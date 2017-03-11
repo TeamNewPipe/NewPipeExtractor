@@ -1,5 +1,7 @@
 package org.schabi.newpipe.extractor.stream_info;
 
+import java.io.Serializable;
+
 /**
  * Created by Christian Schabesberger on 04.03.16.
  *
@@ -20,7 +22,7 @@ package org.schabi.newpipe.extractor.stream_info;
  * along with NewPipe.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-public class VideoStream {
+public class VideoStream implements Serializable{
     //url of the stream
     public String url = "";
     public int format = -1;
