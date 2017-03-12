@@ -52,7 +52,10 @@ public abstract class StreamingService {
     public abstract SearchEngine getSearchEngineInstance();
     public abstract UrlIdHandler getStreamUrlIdHandlerInstance();
     public abstract UrlIdHandler getChannelUrlIdHandlerInstance();
+	public abstract UrlIdHandler getPlayListUrlIdHandlerInstance();
     public abstract ChannelExtractor getChannelExtractorInstance(String url, int page)
+            throws ExtractionException, IOException;
+	public abstract PlayListExtractor getPlayListExtractorInstance(String url, int page)
             throws ExtractionException, IOException;
     public abstract SuggestionExtractor getSuggestionExtractorInstance();
 
@@ -66,11 +69,14 @@ public abstract class StreamingService {
     public final LinkType getLinkTypeByUrl(String url) {
         UrlIdHandler sH = getStreamUrlIdHandlerInstance();
         UrlIdHandler cH = getChannelUrlIdHandlerInstance();
+        UrlIdHandler pH = getPlayListUrlIdHandlerInstance();
 
         if(sH.acceptUrl(url)) {
             return LinkType.STREAM;
         } else if(cH.acceptUrl(url)) {
             return LinkType.CHANNEL;
+        } else if (pH.acceptUrl(url)) {
+            return LinkType.PLAYLIST;
         } else {
             return LinkType.NONE;
         }

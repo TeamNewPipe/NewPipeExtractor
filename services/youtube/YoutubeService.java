@@ -69,10 +69,21 @@ public class YoutubeService extends StreamingService {
         return new YoutubeChannelUrlIdHandler();
     }
 
+
+    @Override
+    public UrlIdHandler getPlayListUrlIdHandlerInstance() {
+        return new YoutubePlayListUrlIdHandler();
+    }
+
     @Override
     public ChannelExtractor getChannelExtractorInstance(String url, int page)
         throws ExtractionException, IOException {
         return new YoutubeChannelExtractor(getChannelUrlIdHandlerInstance(), url, page, getServiceId());
+    }
+
+    public PlayListExtractor getPlayListExtractorInstance(String url, int page)
+        throws ExtractionException, IOException {
+        return new YoutubePlayListExtractor(getPlayListUrlIdHandlerInstance(), url, page, getServiceId());
     }
 
     @Override
