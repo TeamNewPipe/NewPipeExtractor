@@ -2,6 +2,7 @@ package org.schabi.newpipe.extractor;
 
 import org.schabi.newpipe.extractor.channel.ChannelExtractor;
 import org.schabi.newpipe.extractor.exceptions.ExtractionException;
+import org.schabi.newpipe.extractor.playlist.PlayListExtractor;
 import org.schabi.newpipe.extractor.search.SearchEngine;
 import org.schabi.newpipe.extractor.stream_info.StreamExtractor;
 
@@ -52,10 +53,10 @@ public abstract class StreamingService {
     public abstract SearchEngine getSearchEngineInstance();
     public abstract UrlIdHandler getStreamUrlIdHandlerInstance();
     public abstract UrlIdHandler getChannelUrlIdHandlerInstance();
-	public abstract UrlIdHandler getPlayListUrlIdHandlerInstance();
+    public abstract UrlIdHandler getPlayListUrlIdHandlerInstance();
     public abstract ChannelExtractor getChannelExtractorInstance(String url, int page)
             throws ExtractionException, IOException;
-	public abstract PlayListExtractor getPlayListExtractorInstance(String url, int page)
+    public abstract PlayListExtractor getPlayListExtractorInstance(String url, int page)
             throws ExtractionException, IOException;
     public abstract SuggestionExtractor getSuggestionExtractorInstance();
 
