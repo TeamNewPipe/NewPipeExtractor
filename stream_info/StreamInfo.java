@@ -239,18 +239,14 @@ public class StreamInfo extends AbstractStreamInfo {
             streamInfo.addException(e);
         }
         try {
-            // get next video
-            if(streamInfo.next_video != null)
-            {
-                StreamInfoItemCollector c = new StreamInfoItemCollector(
-                        extractor.getUrlIdHandler(), extractor.getServiceId());
-                StreamInfoItemExtractor nextVideo = extractor.getNextVideo();
-                c.commit(nextVideo);
-                if(c.getItemList().size() != 0) {
-                    streamInfo.next_video = (StreamInfoItem) c.getItemList().get(0);
-                }
-                streamInfo.errors.addAll(c.getErrors());
+            StreamInfoItemCollector c = new StreamInfoItemCollector(
+                    extractor.getUrlIdHandler(), extractor.getServiceId());
+            StreamInfoItemExtractor nextVideo = extractor.getNextVideo();
+            c.commit(nextVideo);
+            if(c.getItemList().size() != 0) {
+                streamInfo.next_video = (StreamInfoItem) c.getItemList().get(0);
             }
+            streamInfo.errors.addAll(c.getErrors());
         }
         catch(Exception e) {
             streamInfo.addException(e);
