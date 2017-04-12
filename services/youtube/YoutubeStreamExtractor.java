@@ -147,9 +147,10 @@ public class YoutubeStreamExtractor extends StreamExtractor {
             //////////////////////////////////////////////////////////////////////////////////////////
             // AUDIO     ID      ItagType          Format        Bitrate    SamplingR  Bandwidth  ///
             ////////////////////////////////////////////////////////////////////////////////////////
-            new ItagItem(249, ItagType.AUDIO, MediaFormat.WEBMA,    50,        0,          0),
-            new ItagItem(250, ItagType.AUDIO, MediaFormat.WEBMA,    70,        0,          0),
-            new ItagItem(251, ItagType.AUDIO, MediaFormat.WEBMA,    160,       0,          0),
+            // Disable Opus codec as it's not well supported in older devices
+//          new ItagItem(249, ItagType.AUDIO, MediaFormat.WEBMA,    50,        0,          0),
+//          new ItagItem(250, ItagType.AUDIO, MediaFormat.WEBMA,    70,        0,          0),
+//          new ItagItem(251, ItagType.AUDIO, MediaFormat.WEBMA,    160,       0,          0),
             new ItagItem(171, ItagType.AUDIO, MediaFormat.WEBMA,    128,       0,          0),
             new ItagItem(172, ItagType.AUDIO, MediaFormat.WEBMA,    256,       0,          0),
             new ItagItem(140, ItagType.AUDIO, MediaFormat.M4A,      128,       0,          0),
