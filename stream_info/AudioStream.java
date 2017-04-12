@@ -27,22 +27,26 @@ public class AudioStream implements Serializable{
     public int format = -1;
     public int bandwidth = -1;
     public int sampling_rate = -1;
+    public int avgBitrate = -1;
 
-    public AudioStream(String url, int format, int bandwidth, int samplingRate) {
-        this.url = url; this.format = format;
-        this.bandwidth = bandwidth; this.sampling_rate = samplingRate;
+    public AudioStream(String url, int format, int avgBitrate, int bandwidth, int samplingRate) {
+        this.url = url;
+        this.format = format;
+        this.avgBitrate = avgBitrate;
+        this.bandwidth = bandwidth;
+        this.sampling_rate = samplingRate;
     }
 
     // reveals whether two streams are the same, but have different urls
     public boolean equalStats(AudioStream cmp) {
         return format == cmp.format
                 && bandwidth == cmp.bandwidth
-                && sampling_rate == cmp.sampling_rate;
+                && sampling_rate == cmp.sampling_rate
+                && avgBitrate == cmp.avgBitrate;
     }
 
     // reveals whether two streams are equal
     public boolean equals(AudioStream cmp) {
-        return cmp != null && equalStats(cmp)
-                && url == cmp.url;
+        return cmp != null && equalStats(cmp) && url.equals(cmp.url);
     }
 }

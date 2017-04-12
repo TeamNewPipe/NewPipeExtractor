@@ -9,15 +9,15 @@ import org.mozilla.javascript.Context;
 import org.mozilla.javascript.Function;
 import org.mozilla.javascript.ScriptableObject;
 import org.schabi.newpipe.extractor.AbstractStreamInfo;
+import org.schabi.newpipe.extractor.Downloader;
+import org.schabi.newpipe.extractor.MediaFormat;
+import org.schabi.newpipe.extractor.NewPipe;
+import org.schabi.newpipe.extractor.Parser;
+import org.schabi.newpipe.extractor.UrlIdHandler;
 import org.schabi.newpipe.extractor.exceptions.ExtractionException;
 import org.schabi.newpipe.extractor.exceptions.ParsingException;
 import org.schabi.newpipe.extractor.exceptions.ReCaptchaException;
 import org.schabi.newpipe.extractor.stream_info.AudioStream;
-import org.schabi.newpipe.extractor.Downloader;
-import org.schabi.newpipe.extractor.NewPipe;
-import org.schabi.newpipe.extractor.Parser;
-import org.schabi.newpipe.extractor.UrlIdHandler;
-import org.schabi.newpipe.extractor.MediaFormat;
 import org.schabi.newpipe.extractor.stream_info.StreamExtractor;
 import org.schabi.newpipe.extractor.stream_info.StreamInfo;
 import org.schabi.newpipe.extractor.stream_info.StreamInfoItemCollector;
@@ -105,49 +105,84 @@ public class YoutubeStreamExtractor extends StreamExtractor {
             this.resolutionString = res;
             this.fps = fps;
         }
+
         public ItagItem(int id, ItagType type, MediaFormat format, int samplingRate, int bandWidth) {
+            this(id, type, format, 0, samplingRate, bandWidth);
+        }
+
+        public ItagItem(int id, ItagType type, MediaFormat format, int avgBitrate, int samplingRate, int bandWidth) {
             this.id = id;
             this.itagType = type;
             this.mediaFormatId = format.id;
+            this.avgBitrate = avgBitrate;
             this.samplingRate = samplingRate;
             this.bandWidth = bandWidth;
         }
+
         public int id;
         public ItagType itagType;
         public int mediaFormatId;
         public String resolutionString;
         public int fps = -1;
+        public int avgBitrate = -1;
         public int samplingRate = -1;
         public int bandWidth = -1;
     }
 
     private static final ItagItem[] itagList = {
-            // video streams
-            //           id, ItagType,       MediaFormat,    Resolution, fps
-            new ItagItem(17, ItagType.VIDEO, MediaFormat.v3GPP, "144p", 12),
-            new ItagItem(18, ItagType.VIDEO, MediaFormat.MPEG_4, "360p", 24),
-            new ItagItem(22, ItagType.VIDEO, MediaFormat.MPEG_4, "720p", 24),
-            new ItagItem(36, ItagType.VIDEO, MediaFormat.v3GPP, "240p", 24),
-            new ItagItem(37, ItagType.VIDEO, MediaFormat.MPEG_4, "1080p", 24),
-            new ItagItem(38, ItagType.VIDEO, MediaFormat.MPEG_4, "1080p", 24),
-            new ItagItem(43, ItagType.VIDEO, MediaFormat.WEBM, "360p", 24),
-            new ItagItem(44, ItagType.VIDEO, MediaFormat.WEBM, "480p", 24),
-            new ItagItem(45, ItagType.VIDEO, MediaFormat.WEBM, "720p", 24),
-            new ItagItem(46, ItagType.VIDEO, MediaFormat.WEBM, "1080p", 24),
-            // audio streams
-            //           id, ItagType,       MediaFormat,    samplingR, bandwidth
-            new ItagItem(249, ItagType.AUDIO, MediaFormat.WEBMA, 0, 0),  // bandwith/samplingR 0 because not known
-            new ItagItem(250, ItagType.AUDIO, MediaFormat.WEBMA, 0, 0),
-            new ItagItem(171, ItagType.AUDIO, MediaFormat.WEBMA, 0, 0),
-            new ItagItem(140, ItagType.AUDIO, MediaFormat.M4A, 0, 0),
-            new ItagItem(251, ItagType.AUDIO, MediaFormat.WEBMA, 0, 0),
-            // video only streams
-            new ItagItem(160, ItagType.VIDEO_ONLY, MediaFormat.MPEG_4, "144p", 24),
-            new ItagItem(133, ItagType.VIDEO_ONLY, MediaFormat.MPEG_4, "240p", 24),
-            new ItagItem(134, ItagType.VIDEO_ONLY, MediaFormat.MPEG_4, "360p", 24),
-            new ItagItem(135, ItagType.VIDEO_ONLY, MediaFormat.MPEG_4, "480p", 24),
-            new ItagItem(136, ItagType.VIDEO_ONLY, MediaFormat.MPEG_4, "720p", 24),
-            new ItagItem(137, ItagType.VIDEO_ONLY, MediaFormat.MPEG_4, "1080p", 24),
+            //////////////////////////////////////////////////////////////////////////
+            // VIDEO     ID     ItagType        Format          Resolution   FPS  ///
+            ////////////////////////////////////////////////////////////////////////
+            new ItagItem(17, ItagType.VIDEO, MediaFormat.v3GPP,  "144p"     , 12),
+            new ItagItem(18, ItagType.VIDEO, MediaFormat.MPEG_4, "360p"     , 24),
+            new ItagItem(22, ItagType.VIDEO, MediaFormat.MPEG_4, "720p"     , 24),
+            new ItagItem(36, ItagType.VIDEO, MediaFormat.v3GPP,  "240p"     , 24),
+            new ItagItem(37, ItagType.VIDEO, MediaFormat.MPEG_4, "1080p"    , 24),
+            new ItagItem(38, ItagType.VIDEO, MediaFormat.MPEG_4, "1080p"    , 24),
+            new ItagItem(43, ItagType.VIDEO, MediaFormat.WEBM,   "360p"     , 24),
+            new ItagItem(44, ItagType.VIDEO, MediaFormat.WEBM,   "480p"     , 24),
+            new ItagItem(45, ItagType.VIDEO, MediaFormat.WEBM,   "720p"     , 24),
+            new ItagItem(46, ItagType.VIDEO, MediaFormat.WEBM,   "1080p"    , 24),
+
+            //////////////////////////////////////////////////////////////////////////////////////////
+            // AUDIO     ID      ItagType          Format        Bitrate    SamplingR  Bandwidth  ///
+            ////////////////////////////////////////////////////////////////////////////////////////
+            new ItagItem(249, ItagType.AUDIO, MediaFormat.WEBMA,    50,        0,          0),
+            new ItagItem(250, ItagType.AUDIO, MediaFormat.WEBMA,    70,        0,          0),
+            new ItagItem(251, ItagType.AUDIO, MediaFormat.WEBMA,    160,       0,          0),
+            new ItagItem(171, ItagType.AUDIO, MediaFormat.WEBMA,    128,       0,          0),
+            new ItagItem(172, ItagType.AUDIO, MediaFormat.WEBMA,    256,       0,          0),
+            new ItagItem(140, ItagType.AUDIO, MediaFormat.M4A,      128,       0,          0),
+            new ItagItem(141, ItagType.AUDIO, MediaFormat.M4A,      256,       0,          0),
+
+            /// VIDEO ONLY ///////////////////////////////////////////////////////////////////
+            //           ID         ItagType             Format       Resolution     FPS  ///
+            ////////////////////////////////////////////////////////////////////////////////
+            // Don't add VideoOnly streams that have normal variants
+//          new ItagItem(160, ItagType.VIDEO_ONLY, MediaFormat.MPEG_4,  "144p"      , 24),
+//          new ItagItem(133, ItagType.VIDEO_ONLY, MediaFormat.MPEG_4,  "240p"      , 24),
+//          new ItagItem(134, ItagType.VIDEO_ONLY, MediaFormat.MPEG_4,  "360p"      , 24),
+            new ItagItem(135, ItagType.VIDEO_ONLY, MediaFormat.MPEG_4,  "480p"      , 30),
+//          new ItagItem(136, ItagType.VIDEO_ONLY, MediaFormat.MPEG_4,  "720p"      , 30),
+            new ItagItem(298, ItagType.VIDEO_ONLY, MediaFormat.MPEG_4,  "720p60"    , 60),
+            new ItagItem(137, ItagType.VIDEO_ONLY, MediaFormat.MPEG_4,  "1080p"     , 30),
+            new ItagItem(299, ItagType.VIDEO_ONLY, MediaFormat.MPEG_4,  "1080p60"   , 60),
+            new ItagItem(266, ItagType.VIDEO_ONLY, MediaFormat.MPEG_4,  "2160p"     , 30),
+
+//          new ItagItem(243, ItagType.VIDEO_ONLY, MediaFormat.WEBM,    "360p"      , 30),
+            new ItagItem(244, ItagType.VIDEO_ONLY, MediaFormat.WEBM,    "480p"      , 30),
+            new ItagItem(245, ItagType.VIDEO_ONLY, MediaFormat.WEBM,    "480p"      , 30),
+            new ItagItem(246, ItagType.VIDEO_ONLY, MediaFormat.WEBM,    "480p"      , 30),
+            new ItagItem(247, ItagType.VIDEO_ONLY, MediaFormat.WEBM,    "720p"      , 30),
+            new ItagItem(248, ItagType.VIDEO_ONLY, MediaFormat.WEBM,    "1080p"     , 30),
+            new ItagItem(271, ItagType.VIDEO_ONLY, MediaFormat.WEBM,    "1440p"     , 30),
+            // #272 is either 3840x2160 (e.g. RtoitU2A-3E) or 7680x4320 (sLprVF6d7Ug)
+            new ItagItem(272, ItagType.VIDEO_ONLY, MediaFormat.WEBM,    "2160p"     , 30),
+            new ItagItem(302, ItagType.VIDEO_ONLY, MediaFormat.WEBM,    "720p60"    , 60),
+            new ItagItem(303, ItagType.VIDEO_ONLY, MediaFormat.WEBM,    "1080p60"   , 60),
+            new ItagItem(308, ItagType.VIDEO_ONLY, MediaFormat.WEBM,    "1440p60"   , 60),
+            new ItagItem(313, ItagType.VIDEO_ONLY, MediaFormat.WEBM,    "2160p"     , 30),
+            new ItagItem(315, ItagType.VIDEO_ONLY, MediaFormat.WEBM,    "2160p60"   , 60)
     };
 
     /**These lists only contain itag formats that are supported by the common Android Video player.
@@ -483,6 +518,7 @@ public class YoutubeStreamExtractor extends StreamExtractor {
 
                         audioStreams.add(new AudioStream(streamUrl,
                                 itagItem.mediaFormatId,
+                                itagItem.avgBitrate,
                                 itagItem.bandWidth,
                                 itagItem.samplingRate));
                     }
@@ -549,7 +585,58 @@ public class YoutubeStreamExtractor extends StreamExtractor {
 
     @Override
     public List<VideoStream> getVideoOnlyStreams() throws ParsingException {
-        return null;
+        Vector<VideoStream> videoOnlyStreams = new Vector<>();
+
+        try {
+            String encodedUrlMap;
+            // playerArgs could be null if the video is age restricted
+            if (playerArgs == null) {
+                if (videoInfoPage.containsKey("adaptive_fmts")) {
+                    encodedUrlMap = videoInfoPage.get("adaptive_fmts");
+                } else {
+                    return null;
+                }
+            } else {
+                if (playerArgs.has("adaptive_fmts")) {
+                    encodedUrlMap = playerArgs.getString("adaptive_fmts");
+                } else {
+                    return null;
+                }
+            }
+            for (String url_data_str : encodedUrlMap.split(",")) {
+                // This loop iterates through multiple streams, therefor tags
+                // is related to one and the same stream at a time.
+                Map<String, String> tags = Parser.compatParseMap(
+                        org.jsoup.parser.Parser.unescapeEntities(url_data_str, true));
+
+                int itag = Integer.parseInt(tags.get("itag"));
+
+                if (itagIsSupported(itag)) {
+                    ItagItem itagItem = getItagItem(itag);
+                    if (itagItem.itagType == ItagType.VIDEO_ONLY) {
+                        String streamUrl = tags.get("url");
+                        // if video has a signature: decrypt it and add it to the url
+                        if (tags.get("s") != null) {
+                            streamUrl = streamUrl + "&signature="
+                                    + decryptSignature(tags.get("s"), decryptionCode);
+                        }
+
+                        videoOnlyStreams.add(new VideoStream(
+                                true, //isVideoOnly
+                                streamUrl,
+                                itagItem.mediaFormatId,
+                                itagItem.resolutionString));
+                    }
+                }
+            }
+        } catch (Exception e) {
+            throw new ParsingException("Failed to get video only streams", e);
+        }
+
+        if (videoOnlyStreams.isEmpty()) {
+            throw new ParsingException("Failed to get any video only stream");
+        }
+        return videoOnlyStreams;
     }
 
     /**Attempts to parse (and return) the offset to start playing the video from.

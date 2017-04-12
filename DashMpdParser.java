@@ -81,7 +81,7 @@ public class DashMpdParser {
                     } else if(memeType.equals(MediaFormat.M4A.mimeType)) {
                         format = MediaFormat.M4A.id;
                     }
-                    audioStreams.add(new AudioStream(url, format, bandwidth, samplingRate));
+                    audioStreams.add(new AudioStream(url, format, 0, bandwidth, samplingRate));
                 }
             }
         }

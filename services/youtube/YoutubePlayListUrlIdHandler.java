@@ -1,6 +1,5 @@
 package org.schabi.newpipe.extractor.services.youtube;
 
-import android.net.UrlQuerySanitizer;
 
 import org.schabi.newpipe.extractor.Parser;
 import org.schabi.newpipe.extractor.UrlIdHandler;
