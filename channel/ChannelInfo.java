@@ -2,9 +2,9 @@ package org.schabi.newpipe.extractor.channel;
 
 import org.schabi.newpipe.extractor.InfoItem;
 import org.schabi.newpipe.extractor.exceptions.ParsingException;
-import org.schabi.newpipe.extractor.stream_info.StreamInfoItem;
 import org.schabi.newpipe.extractor.stream_info.StreamInfoItemCollector;
 
+import java.io.Serializable;
 import java.util.List;
 import java.util.Vector;
 
@@ -28,7 +28,7 @@ import java.util.Vector;
  * along with NewPipe.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-public class ChannelInfo {
+public class ChannelInfo implements Serializable{
     public void addException(Exception e) {
         errors.add(e);
     }

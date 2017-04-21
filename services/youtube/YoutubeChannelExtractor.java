@@ -18,7 +18,6 @@ import org.schabi.newpipe.extractor.exceptions.ParsingException;
 import org.schabi.newpipe.extractor.stream_info.StreamInfoItemCollector;
 import org.schabi.newpipe.extractor.stream_info.StreamInfoItemExtractor;
 
-
 import java.io.IOException;
 
 /**
@@ -46,19 +45,20 @@ public class YoutubeChannelExtractor extends ChannelExtractor {
     private static final String TAG = YoutubeChannelExtractor.class.toString();
 
     // private CSSOMParser cssParser = new CSSOMParser(new SACParserCSS3());
+    private static final String CHANNEL_FEED_BASE = "https://www.youtube.com/feeds/videos.xml?channel_id=";
 
     private Document doc = null;
 
     private boolean isAjaxPage = false;
-    private static String userUrl = "";
-    private static String channelName = "";
-    private static String avatarUrl = "";
-    private static String bannerUrl = "";
-    private static String feedUrl = "";
-    private static long subscriberCount = -1;
+    private String userUrl = "";
+    private String channelName = "";
+    private String avatarUrl = "";
+    private String bannerUrl = "";
+    private String feedUrl = "";
+    private long subscriberCount = -1;
     // the fist page is html all other pages are ajax. Every new page can be requested by sending
     // this request url.
-    private static String nextPageUrl = "";
+    private String nextPageUrl = "";
 
     public YoutubeChannelExtractor(UrlIdHandler urlIdHandler, String url, int page, int serviceId)
             throws ExtractionException, IOException {
@@ -318,13 +318,8 @@ public class YoutubeChannelExtractor extends ChannelExtractor {
     @Override
     public String getFeedUrl() throws ParsingException {
         try {
-            if(userUrl.contains("channel")) {
-                //channels don't have feeds in youtube, only user can provide such
-                return "";
-            }
-            if(!isAjaxPage) {
-                feedUrl = doc.select("link[title=\"RSS\"]").first().attr("abs:href");
-            }
+            String channelId = doc.getElementsByClass("yt-uix-subscription-button").first().attr("data-channel-external-id");
+            feedUrl = CHANNEL_FEED_BASE + channelId;
             return feedUrl;
         } catch(Exception e) {
             throw new ParsingException("Could not get feed url", e);
