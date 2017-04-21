@@ -25,11 +25,11 @@ public class YoutubePlayListExtractor extends PlayListExtractor {
     private Document doc = null;
 
     private boolean isAjaxPage = false;
-    private String name = "";
-    private String feedUrl = "";
-    private String avatarUrl = "";
-    private String bannerUrl = "";
-    private String nextPageUrl = "";
+    private static String name = "";
+    private static String feedUrl = "";
+    private static String avatarUrl = "";
+    private static String bannerUrl = "";
+    private static String nextPageUrl = "";
 
     public YoutubePlayListExtractor(UrlIdHandler urlIdHandler,
                                     String url, int page, int serviceId) throws IOException, ExtractionException {
