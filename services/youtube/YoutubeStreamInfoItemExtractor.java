@@ -164,7 +164,7 @@ public class YoutubeStreamInfoItemExtractor implements StreamInfoItemExtractor {
 
     @Override
     public boolean isAd() throws ParsingException {
-	    return !item.select("span[class*=\"icon-not-available\"]").isEmpty();
+        return !item.select("span[class*=\"icon-not-available\"]").isEmpty();
     }
 
     private boolean isLiveStream(Element item) {
