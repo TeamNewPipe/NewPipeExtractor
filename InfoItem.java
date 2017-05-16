@@ -23,7 +23,7 @@ import java.io.Serializable;
  */
 
 public interface InfoItem extends Serializable{
-    public enum InfoType {
+    enum InfoType {
         STREAM,
         PLAYLIST,
         CHANNEL

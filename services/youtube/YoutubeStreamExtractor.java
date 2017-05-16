@@ -818,11 +818,7 @@ public class YoutubeStreamExtractor extends StreamExtractor {
 
             @Override
             public boolean isAd() throws ParsingException {
-                if(!li.select("span[class*=\"icon-not-available\"]").isEmpty()) {
-                    return true;
-                } else {
-                    return false;
-                }
+                return !li.select("span[class*=\"icon-not-available\"]").isEmpty();
             }
 
             @Override
