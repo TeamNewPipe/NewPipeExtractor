@@ -104,7 +104,7 @@ public class StreamInfo extends AbstractStreamInfo {
                 || (streamInfo.id == null || streamInfo.id.isEmpty())
                 || (streamInfo.title == null /* streamInfo.title can be empty of course */)
                 || (streamInfo.age_limit == -1)) {
-            throw new ExtractionException("Some importand stream information was not given.");
+            throw new ExtractionException("Some important stream information was not given.");
         }
 
         return streamInfo;
