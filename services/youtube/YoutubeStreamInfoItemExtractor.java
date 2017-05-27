@@ -117,10 +117,7 @@ public class YoutubeStreamInfoItemExtractor implements StreamInfoItemExtractor {
             }
         }
 
-        output = Parser.matchGroup1("([0-9,\\. ]*)", input)
-                .replace(" ", "")
-                .replace(".", "")
-                .replace(",", "");
+        output = input.replaceAll("[^0-9]+", "");
 
         try {
             return Long.parseLong(output);
