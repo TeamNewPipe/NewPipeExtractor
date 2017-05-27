@@ -74,19 +74,34 @@ public class StreamInfo extends AbstractStreamInfo {
     /**Fills out the video info fields which are common to all services.
      * Probably needs to be overridden by subclasses*/
     public static StreamInfo getVideoInfo(StreamExtractor extractor)
-            throws ExtractionException, IOException {
+            throws ExtractionException, StreamExtractor.ContentNotAvailableException {
         StreamInfo streamInfo = new StreamInfo();
 
-        streamInfo = extractImportantData(streamInfo, extractor);
-        streamInfo = extractStreams(streamInfo, extractor);
-        streamInfo = extractOptionalData(streamInfo, extractor);
+        try {
+            streamInfo = extractImportantData(streamInfo, extractor);
+            streamInfo = extractStreams(streamInfo, extractor);
+            streamInfo = extractOptionalData(streamInfo, extractor);
+        } catch (ExtractionException e) {
+	        // Currently YouTube does not distinguish between age restricted videos and videos blocked
+	        // by country.  This means that during the initialisation of the extractor, the extractor
+	        // will assume that a video is age restricted while in reality it it blocked by country.
+	        //
+	        // We will now detect whether the video is blocked by country or not.
+            String errorMsg = extractor.getErrorMessage();
+
+            if (errorMsg != null) {
+                throw new StreamExtractor.ContentNotAvailableException(errorMsg);
+            } else {
+                throw e;
+            }
+        }
 
         return streamInfo;
     }
 
     private static StreamInfo extractImportantData(
             StreamInfo streamInfo, StreamExtractor extractor)
-            throws ExtractionException, IOException {
+            throws ExtractionException {
         /* ---- important data, withoug the video can't be displayed goes here: ---- */
         // if one of these is not available an exception is meant to be thrown directly into the frontend.
 
@@ -112,7 +127,7 @@ public class StreamInfo extends AbstractStreamInfo {
 
     private static StreamInfo extractStreams(
             StreamInfo streamInfo, StreamExtractor extractor)
-            throws ExtractionException, IOException {
+            throws ExtractionException {
         /* ---- stream extraction goes here ---- */
         // At least one type of stream has to be available,
         // otherwise an exception will be thrown directly into the frontend.
