@@ -260,7 +260,7 @@ public class YoutubeStreamExtractor extends StreamExtractor {
                     Parser.matchGroup1("ytplayer.config\\s*=\\s*(\\{.*?\\});", pageContent);
             return new JSONObject(ytPlayerConfigRaw);
         } catch (Parser.RegexException e) {
-            String errorReason = findErrorReason(doc);
+            String errorReason = getErrorMessage();
             switch(errorReason) {
                 case "GEMA":
                     throw new GemaException(errorReason);
@@ -948,15 +948,28 @@ public class YoutubeStreamExtractor extends StreamExtractor {
         return result == null ? "" : result.toString();
     }
 
-    private String findErrorReason(Document doc) {
-        String errorMessage = doc.select("h1[id=\"unavailable-message\"]").first().text();
-        if(errorMessage.contains("GEMA")) {
+
+    /**
+     * {@inheritDoc}
+     */
+    public String getErrorMessage() {
+        String          errorMessage = doc.select("h1[id=\"unavailable-message\"]").first().text();
+        StringBuilder   errorReason;
+
+        if (errorMessage == null  ||  errorMessage.isEmpty()) {
+            errorReason = null;
+        } else if(errorMessage.contains("GEMA")) {
             // Gema sometimes blocks youtube music content in germany:
             // https://www.gema.de/en/
             // Detailed description:
             // https://en.wikipedia.org/wiki/GEMA_%28German_organization%29
-            return "GEMA";
+            errorReason = new StringBuilder("GEMA");
+        } else {
+            errorReason = new StringBuilder(errorMessage);
+            errorReason.append("  ");
+            errorReason.append(doc.select("[id=\"unavailable-submessage\"]").first().text());
         }
-        return "";
+
+        return errorReason != null  ?  errorReason.toString()  :  null;
     }
 }

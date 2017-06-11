@@ -49,7 +49,7 @@ public abstract class StreamExtractor {
         }
     }
 
-    public class ContentNotAvailableException extends ParsingException {
+    public static class ContentNotAvailableException extends ParsingException {
         public ContentNotAvailableException(String message) {
             super(message);
         }
@@ -101,4 +101,11 @@ public abstract class StreamExtractor {
     public int getServiceId() {
         return serviceId;
     }
+
+    /**
+     * Analyses the webpage's document and extracts any error message there might be.
+     *
+     * @return  Error message; null if there is no error message.
+     */
+    public abstract String getErrorMessage();
 }
