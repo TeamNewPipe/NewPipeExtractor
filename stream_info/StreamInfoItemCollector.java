@@ -48,7 +48,7 @@ public class StreamInfoItemCollector extends InfoItemCollector {
         }
 
         StreamInfoItem resultItem = new StreamInfoItem();
-        // importand information
+        // important information
         resultItem.service_id = getServiceId();
         resultItem.webpage_url = extractor.getWebPageUrl();
         if (getUrlIdHandler() == null) {
