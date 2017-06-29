@@ -1,6 +1,6 @@
 package org.schabi.newpipe.extractor.exceptions;
 
-/**
+/*
  * Created by Christian Schabesberger on 30.01.16.
  *
  * Copyright (C) Christian Schabesberger 2016 <chris.schabesberger@mailbox.org>
@@ -24,9 +24,11 @@ public class ExtractionException extends Exception {
     public ExtractionException(String message) {
         super(message);
     }
+
     public ExtractionException(Throwable cause) {
         super(cause);
     }
+
     public ExtractionException(String message, Throwable cause) {
         super(message, cause);
     }

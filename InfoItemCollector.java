@@ -5,7 +5,7 @@ import org.schabi.newpipe.extractor.exceptions.ExtractionException;
 import java.util.List;
 import java.util.Vector;
 
-/**
+/*
  * Created by Christian Schabesberger on 12.02.17.
  *
  * Copyright (C) Christian Schabesberger 2017 <chris.schabesberger@mailbox.org>
@@ -37,11 +37,13 @@ public class InfoItemCollector {
     public List<InfoItem> getItemList() {
         return itemList;
     }
+
     public List<Throwable> getErrors() {
         return errors;
     }
+
     protected void addFromCollector(InfoItemCollector otherC) throws ExtractionException {
-        if(serviceId != otherC.serviceId) {
+        if (serviceId != otherC.serviceId) {
             throw new ExtractionException("Service Id does not equal: "
                     + NewPipe.getNameOfService(serviceId)
                     + " and " + NewPipe.getNameOfService(otherC.serviceId));
@@ -49,12 +51,15 @@ public class InfoItemCollector {
         errors.addAll(otherC.errors);
         itemList.addAll(otherC.itemList);
     }
+
     protected void addError(Exception e) {
         errors.add(e);
     }
+
     protected void addItem(InfoItem item) {
         itemList.add(item);
     }
+
     protected int getServiceId() {
         return serviceId;
     }

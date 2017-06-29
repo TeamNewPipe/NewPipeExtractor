@@ -2,7 +2,7 @@ package org.schabi.newpipe.extractor;
 
 import java.io.Serializable;
 
-/**
+/*
  * Created by the-scrabi on 11.02.17.
  *
  * Copyright (C) Christian Schabesberger 2017 <chris.schabesberger@mailbox.org>
@@ -22,7 +22,7 @@ import java.io.Serializable;
  * along with NewPipe.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-public interface InfoItem extends Serializable{
+public interface InfoItem extends Serializable {
     enum InfoType {
         STREAM,
         PLAYLIST,

@@ -2,7 +2,7 @@ package org.schabi.newpipe.extractor;
 
 import org.schabi.newpipe.extractor.exceptions.ParsingException;
 
-/**
+/*
  * Created by Christian Schabesberger on 26.07.16.
  *
  * Copyright (C) Christian Schabesberger 2016 <chris.schabesberger@mailbox.org>
@@ -28,8 +28,10 @@ public interface UrlIdHandler {
     String getId(String siteUrl) throws ParsingException;
     String cleanUrl(String siteUrl) throws ParsingException;
 
-    /**When a VIEW_ACTION is caught this function will test if the url delivered within the calling
-     Intent was meant to be watched with this Service.
-     Return false if this service shall not allow to be called through ACTIONs.*/
+    /**
+     * When a VIEW_ACTION is caught this function will test if the url delivered within the calling
+     * Intent was meant to be watched with this Service.
+     * Return false if this service shall not allow to be called through ACTIONs.
+     */
     boolean acceptUrl(String videoUrl);
 }

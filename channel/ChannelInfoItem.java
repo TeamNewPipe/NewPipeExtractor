@@ -2,7 +2,7 @@ package org.schabi.newpipe.extractor.channel;
 
 import org.schabi.newpipe.extractor.InfoItem;
 
-/**
+/*
  * Created by Christian Schabesberger on 11.02.17.
  *
  * Copyright (C) Christian Schabesberger 2017 <chris.schabesberger@mailbox.org>
@@ -30,14 +30,16 @@ public class ChannelInfoItem implements InfoItem {
     public String webPageUrl = "";
     public String description = "";
     public long subscriberCount = -1;
-    public int videoAmount = -1;
+    public long viewCount = -1;
 
     public InfoType infoType() {
         return InfoType.CHANNEL;
     }
+
     public String getTitle() {
         return channelName;
     }
+
     public String getLink() {
         return webPageUrl;
     }

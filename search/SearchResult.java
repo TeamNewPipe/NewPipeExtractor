@@ -2,14 +2,13 @@ package org.schabi.newpipe.extractor.search;
 
 import org.schabi.newpipe.extractor.InfoItem;
 import org.schabi.newpipe.extractor.exceptions.ExtractionException;
-import org.schabi.newpipe.extractor.stream_info.StreamInfoItem;
 
 import java.io.IOException;
 import java.util.EnumSet;
 import java.util.List;
 import java.util.Vector;
 
-/**
+/*
  * Created by Christian Schabesberger on 29.02.16.
  *
  * Copyright (C) Christian Schabesberger 2016 <chris.schabesberger@mailbox.org>
@@ -37,9 +36,9 @@ public class SearchResult {
         SearchResult result = engine
                 .search(query, page, languageCode, filter)
                 .getSearchResult();
-        if(result.resultList.isEmpty()) {
-            if(result.suggestion.isEmpty()) {
-                if(result.errors.isEmpty()) {
+        if (result.resultList.isEmpty()) {
+            if (result.suggestion.isEmpty()) {
+                if (result.errors.isEmpty()) {
                     throw new ExtractionException("Empty result despite no error");
                 }
             } else {

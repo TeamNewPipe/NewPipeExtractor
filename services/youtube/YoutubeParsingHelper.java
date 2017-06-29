@@ -3,7 +3,7 @@ package org.schabi.newpipe.extractor.services.youtube;
 
 import org.schabi.newpipe.extractor.exceptions.ParsingException;
 
-/**
+/*
  * Created by Christian Schabesberger on 02.03.16.
  *
  * Copyright (C) Christian Schabesberger 2016 <chris.schabesberger@mailbox.org>
@@ -36,7 +36,7 @@ public class YoutubeParsingHelper {
         String minutes = "0";
         String seconds;
 
-        switch(splitInput.length) {
+        switch (splitInput.length) {
             case 4:
                 days = splitInput[0];
                 hours = splitInput[1];

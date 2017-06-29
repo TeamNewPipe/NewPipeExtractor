@@ -1,6 +1,6 @@
 package org.schabi.newpipe.extractor.exceptions;
 
-/**
+/*
  * Created by beneth <bmauduit@beneth.fr> on 07.12.16.
  *
  * Copyright (C) Christian Schabesberger 2016 <chris.schabesberger@mailbox.org>

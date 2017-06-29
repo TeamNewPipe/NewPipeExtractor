@@ -1,6 +1,6 @@
 package org.schabi.newpipe.extractor.exceptions;
 
-/**
+/*
  * Created by Christian Schabesberger on 12.09.16.
  *
  * Copyright (C) Christian Schabesberger 2016 <chris.schabesberger@mailbox.org>
@@ -24,6 +24,7 @@ public class FoundAdException extends ParsingException {
     public FoundAdException(String message) {
         super(message);
     }
+
     public FoundAdException(String message, Throwable cause) {
         super(message, cause);
     }

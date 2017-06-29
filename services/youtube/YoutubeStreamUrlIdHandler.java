@@ -2,11 +2,11 @@ package org.schabi.newpipe.extractor.services.youtube;
 
 import org.schabi.newpipe.extractor.Downloader;
 import org.schabi.newpipe.extractor.NewPipe;
-import org.schabi.newpipe.extractor.Parser;
 import org.schabi.newpipe.extractor.UrlIdHandler;
 import org.schabi.newpipe.extractor.exceptions.FoundAdException;
 import org.schabi.newpipe.extractor.exceptions.ParsingException;
 import org.schabi.newpipe.extractor.exceptions.ReCaptchaException;
+import org.schabi.newpipe.extractor.utils.Parser;
 
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
@@ -14,7 +14,7 @@ import java.net.URI;
 import java.net.URISyntaxException;
 import java.net.URLDecoder;
 
-/**
+/*
  * Created by Christian Schabesberger on 02.02.16.
  *
  * Copyright (C) Christian Schabesberger 2016 <chris.schabesberger@mailbox.org>
@@ -39,7 +39,8 @@ public class YoutubeStreamUrlIdHandler implements UrlIdHandler {
     private static final YoutubeStreamUrlIdHandler instance = new YoutubeStreamUrlIdHandler();
     private static final String ID_PATTERN = "([\\-a-zA-Z0-9_]{11})";
 
-    private YoutubeStreamUrlIdHandler() {}
+    private YoutubeStreamUrlIdHandler() {
+    }
 
     public static YoutubeStreamUrlIdHandler getInstance() {
         return instance;
@@ -52,13 +53,13 @@ public class YoutubeStreamUrlIdHandler implements UrlIdHandler {
 
     @Override
     public String getId(String url) throws ParsingException, IllegalArgumentException {
-        if(url.isEmpty()) {
+        if (url.isEmpty()) {
             throw new IllegalArgumentException("The url parameter should not be empty");
         }
 
         String id;
         String lowercaseUrl = url.toLowerCase();
-        if(lowercaseUrl.contains("youtube")) {
+        if (lowercaseUrl.contains("youtube")) {
             if (url.contains("attribution_link")) {
                 try {
                     String escapedQuery = Parser.matchGroup1("u=(.[^&|$]*)", url);
@@ -67,31 +68,29 @@ public class YoutubeStreamUrlIdHandler implements UrlIdHandler {
                 } catch (UnsupportedEncodingException uee) {
                     throw new ParsingException("Could not parse attribution_link", uee);
                 }
-            } else if(lowercaseUrl.contains("youtube.com/shared?ci=")) {
+            } else if (lowercaseUrl.contains("youtube.com/shared?ci=")) {
                 return getRealIdFromSharedLink(url);
             } else if (url.contains("vnd.youtube")) {
                 id = Parser.matchGroup1(ID_PATTERN, url);
             } else if (url.contains("embed")) {
                 id = Parser.matchGroup1("embed/" + ID_PATTERN, url);
-            } else if(url.contains("googleads")) {
+            } else if (url.contains("googleads")) {
                 throw new FoundAdException("Error found add: " + url);
             } else {
                 id = Parser.matchGroup1("[?&]v=" + ID_PATTERN, url);
             }
-        }
-        else if(lowercaseUrl.contains("youtu.be")) {
-            if(url.contains("v=")) {
+        } else if (lowercaseUrl.contains("youtu.be")) {
+            if (url.contains("v=")) {
                 id = Parser.matchGroup1("v=" + ID_PATTERN, url);
             } else {
                 id = Parser.matchGroup1("[Yy][Oo][Uu][Tt][Uu]\\.[Bb][Ee]/" + ID_PATTERN, url);
             }
-        }
-        else {
+        } else {
             throw new ParsingException("Error no suitable url: " + url);
         }
 
 
-        if(!id.isEmpty()){
+        if (!id.isEmpty()) {
             return id;
         } else {
             throw new ParsingException("Error could not parse url: " + url);
@@ -100,12 +99,13 @@ public class YoutubeStreamUrlIdHandler implements UrlIdHandler {
 
     /**
      * Get the real url from a shared uri.
-     *
+     * <p>
      * Shared URI's look like this:
      * <pre>
      *     * https://www.youtube.com/shared?ci=PJICrTByb3E
      *     * vnd.youtube://www.youtube.com/shared?ci=PJICrTByb3E&feature=twitter-deep-link
      * </pre>
+     *
      * @param url The shared url
      * @return the id of the stream
      * @throws ParsingException
@@ -127,8 +127,8 @@ public class YoutubeStreamUrlIdHandler implements UrlIdHandler {
         }
         // is this bad? is this fragile?:
         String realId = Parser.matchGroup1("rel=\"shortlink\" href=\"https://youtu.be/" + ID_PATTERN, content);
-        if(sharedId.equals(realId)) {
-            throw new ParsingException("Got same id for as shared id: " + sharedId);
+        if (sharedId.equals(realId)) {
+            throw new ParsingException("Got same id for as shared info_id: " + sharedId);
         }
         return realId;
     }
@@ -147,7 +147,7 @@ public class YoutubeStreamUrlIdHandler implements UrlIdHandler {
     @Override
     public boolean acceptUrl(String videoUrl) {
         String lowercaseUrl = videoUrl.toLowerCase();
-        if(lowercaseUrl.contains("youtube") ||
+        if (lowercaseUrl.contains("youtube") ||
                 lowercaseUrl.contains("youtu.be")) {
             // bad programming I know
             try {

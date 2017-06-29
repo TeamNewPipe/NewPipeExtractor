@@ -1,6 +1,6 @@
-package org.schabi.newpipe.extractor.stream_info;
+package org.schabi.newpipe.extractor.stream;
 
-/**
+/*
  * Created by Christian Schabesberger on 10.08.15.
  *
  * Copyright (C) Christian Schabesberger 2016 <chris.schabesberger@mailbox.org>
@@ -20,60 +20,29 @@ package org.schabi.newpipe.extractor.stream_info;
  * along with NewPipe.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+import org.schabi.newpipe.extractor.Extractor;
 import org.schabi.newpipe.extractor.UrlIdHandler;
-import org.schabi.newpipe.extractor.exceptions.ExtractionException;
 import org.schabi.newpipe.extractor.exceptions.ParsingException;
 
 import java.util.List;
 
-/**Scrapes information from a video streaming service (eg, YouTube).*/
-
-
-@SuppressWarnings("ALL")
-public abstract class StreamExtractor {
-
-    private int serviceId;
-    private String url;
-    private UrlIdHandler urlIdHandler;
-    private StreamInfoItemCollector previewInfoCollector;
-
-    public class ExtractorInitException extends ExtractionException {
-        public ExtractorInitException(String message) {
-            super(message);
-        }
-        public ExtractorInitException(Throwable cause) {
-            super(cause);
-        }
-        public ExtractorInitException(String message, Throwable cause) {
-            super(message, cause);
-        }
-    }
+/**
+ * Scrapes information from a video streaming service (eg, YouTube).
+ */
+public abstract class StreamExtractor extends Extractor {
 
     public static class ContentNotAvailableException extends ParsingException {
         public ContentNotAvailableException(String message) {
             super(message);
         }
+
         public ContentNotAvailableException(String message, Throwable cause) {
             super(message, cause);
         }
     }
 
     public StreamExtractor(UrlIdHandler urlIdHandler, String url, int serviceId) {
-        this.serviceId = serviceId;
-        this.urlIdHandler = urlIdHandler;
-        previewInfoCollector = new StreamInfoItemCollector(urlIdHandler, serviceId);
-    }
-
-    protected StreamInfoItemCollector getStreamPreviewInfoCollector() {
-        return previewInfoCollector;
-    }
-
-    public String getUrl() {
-        return url;
-    }
-
-    public UrlIdHandler getUrlIdHandler() {
-        return urlIdHandler;
+        super(urlIdHandler, serviceId, url);
     }
 
     public abstract int getTimeStamp() throws ParsingException;
@@ -98,9 +67,6 @@ public abstract class StreamExtractor {
     public abstract StreamInfoItemCollector getRelatedVideos() throws ParsingException;
     public abstract String getPageUrl();
     public abstract StreamInfo.StreamType getStreamType() throws ParsingException;
-    public int getServiceId() {
-        return serviceId;
-    }
 
     /**
      * Analyses the webpage's document and extracts any error message there might be.

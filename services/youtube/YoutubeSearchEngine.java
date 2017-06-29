@@ -10,12 +10,12 @@ import org.schabi.newpipe.extractor.exceptions.ExtractionException;
 import org.schabi.newpipe.extractor.search.InfoItemSearchCollector;
 import org.schabi.newpipe.extractor.search.SearchEngine;
 
-import java.net.URLEncoder;
 import java.io.IOException;
+import java.net.URLEncoder;
 import java.util.EnumSet;
 
 
-/**
+/*
  * Created by Christian Schabesberger on 09.08.15.
  *
  * Copyright (C) Christian Schabesberger 2015 <chris.schabesberger@mailbox.org>
@@ -58,20 +58,19 @@ public class YoutubeSearchEngine extends SearchEngine {
         String url = "https://www.youtube.com/results"
                 + "?q=" + URLEncoder.encode(query, CHARSET_UTF_8)
                 + "&page=" + Integer.toString(page + 1);
-        if(filter.contains(Filter.STREAM) && !filter.contains(Filter.CHANNEL)) {
+        if (filter.contains(Filter.STREAM) && !filter.contains(Filter.CHANNEL)) {
             url += "&sp=EgIQAQ%253D%253D";
-        } else if(!filter.contains(Filter.STREAM) && filter.contains(Filter.CHANNEL)) {
+        } else if (!filter.contains(Filter.STREAM) && filter.contains(Filter.CHANNEL)) {
             url += "&sp=EgIQAg%253D%253D";
         }
 
         String site;
         //String url = builder.build().toString();
         //if we've been passed a valid language code, append it to the URL
-        if(!languageCode.isEmpty()) {
+        if (!languageCode.isEmpty()) {
             //assert Pattern.matches("[a-z]{2}(-([A-Z]{2}|[0-9]{1,3}))?", languageCode);
-            site  = downloader.download(url, languageCode);
-        }
-        else {
+            site = downloader.download(url, languageCode);
+        } else {
             site = downloader.download(url);
         }
 
@@ -95,7 +94,7 @@ public class YoutubeSearchEngine extends SearchEngine {
             // both types of spell correction item
             if ((el = item.select("div[class*=\"spell-correction\"]").first()) != null) {
                 collector.setSuggestion(el.select("a").first().text());
-                if(list.children().size() == 1) {
+                if (list.children().size() == 1) {
                     throw new NothingFoundException("Did you mean: " + el.select("a").first().text());
                 }
                 // search message item
@@ -105,7 +104,7 @@ public class YoutubeSearchEngine extends SearchEngine {
                 // video item type
             } else if ((el = item.select("div[class*=\"yt-lockup-video\"]").first()) != null) {
                 collector.commit(new YoutubeStreamInfoItemExtractor(el));
-            } else if((el = item.select("div[class*=\"yt-lockup-channel\"]").first()) != null) {
+            } else if ((el = item.select("div[class*=\"yt-lockup-channel\"]").first()) != null) {
                 collector.commit(new YoutubeChannelInfoItemExtractor(el));
             } else {
                 // noinspection ConstantConditions

@@ -1,4 +1,4 @@
-package org.schabi.newpipe.extractor.stream_info;
+package org.schabi.newpipe.extractor.stream;
 
 import org.schabi.newpipe.extractor.InfoItemCollector;
 import org.schabi.newpipe.extractor.NewPipe;
@@ -6,10 +6,7 @@ import org.schabi.newpipe.extractor.UrlIdHandler;
 import org.schabi.newpipe.extractor.exceptions.FoundAdException;
 import org.schabi.newpipe.extractor.exceptions.ParsingException;
 
-import java.util.List;
-import java.util.Vector;
-
-/**
+/*
  * Created by Christian Schabesberger on 28.02.16.
  *
  * Copyright (C) Christian Schabesberger 2016 <chris.schabesberger@mailbox.org>
@@ -43,22 +40,22 @@ public class StreamInfoItemCollector extends InfoItemCollector {
     }
 
     public StreamInfoItem extract(StreamInfoItemExtractor extractor) throws Exception {
-        if(extractor.isAd()) {
+        if (extractor.isAd()) {
             throw new FoundAdException("Found ad");
         }
 
         StreamInfoItem resultItem = new StreamInfoItem();
         // important information
         resultItem.service_id = getServiceId();
-        resultItem.webpage_url = extractor.getWebPageUrl();
+        resultItem.url = extractor.getWebPageUrl();
         if (getUrlIdHandler() == null) {
             throw new ParsingException("Error: UrlIdHandler not set");
-        } else if (!resultItem.webpage_url.isEmpty()) {
+        } else if (!resultItem.url.isEmpty()) {
             resultItem.id = NewPipe.getService(getServiceId())
                     .getStreamUrlIdHandlerInstance()
-                    .getId(resultItem.webpage_url);
+                    .getId(resultItem.url);
         }
-        resultItem.title = extractor.getTitle();
+        resultItem.name = extractor.getTitle();
         resultItem.stream_type = extractor.getStreamType();
 
         // optional information
@@ -93,7 +90,7 @@ public class StreamInfoItemCollector extends InfoItemCollector {
     public void commit(StreamInfoItemExtractor extractor) throws ParsingException {
         try {
             addItem(extract(extractor));
-        } catch(FoundAdException ae) {
+        } catch (FoundAdException ae) {
             //System.out.println("AD_WARNING: " + ae.getMessage());
         } catch (Exception e) {
             addError(e);

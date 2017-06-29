@@ -5,7 +5,7 @@ import org.schabi.newpipe.extractor.exceptions.ExtractionException;
 import java.io.IOException;
 import java.util.List;
 
-/**
+/*
  * Created by Christian Schabesberger on 28.09.16.
  *
  * Copyright (C) Christian Schabesberger 2016 <chris.schabesberger@mailbox.org>
@@ -33,8 +33,7 @@ public abstract class SuggestionExtractor {
         this.serviceId = serviceId;
     }
 
-    public abstract List<String> suggestionList(
-            String query,String contentCountry)
+    public abstract List<String> suggestionList(String query, String contentCountry)
             throws ExtractionException, IOException;
 
     public int getServiceId() {

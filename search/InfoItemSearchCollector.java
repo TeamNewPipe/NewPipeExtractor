@@ -6,11 +6,10 @@ import org.schabi.newpipe.extractor.channel.ChannelInfoItemCollector;
 import org.schabi.newpipe.extractor.channel.ChannelInfoItemExtractor;
 import org.schabi.newpipe.extractor.exceptions.ExtractionException;
 import org.schabi.newpipe.extractor.exceptions.FoundAdException;
-import org.schabi.newpipe.extractor.exceptions.ParsingException;
-import org.schabi.newpipe.extractor.stream_info.StreamInfoItemCollector;
-import org.schabi.newpipe.extractor.stream_info.StreamInfoItemExtractor;
+import org.schabi.newpipe.extractor.stream.StreamInfoItemCollector;
+import org.schabi.newpipe.extractor.stream.StreamInfoItemExtractor;
 
-/**
+/*
  * Created by Christian Schabesberger on 12.02.17.
  *
  * Copyright (C) Christian Schabesberger 2017 <chris.schabesberger@mailbox.org>
@@ -60,7 +59,7 @@ public class InfoItemSearchCollector extends InfoItemCollector {
     public void commit(StreamInfoItemExtractor extractor) {
         try {
             result.resultList.add(streamCollector.extract(extractor));
-        } catch(FoundAdException ae) {
+        } catch (FoundAdException ae) {
             System.err.println("Found add");
         } catch (Exception e) {
             addError(e);
@@ -70,7 +69,7 @@ public class InfoItemSearchCollector extends InfoItemCollector {
     public void commit(ChannelInfoItemExtractor extractor) {
         try {
             result.resultList.add(channelCollector.extract(extractor));
-        } catch(FoundAdException ae) {
+        } catch (FoundAdException ae) {
             System.err.println("Found add");
         } catch (Exception e) {
             addError(e);

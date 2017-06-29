@@ -1,18 +1,18 @@
 package org.schabi.newpipe.extractor.services.youtube;
 
 import org.schabi.newpipe.extractor.StreamingService;
+import org.schabi.newpipe.extractor.SuggestionExtractor;
 import org.schabi.newpipe.extractor.UrlIdHandler;
 import org.schabi.newpipe.extractor.channel.ChannelExtractor;
 import org.schabi.newpipe.extractor.exceptions.ExtractionException;
-import org.schabi.newpipe.extractor.playlist.PlayListExtractor;
+import org.schabi.newpipe.extractor.playlist.PlaylistExtractor;
 import org.schabi.newpipe.extractor.search.SearchEngine;
-import org.schabi.newpipe.extractor.SuggestionExtractor;
-import org.schabi.newpipe.extractor.stream_info.StreamExtractor;
+import org.schabi.newpipe.extractor.stream.StreamExtractor;
 
 import java.io.IOException;
 
 
-/**
+/*
  * Created by Christian Schabesberger on 23.08.15.
  *
  * Copyright (C) Christian Schabesberger 2015 <chris.schabesberger@mailbox.org>
@@ -44,17 +44,18 @@ public class YoutubeService extends StreamingService {
         serviceInfo.name = "Youtube";
         return serviceInfo;
     }
+
     @Override
     public StreamExtractor getExtractorInstance(String url)
             throws ExtractionException, IOException {
         UrlIdHandler urlIdHandler = YoutubeStreamUrlIdHandler.getInstance();
-        if(urlIdHandler.acceptUrl(url)) {
+        if (urlIdHandler.acceptUrl(url)) {
             return new YoutubeStreamExtractor(urlIdHandler, url, getServiceId());
-        }
-        else {
+        } else {
             throw new IllegalArgumentException("supplied String is not a valid Youtube URL");
         }
     }
+
     @Override
     public SearchEngine getSearchEngineInstance() {
         return new YoutubeSearchEngine(getStreamUrlIdHandlerInstance(), getServiceId());
@@ -72,19 +73,18 @@ public class YoutubeService extends StreamingService {
 
 
     @Override
-    public UrlIdHandler getPlayListUrlIdHandlerInstance() {
-        return new YoutubePlayListUrlIdHandler();
+    public UrlIdHandler getPlaylistUrlIdHandlerInstance() {
+        return new YoutubePlaylistUrlIdHandler();
     }
 
     @Override
-    public ChannelExtractor getChannelExtractorInstance(String url, int page)
-        throws ExtractionException, IOException {
-        return new YoutubeChannelExtractor(getChannelUrlIdHandlerInstance(), url, page, getServiceId());
+    public ChannelExtractor getChannelExtractorInstance(String url) throws ExtractionException, IOException {
+        return new YoutubeChannelExtractor(getChannelUrlIdHandlerInstance(), url, getServiceId());
     }
 
-    public PlayListExtractor getPlayListExtractorInstance(String url, int page)
-        throws ExtractionException, IOException {
-        return new YoutubePlayListExtractor(getPlayListUrlIdHandlerInstance(), url, page, getServiceId());
+    @Override
+    public PlaylistExtractor getPlaylistExtractorInstance(String url) throws ExtractionException, IOException {
+        return new YoutubePlaylistExtractor(getPlaylistUrlIdHandlerInstance(), url, getServiceId());
     }
 
     @Override

@@ -1,6 +1,6 @@
-package org.schabi.newpipe.extractor.stream_info;
+package org.schabi.newpipe.extractor.stream;
 
-/**
+/*
  * Created by Christian Schabesberger on 26.08.15.
  *
  * Copyright (C) Christian Schabesberger 2016 <chris.schabesberger@mailbox.org>
@@ -20,10 +20,11 @@ package org.schabi.newpipe.extractor.stream_info;
  * along with NewPipe.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-import org.schabi.newpipe.extractor.AbstractStreamInfo;
 import org.schabi.newpipe.extractor.InfoItem;
 
-/**Info object for previews of unopened videos, eg search results, related videos*/
+/**
+ * Info object for previews of unopened videos, eg search results, related videos
+ */
 public class StreamInfoItem extends AbstractStreamInfo implements InfoItem {
     public int duration;
 
@@ -32,10 +33,10 @@ public class StreamInfoItem extends AbstractStreamInfo implements InfoItem {
     }
 
     public String getTitle() {
-        return title;
+        return name;
     }
 
     public String getLink() {
-        return webpage_url;
+        return url;
     }
 }

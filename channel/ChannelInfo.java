@@ -1,14 +1,13 @@
 package org.schabi.newpipe.extractor.channel;
 
+import org.schabi.newpipe.extractor.Info;
 import org.schabi.newpipe.extractor.InfoItem;
 import org.schabi.newpipe.extractor.exceptions.ParsingException;
-import org.schabi.newpipe.extractor.stream_info.StreamInfoItemCollector;
+import org.schabi.newpipe.extractor.stream.StreamInfoItemCollector;
 
-import java.io.Serializable;
 import java.util.List;
-import java.util.Vector;
 
-/**
+/*
  * Created by Christian Schabesberger on 31.07.16.
  *
  * Copyright (C) Christian Schabesberger 2016 <chris.schabesberger@mailbox.org>
@@ -28,20 +27,23 @@ import java.util.Vector;
  * along with NewPipe.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-public class ChannelInfo implements Serializable{
-    public void addException(Exception e) {
-        errors.add(e);
-    }
+public class ChannelInfo extends Info {
 
     public static ChannelInfo getInfo(ChannelExtractor extractor)
-        throws ParsingException {
+            throws ParsingException {
         ChannelInfo info = new ChannelInfo();
 
         // important data
         info.service_id = extractor.getServiceId();
-        info.channel_name = extractor.getChannelName();
-        info.hasNextPage = extractor.hasNextPage();
+        info.url = extractor.getUrl();
+        info.name = extractor.getChannelName();
+        info.hasMoreStreams = extractor.hasMoreStreams();
 
+        try {
+            info.id = extractor.getChannelId();
+        } catch (Exception e) {
+            info.errors.add(e);
+        }
         try {
             info.avatar_url = extractor.getAvatarUrl();
         } catch (Exception e) {
@@ -54,18 +56,18 @@ public class ChannelInfo implements Serializable{
         }
         try {
             info.feed_url = extractor.getFeedUrl();
-        } catch(Exception e) {
+        } catch (Exception e) {
             info.errors.add(e);
         }
         try {
             StreamInfoItemCollector c = extractor.getStreams();
             info.related_streams = c.getItemList();
             info.errors.addAll(c.getErrors());
-        } catch(Exception e) {
+        } catch (Exception e) {
             info.errors.add(e);
         }
         try {
-            info.subscriberCount = extractor.getSubscriberCount();
+            info.subscriber_count = extractor.getSubscriberCount();
         } catch (Exception e) {
             info.errors.add(e);
         }
@@ -73,14 +75,10 @@ public class ChannelInfo implements Serializable{
         return info;
     }
 
-    public int service_id = -1;
-    public String channel_name = "";
     public String avatar_url = "";
     public String banner_url = "";
     public String feed_url = "";
     public List<InfoItem> related_streams = null;
-    public long subscriberCount = -1;
-    public boolean hasNextPage = false;
-
-    public List<Throwable> errors = new Vector<>();
+    public long subscriber_count = -1;
+    public boolean hasMoreStreams = false;
 }
