@@ -91,7 +91,7 @@ public class YoutubeStreamInfoItemExtractor implements StreamInfoItemExtractor {
                 return div.select("li").first().text();
             }
         } catch(Exception e) {
-            throw new ParsingException("Could not get uplaod date", e);
+            throw new ParsingException("Could not get upload date", e);
         }
     }
 

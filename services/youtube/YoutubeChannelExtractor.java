@@ -228,7 +228,7 @@ public class YoutubeChannelExtractor extends ChannelExtractor {
                                 return li.text();
                             }
                         } catch(Exception e) {
-                            throw new ParsingException("Could not get uplaod date", e);
+                            throw new ParsingException("Could not get upload date", e);
                         }
                     }
 

@@ -34,7 +34,7 @@ public class ChannelInfoItemCollector extends InfoItemCollector {
 
     public ChannelInfoItem extract(ChannelInfoItemExtractor extractor) throws ParsingException {
         ChannelInfoItem resultItem = new ChannelInfoItem();
-        // importand information
+        // important information
         resultItem.channelName = extractor.getChannelName();
 
         resultItem.serviceId = getServiceId();

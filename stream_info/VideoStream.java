@@ -40,7 +40,7 @@ public class VideoStream implements Serializable {
         this.isVideoOnly = isVideoOnly;
     }
 
-    // reveals whether two streams are the same, but have diferent urls
+    // reveals whether two streams are the same, but have different urls
     public boolean equalStats(VideoStream cmp) {
         return format == cmp.format && resolution.equals(cmp.resolution);
     }

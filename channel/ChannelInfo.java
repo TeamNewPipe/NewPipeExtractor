@@ -37,7 +37,7 @@ public class ChannelInfo implements Serializable{
         throws ParsingException {
         ChannelInfo info = new ChannelInfo();
 
-        // importand data
+        // important data
         info.service_id = extractor.getServiceId();
         info.channel_name = extractor.getChannelName();
         info.hasNextPage = extractor.hasNextPage();
