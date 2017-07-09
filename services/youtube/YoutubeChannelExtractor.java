@@ -244,7 +244,8 @@ public class YoutubeChannelExtractor extends ChannelExtractor {
                             return -1;
                         }
 
-                        output = Parser.matchGroup1("([0-9,\\. ]*)", input)
+                        output = Parser.matchGroup1("([0-9,\\. \u00a0]*)", input)
+                                .replace("\u00a0", "")
                                 .replace(" ", "")
                                 .replace(".", "")
                                 .replace(",", "");
