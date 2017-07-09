@@ -49,7 +49,6 @@ public class YoutubeChannelExtractor extends ChannelExtractor {
      * It's lazily initialized (when getNextStreams is called)
      */
     private Document nextStreamsAjax;
-    private String nextStreamsUrl = "";
 
     /*//////////////////////////////////////////////////////////////////////////
     // Variables for cache purposes (not "select" the current document all over again)
@@ -60,7 +59,6 @@ public class YoutubeChannelExtractor extends ChannelExtractor {
     private String bannerUrl;
     private String feedUrl;
     private long subscriberCount = -1;
-
 
     public YoutubeChannelExtractor(UrlIdHandler urlIdHandler, String url, int serviceId) throws ExtractionException, IOException {
         super(urlIdHandler, urlIdHandler.cleanUrl(url), serviceId);
@@ -161,13 +159,10 @@ public class YoutubeChannelExtractor extends ChannelExtractor {
     }
 
     @Override
-    public boolean hasMoreStreams() {
-        return nextStreamsUrl != null && !nextStreamsUrl.isEmpty();
-    }
-
-    @Override
     public StreamInfoItemCollector getNextStreams() throws ExtractionException, IOException {
-        if (!hasMoreStreams()) throw new ExtractionException("Channel doesn't have more streams");
+        if (!hasMoreStreams()) {
+            throw new ExtractionException("Channel doesn't have more streams");
+        }
 
         StreamInfoItemCollector collector = new StreamInfoItemCollector(getUrlIdHandler(), getServiceId());
         setupNextStreamsAjax(NewPipe.getDownloader());

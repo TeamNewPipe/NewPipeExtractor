@@ -27,14 +27,15 @@ public abstract class StreamingService {
     }
 
     public abstract ServiceInfo getServiceInfo();
-    public abstract StreamExtractor getExtractorInstance(String url) throws IOException, ExtractionException;
-    public abstract SearchEngine getSearchEngineInstance();
+
     public abstract UrlIdHandler getStreamUrlIdHandlerInstance();
     public abstract UrlIdHandler getChannelUrlIdHandlerInstance();
     public abstract UrlIdHandler getPlaylistUrlIdHandlerInstance();
+    public abstract SearchEngine getSearchEngineInstance();
+    public abstract SuggestionExtractor getSuggestionExtractorInstance();
+    public abstract StreamExtractor getStreamExtractorInstance(String url) throws IOException, ExtractionException;
     public abstract ChannelExtractor getChannelExtractorInstance(String url) throws ExtractionException, IOException;
     public abstract PlaylistExtractor getPlaylistExtractorInstance(String url) throws ExtractionException, IOException;
-    public abstract SuggestionExtractor getSuggestionExtractorInstance();
 
 
     public final int getServiceId() {

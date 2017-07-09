@@ -1,6 +1,7 @@
 package org.schabi.newpipe.extractor.channel;
 
 import org.schabi.newpipe.extractor.Extractor;
+import org.schabi.newpipe.extractor.ListExtractor;
 import org.schabi.newpipe.extractor.UrlIdHandler;
 import org.schabi.newpipe.extractor.exceptions.ExtractionException;
 import org.schabi.newpipe.extractor.exceptions.ParsingException;
@@ -28,7 +29,7 @@ import java.io.IOException;
  * along with NewPipe.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-public abstract class ChannelExtractor extends Extractor {
+public abstract class ChannelExtractor extends ListExtractor {
 
     public ChannelExtractor(UrlIdHandler urlIdHandler, String url, int serviceId) throws ExtractionException, IOException {
         super(urlIdHandler, serviceId, url);
@@ -41,7 +42,5 @@ public abstract class ChannelExtractor extends Extractor {
     public abstract String getFeedUrl() throws ParsingException;
     public abstract StreamInfoItemCollector getStreams() throws ParsingException;
     public abstract long getSubscriberCount() throws ParsingException;
-    public abstract boolean hasMoreStreams();
-    public abstract StreamInfoItemCollector getNextStreams() throws ExtractionException, IOException;
 
 }

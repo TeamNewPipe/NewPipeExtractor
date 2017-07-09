@@ -27,7 +27,6 @@ public class YoutubePlaylistExtractor extends PlaylistExtractor {
      * It's lazily initialized (when getNextStreams is called)
      */
     private Document nextStreamsAjax = null;
-    private String nextStreamsUrl = "";
 
     /*//////////////////////////////////////////////////////////////////////////
     // Variables for cache purposes (not "select" the current document all over again)
@@ -182,13 +181,10 @@ public class YoutubePlaylistExtractor extends PlaylistExtractor {
     }
 
     @Override
-    public boolean hasMoreStreams() {
-        return nextStreamsUrl != null && !nextStreamsUrl.isEmpty();
-    }
-
-    @Override
     public StreamInfoItemCollector getNextStreams() throws ExtractionException, IOException {
-        if (!hasMoreStreams()) throw new ExtractionException("Playlist doesn't have more streams");
+        if (!hasMoreStreams()){
+            throw new ExtractionException("Playlist doesn't have more streams");
+        }
 
         StreamInfoItemCollector collector = new StreamInfoItemCollector(getUrlIdHandler(), getServiceId());
         setupNextStreamsAjax(NewPipe.getDownloader());
