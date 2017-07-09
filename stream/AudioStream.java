@@ -1,8 +1,8 @@
-package org.schabi.newpipe.extractor.stream_info;
+package org.schabi.newpipe.extractor.stream;
 
 import java.io.Serializable;
 
-/**
+/*
  * Created by Christian Schabesberger on 04.03.16.
  *
  * Copyright (C) Christian Schabesberger 2016 <chris.schabesberger@mailbox.org>
@@ -22,7 +22,7 @@ import java.io.Serializable;
  * along with NewPipe.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-public class AudioStream implements Serializable{
+public class AudioStream implements Serializable {
     public String url = "";
     public int format = -1;
     public int bandwidth = -1;

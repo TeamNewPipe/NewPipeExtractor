@@ -1,11 +1,11 @@
 package org.schabi.newpipe.extractor.services.youtube;
 
 
-import org.schabi.newpipe.extractor.Parser;
 import org.schabi.newpipe.extractor.UrlIdHandler;
 import org.schabi.newpipe.extractor.exceptions.ParsingException;
+import org.schabi.newpipe.extractor.utils.Parser;
 
-public class YoutubePlayListUrlIdHandler implements UrlIdHandler {
+public class YoutubePlaylistUrlIdHandler implements UrlIdHandler {
 
     private static final String ID_PATTERN = "([\\-a-zA-Z0-9_]{34})";
 

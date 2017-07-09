@@ -1,11 +1,10 @@
 package org.schabi.newpipe.extractor.services.youtube;
 
-import org.schabi.newpipe.extractor.Parser;
+import org.jsoup.nodes.Element;
 import org.schabi.newpipe.extractor.channel.ChannelInfoItemExtractor;
 import org.schabi.newpipe.extractor.exceptions.ParsingException;
-import org.jsoup.nodes.Element;
 
-/**
+/*
  * Created by Christian Schabesberger on 12.02.17.
  *
  * Copyright (C) Christian Schabesberger 2017 <chris.schabesberger@mailbox.org>
@@ -32,49 +31,55 @@ public class YoutubeChannelInfoItemExtractor implements ChannelInfoItemExtractor
         this.el = el;
     }
 
+    @Override
     public String getThumbnailUrl() throws ParsingException {
         Element img = el.select("span[class*=\"yt-thumb-simple\"]").first()
                 .select("img").first();
 
         String url = img.attr("abs:src");
 
-        if(url.contains("gif")) {
+        if (url.contains("gif")) {
             url = img.attr("abs:data-thumb");
         }
         return url;
     }
 
+    @Override
     public String getChannelName() throws ParsingException {
         return el.select("a[class*=\"yt-uix-tile-link\"]").first()
                 .text();
     }
 
+    @Override
     public String getWebPageUrl() throws ParsingException {
         return el.select("a[class*=\"yt-uix-tile-link\"]").first()
                 .attr("abs:href");
     }
 
+    @Override
     public long getSubscriberCount() throws ParsingException {
         Element subsEl = el.select("span[class*=\"yt-subscriber-count\"]").first();
-        if(subsEl == null) {
+        if (subsEl == null) {
             return 0;
         } else {
-            return Integer.parseInt(subsEl.text().replaceAll("\\D+",""));
+            return Long.parseLong(subsEl.text().replaceAll("\\D+", ""));
         }
     }
 
-    public int getVideoAmount() throws ParsingException {
+    @Override
+    public long getViewCount() throws ParsingException {
         Element metaEl = el.select("ul[class*=\"yt-lockup-meta-info\"]").first();
-        if(metaEl == null) {
+        if (metaEl == null) {
             return 0;
         } else {
-            return Integer.parseInt(metaEl.text().replaceAll("\\D+",""));
+            return Long.parseLong(metaEl.text().replaceAll("\\D+", ""));
         }
     }
 
+    @Override
     public String getDescription() throws ParsingException {
         Element desEl = el.select("div[class*=\"yt-lockup-description\"]").first();
-        if(desEl == null) {
+        if (desEl == null) {
             return "";
         } else {
             return desEl.text();

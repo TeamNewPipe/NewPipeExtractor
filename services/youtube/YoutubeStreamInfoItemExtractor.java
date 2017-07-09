@@ -1,13 +1,12 @@
 package org.schabi.newpipe.extractor.services.youtube;
 
 import org.jsoup.nodes.Element;
-import org.schabi.newpipe.extractor.AbstractStreamInfo;
-import org.schabi.newpipe.extractor.Parser;
 import org.schabi.newpipe.extractor.exceptions.FoundAdException;
 import org.schabi.newpipe.extractor.exceptions.ParsingException;
-import org.schabi.newpipe.extractor.stream_info.StreamInfoItemExtractor;
+import org.schabi.newpipe.extractor.stream.AbstractStreamInfo;
+import org.schabi.newpipe.extractor.stream.StreamInfoItemExtractor;
 
-/**
+/*
  * Copyright (C) Christian Schabesberger 2016 <chris.schabesberger@mailbox.org>
  * YoutubeStreamInfoItemExtractor.java is part of NewPipe.
  *
@@ -60,8 +59,8 @@ public class YoutubeStreamInfoItemExtractor implements StreamInfoItemExtractor {
         try {
             return YoutubeParsingHelper.parseDurationString(
                     item.select("span[class=\"video-time\"]").first().text());
-        } catch(Exception e) {
-            if(isLiveStream(item)) {
+        } catch (Exception e) {
+            if (isLiveStream(item)) {
                 // -1 for no duration
                 return -1;
             } else {
@@ -85,12 +84,12 @@ public class YoutubeStreamInfoItemExtractor implements StreamInfoItemExtractor {
     public String getUploadDate() throws ParsingException {
         try {
             Element div = item.select("div[class=\"yt-lockup-meta\"]").first();
-            if(div == null) {
+            if (div == null) {
                 return null;
             } else {
                 return div.select("li").first().text();
             }
-        } catch(Exception e) {
+        } catch (Exception e) {
             throw new ParsingException("Could not get upload date", e);
         }
     }
@@ -101,14 +100,14 @@ public class YoutubeStreamInfoItemExtractor implements StreamInfoItemExtractor {
         String input;
         try {
             Element div = item.select("div[class=\"yt-lockup-meta\"]").first();
-            if(div == null) {
+            if (div == null) {
                 return -1;
             } else {
                 input = div.select("li").get(1)
                         .text();
             }
         } catch (IndexOutOfBoundsException e) {
-            if(isLiveStream(item)) {
+            if (isLiveStream(item)) {
                 // -1 for no view count
                 return -1;
             } else {
@@ -123,7 +122,7 @@ public class YoutubeStreamInfoItemExtractor implements StreamInfoItemExtractor {
             return Long.parseLong(output);
         } catch (NumberFormatException e) {
             // if this happens the video probably has no views
-            if(!input.isEmpty()) {
+            if (!input.isEmpty()) {
                 return 0;
             } else {
                 throw new ParsingException("Could not handle input: " + input, e);
@@ -152,7 +151,7 @@ public class YoutubeStreamInfoItemExtractor implements StreamInfoItemExtractor {
 
     @Override
     public AbstractStreamInfo.StreamType getStreamType() {
-        if(isLiveStream(item)) {
+        if (isLiveStream(item)) {
             return AbstractStreamInfo.StreamType.LIVE_STREAM;
         } else {
             return AbstractStreamInfo.StreamType.VIDEO_STREAM;
@@ -167,10 +166,10 @@ public class YoutubeStreamInfoItemExtractor implements StreamInfoItemExtractor {
     private boolean isLiveStream(Element item) {
         Element bla = item.select("span[class*=\"yt-badge-live\"]").first();
 
-        if(bla == null) {
+        if (bla == null) {
             // sometimes livestreams dont have badges but sill are live streams
             // if video time is not available we most likly have an offline livestream
-            if(item.select("span[class*=\"video-time\"]").first() == null) {
+            if (item.select("span[class*=\"video-time\"]").first() == null) {
                 return true;
             }
         }

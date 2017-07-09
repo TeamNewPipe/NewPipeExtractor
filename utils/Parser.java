@@ -1,4 +1,4 @@
-package org.schabi.newpipe.extractor;
+package org.schabi.newpipe.extractor.utils;
 
 import org.schabi.newpipe.extractor.exceptions.ParsingException;
 
@@ -9,7 +9,7 @@ import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-/**
+/*
  * Created by Christian Schabesberger on 02.02.16.
  *
  * Copyright (C) Christian Schabesberger 2016 <chris.schabesberger@mailbox.org>
@@ -29,7 +29,9 @@ import java.util.regex.Pattern;
  * along with NewPipe.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-/** avoid using regex !!! */
+/**
+ * avoid using regex !!!
+ */
 public class Parser {
 
     private Parser() {
@@ -51,11 +53,10 @@ public class Parser {
         boolean foundMatch = mat.find();
         if (foundMatch) {
             return mat.group(group);
-        }
-        else {
+        } else {
             //Log.e(TAG, "failed to find pattern \""+pattern+"\" inside of \""+input+"\"");
-            if(input.length() > 1024) {
-                throw new RegexException("failed to find pattern \""+pattern);
+            if (input.length() > 1024) {
+                throw new RegexException("failed to find pattern \"" + pattern);
             } else {
                 throw new RegexException("failed to find pattern \"" + pattern + " inside of " + input + "\"");
             }
@@ -64,9 +65,9 @@ public class Parser {
 
     public static Map<String, String> compatParseMap(final String input) throws UnsupportedEncodingException {
         Map<String, String> map = new HashMap<>();
-        for(String arg : input.split("&")) {
+        for (String arg : input.split("&")) {
             String[] splitArg = arg.split("=");
-            if(splitArg.length > 1) {
+            if (splitArg.length > 1) {
                 map.put(splitArg[0], URLDecoder.decode(splitArg[1], "UTF-8"));
             } else {
                 map.put(splitArg[0], "");

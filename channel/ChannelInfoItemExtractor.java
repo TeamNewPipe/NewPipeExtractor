@@ -2,7 +2,7 @@ package org.schabi.newpipe.extractor.channel;
 
 import org.schabi.newpipe.extractor.exceptions.ParsingException;
 
-/**
+/*
  * Created by Christian Schabesberger on 12.02.17.
  *
  * Copyright (C) Christian Schabesberger 2017 <chris.schabesberger@mailbox.org>
@@ -28,5 +28,5 @@ public interface ChannelInfoItemExtractor {
     String getWebPageUrl() throws ParsingException;
     String getDescription() throws ParsingException;
     long getSubscriberCount() throws ParsingException;
-    int getVideoAmount() throws ParsingException;
+    long getViewCount() throws ParsingException;
 }

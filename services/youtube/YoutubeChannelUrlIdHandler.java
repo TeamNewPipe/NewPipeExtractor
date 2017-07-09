@@ -1,10 +1,10 @@
 package org.schabi.newpipe.extractor.services.youtube;
 
-import org.schabi.newpipe.extractor.Parser;
 import org.schabi.newpipe.extractor.UrlIdHandler;
 import org.schabi.newpipe.extractor.exceptions.ParsingException;
+import org.schabi.newpipe.extractor.utils.Parser;
 
-/**
+/*
  * Created by Christian Schabesberger on 25.07.16.
  *
  * Copyright (C) Christian Schabesberger 2016 <chris.schabesberger@mailbox.org>
@@ -35,13 +35,13 @@ public class YoutubeChannelUrlIdHandler implements UrlIdHandler {
     }
 
     public String cleanUrl(String siteUrl) throws ParsingException {
-       return getUrl(getId(siteUrl));
+        return getUrl(getId(siteUrl));
     }
 
     public boolean acceptUrl(String videoUrl) {
         return (videoUrl.contains("youtube") ||
                 videoUrl.contains("youtu.be")) &&
-                ( videoUrl.contains("/user/") ||
+                (videoUrl.contains("/user/") ||
                         videoUrl.contains("/channel/"));
     }
 }

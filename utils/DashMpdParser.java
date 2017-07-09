@@ -1,8 +1,11 @@
-package org.schabi.newpipe.extractor;
+package org.schabi.newpipe.extractor.utils;
 
+import org.schabi.newpipe.extractor.Downloader;
+import org.schabi.newpipe.extractor.MediaFormat;
+import org.schabi.newpipe.extractor.NewPipe;
 import org.schabi.newpipe.extractor.exceptions.ParsingException;
 import org.schabi.newpipe.extractor.exceptions.ReCaptchaException;
-import org.schabi.newpipe.extractor.stream_info.AudioStream;
+import org.schabi.newpipe.extractor.stream.AudioStream;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
@@ -16,7 +19,7 @@ import java.util.Vector;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 
-/**
+/*
  * Created by Christian Schabesberger on 02.02.16.
  *
  * Copyright (C) Christian Schabesberger 2016 <chris.schabesberger@mailbox.org>
@@ -53,7 +56,7 @@ public class DashMpdParser {
         Downloader downloader = NewPipe.getDownloader();
         try {
             dashDoc = downloader.download(dashManifestUrl);
-        } catch(IOException ioe) {
+        } catch (IOException ioe) {
             throw new DashMpdParsingException("Could not get dash mpd: " + dashManifestUrl, ioe);
         } catch (ReCaptchaException e) {
             throw new ReCaptchaException("reCaptcha Challenge needed");
@@ -67,25 +70,24 @@ public class DashMpdParser {
 
             Document doc = builder.parse(stream);
             NodeList adaptationSetList = doc.getElementsByTagName("AdaptationSet");
-            for(int i = 0; i < adaptationSetList.getLength(); i++) {
+            for (int i = 0; i < adaptationSetList.getLength(); i++) {
                 Element adaptationSet = (Element) adaptationSetList.item(i);
                 String memeType = adaptationSet.getAttribute("mimeType");
-                if(memeType.contains("audio")) {
+                if (memeType.contains("audio")) {
                     Element representation = (Element) adaptationSet.getElementsByTagName("Representation").item(0);
                     String url = representation.getElementsByTagName("BaseURL").item(0).getTextContent();
                     int bandwidth = Integer.parseInt(representation.getAttribute("bandwidth"));
                     int samplingRate = Integer.parseInt(representation.getAttribute("audioSamplingRate"));
                     int format = -1;
-                    if(memeType.equals(MediaFormat.WEBMA.mimeType)) {
+                    if (memeType.equals(MediaFormat.WEBMA.mimeType)) {
                         format = MediaFormat.WEBMA.id;
-                    } else if(memeType.equals(MediaFormat.M4A.mimeType)) {
+                    } else if (memeType.equals(MediaFormat.M4A.mimeType)) {
                         format = MediaFormat.M4A.id;
                     }
                     audioStreams.add(new AudioStream(url, format, 0, bandwidth, samplingRate));
                 }
             }
-        }
-        catch(Exception e) {
+        } catch (Exception e) {
             throw new DashMpdParsingException("Could not parse Dash mpd", e);
         }
         return audioStreams;

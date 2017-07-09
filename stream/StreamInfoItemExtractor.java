@@ -1,9 +1,8 @@
-package org.schabi.newpipe.extractor.stream_info;
+package org.schabi.newpipe.extractor.stream;
 
-import org.schabi.newpipe.extractor.AbstractStreamInfo;
 import org.schabi.newpipe.extractor.exceptions.ParsingException;
 
-/**
+/*
  * Created by Christian Schabesberger on 28.02.16.
  *
  * Copyright (C) Christian Schabesberger 2016 <chris.schabesberger@mailbox.org>
@@ -30,7 +29,7 @@ public interface StreamInfoItemExtractor {
     int getDuration() throws ParsingException;
     String getUploader() throws ParsingException;
     String getUploadDate() throws ParsingException;
-    long getViewCount() throws  ParsingException;
-    String getThumbnailUrl() throws  ParsingException;
+    long getViewCount() throws ParsingException;
+    String getThumbnailUrl() throws ParsingException;
     boolean isAd() throws ParsingException;
 }

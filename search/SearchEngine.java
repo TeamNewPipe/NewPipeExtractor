@@ -2,12 +2,11 @@ package org.schabi.newpipe.extractor.search;
 
 import org.schabi.newpipe.extractor.UrlIdHandler;
 import org.schabi.newpipe.extractor.exceptions.ExtractionException;
-import org.schabi.newpipe.extractor.stream_info.StreamInfoItemCollector;
 
 import java.io.IOException;
 import java.util.EnumSet;
 
-/**
+/*
  * Created by Christian Schabesberger on 10.08.15.
  *
  * Copyright (C) Christian Schabesberger 2015 <chris.schabesberger@mailbox.org>
@@ -37,15 +36,17 @@ public abstract class SearchEngine {
             super(message);
         }
     }
+
     private InfoItemSearchCollector collector;
 
     public SearchEngine(UrlIdHandler urlIdHandler, int serviceId) {
         collector = new InfoItemSearchCollector(urlIdHandler, serviceId);
     }
 
-    protected  InfoItemSearchCollector getInfoItemSearchCollector() {
+    protected InfoItemSearchCollector getInfoItemSearchCollector() {
         return collector;
     }
+
     //Result search(String query, int page);
     public abstract InfoItemSearchCollector search(
             String query, int page, String contentCountry, EnumSet<Filter> filter)
