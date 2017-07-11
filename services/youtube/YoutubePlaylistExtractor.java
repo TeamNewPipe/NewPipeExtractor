@@ -12,10 +12,11 @@ import org.schabi.newpipe.extractor.exceptions.ExtractionException;
 import org.schabi.newpipe.extractor.exceptions.ParsingException;
 import org.schabi.newpipe.extractor.exceptions.ReCaptchaException;
 import org.schabi.newpipe.extractor.playlist.PlaylistExtractor;
-import org.schabi.newpipe.extractor.stream.AbstractStreamInfo;
 import org.schabi.newpipe.extractor.stream.StreamInfoItemCollector;
 import org.schabi.newpipe.extractor.stream.StreamInfoItemExtractor;
+import org.schabi.newpipe.extractor.stream.StreamType;
 import org.schabi.newpipe.extractor.utils.Parser;
+import org.schabi.newpipe.extractor.utils.Utils;
 
 import java.io.IOException;
 
@@ -157,7 +158,7 @@ public class YoutubePlaylistExtractor extends PlaylistExtractor {
             }
 
             try {
-                streamsCount = Long.parseLong(input.replaceAll("\\D+", ""));
+                streamsCount = Long.parseLong(Utils.removeNonDigitCharacters(input));
             } catch (NumberFormatException e) {
                 // When there's no videos in a playlist, there's no number in the "innerHtml",
                 // all characters that is not a number is removed, so we try to parse a empty string
@@ -186,7 +187,7 @@ public class YoutubePlaylistExtractor extends PlaylistExtractor {
             throw new ExtractionException("Playlist doesn't have more streams");
         }
 
-        StreamInfoItemCollector collector = new StreamInfoItemCollector(getUrlIdHandler(), getServiceId());
+        StreamInfoItemCollector collector = new StreamInfoItemCollector(getServiceId());
         setupNextStreamsAjax(NewPipe.getDownloader());
         collectStreamsFrom(collector, nextStreamsAjax.select("tbody[id=\"pl-load-more-destination\"]").first());
 
@@ -244,8 +245,8 @@ public class YoutubePlaylistExtractor extends PlaylistExtractor {
         for (final Element li : element.children()) {
             collector.commit(new StreamInfoItemExtractor() {
                 @Override
-                public AbstractStreamInfo.StreamType getStreamType() throws ParsingException {
-                    return AbstractStreamInfo.StreamType.VIDEO_STREAM;
+                public StreamType getStreamType() throws ParsingException {
+                    return StreamType.VIDEO_STREAM;
                 }
 
                 @Override

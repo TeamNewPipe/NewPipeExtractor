@@ -13,10 +13,11 @@ import org.schabi.newpipe.extractor.channel.ChannelExtractor;
 import org.schabi.newpipe.extractor.exceptions.ExtractionException;
 import org.schabi.newpipe.extractor.exceptions.ParsingException;
 import org.schabi.newpipe.extractor.exceptions.ReCaptchaException;
-import org.schabi.newpipe.extractor.stream.AbstractStreamInfo;
 import org.schabi.newpipe.extractor.stream.StreamInfoItemCollector;
 import org.schabi.newpipe.extractor.stream.StreamInfoItemExtractor;
+import org.schabi.newpipe.extractor.stream.StreamType;
 import org.schabi.newpipe.extractor.utils.Parser;
+import org.schabi.newpipe.extractor.utils.Utils;
 
 import java.io.IOException;
 
@@ -135,7 +136,7 @@ public class YoutubeChannelExtractor extends ChannelExtractor {
         if (subscriberCount == -1) {
             Element el = doc.select("span[class*=\"yt-subscription-button-subscriber-count\"]").first();
             if (el != null) {
-                subscriberCount = Long.parseLong(el.text().replaceAll("\\D+", ""));
+                subscriberCount = Long.parseLong(Utils.removeNonDigitCharacters(el.text()));
             } else {
                 throw new ParsingException("Could not get subscriber count");
             }
@@ -164,7 +165,7 @@ public class YoutubeChannelExtractor extends ChannelExtractor {
             throw new ExtractionException("Channel doesn't have more streams");
         }
 
-        StreamInfoItemCollector collector = new StreamInfoItemCollector(getUrlIdHandler(), getServiceId());
+        StreamInfoItemCollector collector = new StreamInfoItemCollector(getServiceId());
         setupNextStreamsAjax(NewPipe.getDownloader());
         collectStreamsFrom(collector, nextStreamsAjax.select("body").first());
 
@@ -223,8 +224,8 @@ public class YoutubeChannelExtractor extends ChannelExtractor {
             if (li.select("div[class=\"feed-item-dismissable\"]").first() != null) {
                 collector.commit(new StreamInfoItemExtractor() {
                     @Override
-                    public AbstractStreamInfo.StreamType getStreamType() throws ParsingException {
-                        return AbstractStreamInfo.StreamType.VIDEO_STREAM;
+                    public StreamType getStreamType() throws ParsingException {
+                        return StreamType.VIDEO_STREAM;
                     }
 
                     @Override
@@ -302,7 +303,7 @@ public class YoutubeChannelExtractor extends ChannelExtractor {
                             return -1;
                         }
 
-                        output = input.replaceAll("\\D+", "");
+                        output = Utils.removeNonDigitCharacters(input);
 
                         try {
                             return Long.parseLong(output);

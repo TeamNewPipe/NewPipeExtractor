@@ -140,6 +140,7 @@ public class YoutubeStreamUrlIdHandler implements UrlIdHandler {
         return Parser.matchGroup1("ci=" + ID_PATTERN, uri.getQuery());
     }
 
+    @Override
     public String cleanUrl(String complexUrl) throws ParsingException {
         return getUrl(getId(complexUrl));
     }

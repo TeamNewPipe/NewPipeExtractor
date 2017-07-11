@@ -1,7 +1,5 @@
 package org.schabi.newpipe.extractor.stream;
 
-import java.io.Serializable;
-
 /*
  * Created by Christian Schabesberger on 04.03.16.
  *
@@ -22,31 +20,24 @@ import java.io.Serializable;
  * along with NewPipe.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-public class VideoStream implements Serializable {
-    //url of the stream
-    public String url = "";
-    public int format = -1;
-    public String resolution = "";
-    public boolean isVideoOnly = false;
+public class VideoStream extends Stream {
+    public String resolution;
+    public boolean isVideoOnly;
 
     public VideoStream(String url, int format, String res) {
-        this(false, url, format, res);
+        this(url, format, res, false);
     }
 
-    public VideoStream(boolean isVideoOnly, String url, int format, String res) {
-        this.url = url;
-        this.format = format;
+    public VideoStream(String url, int format, String res, boolean isVideoOnly) {
+        super(url, format);
         this.resolution = res;
         this.isVideoOnly = isVideoOnly;
     }
 
-    // reveals whether two streams are the same, but have different urls
-    public boolean equalStats(VideoStream cmp) {
-        return format == cmp.format && resolution.equals(cmp.resolution);
-    }
-
-    // reveals whether two streams are equal
-    public boolean equals(VideoStream cmp) {
-        return cmp != null && equalStats(cmp) && url.equals(cmp.url);
+    @Override
+    public boolean equalStats(Stream cmp) {
+        return super.equalStats(cmp) && cmp instanceof VideoStream &&
+                resolution.equals(((VideoStream) cmp).resolution) &&
+                isVideoOnly == ((VideoStream) cmp).isVideoOnly;
     }
 }

@@ -58,7 +58,7 @@ public class YoutubeService extends StreamingService {
 
     @Override
     public SearchEngine getSearchEngineInstance() {
-        return new YoutubeSearchEngine(getStreamUrlIdHandlerInstance(), getServiceId());
+        return new YoutubeSearchEngine(getServiceId());
     }
 
     @Override
@@ -68,13 +68,13 @@ public class YoutubeService extends StreamingService {
 
     @Override
     public UrlIdHandler getChannelUrlIdHandlerInstance() {
-        return new YoutubeChannelUrlIdHandler();
+        return YoutubeChannelUrlIdHandler.getInstance();
     }
 
 
     @Override
     public UrlIdHandler getPlaylistUrlIdHandlerInstance() {
-        return new YoutubePlaylistUrlIdHandler();
+        return YoutubePlaylistUrlIdHandler.getInstance();
     }
 
     @Override

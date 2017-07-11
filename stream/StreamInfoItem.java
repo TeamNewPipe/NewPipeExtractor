@@ -25,18 +25,16 @@ import org.schabi.newpipe.extractor.InfoItem;
 /**
  * Info object for previews of unopened videos, eg search results, related videos
  */
-public class StreamInfoItem extends AbstractStreamInfo implements InfoItem {
-    public int duration;
+public class StreamInfoItem extends InfoItem {
+    public StreamType stream_type;
 
-    public InfoType infoType() {
-        return InfoType.STREAM;
-    }
+    public String uploader;
+    public String thumbnail_url;
+    public String upload_date;
+    public long view_count = -1;
+    public int duration = -1;
 
-    public String getTitle() {
-        return name;
-    }
-
-    public String getLink() {
-        return url;
+    public StreamInfoItem() {
+        super(InfoType.STREAM);
     }
 }

@@ -1,6 +1,5 @@
 package org.schabi.newpipe.extractor.playlist;
 
-import org.schabi.newpipe.extractor.Extractor;
 import org.schabi.newpipe.extractor.ListExtractor;
 import org.schabi.newpipe.extractor.UrlIdHandler;
 import org.schabi.newpipe.extractor.exceptions.ExtractionException;

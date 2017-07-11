@@ -25,7 +25,7 @@ import java.util.Vector;
  * along with NewPipe.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-public class InfoItemCollector {
+public abstract class InfoItemCollector {
     private List<InfoItem> itemList = new Vector<>();
     private List<Throwable> errors = new Vector<>();
     private int serviceId = -1;

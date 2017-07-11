@@ -3,8 +3,9 @@ package org.schabi.newpipe.extractor.services.youtube;
 import org.jsoup.nodes.Element;
 import org.schabi.newpipe.extractor.exceptions.FoundAdException;
 import org.schabi.newpipe.extractor.exceptions.ParsingException;
-import org.schabi.newpipe.extractor.stream.AbstractStreamInfo;
 import org.schabi.newpipe.extractor.stream.StreamInfoItemExtractor;
+import org.schabi.newpipe.extractor.stream.StreamType;
+import org.schabi.newpipe.extractor.utils.Utils;
 
 /*
  * Copyright (C) Christian Schabesberger 2016 <chris.schabesberger@mailbox.org>
@@ -116,7 +117,7 @@ public class YoutubeStreamInfoItemExtractor implements StreamInfoItemExtractor {
             }
         }
 
-        output = input.replaceAll("[^0-9]+", "");
+        output = Utils.removeNonDigitCharacters(input);
 
         try {
             return Long.parseLong(output);
@@ -150,11 +151,11 @@ public class YoutubeStreamInfoItemExtractor implements StreamInfoItemExtractor {
     }
 
     @Override
-    public AbstractStreamInfo.StreamType getStreamType() {
+    public StreamType getStreamType() {
         if (isLiveStream(item)) {
-            return AbstractStreamInfo.StreamType.LIVE_STREAM;
+            return StreamType.LIVE_STREAM;
         } else {
-            return AbstractStreamInfo.StreamType.VIDEO_STREAM;
+            return StreamType.VIDEO_STREAM;
         }
     }
 

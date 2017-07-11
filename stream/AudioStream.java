@@ -1,7 +1,5 @@
 package org.schabi.newpipe.extractor.stream;
 
-import java.io.Serializable;
-
 /*
  * Created by Christian Schabesberger on 04.03.16.
  *
@@ -22,31 +20,17 @@ import java.io.Serializable;
  * along with NewPipe.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-public class AudioStream implements Serializable {
-    public String url = "";
-    public int format = -1;
-    public int bandwidth = -1;
-    public int sampling_rate = -1;
-    public int avgBitrate = -1;
+public class AudioStream extends Stream {
+    public int average_bitrate = -1;
 
-    public AudioStream(String url, int format, int avgBitrate, int bandwidth, int samplingRate) {
-        this.url = url;
-        this.format = format;
-        this.avgBitrate = avgBitrate;
-        this.bandwidth = bandwidth;
-        this.sampling_rate = samplingRate;
+    public AudioStream(String url, int format, int averageBitrate) {
+        super(url, format);
+        this.average_bitrate = averageBitrate;
     }
 
-    // reveals whether two streams are the same, but have different urls
-    public boolean equalStats(AudioStream cmp) {
-        return format == cmp.format
-                && bandwidth == cmp.bandwidth
-                && sampling_rate == cmp.sampling_rate
-                && avgBitrate == cmp.avgBitrate;
-    }
-
-    // reveals whether two streams are equal
-    public boolean equals(AudioStream cmp) {
-        return cmp != null && equalStats(cmp) && url.equals(cmp.url);
+    @Override
+    public boolean equalStats(Stream cmp) {
+        return super.equalStats(cmp) && cmp instanceof AudioStream &&
+                average_bitrate == ((AudioStream) cmp).average_bitrate;
     }
 }

@@ -11,9 +11,9 @@ public abstract class Info implements Serializable {
      * Id of this Info object <br>
      * e.g. Youtube:  https://www.youtube.com/watch?v=RER5qCTzZ7     >    RER5qCTzZ7
      */
-    public String id = "";
-    public String url = "";
-    public String name = "";
+    public String id;
+    public String url;
+    public String name;
 
     public List<Throwable> errors = new Vector<>();
 }

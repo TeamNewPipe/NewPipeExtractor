@@ -14,14 +14,10 @@ public class PlaylistInfo extends Info {
 
         info.service_id = extractor.getServiceId();
         info.url = extractor.getUrl();
+        info.id = extractor.getPlaylistId();
         info.name = extractor.getPlaylistName();
-        info.hasMoreStreams = extractor.hasMoreStreams();
+        info.has_more_streams = extractor.hasMoreStreams();
 
-        try {
-            info.id = extractor.getPlaylistId();
-        } catch (Exception e) {
-            info.errors.add(e);
-        }
         try {
             info.streams_count = extractor.getStreamsCount();
         } catch (Exception e) {
@@ -63,12 +59,12 @@ public class PlaylistInfo extends Info {
         return info;
     }
 
-    public String avatar_url = "";
-    public String banner_url = "";
-    public String uploader_url = "";
-    public String uploader_name = "";
-    public String uploader_avatar_url = "";
+    public String avatar_url;
+    public String banner_url;
+    public String uploader_url;
+    public String uploader_name;
+    public String uploader_avatar_url;
     public long streams_count = 0;
-    public List<InfoItem> related_streams = null;
-    public boolean hasMoreStreams = false;
+    public List<InfoItem> related_streams;
+    public boolean has_more_streams;
 }
