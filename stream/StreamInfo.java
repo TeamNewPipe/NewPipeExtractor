@@ -5,7 +5,9 @@ import org.schabi.newpipe.extractor.InfoItem;
 import org.schabi.newpipe.extractor.exceptions.ContentNotAvailableException;
 import org.schabi.newpipe.extractor.exceptions.ExtractionException;
 import org.schabi.newpipe.extractor.utils.DashMpdParser;
+import org.schabi.newpipe.extractor.utils.Utils;
 
+import java.io.FileNotFoundException;
 import java.util.List;
 import java.util.Vector;
 
@@ -137,7 +139,12 @@ public class StreamInfo extends Info {
                 // find a similar stream in the respective lists (calling Stream#equalStats).
                 DashMpdParser.getStreams(streamInfo);
             } catch (Exception e) {
-                streamInfo.addException(new ExtractionException("Couldn't get streams from dash mpd", e));
+                // Sometimes we receive 403 (forbidden) error when trying to download the manifest,
+                // (similar to https://github.com/rg3/youtube-dl/blob/master/youtube_dl/extractor/youtube.py#L1888)
+                // just skip the exception, as we later check if we have any streams
+                if (!Utils.hasCauseThrowable(e, FileNotFoundException.class)) {
+                    streamInfo.addException(new ExtractionException("Couldn't get streams from dash mpd", e));
+                }
             }
         }
 

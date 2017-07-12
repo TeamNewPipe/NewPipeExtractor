@@ -17,4 +17,21 @@ public class Utils {
     public static String removeNonDigitCharacters(String toRemove) {
         return toRemove.replaceAll("\\D+", "");
     }
+
+    /**
+     * Check if throwable have the cause
+     */
+    public static boolean hasCauseThrowable(Throwable throwable, Class<?> causeToCheck) {
+        // Check if getCause is not the same as cause (the getCause is already the root),
+        // as it will cause a infinite loop if it is
+        Throwable cause,  getCause = throwable;
+
+        while ((cause = throwable.getCause()) != null && getCause != cause) {
+            getCause = cause;
+            if (cause.getClass().isAssignableFrom(causeToCheck)) {
+                return true;
+            }
+        }
+        return false;
+    }
 }
