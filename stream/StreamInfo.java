@@ -1,7 +1,8 @@
 package org.schabi.newpipe.extractor.stream;
 
+import org.schabi.newpipe.extractor.Info;
 import org.schabi.newpipe.extractor.InfoItem;
-import org.schabi.newpipe.extractor.UrlIdHandler;
+import org.schabi.newpipe.extractor.exceptions.ContentNotAvailableException;
 import org.schabi.newpipe.extractor.exceptions.ExtractionException;
 import org.schabi.newpipe.extractor.utils.DashMpdParser;
 
@@ -31,11 +32,11 @@ import java.util.Vector;
 /**
  * Info object for opened videos, ie the video ready to play.
  */
-@SuppressWarnings("ALL")
-public class StreamInfo extends AbstractStreamInfo {
+@SuppressWarnings("WeakerAccess")
+public class StreamInfo extends Info {
 
-    public static class StreamExctractException extends ExtractionException {
-        StreamExctractException(String message) {
+    public static class StreamExtractException extends ExtractionException {
+        StreamExtractException(String message) {
             super(message);
         }
     }
@@ -44,42 +45,10 @@ public class StreamInfo extends AbstractStreamInfo {
     }
 
     /**
-     * Creates a new StreamInfo object from an existing AbstractVideoInfo.
-     * All the shared properties are copied to the new StreamInfo.
-     */
-    @SuppressWarnings("WeakerAccess")
-    public StreamInfo(AbstractStreamInfo avi) {
-        this.id = avi.id;
-        this.url = avi.url;
-        this.name = avi.name;
-        this.uploader = avi.uploader;
-        this.thumbnail_url = avi.thumbnail_url;
-        this.upload_date = avi.upload_date;
-        this.upload_date = avi.upload_date;
-        this.view_count = avi.view_count;
-
-        //todo: better than this
-        if (avi instanceof StreamInfoItem) {
-            //shitty String to convert code
-            /*
-            String dur = ((StreamInfoItem)avi).duration;
-            int minutes = Integer.parseInt(dur.substring(0, dur.indexOf(":")));
-            int seconds = Integer.parseInt(dur.substring(dur.indexOf(":")+1, dur.length()));
-            */
-            this.duration = ((StreamInfoItem) avi).duration;
-        }
-    }
-
-    public void addException(Exception e) {
-        errors.add(e);
-    }
-
-    /**
      * Fills out the video info fields which are common to all services.
      * Probably needs to be overridden by subclasses
      */
-    public static StreamInfo getVideoInfo(StreamExtractor extractor)
-            throws ExtractionException, StreamExtractor.ContentNotAvailableException {
+    public static StreamInfo getVideoInfo(StreamExtractor extractor) throws ExtractionException {
         StreamInfo streamInfo = new StreamInfo();
 
         try {
@@ -87,15 +56,15 @@ public class StreamInfo extends AbstractStreamInfo {
             streamInfo = extractStreams(streamInfo, extractor);
             streamInfo = extractOptionalData(streamInfo, extractor);
         } catch (ExtractionException e) {
-	        // Currently YouTube does not distinguish between age restricted videos and videos blocked
-	        // by country.  This means that during the initialisation of the extractor, the extractor
-	        // will assume that a video is age restricted while in reality it it blocked by country.
-	        //
-	        // We will now detect whether the video is blocked by country or not.
+            // Currently YouTube does not distinguish between age restricted videos and videos blocked
+            // by country.  This means that during the initialisation of the extractor, the extractor
+            // will assume that a video is age restricted while in reality it it blocked by country.
+            //
+            // We will now detect whether the video is blocked by country or not.
             String errorMsg = extractor.getErrorMessage();
 
             if (errorMsg != null) {
-                throw new StreamExtractor.ContentNotAvailableException(errorMsg);
+                throw new ContentNotAvailableException(errorMsg);
             } else {
                 throw e;
             }
@@ -104,18 +73,14 @@ public class StreamInfo extends AbstractStreamInfo {
         return streamInfo;
     }
 
-    private static StreamInfo extractImportantData(
-            StreamInfo streamInfo, StreamExtractor extractor)
-            throws ExtractionException {
+    private static StreamInfo extractImportantData(StreamInfo streamInfo, StreamExtractor extractor) throws ExtractionException {
         /* ---- important data, withoug the video can't be displayed goes here: ---- */
         // if one of these is not available an exception is meant to be thrown directly into the frontend.
 
-        UrlIdHandler uiconv = extractor.getUrlIdHandler();
-
         streamInfo.service_id = extractor.getServiceId();
-        streamInfo.url = extractor.getPageUrl();
+        streamInfo.url = extractor.getUrl();
         streamInfo.stream_type = extractor.getStreamType();
-        streamInfo.id = uiconv.getId(extractor.getPageUrl());
+        streamInfo.id = extractor.getId();
         streamInfo.name = extractor.getTitle();
         streamInfo.age_limit = extractor.getAgeLimit();
 
@@ -130,9 +95,7 @@ public class StreamInfo extends AbstractStreamInfo {
         return streamInfo;
     }
 
-    private static StreamInfo extractStreams(
-            StreamInfo streamInfo, StreamExtractor extractor)
-            throws ExtractionException {
+    private static StreamInfo extractStreams(StreamInfo streamInfo, StreamExtractor extractor) throws ExtractionException {
         /* ---- stream extraction goes here ---- */
         // At least one type of stream has to be available,
         // otherwise an exception will be thrown directly into the frontend.
@@ -149,34 +112,33 @@ public class StreamInfo extends AbstractStreamInfo {
         } catch (Exception e) {
             streamInfo.addException(new ExtractionException("Couldn't get audio streams", e));
         }
-        // also try to get streams from the dashMpd
-        if (streamInfo.dashMpdUrl != null && !streamInfo.dashMpdUrl.isEmpty()) {
-            if (streamInfo.audio_streams == null) {
-                streamInfo.audio_streams = new Vector<>();
-            }
-            //todo: make this quick and dirty solution a real fallback
-            // same as the quick and dirty above
-            try {
-                streamInfo.audio_streams.addAll(
-                        DashMpdParser.getAudioStreams(streamInfo.dashMpdUrl));
-            } catch (Exception e) {
-                streamInfo.addException(
-                        new ExtractionException("Couldn't get audio streams from dash mpd", e));
-            }
-        }
         /* Extract video stream url*/
         try {
             streamInfo.video_streams = extractor.getVideoStreams();
         } catch (Exception e) {
-            streamInfo.addException(
-                    new ExtractionException("Couldn't get video streams", e));
+            streamInfo.addException(new ExtractionException("Couldn't get video streams", e));
         }
         /* Extract video only stream url*/
         try {
             streamInfo.video_only_streams = extractor.getVideoOnlyStreams();
         } catch (Exception e) {
-            streamInfo.addException(
-                    new ExtractionException("Couldn't get video only streams", e));
+            streamInfo.addException(new ExtractionException("Couldn't get video only streams", e));
+        }
+
+        // Lists can be null if a exception was thrown during extraction
+        if (streamInfo.video_streams == null) streamInfo.video_streams = new Vector<>();
+        if (streamInfo.video_only_streams == null) streamInfo.video_only_streams = new Vector<>();
+        if (streamInfo.audio_streams == null) streamInfo.audio_streams = new Vector<>();
+
+        if (streamInfo.dashMpdUrl != null && !streamInfo.dashMpdUrl.isEmpty()) {
+            try {
+                // Will try to find in the dash manifest for any stream that the ItagItem has (by the id),
+                // it has video, video only and audio streams and will only add to the list if it don't
+                // find a similar stream in the respective lists (calling Stream#equalStats).
+                DashMpdParser.getStreams(streamInfo);
+            } catch (Exception e) {
+                streamInfo.addException(new ExtractionException("Couldn't get streams from dash mpd", e));
+            }
         }
 
         // either dash_mpd audio_only or video has to be available, otherwise we didn't get a stream,
@@ -184,15 +146,14 @@ public class StreamInfo extends AbstractStreamInfo {
         if ((streamInfo.video_streams == null || streamInfo.video_streams.isEmpty())
                 && (streamInfo.audio_streams == null || streamInfo.audio_streams.isEmpty())
                 && (streamInfo.dashMpdUrl == null || streamInfo.dashMpdUrl.isEmpty())) {
-            throw new StreamExctractException(
+            throw new StreamExtractException(
                     "Could not get any stream. See error variable to get further details.");
         }
 
         return streamInfo;
     }
 
-    private static StreamInfo extractOptionalData(
-            StreamInfo streamInfo, StreamExtractor extractor) {
+    private static StreamInfo extractOptionalData(StreamInfo streamInfo, StreamExtractor extractor) {
         /*  ---- optional data goes here: ---- */
         // If one of these fails, the frontend needs to handle that they are not available.
         // Exceptions are therefore not thrown into the frontend, but stored into the error List,
@@ -259,8 +220,7 @@ public class StreamInfo extends AbstractStreamInfo {
             streamInfo.addException(e);
         }
         try {
-            StreamInfoItemCollector c = new StreamInfoItemCollector(
-                    extractor.getUrlIdHandler(), extractor.getServiceId());
+            StreamInfoItemCollector c = new StreamInfoItemCollector(extractor.getServiceId());
             StreamInfoItemExtractor nextVideo = extractor.getNextVideo();
             c.commit(nextVideo);
             if (c.getItemList().size() != 0) {
@@ -282,26 +242,36 @@ public class StreamInfo extends AbstractStreamInfo {
         return streamInfo;
     }
 
-    public String uploader_thumbnail_url = "";
-    public String channel_url = "";
-    public String description = "";
+    public void addException(Exception e) {
+        errors.add(e);
+    }
 
-    public List<VideoStream> video_streams = null;
-    public List<AudioStream> audio_streams = null;
-    public List<VideoStream> video_only_streams = null;
+    public StreamType stream_type;
+    public String uploader;
+    public String thumbnail_url;
+    public String upload_date;
+    public long view_count = -1;
+
+    public String uploader_thumbnail_url;
+    public String channel_url;
+    public String description;
+
+    public List<VideoStream> video_streams;
+    public List<AudioStream> audio_streams;
+    public List<VideoStream> video_only_streams;
     // video streams provided by the dash mpd do not need to be provided as VideoStream.
     // Later on this will also aplly to audio streams. Since dash mpd is standarized,
     // crawling such a file is not service dependent. Therefore getting audio only streams by yust
     // providing the dash mpd fille will be possible in the future.
-    public String dashMpdUrl = "";
+    public String dashMpdUrl;
     public int duration = -1;
 
     public int age_limit = -1;
     public int like_count = -1;
     public int dislike_count = -1;
-    public String average_rating = "";
-    public StreamInfoItem next_video = null;
-    public List<InfoItem> related_streams = null;
+    public String average_rating;
+    public StreamInfoItem next_video;
+    public List<InfoItem> related_streams = new Vector<>();
     //in seconds. some metadata is not passed using a StreamInfo object!
     public int start_position = 0;
 }

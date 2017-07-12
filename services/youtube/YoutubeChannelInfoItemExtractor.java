@@ -3,6 +3,7 @@ package org.schabi.newpipe.extractor.services.youtube;
 import org.jsoup.nodes.Element;
 import org.schabi.newpipe.extractor.channel.ChannelInfoItemExtractor;
 import org.schabi.newpipe.extractor.exceptions.ParsingException;
+import org.schabi.newpipe.extractor.utils.Utils;
 
 /*
  * Created by Christian Schabesberger on 12.02.17.
@@ -62,7 +63,7 @@ public class YoutubeChannelInfoItemExtractor implements ChannelInfoItemExtractor
         if (subsEl == null) {
             return 0;
         } else {
-            return Long.parseLong(subsEl.text().replaceAll("\\D+", ""));
+            return Long.parseLong(Utils.removeNonDigitCharacters(subsEl.text()));
         }
     }
 
@@ -72,7 +73,7 @@ public class YoutubeChannelInfoItemExtractor implements ChannelInfoItemExtractor
         if (metaEl == null) {
             return 0;
         } else {
-            return Long.parseLong(metaEl.text().replaceAll("\\D+", ""));
+            return Long.parseLong(Utils.removeNonDigitCharacters(metaEl.text()));
         }
     }
 

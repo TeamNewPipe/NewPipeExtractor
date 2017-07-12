@@ -1,6 +1,7 @@
 package org.schabi.newpipe.extractor.playlist;
 
 import org.schabi.newpipe.extractor.InfoItemCollector;
+import org.schabi.newpipe.extractor.UrlIdHandler;
 import org.schabi.newpipe.extractor.exceptions.ParsingException;
 
 public class PlaylistInfoItemCollector extends InfoItemCollector {
@@ -12,10 +13,16 @@ public class PlaylistInfoItemCollector extends InfoItemCollector {
         final PlaylistInfoItem resultItem = new PlaylistInfoItem();
 
         resultItem.name = extractor.getPlaylistName();
-        resultItem.serviceId = getServiceId();
-        resultItem.webPageUrl = extractor.getWebPageUrl();
+        resultItem.service_id = getServiceId();
+        resultItem.url = extractor.getWebPageUrl();
+
         try {
-            resultItem.thumbnailUrl = extractor.getThumbnailUrl();
+            resultItem.thumbnail_url = extractor.getThumbnailUrl();
+        } catch (Exception e) {
+            addError(e);
+        }
+        try {
+            resultItem.streams_count = extractor.getStreamsCount();
         } catch (Exception e) {
             addError(e);
         }

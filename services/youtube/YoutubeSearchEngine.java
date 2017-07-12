@@ -5,7 +5,6 @@ import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.schabi.newpipe.extractor.Downloader;
 import org.schabi.newpipe.extractor.NewPipe;
-import org.schabi.newpipe.extractor.UrlIdHandler;
 import org.schabi.newpipe.extractor.exceptions.ExtractionException;
 import org.schabi.newpipe.extractor.search.InfoItemSearchCollector;
 import org.schabi.newpipe.extractor.search.SearchEngine;
@@ -40,8 +39,8 @@ public class YoutubeSearchEngine extends SearchEngine {
     private static final String TAG = YoutubeSearchEngine.class.toString();
     public static final String CHARSET_UTF_8 = "UTF-8";
 
-    public YoutubeSearchEngine(UrlIdHandler urlIdHandler, int serviceId) {
-        super(urlIdHandler, serviceId);
+    public YoutubeSearchEngine(int serviceId) {
+        super(serviceId);
     }
 
     @Override

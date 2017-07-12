@@ -2,22 +2,15 @@ package org.schabi.newpipe.extractor.playlist;
 
 import org.schabi.newpipe.extractor.InfoItem;
 
-public class PlaylistInfoItem implements InfoItem {
+public class PlaylistInfoItem extends InfoItem {
 
-    public int serviceId = -1;
-    public String name = "";
-    public String thumbnailUrl = "";
-    public String webPageUrl = "";
+    public String thumbnail_url;
+    /**
+     * How many streams this playlist have
+     */
+    public long streams_count = 0;
 
-    public InfoType infoType() {
-        return InfoType.PLAYLIST;
-    }
-
-    public String getTitle() {
-        return name;
-    }
-
-    public String getLink() {
-        return webPageUrl;
+    public PlaylistInfoItem() {
+        super(InfoType.PLAYLIST);
     }
 }

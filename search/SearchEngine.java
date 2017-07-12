@@ -1,6 +1,5 @@
 package org.schabi.newpipe.extractor.search;
 
-import org.schabi.newpipe.extractor.UrlIdHandler;
 import org.schabi.newpipe.extractor.exceptions.ExtractionException;
 
 import java.io.IOException;
@@ -28,7 +27,7 @@ import java.util.EnumSet;
 
 public abstract class SearchEngine {
     public enum Filter {
-        STREAM, CHANNEL, PLAY_LIST
+        STREAM, CHANNEL, PLAYLIST
     }
 
     public static class NothingFoundException extends ExtractionException {
@@ -39,8 +38,8 @@ public abstract class SearchEngine {
 
     private InfoItemSearchCollector collector;
 
-    public SearchEngine(UrlIdHandler urlIdHandler, int serviceId) {
-        collector = new InfoItemSearchCollector(urlIdHandler, serviceId);
+    public SearchEngine(int serviceId) {
+        collector = new InfoItemSearchCollector(serviceId);
     }
 
     protected InfoItemSearchCollector getInfoItemSearchCollector() {

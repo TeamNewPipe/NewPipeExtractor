@@ -5,7 +5,11 @@ import org.schabi.newpipe.extractor.MediaFormat;
 import org.schabi.newpipe.extractor.NewPipe;
 import org.schabi.newpipe.extractor.exceptions.ParsingException;
 import org.schabi.newpipe.extractor.exceptions.ReCaptchaException;
+import org.schabi.newpipe.extractor.services.youtube.ItagItem;
 import org.schabi.newpipe.extractor.stream.AudioStream;
+import org.schabi.newpipe.extractor.stream.Stream;
+import org.schabi.newpipe.extractor.stream.StreamInfo;
+import org.schabi.newpipe.extractor.stream.VideoStream;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
@@ -13,8 +17,6 @@ import org.w3c.dom.NodeList;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.util.List;
-import java.util.Vector;
 
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
@@ -44,24 +46,25 @@ public class DashMpdParser {
     private DashMpdParser() {
     }
 
-    static class DashMpdParsingException extends ParsingException {
+    public static class DashMpdParsingException extends ParsingException {
         DashMpdParsingException(String message, Exception e) {
             super(message, e);
         }
     }
 
-    public static List<AudioStream> getAudioStreams(String dashManifestUrl)
-            throws DashMpdParsingException, ReCaptchaException {
+    /**
+     * Download manifest and return nodelist with elements of tag "AdaptationSet"
+     */
+    public static void getStreams(StreamInfo streamInfo) throws DashMpdParsingException, ReCaptchaException {
         String dashDoc;
         Downloader downloader = NewPipe.getDownloader();
         try {
-            dashDoc = downloader.download(dashManifestUrl);
+            dashDoc = downloader.download(streamInfo.dashMpdUrl);
         } catch (IOException ioe) {
-            throw new DashMpdParsingException("Could not get dash mpd: " + dashManifestUrl, ioe);
+            throw new DashMpdParsingException("Could not get dash mpd: " + streamInfo.dashMpdUrl, ioe);
         } catch (ReCaptchaException e) {
             throw new ReCaptchaException("reCaptcha Challenge needed");
         }
-        Vector<AudioStream> audioStreams = new Vector<>();
 
         try {
             DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
@@ -69,27 +72,43 @@ public class DashMpdParser {
             InputStream stream = new ByteArrayInputStream(dashDoc.getBytes());
 
             Document doc = builder.parse(stream);
-            NodeList adaptationSetList = doc.getElementsByTagName("AdaptationSet");
-            for (int i = 0; i < adaptationSetList.getLength(); i++) {
-                Element adaptationSet = (Element) adaptationSetList.item(i);
-                String memeType = adaptationSet.getAttribute("mimeType");
-                if (memeType.contains("audio")) {
-                    Element representation = (Element) adaptationSet.getElementsByTagName("Representation").item(0);
+            NodeList representationList = doc.getElementsByTagName("Representation");
+
+            for (int i = 0; i < representationList.getLength(); i++) {
+                Element representation = ((Element) representationList.item(i));
+                try {
+                    String mimeType = ((Element) representation.getParentNode()).getAttribute("mimeType");
+                    String id = representation.getAttribute("id");
                     String url = representation.getElementsByTagName("BaseURL").item(0).getTextContent();
-                    int bandwidth = Integer.parseInt(representation.getAttribute("bandwidth"));
-                    int samplingRate = Integer.parseInt(representation.getAttribute("audioSamplingRate"));
-                    int format = -1;
-                    if (memeType.equals(MediaFormat.WEBMA.mimeType)) {
-                        format = MediaFormat.WEBMA.id;
-                    } else if (memeType.equals(MediaFormat.M4A.mimeType)) {
-                        format = MediaFormat.M4A.id;
+                    ItagItem itag = ItagItem.getItag(Integer.parseInt(id));
+                    if (itag != null) {
+                        MediaFormat mediaFormat = MediaFormat.getFromMimeType(mimeType);
+                        int format = mediaFormat != null ? mediaFormat.id : -1;
+
+                        if (itag.itagType.equals(ItagItem.ItagType.AUDIO)) {
+                            AudioStream audioStream = new AudioStream(url, format, itag.avgBitrate);
+
+                            if (!Stream.containSimilarStream(audioStream, streamInfo.audio_streams)) {
+                                streamInfo.audio_streams.add(audioStream);
+                            }
+                        } else {
+                            boolean isVideoOnly = itag.itagType.equals(ItagItem.ItagType.VIDEO_ONLY);
+                            VideoStream videoStream = new VideoStream(url, format, itag.resolutionString, isVideoOnly);
+
+                            if (isVideoOnly) {
+                                if (!Stream.containSimilarStream(videoStream, streamInfo.video_only_streams)) {
+                                    streamInfo.video_only_streams.add(videoStream);
+                                }
+                            } else if (!Stream.containSimilarStream(videoStream, streamInfo.video_streams)) {
+                                streamInfo.video_streams.add(videoStream);
+                            }
+                        }
                     }
-                    audioStreams.add(new AudioStream(url, format, 0, bandwidth, samplingRate));
+                } catch (Exception ignored) {
                 }
             }
         } catch (Exception e) {
             throw new DashMpdParsingException("Could not parse Dash mpd", e);
         }
-        return audioStreams;
     }
 }

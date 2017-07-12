@@ -14,7 +14,7 @@ public abstract class Extractor implements Serializable {
         this.urlIdHandler = urlIdHandler;
         this.serviceId = serviceId;
         this.url = url;
-        this.previewInfoCollector = new StreamInfoItemCollector(urlIdHandler, serviceId);
+        this.previewInfoCollector = new StreamInfoItemCollector(serviceId);
     }
 
     public String getUrl() {

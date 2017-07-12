@@ -1,7 +1,6 @@
 package org.schabi.newpipe.extractor.search;
 
 import org.schabi.newpipe.extractor.InfoItemCollector;
-import org.schabi.newpipe.extractor.UrlIdHandler;
 import org.schabi.newpipe.extractor.channel.ChannelInfoItemCollector;
 import org.schabi.newpipe.extractor.channel.ChannelInfoItemExtractor;
 import org.schabi.newpipe.extractor.exceptions.ExtractionException;
@@ -30,15 +29,15 @@ import org.schabi.newpipe.extractor.stream.StreamInfoItemExtractor;
  */
 
 public class InfoItemSearchCollector extends InfoItemCollector {
-    private String suggestion = "";
+    private String suggestion;
     private StreamInfoItemCollector streamCollector;
     private ChannelInfoItemCollector channelCollector;
 
-    SearchResult result = new SearchResult();
+    private SearchResult result = new SearchResult();
 
-    InfoItemSearchCollector(UrlIdHandler handler, int serviceId) {
+    InfoItemSearchCollector(int serviceId) {
         super(serviceId);
-        streamCollector = new StreamInfoItemCollector(handler, serviceId);
+        streamCollector = new StreamInfoItemCollector(serviceId);
         channelCollector = new ChannelInfoItemCollector(serviceId);
     }
 

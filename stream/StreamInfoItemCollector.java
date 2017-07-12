@@ -1,8 +1,6 @@
 package org.schabi.newpipe.extractor.stream;
 
 import org.schabi.newpipe.extractor.InfoItemCollector;
-import org.schabi.newpipe.extractor.NewPipe;
-import org.schabi.newpipe.extractor.UrlIdHandler;
 import org.schabi.newpipe.extractor.exceptions.FoundAdException;
 import org.schabi.newpipe.extractor.exceptions.ParsingException;
 
@@ -28,15 +26,8 @@ import org.schabi.newpipe.extractor.exceptions.ParsingException;
 
 public class StreamInfoItemCollector extends InfoItemCollector {
 
-    private UrlIdHandler urlIdHandler;
-
-    public StreamInfoItemCollector(UrlIdHandler handler, int serviceId) {
+    public StreamInfoItemCollector(int serviceId) {
         super(serviceId);
-        urlIdHandler = handler;
-    }
-
-    private UrlIdHandler getUrlIdHandler() {
-        return urlIdHandler;
     }
 
     public StreamInfoItem extract(StreamInfoItemExtractor extractor) throws Exception {
@@ -48,13 +39,7 @@ public class StreamInfoItemCollector extends InfoItemCollector {
         // important information
         resultItem.service_id = getServiceId();
         resultItem.url = extractor.getWebPageUrl();
-        if (getUrlIdHandler() == null) {
-            throw new ParsingException("Error: UrlIdHandler not set");
-        } else if (!resultItem.url.isEmpty()) {
-            resultItem.id = NewPipe.getService(getServiceId())
-                    .getStreamUrlIdHandlerInstance()
-                    .getId(resultItem.url);
-        }
+
         resultItem.name = extractor.getTitle();
         resultItem.stream_type = extractor.getStreamType();
 

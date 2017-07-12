@@ -29,21 +29,16 @@ import java.util.List;
 
 public class ChannelInfo extends Info {
 
-    public static ChannelInfo getInfo(ChannelExtractor extractor)
-            throws ParsingException {
+    public static ChannelInfo getInfo(ChannelExtractor extractor) throws ParsingException {
         ChannelInfo info = new ChannelInfo();
 
         // important data
         info.service_id = extractor.getServiceId();
         info.url = extractor.getUrl();
+        info.id = extractor.getChannelId();
         info.name = extractor.getChannelName();
-        info.hasMoreStreams = extractor.hasMoreStreams();
+        info.has_more_streams = extractor.hasMoreStreams();
 
-        try {
-            info.id = extractor.getChannelId();
-        } catch (Exception e) {
-            info.errors.add(e);
-        }
         try {
             info.avatar_url = extractor.getAvatarUrl();
         } catch (Exception e) {
@@ -75,10 +70,10 @@ public class ChannelInfo extends Info {
         return info;
     }
 
-    public String avatar_url = "";
-    public String banner_url = "";
-    public String feed_url = "";
-    public List<InfoItem> related_streams = null;
+    public String avatar_url;
+    public String banner_url;
+    public String feed_url;
+    public List<InfoItem> related_streams;
     public long subscriber_count = -1;
-    public boolean hasMoreStreams = false;
+    public boolean has_more_streams = false;
 }

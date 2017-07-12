@@ -7,7 +7,12 @@ import org.schabi.newpipe.extractor.utils.Parser;
 
 public class YoutubePlaylistUrlIdHandler implements UrlIdHandler {
 
+    private static final YoutubePlaylistUrlIdHandler instance = new YoutubePlaylistUrlIdHandler();
     private static final String ID_PATTERN = "([\\-a-zA-Z0-9_]{34})";
+
+    public static YoutubePlaylistUrlIdHandler getInstance() {
+        return instance;
+    }
 
     @Override
     public String getUrl(String listId) {

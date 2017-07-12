@@ -31,20 +31,11 @@ import java.util.List;
  */
 public abstract class StreamExtractor extends Extractor {
 
-    public static class ContentNotAvailableException extends ParsingException {
-        public ContentNotAvailableException(String message) {
-            super(message);
-        }
-
-        public ContentNotAvailableException(String message, Throwable cause) {
-            super(message, cause);
-        }
-    }
-
     public StreamExtractor(UrlIdHandler urlIdHandler, String url, int serviceId) {
         super(urlIdHandler, serviceId, url);
     }
 
+    public abstract String getId() throws ParsingException;
     public abstract int getTimeStamp() throws ParsingException;
     public abstract String getTitle() throws ParsingException;
     public abstract String getDescription() throws ParsingException;
@@ -65,8 +56,7 @@ public abstract class StreamExtractor extends Extractor {
     public abstract int getDislikeCount() throws ParsingException;
     public abstract StreamInfoItemExtractor getNextVideo() throws ParsingException;
     public abstract StreamInfoItemCollector getRelatedVideos() throws ParsingException;
-    public abstract String getPageUrl();
-    public abstract StreamInfo.StreamType getStreamType() throws ParsingException;
+    public abstract StreamType getStreamType() throws ParsingException;
 
     /**
      * Analyses the webpage's document and extracts any error message there might be.

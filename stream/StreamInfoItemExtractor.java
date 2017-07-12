@@ -23,7 +23,7 @@ import org.schabi.newpipe.extractor.exceptions.ParsingException;
  */
 
 public interface StreamInfoItemExtractor {
-    AbstractStreamInfo.StreamType getStreamType() throws ParsingException;
+    StreamType getStreamType() throws ParsingException;
     String getWebPageUrl() throws ParsingException;
     String getTitle() throws ParsingException;
     int getDuration() throws ParsingException;

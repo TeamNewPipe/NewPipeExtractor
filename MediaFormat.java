@@ -91,4 +91,17 @@ public enum MediaFormat {
         }
         return "";
     }
+
+    /**
+     * Return the MediaFormat with the supplied mime type
+     *
+     * @return MediaFormat associated with this mime type,
+     * or null if none match it.
+     */
+    public static MediaFormat getFromMimeType(String mimeType) {
+        for (MediaFormat vf : MediaFormat.values()) {
+            if (vf.mimeType.equals(mimeType)) return vf;
+        }
+        return null;
+    }
 }

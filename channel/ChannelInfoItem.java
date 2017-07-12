@@ -22,25 +22,14 @@ import org.schabi.newpipe.extractor.InfoItem;
  * along with NewPipe.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-public class ChannelInfoItem implements InfoItem {
+public class ChannelInfoItem extends InfoItem {
 
-    public int serviceId = -1;
-    public String channelName = "";
-    public String thumbnailUrl = "";
-    public String webPageUrl = "";
-    public String description = "";
-    public long subscriberCount = -1;
-    public long viewCount = -1;
+    public String thumbnail_url;
+    public String description;
+    public long subscriber_count = -1;
+    public long view_count = -1;
 
-    public InfoType infoType() {
-        return InfoType.CHANNEL;
-    }
-
-    public String getTitle() {
-        return channelName;
-    }
-
-    public String getLink() {
-        return webPageUrl;
+    public ChannelInfoItem() {
+        super(InfoType.CHANNEL);
     }
 }

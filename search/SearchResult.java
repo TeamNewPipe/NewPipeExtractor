@@ -49,7 +49,7 @@ public class SearchResult {
         return result;
     }
 
-    public String suggestion = "";
+    public String suggestion;
     public List<InfoItem> resultList = new Vector<>();
     public List<Throwable> errors = new Vector<>();
 }
