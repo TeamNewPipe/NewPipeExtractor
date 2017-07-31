@@ -34,7 +34,8 @@ public enum MediaFormat {
     WEBM        (0x2,   "WebM",  "webm", "video/webm"),
     // audio formats
     M4A         (0x3,   "m4a",   "m4a",  "audio/mp4"),
-    WEBMA       (0x4,   "WebM",  "webm", "audio/webm");
+    WEBMA       (0x4,   "WebM",  "webm", "audio/webm"),
+    MP3         (0x5,   "MP3",   "mp3",  "audio/mpeg");
 
     public final int id;
     @SuppressWarnings("WeakerAccess")

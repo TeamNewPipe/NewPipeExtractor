@@ -1,6 +1,9 @@
 package org.schabi.newpipe.extractor;
 
+import java.io.IOException;
+
 import org.schabi.newpipe.extractor.exceptions.ParsingException;
+import org.schabi.newpipe.extractor.exceptions.ReCaptchaException;
 
 /*
  * Created by Christian Schabesberger on 26.07.16.
@@ -24,9 +27,9 @@ import org.schabi.newpipe.extractor.exceptions.ParsingException;
 
 public interface UrlIdHandler {
 
-    String getUrl(String videoId);
-    String getId(String siteUrl) throws ParsingException;
-    String cleanUrl(String siteUrl) throws ParsingException;
+    String getUrl(String videoId) throws ParsingException, ReCaptchaException, IOException;
+    String getId(String siteUrl) throws ParsingException, ReCaptchaException, IOException;
+    String cleanUrl(String siteUrl) throws ParsingException, ReCaptchaException, IOException;
 
     /**
      * When a VIEW_ACTION is caught this function will test if the url delivered within the calling

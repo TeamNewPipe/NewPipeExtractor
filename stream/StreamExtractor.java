@@ -23,7 +23,9 @@ package org.schabi.newpipe.extractor.stream;
 import org.schabi.newpipe.extractor.Extractor;
 import org.schabi.newpipe.extractor.UrlIdHandler;
 import org.schabi.newpipe.extractor.exceptions.ParsingException;
+import org.schabi.newpipe.extractor.exceptions.ReCaptchaException;
 
+import java.io.IOException;
 import java.util.List;
 
 /**
@@ -46,7 +48,7 @@ public abstract class StreamExtractor extends Extractor {
     public abstract String getUploadDate() throws ParsingException;
     public abstract String getThumbnailUrl() throws ParsingException;
     public abstract String getUploaderThumbnailUrl() throws ParsingException;
-    public abstract List<AudioStream> getAudioStreams() throws ParsingException;
+    public abstract List<AudioStream> getAudioStreams() throws ParsingException, ReCaptchaException, IOException;
     public abstract List<VideoStream> getVideoStreams() throws ParsingException;
     public abstract List<VideoStream> getVideoOnlyStreams() throws ParsingException;
     public abstract String getDashMpdUrl() throws ParsingException;
@@ -55,7 +57,7 @@ public abstract class StreamExtractor extends Extractor {
     public abstract int getLikeCount() throws ParsingException;
     public abstract int getDislikeCount() throws ParsingException;
     public abstract StreamInfoItemExtractor getNextVideo() throws ParsingException;
-    public abstract StreamInfoItemCollector getRelatedVideos() throws ParsingException;
+    public abstract StreamInfoItemCollector getRelatedVideos() throws ParsingException, ReCaptchaException, IOException;
     public abstract StreamType getStreamType() throws ParsingException;
 
     /**
