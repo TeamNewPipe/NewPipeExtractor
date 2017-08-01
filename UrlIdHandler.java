@@ -27,9 +27,9 @@ import org.schabi.newpipe.extractor.exceptions.ReCaptchaException;
 
 public interface UrlIdHandler {
 
-    String getUrl(String videoId) throws ParsingException, ReCaptchaException, IOException;
-    String getId(String siteUrl) throws ParsingException, ReCaptchaException, IOException;
-    String cleanUrl(String siteUrl) throws ParsingException, ReCaptchaException, IOException;
+    String getUrl(String videoId) throws ParsingException;
+    String getId(String siteUrl) throws ParsingException;
+    String cleanUrl(String siteUrl) throws ParsingException;
 
     /**
      * When a VIEW_ACTION is caught this function will test if the url delivered within the calling

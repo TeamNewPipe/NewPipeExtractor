@@ -15,7 +15,6 @@ import org.schabi.newpipe.extractor.stream.StreamInfoItemCollector;
 
 @SuppressWarnings("WeakerAccess")
 public class SoundcloudChannelExtractor extends ChannelExtractor {
-    private String url;
     private String channelId;
     private JSONObject channel;
     private String nextUrl;

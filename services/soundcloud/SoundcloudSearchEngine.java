@@ -13,8 +13,6 @@ import org.schabi.newpipe.extractor.search.InfoItemSearchCollector;
 import org.schabi.newpipe.extractor.search.SearchEngine;
 
 public class SoundcloudSearchEngine extends SearchEngine {
-
-    private static final String TAG = SoundcloudSearchEngine.class.toString();
     public static final String CHARSET_UTF_8 = "UTF-8";
 
     public SoundcloudSearchEngine(int serviceId) {

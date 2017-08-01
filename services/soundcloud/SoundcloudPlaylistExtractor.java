@@ -16,13 +16,12 @@ import org.schabi.newpipe.extractor.stream.StreamInfoItemCollector;
 
 @SuppressWarnings("WeakerAccess")
 public class SoundcloudPlaylistExtractor extends PlaylistExtractor {
-    private String url;
     private String playlistId;
     private JSONObject playlist;
     private List<String> nextTracks;
 
     public SoundcloudPlaylistExtractor(UrlIdHandler urlIdHandler, String url, int serviceId) throws IOException, ExtractionException {
-        super(urlIdHandler, urlIdHandler.cleanUrl(url), serviceId);
+        super(urlIdHandler, url, serviceId);
 
         Downloader dl = NewPipe.getDownloader();
         playlistId = urlIdHandler.getId(url);

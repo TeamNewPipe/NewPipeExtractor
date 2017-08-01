@@ -62,7 +62,7 @@ public class SoundcloudParsingHelper {
             }
             return timeAgoString.toString();
         } catch (ParseException e) {
-            throw new ParsingException(e.getMessage());
+            throw new ParsingException(e.getMessage(), e);
         }
     }
 
@@ -73,7 +73,7 @@ public class SoundcloudParsingHelper {
             SimpleDateFormat newDateFormat = new SimpleDateFormat("yyyy-MM-dd");
             return newDateFormat.format(date);
         } catch (ParseException e) {
-            throw new ParsingException(e.getMessage());
+            throw new ParsingException(e.getMessage(), e);
         }
     }
 

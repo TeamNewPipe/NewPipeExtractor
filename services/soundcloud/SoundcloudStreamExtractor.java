@@ -29,7 +29,7 @@ public class SoundcloudStreamExtractor extends StreamExtractor {
     private JSONObject track;
 
     public SoundcloudStreamExtractor(UrlIdHandler urlIdHandler, String pageUrl, int serviceId) throws ExtractionException, IOException {
-        super(urlIdHandler, urlIdHandler.cleanUrl(pageUrl), serviceId);
+        super(urlIdHandler, pageUrl, serviceId);
 
         Downloader dl = NewPipe.getDownloader();
 
