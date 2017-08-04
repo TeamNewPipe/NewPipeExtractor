@@ -72,6 +72,6 @@ public class SoundcloudStreamUrlIdHandler implements UrlIdHandler {
     @Override
     public boolean acceptUrl(String videoUrl) {
         String regex = "^https?://(www\\.)?soundcloud.com/[0-9a-z_-]+/(?!(tracks|albums|sets|reposts|followers|following)/?$)[0-9a-z_-]+/?([#?].*)?$";
-        return Parser.isMatch(regex, videoUrl);
+        return Parser.isMatch(regex, videoUrl.toLowerCase());
     }
 }

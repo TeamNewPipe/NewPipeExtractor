@@ -70,6 +70,6 @@ public class SoundcloudPlaylistUrlIdHandler implements UrlIdHandler {
     @Override
     public boolean acceptUrl(String videoUrl) {
         String regex = "^https?://(www\\.)?soundcloud.com/[0-9a-z_-]+/sets/[0-9a-z_-]+/?([#?].*)?$";
-        return Parser.isMatch(regex, videoUrl);
+        return Parser.isMatch(regex, videoUrl.toLowerCase());
     }
 }
