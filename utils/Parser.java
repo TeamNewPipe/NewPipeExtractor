@@ -63,6 +63,15 @@ public class Parser {
         }
     }
 
+    public static boolean isMatch(String pattern, String input) {
+        try {
+            matchGroup1(pattern, input);
+            return true;
+        } catch (RegexException e) {
+            return false;
+        }
+    }
+
     public static Map<String, String> compatParseMap(final String input) throws UnsupportedEncodingException {
         Map<String, String> map = new HashMap<>();
         for (String arg : input.split("&")) {
