@@ -62,7 +62,7 @@ public class SoundcloudStreamExtractor extends StreamExtractor {
 
     @Override
     public String getUploader() {
-        return track.getString("description");
+        return track.getJSONObject("user").getString("username");
     }
 
     @Override

@@ -42,7 +42,7 @@ public class SoundcloudParsingHelper {
                     TimeUnit.SECONDS.toMillis(1));
             List<String> timesString = Arrays.asList("year", "month", "week", "day", "hour", "minute", "second");
 
-            SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-ddTHH:mm:ssZ");
+            SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss'Z'");
 
             long timeAgo = System.currentTimeMillis() - dateFormat.parse(time).getTime();
 
@@ -68,7 +68,7 @@ public class SoundcloudParsingHelper {
 
     public static String toDateString(String time) throws ParsingException {
         try {
-            SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-ddTHH:mm:ssZ");
+            SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss'Z'");
             Date date = dateFormat.parse(time);
             SimpleDateFormat newDateFormat = new SimpleDateFormat("yyyy-MM-dd");
             return newDateFormat.format(date);
