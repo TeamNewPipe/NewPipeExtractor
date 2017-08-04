@@ -8,6 +8,7 @@ import org.schabi.newpipe.extractor.Downloader;
 import org.schabi.newpipe.extractor.NewPipe;
 import org.schabi.newpipe.extractor.UrlIdHandler;
 import org.schabi.newpipe.extractor.exceptions.ParsingException;
+import org.schabi.newpipe.extractor.utils.Parser;
 
 public class SoundcloudChannelUrlIdHandler implements UrlIdHandler {
 
@@ -68,14 +69,8 @@ public class SoundcloudChannelUrlIdHandler implements UrlIdHandler {
 
     @Override
     public boolean acceptUrl(String channelUrl) {
-        return channelUrl.startsWith("https://soundcloud.com/")
-                && (channelUrl.split("/").length == 4
-                || channelUrl.endsWith("/tracks")
-                || channelUrl.endsWith("/albums")
-                || channelUrl.endsWith("/sets")
-                || channelUrl.endsWith("/reposts")
-                || channelUrl.endsWith("/followers")
-                || channelUrl.endsWith("/following"));
+        String regex = "^https?://(www\\.)?soundcloud.com/[0-9a-z_-]+(/((tracks|albums|sets|reposts|followers|following)/?)?)?([#?].*)?$";
+        return Parser.isMatch(regex, channelUrl);
 
     }
 }
