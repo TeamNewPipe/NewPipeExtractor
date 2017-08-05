@@ -1,18 +1,16 @@
-package org.schabi.newpipe.extractor.services.youtube.youtube;
-
-import static junit.framework.Assert.assertEquals;
-import static junit.framework.Assert.assertFalse;
-import static junit.framework.Assert.assertTrue;
-
-import java.util.EnumSet;
+package org.schabi.newpipe.extractor.services.youtube;
 
 import org.junit.Before;
 import org.junit.Test;
 import org.schabi.newpipe.Downloader;
-import org.schabi.newpipe.extractor.InfoItem;
 import org.schabi.newpipe.extractor.NewPipe;
 import org.schabi.newpipe.extractor.search.SearchEngine;
 import org.schabi.newpipe.extractor.search.SearchResult;
+
+import java.util.EnumSet;
+
+import static junit.framework.Assert.assertFalse;
+import static junit.framework.Assert.assertTrue;
 
 
 /**
@@ -38,7 +36,7 @@ import org.schabi.newpipe.extractor.search.SearchResult;
 /**
  * Test for {@link SearchEngine}
  */
-public class YoutubeSearchEngineChannelTest {
+public class YoutubeSearchEngineAllTest {
     private SearchResult result;
 
     @Before
@@ -46,8 +44,11 @@ public class YoutubeSearchEngineChannelTest {
         NewPipe.init(Downloader.getInstance());
         SearchEngine engine = NewPipe.getService("Youtube").getSearchEngineInstance();
 
-        result = engine.search("gronkh", 0, "de",
-                EnumSet.of(SearchEngine.Filter.CHANNEL)).getSearchResult();
+        // Youtube will suggest "asdf" instead of "asdgff"
+        // keep in mind that the suggestions can change by country (the parameter "de")
+        result = engine.search("asdgff", 0, "de",
+                EnumSet.of(SearchEngine.Filter.CHANNEL,
+                        SearchEngine.Filter.STREAM)).getSearchResult();
     }
 
     @Test
@@ -56,12 +57,8 @@ public class YoutubeSearchEngineChannelTest {
     }
 
     @Test
-    public void testChannelItemType() {
-        assertEquals(result.resultList.get(0).info_type, InfoItem.InfoType.CHANNEL);
-    }
-
-    @Test
     public void testResultErrors() {
+        if (!result.errors.isEmpty()) for (Throwable error : result.errors) error.printStackTrace();
         assertTrue(result.errors == null || result.errors.isEmpty());
     }
 

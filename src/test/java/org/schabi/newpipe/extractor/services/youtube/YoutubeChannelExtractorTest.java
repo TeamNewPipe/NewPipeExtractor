@@ -1,4 +1,4 @@
-package org.schabi.newpipe.extractor.services.youtube.youtube;
+package org.schabi.newpipe.extractor.services.youtube;
 
 import static junit.framework.Assert.assertEquals;
 import static junit.framework.Assert.assertNotNull;
