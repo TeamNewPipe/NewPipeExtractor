@@ -1,0 +1,14 @@
+apply plugin: 'java-library'
+
+repositories {
+    jcenter()
+}
+
+dependencies {
+    implementation 'org.json:json:20160807'
+    implementation 'org.jsoup:jsoup:1.9.2'
+    implementation 'org.mozilla:rhino:1.7.7.1'
+
+    testImplementation 'junit:junit:4.12'
+}
+
