@@ -1,7 +1,6 @@
 package org.schabi.newpipe.extractor.playlist;
 
 import org.schabi.newpipe.extractor.InfoItemCollector;
-import org.schabi.newpipe.extractor.UrlIdHandler;
 import org.schabi.newpipe.extractor.exceptions.ParsingException;
 
 public class PlaylistInfoItemCollector extends InfoItemCollector {
@@ -22,7 +21,7 @@ public class PlaylistInfoItemCollector extends InfoItemCollector {
             addError(e);
         }
         try {
-            resultItem.streams_count = extractor.getStreamsCount();
+            resultItem.stream_count = extractor.getStreamCount();
         } catch (Exception e) {
             addError(e);
         }

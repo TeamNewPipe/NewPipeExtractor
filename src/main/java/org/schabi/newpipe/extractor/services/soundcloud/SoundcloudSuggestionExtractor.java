@@ -1,10 +1,5 @@
 package org.schabi.newpipe.extractor.services.soundcloud;
 
-import java.io.IOException;
-import java.net.URLEncoder;
-import java.util.ArrayList;
-import java.util.List;
-
 import org.json.JSONArray;
 import org.json.JSONObject;
 import org.schabi.newpipe.extractor.Downloader;
@@ -12,6 +7,11 @@ import org.schabi.newpipe.extractor.NewPipe;
 import org.schabi.newpipe.extractor.SuggestionExtractor;
 import org.schabi.newpipe.extractor.exceptions.ReCaptchaException;
 import org.schabi.newpipe.extractor.utils.Parser.RegexException;
+
+import java.io.IOException;
+import java.net.URLEncoder;
+import java.util.ArrayList;
+import java.util.List;
 
 public class SoundcloudSuggestionExtractor extends SuggestionExtractor {
 

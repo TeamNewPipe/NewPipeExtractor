@@ -13,61 +13,48 @@ import java.io.IOException;
 
 public class SoundcloudService extends StreamingService {
 
-    public SoundcloudService(int id) {
-        super(id);
+    public SoundcloudService(int id, String name) {
+        super(id, name);
     }
 
     @Override
-    public ServiceInfo getServiceInfo() {
-        ServiceInfo serviceInfo = new ServiceInfo();
-        serviceInfo.name = "Soundcloud";
-        return serviceInfo;
-    }
-
-    @Override
-    public StreamExtractor getStreamExtractorInstance(String url)
-            throws ExtractionException, IOException {
-        UrlIdHandler urlIdHandler = SoundcloudStreamUrlIdHandler.getInstance();
-        if (urlIdHandler.acceptUrl(url)) {
-            return new SoundcloudStreamExtractor(urlIdHandler, url, getServiceId());
-        } else {
-            throw new IllegalArgumentException("supplied String is not a valid Soundcloud URL");
-        }
-    }
-
-    @Override
-    public SearchEngine getSearchEngineInstance() {
+    public SearchEngine getSearchEngine() {
         return new SoundcloudSearchEngine(getServiceId());
     }
 
     @Override
-    public UrlIdHandler getStreamUrlIdHandlerInstance() {
+    public UrlIdHandler getStreamUrlIdHandler() {
         return SoundcloudStreamUrlIdHandler.getInstance();
     }
 
     @Override
-    public UrlIdHandler getChannelUrlIdHandlerInstance() {
+    public UrlIdHandler getChannelUrlIdHandler() {
         return SoundcloudChannelUrlIdHandler.getInstance();
     }
 
-
     @Override
-    public UrlIdHandler getPlaylistUrlIdHandlerInstance() {
+    public UrlIdHandler getPlaylistUrlIdHandler() {
         return SoundcloudPlaylistUrlIdHandler.getInstance();
     }
 
+
     @Override
-    public ChannelExtractor getChannelExtractorInstance(String url) throws ExtractionException, IOException {
-        return new SoundcloudChannelExtractor(getChannelUrlIdHandlerInstance(), url, getServiceId());
+    public StreamExtractor getStreamExtractor(String url) throws IOException, ExtractionException {
+        return new SoundcloudStreamExtractor(this, url);
     }
 
     @Override
-    public PlaylistExtractor getPlaylistExtractorInstance(String url) throws ExtractionException, IOException {
-        return new SoundcloudPlaylistExtractor(getPlaylistUrlIdHandlerInstance(), url, getServiceId());
+    public ChannelExtractor getChannelExtractor(String url, String nextStreamsUrl) throws IOException, ExtractionException {
+        return new SoundcloudChannelExtractor(this, url, nextStreamsUrl);
     }
 
     @Override
-    public SuggestionExtractor getSuggestionExtractorInstance() {
+    public PlaylistExtractor getPlaylistExtractor(String url, String nextStreamsUrl) throws IOException, ExtractionException {
+        return new SoundcloudPlaylistExtractor(this, url, nextStreamsUrl);
+    }
+
+    @Override
+    public SuggestionExtractor getSuggestionExtractor() {
         return new SoundcloudSuggestionExtractor(getServiceId());
     }
 }

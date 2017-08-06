@@ -49,5 +49,5 @@ public abstract class SearchEngine {
     //Result search(String query, int page);
     public abstract InfoItemSearchCollector search(
             String query, int page, String contentCountry, EnumSet<Filter> filter)
-            throws ExtractionException, IOException;
+            throws IOException, ExtractionException;
 }

@@ -1,19 +1,14 @@
 package org.schabi.newpipe.extractor.services.soundcloud;
 
-import java.io.IOException;
-import java.util.List;
-import java.util.Vector;
-
 import org.json.JSONArray;
 import org.json.JSONObject;
 import org.schabi.newpipe.extractor.Downloader;
 import org.schabi.newpipe.extractor.MediaFormat;
 import org.schabi.newpipe.extractor.NewPipe;
-import org.schabi.newpipe.extractor.UrlIdHandler;
+import org.schabi.newpipe.extractor.StreamingService;
 import org.schabi.newpipe.extractor.exceptions.ContentNotAvailableException;
 import org.schabi.newpipe.extractor.exceptions.ExtractionException;
 import org.schabi.newpipe.extractor.exceptions.ParsingException;
-import org.schabi.newpipe.extractor.exceptions.ReCaptchaException;
 import org.schabi.newpipe.extractor.stream.AudioStream;
 import org.schabi.newpipe.extractor.stream.StreamExtractor;
 import org.schabi.newpipe.extractor.stream.StreamInfoItemCollector;
@@ -21,24 +16,21 @@ import org.schabi.newpipe.extractor.stream.StreamInfoItemExtractor;
 import org.schabi.newpipe.extractor.stream.StreamType;
 import org.schabi.newpipe.extractor.stream.VideoStream;
 import org.schabi.newpipe.extractor.utils.Parser;
-import org.schabi.newpipe.extractor.utils.Parser.RegexException;
+
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 
 public class SoundcloudStreamExtractor extends StreamExtractor {
-    private String pageUrl;
-    private String trackId;
     private JSONObject track;
 
-    public SoundcloudStreamExtractor(UrlIdHandler urlIdHandler, String pageUrl, int serviceId) throws ExtractionException, IOException {
-        super(urlIdHandler, pageUrl, serviceId);
+    public SoundcloudStreamExtractor(StreamingService service, String url) throws IOException, ExtractionException {
+        super(service, url);
+    }
 
-        Downloader dl = NewPipe.getDownloader();
-
-        trackId = urlIdHandler.getId(pageUrl);
-        String apiUrl = "https://api-v2.soundcloud.com/tracks/" + trackId
-                + "?client_id=" + SoundcloudParsingHelper.clientId();
-
-        String response = dl.download(apiUrl);
-        track = new JSONObject(response);
+    @Override
+    public void fetchPage() throws IOException, ExtractionException {
+        track = SoundcloudParsingHelper.resolveFor(getOriginalUrl());
 
         if (!track.getString("policy").equals("ALLOW") && !track.getString("policy").equals("MONETIZE")) {
             throw new ContentNotAvailableException("Content not available: policy " + track.getString("policy"));
@@ -46,8 +38,17 @@ public class SoundcloudStreamExtractor extends StreamExtractor {
     }
 
     @Override
+    public String getCleanUrl() {
+        try {
+            return track.getString("permalink_url");
+        } catch (Exception e) {
+            return getOriginalUrl();
+        }
+    }
+
+    @Override
     public String getId() {
-        return trackId;
+        return track.getInt("id") + "";
     }
 
     @Override
@@ -96,11 +97,11 @@ public class SoundcloudStreamExtractor extends StreamExtractor {
     }
 
     @Override
-    public List<AudioStream> getAudioStreams() throws ReCaptchaException, IOException, RegexException {
-        Vector<AudioStream> audioStreams = new Vector<>();
+    public List<AudioStream> getAudioStreams() throws IOException, ExtractionException {
+        List<AudioStream> audioStreams = new ArrayList<>();
         Downloader dl = NewPipe.getDownloader();
 
-        String apiUrl = "https://api.soundcloud.com/i1/tracks/" + trackId + "/streams"
+        String apiUrl = "https://api.soundcloud.com/i1/tracks/" + getId() + "/streams"
                 + "?client_id=" + SoundcloudParsingHelper.clientId();
 
         String response = dl.download(apiUrl);
@@ -113,20 +114,20 @@ public class SoundcloudStreamExtractor extends StreamExtractor {
     }
 
     @Override
-    public List<VideoStream> getVideoStreams() {
+    public List<VideoStream> getVideoStreams() throws IOException, ExtractionException {
         return null;
     }
 
     @Override
-    public List<VideoStream> getVideoOnlyStreams() {
-       return null;
+    public List<VideoStream> getVideoOnlyStreams() throws IOException, ExtractionException {
+        return null;
     }
 
     @Override
     public int getTimeStamp() throws ParsingException {
         String timeStamp;
         try {
-            timeStamp = Parser.matchGroup1("(#t=\\d{0,3}h?\\d{0,3}m?\\d{1,3}s?)", pageUrl);
+            timeStamp = Parser.matchGroup1("(#t=\\d{0,3}h?\\d{0,3}m?\\d{1,3}s?)", getOriginalUrl());
         } catch (Parser.RegexException e) {
             // catch this instantly since an url does not necessarily have to have a time stamp
 
@@ -190,16 +191,16 @@ public class SoundcloudStreamExtractor extends StreamExtractor {
     }
 
     @Override
-    public StreamInfoItemExtractor getNextVideo() {
+    public StreamInfoItemExtractor getNextVideo() throws IOException, ExtractionException {
         return null;
     }
 
     @Override
-    public StreamInfoItemCollector getRelatedVideos() throws ReCaptchaException, IOException, ParsingException {
-        StreamInfoItemCollector collector = getStreamPreviewInfoCollector();
+    public StreamInfoItemCollector getRelatedVideos() throws IOException, ExtractionException {
+        StreamInfoItemCollector collector = new StreamInfoItemCollector(getServiceId());
         Downloader dl = NewPipe.getDownloader();
 
-        String apiUrl = "https://api-v2.soundcloud.com/tracks/" + trackId + "/related"
+        String apiUrl = "https://api-v2.soundcloud.com/tracks/" + getId() + "/related"
                 + "?client_id=" + SoundcloudParsingHelper.clientId();
 
         String response = dl.download(apiUrl);

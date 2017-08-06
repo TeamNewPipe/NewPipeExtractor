@@ -35,7 +35,7 @@ public class SoundcloudStreamInfoItemExtractor implements StreamInfoItemExtracto
 
     @Override
     public String getUploadDate() throws ParsingException {
-        return SoundcloudParsingHelper.toTimeAgoString(searchResult.getString("created_at"));
+        return SoundcloudParsingHelper.toDateString(searchResult.getString("created_at"));
     }
 
     @Override

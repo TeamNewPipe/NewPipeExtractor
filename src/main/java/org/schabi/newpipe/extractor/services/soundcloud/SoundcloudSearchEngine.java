@@ -1,9 +1,5 @@
 package org.schabi.newpipe.extractor.services.soundcloud;
 
-import java.io.IOException;
-import java.net.URLEncoder;
-import java.util.EnumSet;
-
 import org.json.JSONArray;
 import org.json.JSONObject;
 import org.schabi.newpipe.extractor.Downloader;
@@ -11,6 +7,10 @@ import org.schabi.newpipe.extractor.NewPipe;
 import org.schabi.newpipe.extractor.exceptions.ExtractionException;
 import org.schabi.newpipe.extractor.search.InfoItemSearchCollector;
 import org.schabi.newpipe.extractor.search.SearchEngine;
+
+import java.io.IOException;
+import java.net.URLEncoder;
+import java.util.EnumSet;
 
 public class SoundcloudSearchEngine extends SearchEngine {
     public static final String CHARSET_UTF_8 = "UTF-8";

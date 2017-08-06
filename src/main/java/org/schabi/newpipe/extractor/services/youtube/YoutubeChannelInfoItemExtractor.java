@@ -68,7 +68,7 @@ public class YoutubeChannelInfoItemExtractor implements ChannelInfoItemExtractor
     }
 
     @Override
-    public long getViewCount() throws ParsingException {
+    public long getStreamCount() throws ParsingException {
         Element metaEl = el.select("ul[class*=\"yt-lockup-meta-info\"]").first();
         if (metaEl == null) {
             return 0;

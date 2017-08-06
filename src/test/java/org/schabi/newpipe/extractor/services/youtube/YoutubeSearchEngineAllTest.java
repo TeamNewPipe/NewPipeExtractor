@@ -9,11 +9,12 @@ import org.schabi.newpipe.extractor.search.SearchResult;
 
 import java.util.EnumSet;
 
-import static junit.framework.Assert.assertFalse;
-import static junit.framework.Assert.assertTrue;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
+import static org.schabi.newpipe.extractor.ServiceList.Youtube;
 
 
-/**
+/*
  * Created by Christian Schabesberger on 29.12.15.
  *
  * Copyright (C) Christian Schabesberger 2015 <chris.schabesberger@mailbox.org>
@@ -42,7 +43,7 @@ public class YoutubeSearchEngineAllTest {
     @Before
     public void setUp() throws Exception {
         NewPipe.init(Downloader.getInstance());
-        SearchEngine engine = NewPipe.getService("Youtube").getSearchEngineInstance();
+        SearchEngine engine = Youtube.getService().getSearchEngine();
 
         // Youtube will suggest "asdf" instead of "asdgff"
         // keep in mind that the suggestions can change by country (the parameter "de")

@@ -1,8 +1,8 @@
 package org.schabi.newpipe.extractor;
 
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.List;
-import java.util.Vector;
 
 public abstract class Info implements Serializable {
 
@@ -15,5 +15,5 @@ public abstract class Info implements Serializable {
     public String url;
     public String name;
 
-    public List<Throwable> errors = new Vector<>();
+    public List<Throwable> errors = new ArrayList<>();
 }

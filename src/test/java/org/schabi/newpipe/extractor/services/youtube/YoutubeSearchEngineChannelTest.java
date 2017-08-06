@@ -10,12 +10,13 @@ import org.schabi.newpipe.extractor.search.SearchResult;
 
 import java.util.EnumSet;
 
-import static junit.framework.Assert.assertEquals;
-import static junit.framework.Assert.assertFalse;
-import static junit.framework.Assert.assertTrue;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
+import static org.schabi.newpipe.extractor.ServiceList.Youtube;
 
 
-/**
+/*
  * Created by Christian Schabesberger on 29.12.15.
  *
  * Copyright (C) Christian Schabesberger 2015 <chris.schabesberger@mailbox.org>
@@ -44,7 +45,7 @@ public class YoutubeSearchEngineChannelTest {
     @Before
     public void setUp() throws Exception {
         NewPipe.init(Downloader.getInstance());
-        SearchEngine engine = NewPipe.getService("Youtube").getSearchEngineInstance();
+        SearchEngine engine = Youtube.getService().getSearchEngine();
 
         // Youtube will suggest "gronkh" instead of "grrunkh"
         // keep in mind that the suggestions can change by country (the parameter "de")
@@ -59,7 +60,9 @@ public class YoutubeSearchEngineChannelTest {
 
     @Test
     public void testChannelItemType() {
-        assertEquals(result.resultList.get(0).info_type, InfoItem.InfoType.CHANNEL);
+        for (InfoItem infoItem : result.resultList) {
+            assertEquals(InfoItem.InfoType.CHANNEL, infoItem.info_type);
+        }
     }
 
     @Test

@@ -27,7 +27,7 @@ public class ChannelInfoItem extends InfoItem {
     public String thumbnail_url;
     public String description;
     public long subscriber_count = -1;
-    public long view_count = -1;
+    public long stream_count = -1;
 
     public ChannelInfoItem() {
         super(InfoType.CHANNEL);

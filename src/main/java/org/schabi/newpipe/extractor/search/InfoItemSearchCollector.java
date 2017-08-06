@@ -59,7 +59,7 @@ public class InfoItemSearchCollector extends InfoItemCollector {
         try {
             result.resultList.add(streamCollector.extract(extractor));
         } catch (FoundAdException ae) {
-            System.err.println("Found add");
+            System.err.println("Found ad");
         } catch (Exception e) {
             addError(e);
         }
@@ -69,7 +69,7 @@ public class InfoItemSearchCollector extends InfoItemCollector {
         try {
             result.resultList.add(channelCollector.extract(extractor));
         } catch (FoundAdException ae) {
-            System.err.println("Found add");
+            System.err.println("Found ad");
         } catch (Exception e) {
             addError(e);
         }

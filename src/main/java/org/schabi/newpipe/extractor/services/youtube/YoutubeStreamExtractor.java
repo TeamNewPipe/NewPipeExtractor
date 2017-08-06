@@ -10,7 +10,7 @@ import org.mozilla.javascript.Function;
 import org.mozilla.javascript.ScriptableObject;
 import org.schabi.newpipe.extractor.Downloader;
 import org.schabi.newpipe.extractor.NewPipe;
-import org.schabi.newpipe.extractor.UrlIdHandler;
+import org.schabi.newpipe.extractor.StreamingService;
 import org.schabi.newpipe.extractor.exceptions.ContentNotAvailableException;
 import org.schabi.newpipe.extractor.exceptions.ExtractionException;
 import org.schabi.newpipe.extractor.exceptions.ParsingException;
@@ -26,9 +26,9 @@ import org.schabi.newpipe.extractor.utils.Parser;
 import org.schabi.newpipe.extractor.utils.Utils;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
-import java.util.Vector;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -80,12 +80,9 @@ public class YoutubeStreamExtractor extends StreamExtractor {
     /*//////////////////////////////////////////////////////////////////////////*/
 
     private Document doc;
-    private final String dirtyUrl;
 
-    public YoutubeStreamExtractor(UrlIdHandler urlIdHandler, String pageUrl, int serviceId) throws ExtractionException, IOException {
-        super(urlIdHandler, urlIdHandler.cleanUrl(pageUrl), serviceId);
-        dirtyUrl = pageUrl;
-        fetchDocument();
+    public YoutubeStreamExtractor(StreamingService service, String url) throws IOException, ExtractionException {
+        super(service, url);
     }
 
     /*//////////////////////////////////////////////////////////////////////////
@@ -95,7 +92,7 @@ public class YoutubeStreamExtractor extends StreamExtractor {
     @Override
     public String getId() throws ParsingException {
         try {
-            return getUrlIdHandler().getId(getUrl());
+            return getUrlIdHandler().getId(getCleanUrl());
         } catch (Exception e) {
             throw new ParsingException("Could not get stream id");
         }
@@ -238,8 +235,8 @@ public class YoutubeStreamExtractor extends StreamExtractor {
     }
 
     @Override
-    public List<AudioStream> getAudioStreams() throws ParsingException {
-        Vector<AudioStream> audioStreams = new Vector<>();
+    public List<AudioStream> getAudioStreams() throws IOException, ExtractionException {
+        List<AudioStream> audioStreams = new ArrayList<>();
         try {
             String encodedUrlMap;
             // playerArgs could be null if the video is age restricted
@@ -288,8 +285,8 @@ public class YoutubeStreamExtractor extends StreamExtractor {
     }
 
     @Override
-    public List<VideoStream> getVideoStreams() throws ParsingException {
-        Vector<VideoStream> videoStreams = new Vector<>();
+    public List<VideoStream> getVideoStreams() throws IOException, ExtractionException {
+        List<VideoStream> videoStreams = new ArrayList<>();
 
         try {
             String encodedUrlMap;
@@ -342,8 +339,8 @@ public class YoutubeStreamExtractor extends StreamExtractor {
     }
 
     @Override
-    public List<VideoStream> getVideoOnlyStreams() throws ParsingException {
-        Vector<VideoStream> videoOnlyStreams = new Vector<>();
+    public List<VideoStream> getVideoOnlyStreams() throws IOException, ExtractionException {
+        List<VideoStream> videoOnlyStreams = new ArrayList<>();
 
         try {
             String encodedUrlMap;
@@ -405,7 +402,7 @@ public class YoutubeStreamExtractor extends StreamExtractor {
     public int getTimeStamp() throws ParsingException {
         String timeStamp;
         try {
-            timeStamp = Parser.matchGroup1("((#|&|\\?)t=\\d{0,3}h?\\d{0,3}m?\\d{1,3}s?)", dirtyUrl);
+            timeStamp = Parser.matchGroup1("((#|&|\\?)t=\\d{0,3}h?\\d{0,3}m?\\d{1,3}s?)", getOriginalUrl());
         } catch (Parser.RegexException e) {
             // catch this instantly since an url does not necessarily have to have a time stamp
 
@@ -516,7 +513,7 @@ public class YoutubeStreamExtractor extends StreamExtractor {
     }
 
     @Override
-    public StreamInfoItemExtractor getNextVideo() throws ParsingException {
+    public StreamInfoItemExtractor getNextVideo() throws IOException, ExtractionException {
         try {
             return extractVideoPreviewInfo(doc.select("div[class=\"watch-sidebar-section\"]").first()
                     .select("li").first());
@@ -526,9 +523,9 @@ public class YoutubeStreamExtractor extends StreamExtractor {
     }
 
     @Override
-    public StreamInfoItemCollector getRelatedVideos() throws ParsingException {
+    public StreamInfoItemCollector getRelatedVideos() throws IOException, ExtractionException {
         try {
-            StreamInfoItemCollector collector = getStreamPreviewInfoCollector();
+            StreamInfoItemCollector collector = new StreamInfoItemCollector(getServiceId());
             Element ul = doc.select("ul[id=\"watch-related\"]").first();
             if (ul != null) {
                 for (Element li : ul.children()) {
@@ -617,11 +614,12 @@ public class YoutubeStreamExtractor extends StreamExtractor {
     // cached values
     private static volatile String decryptionCode = "";
 
-    private void fetchDocument() throws IOException, ReCaptchaException, ParsingException {
+    @Override
+    public void fetchPage() throws IOException, ExtractionException {
         Downloader downloader = NewPipe.getDownloader();
 
-        String pageContent = downloader.download(getUrl());
-        doc = Jsoup.parse(pageContent, getUrl());
+        String pageContent = downloader.download(getCleanUrl());
+        doc = Jsoup.parse(pageContent, getCleanUrl());
 
         JSONObject ytPlayerConfig;
         String playerUrl;
@@ -632,7 +630,7 @@ public class YoutubeStreamExtractor extends StreamExtractor {
 
         // Check if the video is age restricted
         if (pageContent.contains("<meta property=\"og:restrictions:age")) {
-            playerUrl = getPlayerUrlFromRestrictedVideo(getUrl());
+            playerUrl = getPlayerUrlFromRestrictedVideo();
             isAgeRestricted = true;
         } else {
             ytPlayerConfig = getPlayerConfig(pageContent);
@@ -683,7 +681,7 @@ public class YoutubeStreamExtractor extends StreamExtractor {
             throw new ParsingException("Could not parse yt player config", e);
         }
         if (isLiveStream) {
-            throw new LiveStreamException("This is a Life stream. Can't use those right now.");
+            throw new LiveStreamException("This is a Live stream. Can't use those right now.");
         }
 
         return playerArgs;
@@ -709,12 +707,11 @@ public class YoutubeStreamExtractor extends StreamExtractor {
         }
     }
 
-    private String getPlayerUrlFromRestrictedVideo(String pageUrl) throws ParsingException, ReCaptchaException {
+    private String getPlayerUrlFromRestrictedVideo() throws ParsingException, ReCaptchaException {
         try {
             Downloader downloader = NewPipe.getDownloader();
             String playerUrl = "";
-            String videoId = getUrlIdHandler().getId(pageUrl);
-            String embedUrl = "https://www.youtube.com/embed/" + videoId;
+            String embedUrl = "https://www.youtube.com/embed/" + getId();
             String embedPageContent = downloader.download(embedUrl);
             //todo: find out if this can be reapaced by Parser.matchGroup1()
             Pattern assetsPattern = Pattern.compile("\"assets\":.+?\"js\":\\s*(\"[^\"]+\")");
@@ -811,7 +808,8 @@ public class YoutubeStreamExtractor extends StreamExtractor {
 
             @Override
             public boolean isAd() throws ParsingException {
-                return !li.select("span[class*=\"icon-not-available\"]").isEmpty();
+                return !li.select("span[class*=\"icon-not-available\"]").isEmpty() ||
+                        !li.select("span[class*=\"yt-badge-ad\"]").isEmpty();
             }
 
             @Override
@@ -829,8 +827,17 @@ public class YoutubeStreamExtractor extends StreamExtractor {
 
             @Override
             public int getDuration() throws ParsingException {
-                return YoutubeParsingHelper.parseDurationString(
-                        li.select("span.video-time").first().text());
+                try {
+                    return YoutubeParsingHelper.parseDurationString(
+                            li.select("span[class*=\"video-time\"]").first().text());
+                } catch (Exception e) {
+                    if (isLiveStream(li)) {
+                        // -1 for no duration
+                        return -1;
+                    } else {
+                        throw new ParsingException("Could not get Duration: " + getTitle(), e);
+                    }
+                }
             }
 
             @Override
@@ -845,12 +852,6 @@ public class YoutubeStreamExtractor extends StreamExtractor {
 
             @Override
             public long getViewCount() throws ParsingException {
-                //this line is unused
-                //String views = li.select("span.view-count").first().text();
-
-                //Log.i(TAG, "title:"+info.title);
-                //Log.i(TAG, "view count:"+views);
-
                 try {
                     return Long.parseLong(Utils.removeNonDigitCharacters(
                             li.select("span.view-count").first().text()));
@@ -874,6 +875,19 @@ public class YoutubeStreamExtractor extends StreamExtractor {
                     thumbnailUrl = HTTPS + thumbnailUrl;
                 }
                 return thumbnailUrl;
+            }
+
+            private boolean isLiveStream(Element item) {
+                Element bla = item.select("span[class*=\"yt-badge-live\"]").first();
+
+                if (bla == null) {
+                    // sometimes livestreams dont have badges but sill are live streams
+                    // if video time is not available we most likly have an offline livestream
+                    if (item.select("span[class*=\"video-time\"]").first() == null) {
+                        return true;
+                    }
+                }
+                return bla != null;
             }
         };
     }

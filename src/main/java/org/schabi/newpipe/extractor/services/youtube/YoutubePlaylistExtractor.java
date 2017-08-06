@@ -7,6 +7,7 @@ import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.schabi.newpipe.extractor.Downloader;
 import org.schabi.newpipe.extractor.NewPipe;
+import org.schabi.newpipe.extractor.StreamingService;
 import org.schabi.newpipe.extractor.UrlIdHandler;
 import org.schabi.newpipe.extractor.exceptions.ExtractionException;
 import org.schabi.newpipe.extractor.exceptions.ParsingException;
@@ -23,39 +24,31 @@ import java.io.IOException;
 @SuppressWarnings("WeakerAccess")
 public class YoutubePlaylistExtractor extends PlaylistExtractor {
 
-    private Document doc = null;
+    private Document doc;
     /**
      * It's lazily initialized (when getNextStreams is called)
      */
-    private Document nextStreamsAjax = null;
+    private Document nextStreamsAjax;
 
-    /*//////////////////////////////////////////////////////////////////////////
-    // Variables for cache purposes (not "select" the current document all over again)
-    //////////////////////////////////////////////////////////////////////////*/
-    private String playlistId;
-    private String playlistName;
-    private String avatarUrl;
-    private String bannerUrl;
+    public YoutubePlaylistExtractor(StreamingService service, String url, String nextStreamsUrl) throws IOException, ExtractionException {
+        super(service, url, nextStreamsUrl);
+    }
 
-    private long streamsCount;
+    @Override
+    public void fetchPage() throws IOException, ExtractionException {
+        Downloader downloader = NewPipe.getDownloader();
 
-    private String uploaderUrl;
-    private String uploaderName;
-    private String uploaderAvatarUrl;
+        String pageContent = downloader.download(getCleanUrl());
+        doc = Jsoup.parse(pageContent, getCleanUrl());
 
-    public YoutubePlaylistExtractor(UrlIdHandler urlIdHandler, String url, int serviceId) throws IOException, ExtractionException {
-        super(urlIdHandler, urlIdHandler.cleanUrl(url), serviceId);
-        fetchDocument();
+        nextStreamsUrl = getNextStreamsUrlFrom(doc);
+        nextStreamsAjax = null;
     }
 
     @Override
     public String getPlaylistId() throws ParsingException {
         try {
-            if (playlistId == null) {
-                playlistId = getUrlIdHandler().getId(getUrl());
-            }
-
-            return playlistId;
+            return getUrlIdHandler().getId(getCleanUrl());
         } catch (Exception e) {
             throw new ParsingException("Could not get playlist id");
         }
@@ -64,11 +57,7 @@ public class YoutubePlaylistExtractor extends PlaylistExtractor {
     @Override
     public String getPlaylistName() throws ParsingException {
         try {
-            if (playlistName == null) {
-                playlistName = doc.select("div[id=pl-header] h1[class=pl-header-title]").first().text();
-            }
-
-            return playlistName;
+            return doc.select("div[id=pl-header] h1[class=pl-header-title]").first().text();
         } catch (Exception e) {
             throw new ParsingException("Could not get playlist name");
         }
@@ -77,11 +66,7 @@ public class YoutubePlaylistExtractor extends PlaylistExtractor {
     @Override
     public String getAvatarUrl() throws ParsingException {
         try {
-            if (avatarUrl == null) {
-                avatarUrl = doc.select("div[id=pl-header] div[class=pl-header-thumb] img").first().attr("abs:src");
-            }
-
-            return avatarUrl;
+            return doc.select("div[id=pl-header] div[class=pl-header-thumb] img").first().attr("abs:src");
         } catch (Exception e) {
             throw new ParsingException("Could not get playlist avatar");
         }
@@ -90,18 +75,16 @@ public class YoutubePlaylistExtractor extends PlaylistExtractor {
     @Override
     public String getBannerUrl() throws ParsingException {
         try {
-            if (bannerUrl == null) {
-                Element el = doc.select("div[id=\"gh-banner\"] style").first();
-                String cssContent = el.html();
-                String url = "https:" + Parser.matchGroup1("url\\((.*)\\)", cssContent);
-                if (url.contains("s.ytimg.com")) {
-                    bannerUrl = null;
-                } else {
-                    bannerUrl = url.substring(0, url.indexOf(");"));
-                }
+            Element el = doc.select("div[id=\"gh-banner\"] style").first();
+            String cssContent = el.html();
+            String url = "https:" + Parser.matchGroup1("url\\((.*)\\)", cssContent);
+            if (url.contains("s.ytimg.com")) {
+                return null;
+            } else {
+                return url.substring(0, url.indexOf(");"));
             }
 
-            return bannerUrl;
+
         } catch (Exception e) {
             throw new ParsingException("Could not get playlist Banner");
         }
@@ -110,11 +93,7 @@ public class YoutubePlaylistExtractor extends PlaylistExtractor {
     @Override
     public String getUploaderUrl() throws ParsingException {
         try {
-            if (uploaderUrl == null) {
-                uploaderUrl = doc.select("ul[class=\"pl-header-details\"] li").first().select("a").first().attr("abs:href");
-            }
-
-            return uploaderUrl;
+            return doc.select("ul[class=\"pl-header-details\"] li").first().select("a").first().attr("abs:href");
         } catch (Exception e) {
             throw new ParsingException("Could not get playlist uploader name");
         }
@@ -123,11 +102,7 @@ public class YoutubePlaylistExtractor extends PlaylistExtractor {
     @Override
     public String getUploaderName() throws ParsingException {
         try {
-            if (uploaderName == null) {
-                uploaderName = doc.select("span[class=\"qualified-channel-title-text\"]").first().select("a").first().text();
-            }
-
-            return uploaderName;
+            return doc.select("span[class=\"qualified-channel-title-text\"]").first().select("a").first().text();
         } catch (Exception e) {
             throw new ParsingException("Could not get playlist uploader name");
         }
@@ -136,54 +111,46 @@ public class YoutubePlaylistExtractor extends PlaylistExtractor {
     @Override
     public String getUploaderAvatarUrl() throws ParsingException {
         try {
-            if (uploaderAvatarUrl == null) {
-                uploaderAvatarUrl = doc.select("div[id=gh-banner] img[class=channel-header-profile-image]").first().attr("abs:src");
-            }
-
-            return uploaderAvatarUrl;
+            return doc.select("div[id=gh-banner] img[class=channel-header-profile-image]").first().attr("abs:src");
         } catch (Exception e) {
             throw new ParsingException("Could not get playlist uploader avatar");
         }
     }
 
     @Override
-    public long getStreamsCount() throws ParsingException {
-        if (streamsCount <= 0) {
-            String input;
+    public long getStreamCount() throws ParsingException {
+        String input;
 
-            try {
-                input = doc.select("ul[class=\"pl-header-details\"] li").get(1).text();
-            } catch (IndexOutOfBoundsException e) {
-                throw new ParsingException("Could not get video count from playlist", e);
-            }
-
-            try {
-                streamsCount = Long.parseLong(Utils.removeNonDigitCharacters(input));
-            } catch (NumberFormatException e) {
-                // When there's no videos in a playlist, there's no number in the "innerHtml",
-                // all characters that is not a number is removed, so we try to parse a empty string
-                if (!input.isEmpty()) {
-                    streamsCount = 0;
-                } else {
-                    throw new ParsingException("Could not handle input: " + input, e);
-                }
-            }
+        try {
+            input = doc.select("ul[class=\"pl-header-details\"] li").get(1).text();
+        } catch (IndexOutOfBoundsException e) {
+            throw new ParsingException("Could not get video count from playlist", e);
         }
 
-        return streamsCount;
+        try {
+            return Long.parseLong(Utils.removeNonDigitCharacters(input));
+        } catch (NumberFormatException e) {
+            // When there's no videos in a playlist, there's no number in the "innerHtml",
+            // all characters that is not a number is removed, so we try to parse a empty string
+            if (!input.isEmpty()) {
+                return 0;
+            } else {
+                throw new ParsingException("Could not handle input: " + input, e);
+            }
+        }
     }
 
     @Override
-    public StreamInfoItemCollector getStreams() throws ParsingException {
-        StreamInfoItemCollector collector = getStreamPreviewInfoCollector();
+    public StreamInfoItemCollector getStreams() throws IOException, ExtractionException {
+        StreamInfoItemCollector collector = new StreamInfoItemCollector(getServiceId());
         Element tbody = doc.select("tbody[id=\"pl-load-more-destination\"]").first();
         collectStreamsFrom(collector, tbody);
         return collector;
     }
 
     @Override
-    public StreamInfoItemCollector getNextStreams() throws ExtractionException, IOException {
-        if (!hasMoreStreams()){
+    public NextItemsResult getNextStreams() throws IOException, ExtractionException {
+        if (!hasMoreStreams()) {
             throw new ExtractionException("Playlist doesn't have more streams");
         }
 
@@ -191,7 +158,7 @@ public class YoutubePlaylistExtractor extends PlaylistExtractor {
         setupNextStreamsAjax(NewPipe.getDownloader());
         collectStreamsFrom(collector, nextStreamsAjax.select("tbody[id=\"pl-load-more-destination\"]").first());
 
-        return collector;
+        return new NextItemsResult(collector.getItemList(), nextStreamsUrl);
     }
 
     private void setupNextStreamsAjax(Downloader downloader) throws IOException, ReCaptchaException, ParsingException {
@@ -204,8 +171,7 @@ public class YoutubePlaylistExtractor extends PlaylistExtractor {
 
             String nextStreamsHtmlDataRaw = ajaxData.getString("load_more_widget_html");
             if (!nextStreamsHtmlDataRaw.isEmpty()) {
-                final Document nextStreamsData = Jsoup.parse(nextStreamsHtmlDataRaw, nextStreamsUrl);
-                nextStreamsUrl = getNextStreamsUrl(nextStreamsData);
+                nextStreamsUrl = getNextStreamsUrlFrom(Jsoup.parse(nextStreamsHtmlDataRaw, nextStreamsUrl));
             } else {
                 nextStreamsUrl = "";
             }
@@ -214,17 +180,7 @@ public class YoutubePlaylistExtractor extends PlaylistExtractor {
         }
     }
 
-    private void fetchDocument() throws IOException, ReCaptchaException, ParsingException {
-        Downloader downloader = NewPipe.getDownloader();
-
-        String pageContent = downloader.download(getUrl());
-        doc = Jsoup.parse(pageContent, getUrl());
-
-        nextStreamsUrl = getNextStreamsUrl(doc);
-        nextStreamsAjax = null;
-    }
-
-    private String getNextStreamsUrl(Document d) throws ParsingException {
+    private String getNextStreamsUrlFrom(Document d) throws ParsingException {
         try {
             Element button = d.select("button[class*=\"yt-uix-load-more\"]").first();
             if (button != null) {
@@ -241,7 +197,7 @@ public class YoutubePlaylistExtractor extends PlaylistExtractor {
     private void collectStreamsFrom(StreamInfoItemCollector collector, Element element) throws ParsingException {
         collector.getItemList().clear();
 
-        final YoutubeStreamUrlIdHandler youtubeStreamUrlIdHandler = YoutubeStreamUrlIdHandler.getInstance();
+        final UrlIdHandler streamUrlIdHandler = getService().getStreamUrlIdHandler();
         for (final Element li : element.children()) {
             collector.commit(new StreamInfoItemExtractor() {
                 @Override
@@ -252,7 +208,7 @@ public class YoutubePlaylistExtractor extends PlaylistExtractor {
                 @Override
                 public String getWebPageUrl() throws ParsingException {
                     try {
-                        return youtubeStreamUrlIdHandler.getUrl(li.attr("data-video-id"));
+                        return streamUrlIdHandler.getUrl(li.attr("data-video-id"));
                     } catch (Exception e) {
                         throw new ParsingException("Could not get web page url for the video", e);
                     }
@@ -300,7 +256,7 @@ public class YoutubePlaylistExtractor extends PlaylistExtractor {
                 @Override
                 public String getThumbnailUrl() throws ParsingException {
                     try {
-                        return "https://i.ytimg.com/vi/" + youtubeStreamUrlIdHandler.getId(getWebPageUrl()) + "/hqdefault.jpg";
+                        return "https://i.ytimg.com/vi/" + streamUrlIdHandler.getId(getWebPageUrl()) + "/hqdefault.jpg";
                     } catch (Exception e) {
                         throw new ParsingException("Could not get thumbnail url", e);
                     }

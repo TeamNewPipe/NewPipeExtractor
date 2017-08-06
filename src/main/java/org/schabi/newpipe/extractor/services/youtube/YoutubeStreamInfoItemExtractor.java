@@ -59,7 +59,7 @@ public class YoutubeStreamInfoItemExtractor implements StreamInfoItemExtractor {
     public int getDuration() throws ParsingException {
         try {
             return YoutubeParsingHelper.parseDurationString(
-                    item.select("span[class=\"video-time\"]").first().text());
+                    item.select("span[class*=\"video-time\"]").first().text());
         } catch (Exception e) {
             if (isLiveStream(item)) {
                 // -1 for no duration
@@ -104,16 +104,14 @@ public class YoutubeStreamInfoItemExtractor implements StreamInfoItemExtractor {
             if (div == null) {
                 return -1;
             } else {
-                input = div.select("li").get(1)
-                        .text();
+                input = div.select("li").get(1).text();
             }
         } catch (IndexOutOfBoundsException e) {
             if (isLiveStream(item)) {
                 // -1 for no view count
                 return -1;
             } else {
-                throw new ParsingException(
-                        "Could not parse yt-lockup-meta although available: " + getTitle(), e);
+                throw new ParsingException("Could not parse yt-lockup-meta although available: " + getTitle(), e);
             }
         }
 
@@ -161,7 +159,8 @@ public class YoutubeStreamInfoItemExtractor implements StreamInfoItemExtractor {
 
     @Override
     public boolean isAd() throws ParsingException {
-        return !item.select("span[class*=\"icon-not-available\"]").isEmpty();
+        return !item.select("span[class*=\"icon-not-available\"]").isEmpty() ||
+                !item.select("span[class*=\"yt-badge-ad\"]").isEmpty();
     }
 
     private boolean isLiveStream(Element item) {

@@ -4,9 +4,9 @@ import org.schabi.newpipe.extractor.InfoItem;
 import org.schabi.newpipe.extractor.exceptions.ExtractionException;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.EnumSet;
 import java.util.List;
-import java.util.Vector;
 
 /*
  * Created by Christian Schabesberger on 29.02.16.
@@ -31,7 +31,7 @@ import java.util.Vector;
 public class SearchResult {
     public static SearchResult getSearchResult(SearchEngine engine, String query,
                                                int page, String languageCode, EnumSet<SearchEngine.Filter> filter)
-            throws ExtractionException, IOException {
+            throws IOException, ExtractionException {
 
         SearchResult result = engine
                 .search(query, page, languageCode, filter)
@@ -50,6 +50,6 @@ public class SearchResult {
     }
 
     public String suggestion;
-    public List<InfoItem> resultList = new Vector<>();
-    public List<Throwable> errors = new Vector<>();
+    public List<InfoItem> resultList = new ArrayList<>();
+    public List<Throwable> errors = new ArrayList<>();
 }
