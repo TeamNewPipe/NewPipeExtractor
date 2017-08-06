@@ -22,16 +22,20 @@ public class SoundcloudParsingHelper {
     private SoundcloudParsingHelper() {
     }
 
-    public static final String clientId() throws ReCaptchaException, IOException, RegexException {
-        Downloader dl = NewPipe.getDownloader();
+    private static String clientId;
 
-        String response = dl.download("https://soundcloud.com");
-        Document doc = Jsoup.parse(response);
+    public static String clientId() throws ReCaptchaException, IOException, RegexException {
+        if (clientId.isEmpty()) {
+            Downloader dl = NewPipe.getDownloader();
 
-        Element jsElement = doc.select("script[src^=https://a-v2.sndcdn.com/assets/app]").first();
-        String js = dl.download(jsElement.attr("src"));
+            String response = dl.download("https://soundcloud.com");
+            Document doc = Jsoup.parse(response);
 
-        String clientId = Parser.matchGroup1(",client_id:\"(.*?)\"", js);
+            Element jsElement = doc.select("script[src^=https://a-v2.sndcdn.com/assets/app]").first();
+            String js = dl.download(jsElement.attr("src"));
+
+            clientId = Parser.matchGroup1(",client_id:\"(.*?)\"", js);
+        }
         return clientId;
     }
 
@@ -76,5 +80,4 @@ public class SoundcloudParsingHelper {
             throw new ParsingException(e.getMessage(), e);
         }
     }
-
 }
