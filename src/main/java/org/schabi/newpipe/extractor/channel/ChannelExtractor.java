@@ -1,11 +1,10 @@
 package org.schabi.newpipe.extractor.channel;
 
 import org.schabi.newpipe.extractor.ListExtractor;
+import org.schabi.newpipe.extractor.StreamingService;
 import org.schabi.newpipe.extractor.UrlIdHandler;
 import org.schabi.newpipe.extractor.exceptions.ExtractionException;
 import org.schabi.newpipe.extractor.exceptions.ParsingException;
-import org.schabi.newpipe.extractor.exceptions.ReCaptchaException;
-import org.schabi.newpipe.extractor.stream.StreamInfoItemCollector;
 
 import java.io.IOException;
 
@@ -31,8 +30,13 @@ import java.io.IOException;
 
 public abstract class ChannelExtractor extends ListExtractor {
 
-    public ChannelExtractor(UrlIdHandler urlIdHandler, String url, int serviceId) throws ExtractionException, IOException {
-        super(urlIdHandler, serviceId, url);
+    public ChannelExtractor(StreamingService service, String url, String nextStreamsUrl) throws IOException, ExtractionException {
+        super(service, url, nextStreamsUrl);
+    }
+
+    @Override
+    protected UrlIdHandler getUrlIdHandler() throws ParsingException {
+        return getService().getChannelUrlIdHandler();
     }
 
     public abstract String getChannelId() throws ParsingException;
@@ -40,7 +44,6 @@ public abstract class ChannelExtractor extends ListExtractor {
     public abstract String getAvatarUrl() throws ParsingException;
     public abstract String getBannerUrl() throws ParsingException;
     public abstract String getFeedUrl() throws ParsingException;
-    public abstract StreamInfoItemCollector getStreams() throws ParsingException, ReCaptchaException, IOException;
     public abstract long getSubscriberCount() throws ParsingException;
 
 }

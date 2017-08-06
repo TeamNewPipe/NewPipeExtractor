@@ -33,8 +33,7 @@ public abstract class SuggestionExtractor {
         this.serviceId = serviceId;
     }
 
-    public abstract List<String> suggestionList(String query, String contentCountry)
-            throws ExtractionException, IOException;
+    public abstract List<String> suggestionList(String query, String contentCountry) throws IOException, ExtractionException;
 
     public int getServiceId() {
         return serviceId;

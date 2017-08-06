@@ -2,6 +2,7 @@ package org.schabi.newpipe.extractor.services.youtube;
 
 import org.junit.Before;
 import org.junit.Test;
+
 import org.schabi.newpipe.Downloader;
 import org.schabi.newpipe.extractor.InfoItem;
 import org.schabi.newpipe.extractor.NewPipe;
@@ -10,12 +11,13 @@ import org.schabi.newpipe.extractor.search.SearchResult;
 
 import java.util.EnumSet;
 
-import static junit.framework.Assert.assertEquals;
-import static junit.framework.Assert.assertFalse;
-import static junit.framework.Assert.assertTrue;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
+import static org.schabi.newpipe.extractor.ServiceList.Youtube;
 
 
-/**
+/*
  * Created by Christian Schabesberger on 29.12.15.
  *
  * Copyright (C) Christian Schabesberger 2015 <chris.schabesberger@mailbox.org>
@@ -44,7 +46,7 @@ public class YoutubeSearchEngineStreamTest {
     @Before
     public void setUp() throws Exception {
         NewPipe.init(Downloader.getInstance());
-        SearchEngine engine = NewPipe.getService("Youtube").getSearchEngineInstance();
+        SearchEngine engine = Youtube.getService().getSearchEngine();
 
         // Youtube will suggest "results" instead of "rsults",
         // keep in mind that the suggestions can change by country (the parameter "de")
@@ -58,8 +60,10 @@ public class YoutubeSearchEngineStreamTest {
     }
 
     @Test
-    public void testChannelItemType() {
-        assertEquals(result.resultList.get(0).info_type, InfoItem.InfoType.STREAM);
+    public void testStreamItemType() {
+        for (InfoItem infoItem : result.resultList) {
+            assertEquals(InfoItem.InfoType.STREAM, infoItem.info_type);
+        }
     }
 
     @Test

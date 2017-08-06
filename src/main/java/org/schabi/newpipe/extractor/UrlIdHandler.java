@@ -1,9 +1,6 @@
 package org.schabi.newpipe.extractor;
 
-import java.io.IOException;
-
 import org.schabi.newpipe.extractor.exceptions.ParsingException;
-import org.schabi.newpipe.extractor.exceptions.ReCaptchaException;
 
 /*
  * Created by Christian Schabesberger on 26.07.16.

@@ -21,9 +21,10 @@ package org.schabi.newpipe.extractor.stream;
  */
 
 import org.schabi.newpipe.extractor.Extractor;
+import org.schabi.newpipe.extractor.StreamingService;
 import org.schabi.newpipe.extractor.UrlIdHandler;
+import org.schabi.newpipe.extractor.exceptions.ExtractionException;
 import org.schabi.newpipe.extractor.exceptions.ParsingException;
-import org.schabi.newpipe.extractor.exceptions.ReCaptchaException;
 
 import java.io.IOException;
 import java.util.List;
@@ -33,8 +34,14 @@ import java.util.List;
  */
 public abstract class StreamExtractor extends Extractor {
 
-    public StreamExtractor(UrlIdHandler urlIdHandler, String url, int serviceId) {
-        super(urlIdHandler, serviceId, url);
+    public StreamExtractor(StreamingService service, String url) throws IOException, ExtractionException {
+        super(service, url);
+        fetchPage();
+    }
+
+    @Override
+    protected UrlIdHandler getUrlIdHandler() throws ParsingException {
+        return getService().getStreamUrlIdHandler();
     }
 
     public abstract String getId() throws ParsingException;
@@ -48,22 +55,22 @@ public abstract class StreamExtractor extends Extractor {
     public abstract String getUploadDate() throws ParsingException;
     public abstract String getThumbnailUrl() throws ParsingException;
     public abstract String getUploaderThumbnailUrl() throws ParsingException;
-    public abstract List<AudioStream> getAudioStreams() throws ParsingException, ReCaptchaException, IOException;
-    public abstract List<VideoStream> getVideoStreams() throws ParsingException;
-    public abstract List<VideoStream> getVideoOnlyStreams() throws ParsingException;
+    public abstract List<AudioStream> getAudioStreams() throws IOException, ExtractionException;
+    public abstract List<VideoStream> getVideoStreams() throws IOException, ExtractionException;
+    public abstract List<VideoStream> getVideoOnlyStreams() throws IOException, ExtractionException;
     public abstract String getDashMpdUrl() throws ParsingException;
     public abstract int getAgeLimit() throws ParsingException;
     public abstract String getAverageRating() throws ParsingException;
     public abstract int getLikeCount() throws ParsingException;
     public abstract int getDislikeCount() throws ParsingException;
-    public abstract StreamInfoItemExtractor getNextVideo() throws ParsingException;
-    public abstract StreamInfoItemCollector getRelatedVideos() throws ParsingException, ReCaptchaException, IOException;
+    public abstract StreamInfoItemExtractor getNextVideo() throws IOException, ExtractionException;
+    public abstract StreamInfoItemCollector getRelatedVideos() throws IOException, ExtractionException;
     public abstract StreamType getStreamType() throws ParsingException;
 
     /**
      * Analyses the webpage's document and extracts any error message there might be.
      *
-     * @return  Error message; null if there is no error message.
+     * @return Error message; null if there is no error message.
      */
     public abstract String getErrorMessage();
 }

@@ -1,16 +1,17 @@
 package org.schabi.newpipe.extractor.services.youtube;
 
-import static junit.framework.Assert.assertEquals;
-import static junit.framework.Assert.assertNotNull;
-import static junit.framework.Assert.assertTrue;
-
 import org.junit.Before;
 import org.junit.Test;
 import org.schabi.newpipe.Downloader;
 import org.schabi.newpipe.extractor.NewPipe;
 import org.schabi.newpipe.extractor.channel.ChannelExtractor;
 
-/**
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
+import static org.schabi.newpipe.extractor.ServiceList.Youtube;
+
+/*
  * Created by Christian Schabesberger on 12.09.16.
  *
  * Copyright (C) Christian Schabesberger 2015 <chris.schabesberger@mailbox.org>
@@ -41,8 +42,8 @@ public class YoutubeChannelExtractorTest  {
     @Before
     public void setUp() throws Exception {
         NewPipe.init(Downloader.getInstance());
-        extractor = NewPipe.getService("Youtube")
-                .getChannelExtractorInstance("https://www.youtube.com/channel/UCYJ61XIK64sp6ZFFS8sctxw");
+        extractor = Youtube.getService()
+                .getChannelExtractor("https://www.youtube.com/channel/UCYJ61XIK64sp6ZFFS8sctxw");
     }
 
     @Test
@@ -61,7 +62,7 @@ public class YoutubeChannelExtractorTest  {
     }
 
     @Test
-    public void testGetBannerurl() throws Exception {
+    public void testGetBannerUrl() throws Exception {
         assertTrue(extractor.getBannerUrl(), extractor.getBannerUrl().contains("yt3"));
     }
 
@@ -81,9 +82,10 @@ public class YoutubeChannelExtractorTest  {
     }
 
     @Test
-    public void testHasNextPage() throws Exception {
-        // this particular example (link) has a next page !!!
-        assertTrue("no next page link found", extractor.hasMoreStreams());
+    public void testHasMoreStreams() throws Exception {
+        // Setup the streams
+        extractor.getStreams();
+        assertTrue("don't have more streams", extractor.hasMoreStreams());
     }
 
     @Test
@@ -92,16 +94,11 @@ public class YoutubeChannelExtractorTest  {
     }
 
     @Test
-    public void testGetNextPage() throws Exception {
-        extractor = NewPipe.getService("Youtube")
-                .getChannelExtractorInstance("https://www.youtube.com/channel/UCYJ61XIK64sp6ZFFS8sctxw");
-        assertTrue("next page didn't have content", !extractor.getStreams().getItemList().isEmpty());
+    public void testGetNextStreams() throws Exception {
+        // Setup the streams
+        extractor.getStreams();
+        assertTrue("extractor didn't have next streams", !extractor.getNextStreams().nextItemsList.isEmpty());
+        assertTrue("extractor didn't have more streams after getNextStreams", extractor.hasMoreStreams());
     }
 
-    @Test
-    public void testGetNextNextPageUrl() throws Exception {
-        extractor = NewPipe.getService("Youtube")
-                .getChannelExtractorInstance("https://www.youtube.com/channel/UCYJ61XIK64sp6ZFFS8sctxw");
-        assertTrue("next page didn't have content", extractor.hasMoreStreams());
-    }
 }

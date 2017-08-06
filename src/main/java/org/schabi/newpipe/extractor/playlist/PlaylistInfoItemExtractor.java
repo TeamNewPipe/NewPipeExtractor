@@ -6,5 +6,5 @@ public interface PlaylistInfoItemExtractor {
     String getThumbnailUrl() throws ParsingException;
     String getPlaylistName() throws ParsingException;
     String getWebPageUrl() throws ParsingException;
-    long getStreamsCount() throws ParsingException;
+    long getStreamCount() throws ParsingException;
 }

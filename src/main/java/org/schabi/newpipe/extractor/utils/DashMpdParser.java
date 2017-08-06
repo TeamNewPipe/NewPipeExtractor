@@ -53,7 +53,13 @@ public class DashMpdParser {
     }
 
     /**
-     * Download manifest and return nodelist with elements of tag "AdaptationSet"
+     * Will try to download (using {@link StreamInfo#dashMpdUrl}) and parse the dash manifest,
+     * then it will search for any stream that the ItagItem has (by the id).
+     * <p>
+     * It has video, video only and audio streams and will only add to the list if it don't
+     * find a similar stream in the respective lists (calling {@link Stream#equalStats}).
+     *
+     * @param streamInfo where the parsed streams will be added
      */
     public static void getStreams(StreamInfo streamInfo) throws DashMpdParsingException, ReCaptchaException {
         String dashDoc;

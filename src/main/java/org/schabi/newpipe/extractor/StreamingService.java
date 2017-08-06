@@ -10,7 +10,11 @@ import java.io.IOException;
 
 public abstract class StreamingService {
     public class ServiceInfo {
-        public String name = "";
+        public final String name;
+
+        public ServiceInfo(String name) {
+            this.name = name;
+        }
     }
 
     public enum LinkType {
@@ -20,35 +24,46 @@ public abstract class StreamingService {
         PLAYLIST
     }
 
-    private int serviceId;
+    private final int serviceId;
+    private final ServiceInfo serviceInfo;
 
-    public StreamingService(int id) {
-        serviceId = id;
+    public StreamingService(int id, String name) {
+        this.serviceId = id;
+        this.serviceInfo = new ServiceInfo(name);
     }
-
-    public abstract ServiceInfo getServiceInfo();
-
-    public abstract UrlIdHandler getStreamUrlIdHandlerInstance();
-    public abstract UrlIdHandler getChannelUrlIdHandlerInstance();
-    public abstract UrlIdHandler getPlaylistUrlIdHandlerInstance();
-    public abstract SearchEngine getSearchEngineInstance();
-    public abstract SuggestionExtractor getSuggestionExtractorInstance();
-    public abstract StreamExtractor getStreamExtractorInstance(String url) throws IOException, ExtractionException;
-    public abstract ChannelExtractor getChannelExtractorInstance(String url) throws ExtractionException, IOException;
-    public abstract PlaylistExtractor getPlaylistExtractorInstance(String url) throws ExtractionException, IOException;
-
 
     public final int getServiceId() {
         return serviceId;
+    }
+
+    public ServiceInfo getServiceInfo() {
+        return serviceInfo;
+    }
+
+    public abstract UrlIdHandler getStreamUrlIdHandler();
+    public abstract UrlIdHandler getChannelUrlIdHandler();
+    public abstract UrlIdHandler getPlaylistUrlIdHandler();
+    public abstract SearchEngine getSearchEngine();
+    public abstract SuggestionExtractor getSuggestionExtractor();
+    public abstract StreamExtractor getStreamExtractor(String url) throws IOException, ExtractionException;
+    public abstract ChannelExtractor getChannelExtractor(String url, String nextStreamsUrl) throws IOException, ExtractionException;
+    public abstract PlaylistExtractor getPlaylistExtractor(String url, String nextStreamsUrl) throws IOException, ExtractionException;
+
+    public ChannelExtractor getChannelExtractor(String url) throws IOException, ExtractionException {
+        return getChannelExtractor(url, null);
+    }
+
+    public PlaylistExtractor getPlaylistExtractor(String url) throws IOException, ExtractionException {
+        return getPlaylistExtractor(url, null);
     }
 
     /**
      * figure out where the link is pointing to (a channel, video, playlist, etc.)
      */
     public final LinkType getLinkTypeByUrl(String url) {
-        UrlIdHandler sH = getStreamUrlIdHandlerInstance();
-        UrlIdHandler cH = getChannelUrlIdHandlerInstance();
-        UrlIdHandler pH = getPlaylistUrlIdHandlerInstance();
+        UrlIdHandler sH = getStreamUrlIdHandler();
+        UrlIdHandler cH = getChannelUrlIdHandler();
+        UrlIdHandler pH = getPlaylistUrlIdHandler();
 
         if (sH.acceptUrl(url)) {
             return LinkType.STREAM;

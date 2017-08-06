@@ -7,47 +7,25 @@ import org.schabi.newpipe.extractor.NewPipe;
 import org.schabi.newpipe.extractor.exceptions.ExtractionException;
 import org.schabi.newpipe.extractor.exceptions.ParsingException;
 import org.schabi.newpipe.extractor.stream.StreamExtractor;
-import org.schabi.newpipe.extractor.stream.StreamInfoItemCollector;
-import org.schabi.newpipe.extractor.stream.StreamType;
 import org.schabi.newpipe.extractor.stream.VideoStream;
 
 import java.io.IOException;
 
-import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 import static org.schabi.newpipe.extractor.ServiceList.Youtube;
 
-/*
- * Created by Christian Schabesberger on 30.12.15.
- *
- * Copyright (C) Christian Schabesberger 2015 <chris.schabesberger@mailbox.org>
- * YoutubeVideoExtractorDefault.java is part of NewPipe.
- *
- * NewPipe is free software: you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation, either version 3 of the License, or
- * (at your option) any later version.
- *
- * NewPipe is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- *
- * You should have received a copy of the GNU General Public License
- * along with NewPipe.  If not, see <http://www.gnu.org/licenses/>.
- */
-
 /**
- * Test for {@link StreamExtractor}
+ * Test for {@link YoutubeStreamUrlIdHandler}
  */
-public class YoutubeStreamExtractorDefaultTest {
+public class YoutubeStreamExtractorRestrictedTest {
     public static final String HTTPS = "https://";
     private StreamExtractor extractor;
 
     @Before
     public void setUp() throws Exception {
         NewPipe.init(Downloader.getInstance());
-        extractor = Youtube.getService().getStreamExtractor("https://www.youtube.com/watch?v=YQHsXMglC9A");
+        extractor = Youtube.getService()
+                .getStreamExtractor("https://www.youtube.com/watch?v=i6JTvzrpBy0");
     }
 
     @Test
@@ -58,9 +36,15 @@ public class YoutubeStreamExtractorDefaultTest {
 
     @Test
     public void testGetValidTimeStamp() throws IOException, ExtractionException {
-        StreamExtractor extractor = Youtube.getService().getStreamExtractor("https://youtu.be/FmG385_uUys?t=174");
+        StreamExtractor extractor= Youtube.getService()
+                .getStreamExtractor("https://youtu.be/FmG385_uUys?t=174");
         assertTrue(Integer.toString(extractor.getTimeStamp()),
                 extractor.getTimeStamp() == 174);
+    }
+
+    @Test
+    public void testGetAgeLimit() throws ParsingException {
+        assertTrue(extractor.getAgeLimit() == 18);
     }
 
     @Test
@@ -84,19 +68,13 @@ public class YoutubeStreamExtractorDefaultTest {
     }
 
     @Test
-    public void testGetViewCount() throws ParsingException {
-        assertTrue(Long.toString(extractor.getViewCount()),
-                extractor.getViewCount() > /* specific to that video */ 1224000074);
+    public void testGetViews() throws ParsingException {
+        assertTrue(extractor.getLength() > 0);
     }
 
     @Test
     public void testGetUploadDate() throws ParsingException {
         assertTrue(extractor.getUploadDate().length() > 0);
-    }
-
-    @Test
-    public void testGetChannelUrl() throws ParsingException {
-        assertTrue(extractor.getChannelUrl().length() > 0);
     }
 
     @Test
@@ -113,6 +91,7 @@ public class YoutubeStreamExtractorDefaultTest {
 
     @Test
     public void testGetAudioStreams() throws IOException, ExtractionException {
+        // audiostream not always necessary
         assertTrue(!extractor.getAudioStreams().isEmpty());
     }
 
@@ -125,23 +104,5 @@ public class YoutubeStreamExtractorDefaultTest {
             assertTrue(Integer.toString(s.format),
                     0 <= s.format && s.format <= 4);
         }
-    }
-
-    @Test
-    public void testStreamType() throws ParsingException {
-        assertTrue(extractor.getStreamType() == StreamType.VIDEO_STREAM);
-    }
-
-    @Test
-    public void testGetDashMpd() throws ParsingException {
-        assertTrue(extractor.getDashMpdUrl(),
-                extractor.getDashMpdUrl() != null || !extractor.getDashMpdUrl().isEmpty());
-    }
-
-    @Test
-    public void testGetRelatedVideos() throws ExtractionException, IOException {
-        StreamInfoItemCollector relatedVideos = extractor.getRelatedVideos();
-        assertFalse(relatedVideos.getItemList().isEmpty());
-        assertTrue(relatedVideos.getErrors().isEmpty());
     }
 }

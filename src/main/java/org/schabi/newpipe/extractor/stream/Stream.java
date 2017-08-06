@@ -13,7 +13,7 @@ public abstract class Stream implements Serializable {
     }
 
     /**
-     * Reveals whether two streams are the same, but have different urls
+     * Reveals whether two streams have the same stats (format and bitrate, for example)
      */
     public boolean equalStats(Stream cmp) {
         return cmp != null && format == cmp.format;

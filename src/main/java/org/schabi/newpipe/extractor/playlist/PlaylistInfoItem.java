@@ -8,7 +8,7 @@ public class PlaylistInfoItem extends InfoItem {
     /**
      * How many streams this playlist have
      */
-    public long streams_count = 0;
+    public long stream_count = 0;
 
     public PlaylistInfoItem() {
         super(InfoType.PLAYLIST);

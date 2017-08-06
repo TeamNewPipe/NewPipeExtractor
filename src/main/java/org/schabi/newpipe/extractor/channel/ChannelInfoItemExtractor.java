@@ -28,5 +28,5 @@ public interface ChannelInfoItemExtractor {
     String getWebPageUrl() throws ParsingException;
     String getDescription() throws ParsingException;
     long getSubscriberCount() throws ParsingException;
-    long getViewCount() throws ParsingException;
+    long getStreamCount() throws ParsingException;
 }

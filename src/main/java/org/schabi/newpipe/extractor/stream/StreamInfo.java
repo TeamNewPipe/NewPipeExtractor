@@ -2,14 +2,18 @@ package org.schabi.newpipe.extractor.stream;
 
 import org.schabi.newpipe.extractor.Info;
 import org.schabi.newpipe.extractor.InfoItem;
+import org.schabi.newpipe.extractor.NewPipe;
+import org.schabi.newpipe.extractor.ServiceList;
+import org.schabi.newpipe.extractor.StreamingService;
 import org.schabi.newpipe.extractor.exceptions.ContentNotAvailableException;
 import org.schabi.newpipe.extractor.exceptions.ExtractionException;
 import org.schabi.newpipe.extractor.utils.DashMpdParser;
 import org.schabi.newpipe.extractor.utils.Utils;
 
 import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
-import java.util.Vector;
 
 /*
  * Created by Christian Schabesberger on 26.08.15.
@@ -46,11 +50,23 @@ public class StreamInfo extends Info {
     public StreamInfo() {
     }
 
+    public static StreamInfo getInfo(String url) throws IOException, ExtractionException {
+        return getInfo(NewPipe.getServiceByUrl(url), url);
+    }
+
+    public static StreamInfo getInfo(ServiceList serviceItem, String url) throws IOException, ExtractionException {
+        return getInfo(serviceItem.getService(), url);
+    }
+
+    public static StreamInfo getInfo(StreamingService service, String url) throws IOException, ExtractionException {
+        return getInfo(service.getStreamExtractor(url));
+    }
+
     /**
      * Fills out the video info fields which are common to all services.
      * Probably needs to be overridden by subclasses
      */
-    public static StreamInfo getVideoInfo(StreamExtractor extractor) throws ExtractionException {
+    public static StreamInfo getInfo(StreamExtractor extractor) throws ExtractionException {
         StreamInfo streamInfo = new StreamInfo();
 
         try {
@@ -80,7 +96,7 @@ public class StreamInfo extends Info {
         // if one of these is not available an exception is meant to be thrown directly into the frontend.
 
         streamInfo.service_id = extractor.getServiceId();
-        streamInfo.url = extractor.getUrl();
+        streamInfo.url = extractor.getCleanUrl();
         streamInfo.stream_type = extractor.getStreamType();
         streamInfo.id = extractor.getId();
         streamInfo.name = extractor.getTitle();
@@ -128,15 +144,12 @@ public class StreamInfo extends Info {
         }
 
         // Lists can be null if a exception was thrown during extraction
-        if (streamInfo.video_streams == null) streamInfo.video_streams = new Vector<>();
-        if (streamInfo.video_only_streams == null) streamInfo.video_only_streams = new Vector<>();
-        if (streamInfo.audio_streams == null) streamInfo.audio_streams = new Vector<>();
+        if (streamInfo.video_streams == null) streamInfo.video_streams = new ArrayList<>();
+        if (streamInfo.video_only_streams == null) streamInfo.video_only_streams = new ArrayList<>();
+        if (streamInfo.audio_streams == null) streamInfo.audio_streams = new ArrayList<>();
 
         if (streamInfo.dashMpdUrl != null && !streamInfo.dashMpdUrl.isEmpty()) {
             try {
-                // Will try to find in the dash manifest for any stream that the ItagItem has (by the id),
-                // it has video, video only and audio streams and will only add to the list if it don't
-                // find a similar stream in the respective lists (calling Stream#equalStats).
                 DashMpdParser.getStreams(streamInfo);
             } catch (Exception e) {
                 // Sometimes we receive 403 (forbidden) error when trying to download the manifest,
@@ -246,6 +259,8 @@ public class StreamInfo extends Info {
             streamInfo.addException(e);
         }
 
+        if (streamInfo.related_streams == null) streamInfo.related_streams = new ArrayList<>();
+
         return streamInfo;
     }
 
@@ -278,7 +293,7 @@ public class StreamInfo extends Info {
     public int dislike_count = -1;
     public String average_rating;
     public StreamInfoItem next_video;
-    public List<InfoItem> related_streams = new Vector<>();
+    public List<InfoItem> related_streams;
     //in seconds. some metadata is not passed using a StreamInfo object!
     public int start_position = 0;
 }

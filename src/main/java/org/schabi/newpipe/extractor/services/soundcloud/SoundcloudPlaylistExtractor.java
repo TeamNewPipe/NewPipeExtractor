@@ -1,36 +1,44 @@
 package org.schabi.newpipe.extractor.services.soundcloud;
 
-import java.io.IOException;
-import java.util.List;
-
-import org.json.JSONArray;
 import org.json.JSONObject;
 import org.schabi.newpipe.extractor.Downloader;
 import org.schabi.newpipe.extractor.NewPipe;
-import org.schabi.newpipe.extractor.UrlIdHandler;
+import org.schabi.newpipe.extractor.StreamingService;
 import org.schabi.newpipe.extractor.exceptions.ExtractionException;
-import org.schabi.newpipe.extractor.exceptions.ParsingException;
-import org.schabi.newpipe.extractor.exceptions.ReCaptchaException;
 import org.schabi.newpipe.extractor.playlist.PlaylistExtractor;
 import org.schabi.newpipe.extractor.stream.StreamInfoItemCollector;
+
+import java.io.IOException;
 
 @SuppressWarnings("WeakerAccess")
 public class SoundcloudPlaylistExtractor extends PlaylistExtractor {
     private String playlistId;
     private JSONObject playlist;
-    private List<String> nextTracks;
 
-    public SoundcloudPlaylistExtractor(UrlIdHandler urlIdHandler, String url, int serviceId) throws IOException, ExtractionException {
-        super(urlIdHandler, url, serviceId);
+    public SoundcloudPlaylistExtractor(StreamingService service, String url, String nextStreamsUrl) throws IOException, ExtractionException {
+        super(service, url, nextStreamsUrl);
+    }
 
+    @Override
+    public void fetchPage() throws IOException, ExtractionException {
         Downloader dl = NewPipe.getDownloader();
-        playlistId = urlIdHandler.getId(url);
 
-        String apiUrl = "https://api-v2.soundcloud.com/users/" + playlistId
-                + "?client_id=" + SoundcloudParsingHelper.clientId();
+        playlistId = getUrlIdHandler().getId(getOriginalUrl());
+        String apiUrl = "https://api.soundcloud.com/playlists/" + playlistId +
+                "?client_id=" + SoundcloudParsingHelper.clientId() +
+                "&representation=compact";
 
         String response = dl.download(apiUrl);
         playlist = new JSONObject(response);
+    }
+
+    @Override
+    public String getCleanUrl() {
+        try {
+            return playlist.getString("permalink_url");
+        } catch (Exception e) {
+            return getOriginalUrl();
+        }
     }
 
     @Override
@@ -69,61 +77,33 @@ public class SoundcloudPlaylistExtractor extends PlaylistExtractor {
     }
 
     @Override
-    public long getStreamsCount() {
+    public long getStreamCount() {
         return playlist.getLong("track_count");
     }
 
     @Override
-    public StreamInfoItemCollector getStreams() throws ParsingException, ReCaptchaException, IOException {
-        StreamInfoItemCollector collector = getStreamPreviewInfoCollector();
-        Downloader dl = NewPipe.getDownloader();
+    public StreamInfoItemCollector getStreams() throws IOException, ExtractionException {
+        StreamInfoItemCollector collector = new StreamInfoItemCollector(getServiceId());
 
-        String apiUrl = "https://api-v2.soundcloud.com/playlists/" + playlistId
-                + "?client_id=" + SoundcloudParsingHelper.clientId();
+        // Note the "api", NOT "api-v2"
+        String apiUrl = "https://api.soundcloud.com/playlists/" + getPlaylistId() + "/tracks"
+                + "?client_id=" + SoundcloudParsingHelper.clientId()
+                + "&limit=20"
+                + "&linked_partitioning=1";
 
-        String response = dl.download(apiUrl);
-        JSONObject responseObject = new JSONObject(response);
-        JSONArray responseCollection = responseObject.getJSONArray("collection");
-
-        for (int i = 0; i < responseCollection.length(); i++) {
-            JSONObject track = responseCollection.getJSONObject(i);
-            try {
-                collector.commit(new SoundcloudStreamInfoItemExtractor(track));
-            } catch (Exception e) {
-                nextTracks.add(track.getString("id"));
-            }
-        }
+        nextStreamsUrl = SoundcloudParsingHelper.getStreamsFromApiMinItems(15, collector, apiUrl);
         return collector;
     }
 
     @Override
-    public StreamInfoItemCollector getNextStreams() throws ReCaptchaException, IOException, ParsingException {
-        if (nextTracks.equals(null)) {
-            return null;
+    public NextItemsResult getNextStreams() throws IOException, ExtractionException {
+        if (!hasMoreStreams()) {
+            throw new ExtractionException("Playlist doesn't have more streams");
         }
 
-        StreamInfoItemCollector collector = getStreamPreviewInfoCollector();
-        Downloader dl = NewPipe.getDownloader();
+        StreamInfoItemCollector collector = new StreamInfoItemCollector(getServiceId());
+        nextStreamsUrl = SoundcloudParsingHelper.getStreamsFromApiMinItems(15, collector, nextStreamsUrl);
 
-        // TODO: Do this per 10 tracks, instead of all tracks at once
-        String apiUrl = "https://api-v2.soundcloud.com/tracks?ids=";
-        for (String id : nextTracks) {
-            apiUrl += id;
-            if (!id.equals(nextTracks.get(nextTracks.size() - 1))) {
-                apiUrl += ",";
-            }
-        }
-        apiUrl += "&client_id=" + SoundcloudParsingHelper.clientId();
-
-        String response = dl.download(apiUrl);
-        JSONObject responseObject = new JSONObject(response);
-        JSONArray responseCollection = responseObject.getJSONArray("collection");
-
-        for (int i = 0; i < responseCollection.length(); i++) {
-            JSONObject track = responseCollection.getJSONObject(i);
-            collector.commit(new SoundcloudStreamInfoItemExtractor(track));
-        }
-        nextTracks = null;
-        return collector;
+        return new NextItemsResult(collector.getItemList(), nextStreamsUrl);
     }
 }

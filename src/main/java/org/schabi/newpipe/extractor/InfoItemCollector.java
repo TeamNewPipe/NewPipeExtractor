@@ -2,8 +2,8 @@ package org.schabi.newpipe.extractor;
 
 import org.schabi.newpipe.extractor.exceptions.ExtractionException;
 
+import java.util.ArrayList;
 import java.util.List;
-import java.util.Vector;
 
 /*
  * Created by Christian Schabesberger on 12.02.17.
@@ -26,8 +26,8 @@ import java.util.Vector;
  */
 
 public abstract class InfoItemCollector {
-    private List<InfoItem> itemList = new Vector<>();
-    private List<Throwable> errors = new Vector<>();
+    private List<InfoItem> itemList = new ArrayList<>();
+    private List<Throwable> errors = new ArrayList<>();
     private int serviceId = -1;
 
     public InfoItemCollector(int serviceId) {
@@ -46,7 +46,7 @@ public abstract class InfoItemCollector {
         if (serviceId != otherC.serviceId) {
             throw new ExtractionException("Service Id does not equal: "
                     + NewPipe.getNameOfService(serviceId)
-                    + " and " + NewPipe.getNameOfService(otherC.serviceId));
+                    + " and " + NewPipe.getNameOfService((otherC.serviceId)));
         }
         errors.addAll(otherC.errors);
         itemList.addAll(otherC.itemList);

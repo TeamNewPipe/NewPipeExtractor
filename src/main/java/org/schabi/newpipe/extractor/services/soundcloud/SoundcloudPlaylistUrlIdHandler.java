@@ -1,10 +1,7 @@
 package org.schabi.newpipe.extractor.services.soundcloud;
 
-import org.json.JSONObject;
 import org.jsoup.Jsoup;
-import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
-import org.schabi.newpipe.extractor.Downloader;
 import org.schabi.newpipe.extractor.NewPipe;
 import org.schabi.newpipe.extractor.UrlIdHandler;
 import org.schabi.newpipe.extractor.exceptions.ParsingException;
@@ -21,13 +18,7 @@ public class SoundcloudPlaylistUrlIdHandler implements UrlIdHandler {
     @Override
     public String getUrl(String listId) throws ParsingException {
         try {
-            Downloader dl = NewPipe.getDownloader();
-
-            String response = dl.download("https://api-v2.soundcloud.com/playlists/" + listId
-                    + "?client_id=" + SoundcloudParsingHelper.clientId());
-            JSONObject responseObject = new JSONObject(response);
-
-            return responseObject.getString("permalink_url");
+            return SoundcloudParsingHelper.resolveUrlWithEmbedPlayer("https://api.soundcloud.com/playlists/" + listId);
         } catch (Exception e) {
             throw new ParsingException(e.getMessage(), e);
         }
@@ -36,15 +27,7 @@ public class SoundcloudPlaylistUrlIdHandler implements UrlIdHandler {
     @Override
     public String getId(String url) throws ParsingException {
         try {
-            Downloader dl = NewPipe.getDownloader();
-
-            String response = dl.download(url);
-            Document doc = Jsoup.parse(response);
-
-            Element androidElement = doc.select("meta[property=al:android:url]").first();
-            String id = androidElement.attr("content").substring(23);
-
-            return id;
+            return SoundcloudParsingHelper.resolveIdWithEmbedPlayer(url);
         } catch (Exception e) {
             throw new ParsingException(e.getMessage(), e);
         }
@@ -53,15 +36,10 @@ public class SoundcloudPlaylistUrlIdHandler implements UrlIdHandler {
     @Override
     public String cleanUrl(String complexUrl) throws ParsingException {
         try {
-            Downloader dl = NewPipe.getDownloader();
+            Element ogElement = Jsoup.parse(NewPipe.getDownloader().download(complexUrl))
+                    .select("meta[property=og:url]").first();
 
-            String response = dl.download(complexUrl);
-            Document doc = Jsoup.parse(response);
-
-            Element ogElement = doc.select("meta[property=og:url]").first();
-            String url = ogElement.attr("content");
-
-            return url;
+            return ogElement.attr("content");
         } catch (Exception e) {
             throw new ParsingException(e.getMessage(), e);
         }

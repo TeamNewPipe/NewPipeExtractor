@@ -43,7 +43,7 @@ public class ChannelInfoItemCollector extends InfoItemCollector {
             addError(e);
         }
         try {
-            resultItem.view_count = extractor.getViewCount();
+            resultItem.stream_count = extractor.getStreamCount();
         } catch (Exception e) {
             addError(e);
         }

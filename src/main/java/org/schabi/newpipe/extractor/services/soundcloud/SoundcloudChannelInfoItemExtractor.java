@@ -31,7 +31,7 @@ public class SoundcloudChannelInfoItemExtractor implements ChannelInfoItemExtrac
     }
 
     @Override
-    public long getViewCount() {
+    public long getStreamCount() {
         return searchResult.getLong("track_count");
     }
 
