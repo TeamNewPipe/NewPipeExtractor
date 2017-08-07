@@ -4,19 +4,19 @@ import org.json.JSONObject;
 import org.schabi.newpipe.extractor.Downloader;
 import org.schabi.newpipe.extractor.NewPipe;
 import org.schabi.newpipe.extractor.StreamingService;
-import org.schabi.newpipe.extractor.channel.ChannelExtractor;
 import org.schabi.newpipe.extractor.exceptions.ExtractionException;
 import org.schabi.newpipe.extractor.exceptions.ParsingException;
 import org.schabi.newpipe.extractor.stream.StreamInfoItemCollector;
+import org.schabi.newpipe.extractor.user.UserExtractor;
 
 import java.io.IOException;
 
 @SuppressWarnings("WeakerAccess")
-public class SoundcloudChannelExtractor extends ChannelExtractor {
-    private String channelId;
-    private JSONObject channel;
+public class SoundcloudUserExtractor extends UserExtractor {
+    private String userId;
+    private JSONObject user;
 
-    public SoundcloudChannelExtractor(StreamingService service, String url, String nextStreamsUrl) throws IOException, ExtractionException {
+    public SoundcloudUserExtractor(StreamingService service, String url, String nextStreamsUrl) throws IOException, ExtractionException {
         super(service, url, nextStreamsUrl);
     }
 
@@ -24,42 +24,42 @@ public class SoundcloudChannelExtractor extends ChannelExtractor {
     public void fetchPage() throws IOException, ExtractionException {
         Downloader dl = NewPipe.getDownloader();
 
-        channelId = getUrlIdHandler().getId(getOriginalUrl());
-        String apiUrl = "https://api.soundcloud.com/users/" + channelId +
+        userId = getUrlIdHandler().getId(getOriginalUrl());
+        String apiUrl = "https://api.soundcloud.com/users/" + userId +
                 "?client_id=" + SoundcloudParsingHelper.clientId();
 
         String response = dl.download(apiUrl);
-        channel = new JSONObject(response);
+        user = new JSONObject(response);
     }
 
     @Override
     public String getCleanUrl() {
         try {
-            return channel.getString("permalink_url");
+            return user.getString("permalink_url");
         } catch (Exception e) {
             return getOriginalUrl();
         }
     }
 
     @Override
-    public String getChannelId() {
-        return channelId;
+    public String getUserId() {
+        return userId;
     }
 
     @Override
-    public String getChannelName() {
-        return channel.getString("username");
+    public String getUserName() {
+        return user.getString("username");
     }
 
     @Override
     public String getAvatarUrl() {
-        return channel.getString("avatar_url");
+        return user.getString("avatar_url");
     }
 
     @Override
     public String getBannerUrl() throws ParsingException {
         try {
-            return channel.getJSONObject("visuals").getJSONArray("visuals").getJSONObject(0).getString("visual_url");
+            return user.getJSONObject("visuals").getJSONArray("visuals").getJSONObject(0).getString("visual_url");
         } catch (Exception e) {
             throw new ParsingException("Could not get Banner", e);
         }
@@ -67,7 +67,7 @@ public class SoundcloudChannelExtractor extends ChannelExtractor {
 
     @Override
     public long getSubscriberCount() {
-        return channel.getLong("followers_count");
+        return user.getLong("followers_count");
     }
 
     @Override
@@ -79,7 +79,7 @@ public class SoundcloudChannelExtractor extends ChannelExtractor {
     public StreamInfoItemCollector getStreams() throws IOException, ExtractionException {
         StreamInfoItemCollector collector = new StreamInfoItemCollector(getServiceId());
 
-        String apiUrl = "https://api-v2.soundcloud.com/users/" + getChannelId() + "/tracks"
+        String apiUrl = "https://api-v2.soundcloud.com/users/" + getUserId() + "/tracks"
                 + "?client_id=" + SoundcloudParsingHelper.clientId()
                 + "&limit=20"
                 + "&linked_partitioning=1";
@@ -91,7 +91,7 @@ public class SoundcloudChannelExtractor extends ChannelExtractor {
     @Override
     public NextItemsResult getNextStreams() throws IOException, ExtractionException {
         if (!hasMoreStreams()) {
-            throw new ExtractionException("Channel doesn't have more streams");
+            throw new ExtractionException("User doesn't have more streams");
         }
 
         StreamInfoItemCollector collector = new StreamInfoItemCollector(getServiceId());

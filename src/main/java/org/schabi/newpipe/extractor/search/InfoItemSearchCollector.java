@@ -1,12 +1,12 @@
 package org.schabi.newpipe.extractor.search;
 
 import org.schabi.newpipe.extractor.InfoItemCollector;
-import org.schabi.newpipe.extractor.channel.ChannelInfoItemCollector;
-import org.schabi.newpipe.extractor.channel.ChannelInfoItemExtractor;
 import org.schabi.newpipe.extractor.exceptions.ExtractionException;
 import org.schabi.newpipe.extractor.exceptions.FoundAdException;
 import org.schabi.newpipe.extractor.stream.StreamInfoItemCollector;
 import org.schabi.newpipe.extractor.stream.StreamInfoItemExtractor;
+import org.schabi.newpipe.extractor.user.UserInfoItemCollector;
+import org.schabi.newpipe.extractor.user.UserInfoItemExtractor;
 
 /*
  * Created by Christian Schabesberger on 12.02.17.
@@ -31,14 +31,14 @@ import org.schabi.newpipe.extractor.stream.StreamInfoItemExtractor;
 public class InfoItemSearchCollector extends InfoItemCollector {
     private String suggestion;
     private StreamInfoItemCollector streamCollector;
-    private ChannelInfoItemCollector channelCollector;
+    private UserInfoItemCollector userCollector;
 
     private SearchResult result = new SearchResult();
 
     InfoItemSearchCollector(int serviceId) {
         super(serviceId);
         streamCollector = new StreamInfoItemCollector(serviceId);
-        channelCollector = new ChannelInfoItemCollector(serviceId);
+        userCollector = new UserInfoItemCollector(serviceId);
     }
 
     public void setSuggestion(String suggestion) {
@@ -47,7 +47,7 @@ public class InfoItemSearchCollector extends InfoItemCollector {
 
     public SearchResult getSearchResult() throws ExtractionException {
 
-        addFromCollector(channelCollector);
+        addFromCollector(userCollector);
         addFromCollector(streamCollector);
 
         result.suggestion = suggestion;
@@ -65,9 +65,9 @@ public class InfoItemSearchCollector extends InfoItemCollector {
         }
     }
 
-    public void commit(ChannelInfoItemExtractor extractor) {
+    public void commit(UserInfoItemExtractor extractor) {
         try {
-            result.resultList.add(channelCollector.extract(extractor));
+            result.resultList.add(userCollector.extract(extractor));
         } catch (FoundAdException ae) {
             System.err.println("Found ad");
         } catch (Exception e) {

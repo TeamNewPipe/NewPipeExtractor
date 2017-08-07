@@ -11,7 +11,7 @@ import java.util.EnumSet;
 
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
-import static org.schabi.newpipe.extractor.ServiceList.Youtube;
+import static org.schabi.newpipe.extractor.ServiceList.YouTube;
 
 
 /*
@@ -43,12 +43,12 @@ public class YoutubeSearchEngineAllTest {
     @Before
     public void setUp() throws Exception {
         NewPipe.init(Downloader.getInstance());
-        SearchEngine engine = Youtube.getService().getSearchEngine();
+        SearchEngine engine = YouTube.getService().getSearchEngine();
 
         // Youtube will suggest "asdf" instead of "asdgff"
         // keep in mind that the suggestions can change by country (the parameter "de")
         result = engine.search("asdgff", 0, "de",
-                EnumSet.of(SearchEngine.Filter.CHANNEL,
+                EnumSet.of(SearchEngine.Filter.USER,
                         SearchEngine.Filter.STREAM)).getSearchResult();
     }
 

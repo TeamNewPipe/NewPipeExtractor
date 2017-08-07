@@ -7,7 +7,7 @@ import java.io.IOException;
 import java.util.List;
 
 /**
- * Base class to extractors that have a list (e.g. playlists, channels).
+ * Base class to extractors that have a list (e.g. playlists, users).
  */
 public abstract class ListExtractor extends Extractor {
     protected String nextStreamsUrl;

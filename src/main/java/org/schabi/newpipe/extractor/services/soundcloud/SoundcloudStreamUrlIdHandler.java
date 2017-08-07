@@ -19,9 +19,9 @@ public class SoundcloudStreamUrlIdHandler implements UrlIdHandler {
     }
 
     @Override
-    public String getUrl(String videoId) throws ParsingException {
+    public String getUrl(String id) throws ParsingException {
         try {
-            return SoundcloudParsingHelper.resolveUrlWithEmbedPlayer("https://api.soundcloud.com/tracks/" + videoId);
+            return SoundcloudParsingHelper.resolveUrlWithEmbedPlayer("https://api.soundcloud.com/tracks/" + id);
         } catch (Exception e) {
             throw new ParsingException(e.getMessage(), e);
         }
@@ -49,8 +49,8 @@ public class SoundcloudStreamUrlIdHandler implements UrlIdHandler {
     }
 
     @Override
-    public boolean acceptUrl(String videoUrl) {
+    public boolean acceptUrl(String url) {
         String regex = "^https?://(www\\.)?soundcloud.com/[0-9a-z_-]+/(?!(tracks|albums|sets|reposts|followers|following)/?$)[0-9a-z_-]+/?([#?].*)?$";
-        return Parser.isMatch(regex, videoUrl.toLowerCase());
+        return Parser.isMatch(regex, url.toLowerCase());
     }
 }

@@ -13,7 +13,7 @@ import java.util.EnumSet;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
-import static org.schabi.newpipe.extractor.ServiceList.Youtube;
+import static org.schabi.newpipe.extractor.ServiceList.YouTube;
 
 
 /*
@@ -39,18 +39,18 @@ import static org.schabi.newpipe.extractor.ServiceList.Youtube;
 /**
  * Test for {@link SearchEngine}
  */
-public class YoutubeSearchEngineChannelTest {
+public class YoutubeSearchEngineUserTest {
     private SearchResult result;
 
     @Before
     public void setUp() throws Exception {
         NewPipe.init(Downloader.getInstance());
-        SearchEngine engine = Youtube.getService().getSearchEngine();
+        SearchEngine engine = YouTube.getService().getSearchEngine();
 
         // Youtube will suggest "gronkh" instead of "grrunkh"
         // keep in mind that the suggestions can change by country (the parameter "de")
         result = engine.search("grrunkh", 0, "de",
-                EnumSet.of(SearchEngine.Filter.CHANNEL)).getSearchResult();
+                EnumSet.of(SearchEngine.Filter.USER)).getSearchResult();
     }
 
     @Test
@@ -59,9 +59,9 @@ public class YoutubeSearchEngineChannelTest {
     }
 
     @Test
-    public void testChannelItemType() {
+    public void testUserItemType() {
         for (InfoItem infoItem : result.resultList) {
-            assertEquals(InfoItem.InfoType.CHANNEL, infoItem.info_type);
+            assertEquals(InfoItem.InfoType.USER, infoItem.info_type);
         }
     }
 

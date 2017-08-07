@@ -9,7 +9,7 @@ import org.schabi.newpipe.extractor.exceptions.ExtractionException;
 import java.io.IOException;
 
 import static org.junit.Assert.fail;
-import static org.schabi.newpipe.extractor.ServiceList.Youtube;
+import static org.schabi.newpipe.extractor.ServiceList.YouTube;
 
 /*
  * Created by Christian Schabesberger on 30.12.15.
@@ -43,7 +43,7 @@ public class YoutubeStreamExtractorGemaTest {
     public void testGemaError() throws IOException, ExtractionException {
         try {
             NewPipe.init(Downloader.getInstance());
-            Youtube.getService().getStreamExtractor("https://www.youtube.com/watch?v=3O1_3zBUKM8");
+            YouTube.getService().getStreamExtractor("https://www.youtube.com/watch?v=3O1_3zBUKM8");
 
             fail("GemaException should be thrown");
         } catch (YoutubeStreamExtractor.GemaException ignored) {

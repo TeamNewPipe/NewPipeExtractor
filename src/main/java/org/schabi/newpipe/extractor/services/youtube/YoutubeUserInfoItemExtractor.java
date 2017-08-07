@@ -1,15 +1,15 @@
 package org.schabi.newpipe.extractor.services.youtube;
 
 import org.jsoup.nodes.Element;
-import org.schabi.newpipe.extractor.channel.ChannelInfoItemExtractor;
 import org.schabi.newpipe.extractor.exceptions.ParsingException;
+import org.schabi.newpipe.extractor.user.UserInfoItemExtractor;
 import org.schabi.newpipe.extractor.utils.Utils;
 
 /*
  * Created by Christian Schabesberger on 12.02.17.
  *
  * Copyright (C) Christian Schabesberger 2017 <chris.schabesberger@mailbox.org>
- * YoutubeChannelInfoItemExtractor.java is part of NewPipe.
+ * YoutubeUserInfoItemExtractor.java is part of NewPipe.
  *
  * NewPipe is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -25,10 +25,10 @@ import org.schabi.newpipe.extractor.utils.Utils;
  * along with NewPipe.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-public class YoutubeChannelInfoItemExtractor implements ChannelInfoItemExtractor {
+public class YoutubeUserInfoItemExtractor implements UserInfoItemExtractor {
     private Element el;
 
-    public YoutubeChannelInfoItemExtractor(Element el) {
+    public YoutubeUserInfoItemExtractor(Element el) {
         this.el = el;
     }
 
@@ -46,7 +46,7 @@ public class YoutubeChannelInfoItemExtractor implements ChannelInfoItemExtractor
     }
 
     @Override
-    public String getChannelName() throws ParsingException {
+    public String getUserName() throws ParsingException {
         return el.select("a[class*=\"yt-uix-tile-link\"]").first()
                 .text();
     }

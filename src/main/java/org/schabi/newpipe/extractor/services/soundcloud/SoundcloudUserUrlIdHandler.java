@@ -7,18 +7,18 @@ import org.schabi.newpipe.extractor.UrlIdHandler;
 import org.schabi.newpipe.extractor.exceptions.ParsingException;
 import org.schabi.newpipe.extractor.utils.Parser;
 
-public class SoundcloudChannelUrlIdHandler implements UrlIdHandler {
+public class SoundcloudUserUrlIdHandler implements UrlIdHandler {
 
-    private static final SoundcloudChannelUrlIdHandler instance = new SoundcloudChannelUrlIdHandler();
+    private static final SoundcloudUserUrlIdHandler instance = new SoundcloudUserUrlIdHandler();
 
-    public static SoundcloudChannelUrlIdHandler getInstance() {
+    public static SoundcloudUserUrlIdHandler getInstance() {
         return instance;
     }
 
     @Override
-    public String getUrl(String channelId) throws ParsingException {
+    public String getUrl(String id) throws ParsingException {
         try {
-            return SoundcloudParsingHelper.resolveUrlWithEmbedPlayer("https://api.soundcloud.com/users/" + channelId);
+            return SoundcloudParsingHelper.resolveUrlWithEmbedPlayer("https://api.soundcloud.com/users/" + id);
         } catch (Exception e) {
             throw new ParsingException(e.getMessage(), e);
         }
@@ -46,8 +46,8 @@ public class SoundcloudChannelUrlIdHandler implements UrlIdHandler {
     }
 
     @Override
-    public boolean acceptUrl(String channelUrl) {
+    public boolean acceptUrl(String url) {
         String regex = "^https?://(www\\.)?soundcloud.com/[0-9a-z_-]+(/((tracks|albums|sets|reposts|followers|following)/?)?)?([#?].*)?$";
-        return Parser.isMatch(regex, channelUrl.toLowerCase());
+        return Parser.isMatch(regex, url.toLowerCase());
     }
 }

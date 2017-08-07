@@ -26,7 +26,7 @@ public abstract class InfoItem implements Serializable {
     public enum InfoType {
         STREAM,
         PLAYLIST,
-        CHANNEL
+        USER
     }
 
     public InfoItem(InfoType infoType) {

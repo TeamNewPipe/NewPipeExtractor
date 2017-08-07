@@ -1,4 +1,4 @@
-package org.schabi.newpipe.extractor.channel;
+package org.schabi.newpipe.extractor.user;
 
 import org.schabi.newpipe.extractor.InfoItem;
 
@@ -6,7 +6,7 @@ import org.schabi.newpipe.extractor.InfoItem;
  * Created by Christian Schabesberger on 11.02.17.
  *
  * Copyright (C) Christian Schabesberger 2017 <chris.schabesberger@mailbox.org>
- * ChannelInfoItem.java is part of NewPipe.
+ * UserInfoItem.java is part of NewPipe.
  *
  * NewPipe is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -22,14 +22,14 @@ import org.schabi.newpipe.extractor.InfoItem;
  * along with NewPipe.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-public class ChannelInfoItem extends InfoItem {
+public class UserInfoItem extends InfoItem {
 
     public String thumbnail_url;
     public String description;
     public long subscriber_count = -1;
     public long stream_count = -1;
 
-    public ChannelInfoItem() {
-        super(InfoType.CHANNEL);
+    public UserInfoItem() {
+        super(InfoType.USER);
     }
 }

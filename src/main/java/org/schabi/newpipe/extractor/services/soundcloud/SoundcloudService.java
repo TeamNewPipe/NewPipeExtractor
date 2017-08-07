@@ -3,11 +3,11 @@ package org.schabi.newpipe.extractor.services.soundcloud;
 import org.schabi.newpipe.extractor.StreamingService;
 import org.schabi.newpipe.extractor.SuggestionExtractor;
 import org.schabi.newpipe.extractor.UrlIdHandler;
-import org.schabi.newpipe.extractor.channel.ChannelExtractor;
 import org.schabi.newpipe.extractor.exceptions.ExtractionException;
 import org.schabi.newpipe.extractor.playlist.PlaylistExtractor;
 import org.schabi.newpipe.extractor.search.SearchEngine;
 import org.schabi.newpipe.extractor.stream.StreamExtractor;
+import org.schabi.newpipe.extractor.user.UserExtractor;
 
 import java.io.IOException;
 
@@ -28,8 +28,8 @@ public class SoundcloudService extends StreamingService {
     }
 
     @Override
-    public UrlIdHandler getChannelUrlIdHandler() {
-        return SoundcloudChannelUrlIdHandler.getInstance();
+    public UrlIdHandler getUserUrlIdHandler() {
+        return SoundcloudUserUrlIdHandler.getInstance();
     }
 
     @Override
@@ -44,8 +44,8 @@ public class SoundcloudService extends StreamingService {
     }
 
     @Override
-    public ChannelExtractor getChannelExtractor(String url, String nextStreamsUrl) throws IOException, ExtractionException {
-        return new SoundcloudChannelExtractor(this, url, nextStreamsUrl);
+    public UserExtractor getUserExtractor(String url, String nextStreamsUrl) throws IOException, ExtractionException {
+        return new SoundcloudUserExtractor(this, url, nextStreamsUrl);
     }
 
     @Override

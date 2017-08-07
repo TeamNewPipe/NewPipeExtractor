@@ -14,7 +14,7 @@ import java.util.EnumSet;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
-import static org.schabi.newpipe.extractor.ServiceList.Youtube;
+import static org.schabi.newpipe.extractor.ServiceList.YouTube;
 
 
 /*
@@ -46,7 +46,7 @@ public class YoutubeSearchEngineStreamTest {
     @Before
     public void setUp() throws Exception {
         NewPipe.init(Downloader.getInstance());
-        SearchEngine engine = Youtube.getService().getSearchEngine();
+        SearchEngine engine = YouTube.getService().getSearchEngine();
 
         // Youtube will suggest "results" instead of "rsults",
         // keep in mind that the suggestions can change by country (the parameter "de")

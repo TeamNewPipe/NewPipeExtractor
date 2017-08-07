@@ -10,7 +10,7 @@ import org.schabi.newpipe.extractor.exceptions.ExtractionException;
 import java.io.IOException;
 
 import static org.junit.Assert.assertFalse;
-import static org.schabi.newpipe.extractor.ServiceList.Youtube;
+import static org.schabi.newpipe.extractor.ServiceList.YouTube;
 
 /*
  * Created by Christian Schabesberger on 18.11.16.
@@ -41,7 +41,7 @@ public class YoutubeSuggestionExtractorTest {
     @Before
     public void setUp() throws Exception {
         NewPipe.init(Downloader.getInstance());
-        suggestionExtractor = Youtube.getService().getSuggestionExtractor();
+        suggestionExtractor = YouTube.getService().getSuggestionExtractor();
     }
 
     @Test

@@ -195,7 +195,7 @@ public class StreamInfo extends Info {
             streamInfo.addException(e);
         }
         try {
-            streamInfo.channel_url = extractor.getChannelUrl();
+            streamInfo.user_url = extractor.getUserUrl();
         } catch (Exception e) {
             streamInfo.addException(e);
         }
@@ -275,7 +275,7 @@ public class StreamInfo extends Info {
     public long view_count = -1;
 
     public String uploader_thumbnail_url;
-    public String channel_url;
+    public String user_url;
     public String description;
 
     public List<VideoStream> video_streams;

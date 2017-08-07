@@ -37,7 +37,7 @@ public abstract class Extractor {
     }
 
     /**
-     * @return a {@link UrlIdHandler} of the current extractor type (e.g. a ChannelExtractor should return a channel url handler).
+     * @return a {@link UrlIdHandler} of the current extractor type (e.g. a UserExtractor should return a user url handler).
      */
     protected abstract UrlIdHandler getUrlIdHandler() throws ParsingException;
 

@@ -1,4 +1,4 @@
-package org.schabi.newpipe.extractor.channel;
+package org.schabi.newpipe.extractor.user;
 
 import org.schabi.newpipe.extractor.exceptions.ParsingException;
 
@@ -6,7 +6,7 @@ import org.schabi.newpipe.extractor.exceptions.ParsingException;
  * Created by Christian Schabesberger on 12.02.17.
  *
  * Copyright (C) Christian Schabesberger 2017 <chris.schabesberger@mailbox.org>
- * ChannelInfoItemExtractor.java is part of NewPipe.
+ * UserInfoItemExtractor.java is part of NewPipe.
  *
  * NewPipe is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -22,9 +22,9 @@ import org.schabi.newpipe.extractor.exceptions.ParsingException;
  * along with NewPipe.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-public interface ChannelInfoItemExtractor {
+public interface UserInfoItemExtractor {
     String getThumbnailUrl() throws ParsingException;
-    String getChannelName() throws ParsingException;
+    String getUserName() throws ParsingException;
     String getWebPageUrl() throws ParsingException;
     String getDescription() throws ParsingException;
     long getSubscriberCount() throws ParsingException;

@@ -15,8 +15,8 @@ public class YoutubePlaylistUrlIdHandler implements UrlIdHandler {
     }
 
     @Override
-    public String getUrl(String listId) {
-        return "https://www.youtube.com/playlist?list=" + listId;
+    public String getUrl(String id) {
+        return "https://www.youtube.com/playlist?list=" + id;
     }
 
     @Override
@@ -34,9 +34,9 @@ public class YoutubePlaylistUrlIdHandler implements UrlIdHandler {
     }
 
     @Override
-    public boolean acceptUrl(String videoUrl) {
-        final boolean hasNotEmptyUrl = videoUrl != null && !videoUrl.isEmpty();
-        final boolean isYoutubeDomain = hasNotEmptyUrl && (videoUrl.contains("youtube") || videoUrl.contains("youtu.be"));
-        return isYoutubeDomain && videoUrl.contains("list=");
+    public boolean acceptUrl(String url) {
+        final boolean hasNotEmptyUrl = url != null && !url.isEmpty();
+        final boolean isYoutubeDomain = hasNotEmptyUrl && (url.contains("youtube") || url.contains("youtu.be"));
+        return isYoutubeDomain && url.contains("list=");
     }
 }

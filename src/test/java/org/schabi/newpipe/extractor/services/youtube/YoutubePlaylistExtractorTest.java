@@ -9,7 +9,7 @@ import org.schabi.newpipe.extractor.playlist.PlaylistExtractor;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
-import static org.schabi.newpipe.extractor.ServiceList.Youtube;
+import static org.schabi.newpipe.extractor.ServiceList.YouTube;
 
 /**
  * Test for {@link PlaylistExtractor}
@@ -21,7 +21,7 @@ public class YoutubePlaylistExtractorTest {
     @Before
     public void setUp() throws Exception {
         NewPipe.init(Downloader.getInstance());
-        extractor = Youtube.getService()
+        extractor = YouTube.getService()
                 .getPlaylistExtractor("https://www.youtube.com/playlist?list=PL7XlqX4npddfrdpMCxBnNZXg2GFll7t5y");
     }
 
