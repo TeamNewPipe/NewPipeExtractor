@@ -8,7 +8,7 @@ import org.schabi.newpipe.extractor.utils.Parser;
  * Created by Christian Schabesberger on 25.07.16.
  *
  * Copyright (C) Christian Schabesberger 2016 <chris.schabesberger@mailbox.org>
- * YoutubeChannelUrlIdHandler.java is part of NewPipe.
+ * YoutubeUserUrlIdHandler.java is part of NewPipe.
  *
  * NewPipe is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -24,35 +24,35 @@ import org.schabi.newpipe.extractor.utils.Parser;
  * along with NewPipe.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-public class YoutubeChannelUrlIdHandler implements UrlIdHandler {
+public class YoutubeUserUrlIdHandler implements UrlIdHandler {
 
-    private static final YoutubeChannelUrlIdHandler instance = new YoutubeChannelUrlIdHandler();
+    private static final YoutubeUserUrlIdHandler instance = new YoutubeUserUrlIdHandler();
     private static final String ID_PATTERN = "/(user/[A-Za-z0-9_-]*|channel/[A-Za-z0-9_-]*)";
 
-    public static YoutubeChannelUrlIdHandler getInstance() {
+    public static YoutubeUserUrlIdHandler getInstance() {
         return instance;
     }
 
     @Override
-    public String getUrl(String channelId) {
-        return "https://www.youtube.com/" + channelId;
+    public String getUrl(String id) {
+        return "https://www.youtube.com/" + id;
     }
 
     @Override
-    public String getId(String siteUrl) throws ParsingException {
-        return Parser.matchGroup1(ID_PATTERN, siteUrl);
+    public String getId(String url) throws ParsingException {
+        return Parser.matchGroup1(ID_PATTERN, url);
     }
 
     @Override
-    public String cleanUrl(String siteUrl) throws ParsingException {
-        return getUrl(getId(siteUrl));
+    public String cleanUrl(String complexUrl) throws ParsingException {
+        return getUrl(getId(complexUrl));
     }
 
     @Override
-    public boolean acceptUrl(String videoUrl) {
-        return (videoUrl.contains("youtube") ||
-                videoUrl.contains("youtu.be")) &&
-                (videoUrl.contains("/user/") ||
-                        videoUrl.contains("/channel/"));
+    public boolean acceptUrl(String url) {
+        return (url.contains("youtube") ||
+                url.contains("youtu.be")) &&
+                (url.contains("/user/") ||
+                        url.contains("/channel/"));
     }
 }

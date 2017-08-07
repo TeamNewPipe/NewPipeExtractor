@@ -12,7 +12,7 @@ import org.schabi.newpipe.extractor.stream.VideoStream;
 import java.io.IOException;
 
 import static org.junit.Assert.assertTrue;
-import static org.schabi.newpipe.extractor.ServiceList.Youtube;
+import static org.schabi.newpipe.extractor.ServiceList.YouTube;
 
 /**
  * Test for {@link YoutubeStreamUrlIdHandler}
@@ -24,7 +24,7 @@ public class YoutubeStreamExtractorRestrictedTest {
     @Before
     public void setUp() throws Exception {
         NewPipe.init(Downloader.getInstance());
-        extractor = Youtube.getService()
+        extractor = YouTube.getService()
                 .getStreamExtractor("https://www.youtube.com/watch?v=i6JTvzrpBy0");
     }
 
@@ -36,7 +36,7 @@ public class YoutubeStreamExtractorRestrictedTest {
 
     @Test
     public void testGetValidTimeStamp() throws IOException, ExtractionException {
-        StreamExtractor extractor= Youtube.getService()
+        StreamExtractor extractor= YouTube.getService()
                 .getStreamExtractor("https://youtu.be/FmG385_uUys?t=174");
         assertTrue(Integer.toString(extractor.getTimeStamp()),
                 extractor.getTimeStamp() == 174);

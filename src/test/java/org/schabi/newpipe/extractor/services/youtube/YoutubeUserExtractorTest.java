@@ -4,12 +4,12 @@ import org.junit.Before;
 import org.junit.Test;
 import org.schabi.newpipe.Downloader;
 import org.schabi.newpipe.extractor.NewPipe;
-import org.schabi.newpipe.extractor.channel.ChannelExtractor;
+import org.schabi.newpipe.extractor.user.UserExtractor;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
-import static org.schabi.newpipe.extractor.ServiceList.Youtube;
+import static org.schabi.newpipe.extractor.ServiceList.YouTube;
 
 /*
  * Created by Christian Schabesberger on 12.09.16.
@@ -32,18 +32,18 @@ import static org.schabi.newpipe.extractor.ServiceList.Youtube;
  */
 
 /**
- * Test for {@link ChannelExtractor}
+ * Test for {@link UserExtractor}
  */
 
-public class YoutubeChannelExtractorTest  {
+public class YoutubeUserExtractorTest  {
 
-    ChannelExtractor extractor;
+    UserExtractor extractor;
 
     @Before
     public void setUp() throws Exception {
         NewPipe.init(Downloader.getInstance());
-        extractor = Youtube.getService()
-                .getChannelExtractor("https://www.youtube.com/channel/UCYJ61XIK64sp6ZFFS8sctxw");
+        extractor = YouTube.getService()
+                .getUserExtractor("https://www.youtube.com/channel/UCYJ61XIK64sp6ZFFS8sctxw");
     }
 
     @Test
@@ -52,8 +52,8 @@ public class YoutubeChannelExtractorTest  {
     }
 
     @Test
-    public void testGetChannelName() throws Exception {
-        assertEquals(extractor.getChannelName(), "Gronkh");
+    public void testGetUserName() throws Exception {
+        assertEquals(extractor.getUserName(), "Gronkh");
     }
 
     @Test

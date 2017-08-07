@@ -15,7 +15,7 @@ import java.io.IOException;
 
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
-import static org.schabi.newpipe.extractor.ServiceList.Youtube;
+import static org.schabi.newpipe.extractor.ServiceList.YouTube;
 
 /*
  * Created by Christian Schabesberger on 30.12.15.
@@ -47,7 +47,7 @@ public class YoutubeStreamExtractorDefaultTest {
     @Before
     public void setUp() throws Exception {
         NewPipe.init(Downloader.getInstance());
-        extractor = Youtube.getService().getStreamExtractor("https://www.youtube.com/watch?v=YQHsXMglC9A");
+        extractor = YouTube.getService().getStreamExtractor("https://www.youtube.com/watch?v=YQHsXMglC9A");
     }
 
     @Test
@@ -58,7 +58,7 @@ public class YoutubeStreamExtractorDefaultTest {
 
     @Test
     public void testGetValidTimeStamp() throws IOException, ExtractionException {
-        StreamExtractor extractor = Youtube.getService().getStreamExtractor("https://youtu.be/FmG385_uUys?t=174");
+        StreamExtractor extractor = YouTube.getService().getStreamExtractor("https://youtu.be/FmG385_uUys?t=174");
         assertTrue(Integer.toString(extractor.getTimeStamp()),
                 extractor.getTimeStamp() == 174);
     }
@@ -95,8 +95,8 @@ public class YoutubeStreamExtractorDefaultTest {
     }
 
     @Test
-    public void testGetChannelUrl() throws ParsingException {
-        assertTrue(extractor.getChannelUrl().length() > 0);
+    public void testGetUserlUrl() throws ParsingException {
+        assertTrue(extractor.getUserUrl().length() > 0);
     }
 
     @Test

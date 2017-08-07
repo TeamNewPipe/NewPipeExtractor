@@ -57,9 +57,9 @@ public class YoutubeSearchEngine extends SearchEngine {
         String url = "https://www.youtube.com/results"
                 + "?q=" + URLEncoder.encode(query, CHARSET_UTF_8)
                 + "&page=" + Integer.toString(page + 1);
-        if (filter.contains(Filter.STREAM) && !filter.contains(Filter.CHANNEL)) {
+        if (filter.contains(Filter.STREAM) && !filter.contains(Filter.USER)) {
             url += "&sp=EgIQAQ%253D%253D";
-        } else if (!filter.contains(Filter.STREAM) && filter.contains(Filter.CHANNEL)) {
+        } else if (!filter.contains(Filter.STREAM) && filter.contains(Filter.USER)) {
             url += "&sp=EgIQAg%253D%253D";
         }
 
@@ -104,7 +104,7 @@ public class YoutubeSearchEngine extends SearchEngine {
             } else if ((el = item.select("div[class*=\"yt-lockup-video\"]").first()) != null) {
                 collector.commit(new YoutubeStreamInfoItemExtractor(el));
             } else if ((el = item.select("div[class*=\"yt-lockup-channel\"]").first()) != null) {
-                collector.commit(new YoutubeChannelInfoItemExtractor(el));
+                collector.commit(new YoutubeUserInfoItemExtractor(el));
             } else {
                 // noinspection ConstantConditions
                 // simply ignore not known items

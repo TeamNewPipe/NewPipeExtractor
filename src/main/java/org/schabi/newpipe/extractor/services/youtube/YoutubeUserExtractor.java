@@ -9,13 +9,13 @@ import org.jsoup.nodes.Element;
 import org.schabi.newpipe.extractor.Downloader;
 import org.schabi.newpipe.extractor.NewPipe;
 import org.schabi.newpipe.extractor.StreamingService;
-import org.schabi.newpipe.extractor.channel.ChannelExtractor;
 import org.schabi.newpipe.extractor.exceptions.ExtractionException;
 import org.schabi.newpipe.extractor.exceptions.ParsingException;
 import org.schabi.newpipe.extractor.exceptions.ReCaptchaException;
 import org.schabi.newpipe.extractor.stream.StreamInfoItemCollector;
 import org.schabi.newpipe.extractor.stream.StreamInfoItemExtractor;
 import org.schabi.newpipe.extractor.stream.StreamType;
+import org.schabi.newpipe.extractor.user.UserExtractor;
 import org.schabi.newpipe.extractor.utils.Parser;
 import org.schabi.newpipe.extractor.utils.Utils;
 
@@ -25,7 +25,7 @@ import java.io.IOException;
  * Created by Christian Schabesberger on 25.07.16.
  *
  * Copyright (C) Christian Schabesberger 2016 <chris.schabesberger@mailbox.org>
- * YoutubeChannelExtractor.java is part of NewPipe.
+ * YoutubeUserExtractor.java is part of NewPipe.
  *
  * NewPipe is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -42,7 +42,7 @@ import java.io.IOException;
  */
 
 @SuppressWarnings("WeakerAccess")
-public class YoutubeChannelExtractor extends ChannelExtractor {
+public class YoutubeUserExtractor extends UserExtractor {
     private static final String CHANNEL_FEED_BASE = "https://www.youtube.com/feeds/videos.xml?channel_id=";
     private static final String CHANNEL_URL_PARAMETERS = "/videos?view=0&flow=list&sort=dd&live_view=10000";
 
@@ -52,7 +52,7 @@ public class YoutubeChannelExtractor extends ChannelExtractor {
      */
     private Document nextStreamsAjax;
 
-    public YoutubeChannelExtractor(StreamingService service, String url, String nextStreamsUrl) throws IOException, ExtractionException {
+    public YoutubeUserExtractor(StreamingService service, String url, String nextStreamsUrl) throws IOException, ExtractionException {
         super(service, url, nextStreamsUrl);
     }
 
@@ -69,7 +69,7 @@ public class YoutubeChannelExtractor extends ChannelExtractor {
     }
 
     @Override
-    public String getChannelId() throws ParsingException {
+    public String getUserId() throws ParsingException {
         try {
             return getUrlIdHandler().getId(getCleanUrl());
         } catch (Exception e) {
@@ -78,7 +78,7 @@ public class YoutubeChannelExtractor extends ChannelExtractor {
     }
 
     @Override
-    public String getChannelName() throws ParsingException {
+    public String getUserName() throws ParsingException {
         try {
             return doc.select("span[class=\"qualified-channel-title-text\"]").first().select("a").first().text();
         } catch (Exception e) {
@@ -239,7 +239,7 @@ public class YoutubeChannelExtractor extends ChannelExtractor {
 
                     @Override
                     public String getUploader() throws ParsingException {
-                        return getChannelName();
+                        return getUserName();
                     }
 
                     @Override

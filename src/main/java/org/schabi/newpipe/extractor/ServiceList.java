@@ -7,7 +7,7 @@ import org.schabi.newpipe.extractor.services.youtube.YoutubeService;
  * A list of supported services.
  */
 public enum ServiceList {
-    Youtube(new YoutubeService(0, "Youtube")),
+    YouTube(new YoutubeService(0, "YouTube")),
     SoundCloud(new SoundcloudService(1, "SoundCloud"));
 //  DailyMotion(new DailyMotionService(2, "DailyMotion"));
 

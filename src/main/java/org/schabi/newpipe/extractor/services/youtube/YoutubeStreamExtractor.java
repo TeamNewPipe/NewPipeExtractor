@@ -542,7 +542,7 @@ public class YoutubeStreamExtractor extends StreamExtractor {
     }
 
     @Override
-    public String getChannelUrl() throws ParsingException {
+    public String getUserUrl() throws ParsingException {
         try {
             return doc.select("div[class=\"yt-user-info\"]").first().children()
                     .select("a").first().attr("abs:href");

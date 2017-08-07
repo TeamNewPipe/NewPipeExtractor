@@ -1,4 +1,4 @@
-package org.schabi.newpipe.extractor.channel;
+package org.schabi.newpipe.extractor.user;
 
 import org.schabi.newpipe.extractor.ListExtractor;
 import org.schabi.newpipe.extractor.StreamingService;
@@ -12,7 +12,7 @@ import java.io.IOException;
  * Created by Christian Schabesberger on 25.07.16.
  *
  * Copyright (C) Christian Schabesberger 2016 <chris.schabesberger@mailbox.org>
- * ChannelExtractor.java is part of NewPipe.
+ * UserExtractor.java is part of NewPipe.
  *
  * NewPipe is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -28,19 +28,19 @@ import java.io.IOException;
  * along with NewPipe.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-public abstract class ChannelExtractor extends ListExtractor {
+public abstract class UserExtractor extends ListExtractor {
 
-    public ChannelExtractor(StreamingService service, String url, String nextStreamsUrl) throws IOException, ExtractionException {
+    public UserExtractor(StreamingService service, String url, String nextStreamsUrl) throws IOException, ExtractionException {
         super(service, url, nextStreamsUrl);
     }
 
     @Override
     protected UrlIdHandler getUrlIdHandler() throws ParsingException {
-        return getService().getChannelUrlIdHandler();
+        return getService().getUserUrlIdHandler();
     }
 
-    public abstract String getChannelId() throws ParsingException;
-    public abstract String getChannelName() throws ParsingException;
+    public abstract String getUserId() throws ParsingException;
+    public abstract String getUserName() throws ParsingException;
     public abstract String getAvatarUrl() throws ParsingException;
     public abstract String getBannerUrl() throws ParsingException;
     public abstract String getFeedUrl() throws ParsingException;

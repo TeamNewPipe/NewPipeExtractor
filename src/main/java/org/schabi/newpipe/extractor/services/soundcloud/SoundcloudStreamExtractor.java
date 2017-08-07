@@ -215,7 +215,7 @@ public class SoundcloudStreamExtractor extends StreamExtractor {
     }
 
     @Override
-    public String getChannelUrl() {
+    public String getUserUrl() {
         return track.getJSONObject("user").getString("permalink_url");
     }
 

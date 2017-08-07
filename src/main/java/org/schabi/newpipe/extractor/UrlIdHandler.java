@@ -24,14 +24,14 @@ import org.schabi.newpipe.extractor.exceptions.ParsingException;
 
 public interface UrlIdHandler {
 
-    String getUrl(String videoId) throws ParsingException;
-    String getId(String siteUrl) throws ParsingException;
-    String cleanUrl(String siteUrl) throws ParsingException;
+    String getUrl(String id) throws ParsingException;
+    String getId(String url) throws ParsingException;
+    String cleanUrl(String complexUrl) throws ParsingException;
 
     /**
      * When a VIEW_ACTION is caught this function will test if the url delivered within the calling
      * Intent was meant to be watched with this Service.
      * Return false if this service shall not allow to be called through ACTIONs.
      */
-    boolean acceptUrl(String videoUrl);
+    boolean acceptUrl(String url);
 }

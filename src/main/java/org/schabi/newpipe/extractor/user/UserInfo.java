@@ -1,4 +1,4 @@
-package org.schabi.newpipe.extractor.channel;
+package org.schabi.newpipe.extractor.user;
 
 import org.schabi.newpipe.extractor.ListExtractor.NextItemsResult;
 import org.schabi.newpipe.extractor.ListInfo;
@@ -16,7 +16,7 @@ import java.util.ArrayList;
  * Created by Christian Schabesberger on 31.07.16.
  *
  * Copyright (C) Christian Schabesberger 2016 <chris.schabesberger@mailbox.org>
- * ChannelInfo.java is part of NewPipe.
+ * UserInfo.java is part of NewPipe.
  *
  * NewPipe is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -32,36 +32,36 @@ import java.util.ArrayList;
  * along with NewPipe.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-public class ChannelInfo extends ListInfo {
+public class UserInfo extends ListInfo {
 
     public static NextItemsResult getMoreItems(ServiceList serviceItem, String nextStreamsUrl) throws IOException, ExtractionException {
         return getMoreItems(serviceItem.getService(), nextStreamsUrl);
     }
 
     public static NextItemsResult getMoreItems(StreamingService service, String nextStreamsUrl) throws IOException, ExtractionException {
-        return service.getChannelExtractor(null, nextStreamsUrl).getNextStreams();
+        return service.getUserExtractor(null, nextStreamsUrl).getNextStreams();
     }
 
-    public static ChannelInfo getInfo(String url) throws IOException, ExtractionException {
+    public static UserInfo getInfo(String url) throws IOException, ExtractionException {
         return getInfo(NewPipe.getServiceByUrl(url), url);
     }
 
-    public static ChannelInfo getInfo(ServiceList serviceItem, String url) throws IOException, ExtractionException {
+    public static UserInfo getInfo(ServiceList serviceItem, String url) throws IOException, ExtractionException {
         return getInfo(serviceItem.getService(), url);
     }
 
-    public static ChannelInfo getInfo(StreamingService service, String url) throws IOException, ExtractionException {
-        return getInfo(service.getChannelExtractor(url));
+    public static UserInfo getInfo(StreamingService service, String url) throws IOException, ExtractionException {
+        return getInfo(service.getUserExtractor(url));
     }
 
-    public static ChannelInfo getInfo(ChannelExtractor extractor) throws ParsingException {
-        ChannelInfo info = new ChannelInfo();
+    public static UserInfo getInfo(UserExtractor extractor) throws ParsingException {
+        UserInfo info = new UserInfo();
 
         // important data
         info.service_id = extractor.getServiceId();
         info.url = extractor.getCleanUrl();
-        info.id = extractor.getChannelId();
-        info.name = extractor.getChannelName();
+        info.id = extractor.getUserId();
+        info.name = extractor.getUserName();
 
         try {
             info.avatar_url = extractor.getAvatarUrl();

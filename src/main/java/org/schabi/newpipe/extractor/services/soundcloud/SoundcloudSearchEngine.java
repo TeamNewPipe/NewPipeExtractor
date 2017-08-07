@@ -27,9 +27,9 @@ public class SoundcloudSearchEngine extends SearchEngine {
 
         String url = "https://api-v2.soundcloud.com/search";
 
-        if (filter.contains(Filter.STREAM) && !filter.contains(Filter.CHANNEL)) {
+        if (filter.contains(Filter.STREAM) && !filter.contains(Filter.USER)) {
             url += "/tracks";
-        } else if (!filter.contains(Filter.STREAM) && filter.contains(Filter.CHANNEL)) {
+        } else if (!filter.contains(Filter.STREAM) && filter.contains(Filter.USER)) {
             url += "/users";
         }
 
@@ -50,7 +50,7 @@ public class SoundcloudSearchEngine extends SearchEngine {
             JSONObject searchResult = searchCollection.getJSONObject(i);
             String kind = searchResult.getString("kind");
             if (kind.equals("user")) {
-                collector.commit(new SoundcloudChannelInfoItemExtractor(searchResult));
+                collector.commit(new SoundcloudUserInfoItemExtractor(searchResult));
             } else if (kind.equals("track")) {
                 collector.commit(new SoundcloudStreamInfoItemExtractor(searchResult));
             }
