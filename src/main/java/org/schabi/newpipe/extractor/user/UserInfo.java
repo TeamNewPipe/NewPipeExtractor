@@ -90,6 +90,11 @@ public class UserInfo extends ListInfo {
         } catch (Exception e) {
             info.errors.add(e);
         }
+        try {
+            info.description = extractor.getDescription();
+        } catch (Exception e) {
+            info.errors.add(e);
+        }
 
         // Lists can be null if a exception was thrown during extraction
         if (info.related_streams == null) info.related_streams = new ArrayList<>();
@@ -103,4 +108,5 @@ public class UserInfo extends ListInfo {
     public String banner_url;
     public String feed_url;
     public long subscriber_count = -1;
+    public String description = "";
 }

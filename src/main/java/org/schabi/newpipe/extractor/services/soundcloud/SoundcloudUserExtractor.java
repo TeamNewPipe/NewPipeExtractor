@@ -99,4 +99,9 @@ public class SoundcloudUserExtractor extends UserExtractor {
 
         return new NextItemsResult(collector.getItemList(), nextStreamsUrl);
     }
+
+    @Override
+    public String getDescription() throws ParsingException {
+        return user.getString("description");
+    }
 }

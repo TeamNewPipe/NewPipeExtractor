@@ -45,5 +45,6 @@ public abstract class UserExtractor extends ListExtractor {
     public abstract String getBannerUrl() throws ParsingException;
     public abstract String getFeedUrl() throws ParsingException;
     public abstract long getSubscriberCount() throws ParsingException;
+    public abstract String getDescription() throws ParsingException;
 
 }

@@ -57,6 +57,11 @@ public class YoutubeUserExtractorTest  {
     }
 
     @Test
+    public void testGetDescription() throws Exception {
+        assertEquals(extractor.getDescription(), "★ ★ ★ KLICK MICH HART, DU SAU! :D ★ ★ ★ Zart im Schmelz und süffig im Abgang. Ungebremster Spieltrieb seit 1896. Tägliche Folgen nonstop seit dem 01.04.2010!...");
+    }
+
+    @Test
     public void testGetAvatarUrl() throws Exception {
         assertTrue(extractor.getAvatarUrl(), extractor.getAvatarUrl().contains("yt3"));
     }
