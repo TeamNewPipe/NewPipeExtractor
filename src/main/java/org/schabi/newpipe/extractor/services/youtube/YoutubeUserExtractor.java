@@ -120,6 +120,15 @@ public class YoutubeUserExtractor extends UserExtractor {
     }
 
     @Override
+    public String getDescription() throws ParsingException {
+        try {
+            return doc.select("meta[name=\"description\"]").first().attr("content");
+        } catch(Exception e) {
+            throw new ParsingException("Could not get channel name", e);
+        }
+    }
+
+    @Override
     public String getFeedUrl() throws ParsingException {
         try {
             String channelId = doc.getElementsByClass("yt-uix-subscription-button").first().attr("data-channel-external-id");
