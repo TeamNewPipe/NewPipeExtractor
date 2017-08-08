@@ -10,9 +10,7 @@ import org.schabi.newpipe.extractor.exceptions.ParsingException;
 import java.util.ArrayList;
 import java.util.List;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.fail;
-import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.*;
 
 /**
  * Test for {@link YoutubeStreamUrlIdHandler}
@@ -43,18 +41,19 @@ public class YoutubeStreamUrlIdHandlerTest {
         invalidUrls.add("https://www.youtube.com/watch?v=jZViOEv90d");
         invalidUrls.add("https://www.youtube.com/watchjZViOEv90d");
         invalidUrls.add("https://www.youtube.com/");
-        for(String invalidUrl: invalidUrls) {
+        for (String invalidUrl : invalidUrls) {
             Throwable exception = null;
             try {
                 urlIdHandler.getId(invalidUrl);
             } catch (ParsingException e) {
                 exception = e;
             }
-            if(exception == null) {
+            if (exception == null) {
                 fail("Expected ParsingException for url: " + invalidUrl);
             }
         }
     }
+
     @Test
     public void getId() throws Exception {
         assertEquals("jZViOEv90dI", urlIdHandler.getId("https://www.youtube.com/watch?v=jZViOEv90dI"));
@@ -84,7 +83,7 @@ public class YoutubeStreamUrlIdHandlerTest {
         String sharedId = "7JIArTByb3E";
         String realId = "Q7JsK50NGaA";
         assertEquals(realId, urlIdHandler.getId("vnd.youtube://www.YouTube.com/shared?ci=" + sharedId + "&feature=twitter-deep-link"));
-        assertEquals(realId, urlIdHandler.getId("vnd.youtube://www.youtube.com/shared?ci=" + sharedId ));
+        assertEquals(realId, urlIdHandler.getId("vnd.youtube://www.youtube.com/shared?ci=" + sharedId));
         assertEquals(realId, urlIdHandler.getId("https://www.youtube.com/shared?ci=" + sharedId));
     }
 
@@ -111,7 +110,7 @@ public class YoutubeStreamUrlIdHandlerTest {
 
         String sharedId = "8A940MXKFmQ";
         assertTrue(urlIdHandler.acceptUrl("vnd.youtube://www.youtube.com/shared?ci=" + sharedId + "&feature=twitter-deep-link"));
-        assertTrue(urlIdHandler.acceptUrl("vnd.youtube://www.youtube.com/shared?ci=" + sharedId ));
+        assertTrue(urlIdHandler.acceptUrl("vnd.youtube://www.youtube.com/shared?ci=" + sharedId));
         assertTrue(urlIdHandler.acceptUrl("https://www.youtube.com/shared?ci=" + sharedId));
     }
 }

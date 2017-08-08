@@ -1,4 +1,4 @@
-package org.schabi.newpipe.extractor.services.youtube;
+package org.schabi.newpipe.extractor.services.soundcloud;
 
 import org.junit.Before;
 import org.junit.Ignore;
@@ -12,43 +12,22 @@ import org.schabi.newpipe.extractor.search.SearchResult;
 import java.util.EnumSet;
 
 import static org.junit.Assert.*;
-import static org.schabi.newpipe.extractor.ServiceList.YouTube;
-
-
-/*
- * Created by Christian Schabesberger on 29.12.15.
- *
- * Copyright (C) Christian Schabesberger 2015 <chris.schabesberger@mailbox.org>
- * YoutubeSearchEngineStreamTest.java is part of NewPipe.
- *
- * NewPipe is free software: you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation, either version 3 of the License, or
- * (at your option) any later version.
- *
- * NewPipe is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- *
- * You should have received a copy of the GNU General Public License
- * along with NewPipe.  If not, see <http://www.gnu.org/licenses/>.
- */
+import static org.schabi.newpipe.extractor.ServiceList.SoundCloud;
 
 /**
  * Test for {@link SearchEngine}
  */
-public class YoutubeSearchEngineUserTest {
+public class SoundcloudSearchEngineUserTest {
     private SearchResult result;
 
     @Before
     public void setUp() throws Exception {
         NewPipe.init(Downloader.getInstance());
-        SearchEngine engine = YouTube.getService().getSearchEngine();
+        SearchEngine engine = SoundCloud.getService().getSearchEngine();
 
-        // Youtube will suggest "gronkh" instead of "grrunkh"
-        // keep in mind that the suggestions can change by country (the parameter "de")
-        result = engine.search("grrunkh", 0, "de",
+        // SoundCloud will suggest "lil uzi vert" instead of "lill uzi vert"
+        // keep in mind that the suggestions can NOT change by country (the parameter "de")
+        result = engine.search("lill uzi vert", 0, "de",
                 EnumSet.of(SearchEngine.Filter.USER)).getSearchResult();
     }
 

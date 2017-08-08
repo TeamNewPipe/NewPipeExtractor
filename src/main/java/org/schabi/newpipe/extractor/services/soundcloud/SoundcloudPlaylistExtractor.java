@@ -53,7 +53,7 @@ public class SoundcloudPlaylistExtractor extends PlaylistExtractor {
 
     @Override
     public String getAvatarUrl() {
-        return playlist.getString("artwork_url");
+        return playlist.optString("artwork_url");
     }
 
     @Override

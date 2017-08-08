@@ -36,7 +36,7 @@ public class YoutubeStreamExtractorRestrictedTest {
 
     @Test
     public void testGetValidTimeStamp() throws IOException, ExtractionException {
-        StreamExtractor extractor= YouTube.getService()
+        StreamExtractor extractor = YouTube.getService()
                 .getStreamExtractor("https://youtu.be/FmG385_uUys?t=174");
         assertTrue(Integer.toString(extractor.getTimeStamp()),
                 extractor.getTimeStamp() == 174);
@@ -97,7 +97,7 @@ public class YoutubeStreamExtractorRestrictedTest {
 
     @Test
     public void testGetVideoStreams() throws IOException, ExtractionException {
-        for(VideoStream s : extractor.getVideoStreams()) {
+        for (VideoStream s : extractor.getVideoStreams()) {
             assertTrue(s.url,
                     s.url.contains(HTTPS));
             assertTrue(s.resolution.length() > 0);

@@ -1,6 +1,7 @@
 package org.schabi.newpipe.extractor.services.youtube;
 
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.schabi.newpipe.Downloader;
 import org.schabi.newpipe.extractor.NewPipe;
@@ -63,6 +64,7 @@ public class YoutubeSearchEngineAllTest {
         assertTrue(result.errors == null || result.errors.isEmpty());
     }
 
+    @Ignore
     @Test
     public void testSuggestion() {
         //todo write a real test

@@ -29,7 +29,7 @@ import org.schabi.newpipe.extractor.user.UserInfoItemExtractor;
  */
 
 public class InfoItemSearchCollector extends InfoItemCollector {
-    private String suggestion;
+    private String suggestion = "";
     private StreamInfoItemCollector streamCollector;
     private UserInfoItemCollector userCollector;
 
