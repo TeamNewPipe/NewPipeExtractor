@@ -127,7 +127,7 @@ public class YoutubeStreamExtractor extends StreamExtractor {
     }
 
     @Override
-    public String getUploader() throws ParsingException {
+    public String getUploaderName() throws ParsingException {
         try {
             if (playerArgs == null) {
                 return videoInfoPage.get("author");
@@ -199,7 +199,7 @@ public class YoutubeStreamExtractor extends StreamExtractor {
     }
 
     @Override
-    public String getUploaderThumbnailUrl() throws ParsingException {
+    public String getUploaderAvatarUrl() throws ParsingException {
         try {
             return doc.select("a[class*=\"yt-user-photo\"]").first()
                     .select("img").first()
@@ -460,18 +460,6 @@ public class YoutubeStreamExtractor extends StreamExtractor {
     }
 
     @Override
-    public String getAverageRating() throws ParsingException {
-        try {
-            if (playerArgs == null) {
-                return videoInfoPage.get("avg_rating");
-            }
-            return playerArgs.getString("avg_rating");
-        } catch (JSONException e) {
-            throw new ParsingException("Could not get Average rating", e);
-        }
-    }
-
-    @Override
     public int getLikeCount() throws ParsingException {
         String likesString = "";
         try {
@@ -542,7 +530,7 @@ public class YoutubeStreamExtractor extends StreamExtractor {
     }
 
     @Override
-    public String getUserUrl() throws ParsingException {
+    public String getUploaderUrl() throws ParsingException {
         try {
             return doc.select("div[class=\"yt-user-info\"]").first().children()
                     .select("a").first().attr("abs:href");

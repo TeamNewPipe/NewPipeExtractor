@@ -50,8 +50,8 @@ public class SoundcloudStreamExtractorDefaultTest {
     }
 
     @Test
-    public void testGetUploader() throws ParsingException {
-        assertEquals(extractor.getUploader(), "LIL UZI VERT");
+    public void testGetUploaderName() throws ParsingException {
+        assertEquals(extractor.getUploaderName(), "LIL UZI VERT");
     }
 
     @Test
@@ -71,8 +71,8 @@ public class SoundcloudStreamExtractorDefaultTest {
     }
 
     @Test
-    public void testGetUserUrl() throws ParsingException {
-        assertEquals(extractor.getUserUrl(), "http://soundcloud.com/liluzivert");
+    public void testGetUploaderUrl() throws ParsingException {
+        assertEquals(extractor.getUploaderUrl(), "http://soundcloud.com/liluzivert");
     }
 
     @Test
@@ -81,8 +81,8 @@ public class SoundcloudStreamExtractorDefaultTest {
     }
 
     @Test
-    public void testGetUploaderThumbnailUrl() throws ParsingException {
-        assertEquals(extractor.getUploaderThumbnailUrl(), "https://a1.sndcdn.com/images/default_avatar_large.png");
+    public void testGetUploaderAvatarUrl() throws ParsingException {
+        assertEquals(extractor.getUploaderAvatarUrl(), "https://a1.sndcdn.com/images/default_avatar_large.png");
     }
 
     @Test

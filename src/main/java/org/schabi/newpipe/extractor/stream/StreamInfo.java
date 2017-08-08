@@ -190,12 +190,12 @@ public class StreamInfo extends Info {
             streamInfo.addException(e);
         }
         try {
-            streamInfo.uploader = extractor.getUploader();
+            streamInfo.uploader_name = extractor.getUploaderName();
         } catch (Exception e) {
             streamInfo.addException(e);
         }
         try {
-            streamInfo.user_url = extractor.getUserUrl();
+            streamInfo.uploader_url = extractor.getUploaderUrl();
         } catch (Exception e) {
             streamInfo.addException(e);
         }
@@ -215,17 +215,12 @@ public class StreamInfo extends Info {
             streamInfo.addException(e);
         }
         try {
-            streamInfo.uploader_thumbnail_url = extractor.getUploaderThumbnailUrl();
+            streamInfo.uploader_avatar_url = extractor.getUploaderAvatarUrl();
         } catch (Exception e) {
             streamInfo.addException(e);
         }
         try {
             streamInfo.start_position = extractor.getTimeStamp();
-        } catch (Exception e) {
-            streamInfo.addException(e);
-        }
-        try {
-            streamInfo.average_rating = extractor.getAverageRating();
         } catch (Exception e) {
             streamInfo.addException(e);
         }
@@ -269,14 +264,18 @@ public class StreamInfo extends Info {
     }
 
     public StreamType stream_type;
-    public String uploader;
     public String thumbnail_url;
     public String upload_date;
-    public long view_count = -1;
+    public int duration = -1;
+    public int age_limit = -1;
 
-    public String uploader_thumbnail_url;
-    public String user_url;
-    public String description;
+    public long view_count = -1;
+    public int like_count = -1;
+    public int dislike_count = -1;
+
+    public String uploader_name;
+    public String uploader_url;
+    public String uploader_avatar_url;
 
     public List<VideoStream> video_streams;
     public List<AudioStream> audio_streams;
@@ -286,14 +285,10 @@ public class StreamInfo extends Info {
     // crawling such a file is not service dependent. Therefore getting audio only streams by yust
     // providing the dash mpd fille will be possible in the future.
     public String dashMpdUrl;
-    public int duration = -1;
 
-    public int age_limit = -1;
-    public int like_count = -1;
-    public int dislike_count = -1;
-    public String average_rating;
     public StreamInfoItem next_video;
     public List<InfoItem> related_streams;
     //in seconds. some metadata is not passed using a StreamInfo object!
     public int start_position = 0;
+    public String description = "";
 }

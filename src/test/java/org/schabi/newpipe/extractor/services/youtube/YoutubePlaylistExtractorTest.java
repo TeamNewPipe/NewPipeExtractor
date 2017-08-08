@@ -39,8 +39,8 @@ public class YoutubePlaylistExtractorTest {
     }
 
     @Test
-    public void testGetAvatarUrl() throws Exception {
-        assertTrue(extractor.getAvatarUrl(), extractor.getAvatarUrl().contains("yt"));
+    public void testGetThumbnailUrl() throws Exception {
+        assertTrue(extractor.getThumbnailUrl(), extractor.getThumbnailUrl().contains("yt"));
     }
 
     @Test

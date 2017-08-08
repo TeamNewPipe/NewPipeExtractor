@@ -21,7 +21,7 @@ public abstract class PlaylistExtractor extends ListExtractor {
 
     public abstract String getPlaylistId() throws ParsingException;
     public abstract String getPlaylistName() throws ParsingException;
-    public abstract String getAvatarUrl() throws ParsingException;
+    public abstract String getThumbnailUrl() throws ParsingException;
     public abstract String getBannerUrl() throws ParsingException;
     public abstract String getUploaderUrl() throws ParsingException;
     public abstract String getUploaderName() throws ParsingException;

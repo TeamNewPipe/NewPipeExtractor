@@ -57,7 +57,7 @@ public class SoundcloudStreamExtractor extends StreamExtractor {
     }
 
     @Override
-    public String getUploader() {
+    public String getUploaderName() {
         return track.getJSONObject("user").getString("username");
     }
 
@@ -82,7 +82,7 @@ public class SoundcloudStreamExtractor extends StreamExtractor {
     }
 
     @Override
-    public String getUploaderThumbnailUrl() {
+    public String getUploaderAvatarUrl() {
         return track.getJSONObject("user").getString("avatar_url");
     }
 
@@ -171,11 +171,6 @@ public class SoundcloudStreamExtractor extends StreamExtractor {
     }
 
     @Override
-    public String getAverageRating() {
-        return null;
-    }
-
-    @Override
     public int getLikeCount() {
         return track.getInt("likes_count");
     }
@@ -210,7 +205,7 @@ public class SoundcloudStreamExtractor extends StreamExtractor {
     }
 
     @Override
-    public String getUserUrl() {
+    public String getUploaderUrl() {
         return track.getJSONObject("user").getString("permalink_url");
     }
 

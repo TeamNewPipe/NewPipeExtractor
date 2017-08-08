@@ -58,8 +58,8 @@ public class YoutubeStreamExtractorRestrictedTest {
     }
 
     @Test
-    public void testGetUploader() throws ParsingException {
-        assertTrue(!extractor.getUploader().isEmpty());
+    public void testGetUploaderName() throws ParsingException {
+        assertTrue(!extractor.getUploaderName().isEmpty());
     }
 
     @Test
@@ -84,9 +84,9 @@ public class YoutubeStreamExtractorRestrictedTest {
     }
 
     @Test
-    public void testGetUploaderThumbnailUrl() throws ParsingException {
-        assertTrue(extractor.getUploaderThumbnailUrl(),
-                extractor.getUploaderThumbnailUrl().contains(HTTPS));
+    public void testGetUploaderAvatarUrl() throws ParsingException {
+        assertTrue(extractor.getUploaderAvatarUrl(),
+                extractor.getUploaderAvatarUrl().contains(HTTPS));
     }
 
     @Test

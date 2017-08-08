@@ -64,11 +64,11 @@ public class YoutubePlaylistExtractor extends PlaylistExtractor {
     }
 
     @Override
-    public String getAvatarUrl() throws ParsingException {
+    public String getThumbnailUrl() throws ParsingException {
         try {
             return doc.select("div[id=pl-header] div[class=pl-header-thumb] img").first().attr("abs:src");
         } catch (Exception e) {
-            throw new ParsingException("Could not get playlist avatar");
+            throw new ParsingException("Could not get playlist thumbnail");
         }
     }
 

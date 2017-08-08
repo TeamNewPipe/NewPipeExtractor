@@ -39,8 +39,8 @@ public class SoundcloudPlaylistExtractorTest {
     }
 
     @Test
-    public void testGetAvatarUrl() throws Exception {
-        assertEquals(extractor.getAvatarUrl(), "https://i1.sndcdn.com/artworks-000174203688-bweu12-large.jpg");
+    public void testGetThumbnailUrl() throws Exception {
+        assertEquals(extractor.getThumbnailUrl(), "https://i1.sndcdn.com/artworks-000174203688-bweu12-large.jpg");
     }
 
     @Test

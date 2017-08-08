@@ -124,7 +124,7 @@ public class YoutubeUserExtractor extends UserExtractor {
         try {
             return doc.select("meta[name=\"description\"]").first().attr("content");
         } catch(Exception e) {
-            throw new ParsingException("Could not get channel name", e);
+            throw new ParsingException("Could not get channel description", e);
         }
     }
 

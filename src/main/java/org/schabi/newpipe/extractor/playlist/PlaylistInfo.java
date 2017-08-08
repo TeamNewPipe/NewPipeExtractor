@@ -48,7 +48,7 @@ public class PlaylistInfo extends ListInfo {
             info.errors.add(e);
         }
         try {
-            info.avatar_url = extractor.getAvatarUrl();
+            info.thumbnail_url = extractor.getThumbnailUrl();
         } catch (Exception e) {
             info.errors.add(e);
         }
@@ -88,7 +88,7 @@ public class PlaylistInfo extends ListInfo {
         return info;
     }
 
-    public String avatar_url;
+    public String thumbnail_url;
     public String banner_url;
     public String uploader_url;
     public String uploader_name;
