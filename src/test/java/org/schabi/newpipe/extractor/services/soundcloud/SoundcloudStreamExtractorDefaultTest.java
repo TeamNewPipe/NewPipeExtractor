@@ -1,12 +1,5 @@
 package org.schabi.newpipe.extractor.services.soundcloud;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
-import static org.schabi.newpipe.extractor.ServiceList.SoundCloud;
-
-import java.io.IOException;
-
 import org.junit.Before;
 import org.junit.Test;
 import org.schabi.newpipe.Downloader;
@@ -16,6 +9,11 @@ import org.schabi.newpipe.extractor.exceptions.ParsingException;
 import org.schabi.newpipe.extractor.stream.StreamExtractor;
 import org.schabi.newpipe.extractor.stream.StreamInfoItemCollector;
 import org.schabi.newpipe.extractor.stream.StreamType;
+
+import java.io.IOException;
+
+import static org.junit.Assert.*;
+import static org.schabi.newpipe.extractor.ServiceList.SoundCloud;
 
 /**
  * Test for {@link StreamExtractor}

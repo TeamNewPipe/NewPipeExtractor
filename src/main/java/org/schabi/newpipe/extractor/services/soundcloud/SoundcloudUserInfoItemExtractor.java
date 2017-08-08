@@ -12,7 +12,7 @@ public class SoundcloudUserInfoItemExtractor implements UserInfoItemExtractor {
 
     @Override
     public String getThumbnailUrl() {
-        return searchResult.getString("avatar_url");
+        return searchResult.optString("avatar_url");
     }
 
     @Override
@@ -37,6 +37,6 @@ public class SoundcloudUserInfoItemExtractor implements UserInfoItemExtractor {
 
     @Override
     public String getDescription() {
-        return searchResult.getString("description");
+        return searchResult.optString("description");
     }
 }

@@ -45,7 +45,7 @@ public class SoundcloudStreamInfoItemExtractor implements StreamInfoItemExtracto
 
     @Override
     public String getThumbnailUrl() {
-        return searchResult.getString("artwork_url");
+        return searchResult.optString("artwork_url");
     }
 
     @Override

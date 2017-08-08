@@ -6,9 +6,7 @@ import org.schabi.newpipe.Downloader;
 import org.schabi.newpipe.extractor.NewPipe;
 import org.schabi.newpipe.extractor.user.UserExtractor;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.*;
 import static org.schabi.newpipe.extractor.ServiceList.YouTube;
 
 /*
@@ -35,7 +33,7 @@ import static org.schabi.newpipe.extractor.ServiceList.YouTube;
  * Test for {@link UserExtractor}
  */
 
-public class YoutubeUserExtractorTest  {
+public class YoutubeUserExtractorTest {
 
     UserExtractor extractor;
 
@@ -47,7 +45,7 @@ public class YoutubeUserExtractorTest  {
     }
 
     @Test
-    public void testGetDownloader()  throws Exception {
+    public void testGetDownloader() throws Exception {
         assertNotNull(NewPipe.getDownloader());
     }
 

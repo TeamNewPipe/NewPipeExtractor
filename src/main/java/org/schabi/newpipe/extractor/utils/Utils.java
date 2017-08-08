@@ -1,5 +1,7 @@
 package org.schabi.newpipe.extractor.utils;
 
+import org.schabi.newpipe.extractor.exceptions.ParsingException;
+
 public class Utils {
     private Utils() {
         //no instance
@@ -41,5 +43,21 @@ public class Utils {
             }
         }
         return false;
+    }
+
+    /**
+     * Check if the url matches the pattern.
+     *
+     * @param pattern the pattern that will be used to check the url
+     * @param url     the url to be tested
+     */
+    public static void checkUrl(String pattern, String url) throws ParsingException {
+        if (url == null || url.isEmpty()) {
+            throw new IllegalArgumentException("Url can't be null or empty");
+        }
+
+        if (!Parser.isMatch(pattern, url.toLowerCase())) {
+            throw new ParsingException("Url not suitable for this url handler");
+        }
     }
 }

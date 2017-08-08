@@ -1,17 +1,15 @@
 package org.schabi.newpipe.extractor.services.soundcloud;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.fail;
-
-import java.util.ArrayList;
-import java.util.List;
-
 import org.junit.Before;
 import org.junit.Test;
 import org.schabi.newpipe.Downloader;
 import org.schabi.newpipe.extractor.NewPipe;
 import org.schabi.newpipe.extractor.exceptions.ParsingException;
+
+import java.util.ArrayList;
+import java.util.List;
+
+import static org.junit.Assert.*;
 
 /**
  * Test for {@link SoundcloudStreamUrlIdHandler}
@@ -25,7 +23,7 @@ public class SoundcloudStreamUrlIdHandlerTest {
         NewPipe.init(Downloader.getInstance());
     }
 
-    @Test(expected = NullPointerException.class)
+    @Test(expected = IllegalArgumentException.class)
     public void getIdWithNullAsUrl() throws ParsingException {
         urlIdHandler.getId(null);
     }
@@ -36,18 +34,19 @@ public class SoundcloudStreamUrlIdHandlerTest {
         invalidUrls.add("https://soundcloud.com/liluzivert/t.e.s.t");
         invalidUrls.add("https://soundcloud.com/liluzivert/tracks");
         invalidUrls.add("https://soundcloud.com/");
-        for(String invalidUrl: invalidUrls) {
+        for (String invalidUrl : invalidUrls) {
             Throwable exception = null;
             try {
                 urlIdHandler.getId(invalidUrl);
             } catch (ParsingException e) {
                 exception = e;
             }
-            if(exception == null) {
+            if (exception == null) {
                 fail("Expected ParsingException for url: " + invalidUrl);
             }
         }
     }
+
     @Test
     public void getId() throws Exception {
         assertEquals("309689103", urlIdHandler.getId("https://soundcloud.com/liluzivert/15-ysl"));

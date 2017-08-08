@@ -118,7 +118,7 @@ public class YoutubeStreamExtractorDefaultTest {
 
     @Test
     public void testGetVideoStreams() throws IOException, ExtractionException {
-        for(VideoStream s : extractor.getVideoStreams()) {
+        for (VideoStream s : extractor.getVideoStreams()) {
             assertTrue(s.url,
                     s.url.contains(HTTPS));
             assertTrue(s.resolution.length() > 0);

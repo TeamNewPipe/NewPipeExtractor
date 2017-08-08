@@ -1,21 +1,19 @@
 package org.schabi.newpipe.extractor.services.soundcloud;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
-import static org.schabi.newpipe.extractor.ServiceList.SoundCloud;
-
 import org.junit.Before;
 import org.junit.Test;
 import org.schabi.newpipe.Downloader;
 import org.schabi.newpipe.extractor.NewPipe;
 import org.schabi.newpipe.extractor.user.UserExtractor;
 
+import static org.junit.Assert.*;
+import static org.schabi.newpipe.extractor.ServiceList.SoundCloud;
+
 /**
  * Test for {@link UserExtractor}
  */
 
-public class SoundcloudUserExtractorTest  {
+public class SoundcloudUserExtractorTest {
 
     UserExtractor extractor;
 
@@ -27,7 +25,7 @@ public class SoundcloudUserExtractorTest  {
     }
 
     @Test
-    public void testGetDownloader()  throws Exception {
+    public void testGetDownloader() throws Exception {
         assertNotNull(NewPipe.getDownloader());
     }
 

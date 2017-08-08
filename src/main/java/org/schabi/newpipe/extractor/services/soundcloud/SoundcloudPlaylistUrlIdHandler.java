@@ -6,10 +6,13 @@ import org.schabi.newpipe.extractor.NewPipe;
 import org.schabi.newpipe.extractor.UrlIdHandler;
 import org.schabi.newpipe.extractor.exceptions.ParsingException;
 import org.schabi.newpipe.extractor.utils.Parser;
+import org.schabi.newpipe.extractor.utils.Utils;
 
 public class SoundcloudPlaylistUrlIdHandler implements UrlIdHandler {
 
     private static final SoundcloudPlaylistUrlIdHandler instance = new SoundcloudPlaylistUrlIdHandler();
+    private final String URL_PATTERN = "^https?://(www\\.)?soundcloud.com/[0-9a-z_-]+" +
+            "/sets/[0-9a-z_-]+/?([#?].*)?$";
 
     public static SoundcloudPlaylistUrlIdHandler getInstance() {
         return instance;
@@ -26,6 +29,8 @@ public class SoundcloudPlaylistUrlIdHandler implements UrlIdHandler {
 
     @Override
     public String getId(String url) throws ParsingException {
+        Utils.checkUrl(URL_PATTERN, url);
+
         try {
             return SoundcloudParsingHelper.resolveIdWithEmbedPlayer(url);
         } catch (Exception e) {
@@ -35,6 +40,8 @@ public class SoundcloudPlaylistUrlIdHandler implements UrlIdHandler {
 
     @Override
     public String cleanUrl(String complexUrl) throws ParsingException {
+        Utils.checkUrl(URL_PATTERN, complexUrl);
+
         try {
             Element ogElement = Jsoup.parse(NewPipe.getDownloader().download(complexUrl))
                     .select("meta[property=og:url]").first();
@@ -47,7 +54,6 @@ public class SoundcloudPlaylistUrlIdHandler implements UrlIdHandler {
 
     @Override
     public boolean acceptUrl(String url) {
-        String regex = "^https?://(www\\.)?soundcloud.com/[0-9a-z_-]+/sets/[0-9a-z_-]+/?([#?].*)?$";
-        return Parser.isMatch(regex, url.toLowerCase());
+        return Parser.isMatch(URL_PATTERN, url.toLowerCase());
     }
 }

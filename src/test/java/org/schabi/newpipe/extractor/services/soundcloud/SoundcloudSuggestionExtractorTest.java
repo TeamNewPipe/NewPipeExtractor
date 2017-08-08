@@ -1,16 +1,16 @@
 package org.schabi.newpipe.extractor.services.soundcloud;
 
-import static org.junit.Assert.assertFalse;
-import static org.schabi.newpipe.extractor.ServiceList.SoundCloud;
-
-import java.io.IOException;
-
 import org.junit.Before;
 import org.junit.Test;
 import org.schabi.newpipe.Downloader;
 import org.schabi.newpipe.extractor.NewPipe;
 import org.schabi.newpipe.extractor.SuggestionExtractor;
 import org.schabi.newpipe.extractor.exceptions.ExtractionException;
+
+import java.io.IOException;
+
+import static org.junit.Assert.assertFalse;
+import static org.schabi.newpipe.extractor.ServiceList.SoundCloud;
 
 /**
  * Test for {@link SuggestionExtractor}
