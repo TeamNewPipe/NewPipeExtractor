@@ -48,7 +48,7 @@ public class SoundcloudPlaylistExtractor extends PlaylistExtractor {
 
     @Override
     public String getPlaylistName() {
-        return playlist.getString("title");
+        return playlist.optString("title");
     }
 
     @Override

@@ -63,7 +63,7 @@ public class SoundcloudUserExtractorTest {
 
     @Test
     public void testGetSubscriberCount() throws Exception {
-        assertTrue("wrong subscriber count", extractor.getSubscriberCount() >= 1224324);
+        assertTrue("wrong subscriber count", extractor.getSubscriberCount() >= 1000000);
     }
 
     @Test

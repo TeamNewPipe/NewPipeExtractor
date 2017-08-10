@@ -13,8 +13,6 @@ import org.schabi.newpipe.extractor.exceptions.ExtractionException;
 import org.schabi.newpipe.extractor.exceptions.ParsingException;
 import org.schabi.newpipe.extractor.exceptions.ReCaptchaException;
 import org.schabi.newpipe.extractor.stream.StreamInfoItemCollector;
-import org.schabi.newpipe.extractor.stream.StreamInfoItemExtractor;
-import org.schabi.newpipe.extractor.stream.StreamType;
 import org.schabi.newpipe.extractor.user.UserExtractor;
 import org.schabi.newpipe.extractor.utils.Parser;
 import org.schabi.newpipe.extractor.utils.Utils;
@@ -197,18 +195,7 @@ public class YoutubeUserExtractor extends UserExtractor {
 
         for (final Element li : element.children()) {
             if (li.select("div[class=\"feed-item-dismissable\"]").first() != null) {
-                collector.commit(new StreamInfoItemExtractor() {
-                    @Override
-                    public StreamType getStreamType() throws ParsingException {
-                        return StreamType.VIDEO_STREAM;
-                    }
-
-                    @Override
-                    public boolean isAd() throws ParsingException {
-                        return !li.select("span[class*=\"icon-not-available\"]").isEmpty() ||
-                                !li.select("span[class*=\"yt-badge-ad\"]").isEmpty();
-                    }
-
+                collector.commit(new YoutubeStreamInfoItemExtractor(li) {
                     @Override
                     public String getWebPageUrl() throws ParsingException {
                         try {
@@ -232,65 +219,8 @@ public class YoutubeUserExtractor extends UserExtractor {
                     }
 
                     @Override
-                    public int getDuration() throws ParsingException {
-                        try {
-                            return YoutubeParsingHelper.parseDurationString(
-                                    li.select("span[class*=\"video-time\"]").first().text());
-                        } catch (Exception e) {
-                            if (isLiveStream(li)) {
-                                // -1 for no duration
-                                return -1;
-                            } else {
-                                throw new ParsingException("Could not get Duration: " + getTitle(), e);
-                            }
-                        }
-                    }
-
-                    @Override
                     public String getUploaderName() throws ParsingException {
                         return getUserName();
-                    }
-
-                    @Override
-                    public String getUploadDate() throws ParsingException {
-                        try {
-                            Element meta = li.select("div[class=\"yt-lockup-meta\"]").first();
-                            Element li = meta.select("li").first();
-                            if (li == null) {
-                                //this means we have a youtube red video
-                                return "";
-                            } else {
-                                return li.text();
-                            }
-                        } catch (Exception e) {
-                            throw new ParsingException("Could not get upload date", e);
-                        }
-                    }
-
-                    @Override
-                    public long getViewCount() throws ParsingException {
-                        String output;
-                        String input;
-                        try {
-                            input = li.select("div[class=\"yt-lockup-meta\"]").first()
-                                    .select("li").get(1)
-                                    .text();
-                        } catch (IndexOutOfBoundsException e) {
-                            return -1;
-                        }
-
-                        output = Utils.removeNonDigitCharacters(input);
-
-                        try {
-                            return Long.parseLong(output);
-                        } catch (NumberFormatException e) {
-                            // if this happens the video probably has no views
-                            if (!input.isEmpty()) {
-                                return 0;
-                            } else {
-                                throw new ParsingException("Could not handle input: " + input, e);
-                            }
-                        }
                     }
 
                     @Override
@@ -310,19 +240,6 @@ public class YoutubeUserExtractor extends UserExtractor {
                         } catch (Exception e) {
                             throw new ParsingException("Could not get thumbnail url", e);
                         }
-                    }
-
-                    private boolean isLiveStream(Element item) {
-                        Element bla = item.select("span[class*=\"yt-badge-live\"]").first();
-
-                        if (bla == null) {
-                            // sometimes livestreams dont have badges but sill are live streams
-                            // if video time is not available we most likly have an offline livestream
-                            if (item.select("span[class*=\"video-time\"]").first() == null) {
-                                return true;
-                            }
-                        }
-                        return bla != null;
                     }
                 });
             }

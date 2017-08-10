@@ -235,18 +235,11 @@ public class StreamInfo extends Info {
             streamInfo.addException(e);
         }
         try {
-            StreamInfoItemCollector c = new StreamInfoItemCollector(extractor.getServiceId());
-            StreamInfoItemExtractor nextVideo = extractor.getNextVideo();
-            c.commit(nextVideo);
-            if (c.getItemList().size() != 0) {
-                streamInfo.next_video = (StreamInfoItem) c.getItemList().get(0);
-            }
-            streamInfo.errors.addAll(c.getErrors());
+            streamInfo.next_video = extractor.getNextVideo();
         } catch (Exception e) {
             streamInfo.addException(e);
         }
         try {
-            // get related videos
             StreamInfoItemCollector c = extractor.getRelatedVideos();
             streamInfo.related_streams = c.getItemList();
             streamInfo.errors.addAll(c.getErrors());
@@ -266,12 +259,12 @@ public class StreamInfo extends Info {
     public StreamType stream_type;
     public String thumbnail_url;
     public String upload_date;
-    public int duration = -1;
+    public long duration = -1;
     public int age_limit = -1;
 
     public long view_count = -1;
-    public int like_count = -1;
-    public int dislike_count = -1;
+    public long like_count = -1;
+    public long dislike_count = -1;
 
     public String uploader_name;
     public String uploader_url;

@@ -14,7 +14,6 @@ import org.schabi.newpipe.extractor.exceptions.ParsingException;
 import org.schabi.newpipe.extractor.exceptions.ReCaptchaException;
 import org.schabi.newpipe.extractor.playlist.PlaylistExtractor;
 import org.schabi.newpipe.extractor.stream.StreamInfoItemCollector;
-import org.schabi.newpipe.extractor.stream.StreamInfoItemExtractor;
 import org.schabi.newpipe.extractor.stream.StreamType;
 import org.schabi.newpipe.extractor.utils.Parser;
 import org.schabi.newpipe.extractor.utils.Utils;
@@ -199,10 +198,10 @@ public class YoutubePlaylistExtractor extends PlaylistExtractor {
 
         final UrlIdHandler streamUrlIdHandler = getService().getStreamUrlIdHandler();
         for (final Element li : element.children()) {
-            collector.commit(new StreamInfoItemExtractor() {
+            collector.commit(new YoutubeStreamInfoItemExtractor(li) {
                 @Override
-                public StreamType getStreamType() throws ParsingException {
-                    return StreamType.VIDEO_STREAM;
+                public boolean isAd() throws ParsingException {
+                    return false;
                 }
 
                 @Override
@@ -226,15 +225,18 @@ public class YoutubePlaylistExtractor extends PlaylistExtractor {
                 @Override
                 public int getDuration() throws ParsingException {
                     try {
-                        return YoutubeParsingHelper.parseDurationString(
-                                li.select("div[class=\"timestamp\"] span").first().text().trim());
-                    } catch (Exception e) {
-                        if (isLiveStream(li)) {
-                            // -1 for no duration
+                        if (getStreamType() == StreamType.LIVE_STREAM) return -1;
+
+                        Element first = li.select("div[class=\"timestamp\"] span").first();
+                        if (first == null) {
+                            // Video unavailable (private, deleted, etc.), this is a thing that happens specifically with playlists,
+                            // because in other cases, those videos don't even show up
                             return -1;
-                        } else {
-                            throw new ParsingException("Could not get Duration: " + getTitle(), e);
                         }
+
+                        return YoutubeParsingHelper.parseDurationString(first.text());
+                    } catch (Exception e) {
+                        throw new ParsingException("Could not get Duration: " + getTitle(), e);
                     }
                 }
 
@@ -260,24 +262,6 @@ public class YoutubePlaylistExtractor extends PlaylistExtractor {
                     } catch (Exception e) {
                         throw new ParsingException("Could not get thumbnail url", e);
                     }
-                }
-
-                @Override
-                public boolean isAd() throws ParsingException {
-                    return false;
-                }
-
-                private boolean isLiveStream(Element item) {
-                    Element bla = item.select("span[class*=\"yt-badge-live\"]").first();
-
-                    if (bla == null) {
-                        // sometimes livestreams dont have badges but sill are live streams
-                        // if video time is not available we most likly have an offline livestream
-                        if (item.select("span[class*=\"video-time\"]").first() == null) {
-                            return true;
-                        }
-                    }
-                    return bla != null;
                 }
             });
         }

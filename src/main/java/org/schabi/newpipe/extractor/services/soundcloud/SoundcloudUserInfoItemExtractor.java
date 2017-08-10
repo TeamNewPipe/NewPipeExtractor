@@ -27,7 +27,7 @@ public class SoundcloudUserInfoItemExtractor implements UserInfoItemExtractor {
 
     @Override
     public long getSubscriberCount() {
-        return searchResult.getLong("followers_count");
+        return searchResult.optLong("followers_count", 0L);
     }
 
     @Override

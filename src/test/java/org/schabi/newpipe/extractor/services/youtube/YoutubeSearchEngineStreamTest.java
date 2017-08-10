@@ -58,7 +58,7 @@ public class YoutubeSearchEngineStreamTest {
     }
 
     @Test
-    public void testStreamItemType() {
+    public void testResultsItemType() {
         for (InfoItem infoItem : result.resultList) {
             assertEquals(InfoItem.InfoType.STREAM, infoItem.info_type);
         }

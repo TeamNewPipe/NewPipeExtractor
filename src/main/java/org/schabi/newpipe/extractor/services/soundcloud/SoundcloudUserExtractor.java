@@ -53,7 +53,7 @@ public class SoundcloudUserExtractor extends UserExtractor {
 
     @Override
     public String getAvatarUrl() {
-        return user.getString("avatar_url");
+        return user.optString("avatar_url");
     }
 
     @Override
@@ -67,7 +67,7 @@ public class SoundcloudUserExtractor extends UserExtractor {
 
     @Override
     public long getSubscriberCount() {
-        return user.getLong("followers_count");
+        return user.optLong("followers_count", 0L);
     }
 
     @Override
@@ -102,6 +102,6 @@ public class SoundcloudUserExtractor extends UserExtractor {
 
     @Override
     public String getDescription() throws ParsingException {
-        return user.getString("description");
+        return user.optString("description");
     }
 }

@@ -37,7 +37,7 @@ public class SoundcloudSearchEngineUserTest {
     }
 
     @Test
-    public void testUserItemType() {
+    public void testResultsItemType() {
         for (InfoItem infoItem : result.resultList) {
             assertEquals(InfoItem.InfoType.USER, infoItem.info_type);
         }

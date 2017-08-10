@@ -50,7 +50,7 @@ public abstract class StreamExtractor extends Extractor {
     public abstract String getDescription() throws ParsingException;
     public abstract String getUploaderName() throws ParsingException;
     public abstract String getUploaderUrl() throws ParsingException;
-    public abstract int getLength() throws ParsingException;
+    public abstract long getLength() throws ParsingException;
     public abstract long getViewCount() throws ParsingException;
     public abstract String getUploadDate() throws ParsingException;
     public abstract String getThumbnailUrl() throws ParsingException;
@@ -60,9 +60,9 @@ public abstract class StreamExtractor extends Extractor {
     public abstract List<VideoStream> getVideoOnlyStreams() throws IOException, ExtractionException;
     public abstract String getDashMpdUrl() throws ParsingException;
     public abstract int getAgeLimit() throws ParsingException;
-    public abstract int getLikeCount() throws ParsingException;
-    public abstract int getDislikeCount() throws ParsingException;
-    public abstract StreamInfoItemExtractor getNextVideo() throws IOException, ExtractionException;
+    public abstract long getLikeCount() throws ParsingException;
+    public abstract long getDislikeCount() throws ParsingException;
+    public abstract StreamInfoItem getNextVideo() throws IOException, ExtractionException;
     public abstract StreamInfoItemCollector getRelatedVideos() throws IOException, ExtractionException;
     public abstract StreamType getStreamType() throws ParsingException;
 

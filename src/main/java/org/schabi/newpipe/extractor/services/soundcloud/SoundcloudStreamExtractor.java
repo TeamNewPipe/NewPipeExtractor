@@ -1,6 +1,5 @@
 package org.schabi.newpipe.extractor.services.soundcloud;
 
-import org.json.JSONArray;
 import org.json.JSONObject;
 import org.schabi.newpipe.extractor.Downloader;
 import org.schabi.newpipe.extractor.MediaFormat;
@@ -27,8 +26,9 @@ public class SoundcloudStreamExtractor extends StreamExtractor {
     public void fetchPage() throws IOException, ExtractionException {
         track = SoundcloudParsingHelper.resolveFor(getOriginalUrl());
 
-        if (!track.getString("policy").equals("ALLOW") && !track.getString("policy").equals("MONETIZE")) {
-            throw new ContentNotAvailableException("Content not available: policy " + track.getString("policy"));
+        String policy = track.getString("policy");
+        if (!policy.equals("ALLOW") && !policy.equals("MONETIZE")) {
+            throw new ContentNotAvailableException("Content not available: policy " + policy);
         }
     }
 
@@ -48,12 +48,12 @@ public class SoundcloudStreamExtractor extends StreamExtractor {
 
     @Override
     public String getTitle() {
-        return track.getString("title");
+        return track.optString("title");
     }
 
     @Override
     public String getDescription() {
-        return track.getString("description");
+        return track.optString("description");
     }
 
     @Override
@@ -62,8 +62,23 @@ public class SoundcloudStreamExtractor extends StreamExtractor {
     }
 
     @Override
-    public int getLength() {
-        return track.getInt("duration") / 1000;
+    public String getUploaderUrl() {
+        return track.getJSONObject("user").getString("permalink_url");
+    }
+
+    @Override
+    public String getUploaderAvatarUrl() {
+        return track.getJSONObject("user").optString("avatar_url");
+    }
+
+    @Override
+    public String getThumbnailUrl() {
+        return track.optString("artwork_url");
+    }
+
+    @Override
+    public long getLength() {
+        return track.getLong("duration") / 1000L;
     }
 
     @Override
@@ -74,16 +89,6 @@ public class SoundcloudStreamExtractor extends StreamExtractor {
     @Override
     public String getUploadDate() throws ParsingException {
         return SoundcloudParsingHelper.toDateString(track.getString("created_at"));
-    }
-
-    @Override
-    public String getThumbnailUrl() {
-        return track.optString("artwork_url");
-    }
-
-    @Override
-    public String getUploaderAvatarUrl() {
-        return track.getJSONObject("user").getString("avatar_url");
     }
 
     @Override
@@ -171,42 +176,29 @@ public class SoundcloudStreamExtractor extends StreamExtractor {
     }
 
     @Override
-    public int getLikeCount() {
-        return track.getInt("likes_count");
+    public long getLikeCount() {
+        return track.getLong("likes_count");
     }
 
     @Override
-    public int getDislikeCount() {
+    public long getDislikeCount() {
         return 0;
     }
 
     @Override
-    public StreamInfoItemExtractor getNextVideo() throws IOException, ExtractionException {
+    public StreamInfoItem getNextVideo() throws IOException, ExtractionException {
         return null;
     }
 
     @Override
     public StreamInfoItemCollector getRelatedVideos() throws IOException, ExtractionException {
         StreamInfoItemCollector collector = new StreamInfoItemCollector(getServiceId());
-        Downloader dl = NewPipe.getDownloader();
 
         String apiUrl = "https://api-v2.soundcloud.com/tracks/" + getId() + "/related"
                 + "?client_id=" + SoundcloudParsingHelper.clientId();
 
-        String response = dl.download(apiUrl);
-        JSONObject responseObject = new JSONObject(response);
-        JSONArray responseCollection = responseObject.getJSONArray("collection");
-
-        for (int i = 0; i < responseCollection.length(); i++) {
-            JSONObject relatedVideo = responseCollection.getJSONObject(i);
-            collector.commit(new SoundcloudStreamInfoItemExtractor(relatedVideo));
-        }
+        SoundcloudParsingHelper.getStreamsFromApi(collector, apiUrl);
         return collector;
-    }
-
-    @Override
-    public String getUploaderUrl() {
-        return track.getJSONObject("user").getString("permalink_url");
     }
 
     @Override
