@@ -50,7 +50,7 @@ public class StreamInfoItemCollector extends InfoItemCollector {
             addError(e);
         }
         try {
-            resultItem.uploader = extractor.getUploader();
+            resultItem.uploader_name = extractor.getUploaderName();
         } catch (Exception e) {
             addError(e);
         }

@@ -31,9 +31,8 @@ public class UserInfoItemCollector extends InfoItemCollector {
     public UserInfoItem extract(UserInfoItemExtractor extractor) throws ParsingException {
         UserInfoItem resultItem = new UserInfoItem();
         // important information
-        resultItem.name = extractor.getUserName();
-
         resultItem.service_id = getServiceId();
+        resultItem.name = extractor.getUserName();
         resultItem.url = extractor.getWebPageUrl();
 
         // optional information

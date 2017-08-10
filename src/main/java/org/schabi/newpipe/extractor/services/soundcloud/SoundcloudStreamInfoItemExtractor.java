@@ -29,7 +29,7 @@ public class SoundcloudStreamInfoItemExtractor implements StreamInfoItemExtracto
     }
 
     @Override
-    public String getUploader() {
+    public String getUploaderName() {
         return searchResult.getJSONObject("user").getString("username");
     }
 

@@ -71,7 +71,7 @@ public class YoutubeStreamInfoItemExtractor implements StreamInfoItemExtractor {
     }
 
     @Override
-    public String getUploader() throws ParsingException {
+    public String getUploaderName() throws ParsingException {
         try {
             return item.select("div[class=\"yt-lockup-byline\"]").first()
                     .select("a").first()

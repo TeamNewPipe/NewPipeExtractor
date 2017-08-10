@@ -38,9 +38,7 @@ public enum MediaFormat {
     MP3         (0x5,   "MP3",   "mp3",  "audio/mpeg");
 
     public final int id;
-    @SuppressWarnings("WeakerAccess")
     public final String name;
-    @SuppressWarnings("WeakerAccess")
     public final String suffix;
     public final String mimeType;
 

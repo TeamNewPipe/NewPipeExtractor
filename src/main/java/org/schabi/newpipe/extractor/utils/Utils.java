@@ -57,7 +57,7 @@ public class Utils {
         }
 
         if (!Parser.isMatch(pattern, url.toLowerCase())) {
-            throw new ParsingException("Url not suitable for this url handler");
+            throw new ParsingException("Url don't match the pattern");
         }
     }
 }

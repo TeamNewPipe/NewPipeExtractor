@@ -29,11 +29,12 @@ public abstract class InfoItem implements Serializable {
         USER
     }
 
+    public final InfoType info_type;
+
     public InfoItem(InfoType infoType) {
         this.info_type = infoType;
     }
 
-    public final InfoType info_type;
     public int service_id = -1;
     public String url;
     public String name;

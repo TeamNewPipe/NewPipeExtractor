@@ -239,7 +239,7 @@ public class YoutubePlaylistExtractor extends PlaylistExtractor {
                 }
 
                 @Override
-                public String getUploader() throws ParsingException {
+                public String getUploaderName() throws ParsingException {
                     return li.select("div[class=pl-video-owner] a").text();
                 }
 

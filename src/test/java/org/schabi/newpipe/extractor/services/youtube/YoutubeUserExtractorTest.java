@@ -32,7 +32,6 @@ import static org.schabi.newpipe.extractor.ServiceList.YouTube;
 /**
  * Test for {@link UserExtractor}
  */
-
 public class YoutubeUserExtractorTest {
 
     UserExtractor extractor;

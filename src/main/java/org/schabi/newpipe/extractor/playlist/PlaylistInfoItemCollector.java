@@ -16,6 +16,11 @@ public class PlaylistInfoItemCollector extends InfoItemCollector {
         resultItem.url = extractor.getWebPageUrl();
 
         try {
+            resultItem.uploader_name = extractor.getUploaderName();
+        } catch (Exception e) {
+            addError(e);
+        }
+        try {
             resultItem.thumbnail_url = extractor.getThumbnailUrl();
         } catch (Exception e) {
             addError(e);

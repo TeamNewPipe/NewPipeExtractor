@@ -247,7 +247,7 @@ public class YoutubeUserExtractor extends UserExtractor {
                     }
 
                     @Override
-                    public String getUploader() throws ParsingException {
+                    public String getUploaderName() throws ParsingException {
                         return getUserName();
                     }
 
