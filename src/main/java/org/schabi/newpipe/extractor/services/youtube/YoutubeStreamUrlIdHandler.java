@@ -1,5 +1,8 @@
 package org.schabi.newpipe.extractor.services.youtube;
 
+import org.jsoup.Jsoup;
+import org.jsoup.nodes.Document;
+import org.jsoup.nodes.Element;
 import org.schabi.newpipe.extractor.Downloader;
 import org.schabi.newpipe.extractor.NewPipe;
 import org.schabi.newpipe.extractor.UrlIdHandler;
@@ -125,8 +128,18 @@ public class YoutubeStreamUrlIdHandler implements UrlIdHandler {
         } catch (IOException | ReCaptchaException e) {
             throw new ParsingException("Unable to resolve shared link", e);
         }
-        // is this bad? is this fragile?:
-        String realId = Parser.matchGroup1("rel=\"shortlink\" href=\"https://youtu.be/" + ID_PATTERN, content);
+        Document document = Jsoup.parse(content);
+        String urlWithRealId;
+
+        Element element = document.select("link[rel=\"canonical\"]").first();
+        if (element != null) {
+            urlWithRealId = element.attr("abs:href");
+        } else {
+            urlWithRealId = document.select("meta[property=\"og:url\"]").first()
+                    .attr("abs:content");
+        }
+
+        String realId = Parser.matchGroup1(ID_PATTERN, urlWithRealId);
         if (sharedId.equals(realId)) {
             throw new ParsingException("Got same id for as shared info_id: " + sharedId);
         }
