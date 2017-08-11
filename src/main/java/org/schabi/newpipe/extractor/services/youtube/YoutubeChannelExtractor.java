@@ -196,7 +196,7 @@ public class YoutubeChannelExtractor extends ChannelExtractor {
             if (li.select("div[class=\"feed-item-dismissable\"]").first() != null) {
                 collector.commit(new YoutubeStreamInfoItemExtractor(li) {
                     @Override
-                    public String getWebPageUrl() throws ParsingException {
+                    public String getUrl() throws ParsingException {
                         try {
                             Element el = li.select("div[class=\"feed-item-dismissable\"]").first();
                             Element dl = el.select("h3").first().select("a").first();
@@ -207,7 +207,7 @@ public class YoutubeChannelExtractor extends ChannelExtractor {
                     }
 
                     @Override
-                    public String getTitle() throws ParsingException {
+                    public String getName() throws ParsingException {
                         try {
                             Element el = li.select("div[class=\"feed-item-dismissable\"]").first();
                             Element dl = el.select("h3").first().select("a").first();
@@ -219,7 +219,7 @@ public class YoutubeChannelExtractor extends ChannelExtractor {
 
                     @Override
                     public String getUploaderName() throws ParsingException {
-                        return getName();
+                        return YoutubeChannelExtractor.this.getName();
                     }
 
                     @Override

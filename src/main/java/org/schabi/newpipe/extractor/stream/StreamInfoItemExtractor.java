@@ -1,5 +1,6 @@
 package org.schabi.newpipe.extractor.stream;
 
+import org.schabi.newpipe.extractor.InfoItemExtractor;
 import org.schabi.newpipe.extractor.exceptions.ParsingException;
 
 /*
@@ -22,14 +23,14 @@ import org.schabi.newpipe.extractor.exceptions.ParsingException;
  * along with NewPipe.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-public interface StreamInfoItemExtractor {
+public interface StreamInfoItemExtractor extends InfoItemExtractor {
     StreamType getStreamType() throws ParsingException;
-    String getWebPageUrl() throws ParsingException;
-    String getTitle() throws ParsingException;
-    int getDuration() throws ParsingException;
+    boolean isAd() throws ParsingException;
+
+    long getDuration() throws ParsingException;
+    long getViewCount() throws ParsingException;
+
     String getUploaderName() throws ParsingException;
     String getUploadDate() throws ParsingException;
-    long getViewCount() throws ParsingException;
-    String getThumbnailUrl() throws ParsingException;
-    boolean isAd() throws ParsingException;
+
 }

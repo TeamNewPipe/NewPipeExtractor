@@ -38,9 +38,8 @@ public class StreamInfoItemCollector extends InfoItemCollector {
         StreamInfoItem resultItem = new StreamInfoItem();
         // important information
         resultItem.service_id = getServiceId();
-        resultItem.url = extractor.getWebPageUrl();
-
-        resultItem.name = extractor.getTitle();
+        resultItem.url = extractor.getUrl();
+        resultItem.name = extractor.getName();
         resultItem.stream_type = extractor.getStreamType();
 
         // optional information

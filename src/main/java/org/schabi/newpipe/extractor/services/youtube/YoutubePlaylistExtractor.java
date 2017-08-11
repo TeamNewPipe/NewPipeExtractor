@@ -205,7 +205,7 @@ public class YoutubePlaylistExtractor extends PlaylistExtractor {
                 }
 
                 @Override
-                public String getWebPageUrl() throws ParsingException {
+                public String getUrl() throws ParsingException {
                     try {
                         return streamUrlIdHandler.getUrl(li.attr("data-video-id"));
                     } catch (Exception e) {
@@ -214,7 +214,7 @@ public class YoutubePlaylistExtractor extends PlaylistExtractor {
                 }
 
                 @Override
-                public String getTitle() throws ParsingException {
+                public String getName() throws ParsingException {
                     try {
                         return li.attr("data-title");
                     } catch (Exception e) {
@@ -223,7 +223,7 @@ public class YoutubePlaylistExtractor extends PlaylistExtractor {
                 }
 
                 @Override
-                public int getDuration() throws ParsingException {
+                public long getDuration() throws ParsingException {
                     try {
                         if (getStreamType() == StreamType.LIVE_STREAM) return -1;
 
@@ -236,7 +236,7 @@ public class YoutubePlaylistExtractor extends PlaylistExtractor {
 
                         return YoutubeParsingHelper.parseDurationString(first.text());
                     } catch (Exception e) {
-                        throw new ParsingException("Could not get Duration: " + getTitle(), e);
+                        throw new ParsingException("Could not get duration" + getUrl(), e);
                     }
                 }
 
@@ -258,7 +258,7 @@ public class YoutubePlaylistExtractor extends PlaylistExtractor {
                 @Override
                 public String getThumbnailUrl() throws ParsingException {
                     try {
-                        return "https://i.ytimg.com/vi/" + streamUrlIdHandler.getId(getWebPageUrl()) + "/hqdefault.jpg";
+                        return "https://i.ytimg.com/vi/" + streamUrlIdHandler.getId(getUrl()) + "/hqdefault.jpg";
                     } catch (Exception e) {
                         throw new ParsingException("Could not get thumbnail url", e);
                     }

@@ -3,14 +3,8 @@ package org.schabi.newpipe.extractor.services.youtube;
 import org.schabi.newpipe.extractor.MediaFormat;
 import org.schabi.newpipe.extractor.exceptions.ParsingException;
 
-import static org.schabi.newpipe.extractor.MediaFormat.M4A;
-import static org.schabi.newpipe.extractor.MediaFormat.MPEG_4;
-import static org.schabi.newpipe.extractor.MediaFormat.WEBM;
-import static org.schabi.newpipe.extractor.MediaFormat.WEBMA;
-import static org.schabi.newpipe.extractor.MediaFormat.v3GPP;
-import static org.schabi.newpipe.extractor.services.youtube.ItagItem.ItagType.AUDIO;
-import static org.schabi.newpipe.extractor.services.youtube.ItagItem.ItagType.VIDEO;
-import static org.schabi.newpipe.extractor.services.youtube.ItagItem.ItagType.VIDEO_ONLY;
+import static org.schabi.newpipe.extractor.MediaFormat.*;
+import static org.schabi.newpipe.extractor.services.youtube.ItagItem.ItagType.*;
 
 public class ItagItem {
     /**

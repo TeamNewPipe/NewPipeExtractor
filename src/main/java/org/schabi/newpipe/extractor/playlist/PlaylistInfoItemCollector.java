@@ -11,9 +11,9 @@ public class PlaylistInfoItemCollector extends InfoItemCollector {
     public PlaylistInfoItem extract(PlaylistInfoItemExtractor extractor) throws ParsingException {
         final PlaylistInfoItem resultItem = new PlaylistInfoItem();
 
-        resultItem.name = extractor.getPlaylistName();
+        resultItem.name = extractor.getName();
         resultItem.service_id = getServiceId();
-        resultItem.url = extractor.getWebPageUrl();
+        resultItem.url = extractor.getUrl();
 
         try {
             resultItem.uploader_name = extractor.getUploaderName();

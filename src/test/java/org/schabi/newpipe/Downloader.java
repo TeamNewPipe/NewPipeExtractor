@@ -2,6 +2,7 @@ package org.schabi.newpipe;
 
 import org.schabi.newpipe.extractor.exceptions.ReCaptchaException;
 
+import javax.net.ssl.HttpsURLConnection;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
@@ -10,8 +11,6 @@ import java.net.UnknownHostException;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
-
-import javax.net.ssl.HttpsURLConnection;
 
 
 /*
@@ -106,6 +105,7 @@ public class Downloader implements org.schabi.newpipe.extractor.Downloader {
         BufferedReader in = null;
 
         try {
+            con.setConnectTimeout(30 * 1000);// 30s
             con.setReadTimeout(30 * 1000);// 30s
             con.setRequestMethod("GET");
             con.setRequestProperty("User-Agent", USER_AGENT);

@@ -38,4 +38,10 @@ public abstract class InfoItem implements Serializable {
     public int service_id = -1;
     public String url;
     public String name;
+    public String thumbnail_url;
+
+    @Override
+    public String toString() {
+        return getClass().getSimpleName() + "[url=\"" + url + "\", name=\"" + name + "\"]";
+    }
 }

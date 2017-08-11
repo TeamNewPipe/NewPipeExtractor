@@ -48,7 +48,7 @@ public class YoutubeStreamInfoItemExtractor implements StreamInfoItemExtractor {
     }
 
     @Override
-    public String getWebPageUrl() throws ParsingException {
+    public String getUrl() throws ParsingException {
         try {
             Element el = item.select("div[class*=\"yt-lockup-video\"").first();
             Element dl = el.select("h3").first().select("a").first();
@@ -59,7 +59,7 @@ public class YoutubeStreamInfoItemExtractor implements StreamInfoItemExtractor {
     }
 
     @Override
-    public String getTitle() throws ParsingException {
+    public String getName() throws ParsingException {
         try {
             Element el = item.select("div[class*=\"yt-lockup-video\"").first();
             Element dl = el.select("h3").first().select("a").first();
@@ -70,13 +70,13 @@ public class YoutubeStreamInfoItemExtractor implements StreamInfoItemExtractor {
     }
 
     @Override
-    public int getDuration() throws ParsingException {
+    public long getDuration() throws ParsingException {
         try {
             if (getStreamType() == StreamType.LIVE_STREAM) return -1;
 
             return YoutubeParsingHelper.parseDurationString(item.select("span[class*=\"video-time\"]").first().text());
         } catch (Exception e) {
-            throw new ParsingException("Could not get Duration: " + getTitle(), e);
+            throw new ParsingException("Could not get Duration: " + getUrl(), e);
         }
     }
 
@@ -116,7 +116,7 @@ public class YoutubeStreamInfoItemExtractor implements StreamInfoItemExtractor {
 
             input = meta.select("li").get(1).text();
         } catch (IndexOutOfBoundsException e) {
-            throw new ParsingException("Could not parse yt-lockup-meta although available: " + getTitle(), e);
+            throw new ParsingException("Could not parse yt-lockup-meta although available: " + getUrl(), e);
         }
 
         try {

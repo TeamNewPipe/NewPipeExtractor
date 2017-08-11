@@ -46,13 +46,13 @@ public class YoutubeChannelInfoItemExtractor implements ChannelInfoItemExtractor
     }
 
     @Override
-    public String getChannelName() throws ParsingException {
+    public String getName() throws ParsingException {
         return el.select("a[class*=\"yt-uix-tile-link\"]").first()
                 .text();
     }
 
     @Override
-    public String getWebPageUrl() throws ParsingException {
+    public String getUrl() throws ParsingException {
         return el.select("a[class*=\"yt-uix-tile-link\"]").first()
                 .attr("abs:href");
     }

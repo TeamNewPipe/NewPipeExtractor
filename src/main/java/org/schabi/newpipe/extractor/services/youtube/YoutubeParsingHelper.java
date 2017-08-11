@@ -28,7 +28,7 @@ public class YoutubeParsingHelper {
     private YoutubeParsingHelper() {
     }
 
-    public static int parseDurationString(String input)
+    public static long parseDurationString(String input)
             throws ParsingException, NumberFormatException {
         String[] splitInput = input.split(":");
         String days = "0";
@@ -58,9 +58,9 @@ public class YoutubeParsingHelper {
             default:
                 throw new ParsingException("Error duration string with unknown format: " + input);
         }
-        return ((((Integer.parseInt(days) * 24)
-                + Integer.parseInt(hours) * 60)
-                + Integer.parseInt(minutes)) * 60)
-                + Integer.parseInt(seconds);
+        return ((((Long.parseLong(days) * 24)
+                + Long.parseLong(hours) * 60)
+                + Long.parseLong(minutes)) * 60)
+                + Long.parseLong(seconds);
     }
 }

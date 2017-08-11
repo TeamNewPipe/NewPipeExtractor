@@ -1,10 +1,6 @@
 package org.schabi.newpipe.extractor.stream;
 
-import org.schabi.newpipe.extractor.Info;
-import org.schabi.newpipe.extractor.InfoItem;
-import org.schabi.newpipe.extractor.NewPipe;
-import org.schabi.newpipe.extractor.ServiceList;
-import org.schabi.newpipe.extractor.StreamingService;
+import org.schabi.newpipe.extractor.*;
 import org.schabi.newpipe.extractor.exceptions.ContentNotAvailableException;
 import org.schabi.newpipe.extractor.exceptions.ExtractionException;
 import org.schabi.newpipe.extractor.utils.DashMpdParser;
@@ -261,6 +257,7 @@ public class StreamInfo extends Info {
     public String upload_date;
     public long duration = -1;
     public int age_limit = -1;
+    public String description;
 
     public long view_count = -1;
     public long like_count = -1;
@@ -283,5 +280,4 @@ public class StreamInfo extends Info {
     public List<InfoItem> related_streams;
     //in seconds. some metadata is not passed using a StreamInfo object!
     public long start_position = 0;
-    public String description = "";
 }

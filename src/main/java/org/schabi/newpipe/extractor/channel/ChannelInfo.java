@@ -108,5 +108,5 @@ public class ChannelInfo extends ListInfo {
     public String banner_url;
     public String feed_url;
     public long subscriber_count = -1;
-    public String description = "";
+    public String description;
 }

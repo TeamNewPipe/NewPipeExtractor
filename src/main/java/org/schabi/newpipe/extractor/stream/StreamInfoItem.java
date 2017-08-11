@@ -29,10 +29,9 @@ public class StreamInfoItem extends InfoItem {
     public StreamType stream_type;
 
     public String uploader_name;
-    public String thumbnail_url;
     public String upload_date;
     public long view_count = -1;
-    public int duration = -1;
+    public long duration = -1;
 
     public StreamInfoItem() {
         super(InfoType.STREAM);

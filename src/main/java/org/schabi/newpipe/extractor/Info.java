@@ -16,4 +16,9 @@ public abstract class Info implements Serializable {
     public String name;
 
     public List<Throwable> errors = new ArrayList<>();
+
+    @Override
+    public String toString() {
+        return getClass().getSimpleName() + "[url=\"" + url + "\", name=\"" + name + "\"]";
+    }
 }

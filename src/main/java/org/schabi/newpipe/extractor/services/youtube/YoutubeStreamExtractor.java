@@ -725,12 +725,12 @@ public class YoutubeStreamExtractor extends StreamExtractor {
         return new YoutubeStreamInfoItemExtractor(li) {
 
             @Override
-            public String getWebPageUrl() throws ParsingException {
+            public String getUrl() throws ParsingException {
                 return li.select("a.content-link").first().attr("abs:href");
             }
 
             @Override
-            public String getTitle() throws ParsingException {
+            public String getName() throws ParsingException {
                 //todo: check NullPointerException causing
                 return li.select("span.title").first().text();
                 //this page causes the NullPointerException, after finding it by searching for "tjvg":

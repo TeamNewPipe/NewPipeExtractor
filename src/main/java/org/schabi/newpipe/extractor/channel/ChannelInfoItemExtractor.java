@@ -1,5 +1,6 @@
 package org.schabi.newpipe.extractor.channel;
 
+import org.schabi.newpipe.extractor.InfoItemExtractor;
 import org.schabi.newpipe.extractor.exceptions.ParsingException;
 
 /*
@@ -22,11 +23,9 @@ import org.schabi.newpipe.extractor.exceptions.ParsingException;
  * along with NewPipe.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-public interface ChannelInfoItemExtractor {
-    String getThumbnailUrl() throws ParsingException;
-    String getChannelName() throws ParsingException;
-    String getWebPageUrl() throws ParsingException;
+public interface ChannelInfoItemExtractor extends InfoItemExtractor {
     String getDescription() throws ParsingException;
+
     long getSubscriberCount() throws ParsingException;
     long getStreamCount() throws ParsingException;
 }

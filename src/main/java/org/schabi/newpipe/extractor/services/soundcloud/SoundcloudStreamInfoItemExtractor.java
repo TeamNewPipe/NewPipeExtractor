@@ -14,18 +14,18 @@ public class SoundcloudStreamInfoItemExtractor implements StreamInfoItemExtracto
     }
 
     @Override
-    public String getWebPageUrl() {
+    public String getUrl() {
         return searchResult.getString("permalink_url");
     }
 
     @Override
-    public String getTitle() {
+    public String getName() {
         return searchResult.getString("title");
     }
 
     @Override
-    public int getDuration() {
-        return searchResult.getInt("duration") / 1000;
+    public long getDuration() {
+        return searchResult.getLong("duration") / 1000L;
     }
 
     @Override

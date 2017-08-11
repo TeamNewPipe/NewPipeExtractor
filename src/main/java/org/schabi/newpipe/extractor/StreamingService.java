@@ -1,10 +1,10 @@
 package org.schabi.newpipe.extractor;
 
+import org.schabi.newpipe.extractor.channel.ChannelExtractor;
 import org.schabi.newpipe.extractor.exceptions.ExtractionException;
 import org.schabi.newpipe.extractor.playlist.PlaylistExtractor;
 import org.schabi.newpipe.extractor.search.SearchEngine;
 import org.schabi.newpipe.extractor.stream.StreamExtractor;
-import org.schabi.newpipe.extractor.channel.ChannelExtractor;
 
 import java.io.IOException;
 

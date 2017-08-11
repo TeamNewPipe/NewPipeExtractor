@@ -11,28 +11,28 @@ public class SoundcloudChannelInfoItemExtractor implements ChannelInfoItemExtrac
     }
 
     @Override
+    public String getName() {
+        return searchResult.getString("username");
+    }
+
+    @Override
+    public String getUrl() {
+        return searchResult.getString("permalink_url");
+    }
+
+    @Override
     public String getThumbnailUrl() {
         return searchResult.optString("avatar_url");
     }
 
     @Override
-    public String getChannelName() {
-        return searchResult.getString("username");
-    }
-
-    @Override
-    public String getWebPageUrl() {
-        return searchResult.getString("permalink_url");
-    }
-
-    @Override
     public long getSubscriberCount() {
-        return searchResult.optLong("followers_count", 0L);
+        return searchResult.optLong("followers_count");
     }
 
     @Override
     public long getStreamCount() {
-        return searchResult.getLong("track_count");
+        return searchResult.optLong("track_count");
     }
 
     @Override

@@ -5,7 +5,6 @@ import org.schabi.newpipe.extractor.InfoItem;
 public class PlaylistInfoItem extends InfoItem {
 
     public String uploader_name;
-    public String thumbnail_url;
     /**
      * How many streams this playlist have
      */

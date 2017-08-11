@@ -72,7 +72,7 @@ public class SoundcloudChannelExtractor extends ChannelExtractor {
 
     @Override
     public long getSubscriberCount() {
-        return user.optLong("followers_count", 0L);
+        return user.optLong("followers_count");
     }
 
     @Override
