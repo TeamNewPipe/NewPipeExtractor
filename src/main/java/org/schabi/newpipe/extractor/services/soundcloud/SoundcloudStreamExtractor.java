@@ -47,43 +47,8 @@ public class SoundcloudStreamExtractor extends StreamExtractor {
     }
 
     @Override
-    public String getTitle() {
+    public String getName() {
         return track.optString("title");
-    }
-
-    @Override
-    public String getDescription() {
-        return track.optString("description");
-    }
-
-    @Override
-    public String getUploaderName() {
-        return track.getJSONObject("user").getString("username");
-    }
-
-    @Override
-    public String getUploaderUrl() {
-        return track.getJSONObject("user").getString("permalink_url");
-    }
-
-    @Override
-    public String getUploaderAvatarUrl() {
-        return track.getJSONObject("user").optString("avatar_url");
-    }
-
-    @Override
-    public String getThumbnailUrl() {
-        return track.optString("artwork_url");
-    }
-
-    @Override
-    public long getLength() {
-        return track.getLong("duration") / 1000L;
-    }
-
-    @Override
-    public long getViewCount() {
-        return track.getLong("playback_count");
     }
 
     @Override
@@ -92,39 +57,27 @@ public class SoundcloudStreamExtractor extends StreamExtractor {
     }
 
     @Override
-    public String getDashMpdUrl() {
-        return null;
+    public String getThumbnailUrl() {
+        return track.optString("artwork_url");
     }
 
     @Override
-    public List<AudioStream> getAudioStreams() throws IOException, ExtractionException {
-        List<AudioStream> audioStreams = new ArrayList<>();
-        Downloader dl = NewPipe.getDownloader();
-
-        String apiUrl = "https://api.soundcloud.com/i1/tracks/" + getId() + "/streams"
-                + "?client_id=" + SoundcloudParsingHelper.clientId();
-
-        String response = dl.download(apiUrl);
-        JSONObject responseObject = new JSONObject(response);
-
-        AudioStream audioStream = new AudioStream(responseObject.getString("http_mp3_128_url"), MediaFormat.MP3.id, 128);
-        audioStreams.add(audioStream);
-
-        return audioStreams;
+    public String getDescription() {
+        return track.optString("description");
     }
 
     @Override
-    public List<VideoStream> getVideoStreams() throws IOException, ExtractionException {
-        return null;
+    public int getAgeLimit() {
+        return 0;
     }
 
     @Override
-    public List<VideoStream> getVideoOnlyStreams() throws IOException, ExtractionException {
-        return null;
+    public long getLength() {
+        return track.getLong("duration") / 1000L;
     }
 
     @Override
-    public int getTimeStamp() throws ParsingException {
+    public long getTimeStamp() throws ParsingException {
         String timeStamp;
         try {
             timeStamp = Parser.matchGroup1("(#t=\\d{0,3}h?\\d{0,3}m?\\d{1,3}s?)", getOriginalUrl());
@@ -171,8 +124,8 @@ public class SoundcloudStreamExtractor extends StreamExtractor {
     }
 
     @Override
-    public int getAgeLimit() {
-        return 0;
+    public long getViewCount() {
+        return track.getLong("playback_count");
     }
 
     @Override
@@ -183,6 +136,58 @@ public class SoundcloudStreamExtractor extends StreamExtractor {
     @Override
     public long getDislikeCount() {
         return 0;
+    }
+
+    @Override
+    public String getUploaderUrl() {
+        return track.getJSONObject("user").getString("permalink_url");
+    }
+
+    @Override
+    public String getUploaderName() {
+        return track.getJSONObject("user").getString("username");
+    }
+
+    @Override
+    public String getUploaderAvatarUrl() {
+        return track.getJSONObject("user").optString("avatar_url");
+    }
+
+    @Override
+    public String getDashMpdUrl() {
+        return null;
+    }
+
+    @Override
+    public List<AudioStream> getAudioStreams() throws IOException, ExtractionException {
+        List<AudioStream> audioStreams = new ArrayList<>();
+        Downloader dl = NewPipe.getDownloader();
+
+        String apiUrl = "https://api.soundcloud.com/i1/tracks/" + getId() + "/streams"
+                + "?client_id=" + SoundcloudParsingHelper.clientId();
+
+        String response = dl.download(apiUrl);
+        JSONObject responseObject = new JSONObject(response);
+
+        AudioStream audioStream = new AudioStream(responseObject.getString("http_mp3_128_url"), MediaFormat.MP3.id, 128);
+        audioStreams.add(audioStream);
+
+        return audioStreams;
+    }
+
+    @Override
+    public List<VideoStream> getVideoStreams() throws IOException, ExtractionException {
+        return null;
+    }
+
+    @Override
+    public List<VideoStream> getVideoOnlyStreams() throws IOException, ExtractionException {
+        return null;
+    }
+
+    @Override
+    public StreamType getStreamType() {
+        return StreamType.AUDIO_STREAM;
     }
 
     @Override
@@ -201,10 +206,6 @@ public class SoundcloudStreamExtractor extends StreamExtractor {
         return collector;
     }
 
-    @Override
-    public StreamType getStreamType() {
-        return StreamType.AUDIO_STREAM;
-    }
 
     @Override
     public String getErrorMessage() {

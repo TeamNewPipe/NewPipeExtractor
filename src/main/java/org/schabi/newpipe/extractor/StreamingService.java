@@ -4,7 +4,7 @@ import org.schabi.newpipe.extractor.exceptions.ExtractionException;
 import org.schabi.newpipe.extractor.playlist.PlaylistExtractor;
 import org.schabi.newpipe.extractor.search.SearchEngine;
 import org.schabi.newpipe.extractor.stream.StreamExtractor;
-import org.schabi.newpipe.extractor.user.UserExtractor;
+import org.schabi.newpipe.extractor.channel.ChannelExtractor;
 
 import java.io.IOException;
 
@@ -20,7 +20,7 @@ public abstract class StreamingService {
     public enum LinkType {
         NONE,
         STREAM,
-        USER,
+        CHANNEL,
         PLAYLIST
     }
 
@@ -41,16 +41,16 @@ public abstract class StreamingService {
     }
 
     public abstract UrlIdHandler getStreamUrlIdHandler();
-    public abstract UrlIdHandler getUserUrlIdHandler();
+    public abstract UrlIdHandler getChannelUrlIdHandler();
     public abstract UrlIdHandler getPlaylistUrlIdHandler();
     public abstract SearchEngine getSearchEngine();
     public abstract SuggestionExtractor getSuggestionExtractor();
     public abstract StreamExtractor getStreamExtractor(String url) throws IOException, ExtractionException;
-    public abstract UserExtractor getUserExtractor(String url, String nextStreamsUrl) throws IOException, ExtractionException;
+    public abstract ChannelExtractor getChannelExtractor(String url, String nextStreamsUrl) throws IOException, ExtractionException;
     public abstract PlaylistExtractor getPlaylistExtractor(String url, String nextStreamsUrl) throws IOException, ExtractionException;
 
-    public UserExtractor getUserExtractor(String url) throws IOException, ExtractionException {
-        return getUserExtractor(url, null);
+    public ChannelExtractor getChannelExtractor(String url) throws IOException, ExtractionException {
+        return getChannelExtractor(url, null);
     }
 
     public PlaylistExtractor getPlaylistExtractor(String url) throws IOException, ExtractionException {
@@ -58,17 +58,17 @@ public abstract class StreamingService {
     }
 
     /**
-     * figure out where the link is pointing to (a user, video, playlist, etc.)
+     * figure out where the link is pointing to (a channel, video, playlist, etc.)
      */
     public final LinkType getLinkTypeByUrl(String url) {
         UrlIdHandler sH = getStreamUrlIdHandler();
-        UrlIdHandler cH = getUserUrlIdHandler();
+        UrlIdHandler cH = getChannelUrlIdHandler();
         UrlIdHandler pH = getPlaylistUrlIdHandler();
 
         if (sH.acceptUrl(url)) {
             return LinkType.STREAM;
         } else if (cH.acceptUrl(url)) {
-            return LinkType.USER;
+            return LinkType.CHANNEL;
         } else if (pH.acceptUrl(url)) {
             return LinkType.PLAYLIST;
         } else {

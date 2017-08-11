@@ -30,12 +30,12 @@ public class YoutubePlaylistExtractorTest {
 
     @Test
     public void testGetId() throws Exception {
-        assertEquals(extractor.getPlaylistId(), "PL7XlqX4npddfrdpMCxBnNZXg2GFll7t5y");
+        assertEquals(extractor.getId(), "PL7XlqX4npddfrdpMCxBnNZXg2GFll7t5y");
     }
 
     @Test
     public void testGetName() throws Exception {
-        assertEquals(extractor.getPlaylistName(), "important videos");
+        assertEquals(extractor.getName(), "important videos");
     }
 
     @Test

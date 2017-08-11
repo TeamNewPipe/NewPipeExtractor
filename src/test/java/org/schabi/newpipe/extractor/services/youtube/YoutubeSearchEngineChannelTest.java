@@ -38,7 +38,7 @@ import static org.schabi.newpipe.extractor.ServiceList.YouTube;
 /**
  * Test for {@link SearchEngine}
  */
-public class YoutubeSearchEngineUserTest {
+public class YoutubeSearchEngineChannelTest {
     private SearchResult result;
 
     @Before
@@ -49,7 +49,7 @@ public class YoutubeSearchEngineUserTest {
         // Youtube will suggest "gronkh" instead of "grrunkh"
         // keep in mind that the suggestions can change by country (the parameter "de")
         result = engine.search("grrunkh", 0, "de",
-                EnumSet.of(SearchEngine.Filter.USER)).getSearchResult();
+                EnumSet.of(SearchEngine.Filter.CHANNEL)).getSearchResult();
     }
 
     @Test
@@ -60,7 +60,7 @@ public class YoutubeSearchEngineUserTest {
     @Test
     public void testResultsItemType() {
         for (InfoItem infoItem : result.resultList) {
-            assertEquals(InfoItem.InfoType.USER, infoItem.info_type);
+            assertEquals(InfoItem.InfoType.CHANNEL, infoItem.info_type);
         }
     }
 

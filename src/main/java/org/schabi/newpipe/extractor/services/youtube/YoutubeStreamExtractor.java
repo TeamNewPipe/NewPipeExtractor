@@ -97,83 +97,24 @@ public class YoutubeStreamExtractor extends StreamExtractor {
     }
 
     @Override
-    public String getTitle() throws ParsingException {
+    public String getName() throws ParsingException {
         try {
-            if (playerArgs == null) {
-                return videoInfoPage.get("title");
-            }
-            //json player args method
             return playerArgs.getString("title");
-        } catch (Exception je) {
-            System.err.println("failed to load title from JSON args; trying to extract it from HTML");
-            try { // fall-back to html
-                return doc.select("meta[name=title]").attr(CONTENT);
-            } catch (Exception e) {
-                throw new ParsingException("Could not get the title", e);
-            }
-        }
-    }
-
-    @Override
-    public String getDescription() throws ParsingException {
-        try {
-            return doc.select("p[id=\"eow-description\"]").first().html();
-        } catch (Exception e) {//todo: add fallback method <-- there is no ... as long as i know
-            throw new ParsingException("Could not get the description", e);
-        }
-    }
-
-    @Override
-    public String getUploaderName() throws ParsingException {
-        try {
-            return playerArgs.getString("author");
         } catch (Exception ignored) {
             // Try other method...
         }
 
         try {
-            return videoInfoPage.get("author");
+            return videoInfoPage.get("title");
         } catch (Exception ignored) {
             // Try other method...
         }
 
         try {
             // Fallback to HTML method
-            return doc.select("div.yt-user-info").first().text();
+            return doc.select("meta[name=title]").attr(CONTENT);
         } catch (Exception e) {
-            throw new ParsingException("Could not get uploader name", e);
-        }
-    }
-
-    @Override
-    public long getLength() throws ParsingException {
-        try {
-            return playerArgs.getLong("length_seconds");
-        } catch (Exception ignored) {
-            // Try other method...
-        }
-
-        try {
-            return Long.parseLong(videoInfoPage.get("length_seconds"));
-        } catch (Exception ignored) {
-            // Try other method...
-        }
-
-        try {
-            // Fallback to HTML method
-            return Long.parseLong(doc.select("div[class~=\"ytp-progress-bar\"][role=\"slider\"]")
-                    .first().attr("aria-valuemax"));
-        } catch (Exception e) {
-            throw new ParsingException("Could not get video length", e);
-        }
-    }
-
-    @Override
-    public long getViewCount() throws ParsingException {
-        try {
-            return Long.parseLong(doc.select("meta[itemprop=interactionCount]").attr(CONTENT));
-        } catch (Exception e) {//todo: find fallback method
-            throw new ParsingException("Could not get number of views", e);
+            throw new ParsingException("Could not get the title", e);
         }
     }
 
@@ -205,6 +146,182 @@ public class YoutubeStreamExtractor extends StreamExtractor {
             return videoInfoPage.get("thumbnail_url");
         } catch (Exception e) {
             throw new ParsingException("Could not get thumbnail url", e);
+        }
+    }
+
+    @Override
+    public String getDescription() throws ParsingException {
+        try {
+            return doc.select("p[id=\"eow-description\"]").first().html();
+        } catch (Exception e) {//todo: add fallback method <-- there is no ... as long as i know
+            throw new ParsingException("Could not get the description", e);
+        }
+    }
+
+    @Override
+    public int getAgeLimit() throws ParsingException {
+        if (!isAgeRestricted) {
+            return 0;
+        }
+        try {
+            return Integer.valueOf(doc.select("meta[property=\"og:restrictions:age\"]")
+                    .attr(CONTENT).replace("+", ""));
+        } catch (Exception e) {
+            throw new ParsingException("Could not get age restriction");
+        }
+    }
+
+    @Override
+    public long getLength() throws ParsingException {
+        try {
+            return playerArgs.getLong("length_seconds");
+        } catch (Exception ignored) {
+            // Try other method...
+        }
+
+        try {
+            return Long.parseLong(videoInfoPage.get("length_seconds"));
+        } catch (Exception ignored) {
+            // Try other method...
+        }
+
+        try {
+            // Fallback to HTML method
+            return Long.parseLong(doc.select("div[class~=\"ytp-progress-bar\"][role=\"slider\"]")
+                    .first().attr("aria-valuemax"));
+        } catch (Exception e) {
+            throw new ParsingException("Could not get video length", e);
+        }
+    }
+
+    /**
+     * Attempts to parse (and return) the offset to start playing the video from.
+     *
+     * @return the offset (in seconds), or 0 if no timestamp is found.
+     */
+    @Override
+    public long getTimeStamp() throws ParsingException {
+        String timeStamp;
+        try {
+            timeStamp = Parser.matchGroup1("((#|&|\\?)t=\\d{0,3}h?\\d{0,3}m?\\d{1,3}s?)", getOriginalUrl());
+        } catch (Parser.RegexException e) {
+            // catch this instantly since an url does not necessarily have to have a time stamp
+
+            // -2 because well the testing system will then know its the regex that failed :/
+            // not good i know
+            return -2;
+        }
+
+        if (!timeStamp.isEmpty()) {
+            try {
+                String secondsString = "";
+                String minutesString = "";
+                String hoursString = "";
+                try {
+                    secondsString = Parser.matchGroup1("(\\d{1,3})s", timeStamp);
+                    minutesString = Parser.matchGroup1("(\\d{1,3})m", timeStamp);
+                    hoursString = Parser.matchGroup1("(\\d{1,3})h", timeStamp);
+                } catch (Exception e) {
+                    //it could be that time is given in another method
+                    if (secondsString.isEmpty() //if nothing was got,
+                            && minutesString.isEmpty()//treat as unlabelled seconds
+                            && hoursString.isEmpty()) {
+                        secondsString = Parser.matchGroup1("t=(\\d+)", timeStamp);
+                    }
+                }
+
+                int seconds = secondsString.isEmpty() ? 0 : Integer.parseInt(secondsString);
+                int minutes = minutesString.isEmpty() ? 0 : Integer.parseInt(minutesString);
+                int hours = hoursString.isEmpty() ? 0 : Integer.parseInt(hoursString);
+
+                //don't trust BODMAS!
+                return seconds + (60 * minutes) + (3600 * hours);
+                //Log.d(TAG, "derived timestamp value:"+ret);
+                //the ordering varies internationally
+            } catch (ParsingException e) {
+                throw new ParsingException("Could not get timestamp.", e);
+            }
+        } else {
+            return 0;
+        }
+    }
+
+    @Override
+    public long getViewCount() throws ParsingException {
+        try {
+            return Long.parseLong(doc.select("meta[itemprop=interactionCount]").attr(CONTENT));
+        } catch (Exception e) {//todo: find fallback method
+            throw new ParsingException("Could not get number of views", e);
+        }
+    }
+
+    @Override
+    public long getLikeCount() throws ParsingException {
+        String likesString = "";
+        try {
+            Element button = doc.select("button.like-button-renderer-like-button").first();
+            try {
+                likesString = button.select("span.yt-uix-button-content").first().text();
+            } catch (NullPointerException e) {
+                //if this ckicks in our button has no content and thefore likes/dislikes are disabled
+                return -1;
+            }
+            return Integer.parseInt(Utils.removeNonDigitCharacters(likesString));
+        } catch (NumberFormatException nfe) {
+            throw new ParsingException("Could not parse \"" + likesString + "\" as an Integer", nfe);
+        } catch (Exception e) {
+            throw new ParsingException("Could not get like count", e);
+        }
+    }
+
+    @Override
+    public long getDislikeCount() throws ParsingException {
+        String dislikesString = "";
+        try {
+            Element button = doc.select("button.like-button-renderer-dislike-button").first();
+            try {
+                dislikesString = button.select("span.yt-uix-button-content").first().text();
+            } catch (NullPointerException e) {
+                //if this kicks in our button has no content and therefore likes/dislikes are disabled
+                return -1;
+            }
+            return Integer.parseInt(Utils.removeNonDigitCharacters(dislikesString));
+        } catch (NumberFormatException nfe) {
+            throw new ParsingException("Could not parse \"" + dislikesString + "\" as an Integer", nfe);
+        } catch (Exception e) {
+            throw new ParsingException("Could not get dislike count", e);
+        }
+    }
+
+    @Override
+    public String getUploaderUrl() throws ParsingException {
+        try {
+            return doc.select("div[class=\"yt-user-info\"]").first().children()
+                    .select("a").first().attr("abs:href");
+        } catch (Exception e) {
+            throw new ParsingException("Could not get channel link", e);
+        }
+    }
+
+    @Override
+    public String getUploaderName() throws ParsingException {
+        try {
+            return playerArgs.getString("author");
+        } catch (Exception ignored) {
+            // Try other method...
+        }
+
+        try {
+            return videoInfoPage.get("author");
+        } catch (Exception ignored) {
+            // Try other method...
+        }
+
+        try {
+            // Fallback to HTML method
+            return doc.select("div.yt-user-info").first().text();
+        } catch (Exception e) {
+            throw new ParsingException("Could not get uploader name", e);
         }
     }
 
@@ -302,108 +419,10 @@ public class YoutubeStreamExtractor extends StreamExtractor {
         return videoOnlyStreams;
     }
 
-    /**
-     * Attempts to parse (and return) the offset to start playing the video from.
-     *
-     * @return the offset (in seconds), or 0 if no timestamp is found.
-     */
     @Override
-    public int getTimeStamp() throws ParsingException {
-        String timeStamp;
-        try {
-            timeStamp = Parser.matchGroup1("((#|&|\\?)t=\\d{0,3}h?\\d{0,3}m?\\d{1,3}s?)", getOriginalUrl());
-        } catch (Parser.RegexException e) {
-            // catch this instantly since an url does not necessarily have to have a time stamp
-
-            // -2 because well the testing system will then know its the regex that failed :/
-            // not good i know
-            return -2;
-        }
-
-        if (!timeStamp.isEmpty()) {
-            try {
-                String secondsString = "";
-                String minutesString = "";
-                String hoursString = "";
-                try {
-                    secondsString = Parser.matchGroup1("(\\d{1,3})s", timeStamp);
-                    minutesString = Parser.matchGroup1("(\\d{1,3})m", timeStamp);
-                    hoursString = Parser.matchGroup1("(\\d{1,3})h", timeStamp);
-                } catch (Exception e) {
-                    //it could be that time is given in another method
-                    if (secondsString.isEmpty() //if nothing was got,
-                            && minutesString.isEmpty()//treat as unlabelled seconds
-                            && hoursString.isEmpty()) {
-                        secondsString = Parser.matchGroup1("t=(\\d+)", timeStamp);
-                    }
-                }
-
-                int seconds = secondsString.isEmpty() ? 0 : Integer.parseInt(secondsString);
-                int minutes = minutesString.isEmpty() ? 0 : Integer.parseInt(minutesString);
-                int hours = hoursString.isEmpty() ? 0 : Integer.parseInt(hoursString);
-
-                //don't trust BODMAS!
-                return seconds + (60 * minutes) + (3600 * hours);
-                //Log.d(TAG, "derived timestamp value:"+ret);
-                //the ordering varies internationally
-            } catch (ParsingException e) {
-                throw new ParsingException("Could not get timestamp.", e);
-            }
-        } else {
-            return 0;
-        }
-    }
-
-    @Override
-    public int getAgeLimit() throws ParsingException {
-        if (!isAgeRestricted) {
-            return 0;
-        }
-        try {
-            return Integer.valueOf(doc.head()
-                    .getElementsByAttributeValue("property", "og:restrictions:age")
-                    .attr(CONTENT).replace("+", ""));
-        } catch (Exception e) {
-            throw new ParsingException("Could not get age restriction");
-        }
-    }
-
-    @Override
-    public long getLikeCount() throws ParsingException {
-        String likesString = "";
-        try {
-            Element button = doc.select("button.like-button-renderer-like-button").first();
-            try {
-                likesString = button.select("span.yt-uix-button-content").first().text();
-            } catch (NullPointerException e) {
-                //if this ckicks in our button has no content and thefore likes/dislikes are disabled
-                return -1;
-            }
-            return Integer.parseInt(Utils.removeNonDigitCharacters(likesString));
-        } catch (NumberFormatException nfe) {
-            throw new ParsingException("Could not parse \"" + likesString + "\" as an Integer", nfe);
-        } catch (Exception e) {
-            throw new ParsingException("Could not get like count", e);
-        }
-    }
-
-    @Override
-    public long getDislikeCount() throws ParsingException {
-        String dislikesString = "";
-        try {
-            Element button = doc.select("button.like-button-renderer-dislike-button").first();
-            try {
-                dislikesString = button.select("span.yt-uix-button-content").first().text();
-            } catch (NullPointerException e) {
-                //if this kicks in our button has no content and therefore likes/dislikes are disabled
-                return -1;
-            }
-            return Integer.parseInt(Utils.removeNonDigitCharacters(dislikesString));
-        } catch (NumberFormatException nfe) {
-            throw new ParsingException("Could not parse \"" + dislikesString + "\" as an Integer", nfe);
-        } catch (Exception e) {
-            throw new ParsingException("Could not get dislike count", e);
-        }
+    public StreamType getStreamType() throws ParsingException {
+        //todo: if implementing livestream support this value should be generated dynamically
+        return StreamType.VIDEO_STREAM;
     }
 
     @Override
@@ -436,22 +455,6 @@ public class YoutubeStreamExtractor extends StreamExtractor {
         } catch (Exception e) {
             throw new ParsingException("Could not get related videos", e);
         }
-    }
-
-    @Override
-    public String getUploaderUrl() throws ParsingException {
-        try {
-            return doc.select("div[class=\"yt-user-info\"]").first().children()
-                    .select("a").first().attr("abs:href");
-        } catch (Exception e) {
-            throw new ParsingException("Could not get channel link", e);
-        }
-    }
-
-    @Override
-    public StreamType getStreamType() throws ParsingException {
-        //todo: if implementing livestream support this value should be generated dynamically
-        return StreamType.VIDEO_STREAM;
     }
 
     /**

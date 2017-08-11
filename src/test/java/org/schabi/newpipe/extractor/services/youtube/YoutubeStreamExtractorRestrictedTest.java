@@ -11,6 +11,7 @@ import org.schabi.newpipe.extractor.stream.VideoStream;
 
 import java.io.IOException;
 
+import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 import static org.schabi.newpipe.extractor.ServiceList.YouTube;
 
@@ -30,16 +31,13 @@ public class YoutubeStreamExtractorRestrictedTest {
 
     @Test
     public void testGetInvalidTimeStamp() throws ParsingException {
-        assertTrue(Integer.toString(extractor.getTimeStamp()),
-                extractor.getTimeStamp() <= 0);
+        assertTrue(extractor.getTimeStamp() + "", extractor.getTimeStamp() <= 0);
     }
 
     @Test
     public void testGetValidTimeStamp() throws IOException, ExtractionException {
-        StreamExtractor extractor = YouTube.getService()
-                .getStreamExtractor("https://youtu.be/FmG385_uUys?t=174");
-        assertTrue(Integer.toString(extractor.getTimeStamp()),
-                extractor.getTimeStamp() == 174);
+        StreamExtractor extractor = YouTube.getService().getStreamExtractor("https://youtu.be/FmG385_uUys?t=174");
+        assertEquals(extractor.getTimeStamp() + "", "174");
     }
 
     @Test
@@ -49,7 +47,7 @@ public class YoutubeStreamExtractorRestrictedTest {
 
     @Test
     public void testGetTitle() throws ParsingException {
-        assertTrue(!extractor.getTitle().isEmpty());
+        assertTrue(!extractor.getName().isEmpty());
     }
 
     @Test

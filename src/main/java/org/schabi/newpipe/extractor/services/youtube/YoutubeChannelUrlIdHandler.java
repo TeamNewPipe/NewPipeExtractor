@@ -8,7 +8,7 @@ import org.schabi.newpipe.extractor.utils.Parser;
  * Created by Christian Schabesberger on 25.07.16.
  *
  * Copyright (C) Christian Schabesberger 2016 <chris.schabesberger@mailbox.org>
- * YoutubeUserUrlIdHandler.java is part of NewPipe.
+ * YoutubeChannelUrlIdHandler.java is part of NewPipe.
  *
  * NewPipe is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -24,12 +24,12 @@ import org.schabi.newpipe.extractor.utils.Parser;
  * along with NewPipe.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-public class YoutubeUserUrlIdHandler implements UrlIdHandler {
+public class YoutubeChannelUrlIdHandler implements UrlIdHandler {
 
-    private static final YoutubeUserUrlIdHandler instance = new YoutubeUserUrlIdHandler();
+    private static final YoutubeChannelUrlIdHandler instance = new YoutubeChannelUrlIdHandler();
     private static final String ID_PATTERN = "/(user/[A-Za-z0-9_-]*|channel/[A-Za-z0-9_-]*)";
 
-    public static YoutubeUserUrlIdHandler getInstance() {
+    public static YoutubeChannelUrlIdHandler getInstance() {
         return instance;
     }
 

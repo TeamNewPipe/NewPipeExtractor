@@ -99,7 +99,7 @@ public class StreamInfo extends Info {
         streamInfo.url = extractor.getCleanUrl();
         streamInfo.stream_type = extractor.getStreamType();
         streamInfo.id = extractor.getId();
-        streamInfo.name = extractor.getTitle();
+        streamInfo.name = extractor.getName();
         streamInfo.age_limit = extractor.getAgeLimit();
 
         if ((streamInfo.stream_type == StreamType.NONE)
@@ -282,6 +282,6 @@ public class StreamInfo extends Info {
     public StreamInfoItem next_video;
     public List<InfoItem> related_streams;
     //in seconds. some metadata is not passed using a StreamInfo object!
-    public int start_position = 0;
+    public long start_position = 0;
     public String description = "";
 }

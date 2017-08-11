@@ -45,7 +45,7 @@ public class YoutubePlaylistExtractor extends PlaylistExtractor {
     }
 
     @Override
-    public String getPlaylistId() throws ParsingException {
+    public String getId() throws ParsingException {
         try {
             return getUrlIdHandler().getId(getCleanUrl());
         } catch (Exception e) {
@@ -54,7 +54,7 @@ public class YoutubePlaylistExtractor extends PlaylistExtractor {
     }
 
     @Override
-    public String getPlaylistName() throws ParsingException {
+    public String getName() throws ParsingException {
         try {
             return doc.select("div[id=pl-header] h1[class=pl-header-title]").first().text();
         } catch (Exception e) {

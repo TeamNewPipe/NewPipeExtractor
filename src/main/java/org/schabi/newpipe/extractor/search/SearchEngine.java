@@ -27,7 +27,7 @@ import java.util.EnumSet;
 
 public abstract class SearchEngine {
     public enum Filter {
-        STREAM, USER, PLAYLIST
+        STREAM, CHANNEL, PLAYLIST
     }
 
     public static class NothingFoundException extends ExtractionException {

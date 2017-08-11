@@ -30,12 +30,12 @@ public class SoundcloudPlaylistExtractorTest {
 
     @Test
     public void testGetId() throws Exception {
-        assertEquals(extractor.getPlaylistId(), "246349810");
+        assertEquals(extractor.getId(), "246349810");
     }
 
     @Test
     public void testGetName() throws Exception {
-        assertEquals(extractor.getPlaylistName(), "THE PERFECT LUV TAPE®️");
+        assertEquals(extractor.getName(), "THE PERFECT LUV TAPE®️");
     }
 
     @Test

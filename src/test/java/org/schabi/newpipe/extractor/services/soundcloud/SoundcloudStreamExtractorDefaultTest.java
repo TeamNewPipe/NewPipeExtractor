@@ -29,19 +29,19 @@ public class SoundcloudStreamExtractorDefaultTest {
 
     @Test
     public void testGetInvalidTimeStamp() throws ParsingException {
-        assertTrue(Integer.toString(extractor.getTimeStamp()),
+        assertTrue(extractor.getTimeStamp() + "",
                 extractor.getTimeStamp() <= 0);
     }
 
     @Test
     public void testGetValidTimeStamp() throws IOException, ExtractionException {
         StreamExtractor extractor = SoundCloud.getService().getStreamExtractor("https://soundcloud.com/liluzivert/do-what-i-want-produced-by-maaly-raw-don-cannon#t=69");
-        assertEquals(Integer.toString(extractor.getTimeStamp()), "69");
+        assertEquals(extractor.getTimeStamp() + "", "69");
     }
 
     @Test
     public void testGetTitle() throws ParsingException {
-        assertEquals(extractor.getTitle(), "Do What I Want [Produced By Maaly Raw + Don Cannon]");
+        assertEquals(extractor.getName(), "Do What I Want [Produced By Maaly Raw + Don Cannon]");
     }
 
     @Test

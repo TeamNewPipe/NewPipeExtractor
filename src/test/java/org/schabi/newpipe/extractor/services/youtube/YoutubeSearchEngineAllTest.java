@@ -49,7 +49,7 @@ public class YoutubeSearchEngineAllTest {
         // Youtube will suggest "asdf" instead of "asdgff"
         // keep in mind that the suggestions can change by country (the parameter "de")
         result = engine.search("asdgff", 0, "de",
-                EnumSet.of(SearchEngine.Filter.USER,
+                EnumSet.of(SearchEngine.Filter.CHANNEL,
                         SearchEngine.Filter.STREAM)).getSearchResult();
     }
 

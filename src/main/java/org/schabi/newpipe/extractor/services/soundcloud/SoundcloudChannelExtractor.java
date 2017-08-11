@@ -4,19 +4,19 @@ import org.json.JSONObject;
 import org.schabi.newpipe.extractor.Downloader;
 import org.schabi.newpipe.extractor.NewPipe;
 import org.schabi.newpipe.extractor.StreamingService;
+import org.schabi.newpipe.extractor.channel.ChannelExtractor;
 import org.schabi.newpipe.extractor.exceptions.ExtractionException;
 import org.schabi.newpipe.extractor.exceptions.ParsingException;
 import org.schabi.newpipe.extractor.stream.StreamInfoItemCollector;
-import org.schabi.newpipe.extractor.user.UserExtractor;
 
 import java.io.IOException;
 
 @SuppressWarnings("WeakerAccess")
-public class SoundcloudUserExtractor extends UserExtractor {
+public class SoundcloudChannelExtractor extends ChannelExtractor {
     private String userId;
     private JSONObject user;
 
-    public SoundcloudUserExtractor(StreamingService service, String url, String nextStreamsUrl) throws IOException, ExtractionException {
+    public SoundcloudChannelExtractor(StreamingService service, String url, String nextStreamsUrl) throws IOException, ExtractionException {
         super(service, url, nextStreamsUrl);
     }
 
@@ -42,12 +42,12 @@ public class SoundcloudUserExtractor extends UserExtractor {
     }
 
     @Override
-    public String getUserId() {
+    public String getId() {
         return userId;
     }
 
     @Override
-    public String getUserName() {
+    public String getName() {
         return user.getString("username");
     }
 
@@ -66,20 +66,25 @@ public class SoundcloudUserExtractor extends UserExtractor {
     }
 
     @Override
+    public String getFeedUrl() throws ParsingException {
+        return null;
+    }
+
+    @Override
     public long getSubscriberCount() {
         return user.optLong("followers_count", 0L);
     }
 
     @Override
-    public String getFeedUrl() throws ParsingException {
-        return null;
+    public String getDescription() throws ParsingException {
+        return user.optString("description");
     }
 
     @Override
     public StreamInfoItemCollector getStreams() throws IOException, ExtractionException {
         StreamInfoItemCollector collector = new StreamInfoItemCollector(getServiceId());
 
-        String apiUrl = "https://api-v2.soundcloud.com/users/" + getUserId() + "/tracks"
+        String apiUrl = "https://api-v2.soundcloud.com/users/" + getId() + "/tracks"
                 + "?client_id=" + SoundcloudParsingHelper.clientId()
                 + "&limit=20"
                 + "&linked_partitioning=1";
@@ -91,17 +96,12 @@ public class SoundcloudUserExtractor extends UserExtractor {
     @Override
     public NextItemsResult getNextStreams() throws IOException, ExtractionException {
         if (!hasMoreStreams()) {
-            throw new ExtractionException("User doesn't have more streams");
+            throw new ExtractionException("Channel doesn't have more streams");
         }
 
         StreamInfoItemCollector collector = new StreamInfoItemCollector(getServiceId());
         nextStreamsUrl = SoundcloudParsingHelper.getStreamsFromApiMinItems(15, collector, nextStreamsUrl);
 
         return new NextItemsResult(collector.getItemList(), nextStreamsUrl);
-    }
-
-    @Override
-    public String getDescription() throws ParsingException {
-        return user.optString("description");
     }
 }

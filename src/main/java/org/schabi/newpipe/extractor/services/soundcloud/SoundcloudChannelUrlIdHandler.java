@@ -8,13 +8,13 @@ import org.schabi.newpipe.extractor.exceptions.ParsingException;
 import org.schabi.newpipe.extractor.utils.Parser;
 import org.schabi.newpipe.extractor.utils.Utils;
 
-public class SoundcloudUserUrlIdHandler implements UrlIdHandler {
+public class SoundcloudChannelUrlIdHandler implements UrlIdHandler {
 
-    private static final SoundcloudUserUrlIdHandler instance = new SoundcloudUserUrlIdHandler();
+    private static final SoundcloudChannelUrlIdHandler instance = new SoundcloudChannelUrlIdHandler();
     private final String URL_PATTERN = "^https?://(www\\.)?soundcloud.com/[0-9a-z_-]+" +
             "(/((tracks|albums|sets|reposts|followers|following)/?)?)?([#?].*)?$";
 
-    public static SoundcloudUserUrlIdHandler getInstance() {
+    public static SoundcloudChannelUrlIdHandler getInstance() {
         return instance;
     }
 

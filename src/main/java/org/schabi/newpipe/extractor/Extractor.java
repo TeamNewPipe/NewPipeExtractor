@@ -20,7 +20,7 @@ public abstract class Extractor {
      * <pre>
      *     https://www.youtube.com/watch?v=a9Zf_258aTI<i>&t=4s</i>  →  <i><b>&t=4s</b></i>
      * </pre>
-     * But as you can imagine, the time parameter is very important when calling, for example, {@link org.schabi.newpipe.extractor.stream.StreamExtractor#getTimeStamp()}.
+     * But as you can imagine, the time parameter is very important when calling {@link org.schabi.newpipe.extractor.stream.StreamExtractor#getTimeStamp()}.
      */
     private final String originalUrl;
 
@@ -37,7 +37,7 @@ public abstract class Extractor {
     }
 
     /**
-     * @return a {@link UrlIdHandler} of the current extractor type (e.g. a UserExtractor should return a user url handler).
+     * @return a {@link UrlIdHandler} of the current extractor type (e.g. a ChannelExtractor should return a channel url handler).
      */
     protected abstract UrlIdHandler getUrlIdHandler() throws ParsingException;
 
@@ -45,6 +45,9 @@ public abstract class Extractor {
      * Fetch the current page.
      */
     public abstract void fetchPage() throws IOException, ExtractionException;
+
+    public abstract String getId() throws ParsingException;
+    public abstract String getName() throws ParsingException;
 
     public String getOriginalUrl() {
         return originalUrl;

@@ -28,7 +28,7 @@ public class SoundcloudSearchEngineAllTest {
         // SoundCloud will suggest "lil uzi vert" instead of "lill uzi vert"
         // keep in mind that the suggestions can NOT change by country (the parameter "de")
         result = engine.search("lill uzi vert", 0, "de",
-                EnumSet.of(SearchEngine.Filter.USER,
+                EnumSet.of(SearchEngine.Filter.CHANNEL,
                         SearchEngine.Filter.STREAM)).getSearchResult();
     }
 

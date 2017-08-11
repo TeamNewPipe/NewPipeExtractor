@@ -4,24 +4,24 @@ import org.junit.Before;
 import org.junit.Test;
 import org.schabi.newpipe.Downloader;
 import org.schabi.newpipe.extractor.NewPipe;
-import org.schabi.newpipe.extractor.user.UserExtractor;
+import org.schabi.newpipe.extractor.channel.ChannelExtractor;
 
 import static org.junit.Assert.*;
 import static org.schabi.newpipe.extractor.ServiceList.SoundCloud;
 
 /**
- * Test for {@link UserExtractor}
+ * Test for {@link ChannelExtractor}
  */
 
-public class SoundcloudUserExtractorTest {
+public class SoundcloudChannelExtractorTest {
 
-    UserExtractor extractor;
+    ChannelExtractor extractor;
 
     @Before
     public void setUp() throws Exception {
         NewPipe.init(Downloader.getInstance());
         extractor = SoundCloud.getService()
-                .getUserExtractor("https://soundcloud.com/liluzivert");
+                .getChannelExtractor("https://soundcloud.com/liluzivert");
     }
 
     @Test
@@ -30,8 +30,8 @@ public class SoundcloudUserExtractorTest {
     }
 
     @Test
-    public void testGetUserName() throws Exception {
-        assertEquals(extractor.getUserName(), "LIL UZI VERT");
+    public void testGetName() throws Exception {
+        assertEquals(extractor.getName(), "LIL UZI VERT");
     }
 
     @Test

@@ -4,7 +4,7 @@ import org.junit.Before;
 import org.junit.Test;
 import org.schabi.newpipe.Downloader;
 import org.schabi.newpipe.extractor.NewPipe;
-import org.schabi.newpipe.extractor.user.UserExtractor;
+import org.schabi.newpipe.extractor.channel.ChannelExtractor;
 
 import static org.junit.Assert.*;
 import static org.schabi.newpipe.extractor.ServiceList.YouTube;
@@ -30,17 +30,17 @@ import static org.schabi.newpipe.extractor.ServiceList.YouTube;
  */
 
 /**
- * Test for {@link UserExtractor}
+ * Test for {@link ChannelExtractor}
  */
-public class YoutubeUserExtractorTest {
+public class YoutubeChannelExtractorTest {
 
-    UserExtractor extractor;
+    ChannelExtractor extractor;
 
     @Before
     public void setUp() throws Exception {
         NewPipe.init(Downloader.getInstance());
         extractor = YouTube.getService()
-                .getUserExtractor("https://www.youtube.com/channel/UCYJ61XIK64sp6ZFFS8sctxw");
+                .getChannelExtractor("https://www.youtube.com/channel/UCYJ61XIK64sp6ZFFS8sctxw");
     }
 
     @Test
@@ -49,8 +49,8 @@ public class YoutubeUserExtractorTest {
     }
 
     @Test
-    public void testGetUserName() throws Exception {
-        assertEquals(extractor.getUserName(), "Gronkh");
+    public void testGetName() throws Exception {
+        assertEquals(extractor.getName(), "Gronkh");
     }
 
     @Test

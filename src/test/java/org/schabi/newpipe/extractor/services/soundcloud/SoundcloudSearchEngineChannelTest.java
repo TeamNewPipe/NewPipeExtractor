@@ -17,7 +17,7 @@ import static org.schabi.newpipe.extractor.ServiceList.SoundCloud;
 /**
  * Test for {@link SearchEngine}
  */
-public class SoundcloudSearchEngineUserTest {
+public class SoundcloudSearchEngineChannelTest {
     private SearchResult result;
 
     @Before
@@ -28,7 +28,7 @@ public class SoundcloudSearchEngineUserTest {
         // SoundCloud will suggest "lil uzi vert" instead of "lill uzi vert"
         // keep in mind that the suggestions can NOT change by country (the parameter "de")
         result = engine.search("lill uzi vert", 0, "de",
-                EnumSet.of(SearchEngine.Filter.USER)).getSearchResult();
+                EnumSet.of(SearchEngine.Filter.CHANNEL)).getSearchResult();
     }
 
     @Test
@@ -39,7 +39,7 @@ public class SoundcloudSearchEngineUserTest {
     @Test
     public void testResultsItemType() {
         for (InfoItem infoItem : result.resultList) {
-            assertEquals(InfoItem.InfoType.USER, infoItem.info_type);
+            assertEquals(InfoItem.InfoType.CHANNEL, infoItem.info_type);
         }
     }
 

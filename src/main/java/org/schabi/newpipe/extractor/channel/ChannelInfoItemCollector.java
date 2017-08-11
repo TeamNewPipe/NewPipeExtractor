@@ -1,4 +1,4 @@
-package org.schabi.newpipe.extractor.user;
+package org.schabi.newpipe.extractor.channel;
 
 import org.schabi.newpipe.extractor.InfoItemCollector;
 import org.schabi.newpipe.extractor.exceptions.ParsingException;
@@ -7,7 +7,7 @@ import org.schabi.newpipe.extractor.exceptions.ParsingException;
  * Created by Christian Schabesberger on 12.02.17.
  *
  * Copyright (C) Christian Schabesberger 2017 <chris.schabesberger@mailbox.org>
- * UserInfoItemCollector.java is part of NewPipe.
+ * ChannelInfoItemCollector.java is part of NewPipe.
  *
  * NewPipe is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -23,16 +23,16 @@ import org.schabi.newpipe.extractor.exceptions.ParsingException;
  * along with NewPipe.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-public class UserInfoItemCollector extends InfoItemCollector {
-    public UserInfoItemCollector(int serviceId) {
+public class ChannelInfoItemCollector extends InfoItemCollector {
+    public ChannelInfoItemCollector(int serviceId) {
         super(serviceId);
     }
 
-    public UserInfoItem extract(UserInfoItemExtractor extractor) throws ParsingException {
-        UserInfoItem resultItem = new UserInfoItem();
+    public ChannelInfoItem extract(ChannelInfoItemExtractor extractor) throws ParsingException {
+        ChannelInfoItem resultItem = new ChannelInfoItem();
         // important information
         resultItem.service_id = getServiceId();
-        resultItem.name = extractor.getUserName();
+        resultItem.name = extractor.getChannelName();
         resultItem.url = extractor.getWebPageUrl();
 
         // optional information
@@ -59,7 +59,7 @@ public class UserInfoItemCollector extends InfoItemCollector {
         return resultItem;
     }
 
-    public void commit(UserInfoItemExtractor extractor) throws ParsingException {
+    public void commit(ChannelInfoItemExtractor extractor) throws ParsingException {
         try {
             addItem(extract(extractor));
         } catch (Exception e) {

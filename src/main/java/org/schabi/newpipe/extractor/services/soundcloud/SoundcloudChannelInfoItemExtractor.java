@@ -1,12 +1,12 @@
 package org.schabi.newpipe.extractor.services.soundcloud;
 
 import org.json.JSONObject;
-import org.schabi.newpipe.extractor.user.UserInfoItemExtractor;
+import org.schabi.newpipe.extractor.channel.ChannelInfoItemExtractor;
 
-public class SoundcloudUserInfoItemExtractor implements UserInfoItemExtractor {
+public class SoundcloudChannelInfoItemExtractor implements ChannelInfoItemExtractor {
     private JSONObject searchResult;
 
-    public SoundcloudUserInfoItemExtractor(JSONObject searchResult) {
+    public SoundcloudChannelInfoItemExtractor(JSONObject searchResult) {
         this.searchResult = searchResult;
     }
 
@@ -16,7 +16,7 @@ public class SoundcloudUserInfoItemExtractor implements UserInfoItemExtractor {
     }
 
     @Override
-    public String getUserName() {
+    public String getChannelName() {
         return searchResult.getString("username");
     }
 

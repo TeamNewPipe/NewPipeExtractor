@@ -1,12 +1,12 @@
 package org.schabi.newpipe.extractor.search;
 
 import org.schabi.newpipe.extractor.InfoItemCollector;
+import org.schabi.newpipe.extractor.channel.ChannelInfoItemCollector;
+import org.schabi.newpipe.extractor.channel.ChannelInfoItemExtractor;
 import org.schabi.newpipe.extractor.exceptions.ExtractionException;
 import org.schabi.newpipe.extractor.exceptions.FoundAdException;
 import org.schabi.newpipe.extractor.stream.StreamInfoItemCollector;
 import org.schabi.newpipe.extractor.stream.StreamInfoItemExtractor;
-import org.schabi.newpipe.extractor.user.UserInfoItemCollector;
-import org.schabi.newpipe.extractor.user.UserInfoItemExtractor;
 
 /*
  * Created by Christian Schabesberger on 12.02.17.
@@ -31,14 +31,14 @@ import org.schabi.newpipe.extractor.user.UserInfoItemExtractor;
 public class InfoItemSearchCollector extends InfoItemCollector {
     private String suggestion = "";
     private StreamInfoItemCollector streamCollector;
-    private UserInfoItemCollector userCollector;
+    private ChannelInfoItemCollector userCollector;
 
     private SearchResult result = new SearchResult();
 
     InfoItemSearchCollector(int serviceId) {
         super(serviceId);
         streamCollector = new StreamInfoItemCollector(serviceId);
-        userCollector = new UserInfoItemCollector(serviceId);
+        userCollector = new ChannelInfoItemCollector(serviceId);
     }
 
     public void setSuggestion(String suggestion) {
@@ -65,7 +65,7 @@ public class InfoItemSearchCollector extends InfoItemCollector {
         }
     }
 
-    public void commit(UserInfoItemExtractor extractor) {
+    public void commit(ChannelInfoItemExtractor extractor) {
         try {
             result.resultList.add(userCollector.extract(extractor));
         } catch (FoundAdException ae) {

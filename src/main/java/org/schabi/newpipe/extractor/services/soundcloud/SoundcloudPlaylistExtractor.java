@@ -42,12 +42,12 @@ public class SoundcloudPlaylistExtractor extends PlaylistExtractor {
     }
 
     @Override
-    public String getPlaylistId() {
+    public String getId() {
         return playlistId;
     }
 
     @Override
-    public String getPlaylistName() {
+    public String getName() {
         return playlist.optString("title");
     }
 
@@ -86,7 +86,7 @@ public class SoundcloudPlaylistExtractor extends PlaylistExtractor {
         StreamInfoItemCollector collector = new StreamInfoItemCollector(getServiceId());
 
         // Note the "api", NOT "api-v2"
-        String apiUrl = "https://api.soundcloud.com/playlists/" + getPlaylistId() + "/tracks"
+        String apiUrl = "https://api.soundcloud.com/playlists/" + getId() + "/tracks"
                 + "?client_id=" + SoundcloudParsingHelper.clientId()
                 + "&limit=20"
                 + "&linked_partitioning=1";

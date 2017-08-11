@@ -44,27 +44,30 @@ public abstract class StreamExtractor extends Extractor {
         return getService().getStreamUrlIdHandler();
     }
 
-    public abstract String getId() throws ParsingException;
-    public abstract int getTimeStamp() throws ParsingException;
-    public abstract String getTitle() throws ParsingException;
-    public abstract String getDescription() throws ParsingException;
-    public abstract String getUploaderName() throws ParsingException;
-    public abstract String getUploaderUrl() throws ParsingException;
-    public abstract long getLength() throws ParsingException;
-    public abstract long getViewCount() throws ParsingException;
     public abstract String getUploadDate() throws ParsingException;
     public abstract String getThumbnailUrl() throws ParsingException;
+    public abstract String getDescription() throws ParsingException;
+    public abstract int getAgeLimit() throws ParsingException;
+
+    public abstract long getLength() throws ParsingException;
+    public abstract long getTimeStamp() throws ParsingException;
+
+    public abstract long getViewCount() throws ParsingException;
+    public abstract long getLikeCount() throws ParsingException;
+    public abstract long getDislikeCount() throws ParsingException;
+
+    public abstract String getUploaderUrl() throws ParsingException;
+    public abstract String getUploaderName() throws ParsingException;
     public abstract String getUploaderAvatarUrl() throws ParsingException;
+
+    public abstract String getDashMpdUrl() throws ParsingException;
     public abstract List<AudioStream> getAudioStreams() throws IOException, ExtractionException;
     public abstract List<VideoStream> getVideoStreams() throws IOException, ExtractionException;
     public abstract List<VideoStream> getVideoOnlyStreams() throws IOException, ExtractionException;
-    public abstract String getDashMpdUrl() throws ParsingException;
-    public abstract int getAgeLimit() throws ParsingException;
-    public abstract long getLikeCount() throws ParsingException;
-    public abstract long getDislikeCount() throws ParsingException;
+
+    public abstract StreamType getStreamType() throws ParsingException;
     public abstract StreamInfoItem getNextVideo() throws IOException, ExtractionException;
     public abstract StreamInfoItemCollector getRelatedVideos() throws IOException, ExtractionException;
-    public abstract StreamType getStreamType() throws ParsingException;
 
     /**
      * Analyses the webpage's document and extracts any error message there might be.

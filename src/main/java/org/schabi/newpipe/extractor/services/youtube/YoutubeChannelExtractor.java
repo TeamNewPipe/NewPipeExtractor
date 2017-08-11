@@ -9,11 +9,11 @@ import org.jsoup.nodes.Element;
 import org.schabi.newpipe.extractor.Downloader;
 import org.schabi.newpipe.extractor.NewPipe;
 import org.schabi.newpipe.extractor.StreamingService;
+import org.schabi.newpipe.extractor.channel.ChannelExtractor;
 import org.schabi.newpipe.extractor.exceptions.ExtractionException;
 import org.schabi.newpipe.extractor.exceptions.ParsingException;
 import org.schabi.newpipe.extractor.exceptions.ReCaptchaException;
 import org.schabi.newpipe.extractor.stream.StreamInfoItemCollector;
-import org.schabi.newpipe.extractor.user.UserExtractor;
 import org.schabi.newpipe.extractor.utils.Parser;
 import org.schabi.newpipe.extractor.utils.Utils;
 
@@ -23,7 +23,7 @@ import java.io.IOException;
  * Created by Christian Schabesberger on 25.07.16.
  *
  * Copyright (C) Christian Schabesberger 2016 <chris.schabesberger@mailbox.org>
- * YoutubeUserExtractor.java is part of NewPipe.
+ * YoutubeChannelExtractor.java is part of NewPipe.
  *
  * NewPipe is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -40,7 +40,7 @@ import java.io.IOException;
  */
 
 @SuppressWarnings("WeakerAccess")
-public class YoutubeUserExtractor extends UserExtractor {
+public class YoutubeChannelExtractor extends ChannelExtractor {
     private static final String CHANNEL_FEED_BASE = "https://www.youtube.com/feeds/videos.xml?channel_id=";
     private static final String CHANNEL_URL_PARAMETERS = "/videos?view=0&flow=list&sort=dd&live_view=10000";
 
@@ -50,7 +50,7 @@ public class YoutubeUserExtractor extends UserExtractor {
      */
     private Document nextStreamsAjax;
 
-    public YoutubeUserExtractor(StreamingService service, String url, String nextStreamsUrl) throws IOException, ExtractionException {
+    public YoutubeChannelExtractor(StreamingService service, String url, String nextStreamsUrl) throws IOException, ExtractionException {
         super(service, url, nextStreamsUrl);
     }
 
@@ -58,16 +58,16 @@ public class YoutubeUserExtractor extends UserExtractor {
     public void fetchPage() throws IOException, ExtractionException {
         Downloader downloader = NewPipe.getDownloader();
 
-        String userUrl = getCleanUrl() + CHANNEL_URL_PARAMETERS;
-        String pageContent = downloader.download(userUrl);
-        doc = Jsoup.parse(pageContent, userUrl);
+        String channelUrl = getCleanUrl() + CHANNEL_URL_PARAMETERS;
+        String pageContent = downloader.download(channelUrl);
+        doc = Jsoup.parse(pageContent, channelUrl);
 
         nextStreamsUrl = getNextStreamsUrlFrom(doc);
         nextStreamsAjax = null;
     }
 
     @Override
-    public String getUserId() throws ParsingException {
+    public String getId() throws ParsingException {
         try {
             return getUrlIdHandler().getId(getCleanUrl());
         } catch (Exception e) {
@@ -76,7 +76,7 @@ public class YoutubeUserExtractor extends UserExtractor {
     }
 
     @Override
-    public String getUserName() throws ParsingException {
+    public String getName() throws ParsingException {
         try {
             return doc.select("span[class=\"qualified-channel-title-text\"]").first().select("a").first().text();
         } catch (Exception e) {
@@ -106,6 +106,15 @@ public class YoutubeUserExtractor extends UserExtractor {
         }
     }
 
+    @Override
+    public String getFeedUrl() throws ParsingException {
+        try {
+            String channelId = doc.getElementsByClass("yt-uix-subscription-button").first().attr("data-channel-external-id");
+            return channelId == null ? "" : CHANNEL_FEED_BASE + channelId;
+        } catch (Exception e) {
+            throw new ParsingException("Could not get feed url", e);
+        }
+    }
 
     @Override
     public long getSubscriberCount() throws ParsingException {
@@ -121,18 +130,8 @@ public class YoutubeUserExtractor extends UserExtractor {
     public String getDescription() throws ParsingException {
         try {
             return doc.select("meta[name=\"description\"]").first().attr("content");
-        } catch(Exception e) {
-            throw new ParsingException("Could not get channel description", e);
-        }
-    }
-
-    @Override
-    public String getFeedUrl() throws ParsingException {
-        try {
-            String channelId = doc.getElementsByClass("yt-uix-subscription-button").first().attr("data-channel-external-id");
-            return channelId == null ? "" : CHANNEL_FEED_BASE + channelId;
         } catch (Exception e) {
-            throw new ParsingException("Could not get feed url", e);
+            throw new ParsingException("Could not get channel description", e);
         }
     }
 
@@ -220,7 +219,7 @@ public class YoutubeUserExtractor extends UserExtractor {
 
                     @Override
                     public String getUploaderName() throws ParsingException {
-                        return getUserName();
+                        return getName();
                     }
 
                     @Override
