@@ -1,6 +1,6 @@
 package org.schabi.newpipe.extractor.services.youtube;
 
-import org.json.JSONArray;
+import com.github.openjson.JSONArray;
 import org.schabi.newpipe.extractor.Downloader;
 import org.schabi.newpipe.extractor.NewPipe;
 import org.schabi.newpipe.extractor.SuggestionExtractor;
@@ -54,7 +54,9 @@ public class YoutubeSuggestionExtractor extends SuggestionExtractor {
         String response = dl.download(url);
         try {
             JSONArray suggestionsArray = new JSONArray(response).getJSONArray(1);
-            for (Object suggestion : suggestionsArray) suggestions.add(suggestion.toString());
+            for (int i = 0; i < suggestionsArray.length(); i++) {
+                suggestions.add(suggestionsArray.get(i).toString());
+            }
         } catch (Exception e) {
             throw new ParsingException("Could not parse suggestions response.", e);
         }

@@ -1,7 +1,7 @@
 package org.schabi.newpipe.extractor.services.soundcloud;
 
-import org.json.JSONArray;
-import org.json.JSONObject;
+import com.github.openjson.JSONArray;
+import com.github.openjson.JSONObject;
 import org.schabi.newpipe.extractor.Downloader;
 import org.schabi.newpipe.extractor.NewPipe;
 import org.schabi.newpipe.extractor.SuggestionExtractor;

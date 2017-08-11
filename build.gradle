@@ -5,7 +5,7 @@ repositories {
 }
 
 dependencies {
-    implementation 'org.json:json:20160807'
+    implementation 'com.github.openjson:openjson:1.0.8'
     implementation 'org.jsoup:jsoup:1.9.2'
     implementation 'org.mozilla:rhino:1.7.7.1'
 

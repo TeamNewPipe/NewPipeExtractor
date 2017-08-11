@@ -1,6 +1,6 @@
 package org.schabi.newpipe.extractor.services.soundcloud;
 
-import org.json.JSONObject;
+import com.github.openjson.JSONObject;
 import org.schabi.newpipe.extractor.exceptions.ParsingException;
 import org.schabi.newpipe.extractor.stream.StreamInfoItemExtractor;
 import org.schabi.newpipe.extractor.stream.StreamType;
