@@ -102,5 +102,4 @@ public class YoutubeChannelExtractorTest {
         assertTrue("extractor didn't have next streams", !extractor.getNextStreams().nextItemsList.isEmpty());
         assertTrue("extractor didn't have more streams after getNextStreams", extractor.hasMoreStreams());
     }
-
 }
