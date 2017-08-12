@@ -49,7 +49,7 @@ public abstract class StreamingService {
     public abstract StreamExtractor getStreamExtractor(String url) throws IOException, ExtractionException;
     public abstract ChannelExtractor getChannelExtractor(String url, String nextStreamsUrl) throws IOException, ExtractionException;
     public abstract PlaylistExtractor getPlaylistExtractor(String url, String nextStreamsUrl) throws IOException, ExtractionException;
-    public abstract KioskList getKioskList();
+    public abstract KioskList getKioskList() throws ExtractionException;
 
     public ChannelExtractor getChannelExtractor(String url) throws IOException, ExtractionException {
         return getChannelExtractor(url, null);

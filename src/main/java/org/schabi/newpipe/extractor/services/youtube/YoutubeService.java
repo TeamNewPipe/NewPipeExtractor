@@ -81,11 +81,16 @@ public class YoutubeService extends StreamingService {
     }
 
     @Override
-    public KioskList getKioskList() {
+    public KioskList getKioskList() throws ExtractionException {
         KioskList list = new KioskList(getServiceId());
 
         // add kiosks here e.g.:
-        //list.addKioskEntry("trinding", new TrendingKiosk(), new TrendingUrlIdHandler());
+        YoutubeTrendingUrlIdHandler h = new YoutubeTrendingUrlIdHandler();
+        try {
+            list.addKioskEntry(new YoutubeTrendingExtractor(this, h.getUrl(""), h.getUrl("")), h);
+        } catch (Exception e) {
+            throw new ExtractionException(e);
+        }
 
         return list;
     }
