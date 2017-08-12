@@ -87,7 +87,7 @@ public class YoutubeService extends StreamingService {
         // add kiosks here e.g.:
         YoutubeTrendingUrlIdHandler h = new YoutubeTrendingUrlIdHandler();
         try {
-            list.addKioskEntry(new YoutubeTrendingExtractor(this, h.getUrl(""), h.getUrl("")), h);
+            list.addKioskEntry(new YoutubeTrendingExtractor(this, h.getUrl(""), null), h);
         } catch (Exception e) {
             throw new ExtractionException(e);
         }

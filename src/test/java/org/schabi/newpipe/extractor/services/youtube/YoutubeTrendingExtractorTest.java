@@ -23,8 +23,12 @@ package org.schabi.newpipe.extractor.services.youtube;
 import org.junit.Before;
 import org.junit.Test;
 import org.schabi.newpipe.Downloader;
+import org.schabi.newpipe.extractor.InfoItem;
+import org.schabi.newpipe.extractor.InfoItemCollector;
 import org.schabi.newpipe.extractor.NewPipe;
 import org.schabi.newpipe.extractor.kiosk.KioskExtractor;
+
+import java.util.List;
 
 import static junit.framework.TestCase.assertFalse;
 import static org.junit.Assert.assertEquals;
@@ -46,6 +50,7 @@ public class YoutubeTrendingExtractorTest {
         extractor = YouTube.getService()
                 .getKioskList()
                 .getExtractorByType("Trending");
+        extractor.fetchPage();
     }
 
     @Test
@@ -65,7 +70,17 @@ public class YoutubeTrendingExtractorTest {
 
     @Test
     public void testGetStreams() throws Exception {
-        assertTrue("no streams are received", !extractor.getStreams().getItemList().isEmpty());
+        InfoItemCollector collector = extractor.getStreams();
+        if(!collector.getErrors().isEmpty()) {
+            System.err.println("----------");
+            for(Throwable e : collector.getErrors()) {
+                e.printStackTrace();
+                System.err.println("----------");
+            }
+        }
+        assertTrue("no streams are received",
+                !collector.getItemList().isEmpty()
+                        && collector.getErrors().isEmpty());
     }
 
     @Test
@@ -77,12 +92,17 @@ public class YoutubeTrendingExtractorTest {
     public void testHasMoreStreams() throws Exception {
         // Setup the streams
         extractor.getStreams();
-        assertTrue("don't have more streams", extractor.hasMoreStreams());
+        assertFalse("has more streams", extractor.hasMoreStreams());
     }
 
     @Test
     public void testGetNextStreams() throws Exception {
-        assertFalse("extractor has next streams", !extractor.getNextStreams().nextItemsList.isEmpty());
-        assertFalse("extractor has more streams after getNextStreams", extractor.hasMoreStreams());
+        assertTrue("extractor has next streams", extractor.getNextStreams() == null
+                || extractor.getNextStreams().nextItemsList.isEmpty());
+    }
+
+    @Test
+    public void testGetCleanUrl() throws Exception {
+        assertEquals(extractor.getCleanUrl(), extractor.getCleanUrl(), "https://www.youtube.com/feed/trending");
     }
 }

@@ -1,8 +1,12 @@
 package org.schabi.newpipe.extractor.stream;
 
+import org.schabi.newpipe.extractor.InfoItem;
 import org.schabi.newpipe.extractor.InfoItemCollector;
 import org.schabi.newpipe.extractor.exceptions.FoundAdException;
 import org.schabi.newpipe.extractor.exceptions.ParsingException;
+
+import java.util.List;
+import java.util.Vector;
 
 /*
  * Created by Christian Schabesberger on 28.02.16.
@@ -79,5 +83,15 @@ public class StreamInfoItemCollector extends InfoItemCollector {
         } catch (Exception e) {
             addError(e);
         }
+    }
+
+    public List<StreamInfoItem> getStreamInfoItemList() {
+        List<StreamInfoItem> siiList = new Vector<>();
+        for(InfoItem ii : super.getItemList()) {
+            if(ii instanceof StreamInfoItem) {
+                siiList.add((StreamInfoItem) ii);
+            }
+        }
+        return siiList;
     }
 }

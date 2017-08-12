@@ -20,15 +20,20 @@ package org.schabi.newpipe.extractor.services.youtube;
  * along with NewPipe.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-import org.schabi.newpipe.extractor.ListExtractor;
-import org.schabi.newpipe.extractor.StreamingService;
-import org.schabi.newpipe.extractor.UrlIdHandler;
+import org.jsoup.Jsoup;
+import org.jsoup.nodes.Document;
+import org.jsoup.nodes.Element;
+import org.schabi.newpipe.extractor.*;
 import org.schabi.newpipe.extractor.exceptions.ExtractionException;
+import org.schabi.newpipe.extractor.exceptions.ParsingException;
 import org.schabi.newpipe.extractor.kiosk.KioskExtractor;
 import org.schabi.newpipe.extractor.stream.StreamInfoItemCollector;
+
 import java.io.IOException;
 
 public class YoutubeTrendingExtractor extends KioskExtractor {
+
+    private Document doc;
 
     public YoutubeTrendingExtractor(StreamingService service, String url, String nextStreamsUrl)
         throws IOException, ExtractionException {
@@ -36,14 +41,17 @@ public class YoutubeTrendingExtractor extends KioskExtractor {
     }
 
     @Override
-    public void fetchPage()
-        throws IOException, ExtractionException {
+    public void fetchPage() throws IOException, ExtractionException {
+        Downloader downloader = NewPipe.getDownloader();
 
+        String channelUrl = getCleanUrl();
+        String pageContent = downloader.download(channelUrl);
+        doc = Jsoup.parse(pageContent, channelUrl);
     }
 
     @Override
     public String getType() {
-        return "Treinding";
+        return "Trending";
     }
 
     @Override
@@ -57,7 +65,63 @@ public class YoutubeTrendingExtractor extends KioskExtractor {
     }
 
     @Override
-    public StreamInfoItemCollector getStreams() {
-        return null;
+    public StreamInfoItemCollector getStreams() throws ParsingException {
+        StreamInfoItemCollector collector = new StreamInfoItemCollector(getServiceId());
+        Element ul = doc.select("ul[class*=\"expanded-shelf-content-list\"]").first();
+        for(final Element li : ul.children()) {
+            final Element el = li.select("div[class*=\"yt-lockup-dismissable\"]").first();
+            collector.commit(new YoutubeStreamInfoItemExtractor(li) {
+                @Override
+                public String getUrl() throws ParsingException {
+                    try {
+                        Element dl = el.select("h3").first().select("a").first();
+                        return dl.attr("abs:href");
+                    } catch (Exception e) {
+                        throw new ParsingException("Could not get web page url for the video", e);
+                    }
+                }
+
+                @Override
+                public String getName() throws ParsingException {
+                    try {
+                        Element dl = el.select("h3").first().select("a").first();
+                        return dl.text();
+                    } catch (Exception e) {
+                        throw new ParsingException("Could not get web page url for the video", e);
+                    }
+                }
+
+                @Override
+                public String getUploaderName() throws ParsingException {
+                    try {
+                        Element uploaderEl = el.select("div[class*=\"yt-lockup-byline \"]").first();
+                        return uploaderEl.select("a").text();
+                    } catch (Exception e) {
+                        throw new ParsingException("Could not get Uploader name");
+                    }
+                }
+
+                @Override
+                public String getThumbnailUrl() throws ParsingException {
+                    try {
+                        String url;
+                        Element te = li.select("span[class=\"yt-thumb-simple\"]").first()
+                                .select("img").first();
+                        url = te.attr("abs:src");
+                        // Sometimes youtube sends links to gif files which somehow seem to not exist
+                        // anymore. Items with such gif also offer a secondary image source. So we are going
+                        // to use that if we've caught such an item.
+                        if (url.contains(".gif")) {
+                            url = te.attr("abs:data-thumb");
+                        }
+                        return url;
+                    } catch (Exception e) {
+                        throw new ParsingException("Could not get thumbnail url", e);
+                    }
+                }
+            });
+        }
+
+        return collector;
     }
 }

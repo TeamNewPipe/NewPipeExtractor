@@ -71,6 +71,7 @@ public class YoutubeTrendingUrlIdHandlerTest {
         assertFalse(urlIdHandler.acceptUrl("youtube.com/feed/trending askjkf"));
         assertFalse(urlIdHandler.acceptUrl("askdjfi youtube.com/feed/trending askjkf"));
         assertFalse(urlIdHandler.acceptUrl("    youtube.com/feed/trending"));
+        assertFalse(urlIdHandler.acceptUrl("https://www.youtube.com/feed/trending.html"));
         assertFalse(urlIdHandler.acceptUrl(""));
     }
 }
