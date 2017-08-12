@@ -1,7 +1,7 @@
 package org.schabi.newpipe.extractor;
 
 /*
- * Created by the-scrabi on 11.02.17.
+ * Created by Christian Schabesberger on 11.02.17.
  *
  * Copyright (C) Christian Schabesberger 2017 <chris.schabesberger@mailbox.org>
  * InfoItem.java is part of NewPipe.

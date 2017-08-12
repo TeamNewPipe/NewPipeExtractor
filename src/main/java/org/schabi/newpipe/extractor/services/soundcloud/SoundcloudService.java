@@ -5,6 +5,8 @@ import org.schabi.newpipe.extractor.SuggestionExtractor;
 import org.schabi.newpipe.extractor.UrlIdHandler;
 import org.schabi.newpipe.extractor.channel.ChannelExtractor;
 import org.schabi.newpipe.extractor.exceptions.ExtractionException;
+import org.schabi.newpipe.extractor.kiosk.KioskExtractor;
+import org.schabi.newpipe.extractor.kiosk.KioskList;
 import org.schabi.newpipe.extractor.playlist.PlaylistExtractor;
 import org.schabi.newpipe.extractor.search.SearchEngine;
 import org.schabi.newpipe.extractor.stream.StreamExtractor;
@@ -56,5 +58,16 @@ public class SoundcloudService extends StreamingService {
     @Override
     public SuggestionExtractor getSuggestionExtractor() {
         return new SoundcloudSuggestionExtractor(getServiceId());
+    }
+
+    @Override
+    public KioskList getKioskList() {
+        KioskList list = new KioskList(getServiceId());
+
+        // add kiosks here e.g.:
+        //list.addKioskEntry("trinding", new TrendingKiosk(), new TrendingUrlIdHandler());
+
+
+        return list;
     }
 }
