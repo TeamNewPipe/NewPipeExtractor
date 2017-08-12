@@ -21,6 +21,7 @@ package org.schabi.newpipe.extractor.services.youtube;
  */
 
 import org.schabi.newpipe.extractor.UrlIdHandler;
+import org.schabi.newpipe.extractor.utils.Parser;
 
 public class YoutubeTrendingUrlIdHandler implements UrlIdHandler {
 
@@ -40,6 +41,6 @@ public class YoutubeTrendingUrlIdHandler implements UrlIdHandler {
 
     @Override
     public boolean acceptUrl(String url) {
-        return url.contains("feed/treinding");
+        return Parser.isMatch("^(https://|http://|)(www.|m.|)youtube.com/feed/trending(|\\?.*)$", url);
     }
 }
