@@ -50,6 +50,8 @@ public class KioskInfo extends ListInfo {
     public static KioskInfo getInfo(KioskExtractor extractor) throws ParsingException {
         KioskInfo info = new KioskInfo();
         info.type = extractor.getType();
+        info.name = extractor.getName();
+        info.id = extractor.getId();
 
         try {
             StreamInfoItemCollector c = extractor.getStreams();
