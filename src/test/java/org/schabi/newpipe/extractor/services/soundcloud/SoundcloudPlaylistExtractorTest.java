@@ -4,6 +4,7 @@ import org.junit.Before;
 import org.junit.Test;
 import org.schabi.newpipe.Downloader;
 import org.schabi.newpipe.extractor.NewPipe;
+import org.schabi.newpipe.extractor.exceptions.ExtractionException;
 import org.schabi.newpipe.extractor.playlist.PlaylistExtractor;
 
 import static org.junit.Assert.*;
@@ -78,5 +79,16 @@ public class SoundcloudPlaylistExtractorTest {
         // Setup the streams
         extractor.getStreams();
         assertTrue("extractor didn't have more streams", !extractor.hasMoreStreams());
+    }
+
+    @Test(expected = ExtractionException.class)
+    public void testGetNextStreamsNonExistent() throws Exception {
+        // Setup the streams
+        extractor.getStreams();
+
+        // This playlist don't have more streams, it should throw an error
+        extractor.getNextStreams();
+
+        fail("Expected exception wasn't thrown");
     }
 }

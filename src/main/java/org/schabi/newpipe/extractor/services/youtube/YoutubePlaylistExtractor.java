@@ -157,7 +157,7 @@ public class YoutubePlaylistExtractor extends PlaylistExtractor {
         setupNextStreamsAjax(NewPipe.getDownloader());
         collectStreamsFrom(collector, nextStreamsAjax.select("tbody[id=\"pl-load-more-destination\"]").first());
 
-        return new NextItemsResult(collector.getItemList(), nextStreamsUrl);
+        return new NextItemsResult(collector, nextStreamsUrl);
     }
 
     private void setupNextStreamsAjax(Downloader downloader) throws IOException, ReCaptchaException, ParsingException {

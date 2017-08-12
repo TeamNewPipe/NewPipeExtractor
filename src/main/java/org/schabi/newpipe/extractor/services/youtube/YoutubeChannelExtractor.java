@@ -153,7 +153,7 @@ public class YoutubeChannelExtractor extends ChannelExtractor {
         setupNextStreamsAjax(NewPipe.getDownloader());
         collectStreamsFrom(collector, nextStreamsAjax.select("body").first());
 
-        return new NextItemsResult(collector.getItemList(), nextStreamsUrl);
+        return new NextItemsResult(collector, nextStreamsUrl);
     }
 
     private void setupNextStreamsAjax(Downloader downloader) throws IOException, ReCaptchaException, ParsingException {

@@ -102,6 +102,6 @@ public class SoundcloudChannelExtractor extends ChannelExtractor {
         StreamInfoItemCollector collector = new StreamInfoItemCollector(getServiceId());
         nextStreamsUrl = SoundcloudParsingHelper.getStreamsFromApiMinItems(15, collector, nextStreamsUrl);
 
-        return new NextItemsResult(collector.getItemList(), nextStreamsUrl);
+        return new NextItemsResult(collector, nextStreamsUrl);
     }
 }
