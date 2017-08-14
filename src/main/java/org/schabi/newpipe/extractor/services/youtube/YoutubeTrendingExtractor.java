@@ -44,9 +44,14 @@ public class YoutubeTrendingExtractor extends KioskExtractor {
     public void fetchPage() throws IOException, ExtractionException {
         Downloader downloader = NewPipe.getDownloader();
 
-        String channelUrl = getCleanUrl();
-        String pageContent = downloader.download(channelUrl);
-        doc = Jsoup.parse(pageContent, channelUrl);
+        final String contentCountry = getContentCountry();
+        String url = getCleanUrl();
+        if(contentCountry != null && !contentCountry.isEmpty()) {
+            url += "?gl=" + contentCountry;
+        }
+
+        String pageContent = downloader.download(url);
+        doc = Jsoup.parse(pageContent, url);
     }
 
     @Override

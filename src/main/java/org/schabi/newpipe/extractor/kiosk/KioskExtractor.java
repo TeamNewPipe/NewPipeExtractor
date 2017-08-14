@@ -28,9 +28,24 @@ import org.schabi.newpipe.extractor.exceptions.ParsingException;
 import java.io.IOException;
 
 public abstract class KioskExtractor extends ListExtractor {
-    public KioskExtractor(StreamingService streamingService, String url, String nextStreamsUrl)
+    private String contentCountry = null;
+
+    public KioskExtractor(StreamingService streamingService,
+                          String url,
+                          String nextStreamsUrl)
         throws IOException, ExtractionException {
         super(streamingService, url, nextStreamsUrl);
+        this.contentCountry = contentCountry;
+    }
+
+    /**
+     * For certain Websites the content of a kiosk will be different depending
+     * on the country you want to poen the website in. Therefore you should
+     * set the contentCountry.
+     * @param contentCountry Set the country decoded as Country Code: http://www.1728.org/countries.htm
+     */
+    public void setContentCountry(String contentCountry) {
+        this.contentCountry = contentCountry;
     }
 
     /**
@@ -48,5 +63,9 @@ public abstract class KioskExtractor extends ListExtractor {
     @Override
     public String getName() throws ParsingException {
         return getType();
+    }
+
+    public String getContentCountry() {
+        return contentCountry;
     }
 }

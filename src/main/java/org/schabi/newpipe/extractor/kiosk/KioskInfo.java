@@ -33,22 +33,30 @@ import java.io.IOException;
 public class KioskInfo extends ListInfo {
     public String type;
 
-    public static KioskInfo getInfo(String url) throws IOException, ExtractionException {
-        return getInfo(NewPipe.getServiceByUrl(url), url);
+    public static KioskInfo getInfo(String url,
+                                    String contentCountry) throws IOException, ExtractionException {
+        return getInfo(NewPipe.getServiceByUrl(url), url, contentCountry);
     }
 
-    public static KioskInfo getInfo(ServiceList serviceItem, String url) throws IOException, ExtractionException {
-        return getInfo(serviceItem.getService(), url);
+    public static KioskInfo getInfo(ServiceList serviceItem,
+                                    String url,
+                                    String contentContry) throws IOException, ExtractionException {
+        return getInfo(serviceItem.getService(), url, contentContry);
     }
 
-    public static KioskInfo getInfo(StreamingService service, String url) throws IOException, ExtractionException {
+    public static KioskInfo getInfo(StreamingService service,
+                                    String url,
+                                    String contentCountry) throws IOException, ExtractionException {
         KioskList kl = service.getKioskList();
         KioskExtractor extractor = kl.getExtryctorByUrl(url);
-        return getInfo(extractor);
+        return getInfo(extractor, contentCountry);
     }
 
-    public static KioskInfo getInfo(KioskExtractor extractor) throws ParsingException {
+    public static KioskInfo getInfo(KioskExtractor extractor,
+                                    String contentCountry) throws IOException, ExtractionException {
         KioskInfo info = new KioskInfo();
+        extractor.setContentCountry(contentCountry);
+        extractor.fetchPage();
         info.type = extractor.getType();
         info.name = extractor.getName();
         info.id = extractor.getId();
