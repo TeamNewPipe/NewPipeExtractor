@@ -59,7 +59,7 @@ public class YoutubeChannelExtractor extends ChannelExtractor {
     public void fetchPage() throws IOException, ExtractionException {
         Downloader downloader = NewPipe.getDownloader();
 
-        String channelUrl = getCleanUrl() + CHANNEL_URL_PARAMETERS;
+        String channelUrl = super.getCleanUrl() + CHANNEL_URL_PARAMETERS;
         String pageContent = downloader.download(channelUrl);
         doc = Jsoup.parse(pageContent, channelUrl);
 
@@ -68,11 +68,23 @@ public class YoutubeChannelExtractor extends ChannelExtractor {
     }
 
     @Override
+    public String getCleanUrl() {
+        try {
+            return "https://www.youtube.com/channel/" + getId();
+        } catch (ParsingException e) {
+            return super.getCleanUrl();
+        }
+    }
+
+    @Override
     public String getId() throws ParsingException {
         try {
-            return getUrlIdHandler().getId(getCleanUrl());
+            Element element = doc.getElementsByClass("yt-uix-subscription-button").first();
+            if (element == null) element = doc.getElementsByClass("yt-uix-subscription-preferences-button").first();
+
+            return element.attr("data-channel-external-id");
         } catch (Exception e) {
-            throw new ParsingException("Could not get channel id");
+            throw new ParsingException("Could not get channel id", e);
         }
     }
 
@@ -110,8 +122,7 @@ public class YoutubeChannelExtractor extends ChannelExtractor {
     @Override
     public String getFeedUrl() throws ParsingException {
         try {
-            String channelId = doc.getElementsByClass("yt-uix-subscription-button").first().attr("data-channel-external-id");
-            return channelId == null ? "" : CHANNEL_FEED_BASE + channelId;
+            return CHANNEL_FEED_BASE + getId();
         } catch (Exception e) {
             throw new ParsingException("Could not get feed url", e);
         }

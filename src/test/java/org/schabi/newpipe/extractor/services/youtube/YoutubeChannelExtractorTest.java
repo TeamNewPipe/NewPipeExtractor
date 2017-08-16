@@ -41,7 +41,7 @@ public class YoutubeChannelExtractorTest {
     public void setUp() throws Exception {
         NewPipe.init(Downloader.getInstance());
         extractor = YouTube.getService()
-                .getChannelExtractor("https://www.youtube.com/channel/UCYJ61XIK64sp6ZFFS8sctxw");
+                .getChannelExtractor("https://www.youtube.com/user/Gronkh");
     }
 
     @Test
@@ -52,6 +52,16 @@ public class YoutubeChannelExtractorTest {
     @Test
     public void testGetName() throws Exception {
         assertEquals(extractor.getName(), "Gronkh");
+    }
+
+    @Test
+    public void testGetId() throws Exception {
+        assertEquals(extractor.getId(), "UCYJ61XIK64sp6ZFFS8sctxw");
+    }
+
+    @Test
+    public void testGetUrl() throws Exception {
+        assertEquals(extractor.getCleanUrl(), "https://www.youtube.com/channel/UCYJ61XIK64sp6ZFFS8sctxw");
     }
 
     @Test
@@ -71,7 +81,7 @@ public class YoutubeChannelExtractorTest {
 
     @Test
     public void testGetFeedUrl() throws Exception {
-        assertTrue(extractor.getFeedUrl(), extractor.getFeedUrl().contains("feed"));
+        assertEquals(extractor.getFeedUrl(), "https://www.youtube.com/feeds/videos.xml?channel_id=UCYJ61XIK64sp6ZFFS8sctxw");
     }
 
     @Test
