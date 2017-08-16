@@ -1,16 +1,18 @@
 package org.schabi.newpipe.extractor.services.soundcloud;
 
-import com.github.openjson.JSONArray;
-import com.github.openjson.JSONObject;
+import com.grack.nanojson.JsonArray;
+import com.grack.nanojson.JsonObject;
+import com.grack.nanojson.JsonParser;
+import com.grack.nanojson.JsonParserException;
 import org.schabi.newpipe.extractor.Downloader;
 import org.schabi.newpipe.extractor.NewPipe;
 import org.schabi.newpipe.extractor.exceptions.ExtractionException;
+import org.schabi.newpipe.extractor.exceptions.ParsingException;
 import org.schabi.newpipe.extractor.search.InfoItemSearchCollector;
 import org.schabi.newpipe.extractor.search.SearchEngine;
 
 import java.io.IOException;
 import java.net.URLEncoder;
-import java.util.EnumSet;
 
 public class SoundcloudSearchEngine extends SearchEngine {
     public static final String CHARSET_UTF_8 = "UTF-8";
@@ -20,19 +22,27 @@ public class SoundcloudSearchEngine extends SearchEngine {
     }
 
     @Override
-    public InfoItemSearchCollector search(String query, int page, String languageCode, EnumSet<Filter> filter) throws IOException, ExtractionException {
+    public InfoItemSearchCollector search(String query, int page, String languageCode, Filter filter) throws IOException, ExtractionException {
         InfoItemSearchCollector collector = getInfoItemSearchCollector();
 
-        Downloader downloader = NewPipe.getDownloader();
+        Downloader dl = NewPipe.getDownloader();
 
         String url = "https://api-v2.soundcloud.com/search";
 
-        if (filter.contains(Filter.STREAM) && filter.size() == 1) {
-            url += "/tracks";
-        } else if (filter.contains(Filter.CHANNEL) && filter.size() == 1) {
-            url += "/users";
-        } else if (filter.contains(Filter.PLAYLIST) && filter.size() == 1) {
-            url += "/playlists";
+        switch (filter) {
+            case STREAM:
+                url += "/tracks";
+                break;
+            case CHANNEL:
+                url += "/users";
+                break;
+            case PLAYLIST:
+                url += "/playlists";
+                break;
+            case ANY:
+                // Don't append any parameter to search for everything
+            default:
+                break;
         }
 
         url += "?q=" + URLEncoder.encode(query, CHARSET_UTF_8)
@@ -40,23 +50,32 @@ public class SoundcloudSearchEngine extends SearchEngine {
                 + "&limit=10"
                 + "&offset=" + Integer.toString(page * 10);
 
-        String searchJson = downloader.download(url);
-        JSONObject search = new JSONObject(searchJson);
-        JSONArray searchCollection = search.getJSONArray("collection");
+        JsonArray searchCollection;
+        try {
+            searchCollection = JsonParser.object().from(dl.download(url)).getArray("collection");
+        } catch (JsonParserException e) {
+            throw new ParsingException("Could not parse json response", e);
+        }
 
-        if (searchCollection.length() == 0) {
+        if (searchCollection.size() == 0) {
             throw new NothingFoundException("Nothing found");
         }
 
-        for (int i = 0; i < searchCollection.length(); i++) {
-            JSONObject searchResult = searchCollection.getJSONObject(i);
-            String kind = searchResult.getString("kind");
-            if (kind.equals("user")) {
-                collector.commit(new SoundcloudChannelInfoItemExtractor(searchResult));
-            } else if (kind.equals("track")) {
-                collector.commit(new SoundcloudStreamInfoItemExtractor(searchResult));
-            } else if (kind.equals("playlist")) {
-                collector.commit(new SoundcloudPlaylistInfoItemExtractor(searchResult));
+        for (Object result : searchCollection) {
+            if (!(result instanceof JsonObject)) continue;
+            //noinspection ConstantConditions
+            JsonObject searchResult = (JsonObject) result;
+            String kind = searchResult.getString("kind", "");
+            switch (kind) {
+                case "user":
+                    collector.commit(new SoundcloudChannelInfoItemExtractor(searchResult));
+                    break;
+                case "track":
+                    collector.commit(new SoundcloudStreamInfoItemExtractor(searchResult));
+                    break;
+                case "playlist":
+                    collector.commit(new SoundcloudPlaylistInfoItemExtractor(searchResult));
+                    break;
             }
         }
 

@@ -1,6 +1,8 @@
 package org.schabi.newpipe.extractor.services.youtube;
 
-import com.github.openjson.JSONArray;
+import com.grack.nanojson.JsonArray;
+import com.grack.nanojson.JsonParser;
+import com.grack.nanojson.JsonParserException;
 import org.schabi.newpipe.extractor.Downloader;
 import org.schabi.newpipe.extractor.NewPipe;
 import org.schabi.newpipe.extractor.SuggestionExtractor;
@@ -53,14 +55,12 @@ public class YoutubeSuggestionExtractor extends SuggestionExtractor {
 
         String response = dl.download(url);
         try {
-            JSONArray suggestionsArray = new JSONArray(response).getJSONArray(1);
-            for (int i = 0; i < suggestionsArray.length(); i++) {
-                suggestions.add(suggestionsArray.get(i).toString());
-            }
-        } catch (Exception e) {
-            throw new ParsingException("Could not parse suggestions response.", e);
-        }
+            JsonArray collection = JsonParser.array().from(response).getArray(1);
+            for (Object suggestion : collection) suggestions.add(suggestion.toString());
 
-        return suggestions;
+            return suggestions;
+        } catch (JsonParserException e) {
+            throw new ParsingException("Could not parse json response", e);
+        }
     }
 }

@@ -5,7 +5,6 @@ import org.schabi.newpipe.extractor.exceptions.ExtractionException;
 
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.EnumSet;
 import java.util.List;
 
 /*
@@ -29,8 +28,7 @@ import java.util.List;
  */
 
 public class SearchResult {
-    public static SearchResult getSearchResult(SearchEngine engine, String query,
-                                               int page, String languageCode, EnumSet<SearchEngine.Filter> filter)
+    public static SearchResult getSearchResult(SearchEngine engine, String query, int page, String languageCode, SearchEngine.Filter filter)
             throws IOException, ExtractionException {
 
         SearchResult result = engine

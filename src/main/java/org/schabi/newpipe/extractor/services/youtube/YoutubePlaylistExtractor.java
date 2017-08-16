@@ -1,7 +1,8 @@
 package org.schabi.newpipe.extractor.services.youtube;
 
-import com.github.openjson.JSONException;
-import com.github.openjson.JSONObject;
+import com.grack.nanojson.JsonObject;
+import com.grack.nanojson.JsonParser;
+import com.grack.nanojson.JsonParserException;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
@@ -163,7 +164,7 @@ public class YoutubePlaylistExtractor extends PlaylistExtractor {
     private void setupNextStreamsAjax(Downloader downloader) throws IOException, ReCaptchaException, ParsingException {
         String ajaxDataRaw = downloader.download(nextStreamsUrl);
         try {
-            JSONObject ajaxData = new JSONObject(ajaxDataRaw);
+            JsonObject ajaxData = JsonParser.object().from(ajaxDataRaw);
 
             String htmlDataRaw = "<table><tbody id=\"pl-load-more-destination\">" + ajaxData.getString("content_html") + "</tbody></table>";
             nextStreamsAjax = Jsoup.parse(htmlDataRaw, nextStreamsUrl);
@@ -174,7 +175,7 @@ public class YoutubePlaylistExtractor extends PlaylistExtractor {
             } else {
                 nextStreamsUrl = "";
             }
-        } catch (JSONException e) {
+        } catch (JsonParserException e) {
             throw new ParsingException("Could not parse json data for next streams", e);
         }
     }

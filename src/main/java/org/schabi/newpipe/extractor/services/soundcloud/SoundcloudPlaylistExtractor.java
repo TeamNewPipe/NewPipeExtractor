@@ -1,10 +1,13 @@
 package org.schabi.newpipe.extractor.services.soundcloud;
 
-import com.github.openjson.JSONObject;
+import com.grack.nanojson.JsonObject;
+import com.grack.nanojson.JsonParser;
+import com.grack.nanojson.JsonParserException;
 import org.schabi.newpipe.extractor.Downloader;
 import org.schabi.newpipe.extractor.NewPipe;
 import org.schabi.newpipe.extractor.StreamingService;
 import org.schabi.newpipe.extractor.exceptions.ExtractionException;
+import org.schabi.newpipe.extractor.exceptions.ParsingException;
 import org.schabi.newpipe.extractor.playlist.PlaylistExtractor;
 import org.schabi.newpipe.extractor.stream.StreamInfoItemCollector;
 
@@ -13,7 +16,7 @@ import java.io.IOException;
 @SuppressWarnings("WeakerAccess")
 public class SoundcloudPlaylistExtractor extends PlaylistExtractor {
     private String playlistId;
-    private JSONObject playlist;
+    private JsonObject playlist;
 
     public SoundcloudPlaylistExtractor(StreamingService service, String url, String nextStreamsUrl) throws IOException, ExtractionException {
         super(service, url, nextStreamsUrl);
@@ -29,16 +32,16 @@ public class SoundcloudPlaylistExtractor extends PlaylistExtractor {
                 "&representation=compact";
 
         String response = dl.download(apiUrl);
-        playlist = new JSONObject(response);
+        try {
+            playlist = JsonParser.object().from(response);
+        } catch (JsonParserException e) {
+            throw new ParsingException("Could not parse json response", e);
+        }
     }
 
     @Override
     public String getCleanUrl() {
-        try {
-            return playlist.getString("permalink_url");
-        } catch (Exception e) {
-            return getOriginalUrl();
-        }
+        return playlist.isString("permalink_url") ? playlist.getString("permalink_url") : getOriginalUrl();
     }
 
     @Override
@@ -48,12 +51,12 @@ public class SoundcloudPlaylistExtractor extends PlaylistExtractor {
 
     @Override
     public String getName() {
-        return playlist.optString("title");
+        return playlist.getString("title");
     }
 
     @Override
     public String getThumbnailUrl() {
-        return playlist.optString("artwork_url");
+        return playlist.getString("artwork_url");
     }
 
     @Override
@@ -63,22 +66,22 @@ public class SoundcloudPlaylistExtractor extends PlaylistExtractor {
 
     @Override
     public String getUploaderUrl() {
-        return playlist.getJSONObject("user").getString("permalink_url");
+        return playlist.getObject("user").getString("permalink_url", "");
     }
 
     @Override
     public String getUploaderName() {
-        return playlist.getJSONObject("user").getString("username");
+        return playlist.getObject("user").getString("username", "");
     }
 
     @Override
     public String getUploaderAvatarUrl() {
-        return playlist.getJSONObject("user").getString("avatar_url");
+        return playlist.getObject("user", new JsonObject()).getString("avatar_url", "");
     }
 
     @Override
     public long getStreamCount() {
-        return playlist.getLong("track_count");
+        return playlist.getNumber("track_count", 0).longValue();
     }
 
     @Override

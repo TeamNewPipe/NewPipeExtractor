@@ -9,11 +9,7 @@ import org.schabi.newpipe.extractor.NewPipe;
 import org.schabi.newpipe.extractor.search.SearchEngine;
 import org.schabi.newpipe.extractor.search.SearchResult;
 
-import java.util.EnumSet;
-
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.*;
 import static org.schabi.newpipe.extractor.ServiceList.SoundCloud;
 
 
@@ -49,7 +45,7 @@ public class SoundcloudSearchEnginePlaylistTest {
         SearchEngine engine = SoundCloud.getService().getSearchEngine();
 
         // Search by country not yet implemented
-        result = engine.search("parkmemme", 0, "", EnumSet.of(SearchEngine.Filter.PLAYLIST))
+        result = engine.search("parkmemme", 0, "", SearchEngine.Filter.PLAYLIST)
                 .getSearchResult();
     }
 

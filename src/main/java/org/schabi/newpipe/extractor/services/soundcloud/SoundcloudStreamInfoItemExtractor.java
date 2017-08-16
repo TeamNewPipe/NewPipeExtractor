@@ -1,15 +1,15 @@
 package org.schabi.newpipe.extractor.services.soundcloud;
 
-import com.github.openjson.JSONObject;
+import com.grack.nanojson.JsonObject;
 import org.schabi.newpipe.extractor.exceptions.ParsingException;
 import org.schabi.newpipe.extractor.stream.StreamInfoItemExtractor;
 import org.schabi.newpipe.extractor.stream.StreamType;
 
 public class SoundcloudStreamInfoItemExtractor implements StreamInfoItemExtractor {
 
-    private final JSONObject searchResult;
+    private final JsonObject searchResult;
 
-    public SoundcloudStreamInfoItemExtractor(JSONObject searchResult) {
+    public SoundcloudStreamInfoItemExtractor(JsonObject searchResult) {
         this.searchResult = searchResult;
     }
 
@@ -25,12 +25,12 @@ public class SoundcloudStreamInfoItemExtractor implements StreamInfoItemExtracto
 
     @Override
     public long getDuration() {
-        return searchResult.getLong("duration") / 1000L;
+        return searchResult.getNumber("duration", 0).longValue() / 1000L;
     }
 
     @Override
     public String getUploaderName() {
-        return searchResult.getJSONObject("user").getString("username");
+        return searchResult.getObject("user").getString("username");
     }
 
     @Override
@@ -40,12 +40,12 @@ public class SoundcloudStreamInfoItemExtractor implements StreamInfoItemExtracto
 
     @Override
     public long getViewCount() {
-        return searchResult.getLong("playback_count");
+        return searchResult.getNumber("playback_count", 0).longValue();
     }
 
     @Override
     public String getThumbnailUrl() {
-        return searchResult.optString("artwork_url");
+        return searchResult.getString("artwork_url");
     }
 
     @Override

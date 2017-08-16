@@ -1,8 +1,9 @@
 package org.schabi.newpipe.extractor.services.youtube;
 
 
-import com.github.openjson.JSONException;
-import com.github.openjson.JSONObject;
+import com.grack.nanojson.JsonObject;
+import com.grack.nanojson.JsonParser;
+import com.grack.nanojson.JsonParserException;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
@@ -159,7 +160,7 @@ public class YoutubeChannelExtractor extends ChannelExtractor {
     private void setupNextStreamsAjax(Downloader downloader) throws IOException, ReCaptchaException, ParsingException {
         String ajaxDataRaw = downloader.download(nextStreamsUrl);
         try {
-            JSONObject ajaxData = new JSONObject(ajaxDataRaw);
+            JsonObject ajaxData = JsonParser.object().from(ajaxDataRaw);
 
             String htmlDataRaw = ajaxData.getString("content_html");
             nextStreamsAjax = Jsoup.parse(htmlDataRaw, nextStreamsUrl);
@@ -170,7 +171,7 @@ public class YoutubeChannelExtractor extends ChannelExtractor {
             } else {
                 nextStreamsUrl = "";
             }
-        } catch (JSONException e) {
+        } catch (JsonParserException e) {
             throw new ParsingException("Could not parse json data for next streams", e);
         }
     }

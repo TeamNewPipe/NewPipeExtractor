@@ -11,7 +11,6 @@ import org.schabi.newpipe.extractor.search.SearchEngine;
 
 import java.io.IOException;
 import java.net.URLEncoder;
-import java.util.EnumSet;
 
 
 /*
@@ -44,26 +43,29 @@ public class YoutubeSearchEngine extends SearchEngine {
     }
 
     @Override
-    public InfoItemSearchCollector search(String query,
-                                          int page,
-                                          String languageCode,
-                                          EnumSet<Filter> filter)
+    public InfoItemSearchCollector search(String query, int page, String languageCode, Filter filter)
             throws IOException, ExtractionException {
         InfoItemSearchCollector collector = getInfoItemSearchCollector();
-
-
         Downloader downloader = NewPipe.getDownloader();
 
         String url = "https://www.youtube.com/results"
                 + "?q=" + URLEncoder.encode(query, CHARSET_UTF_8)
                 + "&page=" + Integer.toString(page + 1);
 
-        if (filter.contains(Filter.STREAM) && filter.size() == 1) {
-            url += "&sp=EgIQAVAU";
-        } else if (filter.contains(Filter.CHANNEL) && filter.size() == 1) {
-            url += "&sp=EgIQAlAU"; //EgIQA( lowercase L )AU
-        } else if (filter.contains(Filter.PLAYLIST) && filter.size() == 1) {
-            url += "&sp=EgIQA1AU"; //EgIQA( one )AU
+        switch (filter) {
+            case STREAM:
+                url += "&sp=EgIQAVAU";
+                break;
+            case CHANNEL:
+                url += "&sp=EgIQAlAU"; //EgIQA( lowercase L )AU
+                break;
+            case PLAYLIST:
+                url += "&sp=EgIQA1AU"; //EgIQA( one )AU
+                break;
+            case ANY:
+                // Don't append any parameter to search for everything
+            default:
+                break;
         }
 
         String site;

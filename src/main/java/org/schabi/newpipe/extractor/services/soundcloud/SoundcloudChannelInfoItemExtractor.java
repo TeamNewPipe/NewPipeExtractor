@@ -1,12 +1,12 @@
 package org.schabi.newpipe.extractor.services.soundcloud;
 
-import com.github.openjson.JSONObject;
+import com.grack.nanojson.JsonObject;
 import org.schabi.newpipe.extractor.channel.ChannelInfoItemExtractor;
 
 public class SoundcloudChannelInfoItemExtractor implements ChannelInfoItemExtractor {
-    private JSONObject searchResult;
+    private JsonObject searchResult;
 
-    public SoundcloudChannelInfoItemExtractor(JSONObject searchResult) {
+    public SoundcloudChannelInfoItemExtractor(JsonObject searchResult) {
         this.searchResult = searchResult;
     }
 
@@ -22,21 +22,21 @@ public class SoundcloudChannelInfoItemExtractor implements ChannelInfoItemExtrac
 
     @Override
     public String getThumbnailUrl() {
-        return searchResult.optString("avatar_url");
+        return searchResult.getString("avatar_url", "");
     }
 
     @Override
     public long getSubscriberCount() {
-        return searchResult.optLong("followers_count");
+        return searchResult.getNumber("followers_count", 0).longValue();
     }
 
     @Override
     public long getStreamCount() {
-        return searchResult.optLong("track_count");
+        return searchResult.getNumber("track_count", 0).longValue();
     }
 
     @Override
     public String getDescription() {
-        return searchResult.optString("description");
+        return searchResult.getString("description", "");
     }
 }

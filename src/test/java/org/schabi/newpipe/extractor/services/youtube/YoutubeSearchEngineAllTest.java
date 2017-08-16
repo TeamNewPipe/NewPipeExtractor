@@ -8,8 +8,6 @@ import org.schabi.newpipe.extractor.NewPipe;
 import org.schabi.newpipe.extractor.search.SearchEngine;
 import org.schabi.newpipe.extractor.search.SearchResult;
 
-import java.util.EnumSet;
-
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 import static org.schabi.newpipe.extractor.ServiceList.YouTube;
@@ -48,10 +46,8 @@ public class YoutubeSearchEngineAllTest {
 
         // Youtube will suggest "asdf" instead of "asdgff"
         // keep in mind that the suggestions can change by country (the parameter "de")
-        result = engine.search("asdgff", 0, "de",
-                EnumSet.of(SearchEngine.Filter.CHANNEL,
-                        SearchEngine.Filter.STREAM,
-                        SearchEngine.Filter.PLAYLIST)).getSearchResult();
+        result = engine.search("asdgff", 0, "de", SearchEngine.Filter.ANY)
+                .getSearchResult();
     }
 
     @Test

@@ -1,6 +1,7 @@
 package org.schabi.newpipe.extractor.services.youtube;
 
-import com.github.openjson.JSONObject;
+import com.grack.nanojson.JsonObject;
+import com.grack.nanojson.JsonParser;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
@@ -74,7 +75,7 @@ public class YoutubeStreamExtractor extends StreamExtractor {
     /*//////////////////////////////////////////////////////////////////////////*/
 
     private Document doc;
-    private JSONObject playerArgs;
+    private JsonObject playerArgs;
     private Map<String, String> videoInfoPage;
 
     private boolean isAgeRestricted;
@@ -137,7 +138,7 @@ public class YoutubeStreamExtractor extends StreamExtractor {
         }
 
         try {
-            return playerArgs.getString("thumbnail_url");
+            if (playerArgs.isString("thumbnail_url")) return playerArgs.getString("thumbnail_url");
         } catch (Exception ignored) {
             // Try other method...
         }
@@ -174,7 +175,8 @@ public class YoutubeStreamExtractor extends StreamExtractor {
     @Override
     public long getLength() throws ParsingException {
         try {
-            return playerArgs.getLong("length_seconds");
+            long returnValue = playerArgs.getNumber("length_seconds", -1).longValue();
+            if (returnValue >= 0) return returnValue;
         } catch (Exception ignored) {
             // Try other method...
         }
@@ -342,8 +344,8 @@ public class YoutubeStreamExtractor extends StreamExtractor {
             String dashManifestUrl;
             if (videoInfoPage != null && videoInfoPage.containsKey("dashmpd")) {
                 dashManifestUrl = videoInfoPage.get("dashmpd");
-            } else if (playerArgs.get("dashmpd") != null) {
-                dashManifestUrl = playerArgs.optString("dashmpd");
+            } else if (playerArgs.isString("dashmpd")) {
+                dashManifestUrl = playerArgs.getString("dashmpd", "");
             } else {
                 return "";
             }
@@ -513,7 +515,7 @@ public class YoutubeStreamExtractor extends StreamExtractor {
             playerUrl = getPlayerUrlFromRestrictedVideo();
             isAgeRestricted = true;
         } else {
-            JSONObject ytPlayerConfig = getPlayerConfig(pageContent);
+            JsonObject ytPlayerConfig = getPlayerConfig(pageContent);
             playerArgs = getPlayerArgs(ytPlayerConfig);
             playerUrl = getPlayerUrl(ytPlayerConfig);
             isAgeRestricted = false;
@@ -524,11 +526,10 @@ public class YoutubeStreamExtractor extends StreamExtractor {
         }
     }
 
-    private JSONObject getPlayerConfig(String pageContent) throws ParsingException {
+    private JsonObject getPlayerConfig(String pageContent) throws ParsingException {
         try {
-            String ytPlayerConfigRaw =
-                    Parser.matchGroup1("ytplayer.config\\s*=\\s*(\\{.*?\\});", pageContent);
-            return new JSONObject(ytPlayerConfigRaw);
+            String ytPlayerConfigRaw = Parser.matchGroup1("ytplayer.config\\s*=\\s*(\\{.*?\\});", pageContent);
+            return JsonParser.object().from(ytPlayerConfigRaw);
         } catch (Parser.RegexException e) {
             String errorReason = getErrorMessage();
             switch (errorReason) {
@@ -544,13 +545,13 @@ public class YoutubeStreamExtractor extends StreamExtractor {
         }
     }
 
-    private JSONObject getPlayerArgs(JSONObject playerConfig) throws ParsingException {
-        JSONObject playerArgs;
+    private JsonObject getPlayerArgs(JsonObject playerConfig) throws ParsingException {
+        JsonObject playerArgs;
 
         //attempt to load the youtube js player JSON arguments
         boolean isLiveStream = false; //used to determine if this is a livestream or not
         try {
-            playerArgs = playerConfig.getJSONObject("args");
+            playerArgs = playerConfig.getObject("args");
 
             // check if we have a live stream. We need to filter it, since its not yet supported.
             if ((playerArgs.has("ps") && playerArgs.get("ps").toString().equals("live"))
@@ -567,14 +568,14 @@ public class YoutubeStreamExtractor extends StreamExtractor {
         return playerArgs;
     }
 
-    private String getPlayerUrl(JSONObject playerConfig) throws ParsingException {
+    private String getPlayerUrl(JsonObject playerConfig) throws ParsingException {
         try {
             // The Youtube service needs to be initialized by downloading the
             // js-Youtube-player. This is done in order to get the algorithm
             // for decrypting cryptic signatures inside certain stream urls.
             String playerUrl;
 
-            JSONObject ytAssets = playerConfig.getJSONObject("assets");
+            JsonObject ytAssets = playerConfig.getObject("assets");
             playerUrl = ytAssets.getString("js");
 
             if (playerUrl.startsWith("//")) {
@@ -582,8 +583,7 @@ public class YoutubeStreamExtractor extends StreamExtractor {
             }
             return playerUrl;
         } catch (Exception e) {
-            throw new ParsingException(
-                    "Could not load decryption code for the Youtube service.", e);
+            throw new ParsingException("Could not load decryption code for the Youtube service.", e);
         }
     }
 
@@ -684,8 +684,8 @@ public class YoutubeStreamExtractor extends StreamExtractor {
         String encodedUrlMap = "";
         if (videoInfoPage != null && videoInfoPage.containsKey(encodedUrlMapKey)) {
             encodedUrlMap = videoInfoPage.get(encodedUrlMapKey);
-        } else if (playerArgs != null && playerArgs.get(encodedUrlMapKey) != null) {
-            encodedUrlMap = playerArgs.optString(encodedUrlMapKey);
+        } else if (playerArgs != null && playerArgs.isString(encodedUrlMapKey)) {
+            encodedUrlMap = playerArgs.getString(encodedUrlMapKey, "");
         }
 
         for (String url_data_str : encodedUrlMap.split(",")) {

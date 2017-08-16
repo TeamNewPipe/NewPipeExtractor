@@ -3,7 +3,6 @@ package org.schabi.newpipe.extractor.search;
 import org.schabi.newpipe.extractor.exceptions.ExtractionException;
 
 import java.io.IOException;
-import java.util.EnumSet;
 
 /*
  * Created by Christian Schabesberger on 10.08.15.
@@ -27,7 +26,7 @@ import java.util.EnumSet;
 
 public abstract class SearchEngine {
     public enum Filter {
-        STREAM, CHANNEL, PLAYLIST
+        ANY, STREAM, CHANNEL, PLAYLIST
     }
 
     public static class NothingFoundException extends ExtractionException {
@@ -46,8 +45,6 @@ public abstract class SearchEngine {
         return collector;
     }
 
-    //Result search(String query, int page);
-    public abstract InfoItemSearchCollector search(
-            String query, int page, String contentCountry, EnumSet<Filter> filter)
+    public abstract InfoItemSearchCollector search(String query, int page, String contentCountry, Filter filter)
             throws IOException, ExtractionException;
 }
