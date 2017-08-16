@@ -57,10 +57,13 @@ public class YoutubeSearchEngine extends SearchEngine {
         String url = "https://www.youtube.com/results"
                 + "?q=" + URLEncoder.encode(query, CHARSET_UTF_8)
                 + "&page=" + Integer.toString(page + 1);
-        if (filter.contains(Filter.STREAM) && !filter.contains(Filter.CHANNEL)) {
-            url += "&sp=EgIQAQ%253D%253D";
-        } else if (!filter.contains(Filter.STREAM) && filter.contains(Filter.CHANNEL)) {
-            url += "&sp=EgIQAg%253D%253D";
+
+        if (filter.contains(Filter.STREAM) && filter.size() == 1) {
+            url += "&sp=EgIQAVAU";
+        } else if (filter.contains(Filter.CHANNEL) && filter.size() == 1) {
+            url += "&sp=EgIQAlAU"; //EgIQA( lowercase L )AU
+        } else if (filter.contains(Filter.PLAYLIST) && filter.size() == 1) {
+            url += "&sp=EgIQA1AU"; //EgIQA( one )AU
         }
 
         String site;
@@ -105,6 +108,8 @@ public class YoutubeSearchEngine extends SearchEngine {
                 collector.commit(new YoutubeStreamInfoItemExtractor(el));
             } else if ((el = item.select("div[class*=\"yt-lockup-channel\"]").first()) != null) {
                 collector.commit(new YoutubeChannelInfoItemExtractor(el));
+            } else if ((el = item.select("div[class*=\"yt-lockup-playlist\"]").first()) != null) {
+                collector.commit(new YoutubePlaylistInfoItemExtractor(el));
             } else {
                 // noinspection ConstantConditions
                 // simply ignore not known items

@@ -27,10 +27,12 @@ public class SoundcloudSearchEngine extends SearchEngine {
 
         String url = "https://api-v2.soundcloud.com/search";
 
-        if (filter.contains(Filter.STREAM) && !filter.contains(Filter.CHANNEL)) {
+        if (filter.contains(Filter.STREAM) && filter.size() == 1) {
             url += "/tracks";
-        } else if (!filter.contains(Filter.STREAM) && filter.contains(Filter.CHANNEL)) {
+        } else if (filter.contains(Filter.CHANNEL) && filter.size() == 1) {
             url += "/users";
+        } else if (filter.contains(Filter.PLAYLIST) && filter.size() == 1) {
+            url += "/playlists";
         }
 
         url += "?q=" + URLEncoder.encode(query, CHARSET_UTF_8)
@@ -53,6 +55,8 @@ public class SoundcloudSearchEngine extends SearchEngine {
                 collector.commit(new SoundcloudChannelInfoItemExtractor(searchResult));
             } else if (kind.equals("track")) {
                 collector.commit(new SoundcloudStreamInfoItemExtractor(searchResult));
+            } else if (kind.equals("playlist")) {
+                collector.commit(new SoundcloudPlaylistInfoItemExtractor(searchResult));
             }
         }
 

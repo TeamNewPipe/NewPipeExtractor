@@ -74,7 +74,10 @@ public class YoutubeStreamInfoItemExtractor implements StreamInfoItemExtractor {
         try {
             if (getStreamType() == StreamType.LIVE_STREAM) return -1;
 
-            return YoutubeParsingHelper.parseDurationString(item.select("span[class*=\"video-time\"]").first().text());
+            final Element duration = item.select("span[class*=\"video-time\"]").first();
+            // apparently on youtube, video-time element will not show up if the video has a duration of 00:00
+            // see: https://www.youtube.com/results?sp=EgIQAVAU&q=asdfgf
+            return duration == null ? 0 : YoutubeParsingHelper.parseDurationString(duration.text());
         } catch (Exception e) {
             throw new ParsingException("Could not get Duration: " + getUrl(), e);
         }
