@@ -1,17 +1,16 @@
 package org.schabi.newpipe.extractor.services.soundcloud;
 
+import java.io.IOException;
+
 import org.schabi.newpipe.extractor.StreamingService;
 import org.schabi.newpipe.extractor.SuggestionExtractor;
 import org.schabi.newpipe.extractor.UrlIdHandler;
 import org.schabi.newpipe.extractor.channel.ChannelExtractor;
 import org.schabi.newpipe.extractor.exceptions.ExtractionException;
-import org.schabi.newpipe.extractor.kiosk.KioskExtractor;
 import org.schabi.newpipe.extractor.kiosk.KioskList;
 import org.schabi.newpipe.extractor.playlist.PlaylistExtractor;
 import org.schabi.newpipe.extractor.search.SearchEngine;
 import org.schabi.newpipe.extractor.stream.StreamExtractor;
-
-import java.io.IOException;
 
 public class SoundcloudService extends StreamingService {
 
@@ -61,12 +60,17 @@ public class SoundcloudService extends StreamingService {
     }
 
     @Override
-    public KioskList getKioskList() {
+    public KioskList getKioskList() throws ExtractionException {
         KioskList list = new KioskList(getServiceId());
 
         // add kiosks here e.g.:
-        //list.addKioskEntry("trinding", new TrendingKiosk(), new TrendingUrlIdHandler());
-
+        SoundcloudChartsUrlIdHandler h = new SoundcloudChartsUrlIdHandler();
+        try {
+            list.addKioskEntry(new SoundcloudChartsExtractor(this, h.getUrl("Top 50"), null), h);
+            list.addKioskEntry(new SoundcloudChartsExtractor(this, h.getUrl("New & hot"), null), h);
+        } catch (Exception e) {
+            throw new ExtractionException(e);
+        }
 
         return list;
     }

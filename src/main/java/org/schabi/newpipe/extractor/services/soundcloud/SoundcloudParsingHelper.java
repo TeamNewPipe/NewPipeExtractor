@@ -121,13 +121,17 @@ public class SoundcloudParsingHelper {
      *
      * @return the next streams url, empty if don't have
      */
-    public static String getStreamsFromApi(StreamInfoItemCollector collector, String apiUrl) throws IOException, ReCaptchaException, ParsingException {
+    public static String getStreamsFromApi(StreamInfoItemCollector collector, String apiUrl, boolean charts) throws IOException, ReCaptchaException, ParsingException {
         String response = NewPipe.getDownloader().download(apiUrl);
         JSONObject responseObject = new JSONObject(response);
 
         JSONArray responseCollection = responseObject.getJSONArray("collection");
         for (int i = 0; i < responseCollection.length(); i++) {
-            collector.commit(new SoundcloudStreamInfoItemExtractor(responseCollection.getJSONObject(i)));
+            if (charts) {
+                collector.commit(new SoundcloudStreamInfoItemExtractor(responseCollection.getJSONObject(i).getJSONObject("track")));
+            } else {
+                collector.commit(new SoundcloudStreamInfoItemExtractor(responseCollection.getJSONObject(i)));
+            }
         }
 
         String nextStreamsUrl;
@@ -139,5 +143,9 @@ public class SoundcloudParsingHelper {
         }
 
         return nextStreamsUrl;
+    }
+
+    public static String getStreamsFromApi(StreamInfoItemCollector collector, String apiUrl) throws ReCaptchaException, ParsingException, IOException {
+        return getStreamsFromApi(collector, apiUrl, false);
     }
 }
