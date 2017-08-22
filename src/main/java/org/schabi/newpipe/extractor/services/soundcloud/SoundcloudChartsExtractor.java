@@ -1,6 +1,8 @@
 package org.schabi.newpipe.extractor.services.soundcloud;
 
 import java.io.IOException;
+import java.util.Arrays;
+import java.util.List;
 
 import org.schabi.newpipe.extractor.StreamingService;
 import org.schabi.newpipe.extractor.UrlIdHandler;
@@ -55,6 +57,12 @@ public class SoundcloudChartsExtractor extends KioskExtractor {
             apiUrl += "&kind=top";
         } else {
             apiUrl += "&kind=new";
+        }
+
+        List<String> supportedCountries = Arrays.asList("AU", "CA", "FR", "DE", "IE", "NL", "NZ", "GB", "US");
+        String contentCountry = getContentCountry();
+        if (supportedCountries.contains(contentCountry)) {
+            apiUrl += "&region=soundcloud:regions:" + contentCountry;
         }
 
         nextStreamsUrl = SoundcloudParsingHelper.getStreamsFromApi(collector, apiUrl, true);
