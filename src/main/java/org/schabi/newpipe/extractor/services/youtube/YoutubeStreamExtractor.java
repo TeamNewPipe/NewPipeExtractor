@@ -682,10 +682,10 @@ public class YoutubeStreamExtractor extends StreamExtractor {
         Map<String, ItagItem> urlAndItags = new LinkedHashMap<>();
 
         String encodedUrlMap = "";
-        if (videoInfoPage != null && videoInfoPage.containsKey(encodedUrlMapKey)) {
-            encodedUrlMap = videoInfoPage.get(encodedUrlMapKey);
-        } else if (playerArgs != null && playerArgs.isString(encodedUrlMapKey)) {
+        if (playerArgs != null && playerArgs.isString(encodedUrlMapKey)) {
             encodedUrlMap = playerArgs.getString(encodedUrlMapKey, "");
+        } else if (videoInfoPage != null && videoInfoPage.containsKey(encodedUrlMapKey)) {
+            encodedUrlMap = videoInfoPage.get(encodedUrlMapKey);
         }
 
         for (String url_data_str : encodedUrlMap.split(",")) {
