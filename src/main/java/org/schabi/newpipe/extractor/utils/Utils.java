@@ -21,31 +21,6 @@ public class Utils {
     }
 
     /**
-     * Check if throwable have the cause
-     */
-    public static boolean hasCauseThrowable(Throwable throwable, Class<?>... causesToCheck) {
-        // Check if getCause is not the same as cause (the getCause is already the root),
-        // as it will cause a infinite loop if it is
-        Throwable cause, getCause = throwable;
-
-        for (Class<?> causesEl : causesToCheck) {
-            if (throwable.getClass().isAssignableFrom(causesEl)) {
-                return true;
-            }
-        }
-
-        while ((cause = throwable.getCause()) != null && getCause != cause) {
-            getCause = cause;
-            for (Class<?> causesEl : causesToCheck) {
-                if (cause.getClass().isAssignableFrom(causesEl)) {
-                    return true;
-                }
-            }
-        }
-        return false;
-    }
-
-    /**
      * Check if the url matches the pattern.
      *
      * @param pattern the pattern that will be used to check the url
