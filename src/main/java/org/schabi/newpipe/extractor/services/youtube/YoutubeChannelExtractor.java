@@ -45,6 +45,8 @@ public class YoutubeChannelExtractor extends ChannelExtractor {
     private static final String CHANNEL_FEED_BASE = "https://www.youtube.com/feeds/videos.xml?channel_id=";
     private static final String CHANNEL_URL_PARAMETERS = "/videos?view=0&flow=list&sort=dd&live_view=10000";
 
+    private String channelName = ""; //Small hack used to make the channelName available to NextStreams
+
     private Document doc;
     /**
      * It's lazily initialized (when getNextStreams is called)
@@ -100,7 +102,8 @@ public class YoutubeChannelExtractor extends ChannelExtractor {
     @Override
     public String getAvatarUrl() throws ParsingException {
         try {
-            return doc.select("img[class=\"channel-header-profile-image\"]").first().attr("abs:src");
+            channelName = doc.select("img[class=\"channel-header-profile-image\"]").first().attr("abs:src");
+            return channelName;
         } catch (Exception e) {
             throw new ParsingException("Could not get avatar", e);
         }
@@ -232,7 +235,11 @@ public class YoutubeChannelExtractor extends ChannelExtractor {
 
                     @Override
                     public String getUploaderName() throws ParsingException {
-                        return YoutubeChannelExtractor.this.getName();
+                        if(channelName.isEmpty()) {
+                            return "";
+                        } else {
+                            return channelName;
+                        }
                     }
 
                     @Override
