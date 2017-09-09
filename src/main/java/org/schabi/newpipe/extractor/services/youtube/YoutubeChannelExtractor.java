@@ -93,7 +93,8 @@ public class YoutubeChannelExtractor extends ChannelExtractor {
     @Override
     public String getName() throws ParsingException {
         try {
-            return doc.select("span[class=\"qualified-channel-title-text\"]").first().select("a").first().text();
+            channelName = doc.select("span[class=\"qualified-channel-title-text\"]").first().select("a").first().text();
+            return channelName;
         } catch (Exception e) {
             throw new ParsingException("Could not get channel name", e);
         }
@@ -102,8 +103,7 @@ public class YoutubeChannelExtractor extends ChannelExtractor {
     @Override
     public String getAvatarUrl() throws ParsingException {
         try {
-            channelName = doc.select("img[class=\"channel-header-profile-image\"]").first().attr("abs:src");
-            return channelName;
+            return doc.select("img[class=\"channel-header-profile-image\"]").first().attr("abs:src");
         } catch (Exception e) {
             throw new ParsingException("Could not get avatar", e);
         }
