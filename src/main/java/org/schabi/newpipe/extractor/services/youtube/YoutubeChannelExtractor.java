@@ -93,7 +93,7 @@ public class YoutubeChannelExtractor extends ChannelExtractor {
         try {
             return doc.select("span[class=\"qualified-channel-title-text\"]").first().select("a").first().text();
         } catch (Exception e) {
-            throw new ParsingException("Could not get channel name");
+            throw new ParsingException("Could not get channel name", e);
         }
     }
 
@@ -201,7 +201,8 @@ public class YoutubeChannelExtractor extends ChannelExtractor {
         }
     }
 
-    private void collectStreamsFrom(StreamInfoItemCollector collector, Element element) throws ParsingException {
+    private void collectStreamsFrom(StreamInfoItemCollector collector,
+                                    Element element) throws ParsingException {
         collector.getItemList().clear();
 
         for (final Element li : element.children()) {
