@@ -1,6 +1,8 @@
 package org.schabi.newpipe.extractor.services.soundcloud;
 
-import com.github.openjson.JSONObject;
+import com.grack.nanojson.JsonObject;
+import com.grack.nanojson.JsonParser;
+import com.grack.nanojson.JsonParserException;
 import org.schabi.newpipe.extractor.Downloader;
 import org.schabi.newpipe.extractor.MediaFormat;
 import org.schabi.newpipe.extractor.NewPipe;
@@ -16,7 +18,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class SoundcloudStreamExtractor extends StreamExtractor {
-    private JSONObject track;
+    private JsonObject track;
 
     public SoundcloudStreamExtractor(StreamingService service, String url) throws IOException, ExtractionException {
         super(service, url);
@@ -26,7 +28,7 @@ public class SoundcloudStreamExtractor extends StreamExtractor {
     public void fetchPage() throws IOException, ExtractionException {
         track = SoundcloudParsingHelper.resolveFor(getOriginalUrl());
 
-        String policy = track.getString("policy");
+        String policy = track.getString("policy", "");
         if (!policy.equals("ALLOW") && !policy.equals("MONETIZE")) {
             throw new ContentNotAvailableException("Content not available: policy " + policy);
         }
@@ -34,11 +36,7 @@ public class SoundcloudStreamExtractor extends StreamExtractor {
 
     @Override
     public String getCleanUrl() {
-        try {
-            return track.getString("permalink_url");
-        } catch (Exception e) {
-            return getOriginalUrl();
-        }
+        return track.isString("permalink_url") ? track.getString("permalink_url") : getOriginalUrl();
     }
 
     @Override
@@ -48,7 +46,7 @@ public class SoundcloudStreamExtractor extends StreamExtractor {
 
     @Override
     public String getName() {
-        return track.optString("title");
+        return track.getString("title");
     }
 
     @Override
@@ -58,12 +56,12 @@ public class SoundcloudStreamExtractor extends StreamExtractor {
 
     @Override
     public String getThumbnailUrl() {
-        return track.optString("artwork_url");
+        return track.getString("artwork_url", "");
     }
 
     @Override
     public String getDescription() {
-        return track.optString("description");
+        return track.getString("description");
     }
 
     @Override
@@ -73,7 +71,7 @@ public class SoundcloudStreamExtractor extends StreamExtractor {
 
     @Override
     public long getLength() {
-        return track.getLong("duration") / 1000L;
+        return track.getNumber("duration", 0).longValue() / 1000L;
     }
 
     @Override
@@ -125,12 +123,12 @@ public class SoundcloudStreamExtractor extends StreamExtractor {
 
     @Override
     public long getViewCount() {
-        return track.getLong("playback_count");
+        return track.getNumber("playback_count", 0).longValue();
     }
 
     @Override
     public long getLikeCount() {
-        return track.getLong("likes_count");
+        return track.getNumber("likes_count", 0).longValue();
     }
 
     @Override
@@ -140,17 +138,17 @@ public class SoundcloudStreamExtractor extends StreamExtractor {
 
     @Override
     public String getUploaderUrl() {
-        return track.getJSONObject("user").getString("permalink_url");
+        return track.getObject("user").getString("permalink_url", "");
     }
 
     @Override
     public String getUploaderName() {
-        return track.getJSONObject("user").getString("username");
+        return track.getObject("user").getString("username", "");
     }
 
     @Override
     public String getUploaderAvatarUrl() {
-        return track.getJSONObject("user").optString("avatar_url");
+        return track.getObject("user", new JsonObject()).getString("avatar_url", "");
     }
 
     @Override
@@ -167,10 +165,19 @@ public class SoundcloudStreamExtractor extends StreamExtractor {
                 + "?client_id=" + SoundcloudParsingHelper.clientId();
 
         String response = dl.download(apiUrl);
-        JSONObject responseObject = new JSONObject(response);
+        JsonObject responseObject;
+        try {
+            responseObject = JsonParser.object().from(response);
+        } catch (JsonParserException e) {
+            throw new ParsingException("Could not parse json response", e);
+        }
 
-        AudioStream audioStream = new AudioStream(responseObject.getString("http_mp3_128_url"), MediaFormat.MP3.id, 128);
-        audioStreams.add(audioStream);
+        String mp3Url = responseObject.getString("http_mp3_128_url");
+        if (mp3Url != null && !mp3Url.isEmpty()) {
+            audioStreams.add(new AudioStream(mp3Url, MediaFormat.MP3.id, 128));
+        } else {
+            throw new ExtractionException("Could not get SoundCloud's track audio url");
+        }
 
         return audioStreams;
     }

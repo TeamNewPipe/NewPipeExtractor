@@ -9,8 +9,6 @@ import org.schabi.newpipe.extractor.NewPipe;
 import org.schabi.newpipe.extractor.search.SearchEngine;
 import org.schabi.newpipe.extractor.search.SearchResult;
 
-import java.util.EnumSet;
-
 import static org.junit.Assert.*;
 import static org.schabi.newpipe.extractor.ServiceList.YouTube;
 
@@ -48,8 +46,8 @@ public class YoutubeSearchEngineChannelTest {
 
         // Youtube will suggest "gronkh" instead of "grrunkh"
         // keep in mind that the suggestions can change by country (the parameter "de")
-        result = engine.search("grrunkh", 0, "de",
-                EnumSet.of(SearchEngine.Filter.CHANNEL)).getSearchResult();
+        result = engine.search("grrunkh", 0, "de", SearchEngine.Filter.CHANNEL)
+                .getSearchResult();
     }
 
     @Test

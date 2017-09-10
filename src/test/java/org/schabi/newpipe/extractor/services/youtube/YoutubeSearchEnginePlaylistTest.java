@@ -4,12 +4,12 @@ import org.junit.Before;
 import org.junit.Ignore;
 import org.junit.Test;
 import org.schabi.newpipe.Downloader;
+import org.schabi.newpipe.extractor.InfoItem;
 import org.schabi.newpipe.extractor.NewPipe;
 import org.schabi.newpipe.extractor.search.SearchEngine;
 import org.schabi.newpipe.extractor.search.SearchResult;
 
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.*;
 import static org.schabi.newpipe.extractor.ServiceList.YouTube;
 
 
@@ -36,7 +36,7 @@ import static org.schabi.newpipe.extractor.ServiceList.YouTube;
 /**
  * Test for {@link SearchEngine}
  */
-public class YoutubeSearchEngineAllTest {
+public class YoutubeSearchEnginePlaylistTest {
     private SearchResult result;
 
     @Before
@@ -44,15 +44,22 @@ public class YoutubeSearchEngineAllTest {
         NewPipe.init(Downloader.getInstance());
         SearchEngine engine = YouTube.getService().getSearchEngine();
 
-        // Youtube will suggest "asdf" instead of "asdgff"
+        // Youtube will suggest "gronkh" instead of "grrunkh"
         // keep in mind that the suggestions can change by country (the parameter "de")
-        result = engine.search("asdgff", 0, "de", SearchEngine.Filter.ANY)
+        result = engine.search("grrunkh", 0, "de", SearchEngine.Filter.PLAYLIST)
                 .getSearchResult();
     }
 
     @Test
     public void testResultList() {
         assertFalse(result.resultList.isEmpty());
+    }
+
+    @Test
+    public void testUserItemType() {
+        for (InfoItem infoItem : result.resultList) {
+            assertEquals(InfoItem.InfoType.PLAYLIST, infoItem.info_type);
+        }
     }
 
     @Test

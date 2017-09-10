@@ -3,6 +3,7 @@ package org.schabi.newpipe.extractor.services.youtube;
 import org.junit.Before;
 import org.junit.Test;
 import org.schabi.newpipe.Downloader;
+import org.schabi.newpipe.extractor.ListExtractor;
 import org.schabi.newpipe.extractor.NewPipe;
 import org.schabi.newpipe.extractor.channel.ChannelExtractor;
 
@@ -40,7 +41,7 @@ public class YoutubeChannelExtractorTest {
     public void setUp() throws Exception {
         NewPipe.init(Downloader.getInstance());
         extractor = YouTube.getService()
-                .getChannelExtractor("https://www.youtube.com/channel/UCYJ61XIK64sp6ZFFS8sctxw");
+                .getChannelExtractor("https://www.youtube.com/user/Gronkh");
     }
 
     @Test
@@ -51,6 +52,16 @@ public class YoutubeChannelExtractorTest {
     @Test
     public void testGetName() throws Exception {
         assertEquals(extractor.getName(), "Gronkh");
+    }
+
+    @Test
+    public void testGetId() throws Exception {
+        assertEquals(extractor.getId(), "UCYJ61XIK64sp6ZFFS8sctxw");
+    }
+
+    @Test
+    public void testGetUrl() throws Exception {
+        assertEquals(extractor.getCleanUrl(), "https://www.youtube.com/channel/UCYJ61XIK64sp6ZFFS8sctxw");
     }
 
     @Test
@@ -70,7 +81,7 @@ public class YoutubeChannelExtractorTest {
 
     @Test
     public void testGetFeedUrl() throws Exception {
-        assertTrue(extractor.getFeedUrl(), extractor.getFeedUrl().contains("feed"));
+        assertEquals(extractor.getFeedUrl(), "https://www.youtube.com/feeds/videos.xml?channel_id=UCYJ61XIK64sp6ZFFS8sctxw");
     }
 
     @Test
@@ -99,7 +110,9 @@ public class YoutubeChannelExtractorTest {
     public void testGetNextStreams() throws Exception {
         // Setup the streams
         extractor.getStreams();
-        assertTrue("extractor didn't have next streams", !extractor.getNextStreams().nextItemsList.isEmpty());
+        ListExtractor.NextItemsResult nextItemsResult = extractor.getNextStreams();
+        assertTrue("extractor didn't have next streams", !nextItemsResult.nextItemsList.isEmpty());
+        assertTrue("errors occurred during extraction of the next streams", nextItemsResult.errors.isEmpty());
         assertTrue("extractor didn't have more streams after getNextStreams", extractor.hasMoreStreams());
     }
 }

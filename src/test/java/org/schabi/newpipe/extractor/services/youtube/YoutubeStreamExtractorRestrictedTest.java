@@ -67,7 +67,7 @@ public class YoutubeStreamExtractorRestrictedTest {
 
     @Test
     public void testGetViews() throws ParsingException {
-        assertTrue(extractor.getLength() > 0);
+        assertTrue(extractor.getViewCount() > 0);
     }
 
     @Test

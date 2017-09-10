@@ -5,6 +5,8 @@ import org.schabi.newpipe.extractor.channel.ChannelInfoItemCollector;
 import org.schabi.newpipe.extractor.channel.ChannelInfoItemExtractor;
 import org.schabi.newpipe.extractor.exceptions.ExtractionException;
 import org.schabi.newpipe.extractor.exceptions.FoundAdException;
+import org.schabi.newpipe.extractor.playlist.PlaylistInfoItemCollector;
+import org.schabi.newpipe.extractor.playlist.PlaylistInfoItemExtractor;
 import org.schabi.newpipe.extractor.stream.StreamInfoItemCollector;
 import org.schabi.newpipe.extractor.stream.StreamInfoItemExtractor;
 
@@ -32,6 +34,7 @@ public class InfoItemSearchCollector extends InfoItemCollector {
     private String suggestion = "";
     private StreamInfoItemCollector streamCollector;
     private ChannelInfoItemCollector userCollector;
+    private PlaylistInfoItemCollector playlistCollector;
 
     private SearchResult result = new SearchResult();
 
@@ -39,6 +42,7 @@ public class InfoItemSearchCollector extends InfoItemCollector {
         super(serviceId);
         streamCollector = new StreamInfoItemCollector(serviceId);
         userCollector = new ChannelInfoItemCollector(serviceId);
+        playlistCollector = new PlaylistInfoItemCollector(serviceId);
     }
 
     public void setSuggestion(String suggestion) {
@@ -49,6 +53,7 @@ public class InfoItemSearchCollector extends InfoItemCollector {
 
         addFromCollector(userCollector);
         addFromCollector(streamCollector);
+        addFromCollector(playlistCollector);
 
         result.suggestion = suggestion;
         result.errors = getErrors();
@@ -68,6 +73,16 @@ public class InfoItemSearchCollector extends InfoItemCollector {
     public void commit(ChannelInfoItemExtractor extractor) {
         try {
             result.resultList.add(userCollector.extract(extractor));
+        } catch (FoundAdException ae) {
+            System.err.println("Found ad");
+        } catch (Exception e) {
+            addError(e);
+        }
+    }
+
+    public void commit(PlaylistInfoItemExtractor extractor) {
+        try {
+            result.resultList.add(playlistCollector.extract(extractor));
         } catch (FoundAdException ae) {
             System.err.println("Found ad");
         } catch (Exception e) {

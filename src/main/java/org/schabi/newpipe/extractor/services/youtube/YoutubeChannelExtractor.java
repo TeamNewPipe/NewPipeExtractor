@@ -1,8 +1,9 @@
 package org.schabi.newpipe.extractor.services.youtube;
 
 
-import com.github.openjson.JSONException;
-import com.github.openjson.JSONObject;
+import com.grack.nanojson.JsonObject;
+import com.grack.nanojson.JsonParser;
+import com.grack.nanojson.JsonParserException;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
@@ -44,6 +45,8 @@ public class YoutubeChannelExtractor extends ChannelExtractor {
     private static final String CHANNEL_FEED_BASE = "https://www.youtube.com/feeds/videos.xml?channel_id=";
     private static final String CHANNEL_URL_PARAMETERS = "/videos?view=0&flow=list&sort=dd&live_view=10000";
 
+    private String channelName = ""; //Small hack used to make the channelName available to NextStreams
+
     private Document doc;
     /**
      * It's lazily initialized (when getNextStreams is called)
@@ -58,7 +61,7 @@ public class YoutubeChannelExtractor extends ChannelExtractor {
     public void fetchPage() throws IOException, ExtractionException {
         Downloader downloader = NewPipe.getDownloader();
 
-        String channelUrl = getCleanUrl() + CHANNEL_URL_PARAMETERS;
+        String channelUrl = super.getCleanUrl() + CHANNEL_URL_PARAMETERS;
         String pageContent = downloader.download(channelUrl);
         doc = Jsoup.parse(pageContent, channelUrl);
 
@@ -67,20 +70,33 @@ public class YoutubeChannelExtractor extends ChannelExtractor {
     }
 
     @Override
+    public String getCleanUrl() {
+        try {
+            return "https://www.youtube.com/channel/" + getId();
+        } catch (ParsingException e) {
+            return super.getCleanUrl();
+        }
+    }
+
+    @Override
     public String getId() throws ParsingException {
         try {
-            return getUrlIdHandler().getId(getCleanUrl());
+            Element element = doc.getElementsByClass("yt-uix-subscription-button").first();
+            if (element == null) element = doc.getElementsByClass("yt-uix-subscription-preferences-button").first();
+
+            return element.attr("data-channel-external-id");
         } catch (Exception e) {
-            throw new ParsingException("Could not get channel id");
+            throw new ParsingException("Could not get channel id", e);
         }
     }
 
     @Override
     public String getName() throws ParsingException {
         try {
-            return doc.select("span[class=\"qualified-channel-title-text\"]").first().select("a").first().text();
+            channelName = doc.select("span[class=\"qualified-channel-title-text\"]").first().select("a").first().text();
+            return channelName;
         } catch (Exception e) {
-            throw new ParsingException("Could not get channel name");
+            throw new ParsingException("Could not get channel name", e);
         }
     }
 
@@ -109,8 +125,7 @@ public class YoutubeChannelExtractor extends ChannelExtractor {
     @Override
     public String getFeedUrl() throws ParsingException {
         try {
-            String channelId = doc.getElementsByClass("yt-uix-subscription-button").first().attr("data-channel-external-id");
-            return channelId == null ? "" : CHANNEL_FEED_BASE + channelId;
+            return CHANNEL_FEED_BASE + getId();
         } catch (Exception e) {
             throw new ParsingException("Could not get feed url", e);
         }
@@ -153,13 +168,13 @@ public class YoutubeChannelExtractor extends ChannelExtractor {
         setupNextStreamsAjax(NewPipe.getDownloader());
         collectStreamsFrom(collector, nextStreamsAjax.select("body").first());
 
-        return new NextItemsResult(collector.getItemList(), nextStreamsUrl);
+        return new NextItemsResult(collector, nextStreamsUrl);
     }
 
     private void setupNextStreamsAjax(Downloader downloader) throws IOException, ReCaptchaException, ParsingException {
         String ajaxDataRaw = downloader.download(nextStreamsUrl);
         try {
-            JSONObject ajaxData = new JSONObject(ajaxDataRaw);
+            JsonObject ajaxData = JsonParser.object().from(ajaxDataRaw);
 
             String htmlDataRaw = ajaxData.getString("content_html");
             nextStreamsAjax = Jsoup.parse(htmlDataRaw, nextStreamsUrl);
@@ -170,7 +185,7 @@ public class YoutubeChannelExtractor extends ChannelExtractor {
             } else {
                 nextStreamsUrl = "";
             }
-        } catch (JSONException e) {
+        } catch (JsonParserException e) {
             throw new ParsingException("Could not parse json data for next streams", e);
         }
     }
@@ -189,7 +204,8 @@ public class YoutubeChannelExtractor extends ChannelExtractor {
         }
     }
 
-    private void collectStreamsFrom(StreamInfoItemCollector collector, Element element) throws ParsingException {
+    private void collectStreamsFrom(StreamInfoItemCollector collector,
+                                    Element element) throws ParsingException {
         collector.getItemList().clear();
 
         for (final Element li : element.children()) {
@@ -219,7 +235,11 @@ public class YoutubeChannelExtractor extends ChannelExtractor {
 
                     @Override
                     public String getUploaderName() throws ParsingException {
-                        return YoutubeChannelExtractor.this.getName();
+                        if(channelName.isEmpty()) {
+                            return "";
+                        } else {
+                            return channelName;
+                        }
                     }
 
                     @Override

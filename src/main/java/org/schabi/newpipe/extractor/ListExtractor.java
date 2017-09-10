@@ -69,9 +69,19 @@ public abstract class ListExtractor extends Extractor {
          */
         public final String nextItemsUrl;
 
-        public NextItemsResult(List<InfoItem> nextItemsList, String nextItemsUrl) {
+        /**
+         * Errors that happened during the extraction
+         */
+        public final List<Throwable> errors;
+
+        public NextItemsResult(InfoItemCollector collector, String nextItemsUrl) {
+            this(collector.getItemList(), nextItemsUrl, collector.getErrors());
+        }
+
+        public NextItemsResult(List<InfoItem> nextItemsList, String nextItemsUrl, List<Throwable> errors) {
             this.nextItemsList = nextItemsList;
             this.nextItemsUrl = nextItemsUrl;
+            this.errors = errors;
         }
 
         public boolean hasMoreStreams() {

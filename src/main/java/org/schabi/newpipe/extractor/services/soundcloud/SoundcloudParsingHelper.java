@@ -1,7 +1,9 @@
 package org.schabi.newpipe.extractor.services.soundcloud;
 
-import com.github.openjson.JSONArray;
-import com.github.openjson.JSONObject;
+import com.grack.nanojson.JsonArray;
+import com.grack.nanojson.JsonObject;
+import com.grack.nanojson.JsonParser;
+import com.grack.nanojson.JsonParserException;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
@@ -65,12 +67,16 @@ public class SoundcloudParsingHelper {
      * Call the endpoint "/resolve" of the api.<br/>
      * See https://developers.soundcloud.com/docs/api/reference#resolve
      */
-    public static JSONObject resolveFor(String url) throws IOException, ReCaptchaException, ParsingException {
+    public static JsonObject resolveFor(String url) throws IOException, ReCaptchaException, ParsingException {
         String apiUrl = "https://api.soundcloud.com/resolve"
                 + "?url=" + URLEncoder.encode(url, "UTF-8")
                 + "&client_id=" + clientId();
 
-        return new JSONObject(NewPipe.getDownloader().download(apiUrl));
+        try {
+            return JsonParser.object().from(NewPipe.getDownloader().download(apiUrl));
+        } catch (JsonParserException e) {
+            throw new ParsingException("Could not parse json response", e);
+        }
     }
 
     /**
@@ -123,15 +129,16 @@ public class SoundcloudParsingHelper {
      */
     public static String getStreamsFromApi(StreamInfoItemCollector collector, String apiUrl, boolean charts) throws IOException, ReCaptchaException, ParsingException {
         String response = NewPipe.getDownloader().download(apiUrl);
-        JSONObject responseObject = new JSONObject(response);
+        JsonObject responseObject;
+        try {
+            responseObject = JsonParser.object().from(response);
+        } catch (JsonParserException e) {
+            throw new ParsingException("Could not parse json response", e);
+        }
 
-        JSONArray responseCollection = responseObject.getJSONArray("collection");
-        for (int i = 0; i < responseCollection.length(); i++) {
-            if (charts) {
-                collector.commit(new SoundcloudStreamInfoItemExtractor(responseCollection.getJSONObject(i).getJSONObject("track")));
-            } else {
-                collector.commit(new SoundcloudStreamInfoItemExtractor(responseCollection.getJSONObject(i)));
-            }
+        JsonArray responseCollection = responseObject.getArray("collection");
+        for (Object o : responseCollection) {
+            if (o instanceof JsonObject) collector.commit(new SoundcloudStreamInfoItemExtractor((JsonObject) o));
         }
 
         String nextStreamsUrl;

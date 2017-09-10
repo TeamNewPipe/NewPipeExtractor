@@ -40,7 +40,7 @@ public class SoundcloudChartsExtractor extends KioskExtractor {
         StreamInfoItemCollector collector = new StreamInfoItemCollector(getServiceId());
         nextStreamsUrl = SoundcloudParsingHelper.getStreamsFromApi(collector, nextStreamsUrl, true);
 
-        return new NextItemsResult(collector.getItemList(), nextStreamsUrl);
+        return new NextItemsResult(collector, nextStreamsUrl);
     }
 
     @Override

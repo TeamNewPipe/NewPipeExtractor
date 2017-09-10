@@ -1,12 +1,14 @@
 package org.schabi.newpipe.extractor.services.soundcloud;
 
-import com.github.openjson.JSONArray;
-import com.github.openjson.JSONObject;
+import com.grack.nanojson.JsonArray;
+import com.grack.nanojson.JsonObject;
+import com.grack.nanojson.JsonParser;
+import com.grack.nanojson.JsonParserException;
 import org.schabi.newpipe.extractor.Downloader;
 import org.schabi.newpipe.extractor.NewPipe;
 import org.schabi.newpipe.extractor.SuggestionExtractor;
-import org.schabi.newpipe.extractor.exceptions.ReCaptchaException;
-import org.schabi.newpipe.extractor.utils.Parser.RegexException;
+import org.schabi.newpipe.extractor.exceptions.ExtractionException;
+import org.schabi.newpipe.extractor.exceptions.ParsingException;
 
 import java.io.IOException;
 import java.net.URLEncoder;
@@ -22,7 +24,7 @@ public class SoundcloudSuggestionExtractor extends SuggestionExtractor {
     }
 
     @Override
-    public List<String> suggestionList(String query, String contentCountry) throws RegexException, ReCaptchaException, IOException {
+    public List<String> suggestionList(String query, String contentCountry) throws IOException, ExtractionException {
         List<String> suggestions = new ArrayList<>();
 
         Downloader dl = NewPipe.getDownloader();
@@ -33,14 +35,15 @@ public class SoundcloudSuggestionExtractor extends SuggestionExtractor {
                 + "&limit=10";
 
         String response = dl.download(url);
-        JSONObject responseObject = new JSONObject(response);
-        JSONArray responseCollection = responseObject.getJSONArray("collection");
+        try {
+            JsonArray collection = JsonParser.object().from(response).getArray("collection");
+            for (Object suggestion : collection) {
+                if (suggestion instanceof JsonObject) suggestions.add(((JsonObject) suggestion).getString("query"));
+            }
 
-        for (int i = 0; i < responseCollection.length(); i++) {
-            JSONObject suggestion = responseCollection.getJSONObject(i);
-            suggestions.add(suggestion.getString("query"));
+            return suggestions;
+        } catch (JsonParserException e) {
+            throw new ParsingException("Could not parse json response", e);
         }
-
-        return suggestions;
     }
 }

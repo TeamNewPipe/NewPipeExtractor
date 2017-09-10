@@ -3,6 +3,7 @@ package org.schabi.newpipe.extractor.services.youtube;
 import org.junit.Before;
 import org.junit.Test;
 import org.schabi.newpipe.Downloader;
+import org.schabi.newpipe.extractor.ListExtractor;
 import org.schabi.newpipe.extractor.NewPipe;
 import org.schabi.newpipe.extractor.playlist.PlaylistExtractor;
 
@@ -89,7 +90,9 @@ public class YoutubePlaylistExtractorTest {
     public void testGetNextStreams() throws Exception {
         // Setup the streams
         extractor.getStreams();
-        assertTrue("extractor didn't have next streams", !extractor.getNextStreams().nextItemsList.isEmpty());
+        ListExtractor.NextItemsResult nextItemsResult = extractor.getNextStreams();
+        assertTrue("extractor didn't have next streams", !nextItemsResult.nextItemsList.isEmpty());
+        assertTrue("errors occurred during extraction of the next streams", nextItemsResult.errors.isEmpty());
         assertTrue("extractor didn't have more streams after getNextStreams", extractor.hasMoreStreams());
     }
 

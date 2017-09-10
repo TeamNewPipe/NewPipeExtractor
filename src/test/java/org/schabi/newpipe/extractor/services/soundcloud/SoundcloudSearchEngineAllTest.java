@@ -8,8 +8,6 @@ import org.schabi.newpipe.extractor.NewPipe;
 import org.schabi.newpipe.extractor.search.SearchEngine;
 import org.schabi.newpipe.extractor.search.SearchResult;
 
-import java.util.EnumSet;
-
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 import static org.schabi.newpipe.extractor.ServiceList.SoundCloud;
@@ -27,9 +25,8 @@ public class SoundcloudSearchEngineAllTest {
 
         // SoundCloud will suggest "lil uzi vert" instead of "lill uzi vert"
         // keep in mind that the suggestions can NOT change by country (the parameter "de")
-        result = engine.search("lill uzi vert", 0, "de",
-                EnumSet.of(SearchEngine.Filter.CHANNEL,
-                        SearchEngine.Filter.STREAM)).getSearchResult();
+        result = engine.search("lill uzi vert", 0, "de", SearchEngine.Filter.ANY)
+                .getSearchResult();
     }
 
     @Test

@@ -1,6 +1,8 @@
 package org.schabi.newpipe.extractor.services.soundcloud;
 
-import com.github.openjson.JSONObject;
+import com.grack.nanojson.JsonObject;
+import com.grack.nanojson.JsonParser;
+import com.grack.nanojson.JsonParserException;
 import org.schabi.newpipe.extractor.Downloader;
 import org.schabi.newpipe.extractor.NewPipe;
 import org.schabi.newpipe.extractor.StreamingService;
@@ -14,7 +16,7 @@ import java.io.IOException;
 @SuppressWarnings("WeakerAccess")
 public class SoundcloudChannelExtractor extends ChannelExtractor {
     private String userId;
-    private JSONObject user;
+    private JsonObject user;
 
     public SoundcloudChannelExtractor(StreamingService service, String url, String nextStreamsUrl) throws IOException, ExtractionException {
         super(service, url, nextStreamsUrl);
@@ -29,16 +31,16 @@ public class SoundcloudChannelExtractor extends ChannelExtractor {
                 "?client_id=" + SoundcloudParsingHelper.clientId();
 
         String response = dl.download(apiUrl);
-        user = new JSONObject(response);
+        try {
+            user = JsonParser.object().from(response);
+        } catch (JsonParserException e) {
+            throw new ParsingException("Could not parse json response", e);
+        }
     }
 
     @Override
     public String getCleanUrl() {
-        try {
-            return user.getString("permalink_url");
-        } catch (Exception e) {
-            return getOriginalUrl();
-        }
+        return user.isString("permalink_url") ? user.getString("permalink_url") : getOriginalUrl();
     }
 
     @Override
@@ -53,16 +55,12 @@ public class SoundcloudChannelExtractor extends ChannelExtractor {
 
     @Override
     public String getAvatarUrl() {
-        return user.optString("avatar_url");
+        return user.getString("avatar_url");
     }
 
     @Override
     public String getBannerUrl() throws ParsingException {
-        try {
-            return user.getJSONObject("visuals").getJSONArray("visuals").getJSONObject(0).getString("visual_url");
-        } catch (Exception e) {
-            throw new ParsingException("Could not get Banner", e);
-        }
+        return user.getObject("visuals").getArray("visuals").getObject(0).getString("visual_url", "");
     }
 
     @Override
@@ -72,12 +70,12 @@ public class SoundcloudChannelExtractor extends ChannelExtractor {
 
     @Override
     public long getSubscriberCount() {
-        return user.optLong("followers_count");
+        return user.getNumber("followers_count", 0).longValue();
     }
 
     @Override
     public String getDescription() throws ParsingException {
-        return user.optString("description");
+        return user.getString("description", "");
     }
 
     @Override
@@ -102,6 +100,6 @@ public class SoundcloudChannelExtractor extends ChannelExtractor {
         StreamInfoItemCollector collector = new StreamInfoItemCollector(getServiceId());
         nextStreamsUrl = SoundcloudParsingHelper.getStreamsFromApiMinItems(15, collector, nextStreamsUrl);
 
-        return new NextItemsResult(collector.getItemList(), nextStreamsUrl);
+        return new NextItemsResult(collector, nextStreamsUrl);
     }
 }

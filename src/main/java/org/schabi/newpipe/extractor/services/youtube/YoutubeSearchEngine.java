@@ -11,7 +11,6 @@ import org.schabi.newpipe.extractor.search.SearchEngine;
 
 import java.io.IOException;
 import java.net.URLEncoder;
-import java.util.EnumSet;
 
 
 /*
@@ -44,23 +43,29 @@ public class YoutubeSearchEngine extends SearchEngine {
     }
 
     @Override
-    public InfoItemSearchCollector search(String query,
-                                          int page,
-                                          String languageCode,
-                                          EnumSet<Filter> filter)
+    public InfoItemSearchCollector search(String query, int page, String languageCode, Filter filter)
             throws IOException, ExtractionException {
         InfoItemSearchCollector collector = getInfoItemSearchCollector();
-
-
         Downloader downloader = NewPipe.getDownloader();
 
         String url = "https://www.youtube.com/results"
                 + "?q=" + URLEncoder.encode(query, CHARSET_UTF_8)
                 + "&page=" + Integer.toString(page + 1);
-        if (filter.contains(Filter.STREAM) && !filter.contains(Filter.CHANNEL)) {
-            url += "&sp=EgIQAQ%253D%253D";
-        } else if (!filter.contains(Filter.STREAM) && filter.contains(Filter.CHANNEL)) {
-            url += "&sp=EgIQAg%253D%253D";
+
+        switch (filter) {
+            case STREAM:
+                url += "&sp=EgIQAVAU";
+                break;
+            case CHANNEL:
+                url += "&sp=EgIQAlAU"; //EgIQA( lowercase L )AU
+                break;
+            case PLAYLIST:
+                url += "&sp=EgIQA1AU"; //EgIQA( one )AU
+                break;
+            case ANY:
+                // Don't append any parameter to search for everything
+            default:
+                break;
         }
 
         String site;
@@ -105,6 +110,8 @@ public class YoutubeSearchEngine extends SearchEngine {
                 collector.commit(new YoutubeStreamInfoItemExtractor(el));
             } else if ((el = item.select("div[class*=\"yt-lockup-channel\"]").first()) != null) {
                 collector.commit(new YoutubeChannelInfoItemExtractor(el));
+            } else if ((el = item.select("div[class*=\"yt-lockup-playlist\"]").first()) != null) {
+                collector.commit(new YoutubePlaylistInfoItemExtractor(el));
             } else {
                 // noinspection ConstantConditions
                 // simply ignore not known items
