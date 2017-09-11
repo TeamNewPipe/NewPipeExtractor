@@ -1,10 +1,10 @@
-package org.schabi.newpipe.extractor;
+package org.schabi.newpipe.extractor.services.youtube;
 
 /*
- * Created by Christian Schabesberger on 11.02.17.
+ * Created by Christian Schabesberger on 12.08.17.
  *
  * Copyright (C) Christian Schabesberger 2017 <chris.schabesberger@mailbox.org>
- * InfoItem.java is part of NewPipe.
+ * YoutubeTrendingUrlIdHandler.java is part of NewPipe.
  *
  * NewPipe is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -20,28 +20,27 @@ package org.schabi.newpipe.extractor;
  * along with NewPipe.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-import java.io.Serializable;
+import org.schabi.newpipe.extractor.UrlIdHandler;
+import org.schabi.newpipe.extractor.utils.Parser;
 
-public abstract class InfoItem implements Serializable {
-    public enum InfoType {
-        STREAM,
-        PLAYLIST,
-        CHANNEL
+public class YoutubeTrendingUrlIdHandler implements UrlIdHandler {
+
+    public String getUrl(String id) {
+        return "https://www.youtube.com/feed/trending";
     }
-
-    public final InfoType info_type;
-
-    public InfoItem(InfoType infoType) {
-        this.info_type = infoType;
-    }
-
-    public int service_id = -1;
-    public String url;
-    public String name;
-    public String thumbnail_url;
 
     @Override
-    public String toString() {
-        return getClass().getSimpleName() + "[url=\"" + url + "\", name=\"" + name + "\"]";
+    public String getId(String url) {
+        return "Trending";
+    }
+
+    @Override
+    public String cleanUrl(String url) {
+        return getUrl("");
+    }
+
+    @Override
+    public boolean acceptUrl(String url) {
+        return Parser.isMatch("^(https://|http://|)(www.|m.|)youtube.com/feed/trending(|\\?.*)$", url);
     }
 }

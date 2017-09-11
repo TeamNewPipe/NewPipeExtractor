@@ -115,5 +115,4 @@ public class YoutubeChannelExtractorTest {
         assertTrue("errors occurred during extraction of the next streams", nextItemsResult.errors.isEmpty());
         assertTrue("extractor didn't have more streams after getNextStreams", extractor.hasMoreStreams());
     }
-
 }

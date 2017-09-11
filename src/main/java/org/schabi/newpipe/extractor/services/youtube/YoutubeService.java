@@ -5,6 +5,7 @@ import org.schabi.newpipe.extractor.SuggestionExtractor;
 import org.schabi.newpipe.extractor.UrlIdHandler;
 import org.schabi.newpipe.extractor.channel.ChannelExtractor;
 import org.schabi.newpipe.extractor.exceptions.ExtractionException;
+import org.schabi.newpipe.extractor.kiosk.KioskList;
 import org.schabi.newpipe.extractor.playlist.PlaylistExtractor;
 import org.schabi.newpipe.extractor.search.SearchEngine;
 import org.schabi.newpipe.extractor.stream.StreamExtractor;
@@ -77,5 +78,20 @@ public class YoutubeService extends StreamingService {
     @Override
     public SuggestionExtractor getSuggestionExtractor() {
         return new YoutubeSuggestionExtractor(getServiceId());
+    }
+
+    @Override
+    public KioskList getKioskList() throws ExtractionException {
+        KioskList list = new KioskList(getServiceId());
+
+        // add kiosks here e.g.:
+        YoutubeTrendingUrlIdHandler h = new YoutubeTrendingUrlIdHandler();
+        try {
+            list.addKioskEntry(new YoutubeTrendingExtractor(this, h.getUrl(""), null), h);
+        } catch (Exception e) {
+            throw new ExtractionException(e);
+        }
+
+        return list;
     }
 }

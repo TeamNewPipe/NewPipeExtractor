@@ -127,7 +127,7 @@ public class SoundcloudParsingHelper {
      *
      * @return the next streams url, empty if don't have
      */
-    public static String getStreamsFromApi(StreamInfoItemCollector collector, String apiUrl) throws IOException, ReCaptchaException, ParsingException {
+    public static String getStreamsFromApi(StreamInfoItemCollector collector, String apiUrl, boolean charts) throws IOException, ReCaptchaException, ParsingException {
         String response = NewPipe.getDownloader().download(apiUrl);
         JsonObject responseObject;
         try {
@@ -150,5 +150,9 @@ public class SoundcloudParsingHelper {
         }
 
         return nextStreamsUrl;
+    }
+
+    public static String getStreamsFromApi(StreamInfoItemCollector collector, String apiUrl) throws ReCaptchaException, ParsingException, IOException {
+        return getStreamsFromApi(collector, apiUrl, false);
     }
 }

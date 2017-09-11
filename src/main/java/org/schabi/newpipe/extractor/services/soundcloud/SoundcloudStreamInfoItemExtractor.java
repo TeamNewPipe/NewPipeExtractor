@@ -30,12 +30,13 @@ public class SoundcloudStreamInfoItemExtractor implements StreamInfoItemExtracto
 
     @Override
     public String getUploaderName() {
-        return searchResult.getObject("user").getString("username");
+        //return searchResult.getObject("user").getString("username");
+        return searchResult.getObject("track").getObject("user").getString("username");
     }
 
     @Override
     public String getUploadDate() throws ParsingException {
-        return SoundcloudParsingHelper.toDateString(searchResult.getString("created_at"));
+        return SoundcloudParsingHelper.toDateString(searchResult.getObject("track").getString("created_at"));
     }
 
     @Override

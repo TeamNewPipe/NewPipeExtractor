@@ -1,17 +1,5 @@
 package org.schabi.newpipe.extractor.services.youtube;
 
-import org.junit.Before;
-import org.junit.Test;
-import org.schabi.newpipe.Downloader;
-import org.schabi.newpipe.extractor.NewPipe;
-import org.schabi.newpipe.extractor.SuggestionExtractor;
-import org.schabi.newpipe.extractor.exceptions.ExtractionException;
-
-import java.io.IOException;
-
-import static org.junit.Assert.assertFalse;
-import static org.schabi.newpipe.extractor.ServiceList.YouTube;
-
 /*
  * Created by Christian Schabesberger on 18.11.16.
  *
@@ -31,6 +19,18 @@ import static org.schabi.newpipe.extractor.ServiceList.YouTube;
  * You should have received a copy of the GNU General Public License
  * along with NewPipe.  If not, see <http://www.gnu.org/licenses/>.
  */
+
+import org.junit.Before;
+import org.junit.Test;
+import org.schabi.newpipe.Downloader;
+import org.schabi.newpipe.extractor.NewPipe;
+import org.schabi.newpipe.extractor.SuggestionExtractor;
+import org.schabi.newpipe.extractor.exceptions.ExtractionException;
+
+import java.io.IOException;
+
+import static org.junit.Assert.assertFalse;
+import static org.schabi.newpipe.extractor.ServiceList.YouTube;
 
 /**
  * Test for {@link SuggestionExtractor}
