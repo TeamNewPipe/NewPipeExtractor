@@ -42,8 +42,7 @@ public class SoundcloudParsingHelper {
         Element jsElement = doc.select("script[src^=https://a-v2.sndcdn.com/assets/app]").first();
         String js = dl.download(jsElement.attr("src"));
 
-        clientId = Parser.matchGroup1(",client_id:\"(.*?)\"", js);
-        return clientId;
+        return clientId = Parser.matchGroup1(",client_id:\"(.*?)\"", js);
     }
 
     public static String toDateString(String time) throws ParsingException {
@@ -138,7 +137,10 @@ public class SoundcloudParsingHelper {
 
         JsonArray responseCollection = responseObject.getArray("collection");
         for (Object o : responseCollection) {
-            if (o instanceof JsonObject) collector.commit(new SoundcloudStreamInfoItemExtractor((JsonObject) o));
+            if (o instanceof JsonObject) {
+                JsonObject object = (JsonObject) o;
+                collector.commit(new SoundcloudStreamInfoItemExtractor(charts ? object.getObject("track") : object));
+            }
         }
 
         String nextStreamsUrl;
