@@ -110,7 +110,8 @@ public class YoutubeSearchEngine extends SearchEngine {
                 collector.commit(new YoutubeStreamInfoItemExtractor(el));
             } else if ((el = item.select("div[class*=\"yt-lockup-channel\"]").first()) != null) {
                 collector.commit(new YoutubeChannelInfoItemExtractor(el));
-            } else if ((el = item.select("div[class*=\"yt-lockup-playlist\"]").first()) != null) {
+            } else if ((el = item.select("div[class*=\"yt-lockup-playlist\"]").first()) != null &&
+                    item.select(".yt-pl-icon-mix").isEmpty()) {
                 collector.commit(new YoutubePlaylistInfoItemExtractor(el));
             } else {
                 // noinspection ConstantConditions
