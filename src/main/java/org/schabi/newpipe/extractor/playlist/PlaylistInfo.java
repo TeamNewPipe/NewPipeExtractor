@@ -14,12 +14,12 @@ import java.util.ArrayList;
 
 public class PlaylistInfo extends ListInfo {
 
-    public static NextItemsResult getMoreItems(ServiceList serviceItem, String nextStreamsUrl) throws IOException, ExtractionException {
-        return getMoreItems(serviceItem.getService(), nextStreamsUrl);
+    public static NextItemsResult getMoreItems(ServiceList serviceItem, String url, String nextStreamsUrl) throws IOException, ExtractionException {
+        return getMoreItems(serviceItem.getService(), url, nextStreamsUrl);
     }
 
-    public static NextItemsResult getMoreItems(StreamingService service, String nextStreamsUrl) throws IOException, ExtractionException {
-        return service.getPlaylistExtractor(null, nextStreamsUrl).getNextStreams();
+    public static NextItemsResult getMoreItems(StreamingService service, String url, String nextStreamsUrl) throws IOException, ExtractionException {
+        return service.getPlaylistExtractor(url, nextStreamsUrl).getNextStreams();
     }
 
     public static PlaylistInfo getInfo(String url) throws IOException, ExtractionException {

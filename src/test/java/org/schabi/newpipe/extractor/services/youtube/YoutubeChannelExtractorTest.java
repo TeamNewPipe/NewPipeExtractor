@@ -6,7 +6,6 @@ import org.schabi.newpipe.Downloader;
 import org.schabi.newpipe.extractor.ListExtractor;
 import org.schabi.newpipe.extractor.NewPipe;
 import org.schabi.newpipe.extractor.channel.ChannelExtractor;
-import org.schabi.newpipe.extractor.stream.StreamInfoItem;
 
 import static org.junit.Assert.*;
 import static org.schabi.newpipe.extractor.ServiceList.YouTube;

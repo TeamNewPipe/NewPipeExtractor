@@ -34,12 +34,12 @@ import java.util.ArrayList;
 
 public class ChannelInfo extends ListInfo {
 
-    public static NextItemsResult getMoreItems(ServiceList serviceItem, String nextStreamsUrl) throws IOException, ExtractionException {
-        return getMoreItems(serviceItem.getService(), nextStreamsUrl);
+    public static NextItemsResult getMoreItems(ServiceList serviceItem, String url, String nextStreamsUrl) throws IOException, ExtractionException {
+        return getMoreItems(serviceItem.getService(), url, nextStreamsUrl);
     }
 
-    public static NextItemsResult getMoreItems(StreamingService service, String nextStreamsUrl) throws IOException, ExtractionException {
-        return service.getChannelExtractor(null, nextStreamsUrl).getNextStreams();
+    public static NextItemsResult getMoreItems(StreamingService service, String url, String nextStreamsUrl) throws IOException, ExtractionException {
+        return service.getChannelExtractor(url, nextStreamsUrl).getNextStreams();
     }
 
     public static ChannelInfo getInfo(String url) throws IOException, ExtractionException {

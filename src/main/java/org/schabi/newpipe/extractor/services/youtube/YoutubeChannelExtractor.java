@@ -45,8 +45,6 @@ public class YoutubeChannelExtractor extends ChannelExtractor {
     private static final String CHANNEL_FEED_BASE = "https://www.youtube.com/feeds/videos.xml?channel_id=";
     private static final String CHANNEL_URL_PARAMETERS = "/videos?view=0&flow=list&sort=dd&live_view=10000";
 
-    private String channelName = ""; //Small hack used to make the channelName available to NextStreams
-
     private Document doc;
     /**
      * It's lazily initialized (when getNextStreams is called)
@@ -67,6 +65,13 @@ public class YoutubeChannelExtractor extends ChannelExtractor {
 
         nextStreamsUrl = getNextStreamsUrlFrom(doc);
         nextStreamsAjax = null;
+    }
+
+    @Override
+    protected boolean fetchPageUponCreation() {
+        // Unfortunately, we have to fetch the page even if we are getting only next streams,
+        // as they don't deliver enough information on their own (the channel name, for example).
+        return true;
     }
 
     @Override
@@ -93,8 +98,7 @@ public class YoutubeChannelExtractor extends ChannelExtractor {
     @Override
     public String getName() throws ParsingException {
         try {
-            channelName = doc.select("span[class=\"qualified-channel-title-text\"]").first().select("a").first().text();
-            return channelName;
+            return doc.select("meta[property=\"og:title\"]").first().attr("content");
         } catch (Exception e) {
             throw new ParsingException("Could not get channel name", e);
         }
@@ -204,10 +208,10 @@ public class YoutubeChannelExtractor extends ChannelExtractor {
         }
     }
 
-    private void collectStreamsFrom(StreamInfoItemCollector collector,
-                                    Element element) throws ParsingException {
+    private void collectStreamsFrom(StreamInfoItemCollector collector, Element element) throws ParsingException {
         collector.getItemList().clear();
 
+        final String uploaderName = getName();
         for (final Element li : element.children()) {
             if (li.select("div[class=\"feed-item-dismissable\"]").first() != null) {
                 collector.commit(new YoutubeStreamInfoItemExtractor(li) {
@@ -235,11 +239,7 @@ public class YoutubeChannelExtractor extends ChannelExtractor {
 
                     @Override
                     public String getUploaderName() throws ParsingException {
-                        if(channelName.isEmpty()) {
-                            return "";
-                        } else {
-                            return channelName;
-                        }
+                        return uploaderName;
                     }
 
                     @Override
