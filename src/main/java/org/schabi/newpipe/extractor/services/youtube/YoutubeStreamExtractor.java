@@ -175,7 +175,7 @@ public class YoutubeStreamExtractor extends StreamExtractor {
     @Override
     public long getLength() throws ParsingException {
         try {
-            long returnValue = playerArgs.getNumber("length_seconds", -1).longValue();
+            long returnValue = Long.parseLong(playerArgs.get("length_seconds") + "");
             if (returnValue >= 0) return returnValue;
         } catch (Exception ignored) {
             // Try other method...
@@ -504,14 +504,12 @@ public class YoutubeStreamExtractor extends StreamExtractor {
 
         String pageContent = dl.download(getCleanUrl());
         doc = Jsoup.parse(pageContent, getCleanUrl());
-        String infoPageResponse = dl.download(String.format(GET_VIDEO_INFO_URL, getId()));
-        videoInfoPage = Parser.compatParseMap(infoPageResponse);
-
 
         String playerUrl;
-
         // Check if the video is age restricted
         if (pageContent.contains("<meta property=\"og:restrictions:age")) {
+            String infoPageResponse = dl.download(String.format(GET_VIDEO_INFO_URL, getId()));
+            videoInfoPage = Parser.compatParseMap(infoPageResponse);
             playerUrl = getPlayerUrlFromRestrictedVideo();
             isAgeRestricted = true;
         } else {
