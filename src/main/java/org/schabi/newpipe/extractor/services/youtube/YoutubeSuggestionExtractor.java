@@ -48,15 +48,23 @@ public class YoutubeSuggestionExtractor extends SuggestionExtractor {
         List<String> suggestions = new ArrayList<>();
 
         String url = "https://suggestqueries.google.com/complete/search"
-                + "?client=" + "firefox" // 'toolbar' for xml
+                + "?client=" + "youtube" //"firefox" for JSON, 'toolbar' for xml
+                + "&jsonp=" + "JP"
                 + "&ds=" + "yt"
                 + "&hl=" + URLEncoder.encode(contentCountry, CHARSET_UTF_8)
                 + "&q=" + URLEncoder.encode(query, CHARSET_UTF_8);
 
         String response = dl.download(url);
+        // trim JSONP part "JP(...)"
+        response = response.substring(3, response.length()-1);
         try {
-            JsonArray collection = JsonParser.array().from(response).getArray(1);
-            for (Object suggestion : collection) suggestions.add(suggestion.toString());
+            JsonArray collection = JsonParser.array().from(response).getArray(1, new JsonArray());
+            for (Object suggestion : collection) {
+                if (!(suggestion instanceof JsonArray)) continue;
+                String suggestionStr = ((JsonArray)suggestion).getString(0);
+                if (suggestionStr == null) continue;
+                suggestions.add(suggestionStr);
+            }
 
             return suggestions;
         } catch (JsonParserException e) {
