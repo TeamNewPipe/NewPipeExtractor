@@ -128,7 +128,7 @@ public class SoundcloudStreamExtractor extends StreamExtractor {
 
     @Override
     public long getLikeCount() {
-        return track.getNumber("likes_count", -1).longValue();
+        return track.getNumber("favoritings_count", -1).longValue();
     }
 
     @Override

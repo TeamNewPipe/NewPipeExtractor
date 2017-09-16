@@ -59,12 +59,16 @@ public class SoundcloudChannelExtractor extends ChannelExtractor {
     }
 
     @Override
-    public String getBannerUrl() throws ParsingException {
-        return user.getObject("visuals").getArray("visuals").getObject(0).getString("visual_url", "");
+    public String getBannerUrl() {
+        try {
+            return user.getObject("visuals").getArray("visuals").getObject(0).getString("visual_url", "");
+        } catch (NullPointerException e) {
+            return null;
+        }
     }
 
     @Override
-    public String getFeedUrl() throws ParsingException {
+    public String getFeedUrl() {
         return null;
     }
 
