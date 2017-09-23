@@ -12,7 +12,6 @@ import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 import static org.schabi.newpipe.extractor.ServiceList.YouTube;
 
-
 /*
  * Created by Christian Schabesberger on 29.12.15.
  *

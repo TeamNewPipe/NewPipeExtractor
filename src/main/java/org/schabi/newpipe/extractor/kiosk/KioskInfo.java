@@ -20,10 +20,7 @@ package org.schabi.newpipe.extractor.kiosk;
  * along with NewPipe.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-import org.schabi.newpipe.extractor.ListInfo;
-import org.schabi.newpipe.extractor.NewPipe;
-import org.schabi.newpipe.extractor.ServiceList;
-import org.schabi.newpipe.extractor.StreamingService;
+import org.schabi.newpipe.extractor.*;
 import org.schabi.newpipe.extractor.exceptions.ExtractionException;
 import org.schabi.newpipe.extractor.exceptions.ParsingException;
 import org.schabi.newpipe.extractor.stream.StreamInfoItemCollector;
@@ -32,6 +29,16 @@ import java.io.IOException;
 
 public class KioskInfo extends ListInfo {
     public String type;
+
+    public static ListExtractor.NextItemsResult getMoreItems(ServiceList serviceItem, String url, String nextStreamsUrl) throws IOException, ExtractionException {
+        return getMoreItems(serviceItem.getService(), url, nextStreamsUrl);
+    }
+
+    public static ListExtractor.NextItemsResult getMoreItems(StreamingService service, String url, String nextStreamsUrl) throws IOException, ExtractionException {
+        KioskList kl = service.getKioskList();
+        KioskExtractor extractor = kl.getExtryctorByUrl(url, nextStreamsUrl);
+        return extractor.getNextStreams();
+    }
 
     public static KioskInfo getInfo(String url,
                                     String contentCountry) throws IOException, ExtractionException {
@@ -48,7 +55,7 @@ public class KioskInfo extends ListInfo {
                                     String url,
                                     String contentCountry) throws IOException, ExtractionException {
         KioskList kl = service.getKioskList();
-        KioskExtractor extractor = kl.getExtryctorByUrl(url);
+        KioskExtractor extractor = kl.getExtryctorByUrl(url, null);
         return getInfo(extractor, contentCountry);
     }
 

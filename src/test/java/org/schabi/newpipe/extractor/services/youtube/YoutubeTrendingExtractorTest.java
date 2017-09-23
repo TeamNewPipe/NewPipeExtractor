@@ -23,12 +23,9 @@ package org.schabi.newpipe.extractor.services.youtube;
 import org.junit.Before;
 import org.junit.Test;
 import org.schabi.newpipe.Downloader;
-import org.schabi.newpipe.extractor.InfoItem;
 import org.schabi.newpipe.extractor.InfoItemCollector;
 import org.schabi.newpipe.extractor.NewPipe;
 import org.schabi.newpipe.extractor.kiosk.KioskExtractor;
-
-import java.util.List;
 
 import static junit.framework.TestCase.assertFalse;
 import static org.junit.Assert.assertEquals;
@@ -49,7 +46,7 @@ public class YoutubeTrendingExtractorTest {
         NewPipe.init(Downloader.getInstance());
         extractor = YouTube.getService()
                 .getKioskList()
-                .getExtractorByType("Trending");
+                .getExtractorByType("Trending", null);
         extractor.fetchPage();
     }
 
