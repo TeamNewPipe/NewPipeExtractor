@@ -1,6 +1,6 @@
 # NewPipe Extractor [![Build Status](https://travis-ci.org/TeamNewPipe/NewPipeExtractor.svg?branch=master)](https://travis-ci.org/TeamNewPipe/NewPipeExtractor)
 
-NewPipe Extractor is a library for extracting things from streaming sites.
+NewPipe Extractor is a library for extracting things from streaming sites. It is a core component of [NewPipe](https://github.com/TeamNewPipe/NewPipe), but could be used independently.
 
 ## Usage
 
