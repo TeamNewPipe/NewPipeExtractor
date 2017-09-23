@@ -14,8 +14,9 @@ import org.schabi.newpipe.extractor.stream.StreamInfoItemCollector;
 public class SoundcloudChartsExtractor extends KioskExtractor {
 	private String url;
 
-    public SoundcloudChartsExtractor(StreamingService service, String url, String nextStreamsUrl) throws IOException, ExtractionException {
-        super(service, url, nextStreamsUrl);
+    public SoundcloudChartsExtractor(StreamingService service, String url, String nextStreamsUrl, String type)
+            throws IOException, ExtractionException {
+        super(service, url, nextStreamsUrl, type);
         this.url = url;
     }
 

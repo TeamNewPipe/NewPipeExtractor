@@ -69,16 +69,30 @@ public class SoundcloudService extends StreamingService {
         try {
             list.addKioskEntry(new KioskList.KioskExtractorFactory() {
                 @Override
-                public KioskExtractor createNewKiosk(StreamingService streamingService, String url, String nextStreamUrl) throws ExtractionException, IOException {
-                    return new SoundcloudChartsExtractor(SoundcloudService.this, h.getUrl("Top 50"), nextStreamUrl);
+                public KioskExtractor createNewKiosk(StreamingService streamingService,
+                                                     String url,
+                                                     String nextStreamUrl,
+                                                     String type)
+                        throws ExtractionException, IOException {
+                    return new SoundcloudChartsExtractor(SoundcloudService.this,
+                            h.getUrl(type),
+                            nextStreamUrl,
+                            type);
                 }
-            }, h);
+            }, h, "Top 50");
             list.addKioskEntry(new KioskList.KioskExtractorFactory() {
                 @Override
-                public KioskExtractor createNewKiosk(StreamingService streamingService, String url, String nextStreamUrl) throws ExtractionException, IOException {
-                    return new SoundcloudChartsExtractor(SoundcloudService.this, h.getUrl("New & hot"), nextStreamUrl);
+                public KioskExtractor createNewKiosk(StreamingService streamingService,
+                                                     String url,
+                                                     String nextStreamUrl,
+                                                     String type)
+                        throws ExtractionException, IOException {
+                    return new SoundcloudChartsExtractor(SoundcloudService.this,
+                            h.getUrl(type),
+                            nextStreamUrl,
+                            type);
                 }
-            }, h);
+            }, h, "New & hot");
         } catch (Exception e) {
             throw new ExtractionException(e);
         }

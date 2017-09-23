@@ -29,13 +29,16 @@ import java.io.IOException;
 
 public abstract class KioskExtractor extends ListExtractor {
     private String contentCountry = null;
+    private String type = null;
 
     public KioskExtractor(StreamingService streamingService,
                           String url,
-                          String nextStreamsUrl)
+                          String nextStreamsUrl,
+                          String type)
         throws IOException, ExtractionException {
         super(streamingService, url, nextStreamsUrl);
         this.contentCountry = contentCountry;
+        this.type = type;
     }
 
     /**
@@ -53,7 +56,9 @@ public abstract class KioskExtractor extends ListExtractor {
      * eg. Trending, Top & Hot, Top last 24 hours
      * @return type of kiosk
      */
-    public abstract String getType() throws ParsingException;
+    public String getType() throws ParsingException {
+        return type;
+    }
 
     @Override
     public String getId() throws ParsingException {

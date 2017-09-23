@@ -35,9 +35,9 @@ public class YoutubeTrendingExtractor extends KioskExtractor {
 
     private Document doc;
 
-    public YoutubeTrendingExtractor(StreamingService service, String url, String nextStreamsUrl)
+    public YoutubeTrendingExtractor(StreamingService service, String url, String nextStreamsUrl, String type)
         throws IOException, ExtractionException {
-        super(service, url, nextStreamsUrl);
+        super(service, url, nextStreamsUrl, type);
     }
 
     @Override
@@ -52,11 +52,6 @@ public class YoutubeTrendingExtractor extends KioskExtractor {
 
         String pageContent = downloader.download(url);
         doc = Jsoup.parse(pageContent, url);
-    }
-
-    @Override
-    public String getType() {
-        return "Trending";
     }
 
     @Override

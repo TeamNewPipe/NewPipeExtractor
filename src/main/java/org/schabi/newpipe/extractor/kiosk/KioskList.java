@@ -17,7 +17,8 @@ public  class KioskList {
     public interface KioskExtractorFactory {
         KioskExtractor createNewKiosk(final StreamingService streamingService,
                                              final String url,
-                                             final String nextStreamUrl)
+                                             final String nextStreamUrl,
+                                             final String type)
             throws ExtractionException, IOException;
     }
 
@@ -38,14 +39,12 @@ public  class KioskList {
         this.service_id = service_id;
     }
 
-    public void addKioskEntry(KioskExtractorFactory extractorFactory, UrlIdHandler handler)
+    public void addKioskEntry(KioskExtractorFactory extractorFactory, UrlIdHandler handler, String type)
         throws Exception {
-        KioskExtractor extractor =
-                extractorFactory.createNewKiosk(NewPipe.getService(service_id), "", "");
-        if(kioskList.get(extractor.getType()) != null) {
-            throw new Exception("Kiosk with type " + extractor.getType() + " already exists.");
+        if(kioskList.get(type) != null) {
+            throw new Exception("Kiosk with type " + type + " already exists.");
         }
-        kioskList.put(extractor.getType(), new KioskEntry(extractorFactory, handler));
+        kioskList.put(type, new KioskEntry(extractorFactory, handler));
     }
 
     public void setDefaultKiosk(String kioskType) {
@@ -78,8 +77,8 @@ public  class KioskList {
             throw new ExtractionException("No kiosk found with the type: " + kioskType);
         } else {
             return ke.extractorFactory.createNewKiosk(NewPipe.getService(service_id),
-                    ke.handler.getUrl(""),
-                    nextStreamsUrl);
+                    ke.handler.getUrl(kioskType),
+                    nextStreamsUrl, kioskType);
         }
     }
 
@@ -87,7 +86,7 @@ public  class KioskList {
         return kioskList.keySet();
     }
 
-    public KioskExtractor getExtryctorByUrl(String url, String nextStreamsUrl)
+    public KioskExtractor getExtractorByUrl(String url, String nextStreamsUrl)
             throws ExtractionException, IOException {
         for(Map.Entry<String, KioskEntry> e : kioskList.entrySet()) {
             KioskEntry ke = e.getValue();
@@ -96,5 +95,9 @@ public  class KioskList {
             }
         }
         throw new ExtractionException("Could not find a kiosk that fits to the url: " + url);
+    }
+
+    public UrlIdHandler getUrlIdHandlerByType(String type) {
+        return kioskList.get(type).handler;
     }
 }
