@@ -1,22 +1,25 @@
-NewPipe Extractor [![Build Status](https://travis-ci.org/TeamNewPipe/NewPipeExtractor.svg?branch=master)](https://travis-ci.org/TeamNewPipe/NewPipeExtractor)
-=================
+# NewPipe Extractor [![Build Status](https://travis-ci.org/TeamNewPipe/NewPipeExtractor.svg?branch=master)](https://travis-ci.org/TeamNewPipe/NewPipeExtractor)
 
-
-This is the system independent core of [NewPipe](https://github.com/TeamNewPipe/NewPipe).
-It can be used to create your own java based NewPipe client.
-
-A small example showing how to use the extractor can be found [here](https://github.com/TeamNewPipe/np-cli).
+NewPipe Extractor is a library for extracting things from streaming sites. It is a core component of [NewPipe](https://github.com/TeamNewPipe/NewPipe), but could be used independently.
 
 ## Usage
-Using this Extractor in your own open source projects is simple. We offer this extractor as maven repository, so if you use
-gradle you can simple include NewPipeExtractor to your project by adding this line to the dependencies:
 
-`compile 'com.github.TeamNewPipe:NewPipeExtractor:7ae274`
+NewPipe Extractor is available at JitPack's Maven repo.
 
-A fill documentation is no yet there, but it will follow :) Stay tuned.
+If you're using Gradle, you could add NewPipe Extractor as a dependency with the following steps:
 
+1. Add `maven { url 'https://jitpack.io' }` to the `repositories` in your `build.gradle`.
+2. Add `compile 'com.github.TeamNewPipe:NewPipeExtractor:82ae72900a'`the `dependencies` in your `build.gradle`. Replace `82ae72900a` with the latest commit.
+
+## Supported sites
+
+The following sites are currently supported:
+
+- YouTube
+- SoundCloud
 
 ## License
+
 [![GNU GPLv3 Image](https://www.gnu.org/graphics/gplv3-127x51.png)](http://www.gnu.org/licenses/gpl-3.0.en.html)  
 
 NewPipe is Free Software: You can use, study share and improve it at your
