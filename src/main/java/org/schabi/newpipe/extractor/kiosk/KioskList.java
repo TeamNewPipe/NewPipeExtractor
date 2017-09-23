@@ -67,6 +67,10 @@ public  class KioskList {
         }
     }
 
+    public String getDefaultKioskType() {
+        return defaultKiosk;
+    }
+
     public KioskExtractor getExtractorByType(String kioskType, String nextStreamsUrl)
             throws ExtractionException, IOException {
         KioskEntry ke = kioskList.get(kioskType);

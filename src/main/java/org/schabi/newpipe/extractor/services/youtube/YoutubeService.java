@@ -95,6 +95,7 @@ public class YoutubeService extends StreamingService {
                     return new YoutubeTrendingExtractor(YoutubeService.this, url, nextStreamUrl);
                 }
             }, new YoutubeTrendingUrlIdHandler());
+            list.setDefaultKiosk("Trending");
         } catch (Exception e) {
             throw new ExtractionException(e);
         }

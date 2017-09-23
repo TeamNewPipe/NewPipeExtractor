@@ -30,11 +30,15 @@ import java.io.IOException;
 public class KioskInfo extends ListInfo {
     public String type;
 
-    public static ListExtractor.NextItemsResult getMoreItems(ServiceList serviceItem, String url, String nextStreamsUrl) throws IOException, ExtractionException {
+    public static ListExtractor.NextItemsResult getMoreItems(ServiceList serviceItem,
+                                                             String url, 
+                                                             String nextStreamsUrl) throws IOException, ExtractionException {
         return getMoreItems(serviceItem.getService(), url, nextStreamsUrl);
     }
 
-    public static ListExtractor.NextItemsResult getMoreItems(StreamingService service, String url, String nextStreamsUrl) throws IOException, ExtractionException {
+    public static ListExtractor.NextItemsResult getMoreItems(StreamingService service,
+                                                             String url,
+                                                             String nextStreamsUrl) throws IOException, ExtractionException {
         KioskList kl = service.getKioskList();
         KioskExtractor extractor = kl.getExtryctorByUrl(url, nextStreamsUrl);
         return extractor.getNextStreams();
