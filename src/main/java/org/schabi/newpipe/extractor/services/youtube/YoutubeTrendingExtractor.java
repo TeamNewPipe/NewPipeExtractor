@@ -35,9 +35,9 @@ public class YoutubeTrendingExtractor extends KioskExtractor {
 
     private Document doc;
 
-    public YoutubeTrendingExtractor(StreamingService service, String url, String nextStreamsUrl, String type)
+    public YoutubeTrendingExtractor(StreamingService service, String url, String nextStreamsUrl, String kioskId)
         throws IOException, ExtractionException {
-        super(service, url, nextStreamsUrl, type);
+        super(service, url, nextStreamsUrl, kioskId);
     }
 
     @Override
@@ -62,6 +62,18 @@ public class YoutubeTrendingExtractor extends KioskExtractor {
     @Override
     public ListExtractor.NextItemsResult getNextStreams() {
         return null;
+    }
+
+    @Override
+    public String getName() throws ParsingException {
+        try {
+            Element a = doc.select("a[href*=\"/feed/trending\"]").first();
+            Element span = a.select("span[class*=\"display-name\"]").first();
+            Element nameSpan = span.select("span").first();
+            return nameSpan.text();
+        } catch (Exception e) {
+            throw new ParsingException("Could not get Trending name", e);
+        }
     }
 
     @Override

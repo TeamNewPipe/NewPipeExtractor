@@ -62,37 +62,27 @@ public class SoundcloudService extends StreamingService {
 
     @Override
     public KioskList getKioskList() throws ExtractionException {
+        KioskList.KioskExtractorFactory chartsFactory = new KioskList.KioskExtractorFactory() {
+            @Override
+            public KioskExtractor createNewKiosk(StreamingService streamingService,
+                                                 String url,
+                                                 String nextStreamUrl,
+                                                 String id)
+                    throws ExtractionException, IOException {
+                return new SoundcloudChartsExtractor(SoundcloudService.this,
+                        url,
+                        nextStreamUrl,
+                        id);
+            }
+        };
+
         KioskList list = new KioskList(getServiceId());
 
         // add kiosks here e.g.:
         final SoundcloudChartsUrlIdHandler h = new SoundcloudChartsUrlIdHandler();
         try {
-            list.addKioskEntry(new KioskList.KioskExtractorFactory() {
-                @Override
-                public KioskExtractor createNewKiosk(StreamingService streamingService,
-                                                     String url,
-                                                     String nextStreamUrl,
-                                                     String type)
-                        throws ExtractionException, IOException {
-                    return new SoundcloudChartsExtractor(SoundcloudService.this,
-                            h.getUrl(type),
-                            nextStreamUrl,
-                            type);
-                }
-            }, h, "Top 50");
-            list.addKioskEntry(new KioskList.KioskExtractorFactory() {
-                @Override
-                public KioskExtractor createNewKiosk(StreamingService streamingService,
-                                                     String url,
-                                                     String nextStreamUrl,
-                                                     String type)
-                        throws ExtractionException, IOException {
-                    return new SoundcloudChartsExtractor(SoundcloudService.this,
-                            h.getUrl(type),
-                            nextStreamUrl,
-                            type);
-                }
-            }, h, "New & hot");
+            list.addKioskEntry(chartsFactory, h, "Top 50");
+            list.addKioskEntry(chartsFactory, h, "New & hot");
         } catch (Exception e) {
             throw new ExtractionException(e);
         }

@@ -54,7 +54,12 @@ public class YoutubeTreindingKioskInfoTest {
     }
 
     @Test
-    public void getType() {
-        assertEquals(kioskInfo.type, "Trending");
+    public void getId() {
+        assertEquals(kioskInfo.id, "Trending");
+    }
+
+    @Test
+    public void getName() {
+        assertFalse(kioskInfo.name.isEmpty());
     }
 }

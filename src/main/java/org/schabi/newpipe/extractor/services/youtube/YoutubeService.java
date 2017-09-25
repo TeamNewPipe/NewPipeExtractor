@@ -90,9 +90,9 @@ public class YoutubeService extends StreamingService {
         try {
             list.addKioskEntry(new KioskList.KioskExtractorFactory() {
                 @Override
-                public KioskExtractor createNewKiosk(StreamingService streamingService, String url, String nextStreamUrl, String type)
+                public KioskExtractor createNewKiosk(StreamingService streamingService, String url, String nextStreamUrl, String id)
                 throws ExtractionException, IOException {
-                    return new YoutubeTrendingExtractor(YoutubeService.this, url, nextStreamUrl, type);
+                    return new YoutubeTrendingExtractor(YoutubeService.this, url, nextStreamUrl, id);
                 }
             }, new YoutubeTrendingUrlIdHandler(), "Trending");
             list.setDefaultKiosk("Trending");

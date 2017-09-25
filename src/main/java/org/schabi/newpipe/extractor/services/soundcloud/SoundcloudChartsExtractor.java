@@ -14,9 +14,9 @@ import org.schabi.newpipe.extractor.stream.StreamInfoItemCollector;
 public class SoundcloudChartsExtractor extends KioskExtractor {
 	private String url;
 
-    public SoundcloudChartsExtractor(StreamingService service, String url, String nextStreamsUrl, String type)
+    public SoundcloudChartsExtractor(StreamingService service, String url, String nextStreamsUrl, String kioskId)
             throws IOException, ExtractionException {
-        super(service, url, nextStreamsUrl, type);
+        super(service, url, nextStreamsUrl, kioskId);
         this.url = url;
     }
 
@@ -25,8 +25,8 @@ public class SoundcloudChartsExtractor extends KioskExtractor {
     }
 
     @Override
-    public String getType() throws ParsingException {
-        return getUrlIdHandler().getId(url);
+    public String getName() throws ParsingException {
+        return "< Implement me (♥_♥) >";
     }
 
     @Override
@@ -54,7 +54,7 @@ public class SoundcloudChartsExtractor extends KioskExtractor {
                 "?genre=soundcloud:genres:all-music" +
                 "&client_id=" + SoundcloudParsingHelper.clientId();
 
-        if (getType().equals("Top 50")) {
+        if (getId().equals("Top 50")) {
             apiUrl += "&kind=top";
         } else {
             apiUrl += "&kind=new";

@@ -29,16 +29,15 @@ import java.io.IOException;
 
 public abstract class KioskExtractor extends ListExtractor {
     private String contentCountry = null;
-    private String type = null;
+    private String id = null;
 
     public KioskExtractor(StreamingService streamingService,
                           String url,
                           String nextStreamsUrl,
-                          String type)
+                          String kioskId)
         throws IOException, ExtractionException {
         super(streamingService, url, nextStreamsUrl);
-        this.contentCountry = contentCountry;
-        this.type = type;
+        this.id = kioskId;
     }
 
     /**
@@ -51,24 +50,23 @@ public abstract class KioskExtractor extends ListExtractor {
         this.contentCountry = contentCountry;
     }
 
-    /**
-     * Returns the type of the kiosk.
-     * eg. Trending, Top & Hot, Top last 24 hours
-     * @return type of kiosk
-     */
-    public String getType() throws ParsingException {
-        return type;
-    }
 
     @Override
     public String getId() throws ParsingException {
-        return getType();
+        return id;
     }
 
+    /**
+     * Id should be the name of the kiosk, tho Id is used for identifing it in the programm,
+     * so id should be kept in english.
+     * In order to get the name of the kiosk in the desired language we have to
+     * crawl if from the website.
+     * @return the tranlsated version of id
+     * @throws ParsingException
+     */
     @Override
-    public String getName() throws ParsingException {
-        return getType();
-    }
+    public abstract String getName() throws ParsingException;
+
 
     public String getContentCountry() {
         return contentCountry;

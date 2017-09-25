@@ -46,7 +46,7 @@ public class YoutubeTrendingExtractorTest {
         NewPipe.init(Downloader.getInstance());
         extractor = YouTube.getService()
                 .getKioskList()
-                .getExtractorByType("Trending", null);
+                .getExtractorById("Trending", null);
     }
 
     @Test
@@ -56,7 +56,8 @@ public class YoutubeTrendingExtractorTest {
 
     @Test
     public void testGetName() throws Exception {
-        assertEquals(extractor.getName(), "Trending");
+        System.out.println(extractor.getName());
+        assertFalse(extractor.getName().isEmpty());
     }
 
     @Test

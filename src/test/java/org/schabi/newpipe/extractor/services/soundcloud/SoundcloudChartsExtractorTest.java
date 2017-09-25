@@ -25,7 +25,7 @@ public class SoundcloudChartsExtractorTest {
         NewPipe.init(Downloader.getInstance());
         extractor = SoundCloud.getService()
                 .getKioskList()
-                .getExtractorByType("Top 50", null);
+                .getExtractorById("Top 50", null);
         extractor.fetchPage();
     }
 

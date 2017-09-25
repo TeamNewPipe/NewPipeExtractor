@@ -18,7 +18,7 @@ public  class KioskList {
         KioskExtractor createNewKiosk(final StreamingService streamingService,
                                              final String url,
                                              final String nextStreamUrl,
-                                             final String type)
+                                             final String kioskId)
             throws ExtractionException, IOException;
     }
 
@@ -39,12 +39,12 @@ public  class KioskList {
         this.service_id = service_id;
     }
 
-    public void addKioskEntry(KioskExtractorFactory extractorFactory, UrlIdHandler handler, String type)
+    public void addKioskEntry(KioskExtractorFactory extractorFactory, UrlIdHandler handler, String id)
         throws Exception {
-        if(kioskList.get(type) != null) {
-            throw new Exception("Kiosk with type " + type + " already exists.");
+        if(kioskList.get(id) != null) {
+            throw new Exception("Kiosk with type " + id + " already exists.");
         }
-        kioskList.put(type, new KioskEntry(extractorFactory, handler));
+        kioskList.put(id, new KioskEntry(extractorFactory, handler));
     }
 
     public void setDefaultKiosk(String kioskType) {
@@ -54,35 +54,35 @@ public  class KioskList {
     public KioskExtractor getDefaultKioskExtractor(String nextStreamUrl)
             throws ExtractionException, IOException {
         if(defaultKiosk != null && !defaultKiosk.equals("")) {
-            return getExtractorByType(defaultKiosk, nextStreamUrl);
+            return getExtractorById(defaultKiosk, nextStreamUrl);
         } else {
             if(!kioskList.isEmpty()) {
                 // if not set get any entry
                 Object[] keySet = kioskList.keySet().toArray();
-                return getExtractorByType(keySet[0].toString(), nextStreamUrl);
+                return getExtractorById(keySet[0].toString(), nextStreamUrl);
             } else {
                 return null;
             }
         }
     }
 
-    public String getDefaultKioskType() {
+    public String getDefaultKioskId() {
         return defaultKiosk;
     }
 
-    public KioskExtractor getExtractorByType(String kioskType, String nextStreamsUrl)
+    public KioskExtractor getExtractorById(String kioskId, String nextStreamsUrl)
             throws ExtractionException, IOException {
-        KioskEntry ke = kioskList.get(kioskType);
+        KioskEntry ke = kioskList.get(kioskId);
         if(ke == null) {
-            throw new ExtractionException("No kiosk found with the type: " + kioskType);
+            throw new ExtractionException("No kiosk found with the type: " + kioskId);
         } else {
             return ke.extractorFactory.createNewKiosk(NewPipe.getService(service_id),
-                    ke.handler.getUrl(kioskType),
-                    nextStreamsUrl, kioskType);
+                    ke.handler.getUrl(kioskId),
+                    nextStreamsUrl, kioskId);
         }
     }
 
-    public Set<String> getAvailableKisokTypes() {
+    public Set<String> getAvailableKisoks() {
         return kioskList.keySet();
     }
 
@@ -91,7 +91,7 @@ public  class KioskList {
         for(Map.Entry<String, KioskEntry> e : kioskList.entrySet()) {
             KioskEntry ke = e.getValue();
             if(ke.handler.acceptUrl(url)) {
-                return getExtractorByType(e.getKey(), nextStreamsUrl);
+                return getExtractorById(e.getKey(), nextStreamsUrl);
             }
         }
         throw new ExtractionException("Could not find a kiosk that fits to the url: " + url);

@@ -27,7 +27,6 @@ import org.schabi.newpipe.extractor.stream.StreamInfoItemCollector;
 import java.io.IOException;
 
 public class KioskInfo extends ListInfo {
-    public String type;
 
     public static ListExtractor.NextItemsResult getMoreItems(ServiceList serviceItem,
                                                              String url, 
@@ -67,9 +66,9 @@ public class KioskInfo extends ListInfo {
         KioskInfo info = new KioskInfo();
         extractor.setContentCountry(contentCountry);
         extractor.fetchPage();
-        info.type = extractor.getType();
         info.name = extractor.getName();
         info.id = extractor.getId();
+        info.url = extractor.getCleanUrl();
 
         try {
             StreamInfoItemCollector c = extractor.getStreams();
