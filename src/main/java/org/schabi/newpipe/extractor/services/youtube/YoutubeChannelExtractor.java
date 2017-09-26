@@ -51,6 +51,8 @@ public class YoutubeChannelExtractor extends ChannelExtractor {
      */
     private Document nextStreamsAjax;
 
+    private boolean fetchingNextStreams;
+
     public YoutubeChannelExtractor(StreamingService service, String url, String nextStreamsUrl) throws IOException, ExtractionException {
         super(service, url, nextStreamsUrl);
     }
@@ -63,7 +65,9 @@ public class YoutubeChannelExtractor extends ChannelExtractor {
         String pageContent = downloader.download(channelUrl);
         doc = Jsoup.parse(pageContent, channelUrl);
 
-        nextStreamsUrl = getNextStreamsUrlFrom(doc);
+        if (!fetchingNextStreams) {
+            nextStreamsUrl = getNextStreamsUrlFrom(doc);
+        }
         nextStreamsAjax = null;
     }
 
@@ -71,6 +75,7 @@ public class YoutubeChannelExtractor extends ChannelExtractor {
     protected boolean fetchPageUponCreation() {
         // Unfortunately, we have to fetch the page even if we are getting only next streams,
         // as they don't deliver enough information on their own (the channel name, for example).
+        fetchingNextStreams = nextStreamsUrl != null && !nextStreamsUrl.isEmpty();
         return true;
     }
 
