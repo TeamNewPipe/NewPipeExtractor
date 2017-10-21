@@ -59,6 +59,11 @@ public abstract class StreamingService {
         return getPlaylistExtractor(url, null);
     }
 
+    public abstract boolean isFeedUrl(String url);
+
+    public abstract String getUrlFromFeed(String feedUrl);
+
+
     /**
      * figure out where the link is pointing to (a channel, video, playlist, etc.)
      */

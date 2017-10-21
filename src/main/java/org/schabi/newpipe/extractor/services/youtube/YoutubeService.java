@@ -102,4 +102,12 @@ public class YoutubeService extends StreamingService {
 
         return list;
     }
+
+    public boolean isFeedUrl(String url) {
+        return url.contains("videos.xml");
+    }
+
+    public String getUrlFromFeed(String feedUrl) {
+        return "https://www.youtube.com/channel/" + feedUrl.split("=")[1];
+    }
 }
