@@ -82,7 +82,7 @@ public  class KioskList {
         }
     }
 
-    public Set<String> getAvailableKisoks() {
+    public Set<String> getAvailableKiosks() {
         return kioskList.keySet();
     }
 
