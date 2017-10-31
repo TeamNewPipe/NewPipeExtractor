@@ -36,10 +36,10 @@ import static org.schabi.newpipe.extractor.ServiceList.YouTube;
  * <p>
  * WARNING: Deactivate this Test Case before uploading it to Github, otherwise CI will fail.
  */
-@Ignore
 public class YoutubeStreamExtractorGemaTest {
 
     @Test
+    @Ignore
     public void testGemaError() throws IOException, ExtractionException {
         try {
             NewPipe.init(Downloader.getInstance());

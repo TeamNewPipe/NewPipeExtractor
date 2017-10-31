@@ -53,6 +53,6 @@ public class YoutubeServiceTest {
 
     @Test
     public void testGetDefaultKiosk() throws Exception {
-        assertEquals(kioskList.getDefaultKioskExtractor(null).getName(), "Trending");
+        assertEquals(kioskList.getDefaultKioskExtractor(null).getId(), "Trending");
     }
 }

@@ -737,7 +737,8 @@ public class YoutubeStreamExtractor extends StreamExtractor {
 
             @Override
             public String getUploaderName() throws ParsingException {
-                return li.select("span.g-hovercard").first().text();
+                return li.select("span[class*=\"attribution\"").first()
+                        .select("span").first().text();
             }
 
             @Override
