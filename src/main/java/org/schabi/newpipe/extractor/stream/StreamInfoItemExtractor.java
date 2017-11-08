@@ -31,6 +31,7 @@ public interface StreamInfoItemExtractor extends InfoItemExtractor {
     long getViewCount() throws ParsingException;
 
     String getUploaderName() throws ParsingException;
+    String getUploaderUrl() throws ParsingException;
     String getUploadDate() throws ParsingException;
 
 }
