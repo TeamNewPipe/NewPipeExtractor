@@ -33,7 +33,17 @@ public class StreamInfoItem extends InfoItem {
     public long view_count = -1;
     public long duration = -1;
 
+    private String uploaderUrl = null;
+
     public StreamInfoItem() {
         super(InfoType.STREAM);
+    }
+
+    public void setUploaderUrl(String uploaderUrl) {
+        this.uploaderUrl = uploaderUrl;
+    }
+
+    public String getUploaderUrl() {
+        return uploaderUrl;
     }
 }
