@@ -24,9 +24,9 @@ import java.io.Serializable;
 
 public abstract class InfoItem implements Serializable {
     public final InfoType info_type;
-    public int service_id = -1;
-    public String url;
-    public String name;
+    public final int service_id;
+    public final String url;
+    public final String name;
     public String thumbnail_url;
 
     public InfoItem(InfoType infoType, int serviceId, String url, String name) {
