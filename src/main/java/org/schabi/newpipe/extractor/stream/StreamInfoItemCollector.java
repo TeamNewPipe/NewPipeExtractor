@@ -39,36 +39,38 @@ public class StreamInfoItemCollector extends InfoItemCollector {
             throw new FoundAdException("Found ad");
         }
 
-        StreamInfoItem resultItem = new StreamInfoItem();
         // important information
-        resultItem.service_id = getServiceId();
-        resultItem.url = extractor.getUrl();
-        resultItem.name = extractor.getName();
-        resultItem.stream_type = extractor.getStreamType();
+        int serviceId = getServiceId();
+        String url = extractor.getUrl();
+        String name = extractor.getName();
+        StreamType streamType = extractor.getStreamType();
+
+        StreamInfoItem resultItem = new StreamInfoItem(serviceId, url, name, streamType);
+
 
         // optional information
         try {
-            resultItem.duration = extractor.getDuration();
+            resultItem.setDuration(extractor.getDuration());
         } catch (Exception e) {
             addError(e);
         }
         try {
-            resultItem.uploader_name = extractor.getUploaderName();
+            resultItem.setUploaderName(extractor.getUploaderName());
         } catch (Exception e) {
             addError(e);
         }
         try {
-            resultItem.upload_date = extractor.getUploadDate();
+            resultItem.setUploadDate(extractor.getUploadDate());
         } catch (Exception e) {
             addError(e);
         }
         try {
-            resultItem.view_count = extractor.getViewCount();
+            resultItem.setViewCount(extractor.getViewCount());
         } catch (Exception e) {
             addError(e);
         }
         try {
-            resultItem.thumbnail_url = extractor.getThumbnailUrl();
+            resultItem.setThumbnailUrl(extractor.getThumbnailUrl());
         } catch (Exception e) {
             addError(e);
         }

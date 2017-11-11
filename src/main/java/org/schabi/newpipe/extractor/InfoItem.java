@@ -20,6 +20,8 @@ package org.schabi.newpipe.extractor;
  * along with NewPipe.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+import org.schabi.newpipe.extractor.stream.StreamType;
+
 import java.io.Serializable;
 
 public abstract class InfoItem implements Serializable {
@@ -29,8 +31,11 @@ public abstract class InfoItem implements Serializable {
     public String name;
     public String thumbnail_url;
 
-    public InfoItem(InfoType infoType) {
+    public InfoItem(InfoType infoType, int serviceId, String url, String name) {
         this.info_type = infoType;
+        this.service_id = serviceId;
+        this.url = url;
+        this.name = name;
     }
 
     public InfoType getInfoType() {
@@ -47,6 +52,10 @@ public abstract class InfoItem implements Serializable {
 
     public String getName() {
         return name;
+    }
+
+    public void setThumbnailUrl(String thumbnailUrl) {
+        this.thumbnail_url = thumbnailUrl;
     }
 
     public String getThumbnailUrl() {

@@ -7,8 +7,8 @@ import java.util.List;
 
 public abstract class Stream implements Serializable {
     private final MediaFormat mediaFormat;
-    public String url;
-    public int format = -1;
+    public final String url;
+    public final int format;
 
     public Stream(String url, MediaFormat format) {
         this.url = url;

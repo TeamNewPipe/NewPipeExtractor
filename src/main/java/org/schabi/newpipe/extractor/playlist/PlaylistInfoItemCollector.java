@@ -9,24 +9,25 @@ public class PlaylistInfoItemCollector extends InfoItemCollector {
     }
 
     public PlaylistInfoItem extract(PlaylistInfoItemExtractor extractor) throws ParsingException {
-        final PlaylistInfoItem resultItem = new PlaylistInfoItem();
 
-        resultItem.name = extractor.getName();
-        resultItem.service_id = getServiceId();
-        resultItem.url = extractor.getUrl();
+        String name = extractor.getName();
+        int serviceId = getServiceId();
+        String url = extractor.getUrl();
+
+        PlaylistInfoItem resultItem = new PlaylistInfoItem(serviceId, url, name);
 
         try {
-            resultItem.uploader_name = extractor.getUploaderName();
+            resultItem.setUploaderName(extractor.getUploaderName());
         } catch (Exception e) {
             addError(e);
         }
         try {
-            resultItem.thumbnail_url = extractor.getThumbnailUrl();
+            resultItem.setThumbnailUrl(extractor.getThumbnailUrl());
         } catch (Exception e) {
             addError(e);
         }
         try {
-            resultItem.stream_count = extractor.getStreamCount();
+            resultItem.setStreamCount(extractor.getStreamCount());
         } catch (Exception e) {
             addError(e);
         }

@@ -22,14 +22,18 @@ package org.schabi.newpipe.extractor.kiosk;
 
 import org.schabi.newpipe.extractor.*;
 import org.schabi.newpipe.extractor.exceptions.ExtractionException;
-import org.schabi.newpipe.extractor.stream.StreamInfoItemCollector;
+import org.schabi.newpipe.extractor.utils.ExtractorHelper;
 
 import java.io.IOException;
 
 public class KioskInfo extends ListInfo {
 
+    public KioskInfo(int serviceId, String id, String url, String name) {
+        super(serviceId, id, url, name);
+    }
+
     public static ListExtractor.NextItemsResult getMoreItems(ServiceList serviceItem,
-                                                             String url, 
+                                                             String url,
                                                              String nextStreamsUrl) throws IOException, ExtractionException {
         return getMoreItems(serviceItem.getService(), url, nextStreamsUrl);
     }
@@ -63,20 +67,17 @@ public class KioskInfo extends ListInfo {
 
     public static KioskInfo getInfo(KioskExtractor extractor,
                                     String contentCountry) throws IOException, ExtractionException {
-        KioskInfo info = new KioskInfo();
         extractor.setContentCountry(contentCountry);
         extractor.fetchPage();
-        info.name = extractor.getName();
-        info.id = extractor.getId();
-        info.url = extractor.getCleanUrl();
 
-        try {
-            StreamInfoItemCollector c = extractor.getStreams();
-            info.related_streams = c.getItemList();
-            info.errors.addAll(c.getErrors());
-        } catch (Exception e) {
-            info.errors.add(e);
-        }
+        int serviceId = extractor.getServiceId();
+        String name = extractor.getName();
+        String id = extractor.getId();
+        String url = extractor.getCleanUrl();
+
+        KioskInfo info = new KioskInfo(serviceId, name, id, url);
+
+        info.related_streams = ExtractorHelper.getStreamsOrLogError(info, extractor);
 
         return info;
     }

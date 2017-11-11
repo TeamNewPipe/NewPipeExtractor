@@ -28,7 +28,32 @@ public class ChannelInfoItem extends InfoItem {
     public long subscriber_count = -1;
     public long stream_count = -1;
 
-    public ChannelInfoItem() {
-        super(InfoType.CHANNEL);
+
+    public ChannelInfoItem(int serviceId, String url, String name) {
+        super(InfoType.CHANNEL, serviceId, url, name);
+    }
+
+    public String getDescription() {
+        return description;
+    }
+
+    public void setDescription(String description) {
+        this.description = description;
+    }
+
+    public long getSubscriberCount() {
+        return subscriber_count;
+    }
+
+    public void setSubscriberCount(long subscriber_count) {
+        this.subscriber_count = subscriber_count;
+    }
+
+    public long getStreamCount() {
+        return stream_count;
+    }
+
+    public void setStreamCount(long stream_count) {
+        this.stream_count = stream_count;
     }
 }

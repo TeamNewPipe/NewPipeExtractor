@@ -29,30 +29,32 @@ public class ChannelInfoItemCollector extends InfoItemCollector {
     }
 
     public ChannelInfoItem extract(ChannelInfoItemExtractor extractor) throws ParsingException {
-        ChannelInfoItem resultItem = new ChannelInfoItem();
         // important information
-        resultItem.service_id = getServiceId();
-        resultItem.name = extractor.getName();
-        resultItem.url = extractor.getUrl();
+        int serviceId = getServiceId();
+        String name = extractor.getName();
+        String  url = extractor.getUrl();
+
+        ChannelInfoItem resultItem = new ChannelInfoItem(serviceId, name, url);
+
 
         // optional information
         try {
-            resultItem.subscriber_count = extractor.getSubscriberCount();
+            resultItem.setSubscriberCount(extractor.getSubscriberCount());
         } catch (Exception e) {
             addError(e);
         }
         try {
-            resultItem.stream_count = extractor.getStreamCount();
+            resultItem.setStreamCount(extractor.getStreamCount());
         } catch (Exception e) {
             addError(e);
         }
         try {
-            resultItem.thumbnail_url = extractor.getThumbnailUrl();
+            resultItem.setThumbnailUrl(extractor.getThumbnailUrl());
         } catch (Exception e) {
             addError(e);
         }
         try {
-            resultItem.description = extractor.getDescription();
+            resultItem.setDescription(extractor.getDescription());
         } catch (Exception e) {
             addError(e);
         }
