@@ -214,7 +214,7 @@ public class YoutubeChannelExtractor extends ChannelExtractor {
     }
 
     private void collectStreamsFrom(StreamInfoItemCollector collector, Element element) throws ParsingException {
-        collector.getItemList().clear();
+        collector.reset();
 
         final String uploaderName = getName();
         for (final Element li : element.children()) {

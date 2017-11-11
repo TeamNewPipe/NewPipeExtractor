@@ -28,18 +28,6 @@ public class AudioStream extends Stream {
     /**
      * Create a new audio stream
      * @param url the url
-     * @param format the id of the format
-     * @param averageBitrate the average bit rate
-     * @deprecated use {@link AudioStream#AudioStream(String, MediaFormat, int)} instead
-     */
-    @Deprecated
-    public AudioStream(String url, int format, int averageBitrate) {
-        this(url, MediaFormat.getFormatById(format), averageBitrate);
-    }
-
-    /**
-     * Create a new audio stream
-     * @param url the url
      * @param format the format
      * @param averageBitrate the average bitrate
      */

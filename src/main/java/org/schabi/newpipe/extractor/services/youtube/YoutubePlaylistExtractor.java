@@ -195,7 +195,7 @@ public class YoutubePlaylistExtractor extends PlaylistExtractor {
     }
 
     private void collectStreamsFrom(StreamInfoItemCollector collector, Element element) throws ParsingException {
-        collector.getItemList().clear();
+        collector.reset();
 
         final UrlIdHandler streamUrlIdHandler = getService().getStreamUrlIdHandler();
         for (final Element li : element.children()) {

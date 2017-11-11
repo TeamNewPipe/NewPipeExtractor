@@ -87,6 +87,18 @@ public abstract class ListExtractor extends Extractor {
         public boolean hasMoreStreams() {
             return nextItemsUrl != null && !nextItemsUrl.isEmpty();
         }
+
+        public List<InfoItem> getNextItemsList() {
+            return nextItemsList;
+        }
+
+        public String getNextItemsUrl() {
+            return nextItemsUrl;
+        }
+
+        public List<Throwable> getErrors() {
+            return errors;
+        }
     }
 
 }

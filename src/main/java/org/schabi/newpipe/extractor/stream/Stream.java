@@ -8,6 +8,11 @@ import java.util.List;
 public abstract class Stream implements Serializable {
     private final MediaFormat mediaFormat;
     public final String url;
+
+    /**
+     * @deprecated Use {@link #getFormat()}  or {@link #getFormatId()}
+     */
+    @Deprecated
     public final int format;
 
     public Stream(String url, MediaFormat format) {
@@ -20,7 +25,7 @@ public abstract class Stream implements Serializable {
      * Reveals whether two streams have the same stats (format and bitrate, for example)
      */
     public boolean equalStats(Stream cmp) {
-        return cmp != null && format == cmp.format;
+        return cmp != null && getFormatId() == cmp.getFormatId();
     }
 
     /**
@@ -47,5 +52,9 @@ public abstract class Stream implements Serializable {
 
     public MediaFormat getFormat() {
         return mediaFormat;
+    }
+
+    public int getFormatId() {
+        return mediaFormat.id;
     }
 }

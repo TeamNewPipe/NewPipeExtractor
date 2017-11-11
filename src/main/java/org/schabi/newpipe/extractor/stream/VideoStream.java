@@ -26,22 +26,6 @@ public class VideoStream extends Stream {
     public String resolution;
     public boolean isVideoOnly;
 
-    /**
-     * @deprecated use {@link VideoStream#VideoStream(String, MediaFormat, String)}
-     */
-    @Deprecated
-    public VideoStream(String url, int format, String res) {
-        this(url, MediaFormat.getFormatById(format), res);
-    }
-
-    /**
-     * @deprecated use {@link VideoStream#VideoStream(String, MediaFormat, String, boolean)}
-     */
-    @Deprecated
-    public VideoStream(String url, int format, String res, boolean isVideoOnly) {
-        this(url, MediaFormat.getFormatById(format), res, isVideoOnly);
-    }
-
 
     public VideoStream(String url, MediaFormat format, String resolution) {
         this(url, format, resolution, false);

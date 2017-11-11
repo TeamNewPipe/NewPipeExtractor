@@ -3,11 +3,13 @@ package org.schabi.newpipe.extractor.playlist;
 import org.schabi.newpipe.extractor.InfoItemCollector;
 import org.schabi.newpipe.extractor.exceptions.ParsingException;
 
-public class PlaylistInfoItemCollector extends InfoItemCollector {
+public class PlaylistInfoItemCollector extends InfoItemCollector<PlaylistInfoItem, PlaylistInfoItemExtractor> {
+
     public PlaylistInfoItemCollector(int serviceId) {
         super(serviceId);
     }
 
+    @Override
     public PlaylistInfoItem extract(PlaylistInfoItemExtractor extractor) throws ParsingException {
 
         String name = extractor.getName();
@@ -32,13 +34,5 @@ public class PlaylistInfoItemCollector extends InfoItemCollector {
             addError(e);
         }
         return resultItem;
-    }
-
-    public void commit(PlaylistInfoItemExtractor extractor) throws ParsingException {
-        try {
-            addItem(extract(extractor));
-        } catch (Exception e) {
-            addError(e);
-        }
     }
 }

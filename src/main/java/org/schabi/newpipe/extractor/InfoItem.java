@@ -20,8 +20,6 @@ package org.schabi.newpipe.extractor;
  * along with NewPipe.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-import org.schabi.newpipe.extractor.stream.StreamType;
-
 import java.io.Serializable;
 
 public abstract class InfoItem implements Serializable {

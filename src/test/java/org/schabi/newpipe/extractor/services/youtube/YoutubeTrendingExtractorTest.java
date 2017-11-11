@@ -26,6 +26,7 @@ import org.schabi.newpipe.Downloader;
 import org.schabi.newpipe.extractor.InfoItemCollector;
 import org.schabi.newpipe.extractor.NewPipe;
 import org.schabi.newpipe.extractor.kiosk.KioskExtractor;
+import org.schabi.newpipe.extractor.stream.StreamInfoItemCollector;
 
 import static junit.framework.TestCase.assertFalse;
 import static org.junit.Assert.assertEquals;
@@ -67,7 +68,7 @@ public class YoutubeTrendingExtractorTest {
 
     @Test
     public void testGetStreams() throws Exception {
-        InfoItemCollector collector = extractor.getStreams();
+        StreamInfoItemCollector collector = extractor.getStreams();
         if(!collector.getErrors().isEmpty()) {
             System.err.println("----------");
             for(Throwable e : collector.getErrors()) {
@@ -95,7 +96,7 @@ public class YoutubeTrendingExtractorTest {
     @Test
     public void testGetNextStreams() throws Exception {
         assertTrue("extractor has next streams", extractor.getNextStreams() == null
-                || extractor.getNextStreams().nextItemsList.isEmpty());
+                || extractor.getNextStreams().getNextItemsList().isEmpty());
     }
 
     @Test

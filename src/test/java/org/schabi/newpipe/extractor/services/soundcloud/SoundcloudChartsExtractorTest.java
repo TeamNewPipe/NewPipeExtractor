@@ -13,6 +13,9 @@ import org.schabi.newpipe.Downloader;
 import org.schabi.newpipe.extractor.InfoItemCollector;
 import org.schabi.newpipe.extractor.NewPipe;
 import org.schabi.newpipe.extractor.kiosk.KioskExtractor;
+import org.schabi.newpipe.extractor.stream.StreamInfoItemCollector;
+
+import java.util.List;
 
 /**
  * Test for {@link SoundcloudChartsUrlIdHandler}
@@ -48,10 +51,10 @@ public class SoundcloudChartsExtractorTest {
 
     @Test
     public void testGetStreams() throws Exception {
-        InfoItemCollector collector = extractor.getStreams();
+        StreamInfoItemCollector collector = extractor.getStreams();
         if(!collector.getErrors().isEmpty()) {
             System.err.println("----------");
-            for(Throwable e : collector.getErrors()) {
+            for(Throwable e: collector.getErrors()) {
                 e.printStackTrace();
                 System.err.println("----------");
             }

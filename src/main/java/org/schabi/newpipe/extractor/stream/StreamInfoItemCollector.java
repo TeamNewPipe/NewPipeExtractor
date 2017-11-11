@@ -28,13 +28,14 @@ import java.util.Vector;
  * along with NewPipe.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-public class StreamInfoItemCollector extends InfoItemCollector {
+public class StreamInfoItemCollector extends InfoItemCollector<StreamInfoItem, StreamInfoItemExtractor> {
 
     public StreamInfoItemCollector(int serviceId) {
         super(serviceId);
     }
 
-    public StreamInfoItem extract(StreamInfoItemExtractor extractor) throws Exception {
+    @Override
+    public StreamInfoItem extract(StreamInfoItemExtractor extractor) throws ParsingException {
         if (extractor.isAd()) {
             throw new FoundAdException("Found ad");
         }
@@ -82,7 +83,8 @@ public class StreamInfoItemCollector extends InfoItemCollector {
         return resultItem;
     }
 
-    public void commit(StreamInfoItemExtractor extractor) throws ParsingException {
+    @Override
+    public void commit(StreamInfoItemExtractor extractor) {
         try {
             addItem(extract(extractor));
         } catch (FoundAdException ae) {

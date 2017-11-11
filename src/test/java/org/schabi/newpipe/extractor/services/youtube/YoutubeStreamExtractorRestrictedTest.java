@@ -98,11 +98,11 @@ public class YoutubeStreamExtractorRestrictedTest {
     @Test
     public void testGetVideoStreams() throws IOException, ExtractionException {
         for (VideoStream s : extractor.getVideoStreams()) {
-            assertTrue(s.url,
-                    s.url.contains(HTTPS));
+            assertTrue(s.getUrl(),
+                    s.getUrl().contains(HTTPS));
             assertTrue(s.resolution.length() > 0);
-            assertTrue(Integer.toString(s.format),
-                    0 <= s.format && s.format <= 4);
+            assertTrue(Integer.toString(s.getFormatId()),
+                    0 <= s.getFormatId() && s.getFormatId() <= 4);
         }
     }
 

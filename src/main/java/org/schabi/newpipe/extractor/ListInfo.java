@@ -11,7 +11,7 @@ public abstract class ListInfo extends Info {
         super(serviceId, id, url, name);
     }
 
-    public List<InfoItem> getRelated_streams() {
+    public List<InfoItem> getRelatedStreams() {
         return related_streams;
     }
 
@@ -19,7 +19,7 @@ public abstract class ListInfo extends Info {
         this.related_streams = related_streams;
     }
 
-    public boolean isHas_more_streams() {
+    public boolean hasMoreStreams() {
         return has_more_streams;
     }
 
@@ -27,7 +27,7 @@ public abstract class ListInfo extends Info {
         this.has_more_streams = has_more_streams;
     }
 
-    public String getNext_streams_url() {
+    public String getNextStreamsUrl() {
         return next_streams_url;
     }
 

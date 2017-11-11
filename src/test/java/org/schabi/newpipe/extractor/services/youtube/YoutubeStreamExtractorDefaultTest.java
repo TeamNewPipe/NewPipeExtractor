@@ -119,8 +119,8 @@ public class YoutubeStreamExtractorDefaultTest {
             assertTrue(s.url,
                     s.url.contains(HTTPS));
             assertTrue(s.resolution.length() > 0);
-            assertTrue(Integer.toString(s.format),
-                    0 <= s.format && s.format <= 4);
+            assertTrue(Integer.toString(s.getFormatId()),
+                    0 <= s.getFormatId() && s.getFormatId() <= 4);
         }
     }
 

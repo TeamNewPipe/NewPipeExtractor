@@ -50,16 +50,16 @@ public class YoutubeTreindingKioskInfoTest {
 
     @Test
     public void getStreams() {
-        assertFalse(kioskInfo.related_streams.isEmpty());
+        assertFalse(kioskInfo.getRelatedStreams().isEmpty());
     }
 
     @Test
     public void getId() {
-        assertEquals(kioskInfo.id, "Trending");
+        assertEquals(kioskInfo.getId(), "Trending");
     }
 
     @Test
     public void getName() {
-        assertFalse(kioskInfo.name.isEmpty());
+        assertFalse(kioskInfo.getName().isEmpty());
     }
 }

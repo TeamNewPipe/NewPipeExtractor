@@ -1,6 +1,7 @@
 package org.schabi.newpipe.extractor.services.youtube;
 
 import org.junit.Before;
+import org.junit.BeforeClass;
 import org.junit.Ignore;
 import org.junit.Test;
 import org.schabi.newpipe.Downloader;
@@ -36,12 +37,12 @@ import static org.schabi.newpipe.extractor.ServiceList.YouTube;
  * Test for {@link SearchEngine}
  */
 public class YoutubeSearchEngineAllTest {
-    private SearchResult result;
+    private static SearchResult result;
 
-    @Before
-    public void setUp() throws Exception {
+    @BeforeClass
+    public static void setUpClass() throws Exception {
         NewPipe.init(Downloader.getInstance());
-        SearchEngine engine = YouTube.getService().getSearchEngine();
+        YoutubeSearchEngine engine = new YoutubeSearchEngine(1);
 
         // Youtube will suggest "asdf" instead of "asdgff"
         // keep in mind that the suggestions can change by country (the parameter "de")
@@ -51,19 +52,22 @@ public class YoutubeSearchEngineAllTest {
 
     @Test
     public void testResultList() {
-        assertFalse(result.resultList.isEmpty());
+        System.out.println("Results: " + result.getResults());
+        assertFalse("Results are empty: " + result.resultList, result.resultList.isEmpty());
     }
 
     @Test
     public void testResultErrors() {
-        if (!result.errors.isEmpty()) for (Throwable error : result.errors) error.printStackTrace();
-        assertTrue(result.errors == null || result.errors.isEmpty());
+        for (Throwable error : result.getErrors()) {
+            error.printStackTrace();
+        }
+        assertTrue(result.getErrors().isEmpty());
     }
 
     @Ignore
     @Test
     public void testSuggestion() {
         //todo write a real test
-        assertTrue(result.suggestion != null);
+        assertTrue(result.getSuggestion() != null);
     }
 }

@@ -32,6 +32,8 @@ public abstract class Extractor {
     private String cleanUrl;
 
     public Extractor(StreamingService service, String url) throws ExtractionException {
+        if(service == null) throw new NullPointerException("service is null");
+        if(url == null) throw new NullPointerException("url is null");
         this.service = service;
         this.originalUrl = url;
     }
@@ -53,6 +55,10 @@ public abstract class Extractor {
         return originalUrl;
     }
 
+    /**
+     * Get a clean url and as a fallback the original url.
+     * @return the clean url or the original url
+     */
     public String getCleanUrl() {
         if (cleanUrl != null && !cleanUrl.isEmpty()) return cleanUrl;
 

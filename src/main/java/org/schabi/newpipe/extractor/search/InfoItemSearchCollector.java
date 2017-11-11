@@ -1,10 +1,10 @@
 package org.schabi.newpipe.extractor.search;
 
-import org.schabi.newpipe.extractor.InfoItemCollector;
+import org.schabi.newpipe.extractor.*;
 import org.schabi.newpipe.extractor.channel.ChannelInfoItemCollector;
 import org.schabi.newpipe.extractor.channel.ChannelInfoItemExtractor;
 import org.schabi.newpipe.extractor.exceptions.ExtractionException;
-import org.schabi.newpipe.extractor.exceptions.FoundAdException;
+import org.schabi.newpipe.extractor.exceptions.ParsingException;
 import org.schabi.newpipe.extractor.playlist.PlaylistInfoItemCollector;
 import org.schabi.newpipe.extractor.playlist.PlaylistInfoItemExtractor;
 import org.schabi.newpipe.extractor.stream.StreamInfoItemCollector;
@@ -30,13 +30,23 @@ import org.schabi.newpipe.extractor.stream.StreamInfoItemExtractor;
  * along with NewPipe.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-public class InfoItemSearchCollector extends InfoItemCollector {
+/**
+ * Collector for search results
+ *
+ * This collector can handle the following extractor types:
+ * <ul>
+ *     <li>{@link StreamInfoItemExtractor}</li>
+ *     <li>{@link ChannelInfoItemExtractor}</li>
+ *     <li>{@link PlaylistInfoItemExtractor}</li>
+ * </ul>
+ * Calling {@link #extract(InfoItemExtractor)} or {@link #commit(Object)} with any
+ * other extractor type will raise an exception.
+ */
+public class InfoItemSearchCollector extends InfoItemCollector<InfoItem, InfoItemExtractor> {
     private String suggestion = "";
-    private StreamInfoItemCollector streamCollector;
-    private ChannelInfoItemCollector userCollector;
-    private PlaylistInfoItemCollector playlistCollector;
-
-    private SearchResult result = new SearchResult();
+    private final StreamInfoItemCollector streamCollector;
+    private final ChannelInfoItemCollector userCollector;
+    private final PlaylistInfoItemCollector playlistCollector;
 
     InfoItemSearchCollector(int serviceId) {
         super(serviceId);
@@ -50,43 +60,20 @@ public class InfoItemSearchCollector extends InfoItemCollector {
     }
 
     public SearchResult getSearchResult() throws ExtractionException {
-
-        addFromCollector(userCollector);
-        addFromCollector(streamCollector);
-        addFromCollector(playlistCollector);
-
-        result.suggestion = suggestion;
-        result.errors = getErrors();
-        return result;
+        return new SearchResult(getServiceId(), suggestion, getItemList(), getErrors());
     }
 
-    public void commit(StreamInfoItemExtractor extractor) {
-        try {
-            result.resultList.add(streamCollector.extract(extractor));
-        } catch (FoundAdException ae) {
-            System.err.println("Found ad");
-        } catch (Exception e) {
-            addError(e);
-        }
-    }
-
-    public void commit(ChannelInfoItemExtractor extractor) {
-        try {
-            result.resultList.add(userCollector.extract(extractor));
-        } catch (FoundAdException ae) {
-            System.err.println("Found ad");
-        } catch (Exception e) {
-            addError(e);
-        }
-    }
-
-    public void commit(PlaylistInfoItemExtractor extractor) {
-        try {
-            result.resultList.add(playlistCollector.extract(extractor));
-        } catch (FoundAdException ae) {
-            System.err.println("Found ad");
-        } catch (Exception e) {
-            addError(e);
+    @Override
+    public InfoItem extract(InfoItemExtractor extractor) throws ParsingException {
+        // Use the corresponding collector for each item extractor type
+        if(extractor instanceof StreamInfoItemExtractor) {
+            return streamCollector.extract((StreamInfoItemExtractor) extractor);
+        } else if(extractor instanceof ChannelInfoItemExtractor) {
+            return userCollector.extract((ChannelInfoItemExtractor) extractor);
+        } else if(extractor instanceof PlaylistInfoItemExtractor) {
+            return playlistCollector.extract((PlaylistInfoItemExtractor) extractor);
+        } else {
+            throw new IllegalArgumentException("Invalid extractor type: " + extractor);
         }
     }
 }
