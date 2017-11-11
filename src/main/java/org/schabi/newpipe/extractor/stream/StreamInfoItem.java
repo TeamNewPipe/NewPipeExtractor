@@ -46,4 +46,24 @@ public class StreamInfoItem extends InfoItem {
     public String getUploaderUrl() {
         return uploaderUrl;
     }
+
+    public StreamType getStreamType() {
+        return stream_type;
+    }
+
+    public String getUploaderName() {
+        return uploader_name;
+    }
+
+    public String getUploadDate() {
+        return upload_date;
+    }
+
+    public long getViewCount() {
+        return view_count;
+    }
+
+    public long getDuration() {
+        return duration;
+    }
 }

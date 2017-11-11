@@ -7,6 +7,7 @@ import static org.junit.Assert.assertTrue;
 import static org.schabi.newpipe.extractor.ServiceList.SoundCloud;
 
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.schabi.newpipe.Downloader;
 import org.schabi.newpipe.extractor.InfoItemCollector;
@@ -34,6 +35,7 @@ public class SoundcloudChartsExtractorTest {
         assertNotNull(NewPipe.getDownloader());
     }
 
+    @Ignore
     @Test
     public void testGetName() throws Exception {
         assertEquals(extractor.getName(), "Top 50");

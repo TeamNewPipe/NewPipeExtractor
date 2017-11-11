@@ -129,7 +129,7 @@ public class SoundcloudStreamExtractor extends StreamExtractor {
 
         String mp3Url = responseObject.getString("http_mp3_128_url");
         if (mp3Url != null && !mp3Url.isEmpty()) {
-            audioStreams.add(new AudioStream(mp3Url, MediaFormat.MP3.id, 128));
+            audioStreams.add(new AudioStream(mp3Url, MediaFormat.MP3, 128));
         } else {
             throw new ExtractionException("Could not get SoundCloud's track audio url");
         }

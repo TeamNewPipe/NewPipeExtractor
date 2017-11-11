@@ -35,6 +35,102 @@ import java.util.List;
 @SuppressWarnings("WeakerAccess")
 public class StreamInfo extends Info {
 
+    /**
+     * Get the stream type
+     * @return the stream type
+     */
+    public StreamType getStreamType() {
+        return stream_type;
+    }
+
+    /**
+     * Get the thumbnail url
+     * @return the thumbnail url as a string
+     */
+    public String getThumbnailUrl() {
+       return thumbnail_url;
+    }
+
+    public String getUploadDate() {
+        return upload_date;
+    }
+
+    /**
+     * Get the duration in seconds
+     * @return the duration in seconds
+     */
+    public long getDuration() {
+        return duration;
+    }
+
+    public int getAgeLimit() {
+        return age_limit;
+    }
+
+    public String getDescription() {
+        return description;
+    }
+
+    public long getViewCount() {
+        return view_count;
+    }
+
+    /**
+     * Get the number of likes.
+     * @return The number of likes or -1 if this information is not available
+     */
+    public long getLikeCount() {
+        return like_count;
+    }
+
+    /**
+     * Get the number of dislikes.
+     * @return The number of likes or -1 if this information is not available
+     */
+    public long getDislikeCount() {
+        return dislike_count;
+    }
+
+    public String getUploaderName() {
+        return uploader_name;
+    }
+
+    public String getUploaderUrl() {
+        return uploader_url;
+    }
+
+    public String getUploaderAvatarUrl() {
+        return uploader_avatar_url;
+    }
+
+    public List<VideoStream> getVideoStreams() {
+        return video_streams;
+    }
+
+    public List<AudioStream> getAudioStreams() {
+        return audio_streams;
+    }
+
+    public List<VideoStream> getVideoOnlyStreams() {
+        return video_only_streams;
+    }
+
+    public String getDashMpdUrl() {
+        return dashMpdUrl;
+    }
+
+    public StreamInfoItem getNextVideo() {
+        return next_video;
+    }
+
+    public List<InfoItem> getRelatedStreams() {
+        return related_streams;
+    }
+
+    public long getStartPosition() {
+        return start_position;
+    }
+
     public static class StreamExtractException extends ExtractionException {
         StreamExtractException(String message) {
             super(message);
@@ -86,7 +182,7 @@ public class StreamInfo extends Info {
     }
 
     private static StreamInfo extractImportantData(StreamInfo streamInfo, StreamExtractor extractor) throws ExtractionException {
-        /* ---- important data, withoug the video can't be displayed goes here: ---- */
+        /* ---- important data, without the video can't be displayed goes here: ---- */
         // if one of these is not available an exception is meant to be thrown directly into the frontend.
 
         streamInfo.service_id = extractor.getServiceId();
@@ -271,9 +367,9 @@ public class StreamInfo extends Info {
     public List<AudioStream> audio_streams;
     public List<VideoStream> video_only_streams;
     // video streams provided by the dash mpd do not need to be provided as VideoStream.
-    // Later on this will also aplly to audio streams. Since dash mpd is standarized,
+    // Later on this will also apply to audio streams. Since dash mpd is standarized,
     // crawling such a file is not service dependent. Therefore getting audio only streams by yust
-    // providing the dash mpd fille will be possible in the future.
+    // providing the dash mpd file will be possible in the future.
     public String dashMpdUrl;
 
     public StreamInfoItem next_video;

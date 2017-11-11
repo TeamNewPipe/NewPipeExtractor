@@ -23,25 +23,44 @@ package org.schabi.newpipe.extractor;
 import java.io.Serializable;
 
 public abstract class InfoItem implements Serializable {
-    public enum InfoType {
-        STREAM,
-        PLAYLIST,
-        CHANNEL
-    }
-
     public final InfoType info_type;
-
-    public InfoItem(InfoType infoType) {
-        this.info_type = infoType;
-    }
-
     public int service_id = -1;
     public String url;
     public String name;
     public String thumbnail_url;
 
+    public InfoItem(InfoType infoType) {
+        this.info_type = infoType;
+    }
+
+    public InfoType getInfoType() {
+        return info_type;
+    }
+
+    public int getServiceId() {
+        return service_id;
+    }
+
+    public String getUrl() {
+        return url;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public String getThumbnailUrl() {
+        return thumbnail_url;
+    }
+
     @Override
     public String toString() {
         return getClass().getSimpleName() + "[url=\"" + url + "\", name=\"" + name + "\"]";
+    }
+
+    public enum InfoType {
+        STREAM,
+        PLAYLIST,
+        CHANNEL
     }
 }

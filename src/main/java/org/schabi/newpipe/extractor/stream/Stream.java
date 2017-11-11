@@ -1,15 +1,19 @@
 package org.schabi.newpipe.extractor.stream;
 
+import org.schabi.newpipe.extractor.MediaFormat;
+
 import java.io.Serializable;
 import java.util.List;
 
 public abstract class Stream implements Serializable {
+    private final MediaFormat mediaFormat;
     public String url;
     public int format = -1;
 
-    public Stream(String url, int format) {
+    public Stream(String url, MediaFormat format) {
         this.url = url;
-        this.format = format;
+        this.format = format.id;
+        this.mediaFormat = format;
     }
 
     /**
@@ -35,5 +39,13 @@ public abstract class Stream implements Serializable {
             if (stream.equalStats(cmpStream)) return true;
         }
         return false;
+    }
+
+    public String getUrl() {
+        return url;
+    }
+
+    public MediaFormat getFormat() {
+        return mediaFormat;
     }
 }

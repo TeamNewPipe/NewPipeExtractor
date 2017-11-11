@@ -223,7 +223,7 @@ public class YoutubeStreamExtractor extends StreamExtractor {
             try {
                 likesString = button.select("span.yt-uix-button-content").first().text();
             } catch (NullPointerException e) {
-                //if this ckicks in our button has no content and thefore likes/dislikes are disabled
+                //if this kicks in our button has no content and therefore likes/dislikes are disabled
                 return -1;
             }
             return Integer.parseInt(Utils.removeNonDigitCharacters(likesString));
@@ -329,7 +329,7 @@ public class YoutubeStreamExtractor extends StreamExtractor {
             for (Map.Entry<String, ItagItem> entry : getItags(ADAPTIVE_FMTS, ItagItem.ItagType.AUDIO).entrySet()) {
                 ItagItem itag = entry.getValue();
 
-                AudioStream audioStream = new AudioStream(entry.getKey(), itag.mediaFormatId, itag.avgBitrate);
+                AudioStream audioStream = new AudioStream(entry.getKey(), itag.getMediaFormat(), itag.avgBitrate);
                 if (!Stream.containSimilarStream(audioStream, audioStreams)) {
                     audioStreams.add(audioStream);
                 }
@@ -348,7 +348,7 @@ public class YoutubeStreamExtractor extends StreamExtractor {
             for (Map.Entry<String, ItagItem> entry : getItags(URL_ENCODED_FMT_STREAM_MAP, ItagItem.ItagType.VIDEO).entrySet()) {
                 ItagItem itag = entry.getValue();
 
-                VideoStream videoStream = new VideoStream(entry.getKey(), itag.mediaFormatId, itag.resolutionString);
+                VideoStream videoStream = new VideoStream(entry.getKey(), itag.getMediaFormat(), itag.resolutionString);
                 if (!Stream.containSimilarStream(videoStream, videoStreams)) {
                     videoStreams.add(videoStream);
                 }
@@ -367,7 +367,7 @@ public class YoutubeStreamExtractor extends StreamExtractor {
             for (Map.Entry<String, ItagItem> entry : getItags(ADAPTIVE_FMTS, ItagItem.ItagType.VIDEO_ONLY).entrySet()) {
                 ItagItem itag = entry.getValue();
 
-                VideoStream videoStream = new VideoStream(entry.getKey(), itag.mediaFormatId, itag.resolutionString, true);
+                VideoStream videoStream = new VideoStream(entry.getKey(), itag.getMediaFormat(), itag.resolutionString, true);
                 if (!Stream.containSimilarStream(videoStream, videoOnlyStreams)) {
                     videoOnlyStreams.add(videoStream);
                 }
