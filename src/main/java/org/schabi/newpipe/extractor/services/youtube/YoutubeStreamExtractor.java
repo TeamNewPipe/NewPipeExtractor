@@ -420,34 +420,8 @@ public class YoutubeStreamExtractor extends StreamExtractor {
         return videoOnlyStreams;
     }
 
-    /**
-     * Example output:
-     * {
-     *      #language code#: [
-     *          [0]"captions URL",
-     *          [1]"language Name"
-     *      ],
-     *      "a.en": {  // a.#language code# == auto generated
-     *          [0]"https://youtube.com/api/timedtext..."
-     *          [1]"English (Auto-generated)"
-     *      },
-     *      ".en": {   // .#language code# == normal (not auto generated)
-     *          [0]"https://youtube.com/api/timedtext..."
-     *          [1]"English"
-     *      }
-     * }
-     *
-     * Example usage:
-     * 1) Get list of keys in the Map if there are any
-     * 2) Get
-     *
-     * @return Map(String, StringArray[2])
-     * @throws IOException - Thrown when parsing HTML page
-     * @throws ExtractionException - Thrown when parsing HTML
-     * @throws JsonParserException - Thrown when parsing JSON from the web page
-     */
     @Override
-    public HashMap<String, String[]> getSubtitles() throws IOException, ExtractionException, JsonParserException {
+    public HashMap<String, String[]> getSubtitlesList() throws IOException, ExtractionException, JsonParserException {
         HashMap<String, String[]> result = new HashMap<>();
 
         JsonObject playerConfig = getPlayerConfig(getPageHtml());
@@ -471,6 +445,14 @@ public class YoutubeStreamExtractor extends StreamExtractor {
         }
 
         return result;
+    }
+
+    @Override
+    public String downloadSubtitles(String URL) throws IOException, ReCaptchaException {
+        Downloader dl = NewPipe.getDownloader();
+        // Instead of the WebVTT 'vtt' we can use also Timed Text Markup Language 'ttml'
+        String URLasVTT = URL.replaceAll("&fmt=[^&]*", "&fmt=vtt");
+        return dl.download(URLasVTT);
     }
 
     @Override

@@ -10,6 +10,7 @@ import org.schabi.newpipe.extractor.StreamingService;
 import org.schabi.newpipe.extractor.exceptions.ContentNotAvailableException;
 import org.schabi.newpipe.extractor.exceptions.ExtractionException;
 import org.schabi.newpipe.extractor.exceptions.ParsingException;
+import org.schabi.newpipe.extractor.exceptions.ReCaptchaException;
 import org.schabi.newpipe.extractor.stream.*;
 import org.schabi.newpipe.extractor.utils.Parser;
 
@@ -194,8 +195,13 @@ public class SoundcloudStreamExtractor extends StreamExtractor {
     }
 
     @Override
-    public HashMap<String, String[]> getSubtitles() throws IOException, ExtractionException, JsonParserException {
+    public HashMap<String, String[]> getSubtitlesList() throws IOException, ExtractionException, JsonParserException {
         return new HashMap<>();
+    }
+
+    @Override
+    public String downloadSubtitles(String URL) throws IOException, ReCaptchaException {
+        return "";
     }
 
     @Override

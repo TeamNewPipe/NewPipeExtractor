@@ -152,7 +152,18 @@ public class YoutubeStreamExtractorDefaultTest {
     }
 
     @Test
-    public void testGetSubtitles() throws IOException, ExtractionException, JsonParserException {
-        assertTrue(extractor.getSubtitles() != null);
+    public void testGetSubtitlesList() throws IOException, ExtractionException, JsonParserException {
+        assertTrue(extractor.getSubtitlesList() != null);
+    }
+
+    @Test
+    public void testDownloadSubtitles() throws Exception {
+        try {
+            extractor.downloadSubtitles(extractor.getSubtitlesList().get("en")[0]);
+            // Video has no subtitles!
+            assert false;
+        } catch (Exception e) {
+            assert true;
+        }
     }
 }
