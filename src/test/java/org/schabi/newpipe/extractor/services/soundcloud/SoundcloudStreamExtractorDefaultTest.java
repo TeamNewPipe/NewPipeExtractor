@@ -1,5 +1,6 @@
 package org.schabi.newpipe.extractor.services.soundcloud;
 
+import com.grack.nanojson.JsonParserException;
 import org.junit.Before;
 import org.junit.Test;
 import org.schabi.newpipe.Downloader;
@@ -100,5 +101,10 @@ public class SoundcloudStreamExtractorDefaultTest {
         StreamInfoItemCollector relatedVideos = extractor.getRelatedVideos();
         assertFalse(relatedVideos.getItemList().isEmpty());
         assertTrue(relatedVideos.getErrors().isEmpty());
+    }
+
+    @Test
+    public void testGetSubtitles() throws IOException, ExtractionException, JsonParserException {
+        assertTrue(extractor.getSubtitles() != null);
     }
 }

@@ -1,7 +1,9 @@
 package org.schabi.newpipe.extractor.services.youtube;
 
+import com.grack.nanojson.JsonArray;
 import com.grack.nanojson.JsonObject;
 import com.grack.nanojson.JsonParser;
+import com.grack.nanojson.JsonParserException;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
@@ -20,10 +22,7 @@ import org.schabi.newpipe.extractor.utils.Parser;
 import org.schabi.newpipe.extractor.utils.Utils;
 
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -421,6 +420,59 @@ public class YoutubeStreamExtractor extends StreamExtractor {
         return videoOnlyStreams;
     }
 
+    /**
+     * Example output:
+     * {
+     *      #language code#: [
+     *          [0]"captions URL",
+     *          [1]"language Name"
+     *      ],
+     *      "a.en": {  // a.#language code# == auto generated
+     *          [0]"https://youtube.com/api/timedtext..."
+     *          [1]"English (Auto-generated)"
+     *      },
+     *      ".en": {   // .#language code# == normal (not auto generated)
+     *          [0]"https://youtube.com/api/timedtext..."
+     *          [1]"English"
+     *      }
+     * }
+     *
+     * Example usage:
+     * 1) Get list of keys in the Map if there are any
+     * 2) Get
+     *
+     * @return Map(String, StringArray[2])
+     * @throws IOException - Thrown when parsing HTML page
+     * @throws ExtractionException - Thrown when parsing HTML
+     * @throws JsonParserException - Thrown when parsing JSON from the web page
+     */
+    @Override
+    public HashMap<String, String[]> getSubtitles() throws IOException, ExtractionException, JsonParserException {
+        HashMap<String, String[]> result = new HashMap<>();
+
+        JsonObject playerConfig = getPlayerConfig(getPageHtml());
+
+        String playerResponse = playerConfig.getObject("args").getString("player_response");
+
+        if (!JsonParser.object().from(playerResponse).has("captions")) {
+            return new HashMap<>();
+        }
+
+        JsonObject captions = JsonParser.object().from(playerResponse).getObject("captions");
+        JsonArray captionsArray = captions.getObject("playerCaptionsTracklistRenderer").getArray("captionTracks");
+
+        for (int x = 0; x < captionsArray.size(); x++) {
+            String captionsUrlAndName[] = new String[2];
+            captionsUrlAndName[0] = captionsArray.getObject(x).getString("baseUrl");
+            captionsUrlAndName[1] = captionsArray.getObject(x).getObject("name").getString("simpleText");
+            String captionsLangCode = captionsArray.getObject(x).getString("vssId");
+
+            result.put(captionsLangCode, captionsUrlAndName);
+        }
+
+        return result;
+    }
+
     @Override
     public StreamType getStreamType() throws ParsingException {
         //todo: if implementing livestream support this value should be generated dynamically
@@ -498,12 +550,23 @@ public class YoutubeStreamExtractor extends StreamExtractor {
 
     private static volatile String decryptionCode = "";
 
+    private static String pageHtml = null;
+
+    private String getPageHtml() throws IOException, ExtractionException{
+        if (pageHtml == null) {
+            Downloader dl = NewPipe.getDownloader();
+            pageHtml = dl.download(getCleanUrl());
+        }
+        return pageHtml;
+    }
+
     @Override
     public void fetchPage() throws IOException, ExtractionException {
         Downloader dl = NewPipe.getDownloader();
 
-        String pageContent = dl.download(getCleanUrl());
+        String pageContent = getPageHtml();
         doc = Jsoup.parse(pageContent, getCleanUrl());
+
 
         String playerUrl;
         // Check if the video is age restricted

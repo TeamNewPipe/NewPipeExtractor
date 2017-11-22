@@ -1,5 +1,6 @@
 package org.schabi.newpipe.extractor.services.youtube;
 
+import com.grack.nanojson.JsonParserException;
 import org.junit.Before;
 import org.junit.Test;
 import org.schabi.newpipe.Downloader;
@@ -102,5 +103,10 @@ public class YoutubeStreamExtractorRestrictedTest {
             assertTrue(Integer.toString(s.format),
                     0 <= s.format && s.format <= 4);
         }
+    }
+
+    @Test
+    public void testGetSubtitles() throws IOException, ExtractionException, JsonParserException {
+        assertTrue(extractor.getSubtitles() != null);
     }
 }

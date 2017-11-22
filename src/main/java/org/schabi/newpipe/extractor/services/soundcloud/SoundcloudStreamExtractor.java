@@ -15,6 +15,7 @@ import org.schabi.newpipe.extractor.utils.Parser;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
 public class SoundcloudStreamExtractor extends StreamExtractor {
@@ -190,6 +191,11 @@ public class SoundcloudStreamExtractor extends StreamExtractor {
     @Override
     public List<VideoStream> getVideoOnlyStreams() throws IOException, ExtractionException {
         return null;
+    }
+
+    @Override
+    public HashMap<String, String[]> getSubtitles() throws IOException, ExtractionException, JsonParserException {
+        return new HashMap<>();
     }
 
     @Override
