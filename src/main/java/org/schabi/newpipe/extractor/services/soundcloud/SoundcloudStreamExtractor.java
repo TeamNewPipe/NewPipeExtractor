@@ -3,10 +3,7 @@ package org.schabi.newpipe.extractor.services.soundcloud;
 import com.grack.nanojson.JsonObject;
 import com.grack.nanojson.JsonParser;
 import com.grack.nanojson.JsonParserException;
-import org.schabi.newpipe.extractor.Downloader;
-import org.schabi.newpipe.extractor.MediaFormat;
-import org.schabi.newpipe.extractor.NewPipe;
-import org.schabi.newpipe.extractor.StreamingService;
+import org.schabi.newpipe.extractor.*;
 import org.schabi.newpipe.extractor.exceptions.ContentNotAvailableException;
 import org.schabi.newpipe.extractor.exceptions.ExtractionException;
 import org.schabi.newpipe.extractor.exceptions.ParsingException;
@@ -195,13 +192,8 @@ public class SoundcloudStreamExtractor extends StreamExtractor {
     }
 
     @Override
-    public HashMap<String, String[]> getSubtitlesList() throws IOException, ExtractionException, JsonParserException {
-        return new HashMap<>();
-    }
-
-    @Override
-    public String downloadSubtitles(String URL) throws IOException, ReCaptchaException {
-        return "";
+    public Subtitles[] getSubtitles() throws IOException, ExtractionException, JsonParserException {
+        return null;
     }
 
     @Override
