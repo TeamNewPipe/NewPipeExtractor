@@ -28,6 +28,7 @@ import org.schabi.newpipe.extractor.UrlIdHandler;
 import org.schabi.newpipe.extractor.exceptions.ExtractionException;
 import org.schabi.newpipe.extractor.exceptions.ParsingException;
 import org.schabi.newpipe.extractor.exceptions.ReCaptchaException;
+import org.schabi.newpipe.extractor.utils.Parser;
 
 import java.io.IOException;
 import java.util.List;
@@ -54,6 +55,50 @@ public abstract class StreamExtractor extends Extractor {
 
     public abstract long getLength() throws ParsingException;
     public abstract long getTimeStamp() throws ParsingException;
+    protected long getTimestampSeconds(String regexPattern) throws ParsingException {
+        String timeStamp;
+        try {
+            timeStamp = Parser.matchGroup1(regexPattern, getOriginalUrl());
+        } catch (Parser.RegexException e) {
+            // catch this instantly since an url does not necessarily have to have a time stamp
+
+            // -2 because well the testing system will then know its the regex that failed :/
+            // not good i know
+            return -2;
+        }
+
+        if (!timeStamp.isEmpty()) {
+            try {
+                String secondsString = "";
+                String minutesString = "";
+                String hoursString = "";
+                try {
+                    secondsString = Parser.matchGroup1("(\\d{1,3})s", timeStamp);
+                    minutesString = Parser.matchGroup1("(\\d{1,3})m", timeStamp);
+                    hoursString = Parser.matchGroup1("(\\d{1,3})h", timeStamp);
+                } catch (Exception e) {
+                    //it could be that time is given in another method
+                    if (secondsString.isEmpty() //if nothing was got,
+                            && minutesString.isEmpty()//treat as unlabelled seconds
+                            && hoursString.isEmpty()) {
+                        secondsString = Parser.matchGroup1("t=(\\d+)", timeStamp);
+                    }
+                }
+
+                int seconds = secondsString.isEmpty() ? 0 : Integer.parseInt(secondsString);
+                int minutes = minutesString.isEmpty() ? 0 : Integer.parseInt(minutesString);
+                int hours = hoursString.isEmpty() ? 0 : Integer.parseInt(hoursString);
+
+                //don't trust BODMAS!
+                return seconds + (60 * minutes) + (3600 * hours);
+                //Log.d(TAG, "derived timestamp value:"+ret);
+                //the ordering varies internationally
+            } catch (ParsingException e) {
+                throw new ParsingException("Could not get timestamp.", e);
+            }
+        } else {
+            return 0;
+        }};
 
     public abstract long getViewCount() throws ParsingException;
     public abstract long getLikeCount() throws ParsingException;
