@@ -105,6 +105,6 @@ public class SoundcloudStreamExtractorDefaultTest {
 
     @Test
     public void testGetSubtitles() throws IOException, ExtractionException, JsonParserException {
-        assertTrue(extractor.getSubtitlesList() != null);
+        assertTrue(extractor.getSubtitles() != null);
     }
 }

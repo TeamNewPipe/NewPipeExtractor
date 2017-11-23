@@ -107,11 +107,6 @@ public class YoutubeStreamExtractorRestrictedTest {
 
     @Test
     public void testGetSubtitlesList() throws IOException, ExtractionException, JsonParserException {
-        assertTrue(extractor.getSubtitlesList() != null);
-    }
-
-    @Test
-    public void testDownloadSubtitles() throws Exception {
-        assertTrue(extractor.downloadSubtitles("https://youtu.be/FmG385_uUys?t=174") != null);
+        assertTrue(extractor.getSubtitles() != null);
     }
 }
