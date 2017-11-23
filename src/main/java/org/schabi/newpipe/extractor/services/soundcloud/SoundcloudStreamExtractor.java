@@ -12,9 +12,7 @@ import org.schabi.newpipe.extractor.stream.*;
 import org.schabi.newpipe.extractor.utils.Parser;
 
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
+import java.util.*;
 
 public class SoundcloudStreamExtractor extends StreamExtractor {
     private JsonObject track;
@@ -150,7 +148,12 @@ public class SoundcloudStreamExtractor extends StreamExtractor {
     }
 
     @Override
-    public Subtitles[] getSubtitles() throws IOException, ExtractionException, JsonParserException {
+    public List<Subtitles> getSubtitlesDefault() throws IOException, ExtractionException, JsonParserException {
+        return null;
+    }
+
+    @Override
+    public List<Subtitles> getSubtitles(SubtitlesFormat format) throws IOException, ExtractionException, JsonParserException {
         return null;
     }
 
