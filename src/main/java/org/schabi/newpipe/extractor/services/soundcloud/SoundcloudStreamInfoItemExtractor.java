@@ -34,6 +34,11 @@ public class SoundcloudStreamInfoItemExtractor implements StreamInfoItemExtracto
     }
 
     @Override
+    public String getUploaderUrl() {
+        return searchResult.getObject("user").getString("permalink_url");
+    }
+
+    @Override
     public String getUploadDate() throws ParsingException {
         return SoundcloudParsingHelper.toDateString(searchResult.getString("created_at"));
     }

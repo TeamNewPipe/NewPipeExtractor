@@ -95,6 +95,17 @@ public class YoutubeStreamInfoItemExtractor implements StreamInfoItemExtractor {
     }
 
     @Override
+    public String getUploaderUrl() throws ParsingException {
+        try {
+            return item.select("div[class=\"yt-lockup-byline\"]").first()
+                    .select("a").first()
+                    .attr("href");
+        } catch (Exception e) {
+            throw new ParsingException("Could not get uploader", e);
+        }
+    }
+
+    @Override
     public String getUploadDate() throws ParsingException {
         try {
             Element meta = item.select("div[class=\"yt-lockup-meta\"]").first();

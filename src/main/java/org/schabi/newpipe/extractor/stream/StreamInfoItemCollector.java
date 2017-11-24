@@ -72,6 +72,11 @@ public class StreamInfoItemCollector extends InfoItemCollector {
         } catch (Exception e) {
             addError(e);
         }
+        try {
+            resultItem.setUploaderUrl(extractor.getUploaderUrl());
+        } catch (Exception e) {
+            addError(e);
+        }
         return resultItem;
     }
 
