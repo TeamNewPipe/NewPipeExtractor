@@ -20,11 +20,14 @@ package org.schabi.newpipe.extractor.stream;
  * along with NewPipe.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+import com.grack.nanojson.JsonParserException;
 import org.schabi.newpipe.extractor.Extractor;
 import org.schabi.newpipe.extractor.StreamingService;
+import org.schabi.newpipe.extractor.Subtitles;
 import org.schabi.newpipe.extractor.UrlIdHandler;
 import org.schabi.newpipe.extractor.exceptions.ExtractionException;
 import org.schabi.newpipe.extractor.exceptions.ParsingException;
+import org.schabi.newpipe.extractor.exceptions.ReCaptchaException;
 import org.schabi.newpipe.extractor.utils.Parser;
 
 import java.io.IOException;
@@ -109,6 +112,8 @@ public abstract class StreamExtractor extends Extractor {
     public abstract List<AudioStream> getAudioStreams() throws IOException, ExtractionException;
     public abstract List<VideoStream> getVideoStreams() throws IOException, ExtractionException;
     public abstract List<VideoStream> getVideoOnlyStreams() throws IOException, ExtractionException;
+    public abstract List<Subtitles> getSubtitlesDefault() throws IOException, ExtractionException;
+    public abstract List<Subtitles> getSubtitles(SubtitlesFormat format) throws IOException, ExtractionException;
 
     public abstract StreamType getStreamType() throws ParsingException;
     public abstract StreamInfoItem getNextVideo() throws IOException, ExtractionException;

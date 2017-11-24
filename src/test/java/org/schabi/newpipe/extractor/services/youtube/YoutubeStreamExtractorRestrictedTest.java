@@ -1,5 +1,6 @@
 package org.schabi.newpipe.extractor.services.youtube;
 
+import com.grack.nanojson.JsonParserException;
 import org.junit.Before;
 import org.junit.Test;
 import org.schabi.newpipe.Downloader;
@@ -7,6 +8,7 @@ import org.schabi.newpipe.extractor.NewPipe;
 import org.schabi.newpipe.extractor.exceptions.ExtractionException;
 import org.schabi.newpipe.extractor.exceptions.ParsingException;
 import org.schabi.newpipe.extractor.stream.StreamExtractor;
+import org.schabi.newpipe.extractor.stream.SubtitlesFormat;
 import org.schabi.newpipe.extractor.stream.VideoStream;
 
 import java.io.IOException;
@@ -102,5 +104,18 @@ public class YoutubeStreamExtractorRestrictedTest {
             assertTrue(Integer.toString(s.format),
                     0 <= s.format && s.format <= 4);
         }
+    }
+
+
+    @Test
+    public void testGetSubtitlesListDefault() throws IOException, ExtractionException {
+        // Video (/view?v=YQHsXMglC9A) set in the setUp() method has no captions => null
+        assertTrue(extractor.getSubtitlesDefault() == null);
+    }
+
+    @Test
+    public void testGetSubtitlesList() throws IOException, ExtractionException {
+        // Video (/view?v=YQHsXMglC9A) set in the setUp() method has no captions => null
+        assertTrue(extractor.getSubtitles(SubtitlesFormat.VTT) == null);
     }
 }

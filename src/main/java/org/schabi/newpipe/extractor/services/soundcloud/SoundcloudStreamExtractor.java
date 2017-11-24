@@ -3,19 +3,16 @@ package org.schabi.newpipe.extractor.services.soundcloud;
 import com.grack.nanojson.JsonObject;
 import com.grack.nanojson.JsonParser;
 import com.grack.nanojson.JsonParserException;
-import org.schabi.newpipe.extractor.Downloader;
-import org.schabi.newpipe.extractor.MediaFormat;
-import org.schabi.newpipe.extractor.NewPipe;
-import org.schabi.newpipe.extractor.StreamingService;
+import org.schabi.newpipe.extractor.*;
 import org.schabi.newpipe.extractor.exceptions.ContentNotAvailableException;
 import org.schabi.newpipe.extractor.exceptions.ExtractionException;
 import org.schabi.newpipe.extractor.exceptions.ParsingException;
+import org.schabi.newpipe.extractor.exceptions.ReCaptchaException;
 import org.schabi.newpipe.extractor.stream.*;
 import org.schabi.newpipe.extractor.utils.Parser;
 
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
+import java.util.*;
 
 public class SoundcloudStreamExtractor extends StreamExtractor {
     private JsonObject track;
@@ -147,6 +144,16 @@ public class SoundcloudStreamExtractor extends StreamExtractor {
 
     @Override
     public List<VideoStream> getVideoOnlyStreams() throws IOException, ExtractionException {
+        return null;
+    }
+
+    @Override
+    public List<Subtitles> getSubtitlesDefault() throws IOException, ExtractionException {
+        return null;
+    }
+
+    @Override
+    public List<Subtitles> getSubtitles(SubtitlesFormat format) throws IOException, ExtractionException {
         return null;
     }
 

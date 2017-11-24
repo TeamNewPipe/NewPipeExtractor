@@ -1,16 +1,20 @@
 package org.schabi.newpipe.extractor.services.soundcloud;
 
+import com.grack.nanojson.JsonParserException;
 import org.junit.Before;
 import org.junit.Test;
 import org.schabi.newpipe.Downloader;
 import org.schabi.newpipe.extractor.NewPipe;
+import org.schabi.newpipe.extractor.Subtitles;
 import org.schabi.newpipe.extractor.exceptions.ExtractionException;
 import org.schabi.newpipe.extractor.exceptions.ParsingException;
 import org.schabi.newpipe.extractor.stream.StreamExtractor;
 import org.schabi.newpipe.extractor.stream.StreamInfoItemCollector;
 import org.schabi.newpipe.extractor.stream.StreamType;
+import org.schabi.newpipe.extractor.stream.SubtitlesFormat;
 
 import java.io.IOException;
+import java.util.List;
 
 import static org.junit.Assert.*;
 import static org.schabi.newpipe.extractor.ServiceList.SoundCloud;
@@ -100,5 +104,17 @@ public class SoundcloudStreamExtractorDefaultTest {
         StreamInfoItemCollector relatedVideos = extractor.getRelatedVideos();
         assertFalse(relatedVideos.getItemList().isEmpty());
         assertTrue(relatedVideos.getErrors().isEmpty());
+    }
+
+    @Test
+    public void testGetSubtitlesListDefault() throws IOException, ExtractionException {
+        // Video (/view?v=YQHsXMglC9A) set in the setUp() method has no captions => null
+        assertTrue(extractor.getSubtitlesDefault() == null);
+    }
+
+    @Test
+    public void testGetSubtitlesList() throws IOException, ExtractionException {
+        // Video (/view?v=YQHsXMglC9A) set in the setUp() method has no captions => null
+        assertTrue(extractor.getSubtitles(SubtitlesFormat.VTT) == null);
     }
 }

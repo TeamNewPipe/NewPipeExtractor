@@ -54,7 +54,6 @@ public class Parser {
         if (foundMatch) {
             return mat.group(group);
         } else {
-            //Log.e(TAG, "failed to find pattern \""+pattern+"\" inside of \""+input+"\"");
             if (input.length() > 1024) {
                 throw new RegexException("failed to find pattern \"" + pattern);
             } else {
@@ -64,12 +63,9 @@ public class Parser {
     }
 
     public static boolean isMatch(String pattern, String input) {
-        try {
-            matchGroup1(pattern, input);
-            return true;
-        } catch (RegexException e) {
-            return false;
-        }
+        Pattern pat = Pattern.compile(pattern);
+        Matcher mat = pat.matcher(input);
+        return mat.find();
     }
 
     public static Map<String, String> compatParseMap(final String input) throws UnsupportedEncodingException {
