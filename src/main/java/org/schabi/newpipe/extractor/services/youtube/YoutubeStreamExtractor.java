@@ -380,19 +380,25 @@ public class YoutubeStreamExtractor extends StreamExtractor {
     }
 
     @Override
-    public List<Subtitles> getSubtitlesDefault() throws IOException, ExtractionException, JsonParserException {
+    public List<Subtitles> getSubtitlesDefault() throws IOException, ExtractionException {
         return getSubtitles(SubtitlesFormat.TTML);
     }
 
     @Override
-    public List<Subtitles> getSubtitles(SubtitlesFormat format) throws IOException, ExtractionException, JsonParserException {
+    public List<Subtitles> getSubtitles(SubtitlesFormat format) throws IOException, ExtractionException {
         JsonObject playerConfig = getPlayerConfig(getPageHtml());
         String playerResponse = playerConfig.getObject("args").getString("player_response");
 
-        // Captions does not exist, return null
-        if (!JsonParser.object().from(playerResponse).has("captions")) return null;
+        JsonObject captions;
+        try {
+            // Captions does not exist, return null
+            if (!JsonParser.object().from(playerResponse).has("captions")) return null;
 
-        JsonObject captions = JsonParser.object().from(playerResponse).getObject("captions");
+            captions = JsonParser.object().from(playerResponse).getObject("captions");
+        } catch (JsonParserException e) {
+            // Failed to parse subtitles
+            return null;
+        }
         JsonArray captionsArray = captions.getObject("playerCaptionsTracklistRenderer").getArray("captionTracks");
 
         int captionsSize = captionsArray.size();

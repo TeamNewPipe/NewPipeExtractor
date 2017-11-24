@@ -112,9 +112,8 @@ public abstract class StreamExtractor extends Extractor {
     public abstract List<AudioStream> getAudioStreams() throws IOException, ExtractionException;
     public abstract List<VideoStream> getVideoStreams() throws IOException, ExtractionException;
     public abstract List<VideoStream> getVideoOnlyStreams() throws IOException, ExtractionException;
-    public abstract List<Subtitles> getSubtitlesDefault() throws IOException, ExtractionException, JsonParserException;
-
-    public abstract List<Subtitles> getSubtitles(SubtitlesFormat format) throws IOException, ExtractionException, JsonParserException;
+    public abstract List<Subtitles> getSubtitlesDefault() throws IOException, ExtractionException;
+    public abstract List<Subtitles> getSubtitles(SubtitlesFormat format) throws IOException, ExtractionException;
 
     public abstract StreamType getStreamType() throws ParsingException;
     public abstract StreamInfoItem getNextVideo() throws IOException, ExtractionException;
