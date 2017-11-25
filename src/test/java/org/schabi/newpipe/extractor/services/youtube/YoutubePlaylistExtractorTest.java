@@ -6,21 +6,29 @@ import org.schabi.newpipe.Downloader;
 import org.schabi.newpipe.extractor.ListExtractor;
 import org.schabi.newpipe.extractor.NewPipe;
 import org.schabi.newpipe.extractor.playlist.PlaylistExtractor;
+import org.schabi.newpipe.extractor.stream.StreamInfoItem;
+
+import java.util.List;
 
 import static org.junit.Assert.*;
+import static org.schabi.newpipe.extractor.ExtractorAsserts.assertEmptyErrors;
 import static org.schabi.newpipe.extractor.ServiceList.YouTube;
 
 /**
- * Test for {@link PlaylistExtractor}
+ * Test for {@link YoutubePlaylistExtractor}
  */
-
 public class YoutubePlaylistExtractorTest {
-    private PlaylistExtractor extractor;
+    private YoutubePlaylistExtractor extractor;
+
+    private static void assertNotEmpty(String message, String value) {
+        assertNotNull(message, value);
+        assertFalse(message, value.isEmpty());
+    }
 
     @Before
     public void setUp() throws Exception {
         NewPipe.init(Downloader.getInstance());
-        extractor = YouTube.getService()
+        extractor = (YoutubePlaylistExtractor) YouTube.getService()
                 .getPlaylistExtractor("https://www.youtube.com/playlist?list=PL7XlqX4npddfrdpMCxBnNZXg2GFll7t5y");
     }
 
@@ -71,12 +79,22 @@ public class YoutubePlaylistExtractorTest {
 
     @Test
     public void testGetStreams() throws Exception {
-        assertTrue("no streams are received", !extractor.getStreams().getItemList().isEmpty());
+        List<StreamInfoItem> streams = extractor.getStreams().getItemList();
+        assertFalse("no streams are received", streams.isEmpty());
+        assertTrue(streams.size() > 60);
+        assertFalse(streams.contains(null));
+        for(StreamInfoItem item: streams) {
+            assertEquals("Service id doesn't match", YouTube.getId(), item.getServiceId());
+            assertNotNull("Stream type not set: " + item, item.getStreamType());
+            //assertNotEmpty("Upload date not set: " + item, item.getUploadDate());
+            assertNotEmpty("Uploader name not set: " + item, item.getUploaderName());
+            assertNotEmpty("Uploader url not set: " + item, item.getUploaderUrl());
+        }
     }
 
     @Test
     public void testGetStreamsErrors() throws Exception {
-        assertTrue("errors during stream list extraction", extractor.getStreams().getErrors().isEmpty());
+        assertEmptyErrors("errors during stream list extraction", extractor.getStreams().getErrors());
     }
 
     @Test
@@ -92,7 +110,7 @@ public class YoutubePlaylistExtractorTest {
         extractor.getStreams();
         ListExtractor.NextItemsResult nextItemsResult = extractor.getNextStreams();
         assertTrue("extractor didn't have next streams", !nextItemsResult.nextItemsList.isEmpty());
-        assertTrue("errors occurred during extraction of the next streams", nextItemsResult.errors.isEmpty());
+        assertEmptyErrors("errors occurred during extraction of the next streams", nextItemsResult.errors);
         assertTrue("extractor didn't have more streams after getNextStreams", extractor.hasMoreStreams());
     }
 

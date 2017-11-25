@@ -7,7 +7,10 @@ import org.schabi.newpipe.extractor.ListExtractor;
 import org.schabi.newpipe.extractor.NewPipe;
 import org.schabi.newpipe.extractor.channel.ChannelExtractor;
 
+import java.util.List;
+
 import static org.junit.Assert.*;
+import static org.schabi.newpipe.extractor.ExtractorAsserts.assertEmptyErrors;
 import static org.schabi.newpipe.extractor.ServiceList.YouTube;
 
 /*
@@ -35,12 +38,12 @@ import static org.schabi.newpipe.extractor.ServiceList.YouTube;
  */
 public class YoutubeChannelExtractorTest {
 
-    ChannelExtractor extractor;
+    YoutubeChannelExtractor extractor;
 
     @Before
     public void setUp() throws Exception {
         NewPipe.init(Downloader.getInstance());
-        extractor = YouTube.getService()
+        extractor = (YoutubeChannelExtractor) YouTube.getService()
                 .getChannelExtractor("https://www.youtube.com/user/Gronkh");
     }
 
@@ -91,7 +94,7 @@ public class YoutubeChannelExtractorTest {
 
     @Test
     public void testGetStreamsErrors() throws Exception {
-        assertTrue("errors during stream list extraction", extractor.getStreams().getErrors().isEmpty());
+        assertEmptyErrors("errors during stream list extraction", extractor.getStreams().getErrors());
     }
 
     @Test
@@ -112,7 +115,7 @@ public class YoutubeChannelExtractorTest {
         extractor.getStreams();
         ListExtractor.NextItemsResult nextItemsResult = extractor.getNextStreams();
         assertTrue("extractor didn't have next streams", !nextItemsResult.nextItemsList.isEmpty());
-        assertTrue("errors occurred during extraction of the next streams", nextItemsResult.errors.isEmpty());
+        assertEmptyErrors("errors occurred during extraction of the next streams", nextItemsResult.errors);
         assertTrue("extractor didn't have more streams after getNextStreams", extractor.hasMoreStreams());
     }
 }
