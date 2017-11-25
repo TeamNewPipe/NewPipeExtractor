@@ -67,13 +67,16 @@ public class YoutubeStreamExtractorDefaultTest {
 
     @Test
     public void testGetDescription() throws ParsingException {
-        assertTrue(extractor.getDescription() != null);
+        assertNotNull(extractor.getDescription());
+        assertFalse(extractor.getDescription().isEmpty());
     }
 
     @Test
     public void testGetUploaderName() throws ParsingException {
-        assertTrue(!extractor.getUploaderName().isEmpty());
+        assertNotNull(extractor.getUploaderName());
+        assertFalse(extractor.getUploaderName().isEmpty());
     }
+
 
     @Test
     public void testGetLength() throws ParsingException {

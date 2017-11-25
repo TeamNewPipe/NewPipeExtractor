@@ -7,7 +7,6 @@ import org.schabi.newpipe.extractor.utils.DashMpdParser;
 import org.schabi.newpipe.extractor.utils.ExtractorHelper;
 
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 

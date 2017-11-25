@@ -23,7 +23,6 @@ package org.schabi.newpipe.extractor.services.youtube;
 import org.junit.Before;
 import org.junit.Test;
 import org.schabi.newpipe.Downloader;
-import org.schabi.newpipe.extractor.InfoItemCollector;
 import org.schabi.newpipe.extractor.NewPipe;
 import org.schabi.newpipe.extractor.kiosk.KioskExtractor;
 import org.schabi.newpipe.extractor.stream.StreamInfoItemCollector;

@@ -63,8 +63,9 @@ public class SoundcloudSearchEnginePlaylistTest {
 
     @Test
     public void testResultErrors() {
+        assertNotNull(result.errors);
         if (!result.errors.isEmpty()) for (Throwable error : result.errors) error.printStackTrace();
-        assertTrue(result.errors == null || result.errors.isEmpty());
+        assertTrue(result.errors.isEmpty());
     }
 
     @Ignore

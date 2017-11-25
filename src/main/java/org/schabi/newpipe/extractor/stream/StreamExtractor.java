@@ -30,6 +30,7 @@ import org.schabi.newpipe.extractor.exceptions.ParsingException;
 import org.schabi.newpipe.extractor.exceptions.ReCaptchaException;
 import org.schabi.newpipe.extractor.utils.Parser;
 
+import javax.annotation.Nonnull;
 import java.io.IOException;
 import java.util.List;
 
@@ -40,16 +41,19 @@ public abstract class StreamExtractor extends Extractor {
 
     public StreamExtractor(StreamingService service, String url) throws IOException, ExtractionException {
         super(service, url);
-        fetchPage();
     }
 
+    @Nonnull
     @Override
     protected UrlIdHandler getUrlIdHandler() throws ParsingException {
         return getService().getStreamUrlIdHandler();
     }
 
+    @Nonnull
     public abstract String getUploadDate() throws ParsingException;
+    @Nonnull
     public abstract String getThumbnailUrl() throws ParsingException;
+    @Nonnull
     public abstract String getDescription() throws ParsingException;
     public abstract int getAgeLimit() throws ParsingException;
 
@@ -104,10 +108,18 @@ public abstract class StreamExtractor extends Extractor {
     public abstract long getLikeCount() throws ParsingException;
     public abstract long getDislikeCount() throws ParsingException;
 
+    @Nonnull
     public abstract String getUploaderUrl() throws ParsingException;
+    @Nonnull
     public abstract String getUploaderName() throws ParsingException;
+    @Nonnull
     public abstract String getUploaderAvatarUrl() throws ParsingException;
 
+    /**
+     * Get the dash mpd url
+     * @return the url as a string or an empty string
+     * @throws ParsingException if an error occurs while reading
+     */
     public abstract String getDashMpdUrl() throws ParsingException;
     public abstract List<AudioStream> getAudioStreams() throws IOException, ExtractionException;
     public abstract List<VideoStream> getVideoStreams() throws IOException, ExtractionException;

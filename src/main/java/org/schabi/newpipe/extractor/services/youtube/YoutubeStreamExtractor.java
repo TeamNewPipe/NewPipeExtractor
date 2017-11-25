@@ -22,6 +22,8 @@ import org.schabi.newpipe.extractor.stream.*;
 import org.schabi.newpipe.extractor.utils.Parser;
 import org.schabi.newpipe.extractor.utils.Utils;
 
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import java.io.IOException;
 import java.util.*;
 import java.util.regex.Matcher;
@@ -75,19 +77,23 @@ public class YoutubeStreamExtractor extends StreamExtractor {
     /*//////////////////////////////////////////////////////////////////////////*/
 
     private Document doc;
+    @Nullable
     private JsonObject playerArgs;
-    private Map<String, String> videoInfoPage;
+    @Nonnull
+    private final Map<String, String> videoInfoPage = new HashMap<>();
 
     private boolean isAgeRestricted;
 
     public YoutubeStreamExtractor(StreamingService service, String url) throws IOException, ExtractionException {
         super(service, url);
+        fetchPage();
     }
 
     /*//////////////////////////////////////////////////////////////////////////
     // Impl
     //////////////////////////////////////////////////////////////////////////*/
 
+    @Nonnull
     @Override
     public String getId() throws ParsingException {
         try {
@@ -97,28 +103,25 @@ public class YoutubeStreamExtractor extends StreamExtractor {
         }
     }
 
+    @Nonnull
     @Override
     public String getName() throws ParsingException {
-        try {
-            return playerArgs.getString("title");
-        } catch (Exception ignored) {
-            // Try other method...
-        }
-
-        try {
-            return videoInfoPage.get("title");
-        } catch (Exception ignored) {
-            // Try other method...
-        }
-
-        try {
+        String name = getStringFromMetaData("title");
+        if(name == null) {
             // Fallback to HTML method
-            return doc.select("meta[name=title]").attr(CONTENT);
-        } catch (Exception e) {
-            throw new ParsingException("Could not get the title", e);
+            try {
+                name = doc.select("meta[name=title]").attr(CONTENT);
+            } catch (Exception e) {
+                throw new ParsingException("Could not get the title", e);
+            }
         }
+        if(name == null || name.isEmpty()) {
+            throw new ParsingException("Could not get the title");
+        }
+        return name;
     }
 
+    @Nonnull
     @Override
     public String getUploadDate() throws ParsingException {
         try {
@@ -128,6 +131,7 @@ public class YoutubeStreamExtractor extends StreamExtractor {
         }
     }
 
+    @Nonnull
     @Override
     public String getThumbnailUrl() throws ParsingException {
         // Try to get high resolution thumbnail first, if it fails, use low res from the player instead
@@ -138,7 +142,7 @@ public class YoutubeStreamExtractor extends StreamExtractor {
         }
 
         try {
-            if (playerArgs.isString("thumbnail_url")) return playerArgs.getString("thumbnail_url");
+            if (playerArgs != null && playerArgs.isString("thumbnail_url")) return playerArgs.getString("thumbnail_url");
         } catch (Exception ignored) {
             // Try other method...
         }
@@ -150,6 +154,7 @@ public class YoutubeStreamExtractor extends StreamExtractor {
         }
     }
 
+    @Nonnull
     @Override
     public String getDescription() throws ParsingException {
         try {
@@ -174,23 +179,27 @@ public class YoutubeStreamExtractor extends StreamExtractor {
 
     @Override
     public long getLength() throws ParsingException {
+        if(playerArgs != null) {
+            try {
+                long returnValue = Long.parseLong(playerArgs.get("length_seconds") + "");
+                if (returnValue >= 0) return returnValue;
+            } catch (Exception ignored) {
+                // Try other method...
+            }
+        }
+
+        String lengthString = videoInfoPage.get("length_seconds");
         try {
-            long returnValue = Long.parseLong(playerArgs.get("length_seconds") + "");
-            if (returnValue >= 0) return returnValue;
+            return Long.parseLong(lengthString);
         } catch (Exception ignored) {
             // Try other method...
         }
 
-        try {
-            return Long.parseLong(videoInfoPage.get("length_seconds"));
-        } catch (Exception ignored) {
-            // Try other method...
-        }
-
+        // TODO: 25.11.17 Implement a way to get the length for age restricted videos #44
         try {
             // Fallback to HTML method
-            return Long.parseLong(doc.select("div[class~=\"ytp-progress-bar\"][role=\"slider\"]")
-                    .first().attr("aria-valuemax"));
+            return Long.parseLong(doc.select("div[class~=\"ytp-progress-bar\"][role=\"slider\"]").first()
+                    .attr("aria-valuemax"));
         } catch (Exception e) {
             throw new ParsingException("Could not get video length", e);
         }
@@ -253,6 +262,7 @@ public class YoutubeStreamExtractor extends StreamExtractor {
         }
     }
 
+    @Nonnull
     @Override
     public String getUploaderUrl() throws ParsingException {
         try {
@@ -263,28 +273,41 @@ public class YoutubeStreamExtractor extends StreamExtractor {
         }
     }
 
-    @Override
-    public String getUploaderName() throws ParsingException {
-        try {
-            return playerArgs.getString("author");
-        } catch (Exception ignored) {
-            // Try other method...
-        }
 
-        try {
-            return videoInfoPage.get("author");
-        } catch (Exception ignored) {
-            // Try other method...
+    @Nullable
+    private String getStringFromMetaData(String field) {
+        String value = null;
+        if(playerArgs != null) {
+            // This can not fail
+            value = playerArgs.getString(field);
         }
-
-        try {
-            // Fallback to HTML method
-            return doc.select("div.yt-user-info").first().text();
-        } catch (Exception e) {
-            throw new ParsingException("Could not get uploader name", e);
+        if(value == null) {
+            // This can not fail too
+            value = videoInfoPage.get(field);
         }
+        return value;
     }
 
+    @Nonnull
+    @Override
+    public String getUploaderName() throws ParsingException {
+        String name = getStringFromMetaData("author");
+
+        if(name == null) {
+            try {
+                // Fallback to HTML method
+                name = doc.select("div.yt-user-info").first().text();
+            } catch (Exception e) {
+                throw new ParsingException("Could not get uploader name", e);
+            }
+        }
+        if(name == null || name.isEmpty()) {
+            throw new ParsingException("Could not get uploader name");
+        }
+        return name;
+    }
+
+    @Nonnull
     @Override
     public String getUploaderAvatarUrl() throws ParsingException {
         try {
@@ -300,9 +323,9 @@ public class YoutubeStreamExtractor extends StreamExtractor {
     public String getDashMpdUrl() throws ParsingException {
         try {
             String dashManifestUrl;
-            if (videoInfoPage != null && videoInfoPage.containsKey("dashmpd")) {
+            if (videoInfoPage.containsKey("dashmpd")) {
                 dashManifestUrl = videoInfoPage.get("dashmpd");
-            } else if (playerArgs.isString("dashmpd")) {
+            } else if (playerArgs != null && playerArgs.isString("dashmpd")) {
                 dashManifestUrl = playerArgs.getString("dashmpd", "");
             } else {
                 return "";
@@ -521,7 +544,7 @@ public class YoutubeStreamExtractor extends StreamExtractor {
         // Check if the video is age restricted
         if (pageContent.contains("<meta property=\"og:restrictions:age")) {
             String infoPageResponse = dl.download(String.format(GET_VIDEO_INFO_URL, getId()));
-            videoInfoPage = Parser.compatParseMap(infoPageResponse);
+            videoInfoPage.putAll(Parser.compatParseMap(infoPageResponse));
             playerUrl = getPlayerUrlFromRestrictedVideo();
             isAgeRestricted = true;
         } else {
@@ -694,7 +717,7 @@ public class YoutubeStreamExtractor extends StreamExtractor {
         String encodedUrlMap = "";
         if (playerArgs != null && playerArgs.isString(encodedUrlMapKey)) {
             encodedUrlMap = playerArgs.getString(encodedUrlMapKey, "");
-        } else if (videoInfoPage != null && videoInfoPage.containsKey(encodedUrlMapKey)) {
+        } else if (videoInfoPage.containsKey(encodedUrlMapKey)) {
             encodedUrlMap = videoInfoPage.get(encodedUrlMapKey);
         }
 

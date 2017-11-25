@@ -18,6 +18,7 @@ import org.schabi.newpipe.extractor.stream.StreamInfoItemCollector;
 import org.schabi.newpipe.extractor.utils.Parser;
 import org.schabi.newpipe.extractor.utils.Utils;
 
+import javax.annotation.Nonnull;
 import java.io.IOException;
 
 /*
@@ -79,6 +80,7 @@ public class YoutubeChannelExtractor extends ChannelExtractor {
         return true;
     }
 
+    @Nonnull
     @Override
     public String getCleanUrl() {
         try {
@@ -88,6 +90,7 @@ public class YoutubeChannelExtractor extends ChannelExtractor {
         }
     }
 
+    @Nonnull
     @Override
     public String getId() throws ParsingException {
         try {
@@ -100,6 +103,7 @@ public class YoutubeChannelExtractor extends ChannelExtractor {
         }
     }
 
+    @Nonnull
     @Override
     public String getName() throws ParsingException {
         try {

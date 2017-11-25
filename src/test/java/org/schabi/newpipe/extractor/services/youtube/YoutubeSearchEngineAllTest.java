@@ -1,6 +1,5 @@
 package org.schabi.newpipe.extractor.services.youtube;
 
-import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Ignore;
 import org.junit.Test;
@@ -11,7 +10,6 @@ import org.schabi.newpipe.extractor.search.SearchResult;
 
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
-import static org.schabi.newpipe.extractor.ServiceList.YouTube;
 
 /*
  * Created by Christian Schabesberger on 29.12.15.

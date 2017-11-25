@@ -11,6 +11,7 @@ import org.schabi.newpipe.extractor.exceptions.ExtractionException;
 import org.schabi.newpipe.extractor.exceptions.ParsingException;
 import org.schabi.newpipe.extractor.stream.StreamInfoItemCollector;
 
+import javax.annotation.Nonnull;
 import java.io.IOException;
 
 @SuppressWarnings("WeakerAccess")
@@ -38,16 +39,19 @@ public class SoundcloudChannelExtractor extends ChannelExtractor {
         }
     }
 
+    @Nonnull
     @Override
     public String getCleanUrl() {
         return user.isString("permalink_url") ? user.getString("permalink_url") : getOriginalUrl();
     }
 
+    @Nonnull
     @Override
     public String getId() {
         return userId;
     }
 
+    @Nonnull
     @Override
     public String getName() {
         return user.getString("username");

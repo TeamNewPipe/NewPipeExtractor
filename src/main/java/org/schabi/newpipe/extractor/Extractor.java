@@ -3,6 +3,8 @@ package org.schabi.newpipe.extractor;
 import org.schabi.newpipe.extractor.exceptions.ExtractionException;
 import org.schabi.newpipe.extractor.exceptions.ParsingException;
 
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import java.io.IOException;
 
 public abstract class Extractor {
@@ -29,6 +31,7 @@ public abstract class Extractor {
      * <p>
      * Is lazily-cleaned by calling {@link #getCleanUrl()}
      */
+    @Nullable
     private String cleanUrl;
 
     public Extractor(StreamingService service, String url) throws ExtractionException {
@@ -41,6 +44,7 @@ public abstract class Extractor {
     /**
      * @return a {@link UrlIdHandler} of the current extractor type (e.g. a ChannelExtractor should return a channel url handler).
      */
+    @Nonnull
     protected abstract UrlIdHandler getUrlIdHandler() throws ParsingException;
 
     /**
@@ -48,9 +52,18 @@ public abstract class Extractor {
      */
     public abstract void fetchPage() throws IOException, ExtractionException;
 
+    @Nonnull
     public abstract String getId() throws ParsingException;
+
+    /**
+     * Get the name
+     * @return the name
+     * @throws ParsingException if the name cannot be extracted
+     */
+    @Nonnull
     public abstract String getName() throws ParsingException;
 
+    @Nonnull
     public String getOriginalUrl() {
         return originalUrl;
     }
@@ -59,6 +72,7 @@ public abstract class Extractor {
      * Get a clean url and as a fallback the original url.
      * @return the clean url or the original url
      */
+    @Nonnull
     public String getCleanUrl() {
         if (cleanUrl != null && !cleanUrl.isEmpty()) return cleanUrl;
 
@@ -72,6 +86,7 @@ public abstract class Extractor {
         return cleanUrl;
     }
 
+    @Nonnull
     public StreamingService getService() {
         return service;
     }

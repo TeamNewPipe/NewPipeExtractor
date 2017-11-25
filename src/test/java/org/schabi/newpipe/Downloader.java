@@ -89,10 +89,8 @@ public class Downloader implements org.schabi.newpipe.extractor.Downloader {
     public String download(String siteUrl, Map<String, String> customProperties) throws IOException, ReCaptchaException {
         URL url = new URL(siteUrl);
         HttpsURLConnection con = (HttpsURLConnection) url.openConnection();
-        Iterator it = customProperties.entrySet().iterator();
-        while (it.hasNext()) {
-            Map.Entry pair = (Map.Entry) it.next();
-            con.setRequestProperty((String) pair.getKey(), (String) pair.getValue());
+        for (Map.Entry<String, String> pair: customProperties.entrySet()) {
+            con.setRequestProperty(pair.getKey(), pair.getValue());
         }
         return dl(con);
     }

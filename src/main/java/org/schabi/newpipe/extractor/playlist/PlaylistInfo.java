@@ -4,7 +4,6 @@ import org.schabi.newpipe.extractor.*;
 import org.schabi.newpipe.extractor.ListExtractor.NextItemsResult;
 import org.schabi.newpipe.extractor.exceptions.ExtractionException;
 import org.schabi.newpipe.extractor.exceptions.ParsingException;
-import org.schabi.newpipe.extractor.utils.ExtractorHelper;
 
 import java.io.IOException;
 

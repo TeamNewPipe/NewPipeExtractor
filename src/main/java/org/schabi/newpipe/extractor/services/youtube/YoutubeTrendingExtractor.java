@@ -29,6 +29,7 @@ import org.schabi.newpipe.extractor.exceptions.ParsingException;
 import org.schabi.newpipe.extractor.kiosk.KioskExtractor;
 import org.schabi.newpipe.extractor.stream.StreamInfoItemCollector;
 
+import javax.annotation.Nonnull;
 import java.io.IOException;
 
 public class YoutubeTrendingExtractor extends KioskExtractor {
@@ -54,6 +55,7 @@ public class YoutubeTrendingExtractor extends KioskExtractor {
         doc = Jsoup.parse(pageContent, url);
     }
 
+    @Nonnull
     @Override
     public UrlIdHandler getUrlIdHandler() {
         return new YoutubeTrendingUrlIdHandler();
@@ -64,6 +66,7 @@ public class YoutubeTrendingExtractor extends KioskExtractor {
         return null;
     }
 
+    @Nonnull
     @Override
     public String getName() throws ParsingException {
         try {

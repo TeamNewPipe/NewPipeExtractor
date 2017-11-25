@@ -7,11 +7,9 @@ import org.schabi.newpipe.extractor.ServiceList;
 import org.schabi.newpipe.extractor.StreamingService;
 import org.schabi.newpipe.extractor.exceptions.ExtractionException;
 import org.schabi.newpipe.extractor.exceptions.ParsingException;
-import org.schabi.newpipe.extractor.stream.StreamInfoItemCollector;
 import org.schabi.newpipe.extractor.utils.ExtractorHelper;
 
 import java.io.IOException;
-import java.util.ArrayList;
 
 /*
  * Created by Christian Schabesberger on 31.07.16.

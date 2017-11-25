@@ -26,7 +26,6 @@ import org.schabi.newpipe.Downloader;
 import org.schabi.newpipe.extractor.NewPipe;
 import org.schabi.newpipe.extractor.StreamingService;
 import org.schabi.newpipe.extractor.kiosk.KioskList;
-import org.schabi.newpipe.extractor.search.SearchEngine;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;

@@ -9,6 +9,7 @@ import org.schabi.newpipe.extractor.search.SearchEngine;
 import org.schabi.newpipe.extractor.search.SearchResult;
 
 import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 import static org.schabi.newpipe.extractor.ServiceList.SoundCloud;
 
@@ -36,8 +37,9 @@ public class SoundcloudSearchEngineAllTest {
 
     @Test
     public void testResultErrors() {
+        assertNotNull(result.errors);
         if (!result.errors.isEmpty()) for (Throwable error : result.errors) error.printStackTrace();
-        assertTrue(result.errors == null || result.errors.isEmpty());
+        assertTrue(result.errors.isEmpty());
     }
 
     @Ignore

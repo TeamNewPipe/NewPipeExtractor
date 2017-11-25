@@ -11,6 +11,7 @@ import org.schabi.newpipe.extractor.exceptions.ParsingException;
 import org.schabi.newpipe.extractor.playlist.PlaylistExtractor;
 import org.schabi.newpipe.extractor.stream.StreamInfoItemCollector;
 
+import javax.annotation.Nonnull;
 import java.io.IOException;
 
 @SuppressWarnings("WeakerAccess")
@@ -39,16 +40,19 @@ public class SoundcloudPlaylistExtractor extends PlaylistExtractor {
         }
     }
 
+    @Nonnull
     @Override
     public String getCleanUrl() {
         return playlist.isString("permalink_url") ? playlist.getString("permalink_url") : getOriginalUrl();
     }
 
+    @Nonnull
     @Override
     public String getId() {
         return playlistId;
     }
 
+    @Nonnull
     @Override
     public String getName() {
         return playlist.getString("title");
