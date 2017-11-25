@@ -203,7 +203,13 @@ public class YoutubePlaylistExtractor extends PlaylistExtractor {
 
         final UrlIdHandler streamUrlIdHandler = getService().getStreamUrlIdHandler();
         for (final Element li : element.children()) {
+            if(isDeletedItem(li)) {
+                continue;
+            }
+
             collector.commit(new YoutubeStreamInfoItemExtractor(li) {
+                public Element uploaderLink;
+
                 @Override
                 public boolean isAd() throws ParsingException {
                     return false;
@@ -245,9 +251,23 @@ public class YoutubePlaylistExtractor extends PlaylistExtractor {
                     }
                 }
 
+
+                private Element getUploaderLink() {
+                    // should always be present since we filter deleted items
+                    if(uploaderLink == null) {
+                        uploaderLink = li.select("div[class=pl-video-owner] a").first();
+                    }
+                    return uploaderLink;
+                }
+
                 @Override
                 public String getUploaderName() throws ParsingException {
-                    return li.select("div[class=pl-video-owner] a").text();
+                    return getUploaderLink().text();
+                }
+
+                @Override
+                public String getUploaderUrl() throws ParsingException {
+                    return getUploaderLink().attr("href");
                 }
 
                 @Override
@@ -270,5 +290,14 @@ public class YoutubePlaylistExtractor extends PlaylistExtractor {
                 }
             });
         }
+    }
+
+    /**
+     * Check if the playlist item is deleted
+     * @param li the list item
+     * @return true if the item is deleted
+     */
+    private boolean isDeletedItem(Element li) {
+        return li.select("div[class=pl-video-owner] a").isEmpty();
     }
 }

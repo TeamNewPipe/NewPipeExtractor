@@ -83,4 +83,21 @@ public class StreamInfoItem extends InfoItem {
     public void setViewCount(long view_count) {
         this.view_count = view_count;
     }
+
+    @Override
+    public String toString() {
+        return "StreamInfoItem{" +
+                "stream_type=" + stream_type +
+                ", uploader_name='" + uploader_name + '\'' +
+                ", upload_date='" + upload_date + '\'' +
+                ", view_count=" + view_count +
+                ", duration=" + duration +
+                ", uploaderUrl='" + uploaderUrl + '\'' +
+                ", info_type=" + info_type +
+                ", service_id=" + service_id +
+                ", url='" + url + '\'' +
+                ", name='" + name + '\'' +
+                ", thumbnail_url='" + thumbnail_url + '\'' +
+                '}';
+    }
 }
