@@ -1,6 +1,5 @@
 package org.schabi.newpipe.extractor.services.youtube;
 
-import com.grack.nanojson.JsonParserException;
 import org.junit.Before;
 import org.junit.Ignore;
 import org.junit.Test;

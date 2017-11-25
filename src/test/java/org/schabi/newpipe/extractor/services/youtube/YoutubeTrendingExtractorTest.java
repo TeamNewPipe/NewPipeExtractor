@@ -31,6 +31,7 @@ import static junit.framework.TestCase.assertFalse;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
+import static org.schabi.newpipe.extractor.ExtractorAsserts.assertEmptyErrors;
 import static org.schabi.newpipe.extractor.ServiceList.YouTube;
 
 
@@ -68,21 +69,12 @@ public class YoutubeTrendingExtractorTest {
     @Test
     public void testGetStreams() throws Exception {
         StreamInfoItemCollector collector = extractor.getStreams();
-        if(!collector.getErrors().isEmpty()) {
-            System.err.println("----------");
-            for(Throwable e : collector.getErrors()) {
-                e.printStackTrace();
-                System.err.println("----------");
-            }
-        }
-        assertTrue("no streams are received",
-                !collector.getItemList().isEmpty()
-                        && collector.getErrors().isEmpty());
+        assertTrue("no streams are received", collector.getItemList().isEmpty());
     }
 
     @Test
     public void testGetStreamsErrors() throws Exception {
-        assertTrue("errors during stream list extraction", extractor.getStreams().getErrors().isEmpty());
+        assertEmptyErrors("errors during stream list extraction", extractor.getStreams().getErrors());
     }
 
     @Test
