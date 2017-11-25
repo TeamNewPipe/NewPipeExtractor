@@ -403,11 +403,13 @@ public class YoutubeStreamExtractor extends StreamExtractor {
     }
 
     @Override
+    @Nullable
     public List<Subtitles> getSubtitlesDefault() throws IOException, ExtractionException {
         return getSubtitles(SubtitlesFormat.TTML);
     }
 
     @Override
+    @Nullable
     public List<Subtitles> getSubtitles(SubtitlesFormat format) throws IOException, ExtractionException {
         JsonObject playerConfig = getPlayerConfig(getPageHtml());
         String playerResponse = playerConfig.getObject("args").getString("player_response");

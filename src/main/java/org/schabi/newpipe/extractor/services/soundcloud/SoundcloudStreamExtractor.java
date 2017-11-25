@@ -7,12 +7,13 @@ import org.schabi.newpipe.extractor.*;
 import org.schabi.newpipe.extractor.exceptions.ContentNotAvailableException;
 import org.schabi.newpipe.extractor.exceptions.ExtractionException;
 import org.schabi.newpipe.extractor.exceptions.ParsingException;
-import org.schabi.newpipe.extractor.exceptions.ReCaptchaException;
 import org.schabi.newpipe.extractor.stream.*;
-import org.schabi.newpipe.extractor.utils.Parser;
 
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import java.io.IOException;
+import java.io.UnsupportedEncodingException;
+import java.net.URLEncoder;
 import java.util.*;
 
 public class SoundcloudStreamExtractor extends StreamExtractor {
@@ -127,8 +128,8 @@ public class SoundcloudStreamExtractor extends StreamExtractor {
         List<AudioStream> audioStreams = new ArrayList<>();
         Downloader dl = NewPipe.getDownloader();
 
-        String apiUrl = "https://api.soundcloud.com/i1/tracks/" + getId() + "/streams"
-                + "?client_id=" + SoundcloudParsingHelper.clientId();
+        String apiUrl = "https://api.soundcloud.com/i1/tracks/" + urlEncode(getId()) + "/streams"
+                + "?client_id=" + urlEncode(SoundcloudParsingHelper.clientId());
 
         String response = dl.download(apiUrl);
         JsonObject responseObject;
@@ -148,6 +149,14 @@ public class SoundcloudStreamExtractor extends StreamExtractor {
         return audioStreams;
     }
 
+    private static String urlEncode(String value) {
+        try {
+            return URLEncoder.encode(value, "UTF-8");
+        } catch (UnsupportedEncodingException e) {
+            throw new IllegalStateException(e);
+        }
+    }
+
     @Override
     public List<VideoStream> getVideoStreams() throws IOException, ExtractionException {
         return null;
@@ -159,11 +168,13 @@ public class SoundcloudStreamExtractor extends StreamExtractor {
     }
 
     @Override
+    @Nullable
     public List<Subtitles> getSubtitlesDefault() throws IOException, ExtractionException {
         return null;
     }
 
     @Override
+    @Nullable
     public List<Subtitles> getSubtitles(SubtitlesFormat format) throws IOException, ExtractionException {
         return null;
     }
@@ -182,8 +193,8 @@ public class SoundcloudStreamExtractor extends StreamExtractor {
     public StreamInfoItemCollector getRelatedVideos() throws IOException, ExtractionException {
         StreamInfoItemCollector collector = new StreamInfoItemCollector(getServiceId());
 
-        String apiUrl = "https://api-v2.soundcloud.com/tracks/" + getId() + "/related"
-                + "?client_id=" + SoundcloudParsingHelper.clientId();
+        String apiUrl = "https://api-v2.soundcloud.com/tracks/" + urlEncode(getId()) + "/related"
+                + "?client_id=" + urlEncode(SoundcloudParsingHelper.clientId());
 
         SoundcloudParsingHelper.getStreamsFromApi(collector, apiUrl);
         return collector;
