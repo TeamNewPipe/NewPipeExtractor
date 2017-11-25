@@ -411,6 +411,10 @@ public class YoutubeStreamExtractor extends StreamExtractor {
     @Override
     @Nullable
     public List<Subtitles> getSubtitles(SubtitlesFormat format) throws IOException, ExtractionException {
+        if(isAgeRestricted) {
+            // If the video is age restricted getPlayerConfig will fail
+            return null;
+        }
         JsonObject playerConfig = getPlayerConfig(getPageHtml());
         String playerResponse = playerConfig.getObject("args").getString("player_response");
 
