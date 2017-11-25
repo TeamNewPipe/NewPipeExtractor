@@ -86,6 +86,7 @@ public class SoundcloudChannelExtractor extends ChannelExtractor {
         return user.getString("description", "");
     }
 
+    @Nonnull
     @Override
     public StreamInfoItemCollector getStreams() throws IOException, ExtractionException {
         StreamInfoItemCollector collector = new StreamInfoItemCollector(getServiceId());

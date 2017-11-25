@@ -50,6 +50,7 @@ public class SoundcloudChartsExtractor extends KioskExtractor {
         return new NextItemsResult(collector, nextStreamsUrl);
     }
 
+    @Nonnull
     @Override
     public StreamInfoItemCollector getStreams() throws IOException, ExtractionException {
         StreamInfoItemCollector collector = new StreamInfoItemCollector(getServiceId());

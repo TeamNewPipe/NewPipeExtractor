@@ -88,6 +88,7 @@ public class SoundcloudPlaylistExtractor extends PlaylistExtractor {
         return playlist.getNumber("track_count", 0).longValue();
     }
 
+    @Nonnull
     @Override
     public StreamInfoItemCollector getStreams() throws IOException, ExtractionException {
         StreamInfoItemCollector collector = new StreamInfoItemCollector(getServiceId());

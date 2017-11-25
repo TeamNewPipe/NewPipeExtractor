@@ -163,6 +163,7 @@ public class YoutubeChannelExtractor extends ChannelExtractor {
         }
     }
 
+    @Nonnull
     @Override
     public StreamInfoItemCollector getStreams() throws IOException, ExtractionException {
         StreamInfoItemCollector collector = new StreamInfoItemCollector(getServiceId());

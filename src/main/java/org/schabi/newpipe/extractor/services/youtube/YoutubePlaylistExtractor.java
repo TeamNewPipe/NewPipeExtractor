@@ -143,6 +143,7 @@ public class YoutubePlaylistExtractor extends PlaylistExtractor {
         }
     }
 
+    @Nonnull
     @Override
     public StreamInfoItemCollector getStreams() throws IOException, ExtractionException {
         StreamInfoItemCollector collector = new StreamInfoItemCollector(getServiceId());

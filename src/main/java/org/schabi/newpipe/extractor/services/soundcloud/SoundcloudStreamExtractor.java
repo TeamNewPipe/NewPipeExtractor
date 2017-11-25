@@ -71,7 +71,7 @@ public class SoundcloudStreamExtractor extends StreamExtractor {
 
     @Override
     public int getAgeLimit() {
-        return 0;
+        return NO_AGE_LIMIT;
     }
 
     @Override

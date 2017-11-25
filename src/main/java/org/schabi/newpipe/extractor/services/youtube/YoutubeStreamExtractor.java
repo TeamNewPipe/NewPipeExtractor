@@ -167,7 +167,7 @@ public class YoutubeStreamExtractor extends StreamExtractor {
     @Override
     public int getAgeLimit() throws ParsingException {
         if (!isAgeRestricted) {
-            return 0;
+            return NO_AGE_LIMIT;
         }
         try {
             return Integer.valueOf(doc.select("meta[property=\"og:restrictions:age\"]")

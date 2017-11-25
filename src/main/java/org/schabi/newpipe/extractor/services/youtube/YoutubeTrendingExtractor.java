@@ -79,6 +79,7 @@ public class YoutubeTrendingExtractor extends KioskExtractor {
         }
     }
 
+    @Nonnull
     @Override
     public StreamInfoItemCollector getStreams() throws ParsingException {
         StreamInfoItemCollector collector = new StreamInfoItemCollector(getServiceId());

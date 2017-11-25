@@ -39,6 +39,8 @@ import java.util.List;
  */
 public abstract class StreamExtractor extends Extractor {
 
+    public static final int NO_AGE_LIMIT = 0;
+
     public StreamExtractor(StreamingService service, String url) throws IOException, ExtractionException {
         super(service, url);
     }
