@@ -23,12 +23,12 @@ import static org.schabi.newpipe.extractor.ServiceList.SoundCloud;
  * Test for {@link StreamExtractor}
  */
 public class SoundcloudStreamExtractorDefaultTest {
-    private StreamExtractor extractor;
+    private SoundcloudStreamExtractor extractor;
 
     @Before
     public void setUp() throws Exception {
         NewPipe.init(Downloader.getInstance());
-        extractor = SoundCloud.getService().getStreamExtractor("https://soundcloud.com/liluzivert/do-what-i-want-produced-by-maaly-raw-don-cannon");
+        extractor = (SoundcloudStreamExtractor) SoundCloud.getService().getStreamExtractor("https://soundcloud.com/liluzivert/do-what-i-want-produced-by-maaly-raw-don-cannon");
     }
 
     @Test
@@ -91,7 +91,7 @@ public class SoundcloudStreamExtractorDefaultTest {
 
     @Test
     public void testGetAudioStreams() throws IOException, ExtractionException {
-        assertTrue(!extractor.getAudioStreams().isEmpty());
+        assertFalse(extractor.getAudioStreams().isEmpty());
     }
 
     @Test

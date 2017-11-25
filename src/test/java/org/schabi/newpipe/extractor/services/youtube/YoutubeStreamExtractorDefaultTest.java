@@ -62,7 +62,7 @@ public class YoutubeStreamExtractorDefaultTest {
 
     @Test
     public void testGetTitle() throws ParsingException {
-        assertTrue(!extractor.getName().isEmpty());
+        assertFalse(extractor.getName().isEmpty());
     }
 
     @Test
@@ -113,7 +113,7 @@ public class YoutubeStreamExtractorDefaultTest {
 
     @Test
     public void testGetAudioStreams() throws IOException, ExtractionException {
-        assertTrue(!extractor.getAudioStreams().isEmpty());
+        assertFalse(extractor.getAudioStreams().isEmpty());
     }
 
     @Test

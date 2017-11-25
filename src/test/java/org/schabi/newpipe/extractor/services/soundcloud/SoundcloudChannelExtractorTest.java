@@ -47,7 +47,7 @@ public class SoundcloudChannelExtractorTest {
 
     @Test
     public void testGetStreams() throws Exception {
-        assertTrue("no streams are received", !extractor.getStreams().getItemList().isEmpty());
+        assertFalse("no streams are received", extractor.getStreams().getItemList().isEmpty());
     }
 
     @Test
