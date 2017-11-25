@@ -24,7 +24,6 @@ import org.junit.Before;
 import org.junit.Test;
 import org.schabi.newpipe.Downloader;
 import org.schabi.newpipe.extractor.NewPipe;
-import org.schabi.newpipe.extractor.kiosk.KioskExtractor;
 import org.schabi.newpipe.extractor.stream.StreamInfoItemCollector;
 
 import static junit.framework.TestCase.assertFalse;
@@ -40,12 +39,12 @@ import static org.schabi.newpipe.extractor.ServiceList.YouTube;
  */
 public class YoutubeTrendingExtractorTest {
 
-    KioskExtractor extractor;
+    YoutubeTrendingExtractor extractor;
 
     @Before
     public void setUp() throws Exception {
         NewPipe.init(Downloader.getInstance());
-        extractor = YouTube.getService()
+        extractor = (YoutubeTrendingExtractor) YouTube.getService()
                 .getKioskList()
                 .getExtractorById("Trending", null);
     }

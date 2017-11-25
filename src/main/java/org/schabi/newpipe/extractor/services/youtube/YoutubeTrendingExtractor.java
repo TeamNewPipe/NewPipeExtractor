@@ -108,10 +108,27 @@ public class YoutubeTrendingExtractor extends KioskExtractor {
                 }
 
                 @Override
+                public String getUploaderUrl() throws ParsingException {
+                    try {
+                        String link = getUploaderLink().attr("href");
+                        if(link.isEmpty()) {
+                            throw new IllegalArgumentException("is empty");
+                        }
+                        return link;
+                    } catch (Exception e) {
+                        throw new ParsingException("Could not get Uploader name");
+                    }
+                }
+
+                private Element getUploaderLink() {
+                    Element uploaderEl = el.select("div[class*=\"yt-lockup-byline \"]").first();
+                    return uploaderEl.select("a").first();
+                }
+
+                @Override
                 public String getUploaderName() throws ParsingException {
                     try {
-                        Element uploaderEl = el.select("div[class*=\"yt-lockup-byline \"]").first();
-                        return uploaderEl.select("a").text();
+                        return getUploaderLink().text();
                     } catch (Exception e) {
                         throw new ParsingException("Could not get Uploader name");
                     }
