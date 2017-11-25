@@ -222,6 +222,7 @@ public class YoutubeChannelExtractor extends ChannelExtractor {
         collector.reset();
 
         final String uploaderName = getName();
+        final String uploaderUrl = getCleanUrl();
         for (final Element li : element.children()) {
             if (li.select("div[class=\"feed-item-dismissable\"]").first() != null) {
                 collector.commit(new YoutubeStreamInfoItemExtractor(li) {
@@ -250,6 +251,11 @@ public class YoutubeChannelExtractor extends ChannelExtractor {
                     @Override
                     public String getUploaderName() throws ParsingException {
                         return uploaderName;
+                    }
+
+                    @Override
+                    public String getUploaderUrl() throws ParsingException {
+                        return uploaderUrl;
                     }
 
                     @Override
