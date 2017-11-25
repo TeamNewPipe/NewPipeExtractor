@@ -8,6 +8,7 @@ import org.schabi.newpipe.extractor.NewPipe;
 import org.schabi.newpipe.extractor.exceptions.ExtractionException;
 import org.schabi.newpipe.extractor.exceptions.ParsingException;
 import org.schabi.newpipe.extractor.stream.*;
+import org.schabi.newpipe.extractor.utils.Utils;
 
 import java.io.IOException;
 import java.util.HashMap;
@@ -45,7 +46,7 @@ public class YoutubeStreamExtractorDefaultTest {
     @Before
     public void setUp() throws Exception {
         NewPipe.init(Downloader.getInstance());
-        extractor = YouTube.getService().getStreamExtractor("https://www.youtube.com/watch?v=YQHsXMglC9A");
+        extractor = YouTube.getService().getStreamExtractor("https://www.youtube.com/watch?v=rYEDA3JcQqw");
     }
 
     @Test
@@ -85,8 +86,8 @@ public class YoutubeStreamExtractorDefaultTest {
 
     @Test
     public void testGetViewCount() throws ParsingException {
-        assertTrue(Long.toString(extractor.getViewCount()),
-                extractor.getViewCount() > /* specific to that video */ 1224000074);
+        Long count = extractor.getViewCount();
+        assertTrue(Long.toString(count), count >= /* specific to that video */ 1220025784);
     }
 
     @Test
@@ -141,13 +142,8 @@ public class YoutubeStreamExtractorDefaultTest {
     @Test
     public void testGetRelatedVideos() throws ExtractionException, IOException {
         StreamInfoItemCollector relatedVideos = extractor.getRelatedVideos();
+        Utils.printErrors(relatedVideos);
         assertFalse(relatedVideos.getItemList().isEmpty());
-        if(!relatedVideos.getErrors().isEmpty()) {
-            for(Throwable e : relatedVideos.getErrors()) {
-                e.printStackTrace();
-                System.err.println("----------------------");
-            }
-        }
         assertTrue(relatedVideos.getErrors().isEmpty());
     }
 

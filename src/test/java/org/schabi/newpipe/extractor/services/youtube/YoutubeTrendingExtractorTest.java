@@ -25,6 +25,7 @@ import org.junit.Test;
 import org.schabi.newpipe.Downloader;
 import org.schabi.newpipe.extractor.NewPipe;
 import org.schabi.newpipe.extractor.stream.StreamInfoItemCollector;
+import org.schabi.newpipe.extractor.utils.Utils;
 
 import static junit.framework.TestCase.assertFalse;
 import static org.junit.Assert.assertEquals;
@@ -68,6 +69,7 @@ public class YoutubeTrendingExtractorTest {
     @Test
     public void testGetStreams() throws Exception {
         StreamInfoItemCollector collector = extractor.getStreams();
+        Utils.printErrors(collector);
         assertTrue("no streams are received", collector.getItemList().isEmpty());
     }
 
