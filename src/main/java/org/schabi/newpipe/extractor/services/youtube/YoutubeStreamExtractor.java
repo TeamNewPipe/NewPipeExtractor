@@ -783,6 +783,11 @@ public class YoutubeStreamExtractor extends StreamExtractor {
             }
 
             @Override
+            public String getUploaderUrl() throws ParsingException {
+                return ""; // The uploader is not linked
+            }
+
+            @Override
             public String getUploadDate() throws ParsingException {
                 return "";
             }
