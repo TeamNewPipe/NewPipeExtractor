@@ -21,12 +21,11 @@ public class SoundcloudStreamExtractor extends StreamExtractor {
 
     public SoundcloudStreamExtractor(StreamingService service, String url) throws IOException, ExtractionException {
         super(service, url);
-        fetchPage();
     }
 
     @Override
-    public void fetchPage() throws IOException, ExtractionException {
-        track = SoundcloudParsingHelper.resolveFor(getOriginalUrl());
+    public void onFetchPage(@Nonnull Downloader downloader) throws IOException, ExtractionException {
+        track = SoundcloudParsingHelper.resolveFor(downloader, getOriginalUrl());
 
         String policy = track.getString("policy", "");
         if (!policy.equals("ALLOW") && !policy.equals("MONETIZE")) {

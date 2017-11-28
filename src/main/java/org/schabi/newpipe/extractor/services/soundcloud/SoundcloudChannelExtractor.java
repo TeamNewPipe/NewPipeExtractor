@@ -24,14 +24,13 @@ public class SoundcloudChannelExtractor extends ChannelExtractor {
     }
 
     @Override
-    public void fetchPage() throws IOException, ExtractionException {
-        Downloader dl = NewPipe.getDownloader();
+    public void onFetchPage(@Nonnull Downloader downloader) throws IOException, ExtractionException {
 
         userId = getUrlIdHandler().getId(getOriginalUrl());
         String apiUrl = "https://api.soundcloud.com/users/" + userId +
                 "?client_id=" + SoundcloudParsingHelper.clientId();
 
-        String response = dl.download(apiUrl);
+        String response = downloader.download(apiUrl);
         try {
             user = JsonParser.object().from(response);
         } catch (JsonParserException e) {

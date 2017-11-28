@@ -86,7 +86,6 @@ public class YoutubeStreamExtractor extends StreamExtractor {
 
     public YoutubeStreamExtractor(StreamingService service, String url) throws IOException, ExtractionException {
         super(service, url);
-        fetchPage();
     }
 
     /*//////////////////////////////////////////////////////////////////////////
@@ -415,7 +414,8 @@ public class YoutubeStreamExtractor extends StreamExtractor {
             // If the video is age restricted getPlayerConfig will fail
             return null;
         }
-        JsonObject playerConfig = getPlayerConfig(getPageHtml());
+        // TODO: This should be done in onFetchPage()
+        JsonObject playerConfig = getPlayerConfig(getPageHtml(NewPipe.getDownloader()));
         String playerResponse = playerConfig.getObject("args").getString("player_response");
 
         JsonObject captions;
@@ -530,26 +530,23 @@ public class YoutubeStreamExtractor extends StreamExtractor {
 
     private static String pageHtml = null;
 
-    private String getPageHtml() throws IOException, ExtractionException{
+    private String getPageHtml(Downloader downloader) throws IOException, ExtractionException{
         if (pageHtml == null) {
-            Downloader dl = NewPipe.getDownloader();
-            pageHtml = dl.download(getCleanUrl());
+            pageHtml = downloader.download(getCleanUrl());
         }
         return pageHtml;
     }
 
     @Override
-    public void fetchPage() throws IOException, ExtractionException {
-        Downloader dl = NewPipe.getDownloader();
-
-        String pageContent = getPageHtml();
+    public void onFetchPage(@Nonnull Downloader downloader) throws IOException, ExtractionException {
+        String pageContent = getPageHtml(downloader);
         doc = Jsoup.parse(pageContent, getCleanUrl());
 
 
         String playerUrl;
         // Check if the video is age restricted
         if (pageContent.contains("<meta property=\"og:restrictions:age")) {
-            String infoPageResponse = dl.download(String.format(GET_VIDEO_INFO_URL, getId()));
+            String infoPageResponse = downloader.download(String.format(GET_VIDEO_INFO_URL, getId()));
             videoInfoPage.putAll(Parser.compatParseMap(infoPageResponse));
             playerUrl = getPlayerUrlFromRestrictedVideo();
             isAgeRestricted = true;

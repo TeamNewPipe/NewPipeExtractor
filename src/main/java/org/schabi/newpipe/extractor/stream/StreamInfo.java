@@ -236,7 +236,8 @@ public class StreamInfo extends Info {
      * Fills out the video info fields which are common to all services.
      * Probably needs to be overridden by subclasses
      */
-    public static StreamInfo getInfo(StreamExtractor extractor) throws ExtractionException {
+    private static StreamInfo getInfo(StreamExtractor extractor) throws ExtractionException, IOException {
+        extractor.fetchPage();
         StreamInfo streamInfo;
         try {
             streamInfo = extractImportantData(extractor);

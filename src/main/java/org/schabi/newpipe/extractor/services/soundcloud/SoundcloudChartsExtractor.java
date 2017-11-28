@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.util.Arrays;
 import java.util.List;
 
+import org.schabi.newpipe.extractor.Downloader;
 import org.schabi.newpipe.extractor.StreamingService;
 import org.schabi.newpipe.extractor.UrlIdHandler;
 import org.schabi.newpipe.extractor.exceptions.ExtractionException;
@@ -23,7 +24,7 @@ public class SoundcloudChartsExtractor extends KioskExtractor {
     }
 
     @Override
-    public void fetchPage() {
+    public void onFetchPage(@Nonnull Downloader downloader) {
     }
 
     @Nonnull

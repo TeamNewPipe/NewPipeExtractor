@@ -28,6 +28,7 @@ public class YoutubeStreamExtractorRestrictedTest {
         NewPipe.init(Downloader.getInstance());
         extractor = (YoutubeStreamExtractor) YouTube.getService()
                 .getStreamExtractor("https://www.youtube.com/watch?v=i6JTvzrpBy0");
+        extractor.fetchPage();
     }
 
     @Test

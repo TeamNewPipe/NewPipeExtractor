@@ -29,6 +29,7 @@ public class SoundcloudStreamExtractorDefaultTest {
     public void setUp() throws Exception {
         NewPipe.init(Downloader.getInstance());
         extractor = (SoundcloudStreamExtractor) SoundCloud.getService().getStreamExtractor("https://soundcloud.com/liluzivert/do-what-i-want-produced-by-maaly-raw-don-cannon");
+        extractor.fetchPage();
     }
 
     @Test
