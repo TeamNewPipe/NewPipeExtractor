@@ -13,7 +13,7 @@ dependencies {
     implementation 'com.grack:nanojson:1.1'
     implementation 'org.jsoup:jsoup:1.9.2'
     implementation 'org.mozilla:rhino:1.7.7.1'
-    implementation 'com.github.spotbugs:spotbugs:3.1.0'
+    implementation 'com.github.spotbugs:spotbugs-annotations:3.1.0'
     testImplementation 'junit:junit:4.12'
 }
 
