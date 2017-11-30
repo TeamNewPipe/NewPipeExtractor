@@ -10,7 +10,7 @@ public abstract class Info implements Serializable {
     public final int service_id;
     /**
      * Id of this Info object <br>
-     * e.g. Youtube:  https://www.youtube.com/watch?v=RER5qCTzZ7     >    RER5qCTzZ7
+     * e.g. Youtube:  https://www.youtube.com/watch?v=RER5qCTzZ7     &gt;    RER5qCTzZ7
      */
     public final String id;
     public final String url;
