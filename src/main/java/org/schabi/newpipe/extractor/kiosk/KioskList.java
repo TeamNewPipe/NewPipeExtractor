@@ -19,8 +19,8 @@ public  class KioskList {
             throws ExtractionException, IOException;
     }
 
-    private int service_id;
-    private HashMap<String, KioskEntry> kioskList = new HashMap<>();
+    private final int service_id;
+    private final HashMap<String, KioskEntry> kioskList = new HashMap<>();
     private String defaultKiosk = null;
 
     private class KioskEntry {
@@ -28,8 +28,8 @@ public  class KioskList {
             extractorFactory = ef;
             handler = h;
         }
-        KioskExtractorFactory extractorFactory;
-        UrlIdHandler handler;
+        final KioskExtractorFactory extractorFactory;
+        final UrlIdHandler handler;
     }
 
     public KioskList(int service_id) {

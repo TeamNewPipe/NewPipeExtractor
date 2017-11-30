@@ -24,15 +24,14 @@ public class SoundcloudPlaylistExtractor extends PlaylistExtractor {
     }
 
     @Override
-    public void fetchPage() throws IOException, ExtractionException {
-        Downloader dl = NewPipe.getDownloader();
+    public void onFetchPage(@Nonnull Downloader downloader) throws IOException, ExtractionException {
 
         playlistId = getUrlIdHandler().getId(getOriginalUrl());
         String apiUrl = "https://api.soundcloud.com/playlists/" + playlistId +
                 "?client_id=" + SoundcloudParsingHelper.clientId() +
                 "&representation=compact";
 
-        String response = dl.download(apiUrl);
+        String response = downloader.download(apiUrl);
         try {
             playlist = JsonParser.object().from(response);
         } catch (JsonParserException e) {

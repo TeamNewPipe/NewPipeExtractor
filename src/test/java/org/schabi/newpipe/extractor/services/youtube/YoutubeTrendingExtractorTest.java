@@ -70,7 +70,7 @@ public class YoutubeTrendingExtractorTest {
     public void testGetStreams() throws Exception {
         StreamInfoItemCollector collector = extractor.getStreams();
         Utils.printErrors(collector);
-        assertTrue("no streams are received", collector.getItemList().isEmpty());
+        assertFalse("no streams are received", collector.getItemList().isEmpty());
     }
 
     @Test

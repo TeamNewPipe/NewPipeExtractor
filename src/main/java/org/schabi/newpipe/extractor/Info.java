@@ -16,7 +16,7 @@ public abstract class Info implements Serializable {
     public final String url;
     public final String name;
 
-    public List<Throwable> errors = new ArrayList<>();
+    public final List<Throwable> errors = new ArrayList<>();
 
     public void addError(Throwable throwable) {
         this.errors.add(throwable);

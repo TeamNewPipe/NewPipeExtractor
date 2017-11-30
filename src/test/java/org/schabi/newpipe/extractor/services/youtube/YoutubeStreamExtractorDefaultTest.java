@@ -41,12 +41,14 @@ import static org.schabi.newpipe.extractor.ServiceList.YouTube;
  */
 public class YoutubeStreamExtractorDefaultTest {
     public static final String HTTPS = "https://";
-    private StreamExtractor extractor;
+    private YoutubeStreamExtractor extractor;
 
     @Before
     public void setUp() throws Exception {
         NewPipe.init(Downloader.getInstance());
-        extractor = YouTube.getService().getStreamExtractor("https://www.youtube.com/watch?v=rYEDA3JcQqw");
+        extractor = (YoutubeStreamExtractor) YouTube.getService()
+                .getStreamExtractor("https://www.youtube.com/watch?v=rYEDA3JcQqw");
+        extractor.fetchPage();
     }
 
     @Test

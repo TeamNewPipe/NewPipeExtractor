@@ -59,9 +59,7 @@ public class YoutubeChannelExtractor extends ChannelExtractor {
     }
 
     @Override
-    public void fetchPage() throws IOException, ExtractionException {
-        Downloader downloader = NewPipe.getDownloader();
-
+    public void onFetchPage(@Nonnull Downloader downloader) throws IOException, ExtractionException {
         String channelUrl = super.getCleanUrl() + CHANNEL_URL_PARAMETERS;
         String pageContent = downloader.download(channelUrl);
         doc = Jsoup.parse(pageContent, channelUrl);

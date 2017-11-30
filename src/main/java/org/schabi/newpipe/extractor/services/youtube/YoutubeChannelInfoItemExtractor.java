@@ -26,7 +26,7 @@ import org.schabi.newpipe.extractor.utils.Utils;
  */
 
 public class YoutubeChannelInfoItemExtractor implements ChannelInfoItemExtractor {
-    private Element el;
+    private final Element el;
 
     public YoutubeChannelInfoItemExtractor(Element el) {
         this.el = el;

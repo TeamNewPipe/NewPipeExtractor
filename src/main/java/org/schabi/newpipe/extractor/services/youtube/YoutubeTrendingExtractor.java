@@ -42,9 +42,7 @@ public class YoutubeTrendingExtractor extends KioskExtractor {
     }
 
     @Override
-    public void fetchPage() throws IOException, ExtractionException {
-        Downloader downloader = NewPipe.getDownloader();
-
+    public void onFetchPage(@Nonnull Downloader downloader) throws IOException, ExtractionException {
         final String contentCountry = getContentCountry();
         String url = getCleanUrl();
         if(contentCountry != null && !contentCountry.isEmpty()) {

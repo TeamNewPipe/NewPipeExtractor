@@ -86,7 +86,6 @@ public class YoutubeStreamExtractor extends StreamExtractor {
 
     public YoutubeStreamExtractor(StreamingService service, String url) throws IOException, ExtractionException {
         super(service, url);
-        fetchPage();
     }
 
     /*//////////////////////////////////////////////////////////////////////////
@@ -106,6 +105,7 @@ public class YoutubeStreamExtractor extends StreamExtractor {
     @Nonnull
     @Override
     public String getName() throws ParsingException {
+        assertPageFetched();
         String name = getStringFromMetaData("title");
         if(name == null) {
             // Fallback to HTML method
@@ -124,6 +124,7 @@ public class YoutubeStreamExtractor extends StreamExtractor {
     @Nonnull
     @Override
     public String getUploadDate() throws ParsingException {
+        assertPageFetched();
         try {
             return doc.select("meta[itemprop=datePublished]").attr(CONTENT);
         } catch (Exception e) {//todo: add fallback method
@@ -134,6 +135,7 @@ public class YoutubeStreamExtractor extends StreamExtractor {
     @Nonnull
     @Override
     public String getThumbnailUrl() throws ParsingException {
+        assertPageFetched();
         // Try to get high resolution thumbnail first, if it fails, use low res from the player instead
         try {
             return doc.select("link[itemprop=\"thumbnailUrl\"]").first().attr("abs:href");
@@ -157,6 +159,7 @@ public class YoutubeStreamExtractor extends StreamExtractor {
     @Nonnull
     @Override
     public String getDescription() throws ParsingException {
+        assertPageFetched();
         try {
             return doc.select("p[id=\"eow-description\"]").first().html();
         } catch (Exception e) {//todo: add fallback method <-- there is no ... as long as i know
@@ -166,6 +169,7 @@ public class YoutubeStreamExtractor extends StreamExtractor {
 
     @Override
     public int getAgeLimit() throws ParsingException {
+        assertPageFetched();
         if (!isAgeRestricted) {
             return NO_AGE_LIMIT;
         }
@@ -179,6 +183,7 @@ public class YoutubeStreamExtractor extends StreamExtractor {
 
     @Override
     public long getLength() throws ParsingException {
+        assertPageFetched();
         if(playerArgs != null) {
             try {
                 long returnValue = Long.parseLong(playerArgs.get("length_seconds") + "");
@@ -217,6 +222,7 @@ public class YoutubeStreamExtractor extends StreamExtractor {
 
     @Override
     public long getViewCount() throws ParsingException {
+        assertPageFetched();
         try {
             return Long.parseLong(doc.select("meta[itemprop=interactionCount]").attr(CONTENT));
         } catch (Exception e) {//todo: find fallback method
@@ -226,6 +232,7 @@ public class YoutubeStreamExtractor extends StreamExtractor {
 
     @Override
     public long getLikeCount() throws ParsingException {
+        assertPageFetched();
         String likesString = "";
         try {
             Element button = doc.select("button.like-button-renderer-like-button").first();
@@ -245,6 +252,7 @@ public class YoutubeStreamExtractor extends StreamExtractor {
 
     @Override
     public long getDislikeCount() throws ParsingException {
+        assertPageFetched();
         String dislikesString = "";
         try {
             Element button = doc.select("button.like-button-renderer-dislike-button").first();
@@ -265,6 +273,7 @@ public class YoutubeStreamExtractor extends StreamExtractor {
     @Nonnull
     @Override
     public String getUploaderUrl() throws ParsingException {
+        assertPageFetched();
         try {
             return doc.select("div[class=\"yt-user-info\"]").first().children()
                     .select("a").first().attr("abs:href");
@@ -276,6 +285,7 @@ public class YoutubeStreamExtractor extends StreamExtractor {
 
     @Nullable
     private String getStringFromMetaData(String field) {
+        assertPageFetched();
         String value = null;
         if(playerArgs != null) {
             // This can not fail
@@ -291,6 +301,7 @@ public class YoutubeStreamExtractor extends StreamExtractor {
     @Nonnull
     @Override
     public String getUploaderName() throws ParsingException {
+        assertPageFetched();
         String name = getStringFromMetaData("author");
 
         if(name == null) {
@@ -310,6 +321,7 @@ public class YoutubeStreamExtractor extends StreamExtractor {
     @Nonnull
     @Override
     public String getUploaderAvatarUrl() throws ParsingException {
+        assertPageFetched();
         try {
             return doc.select("a[class*=\"yt-user-photo\"]").first()
                     .select("img").first()
@@ -321,6 +333,7 @@ public class YoutubeStreamExtractor extends StreamExtractor {
 
     @Override
     public String getDashMpdUrl() throws ParsingException {
+        assertPageFetched();
         try {
             String dashManifestUrl;
             if (videoInfoPage.containsKey("dashmpd")) {
@@ -347,6 +360,7 @@ public class YoutubeStreamExtractor extends StreamExtractor {
 
     @Override
     public List<AudioStream> getAudioStreams() throws IOException, ExtractionException {
+        assertPageFetched();
         List<AudioStream> audioStreams = new ArrayList<>();
         try {
             for (Map.Entry<String, ItagItem> entry : getItags(ADAPTIVE_FMTS, ItagItem.ItagType.AUDIO).entrySet()) {
@@ -366,6 +380,7 @@ public class YoutubeStreamExtractor extends StreamExtractor {
 
     @Override
     public List<VideoStream> getVideoStreams() throws IOException, ExtractionException {
+        assertPageFetched();
         List<VideoStream> videoStreams = new ArrayList<>();
         try {
             for (Map.Entry<String, ItagItem> entry : getItags(URL_ENCODED_FMT_STREAM_MAP, ItagItem.ItagType.VIDEO).entrySet()) {
@@ -385,6 +400,7 @@ public class YoutubeStreamExtractor extends StreamExtractor {
 
     @Override
     public List<VideoStream> getVideoOnlyStreams() throws IOException, ExtractionException {
+        assertPageFetched();
         List<VideoStream> videoOnlyStreams = new ArrayList<>();
         try {
             for (Map.Entry<String, ItagItem> entry : getItags(ADAPTIVE_FMTS, ItagItem.ItagType.VIDEO_ONLY).entrySet()) {
@@ -411,11 +427,13 @@ public class YoutubeStreamExtractor extends StreamExtractor {
     @Override
     @Nullable
     public List<Subtitles> getSubtitles(SubtitlesFormat format) throws IOException, ExtractionException {
+        assertPageFetched();
         if(isAgeRestricted) {
             // If the video is age restricted getPlayerConfig will fail
             return null;
         }
-        JsonObject playerConfig = getPlayerConfig(getPageHtml());
+        // TODO: This should be done in onFetchPage()
+        JsonObject playerConfig = getPlayerConfig(getPageHtml(NewPipe.getDownloader()));
         String playerResponse = playerConfig.getObject("args").getString("player_response");
 
         JsonObject captions;
@@ -459,6 +477,7 @@ public class YoutubeStreamExtractor extends StreamExtractor {
 
     @Override
     public StreamInfoItem getNextVideo() throws IOException, ExtractionException {
+        assertPageFetched();
         try {
             StreamInfoItemCollector collector = new StreamInfoItemCollector(getServiceId());
             collector.commit(extractVideoPreviewInfo(doc.select("div[class=\"watch-sidebar-section\"]")
@@ -472,6 +491,7 @@ public class YoutubeStreamExtractor extends StreamExtractor {
 
     @Override
     public StreamInfoItemCollector getRelatedVideos() throws IOException, ExtractionException {
+        assertPageFetched();
         try {
             StreamInfoItemCollector collector = new StreamInfoItemCollector(getServiceId());
             Element ul = doc.select("ul[id=\"watch-related\"]").first();
@@ -526,30 +546,27 @@ public class YoutubeStreamExtractor extends StreamExtractor {
     private static final String GET_VIDEO_INFO_URL = "https://www.youtube.com/get_video_info?video_id=" + "%s" +
             "&el=info&ps=default&eurl=&gl=US&hl=en";
 
-    private static volatile String decryptionCode = "";
+    private volatile String decryptionCode = "";
 
-    private static String pageHtml = null;
+    private String pageHtml = null;
 
-    private String getPageHtml() throws IOException, ExtractionException{
+    private String getPageHtml(Downloader downloader) throws IOException, ExtractionException{
         if (pageHtml == null) {
-            Downloader dl = NewPipe.getDownloader();
-            pageHtml = dl.download(getCleanUrl());
+            pageHtml = downloader.download(getCleanUrl());
         }
         return pageHtml;
     }
 
     @Override
-    public void fetchPage() throws IOException, ExtractionException {
-        Downloader dl = NewPipe.getDownloader();
-
-        String pageContent = getPageHtml();
+    public void onFetchPage(@Nonnull Downloader downloader) throws IOException, ExtractionException {
+        String pageContent = getPageHtml(downloader);
         doc = Jsoup.parse(pageContent, getCleanUrl());
 
 
         String playerUrl;
         // Check if the video is age restricted
         if (pageContent.contains("<meta property=\"og:restrictions:age")) {
-            String infoPageResponse = dl.download(String.format(GET_VIDEO_INFO_URL, getId()));
+            String infoPageResponse = downloader.download(String.format(GET_VIDEO_INFO_URL, getId()));
             videoInfoPage.putAll(Parser.compatParseMap(infoPageResponse));
             playerUrl = getPlayerUrlFromRestrictedVideo();
             isAgeRestricted = true;

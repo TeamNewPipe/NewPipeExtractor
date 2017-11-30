@@ -36,9 +36,7 @@ public class YoutubePlaylistExtractor extends PlaylistExtractor {
     }
 
     @Override
-    public void fetchPage() throws IOException, ExtractionException {
-        Downloader downloader = NewPipe.getDownloader();
-
+    public void onFetchPage(@Nonnull Downloader downloader) throws IOException, ExtractionException {
         String pageContent = downloader.download(getCleanUrl());
         doc = Jsoup.parse(pageContent, getCleanUrl());
 

@@ -67,13 +67,13 @@ public class SoundcloudParsingHelper {
      * 
      * See https://developers.soundcloud.com/docs/api/reference#resolve
      */
-    public static JsonObject resolveFor(String url) throws IOException, ReCaptchaException, ParsingException {
+    public static JsonObject resolveFor(Downloader downloader, String url) throws IOException, ReCaptchaException, ParsingException {
         String apiUrl = "https://api.soundcloud.com/resolve"
                 + "?url=" + URLEncoder.encode(url, "UTF-8")
                 + "&client_id=" + clientId();
 
         try {
-            return JsonParser.object().from(NewPipe.getDownloader().download(apiUrl));
+            return JsonParser.object().from(downloader.download(apiUrl));
         } catch (JsonParserException e) {
             throw new ParsingException("Could not parse json response", e);
         }
