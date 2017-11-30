@@ -146,8 +146,8 @@ public class ItagItem {
         return mediaFormat;
     }
 
-    public int id;
-    public ItagType itagType;
+    public final int id;
+    public final ItagType itagType;
 
     // Audio fields
     public int avgBitrate = -1;

@@ -6,7 +6,7 @@ import org.schabi.newpipe.extractor.playlist.PlaylistInfoItemExtractor;
 import org.schabi.newpipe.extractor.utils.Utils;
 
 public class YoutubePlaylistInfoItemExtractor implements PlaylistInfoItemExtractor {
-    private Element el;
+    private final Element el;
 
     public YoutubePlaylistInfoItemExtractor(Element el) {
         this.el = el;

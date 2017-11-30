@@ -13,8 +13,8 @@ public enum SubtitlesFormat {
     TRANSCRIPT2 (0x3, "srv2"),
     TRANSCRIPT3 (0x4, "srv3");
 
-    private int id;
-    private String extension;
+    private final int id;
+    private final String extension;
 
     SubtitlesFormat(int id, String extension) {
         this.id = id;

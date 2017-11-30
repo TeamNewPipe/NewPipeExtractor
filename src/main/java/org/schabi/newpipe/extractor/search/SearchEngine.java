@@ -35,7 +35,7 @@ public abstract class SearchEngine {
         }
     }
 
-    private InfoItemSearchCollector collector;
+    private final InfoItemSearchCollector collector;
 
     public SearchEngine(int serviceId) {
         collector = new InfoItemSearchCollector(serviceId);

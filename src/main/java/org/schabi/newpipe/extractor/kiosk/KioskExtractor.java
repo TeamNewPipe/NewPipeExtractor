@@ -30,7 +30,7 @@ import java.io.IOException;
 
 public abstract class KioskExtractor extends ListExtractor {
     private String contentCountry = null;
-    private String id = null;
+    private final String id;
 
     public KioskExtractor(StreamingService streamingService,
                           String url,

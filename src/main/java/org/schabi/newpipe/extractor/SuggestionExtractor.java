@@ -27,7 +27,7 @@ import java.util.List;
 
 public abstract class SuggestionExtractor {
 
-    private int serviceId;
+    private final int serviceId;
 
     public SuggestionExtractor(int serviceId) {
         this.serviceId = serviceId;

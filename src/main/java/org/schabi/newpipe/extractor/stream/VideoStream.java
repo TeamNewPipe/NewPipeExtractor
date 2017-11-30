@@ -23,8 +23,8 @@ package org.schabi.newpipe.extractor.stream;
 import org.schabi.newpipe.extractor.MediaFormat;
 
 public class VideoStream extends Stream {
-    public String resolution;
-    public boolean isVideoOnly;
+    public final String resolution;
+    public final boolean isVideoOnly;
 
 
     public VideoStream(String url, MediaFormat format, String resolution) {
