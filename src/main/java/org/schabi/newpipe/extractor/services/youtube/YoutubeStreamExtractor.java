@@ -546,9 +546,9 @@ public class YoutubeStreamExtractor extends StreamExtractor {
     private static final String GET_VIDEO_INFO_URL = "https://www.youtube.com/get_video_info?video_id=" + "%s" +
             "&el=info&ps=default&eurl=&gl=US&hl=en";
 
-    private static volatile String decryptionCode = "";
+    private volatile String decryptionCode = "";
 
-    private static String pageHtml = null;
+    private String pageHtml = null;
 
     private String getPageHtml(Downloader downloader) throws IOException, ExtractionException{
         if (pageHtml == null) {
