@@ -1,7 +1,5 @@
 package org.schabi.newpipe.extractor.stream;
 
-import org.schabi.newpipe.extractor.Subtitles;
-
 public enum SubtitlesFormat {
     // YouTube subtitles formats
     // TRANSCRIPT(3) is default YT format based on TTML,
