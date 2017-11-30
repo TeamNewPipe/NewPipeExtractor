@@ -30,6 +30,7 @@ import org.schabi.newpipe.extractor.kiosk.KioskInfo;
 
 import static junit.framework.TestCase.assertEquals;
 import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
 import static org.schabi.newpipe.extractor.ServiceList.YouTube;
 
 /**
@@ -55,7 +56,8 @@ public class YoutubeTreindingKioskInfoTest {
 
     @Test
     public void getId() {
-        assertEquals(kioskInfo.getId(), "Trending");
+        assertTrue(kioskInfo.getId().equals("Trending")
+                || kioskInfo.getId().equals("Trends"));
     }
 
     @Test
