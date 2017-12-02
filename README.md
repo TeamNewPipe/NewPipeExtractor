@@ -1,4 +1,6 @@
-# NewPipe Extractor [![Build Status](https://travis-ci.org/TeamNewPipe/NewPipeExtractor.svg?branch=master)](https://travis-ci.org/TeamNewPipe/NewPipeExtractor)
+# NewPipe Extractor
+
+[![Build Status](https://travis-ci.org/TeamNewPipe/NewPipeExtractor.svg?branch=master)](https://travis-ci.org/TeamNewPipe/NewPipeExtractor) [![JIT Pack Badge](https://jitpack.io/v/TeamNewPipe/NewPipeExtractor.svg)](https://jitpack.io/#TeamNewPipe/NewPipeExtractor)
 
 NewPipe Extractor is a library for extracting things from streaming sites. It is a core component of [NewPipe](https://github.com/TeamNewPipe/NewPipe), but could be used independently.
 
@@ -9,7 +11,7 @@ NewPipe Extractor is available at JitPack's Maven repo.
 If you're using Gradle, you could add NewPipe Extractor as a dependency with the following steps:
 
 1. Add `maven { url 'https://jitpack.io' }` to the `repositories` in your `build.gradle`.
-2. Add `compile 'com.github.TeamNewPipe:NewPipeExtractor:82ae72900a'`the `dependencies` in your `build.gradle`. Replace `82ae72900a` with the latest commit.
+2. Add `compile 'com.github.TeamNewPipe:NewPipeExtractor:v0.11.0'`the `dependencies` in your `build.gradle`. Replace `v0.11.0` with the latest release.
 
 ## Supported sites
 
