@@ -1,11 +1,10 @@
 package org.schabi.newpipe.extractor.services.youtube;
 
-import org.junit.Before;
+import org.junit.BeforeClass;
 import org.junit.Test;
 import org.schabi.newpipe.Downloader;
 import org.schabi.newpipe.extractor.ListExtractor;
 import org.schabi.newpipe.extractor.NewPipe;
-import org.schabi.newpipe.extractor.playlist.PlaylistExtractor;
 import org.schabi.newpipe.extractor.stream.StreamInfoItem;
 
 import java.util.List;
@@ -18,15 +17,15 @@ import static org.schabi.newpipe.extractor.ServiceList.YouTube;
  * Test for {@link YoutubePlaylistExtractor}
  */
 public class YoutubePlaylistExtractorTest {
-    private YoutubePlaylistExtractor extractor;
+    private static YoutubePlaylistExtractor extractor;
 
     private static void assertNotEmpty(String message, String value) {
         assertNotNull(message, value);
         assertFalse(message, value.isEmpty());
     }
 
-    @Before
-    public void setUp() throws Exception {
+    @BeforeClass
+    public static void setUp() throws Exception {
         NewPipe.init(Downloader.getInstance());
         extractor = (YoutubePlaylistExtractor) YouTube.getService()
                 .getPlaylistExtractor("https://www.youtube.com/playlist?list=PL7XlqX4npddfrdpMCxBnNZXg2GFll7t5y");

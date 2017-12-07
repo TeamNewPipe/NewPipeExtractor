@@ -1,6 +1,6 @@
 package org.schabi.newpipe.extractor.services.soundcloud;
 
-import org.junit.Before;
+import org.junit.BeforeClass;
 import org.junit.Ignore;
 import org.junit.Test;
 import org.schabi.newpipe.Downloader;
@@ -16,10 +16,10 @@ import static org.schabi.newpipe.extractor.ServiceList.SoundCloud;
  * Test for {@link SearchEngine}
  */
 public class SoundcloudSearchEngineChannelTest {
-    private SearchResult result;
+    private static SearchResult result;
 
-    @Before
-    public void setUp() throws Exception {
+    @BeforeClass
+    public static void setUp() throws Exception {
         NewPipe.init(Downloader.getInstance());
         SearchEngine engine = SoundCloud.getService().getSearchEngine();
 

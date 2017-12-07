@@ -1,6 +1,6 @@
 package org.schabi.newpipe.extractor.services.youtube;
 
-import org.junit.Before;
+import org.junit.BeforeClass;
 import org.junit.Ignore;
 import org.junit.Test;
 import org.schabi.newpipe.Downloader;
@@ -21,10 +21,10 @@ import static org.schabi.newpipe.extractor.ServiceList.YouTube;
  */
 public class YoutubeStreamExtractorRestrictedTest {
     public static final String HTTPS = "https://";
-    private YoutubeStreamExtractor extractor;
+    private static YoutubeStreamExtractor extractor;
 
-    @Before
-    public void setUp() throws Exception {
+    @BeforeClass
+    public static void setUp() throws Exception {
         NewPipe.init(Downloader.getInstance());
         extractor = (YoutubeStreamExtractor) YouTube.getService()
                 .getStreamExtractor("https://www.youtube.com/watch?v=i6JTvzrpBy0");

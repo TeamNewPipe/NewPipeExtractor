@@ -1,6 +1,6 @@
 package org.schabi.newpipe.extractor.services.youtube;
 
-import org.junit.Before;
+import org.junit.BeforeClass;
 import org.junit.Ignore;
 import org.junit.Test;
 import org.schabi.newpipe.Downloader;
@@ -37,10 +37,10 @@ import static org.schabi.newpipe.extractor.ServiceList.YouTube;
  * Test for {@link SearchEngine}
  */
 public class YoutubeSearchEngineChannelTest {
-    private SearchResult result;
+    private static SearchResult result;
 
-    @Before
-    public void setUp() throws Exception {
+    @BeforeClass
+    public static void setUp() throws Exception {
         NewPipe.init(Downloader.getInstance());
         SearchEngine engine = YouTube.getService().getSearchEngine();
 

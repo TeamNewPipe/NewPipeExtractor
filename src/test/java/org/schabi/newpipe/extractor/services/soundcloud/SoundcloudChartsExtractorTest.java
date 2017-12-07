@@ -6,7 +6,7 @@ import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 import static org.schabi.newpipe.extractor.ServiceList.SoundCloud;
 
-import org.junit.Before;
+import org.junit.BeforeClass;
 import org.junit.Ignore;
 import org.junit.Test;
 import org.schabi.newpipe.Downloader;
@@ -19,10 +19,10 @@ import org.schabi.newpipe.extractor.stream.StreamInfoItemCollector;
  */
 public class SoundcloudChartsExtractorTest {
 
-    KioskExtractor extractor;
+    static KioskExtractor extractor;
 
-    @Before
-    public void setUp() throws Exception {
+    @BeforeClass
+    public static void setUp() throws Exception {
         NewPipe.init(Downloader.getInstance());
         extractor = SoundCloud.getService()
                 .getKioskList()
