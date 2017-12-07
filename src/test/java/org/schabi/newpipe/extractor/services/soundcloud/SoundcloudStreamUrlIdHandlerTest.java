@@ -1,6 +1,6 @@
 package org.schabi.newpipe.extractor.services.soundcloud;
 
-import org.junit.Before;
+import org.junit.BeforeClass;
 import org.junit.Test;
 import org.schabi.newpipe.Downloader;
 import org.schabi.newpipe.extractor.NewPipe;
@@ -15,10 +15,10 @@ import static org.junit.Assert.*;
  * Test for {@link SoundcloudStreamUrlIdHandler}
  */
 public class SoundcloudStreamUrlIdHandlerTest {
-    private SoundcloudStreamUrlIdHandler urlIdHandler;
+    private static SoundcloudStreamUrlIdHandler urlIdHandler;
 
-    @Before
-    public void setUp() throws Exception {
+    @BeforeClass
+    public static void setUp() throws Exception {
         urlIdHandler = SoundcloudStreamUrlIdHandler.getInstance();
         NewPipe.init(Downloader.getInstance());
     }

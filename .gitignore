@@ -3,6 +3,7 @@ build/
 .idea
 local.properties
 out/
+*.iml
 
 # Ignore Gradle GUI config
 gradle-app.setting

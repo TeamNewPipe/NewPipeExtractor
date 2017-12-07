@@ -1,11 +1,9 @@
 package org.schabi.newpipe.extractor.services.soundcloud;
 
-import com.grack.nanojson.JsonParserException;
-import org.junit.Before;
+import org.junit.BeforeClass;
 import org.junit.Test;
 import org.schabi.newpipe.Downloader;
 import org.schabi.newpipe.extractor.NewPipe;
-import org.schabi.newpipe.extractor.Subtitles;
 import org.schabi.newpipe.extractor.exceptions.ExtractionException;
 import org.schabi.newpipe.extractor.exceptions.ParsingException;
 import org.schabi.newpipe.extractor.stream.StreamExtractor;
@@ -14,7 +12,6 @@ import org.schabi.newpipe.extractor.stream.StreamType;
 import org.schabi.newpipe.extractor.stream.SubtitlesFormat;
 
 import java.io.IOException;
-import java.util.List;
 
 import static org.junit.Assert.*;
 import static org.schabi.newpipe.extractor.ServiceList.SoundCloud;
@@ -23,10 +20,10 @@ import static org.schabi.newpipe.extractor.ServiceList.SoundCloud;
  * Test for {@link StreamExtractor}
  */
 public class SoundcloudStreamExtractorDefaultTest {
-    private SoundcloudStreamExtractor extractor;
+    private static SoundcloudStreamExtractor extractor;
 
-    @Before
-    public void setUp() throws Exception {
+    @BeforeClass
+    public static void setUp() throws Exception {
         NewPipe.init(Downloader.getInstance());
         extractor = (SoundcloudStreamExtractor) SoundCloud.getService().getStreamExtractor("https://soundcloud.com/liluzivert/do-what-i-want-produced-by-maaly-raw-don-cannon");
         extractor.fetchPage();

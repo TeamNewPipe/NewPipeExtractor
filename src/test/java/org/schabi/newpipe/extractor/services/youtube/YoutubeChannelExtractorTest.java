@@ -1,13 +1,12 @@
 package org.schabi.newpipe.extractor.services.youtube;
 
-import org.junit.Before;
+import org.junit.BeforeClass;
 import org.junit.Test;
 import org.schabi.newpipe.Downloader;
 import org.schabi.newpipe.extractor.ListExtractor;
 import org.schabi.newpipe.extractor.NewPipe;
 import org.schabi.newpipe.extractor.channel.ChannelExtractor;
 
-import java.util.List;
 
 import static org.junit.Assert.*;
 import static org.schabi.newpipe.extractor.ExtractorAsserts.assertEmptyErrors;
@@ -38,10 +37,10 @@ import static org.schabi.newpipe.extractor.ServiceList.YouTube;
  */
 public class YoutubeChannelExtractorTest {
 
-    YoutubeChannelExtractor extractor;
+    static YoutubeChannelExtractor extractor;
 
-    @Before
-    public void setUp() throws Exception {
+    @BeforeClass
+    public static void setUp() throws Exception {
         NewPipe.init(Downloader.getInstance());
         extractor = (YoutubeChannelExtractor) YouTube.getService()
                 .getChannelExtractor("https://www.youtube.com/user/Gronkh");

@@ -1,6 +1,6 @@
 package org.schabi.newpipe.extractor.services.soundcloud;
 
-import org.junit.Before;
+import org.junit.BeforeClass;
 import org.junit.Test;
 import org.schabi.newpipe.Downloader;
 import org.schabi.newpipe.extractor.NewPipe;
@@ -16,10 +16,10 @@ import static org.schabi.newpipe.extractor.ServiceList.SoundCloud;
  * Test for {@link SuggestionExtractor}
  */
 public class SoundcloudSuggestionExtractorTest {
-    private SuggestionExtractor suggestionExtractor;
+    private static SuggestionExtractor suggestionExtractor;
 
-    @Before
-    public void setUp() throws Exception {
+    @BeforeClass
+    public static void setUp() throws Exception {
         NewPipe.init(Downloader.getInstance());
         suggestionExtractor = SoundCloud.getService().getSuggestionExtractor();
     }

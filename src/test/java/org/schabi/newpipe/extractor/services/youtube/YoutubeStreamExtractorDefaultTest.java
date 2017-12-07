@@ -1,7 +1,6 @@
 package org.schabi.newpipe.extractor.services.youtube;
 
-import com.grack.nanojson.JsonParserException;
-import org.junit.Before;
+import org.junit.BeforeClass;
 import org.junit.Test;
 import org.schabi.newpipe.Downloader;
 import org.schabi.newpipe.extractor.NewPipe;
@@ -11,7 +10,6 @@ import org.schabi.newpipe.extractor.stream.*;
 import org.schabi.newpipe.extractor.utils.Utils;
 
 import java.io.IOException;
-import java.util.HashMap;
 
 import static org.junit.Assert.*;
 import static org.schabi.newpipe.extractor.ServiceList.YouTube;
@@ -41,10 +39,10 @@ import static org.schabi.newpipe.extractor.ServiceList.YouTube;
  */
 public class YoutubeStreamExtractorDefaultTest {
     public static final String HTTPS = "https://";
-    private YoutubeStreamExtractor extractor;
+    private static YoutubeStreamExtractor extractor;
 
-    @Before
-    public void setUp() throws Exception {
+    @BeforeClass
+    public static void setUp() throws Exception {
         NewPipe.init(Downloader.getInstance());
         extractor = (YoutubeStreamExtractor) YouTube.getService()
                 .getStreamExtractor("https://www.youtube.com/watch?v=rYEDA3JcQqw");
