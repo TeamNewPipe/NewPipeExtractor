@@ -10,6 +10,7 @@ import org.schabi.newpipe.extractor.search.SearchEngine;
 import org.schabi.newpipe.extractor.search.SearchResult;
 
 import static org.junit.Assert.*;
+import static org.schabi.newpipe.extractor.ExtractorAsserts.assertIsValidUrl;
 import static org.schabi.newpipe.extractor.ServiceList.YouTube;
 
 
@@ -53,6 +54,9 @@ public class YoutubeSearchEngineStreamTest {
     @Test
     public void testResultList() {
         assertFalse(result.resultList.isEmpty());
+        for(InfoItem item: result.getResults()) {
+            assertIsValidUrl(item.url);
+        }
     }
 
     @Test
