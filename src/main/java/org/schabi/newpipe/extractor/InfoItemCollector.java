@@ -1,5 +1,6 @@
 package org.schabi.newpipe.extractor;
 
+import org.schabi.newpipe.extractor.exceptions.FoundAdException;
 import org.schabi.newpipe.extractor.exceptions.ParsingException;
 
 import java.util.ArrayList;
@@ -84,6 +85,8 @@ public abstract class InfoItemCollector<I extends InfoItem, E> implements Collec
     public void commit(E extractor) {
         try {
             addItem(extract(extractor));
+        } catch (FoundAdException ae) {
+            // found an ad. Maybe a debug line could be placed here
         } catch (ParsingException e) {
             addError(e);
         }

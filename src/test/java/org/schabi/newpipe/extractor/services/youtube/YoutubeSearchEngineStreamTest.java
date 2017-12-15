@@ -47,7 +47,7 @@ public class YoutubeSearchEngineStreamTest {
 
         // Youtube will suggest "results" instead of "rsults",
         // keep in mind that the suggestions can change by country (the parameter "de")
-        result = engine.search("rsults", 0, "de", SearchEngine.Filter.STREAM)
+        result = engine.search("abc", 0, "de", SearchEngine.Filter.STREAM)
                 .getSearchResult();
     }
 
