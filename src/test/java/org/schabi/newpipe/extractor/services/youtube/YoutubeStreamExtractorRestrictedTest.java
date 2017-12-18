@@ -12,6 +12,8 @@ import org.schabi.newpipe.extractor.stream.SubtitlesFormat;
 import org.schabi.newpipe.extractor.stream.VideoStream;
 
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 
 import static org.junit.Assert.*;
 import static org.schabi.newpipe.extractor.ServiceList.YouTube;
@@ -103,7 +105,12 @@ public class YoutubeStreamExtractorRestrictedTest {
 
     @Test
     public void testGetVideoStreams() throws IOException, ExtractionException {
-        for (VideoStream s : extractor.getVideoStreams()) {
+        List<VideoStream> streams = new ArrayList<>();
+        streams.addAll(extractor.getVideoStreams());
+        streams.addAll(extractor.getVideoOnlyStreams());
+
+        assertTrue(streams.size() > 0);
+        for (VideoStream s : streams) {
             assertTrue(s.getUrl(),
                     s.getUrl().contains(HTTPS));
             assertTrue(s.resolution.length() > 0);

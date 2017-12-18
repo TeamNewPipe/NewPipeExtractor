@@ -543,8 +543,6 @@ public class YoutubeStreamExtractor extends StreamExtractor {
     private static final String HTTPS = "https:";
     private static final String CONTENT = "content";
     private static final String DECRYPTION_FUNC_NAME = "decrypt";
-    private static final String GET_VIDEO_INFO_URL = "https://www.youtube.com/get_video_info?video_id=" + "%s" +
-            "&el=info&ps=default&eurl=&gl=US&hl=en";
 
     private volatile String decryptionCode = "";
 
@@ -559,19 +557,21 @@ public class YoutubeStreamExtractor extends StreamExtractor {
 
     @Override
     public void onFetchPage(@Nonnull Downloader downloader) throws IOException, ExtractionException {
-        String pageContent = getPageHtml(downloader);
+        final String pageContent = getPageHtml(downloader);
         doc = Jsoup.parse(pageContent, getCleanUrl());
 
-
-        String playerUrl;
+        final String playerUrl;
+        // TODO: use embedded videos to fetch DASH manifest for all videos
         // Check if the video is age restricted
         if (pageContent.contains("<meta property=\"og:restrictions:age")) {
-            String infoPageResponse = downloader.download(String.format(GET_VIDEO_INFO_URL, getId()));
+            final EmbeddedInfo info = getEmbeddedInfo();
+            final String videoInfoUrl = getVideoInfoUrl(getId(), info.sts);
+            final String infoPageResponse = downloader.download(videoInfoUrl);
             videoInfoPage.putAll(Parser.compatParseMap(infoPageResponse));
-            playerUrl = getPlayerUrlFromRestrictedVideo();
+            playerUrl = info.url;
             isAgeRestricted = true;
         } else {
-            JsonObject ytPlayerConfig = getPlayerConfig(pageContent);
+            final JsonObject ytPlayerConfig = getPlayerConfig(pageContent);
             playerArgs = getPlayerArgs(ytPlayerConfig);
             playerUrl = getPlayerUrl(ytPlayerConfig);
             isAgeRestricted = false;
@@ -643,24 +643,26 @@ public class YoutubeStreamExtractor extends StreamExtractor {
         }
     }
 
-    private String getPlayerUrlFromRestrictedVideo() throws ParsingException, ReCaptchaException {
+    @Nonnull
+    private EmbeddedInfo getEmbeddedInfo() throws ParsingException, ReCaptchaException {
         try {
-            Downloader downloader = NewPipe.getDownloader();
-            String playerUrl = "";
-            String embedUrl = "https://www.youtube.com/embed/" + getId();
-            String embedPageContent = downloader.download(embedUrl);
-            //todo: find out if this can be reapaced by Parser.matchGroup1()
-            Pattern assetsPattern = Pattern.compile("\"assets\":.+?\"js\":\\s*(\"[^\"]+\")");
-            Matcher patternMatcher = assetsPattern.matcher(embedPageContent);
-            while (patternMatcher.find()) {
-                playerUrl = patternMatcher.group(1);
-            }
-            playerUrl = playerUrl.replace("\\", "").replace("\"", "");
+            final Downloader downloader = NewPipe.getDownloader();
+            final String embedUrl = "https://www.youtube.com/embed/" + getId();
+            final String embedPageContent = downloader.download(embedUrl);
 
+            // Get player url
+            final String assetsPattern = "\"assets\":.+?\"js\":\\s*(\"[^\"]+\")";
+            String playerUrl = Parser.matchGroup1(assetsPattern, embedPageContent)
+                    .replace("\\", "").replace("\"", "");
             if (playerUrl.startsWith("//")) {
                 playerUrl = HTTPS + playerUrl;
             }
-            return playerUrl;
+
+            // Get embed sts
+            final String stsPattern = "\"sts\"\\s*:\\s*(\\d+)";
+            final String sts = Parser.matchGroup1(stsPattern, embedPageContent);
+
+            return new EmbeddedInfo(playerUrl, sts);
         } catch (IOException e) {
             throw new ParsingException(
                     "Could load decryption code form restricted video for the Youtube service.", e);
@@ -731,8 +733,29 @@ public class YoutubeStreamExtractor extends StreamExtractor {
     }
 
     /*//////////////////////////////////////////////////////////////////////////
+    // Data Class
+    //////////////////////////////////////////////////////////////////////////*/
+
+    private class EmbeddedInfo {
+        final String url;
+        final String sts;
+
+        EmbeddedInfo(final String url, final String sts) {
+            this.url = url;
+            this.sts = sts;
+        }
+    }
+
+    /*//////////////////////////////////////////////////////////////////////////
     // Utils
     //////////////////////////////////////////////////////////////////////////*/
+
+    @Nonnull
+    private String getVideoInfoUrl(final String id, final String sts) {
+        return "https://www.youtube.com/get_video_info?" + "video_id=" + id +
+                "&eurl=https://youtube.googleapis.com/v/" + id +
+                "&sts=" + sts + "&ps=default&gl=US&hl=en";
+    }
 
     private Map<String, ItagItem> getItags(String encodedUrlMapKey, ItagItem.ItagType itagTypeWanted) throws ParsingException {
         Map<String, ItagItem> urlAndItags = new LinkedHashMap<>();
