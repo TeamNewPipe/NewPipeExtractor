@@ -57,7 +57,6 @@ public class YoutubeTrendingExtractorTest {
 
     @Test
     public void testGetName() throws Exception {
-        System.out.println(extractor.getName());
         assertFalse(extractor.getName().isEmpty());
     }
 

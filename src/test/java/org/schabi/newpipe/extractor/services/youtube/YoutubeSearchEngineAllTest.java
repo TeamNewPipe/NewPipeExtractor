@@ -55,7 +55,6 @@ public class YoutubeSearchEngineAllTest {
     @Test
     public void testResultList() {
         final List<InfoItem> results = result.getResults();
-        System.out.println("Results: " + results);
         assertFalse("Results are empty: " + results, results.isEmpty());
 
         InfoItem firstInfoItem = results.get(0);
