@@ -63,7 +63,7 @@ public class SoundcloudChartsExtractor extends KioskExtractor {
         if (getId().equals("Top 50")) {
             apiUrl += "&kind=top";
         } else {
-            apiUrl += "&kind=new";
+            apiUrl += "&kind=trending";
         }
 
         List<String> supportedCountries = Arrays.asList("AU", "CA", "FR", "DE", "IE", "NL", "NZ", "GB", "US");
