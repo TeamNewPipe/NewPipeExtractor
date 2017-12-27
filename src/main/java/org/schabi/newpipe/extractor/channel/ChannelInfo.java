@@ -7,7 +7,6 @@ import org.schabi.newpipe.extractor.ServiceList;
 import org.schabi.newpipe.extractor.StreamingService;
 import org.schabi.newpipe.extractor.exceptions.ExtractionException;
 import org.schabi.newpipe.extractor.exceptions.ParsingException;
-import org.schabi.newpipe.extractor.stream.Stream;
 import org.schabi.newpipe.extractor.stream.StreamInfoItemCollector;
 
 import java.io.IOException;
@@ -44,8 +43,6 @@ public class ChannelInfo extends ListInfo {
     }
 
     public static ChannelInfo getInfo(String url) throws IOException, ExtractionException {
-        if(isFeedUrl(url))
-                return getInfo(NewPipe.getServiceByUrl(url), getUrlFromFeed(url));
         return getInfo(NewPipe.getServiceByUrl(url), url);
     }
 
@@ -55,22 +52,6 @@ public class ChannelInfo extends ListInfo {
 
     public static ChannelInfo getInfo(StreamingService service, String url) throws IOException, ExtractionException {
         return getInfo(service.getChannelExtractor(url));
-    }
-
-    public static Boolean isFeedUrl(String url) throws ExtractionException {
-        return isFeedUrl(NewPipe.getServiceByUrl(url), url);
-    }
-
-    public static Boolean isFeedUrl(StreamingService service, String url) {
-        return service.isFeedUrl(url);
-    }
-
-    public static String getUrlFromFeed(String feedUrl) throws ExtractionException {
-        return getUrlFromFeed(NewPipe.getServiceByUrl(feedUrl), feedUrl);
-    }
-
-    public static String getUrlFromFeed(StreamingService service, String feedUrl) {
-        return service.getUrlFromFeed(feedUrl);
     }
 
     public static ChannelInfo getInfo(ChannelExtractor extractor) throws ParsingException {

@@ -96,7 +96,6 @@ public class YoutubeChannelExtractor extends ChannelExtractor {
 
             return element.attr("data-channel-external-id");
         } catch (Exception e) {
-
             throw new ParsingException("Could not get channel id", e);
         }
     }

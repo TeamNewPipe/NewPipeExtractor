@@ -1,25 +1,17 @@
 package org.schabi.newpipe.extractor.services.soundcloud;
 
-import com.grack.nanojson.JsonObject;
-import com.grack.nanojson.JsonParser;
-import com.grack.nanojson.JsonParserException;
-
 import java.io.IOException;
 
-import org.schabi.newpipe.extractor.Downloader;
-import org.schabi.newpipe.extractor.NewPipe;
 import org.schabi.newpipe.extractor.StreamingService;
 import org.schabi.newpipe.extractor.SuggestionExtractor;
 import org.schabi.newpipe.extractor.UrlIdHandler;
 import org.schabi.newpipe.extractor.channel.ChannelExtractor;
 import org.schabi.newpipe.extractor.exceptions.ExtractionException;
-import org.schabi.newpipe.extractor.exceptions.ReCaptchaException;
 import org.schabi.newpipe.extractor.kiosk.KioskExtractor;
 import org.schabi.newpipe.extractor.kiosk.KioskList;
 import org.schabi.newpipe.extractor.playlist.PlaylistExtractor;
 import org.schabi.newpipe.extractor.search.SearchEngine;
 import org.schabi.newpipe.extractor.stream.StreamExtractor;
-import org.schabi.newpipe.extractor.utils.Parser;
 
 public class SoundcloudService extends StreamingService {
 
@@ -96,46 +88,5 @@ public class SoundcloudService extends StreamingService {
         }
 
         return list;
-    }
-
-    public boolean isFeedUrl(String url) {
-        return url.contains("sounds.rss");
-    }
-
-    public String getUrlFromFeed(String feedUrl) {
-        Downloader dl = NewPipe.getDownloader();
-        String userId = feedUrl.split(":users:")[1];
-        String apiUrl;
-        try {
-            apiUrl = "https://api.soundcloud.com/users/" + userId +
-                    "?client_id=" + SoundcloudParsingHelper.clientId();
-        } catch (ReCaptchaException e) {
-            e.printStackTrace();
-            return null;
-        } catch (IOException e) {
-            e.printStackTrace();
-            return null;
-        } catch (Parser.RegexException e) {
-            e.printStackTrace();
-            return null;
-        }
-        String response;
-        try {
-            response = dl.download(apiUrl);
-        } catch (IOException e) {
-            e.printStackTrace();
-            return null;
-        } catch (ReCaptchaException e) {
-            e.printStackTrace();
-            return null;
-        }
-        JsonObject user;
-        try {
-            user = JsonParser.object().from(response);
-        } catch (JsonParserException e) {
-            e.printStackTrace();
-            return null;
-        }
-        return user.getString("permalink_url");
     }
 }

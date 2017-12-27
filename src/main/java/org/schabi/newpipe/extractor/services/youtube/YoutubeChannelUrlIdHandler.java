@@ -51,6 +51,6 @@ public class YoutubeChannelUrlIdHandler implements UrlIdHandler {
     @Override
     public boolean acceptUrl(String url) {
         return (url.contains("youtube") || url.contains("youtu.be"))
-                && ((url.contains("/user/") || url.contains("/channel/")) || url.contains("videos.xml"));
+                && (url.contains("/user/") || url.contains("/channel/"));
     }
 }
