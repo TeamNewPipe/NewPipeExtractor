@@ -1,6 +1,6 @@
 package org.schabi.newpipe.extractor.services.soundcloud;
 
-import org.junit.Before;
+import org.junit.BeforeClass;
 import org.junit.Test;
 import org.schabi.newpipe.Downloader;
 import org.schabi.newpipe.extractor.ListExtractor;
@@ -16,10 +16,10 @@ import static org.schabi.newpipe.extractor.ServiceList.SoundCloud;
 
 public class SoundcloudChannelExtractorTest {
 
-    ChannelExtractor extractor;
+    static ChannelExtractor extractor;
 
-    @Before
-    public void setUp() throws Exception {
+    @BeforeClass
+    public static void setUp() throws Exception {
         NewPipe.init(Downloader.getInstance());
         extractor = SoundCloud.getService()
                 .getChannelExtractor("https://soundcloud.com/liluzivert");
@@ -47,7 +47,7 @@ public class SoundcloudChannelExtractorTest {
 
     @Test
     public void testGetStreams() throws Exception {
-        assertTrue("no streams are received", !extractor.getStreams().getItemList().isEmpty());
+        assertFalse("no streams are received", extractor.getStreams().getItemList().isEmpty());
     }
 
     @Test

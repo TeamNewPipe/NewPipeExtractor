@@ -11,6 +11,7 @@ import org.schabi.newpipe.extractor.exceptions.ParsingException;
 import org.schabi.newpipe.extractor.playlist.PlaylistExtractor;
 import org.schabi.newpipe.extractor.stream.StreamInfoItemCollector;
 
+import javax.annotation.Nonnull;
 import java.io.IOException;
 
 @SuppressWarnings("WeakerAccess")
@@ -23,15 +24,14 @@ public class SoundcloudPlaylistExtractor extends PlaylistExtractor {
     }
 
     @Override
-    public void fetchPage() throws IOException, ExtractionException {
-        Downloader dl = NewPipe.getDownloader();
+    public void onFetchPage(@Nonnull Downloader downloader) throws IOException, ExtractionException {
 
         playlistId = getUrlIdHandler().getId(getOriginalUrl());
         String apiUrl = "https://api.soundcloud.com/playlists/" + playlistId +
                 "?client_id=" + SoundcloudParsingHelper.clientId() +
                 "&representation=compact";
 
-        String response = dl.download(apiUrl);
+        String response = downloader.download(apiUrl);
         try {
             playlist = JsonParser.object().from(response);
         } catch (JsonParserException e) {
@@ -39,16 +39,19 @@ public class SoundcloudPlaylistExtractor extends PlaylistExtractor {
         }
     }
 
+    @Nonnull
     @Override
     public String getCleanUrl() {
         return playlist.isString("permalink_url") ? playlist.getString("permalink_url") : getOriginalUrl();
     }
 
+    @Nonnull
     @Override
     public String getId() {
         return playlistId;
     }
 
+    @Nonnull
     @Override
     public String getName() {
         return playlist.getString("title");
@@ -84,6 +87,7 @@ public class SoundcloudPlaylistExtractor extends PlaylistExtractor {
         return playlist.getNumber("track_count", 0).longValue();
     }
 
+    @Nonnull
     @Override
     public StreamInfoItemCollector getStreams() throws IOException, ExtractionException {
         StreamInfoItemCollector collector = new StreamInfoItemCollector(getServiceId());

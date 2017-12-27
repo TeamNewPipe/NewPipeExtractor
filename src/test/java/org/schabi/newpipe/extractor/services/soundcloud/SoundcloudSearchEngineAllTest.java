@@ -1,6 +1,6 @@
 package org.schabi.newpipe.extractor.services.soundcloud;
 
-import org.junit.Before;
+import org.junit.BeforeClass;
 import org.junit.Ignore;
 import org.junit.Test;
 import org.schabi.newpipe.Downloader;
@@ -9,6 +9,7 @@ import org.schabi.newpipe.extractor.search.SearchEngine;
 import org.schabi.newpipe.extractor.search.SearchResult;
 
 import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 import static org.schabi.newpipe.extractor.ServiceList.SoundCloud;
 
@@ -16,10 +17,10 @@ import static org.schabi.newpipe.extractor.ServiceList.SoundCloud;
  * Test for {@link SearchEngine}
  */
 public class SoundcloudSearchEngineAllTest {
-    private SearchResult result;
+    private static SearchResult result;
 
-    @Before
-    public void setUp() throws Exception {
+    @BeforeClass
+    public static void setUp() throws Exception {
         NewPipe.init(Downloader.getInstance());
         SearchEngine engine = SoundCloud.getService().getSearchEngine();
 
@@ -36,8 +37,9 @@ public class SoundcloudSearchEngineAllTest {
 
     @Test
     public void testResultErrors() {
+        assertNotNull(result.errors);
         if (!result.errors.isEmpty()) for (Throwable error : result.errors) error.printStackTrace();
-        assertTrue(result.errors == null || result.errors.isEmpty());
+        assertTrue(result.errors.isEmpty());
     }
 
     @Ignore

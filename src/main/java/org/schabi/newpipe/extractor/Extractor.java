@@ -3,6 +3,8 @@ package org.schabi.newpipe.extractor;
 import org.schabi.newpipe.extractor.exceptions.ExtractionException;
 import org.schabi.newpipe.extractor.exceptions.ParsingException;
 
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import java.io.IOException;
 
 public abstract class Extractor {
@@ -29,30 +31,70 @@ public abstract class Extractor {
      * <p>
      * Is lazily-cleaned by calling {@link #getCleanUrl()}
      */
+    @Nullable
     private String cleanUrl;
+    private boolean pageFetched = false;
+    private final Downloader downloader;
 
     public Extractor(StreamingService service, String url) throws ExtractionException {
+        if(service == null) throw new NullPointerException("service is null");
+        if(url == null) throw new NullPointerException("url is null");
         this.service = service;
         this.originalUrl = url;
+        this.downloader = NewPipe.getDownloader();
+        if(downloader == null) throw new NullPointerException("downloader is null");
     }
 
     /**
      * @return a {@link UrlIdHandler} of the current extractor type (e.g. a ChannelExtractor should return a channel url handler).
      */
+    @Nonnull
     protected abstract UrlIdHandler getUrlIdHandler() throws ParsingException;
 
     /**
      * Fetch the current page.
+     * @throws IOException if the page can not be loaded
+     * @throws ExtractionException if the pages content is not understood
      */
-    public abstract void fetchPage() throws IOException, ExtractionException;
+    public void fetchPage() throws IOException, ExtractionException {
+        if(pageFetched) return;
+        onFetchPage(downloader);
+        pageFetched = true;
+    }
 
+    protected void assertPageFetched() {
+        if(!pageFetched) throw new IllegalStateException("Page is not fetched. Make sure you call fetchPage()");
+    }
+
+    /**
+     * Fetch the current page.
+     * @param downloader the download to use
+     * @throws IOException if the page can not be loaded
+     * @throws ExtractionException if the pages content is not understood
+     */
+    public abstract void onFetchPage(@Nonnull Downloader downloader) throws IOException, ExtractionException;
+
+    @Nonnull
     public abstract String getId() throws ParsingException;
+
+    /**
+     * Get the name
+     * @return the name
+     * @throws ParsingException if the name cannot be extracted
+     */
+    @Nonnull
     public abstract String getName() throws ParsingException;
 
+    @Nonnull
     public String getOriginalUrl() {
         return originalUrl;
     }
 
+    /**
+     * Get a clean url and as a fallback the original url.
+     * @return the clean url or the original url
+     */
+    @Nonnull
     public String getCleanUrl() {
         if (cleanUrl != null && !cleanUrl.isEmpty()) return cleanUrl;
 
@@ -66,6 +108,7 @@ public abstract class Extractor {
         return cleanUrl;
     }
 
+    @Nonnull
     public StreamingService getService() {
         return service;
     }

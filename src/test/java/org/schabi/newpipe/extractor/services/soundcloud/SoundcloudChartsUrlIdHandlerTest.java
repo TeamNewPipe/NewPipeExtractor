@@ -4,7 +4,7 @@ import static junit.framework.TestCase.assertFalse;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
-import org.junit.Before;
+import org.junit.BeforeClass;
 import org.junit.Test;
 import org.schabi.newpipe.Downloader;
 import org.schabi.newpipe.extractor.NewPipe;
@@ -13,10 +13,10 @@ import org.schabi.newpipe.extractor.NewPipe;
  * Test for {@link SoundcloudChartsUrlIdHandler}
  */
 public class SoundcloudChartsUrlIdHandlerTest {
-    private SoundcloudChartsUrlIdHandler urlIdHandler;
+    private static SoundcloudChartsUrlIdHandler urlIdHandler;
 
-    @Before
-    public void setUp() throws Exception {
+    @BeforeClass
+    public static void setUp() throws Exception {
         urlIdHandler = new SoundcloudChartsUrlIdHandler();
         NewPipe.init(Downloader.getInstance());
     }

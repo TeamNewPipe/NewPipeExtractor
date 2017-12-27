@@ -20,13 +20,12 @@ package org.schabi.newpipe.extractor.services.youtube;
  * along with NewPipe.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-import org.junit.Before;
+import org.junit.BeforeClass;
 import org.junit.Test;
 import org.schabi.newpipe.Downloader;
 import org.schabi.newpipe.extractor.NewPipe;
 import org.schabi.newpipe.extractor.StreamingService;
 import org.schabi.newpipe.extractor.kiosk.KioskList;
-import org.schabi.newpipe.extractor.search.SearchEngine;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
@@ -36,11 +35,11 @@ import static org.schabi.newpipe.extractor.ServiceList.YouTube;
  * Test for {@link YoutubeService}
  */
 public class YoutubeServiceTest {
-    StreamingService service;
-    KioskList kioskList;
+    static StreamingService service;
+    static KioskList kioskList;
 
-    @Before
-    public void setUp() throws Exception {
+    @BeforeClass
+    public static void setUp() throws Exception {
         NewPipe.init(Downloader.getInstance());
         service = YouTube.getService();
         kioskList = service.getKioskList();
@@ -48,11 +47,11 @@ public class YoutubeServiceTest {
 
     @Test
     public void testGetKioskAvailableKiosks() throws Exception {
-        assertFalse("No kiosk got returned", kioskList.getAvailableKisoks().isEmpty());
+        assertFalse("No kiosk got returned", kioskList.getAvailableKiosks().isEmpty());
     }
 
     @Test
-    public void testGetDefaultKisok() throws Exception {
-        assertEquals(kioskList.getDefaultKioskExtractor(null).getName(), "Trending");
+    public void testGetDefaultKiosk() throws Exception {
+        assertEquals(kioskList.getDefaultKioskExtractor(null).getId(), "Trending");
     }
 }

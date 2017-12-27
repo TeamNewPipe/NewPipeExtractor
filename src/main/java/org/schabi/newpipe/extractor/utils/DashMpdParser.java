@@ -88,17 +88,16 @@ public class DashMpdParser {
                     ItagItem itag = ItagItem.getItag(Integer.parseInt(id));
                     if (itag != null) {
                         MediaFormat mediaFormat = MediaFormat.getFromMimeType(mimeType);
-                        int format = mediaFormat != null ? mediaFormat.id : -1;
 
                         if (itag.itagType.equals(ItagItem.ItagType.AUDIO)) {
-                            AudioStream audioStream = new AudioStream(url, format, itag.avgBitrate);
+                            AudioStream audioStream = new AudioStream(url, mediaFormat, itag.avgBitrate);
 
                             if (!Stream.containSimilarStream(audioStream, streamInfo.audio_streams)) {
                                 streamInfo.audio_streams.add(audioStream);
                             }
                         } else {
                             boolean isVideoOnly = itag.itagType.equals(ItagItem.ItagType.VIDEO_ONLY);
-                            VideoStream videoStream = new VideoStream(url, format, itag.resolutionString, isVideoOnly);
+                            VideoStream videoStream = new VideoStream(url, mediaFormat, itag.resolutionString, isVideoOnly);
 
                             if (isVideoOnly) {
                                 if (!Stream.containSimilarStream(videoStream, streamInfo.video_only_streams)) {

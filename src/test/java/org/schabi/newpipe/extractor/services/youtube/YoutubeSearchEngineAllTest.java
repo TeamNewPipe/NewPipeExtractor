@@ -1,16 +1,21 @@
 package org.schabi.newpipe.extractor.services.youtube;
 
-import org.junit.Before;
+import org.junit.BeforeClass;
 import org.junit.Ignore;
 import org.junit.Test;
 import org.schabi.newpipe.Downloader;
+import org.schabi.newpipe.extractor.InfoItem;
 import org.schabi.newpipe.extractor.NewPipe;
+import org.schabi.newpipe.extractor.channel.ChannelInfoItem;
 import org.schabi.newpipe.extractor.search.SearchEngine;
 import org.schabi.newpipe.extractor.search.SearchResult;
 
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
-import static org.schabi.newpipe.extractor.ServiceList.YouTube;
+import java.net.MalformedURLException;
+import java.net.URL;
+import java.util.List;
+
+import static org.junit.Assert.*;
+import static org.schabi.newpipe.extractor.ExtractorAsserts.assertIsValidUrl;
 
 /*
  * Created by Christian Schabesberger on 29.12.15.
@@ -36,34 +41,47 @@ import static org.schabi.newpipe.extractor.ServiceList.YouTube;
  * Test for {@link SearchEngine}
  */
 public class YoutubeSearchEngineAllTest {
-    private SearchResult result;
+    private static SearchResult result;
 
-    @Before
-    public void setUp() throws Exception {
+    @BeforeClass
+    public static void setUpClass() throws Exception {
         NewPipe.init(Downloader.getInstance());
-        SearchEngine engine = YouTube.getService().getSearchEngine();
+        YoutubeSearchEngine engine = new YoutubeSearchEngine(1);
 
-        // Youtube will suggest "asdf" instead of "asdgff"
-        // keep in mind that the suggestions can change by country (the parameter "de")
-        result = engine.search("asdgff", 0, "de", SearchEngine.Filter.ANY)
+        result = engine.search("pewdiepie", 0, "de", SearchEngine.Filter.ANY)
                 .getSearchResult();
     }
 
     @Test
     public void testResultList() {
-        assertFalse(result.resultList.isEmpty());
+        final List<InfoItem> results = result.getResults();
+        assertFalse("Results are empty: " + results, results.isEmpty());
+
+        InfoItem firstInfoItem = results.get(0);
+
+        // THe channel should be the first item
+        assertTrue(firstInfoItem instanceof ChannelInfoItem);
+        assertEquals("name", "PewDiePie", firstInfoItem.name);
+        assertEquals("url","https://www.youtube.com/user/PewDiePie", firstInfoItem.url);
+
+        for(InfoItem item: results) {
+            assertIsValidUrl(item.url);
+        }
+
     }
 
     @Test
     public void testResultErrors() {
-        if (!result.errors.isEmpty()) for (Throwable error : result.errors) error.printStackTrace();
-        assertTrue(result.errors == null || result.errors.isEmpty());
+        for (Throwable error : result.getErrors()) {
+            error.printStackTrace();
+        }
+        assertTrue(result.getErrors().isEmpty());
     }
 
     @Ignore
     @Test
     public void testSuggestion() {
         //todo write a real test
-        assertTrue(result.suggestion != null);
+        assertTrue(result.getSuggestion() != null);
     }
 }

@@ -1,6 +1,6 @@
 package org.schabi.newpipe.extractor.services.youtube;
 
-import org.junit.Before;
+import org.junit.BeforeClass;
 import org.junit.Ignore;
 import org.junit.Test;
 import org.schabi.newpipe.Downloader;
@@ -10,6 +10,7 @@ import org.schabi.newpipe.extractor.search.SearchEngine;
 import org.schabi.newpipe.extractor.search.SearchResult;
 
 import static org.junit.Assert.*;
+import static org.schabi.newpipe.extractor.ExtractorAsserts.assertIsValidUrl;
 import static org.schabi.newpipe.extractor.ServiceList.YouTube;
 
 
@@ -37,10 +38,10 @@ import static org.schabi.newpipe.extractor.ServiceList.YouTube;
  * Test for {@link SearchEngine}
  */
 public class YoutubeSearchEngineChannelTest {
-    private SearchResult result;
+    private static SearchResult result;
 
-    @Before
-    public void setUp() throws Exception {
+    @BeforeClass
+    public static void setUp() throws Exception {
         NewPipe.init(Downloader.getInstance());
         SearchEngine engine = YouTube.getService().getSearchEngine();
 
@@ -53,6 +54,9 @@ public class YoutubeSearchEngineChannelTest {
     @Test
     public void testResultList() {
         assertFalse(result.resultList.isEmpty());
+        for(InfoItem item: result.getResults()) {
+            assertIsValidUrl(item.url);
+        }
     }
 
     @Test
@@ -64,8 +68,9 @@ public class YoutubeSearchEngineChannelTest {
 
     @Test
     public void testResultErrors() {
+        assertNotNull(result.errors);
         if (!result.errors.isEmpty()) for (Throwable error : result.errors) error.printStackTrace();
-        assertTrue(result.errors == null || result.errors.isEmpty());
+        assertTrue(result.errors.isEmpty());
     }
 
     @Ignore

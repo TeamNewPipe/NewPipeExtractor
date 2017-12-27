@@ -23,47 +23,42 @@ import org.schabi.newpipe.extractor.exceptions.ParsingException;
  * along with NewPipe.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-public class ChannelInfoItemCollector extends InfoItemCollector {
+public class ChannelInfoItemCollector extends InfoItemCollector<ChannelInfoItem, ChannelInfoItemExtractor> {
     public ChannelInfoItemCollector(int serviceId) {
         super(serviceId);
     }
 
+    @Override
     public ChannelInfoItem extract(ChannelInfoItemExtractor extractor) throws ParsingException {
-        ChannelInfoItem resultItem = new ChannelInfoItem();
         // important information
-        resultItem.service_id = getServiceId();
-        resultItem.name = extractor.getName();
-        resultItem.url = extractor.getUrl();
+        int serviceId = getServiceId();
+        String name = extractor.getName();
+        String  url = extractor.getUrl();
+
+        ChannelInfoItem resultItem = new ChannelInfoItem(serviceId, url, name);
+
 
         // optional information
         try {
-            resultItem.subscriber_count = extractor.getSubscriberCount();
+            resultItem.setSubscriberCount(extractor.getSubscriberCount());
         } catch (Exception e) {
             addError(e);
         }
         try {
-            resultItem.stream_count = extractor.getStreamCount();
+            resultItem.setStreamCount(extractor.getStreamCount());
         } catch (Exception e) {
             addError(e);
         }
         try {
-            resultItem.thumbnail_url = extractor.getThumbnailUrl();
+            resultItem.setThumbnailUrl(extractor.getThumbnailUrl());
         } catch (Exception e) {
             addError(e);
         }
         try {
-            resultItem.description = extractor.getDescription();
+            resultItem.setDescription(extractor.getDescription());
         } catch (Exception e) {
             addError(e);
         }
         return resultItem;
-    }
-
-    public void commit(ChannelInfoItemExtractor extractor) throws ParsingException {
-        try {
-            addItem(extract(extractor));
-        } catch (Exception e) {
-            addError(e);
-        }
     }
 }

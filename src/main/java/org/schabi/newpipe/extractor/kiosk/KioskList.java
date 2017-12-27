@@ -1,16 +1,13 @@
 package org.schabi.newpipe.extractor.kiosk;
 
 import org.schabi.newpipe.extractor.NewPipe;
-import org.schabi.newpipe.extractor.ServiceList;
 import org.schabi.newpipe.extractor.StreamingService;
 import org.schabi.newpipe.extractor.UrlIdHandler;
 import org.schabi.newpipe.extractor.exceptions.ExtractionException;
 
-import java.io.IOError;
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Random;
 import java.util.Set;
 
 public  class KioskList {
@@ -22,8 +19,8 @@ public  class KioskList {
             throws ExtractionException, IOException;
     }
 
-    private int service_id;
-    private HashMap<String, KioskEntry> kioskList = new HashMap<>();
+    private final int service_id;
+    private final HashMap<String, KioskEntry> kioskList = new HashMap<>();
     private String defaultKiosk = null;
 
     private class KioskEntry {
@@ -31,8 +28,8 @@ public  class KioskList {
             extractorFactory = ef;
             handler = h;
         }
-        KioskExtractorFactory extractorFactory;
-        UrlIdHandler handler;
+        final KioskExtractorFactory extractorFactory;
+        final UrlIdHandler handler;
     }
 
     public KioskList(int service_id) {
@@ -82,7 +79,7 @@ public  class KioskList {
         }
     }
 
-    public Set<String> getAvailableKisoks() {
+    public Set<String> getAvailableKiosks() {
         return kioskList.keySet();
     }
 

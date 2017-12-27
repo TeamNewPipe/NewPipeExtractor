@@ -29,6 +29,7 @@ import org.schabi.newpipe.extractor.exceptions.ParsingException;
 import org.schabi.newpipe.extractor.kiosk.KioskExtractor;
 import org.schabi.newpipe.extractor.stream.StreamInfoItemCollector;
 
+import javax.annotation.Nonnull;
 import java.io.IOException;
 
 public class YoutubeTrendingExtractor extends KioskExtractor {
@@ -41,9 +42,7 @@ public class YoutubeTrendingExtractor extends KioskExtractor {
     }
 
     @Override
-    public void fetchPage() throws IOException, ExtractionException {
-        Downloader downloader = NewPipe.getDownloader();
-
+    public void onFetchPage(@Nonnull Downloader downloader) throws IOException, ExtractionException {
         final String contentCountry = getContentCountry();
         String url = getCleanUrl();
         if(contentCountry != null && !contentCountry.isEmpty()) {
@@ -54,6 +53,7 @@ public class YoutubeTrendingExtractor extends KioskExtractor {
         doc = Jsoup.parse(pageContent, url);
     }
 
+    @Nonnull
     @Override
     public UrlIdHandler getUrlIdHandler() {
         return new YoutubeTrendingUrlIdHandler();
@@ -64,6 +64,7 @@ public class YoutubeTrendingExtractor extends KioskExtractor {
         return null;
     }
 
+    @Nonnull
     @Override
     public String getName() throws ParsingException {
         try {
@@ -76,6 +77,7 @@ public class YoutubeTrendingExtractor extends KioskExtractor {
         }
     }
 
+    @Nonnull
     @Override
     public StreamInfoItemCollector getStreams() throws ParsingException {
         StreamInfoItemCollector collector = new StreamInfoItemCollector(getServiceId());
@@ -104,10 +106,27 @@ public class YoutubeTrendingExtractor extends KioskExtractor {
                 }
 
                 @Override
+                public String getUploaderUrl() throws ParsingException {
+                    try {
+                        String link = getUploaderLink().attr("href");
+                        if(link.isEmpty()) {
+                            throw new IllegalArgumentException("is empty");
+                        }
+                        return link;
+                    } catch (Exception e) {
+                        throw new ParsingException("Could not get Uploader name");
+                    }
+                }
+
+                private Element getUploaderLink() {
+                    Element uploaderEl = el.select("div[class*=\"yt-lockup-byline \"]").first();
+                    return uploaderEl.select("a").first();
+                }
+
+                @Override
                 public String getUploaderName() throws ParsingException {
                     try {
-                        Element uploaderEl = el.select("div[class*=\"yt-lockup-byline \"]").first();
-                        return uploaderEl.select("a").text();
+                        return getUploaderLink().text();
                     } catch (Exception e) {
                         throw new ParsingException("Could not get Uploader name");
                     }

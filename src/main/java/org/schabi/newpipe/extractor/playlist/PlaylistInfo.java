@@ -1,18 +1,19 @@
 package org.schabi.newpipe.extractor.playlist;
 
+import org.schabi.newpipe.extractor.*;
 import org.schabi.newpipe.extractor.ListExtractor.NextItemsResult;
-import org.schabi.newpipe.extractor.ListInfo;
-import org.schabi.newpipe.extractor.NewPipe;
-import org.schabi.newpipe.extractor.ServiceList;
-import org.schabi.newpipe.extractor.StreamingService;
 import org.schabi.newpipe.extractor.exceptions.ExtractionException;
 import org.schabi.newpipe.extractor.exceptions.ParsingException;
-import org.schabi.newpipe.extractor.stream.StreamInfoItemCollector;
 
 import java.io.IOException;
-import java.util.ArrayList;
+
+import static org.schabi.newpipe.extractor.utils.ExtractorHelper.getStreamsOrLogError;
 
 public class PlaylistInfo extends ListInfo {
+
+    public PlaylistInfo(int serviceId, String id, String url, String name) {
+        super(serviceId, id, url, name);
+    }
 
     public static NextItemsResult getMoreItems(ServiceList serviceItem, String url, String nextStreamsUrl) throws IOException, ExtractionException {
         return getMoreItems(serviceItem.getService(), url, nextStreamsUrl);
@@ -35,56 +36,47 @@ public class PlaylistInfo extends ListInfo {
     }
 
     public static PlaylistInfo getInfo(PlaylistExtractor extractor) throws ParsingException {
-        PlaylistInfo info = new PlaylistInfo();
 
-        info.service_id = extractor.getServiceId();
-        info.url = extractor.getCleanUrl();
-        info.id = extractor.getId();
-        info.name = extractor.getName();
+        int serviceId = extractor.getServiceId();
+        String url = extractor.getCleanUrl();
+        String id = extractor.getId();
+        String name = extractor.getName();
+        PlaylistInfo info = new PlaylistInfo(serviceId, url, id, name);
 
         try {
-            info.stream_count = extractor.getStreamCount();
+            info.setStreamCount(extractor.getStreamCount());
         } catch (Exception e) {
-            info.errors.add(e);
+            info.addError(e);
         }
         try {
-            info.thumbnail_url = extractor.getThumbnailUrl();
+            info.setThumbnailUrl(extractor.getThumbnailUrl());
         } catch (Exception e) {
-            info.errors.add(e);
+            info.addError(e);
         }
         try {
-            info.uploader_url = extractor.getUploaderUrl();
+            info.setUploaderUrl(extractor.getUploaderUrl());
         } catch (Exception e) {
-            info.errors.add(e);
+            info.addError(e);
         }
         try {
-            info.uploader_name = extractor.getUploaderName();
+            info.setUploaderName(extractor.getUploaderName());
         } catch (Exception e) {
-            info.errors.add(e);
+            info.addError(e);
         }
         try {
-            info.uploader_avatar_url = extractor.getUploaderAvatarUrl();
+            info.setUploaderAvatarUrl(extractor.getUploaderAvatarUrl());
         } catch (Exception e) {
-            info.errors.add(e);
+            info.addError(e);
         }
         try {
-            info.banner_url = extractor.getBannerUrl();
+            info.setBannerUrl(extractor.getBannerUrl());
         } catch (Exception e) {
-            info.errors.add(e);
-        }
-        try {
-            StreamInfoItemCollector c = extractor.getStreams();
-            info.related_streams = c.getItemList();
-            info.errors.addAll(c.getErrors());
-        } catch (Exception e) {
-            info.errors.add(e);
+            info.addError(e);
         }
 
-        // Lists can be null if a exception was thrown during extraction
-        if (info.related_streams == null) info.related_streams = new ArrayList<>();
-
-        info.has_more_streams = extractor.hasMoreStreams();
-        info.next_streams_url = extractor.getNextStreamsUrl();
+        info.setRelatedStreams(getStreamsOrLogError(info, extractor));
+        info.setHasMoreStreams(extractor.hasMoreStreams());
+        info.setNextStreamsUrl(extractor.getNextStreamsUrl());
         return info;
     }
 
@@ -94,4 +86,52 @@ public class PlaylistInfo extends ListInfo {
     public String uploader_name;
     public String uploader_avatar_url;
     public long stream_count = 0;
+
+    public String getThumbnailUrl() {
+        return thumbnail_url;
+    }
+
+    public String getBannerUrl() {
+        return banner_url;
+    }
+
+    public String getUploaderUrl() {
+        return uploader_url;
+    }
+
+    public String getUploaderName() {
+        return uploader_name;
+    }
+
+    public String getUploaderAvatarUrl() {
+        return uploader_avatar_url;
+    }
+
+    public long getStreamCount() {
+        return stream_count;
+    }
+
+    public void setThumbnailUrl(String thumbnailUrl) {
+        this.thumbnail_url = thumbnailUrl;
+    }
+
+    public void setBannerUrl(String bannerUrl) {
+        this.banner_url = bannerUrl;
+    }
+
+    public void setUploaderUrl(String uploaderUrl) {
+        this.uploader_url = uploaderUrl;
+    }
+
+    public void setUploaderName(String uploaderName) {
+        this.uploader_name = uploaderName;
+    }
+
+    public void setUploaderAvatarUrl(String uploaderAvatarUrl) {
+        this.uploader_avatar_url = uploaderAvatarUrl;
+    }
+
+    public void setStreamCount(long streamCount) {
+        this.stream_count = streamCount;
+    }
 }

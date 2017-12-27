@@ -4,7 +4,7 @@ import com.grack.nanojson.JsonObject;
 import org.schabi.newpipe.extractor.channel.ChannelInfoItemExtractor;
 
 public class SoundcloudChannelInfoItemExtractor implements ChannelInfoItemExtractor {
-    private JsonObject searchResult;
+    private final JsonObject searchResult;
 
     public SoundcloudChannelInfoItemExtractor(JsonObject searchResult) {
         this.searchResult = searchResult;

@@ -11,6 +11,7 @@ import org.schabi.newpipe.extractor.exceptions.ExtractionException;
 import org.schabi.newpipe.extractor.exceptions.ParsingException;
 import org.schabi.newpipe.extractor.stream.StreamInfoItemCollector;
 
+import javax.annotation.Nonnull;
 import java.io.IOException;
 
 @SuppressWarnings("WeakerAccess")
@@ -23,14 +24,13 @@ public class SoundcloudChannelExtractor extends ChannelExtractor {
     }
 
     @Override
-    public void fetchPage() throws IOException, ExtractionException {
-        Downloader dl = NewPipe.getDownloader();
+    public void onFetchPage(@Nonnull Downloader downloader) throws IOException, ExtractionException {
 
         userId = getUrlIdHandler().getId(getOriginalUrl());
         String apiUrl = "https://api.soundcloud.com/users/" + userId +
                 "?client_id=" + SoundcloudParsingHelper.clientId();
 
-        String response = dl.download(apiUrl);
+        String response = downloader.download(apiUrl);
         try {
             user = JsonParser.object().from(response);
         } catch (JsonParserException e) {
@@ -38,16 +38,19 @@ public class SoundcloudChannelExtractor extends ChannelExtractor {
         }
     }
 
+    @Nonnull
     @Override
     public String getCleanUrl() {
         return user.isString("permalink_url") ? user.getString("permalink_url") : getOriginalUrl();
     }
 
+    @Nonnull
     @Override
     public String getId() {
         return userId;
     }
 
+    @Nonnull
     @Override
     public String getName() {
         return user.getString("username");
@@ -82,6 +85,7 @@ public class SoundcloudChannelExtractor extends ChannelExtractor {
         return user.getString("description", "");
     }
 
+    @Nonnull
     @Override
     public StreamInfoItemCollector getStreams() throws IOException, ExtractionException {
         StreamInfoItemCollector collector = new StreamInfoItemCollector(getServiceId());

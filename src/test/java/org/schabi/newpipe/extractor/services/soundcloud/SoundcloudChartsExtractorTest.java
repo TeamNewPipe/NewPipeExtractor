@@ -6,22 +6,23 @@ import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 import static org.schabi.newpipe.extractor.ServiceList.SoundCloud;
 
-import org.junit.Before;
+import org.junit.BeforeClass;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.schabi.newpipe.Downloader;
-import org.schabi.newpipe.extractor.InfoItemCollector;
 import org.schabi.newpipe.extractor.NewPipe;
 import org.schabi.newpipe.extractor.kiosk.KioskExtractor;
+import org.schabi.newpipe.extractor.stream.StreamInfoItemCollector;
 
 /**
  * Test for {@link SoundcloudChartsUrlIdHandler}
  */
 public class SoundcloudChartsExtractorTest {
 
-    KioskExtractor extractor;
+    static KioskExtractor extractor;
 
-    @Before
-    public void setUp() throws Exception {
+    @BeforeClass
+    public static void setUp() throws Exception {
         NewPipe.init(Downloader.getInstance());
         extractor = SoundCloud.getService()
                 .getKioskList()
@@ -34,6 +35,7 @@ public class SoundcloudChartsExtractorTest {
         assertNotNull(NewPipe.getDownloader());
     }
 
+    @Ignore
     @Test
     public void testGetName() throws Exception {
         assertEquals(extractor.getName(), "Top 50");
@@ -46,10 +48,10 @@ public class SoundcloudChartsExtractorTest {
 
     @Test
     public void testGetStreams() throws Exception {
-        InfoItemCollector collector = extractor.getStreams();
+        StreamInfoItemCollector collector = extractor.getStreams();
         if(!collector.getErrors().isEmpty()) {
             System.err.println("----------");
-            for(Throwable e : collector.getErrors()) {
+            for(Throwable e: collector.getErrors()) {
                 e.printStackTrace();
                 System.err.println("----------");
             }

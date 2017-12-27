@@ -23,7 +23,7 @@ package org.schabi.newpipe.extractor;
  */
 
 /**
- * Static data about various media formats support by Newpipe, eg mime type, extension
+ * Static data about various media formats support by NewPipe, eg mime type, extension
  */
 
 public enum MediaFormat {
@@ -102,5 +102,41 @@ public enum MediaFormat {
             if (vf.mimeType.equals(mimeType)) return vf;
         }
         return null;
+    }
+
+    /**
+     * Get the media format by it's id.
+     * @param id the id
+     * @return the id of the media format or null.
+     */
+    public static MediaFormat getFormatById(int id) {
+        for (MediaFormat vf: values()) {
+            if (vf.id == id) return vf;
+        }
+        return null;
+    }
+
+    /**
+     * Get the name of the format
+     * @return the name of the format
+     */
+    public String getName() {
+        return name;
+    }
+
+    /**
+     * Get the filename extension
+     * @return the filename extension
+     */
+    public String getSuffix() {
+        return suffix;
+    }
+
+    /**
+     * Get the mime type
+     * @return the mime type
+     */
+    public String getMimeType() {
+        return mimeType;
     }
 }

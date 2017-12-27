@@ -20,7 +20,7 @@ package org.schabi.newpipe.extractor.services.youtube;
  * along with NewPipe.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-import org.junit.Before;
+import org.junit.BeforeClass;
 import org.junit.Test;
 import org.schabi.newpipe.Downloader;
 import org.schabi.newpipe.extractor.NewPipe;
@@ -36,10 +36,10 @@ import static org.junit.Assert.assertTrue;
  * Test for {@link YoutubeTrendingUrlIdHandler}
  */
 public class YoutubeTrendingUrlIdHandlerTest {
-    private UrlIdHandler urlIdHandler;
+    private static UrlIdHandler urlIdHandler;
 
-    @Before
-    public void setUp() throws Exception {
+    @BeforeClass
+    public static void setUp() throws Exception {
         urlIdHandler = YouTube.getService().getKioskList().getUrlIdHandlerByType("Trending");
         NewPipe.init(Downloader.getInstance());
     }

@@ -1,8 +1,10 @@
 package org.schabi.newpipe.extractor;
 
-import org.schabi.newpipe.extractor.exceptions.ExtractionException;
+import org.schabi.newpipe.extractor.exceptions.FoundAdException;
+import org.schabi.newpipe.extractor.exceptions.ParsingException;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 /*
@@ -25,42 +27,68 @@ import java.util.List;
  * along with NewPipe.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-public abstract class InfoItemCollector {
-    private List<InfoItem> itemList = new ArrayList<>();
-    private List<Throwable> errors = new ArrayList<>();
-    private int serviceId = -1;
+public abstract class InfoItemCollector<I extends InfoItem, E> implements Collector<I,E> {
 
+    private final List<I> itemList = new ArrayList<>();
+    private final List<Throwable> errors = new ArrayList<>();
+    private final int serviceId;
+
+    /**
+     * Create a new collector
+     * @param serviceId the service id
+     */
     public InfoItemCollector(int serviceId) {
         this.serviceId = serviceId;
     }
 
-    public List<InfoItem> getItemList() {
-        return itemList;
+    @Override
+    public List<I> getItemList() {
+        return Collections.unmodifiableList(itemList);
     }
 
+    @Override
     public List<Throwable> getErrors() {
-        return errors;
+        return Collections.unmodifiableList(errors);
     }
 
-    protected void addFromCollector(InfoItemCollector otherC) throws ExtractionException {
-        if (serviceId != otherC.serviceId) {
-            throw new ExtractionException("Service Id does not equal: "
-                    + NewPipe.getNameOfService(serviceId)
-                    + " and " + NewPipe.getNameOfService((otherC.serviceId)));
-        }
-        errors.addAll(otherC.errors);
-        itemList.addAll(otherC.itemList);
+    @Override
+    public void reset() {
+        itemList.clear();
+        errors.clear();
     }
 
-    protected void addError(Exception e) {
-        errors.add(e);
+    /**
+     * Add an error
+     * @param error the error
+     */
+    protected void addError(Exception error) {
+        errors.add(error);
     }
 
-    protected void addItem(InfoItem item) {
+    /**
+     * Add an item
+     * @param item the item
+     */
+    protected void addItem(I item) {
         itemList.add(item);
     }
 
-    protected int getServiceId() {
+    /**
+     * Get the service id
+     * @return the service id
+     */
+    public int getServiceId() {
         return serviceId;
+    }
+
+    @Override
+    public void commit(E extractor) {
+        try {
+            addItem(extract(extractor));
+        } catch (FoundAdException ae) {
+            // found an ad. Maybe a debug line could be placed here
+        } catch (ParsingException e) {
+            addError(e);
+        }
     }
 }

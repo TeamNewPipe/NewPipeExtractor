@@ -7,10 +7,9 @@ import org.schabi.newpipe.extractor.ServiceList;
 import org.schabi.newpipe.extractor.StreamingService;
 import org.schabi.newpipe.extractor.exceptions.ExtractionException;
 import org.schabi.newpipe.extractor.exceptions.ParsingException;
-import org.schabi.newpipe.extractor.stream.StreamInfoItemCollector;
+import org.schabi.newpipe.extractor.utils.ExtractorHelper;
 
 import java.io.IOException;
-import java.util.ArrayList;
 
 /*
  * Created by Christian Schabesberger on 31.07.16.
@@ -34,6 +33,11 @@ import java.util.ArrayList;
 
 public class ChannelInfo extends ListInfo {
 
+    public ChannelInfo(int serviceId, String url, String id, String name) {
+        super(serviceId, id, url, name);
+    }
+
+
     public static NextItemsResult getMoreItems(ServiceList serviceItem, String url, String nextStreamsUrl) throws IOException, ExtractionException {
         return getMoreItems(serviceItem.getService(), url, nextStreamsUrl);
     }
@@ -55,52 +59,47 @@ public class ChannelInfo extends ListInfo {
     }
 
     public static ChannelInfo getInfo(ChannelExtractor extractor) throws ParsingException {
-        ChannelInfo info = new ChannelInfo();
 
         // important data
-        info.service_id = extractor.getServiceId();
-        info.url = extractor.getCleanUrl();
-        info.id = extractor.getId();
-        info.name = extractor.getName();
+        int serviceId = extractor.getServiceId();
+        String url = extractor.getCleanUrl();
+        String id = extractor.getId();
+        String name = extractor.getName();
+
+        ChannelInfo info = new ChannelInfo(serviceId, url, id, name);
+
 
         try {
-            info.avatar_url = extractor.getAvatarUrl();
+            info.setAvatarUrl(extractor.getAvatarUrl());
         } catch (Exception e) {
-            info.errors.add(e);
+            info.addError(e);
         }
         try {
-            info.banner_url = extractor.getBannerUrl();
+            info.setBannerUrl(extractor.getBannerUrl());
         } catch (Exception e) {
-            info.errors.add(e);
+            info.addError(e);
         }
         try {
-            info.feed_url = extractor.getFeedUrl();
+            info.setFeedUrl(extractor.getFeedUrl());
         } catch (Exception e) {
-            info.errors.add(e);
-        }
-        try {
-            StreamInfoItemCollector c = extractor.getStreams();
-            info.related_streams = c.getItemList();
-            info.errors.addAll(c.getErrors());
-        } catch (Exception e) {
-            info.errors.add(e);
-        }
-        try {
-            info.subscriber_count = extractor.getSubscriberCount();
-        } catch (Exception e) {
-            info.errors.add(e);
-        }
-        try {
-            info.description = extractor.getDescription();
-        } catch (Exception e) {
-            info.errors.add(e);
+            info.addError(e);
         }
 
-        // Lists can be null if a exception was thrown during extraction
-        if (info.related_streams == null) info.related_streams = new ArrayList<>();
+        info.setRelatedStreams(ExtractorHelper.getStreamsOrLogError(info, extractor));
 
-        info.has_more_streams = extractor.hasMoreStreams();
-        info.next_streams_url = extractor.getNextStreamsUrl();
+        try {
+            info.setSubscriberCount(extractor.getSubscriberCount());
+        } catch (Exception e) {
+            info.addError(e);
+        }
+        try {
+            info.setDescription(extractor.getDescription());
+        } catch (Exception e) {
+            info.addError(e);
+        }
+
+        info.setHasMoreStreams(extractor.hasMoreStreams());
+        info.setNextStreamsUrl(extractor.getNextStreamsUrl());
         return info;
     }
 
@@ -109,4 +108,44 @@ public class ChannelInfo extends ListInfo {
     public String feed_url;
     public long subscriber_count = -1;
     public String description;
+
+    public String getAvatarUrl() {
+        return avatar_url;
+    }
+
+    public void setAvatarUrl(String avatarUrl) {
+        this.avatar_url = avatarUrl;
+    }
+
+    public String getBannerUrl() {
+        return banner_url;
+    }
+
+    public void setBannerUrl(String bannerUrl) {
+        this.banner_url = bannerUrl;
+    }
+
+    public String getFeedUrl() {
+        return feed_url;
+    }
+
+    public void setFeedUrl(String feedUrl) {
+        this.feed_url = feedUrl;
+    }
+
+    public long getSubscriberCount() {
+        return subscriber_count;
+    }
+
+    public void setSubscriberCount(long subscriberCount) {
+        this.subscriber_count = subscriberCount;
+    }
+
+    public String getDescription() {
+        return description;
+    }
+
+    public void setDescription(String description) {
+        this.description = description;
+    }
 }

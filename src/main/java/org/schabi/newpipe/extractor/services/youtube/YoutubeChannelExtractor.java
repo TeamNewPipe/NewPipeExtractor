@@ -18,6 +18,7 @@ import org.schabi.newpipe.extractor.stream.StreamInfoItemCollector;
 import org.schabi.newpipe.extractor.utils.Parser;
 import org.schabi.newpipe.extractor.utils.Utils;
 
+import javax.annotation.Nonnull;
 import java.io.IOException;
 
 /*
@@ -58,9 +59,7 @@ public class YoutubeChannelExtractor extends ChannelExtractor {
     }
 
     @Override
-    public void fetchPage() throws IOException, ExtractionException {
-        Downloader downloader = NewPipe.getDownloader();
-
+    public void onFetchPage(@Nonnull Downloader downloader) throws IOException, ExtractionException {
         String channelUrl = super.getCleanUrl() + CHANNEL_URL_PARAMETERS;
         String pageContent = downloader.download(channelUrl);
         doc = Jsoup.parse(pageContent, channelUrl);
@@ -79,6 +78,7 @@ public class YoutubeChannelExtractor extends ChannelExtractor {
         return true;
     }
 
+    @Nonnull
     @Override
     public String getCleanUrl() {
         try {
@@ -88,6 +88,7 @@ public class YoutubeChannelExtractor extends ChannelExtractor {
         }
     }
 
+    @Nonnull
     @Override
     public String getId() throws ParsingException {
         try {
@@ -100,6 +101,7 @@ public class YoutubeChannelExtractor extends ChannelExtractor {
         }
     }
 
+    @Nonnull
     @Override
     public String getName() throws ParsingException {
         try {
@@ -159,6 +161,7 @@ public class YoutubeChannelExtractor extends ChannelExtractor {
         }
     }
 
+    @Nonnull
     @Override
     public StreamInfoItemCollector getStreams() throws IOException, ExtractionException {
         StreamInfoItemCollector collector = new StreamInfoItemCollector(getServiceId());
@@ -214,9 +217,10 @@ public class YoutubeChannelExtractor extends ChannelExtractor {
     }
 
     private void collectStreamsFrom(StreamInfoItemCollector collector, Element element) throws ParsingException {
-        collector.getItemList().clear();
+        collector.reset();
 
         final String uploaderName = getName();
+        final String uploaderUrl = getCleanUrl();
         for (final Element li : element.children()) {
             if (li.select("div[class=\"feed-item-dismissable\"]").first() != null) {
                 collector.commit(new YoutubeStreamInfoItemExtractor(li) {
@@ -245,6 +249,11 @@ public class YoutubeChannelExtractor extends ChannelExtractor {
                     @Override
                     public String getUploaderName() throws ParsingException {
                         return uploaderName;
+                    }
+
+                    @Override
+                    public String getUploaderUrl() throws ParsingException {
+                        return uploaderUrl;
                     }
 
                     @Override

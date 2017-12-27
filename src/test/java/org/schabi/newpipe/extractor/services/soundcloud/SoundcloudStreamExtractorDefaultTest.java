@@ -1,6 +1,6 @@
 package org.schabi.newpipe.extractor.services.soundcloud;
 
-import org.junit.Before;
+import org.junit.BeforeClass;
 import org.junit.Test;
 import org.schabi.newpipe.Downloader;
 import org.schabi.newpipe.extractor.NewPipe;
@@ -9,6 +9,7 @@ import org.schabi.newpipe.extractor.exceptions.ParsingException;
 import org.schabi.newpipe.extractor.stream.StreamExtractor;
 import org.schabi.newpipe.extractor.stream.StreamInfoItemCollector;
 import org.schabi.newpipe.extractor.stream.StreamType;
+import org.schabi.newpipe.extractor.stream.SubtitlesFormat;
 
 import java.io.IOException;
 
@@ -19,12 +20,13 @@ import static org.schabi.newpipe.extractor.ServiceList.SoundCloud;
  * Test for {@link StreamExtractor}
  */
 public class SoundcloudStreamExtractorDefaultTest {
-    private StreamExtractor extractor;
+    private static SoundcloudStreamExtractor extractor;
 
-    @Before
-    public void setUp() throws Exception {
+    @BeforeClass
+    public static void setUp() throws Exception {
         NewPipe.init(Downloader.getInstance());
-        extractor = SoundCloud.getService().getStreamExtractor("https://soundcloud.com/liluzivert/do-what-i-want-produced-by-maaly-raw-don-cannon");
+        extractor = (SoundcloudStreamExtractor) SoundCloud.getService().getStreamExtractor("https://soundcloud.com/liluzivert/do-what-i-want-produced-by-maaly-raw-don-cannon");
+        extractor.fetchPage();
     }
 
     @Test
@@ -87,7 +89,7 @@ public class SoundcloudStreamExtractorDefaultTest {
 
     @Test
     public void testGetAudioStreams() throws IOException, ExtractionException {
-        assertTrue(!extractor.getAudioStreams().isEmpty());
+        assertFalse(extractor.getAudioStreams().isEmpty());
     }
 
     @Test
@@ -100,5 +102,17 @@ public class SoundcloudStreamExtractorDefaultTest {
         StreamInfoItemCollector relatedVideos = extractor.getRelatedVideos();
         assertFalse(relatedVideos.getItemList().isEmpty());
         assertTrue(relatedVideos.getErrors().isEmpty());
+    }
+
+    @Test
+    public void testGetSubtitlesListDefault() throws IOException, ExtractionException {
+        // Video (/view?v=YQHsXMglC9A) set in the setUp() method has no captions => null
+        assertTrue(extractor.getSubtitlesDefault() == null);
+    }
+
+    @Test
+    public void testGetSubtitlesList() throws IOException, ExtractionException {
+        // Video (/view?v=YQHsXMglC9A) set in the setUp() method has no captions => null
+        assertTrue(extractor.getSubtitles(SubtitlesFormat.VTT) == null);
     }
 }

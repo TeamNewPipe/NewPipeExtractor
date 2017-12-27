@@ -20,17 +20,18 @@ package org.schabi.newpipe.extractor.services.youtube;
  * along with NewPipe.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-import org.junit.Before;
+import org.junit.BeforeClass;
 import org.junit.Test;
 import org.schabi.newpipe.Downloader;
-import org.schabi.newpipe.extractor.InfoItemCollector;
 import org.schabi.newpipe.extractor.NewPipe;
-import org.schabi.newpipe.extractor.kiosk.KioskExtractor;
+import org.schabi.newpipe.extractor.stream.StreamInfoItemCollector;
+import org.schabi.newpipe.extractor.utils.Utils;
 
 import static junit.framework.TestCase.assertFalse;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
+import static org.schabi.newpipe.extractor.ExtractorAsserts.assertEmptyErrors;
 import static org.schabi.newpipe.extractor.ServiceList.YouTube;
 
 
@@ -39,12 +40,12 @@ import static org.schabi.newpipe.extractor.ServiceList.YouTube;
  */
 public class YoutubeTrendingExtractorTest {
 
-    KioskExtractor extractor;
+    static YoutubeTrendingExtractor extractor;
 
-    @Before
-    public void setUp() throws Exception {
+    @BeforeClass
+    public static void setUp() throws Exception {
         NewPipe.init(Downloader.getInstance());
-        extractor = YouTube.getService()
+        extractor = (YoutubeTrendingExtractor) YouTube.getService()
                 .getKioskList()
                 .getExtractorById("Trending", null);
     }
@@ -56,7 +57,6 @@ public class YoutubeTrendingExtractorTest {
 
     @Test
     public void testGetName() throws Exception {
-        System.out.println(extractor.getName());
         assertFalse(extractor.getName().isEmpty());
     }
 
@@ -67,22 +67,14 @@ public class YoutubeTrendingExtractorTest {
 
     @Test
     public void testGetStreams() throws Exception {
-        InfoItemCollector collector = extractor.getStreams();
-        if(!collector.getErrors().isEmpty()) {
-            System.err.println("----------");
-            for(Throwable e : collector.getErrors()) {
-                e.printStackTrace();
-                System.err.println("----------");
-            }
-        }
-        assertTrue("no streams are received",
-                !collector.getItemList().isEmpty()
-                        && collector.getErrors().isEmpty());
+        StreamInfoItemCollector collector = extractor.getStreams();
+        Utils.printErrors(collector);
+        assertFalse("no streams are received", collector.getItemList().isEmpty());
     }
 
     @Test
     public void testGetStreamsErrors() throws Exception {
-        assertTrue("errors during stream list extraction", extractor.getStreams().getErrors().isEmpty());
+        assertEmptyErrors("errors during stream list extraction", extractor.getStreams().getErrors());
     }
 
     @Test
@@ -95,7 +87,7 @@ public class YoutubeTrendingExtractorTest {
     @Test
     public void testGetNextStreams() throws Exception {
         assertTrue("extractor has next streams", extractor.getNextStreams() == null
-                || extractor.getNextStreams().nextItemsList.isEmpty());
+                || extractor.getNextStreams().getNextItemsList().isEmpty());
     }
 
     @Test

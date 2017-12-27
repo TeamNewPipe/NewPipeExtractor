@@ -26,14 +26,78 @@ import org.schabi.newpipe.extractor.InfoItem;
  * Info object for previews of unopened videos, eg search results, related videos
  */
 public class StreamInfoItem extends InfoItem {
-    public StreamType stream_type;
+    public final StreamType stream_type;
 
     public String uploader_name;
     public String upload_date;
     public long view_count = -1;
     public long duration = -1;
 
-    public StreamInfoItem() {
-        super(InfoType.STREAM);
+    private String uploaderUrl = null;
+
+    public StreamInfoItem(int serviceId, String url, String name, StreamType streamType) {
+        super(InfoType.STREAM, serviceId, url, name);
+        this.stream_type = streamType;
+    }
+
+    public void setUploaderUrl(String uploaderUrl) {
+        this.uploaderUrl = uploaderUrl;
+    }
+
+    public String getUploaderUrl() {
+        return uploaderUrl;
+    }
+
+    public StreamType getStreamType() {
+        return stream_type;
+    }
+
+    public String getUploaderName() {
+        return uploader_name;
+    }
+
+    public String getUploadDate() {
+        return upload_date;
+    }
+
+    public long getViewCount() {
+        return view_count;
+    }
+
+    public long getDuration() {
+        return duration;
+    }
+
+    public void setDuration(long duration) {
+        this.duration = duration;
+    }
+
+    public void setUploaderName(String uploader_name) {
+        this.uploader_name = uploader_name;
+    }
+
+    public void setUploadDate(String upload_date) {
+        this.upload_date = upload_date;
+    }
+
+    public void setViewCount(long view_count) {
+        this.view_count = view_count;
+    }
+
+    @Override
+    public String toString() {
+        return "StreamInfoItem{" +
+                "stream_type=" + stream_type +
+                ", uploader_name='" + uploader_name + '\'' +
+                ", upload_date='" + upload_date + '\'' +
+                ", view_count=" + view_count +
+                ", duration=" + duration +
+                ", uploaderUrl='" + uploaderUrl + '\'' +
+                ", info_type=" + info_type +
+                ", service_id=" + service_id +
+                ", url='" + url + '\'' +
+                ", name='" + name + '\'' +
+                ", thumbnail_url='" + thumbnail_url + '\'' +
+                '}';
     }
 }

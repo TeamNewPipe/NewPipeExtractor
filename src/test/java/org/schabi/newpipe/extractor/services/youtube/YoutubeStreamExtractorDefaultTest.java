@@ -1,15 +1,13 @@
 package org.schabi.newpipe.extractor.services.youtube;
 
-import org.junit.Before;
+import org.junit.BeforeClass;
 import org.junit.Test;
 import org.schabi.newpipe.Downloader;
 import org.schabi.newpipe.extractor.NewPipe;
 import org.schabi.newpipe.extractor.exceptions.ExtractionException;
 import org.schabi.newpipe.extractor.exceptions.ParsingException;
-import org.schabi.newpipe.extractor.stream.StreamExtractor;
-import org.schabi.newpipe.extractor.stream.StreamInfoItemCollector;
-import org.schabi.newpipe.extractor.stream.StreamType;
-import org.schabi.newpipe.extractor.stream.VideoStream;
+import org.schabi.newpipe.extractor.stream.*;
+import org.schabi.newpipe.extractor.utils.Utils;
 
 import java.io.IOException;
 
@@ -41,12 +39,14 @@ import static org.schabi.newpipe.extractor.ServiceList.YouTube;
  */
 public class YoutubeStreamExtractorDefaultTest {
     public static final String HTTPS = "https://";
-    private StreamExtractor extractor;
+    private static YoutubeStreamExtractor extractor;
 
-    @Before
-    public void setUp() throws Exception {
+    @BeforeClass
+    public static void setUp() throws Exception {
         NewPipe.init(Downloader.getInstance());
-        extractor = YouTube.getService().getStreamExtractor("https://www.youtube.com/watch?v=YQHsXMglC9A");
+        extractor = (YoutubeStreamExtractor) YouTube.getService()
+                .getStreamExtractor("https://www.youtube.com/watch?v=rYEDA3JcQqw");
+        extractor.fetchPage();
     }
 
     @Test
@@ -63,18 +63,21 @@ public class YoutubeStreamExtractorDefaultTest {
 
     @Test
     public void testGetTitle() throws ParsingException {
-        assertTrue(!extractor.getName().isEmpty());
+        assertFalse(extractor.getName().isEmpty());
     }
 
     @Test
     public void testGetDescription() throws ParsingException {
-        assertTrue(extractor.getDescription() != null);
+        assertNotNull(extractor.getDescription());
+        assertFalse(extractor.getDescription().isEmpty());
     }
 
     @Test
     public void testGetUploaderName() throws ParsingException {
-        assertTrue(!extractor.getUploaderName().isEmpty());
+        assertNotNull(extractor.getUploaderName());
+        assertFalse(extractor.getUploaderName().isEmpty());
     }
+
 
     @Test
     public void testGetLength() throws ParsingException {
@@ -83,8 +86,8 @@ public class YoutubeStreamExtractorDefaultTest {
 
     @Test
     public void testGetViewCount() throws ParsingException {
-        assertTrue(Long.toString(extractor.getViewCount()),
-                extractor.getViewCount() > /* specific to that video */ 1224000074);
+        Long count = extractor.getViewCount();
+        assertTrue(Long.toString(count), count >= /* specific to that video */ 1220025784);
     }
 
     @Test
@@ -111,7 +114,7 @@ public class YoutubeStreamExtractorDefaultTest {
 
     @Test
     public void testGetAudioStreams() throws IOException, ExtractionException {
-        assertTrue(!extractor.getAudioStreams().isEmpty());
+        assertFalse(extractor.getAudioStreams().isEmpty());
     }
 
     @Test
@@ -120,8 +123,8 @@ public class YoutubeStreamExtractorDefaultTest {
             assertTrue(s.url,
                     s.url.contains(HTTPS));
             assertTrue(s.resolution.length() > 0);
-            assertTrue(Integer.toString(s.format),
-                    0 <= s.format && s.format <= 4);
+            assertTrue(Integer.toString(s.getFormatId()),
+                    0 <= s.getFormatId() && s.getFormatId() <= 4);
         }
     }
 
@@ -139,7 +142,20 @@ public class YoutubeStreamExtractorDefaultTest {
     @Test
     public void testGetRelatedVideos() throws ExtractionException, IOException {
         StreamInfoItemCollector relatedVideos = extractor.getRelatedVideos();
+        Utils.printErrors(relatedVideos);
         assertFalse(relatedVideos.getItemList().isEmpty());
         assertTrue(relatedVideos.getErrors().isEmpty());
+    }
+
+    @Test
+    public void testGetSubtitlesListDefault() throws IOException, ExtractionException {
+        // Video (/view?v=YQHsXMglC9A) set in the setUp() method has no captions => null
+        assertTrue(extractor.getSubtitlesDefault() == null);
+    }
+
+    @Test
+    public void testGetSubtitlesList() throws IOException, ExtractionException {
+        // Video (/view?v=YQHsXMglC9A) set in the setUp() method has no captions => null
+        assertTrue(extractor.getSubtitles(SubtitlesFormat.VTT) == null);
     }
 }

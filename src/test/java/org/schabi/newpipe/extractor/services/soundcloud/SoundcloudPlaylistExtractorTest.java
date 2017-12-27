@@ -1,6 +1,6 @@
 package org.schabi.newpipe.extractor.services.soundcloud;
 
-import org.junit.Before;
+import org.junit.BeforeClass;
 import org.junit.Test;
 import org.schabi.newpipe.Downloader;
 import org.schabi.newpipe.extractor.NewPipe;
@@ -15,10 +15,10 @@ import static org.schabi.newpipe.extractor.ServiceList.SoundCloud;
  */
 
 public class SoundcloudPlaylistExtractorTest {
-    private PlaylistExtractor extractor;
+    private static PlaylistExtractor extractor;
 
-    @Before
-    public void setUp() throws Exception {
+    @BeforeClass
+    public static void setUp() throws Exception {
         NewPipe.init(Downloader.getInstance());
         extractor = SoundCloud.getService()
                 .getPlaylistExtractor("https://soundcloud.com/liluzivert/sets/the-perfect-luv-tape-r");

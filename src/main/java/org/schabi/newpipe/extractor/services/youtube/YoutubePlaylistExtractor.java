@@ -19,6 +19,7 @@ import org.schabi.newpipe.extractor.stream.StreamType;
 import org.schabi.newpipe.extractor.utils.Parser;
 import org.schabi.newpipe.extractor.utils.Utils;
 
+import javax.annotation.Nonnull;
 import java.io.IOException;
 
 @SuppressWarnings("WeakerAccess")
@@ -35,9 +36,7 @@ public class YoutubePlaylistExtractor extends PlaylistExtractor {
     }
 
     @Override
-    public void fetchPage() throws IOException, ExtractionException {
-        Downloader downloader = NewPipe.getDownloader();
-
+    public void onFetchPage(@Nonnull Downloader downloader) throws IOException, ExtractionException {
         String pageContent = downloader.download(getCleanUrl());
         doc = Jsoup.parse(pageContent, getCleanUrl());
 
@@ -45,6 +44,7 @@ public class YoutubePlaylistExtractor extends PlaylistExtractor {
         nextStreamsAjax = null;
     }
 
+    @Nonnull
     @Override
     public String getId() throws ParsingException {
         try {
@@ -54,6 +54,7 @@ public class YoutubePlaylistExtractor extends PlaylistExtractor {
         }
     }
 
+    @Nonnull
     @Override
     public String getName() throws ParsingException {
         try {
@@ -140,6 +141,7 @@ public class YoutubePlaylistExtractor extends PlaylistExtractor {
         }
     }
 
+    @Nonnull
     @Override
     public StreamInfoItemCollector getStreams() throws IOException, ExtractionException {
         StreamInfoItemCollector collector = new StreamInfoItemCollector(getServiceId());
@@ -195,11 +197,17 @@ public class YoutubePlaylistExtractor extends PlaylistExtractor {
     }
 
     private void collectStreamsFrom(StreamInfoItemCollector collector, Element element) throws ParsingException {
-        collector.getItemList().clear();
+        collector.reset();
 
         final UrlIdHandler streamUrlIdHandler = getService().getStreamUrlIdHandler();
         for (final Element li : element.children()) {
+            if(isDeletedItem(li)) {
+                continue;
+            }
+
             collector.commit(new YoutubeStreamInfoItemExtractor(li) {
+                public Element uploaderLink;
+
                 @Override
                 public boolean isAd() throws ParsingException {
                     return false;
@@ -241,9 +249,23 @@ public class YoutubePlaylistExtractor extends PlaylistExtractor {
                     }
                 }
 
+
+                private Element getUploaderLink() {
+                    // should always be present since we filter deleted items
+                    if(uploaderLink == null) {
+                        uploaderLink = li.select("div[class=pl-video-owner] a").first();
+                    }
+                    return uploaderLink;
+                }
+
                 @Override
                 public String getUploaderName() throws ParsingException {
-                    return li.select("div[class=pl-video-owner] a").text();
+                    return getUploaderLink().text();
+                }
+
+                @Override
+                public String getUploaderUrl() throws ParsingException {
+                    return getUploaderLink().attr("href");
                 }
 
                 @Override
@@ -266,5 +288,14 @@ public class YoutubePlaylistExtractor extends PlaylistExtractor {
                 }
             });
         }
+    }
+
+    /**
+     * Check if the playlist item is deleted
+     * @param li the list item
+     * @return true if the item is deleted
+     */
+    private boolean isDeletedItem(Element li) {
+        return li.select("div[class=pl-video-owner] a").isEmpty();
     }
 }

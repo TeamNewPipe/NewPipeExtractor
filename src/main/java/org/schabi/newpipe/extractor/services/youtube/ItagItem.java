@@ -76,7 +76,6 @@ public class ItagItem {
             new ItagItem(313, VIDEO_ONLY, WEBM, "2160p"),
             new ItagItem(315, VIDEO_ONLY, WEBM, "2160p60", 60)
     };
-
     /*//////////////////////////////////////////////////////////////////////////
     // Utils
     //////////////////////////////////////////////////////////////////////////*/
@@ -115,7 +114,7 @@ public class ItagItem {
     public ItagItem(int id, ItagType type, MediaFormat format, String resolution) {
         this.id = id;
         this.itagType = type;
-        this.mediaFormatId = format.id;
+        this.mediaFormat = format;
         this.resolutionString = resolution;
         this.fps = 30;
     }
@@ -128,7 +127,7 @@ public class ItagItem {
     public ItagItem(int id, ItagType type, MediaFormat format, String resolution, int fps) {
         this.id = id;
         this.itagType = type;
-        this.mediaFormatId = format.id;
+        this.mediaFormat = format;
         this.resolutionString = resolution;
         this.fps = fps;
     }
@@ -136,13 +135,19 @@ public class ItagItem {
     public ItagItem(int id, ItagType type, MediaFormat format, int avgBitrate) {
         this.id = id;
         this.itagType = type;
-        this.mediaFormatId = format.id;
+        this.mediaFormat = format;
         this.avgBitrate = avgBitrate;
     }
 
-    public int id;
-    public ItagType itagType;
-    public int mediaFormatId;
+    private final MediaFormat mediaFormat;
+
+
+    public MediaFormat getMediaFormat() {
+        return mediaFormat;
+    }
+
+    public final int id;
+    public final ItagType itagType;
 
     // Audio fields
     public int avgBitrate = -1;

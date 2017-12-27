@@ -63,23 +63,24 @@ public class SoundcloudParsingHelper {
     }
 
     /**
-     * Call the endpoint "/resolve" of the api.<br/>
+     * Call the endpoint "/resolve" of the api.<p>
+     * 
      * See https://developers.soundcloud.com/docs/api/reference#resolve
      */
-    public static JsonObject resolveFor(String url) throws IOException, ReCaptchaException, ParsingException {
+    public static JsonObject resolveFor(Downloader downloader, String url) throws IOException, ReCaptchaException, ParsingException {
         String apiUrl = "https://api.soundcloud.com/resolve"
                 + "?url=" + URLEncoder.encode(url, "UTF-8")
                 + "&client_id=" + clientId();
 
         try {
-            return JsonParser.object().from(NewPipe.getDownloader().download(apiUrl));
+            return JsonParser.object().from(downloader.download(apiUrl));
         } catch (JsonParserException e) {
             throw new ParsingException("Could not parse json response", e);
         }
     }
 
     /**
-     * Fetch the embed player with the apiUrl and return the canonical url (like the permalink_url from the json api).<br/>
+     * Fetch the embed player with the apiUrl and return the canonical url (like the permalink_url from the json api).
      *
      * @return the url resolved
      */
@@ -92,7 +93,7 @@ public class SoundcloudParsingHelper {
     }
 
     /**
-     * Fetch the embed player with the url and return the id (like the id from the json api).<br/>
+     * Fetch the embed player with the url and return the id (like the id from the json api).
      *
      * @return the id resolved
      */

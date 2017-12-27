@@ -9,7 +9,7 @@ public class SoundcloudPlaylistInfoItemExtractor implements PlaylistInfoItemExtr
     private static final String AVATAR_URL_KEY = "avatar_url";
     private static final String ARTWORK_URL_KEY = "artwork_url";
 
-    private JsonObject searchResult;
+    private final JsonObject searchResult;
 
     public SoundcloudPlaylistInfoItemExtractor(JsonObject searchResult) {
         this.searchResult = searchResult;

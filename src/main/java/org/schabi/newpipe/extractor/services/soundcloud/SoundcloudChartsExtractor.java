@@ -4,12 +4,15 @@ import java.io.IOException;
 import java.util.Arrays;
 import java.util.List;
 
+import org.schabi.newpipe.extractor.Downloader;
 import org.schabi.newpipe.extractor.StreamingService;
 import org.schabi.newpipe.extractor.UrlIdHandler;
 import org.schabi.newpipe.extractor.exceptions.ExtractionException;
 import org.schabi.newpipe.extractor.exceptions.ParsingException;
 import org.schabi.newpipe.extractor.kiosk.KioskExtractor;
 import org.schabi.newpipe.extractor.stream.StreamInfoItemCollector;
+
+import javax.annotation.Nonnull;
 
 public class SoundcloudChartsExtractor extends KioskExtractor {
 	private String url;
@@ -21,14 +24,16 @@ public class SoundcloudChartsExtractor extends KioskExtractor {
     }
 
     @Override
-    public void fetchPage() {
+    public void onFetchPage(@Nonnull Downloader downloader) {
     }
 
+    @Nonnull
     @Override
     public String getName() throws ParsingException {
         return "< Implement me (♥_♥) >";
     }
 
+    @Nonnull
     @Override
     public UrlIdHandler getUrlIdHandler() {
         return new SoundcloudChartsUrlIdHandler();
@@ -46,6 +51,7 @@ public class SoundcloudChartsExtractor extends KioskExtractor {
         return new NextItemsResult(collector, nextStreamsUrl);
     }
 
+    @Nonnull
     @Override
     public StreamInfoItemCollector getStreams() throws IOException, ExtractionException {
         StreamInfoItemCollector collector = new StreamInfoItemCollector(getServiceId());
@@ -57,7 +63,7 @@ public class SoundcloudChartsExtractor extends KioskExtractor {
         if (getId().equals("Top 50")) {
             apiUrl += "&kind=top";
         } else {
-            apiUrl += "&kind=new";
+            apiUrl += "&kind=trending";
         }
 
         List<String> supportedCountries = Arrays.asList("AU", "CA", "FR", "DE", "IE", "NL", "NZ", "GB", "US");
