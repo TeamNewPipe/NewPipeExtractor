@@ -4,6 +4,7 @@ import org.schabi.newpipe.extractor.StreamingService;
 import org.schabi.newpipe.extractor.SuggestionExtractor;
 import org.schabi.newpipe.extractor.UrlIdHandler;
 import org.schabi.newpipe.extractor.channel.ChannelExtractor;
+import org.schabi.newpipe.extractor.channel.FeedExtractor;
 import org.schabi.newpipe.extractor.exceptions.ExtractionException;
 import org.schabi.newpipe.extractor.kiosk.KioskExtractor;
 import org.schabi.newpipe.extractor.kiosk.KioskList;
@@ -60,6 +61,11 @@ public class YoutubeService extends StreamingService {
         return YoutubePlaylistUrlIdHandler.getInstance();
     }
 
+    @Override
+    public UrlIdHandler getFeedUrlIdHandler() {
+        return YoutubeFeedUrlIdHandler.getInstance();
+    }
+
 
     @Override
     public StreamExtractor getStreamExtractor(String url) throws IOException, ExtractionException {
@@ -69,6 +75,11 @@ public class YoutubeService extends StreamingService {
     @Override
     public ChannelExtractor getChannelExtractor(String url, String nextStreamsUrl) throws IOException, ExtractionException {
         return new YoutubeChannelExtractor(this, url, nextStreamsUrl);
+    }
+
+    @Override
+    public FeedExtractor getFeedExtractor(String url, String nextStreamsUrl) throws IOException, ExtractionException {
+        return new YoutubeFeedExtractor(this, url, nextStreamsUrl);
     }
 
     @Override

@@ -37,7 +37,6 @@ public class ChannelInfo extends ListInfo {
         super(serviceId, id, url, name);
     }
 
-
     public static NextItemsResult getMoreItems(ServiceList serviceItem, String url, String nextStreamsUrl) throws IOException, ExtractionException {
         return getMoreItems(serviceItem.getService(), url, nextStreamsUrl);
     }
@@ -45,6 +44,66 @@ public class ChannelInfo extends ListInfo {
     public static NextItemsResult getMoreItems(StreamingService service, String url, String nextStreamsUrl) throws IOException, ExtractionException {
         return service.getChannelExtractor(url, nextStreamsUrl).getNextStreams();
     }
+
+    public static ChannelInfo getInfoFromFeed(String url) throws IOException, ExtractionException {
+        return getInfoFromFeed(NewPipe.getServiceByUrl(url), url);
+    }
+
+    public static ChannelInfo getInfoFromFeed(ServiceList serviceItem, String url) throws IOException, ExtractionException {
+        return getInfoFromFeed(serviceItem.getService(), url);
+    }
+
+    public static ChannelInfo getInfoFromFeed(StreamingService service, String url) throws IOException, ExtractionException {
+        ChannelExtractor extractor = service.getFeedExtractor(url);
+        extractor.fetchPage();
+        return getInfoFromFeed(service.getFeedExtractor(url));
+    }
+
+    public static ChannelInfo getInfoFromFeed(FeedExtractor extractor) throws ParsingException {
+
+        // important data
+        int serviceId = extractor.getServiceId();
+        String url = extractor.getCleanUrl();
+        String id = extractor.getId();
+        String name = extractor.getName();
+
+        ChannelInfo info = new ChannelInfo(serviceId, url, id, name);
+
+
+        try {
+            info.setAvatarUrl(extractor.getAvatarUrl());
+        } catch (Exception e) {
+            info.addError(e);
+        }
+        try {
+            info.setBannerUrl(extractor.getBannerUrl());
+        } catch (Exception e) {
+            info.addError(e);
+        }
+        try {
+            info.setFeedUrl(extractor.getFeedUrl());
+        } catch (Exception e) {
+            info.addError(e);
+        }
+
+        info.setRelatedStreams(ExtractorHelper.getStreamsOrLogError(info, extractor));
+
+        try {
+            info.setSubscriberCount(extractor.getSubscriberCount());
+        } catch (Exception e) {
+            info.addError(e);
+        }
+        try {
+            info.setDescription(extractor.getDescription());
+        } catch (Exception e) {
+            info.addError(e);
+        }
+
+        info.setHasMoreStreams(extractor.hasMoreStreams());
+        info.setNextStreamsUrl(extractor.getNextStreamsUrl());
+        return info;
+    }
+
 
     public static ChannelInfo getInfo(String url) throws IOException, ExtractionException {
         return getInfo(NewPipe.getServiceByUrl(url), url);
