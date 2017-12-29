@@ -44,6 +44,7 @@ public class YoutubeChannelExtractorTest {
         NewPipe.init(Downloader.getInstance());
         extractor = (YoutubeChannelExtractor) YouTube.getService()
                 .getChannelExtractor("https://www.youtube.com/user/Gronkh");
+        extractor.fetchPage();
     }
 
     @Test

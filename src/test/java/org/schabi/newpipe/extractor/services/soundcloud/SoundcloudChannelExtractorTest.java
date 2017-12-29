@@ -23,6 +23,7 @@ public class SoundcloudChannelExtractorTest {
         NewPipe.init(Downloader.getInstance());
         extractor = SoundCloud.getService()
                 .getChannelExtractor("https://soundcloud.com/liluzivert");
+        extractor.fetchPage();
     }
 
     @Test

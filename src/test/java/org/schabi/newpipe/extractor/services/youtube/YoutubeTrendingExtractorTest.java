@@ -48,6 +48,7 @@ public class YoutubeTrendingExtractorTest {
         extractor = (YoutubeTrendingExtractor) YouTube.getService()
                 .getKioskList()
                 .getExtractorById("Trending", null);
+        extractor.fetchPage();
     }
 
     @Test
