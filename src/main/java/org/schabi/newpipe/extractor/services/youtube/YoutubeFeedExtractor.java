@@ -41,7 +41,7 @@ public class YoutubeFeedExtractor extends FeedExtractor {
     public void onFetchPage(@Nonnull Downloader downloader) throws IOException, ExtractionException {
         YoutubeChannelUrlIdHandler urlIdHandler = YoutubeChannelUrlIdHandler.getInstance();
         YoutubeFeedUrlIdHandler feedIdHandler = YoutubeFeedUrlIdHandler.getInstance();
-        String channelUrl = urlIdHandler.getUrl(feedIdHandler.getId(super.getCleanUrl())) + CHANNEL_URL_PARAMETERS;
+        String channelUrl = urlIdHandler.getUrl("channel/" + feedIdHandler.getId(super.getCleanUrl())) + CHANNEL_URL_PARAMETERS;
         String pageContent = downloader.download(channelUrl);
         doc = Jsoup.parse(pageContent, channelUrl);
 
@@ -49,14 +49,6 @@ public class YoutubeFeedExtractor extends FeedExtractor {
             nextStreamsUrl = getNextStreamsUrlFrom(doc);
         }
         nextStreamsAjax = null;
-    }
-
-    @Override
-    protected boolean fetchPageUponCreation() {
-        // Unfortunately, we have to fetch the page even if we are getting only next streams,
-        // as they don't deliver enough information on their own (the channel name, for example).
-        fetchingNextStreams = nextStreamsUrl != null && !nextStreamsUrl.isEmpty();
-        return true;
     }
 
     @Nonnull
