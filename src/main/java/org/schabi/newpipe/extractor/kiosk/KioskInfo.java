@@ -28,21 +28,24 @@ import java.io.IOException;
 
 public class KioskInfo extends ListInfo {
 
-    public KioskInfo(int serviceId, String id, String url, String name) {
+    private KioskInfo(int serviceId, String id, String url, String name) {
         super(serviceId, id, url, name);
     }
 
     public static ListExtractor.NextItemsResult getMoreItems(ServiceList serviceItem,
                                                              String url,
-                                                             String nextStreamsUrl) throws IOException, ExtractionException {
-        return getMoreItems(serviceItem.getService(), url, nextStreamsUrl);
+                                                             String nextStreamsUrl,
+                                                             String contentCountry) throws IOException, ExtractionException {
+        return getMoreItems(serviceItem.getService(), url, nextStreamsUrl, contentCountry);
     }
 
     public static ListExtractor.NextItemsResult getMoreItems(StreamingService service,
                                                              String url,
-                                                             String nextStreamsUrl) throws IOException, ExtractionException {
+                                                             String nextStreamsUrl,
+                                                             String contentCountry) throws IOException, ExtractionException {
         KioskList kl = service.getKioskList();
         KioskExtractor extractor = kl.getExtractorByUrl(url, nextStreamsUrl);
+        extractor.setContentCountry(contentCountry);
         return extractor.getNextStreams();
     }
 
