@@ -54,7 +54,7 @@ public class ChannelInfo extends ListInfo {
     }
 
     public static ChannelInfo getInfoFromFeed(StreamingService service, String url) throws IOException, ExtractionException {
-        ChannelExtractor extractor = service.getFeedExtractor(url);
+        FeedExtractor extractor = service.getFeedExtractor(url);
         extractor.fetchPage();
         return getInfoFromFeed(service.getFeedExtractor(url));
     }
