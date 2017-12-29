@@ -6,6 +6,7 @@ import org.schabi.newpipe.extractor.StreamingService;
 import org.schabi.newpipe.extractor.SuggestionExtractor;
 import org.schabi.newpipe.extractor.UrlIdHandler;
 import org.schabi.newpipe.extractor.channel.ChannelExtractor;
+import org.schabi.newpipe.extractor.channel.FeedExtractor;
 import org.schabi.newpipe.extractor.exceptions.ExtractionException;
 import org.schabi.newpipe.extractor.kiosk.KioskExtractor;
 import org.schabi.newpipe.extractor.kiosk.KioskList;
@@ -39,6 +40,10 @@ public class SoundcloudService extends StreamingService {
         return SoundcloudPlaylistUrlIdHandler.getInstance();
     }
 
+    @Override
+    public UrlIdHandler getFeedUrlIdHandler() {
+        return SoundcloudFeedUrlIdHandler.getInstance();
+    }
 
     @Override
     public StreamExtractor getStreamExtractor(String url) throws IOException, ExtractionException {
@@ -49,6 +54,12 @@ public class SoundcloudService extends StreamingService {
     public ChannelExtractor getChannelExtractor(String url, String nextStreamsUrl) throws IOException, ExtractionException {
         return new SoundcloudChannelExtractor(this, url, nextStreamsUrl);
     }
+
+    @Override
+    public FeedExtractor getFeedExtractor(String url, String nextStreamsUrl) throws IOException, ExtractionException {
+        return new SoundcloudFeedExtractor(this, url, nextStreamsUrl);
+    }
+
 
     @Override
     public PlaylistExtractor getPlaylistExtractor(String url, String nextStreamsUrl) throws IOException, ExtractionException {
