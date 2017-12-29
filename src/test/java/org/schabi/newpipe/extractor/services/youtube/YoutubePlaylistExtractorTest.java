@@ -30,6 +30,7 @@ public class YoutubePlaylistExtractorTest {
         NewPipe.init(Downloader.getInstance());
         extractor = (YoutubePlaylistExtractor) YouTube.getService()
                 .getPlaylistExtractor("https://www.youtube.com/watch?v=lp-EO5I60KA&list=PLMC9KNkIncKtPzgY-5rmhvj7fax8fdxoj");
+        extractor.fetchPage();
     }
 
     @Test

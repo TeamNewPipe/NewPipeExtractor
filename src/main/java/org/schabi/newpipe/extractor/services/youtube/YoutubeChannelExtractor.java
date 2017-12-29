@@ -70,14 +70,6 @@ public class YoutubeChannelExtractor extends ChannelExtractor {
         nextStreamsAjax = null;
     }
 
-    @Override
-    protected boolean fetchPageUponCreation() {
-        // Unfortunately, we have to fetch the page even if we are getting only next streams,
-        // as they don't deliver enough information on their own (the channel name, for example).
-        fetchingNextStreams = nextStreamsUrl != null && !nextStreamsUrl.isEmpty();
-        return true;
-    }
-
     @Nonnull
     @Override
     public String getCleanUrl() {
