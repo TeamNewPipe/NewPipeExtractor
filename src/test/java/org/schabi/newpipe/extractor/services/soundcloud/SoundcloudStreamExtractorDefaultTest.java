@@ -14,6 +14,7 @@ import org.schabi.newpipe.extractor.stream.SubtitlesFormat;
 import java.io.IOException;
 
 import static org.junit.Assert.*;
+import static org.schabi.newpipe.extractor.ExtractorAsserts.assertIsSecureUrl;
 import static org.schabi.newpipe.extractor.ServiceList.SoundCloud;
 
 /**
@@ -69,22 +70,23 @@ public class SoundcloudStreamExtractorDefaultTest {
 
     @Test
     public void testGetUploadDate() throws ParsingException {
-        assertEquals(extractor.getUploadDate(), "2016-07-31");
+        assertEquals("2016-07-31", extractor.getUploadDate());
     }
 
     @Test
     public void testGetUploaderUrl() throws ParsingException {
-        assertEquals(extractor.getUploaderUrl(), "http://soundcloud.com/liluzivert");
+        assertIsSecureUrl(extractor.getUploaderUrl());
+        assertEquals("https://soundcloud.com/liluzivert", extractor.getUploaderUrl());
     }
 
     @Test
     public void testGetThumbnailUrl() throws ParsingException {
-        assertTrue(extractor.getThumbnailUrl(), extractor.getThumbnailUrl().contains("https://"));
+        assertIsSecureUrl(extractor.getThumbnailUrl());
     }
 
     @Test
     public void testGetUploaderAvatarUrl() throws ParsingException {
-        assertTrue(extractor.getUploaderAvatarUrl(), extractor.getUploaderAvatarUrl().contains("https://"));
+        assertIsSecureUrl(extractor.getUploaderAvatarUrl());
     }
 
     @Test

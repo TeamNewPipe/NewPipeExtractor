@@ -8,6 +8,7 @@ import org.schabi.newpipe.extractor.exceptions.ExtractionException;
 import org.schabi.newpipe.extractor.playlist.PlaylistExtractor;
 
 import static org.junit.Assert.*;
+import static org.schabi.newpipe.extractor.ExtractorAsserts.assertIsSecureUrl;
 import static org.schabi.newpipe.extractor.ServiceList.SoundCloud;
 
 /**
@@ -42,12 +43,13 @@ public class SoundcloudPlaylistExtractorTest {
 
     @Test
     public void testGetThumbnailUrl() throws Exception {
-        assertTrue(extractor.getThumbnailUrl(), extractor.getThumbnailUrl().contains("https://"));
+        assertIsSecureUrl(extractor.getThumbnailUrl());
     }
 
     @Test
     public void testGetUploaderUrl() throws Exception {
-        assertEquals(extractor.getUploaderUrl(), "http://soundcloud.com/liluzivert");
+        assertIsSecureUrl(extractor.getUploaderUrl());
+        assertEquals(extractor.getUploaderUrl(), "https://soundcloud.com/liluzivert");
     }
 
     @Test
@@ -57,7 +59,7 @@ public class SoundcloudPlaylistExtractorTest {
 
     @Test
     public void testGetUploaderAvatarUrl() throws Exception {
-        assertTrue(extractor.getUploaderAvatarUrl(), extractor.getUploaderAvatarUrl().contains("https://"));
+        assertIsSecureUrl(extractor.getUploaderAvatarUrl());
     }
 
     @Test
