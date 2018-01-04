@@ -48,7 +48,7 @@ public class PlaylistInfo extends ListInfo {
         String url = extractor.getCleanUrl();
         String id = extractor.getId();
         String name = extractor.getName();
-        PlaylistInfo info = new PlaylistInfo(serviceId, url, id, name);
+        PlaylistInfo info = new PlaylistInfo(serviceId, id, url, name);
 
         try {
             info.setStreamCount(extractor.getStreamCount());
