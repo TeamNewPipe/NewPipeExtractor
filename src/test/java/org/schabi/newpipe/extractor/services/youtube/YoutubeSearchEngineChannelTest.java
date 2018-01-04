@@ -37,8 +37,7 @@ import static org.schabi.newpipe.extractor.ServiceList.YouTube;
 /**
  * Test for {@link SearchEngine}
  */
-public class YoutubeSearchEngineChannelTest {
-    private static SearchResult result;
+public class YoutubeSearchEngineChannelTest extends BaseYoutubeSearchTest {
 
     @BeforeClass
     public static void setUp() throws Exception {
@@ -52,25 +51,10 @@ public class YoutubeSearchEngineChannelTest {
     }
 
     @Test
-    public void testResultList() {
-        assertFalse(result.resultList.isEmpty());
-        for(InfoItem item: result.getResults()) {
-            assertIsValidUrl(item.url);
-        }
-    }
-
-    @Test
     public void testResultsItemType() {
         for (InfoItem infoItem : result.resultList) {
             assertEquals(InfoItem.InfoType.CHANNEL, infoItem.info_type);
         }
-    }
-
-    @Test
-    public void testResultErrors() {
-        assertNotNull(result.errors);
-        if (!result.errors.isEmpty()) for (Throwable error : result.errors) error.printStackTrace();
-        assertTrue(result.errors.isEmpty());
     }
 
     @Ignore

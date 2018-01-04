@@ -40,8 +40,7 @@ import static org.schabi.newpipe.extractor.ExtractorAsserts.assertIsValidUrl;
 /**
  * Test for {@link SearchEngine}
  */
-public class YoutubeSearchEngineAllTest {
-    private static SearchResult result;
+public class YoutubeSearchEngineAllTest extends BaseYoutubeSearchTest {
 
     @BeforeClass
     public static void setUpClass() throws Exception {
@@ -53,29 +52,13 @@ public class YoutubeSearchEngineAllTest {
     }
 
     @Test
-    public void testResultList() {
-        final List<InfoItem> results = result.getResults();
-        assertFalse("Results are empty: " + results, results.isEmpty());
-
-        InfoItem firstInfoItem = results.get(0);
+    public void testResultList_FirstElement() {
+        InfoItem firstInfoItem = result.getResults().get(0);
 
         // THe channel should be the first item
         assertTrue(firstInfoItem instanceof ChannelInfoItem);
         assertEquals("name", "PewDiePie", firstInfoItem.name);
         assertEquals("url","https://www.youtube.com/user/PewDiePie", firstInfoItem.url);
-
-        for(InfoItem item: results) {
-            assertIsValidUrl(item.url);
-        }
-
-    }
-
-    @Test
-    public void testResultErrors() {
-        for (Throwable error : result.getErrors()) {
-            error.printStackTrace();
-        }
-        assertTrue(result.getErrors().isEmpty());
     }
 
     @Ignore
