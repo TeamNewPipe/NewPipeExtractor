@@ -169,6 +169,10 @@ public class YoutubeChannelExtractor extends ChannelExtractor {
         }
 
         StreamInfoItemCollector collector = new StreamInfoItemCollector(getServiceId());
+
+        //TODO: This is a horrible hack and should be fixed (the whole F*** architecture of ListExtractor is broken)
+        onFetchPage(NewPipe.getDownloader());
+
         setupNextStreamsAjax(NewPipe.getDownloader());
         collectStreamsFrom(collector, nextStreamsAjax.select("body").first());
 
