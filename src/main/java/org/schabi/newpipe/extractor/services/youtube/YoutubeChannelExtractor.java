@@ -176,9 +176,7 @@ public class YoutubeChannelExtractor extends ChannelExtractor {
             throw new ExtractionException("Channel doesn't have more streams");
         }
 
-        if (!isPageFetched()) {
-            fetchPage();
-        }
+        fetchPage();
 
         StreamInfoItemCollector collector = new StreamInfoItemCollector(getServiceId());
 
