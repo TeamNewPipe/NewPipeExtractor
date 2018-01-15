@@ -110,7 +110,7 @@ public class YoutubeTrendingExtractor extends KioskExtractor {
                     @Override
                     public String getUploaderUrl() throws ParsingException {
                         try {
-                            String link = getUploaderLink().attr("href");
+                            String link = getUploaderLink().attr("abs:href");
                             if (link.isEmpty()) {
                                 throw new IllegalArgumentException("is empty");
                             }

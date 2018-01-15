@@ -4,7 +4,6 @@ import com.grack.nanojson.JsonObject;
 import com.grack.nanojson.JsonParser;
 import com.grack.nanojson.JsonParserException;
 import org.schabi.newpipe.extractor.Downloader;
-import org.schabi.newpipe.extractor.NewPipe;
 import org.schabi.newpipe.extractor.StreamingService;
 import org.schabi.newpipe.extractor.exceptions.ExtractionException;
 import org.schabi.newpipe.extractor.exceptions.ParsingException;
@@ -69,17 +68,17 @@ public class SoundcloudPlaylistExtractor extends PlaylistExtractor {
 
     @Override
     public String getUploaderUrl() {
-        return playlist.getObject("user").getString("permalink_url", "");
+        return SoundcloudExtractorHelper.getUploaderUrl(playlist);
     }
 
     @Override
     public String getUploaderName() {
-        return playlist.getObject("user").getString("username", "");
+        return SoundcloudExtractorHelper.getUploaderName(playlist);
     }
 
     @Override
     public String getUploaderAvatarUrl() {
-        return playlist.getObject("user", new JsonObject()).getString("avatar_url", "");
+        return SoundcloudExtractorHelper.getAvatarUrl(playlist);
     }
 
     @Override

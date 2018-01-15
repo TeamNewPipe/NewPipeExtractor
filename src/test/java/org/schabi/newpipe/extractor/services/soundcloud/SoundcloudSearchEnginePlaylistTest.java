@@ -36,8 +36,7 @@ import static org.schabi.newpipe.extractor.ServiceList.SoundCloud;
 /**
  * Test for {@link SearchEngine}
  */
-public class SoundcloudSearchEnginePlaylistTest {
-    private static SearchResult result;
+public class SoundcloudSearchEnginePlaylistTest extends BaseSoundcloudSearchTest {
 
     @BeforeClass
     public static void setUp() throws Exception {
@@ -50,22 +49,10 @@ public class SoundcloudSearchEnginePlaylistTest {
     }
 
     @Test
-    public void testResultList() {
-        assertFalse(result.resultList.isEmpty());
-    }
-
-    @Test
     public void testUserItemType() {
         for (InfoItem infoItem : result.resultList) {
             assertEquals(InfoItem.InfoType.PLAYLIST, infoItem.info_type);
         }
-    }
-
-    @Test
-    public void testResultErrors() {
-        assertNotNull(result.errors);
-        if (!result.errors.isEmpty()) for (Throwable error : result.errors) error.printStackTrace();
-        assertTrue(result.errors.isEmpty());
     }
 
     @Ignore

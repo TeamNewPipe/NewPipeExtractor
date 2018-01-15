@@ -100,7 +100,7 @@ public class YoutubeStreamInfoItemExtractor implements StreamInfoItemExtractor {
             try {
                 return item.select("div[class=\"yt-lockup-byline\"]").first()
                         .select("a").first()
-                        .attr("href");
+                        .attr("abs:href");
             } catch (Exception e){}
 
             // try this if the first didn't work
