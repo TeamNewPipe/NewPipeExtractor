@@ -94,23 +94,13 @@ public class YoutubeStreamInfoItemExtractor implements StreamInfoItemExtractor {
         }
     }
 
-    private static String fixRelativeUrls(String url) {
-        if(url == null || url.isEmpty()) return url;
-        if(url.startsWith("/")) {
-            return "https://youtube.com" + url;
-        } else {
-            return url;
-        }
-    }
-
     @Override
     public String getUploaderUrl() throws ParsingException {
         try {
             try {
-                String url = item.select("div[class=\"yt-lockup-byline\"]").first()
+                return item.select("div[class=\"yt-lockup-byline\"]").first()
                         .select("a").first()
-                        .attr("href");
-                return fixRelativeUrls(url);
+                        .attr("abs:href");
             } catch (Exception e){}
 
             // try this if the first didn't work

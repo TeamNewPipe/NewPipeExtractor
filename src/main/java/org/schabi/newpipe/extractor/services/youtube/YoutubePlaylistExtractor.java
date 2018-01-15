@@ -265,7 +265,7 @@ public class YoutubePlaylistExtractor extends PlaylistExtractor {
 
                 @Override
                 public String getUploaderUrl() throws ParsingException {
-                    return getUploaderLink().attr("href");
+                    return getUploaderLink().attr("abs:href");
                 }
 
                 @Override
