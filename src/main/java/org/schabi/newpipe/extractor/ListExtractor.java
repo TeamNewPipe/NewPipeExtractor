@@ -16,7 +16,7 @@ public abstract class ListExtractor extends Extractor {
     /**
      * Get a new ListExtractor with the given nextStreamsUrl set.
      */
-    public ListExtractor(StreamingService service, String url, String nextStreamsUrl) throws IOException, ExtractionException {
+    public ListExtractor(StreamingService service, String url, String nextStreamsUrl) throws ExtractionException {
         super(service, url);
         setNextStreamsUrl(nextStreamsUrl);
     }
@@ -46,7 +46,7 @@ public abstract class ListExtractor extends Extractor {
         /**
          * The current list of items to this result
          */
-        public final List<? extends InfoItem> nextItemsList;
+        public final List<InfoItem> nextItemsList;
 
         /**
          * Next url to fetch more items
@@ -58,11 +58,11 @@ public abstract class ListExtractor extends Extractor {
          */
         public final List<Throwable> errors;
 
-        public NextItemsResult(InfoItemCollector<? extends InfoItem, ?> collector, String nextItemsUrl) {
+        public NextItemsResult(InfoItemCollector collector, String nextItemsUrl) {
             this(collector.getItemList(), nextItemsUrl, collector.getErrors());
         }
 
-        public NextItemsResult(List<? extends InfoItem> nextItemsList, String nextItemsUrl, List<Throwable> errors) {
+        public NextItemsResult(List<InfoItem> nextItemsList, String nextItemsUrl, List<Throwable> errors) {
             this.nextItemsList = nextItemsList;
             this.nextItemsUrl = nextItemsUrl;
             this.errors = errors;
@@ -72,7 +72,7 @@ public abstract class ListExtractor extends Extractor {
             return nextItemsUrl != null && !nextItemsUrl.isEmpty();
         }
 
-        public List<? extends InfoItem> getNextItemsList() {
+        public List<InfoItem> getNextItemsList() {
             return nextItemsList;
         }
 
