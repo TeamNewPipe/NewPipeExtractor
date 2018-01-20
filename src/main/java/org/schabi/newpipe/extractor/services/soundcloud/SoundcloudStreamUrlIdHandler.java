@@ -9,9 +9,8 @@ import org.schabi.newpipe.extractor.utils.Parser;
 import org.schabi.newpipe.extractor.utils.Utils;
 
 public class SoundcloudStreamUrlIdHandler implements UrlIdHandler {
-
     private static final SoundcloudStreamUrlIdHandler instance = new SoundcloudStreamUrlIdHandler();
-    private final String URL_PATTERN = "^https?://(www\\.)?soundcloud.com/[0-9a-z_-]+" +
+    private final String URL_PATTERN = "^https?://(www\\.|m\\.)?soundcloud.com/[0-9a-z_-]+" +
             "/(?!(tracks|albums|sets|reposts|followers|following)/?$)[0-9a-z_-]+/?([#?].*)?$";
 
     private SoundcloudStreamUrlIdHandler() {
