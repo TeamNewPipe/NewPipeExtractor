@@ -3,12 +3,12 @@ package org.schabi.newpipe.extractor.services.youtube;
 import com.grack.nanojson.JsonObject;
 import com.grack.nanojson.JsonParser;
 import com.grack.nanojson.JsonParserException;
+
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.schabi.newpipe.extractor.Downloader;
 import org.schabi.newpipe.extractor.NewPipe;
-import org.schabi.newpipe.extractor.StreamingService;
 import org.schabi.newpipe.extractor.UrlIdHandler;
 import org.schabi.newpipe.extractor.exceptions.ExtractionException;
 import org.schabi.newpipe.extractor.exceptions.ParsingException;
@@ -19,11 +19,12 @@ import org.schabi.newpipe.extractor.stream.StreamType;
 import org.schabi.newpipe.extractor.utils.Parser;
 import org.schabi.newpipe.extractor.utils.Utils;
 
-import javax.annotation.Nonnull;
 import java.io.IOException;
 
+import javax.annotation.Nonnull;
+
 @SuppressWarnings("WeakerAccess")
-public class YoutubePlaylistExtractor extends PlaylistExtractor {
+public class YoutubePlaylistExtractor extends PlaylistExtractor<YoutubeService> {
 
     private Document doc;
     /**
@@ -31,7 +32,7 @@ public class YoutubePlaylistExtractor extends PlaylistExtractor {
      */
     private Document nextStreamsAjax;
 
-    public YoutubePlaylistExtractor(StreamingService service, String url, String nextStreamsUrl) throws IOException, ExtractionException {
+    public YoutubePlaylistExtractor(YoutubeService service, String url, String nextStreamsUrl) throws IOException, ExtractionException {
         super(service, url, nextStreamsUrl);
     }
 
@@ -205,7 +206,7 @@ public class YoutubePlaylistExtractor extends PlaylistExtractor {
                 continue;
             }
 
-            collector.commit(new YoutubeStreamInfoItemExtractor(li) {
+            collector.commit(new YoutubeStreamInfoItemExtractor(li, null) {
                 public Element uploaderLink;
 
                 @Override
@@ -269,7 +270,7 @@ public class YoutubePlaylistExtractor extends PlaylistExtractor {
                 }
 
                 @Override
-                public String getUploadDate() throws ParsingException {
+                public String getTextualUploadDate() throws ParsingException {
                     return "";
                 }
 

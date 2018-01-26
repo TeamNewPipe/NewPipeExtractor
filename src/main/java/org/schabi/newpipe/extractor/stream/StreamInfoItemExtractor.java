@@ -3,6 +3,8 @@ package org.schabi.newpipe.extractor.stream;
 import org.schabi.newpipe.extractor.InfoItemExtractor;
 import org.schabi.newpipe.extractor.exceptions.ParsingException;
 
+import java.util.Calendar;
+
 /*
  * Created by Christian Schabesberger on 28.02.16.
  *
@@ -64,10 +66,28 @@ public interface StreamInfoItemExtractor extends InfoItemExtractor {
     String getUploaderUrl() throws ParsingException;
 
     /**
-     * Extract the uploader name
-     * @return the uploader name
-     * @throws ParsingException thrown if there is an error in the extraction
+     * Extract the textual upload date of this item.
+     * The original textual date provided by the service may be used if it is short;
+     * otherwise the format "yyyy-MM-dd" or an locale specific version is preferred.
+     *
+     * @return The original textual upload date.
+     * @throws ParsingException if there is an error in the extraction
+     * @see #getUploadDate()
      */
-    String getUploadDate() throws ParsingException;
+    String getTextualUploadDate() throws ParsingException;
+
+    /**
+     * Extracts the upload date and time of this item and parses it.
+     * <p>
+     *     If the service doesn't provide an exact time, an approximation can be returned.
+     *     If the service doesn't provide any date at all, then {@code null} should be returned.
+     * </p>
+     *
+     * @return The (approximated) date and time this item was uploaded or {@code null}.
+     * @throws ParsingException if there is an error in the extraction
+     *                          or the extracted date couldn't be parsed.
+     * @see #getTextualUploadDate()
+     */
+    Calendar getUploadDate() throws ParsingException;
 
 }

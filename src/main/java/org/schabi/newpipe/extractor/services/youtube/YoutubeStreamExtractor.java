@@ -4,6 +4,7 @@ import com.grack.nanojson.JsonArray;
 import com.grack.nanojson.JsonObject;
 import com.grack.nanojson.JsonParser;
 import com.grack.nanojson.JsonParserException;
+
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
@@ -12,22 +13,32 @@ import org.mozilla.javascript.Function;
 import org.mozilla.javascript.ScriptableObject;
 import org.schabi.newpipe.extractor.Downloader;
 import org.schabi.newpipe.extractor.NewPipe;
-import org.schabi.newpipe.extractor.StreamingService;
 import org.schabi.newpipe.extractor.Subtitles;
 import org.schabi.newpipe.extractor.exceptions.ContentNotAvailableException;
 import org.schabi.newpipe.extractor.exceptions.ExtractionException;
 import org.schabi.newpipe.extractor.exceptions.ParsingException;
 import org.schabi.newpipe.extractor.exceptions.ReCaptchaException;
-import org.schabi.newpipe.extractor.stream.*;
+import org.schabi.newpipe.extractor.stream.AudioStream;
+import org.schabi.newpipe.extractor.stream.Stream;
+import org.schabi.newpipe.extractor.stream.StreamExtractor;
+import org.schabi.newpipe.extractor.stream.StreamInfoItem;
+import org.schabi.newpipe.extractor.stream.StreamInfoItemCollector;
+import org.schabi.newpipe.extractor.stream.StreamInfoItemExtractor;
+import org.schabi.newpipe.extractor.stream.StreamType;
+import org.schabi.newpipe.extractor.stream.SubtitlesFormat;
+import org.schabi.newpipe.extractor.stream.VideoStream;
 import org.schabi.newpipe.extractor.utils.Parser;
 import org.schabi.newpipe.extractor.utils.Utils;
 
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Map;
+
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
-import java.io.IOException;
-import java.util.*;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 /*
  * Created by Christian Schabesberger on 06.08.15.
@@ -49,7 +60,7 @@ import java.util.regex.Pattern;
  * along with NewPipe.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-public class YoutubeStreamExtractor extends StreamExtractor {
+public class YoutubeStreamExtractor extends StreamExtractor<YoutubeService> {
     private static final String TAG = YoutubeStreamExtractor.class.getSimpleName();
 
     /*//////////////////////////////////////////////////////////////////////////
@@ -84,7 +95,7 @@ public class YoutubeStreamExtractor extends StreamExtractor {
 
     private boolean isAgeRestricted;
 
-    public YoutubeStreamExtractor(StreamingService service, String url) throws IOException, ExtractionException {
+    public YoutubeStreamExtractor(YoutubeService service, String url) throws IOException, ExtractionException {
         super(service, url);
     }
 
@@ -801,7 +812,7 @@ public class YoutubeStreamExtractor extends StreamExtractor {
      * This is encapsulated in a StreamInfoItem object, which is a subset of the fields in a full StreamInfo.
      */
     private StreamInfoItemExtractor extractVideoPreviewInfo(final Element li) {
-        return new YoutubeStreamInfoItemExtractor(li) {
+        return new YoutubeStreamInfoItemExtractor(li, null) {
 
             @Override
             public String getUrl() throws ParsingException {
@@ -828,7 +839,7 @@ public class YoutubeStreamExtractor extends StreamExtractor {
             }
 
             @Override
-            public String getUploadDate() throws ParsingException {
+            public String getTextualUploadDate() throws ParsingException {
                 return "";
             }
 

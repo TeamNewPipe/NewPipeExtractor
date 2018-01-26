@@ -29,9 +29,9 @@ import java.io.IOException;
  * along with NewPipe.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-public abstract class ChannelExtractor extends ListExtractor {
+public abstract class ChannelExtractor<S extends StreamingService> extends ListExtractor<S> {
 
-    public ChannelExtractor(StreamingService service, String url, String nextStreamsUrl) throws IOException, ExtractionException {
+    public ChannelExtractor(S service, String url, String nextStreamsUrl) throws IOException, ExtractionException {
         super(service, url, nextStreamsUrl);
     }
 

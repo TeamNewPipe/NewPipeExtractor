@@ -4,7 +4,10 @@ import org.jsoup.nodes.Element;
 import org.schabi.newpipe.extractor.exceptions.ParsingException;
 import org.schabi.newpipe.extractor.stream.StreamInfoItemExtractor;
 import org.schabi.newpipe.extractor.stream.StreamType;
+import org.schabi.newpipe.extractor.stream.TimeAgoParser;
 import org.schabi.newpipe.extractor.utils.Utils;
+
+import java.util.Calendar;
 
 /*
  * Copyright (C) Christian Schabesberger 2016 <chris.schabesberger@mailbox.org>
@@ -27,9 +30,18 @@ import org.schabi.newpipe.extractor.utils.Utils;
 public class YoutubeStreamInfoItemExtractor implements StreamInfoItemExtractor {
 
     private final Element item;
+    private final TimeAgoParser timeAgoParser;
 
-    public YoutubeStreamInfoItemExtractor(Element item) {
+    private String cachedUploadDate;
+
+    /**
+     * Creates an extractor of StreamInfoItems from a YouTube page.
+     * @param item          The page element
+     * @param timeAgoParser A parser of the textual dates or {@code null}.
+     */
+    public YoutubeStreamInfoItemExtractor(Element item, TimeAgoParser timeAgoParser) {
         this.item = item;
+        this.timeAgoParser = timeAgoParser;
     }
 
     @Override
@@ -113,14 +125,27 @@ public class YoutubeStreamInfoItemExtractor implements StreamInfoItemExtractor {
     }
 
     @Override
-    public String getUploadDate() throws ParsingException {
+    public String getTextualUploadDate() throws ParsingException {
+        if (cachedUploadDate != null) {
+            return cachedUploadDate;
+        }
+
         try {
             Element meta = item.select("div[class=\"yt-lockup-meta\"]").first();
             if (meta == null) return "";
 
-            return meta.select("li").first().text();
+            return cachedUploadDate = meta.select("li").first().text();
         } catch (Exception e) {
             throw new ParsingException("Could not get upload date", e);
+        }
+    }
+
+    @Override
+    public Calendar getUploadDate() throws ParsingException {
+        if (timeAgoParser != null) {
+            return timeAgoParser.parse(getTextualUploadDate());
+        } else {
+            return null;
         }
     }
 

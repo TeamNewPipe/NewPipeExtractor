@@ -3,22 +3,23 @@ package org.schabi.newpipe.extractor.services.soundcloud;
 import com.grack.nanojson.JsonObject;
 import com.grack.nanojson.JsonParser;
 import com.grack.nanojson.JsonParserException;
+
 import org.schabi.newpipe.extractor.Downloader;
-import org.schabi.newpipe.extractor.StreamingService;
 import org.schabi.newpipe.extractor.exceptions.ExtractionException;
 import org.schabi.newpipe.extractor.exceptions.ParsingException;
 import org.schabi.newpipe.extractor.playlist.PlaylistExtractor;
 import org.schabi.newpipe.extractor.stream.StreamInfoItemCollector;
 
-import javax.annotation.Nonnull;
 import java.io.IOException;
 
+import javax.annotation.Nonnull;
+
 @SuppressWarnings("WeakerAccess")
-public class SoundcloudPlaylistExtractor extends PlaylistExtractor {
+public class SoundcloudPlaylistExtractor extends PlaylistExtractor<SoundcloudService> {
     private String playlistId;
     private JsonObject playlist;
 
-    public SoundcloudPlaylistExtractor(StreamingService service, String url, String nextStreamsUrl) throws IOException, ExtractionException {
+    public SoundcloudPlaylistExtractor(SoundcloudService service, String url, String nextStreamsUrl) throws IOException, ExtractionException {
         super(service, url, nextStreamsUrl);
     }
 

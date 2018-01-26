@@ -22,6 +22,8 @@ package org.schabi.newpipe.extractor.stream;
 
 import org.schabi.newpipe.extractor.InfoItem;
 
+import java.util.Calendar;
+
 /**
  * Info object for previews of unopened videos, eg search results, related videos
  */
@@ -29,7 +31,8 @@ public class StreamInfoItem extends InfoItem {
     public final StreamType stream_type;
 
     public String uploader_name;
-    public String upload_date;
+    private String textualUploadDate;
+    private Calendar uploadDate;
     public long view_count = -1;
     public long duration = -1;
 
@@ -56,8 +59,12 @@ public class StreamInfoItem extends InfoItem {
         return uploader_name;
     }
 
-    public String getUploadDate() {
-        return upload_date;
+    /**
+     * @return The original textual upload date as returned by the streaming service.
+     * @see #getUploadDate()
+     */
+    public String getTextualUploadDate() {
+        return textualUploadDate;
     }
 
     public long getViewCount() {
@@ -76,12 +83,24 @@ public class StreamInfoItem extends InfoItem {
         this.uploader_name = uploader_name;
     }
 
-    public void setUploadDate(String upload_date) {
-        this.upload_date = upload_date;
+    public void setTextualUploadDate(String upload_date) {
+        this.textualUploadDate = upload_date;
     }
 
     public void setViewCount(long view_count) {
         this.view_count = view_count;
+    }
+
+    /**
+     * @return The (approximated) date and time this item was uploaded or {@code null}.
+     * @see #getTextualUploadDate()
+     */
+    public Calendar getUploadDate() {
+        return uploadDate;
+    }
+
+    void setUploadDate(Calendar uploadDate) {
+        this.uploadDate = uploadDate;
     }
 
     @Override
@@ -89,7 +108,7 @@ public class StreamInfoItem extends InfoItem {
         return "StreamInfoItem{" +
                 "stream_type=" + stream_type +
                 ", uploader_name='" + uploader_name + '\'' +
-                ", upload_date='" + upload_date + '\'' +
+                ", textualUploadDate='" + textualUploadDate + '\'' +
                 ", view_count=" + view_count +
                 ", duration=" + duration +
                 ", uploaderUrl='" + uploaderUrl + '\'' +

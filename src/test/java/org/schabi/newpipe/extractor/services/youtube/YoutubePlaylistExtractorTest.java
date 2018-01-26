@@ -87,7 +87,7 @@ public class YoutubePlaylistExtractorTest {
         for(StreamInfoItem item: streams) {
             assertEquals("Service id doesn't match", YouTube.getId(), item.getServiceId());
             assertNotNull("Stream type not set: " + item, item.getStreamType());
-            //assertNotEmpty("Upload date not set: " + item, item.getUploadDate());
+            //assertNotEmpty("Upload date not set: " + item, item.getTextualUploadDate());
             assertNotEmpty("Uploader name not set: " + item, item.getUploaderName());
             assertNotEmpty("Uploader url not set: " + item, item.getUploaderUrl());
         }

@@ -9,9 +9,9 @@ import org.schabi.newpipe.extractor.exceptions.ParsingException;
 import javax.annotation.Nonnull;
 import java.io.IOException;
 
-public abstract class PlaylistExtractor extends ListExtractor {
+public abstract class PlaylistExtractor<S extends StreamingService> extends ListExtractor<S> {
 
-    public PlaylistExtractor(StreamingService service, String url, String nextStreamsUrl) throws IOException, ExtractionException {
+    public PlaylistExtractor(S service, String url, String nextStreamsUrl) throws IOException, ExtractionException {
         super(service, url, nextStreamsUrl);
     }
 

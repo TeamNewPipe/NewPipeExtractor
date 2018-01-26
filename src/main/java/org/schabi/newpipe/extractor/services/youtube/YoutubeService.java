@@ -10,6 +10,7 @@ import org.schabi.newpipe.extractor.kiosk.KioskList;
 import org.schabi.newpipe.extractor.playlist.PlaylistExtractor;
 import org.schabi.newpipe.extractor.search.SearchEngine;
 import org.schabi.newpipe.extractor.stream.StreamExtractor;
+import org.schabi.newpipe.extractor.stream.TimeAgoParser;
 
 import java.io.IOException;
 
@@ -101,5 +102,14 @@ public class YoutubeService extends StreamingService {
         }
 
         return list;
+    }
+
+    /**
+     * @return A helper to parse upload dates in the format '2 days ago'.
+     *
+     * TODO Introduce support for multiple languages.
+     */
+    TimeAgoParser getTimeAgoParser() {
+        return new TimeAgoParser(TimeAgoParser.DEFAULT_AGO_PHRASES);
     }
 }

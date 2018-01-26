@@ -24,20 +24,25 @@ import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
-import org.schabi.newpipe.extractor.*;
+import org.schabi.newpipe.extractor.Downloader;
+import org.schabi.newpipe.extractor.ListExtractor;
+import org.schabi.newpipe.extractor.UrlIdHandler;
 import org.schabi.newpipe.extractor.exceptions.ExtractionException;
 import org.schabi.newpipe.extractor.exceptions.ParsingException;
 import org.schabi.newpipe.extractor.kiosk.KioskExtractor;
 import org.schabi.newpipe.extractor.stream.StreamInfoItemCollector;
 
-import javax.annotation.Nonnull;
 import java.io.IOException;
 
-public class YoutubeTrendingExtractor extends KioskExtractor {
+import javax.annotation.Nonnull;
+
+public class YoutubeTrendingExtractor extends KioskExtractor<YoutubeService> {
+
+
 
     private Document doc;
 
-    public YoutubeTrendingExtractor(StreamingService service, String url, String nextStreamsUrl, String kioskId)
+    public YoutubeTrendingExtractor(YoutubeService service, String url, String nextStreamsUrl, String kioskId)
             throws IOException, ExtractionException {
         super(service, url, nextStreamsUrl, kioskId);
     }
@@ -86,7 +91,7 @@ public class YoutubeTrendingExtractor extends KioskExtractor {
         for(Element ul : uls) {
             for(final Element li : ul.children()) {
                 final Element el = li.select("div[class*=\"yt-lockup-dismissable\"]").first();
-                collector.commit(new YoutubeStreamInfoItemExtractor(li) {
+                collector.commit(new YoutubeStreamInfoItemExtractor(li, null) {
                     @Override
                     public String getUrl() throws ParsingException {
                         try {

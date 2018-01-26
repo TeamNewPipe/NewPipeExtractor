@@ -28,7 +28,7 @@ public abstract class BaseYoutubeSearchTest {
                 // test stream item
                 StreamInfoItem streamInfoItem = (StreamInfoItem) infoItem;
                 assertIsSecureUrl(streamInfoItem.getUploaderUrl());
-                assertFalse(streamInfoItem.getUploadDate().isEmpty());
+                assertFalse(streamInfoItem.getTextualUploadDate().isEmpty());
                 assertFalse(streamInfoItem.getUploaderName().isEmpty());
             } else if(infoItem instanceof ChannelInfoItem) {
                 // Nothing special to check?

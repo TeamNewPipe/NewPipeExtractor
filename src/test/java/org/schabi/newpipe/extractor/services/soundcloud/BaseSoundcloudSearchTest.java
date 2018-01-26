@@ -28,7 +28,7 @@ public abstract class BaseSoundcloudSearchTest {
                 // test stream item
                 StreamInfoItem streamInfoItem = (StreamInfoItem) infoItem;
                 assertIsSecureUrl(streamInfoItem.getUploaderUrl());
-                assertFalse(streamInfoItem.getUploadDate().isEmpty());
+                assertFalse(streamInfoItem.getTextualUploadDate().isEmpty());
                 assertFalse(streamInfoItem.getUploaderName().isEmpty());
                 assertEquals(StreamType.AUDIO_STREAM, streamInfoItem.getStreamType());
             } else if(infoItem instanceof ChannelInfoItem) {

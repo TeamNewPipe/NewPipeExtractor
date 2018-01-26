@@ -28,11 +28,11 @@ import org.schabi.newpipe.extractor.exceptions.ParsingException;
 import javax.annotation.Nonnull;
 import java.io.IOException;
 
-public abstract class KioskExtractor extends ListExtractor {
+public abstract class KioskExtractor<S extends StreamingService> extends ListExtractor<S> {
     private String contentCountry = null;
     private final String id;
 
-    public KioskExtractor(StreamingService streamingService,
+    public KioskExtractor(S streamingService,
                           String url,
                           String nextStreamsUrl,
                           String kioskId)

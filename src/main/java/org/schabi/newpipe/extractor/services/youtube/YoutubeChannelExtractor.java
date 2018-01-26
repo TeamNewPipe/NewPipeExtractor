@@ -4,22 +4,24 @@ package org.schabi.newpipe.extractor.services.youtube;
 import com.grack.nanojson.JsonObject;
 import com.grack.nanojson.JsonParser;
 import com.grack.nanojson.JsonParserException;
+
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.schabi.newpipe.extractor.Downloader;
 import org.schabi.newpipe.extractor.NewPipe;
-import org.schabi.newpipe.extractor.StreamingService;
 import org.schabi.newpipe.extractor.channel.ChannelExtractor;
 import org.schabi.newpipe.extractor.exceptions.ExtractionException;
 import org.schabi.newpipe.extractor.exceptions.ParsingException;
 import org.schabi.newpipe.extractor.exceptions.ReCaptchaException;
 import org.schabi.newpipe.extractor.stream.StreamInfoItemCollector;
+import org.schabi.newpipe.extractor.stream.TimeAgoParser;
 import org.schabi.newpipe.extractor.utils.Parser;
 import org.schabi.newpipe.extractor.utils.Utils;
 
-import javax.annotation.Nonnull;
 import java.io.IOException;
+
+import javax.annotation.Nonnull;
 
 /*
  * Created by Christian Schabesberger on 25.07.16.
@@ -42,9 +44,11 @@ import java.io.IOException;
  */
 
 @SuppressWarnings("WeakerAccess")
-public class YoutubeChannelExtractor extends ChannelExtractor {
+public class YoutubeChannelExtractor extends ChannelExtractor<YoutubeService> {
     private static final String CHANNEL_FEED_BASE = "https://www.youtube.com/feeds/videos.xml?channel_id=";
     private static final String CHANNEL_URL_PARAMETERS = "/videos?view=0&flow=list&sort=dd&live_view=10000";
+
+    private final TimeAgoParser timeAgoParser = getService().getTimeAgoParser();
 
     private Document doc;
     /**
@@ -60,7 +64,7 @@ public class YoutubeChannelExtractor extends ChannelExtractor {
      */
     private boolean fetchingNextStreams;
 
-    public YoutubeChannelExtractor(StreamingService service, String url, String nextStreamsUrl) throws IOException, ExtractionException {
+    public YoutubeChannelExtractor(YoutubeService service, String url, String nextStreamsUrl) throws IOException, ExtractionException {
         super(service, url, nextStreamsUrl);
 
         fetchingNextStreams = nextStreamsUrl != null && !nextStreamsUrl.isEmpty();
@@ -226,7 +230,7 @@ public class YoutubeChannelExtractor extends ChannelExtractor {
         final String uploaderUrl = getCleanUrl();
         for (final Element li : element.children()) {
             if (li.select("div[class=\"feed-item-dismissable\"]").first() != null) {
-                collector.commit(new YoutubeStreamInfoItemExtractor(li) {
+                collector.commit(new YoutubeStreamInfoItemExtractor(li, timeAgoParser) {
                     @Override
                     public String getUrl() throws ParsingException {
                         try {

@@ -107,7 +107,7 @@ public class YoutubeSearchEngine extends SearchEngine {
 
                 // video item type
             } else if ((el = item.select("div[class*=\"yt-lockup-video\"]").first()) != null) {
-                collector.commit(new YoutubeStreamInfoItemExtractor(el));
+                collector.commit(new YoutubeStreamInfoItemExtractor(el, null));
             } else if ((el = item.select("div[class*=\"yt-lockup-channel\"]").first()) != null) {
                 collector.commit(new YoutubeChannelInfoItemExtractor(el));
             } else if ((el = item.select("div[class*=\"yt-lockup-playlist\"]").first()) != null &&

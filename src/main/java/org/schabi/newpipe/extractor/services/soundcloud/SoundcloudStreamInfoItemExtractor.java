@@ -1,9 +1,12 @@
 package org.schabi.newpipe.extractor.services.soundcloud;
 
 import com.grack.nanojson.JsonObject;
+
 import org.schabi.newpipe.extractor.exceptions.ParsingException;
 import org.schabi.newpipe.extractor.stream.StreamInfoItemExtractor;
 import org.schabi.newpipe.extractor.stream.StreamType;
+
+import java.util.Calendar;
 
 public class SoundcloudStreamInfoItemExtractor implements StreamInfoItemExtractor {
 
@@ -39,8 +42,13 @@ public class SoundcloudStreamInfoItemExtractor implements StreamInfoItemExtracto
     }
 
     @Override
-    public String getUploadDate() throws ParsingException {
+    public String getTextualUploadDate() throws ParsingException {
         return SoundcloudParsingHelper.toDateString(searchResult.getString("created_at"));
+    }
+
+    @Override
+    public Calendar getUploadDate() throws ParsingException {
+        throw new ParsingException("SoundcloudStreamInfoItemExtractor.getUploadDate() not implemented.");
     }
 
     @Override

@@ -3,23 +3,35 @@ package org.schabi.newpipe.extractor.services.soundcloud;
 import com.grack.nanojson.JsonObject;
 import com.grack.nanojson.JsonParser;
 import com.grack.nanojson.JsonParserException;
-import org.schabi.newpipe.extractor.*;
+
+import org.schabi.newpipe.extractor.Downloader;
+import org.schabi.newpipe.extractor.MediaFormat;
+import org.schabi.newpipe.extractor.NewPipe;
+import org.schabi.newpipe.extractor.Subtitles;
 import org.schabi.newpipe.extractor.exceptions.ContentNotAvailableException;
 import org.schabi.newpipe.extractor.exceptions.ExtractionException;
 import org.schabi.newpipe.extractor.exceptions.ParsingException;
-import org.schabi.newpipe.extractor.stream.*;
+import org.schabi.newpipe.extractor.stream.AudioStream;
+import org.schabi.newpipe.extractor.stream.StreamExtractor;
+import org.schabi.newpipe.extractor.stream.StreamInfoItem;
+import org.schabi.newpipe.extractor.stream.StreamInfoItemCollector;
+import org.schabi.newpipe.extractor.stream.StreamType;
+import org.schabi.newpipe.extractor.stream.SubtitlesFormat;
+import org.schabi.newpipe.extractor.stream.VideoStream;
 
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
 
-public class SoundcloudStreamExtractor extends StreamExtractor {
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
+
+public class SoundcloudStreamExtractor extends StreamExtractor<SoundcloudService> {
     private JsonObject track;
 
-    public SoundcloudStreamExtractor(StreamingService service, String url) throws IOException, ExtractionException {
+    public SoundcloudStreamExtractor(SoundcloudService service, String url) throws IOException, ExtractionException {
         super(service, url);
     }
 

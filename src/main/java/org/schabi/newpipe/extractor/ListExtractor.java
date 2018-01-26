@@ -10,13 +10,13 @@ import java.util.List;
 /**
  * Base class to extractors that have a list (e.g. playlists, users).
  */
-public abstract class ListExtractor extends Extractor {
+public abstract class ListExtractor<S extends StreamingService> extends Extractor<S> {
     protected String nextStreamsUrl;
 
     /**
      * Get a new ListExtractor with the given nextStreamsUrl set.
      */
-    public ListExtractor(StreamingService service, String url, String nextStreamsUrl) throws ExtractionException {
+    public ListExtractor(S service, String url, String nextStreamsUrl) throws ExtractionException {
         super(service, url);
         setNextStreamsUrl(nextStreamsUrl);
     }

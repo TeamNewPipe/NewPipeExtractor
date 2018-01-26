@@ -7,12 +7,12 @@ import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.io.IOException;
 
-public abstract class Extractor {
+public abstract class Extractor<S extends StreamingService> {
     /**
      * {@link StreamingService} currently related to this extractor.<br/>
      * Useful for getting other things from a service (like the url handlers for cleaning/accepting/get id from urls).
      */
-    private final StreamingService service;
+    private final S service;
 
     /**
      * Dirty/original url that was passed in the constructor.
@@ -36,7 +36,7 @@ public abstract class Extractor {
     private boolean pageFetched = false;
     private final Downloader downloader;
 
-    public Extractor(StreamingService service, String url) throws ExtractionException {
+    public Extractor(S service, String url) throws ExtractionException {
         if(service == null) throw new NullPointerException("service is null");
         if(url == null) throw new NullPointerException("url is null");
         this.service = service;
@@ -113,7 +113,7 @@ public abstract class Extractor {
     }
 
     @Nonnull
-    public StreamingService getService() {
+    public S getService() {
         return service;
     }
 

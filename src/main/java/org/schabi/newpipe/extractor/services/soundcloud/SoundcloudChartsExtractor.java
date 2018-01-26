@@ -1,23 +1,22 @@
 package org.schabi.newpipe.extractor.services.soundcloud;
 
-import java.io.IOException;
-import java.util.Arrays;
-import java.util.List;
-
 import org.schabi.newpipe.extractor.Downloader;
-import org.schabi.newpipe.extractor.StreamingService;
 import org.schabi.newpipe.extractor.UrlIdHandler;
 import org.schabi.newpipe.extractor.exceptions.ExtractionException;
 import org.schabi.newpipe.extractor.exceptions.ParsingException;
 import org.schabi.newpipe.extractor.kiosk.KioskExtractor;
 import org.schabi.newpipe.extractor.stream.StreamInfoItemCollector;
 
+import java.io.IOException;
+import java.util.Arrays;
+import java.util.List;
+
 import javax.annotation.Nonnull;
 
-public class SoundcloudChartsExtractor extends KioskExtractor {
+public class SoundcloudChartsExtractor extends KioskExtractor<SoundcloudService> {
 	private String url;
 
-    public SoundcloudChartsExtractor(StreamingService service, String url, String nextStreamsUrl, String kioskId)
+    public SoundcloudChartsExtractor(SoundcloudService service, String url, String nextStreamsUrl, String kioskId)
             throws IOException, ExtractionException {
         super(service, url, nextStreamsUrl, kioskId);
         this.url = url;
