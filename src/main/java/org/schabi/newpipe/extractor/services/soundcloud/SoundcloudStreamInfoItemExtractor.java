@@ -43,12 +43,18 @@ public class SoundcloudStreamInfoItemExtractor implements StreamInfoItemExtracto
 
     @Override
     public String getTextualUploadDate() throws ParsingException {
-        return SoundcloudParsingHelper.toDateString(searchResult.getString("created_at"));
+        return SoundcloudParsingHelper.toTextualDate(getCreatedAt());
     }
 
     @Override
     public Calendar getUploadDate() throws ParsingException {
-        throw new ParsingException("SoundcloudStreamInfoItemExtractor.getUploadDate() not implemented.");
+        Calendar uploadTime = Calendar.getInstance();
+        uploadTime.setTime(SoundcloudParsingHelper.parseDate(getCreatedAt()));
+        return uploadTime;
+    }
+
+    private String getCreatedAt() {
+        return searchResult.getString("created_at");
     }
 
     @Override

@@ -45,21 +45,20 @@ public class SoundcloudParsingHelper {
         return clientId = Parser.matchGroup1(",client_id:\"(.*?)\"", js);
     }
 
-    public static String toDateString(String time) throws ParsingException {
+    static Date parseDate(String time) throws ParsingException {
         try {
-            Date date;
-            // Have two date formats, one for the 'api.soundc...' and the other 'api-v2.soundc...'.
+            return new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss'Z'").parse(time);
+        } catch (ParseException e1) {
             try {
-                date = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss'Z'").parse(time);
-            } catch (Exception e) {
-                date = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss +0000").parse(time);
+                return new SimpleDateFormat("yyyy/MM/dd HH:mm:ss +0000").parse(time);
+            } catch (ParseException e2) {
+                throw new ParsingException(e1.getMessage(), e2);
             }
-
-            SimpleDateFormat newDateFormat = new SimpleDateFormat("yyyy-MM-dd");
-            return newDateFormat.format(date);
-        } catch (ParseException e) {
-            throw new ParsingException(e.getMessage(), e);
         }
+    }
+
+    static String toTextualDate(String time) throws ParsingException {
+        return new SimpleDateFormat("yyyy-MM-dd").format(parseDate(time));
     }
 
     /**
