@@ -31,6 +31,7 @@ import org.schabi.newpipe.extractor.exceptions.ExtractionException;
 import org.schabi.newpipe.extractor.exceptions.ParsingException;
 import org.schabi.newpipe.extractor.kiosk.KioskExtractor;
 import org.schabi.newpipe.extractor.stream.StreamInfoItemCollector;
+import org.schabi.newpipe.extractor.stream.TimeAgoParser;
 
 import java.io.IOException;
 
@@ -38,7 +39,7 @@ import javax.annotation.Nonnull;
 
 public class YoutubeTrendingExtractor extends KioskExtractor<YoutubeService> {
 
-
+    private final TimeAgoParser timeAgoParser = getService().getTimeAgoParser();
 
     private Document doc;
 
@@ -91,7 +92,7 @@ public class YoutubeTrendingExtractor extends KioskExtractor<YoutubeService> {
         for(Element ul : uls) {
             for(final Element li : ul.children()) {
                 final Element el = li.select("div[class*=\"yt-lockup-dismissable\"]").first();
-                collector.commit(new YoutubeStreamInfoItemExtractor(li, null) {
+                collector.commit(new YoutubeStreamInfoItemExtractor(li, timeAgoParser) {
                     @Override
                     public String getUrl() throws ParsingException {
                         try {

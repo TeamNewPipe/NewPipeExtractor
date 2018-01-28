@@ -20,9 +20,9 @@ public class TimeAgoParser {
      * A set of english phrases that are contained in the time units.
      * (e.g. '7 minutes ago' contains 'min')
      */
-    public static Map<TimeAgoUnit, String> DEFAULT_AGO_PHRASES = new EnumMap<>(TimeAgoUnit.class);
+    public static Map<TimeAgoUnit, String[]> DEFAULT_AGO_PHRASES = new EnumMap<>(TimeAgoUnit.class);
 
-    private final Map<TimeAgoUnit, String> agoPhrases;
+    private final Map<TimeAgoUnit, String[]> agoPhrases;
 
     private final Calendar consistentNow;
 
@@ -33,73 +33,82 @@ public class TimeAgoParser {
      * </p>
      * @param agoPhrases A set of phrases how to recognize the time units in a given language.
      */
-    public TimeAgoParser(Map<TimeAgoUnit, String> agoPhrases) {
+    public TimeAgoParser(Map<TimeAgoUnit, String[]> agoPhrases) {
         this.agoPhrases = agoPhrases;
         consistentNow = Calendar.getInstance();
     }
 
+    /**
+     * Parses a textual date in the format '2 days ago' into a Calendar representation.
+     * Sets the time to the beginning of the day/week/month/year if no exact time is available.
+     * @param textualDate The original date as provided by the streaming service
+     * @return The parsed (approximated) time
+     * @throws ParsingException if the time unit could not be recognized
+     */
     public Calendar parse(String textualDate) throws ParsingException {
         try {
-            int timeAgoValue = parseTimeAgoValue(textualDate);
+            int timeAgoAmount = parseTimeAgoAmount(textualDate);
             TimeAgoUnit timeAgoUnit = parseTimeAgoUnit(textualDate);
 
-            return getCalendar(timeAgoValue, timeAgoUnit);
+            return getCalendar(timeAgoAmount, timeAgoUnit);
         } catch (NumberFormatException e) {
             // If there is no valid number in the textual date, assume it is 'moments ago'.
             return getCalendar(0, TimeAgoUnit.SECONDS);
         }
     }
 
-    private int parseTimeAgoValue(String textualDate) throws NumberFormatException {
+    private int parseTimeAgoAmount(String textualDate) throws NumberFormatException {
         String timeValueStr = textualDate.replaceAll("\\D+", "");
         return Integer.parseInt(timeValueStr);
     }
 
     private TimeAgoUnit parseTimeAgoUnit(String textualDate) throws ParsingException {
         for (TimeAgoUnit timeAgoUnit : agoPhrases.keySet()) {
-            if (textualDate.contains(agoPhrases.get(timeAgoUnit))) {
-                return timeAgoUnit;
+            for (String agoPhrase : agoPhrases.get(timeAgoUnit)) {
+                if (textualDate.toLowerCase().contains(agoPhrase.toLowerCase())){
+                    return timeAgoUnit;
+                }
             }
         }
 
         throw new ParsingException("Unable to parse the date: " + textualDate);
     }
 
-    private Calendar getCalendar(int timeAgoValue, TimeAgoUnit timeAgoUnit) {
+    private Calendar getCalendar(int timeAgoAmount, TimeAgoUnit timeAgoUnit) {
         Calendar calendarTime = getNow();
 
         switch (timeAgoUnit) {
             case SECONDS:
-                calendarTime.add(Calendar.SECOND, -timeAgoValue);
+                calendarTime.add(Calendar.SECOND, -timeAgoAmount);
                 break;
 
             case MINUTES:
-                calendarTime.add(Calendar.MINUTE, -timeAgoValue);
+                calendarTime.add(Calendar.MINUTE, -timeAgoAmount);
                 break;
 
             case HOURS:
-                calendarTime.add(Calendar.HOUR_OF_DAY, -timeAgoValue);
+                calendarTime.add(Calendar.HOUR_OF_DAY, -timeAgoAmount);
                 break;
 
             case DAYS:
-                calendarTime.add(Calendar.DAY_OF_MONTH, -timeAgoValue);
+                calendarTime.add(Calendar.DAY_OF_MONTH, -timeAgoAmount);
                 resetTimeOfDay(calendarTime);
                 break;
 
             case WEEKS:
-                calendarTime.add(Calendar.WEEK_OF_MONTH, -timeAgoValue);
+                calendarTime.add(Calendar.WEEK_OF_YEAR, -timeAgoAmount);
                 calendarTime.set(Calendar.DAY_OF_WEEK, calendarTime.getFirstDayOfWeek());
                 resetTimeOfDay(calendarTime);
                 break;
 
             case MONTHS:
-                calendarTime.add(Calendar.MONTH, -timeAgoValue);
+                calendarTime.add(Calendar.MONTH, -timeAgoAmount);
                 calendarTime.set(Calendar.DAY_OF_MONTH, 1);
                 resetTimeOfDay(calendarTime);
                 break;
 
             case YEARS:
-                calendarTime.add(Calendar.YEAR, -timeAgoValue);
+                calendarTime.add(Calendar.YEAR, -timeAgoAmount);
                 calendarTime.set(Calendar.MONTH, 1);
                 calendarTime.set(Calendar.DAY_OF_MONTH, 1);
                 resetTimeOfDay(calendarTime);
@@ -117,19 +126,20 @@ public class TimeAgoParser {
         calendarTime.set(Calendar.HOUR_OF_DAY, 0);
         calendarTime.set(Calendar.MINUTE, 0);
         calendarTime.set(Calendar.SECOND, 0);
+        calendarTime.set(Calendar.MILLISECOND, 0);
     }
 
     static {
-        DEFAULT_AGO_PHRASES.put(TimeAgoUnit.SECONDS, "sec");
-        DEFAULT_AGO_PHRASES.put(TimeAgoUnit.MINUTES, "min");
-        DEFAULT_AGO_PHRASES.put(TimeAgoUnit.HOURS, "hour");
-        DEFAULT_AGO_PHRASES.put(TimeAgoUnit.DAYS, "day");
-        DEFAULT_AGO_PHRASES.put(TimeAgoUnit.WEEKS, "week");
-        DEFAULT_AGO_PHRASES.put(TimeAgoUnit.MONTHS, "month");
-        DEFAULT_AGO_PHRASES.put(TimeAgoUnit.YEARS, "year");
+        DEFAULT_AGO_PHRASES.put(TimeAgoUnit.SECONDS, new String[]{"sec"});
+        DEFAULT_AGO_PHRASES.put(TimeAgoUnit.MINUTES, new String[]{"min"});
+        DEFAULT_AGO_PHRASES.put(TimeAgoUnit.HOURS, new String[]{"hour"});
+        DEFAULT_AGO_PHRASES.put(TimeAgoUnit.DAYS, new String[]{"day"});
+        DEFAULT_AGO_PHRASES.put(TimeAgoUnit.WEEKS, new String[]{"week"});
+        DEFAULT_AGO_PHRASES.put(TimeAgoUnit.MONTHS, new String[]{"month"});
+        DEFAULT_AGO_PHRASES.put(TimeAgoUnit.YEARS, new String[]{"year"});
     }
 
-    enum TimeAgoUnit {
+    public enum TimeAgoUnit {
         SECONDS,
         MINUTES,
         HOURS,

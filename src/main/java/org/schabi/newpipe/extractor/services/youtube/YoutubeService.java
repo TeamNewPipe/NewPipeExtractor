@@ -13,6 +13,8 @@ import org.schabi.newpipe.extractor.stream.StreamExtractor;
 import org.schabi.newpipe.extractor.stream.TimeAgoParser;
 
 import java.io.IOException;
+import java.util.EnumMap;
+import java.util.Map;
 
 
 /*
@@ -37,13 +39,15 @@ import java.io.IOException;
 
 public class YoutubeService extends StreamingService {
 
+    private Map<TimeAgoParser.TimeAgoUnit, String[]> timeAgoParserPhrases;
+
     public YoutubeService(int id, String name) {
         super(id, name);
     }
 
     @Override
     public SearchEngine getSearchEngine() {
-        return new YoutubeSearchEngine(getServiceId());
+        return new YoutubeSearchEngine(getServiceId(), getTimeAgoParser());
     }
 
     @Override
@@ -105,11 +109,35 @@ public class YoutubeService extends StreamingService {
     }
 
     /**
+     * Sets the phrases used to parse upload date in the format '2 days ago'.
+     * @param secondsPhrases How to recognize seconds
+     * @param minutesPhrases How to recognize minutes
+     * @param hoursPhrases   How to recognize hours
+     * @param daysPhrases    How to recognize days
+     * @param weeksPhrases   How to recognize weeks
+     * @param monthsPhrases  How to recognize months
+     * @param yearsPhrases   How to recognize years
+     */
+    public void setTimeAgoParserPhrases(String[] secondsPhrases, String[] minutesPhrases,
+                                        String[] hoursPhrases, String[] daysPhrases,
+                                        String[] weeksPhrases, String[] monthsPhrases,
+                                        String[] yearsPhrases) {
+        timeAgoParserPhrases = new EnumMap<>(TimeAgoParser.TimeAgoUnit.class);
+        timeAgoParserPhrases.put(TimeAgoParser.TimeAgoUnit.SECONDS, secondsPhrases);
+        timeAgoParserPhrases.put(TimeAgoParser.TimeAgoUnit.MINUTES, minutesPhrases);
+        timeAgoParserPhrases.put(TimeAgoParser.TimeAgoUnit.HOURS, hoursPhrases);
+        timeAgoParserPhrases.put(TimeAgoParser.TimeAgoUnit.DAYS, daysPhrases);
+        timeAgoParserPhrases.put(TimeAgoParser.TimeAgoUnit.WEEKS, weeksPhrases);
+        timeAgoParserPhrases.put(TimeAgoParser.TimeAgoUnit.MONTHS, monthsPhrases);
+        timeAgoParserPhrases.put(TimeAgoParser.TimeAgoUnit.YEARS, yearsPhrases);
+
+    }
+
+    /**
      * @return A helper to parse upload dates in the format '2 days ago'.
-     *
-     * TODO Introduce support for multiple languages.
      */
     TimeAgoParser getTimeAgoParser() {
-        return new TimeAgoParser(TimeAgoParser.DEFAULT_AGO_PHRASES);
+        return new TimeAgoParser(timeAgoParserPhrases == null ?
+                TimeAgoParser.DEFAULT_AGO_PHRASES : timeAgoParserPhrases);
     }
 }

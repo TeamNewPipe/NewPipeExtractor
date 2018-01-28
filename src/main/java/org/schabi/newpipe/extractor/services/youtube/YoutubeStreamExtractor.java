@@ -26,6 +26,7 @@ import org.schabi.newpipe.extractor.stream.StreamInfoItemCollector;
 import org.schabi.newpipe.extractor.stream.StreamInfoItemExtractor;
 import org.schabi.newpipe.extractor.stream.StreamType;
 import org.schabi.newpipe.extractor.stream.SubtitlesFormat;
+import org.schabi.newpipe.extractor.stream.TimeAgoParser;
 import org.schabi.newpipe.extractor.stream.VideoStream;
 import org.schabi.newpipe.extractor.utils.Parser;
 import org.schabi.newpipe.extractor.utils.Utils;
@@ -86,6 +87,8 @@ public class YoutubeStreamExtractor extends StreamExtractor<YoutubeService> {
     }
 
     /*//////////////////////////////////////////////////////////////////////////*/
+
+    private final TimeAgoParser timeAgoParser = getService().getTimeAgoParser();
 
     private Document doc;
     @Nullable
@@ -812,7 +815,7 @@ public class YoutubeStreamExtractor extends StreamExtractor<YoutubeService> {
      * This is encapsulated in a StreamInfoItem object, which is a subset of the fields in a full StreamInfo.
      */
     private StreamInfoItemExtractor extractVideoPreviewInfo(final Element li) {
-        return new YoutubeStreamInfoItemExtractor(li, null) {
+        return new YoutubeStreamInfoItemExtractor(li, timeAgoParser) {
 
             @Override
             public String getUrl() throws ParsingException {

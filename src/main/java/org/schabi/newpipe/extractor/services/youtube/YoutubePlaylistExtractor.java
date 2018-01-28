@@ -16,6 +16,7 @@ import org.schabi.newpipe.extractor.exceptions.ReCaptchaException;
 import org.schabi.newpipe.extractor.playlist.PlaylistExtractor;
 import org.schabi.newpipe.extractor.stream.StreamInfoItemCollector;
 import org.schabi.newpipe.extractor.stream.StreamType;
+import org.schabi.newpipe.extractor.stream.TimeAgoParser;
 import org.schabi.newpipe.extractor.utils.Parser;
 import org.schabi.newpipe.extractor.utils.Utils;
 
@@ -25,6 +26,8 @@ import javax.annotation.Nonnull;
 
 @SuppressWarnings("WeakerAccess")
 public class YoutubePlaylistExtractor extends PlaylistExtractor<YoutubeService> {
+
+    private final TimeAgoParser timeAgoParser = getService().getTimeAgoParser();
 
     private Document doc;
     /**
@@ -206,7 +209,7 @@ public class YoutubePlaylistExtractor extends PlaylistExtractor<YoutubeService> 
                 continue;
             }
 
-            collector.commit(new YoutubeStreamInfoItemExtractor(li, null) {
+            collector.commit(new YoutubeStreamInfoItemExtractor(li, timeAgoParser) {
                 public Element uploaderLink;
 
                 @Override

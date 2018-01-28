@@ -9,6 +9,7 @@ import org.schabi.newpipe.extractor.NewPipe;
 import org.schabi.newpipe.extractor.channel.ChannelInfoItem;
 import org.schabi.newpipe.extractor.search.SearchEngine;
 import org.schabi.newpipe.extractor.search.SearchResult;
+import org.schabi.newpipe.extractor.stream.TimeAgoParser;
 
 import java.net.MalformedURLException;
 import java.net.URL;
@@ -45,7 +46,8 @@ public class YoutubeSearchEngineAllTest extends BaseYoutubeSearchTest {
     @BeforeClass
     public static void setUpClass() throws Exception {
         NewPipe.init(Downloader.getInstance());
-        YoutubeSearchEngine engine = new YoutubeSearchEngine(1);
+        YoutubeSearchEngine engine = new YoutubeSearchEngine(1,
+                new TimeAgoParser(TimeAgoParser.DEFAULT_AGO_PHRASES));
 
         result = engine.search("pewdiepie", 0, "de", SearchEngine.Filter.ANY)
                 .getSearchResult();
