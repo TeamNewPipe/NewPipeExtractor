@@ -99,7 +99,7 @@ public class StreamInfoItem extends InfoItem {
         return uploadDate;
     }
 
-    void setUploadDate(Calendar uploadDate) {
+    public void setUploadDate(Calendar uploadDate) {
         this.uploadDate = uploadDate;
     }
 

@@ -80,6 +80,8 @@ public interface StreamInfoItemExtractor extends InfoItemExtractor {
      * Extracts the upload date and time of this item and parses it.
      * <p>
      *     If the service doesn't provide an exact time, an approximation can be returned.
+     *     The approximation should be marked by setting seconds and milliseconds to zero.
+     *     <br>
      *     If the service doesn't provide any date at all, then {@code null} should be returned.
      * </p>
      *
