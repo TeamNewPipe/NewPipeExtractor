@@ -138,6 +138,10 @@ public class StreamInfo extends Info {
         return start_position;
     }
 
+    public List<Subtitles> getSubtitles() {
+        return subtitles;
+    }
+
     public void setStreamType(StreamType stream_type) {
         this.stream_type = stream_type;
     }
@@ -212,6 +216,10 @@ public class StreamInfo extends Info {
 
     public void setStartPosition(long start_position) {
         this.start_position = start_position;
+    }
+
+    public void setSubtitles(List<Subtitles> subtitles) {
+        this.subtitles = subtitles;
     }
 
     public static class StreamExtractException extends ExtractionException {
@@ -311,6 +319,12 @@ public class StreamInfo extends Info {
             streamInfo.setVideoOnlyStreams(extractor.getVideoOnlyStreams());
         } catch (Exception e) {
             streamInfo.addError(new ExtractionException("Couldn't get video only streams", e));
+        }
+
+        try {
+            streamInfo.setSubtitles(extractor.getSubtitlesDefault());
+        } catch (Exception e) {
+            streamInfo.addError(new ExtractionException("Couldn't get subtitles", e));
         }
 
         // Lists can be null if a exception was thrown during extraction
@@ -444,4 +458,6 @@ public class StreamInfo extends Info {
     public List<InfoItem> related_streams;
     //in seconds. some metadata is not passed using a StreamInfo object!
     public long start_position = 0;
+
+    public List<Subtitles> subtitles;
 }

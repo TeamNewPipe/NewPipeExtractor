@@ -2,7 +2,9 @@ package org.schabi.newpipe.extractor;
 
 import org.schabi.newpipe.extractor.stream.SubtitlesFormat;
 
-public class Subtitles {
+import java.io.Serializable;
+
+public class Subtitles implements Serializable {
     private final SubtitlesFormat format;
     private final String languageCode;
     private final String URL;

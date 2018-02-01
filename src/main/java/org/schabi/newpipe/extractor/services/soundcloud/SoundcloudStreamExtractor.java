@@ -167,15 +167,15 @@ public class SoundcloudStreamExtractor extends StreamExtractor {
     }
 
     @Override
-    @Nullable
+    @Nonnull
     public List<Subtitles> getSubtitlesDefault() throws IOException, ExtractionException {
-        return null;
+        return Collections.emptyList();
     }
 
     @Override
-    @Nullable
+    @Nonnull
     public List<Subtitles> getSubtitles(SubtitlesFormat format) throws IOException, ExtractionException {
-        return null;
+        return Collections.emptyList();
     }
 
     @Override
