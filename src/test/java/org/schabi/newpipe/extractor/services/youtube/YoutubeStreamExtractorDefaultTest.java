@@ -153,6 +153,6 @@ public class YoutubeStreamExtractorDefaultTest {
     @Test
     public void testGetSubtitlesList() throws IOException, ExtractionException {
         // Video (/view?v=YQHsXMglC9A) set in the setUp() method has no captions => null
-        assertTrue(extractor.getSubtitles(SubtitlesFormat.VTT).isEmpty());
+        assertTrue(extractor.getSubtitlesDefault().isEmpty());
     }
 }

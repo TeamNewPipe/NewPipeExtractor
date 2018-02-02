@@ -716,7 +716,7 @@ public class YoutubeStreamExtractor extends StreamExtractor {
             final Document listing = Jsoup.parse(pageContent, listingUrl);
             final Elements tracks = listing.select("track");
 
-            List<Subtitles> subtitles = new ArrayList<>(tracks.size() * 5);
+            List<Subtitles> subtitles = new ArrayList<>(tracks.size() * 2);
             for (final Element track : tracks) {
                 final String languageCode = track.attr("lang_code");
                 subtitles.add(getVideoSubtitlesUrl(id, languageCode, SubtitlesFormat.TTML));
@@ -761,7 +761,7 @@ public class YoutubeStreamExtractor extends StreamExtractor {
     @Nonnull
     private static Subtitles getVideoSubtitlesUrl(final String id, final String locale, final SubtitlesFormat format) {
         final String url = "https://www.youtube.com/api/timedtext?lang=" + locale +
-                "&fmt=" + format.getExtension() + "&name=&v=" + id;
+                "&fmt=" + format.getExtension() + "&v=" + id;
         // These are all non-generated
         return new Subtitles(format, locale, url, false);
     }
