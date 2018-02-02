@@ -7,6 +7,8 @@ package org.schabi.newpipe.extractor.stream;
 import org.schabi.newpipe.extractor.exceptions.ParsingException;
 
 import java.util.Calendar;
+import java.util.Collection;
+import java.util.Collections;
 import java.util.EnumMap;
 import java.util.Map;
 
@@ -20,9 +22,10 @@ public class TimeAgoParser {
      * A set of english phrases that are contained in the time units.
      * (e.g. '7 minutes ago' contains 'min')
      */
-    public static Map<TimeAgoUnit, String[]> DEFAULT_AGO_PHRASES = new EnumMap<>(TimeAgoUnit.class);
+    public static Map<TimeAgoUnit, Collection<String>> DEFAULT_AGO_PHRASES =
+            new EnumMap<>(TimeAgoUnit.class);
 
-    private final Map<TimeAgoUnit, String[]> agoPhrases;
+    private final Map<TimeAgoUnit, Collection<String>> agoPhrases;
 
     private final Calendar consistentNow;
 
@@ -33,7 +36,7 @@ public class TimeAgoParser {
      * </p>
      * @param agoPhrases A set of phrases how to recognize the time units in a given language.
      */
-    public TimeAgoParser(Map<TimeAgoUnit, String[]> agoPhrases) {
+    public TimeAgoParser(Map<TimeAgoUnit, Collection<String>> agoPhrases) {
         this.agoPhrases = agoPhrases;
         consistentNow = Calendar.getInstance();
     }
@@ -130,13 +133,13 @@ public class TimeAgoParser {
     }
 
     static {
-        DEFAULT_AGO_PHRASES.put(TimeAgoUnit.SECONDS, new String[]{"sec"});
-        DEFAULT_AGO_PHRASES.put(TimeAgoUnit.MINUTES, new String[]{"min"});
-        DEFAULT_AGO_PHRASES.put(TimeAgoUnit.HOURS, new String[]{"hour"});
-        DEFAULT_AGO_PHRASES.put(TimeAgoUnit.DAYS, new String[]{"day"});
-        DEFAULT_AGO_PHRASES.put(TimeAgoUnit.WEEKS, new String[]{"week"});
-        DEFAULT_AGO_PHRASES.put(TimeAgoUnit.MONTHS, new String[]{"month"});
-        DEFAULT_AGO_PHRASES.put(TimeAgoUnit.YEARS, new String[]{"year"});
+        DEFAULT_AGO_PHRASES.put(TimeAgoUnit.SECONDS, Collections.singleton("sec"));
+        DEFAULT_AGO_PHRASES.put(TimeAgoUnit.MINUTES, Collections.singleton("min"));
+        DEFAULT_AGO_PHRASES.put(TimeAgoUnit.HOURS, Collections.singleton("hour"));
+        DEFAULT_AGO_PHRASES.put(TimeAgoUnit.DAYS, Collections.singleton("day"));
+        DEFAULT_AGO_PHRASES.put(TimeAgoUnit.WEEKS, Collections.singleton("week"));
+        DEFAULT_AGO_PHRASES.put(TimeAgoUnit.MONTHS, Collections.singleton("month"));
+        DEFAULT_AGO_PHRASES.put(TimeAgoUnit.YEARS, Collections.singleton("year"));
     }
 
     public enum TimeAgoUnit {

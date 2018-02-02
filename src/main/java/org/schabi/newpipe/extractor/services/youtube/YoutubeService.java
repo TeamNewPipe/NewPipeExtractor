@@ -13,6 +13,7 @@ import org.schabi.newpipe.extractor.stream.StreamExtractor;
 import org.schabi.newpipe.extractor.stream.TimeAgoParser;
 
 import java.io.IOException;
+import java.util.Collection;
 import java.util.EnumMap;
 import java.util.Map;
 
@@ -39,7 +40,7 @@ import java.util.Map;
 
 public class YoutubeService extends StreamingService {
 
-    private Map<TimeAgoParser.TimeAgoUnit, String[]> timeAgoParserPhrases;
+    private Map<TimeAgoParser.TimeAgoUnit, Collection<String>> timeAgoParserPhrases;
 
     public YoutubeService(int id, String name) {
         super(id, name);
@@ -109,7 +110,7 @@ public class YoutubeService extends StreamingService {
     }
 
     /**
-     * Sets the phrases used to parse upload date in the format '2 days ago'.
+     * Sets the phrases used to parse upload dates in the format '2 days ago'.
      * @param secondsPhrases How to recognize seconds
      * @param minutesPhrases How to recognize minutes
      * @param hoursPhrases   How to recognize hours
@@ -118,10 +119,11 @@ public class YoutubeService extends StreamingService {
      * @param monthsPhrases  How to recognize months
      * @param yearsPhrases   How to recognize years
      */
-    public void setTimeAgoParserPhrases(String[] secondsPhrases, String[] minutesPhrases,
-                                        String[] hoursPhrases, String[] daysPhrases,
-                                        String[] weeksPhrases, String[] monthsPhrases,
-                                        String[] yearsPhrases) {
+    public void setTimeAgoParserPhrases(
+            Collection<String> secondsPhrases, Collection<String> minutesPhrases,
+            Collection<String> hoursPhrases, Collection<String> daysPhrases,
+            Collection<String> weeksPhrases, Collection<String> monthsPhrases,
+            Collection<String> yearsPhrases) {
         timeAgoParserPhrases = new EnumMap<>(TimeAgoParser.TimeAgoUnit.class);
         timeAgoParserPhrases.put(TimeAgoParser.TimeAgoUnit.SECONDS, secondsPhrases);
         timeAgoParserPhrases.put(TimeAgoParser.TimeAgoUnit.MINUTES, minutesPhrases);
@@ -130,7 +132,6 @@ public class YoutubeService extends StreamingService {
         timeAgoParserPhrases.put(TimeAgoParser.TimeAgoUnit.WEEKS, weeksPhrases);
         timeAgoParserPhrases.put(TimeAgoParser.TimeAgoUnit.MONTHS, monthsPhrases);
         timeAgoParserPhrases.put(TimeAgoParser.TimeAgoUnit.YEARS, yearsPhrases);
-
     }
 
     /**
