@@ -7,7 +7,6 @@ import com.grack.nanojson.JsonParserException;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
-import org.jsoup.select.Elements;
 import org.mozilla.javascript.Context;
 import org.mozilla.javascript.Function;
 import org.mozilla.javascript.ScriptableObject;
@@ -456,7 +455,7 @@ public class YoutubeStreamExtractor extends StreamExtractor {
             collector.commit(extractVideoPreviewInfo(doc.select("div[class=\"watch-sidebar-section\"]")
                     .first().select("li").first()));
 
-            return ((StreamInfoItem) collector.getItemList().get(0));
+            return collector.getItemList().get(0);
         } catch (Exception e) {
             throw new ParsingException("Could not get next video", e);
         }
@@ -555,7 +554,7 @@ public class YoutubeStreamExtractor extends StreamExtractor {
         }
 
         if (availableSubtitles.isEmpty()) {
-            availableSubtitles.addAll(getAvailableSubtitles(getId()));
+            availableSubtitles.addAll(getAvailableSubtitles());
         }
     }
 
@@ -709,24 +708,57 @@ public class YoutubeStreamExtractor extends StreamExtractor {
         return result == null ? "" : result.toString();
     }
 
-    private List<Subtitles> getAvailableSubtitles(final String id) throws SubtitlesException {
-        try {
-            final String listingUrl = getVideoSubtitlesListingUrl(id);
-            final String pageContent = NewPipe.getDownloader().download(listingUrl);
-            final Document listing = Jsoup.parse(pageContent, listingUrl);
-            final Elements tracks = listing.select("track");
+    @Nonnull
+    private List<Subtitles> getAvailableSubtitles() throws SubtitlesException {
+        // If the video is age restricted getPlayerConfig will fail
+        if(isAgeRestricted) return Collections.emptyList();
 
-            List<Subtitles> subtitles = new ArrayList<>(tracks.size() * 2);
-            for (final Element track : tracks) {
-                final String languageCode = track.attr("lang_code");
-                subtitles.add(getVideoSubtitlesUrl(id, languageCode, SubtitlesFormat.TTML));
-                subtitles.add(getVideoSubtitlesUrl(id, languageCode, SubtitlesFormat.VTT));
-                // todo: add transcripts, they are currently omitted since they are incompatible with ExoPlayer
-            }
-            return subtitles;
-        } catch (IOException | ReCaptchaException e) {
-            throw new SubtitlesException("Unable to download subtitles listing", e);
+        final JsonObject playerConfig;
+        try {
+            playerConfig = getPlayerConfig(getPageHtml(NewPipe.getDownloader()));
+        } catch (IOException | ExtractionException e) {
+            throw new SubtitlesException("Unable to download player configs", e);
         }
+        final String playerResponse = playerConfig.getObject("args").getString("player_response");
+
+        final JsonObject captions;
+        try {
+            if (!JsonParser.object().from(playerResponse).has("captions")) {
+                // Captions does not exist
+                return Collections.emptyList();
+            }
+            captions = JsonParser.object().from(playerResponse).getObject("captions");
+        } catch (JsonParserException e) {
+            // Failed to parse subtitles
+            throw new SubtitlesException("Unable to parse subtitles listing", e);
+        }
+
+        final JsonObject renderer = captions.getObject("playerCaptionsTracklistRenderer");
+        final JsonArray captionsArray = renderer.getArray("captionTracks");
+        final JsonArray autoCaptionsArray = renderer.getArray("translationLanguages");
+
+        final int captionsSize = captionsArray.size();
+        // Should not happen, if there is the "captions" object, it should always has some captions in it
+        if(captionsSize == 0) return Collections.emptyList();
+        // Obtain the base url, this only needs to be done once
+        final String baseUrl = captionsArray.getObject(0).getString("baseUrl");
+
+        Set<String> manualLanguageCodes = new HashSet<>();
+        for (int i = 0; i < captionsSize; i++) {
+            manualLanguageCodes.add(captionsArray.getObject(i).getString("languageCode"));
+        }
+        Set<String> automaticLanguageCodes = new HashSet<>();
+        for (int i = 0; i < autoCaptionsArray.size(); i++) {
+            automaticLanguageCodes.add(autoCaptionsArray.getObject(i).getString("languageCode"));
+        }
+
+        List<Subtitles> result = new ArrayList<>();
+        result.addAll(getVideoSubtitlesUrl(baseUrl, new ArrayList<>(manualLanguageCodes),
+                new ArrayList<>(automaticLanguageCodes), SubtitlesFormat.VTT));
+        result.addAll(getVideoSubtitlesUrl(baseUrl, new ArrayList<>(manualLanguageCodes),
+                new ArrayList<>(automaticLanguageCodes), SubtitlesFormat.TTML));
+        // todo: add transcripts, they are currently omitted since they are incompatible with ExoPlayer
+        return result;
     }
     /*//////////////////////////////////////////////////////////////////////////
     // Data Class
@@ -754,16 +786,26 @@ public class YoutubeStreamExtractor extends StreamExtractor {
     }
 
     @Nonnull
-    private static String getVideoSubtitlesListingUrl(final String id) {
-        return "https://video.google.com/timedtext?type=list&v=" + id;
-    }
+    private static List<Subtitles> getVideoSubtitlesUrl(final String baseUrl,
+                                                        final List<String> manualCaptionLanguageCodes,
+                                                        final List<String> automaticCaptionLanguageCodes,
+                                                        final SubtitlesFormat format) {
+        final String cleanUrl = baseUrl
+                .replaceAll("&fmt=[^&]*", "") // Remove preexisting format if exists
+                .replaceAll("&tlang=[^&]*", "") // Remove translation language
+                .replaceAll("&kind=[^&]*", ""); // Remove automatic generation toggle
+        final String builderUrl = cleanUrl + "&fmt=" + format.getExtension() + "&tlang=";
 
-    @Nonnull
-    private static Subtitles getVideoSubtitlesUrl(final String id, final String locale, final SubtitlesFormat format) {
-        final String url = "https://www.youtube.com/api/timedtext?lang=" + locale +
-                "&fmt=" + format.getExtension() + "&v=" + id;
-        // These are all non-generated
-        return new Subtitles(format, locale, url, false);
+        List<Subtitles> subtitles = new ArrayList<>(manualCaptionLanguageCodes.size() +
+                automaticCaptionLanguageCodes.size());
+        for (final String languageCode : manualCaptionLanguageCodes) {
+            subtitles.add(new Subtitles(format, languageCode, builderUrl + languageCode, false));
+        }
+        for (final String languageCode : automaticCaptionLanguageCodes) {
+            final String fullUrl = builderUrl + languageCode + "&kind=asr";
+            subtitles.add(new Subtitles(format, languageCode, fullUrl, true));
+        }
+        return subtitles;
     }
 
     private Map<String, ItagItem> getItags(String encodedUrlMapKey, ItagItem.ItagType itagTypeWanted) throws ParsingException {
