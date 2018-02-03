@@ -775,16 +775,21 @@ public class YoutubeStreamExtractor extends StreamExtractor {
         final String languageCode;
         final boolean isGenerated;
 
+        final Locale locale;
+
         public SubtitlesInfo(final String baseUrl, final String languageCode, final boolean isGenerated) {
             this.cleanUrl = baseUrl
                     .replaceAll("&fmt=[^&]*", "") // Remove preexisting format if exists
                     .replaceAll("&tlang=[^&]*", ""); // Remove translation language
             this.languageCode = languageCode;
             this.isGenerated = isGenerated;
+
+            final String[] splits = languageCode.split("-");
+            this.locale = splits.length == 2 ? new Locale(splits[0], splits[1]) : new Locale(languageCode);
         }
 
         public Subtitles getSubtitle(final SubtitlesFormat format) {
-            return new Subtitles(format, languageCode, cleanUrl + "&fmt=" + format.getExtension(), isGenerated);
+            return new Subtitles(format, locale, cleanUrl + "&fmt=" + format.getExtension(), isGenerated);
         }
     }
 
