@@ -1,7 +1,6 @@
 package org.schabi.newpipe.extractor;
 
 import org.schabi.newpipe.extractor.channel.ChannelExtractor;
-import org.schabi.newpipe.extractor.channel.FeedExtractor;
 import org.schabi.newpipe.extractor.exceptions.ExtractionException;
 import org.schabi.newpipe.extractor.kiosk.KioskList;
 import org.schabi.newpipe.extractor.playlist.PlaylistExtractor;
@@ -52,13 +51,8 @@ public abstract class StreamingService {
     public abstract SuggestionExtractor getSuggestionExtractor();
     public abstract StreamExtractor getStreamExtractor(String url) throws IOException, ExtractionException;
     public abstract ChannelExtractor getChannelExtractor(String url, String nextStreamsUrl) throws IOException, ExtractionException;
-    public abstract FeedExtractor getFeedExtractor(String url, String nextStreamsUrl) throws IOException, ExtractionException;
     public abstract PlaylistExtractor getPlaylistExtractor(String url, String nextStreamsUrl) throws IOException, ExtractionException;
     public abstract KioskList getKioskList() throws ExtractionException;
-
-    public FeedExtractor getFeedExtractor(String url) throws IOException, ExtractionException {
-        return getFeedExtractor(url, null);
-    }
 
     public ChannelExtractor getChannelExtractor(String url) throws IOException, ExtractionException {
         return getChannelExtractor(url, null);
