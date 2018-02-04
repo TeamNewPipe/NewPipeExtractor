@@ -12,6 +12,7 @@ import org.schabi.newpipe.extractor.utils.Utils;
 import java.io.IOException;
 
 import static org.junit.Assert.*;
+import static org.schabi.newpipe.extractor.ExtractorAsserts.assertIsSecureUrl;
 import static org.schabi.newpipe.extractor.ServiceList.YouTube;
 
 /*
@@ -38,7 +39,6 @@ import static org.schabi.newpipe.extractor.ServiceList.YouTube;
  * Test for {@link StreamExtractor}
  */
 public class YoutubeStreamExtractorDefaultTest {
-    public static final String HTTPS = "https://";
     private static YoutubeStreamExtractor extractor;
 
     @BeforeClass
@@ -102,14 +102,12 @@ public class YoutubeStreamExtractorDefaultTest {
 
     @Test
     public void testGetThumbnailUrl() throws ParsingException {
-        assertTrue(extractor.getThumbnailUrl(),
-                extractor.getThumbnailUrl().contains(HTTPS));
+        assertIsSecureUrl(extractor.getThumbnailUrl());
     }
 
     @Test
     public void testGetUploaderAvatarUrl() throws ParsingException {
-        assertTrue(extractor.getUploaderAvatarUrl(),
-                extractor.getUploaderAvatarUrl().contains(HTTPS));
+        assertIsSecureUrl(extractor.getUploaderAvatarUrl());
     }
 
     @Test
@@ -120,8 +118,7 @@ public class YoutubeStreamExtractorDefaultTest {
     @Test
     public void testGetVideoStreams() throws IOException, ExtractionException {
         for (VideoStream s : extractor.getVideoStreams()) {
-            assertTrue(s.url,
-                    s.url.contains(HTTPS));
+            assertIsSecureUrl(s.url);
             assertTrue(s.resolution.length() > 0);
             assertTrue(Integer.toString(s.getFormatId()),
                     0 <= s.getFormatId() && s.getFormatId() <= 4);
@@ -150,12 +147,12 @@ public class YoutubeStreamExtractorDefaultTest {
     @Test
     public void testGetSubtitlesListDefault() throws IOException, ExtractionException {
         // Video (/view?v=YQHsXMglC9A) set in the setUp() method has no captions => null
-        assertTrue(extractor.getSubtitlesDefault() == null);
+        assertTrue(extractor.getSubtitlesDefault().isEmpty());
     }
 
     @Test
     public void testGetSubtitlesList() throws IOException, ExtractionException {
         // Video (/view?v=YQHsXMglC9A) set in the setUp() method has no captions => null
-        assertTrue(extractor.getSubtitles(SubtitlesFormat.VTT) == null);
+        assertTrue(extractor.getSubtitles(SubtitlesFormat.TTML).isEmpty());
     }
 }

@@ -32,16 +32,23 @@ public class PlaylistInfo extends ListInfo {
     }
 
     public static PlaylistInfo getInfo(StreamingService service, String url) throws IOException, ExtractionException {
-        return getInfo(service.getPlaylistExtractor(url));
+        PlaylistExtractor extractor = service.getPlaylistExtractor(url);
+        extractor.fetchPage();
+        return getInfo(extractor);
     }
 
+    /**
+     * Get PlaylistInfo from PlaylistExtractor
+     *
+     * @param extractor an extractor where fetchPage() was already got called on.
+     */
     public static PlaylistInfo getInfo(PlaylistExtractor extractor) throws ParsingException {
 
         int serviceId = extractor.getServiceId();
         String url = extractor.getCleanUrl();
         String id = extractor.getId();
         String name = extractor.getName();
-        PlaylistInfo info = new PlaylistInfo(serviceId, url, id, name);
+        PlaylistInfo info = new PlaylistInfo(serviceId, id, url, name);
 
         try {
             info.setStreamCount(extractor.getStreamCount());

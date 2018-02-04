@@ -102,19 +102,19 @@ public class SoundcloudStreamExtractor extends StreamExtractor {
     @Nonnull
     @Override
     public String getUploaderUrl() {
-        return track.getObject("user").getString("permalink_url", "");
+        return SoundcloudExtractorHelper.getUploaderUrl(track);
     }
 
     @Nonnull
     @Override
     public String getUploaderName() {
-        return track.getObject("user").getString("username", "");
+        return SoundcloudExtractorHelper.getUploaderName(track);
     }
 
     @Nonnull
     @Override
     public String getUploaderAvatarUrl() {
-        return track.getObject("user", new JsonObject()).getString("avatar_url", "");
+        return SoundcloudExtractorHelper.getAvatarUrl(track);
     }
 
     @Override
@@ -167,15 +167,15 @@ public class SoundcloudStreamExtractor extends StreamExtractor {
     }
 
     @Override
-    @Nullable
+    @Nonnull
     public List<Subtitles> getSubtitlesDefault() throws IOException, ExtractionException {
-        return null;
+        return Collections.emptyList();
     }
 
     @Override
-    @Nullable
+    @Nonnull
     public List<Subtitles> getSubtitles(SubtitlesFormat format) throws IOException, ExtractionException {
-        return null;
+        return Collections.emptyList();
     }
 
     @Override

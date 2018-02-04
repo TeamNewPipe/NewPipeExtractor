@@ -28,21 +28,24 @@ import java.io.IOException;
 
 public class KioskInfo extends ListInfo {
 
-    public KioskInfo(int serviceId, String id, String url, String name) {
+    private KioskInfo(int serviceId, String id, String url, String name) {
         super(serviceId, id, url, name);
     }
 
     public static ListExtractor.NextItemsResult getMoreItems(ServiceList serviceItem,
                                                              String url,
-                                                             String nextStreamsUrl) throws IOException, ExtractionException {
-        return getMoreItems(serviceItem.getService(), url, nextStreamsUrl);
+                                                             String nextStreamsUrl,
+                                                             String contentCountry) throws IOException, ExtractionException {
+        return getMoreItems(serviceItem.getService(), url, nextStreamsUrl, contentCountry);
     }
 
     public static ListExtractor.NextItemsResult getMoreItems(StreamingService service,
                                                              String url,
-                                                             String nextStreamsUrl) throws IOException, ExtractionException {
+                                                             String nextStreamsUrl,
+                                                             String contentCountry) throws IOException, ExtractionException {
         KioskList kl = service.getKioskList();
         KioskExtractor extractor = kl.getExtractorByUrl(url, nextStreamsUrl);
+        extractor.setContentCountry(contentCountry);
         return extractor.getNextStreams();
     }
 
@@ -62,13 +65,17 @@ public class KioskInfo extends ListInfo {
                                     String contentCountry) throws IOException, ExtractionException {
         KioskList kl = service.getKioskList();
         KioskExtractor extractor = kl.getExtractorByUrl(url, null);
-        return getInfo(extractor, contentCountry);
-    }
-
-    public static KioskInfo getInfo(KioskExtractor extractor,
-                                    String contentCountry) throws IOException, ExtractionException {
         extractor.setContentCountry(contentCountry);
         extractor.fetchPage();
+        return getInfo(extractor);
+    }
+
+    /**
+     * Get KioskInfo from KioskExtractor
+     *
+     * @param extractor an extractor where fetchPage() was already got called on.
+     */
+    public static KioskInfo getInfo(KioskExtractor extractor) throws ExtractionException {
 
         int serviceId = extractor.getServiceId();
         String name = extractor.getName();

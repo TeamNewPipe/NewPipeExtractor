@@ -48,6 +48,7 @@ public class YoutubeTrendingExtractorTest {
         extractor = (YoutubeTrendingExtractor) YouTube.getService()
                 .getKioskList()
                 .getExtractorById("Trending", null);
+        extractor.fetchPage();
     }
 
     @Test
@@ -66,10 +67,10 @@ public class YoutubeTrendingExtractorTest {
     }
 
     @Test
-    public void testGetStreams() throws Exception {
+    public void testGetStreamsQuantity() throws Exception {
         StreamInfoItemCollector collector = extractor.getStreams();
         Utils.printErrors(collector);
-        assertFalse("no streams are received", collector.getItemList().isEmpty());
+        assertTrue("no streams are received", collector.getItemList().size() >= 20);
     }
 
     @Test

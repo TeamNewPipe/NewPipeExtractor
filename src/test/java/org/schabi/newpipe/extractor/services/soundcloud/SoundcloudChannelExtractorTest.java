@@ -8,6 +8,7 @@ import org.schabi.newpipe.extractor.NewPipe;
 import org.schabi.newpipe.extractor.channel.ChannelExtractor;
 
 import static org.junit.Assert.*;
+import static org.schabi.newpipe.extractor.ExtractorAsserts.assertIsSecureUrl;
 import static org.schabi.newpipe.extractor.ServiceList.SoundCloud;
 
 /**
@@ -23,6 +24,7 @@ public class SoundcloudChannelExtractorTest {
         NewPipe.init(Downloader.getInstance());
         extractor = SoundCloud.getService()
                 .getChannelExtractor("https://soundcloud.com/liluzivert");
+        extractor.fetchPage();
     }
 
     @Test
@@ -42,7 +44,7 @@ public class SoundcloudChannelExtractorTest {
 
     @Test
     public void testGetAvatarUrl() throws Exception {
-        assertTrue(extractor.getAvatarUrl().contains("https://"));
+        assertIsSecureUrl(extractor.getAvatarUrl());
     }
 
     @Test

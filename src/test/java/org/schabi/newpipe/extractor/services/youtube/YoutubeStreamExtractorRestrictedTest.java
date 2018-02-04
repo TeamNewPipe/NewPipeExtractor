@@ -16,6 +16,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import static org.junit.Assert.*;
+import static org.schabi.newpipe.extractor.ExtractorAsserts.assertIsSecureUrl;
 import static org.schabi.newpipe.extractor.ServiceList.YouTube;
 
 /**
@@ -85,14 +86,12 @@ public class YoutubeStreamExtractorRestrictedTest {
 
     @Test
     public void testGetThumbnailUrl() throws ParsingException {
-        assertTrue(extractor.getThumbnailUrl(),
-                extractor.getThumbnailUrl().contains(HTTPS));
+        assertIsSecureUrl(extractor.getThumbnailUrl());
     }
 
     @Test
     public void testGetUploaderAvatarUrl() throws ParsingException {
-        assertTrue(extractor.getUploaderAvatarUrl(),
-                extractor.getUploaderAvatarUrl().contains(HTTPS));
+        assertIsSecureUrl(extractor.getUploaderAvatarUrl());
     }
 
     // FIXME: 25.11.17 Are there no streams or are they not listed?
@@ -123,12 +122,12 @@ public class YoutubeStreamExtractorRestrictedTest {
     @Test
     public void testGetSubtitlesListDefault() throws IOException, ExtractionException {
         // Video (/view?v=YQHsXMglC9A) set in the setUp() method has no captions => null
-        assertNull(extractor.getSubtitlesDefault());
+        assertTrue(extractor.getSubtitlesDefault().isEmpty());
     }
 
     @Test
     public void testGetSubtitlesList() throws IOException, ExtractionException {
         // Video (/view?v=YQHsXMglC9A) set in the setUp() method has no captions => null
-        assertNull(extractor.getSubtitles(SubtitlesFormat.VTT));
+        assertTrue(extractor.getSubtitles(SubtitlesFormat.TTML).isEmpty());
     }
 }

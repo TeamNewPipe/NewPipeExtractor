@@ -66,6 +66,10 @@ public abstract class Extractor {
         if(!pageFetched) throw new IllegalStateException("Page is not fetched. Make sure you call fetchPage()");
     }
 
+    protected boolean isPageFetched() {
+        return pageFetched;
+    }
+
     /**
      * Fetch the current page.
      * @param downloader the download to use

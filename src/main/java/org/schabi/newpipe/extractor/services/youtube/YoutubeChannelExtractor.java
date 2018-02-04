@@ -52,10 +52,18 @@ public class YoutubeChannelExtractor extends ChannelExtractor {
      */
     private Document nextStreamsAjax;
 
+    /**
+     * Unfortunately, we have to fetch the page even if we are only getting next streams,
+     * as they don't deliver enough information on their own (the channel name, for example).
+     * <br/>
+     * This help us to keep track on what are we fetching.
+     */
     private boolean fetchingNextStreams;
 
     public YoutubeChannelExtractor(StreamingService service, String url, String nextStreamsUrl) throws IOException, ExtractionException {
         super(service, url, nextStreamsUrl);
+
+        fetchingNextStreams = nextStreamsUrl != null && !nextStreamsUrl.isEmpty();
     }
 
     @Override
@@ -68,14 +76,6 @@ public class YoutubeChannelExtractor extends ChannelExtractor {
             nextStreamsUrl = getNextStreamsUrlFrom(doc);
         }
         nextStreamsAjax = null;
-    }
-
-    @Override
-    protected boolean fetchPageUponCreation() {
-        // Unfortunately, we have to fetch the page even if we are getting only next streams,
-        // as they don't deliver enough information on their own (the channel name, for example).
-        fetchingNextStreams = nextStreamsUrl != null && !nextStreamsUrl.isEmpty();
-        return true;
     }
 
     @Nonnull
@@ -176,7 +176,10 @@ public class YoutubeChannelExtractor extends ChannelExtractor {
             throw new ExtractionException("Channel doesn't have more streams");
         }
 
+        fetchPage();
+
         StreamInfoItemCollector collector = new StreamInfoItemCollector(getServiceId());
+
         setupNextStreamsAjax(NewPipe.getDownloader());
         collectStreamsFrom(collector, nextStreamsAjax.select("body").first());
 
