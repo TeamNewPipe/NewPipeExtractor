@@ -39,11 +39,8 @@ public class YoutubeSearchEngine extends SearchEngine {
     private static final String TAG = YoutubeSearchEngine.class.toString();
     public static final String CHARSET_UTF_8 = "UTF-8";
 
-    private final TimeAgoParser timeAgoParser;
-
-    public YoutubeSearchEngine(int serviceId, TimeAgoParser timeAgoParser) {
+    public YoutubeSearchEngine(int serviceId) {
         super(serviceId);
-        this.timeAgoParser = timeAgoParser;
     }
 
     @Override
@@ -111,7 +108,7 @@ public class YoutubeSearchEngine extends SearchEngine {
 
                 // video item type
             } else if ((el = item.select("div[class*=\"yt-lockup-video\"]").first()) != null) {
-                collector.commit(new YoutubeStreamInfoItemExtractor(el, timeAgoParser));
+                collector.commit(new YoutubeStreamInfoItemExtractor(el, null));
             } else if ((el = item.select("div[class*=\"yt-lockup-channel\"]").first()) != null) {
                 collector.commit(new YoutubeChannelInfoItemExtractor(el));
             } else if ((el = item.select("div[class*=\"yt-lockup-playlist\"]").first()) != null &&

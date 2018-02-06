@@ -48,7 +48,7 @@ public class YoutubeService extends StreamingService {
 
     @Override
     public SearchEngine getSearchEngine() {
-        return new YoutubeSearchEngine(getServiceId(), getTimeAgoParser());
+        return new YoutubeSearchEngine(getServiceId());
     }
 
     @Override
