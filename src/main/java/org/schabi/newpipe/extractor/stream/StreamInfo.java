@@ -321,12 +321,6 @@ public class StreamInfo extends Info {
             streamInfo.addError(new ExtractionException("Couldn't get video only streams", e));
         }
 
-        try {
-            streamInfo.setSubtitles(extractor.getSubtitlesDefault());
-        } catch (Exception e) {
-            streamInfo.addError(new ExtractionException("Couldn't get subtitles", e));
-        }
-
         // Lists can be null if a exception was thrown during extraction
         if (streamInfo.getVideoStreams() == null) streamInfo.setVideoStreams(Collections.<VideoStream>emptyList());
         if (streamInfo.getVideoOnlyStreams()== null) streamInfo.setVideoOnlyStreams(Collections.<VideoStream>emptyList());
@@ -425,7 +419,11 @@ public class StreamInfo extends Info {
         } catch (Exception e) {
             streamInfo.addError(e);
         }
-
+        try {
+            streamInfo.setSubtitles(extractor.getSubtitlesDefault());
+        } catch (Exception e) {
+            streamInfo.addError(e);
+        }
         streamInfo.setRelatedStreams(ExtractorHelper.getRelatedVideosOrLogError(streamInfo, extractor));
         return streamInfo;
     }
