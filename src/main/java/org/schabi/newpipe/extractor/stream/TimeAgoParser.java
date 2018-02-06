@@ -43,21 +43,24 @@ public class TimeAgoParser {
 
     /**
      * Parses a textual date in the format '2 days ago' into a Calendar representation.
-     * Sets the time to the beginning of the day/week/month/year if no exact time is available.
+     * Beginning with days ago, marks the date as approximated by setting minutes, seconds
+     * and milliseconds to 0.
      * @param textualDate The original date as provided by the streaming service
      * @return The parsed (approximated) time
      * @throws ParsingException if the time unit could not be recognized
      */
     public Calendar parse(String textualDate) throws ParsingException {
+        int timeAgoAmount;
         try {
-            int timeAgoAmount = parseTimeAgoAmount(textualDate);
-            TimeAgoUnit timeAgoUnit = parseTimeAgoUnit(textualDate);
-
-            return getCalendar(timeAgoAmount, timeAgoUnit);
+            timeAgoAmount = parseTimeAgoAmount(textualDate);
         } catch (NumberFormatException e) {
-            // If there is no valid number in the textual date, assume it is 'moments ago'.
-            return getCalendar(0, TimeAgoUnit.SECONDS);
+            // If there is no valid number in the textual date,
+            // assume it is 1 (as in 'a second ago').
+            timeAgoAmount = 1;
         }
+
+        TimeAgoUnit timeAgoUnit = parseTimeAgoUnit(textualDate);
+        return getCalendar(timeAgoAmount, timeAgoUnit);
     }
 
     private int parseTimeAgoAmount(String textualDate) throws NumberFormatException {
@@ -95,26 +98,24 @@ public class TimeAgoParser {
 
             case DAYS:
                 calendarTime.add(Calendar.DAY_OF_MONTH, -timeAgoAmount);
-                resetTimeOfDay(calendarTime);
+                markApproximatedTime(calendarTime);
                 break;
 
             case WEEKS:
                 calendarTime.add(Calendar.WEEK_OF_YEAR, -timeAgoAmount);
-                calendarTime.set(Calendar.DAY_OF_WEEK, calendarTime.getFirstDayOfWeek());
-                resetTimeOfDay(calendarTime);
+                markApproximatedTime(calendarTime);
                 break;
 
             case MONTHS:
                 calendarTime.add(Calendar.MONTH, -timeAgoAmount);
-                calendarTime.set(Calendar.DAY_OF_MONTH, 1);
-                resetTimeOfDay(calendarTime);
+                markApproximatedTime(calendarTime);
                 break;
 
             case YEARS:
                 calendarTime.add(Calendar.YEAR, -timeAgoAmount);
-                calendarTime.set(Calendar.MONTH, 1);
-                calendarTime.set(Calendar.DAY_OF_MONTH, 1);
-                resetTimeOfDay(calendarTime);
+                // Prevent `PrettyTime` from showing '12 months ago'.
+                calendarTime.add(Calendar.DAY_OF_MONTH, -1);
+                markApproximatedTime(calendarTime);
                 break;
         }
 
@@ -125,8 +126,11 @@ public class TimeAgoParser {
         return (Calendar) consistentNow.clone();
     }
 
-    private void resetTimeOfDay(Calendar calendarTime) {
-        calendarTime.set(Calendar.HOUR_OF_DAY, 0);
+    /**
+     * Marks the time as approximated by setting minutes, seconds and milliseconds to 0.
+     * @param calendarTime Time to be marked as approximated
+     */
+    private void markApproximatedTime(Calendar calendarTime) {
         calendarTime.set(Calendar.MINUTE, 0);
         calendarTime.set(Calendar.SECOND, 0);
         calendarTime.set(Calendar.MILLISECOND, 0);

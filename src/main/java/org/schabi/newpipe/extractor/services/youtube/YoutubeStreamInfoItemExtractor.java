@@ -142,8 +142,10 @@ public class YoutubeStreamInfoItemExtractor implements StreamInfoItemExtractor {
 
     @Override
     public Calendar getUploadDate() throws ParsingException {
-        if (timeAgoParser != null) {
-            return timeAgoParser.parse(getTextualUploadDate());
+        String textualUploadDate = getTextualUploadDate();
+        if (timeAgoParser != null
+                && textualUploadDate != null && !"".equals(textualUploadDate)) {
+            return timeAgoParser.parse(textualUploadDate);
         } else {
             return null;
         }
