@@ -132,10 +132,9 @@ public abstract class StreamExtractor<S extends StreamingService> extends Extrac
     public abstract List<VideoStream> getVideoStreams() throws IOException, ExtractionException;
     public abstract List<VideoStream> getVideoOnlyStreams() throws IOException, ExtractionException;
 
-    @Nullable
+    @Nonnull
     public abstract List<Subtitles> getSubtitlesDefault() throws IOException, ExtractionException;
-
-    @Nullable
+    @Nonnull
     public abstract List<Subtitles> getSubtitles(SubtitlesFormat format) throws IOException, ExtractionException;
 
     public abstract StreamType getStreamType() throws ParsingException;

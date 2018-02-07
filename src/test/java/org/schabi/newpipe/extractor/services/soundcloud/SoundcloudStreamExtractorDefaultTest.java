@@ -109,12 +109,12 @@ public class SoundcloudStreamExtractorDefaultTest {
     @Test
     public void testGetSubtitlesListDefault() throws IOException, ExtractionException {
         // Video (/view?v=YQHsXMglC9A) set in the setUp() method has no captions => null
-        assertTrue(extractor.getSubtitlesDefault() == null);
+        assertTrue(extractor.getSubtitlesDefault().isEmpty());
     }
 
     @Test
     public void testGetSubtitlesList() throws IOException, ExtractionException {
         // Video (/view?v=YQHsXMglC9A) set in the setUp() method has no captions => null
-        assertTrue(extractor.getSubtitles(SubtitlesFormat.VTT) == null);
+        assertTrue(extractor.getSubtitlesDefault().isEmpty());
     }
 }

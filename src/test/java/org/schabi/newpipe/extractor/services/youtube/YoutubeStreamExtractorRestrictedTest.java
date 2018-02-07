@@ -122,12 +122,12 @@ public class YoutubeStreamExtractorRestrictedTest {
     @Test
     public void testGetSubtitlesListDefault() throws IOException, ExtractionException {
         // Video (/view?v=YQHsXMglC9A) set in the setUp() method has no captions => null
-        assertNull(extractor.getSubtitlesDefault());
+        assertTrue(extractor.getSubtitlesDefault().isEmpty());
     }
 
     @Test
     public void testGetSubtitlesList() throws IOException, ExtractionException {
         // Video (/view?v=YQHsXMglC9A) set in the setUp() method has no captions => null
-        assertNull(extractor.getSubtitles(SubtitlesFormat.VTT));
+        assertTrue(extractor.getSubtitles(SubtitlesFormat.TTML).isEmpty());
     }
 }
