@@ -6,7 +6,11 @@ import org.schabi.newpipe.Downloader;
 import org.schabi.newpipe.extractor.ListExtractor;
 import org.schabi.newpipe.extractor.NewPipe;
 import org.schabi.newpipe.extractor.channel.ChannelExtractor;
+import org.schabi.newpipe.extractor.stream.StreamInfoItem;
 
+
+import java.util.Calendar;
+import java.util.List;
 
 import static org.junit.Assert.*;
 import static org.schabi.newpipe.extractor.ExtractorAsserts.assertEmptyErrors;
@@ -90,6 +94,18 @@ public class YoutubeChannelExtractorTest {
     @Test
     public void testGetStreams() throws Exception {
         assertTrue("no streams are received", !extractor.getStreams().getItemList().isEmpty());
+    }
+
+    @Test
+    public void testParseUploadDate() throws Exception {
+        List<StreamInfoItem> streamItems = extractor.getStreams().getItemList();
+
+        if (!streamItems.isEmpty()) {
+            StreamInfoItem fstStreamItem = streamItems.get(0);
+            assertNotNull("No parsed upload date", fstStreamItem.getUploadDate());
+            assertTrue("Upload date not in the past",
+                    fstStreamItem.getUploadDate().before(Calendar.getInstance()));
+        }
     }
 
     @Test

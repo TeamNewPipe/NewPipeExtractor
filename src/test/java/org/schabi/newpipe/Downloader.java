@@ -35,6 +35,7 @@ import java.util.Map;
 public class Downloader implements org.schabi.newpipe.extractor.Downloader {
 
     private static final String USER_AGENT = "Mozilla/5.0 (Windows NT 6.1; WOW64; rv:43.0) Gecko/20100101 Firefox/43.0";
+    private static final String DEFAULT_HTTP_ACCEPT_LANGUAGE = "en";
     private static String mCookies = "";
 
     private static Downloader instance = null;
@@ -152,6 +153,7 @@ public class Downloader implements org.schabi.newpipe.extractor.Downloader {
         URL url = new URL(siteUrl);
         HttpsURLConnection con = (HttpsURLConnection) url.openConnection();
         //HttpsURLConnection con = NetCipher.getHttpsURLConnection(url);
+        con.setRequestProperty("Accept-Language", DEFAULT_HTTP_ACCEPT_LANGUAGE);
         return dl(con);
     }
 }

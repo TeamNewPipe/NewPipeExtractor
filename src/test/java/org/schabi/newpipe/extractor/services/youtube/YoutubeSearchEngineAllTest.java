@@ -8,15 +8,9 @@ import org.schabi.newpipe.extractor.InfoItem;
 import org.schabi.newpipe.extractor.NewPipe;
 import org.schabi.newpipe.extractor.channel.ChannelInfoItem;
 import org.schabi.newpipe.extractor.search.SearchEngine;
-import org.schabi.newpipe.extractor.search.SearchResult;
-import org.schabi.newpipe.extractor.stream.TimeAgoParser;
 
-import java.net.MalformedURLException;
-import java.net.URL;
-import java.util.List;
-
-import static org.junit.Assert.*;
-import static org.schabi.newpipe.extractor.ExtractorAsserts.assertIsValidUrl;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 
 /*
  * Created by Christian Schabesberger on 29.12.15.
@@ -46,8 +40,7 @@ public class YoutubeSearchEngineAllTest extends BaseYoutubeSearchTest {
     @BeforeClass
     public static void setUpClass() throws Exception {
         NewPipe.init(Downloader.getInstance());
-        YoutubeSearchEngine engine = new YoutubeSearchEngine(1,
-                new TimeAgoParser(TimeAgoParser.DEFAULT_AGO_PHRASES));
+        YoutubeSearchEngine engine = new YoutubeSearchEngine(1);
 
         result = engine.search("pewdiepie", 0, "de", SearchEngine.Filter.ANY)
                 .getSearchResult();
