@@ -37,7 +37,6 @@ public class ChannelInfo extends ListInfo {
         super(serviceId, id, url, name);
     }
 
-
     public static NextItemsResult getMoreItems(ServiceList serviceItem, String url, String nextStreamsUrl) throws IOException, ExtractionException {
         return getMoreItems(serviceItem.getService(), url, nextStreamsUrl);
     }

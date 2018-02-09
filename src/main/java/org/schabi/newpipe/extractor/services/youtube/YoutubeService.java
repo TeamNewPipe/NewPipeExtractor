@@ -60,6 +60,11 @@ public class YoutubeService extends StreamingService {
         return YoutubePlaylistUrlIdHandler.getInstance();
     }
 
+    @Override
+    public UrlIdHandler getFeedUrlIdHandler() {
+        return YoutubeFeedUrlIdHandler.getInstance();
+    }
+
 
     @Override
     public StreamExtractor getStreamExtractor(String url) throws IOException, ExtractionException {

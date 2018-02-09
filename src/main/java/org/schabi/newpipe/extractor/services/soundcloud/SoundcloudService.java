@@ -39,6 +39,10 @@ public class SoundcloudService extends StreamingService {
         return SoundcloudPlaylistUrlIdHandler.getInstance();
     }
 
+    @Override
+    public UrlIdHandler getFeedUrlIdHandler() {
+        return SoundcloudFeedUrlIdHandler.getInstance();
+    }
 
     @Override
     public StreamExtractor getStreamExtractor(String url) throws IOException, ExtractionException {
