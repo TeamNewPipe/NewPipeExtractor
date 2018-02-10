@@ -4,7 +4,7 @@ package org.schabi.newpipe.extractor.services.youtube;
          * Created by Christian Schabesberger on 12.08.17.
          *
          * Copyright (C) Christian Schabesberger 2017 <chris.schabesberger@mailbox.org>
-         * YoutubeTreindingKioskInfoTest.java is part of NewPipe.
+         * YoutubeTrendingKioskInfoTest.java is part of NewPipe.
          *
          * NewPipe is free software: you can redistribute it and/or modify
          * it under the terms of the GNU General Public License as published by
@@ -28,7 +28,6 @@ import org.schabi.newpipe.extractor.StreamingService;
 import org.schabi.newpipe.extractor.UrlIdHandler;
 import org.schabi.newpipe.extractor.kiosk.KioskInfo;
 
-import static junit.framework.TestCase.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 import static org.schabi.newpipe.extractor.ServiceList.YouTube;
@@ -36,17 +35,17 @@ import static org.schabi.newpipe.extractor.ServiceList.YouTube;
 /**
  * Test for {@link KioskInfo}
  */
-public class YoutubeTreindingKioskInfoTest {
+public class YoutubeTrendingKioskInfoTest {
     static KioskInfo kioskInfo;
 
     @BeforeClass
     public static void setUp()
             throws Exception {
         NewPipe.init(Downloader.getInstance());
-        StreamingService service = YouTube.getService();
+        StreamingService service = YouTube;
         UrlIdHandler urlIdHandler = service.getKioskList().getUrlIdHandlerByType("Trending");
 
-        kioskInfo = KioskInfo.getInfo(YouTube.getService(), urlIdHandler.getUrl("Trending"), null);
+        kioskInfo = KioskInfo.getInfo(YouTube, urlIdHandler.getUrl("Trending"), null);
     }
 
     @Test

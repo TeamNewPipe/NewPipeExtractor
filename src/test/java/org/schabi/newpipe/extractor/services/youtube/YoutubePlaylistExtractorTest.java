@@ -28,7 +28,7 @@ public class YoutubePlaylistExtractorTest {
     @BeforeClass
     public static void setUp() throws Exception {
         NewPipe.init(Downloader.getInstance());
-        extractor = (YoutubePlaylistExtractor) YouTube.getService()
+        extractor = (YoutubePlaylistExtractor) YouTube
                 .getPlaylistExtractor("https://www.youtube.com/watch?v=lp-EO5I60KA&list=PLMC9KNkIncKtPzgY-5rmhvj7fax8fdxoj");
         extractor.fetchPage();
     }
@@ -85,7 +85,7 @@ public class YoutubePlaylistExtractorTest {
         assertTrue(streams.size() > 60);
         assertFalse(streams.contains(null));
         for(StreamInfoItem item: streams) {
-            assertEquals("Service id doesn't match", YouTube.getId(), item.getServiceId());
+            assertEquals("Service id doesn't match", YouTube.getServiceId(), item.getServiceId());
             assertNotNull("Stream type not set: " + item, item.getStreamType());
             //assertNotEmpty("Upload date not set: " + item, item.getUploadDate());
             assertNotEmpty("Uploader name not set: " + item, item.getUploaderName());

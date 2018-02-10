@@ -3,7 +3,6 @@ package org.schabi.newpipe.extractor.channel;
 import org.schabi.newpipe.extractor.ListExtractor.NextItemsResult;
 import org.schabi.newpipe.extractor.ListInfo;
 import org.schabi.newpipe.extractor.NewPipe;
-import org.schabi.newpipe.extractor.ServiceList;
 import org.schabi.newpipe.extractor.StreamingService;
 import org.schabi.newpipe.extractor.exceptions.ExtractionException;
 import org.schabi.newpipe.extractor.exceptions.ParsingException;
@@ -38,20 +37,12 @@ public class ChannelInfo extends ListInfo {
     }
 
 
-    public static NextItemsResult getMoreItems(ServiceList serviceItem, String url, String nextStreamsUrl) throws IOException, ExtractionException {
-        return getMoreItems(serviceItem.getService(), url, nextStreamsUrl);
-    }
-
-    public static NextItemsResult getMoreItems(StreamingService service, String url, String nextStreamsUrl) throws IOException, ExtractionException {
+    public static NextItemsResult getMoreItems(StreamingService service, String url, String nextStreamsUrl, String contentLanguage) throws IOException, ExtractionException {
         return service.getChannelExtractor(url, nextStreamsUrl).getNextStreams();
     }
 
     public static ChannelInfo getInfo(String url) throws IOException, ExtractionException {
         return getInfo(NewPipe.getServiceByUrl(url), url);
-    }
-
-    public static ChannelInfo getInfo(ServiceList serviceItem, String url) throws IOException, ExtractionException {
-        return getInfo(serviceItem.getService(), url);
     }
 
     public static ChannelInfo getInfo(StreamingService service, String url) throws IOException, ExtractionException {

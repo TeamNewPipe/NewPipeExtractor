@@ -3,34 +3,34 @@ package org.schabi.newpipe.extractor;
 import org.schabi.newpipe.extractor.services.soundcloud.SoundcloudService;
 import org.schabi.newpipe.extractor.services.youtube.YoutubeService;
 
+import java.util.List;
+
+import static java.util.Arrays.asList;
+import static java.util.Collections.unmodifiableList;
+
 /**
  * A list of supported services.
  */
-public enum ServiceList {
-    YouTube(new YoutubeService(0, "YouTube")),
-    SoundCloud(new SoundcloudService(1, "SoundCloud"));
-//  DailyMotion(new DailyMotionService(2, "DailyMotion"));
-
-    private final StreamingService service;
-
-    ServiceList(StreamingService service) {
-        this.service = service;
+public final class ServiceList {
+    private ServiceList() {
+        //no instance
     }
 
-    public StreamingService getService() {
-        return service;
-    }
+    public static final YoutubeService YouTube;
+    public static final SoundcloudService SoundCloud;
 
-    public StreamingService.ServiceInfo getServiceInfo() {
-        return service.getServiceInfo();
-    }
+    private static final List<StreamingService> SERVICES = unmodifiableList(asList(
+            YouTube = new YoutubeService(0),
+            SoundCloud = new SoundcloudService(1)
+            // DailyMotion = new DailyMotionService(2);
+    ));
 
-    public int getId() {
-        return service.getServiceId();
-    }
-
-    @Override
-    public String toString() {
-        return service.getServiceInfo().name;
+    /**
+     * Get all the supported services.
+     *
+     * @return a unmodifiable list of all the supported services
+     */
+    public static List<StreamingService> all() {
+        return SERVICES;
     }
 }

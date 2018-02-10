@@ -8,13 +8,29 @@ import org.schabi.newpipe.extractor.search.SearchEngine;
 import org.schabi.newpipe.extractor.stream.StreamExtractor;
 
 import java.io.IOException;
+import java.util.Collections;
+import java.util.List;
 
 public abstract class StreamingService {
-    public class ServiceInfo {
-        public final String name;
+    public static class ServiceInfo {
+        private final String name;
+        private final List<MediaCapability> mediaCapabilities;
 
-        public ServiceInfo(String name) {
+        public ServiceInfo(String name, List<MediaCapability> mediaCapabilities) {
             this.name = name;
+            this.mediaCapabilities = Collections.unmodifiableList(mediaCapabilities);
+        }
+
+        public String getName() {
+            return name;
+        }
+
+        public List<MediaCapability> getMediaCapabilities() {
+            return mediaCapabilities;
+        }
+
+        public enum MediaCapability {
+            AUDIO, VIDEO, LIVE
         }
     }
 
@@ -28,9 +44,9 @@ public abstract class StreamingService {
     private final int serviceId;
     private final ServiceInfo serviceInfo;
 
-    public StreamingService(int id, String name) {
+    public StreamingService(int id, String name, List<ServiceInfo.MediaCapability> capabilities) {
         this.serviceId = id;
-        this.serviceInfo = new ServiceInfo(name);
+        this.serviceInfo = new ServiceInfo(name, capabilities);
     }
 
     public final int getServiceId() {
@@ -39,6 +55,11 @@ public abstract class StreamingService {
 
     public ServiceInfo getServiceInfo() {
         return serviceInfo;
+    }
+
+    @Override
+    public String toString() {
+        return serviceId + ":" + serviceInfo.getName();
     }
 
     public abstract UrlIdHandler getStreamUrlIdHandler();

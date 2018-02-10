@@ -8,14 +8,9 @@ import org.schabi.newpipe.extractor.InfoItem;
 import org.schabi.newpipe.extractor.NewPipe;
 import org.schabi.newpipe.extractor.channel.ChannelInfoItem;
 import org.schabi.newpipe.extractor.search.SearchEngine;
-import org.schabi.newpipe.extractor.search.SearchResult;
 
-import java.net.MalformedURLException;
-import java.net.URL;
-import java.util.List;
-
-import static org.junit.Assert.*;
-import static org.schabi.newpipe.extractor.ExtractorAsserts.assertIsValidUrl;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 
 /*
  * Created by Christian Schabesberger on 29.12.15.

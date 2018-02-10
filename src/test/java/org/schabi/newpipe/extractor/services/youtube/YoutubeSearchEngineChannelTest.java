@@ -7,10 +7,9 @@ import org.schabi.newpipe.Downloader;
 import org.schabi.newpipe.extractor.InfoItem;
 import org.schabi.newpipe.extractor.NewPipe;
 import org.schabi.newpipe.extractor.search.SearchEngine;
-import org.schabi.newpipe.extractor.search.SearchResult;
 
-import static org.junit.Assert.*;
-import static org.schabi.newpipe.extractor.ExtractorAsserts.assertIsValidUrl;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 import static org.schabi.newpipe.extractor.ServiceList.YouTube;
 
 
@@ -42,7 +41,7 @@ public class YoutubeSearchEngineChannelTest extends BaseYoutubeSearchTest {
     @BeforeClass
     public static void setUp() throws Exception {
         NewPipe.init(Downloader.getInstance());
-        SearchEngine engine = YouTube.getService().getSearchEngine();
+        SearchEngine engine = YouTube.getSearchEngine();
 
         // Youtube will suggest "gronkh" instead of "grrunkh"
         // keep in mind that the suggestions can change by country (the parameter "de")

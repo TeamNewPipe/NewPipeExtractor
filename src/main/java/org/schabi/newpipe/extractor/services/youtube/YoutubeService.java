@@ -13,6 +13,9 @@ import org.schabi.newpipe.extractor.stream.StreamExtractor;
 
 import java.io.IOException;
 
+import static java.util.Arrays.asList;
+import static org.schabi.newpipe.extractor.StreamingService.ServiceInfo.MediaCapability.*;
+
 
 /*
  * Created by Christian Schabesberger on 23.08.15.
@@ -36,8 +39,8 @@ import java.io.IOException;
 
 public class YoutubeService extends StreamingService {
 
-    public YoutubeService(int id, String name) {
-        super(id, name);
+    public YoutubeService(int id) {
+        super(id, "YouTube", asList(AUDIO, VIDEO, LIVE));
     }
 
     @Override
@@ -59,7 +62,6 @@ public class YoutubeService extends StreamingService {
     public UrlIdHandler getPlaylistUrlIdHandler() {
         return YoutubePlaylistUrlIdHandler.getInstance();
     }
-
 
     @Override
     public StreamExtractor getStreamExtractor(String url) throws IOException, ExtractionException {

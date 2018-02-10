@@ -41,7 +41,7 @@ public class YoutubeServiceTest {
     @BeforeClass
     public static void setUp() throws Exception {
         NewPipe.init(Downloader.getInstance());
-        service = YouTube.getService();
+        service = YouTube;
         kioskList = service.getKioskList();
     }
 

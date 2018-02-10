@@ -21,7 +21,7 @@ public class SoundcloudPlaylistExtractorTest {
     @BeforeClass
     public static void setUp() throws Exception {
         NewPipe.init(Downloader.getInstance());
-        extractor = SoundCloud.getService()
+        extractor = SoundCloud
                 .getPlaylistExtractor("https://soundcloud.com/liluzivert/sets/the-perfect-luv-tape-r");
         extractor.fetchPage();
     }

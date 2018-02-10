@@ -7,9 +7,9 @@ import org.schabi.newpipe.Downloader;
 import org.schabi.newpipe.extractor.InfoItem;
 import org.schabi.newpipe.extractor.NewPipe;
 import org.schabi.newpipe.extractor.search.SearchEngine;
-import org.schabi.newpipe.extractor.search.SearchResult;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 import static org.schabi.newpipe.extractor.ServiceList.SoundCloud;
 
 
@@ -41,7 +41,7 @@ public class SoundcloudSearchEnginePlaylistTest extends BaseSoundcloudSearchTest
     @BeforeClass
     public static void setUp() throws Exception {
         NewPipe.init(Downloader.getInstance());
-        SearchEngine engine = SoundCloud.getService().getSearchEngine();
+        SearchEngine engine = SoundCloud.getSearchEngine();
 
         // Search by country not yet implemented
         result = engine.search("parkmemme", 0, "", SearchEngine.Filter.PLAYLIST)

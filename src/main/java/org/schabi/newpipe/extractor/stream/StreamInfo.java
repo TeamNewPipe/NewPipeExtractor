@@ -232,10 +232,6 @@ public class StreamInfo extends Info {
         return getInfo(NewPipe.getServiceByUrl(url), url);
     }
 
-    public static StreamInfo getInfo(ServiceList serviceItem, String url) throws IOException, ExtractionException {
-        return getInfo(serviceItem.getService(), url);
-    }
-
     public static StreamInfo getInfo(StreamingService service, String url) throws IOException, ExtractionException {
         return getInfo(service.getStreamExtractor(url));
     }

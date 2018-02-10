@@ -20,7 +20,10 @@ package org.schabi.newpipe.extractor.kiosk;
  * along with NewPipe.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-import org.schabi.newpipe.extractor.*;
+import org.schabi.newpipe.extractor.ListExtractor;
+import org.schabi.newpipe.extractor.ListInfo;
+import org.schabi.newpipe.extractor.NewPipe;
+import org.schabi.newpipe.extractor.StreamingService;
 import org.schabi.newpipe.extractor.exceptions.ExtractionException;
 import org.schabi.newpipe.extractor.utils.ExtractorHelper;
 
@@ -30,13 +33,6 @@ public class KioskInfo extends ListInfo {
 
     private KioskInfo(int serviceId, String id, String url, String name) {
         super(serviceId, id, url, name);
-    }
-
-    public static ListExtractor.NextItemsResult getMoreItems(ServiceList serviceItem,
-                                                             String url,
-                                                             String nextStreamsUrl,
-                                                             String contentCountry) throws IOException, ExtractionException {
-        return getMoreItems(serviceItem.getService(), url, nextStreamsUrl, contentCountry);
     }
 
     public static ListExtractor.NextItemsResult getMoreItems(StreamingService service,
@@ -52,12 +48,6 @@ public class KioskInfo extends ListInfo {
     public static KioskInfo getInfo(String url,
                                     String contentCountry) throws IOException, ExtractionException {
         return getInfo(NewPipe.getServiceByUrl(url), url, contentCountry);
-    }
-
-    public static KioskInfo getInfo(ServiceList serviceItem,
-                                    String url,
-                                    String contentContry) throws IOException, ExtractionException {
-        return getInfo(serviceItem.getService(), url, contentContry);
     }
 
     public static KioskInfo getInfo(StreamingService service,
@@ -82,7 +72,7 @@ public class KioskInfo extends ListInfo {
         String id = extractor.getId();
         String url = extractor.getCleanUrl();
 
-        KioskInfo info = new KioskInfo(serviceId, name, id, url);
+        KioskInfo info = new KioskInfo(serviceId, id, name, url);
 
         info.related_streams = ExtractorHelper.getStreamsOrLogError(info, extractor);
 

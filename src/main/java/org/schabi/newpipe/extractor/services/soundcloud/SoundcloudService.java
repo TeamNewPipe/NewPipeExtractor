@@ -1,7 +1,5 @@
 package org.schabi.newpipe.extractor.services.soundcloud;
 
-import java.io.IOException;
-
 import org.schabi.newpipe.extractor.StreamingService;
 import org.schabi.newpipe.extractor.SuggestionExtractor;
 import org.schabi.newpipe.extractor.UrlIdHandler;
@@ -13,10 +11,15 @@ import org.schabi.newpipe.extractor.playlist.PlaylistExtractor;
 import org.schabi.newpipe.extractor.search.SearchEngine;
 import org.schabi.newpipe.extractor.stream.StreamExtractor;
 
+import java.io.IOException;
+
+import static java.util.Collections.singletonList;
+import static org.schabi.newpipe.extractor.StreamingService.ServiceInfo.MediaCapability.AUDIO;
+
 public class SoundcloudService extends StreamingService {
 
-    public SoundcloudService(int id, String name) {
-        super(id, name);
+    public SoundcloudService(int id) {
+        super(id, "SoundCloud", singletonList(AUDIO));
     }
 
     @Override

@@ -1,11 +1,5 @@
 package org.schabi.newpipe.extractor.services.soundcloud;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
-import static org.schabi.newpipe.extractor.ServiceList.SoundCloud;
-
 import org.junit.BeforeClass;
 import org.junit.Ignore;
 import org.junit.Test;
@@ -13,6 +7,9 @@ import org.schabi.newpipe.Downloader;
 import org.schabi.newpipe.extractor.NewPipe;
 import org.schabi.newpipe.extractor.kiosk.KioskExtractor;
 import org.schabi.newpipe.extractor.stream.StreamInfoItemCollector;
+
+import static org.junit.Assert.*;
+import static org.schabi.newpipe.extractor.ServiceList.SoundCloud;
 
 /**
  * Test for {@link SoundcloudChartsUrlIdHandler}
@@ -24,7 +21,7 @@ public class SoundcloudChartsExtractorTest {
     @BeforeClass
     public static void setUp() throws Exception {
         NewPipe.init(Downloader.getInstance());
-        extractor = SoundCloud.getService()
+        extractor = SoundCloud
                 .getKioskList()
                 .getExtractorById("Top 50", null);
         extractor.fetchPage();

@@ -43,7 +43,7 @@ public class YoutubeStreamExtractorGemaTest {
     public void testGemaError() throws IOException, ExtractionException {
         try {
             NewPipe.init(Downloader.getInstance());
-            YouTube.getService().getStreamExtractor("https://www.youtube.com/watch?v=3O1_3zBUKM8");
+            YouTube.getStreamExtractor("https://www.youtube.com/watch?v=3O1_3zBUKM8");
 
             fail("GemaException should be thrown");
         } catch (YoutubeStreamExtractor.GemaException ignored) {

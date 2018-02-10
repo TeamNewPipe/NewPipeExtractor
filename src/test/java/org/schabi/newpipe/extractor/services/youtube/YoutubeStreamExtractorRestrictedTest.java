@@ -29,7 +29,7 @@ public class YoutubeStreamExtractorRestrictedTest {
     @BeforeClass
     public static void setUp() throws Exception {
         NewPipe.init(Downloader.getInstance());
-        extractor = (YoutubeStreamExtractor) YouTube.getService()
+        extractor = (YoutubeStreamExtractor) YouTube
                 .getStreamExtractor("https://www.youtube.com/watch?v=i6JTvzrpBy0");
         extractor.fetchPage();
     }
@@ -41,7 +41,7 @@ public class YoutubeStreamExtractorRestrictedTest {
 
     @Test
     public void testGetValidTimeStamp() throws IOException, ExtractionException {
-        StreamExtractor extractor = YouTube.getService().getStreamExtractor("https://youtu.be/FmG385_uUys?t=174");
+        StreamExtractor extractor = YouTube.getStreamExtractor("https://youtu.be/FmG385_uUys?t=174");
         assertEquals(extractor.getTimeStamp() + "", "174");
     }
 

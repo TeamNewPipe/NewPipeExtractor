@@ -1,7 +1,9 @@
 package org.schabi.newpipe.extractor.playlist;
 
-import org.schabi.newpipe.extractor.*;
 import org.schabi.newpipe.extractor.ListExtractor.NextItemsResult;
+import org.schabi.newpipe.extractor.ListInfo;
+import org.schabi.newpipe.extractor.NewPipe;
+import org.schabi.newpipe.extractor.StreamingService;
 import org.schabi.newpipe.extractor.exceptions.ExtractionException;
 import org.schabi.newpipe.extractor.exceptions.ParsingException;
 
@@ -15,20 +17,12 @@ public class PlaylistInfo extends ListInfo {
         super(serviceId, id, url, name);
     }
 
-    public static NextItemsResult getMoreItems(ServiceList serviceItem, String url, String nextStreamsUrl) throws IOException, ExtractionException {
-        return getMoreItems(serviceItem.getService(), url, nextStreamsUrl);
-    }
-
     public static NextItemsResult getMoreItems(StreamingService service, String url, String nextStreamsUrl) throws IOException, ExtractionException {
         return service.getPlaylistExtractor(url, nextStreamsUrl).getNextStreams();
     }
 
     public static PlaylistInfo getInfo(String url) throws IOException, ExtractionException {
         return getInfo(NewPipe.getServiceByUrl(url), url);
-    }
-
-    public static PlaylistInfo getInfo(ServiceList serviceItem, String url) throws IOException, ExtractionException {
-        return getInfo(serviceItem.getService(), url);
     }
 
     public static PlaylistInfo getInfo(StreamingService service, String url) throws IOException, ExtractionException {

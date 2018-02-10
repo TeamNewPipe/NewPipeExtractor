@@ -21,7 +21,7 @@ public class SoundcloudSuggestionExtractorTest {
     @BeforeClass
     public static void setUp() throws Exception {
         NewPipe.init(Downloader.getInstance());
-        suggestionExtractor = SoundCloud.getService().getSuggestionExtractor();
+        suggestionExtractor = SoundCloud.getSuggestionExtractor();
     }
 
     @Test

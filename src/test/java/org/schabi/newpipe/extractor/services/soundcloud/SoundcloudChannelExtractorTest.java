@@ -22,7 +22,7 @@ public class SoundcloudChannelExtractorTest {
     @BeforeClass
     public static void setUp() throws Exception {
         NewPipe.init(Downloader.getInstance());
-        extractor = SoundCloud.getService()
+        extractor = SoundCloud
                 .getChannelExtractor("https://soundcloud.com/liluzivert");
         extractor.fetchPage();
     }

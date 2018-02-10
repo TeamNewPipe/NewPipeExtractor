@@ -26,11 +26,10 @@ import org.schabi.newpipe.Downloader;
 import org.schabi.newpipe.extractor.NewPipe;
 import org.schabi.newpipe.extractor.UrlIdHandler;
 
-import static org.schabi.newpipe.extractor.ServiceList.YouTube;
-
 import static junit.framework.TestCase.assertFalse;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
+import static org.schabi.newpipe.extractor.ServiceList.YouTube;
 
 /**
  * Test for {@link YoutubeTrendingUrlIdHandler}
@@ -40,7 +39,7 @@ public class YoutubeTrendingUrlIdHandlerTest {
 
     @BeforeClass
     public static void setUp() throws Exception {
-        urlIdHandler = YouTube.getService().getKioskList().getUrlIdHandlerByType("Trending");
+        urlIdHandler = YouTube.getKioskList().getUrlIdHandlerByType("Trending");
         NewPipe.init(Downloader.getInstance());
     }
 

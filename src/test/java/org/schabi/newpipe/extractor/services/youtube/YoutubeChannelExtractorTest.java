@@ -7,7 +7,6 @@ import org.schabi.newpipe.extractor.ListExtractor;
 import org.schabi.newpipe.extractor.NewPipe;
 import org.schabi.newpipe.extractor.channel.ChannelExtractor;
 
-
 import static org.junit.Assert.*;
 import static org.schabi.newpipe.extractor.ExtractorAsserts.assertEmptyErrors;
 import static org.schabi.newpipe.extractor.ServiceList.YouTube;
@@ -42,7 +41,7 @@ public class YoutubeChannelExtractorTest {
     @BeforeClass
     public static void setUp() throws Exception {
         NewPipe.init(Downloader.getInstance());
-        extractor = (YoutubeChannelExtractor) YouTube.getService()
+        extractor = (YoutubeChannelExtractor) YouTube
                 .getChannelExtractor("https://www.youtube.com/user/Gronkh");
         extractor.fetchPage();
     }
