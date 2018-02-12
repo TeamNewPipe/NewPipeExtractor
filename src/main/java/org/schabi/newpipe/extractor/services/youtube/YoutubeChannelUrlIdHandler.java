@@ -50,7 +50,7 @@ public class YoutubeChannelUrlIdHandler implements UrlIdHandler {
 
     @Override
     public boolean acceptUrl(String url) {
-        return (url.contains("youtube") || url.contains("youtu.be"))
+        return (url.contains("youtube") || url.contains("youtu.be") || url.contains("hooktube.com"))
                 && (url.contains("/user/") || url.contains("/channel/"));
     }
 }
