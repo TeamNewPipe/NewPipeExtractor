@@ -20,7 +20,7 @@ public class YoutubeStreamUrlIdHandlerTest {
     private static YoutubeStreamUrlIdHandler urlIdHandler;
 
     @BeforeClass
-    public static void setUp() throws Exception {
+    public static void setUp() {
         urlIdHandler = YoutubeStreamUrlIdHandler.getInstance();
         NewPipe.init(Downloader.getInstance());
     }
@@ -36,7 +36,7 @@ public class YoutubeStreamUrlIdHandlerTest {
     }
 
     @Test
-    public void getIdForInvalidUrls() throws ParsingException {
+    public void getIdForInvalidUrls() {
         List<String> invalidUrls = new ArrayList<>(50);
         invalidUrls.add("https://www.youtube.com/watch?v=jZViOEv90d");
         invalidUrls.add("https://www.youtube.com/watchjZViOEv90d");
@@ -55,7 +55,7 @@ public class YoutubeStreamUrlIdHandlerTest {
     }
 
     @Test
-    public void getId() throws Exception {
+    public void getIdfromYt() throws Exception {
         assertEquals("jZViOEv90dI", urlIdHandler.getId("https://www.youtube.com/watch?v=jZViOEv90dI"));
         assertEquals("W-fFHeTX70Q", urlIdHandler.getId("https://www.youtube.com/watch?v=W-fFHeTX70Q"));
         assertEquals("jZViOEv90dI", urlIdHandler.getId("https://www.youtube.com/watch?v=jZViOEv90dI?t=100"));
@@ -78,8 +78,10 @@ public class YoutubeStreamUrlIdHandlerTest {
         assertEquals("EhxJLojIE_o", urlIdHandler.getId("http://www.youtube.com/attribution_link?a=JdfC0C9V6ZI&u=%2Fwatch%3Fv%3DEhxJLojIE_o%26feature%3Dshare"));
         assertEquals("jZViOEv90dI", urlIdHandler.getId("vnd.youtube://www.youtube.com/watch?v=jZViOEv90dI"));
         assertEquals("jZViOEv90dI", urlIdHandler.getId("vnd.youtube:jZViOEv90dI"));
+    }
 
-        // Shared links
+    @Test
+    public void getIdfromSharedLinksYt() throws Exception {
         String sharedId = "7JIArTByb3E";
         String realId = "Q7JsK50NGaA";
         assertEquals(realId, urlIdHandler.getId("vnd.youtube://www.YouTube.com/shared?ci=" + sharedId + "&feature=twitter-deep-link"));
@@ -89,13 +91,12 @@ public class YoutubeStreamUrlIdHandlerTest {
 
 
     @Test
-    public void testAcceptUrl() {
+    public void testAcceptYtUrl() {
         assertTrue(urlIdHandler.acceptUrl("https://www.youtube.com/watch?v=jZViOEv90dI"));
         assertTrue(urlIdHandler.acceptUrl("https://www.youtube.com/watch?v=jZViOEv90dI?t=100"));
         assertTrue(urlIdHandler.acceptUrl("https://WWW.YouTube.com/watch?v=jZViOEv90dI?t=100"));
         assertTrue(urlIdHandler.acceptUrl("HTTPS://www.youtube.com/watch?v=jZViOEv90dI?t=100"));
         assertTrue(urlIdHandler.acceptUrl("https://youtu.be/jZViOEv90dI?t=9s"));
-        //assertTrue(urlIdHandler.acceptUrl("https://www.youtube.com/watch/jZViOEv90dI"));
         assertTrue(urlIdHandler.acceptUrl("https://www.youtube.com/embed/jZViOEv90dI"));
         assertTrue(urlIdHandler.acceptUrl("https://www.youtube-nocookie.com/embed/jZViOEv90dI"));
         assertTrue(urlIdHandler.acceptUrl("http://www.youtube.com/watch?v=jZViOEv90dI"));
@@ -107,10 +108,33 @@ public class YoutubeStreamUrlIdHandlerTest {
         assertTrue(urlIdHandler.acceptUrl("vnd.youtube:jZViOEv90dI"));
 
         assertTrue(urlIdHandler.acceptUrl("vnd.youtube:jZViOEv90dI"));
+    }
 
+    @Test
+    public void testAcceptSharedYtUrl() {
         String sharedId = "8A940MXKFmQ";
         assertTrue(urlIdHandler.acceptUrl("vnd.youtube://www.youtube.com/shared?ci=" + sharedId + "&feature=twitter-deep-link"));
         assertTrue(urlIdHandler.acceptUrl("vnd.youtube://www.youtube.com/shared?ci=" + sharedId));
         assertTrue(urlIdHandler.acceptUrl("https://www.youtube.com/shared?ci=" + sharedId));
+    }
+
+    @Test
+    public void testAcceptHookUrl() {
+        assertTrue(urlIdHandler.acceptUrl("https://hooktube.com/watch?v=TglNG-yjabU"));
+        assertTrue(urlIdHandler.acceptUrl("hooktube.com/watch?v=3msbfr6pBNE"));
+        assertTrue(urlIdHandler.acceptUrl("https://hooktube.com/watch?v=ocH3oSnZG3c&list=PLS2VU1j4vzuZwooPjV26XM9UEBY2CPNn2"));
+        assertTrue(urlIdHandler.acceptUrl("hooktube.com/watch/3msbfr6pBNE"));
+        assertTrue(urlIdHandler.acceptUrl("hooktube.com/v/3msbfr6pBNE"));
+        assertTrue(urlIdHandler.acceptUrl("hooktube.com/embed/3msbfr6pBNE"));
+    }
+
+    @Test
+    public void testGetHookIdfromUrl() throws ParsingException {
+        assertEquals("TglNG-yjabU", urlIdHandler.getId("https://hooktube.com/watch?v=TglNG-yjabU"));
+        assertEquals("3msbfr6pBNE", urlIdHandler.getId("hooktube.com/watch?v=3msbfr6pBNE"));
+        assertEquals("ocH3oSnZG3c", urlIdHandler.getId("https://hooktube.com/watch?v=ocH3oSnZG3c&list=PLS2VU1j4vzuZwooPjV26XM9UEBY2CPNn2"));
+        assertEquals("3msbfr6pBNE", urlIdHandler.getId("hooktube.com/watch/3msbfr6pBNE"));
+        assertEquals("3msbfr6pBNE", urlIdHandler.getId("hooktube.com/v/3msbfr6pBNE"));
+        assertEquals("3msbfr6pBNE", urlIdHandler.getId("hooktube.com/embed/3msbfr6pBNE"));
     }
 }

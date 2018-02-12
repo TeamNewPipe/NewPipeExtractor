@@ -88,6 +88,19 @@ public class YoutubeStreamUrlIdHandler implements UrlIdHandler {
             } else {
                 id = Parser.matchGroup1("[Yy][Oo][Uu][Tt][Uu]\\.[Bb][Ee]/" + ID_PATTERN, url);
             }
+        } else if(lowercaseUrl.contains("hooktube")) {
+            if(lowercaseUrl.contains("&v=")
+                    || lowercaseUrl.contains("?v=")) {
+                id = Parser.matchGroup1("[?&]v=" + ID_PATTERN, url);
+            } else if (url.contains("/embed/")) {
+                id = Parser.matchGroup1("embed/" + ID_PATTERN, url);
+            } else if (url.contains("/v/")) {
+                id = Parser.matchGroup1("v/" + ID_PATTERN, url);
+            } else if (url.contains("/watch/")) {
+                id = Parser.matchGroup1("watch/" + ID_PATTERN, url);
+            } else {
+                throw new ParsingException("Error no suitable url: " + url);
+            }
         } else {
             throw new ParsingException("Error no suitable url: " + url);
         }
@@ -161,8 +174,9 @@ public class YoutubeStreamUrlIdHandler implements UrlIdHandler {
     @Override
     public boolean acceptUrl(String url) {
         String lowercaseUrl = url.toLowerCase();
-        if (lowercaseUrl.contains("youtube") ||
-                lowercaseUrl.contains("youtu.be")) {
+        if (lowercaseUrl.contains("youtube")
+                || lowercaseUrl.contains("youtu.be")
+                || lowercaseUrl.contains("hooktube")) {
             // bad programming I know
             try {
                 getId(url);
