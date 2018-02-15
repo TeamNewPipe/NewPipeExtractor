@@ -678,7 +678,7 @@ public class YoutubeStreamExtractor extends StreamExtractor {
 
             String helperPattern = "(var "
                     + helperObjectName.replace("$", "\\$") + "=\\{.+?\\}\\};)";
-            helperObject = Parser.matchGroup1(helperPattern, playerCode);
+            helperObject = Parser.matchGroup1(helperPattern, playerCode.replace("\n", ""));
 
 
             callerFunc = callerFunc.replace("%%", decryptionFuncName);
