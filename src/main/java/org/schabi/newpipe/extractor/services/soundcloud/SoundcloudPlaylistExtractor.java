@@ -68,17 +68,17 @@ public class SoundcloudPlaylistExtractor extends PlaylistExtractor {
 
     @Override
     public String getUploaderUrl() {
-        return SoundcloudExtractorHelper.getUploaderUrl(playlist);
+        return SoundcloudParsingHelper.getUploaderUrl(playlist);
     }
 
     @Override
     public String getUploaderName() {
-        return SoundcloudExtractorHelper.getUploaderName(playlist);
+        return SoundcloudParsingHelper.getUploaderName(playlist);
     }
 
     @Override
     public String getUploaderAvatarUrl() {
-        return SoundcloudExtractorHelper.getAvatarUrl(playlist);
+        return SoundcloudParsingHelper.getAvatarUrl(playlist);
     }
 
     @Override
