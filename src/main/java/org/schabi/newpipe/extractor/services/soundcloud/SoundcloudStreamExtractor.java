@@ -102,19 +102,19 @@ public class SoundcloudStreamExtractor extends StreamExtractor {
     @Nonnull
     @Override
     public String getUploaderUrl() {
-        return SoundcloudExtractorHelper.getUploaderUrl(track);
+        return SoundcloudParsingHelper.getUploaderUrl(track);
     }
 
     @Nonnull
     @Override
     public String getUploaderName() {
-        return SoundcloudExtractorHelper.getUploaderName(track);
+        return SoundcloudParsingHelper.getUploaderName(track);
     }
 
     @Nonnull
     @Override
     public String getUploaderAvatarUrl() {
-        return SoundcloudExtractorHelper.getAvatarUrl(track);
+        return SoundcloudParsingHelper.getAvatarUrl(track);
     }
 
     @Override
