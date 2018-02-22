@@ -1,0 +1,23 @@
+<opml version="1.1">
+    <body>
+        <outline text="YouTube Subscriptions" title="YouTube Subscriptions">
+            <outline text="Kurzgesagt – In a Nutshell" title="Kurzgesagt – In a Nutshell" type="rss"
+                     xmlUrl="https://www.youtube.com/feeds/videos.xml?channel_id=UCsXVk37bltHxD1rDPwtNM8Q"/>
+            <outline text="CaptainDisillusion" title="CaptainDisillusion" type="rss"
+                     xmlUrl="https://www.youtube.com/feeds/videos.xml?channel_id=UCEOXxzW2vU0P-0THehuIIeg"/>
+            <outline text="TED" title="TED" type="rss"
+                     xmlUrl="https://www.youtube.com/feeds/videos.xml?channel_id=UCAuUUnT6oDeKwE6v1NGQxug"/>
+            <outline text="Gorillaz" title="Gorillaz" type="rss"
+                     xmlUrl="https://www.youtube.com/feeds/videos.xml?channel_id=UCfIXdjDQH9Fau7y99_Orpjw"/>
+            <outline text="ElectroBOOM" title="ElectroBOOM" type="rss"
+                     xmlUrl="https://www.youtube.com/feeds/videos.xml?channel_id=UCJ0-OtVpF0wOKEqT2Z1HEtA"/>
+
+            <outline text="ⓤⓝⓘⓒⓞⓓⓔ" title="ⓤⓝⓘⓒⓞⓓⓔ" type="rss"
+                     xmlUrl="https://www.youtube.com/feeds/videos.xml?channel_id=UCsXVk37bltHxD1rDPwtNM8Q"/>
+            <outline text="中文" title="中文" type="rss"
+                     xmlUrl="https://www.youtube.com/feeds/videos.xml?channel_id=UCsXVk37bltHxD1rDPwtNM8Q"/>
+            <outline text="हिंदी" title="हिंदी" type="rss"
+                     xmlUrl="https://www.youtube.com/feeds/videos.xml?channel_id=UCsXVk37bltHxD1rDPwtNM8Q"/>
+        </outline>
+    </body>
+</opml>

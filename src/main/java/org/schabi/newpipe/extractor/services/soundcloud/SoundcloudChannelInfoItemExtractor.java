@@ -4,39 +4,39 @@ import com.grack.nanojson.JsonObject;
 import org.schabi.newpipe.extractor.channel.ChannelInfoItemExtractor;
 
 public class SoundcloudChannelInfoItemExtractor implements ChannelInfoItemExtractor {
-    private final JsonObject searchResult;
+    private final JsonObject itemObject;
 
-    public SoundcloudChannelInfoItemExtractor(JsonObject searchResult) {
-        this.searchResult = searchResult;
+    public SoundcloudChannelInfoItemExtractor(JsonObject itemObject) {
+        this.itemObject = itemObject;
     }
 
     @Override
     public String getName() {
-        return searchResult.getString("username");
+        return itemObject.getString("username");
     }
 
     @Override
     public String getUrl() {
-        return searchResult.getString("permalink_url");
+        return itemObject.getString("permalink_url");
     }
 
     @Override
     public String getThumbnailUrl() {
-        return searchResult.getString("avatar_url", "");
+        return itemObject.getString("avatar_url", "");
     }
 
     @Override
     public long getSubscriberCount() {
-        return searchResult.getNumber("followers_count", 0).longValue();
+        return itemObject.getNumber("followers_count", 0).longValue();
     }
 
     @Override
     public long getStreamCount() {
-        return searchResult.getNumber("track_count", 0).longValue();
+        return itemObject.getNumber("track_count", 0).longValue();
     }
 
     @Override
     public String getDescription() {
-        return searchResult.getString("description", "");
+        return itemObject.getString("description", "");
     }
 }

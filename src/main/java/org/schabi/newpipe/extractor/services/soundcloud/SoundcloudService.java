@@ -10,6 +10,7 @@ import org.schabi.newpipe.extractor.kiosk.KioskList;
 import org.schabi.newpipe.extractor.playlist.PlaylistExtractor;
 import org.schabi.newpipe.extractor.search.SearchEngine;
 import org.schabi.newpipe.extractor.stream.StreamExtractor;
+import org.schabi.newpipe.extractor.subscription.SubscriptionExtractor;
 
 import java.io.IOException;
 
@@ -91,5 +92,11 @@ public class SoundcloudService extends StreamingService {
         }
 
         return list;
+    }
+
+
+    @Override
+    public SubscriptionExtractor getSubscriptionExtractor() {
+        return new SoundcloudSubscriptionExtractor(this);
     }
 }

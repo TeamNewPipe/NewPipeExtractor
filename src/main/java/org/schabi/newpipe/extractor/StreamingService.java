@@ -6,6 +6,7 @@ import org.schabi.newpipe.extractor.kiosk.KioskList;
 import org.schabi.newpipe.extractor.playlist.PlaylistExtractor;
 import org.schabi.newpipe.extractor.search.SearchEngine;
 import org.schabi.newpipe.extractor.stream.StreamExtractor;
+import org.schabi.newpipe.extractor.subscription.SubscriptionExtractor;
 
 import java.io.IOException;
 import java.util.Collections;
@@ -71,6 +72,7 @@ public abstract class StreamingService {
     public abstract ChannelExtractor getChannelExtractor(String url, String nextStreamsUrl) throws IOException, ExtractionException;
     public abstract PlaylistExtractor getPlaylistExtractor(String url, String nextStreamsUrl) throws IOException, ExtractionException;
     public abstract KioskList getKioskList() throws ExtractionException;
+    public abstract SubscriptionExtractor getSubscriptionExtractor();
 
     public ChannelExtractor getChannelExtractor(String url) throws IOException, ExtractionException {
         return getChannelExtractor(url, null);

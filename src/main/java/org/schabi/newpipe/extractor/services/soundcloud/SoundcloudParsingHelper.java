@@ -9,19 +9,19 @@ import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.schabi.newpipe.extractor.Downloader;
 import org.schabi.newpipe.extractor.NewPipe;
+import org.schabi.newpipe.extractor.channel.ChannelInfoItemCollector;
 import org.schabi.newpipe.extractor.exceptions.ParsingException;
 import org.schabi.newpipe.extractor.exceptions.ReCaptchaException;
 import org.schabi.newpipe.extractor.stream.StreamInfoItemCollector;
 import org.schabi.newpipe.extractor.utils.Parser;
 import org.schabi.newpipe.extractor.utils.Parser.RegexException;
 
+import javax.annotation.Nonnull;
 import java.io.IOException;
 import java.net.URLEncoder;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
-
-import javax.annotation.Nonnull;
 
 public class SoundcloudParsingHelper {
     private static String clientId;
@@ -100,13 +100,64 @@ public class SoundcloudParsingHelper {
     /**
      * Fetch the embed player with the url and return the id (like the id from the json api).
      *
-     * @return the id resolved
+     * @return the resolved id
      */
     public static String resolveIdWithEmbedPlayer(String url) throws IOException, ReCaptchaException, ParsingException {
 
         String response = NewPipe.getDownloader().download("https://w.soundcloud.com/player/?url="
                 + URLEncoder.encode(url, "UTF-8"));
         return Parser.matchGroup1(",\"id\":(.*?),", response);
+    }
+
+    /**
+     * Fetch the users from the given api and commit each of them to the collector.
+     * <p>
+     * This differ from {@link #getUsersFromApi(ChannelInfoItemCollector, String)} in the sense that they will always
+     * get MIN_ITEMS or more.
+     *
+     * @param minItems the method will return only when it have extracted that many items (equal or more)
+     */
+    public static String getUsersFromApiMinItems(int minItems, ChannelInfoItemCollector collector, String apiUrl) throws IOException, ReCaptchaException, ParsingException {
+        String nextStreamsUrl = SoundcloudParsingHelper.getUsersFromApi(collector, apiUrl);
+
+        while (!nextStreamsUrl.isEmpty() && collector.getItemList().size() < minItems) {
+            nextStreamsUrl = SoundcloudParsingHelper.getUsersFromApi(collector, nextStreamsUrl);
+        }
+
+        return nextStreamsUrl;
+    }
+
+    /**
+     * Fetch the user items from the given api and commit each of them to the collector.
+     *
+     * @return the next streams url, empty if don't have
+     */
+    public static String getUsersFromApi(ChannelInfoItemCollector collector, String apiUrl) throws IOException, ReCaptchaException, ParsingException {
+        String response = NewPipe.getDownloader().download(apiUrl);
+        JsonObject responseObject;
+        try {
+            responseObject = JsonParser.object().from(response);
+        } catch (JsonParserException e) {
+            throw new ParsingException("Could not parse json response", e);
+        }
+
+        JsonArray responseCollection = responseObject.getArray("collection");
+        for (Object o : responseCollection) {
+            if (o instanceof JsonObject) {
+                JsonObject object = (JsonObject) o;
+                collector.commit(new SoundcloudChannelInfoItemExtractor(object));
+            }
+        }
+
+        String nextStreamsUrl;
+        try {
+            nextStreamsUrl = responseObject.getString("next_href");
+            if (!nextStreamsUrl.contains("client_id=")) nextStreamsUrl += "&client_id=" + SoundcloudParsingHelper.clientId();
+        } catch (Exception ignored) {
+            nextStreamsUrl = "";
+        }
+
+        return nextStreamsUrl;
     }
 
     /**
