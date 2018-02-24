@@ -1,7 +1,7 @@
 package org.schabi.newpipe.extractor.stream;
 
 import org.schabi.newpipe.extractor.InfoItem;
-import org.schabi.newpipe.extractor.InfoItemCollector;
+import org.schabi.newpipe.extractor.InfoItemsCollector;
 import org.schabi.newpipe.extractor.exceptions.FoundAdException;
 import org.schabi.newpipe.extractor.exceptions.ParsingException;
 
@@ -12,7 +12,7 @@ import java.util.Vector;
  * Created by Christian Schabesberger on 28.02.16.
  *
  * Copyright (C) Christian Schabesberger 2016 <chris.schabesberger@mailbox.org>
- * StreamInfoItemCollector.java is part of NewPipe.
+ * StreamInfoItemsCollector.java is part of NewPipe.
  *
  * NewPipe is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -28,9 +28,9 @@ import java.util.Vector;
  * along with NewPipe.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-public class StreamInfoItemCollector extends InfoItemCollector<StreamInfoItem, StreamInfoItemExtractor> {
+public class StreamInfoItemsCollector extends InfoItemsCollector<StreamInfoItem, StreamInfoItemExtractor> {
 
-    public StreamInfoItemCollector(int serviceId) {
+    public StreamInfoItemsCollector(int serviceId) {
         super(serviceId);
     }
 

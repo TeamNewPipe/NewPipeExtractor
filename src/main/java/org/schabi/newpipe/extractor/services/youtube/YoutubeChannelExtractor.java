@@ -14,7 +14,7 @@ import org.schabi.newpipe.extractor.channel.ChannelExtractor;
 import org.schabi.newpipe.extractor.exceptions.ExtractionException;
 import org.schabi.newpipe.extractor.exceptions.ParsingException;
 import org.schabi.newpipe.extractor.exceptions.ReCaptchaException;
-import org.schabi.newpipe.extractor.stream.StreamInfoItemCollector;
+import org.schabi.newpipe.extractor.stream.StreamInfoItemsCollector;
 import org.schabi.newpipe.extractor.utils.Parser;
 import org.schabi.newpipe.extractor.utils.Utils;
 
@@ -48,7 +48,7 @@ public class YoutubeChannelExtractor extends ChannelExtractor {
 
     private Document doc;
     /**
-     * It's lazily initialized (when getNextStreams is called)
+     * It's lazily initialized (when getInfoItemPage is called)
      */
     private Document nextStreamsAjax;
 
@@ -60,10 +60,10 @@ public class YoutubeChannelExtractor extends ChannelExtractor {
      */
     private boolean fetchingNextStreams;
 
-    public YoutubeChannelExtractor(StreamingService service, String url, String nextStreamsUrl) throws IOException, ExtractionException {
-        super(service, url, nextStreamsUrl);
+    public YoutubeChannelExtractor(StreamingService service, String url, String nextPageUrl) throws IOException, ExtractionException {
+        super(service, url, nextPageUrl);
 
-        fetchingNextStreams = nextStreamsUrl != null && !nextStreamsUrl.isEmpty();
+        fetchingNextStreams = nextPageUrl != null && !nextPageUrl.isEmpty();
     }
 
     @Override
@@ -73,7 +73,7 @@ public class YoutubeChannelExtractor extends ChannelExtractor {
         doc = Jsoup.parse(pageContent, channelUrl);
 
         if (!fetchingNextStreams) {
-            nextStreamsUrl = getNextStreamsUrlFrom(doc);
+            nextPageUrl = getNextPageUrlFrom(doc);
         }
         nextStreamsAjax = null;
     }
@@ -163,49 +163,49 @@ public class YoutubeChannelExtractor extends ChannelExtractor {
 
     @Nonnull
     @Override
-    public StreamInfoItemCollector getStreams() throws IOException, ExtractionException {
-        StreamInfoItemCollector collector = new StreamInfoItemCollector(getServiceId());
+    public StreamInfoItemsCollector getStreams() throws ExtractionException {
+        StreamInfoItemsCollector collector = new StreamInfoItemsCollector(getServiceId());
         Element ul = doc.select("ul[id=\"browse-items-primary\"]").first();
         collectStreamsFrom(collector, ul);
         return collector;
     }
 
     @Override
-    public NextItemsResult getNextStreams() throws IOException, ExtractionException {
-        if (!hasMoreStreams()) {
+    public InfoItemPage getInfoItemPage() throws IOException, ExtractionException {
+        if (!hasNextPage()) {
             throw new ExtractionException("Channel doesn't have more streams");
         }
 
         fetchPage();
 
-        StreamInfoItemCollector collector = new StreamInfoItemCollector(getServiceId());
+        StreamInfoItemsCollector collector = new StreamInfoItemsCollector(getServiceId());
 
-        setupNextStreamsAjax(NewPipe.getDownloader());
+        setupNextPageAjax(NewPipe.getDownloader());
         collectStreamsFrom(collector, nextStreamsAjax.select("body").first());
 
-        return new NextItemsResult(collector, nextStreamsUrl);
+        return new InfoItemPage(collector, nextPageUrl);
     }
 
-    private void setupNextStreamsAjax(Downloader downloader) throws IOException, ReCaptchaException, ParsingException {
-        String ajaxDataRaw = downloader.download(nextStreamsUrl);
+    private void setupNextPageAjax(Downloader downloader) throws IOException, ReCaptchaException, ParsingException {
+        String ajaxDataRaw = downloader.download(nextPageUrl);
         try {
             JsonObject ajaxData = JsonParser.object().from(ajaxDataRaw);
 
             String htmlDataRaw = ajaxData.getString("content_html");
-            nextStreamsAjax = Jsoup.parse(htmlDataRaw, nextStreamsUrl);
+            nextStreamsAjax = Jsoup.parse(htmlDataRaw, nextPageUrl);
 
             String nextStreamsHtmlDataRaw = ajaxData.getString("load_more_widget_html");
             if (!nextStreamsHtmlDataRaw.isEmpty()) {
-                nextStreamsUrl = getNextStreamsUrlFrom(Jsoup.parse(nextStreamsHtmlDataRaw, nextStreamsUrl));
+                nextPageUrl = getNextPageUrlFrom(Jsoup.parse(nextStreamsHtmlDataRaw, nextPageUrl));
             } else {
-                nextStreamsUrl = "";
+                nextPageUrl = "";
             }
         } catch (JsonParserException e) {
             throw new ParsingException("Could not parse json data for next streams", e);
         }
     }
 
-    private String getNextStreamsUrlFrom(Document d) throws ParsingException {
+    private String getNextPageUrlFrom(Document d) throws ParsingException {
         try {
             Element button = d.select("button[class*=\"yt-uix-load-more\"]").first();
             if (button != null) {
@@ -219,7 +219,7 @@ public class YoutubeChannelExtractor extends ChannelExtractor {
         }
     }
 
-    private void collectStreamsFrom(StreamInfoItemCollector collector, Element element) throws ParsingException {
+    private void collectStreamsFrom(StreamInfoItemsCollector collector, Element element) throws ParsingException {
         collector.reset();
 
         final String uploaderName = getName();

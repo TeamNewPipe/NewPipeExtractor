@@ -4,9 +4,11 @@ import org.junit.BeforeClass;
 import org.junit.Ignore;
 import org.junit.Test;
 import org.schabi.newpipe.Downloader;
+import org.schabi.newpipe.extractor.InfoItemsCollector;
 import org.schabi.newpipe.extractor.NewPipe;
 import org.schabi.newpipe.extractor.kiosk.KioskExtractor;
-import org.schabi.newpipe.extractor.stream.StreamInfoItemCollector;
+
+import java.util.List;
 
 import static org.junit.Assert.*;
 import static org.schabi.newpipe.extractor.ServiceList.SoundCloud;
@@ -39,16 +41,17 @@ public class SoundcloudChartsExtractorTest {
     }
 
     @Test
-    public void testId() throws Exception {
+    public void testId() {
         assertEquals(extractor.getId(), "Top 50");
     }
 
     @Test
     public void testGetStreams() throws Exception {
-        StreamInfoItemCollector collector = extractor.getStreams();
+        InfoItemsCollector collector = extractor.getInfoItems();
         if(!collector.getErrors().isEmpty()) {
             System.err.println("----------");
-            for(Throwable e: collector.getErrors()) {
+            List<Throwable> errors = collector.getErrors();
+            for(Throwable e: errors) {
                 e.printStackTrace();
                 System.err.println("----------");
             }
@@ -60,21 +63,21 @@ public class SoundcloudChartsExtractorTest {
 
     @Test
     public void testGetStreamsErrors() throws Exception {
-        assertTrue("errors during stream list extraction", extractor.getStreams().getErrors().isEmpty());
+        assertTrue("errors during stream list extraction", extractor.getInfoItems().getErrors().isEmpty());
     }
 
     @Test
     public void testHasMoreStreams() throws Exception {
         // Setup the streams
-        extractor.getStreams();
-        assertTrue("has more streams", extractor.hasMoreStreams());
+        extractor.getInfoItems();
+        assertTrue("has more streams", extractor.hasNextPage());
     }
 
     @Test
     public void testGetNextStreams() throws Exception {
-        extractor.getStreams();
-        assertFalse("extractor has next streams", extractor.getNextStreams() == null
-                || extractor.getNextStreams().nextItemsList.isEmpty());
+        extractor.getInfoItems();
+        assertFalse("extractor has next streams", extractor.getInfoItemPage() == null
+                || extractor.getInfoItemPage().infoItemList.isEmpty());
     }
 
     @Test

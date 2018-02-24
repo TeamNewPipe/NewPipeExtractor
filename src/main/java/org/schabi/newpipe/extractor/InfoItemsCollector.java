@@ -11,7 +11,7 @@ import java.util.List;
  * Created by Christian Schabesberger on 12.02.17.
  *
  * Copyright (C) Christian Schabesberger 2017 <chris.schabesberger@mailbox.org>
- * InfoItemCollector.java is part of NewPipe.
+ * InfoItemsCollector.java is part of NewPipe.
  *
  * NewPipe is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -27,7 +27,7 @@ import java.util.List;
  * along with NewPipe.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-public abstract class InfoItemCollector<I extends InfoItem, E> implements Collector<I,E> {
+public abstract class InfoItemsCollector<I extends InfoItem, E> implements Collector<I,E> {
 
     private final List<I> itemList = new ArrayList<>();
     private final List<Throwable> errors = new ArrayList<>();
@@ -37,7 +37,7 @@ public abstract class InfoItemCollector<I extends InfoItem, E> implements Collec
      * Create a new collector
      * @param serviceId the service id
      */
-    public InfoItemCollector(int serviceId) {
+    public InfoItemsCollector(int serviceId) {
         this.serviceId = serviceId;
     }
 

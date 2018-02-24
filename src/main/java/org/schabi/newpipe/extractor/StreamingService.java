@@ -69,8 +69,8 @@ public abstract class StreamingService {
     public abstract SearchEngine getSearchEngine();
     public abstract SuggestionExtractor getSuggestionExtractor();
     public abstract StreamExtractor getStreamExtractor(String url) throws IOException, ExtractionException;
-    public abstract ChannelExtractor getChannelExtractor(String url, String nextStreamsUrl) throws IOException, ExtractionException;
-    public abstract PlaylistExtractor getPlaylistExtractor(String url, String nextStreamsUrl) throws IOException, ExtractionException;
+    public abstract ChannelExtractor getChannelExtractor(String url, String nextPageUrl) throws IOException, ExtractionException;
+    public abstract PlaylistExtractor getPlaylistExtractor(String url, String nextPageUrl) throws IOException, ExtractionException;
     public abstract KioskList getKioskList() throws ExtractionException;
     public abstract SubscriptionExtractor getSubscriptionExtractor();
 

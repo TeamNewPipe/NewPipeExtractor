@@ -1,10 +1,10 @@
 package org.schabi.newpipe.extractor.channel;
 
-import org.schabi.newpipe.extractor.ListExtractor;
-import org.schabi.newpipe.extractor.StreamingService;
-import org.schabi.newpipe.extractor.UrlIdHandler;
+import edu.umd.cs.findbugs.annotations.NonNull;
+import org.schabi.newpipe.extractor.*;
 import org.schabi.newpipe.extractor.exceptions.ExtractionException;
 import org.schabi.newpipe.extractor.exceptions.ParsingException;
+import org.schabi.newpipe.extractor.stream.StreamInfoItemsCollector;
 
 import javax.annotation.Nonnull;
 import java.io.IOException;
@@ -31,16 +31,25 @@ import java.io.IOException;
 
 public abstract class ChannelExtractor extends ListExtractor {
 
-    public ChannelExtractor(StreamingService service, String url, String nextStreamsUrl) throws IOException, ExtractionException {
-        super(service, url, nextStreamsUrl);
+    public ChannelExtractor(StreamingService service, String url, String nextPageUrl)
+            throws ExtractionException {
+        super(service, url, nextPageUrl);
     }
 
     @Nonnull
     @Override
-    protected UrlIdHandler getUrlIdHandler() throws ParsingException {
+    protected UrlIdHandler getUrlIdHandler() {
         return getService().getChannelUrlIdHandler();
     }
 
+    @NonNull
+    @Override
+    public InfoItemsCollector getInfoItems()
+        throws IOException, ExtractionException {
+        return getStreams();
+    }
+
+    public abstract StreamInfoItemsCollector getStreams() throws IOException, ExtractionException;
     public abstract String getAvatarUrl() throws ParsingException;
     public abstract String getBannerUrl() throws ParsingException;
     public abstract String getFeedUrl() throws ParsingException;

@@ -1,6 +1,6 @@
 package org.schabi.newpipe.extractor.playlist;
 
-import org.schabi.newpipe.extractor.ListExtractor.NextItemsResult;
+import org.schabi.newpipe.extractor.ListExtractor.InfoItemPage;
 import org.schabi.newpipe.extractor.ListInfo;
 import org.schabi.newpipe.extractor.NewPipe;
 import org.schabi.newpipe.extractor.StreamingService;
@@ -9,7 +9,7 @@ import org.schabi.newpipe.extractor.exceptions.ParsingException;
 
 import java.io.IOException;
 
-import static org.schabi.newpipe.extractor.utils.ExtractorHelper.getStreamsOrLogError;
+import static org.schabi.newpipe.extractor.utils.ExtractorHelper.getInfoItemsOrLogError;
 
 public class PlaylistInfo extends ListInfo {
 
@@ -17,8 +17,8 @@ public class PlaylistInfo extends ListInfo {
         super(serviceId, id, url, name);
     }
 
-    public static NextItemsResult getMoreItems(StreamingService service, String url, String nextStreamsUrl) throws IOException, ExtractionException {
-        return service.getPlaylistExtractor(url, nextStreamsUrl).getNextStreams();
+    public static InfoItemPage getMoreItems(StreamingService service, String url, String nextPageUrl) throws IOException, ExtractionException {
+        return service.getPlaylistExtractor(url, nextPageUrl).getInfoItemPage();
     }
 
     public static PlaylistInfo getInfo(String url) throws IOException, ExtractionException {
@@ -75,9 +75,9 @@ public class PlaylistInfo extends ListInfo {
             info.addError(e);
         }
 
-        info.setRelatedStreams(getStreamsOrLogError(info, extractor));
-        info.setHasMoreStreams(extractor.hasMoreStreams());
-        info.setNextStreamsUrl(extractor.getNextStreamsUrl());
+        info.setRelatedStreams(getInfoItemsOrLogError(info, extractor));
+        info.setHasMoreStreams(extractor.hasNextPage());
+        info.setNextStreamsUrl(extractor.getNextPageUrl());
         return info;
     }
 

@@ -19,7 +19,7 @@ public abstract class ListInfo extends Info {
         this.related_streams = related_streams;
     }
 
-    public boolean hasMoreStreams() {
+    public boolean hasNextPage() {
         return has_more_streams;
     }
 
@@ -27,7 +27,7 @@ public abstract class ListInfo extends Info {
         this.has_more_streams = has_more_streams;
     }
 
-    public String getNextStreamsUrl() {
+    public String getNextPageUrl() {
         return next_streams_url;
     }
 

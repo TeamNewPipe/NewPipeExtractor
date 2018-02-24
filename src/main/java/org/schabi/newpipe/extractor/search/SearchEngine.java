@@ -35,16 +35,16 @@ public abstract class SearchEngine {
         }
     }
 
-    private final InfoItemSearchCollector collector;
+    private final InfoItemsSearchCollector collector;
 
     public SearchEngine(int serviceId) {
-        collector = new InfoItemSearchCollector(serviceId);
+        collector = new InfoItemsSearchCollector(serviceId);
     }
 
-    protected InfoItemSearchCollector getInfoItemSearchCollector() {
+    protected InfoItemsSearchCollector getInfoItemSearchCollector() {
         return collector;
     }
 
-    public abstract InfoItemSearchCollector search(String query, int page, String contentCountry, Filter filter)
+    public abstract InfoItemsSearchCollector search(String query, int page, String contentCountry, Filter filter)
             throws IOException, ExtractionException;
 }

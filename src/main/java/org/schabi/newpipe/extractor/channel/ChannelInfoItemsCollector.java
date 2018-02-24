@@ -1,13 +1,13 @@
 package org.schabi.newpipe.extractor.channel;
 
-import org.schabi.newpipe.extractor.InfoItemCollector;
+import org.schabi.newpipe.extractor.InfoItemsCollector;
 import org.schabi.newpipe.extractor.exceptions.ParsingException;
 
 /*
  * Created by Christian Schabesberger on 12.02.17.
  *
  * Copyright (C) Christian Schabesberger 2017 <chris.schabesberger@mailbox.org>
- * ChannelInfoItemCollector.java is part of NewPipe.
+ * ChannelInfoItemsCollector.java is part of NewPipe.
  *
  * NewPipe is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -23,8 +23,8 @@ import org.schabi.newpipe.extractor.exceptions.ParsingException;
  * along with NewPipe.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-public class ChannelInfoItemCollector extends InfoItemCollector<ChannelInfoItem, ChannelInfoItemExtractor> {
-    public ChannelInfoItemCollector(int serviceId) {
+public class ChannelInfoItemsCollector extends InfoItemsCollector<ChannelInfoItem, ChannelInfoItemExtractor> {
+    public ChannelInfoItemsCollector(int serviceId) {
         super(serviceId);
     }
 

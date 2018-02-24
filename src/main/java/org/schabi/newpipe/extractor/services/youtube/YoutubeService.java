@@ -70,13 +70,13 @@ public class YoutubeService extends StreamingService {
     }
 
     @Override
-    public ChannelExtractor getChannelExtractor(String url, String nextStreamsUrl) throws IOException, ExtractionException {
-        return new YoutubeChannelExtractor(this, url, nextStreamsUrl);
+    public ChannelExtractor getChannelExtractor(String url, String nextPageUrl) throws IOException, ExtractionException {
+        return new YoutubeChannelExtractor(this, url, nextPageUrl);
     }
 
     @Override
-    public PlaylistExtractor getPlaylistExtractor(String url, String nextStreamsUrl) throws IOException, ExtractionException {
-        return new YoutubePlaylistExtractor(this, url, nextStreamsUrl);
+    public PlaylistExtractor getPlaylistExtractor(String url, String nextPageUrl) throws IOException, ExtractionException {
+        return new YoutubePlaylistExtractor(this, url, nextPageUrl);
     }
 
     @Override
@@ -92,9 +92,9 @@ public class YoutubeService extends StreamingService {
         try {
             list.addKioskEntry(new KioskList.KioskExtractorFactory() {
                 @Override
-                public KioskExtractor createNewKiosk(StreamingService streamingService, String url, String nextStreamUrl, String id)
+                public KioskExtractor createNewKiosk(StreamingService streamingService, String url, String nextPageUrl, String id)
                 throws ExtractionException, IOException {
-                    return new YoutubeTrendingExtractor(YoutubeService.this, url, nextStreamUrl, id);
+                    return new YoutubeTrendingExtractor(YoutubeService.this, url, nextPageUrl, id);
                 }
             }, new YoutubeTrendingUrlIdHandler(), "Trending");
             list.setDefaultKiosk("Trending");

@@ -50,13 +50,13 @@ public class SoundcloudService extends StreamingService {
     }
 
     @Override
-    public ChannelExtractor getChannelExtractor(String url, String nextStreamsUrl) throws IOException, ExtractionException {
-        return new SoundcloudChannelExtractor(this, url, nextStreamsUrl);
+    public ChannelExtractor getChannelExtractor(String url, String nextPageUrl) throws IOException, ExtractionException {
+        return new SoundcloudChannelExtractor(this, url, nextPageUrl);
     }
 
     @Override
-    public PlaylistExtractor getPlaylistExtractor(String url, String nextStreamsUrl) throws IOException, ExtractionException {
-        return new SoundcloudPlaylistExtractor(this, url, nextStreamsUrl);
+    public PlaylistExtractor getPlaylistExtractor(String url, String nextPageUrl) throws IOException, ExtractionException {
+        return new SoundcloudPlaylistExtractor(this, url, nextPageUrl);
     }
 
     @Override
@@ -70,12 +70,12 @@ public class SoundcloudService extends StreamingService {
             @Override
             public KioskExtractor createNewKiosk(StreamingService streamingService,
                                                  String url,
-                                                 String nextStreamUrl,
+                                                 String nextPageUrl,
                                                  String id)
                     throws ExtractionException, IOException {
                 return new SoundcloudChartsExtractor(SoundcloudService.this,
                         url,
-                        nextStreamUrl,
+                        nextPageUrl,
                         id);
             }
         };

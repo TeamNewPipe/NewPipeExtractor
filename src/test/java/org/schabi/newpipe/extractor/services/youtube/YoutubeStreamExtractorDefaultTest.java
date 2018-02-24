@@ -138,7 +138,7 @@ public class YoutubeStreamExtractorDefaultTest {
 
     @Test
     public void testGetRelatedVideos() throws ExtractionException, IOException {
-        StreamInfoItemCollector relatedVideos = extractor.getRelatedVideos();
+        StreamInfoItemsCollector relatedVideos = extractor.getRelatedVideos();
         Utils.printErrors(relatedVideos);
         assertFalse(relatedVideos.getItemList().isEmpty());
         assertTrue(relatedVideos.getErrors().isEmpty());

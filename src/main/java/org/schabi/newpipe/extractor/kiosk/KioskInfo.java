@@ -35,14 +35,14 @@ public class KioskInfo extends ListInfo {
         super(serviceId, id, url, name);
     }
 
-    public static ListExtractor.NextItemsResult getMoreItems(StreamingService service,
+    public static ListExtractor.InfoItemPage getMoreItems(StreamingService service,
                                                              String url,
-                                                             String nextStreamsUrl,
+                                                             String nextPageUrl,
                                                              String contentCountry) throws IOException, ExtractionException {
         KioskList kl = service.getKioskList();
-        KioskExtractor extractor = kl.getExtractorByUrl(url, nextStreamsUrl);
+        KioskExtractor extractor = kl.getExtractorByUrl(url, nextPageUrl);
         extractor.setContentCountry(contentCountry);
-        return extractor.getNextStreams();
+        return extractor.getInfoItemPage();
     }
 
     public static KioskInfo getInfo(String url,
@@ -74,7 +74,7 @@ public class KioskInfo extends ListInfo {
 
         KioskInfo info = new KioskInfo(serviceId, id, name, url);
 
-        info.related_streams = ExtractorHelper.getStreamsOrLogError(info, extractor);
+        info.related_streams = ExtractorHelper.getInfoItemsOrLogError(info, extractor);
 
         return info;
     }

@@ -28,7 +28,7 @@ import org.schabi.newpipe.extractor.*;
 import org.schabi.newpipe.extractor.exceptions.ExtractionException;
 import org.schabi.newpipe.extractor.exceptions.ParsingException;
 import org.schabi.newpipe.extractor.kiosk.KioskExtractor;
-import org.schabi.newpipe.extractor.stream.StreamInfoItemCollector;
+import org.schabi.newpipe.extractor.stream.StreamInfoItemsCollector;
 
 import javax.annotation.Nonnull;
 import java.io.IOException;
@@ -37,9 +37,9 @@ public class YoutubeTrendingExtractor extends KioskExtractor {
 
     private Document doc;
 
-    public YoutubeTrendingExtractor(StreamingService service, String url, String nextStreamsUrl, String kioskId)
-            throws IOException, ExtractionException {
-        super(service, url, nextStreamsUrl, kioskId);
+    public YoutubeTrendingExtractor(StreamingService service, String url, String nextPageUrl, String kioskId)
+            throws ExtractionException {
+        super(service, url, nextPageUrl, kioskId);
     }
 
     @Override
@@ -61,7 +61,7 @@ public class YoutubeTrendingExtractor extends KioskExtractor {
     }
 
     @Override
-    public ListExtractor.NextItemsResult getNextStreams() {
+    public ListExtractor.InfoItemPage getInfoItemPage() {
         return null;
     }
 
@@ -80,8 +80,8 @@ public class YoutubeTrendingExtractor extends KioskExtractor {
 
     @Nonnull
     @Override
-    public StreamInfoItemCollector getStreams() throws ParsingException {
-        StreamInfoItemCollector collector = new StreamInfoItemCollector(getServiceId());
+    public StreamInfoItemsCollector getInfoItems() throws ParsingException {
+        StreamInfoItemsCollector collector = new StreamInfoItemsCollector(getServiceId());
         Elements uls = doc.select("ul[class*=\"expanded-shelf-content-list\"]");
         for(Element ul : uls) {
             for(final Element li : ul.children()) {

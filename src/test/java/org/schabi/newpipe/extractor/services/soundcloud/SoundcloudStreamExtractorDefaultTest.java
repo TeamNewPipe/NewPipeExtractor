@@ -7,7 +7,7 @@ import org.schabi.newpipe.extractor.NewPipe;
 import org.schabi.newpipe.extractor.exceptions.ExtractionException;
 import org.schabi.newpipe.extractor.exceptions.ParsingException;
 import org.schabi.newpipe.extractor.stream.StreamExtractor;
-import org.schabi.newpipe.extractor.stream.StreamInfoItemCollector;
+import org.schabi.newpipe.extractor.stream.StreamInfoItemsCollector;
 import org.schabi.newpipe.extractor.stream.StreamType;
 
 import java.io.IOException;
@@ -100,7 +100,7 @@ public class SoundcloudStreamExtractorDefaultTest {
 
     @Test
     public void testGetRelatedVideos() throws ExtractionException, IOException {
-        StreamInfoItemCollector relatedVideos = extractor.getRelatedVideos();
+        StreamInfoItemsCollector relatedVideos = extractor.getRelatedVideos();
         assertFalse(relatedVideos.getItemList().isEmpty());
         assertTrue(relatedVideos.getErrors().isEmpty());
     }

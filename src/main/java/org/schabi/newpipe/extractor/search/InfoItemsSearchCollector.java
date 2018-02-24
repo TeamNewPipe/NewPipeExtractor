@@ -1,20 +1,20 @@
 package org.schabi.newpipe.extractor.search;
 
 import org.schabi.newpipe.extractor.*;
-import org.schabi.newpipe.extractor.channel.ChannelInfoItemCollector;
+import org.schabi.newpipe.extractor.channel.ChannelInfoItemsCollector;
 import org.schabi.newpipe.extractor.channel.ChannelInfoItemExtractor;
 import org.schabi.newpipe.extractor.exceptions.ExtractionException;
 import org.schabi.newpipe.extractor.exceptions.ParsingException;
-import org.schabi.newpipe.extractor.playlist.PlaylistInfoItemCollector;
+import org.schabi.newpipe.extractor.playlist.PlaylistInfoItemsCollector;
 import org.schabi.newpipe.extractor.playlist.PlaylistInfoItemExtractor;
-import org.schabi.newpipe.extractor.stream.StreamInfoItemCollector;
+import org.schabi.newpipe.extractor.stream.StreamInfoItemsCollector;
 import org.schabi.newpipe.extractor.stream.StreamInfoItemExtractor;
 
 /*
  * Created by Christian Schabesberger on 12.02.17.
  *
  * Copyright (C) Christian Schabesberger 2017 <chris.schabesberger@mailbox.org>
- * InfoItemSearchCollector.java is part of NewPipe.
+ * InfoItemsSearchCollector.java is part of NewPipe.
  *
  * NewPipe is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -42,17 +42,17 @@ import org.schabi.newpipe.extractor.stream.StreamInfoItemExtractor;
  * Calling {@link #extract(InfoItemExtractor)} or {@link #commit(Object)} with any
  * other extractor type will raise an exception.
  */
-public class InfoItemSearchCollector extends InfoItemCollector<InfoItem, InfoItemExtractor> {
+public class InfoItemsSearchCollector extends InfoItemsCollector<InfoItem, InfoItemExtractor> {
     private String suggestion = "";
-    private final StreamInfoItemCollector streamCollector;
-    private final ChannelInfoItemCollector userCollector;
-    private final PlaylistInfoItemCollector playlistCollector;
+    private final StreamInfoItemsCollector streamCollector;
+    private final ChannelInfoItemsCollector userCollector;
+    private final PlaylistInfoItemsCollector playlistCollector;
 
-    InfoItemSearchCollector(int serviceId) {
+    InfoItemsSearchCollector(int serviceId) {
         super(serviceId);
-        streamCollector = new StreamInfoItemCollector(serviceId);
-        userCollector = new ChannelInfoItemCollector(serviceId);
-        playlistCollector = new PlaylistInfoItemCollector(serviceId);
+        streamCollector = new StreamInfoItemsCollector(serviceId);
+        userCollector = new ChannelInfoItemsCollector(serviceId);
+        playlistCollector = new PlaylistInfoItemsCollector(serviceId);
     }
 
     public void setSuggestion(String suggestion) {

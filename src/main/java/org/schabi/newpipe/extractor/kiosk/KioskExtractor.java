@@ -34,10 +34,10 @@ public abstract class KioskExtractor extends ListExtractor {
 
     public KioskExtractor(StreamingService streamingService,
                           String url,
-                          String nextStreamsUrl,
+                          String nextPageUrl,
                           String kioskId)
-        throws IOException, ExtractionException {
-        super(streamingService, url, nextStreamsUrl);
+        throws ExtractionException {
+        super(streamingService, url, nextPageUrl);
         this.id = kioskId;
     }
 
@@ -54,12 +54,12 @@ public abstract class KioskExtractor extends ListExtractor {
 
     @Nonnull
     @Override
-    public String getId() throws ParsingException {
+    public String getId() {
         return id;
     }
 
     /**
-     * Id should be the name of the kiosk, tho Id is used for identifing it in the programm,
+     * Id should be the name of the kiosk, tho Id is used for identifing it in the frontend,
      * so id should be kept in english.
      * In order to get the name of the kiosk in the desired language we have to
      * crawl if from the website.

@@ -9,10 +9,10 @@ import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.schabi.newpipe.extractor.Downloader;
 import org.schabi.newpipe.extractor.NewPipe;
-import org.schabi.newpipe.extractor.channel.ChannelInfoItemCollector;
+import org.schabi.newpipe.extractor.channel.ChannelInfoItemsCollector;
 import org.schabi.newpipe.extractor.exceptions.ParsingException;
 import org.schabi.newpipe.extractor.exceptions.ReCaptchaException;
-import org.schabi.newpipe.extractor.stream.StreamInfoItemCollector;
+import org.schabi.newpipe.extractor.stream.StreamInfoItemsCollector;
 import org.schabi.newpipe.extractor.utils.Parser;
 import org.schabi.newpipe.extractor.utils.Parser.RegexException;
 
@@ -112,19 +112,19 @@ public class SoundcloudParsingHelper {
     /**
      * Fetch the users from the given api and commit each of them to the collector.
      * <p>
-     * This differ from {@link #getUsersFromApi(ChannelInfoItemCollector, String)} in the sense that they will always
+     * This differ from {@link #getUsersFromApi(ChannelInfoItemsCollector, String)} in the sense that they will always
      * get MIN_ITEMS or more.
      *
      * @param minItems the method will return only when it have extracted that many items (equal or more)
      */
-    public static String getUsersFromApiMinItems(int minItems, ChannelInfoItemCollector collector, String apiUrl) throws IOException, ReCaptchaException, ParsingException {
-        String nextStreamsUrl = SoundcloudParsingHelper.getUsersFromApi(collector, apiUrl);
+    public static String getUsersFromApiMinItems(int minItems, ChannelInfoItemsCollector collector, String apiUrl) throws IOException, ReCaptchaException, ParsingException {
+        String nextPageUrl = SoundcloudParsingHelper.getUsersFromApi(collector, apiUrl);
 
-        while (!nextStreamsUrl.isEmpty() && collector.getItemList().size() < minItems) {
-            nextStreamsUrl = SoundcloudParsingHelper.getUsersFromApi(collector, nextStreamsUrl);
+        while (!nextPageUrl.isEmpty() && collector.getItemList().size() < minItems) {
+            nextPageUrl = SoundcloudParsingHelper.getUsersFromApi(collector, nextPageUrl);
         }
 
-        return nextStreamsUrl;
+        return nextPageUrl;
     }
 
     /**
@@ -132,7 +132,7 @@ public class SoundcloudParsingHelper {
      *
      * @return the next streams url, empty if don't have
      */
-    public static String getUsersFromApi(ChannelInfoItemCollector collector, String apiUrl) throws IOException, ReCaptchaException, ParsingException {
+    public static String getUsersFromApi(ChannelInfoItemsCollector collector, String apiUrl) throws IOException, ReCaptchaException, ParsingException {
         String response = NewPipe.getDownloader().download(apiUrl);
         JsonObject responseObject;
         try {
@@ -149,33 +149,33 @@ public class SoundcloudParsingHelper {
             }
         }
 
-        String nextStreamsUrl;
+        String nextPageUrl;
         try {
-            nextStreamsUrl = responseObject.getString("next_href");
-            if (!nextStreamsUrl.contains("client_id=")) nextStreamsUrl += "&client_id=" + SoundcloudParsingHelper.clientId();
+            nextPageUrl = responseObject.getString("next_href");
+            if (!nextPageUrl.contains("client_id=")) nextPageUrl += "&client_id=" + SoundcloudParsingHelper.clientId();
         } catch (Exception ignored) {
-            nextStreamsUrl = "";
+            nextPageUrl = "";
         }
 
-        return nextStreamsUrl;
+        return nextPageUrl;
     }
 
     /**
      * Fetch the streams from the given api and commit each of them to the collector.
      * <p>
-     * This differ from {@link #getStreamsFromApi(StreamInfoItemCollector, String)} in the sense that they will always
+     * This differ from {@link #getStreamsFromApi(StreamInfoItemsCollector, String)} in the sense that they will always
      * get MIN_ITEMS or more items.
      *
      * @param minItems the method will return only when it have extracted that many items (equal or more)
      */
-    public static String getStreamsFromApiMinItems(int minItems, StreamInfoItemCollector collector, String apiUrl) throws IOException, ReCaptchaException, ParsingException {
-        String nextStreamsUrl = SoundcloudParsingHelper.getStreamsFromApi(collector, apiUrl);
+    public static String getStreamsFromApiMinItems(int minItems, StreamInfoItemsCollector collector, String apiUrl) throws IOException, ReCaptchaException, ParsingException {
+        String nextPageUrl = SoundcloudParsingHelper.getStreamsFromApi(collector, apiUrl);
 
-        while (!nextStreamsUrl.isEmpty() && collector.getItemList().size() < minItems) {
-            nextStreamsUrl = SoundcloudParsingHelper.getStreamsFromApi(collector, nextStreamsUrl);
+        while (!nextPageUrl.isEmpty() && collector.getItemList().size() < minItems) {
+            nextPageUrl = SoundcloudParsingHelper.getStreamsFromApi(collector, nextPageUrl);
         }
 
-        return nextStreamsUrl;
+        return nextPageUrl;
     }
 
     /**
@@ -183,7 +183,7 @@ public class SoundcloudParsingHelper {
      *
      * @return the next streams url, empty if don't have
      */
-    public static String getStreamsFromApi(StreamInfoItemCollector collector, String apiUrl, boolean charts) throws IOException, ReCaptchaException, ParsingException {
+    public static String getStreamsFromApi(StreamInfoItemsCollector collector, String apiUrl, boolean charts) throws IOException, ReCaptchaException, ParsingException {
         String response = NewPipe.getDownloader().download(apiUrl);
         JsonObject responseObject;
         try {
@@ -200,18 +200,18 @@ public class SoundcloudParsingHelper {
             }
         }
 
-        String nextStreamsUrl;
+        String nextPageUrl;
         try {
-            nextStreamsUrl = responseObject.getString("next_href");
-            if (!nextStreamsUrl.contains("client_id=")) nextStreamsUrl += "&client_id=" + SoundcloudParsingHelper.clientId();
+            nextPageUrl = responseObject.getString("next_href");
+            if (!nextPageUrl.contains("client_id=")) nextPageUrl += "&client_id=" + SoundcloudParsingHelper.clientId();
         } catch (Exception ignored) {
-            nextStreamsUrl = "";
+            nextPageUrl = "";
         }
 
-        return nextStreamsUrl;
+        return nextPageUrl;
     }
 
-    public static String getStreamsFromApi(StreamInfoItemCollector collector, String apiUrl) throws ReCaptchaException, ParsingException, IOException {
+    public static String getStreamsFromApi(StreamInfoItemsCollector collector, String apiUrl) throws ReCaptchaException, ParsingException, IOException {
         return getStreamsFromApi(collector, apiUrl, false);
     }
 

@@ -10,7 +10,6 @@ import org.schabi.newpipe.extractor.exceptions.ParsingException;
 import org.schabi.newpipe.extractor.stream.*;
 
 import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
@@ -189,8 +188,8 @@ public class SoundcloudStreamExtractor extends StreamExtractor {
     }
 
     @Override
-    public StreamInfoItemCollector getRelatedVideos() throws IOException, ExtractionException {
-        StreamInfoItemCollector collector = new StreamInfoItemCollector(getServiceId());
+    public StreamInfoItemsCollector getRelatedVideos() throws IOException, ExtractionException {
+        StreamInfoItemsCollector collector = new StreamInfoItemsCollector(getServiceId());
 
         String apiUrl = "https://api-v2.soundcloud.com/tracks/" + urlEncode(getId()) + "/related"
                 + "?client_id=" + urlEncode(SoundcloudParsingHelper.clientId());

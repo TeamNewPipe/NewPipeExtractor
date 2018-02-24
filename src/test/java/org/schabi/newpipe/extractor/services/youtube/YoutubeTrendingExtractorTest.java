@@ -23,8 +23,8 @@ package org.schabi.newpipe.extractor.services.youtube;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import org.schabi.newpipe.Downloader;
+import org.schabi.newpipe.extractor.InfoItemsCollector;
 import org.schabi.newpipe.extractor.NewPipe;
-import org.schabi.newpipe.extractor.stream.StreamInfoItemCollector;
 import org.schabi.newpipe.extractor.utils.Utils;
 
 import static junit.framework.TestCase.assertFalse;
@@ -66,27 +66,27 @@ public class YoutubeTrendingExtractorTest {
 
     @Test
     public void testGetStreamsQuantity() throws Exception {
-        StreamInfoItemCollector collector = extractor.getStreams();
+        InfoItemsCollector collector = extractor.getInfoItems();
         Utils.printErrors(collector);
         assertTrue("no streams are received", collector.getItemList().size() >= 20);
     }
 
     @Test
     public void testGetStreamsErrors() throws Exception {
-        assertEmptyErrors("errors during stream list extraction", extractor.getStreams().getErrors());
+        assertEmptyErrors("errors during stream list extraction", extractor.getInfoItems().getErrors());
     }
 
     @Test
     public void testHasMoreStreams() throws Exception {
         // Setup the streams
-        extractor.getStreams();
-        assertFalse("has more streams", extractor.hasMoreStreams());
+        extractor.getInfoItems();
+        assertFalse("has more streams", extractor.hasNextPage());
     }
 
     @Test
     public void testGetNextStreams() throws Exception {
-        assertTrue("extractor has next streams", extractor.getNextStreams() == null
-                || extractor.getNextStreams().getNextItemsList().isEmpty());
+        assertTrue("extractor has next streams", extractor.getInfoItemPage() == null
+                || extractor.getInfoItemPage().getNextItemsList().isEmpty());
     }
 
     @Test

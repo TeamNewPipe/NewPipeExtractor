@@ -100,7 +100,7 @@ public class YoutubeChannelExtractorTest {
     public void testHasMoreStreams() throws Exception {
         // Setup the streams
         extractor.getStreams();
-        assertTrue("don't have more streams", extractor.hasMoreStreams());
+        assertTrue("don't have more streams", extractor.hasNextPage());
     }
 
     @Test
@@ -112,9 +112,9 @@ public class YoutubeChannelExtractorTest {
     public void testGetNextStreams() throws Exception {
         // Setup the streams
         extractor.getStreams();
-        ListExtractor.NextItemsResult nextItemsResult = extractor.getNextStreams();
-        assertTrue("extractor didn't have next streams", !nextItemsResult.nextItemsList.isEmpty());
+        ListExtractor.InfoItemPage nextItemsResult = extractor.getInfoItemPage();
+        assertTrue("extractor didn't have next streams", !nextItemsResult.infoItemList.isEmpty());
         assertEmptyErrors("errors occurred during extraction of the next streams", nextItemsResult.errors);
-        assertTrue("extractor didn't have more streams after getNextStreams", extractor.hasMoreStreams());
+        assertTrue("extractor didn't have more streams after getInfoItemPage", extractor.hasNextPage());
     }
 }

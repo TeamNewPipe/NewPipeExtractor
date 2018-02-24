@@ -8,7 +8,7 @@ import org.schabi.newpipe.extractor.Downloader;
 import org.schabi.newpipe.extractor.NewPipe;
 import org.schabi.newpipe.extractor.exceptions.ExtractionException;
 import org.schabi.newpipe.extractor.exceptions.ParsingException;
-import org.schabi.newpipe.extractor.search.InfoItemSearchCollector;
+import org.schabi.newpipe.extractor.search.InfoItemsSearchCollector;
 import org.schabi.newpipe.extractor.search.SearchEngine;
 
 import java.io.IOException;
@@ -22,8 +22,8 @@ public class SoundcloudSearchEngine extends SearchEngine {
     }
 
     @Override
-    public InfoItemSearchCollector search(String query, int page, String languageCode, Filter filter) throws IOException, ExtractionException {
-        InfoItemSearchCollector collector = getInfoItemSearchCollector();
+    public InfoItemsSearchCollector search(String query, int page, String languageCode, Filter filter) throws IOException, ExtractionException {
+        InfoItemsSearchCollector collector = getInfoItemSearchCollector();
 
         Downloader dl = NewPipe.getDownloader();
 

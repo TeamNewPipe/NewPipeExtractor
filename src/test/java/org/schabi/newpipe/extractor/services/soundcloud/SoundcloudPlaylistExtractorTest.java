@@ -81,7 +81,7 @@ public class SoundcloudPlaylistExtractorTest {
     public void testHasMoreStreams() throws Exception {
         // Setup the streams
         extractor.getStreams();
-        assertTrue("extractor didn't have more streams", !extractor.hasMoreStreams());
+        assertTrue("extractor didn't have more streams", !extractor.hasNextPage());
     }
 
     @Test(expected = ExtractionException.class)
@@ -90,7 +90,7 @@ public class SoundcloudPlaylistExtractorTest {
         extractor.getStreams();
 
         // This playlist don't have more streams, it should throw an error
-        extractor.getNextStreams();
+        extractor.getInfoItemPage();
 
         fail("Expected exception wasn't thrown");
     }

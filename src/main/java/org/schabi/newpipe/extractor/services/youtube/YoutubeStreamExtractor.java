@@ -452,7 +452,7 @@ public class YoutubeStreamExtractor extends StreamExtractor {
     public StreamInfoItem getNextVideo() throws IOException, ExtractionException {
         assertPageFetched();
         try {
-            StreamInfoItemCollector collector = new StreamInfoItemCollector(getServiceId());
+            StreamInfoItemsCollector collector = new StreamInfoItemsCollector(getServiceId());
             collector.commit(extractVideoPreviewInfo(doc.select("div[class=\"watch-sidebar-section\"]")
                     .first().select("li").first()));
 
@@ -463,10 +463,10 @@ public class YoutubeStreamExtractor extends StreamExtractor {
     }
 
     @Override
-    public StreamInfoItemCollector getRelatedVideos() throws IOException, ExtractionException {
+    public StreamInfoItemsCollector getRelatedVideos() throws IOException, ExtractionException {
         assertPageFetched();
         try {
-            StreamInfoItemCollector collector = new StreamInfoItemCollector(getServiceId());
+            StreamInfoItemsCollector collector = new StreamInfoItemsCollector(getServiceId());
             Element ul = doc.select("ul[id=\"watch-related\"]").first();
             if (ul != null) {
                 for (Element li : ul.children()) {

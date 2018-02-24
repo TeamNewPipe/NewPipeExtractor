@@ -1,6 +1,6 @@
 package org.schabi.newpipe.extractor.channel;
 
-import org.schabi.newpipe.extractor.ListExtractor.NextItemsResult;
+import org.schabi.newpipe.extractor.ListExtractor.InfoItemPage;
 import org.schabi.newpipe.extractor.ListInfo;
 import org.schabi.newpipe.extractor.NewPipe;
 import org.schabi.newpipe.extractor.StreamingService;
@@ -37,8 +37,9 @@ public class ChannelInfo extends ListInfo {
     }
 
 
-    public static NextItemsResult getMoreItems(StreamingService service, String url, String nextStreamsUrl) throws IOException, ExtractionException {
-        return service.getChannelExtractor(url, nextStreamsUrl).getNextStreams();
+    public static InfoItemPage getMoreItems(StreamingService service, String url, String nextPageUrl)
+            throws IOException, ExtractionException {
+        return service.getChannelExtractor(url, nextPageUrl).getInfoItemPage();
     }
 
     public static ChannelInfo getInfo(String url) throws IOException, ExtractionException {
@@ -78,7 +79,7 @@ public class ChannelInfo extends ListInfo {
             info.addError(e);
         }
 
-        info.setRelatedStreams(ExtractorHelper.getStreamsOrLogError(info, extractor));
+        info.setRelatedStreams(ExtractorHelper.getInfoItemsOrLogError(info, extractor));
 
         try {
             info.setSubscriberCount(extractor.getSubscriberCount());
@@ -91,8 +92,8 @@ public class ChannelInfo extends ListInfo {
             info.addError(e);
         }
 
-        info.setHasMoreStreams(extractor.hasMoreStreams());
-        info.setNextStreamsUrl(extractor.getNextStreamsUrl());
+        info.setHasMoreStreams(extractor.hasNextPage());
+        info.setNextStreamsUrl(extractor.getNextPageUrl());
         return info;
     }
 

@@ -8,7 +8,7 @@ import org.schabi.newpipe.extractor.StreamingService;
 import org.schabi.newpipe.extractor.exceptions.ExtractionException;
 import org.schabi.newpipe.extractor.exceptions.ParsingException;
 import org.schabi.newpipe.extractor.playlist.PlaylistExtractor;
-import org.schabi.newpipe.extractor.stream.StreamInfoItemCollector;
+import org.schabi.newpipe.extractor.stream.StreamInfoItemsCollector;
 
 import javax.annotation.Nonnull;
 import java.io.IOException;
@@ -18,8 +18,8 @@ public class SoundcloudPlaylistExtractor extends PlaylistExtractor {
     private String playlistId;
     private JsonObject playlist;
 
-    public SoundcloudPlaylistExtractor(StreamingService service, String url, String nextStreamsUrl) throws IOException, ExtractionException {
-        super(service, url, nextStreamsUrl);
+    public SoundcloudPlaylistExtractor(StreamingService service, String url, String nextPageUrl) throws IOException, ExtractionException {
+        super(service, url, nextPageUrl);
     }
 
     @Override
@@ -88,8 +88,8 @@ public class SoundcloudPlaylistExtractor extends PlaylistExtractor {
 
     @Nonnull
     @Override
-    public StreamInfoItemCollector getStreams() throws IOException, ExtractionException {
-        StreamInfoItemCollector collector = new StreamInfoItemCollector(getServiceId());
+    public StreamInfoItemsCollector getStreams() throws IOException, ExtractionException {
+        StreamInfoItemsCollector collector = new StreamInfoItemsCollector(getServiceId());
 
         // Note the "api", NOT "api-v2"
         String apiUrl = "https://api.soundcloud.com/playlists/" + getId() + "/tracks"
@@ -97,19 +97,19 @@ public class SoundcloudPlaylistExtractor extends PlaylistExtractor {
                 + "&limit=20"
                 + "&linked_partitioning=1";
 
-        nextStreamsUrl = SoundcloudParsingHelper.getStreamsFromApiMinItems(15, collector, apiUrl);
+        nextPageUrl = SoundcloudParsingHelper.getStreamsFromApiMinItems(15, collector, apiUrl);
         return collector;
     }
 
     @Override
-    public NextItemsResult getNextStreams() throws IOException, ExtractionException {
-        if (!hasMoreStreams()) {
+    public InfoItemPage getInfoItemPage() throws IOException, ExtractionException {
+        if (!hasNextPage()) {
             throw new ExtractionException("Playlist doesn't have more streams");
         }
 
-        StreamInfoItemCollector collector = new StreamInfoItemCollector(getServiceId());
-        nextStreamsUrl = SoundcloudParsingHelper.getStreamsFromApiMinItems(15, collector, nextStreamsUrl);
+        StreamInfoItemsCollector collector = new StreamInfoItemsCollector(getServiceId());
+        nextPageUrl = SoundcloudParsingHelper.getStreamsFromApiMinItems(15, collector, nextPageUrl);
 
-        return new NextItemsResult(collector, nextStreamsUrl);
+        return new InfoItemPage(collector, nextPageUrl);
     }
 }

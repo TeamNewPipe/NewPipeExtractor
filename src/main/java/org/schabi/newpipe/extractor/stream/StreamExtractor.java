@@ -29,7 +29,6 @@ import org.schabi.newpipe.extractor.exceptions.ParsingException;
 import org.schabi.newpipe.extractor.utils.Parser;
 
 import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
 import java.io.IOException;
 import java.util.List;
 
@@ -139,7 +138,7 @@ public abstract class StreamExtractor extends Extractor {
 
     public abstract StreamType getStreamType() throws ParsingException;
     public abstract StreamInfoItem getNextVideo() throws IOException, ExtractionException;
-    public abstract StreamInfoItemCollector getRelatedVideos() throws IOException, ExtractionException;
+    public abstract StreamInfoItemsCollector getRelatedVideos() throws IOException, ExtractionException;
 
     /**
      * Analyses the webpage's document and extracts any error message there might be.
