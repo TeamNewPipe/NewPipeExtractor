@@ -126,6 +126,10 @@ public class StreamInfo extends Info {
         return dashMpdUrl;
     }
 
+    public String getHlsUrl() {
+        return hlsUrl;
+    }
+
     public StreamInfoItem getNextVideo() {
         return next_video;
     }
@@ -204,6 +208,10 @@ public class StreamInfo extends Info {
 
     public void setDashMpdUrl(String dashMpdUrl) {
         this.dashMpdUrl = dashMpdUrl;
+    }
+
+    public void setHlsUrl(String hlsUrl) {
+        this.hlsUrl = hlsUrl;
     }
 
     public void setNextVideo(StreamInfoItem next_video) {
@@ -296,6 +304,12 @@ public class StreamInfo extends Info {
             streamInfo.setDashMpdUrl(extractor.getDashMpdUrl());
         } catch (Exception e) {
             streamInfo.addError(new ExtractionException("Couldn't get Dash manifest", e));
+        }
+
+        try {
+            streamInfo.setHlsUrl(extractor.getHlsUrl());
+        } catch (Exception e) {
+            streamInfo.addError(new ExtractionException("Couldn't get HLS manifest", e));
         }
 
         /*  Load and extract audio */
@@ -447,6 +461,7 @@ public class StreamInfo extends Info {
     // crawling such a file is not service dependent. Therefore getting audio only streams by yust
     // providing the dash mpd file will be possible in the future.
     public String dashMpdUrl;
+    public String hlsUrl;
 
     public StreamInfoItem next_video;
     public List<InfoItem> related_streams;

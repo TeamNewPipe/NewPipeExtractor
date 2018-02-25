@@ -116,9 +116,16 @@ public class SoundcloudStreamExtractor extends StreamExtractor {
         return SoundcloudParsingHelper.getAvatarUrl(track);
     }
 
+    @Nonnull
     @Override
     public String getDashMpdUrl() {
-        return null;
+        return "";
+    }
+
+    @Nonnull
+    @Override
+    public String getHlsUrl() throws ParsingException {
+        return "";
     }
 
     @Override

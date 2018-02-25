@@ -66,12 +66,6 @@ public class YoutubeStreamExtractor extends StreamExtractor {
         }
     }
 
-    public class LiveStreamException extends ContentNotAvailableException {
-        LiveStreamException(String message) {
-            super(message);
-        }
-    }
-
     public class SubtitlesException extends ContentNotAvailableException {
         SubtitlesException(String message, Throwable cause) {
             super(message, cause);
@@ -338,6 +332,7 @@ public class YoutubeStreamExtractor extends StreamExtractor {
         }
     }
 
+    @Nonnull
     @Override
     public String getDashMpdUrl() throws ParsingException {
         assertPageFetched();
@@ -362,6 +357,24 @@ public class YoutubeStreamExtractor extends StreamExtractor {
             return dashManifestUrl;
         } catch (Exception e) {
             throw new ParsingException("Could not get dash manifest url", e);
+        }
+    }
+
+    @Nonnull
+    @Override
+    public String getHlsUrl() throws ParsingException {
+        assertPageFetched();
+        try {
+            String hlsvp;
+            if (playerArgs != null && playerArgs.isString("hlsvp")) {
+                hlsvp = playerArgs.getString("hlsvp", "");
+            } else {
+                return "";
+            }
+
+            return hlsvp;
+        } catch (Exception e) {
+            throw new ParsingException("Could not get hls manifest url", e);
         }
     }
 
