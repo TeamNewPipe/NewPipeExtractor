@@ -441,7 +441,7 @@ public class YoutubeStreamExtractor extends StreamExtractor {
     @Override
     @Nonnull
     public List<Subtitles> getSubtitlesDefault() throws IOException, ExtractionException {
-        return getSubtitles(SubtitlesFormat.VTT);
+        return getSubtitles(SubtitlesFormat.TTML);
     }
 
     @Override
@@ -457,7 +457,17 @@ public class YoutubeStreamExtractor extends StreamExtractor {
 
     @Override
     public StreamType getStreamType() throws ParsingException {
-        //todo: if implementing livestream support this value should be generated dynamically
+        assertPageFetched();
+        if (playerArgs == null) return StreamType.NONE;
+
+        try {
+            if (playerArgs.has("ps") && playerArgs.get("ps").toString().equals("live") ||
+                    playerArgs.get(URL_ENCODED_FMT_STREAM_MAP).toString().isEmpty()) {
+                return StreamType.LIVE_STREAM;
+            }
+        } catch (Exception e) {
+            throw new ParsingException("Could not get hls manifest url", e);
+        }
         return StreamType.VIDEO_STREAM;
     }
 
@@ -547,7 +557,6 @@ public class YoutubeStreamExtractor extends StreamExtractor {
         doc = Jsoup.parse(pageContent, getCleanUrl());
 
         final String playerUrl;
-        // TODO: use embedded videos to fetch DASH manifest for all videos
         // Check if the video is age restricted
         if (pageContent.contains("<meta property=\"og:restrictions:age")) {
             final EmbeddedInfo info = getEmbeddedInfo();
@@ -595,15 +604,8 @@ public class YoutubeStreamExtractor extends StreamExtractor {
         JsonObject playerArgs;
 
         //attempt to load the youtube js player JSON arguments
-        boolean isLiveStream = false; //used to determine if this is a livestream or not
         try {
             playerArgs = playerConfig.getObject("args");
-
-            // check if we have a live stream. We need to filter it, since its not yet supported.
-            if ((playerArgs.has("ps") && playerArgs.get("ps").toString().equals("live"))
-                    || (playerArgs.get(URL_ENCODED_FMT_STREAM_MAP).toString().isEmpty())) {
-                isLiveStream = true;
-            }
         } catch (Exception e) {
             throw new ParsingException("Could not parse yt player config", e);
         }
@@ -814,11 +816,6 @@ public class YoutubeStreamExtractor extends StreamExtractor {
         return "https://www.youtube.com/get_video_info?" + "video_id=" + id +
                 "&eurl=https://youtube.googleapis.com/v/" + id +
                 "&sts=" + sts + "&ps=default&gl=US&hl=en";
-    }
-
-    @Nonnull
-    private static String getSubtitleFormatUrl(final String baseUrl, final SubtitlesFormat format) {
-        return baseUrl.replaceAll("&fmt=[^&]*", "") + "&fmt=" + format.getExtension();
     }
 
     private Map<String, ItagItem> getItags(String encodedUrlMapKey, ItagItem.ItagType itagTypeWanted) throws ParsingException {
