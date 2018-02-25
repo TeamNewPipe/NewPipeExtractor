@@ -594,9 +594,6 @@ public class YoutubeStreamExtractor extends StreamExtractor {
         } catch (Exception e) {
             throw new ParsingException("Could not parse yt player config", e);
         }
-        if (isLiveStream) {
-            throw new LiveStreamException("This is a Live stream. Can't use those right now.");
-        }
 
         return playerArgs;
     }
