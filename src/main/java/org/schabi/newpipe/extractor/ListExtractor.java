@@ -14,7 +14,7 @@ public abstract class ListExtractor extends Extractor {
     /**
      * Get a new ListExtractor with the given nextPageUrl set.
      */
-    public ListExtractor(StreamingService service, String url) throws ExtractionException {
+    public ListExtractor(StreamingService service, String url) {
         super(service, url);
     }
 

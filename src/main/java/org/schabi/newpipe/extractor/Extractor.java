@@ -36,7 +36,7 @@ public abstract class Extractor {
     private boolean pageFetched = false;
     private final Downloader downloader;
 
-    public Extractor(StreamingService service, String url) throws ExtractionException {
+    public Extractor(final StreamingService service, final String url) {
         if(service == null) throw new NullPointerException("service is null");
         if(url == null) throw new NullPointerException("url is null");
         this.service = service;

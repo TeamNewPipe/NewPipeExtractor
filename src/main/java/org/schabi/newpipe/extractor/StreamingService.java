@@ -66,12 +66,13 @@ public abstract class StreamingService {
     public abstract UrlIdHandler getStreamUrlIdHandler();
     public abstract UrlIdHandler getChannelUrlIdHandler();
     public abstract UrlIdHandler getPlaylistUrlIdHandler();
+
     public abstract SearchEngine getSearchEngine();
     public abstract SuggestionExtractor getSuggestionExtractor();
-    public abstract StreamExtractor getStreamExtractor(String url) throws ExtractionException;
+    public abstract StreamExtractor getStreamExtractor(String url);
     public abstract KioskList getKioskList() throws ExtractionException;
-    public abstract ChannelExtractor getChannelExtractor(String url) throws ExtractionException;
-    public abstract PlaylistExtractor getPlaylistExtractor(String url) throws ExtractionException;
+    public abstract ChannelExtractor getChannelExtractor(String url);
+    public abstract PlaylistExtractor getPlaylistExtractor(String url);
     public abstract SubscriptionExtractor getSubscriptionExtractor();
 
     /**

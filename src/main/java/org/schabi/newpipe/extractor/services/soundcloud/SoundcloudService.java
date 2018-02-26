@@ -45,17 +45,17 @@ public class SoundcloudService extends StreamingService {
 
 
     @Override
-    public StreamExtractor getStreamExtractor(String url) throws ExtractionException {
+    public StreamExtractor getStreamExtractor(String url) {
         return new SoundcloudStreamExtractor(this, url);
     }
 
     @Override
-    public ChannelExtractor getChannelExtractor(String url) throws ExtractionException {
+    public ChannelExtractor getChannelExtractor(String url) {
         return new SoundcloudChannelExtractor(this, url);
     }
 
     @Override
-    public PlaylistExtractor getPlaylistExtractor(String url) throws ExtractionException {
+    public PlaylistExtractor getPlaylistExtractor(String url) {
         return new SoundcloudPlaylistExtractor(this, url);
     }
 

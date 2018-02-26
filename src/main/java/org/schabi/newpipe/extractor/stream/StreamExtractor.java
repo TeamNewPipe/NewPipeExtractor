@@ -39,7 +39,7 @@ public abstract class StreamExtractor extends Extractor {
 
     public static final int NO_AGE_LIMIT = 0;
 
-    public StreamExtractor(StreamingService service, String url) throws ExtractionException {
+    public StreamExtractor(StreamingService service, String url) {
         super(service, url);
     }
 

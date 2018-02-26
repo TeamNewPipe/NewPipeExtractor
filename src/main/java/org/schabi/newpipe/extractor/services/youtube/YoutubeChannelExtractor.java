@@ -60,10 +60,8 @@ public class YoutubeChannelExtractor extends ChannelExtractor {
      */
     //private boolean fetchingNextStreams;
 
-    public YoutubeChannelExtractor(StreamingService service, String url) throws ExtractionException {
+    public YoutubeChannelExtractor(StreamingService service, String url) {
         super(service, url);
-
-        //fetchingNextStreams = nextPageUrl != null && !nextPageUrl.isEmpty();
     }
 
     @Override

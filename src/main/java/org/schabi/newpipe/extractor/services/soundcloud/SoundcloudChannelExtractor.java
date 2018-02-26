@@ -21,7 +21,7 @@ public class SoundcloudChannelExtractor extends ChannelExtractor {
     private StreamInfoItemsCollector streamInfoItemsCollector = null;
     private String nextPageUrl = null;
 
-    public SoundcloudChannelExtractor(StreamingService service, String url) throws ExtractionException {
+    public SoundcloudChannelExtractor(StreamingService service, String url) {
         super(service, url);
     }
 

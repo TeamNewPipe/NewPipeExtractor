@@ -85,7 +85,7 @@ public class YoutubeStreamExtractor extends StreamExtractor {
 
     private boolean isAgeRestricted;
 
-    public YoutubeStreamExtractor(StreamingService service, String url) throws ExtractionException {
+    public YoutubeStreamExtractor(StreamingService service, String url) {
         super(service, url);
     }
 

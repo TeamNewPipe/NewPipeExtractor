@@ -21,7 +21,7 @@ public class SoundcloudPlaylistExtractor extends PlaylistExtractor {
     private StreamInfoItemsCollector streamInfoItemsCollector = null;
     private String nextPageUrl = null;
 
-    public SoundcloudPlaylistExtractor(StreamingService service, String url) throws ExtractionException {
+    public SoundcloudPlaylistExtractor(StreamingService service, String url) {
         super(service, url);
     }
 

@@ -14,7 +14,7 @@ import java.io.IOException;
 
 public abstract class PlaylistExtractor extends ListExtractor {
 
-    public PlaylistExtractor(StreamingService service, String url) throws ExtractionException {
+    public PlaylistExtractor(StreamingService service, String url) {
         super(service, url);
     }
 

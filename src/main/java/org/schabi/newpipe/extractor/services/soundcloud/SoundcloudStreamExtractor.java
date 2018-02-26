@@ -18,7 +18,7 @@ import java.util.*;
 public class SoundcloudStreamExtractor extends StreamExtractor {
     private JsonObject track;
 
-    public SoundcloudStreamExtractor(StreamingService service, String url) throws ExtractionException {
+    public SoundcloudStreamExtractor(StreamingService service, String url) {
         super(service, url);
     }
 

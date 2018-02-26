@@ -65,17 +65,17 @@ public class YoutubeService extends StreamingService {
     }
 
     @Override
-    public StreamExtractor getStreamExtractor(String url) throws ExtractionException {
+    public StreamExtractor getStreamExtractor(String url) {
         return new YoutubeStreamExtractor(this, url);
     }
 
     @Override
-    public ChannelExtractor getChannelExtractor(String url) throws ExtractionException {
+    public ChannelExtractor getChannelExtractor(String url) {
         return new YoutubeChannelExtractor(this, url);
     }
 
     @Override
-    public PlaylistExtractor getPlaylistExtractor(String url) throws ExtractionException {
+    public PlaylistExtractor getPlaylistExtractor(String url) {
         return new YoutubePlaylistExtractor(this, url);
     }
 

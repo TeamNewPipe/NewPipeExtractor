@@ -31,8 +31,7 @@ import java.io.IOException;
 
 public abstract class ChannelExtractor extends ListExtractor {
 
-    public ChannelExtractor(StreamingService service, String url)
-            throws ExtractionException {
+    public ChannelExtractor(StreamingService service, String url) {
         super(service, url);
     }
 

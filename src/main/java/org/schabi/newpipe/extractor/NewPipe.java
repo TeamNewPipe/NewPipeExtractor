@@ -28,7 +28,6 @@ import java.util.List;
  * Provides access to streaming services supported by NewPipe.
  */
 public class NewPipe {
-    private static final String TAG = NewPipe.class.toString();
     private static Downloader downloader = null;
 
     private NewPipe() {

@@ -31,7 +31,7 @@ public class YoutubePlaylistExtractor extends PlaylistExtractor {
      */
     private Document nextPageAjax;
 
-    public YoutubePlaylistExtractor(StreamingService service, String url) throws ExtractionException {
+    public YoutubePlaylistExtractor(StreamingService service, String url) {
         super(service, url);
     }
 
