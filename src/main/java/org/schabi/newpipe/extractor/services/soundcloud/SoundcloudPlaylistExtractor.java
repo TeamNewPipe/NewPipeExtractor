@@ -18,8 +18,11 @@ public class SoundcloudPlaylistExtractor extends PlaylistExtractor {
     private String playlistId;
     private JsonObject playlist;
 
-    public SoundcloudPlaylistExtractor(StreamingService service, String url, String nextPageUrl) throws IOException, ExtractionException {
-        super(service, url, nextPageUrl);
+    private StreamInfoItemsCollector streamInfoItemsCollector = null;
+    private String nextPageUrl = null;
+
+    public SoundcloudPlaylistExtractor(StreamingService service, String url) throws ExtractionException {
+        super(service, url);
     }
 
     @Override
@@ -89,7 +92,14 @@ public class SoundcloudPlaylistExtractor extends PlaylistExtractor {
     @Nonnull
     @Override
     public StreamInfoItemsCollector getStreams() throws IOException, ExtractionException {
-        StreamInfoItemsCollector collector = new StreamInfoItemsCollector(getServiceId());
+        if(streamInfoItemsCollector == null) {
+            computeStreamsAndNextPageUrl();
+        }
+        return streamInfoItemsCollector;
+    }
+
+    private void computeStreamsAndNextPageUrl() throws ExtractionException, IOException {
+        streamInfoItemsCollector = new StreamInfoItemsCollector(getServiceId());
 
         // Note the "api", NOT "api-v2"
         String apiUrl = "https://api.soundcloud.com/playlists/" + getId() + "/tracks"
@@ -97,18 +107,25 @@ public class SoundcloudPlaylistExtractor extends PlaylistExtractor {
                 + "&limit=20"
                 + "&linked_partitioning=1";
 
-        nextPageUrl = SoundcloudParsingHelper.getStreamsFromApiMinItems(15, collector, apiUrl);
-        return collector;
+        nextPageUrl = SoundcloudParsingHelper.getStreamsFromApiMinItems(15, streamInfoItemsCollector, apiUrl);
     }
 
     @Override
-    public InfoItemPage getInfoItemPage() throws IOException, ExtractionException {
+    public String getNextPageUrl() throws IOException, ExtractionException {
+        if(nextPageUrl == null) {
+            computeStreamsAndNextPageUrl();
+        }
+        return nextPageUrl;
+    }
+
+    @Override
+    public InfoItemPage getPage(String pageUrl) throws IOException, ExtractionException {
         if (!hasNextPage()) {
             throw new ExtractionException("Playlist doesn't have more streams");
         }
 
         StreamInfoItemsCollector collector = new StreamInfoItemsCollector(getServiceId());
-        nextPageUrl = SoundcloudParsingHelper.getStreamsFromApiMinItems(15, collector, nextPageUrl);
+        String nextPageUrl = SoundcloudParsingHelper.getStreamsFromApiMinItems(15, collector, pageUrl);
 
         return new InfoItemPage(collector, nextPageUrl);
     }

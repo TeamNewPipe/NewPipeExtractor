@@ -37,9 +37,9 @@ public class ChannelInfo extends ListInfo {
     }
 
 
-    public static InfoItemPage getMoreItems(StreamingService service, String url, String nextPageUrl)
+    public static InfoItemPage getMoreItems(StreamingService service, String url, String pageUrl)
             throws IOException, ExtractionException {
-        return service.getChannelExtractor(url, nextPageUrl).getInfoItemPage();
+        return service.getChannelExtractor(url).getPage(pageUrl);
     }
 
     public static ChannelInfo getInfo(String url) throws IOException, ExtractionException {
@@ -52,7 +52,7 @@ public class ChannelInfo extends ListInfo {
         return getInfo(extractor);
     }
 
-    public static ChannelInfo getInfo(ChannelExtractor extractor) throws ParsingException {
+    public static ChannelInfo getInfo(ChannelExtractor extractor) throws IOException, ExtractionException {
 
         // important data
         int serviceId = extractor.getServiceId();

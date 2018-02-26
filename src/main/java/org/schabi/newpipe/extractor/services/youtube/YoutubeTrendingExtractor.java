@@ -37,9 +37,9 @@ public class YoutubeTrendingExtractor extends KioskExtractor {
 
     private Document doc;
 
-    public YoutubeTrendingExtractor(StreamingService service, String url, String nextPageUrl, String kioskId)
+    public YoutubeTrendingExtractor(StreamingService service, String url, String kioskId)
             throws ExtractionException {
-        super(service, url, nextPageUrl, kioskId);
+        super(service, url, kioskId);
     }
 
     @Override
@@ -61,7 +61,12 @@ public class YoutubeTrendingExtractor extends KioskExtractor {
     }
 
     @Override
-    public ListExtractor.InfoItemPage getInfoItemPage() {
+    public String getNextPageUrl() {
+        return "";
+    }
+
+    @Override
+    public ListExtractor.InfoItemPage getPage(String pageUrl) {
         return null;
     }
 

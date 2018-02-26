@@ -10,32 +10,26 @@ import java.util.List;
  * Base class to extractors that have a list (e.g. playlists, users).
  */
 public abstract class ListExtractor extends Extractor {
-    protected String nextPageUrl;
 
     /**
      * Get a new ListExtractor with the given nextPageUrl set.
      */
-    public ListExtractor(StreamingService service, String url, String nextPageUrl) throws ExtractionException {
+    public ListExtractor(StreamingService service, String url) throws ExtractionException {
         super(service, url);
-        setNextPageUrl(nextPageUrl);
     }
 
     @Nonnull
     public abstract InfoItemsCollector getInfoItems() throws IOException, ExtractionException;
 
-    public abstract InfoItemPage getInfoItemPage() throws IOException, ExtractionException;
+    public abstract String getNextPageUrl() throws IOException, ExtractionException;
 
-    public boolean hasNextPage() {
-        return nextPageUrl != null && !nextPageUrl.isEmpty();
+    public abstract InfoItemPage getPage(final String nextPageUrl) throws IOException, ExtractionException;
+
+    public boolean hasNextPage() throws IOException, ExtractionException {
+        return getNextPageUrl() != null && !getNextPageUrl().isEmpty();
     }
 
-    public String getNextPageUrl() {
-        return nextPageUrl;
-    }
 
-    public void setNextPageUrl(String nextPageUrl) {
-        this.nextPageUrl = nextPageUrl;
-    }
 
     /*//////////////////////////////////////////////////////////////////////////
     // Inner

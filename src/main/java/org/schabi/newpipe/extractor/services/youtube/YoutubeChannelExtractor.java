@@ -50,7 +50,7 @@ public class YoutubeChannelExtractor extends ChannelExtractor {
     /**
      * It's lazily initialized (when getInfoItemPage is called)
      */
-    private Document nextStreamsAjax;
+    // private Document nextStreamsAjax;
 
     /**
      * Unfortunately, we have to fetch the page even if we are only getting next streams,
@@ -58,12 +58,12 @@ public class YoutubeChannelExtractor extends ChannelExtractor {
      * <br/>
      * This help us to keep track on what are we fetching.
      */
-    private boolean fetchingNextStreams;
+    //private boolean fetchingNextStreams;
 
-    public YoutubeChannelExtractor(StreamingService service, String url, String nextPageUrl) throws IOException, ExtractionException {
-        super(service, url, nextPageUrl);
+    public YoutubeChannelExtractor(StreamingService service, String url) throws ExtractionException {
+        super(service, url);
 
-        fetchingNextStreams = nextPageUrl != null && !nextPageUrl.isEmpty();
+        //fetchingNextStreams = nextPageUrl != null && !nextPageUrl.isEmpty();
     }
 
     @Override
@@ -72,10 +72,12 @@ public class YoutubeChannelExtractor extends ChannelExtractor {
         String pageContent = downloader.download(channelUrl);
         doc = Jsoup.parse(pageContent, channelUrl);
 
-        if (!fetchingNextStreams) {
-            nextPageUrl = getNextPageUrlFrom(doc);
-        }
-        nextStreamsAjax = null;
+        //nextStreamsAjax = null;
+    }
+
+    @Override
+    public String getNextPageUrl() throws ExtractionException {
+        return getNextPageUrlFrom(doc);
     }
 
     @Nonnull
@@ -171,37 +173,38 @@ public class YoutubeChannelExtractor extends ChannelExtractor {
     }
 
     @Override
-    public InfoItemPage getInfoItemPage() throws IOException, ExtractionException {
-        if (!hasNextPage()) {
-            throw new ExtractionException("Channel doesn't have more streams");
+    public InfoItemPage getPage(String pageUrl) throws IOException, ExtractionException {
+        try {
+
+            if (!hasNextPage()) {
+                throw new ExtractionException("Channel doesn't have more streams");
+            }
+
+            fetchPage();
+
+            StreamInfoItemsCollector collector = new StreamInfoItemsCollector(getServiceId());
+
+            final JsonObject ajaxJson = JsonParser.object().from(
+                    NewPipe.getDownloader()
+                    .download(pageUrl));
+
+            final Document ajaxHtml = Jsoup.parse(ajaxJson.getString("content_html"));
+
+            collectStreamsFrom(collector, ajaxHtml.select("body").first());
+
+            return new InfoItemPage(collector, getNextPageUrlFromAjaxPage(ajaxJson, pageUrl));
+        } catch (JsonParserException pe) {
+            throw new ParsingException("Could not parse json data for next streams", pe);
         }
-
-        fetchPage();
-
-        StreamInfoItemsCollector collector = new StreamInfoItemsCollector(getServiceId());
-
-        setupNextPageAjax(NewPipe.getDownloader());
-        collectStreamsFrom(collector, nextStreamsAjax.select("body").first());
-
-        return new InfoItemPage(collector, nextPageUrl);
     }
 
-    private void setupNextPageAjax(Downloader downloader) throws IOException, ReCaptchaException, ParsingException {
-        String ajaxDataRaw = downloader.download(nextPageUrl);
-        try {
-            JsonObject ajaxData = JsonParser.object().from(ajaxDataRaw);
-
-            String htmlDataRaw = ajaxData.getString("content_html");
-            nextStreamsAjax = Jsoup.parse(htmlDataRaw, nextPageUrl);
-
-            String nextStreamsHtmlDataRaw = ajaxData.getString("load_more_widget_html");
-            if (!nextStreamsHtmlDataRaw.isEmpty()) {
-                nextPageUrl = getNextPageUrlFrom(Jsoup.parse(nextStreamsHtmlDataRaw, nextPageUrl));
-            } else {
-                nextPageUrl = "";
-            }
-        } catch (JsonParserException e) {
-            throw new ParsingException("Could not parse json data for next streams", e);
+    private String getNextPageUrlFromAjaxPage(final JsonObject ajaxJson, final String pageUrl)
+        throws ParsingException {
+        String loadMoreHtmlDataRaw = ajaxJson.getString("load_more_widget_html");
+        if (!loadMoreHtmlDataRaw.isEmpty()) {
+            return getNextPageUrlFrom(Jsoup.parse(loadMoreHtmlDataRaw, pageUrl));
+        } else {
+            return "";
         }
     }
 

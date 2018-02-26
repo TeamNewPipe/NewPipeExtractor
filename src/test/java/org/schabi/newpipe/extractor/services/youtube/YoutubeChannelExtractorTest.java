@@ -112,7 +112,7 @@ public class YoutubeChannelExtractorTest {
     public void testGetNextStreams() throws Exception {
         // Setup the streams
         extractor.getStreams();
-        ListExtractor.InfoItemPage nextItemsResult = extractor.getInfoItemPage();
+        ListExtractor.InfoItemPage nextItemsResult = extractor.getPage(extractor.getNextPageUrl());
         assertTrue("extractor didn't have next streams", !nextItemsResult.infoItemList.isEmpty());
         assertEmptyErrors("errors occurred during extraction of the next streams", nextItemsResult.errors);
         assertTrue("extractor didn't have more streams after getInfoItemPage", extractor.hasNextPage());

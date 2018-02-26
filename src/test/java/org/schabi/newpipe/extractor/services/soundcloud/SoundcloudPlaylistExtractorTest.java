@@ -90,7 +90,7 @@ public class SoundcloudPlaylistExtractorTest {
         extractor.getStreams();
 
         // This playlist don't have more streams, it should throw an error
-        extractor.getInfoItemPage();
+        extractor.getPage(extractor.getNextPageUrl());
 
         fail("Expected exception wasn't thrown");
     }

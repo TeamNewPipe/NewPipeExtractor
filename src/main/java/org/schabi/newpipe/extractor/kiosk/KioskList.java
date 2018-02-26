@@ -14,7 +14,6 @@ public  class KioskList {
     public interface KioskExtractorFactory {
         KioskExtractor createNewKiosk(final StreamingService streamingService,
                                              final String url,
-                                             final String nextPageUrl,
                                              final String kioskId)
             throws ExtractionException, IOException;
     }
@@ -74,8 +73,7 @@ public  class KioskList {
             throw new ExtractionException("No kiosk found with the type: " + kioskId);
         } else {
             return ke.extractorFactory.createNewKiosk(NewPipe.getService(service_id),
-                    ke.handler.getUrl(kioskId),
-                    nextPageUrl, kioskId);
+                    ke.handler.getUrl(kioskId), kioskId);
         }
     }
 

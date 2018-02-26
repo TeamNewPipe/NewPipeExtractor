@@ -85,8 +85,8 @@ public class YoutubeTrendingExtractorTest {
 
     @Test
     public void testGetNextStreams() throws Exception {
-        assertTrue("extractor has next streams", extractor.getInfoItemPage() == null
-                || extractor.getInfoItemPage().getNextItemsList().isEmpty());
+        assertTrue("extractor has next streams", extractor.getPage(extractor.getNextPageUrl()) == null
+                || extractor.getPage(extractor.getNextPageUrl()).getNextItemsList().isEmpty());
     }
 
     @Test

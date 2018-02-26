@@ -34,10 +34,9 @@ public abstract class KioskExtractor extends ListExtractor {
 
     public KioskExtractor(StreamingService streamingService,
                           String url,
-                          String nextPageUrl,
                           String kioskId)
         throws ExtractionException {
-        super(streamingService, url, nextPageUrl);
+        super(streamingService, url);
         this.id = kioskId;
     }
 

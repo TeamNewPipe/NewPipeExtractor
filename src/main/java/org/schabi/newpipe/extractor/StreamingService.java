@@ -68,19 +68,11 @@ public abstract class StreamingService {
     public abstract UrlIdHandler getPlaylistUrlIdHandler();
     public abstract SearchEngine getSearchEngine();
     public abstract SuggestionExtractor getSuggestionExtractor();
-    public abstract StreamExtractor getStreamExtractor(String url) throws IOException, ExtractionException;
-    public abstract ChannelExtractor getChannelExtractor(String url, String nextPageUrl) throws IOException, ExtractionException;
-    public abstract PlaylistExtractor getPlaylistExtractor(String url, String nextPageUrl) throws IOException, ExtractionException;
+    public abstract StreamExtractor getStreamExtractor(String url) throws ExtractionException;
     public abstract KioskList getKioskList() throws ExtractionException;
+    public abstract ChannelExtractor getChannelExtractor(String url) throws ExtractionException;
+    public abstract PlaylistExtractor getPlaylistExtractor(String url) throws ExtractionException;
     public abstract SubscriptionExtractor getSubscriptionExtractor();
-
-    public ChannelExtractor getChannelExtractor(String url) throws IOException, ExtractionException {
-        return getChannelExtractor(url, null);
-    }
-
-    public PlaylistExtractor getPlaylistExtractor(String url) throws IOException, ExtractionException {
-        return getPlaylistExtractor(url, null);
-    }
 
     /**
      * figure out where the link is pointing to (a channel, video, playlist, etc.)

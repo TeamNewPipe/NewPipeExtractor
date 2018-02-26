@@ -111,7 +111,7 @@ public class YoutubePlaylistExtractorTest {
     public void testGetNextPage() throws Exception {
         // Setup the streams
         extractor.getStreams();
-        ListExtractor.InfoItemPage infoItemPage = extractor.getInfoItemPage();
+        ListExtractor.InfoItemPage infoItemPage = extractor.getPage(extractor.getNextPageUrl());
         assertTrue("extractor didn't have next streams", !infoItemPage.infoItemList.isEmpty());
         assertEmptyErrors("errors occurred during extraction of the next streams", infoItemPage.errors);
         assertTrue("extractor didn't have more streams after getInfoItemPage", extractor.hasNextPage());

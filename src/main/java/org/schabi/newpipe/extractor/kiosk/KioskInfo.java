@@ -37,12 +37,12 @@ public class KioskInfo extends ListInfo {
 
     public static ListExtractor.InfoItemPage getMoreItems(StreamingService service,
                                                              String url,
-                                                             String nextPageUrl,
+                                                             String pageUrl,
                                                              String contentCountry) throws IOException, ExtractionException {
         KioskList kl = service.getKioskList();
-        KioskExtractor extractor = kl.getExtractorByUrl(url, nextPageUrl);
+        KioskExtractor extractor = kl.getExtractorByUrl(url, pageUrl);
         extractor.setContentCountry(contentCountry);
-        return extractor.getInfoItemPage();
+        return extractor.getPage(pageUrl);
     }
 
     public static KioskInfo getInfo(String url,

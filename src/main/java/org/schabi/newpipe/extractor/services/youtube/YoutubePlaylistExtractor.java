@@ -29,10 +29,10 @@ public class YoutubePlaylistExtractor extends PlaylistExtractor {
     /**
      * It's lazily initialized (when getInfoItemPage is called)
      */
-    private Document nextStreamsAjax;
+    private Document nextPageAjax;
 
-    public YoutubePlaylistExtractor(StreamingService service, String url, String nextPageUrl) throws IOException, ExtractionException {
-        super(service, url, nextPageUrl);
+    public YoutubePlaylistExtractor(StreamingService service, String url) throws ExtractionException {
+        super(service, url);
     }
 
     @Override
@@ -40,8 +40,12 @@ public class YoutubePlaylistExtractor extends PlaylistExtractor {
         String pageContent = downloader.download(getCleanUrl());
         doc = Jsoup.parse(pageContent, getCleanUrl());
 
-        nextPageUrl = getNextPageUrlFrom(doc);
-        nextStreamsAjax = null;
+        nextPageAjax = null;
+    }
+
+    @Override
+    public String getNextPageUrl() throws ExtractionException {
+        return getNextPageUrlFrom(doc);
     }
 
     @Nonnull
@@ -139,34 +143,37 @@ public class YoutubePlaylistExtractor extends PlaylistExtractor {
     }
 
     @Override
-    public InfoItemPage getInfoItemPage() throws IOException, ExtractionException {
-        if (!hasNextPage()) {
-            throw new ExtractionException("Playlist doesn't have more streams");
+    public InfoItemPage getPage(final String pageUrl) throws IOException, ExtractionException {
+        try {
+            if (!hasNextPage()) {
+                throw new ExtractionException("Playlist doesn't have more streams");
+            }
+
+            StreamInfoItemsCollector collector = new StreamInfoItemsCollector(getServiceId());
+            // setupNextStreamsAjax(NewPipe.getDownloader());
+            final JsonObject pageJson = JsonParser.object().from(NewPipe.getDownloader()
+                    .download(pageUrl));
+            final Document pageHtml = Jsoup.parse("<table><tbody id=\"pl-load-more-destination\">"
+                    + pageJson.getString("content_html")
+                    + "</tbody></table>", pageUrl);
+
+            collectStreamsFrom(collector, pageHtml.select("tbody[id=\"pl-load-more-destination\"]").first());
+
+
+
+            return new InfoItemPage(collector, getNextPageUrlFromAjax(pageJson, pageUrl));
+        } catch (JsonParserException pe) {
+            throw new ParsingException("Could not parse ajax json", pe);
         }
-
-        StreamInfoItemsCollector collector = new StreamInfoItemsCollector(getServiceId());
-        setupNextStreamsAjax(NewPipe.getDownloader());
-        collectStreamsFrom(collector, nextStreamsAjax.select("tbody[id=\"pl-load-more-destination\"]").first());
-
-        return new InfoItemPage(collector, nextPageUrl);
     }
 
-    private void setupNextStreamsAjax(Downloader downloader) throws IOException, ReCaptchaException, ParsingException {
-        String ajaxDataRaw = downloader.download(nextPageUrl);
-        try {
-            JsonObject ajaxData = JsonParser.object().from(ajaxDataRaw);
-
-            String htmlDataRaw = "<table><tbody id=\"pl-load-more-destination\">" + ajaxData.getString("content_html") + "</tbody></table>";
-            nextStreamsAjax = Jsoup.parse(htmlDataRaw, nextPageUrl);
-
-            String nextStreamsHtmlDataRaw = ajaxData.getString("load_more_widget_html");
-            if (!nextStreamsHtmlDataRaw.isEmpty()) {
-                nextPageUrl = getNextPageUrlFrom(Jsoup.parse(nextStreamsHtmlDataRaw, nextPageUrl));
-            } else {
-                nextPageUrl = "";
-            }
-        } catch (JsonParserException e) {
-            throw new ParsingException("Could not parse json data for next streams", e);
+    private String getNextPageUrlFromAjax(final JsonObject pageJson, final String pageUrl)
+            throws ParsingException{
+        String nextPageHtml = pageJson.getString("load_more_widget_html");
+        if (!nextPageHtml.isEmpty()) {
+            return getNextPageUrlFrom(Jsoup.parse(nextPageHtml, pageUrl));
+        } else {
+            return "";
         }
     }
 

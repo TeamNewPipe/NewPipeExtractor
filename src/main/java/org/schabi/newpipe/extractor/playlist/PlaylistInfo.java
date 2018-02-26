@@ -5,7 +5,6 @@ import org.schabi.newpipe.extractor.ListInfo;
 import org.schabi.newpipe.extractor.NewPipe;
 import org.schabi.newpipe.extractor.StreamingService;
 import org.schabi.newpipe.extractor.exceptions.ExtractionException;
-import org.schabi.newpipe.extractor.exceptions.ParsingException;
 
 import java.io.IOException;
 
@@ -17,8 +16,8 @@ public class PlaylistInfo extends ListInfo {
         super(serviceId, id, url, name);
     }
 
-    public static InfoItemPage getMoreItems(StreamingService service, String url, String nextPageUrl) throws IOException, ExtractionException {
-        return service.getPlaylistExtractor(url, nextPageUrl).getInfoItemPage();
+    public static InfoItemPage getMoreItems(StreamingService service, String url, String pageUrl) throws IOException, ExtractionException {
+        return service.getPlaylistExtractor(url).getPage(pageUrl);
     }
 
     public static PlaylistInfo getInfo(String url) throws IOException, ExtractionException {
@@ -36,7 +35,7 @@ public class PlaylistInfo extends ListInfo {
      *
      * @param extractor an extractor where fetchPage() was already got called on.
      */
-    public static PlaylistInfo getInfo(PlaylistExtractor extractor) throws ParsingException {
+    public static PlaylistInfo getInfo(PlaylistExtractor extractor) throws IOException, ExtractionException {
 
         int serviceId = extractor.getServiceId();
         String url = extractor.getCleanUrl();

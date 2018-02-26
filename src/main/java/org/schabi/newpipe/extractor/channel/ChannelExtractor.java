@@ -31,9 +31,9 @@ import java.io.IOException;
 
 public abstract class ChannelExtractor extends ListExtractor {
 
-    public ChannelExtractor(StreamingService service, String url, String nextPageUrl)
+    public ChannelExtractor(StreamingService service, String url)
             throws ExtractionException {
-        super(service, url, nextPageUrl);
+        super(service, url);
     }
 
     @Nonnull
@@ -55,5 +55,4 @@ public abstract class ChannelExtractor extends ListExtractor {
     public abstract String getFeedUrl() throws ParsingException;
     public abstract long getSubscriberCount() throws ParsingException;
     public abstract String getDescription() throws ParsingException;
-
 }
