@@ -84,13 +84,13 @@ public class YoutubeTrendingExtractorTest {
     }
 
     @Test
-    public void testGetNextStreams() throws Exception {
+    public void testGetNextPage() {
         assertTrue("extractor has next streams", extractor.getPage(extractor.getNextPageUrl()) == null
-                || extractor.getPage(extractor.getNextPageUrl()).getNextItemsList().isEmpty());
+                || extractor.getPage(extractor.getNextPageUrl()).getItemsList().isEmpty());
     }
 
     @Test
-    public void testGetCleanUrl() throws Exception {
+    public void testGetCleanUrl() {
         assertEquals(extractor.getCleanUrl(), extractor.getCleanUrl(), "https://www.youtube.com/feed/trending");
     }
 }

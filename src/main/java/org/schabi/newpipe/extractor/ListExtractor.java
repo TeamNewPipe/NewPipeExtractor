@@ -65,7 +65,7 @@ public abstract class ListExtractor extends Extractor {
             return nextPageUrl != null && !nextPageUrl.isEmpty();
         }
 
-        public List<InfoItem> getNextItemsList() {
+        public List<InfoItem> getItemsList() {
             return infoItemList;
         }
 

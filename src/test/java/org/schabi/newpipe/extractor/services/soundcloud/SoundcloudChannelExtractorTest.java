@@ -70,7 +70,12 @@ public class SoundcloudChannelExtractorTest {
     }
 
     @Test
-    public void testGetNextStreams() throws Exception {
+    public void testGetNextPageUrl() throws Exception {
+        assertTrue(extractor.hasNextPage());
+    }
+
+    @Test
+    public void testGetPage() throws Exception {
         // Setup the streams
         extractor.getStreams();
         ListExtractor.InfoItemPage nextItemsResult = extractor.getPage(extractor.getNextPageUrl());

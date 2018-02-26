@@ -4,8 +4,7 @@ import java.util.List;
 
 public abstract class ListInfo extends Info {
     public List<InfoItem> related_streams;
-    public boolean has_more_streams;
-    public String next_streams_url;
+    public String nextPageUrl = null;
 
     public ListInfo(int serviceId, String id, String url, String name) {
         super(serviceId, id, url, name);
@@ -20,18 +19,14 @@ public abstract class ListInfo extends Info {
     }
 
     public boolean hasNextPage() {
-        return has_more_streams;
-    }
-
-    public void setHasMoreStreams(boolean has_more_streams) {
-        this.has_more_streams = has_more_streams;
+        return nextPageUrl != null && !nextPageUrl.isEmpty();
     }
 
     public String getNextPageUrl() {
-        return next_streams_url;
+        return nextPageUrl;
     }
 
-    public void setNextStreamsUrl(String next_streams_url) {
-        this.next_streams_url = next_streams_url;
+    public void setNextPageUrl(String pageUrl) {
+        this.nextPageUrl = pageUrl;
     }
 }

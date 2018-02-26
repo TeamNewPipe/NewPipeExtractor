@@ -75,8 +75,7 @@ public class PlaylistInfo extends ListInfo {
         }
 
         info.setRelatedStreams(getInfoItemsOrLogError(info, extractor));
-        info.setHasMoreStreams(extractor.hasNextPage());
-        info.setNextStreamsUrl(extractor.getNextPageUrl());
+        info.setNextPageUrl(extractor.getNextPageUrl());
         return info;
     }
 

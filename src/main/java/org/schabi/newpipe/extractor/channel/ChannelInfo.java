@@ -92,8 +92,7 @@ public class ChannelInfo extends ListInfo {
             info.addError(e);
         }
 
-        info.setHasMoreStreams(extractor.hasNextPage());
-        info.setNextStreamsUrl(extractor.getNextPageUrl());
+        info.setNextPageUrl(extractor.getNextPageUrl());
         return info;
     }
 

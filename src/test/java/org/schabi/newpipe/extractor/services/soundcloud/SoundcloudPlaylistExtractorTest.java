@@ -85,7 +85,7 @@ public class SoundcloudPlaylistExtractorTest {
     }
 
     @Test(expected = ExtractionException.class)
-    public void testGetNextStreamsNonExistent() throws Exception {
+    public void testGetNextPageNonExistent() throws Exception {
         // Setup the streams
         extractor.getStreams();
 

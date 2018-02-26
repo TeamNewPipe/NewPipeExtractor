@@ -74,7 +74,12 @@ public class SoundcloudChartsExtractorTest {
     }
 
     @Test
-    public void testGetNextStreams() throws Exception {
+    public void testGetNextPageUrl() throws Exception {
+        assertTrue(extractor.hasNextPage());
+    }
+
+    @Test
+    public void testGetNextPage() throws Exception {
         extractor.getInfoItems();
         assertFalse("extractor has next streams", extractor.getPage(extractor.getNextPageUrl()) == null
                 || extractor.getPage(extractor.getNextPageUrl()).infoItemList.isEmpty());

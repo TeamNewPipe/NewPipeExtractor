@@ -47,18 +47,6 @@ public class YoutubeChannelExtractor extends ChannelExtractor {
     private static final String CHANNEL_URL_PARAMETERS = "/videos?view=0&flow=list&sort=dd&live_view=10000";
 
     private Document doc;
-    /**
-     * It's lazily initialized (when getInfoItemPage is called)
-     */
-    // private Document nextStreamsAjax;
-
-    /**
-     * Unfortunately, we have to fetch the page even if we are only getting next streams,
-     * as they don't deliver enough information on their own (the channel name, for example).
-     * <br/>
-     * This help us to keep track on what are we fetching.
-     */
-    //private boolean fetchingNextStreams;
 
     public YoutubeChannelExtractor(StreamingService service, String url) {
         super(service, url);
@@ -70,7 +58,6 @@ public class YoutubeChannelExtractor extends ChannelExtractor {
         String pageContent = downloader.download(channelUrl);
         doc = Jsoup.parse(pageContent, channelUrl);
 
-        //nextStreamsAjax = null;
     }
 
     @Override
