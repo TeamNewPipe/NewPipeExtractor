@@ -739,6 +739,9 @@ public class YoutubeStreamExtractor extends StreamExtractor {
         // todo: use this to apply auto translation to different language from a source language
         final JsonArray autoCaptionsArray = renderer.getArray("translationLanguages", new JsonArray());
 
+        // captionsArray object may be null, e.g. https://www.youtube.com/watch?v=OyLafqSSJF8
+        if (captionsArray == null) return Collections.emptyList();
+		
         // This check is necessary since there may be cases where subtitles metadata do not contain caption track info
         // e.g. https://www.youtube.com/watch?v=-Vpwatutnko
         final int captionsSize = captionsArray.size();
