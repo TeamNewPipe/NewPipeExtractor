@@ -458,11 +458,9 @@ public class YoutubeStreamExtractor extends StreamExtractor {
     @Override
     public StreamType getStreamType() throws ParsingException {
         assertPageFetched();
-        if (playerArgs == null) return StreamType.NONE;
-
         try {
-            if (playerArgs.has("ps") && playerArgs.get("ps").toString().equals("live") ||
-                    playerArgs.get(URL_ENCODED_FMT_STREAM_MAP).toString().isEmpty()) {
+            if (playerArgs != null && (playerArgs.has("ps") && playerArgs.get("ps").toString().equals("live") ||
+                    playerArgs.get(URL_ENCODED_FMT_STREAM_MAP).toString().isEmpty())) {
                 return StreamType.LIVE_STREAM;
             }
         } catch (Exception e) {
