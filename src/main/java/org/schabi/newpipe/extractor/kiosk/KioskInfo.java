@@ -25,6 +25,7 @@ import org.schabi.newpipe.extractor.ListInfo;
 import org.schabi.newpipe.extractor.NewPipe;
 import org.schabi.newpipe.extractor.StreamingService;
 import org.schabi.newpipe.extractor.exceptions.ExtractionException;
+import org.schabi.newpipe.extractor.stream.StreamInfoItem;
 import org.schabi.newpipe.extractor.utils.ExtractorHelper;
 
 import java.io.IOException;
@@ -35,10 +36,10 @@ public class KioskInfo extends ListInfo {
         super(serviceId, id, url, name);
     }
 
-    public static ListExtractor.InfoItemPage getMoreItems(StreamingService service,
-                                                             String url,
-                                                             String pageUrl,
-                                                             String contentCountry) throws IOException, ExtractionException {
+    public static ListExtractor.InfoItemPage<StreamInfoItem> getMoreItems(StreamingService service,
+                                                                          String url,
+                                                                          String pageUrl,
+                                                                          String contentCountry) throws IOException, ExtractionException {
         KioskList kl = service.getKioskList();
         KioskExtractor extractor = kl.getExtractorByUrl(url, pageUrl);
         extractor.setContentCountry(contentCountry);

@@ -6,6 +6,7 @@ import org.schabi.newpipe.Downloader;
 import org.schabi.newpipe.extractor.ListExtractor;
 import org.schabi.newpipe.extractor.NewPipe;
 import org.schabi.newpipe.extractor.channel.ChannelExtractor;
+import org.schabi.newpipe.extractor.stream.StreamInfoItem;
 
 import static org.junit.Assert.*;
 import static org.schabi.newpipe.extractor.ExtractorAsserts.assertIsSecureUrl;
@@ -49,18 +50,18 @@ public class SoundcloudChannelExtractorTest {
 
     @Test
     public void testGetStreams() throws Exception {
-        assertFalse("no streams are received", extractor.getStreams().getItemList().isEmpty());
+        assertFalse("no streams are received", extractor.getInfoItems().getItemList().isEmpty());
     }
 
     @Test
     public void testGetStreamsErrors() throws Exception {
-        assertTrue("errors during stream list extraction", extractor.getStreams().getErrors().isEmpty());
+        assertTrue("errors during stream list extraction", extractor.getInfoItems().getErrors().isEmpty());
     }
 
     @Test
     public void testHasMoreStreams() throws Exception {
         // Setup the streams
-        extractor.getStreams();
+        extractor.getInfoItems();
         assertTrue("don't have more streams", extractor.hasNextPage());
     }
 
@@ -77,10 +78,10 @@ public class SoundcloudChannelExtractorTest {
     @Test
     public void testGetPage() throws Exception {
         // Setup the streams
-        extractor.getStreams();
-        ListExtractor.InfoItemPage nextItemsResult = extractor.getPage(extractor.getNextPageUrl());
-        assertTrue("extractor didn't have next streams", !nextItemsResult.infoItemList.isEmpty());
-        assertTrue("errors occurred during extraction of the next streams", nextItemsResult.errors.isEmpty());
+        extractor.getInfoItems();
+        ListExtractor.InfoItemPage<StreamInfoItem> nextItemsResult = extractor.getPage(extractor.getNextPageUrl());
+        assertTrue("extractor didn't have next streams", !nextItemsResult.getItemsList().isEmpty());
+        assertTrue("errors occurred during extraction of the next streams", nextItemsResult.getErrors().isEmpty());
         assertTrue("extractor didn't have more streams after getInfoItemPage", extractor.hasNextPage());
     }
 

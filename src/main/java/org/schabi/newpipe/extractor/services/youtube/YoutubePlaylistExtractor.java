@@ -12,8 +12,8 @@ import org.schabi.newpipe.extractor.StreamingService;
 import org.schabi.newpipe.extractor.UrlIdHandler;
 import org.schabi.newpipe.extractor.exceptions.ExtractionException;
 import org.schabi.newpipe.extractor.exceptions.ParsingException;
-import org.schabi.newpipe.extractor.exceptions.ReCaptchaException;
 import org.schabi.newpipe.extractor.playlist.PlaylistExtractor;
+import org.schabi.newpipe.extractor.stream.StreamInfoItem;
 import org.schabi.newpipe.extractor.stream.StreamInfoItemsCollector;
 import org.schabi.newpipe.extractor.stream.StreamType;
 import org.schabi.newpipe.extractor.utils.Parser;
@@ -26,10 +26,6 @@ import java.io.IOException;
 public class YoutubePlaylistExtractor extends PlaylistExtractor {
 
     private Document doc;
-    /**
-     * It's lazily initialized (when getInfoItemPage is called)
-     */
-    private Document nextPageAjax;
 
     public YoutubePlaylistExtractor(StreamingService service, String url) {
         super(service, url);
@@ -39,8 +35,6 @@ public class YoutubePlaylistExtractor extends PlaylistExtractor {
     public void onFetchPage(@Nonnull Downloader downloader) throws IOException, ExtractionException {
         String pageContent = downloader.download(getCleanUrl());
         doc = Jsoup.parse(pageContent, getCleanUrl());
-
-        nextPageAjax = null;
     }
 
     @Override
@@ -135,7 +129,7 @@ public class YoutubePlaylistExtractor extends PlaylistExtractor {
 
     @Nonnull
     @Override
-    public StreamInfoItemsCollector getStreams() throws IOException, ExtractionException {
+    public StreamInfoItemsCollector getInfoItems() throws IOException, ExtractionException {
         StreamInfoItemsCollector collector = new StreamInfoItemsCollector(getServiceId());
         Element tbody = doc.select("tbody[id=\"pl-load-more-destination\"]").first();
         collectStreamsFrom(collector, tbody);
@@ -143,28 +137,26 @@ public class YoutubePlaylistExtractor extends PlaylistExtractor {
     }
 
     @Override
-    public InfoItemPage getPage(final String pageUrl) throws IOException, ExtractionException {
+    public InfoItemPage<StreamInfoItem> getPage(final String pageUrl) throws IOException, ExtractionException {
+        if (pageUrl == null || pageUrl.isEmpty()) {
+            throw new ExtractionException(new IllegalArgumentException("Page url is empty or null"));
+        }
+
+        StreamInfoItemsCollector collector = new StreamInfoItemsCollector(getServiceId());
+        JsonObject pageJson;
         try {
-            if (!hasNextPage()) {
-                throw new ExtractionException("Playlist doesn't have more streams");
-            }
-
-            StreamInfoItemsCollector collector = new StreamInfoItemsCollector(getServiceId());
-            // setupNextStreamsAjax(NewPipe.getDownloader());
-            final JsonObject pageJson = JsonParser.object().from(NewPipe.getDownloader()
-                    .download(pageUrl));
-            final Document pageHtml = Jsoup.parse("<table><tbody id=\"pl-load-more-destination\">"
-                    + pageJson.getString("content_html")
-                    + "</tbody></table>", pageUrl);
-
-            collectStreamsFrom(collector, pageHtml.select("tbody[id=\"pl-load-more-destination\"]").first());
-
-
-
-            return new InfoItemPage(collector, getNextPageUrlFromAjax(pageJson, pageUrl));
+            pageJson = JsonParser.object().from(NewPipe.getDownloader().download(pageUrl));
         } catch (JsonParserException pe) {
             throw new ParsingException("Could not parse ajax json", pe);
         }
+
+        final Document pageHtml = Jsoup.parse("<table><tbody id=\"pl-load-more-destination\">"
+                + pageJson.getString("content_html")
+                + "</tbody></table>", pageUrl);
+
+        collectStreamsFrom(collector, pageHtml.select("tbody[id=\"pl-load-more-destination\"]").first());
+
+        return new InfoItemPage<>(collector, getNextPageUrlFromAjax(pageJson, pageUrl));
     }
 
     private String getNextPageUrlFromAjax(final JsonObject pageJson, final String pageUrl)

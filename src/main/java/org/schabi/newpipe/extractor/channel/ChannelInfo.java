@@ -5,7 +5,7 @@ import org.schabi.newpipe.extractor.ListInfo;
 import org.schabi.newpipe.extractor.NewPipe;
 import org.schabi.newpipe.extractor.StreamingService;
 import org.schabi.newpipe.extractor.exceptions.ExtractionException;
-import org.schabi.newpipe.extractor.exceptions.ParsingException;
+import org.schabi.newpipe.extractor.stream.StreamInfoItem;
 import org.schabi.newpipe.extractor.utils.ExtractorHelper;
 
 import java.io.IOException;
@@ -37,7 +37,7 @@ public class ChannelInfo extends ListInfo {
     }
 
 
-    public static InfoItemPage getMoreItems(StreamingService service, String url, String pageUrl)
+    public static InfoItemPage<StreamInfoItem> getMoreItems(StreamingService service, String url, String pageUrl)
             throws IOException, ExtractionException {
         return service.getChannelExtractor(url).getPage(pageUrl);
     }

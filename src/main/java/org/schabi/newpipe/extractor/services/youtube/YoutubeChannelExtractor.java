@@ -13,7 +13,7 @@ import org.schabi.newpipe.extractor.StreamingService;
 import org.schabi.newpipe.extractor.channel.ChannelExtractor;
 import org.schabi.newpipe.extractor.exceptions.ExtractionException;
 import org.schabi.newpipe.extractor.exceptions.ParsingException;
-import org.schabi.newpipe.extractor.exceptions.ReCaptchaException;
+import org.schabi.newpipe.extractor.stream.StreamInfoItem;
 import org.schabi.newpipe.extractor.stream.StreamInfoItemsCollector;
 import org.schabi.newpipe.extractor.utils.Parser;
 import org.schabi.newpipe.extractor.utils.Utils;
@@ -150,7 +150,7 @@ public class YoutubeChannelExtractor extends ChannelExtractor {
 
     @Nonnull
     @Override
-    public StreamInfoItemsCollector getStreams() throws ExtractionException {
+    public StreamInfoItemsCollector getInfoItems() throws ExtractionException {
         StreamInfoItemsCollector collector = new StreamInfoItemsCollector(getServiceId());
         Element ul = doc.select("ul[id=\"browse-items-primary\"]").first();
         collectStreamsFrom(collector, ul);
@@ -158,29 +158,27 @@ public class YoutubeChannelExtractor extends ChannelExtractor {
     }
 
     @Override
-    public InfoItemPage getPage(String pageUrl) throws IOException, ExtractionException {
+    public InfoItemPage<StreamInfoItem> getPage(String pageUrl) throws IOException, ExtractionException {
+        if (pageUrl == null || pageUrl.isEmpty()) {
+            throw new ExtractionException(new IllegalArgumentException("Page url is empty or null"));
+        }
+
+        // Unfortunately, we have to fetch the page even if we are only getting next streams,
+        // as they don't deliver enough information on their own (the channel name, for example).
+        fetchPage();
+
+        StreamInfoItemsCollector collector = new StreamInfoItemsCollector(getServiceId());
+        JsonObject ajaxJson;
         try {
-
-            if (!hasNextPage()) {
-                throw new ExtractionException("Channel doesn't have more streams");
-            }
-
-            fetchPage();
-
-            StreamInfoItemsCollector collector = new StreamInfoItemsCollector(getServiceId());
-
-            final JsonObject ajaxJson = JsonParser.object().from(
-                    NewPipe.getDownloader()
-                    .download(pageUrl));
-
-            final Document ajaxHtml = Jsoup.parse(ajaxJson.getString("content_html"));
-
-            collectStreamsFrom(collector, ajaxHtml.select("body").first());
-
-            return new InfoItemPage(collector, getNextPageUrlFromAjaxPage(ajaxJson, pageUrl));
+            ajaxJson = JsonParser.object().from(NewPipe.getDownloader().download(pageUrl));
         } catch (JsonParserException pe) {
             throw new ParsingException("Could not parse json data for next streams", pe);
         }
+
+        final Document ajaxHtml = Jsoup.parse(ajaxJson.getString("content_html"));
+        collectStreamsFrom(collector, ajaxHtml.select("body").first());
+
+        return new InfoItemPage<>(collector, getNextPageUrlFromAjaxPage(ajaxJson, pageUrl));
     }
 
     private String getNextPageUrlFromAjaxPage(final JsonObject ajaxJson, final String pageUrl)

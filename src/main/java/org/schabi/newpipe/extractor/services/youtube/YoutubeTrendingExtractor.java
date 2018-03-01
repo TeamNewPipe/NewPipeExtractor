@@ -24,10 +24,14 @@ import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
-import org.schabi.newpipe.extractor.*;
+import org.schabi.newpipe.extractor.Downloader;
+import org.schabi.newpipe.extractor.ListExtractor;
+import org.schabi.newpipe.extractor.StreamingService;
+import org.schabi.newpipe.extractor.UrlIdHandler;
 import org.schabi.newpipe.extractor.exceptions.ExtractionException;
 import org.schabi.newpipe.extractor.exceptions.ParsingException;
 import org.schabi.newpipe.extractor.kiosk.KioskExtractor;
+import org.schabi.newpipe.extractor.stream.StreamInfoItem;
 import org.schabi.newpipe.extractor.stream.StreamInfoItemsCollector;
 
 import javax.annotation.Nonnull;
@@ -66,7 +70,7 @@ public class YoutubeTrendingExtractor extends KioskExtractor {
     }
 
     @Override
-    public ListExtractor.InfoItemPage getPage(String pageUrl) {
+    public ListExtractor.InfoItemPage<StreamInfoItem> getPage(String pageUrl) {
         return null;
     }
 

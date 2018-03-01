@@ -1,19 +1,17 @@
 package org.schabi.newpipe.extractor.services.soundcloud;
 
-import java.io.IOException;
-import java.util.Arrays;
-import java.util.List;
-
-import org.schabi.newpipe.extractor.Collector;
 import org.schabi.newpipe.extractor.Downloader;
 import org.schabi.newpipe.extractor.StreamingService;
 import org.schabi.newpipe.extractor.UrlIdHandler;
 import org.schabi.newpipe.extractor.exceptions.ExtractionException;
-import org.schabi.newpipe.extractor.exceptions.ParsingException;
 import org.schabi.newpipe.extractor.kiosk.KioskExtractor;
+import org.schabi.newpipe.extractor.stream.StreamInfoItem;
 import org.schabi.newpipe.extractor.stream.StreamInfoItemsCollector;
 
 import javax.annotation.Nonnull;
+import java.io.IOException;
+import java.util.Arrays;
+import java.util.List;
 
 public class SoundcloudChartsExtractor extends KioskExtractor {
 	private String url;
@@ -44,15 +42,15 @@ public class SoundcloudChartsExtractor extends KioskExtractor {
     }
 
     @Override
-    public InfoItemPage getPage(String pageUrl) throws IOException, ExtractionException {
-        if (!hasNextPage()) {
-            throw new ExtractionException("Chart doesn't have more streams");
+    public InfoItemPage<StreamInfoItem> getPage(String pageUrl) throws IOException, ExtractionException {
+        if (pageUrl == null || pageUrl.isEmpty()) {
+            throw new ExtractionException(new IllegalArgumentException("Page url is empty or null"));
         }
 
         StreamInfoItemsCollector collector = new StreamInfoItemsCollector(getServiceId());
         String nextPageUrl = SoundcloudParsingHelper.getStreamsFromApi(collector, pageUrl, true);
 
-        return new InfoItemPage(collector, nextPageUrl);
+        return new InfoItemPage<>(collector, nextPageUrl);
     }
 
 

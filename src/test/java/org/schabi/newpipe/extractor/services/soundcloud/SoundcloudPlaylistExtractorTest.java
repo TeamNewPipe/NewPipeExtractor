@@ -69,25 +69,25 @@ public class SoundcloudPlaylistExtractorTest {
 
     @Test
     public void testGetStreams() throws Exception {
-        assertTrue("no streams are received", !extractor.getStreams().getItemList().isEmpty());
+        assertTrue("no streams are received", !extractor.getInfoItems().getItemList().isEmpty());
     }
 
     @Test
     public void testGetStreamsErrors() throws Exception {
-        assertTrue("errors during stream list extraction", extractor.getStreams().getErrors().isEmpty());
+        assertTrue("errors during stream list extraction", extractor.getInfoItems().getErrors().isEmpty());
     }
 
     @Test
     public void testHasMoreStreams() throws Exception {
         // Setup the streams
-        extractor.getStreams();
+        extractor.getInfoItems();
         assertTrue("extractor didn't have more streams", !extractor.hasNextPage());
     }
 
     @Test(expected = ExtractionException.class)
     public void testGetNextPageNonExistent() throws Exception {
         // Setup the streams
-        extractor.getStreams();
+        extractor.getInfoItems();
 
         // This playlist don't have more streams, it should throw an error
         extractor.getPage(extractor.getNextPageUrl());

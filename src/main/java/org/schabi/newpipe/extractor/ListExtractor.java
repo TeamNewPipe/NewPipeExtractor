@@ -11,52 +11,46 @@ import java.util.List;
  */
 public abstract class ListExtractor extends Extractor {
 
-    /**
-     * Get a new ListExtractor with the given nextPageUrl set.
-     */
     public ListExtractor(StreamingService service, String url) {
         super(service, url);
     }
 
     @Nonnull
-    public abstract InfoItemsCollector getInfoItems() throws IOException, ExtractionException;
-
+    public abstract InfoItemsCollector<? extends InfoItem, ?> getInfoItems() throws IOException, ExtractionException;
     public abstract String getNextPageUrl() throws IOException, ExtractionException;
-
-    public abstract InfoItemPage getPage(final String nextPageUrl) throws IOException, ExtractionException;
+    public abstract InfoItemPage<? extends InfoItem> getPage(final String nextPageUrl) throws IOException, ExtractionException;
 
     public boolean hasNextPage() throws IOException, ExtractionException {
-        return getNextPageUrl() != null && !getNextPageUrl().isEmpty();
+        final String nextPageUrl = getNextPageUrl();
+        return nextPageUrl != null && !nextPageUrl.isEmpty();
     }
-
-
 
     /*//////////////////////////////////////////////////////////////////////////
     // Inner
     //////////////////////////////////////////////////////////////////////////*/
 
-    public static class InfoItemPage {
+    public static class InfoItemPage<T extends InfoItem> {
         /**
          * The current list of items to this result
          */
-        public final List<InfoItem> infoItemList;
+        private final List<T> itemsList;
 
         /**
          * Next url to fetch more items
          */
-        public final String nextPageUrl;
+        private final String nextPageUrl;
 
         /**
          * Errors that happened during the extraction
          */
-        public final List<Throwable> errors;
+        private final List<Throwable> errors;
 
-        public InfoItemPage(InfoItemsCollector collector, String nextPageUrl) {
+        public InfoItemPage(InfoItemsCollector<T, ?> collector, String nextPageUrl) {
             this(collector.getItemList(), nextPageUrl, collector.getErrors());
         }
 
-        public InfoItemPage(List<InfoItem> infoItemList, String nextPageUrl, List<Throwable> errors) {
-            this.infoItemList = infoItemList;
+        public InfoItemPage(List<T> itemsList, String nextPageUrl, List<Throwable> errors) {
+            this.itemsList = itemsList;
             this.nextPageUrl = nextPageUrl;
             this.errors = errors;
         }
@@ -65,8 +59,8 @@ public abstract class ListExtractor extends Extractor {
             return nextPageUrl != null && !nextPageUrl.isEmpty();
         }
 
-        public List<InfoItem> getItemsList() {
-            return infoItemList;
+        public List<T> getItemsList() {
+            return itemsList;
         }
 
         public String getNextPageUrl() {

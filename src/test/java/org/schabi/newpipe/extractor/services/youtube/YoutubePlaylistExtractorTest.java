@@ -81,7 +81,7 @@ public class YoutubePlaylistExtractorTest {
 
     @Test
     public void testGetStreams() throws Exception {
-        List<StreamInfoItem> streams = extractor.getStreams().getItemList();
+        List<StreamInfoItem> streams = extractor.getInfoItems().getItemList();
         assertFalse("no streams are received", streams.isEmpty());
         assertTrue(streams.size() > 60);
         assertFalse(streams.contains(null));
@@ -96,13 +96,13 @@ public class YoutubePlaylistExtractorTest {
 
     @Test
     public void testGetStreamsErrors() throws Exception {
-        assertEmptyErrors("errors during stream list extraction", extractor.getStreams().getErrors());
+        assertEmptyErrors("errors during stream list extraction", extractor.getInfoItems().getErrors());
     }
 
     @Test
     public void testHasMoreStreams() throws Exception {
         // Setup the streams
-        extractor.getStreams();
+        extractor.getInfoItems();
         assertTrue("extractor didn't have more streams", extractor.hasNextPage());
     }
 
@@ -110,10 +110,10 @@ public class YoutubePlaylistExtractorTest {
     @Test @Ignore
     public void testGetNextPage() throws Exception {
         // Setup the streams
-        extractor.getStreams();
-        ListExtractor.InfoItemPage infoItemPage = extractor.getPage(extractor.getNextPageUrl());
-        assertTrue("extractor didn't have next streams", !infoItemPage.infoItemList.isEmpty());
-        assertEmptyErrors("errors occurred during extraction of the next streams", infoItemPage.errors);
+        extractor.getInfoItems();
+        ListExtractor.InfoItemPage<StreamInfoItem> infoItemPage = extractor.getPage(extractor.getNextPageUrl());
+        assertTrue("extractor didn't have next streams", !infoItemPage.getItemsList().isEmpty());
+        assertEmptyErrors("errors occurred during extraction of the next streams", infoItemPage.getErrors());
         assertTrue("extractor didn't have more streams after getInfoItemPage", extractor.hasNextPage());
     }
 

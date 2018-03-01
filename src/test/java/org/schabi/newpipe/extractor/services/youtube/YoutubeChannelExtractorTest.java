@@ -6,6 +6,7 @@ import org.schabi.newpipe.Downloader;
 import org.schabi.newpipe.extractor.ListExtractor;
 import org.schabi.newpipe.extractor.NewPipe;
 import org.schabi.newpipe.extractor.channel.ChannelExtractor;
+import org.schabi.newpipe.extractor.stream.StreamInfoItem;
 
 import static org.junit.Assert.*;
 import static org.schabi.newpipe.extractor.ExtractorAsserts.assertEmptyErrors;
@@ -88,18 +89,18 @@ public class YoutubeChannelExtractorTest {
 
     @Test
     public void testGetStreams() throws Exception {
-        assertTrue("no streams are received", !extractor.getStreams().getItemList().isEmpty());
+        assertTrue("no streams are received", !extractor.getInfoItems().getItemList().isEmpty());
     }
 
     @Test
     public void testGetStreamsErrors() throws Exception {
-        assertEmptyErrors("errors during stream list extraction", extractor.getStreams().getErrors());
+        assertEmptyErrors("errors during stream list extraction", extractor.getInfoItems().getErrors());
     }
 
     @Test
     public void testHasMoreStreams() throws Exception {
         // Setup the streams
-        extractor.getStreams();
+        extractor.getInfoItems();
         assertTrue("don't have more streams", extractor.hasNextPage());
     }
 
@@ -116,10 +117,10 @@ public class YoutubeChannelExtractorTest {
     @Test
     public void testGetPage() throws Exception {
         // Setup the streams
-        extractor.getStreams();
-        ListExtractor.InfoItemPage nextItemsResult = extractor.getPage(extractor.getNextPageUrl());
-        assertTrue("extractor didn't have next streams", !nextItemsResult.infoItemList.isEmpty());
-        assertEmptyErrors("errors occurred during extraction of the next streams", nextItemsResult.errors);
+        extractor.getInfoItems();
+        ListExtractor.InfoItemPage<StreamInfoItem> nextItemsResult = extractor.getPage(extractor.getNextPageUrl());
+        assertTrue("extractor didn't have next streams", !nextItemsResult.getItemsList().isEmpty());
+        assertEmptyErrors("errors occurred during extraction of the next streams", nextItemsResult.getErrors());
         assertTrue("extractor didn't have more streams after getInfoItemPage", extractor.hasNextPage());
     }
 }

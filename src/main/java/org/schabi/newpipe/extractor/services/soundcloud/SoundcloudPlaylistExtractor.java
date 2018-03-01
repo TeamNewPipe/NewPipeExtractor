@@ -8,6 +8,7 @@ import org.schabi.newpipe.extractor.StreamingService;
 import org.schabi.newpipe.extractor.exceptions.ExtractionException;
 import org.schabi.newpipe.extractor.exceptions.ParsingException;
 import org.schabi.newpipe.extractor.playlist.PlaylistExtractor;
+import org.schabi.newpipe.extractor.stream.StreamInfoItem;
 import org.schabi.newpipe.extractor.stream.StreamInfoItemsCollector;
 
 import javax.annotation.Nonnull;
@@ -91,7 +92,7 @@ public class SoundcloudPlaylistExtractor extends PlaylistExtractor {
 
     @Nonnull
     @Override
-    public StreamInfoItemsCollector getStreams() throws IOException, ExtractionException {
+    public StreamInfoItemsCollector getInfoItems() throws IOException, ExtractionException {
         if(streamInfoItemsCollector == null) {
             computeStreamsAndNextPageUrl();
         }
@@ -119,14 +120,14 @@ public class SoundcloudPlaylistExtractor extends PlaylistExtractor {
     }
 
     @Override
-    public InfoItemPage getPage(String pageUrl) throws IOException, ExtractionException {
-        if (!hasNextPage()) {
-            throw new ExtractionException("Playlist doesn't have more streams");
+    public InfoItemPage<StreamInfoItem> getPage(String pageUrl) throws IOException, ExtractionException {
+        if (pageUrl == null || pageUrl.isEmpty()) {
+            throw new ExtractionException(new IllegalArgumentException("Page url is empty or null"));
         }
 
         StreamInfoItemsCollector collector = new StreamInfoItemsCollector(getServiceId());
         String nextPageUrl = SoundcloudParsingHelper.getStreamsFromApiMinItems(15, collector, pageUrl);
 
-        return new InfoItemPage(collector, nextPageUrl);
+        return new InfoItemPage<>(collector, nextPageUrl);
     }
 }
