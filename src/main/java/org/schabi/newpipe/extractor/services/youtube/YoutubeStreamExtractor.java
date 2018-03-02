@@ -538,13 +538,16 @@ public class YoutubeStreamExtractor extends StreamExtractor {
     private static final String CONTENT = "content";
     private static final String DECRYPTION_FUNC_NAME = "decrypt";
 
+    private static final String VERIFIED_URL_PARAMS = "&has_verified=1&bpctr=9999999999";
+
     private volatile String decryptionCode = "";
 
     private String pageHtml = null;
 
-    private String getPageHtml(Downloader downloader) throws IOException, ExtractionException{
+    private String getPageHtml(Downloader downloader) throws IOException, ExtractionException {
+        final String verifiedUrl = getCleanUrl() + VERIFIED_URL_PARAMS;
         if (pageHtml == null) {
-            pageHtml = downloader.download(getCleanUrl());
+            pageHtml = downloader.download(verifiedUrl);
         }
         return pageHtml;
     }
