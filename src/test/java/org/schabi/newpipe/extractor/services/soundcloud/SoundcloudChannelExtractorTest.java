@@ -2,87 +2,199 @@ package org.schabi.newpipe.extractor.services.soundcloud;
 
 import org.junit.BeforeClass;
 import org.junit.Test;
+import org.junit.experimental.runners.Enclosed;
+import org.junit.runner.RunWith;
 import org.schabi.newpipe.Downloader;
-import org.schabi.newpipe.extractor.ListExtractor;
 import org.schabi.newpipe.extractor.NewPipe;
 import org.schabi.newpipe.extractor.channel.ChannelExtractor;
-import org.schabi.newpipe.extractor.stream.StreamInfoItem;
+import org.schabi.newpipe.extractor.services.BaseChannelExtractorTest;
+import org.schabi.newpipe.extractor.services.BaseListExtractorTest;
 
 import static org.junit.Assert.*;
+import static org.schabi.newpipe.extractor.ExtractorAsserts.assertEmpty;
 import static org.schabi.newpipe.extractor.ExtractorAsserts.assertIsSecureUrl;
 import static org.schabi.newpipe.extractor.ServiceList.SoundCloud;
 
 /**
- * Test for {@link ChannelExtractor}
+ * Test for {@link SoundcloudChannelExtractor}
  */
-
+@RunWith(Enclosed.class)
 public class SoundcloudChannelExtractorTest {
+    public static class LilUzi implements BaseChannelExtractorTest {
+        private static SoundcloudChannelExtractor extractor;
 
-    static ChannelExtractor extractor;
+        @BeforeClass
+        public static void setUp() throws Exception {
+            NewPipe.init(Downloader.getInstance());
+            extractor = (SoundcloudChannelExtractor) SoundCloud
+                    .getChannelExtractor("http://soundcloud.com/liluzivert/sets");
+            extractor.fetchPage();
+        }
 
-    @BeforeClass
-    public static void setUp() throws Exception {
-        NewPipe.init(Downloader.getInstance());
-        extractor = SoundCloud
-                .getChannelExtractor("https://soundcloud.com/liluzivert");
-        extractor.fetchPage();
+        /*//////////////////////////////////////////////////////////////////////////
+        // Extractor
+        //////////////////////////////////////////////////////////////////////////*/
+
+        @Test
+        public void testServiceId() {
+            assertEquals(SoundCloud.getServiceId(), extractor.getServiceId());
+        }
+
+        @Test
+        public void testName() {
+            assertEquals("LIL UZI VERT", extractor.getName());
+        }
+
+        @Test
+        public void testId() {
+            assertEquals("10494998", extractor.getId());
+        }
+
+        @Test
+        public void testCleanUrl() {
+            assertEquals("https://soundcloud.com/liluzivert", extractor.getCleanUrl());
+        }
+
+        @Test
+        public void testOriginalUrl() {
+            assertEquals("http://soundcloud.com/liluzivert/sets", extractor.getOriginalUrl());
+        }
+
+        /*//////////////////////////////////////////////////////////////////////////
+        // ListExtractor
+        //////////////////////////////////////////////////////////////////////////*/
+
+        @Test
+        public void testRelatedItems() throws Exception {
+            BaseListExtractorTest.defaultTestRelatedItems(extractor, SoundCloud.getServiceId());
+        }
+
+        @Test
+        public void testMoreRelatedItems() throws Exception {
+            BaseListExtractorTest.defaultTestMoreItems(extractor, SoundCloud.getServiceId());
+        }
+
+        /*//////////////////////////////////////////////////////////////////////////
+        // ChannelExtractor
+        //////////////////////////////////////////////////////////////////////////*/
+
+        @Test
+        public void testDescription() {
+            assertNotNull(extractor.getDescription());
+        }
+
+        @Test
+        public void testAvatarUrl() {
+            assertIsSecureUrl(extractor.getAvatarUrl());
+        }
+
+        @Test
+        public void testBannerUrl() {
+            assertIsSecureUrl(extractor.getBannerUrl());
+        }
+
+        @Test
+        public void testFeedUrl() {
+            assertEmpty(extractor.getFeedUrl());
+        }
+
+        @Test
+        public void testSubscriberCount() {
+            assertTrue("Wrong subscriber count", extractor.getSubscriberCount() >= 1e6);
+        }
     }
 
-    @Test
-    public void testGetDownloader() throws Exception {
-        assertNotNull(NewPipe.getDownloader());
-    }
+    public static class DubMatix implements BaseChannelExtractorTest {
+        private static SoundcloudChannelExtractor extractor;
 
-    @Test
-    public void testGetName() throws Exception {
-        assertEquals("LIL UZI VERT", extractor.getName());
-    }
+        @BeforeClass
+        public static void setUp() throws Exception {
+            NewPipe.init(Downloader.getInstance());
+            extractor = (SoundcloudChannelExtractor) SoundCloud
+                    .getChannelExtractor("https://soundcloud.com/dubmatix");
+            extractor.fetchPage();
+        }
 
-    @Test
-    public void testGetDescription() throws Exception {
-        assertTrue(extractor.getDescription() != null);
-    }
+        /*//////////////////////////////////////////////////////////////////////////
+        // Additional Testing
+        //////////////////////////////////////////////////////////////////////////*/
 
-    @Test
-    public void testGetAvatarUrl() throws Exception {
-        assertIsSecureUrl(extractor.getAvatarUrl());
-    }
+        @Test
+        public void testGetPageInNewExtractor() throws Exception {
+            final ChannelExtractor newExtractor = SoundCloud.getChannelExtractor(extractor.getCleanUrl());
+            BaseListExtractorTest.defaultTestGetPageInNewExtractor(extractor, newExtractor, SoundCloud.getServiceId());
+        }
 
-    @Test
-    public void testGetStreams() throws Exception {
-        assertFalse("no streams are received", extractor.getInfoItems().getItemList().isEmpty());
-    }
+        /*//////////////////////////////////////////////////////////////////////////
+        // Extractor
+        //////////////////////////////////////////////////////////////////////////*/
 
-    @Test
-    public void testGetStreamsErrors() throws Exception {
-        assertTrue("errors during stream list extraction", extractor.getInfoItems().getErrors().isEmpty());
-    }
+        @Test
+        public void testServiceId() {
+            assertEquals(SoundCloud.getServiceId(), extractor.getServiceId());
+        }
 
-    @Test
-    public void testHasMoreStreams() throws Exception {
-        // Setup the streams
-        extractor.getInfoItems();
-        assertTrue("don't have more streams", extractor.hasNextPage());
-    }
+        @Test
+        public void testName() {
+            assertEquals("dubmatix", extractor.getName());
+        }
 
-    @Test
-    public void testGetSubscriberCount() throws Exception {
-        assertTrue("wrong subscriber count", extractor.getSubscriberCount() >= 1000000);
-    }
+        @Test
+        public void testId() {
+            assertEquals("542134", extractor.getId());
+        }
 
-    @Test
-    public void testGetNextPageUrl() throws Exception {
-        assertTrue(extractor.hasNextPage());
-    }
+        @Test
+        public void testCleanUrl() {
+            assertEquals("https://soundcloud.com/dubmatix", extractor.getCleanUrl());
+        }
 
-    @Test
-    public void testGetPage() throws Exception {
-        // Setup the streams
-        extractor.getInfoItems();
-        ListExtractor.InfoItemPage<StreamInfoItem> nextItemsResult = extractor.getPage(extractor.getNextPageUrl());
-        assertTrue("extractor didn't have next streams", !nextItemsResult.getItemsList().isEmpty());
-        assertTrue("errors occurred during extraction of the next streams", nextItemsResult.getErrors().isEmpty());
-        assertTrue("extractor didn't have more streams after getInfoItemPage", extractor.hasNextPage());
-    }
+        @Test
+        public void testOriginalUrl() {
+            assertEquals("https://soundcloud.com/dubmatix", extractor.getOriginalUrl());
+        }
 
+        /*//////////////////////////////////////////////////////////////////////////
+        // ListExtractor
+        //////////////////////////////////////////////////////////////////////////*/
+
+        @Test
+        public void testRelatedItems() throws Exception {
+            BaseListExtractorTest.defaultTestRelatedItems(extractor, SoundCloud.getServiceId());
+        }
+
+        @Test
+        public void testMoreRelatedItems() throws Exception {
+            BaseListExtractorTest.defaultTestMoreItems(extractor, SoundCloud.getServiceId());
+        }
+
+        /*//////////////////////////////////////////////////////////////////////////
+        // ChannelExtractor
+        //////////////////////////////////////////////////////////////////////////*/
+
+        @Test
+        public void testDescription() {
+            assertNotNull(extractor.getDescription());
+        }
+
+        @Test
+        public void testAvatarUrl() {
+            assertIsSecureUrl(extractor.getAvatarUrl());
+        }
+
+        @Test
+        public void testBannerUrl() {
+            assertIsSecureUrl(extractor.getBannerUrl());
+        }
+
+        @Test
+        public void testFeedUrl() {
+            assertEmpty(extractor.getFeedUrl());
+        }
+
+        @Test
+        public void testSubscriberCount() {
+            assertTrue("Wrong subscriber count", extractor.getSubscriberCount() >= 2e6);
+        }
+    }
 }

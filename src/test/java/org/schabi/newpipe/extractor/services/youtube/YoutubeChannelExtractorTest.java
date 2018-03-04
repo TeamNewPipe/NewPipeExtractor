@@ -2,125 +2,396 @@ package org.schabi.newpipe.extractor.services.youtube;
 
 import org.junit.BeforeClass;
 import org.junit.Test;
+import org.junit.experimental.runners.Enclosed;
+import org.junit.runner.RunWith;
 import org.schabi.newpipe.Downloader;
-import org.schabi.newpipe.extractor.ListExtractor;
 import org.schabi.newpipe.extractor.NewPipe;
+import org.schabi.newpipe.extractor.ServiceList;
 import org.schabi.newpipe.extractor.channel.ChannelExtractor;
-import org.schabi.newpipe.extractor.stream.StreamInfoItem;
+import org.schabi.newpipe.extractor.services.BaseChannelExtractorTest;
+import org.schabi.newpipe.extractor.services.BaseListExtractorTest;
 
 import static org.junit.Assert.*;
-import static org.schabi.newpipe.extractor.ExtractorAsserts.assertEmptyErrors;
+import static org.schabi.newpipe.extractor.ExtractorAsserts.assertIsSecureUrl;
 import static org.schabi.newpipe.extractor.ServiceList.YouTube;
-
-/*
- * Created by Christian Schabesberger on 12.09.16.
- *
- * Copyright (C) Christian Schabesberger 2015 <chris.schabesberger@mailbox.org>
- * YoutubeSearchEngineStreamTest.java is part of NewPipe.
- *
- * NewPipe is free software: you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation, either version 3 of the License, or
- * (at your option) any later version.
- *
- * NewPipe is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- *
- * You should have received a copy of the GNU General Public License
- * along with NewPipe.  If not, see <http://www.gnu.org/licenses/>.
- */
 
 /**
  * Test for {@link ChannelExtractor}
  */
+@RunWith(Enclosed.class)
 public class YoutubeChannelExtractorTest {
+    public static class Gronkh implements BaseChannelExtractorTest {
+        private static YoutubeChannelExtractor extractor;
 
-    static YoutubeChannelExtractor extractor;
+        @BeforeClass
+        public static void setUp() throws Exception {
+            NewPipe.init(Downloader.getInstance());
+            extractor = (YoutubeChannelExtractor) YouTube
+                    .getChannelExtractor("http://www.youtube.com/user/Gronkh");
+            extractor.fetchPage();
+        }
 
-    @BeforeClass
-    public static void setUp() throws Exception {
-        NewPipe.init(Downloader.getInstance());
-        extractor = (YoutubeChannelExtractor) YouTube
-                .getChannelExtractor("https://www.youtube.com/user/Gronkh");
-        extractor.fetchPage();
+        /*//////////////////////////////////////////////////////////////////////////
+        // Extractor
+        //////////////////////////////////////////////////////////////////////////*/
+
+        @Test
+        public void testServiceId() {
+            assertEquals(YouTube.getServiceId(), extractor.getServiceId());
+        }
+
+        @Test
+        public void testName() throws Exception {
+            assertEquals("Gronkh", extractor.getName());
+        }
+
+        @Test
+        public void testId() throws Exception {
+            assertEquals("UCYJ61XIK64sp6ZFFS8sctxw", extractor.getId());
+        }
+
+        @Test
+        public void testCleanUrl() {
+            assertEquals("https://www.youtube.com/channel/UCYJ61XIK64sp6ZFFS8sctxw", extractor.getCleanUrl());
+        }
+
+        @Test
+        public void testOriginalUrl() {
+            assertEquals("http://www.youtube.com/user/Gronkh", extractor.getOriginalUrl());
+        }
+
+        /*//////////////////////////////////////////////////////////////////////////
+        // ListExtractor
+        //////////////////////////////////////////////////////////////////////////*/
+
+        @Test
+        public void testRelatedItems() throws Exception {
+            BaseListExtractorTest.defaultTestRelatedItems(extractor, YouTube.getServiceId());
+        }
+
+        @Test
+        public void testMoreRelatedItems() throws Exception {
+            BaseListExtractorTest.defaultTestMoreItems(extractor, ServiceList.YouTube.getServiceId());
+        }
+
+         /*//////////////////////////////////////////////////////////////////////////
+         // ChannelExtractor
+         //////////////////////////////////////////////////////////////////////////*/
+
+        @Test
+        public void testDescription() throws Exception {
+            assertTrue(extractor.getDescription().contains("Zart im Schmelz und süffig im Abgang. Ungebremster Spieltrieb"));
+        }
+
+        @Test
+        public void testAvatarUrl() throws Exception {
+            String avatarUrl = extractor.getAvatarUrl();
+            assertIsSecureUrl(avatarUrl);
+            assertTrue(avatarUrl, avatarUrl.contains("yt3"));
+        }
+
+        @Test
+        public void testBannerUrl() throws Exception {
+            String bannerUrl = extractor.getBannerUrl();
+            assertIsSecureUrl(bannerUrl);
+            assertTrue(bannerUrl, bannerUrl.contains("yt3"));
+        }
+
+        @Test
+        public void testFeedUrl() throws Exception {
+            assertEquals("https://www.youtube.com/feeds/videos.xml?channel_id=UCYJ61XIK64sp6ZFFS8sctxw", extractor.getFeedUrl());
+        }
+
+        @Test
+        public void testSubscriberCount() throws Exception {
+            assertTrue("Wrong subscriber count", extractor.getSubscriberCount() >= 0);
+        }
     }
 
-    @Test
-    public void testGetDownloader() throws Exception {
-        assertNotNull(NewPipe.getDownloader());
+    public static class Kurzgesagt implements BaseChannelExtractorTest {
+        private static YoutubeChannelExtractor extractor;
+
+        @BeforeClass
+        public static void setUp() throws Exception {
+            NewPipe.init(Downloader.getInstance());
+            extractor = (YoutubeChannelExtractor) YouTube
+                    .getChannelExtractor("https://www.youtube.com/channel/UCsXVk37bltHxD1rDPwtNM8Q");
+            extractor.fetchPage();
+        }
+
+        /*//////////////////////////////////////////////////////////////////////////
+        // Additional Testing
+        //////////////////////////////////////////////////////////////////////////*/
+
+        @Test
+        public void testGetPageInNewExtractor() throws Exception {
+            final ChannelExtractor newExtractor = YouTube.getChannelExtractor(extractor.getCleanUrl());
+            BaseListExtractorTest.defaultTestGetPageInNewExtractor(extractor, newExtractor, YouTube.getServiceId());
+        }
+
+        /*//////////////////////////////////////////////////////////////////////////
+        // Extractor
+        //////////////////////////////////////////////////////////////////////////*/
+
+        @Test
+        public void testServiceId() {
+            assertEquals(YouTube.getServiceId(), extractor.getServiceId());
+        }
+
+        @Test
+        public void testName() throws Exception {
+            String name = extractor.getName();
+            assertTrue(name, name.startsWith("Kurzgesagt"));
+        }
+
+        @Test
+        public void testId() throws Exception {
+            assertEquals("UCsXVk37bltHxD1rDPwtNM8Q", extractor.getId());
+        }
+
+        @Test
+        public void testCleanUrl() {
+            assertEquals("https://www.youtube.com/channel/UCsXVk37bltHxD1rDPwtNM8Q", extractor.getCleanUrl());
+        }
+
+        @Test
+        public void testOriginalUrl() {
+            assertEquals("https://www.youtube.com/channel/UCsXVk37bltHxD1rDPwtNM8Q", extractor.getOriginalUrl());
+        }
+
+        /*//////////////////////////////////////////////////////////////////////////
+        // ListExtractor
+        //////////////////////////////////////////////////////////////////////////*/
+
+        @Test
+        public void testRelatedItems() throws Exception {
+            BaseListExtractorTest.defaultTestRelatedItems(extractor, YouTube.getServiceId());
+        }
+
+        @Test
+        public void testMoreRelatedItems() throws Exception {
+            BaseListExtractorTest.defaultTestMoreItems(extractor, ServiceList.YouTube.getServiceId());
+        }
+
+         /*//////////////////////////////////////////////////////////////////////////
+         // ChannelExtractor
+         //////////////////////////////////////////////////////////////////////////*/
+
+        @Test
+        public void testDescription() throws Exception {
+            final String description = extractor.getDescription();
+            assertTrue(description, description.contains("small team who want to make science look beautiful"));
+            //TODO: Description get cuts out, because the og:description is optimized and don't have all the content
+            //assertTrue(description, description.contains("Currently we make one animation video per month"));
+        }
+
+        @Test
+        public void testAvatarUrl() throws Exception {
+            String avatarUrl = extractor.getAvatarUrl();
+            assertIsSecureUrl(avatarUrl);
+            assertTrue(avatarUrl, avatarUrl.contains("yt3"));
+        }
+
+        @Test
+        public void testBannerUrl() throws Exception {
+            String bannerUrl = extractor.getBannerUrl();
+            assertIsSecureUrl(bannerUrl);
+            assertTrue(bannerUrl, bannerUrl.contains("yt3"));
+        }
+
+        @Test
+        public void testFeedUrl() throws Exception {
+            assertEquals("https://www.youtube.com/feeds/videos.xml?channel_id=UCsXVk37bltHxD1rDPwtNM8Q", extractor.getFeedUrl());
+        }
+
+        @Test
+        public void testSubscriberCount() throws Exception {
+            assertTrue("Wrong subscriber count", extractor.getSubscriberCount() >= 5e6);
+        }
     }
 
-    @Test
-    public void testGetName() throws Exception {
-        assertEquals(extractor.getName(), "Gronkh");
+    public static class CaptainDisillusion implements BaseChannelExtractorTest {
+        private static YoutubeChannelExtractor extractor;
+
+        @BeforeClass
+        public static void setUp() throws Exception {
+            NewPipe.init(Downloader.getInstance());
+            extractor = (YoutubeChannelExtractor) YouTube
+                    .getChannelExtractor("https://www.youtube.com/user/CaptainDisillusion/videos");
+            extractor.fetchPage();
+        }
+
+        /*//////////////////////////////////////////////////////////////////////////
+        // Extractor
+        //////////////////////////////////////////////////////////////////////////*/
+
+        @Test
+        public void testServiceId() {
+            assertEquals(YouTube.getServiceId(), extractor.getServiceId());
+        }
+
+        @Test
+        public void testName() throws Exception {
+            assertEquals("CaptainDisillusion", extractor.getName());
+        }
+
+        @Test
+        public void testId() throws Exception {
+            assertEquals("UCEOXxzW2vU0P-0THehuIIeg", extractor.getId());
+        }
+
+        @Test
+        public void testCleanUrl() {
+            assertEquals("https://www.youtube.com/channel/UCEOXxzW2vU0P-0THehuIIeg", extractor.getCleanUrl());
+        }
+
+        @Test
+        public void testOriginalUrl() {
+            assertEquals("https://www.youtube.com/user/CaptainDisillusion/videos", extractor.getOriginalUrl());
+        }
+
+        /*//////////////////////////////////////////////////////////////////////////
+        // ListExtractor
+        //////////////////////////////////////////////////////////////////////////*/
+
+        @Test
+        public void testRelatedItems() throws Exception {
+            BaseListExtractorTest.defaultTestRelatedItems(extractor, YouTube.getServiceId());
+        }
+
+        @Test
+        public void testMoreRelatedItems() throws Exception {
+            BaseListExtractorTest.defaultTestMoreItems(extractor, ServiceList.YouTube.getServiceId());
+        }
+
+         /*//////////////////////////////////////////////////////////////////////////
+         // ChannelExtractor
+         //////////////////////////////////////////////////////////////////////////*/
+
+        @Test
+        public void testDescription() throws Exception {
+            final String description = extractor.getDescription();
+            assertTrue(description, description.contains("In a world where"));
+        }
+
+        @Test
+        public void testAvatarUrl() throws Exception {
+            String avatarUrl = extractor.getAvatarUrl();
+            assertIsSecureUrl(avatarUrl);
+            assertTrue(avatarUrl, avatarUrl.contains("yt3"));
+        }
+
+        @Test
+        public void testBannerUrl() throws Exception {
+            String bannerUrl = extractor.getBannerUrl();
+            assertIsSecureUrl(bannerUrl);
+            assertTrue(bannerUrl, bannerUrl.contains("yt3"));
+        }
+
+        @Test
+        public void testFeedUrl() throws Exception {
+            assertEquals("https://www.youtube.com/feeds/videos.xml?channel_id=UCEOXxzW2vU0P-0THehuIIeg", extractor.getFeedUrl());
+        }
+
+        @Test
+        public void testSubscriberCount() throws Exception {
+            assertTrue("Wrong subscriber count", extractor.getSubscriberCount() >= 5e5);
+        }
     }
 
-    @Test
-    public void testGetId() throws Exception {
-        assertEquals(extractor.getId(), "UCYJ61XIK64sp6ZFFS8sctxw");
-    }
+    public static class RandomChannel implements BaseChannelExtractorTest {
+        private static YoutubeChannelExtractor extractor;
 
-    @Test
-    public void testGetUrl() throws Exception {
-        assertEquals(extractor.getCleanUrl(), "https://www.youtube.com/channel/UCYJ61XIK64sp6ZFFS8sctxw");
-    }
+        @BeforeClass
+        public static void setUp() throws Exception {
+            NewPipe.init(Downloader.getInstance());
+            extractor = (YoutubeChannelExtractor) YouTube
+                    .getChannelExtractor("https://www.youtube.com/channel/UCUaQMQS9lY5lit3vurpXQ6w");
+            extractor.fetchPage();
+        }
 
-    @Test
-    public void testGetDescription() throws Exception {
-        assertEquals(extractor.getDescription(), "★ ★ ★ KLICK MICH HART, DU SAU! :D ★ ★ ★ Zart im Schmelz und süffig im Abgang. Ungebremster Spieltrieb seit 1896. Tägliche Folgen nonstop seit dem 01.04.2010!...");
-    }
+        /*//////////////////////////////////////////////////////////////////////////
+        // Extractor
+        //////////////////////////////////////////////////////////////////////////*/
 
-    @Test
-    public void testGetAvatarUrl() throws Exception {
-        assertTrue(extractor.getAvatarUrl(), extractor.getAvatarUrl().contains("yt3"));
-    }
+        @Test
+        public void testServiceId() {
+            assertEquals(YouTube.getServiceId(), extractor.getServiceId());
+        }
 
-    @Test
-    public void testGetBannerUrl() throws Exception {
-        assertTrue(extractor.getBannerUrl(), extractor.getBannerUrl().contains("yt3"));
-    }
+        @Test
+        public void testName() throws Exception {
+            assertEquals("random channel", extractor.getName());
+        }
 
-    @Test
-    public void testGetFeedUrl() throws Exception {
-        assertEquals(extractor.getFeedUrl(), "https://www.youtube.com/feeds/videos.xml?channel_id=UCYJ61XIK64sp6ZFFS8sctxw");
-    }
+        @Test
+        public void testId() throws Exception {
+            assertEquals("UCUaQMQS9lY5lit3vurpXQ6w", extractor.getId());
+        }
 
-    @Test
-    public void testGetStreams() throws Exception {
-        assertTrue("no streams are received", !extractor.getInfoItems().getItemList().isEmpty());
-    }
+        @Test
+        public void testCleanUrl() {
+            assertEquals("https://www.youtube.com/channel/UCUaQMQS9lY5lit3vurpXQ6w", extractor.getCleanUrl());
+        }
 
-    @Test
-    public void testGetStreamsErrors() throws Exception {
-        assertEmptyErrors("errors during stream list extraction", extractor.getInfoItems().getErrors());
-    }
+        @Test
+        public void testOriginalUrl() {
+            assertEquals("https://www.youtube.com/channel/UCUaQMQS9lY5lit3vurpXQ6w", extractor.getOriginalUrl());
+        }
 
-    @Test
-    public void testHasMoreStreams() throws Exception {
-        // Setup the streams
-        extractor.getInfoItems();
-        assertTrue("don't have more streams", extractor.hasNextPage());
-    }
+        /*//////////////////////////////////////////////////////////////////////////
+        // ListExtractor
+        //////////////////////////////////////////////////////////////////////////*/
 
-    @Test
-    public void testGetSubscriberCount() throws Exception {
-        assertTrue("wrong subscriber count", extractor.getSubscriberCount() >= 0);
-    }
+        @Test
+        public void testRelatedItems() throws Exception {
+            BaseListExtractorTest.defaultTestRelatedItems(extractor, YouTube.getServiceId());
+        }
 
-    @Test
-    public void testGetNextPageUrl() throws Exception {
-        assertTrue(extractor.hasNextPage());
-    }
+        @Test
+        public void testMoreRelatedItems() {
+            try {
+                BaseListExtractorTest.defaultTestMoreItems(extractor, YouTube.getServiceId());
+            } catch (Throwable ignored) {
+                return;
+            }
 
-    @Test
-    public void testGetPage() throws Exception {
-        // Setup the streams
-        extractor.getInfoItems();
-        ListExtractor.InfoItemPage<StreamInfoItem> nextItemsResult = extractor.getPage(extractor.getNextPageUrl());
-        assertTrue("extractor didn't have next streams", !nextItemsResult.getItemsList().isEmpty());
-        assertEmptyErrors("errors occurred during extraction of the next streams", nextItemsResult.getErrors());
-        assertTrue("extractor didn't have more streams after getInfoItemPage", extractor.hasNextPage());
+            fail("This channel doesn't have more items, it should throw an error");
+        }
+
+         /*//////////////////////////////////////////////////////////////////////////
+         // ChannelExtractor
+         //////////////////////////////////////////////////////////////////////////*/
+
+        @Test
+        public void testDescription() throws Exception {
+            final String description = extractor.getDescription();
+            assertTrue(description, description.contains("Hey there iu will upoload a load of pranks onto this channel"));
+        }
+
+        @Test
+        public void testAvatarUrl() throws Exception {
+            String avatarUrl = extractor.getAvatarUrl();
+            assertIsSecureUrl(avatarUrl);
+            assertTrue(avatarUrl, avatarUrl.contains("yt3"));
+        }
+
+        @Test
+        public void testBannerUrl() throws Exception {
+            String bannerUrl = extractor.getBannerUrl();
+            assertIsSecureUrl(bannerUrl);
+            assertTrue(bannerUrl, bannerUrl.contains("yt3"));
+        }
+
+        @Test
+        public void testFeedUrl() throws Exception {
+            assertEquals("https://www.youtube.com/feeds/videos.xml?channel_id=UCUaQMQS9lY5lit3vurpXQ6w", extractor.getFeedUrl());
+        }
+
+        @Test
+        public void testSubscriberCount() throws Exception {
+            assertTrue("Wrong subscriber count", extractor.getSubscriberCount() >= 50);
+        }
     }
-}
+};
+

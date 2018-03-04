@@ -201,7 +201,7 @@ public class YoutubeChannelExtractor extends ChannelExtractor {
                 return "";
             }
         } catch (Exception e) {
-            throw new ParsingException("could not get next streams' url", e);
+            throw new ParsingException("Could not get next page url", e);
         }
     }
 

@@ -1,19 +1,22 @@
 package org.schabi.newpipe.extractor;
 
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.List;
 
-import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.*;
 
 public class ExtractorAsserts {
     public static void assertEmptyErrors(String message, List<Throwable> errors) {
-        if(!errors.isEmpty()) {
-            for (Throwable throwable : errors) {
-                message += "\n  * " + throwable.getMessage();
+        if (!errors.isEmpty()) {
+            StringBuilder messageBuilder = new StringBuilder(message);
+            for (Throwable e : errors) {
+                messageBuilder.append("\n  * ").append(e.getMessage());
             }
-            throw new AssertionError(message, errors.get(0));
+            messageBuilder.append(" ");
+            throw new AssertionError(messageBuilder.toString(), errors.get(0));
         }
     }
 
@@ -22,7 +25,7 @@ public class ExtractorAsserts {
         try {
             return new URL(url);
         } catch (MalformedURLException e) {
-            throw new AssertionError("Invalid url: " + url, e);
+            throw new AssertionError("Invalid url: " + "\"" + url + "\"", e);
         }
     }
 
@@ -33,5 +36,24 @@ public class ExtractorAsserts {
     public static void assertIsSecureUrl(String urlToCheck) {
         URL url = urlFromString(urlToCheck);
         assertEquals("Protocol of URL is not secure", "https", url.getProtocol());
+    }
+
+    public static void assertNotEmpty(String stringToCheck) {
+        assertNotEmpty(null, stringToCheck);
+    }
+
+    public static void assertNotEmpty(@Nullable String message, String stringToCheck) {
+        assertNotNull(message, stringToCheck);
+        assertFalse(message, stringToCheck.isEmpty());
+    }
+
+    public static void assertEmpty(String stringToCheck) {
+        assertEmpty(null, stringToCheck);
+    }
+
+    public static void assertEmpty(@Nullable String message, String stringToCheck) {
+        if (stringToCheck != null) {
+            assertTrue(message, stringToCheck.isEmpty());
+        }
     }
 }
