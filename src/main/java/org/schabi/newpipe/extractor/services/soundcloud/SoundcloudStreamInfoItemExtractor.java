@@ -5,52 +5,54 @@ import org.schabi.newpipe.extractor.exceptions.ParsingException;
 import org.schabi.newpipe.extractor.stream.StreamInfoItemExtractor;
 import org.schabi.newpipe.extractor.stream.StreamType;
 
+import static org.schabi.newpipe.extractor.utils.Utils.replaceHttpWithHttps;
+
 public class SoundcloudStreamInfoItemExtractor implements StreamInfoItemExtractor {
 
-    protected final JsonObject searchResult;
+    protected final JsonObject itemObject;
 
-    public SoundcloudStreamInfoItemExtractor(JsonObject searchResult) {
-        this.searchResult = searchResult;
+    public SoundcloudStreamInfoItemExtractor(JsonObject itemObject) {
+        this.itemObject = itemObject;
     }
 
     @Override
     public String getUrl() {
-        return searchResult.getString("permalink_url");
+        return replaceHttpWithHttps(itemObject.getString("permalink_url"));
     }
 
     @Override
     public String getName() {
-        return searchResult.getString("title");
+        return itemObject.getString("title");
     }
 
     @Override
     public long getDuration() {
-        return searchResult.getNumber("duration", 0).longValue() / 1000L;
+        return itemObject.getNumber("duration", 0).longValue() / 1000L;
     }
 
     @Override
     public String getUploaderName() {
-        return searchResult.getObject("user").getString("username");
+        return itemObject.getObject("user").getString("username");
     }
 
     @Override
     public String getUploaderUrl() {
-        return searchResult.getObject("user").getString("permalink_url");
+        return replaceHttpWithHttps(itemObject.getObject("user").getString("permalink_url"));
     }
 
     @Override
     public String getUploadDate() throws ParsingException {
-        return SoundcloudParsingHelper.toDateString(searchResult.getString("created_at"));
+        return SoundcloudParsingHelper.toDateString(itemObject.getString("created_at"));
     }
 
     @Override
     public long getViewCount() {
-        return searchResult.getNumber("playback_count", 0).longValue();
+        return itemObject.getNumber("playback_count", 0).longValue();
     }
 
     @Override
     public String getThumbnailUrl() {
-        return searchResult.getString("artwork_url");
+        return itemObject.getString("artwork_url");
     }
 
     @Override

@@ -13,7 +13,11 @@ import javax.annotation.Nonnull;
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+
+import static org.schabi.newpipe.extractor.utils.Utils.replaceHttpWithHttps;
 
 public class SoundcloudStreamExtractor extends StreamExtractor {
     private JsonObject track;
@@ -35,7 +39,7 @@ public class SoundcloudStreamExtractor extends StreamExtractor {
     @Nonnull
     @Override
     public String getCleanUrl() {
-        return track.isString("permalink_url") ? track.getString("permalink_url") : getOriginalUrl();
+        return track.isString("permalink_url") ? replaceHttpWithHttps(track.getString("permalink_url")) : getOriginalUrl();
     }
 
     @Nonnull

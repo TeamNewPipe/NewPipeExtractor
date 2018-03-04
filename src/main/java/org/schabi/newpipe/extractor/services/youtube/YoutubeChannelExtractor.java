@@ -175,7 +175,7 @@ public class YoutubeChannelExtractor extends ChannelExtractor {
             throw new ParsingException("Could not parse json data for next streams", pe);
         }
 
-        final Document ajaxHtml = Jsoup.parse(ajaxJson.getString("content_html"));
+        final Document ajaxHtml = Jsoup.parse(ajaxJson.getString("content_html"), pageUrl);
         collectStreamsFrom(collector, ajaxHtml.select("body").first());
 
         return new InfoItemPage<>(collector, getNextPageUrlFromAjaxPage(ajaxJson, pageUrl));

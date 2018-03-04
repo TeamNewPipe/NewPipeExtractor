@@ -1,5 +1,6 @@
 package org.schabi.newpipe.extractor.services.soundcloud;
 
+import com.grack.nanojson.JsonArray;
 import com.grack.nanojson.JsonObject;
 import com.grack.nanojson.JsonParser;
 import com.grack.nanojson.JsonParserException;
@@ -13,6 +14,8 @@ import org.schabi.newpipe.extractor.stream.StreamInfoItemsCollector;
 
 import javax.annotation.Nonnull;
 import java.io.IOException;
+
+import static org.schabi.newpipe.extractor.utils.Utils.replaceHttpWithHttps;
 
 @SuppressWarnings("WeakerAccess")
 public class SoundcloudChannelExtractor extends ChannelExtractor {
@@ -30,7 +33,7 @@ public class SoundcloudChannelExtractor extends ChannelExtractor {
     public void onFetchPage(@Nonnull Downloader downloader) throws IOException, ExtractionException {
 
         userId = getUrlIdHandler().getId(getOriginalUrl());
-        String apiUrl = "https://api.soundcloud.com/users/" + userId +
+        String apiUrl = "https://api-v2.soundcloud.com/users/" + userId +
                 "?client_id=" + SoundcloudParsingHelper.clientId();
 
         String response = downloader.download(apiUrl);
@@ -44,7 +47,7 @@ public class SoundcloudChannelExtractor extends ChannelExtractor {
     @Nonnull
     @Override
     public String getCleanUrl() {
-        return user.isString("permalink_url") ? user.getString("permalink_url") : getOriginalUrl();
+        return user.isString("permalink_url") ? replaceHttpWithHttps(user.getString("permalink_url")) : getOriginalUrl();
     }
 
     @Nonnull
@@ -66,11 +69,10 @@ public class SoundcloudChannelExtractor extends ChannelExtractor {
 
     @Override
     public String getBannerUrl() {
-        try {
-            return user.getObject("visuals").getArray("visuals").getObject(0).getString("visual_url", "");
-        } catch (NullPointerException e) {
-            return null;
-        }
+        return user.getObject("visuals", new JsonObject())
+                .getArray("visuals", new JsonArray())
+                .getObject(0, new JsonObject())
+                .getString("visual_url");
     }
 
     @Override

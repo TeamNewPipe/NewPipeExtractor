@@ -3,6 +3,8 @@ package org.schabi.newpipe.extractor.services.soundcloud;
 import com.grack.nanojson.JsonObject;
 import org.schabi.newpipe.extractor.channel.ChannelInfoItemExtractor;
 
+import static org.schabi.newpipe.extractor.utils.Utils.replaceHttpWithHttps;
+
 public class SoundcloudChannelInfoItemExtractor implements ChannelInfoItemExtractor {
     private final JsonObject itemObject;
 
@@ -17,7 +19,7 @@ public class SoundcloudChannelInfoItemExtractor implements ChannelInfoItemExtrac
 
     @Override
     public String getUrl() {
-        return itemObject.getString("permalink_url");
+        return replaceHttpWithHttps(itemObject.getString("permalink_url"));
     }
 
     @Override

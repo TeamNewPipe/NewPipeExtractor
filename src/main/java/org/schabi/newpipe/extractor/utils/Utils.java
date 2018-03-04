@@ -6,6 +6,7 @@ import org.schabi.newpipe.extractor.exceptions.ParsingException;
 import java.util.List;
 
 public class Utils {
+
     private Utils() {
         //no instance
     }
@@ -45,6 +46,18 @@ public class Utils {
             e.printStackTrace();
             System.err.println("----------------");
         }
+    }
+
+    private static final String HTTP = "http://";
+    private static final String HTTPS = "https://";
+
+    public static String replaceHttpWithHttps(final String url) {
+        if (url == null) return null;
+
+        if(!url.isEmpty() && url.startsWith(HTTP)) {
+            return HTTPS + url.substring(HTTP.length());
+        }
+        return url;
     }
 }
 

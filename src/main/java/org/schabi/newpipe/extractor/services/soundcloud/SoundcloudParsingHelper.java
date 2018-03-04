@@ -23,11 +23,10 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
+import static org.schabi.newpipe.extractor.utils.Utils.replaceHttpWithHttps;
+
 public class SoundcloudParsingHelper {
     private static String clientId;
-
-    private static final String HTTP = "http://";
-    private static final String HTTPS = "https://";
     
     private SoundcloudParsingHelper() {
     }
@@ -213,13 +212,6 @@ public class SoundcloudParsingHelper {
 
     public static String getStreamsFromApi(StreamInfoItemsCollector collector, String apiUrl) throws ReCaptchaException, ParsingException, IOException {
         return getStreamsFromApi(collector, apiUrl, false);
-    }
-
-    private static String replaceHttpWithHttps(final String url) {
-        if(!url.isEmpty() && url.startsWith(HTTP)) {
-            return HTTPS + url.substring(HTTP.length());
-        }
-        return url;
     }
 
     @Nonnull

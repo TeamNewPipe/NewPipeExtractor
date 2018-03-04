@@ -8,6 +8,8 @@ import org.schabi.newpipe.extractor.exceptions.ParsingException;
 import org.schabi.newpipe.extractor.utils.Parser;
 import org.schabi.newpipe.extractor.utils.Utils;
 
+import static org.schabi.newpipe.extractor.utils.Utils.replaceHttpWithHttps;
+
 public class SoundcloudStreamUrlIdHandler implements UrlIdHandler {
     private static final SoundcloudStreamUrlIdHandler instance = new SoundcloudStreamUrlIdHandler();
     private final String URL_PATTERN = "^https?://(www\\.|m\\.)?soundcloud.com/[0-9a-z_-]+" +
@@ -48,7 +50,7 @@ public class SoundcloudStreamUrlIdHandler implements UrlIdHandler {
             Element ogElement = Jsoup.parse(NewPipe.getDownloader().download(complexUrl))
                     .select("meta[property=og:url]").first();
 
-            return ogElement.attr("content");
+            return replaceHttpWithHttps(ogElement.attr("content"));
         } catch (Exception e) {
             throw new ParsingException(e.getMessage(), e);
         }

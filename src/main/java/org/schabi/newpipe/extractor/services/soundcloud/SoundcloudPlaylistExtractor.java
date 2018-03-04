@@ -14,6 +14,8 @@ import org.schabi.newpipe.extractor.stream.StreamInfoItemsCollector;
 import javax.annotation.Nonnull;
 import java.io.IOException;
 
+import static org.schabi.newpipe.extractor.utils.Utils.replaceHttpWithHttps;
+
 @SuppressWarnings("WeakerAccess")
 public class SoundcloudPlaylistExtractor extends PlaylistExtractor {
     private String playlistId;
@@ -45,7 +47,7 @@ public class SoundcloudPlaylistExtractor extends PlaylistExtractor {
     @Nonnull
     @Override
     public String getCleanUrl() {
-        return playlist.isString("permalink_url") ? playlist.getString("permalink_url") : getOriginalUrl();
+        return playlist.isString("permalink_url") ? replaceHttpWithHttps(playlist.getString("permalink_url")) : getOriginalUrl();
     }
 
     @Nonnull
@@ -62,7 +64,26 @@ public class SoundcloudPlaylistExtractor extends PlaylistExtractor {
 
     @Override
     public String getThumbnailUrl() {
-        return playlist.getString("artwork_url");
+        String artworkUrl = playlist.getString("artwork_url");
+
+        if (artworkUrl == null) {
+            // If the thumbnail is null, traverse the items list and get a valid one,
+            // if it also fails, return null
+            try {
+                final StreamInfoItemsCollector infoItems = getInfoItems();
+                if (infoItems.getItemList().isEmpty()) return null;
+
+                for (StreamInfoItem item : infoItems.getItemList()) {
+                    final String thumbnailUrl = item.getThumbnailUrl();
+                    if (thumbnailUrl == null || thumbnailUrl.isEmpty()) continue;
+
+                    return thumbnailUrl;
+                }
+            } catch (Exception ignored) {
+            }
+        }
+
+        return artworkUrl;
     }
 
     @Override
