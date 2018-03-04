@@ -10,13 +10,13 @@ import org.schabi.newpipe.extractor.ListExtractor;
 import org.schabi.newpipe.extractor.NewPipe;
 import org.schabi.newpipe.extractor.ServiceList;
 import org.schabi.newpipe.extractor.playlist.PlaylistExtractor;
-import org.schabi.newpipe.extractor.services.BaseListExtractorTest;
 import org.schabi.newpipe.extractor.services.BasePlaylistExtractorTest;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 import static org.schabi.newpipe.extractor.ExtractorAsserts.assertIsSecureUrl;
 import static org.schabi.newpipe.extractor.ServiceList.YouTube;
+import static org.schabi.newpipe.extractor.services.DefaultTests.*;
 
 /**
  * Test for {@link YoutubePlaylistExtractor}
@@ -70,12 +70,12 @@ public class YoutubePlaylistExtractorTest {
 
         @Test
         public void testRelatedItems() throws Exception {
-            BaseListExtractorTest.defaultTestRelatedItems(extractor, YouTube.getServiceId());
+            defaultTestRelatedItems(extractor, YouTube.getServiceId());
         }
 
         @Test
         public void testMoreRelatedItems() throws Exception {
-            BaseListExtractorTest.defaultTestMoreItems(extractor, ServiceList.YouTube.getServiceId());
+            defaultTestMoreItems(extractor, ServiceList.YouTube.getServiceId());
         }
 
         /*//////////////////////////////////////////////////////////////////////////
@@ -137,7 +137,7 @@ public class YoutubePlaylistExtractorTest {
         @Test
         public void testGetPageInNewExtractor() throws Exception {
             final PlaylistExtractor newExtractor = YouTube.getPlaylistExtractor(extractor.getCleanUrl());
-            BaseListExtractorTest.defaultTestGetPageInNewExtractor(extractor, newExtractor, YouTube.getServiceId());
+            defaultTestGetPageInNewExtractor(extractor, newExtractor, YouTube.getServiceId());
         }
 
         /*//////////////////////////////////////////////////////////////////////////
@@ -176,16 +176,16 @@ public class YoutubePlaylistExtractorTest {
 
         @Test
         public void testRelatedItems() throws Exception {
-            BaseListExtractorTest.defaultTestRelatedItems(extractor, YouTube.getServiceId());
+            defaultTestRelatedItems(extractor, YouTube.getServiceId());
         }
 
         @Test
         public void testMoreRelatedItems() throws Exception {
-            ListExtractor.InfoItemPage<? extends InfoItem> currentPage = BaseListExtractorTest.defaultTestMoreItems(extractor, ServiceList.YouTube.getServiceId());
+            ListExtractor.InfoItemPage<? extends InfoItem> currentPage = defaultTestMoreItems(extractor, ServiceList.YouTube.getServiceId());
             // Test for 2 more levels
             for (int i = 0; i < 2; i++) {
                 currentPage = extractor.getPage(currentPage.getNextPageUrl());
-                BaseListExtractorTest.defaultTestListOfItems(YouTube.getServiceId(), currentPage.getItemsList(), currentPage.getErrors());
+                defaultTestListOfItems(YouTube.getServiceId(), currentPage.getItemsList(), currentPage.getErrors());
             }
         }
 

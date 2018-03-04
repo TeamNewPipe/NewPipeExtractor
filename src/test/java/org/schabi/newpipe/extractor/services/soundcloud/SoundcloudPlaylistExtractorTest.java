@@ -11,12 +11,12 @@ import org.schabi.newpipe.extractor.ListExtractor;
 import org.schabi.newpipe.extractor.NewPipe;
 import org.schabi.newpipe.extractor.ServiceList;
 import org.schabi.newpipe.extractor.playlist.PlaylistExtractor;
-import org.schabi.newpipe.extractor.services.BaseListExtractorTest;
 import org.schabi.newpipe.extractor.services.BasePlaylistExtractorTest;
 
 import static org.junit.Assert.*;
 import static org.schabi.newpipe.extractor.ExtractorAsserts.assertIsSecureUrl;
 import static org.schabi.newpipe.extractor.ServiceList.SoundCloud;
+import static org.schabi.newpipe.extractor.services.DefaultTests.*;
 
 /**
  * Test for {@link PlaylistExtractor}
@@ -69,13 +69,13 @@ public class SoundcloudPlaylistExtractorTest {
 
         @Test
         public void testRelatedItems() throws Exception {
-            BaseListExtractorTest.defaultTestRelatedItems(extractor, SoundCloud.getServiceId());
+            defaultTestRelatedItems(extractor, SoundCloud.getServiceId());
         }
 
         @Test
         public void testMoreRelatedItems() {
             try {
-                BaseListExtractorTest.defaultTestMoreItems(extractor, SoundCloud.getServiceId());
+                defaultTestMoreItems(extractor, SoundCloud.getServiceId());
             } catch (Throwable ignored) {
                 return;
             }
@@ -167,12 +167,12 @@ public class SoundcloudPlaylistExtractorTest {
 
         @Test
         public void testRelatedItems() throws Exception {
-            BaseListExtractorTest.defaultTestRelatedItems(extractor, SoundCloud.getServiceId());
+            defaultTestRelatedItems(extractor, SoundCloud.getServiceId());
         }
 
         @Test
         public void testMoreRelatedItems() throws Exception {
-            BaseListExtractorTest.defaultTestMoreItems(extractor, SoundCloud.getServiceId());
+            defaultTestMoreItems(extractor, SoundCloud.getServiceId());
         }
 
         /*//////////////////////////////////////////////////////////////////////////
@@ -231,7 +231,7 @@ public class SoundcloudPlaylistExtractorTest {
         @Test
         public void testGetPageInNewExtractor() throws Exception {
             final PlaylistExtractor newExtractor = SoundCloud.getPlaylistExtractor(extractor.getCleanUrl());
-            BaseListExtractorTest.defaultTestGetPageInNewExtractor(extractor, newExtractor, SoundCloud.getServiceId());
+            defaultTestGetPageInNewExtractor(extractor, newExtractor, SoundCloud.getServiceId());
         }
 
         /*//////////////////////////////////////////////////////////////////////////
@@ -269,16 +269,16 @@ public class SoundcloudPlaylistExtractorTest {
 
         @Test
         public void testRelatedItems() throws Exception {
-            BaseListExtractorTest.defaultTestRelatedItems(extractor, SoundCloud.getServiceId());
+            defaultTestRelatedItems(extractor, SoundCloud.getServiceId());
         }
 
         @Test
         public void testMoreRelatedItems() throws Exception {
-            ListExtractor.InfoItemPage<? extends InfoItem> currentPage = BaseListExtractorTest.defaultTestMoreItems(extractor, ServiceList.SoundCloud.getServiceId());
+            ListExtractor.InfoItemPage<? extends InfoItem> currentPage = defaultTestMoreItems(extractor, ServiceList.SoundCloud.getServiceId());
             // Test for 2 more levels
             for (int i = 0; i < 2; i++) {
                 currentPage = extractor.getPage(currentPage.getNextPageUrl());
-                BaseListExtractorTest.defaultTestListOfItems(SoundCloud.getServiceId(), currentPage.getItemsList(), currentPage.getErrors());
+                defaultTestListOfItems(SoundCloud.getServiceId(), currentPage.getItemsList(), currentPage.getErrors());
             }
         }
 

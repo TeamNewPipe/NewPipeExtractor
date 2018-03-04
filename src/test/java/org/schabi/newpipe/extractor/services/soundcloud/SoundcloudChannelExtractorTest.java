@@ -8,12 +8,12 @@ import org.schabi.newpipe.Downloader;
 import org.schabi.newpipe.extractor.NewPipe;
 import org.schabi.newpipe.extractor.channel.ChannelExtractor;
 import org.schabi.newpipe.extractor.services.BaseChannelExtractorTest;
-import org.schabi.newpipe.extractor.services.BaseListExtractorTest;
 
 import static org.junit.Assert.*;
 import static org.schabi.newpipe.extractor.ExtractorAsserts.assertEmpty;
 import static org.schabi.newpipe.extractor.ExtractorAsserts.assertIsSecureUrl;
 import static org.schabi.newpipe.extractor.ServiceList.SoundCloud;
+import static org.schabi.newpipe.extractor.services.DefaultTests.*;
 
 /**
  * Test for {@link SoundcloudChannelExtractor}
@@ -66,12 +66,12 @@ public class SoundcloudChannelExtractorTest {
 
         @Test
         public void testRelatedItems() throws Exception {
-            BaseListExtractorTest.defaultTestRelatedItems(extractor, SoundCloud.getServiceId());
+            defaultTestRelatedItems(extractor, SoundCloud.getServiceId());
         }
 
         @Test
         public void testMoreRelatedItems() throws Exception {
-            BaseListExtractorTest.defaultTestMoreItems(extractor, SoundCloud.getServiceId());
+            defaultTestMoreItems(extractor, SoundCloud.getServiceId());
         }
 
         /*//////////////////////////////////////////////////////////////////////////
@@ -122,7 +122,7 @@ public class SoundcloudChannelExtractorTest {
         @Test
         public void testGetPageInNewExtractor() throws Exception {
             final ChannelExtractor newExtractor = SoundCloud.getChannelExtractor(extractor.getCleanUrl());
-            BaseListExtractorTest.defaultTestGetPageInNewExtractor(extractor, newExtractor, SoundCloud.getServiceId());
+            defaultTestGetPageInNewExtractor(extractor, newExtractor, SoundCloud.getServiceId());
         }
 
         /*//////////////////////////////////////////////////////////////////////////
@@ -160,12 +160,12 @@ public class SoundcloudChannelExtractorTest {
 
         @Test
         public void testRelatedItems() throws Exception {
-            BaseListExtractorTest.defaultTestRelatedItems(extractor, SoundCloud.getServiceId());
+            defaultTestRelatedItems(extractor, SoundCloud.getServiceId());
         }
 
         @Test
         public void testMoreRelatedItems() throws Exception {
-            BaseListExtractorTest.defaultTestMoreItems(extractor, SoundCloud.getServiceId());
+            defaultTestMoreItems(extractor, SoundCloud.getServiceId());
         }
 
         /*//////////////////////////////////////////////////////////////////////////

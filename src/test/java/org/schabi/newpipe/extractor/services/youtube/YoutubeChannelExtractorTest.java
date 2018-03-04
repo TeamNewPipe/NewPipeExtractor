@@ -9,11 +9,11 @@ import org.schabi.newpipe.extractor.NewPipe;
 import org.schabi.newpipe.extractor.ServiceList;
 import org.schabi.newpipe.extractor.channel.ChannelExtractor;
 import org.schabi.newpipe.extractor.services.BaseChannelExtractorTest;
-import org.schabi.newpipe.extractor.services.BaseListExtractorTest;
 
 import static org.junit.Assert.*;
 import static org.schabi.newpipe.extractor.ExtractorAsserts.assertIsSecureUrl;
 import static org.schabi.newpipe.extractor.ServiceList.YouTube;
+import static org.schabi.newpipe.extractor.services.DefaultTests.*;
 
 /**
  * Test for {@link ChannelExtractor}
@@ -66,12 +66,12 @@ public class YoutubeChannelExtractorTest {
 
         @Test
         public void testRelatedItems() throws Exception {
-            BaseListExtractorTest.defaultTestRelatedItems(extractor, YouTube.getServiceId());
+            defaultTestRelatedItems(extractor, YouTube.getServiceId());
         }
 
         @Test
         public void testMoreRelatedItems() throws Exception {
-            BaseListExtractorTest.defaultTestMoreItems(extractor, ServiceList.YouTube.getServiceId());
+            defaultTestMoreItems(extractor, ServiceList.YouTube.getServiceId());
         }
 
          /*//////////////////////////////////////////////////////////////////////////
@@ -126,7 +126,7 @@ public class YoutubeChannelExtractorTest {
         @Test
         public void testGetPageInNewExtractor() throws Exception {
             final ChannelExtractor newExtractor = YouTube.getChannelExtractor(extractor.getCleanUrl());
-            BaseListExtractorTest.defaultTestGetPageInNewExtractor(extractor, newExtractor, YouTube.getServiceId());
+            defaultTestGetPageInNewExtractor(extractor, newExtractor, YouTube.getServiceId());
         }
 
         /*//////////////////////////////////////////////////////////////////////////
@@ -165,12 +165,12 @@ public class YoutubeChannelExtractorTest {
 
         @Test
         public void testRelatedItems() throws Exception {
-            BaseListExtractorTest.defaultTestRelatedItems(extractor, YouTube.getServiceId());
+            defaultTestRelatedItems(extractor, YouTube.getServiceId());
         }
 
         @Test
         public void testMoreRelatedItems() throws Exception {
-            BaseListExtractorTest.defaultTestMoreItems(extractor, ServiceList.YouTube.getServiceId());
+            defaultTestMoreItems(extractor, ServiceList.YouTube.getServiceId());
         }
 
          /*//////////////////////////////////////////////////////////////////////////
@@ -256,12 +256,12 @@ public class YoutubeChannelExtractorTest {
 
         @Test
         public void testRelatedItems() throws Exception {
-            BaseListExtractorTest.defaultTestRelatedItems(extractor, YouTube.getServiceId());
+            defaultTestRelatedItems(extractor, YouTube.getServiceId());
         }
 
         @Test
         public void testMoreRelatedItems() throws Exception {
-            BaseListExtractorTest.defaultTestMoreItems(extractor, ServiceList.YouTube.getServiceId());
+            defaultTestMoreItems(extractor, ServiceList.YouTube.getServiceId());
         }
 
          /*//////////////////////////////////////////////////////////////////////////
@@ -345,13 +345,13 @@ public class YoutubeChannelExtractorTest {
 
         @Test
         public void testRelatedItems() throws Exception {
-            BaseListExtractorTest.defaultTestRelatedItems(extractor, YouTube.getServiceId());
+            defaultTestRelatedItems(extractor, YouTube.getServiceId());
         }
 
         @Test
         public void testMoreRelatedItems() {
             try {
-                BaseListExtractorTest.defaultTestMoreItems(extractor, YouTube.getServiceId());
+                defaultTestMoreItems(extractor, YouTube.getServiceId());
             } catch (Throwable ignored) {
                 return;
             }
