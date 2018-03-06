@@ -126,7 +126,8 @@ public abstract class StreamExtractor extends Extractor {
      * @return the url as a string or an empty string
      * @throws ParsingException if an error occurs while reading
      */
-    public abstract String getDashMpdUrl() throws ParsingException;
+    @Nonnull public abstract String getDashMpdUrl() throws ParsingException;
+    @Nonnull public abstract String getHlsUrl() throws ParsingException;
     public abstract List<AudioStream> getAudioStreams() throws IOException, ExtractionException;
     public abstract List<VideoStream> getVideoStreams() throws IOException, ExtractionException;
     public abstract List<VideoStream> getVideoOnlyStreams() throws IOException, ExtractionException;

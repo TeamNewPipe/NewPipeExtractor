@@ -44,23 +44,10 @@ public class SearchResult {
         this.errors = Collections.unmodifiableList(new ArrayList<>(errors));
     }
 
-    public static SearchResult getSearchResult(SearchEngine engine, String query, int page, String languageCode, SearchEngine.Filter filter)
+    public static SearchResult getSearchResult(@Nonnull final SearchEngine engine, final String query, final int page,
+                                               final String languageCode, final SearchEngine.Filter filter)
             throws IOException, ExtractionException {
-
-        SearchResult result = engine
-                .search(query, page, languageCode, filter)
-                .getSearchResult();
-        if (result.resultList.isEmpty()) {
-            if (result.suggestion.isEmpty()) {
-                if (result.errors.isEmpty()) {
-                    throw new ExtractionException("Empty result despite no error");
-                }
-            } else {
-                // This is used as a fallback. Do not relay on it !!!
-                throw new SearchEngine.NothingFoundException(result.suggestion);
-            }
-        }
-        return result;
+        return engine.search(query, page, languageCode, filter).getSearchResult();
     }
 
     public String getSuggestion() {
