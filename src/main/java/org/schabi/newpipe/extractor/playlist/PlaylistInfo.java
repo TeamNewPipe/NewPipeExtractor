@@ -75,63 +75,63 @@ public class PlaylistInfo extends ListInfo {
             info.addError(e);
         }
 
-        info.setRelatedStreams(getInfoItemsOrLogError(info, extractor));
+        info.setRelatedItems(getInfoItemsOrLogError(info, extractor));
         info.setNextPageUrl(extractor.getNextPageUrl());
         return info;
     }
 
-    public String thumbnail_url;
-    public String banner_url;
-    public String uploader_url;
-    public String uploader_name;
-    public String uploader_avatar_url;
-    public long stream_count = 0;
+    private String thumbnailUrl;
+    private String bannerUrl;
+    private String uploaderUrl;
+    private String uploaderName;
+    private String uploaderAvatarUrl;
+    private long streamCount = 0;
 
     public String getThumbnailUrl() {
-        return thumbnail_url;
-    }
-
-    public String getBannerUrl() {
-        return banner_url;
-    }
-
-    public String getUploaderUrl() {
-        return uploader_url;
-    }
-
-    public String getUploaderName() {
-        return uploader_name;
-    }
-
-    public String getUploaderAvatarUrl() {
-        return uploader_avatar_url;
-    }
-
-    public long getStreamCount() {
-        return stream_count;
+        return thumbnailUrl;
     }
 
     public void setThumbnailUrl(String thumbnailUrl) {
-        this.thumbnail_url = thumbnailUrl;
+        this.thumbnailUrl = thumbnailUrl;
+    }
+
+    public String getBannerUrl() {
+        return bannerUrl;
     }
 
     public void setBannerUrl(String bannerUrl) {
-        this.banner_url = bannerUrl;
+        this.bannerUrl = bannerUrl;
+    }
+
+    public String getUploaderUrl() {
+        return uploaderUrl;
     }
 
     public void setUploaderUrl(String uploaderUrl) {
-        this.uploader_url = uploaderUrl;
+        this.uploaderUrl = uploaderUrl;
+    }
+
+    public String getUploaderName() {
+        return uploaderName;
     }
 
     public void setUploaderName(String uploaderName) {
-        this.uploader_name = uploaderName;
+        this.uploaderName = uploaderName;
+    }
+
+    public String getUploaderAvatarUrl() {
+        return uploaderAvatarUrl;
     }
 
     public void setUploaderAvatarUrl(String uploaderAvatarUrl) {
-        this.uploader_avatar_url = uploaderAvatarUrl;
+        this.uploaderAvatarUrl = uploaderAvatarUrl;
+    }
+
+    public long getStreamCount() {
+        return streamCount;
     }
 
     public void setStreamCount(long streamCount) {
-        this.stream_count = streamCount;
+        this.streamCount = streamCount;
     }
 }

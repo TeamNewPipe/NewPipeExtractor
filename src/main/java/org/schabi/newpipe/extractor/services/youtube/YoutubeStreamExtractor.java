@@ -477,7 +477,7 @@ public class YoutubeStreamExtractor extends StreamExtractor {
             collector.commit(extractVideoPreviewInfo(doc.select("div[class=\"watch-sidebar-section\"]")
                     .first().select("li").first()));
 
-            return collector.getItemList().get(0);
+            return collector.getItems().get(0);
         } catch (Exception e) {
             throw new ParsingException("Could not get next video", e);
         }

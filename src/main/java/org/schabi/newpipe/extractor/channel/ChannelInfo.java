@@ -79,7 +79,7 @@ public class ChannelInfo extends ListInfo {
             info.addError(e);
         }
 
-        info.setRelatedStreams(ExtractorHelper.getInfoItemsOrLogError(info, extractor));
+        info.setRelatedItems(ExtractorHelper.getInfoItemsOrLogError(info, extractor));
 
         try {
             info.setSubscriberCount(extractor.getSubscriberCount());
@@ -96,42 +96,42 @@ public class ChannelInfo extends ListInfo {
         return info;
     }
 
-    public String avatar_url;
-    public String banner_url;
-    public String feed_url;
-    public long subscriber_count = -1;
-    public String description;
+    private String avatarUrl;
+    private String bannerUrl;
+    private String feedUrl;
+    private long subscriberCount = -1;
+    private String description;
 
     public String getAvatarUrl() {
-        return avatar_url;
+        return avatarUrl;
     }
 
     public void setAvatarUrl(String avatarUrl) {
-        this.avatar_url = avatarUrl;
+        this.avatarUrl = avatarUrl;
     }
 
     public String getBannerUrl() {
-        return banner_url;
+        return bannerUrl;
     }
 
     public void setBannerUrl(String bannerUrl) {
-        this.banner_url = bannerUrl;
+        this.bannerUrl = bannerUrl;
     }
 
     public String getFeedUrl() {
-        return feed_url;
+        return feedUrl;
     }
 
     public void setFeedUrl(String feedUrl) {
-        this.feed_url = feedUrl;
+        this.feedUrl = feedUrl;
     }
 
     public long getSubscriberCount() {
-        return subscriber_count;
+        return subscriberCount;
     }
 
     public void setSubscriberCount(long subscriberCount) {
-        this.subscriber_count = subscriberCount;
+        this.subscriberCount = subscriberCount;
     }
 
     public String getDescription() {

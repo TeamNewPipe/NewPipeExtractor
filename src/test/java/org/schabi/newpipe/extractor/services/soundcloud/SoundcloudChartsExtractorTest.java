@@ -57,7 +57,7 @@ public class SoundcloudChartsExtractorTest {
             }
         }
         assertTrue("no streams are received",
-                !collector.getItemList().isEmpty()
+                !collector.getItems().isEmpty()
                         && collector.getErrors().isEmpty());
     }
 
@@ -80,7 +80,7 @@ public class SoundcloudChartsExtractorTest {
 
     @Test
     public void testGetNextPage() throws Exception {
-        extractor.getInfoItems().getItemList();
+        extractor.getInfoItems().getItems();
         assertFalse("extractor has next streams", extractor.getPage(extractor.getNextPageUrl()) == null
                 || extractor.getPage(extractor.getNextPageUrl()).getItemsList().isEmpty());
     }

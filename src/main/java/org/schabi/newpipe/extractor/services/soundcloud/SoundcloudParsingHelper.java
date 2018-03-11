@@ -119,7 +119,7 @@ public class SoundcloudParsingHelper {
     public static String getUsersFromApiMinItems(int minItems, ChannelInfoItemsCollector collector, String apiUrl) throws IOException, ReCaptchaException, ParsingException {
         String nextPageUrl = SoundcloudParsingHelper.getUsersFromApi(collector, apiUrl);
 
-        while (!nextPageUrl.isEmpty() && collector.getItemList().size() < minItems) {
+        while (!nextPageUrl.isEmpty() && collector.getItems().size() < minItems) {
             nextPageUrl = SoundcloudParsingHelper.getUsersFromApi(collector, nextPageUrl);
         }
 
@@ -170,7 +170,7 @@ public class SoundcloudParsingHelper {
     public static String getStreamsFromApiMinItems(int minItems, StreamInfoItemsCollector collector, String apiUrl) throws IOException, ReCaptchaException, ParsingException {
         String nextPageUrl = SoundcloudParsingHelper.getStreamsFromApi(collector, apiUrl);
 
-        while (!nextPageUrl.isEmpty() && collector.getItemList().size() < minItems) {
+        while (!nextPageUrl.isEmpty() && collector.getItems().size() < minItems) {
             nextPageUrl = SoundcloudParsingHelper.getStreamsFromApi(collector, nextPageUrl);
         }
 

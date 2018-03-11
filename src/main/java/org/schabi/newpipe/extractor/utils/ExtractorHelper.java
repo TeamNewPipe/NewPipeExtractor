@@ -42,7 +42,7 @@ public class ExtractorHelper {
     private static List<InfoItem> getInfoItems(Info info, InfoItemsCollector collector) {
         List<InfoItem> result;
         try {
-            result = collector.getItemList();
+            result = collector.getItems();
             info.addAllErrors(collector.getErrors());
         } catch (Exception e) {
             info.addError(e);

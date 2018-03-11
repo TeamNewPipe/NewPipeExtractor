@@ -43,7 +43,7 @@ public class SoundcloudSubscriptionExtractor extends SubscriptionExtractor {
         // ± 2000 is the limit of followings on SoundCloud, so this minimum should be enough
         SoundcloudParsingHelper.getUsersFromApiMinItems(2500, collector, apiUrl);
 
-        return toSubscriptionItems(collector.getItemList());
+        return toSubscriptionItems(collector.getItems());
     }
 
     private String getUrlFrom(String channelUrl) {

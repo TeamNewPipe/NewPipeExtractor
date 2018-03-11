@@ -31,7 +31,7 @@ public interface Collector<I, E> {
      * Get all items
      * @return the items
      */
-    List<I> getItemList();
+    List<I> getItems();
 
     /**
      * Get all errors

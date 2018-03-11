@@ -71,9 +71,9 @@ public class SoundcloudPlaylistExtractor extends PlaylistExtractor {
             // if it also fails, return null
             try {
                 final StreamInfoItemsCollector infoItems = getInfoItems();
-                if (infoItems.getItemList().isEmpty()) return null;
+                if (infoItems.getItems().isEmpty()) return null;
 
-                for (StreamInfoItem item : infoItems.getItemList()) {
+                for (StreamInfoItem item : infoItems.getItems()) {
                     final String thumbnailUrl = item.getThumbnailUrl();
                     if (thumbnailUrl == null || thumbnailUrl.isEmpty()) continue;
 

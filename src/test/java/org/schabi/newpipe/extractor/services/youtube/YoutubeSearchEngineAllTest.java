@@ -52,8 +52,8 @@ public class YoutubeSearchEngineAllTest extends BaseYoutubeSearchTest {
 
         // THe channel should be the first item
         assertTrue(firstInfoItem instanceof ChannelInfoItem);
-        assertEquals("name", "PewDiePie", firstInfoItem.name);
-        assertEquals("url","https://www.youtube.com/user/PewDiePie", firstInfoItem.url);
+        assertEquals("name", "PewDiePie", firstInfoItem.getName());
+        assertEquals("url","https://www.youtube.com/user/PewDiePie", firstInfoItem.getUrl());
     }
 
     @Ignore

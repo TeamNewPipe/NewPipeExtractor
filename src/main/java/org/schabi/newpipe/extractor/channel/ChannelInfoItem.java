@@ -24,9 +24,9 @@ import org.schabi.newpipe.extractor.InfoItem;
 
 public class ChannelInfoItem extends InfoItem {
 
-    public String description;
-    public long subscriber_count = -1;
-    public long stream_count = -1;
+    private String description;
+    private long subscriberCount = -1;
+    private long streamCount = -1;
 
 
     public ChannelInfoItem(int serviceId, String url, String name) {
@@ -42,18 +42,18 @@ public class ChannelInfoItem extends InfoItem {
     }
 
     public long getSubscriberCount() {
-        return subscriber_count;
+        return subscriberCount;
     }
 
     public void setSubscriberCount(long subscriber_count) {
-        this.subscriber_count = subscriber_count;
+        this.subscriberCount = subscriber_count;
     }
 
     public long getStreamCount() {
-        return stream_count;
+        return streamCount;
     }
 
     public void setStreamCount(long stream_count) {
-        this.stream_count = stream_count;
+        this.streamCount = stream_count;
     }
 }

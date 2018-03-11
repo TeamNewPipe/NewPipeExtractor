@@ -26,42 +26,46 @@ import org.schabi.newpipe.extractor.InfoItem;
  * Info object for previews of unopened videos, eg search results, related videos
  */
 public class StreamInfoItem extends InfoItem {
-    public final StreamType stream_type;
+    private final StreamType streamType;
 
-    public String uploader_name;
-    public String upload_date;
-    public long view_count = -1;
-    public long duration = -1;
+    private String uploaderName;
+    private String uploadDate;
+    private long viewCount = -1;
+    private long duration = -1;
 
     private String uploaderUrl = null;
 
     public StreamInfoItem(int serviceId, String url, String name, StreamType streamType) {
         super(InfoType.STREAM, serviceId, url, name);
-        this.stream_type = streamType;
-    }
-
-    public void setUploaderUrl(String uploaderUrl) {
-        this.uploaderUrl = uploaderUrl;
-    }
-
-    public String getUploaderUrl() {
-        return uploaderUrl;
+        this.streamType = streamType;
     }
 
     public StreamType getStreamType() {
-        return stream_type;
+        return streamType;
     }
 
     public String getUploaderName() {
-        return uploader_name;
+        return uploaderName;
+    }
+
+    public void setUploaderName(String uploader_name) {
+        this.uploaderName = uploader_name;
     }
 
     public String getUploadDate() {
-        return upload_date;
+        return uploadDate;
+    }
+
+    public void setUploadDate(String upload_date) {
+        this.uploadDate = upload_date;
     }
 
     public long getViewCount() {
-        return view_count;
+        return viewCount;
+    }
+
+    public void setViewCount(long view_count) {
+        this.viewCount = view_count;
     }
 
     public long getDuration() {
@@ -72,32 +76,28 @@ public class StreamInfoItem extends InfoItem {
         this.duration = duration;
     }
 
-    public void setUploaderName(String uploader_name) {
-        this.uploader_name = uploader_name;
+    public String getUploaderUrl() {
+        return uploaderUrl;
     }
 
-    public void setUploadDate(String upload_date) {
-        this.upload_date = upload_date;
-    }
-
-    public void setViewCount(long view_count) {
-        this.view_count = view_count;
+    public void setUploaderUrl(String uploaderUrl) {
+        this.uploaderUrl = uploaderUrl;
     }
 
     @Override
     public String toString() {
         return "StreamInfoItem{" +
-                "stream_type=" + stream_type +
-                ", uploader_name='" + uploader_name + '\'' +
-                ", upload_date='" + upload_date + '\'' +
-                ", view_count=" + view_count +
+                "streamType=" + streamType +
+                ", uploaderName='" + uploaderName + '\'' +
+                ", uploadDate='" + uploadDate + '\'' +
+                ", viewCount=" + viewCount +
                 ", duration=" + duration +
                 ", uploaderUrl='" + uploaderUrl + '\'' +
-                ", info_type=" + info_type +
-                ", service_id=" + service_id +
-                ", url='" + url + '\'' +
-                ", name='" + name + '\'' +
-                ", thumbnail_url='" + thumbnail_url + '\'' +
+                ", infoType=" + getInfoType() +
+                ", serviceId=" + getServiceId() +
+                ", url='" + getUrl() + '\'' +
+                ", name='" + getName() + '\'' +
+                ", thumbnailUrl='" + getThumbnailUrl() + '\'' +
                 '}';
     }
 }

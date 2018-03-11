@@ -7,7 +7,7 @@ import org.schabi.newpipe.extractor.utils.DashMpdParser;
 import org.schabi.newpipe.extractor.utils.ExtractorHelper;
 
 import java.io.IOException;
-import java.util.Collections;
+import java.util.ArrayList;
 import java.util.List;
 
 /*
@@ -33,207 +33,18 @@ import java.util.List;
 /**
  * Info object for opened videos, ie the video ready to play.
  */
-@SuppressWarnings("WeakerAccess")
 public class StreamInfo extends Info {
-
-    public StreamInfo(int serviceId, String url, StreamType streamType, String id, String name, int ageLimit) {
-        super(serviceId, id, url, name);
-        this.stream_type = streamType;
-        this.age_limit = ageLimit;
-    }
-
-    /**
-     * Get the stream type
-     * @return the stream type
-     */
-    public StreamType getStreamType() {
-        return stream_type;
-    }
-
-    /**
-     * Get the thumbnail url
-     * @return the thumbnail url as a string
-     */
-    public String getThumbnailUrl() {
-       return thumbnail_url;
-    }
-
-    public String getUploadDate() {
-        return upload_date;
-    }
-
-    /**
-     * Get the duration in seconds
-     * @return the duration in seconds
-     */
-    public long getDuration() {
-        return duration;
-    }
-
-    public int getAgeLimit() {
-        return age_limit;
-    }
-
-    public String getDescription() {
-        return description;
-    }
-
-    public long getViewCount() {
-        return view_count;
-    }
-
-    /**
-     * Get the number of likes.
-     * @return The number of likes or -1 if this information is not available
-     */
-    public long getLikeCount() {
-        return like_count;
-    }
-
-    /**
-     * Get the number of dislikes.
-     * @return The number of likes or -1 if this information is not available
-     */
-    public long getDislikeCount() {
-        return dislike_count;
-    }
-
-    public String getUploaderName() {
-        return uploader_name;
-    }
-
-    public String getUploaderUrl() {
-        return uploader_url;
-    }
-
-    public String getUploaderAvatarUrl() {
-        return uploader_avatar_url;
-    }
-
-    public List<VideoStream> getVideoStreams() {
-        return video_streams;
-    }
-
-    public List<AudioStream> getAudioStreams() {
-        return audio_streams;
-    }
-
-    public List<VideoStream> getVideoOnlyStreams() {
-        return video_only_streams;
-    }
-
-    public String getDashMpdUrl() {
-        return dashMpdUrl;
-    }
-
-    public String getHlsUrl() {
-        return hlsUrl;
-    }
-
-    public StreamInfoItem getNextVideo() {
-        return next_video;
-    }
-
-    public List<InfoItem> getRelatedStreams() {
-        return related_streams;
-    }
-
-    public long getStartPosition() {
-        return start_position;
-    }
-
-    public List<Subtitles> getSubtitles() {
-        return subtitles;
-    }
-
-    public void setStreamType(StreamType stream_type) {
-        this.stream_type = stream_type;
-    }
-
-    public void setThumbnailUrl(String thumbnail_url) {
-        this.thumbnail_url = thumbnail_url;
-    }
-
-    public void setUploadDate(String upload_date) {
-        this.upload_date = upload_date;
-    }
-
-    public void setDuration(long duration) {
-        this.duration = duration;
-    }
-
-    public void setAgeLimit(int age_limit) {
-        this.age_limit = age_limit;
-    }
-
-    public void setDescription(String description) {
-        this.description = description;
-    }
-
-    public void setViewCount(long view_count) {
-        this.view_count = view_count;
-    }
-
-    public void setLikeCount(long like_count) {
-        this.like_count = like_count;
-    }
-
-    public void setDislikeCount(long dislike_count) {
-        this.dislike_count = dislike_count;
-    }
-
-    public void setUploaderName(String uploader_name) {
-        this.uploader_name = uploader_name;
-    }
-
-    public void setUploaderUrl(String uploader_url) {
-        this.uploader_url = uploader_url;
-    }
-
-    public void setUploaderAvatarUrl(String uploader_avatar_url) {
-        this.uploader_avatar_url = uploader_avatar_url;
-    }
-
-    public void setVideoStreams(List<VideoStream> video_streams) {
-        this.video_streams = video_streams;
-    }
-
-    public void setAudioStreams(List<AudioStream> audio_streams) {
-        this.audio_streams = audio_streams;
-    }
-
-    public void setVideoOnlyStreams(List<VideoStream> video_only_streams) {
-        this.video_only_streams = video_only_streams;
-    }
-
-    public void setDashMpdUrl(String dashMpdUrl) {
-        this.dashMpdUrl = dashMpdUrl;
-    }
-
-    public void setHlsUrl(String hlsUrl) {
-        this.hlsUrl = hlsUrl;
-    }
-
-    public void setNextVideo(StreamInfoItem next_video) {
-        this.next_video = next_video;
-    }
-
-    public void setRelatedStreams(List<InfoItem> related_streams) {
-        this.related_streams = related_streams;
-    }
-
-    public void setStartPosition(long start_position) {
-        this.start_position = start_position;
-    }
-
-    public void setSubtitles(List<Subtitles> subtitles) {
-        this.subtitles = subtitles;
-    }
 
     public static class StreamExtractException extends ExtractionException {
         StreamExtractException(String message) {
             super(message);
         }
+    }
+
+    public StreamInfo(int serviceId, String url, StreamType streamType, String id, String name, int ageLimit) {
+        super(serviceId, id, url, name);
+        this.streamType = streamType;
+        this.ageLimit = ageLimit;
     }
 
     public static StreamInfo getInfo(String url) throws IOException, ExtractionException {
@@ -244,10 +55,6 @@ public class StreamInfo extends Info {
         return getInfo(service.getStreamExtractor(url));
     }
 
-    /**
-     * Fills out the video info fields which are common to all services.
-     * Probably needs to be overridden by subclasses
-     */
     private static StreamInfo getInfo(StreamExtractor extractor) throws ExtractionException, IOException {
         extractor.fetchPage();
         StreamInfo streamInfo;
@@ -332,9 +139,9 @@ public class StreamInfo extends Info {
         }
 
         // Lists can be null if a exception was thrown during extraction
-        if (streamInfo.getVideoStreams() == null) streamInfo.setVideoStreams(Collections.<VideoStream>emptyList());
-        if (streamInfo.getVideoOnlyStreams()== null) streamInfo.setVideoOnlyStreams(Collections.<VideoStream>emptyList());
-        if (streamInfo.getAudioStreams() == null) streamInfo.setAudioStreams(Collections.<AudioStream>emptyList());
+        if (streamInfo.getVideoStreams() == null) streamInfo.setVideoStreams(new ArrayList<VideoStream>());
+        if (streamInfo.getVideoOnlyStreams() == null) streamInfo.setVideoOnlyStreams(new ArrayList<VideoStream>());
+        if (streamInfo.getAudioStreams() == null) streamInfo.setAudioStreams(new ArrayList<AudioStream>());
 
         Exception dashMpdError = null;
         if (streamInfo.getDashMpdUrl() != null && !streamInfo.getDashMpdUrl().isEmpty()) {
@@ -348,8 +155,8 @@ public class StreamInfo extends Info {
         }
 
         // Either audio or video has to be available, otherwise we didn't get a stream (since videoOnly are optional, they don't count).
-        if ((streamInfo.video_streams.isEmpty())
-                && (streamInfo.audio_streams.isEmpty())) {
+        if ((streamInfo.videoStreams.isEmpty())
+                && (streamInfo.audioStreams.isEmpty())) {
 
             if (dashMpdError != null) {
                 // If we don't have any video or audio and the dashMpd 'errored', add it to the error list
@@ -434,39 +241,228 @@ public class StreamInfo extends Info {
         } catch (Exception e) {
             streamInfo.addError(e);
         }
+
         streamInfo.setRelatedStreams(ExtractorHelper.getRelatedVideosOrLogError(streamInfo, extractor));
         return streamInfo;
     }
 
-    public StreamType stream_type;
-    public String thumbnail_url;
-    public String upload_date;
-    public long duration = -1;
-    public int age_limit = -1;
-    public String description;
+    private StreamType streamType;
+    private String thumbnailUrl;
+    private String uploadDate;
+    private long duration = -1;
+    private int ageLimit = -1;
+    private String description;
 
-    public long view_count = -1;
-    public long like_count = -1;
-    public long dislike_count = -1;
+    private long viewCount = -1;
+    private long likeCount = -1;
+    private long dislikeCount = -1;
 
-    public String uploader_name;
-    public String uploader_url;
-    public String uploader_avatar_url;
+    private String uploaderName;
+    private String uploaderUrl;
+    private String uploaderAvatarUrl;
 
-    public List<VideoStream> video_streams;
-    public List<AudioStream> audio_streams;
-    public List<VideoStream> video_only_streams;
-    // video streams provided by the dash mpd do not need to be provided as VideoStream.
-    // Later on this will also apply to audio streams. Since dash mpd is standarized,
-    // crawling such a file is not service dependent. Therefore getting audio only streams by yust
-    // providing the dash mpd file will be possible in the future.
-    public String dashMpdUrl;
-    public String hlsUrl;
+    private List<VideoStream> videoStreams;
+    private List<AudioStream> audioStreams;
+    private List<VideoStream> videoOnlyStreams;
 
-    public StreamInfoItem next_video;
-    public List<InfoItem> related_streams;
-    //in seconds. some metadata is not passed using a StreamInfo object!
-    public long start_position = 0;
+    private String dashMpdUrl;
+    private String hlsUrl;
+    private StreamInfoItem nextVideo;
+    private List<InfoItem> relatedStreams;
 
-    public List<Subtitles> subtitles;
+    private long startPosition = 0;
+    private List<Subtitles> subtitles;
+
+    /**
+     * Get the stream type
+     *
+     * @return the stream type
+     */
+    public StreamType getStreamType() {
+        return streamType;
+    }
+
+    public void setStreamType(StreamType streamType) {
+        this.streamType = streamType;
+    }
+
+    /**
+     * Get the thumbnail url
+     *
+     * @return the thumbnail url as a string
+     */
+    public String getThumbnailUrl() {
+        return thumbnailUrl;
+    }
+
+    public void setThumbnailUrl(String thumbnailUrl) {
+        this.thumbnailUrl = thumbnailUrl;
+    }
+
+    public String getUploadDate() {
+        return uploadDate;
+    }
+
+    public void setUploadDate(String uploadDate) {
+        this.uploadDate = uploadDate;
+    }
+
+    /**
+     * Get the duration in seconds
+     *
+     * @return the duration in seconds
+     */
+    public long getDuration() {
+        return duration;
+    }
+
+    public void setDuration(long duration) {
+        this.duration = duration;
+    }
+
+    public int getAgeLimit() {
+        return ageLimit;
+    }
+
+    public void setAgeLimit(int ageLimit) {
+        this.ageLimit = ageLimit;
+    }
+
+    public String getDescription() {
+        return description;
+    }
+
+    public void setDescription(String description) {
+        this.description = description;
+    }
+
+    public long getViewCount() {
+        return viewCount;
+    }
+
+    public void setViewCount(long viewCount) {
+        this.viewCount = viewCount;
+    }
+
+    /**
+     * Get the number of likes.
+     *
+     * @return The number of likes or -1 if this information is not available
+     */
+    public long getLikeCount() {
+        return likeCount;
+    }
+
+    public void setLikeCount(long likeCount) {
+        this.likeCount = likeCount;
+    }
+
+    /**
+     * Get the number of dislikes.
+     *
+     * @return The number of likes or -1 if this information is not available
+     */
+    public long getDislikeCount() {
+        return dislikeCount;
+    }
+
+    public void setDislikeCount(long dislikeCount) {
+        this.dislikeCount = dislikeCount;
+    }
+
+    public String getUploaderName() {
+        return uploaderName;
+    }
+
+    public void setUploaderName(String uploaderName) {
+        this.uploaderName = uploaderName;
+    }
+
+    public String getUploaderUrl() {
+        return uploaderUrl;
+    }
+
+    public void setUploaderUrl(String uploaderUrl) {
+        this.uploaderUrl = uploaderUrl;
+    }
+
+    public String getUploaderAvatarUrl() {
+        return uploaderAvatarUrl;
+    }
+
+    public void setUploaderAvatarUrl(String uploaderAvatarUrl) {
+        this.uploaderAvatarUrl = uploaderAvatarUrl;
+    }
+
+    public List<VideoStream> getVideoStreams() {
+        return videoStreams;
+    }
+
+    public void setVideoStreams(List<VideoStream> videoStreams) {
+        this.videoStreams = videoStreams;
+    }
+
+    public List<AudioStream> getAudioStreams() {
+        return audioStreams;
+    }
+
+    public void setAudioStreams(List<AudioStream> audioStreams) {
+        this.audioStreams = audioStreams;
+    }
+
+    public List<VideoStream> getVideoOnlyStreams() {
+        return videoOnlyStreams;
+    }
+
+    public void setVideoOnlyStreams(List<VideoStream> videoOnlyStreams) {
+        this.videoOnlyStreams = videoOnlyStreams;
+    }
+
+    public String getDashMpdUrl() {
+        return dashMpdUrl;
+    }
+
+    public void setDashMpdUrl(String dashMpdUrl) {
+        this.dashMpdUrl = dashMpdUrl;
+    }
+
+    public String getHlsUrl() {
+        return hlsUrl;
+    }
+
+    public void setHlsUrl(String hlsUrl) {
+        this.hlsUrl = hlsUrl;
+    }
+
+    public StreamInfoItem getNextVideo() {
+        return nextVideo;
+    }
+
+    public void setNextVideo(StreamInfoItem nextVideo) {
+        this.nextVideo = nextVideo;
+    }
+
+    public List<InfoItem> getRelatedStreams() {
+        return relatedStreams;
+    }
+
+    public void setRelatedStreams(List<InfoItem> relatedStreams) {
+        this.relatedStreams = relatedStreams;
+    }
+
+    public long getStartPosition() {
+        return startPosition;
+    }
+
+    public void setStartPosition(long startPosition) {
+        this.startPosition = startPosition;
+    }
+
+    public List<Subtitles> getSubtitles() {
+        return subtitles;
+    }
+
+    public void setSubtitles(List<Subtitles> subtitles) {
+        this.subtitles = subtitles;
+    }
 }

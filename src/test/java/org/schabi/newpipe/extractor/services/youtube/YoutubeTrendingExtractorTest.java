@@ -67,8 +67,8 @@ public class YoutubeTrendingExtractorTest {
     @Test
     public void testGetStreamsQuantity() throws Exception {
         InfoItemsCollector collector = extractor.getInfoItems();
-        Utils.printErrors(collector);
-        assertTrue("no streams are received", collector.getItemList().size() >= 20);
+        Utils.printErrors(collector.getErrors());
+        assertTrue("no streams are received", collector.getItems().size() >= 20);
     }
 
     @Test

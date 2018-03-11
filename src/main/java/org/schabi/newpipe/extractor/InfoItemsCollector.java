@@ -42,7 +42,7 @@ public abstract class InfoItemsCollector<I extends InfoItem, E> implements Colle
     }
 
     @Override
-    public List<I> getItemList() {
+    public List<I> getItems() {
         return Collections.unmodifiableList(itemList);
     }
 

@@ -7,16 +7,16 @@ import java.util.List;
 
 public abstract class Info implements Serializable {
 
-    public final int service_id;
+    private final int serviceId;
     /**
      * Id of this Info object <br>
      * e.g. Youtube:  https://www.youtube.com/watch?v=RER5qCTzZ7     &gt;    RER5qCTzZ7
      */
-    public final String id;
-    public final String url;
-    public final String name;
+    private final String id;
+    private final String url;
+    private final String name;
 
-    public final List<Throwable> errors = new ArrayList<>();
+    private final List<Throwable> errors = new ArrayList<>();
 
     public void addError(Throwable throwable) {
         this.errors.add(throwable);
@@ -27,12 +27,11 @@ public abstract class Info implements Serializable {
     }
 
     public Info(int serviceId, String id, String url, String name) {
-        this.service_id = serviceId;
+        this.serviceId = serviceId;
         this.id = id;
         this.url = url;
         this.name = name;
     }
-
 
     @Override
     public String toString() {
@@ -40,7 +39,7 @@ public abstract class Info implements Serializable {
     }
 
     public int getServiceId() {
-        return service_id;
+        return serviceId;
     }
 
     public String getId() {

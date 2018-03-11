@@ -51,7 +51,7 @@ public class SoundcloudSearchEnginePlaylistTest extends BaseSoundcloudSearchTest
     @Test
     public void testUserItemType() {
         for (InfoItem infoItem : result.resultList) {
-            assertEquals(InfoItem.InfoType.PLAYLIST, infoItem.info_type);
+            assertEquals(InfoItem.InfoType.PLAYLIST, infoItem.getInfoType());
         }
     }
 

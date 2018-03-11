@@ -54,7 +54,7 @@ public class YoutubeSearchEnginePlaylistTest extends BaseYoutubeSearchTest {
     public void testInfoItemType() {
         for (InfoItem infoItem : result.resultList) {
             assertTrue(infoItem instanceof PlaylistInfoItem);
-            assertEquals(InfoItem.InfoType.PLAYLIST, infoItem.info_type);
+            assertEquals(InfoItem.InfoType.PLAYLIST, infoItem.getInfoType());
         }
     }
 

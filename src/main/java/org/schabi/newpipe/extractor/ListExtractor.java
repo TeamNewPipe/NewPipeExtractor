@@ -46,7 +46,7 @@ public abstract class ListExtractor extends Extractor {
         private final List<Throwable> errors;
 
         public InfoItemPage(InfoItemsCollector<T, ?> collector, String nextPageUrl) {
-            this(collector.getItemList(), nextPageUrl, collector.getErrors());
+            this(collector.getItems(), nextPageUrl, collector.getErrors());
         }
 
         public InfoItemPage(List<T> itemsList, String nextPageUrl, List<Throwable> errors) {

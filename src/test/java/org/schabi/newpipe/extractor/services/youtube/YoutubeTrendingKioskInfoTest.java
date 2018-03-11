@@ -50,7 +50,7 @@ public class YoutubeTrendingKioskInfoTest {
 
     @Test
     public void getStreams() {
-        assertFalse(kioskInfo.getRelatedStreams().isEmpty());
+        assertFalse(kioskInfo.getRelatedItems().isEmpty());
     }
 
     @Test

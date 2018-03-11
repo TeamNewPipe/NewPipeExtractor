@@ -1,14 +1,16 @@
 package org.schabi.newpipe.extractor.search;
 
-import org.schabi.newpipe.extractor.*;
-import org.schabi.newpipe.extractor.channel.ChannelInfoItemsCollector;
+import org.schabi.newpipe.extractor.InfoItem;
+import org.schabi.newpipe.extractor.InfoItemExtractor;
+import org.schabi.newpipe.extractor.InfoItemsCollector;
 import org.schabi.newpipe.extractor.channel.ChannelInfoItemExtractor;
+import org.schabi.newpipe.extractor.channel.ChannelInfoItemsCollector;
 import org.schabi.newpipe.extractor.exceptions.ExtractionException;
 import org.schabi.newpipe.extractor.exceptions.ParsingException;
-import org.schabi.newpipe.extractor.playlist.PlaylistInfoItemsCollector;
 import org.schabi.newpipe.extractor.playlist.PlaylistInfoItemExtractor;
-import org.schabi.newpipe.extractor.stream.StreamInfoItemsCollector;
+import org.schabi.newpipe.extractor.playlist.PlaylistInfoItemsCollector;
 import org.schabi.newpipe.extractor.stream.StreamInfoItemExtractor;
+import org.schabi.newpipe.extractor.stream.StreamInfoItemsCollector;
 
 /*
  * Created by Christian Schabesberger on 12.02.17.
@@ -60,7 +62,7 @@ public class InfoItemsSearchCollector extends InfoItemsCollector<InfoItem, InfoI
     }
 
     public SearchResult getSearchResult() throws ExtractionException {
-        return new SearchResult(getServiceId(), suggestion, getItemList(), getErrors());
+        return new SearchResult(getServiceId(), suggestion, getItems(), getErrors());
     }
 
     @Override

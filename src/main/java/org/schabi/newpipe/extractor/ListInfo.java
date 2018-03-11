@@ -2,20 +2,20 @@ package org.schabi.newpipe.extractor;
 
 import java.util.List;
 
-public abstract class ListInfo extends Info {
-    public List<InfoItem> related_streams;
-    public String nextPageUrl = null;
+public abstract class ListInfo<T extends InfoItem> extends Info {
+    private List<T> relatedItems;
+    private String nextPageUrl = null;
 
     public ListInfo(int serviceId, String id, String url, String name) {
         super(serviceId, id, url, name);
     }
 
-    public List<InfoItem> getRelatedStreams() {
-        return related_streams;
+    public List<T> getRelatedItems() {
+        return relatedItems;
     }
 
-    public void setRelatedStreams(List<InfoItem> related_streams) {
-        this.related_streams = related_streams;
+    public void setRelatedItems(List<T> relatedItems) {
+        this.relatedItems = relatedItems;
     }
 
     public boolean hasNextPage() {

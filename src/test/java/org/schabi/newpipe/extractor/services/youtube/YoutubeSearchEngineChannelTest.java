@@ -52,7 +52,7 @@ public class YoutubeSearchEngineChannelTest extends BaseYoutubeSearchTest {
     @Test
     public void testResultsItemType() {
         for (InfoItem infoItem : result.resultList) {
-            assertEquals(InfoItem.InfoType.CHANNEL, infoItem.info_type);
+            assertEquals(InfoItem.InfoType.CHANNEL, infoItem.getInfoType());
         }
     }
 

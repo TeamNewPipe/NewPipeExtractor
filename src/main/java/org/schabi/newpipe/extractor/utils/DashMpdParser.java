@@ -64,9 +64,9 @@ public class DashMpdParser {
         String dashDoc;
         Downloader downloader = NewPipe.getDownloader();
         try {
-            dashDoc = downloader.download(streamInfo.dashMpdUrl);
+            dashDoc = downloader.download(streamInfo.getDashMpdUrl());
         } catch (IOException ioe) {
-            throw new DashMpdParsingException("Could not get dash mpd: " + streamInfo.dashMpdUrl, ioe);
+            throw new DashMpdParsingException("Could not get dash mpd: " + streamInfo.getDashMpdUrl(), ioe);
         } catch (ReCaptchaException e) {
             throw new ReCaptchaException("reCaptcha Challenge needed");
         }
@@ -92,19 +92,19 @@ public class DashMpdParser {
                         if (itag.itagType.equals(ItagItem.ItagType.AUDIO)) {
                             AudioStream audioStream = new AudioStream(url, mediaFormat, itag.avgBitrate);
 
-                            if (!Stream.containSimilarStream(audioStream, streamInfo.audio_streams)) {
-                                streamInfo.audio_streams.add(audioStream);
+                            if (!Stream.containSimilarStream(audioStream, streamInfo.getAudioStreams())) {
+                                streamInfo.getAudioStreams().add(audioStream);
                             }
                         } else {
                             boolean isVideoOnly = itag.itagType.equals(ItagItem.ItagType.VIDEO_ONLY);
                             VideoStream videoStream = new VideoStream(url, mediaFormat, itag.resolutionString, isVideoOnly);
 
                             if (isVideoOnly) {
-                                if (!Stream.containSimilarStream(videoStream, streamInfo.video_only_streams)) {
-                                    streamInfo.video_only_streams.add(videoStream);
+                                if (!Stream.containSimilarStream(videoStream, streamInfo.getVideoOnlyStreams())) {
+                                    streamInfo.getVideoOnlyStreams().add(videoStream);
                                 }
-                            } else if (!Stream.containSimilarStream(videoStream, streamInfo.video_streams)) {
-                                streamInfo.video_streams.add(videoStream);
+                            } else if (!Stream.containSimilarStream(videoStream, streamInfo.getVideoStreams())) {
+                                streamInfo.getVideoStreams().add(videoStream);
                             }
                         }
                     }

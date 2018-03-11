@@ -34,7 +34,7 @@ public final class DefaultTests {
 
     public static void defaultTestRelatedItems(ListExtractor extractor, int expectedServiceId) throws Exception {
         final InfoItemsCollector<? extends InfoItem, ?> itemsCollector = extractor.getInfoItems();
-        final List<? extends InfoItem> itemsList = itemsCollector.getItemList();
+        final List<? extends InfoItem> itemsList = itemsCollector.getItems();
         List<Throwable> errors = itemsCollector.getErrors();
 
         defaultTestListOfItems(expectedServiceId, itemsList, errors);

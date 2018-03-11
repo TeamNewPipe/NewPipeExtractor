@@ -75,7 +75,7 @@ public class KioskInfo extends ListInfo {
 
         KioskInfo info = new KioskInfo(serviceId, id, name, url);
 
-        info.related_streams = ExtractorHelper.getInfoItemsOrLogError(info, extractor);
+        info.setRelatedItems(ExtractorHelper.getInfoItemsOrLogError(info, extractor));
 
         return info;
     }

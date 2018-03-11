@@ -1,6 +1,5 @@
 package org.schabi.newpipe.extractor.utils;
 
-import org.schabi.newpipe.extractor.Collector;
 import org.schabi.newpipe.extractor.exceptions.ParsingException;
 
 import java.util.List;
@@ -40,8 +39,7 @@ public class Utils {
         }
     }
 
-    public static void printErrors(Collector c) {
-        List<Throwable> errors = c.getErrors();
+    public static void printErrors(List<Throwable> errors) {
         for(Throwable e : errors) {
             e.printStackTrace();
             System.err.println("----------------");

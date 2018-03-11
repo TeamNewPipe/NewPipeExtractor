@@ -4,29 +4,29 @@ import org.schabi.newpipe.extractor.InfoItem;
 
 public class PlaylistInfoItem extends InfoItem {
 
-    public String uploader_name;
+    private String uploaderName;
     /**
      * How many streams this playlist have
      */
-    public long stream_count = 0;
+    private long streamCount = 0;
 
     public PlaylistInfoItem(int serviceId, String url, String name) {
         super(InfoType.PLAYLIST, serviceId, url, name);
     }
 
     public String getUploaderName() {
-        return uploader_name;
+        return uploaderName;
     }
 
     public void setUploaderName(String uploader_name) {
-        this.uploader_name = uploader_name;
+        this.uploaderName = uploader_name;
     }
 
     public long getStreamCount() {
-        return stream_count;
+        return streamCount;
     }
 
     public void setStreamCount(long stream_count) {
-        this.stream_count = stream_count;
+        this.streamCount = stream_count;
     }
 }
