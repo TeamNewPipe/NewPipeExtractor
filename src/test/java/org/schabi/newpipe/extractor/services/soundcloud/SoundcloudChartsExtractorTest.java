@@ -4,9 +4,10 @@ import org.junit.BeforeClass;
 import org.junit.Ignore;
 import org.junit.Test;
 import org.schabi.newpipe.Downloader;
-import org.schabi.newpipe.extractor.InfoItemsCollector;
+import org.schabi.newpipe.extractor.ListExtractor;
 import org.schabi.newpipe.extractor.NewPipe;
 import org.schabi.newpipe.extractor.kiosk.KioskExtractor;
+import org.schabi.newpipe.extractor.stream.StreamInfoItem;
 
 import java.util.List;
 
@@ -47,29 +48,29 @@ public class SoundcloudChartsExtractorTest {
 
     @Test
     public void testGetStreams() throws Exception {
-        InfoItemsCollector collector = extractor.getInfoItems();
-        if(!collector.getErrors().isEmpty()) {
+        ListExtractor.InfoItemsPage<StreamInfoItem> page = extractor.getInitialPage();
+        if(!page.getErrors().isEmpty()) {
             System.err.println("----------");
-            List<Throwable> errors = collector.getErrors();
+            List<Throwable> errors = page.getErrors();
             for(Throwable e: errors) {
                 e.printStackTrace();
                 System.err.println("----------");
             }
         }
         assertTrue("no streams are received",
-                !collector.getItems().isEmpty()
-                        && collector.getErrors().isEmpty());
+                !page.getItems().isEmpty()
+                        && page.getErrors().isEmpty());
     }
 
     @Test
     public void testGetStreamsErrors() throws Exception {
-        assertTrue("errors during stream list extraction", extractor.getInfoItems().getErrors().isEmpty());
+        assertTrue("errors during stream list extraction", extractor.getInitialPage().getErrors().isEmpty());
     }
 
     @Test
     public void testHasMoreStreams() throws Exception {
         // Setup the streams
-        extractor.getInfoItems();
+        extractor.getInitialPage();
         assertTrue("has more streams", extractor.hasNextPage());
     }
 
@@ -80,9 +81,9 @@ public class SoundcloudChartsExtractorTest {
 
     @Test
     public void testGetNextPage() throws Exception {
-        extractor.getInfoItems().getItems();
+        extractor.getInitialPage().getItems();
         assertFalse("extractor has next streams", extractor.getPage(extractor.getNextPageUrl()) == null
-                || extractor.getPage(extractor.getNextPageUrl()).getItemsList().isEmpty());
+                || extractor.getPage(extractor.getNextPageUrl()).getItems().isEmpty());
     }
 
     @Test

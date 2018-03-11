@@ -1,7 +1,6 @@
 package org.schabi.newpipe.extractor.services;
 
 import org.schabi.newpipe.extractor.InfoItem;
-import org.schabi.newpipe.extractor.InfoItemsCollector;
 import org.schabi.newpipe.extractor.ListExtractor;
 import org.schabi.newpipe.extractor.stream.StreamInfoItem;
 
@@ -32,28 +31,30 @@ public final class DefaultTests {
         }
     }
 
-    public static void defaultTestRelatedItems(ListExtractor extractor, int expectedServiceId) throws Exception {
-        final InfoItemsCollector<? extends InfoItem, ?> itemsCollector = extractor.getInfoItems();
-        final List<? extends InfoItem> itemsList = itemsCollector.getItems();
-        List<Throwable> errors = itemsCollector.getErrors();
+    public static <T extends InfoItem> ListExtractor.InfoItemsPage<T> defaultTestRelatedItems(ListExtractor<T> extractor, int expectedServiceId) throws Exception {
+        final ListExtractor.InfoItemsPage<T> page = extractor.getInitialPage();
+        final List<T> itemsList = page.getItems();
+        List<Throwable> errors = page.getErrors();
 
         defaultTestListOfItems(expectedServiceId, itemsList, errors);
+        return page;
     }
 
-    public static ListExtractor.InfoItemPage<? extends InfoItem> defaultTestMoreItems(ListExtractor extractor, int expectedServiceId) throws Exception {
+    public static <T extends InfoItem> ListExtractor.InfoItemsPage<T> defaultTestMoreItems(ListExtractor<T> extractor, int expectedServiceId) throws Exception {
         assertTrue("Doesn't have more items", extractor.hasNextPage());
-        ListExtractor.InfoItemPage<? extends InfoItem> nextPage = extractor.getPage(extractor.getNextPageUrl());
-        assertTrue("Next page is empty", !nextPage.getItemsList().isEmpty());
+        ListExtractor.InfoItemsPage<T> nextPage = extractor.getPage(extractor.getNextPageUrl());
+        final List<T> items = nextPage.getItems();
+        assertTrue("Next page is empty", !items.isEmpty());
         assertEmptyErrors("Next page have errors", nextPage.getErrors());
 
-        defaultTestListOfItems(expectedServiceId, nextPage.getItemsList(), nextPage.getErrors());
+        defaultTestListOfItems(expectedServiceId, nextPage.getItems(), nextPage.getErrors());
         return nextPage;
     }
 
-    public static void defaultTestGetPageInNewExtractor(ListExtractor extractor, ListExtractor newExtractor, int expectedServiceId) throws Exception {
+    public static void defaultTestGetPageInNewExtractor(ListExtractor<? extends InfoItem> extractor, ListExtractor<? extends InfoItem> newExtractor, int expectedServiceId) throws Exception {
         final String nextPageUrl = extractor.getNextPageUrl();
 
-        final ListExtractor.InfoItemPage<? extends InfoItem> page = newExtractor.getPage(nextPageUrl);
-        defaultTestListOfItems(expectedServiceId, page.getItemsList(), page.getErrors());
+        final ListExtractor.InfoItemsPage<? extends InfoItem> page = newExtractor.getPage(nextPageUrl);
+        defaultTestListOfItems(expectedServiceId, page.getItems(), page.getErrors());
     }
 }

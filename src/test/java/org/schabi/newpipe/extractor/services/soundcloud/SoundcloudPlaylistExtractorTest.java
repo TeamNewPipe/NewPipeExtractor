@@ -6,12 +6,12 @@ import org.junit.Test;
 import org.junit.experimental.runners.Enclosed;
 import org.junit.runner.RunWith;
 import org.schabi.newpipe.Downloader;
-import org.schabi.newpipe.extractor.InfoItem;
 import org.schabi.newpipe.extractor.ListExtractor;
 import org.schabi.newpipe.extractor.NewPipe;
 import org.schabi.newpipe.extractor.ServiceList;
 import org.schabi.newpipe.extractor.playlist.PlaylistExtractor;
 import org.schabi.newpipe.extractor.services.BasePlaylistExtractorTest;
+import org.schabi.newpipe.extractor.stream.StreamInfoItem;
 
 import static org.junit.Assert.*;
 import static org.schabi.newpipe.extractor.ExtractorAsserts.assertIsSecureUrl;
@@ -274,11 +274,11 @@ public class SoundcloudPlaylistExtractorTest {
 
         @Test
         public void testMoreRelatedItems() throws Exception {
-            ListExtractor.InfoItemPage<? extends InfoItem> currentPage = defaultTestMoreItems(extractor, ServiceList.SoundCloud.getServiceId());
+            ListExtractor.InfoItemsPage<StreamInfoItem> currentPage = defaultTestMoreItems(extractor, ServiceList.SoundCloud.getServiceId());
             // Test for 2 more levels
             for (int i = 0; i < 2; i++) {
                 currentPage = extractor.getPage(currentPage.getNextPageUrl());
-                defaultTestListOfItems(SoundCloud.getServiceId(), currentPage.getItemsList(), currentPage.getErrors());
+                defaultTestListOfItems(SoundCloud.getServiceId(), currentPage.getItems(), currentPage.getErrors());
             }
         }
 

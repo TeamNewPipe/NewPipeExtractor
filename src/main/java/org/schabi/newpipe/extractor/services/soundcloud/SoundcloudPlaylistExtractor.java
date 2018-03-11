@@ -70,7 +70,7 @@ public class SoundcloudPlaylistExtractor extends PlaylistExtractor {
             // If the thumbnail is null, traverse the items list and get a valid one,
             // if it also fails, return null
             try {
-                final StreamInfoItemsCollector infoItems = getInfoItems();
+                final InfoItemsPage<StreamInfoItem> infoItems = getInitialPage();
                 if (infoItems.getItems().isEmpty()) return null;
 
                 for (StreamInfoItem item : infoItems.getItems()) {
@@ -113,11 +113,11 @@ public class SoundcloudPlaylistExtractor extends PlaylistExtractor {
 
     @Nonnull
     @Override
-    public StreamInfoItemsCollector getInfoItems() throws IOException, ExtractionException {
-        if(streamInfoItemsCollector == null) {
+    public InfoItemsPage<StreamInfoItem> getInitialPage() throws IOException, ExtractionException {
+        if (streamInfoItemsCollector == null) {
             computeStreamsAndNextPageUrl();
         }
-        return streamInfoItemsCollector;
+        return new InfoItemsPage<>(streamInfoItemsCollector, getNextPageUrl());
     }
 
     private void computeStreamsAndNextPageUrl() throws ExtractionException, IOException {
@@ -134,14 +134,14 @@ public class SoundcloudPlaylistExtractor extends PlaylistExtractor {
 
     @Override
     public String getNextPageUrl() throws IOException, ExtractionException {
-        if(nextPageUrl == null) {
+        if (nextPageUrl == null) {
             computeStreamsAndNextPageUrl();
         }
         return nextPageUrl;
     }
 
     @Override
-    public InfoItemPage<StreamInfoItem> getPage(String pageUrl) throws IOException, ExtractionException {
+    public InfoItemsPage<StreamInfoItem> getPage(String pageUrl) throws IOException, ExtractionException {
         if (pageUrl == null || pageUrl.isEmpty()) {
             throw new ExtractionException(new IllegalArgumentException("Page url is empty or null"));
         }
@@ -149,6 +149,6 @@ public class SoundcloudPlaylistExtractor extends PlaylistExtractor {
         StreamInfoItemsCollector collector = new StreamInfoItemsCollector(getServiceId());
         String nextPageUrl = SoundcloudParsingHelper.getStreamsFromApiMinItems(15, collector, pageUrl);
 
-        return new InfoItemPage<>(collector, nextPageUrl);
+        return new InfoItemsPage<>(collector, nextPageUrl);
     }
 }

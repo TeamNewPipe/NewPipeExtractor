@@ -25,7 +25,6 @@ import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 import org.schabi.newpipe.extractor.Downloader;
-import org.schabi.newpipe.extractor.ListExtractor;
 import org.schabi.newpipe.extractor.StreamingService;
 import org.schabi.newpipe.extractor.UrlIdHandler;
 import org.schabi.newpipe.extractor.exceptions.ExtractionException;
@@ -70,7 +69,7 @@ public class YoutubeTrendingExtractor extends KioskExtractor {
     }
 
     @Override
-    public ListExtractor.InfoItemPage<StreamInfoItem> getPage(String pageUrl) {
+    public InfoItemsPage<StreamInfoItem> getPage(String pageUrl) {
         return null;
     }
 
@@ -89,7 +88,7 @@ public class YoutubeTrendingExtractor extends KioskExtractor {
 
     @Nonnull
     @Override
-    public StreamInfoItemsCollector getInfoItems() throws ParsingException {
+    public InfoItemsPage<StreamInfoItem> getInitialPage() throws ParsingException {
         StreamInfoItemsCollector collector = new StreamInfoItemsCollector(getServiceId());
         Elements uls = doc.select("ul[class*=\"expanded-shelf-content-list\"]");
         for(Element ul : uls) {
@@ -165,6 +164,6 @@ public class YoutubeTrendingExtractor extends KioskExtractor {
             }
         }
 
-        return collector;
+        return new InfoItemsPage<>(collector, getNextPageUrl());
     }
 }

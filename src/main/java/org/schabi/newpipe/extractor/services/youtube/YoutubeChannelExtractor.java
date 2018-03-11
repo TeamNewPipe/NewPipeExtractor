@@ -150,15 +150,15 @@ public class YoutubeChannelExtractor extends ChannelExtractor {
 
     @Nonnull
     @Override
-    public StreamInfoItemsCollector getInfoItems() throws ExtractionException {
+    public InfoItemsPage<StreamInfoItem> getInitialPage() throws ExtractionException {
         StreamInfoItemsCollector collector = new StreamInfoItemsCollector(getServiceId());
         Element ul = doc.select("ul[id=\"browse-items-primary\"]").first();
         collectStreamsFrom(collector, ul);
-        return collector;
+        return new InfoItemsPage<>(collector, getNextPageUrl());
     }
 
     @Override
-    public InfoItemPage<StreamInfoItem> getPage(String pageUrl) throws IOException, ExtractionException {
+    public InfoItemsPage<StreamInfoItem> getPage(String pageUrl) throws IOException, ExtractionException {
         if (pageUrl == null || pageUrl.isEmpty()) {
             throw new ExtractionException(new IllegalArgumentException("Page url is empty or null"));
         }
@@ -178,7 +178,7 @@ public class YoutubeChannelExtractor extends ChannelExtractor {
         final Document ajaxHtml = Jsoup.parse(ajaxJson.getString("content_html"), pageUrl);
         collectStreamsFrom(collector, ajaxHtml.select("body").first());
 
-        return new InfoItemPage<>(collector, getNextPageUrlFromAjaxPage(ajaxJson, pageUrl));
+        return new InfoItemsPage<>(collector, getNextPageUrlFromAjaxPage(ajaxJson, pageUrl));
     }
 
     private String getNextPageUrlFromAjaxPage(final JsonObject ajaxJson, final String pageUrl)

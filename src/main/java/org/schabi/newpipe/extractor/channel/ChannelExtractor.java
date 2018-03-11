@@ -1,16 +1,12 @@
 package org.schabi.newpipe.extractor.channel;
 
-import edu.umd.cs.findbugs.annotations.NonNull;
 import org.schabi.newpipe.extractor.ListExtractor;
 import org.schabi.newpipe.extractor.StreamingService;
 import org.schabi.newpipe.extractor.UrlIdHandler;
-import org.schabi.newpipe.extractor.exceptions.ExtractionException;
 import org.schabi.newpipe.extractor.exceptions.ParsingException;
 import org.schabi.newpipe.extractor.stream.StreamInfoItem;
-import org.schabi.newpipe.extractor.stream.StreamInfoItemsCollector;
 
 import javax.annotation.Nonnull;
-import java.io.IOException;
 
 /*
  * Created by Christian Schabesberger on 25.07.16.
@@ -32,7 +28,7 @@ import java.io.IOException;
  * along with NewPipe.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-public abstract class ChannelExtractor extends ListExtractor {
+public abstract class ChannelExtractor extends ListExtractor<StreamInfoItem> {
 
     public ChannelExtractor(StreamingService service, String url) {
         super(service, url);
@@ -43,12 +39,6 @@ public abstract class ChannelExtractor extends ListExtractor {
     protected UrlIdHandler getUrlIdHandler() {
         return getService().getChannelUrlIdHandler();
     }
-
-    @NonNull
-    @Override
-    public abstract StreamInfoItemsCollector getInfoItems() throws IOException, ExtractionException;
-    @Override
-    public abstract InfoItemPage<StreamInfoItem> getPage(String nextPageUrl) throws IOException, ExtractionException;
 
     public abstract String getAvatarUrl() throws ParsingException;
     public abstract String getBannerUrl() throws ParsingException;

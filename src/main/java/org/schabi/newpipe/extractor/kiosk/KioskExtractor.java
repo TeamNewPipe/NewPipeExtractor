@@ -20,18 +20,15 @@ package org.schabi.newpipe.extractor.kiosk;
  * along with NewPipe.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-import edu.umd.cs.findbugs.annotations.NonNull;
 import org.schabi.newpipe.extractor.ListExtractor;
 import org.schabi.newpipe.extractor.StreamingService;
 import org.schabi.newpipe.extractor.exceptions.ExtractionException;
 import org.schabi.newpipe.extractor.exceptions.ParsingException;
 import org.schabi.newpipe.extractor.stream.StreamInfoItem;
-import org.schabi.newpipe.extractor.stream.StreamInfoItemsCollector;
 
 import javax.annotation.Nonnull;
-import java.io.IOException;
 
-public abstract class KioskExtractor extends ListExtractor {
+public abstract class KioskExtractor extends ListExtractor<StreamInfoItem> {
     private String contentCountry = null;
     private final String id;
 
@@ -42,12 +39,6 @@ public abstract class KioskExtractor extends ListExtractor {
         super(streamingService, url);
         this.id = kioskId;
     }
-
-    @NonNull
-    @Override
-    public abstract StreamInfoItemsCollector getInfoItems() throws IOException, ExtractionException;
-    @Override
-    public abstract InfoItemPage<StreamInfoItem> getPage(String nextPageUrl) throws IOException, ExtractionException;
 
     /**
      * For certain Websites the content of a kiosk will be different depending

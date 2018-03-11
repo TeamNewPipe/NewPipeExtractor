@@ -1,24 +1,19 @@
 package org.schabi.newpipe.extractor.playlist;
 
-import org.schabi.newpipe.extractor.ListExtractor.InfoItemPage;
+import org.schabi.newpipe.extractor.ListExtractor.InfoItemsPage;
 import org.schabi.newpipe.extractor.ListInfo;
 import org.schabi.newpipe.extractor.NewPipe;
 import org.schabi.newpipe.extractor.StreamingService;
 import org.schabi.newpipe.extractor.exceptions.ExtractionException;
 import org.schabi.newpipe.extractor.stream.StreamInfoItem;
+import org.schabi.newpipe.extractor.utils.ExtractorHelper;
 
 import java.io.IOException;
 
-import static org.schabi.newpipe.extractor.utils.ExtractorHelper.getInfoItemsOrLogError;
-
-public class PlaylistInfo extends ListInfo {
+public class PlaylistInfo extends ListInfo<StreamInfoItem> {
 
     public PlaylistInfo(int serviceId, String id, String url, String name) {
         super(serviceId, id, url, name);
-    }
-
-    public static InfoItemPage<StreamInfoItem> getMoreItems(StreamingService service, String url, String pageUrl) throws IOException, ExtractionException {
-        return service.getPlaylistExtractor(url).getPage(pageUrl);
     }
 
     public static PlaylistInfo getInfo(String url) throws IOException, ExtractionException {
@@ -29,6 +24,10 @@ public class PlaylistInfo extends ListInfo {
         PlaylistExtractor extractor = service.getPlaylistExtractor(url);
         extractor.fetchPage();
         return getInfo(extractor);
+    }
+
+    public static InfoItemsPage<StreamInfoItem> getMoreItems(StreamingService service, String url, String pageUrl) throws IOException, ExtractionException {
+        return service.getPlaylistExtractor(url).getPage(pageUrl);
     }
 
     /**
@@ -75,8 +74,10 @@ public class PlaylistInfo extends ListInfo {
             info.addError(e);
         }
 
-        info.setRelatedItems(getInfoItemsOrLogError(info, extractor));
-        info.setNextPageUrl(extractor.getNextPageUrl());
+        final InfoItemsPage<StreamInfoItem> itemsPage = ExtractorHelper.getItemsPageOrLogError(info, extractor);
+        info.setRelatedItems(itemsPage.getItems());
+        info.setNextPageUrl(itemsPage.getNextPageUrl());
+
         return info;
     }
 

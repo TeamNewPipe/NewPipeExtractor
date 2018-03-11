@@ -92,11 +92,11 @@ public class SoundcloudChannelExtractor extends ChannelExtractor {
 
     @Nonnull
     @Override
-    public StreamInfoItemsCollector getInfoItems() throws ExtractionException {
+    public InfoItemsPage<StreamInfoItem> getInitialPage() throws ExtractionException {
         if(streamInfoItemsCollector == null) {
             computeNextPageAndGetStreams();
         }
-        return streamInfoItemsCollector;
+        return new InfoItemsPage<>(streamInfoItemsCollector, getNextPageUrl());
     }
 
     @Override
@@ -123,7 +123,7 @@ public class SoundcloudChannelExtractor extends ChannelExtractor {
     }
 
     @Override
-    public InfoItemPage<StreamInfoItem> getPage(final String pageUrl) throws IOException, ExtractionException {
+    public InfoItemsPage<StreamInfoItem> getPage(final String pageUrl) throws IOException, ExtractionException {
         if (pageUrl == null || pageUrl.isEmpty()) {
             throw new ExtractionException(new IllegalArgumentException("Page url is empty or null"));
         }
@@ -131,6 +131,6 @@ public class SoundcloudChannelExtractor extends ChannelExtractor {
         StreamInfoItemsCollector collector = new StreamInfoItemsCollector(getServiceId());
         String nextPageUrl = SoundcloudParsingHelper.getStreamsFromApiMinItems(15, collector, pageUrl);
 
-        return new InfoItemPage<>(collector, nextPageUrl);
+        return new InfoItemsPage<>(collector, nextPageUrl);
     }
 }

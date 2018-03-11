@@ -1,6 +1,6 @@
 package org.schabi.newpipe.extractor.channel;
 
-import org.schabi.newpipe.extractor.ListExtractor.InfoItemPage;
+import org.schabi.newpipe.extractor.ListExtractor.InfoItemsPage;
 import org.schabi.newpipe.extractor.ListInfo;
 import org.schabi.newpipe.extractor.NewPipe;
 import org.schabi.newpipe.extractor.StreamingService;
@@ -30,16 +30,10 @@ import java.io.IOException;
  * along with NewPipe.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-public class ChannelInfo extends ListInfo {
+public class ChannelInfo extends ListInfo<StreamInfoItem> {
 
     public ChannelInfo(int serviceId, String url, String id, String name) {
         super(serviceId, id, url, name);
-    }
-
-
-    public static InfoItemPage<StreamInfoItem> getMoreItems(StreamingService service, String url, String pageUrl)
-            throws IOException, ExtractionException {
-        return service.getChannelExtractor(url).getPage(pageUrl);
     }
 
     public static ChannelInfo getInfo(String url) throws IOException, ExtractionException {
@@ -50,6 +44,10 @@ public class ChannelInfo extends ListInfo {
         ChannelExtractor extractor = service.getChannelExtractor(url);
         extractor.fetchPage();
         return getInfo(extractor);
+    }
+
+    public static InfoItemsPage<StreamInfoItem> getMoreItems(StreamingService service, String url, String pageUrl) throws IOException, ExtractionException {
+        return service.getChannelExtractor(url).getPage(pageUrl);
     }
 
     public static ChannelInfo getInfo(ChannelExtractor extractor) throws IOException, ExtractionException {
@@ -79,7 +77,9 @@ public class ChannelInfo extends ListInfo {
             info.addError(e);
         }
 
-        info.setRelatedItems(ExtractorHelper.getInfoItemsOrLogError(info, extractor));
+        final InfoItemsPage<StreamInfoItem> itemsPage = ExtractorHelper.getItemsPageOrLogError(info, extractor);
+        info.setRelatedItems(itemsPage.getItems());
+        info.setNextPageUrl(itemsPage.getNextPageUrl());
 
         try {
             info.setSubscriberCount(extractor.getSubscriberCount());
@@ -92,7 +92,6 @@ public class ChannelInfo extends ListInfo {
             info.addError(e);
         }
 
-        info.setNextPageUrl(extractor.getNextPageUrl());
         return info;
     }
 

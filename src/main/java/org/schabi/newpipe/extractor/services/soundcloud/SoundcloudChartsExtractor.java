@@ -42,7 +42,7 @@ public class SoundcloudChartsExtractor extends KioskExtractor {
     }
 
     @Override
-    public InfoItemPage<StreamInfoItem> getPage(String pageUrl) throws IOException, ExtractionException {
+    public InfoItemsPage<StreamInfoItem> getPage(String pageUrl) throws IOException, ExtractionException {
         if (pageUrl == null || pageUrl.isEmpty()) {
             throw new ExtractionException(new IllegalArgumentException("Page url is empty or null"));
         }
@@ -50,7 +50,7 @@ public class SoundcloudChartsExtractor extends KioskExtractor {
         StreamInfoItemsCollector collector = new StreamInfoItemsCollector(getServiceId());
         String nextPageUrl = SoundcloudParsingHelper.getStreamsFromApi(collector, pageUrl, true);
 
-        return new InfoItemPage<>(collector, nextPageUrl);
+        return new InfoItemsPage<>(collector, nextPageUrl);
     }
 
 
@@ -86,10 +86,10 @@ public class SoundcloudChartsExtractor extends KioskExtractor {
 
     @Nonnull
     @Override
-    public StreamInfoItemsCollector getInfoItems() throws IOException, ExtractionException {
+    public InfoItemsPage<StreamInfoItem> getInitialPage() throws IOException, ExtractionException {
         if(collector == null) {
             computNextPageAndStreams();
         }
-        return collector;
+        return new InfoItemsPage<>(collector, getNextPageUrl());
     }
 }

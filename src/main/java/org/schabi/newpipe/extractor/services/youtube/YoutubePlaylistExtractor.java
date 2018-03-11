@@ -129,15 +129,15 @@ public class YoutubePlaylistExtractor extends PlaylistExtractor {
 
     @Nonnull
     @Override
-    public StreamInfoItemsCollector getInfoItems() throws IOException, ExtractionException {
+    public InfoItemsPage<StreamInfoItem> getInitialPage() throws IOException, ExtractionException {
         StreamInfoItemsCollector collector = new StreamInfoItemsCollector(getServiceId());
         Element tbody = doc.select("tbody[id=\"pl-load-more-destination\"]").first();
         collectStreamsFrom(collector, tbody);
-        return collector;
+        return new InfoItemsPage<>(collector, getNextPageUrl());
     }
 
     @Override
-    public InfoItemPage<StreamInfoItem> getPage(final String pageUrl) throws IOException, ExtractionException {
+    public InfoItemsPage<StreamInfoItem> getPage(final String pageUrl) throws IOException, ExtractionException {
         if (pageUrl == null || pageUrl.isEmpty()) {
             throw new ExtractionException(new IllegalArgumentException("Page url is empty or null"));
         }
@@ -156,7 +156,7 @@ public class YoutubePlaylistExtractor extends PlaylistExtractor {
 
         collectStreamsFrom(collector, pageHtml.select("tbody[id=\"pl-load-more-destination\"]").first());
 
-        return new InfoItemPage<>(collector, getNextPageUrlFromAjax(pageJson, pageUrl));
+        return new InfoItemsPage<>(collector, getNextPageUrlFromAjax(pageJson, pageUrl));
     }
 
     private String getNextPageUrlFromAjax(final JsonObject pageJson, final String pageUrl)
