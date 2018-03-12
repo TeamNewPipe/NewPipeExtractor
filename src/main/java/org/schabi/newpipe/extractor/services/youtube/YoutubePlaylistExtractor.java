@@ -74,21 +74,9 @@ public class YoutubePlaylistExtractor extends PlaylistExtractor {
     }
 
     @Override
-    public String getBannerUrl() throws ParsingException {
-        try {
-            Element el = doc.select("div[id=\"gh-banner\"] style").first();
-            String cssContent = el.html();
-            String url = "https:" + Parser.matchGroup1("url\\((.*)\\)", cssContent);
-            if (url.contains("s.ytimg.com")) {
-                return null;
-            } else {
-                return url.substring(0, url.indexOf(");"));
-            }
-
-
-        } catch (Exception e) {
-            throw new ParsingException("Could not get playlist Banner");
-        }
+    public String getBannerUrl() {
+        return "";      // Banner can't be handled by frontend right now.
+                        // Whoever is willing to implement this should also implement this in the fornt end
     }
 
     @Override

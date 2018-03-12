@@ -55,6 +55,7 @@ public class YoutubePlaylistExtractorTest {
 
     @Test
     public void testGetBannerUrl() throws Exception {
+        System.out.println(extractor.getBannerUrl());
         assertTrue(extractor.getBannerUrl(), extractor.getBannerUrl().contains("yt"));
     }
 
