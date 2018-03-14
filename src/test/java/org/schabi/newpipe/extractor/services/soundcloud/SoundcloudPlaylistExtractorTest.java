@@ -3,8 +3,6 @@ package org.schabi.newpipe.extractor.services.soundcloud;
 import org.junit.BeforeClass;
 import org.junit.Ignore;
 import org.junit.Test;
-import org.junit.experimental.runners.Enclosed;
-import org.junit.runner.RunWith;
 import org.schabi.newpipe.Downloader;
 import org.schabi.newpipe.extractor.ListExtractor;
 import org.schabi.newpipe.extractor.NewPipe;
@@ -21,7 +19,6 @@ import static org.schabi.newpipe.extractor.services.DefaultTests.*;
 /**
  * Test for {@link PlaylistExtractor}
  */
-@RunWith(Enclosed.class)
 public class SoundcloudPlaylistExtractorTest {
     public static class LuvTape implements BasePlaylistExtractorTest {
         private static SoundcloudPlaylistExtractor extractor;

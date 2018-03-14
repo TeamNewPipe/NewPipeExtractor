@@ -2,8 +2,6 @@ package org.schabi.newpipe.extractor.services.soundcloud;
 
 import org.junit.BeforeClass;
 import org.junit.Test;
-import org.junit.experimental.runners.Enclosed;
-import org.junit.runner.RunWith;
 import org.schabi.newpipe.Downloader;
 import org.schabi.newpipe.extractor.NewPipe;
 import org.schabi.newpipe.extractor.channel.ChannelExtractor;
@@ -18,7 +16,6 @@ import static org.schabi.newpipe.extractor.services.DefaultTests.*;
 /**
  * Test for {@link SoundcloudChannelExtractor}
  */
-@RunWith(Enclosed.class)
 public class SoundcloudChannelExtractorTest {
     public static class LilUzi implements BaseChannelExtractorTest {
         private static SoundcloudChannelExtractor extractor;

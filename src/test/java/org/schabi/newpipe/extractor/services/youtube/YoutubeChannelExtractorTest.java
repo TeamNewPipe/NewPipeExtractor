@@ -2,8 +2,6 @@ package org.schabi.newpipe.extractor.services.youtube;
 
 import org.junit.BeforeClass;
 import org.junit.Test;
-import org.junit.experimental.runners.Enclosed;
-import org.junit.runner.RunWith;
 import org.schabi.newpipe.Downloader;
 import org.schabi.newpipe.extractor.NewPipe;
 import org.schabi.newpipe.extractor.ServiceList;
@@ -18,7 +16,6 @@ import static org.schabi.newpipe.extractor.services.DefaultTests.*;
 /**
  * Test for {@link ChannelExtractor}
  */
-@RunWith(Enclosed.class)
 public class YoutubeChannelExtractorTest {
     public static class Gronkh implements BaseChannelExtractorTest {
         private static YoutubeChannelExtractor extractor;
