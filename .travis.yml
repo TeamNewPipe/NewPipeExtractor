@@ -1,8 +1,7 @@
 language: java
 
-script:
-  - ./gradlew check
-  - ./gradlew javadoc
+script: ./gradlew check
+after_success: ./gradlew javadoc
 
 deploy:
   provider: pages
