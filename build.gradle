@@ -1,35 +1,31 @@
-apply plugin: 'java-library'
-
 allprojects {
+    apply plugin: 'java-library'
     sourceCompatibility = 1.7
     targetCompatibility = 1.7
-}
 
-repositories {
-    jcenter()
-}
+    version 'v0.12.0'
 
-dependencies {
-    implementation 'com.grack:nanojson:1.1'
-    implementation 'org.jsoup:jsoup:1.9.2'
-    implementation 'org.mozilla:rhino:1.7.7.1'
-    implementation 'com.github.spotbugs:spotbugs-annotations:3.1.0'
-    testImplementation 'junit:junit:4.12'
-}
-
-task sourcesJar(type: Jar, dependsOn: classes) {
-    classifier = 'sources'
-    from sourceSets.main.allSource
-}
-
-artifacts {
-    archives sourcesJar
-}
-
-tasks.withType(Test) {
-    testLogging {
-        events "skipped", "failed"
-        showStandardStreams = true
-        exceptionFormat = 'full'
+    repositories {
+        jcenter()
     }
 }
+
+subprojects {
+    task sourcesJar(type: Jar, dependsOn: classes) {
+        classifier = 'sources'
+        from sourceSets.main.allSource
+    }
+
+    tasks.withType(Test) {
+        testLogging {
+            events "skipped", "failed"
+            showStandardStreams = true
+            exceptionFormat = 'full'
+        }
+    }
+
+    artifacts {
+        archives sourcesJar
+    }
+}
+

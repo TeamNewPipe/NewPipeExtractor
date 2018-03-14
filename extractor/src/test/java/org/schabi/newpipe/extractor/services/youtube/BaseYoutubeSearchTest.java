@@ -8,7 +8,6 @@ import org.schabi.newpipe.extractor.search.SearchResult;
 import org.schabi.newpipe.extractor.stream.StreamInfoItem;
 
 import static org.junit.Assert.*;
-import static org.junit.Assert.assertTrue;
 import static org.schabi.newpipe.extractor.ExtractorAsserts.assertIsSecureUrl;
 
 public abstract class BaseYoutubeSearchTest {

@@ -8,7 +8,6 @@ import org.schabi.newpipe.extractor.search.SearchEngine;
 import org.schabi.newpipe.extractor.stream.StreamExtractor;
 import org.schabi.newpipe.extractor.subscription.SubscriptionExtractor;
 
-import java.io.IOException;
 import java.util.Collections;
 import java.util.List;
 
