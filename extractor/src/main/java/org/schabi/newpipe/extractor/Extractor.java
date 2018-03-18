@@ -9,7 +9,7 @@ import java.io.IOException;
 
 public abstract class Extractor {
     /**
-     * {@link StreamingService} currently related to this extractor.<br/>
+     * {@link StreamingService} currently related to this extractor.<br>
      * Useful for getting other things from a service (like the url handlers for cleaning/accepting/get id from urls).
      */
     private final StreamingService service;
@@ -20,7 +20,7 @@ public abstract class Extractor {
      * What makes a url "dirty" or not is, for example, the additional parameters
      * (not important as—in this case—the id):
      * <pre>
-     *     https://www.youtube.com/watch?v=a9Zf_258aTI<i>&t=4s</i>  →  <i><b>&t=4s</b></i>
+     *     https://www.youtube.com/watch?v=a9Zf_258aTI<i>&amp;t=4s</i>  →  <i><b>&amp;t=4s</b></i>
      * </pre>
      * But as you can imagine, the time parameter is very important when calling {@link org.schabi.newpipe.extractor.stream.StreamExtractor#getTimeStamp()}.
      */

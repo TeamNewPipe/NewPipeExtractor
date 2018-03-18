@@ -29,3 +29,19 @@ subprojects {
     }
 }
 
+// https://discuss.gradle.org/t/best-approach-gradle-multi-module-project-generate-just-one-global-javadoc/18657/21
+task aggregatedJavadocs(type: Javadoc, group: 'Documentation') {
+    destinationDir = file("$buildDir/docs/javadoc")
+    title = "$project.name $version"
+    // options.memberLevel = JavadocMemberLevel.PRIVATE
+    options.links 'https://docs.oracle.com/javase/7/docs/api/'
+    
+    subprojects.each { project ->
+        project.tasks.withType(Javadoc).each { javadocTask ->
+            source += javadocTask.source
+            classpath += javadocTask.classpath
+            excludes += javadocTask.excludes
+            includes += javadocTask.includes
+        }
+    }
+}

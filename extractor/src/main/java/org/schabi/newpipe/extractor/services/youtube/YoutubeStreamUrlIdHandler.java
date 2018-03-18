@@ -119,7 +119,7 @@ public class YoutubeStreamUrlIdHandler implements UrlIdHandler {
      * Shared URI's look like this:
      * <pre>
      *     * https://www.youtube.com/shared?ci=PJICrTByb3E
-     *     * vnd.youtube://www.youtube.com/shared?ci=PJICrTByb3E&feature=twitter-deep-link
+     *     * vnd.youtube://www.youtube.com/shared?ci=PJICrTByb3E&amp;feature=twitter-deep-link
      * </pre>
      *
      * @param url The shared url

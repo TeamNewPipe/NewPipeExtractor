@@ -26,7 +26,7 @@ public abstract class ListExtractor<R extends InfoItem> extends Extractor {
     public abstract InfoItemsPage<R> getInitialPage() throws IOException, ExtractionException;
 
     /**
-     * Returns an url that can be used to get the next page relative to the initial one.<br/>
+     * Returns an url that can be used to get the next page relative to the initial one.
      * <p>Usually, these links will only work in the implementation itself.</p>
      *
      * @return an url pointing to the next page relative to the initial page
