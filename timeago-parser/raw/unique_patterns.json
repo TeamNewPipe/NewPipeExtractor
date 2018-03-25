@@ -1,0 +1,2230 @@
+{
+  "af": {
+    "seconds": [
+      "sekonde",
+      "sekondes"
+    ],
+    "minutes": [
+      "minute",
+      "minuut"
+    ],
+    "hours": [
+      "ure",
+      "uur"
+    ],
+    "days": [
+      "dae",
+      "dag"
+    ],
+    "weeks": [
+      "week",
+      "weke"
+    ],
+    "months": [
+      "maand",
+      "maande"
+    ],
+    "years": [
+      "jaar"
+    ]
+  },
+  "am": {
+    "seconds": [
+      "ሰኮንዶች",
+      "ሴኮንድ"
+    ],
+    "minutes": [
+      "ደቂቃ",
+      "ደቂቃዎች"
+    ],
+    "hours": [
+      "ሰዓት",
+      "ሰዓቶች"
+    ],
+    "days": [
+      "ቀን",
+      "ቀኖች"
+    ],
+    "weeks": [
+      "ሳምንታት",
+      "ሳምንት"
+    ],
+    "months": [
+      "ወራት",
+      "ወር"
+    ],
+    "years": [
+      "ዓመታት",
+      "ዓመት"
+    ]
+  },
+  "ar": {
+    "seconds": [
+      "ثانية",
+      "ثانيتين",
+      "ثوانٍ"
+    ],
+    "minutes": [
+      "دقائق",
+      "دقيقة",
+      "دقيقتين"
+    ],
+    "hours": [
+      "ساعات",
+      "ساعة",
+      "ساعتين"
+    ],
+    "days": [
+      "أيام",
+      "يوم",
+      "يومين"
+    ],
+    "weeks": [
+      "أسابيع",
+      "أسبوع",
+      "أسبوعين"
+    ],
+    "months": [
+      "أشهر",
+      "شهر",
+      "شهرين",
+      "شهرًا"
+    ],
+    "years": [
+      "سنة",
+      "سنتين",
+      "سنوات"
+    ]
+  },
+  "az": {
+    "seconds": [
+      "saniyə"
+    ],
+    "minutes": [
+      "dəqiqə"
+    ],
+    "hours": [
+      "saat"
+    ],
+    "days": [
+      "gün"
+    ],
+    "weeks": [
+      "həftə"
+    ],
+    "months": [
+      "ay"
+    ],
+    "years": [
+      "il"
+    ]
+  },
+  "be": {
+    "seconds": [
+      "секунд",
+      "секунду",
+      "секунды"
+    ],
+    "minutes": [
+      "хвіліну",
+      "хвіліны"
+    ],
+    "hours": [
+      "гадзіну",
+      "гадзіны"
+    ],
+    "days": [
+      "дзень",
+      "дня"
+    ],
+    "weeks": [
+      "тыдзень",
+      "тыдня"
+    ],
+    "months": [
+      "месяц",
+      "месяца"
+    ],
+    "years": [
+      "год",
+      "года"
+    ]
+  },
+  "bg": {
+    "seconds": [
+      "секунда",
+      "секунди"
+    ],
+    "minutes": [
+      "минута",
+      "минути"
+    ],
+    "hours": [
+      "час",
+      "часа"
+    ],
+    "days": [
+      "ден",
+      "дни"
+    ],
+    "weeks": [
+      "седмица",
+      "седмици"
+    ],
+    "months": [
+      "месец",
+      "месеца"
+    ],
+    "years": [
+      "година",
+      "години"
+    ]
+  },
+  "bn": {
+    "seconds": [
+      "সেকেন্ড"
+    ],
+    "minutes": [
+      "মিনিট"
+    ],
+    "hours": [
+      "ঘণ্টা"
+    ],
+    "days": [
+      "দিন"
+    ],
+    "weeks": [
+      "সপ্তাহ"
+    ],
+    "months": [
+      "মাস"
+    ],
+    "years": [
+      "বছর"
+    ]
+  },
+  "bs": {
+    "seconds": [
+      "sekundi",
+      "sekundu"
+    ],
+    "minutes": [
+      "minuta",
+      "minutu"
+    ],
+    "hours": [
+      "h",
+      "sat"
+    ],
+    "days": [
+      "dan",
+      "dana"
+    ],
+    "weeks": [
+      "sedm."
+    ],
+    "months": [
+      "mj.",
+      "mjesec"
+    ],
+    "years": [
+      "godine",
+      "godina",
+      "godinu"
+    ]
+  },
+  "ca": {
+    "seconds": [
+      "segon",
+      "segons"
+    ],
+    "minutes": [
+      "minut",
+      "minuts"
+    ],
+    "hours": [
+      "hora",
+      "hores"
+    ],
+    "days": [
+      "dia",
+      "dies"
+    ],
+    "weeks": [
+      "setmana",
+      "setmanes"
+    ],
+    "months": [
+      "mes",
+      "mesos"
+    ],
+    "years": [
+      "any",
+      "anys"
+    ]
+  },
+  "cs": {
+    "seconds": [
+      "sekundami",
+      "sekundou"
+    ],
+    "minutes": [
+      "minutami",
+      "minutou"
+    ],
+    "hours": [
+      "hodinami",
+      "hodinou"
+    ],
+    "days": [
+      "dny",
+      "včera"
+    ],
+    "weeks": [
+      "týdnem",
+      "týdny"
+    ],
+    "months": [
+      "měsícem",
+      "měsíci"
+    ],
+    "years": [
+      "rokem",
+      "roky"
+    ]
+  },
+  "da": {
+    "seconds": [
+      "sekund",
+      "sekunder"
+    ],
+    "minutes": [
+      "minut",
+      "minutter"
+    ],
+    "hours": [
+      "time",
+      "timer"
+    ],
+    "days": [
+      "dag",
+      "dage"
+    ],
+    "weeks": [
+      "uge",
+      "uger"
+    ],
+    "months": [
+      "måned",
+      "måneder"
+    ],
+    "years": [
+      "år"
+    ]
+  },
+  "de": {
+    "seconds": [
+      "Sekunde",
+      "Sekunden"
+    ],
+    "minutes": [
+      "Minute",
+      "Minuten"
+    ],
+    "hours": [
+      "Stunde",
+      "Stunden"
+    ],
+    "days": [
+      "Tag",
+      "Tagen"
+    ],
+    "weeks": [
+      "Woche",
+      "Wochen"
+    ],
+    "months": [
+      "Monat",
+      "Monaten"
+    ],
+    "years": [
+      "Jahr",
+      "Jahren"
+    ]
+  },
+  "el": {
+    "seconds": [
+      "δευτερόλεπτα",
+      "δευτερόλεπτο"
+    ],
+    "minutes": [
+      "λεπτά",
+      "λεπτό"
+    ],
+    "hours": [
+      "ώρα",
+      "ώρες"
+    ],
+    "days": [
+      "ημέρα",
+      "ημέρες"
+    ],
+    "weeks": [
+      "εβδομάδα",
+      "εβδομάδες"
+    ],
+    "months": [
+      "μήνα",
+      "μήνες"
+    ],
+    "years": [
+      "χρόνια",
+      "χρόνο"
+    ]
+  },
+  "en": {
+    "seconds": [
+      "second",
+      "seconds"
+    ],
+    "minutes": [
+      "minute",
+      "minutes"
+    ],
+    "hours": [
+      "hour",
+      "hours"
+    ],
+    "days": [
+      "day",
+      "days"
+    ],
+    "weeks": [
+      "week",
+      "weeks"
+    ],
+    "months": [
+      "month",
+      "months"
+    ],
+    "years": [
+      "year",
+      "years"
+    ]
+  },
+  "en-GB": {
+    "seconds": [
+      "second",
+      "seconds"
+    ],
+    "minutes": [
+      "minute",
+      "minutes"
+    ],
+    "hours": [
+      "hour",
+      "hours"
+    ],
+    "days": [
+      "day",
+      "days"
+    ],
+    "weeks": [
+      "week",
+      "weeks"
+    ],
+    "months": [
+      "month",
+      "months"
+    ],
+    "years": [
+      "year",
+      "years"
+    ]
+  },
+  "es": {
+    "seconds": [
+      "segundo",
+      "segundos"
+    ],
+    "minutes": [
+      "minuto",
+      "minutos"
+    ],
+    "hours": [
+      "hora",
+      "horas"
+    ],
+    "days": [
+      "día",
+      "días"
+    ],
+    "weeks": [
+      "semana",
+      "semanas"
+    ],
+    "months": [
+      "mes",
+      "meses"
+    ],
+    "years": [
+      "año",
+      "años"
+    ]
+  },
+  "es-419": {
+    "seconds": [
+      "segundo",
+      "segundos"
+    ],
+    "minutes": [
+      "minuto",
+      "minutos"
+    ],
+    "hours": [
+      "hora",
+      "horas"
+    ],
+    "days": [
+      "día",
+      "días"
+    ],
+    "weeks": [
+      "semana",
+      "semanas"
+    ],
+    "months": [
+      "mes",
+      "meses"
+    ],
+    "years": [
+      "año",
+      "años"
+    ]
+  },
+  "es-US": {
+    "seconds": [
+      "segundo",
+      "segundos"
+    ],
+    "minutes": [
+      "minuto",
+      "minutos"
+    ],
+    "hours": [
+      "hora",
+      "horas"
+    ],
+    "days": [
+      "día",
+      "días"
+    ],
+    "weeks": [
+      "semana",
+      "semanas"
+    ],
+    "months": [
+      "mes",
+      "meses"
+    ],
+    "years": [
+      "año",
+      "años"
+    ]
+  },
+  "et": {
+    "seconds": [
+      "sekund",
+      "sekundit"
+    ],
+    "minutes": [
+      "minut",
+      "minutit"
+    ],
+    "hours": [
+      "tund",
+      "tundi"
+    ],
+    "days": [
+      "päev",
+      "päeva"
+    ],
+    "weeks": [
+      "nädal",
+      "nädalat"
+    ],
+    "months": [
+      "kuu",
+      "kuud"
+    ],
+    "years": [
+      "aasta",
+      "aastat"
+    ]
+  },
+  "eu": {
+    "seconds": [
+      "segundo"
+    ],
+    "minutes": [
+      "minutu"
+    ],
+    "hours": [
+      "ordu",
+      "ordubete"
+    ],
+    "days": [
+      "egun"
+    ],
+    "weeks": [
+      "aste",
+      "astebete"
+    ],
+    "months": [
+      "hilabete"
+    ],
+    "years": [
+      "urte",
+      "urtebete"
+    ]
+  },
+  "fa": {
+    "seconds": [
+      "ثانیه"
+    ],
+    "minutes": [
+      "دقیقه"
+    ],
+    "hours": [
+      "ساعت"
+    ],
+    "days": [
+      "روز"
+    ],
+    "weeks": [
+      "هفته"
+    ],
+    "months": [
+      "ماه"
+    ],
+    "years": [
+      "سال"
+    ]
+  },
+  "fi": {
+    "seconds": [
+      "sekunti",
+      "sekuntia"
+    ],
+    "minutes": [
+      "minuutti",
+      "minuuttia"
+    ],
+    "hours": [
+      "tunti",
+      "tuntia"
+    ],
+    "days": [
+      "päivä",
+      "päivää"
+    ],
+    "weeks": [
+      "viikko",
+      "viikkoa"
+    ],
+    "months": [
+      "kuukausi",
+      "kuukautta"
+    ],
+    "years": [
+      "vuosi",
+      "vuotta"
+    ]
+  },
+  "fil": {
+    "seconds": [
+      "segundo"
+    ],
+    "minutes": [
+      "minuto"
+    ],
+    "hours": [
+      "oras"
+    ],
+    "days": [
+      "araw"
+    ],
+    "weeks": [
+      "linggo"
+    ],
+    "months": [
+      "buwan"
+    ],
+    "years": [
+      "taon"
+    ]
+  },
+  "fr": {
+    "seconds": [
+      "seconde",
+      "secondes"
+    ],
+    "minutes": [
+      "minute",
+      "minutes"
+    ],
+    "hours": [
+      "heure",
+      "heures"
+    ],
+    "days": [
+      "jour",
+      "jours"
+    ],
+    "weeks": [
+      "semaine",
+      "semaines"
+    ],
+    "months": [
+      "mois"
+    ],
+    "years": [
+      "an",
+      "ans"
+    ]
+  },
+  "fr-CA": {
+    "seconds": [
+      "seconde",
+      "secondes"
+    ],
+    "minutes": [
+      "minute",
+      "minutes"
+    ],
+    "hours": [
+      "heures",
+      "heure"
+    ],
+    "days": [
+      "jour",
+      "jours"
+    ],
+    "weeks": [
+      "semaine",
+      "semaines"
+    ],
+    "months": [
+      "mois"
+    ],
+    "years": [
+      "an",
+      "ans"
+    ]
+  },
+  "gl": {
+    "seconds": [
+      "segundo",
+      "segundos"
+    ],
+    "minutes": [
+      "minuto",
+      "minutos"
+    ],
+    "hours": [
+      "hora",
+      "horas"
+    ],
+    "days": [
+      "día",
+      "días"
+    ],
+    "weeks": [
+      "semana",
+      "semanas"
+    ],
+    "months": [
+      "mes",
+      "meses"
+    ],
+    "years": [
+      "ano",
+      "anos"
+    ]
+  },
+  "gu": {
+    "seconds": [
+      "સેકંડ"
+    ],
+    "minutes": [
+      "મિનિટ"
+    ],
+    "hours": [
+      "કલાક"
+    ],
+    "days": [
+      "દિવસ"
+    ],
+    "weeks": [
+      "અઠવાડિયા"
+    ],
+    "months": [
+      "મહિના"
+    ],
+    "years": [
+      "વર્ષ"
+    ]
+  },
+  "hi": {
+    "seconds": [
+      "सेकंड"
+    ],
+    "minutes": [
+      "मिनट"
+    ],
+    "hours": [
+      "घंटा",
+      "घंटे"
+    ],
+    "days": [
+      "दिन"
+    ],
+    "weeks": [
+      "सप्ताह"
+    ],
+    "months": [
+      "महीना",
+      "महीने"
+    ],
+    "years": [
+      "वर्ष"
+    ]
+  },
+  "hr": {
+    "seconds": [
+      "sekunde",
+      "sekundi",
+      "sekundu"
+    ],
+    "minutes": [
+      "minuta",
+      "minute",
+      "minutu"
+    ],
+    "hours": [
+      "sat",
+      "sata",
+      "sati"
+    ],
+    "days": [
+      "dan",
+      "dana"
+    ],
+    "weeks": [
+      "tjedan",
+      "tjedna"
+    ],
+    "months": [
+      "mjesec",
+      "mjeseca",
+      "mjeseci"
+    ],
+    "years": [
+      "godina",
+      "godine",
+      "godinu"
+    ]
+  },
+  "hu": {
+    "seconds": [
+      "másodperce"
+    ],
+    "minutes": [
+      "perce"
+    ],
+    "hours": [
+      "órája"
+    ],
+    "days": [
+      "napja"
+    ],
+    "weeks": [
+      "hete"
+    ],
+    "months": [
+      "hónapja"
+    ],
+    "years": [
+      "éve"
+    ]
+  },
+  "hy": {
+    "seconds": [
+      "վայրկյան"
+    ],
+    "minutes": [
+      "րոպե"
+    ],
+    "hours": [
+      "ժամ"
+    ],
+    "days": [
+      "օր"
+    ],
+    "weeks": [
+      "շաբաթ"
+    ],
+    "months": [
+      "ամիս"
+    ],
+    "years": [
+      "տարի"
+    ]
+  },
+  "id": {
+    "seconds": [
+      "detik"
+    ],
+    "minutes": [
+      "menit"
+    ],
+    "hours": [
+      "jam"
+    ],
+    "days": [
+      "hari"
+    ],
+    "weeks": [
+      "minggu"
+    ],
+    "months": [
+      "bulan"
+    ],
+    "years": [
+      "tahun"
+    ]
+  },
+  "is": {
+    "seconds": [
+      "sekúndu",
+      "sekúndum"
+    ],
+    "minutes": [
+      "mínútu",
+      "mínútum"
+    ],
+    "hours": [
+      "klukkustund",
+      "klukkustundum"
+    ],
+    "days": [
+      "degi",
+      "dögum"
+    ],
+    "weeks": [
+      "viku",
+      "vikum"
+    ],
+    "months": [
+      "mánuði",
+      "mánuðum"
+    ],
+    "years": [
+      "ári",
+      "árum"
+    ]
+  },
+  "it": {
+    "seconds": [
+      "secondi",
+      "secondo"
+    ],
+    "minutes": [
+      "minuti",
+      "minuto"
+    ],
+    "hours": [
+      "ora",
+      "ore"
+    ],
+    "days": [
+      "giorni",
+      "giorno"
+    ],
+    "weeks": [
+      "settimana",
+      "settimane"
+    ],
+    "months": [
+      "mese",
+      "mesi"
+    ],
+    "years": [
+      "anni",
+      "anno"
+    ]
+  },
+  "iw": {
+    "seconds": [
+      "שניות",
+      "שנייה"
+    ],
+    "minutes": [
+      "דקה",
+      "דקות"
+    ],
+    "hours": [
+      "שעה",
+      "שעות"
+    ],
+    "days": [
+      "יום",
+      "ימים"
+    ],
+    "weeks": [
+      "שבוע",
+      "שבועות"
+    ],
+    "months": [
+      "חודש",
+      "חודשים"
+    ],
+    "years": [
+      "שנה",
+      "שנים"
+    ]
+  },
+  "ja": {
+    "seconds": [
+      "秒前"
+    ],
+    "minutes": [
+      "分前"
+    ],
+    "hours": [
+      "時間前"
+    ],
+    "days": [
+      "日前"
+    ],
+    "weeks": [
+      "週間前"
+    ],
+    "months": [
+      "か月前"
+    ],
+    "years": [
+      "年前"
+    ]
+  },
+  "ka": {
+    "seconds": [
+      "წამის"
+    ],
+    "minutes": [
+      "წუთის"
+    ],
+    "hours": [
+      "საათის"
+    ],
+    "days": [
+      "დღის"
+    ],
+    "weeks": [
+      "კვირის"
+    ],
+    "months": [
+      "თვის"
+    ],
+    "years": [
+      "წლის"
+    ]
+  },
+  "kk": {
+    "seconds": [
+      "секунд"
+    ],
+    "minutes": [
+      "минут"
+    ],
+    "hours": [
+      "сағат"
+    ],
+    "days": [
+      "күн"
+    ],
+    "weeks": [
+      "апта"
+    ],
+    "months": [
+      "ай"
+    ],
+    "years": [
+      "жыл"
+    ]
+  },
+  "km": {
+    "seconds": [
+      "វិនាទី\u200bមុន",
+      "១វិនាទីមុន"
+    ],
+    "minutes": [
+      "នាទីមុន",
+      "១នាទីមុន"
+    ],
+    "hours": [
+      "ម៉ោង\u200bមុន",
+      "១ម៉ោង\u200bមុន"
+    ],
+    "days": [
+      "ថ្ងៃមុន",
+      "១ថ្ងៃ\u200bមុន"
+    ],
+    "weeks": [
+      "ស\u200bប្តា\u200bហ៍\u200bមុន",
+      "១ស\u200bប្តា\u200bហ៍\u200bមុន"
+    ],
+    "months": [
+      "ខែមុន",
+      "១ខែមុន"
+    ],
+    "years": [
+      "ឆ្នាំ\u200bមុន",
+      "១ឆ្នាំមុន"
+    ]
+  },
+  "kn": {
+    "seconds": [
+      "ಸೆಕೆಂಡುಗಳ",
+      "ಸೆಕೆಂಡ್"
+    ],
+    "minutes": [
+      "ನಿಮಿಷಗಳ",
+      "ನಿಮಿಷದ"
+    ],
+    "hours": [
+      "ಗಂಟೆಗಳ",
+      "ಗಂಟೆಯ"
+    ],
+    "days": [
+      "ದಿನಗಳ",
+      "ದಿನದ"
+    ],
+    "weeks": [
+      "ವಾರಗಳ",
+      "ವಾರದ"
+    ],
+    "months": [
+      "ತಿಂಗಳ",
+      "ತಿಂಗಳುಗಳ"
+    ],
+    "years": [
+      "ವರ್ಷಗಳ",
+      "ವರ್ಷದ"
+    ]
+  },
+  "ko": {
+    "seconds": [
+      "초"
+    ],
+    "minutes": [
+      "분"
+    ],
+    "hours": [
+      "시간"
+    ],
+    "days": [
+      "일"
+    ],
+    "weeks": [
+      "주"
+    ],
+    "months": [
+      "개월"
+    ],
+    "years": [
+      "년"
+    ]
+  },
+  "ky": {
+    "seconds": [
+      "секунд"
+    ],
+    "minutes": [
+      "мүнөт"
+    ],
+    "hours": [
+      "саат"
+    ],
+    "days": [
+      "күн"
+    ],
+    "weeks": [
+      "апта"
+    ],
+    "months": [
+      "ай"
+    ],
+    "years": [
+      "жыл"
+    ]
+  },
+  "lo": {
+    "seconds": [
+      "ວິນາທີກ່ອນນີ້"
+    ],
+    "minutes": [
+      "ນາທີກ່ອນນີ້",
+      "ນາ\u200bທີ\u200bກ່ອນ\u200bນີ້"
+    ],
+    "hours": [
+      "ຊົ່ວ\u200bໂມງ\u200bກ່ອນ\u200bນີ້"
+    ],
+    "days": [
+      "ມື້ກ່ອນນີ້"
+    ],
+    "weeks": [
+      "ອາ\u200bທິດ\u200bກ່ອນ\u200bນີ້"
+    ],
+    "months": [
+      "ເດືອນ\u200bກ່ອນ\u200bນີ້"
+    ],
+    "years": [
+      "ປີ\u200bກ່ອນ\u200bນີ້"
+    ]
+  },
+  "lt": {
+    "seconds": [
+      "sekundes",
+      "sekundę",
+      "sekundžių"
+    ],
+    "minutes": [
+      "minutes",
+      "minutę",
+      "minučių"
+    ],
+    "hours": [
+      "valandas",
+      "valandą",
+      "valandų"
+    ],
+    "days": [
+      "dienas",
+      "dieną"
+    ],
+    "weeks": [
+      "savaites",
+      "savaitę"
+    ],
+    "months": [
+      "mėnesius",
+      "mėnesių",
+      "mėnesį"
+    ],
+    "years": [
+      "metus",
+      "metų"
+    ]
+  },
+  "lv": {
+    "seconds": [
+      "sekundes",
+      "sekundēm"
+    ],
+    "minutes": [
+      "minūtes",
+      "minūtēm",
+      "minūtes"
+    ],
+    "hours": [
+      "stundas",
+      "stundām"
+    ],
+    "days": [
+      "dienas",
+      "dienām"
+    ],
+    "weeks": [
+      "nedēļas",
+      "nedēļām"
+    ],
+    "months": [
+      "mēneša",
+      "mēnešiem"
+    ],
+    "years": [
+      "gada",
+      "gadiem"
+    ]
+  },
+  "mk": {
+    "seconds": [
+      "секунда",
+      "секунди"
+    ],
+    "minutes": [
+      "минута",
+      "минути"
+    ],
+    "hours": [
+      "час",
+      "часа"
+    ],
+    "days": [
+      "ден",
+      "дена"
+    ],
+    "weeks": [
+      "недела",
+      "недели"
+    ],
+    "months": [
+      "месец",
+      "месеци"
+    ],
+    "years": [
+      "година",
+      "години"
+    ]
+  },
+  "ml": {
+    "seconds": [
+      "സെക്കന്റ്",
+      "സെക്കൻഡ്"
+    ],
+    "minutes": [
+      "മിനിറ്റ്"
+    ],
+    "hours": [
+      "മണിക്കൂർ"
+    ],
+    "days": [
+      "ദിവസം"
+    ],
+    "weeks": [
+      "ആഴ്ച",
+      "ആഴ്\u200cച"
+    ],
+    "months": [
+      "മാസം"
+    ],
+    "years": [
+      "വർഷം"
+    ]
+  },
+  "mn": {
+    "seconds": [
+      "секундын"
+    ],
+    "minutes": [
+      "минутын"
+    ],
+    "hours": [
+      "цагийн"
+    ],
+    "days": [
+      "өдрийн"
+    ],
+    "weeks": [
+      "долоо",
+      "хоногийн"
+    ],
+    "months": [
+      "сарын"
+    ],
+    "years": [
+      "жилийн"
+    ]
+  },
+  "mr": {
+    "seconds": [
+      "सेकंदांपूर्वी",
+      "सेकंदापूर्वी"
+    ],
+    "minutes": [
+      "मिनिटांपूर्वी",
+      "मिनिटापूर्वी"
+    ],
+    "hours": [
+      "तासांपूर्वी",
+      "तासापूर्वी"
+    ],
+    "days": [
+      "दिवसांपूर्वी",
+      "दिवसापूर्वी"
+    ],
+    "weeks": [
+      "आठवड्यांपूर्वी",
+      "आठवड्यापूर्वी"
+    ],
+    "months": [
+      "महिन्यांपूर्वी",
+      "महिन्यापूर्वी"
+    ],
+    "years": [
+      "वर्षांपूर्वी",
+      "वर्षापूर्वी"
+    ]
+  },
+  "ms": {
+    "seconds": [
+      "saat"
+    ],
+    "minutes": [
+      "minit"
+    ],
+    "hours": [
+      "jam"
+    ],
+    "days": [
+      "hari"
+    ],
+    "weeks": [
+      "minggu"
+    ],
+    "months": [
+      "bulan"
+    ],
+    "years": [
+      "tahun"
+    ]
+  },
+  "my": {
+    "seconds": [
+      "စက္ကန့်"
+    ],
+    "minutes": [
+      "မိနစ်"
+    ],
+    "hours": [
+      "နာရီ"
+    ],
+    "days": [
+      "ရက်"
+    ],
+    "weeks": [
+      "ပတ်"
+    ],
+    "months": [
+      "လ"
+    ],
+    "years": [
+      "နှစ်"
+    ]
+  },
+  "ne": {
+    "seconds": [
+      "सेकेन्ड"
+    ],
+    "minutes": [
+      "मिनेट"
+    ],
+    "hours": [
+      "घन्टा"
+    ],
+    "days": [
+      "दिन"
+    ],
+    "weeks": [
+      "हप्ता"
+    ],
+    "months": [
+      "महिना"
+    ],
+    "years": [
+      "वर्ष"
+    ]
+  },
+  "nl": {
+    "seconds": [
+      "seconde",
+      "seconden"
+    ],
+    "minutes": [
+      "minuten",
+      "minuut"
+    ],
+    "hours": [
+      "uur"
+    ],
+    "days": [
+      "dag",
+      "dagen"
+    ],
+    "weeks": [
+      "week",
+      "weken"
+    ],
+    "months": [
+      "maand",
+      "maanden"
+    ],
+    "years": [
+      "jaar"
+    ]
+  },
+  "no": {
+    "seconds": [
+      "sekund",
+      "sekunder"
+    ],
+    "minutes": [
+      "minutt",
+      "minutter"
+    ],
+    "hours": [
+      "time",
+      "timer"
+    ],
+    "days": [
+      "dag",
+      "dager"
+    ],
+    "weeks": [
+      "uke",
+      "uker"
+    ],
+    "months": [
+      "md."
+    ],
+    "years": [
+      "år"
+    ]
+  },
+  "pa": {
+    "seconds": [
+      "ਸਕਿੰਟ"
+    ],
+    "minutes": [
+      "ਮਿੰਟ"
+    ],
+    "hours": [
+      "ਘੰਟਾ",
+      "ਘੰਟੇ"
+    ],
+    "days": [
+      "ਦਿਨ"
+    ],
+    "weeks": [
+      "ਹਫ਼ਤਾ",
+      "ਹਫ਼ਤੇ"
+    ],
+    "months": [
+      "ਮਹੀਨਾ",
+      "ਮਹੀਨੇ"
+    ],
+    "years": [
+      "ਸਾਲ"
+    ]
+  },
+  "pl": {
+    "seconds": [
+      "sekund",
+      "sekundy",
+      "sekundę"
+    ],
+    "minutes": [
+      "minut",
+      "minuty",
+      "minutę"
+    ],
+    "hours": [
+      "godzin",
+      "godziny",
+      "godzinę"
+    ],
+    "days": [
+      "dni",
+      "dzień"
+    ],
+    "weeks": [
+      "tydzień",
+      "tygodnie"
+    ],
+    "months": [
+      "miesiąc",
+      "miesiące",
+      "miesięcy"
+    ],
+    "years": [
+      "lat",
+      "lata",
+      "rok"
+    ]
+  },
+  "pt": {
+    "seconds": [
+      "segundo",
+      "segundos"
+    ],
+    "minutes": [
+      "minuto",
+      "minutos"
+    ],
+    "hours": [
+      "hora",
+      "horas"
+    ],
+    "days": [
+      "dia",
+      "dias"
+    ],
+    "weeks": [
+      "semana",
+      "semanas"
+    ],
+    "months": [
+      "meses",
+      "mês"
+    ],
+    "years": [
+      "ano",
+      "anos"
+    ]
+  },
+  "pt-PT": {
+    "seconds": [
+      "segundo",
+      "segundos"
+    ],
+    "minutes": [
+      "minuto",
+      "minutos"
+    ],
+    "hours": [
+      "hora",
+      "horas"
+    ],
+    "days": [
+      "dia",
+      "dias"
+    ],
+    "weeks": [
+      "semana",
+      "semanas"
+    ],
+    "months": [
+      "meses",
+      "mês"
+    ],
+    "years": [
+      "ano",
+      "anos"
+    ]
+  },
+  "ro": {
+    "seconds": [
+      "secunde",
+      "secundă"
+    ],
+    "minutes": [
+      "minut",
+      "minute"
+    ],
+    "hours": [
+      "ore",
+      "oră"
+    ],
+    "days": [
+      "zi",
+      "zile"
+    ],
+    "weeks": [
+      "săptămâni",
+      "săptămână"
+    ],
+    "months": [
+      "luni",
+      "lună"
+    ],
+    "years": [
+      "an",
+      "ani"
+    ]
+  },
+  "ru": {
+    "seconds": [
+      "секунд",
+      "секунду",
+      "секунды",
+      "только что"
+    ],
+    "minutes": [
+      "минут",
+      "минуту",
+      "минуты"
+    ],
+    "hours": [
+      "час",
+      "часа",
+      "часов"
+    ],
+    "days": [
+      "день",
+      "дней",
+      "дня"
+    ],
+    "weeks": [
+      "Неделю",
+      "недели"
+    ],
+    "months": [
+      "месяц",
+      "месяца",
+      "месяцев"
+    ],
+    "years": [
+      "Год",
+      "года",
+      "лет"
+    ]
+  },
+  "si": {
+    "seconds": [
+      "තත්පර"
+    ],
+    "minutes": [
+      "මිනිත්තු"
+    ],
+    "hours": [
+      "පැය"
+    ],
+    "days": [
+      "දින"
+    ],
+    "weeks": [
+      "සති"
+    ],
+    "months": [
+      "මාස"
+    ],
+    "years": [
+      "වසර"
+    ]
+  },
+  "sk": {
+    "seconds": [
+      "sekundami",
+      "sekundou"
+    ],
+    "minutes": [
+      "minútami",
+      "minútou"
+    ],
+    "hours": [
+      "hodinami",
+      "hodinou"
+    ],
+    "days": [
+      "dňami",
+      "dňom"
+    ],
+    "weeks": [
+      "týždňami",
+      "týždňom"
+    ],
+    "months": [
+      "mesiacmi",
+      "mesiacom"
+    ],
+    "years": [
+      "rokmi",
+      "rokom"
+    ]
+  },
+  "sl": {
+    "seconds": [
+      "sekundama",
+      "sekundami",
+      "sekundo"
+    ],
+    "minutes": [
+      "minutama",
+      "minutami",
+      "minuto"
+    ],
+    "hours": [
+      "urama",
+      "urami",
+      "uro"
+    ],
+    "days": [
+      "dnem",
+      "dnevi",
+      "dnevoma"
+    ],
+    "weeks": [
+      "tedni",
+      "tednom",
+      "tednoma"
+    ],
+    "months": [
+      "mesecem",
+      "mesecema",
+      "meseci"
+    ],
+    "years": [
+      "leti",
+      "letom",
+      "letoma"
+    ]
+  },
+  "sq": {
+    "seconds": [
+      "sekonda",
+      "sekondë"
+    ],
+    "minutes": [
+      "minuta",
+      "minutë"
+    ],
+    "hours": [
+      "orë"
+    ],
+    "days": [
+      "ditë"
+    ],
+    "weeks": [
+      "javë"
+    ],
+    "months": [
+      "muaj"
+    ],
+    "years": [
+      "vit",
+      "vjet"
+    ]
+  },
+  "sr": {
+    "seconds": [
+      "секунде",
+      "секунди"
+    ],
+    "minutes": [
+      "минута"
+    ],
+    "hours": [
+      "сат",
+      "сата",
+      "сати"
+    ],
+    "days": [
+      "дан",
+      "дана"
+    ],
+    "weeks": [
+      "недеље",
+      "недељу"
+    ],
+    "months": [
+      "месец",
+      "месеца",
+      "месеци"
+    ],
+    "years": [
+      "година",
+      "године",
+      "годину"
+    ]
+  },
+  "sr-Latn": {
+    "seconds": [
+      "sekunde",
+      "sekundi"
+    ],
+    "minutes": [
+      "minuta"
+    ],
+    "hours": [
+      "sat",
+      "sati"
+    ],
+    "days": [
+      "dan",
+      "dana"
+    ],
+    "weeks": [
+      "nedelja",
+      "nedelje",
+      "nedelju"
+    ],
+    "months": [
+      "mesec",
+      "meseci",
+      "meseca"
+    ],
+    "years": [
+      "godine",
+      "godina",
+      "godinu"
+    ]
+  },
+  "sv": {
+    "seconds": [
+      "sekund",
+      "sekunder"
+    ],
+    "minutes": [
+      "minut",
+      "minuter"
+    ],
+    "hours": [
+      "timmar",
+      "timme"
+    ],
+    "days": [
+      "dag",
+      "dagar"
+    ],
+    "weeks": [
+      "vecka",
+      "veckor"
+    ],
+    "months": [
+      "månad",
+      "månader"
+    ],
+    "years": [
+      "år"
+    ]
+  },
+  "sw": {
+    "seconds": [
+      "sekunde"
+    ],
+    "minutes": [
+      "dakika"
+    ],
+    "hours": [
+      "saa"
+    ],
+    "days": [
+      "siku"
+    ],
+    "weeks": [
+      "wiki"
+    ],
+    "months": [
+      "Mwezi",
+      "miezi"
+    ],
+    "years": [
+      "Miaka",
+      "Mwaka"
+    ]
+  },
+  "ta": {
+    "seconds": [
+      "வினாடி",
+      "வினாடிகளுக்கு"
+    ],
+    "minutes": [
+      "நிமிடங்கள்",
+      "நிமிடம்"
+    ],
+    "hours": [
+      "மணிநேரத்திற்கு"
+    ],
+    "days": [
+      "நாட்களுக்கு",
+      "நாளுக்கு"
+    ],
+    "weeks": [
+      "வாரங்களுக்கு",
+      "வாரம்"
+    ],
+    "months": [
+      "மாதங்கள்",
+      "மாதம்"
+    ],
+    "years": [
+      "ஆண்டு",
+      "ஆண்டுகளுக்கு"
+    ]
+  },
+  "te": {
+    "seconds": [
+      "సెకను",
+      "సెకన్ల"
+    ],
+    "minutes": [
+      "నిమిషం",
+      "నిమిషాల"
+    ],
+    "hours": [
+      "గంట",
+      "గంటల"
+    ],
+    "days": [
+      "రోజు",
+      "రోజుల"
+    ],
+    "weeks": [
+      "వారం",
+      "వారాల"
+    ],
+    "months": [
+      "నెల",
+      "నెలల"
+    ],
+    "years": [
+      "సంవత్సరం",
+      "సంవత్సరాల"
+    ]
+  },
+  "th": {
+    "seconds": [
+      "วินาทีที่ผ่านมา"
+    ],
+    "minutes": [
+      "นาทีที่ผ่านมา"
+    ],
+    "hours": [
+      "ชั่วโมงที่ผ่านมา"
+    ],
+    "days": [
+      "วันที่ผ่านมา"
+    ],
+    "weeks": [
+      "สัปดาห์ที่ผ่านมา"
+    ],
+    "months": [
+      "เดือนที่ผ่านมา"
+    ],
+    "years": [
+      "ปีที่ผ่านมา"
+    ]
+  },
+  "tr": {
+    "seconds": [
+      "saniye"
+    ],
+    "minutes": [
+      "dakika"
+    ],
+    "hours": [
+      "saat"
+    ],
+    "days": [
+      "gün"
+    ],
+    "weeks": [
+      "hafta"
+    ],
+    "months": [
+      "ay"
+    ],
+    "years": [
+      "yıl"
+    ]
+  },
+  "uk": {
+    "seconds": [
+      "секунд",
+      "секунди",
+      "секунду"
+    ],
+    "minutes": [
+      "хвилин",
+      "хвилини",
+      "хвилину"
+    ],
+    "hours": [
+      "годин",
+      "години",
+      "годину"
+    ],
+    "days": [
+      "день",
+      "дні",
+      "днів"
+    ],
+    "weeks": [
+      "тиждень",
+      "тижні"
+    ],
+    "months": [
+      "місяць",
+      "місяці",
+      "місяців"
+    ],
+    "years": [
+      "роки",
+      "років",
+      "рік"
+    ]
+  },
+  "ur": {
+    "seconds": [
+      "سیکنڈ",
+      "سیکنڈز"
+    ],
+    "minutes": [
+      "منٹ",
+      "منٹس"
+    ],
+    "hours": [
+      "گھنٹہ",
+      "گھنٹے"
+    ],
+    "days": [
+      "دن"
+    ],
+    "weeks": [
+      "ہفتہ",
+      "ہفتے"
+    ],
+    "months": [
+      "ماہ"
+    ],
+    "years": [
+      "سال"
+    ]
+  },
+  "uz": {
+    "seconds": [
+      "soniya"
+    ],
+    "minutes": [
+      "daqiqa"
+    ],
+    "hours": [
+      "soat"
+    ],
+    "days": [
+      "kun"
+    ],
+    "weeks": [
+      "hafta"
+    ],
+    "months": [
+      "oy"
+    ],
+    "years": [
+      "yil"
+    ]
+  },
+  "vi": {
+    "seconds": [
+      "giây"
+    ],
+    "minutes": [
+      "phút"
+    ],
+    "hours": [
+      "giờ"
+    ],
+    "days": [
+      "ngày"
+    ],
+    "weeks": [
+      "tuần"
+    ],
+    "months": [
+      "tháng"
+    ],
+    "years": [
+      "năm"
+    ]
+  },
+  "zh-CN": {
+    "seconds": [
+      "秒前"
+    ],
+    "minutes": [
+      "分钟前"
+    ],
+    "hours": [
+      "小时前"
+    ],
+    "days": [
+      "天前"
+    ],
+    "weeks": [
+      "周前"
+    ],
+    "months": [
+      "个月前"
+    ],
+    "years": [
+      "年前"
+    ]
+  },
+  "zh-HK": {
+    "seconds": [
+      "秒前"
+    ],
+    "minutes": [
+      "分鐘前"
+    ],
+    "hours": [
+      "小時前"
+    ],
+    "days": [
+      "天前"
+    ],
+    "weeks": [
+      "週前"
+    ],
+    "months": [
+      "個月前"
+    ],
+    "years": [
+      "年前"
+    ]
+  },
+  "zh-TW": {
+    "seconds": [
+      "秒前"
+    ],
+    "minutes": [
+      "分鐘前"
+    ],
+    "hours": [
+      "小時前"
+    ],
+    "days": [
+      "天前"
+    ],
+    "weeks": [
+      "週前"
+    ],
+    "months": [
+      "個月前"
+    ],
+    "years": [
+      "年前"
+    ]
+  },
+  "zu": {
+    "seconds": [
+      "amasekhondi",
+      "isekhondi"
+    ],
+    "minutes": [
+      "amaminithi",
+      "iminithi"
+    ],
+    "hours": [
+      "amahora",
+      "ihora"
+    ],
+    "days": [
+      "izinsuku",
+      "usuku"
+    ],
+    "weeks": [
+      "amaviki",
+      "iviki"
+    ],
+    "months": [
+      "inyanga",
+      "izinyanga"
+    ],
+    "years": [
+      "iminyaka",
+      "unyaka"
+    ]
+  }
+}
