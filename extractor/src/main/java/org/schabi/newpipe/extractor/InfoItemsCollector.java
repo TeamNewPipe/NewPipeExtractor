@@ -27,7 +27,7 @@ import java.util.List;
  * along with NewPipe.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-public abstract class InfoItemsCollector<I extends InfoItem, E> implements Collector<I,E> {
+public abstract class InfoItemsCollector<I extends InfoItem, E extends InfoItemExtractor> implements Collector<I,E> {
 
     private final List<I> itemList = new ArrayList<>();
     private final List<Throwable> errors = new ArrayList<>();
