@@ -32,7 +32,7 @@ public class SoundcloudChartsExtractor extends KioskExtractor {
     @Nonnull
     @Override
     public String getName() {
-        return "< Implement me (♥_♥) >";
+        return "SoundCloud Charts";
     }
 
     @Nonnull
