@@ -33,7 +33,9 @@ public class YoutubeSubscriptionExtractorTest {
 
     @Test
     public void testFromInputStream() throws Exception {
-        File testFile = new File("src/test/resources/youtube_export_test.xml");
+        File testFile = new File("extractor/src/test/resources/youtube_export_test.xml");
+        if (!testFile.exists()) testFile = new File("src/test/resources/youtube_export_test.xml");
+
         List<SubscriptionItem> subscriptionItems = subscriptionExtractor.fromInputStream(new FileInputStream(testFile));
         assertTrue("List doesn't have exactly 8 items (had " + subscriptionItems.size() + ")", subscriptionItems.size() == 8);
 
