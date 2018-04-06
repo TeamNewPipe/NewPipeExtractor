@@ -32,8 +32,8 @@ import java.io.IOException;
 
 public class KioskInfo extends ListInfo<StreamInfoItem> {
 
-    private KioskInfo(int serviceId, String id, String url, String name) {
-        super(serviceId, id, url, name);
+    private KioskInfo(int serviceId, String id, String url, String originalUrl, String name) {
+        super(serviceId, id, url, originalUrl, name);
     }
 
     public static ListExtractor.InfoItemsPage<StreamInfoItem> getMoreItems(StreamingService service,
@@ -72,8 +72,9 @@ public class KioskInfo extends ListInfo<StreamInfoItem> {
         String name = extractor.getName();
         String id = extractor.getId();
         String url = extractor.getCleanUrl();
+        String originalUrl = extractor.getOriginalUrl();
 
-        KioskInfo info = new KioskInfo(serviceId, id, name, url);
+        KioskInfo info = new KioskInfo(serviceId, id, url, originalUrl, name);
 
         final ListExtractor.InfoItemsPage<StreamInfoItem> itemsPage = ExtractorHelper.getItemsPageOrLogError(info, extractor);
         info.setRelatedItems(itemsPage.getItems());

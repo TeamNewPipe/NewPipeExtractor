@@ -13,7 +13,19 @@ public abstract class Info implements Serializable {
      * e.g. Youtube:  https://www.youtube.com/watch?v=RER5qCTzZ7     &gt;    RER5qCTzZ7
      */
     private final String id;
+    /**
+     * Different than the {@link #originalUrl} in the sense that it <i>may</i> be set as a cleaned url.
+     *
+     * @see UrlIdHandler#cleanUrl(String)
+     * @see Extractor#getCleanUrl()
+     */
     private final String url;
+    /**
+     * The url used to start the extraction of this {@link Info} object.
+     *
+     * @see Extractor#getOriginalUrl()
+     */
+    private final String originalUrl;
     private final String name;
 
     private final List<Throwable> errors = new ArrayList<>();
@@ -26,16 +38,18 @@ public abstract class Info implements Serializable {
         this.errors.addAll(errors);
     }
 
-    public Info(int serviceId, String id, String url, String name) {
+    public Info(int serviceId, String id, String url, String originalUrl, String name) {
         this.serviceId = serviceId;
         this.id = id;
         this.url = url;
+        this.originalUrl = originalUrl;
         this.name = name;
     }
 
     @Override
     public String toString() {
-        return getClass().getSimpleName() + "[url=\"" + url + "\", name=\"" + name + "\"]";
+        final String ifDifferentString = !url.equals(originalUrl) ? " (originalUrl=\"" + originalUrl + "\")" : "";
+        return getClass().getSimpleName() + "[url=\"" + url + "\"" + ifDifferentString + ", name=\"" + name + "\"]";
     }
 
     public int getServiceId() {
@@ -48,6 +62,10 @@ public abstract class Info implements Serializable {
 
     public String getUrl() {
         return url;
+    }
+
+    public String getOriginalUrl() {
+        return originalUrl;
     }
 
     public String getName() {

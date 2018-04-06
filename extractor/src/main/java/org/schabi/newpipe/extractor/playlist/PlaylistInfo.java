@@ -12,8 +12,8 @@ import java.io.IOException;
 
 public class PlaylistInfo extends ListInfo<StreamInfoItem> {
 
-    public PlaylistInfo(int serviceId, String id, String url, String name) {
-        super(serviceId, id, url, name);
+    public PlaylistInfo(int serviceId, String id, String url, String originalUrl, String name) {
+        super(serviceId, id, url, originalUrl, name);
     }
 
     public static PlaylistInfo getInfo(String url) throws IOException, ExtractionException {
@@ -39,9 +39,10 @@ public class PlaylistInfo extends ListInfo<StreamInfoItem> {
 
         int serviceId = extractor.getServiceId();
         String url = extractor.getCleanUrl();
+        String originalUrl = extractor.getOriginalUrl();
         String id = extractor.getId();
         String name = extractor.getName();
-        PlaylistInfo info = new PlaylistInfo(serviceId, id, url, name);
+        PlaylistInfo info = new PlaylistInfo(serviceId, id, url, originalUrl, name);
 
         try {
             info.setStreamCount(extractor.getStreamCount());

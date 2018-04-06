@@ -6,8 +6,8 @@ public abstract class ListInfo<T extends InfoItem> extends Info {
     private List<T> relatedItems;
     private String nextPageUrl = null;
 
-    public ListInfo(int serviceId, String id, String url, String name) {
-        super(serviceId, id, url, name);
+    public ListInfo(int serviceId, String id, String url, String originalUrl, String name) {
+        super(serviceId, id, url, originalUrl, name);
     }
 
     public List<T> getRelatedItems() {

@@ -32,8 +32,8 @@ import java.io.IOException;
 
 public class ChannelInfo extends ListInfo<StreamInfoItem> {
 
-    public ChannelInfo(int serviceId, String url, String id, String name) {
-        super(serviceId, id, url, name);
+    public ChannelInfo(int serviceId, String id, String url, String originalUrl, String name) {
+        super(serviceId, id, url, originalUrl, name);
     }
 
     public static ChannelInfo getInfo(String url) throws IOException, ExtractionException {
@@ -55,10 +55,11 @@ public class ChannelInfo extends ListInfo<StreamInfoItem> {
         // important data
         int serviceId = extractor.getServiceId();
         String url = extractor.getCleanUrl();
+        String originalUrl = extractor.getOriginalUrl();
         String id = extractor.getId();
         String name = extractor.getName();
 
-        ChannelInfo info = new ChannelInfo(serviceId, url, id, name);
+        ChannelInfo info = new ChannelInfo(serviceId, id, url, originalUrl, name);
 
 
         try {
