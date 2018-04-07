@@ -92,6 +92,11 @@ public class ChannelInfo extends ListInfo<StreamInfoItem> {
         } catch (Exception e) {
             info.addError(e);
         }
+        try {
+            info.setDonationLinks(extractor.getDonationLinks());
+        } catch (Exception e) {
+            info.addError(e);
+        }
 
         return info;
     }
@@ -101,6 +106,7 @@ public class ChannelInfo extends ListInfo<StreamInfoItem> {
     private String feedUrl;
     private long subscriberCount = -1;
     private String description;
+    private String[] donationLinks;
 
     public String getAvatarUrl() {
         return avatarUrl;
@@ -140,5 +146,13 @@ public class ChannelInfo extends ListInfo<StreamInfoItem> {
 
     public void setDescription(String description) {
         this.description = description;
+    }
+
+    public String[] getDonationLinks() {
+        return donationLinks;
+    }
+
+    public void setDonationLinks(String[] donationLinks) {
+        this.donationLinks = donationLinks;
     }
 }
