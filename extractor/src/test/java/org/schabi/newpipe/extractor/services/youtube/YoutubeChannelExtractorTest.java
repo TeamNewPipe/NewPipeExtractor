@@ -103,6 +103,11 @@ public class YoutubeChannelExtractorTest {
         public void testSubscriberCount() throws Exception {
             assertTrue("Wrong subscriber count", extractor.getSubscriberCount() >= 0);
         }
+
+        @Test
+        public void testChannelDonation() throws Exception {
+            assertTrue(extractor.getDonationLinks().length != 0);
+        }
     }
 
     public static class Kurzgesagt implements BaseChannelExtractorTest {
@@ -204,6 +209,11 @@ public class YoutubeChannelExtractorTest {
         @Test
         public void testSubscriberCount() throws Exception {
             assertTrue("Wrong subscriber count", extractor.getSubscriberCount() >= 5e6);
+        }
+
+        @Test
+        public void testChannelDonation() throws Exception {
+            assertTrue(extractor.getDonationLinks().length == 0);
         }
     }
 
@@ -388,6 +398,11 @@ public class YoutubeChannelExtractorTest {
         @Test
         public void testSubscriberCount() throws Exception {
             assertTrue("Wrong subscriber count", extractor.getSubscriberCount() >= 50);
+        }
+
+        @Test
+        public void testChannelDonation() throws Exception {
+            assertTrue(extractor.getDonationLinks().length == 0);
         }
     }
 };
