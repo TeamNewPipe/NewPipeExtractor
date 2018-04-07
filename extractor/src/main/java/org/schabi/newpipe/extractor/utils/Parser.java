@@ -1,9 +1,14 @@
 package org.schabi.newpipe.extractor.utils;
 
+import org.nibor.autolink.LinkExtractor;
+import org.nibor.autolink.LinkSpan;
+import org.nibor.autolink.LinkType;
 import org.schabi.newpipe.extractor.exceptions.ParsingException;
 
 import java.io.UnsupportedEncodingException;
 import java.net.URLDecoder;
+import java.util.ArrayList;
+import java.util.EnumSet;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.regex.Matcher;
@@ -79,5 +84,24 @@ public class Parser {
             }
         }
         return map;
+    }
+
+    public static String[] getLinksFromString(final String txt) throws ParsingException {
+        try {
+            ArrayList<String> links = new ArrayList<>();
+            LinkExtractor linkExtractor = LinkExtractor.builder()
+                    .linkTypes(EnumSet.of(LinkType.URL, LinkType.WWW))
+                    .build();
+            Iterable<LinkSpan> linkss = linkExtractor.extractLinks(txt);
+            for(LinkSpan ls : linkss) {
+                links.add(txt.substring(ls.getBeginIndex(), ls.getEndIndex()));
+            }
+
+            String[] linksarray = new String[links.size()];
+            linksarray = links.toArray(linksarray);
+            return linksarray;
+        } catch (Exception e) {
+            throw new ParsingException("Could not get links from string", e);
+        }
     }
 }

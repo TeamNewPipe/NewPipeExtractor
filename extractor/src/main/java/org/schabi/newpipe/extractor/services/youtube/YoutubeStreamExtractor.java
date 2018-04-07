@@ -19,6 +19,7 @@ import org.schabi.newpipe.extractor.exceptions.ExtractionException;
 import org.schabi.newpipe.extractor.exceptions.ParsingException;
 import org.schabi.newpipe.extractor.exceptions.ReCaptchaException;
 import org.schabi.newpipe.extractor.stream.*;
+import org.schabi.newpipe.extractor.utils.DonationLinkHelper;
 import org.schabi.newpipe.extractor.utils.Parser;
 import org.schabi.newpipe.extractor.utils.Utils;
 
@@ -527,6 +528,24 @@ public class YoutubeStreamExtractor extends StreamExtractor {
 
         return errorReason != null ? errorReason.toString() : null;
     }
+
+    @Override
+    public String[] getDonationLinks() throws ParsingException {
+        try {
+            ArrayList<String> donationLinks = new ArrayList<>();
+            for (String s : Parser.getLinksFromString(getDescription())) {
+                if (DonationLinkHelper.getServiceByLink(s) != DonationLinkHelper.DonationService.NO_DONATION) {
+                    donationLinks.add(s);
+                }
+            }
+            String[] donlret = new String[donationLinks.size()];
+            donlret = donationLinks.toArray(donlret);
+            return donlret;
+        } catch (Exception e) {
+            throw new ParsingException("Could not get donation links", e);
+        }
+    }
+
 
     /*//////////////////////////////////////////////////////////////////////////
     // Fetch page
