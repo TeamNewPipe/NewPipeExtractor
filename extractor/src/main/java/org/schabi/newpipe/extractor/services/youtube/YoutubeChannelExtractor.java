@@ -17,6 +17,7 @@ import org.schabi.newpipe.extractor.exceptions.ExtractionException;
 import org.schabi.newpipe.extractor.exceptions.ParsingException;
 import org.schabi.newpipe.extractor.stream.StreamInfoItem;
 import org.schabi.newpipe.extractor.stream.StreamInfoItemsCollector;
+import org.schabi.newpipe.extractor.utils.DonationLinkHelper;
 import org.schabi.newpipe.extractor.utils.Parser;
 import org.schabi.newpipe.extractor.utils.Utils;
 
@@ -188,14 +189,16 @@ public class YoutubeChannelExtractor extends ChannelExtractor {
     public String[] getDonationLinks() throws ParsingException {
         try {
             ArrayList<String> links = new ArrayList<>();
-            Element linkHolder = doc.select("div[id=\"links-holder\"]").first();
+            Element linkHolder = doc.select("div[id=\"header-links\"]").first();
             if(linkHolder == null) {
                 // this occures if no links are embeded into the channel
                 return new String[0];
             }
             for(Element a : linkHolder.select("a")) {
-                System.err.println(a.attr("abs:href"));
-                links.add(a.attr("abs:href"));
+                String link = a.attr("abs:href");
+                if(DonationLinkHelper.getServiceByLink(link) != DonationLinkHelper.DonationService.NO_DONATION) {
+                    links.add(link);
+                }
             }
             String[] retLinks = new String[links.size()];
             retLinks = links.toArray(retLinks);
