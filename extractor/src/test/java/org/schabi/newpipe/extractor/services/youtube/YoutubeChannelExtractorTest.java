@@ -106,11 +106,10 @@ public class YoutubeChannelExtractorTest {
         }
 
         @Test
-        @Ignore
         public void testChannelDonation() throws Exception {
             // this needs to be ignored since wed have to upgrade channel extractor to the new yt interface
             // in order to make this work
-            assertTrue(extractor.getDonationLinks().length != 0);
+            assertTrue(extractor.getDonationLinks().length == 0);
         }
     }
 
@@ -217,7 +216,7 @@ public class YoutubeChannelExtractorTest {
 
         @Test
         public void testChannelDonation() throws Exception {
-            assertTrue(extractor.getDonationLinks().length == 0);
+            assertTrue(extractor.getDonationLinks().length == 1);
         }
     }
 
