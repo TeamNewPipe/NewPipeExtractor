@@ -22,6 +22,7 @@ import java.net.URLEncoder;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.HashMap;
 
 import static org.schabi.newpipe.extractor.utils.Utils.replaceHttpWithHttps;
 
@@ -35,18 +36,25 @@ public class SoundcloudParsingHelper {
         if (clientId != null && !clientId.isEmpty()) return clientId;
 
         Downloader dl = NewPipe.getDownloader();
-
         String response = dl.download("https://soundcloud.com");
+
         Document doc = Jsoup.parse(response);
-
-        // TODO: Find a less heavy way to get the client_id
-        // Currently we are downloading a 1MB file (!) just to get the client_id,
-        // youtube-dl don't have a way too, they are just hardcoding and updating it when it becomes invalid.
-        // The embed mode has a way to get it, but we still have to download a heavy file (~800KB).
         Element jsElement = doc.select("script[src^=https://a-v2.sndcdn.com/assets/app]").first();
-        String js = dl.download(jsElement.attr("src"));
 
-        return clientId = Parser.matchGroup1(",client_id:\"(.*?)\"", js);
+        final String clientIdPattern = ",client_id:\"(.*?)\"";
+
+        try {
+            final HashMap<String, String> headers = new HashMap<>();
+            headers.put("Range", "bytes=0-16384");
+            String js = dl.download(jsElement.attr("src"), headers);
+
+            return clientId = Parser.matchGroup1(clientIdPattern, js);
+        } catch (IOException | RegexException ignored) {
+            // Ignore it and proceed to download the whole js file
+        }
+
+        String js = dl.download(jsElement.attr("src"));
+        return clientId = Parser.matchGroup1(clientIdPattern, js);
     }
 
     public static String toDateString(String time) throws ParsingException {
