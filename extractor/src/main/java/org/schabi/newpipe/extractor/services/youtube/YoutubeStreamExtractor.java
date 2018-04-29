@@ -534,7 +534,7 @@ public class YoutubeStreamExtractor extends StreamExtractor {
         try {
             ArrayList<String> donationLinks = new ArrayList<>();
             for (String s : Parser.getLinksFromString(getDescription())) {
-                if (DonationLinkHelper.getServiceByLink(s) != DonationLinkHelper.DonationService.NO_DONATION) {
+                if (DonationLinkHelper.getDonatoinServiceByLink(s) != DonationLinkHelper.DonationService.NO_DONATION) {
                     donationLinks.add(s);
                 }
             }
@@ -543,6 +543,23 @@ public class YoutubeStreamExtractor extends StreamExtractor {
             return donlret;
         } catch (Exception e) {
             throw new ParsingException("Could not get donation links", e);
+        }
+    }
+
+    @Override
+    public String[] getAffiliateLinks() throws ParsingException {
+        try {
+            ArrayList<String> donationLinks = new ArrayList<>();
+            for (String s : Parser.getLinksFromString(getDescription())) {
+                if (DonationLinkHelper.getAffiliateServiceByLink(s) != DonationLinkHelper.AffiliateService.NO_AFILIATE) {
+                    donationLinks.add(s);
+                }
+            }
+            String[] donlret = new String[donationLinks.size()];
+            donlret = donationLinks.toArray(donlret);
+            return donlret;
+        } catch (Exception e) {
+            throw new ParsingException("Could not get afiliate links", e);
         }
     }
 

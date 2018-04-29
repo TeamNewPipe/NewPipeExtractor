@@ -242,6 +242,16 @@ public class StreamInfo extends Info {
         } catch (Exception e) {
             streamInfo.addError(e);
         }
+        try {
+            streamInfo.setAffiliateLinks(extractor.getAffiliateLinks());
+        } catch (Exception e) {
+            streamInfo.addError(e);
+        }
+        try {
+            streamInfo.setDonationLinks(extractor.getDonationLinks());
+        } catch (Exception e) {
+            streamInfo.addError(e);
+        }
 
         streamInfo.setRelatedStreams(ExtractorHelper.getRelatedVideosOrLogError(streamInfo, extractor));
         return streamInfo;
@@ -273,6 +283,9 @@ public class StreamInfo extends Info {
 
     private long startPosition = 0;
     private List<Subtitles> subtitles;
+
+    private String[] donationLinks;
+    private String[] affiliateLinks;
 
     /**
      * Get the stream type
@@ -465,5 +478,21 @@ public class StreamInfo extends Info {
 
     public void setSubtitles(List<Subtitles> subtitles) {
         this.subtitles = subtitles;
+    }
+
+    public String[] getDonationLinks() {
+        return donationLinks;
+    }
+
+    public void setDonationLinks(String[] donationLinks) {
+        this.donationLinks = donationLinks;
+    }
+
+    public String[] getAffiliateLinks() {
+        return affiliateLinks;
+    }
+
+    public void setAffiliateLinks(String[] affiliateLinks) {
+        this.affiliateLinks = affiliateLinks;
     }
 }

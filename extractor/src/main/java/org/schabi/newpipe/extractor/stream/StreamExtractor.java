@@ -142,6 +142,7 @@ public abstract class StreamExtractor extends Extractor {
     public abstract StreamInfoItemsCollector getRelatedVideos() throws IOException, ExtractionException;
 
     public abstract String[] getDonationLinks() throws ExtractionException;
+    public abstract String[] getAffiliateLinks() throws ExtractionException;
 
     /**
      * Analyses the webpage's document and extracts any error message there might be.
