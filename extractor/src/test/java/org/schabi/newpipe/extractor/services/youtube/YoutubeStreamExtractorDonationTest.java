@@ -49,4 +49,10 @@ public class YoutubeStreamExtractorDonationTest {
         assertTrue(String.valueOf(extractor.getDonationLinks().length),
                 extractor.getDonationLinks().length == 2);
     }
+
+    @Test
+    public void getAffiliateLinksTest() throws Exception {
+        assertTrue(String.valueOf(extractor.getAffiliateLinks().length),
+                extractor.getAffiliateLinks().length == 1);
+    }
 }

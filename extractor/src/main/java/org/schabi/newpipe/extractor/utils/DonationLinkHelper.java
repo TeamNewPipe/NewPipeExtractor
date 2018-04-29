@@ -7,11 +7,16 @@ public class DonationLinkHelper {
     public enum DonationService {
         NO_DONATION,
         PATREON,
-        PAYPAL
+        PAYPAL,
+    }
+
+    public enum AffiliateService {
+        NO_AFILIATE,
+        AMAZON,
     }
 
 
-    public static DonationService getServiceByLink(String link) throws MalformedURLException {
+    public static DonationService getDonatoinServiceByLink(String link) throws MalformedURLException {
         URL url = new URL(link);
         switch (url.getHost()) {
             case "www.patreon.com":
@@ -27,5 +32,12 @@ public class DonationLinkHelper {
         }
     }
 
+    public static AffiliateService getAffiliateServiceByLink(String link) throws MalformedURLException {
+        URL url = new URL(link);
+        switch (url.getHost()) {
+            case "amzn.to": return AffiliateService.AMAZON;
+            default: return AffiliateService.NO_AFILIATE;
+        }
+    }
 
 }

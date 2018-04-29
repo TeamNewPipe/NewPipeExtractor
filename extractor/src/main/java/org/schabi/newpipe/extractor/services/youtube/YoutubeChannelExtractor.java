@@ -196,7 +196,7 @@ public class YoutubeChannelExtractor extends ChannelExtractor {
             }
             for(Element a : linkHolder.select("a")) {
                 String link = a.attr("abs:href");
-                if(DonationLinkHelper.getServiceByLink(link) != DonationLinkHelper.DonationService.NO_DONATION) {
+                if(DonationLinkHelper.getDonatoinServiceByLink(link) != DonationLinkHelper.DonationService.NO_DONATION) {
                     links.add(link);
                 }
             }
