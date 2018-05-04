@@ -48,6 +48,7 @@ public class YoutubeTrendingExtractorTest {
                 .getKioskList()
                 .getExtractorById("Trending", null);
         extractor.fetchPage();
+        extractor.setContentCountry("de");
     }
 
     @Test

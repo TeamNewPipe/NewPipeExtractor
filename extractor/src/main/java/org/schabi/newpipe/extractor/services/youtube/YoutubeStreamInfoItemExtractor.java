@@ -135,7 +135,11 @@ public class YoutubeStreamInfoItemExtractor implements StreamInfoItemExtractor {
             Element meta = item.select("div[class=\"yt-lockup-meta\"]").first();
             if (meta == null) return -1;
 
+            // This case can happen if google releases a special video
+            if(meta.select("li").size() < 2)  return -1;
+
             input = meta.select("li").get(1).text();
+
         } catch (IndexOutOfBoundsException e) {
             throw new ParsingException("Could not parse yt-lockup-meta although available: " + getUrl(), e);
         }
