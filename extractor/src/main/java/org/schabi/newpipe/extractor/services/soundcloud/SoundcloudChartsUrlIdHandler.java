@@ -1,13 +1,14 @@
 package org.schabi.newpipe.extractor.services.soundcloud;
 
+import org.schabi.newpipe.extractor.ListUrlIdHandler;
 import org.schabi.newpipe.extractor.UrlIdHandler;
 import org.schabi.newpipe.extractor.utils.Parser;
 
-public class SoundcloudChartsUrlIdHandler implements UrlIdHandler {
+public class SoundcloudChartsUrlIdHandler extends ListUrlIdHandler {
     private final String TOP_URL_PATTERN = "^https?://(www\\.|m\\.)?soundcloud.com/charts(/top)?/?([#?].*)?$";
     private final String URL_PATTERN = "^https?://(www\\.|m\\.)?soundcloud.com/charts(/top|/new)?/?([#?].*)?$";
 
-    public String getUrl(String id) {
+    public String getUrl(String id, String[] contentFilter, String sortFilter) {
         if (id.equals("Top 50")) {
             return "https://soundcloud.com/charts/top";
         } else {

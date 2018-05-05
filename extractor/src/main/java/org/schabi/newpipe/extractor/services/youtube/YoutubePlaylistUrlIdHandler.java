@@ -1,11 +1,12 @@
 package org.schabi.newpipe.extractor.services.youtube;
 
 
+import org.schabi.newpipe.extractor.ListUrlIdHandler;
 import org.schabi.newpipe.extractor.UrlIdHandler;
 import org.schabi.newpipe.extractor.exceptions.ParsingException;
 import org.schabi.newpipe.extractor.utils.Parser;
 
-public class YoutubePlaylistUrlIdHandler implements UrlIdHandler {
+public class YoutubePlaylistUrlIdHandler extends ListUrlIdHandler {
 
     private static final YoutubePlaylistUrlIdHandler instance = new YoutubePlaylistUrlIdHandler();
     private static final String ID_PATTERN = "([\\-a-zA-Z0-9_]{10,})";
@@ -15,7 +16,7 @@ public class YoutubePlaylistUrlIdHandler implements UrlIdHandler {
     }
 
     @Override
-    public String getUrl(String id) {
+    public String getUrl(String id, String[] contentFilter, String sortFilter) {
         return "https://www.youtube.com/playlist?list=" + id;
     }
 

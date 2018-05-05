@@ -1,5 +1,6 @@
 package org.schabi.newpipe.extractor.services.youtube;
 
+import org.schabi.newpipe.extractor.ListUrlIdHandler;
 import org.schabi.newpipe.extractor.UrlIdHandler;
 import org.schabi.newpipe.extractor.exceptions.ParsingException;
 import org.schabi.newpipe.extractor.utils.Parser;
@@ -24,7 +25,7 @@ import org.schabi.newpipe.extractor.utils.Parser;
  * along with NewPipe.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-public class YoutubeChannelUrlIdHandler implements UrlIdHandler {
+public class YoutubeChannelUrlIdHandler extends ListUrlIdHandler {
 
     private static final YoutubeChannelUrlIdHandler instance = new YoutubeChannelUrlIdHandler();
     private static final String ID_PATTERN = "/(user/[A-Za-z0-9_-]*|channel/[A-Za-z0-9_-]*)";
@@ -34,7 +35,7 @@ public class YoutubeChannelUrlIdHandler implements UrlIdHandler {
     }
 
     @Override
-    public String getUrl(String id) {
+    public String getUrl(String id, String[] contentFilter, String sortFilter) {
         return "https://www.youtube.com/" + id;
     }
 
