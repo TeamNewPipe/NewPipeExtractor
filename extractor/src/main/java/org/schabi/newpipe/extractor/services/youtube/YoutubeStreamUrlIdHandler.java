@@ -37,7 +37,7 @@ import java.net.URLDecoder;
  * along with NewPipe.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-public class YoutubeStreamUrlIdHandler implements UrlIdHandler {
+public class YoutubeStreamUrlIdHandler extends UrlIdHandler {
 
     private static final YoutubeStreamUrlIdHandler instance = new YoutubeStreamUrlIdHandler();
     private static final String ID_PATTERN = "([\\-a-zA-Z0-9_]{11})";

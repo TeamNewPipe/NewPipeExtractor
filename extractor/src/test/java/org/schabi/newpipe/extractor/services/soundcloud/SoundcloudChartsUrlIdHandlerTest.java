@@ -22,7 +22,7 @@ public class SoundcloudChartsUrlIdHandlerTest {
     }
 
     @Test
-    public void getUrl() {
+    public void getUrl() throws Exception {
         assertEquals(urlIdHandler.getUrl("Top 50"), "https://soundcloud.com/charts/top");
         assertEquals(urlIdHandler.getUrl("New & hot"), "https://soundcloud.com/charts/new");
     }

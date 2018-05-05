@@ -22,16 +22,16 @@ import org.schabi.newpipe.extractor.exceptions.ParsingException;
  * along with NewPipe.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-public interface UrlIdHandler {
+public abstract class UrlIdHandler {
 
-    String getUrl(String id) throws ParsingException;
-    String getId(String url) throws ParsingException;
-    String cleanUrl(String complexUrl) throws ParsingException;
+    public abstract String getUrl(String id) throws ParsingException;
+    public abstract String getId(String url) throws ParsingException;
+    public abstract String cleanUrl(String complexUrl) throws ParsingException;
 
     /**
      * When a VIEW_ACTION is caught this function will test if the url delivered within the calling
      * Intent was meant to be watched with this Service.
      * Return false if this service shall not allow to be called through ACTIONs.
      */
-    boolean acceptUrl(String url);
+    public abstract boolean acceptUrl(String url);
 }

@@ -20,12 +20,14 @@ package org.schabi.newpipe.extractor.services.youtube;
  * along with NewPipe.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+import org.schabi.newpipe.extractor.ListUrlIdHandler;
 import org.schabi.newpipe.extractor.UrlIdHandler;
+import org.schabi.newpipe.extractor.exceptions.ParsingException;
 import org.schabi.newpipe.extractor.utils.Parser;
 
-public class YoutubeTrendingUrlIdHandler implements UrlIdHandler {
+public class YoutubeTrendingUrlIdHandler extends ListUrlIdHandler {
 
-    public String getUrl(String id) {
+    public String getUrl(String id, String[] contentFilter, String sortFilter) {
         return "https://www.youtube.com/feed/trending";
     }
 
@@ -35,7 +37,7 @@ public class YoutubeTrendingUrlIdHandler implements UrlIdHandler {
     }
 
     @Override
-    public String cleanUrl(String url) {
+    public String cleanUrl(String url) throws ParsingException {
         return getUrl("");
     }
 
