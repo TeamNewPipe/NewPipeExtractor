@@ -5,6 +5,7 @@ import org.junit.Test;
 import org.schabi.newpipe.Downloader;
 import org.schabi.newpipe.extractor.NewPipe;
 import org.schabi.newpipe.extractor.channel.ChannelExtractor;
+import org.schabi.newpipe.extractor.exceptions.ParsingException;
 import org.schabi.newpipe.extractor.services.BaseChannelExtractorTest;
 
 import static org.junit.Assert.*;
@@ -48,12 +49,12 @@ public class SoundcloudChannelExtractorTest {
         }
 
         @Test
-        public void testCleanUrl() {
-            assertEquals("https://soundcloud.com/liluzivert", extractor.getCleanUrl());
+        public void testUrl() throws ParsingException {
+            assertEquals("https://soundcloud.com/liluzivert", extractor.getUrl());
         }
 
         @Test
-        public void testOriginalUrl() {
+        public void testOriginalUrl() throws ParsingException {
             assertEquals("http://soundcloud.com/liluzivert/sets", extractor.getOriginalUrl());
         }
 
@@ -118,7 +119,7 @@ public class SoundcloudChannelExtractorTest {
 
         @Test
         public void testGetPageInNewExtractor() throws Exception {
-            final ChannelExtractor newExtractor = SoundCloud.getChannelExtractor(extractor.getCleanUrl());
+            final ChannelExtractor newExtractor = SoundCloud.getChannelExtractor(extractor.getUrl());
             defaultTestGetPageInNewExtractor(extractor, newExtractor, SoundCloud.getServiceId());
         }
 
@@ -142,12 +143,12 @@ public class SoundcloudChannelExtractorTest {
         }
 
         @Test
-        public void testCleanUrl() {
-            assertEquals("https://soundcloud.com/dubmatix", extractor.getCleanUrl());
+        public void testUrl() throws ParsingException {
+            assertEquals("https://soundcloud.com/dubmatix", extractor.getUrl());
         }
 
         @Test
-        public void testOriginalUrl() {
+        public void testOriginalUrl() throws ParsingException {
             assertEquals("https://soundcloud.com/dubmatix", extractor.getOriginalUrl());
         }
 

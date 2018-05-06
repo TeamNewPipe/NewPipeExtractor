@@ -85,7 +85,7 @@ public class StreamInfo extends Info {
         // if one of these is not available an exception is meant to be thrown directly into the frontend.
 
         int serviceId = extractor.getServiceId();
-        String url = extractor.getCleanUrl();
+        String url = extractor.getUrl();
         String originalUrl = extractor.getOriginalUrl();
         StreamType streamType = extractor.getStreamType();
         String id = extractor.getId();

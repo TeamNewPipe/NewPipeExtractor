@@ -35,22 +35,17 @@ public class YoutubeChannelUrlIdHandler extends ListUrlIdHandler {
     }
 
     @Override
-    public String getUrl(String id, String[] contentFilter, String sortFilter) {
-        return "https://www.youtube.com/" + id;
-    }
-
-    @Override
-    public String getId(String url) throws ParsingException {
+    public String onGetIdFromUrl(String url) throws ParsingException {
         return Parser.matchGroup1(ID_PATTERN, url);
     }
 
     @Override
-    public String cleanUrl(String complexUrl) throws ParsingException {
-        return getUrl(getId(complexUrl));
+    public String getUrl() {
+        return "https://www.youtube.com/" + id;
     }
 
     @Override
-    public boolean acceptUrl(String url) {
+    public boolean onAcceptUrl(String url) {
         return (url.contains("youtube") || url.contains("youtu.be") || url.contains("hooktube.com"))
                 && (url.contains("/user/") || url.contains("/channel/"));
     }

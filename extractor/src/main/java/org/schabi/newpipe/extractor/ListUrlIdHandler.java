@@ -4,11 +4,22 @@ import org.schabi.newpipe.extractor.exceptions.ParsingException;
 
 public abstract class ListUrlIdHandler extends UrlIdHandler {
 
-    public abstract String getUrl(String id, String[] contentFilter, String sortFilter) throws ParsingException;
+    protected String[] contentFilter;
+    protected String sortFilter;
 
-    @Override
-    public String getUrl(String id) throws ParsingException {
-        return getUrl(id, new String[0], null);
+    public ListUrlIdHandler setQuery(String id, String[] contentFilter, String softFilter) throws ParsingException {
+        setId(id);
+        this.contentFilter = contentFilter;
+        this.sortFilter = softFilter;
+        return this;
+    }
+
+    public ListUrlIdHandler setUrl(String url) throws ParsingException {
+        return (ListUrlIdHandler) super.setUrl(url);
+    }
+
+    public ListUrlIdHandler setId(String id) throws ParsingException {
+        return (ListUrlIdHandler) super.setId(id);
     }
 
     /**

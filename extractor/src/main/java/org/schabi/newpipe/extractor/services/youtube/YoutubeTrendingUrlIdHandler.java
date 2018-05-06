@@ -27,22 +27,17 @@ import org.schabi.newpipe.extractor.utils.Parser;
 
 public class YoutubeTrendingUrlIdHandler extends ListUrlIdHandler {
 
-    public String getUrl(String id, String[] contentFilter, String sortFilter) {
+    public String getUrl() {
         return "https://www.youtube.com/feed/trending";
     }
 
     @Override
-    public String getId(String url) {
+    public String onGetIdFromUrl(String url) {
         return "Trending";
     }
 
     @Override
-    public String cleanUrl(String url) throws ParsingException {
-        return getUrl("");
-    }
-
-    @Override
-    public boolean acceptUrl(String url) {
+    public boolean onAcceptUrl(final String url) {
         return Parser.isMatch("^(https://|http://|)(www.|m.|)youtube.com/feed/trending(|\\?.*)$", url);
     }
 }

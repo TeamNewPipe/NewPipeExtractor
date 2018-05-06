@@ -7,6 +7,7 @@ import org.schabi.newpipe.Downloader;
 import org.schabi.newpipe.extractor.NewPipe;
 import org.schabi.newpipe.extractor.ServiceList;
 import org.schabi.newpipe.extractor.channel.ChannelExtractor;
+import org.schabi.newpipe.extractor.exceptions.ParsingException;
 import org.schabi.newpipe.extractor.services.BaseChannelExtractorTest;
 
 import static org.junit.Assert.*;
@@ -49,12 +50,12 @@ public class YoutubeChannelExtractorTest {
         }
 
         @Test
-        public void testCleanUrl() {
-            assertEquals("https://www.youtube.com/channel/UCYJ61XIK64sp6ZFFS8sctxw", extractor.getCleanUrl());
+        public void testUrl() throws ParsingException {
+            assertEquals("https://www.youtube.com/channel/UCYJ61XIK64sp6ZFFS8sctxw", extractor.getUrl());
         }
 
         @Test
-        public void testOriginalUrl() {
+        public void testOriginalUrl() throws ParsingException {
             assertEquals("http://www.youtube.com/user/Gronkh", extractor.getOriginalUrl());
         }
 
@@ -130,7 +131,7 @@ public class YoutubeChannelExtractorTest {
 
         @Test
         public void testGetPageInNewExtractor() throws Exception {
-            final ChannelExtractor newExtractor = YouTube.getChannelExtractor(extractor.getCleanUrl());
+            final ChannelExtractor newExtractor = YouTube.getChannelExtractor(extractor.getUrl());
             defaultTestGetPageInNewExtractor(extractor, newExtractor, YouTube.getServiceId());
         }
 
@@ -155,12 +156,12 @@ public class YoutubeChannelExtractorTest {
         }
 
         @Test
-        public void testCleanUrl() {
-            assertEquals("https://www.youtube.com/channel/UCsXVk37bltHxD1rDPwtNM8Q", extractor.getCleanUrl());
+        public void testUrl() throws ParsingException {
+            assertEquals("https://www.youtube.com/channel/UCsXVk37bltHxD1rDPwtNM8Q", extractor.getUrl());
         }
 
         @Test
-        public void testOriginalUrl() {
+        public void testOriginalUrl() throws ParsingException {
             assertEquals("https://www.youtube.com/channel/UCsXVk37bltHxD1rDPwtNM8Q", extractor.getOriginalUrl());
         }
 
@@ -251,12 +252,12 @@ public class YoutubeChannelExtractorTest {
         }
 
         @Test
-        public void testCleanUrl() {
-            assertEquals("https://www.youtube.com/channel/UCEOXxzW2vU0P-0THehuIIeg", extractor.getCleanUrl());
+        public void testUrl() throws ParsingException {
+            assertEquals("https://www.youtube.com/channel/UCEOXxzW2vU0P-0THehuIIeg", extractor.getUrl());
         }
 
         @Test
-        public void testOriginalUrl() {
+        public void testOriginalUrl() throws ParsingException {
             assertEquals("https://www.youtube.com/user/CaptainDisillusion/videos", extractor.getOriginalUrl());
         }
 
@@ -340,12 +341,12 @@ public class YoutubeChannelExtractorTest {
         }
 
         @Test
-        public void testCleanUrl() {
-            assertEquals("https://www.youtube.com/channel/UCUaQMQS9lY5lit3vurpXQ6w", extractor.getCleanUrl());
+        public void testUrl() throws ParsingException {
+            assertEquals("https://www.youtube.com/channel/UCUaQMQS9lY5lit3vurpXQ6w", extractor.getUrl());
         }
 
         @Test
-        public void testOriginalUrl() {
+        public void testOriginalUrl() throws ParsingException {
             assertEquals("https://www.youtube.com/channel/UCUaQMQS9lY5lit3vurpXQ6w", extractor.getOriginalUrl());
         }
 

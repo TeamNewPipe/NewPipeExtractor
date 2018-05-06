@@ -23,7 +23,7 @@ public class SoundcloudStreamUrlIdHandler extends UrlIdHandler {
     }
 
     @Override
-    public String getUrl(String id) throws ParsingException {
+    public String getUrl() throws ParsingException {
         try {
             return SoundcloudParsingHelper.resolveUrlWithEmbedPlayer("https://api.soundcloud.com/tracks/" + id);
         } catch (Exception e) {
@@ -32,7 +32,7 @@ public class SoundcloudStreamUrlIdHandler extends UrlIdHandler {
     }
 
     @Override
-    public String getId(String url) throws ParsingException {
+    public String onGetIdFromUrl(String url) throws ParsingException {
         Utils.checkUrl(URL_PATTERN, url);
 
         try {
@@ -43,21 +43,7 @@ public class SoundcloudStreamUrlIdHandler extends UrlIdHandler {
     }
 
     @Override
-    public String cleanUrl(String complexUrl) throws ParsingException {
-        Utils.checkUrl(URL_PATTERN, complexUrl);
-
-        try {
-            Element ogElement = Jsoup.parse(NewPipe.getDownloader().download(complexUrl))
-                    .select("meta[property=og:url]").first();
-
-            return replaceHttpWithHttps(ogElement.attr("content"));
-        } catch (Exception e) {
-            throw new ParsingException(e.getMessage(), e);
-        }
-    }
-
-    @Override
-    public boolean acceptUrl(String url) {
+    public boolean onAcceptUrl(final String url) throws ParsingException {
         return Parser.isMatch(URL_PATTERN, url.toLowerCase());
     }
 }

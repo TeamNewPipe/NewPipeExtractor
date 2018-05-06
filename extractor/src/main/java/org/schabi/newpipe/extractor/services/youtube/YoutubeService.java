@@ -1,5 +1,6 @@
 package org.schabi.newpipe.extractor.services.youtube;
 
+import org.schabi.newpipe.extractor.ListUrlIdHandler;
 import org.schabi.newpipe.extractor.StreamingService;
 import org.schabi.newpipe.extractor.SuggestionExtractor;
 import org.schabi.newpipe.extractor.UrlIdHandler;
@@ -53,28 +54,28 @@ public class YoutubeService extends StreamingService {
     }
 
     @Override
-    public UrlIdHandler getChannelUrlIdHandler() {
+    public ListUrlIdHandler getChannelUrlIdHandler() {
         return YoutubeChannelUrlIdHandler.getInstance();
     }
 
     @Override
-    public UrlIdHandler getPlaylistUrlIdHandler() {
+    public ListUrlIdHandler getPlaylistUrlIdHandler() {
         return YoutubePlaylistUrlIdHandler.getInstance();
     }
 
     @Override
-    public StreamExtractor getStreamExtractor(String url) {
-        return new YoutubeStreamExtractor(this, url);
+    public StreamExtractor getStreamExtractor(UrlIdHandler urlIdHandler) throws ExtractionException {
+        return new YoutubeStreamExtractor(this, urlIdHandler);
     }
 
     @Override
-    public ChannelExtractor getChannelExtractor(String url) {
-        return new YoutubeChannelExtractor(this, url);
+    public ChannelExtractor getChannelExtractor(ListUrlIdHandler urlIdHandler) throws ExtractionException {
+        return new YoutubeChannelExtractor(this, urlIdHandler);
     }
 
     @Override
-    public PlaylistExtractor getPlaylistExtractor(String url) {
-        return new YoutubePlaylistExtractor(this, url);
+    public PlaylistExtractor getPlaylistExtractor(ListUrlIdHandler urlIdHandler) throws ExtractionException {
+        return new YoutubePlaylistExtractor(this, urlIdHandler);
     }
 
     @Override
@@ -92,7 +93,8 @@ public class YoutubeService extends StreamingService {
                 @Override
                 public KioskExtractor createNewKiosk(StreamingService streamingService, String url, String id)
                 throws ExtractionException {
-                    return new YoutubeTrendingExtractor(YoutubeService.this, url, id);
+                    return new YoutubeTrendingExtractor(YoutubeService.this,
+                            new YoutubeTrendingUrlIdHandler().setUrl(url), id);
                 }
             }, new YoutubeTrendingUrlIdHandler(), "Trending");
             list.setDefaultKiosk("Trending");

@@ -39,17 +39,17 @@ public class YoutubeChannelUrlIdHandlerTest {
 
     @Test
     public void getIdFromUrl() throws ParsingException {
-        assertEquals("user/Gronkh", urlIdHandler.getId("https://www.youtube.com/user/Gronkh"));
-        assertEquals("user/Netzkino", urlIdHandler.getId("https://www.youtube.com/user/Netzkino/videos"));
+        assertEquals("user/Gronkh", urlIdHandler.setUrl("https://www.youtube.com/user/Gronkh").getId());
+        assertEquals("user/Netzkino", urlIdHandler.setUrl("https://www.youtube.com/user/Netzkino/videos").getId());
 
-        assertEquals("channel/UClq42foiSgl7sSpLupnugGA", urlIdHandler.getId("https://www.youtube.com/channel/UClq42foiSgl7sSpLupnugGA"));
-        assertEquals("channel/UClq42foiSgl7sSpLupnugGA", urlIdHandler.getId("https://www.youtube.com/channel/UClq42foiSgl7sSpLupnugGA/videos?disable_polymer=1"));
+        assertEquals("channel/UClq42foiSgl7sSpLupnugGA", urlIdHandler.setUrl("https://www.youtube.com/channel/UClq42foiSgl7sSpLupnugGA").getId());
+        assertEquals("channel/UClq42foiSgl7sSpLupnugGA", urlIdHandler.setUrl("https://www.youtube.com/channel/UClq42foiSgl7sSpLupnugGA/videos?disable_polymer=1").getId());
 
 
-        assertEquals("user/Gronkh", urlIdHandler.getId("https://hooktube.com/user/Gronkh"));
-        assertEquals("user/Netzkino", urlIdHandler.getId("https://hooktube.com/user/Netzkino/videos"));
+        assertEquals("user/Gronkh", urlIdHandler.setUrl("https://hooktube.com/user/Gronkh").getId());
+        assertEquals("user/Netzkino", urlIdHandler.setUrl("https://hooktube.com/user/Netzkino/videos").getId());
 
-        assertEquals("channel/UClq42foiSgl7sSpLupnugGA", urlIdHandler.getId("https://hooktube.com/channel/UClq42foiSgl7sSpLupnugGA"));
-        assertEquals("channel/UClq42foiSgl7sSpLupnugGA", urlIdHandler.getId("https://hooktube.com/channel/UClq42foiSgl7sSpLupnugGA/videos?disable_polymer=1"));
+        assertEquals("channel/UClq42foiSgl7sSpLupnugGA", urlIdHandler.setUrl("https://hooktube.com/channel/UClq42foiSgl7sSpLupnugGA").getId());
+        assertEquals("channel/UClq42foiSgl7sSpLupnugGA", urlIdHandler.setUrl("https://hooktube.com/channel/UClq42foiSgl7sSpLupnugGA/videos?disable_polymer=1").getId());
     }
 }

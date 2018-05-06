@@ -54,7 +54,7 @@ public class ChannelInfo extends ListInfo<StreamInfoItem> {
 
         // important data
         int serviceId = extractor.getServiceId();
-        String url = extractor.getCleanUrl();
+        String url = extractor.getUrl();
         String originalUrl = extractor.getOriginalUrl();
         String id = extractor.getId();
         String name = extractor.getName();

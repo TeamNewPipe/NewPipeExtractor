@@ -10,10 +10,7 @@ import org.jsoup.nodes.Element;
 import org.mozilla.javascript.Context;
 import org.mozilla.javascript.Function;
 import org.mozilla.javascript.ScriptableObject;
-import org.schabi.newpipe.extractor.Downloader;
-import org.schabi.newpipe.extractor.NewPipe;
-import org.schabi.newpipe.extractor.StreamingService;
-import org.schabi.newpipe.extractor.Subtitles;
+import org.schabi.newpipe.extractor.*;
 import org.schabi.newpipe.extractor.exceptions.ContentNotAvailableException;
 import org.schabi.newpipe.extractor.exceptions.ExtractionException;
 import org.schabi.newpipe.extractor.exceptions.ParsingException;
@@ -86,23 +83,13 @@ public class YoutubeStreamExtractor extends StreamExtractor {
 
     private boolean isAgeRestricted;
 
-    public YoutubeStreamExtractor(StreamingService service, String url) {
-        super(service, url);
+    public YoutubeStreamExtractor(StreamingService service, UrlIdHandler urlIdHandler) throws ExtractionException {
+        super(service, urlIdHandler);
     }
 
     /*//////////////////////////////////////////////////////////////////////////
     // Impl
     //////////////////////////////////////////////////////////////////////////*/
-
-    @Nonnull
-    @Override
-    public String getId() throws ParsingException {
-        try {
-            return getUrlIdHandler().getId(getCleanUrl());
-        } catch (Exception e) {
-            throw new ParsingException("Could not get stream id");
-        }
-    }
 
     @Nonnull
     @Override
@@ -581,7 +568,7 @@ public class YoutubeStreamExtractor extends StreamExtractor {
     private String pageHtml = null;
 
     private String getPageHtml(Downloader downloader) throws IOException, ExtractionException {
-        final String verifiedUrl = getCleanUrl() + VERIFIED_URL_PARAMS;
+        final String verifiedUrl = getUrl() + VERIFIED_URL_PARAMS;
         if (pageHtml == null) {
             pageHtml = downloader.download(verifiedUrl);
         }
@@ -591,7 +578,7 @@ public class YoutubeStreamExtractor extends StreamExtractor {
     @Override
     public void onFetchPage(@Nonnull Downloader downloader) throws IOException, ExtractionException {
         final String pageContent = getPageHtml(downloader);
-        doc = Jsoup.parse(pageContent, getCleanUrl());
+        doc = Jsoup.parse(pageContent, getUrl());
 
         final String playerUrl;
         // Check if the video is age restricted
