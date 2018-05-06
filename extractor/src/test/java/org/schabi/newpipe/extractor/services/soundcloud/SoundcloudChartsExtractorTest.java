@@ -88,6 +88,6 @@ public class SoundcloudChartsExtractorTest {
 
     @Test
     public void testGetCleanUrl() throws Exception {
-        assertEquals(extractor.getCleanUrl(), "https://soundcloud.com/charts/top");
+        assertEquals(extractor.getUrl(), "https://soundcloud.com/charts/top");
     }
 }

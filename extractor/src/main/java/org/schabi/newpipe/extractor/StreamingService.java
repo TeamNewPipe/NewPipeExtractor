@@ -2,6 +2,7 @@ package org.schabi.newpipe.extractor;
 
 import org.schabi.newpipe.extractor.channel.ChannelExtractor;
 import org.schabi.newpipe.extractor.exceptions.ExtractionException;
+import org.schabi.newpipe.extractor.exceptions.ParsingException;
 import org.schabi.newpipe.extractor.kiosk.KioskList;
 import org.schabi.newpipe.extractor.playlist.PlaylistExtractor;
 import org.schabi.newpipe.extractor.search.SearchEngine;
@@ -62,22 +63,52 @@ public abstract class StreamingService {
         return serviceId + ":" + serviceInfo.getName();
     }
 
+    ////////////////////////////////////////////
+    // Url Id handler
+    ////////////////////////////////////////////
     public abstract UrlIdHandler getStreamUrlIdHandler();
-    public abstract UrlIdHandler getChannelUrlIdHandler();
-    public abstract UrlIdHandler getPlaylistUrlIdHandler();
+    public abstract ListUrlIdHandler getChannelUrlIdHandler();
+    public abstract ListUrlIdHandler getPlaylistUrlIdHandler();
 
+
+    ////////////////////////////////////////////
+    // Extractor
+    ////////////////////////////////////////////
     public abstract SearchEngine getSearchEngine();
     public abstract SuggestionExtractor getSuggestionExtractor();
-    public abstract StreamExtractor getStreamExtractor(String url);
-    public abstract KioskList getKioskList() throws ExtractionException;
-    public abstract ChannelExtractor getChannelExtractor(String url);
-    public abstract PlaylistExtractor getPlaylistExtractor(String url);
     public abstract SubscriptionExtractor getSubscriptionExtractor();
+    public abstract KioskList getKioskList() throws ExtractionException;
+
+    public abstract ChannelExtractor getChannelExtractor(ListUrlIdHandler urlIdHandler) throws ExtractionException;
+    public abstract PlaylistExtractor getPlaylistExtractor(ListUrlIdHandler urlIdHandler) throws ExtractionException;
+    public abstract StreamExtractor getStreamExtractor(UrlIdHandler urlIdHandler) throws ExtractionException;
+
+    public ChannelExtractor getChannelExtractor(String id, String[] contentFilter, String sortFilter) throws ExtractionException {
+        return getChannelExtractor(getChannelUrlIdHandler().setQuery(id, contentFilter, sortFilter));
+    }
+
+    public PlaylistExtractor getPlaylistExtractor(String id, String[] contentFilter, String sortFilter) throws ExtractionException {
+        return getPlaylistExtractor(getPlaylistUrlIdHandler().setQuery(id, contentFilter, sortFilter));
+    }
+
+    public ChannelExtractor getChannelExtractor(String url) throws ExtractionException {
+        return getChannelExtractor(getChannelUrlIdHandler().setUrl(url));
+    }
+
+    public PlaylistExtractor getPlaylistExtractor(String url) throws ExtractionException {
+        return getPlaylistExtractor(getPlaylistUrlIdHandler().setUrl(url));
+    }
+
+    public StreamExtractor getStreamExtractor(String url) throws ExtractionException {
+        return getStreamExtractor(getStreamUrlIdHandler().setUrl(url));
+    }
+
+
 
     /**
      * figure out where the link is pointing to (a channel, video, playlist, etc.)
      */
-    public final LinkType getLinkTypeByUrl(String url) {
+    public final LinkType getLinkTypeByUrl(String url) throws ParsingException {
         UrlIdHandler sH = getStreamUrlIdHandler();
         UrlIdHandler cH = getChannelUrlIdHandler();
         UrlIdHandler pH = getPlaylistUrlIdHandler();

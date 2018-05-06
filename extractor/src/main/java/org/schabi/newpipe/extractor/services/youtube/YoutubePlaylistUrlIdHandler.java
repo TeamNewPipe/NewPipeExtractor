@@ -16,12 +16,12 @@ public class YoutubePlaylistUrlIdHandler extends ListUrlIdHandler {
     }
 
     @Override
-    public String getUrl(String id, String[] contentFilter, String sortFilter) {
+    public String getUrl() {
         return "https://www.youtube.com/playlist?list=" + id;
     }
 
     @Override
-    public String getId(String url) throws ParsingException {
+    public String onGetIdFromUrl(String url) throws ParsingException {
         try {
             return Parser.matchGroup1("list=" + ID_PATTERN, url);
         } catch (final Exception exception) {
@@ -29,13 +29,9 @@ public class YoutubePlaylistUrlIdHandler extends ListUrlIdHandler {
         }
     }
 
-    @Override
-    public String cleanUrl(String complexUrl) throws ParsingException {
-        return getUrl(getId(complexUrl));
-    }
 
     @Override
-    public boolean acceptUrl(String url) {
+    public boolean onAcceptUrl(final String url) {
         final boolean hasNotEmptyUrl = url != null && !url.isEmpty();
         final boolean isYoutubeDomain = hasNotEmptyUrl && (url.contains("youtube") || url.contains("youtu.be"));
         return isYoutubeDomain && url.contains("list=");

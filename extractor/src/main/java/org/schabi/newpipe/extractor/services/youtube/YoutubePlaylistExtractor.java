@@ -6,10 +6,7 @@ import com.grack.nanojson.JsonParserException;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
-import org.schabi.newpipe.extractor.Downloader;
-import org.schabi.newpipe.extractor.NewPipe;
-import org.schabi.newpipe.extractor.StreamingService;
-import org.schabi.newpipe.extractor.UrlIdHandler;
+import org.schabi.newpipe.extractor.*;
 import org.schabi.newpipe.extractor.exceptions.ExtractionException;
 import org.schabi.newpipe.extractor.exceptions.ParsingException;
 import org.schabi.newpipe.extractor.playlist.PlaylistExtractor;
@@ -26,29 +23,19 @@ public class YoutubePlaylistExtractor extends PlaylistExtractor {
 
     private Document doc;
 
-    public YoutubePlaylistExtractor(StreamingService service, String url) {
-        super(service, url);
+    public YoutubePlaylistExtractor(StreamingService service, ListUrlIdHandler urlIdHandler) throws ExtractionException {
+        super(service, urlIdHandler);
     }
 
     @Override
     public void onFetchPage(@Nonnull Downloader downloader) throws IOException, ExtractionException {
-        String pageContent = downloader.download(getCleanUrl());
-        doc = Jsoup.parse(pageContent, getCleanUrl());
+        String pageContent = downloader.download(getUrl());
+        doc = Jsoup.parse(pageContent, getUrl());
     }
 
     @Override
     public String getNextPageUrl() throws ExtractionException {
         return getNextPageUrlFrom(doc);
-    }
-
-    @Nonnull
-    @Override
-    public String getId() throws ParsingException {
-        try {
-            return getUrlIdHandler().getId(getCleanUrl());
-        } catch (Exception e) {
-            throw new ParsingException("Could not get playlist id");
-        }
     }
 
     @Nonnull
@@ -202,7 +189,7 @@ public class YoutubePlaylistExtractor extends PlaylistExtractor {
                 @Override
                 public String getUrl() throws ParsingException {
                     try {
-                        return streamUrlIdHandler.getUrl(li.attr("data-video-id"));
+                        return streamUrlIdHandler.setId(li.attr("data-video-id")).getUrl();
                     } catch (Exception e) {
                         throw new ParsingException("Could not get web page url for the video", e);
                     }
@@ -267,7 +254,7 @@ public class YoutubePlaylistExtractor extends PlaylistExtractor {
                 @Override
                 public String getThumbnailUrl() throws ParsingException {
                     try {
-                        return "https://i.ytimg.com/vi/" + streamUrlIdHandler.getId(getUrl()) + "/hqdefault.jpg";
+                        return "https://i.ytimg.com/vi/" + streamUrlIdHandler.setUrl(getUrl()).getId() + "/hqdefault.jpg";
                     } catch (Exception e) {
                         throw new ParsingException("Could not get thumbnail url", e);
                     }

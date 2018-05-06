@@ -8,10 +8,7 @@ import com.sun.org.apache.xerces.internal.xs.StringList;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
-import org.schabi.newpipe.extractor.Downloader;
-import org.schabi.newpipe.extractor.NewPipe;
-import org.schabi.newpipe.extractor.StreamingService;
-import org.schabi.newpipe.extractor.UrlIdHandler;
+import org.schabi.newpipe.extractor.*;
 import org.schabi.newpipe.extractor.channel.ChannelExtractor;
 import org.schabi.newpipe.extractor.exceptions.ExtractionException;
 import org.schabi.newpipe.extractor.exceptions.ParsingException;
@@ -52,16 +49,15 @@ public class YoutubeChannelExtractor extends ChannelExtractor {
 
     private Document doc;
 
-    public YoutubeChannelExtractor(StreamingService service, String url) {
-        super(service, url);
+    public YoutubeChannelExtractor(StreamingService service, ListUrlIdHandler urlIdHandler) {
+        super(service, urlIdHandler);
     }
 
     @Override
     public void onFetchPage(@Nonnull Downloader downloader) throws IOException, ExtractionException {
-        String channelUrl = super.getCleanUrl() + CHANNEL_URL_PARAMETERS;
+        String channelUrl = super.getUrl() + CHANNEL_URL_PARAMETERS;
         String pageContent = downloader.download(channelUrl);
         doc = Jsoup.parse(pageContent, channelUrl);
-
     }
 
     @Override
@@ -71,11 +67,11 @@ public class YoutubeChannelExtractor extends ChannelExtractor {
 
     @Nonnull
     @Override
-    public String getCleanUrl() {
+    public String getUrl() throws ParsingException {
         try {
             return "https://www.youtube.com/channel/" + getId();
         } catch (ParsingException e) {
-            return super.getCleanUrl();
+            return super.getUrl();
         }
     }
 
@@ -236,7 +232,7 @@ public class YoutubeChannelExtractor extends ChannelExtractor {
         collector.reset();
 
         final String uploaderName = getName();
-        final String uploaderUrl = getCleanUrl();
+        final String uploaderUrl = getUrl();
         for (final Element li : element.children()) {
             if (li.select("div[class=\"feed-item-dismissable\"]").first() != null) {
                 collector.commit(new YoutubeStreamInfoItemExtractor(li) {

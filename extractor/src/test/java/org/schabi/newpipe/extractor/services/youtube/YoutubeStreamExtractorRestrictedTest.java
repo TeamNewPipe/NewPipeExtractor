@@ -108,7 +108,7 @@ public class YoutubeStreamExtractorRestrictedTest {
         streams.addAll(extractor.getVideoStreams());
         streams.addAll(extractor.getVideoOnlyStreams());
 
-        assertTrue(streams.size() > 0);
+        assertTrue(Integer.toString(streams.size()),streams.size() > 0);
         for (VideoStream s : streams) {
             assertTrue(s.getUrl(),
                     s.getUrl().contains(HTTPS));

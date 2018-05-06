@@ -6,6 +6,7 @@ import org.jsoup.nodes.Element;
 import org.schabi.newpipe.extractor.Downloader;
 import org.schabi.newpipe.extractor.NewPipe;
 import org.schabi.newpipe.extractor.UrlIdHandler;
+import org.schabi.newpipe.extractor.exceptions.ExtractionException;
 import org.schabi.newpipe.extractor.exceptions.FoundAdException;
 import org.schabi.newpipe.extractor.exceptions.ParsingException;
 import org.schabi.newpipe.extractor.exceptions.ReCaptchaException;
@@ -50,12 +51,12 @@ public class YoutubeStreamUrlIdHandler extends UrlIdHandler {
     }
 
     @Override
-    public String getUrl(String id) {
+    public String getUrl() {
         return "https://www.youtube.com/watch?v=" + id;
     }
 
     @Override
-    public String getId(String url) throws ParsingException, IllegalArgumentException {
+    public String onGetIdFromUrl(String url) throws ParsingException, IllegalArgumentException {
         if (url.isEmpty()) {
             throw new IllegalArgumentException("The url parameter should not be empty");
         }
@@ -167,19 +168,14 @@ public class YoutubeStreamUrlIdHandler extends UrlIdHandler {
     }
 
     @Override
-    public String cleanUrl(String complexUrl) throws ParsingException {
-        return getUrl(getId(complexUrl));
-    }
-
-    @Override
-    public boolean acceptUrl(String url) {
-        String lowercaseUrl = url.toLowerCase();
+    public boolean onAcceptUrl(final String url) {
+        final String lowercaseUrl = url.toLowerCase();
         if (lowercaseUrl.contains("youtube")
                 || lowercaseUrl.contains("youtu.be")
                 || lowercaseUrl.contains("hooktube")) {
             // bad programming I know
             try {
-                getId(url);
+                onGetIdFromUrl(url);
                 return true;
             } catch (Exception e) {
                 return false;

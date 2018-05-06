@@ -71,7 +71,7 @@ public class KioskInfo extends ListInfo<StreamInfoItem> {
         int serviceId = extractor.getServiceId();
         String name = extractor.getName();
         String id = extractor.getId();
-        String url = extractor.getCleanUrl();
+        String url = extractor.getUrl();
         String originalUrl = extractor.getOriginalUrl();
 
         KioskInfo info = new KioskInfo(serviceId, id, url, originalUrl, name);

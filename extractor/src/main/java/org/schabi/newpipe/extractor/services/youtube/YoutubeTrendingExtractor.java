@@ -25,6 +25,7 @@ import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 import org.schabi.newpipe.extractor.Downloader;
+import org.schabi.newpipe.extractor.ListUrlIdHandler;
 import org.schabi.newpipe.extractor.StreamingService;
 import org.schabi.newpipe.extractor.UrlIdHandler;
 import org.schabi.newpipe.extractor.exceptions.ExtractionException;
@@ -40,15 +41,15 @@ public class YoutubeTrendingExtractor extends KioskExtractor {
 
     private Document doc;
 
-    public YoutubeTrendingExtractor(StreamingService service, String url, String kioskId)
+    public YoutubeTrendingExtractor(StreamingService service, ListUrlIdHandler urlIdHandler, String kioskId)
             throws ExtractionException {
-        super(service, url, kioskId);
+        super(service, urlIdHandler, kioskId);
     }
 
     @Override
     public void onFetchPage(@Nonnull Downloader downloader) throws IOException, ExtractionException {
         final String contentCountry = getContentCountry();
-        String url = getCleanUrl();
+        String url = getUrl();
         if(contentCountry != null && !contentCountry.isEmpty()) {
             url += "?gl=" + contentCountry;
         }
