@@ -4,22 +4,26 @@ package org.schabi.newpipe.extractor.services.youtube;
 import com.grack.nanojson.JsonObject;
 import com.grack.nanojson.JsonParser;
 import com.grack.nanojson.JsonParserException;
+import com.sun.org.apache.xerces.internal.xs.StringList;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.schabi.newpipe.extractor.Downloader;
 import org.schabi.newpipe.extractor.NewPipe;
 import org.schabi.newpipe.extractor.StreamingService;
+import org.schabi.newpipe.extractor.UrlIdHandler;
 import org.schabi.newpipe.extractor.channel.ChannelExtractor;
 import org.schabi.newpipe.extractor.exceptions.ExtractionException;
 import org.schabi.newpipe.extractor.exceptions.ParsingException;
 import org.schabi.newpipe.extractor.stream.StreamInfoItem;
 import org.schabi.newpipe.extractor.stream.StreamInfoItemsCollector;
+import org.schabi.newpipe.extractor.utils.DonationLinkHelper;
 import org.schabi.newpipe.extractor.utils.Parser;
 import org.schabi.newpipe.extractor.utils.Utils;
 
 import javax.annotation.Nonnull;
 import java.io.IOException;
+import java.util.ArrayList;
 
 /*
  * Created by Christian Schabesberger on 25.07.16.
@@ -179,6 +183,29 @@ public class YoutubeChannelExtractor extends ChannelExtractor {
         collectStreamsFrom(collector, ajaxHtml.select("body").first());
 
         return new InfoItemsPage<>(collector, getNextPageUrlFromAjaxPage(ajaxJson, pageUrl));
+    }
+
+    @Override
+    public String[] getDonationLinks() throws ParsingException {
+        try {
+            ArrayList<String> links = new ArrayList<>();
+            Element linkHolder = doc.select("div[id=\"header-links\"]").first();
+            if(linkHolder == null) {
+                // this occures if no links are embeded into the channel
+                return new String[0];
+            }
+            for(Element a : linkHolder.select("a")) {
+                String link = a.attr("abs:href");
+                if(DonationLinkHelper.getServiceByLink(link) != DonationLinkHelper.DonationService.NO_DONATION) {
+                    links.add(link);
+                }
+            }
+            String[] retLinks = new String[links.size()];
+            retLinks = links.toArray(retLinks);
+            return retLinks;
+        } catch (Exception e) {
+            throw new ParsingException("Could not get donation links", e);
+        }
     }
 
     private String getNextPageUrlFromAjaxPage(final JsonObject ajaxJson, final String pageUrl)

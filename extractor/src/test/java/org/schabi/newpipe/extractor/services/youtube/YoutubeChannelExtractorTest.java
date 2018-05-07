@@ -1,6 +1,7 @@
 package org.schabi.newpipe.extractor.services.youtube;
 
 import org.junit.BeforeClass;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.schabi.newpipe.Downloader;
 import org.schabi.newpipe.extractor.NewPipe;
@@ -103,6 +104,13 @@ public class YoutubeChannelExtractorTest {
         public void testSubscriberCount() throws Exception {
             assertTrue("Wrong subscriber count", extractor.getSubscriberCount() >= 0);
         }
+
+        @Test
+        public void testChannelDonation() throws Exception {
+            // this needs to be ignored since wed have to upgrade channel extractor to the new yt interface
+            // in order to make this work
+            assertTrue(extractor.getDonationLinks().length == 0);
+        }
     }
 
     public static class Kurzgesagt implements BaseChannelExtractorTest {
@@ -204,6 +212,11 @@ public class YoutubeChannelExtractorTest {
         @Test
         public void testSubscriberCount() throws Exception {
             assertTrue("Wrong subscriber count", extractor.getSubscriberCount() >= 5e6);
+        }
+
+        @Test
+        public void testChannelDonation() throws Exception {
+            assertTrue(extractor.getDonationLinks().length == 1);
         }
     }
 
@@ -388,6 +401,11 @@ public class YoutubeChannelExtractorTest {
         @Test
         public void testSubscriberCount() throws Exception {
             assertTrue("Wrong subscriber count", extractor.getSubscriberCount() >= 50);
+        }
+
+        @Test
+        public void testChannelDonation() throws Exception {
+            assertTrue(extractor.getDonationLinks().length == 0);
         }
     }
 };
