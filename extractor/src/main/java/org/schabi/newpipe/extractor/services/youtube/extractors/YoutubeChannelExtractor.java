@@ -1,10 +1,9 @@
-package org.schabi.newpipe.extractor.services.youtube;
+package org.schabi.newpipe.extractor.services.youtube.extractors;
 
 
 import com.grack.nanojson.JsonObject;
 import com.grack.nanojson.JsonParser;
 import com.grack.nanojson.JsonParserException;
-import com.sun.org.apache.xerces.internal.xs.StringList;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;

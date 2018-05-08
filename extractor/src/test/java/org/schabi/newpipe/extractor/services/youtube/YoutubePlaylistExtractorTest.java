@@ -10,6 +10,7 @@ import org.schabi.newpipe.extractor.ServiceList;
 import org.schabi.newpipe.extractor.exceptions.ParsingException;
 import org.schabi.newpipe.extractor.playlist.PlaylistExtractor;
 import org.schabi.newpipe.extractor.services.BasePlaylistExtractorTest;
+import org.schabi.newpipe.extractor.services.youtube.extractors.YoutubePlaylistExtractor;
 import org.schabi.newpipe.extractor.stream.StreamInfoItem;
 
 import static org.junit.Assert.assertEquals;

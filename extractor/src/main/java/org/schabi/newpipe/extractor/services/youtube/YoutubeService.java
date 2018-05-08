@@ -10,6 +10,11 @@ import org.schabi.newpipe.extractor.kiosk.KioskExtractor;
 import org.schabi.newpipe.extractor.kiosk.KioskList;
 import org.schabi.newpipe.extractor.playlist.PlaylistExtractor;
 import org.schabi.newpipe.extractor.search.SearchEngine;
+import org.schabi.newpipe.extractor.services.youtube.extractors.*;
+import org.schabi.newpipe.extractor.services.youtube.urlIdHandlers.YoutubeChannelUrlIdHandler;
+import org.schabi.newpipe.extractor.services.youtube.urlIdHandlers.YoutubePlaylistUrlIdHandler;
+import org.schabi.newpipe.extractor.services.youtube.urlIdHandlers.YoutubeStreamUrlIdHandler;
+import org.schabi.newpipe.extractor.services.youtube.urlIdHandlers.YoutubeTrendingUrlIdHandler;
 import org.schabi.newpipe.extractor.stream.StreamExtractor;
 import org.schabi.newpipe.extractor.subscription.SubscriptionExtractor;
 

@@ -1,4 +1,4 @@
-package org.schabi.newpipe.extractor.services.youtube;
+package org.schabi.newpipe.extractor.services.youtube.urlIdHandlers;
 
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
@@ -6,7 +6,6 @@ import org.jsoup.nodes.Element;
 import org.schabi.newpipe.extractor.Downloader;
 import org.schabi.newpipe.extractor.NewPipe;
 import org.schabi.newpipe.extractor.UrlIdHandler;
-import org.schabi.newpipe.extractor.exceptions.ExtractionException;
 import org.schabi.newpipe.extractor.exceptions.FoundAdException;
 import org.schabi.newpipe.extractor.exceptions.ParsingException;
 import org.schabi.newpipe.extractor.exceptions.ReCaptchaException;

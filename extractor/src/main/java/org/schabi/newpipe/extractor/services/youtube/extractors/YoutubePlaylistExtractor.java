@@ -1,4 +1,4 @@
-package org.schabi.newpipe.extractor.services.youtube;
+package org.schabi.newpipe.extractor.services.youtube.extractors;
 
 import com.grack.nanojson.JsonObject;
 import com.grack.nanojson.JsonParser;
@@ -10,6 +10,7 @@ import org.schabi.newpipe.extractor.*;
 import org.schabi.newpipe.extractor.exceptions.ExtractionException;
 import org.schabi.newpipe.extractor.exceptions.ParsingException;
 import org.schabi.newpipe.extractor.playlist.PlaylistExtractor;
+import org.schabi.newpipe.extractor.services.youtube.urlIdHandlers.YoutubeParsingHelper;
 import org.schabi.newpipe.extractor.stream.StreamInfoItem;
 import org.schabi.newpipe.extractor.stream.StreamInfoItemsCollector;
 import org.schabi.newpipe.extractor.stream.StreamType;

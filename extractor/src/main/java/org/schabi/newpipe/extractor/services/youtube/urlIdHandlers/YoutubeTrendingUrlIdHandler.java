@@ -1,4 +1,4 @@
-package org.schabi.newpipe.extractor.services.youtube;
+package org.schabi.newpipe.extractor.services.youtube.urlIdHandlers;
 
 /*
  * Created by Christian Schabesberger on 12.08.17.

@@ -8,6 +8,7 @@ import org.schabi.newpipe.extractor.InfoItem;
 import org.schabi.newpipe.extractor.NewPipe;
 import org.schabi.newpipe.extractor.channel.ChannelInfoItem;
 import org.schabi.newpipe.extractor.search.SearchEngine;
+import org.schabi.newpipe.extractor.services.youtube.extractors.YoutubeSearchEngine;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
