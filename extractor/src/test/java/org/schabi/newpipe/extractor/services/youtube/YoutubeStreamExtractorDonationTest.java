@@ -25,6 +25,7 @@ import org.junit.BeforeClass;
 import org.junit.Test;
 import org.schabi.newpipe.Downloader;
 import org.schabi.newpipe.extractor.NewPipe;
+import org.schabi.newpipe.extractor.services.youtube.extractors.YoutubeStreamExtractor;
 import org.schabi.newpipe.extractor.stream.StreamExtractor;
 
 import static org.junit.Assert.assertTrue;

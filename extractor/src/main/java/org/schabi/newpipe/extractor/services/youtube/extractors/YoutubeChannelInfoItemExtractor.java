@@ -1,4 +1,4 @@
-package org.schabi.newpipe.extractor.services.youtube;
+package org.schabi.newpipe.extractor.services.youtube.extractors;
 
 import org.jsoup.nodes.Element;
 import org.schabi.newpipe.extractor.channel.ChannelInfoItemExtractor;

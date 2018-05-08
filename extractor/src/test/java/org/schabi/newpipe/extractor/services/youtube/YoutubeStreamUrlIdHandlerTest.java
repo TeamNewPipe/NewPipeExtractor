@@ -6,6 +6,7 @@ import org.schabi.newpipe.Downloader;
 import org.schabi.newpipe.extractor.NewPipe;
 import org.schabi.newpipe.extractor.exceptions.FoundAdException;
 import org.schabi.newpipe.extractor.exceptions.ParsingException;
+import org.schabi.newpipe.extractor.services.youtube.urlIdHandlers.YoutubeStreamUrlIdHandler;
 
 import java.util.ArrayList;
 import java.util.List;

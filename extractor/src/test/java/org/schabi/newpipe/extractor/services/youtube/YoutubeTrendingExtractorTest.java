@@ -25,6 +25,8 @@ import org.junit.Test;
 import org.schabi.newpipe.Downloader;
 import org.schabi.newpipe.extractor.ListExtractor;
 import org.schabi.newpipe.extractor.NewPipe;
+import org.schabi.newpipe.extractor.services.youtube.extractors.YoutubeTrendingExtractor;
+import org.schabi.newpipe.extractor.services.youtube.urlIdHandlers.YoutubeTrendingUrlIdHandler;
 import org.schabi.newpipe.extractor.stream.StreamInfoItem;
 import org.schabi.newpipe.extractor.utils.Utils;
 

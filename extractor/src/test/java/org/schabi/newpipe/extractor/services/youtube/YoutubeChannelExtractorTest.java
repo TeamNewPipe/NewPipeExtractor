@@ -1,7 +1,6 @@
 package org.schabi.newpipe.extractor.services.youtube;
 
 import org.junit.BeforeClass;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.schabi.newpipe.Downloader;
 import org.schabi.newpipe.extractor.NewPipe;
@@ -9,6 +8,7 @@ import org.schabi.newpipe.extractor.ServiceList;
 import org.schabi.newpipe.extractor.channel.ChannelExtractor;
 import org.schabi.newpipe.extractor.exceptions.ParsingException;
 import org.schabi.newpipe.extractor.services.BaseChannelExtractorTest;
+import org.schabi.newpipe.extractor.services.youtube.extractors.YoutubeChannelExtractor;
 
 import static org.junit.Assert.*;
 import static org.schabi.newpipe.extractor.ExtractorAsserts.assertIsSecureUrl;

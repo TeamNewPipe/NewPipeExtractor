@@ -25,7 +25,7 @@ import org.junit.Test;
 import org.schabi.newpipe.Downloader;
 import org.schabi.newpipe.extractor.NewPipe;
 import org.schabi.newpipe.extractor.UrlIdHandler;
-import org.schabi.newpipe.extractor.exceptions.ParsingException;
+import org.schabi.newpipe.extractor.services.youtube.urlIdHandlers.YoutubeTrendingUrlIdHandler;
 
 import static junit.framework.TestCase.assertFalse;
 import static org.junit.Assert.assertEquals;
