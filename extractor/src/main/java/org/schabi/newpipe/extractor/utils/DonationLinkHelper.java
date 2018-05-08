@@ -15,9 +15,8 @@ public class DonationLinkHelper {
         AMAZON,
     }
 
-
     public static DonationService getDonatoinServiceByLink(String link) throws MalformedURLException {
-        URL url = new URL(link);
+        URL url = new URL(fixLink(link));
         switch (url.getHost()) {
             case "www.patreon.com":
                 return DonationService.PATREON;
@@ -33,11 +32,17 @@ public class DonationLinkHelper {
     }
 
     public static AffiliateService getAffiliateServiceByLink(String link) throws MalformedURLException {
-        URL url = new URL(link);
+        URL url = new URL(fixLink(link));
         switch (url.getHost()) {
             case "amzn.to": return AffiliateService.AMAZON;
             default: return AffiliateService.NO_AFILIATE;
         }
+    }
+
+    private static String fixLink(String link) {
+        return (link.startsWith("https://") || link.startsWith("http://"))
+                ? link
+                : "https://" + link;
     }
 
 }
