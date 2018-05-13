@@ -1,6 +1,5 @@
 package org.schabi.newpipe.extractor;
 
-import edu.umd.cs.findbugs.annotations.NonNull;
 import org.schabi.newpipe.extractor.exceptions.ExtractionException;
 import org.schabi.newpipe.extractor.exceptions.ParsingException;
 
@@ -34,7 +33,7 @@ public abstract class Extractor {
      * @return The {@link UrlIdHandler} of the current extractor object (e.g. a ChannelExtractor should return a channel url handler).
      */
     @Nonnull
-    protected  UrlIdHandler getUrlIdHandler() {
+    public  UrlIdHandler getUrlIdHandler() {
         return urlIdHandler;
     }
 

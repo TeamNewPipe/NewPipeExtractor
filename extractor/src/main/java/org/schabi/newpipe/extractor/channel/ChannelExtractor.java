@@ -36,12 +36,6 @@ public abstract class ChannelExtractor extends ListExtractor<StreamInfoItem> {
         super(service, urlIdHandler);
     }
 
-    @Nonnull
-    @Override
-    protected UrlIdHandler getUrlIdHandler() {
-        return getService().getChannelUrlIdHandler();
-    }
-
     public abstract String getAvatarUrl() throws ParsingException;
     public abstract String getBannerUrl() throws ParsingException;
     public abstract String getFeedUrl() throws ParsingException;

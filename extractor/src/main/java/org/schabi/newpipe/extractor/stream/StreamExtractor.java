@@ -44,12 +44,6 @@ public abstract class StreamExtractor extends Extractor {
     }
 
     @Nonnull
-    @Override
-    protected UrlIdHandler getUrlIdHandler()  {
-        return getService().getStreamUrlIdHandler();
-    }
-
-    @Nonnull
     public abstract String getUploadDate() throws ParsingException;
     @Nonnull
     public abstract String getThumbnailUrl() throws ParsingException;

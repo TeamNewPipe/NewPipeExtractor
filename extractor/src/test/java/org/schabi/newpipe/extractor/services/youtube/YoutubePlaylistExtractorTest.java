@@ -46,7 +46,7 @@ public class YoutubePlaylistExtractorTest {
         @Test
         public void testName() throws Exception {
             String name = extractor.getName();
-            assertTrue(name, name.startsWith("Pop Music Playlist: Timeless Pop Hits"));
+            assertTrue(name, name.startsWith("Pop Music Playlist"));
         }
 
         @Test

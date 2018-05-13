@@ -49,6 +49,11 @@ public abstract class ListExtractor<R extends InfoItem> extends Extractor {
         return nextPageUrl != null && !nextPageUrl.isEmpty();
     }
 
+    @Override
+    public ListUrlIdHandler getUrlIdHandler() {
+        return (ListUrlIdHandler) super.getUrlIdHandler();
+    }
+
     /*//////////////////////////////////////////////////////////////////////////
     // Inner
     //////////////////////////////////////////////////////////////////////////*/

@@ -32,12 +32,6 @@ public class SoundcloudChartsExtractor extends KioskExtractor {
         return getId();
     }
 
-    @Nonnull
-    @Override
-    public UrlIdHandler getUrlIdHandler() {
-        return new SoundcloudChartsUrlIdHandler();
-    }
-
     @Override
     public InfoItemsPage<StreamInfoItem> getPage(String pageUrl) throws IOException, ExtractionException {
         if (pageUrl == null || pageUrl.isEmpty()) {
