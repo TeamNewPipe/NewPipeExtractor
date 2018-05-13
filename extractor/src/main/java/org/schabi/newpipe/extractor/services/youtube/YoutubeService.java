@@ -10,6 +10,7 @@ import org.schabi.newpipe.extractor.kiosk.KioskExtractor;
 import org.schabi.newpipe.extractor.kiosk.KioskList;
 import org.schabi.newpipe.extractor.playlist.PlaylistExtractor;
 import org.schabi.newpipe.extractor.search.SearchEngine;
+import org.schabi.newpipe.extractor.search.SearchExtractor;
 import org.schabi.newpipe.extractor.services.youtube.extractors.*;
 import org.schabi.newpipe.extractor.services.youtube.urlIdHandlers.YoutubeChannelUrlIdHandler;
 import org.schabi.newpipe.extractor.services.youtube.urlIdHandlers.YoutubePlaylistUrlIdHandler;
@@ -51,6 +52,11 @@ public class YoutubeService extends StreamingService {
     @Override
     public SearchEngine getSearchEngine() {
         return new YoutubeSearchEngine(getServiceId());
+    }
+
+    @Override
+    public SearchExtractor getSearchExtractor() {
+        return null;
     }
 
     @Override

@@ -16,12 +16,6 @@ public abstract class PlaylistExtractor extends ListExtractor<StreamInfoItem> {
         super(service, urlIdHandler);
     }
 
-    @Nonnull
-    @Override
-    protected UrlIdHandler getUrlIdHandler() {
-        return getService().getPlaylistUrlIdHandler();
-    }
-
     public abstract String getThumbnailUrl() throws ParsingException;
     public abstract String getBannerUrl() throws ParsingException;
 

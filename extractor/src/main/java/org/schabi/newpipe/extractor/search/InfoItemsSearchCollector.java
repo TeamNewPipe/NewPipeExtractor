@@ -61,7 +61,7 @@ public class InfoItemsSearchCollector extends InfoItemsCollector<InfoItem, InfoI
         this.suggestion = suggestion;
     }
 
-    public SearchResult getSearchResult() throws ExtractionException {
+    public SearchResult getSearchResult() {
         return new SearchResult(getServiceId(), suggestion, getItems(), getErrors());
     }
 

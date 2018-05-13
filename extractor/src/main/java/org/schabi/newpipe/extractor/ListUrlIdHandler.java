@@ -39,4 +39,13 @@ public abstract class ListUrlIdHandler extends UrlIdHandler {
     public String[] getAvailableSortFilter() {
         return new String[0];
     }
+
+
+    public String[] getContentFilter() {
+        return contentFilter;
+    }
+
+    public String getSortFilter() {
+        return sortFilter;
+    }
 }

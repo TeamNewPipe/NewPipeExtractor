@@ -59,12 +59,6 @@ public class YoutubeTrendingExtractor extends KioskExtractor {
         doc = Jsoup.parse(pageContent, url);
     }
 
-    @Nonnull
-    @Override
-    public UrlIdHandler getUrlIdHandler() {
-        return new YoutubeTrendingUrlIdHandler();
-    }
-
     @Override
     public String getNextPageUrl() {
         return "";
