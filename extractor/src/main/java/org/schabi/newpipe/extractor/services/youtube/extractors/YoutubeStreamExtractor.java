@@ -24,6 +24,7 @@ import org.schabi.newpipe.extractor.utils.Utils;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.io.IOException;
+import java.io.UnsupportedEncodingException;
 import java.util.*;
 
 /*
@@ -151,10 +152,42 @@ public class YoutubeStreamExtractor extends StreamExtractor {
     public String getDescription() throws ParsingException {
         assertPageFetched();
         try {
-            return doc.select("p[id=\"eow-description\"]").first().html();
+            return fixDescriptionLinks(doc.select("p[id=\"eow-description\"]").first().html());
         } catch (Exception e) {//todo: add fallback method <-- there is no ... as long as i know
             throw new ParsingException("Could not get the description", e);
         }
+    }
+
+    private String fixDescriptionLinks(String description) throws ParsingException, UnsupportedEncodingException {
+        boolean everythingIsFine = true;
+        String descriptionE = java.net.URLDecoder.decode(description, "UTF-8");
+        Parser.getLinksFromString(descriptionE);
+        int endlessloop = 0;
+        while(everythingIsFine) {
+            try {
+                String[] FirstCut = description.split("<a href=\"",2);
+                if(FirstCut.length==1) {
+                    everythingIsFine = false;
+                }
+
+                String Beginning = FirstCut[0];
+                String[] SecondCut = FirstCut[1].split("\"",2);
+                String End = SecondCut[1];
+                if(SecondCut[0].contains("q=")) {
+                    String LinkToBeFixed = SecondCut[0].split("q=")[1].split("&amp")[0];
+                    String Link = java.net.URLDecoder.decode(LinkToBeFixed, "UTF-8");
+
+                    description = Beginning + "<a  href=\"" + Link + "\"" + End; //I'm inserting a double space between "<a" and "href" here so the next cut doesn't cut here.
+                } else { //Timestamps and other links to youtube videos are processed here
+                    description = Beginning + "<a  href=\"" + SecondCut[0] + "\"" + End;
+                }
+            } catch (ArrayIndexOutOfBoundsException | UnsupportedEncodingException end) {
+                //this means we have run out of Links because there are no more <a href=" to split the text in so the Array has only one Element or that something else went wrong.
+                endlessloop = endlessloop + 1;
+                if (endlessloop > 20) everythingIsFine = false;
+            }
+        }
+        return description;
     }
 
     @Override
