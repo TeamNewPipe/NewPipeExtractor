@@ -88,20 +88,38 @@ public class Parser {
 
     public static String[] getLinksFromString(final String txt) throws ParsingException {
         try {
-            ArrayList<String> links = new ArrayList<>();
+            return getLinksFromLinkSpan(getLinkSpanFromString(txt), txt);
+        } catch (Exception e) {
+            throw new ParsingException("Could not get links from string", e);
+        }
+    }
+
+    public static LinkSpan[] getLinkSpanFromString(final String txt) throws ParsingException {
+        try {
+            ArrayList<LinkSpan> linksSpans = new ArrayList<>();
             LinkExtractor linkExtractor = LinkExtractor.builder()
                     .linkTypes(EnumSet.of(LinkType.URL, LinkType.WWW))
                     .build();
-            Iterable<LinkSpan> linkss = linkExtractor.extractLinks(txt);
-            for(LinkSpan ls : linkss) {
-                links.add(txt.substring(ls.getBeginIndex(), ls.getEndIndex()));
+            for (LinkSpan ls : linkExtractor.extractLinks(txt)) {
+                linksSpans.add(ls);
             }
-
-            String[] linksarray = new String[links.size()];
-            linksarray = links.toArray(linksarray);
-            return linksarray;
+            LinkSpan[] linksarray = new LinkSpan[linksSpans.size()];
+            return linksSpans.toArray(linksarray);
         } catch (Exception e) {
             throw new ParsingException("Could not get links from string", e);
+        }
+    }
+
+    public static String[] getLinksFromLinkSpan(final LinkSpan[] links, final String txt) throws ParsingException {
+        try {
+            ArrayList<String> linksout = new ArrayList<>();
+            for (LinkSpan ls : links) {
+                linksout.add(txt.substring(ls.getBeginIndex(), ls.getEndIndex()));
+            }
+            String[] linksarray = new String[linksout.size()];
+            return linksout.toArray(linksarray);
+        } catch (Exception e) {
+            throw new ParsingException("Could not get LinkSpans from string", e);
         }
     }
 }
