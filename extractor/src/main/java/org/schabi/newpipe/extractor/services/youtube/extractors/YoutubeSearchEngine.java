@@ -1,4 +1,4 @@
-package org.schabi.newpipe.extractor.services.youtube;
+package org.schabi.newpipe.extractor.services.youtube.extractors;
 
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;

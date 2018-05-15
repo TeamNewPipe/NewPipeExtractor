@@ -4,6 +4,7 @@ import com.grack.nanojson.JsonObject;
 import com.grack.nanojson.JsonParser;
 import com.grack.nanojson.JsonParserException;
 import org.schabi.newpipe.extractor.Downloader;
+import org.schabi.newpipe.extractor.ListUrlIdHandler;
 import org.schabi.newpipe.extractor.StreamingService;
 import org.schabi.newpipe.extractor.exceptions.ExtractionException;
 import org.schabi.newpipe.extractor.exceptions.ParsingException;
@@ -24,14 +25,14 @@ public class SoundcloudPlaylistExtractor extends PlaylistExtractor {
     private StreamInfoItemsCollector streamInfoItemsCollector = null;
     private String nextPageUrl = null;
 
-    public SoundcloudPlaylistExtractor(StreamingService service, String url) {
-        super(service, url);
+    public SoundcloudPlaylistExtractor(StreamingService service, ListUrlIdHandler urlIdHandler) {
+        super(service, urlIdHandler);
     }
 
     @Override
     public void onFetchPage(@Nonnull Downloader downloader) throws IOException, ExtractionException {
 
-        playlistId = getUrlIdHandler().getId(getOriginalUrl());
+        playlistId = getUrlIdHandler().getId();
         String apiUrl = "https://api.soundcloud.com/playlists/" + playlistId +
                 "?client_id=" + SoundcloudParsingHelper.clientId() +
                 "&representation=compact";
@@ -42,12 +43,6 @@ public class SoundcloudPlaylistExtractor extends PlaylistExtractor {
         } catch (JsonParserException e) {
             throw new ParsingException("Could not parse json response", e);
         }
-    }
-
-    @Nonnull
-    @Override
-    public String getCleanUrl() {
-        return playlist.isString("permalink_url") ? replaceHttpWithHttps(playlist.getString("permalink_url")) : getOriginalUrl();
     }
 
     @Nonnull

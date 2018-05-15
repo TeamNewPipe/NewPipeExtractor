@@ -12,8 +12,8 @@ import java.util.List;
  */
 public abstract class ListExtractor<R extends InfoItem> extends Extractor {
 
-    public ListExtractor(StreamingService service, String url) {
-        super(service, url);
+    public ListExtractor(StreamingService service, ListUrlIdHandler urlIdHandler) {
+        super(service, urlIdHandler);
     }
 
     /**

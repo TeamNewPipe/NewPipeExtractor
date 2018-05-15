@@ -73,7 +73,7 @@ public  class KioskList {
             throw new ExtractionException("No kiosk found with the type: " + kioskId);
         } else {
             return ke.extractorFactory.createNewKiosk(NewPipe.getService(service_id),
-                    ke.handler.getUrl(kioskId), kioskId);
+                    ke.handler.setId(kioskId).getUrl(), kioskId);
         }
     }
 

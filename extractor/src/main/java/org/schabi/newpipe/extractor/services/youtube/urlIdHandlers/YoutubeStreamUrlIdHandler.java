@@ -1,4 +1,4 @@
-package org.schabi.newpipe.extractor.services.youtube;
+package org.schabi.newpipe.extractor.services.youtube.urlIdHandlers;
 
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
@@ -37,7 +37,7 @@ import java.net.URLDecoder;
  * along with NewPipe.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-public class YoutubeStreamUrlIdHandler implements UrlIdHandler {
+public class YoutubeStreamUrlIdHandler extends UrlIdHandler {
 
     private static final YoutubeStreamUrlIdHandler instance = new YoutubeStreamUrlIdHandler();
     private static final String ID_PATTERN = "([\\-a-zA-Z0-9_]{11})";
@@ -50,12 +50,12 @@ public class YoutubeStreamUrlIdHandler implements UrlIdHandler {
     }
 
     @Override
-    public String getUrl(String id) {
+    public String getUrl() {
         return "https://www.youtube.com/watch?v=" + id;
     }
 
     @Override
-    public String getId(String url) throws ParsingException, IllegalArgumentException {
+    public String onGetIdFromUrl(String url) throws ParsingException, IllegalArgumentException {
         if (url.isEmpty()) {
             throw new IllegalArgumentException("The url parameter should not be empty");
         }
@@ -167,19 +167,14 @@ public class YoutubeStreamUrlIdHandler implements UrlIdHandler {
     }
 
     @Override
-    public String cleanUrl(String complexUrl) throws ParsingException {
-        return getUrl(getId(complexUrl));
-    }
-
-    @Override
-    public boolean acceptUrl(String url) {
-        String lowercaseUrl = url.toLowerCase();
+    public boolean onAcceptUrl(final String url) {
+        final String lowercaseUrl = url.toLowerCase();
         if (lowercaseUrl.contains("youtube")
                 || lowercaseUrl.contains("youtu.be")
                 || lowercaseUrl.contains("hooktube")) {
             // bad programming I know
             try {
-                getId(url);
+                onGetIdFromUrl(url);
                 return true;
             } catch (Exception e) {
                 return false;

@@ -1,7 +1,8 @@
-package org.schabi.newpipe.extractor.services.youtube;
+package org.schabi.newpipe.extractor.services.youtube.extractors;
 
 import org.jsoup.nodes.Element;
 import org.schabi.newpipe.extractor.exceptions.ParsingException;
+import org.schabi.newpipe.extractor.services.youtube.urlIdHandlers.YoutubeParsingHelper;
 import org.schabi.newpipe.extractor.stream.StreamInfoItemExtractor;
 import org.schabi.newpipe.extractor.stream.StreamType;
 import org.schabi.newpipe.extractor.utils.Utils;
@@ -135,7 +136,11 @@ public class YoutubeStreamInfoItemExtractor implements StreamInfoItemExtractor {
             Element meta = item.select("div[class=\"yt-lockup-meta\"]").first();
             if (meta == null) return -1;
 
+            // This case can happen if google releases a special video
+            if(meta.select("li").size() < 2)  return -1;
+
             input = meta.select("li").get(1).text();
+
         } catch (IndexOutOfBoundsException e) {
             throw new ParsingException("Could not parse yt-lockup-meta although available: " + getUrl(), e);
         }

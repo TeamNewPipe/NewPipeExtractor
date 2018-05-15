@@ -1,5 +1,6 @@
 package org.schabi.newpipe.extractor;
 
+import edu.umd.cs.findbugs.annotations.NonNull;
 import org.schabi.newpipe.extractor.exceptions.ExtractionException;
 import org.schabi.newpipe.extractor.exceptions.ParsingException;
 
@@ -14,42 +15,28 @@ public abstract class Extractor {
      */
     private final StreamingService service;
 
-    /**
-     * Dirty/original url that was passed in the constructor.
-     * <p>
-     * What makes a url "dirty" or not is, for example, the additional parameters
-     * (not important as—in this case—the id):
-     * <pre>
-     *     https://www.youtube.com/watch?v=a9Zf_258aTI<i>&amp;t=4s</i>  →  <i><b>&amp;t=4s</b></i>
-     * </pre>
-     * But as you can imagine, the time parameter is very important when calling {@link org.schabi.newpipe.extractor.stream.StreamExtractor#getTimeStamp()}.
-     */
-    private final String originalUrl;
+    private final UrlIdHandler urlIdHandler;
 
-    /**
-     * The cleaned url, result of passing the {@link #originalUrl} to the associated urlIdHandler ({@link #getUrlIdHandler()}).
-     * <p>
-     * Is lazily-cleaned by calling {@link #getCleanUrl()}
-     */
     @Nullable
-    private String cleanUrl;
     private boolean pageFetched = false;
     private final Downloader downloader;
 
-    public Extractor(final StreamingService service, final String url) {
+    public Extractor(final StreamingService service, final UrlIdHandler urlIdHandler) {
         if(service == null) throw new NullPointerException("service is null");
-        if(url == null) throw new NullPointerException("url is null");
+        if(urlIdHandler == null) throw new NullPointerException("UrlIdHandler is null");
         this.service = service;
-        this.originalUrl = url;
+        this.urlIdHandler = urlIdHandler;
         this.downloader = NewPipe.getDownloader();
         if(downloader == null) throw new NullPointerException("downloader is null");
     }
 
     /**
-     * @return a {@link UrlIdHandler} of the current extractor type (e.g. a ChannelExtractor should return a channel url handler).
+     * @return The {@link UrlIdHandler} of the current extractor object (e.g. a ChannelExtractor should return a channel url handler).
      */
     @Nonnull
-    protected abstract UrlIdHandler getUrlIdHandler() throws ParsingException;
+    protected  UrlIdHandler getUrlIdHandler() {
+        return urlIdHandler;
+    }
 
     /**
      * Fetch the current page.
@@ -79,7 +66,9 @@ public abstract class Extractor {
     public abstract void onFetchPage(@Nonnull Downloader downloader) throws IOException, ExtractionException;
 
     @Nonnull
-    public abstract String getId() throws ParsingException;
+    public String getId() throws ParsingException {
+        return urlIdHandler.getId();
+    }
 
     /**
      * Get the name
@@ -90,26 +79,13 @@ public abstract class Extractor {
     public abstract String getName() throws ParsingException;
 
     @Nonnull
-    public String getOriginalUrl() {
-        return originalUrl;
+    public String getOriginalUrl() throws ParsingException {
+        return urlIdHandler.getOriginalUrl();
     }
 
-    /**
-     * Get a clean url and as a fallback the original url.
-     * @return the clean url or the original url
-     */
     @Nonnull
-    public String getCleanUrl() {
-        if (cleanUrl != null && !cleanUrl.isEmpty()) return cleanUrl;
-
-        try {
-            cleanUrl = getUrlIdHandler().cleanUrl(originalUrl);
-        } catch (Exception e) {
-            cleanUrl = null;
-            // Fallback to the original url
-            return originalUrl;
-        }
-        return cleanUrl;
+    public String getUrl() throws ParsingException {
+        return urlIdHandler.getUrl();
     }
 
     @Nonnull

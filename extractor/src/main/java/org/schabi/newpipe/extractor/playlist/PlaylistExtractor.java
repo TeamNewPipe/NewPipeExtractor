@@ -1,8 +1,10 @@
 package org.schabi.newpipe.extractor.playlist;
 
 import org.schabi.newpipe.extractor.ListExtractor;
+import org.schabi.newpipe.extractor.ListUrlIdHandler;
 import org.schabi.newpipe.extractor.StreamingService;
 import org.schabi.newpipe.extractor.UrlIdHandler;
+import org.schabi.newpipe.extractor.exceptions.ExtractionException;
 import org.schabi.newpipe.extractor.exceptions.ParsingException;
 import org.schabi.newpipe.extractor.stream.StreamInfoItem;
 
@@ -10,8 +12,8 @@ import javax.annotation.Nonnull;
 
 public abstract class PlaylistExtractor extends ListExtractor<StreamInfoItem> {
 
-    public PlaylistExtractor(StreamingService service, String url) {
-        super(service, url);
+    public PlaylistExtractor(StreamingService service, ListUrlIdHandler urlIdHandler) {
+        super(service, urlIdHandler);
     }
 
     @Nonnull

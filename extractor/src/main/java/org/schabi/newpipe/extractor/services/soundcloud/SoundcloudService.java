@@ -1,5 +1,6 @@
 package org.schabi.newpipe.extractor.services.soundcloud;
 
+import org.schabi.newpipe.extractor.ListUrlIdHandler;
 import org.schabi.newpipe.extractor.StreamingService;
 import org.schabi.newpipe.extractor.SuggestionExtractor;
 import org.schabi.newpipe.extractor.UrlIdHandler;
@@ -32,29 +33,29 @@ public class SoundcloudService extends StreamingService {
     }
 
     @Override
-    public UrlIdHandler getChannelUrlIdHandler() {
+    public ListUrlIdHandler getChannelUrlIdHandler() {
         return SoundcloudChannelUrlIdHandler.getInstance();
     }
 
     @Override
-    public UrlIdHandler getPlaylistUrlIdHandler() {
+    public ListUrlIdHandler getPlaylistUrlIdHandler() {
         return SoundcloudPlaylistUrlIdHandler.getInstance();
     }
 
 
     @Override
-    public StreamExtractor getStreamExtractor(String url) {
-        return new SoundcloudStreamExtractor(this, url);
+    public StreamExtractor getStreamExtractor(UrlIdHandler urlIdHandler) throws ExtractionException {
+        return new SoundcloudStreamExtractor(this, urlIdHandler);
     }
 
     @Override
-    public ChannelExtractor getChannelExtractor(String url) {
-        return new SoundcloudChannelExtractor(this, url);
+    public ChannelExtractor getChannelExtractor(ListUrlIdHandler urlIdHandler) throws ExtractionException {
+        return new SoundcloudChannelExtractor(this, urlIdHandler);
     }
 
     @Override
-    public PlaylistExtractor getPlaylistExtractor(String url) {
-        return new SoundcloudPlaylistExtractor(this, url);
+    public PlaylistExtractor getPlaylistExtractor(ListUrlIdHandler urlIdHandler) throws ExtractionException {
+        return new SoundcloudPlaylistExtractor(this, urlIdHandler);
     }
 
     @Override
@@ -71,8 +72,7 @@ public class SoundcloudService extends StreamingService {
                                                  String id)
                     throws ExtractionException {
                 return new SoundcloudChartsExtractor(SoundcloudService.this,
-                        url,
-                        id);
+                        new SoundcloudChartsUrlIdHandler().setUrl(url), id);
             }
         };
 

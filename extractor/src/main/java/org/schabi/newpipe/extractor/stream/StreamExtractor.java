@@ -39,8 +39,8 @@ public abstract class StreamExtractor extends Extractor {
 
     public static final int NO_AGE_LIMIT = 0;
 
-    public StreamExtractor(StreamingService service, String url) {
-        super(service, url);
+    public StreamExtractor(StreamingService service, UrlIdHandler urlIdHandler) {
+        super(service, urlIdHandler);
     }
 
     @Nonnull
@@ -142,6 +142,7 @@ public abstract class StreamExtractor extends Extractor {
     public abstract StreamInfoItemsCollector getRelatedVideos() throws IOException, ExtractionException;
 
     public abstract String[] getDonationLinks() throws ExtractionException;
+    public abstract String[] getAffiliateLinks() throws ExtractionException;
 
     /**
      * Analyses the webpage's document and extracts any error message there might be.

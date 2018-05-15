@@ -1,6 +1,6 @@
-package org.schabi.newpipe.extractor.services.youtube;
+package org.schabi.newpipe.extractor.services.youtube.urlIdHandlers;
 
-import org.schabi.newpipe.extractor.UrlIdHandler;
+import org.schabi.newpipe.extractor.ListUrlIdHandler;
 import org.schabi.newpipe.extractor.exceptions.ParsingException;
 import org.schabi.newpipe.extractor.utils.Parser;
 
@@ -24,7 +24,7 @@ import org.schabi.newpipe.extractor.utils.Parser;
  * along with NewPipe.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-public class YoutubeChannelUrlIdHandler implements UrlIdHandler {
+public class YoutubeChannelUrlIdHandler extends ListUrlIdHandler {
 
     private static final YoutubeChannelUrlIdHandler instance = new YoutubeChannelUrlIdHandler();
     private static final String ID_PATTERN = "/(user/[A-Za-z0-9_-]*|channel/[A-Za-z0-9_-]*)";
@@ -34,22 +34,17 @@ public class YoutubeChannelUrlIdHandler implements UrlIdHandler {
     }
 
     @Override
-    public String getUrl(String id) {
-        return "https://www.youtube.com/" + id;
-    }
-
-    @Override
-    public String getId(String url) throws ParsingException {
+    public String onGetIdFromUrl(String url) throws ParsingException {
         return Parser.matchGroup1(ID_PATTERN, url);
     }
 
     @Override
-    public String cleanUrl(String complexUrl) throws ParsingException {
-        return getUrl(getId(complexUrl));
+    public String getUrl() {
+        return "https://www.youtube.com/" + id;
     }
 
     @Override
-    public boolean acceptUrl(String url) {
+    public boolean onAcceptUrl(String url) {
         return (url.contains("youtube") || url.contains("youtu.be") || url.contains("hooktube.com"))
                 && (url.contains("/user/") || url.contains("/channel/"));
     }

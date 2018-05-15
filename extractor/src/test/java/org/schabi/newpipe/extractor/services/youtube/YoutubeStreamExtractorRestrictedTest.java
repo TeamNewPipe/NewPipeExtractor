@@ -7,6 +7,8 @@ import org.schabi.newpipe.Downloader;
 import org.schabi.newpipe.extractor.NewPipe;
 import org.schabi.newpipe.extractor.exceptions.ExtractionException;
 import org.schabi.newpipe.extractor.exceptions.ParsingException;
+import org.schabi.newpipe.extractor.services.youtube.extractors.YoutubeStreamExtractor;
+import org.schabi.newpipe.extractor.services.youtube.urlIdHandlers.YoutubeStreamUrlIdHandler;
 import org.schabi.newpipe.extractor.stream.StreamExtractor;
 import org.schabi.newpipe.extractor.stream.SubtitlesFormat;
 import org.schabi.newpipe.extractor.stream.VideoStream;
@@ -108,7 +110,7 @@ public class YoutubeStreamExtractorRestrictedTest {
         streams.addAll(extractor.getVideoStreams());
         streams.addAll(extractor.getVideoOnlyStreams());
 
-        assertTrue(streams.size() > 0);
+        assertTrue(Integer.toString(streams.size()),streams.size() > 0);
         for (VideoStream s : streams) {
             assertTrue(s.getUrl(),
                     s.getUrl().contains(HTTPS));
