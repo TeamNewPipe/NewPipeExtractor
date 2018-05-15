@@ -6,6 +6,9 @@ import java.util.List;
 
 public class Utils {
 
+    private static final String HTTP = "http://";
+    private static final String HTTPS = "https://";
+
     private Utils() {
         //no instance
     }
@@ -45,9 +48,6 @@ public class Utils {
             System.err.println("----------------");
         }
     }
-
-    private static final String HTTP = "http://";
-    private static final String HTTPS = "https://";
 
     public static String replaceHttpWithHttps(final String url) {
         if (url == null) return null;

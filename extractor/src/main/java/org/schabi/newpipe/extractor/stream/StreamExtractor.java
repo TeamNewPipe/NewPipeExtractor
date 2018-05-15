@@ -20,6 +20,7 @@ package org.schabi.newpipe.extractor.stream;
  * along with NewPipe.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+import org.nibor.autolink.LinkSpan;
 import org.schabi.newpipe.extractor.Extractor;
 import org.schabi.newpipe.extractor.StreamingService;
 import org.schabi.newpipe.extractor.Subtitles;
@@ -143,6 +144,9 @@ public abstract class StreamExtractor extends Extractor {
 
     public abstract String[] getDonationLinks() throws ExtractionException;
     public abstract String[] getAffiliateLinks() throws ExtractionException;
+    public LinkSpan[] getLinksFromDescription() throws ExtractionException {
+        return Parser.getLinkSpanFromString(getDescription());
+    }
 
     /**
      * Analyses the webpage's document and extracts any error message there might be.
