@@ -43,6 +43,9 @@ public class ItagItem {
             new ItagItem(139, AUDIO, M4A, 48),
             new ItagItem(140, AUDIO, M4A, 128),
             new ItagItem(141, AUDIO, M4A, 256),
+            new ItagItem(249, AUDIO, OPUS, 50),
+            new ItagItem(250, AUDIO, OPUS, 70),
+            new ItagItem(160, AUDIO, OPUS, 160),
 
             /// VIDEO ONLY ////////////////////////////////////////////
             //           ID      Type     Format  Resolution  FPS  ///

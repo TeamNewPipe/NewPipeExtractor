@@ -25,6 +25,7 @@ import org.junit.Test;
 import org.schabi.newpipe.Downloader;
 import org.schabi.newpipe.extractor.NewPipe;
 import org.schabi.newpipe.extractor.UrlIdHandler;
+import org.schabi.newpipe.extractor.services.youtube.urlIdHandlers.YoutubeTrendingUrlIdHandler;
 
 import static junit.framework.TestCase.assertFalse;
 import static org.junit.Assert.assertEquals;
@@ -46,13 +47,13 @@ public class YoutubeTrendingUrlIdHandlerTest {
     @Test
     public void getUrl()
             throws Exception {
-        assertEquals(urlIdHandler.getUrl(""), "https://www.youtube.com/feed/trending");
+        assertEquals(urlIdHandler.setId("").getUrl(), "https://www.youtube.com/feed/trending");
     }
 
     @Test
     public void getId()
             throws Exception {
-        assertEquals(urlIdHandler.getId(""), "Trending");
+        assertEquals(urlIdHandler.setUrl("").getId(), "Trending");
     }
 
     @Test

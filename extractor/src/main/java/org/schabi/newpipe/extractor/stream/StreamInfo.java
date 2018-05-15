@@ -1,10 +1,14 @@
 package org.schabi.newpipe.extractor.stream;
 
+import org.nibor.autolink.LinkSpan;
 import org.schabi.newpipe.extractor.*;
 import org.schabi.newpipe.extractor.exceptions.ContentNotAvailableException;
 import org.schabi.newpipe.extractor.exceptions.ExtractionException;
+import org.schabi.newpipe.extractor.exceptions.ParsingException;
 import org.schabi.newpipe.extractor.utils.DashMpdParser;
+import org.schabi.newpipe.extractor.utils.DonationLinkHelper;
 import org.schabi.newpipe.extractor.utils.ExtractorHelper;
+import org.schabi.newpipe.extractor.utils.Utils;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -62,6 +66,7 @@ public class StreamInfo extends Info {
             streamInfo = extractImportantData(extractor);
             streamInfo = extractStreams(streamInfo, extractor);
             streamInfo = extractOptionalData(streamInfo, extractor);
+            streamInfo = extractLinks(streamInfo, extractor);
         } catch (ExtractionException e) {
             // Currently YouTube does not distinguish between age restricted videos and videos blocked
             // by country.  This means that during the initialisation of the extractor, the extractor
@@ -85,7 +90,7 @@ public class StreamInfo extends Info {
         // if one of these is not available an exception is meant to be thrown directly into the frontend.
 
         int serviceId = extractor.getServiceId();
-        String url = extractor.getCleanUrl();
+        String url = extractor.getUrl();
         String originalUrl = extractor.getOriginalUrl();
         StreamType streamType = extractor.getStreamType();
         String id = extractor.getId();
@@ -169,6 +174,25 @@ public class StreamInfo extends Info {
         }
 
         return streamInfo;
+    }
+
+
+    private static StreamInfo extractLinks(StreamInfo streamInfo, StreamExtractor extractor) throws ParsingException {
+        try {
+            streamInfo.setLinksInDescription(extractor.getLinksFromDescription());
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        try {
+            streamInfo.setAffiliateLinks(extractor.getAffiliateLinks());
+        } catch (Exception e) {
+            streamInfo.addError(e);
+        }
+        try {
+            streamInfo.setDonationLinks(extractor.getDonationLinks());
+        } catch (Exception e) {
+            streamInfo.addError(e);
+        }
     }
 
     private static StreamInfo extractOptionalData(StreamInfo streamInfo, StreamExtractor extractor) {
@@ -273,6 +297,10 @@ public class StreamInfo extends Info {
 
     private long startPosition = 0;
     private List<Subtitles> subtitles;
+
+    private LinkSpan[] linksInDescription;
+    private String[] donationLinks;
+    private String[] affiliateLinks;
 
     /**
      * Get the stream type
@@ -465,5 +493,29 @@ public class StreamInfo extends Info {
 
     public void setSubtitles(List<Subtitles> subtitles) {
         this.subtitles = subtitles;
+    }
+
+    public String[] getDonationLinks() {
+        return donationLinks;
+    }
+
+    public void setDonationLinks(String[] donationLinks) {
+        this.donationLinks = donationLinks;
+    }
+
+    public String[] getAffiliateLinks() {
+        return affiliateLinks;
+    }
+
+    public void setAffiliateLinks(String[] affiliateLinks) {
+        this.affiliateLinks = affiliateLinks;
+    }
+
+    public LinkSpan[] getLinksInDescription() {
+        return linksInDescription;
+    }
+
+    public void setLinksInDescription(LinkSpan[] linksInDescription) {
+        this.linksInDescription = linksInDescription;
     }
 }

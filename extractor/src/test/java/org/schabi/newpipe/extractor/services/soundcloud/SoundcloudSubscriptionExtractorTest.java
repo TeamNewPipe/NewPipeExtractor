@@ -6,6 +6,7 @@ import org.schabi.newpipe.Downloader;
 import org.schabi.newpipe.extractor.NewPipe;
 import org.schabi.newpipe.extractor.ServiceList;
 import org.schabi.newpipe.extractor.UrlIdHandler;
+import org.schabi.newpipe.extractor.exceptions.ParsingException;
 import org.schabi.newpipe.extractor.subscription.SubscriptionExtractor;
 import org.schabi.newpipe.extractor.subscription.SubscriptionItem;
 
@@ -64,7 +65,7 @@ public class SoundcloudSubscriptionExtractorTest {
         }
     }
 
-    private void testList(List<SubscriptionItem> subscriptionItems) {
+    private void testList(List<SubscriptionItem> subscriptionItems) throws ParsingException {
         for (SubscriptionItem item : subscriptionItems) {
             assertNotNull(item.getName());
             assertNotNull(item.getUrl());

@@ -1,6 +1,7 @@
 package org.schabi.newpipe.extractor.services.soundcloud;
 
 import org.schabi.newpipe.extractor.Downloader;
+import org.schabi.newpipe.extractor.ListUrlIdHandler;
 import org.schabi.newpipe.extractor.StreamingService;
 import org.schabi.newpipe.extractor.UrlIdHandler;
 import org.schabi.newpipe.extractor.exceptions.ExtractionException;
@@ -14,15 +15,11 @@ import java.util.Arrays;
 import java.util.List;
 
 public class SoundcloudChartsExtractor extends KioskExtractor {
-	private String url;
-
 	private StreamInfoItemsCollector collector = null;
 	private String nextPageUrl = null;
 
-    public SoundcloudChartsExtractor(StreamingService service, String url, String kioskId)
-            throws ExtractionException {
-        super(service, url, kioskId);
-        this.url = url;
+    public SoundcloudChartsExtractor(StreamingService service, ListUrlIdHandler urlIdHandler, String kioskId) {
+        super(service, urlIdHandler, kioskId);
     }
 
     @Override

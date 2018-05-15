@@ -25,6 +25,7 @@ import org.junit.BeforeClass;
 import org.junit.Test;
 import org.schabi.newpipe.Downloader;
 import org.schabi.newpipe.extractor.NewPipe;
+import org.schabi.newpipe.extractor.services.youtube.extractors.YoutubeStreamExtractor;
 import org.schabi.newpipe.extractor.stream.StreamExtractor;
 
 import static org.junit.Assert.assertTrue;
@@ -48,5 +49,11 @@ public class YoutubeStreamExtractorDonationTest {
     public void getDonationLinksTest() throws Exception {
         assertTrue(String.valueOf(extractor.getDonationLinks().length),
                 extractor.getDonationLinks().length == 2);
+    }
+
+    @Test
+    public void getAffiliateLinksTest() throws Exception {
+        assertTrue(String.valueOf(extractor.getAffiliateLinks().length),
+                extractor.getAffiliateLinks().length == 1);
     }
 }

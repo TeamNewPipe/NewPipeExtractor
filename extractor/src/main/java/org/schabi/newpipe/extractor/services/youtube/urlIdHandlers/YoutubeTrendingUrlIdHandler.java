@@ -1,4 +1,4 @@
-package org.schabi.newpipe.extractor.services.youtube;
+package org.schabi.newpipe.extractor.services.youtube.urlIdHandlers;
 
 /*
  * Created by Christian Schabesberger on 12.08.17.
@@ -20,27 +20,24 @@ package org.schabi.newpipe.extractor.services.youtube;
  * along with NewPipe.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+import org.schabi.newpipe.extractor.ListUrlIdHandler;
 import org.schabi.newpipe.extractor.UrlIdHandler;
+import org.schabi.newpipe.extractor.exceptions.ParsingException;
 import org.schabi.newpipe.extractor.utils.Parser;
 
-public class YoutubeTrendingUrlIdHandler implements UrlIdHandler {
+public class YoutubeTrendingUrlIdHandler extends ListUrlIdHandler {
 
-    public String getUrl(String id) {
+    public String getUrl() {
         return "https://www.youtube.com/feed/trending";
     }
 
     @Override
-    public String getId(String url) {
+    public String onGetIdFromUrl(String url) {
         return "Trending";
     }
 
     @Override
-    public String cleanUrl(String url) {
-        return getUrl("");
-    }
-
-    @Override
-    public boolean acceptUrl(String url) {
+    public boolean onAcceptUrl(final String url) {
         return Parser.isMatch("^(https://|http://|)(www.|m.|)youtube.com/feed/trending(|\\?.*)$", url);
     }
 }

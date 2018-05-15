@@ -7,8 +7,10 @@ import org.schabi.newpipe.Downloader;
 import org.schabi.newpipe.extractor.ListExtractor;
 import org.schabi.newpipe.extractor.NewPipe;
 import org.schabi.newpipe.extractor.ServiceList;
+import org.schabi.newpipe.extractor.exceptions.ParsingException;
 import org.schabi.newpipe.extractor.playlist.PlaylistExtractor;
 import org.schabi.newpipe.extractor.services.BasePlaylistExtractorTest;
+import org.schabi.newpipe.extractor.services.youtube.extractors.YoutubePlaylistExtractor;
 import org.schabi.newpipe.extractor.stream.StreamInfoItem;
 
 import static org.junit.Assert.assertEquals;
@@ -53,12 +55,12 @@ public class YoutubePlaylistExtractorTest {
         }
 
         @Test
-        public void testCleanUrl() {
-            assertEquals("https://www.youtube.com/playlist?list=PLMC9KNkIncKtPzgY-5rmhvj7fax8fdxoj", extractor.getCleanUrl());
+        public void testUrl() throws ParsingException {
+            assertEquals("https://www.youtube.com/playlist?list=PLMC9KNkIncKtPzgY-5rmhvj7fax8fdxoj", extractor.getUrl());
         }
 
         @Test
-        public void testOriginalUrl() {
+        public void testOriginalUrl() throws ParsingException {
             assertEquals("http://www.youtube.com/watch?v=lp-EO5I60KA&list=PLMC9KNkIncKtPzgY-5rmhvj7fax8fdxoj", extractor.getOriginalUrl());
         }
 
@@ -135,7 +137,7 @@ public class YoutubePlaylistExtractorTest {
 
         @Test
         public void testGetPageInNewExtractor() throws Exception {
-            final PlaylistExtractor newExtractor = YouTube.getPlaylistExtractor(extractor.getCleanUrl());
+            final PlaylistExtractor newExtractor = YouTube.getPlaylistExtractor(extractor.getUrl());
             defaultTestGetPageInNewExtractor(extractor, newExtractor, YouTube.getServiceId());
         }
 
@@ -160,12 +162,12 @@ public class YoutubePlaylistExtractorTest {
         }
 
         @Test
-        public void testCleanUrl() {
-            assertEquals("https://www.youtube.com/playlist?list=PLOy0j9AvlVZPto6IkjKfpu0Scx--7PGTC", extractor.getCleanUrl());
+        public void testUrl() throws ParsingException {
+            assertEquals("https://www.youtube.com/playlist?list=PLOy0j9AvlVZPto6IkjKfpu0Scx--7PGTC", extractor.getUrl());
         }
 
         @Test
-        public void testOriginalUrl() {
+        public void testOriginalUrl() throws ParsingException {
             assertEquals("https://www.youtube.com/playlist?list=PLOy0j9AvlVZPto6IkjKfpu0Scx--7PGTC", extractor.getOriginalUrl());
         }
 

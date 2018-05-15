@@ -51,12 +51,12 @@ public class SoundcloudPlaylistExtractorTest {
         }
 
         @Test
-        public void testCleanUrl() {
-            assertEquals("https://soundcloud.com/liluzivert/sets/the-perfect-luv-tape-r", extractor.getCleanUrl());
+        public void testUrl() throws Exception {
+            assertEquals("https://soundcloud.com/liluzivert/sets/the-perfect-luv-tape-r", extractor.getUrl());
         }
 
         @Test
-        public void testOriginalUrl() {
+        public void testOriginalUrl() throws Exception {
             assertEquals("https://soundcloud.com/liluzivert/sets/the-perfect-luv-tape-r?test=123", extractor.getOriginalUrl());
         }
 
@@ -125,7 +125,7 @@ public class SoundcloudPlaylistExtractorTest {
         public static void setUp() throws Exception {
             NewPipe.init(Downloader.getInstance());
             extractor = (SoundcloudPlaylistExtractor) SoundCloud
-                    .getPlaylistExtractor("http://soundcloud.com/finn-trapple/sets/random-house-dance-music-2");
+                    .getPlaylistExtractor("https://soundcloud.com/hunter-leader/sets/house-electro-dance-music-2");
             extractor.fetchPage();
         }
 
@@ -140,22 +140,22 @@ public class SoundcloudPlaylistExtractorTest {
 
         @Test
         public void testName() {
-            assertEquals("Random House & Dance Music #2", extractor.getName());
+            assertEquals("House, Electro , Dance Music 2", extractor.getName());
         }
 
         @Test
         public void testId() {
-            assertEquals("436855608", extractor.getId());
+            assertEquals("310980722", extractor.getId());
         }
 
         @Test
-        public void testCleanUrl() {
-            assertEquals("https://soundcloud.com/finn-trapple/sets/random-house-dance-music-2", extractor.getCleanUrl());
+        public void testUrl() throws Exception {
+            assertEquals("https://soundcloud.com/hunter-leader/sets/house-electro-dance-music-2", extractor.getUrl());
         }
 
         @Test
-        public void testOriginalUrl() {
-            assertEquals("http://soundcloud.com/finn-trapple/sets/random-house-dance-music-2", extractor.getOriginalUrl());
+        public void testOriginalUrl() throws Exception {
+            assertEquals("https://soundcloud.com/hunter-leader/sets/house-electro-dance-music-2", extractor.getOriginalUrl());
         }
 
         /*//////////////////////////////////////////////////////////////////////////
@@ -191,12 +191,12 @@ public class SoundcloudPlaylistExtractorTest {
         public void testUploaderUrl() {
             final String uploaderUrl = extractor.getUploaderUrl();
             assertIsSecureUrl(uploaderUrl);
-            assertTrue(uploaderUrl, uploaderUrl.contains("finn-trapple"));
+            assertTrue(uploaderUrl, uploaderUrl.contains("hunter-leader"));
         }
 
         @Test
         public void testUploaderName() {
-            assertEquals("Finn TrApple", extractor.getUploaderName());
+            assertEquals("Gosu", extractor.getUploaderName());
         }
 
         @Test
@@ -227,7 +227,7 @@ public class SoundcloudPlaylistExtractorTest {
 
         @Test
         public void testGetPageInNewExtractor() throws Exception {
-            final PlaylistExtractor newExtractor = SoundCloud.getPlaylistExtractor(extractor.getCleanUrl());
+            final PlaylistExtractor newExtractor = SoundCloud.getPlaylistExtractor(extractor.getUrl());
             defaultTestGetPageInNewExtractor(extractor, newExtractor, SoundCloud.getServiceId());
         }
 
@@ -251,12 +251,12 @@ public class SoundcloudPlaylistExtractorTest {
         }
 
         @Test
-        public void testCleanUrl() {
-            assertEquals("https://soundcloud.com/user350509423/sets/edm-xxx", extractor.getCleanUrl());
+        public void testUrl() throws Exception {
+            assertEquals("https://soundcloud.com/user350509423/sets/edm-xxx", extractor.getUrl());
         }
 
         @Test
-        public void testOriginalUrl() {
+        public void testOriginalUrl() throws Exception {
             assertEquals("https://soundcloud.com/user350509423/sets/edm-xxx", extractor.getOriginalUrl());
         }
 
