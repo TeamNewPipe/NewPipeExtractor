@@ -8,15 +8,15 @@ import org.schabi.newpipe.extractor.exceptions.ParsingException;
 
 public class SearchInfo extends ListInfo<InfoItem> {
 
-    private String searchQuerry = "";
+    private String searchString = "";
     private String searchSuggestion = "";
 
 
     public SearchInfo(int serviceId,
                       ListUrlIdHandler urlIdHandler,
-                      String searchQuerry) throws ParsingException {
+                      String searchString) throws ParsingException {
         super(serviceId, urlIdHandler, "Search");
-        this.searchQuerry = searchQuerry;
+        this.searchString = searchString;
     }
 
 
@@ -24,7 +24,7 @@ public class SearchInfo extends ListInfo<InfoItem> {
         final SearchInfo info = new SearchInfo(
                 extractor.getServiceId(),
                 extractor.getUrlIdHandler(),
-                extractor.getSearchQuerry());
+                extractor.getSearchString());
 
         try {
             info.searchSuggestion = extractor.getSearchSuggestion();
@@ -36,8 +36,8 @@ public class SearchInfo extends ListInfo<InfoItem> {
     }
 
     // Getter
-    public String getSearchQuerry() {
-        return searchQuerry;
+    public String getSearchString() {
+        return searchString;
     }
 
     public String getSearchSuggestion() {

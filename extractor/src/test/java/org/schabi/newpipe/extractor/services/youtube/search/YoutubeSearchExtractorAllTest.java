@@ -1,24 +1,25 @@
-package org.schabi.newpipe.extractor.services.youtube;
+package org.schabi.newpipe.extractor.services.youtube.search;
 
 import org.junit.BeforeClass;
 import org.junit.Ignore;
 import org.junit.Test;
 import org.schabi.newpipe.Downloader;
 import org.schabi.newpipe.extractor.InfoItem;
+import org.schabi.newpipe.extractor.ListExtractor;
 import org.schabi.newpipe.extractor.NewPipe;
-import org.schabi.newpipe.extractor.playlist.PlaylistInfoItem;
+import org.schabi.newpipe.extractor.channel.ChannelInfoItem;
 import org.schabi.newpipe.extractor.search.SearchEngine;
+import org.schabi.newpipe.extractor.search.SearchExtractor;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 import static org.schabi.newpipe.extractor.ServiceList.YouTube;
 
-
 /*
  * Created by Christian Schabesberger on 29.12.15.
  *
  * Copyright (C) Christian Schabesberger 2015 <chris.schabesberger@mailbox.org>
- * YoutubeSearchEngineStreamTest.java is part of NewPipe.
+ * YoutubeSearchExtractorStreamTest.java is part of NewPipe.
  *
  * NewPipe is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -37,31 +38,33 @@ import static org.schabi.newpipe.extractor.ServiceList.YouTube;
 /**
  * Test for {@link SearchEngine}
  */
-public class YoutubeSearchEnginePlaylistTest extends BaseYoutubeSearchTest {
+public class YoutubeSearchExtractorAllTest {
+
+    private static SearchExtractor extractor;
+    private static ListExtractor.InfoItemsPage<InfoItem> itemsPage;
 
     @BeforeClass
-    public static void setUp() throws Exception {
+    public static void setUpClass() throws Exception {
         NewPipe.init(Downloader.getInstance());
-        SearchEngine engine = YouTube.getSearchEngine();
-
-        // Youtube will suggest "gronkh" instead of "grrunkh"
-        // keep in mind that the suggestions can change by country (the parameter "de")
-        result = engine.search("grrunkh", 0, "de", SearchEngine.Filter.PLAYLIST)
-                .getSearchResult();
+        extractor = YouTube.getSearchExtractor("pewdiepie", "de");
+        extractor.fetchPage();
+        itemsPage = extractor.getInitialPage();
     }
 
     @Test
-    public void testInfoItemType() {
-        for (InfoItem infoItem : result.resultList) {
-            assertTrue(infoItem instanceof PlaylistInfoItem);
-            assertEquals(InfoItem.InfoType.PLAYLIST, infoItem.getInfoType());
-        }
+    public void testResultList_FirstElement() {
+        InfoItem firstInfoItem = itemsPage.getItems().get(0);
+
+        // THe channel should be the first item
+        assertTrue(firstInfoItem instanceof ChannelInfoItem);
+        assertEquals("name", "PewDiePie", firstInfoItem.getName());
+        assertEquals("url","https://www.youtube.com/user/PewDiePie", firstInfoItem.getUrl());
     }
 
     @Ignore
     @Test
-    public void testSuggestion() {
+    public void testSuggestion() throws Exception {
         //todo write a real test
-        assertTrue(result.suggestion != null);
+        assertTrue(extractor.getSearchSuggestion() != null);
     }
 }

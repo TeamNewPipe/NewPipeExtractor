@@ -15,24 +15,35 @@ public abstract class SearchExtractor extends ListExtractor<InfoItem> {
     }
 
     private final InfoItemsSearchCollector collector;
+    private final String contentCountry;
 
-    public SearchExtractor(StreamingService service, SearchQuerryUrlHandler urlIdHandler) {
+    public SearchExtractor(StreamingService service, SearchQueryUrlHandler urlIdHandler, String contentCountry) {
         super(service, urlIdHandler);
         collector = new InfoItemsSearchCollector(service.getServiceId());
+        this.contentCountry = contentCountry;
     }
 
-    public String getSearchQuerry() {
-        return getUrlIdHandler().getSearchQuerry();
+    public String getSearchString() {
+        return getUrlIdHandler().getSearchString();
     }
 
     public abstract String getSearchSuggestion() throws ParsingException;
+
     protected InfoItemsSearchCollector getInfoItemSearchCollector() {
         return collector;
     }
 
     @Override
-    public SearchQuerryUrlHandler getUrlIdHandler() {
-        return (SearchQuerryUrlHandler) super.getUrlIdHandler();
+    public SearchQueryUrlHandler getUrlIdHandler() {
+        return (SearchQueryUrlHandler) super.getUrlIdHandler();
     }
 
+    @Override
+    public String getName() {
+        return getUrlIdHandler().getSearchString();
+    }
+
+    protected String getContentCountry() {
+        return contentCountry;
+    }
 }

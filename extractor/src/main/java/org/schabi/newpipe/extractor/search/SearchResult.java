@@ -47,7 +47,7 @@ public class SearchResult {
     public static SearchResult getSearchResult(@Nonnull final SearchEngine engine, final String query, final int page,
                                                final String languageCode, final SearchEngine.Filter filter)
             throws IOException, ExtractionException {
-        return engine.search(query, page, languageCode, filter).getSearchResult();
+        return null;
     }
 
     public String getSuggestion() {
