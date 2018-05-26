@@ -37,12 +37,12 @@ public abstract class ListExtractor<R extends InfoItem> extends Extractor {
     /**
      * Get a list of items corresponding to the specific requested page.
      *
-     * @param nextPageUrl any next page url got from the exclusive implementation of the list extractor
+     * @param pageUrl any page url got from the exclusive implementation of the list extractor
      * @return a {@link InfoItemsPage} corresponding to the requested page
      * @see #getNextPageUrl()
      * @see InfoItemsPage#getNextPageUrl()
      */
-    public abstract InfoItemsPage<R> getPage(final String nextPageUrl) throws IOException, ExtractionException;
+    public abstract InfoItemsPage<R> getPage(final String pageUrl) throws IOException, ExtractionException;
 
     public boolean hasNextPage() throws IOException, ExtractionException {
         final String nextPageUrl = getNextPageUrl();

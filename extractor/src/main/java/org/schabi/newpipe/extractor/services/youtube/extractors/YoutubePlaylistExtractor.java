@@ -19,6 +19,8 @@ import org.schabi.newpipe.extractor.utils.Utils;
 import javax.annotation.Nonnull;
 import java.io.IOException;
 
+import static org.schabi.newpipe.extractor.NewPipe.getDownloader;
+
 @SuppressWarnings("WeakerAccess")
 public class YoutubePlaylistExtractor extends PlaylistExtractor {
 
@@ -132,7 +134,7 @@ public class YoutubePlaylistExtractor extends PlaylistExtractor {
         StreamInfoItemsCollector collector = new StreamInfoItemsCollector(getServiceId());
         JsonObject pageJson;
         try {
-            pageJson = JsonParser.object().from(NewPipe.getDownloader().download(pageUrl));
+            pageJson = JsonParser.object().from(getDownloader().download(pageUrl));
         } catch (JsonParserException pe) {
             throw new ParsingException("Could not parse ajax json", pe);
         }

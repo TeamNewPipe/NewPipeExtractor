@@ -11,6 +11,7 @@ import org.schabi.newpipe.extractor.kiosk.KioskList;
 import org.schabi.newpipe.extractor.playlist.PlaylistExtractor;
 import org.schabi.newpipe.extractor.search.SearchEngine;
 import org.schabi.newpipe.extractor.search.SearchExtractor;
+import org.schabi.newpipe.extractor.search.SearchQueryUrlHandler;
 import org.schabi.newpipe.extractor.stream.StreamExtractor;
 import org.schabi.newpipe.extractor.subscription.SubscriptionExtractor;
 
@@ -29,10 +30,14 @@ public class SoundcloudService extends StreamingService {
     }
 
     @Override
-    public SearchExtractor getSearchExtractor() {
+    public SearchExtractor getSearchExtractor(SearchQueryUrlHandler queryHandler, String contentCountry) {
         return null;
     }
 
+    @Override
+    public SearchQueryUrlHandler getSearchQueryHandler() {
+        return null;
+    }
 
     @Override
     public UrlIdHandler getStreamUrlIdHandler() {

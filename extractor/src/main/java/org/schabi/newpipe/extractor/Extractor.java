@@ -95,4 +95,8 @@ public abstract class Extractor {
     public int getServiceId() {
         return service.getServiceId();
     }
+
+    public Downloader getDownloader() {
+        return downloader;
+    }
 }

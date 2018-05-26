@@ -11,11 +11,9 @@ import org.schabi.newpipe.extractor.kiosk.KioskList;
 import org.schabi.newpipe.extractor.playlist.PlaylistExtractor;
 import org.schabi.newpipe.extractor.search.SearchEngine;
 import org.schabi.newpipe.extractor.search.SearchExtractor;
+import org.schabi.newpipe.extractor.search.SearchQueryUrlHandler;
 import org.schabi.newpipe.extractor.services.youtube.extractors.*;
-import org.schabi.newpipe.extractor.services.youtube.urlIdHandlers.YoutubeChannelUrlIdHandler;
-import org.schabi.newpipe.extractor.services.youtube.urlIdHandlers.YoutubePlaylistUrlIdHandler;
-import org.schabi.newpipe.extractor.services.youtube.urlIdHandlers.YoutubeStreamUrlIdHandler;
-import org.schabi.newpipe.extractor.services.youtube.urlIdHandlers.YoutubeTrendingUrlIdHandler;
+import org.schabi.newpipe.extractor.services.youtube.urlIdHandlers.*;
 import org.schabi.newpipe.extractor.stream.StreamExtractor;
 import org.schabi.newpipe.extractor.subscription.SubscriptionExtractor;
 
@@ -55,8 +53,8 @@ public class YoutubeService extends StreamingService {
     }
 
     @Override
-    public SearchExtractor getSearchExtractor() {
-        return null;
+    public SearchExtractor getSearchExtractor(SearchQueryUrlHandler query, String contentCountry) {
+        return new YoutubeSearchExtractor(this, query, contentCountry);
     }
 
     @Override
@@ -72,6 +70,11 @@ public class YoutubeService extends StreamingService {
     @Override
     public ListUrlIdHandler getPlaylistUrlIdHandler() {
         return YoutubePlaylistUrlIdHandler.getInstance();
+    }
+
+    @Override
+    public SearchQueryUrlHandler getSearchQueryHandler() {
+        return YoutubeSearchQueryUrlHandler.getInstance();
     }
 
     @Override

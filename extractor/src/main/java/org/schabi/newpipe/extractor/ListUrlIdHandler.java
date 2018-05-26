@@ -2,15 +2,26 @@ package org.schabi.newpipe.extractor;
 
 import org.schabi.newpipe.extractor.exceptions.ParsingException;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public abstract class ListUrlIdHandler extends UrlIdHandler {
 
-    protected String[] contentFilter;
-    protected String sortFilter;
+    protected List<String> contentFilter = new ArrayList<>(0);
+    protected String sortFilter = "";
 
-    public ListUrlIdHandler setQuery(String id, String[] contentFilter, String softFilter) throws ParsingException {
+    public ListUrlIdHandler setQuery(String id,
+                                     List<String> contentFilter,
+                                     String softFilter) throws ParsingException {
         setId(id);
         this.contentFilter = contentFilter;
         this.sortFilter = softFilter;
+        return this;
+    }
+
+
+    public ListUrlIdHandler setQuery(String id) throws ParsingException {
+        setQuery(id, new ArrayList<String>(), "");
         return this;
     }
 
@@ -41,7 +52,7 @@ public abstract class ListUrlIdHandler extends UrlIdHandler {
     }
 
 
-    public String[] getContentFilter() {
+    public List<String> getContentFilter() {
         return contentFilter;
     }
 

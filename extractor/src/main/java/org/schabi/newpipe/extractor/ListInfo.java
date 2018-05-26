@@ -1,13 +1,15 @@
 package org.schabi.newpipe.extractor;
 
+import com.sun.org.apache.xerces.internal.xs.StringList;
 import org.schabi.newpipe.extractor.exceptions.ParsingException;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public abstract class ListInfo<T extends InfoItem> extends Info {
     private List<T> relatedItems;
     private String nextPageUrl = null;
-    private String[] contentFilter = {};
+    private List<String> contentFilter = new ArrayList<>();
     private String sortFilter = "";
 
     public ListInfo(int serviceId,
@@ -15,7 +17,7 @@ public abstract class ListInfo<T extends InfoItem> extends Info {
                     String url,
                     String originalUrl,
                     String name,
-                    String[] contentFilter,
+                    List<String> contentFilter,
                     String sortFilter) {
         super(serviceId, id, url, originalUrl, name);
         this.contentFilter = contentFilter;
@@ -48,7 +50,7 @@ public abstract class ListInfo<T extends InfoItem> extends Info {
         this.nextPageUrl = pageUrl;
     }
 
-    public String[] getContentFilter() {
+    public List<String> getContentFilter() {
         return contentFilter;
     }
 

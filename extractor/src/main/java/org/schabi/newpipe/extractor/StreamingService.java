@@ -1,5 +1,6 @@
 package org.schabi.newpipe.extractor;
 
+import com.sun.org.apache.xerces.internal.xs.StringList;
 import org.schabi.newpipe.extractor.channel.ChannelExtractor;
 import org.schabi.newpipe.extractor.exceptions.ExtractionException;
 import org.schabi.newpipe.extractor.exceptions.ParsingException;
@@ -7,6 +8,7 @@ import org.schabi.newpipe.extractor.kiosk.KioskList;
 import org.schabi.newpipe.extractor.playlist.PlaylistExtractor;
 import org.schabi.newpipe.extractor.search.SearchEngine;
 import org.schabi.newpipe.extractor.search.SearchExtractor;
+import org.schabi.newpipe.extractor.search.SearchQueryUrlHandler;
 import org.schabi.newpipe.extractor.stream.StreamExtractor;
 import org.schabi.newpipe.extractor.subscription.SubscriptionExtractor;
 
@@ -70,13 +72,14 @@ public abstract class StreamingService {
     public abstract UrlIdHandler getStreamUrlIdHandler();
     public abstract ListUrlIdHandler getChannelUrlIdHandler();
     public abstract ListUrlIdHandler getPlaylistUrlIdHandler();
+    public abstract SearchQueryUrlHandler getSearchQueryHandler();
 
 
     ////////////////////////////////////////////
     // Extractor
     ////////////////////////////////////////////
     public abstract SearchEngine getSearchEngine();
-    public abstract SearchExtractor getSearchExtractor();
+    public abstract SearchExtractor getSearchExtractor(SearchQueryUrlHandler queryHandler, String contentCountry);
     public abstract SuggestionExtractor getSuggestionExtractor();
     public abstract SubscriptionExtractor getSubscriptionExtractor();
     public abstract KioskList getKioskList() throws ExtractionException;
@@ -85,12 +88,20 @@ public abstract class StreamingService {
     public abstract PlaylistExtractor getPlaylistExtractor(ListUrlIdHandler urlIdHandler) throws ExtractionException;
     public abstract StreamExtractor getStreamExtractor(UrlIdHandler urlIdHandler) throws ExtractionException;
 
-    public ChannelExtractor getChannelExtractor(String id, String[] contentFilter, String sortFilter) throws ExtractionException {
+    public SearchExtractor getSearchExtractor(String query, List<String> contentFilter, String softFilter, String contentCountry) throws ExtractionException {
+        return getSearchExtractor(getSearchQueryHandler().setQuery(query, contentFilter, softFilter), contentCountry);
+    }
+
+    public ChannelExtractor getChannelExtractor(String id, List<String> contentFilter, String sortFilter) throws ExtractionException {
         return getChannelExtractor(getChannelUrlIdHandler().setQuery(id, contentFilter, sortFilter));
     }
 
-    public PlaylistExtractor getPlaylistExtractor(String id, String[] contentFilter, String sortFilter) throws ExtractionException {
+    public PlaylistExtractor getPlaylistExtractor(String id, List<String> contentFilter, String sortFilter) throws ExtractionException {
         return getPlaylistExtractor(getPlaylistUrlIdHandler().setQuery(id, contentFilter, sortFilter));
+    }
+
+    public SearchExtractor getSearchExtractor(String query, String contentCountry) throws ExtractionException {
+        return getSearchExtractor(getSearchQueryHandler().setQuery(query), contentCountry);
     }
 
     public ChannelExtractor getChannelExtractor(String url) throws ExtractionException {
