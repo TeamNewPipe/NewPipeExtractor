@@ -66,8 +66,8 @@ public class YoutubeSearchExtractor extends SearchExtractor {
     }
 
     @Override
-    public String getNextPageUrl() throws IOException, ExtractionException {
-        return getUrl() + "&page=" + Integer.toString( 1);
+    public String getNextPageUrl() throws ExtractionException {
+        return getUrl() + "&page=" + Integer.toString( 2);
     }
 
     @Override

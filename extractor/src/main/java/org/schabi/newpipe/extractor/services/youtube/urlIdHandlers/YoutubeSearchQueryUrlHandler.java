@@ -25,13 +25,13 @@ public class YoutubeSearchQueryUrlHandler extends SearchQueryUrlHandler {
             final String url = "https://www.youtube.com/results"
                     + "?q=" + URLEncoder.encode(id, CHARSET_UTF_8);
 
-            if(getContentFilter().size() > 1) {
+            if(getContentFilter().size() > 0) {
                 switch (getContentFilter().get(0)) {
                     case STREAM: return url + "&sp=EgIQAVAU";
                     case CHANNEL: return url + "&sp=EgIQAlAU";
                     case PLAYLIST: return url + "&sp=EgIQA1AU";
                     case ANY:
-                    default: return url;
+                    default:
                 }
             }
 
