@@ -12,10 +12,10 @@ public abstract class ListUrlIdHandler extends UrlIdHandler {
 
     public ListUrlIdHandler setQuery(String id,
                                      List<String> contentFilter,
-                                     String softFilter) throws ParsingException {
+                                     String sortFilter) throws ParsingException {
         setId(id);
         this.contentFilter = contentFilter;
-        this.sortFilter = softFilter;
+        this.sortFilter = sortFilter;
         return this;
     }
 

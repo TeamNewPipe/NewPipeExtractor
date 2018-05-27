@@ -88,8 +88,8 @@ public abstract class StreamingService {
     public abstract PlaylistExtractor getPlaylistExtractor(ListUrlIdHandler urlIdHandler) throws ExtractionException;
     public abstract StreamExtractor getStreamExtractor(UrlIdHandler urlIdHandler) throws ExtractionException;
 
-    public SearchExtractor getSearchExtractor(String query, List<String> contentFilter, String softFilter, String contentCountry) throws ExtractionException {
-        return getSearchExtractor(getSearchQueryHandler().setQuery(query, contentFilter, softFilter), contentCountry);
+    public SearchExtractor getSearchExtractor(String query, List<String> contentFilter, String sortFilter, String contentCountry) throws ExtractionException {
+        return getSearchExtractor(getSearchQueryHandler().setQuery(query, contentFilter, sortFilter), contentCountry);
     }
 
     public ChannelExtractor getChannelExtractor(String id, List<String> contentFilter, String sortFilter) throws ExtractionException {

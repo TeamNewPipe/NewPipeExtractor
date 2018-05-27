@@ -21,7 +21,7 @@ public class SoundcloudQueryUrlHandler extends SearchQueryUrlHandler {
         try {
             String url = "https://api-v2.soundcloud.com/search";
 
-            if(getContentFilter().size() > 1) {
+            if(getContentFilter().size() > 0) {
                 switch (getContentFilter().get(0)) {
                     case TRACKS:
                         url += "/tracks";

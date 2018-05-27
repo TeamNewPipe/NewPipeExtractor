@@ -1,7 +1,6 @@
 package org.schabi.newpipe.extractor.search;
 
 import org.schabi.newpipe.extractor.ListUrlIdHandler;
-import org.schabi.newpipe.extractor.UrlIdHandler;
 import org.schabi.newpipe.extractor.exceptions.ParsingException;
 
 import java.util.List;
