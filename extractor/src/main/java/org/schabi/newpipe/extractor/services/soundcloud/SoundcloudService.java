@@ -31,12 +31,12 @@ public class SoundcloudService extends StreamingService {
 
     @Override
     public SearchExtractor getSearchExtractor(SearchQueryUrlHandler queryHandler, String contentCountry) {
-        return null;
+        return new SoundcloudSearchExtractor(this, queryHandler, contentCountry);
     }
 
     @Override
     public SearchQueryUrlHandler getSearchQueryHandler() {
-        return null;
+        return new SoundcloudSearchQueryUrlHandler();
     }
 
     @Override
@@ -56,17 +56,17 @@ public class SoundcloudService extends StreamingService {
 
 
     @Override
-    public StreamExtractor getStreamExtractor(UrlIdHandler urlIdHandler) throws ExtractionException {
+    public StreamExtractor getStreamExtractor(UrlIdHandler urlIdHandler) {
         return new SoundcloudStreamExtractor(this, urlIdHandler);
     }
 
     @Override
-    public ChannelExtractor getChannelExtractor(ListUrlIdHandler urlIdHandler) throws ExtractionException {
+    public ChannelExtractor getChannelExtractor(ListUrlIdHandler urlIdHandler) {
         return new SoundcloudChannelExtractor(this, urlIdHandler);
     }
 
     @Override
-    public PlaylistExtractor getPlaylistExtractor(ListUrlIdHandler urlIdHandler) throws ExtractionException {
+    public PlaylistExtractor getPlaylistExtractor(ListUrlIdHandler urlIdHandler) {
         return new SoundcloudPlaylistExtractor(this, urlIdHandler);
     }
 
