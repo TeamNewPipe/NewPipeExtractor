@@ -80,14 +80,14 @@ public class YoutubeSearchExtractor extends SearchExtractor {
 
     private String getNextPageUrlFromCurrentUrl(String currentUrl)
             throws MalformedURLException, UnsupportedEncodingException {
-        int nextPageNr = Integer.parseInt(
+        final int pageNr = Integer.parseInt(
                 Parser.compatParseMap(
                         new URL(currentUrl)
                                 .getQuery())
-                        .get("page")) + 1;
+                        .get("page"));
 
-        return currentUrl.replace("&page=" + Integer.toString( nextPageNr-1),
-                "&page=" + Integer.toString(nextPageNr));
+        return currentUrl.replace("&page=" + Integer.toString( pageNr),
+                "&page=" + Integer.toString(pageNr + 1));
     }
 
     private InfoItemsSearchCollector collectItems(Document doc) throws NothingFoundException  {

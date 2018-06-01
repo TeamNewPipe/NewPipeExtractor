@@ -8,13 +8,15 @@ import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
 
-public class SoundcloudQueryUrlHandler extends SearchQueryUrlHandler {
+public class SoundcloudSearchQueryUrlHandler extends SearchQueryUrlHandler {
     public static final String CHARSET_UTF_8 = "UTF-8";
 
     public static final String TRACKS = "tracks";
     public static final String USERS = "users";
     public static final String PLAYLIST = "playlist";
     public static final String ANY = "any";
+
+    public static final int ITEMS_PER_PAGE = 10;
 
     @Override
     public String getUrl() throws ParsingException {
@@ -40,7 +42,8 @@ public class SoundcloudQueryUrlHandler extends SearchQueryUrlHandler {
 
             return url + "?q=" + URLEncoder.encode(id, CHARSET_UTF_8)
                     + "&client_id=" + SoundcloudParsingHelper.clientId()
-                    + "&limit=10";
+                    + "&limit=" + ITEMS_PER_PAGE
+                    + "&offset=0";
 
         } catch (UnsupportedEncodingException e) {
             throw new ParsingException("Could not encode query", e);
