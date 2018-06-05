@@ -29,6 +29,19 @@ subprojects {
     }
 }
 
+task deleteJar(type: Delete) {
+    delete 'libs/jars/logmanagementlib.jar'
+}
+
+task createJar(type: Copy) {
+    from('build/intermediates/bundles/release/')
+    into('libs/jars/')
+    include('classes.jar')
+    rename('classes.jar', 'logmanagementlib.jar')
+}
+
+createJar.dependsOn(deleteJar, build)
+
 // https://discuss.gradle.org/t/best-approach-gradle-multi-module-project-generate-just-one-global-javadoc/18657/21
 task aggregatedJavadocs(type: Javadoc, group: 'Documentation') {
     destinationDir = file("$buildDir/docs/javadoc")
