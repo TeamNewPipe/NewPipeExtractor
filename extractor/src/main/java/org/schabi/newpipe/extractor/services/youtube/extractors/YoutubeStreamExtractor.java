@@ -159,34 +159,32 @@ public class YoutubeStreamExtractor extends StreamExtractor {
     }
 
     private String fixDescriptionLinks(String description) throws ParsingException, UnsupportedEncodingException {
-        boolean continueToNextLink = true;
+        boolean everythingIsFine = true;
         String descriptionE = java.net.URLDecoder.decode(description, "UTF-8");
         Parser.getLinksFromString(descriptionE);
-        int exceptionsThrown = 0;
-
-        while(continueToNextLink) {
+        int endlessloop = 0;
+        while(everythingIsFine) {
             try {
-                String[] firstCut = description.split("<a href=\"",2);
-                if(firstCut.length==1) {
-                    continueToNextLink = false;
+                String[] FirstCut = description.split("<a href=\"",2);
+                if(FirstCut.length==1) {
+                    everythingIsFine = false;
                 }
 
-                String beginning = firstCut[0];
-                String[] secondCut = firstCut[1].split("\"",2);
-                String end = secondCut[1];
-                if(secondCut[0].contains("q=")) {
-                    String linkToBeFixed = secondCut[0].split("q=")[1].split("&amp")[0];
-                    String link = java.net.URLDecoder.decode(linkToBeFixed, "UTF-8");
+                String Beginning = FirstCut[0];
+                String[] SecondCut = FirstCut[1].split("\"",2);
+                String End = SecondCut[1];
+                if(SecondCut[0].contains("q=")) {
+                    String LinkToBeFixed = SecondCut[0].split("q=")[1].split("&amp")[0];
+                    String Link = java.net.URLDecoder.decode(LinkToBeFixed, "UTF-8");
 
-                    description = beginning + "<a  href=\"" + link + "\"" + end; //I'm inserting a double space between "<a" and "href" here so the next cut doesn't cut here.
+                    description = Beginning + "<a  href=\"" + Link + "\"" + End; //I'm inserting a double space between "<a" and "href" here so the next cut doesn't cut here.
                 } else { //Timestamps and other links to youtube videos are processed here
-                    description = beginning + "<a  href=\"" + secondCut[0] + "\"" + end;
+                    description = Beginning + "<a  href=\"" + SecondCut[0] + "\"" + End;
                 }
             } catch (ArrayIndexOutOfBoundsException | UnsupportedEncodingException end) {
                 //this means we have run out of Links because there are no more <a href=" to split the text in so the Array has only one Element or that something else went wrong.
-
-                exceptionsThrown++;
-                if (exceptionsThrown > 20) continueToNextLink = false;
+                endlessloop = endlessloop + 1;
+                if (endlessloop > 20) everythingIsFine = false;
             }
         }
         return description;
