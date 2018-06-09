@@ -1,9 +1,10 @@
 package org.schabi.newpipe.extractor;
 
+import android.content.Context;
 import org.schabi.newpipe.extractor.exceptions.ReCaptchaException;
-
 import java.io.IOException;
 import java.util.Map;
+import javax.annotation.Nullable;
 
 /*
  * Created by Christian Schabesberger on 28.01.16.
@@ -58,4 +59,20 @@ public interface Downloader {
      * @throws IOException
      */
     String download(String siteUrl) throws IOException, ReCaptchaException;
+
+    /**
+     * Define the language for HTTP requests and which locale variant is preferred.
+     *
+     * @param ctx            Android application context to obtain the language.
+     *                       If this parameter is NULL, the device country/language will be used.
+     * @param defaultCountry Default country code to be used if not possible
+     *                       determine the device country code. This parameter can be NULL.
+     */
+    void initLanguageFromContext(@Nullable Context ctx, @Nullable String defaultCountry);
+
+    /**
+     * Gets the used language in HTTP requests
+     * @return the language code
+     */
+    String getLanguageCode();
 }
