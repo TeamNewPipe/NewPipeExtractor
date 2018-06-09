@@ -1,6 +1,5 @@
 package org.schabi.newpipe.extractor;
 
-import android.content.Context;
 import org.schabi.newpipe.extractor.exceptions.ReCaptchaException;
 import java.io.IOException;
 import java.util.Map;
