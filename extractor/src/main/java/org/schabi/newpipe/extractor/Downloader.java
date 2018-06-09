@@ -63,12 +63,12 @@ public interface Downloader {
     /**
      * Define the language for HTTP requests and which locale variant is preferred.
      *
-     * @param ctx            Android application context to obtain the language.
+     * @param locale            The application locale to obtain the language.
      *                       If this parameter is NULL, the device country/language will be used.
      * @param defaultCountry Default country code to be used if not possible
      *                       determine the device country code. This parameter can be NULL.
      */
-    void initLanguageFromContext(@Nullable Context ctx, @Nullable String defaultCountry);
+    void initLanguageFromContext(@Nullable Locale locale, @Nullable String defaultCountry);
 
     /**
      * Gets the used language in HTTP requests
