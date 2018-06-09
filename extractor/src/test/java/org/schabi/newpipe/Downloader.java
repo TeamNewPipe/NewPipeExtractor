@@ -1,7 +1,6 @@
 package org.schabi.newpipe;
 
 import org.schabi.newpipe.extractor.exceptions.ReCaptchaException;
-
 import javax.net.ssl.HttpsURLConnection;
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -9,6 +8,7 @@ import java.io.InputStreamReader;
 import java.net.URL;
 import java.net.UnknownHostException;
 import java.util.HashMap;
+import java.util.Locale;
 import java.util.Map;
 
 
@@ -35,7 +35,10 @@ import java.util.Map;
 public class Downloader implements org.schabi.newpipe.extractor.Downloader {
 
     private static final String USER_AGENT = "Mozilla/5.0 (Windows NT 6.1; WOW64; rv:43.0) Gecko/20100101 Firefox/43.0";
+    private static final String ACCEPT_LANGUAGE = "Accept-Language";
     private static String mCookies = "";
+    private static String countryCode = "GB";
+    private static String languageCode = "en";
 
     private static Downloader instance = null;
 
@@ -70,8 +73,9 @@ public class Downloader implements org.schabi.newpipe.extractor.Downloader {
      * @return the contents of the specified text file
      */
     public String download(String siteUrl, String language) throws IOException, ReCaptchaException {
-        Map<String, String> requestProperties = new HashMap<>();
+        Map<String, String> requestProperties = new HashMap<String, String>();
         requestProperties.put("Accept-Language", language);
+
         return download(siteUrl, requestProperties);
     }
 
@@ -86,6 +90,22 @@ public class Downloader implements org.schabi.newpipe.extractor.Downloader {
      * @throws IOException
      */
     public String download(String siteUrl, Map<String, String> customProperties) throws IOException, ReCaptchaException {
+        if (isNullorEmpty(customProperties.get(ACCEPT_LANGUAGE))) {
+            StringBuilder language = new StringBuilder(25);
+            language.append(languageCode);
+
+            if (!isNullorEmpty(countryCode)) {
+                language.append('-')
+                        .append(countryCode)
+                        .append(',')
+                        .append(languageCode)
+                        .append(";q=8.0");
+            }
+
+            language.append(",*;q=0.3");
+            customProperties.put(ACCEPT_LANGUAGE, language.toString());
+        }
+
         URL url = new URL(siteUrl);
         HttpsURLConnection con = (HttpsURLConnection) url.openConnection();
         for (Map.Entry<String, String> pair: customProperties.entrySet()) {
@@ -153,5 +173,42 @@ public class Downloader implements org.schabi.newpipe.extractor.Downloader {
         HttpsURLConnection con = (HttpsURLConnection) url.openConnection();
         //HttpsURLConnection con = NetCipher.getHttpsURLConnection(url);
         return dl(con);
+    }
+
+    /**
+     * Define the language for HTTP requests and which locale variant is preferred.
+     *
+     * @param ctx            The application locale to obtain the language.
+     *                       If this parameter is NULL, the device country/language will be used.
+     * @param defaultCountry Default country code to be used if not possible
+     *                       determine the device country code. This parameter can be NULL.
+     */
+    @Override
+    public void initLanguageFromContext(Locale locale, String defaultCountry) {
+        if (locale == null) {
+            // Use device defaults country/language.
+            // NOTE: the use of "Locale.Category.DISPLAY" is only available on API 24 or higher.
+            locale = Locale.getDefault();
+        }
+
+        languageCode = locale.getLanguage();
+        countryCode = locale.getCountry();
+
+        if (isNullorEmpty(countryCode) && !isNullorEmpty(defaultCountry)) {
+            countryCode = defaultCountry;// Just use a default value
+        }
+    }
+
+    private boolean isNullorEmpty(String str) {
+        return str == null || str.isEmpty();
+    }
+
+    /**
+     * Gets the used language in HTTP requests
+     * @return the language code
+     */
+    @Override
+    public String getLanguageCode() {
+        return languageCode;
     }
 }
