@@ -138,6 +138,16 @@ public class NewPipe {
     }
 
     /**
+     * Sets the language for HTTP requests and which locale variant is preferred.
+     *
+     * @param defaultCountry Default country code to be used if not possible
+     *                       determine the device country code. This parameter can be NULL.
+     */
+    public static void setCountryLanguage(@Nullable String defaultCountry) {
+        setCountryLanguage(null, defaultCountry);
+    }
+    
+    /**
      * Get the language for HTTP requests
      *
      * @return The "accept-language" value
