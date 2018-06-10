@@ -23,13 +23,18 @@ package org.schabi.newpipe.extractor;
 import org.schabi.newpipe.extractor.exceptions.ExtractionException;
 
 import java.util.List;
+import java.util.Locale;
+import javax.annotation.Nullable;
+
 
 /**
  * Provides access to streaming services supported by NewPipe.
  */
 public class NewPipe {
     private static Downloader downloader = null;
-
+    private static String countryLanguage = "";
+    private static String languageCode = "";
+    
     private NewPipe() {
     }
 
@@ -94,5 +99,58 @@ public class NewPipe {
             e.printStackTrace();
             return "<unknown>";
         }
+    }
+    
+    /**
+     * Sets the language for HTTP requests and which locale variant is preferred.
+     *
+     * @param locale            Android application context to obtain the language.
+     *                       If this parameter is NULL, the device country/language will be used.
+     * @param defaultCountry Default country code to be used if not possible
+     *                       determine the device country code. This parameter can be NULL.
+     */
+    public static void setCountryLanguage(@Nullable Locale locale, @Nullable String defaultCountry) {
+        if (locale == null) {
+            // Use device defaults country/language.
+            // NOTE: the use of "Locale.Category.DISPLAY" is only available on API 24 or higher.
+            locale = Locale.getDefault();
+        }
+
+        languageCode = locale.getLanguage();
+        String countryCode = locale.getCountry();
+
+        if (isNullorEmpty(countryCode) && !isNullorEmpty(defaultCountry)) {
+            countryCode = defaultCountry;// Just use a default value
+        }
+
+        StringBuilder language = new StringBuilder(25);
+        language.append(languageCode);
+
+        if (!isNullorEmpty(countryCode)) {
+            language.append('-')
+                    .append(countryCode)
+                    .append(',')
+                    .append(languageCode)
+                    .append(";q=8.0");
+        }
+
+        countryLanguage = language.append(",*;q=0.3").toString();
+    }
+
+    /**
+     * Get the language for HTTP requests
+     *
+     * @return The "accept-language" value
+     */
+    public static String getCountryLanguage() {
+        return countryLanguage;
+    }
+
+    public  static String getLanguage() {
+        return languageCode;
+    }
+
+    private static boolean isNullorEmpty(String str) {
+        return str == null || str.isEmpty();
     }
 }

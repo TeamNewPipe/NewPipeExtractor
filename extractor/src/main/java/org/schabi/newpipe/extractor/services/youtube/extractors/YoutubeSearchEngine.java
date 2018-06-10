@@ -11,7 +11,6 @@ import org.schabi.newpipe.extractor.search.SearchEngine;
 
 import java.io.IOException;
 import java.net.URLEncoder;
-import javax.annotation.Nullable;
 
 
 /*
@@ -44,7 +43,7 @@ public class YoutubeSearchEngine extends SearchEngine {
     }
 
     @Override
-    public InfoItemsSearchCollector search(String query, int page, @Nullable String contentCountry, Filter filter)
+    public InfoItemsSearchCollector search(String query, int page, String languageCode, Filter filter)
             throws IOException, ExtractionException {
         InfoItemsSearchCollector collector = getInfoItemSearchCollector();
         Downloader downloader = NewPipe.getDownloader();
@@ -69,10 +68,8 @@ public class YoutubeSearchEngine extends SearchEngine {
                 break;
         }
 
-
         //String url = builder.build().toString();
-        String site= downloader.download(url);
-
+        String site = downloader.download(url, NewPipe.getCountryLanguage());
 
         Document doc = Jsoup.parse(site, url);
         Element list = doc.select("ol[class=\"item-section\"]").first();

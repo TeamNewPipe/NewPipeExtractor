@@ -30,7 +30,7 @@ public class YoutubePlaylistExtractor extends PlaylistExtractor {
 
     @Override
     public void onFetchPage(@Nonnull Downloader downloader) throws IOException, ExtractionException {
-        String pageContent = downloader.download(getUrl());
+        String pageContent = downloader.download(getUrl(), NewPipe.getCountryLanguage());
         doc = Jsoup.parse(pageContent, getUrl());
     }
 
@@ -132,7 +132,7 @@ public class YoutubePlaylistExtractor extends PlaylistExtractor {
         StreamInfoItemsCollector collector = new StreamInfoItemsCollector(getServiceId());
         JsonObject pageJson;
         try {
-            pageJson = JsonParser.object().from(NewPipe.getDownloader().download(pageUrl));
+            pageJson = JsonParser.object().from(NewPipe.getDownloader().download(pageUrl, NewPipe.getCountryLanguage()));
         } catch (JsonParserException pe) {
             throw new ParsingException("Could not parse ajax json", pe);
         }

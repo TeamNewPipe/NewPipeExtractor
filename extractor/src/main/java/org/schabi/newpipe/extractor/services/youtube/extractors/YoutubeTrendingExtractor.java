@@ -24,6 +24,7 @@ import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
+import org.schabi.newpipe.extractor.NewPipe;
 import org.schabi.newpipe.extractor.Downloader;
 import org.schabi.newpipe.extractor.ListUrlIdHandler;
 import org.schabi.newpipe.extractor.StreamingService;
@@ -55,7 +56,7 @@ public class YoutubeTrendingExtractor extends KioskExtractor {
             url += "?gl=" + contentCountry;
         }
 
-        String pageContent = downloader.download(url);
+        String pageContent = downloader.download(url, NewPipe.getCountryLanguage());
         doc = Jsoup.parse(pageContent, url);
     }
 
