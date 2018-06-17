@@ -1,4 +1,4 @@
-package org.schabi.newpipe.extractor.services.youtube.search;
+package org.schabi.newpipe.extractor.services.soundcloud.search;
 
 import org.junit.BeforeClass;
 import org.junit.Test;
@@ -7,12 +7,12 @@ import org.schabi.newpipe.extractor.InfoItem;
 import org.schabi.newpipe.extractor.ListExtractor;
 import org.schabi.newpipe.extractor.NewPipe;
 import org.schabi.newpipe.extractor.channel.ChannelInfoItem;
+import org.schabi.newpipe.extractor.services.soundcloud.SoundcloudSearchExtractor;
 import org.schabi.newpipe.extractor.services.youtube.extractors.YoutubeSearchExtractor;
 import org.schabi.newpipe.extractor.stream.StreamInfoItem;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.*;
+import static org.schabi.newpipe.extractor.ServiceList.SoundCloud;
 import static org.schabi.newpipe.extractor.ServiceList.YouTube;
 
 /*
@@ -38,21 +38,20 @@ import static org.schabi.newpipe.extractor.ServiceList.YouTube;
 /**
  * Test for {@link YoutubeSearchExtractor}
  */
-public class YoutubeSearchExtractorDefaultTest extends YoutubeSearchExtractorBaseTest {
+public class SoundcloudSearchExtractorDefaultTest extends SoundcloudSearchExtractorBaseTest {
 
     @BeforeClass
     public static void setUpClass() throws Exception {
         NewPipe.init(Downloader.getInstance());
-        extractor = (YoutubeSearchExtractor) YouTube.getSearchExtractor("pewdiepie", "de");
+        extractor = (SoundcloudSearchExtractor) SoundCloud.getSearchExtractor("lill uzi vert", "de");
         extractor.fetchPage();
         itemsPage = extractor.getInitialPage();
     }
 
-
-
     @Test
     public void testGetSecondPageUrl() throws Exception {
-        assertEquals("https://www.youtube.com/results?q=pewdiepie&page=2", extractor.getNextPageUrl());
+        assertEquals("https://api-v2.soundcloud.com/search?q=lill+uzi+vert&client_id=rc0HfXXgVnLSGEuQMs1F8xxuAR2AL431&limit=10&offset=10",
+                extractor.getNextPageUrl());
     }
 
     @Test
@@ -60,9 +59,8 @@ public class YoutubeSearchExtractorDefaultTest extends YoutubeSearchExtractorBas
         InfoItem firstInfoItem = itemsPage.getItems().get(0);
 
         // THe channel should be the first item
-        assertTrue(firstInfoItem instanceof ChannelInfoItem);
-        assertEquals("name", "PewDiePie", firstInfoItem.getName());
-        assertEquals("url","https://www.youtube.com/user/PewDiePie", firstInfoItem.getUrl());
+        assertEquals("name", "Bad and Boujee (Feat. Lil Uzi Vert) [Prod. By Metro Boomin]", firstInfoItem.getName());
+        assertEquals("url","https://soundcloud.com/migosatl/bad-and-boujee-feat-lil-uzi-vert-prod-by-metro-boomin", firstInfoItem.getUrl());
     }
 
     @Test
@@ -78,11 +76,10 @@ public class YoutubeSearchExtractorDefaultTest extends YoutubeSearchExtractorBas
 
     @Test
     public void testGetSecondPage() throws Exception {
-        YoutubeSearchExtractor secondExtractor =
-                (YoutubeSearchExtractor) YouTube.getSearchExtractor("pewdiepie", "de");
+        SoundcloudSearchExtractor secondExtractor = (SoundcloudSearchExtractor) SoundCloud.getSearchExtractor("lill uzi vert", "de");
         ListExtractor.InfoItemsPage<InfoItem> secondPage = secondExtractor.getPage(itemsPage.getNextPageUrl());
         assertTrue(Integer.toString(secondPage.getItems().size()),
-                secondPage.getItems().size() > 10);
+                secondPage.getItems().size() >= 10);
 
         // check if its the same result
         boolean equals = true;
@@ -95,23 +92,18 @@ public class YoutubeSearchExtractorDefaultTest extends YoutubeSearchExtractorBas
         }
         assertFalse("First and second page are equal", equals);
 
-        assertEquals("https://www.youtube.com/results?q=pewdiepie&page=3", secondPage.getNextPageUrl());
-    }
-
-    @Test
-    public void testSuggestionNotNull() throws Exception {
-        //todo write a real test
-        assertTrue(extractor.getSearchSuggestion() != null);
+        assertEquals("https://api-v2.soundcloud.com/search?q=lill+uzi+vert&client_id=rc0HfXXgVnLSGEuQMs1F8xxuAR2AL431&limit=10&offset=20",
+                secondPage.getNextPageUrl());
     }
 
 
     @Test
     public void testId() throws Exception {
-        assertEquals("pewdiepie", extractor.getId());
+        assertEquals("lill uzi vert", extractor.getId());
     }
 
     @Test
     public void testName() {
-        assertEquals("pewdiepie", extractor.getName());
+        assertEquals("lill uzi vert", extractor.getName());
     }
 }
