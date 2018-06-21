@@ -19,14 +19,12 @@ import org.schabi.newpipe.extractor.utils.Utils;
 import javax.annotation.Nonnull;
 import java.io.IOException;
 
-import static org.schabi.newpipe.extractor.NewPipe.getDownloader;
-
 @SuppressWarnings("WeakerAccess")
 public class YoutubePlaylistExtractor extends PlaylistExtractor {
 
     private Document doc;
 
-    public YoutubePlaylistExtractor(StreamingService service, ListUrlIdHandler urlIdHandler) throws ExtractionException {
+    public YoutubePlaylistExtractor(StreamingService service, ListUIHFactory urlIdHandler) throws ExtractionException {
         super(service, urlIdHandler);
     }
 
@@ -175,7 +173,7 @@ public class YoutubePlaylistExtractor extends PlaylistExtractor {
     private void collectStreamsFrom(StreamInfoItemsCollector collector, Element element) throws ParsingException {
         collector.reset();
 
-        final UrlIdHandler streamUrlIdHandler = getService().getStreamUrlIdHandler();
+        final UIHFactory streamUIHFactory = getService().getStreamUIHFactory();
         for (final Element li : element.children()) {
             if(isDeletedItem(li)) {
                 continue;
@@ -192,7 +190,7 @@ public class YoutubePlaylistExtractor extends PlaylistExtractor {
                 @Override
                 public String getUrl() throws ParsingException {
                     try {
-                        return streamUrlIdHandler.setId(li.attr("data-video-id")).getUrl();
+                        return streamUIHFactory.setId(li.attr("data-video-id")).getUrl();
                     } catch (Exception e) {
                         throw new ParsingException("Could not get web page url for the video", e);
                     }
@@ -257,7 +255,7 @@ public class YoutubePlaylistExtractor extends PlaylistExtractor {
                 @Override
                 public String getThumbnailUrl() throws ParsingException {
                     try {
-                        return "https://i.ytimg.com/vi/" + streamUrlIdHandler.setUrl(getUrl()).getId() + "/hqdefault.jpg";
+                        return "https://i.ytimg.com/vi/" + streamUIHFactory.setUrl(getUrl()).getId() + "/hqdefault.jpg";
                     } catch (Exception e) {
                         throw new ParsingException("Could not get thumbnail url", e);
                     }

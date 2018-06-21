@@ -1,11 +1,9 @@
 package org.schabi.newpipe.extractor.services.soundcloud;
 
-import org.schabi.newpipe.extractor.ListUrlIdHandler;
-import org.schabi.newpipe.extractor.UrlIdHandler;
-import org.schabi.newpipe.extractor.exceptions.ParsingException;
+import org.schabi.newpipe.extractor.ListUIHFactory;
 import org.schabi.newpipe.extractor.utils.Parser;
 
-public class SoundcloudChartsUrlIdHandler extends ListUrlIdHandler {
+public class SoundcloudChartsUIHFactory extends ListUIHFactory {
     private final String TOP_URL_PATTERN = "^https?://(www\\.|m\\.)?soundcloud.com/charts(/top)?/?([#?].*)?$";
     private final String URL_PATTERN = "^https?://(www\\.|m\\.)?soundcloud.com/charts(/top|/new)?/?([#?].*)?$";
 

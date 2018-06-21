@@ -1,13 +1,12 @@
 package org.schabi.newpipe.extractor;
 
-import org.schabi.newpipe.extractor.exceptions.ExtractionException;
 import org.schabi.newpipe.extractor.exceptions.ParsingException;
 
 /*
  * Created by Christian Schabesberger on 26.07.16.
  *
  * Copyright (C) Christian Schabesberger 2016 <chris.schabesberger@mailbox.org>
- * UrlIdHandler.java is part of NewPipe.
+ * UIHFactory.java is part of NewPipe.
  *
  * NewPipe is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -23,7 +22,7 @@ import org.schabi.newpipe.extractor.exceptions.ParsingException;
  * along with NewPipe.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-public abstract class UrlIdHandler {
+public abstract class UIHFactory {
 
     protected String id = "";
     protected String originalUrl = "";
@@ -33,14 +32,14 @@ public abstract class UrlIdHandler {
     public abstract boolean onAcceptUrl(final String url) throws ParsingException;
 
 
-    public UrlIdHandler setUrl(String url) throws ParsingException {
+    public UIHFactory setUrl(String url) throws ParsingException {
         if(url == null) throw new IllegalArgumentException("url can not be null");
         originalUrl = url;
         id = onGetIdFromUrl(url);
         return this;
     }
 
-    public UrlIdHandler setId(String id) throws ParsingException {
+    public UIHFactory setId(String id) throws ParsingException {
         if(id == null) throw new IllegalArgumentException("id can not be null");
         this.id = id;
         if(!acceptUrl(getUrl())) {

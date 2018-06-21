@@ -2,7 +2,7 @@ package org.schabi.newpipe.extractor.playlist;
 
 import org.schabi.newpipe.extractor.ListExtractor.InfoItemsPage;
 import org.schabi.newpipe.extractor.ListInfo;
-import org.schabi.newpipe.extractor.ListUrlIdHandler;
+import org.schabi.newpipe.extractor.ListUIHFactory;
 import org.schabi.newpipe.extractor.NewPipe;
 import org.schabi.newpipe.extractor.StreamingService;
 import org.schabi.newpipe.extractor.exceptions.ExtractionException;
@@ -14,7 +14,7 @@ import java.io.IOException;
 
 public class PlaylistInfo extends ListInfo<StreamInfoItem> {
 
-    public PlaylistInfo(int serviceId, ListUrlIdHandler urlIdHandler, String name) throws ParsingException {
+    public PlaylistInfo(int serviceId, ListUIHFactory urlIdHandler, String name) throws ParsingException {
         super(serviceId, urlIdHandler, name);
     }
 
@@ -41,7 +41,7 @@ public class PlaylistInfo extends ListInfo<StreamInfoItem> {
 
         final PlaylistInfo info = new PlaylistInfo(
                 extractor.getServiceId(),
-                extractor.getUrlIdHandler(),
+                extractor.getUIHFactory(),
                 extractor.getName());
 
         try {

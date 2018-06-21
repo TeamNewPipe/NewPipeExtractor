@@ -5,7 +5,7 @@ import com.grack.nanojson.JsonObject;
 import com.grack.nanojson.JsonParser;
 import com.grack.nanojson.JsonParserException;
 import org.schabi.newpipe.extractor.Downloader;
-import org.schabi.newpipe.extractor.ListUrlIdHandler;
+import org.schabi.newpipe.extractor.ListUIHFactory;
 import org.schabi.newpipe.extractor.StreamingService;
 import org.schabi.newpipe.extractor.channel.ChannelExtractor;
 import org.schabi.newpipe.extractor.exceptions.ExtractionException;
@@ -16,8 +16,6 @@ import org.schabi.newpipe.extractor.stream.StreamInfoItemsCollector;
 import javax.annotation.Nonnull;
 import java.io.IOException;
 
-import static org.schabi.newpipe.extractor.utils.Utils.replaceHttpWithHttps;
-
 @SuppressWarnings("WeakerAccess")
 public class SoundcloudChannelExtractor extends ChannelExtractor {
     private String userId;
@@ -26,14 +24,14 @@ public class SoundcloudChannelExtractor extends ChannelExtractor {
     private StreamInfoItemsCollector streamInfoItemsCollector = null;
     private String nextPageUrl = null;
 
-    public SoundcloudChannelExtractor(StreamingService service, ListUrlIdHandler urlIdHandler) {
+    public SoundcloudChannelExtractor(StreamingService service, ListUIHFactory urlIdHandler) {
         super(service, urlIdHandler);
     }
 
     @Override
     public void onFetchPage(@Nonnull Downloader downloader) throws IOException, ExtractionException {
 
-        userId = getUrlIdHandler().getId();
+        userId = getUIHFactory().getId();
         String apiUrl = "https://api-v2.soundcloud.com/users/" + userId +
                 "?client_id=" + SoundcloudParsingHelper.clientId();
 

@@ -18,7 +18,7 @@ public abstract class Info implements Serializable {
     /**
      * Different than the {@link #originalUrl} in the sense that it <i>may</i> be set as a cleaned url.
      *
-     * @see UrlIdHandler#getUrl()
+     * @see UIHFactory#getUrl()
      * @see Extractor#getOriginalUrl()
      */
     private final String url;
@@ -48,11 +48,11 @@ public abstract class Info implements Serializable {
         this.name = name;
     }
 
-    public Info(int serviceId, UrlIdHandler urlIdHandler, String name) throws ParsingException {
+    public Info(int serviceId, UIHFactory UIHFactory, String name) throws ParsingException {
         this(serviceId,
-                urlIdHandler.getId(),
-                urlIdHandler.getUrl(),
-                urlIdHandler.getOriginalUrl(),
+                UIHFactory.getId(),
+                UIHFactory.getUrl(),
+                UIHFactory.getOriginalUrl(),
                 name);
     }
 

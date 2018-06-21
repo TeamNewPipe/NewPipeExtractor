@@ -2,13 +2,13 @@ package org.schabi.newpipe.extractor.services.soundcloud;
 
 import org.schabi.newpipe.extractor.exceptions.ParsingException;
 import org.schabi.newpipe.extractor.exceptions.ReCaptchaException;
-import org.schabi.newpipe.extractor.search.SearchQueryUrlHandler;
+import org.schabi.newpipe.extractor.search.SearchQIHFactory;
 
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
 
-public class SoundcloudSearchQueryUrlHandler extends SearchQueryUrlHandler {
+public class SoundcloudSearchQIHFactory extends SearchQIHFactory {
     public static final String CHARSET_UTF_8 = "UTF-8";
 
     public static final String TRACKS = "tracks";

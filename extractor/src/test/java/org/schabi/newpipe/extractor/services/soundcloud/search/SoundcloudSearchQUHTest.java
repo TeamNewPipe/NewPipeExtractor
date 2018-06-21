@@ -4,7 +4,6 @@ import org.junit.BeforeClass;
 import org.junit.Test;
 import org.schabi.newpipe.Downloader;
 import org.schabi.newpipe.extractor.NewPipe;
-import org.schabi.newpipe.extractor.services.soundcloud.SoundcloudSearchExtractor;
 
 import static java.util.Arrays.asList;
 import static org.junit.Assert.assertEquals;
@@ -19,36 +18,36 @@ public class SoundcloudSearchQUHTest {
 
     @Test
     public void testRegularValues() throws Exception {
-        assertEquals("https://api-v2.soundcloud.com/search?q=asdf&client_id=rc0HfXXgVnLSGEuQMs1F8xxuAR2AL431&limit=10&offset=0", SoundCloud.getSearchQueryHandler().setQuery("asdf").getUrl());
-        assertEquals("https://api-v2.soundcloud.com/search?q=hans&client_id=rc0HfXXgVnLSGEuQMs1F8xxuAR2AL431&limit=10&offset=0",SoundCloud.getSearchQueryHandler().setQuery("hans").getUrl());
-        assertEquals("https://api-v2.soundcloud.com/search?q=Poifj%26jaijf&client_id=rc0HfXXgVnLSGEuQMs1F8xxuAR2AL431&limit=10&offset=0", SoundCloud.getSearchQueryHandler().setQuery("Poifj&jaijf").getUrl());
-        assertEquals("https://api-v2.soundcloud.com/search?q=G%C3%BCl%C3%BCm&client_id=rc0HfXXgVnLSGEuQMs1F8xxuAR2AL431&limit=10&offset=0", SoundCloud.getSearchQueryHandler().setQuery("Gülüm").getUrl());
-        assertEquals("https://api-v2.soundcloud.com/search?q=%3Fj%24%29H%C2%A7B&client_id=rc0HfXXgVnLSGEuQMs1F8xxuAR2AL431&limit=10&offset=0", SoundCloud.getSearchQueryHandler().setQuery("?j$)H§B").getUrl());
+        assertEquals("https://api-v2.soundcloud.com/search?q=asdf&client_id=rc0HfXXgVnLSGEuQMs1F8xxuAR2AL431&limit=10&offset=0", SoundCloud.getSearchQIHFactory().setQuery("asdf").getUrl());
+        assertEquals("https://api-v2.soundcloud.com/search?q=hans&client_id=rc0HfXXgVnLSGEuQMs1F8xxuAR2AL431&limit=10&offset=0",SoundCloud.getSearchQIHFactory().setQuery("hans").getUrl());
+        assertEquals("https://api-v2.soundcloud.com/search?q=Poifj%26jaijf&client_id=rc0HfXXgVnLSGEuQMs1F8xxuAR2AL431&limit=10&offset=0", SoundCloud.getSearchQIHFactory().setQuery("Poifj&jaijf").getUrl());
+        assertEquals("https://api-v2.soundcloud.com/search?q=G%C3%BCl%C3%BCm&client_id=rc0HfXXgVnLSGEuQMs1F8xxuAR2AL431&limit=10&offset=0", SoundCloud.getSearchQIHFactory().setQuery("Gülüm").getUrl());
+        assertEquals("https://api-v2.soundcloud.com/search?q=%3Fj%24%29H%C2%A7B&client_id=rc0HfXXgVnLSGEuQMs1F8xxuAR2AL431&limit=10&offset=0", SoundCloud.getSearchQIHFactory().setQuery("?j$)H§B").getUrl());
     }
 
     @Test
     public void testGetContentFilter() throws Exception {
-        assertEquals("tracks", SoundCloud.getSearchQueryHandler()
+        assertEquals("tracks", SoundCloud.getSearchQIHFactory()
                 .setQuery("", asList(new String[]{"tracks"}), "").getContentFilter().get(0));
-        assertEquals("users", SoundCloud.getSearchQueryHandler()
+        assertEquals("users", SoundCloud.getSearchQIHFactory()
                 .setQuery("asdf", asList(new String[]{"users"}), "").getContentFilter().get(0));
     }
 
     @Test
     public void testWithContentfilter() throws Exception {
-        assertEquals("https://api-v2.soundcloud.com/search/tracks?q=asdf&client_id=rc0HfXXgVnLSGEuQMs1F8xxuAR2AL431&limit=10&offset=0", SoundCloud.getSearchQueryHandler()
+        assertEquals("https://api-v2.soundcloud.com/search/tracks?q=asdf&client_id=rc0HfXXgVnLSGEuQMs1F8xxuAR2AL431&limit=10&offset=0", SoundCloud.getSearchQIHFactory()
                 .setQuery("asdf", asList(new String[]{"tracks"}), "").getUrl());
-        assertEquals("https://api-v2.soundcloud.com/search/users?q=asdf&client_id=rc0HfXXgVnLSGEuQMs1F8xxuAR2AL431&limit=10&offset=0", SoundCloud.getSearchQueryHandler()
+        assertEquals("https://api-v2.soundcloud.com/search/users?q=asdf&client_id=rc0HfXXgVnLSGEuQMs1F8xxuAR2AL431&limit=10&offset=0", SoundCloud.getSearchQIHFactory()
                 .setQuery("asdf", asList(new String[]{"users"}), "").getUrl());
-        assertEquals("https://api-v2.soundcloud.com/search/playlists?q=asdf&client_id=rc0HfXXgVnLSGEuQMs1F8xxuAR2AL431&limit=10&offset=0", SoundCloud.getSearchQueryHandler()
+        assertEquals("https://api-v2.soundcloud.com/search/playlists?q=asdf&client_id=rc0HfXXgVnLSGEuQMs1F8xxuAR2AL431&limit=10&offset=0", SoundCloud.getSearchQIHFactory()
                 .setQuery("asdf", asList(new String[]{"playlist"}), "").getUrl());
-        assertEquals("https://api-v2.soundcloud.com/search?q=asdf&client_id=rc0HfXXgVnLSGEuQMs1F8xxuAR2AL431&limit=10&offset=0", SoundCloud.getSearchQueryHandler()
+        assertEquals("https://api-v2.soundcloud.com/search?q=asdf&client_id=rc0HfXXgVnLSGEuQMs1F8xxuAR2AL431&limit=10&offset=0", SoundCloud.getSearchQIHFactory()
                 .setQuery("asdf", asList(new String[]{"fjiijie"}), "").getUrl());
     }
 
     @Test
     public void testGetAvailableContentFilter() {
-        final String[] contentFilter = SoundCloud.getSearchQueryHandler().getAvailableContentFilter();
+        final String[] contentFilter = SoundCloud.getSearchQIHFactory().getAvailableContentFilter();
         assertEquals(4, contentFilter.length);
         assertEquals("tracks", contentFilter[0]);
         assertEquals("users", contentFilter[1]);
@@ -58,7 +57,7 @@ public class SoundcloudSearchQUHTest {
 
     @Test
     public void testGetAvailableSortFilter() {
-        final String[] contentFilter = SoundCloud.getSearchQueryHandler().getAvailableSortFilter();
+        final String[] contentFilter = SoundCloud.getSearchQIHFactory().getAvailableSortFilter();
         assertEquals(0, contentFilter.length);
     }
 }

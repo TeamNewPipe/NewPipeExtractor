@@ -1,22 +1,16 @@
 package org.schabi.newpipe.extractor.services.soundcloud;
 
-import org.jsoup.Jsoup;
-import org.jsoup.nodes.Element;
-import org.schabi.newpipe.extractor.ListUrlIdHandler;
-import org.schabi.newpipe.extractor.NewPipe;
-import org.schabi.newpipe.extractor.UrlIdHandler;
+import org.schabi.newpipe.extractor.ListUIHFactory;
 import org.schabi.newpipe.extractor.exceptions.ParsingException;
 import org.schabi.newpipe.extractor.utils.Parser;
 import org.schabi.newpipe.extractor.utils.Utils;
 
-import static org.schabi.newpipe.extractor.utils.Utils.replaceHttpWithHttps;
-
-public class SoundcloudChannelUrlIdHandler extends ListUrlIdHandler {
-    private static final SoundcloudChannelUrlIdHandler instance = new SoundcloudChannelUrlIdHandler();
+public class SoundcloudChannelUIHFactory extends ListUIHFactory {
+    private static final SoundcloudChannelUIHFactory instance = new SoundcloudChannelUIHFactory();
     private final String URL_PATTERN = "^https?://(www\\.|m\\.)?soundcloud.com/[0-9a-z_-]+" +
             "(/((tracks|albums|sets|reposts|followers|following)/?)?)?([#?].*)?$";
 
-    public static SoundcloudChannelUrlIdHandler getInstance() {
+    public static SoundcloudChannelUIHFactory getInstance() {
         return instance;
     }
 

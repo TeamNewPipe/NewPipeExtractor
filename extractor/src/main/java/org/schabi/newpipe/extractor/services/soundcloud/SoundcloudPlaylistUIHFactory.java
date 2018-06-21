@@ -1,16 +1,16 @@
 package org.schabi.newpipe.extractor.services.soundcloud;
 
-import org.schabi.newpipe.extractor.ListUrlIdHandler;
+import org.schabi.newpipe.extractor.ListUIHFactory;
 import org.schabi.newpipe.extractor.exceptions.ParsingException;
 import org.schabi.newpipe.extractor.utils.Parser;
 import org.schabi.newpipe.extractor.utils.Utils;
 
-public class SoundcloudPlaylistUrlIdHandler extends ListUrlIdHandler {
-    private static final SoundcloudPlaylistUrlIdHandler instance = new SoundcloudPlaylistUrlIdHandler();
+public class SoundcloudPlaylistUIHFactory extends ListUIHFactory {
+    private static final SoundcloudPlaylistUIHFactory instance = new SoundcloudPlaylistUIHFactory();
     private final String URL_PATTERN = "^https?://(www\\.|m\\.)?soundcloud.com/[0-9a-z_-]+" +
             "/sets/[0-9a-z_-]+/?([#?].*)?$";
 
-    public static SoundcloudPlaylistUrlIdHandler getInstance() {
+    public static SoundcloudPlaylistUIHFactory getInstance() {
         return instance;
     }
 
