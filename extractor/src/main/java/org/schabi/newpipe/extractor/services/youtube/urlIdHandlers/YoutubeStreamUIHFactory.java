@@ -5,7 +5,7 @@ import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.schabi.newpipe.extractor.Downloader;
 import org.schabi.newpipe.extractor.NewPipe;
-import org.schabi.newpipe.extractor.UrlIdHandler;
+import org.schabi.newpipe.extractor.UIHFactory;
 import org.schabi.newpipe.extractor.exceptions.FoundAdException;
 import org.schabi.newpipe.extractor.exceptions.ParsingException;
 import org.schabi.newpipe.extractor.exceptions.ReCaptchaException;
@@ -21,7 +21,7 @@ import java.net.URLDecoder;
  * Created by Christian Schabesberger on 02.02.16.
  *
  * Copyright (C) Christian Schabesberger 2016 <chris.schabesberger@mailbox.org>
- * YoutubeStreamUrlIdHandler.java is part of NewPipe.
+ * YoutubeStreamUIHFactory.java is part of NewPipe.
  *
  * NewPipe is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -37,15 +37,15 @@ import java.net.URLDecoder;
  * along with NewPipe.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-public class YoutubeStreamUrlIdHandler extends UrlIdHandler {
+public class YoutubeStreamUIHFactory extends UIHFactory {
 
-    private static final YoutubeStreamUrlIdHandler instance = new YoutubeStreamUrlIdHandler();
+    private static final YoutubeStreamUIHFactory instance = new YoutubeStreamUIHFactory();
     private static final String ID_PATTERN = "([\\-a-zA-Z0-9_]{11})";
 
-    private YoutubeStreamUrlIdHandler() {
+    private YoutubeStreamUIHFactory() {
     }
 
-    public static YoutubeStreamUrlIdHandler getInstance() {
+    public static YoutubeStreamUIHFactory getInstance() {
         return instance;
     }
 

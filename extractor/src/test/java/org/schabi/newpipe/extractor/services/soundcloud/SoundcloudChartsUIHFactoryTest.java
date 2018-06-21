@@ -11,14 +11,14 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
 /**
- * Test for {@link SoundcloudChartsUrlIdHandler}
+ * Test for {@link SoundcloudChartsUIHFactory}
  */
-public class SoundcloudChartsUrlIdHandlerTest {
-    private static SoundcloudChartsUrlIdHandler urlIdHandler;
+public class SoundcloudChartsUIHFactoryTest {
+    private static SoundcloudChartsUIHFactory urlIdHandler;
 
     @BeforeClass
     public static void setUp() throws Exception {
-        urlIdHandler = new SoundcloudChartsUrlIdHandler();
+        urlIdHandler = new SoundcloudChartsUIHFactory();
         NewPipe.init(Downloader.getInstance());
     }
 

@@ -4,7 +4,7 @@ package org.schabi.newpipe.extractor.services.youtube;
  * Created by Christian Schabesberger on 29.12.15.
  *
  * Copyright (C) Christian Schabesberger 2015 <chris.schabesberger@mailbox.org>
- * YoutubeSearchEngineStreamTest.java is part of NewPipe.
+ * YoutubeSearchExtractorStreamTest.java is part of NewPipe.
  *
  * NewPipe is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
