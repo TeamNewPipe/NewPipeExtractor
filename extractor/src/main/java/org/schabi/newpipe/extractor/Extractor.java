@@ -14,27 +14,27 @@ public abstract class Extractor {
      */
     private final StreamingService service;
 
-    private final UrlIdHandler urlIdHandler;
+    private final UIHFactory UIHFactory;
 
     @Nullable
     private boolean pageFetched = false;
     private final Downloader downloader;
 
-    public Extractor(final StreamingService service, final UrlIdHandler urlIdHandler) {
+    public Extractor(final StreamingService service, final UIHFactory UIHFactory) {
         if(service == null) throw new NullPointerException("service is null");
-        if(urlIdHandler == null) throw new NullPointerException("UrlIdHandler is null");
+        if(UIHFactory == null) throw new NullPointerException("UIHFactory is null");
         this.service = service;
-        this.urlIdHandler = urlIdHandler;
+        this.UIHFactory = UIHFactory;
         this.downloader = NewPipe.getDownloader();
         if(downloader == null) throw new NullPointerException("downloader is null");
     }
 
     /**
-     * @return The {@link UrlIdHandler} of the current extractor object (e.g. a ChannelExtractor should return a channel url handler).
+     * @return The {@link UIHFactory} of the current extractor object (e.g. a ChannelExtractor should return a channel url handler).
      */
     @Nonnull
-    public  UrlIdHandler getUrlIdHandler() {
-        return urlIdHandler;
+    public UIHFactory getUIHFactory() {
+        return UIHFactory;
     }
 
     /**
@@ -66,7 +66,7 @@ public abstract class Extractor {
 
     @Nonnull
     public String getId() throws ParsingException {
-        return urlIdHandler.getId();
+        return UIHFactory.getId();
     }
 
     /**
@@ -79,12 +79,12 @@ public abstract class Extractor {
 
     @Nonnull
     public String getOriginalUrl() throws ParsingException {
-        return urlIdHandler.getOriginalUrl();
+        return UIHFactory.getOriginalUrl();
     }
 
     @Nonnull
     public String getUrl() throws ParsingException {
-        return urlIdHandler.getUrl();
+        return UIHFactory.getUrl();
     }
 
     @Nonnull

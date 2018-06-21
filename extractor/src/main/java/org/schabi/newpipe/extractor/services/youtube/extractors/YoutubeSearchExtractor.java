@@ -5,15 +5,12 @@ import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.schabi.newpipe.extractor.Downloader;
 import org.schabi.newpipe.extractor.InfoItem;
-import org.schabi.newpipe.extractor.InfoItemsCollector;
 import org.schabi.newpipe.extractor.StreamingService;
 import org.schabi.newpipe.extractor.exceptions.ExtractionException;
 import org.schabi.newpipe.extractor.exceptions.ParsingException;
 import org.schabi.newpipe.extractor.search.InfoItemsSearchCollector;
-import org.schabi.newpipe.extractor.search.SearchEngine;
 import org.schabi.newpipe.extractor.search.SearchExtractor;
-import org.schabi.newpipe.extractor.search.SearchQueryUrlHandler;
-import org.schabi.newpipe.extractor.services.youtube.urlIdHandlers.YoutubeSearchQueryUrlHandler;
+import org.schabi.newpipe.extractor.search.SearchQIHFactory;
 import org.schabi.newpipe.extractor.utils.Parser;
 
 import javax.annotation.Nonnull;
@@ -27,7 +24,7 @@ public class YoutubeSearchExtractor extends SearchExtractor {
     private Document doc;
 
     public YoutubeSearchExtractor(StreamingService service,
-                                  SearchQueryUrlHandler urlIdHandler,
+                                  SearchQIHFactory urlIdHandler,
                                   String contentCountry) {
         super(service, urlIdHandler, contentCountry);
     }

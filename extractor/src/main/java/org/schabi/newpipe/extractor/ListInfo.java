@@ -1,6 +1,5 @@
 package org.schabi.newpipe.extractor;
 
-import com.sun.org.apache.xerces.internal.xs.StringList;
 import org.schabi.newpipe.extractor.exceptions.ParsingException;
 
 import java.util.ArrayList;
@@ -24,7 +23,7 @@ public abstract class ListInfo<T extends InfoItem> extends Info {
         this.sortFilter = sortFilter;
     }
 
-    public ListInfo(int serviceId, ListUrlIdHandler listUrlIdHandler, String name) throws ParsingException {
+    public ListInfo(int serviceId, ListUIHFactory listUrlIdHandler, String name) throws ParsingException {
         super(serviceId, listUrlIdHandler, name);
         this.contentFilter = listUrlIdHandler.getContentFilter();
         this.sortFilter = listUrlIdHandler.getSortFilter();

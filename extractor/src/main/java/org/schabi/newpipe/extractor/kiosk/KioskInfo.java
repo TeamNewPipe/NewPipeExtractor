@@ -30,7 +30,7 @@ import java.io.IOException;
 
 public class KioskInfo extends ListInfo<StreamInfoItem> {
 
-    private KioskInfo(int serviceId, ListUrlIdHandler urlIdHandler, String name) throws ParsingException {
+    private KioskInfo(int serviceId, ListUIHFactory urlIdHandler, String name) throws ParsingException {
         super(serviceId, urlIdHandler, name);
     }
 
@@ -67,7 +67,7 @@ public class KioskInfo extends ListInfo<StreamInfoItem> {
     public static KioskInfo getInfo(KioskExtractor extractor) throws ExtractionException {
 
         final KioskInfo info = new KioskInfo(extractor.getServiceId(),
-                extractor.getUrlIdHandler(),
+                extractor.getUIHFactory(),
                 extractor.getName());
 
         final ListExtractor.InfoItemsPage<StreamInfoItem> itemsPage = ExtractorHelper.getItemsPageOrLogError(info, extractor);

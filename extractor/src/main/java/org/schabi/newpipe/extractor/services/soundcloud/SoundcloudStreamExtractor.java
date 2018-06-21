@@ -17,13 +17,11 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-import static org.schabi.newpipe.extractor.utils.Utils.replaceHttpWithHttps;
-
 public class SoundcloudStreamExtractor extends StreamExtractor {
     private JsonObject track;
 
-    public SoundcloudStreamExtractor(StreamingService service, UrlIdHandler urlIdHandler) {
-        super(service, urlIdHandler);
+    public SoundcloudStreamExtractor(StreamingService service, UIHFactory UIHFactory) {
+        super(service, UIHFactory);
     }
 
     @Override

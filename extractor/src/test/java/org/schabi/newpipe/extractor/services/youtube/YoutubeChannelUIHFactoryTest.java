@@ -5,21 +5,21 @@ import org.junit.Test;
 import org.schabi.newpipe.Downloader;
 import org.schabi.newpipe.extractor.NewPipe;
 import org.schabi.newpipe.extractor.exceptions.ParsingException;
-import org.schabi.newpipe.extractor.services.youtube.urlIdHandlers.YoutubeChannelUrlIdHandler;
+import org.schabi.newpipe.extractor.services.youtube.urlIdHandlers.YoutubeChannelUIHFactory;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
 /**
- * Test for {@link YoutubeChannelUrlIdHandler}
+ * Test for {@link YoutubeChannelUIHFactory}
  */
-public class YoutubeChannelUrlIdHandlerTest {
+public class YoutubeChannelUIHFactoryTest {
 
-    private static YoutubeChannelUrlIdHandler urlIdHandler;
+    private static YoutubeChannelUIHFactory urlIdHandler;
 
     @BeforeClass
     public static void setUp() {
-        urlIdHandler = YoutubeChannelUrlIdHandler.getInstance();
+        urlIdHandler = YoutubeChannelUIHFactory.getInstance();
         NewPipe.init(Downloader.getInstance());
     }
 

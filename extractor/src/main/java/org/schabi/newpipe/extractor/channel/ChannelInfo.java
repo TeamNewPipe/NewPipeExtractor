@@ -2,7 +2,7 @@ package org.schabi.newpipe.extractor.channel;
 
 import org.schabi.newpipe.extractor.ListExtractor.InfoItemsPage;
 import org.schabi.newpipe.extractor.ListInfo;
-import org.schabi.newpipe.extractor.ListUrlIdHandler;
+import org.schabi.newpipe.extractor.ListUIHFactory;
 import org.schabi.newpipe.extractor.NewPipe;
 import org.schabi.newpipe.extractor.StreamingService;
 import org.schabi.newpipe.extractor.exceptions.ExtractionException;
@@ -34,7 +34,7 @@ import java.io.IOException;
 
 public class ChannelInfo extends ListInfo<StreamInfoItem> {
 
-    public ChannelInfo(int serviceId, ListUrlIdHandler urlIdHandler, String name) throws ParsingException {
+    public ChannelInfo(int serviceId, ListUIHFactory urlIdHandler, String name) throws ParsingException {
         super(serviceId, urlIdHandler, name);
     }
 
@@ -55,7 +55,7 @@ public class ChannelInfo extends ListInfo<StreamInfoItem> {
     public static ChannelInfo getInfo(ChannelExtractor extractor) throws IOException, ExtractionException {
 
         ChannelInfo info = new ChannelInfo(extractor.getServiceId(),
-                extractor.getUrlIdHandler(),
+                extractor.getUIHFactory(),
                 extractor.getName());
 
 

@@ -5,14 +5,14 @@ import org.schabi.newpipe.extractor.exceptions.ParsingException;
 import java.util.ArrayList;
 import java.util.List;
 
-public abstract class ListUrlIdHandler extends UrlIdHandler {
+public abstract class ListUIHFactory extends UIHFactory {
 
     protected List<String> contentFilter = new ArrayList<>(0);
     protected String sortFilter = "";
 
-    public ListUrlIdHandler setQuery(String id,
-                                     List<String> contentFilter,
-                                     String sortFilter) throws ParsingException {
+    public ListUIHFactory setQuery(String id,
+                                   List<String> contentFilter,
+                                   String sortFilter) throws ParsingException {
         setId(id);
         this.contentFilter = contentFilter;
         this.sortFilter = sortFilter;
@@ -20,17 +20,17 @@ public abstract class ListUrlIdHandler extends UrlIdHandler {
     }
 
 
-    public ListUrlIdHandler setQuery(String id) throws ParsingException {
+    public ListUIHFactory setQuery(String id) throws ParsingException {
         setQuery(id, new ArrayList<String>(), "");
         return this;
     }
 
-    public ListUrlIdHandler setUrl(String url) throws ParsingException {
-        return (ListUrlIdHandler) super.setUrl(url);
+    public ListUIHFactory setUrl(String url) throws ParsingException {
+        return (ListUIHFactory) super.setUrl(url);
     }
 
-    public ListUrlIdHandler setId(String id) throws ParsingException {
-        return (ListUrlIdHandler) super.setId(id);
+    public ListUIHFactory setId(String id) throws ParsingException {
+        return (ListUIHFactory) super.setId(id);
     }
 
     /**

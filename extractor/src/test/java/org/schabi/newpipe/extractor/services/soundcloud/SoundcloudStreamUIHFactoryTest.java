@@ -12,14 +12,14 @@ import java.util.List;
 import static org.junit.Assert.*;
 
 /**
- * Test for {@link SoundcloudStreamUrlIdHandler}
+ * Test for {@link SoundcloudStreamUIHFactory}
  */
-public class SoundcloudStreamUrlIdHandlerTest {
-    private static SoundcloudStreamUrlIdHandler urlIdHandler;
+public class SoundcloudStreamUIHFactoryTest {
+    private static SoundcloudStreamUIHFactory urlIdHandler;
 
     @BeforeClass
     public static void setUp() throws Exception {
-        urlIdHandler = SoundcloudStreamUrlIdHandler.getInstance();
+        urlIdHandler = SoundcloudStreamUIHFactory.getInstance();
         NewPipe.init(Downloader.getInstance());
     }
 

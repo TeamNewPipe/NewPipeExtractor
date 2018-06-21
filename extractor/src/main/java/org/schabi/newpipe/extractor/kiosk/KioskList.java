@@ -2,7 +2,7 @@ package org.schabi.newpipe.extractor.kiosk;
 
 import org.schabi.newpipe.extractor.NewPipe;
 import org.schabi.newpipe.extractor.StreamingService;
-import org.schabi.newpipe.extractor.UrlIdHandler;
+import org.schabi.newpipe.extractor.UIHFactory;
 import org.schabi.newpipe.extractor.exceptions.ExtractionException;
 
 import java.io.IOException;
@@ -23,19 +23,19 @@ public  class KioskList {
     private String defaultKiosk = null;
 
     private class KioskEntry {
-        public KioskEntry(KioskExtractorFactory ef, UrlIdHandler h) {
+        public KioskEntry(KioskExtractorFactory ef, UIHFactory h) {
             extractorFactory = ef;
             handler = h;
         }
         final KioskExtractorFactory extractorFactory;
-        final UrlIdHandler handler;
+        final UIHFactory handler;
     }
 
     public KioskList(int service_id) {
         this.service_id = service_id;
     }
 
-    public void addKioskEntry(KioskExtractorFactory extractorFactory, UrlIdHandler handler, String id)
+    public void addKioskEntry(KioskExtractorFactory extractorFactory, UIHFactory handler, String id)
         throws Exception {
         if(kioskList.get(id) != null) {
             throw new Exception("Kiosk with type " + id + " already exists.");
@@ -92,7 +92,7 @@ public  class KioskList {
         throw new ExtractionException("Could not find a kiosk that fits to the url: " + url);
     }
 
-    public UrlIdHandler getUrlIdHandlerByType(String type) {
+    public UIHFactory getUrlIdHandlerByType(String type) {
         return kioskList.get(type).handler;
     }
 }

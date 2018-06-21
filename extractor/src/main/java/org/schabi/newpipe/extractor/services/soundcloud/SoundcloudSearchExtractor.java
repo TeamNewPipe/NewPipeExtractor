@@ -10,7 +10,7 @@ import org.schabi.newpipe.extractor.exceptions.ParsingException;
 import org.schabi.newpipe.extractor.search.InfoItemsSearchCollector;
 import org.schabi.newpipe.extractor.search.SearchEngine;
 import org.schabi.newpipe.extractor.search.SearchExtractor;
-import org.schabi.newpipe.extractor.search.SearchQueryUrlHandler;
+import org.schabi.newpipe.extractor.search.SearchQIHFactory;
 import org.schabi.newpipe.extractor.utils.Parser;
 
 import javax.annotation.Nonnull;
@@ -19,14 +19,14 @@ import java.io.UnsupportedEncodingException;
 import java.net.MalformedURLException;
 import java.net.URL;
 
-import static org.schabi.newpipe.extractor.services.soundcloud.SoundcloudSearchQueryUrlHandler.ITEMS_PER_PAGE;
+import static org.schabi.newpipe.extractor.services.soundcloud.SoundcloudSearchQIHFactory.ITEMS_PER_PAGE;
 
 public class SoundcloudSearchExtractor extends SearchExtractor {
 
     private JsonArray searchCollection;
 
     public SoundcloudSearchExtractor(StreamingService service,
-                                     SearchQueryUrlHandler urlIdHandler,
+                                     SearchQIHFactory urlIdHandler,
                                      String contentCountry) {
         super(service, urlIdHandler, contentCountry);
     }

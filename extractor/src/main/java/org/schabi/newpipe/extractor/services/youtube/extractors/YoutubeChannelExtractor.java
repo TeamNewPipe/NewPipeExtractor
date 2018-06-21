@@ -48,7 +48,7 @@ public class YoutubeChannelExtractor extends ChannelExtractor {
 
     private Document doc;
 
-    public YoutubeChannelExtractor(StreamingService service, ListUrlIdHandler urlIdHandler) {
+    public YoutubeChannelExtractor(StreamingService service, ListUIHFactory urlIdHandler) {
         super(service, urlIdHandler);
     }
 

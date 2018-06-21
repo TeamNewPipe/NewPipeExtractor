@@ -1,16 +1,16 @@
 package org.schabi.newpipe.extractor.services.youtube.urlIdHandlers;
 
 
-import org.schabi.newpipe.extractor.ListUrlIdHandler;
+import org.schabi.newpipe.extractor.ListUIHFactory;
 import org.schabi.newpipe.extractor.exceptions.ParsingException;
 import org.schabi.newpipe.extractor.utils.Parser;
 
-public class YoutubePlaylistUrlIdHandler extends ListUrlIdHandler {
+public class YoutubePlaylistUIHFactory extends ListUIHFactory {
 
-    private static final YoutubePlaylistUrlIdHandler instance = new YoutubePlaylistUrlIdHandler();
+    private static final YoutubePlaylistUIHFactory instance = new YoutubePlaylistUIHFactory();
     private static final String ID_PATTERN = "([\\-a-zA-Z0-9_]{10,})";
 
-    public static YoutubePlaylistUrlIdHandler getInstance() {
+    public static YoutubePlaylistUIHFactory getInstance() {
         return instance;
     }
 
