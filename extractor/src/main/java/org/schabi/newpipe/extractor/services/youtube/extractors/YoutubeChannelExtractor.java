@@ -55,7 +55,7 @@ public class YoutubeChannelExtractor extends ChannelExtractor {
     @Override
     public void onFetchPage(@Nonnull Downloader downloader) throws IOException, ExtractionException {
         String channelUrl = super.getUrl() + CHANNEL_URL_PARAMETERS;
-        String pageContent = downloader.download(channelUrl, NewPipe.getCountryLanguage());
+        String pageContent = downloader.download(channelUrl);
         doc = Jsoup.parse(pageContent, channelUrl);
     }
 
@@ -169,7 +169,7 @@ public class YoutubeChannelExtractor extends ChannelExtractor {
         StreamInfoItemsCollector collector = new StreamInfoItemsCollector(getServiceId());
         JsonObject ajaxJson;
         try {
-            ajaxJson = JsonParser.object().from(NewPipe.getDownloader().download(pageUrl, NewPipe.getCountryLanguage()));
+            ajaxJson = JsonParser.object().from(NewPipe.getDownloader().download(pageUrl));
         } catch (JsonParserException pe) {
             throw new ParsingException("Could not parse json data for next streams", pe);
         }
