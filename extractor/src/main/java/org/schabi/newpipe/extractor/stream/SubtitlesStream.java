@@ -1,7 +1,6 @@
 package org.schabi.newpipe.extractor.stream;
 
 import org.schabi.newpipe.extractor.MediaFormat;
-
 import java.io.Serializable;
 import java.util.Locale;
 
