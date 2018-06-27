@@ -1,4 +1,4 @@
-package org.schabi.newpipe.extractor.stream;// TODO: ¡git it!
+package org.schabi.newpipe.extractor.stream;
 
 import org.schabi.newpipe.extractor.MediaFormat;
 
@@ -18,7 +18,6 @@ public class SubtitlesStream extends Stream implements Serializable {
         /*
         * Locale.forLanguageTag only for API >= 21
         * Locale.Builder only for API >= 21
-        * Country codes doesn't work well without
         */
         final String[] splits = languageCode.split("-");
         switch (splits.length) {

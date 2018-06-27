@@ -1,4 +1,4 @@
-package org.schabi.newpipe.extractor;//TODO ¡git it!
+package org.schabi.newpipe.extractor;
 
 /*
  * Created by Adam Howard on 08/11/15.
@@ -42,7 +42,8 @@ public enum MediaFormat {
     TTML        (0x8,   "Timed Text Markup Language",  "ttml",  "application/ttml+xml"),
     TRANSCRIPT1 (0x9,   "TranScript v1",               "srv1",  "text/xml"),
     TRANSCRIPT2 (0xA,   "TranScript v2",               "srv2",  "text/xml"),
-    TRANSCRIPT3 (0xB,   "TranScript v3",               "srv3",  "text/xml");
+    TRANSCRIPT3 (0xB,   "TranScript v3",               "srv3",  "text/xml"),
+    SRT         (0xC,   "SubRip file format",          "srt",   "text/srt"); 
 
     public final int id;
     public final String name;
