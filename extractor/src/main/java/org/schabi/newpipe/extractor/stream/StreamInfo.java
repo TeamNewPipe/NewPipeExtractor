@@ -1,4 +1,4 @@
-package org.schabi.newpipe.extractor.stream;
+package org.schabi.newpipe.extractor.stream;// TODO: ¡git it!
 
 import org.schabi.newpipe.extractor.*;
 import org.schabi.newpipe.extractor.exceptions.ContentNotAvailableException;
@@ -282,7 +282,7 @@ public class StreamInfo extends Info {
     private List<InfoItem> relatedStreams;
 
     private long startPosition = 0;
-    private List<Subtitles> subtitles;
+    private List<SubtitlesStream> subtitles;
 
     private String[] donationLinks;
     private String[] affiliateLinks;
@@ -472,11 +472,11 @@ public class StreamInfo extends Info {
         this.startPosition = startPosition;
     }
 
-    public List<Subtitles> getSubtitles() {
+    public List<SubtitlesStream> getSubtitles() {
         return subtitles;
     }
 
-    public void setSubtitles(List<Subtitles> subtitles) {
+    public void setSubtitles(List<SubtitlesStream> subtitles) {
         this.subtitles = subtitles;
     }
 

@@ -1,4 +1,4 @@
-package org.schabi.newpipe.extractor.stream;
+package org.schabi.newpipe.extractor.stream;// TODO: ¡git it!
 
 /*
  * Created by Christian Schabesberger on 10.08.15.
@@ -21,8 +21,8 @@ package org.schabi.newpipe.extractor.stream;
  */
 
 import org.schabi.newpipe.extractor.Extractor;
+import org.schabi.newpipe.extractor.MediaFormat;
 import org.schabi.newpipe.extractor.StreamingService;
-import org.schabi.newpipe.extractor.Subtitles;
 import org.schabi.newpipe.extractor.UrlIdHandler;
 import org.schabi.newpipe.extractor.exceptions.ExtractionException;
 import org.schabi.newpipe.extractor.exceptions.ParsingException;
@@ -133,9 +133,9 @@ public abstract class StreamExtractor extends Extractor {
     public abstract List<VideoStream> getVideoOnlyStreams() throws IOException, ExtractionException;
 
     @Nonnull
-    public abstract List<Subtitles> getSubtitlesDefault() throws IOException, ExtractionException;
+    public abstract List<SubtitlesStream> getSubtitlesDefault() throws IOException, ExtractionException;
     @Nonnull
-    public abstract List<Subtitles> getSubtitles(SubtitlesFormat format) throws IOException, ExtractionException;
+    public abstract List<SubtitlesStream> getSubtitles(MediaFormat format) throws IOException, ExtractionException;
 
     public abstract StreamType getStreamType() throws ParsingException;
     public abstract StreamInfoItem getNextVideo() throws IOException, ExtractionException;

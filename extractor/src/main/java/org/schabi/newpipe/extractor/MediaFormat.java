@@ -1,4 +1,4 @@
-package org.schabi.newpipe.extractor;
+package org.schabi.newpipe.extractor;//TODO ¡git it!
 
 /*
  * Created by Adam Howard on 08/11/15.
@@ -36,7 +36,13 @@ public enum MediaFormat {
     M4A         (0x3,   "m4a",   "m4a",  "audio/mp4"),
     WEBMA       (0x4,   "WebM",  "webm", "audio/webm"),
     MP3         (0x5,   "MP3",   "mp3",  "audio/mpeg"),
-    OPUS        (0x6,   "opus",  "opus", "audio/opus");
+    OPUS        (0x6,   "opus",  "opus", "audio/opus"),
+    // subtitles formats
+    VTT         (0x7,   "WebVTT",                      "vtt",   "text/vtt"),
+    TTML        (0x8,   "Timed Text Markup Language",  "ttml",  "application/ttml+xml"),
+    TRANSCRIPT1 (0x9,   "TranScript v1",               "srv1",  "text/xml"),
+    TRANSCRIPT2 (0xA,   "TranScript v2",               "srv2",  "text/xml"),
+    TRANSCRIPT3 (0xB,   "TranScript v3",               "srv3",  "text/xml");
 
     public final int id;
     public final String name;

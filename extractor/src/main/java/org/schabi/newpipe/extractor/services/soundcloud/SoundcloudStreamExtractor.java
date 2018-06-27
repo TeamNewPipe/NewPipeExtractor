@@ -1,4 +1,4 @@
-package org.schabi.newpipe.extractor.services.soundcloud;
+package org.schabi.newpipe.extractor.services.soundcloud;// TODO: ¡git it!
 
 import com.grack.nanojson.JsonObject;
 import com.grack.nanojson.JsonParser;
@@ -172,13 +172,13 @@ public class SoundcloudStreamExtractor extends StreamExtractor {
 
     @Override
     @Nonnull
-    public List<Subtitles> getSubtitlesDefault() throws IOException, ExtractionException {
+    public List<SubtitlesStream> getSubtitlesDefault() throws IOException, ExtractionException {
         return Collections.emptyList();
     }
 
     @Override
     @Nonnull
-    public List<Subtitles> getSubtitles(SubtitlesFormat format) throws IOException, ExtractionException {
+    public List<SubtitlesStream> getSubtitles(MediaFormat format) throws IOException, ExtractionException {
         return Collections.emptyList();
     }
 
