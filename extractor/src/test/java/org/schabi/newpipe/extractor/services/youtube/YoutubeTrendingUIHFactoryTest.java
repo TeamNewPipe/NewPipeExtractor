@@ -24,12 +24,9 @@ import org.junit.BeforeClass;
 import org.junit.Test;
 import org.schabi.newpipe.Downloader;
 import org.schabi.newpipe.extractor.NewPipe;
-import org.schabi.newpipe.extractor.exceptions.FoundAdException;
 import org.schabi.newpipe.extractor.exceptions.ParsingException;
 import org.schabi.newpipe.extractor.uih.UIHFactory;
 import org.schabi.newpipe.extractor.services.youtube.urlIdHandlers.YoutubeTrendingUIHFactory;
-
-import java.text.ParseException;
 
 import static junit.framework.TestCase.assertFalse;
 import static org.junit.Assert.assertEquals;
@@ -44,7 +41,7 @@ public class YoutubeTrendingUIHFactoryTest {
 
     @BeforeClass
     public static void setUp() throws Exception {
-        UIHFactory = YouTube.getKioskList().getUrlIdHandlerByType("Trending");
+        UIHFactory = YouTube.getKioskList().getUIHFactoryByType("Trending");
         NewPipe.init(Downloader.getInstance());
     }
 

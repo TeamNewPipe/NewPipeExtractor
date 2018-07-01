@@ -25,10 +25,10 @@ public  class KioskList {
     private class KioskEntry {
         public KioskEntry(KioskExtractorFactory ef, UIHFactory h) {
             extractorFactory = ef;
-            handler = h;
+            handlerFactory = h;
         }
         final KioskExtractorFactory extractorFactory;
-        final UIHFactory handler;
+        final UIHFactory handlerFactory;
     }
 
     public KioskList(int service_id) {
@@ -73,7 +73,7 @@ public  class KioskList {
             throw new ExtractionException("No kiosk found with the type: " + kioskId);
         } else {
             return ke.extractorFactory.createNewKiosk(NewPipe.getService(service_id),
-                    ke.handler.fromId(kioskId).getUrl(), kioskId);
+                    ke.handlerFactory.fromId(kioskId).getUrl(), kioskId);
         }
     }
 
@@ -85,14 +85,14 @@ public  class KioskList {
             throws ExtractionException, IOException {
         for(Map.Entry<String, KioskEntry> e : kioskList.entrySet()) {
             KioskEntry ke = e.getValue();
-            if(ke.handler.acceptUrl(url)) {
+            if(ke.handlerFactory.acceptUrl(url)) {
                 return getExtractorById(e.getKey(), nextPageUrl);
             }
         }
         throw new ExtractionException("Could not find a kiosk that fits to the url: " + url);
     }
 
-    public UIHFactory getUrlIdHandlerByType(String type) {
-        return kioskList.get(type).handler;
+    public UIHFactory getUIHFactoryByType(String type) {
+        return kioskList.get(type).handlerFactory;
     }
 }
