@@ -24,14 +24,14 @@ public class SoundcloudChartsUIHFactoryTest {
 
     @Test
     public void getUrl() throws Exception {
-        assertEquals(urlIdHandler.setId("Top 50").getUrl(), "https://soundcloud.com/charts/top");
-        assertEquals(urlIdHandler.setId("New & hot").getUrl(), "https://soundcloud.com/charts/new");
+        assertEquals(urlIdHandler.fromId("Top 50").getUrl(), "https://soundcloud.com/charts/top");
+        assertEquals(urlIdHandler.fromId("New & hot").getUrl(), "https://soundcloud.com/charts/new");
     }
 
     @Test
     public void getId() throws ParsingException {
-        assertEquals(urlIdHandler.setUrl("http://soundcloud.com/charts/top?genre=all-music").getId(), "Top 50");
-        assertEquals(urlIdHandler.setUrl("HTTP://www.soundcloud.com/charts/new/?genre=all-music&country=all-countries").getId(), "New & hot");
+        assertEquals(urlIdHandler.fromUrl("http://soundcloud.com/charts/top?genre=all-music").getId(), "Top 50");
+        assertEquals(urlIdHandler.fromUrl("HTTP://www.soundcloud.com/charts/new/?genre=all-music&country=all-countries").getId(), "New & hot");
     }
 
     @Test

@@ -2,7 +2,7 @@ package org.schabi.newpipe.extractor.kiosk;
 
 import org.schabi.newpipe.extractor.NewPipe;
 import org.schabi.newpipe.extractor.StreamingService;
-import org.schabi.newpipe.extractor.UIHFactory;
+import org.schabi.newpipe.extractor.uih.UIHFactory;
 import org.schabi.newpipe.extractor.exceptions.ExtractionException;
 
 import java.io.IOException;
@@ -73,7 +73,7 @@ public  class KioskList {
             throw new ExtractionException("No kiosk found with the type: " + kioskId);
         } else {
             return ke.extractorFactory.createNewKiosk(NewPipe.getService(service_id),
-                    ke.handler.setId(kioskId).getUrl(), kioskId);
+                    ke.handler.fromId(kioskId).getUrl(), kioskId);
         }
     }
 

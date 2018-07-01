@@ -10,7 +10,7 @@ import org.schabi.newpipe.extractor.exceptions.ParsingException;
 import org.schabi.newpipe.extractor.search.InfoItemsSearchCollector;
 import org.schabi.newpipe.extractor.search.SearchEngine;
 import org.schabi.newpipe.extractor.search.SearchExtractor;
-import org.schabi.newpipe.extractor.search.SearchQIHFactory;
+import org.schabi.newpipe.extractor.uih.SearchQIHandler;
 import org.schabi.newpipe.extractor.utils.Parser;
 
 import javax.annotation.Nonnull;
@@ -26,7 +26,7 @@ public class SoundcloudSearchExtractor extends SearchExtractor {
     private JsonArray searchCollection;
 
     public SoundcloudSearchExtractor(StreamingService service,
-                                     SearchQIHFactory urlIdHandler,
+                                     SearchQIHandler urlIdHandler,
                                      String contentCountry) {
         super(service, urlIdHandler, contentCountry);
     }

@@ -13,6 +13,8 @@ import org.schabi.newpipe.extractor.exceptions.ExtractionException;
 import org.schabi.newpipe.extractor.exceptions.ParsingException;
 import org.schabi.newpipe.extractor.stream.StreamInfoItem;
 import org.schabi.newpipe.extractor.stream.StreamInfoItemsCollector;
+import org.schabi.newpipe.extractor.uih.ListUIHFactory;
+import org.schabi.newpipe.extractor.uih.ListUIHandler;
 import org.schabi.newpipe.extractor.utils.DonationLinkHelper;
 import org.schabi.newpipe.extractor.utils.Parser;
 import org.schabi.newpipe.extractor.utils.Utils;
@@ -24,7 +26,7 @@ import java.util.ArrayList;
 /*
  * Created by Christian Schabesberger on 25.07.16.
  *
- * Copyright (C) Christian Schabesberger 2016 <chris.schabesberger@mailbox.org>
+ * Copyright (C) Christian Schabesberger 2018 <chris.schabesberger@mailbox.org>
  * YoutubeChannelExtractor.java is part of NewPipe.
  *
  * NewPipe is free software: you can redistribute it and/or modify
@@ -48,7 +50,7 @@ public class YoutubeChannelExtractor extends ChannelExtractor {
 
     private Document doc;
 
-    public YoutubeChannelExtractor(StreamingService service, ListUIHFactory urlIdHandler) {
+    public YoutubeChannelExtractor(StreamingService service, ListUIHandler urlIdHandler) {
         super(service, urlIdHandler);
     }
 

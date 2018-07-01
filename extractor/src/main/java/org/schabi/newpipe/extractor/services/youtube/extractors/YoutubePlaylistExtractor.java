@@ -14,6 +14,7 @@ import org.schabi.newpipe.extractor.services.youtube.urlIdHandlers.YoutubeParsin
 import org.schabi.newpipe.extractor.stream.StreamInfoItem;
 import org.schabi.newpipe.extractor.stream.StreamInfoItemsCollector;
 import org.schabi.newpipe.extractor.stream.StreamType;
+import org.schabi.newpipe.extractor.uih.ListUIHandler;
 import org.schabi.newpipe.extractor.utils.Utils;
 
 import javax.annotation.Nonnull;
@@ -24,7 +25,7 @@ public class YoutubePlaylistExtractor extends PlaylistExtractor {
 
     private Document doc;
 
-    public YoutubePlaylistExtractor(StreamingService service, ListUIHFactory urlIdHandler) throws ExtractionException {
+    public YoutubePlaylistExtractor(StreamingService service, ListUIHandler urlIdHandler) throws ExtractionException {
         super(service, urlIdHandler);
     }
 
@@ -170,10 +171,10 @@ public class YoutubePlaylistExtractor extends PlaylistExtractor {
         }
     }
 
-    private void collectStreamsFrom(StreamInfoItemsCollector collector, Element element) throws ParsingException {
+    private void collectStreamsFrom(StreamInfoItemsCollector collector, Element element) {
         collector.reset();
 
-        final UIHFactory streamUIHFactory = getService().getStreamUIHFactory();
+        final org.schabi.newpipe.extractor.uih.UIHFactory streamUIHFactory = getService().getStreamUIHFactory();
         for (final Element li : element.children()) {
             if(isDeletedItem(li)) {
                 continue;
@@ -183,14 +184,14 @@ public class YoutubePlaylistExtractor extends PlaylistExtractor {
                 public Element uploaderLink;
 
                 @Override
-                public boolean isAd() throws ParsingException {
+                public boolean isAd() {
                     return false;
                 }
 
                 @Override
                 public String getUrl() throws ParsingException {
                     try {
-                        return streamUIHFactory.setId(li.attr("data-video-id")).getUrl();
+                        return streamUIHFactory.fromId(li.attr("data-video-id")).getUrl();
                     } catch (Exception e) {
                         throw new ParsingException("Could not get web page url for the video", e);
                     }
@@ -255,7 +256,7 @@ public class YoutubePlaylistExtractor extends PlaylistExtractor {
                 @Override
                 public String getThumbnailUrl() throws ParsingException {
                     try {
-                        return "https://i.ytimg.com/vi/" + streamUIHFactory.setUrl(getUrl()).getId() + "/hqdefault.jpg";
+                        return "https://i.ytimg.com/vi/" + streamUIHFactory.fromUrl(getUrl()).getId() + "/hqdefault.jpg";
                     } catch (Exception e) {
                         throw new ParsingException("Could not get thumbnail url", e);
                     }

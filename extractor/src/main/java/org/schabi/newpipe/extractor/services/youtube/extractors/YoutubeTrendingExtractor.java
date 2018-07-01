@@ -3,7 +3,7 @@ package org.schabi.newpipe.extractor.services.youtube.extractors;
 /*
  * Created by Christian Schabesberger on 12.08.17.
  *
- * Copyright (C) Christian Schabesberger 2017 <chris.schabesberger@mailbox.org>
+ * Copyright (C) Christian Schabesberger 2018 <chris.schabesberger@mailbox.org>
  * YoutubeTrendingExtractor.java is part of NewPipe.
  *
  * NewPipe is free software: you can redistribute it and/or modify
@@ -25,7 +25,7 @@ import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 import org.schabi.newpipe.extractor.Downloader;
-import org.schabi.newpipe.extractor.ListUIHFactory;
+import org.schabi.newpipe.extractor.uih.ListUIHandler;
 import org.schabi.newpipe.extractor.StreamingService;
 import org.schabi.newpipe.extractor.exceptions.ExtractionException;
 import org.schabi.newpipe.extractor.exceptions.ParsingException;
@@ -40,8 +40,9 @@ public class YoutubeTrendingExtractor extends KioskExtractor {
 
     private Document doc;
 
-    public YoutubeTrendingExtractor(StreamingService service, ListUIHFactory urlIdHandler, String kioskId)
-            throws ExtractionException {
+    public YoutubeTrendingExtractor(StreamingService service,
+                                    ListUIHandler urlIdHandler,
+                                    String kioskId) {
         super(service, urlIdHandler, kioskId);
     }
 

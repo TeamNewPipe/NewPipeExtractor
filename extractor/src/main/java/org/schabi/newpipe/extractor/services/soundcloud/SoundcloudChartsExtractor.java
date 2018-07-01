@@ -1,7 +1,7 @@
 package org.schabi.newpipe.extractor.services.soundcloud;
 
 import org.schabi.newpipe.extractor.Downloader;
-import org.schabi.newpipe.extractor.ListUIHFactory;
+import org.schabi.newpipe.extractor.uih.ListUIHandler;
 import org.schabi.newpipe.extractor.StreamingService;
 import org.schabi.newpipe.extractor.exceptions.ExtractionException;
 import org.schabi.newpipe.extractor.kiosk.KioskExtractor;
@@ -17,7 +17,7 @@ public class SoundcloudChartsExtractor extends KioskExtractor {
 	private StreamInfoItemsCollector collector = null;
 	private String nextPageUrl = null;
 
-    public SoundcloudChartsExtractor(StreamingService service, ListUIHFactory urlIdHandler, String kioskId) {
+    public SoundcloudChartsExtractor(StreamingService service, ListUIHandler urlIdHandler, String kioskId) {
         super(service, urlIdHandler, kioskId);
     }
 

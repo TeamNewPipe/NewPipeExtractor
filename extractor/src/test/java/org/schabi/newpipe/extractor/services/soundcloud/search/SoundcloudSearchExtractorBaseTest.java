@@ -37,10 +37,15 @@ public abstract class SoundcloudSearchExtractorBaseTest {
     protected static ListExtractor.InfoItemsPage<InfoItem> itemsPage;
 
 
+    protected static String removeClientId(String url) {
+        String[] splitUrl = url.split("client_id=[a-zA-Z0-9]*&");
+        return splitUrl[0] + splitUrl[1];
+    }
+
     @Test
     public void testResultListElementsLength() {
         assertTrue(Integer.toString(itemsPage.getItems().size()),
-                itemsPage.getItems().size() >= 10);
+                itemsPage.getItems().size() >= 3);
     }
 
     @Test

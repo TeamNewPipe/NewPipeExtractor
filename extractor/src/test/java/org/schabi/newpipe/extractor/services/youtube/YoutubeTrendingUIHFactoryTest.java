@@ -24,8 +24,12 @@ import org.junit.BeforeClass;
 import org.junit.Test;
 import org.schabi.newpipe.Downloader;
 import org.schabi.newpipe.extractor.NewPipe;
-import org.schabi.newpipe.extractor.UIHFactory;
+import org.schabi.newpipe.extractor.exceptions.FoundAdException;
+import org.schabi.newpipe.extractor.exceptions.ParsingException;
+import org.schabi.newpipe.extractor.uih.UIHFactory;
 import org.schabi.newpipe.extractor.services.youtube.urlIdHandlers.YoutubeTrendingUIHFactory;
+
+import java.text.ParseException;
 
 import static junit.framework.TestCase.assertFalse;
 import static org.junit.Assert.assertEquals;
@@ -47,17 +51,17 @@ public class YoutubeTrendingUIHFactoryTest {
     @Test
     public void getUrl()
             throws Exception {
-        assertEquals(UIHFactory.setId("").getUrl(), "https://www.youtube.com/feed/trending");
+        assertEquals(UIHFactory.fromId("").getUrl(), "https://www.youtube.com/feed/trending");
     }
 
     @Test
     public void getId()
             throws Exception {
-        assertEquals(UIHFactory.setUrl("").getId(), "Trending");
+        assertEquals(UIHFactory.fromUrl("https://www.youtube.com/feed/trending").getId(), "Trending");
     }
 
     @Test
-    public void acceptUrl() {
+    public void acceptUrl() throws ParsingException {
         assertTrue(UIHFactory.acceptUrl("https://www.youtube.com/feed/trending"));
         assertTrue(UIHFactory.acceptUrl("https://www.youtube.com/feed/trending?adsf=fjaj#fhe"));
         assertTrue(UIHFactory.acceptUrl("http://www.youtube.com/feed/trending"));

@@ -28,12 +28,12 @@ public class YoutubeStreamUIHFactoryTest {
 
     @Test(expected = IllegalArgumentException.class)
     public void getIdWithNullAsUrl() throws ParsingException {
-        urlIdHandler.setId(null);
+        urlIdHandler.fromId(null);
     }
 
     @Test(expected = FoundAdException.class)
     public void getIdForAd() throws ParsingException {
-        urlIdHandler.setUrl(AD_URL).getId();
+        urlIdHandler.fromUrl(AD_URL).getId();
     }
 
     @Test
@@ -45,7 +45,7 @@ public class YoutubeStreamUIHFactoryTest {
         for (String invalidUrl : invalidUrls) {
             Throwable exception = null;
             try {
-                urlIdHandler.setUrl(invalidUrl).getId();
+                urlIdHandler.fromUrl(invalidUrl).getId();
             } catch (ParsingException e) {
                 exception = e;
             }
@@ -57,37 +57,37 @@ public class YoutubeStreamUIHFactoryTest {
 
     @Test
     public void getIdfromYt() throws Exception {
-        assertEquals("jZViOEv90dI", urlIdHandler.setUrl("https://www.youtube.com/watch?v=jZViOEv90dI").getId());
-        assertEquals("W-fFHeTX70Q", urlIdHandler.setUrl("https://www.youtube.com/watch?v=W-fFHeTX70Q").getId());
-        assertEquals("jZViOEv90dI", urlIdHandler.setUrl("https://www.youtube.com/watch?v=jZViOEv90dI?t=100").getId());
-        assertEquals("jZViOEv90dI", urlIdHandler.setUrl("https://WWW.YouTube.com/watch?v=jZViOEv90dI?t=100").getId());
-        assertEquals("jZViOEv90dI", urlIdHandler.setUrl("HTTPS://www.youtube.com/watch?v=jZViOEv90dI?t=100").getId());
-        assertEquals("jZViOEv90dI", urlIdHandler.setUrl("https://youtu.be/jZViOEv90dI?t=9s").getId());
-        assertEquals("jZViOEv90dI", urlIdHandler.setUrl("HTTPS://Youtu.be/jZViOEv90dI?t=9s").getId());
-        assertEquals("uEJuoEs1UxY", urlIdHandler.setUrl("http://www.youtube.com/watch_popup?v=uEJuoEs1UxY").getId());
-        assertEquals("uEJuoEs1UxY", urlIdHandler.setUrl("http://www.Youtube.com/watch_popup?v=uEJuoEs1UxY").getId());
-        assertEquals("jZViOEv90dI", urlIdHandler.setUrl("https://www.youtube.com/embed/jZViOEv90dI").getId());
-        assertEquals("jZViOEv90dI", urlIdHandler.setUrl("https://www.youtube-nocookie.com/embed/jZViOEv90dI").getId());
-        assertEquals("jZViOEv90dI", urlIdHandler.setUrl("http://www.youtube.com/watch?v=jZViOEv90dI").getId());
-        assertEquals("jZViOEv90dI", urlIdHandler.setUrl("http://youtube.com/watch?v=jZViOEv90dI").getId());
-        assertEquals("jZViOEv90dI", urlIdHandler.setUrl("http://youtu.be/jZViOEv90dI?t=9s").getId());
-        assertEquals("7_WWz2DSnT8", urlIdHandler.setUrl("https://youtu.be/7_WWz2DSnT8").getId());
-        assertEquals("oy6NvWeVruY", urlIdHandler.setUrl("https://m.youtube.com/watch?v=oy6NvWeVruY").getId());
-        assertEquals("jZViOEv90dI", urlIdHandler.setUrl("http://www.youtube.com/embed/jZViOEv90dI").getId());
-        assertEquals("jZViOEv90dI", urlIdHandler.setUrl("http://www.Youtube.com/embed/jZViOEv90dI").getId());
-        assertEquals("jZViOEv90dI", urlIdHandler.setUrl("http://www.youtube-nocookie.com/embed/jZViOEv90dI").getId());
-        assertEquals("EhxJLojIE_o", urlIdHandler.setUrl("http://www.youtube.com/attribution_link?a=JdfC0C9V6ZI&u=%2Fwatch%3Fv%3DEhxJLojIE_o%26feature%3Dshare").getId());
-        assertEquals("jZViOEv90dI", urlIdHandler.setUrl("vnd.youtube://www.youtube.com/watch?v=jZViOEv90dI").getId());
-        assertEquals("jZViOEv90dI", urlIdHandler.setUrl("vnd.youtube:jZViOEv90dI").getId());
+        assertEquals("jZViOEv90dI", urlIdHandler.fromUrl("https://www.youtube.com/watch?v=jZViOEv90dI").getId());
+        assertEquals("W-fFHeTX70Q", urlIdHandler.fromUrl("https://www.youtube.com/watch?v=W-fFHeTX70Q").getId());
+        assertEquals("jZViOEv90dI", urlIdHandler.fromUrl("https://www.youtube.com/watch?v=jZViOEv90dI?t=100").getId());
+        assertEquals("jZViOEv90dI", urlIdHandler.fromUrl("https://WWW.YouTube.com/watch?v=jZViOEv90dI?t=100").getId());
+        assertEquals("jZViOEv90dI", urlIdHandler.fromUrl("HTTPS://www.youtube.com/watch?v=jZViOEv90dI?t=100").getId());
+        assertEquals("jZViOEv90dI", urlIdHandler.fromUrl("https://youtu.be/jZViOEv90dI?t=9s").getId());
+        assertEquals("jZViOEv90dI", urlIdHandler.fromUrl("HTTPS://Youtu.be/jZViOEv90dI?t=9s").getId());
+        assertEquals("uEJuoEs1UxY", urlIdHandler.fromUrl("http://www.youtube.com/watch_popup?v=uEJuoEs1UxY").getId());
+        assertEquals("uEJuoEs1UxY", urlIdHandler.fromUrl("http://www.Youtube.com/watch_popup?v=uEJuoEs1UxY").getId());
+        assertEquals("jZViOEv90dI", urlIdHandler.fromUrl("https://www.youtube.com/embed/jZViOEv90dI").getId());
+        assertEquals("jZViOEv90dI", urlIdHandler.fromUrl("https://www.youtube-nocookie.com/embed/jZViOEv90dI").getId());
+        assertEquals("jZViOEv90dI", urlIdHandler.fromUrl("http://www.youtube.com/watch?v=jZViOEv90dI").getId());
+        assertEquals("jZViOEv90dI", urlIdHandler.fromUrl("http://youtube.com/watch?v=jZViOEv90dI").getId());
+        assertEquals("jZViOEv90dI", urlIdHandler.fromUrl("http://youtu.be/jZViOEv90dI?t=9s").getId());
+        assertEquals("7_WWz2DSnT8", urlIdHandler.fromUrl("https://youtu.be/7_WWz2DSnT8").getId());
+        assertEquals("oy6NvWeVruY", urlIdHandler.fromUrl("https://m.youtube.com/watch?v=oy6NvWeVruY").getId());
+        assertEquals("jZViOEv90dI", urlIdHandler.fromUrl("http://www.youtube.com/embed/jZViOEv90dI").getId());
+        assertEquals("jZViOEv90dI", urlIdHandler.fromUrl("http://www.Youtube.com/embed/jZViOEv90dI").getId());
+        assertEquals("jZViOEv90dI", urlIdHandler.fromUrl("http://www.youtube-nocookie.com/embed/jZViOEv90dI").getId());
+        assertEquals("EhxJLojIE_o", urlIdHandler.fromUrl("http://www.youtube.com/attribution_link?a=JdfC0C9V6ZI&u=%2Fwatch%3Fv%3DEhxJLojIE_o%26feature%3Dshare").getId());
+        assertEquals("jZViOEv90dI", urlIdHandler.fromUrl("vnd.youtube://www.youtube.com/watch?v=jZViOEv90dI").getId());
+        assertEquals("jZViOEv90dI", urlIdHandler.fromUrl("vnd.youtube:jZViOEv90dI").getId());
     }
 
     @Test
     public void getIdfromSharedLinksYt() throws Exception {
         String sharedId = "7JIArTByb3E";
         String realId = "Q7JsK50NGaA";
-        assertEquals(realId, urlIdHandler.setUrl("vnd.youtube://www.YouTube.com/shared?ci=" + sharedId + "&feature=twitter-deep-link").getId());
-        assertEquals(realId, urlIdHandler.setUrl("vnd.youtube://www.youtube.com/shared?ci=" + sharedId).getId());
-        assertEquals(realId, urlIdHandler.setUrl("https://www.youtube.com/shared?ci=" + sharedId).getId());
+        assertEquals(realId, urlIdHandler.fromUrl("vnd.youtube://www.YouTube.com/shared?ci=" + sharedId + "&feature=twitter-deep-link").getId());
+        assertEquals(realId, urlIdHandler.fromUrl("vnd.youtube://www.youtube.com/shared?ci=" + sharedId).getId());
+        assertEquals(realId, urlIdHandler.fromUrl("https://www.youtube.com/shared?ci=" + sharedId).getId());
     }
 
 
@@ -131,11 +131,11 @@ public class YoutubeStreamUIHFactoryTest {
 
     @Test
     public void testGetHookIdfromUrl() throws ParsingException {
-        assertEquals("TglNG-yjabU", urlIdHandler.setUrl("https://hooktube.com/watch?v=TglNG-yjabU").getId());
-        assertEquals("3msbfr6pBNE", urlIdHandler.setUrl("hooktube.com/watch?v=3msbfr6pBNE").getId());
-        assertEquals("ocH3oSnZG3c", urlIdHandler.setUrl("https://hooktube.com/watch?v=ocH3oSnZG3c&list=PLS2VU1j4vzuZwooPjV26XM9UEBY2CPNn2").getId());
-        assertEquals("3msbfr6pBNE", urlIdHandler.setUrl("hooktube.com/watch/3msbfr6pBNE").getId());
-        assertEquals("3msbfr6pBNE", urlIdHandler.setUrl("hooktube.com/v/3msbfr6pBNE").getId());
-        assertEquals("3msbfr6pBNE", urlIdHandler.setUrl("hooktube.com/embed/3msbfr6pBNE").getId());
+        assertEquals("TglNG-yjabU", urlIdHandler.fromUrl("https://hooktube.com/watch?v=TglNG-yjabU").getId());
+        assertEquals("3msbfr6pBNE", urlIdHandler.fromUrl("hooktube.com/watch?v=3msbfr6pBNE").getId());
+        assertEquals("ocH3oSnZG3c", urlIdHandler.fromUrl("https://hooktube.com/watch?v=ocH3oSnZG3c&list=PLS2VU1j4vzuZwooPjV26XM9UEBY2CPNn2").getId());
+        assertEquals("3msbfr6pBNE", urlIdHandler.fromUrl("hooktube.com/watch/3msbfr6pBNE").getId());
+        assertEquals("3msbfr6pBNE", urlIdHandler.fromUrl("hooktube.com/v/3msbfr6pBNE").getId());
+        assertEquals("3msbfr6pBNE", urlIdHandler.fromUrl("hooktube.com/embed/3msbfr6pBNE").getId());
     }
 }

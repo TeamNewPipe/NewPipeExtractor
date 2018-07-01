@@ -5,7 +5,7 @@ import com.grack.nanojson.JsonObject;
 import com.grack.nanojson.JsonParser;
 import com.grack.nanojson.JsonParserException;
 import org.schabi.newpipe.extractor.Downloader;
-import org.schabi.newpipe.extractor.ListUIHFactory;
+import org.schabi.newpipe.extractor.uih.ListUIHandler;
 import org.schabi.newpipe.extractor.StreamingService;
 import org.schabi.newpipe.extractor.channel.ChannelExtractor;
 import org.schabi.newpipe.extractor.exceptions.ExtractionException;
@@ -24,14 +24,14 @@ public class SoundcloudChannelExtractor extends ChannelExtractor {
     private StreamInfoItemsCollector streamInfoItemsCollector = null;
     private String nextPageUrl = null;
 
-    public SoundcloudChannelExtractor(StreamingService service, ListUIHFactory urlIdHandler) {
+    public SoundcloudChannelExtractor(StreamingService service, ListUIHandler urlIdHandler) {
         super(service, urlIdHandler);
     }
 
     @Override
     public void onFetchPage(@Nonnull Downloader downloader) throws IOException, ExtractionException {
 
-        userId = getUIHFactory().getId();
+        userId = getUIHandler().getId();
         String apiUrl = "https://api-v2.soundcloud.com/users/" + userId +
                 "?client_id=" + SoundcloudParsingHelper.clientId();
 

@@ -50,8 +50,8 @@ public class SoundcloudSearchExtractorDefaultTest extends SoundcloudSearchExtrac
 
     @Test
     public void testGetSecondPageUrl() throws Exception {
-        assertEquals("https://api-v2.soundcloud.com/search?q=lill+uzi+vert&client_id=rc0HfXXgVnLSGEuQMs1F8xxuAR2AL431&limit=10&offset=10",
-                extractor.getNextPageUrl());
+        assertEquals("https://api-v2.soundcloud.com/search?q=lill+uzi+vert&limit=10&offset=10",
+                removeClientId(extractor.getNextPageUrl()));
     }
 
     @Test
@@ -92,8 +92,8 @@ public class SoundcloudSearchExtractorDefaultTest extends SoundcloudSearchExtrac
         }
         assertFalse("First and second page are equal", equals);
 
-        assertEquals("https://api-v2.soundcloud.com/search?q=lill+uzi+vert&client_id=rc0HfXXgVnLSGEuQMs1F8xxuAR2AL431&limit=10&offset=20",
-                secondPage.getNextPageUrl());
+        assertEquals("https://api-v2.soundcloud.com/search?q=lill+uzi+vert&limit=10&offset=20",
+                removeClientId(secondPage.getNextPageUrl()));
     }
 
 

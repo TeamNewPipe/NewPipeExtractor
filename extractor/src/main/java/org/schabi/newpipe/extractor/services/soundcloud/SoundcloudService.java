@@ -1,16 +1,13 @@
 package org.schabi.newpipe.extractor.services.soundcloud;
 
 import org.schabi.newpipe.extractor.*;
-import org.schabi.newpipe.extractor.ListUIHFactory;
-import org.schabi.newpipe.extractor.UIHFactory;
+import org.schabi.newpipe.extractor.uih.*;
 import org.schabi.newpipe.extractor.channel.ChannelExtractor;
 import org.schabi.newpipe.extractor.exceptions.ExtractionException;
 import org.schabi.newpipe.extractor.kiosk.KioskExtractor;
 import org.schabi.newpipe.extractor.kiosk.KioskList;
 import org.schabi.newpipe.extractor.playlist.PlaylistExtractor;
-import org.schabi.newpipe.extractor.search.SearchEngine;
 import org.schabi.newpipe.extractor.search.SearchExtractor;
-import org.schabi.newpipe.extractor.search.SearchQIHFactory;
 import org.schabi.newpipe.extractor.stream.StreamExtractor;
 import org.schabi.newpipe.extractor.subscription.SubscriptionExtractor;
 
@@ -24,7 +21,7 @@ public class SoundcloudService extends StreamingService {
     }
 
     @Override
-    public SearchExtractor getSearchExtractor(SearchQIHFactory queryHandler, String contentCountry) {
+    public SearchExtractor getSearchExtractor(SearchQIHandler queryHandler, String contentCountry) {
         return new SoundcloudSearchExtractor(this, queryHandler, contentCountry);
     }
 
@@ -50,17 +47,17 @@ public class SoundcloudService extends StreamingService {
 
 
     @Override
-    public StreamExtractor getStreamExtractor(UIHFactory UIHFactory) {
-        return new SoundcloudStreamExtractor(this, UIHFactory);
+    public StreamExtractor getStreamExtractor(UIHandler UIHandler) {
+        return new SoundcloudStreamExtractor(this, UIHandler);
     }
 
     @Override
-    public ChannelExtractor getChannelExtractor(ListUIHFactory urlIdHandler) {
+    public ChannelExtractor getChannelExtractor(ListUIHandler urlIdHandler) {
         return new SoundcloudChannelExtractor(this, urlIdHandler);
     }
 
     @Override
-    public PlaylistExtractor getPlaylistExtractor(ListUIHFactory urlIdHandler) {
+    public PlaylistExtractor getPlaylistExtractor(ListUIHandler urlIdHandler) {
         return new SoundcloudPlaylistExtractor(this, urlIdHandler);
     }
 
@@ -78,7 +75,7 @@ public class SoundcloudService extends StreamingService {
                                                  String id)
                     throws ExtractionException {
                 return new SoundcloudChartsExtractor(SoundcloudService.this,
-                        new SoundcloudChartsUIHFactory().setUrl(url), id);
+                        new SoundcloudChartsUIHFactory().fromUrl(url), id);
             }
         };
 

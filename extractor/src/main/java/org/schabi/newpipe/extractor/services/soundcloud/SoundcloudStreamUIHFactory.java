@@ -1,6 +1,6 @@
 package org.schabi.newpipe.extractor.services.soundcloud;
 
-import org.schabi.newpipe.extractor.UIHFactory;
+import org.schabi.newpipe.extractor.uih.UIHFactory;
 import org.schabi.newpipe.extractor.exceptions.ParsingException;
 import org.schabi.newpipe.extractor.utils.Parser;
 import org.schabi.newpipe.extractor.utils.Utils;
@@ -18,7 +18,7 @@ public class SoundcloudStreamUIHFactory extends UIHFactory {
     }
 
     @Override
-    public String getUrl() throws ParsingException {
+    public String getUrl(String id) throws ParsingException {
         try {
             return SoundcloudParsingHelper.resolveUrlWithEmbedPlayer("https://api.soundcloud.com/tracks/" + id);
         } catch (Exception e) {
@@ -27,7 +27,7 @@ public class SoundcloudStreamUIHFactory extends UIHFactory {
     }
 
     @Override
-    public String onGetIdFromUrl(String url) throws ParsingException {
+    public String getId(String url) throws ParsingException {
         Utils.checkUrl(URL_PATTERN, url);
 
         try {

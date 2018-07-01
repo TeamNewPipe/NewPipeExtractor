@@ -23,9 +23,10 @@ package org.schabi.newpipe.extractor.stream;
 import org.schabi.newpipe.extractor.Extractor;
 import org.schabi.newpipe.extractor.StreamingService;
 import org.schabi.newpipe.extractor.Subtitles;
-import org.schabi.newpipe.extractor.UIHFactory;
+import org.schabi.newpipe.extractor.uih.UIHFactory;
 import org.schabi.newpipe.extractor.exceptions.ExtractionException;
 import org.schabi.newpipe.extractor.exceptions.ParsingException;
+import org.schabi.newpipe.extractor.uih.UIHandler;
 import org.schabi.newpipe.extractor.utils.Parser;
 
 import javax.annotation.Nonnull;
@@ -39,8 +40,8 @@ public abstract class StreamExtractor extends Extractor {
 
     public static final int NO_AGE_LIMIT = 0;
 
-    public StreamExtractor(StreamingService service, UIHFactory UIHFactory) {
-        super(service, UIHFactory);
+    public StreamExtractor(StreamingService service, UIHandler uiHandler) {
+        super(service, uiHandler);
     }
 
     @Nonnull

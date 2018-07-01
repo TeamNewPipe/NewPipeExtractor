@@ -1,9 +1,11 @@
 package org.schabi.newpipe.extractor.services.soundcloud;
 
-import org.schabi.newpipe.extractor.ListUIHFactory;
+import org.schabi.newpipe.extractor.uih.ListUIHFactory;
 import org.schabi.newpipe.extractor.exceptions.ParsingException;
 import org.schabi.newpipe.extractor.utils.Parser;
 import org.schabi.newpipe.extractor.utils.Utils;
+
+import java.util.List;
 
 public class SoundcloudPlaylistUIHFactory extends ListUIHFactory {
     private static final SoundcloudPlaylistUIHFactory instance = new SoundcloudPlaylistUIHFactory();
@@ -15,7 +17,7 @@ public class SoundcloudPlaylistUIHFactory extends ListUIHFactory {
     }
 
     @Override
-    public String onGetIdFromUrl(String url) throws ParsingException {
+    public String getId(String url) throws ParsingException {
         Utils.checkUrl(URL_PATTERN, url);
 
         try {
@@ -26,7 +28,7 @@ public class SoundcloudPlaylistUIHFactory extends ListUIHFactory {
     }
 
     @Override
-    public String getUrl() throws ParsingException {
+    public String getUrl(String id, List<String> contentFilter, String sortFilter) throws ParsingException {
         try {
             return SoundcloudParsingHelper.resolveUrlWithEmbedPlayer("https://api.soundcloud.com/playlists/" + id);
         } catch (Exception e) {

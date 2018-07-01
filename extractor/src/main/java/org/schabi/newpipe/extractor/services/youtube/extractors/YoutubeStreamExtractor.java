@@ -17,6 +17,7 @@ import org.schabi.newpipe.extractor.exceptions.ParsingException;
 import org.schabi.newpipe.extractor.exceptions.ReCaptchaException;
 import org.schabi.newpipe.extractor.services.youtube.ItagItem;
 import org.schabi.newpipe.extractor.stream.*;
+import org.schabi.newpipe.extractor.uih.UIHandler;
 import org.schabi.newpipe.extractor.utils.DonationLinkHelper;
 import org.schabi.newpipe.extractor.utils.Parser;
 import org.schabi.newpipe.extractor.utils.Utils;
@@ -29,7 +30,7 @@ import java.util.*;
 /*
  * Created by Christian Schabesberger on 06.08.15.
  *
- * Copyright (C) Christian Schabesberger 2015 <chris.schabesberger@mailbox.org>
+ * Copyright (C) Christian Schabesberger 2018 <chris.schabesberger@mailbox.org>
  * YoutubeStreamExtractor.java is part of NewPipe.
  *
  * NewPipe is free software: you can redistribute it and/or modify
@@ -84,8 +85,8 @@ public class YoutubeStreamExtractor extends StreamExtractor {
 
     private boolean isAgeRestricted;
 
-    public YoutubeStreamExtractor(StreamingService service, UIHFactory UIHFactory) throws ExtractionException {
-        super(service, UIHFactory);
+    public YoutubeStreamExtractor(StreamingService service, UIHandler uiHandler) throws ExtractionException {
+        super(service, uiHandler);
     }
 
     /*//////////////////////////////////////////////////////////////////////////

@@ -1,10 +1,11 @@
 package org.schabi.newpipe.extractor.services.youtube.urlIdHandlers;
 
 import org.schabi.newpipe.extractor.exceptions.ParsingException;
-import org.schabi.newpipe.extractor.search.SearchQIHFactory;
+import org.schabi.newpipe.extractor.uih.SearchQIHFactory;
 
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
+import java.util.List;
 
 public class YoutubeSearchQIHFactory extends SearchQIHFactory {
 
@@ -20,13 +21,13 @@ public class YoutubeSearchQIHFactory extends SearchQIHFactory {
     }
 
     @Override
-    public String getUrl() throws ParsingException {
+    public String getUrl(String searchString, List<String> contentFilters, String sortFilter) throws ParsingException {
         try {
             final String url = "https://www.youtube.com/results"
-                    + "?q=" + URLEncoder.encode(id, CHARSET_UTF_8);
+                    + "?q=" + URLEncoder.encode(searchString, CHARSET_UTF_8);
 
-            if(getContentFilter().size() > 0) {
-                switch (getContentFilter().get(0)) {
+            if(contentFilters.size() > 0) {
+                switch (contentFilters.get(0)) {
                     case STREAM: return url + "&sp=EgIQAVAU";
                     case CHANNEL: return url + "&sp=EgIQAlAU";
                     case PLAYLIST: return url + "&sp=EgIQA1AU";

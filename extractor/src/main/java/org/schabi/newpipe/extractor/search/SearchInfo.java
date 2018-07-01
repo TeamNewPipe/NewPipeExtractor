@@ -2,9 +2,10 @@ package org.schabi.newpipe.extractor.search;
 
 import org.schabi.newpipe.extractor.InfoItem;
 import org.schabi.newpipe.extractor.ListInfo;
-import org.schabi.newpipe.extractor.ListUIHFactory;
+import org.schabi.newpipe.extractor.uih.ListUIHFactory;
 import org.schabi.newpipe.extractor.exceptions.ExtractionException;
 import org.schabi.newpipe.extractor.exceptions.ParsingException;
+import org.schabi.newpipe.extractor.uih.ListUIHandler;
 
 public class SearchInfo extends ListInfo<InfoItem> {
 
@@ -13,7 +14,7 @@ public class SearchInfo extends ListInfo<InfoItem> {
 
 
     public SearchInfo(int serviceId,
-                      ListUIHFactory urlIdHandler,
+                      ListUIHandler urlIdHandler,
                       String searchString) throws ParsingException {
         super(serviceId, urlIdHandler, "Search");
         this.searchString = searchString;
@@ -23,7 +24,7 @@ public class SearchInfo extends ListInfo<InfoItem> {
     public static SearchInfo getInfo(SearchExtractor extractor) throws ExtractionException {
         final SearchInfo info = new SearchInfo(
                 extractor.getServiceId(),
-                extractor.getUIHFactory(),
+                extractor.getUIHandler(),
                 extractor.getSearchString());
 
         try {

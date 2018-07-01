@@ -2,11 +2,12 @@ package org.schabi.newpipe.extractor.services.soundcloud;
 
 import org.schabi.newpipe.extractor.exceptions.ParsingException;
 import org.schabi.newpipe.extractor.exceptions.ReCaptchaException;
-import org.schabi.newpipe.extractor.search.SearchQIHFactory;
+import org.schabi.newpipe.extractor.uih.SearchQIHFactory;
 
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
+import java.util.List;
 
 public class SoundcloudSearchQIHFactory extends SearchQIHFactory {
     public static final String CHARSET_UTF_8 = "UTF-8";
@@ -19,12 +20,12 @@ public class SoundcloudSearchQIHFactory extends SearchQIHFactory {
     public static final int ITEMS_PER_PAGE = 10;
 
     @Override
-    public String getUrl() throws ParsingException {
+    public String getUrl(String id, List<String> contentFilter, String sortFilter) throws ParsingException {
         try {
             String url = "https://api-v2.soundcloud.com/search";
 
-            if(getContentFilter().size() > 0) {
-                switch (getContentFilter().get(0)) {
+            if(contentFilter.size() > 0) {
+                switch (contentFilter.get(0)) {
                     case TRACKS:
                         url += "/tracks";
                         break;

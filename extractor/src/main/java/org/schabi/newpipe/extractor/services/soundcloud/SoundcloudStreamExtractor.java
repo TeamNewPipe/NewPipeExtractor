@@ -8,6 +8,7 @@ import org.schabi.newpipe.extractor.exceptions.ContentNotAvailableException;
 import org.schabi.newpipe.extractor.exceptions.ExtractionException;
 import org.schabi.newpipe.extractor.exceptions.ParsingException;
 import org.schabi.newpipe.extractor.stream.*;
+import org.schabi.newpipe.extractor.uih.UIHandler;
 
 import javax.annotation.Nonnull;
 import java.io.IOException;
@@ -20,8 +21,8 @@ import java.util.List;
 public class SoundcloudStreamExtractor extends StreamExtractor {
     private JsonObject track;
 
-    public SoundcloudStreamExtractor(StreamingService service, UIHFactory UIHFactory) {
-        super(service, UIHFactory);
+    public SoundcloudStreamExtractor(StreamingService service, UIHandler uIHandler) {
+        super(service, uIHandler);
     }
 
     @Override

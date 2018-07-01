@@ -2,6 +2,8 @@ package org.schabi.newpipe.extractor;
 
 import org.schabi.newpipe.extractor.exceptions.ExtractionException;
 import org.schabi.newpipe.extractor.exceptions.ParsingException;
+import org.schabi.newpipe.extractor.uih.UIHandler;
+import org.schabi.newpipe.extractor.uih.UIHandler;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -14,27 +16,27 @@ public abstract class Extractor {
      */
     private final StreamingService service;
 
-    private final UIHFactory UIHFactory;
+    private final org.schabi.newpipe.extractor.uih.UIHandler uIHandler;
 
     @Nullable
     private boolean pageFetched = false;
     private final Downloader downloader;
 
-    public Extractor(final StreamingService service, final UIHFactory UIHFactory) {
+    public Extractor(final StreamingService service, final UIHandler uIHandler) {
         if(service == null) throw new NullPointerException("service is null");
-        if(UIHFactory == null) throw new NullPointerException("UIHFactory is null");
+        if(uIHandler == null) throw new NullPointerException("UIHandler is null");
         this.service = service;
-        this.UIHFactory = UIHFactory;
+        this.uIHandler = uIHandler;
         this.downloader = NewPipe.getDownloader();
         if(downloader == null) throw new NullPointerException("downloader is null");
     }
 
     /**
-     * @return The {@link UIHFactory} of the current extractor object (e.g. a ChannelExtractor should return a channel url handler).
+     * @return The {@link UIHandler} of the current extractor object (e.g. a ChannelExtractor should return a channel url handler).
      */
     @Nonnull
-    public UIHFactory getUIHFactory() {
-        return UIHFactory;
+    public UIHandler getUIHandler() {
+        return uIHandler;
     }
 
     /**
@@ -66,7 +68,7 @@ public abstract class Extractor {
 
     @Nonnull
     public String getId() throws ParsingException {
-        return UIHFactory.getId();
+        return uIHandler.getId();
     }
 
     /**
@@ -79,12 +81,12 @@ public abstract class Extractor {
 
     @Nonnull
     public String getOriginalUrl() throws ParsingException {
-        return UIHFactory.getOriginalUrl();
+        return uIHandler.getOriginalUrl();
     }
 
     @Nonnull
     public String getUrl() throws ParsingException {
-        return UIHFactory.getUrl();
+        return uIHandler.getUrl();
     }
 
     @Nonnull

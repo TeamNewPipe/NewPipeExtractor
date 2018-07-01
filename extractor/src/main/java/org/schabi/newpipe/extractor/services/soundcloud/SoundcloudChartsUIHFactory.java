@@ -1,7 +1,9 @@
 package org.schabi.newpipe.extractor.services.soundcloud;
 
-import org.schabi.newpipe.extractor.ListUIHFactory;
+import org.schabi.newpipe.extractor.uih.ListUIHFactory;
 import org.schabi.newpipe.extractor.utils.Parser;
+
+import java.util.List;
 
 public class SoundcloudChartsUIHFactory extends ListUIHFactory {
     private final String TOP_URL_PATTERN = "^https?://(www\\.|m\\.)?soundcloud.com/charts(/top)?/?([#?].*)?$";
@@ -9,7 +11,7 @@ public class SoundcloudChartsUIHFactory extends ListUIHFactory {
 
 
     @Override
-    public String onGetIdFromUrl(String url) {
+    public String getId(String url) {
         if (Parser.isMatch(TOP_URL_PATTERN, url.toLowerCase())) {
             return "Top 50";
         } else {
@@ -17,7 +19,8 @@ public class SoundcloudChartsUIHFactory extends ListUIHFactory {
         }
     }
 
-    public String getUrl() {
+    @Override
+    public String getUrl(String id, List<String> contentFilter, String sortFilter) {
         if (id.equals("Top 50")) {
             return "https://soundcloud.com/charts/top";
         } else {

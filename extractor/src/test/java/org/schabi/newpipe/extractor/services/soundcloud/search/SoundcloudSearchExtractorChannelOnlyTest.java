@@ -30,7 +30,7 @@ public class SoundcloudSearchExtractorChannelOnlyTest extends SoundcloudSearchEx
                 asList(new String[]{"users"}), null, "de");
         ListExtractor.InfoItemsPage<InfoItem> secondPage = secondExtractor.getPage(itemsPage.getNextPageUrl());
         assertTrue(Integer.toString(secondPage.getItems().size()),
-                secondPage.getItems().size() >= 7);
+                secondPage.getItems().size() >= 3);
 
         // check if its the same result
         boolean equals = true;
@@ -43,14 +43,14 @@ public class SoundcloudSearchExtractorChannelOnlyTest extends SoundcloudSearchEx
         }
         assertFalse("First and second page are equal", equals);
 
-        assertEquals("https://api-v2.soundcloud.com/search/users?q=lill+uzi+vert&client_id=rc0HfXXgVnLSGEuQMs1F8xxuAR2AL431&limit=10&offset=20",
-                secondPage.getNextPageUrl());
+        assertEquals("https://api-v2.soundcloud.com/search/users?q=lill+uzi+vert&limit=10&offset=20",
+                removeClientId(secondPage.getNextPageUrl()));
     }
 
     @Test
     public void testGetSecondPageUrl() throws Exception {
-        assertEquals("https://api-v2.soundcloud.com/search/users?q=lill+uzi+vert&client_id=rc0HfXXgVnLSGEuQMs1F8xxuAR2AL431&limit=10&offset=10",
-                extractor.getNextPageUrl());
+        assertEquals("https://api-v2.soundcloud.com/search/users?q=lill+uzi+vert&limit=10&offset=10",
+                removeClientId(extractor.getNextPageUrl()));
     }
 
     @Test

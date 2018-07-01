@@ -1,6 +1,7 @@
 package org.schabi.newpipe.extractor;
 
 import org.schabi.newpipe.extractor.exceptions.ParsingException;
+import org.schabi.newpipe.extractor.uih.ListUIHandler;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -8,7 +9,7 @@ import java.util.List;
 public abstract class ListInfo<T extends InfoItem> extends Info {
     private List<T> relatedItems;
     private String nextPageUrl = null;
-    private List<String> contentFilter = new ArrayList<>();
+    private List<String> contentFilters = new ArrayList<>();
     private String sortFilter = "";
 
     public ListInfo(int serviceId,
@@ -19,13 +20,13 @@ public abstract class ListInfo<T extends InfoItem> extends Info {
                     List<String> contentFilter,
                     String sortFilter) {
         super(serviceId, id, url, originalUrl, name);
-        this.contentFilter = contentFilter;
+        this.contentFilters = contentFilter;
         this.sortFilter = sortFilter;
     }
 
-    public ListInfo(int serviceId, ListUIHFactory listUrlIdHandler, String name) throws ParsingException {
+    public ListInfo(int serviceId, ListUIHandler listUrlIdHandler, String name) throws ParsingException {
         super(serviceId, listUrlIdHandler, name);
-        this.contentFilter = listUrlIdHandler.getContentFilter();
+        this.contentFilters = listUrlIdHandler.getContentFilters();
         this.sortFilter = listUrlIdHandler.getSortFilter();
     }
 
@@ -49,8 +50,8 @@ public abstract class ListInfo<T extends InfoItem> extends Info {
         this.nextPageUrl = pageUrl;
     }
 
-    public List<String> getContentFilter() {
-        return contentFilter;
+    public List<String> getContentFilters() {
+        return contentFilters;
     }
 
     public String getSortFilter() {

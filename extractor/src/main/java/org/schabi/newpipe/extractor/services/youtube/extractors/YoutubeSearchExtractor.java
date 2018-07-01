@@ -10,7 +10,7 @@ import org.schabi.newpipe.extractor.exceptions.ExtractionException;
 import org.schabi.newpipe.extractor.exceptions.ParsingException;
 import org.schabi.newpipe.extractor.search.InfoItemsSearchCollector;
 import org.schabi.newpipe.extractor.search.SearchExtractor;
-import org.schabi.newpipe.extractor.search.SearchQIHFactory;
+import org.schabi.newpipe.extractor.uih.SearchQIHandler;
 import org.schabi.newpipe.extractor.utils.Parser;
 
 import javax.annotation.Nonnull;
@@ -19,12 +19,32 @@ import java.io.UnsupportedEncodingException;
 import java.net.MalformedURLException;
 import java.net.URL;
 
+/*
+ * Created by Christian Schabesberger on 22.07.2018
+ *
+ * Copyright (C) Christian Schabesberger 2018 <chris.schabesberger@mailbox.org>
+ * YoutubeSearchExtractor.java is part of NewPipe.
+ *
+ * NewPipe is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * NewPipe is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with NewPipe.  If not, see <http://www.gnu.org/licenses/>.
+ */
+
 public class YoutubeSearchExtractor extends SearchExtractor {
 
     private Document doc;
 
     public YoutubeSearchExtractor(StreamingService service,
-                                  SearchQIHFactory urlIdHandler,
+                                  SearchQIHandler urlIdHandler,
                                   String contentCountry) {
         super(service, urlIdHandler, contentCountry);
     }

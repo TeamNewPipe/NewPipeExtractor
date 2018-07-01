@@ -1,13 +1,15 @@
 package org.schabi.newpipe.extractor.services.youtube.urlIdHandlers;
 
-import org.schabi.newpipe.extractor.ListUIHFactory;
+import org.schabi.newpipe.extractor.uih.ListUIHFactory;
 import org.schabi.newpipe.extractor.exceptions.ParsingException;
 import org.schabi.newpipe.extractor.utils.Parser;
+
+import java.util.List;
 
 /*
  * Created by Christian Schabesberger on 25.07.16.
  *
- * Copyright (C) Christian Schabesberger 2016 <chris.schabesberger@mailbox.org>
+ * Copyright (C) Christian Schabesberger 2018 <chrźis.schabesberger@mailbox.org>
  * YoutubeChannelUIHFactory.java is part of NewPipe.
  *
  * NewPipe is free software: you can redistribute it and/or modify
@@ -34,12 +36,12 @@ public class YoutubeChannelUIHFactory extends ListUIHFactory {
     }
 
     @Override
-    public String onGetIdFromUrl(String url) throws ParsingException {
+    public String getId(String url) throws ParsingException {
         return Parser.matchGroup1(ID_PATTERN, url);
     }
 
     @Override
-    public String getUrl() {
+    public String getUrl(String id, List<String> contentFilters, String searchFilter) {
         return "https://www.youtube.com/" + id;
     }
 

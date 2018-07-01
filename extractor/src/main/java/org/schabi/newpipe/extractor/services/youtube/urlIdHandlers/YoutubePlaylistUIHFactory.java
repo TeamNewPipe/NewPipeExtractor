@@ -1,9 +1,11 @@
 package org.schabi.newpipe.extractor.services.youtube.urlIdHandlers;
 
 
-import org.schabi.newpipe.extractor.ListUIHFactory;
+import org.schabi.newpipe.extractor.uih.ListUIHFactory;
 import org.schabi.newpipe.extractor.exceptions.ParsingException;
 import org.schabi.newpipe.extractor.utils.Parser;
+
+import java.util.List;
 
 public class YoutubePlaylistUIHFactory extends ListUIHFactory {
 
@@ -15,12 +17,12 @@ public class YoutubePlaylistUIHFactory extends ListUIHFactory {
     }
 
     @Override
-    public String getUrl() {
+    public String getUrl(String id, List<String> contentFilters, String sortFilter) {
         return "https://www.youtube.com/playlist?list=" + id;
     }
 
     @Override
-    public String onGetIdFromUrl(String url) throws ParsingException {
+    public String getId(String url) throws ParsingException {
         try {
             return Parser.matchGroup1("list=" + ID_PATTERN, url);
         } catch (final Exception exception) {

@@ -5,6 +5,8 @@ import org.schabi.newpipe.extractor.ListExtractor;
 import org.schabi.newpipe.extractor.StreamingService;
 import org.schabi.newpipe.extractor.exceptions.ExtractionException;
 import org.schabi.newpipe.extractor.exceptions.ParsingException;
+import org.schabi.newpipe.extractor.uih.SearchQIHFactory;
+import org.schabi.newpipe.extractor.uih.SearchQIHandler;
 
 public abstract class SearchExtractor extends ListExtractor<InfoItem> {
 
@@ -17,14 +19,14 @@ public abstract class SearchExtractor extends ListExtractor<InfoItem> {
     private final InfoItemsSearchCollector collector;
     private final String contentCountry;
 
-    public SearchExtractor(StreamingService service, SearchQIHFactory urlIdHandler, String contentCountry) {
+    public SearchExtractor(StreamingService service, SearchQIHandler urlIdHandler, String contentCountry) {
         super(service, urlIdHandler);
         collector = new InfoItemsSearchCollector(service.getServiceId());
         this.contentCountry = contentCountry;
     }
 
     public String getSearchString() {
-        return getUIHFactory().getSearchString();
+        return getUIHandler().getSearchString();
     }
 
     public abstract String getSearchSuggestion() throws ParsingException;
@@ -34,13 +36,13 @@ public abstract class SearchExtractor extends ListExtractor<InfoItem> {
     }
 
     @Override
-    public SearchQIHFactory getUIHFactory() {
-        return (SearchQIHFactory) super.getUIHFactory();
+    public SearchQIHandler getUIHandler() {
+        return (SearchQIHandler) super.getUIHandler();
     }
 
     @Override
     public String getName() {
-        return getUIHFactory().getSearchString();
+        return getUIHandler().getSearchString();
     }
 
     protected String getContentCountry() {

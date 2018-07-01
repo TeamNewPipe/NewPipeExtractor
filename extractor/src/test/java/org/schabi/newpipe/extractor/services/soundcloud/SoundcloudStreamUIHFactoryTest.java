@@ -25,7 +25,7 @@ public class SoundcloudStreamUIHFactoryTest {
 
     @Test(expected = IllegalArgumentException.class)
     public void getIdWithNullAsUrl() throws ParsingException {
-        urlIdHandler.setUrl(null).getId();
+        urlIdHandler.fromUrl(null).getId();
     }
 
     @Test
@@ -37,7 +37,7 @@ public class SoundcloudStreamUIHFactoryTest {
         for (String invalidUrl : invalidUrls) {
             Throwable exception = null;
             try {
-                urlIdHandler.setUrl(invalidUrl).getId();
+                urlIdHandler.fromUrl(invalidUrl).getId();
             } catch (ParsingException e) {
                 exception = e;
             }
@@ -49,16 +49,16 @@ public class SoundcloudStreamUIHFactoryTest {
 
     @Test
     public void getId() throws Exception {
-        assertEquals("309689103", urlIdHandler.setUrl("https://soundcloud.com/liluzivert/15-ysl").getId());
-        assertEquals("309689082", urlIdHandler.setUrl("https://www.soundcloud.com/liluzivert/15-luv-scars-ko").getId());
-        assertEquals("309689035", urlIdHandler.setUrl("http://soundcloud.com/liluzivert/15-boring-shit").getId());
-        assertEquals("294488599", urlIdHandler.setUrl("http://www.soundcloud.com/liluzivert/secure-the-bag-produced-by-glohan-beats").getId());
-        assertEquals("294488438", urlIdHandler.setUrl("HtTpS://sOuNdClOuD.cOm/LiLuZiVeRt/In-O4-pRoDuCeD-bY-dP-bEaTz").getId());
-        assertEquals("294488147", urlIdHandler.setUrl("https://soundcloud.com/liluzivert/fresh-produced-by-zaytoven#t=69").getId());
-        assertEquals("294487876", urlIdHandler.setUrl("https://soundcloud.com/liluzivert/threesome-produced-by-zaytoven#t=1:09").getId());
-        assertEquals("294487684", urlIdHandler.setUrl("https://soundcloud.com/liluzivert/blonde-brigitte-produced-manny-fresh#t=1:9").getId());
-        assertEquals("294487428", urlIdHandler.setUrl("https://soundcloud.com/liluzivert/today-produced-by-c-note#t=1m9s").getId());
-        assertEquals("294487157", urlIdHandler.setUrl("https://soundcloud.com/liluzivert/changed-my-phone-produced-by-c-note#t=1m09s").getId());
+        assertEquals("309689103", urlIdHandler.fromUrl("https://soundcloud.com/liluzivert/15-ysl").getId());
+        assertEquals("309689082", urlIdHandler.fromUrl("https://www.soundcloud.com/liluzivert/15-luv-scars-ko").getId());
+        assertEquals("309689035", urlIdHandler.fromUrl("http://soundcloud.com/liluzivert/15-boring-shit").getId());
+        assertEquals("294488599", urlIdHandler.fromUrl("http://www.soundcloud.com/liluzivert/secure-the-bag-produced-by-glohan-beats").getId());
+        assertEquals("294488438", urlIdHandler.fromUrl("HtTpS://sOuNdClOuD.cOm/LiLuZiVeRt/In-O4-pRoDuCeD-bY-dP-bEaTz").getId());
+        assertEquals("294488147", urlIdHandler.fromUrl("https://soundcloud.com/liluzivert/fresh-produced-by-zaytoven#t=69").getId());
+        assertEquals("294487876", urlIdHandler.fromUrl("https://soundcloud.com/liluzivert/threesome-produced-by-zaytoven#t=1:09").getId());
+        assertEquals("294487684", urlIdHandler.fromUrl("https://soundcloud.com/liluzivert/blonde-brigitte-produced-manny-fresh#t=1:9").getId());
+        assertEquals("294487428", urlIdHandler.fromUrl("https://soundcloud.com/liluzivert/today-produced-by-c-note#t=1m9s").getId());
+        assertEquals("294487157", urlIdHandler.fromUrl("https://soundcloud.com/liluzivert/changed-my-phone-produced-by-c-note#t=1m09s").getId());
     }
 
 

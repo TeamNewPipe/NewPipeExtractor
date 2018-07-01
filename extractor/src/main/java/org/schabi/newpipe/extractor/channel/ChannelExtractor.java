@@ -1,10 +1,10 @@
 package org.schabi.newpipe.extractor.channel;
 
 import org.schabi.newpipe.extractor.ListExtractor;
-import org.schabi.newpipe.extractor.ListUIHFactory;
 import org.schabi.newpipe.extractor.StreamingService;
 import org.schabi.newpipe.extractor.exceptions.ParsingException;
 import org.schabi.newpipe.extractor.stream.StreamInfoItem;
+import org.schabi.newpipe.extractor.uih.ListUIHandler;
 
 /*
  * Created by Christian Schabesberger on 25.07.16.
@@ -28,7 +28,7 @@ import org.schabi.newpipe.extractor.stream.StreamInfoItem;
 
 public abstract class ChannelExtractor extends ListExtractor<StreamInfoItem> {
 
-    public ChannelExtractor(StreamingService service, ListUIHFactory urlIdHandler) {
+    public ChannelExtractor(StreamingService service, ListUIHandler urlIdHandler) {
         super(service, urlIdHandler);
     }
 

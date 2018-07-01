@@ -1,5 +1,6 @@
-package org.schabi.newpipe.extractor;
+package org.schabi.newpipe.extractor.uih;
 
+import org.schabi.newpipe.extractor.exceptions.FoundAdException;
 import org.schabi.newpipe.extractor.exceptions.ParsingException;
 
 /*
@@ -24,38 +25,32 @@ import org.schabi.newpipe.extractor.exceptions.ParsingException;
 
 public abstract class UIHFactory {
 
-    protected String id = "";
-    protected String originalUrl = "";
+    ///////////////////////////////////
+    // To Override
+    ///////////////////////////////////
 
-    public abstract String onGetIdFromUrl(String url) throws ParsingException;
-    public abstract String getUrl() throws ParsingException;
+    public abstract String getId(String url) throws ParsingException;
+    public abstract String getUrl(String id) throws ParsingException;
     public abstract boolean onAcceptUrl(final String url) throws ParsingException;
 
+    ///////////////////////////////////
+    // Logic
+    ///////////////////////////////////
 
-    public UIHFactory setUrl(String url) throws ParsingException {
+    public UIHandler fromUrl(String url) throws ParsingException {
         if(url == null) throw new IllegalArgumentException("url can not be null");
-        originalUrl = url;
-        id = onGetIdFromUrl(url);
-        return this;
-    }
-
-    public UIHFactory setId(String id) throws ParsingException {
-        if(id == null) throw new IllegalArgumentException("id can not be null");
-        this.id = id;
-        if(!acceptUrl(getUrl())) {
-            throw new ParsingException("Malformed unacceptable url: " + getUrl());
+        if(!acceptUrl(url)) {
+            throw new ParsingException("Malformed unacceptable url: " + url);
         }
-        return this;
+
+        final String id = getId(url);
+        return new UIHandler(url, getUrl(id), id);
     }
 
-    public String getId() {
-        return id;
-    }
-
-    public String getOriginalUrl() throws ParsingException {
-        return (originalUrl == null || originalUrl.isEmpty())
-                ? getUrl()
-                : originalUrl;
+    public UIHandler fromId(String id) throws ParsingException {
+        if(id == null) throw new IllegalArgumentException("id can not be null");
+        final String url = getUrl(id);
+        return new UIHandler(url, url, id);
     }
 
     /**
@@ -63,11 +58,11 @@ public abstract class UIHFactory {
      * Intent was meant to be watched with this Service.
      * Return false if this service shall not allow to be called through ACTIONs.
      */
-    public boolean acceptUrl(final String url) {
+    public boolean acceptUrl(final String url) throws ParsingException {
         try {
             return onAcceptUrl(url);
-        } catch (Exception e) {
-            return false;
+        } catch (FoundAdException fe) {
+            throw fe;
         }
     }
 }

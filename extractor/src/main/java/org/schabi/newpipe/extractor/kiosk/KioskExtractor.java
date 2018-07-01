@@ -21,10 +21,11 @@ package org.schabi.newpipe.extractor.kiosk;
  */
 
 import org.schabi.newpipe.extractor.ListExtractor;
-import org.schabi.newpipe.extractor.ListUIHFactory;
+import org.schabi.newpipe.extractor.uih.ListUIHFactory;
 import org.schabi.newpipe.extractor.StreamingService;
 import org.schabi.newpipe.extractor.exceptions.ParsingException;
 import org.schabi.newpipe.extractor.stream.StreamInfoItem;
+import org.schabi.newpipe.extractor.uih.ListUIHandler;
 
 import javax.annotation.Nonnull;
 
@@ -33,7 +34,7 @@ public abstract class KioskExtractor extends ListExtractor<StreamInfoItem> {
     private final String id;
 
     public KioskExtractor(StreamingService streamingService,
-                          ListUIHFactory urlIdHandler,
+                          ListUIHandler urlIdHandler,
                           String kioskId) {
         super(streamingService, urlIdHandler);
         this.id = kioskId;
