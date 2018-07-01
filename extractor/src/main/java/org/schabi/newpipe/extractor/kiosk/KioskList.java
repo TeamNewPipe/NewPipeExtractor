@@ -92,7 +92,7 @@ public  class KioskList {
         throw new ExtractionException("Could not find a kiosk that fits to the url: " + url);
     }
 
-    public UIHFactory getUrlIdHandlerByType(String type) {
+    public UIHFactory getUIHFactoryByType(String type) {
         return kioskList.get(type).handler;
     }
 }
