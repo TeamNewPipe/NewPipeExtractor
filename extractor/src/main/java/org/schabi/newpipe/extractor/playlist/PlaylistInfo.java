@@ -15,7 +15,7 @@ import java.io.IOException;
 
 public class PlaylistInfo extends ListInfo<StreamInfoItem> {
 
-    public PlaylistInfo(int serviceId, ListUIHandler urlIdHandler, String name) throws ParsingException {
+    private PlaylistInfo(int serviceId, ListUIHandler urlIdHandler, String name) throws ParsingException {
         super(serviceId, urlIdHandler, name);
     }
 

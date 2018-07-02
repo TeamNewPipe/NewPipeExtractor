@@ -1,16 +1,14 @@
 package org.schabi.newpipe.extractor;
 
-import org.schabi.newpipe.extractor.exceptions.ParsingException;
 import org.schabi.newpipe.extractor.uih.ListUIHandler;
 
-import java.util.ArrayList;
 import java.util.List;
 
 public abstract class ListInfo<T extends InfoItem> extends Info {
     private List<T> relatedItems;
     private String nextPageUrl = null;
-    private List<String> contentFilters = new ArrayList<>();
-    private String sortFilter = "";
+    private final List<String> contentFilters;
+    private final String sortFilter;
 
     public ListInfo(int serviceId,
                     String id,
@@ -24,7 +22,7 @@ public abstract class ListInfo<T extends InfoItem> extends Info {
         this.sortFilter = sortFilter;
     }
 
-    public ListInfo(int serviceId, ListUIHandler listUrlIdHandler, String name) throws ParsingException {
+    public ListInfo(int serviceId, ListUIHandler listUrlIdHandler, String name) {
         super(serviceId, listUrlIdHandler, name);
         this.contentFilters = listUrlIdHandler.getContentFilters();
         this.sortFilter = listUrlIdHandler.getSortFilter();

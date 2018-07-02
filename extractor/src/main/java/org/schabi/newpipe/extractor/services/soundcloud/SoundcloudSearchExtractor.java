@@ -8,7 +8,6 @@ import org.schabi.newpipe.extractor.*;
 import org.schabi.newpipe.extractor.exceptions.ExtractionException;
 import org.schabi.newpipe.extractor.exceptions.ParsingException;
 import org.schabi.newpipe.extractor.search.InfoItemsSearchCollector;
-import org.schabi.newpipe.extractor.search.SearchEngine;
 import org.schabi.newpipe.extractor.search.SearchExtractor;
 import org.schabi.newpipe.extractor.uih.SearchQIHandler;
 import org.schabi.newpipe.extractor.utils.Parser;
@@ -70,7 +69,7 @@ public class SoundcloudSearchExtractor extends SearchExtractor {
         }
 
         if (searchCollection.size() == 0) {
-            throw new SearchEngine.NothingFoundException("Nothing found");
+            throw new SearchExtractor.NothingFoundException("Nothing found");
         }
     }
 

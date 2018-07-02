@@ -2,21 +2,19 @@ package org.schabi.newpipe.extractor.search;
 
 import org.schabi.newpipe.extractor.InfoItem;
 import org.schabi.newpipe.extractor.ListInfo;
-import org.schabi.newpipe.extractor.uih.ListUIHFactory;
 import org.schabi.newpipe.extractor.exceptions.ExtractionException;
 import org.schabi.newpipe.extractor.exceptions.ParsingException;
-import org.schabi.newpipe.extractor.uih.ListUIHandler;
+import org.schabi.newpipe.extractor.uih.SearchQIHandler;
 
 public class SearchInfo extends ListInfo<InfoItem> {
 
-    private String searchString = "";
-    private String searchSuggestion = "";
-
+    private String searchString;
+    private String searchSuggestion;
 
     public SearchInfo(int serviceId,
-                      ListUIHandler urlIdHandler,
+                      SearchQIHandler qIHandler,
                       String searchString) throws ParsingException {
-        super(serviceId, urlIdHandler, "Search");
+        super(serviceId, qIHandler, "Search");
         this.searchString = searchString;
     }
 
