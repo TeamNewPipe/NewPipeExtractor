@@ -127,7 +127,7 @@ public class YoutubePlaylistExtractorTest {
         public static void setUp() throws Exception {
             NewPipe.init(Downloader.getInstance());
             extractor = (YoutubePlaylistExtractor) YouTube
-                    .getPlaylistExtractor("https://www.youtube.com/playlist?list=PLOy0j9AvlVZPto6IkjKfpu0Scx--7PGTC");
+                    .getPlaylistExtractor("https://www.youtube.com/watch?v=lH1caqoAGe0&list=PL45xb3ujEhqUexNt53jb9WT2mS-uUaUrn");
             extractor.fetchPage();
         }
 
