@@ -7,6 +7,7 @@ import org.schabi.newpipe.extractor.StreamingService;
 import org.schabi.newpipe.extractor.exceptions.ExtractionException;
 import org.schabi.newpipe.extractor.stream.Stream;
 import org.schabi.newpipe.extractor.uih.SearchQIHandler;
+import org.schabi.newpipe.extractor.utils.ExtractorHelper;
 
 import java.io.IOException;
 
@@ -42,8 +43,9 @@ public class SearchInfo extends ListInfo<InfoItem> {
             info.addError(e);
         }
 
-        info.setRelatedItems(extractor.getInfoItemSearchCollector().getItems());
-        info.setNextPageUrl(extractor.getNextPageUrl());
+        ListExtractor.InfoItemsPage<InfoItem> page = ExtractorHelper.getItemsPageOrLogError(info, extractor);
+        info.setRelatedItems(page.getItems());
+        info.setNextPageUrl(page.getNextPageUrl());
 
         return info;
     }
