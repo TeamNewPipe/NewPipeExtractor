@@ -23,7 +23,7 @@ public class SearchInfo extends ListInfo<InfoItem> {
     }
 
 
-    public static SearchInfo getInfo(SearchExtractor extractor) {
+    public static SearchInfo getInfo(SearchExtractor extractor) throws ExtractionException, IOException {
         final SearchInfo info = new SearchInfo(
                 extractor.getServiceId(),
                 extractor.getUIHandler(),
@@ -34,6 +34,9 @@ public class SearchInfo extends ListInfo<InfoItem> {
         } catch (Exception e) {
             info.addError(e);
         }
+
+        info.setRelatedItems(extractor.getInfoItemSearchCollector().getItems());
+        info.setNextPageUrl(extractor.getNextPageUrl());
 
         return info;
     }

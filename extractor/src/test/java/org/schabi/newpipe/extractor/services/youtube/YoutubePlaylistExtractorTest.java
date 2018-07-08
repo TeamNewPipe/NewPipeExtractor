@@ -153,22 +153,22 @@ public class YoutubePlaylistExtractorTest {
         @Test
         public void testName() throws Exception {
             String name = extractor.getName();
-            assertTrue(name, name.contains("Important videos"));
+            assertTrue(name, name.contains("Korrekte Aussprache - Lektion 1"));
         }
 
         @Test
         public void testId() throws Exception {
-            assertEquals("PLOy0j9AvlVZPto6IkjKfpu0Scx--7PGTC", extractor.getId());
+            assertEquals("PL45xb3ujEhqUexNt53jb9WT2mS-uUaUrn", extractor.getId());
         }
 
         @Test
         public void testUrl() throws ParsingException {
-            assertEquals("https://www.youtube.com/playlist?list=PLOy0j9AvlVZPto6IkjKfpu0Scx--7PGTC", extractor.getUrl());
+            assertEquals("https://www.youtube.com/playlist?list=PL45xb3ujEhqUexNt53jb9WT2mS-uUaUrn", extractor.getUrl());
         }
 
         @Test
         public void testOriginalUrl() throws ParsingException {
-            assertEquals("https://www.youtube.com/playlist?list=PLOy0j9AvlVZPto6IkjKfpu0Scx--7PGTC", extractor.getOriginalUrl());
+            assertEquals("https://www.youtube.com/watch?v=lH1caqoAGe0&list=PL45xb3ujEhqUexNt53jb9WT2mS-uUaUrn", extractor.getOriginalUrl());
         }
 
         /*//////////////////////////////////////////////////////////////////////////
@@ -216,7 +216,7 @@ public class YoutubePlaylistExtractorTest {
 
         @Test
         public void testUploaderName() throws Exception {
-            assertEquals("Crazy Horse", extractor.getUploaderName());
+            assertEquals("Luksan Wunder", extractor.getUploaderName());
         }
 
         @Test
