@@ -2,6 +2,8 @@ package org.schabi.newpipe.extractor.kiosk;
 
 import org.schabi.newpipe.extractor.NewPipe;
 import org.schabi.newpipe.extractor.StreamingService;
+import org.schabi.newpipe.extractor.uih.ListUIHFactory;
+import org.schabi.newpipe.extractor.uih.ListUIHandler;
 import org.schabi.newpipe.extractor.uih.UIHFactory;
 import org.schabi.newpipe.extractor.exceptions.ExtractionException;
 
@@ -23,24 +25,24 @@ public  class KioskList {
     private String defaultKiosk = null;
 
     private class KioskEntry {
-        public KioskEntry(KioskExtractorFactory ef, UIHFactory h) {
+        public KioskEntry(KioskExtractorFactory ef, ListUIHFactory h) {
             extractorFactory = ef;
             handlerFactory = h;
         }
         final KioskExtractorFactory extractorFactory;
-        final UIHFactory handlerFactory;
+        final ListUIHFactory handlerFactory;
     }
 
     public KioskList(int service_id) {
         this.service_id = service_id;
     }
 
-    public void addKioskEntry(KioskExtractorFactory extractorFactory, UIHFactory handler, String id)
+    public void addKioskEntry(KioskExtractorFactory extractorFactory, ListUIHFactory handlerFactory, String id)
         throws Exception {
         if(kioskList.get(id) != null) {
             throw new Exception("Kiosk with type " + id + " already exists.");
         }
-        kioskList.put(id, new KioskEntry(extractorFactory, handler));
+        kioskList.put(id, new KioskEntry(extractorFactory, handlerFactory));
     }
 
     public void setDefaultKiosk(String kioskType) {
@@ -92,7 +94,7 @@ public  class KioskList {
         throw new ExtractionException("Could not find a kiosk that fits to the url: " + url);
     }
 
-    public UIHFactory getUIHFactoryByType(String type) {
+    public ListUIHFactory getUIHFactoryByType(String type) {
         return kioskList.get(type).handlerFactory;
     }
 }
