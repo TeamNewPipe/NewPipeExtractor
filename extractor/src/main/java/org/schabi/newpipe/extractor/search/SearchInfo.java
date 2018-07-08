@@ -5,6 +5,7 @@ import org.schabi.newpipe.extractor.ListExtractor;
 import org.schabi.newpipe.extractor.ListInfo;
 import org.schabi.newpipe.extractor.StreamingService;
 import org.schabi.newpipe.extractor.exceptions.ExtractionException;
+import org.schabi.newpipe.extractor.stream.Stream;
 import org.schabi.newpipe.extractor.uih.SearchQIHandler;
 
 import java.io.IOException;
@@ -22,6 +23,12 @@ public class SearchInfo extends ListInfo<InfoItem> {
         this.searchString = searchString;
     }
 
+
+    public static SearchInfo getInfo(StreamingService service, SearchQIHandler searchQuery, String contentCountry) throws ExtractionException, IOException {
+        SearchExtractor extractor = service.getSearchExtractor(searchQuery, contentCountry);
+        extractor.fetchPage();
+        return getInfo(extractor);
+    }
 
     public static SearchInfo getInfo(SearchExtractor extractor) throws ExtractionException, IOException {
         final SearchInfo info = new SearchInfo(
