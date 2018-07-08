@@ -1,10 +1,14 @@
 package org.schabi.newpipe.extractor.search;
 
 import org.schabi.newpipe.extractor.InfoItem;
+import org.schabi.newpipe.extractor.ListExtractor;
 import org.schabi.newpipe.extractor.ListInfo;
+import org.schabi.newpipe.extractor.StreamingService;
 import org.schabi.newpipe.extractor.exceptions.ExtractionException;
-import org.schabi.newpipe.extractor.exceptions.ParsingException;
 import org.schabi.newpipe.extractor.uih.SearchQIHandler;
+
+import java.io.IOException;
+
 
 public class SearchInfo extends ListInfo<InfoItem> {
 
@@ -13,13 +17,13 @@ public class SearchInfo extends ListInfo<InfoItem> {
 
     public SearchInfo(int serviceId,
                       SearchQIHandler qIHandler,
-                      String searchString) throws ParsingException {
+                      String searchString) {
         super(serviceId, qIHandler, "Search");
         this.searchString = searchString;
     }
 
 
-    public static SearchInfo getInfo(SearchExtractor extractor) throws ExtractionException {
+    public static SearchInfo getInfo(SearchExtractor extractor) {
         final SearchInfo info = new SearchInfo(
                 extractor.getServiceId(),
                 extractor.getUIHandler(),
@@ -32,6 +36,15 @@ public class SearchInfo extends ListInfo<InfoItem> {
         }
 
         return info;
+    }
+
+
+    public static ListExtractor.InfoItemsPage<InfoItem> getMoreItems(StreamingService service,
+                                                                     SearchQIHandler query,
+                                                                     String contentCountry,
+                                                                     String pageUrl)
+            throws IOException, ExtractionException {
+        return service.getSearchExtractor(query, contentCountry).getPage(pageUrl);
     }
 
     // Getter
