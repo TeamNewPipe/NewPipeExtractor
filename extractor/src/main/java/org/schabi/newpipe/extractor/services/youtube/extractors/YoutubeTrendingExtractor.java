@@ -25,7 +25,7 @@ import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 import org.schabi.newpipe.extractor.Downloader;
-import org.schabi.newpipe.extractor.uih.ListUIHandler;
+import org.schabi.newpipe.extractor.linkhandler.ListLinkHandler;
 import org.schabi.newpipe.extractor.StreamingService;
 import org.schabi.newpipe.extractor.exceptions.ExtractionException;
 import org.schabi.newpipe.extractor.exceptions.ParsingException;
@@ -41,7 +41,7 @@ public class YoutubeTrendingExtractor extends KioskExtractor {
     private Document doc;
 
     public YoutubeTrendingExtractor(StreamingService service,
-                                    ListUIHandler urlIdHandler,
+                                    ListLinkHandler urlIdHandler,
                                     String kioskId) {
         super(service, urlIdHandler, kioskId);
     }

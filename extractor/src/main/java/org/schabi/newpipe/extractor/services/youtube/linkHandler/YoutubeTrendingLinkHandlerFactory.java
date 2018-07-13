@@ -1,10 +1,10 @@
-package org.schabi.newpipe.extractor.services.youtube.urlIdHandlers;
+package org.schabi.newpipe.extractor.services.youtube.linkHandler;
 
 /*
  * Created by Christian Schabesberger on 12.08.17.
  *
  * Copyright (C) Christian Schabesberger 2018 <chris.schabesberger@mailbox.org>
- * YoutubeTrendingUIHFactory.java is part of NewPipe.
+ * YoutubeTrendingLinkHandlerFactory.java is part of NewPipe.
  *
  * NewPipe is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -20,12 +20,12 @@ package org.schabi.newpipe.extractor.services.youtube.urlIdHandlers;
  * along with NewPipe.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-import org.schabi.newpipe.extractor.uih.ListUIHFactory;
+import org.schabi.newpipe.extractor.linkhandler.ListLinkHandlerFactory;
 import org.schabi.newpipe.extractor.utils.Parser;
 
 import java.util.List;
 
-public class YoutubeTrendingUIHFactory extends ListUIHFactory {
+public class YoutubeTrendingLinkHandlerFactory extends ListLinkHandlerFactory {
 
     public String getUrl(String id, List<String> contentFilters, String sortFilter) {
         return "https://www.youtube.com/feed/trending";

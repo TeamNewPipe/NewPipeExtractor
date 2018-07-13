@@ -1,18 +1,18 @@
-package org.schabi.newpipe.extractor.services.youtube.urlIdHandlers;
+package org.schabi.newpipe.extractor.services.youtube.linkHandler;
 
 
-import org.schabi.newpipe.extractor.uih.ListUIHFactory;
+import org.schabi.newpipe.extractor.linkhandler.ListLinkHandlerFactory;
 import org.schabi.newpipe.extractor.exceptions.ParsingException;
 import org.schabi.newpipe.extractor.utils.Parser;
 
 import java.util.List;
 
-public class YoutubePlaylistUIHFactory extends ListUIHFactory {
+public class YoutubePlaylistLinkHandlerFactory extends ListLinkHandlerFactory {
 
-    private static final YoutubePlaylistUIHFactory instance = new YoutubePlaylistUIHFactory();
+    private static final YoutubePlaylistLinkHandlerFactory instance = new YoutubePlaylistLinkHandlerFactory();
     private static final String ID_PATTERN = "([\\-a-zA-Z0-9_]{10,})";
 
-    public static YoutubePlaylistUIHFactory getInstance() {
+    public static YoutubePlaylistLinkHandlerFactory getInstance() {
         return instance;
     }
 

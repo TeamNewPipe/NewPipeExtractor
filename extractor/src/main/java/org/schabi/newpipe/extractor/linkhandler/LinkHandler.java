@@ -1,19 +1,19 @@
-package org.schabi.newpipe.extractor.uih;
+package org.schabi.newpipe.extractor.linkhandler;
 
 import java.io.Serializable;
 
-public class UIHandler implements Serializable {
+public class LinkHandler implements Serializable {
     protected final String originalUrl;
     protected final String url;
     protected final String id;
 
-    public UIHandler(String originalUrl, String url, String id) {
+    public LinkHandler(String originalUrl, String url, String id) {
         this.originalUrl = originalUrl;
         this.url = url;
         this.id = id;
     }
 
-    public UIHandler(UIHandler handler) {
+    public LinkHandler(LinkHandler handler) {
         this(handler.originalUrl, handler.url, handler.id);
     }
 

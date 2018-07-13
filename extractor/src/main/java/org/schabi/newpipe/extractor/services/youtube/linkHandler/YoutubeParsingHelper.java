@@ -1,4 +1,4 @@
-package org.schabi.newpipe.extractor.services.youtube.urlIdHandlers;
+package org.schabi.newpipe.extractor.services.youtube.linkHandler;
 
 
 import org.schabi.newpipe.extractor.exceptions.ParsingException;

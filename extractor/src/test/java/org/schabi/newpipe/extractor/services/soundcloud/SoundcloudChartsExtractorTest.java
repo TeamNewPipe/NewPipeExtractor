@@ -15,7 +15,7 @@ import static org.junit.Assert.*;
 import static org.schabi.newpipe.extractor.ServiceList.SoundCloud;
 
 /**
- * Test for {@link SoundcloudChartsUIHFactory}
+ * Test for {@link SoundcloudChartsLinkHandlerFactory}
  */
 public class SoundcloudChartsExtractorTest {
 

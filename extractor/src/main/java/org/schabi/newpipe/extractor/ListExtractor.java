@@ -1,11 +1,9 @@
 package org.schabi.newpipe.extractor;
 
 import org.schabi.newpipe.extractor.exceptions.ExtractionException;
-import org.schabi.newpipe.extractor.uih.ListUIHFactory;
-import org.schabi.newpipe.extractor.uih.ListUIHandler;
+import org.schabi.newpipe.extractor.linkhandler.ListLinkHandler;
 
 import javax.annotation.Nonnull;
-import javax.swing.plaf.ListUI;
 import java.io.IOException;
 import java.util.Collections;
 import java.util.List;
@@ -15,7 +13,7 @@ import java.util.List;
  */
 public abstract class ListExtractor<R extends InfoItem> extends Extractor {
 
-    public ListExtractor(StreamingService service, ListUIHandler uiHandler) {
+    public ListExtractor(StreamingService service, ListLinkHandler uiHandler) {
         super(service, uiHandler);
     }
 
@@ -53,8 +51,8 @@ public abstract class ListExtractor<R extends InfoItem> extends Extractor {
     }
 
     @Override
-    public ListUIHandler getUIHandler() {
-        return (ListUIHandler) super.getUIHandler();
+    public ListLinkHandler getUIHandler() {
+        return (ListLinkHandler) super.getUIHandler();
     }
 
     /*//////////////////////////////////////////////////////////////////////////

@@ -5,8 +5,7 @@ import org.schabi.newpipe.extractor.ListExtractor;
 import org.schabi.newpipe.extractor.StreamingService;
 import org.schabi.newpipe.extractor.exceptions.ExtractionException;
 import org.schabi.newpipe.extractor.exceptions.ParsingException;
-import org.schabi.newpipe.extractor.uih.SearchQIHFactory;
-import org.schabi.newpipe.extractor.uih.SearchQIHandler;
+import org.schabi.newpipe.extractor.linkhandler.SearchQueryHandler;
 
 public abstract class SearchExtractor extends ListExtractor<InfoItem> {
 
@@ -19,7 +18,7 @@ public abstract class SearchExtractor extends ListExtractor<InfoItem> {
     private final InfoItemsSearchCollector collector;
     private final String contentCountry;
 
-    public SearchExtractor(StreamingService service, SearchQIHandler urlIdHandler, String contentCountry) {
+    public SearchExtractor(StreamingService service, SearchQueryHandler urlIdHandler, String contentCountry) {
         super(service, urlIdHandler);
         collector = new InfoItemsSearchCollector(service.getServiceId());
         this.contentCountry = contentCountry;
@@ -36,8 +35,8 @@ public abstract class SearchExtractor extends ListExtractor<InfoItem> {
     }
 
     @Override
-    public SearchQIHandler getUIHandler() {
-        return (SearchQIHandler) super.getUIHandler();
+    public SearchQueryHandler getUIHandler() {
+        return (SearchQueryHandler) super.getUIHandler();
     }
 
     @Override

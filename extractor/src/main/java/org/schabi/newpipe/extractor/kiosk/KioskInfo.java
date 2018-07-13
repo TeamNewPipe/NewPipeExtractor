@@ -24,15 +24,14 @@ import org.schabi.newpipe.extractor.*;
 import org.schabi.newpipe.extractor.exceptions.ExtractionException;
 import org.schabi.newpipe.extractor.exceptions.ParsingException;
 import org.schabi.newpipe.extractor.stream.StreamInfoItem;
-import org.schabi.newpipe.extractor.uih.ListUIHFactory;
-import org.schabi.newpipe.extractor.uih.ListUIHandler;
+import org.schabi.newpipe.extractor.linkhandler.ListLinkHandler;
 import org.schabi.newpipe.extractor.utils.ExtractorHelper;
 
 import java.io.IOException;
 
 public class KioskInfo extends ListInfo<StreamInfoItem> {
 
-    private KioskInfo(int serviceId, ListUIHandler urlIdHandler, String name) throws ParsingException {
+    private KioskInfo(int serviceId, ListLinkHandler urlIdHandler, String name) throws ParsingException {
         super(serviceId, urlIdHandler, name);
     }
 

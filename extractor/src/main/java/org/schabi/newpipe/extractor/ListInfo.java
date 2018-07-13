@@ -1,6 +1,6 @@
 package org.schabi.newpipe.extractor;
 
-import org.schabi.newpipe.extractor.uih.ListUIHandler;
+import org.schabi.newpipe.extractor.linkhandler.ListLinkHandler;
 
 import java.util.List;
 
@@ -22,7 +22,7 @@ public abstract class ListInfo<T extends InfoItem> extends Info {
         this.sortFilter = sortFilter;
     }
 
-    public ListInfo(int serviceId, ListUIHandler listUrlIdHandler, String name) {
+    public ListInfo(int serviceId, ListLinkHandler listUrlIdHandler, String name) {
         super(serviceId, listUrlIdHandler, name);
         this.contentFilters = listUrlIdHandler.getContentFilters();
         this.sortFilter = listUrlIdHandler.getSortFilter();

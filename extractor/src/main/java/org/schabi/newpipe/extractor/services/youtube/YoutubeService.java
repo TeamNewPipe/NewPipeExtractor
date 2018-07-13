@@ -1,7 +1,7 @@
 package org.schabi.newpipe.extractor.services.youtube;
 
 import org.schabi.newpipe.extractor.*;
-import org.schabi.newpipe.extractor.uih.*;
+import org.schabi.newpipe.extractor.linkhandler.*;
 import org.schabi.newpipe.extractor.channel.ChannelExtractor;
 import org.schabi.newpipe.extractor.exceptions.ExtractionException;
 import org.schabi.newpipe.extractor.kiosk.KioskExtractor;
@@ -9,7 +9,7 @@ import org.schabi.newpipe.extractor.kiosk.KioskList;
 import org.schabi.newpipe.extractor.playlist.PlaylistExtractor;
 import org.schabi.newpipe.extractor.search.SearchExtractor;
 import org.schabi.newpipe.extractor.services.youtube.extractors.*;
-import org.schabi.newpipe.extractor.services.youtube.urlIdHandlers.*;
+import org.schabi.newpipe.extractor.services.youtube.linkHandler.*;
 import org.schabi.newpipe.extractor.stream.StreamExtractor;
 import org.schabi.newpipe.extractor.subscription.SubscriptionExtractor;
 
@@ -44,42 +44,42 @@ public class YoutubeService extends StreamingService {
     }
 
     @Override
-    public SearchExtractor getSearchExtractor(SearchQIHandler query, String contentCountry) {
+    public SearchExtractor getSearchExtractor(SearchQueryHandler query, String contentCountry) {
         return new YoutubeSearchExtractor(this, query, contentCountry);
     }
 
     @Override
-    public UIHFactory getStreamUIHFactory() {
-        return YoutubeStreamUIHFactory.getInstance();
+    public LinkHandlerFactory getStreamUIHFactory() {
+        return YoutubeStreamLinkHandlerFactory.getInstance();
     }
 
     @Override
-    public ListUIHFactory getChannelUIHFactory() {
-        return YoutubeChannelUIHFactory.getInstance();
+    public ListLinkHandlerFactory getChannelUIHFactory() {
+        return YoutubeChannelLinkHandlerFactory.getInstance();
     }
 
     @Override
-    public ListUIHFactory getPlaylistUIHFactory() {
-        return YoutubePlaylistUIHFactory.getInstance();
+    public ListLinkHandlerFactory getPlaylistUIHFactory() {
+        return YoutubePlaylistLinkHandlerFactory.getInstance();
     }
 
     @Override
-    public SearchQIHFactory getSearchQIHFactory() {
-        return YoutubeSearchQIHFactory.getInstance();
+    public SearchQueryHandlerFactory getSearchQIHFactory() {
+        return YoutubeSearchQueryHandlerFactory.getInstance();
     }
 
     @Override
-    public StreamExtractor getStreamExtractor(UIHandler uiHandler) throws ExtractionException {
-        return new YoutubeStreamExtractor(this, uiHandler);
+    public StreamExtractor getStreamExtractor(LinkHandler linkHandler) throws ExtractionException {
+        return new YoutubeStreamExtractor(this, linkHandler);
     }
 
     @Override
-    public ChannelExtractor getChannelExtractor(ListUIHandler urlIdHandler) throws ExtractionException {
+    public ChannelExtractor getChannelExtractor(ListLinkHandler urlIdHandler) throws ExtractionException {
         return new YoutubeChannelExtractor(this, urlIdHandler);
     }
 
     @Override
-    public PlaylistExtractor getPlaylistExtractor(ListUIHandler urlIdHandler) throws ExtractionException {
+    public PlaylistExtractor getPlaylistExtractor(ListLinkHandler urlIdHandler) throws ExtractionException {
         return new YoutubePlaylistExtractor(this, urlIdHandler);
     }
 
@@ -99,9 +99,9 @@ public class YoutubeService extends StreamingService {
                 public KioskExtractor createNewKiosk(StreamingService streamingService, String url, String id)
                 throws ExtractionException {
                     return new YoutubeTrendingExtractor(YoutubeService.this,
-                            new YoutubeTrendingUIHFactory().fromUrl(url), id);
+                            new YoutubeTrendingLinkHandlerFactory().fromUrl(url), id);
                 }
-            }, new YoutubeTrendingUIHFactory(), "Trending");
+            }, new YoutubeTrendingLinkHandlerFactory(), "Trending");
             list.setDefaultKiosk("Trending");
         } catch (Exception e) {
             throw new ExtractionException(e);

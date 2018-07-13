@@ -23,10 +23,9 @@ package org.schabi.newpipe.extractor.stream;
 import org.schabi.newpipe.extractor.Extractor;
 import org.schabi.newpipe.extractor.StreamingService;
 import org.schabi.newpipe.extractor.Subtitles;
-import org.schabi.newpipe.extractor.uih.UIHFactory;
 import org.schabi.newpipe.extractor.exceptions.ExtractionException;
 import org.schabi.newpipe.extractor.exceptions.ParsingException;
-import org.schabi.newpipe.extractor.uih.UIHandler;
+import org.schabi.newpipe.extractor.linkhandler.LinkHandler;
 import org.schabi.newpipe.extractor.utils.Parser;
 
 import javax.annotation.Nonnull;
@@ -40,8 +39,8 @@ public abstract class StreamExtractor extends Extractor {
 
     public static final int NO_AGE_LIMIT = 0;
 
-    public StreamExtractor(StreamingService service, UIHandler uiHandler) {
-        super(service, uiHandler);
+    public StreamExtractor(StreamingService service, LinkHandler linkHandler) {
+        super(service, linkHandler);
     }
 
     @Nonnull
@@ -135,9 +134,6 @@ public abstract class StreamExtractor extends Extractor {
     public abstract StreamType getStreamType() throws ParsingException;
     public abstract StreamInfoItem getNextVideo() throws IOException, ExtractionException;
     public abstract StreamInfoItemsCollector getRelatedVideos() throws IOException, ExtractionException;
-
-    public abstract String[] getDonationLinks() throws ExtractionException;
-    public abstract String[] getAffiliateLinks() throws ExtractionException;
 
     /**
      * Analyses the webpage's document and extracts any error message there might be.

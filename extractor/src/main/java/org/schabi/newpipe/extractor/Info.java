@@ -1,8 +1,6 @@
 package org.schabi.newpipe.extractor;
 
-import org.schabi.newpipe.extractor.exceptions.ParsingException;
-import org.schabi.newpipe.extractor.uih.UIHFactory;
-import org.schabi.newpipe.extractor.uih.UIHandler;
+import org.schabi.newpipe.extractor.linkhandler.LinkHandler;
 
 import java.io.Serializable;
 import java.util.ArrayList;
@@ -20,7 +18,7 @@ public abstract class Info implements Serializable {
     /**
      * Different than the {@link #originalUrl} in the sense that it <i>may</i> be set as a cleaned url.
      *
-     * @see UIHandler#getUrl()
+     * @see LinkHandler#getUrl()
      * @see Extractor#getOriginalUrl()
      */
     private final String url;
@@ -50,11 +48,11 @@ public abstract class Info implements Serializable {
         this.name = name;
     }
 
-    public Info(int serviceId, UIHandler uiHandler, String name) {
+    public Info(int serviceId, LinkHandler linkHandler, String name) {
         this(serviceId,
-                uiHandler.getId(),
-                uiHandler.getUrl(),
-                uiHandler.getOriginalUrl(),
+                linkHandler.getId(),
+                linkHandler.getUrl(),
+                linkHandler.getOriginalUrl(),
                 name);
     }
 

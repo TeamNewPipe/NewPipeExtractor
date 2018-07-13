@@ -10,7 +10,7 @@ import org.schabi.newpipe.extractor.exceptions.ExtractionException;
 import org.schabi.newpipe.extractor.exceptions.ParsingException;
 import org.schabi.newpipe.extractor.search.InfoItemsSearchCollector;
 import org.schabi.newpipe.extractor.search.SearchExtractor;
-import org.schabi.newpipe.extractor.uih.SearchQIHandler;
+import org.schabi.newpipe.extractor.linkhandler.SearchQueryHandler;
 import org.schabi.newpipe.extractor.utils.Parser;
 
 import javax.annotation.Nonnull;
@@ -44,7 +44,7 @@ public class YoutubeSearchExtractor extends SearchExtractor {
     private Document doc;
 
     public YoutubeSearchExtractor(StreamingService service,
-                                  SearchQIHandler urlIdHandler,
+                                  SearchQueryHandler urlIdHandler,
                                   String contentCountry) {
         super(service, urlIdHandler, contentCountry);
     }

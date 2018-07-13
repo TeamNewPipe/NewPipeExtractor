@@ -1,6 +1,6 @@
-package org.schabi.newpipe.extractor.services.youtube.urlIdHandlers;
+package org.schabi.newpipe.extractor.services.youtube.linkHandler;
 
-import org.schabi.newpipe.extractor.uih.ListUIHFactory;
+import org.schabi.newpipe.extractor.linkhandler.ListLinkHandlerFactory;
 import org.schabi.newpipe.extractor.exceptions.ParsingException;
 import org.schabi.newpipe.extractor.utils.Parser;
 
@@ -10,7 +10,7 @@ import java.util.List;
  * Created by Christian Schabesberger on 25.07.16.
  *
  * Copyright (C) Christian Schabesberger 2018 <chrźis.schabesberger@mailbox.org>
- * YoutubeChannelUIHFactory.java is part of NewPipe.
+ * YoutubeChannelLinkHandlerFactory.java is part of NewPipe.
  *
  * NewPipe is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -26,12 +26,12 @@ import java.util.List;
  * along with NewPipe.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-public class YoutubeChannelUIHFactory extends ListUIHFactory {
+public class YoutubeChannelLinkHandlerFactory extends ListLinkHandlerFactory {
 
-    private static final YoutubeChannelUIHFactory instance = new YoutubeChannelUIHFactory();
+    private static final YoutubeChannelLinkHandlerFactory instance = new YoutubeChannelLinkHandlerFactory();
     private static final String ID_PATTERN = "/(user/[A-Za-z0-9_-]*|channel/[A-Za-z0-9_-]*)";
 
-    public static YoutubeChannelUIHFactory getInstance() {
+    public static YoutubeChannelLinkHandlerFactory getInstance() {
         return instance;
     }
 

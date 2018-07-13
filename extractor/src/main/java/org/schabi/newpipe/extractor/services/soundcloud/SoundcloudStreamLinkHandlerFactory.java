@@ -1,19 +1,19 @@
 package org.schabi.newpipe.extractor.services.soundcloud;
 
-import org.schabi.newpipe.extractor.uih.UIHFactory;
+import org.schabi.newpipe.extractor.linkhandler.LinkHandlerFactory;
 import org.schabi.newpipe.extractor.exceptions.ParsingException;
 import org.schabi.newpipe.extractor.utils.Parser;
 import org.schabi.newpipe.extractor.utils.Utils;
 
-public class SoundcloudStreamUIHFactory extends UIHFactory {
-    private static final SoundcloudStreamUIHFactory instance = new SoundcloudStreamUIHFactory();
+public class SoundcloudStreamLinkHandlerFactory extends LinkHandlerFactory {
+    private static final SoundcloudStreamLinkHandlerFactory instance = new SoundcloudStreamLinkHandlerFactory();
     private final String URL_PATTERN = "^https?://(www\\.|m\\.)?soundcloud.com/[0-9a-z_-]+" +
             "/(?!(tracks|albums|sets|reposts|followers|following)/?$)[0-9a-z_-]+/?([#?].*)?$";
 
-    private SoundcloudStreamUIHFactory() {
+    private SoundcloudStreamLinkHandlerFactory() {
     }
 
-    public static SoundcloudStreamUIHFactory getInstance() {
+    public static SoundcloudStreamLinkHandlerFactory getInstance() {
         return instance;
     }
 

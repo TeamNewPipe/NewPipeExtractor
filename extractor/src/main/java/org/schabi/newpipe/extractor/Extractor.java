@@ -2,8 +2,7 @@ package org.schabi.newpipe.extractor;
 
 import org.schabi.newpipe.extractor.exceptions.ExtractionException;
 import org.schabi.newpipe.extractor.exceptions.ParsingException;
-import org.schabi.newpipe.extractor.uih.UIHandler;
-import org.schabi.newpipe.extractor.uih.UIHandler;
+import org.schabi.newpipe.extractor.linkhandler.LinkHandler;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -16,15 +15,15 @@ public abstract class Extractor {
      */
     private final StreamingService service;
 
-    private final org.schabi.newpipe.extractor.uih.UIHandler uIHandler;
+    private final LinkHandler uIHandler;
 
     @Nullable
     private boolean pageFetched = false;
     private final Downloader downloader;
 
-    public Extractor(final StreamingService service, final UIHandler uIHandler) {
+    public Extractor(final StreamingService service, final LinkHandler uIHandler) {
         if(service == null) throw new NullPointerException("service is null");
-        if(uIHandler == null) throw new NullPointerException("UIHandler is null");
+        if(uIHandler == null) throw new NullPointerException("LinkHandler is null");
         this.service = service;
         this.uIHandler = uIHandler;
         this.downloader = NewPipe.getDownloader();
@@ -32,10 +31,10 @@ public abstract class Extractor {
     }
 
     /**
-     * @return The {@link UIHandler} of the current extractor object (e.g. a ChannelExtractor should return a channel url handler).
+     * @return The {@link LinkHandler} of the current extractor object (e.g. a ChannelExtractor should return a channel url handler).
      */
     @Nonnull
-    public UIHandler getUIHandler() {
+    public LinkHandler getUIHandler() {
         return uIHandler;
     }
 

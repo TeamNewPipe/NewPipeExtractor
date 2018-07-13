@@ -1,7 +1,7 @@
 package org.schabi.newpipe.extractor.services.soundcloud;
 
 import org.schabi.newpipe.extractor.*;
-import org.schabi.newpipe.extractor.uih.*;
+import org.schabi.newpipe.extractor.linkhandler.*;
 import org.schabi.newpipe.extractor.channel.ChannelExtractor;
 import org.schabi.newpipe.extractor.exceptions.ExtractionException;
 import org.schabi.newpipe.extractor.kiosk.KioskExtractor;
@@ -21,43 +21,43 @@ public class SoundcloudService extends StreamingService {
     }
 
     @Override
-    public SearchExtractor getSearchExtractor(SearchQIHandler queryHandler, String contentCountry) {
+    public SearchExtractor getSearchExtractor(SearchQueryHandler queryHandler, String contentCountry) {
         return new SoundcloudSearchExtractor(this, queryHandler, contentCountry);
     }
 
     @Override
-    public SearchQIHFactory getSearchQIHFactory() {
-        return new SoundcloudSearchQIHFactory();
+    public SearchQueryHandlerFactory getSearchQIHFactory() {
+        return new SoundcloudSearchQueryHandlerFactory();
     }
 
     @Override
-    public UIHFactory getStreamUIHFactory() {
-        return SoundcloudStreamUIHFactory.getInstance();
+    public LinkHandlerFactory getStreamUIHFactory() {
+        return SoundcloudStreamLinkHandlerFactory.getInstance();
     }
 
     @Override
-    public ListUIHFactory getChannelUIHFactory() {
-        return SoundcloudChannelUIHFactory.getInstance();
+    public ListLinkHandlerFactory getChannelUIHFactory() {
+        return SoundcloudChannelLinkHandlerFactory.getInstance();
     }
 
     @Override
-    public ListUIHFactory getPlaylistUIHFactory() {
-        return SoundcloudPlaylistUIHFactory.getInstance();
+    public ListLinkHandlerFactory getPlaylistUIHFactory() {
+        return SoundcloudPlaylistLinkHandlerFactory.getInstance();
     }
 
 
     @Override
-    public StreamExtractor getStreamExtractor(UIHandler UIHandler) {
-        return new SoundcloudStreamExtractor(this, UIHandler);
+    public StreamExtractor getStreamExtractor(LinkHandler LinkHandler) {
+        return new SoundcloudStreamExtractor(this, LinkHandler);
     }
 
     @Override
-    public ChannelExtractor getChannelExtractor(ListUIHandler urlIdHandler) {
+    public ChannelExtractor getChannelExtractor(ListLinkHandler urlIdHandler) {
         return new SoundcloudChannelExtractor(this, urlIdHandler);
     }
 
     @Override
-    public PlaylistExtractor getPlaylistExtractor(ListUIHandler urlIdHandler) {
+    public PlaylistExtractor getPlaylistExtractor(ListLinkHandler urlIdHandler) {
         return new SoundcloudPlaylistExtractor(this, urlIdHandler);
     }
 
@@ -75,14 +75,14 @@ public class SoundcloudService extends StreamingService {
                                                  String id)
                     throws ExtractionException {
                 return new SoundcloudChartsExtractor(SoundcloudService.this,
-                        new SoundcloudChartsUIHFactory().fromUrl(url), id);
+                        new SoundcloudChartsLinkHandlerFactory().fromUrl(url), id);
             }
         };
 
         KioskList list = new KioskList(getServiceId());
 
         // add kiosks here e.g.:
-        final SoundcloudChartsUIHFactory h = new SoundcloudChartsUIHFactory();
+        final SoundcloudChartsLinkHandlerFactory h = new SoundcloudChartsLinkHandlerFactory();
         try {
             list.addKioskEntry(chartsFactory, h, "Top 50");
             list.addKioskEntry(chartsFactory, h, "New & hot");

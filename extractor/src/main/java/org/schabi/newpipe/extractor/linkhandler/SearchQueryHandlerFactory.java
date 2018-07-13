@@ -1,11 +1,11 @@
-package org.schabi.newpipe.extractor.uih;
+package org.schabi.newpipe.extractor.linkhandler;
 
 import org.schabi.newpipe.extractor.exceptions.ParsingException;
 
 import java.util.ArrayList;
 import java.util.List;
 
-public abstract class SearchQIHFactory extends ListUIHFactory {
+public abstract class SearchQueryHandlerFactory extends ListLinkHandlerFactory {
 
     ///////////////////////////////////
     // To Override
@@ -23,13 +23,13 @@ public abstract class SearchQIHFactory extends ListUIHFactory {
     public String getId(String url) { return getSearchString(url); }
 
     @Override
-    public SearchQIHandler fromQuery(String querry,
-                                     List<String> contentFilter,
-                                     String sortFilter) throws ParsingException {
-        return new SearchQIHandler(super.fromQuery(querry, contentFilter, sortFilter));
+    public SearchQueryHandler fromQuery(String querry,
+                                        List<String> contentFilter,
+                                        String sortFilter) throws ParsingException {
+        return new SearchQueryHandler(super.fromQuery(querry, contentFilter, sortFilter));
     }
 
-    public SearchQIHandler fromQuery(String querry) throws ParsingException {
+    public SearchQueryHandler fromQuery(String querry) throws ParsingException {
         return fromQuery(querry, new ArrayList<String>(0), "");
     }
 

@@ -1,13 +1,13 @@
-package org.schabi.newpipe.extractor.services.youtube.urlIdHandlers;
+package org.schabi.newpipe.extractor.services.youtube.linkHandler;
 
 import org.schabi.newpipe.extractor.exceptions.ParsingException;
-import org.schabi.newpipe.extractor.uih.SearchQIHFactory;
+import org.schabi.newpipe.extractor.linkhandler.SearchQueryHandlerFactory;
 
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
 import java.util.List;
 
-public class YoutubeSearchQIHFactory extends SearchQIHFactory {
+public class YoutubeSearchQueryHandlerFactory extends SearchQueryHandlerFactory {
 
     public static final String CHARSET_UTF_8 = "UTF-8";
 
@@ -16,8 +16,8 @@ public class YoutubeSearchQIHFactory extends SearchQIHFactory {
     public static final String PLAYLIST = "playlist";
     public static final String ANY = "any";
 
-    public static YoutubeSearchQIHFactory getInstance() {
-        return new YoutubeSearchQIHFactory();
+    public static YoutubeSearchQueryHandlerFactory getInstance() {
+        return new YoutubeSearchQueryHandlerFactory();
     }
 
     @Override
@@ -45,9 +45,9 @@ public class YoutubeSearchQIHFactory extends SearchQIHFactory {
     @Override
     public String[] getAvailableContentFilter() {
         return new String[] {
+                ANY,
                 STREAM,
                 CHANNEL,
-                PLAYLIST,
-                ANY};
+                PLAYLIST};
     }
 }

@@ -2,14 +2,14 @@ package org.schabi.newpipe.extractor.services.soundcloud;
 
 import org.schabi.newpipe.extractor.exceptions.ParsingException;
 import org.schabi.newpipe.extractor.exceptions.ReCaptchaException;
-import org.schabi.newpipe.extractor.uih.SearchQIHFactory;
+import org.schabi.newpipe.extractor.linkhandler.SearchQueryHandlerFactory;
 
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
 import java.util.List;
 
-public class SoundcloudSearchQIHFactory extends SearchQIHFactory {
+public class SoundcloudSearchQueryHandlerFactory extends SearchQueryHandlerFactory {
     public static final String CHARSET_UTF_8 = "UTF-8";
 
     public static final String TRACKS = "tracks";
@@ -58,9 +58,9 @@ public class SoundcloudSearchQIHFactory extends SearchQIHFactory {
     @Override
     public String[] getAvailableContentFilter() {
         return new String[] {
-            TRACKS,
-            USERS,
-            PLAYLIST,
-            ANY};
+                ANY,
+                TRACKS,
+                USERS,
+                PLAYLIST};
     }
 }

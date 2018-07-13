@@ -1,11 +1,11 @@
-package org.schabi.newpipe.extractor.services.youtube.urlIdHandlers;
+package org.schabi.newpipe.extractor.services.youtube.linkHandler;
 
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.schabi.newpipe.extractor.Downloader;
 import org.schabi.newpipe.extractor.NewPipe;
-import org.schabi.newpipe.extractor.uih.UIHFactory;
+import org.schabi.newpipe.extractor.linkhandler.LinkHandlerFactory;
 import org.schabi.newpipe.extractor.exceptions.FoundAdException;
 import org.schabi.newpipe.extractor.exceptions.ParsingException;
 import org.schabi.newpipe.extractor.exceptions.ReCaptchaException;
@@ -21,7 +21,7 @@ import java.net.URLDecoder;
  * Created by Christian Schabesberger on 02.02.16.
  *
  * Copyright (C) Christian Schabesberger 2018 <chris.schabesberger@mailbox.org>
- * YoutubeStreamUIHFactory.java is part of NewPipe.
+ * YoutubeStreamLinkHandlerFactory.java is part of NewPipe.
  *
  * NewPipe is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -37,15 +37,15 @@ import java.net.URLDecoder;
  * along with NewPipe.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-public class YoutubeStreamUIHFactory extends UIHFactory {
+public class YoutubeStreamLinkHandlerFactory extends LinkHandlerFactory {
 
-    private static final YoutubeStreamUIHFactory instance = new YoutubeStreamUIHFactory();
+    private static final YoutubeStreamLinkHandlerFactory instance = new YoutubeStreamLinkHandlerFactory();
     private static final String ID_PATTERN = "([\\-a-zA-Z0-9_]{11})";
 
-    private YoutubeStreamUIHFactory() {
+    private YoutubeStreamLinkHandlerFactory() {
     }
 
-    public static YoutubeStreamUIHFactory getInstance() {
+    public static YoutubeStreamLinkHandlerFactory getInstance() {
         return instance;
     }
 

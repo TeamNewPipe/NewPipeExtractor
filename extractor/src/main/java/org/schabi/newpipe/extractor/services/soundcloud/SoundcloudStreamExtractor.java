@@ -7,8 +7,8 @@ import org.schabi.newpipe.extractor.*;
 import org.schabi.newpipe.extractor.exceptions.ContentNotAvailableException;
 import org.schabi.newpipe.extractor.exceptions.ExtractionException;
 import org.schabi.newpipe.extractor.exceptions.ParsingException;
+import org.schabi.newpipe.extractor.linkhandler.LinkHandler;
 import org.schabi.newpipe.extractor.stream.*;
-import org.schabi.newpipe.extractor.uih.UIHandler;
 
 import javax.annotation.Nonnull;
 import java.io.IOException;
@@ -21,7 +21,7 @@ import java.util.List;
 public class SoundcloudStreamExtractor extends StreamExtractor {
     private JsonObject track;
 
-    public SoundcloudStreamExtractor(StreamingService service, UIHandler uIHandler) {
+    public SoundcloudStreamExtractor(StreamingService service, LinkHandler uIHandler) {
         super(service, uIHandler);
     }
 
@@ -200,16 +200,6 @@ public class SoundcloudStreamExtractor extends StreamExtractor {
 
         SoundcloudParsingHelper.getStreamsFromApi(collector, apiUrl);
         return collector;
-    }
-
-    @Override
-    public String[] getDonationLinks() {
-        return new String[0];
-    }
-
-    @Override
-    public String[] getAffiliateLinks() {
-        return new String[0];
     }
 
     @Override

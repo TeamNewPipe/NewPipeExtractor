@@ -1,23 +1,23 @@
-package org.schabi.newpipe.extractor.uih;
+package org.schabi.newpipe.extractor.linkhandler;
 
 import java.util.Collections;
 import java.util.List;
 
-public class ListUIHandler extends UIHandler {
+public class ListLinkHandler extends LinkHandler {
     protected final List<String> contentFilters;
     protected final String sortFilter;
 
-    public ListUIHandler(String originalUrl,
-                         String url,
-                         String id,
-                         List<String> contentFilters,
-                         String sortFilter) {
+    public ListLinkHandler(String originalUrl,
+                           String url,
+                           String id,
+                           List<String> contentFilters,
+                           String sortFilter) {
         super(originalUrl, url, id);
         this.contentFilters = Collections.unmodifiableList(contentFilters);
         this.sortFilter = sortFilter;
     }
 
-    public ListUIHandler(ListUIHandler handler) {
+    public ListLinkHandler(ListLinkHandler handler) {
         this(handler.originalUrl,
                 handler.url,
                 handler.id,
@@ -25,9 +25,9 @@ public class ListUIHandler extends UIHandler {
                 handler.sortFilter);
     }
 
-    public ListUIHandler(UIHandler handler,
-                         List<String> contentFilters,
-                         String sortFilter) {
+    public ListLinkHandler(LinkHandler handler,
+                           List<String> contentFilters,
+                           String sortFilter) {
         this(handler.originalUrl,
                 handler.url,
                 handler.id,

@@ -1,12 +1,11 @@
-package org.schabi.newpipe.extractor.uih;
+package org.schabi.newpipe.extractor.linkhandler;
 
 import org.schabi.newpipe.extractor.exceptions.ParsingException;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 
-public abstract class ListUIHFactory extends UIHFactory {
+public abstract class ListLinkHandlerFactory extends LinkHandlerFactory {
 
     ///////////////////////////////////
     // To Override
@@ -22,27 +21,27 @@ public abstract class ListUIHFactory extends UIHFactory {
 
 
     @Override
-    public ListUIHandler fromUrl(String url) throws ParsingException {
+    public ListLinkHandler fromUrl(String url) throws ParsingException {
         if(url == null) throw new IllegalArgumentException("url may not be null");
 
-        return new ListUIHandler(super.fromUrl(url), getContentFilter(url), getSortFilter(url));
+        return new ListLinkHandler(super.fromUrl(url), getContentFilter(url), getSortFilter(url));
     }
 
     @Override
-    public ListUIHandler fromId(String id) throws ParsingException {
-        return new ListUIHandler(super.fromId(id), new ArrayList<String>(0), "");
+    public ListLinkHandler fromId(String id) throws ParsingException {
+        return new ListLinkHandler(super.fromId(id), new ArrayList<String>(0), "");
     }
 
-    public ListUIHandler fromQuery(String id,
-                                    List<String> contentFilters,
-                                    String sortFilter) throws ParsingException {
+    public ListLinkHandler fromQuery(String id,
+                                     List<String> contentFilters,
+                                     String sortFilter) throws ParsingException {
         final String url = getUrl(id, contentFilters, sortFilter);
-        return new ListUIHandler(url, url, id, contentFilters, sortFilter);
+        return new ListLinkHandler(url, url, id, contentFilters, sortFilter);
     }
 
 
     /**
-     * For makeing ListUIHFactory compatible with UIHFactory we need to override this,
+     * For makeing ListLinkHandlerFactory compatible with LinkHandlerFactory we need to override this,
      * however it should not be overridden by the actual implementation.
      * @param id
      * @return the url coresponding to id without any filters applied

@@ -4,7 +4,7 @@ import com.grack.nanojson.JsonObject;
 import com.grack.nanojson.JsonParser;
 import com.grack.nanojson.JsonParserException;
 import org.schabi.newpipe.extractor.Downloader;
-import org.schabi.newpipe.extractor.uih.ListUIHandler;
+import org.schabi.newpipe.extractor.linkhandler.ListLinkHandler;
 import org.schabi.newpipe.extractor.StreamingService;
 import org.schabi.newpipe.extractor.exceptions.ExtractionException;
 import org.schabi.newpipe.extractor.exceptions.ParsingException;
@@ -23,7 +23,7 @@ public class SoundcloudPlaylistExtractor extends PlaylistExtractor {
     private StreamInfoItemsCollector streamInfoItemsCollector = null;
     private String nextPageUrl = null;
 
-    public SoundcloudPlaylistExtractor(StreamingService service, ListUIHandler urlIdHandler) {
+    public SoundcloudPlaylistExtractor(StreamingService service, ListLinkHandler urlIdHandler) {
         super(service, urlIdHandler);
     }
 

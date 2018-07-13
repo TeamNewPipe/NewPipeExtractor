@@ -1,4 +1,4 @@
-package org.schabi.newpipe.extractor.uih;
+package org.schabi.newpipe.extractor.linkhandler;
 
 import org.schabi.newpipe.extractor.exceptions.FoundAdException;
 import org.schabi.newpipe.extractor.exceptions.ParsingException;
@@ -7,7 +7,7 @@ import org.schabi.newpipe.extractor.exceptions.ParsingException;
  * Created by Christian Schabesberger on 26.07.16.
  *
  * Copyright (C) Christian Schabesberger 2016 <chris.schabesberger@mailbox.org>
- * UIHFactory.java is part of NewPipe.
+ * LinkHandlerFactory.java is part of NewPipe.
  *
  * NewPipe is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -23,7 +23,7 @@ import org.schabi.newpipe.extractor.exceptions.ParsingException;
  * along with NewPipe.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-public abstract class UIHFactory {
+public abstract class LinkHandlerFactory {
 
     ///////////////////////////////////
     // To Override
@@ -37,20 +37,20 @@ public abstract class UIHFactory {
     // Logic
     ///////////////////////////////////
 
-    public UIHandler fromUrl(String url) throws ParsingException {
+    public LinkHandler fromUrl(String url) throws ParsingException {
         if(url == null) throw new IllegalArgumentException("url can not be null");
         if(!acceptUrl(url)) {
             throw new ParsingException("Malformed unacceptable url: " + url);
         }
 
         final String id = getId(url);
-        return new UIHandler(url, getUrl(id), id);
+        return new LinkHandler(url, getUrl(id), id);
     }
 
-    public UIHandler fromId(String id) throws ParsingException {
+    public LinkHandler fromId(String id) throws ParsingException {
         if(id == null) throw new IllegalArgumentException("id can not be null");
         final String url = getUrl(id);
-        return new UIHandler(url, url, id);
+        return new LinkHandler(url, url, id);
     }
 
     /**

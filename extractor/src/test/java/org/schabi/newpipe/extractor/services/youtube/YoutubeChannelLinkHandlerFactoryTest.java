@@ -4,23 +4,22 @@ import org.junit.BeforeClass;
 import org.junit.Test;
 import org.schabi.newpipe.Downloader;
 import org.schabi.newpipe.extractor.NewPipe;
-import org.schabi.newpipe.extractor.exceptions.FoundAdException;
 import org.schabi.newpipe.extractor.exceptions.ParsingException;
-import org.schabi.newpipe.extractor.services.youtube.urlIdHandlers.YoutubeChannelUIHFactory;
+import org.schabi.newpipe.extractor.services.youtube.linkHandler.YoutubeChannelLinkHandlerFactory;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
 /**
- * Test for {@link YoutubeChannelUIHFactory}
+ * Test for {@link YoutubeChannelLinkHandlerFactory}
  */
-public class YoutubeChannelUIHFactoryTest {
+public class YoutubeChannelLinkHandlerFactoryTest {
 
-    private static YoutubeChannelUIHFactory urlIdHandler;
+    private static YoutubeChannelLinkHandlerFactory urlIdHandler;
 
     @BeforeClass
     public static void setUp() {
-        urlIdHandler = YoutubeChannelUIHFactory.getInstance();
+        urlIdHandler = YoutubeChannelLinkHandlerFactory.getInstance();
         NewPipe.init(Downloader.getInstance());
     }
 
