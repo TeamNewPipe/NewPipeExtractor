@@ -14,7 +14,7 @@ public class SoundcloudSearchQueryHandlerFactory extends SearchQueryHandlerFacto
 
     public static final String TRACKS = "tracks";
     public static final String USERS = "users";
-    public static final String PLAYLIST = "playlist";
+    public static final String PLAYLISTS = "playlists";
     public static final String ALL = "all";
 
     public static final int ITEMS_PER_PAGE = 10;
@@ -32,7 +32,7 @@ public class SoundcloudSearchQueryHandlerFactory extends SearchQueryHandlerFacto
                     case USERS:
                         url += "/users";
                         break;
-                    case PLAYLIST:
+                    case PLAYLISTS:
                         url += "/playlists";
                         break;
                     case ALL:
@@ -61,6 +61,6 @@ public class SoundcloudSearchQueryHandlerFactory extends SearchQueryHandlerFacto
                 ALL,
                 TRACKS,
                 USERS,
-                PLAYLIST};
+                PLAYLISTS};
     }
 }
