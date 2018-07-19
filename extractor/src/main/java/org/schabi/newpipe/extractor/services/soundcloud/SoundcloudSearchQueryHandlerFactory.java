@@ -15,7 +15,7 @@ public class SoundcloudSearchQueryHandlerFactory extends SearchQueryHandlerFacto
     public static final String TRACKS = "tracks";
     public static final String USERS = "users";
     public static final String PLAYLIST = "playlist";
-    public static final String ANY = "any";
+    public static final String ALL = "all";
 
     public static final int ITEMS_PER_PAGE = 10;
 
@@ -35,7 +35,7 @@ public class SoundcloudSearchQueryHandlerFactory extends SearchQueryHandlerFacto
                     case PLAYLIST:
                         url += "/playlists";
                         break;
-                    case ANY:
+                    case ALL:
                     default:
                         break;
                 }
@@ -58,7 +58,7 @@ public class SoundcloudSearchQueryHandlerFactory extends SearchQueryHandlerFacto
     @Override
     public String[] getAvailableContentFilter() {
         return new String[] {
-                ANY,
+                ALL,
                 TRACKS,
                 USERS,
                 PLAYLIST};

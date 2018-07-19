@@ -8,6 +8,7 @@ import org.schabi.newpipe.extractor.ListExtractor;
 import org.schabi.newpipe.extractor.NewPipe;
 import org.schabi.newpipe.extractor.channel.ChannelInfoItem;
 import org.schabi.newpipe.extractor.services.soundcloud.SoundcloudSearchExtractor;
+import org.schabi.newpipe.extractor.services.soundcloud.SoundcloudSearchQueryHandlerFactory;
 
 import static java.util.Arrays.asList;
 import static org.junit.Assert.*;
@@ -19,7 +20,7 @@ public class SoundcloudSearchExtractorChannelOnlyTest extends SoundcloudSearchEx
     public static void setUpClass() throws Exception {
         NewPipe.init(Downloader.getInstance());
         extractor = (SoundcloudSearchExtractor) SoundCloud.getSearchExtractor("lill uzi vert",
-                asList(new String[]{"users"}), null, "de");
+                asList(SoundcloudSearchQueryHandlerFactory.USERS), null, "de");
         extractor.fetchPage();
         itemsPage = extractor.getInitialPage();
     }
@@ -27,7 +28,7 @@ public class SoundcloudSearchExtractorChannelOnlyTest extends SoundcloudSearchEx
     @Test
     public void testGetSecondPage() throws Exception {
         SoundcloudSearchExtractor secondExtractor = (SoundcloudSearchExtractor) SoundCloud.getSearchExtractor("lill uzi vert",
-                asList(new String[]{"users"}), null, "de");
+                asList(SoundcloudSearchQueryHandlerFactory.USERS), null, "de");
         ListExtractor.InfoItemsPage<InfoItem> secondPage = secondExtractor.getPage(itemsPage.getNextPageUrl());
         assertTrue(Integer.toString(secondPage.getItems().size()),
                 secondPage.getItems().size() >= 3);

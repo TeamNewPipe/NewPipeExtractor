@@ -41,7 +41,7 @@ public class YoutubeTrendingLinkHandlerFactoryTest {
 
     @BeforeClass
     public static void setUp() throws Exception {
-        LinkHandlerFactory = YouTube.getKioskList().getUIHFactoryByType("Trending");
+        LinkHandlerFactory = YouTube.getKioskList().getListLinkHandlerFactoryByType("Trending");
         NewPipe.init(Downloader.getInstance());
     }
 

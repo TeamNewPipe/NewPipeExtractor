@@ -43,7 +43,7 @@ public class YoutubeTrendingKioskInfoTest {
             throws Exception {
         NewPipe.init(Downloader.getInstance());
         StreamingService service = YouTube;
-        LinkHandlerFactory LinkHandlerFactory = service.getKioskList().getUIHFactoryByType("Trending");
+        LinkHandlerFactory LinkHandlerFactory = service.getKioskList().getListLinkHandlerFactoryByType("Trending");
 
         kioskInfo = KioskInfo.getInfo(YouTube, LinkHandlerFactory.fromId("Trending").getUrl(), null);
     }

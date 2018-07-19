@@ -11,10 +11,10 @@ public class YoutubeSearchQueryHandlerFactory extends SearchQueryHandlerFactory 
 
     public static final String CHARSET_UTF_8 = "UTF-8";
 
-    public static final String STREAM = "stream";
-    public static final String CHANNEL = "channel";
-    public static final String PLAYLIST = "playlist";
-    public static final String ANY = "any";
+    public static final String VIDEOS = "videos";
+    public static final String CHANNELS = "channels";
+    public static final String PLAYLISTS = "playlists";
+    public static final String ALL = "all";
 
     public static YoutubeSearchQueryHandlerFactory getInstance() {
         return new YoutubeSearchQueryHandlerFactory();
@@ -28,10 +28,10 @@ public class YoutubeSearchQueryHandlerFactory extends SearchQueryHandlerFactory 
 
             if(contentFilters.size() > 0) {
                 switch (contentFilters.get(0)) {
-                    case STREAM: return url + "&sp=EgIQAVAU";
-                    case CHANNEL: return url + "&sp=EgIQAlAU";
-                    case PLAYLIST: return url + "&sp=EgIQA1AU";
-                    case ANY:
+                    case VIDEOS: return url + "&sp=EgIQAVAU";
+                    case CHANNELS: return url + "&sp=EgIQAlAU";
+                    case PLAYLISTS: return url + "&sp=EgIQA1AU";
+                    case ALL:
                     default:
                 }
             }
@@ -45,9 +45,9 @@ public class YoutubeSearchQueryHandlerFactory extends SearchQueryHandlerFactory 
     @Override
     public String[] getAvailableContentFilter() {
         return new String[] {
-                ANY,
-                STREAM,
-                CHANNEL,
-                PLAYLIST};
+                ALL,
+                VIDEOS,
+                CHANNELS,
+                PLAYLISTS};
     }
 }
