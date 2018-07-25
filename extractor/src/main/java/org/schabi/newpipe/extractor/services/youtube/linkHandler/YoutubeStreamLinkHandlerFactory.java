@@ -60,61 +60,59 @@ public class YoutubeStreamLinkHandlerFactory extends LinkHandlerFactory {
             throw new IllegalArgumentException("The url parameter should not be empty");
         }
 
-        String id;
         String lowercaseUrl = url.toLowerCase();
         if (lowercaseUrl.contains("youtube")) {
             if (lowercaseUrl.contains("list=")) {
                 throw new ParsingException("Error no suitable url: " + url);
-            } else if (url.contains("attribution_link")) {
+            }
+            if (url.contains("attribution_link")) {
                 try {
                     String escapedQuery = Parser.matchGroup1("u=(.[^&|$]*)", url);
                     String query = URLDecoder.decode(escapedQuery, "UTF-8");
-                    id = Parser.matchGroup1("v=" + ID_PATTERN, query);
+                    return Parser.matchGroup1("v=" + ID_PATTERN, query);
                 } catch (UnsupportedEncodingException uee) {
                     throw new ParsingException("Could not parse attribution_link", uee);
                 }
-            } else if (lowercaseUrl.contains("youtube.com/shared?ci=")) {
-                return getRealIdFromSharedLink(url);
-            } else if (url.contains("vnd.youtube")) {
-                id = Parser.matchGroup1(ID_PATTERN, url);
-            } else if (url.contains("embed")) {
-                id = Parser.matchGroup1("embed/" + ID_PATTERN, url);
-            } else if (url.contains("googleads")) {
-                throw new FoundAdException("Error found add: " + url);
-            } else {
-                id = Parser.matchGroup1("[?&]v=" + ID_PATTERN, url);
             }
-        } else if (lowercaseUrl.contains("youtu.be")) {
+            if (lowercaseUrl.contains("youtube.com/shared?ci=")) {
+                return getRealIdFromSharedLink(url);
+            }
+            if (url.contains("vnd.youtube")) {
+                return Parser.matchGroup1(ID_PATTERN, url);
+            }
+            if (url.contains("embed")) {
+                return Parser.matchGroup1("embed/" + ID_PATTERN, url);
+            }
+            if (url.contains("googleads")) {
+                throw new FoundAdException("Error found add: " + url);
+            }
+            return Parser.matchGroup1("[?&]v=" + ID_PATTERN, url);
+        }
+        if (lowercaseUrl.contains("youtu.be")) {
             if (lowercaseUrl.contains("list=")) {
                 throw new ParsingException("Error no suitable url: " + url);
-            } else if (url.contains("v=")) {
-                id = Parser.matchGroup1("v=" + ID_PATTERN, url);
-            } else {
-                id = Parser.matchGroup1("[Yy][Oo][Uu][Tt][Uu]\\.[Bb][Ee]/" + ID_PATTERN, url);
             }
-        } else if(lowercaseUrl.contains("hooktube")) {
-            if(lowercaseUrl.contains("&v=")
+            if (url.contains("v=")) {
+                return Parser.matchGroup1("v=" + ID_PATTERN, url);
+            }
+            return Parser.matchGroup1("[Yy][Oo][Uu][Tt][Uu]\\.[Bb][Ee]/" + ID_PATTERN, url);
+        }
+        if (lowercaseUrl.contains("hooktube")) {
+            if (lowercaseUrl.contains("&v=")
                     || lowercaseUrl.contains("?v=")) {
-                id = Parser.matchGroup1("[?&]v=" + ID_PATTERN, url);
-            } else if (url.contains("/embed/")) {
-                id = Parser.matchGroup1("embed/" + ID_PATTERN, url);
-            } else if (url.contains("/v/")) {
-                id = Parser.matchGroup1("v/" + ID_PATTERN, url);
-            } else if (url.contains("/watch/")) {
-                id = Parser.matchGroup1("watch/" + ID_PATTERN, url);
-            } else {
-                throw new ParsingException("Error no suitable url: " + url);
+                return Parser.matchGroup1("[?&]v=" + ID_PATTERN, url);
             }
-        } else {
-            throw new ParsingException("Error no suitable url: " + url);
+            if (url.contains("/embed/")) {
+                return Parser.matchGroup1("embed/" + ID_PATTERN, url);
+            }
+            if (url.contains("/v/")) {
+                return Parser.matchGroup1("v/" + ID_PATTERN, url);
+            }
+            if (url.contains("/watch/")) {
+                return Parser.matchGroup1("watch/" + ID_PATTERN, url);
+            }
         }
-
-
-        if (!id.isEmpty()) {
-            return id;
-        } else {
-            throw new ParsingException("Error could not parse url: " + url);
-        }
+        throw new ParsingException("Error no suitable url: " + url);
     }
 
     /**
@@ -170,19 +168,18 @@ public class YoutubeStreamLinkHandlerFactory extends LinkHandlerFactory {
     @Override
     public boolean onAcceptUrl(final String url) throws FoundAdException {
         final String lowercaseUrl = url.toLowerCase();
-        if (lowercaseUrl.contains("youtube")
-                || lowercaseUrl.contains("youtu.be")
-                || lowercaseUrl.contains("hooktube")) {
-            // bad programming I know
-            try {
-                getId(url);
-                return true;
-            } catch (FoundAdException fe) {
-                throw fe;
-            } catch (ParsingException e) {
-                return false;
-            }
-        } else {
+        if (!lowercaseUrl.contains("youtube")  &&
+            !lowercaseUrl.contains("youtu.be") &&
+            !lowercaseUrl.contains("hooktube")) {
+            return false;
+            // bad programming I know <-- nice meme
+        }
+        try {
+            getId(url);
+            return true;
+        } catch (FoundAdException fe) {
+            throw fe;
+        } catch (ParsingException e) {
             return false;
         }
     }
