@@ -63,7 +63,9 @@ public class YoutubeStreamLinkHandlerFactory extends LinkHandlerFactory {
         String id;
         String lowercaseUrl = url.toLowerCase();
         if (lowercaseUrl.contains("youtube")) {
-            if (url.contains("attribution_link")) {
+            if (lowercaseUrl.contains("list=")) {
+                throw new ParsingException("Error no suitable url: " + url);
+            } else if (url.contains("attribution_link")) {
                 try {
                     String escapedQuery = Parser.matchGroup1("u=(.[^&|$]*)", url);
                     String query = URLDecoder.decode(escapedQuery, "UTF-8");
@@ -83,7 +85,9 @@ public class YoutubeStreamLinkHandlerFactory extends LinkHandlerFactory {
                 id = Parser.matchGroup1("[?&]v=" + ID_PATTERN, url);
             }
         } else if (lowercaseUrl.contains("youtu.be")) {
-            if (url.contains("v=")) {
+            if (lowercaseUrl.contains("list=")) {
+                throw new ParsingException("Error no suitable url: " + url);
+            } else if (url.contains("v=")) {
                 id = Parser.matchGroup1("v=" + ID_PATTERN, url);
             } else {
                 id = Parser.matchGroup1("[Yy][Oo][Uu][Tt][Uu]\\.[Bb][Ee]/" + ID_PATTERN, url);
