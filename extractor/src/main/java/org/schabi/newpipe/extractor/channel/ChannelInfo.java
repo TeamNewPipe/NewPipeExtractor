@@ -5,7 +5,9 @@ import org.schabi.newpipe.extractor.ListInfo;
 import org.schabi.newpipe.extractor.NewPipe;
 import org.schabi.newpipe.extractor.StreamingService;
 import org.schabi.newpipe.extractor.exceptions.ExtractionException;
+import org.schabi.newpipe.extractor.exceptions.ParsingException;
 import org.schabi.newpipe.extractor.stream.StreamInfoItem;
+import org.schabi.newpipe.extractor.linkhandler.ListLinkHandler;
 import org.schabi.newpipe.extractor.utils.ExtractorHelper;
 
 import java.io.IOException;
@@ -32,8 +34,8 @@ import java.io.IOException;
 
 public class ChannelInfo extends ListInfo<StreamInfoItem> {
 
-    public ChannelInfo(int serviceId, String id, String url, String originalUrl, String name) {
-        super(serviceId, id, url, originalUrl, name);
+    public ChannelInfo(int serviceId, ListLinkHandler urlIdHandler, String name) throws ParsingException {
+        super(serviceId, urlIdHandler, name);
     }
 
     public static ChannelInfo getInfo(String url) throws IOException, ExtractionException {
@@ -52,14 +54,9 @@ public class ChannelInfo extends ListInfo<StreamInfoItem> {
 
     public static ChannelInfo getInfo(ChannelExtractor extractor) throws IOException, ExtractionException {
 
-        // important data
-        int serviceId = extractor.getServiceId();
-        String url = extractor.getUrl();
-        String originalUrl = extractor.getOriginalUrl();
-        String id = extractor.getId();
-        String name = extractor.getName();
-
-        ChannelInfo info = new ChannelInfo(serviceId, id, url, originalUrl, name);
+        ChannelInfo info = new ChannelInfo(extractor.getServiceId(),
+                extractor.getUIHandler(),
+                extractor.getName());
 
 
         try {

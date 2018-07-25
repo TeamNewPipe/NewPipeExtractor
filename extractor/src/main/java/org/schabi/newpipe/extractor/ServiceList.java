@@ -19,11 +19,11 @@ public final class ServiceList {
     public static final YoutubeService YouTube;
     public static final SoundcloudService SoundCloud;
 
-    private static final List<StreamingService> SERVICES = unmodifiableList(asList(
-            YouTube = new YoutubeService(0),
-            SoundCloud = new SoundcloudService(1)
-            // DailyMotion = new DailyMotionService(2);
-    ));
+    private static final List<StreamingService> SERVICES = unmodifiableList(
+            asList(
+                    YouTube = new YoutubeService(0),
+                    SoundCloud = new SoundcloudService(1)
+            ));
 
     /**
      * Get all the supported services.

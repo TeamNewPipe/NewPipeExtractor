@@ -7,6 +7,7 @@ import org.schabi.newpipe.extractor.*;
 import org.schabi.newpipe.extractor.exceptions.ContentNotAvailableException;
 import org.schabi.newpipe.extractor.exceptions.ExtractionException;
 import org.schabi.newpipe.extractor.exceptions.ParsingException;
+import org.schabi.newpipe.extractor.linkhandler.LinkHandler;
 import org.schabi.newpipe.extractor.stream.*;
 
 import javax.annotation.Nonnull;
@@ -17,13 +18,11 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-import static org.schabi.newpipe.extractor.utils.Utils.replaceHttpWithHttps;
-
 public class SoundcloudStreamExtractor extends StreamExtractor {
     private JsonObject track;
 
-    public SoundcloudStreamExtractor(StreamingService service, UrlIdHandler urlIdHandler) {
-        super(service, urlIdHandler);
+    public SoundcloudStreamExtractor(StreamingService service, LinkHandler uIHandler) {
+        super(service, uIHandler);
     }
 
     @Override
@@ -201,16 +200,6 @@ public class SoundcloudStreamExtractor extends StreamExtractor {
 
         SoundcloudParsingHelper.getStreamsFromApi(collector, apiUrl);
         return collector;
-    }
-
-    @Override
-    public String[] getDonationLinks() {
-        return new String[0];
-    }
-
-    @Override
-    public String[] getAffiliateLinks() {
-        return new String[0];
     }
 
     @Override

@@ -5,7 +5,7 @@ import org.junit.Test;
 import org.schabi.newpipe.Downloader;
 import org.schabi.newpipe.extractor.NewPipe;
 import org.schabi.newpipe.extractor.ServiceList;
-import org.schabi.newpipe.extractor.UrlIdHandler;
+import org.schabi.newpipe.extractor.linkhandler.LinkHandlerFactory;
 import org.schabi.newpipe.extractor.services.youtube.extractors.YoutubeSubscriptionExtractor;
 import org.schabi.newpipe.extractor.subscription.SubscriptionExtractor;
 import org.schabi.newpipe.extractor.subscription.SubscriptionItem;
@@ -23,13 +23,13 @@ import static org.junit.Assert.*;
  */
 public class YoutubeSubscriptionExtractorTest {
     private static YoutubeSubscriptionExtractor subscriptionExtractor;
-    private static UrlIdHandler urlHandler;
+    private static LinkHandlerFactory urlHandler;
 
     @BeforeClass
     public static void setupClass() {
         NewPipe.init(Downloader.getInstance());
         subscriptionExtractor = new YoutubeSubscriptionExtractor(ServiceList.YouTube);
-        urlHandler = ServiceList.YouTube.getChannelUrlIdHandler();
+        urlHandler = ServiceList.YouTube.getChannelUIHFactory();
     }
 
     @Test

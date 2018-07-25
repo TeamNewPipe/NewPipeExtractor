@@ -8,7 +8,7 @@ import org.schabi.newpipe.extractor.NewPipe;
 import org.schabi.newpipe.extractor.exceptions.ExtractionException;
 import org.schabi.newpipe.extractor.exceptions.ParsingException;
 import org.schabi.newpipe.extractor.services.youtube.extractors.YoutubeStreamExtractor;
-import org.schabi.newpipe.extractor.services.youtube.urlIdHandlers.YoutubeStreamUrlIdHandler;
+import org.schabi.newpipe.extractor.services.youtube.linkHandler.YoutubeStreamLinkHandlerFactory;
 import org.schabi.newpipe.extractor.stream.StreamExtractor;
 import org.schabi.newpipe.extractor.stream.SubtitlesFormat;
 import org.schabi.newpipe.extractor.stream.VideoStream;
@@ -22,7 +22,7 @@ import static org.schabi.newpipe.extractor.ExtractorAsserts.assertIsSecureUrl;
 import static org.schabi.newpipe.extractor.ServiceList.YouTube;
 
 /**
- * Test for {@link YoutubeStreamUrlIdHandler}
+ * Test for {@link YoutubeStreamLinkHandlerFactory}
  */
 public class YoutubeStreamExtractorRestrictedTest {
     public static final String HTTPS = "https://";

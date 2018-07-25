@@ -15,6 +15,7 @@ import org.schabi.newpipe.extractor.exceptions.ContentNotAvailableException;
 import org.schabi.newpipe.extractor.exceptions.ExtractionException;
 import org.schabi.newpipe.extractor.exceptions.ParsingException;
 import org.schabi.newpipe.extractor.exceptions.ReCaptchaException;
+import org.schabi.newpipe.extractor.linkhandler.LinkHandler;
 import org.schabi.newpipe.extractor.services.youtube.ItagItem;
 import org.schabi.newpipe.extractor.stream.*;
 import org.schabi.newpipe.extractor.utils.DonationLinkHelper;
@@ -29,7 +30,7 @@ import java.util.*;
 /*
  * Created by Christian Schabesberger on 06.08.15.
  *
- * Copyright (C) Christian Schabesberger 2015 <chris.schabesberger@mailbox.org>
+ * Copyright (C) Christian Schabesberger 2018 <chris.schabesberger@mailbox.org>
  * YoutubeStreamExtractor.java is part of NewPipe.
  *
  * NewPipe is free software: you can redistribute it and/or modify
@@ -84,8 +85,8 @@ public class YoutubeStreamExtractor extends StreamExtractor {
 
     private boolean isAgeRestricted;
 
-    public YoutubeStreamExtractor(StreamingService service, UrlIdHandler urlIdHandler) throws ExtractionException {
-        super(service, urlIdHandler);
+    public YoutubeStreamExtractor(StreamingService service, LinkHandler linkHandler) {
+        super(service, linkHandler);
     }
 
     /*//////////////////////////////////////////////////////////////////////////
@@ -516,41 +517,6 @@ public class YoutubeStreamExtractor extends StreamExtractor {
 
         return errorReason != null ? errorReason.toString() : null;
     }
-
-    @Override
-    public String[] getDonationLinks() throws ParsingException {
-        try {
-            ArrayList<String> donationLinks = new ArrayList<>();
-            for (String s : Parser.getLinksFromString(getDescription())) {
-                if (DonationLinkHelper.getDonatoinServiceByLink(s) != DonationLinkHelper.DonationService.NO_DONATION) {
-                    donationLinks.add(s);
-                }
-            }
-            String[] donlret = new String[donationLinks.size()];
-            donlret = donationLinks.toArray(donlret);
-            return donlret;
-        } catch (Exception e) {
-            throw new ParsingException("Could not get donation links", e);
-        }
-    }
-
-    @Override
-    public String[] getAffiliateLinks() throws ParsingException {
-        try {
-            ArrayList<String> donationLinks = new ArrayList<>();
-            for (String s : Parser.getLinksFromString(getDescription())) {
-                if (DonationLinkHelper.getAffiliateServiceByLink(s) != DonationLinkHelper.AffiliateService.NO_AFILIATE) {
-                    donationLinks.add(s);
-                }
-            }
-            String[] donlret = new String[donationLinks.size()];
-            donlret = donationLinks.toArray(donlret);
-            return donlret;
-        } catch (Exception e) {
-            throw new ParsingException("Could not get afiliate links", e);
-        }
-    }
-
 
     /*//////////////////////////////////////////////////////////////////////////
     // Fetch page

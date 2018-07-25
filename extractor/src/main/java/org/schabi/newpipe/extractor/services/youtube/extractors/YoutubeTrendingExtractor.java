@@ -3,7 +3,7 @@ package org.schabi.newpipe.extractor.services.youtube.extractors;
 /*
  * Created by Christian Schabesberger on 12.08.17.
  *
- * Copyright (C) Christian Schabesberger 2017 <chris.schabesberger@mailbox.org>
+ * Copyright (C) Christian Schabesberger 2018 <chris.schabesberger@mailbox.org>
  * YoutubeTrendingExtractor.java is part of NewPipe.
  *
  * NewPipe is free software: you can redistribute it and/or modify
@@ -25,13 +25,11 @@ import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 import org.schabi.newpipe.extractor.Downloader;
-import org.schabi.newpipe.extractor.ListUrlIdHandler;
+import org.schabi.newpipe.extractor.linkhandler.ListLinkHandler;
 import org.schabi.newpipe.extractor.StreamingService;
-import org.schabi.newpipe.extractor.UrlIdHandler;
 import org.schabi.newpipe.extractor.exceptions.ExtractionException;
 import org.schabi.newpipe.extractor.exceptions.ParsingException;
 import org.schabi.newpipe.extractor.kiosk.KioskExtractor;
-import org.schabi.newpipe.extractor.services.youtube.urlIdHandlers.YoutubeTrendingUrlIdHandler;
 import org.schabi.newpipe.extractor.stream.StreamInfoItem;
 import org.schabi.newpipe.extractor.stream.StreamInfoItemsCollector;
 
@@ -42,8 +40,9 @@ public class YoutubeTrendingExtractor extends KioskExtractor {
 
     private Document doc;
 
-    public YoutubeTrendingExtractor(StreamingService service, ListUrlIdHandler urlIdHandler, String kioskId)
-            throws ExtractionException {
+    public YoutubeTrendingExtractor(StreamingService service,
+                                    ListLinkHandler urlIdHandler,
+                                    String kioskId) {
         super(service, urlIdHandler, kioskId);
     }
 
@@ -57,12 +56,6 @@ public class YoutubeTrendingExtractor extends KioskExtractor {
 
         String pageContent = downloader.download(url);
         doc = Jsoup.parse(pageContent, url);
-    }
-
-    @Nonnull
-    @Override
-    public UrlIdHandler getUrlIdHandler() {
-        return new YoutubeTrendingUrlIdHandler();
     }
 
     @Override

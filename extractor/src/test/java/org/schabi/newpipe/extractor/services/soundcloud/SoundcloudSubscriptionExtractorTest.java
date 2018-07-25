@@ -5,7 +5,7 @@ import org.junit.Test;
 import org.schabi.newpipe.Downloader;
 import org.schabi.newpipe.extractor.NewPipe;
 import org.schabi.newpipe.extractor.ServiceList;
-import org.schabi.newpipe.extractor.UrlIdHandler;
+import org.schabi.newpipe.extractor.linkhandler.LinkHandlerFactory;
 import org.schabi.newpipe.extractor.exceptions.ParsingException;
 import org.schabi.newpipe.extractor.subscription.SubscriptionExtractor;
 import org.schabi.newpipe.extractor.subscription.SubscriptionItem;
@@ -21,13 +21,13 @@ import static org.junit.Assert.*;
  */
 public class SoundcloudSubscriptionExtractorTest {
     private static SoundcloudSubscriptionExtractor subscriptionExtractor;
-    private static UrlIdHandler urlHandler;
+    private static LinkHandlerFactory urlHandler;
 
     @BeforeClass
     public static void setupClass() {
         NewPipe.init(Downloader.getInstance());
         subscriptionExtractor = new SoundcloudSubscriptionExtractor(ServiceList.SoundCloud);
-        urlHandler = ServiceList.SoundCloud.getChannelUrlIdHandler();
+        urlHandler = ServiceList.SoundCloud.getChannelUIHFactory();
     }
 
     @Test
