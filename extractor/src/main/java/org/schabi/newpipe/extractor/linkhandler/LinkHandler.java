@@ -25,6 +25,9 @@ public class LinkHandler implements Serializable {
         return url;
     }
 
+    public String getShortUrl() {
+        return getUrl();
+    }
     public String getId() {
         return id;
     }

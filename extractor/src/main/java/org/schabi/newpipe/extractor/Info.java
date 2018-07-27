@@ -28,6 +28,13 @@ public abstract class Info implements Serializable {
      * @see Extractor#getOriginalUrl()
      */
     private final String originalUrl;
+    private final String shortUrl;
+    /**
+     * A shortened version of the Url pointing at the same media
+     * e.g. Youtube https://www.youtube.com/watch?v=RER5qCTzZ7 &gt; https://youtu.be/RER5qCTzZ7
+     *
+     * @see LinkHandler#getShortUrl()
+     */
     private final String name;
 
     private final List<Throwable> errors = new ArrayList<>();
@@ -47,12 +54,21 @@ public abstract class Info implements Serializable {
         this.originalUrl = originalUrl;
         this.name = name;
     }
+    public Info(int serviceId, String id, String url, String originalUrl, String shortUrl, String name) {
+        this(serviceId,
+                id,
+                url,
+                originalUrl,
+                name);
+        this.shortUrl = shortUrl;
+    }
 
     public Info(int serviceId, LinkHandler linkHandler, String name) {
         this(serviceId,
                 linkHandler.getId(),
                 linkHandler.getUrl(),
                 linkHandler.getOriginalUrl(),
+                linkHandler.getShortUrl(),
                 name);
     }
 
