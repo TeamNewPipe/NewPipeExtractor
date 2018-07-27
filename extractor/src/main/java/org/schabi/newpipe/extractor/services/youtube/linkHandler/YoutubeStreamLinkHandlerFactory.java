@@ -51,7 +51,7 @@ public class YoutubeStreamLinkHandlerFactory extends LinkHandlerFactory {
 
     @Override
     public String getUrl(String id) {
-        return "https://www.youtube.com/watch?v=" + id;
+        return "https://youtu.be/" + id;
     }
 
     @Override
