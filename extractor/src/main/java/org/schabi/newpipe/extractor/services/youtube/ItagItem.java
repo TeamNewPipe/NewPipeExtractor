@@ -34,10 +34,6 @@ public class ItagItem {
             ////////////////////////////////////////////////////////////////////
             // AUDIO     ID      ItagType          Format        Bitrate    ///
             //////////////////////////////////////////////////////////////////
-            // Disable Opus codec as it's not well supported in older devices
-//          new ItagItem(249, AUDIO, WEBMA, 50),
-//          new ItagItem(250, AUDIO, WEBMA, 70),
-//          new ItagItem(251, AUDIO, WEBMA, 160),
             new ItagItem(171, AUDIO, WEBMA, 128),
             new ItagItem(172, AUDIO, WEBMA, 256),
             new ItagItem(139, AUDIO, M4A, 48),
@@ -45,7 +41,7 @@ public class ItagItem {
             new ItagItem(141, AUDIO, M4A, 256),
             new ItagItem(249, AUDIO, OPUS, 50),
             new ItagItem(250, AUDIO, OPUS, 70),
-            new ItagItem(160, AUDIO, OPUS, 160),
+            new ItagItem(251, AUDIO, OPUS, 160),
 
             /// VIDEO ONLY ////////////////////////////////////////////
             //           ID      Type     Format  Resolution  FPS  ///
