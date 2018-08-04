@@ -45,7 +45,17 @@ public class YoutubeStreamInfoItemExtractor implements StreamInfoItemExtractor {
     @Override
     public boolean isAd() throws ParsingException {
         return !item.select("span[class*=\"icon-not-available\"]").isEmpty()
-                || !item.select("span[class*=\"yt-badge-ad\"]").isEmpty();
+                || !item.select("span[class*=\"yt-badge-ad\"]").isEmpty()
+                || isPremiumVideo();
+    }
+
+    private boolean isPremiumVideo() {
+        Element premiumSpan = item.select("span[class=\"standalone-collection-badge-renderer-red-text\"]").first();
+        if(premiumSpan == null) return false;
+
+        // if this span has text it most likely says ("Free Video") so we can play this
+        if(premiumSpan.hasText()) return false;
+        return true;
     }
 
     @Override
@@ -118,6 +128,9 @@ public class YoutubeStreamInfoItemExtractor implements StreamInfoItemExtractor {
         try {
             Element meta = item.select("div[class=\"yt-lockup-meta\"]").first();
             if (meta == null) return "";
+
+            Element li = meta.select("li").first();
+            if(li == null) return "";
 
             return meta.select("li").first().text();
         } catch (Exception e) {
