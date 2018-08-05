@@ -29,7 +29,7 @@ public class YoutubeSubscriptionExtractorTest {
     public static void setupClass() {
         NewPipe.init(Downloader.getInstance());
         subscriptionExtractor = new YoutubeSubscriptionExtractor(ServiceList.YouTube);
-        urlHandler = ServiceList.YouTube.getChannelUIHFactory();
+        urlHandler = ServiceList.YouTube.getChannelLHFactory();
     }
 
     @Test

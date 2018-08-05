@@ -175,7 +175,7 @@ public class YoutubePlaylistExtractor extends PlaylistExtractor {
     private void collectStreamsFrom(StreamInfoItemsCollector collector, Element element) {
         collector.reset();
 
-        final LinkHandlerFactory streamLinkHandlerFactory = getService().getStreamUIHFactory();
+        final LinkHandlerFactory streamLinkHandlerFactory = getService().getStreamLHFactory();
         for (final Element li : element.children()) {
             if(isDeletedItem(li)) {
                 continue;
