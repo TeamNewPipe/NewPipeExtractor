@@ -18,13 +18,15 @@ import org.schabi.newpipe.extractor.exceptions.ReCaptchaException;
 import org.schabi.newpipe.extractor.linkhandler.LinkHandler;
 import org.schabi.newpipe.extractor.services.youtube.ItagItem;
 import org.schabi.newpipe.extractor.stream.*;
-import org.schabi.newpipe.extractor.utils.DonationLinkHelper;
 import org.schabi.newpipe.extractor.utils.Parser;
 import org.schabi.newpipe.extractor.utils.Utils;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.io.IOException;
+import java.io.UnsupportedEncodingException;
+import java.net.MalformedURLException;
+import java.net.URL;
 import java.util.*;
 
 /*
@@ -152,10 +154,22 @@ public class YoutubeStreamExtractor extends StreamExtractor {
     public String getDescription() throws ParsingException {
         assertPageFetched();
         try {
-            return doc.select("p[id=\"eow-description\"]").first().html();
+            return parseHtmlAndGetFullLinks(doc.select("p[id=\"eow-description\"]").first().html());
         } catch (Exception e) {//todo: add fallback method <-- there is no ... as long as i know
             throw new ParsingException("Could not get the description", e);
         }
+    }
+
+    private String parseHtmlAndGetFullLinks(String descriptionHtml)
+            throws MalformedURLException, UnsupportedEncodingException, ParsingException {
+        final Document description = Jsoup.parse(descriptionHtml, getUrl());
+        for(Element a : description.select("a")) {
+            final URL redirectLink = new URL(
+                    a.attr("abs:href"));
+            final String link = Parser.compatParseMap(redirectLink.getQuery()).get("q");
+            a.text(link);
+        }
+        return description.select("body").first().html();
     }
 
     @Override
