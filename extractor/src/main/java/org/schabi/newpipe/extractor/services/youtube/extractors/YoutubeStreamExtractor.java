@@ -155,7 +155,7 @@ public class YoutubeStreamExtractor extends StreamExtractor {
         assertPageFetched();
         try {
             return parseHtmlAndGetFullLinks(doc.select("p[id=\"eow-description\"]").first().html());
-        } catch (Exception e) {//todo: add fallback method <-- there is no ... as long as i know
+        } catch (Exception e) {
             throw new ParsingException("Could not get the description", e);
         }
     }
@@ -166,8 +166,14 @@ public class YoutubeStreamExtractor extends StreamExtractor {
         for(Element a : description.select("a")) {
             final URL redirectLink = new URL(
                     a.attr("abs:href"));
-            final String link = Parser.compatParseMap(redirectLink.getQuery()).get("q");
-            a.text(link);
+            final String queryString = redirectLink.getQuery();
+            if(queryString != null) {
+                // if the query string is null we are not dealing with a redirect link,
+                // so we don't need to override it.
+                final String link =
+                        Parser.compatParseMap(queryString).get("q");
+                a.text(link);
+            }
         }
         return description.select("body").first().html();
     }
