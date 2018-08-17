@@ -172,7 +172,11 @@ public class YoutubeStreamExtractor extends StreamExtractor {
                 // so we don't need to override it.
                 final String link =
                         Parser.compatParseMap(queryString).get("q");
-                a.text(link);
+
+                // if link is null the a tag is a hashtag. They refer to the youtube search. We do not handle them.
+                if(link != null) {
+                    a.text(link);
+                }
             }
         }
         return description.select("body").first().html();
