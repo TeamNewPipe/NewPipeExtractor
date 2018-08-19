@@ -1,20 +1,41 @@
 package org.schabi.newpipe.extractor.services.youtube;
 
-import org.schabi.newpipe.extractor.*;
-import org.schabi.newpipe.extractor.linkhandler.*;
+import static java.util.Arrays.asList;
+import static org.schabi.newpipe.extractor.StreamingService.ServiceInfo.MediaCapability.AUDIO;
+import static org.schabi.newpipe.extractor.StreamingService.ServiceInfo.MediaCapability.LIVE;
+import static org.schabi.newpipe.extractor.StreamingService.ServiceInfo.MediaCapability.VIDEO;
+
+import org.schabi.newpipe.extractor.StreamingService;
+import org.schabi.newpipe.extractor.SuggestionExtractor;
 import org.schabi.newpipe.extractor.channel.ChannelExtractor;
+import org.schabi.newpipe.extractor.comments.CommentsExtractor;
 import org.schabi.newpipe.extractor.exceptions.ExtractionException;
 import org.schabi.newpipe.extractor.kiosk.KioskExtractor;
 import org.schabi.newpipe.extractor.kiosk.KioskList;
+import org.schabi.newpipe.extractor.linkhandler.LinkHandler;
+import org.schabi.newpipe.extractor.linkhandler.LinkHandlerFactory;
+import org.schabi.newpipe.extractor.linkhandler.ListLinkHandler;
+import org.schabi.newpipe.extractor.linkhandler.ListLinkHandlerFactory;
+import org.schabi.newpipe.extractor.linkhandler.SearchQueryHandler;
+import org.schabi.newpipe.extractor.linkhandler.SearchQueryHandlerFactory;
 import org.schabi.newpipe.extractor.playlist.PlaylistExtractor;
 import org.schabi.newpipe.extractor.search.SearchExtractor;
-import org.schabi.newpipe.extractor.services.youtube.extractors.*;
-import org.schabi.newpipe.extractor.services.youtube.linkHandler.*;
+import org.schabi.newpipe.extractor.services.youtube.extractors.YoutubeChannelExtractor;
+import org.schabi.newpipe.extractor.services.youtube.extractors.YoutubeCommentsExtractor;
+import org.schabi.newpipe.extractor.services.youtube.extractors.YoutubePlaylistExtractor;
+import org.schabi.newpipe.extractor.services.youtube.extractors.YoutubeSearchExtractor;
+import org.schabi.newpipe.extractor.services.youtube.extractors.YoutubeStreamExtractor;
+import org.schabi.newpipe.extractor.services.youtube.extractors.YoutubeSubscriptionExtractor;
+import org.schabi.newpipe.extractor.services.youtube.extractors.YoutubeSuggestionExtractor;
+import org.schabi.newpipe.extractor.services.youtube.extractors.YoutubeTrendingExtractor;
+import org.schabi.newpipe.extractor.services.youtube.linkHandler.YoutubeChannelLinkHandlerFactory;
+import org.schabi.newpipe.extractor.services.youtube.linkHandler.YoutubeCommentsLinkHandlerFactory;
+import org.schabi.newpipe.extractor.services.youtube.linkHandler.YoutubePlaylistLinkHandlerFactory;
+import org.schabi.newpipe.extractor.services.youtube.linkHandler.YoutubeSearchQueryHandlerFactory;
+import org.schabi.newpipe.extractor.services.youtube.linkHandler.YoutubeStreamLinkHandlerFactory;
+import org.schabi.newpipe.extractor.services.youtube.linkHandler.YoutubeTrendingLinkHandlerFactory;
 import org.schabi.newpipe.extractor.stream.StreamExtractor;
 import org.schabi.newpipe.extractor.subscription.SubscriptionExtractor;
-
-import static java.util.Arrays.asList;
-import static org.schabi.newpipe.extractor.StreamingService.ServiceInfo.MediaCapability.*;
 
 
 /*
@@ -114,5 +135,15 @@ public class YoutubeService extends StreamingService {
     public SubscriptionExtractor getSubscriptionExtractor() {
         return new YoutubeSubscriptionExtractor(this);
     }
+
+	@Override
+	public ListLinkHandlerFactory getCommentsLHFactory() {
+		return YoutubeCommentsLinkHandlerFactory.getInstance();
+	}
+
+	@Override
+	public CommentsExtractor getCommentsExtractor(ListLinkHandler urlIdHandler) throws ExtractionException {
+		return new YoutubeCommentsExtractor(this, urlIdHandler);
+	}
 
 }

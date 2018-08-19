@@ -3,6 +3,7 @@ package org.schabi.newpipe.extractor.services.soundcloud;
 import org.schabi.newpipe.extractor.*;
 import org.schabi.newpipe.extractor.linkhandler.*;
 import org.schabi.newpipe.extractor.channel.ChannelExtractor;
+import org.schabi.newpipe.extractor.comments.CommentsExtractor;
 import org.schabi.newpipe.extractor.exceptions.ExtractionException;
 import org.schabi.newpipe.extractor.kiosk.KioskExtractor;
 import org.schabi.newpipe.extractor.kiosk.KioskList;
@@ -98,4 +99,16 @@ public class SoundcloudService extends StreamingService {
     public SubscriptionExtractor getSubscriptionExtractor() {
         return new SoundcloudSubscriptionExtractor(this);
     }
+
+	@Override
+	public ListLinkHandlerFactory getCommentsLHFactory() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public CommentsExtractor getCommentsExtractor(ListLinkHandler urlIdHandler) throws ExtractionException {
+		// TODO Auto-generated method stub
+		return null;
+	}
 }

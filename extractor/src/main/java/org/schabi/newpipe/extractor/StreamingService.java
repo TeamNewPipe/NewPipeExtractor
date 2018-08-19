@@ -1,17 +1,23 @@
 package org.schabi.newpipe.extractor;
 
+import java.util.Collections;
+import java.util.List;
+
 import org.schabi.newpipe.extractor.channel.ChannelExtractor;
+import org.schabi.newpipe.extractor.comments.CommentsExtractor;
 import org.schabi.newpipe.extractor.exceptions.ExtractionException;
 import org.schabi.newpipe.extractor.exceptions.ParsingException;
 import org.schabi.newpipe.extractor.kiosk.KioskList;
+import org.schabi.newpipe.extractor.linkhandler.LinkHandler;
+import org.schabi.newpipe.extractor.linkhandler.LinkHandlerFactory;
+import org.schabi.newpipe.extractor.linkhandler.ListLinkHandler;
+import org.schabi.newpipe.extractor.linkhandler.ListLinkHandlerFactory;
+import org.schabi.newpipe.extractor.linkhandler.SearchQueryHandler;
+import org.schabi.newpipe.extractor.linkhandler.SearchQueryHandlerFactory;
 import org.schabi.newpipe.extractor.playlist.PlaylistExtractor;
 import org.schabi.newpipe.extractor.search.SearchExtractor;
-import org.schabi.newpipe.extractor.linkhandler.*;
 import org.schabi.newpipe.extractor.stream.StreamExtractor;
 import org.schabi.newpipe.extractor.subscription.SubscriptionExtractor;
-
-import java.util.Collections;
-import java.util.List;
 
 public abstract class StreamingService {
     public static class ServiceInfo {
@@ -71,6 +77,7 @@ public abstract class StreamingService {
     public abstract ListLinkHandlerFactory getChannelLHFactory();
     public abstract ListLinkHandlerFactory getPlaylistLHFactory();
     public abstract SearchQueryHandlerFactory getSearchQHFactory();
+    public abstract ListLinkHandlerFactory getCommentsLHFactory();
 
 
     ////////////////////////////////////////////
@@ -84,6 +91,7 @@ public abstract class StreamingService {
     public abstract ChannelExtractor getChannelExtractor(ListLinkHandler urlIdHandler) throws ExtractionException;
     public abstract PlaylistExtractor getPlaylistExtractor(ListLinkHandler urlIdHandler) throws ExtractionException;
     public abstract StreamExtractor getStreamExtractor(LinkHandler UIHFactory) throws ExtractionException;
+    public abstract CommentsExtractor getCommentsExtractor(ListLinkHandler urlIdHandler) throws ExtractionException;
 
     public SearchExtractor getSearchExtractor(String query, List<String> contentFilter, String sortFilter, String contentCountry) throws ExtractionException {
         return getSearchExtractor(getSearchQHFactory().fromQuery(query, contentFilter, sortFilter), contentCountry);
@@ -112,10 +120,16 @@ public abstract class StreamingService {
     public StreamExtractor getStreamExtractor(String url) throws ExtractionException {
         return getStreamExtractor(getStreamLHFactory().fromUrl(url));
     }
+    
+    public CommentsExtractor getCommentsExtractor(String url) throws ExtractionException {
+        return getCommentsExtractor(getCommentsLHFactory().fromUrl(url));
+    }
 
 
 
-    /**
+ 
+
+	/**
      * figure out where the link is pointing to (a channel, video, playlist, etc.)
      */
     public final LinkType getLinkTypeByUrl(String url) throws ParsingException {
