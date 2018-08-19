@@ -9,6 +9,7 @@ import java.net.URLEncoder;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 
 import javax.net.ssl.HttpsURLConnection;
 
@@ -54,15 +55,15 @@ public class YoutubeCommentsExtractor extends CommentsExtractor {
 	}
 
 	private String getNextPageUrl(JsonNode ajaxJson) throws IOException, ExtractionException {
-		String continuation;
-		try {
-			continuation = ajaxJson.findValue("itemSectionContinuation").get("continuations").findValue("continuation")
-					.asText();
-		} catch (Exception e) {
+		Optional<JsonNode> element = Optional.ofNullable(ajaxJson.findValue("itemSectionContinuation"))
+				.map(e -> e.get("continuations")).map(e -> e.findValue("continuation"));
+
+		if (element.isPresent()) {
+			return getNextPageUrl(element.get().asText());
+		} else {
 			// no more comments
 			return "";
 		}
-		return getNextPageUrl(continuation);
 	}
 
 	private String getNextPageUrl(String continuation) throws ParsingException {
