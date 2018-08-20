@@ -25,13 +25,29 @@ public class CheckAll {
 
                 final int size = value.keySet().size();
                 if (size >= 80) {
-                    if (name.equals("seconds")) currentSeconds++;
-                    else if (name.equals("minutes")) currentMinutes++;
-                    else if (name.equals("hours")) currentHours++;
-                    else if (name.equals("days")) currentDays++;
-                    else if (name.equals("weeks")) currentWeeks++;
-                    else if (name.equals("months")) currentMonths++;
-                    else if (name.equals("years")) currentYears++;
+                    switch (name) {
+                        case "seconds":
+                            currentSeconds++
+                            break;
+                        case "minutes":
+                            currentMinutes++
+                            break;
+                        case "hours":
+                            currentHours++
+                            break;
+                        case "days":
+                            currentDays++
+                            break;
+                        case "weeks":
+                            currentWeeks++
+                            break;
+                        case "months":
+                            currentMonths++
+                            break;
+                        case "years":
+                            currentYears++
+                            break;
+                    }
                 } else {
                     System.err.println("Missing some units in: " + name + " → " + entry.getKey() + " (current size = " + size + ")");
                 }
