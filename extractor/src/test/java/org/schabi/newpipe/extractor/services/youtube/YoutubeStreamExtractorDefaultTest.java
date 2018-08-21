@@ -8,6 +8,7 @@ import org.schabi.newpipe.extractor.exceptions.ExtractionException;
 import org.schabi.newpipe.extractor.exceptions.ParsingException;
 import org.schabi.newpipe.extractor.services.youtube.extractors.YoutubeStreamExtractor;
 import org.schabi.newpipe.extractor.stream.*;
+import org.schabi.newpipe.extractor.utils.DashMpdParser;
 import org.schabi.newpipe.extractor.utils.Utils;
 
 import java.io.IOException;
@@ -140,8 +141,9 @@ public class YoutubeStreamExtractorDefaultTest {
 
     @Test
     public void testGetDashMpd() throws ParsingException {
+        // we dont expect this particular video to have a DASH file. For this purpouse we use a different test class.
         assertTrue(extractor.getDashMpdUrl(),
-                extractor.getDashMpdUrl() != null || !extractor.getDashMpdUrl().isEmpty());
+                extractor.getDashMpdUrl() != null && extractor.getDashMpdUrl().isEmpty());
     }
 
     @Test
