@@ -147,10 +147,7 @@ public class StreamInfo extends Info {
         Exception dashMpdError = null;
         if (streamInfo.getDashMpdUrl() != null && !streamInfo.getDashMpdUrl().isEmpty()) {
             try {
-                DashMpdParser.ParserResult result = DashMpdParser.getStreams(streamInfo);
-                streamInfo.getVideoOnlyStreams().addAll(result.getVideoOnlyStreams());
-                streamInfo.getAudioStreams().addAll(result.getAudioStreams());
-                streamInfo.getVideoStreams().addAll(result.getVideoStreams());
+                DashMpdParser.getStreams(streamInfo);
             } catch (Exception e) {
                 // Sometimes we receive 403 (forbidden) error when trying to download the manifest (similar to what happens with youtube-dl),
                 // just skip the exception (but store it somewhere), as we later check if we have streams anyway.

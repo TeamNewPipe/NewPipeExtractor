@@ -440,7 +440,7 @@ public class YoutubeStreamExtractor extends StreamExtractor {
     }
 
     @Override
-    public List<VideoStream> getVideoOnlyStreams() throws ExtractionException {
+    public List<VideoStream> getVideoOnlyStreams() throws IOException, ExtractionException {
         assertPageFetched();
         List<VideoStream> videoOnlyStreams = new ArrayList<>();
         try {
