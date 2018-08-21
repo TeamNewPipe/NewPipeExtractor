@@ -27,25 +27,25 @@ public class CheckAll {
                 if (size >= 80) {
                     switch (name) {
                         case "seconds":
-                            currentSeconds++
+                            currentSeconds++;
                             break;
                         case "minutes":
-                            currentMinutes++
+                            currentMinutes++;
                             break;
                         case "hours":
-                            currentHours++
+                            currentHours++;
                             break;
                         case "days":
-                            currentDays++
+                            currentDays++;
                             break;
                         case "weeks":
-                            currentWeeks++
+                            currentWeeks++;
                             break;
                         case "months":
-                            currentMonths++
+                            currentMonths++;
                             break;
                         case "years":
-                            currentYears++
+                            currentYears++;
                             break;
                     }
                 } else {
