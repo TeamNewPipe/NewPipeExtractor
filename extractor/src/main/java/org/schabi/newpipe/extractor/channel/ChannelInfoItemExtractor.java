@@ -1,7 +1,6 @@
 package org.schabi.newpipe.extractor.channel;
 
 import org.schabi.newpipe.extractor.InfoItemExtractor;
-import org.schabi.newpipe.extractor.exceptions.ParsingException;
 
 /*
  * Created by Christian Schabesberger on 12.02.17.

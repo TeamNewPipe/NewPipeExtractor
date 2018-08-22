@@ -8,7 +8,6 @@ import org.schabi.newpipe.extractor.exceptions.ExtractionException;
 import org.schabi.newpipe.extractor.exceptions.ParsingException;
 import org.schabi.newpipe.extractor.services.youtube.extractors.YoutubeStreamExtractor;
 import org.schabi.newpipe.extractor.stream.*;
-import org.schabi.newpipe.extractor.utils.DashMpdParser;
 import org.schabi.newpipe.extractor.utils.Utils;
 
 import java.io.IOException;

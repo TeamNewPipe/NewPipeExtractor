@@ -56,7 +56,7 @@ public class ResourceBundleUTF8 {
                         throw new ClassCastException(bundleClass.getName()
                                 + " cannot be cast to ResourceBundle");
                     }
-                } catch (ClassNotFoundException e) {
+                } catch (ClassNotFoundException ignored) {
                 }
             } else if (format.equals("java.properties")) {
                 final String resourceName = bundleName.contains("://") ? null : toResourceName(bundleName, "properties");

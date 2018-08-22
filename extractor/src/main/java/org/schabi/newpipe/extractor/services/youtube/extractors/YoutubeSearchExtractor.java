@@ -7,7 +7,6 @@ import org.schabi.newpipe.extractor.Downloader;
 import org.schabi.newpipe.extractor.InfoItem;
 import org.schabi.newpipe.extractor.StreamingService;
 import org.schabi.newpipe.extractor.exceptions.ExtractionException;
-import org.schabi.newpipe.extractor.exceptions.ParsingException;
 import org.schabi.newpipe.extractor.search.InfoItemsSearchCollector;
 import org.schabi.newpipe.extractor.search.SearchExtractor;
 import org.schabi.newpipe.extractor.linkhandler.SearchQueryHandler;

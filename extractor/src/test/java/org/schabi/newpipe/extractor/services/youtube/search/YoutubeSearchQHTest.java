@@ -1,7 +1,6 @@
 package org.schabi.newpipe.extractor.services.youtube.search;
 
 import org.junit.Test;
-import org.schabi.newpipe.extractor.services.youtube.linkHandler.YoutubeSearchQueryHandlerFactory;
 
 import static java.util.Arrays.asList;
 import static org.junit.Assert.assertEquals;
