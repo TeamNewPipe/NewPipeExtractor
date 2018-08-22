@@ -266,12 +266,12 @@ public class YoutubeChannelExtractor extends ChannelExtractor {
                     }
 
                     @Override
-                    public String getUploaderName() throws ParsingException {
+                    public String getUploaderName() {
                         return uploaderName;
                     }
 
                     @Override
-                    public String getUploaderUrl() throws ParsingException {
+                    public String getUploaderUrl() {
                         return uploaderUrl;
                     }
 

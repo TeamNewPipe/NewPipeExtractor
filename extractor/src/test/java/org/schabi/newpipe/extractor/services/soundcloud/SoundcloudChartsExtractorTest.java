@@ -31,7 +31,7 @@ public class SoundcloudChartsExtractorTest {
     }
 
     @Test
-    public void testGetDownloader() throws Exception {
+    public void testGetDownloader() {
         assertNotNull(NewPipe.getDownloader());
     }
 

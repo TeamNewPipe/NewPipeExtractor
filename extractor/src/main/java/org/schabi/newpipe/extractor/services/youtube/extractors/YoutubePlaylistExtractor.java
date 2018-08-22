@@ -28,7 +28,7 @@ public class YoutubePlaylistExtractor extends PlaylistExtractor {
 
     private Document doc;
 
-    public YoutubePlaylistExtractor(StreamingService service, ListLinkHandler urlIdHandler) throws ExtractionException {
+    public YoutubePlaylistExtractor(StreamingService service, ListLinkHandler urlIdHandler) {
         super(service, urlIdHandler);
     }
 
@@ -241,22 +241,22 @@ public class YoutubePlaylistExtractor extends PlaylistExtractor {
                 }
 
                 @Override
-                public String getUploaderName() throws ParsingException {
+                public String getUploaderName() {
                     return getUploaderLink().text();
                 }
 
                 @Override
-                public String getUploaderUrl() throws ParsingException {
+                public String getUploaderUrl() {
                     return getUploaderLink().attr("abs:href");
                 }
 
                 @Override
-                public String getUploadDate() throws ParsingException {
+                public String getUploadDate() {
                     return "";
                 }
 
                 @Override
-                public long getViewCount() throws ParsingException {
+                public long getViewCount() {
                     return -1;
                 }
 

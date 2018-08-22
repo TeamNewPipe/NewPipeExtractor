@@ -506,5 +506,5 @@ public class YoutubeChannelExtractorTest {
             assertTrue(extractor.getDonationLinks().length == 0);
         }
     }
-};
+}
 

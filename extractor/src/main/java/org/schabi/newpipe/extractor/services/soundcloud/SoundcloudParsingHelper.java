@@ -96,7 +96,7 @@ public class SoundcloudParsingHelper {
      *
      * @return the url resolved
      */
-    public static String resolveUrlWithEmbedPlayer(String apiUrl) throws IOException, ReCaptchaException, ParsingException {
+    public static String resolveUrlWithEmbedPlayer(String apiUrl) throws IOException, ReCaptchaException {
 
         String response = NewPipe.getDownloader().download("https://w.soundcloud.com/player/?url="
                 + URLEncoder.encode(apiUrl, "UTF-8"));

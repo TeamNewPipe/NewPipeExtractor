@@ -18,7 +18,7 @@ public class SoundcloudStreamLinkHandlerFactoryTest {
     private static SoundcloudStreamLinkHandlerFactory urlIdHandler;
 
     @BeforeClass
-    public static void setUp() throws Exception {
+    public static void setUp() {
         urlIdHandler = SoundcloudStreamLinkHandlerFactory.getInstance();
         NewPipe.init(Downloader.getInstance());
     }

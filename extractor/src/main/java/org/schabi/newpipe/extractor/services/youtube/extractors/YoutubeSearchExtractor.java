@@ -67,7 +67,7 @@ public class YoutubeSearchExtractor extends SearchExtractor {
     }
 
     @Override
-    public String getSearchSuggestion() throws ParsingException {
+    public String getSearchSuggestion() {
         final Element el = doc.select("div[class*=\"spell-correction\"]").first();
         if (el != null) {
             return el.select("a").first().text();
@@ -78,7 +78,7 @@ public class YoutubeSearchExtractor extends SearchExtractor {
 
     @Nonnull
     @Override
-    public InfoItemsPage<InfoItem> getInitialPage() throws IOException, ExtractionException {
+    public InfoItemsPage<InfoItem> getInitialPage() throws ExtractionException {
         return new InfoItemsPage<>(collectItems(doc), getNextPageUrl());
     }
 

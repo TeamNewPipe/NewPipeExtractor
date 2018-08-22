@@ -31,7 +31,7 @@ import java.io.IOException;
 
 public class KioskInfo extends ListInfo<StreamInfoItem> {
 
-    private KioskInfo(int serviceId, ListLinkHandler urlIdHandler, String name) throws ParsingException {
+    private KioskInfo(int serviceId, ListLinkHandler urlIdHandler, String name) {
         super(serviceId, urlIdHandler, name);
     }
 

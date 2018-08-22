@@ -34,7 +34,7 @@ import java.io.IOException;
 
 public class ChannelInfo extends ListInfo<StreamInfoItem> {
 
-    public ChannelInfo(int serviceId, ListLinkHandler urlIdHandler, String name) throws ParsingException {
+    public ChannelInfo(int serviceId, ListLinkHandler urlIdHandler, String name) {
         super(serviceId, urlIdHandler, name);
     }
 
@@ -52,7 +52,7 @@ public class ChannelInfo extends ListInfo<StreamInfoItem> {
         return service.getChannelExtractor(url).getPage(pageUrl);
     }
 
-    public static ChannelInfo getInfo(ChannelExtractor extractor) throws IOException, ExtractionException {
+    public static ChannelInfo getInfo(ChannelExtractor extractor) throws ExtractionException {
 
         ChannelInfo info = new ChannelInfo(extractor.getServiceId(),
                 extractor.getUIHandler(),

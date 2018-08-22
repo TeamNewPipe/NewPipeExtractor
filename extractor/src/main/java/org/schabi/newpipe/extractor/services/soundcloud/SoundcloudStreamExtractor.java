@@ -121,7 +121,7 @@ public class SoundcloudStreamExtractor extends StreamExtractor {
 
     @Nonnull
     @Override
-    public String getHlsUrl() throws ParsingException {
+    public String getHlsUrl() {
         return "";
     }
 
@@ -160,24 +160,24 @@ public class SoundcloudStreamExtractor extends StreamExtractor {
     }
 
     @Override
-    public List<VideoStream> getVideoStreams() throws IOException, ExtractionException {
+    public List<VideoStream> getVideoStreams() {
         return null;
     }
 
     @Override
-    public List<VideoStream> getVideoOnlyStreams() throws IOException, ExtractionException {
+    public List<VideoStream> getVideoOnlyStreams() {
         return null;
     }
 
     @Override
     @Nonnull
-    public List<Subtitles> getSubtitlesDefault() throws IOException, ExtractionException {
+    public List<Subtitles> getSubtitlesDefault() {
         return Collections.emptyList();
     }
 
     @Override
     @Nonnull
-    public List<Subtitles> getSubtitles(SubtitlesFormat format) throws IOException, ExtractionException {
+    public List<Subtitles> getSubtitles(SubtitlesFormat format) {
         return Collections.emptyList();
     }
 
@@ -187,7 +187,7 @@ public class SoundcloudStreamExtractor extends StreamExtractor {
     }
 
     @Override
-    public StreamInfoItem getNextVideo() throws IOException, ExtractionException {
+    public StreamInfoItem getNextVideo() {
         return null;
     }
 

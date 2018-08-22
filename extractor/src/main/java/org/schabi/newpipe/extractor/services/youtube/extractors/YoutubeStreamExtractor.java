@@ -400,7 +400,7 @@ public class YoutubeStreamExtractor extends StreamExtractor {
     }
 
     @Override
-    public List<AudioStream> getAudioStreams() throws IOException, ExtractionException {
+    public List<AudioStream> getAudioStreams() throws ExtractionException {
         assertPageFetched();
         List<AudioStream> audioStreams = new ArrayList<>();
         try {
@@ -420,7 +420,7 @@ public class YoutubeStreamExtractor extends StreamExtractor {
     }
 
     @Override
-    public List<VideoStream> getVideoStreams() throws IOException, ExtractionException {
+    public List<VideoStream> getVideoStreams() throws ExtractionException {
         assertPageFetched();
         List<VideoStream> videoStreams = new ArrayList<>();
         try {
@@ -467,7 +467,7 @@ public class YoutubeStreamExtractor extends StreamExtractor {
 
     @Override
     @Nonnull
-    public List<Subtitles> getSubtitles(final SubtitlesFormat format) throws IOException, ExtractionException {
+    public List<Subtitles> getSubtitles(final SubtitlesFormat format) {
         assertPageFetched();
         List<Subtitles> subtitles = new ArrayList<>();
         for (final SubtitlesInfo subtitlesInfo : subtitlesInfos) {
@@ -491,7 +491,7 @@ public class YoutubeStreamExtractor extends StreamExtractor {
     }
 
     @Override
-    public StreamInfoItem getNextVideo() throws IOException, ExtractionException {
+    public StreamInfoItem getNextVideo() throws ExtractionException {
         assertPageFetched();
         try {
             StreamInfoItemsCollector collector = new StreamInfoItemsCollector(getServiceId());
@@ -505,7 +505,7 @@ public class YoutubeStreamExtractor extends StreamExtractor {
     }
 
     @Override
-    public StreamInfoItemsCollector getRelatedVideos() throws IOException, ExtractionException {
+    public StreamInfoItemsCollector getRelatedVideos() throws ExtractionException {
         assertPageFetched();
         try {
             StreamInfoItemsCollector collector = new StreamInfoItemsCollector(getServiceId());
@@ -889,12 +889,12 @@ public class YoutubeStreamExtractor extends StreamExtractor {
         return new YoutubeStreamInfoItemExtractor(li) {
 
             @Override
-            public String getUrl() throws ParsingException {
+            public String getUrl() {
                 return li.select("a.content-link").first().attr("abs:href");
             }
 
             @Override
-            public String getName() throws ParsingException {
+            public String getName() {
                 //todo: check NullPointerException causing
                 return li.select("span.title").first().text();
                 //this page causes the NullPointerException, after finding it by searching for "tjvg":
@@ -902,23 +902,23 @@ public class YoutubeStreamExtractor extends StreamExtractor {
             }
 
             @Override
-            public String getUploaderName() throws ParsingException {
+            public String getUploaderName() {
                 return li.select("span[class*=\"attribution\"").first()
                         .select("span").first().text();
             }
 
             @Override
-            public String getUploaderUrl() throws ParsingException {
+            public String getUploaderUrl() {
                 return ""; // The uploader is not linked
             }
 
             @Override
-            public String getUploadDate() throws ParsingException {
+            public String getUploadDate() {
                 return "";
             }
 
             @Override
-            public long getViewCount() throws ParsingException {
+            public long getViewCount() {
                 try {
                     if (getStreamType() == StreamType.LIVE_STREAM) return -1;
 
@@ -931,7 +931,7 @@ public class YoutubeStreamExtractor extends StreamExtractor {
             }
 
             @Override
-            public String getThumbnailUrl() throws ParsingException {
+            public String getThumbnailUrl() {
                 Element img = li.select("img").first();
                 String thumbnailUrl = img.attr("abs:src");
                 // Sometimes youtube sends links to gif files which somehow seem to not exist

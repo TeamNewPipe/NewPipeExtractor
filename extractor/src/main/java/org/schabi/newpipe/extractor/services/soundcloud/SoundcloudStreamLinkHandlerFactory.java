@@ -38,7 +38,7 @@ public class SoundcloudStreamLinkHandlerFactory extends LinkHandlerFactory {
     }
 
     @Override
-    public boolean onAcceptUrl(final String url) throws ParsingException {
+    public boolean onAcceptUrl(final String url) {
         return Parser.isMatch(URL_PATTERN, url.toLowerCase());
     }
 }

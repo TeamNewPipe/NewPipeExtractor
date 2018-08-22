@@ -15,7 +15,7 @@ import static org.schabi.newpipe.extractor.services.soundcloud.SoundcloudSearchQ
 public class SoundcloudSearchQHTest {
 
     @BeforeClass
-    public static void setUpClass() throws Exception {
+    public static void setUpClass() {
         NewPipe.init(Downloader.getInstance());
     }
 
@@ -41,21 +41,21 @@ public class SoundcloudSearchQHTest {
     @Test
     public void testGetContentFilter() throws Exception {
         assertEquals("tracks", SoundCloud.getSearchQHFactory()
-                .fromQuery("", asList(new String[]{"tracks"}), "").getContentFilters().get(0));
+                .fromQuery("", asList("tracks"), "").getContentFilters().get(0));
         assertEquals("users", SoundCloud.getSearchQHFactory()
-                .fromQuery("asdf", asList(new String[]{"users"}), "").getContentFilters().get(0));
+                .fromQuery("asdf", asList("users"), "").getContentFilters().get(0));
     }
 
     @Test
     public void testWithContentfilter() throws Exception {
         assertEquals("https://api-v2.soundcloud.com/search/tracks?q=asdf&limit=10&offset=0", removeClientId(SoundCloud.getSearchQHFactory()
-                .fromQuery("asdf", asList(new String[]{TRACKS}), "").getUrl()));
+                .fromQuery("asdf", asList(TRACKS), "").getUrl()));
         assertEquals("https://api-v2.soundcloud.com/search/users?q=asdf&limit=10&offset=0", removeClientId(SoundCloud.getSearchQHFactory()
-                .fromQuery("asdf", asList(new String[]{USERS}), "").getUrl()));
+                .fromQuery("asdf", asList(USERS), "").getUrl()));
         assertEquals("https://api-v2.soundcloud.com/search/playlists?q=asdf&limit=10&offset=0", removeClientId(SoundCloud.getSearchQHFactory()
-                .fromQuery("asdf", asList(new String[]{PLAYLISTS}), "").getUrl()));
+                .fromQuery("asdf", asList(PLAYLISTS), "").getUrl()));
         assertEquals("https://api-v2.soundcloud.com/search?q=asdf&limit=10&offset=0", removeClientId(SoundCloud.getSearchQHFactory()
-                .fromQuery("asdf", asList(new String[]{"fjiijie"}), "").getUrl()));
+                .fromQuery("asdf", asList("fjiijie"), "").getUrl()));
     }
 
     @Test

@@ -91,7 +91,7 @@ public class YoutubePlaylistExtractorTest {
 
         @Ignore
         @Test
-        public void testBannerUrl() throws Exception {
+        public void testBannerUrl() {
             final String bannerUrl = extractor.getBannerUrl();
             assertIsSecureUrl(bannerUrl);
             assertTrue(bannerUrl, bannerUrl.contains("yt"));
@@ -205,7 +205,7 @@ public class YoutubePlaylistExtractorTest {
 
         @Ignore
         @Test
-        public void testBannerUrl() throws Exception {
+        public void testBannerUrl() {
             final String bannerUrl = extractor.getBannerUrl();
             assertIsSecureUrl(bannerUrl);
             assertTrue(bannerUrl, bannerUrl.contains("yt"));

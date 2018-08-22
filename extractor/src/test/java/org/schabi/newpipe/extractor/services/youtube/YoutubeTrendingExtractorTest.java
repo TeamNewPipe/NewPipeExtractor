@@ -54,7 +54,7 @@ public class YoutubeTrendingExtractorTest {
     }
 
     @Test
-    public void testGetDownloader() throws Exception {
+    public void testGetDownloader() {
         assertNotNull(NewPipe.getDownloader());
     }
 
@@ -64,7 +64,7 @@ public class YoutubeTrendingExtractorTest {
     }
 
     @Test
-    public void testId() throws Exception {
+    public void testId() {
         assertEquals(extractor.getId(), "Trending");
     }
 

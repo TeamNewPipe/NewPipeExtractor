@@ -46,7 +46,7 @@ public class YoutubeServiceTest {
     }
 
     @Test
-    public void testGetKioskAvailableKiosks() throws Exception {
+    public void testGetKioskAvailableKiosks() {
         assertFalse("No kiosk got returned", kioskList.getAvailableKiosks().isEmpty());
     }
 

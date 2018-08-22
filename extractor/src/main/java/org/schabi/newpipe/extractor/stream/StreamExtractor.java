@@ -102,7 +102,7 @@ public abstract class StreamExtractor extends Extractor {
             }
         } else {
             return 0;
-        }};
+        }}
 
     public abstract long getViewCount() throws ParsingException;
     public abstract long getLikeCount() throws ParsingException;

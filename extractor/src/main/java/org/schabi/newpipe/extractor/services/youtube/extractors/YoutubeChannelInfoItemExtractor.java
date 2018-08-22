@@ -33,7 +33,7 @@ public class YoutubeChannelInfoItemExtractor implements ChannelInfoItemExtractor
     }
 
     @Override
-    public String getThumbnailUrl() throws ParsingException {
+    public String getThumbnailUrl() {
         Element img = el.select("span[class*=\"yt-thumb-simple\"]").first()
                 .select("img").first();
 
@@ -46,13 +46,13 @@ public class YoutubeChannelInfoItemExtractor implements ChannelInfoItemExtractor
     }
 
     @Override
-    public String getName() throws ParsingException {
+    public String getName() {
         return el.select("a[class*=\"yt-uix-tile-link\"]").first()
                 .text();
     }
 
     @Override
-    public String getUrl() throws ParsingException {
+    public String getUrl() {
         return el.select("a[class*=\"yt-uix-tile-link\"]").first()
                 .attr("abs:href");
     }
@@ -73,7 +73,7 @@ public class YoutubeChannelInfoItemExtractor implements ChannelInfoItemExtractor
     }
 
     @Override
-    public long getStreamCount() throws ParsingException {
+    public long getStreamCount() {
         Element metaEl = el.select("ul[class*=\"yt-lockup-meta-info\"]").first();
         if (metaEl == null) {
             return 0;
@@ -83,7 +83,7 @@ public class YoutubeChannelInfoItemExtractor implements ChannelInfoItemExtractor
     }
 
     @Override
-    public String getDescription() throws ParsingException {
+    public String getDescription() {
         Element desEl = el.select("div[class*=\"yt-lockup-description\"]").first();
         if (desEl == null) {
             return "";

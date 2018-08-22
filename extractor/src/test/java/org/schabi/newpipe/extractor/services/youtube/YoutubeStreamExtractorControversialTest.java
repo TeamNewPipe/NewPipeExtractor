@@ -41,7 +41,7 @@ public class YoutubeStreamExtractorControversialTest {
     }
 
     @Test
-    public void testGetValidTimeStamp() throws IOException, ExtractionException {
+    public void testGetValidTimeStamp() throws ExtractionException {
         StreamExtractor extractor = YouTube.getStreamExtractor("https://youtu.be/FmG385_uUys?t=174");
         assertEquals(extractor.getTimeStamp() + "", "174");
     }

@@ -11,8 +11,8 @@ public abstract class ListLinkHandlerFactory extends LinkHandlerFactory {
     // To Override
     ///////////////////////////////////
 
-    public List<String> getContentFilter(String url) throws ParsingException { return new ArrayList<>(0);}
-    public String getSortFilter(String url) throws ParsingException {return ""; }
+    public List<String> getContentFilter(String url) { return new ArrayList<>(0);}
+    public String getSortFilter(String url) {return ""; }
     public abstract String getUrl(String id, List<String> contentFilter, String sortFilter) throws ParsingException;
 
     ///////////////////////////////////
