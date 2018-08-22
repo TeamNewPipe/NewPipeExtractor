@@ -79,7 +79,7 @@ public class YoutubeService extends StreamingService {
     }
 
     @Override
-    public PlaylistExtractor getPlaylistExtractor(ListLinkHandler urlIdHandler) throws ExtractionException {
+    public PlaylistExtractor getPlaylistExtractor(ListLinkHandler urlIdHandler) {
         return new YoutubePlaylistExtractor(this, urlIdHandler);
     }
 

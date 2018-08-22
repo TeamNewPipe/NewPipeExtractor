@@ -56,7 +56,7 @@ public class SoundcloudPlaylistExtractorTest {
         }
 
         @Test
-        public void testOriginalUrl() throws Exception {
+        public void testOriginalUrl() {
             assertEquals("https://soundcloud.com/liluzivert/sets/the-perfect-luv-tape-r?test=123", extractor.getOriginalUrl());
         }
 
@@ -154,7 +154,7 @@ public class SoundcloudPlaylistExtractorTest {
         }
 
         @Test
-        public void testOriginalUrl() throws Exception {
+        public void testOriginalUrl() {
             assertEquals("https://soundcloud.com/hunter-leader/sets/house-electro-dance-music-2", extractor.getOriginalUrl());
         }
 
@@ -256,7 +256,7 @@ public class SoundcloudPlaylistExtractorTest {
         }
 
         @Test
-        public void testOriginalUrl() throws Exception {
+        public void testOriginalUrl() {
             assertEquals("https://soundcloud.com/user350509423/sets/edm-xxx", extractor.getOriginalUrl());
         }
 

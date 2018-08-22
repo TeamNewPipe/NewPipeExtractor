@@ -99,13 +99,13 @@ public class YoutubeStreamExtractorAgeRestrictedTest {
     // FIXME: 25.11.17 Are there no streams or are they not listed?
     @Ignore
     @Test
-    public void testGetAudioStreams() throws IOException, ExtractionException {
+    public void testGetAudioStreams() throws ExtractionException {
         // audio streams are not always necessary
         assertFalse(extractor.getAudioStreams().isEmpty());
     }
 
     @Test
-    public void testGetVideoStreams() throws IOException, ExtractionException {
+    public void testGetVideoStreams() throws ExtractionException {
         List<VideoStream> streams = new ArrayList<>();
         streams.addAll(extractor.getVideoStreams());
         streams.addAll(extractor.getVideoOnlyStreams());
@@ -128,7 +128,7 @@ public class YoutubeStreamExtractorAgeRestrictedTest {
     }
 
     @Test
-    public void testGetSubtitlesList() throws IOException, ExtractionException {
+    public void testGetSubtitlesList() {
         // Video (/view?v=YQHsXMglC9A) set in the setUp() method has no captions => null
         assertTrue(extractor.getSubtitles(SubtitlesFormat.TTML).isEmpty());
     }

@@ -83,7 +83,7 @@ public class YoutubeStreamExtractor extends StreamExtractor {
     private final Map<String, String> videoInfoPage = new HashMap<>();
 
     @Nonnull
-    private List<SubtitlesInfo> subtitlesInfos = new ArrayList<>();
+    private final List<SubtitlesInfo> subtitlesInfos = new ArrayList<>();
 
     private boolean isAgeRestricted;
 
@@ -461,7 +461,7 @@ public class YoutubeStreamExtractor extends StreamExtractor {
 
     @Override
     @Nonnull
-    public List<Subtitles> getSubtitlesDefault() throws IOException, ExtractionException {
+    public List<Subtitles> getSubtitlesDefault() {
         return getSubtitles(SubtitlesFormat.TTML);
     }
 

@@ -31,13 +31,12 @@ public final class DefaultTests {
         }
     }
 
-    public static <T extends InfoItem> ListExtractor.InfoItemsPage<T> defaultTestRelatedItems(ListExtractor<T> extractor, int expectedServiceId) throws Exception {
+    public static <T extends InfoItem> void defaultTestRelatedItems(ListExtractor<T> extractor, int expectedServiceId) throws Exception {
         final ListExtractor.InfoItemsPage<T> page = extractor.getInitialPage();
         final List<T> itemsList = page.getItems();
         List<Throwable> errors = page.getErrors();
 
         defaultTestListOfItems(expectedServiceId, itemsList, errors);
-        return page;
     }
 
     public static <T extends InfoItem> ListExtractor.InfoItemsPage<T> defaultTestMoreItems(ListExtractor<T> extractor, int expectedServiceId) throws Exception {

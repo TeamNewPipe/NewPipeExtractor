@@ -13,7 +13,7 @@ public abstract class PlaylistExtractor extends ListExtractor<StreamInfoItem> {
     }
 
     public abstract String getThumbnailUrl() throws ParsingException;
-    public abstract String getBannerUrl() throws ParsingException;
+    public abstract String getBannerUrl();
 
     public abstract String getUploaderUrl() throws ParsingException;
     public abstract String getUploaderName() throws ParsingException;

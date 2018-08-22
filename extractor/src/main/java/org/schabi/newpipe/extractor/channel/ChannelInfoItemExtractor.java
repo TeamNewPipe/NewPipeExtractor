@@ -24,8 +24,8 @@ import org.schabi.newpipe.extractor.exceptions.ParsingException;
  */
 
 public interface ChannelInfoItemExtractor extends InfoItemExtractor {
-    String getDescription() throws ParsingException;
+    String getDescription();
 
-    long getSubscriberCount() throws ParsingException;
-    long getStreamCount() throws ParsingException;
+    long getSubscriberCount();
+    long getStreamCount();
 }

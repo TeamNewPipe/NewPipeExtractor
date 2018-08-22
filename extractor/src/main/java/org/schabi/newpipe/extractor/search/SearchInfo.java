@@ -13,7 +13,7 @@ import java.io.IOException;
 
 public class SearchInfo extends ListInfo<InfoItem> {
 
-    private String searchString;
+    private final String searchString;
     private String searchSuggestion;
 
     public SearchInfo(int serviceId,
