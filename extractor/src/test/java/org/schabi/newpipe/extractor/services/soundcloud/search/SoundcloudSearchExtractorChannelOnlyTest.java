@@ -12,7 +12,6 @@ import org.schabi.newpipe.extractor.services.soundcloud.SoundcloudSearchQueryHan
 
 import java.util.Collections;
 
-import static java.util.Arrays.asList;
 import static org.junit.Assert.*;
 import static org.schabi.newpipe.extractor.ServiceList.SoundCloud;
 

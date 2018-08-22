@@ -67,7 +67,7 @@ public class ResourceBundleUTF8 {
                     }
                     final ClassLoader classLoader = loader;
                     final boolean reloadFlag = reload;
-                    InputStream stream = null;
+                    InputStream stream;
                     try {
                         stream = AccessController.doPrivileged(
                                 new PrivilegedExceptionAction<InputStream>() {

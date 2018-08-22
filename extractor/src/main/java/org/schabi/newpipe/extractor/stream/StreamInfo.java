@@ -254,7 +254,7 @@ public class StreamInfo extends Info {
     private String thumbnailUrl;
     private String uploadDate;
     private long duration = -1;
-    private int ageLimit = -1;
+    private int ageLimit;
     private String description;
 
     private long viewCount = -1;

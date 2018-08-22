@@ -12,7 +12,6 @@ import org.schabi.newpipe.extractor.services.youtube.linkHandler.YoutubeSearchQu
 
 import java.util.Collections;
 
-import static java.util.Arrays.asList;
 import static org.junit.Assert.*;
 import static org.schabi.newpipe.extractor.ServiceList.YouTube;
 

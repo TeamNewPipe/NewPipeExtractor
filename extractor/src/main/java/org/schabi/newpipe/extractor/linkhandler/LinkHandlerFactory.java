@@ -1,6 +1,5 @@
 package org.schabi.newpipe.extractor.linkhandler;
 
-import org.schabi.newpipe.extractor.exceptions.FoundAdException;
 import org.schabi.newpipe.extractor.exceptions.ParsingException;
 
 /*
