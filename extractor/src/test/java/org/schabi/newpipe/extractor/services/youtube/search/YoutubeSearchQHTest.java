@@ -2,6 +2,8 @@ package org.schabi.newpipe.extractor.services.youtube.search;
 
 import org.junit.Test;
 
+import java.util.Collections;
+
 import static java.util.Arrays.asList;
 import static org.junit.Assert.assertEquals;
 import static org.schabi.newpipe.extractor.ServiceList.YouTube;
@@ -23,21 +25,21 @@ public class YoutubeSearchQHTest {
     @Test
     public void testGetContentFilter() throws Exception {
         assertEquals(VIDEOS, YouTube.getSearchQHFactory()
-                .fromQuery("", asList(VIDEOS), "").getContentFilters().get(0));
+                .fromQuery("", Collections.singletonList(VIDEOS), "").getContentFilters().get(0));
         assertEquals(CHANNELS, YouTube.getSearchQHFactory()
-                .fromQuery("asdf", asList(CHANNELS), "").getContentFilters().get(0));
+                .fromQuery("asdf", Collections.singletonList(CHANNELS), "").getContentFilters().get(0));
     }
 
     @Test
     public void testWithContentfilter() throws Exception {
         assertEquals("https://www.youtube.com/results?q=asdf&sp=EgIQAVAU", YouTube.getSearchQHFactory()
-                .fromQuery("asdf", asList(VIDEOS), "").getUrl());
+                .fromQuery("asdf", Collections.singletonList(VIDEOS), "").getUrl());
         assertEquals("https://www.youtube.com/results?q=asdf&sp=EgIQAlAU", YouTube.getSearchQHFactory()
-                .fromQuery("asdf", asList(CHANNELS), "").getUrl());
+                .fromQuery("asdf", Collections.singletonList(CHANNELS), "").getUrl());
         assertEquals("https://www.youtube.com/results?q=asdf&sp=EgIQA1AU", YouTube.getSearchQHFactory()
-                .fromQuery("asdf", asList(PLAYLISTS), "").getUrl());
+                .fromQuery("asdf", Collections.singletonList(PLAYLISTS), "").getUrl());
         assertEquals("https://www.youtube.com/results?q=asdf", YouTube.getSearchQHFactory()
-                .fromQuery("asdf", asList("fjiijie"), "").getUrl());
+                .fromQuery("asdf", Collections.singletonList("fjiijie"), "").getUrl());
     }
 
     @Test

@@ -5,6 +5,8 @@ import org.junit.Test;
 import org.schabi.newpipe.Downloader;
 import org.schabi.newpipe.extractor.NewPipe;
 
+import java.util.Collections;
+
 import static java.util.Arrays.asList;
 import static org.junit.Assert.assertEquals;
 import static org.schabi.newpipe.extractor.ServiceList.SoundCloud;
@@ -41,21 +43,21 @@ public class SoundcloudSearchQHTest {
     @Test
     public void testGetContentFilter() throws Exception {
         assertEquals("tracks", SoundCloud.getSearchQHFactory()
-                .fromQuery("", asList("tracks"), "").getContentFilters().get(0));
+                .fromQuery("", Collections.singletonList("tracks"), "").getContentFilters().get(0));
         assertEquals("users", SoundCloud.getSearchQHFactory()
-                .fromQuery("asdf", asList("users"), "").getContentFilters().get(0));
+                .fromQuery("asdf", Collections.singletonList("users"), "").getContentFilters().get(0));
     }
 
     @Test
     public void testWithContentfilter() throws Exception {
         assertEquals("https://api-v2.soundcloud.com/search/tracks?q=asdf&limit=10&offset=0", removeClientId(SoundCloud.getSearchQHFactory()
-                .fromQuery("asdf", asList(TRACKS), "").getUrl()));
+                .fromQuery("asdf", Collections.singletonList(TRACKS), "").getUrl()));
         assertEquals("https://api-v2.soundcloud.com/search/users?q=asdf&limit=10&offset=0", removeClientId(SoundCloud.getSearchQHFactory()
-                .fromQuery("asdf", asList(USERS), "").getUrl()));
+                .fromQuery("asdf", Collections.singletonList(USERS), "").getUrl()));
         assertEquals("https://api-v2.soundcloud.com/search/playlists?q=asdf&limit=10&offset=0", removeClientId(SoundCloud.getSearchQHFactory()
-                .fromQuery("asdf", asList(PLAYLISTS), "").getUrl()));
+                .fromQuery("asdf", Collections.singletonList(PLAYLISTS), "").getUrl()));
         assertEquals("https://api-v2.soundcloud.com/search?q=asdf&limit=10&offset=0", removeClientId(SoundCloud.getSearchQHFactory()
-                .fromQuery("asdf", asList("fjiijie"), "").getUrl()));
+                .fromQuery("asdf", Collections.singletonList("fjiijie"), "").getUrl()));
     }
 
     @Test
