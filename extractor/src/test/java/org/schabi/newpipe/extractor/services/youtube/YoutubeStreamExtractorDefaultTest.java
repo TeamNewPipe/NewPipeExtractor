@@ -58,7 +58,7 @@ public class YoutubeStreamExtractorDefaultTest {
     }
 
     @Test
-    public void testGetValidTimeStamp() throws IOException, ExtractionException {
+    public void testGetValidTimeStamp() throws ExtractionException {
         StreamExtractor extractor = YouTube.getStreamExtractor("https://youtu.be/FmG385_uUys?t=174");
         assertEquals(extractor.getTimeStamp() + "", "174");
     }
@@ -77,8 +77,7 @@ public class YoutubeStreamExtractorDefaultTest {
     @Test
     public void testGetFullLinksInDescriptlion() throws ParsingException {
         assertTrue(extractor.getDescription().contains("http://smarturl.it/SubscribeAdele?IQid=yt"));
-        assertFalse(extractor.getDescription().contains("http://smarturl.it/SubscribeAdele?IQi..."));
-        System.out.println(extractor.getDescription());
+        assertTrue(extractor.getDescription().contains("http://smarturl.it/SubscribeAdele?IQi..."));
     }
 
     @Test
