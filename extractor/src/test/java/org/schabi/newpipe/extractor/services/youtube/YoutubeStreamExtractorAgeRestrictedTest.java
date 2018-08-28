@@ -24,7 +24,7 @@ import static org.schabi.newpipe.extractor.ServiceList.YouTube;
 /**
  * Test for {@link YoutubeStreamLinkHandlerFactory}
  */
-public class YoutubeStreamExtractorRestrictedTest {
+public class YoutubeStreamExtractorAgeRestrictedTest {
     public static final String HTTPS = "https://";
     private static YoutubeStreamExtractor extractor;
 
@@ -32,7 +32,7 @@ public class YoutubeStreamExtractorRestrictedTest {
     public static void setUp() throws Exception {
         NewPipe.init(Downloader.getInstance());
         extractor = (YoutubeStreamExtractor) YouTube
-                .getStreamExtractor("https://www.youtube.com/watch?v=i6JTvzrpBy0");
+                .getStreamExtractor("https://www.youtube.com/watch?v=MmBeUZqv1QA");
         extractor.fetchPage();
     }
 

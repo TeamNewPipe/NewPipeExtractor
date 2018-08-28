@@ -127,7 +127,7 @@ public class YoutubePlaylistExtractorTest {
         public static void setUp() throws Exception {
             NewPipe.init(Downloader.getInstance());
             extractor = (YoutubePlaylistExtractor) YouTube
-                    .getPlaylistExtractor("https://www.youtube.com/watch?v=lH1caqoAGe0&list=PL45xb3ujEhqUexNt53jb9WT2mS-uUaUrn");
+                    .getPlaylistExtractor("https://www.youtube.com/watch?v=8SbUC-UaAxE&list=PLWwAypAcFRgKAIIFqBr9oy-ZYZnixa_Fj");
             extractor.fetchPage();
         }
 
@@ -152,23 +152,23 @@ public class YoutubePlaylistExtractorTest {
 
         @Test
         public void testName() throws Exception {
-            String name = extractor.getName();
-            assertTrue(name, name.contains("Korrekte Aussprache - Lektion 1"));
+            final String name = extractor.getName();
+            assertEquals("I Wanna Rock Super Gigantic Playlist 1: Hardrock, AOR, Metal and more !!! 5000 music videos !!!", name);
         }
 
         @Test
         public void testId() throws Exception {
-            assertEquals("PL45xb3ujEhqUexNt53jb9WT2mS-uUaUrn", extractor.getId());
+            assertEquals("PLWwAypAcFRgKAIIFqBr9oy-ZYZnixa_Fj", extractor.getId());
         }
 
         @Test
         public void testUrl() throws ParsingException {
-            assertEquals("https://www.youtube.com/playlist?list=PL45xb3ujEhqUexNt53jb9WT2mS-uUaUrn", extractor.getUrl());
+            assertEquals("https://www.youtube.com/playlist?list=PLWwAypAcFRgKAIIFqBr9oy-ZYZnixa_Fj", extractor.getUrl());
         }
 
         @Test
         public void testOriginalUrl() throws ParsingException {
-            assertEquals("https://www.youtube.com/watch?v=lH1caqoAGe0&list=PL45xb3ujEhqUexNt53jb9WT2mS-uUaUrn", extractor.getOriginalUrl());
+            assertEquals("https://www.youtube.com/watch?v=8SbUC-UaAxE&list=PLWwAypAcFRgKAIIFqBr9oy-ZYZnixa_Fj", extractor.getOriginalUrl());
         }
 
         /*//////////////////////////////////////////////////////////////////////////
@@ -182,8 +182,10 @@ public class YoutubePlaylistExtractorTest {
 
         @Test
         public void testMoreRelatedItems() throws Exception {
-            ListExtractor.InfoItemsPage<StreamInfoItem> currentPage = defaultTestMoreItems(extractor, ServiceList.YouTube.getServiceId());
+            ListExtractor.InfoItemsPage<StreamInfoItem> currentPage
+                    = defaultTestMoreItems(extractor, ServiceList.YouTube.getServiceId());
             // Test for 2 more levels
+
             for (int i = 0; i < 2; i++) {
                 currentPage = extractor.getPage(currentPage.getNextPageUrl());
                 defaultTestListOfItems(YouTube.getServiceId(), currentPage.getItems(), currentPage.getErrors());
@@ -216,7 +218,7 @@ public class YoutubePlaylistExtractorTest {
 
         @Test
         public void testUploaderName() throws Exception {
-            assertEquals("Luksan Wunder", extractor.getUploaderName());
+            assertEquals("Tomas Nilsson", extractor.getUploaderName());
         }
 
         @Test

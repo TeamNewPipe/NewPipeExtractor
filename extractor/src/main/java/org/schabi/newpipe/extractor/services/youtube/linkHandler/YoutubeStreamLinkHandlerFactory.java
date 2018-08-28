@@ -71,8 +71,6 @@ public class YoutubeStreamLinkHandlerFactory extends LinkHandlerFactory {
                 } catch (UnsupportedEncodingException uee) {
                     throw new ParsingException("Could not parse attribution_link", uee);
                 }
-            } else if (lowercaseUrl.contains("youtube.com/shared?ci=")) {
-                return getRealIdFromSharedLink(url);
             } else if (url.contains("vnd.youtube")) {
                 id = Parser.matchGroup1(ID_PATTERN, url);
             } else if (url.contains("embed")) {
@@ -111,56 +109,6 @@ public class YoutubeStreamLinkHandlerFactory extends LinkHandlerFactory {
         } else {
             throw new ParsingException("Error could not parse url: " + url);
         }
-    }
-
-    /**
-     * Get the real url from a shared uri.
-     * <p>
-     * Shared URI's look like this:
-     * <pre>
-     *     * https://www.youtube.com/shared?ci=PJICrTByb3E
-     *     * vnd.youtube://www.youtube.com/shared?ci=PJICrTByb3E&amp;feature=twitter-deep-link
-     * </pre>
-     *
-     * @param url The shared url
-     * @return the id of the stream
-     * @throws ParsingException
-     */
-    private String getRealIdFromSharedLink(String url) throws ParsingException {
-        URI uri;
-        try {
-            uri = new URI(url);
-        } catch (URISyntaxException e) {
-            throw new ParsingException("Invalid shared link", e);
-        }
-        String sharedId = getSharedId(uri);
-        Downloader downloader = NewPipe.getDownloader();
-        String content;
-        try {
-            content = downloader.download("https://www.youtube.com/shared?ci=" + sharedId);
-        } catch (IOException | ReCaptchaException e) {
-            throw new ParsingException("Unable to resolve shared link", e);
-        }
-        final Document document = Jsoup.parse(content);
-
-        final Element element = document.select("link[rel=\"canonical\"]").first();
-        final String urlWithRealId = (element != null)
-                ? element.attr("abs:href")
-                : document.select("meta[property=\"og:url\"]").first()
-                    .attr("abs:content");
-
-        String realId = Parser.matchGroup1(ID_PATTERN, urlWithRealId);
-        if (sharedId.equals(realId)) {
-            throw new ParsingException("Got same id for as shared info_id: " + sharedId);
-        }
-        return realId;
-    }
-
-    private String getSharedId(URI uri) throws ParsingException {
-        if (!"/shared".equals(uri.getPath())) {
-            throw new ParsingException("Not a shared link: " + uri.toString() + " (path != " + uri.getPath() + ")");
-        }
-        return Parser.matchGroup1("ci=" + ID_PATTERN, uri.getQuery());
     }
 
     @Override

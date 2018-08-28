@@ -82,16 +82,6 @@ public class YoutubeStreamLinkHandlerFactoryTest {
     }
 
     @Test
-    public void getIdfromSharedLinksYt() throws Exception {
-        String sharedId = "7JIArTByb3E";
-        String realId = "Q7JsK50NGaA";
-        assertEquals(realId, urlIdHandler.fromUrl("vnd.youtube://www.YouTube.com/shared?ci=" + sharedId + "&feature=twitter-deep-link").getId());
-        assertEquals(realId, urlIdHandler.fromUrl("vnd.youtube://www.youtube.com/shared?ci=" + sharedId).getId());
-        assertEquals(realId, urlIdHandler.fromUrl("https://www.youtube.com/shared?ci=" + sharedId).getId());
-    }
-
-
-    @Test
     public void testAcceptYtUrl() throws ParsingException {
         assertTrue(urlIdHandler.acceptUrl("https://www.youtube.com/watch?v=jZViOEv90dI"));
         assertTrue(urlIdHandler.acceptUrl("https://www.youtube.com/watch?v=jZViOEv90dI?t=100"));
@@ -109,14 +99,6 @@ public class YoutubeStreamLinkHandlerFactoryTest {
         assertTrue(urlIdHandler.acceptUrl("vnd.youtube:jZViOEv90dI"));
 
         assertTrue(urlIdHandler.acceptUrl("vnd.youtube:jZViOEv90dI"));
-    }
-
-    @Test
-    public void testAcceptSharedYtUrl() throws ParsingException {
-        String sharedId = "8A940MXKFmQ";
-        assertTrue(urlIdHandler.acceptUrl("vnd.youtube://www.youtube.com/shared?ci=" + sharedId + "&feature=twitter-deep-link"));
-        assertTrue(urlIdHandler.acceptUrl("vnd.youtube://www.youtube.com/shared?ci=" + sharedId));
-        assertTrue(urlIdHandler.acceptUrl("https://www.youtube.com/shared?ci=" + sharedId));
     }
 
     @Test
