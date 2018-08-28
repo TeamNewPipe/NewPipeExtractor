@@ -176,12 +176,12 @@ public class YoutubeStreamExtractor extends StreamExtractor {
                 if(link != null) {
                     // if link is null the a tag is a hashtag.
                     // They refer to the youtube search. We do not handle them.
-                    a.attr("abs:href", link);
+                    a.text(link);
 
                 } else if(redirectLink.toString().contains("watch?v=")) {
                     // Another posibility is that this link is pointing to another video
                     // we need to put the redirectLink in here explicitly in order to add the domain part to the link.
-                    a.attr("abs:href", redirectLink.toString());
+                    a.text(redirectLink.toString());
                 }
             }
         }
