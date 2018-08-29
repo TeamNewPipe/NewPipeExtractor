@@ -167,7 +167,7 @@ public class YoutubePlaylistExtractorTest {
         }
 
         @Test
-        public void testOriginalUrl() throws ParsingException {
+        public void testOriginalUrl() {
             assertEquals("https://www.youtube.com/watch?v=8SbUC-UaAxE&list=PLWwAypAcFRgKAIIFqBr9oy-ZYZnixa_Fj", extractor.getOriginalUrl());
         }
 
