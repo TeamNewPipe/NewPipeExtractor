@@ -50,8 +50,9 @@ public class YoutubeTrendingExtractor extends KioskExtractor {
     public void onFetchPage(@Nonnull Downloader downloader) throws IOException, ExtractionException {
         final String contentCountry = getContentCountry();
         String url = getUrl();
+        url += "?hl=" + getLanguage();
         if(contentCountry != null && !contentCountry.isEmpty()) {
-            url += "?gl=" + contentCountry;
+            url += "&gl=" + contentCountry;
         }
 
         String pageContent = downloader.download(url);
