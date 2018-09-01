@@ -16,31 +16,31 @@ import org.schabi.newpipe.extractor.services.youtube.extractors.YoutubeCommentsE
 
 public class YoutubeCommentsExtractorTest {
 
-	private static YoutubeCommentsExtractor extractor;
+    private static YoutubeCommentsExtractor extractor;
 
-	@BeforeClass
-	public static void setUp() throws Exception {
-		NewPipe.init(Downloader.getInstance());
-		extractor = (YoutubeCommentsExtractor) YouTube
-				.getCommentsExtractor("https://www.youtube.com/watch?v=rrgFN3AxGfs");
-		extractor.fetchPage();
-	}
+    @BeforeClass
+    public static void setUp() throws Exception {
+        NewPipe.init(Downloader.getInstance());
+        extractor = (YoutubeCommentsExtractor) YouTube
+                .getCommentsExtractor("https://www.youtube.com/watch?v=rrgFN3AxGfs");
+        extractor.fetchPage();
+    }
 
-	@Test
-	public void testGetComments() throws IOException, ExtractionException {
-		boolean result = false;
-		InfoItemsPage<CommentsInfoItem> comments = extractor.getInitialPage();
-		result = findInComments(comments, "i should really be in the top comment.lol");
+    @Test
+    public void testGetComments() throws IOException, ExtractionException {
+        boolean result = false;
+        InfoItemsPage<CommentsInfoItem> comments = extractor.getInitialPage();
+        result = findInComments(comments, "i should really be in the top comment.lol");
 
-		while (comments.hasNextPage()) {
-			comments = extractor.getPage(comments.getNextPageUrl());
-			result = findInComments(comments, "i should really be in the top comment.lol");
-		}
+        while (comments.hasNextPage()) {
+            comments = extractor.getPage(comments.getNextPageUrl());
+            result = findInComments(comments, "i should really be in the top comment.lol");
+        }
 
-		assertTrue(result);
-	}
+        assertTrue(result);
+    }
 
-	private boolean findInComments(InfoItemsPage<CommentsInfoItem> comments, String comment) {
-		return comments.getItems().stream().filter(c -> c.getCommentText().contains(comment)).findAny().isPresent();
-	}
+    private boolean findInComments(InfoItemsPage<CommentsInfoItem> comments, String comment) {
+        return comments.getItems().stream().filter(c -> c.getCommentText().contains(comment)).findAny().isPresent();
+    }
 }
