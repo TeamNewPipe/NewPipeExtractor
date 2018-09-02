@@ -5,6 +5,7 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.net.URL;
 import java.net.UnknownHostException;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -184,10 +185,7 @@ public class Downloader implements org.schabi.newpipe.extractor.Downloader {
 
     @Override
     public DownloadResponse get(String siteUrl) throws IOException, ReCaptchaException {
-        URL url = new URL(siteUrl);
-        HttpsURLConnection con = (HttpsURLConnection) url.openConnection();
-        String responseBody = dl(con);
-        return new DownloadResponse(responseBody, con.getHeaderFields());
+        return get(siteUrl, Collections.emptyMap());
     }
 
     @Override

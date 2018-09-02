@@ -44,6 +44,7 @@ public class YoutubeCommentsExtractor extends CommentsExtractor {
     public InfoItemsPage<CommentsInfoItem> getInitialPage() throws IOException, ExtractionException {
         // initial page does not load any comments but is required to get session token
         // and cookies
+        super.fetchPage();
         return getPage(getNextPageUrl());
     }
 

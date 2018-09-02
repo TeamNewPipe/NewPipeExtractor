@@ -23,7 +23,6 @@ public class YoutubeCommentsExtractorTest {
         NewPipe.init(Downloader.getInstance());
         extractor = (YoutubeCommentsExtractor) YouTube
                 .getCommentsExtractor("https://www.youtube.com/watch?v=rrgFN3AxGfs");
-        extractor.fetchPage();
     }
 
     @Test

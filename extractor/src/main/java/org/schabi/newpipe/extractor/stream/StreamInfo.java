@@ -1,6 +1,10 @@
 package org.schabi.newpipe.extractor.stream;
 
 import org.schabi.newpipe.extractor.*;
+import org.schabi.newpipe.extractor.ListExtractor.InfoItemsPage;
+import org.schabi.newpipe.extractor.comments.CommentsExtractor;
+import org.schabi.newpipe.extractor.comments.CommentsInfo;
+import org.schabi.newpipe.extractor.comments.CommentsInfoItem;
 import org.schabi.newpipe.extractor.exceptions.ContentNotAvailableException;
 import org.schabi.newpipe.extractor.exceptions.ExtractionException;
 import org.schabi.newpipe.extractor.utils.DashMpdParser;
@@ -247,6 +251,19 @@ public class StreamInfo extends Info {
         }
 
         streamInfo.setRelatedStreams(ExtractorHelper.getRelatedVideosOrLogError(streamInfo, extractor));
+        
+        CommentsExtractor commentsExtractor = null;
+        try {
+            commentsExtractor = NewPipe.getService(streamInfo.getServiceId()).getCommentsExtractor(streamInfo.getUrl());
+        } catch (ExtractionException e) {
+            streamInfo.addError(e);
+        }
+        
+        if(null != commentsExtractor) {
+            InfoItemsPage<CommentsInfoItem> initialCommentsPage = ExtractorHelper.getItemsPageOrLogError(streamInfo, commentsExtractor);
+            streamInfo.setComments(initialCommentsPage.getItems());
+        }
+        
         return streamInfo;
     }
 
@@ -273,6 +290,7 @@ public class StreamInfo extends Info {
     private String hlsUrl;
     private StreamInfoItem nextVideo;
     private List<InfoItem> relatedStreams;
+    private List<CommentsInfoItem> comments;
 
     private long startPosition = 0;
     private List<Subtitles> subtitles;
@@ -469,5 +487,15 @@ public class StreamInfo extends Info {
     public void setSubtitles(List<Subtitles> subtitles) {
         this.subtitles = subtitles;
     }
+
+    public List<CommentsInfoItem> getComments() {
+        return comments;
+    }
+
+    public void setComments(List<CommentsInfoItem> comments) {
+        this.comments = comments;
+    }
+    
+    
 
 }
