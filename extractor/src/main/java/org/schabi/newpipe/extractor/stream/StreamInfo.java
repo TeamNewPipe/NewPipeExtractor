@@ -48,7 +48,8 @@ public class StreamInfo extends Info {
         }
     }
 
-    public StreamInfo(int serviceId, String url, String originalUrl, StreamType streamType, String id, String name, int ageLimit) {
+    public StreamInfo(int serviceId, String url, String originalUrl, StreamType streamType, String id, String name,
+            int ageLimit) {
         super(serviceId, id, url, originalUrl, name);
         this.streamType = streamType;
         this.ageLimit = ageLimit;
@@ -70,9 +71,12 @@ public class StreamInfo extends Info {
             streamInfo = extractStreams(streamInfo, extractor);
             streamInfo = extractOptionalData(streamInfo, extractor);
         } catch (ExtractionException e) {
-            // Currently YouTube does not distinguish between age restricted videos and videos blocked
-            // by country.  This means that during the initialisation of the extractor, the extractor
-            // will assume that a video is age restricted while in reality it it blocked by country.
+            // Currently YouTube does not distinguish between age restricted videos and
+            // videos blocked
+            // by country. This means that during the initialisation of the extractor, the
+            // extractor
+            // will assume that a video is age restricted while in reality it it blocked by
+            // country.
             //
             // We will now detect whether the video is blocked by country or not.
             String errorMsg = extractor.getErrorMessage();
@@ -89,7 +93,8 @@ public class StreamInfo extends Info {
 
     private static StreamInfo extractImportantData(StreamExtractor extractor) throws ExtractionException {
         /* ---- important data, without the video can't be displayed goes here: ---- */
-        // if one of these is not available an exception is meant to be thrown directly into the frontend.
+        // if one of these is not available an exception is meant to be thrown directly
+        // into the frontend.
 
         int serviceId = extractor.getServiceId();
         String url = extractor.getUrl();
@@ -99,18 +104,16 @@ public class StreamInfo extends Info {
         String name = extractor.getName();
         int ageLimit = extractor.getAgeLimit();
 
-        if ((streamType == StreamType.NONE)
-                || (url == null || url.isEmpty())
-                || (id == null || id.isEmpty())
-                || (name == null /* streamInfo.title can be empty of course */)
-                || (ageLimit == -1)) {
+        if ((streamType == StreamType.NONE) || (url == null || url.isEmpty()) || (id == null || id.isEmpty())
+                || (name == null /* streamInfo.title can be empty of course */) || (ageLimit == -1)) {
             throw new ExtractionException("Some important stream information was not given.");
         }
 
         return new StreamInfo(serviceId, url, originalUrl, streamType, id, name, ageLimit);
     }
 
-    private static StreamInfo extractStreams(StreamInfo streamInfo, StreamExtractor extractor) throws ExtractionException {
+    private static StreamInfo extractStreams(StreamInfo streamInfo, StreamExtractor extractor)
+            throws ExtractionException {
         /* ---- stream extraction goes here ---- */
         // At least one type of stream has to be available,
         // otherwise an exception will be thrown directly into the frontend.
@@ -127,19 +130,19 @@ public class StreamInfo extends Info {
             streamInfo.addError(new ExtractionException("Couldn't get HLS manifest", e));
         }
 
-        /*  Load and extract audio */
+        /* Load and extract audio */
         try {
             streamInfo.setAudioStreams(extractor.getAudioStreams());
         } catch (Exception e) {
             streamInfo.addError(new ExtractionException("Couldn't get audio streams", e));
         }
-        /* Extract video stream url*/
+        /* Extract video stream url */
         try {
             streamInfo.setVideoStreams(extractor.getVideoStreams());
         } catch (Exception e) {
             streamInfo.addError(new ExtractionException("Couldn't get video streams", e));
         }
-        /* Extract video only stream url*/
+        /* Extract video only stream url */
         try {
             streamInfo.setVideoOnlyStreams(extractor.getVideoOnlyStreams());
         } catch (Exception e) {
@@ -147,9 +150,12 @@ public class StreamInfo extends Info {
         }
 
         // Lists can be null if a exception was thrown during extraction
-        if (streamInfo.getVideoStreams() == null) streamInfo.setVideoStreams(new ArrayList<VideoStream>());
-        if (streamInfo.getVideoOnlyStreams() == null) streamInfo.setVideoOnlyStreams(new ArrayList<VideoStream>());
-        if (streamInfo.getAudioStreams() == null) streamInfo.setAudioStreams(new ArrayList<AudioStream>());
+        if (streamInfo.getVideoStreams() == null)
+            streamInfo.setVideoStreams(new ArrayList<VideoStream>());
+        if (streamInfo.getVideoOnlyStreams() == null)
+            streamInfo.setVideoOnlyStreams(new ArrayList<VideoStream>());
+        if (streamInfo.getAudioStreams() == null)
+            streamInfo.setAudioStreams(new ArrayList<AudioStream>());
 
         Exception dashMpdError = null;
         if (streamInfo.getDashMpdUrl() != null && !streamInfo.getDashMpdUrl().isEmpty()) {
@@ -159,19 +165,23 @@ public class StreamInfo extends Info {
                 streamInfo.getAudioStreams().addAll(result.getAudioStreams());
                 streamInfo.getVideoStreams().addAll(result.getVideoStreams());
             } catch (Exception e) {
-                // Sometimes we receive 403 (forbidden) error when trying to download the manifest (similar to what happens with youtube-dl),
-                // just skip the exception (but store it somewhere), as we later check if we have streams anyway.
+                // Sometimes we receive 403 (forbidden) error when trying to download the
+                // manifest (similar to what happens with youtube-dl),
+                // just skip the exception (but store it somewhere), as we later check if we
+                // have streams anyway.
                 dashMpdError = e;
             }
         }
 
-        // Either audio or video has to be available, otherwise we didn't get a stream (since videoOnly are optional, they don't count).
-        if ((streamInfo.videoStreams.isEmpty())
-                && (streamInfo.audioStreams.isEmpty())) {
+        // Either audio or video has to be available, otherwise we didn't get a stream
+        // (since videoOnly are optional, they don't count).
+        if ((streamInfo.videoStreams.isEmpty()) && (streamInfo.audioStreams.isEmpty())) {
 
             if (dashMpdError != null) {
-                // If we don't have any video or audio and the dashMpd 'errored', add it to the error list
-                // (it's optional and it don't get added automatically, but it's good to have some additional error context)
+                // If we don't have any video or audio and the dashMpd 'errored', add it to the
+                // error list
+                // (it's optional and it don't get added automatically, but it's good to have
+                // some additional error context)
                 streamInfo.addError(dashMpdError);
             }
 
@@ -182,9 +192,11 @@ public class StreamInfo extends Info {
     }
 
     private static StreamInfo extractOptionalData(StreamInfo streamInfo, StreamExtractor extractor) {
-        /*  ---- optional data goes here: ---- */
-        // If one of these fails, the frontend needs to handle that they are not available.
-        // Exceptions are therefore not thrown into the frontend, but stored into the error List,
+        /* ---- optional data goes here: ---- */
+        // If one of these fails, the frontend needs to handle that they are not
+        // available.
+        // Exceptions are therefore not thrown into the frontend, but stored into the
+        // error List,
         // so the frontend can afterwards check where errors happened.
 
         try {
@@ -254,20 +266,39 @@ public class StreamInfo extends Info {
         }
 
         streamInfo.setRelatedStreams(ExtractorHelper.getRelatedVideosOrLogError(streamInfo, extractor));
-        
+
         CommentsExtractor commentsExtractor = null;
         try {
             commentsExtractor = NewPipe.getService(streamInfo.getServiceId()).getCommentsExtractor(streamInfo.getUrl());
-        } catch (ExtractionException e) {
+            streamInfo.setCommentsExtractor(commentsExtractor);
+        } catch (Exception e) {
             streamInfo.addError(e);
         }
-        
-        if(null != commentsExtractor) {
-            InfoItemsPage<CommentsInfoItem> initialCommentsPage = ExtractorHelper.getItemsPageOrLogError(streamInfo, commentsExtractor);
-            streamInfo.setComments(initialCommentsPage.getItems());
+
+        if (null != commentsExtractor) {
+            InfoItemsPage<CommentsInfoItem> initialCommentsPage = ExtractorHelper.getItemsPageOrLogError(streamInfo,
+                    commentsExtractor);
+            streamInfo.setComments(new ArrayList<>());
+            streamInfo.getComments().addAll(initialCommentsPage.getItems());
+            streamInfo.setHasMoreComments(initialCommentsPage.hasNextPage());
+            streamInfo.setNextCommentsPageUrl(initialCommentsPage.getNextPageUrl());
         }
-        
+
         return streamInfo;
+    }
+
+    public static void loadMoreComments(StreamInfo streamInfo) {
+        if (streamInfo.hasMoreComments() && null != streamInfo.getCommentsExtractor()) {
+            try {
+                InfoItemsPage<CommentsInfoItem> commentsPage = streamInfo.getCommentsExtractor()
+                        .getPage(streamInfo.getNextCommentsPageUrl());
+                streamInfo.getComments().addAll(commentsPage.getItems());
+                streamInfo.setHasMoreComments(commentsPage.hasNextPage());
+                streamInfo.setNextCommentsPageUrl(commentsPage.getNextPageUrl());
+            } catch (IOException | ExtractionException e) {
+                streamInfo.addError(e);
+            }
+        }
     }
 
     private StreamType streamType;
@@ -293,7 +324,11 @@ public class StreamInfo extends Info {
     private String hlsUrl;
     private StreamInfoItem nextVideo;
     private List<InfoItem> relatedStreams;
+
+    private CommentsExtractor commentsExtractor;
     private List<CommentsInfoItem> comments;
+    private boolean hasMoreComments;
+    private String nextCommentsPageUrl;
 
     private long startPosition = 0;
     private List<Subtitles> subtitles;
@@ -498,7 +533,29 @@ public class StreamInfo extends Info {
     public void setComments(List<CommentsInfoItem> comments) {
         this.comments = comments;
     }
-    
-    
+
+    public boolean hasMoreComments() {
+        return hasMoreComments;
+    }
+
+    public void setHasMoreComments(boolean hasMoreComments) {
+        this.hasMoreComments = hasMoreComments;
+    }
+
+    public CommentsExtractor getCommentsExtractor() {
+        return commentsExtractor;
+    }
+
+    public void setCommentsExtractor(CommentsExtractor commentsExtractor) {
+        this.commentsExtractor = commentsExtractor;
+    }
+
+    public String getNextCommentsPageUrl() {
+        return nextCommentsPageUrl;
+    }
+
+    public void setNextCommentsPageUrl(String nextCommentsPageUrl) {
+        this.nextCommentsPageUrl = nextCommentsPageUrl;
+    }
 
 }
