@@ -103,7 +103,7 @@ public class YoutubeCommentsExtractor extends CommentsExtractor {
                 @Override
                 public String getThumbnailUrl() throws ParsingException {
                     try {
-                        return c.get("authorThumbnail").get("thumbnails").get(0).get("url").asText();
+                        return c.get("authorThumbnail").get("thumbnails").get(2).get("url").asText();
                     } catch (Exception e) {
                         throw new ParsingException("Could not get thumbnail url", e);
                     }
@@ -114,7 +114,7 @@ public class YoutubeCommentsExtractor extends CommentsExtractor {
                     try {
                         return c.get("authorText").get("simpleText").asText();
                     } catch (Exception e) {
-                        throw new ParsingException("Could not get thumbnail url", e);
+                        throw new ParsingException("Could not get author name", e);
                     }
                 }
 
@@ -123,7 +123,7 @@ public class YoutubeCommentsExtractor extends CommentsExtractor {
                     try {
                         return c.get("publishedTimeText").get("runs").get(0).get("text").asText();
                     } catch (Exception e) {
-                        throw new ParsingException("Could not get thumbnail url", e);
+                        throw new ParsingException("Could not get publishedTimeText", e);
                     }
                 }
 
@@ -132,7 +132,7 @@ public class YoutubeCommentsExtractor extends CommentsExtractor {
                     try {
                         return c.get("likeCount").intValue();
                     } catch (Exception e) {
-                        throw new ParsingException("Could not get thumbnail url", e);
+                        throw new ParsingException("Could not get like count", e);
                     }
                 }
 
@@ -145,7 +145,7 @@ public class YoutubeCommentsExtractor extends CommentsExtractor {
                             return c.get("contentText").get("runs").get(0).get("text").asText();
                         }
                     } catch (Exception e) {
-                        throw new ParsingException("Could not get thumbnail url", e);
+                        throw new ParsingException("Could not get comment text", e);
                     }
                 }
 
@@ -154,16 +154,16 @@ public class YoutubeCommentsExtractor extends CommentsExtractor {
                     try {
                         return c.get("commentId").asText();
                     } catch (Exception e) {
-                        throw new ParsingException("Could not get thumbnail url", e);
+                        throw new ParsingException("Could not get comment id", e);
                     }
                 }
 
                 @Override
                 public String getAuthorThumbnail() throws ParsingException {
                     try {
-                        return c.get("authorThumbnail").get("thumbnails").get(0).get("url").asText();
+                        return c.get("authorThumbnail").get("thumbnails").get(2).get("url").asText();
                     } catch (Exception e) {
-                        throw new ParsingException("Could not get thumbnail url", e);
+                        throw new ParsingException("Could not get author thumbnail", e);
                     }
                 }
 
@@ -172,7 +172,7 @@ public class YoutubeCommentsExtractor extends CommentsExtractor {
                     try {
                         return c.get("authorText").get("simpleText").asText();
                     } catch (Exception e) {
-                        throw new ParsingException("Could not get thumbnail url", e);
+                        throw new ParsingException("Could not get author name", e);
                     }
                 }
 
@@ -182,7 +182,7 @@ public class YoutubeCommentsExtractor extends CommentsExtractor {
                         return "https://youtube.com"
                                 + c.get("authorEndpoint").get("browseEndpoint").get("canonicalBaseUrl").asText();
                     } catch (Exception e) {
-                        throw new ParsingException("Could not get thumbnail url", e);
+                        throw new ParsingException("Could not get author endpoint", e);
                     }
                 }
             };
