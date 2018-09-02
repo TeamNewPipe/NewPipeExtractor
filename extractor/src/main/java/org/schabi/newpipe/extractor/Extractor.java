@@ -7,8 +7,9 @@ import org.schabi.newpipe.extractor.linkhandler.LinkHandler;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.io.IOException;
+import java.io.Serializable;
 
-public abstract class Extractor {
+public abstract class Extractor implements Serializable{ 
     /**
      * {@link StreamingService} currently related to this extractor.<br>
      * Useful for getting other things from a service (like the url handlers for cleaning/accepting/get id from urls).
