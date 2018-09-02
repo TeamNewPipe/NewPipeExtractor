@@ -208,11 +208,12 @@ public class Downloader implements org.schabi.newpipe.extractor.Downloader {
         con.setDoOutput(true);
         con.getOutputStream().write(postDataBytes);
 
-        BufferedReader in = new BufferedReader(new InputStreamReader(con.getInputStream()));
         StringBuilder sb = new StringBuilder();
-        String inputLine;
-        while ((inputLine = in.readLine()) != null) {
-            sb.append(inputLine);
+        try (BufferedReader in = new BufferedReader(new InputStreamReader(con.getInputStream()))) {
+            String inputLine;
+            while ((inputLine = in.readLine()) != null) {
+                sb.append(inputLine);
+            }
         }
         return new DownloadResponse(sb.toString(), con.getHeaderFields());
     }
