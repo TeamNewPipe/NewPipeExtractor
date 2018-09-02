@@ -109,6 +109,6 @@ public abstract class Extractor {
 
     @Nonnull
     public String getLanguage() {
-        return language == null ? "us" : language;
+        return language == null ? "en" : language;
     }
 }
