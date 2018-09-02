@@ -6,8 +6,8 @@ import org.schabi.newpipe.extractor.NewPipe;
 import org.schabi.newpipe.extractor.StreamingService;
 import org.schabi.newpipe.extractor.exceptions.ExtractionException;
 import org.schabi.newpipe.extractor.exceptions.ParsingException;
-import org.schabi.newpipe.extractor.stream.StreamInfoItem;
 import org.schabi.newpipe.extractor.linkhandler.ListLinkHandler;
+import org.schabi.newpipe.extractor.stream.StreamInfoItem;
 import org.schabi.newpipe.extractor.utils.ExtractorHelper;
 
 import java.io.IOException;
@@ -38,12 +38,23 @@ public class ChannelInfo extends ListInfo<StreamInfoItem> {
         super(serviceId, urlIdHandler, name);
     }
 
+    @Deprecated
     public static ChannelInfo getInfo(String url) throws IOException, ExtractionException {
-        return getInfo(NewPipe.getServiceByUrl(url), url);
+        return getInfo(NewPipe.getServiceByUrl(url), url, null);
     }
 
+    public static ChannelInfo getInfo(String url, String language) throws IOException, ExtractionException {
+        return getInfo(NewPipe.getServiceByUrl(url), url, language);
+    }
+
+    @Deprecated
     public static ChannelInfo getInfo(StreamingService service, String url) throws IOException, ExtractionException {
+        return getInfo(service, url, null);
+    }
+
+    public static ChannelInfo getInfo(StreamingService service, String url, String language) throws IOException, ExtractionException {
         ChannelExtractor extractor = service.getChannelExtractor(url);
+        extractor.setLanguage(language);
         extractor.fetchPage();
         return getInfo(extractor);
     }
