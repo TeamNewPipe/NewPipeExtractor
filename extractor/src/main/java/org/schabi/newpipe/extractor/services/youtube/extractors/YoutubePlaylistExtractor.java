@@ -6,7 +6,8 @@ import com.grack.nanojson.JsonParserException;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
-import org.schabi.newpipe.extractor.*;
+import org.schabi.newpipe.extractor.Downloader;
+import org.schabi.newpipe.extractor.StreamingService;
 import org.schabi.newpipe.extractor.exceptions.ExtractionException;
 import org.schabi.newpipe.extractor.exceptions.ParsingException;
 import org.schabi.newpipe.extractor.linkhandler.LinkHandlerFactory;
@@ -19,6 +20,7 @@ import org.schabi.newpipe.extractor.stream.StreamType;
 import org.schabi.newpipe.extractor.utils.Utils;
 
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import java.io.IOException;
 
 @SuppressWarnings("WeakerAccess")
@@ -172,8 +174,12 @@ public class YoutubePlaylistExtractor extends PlaylistExtractor {
         }
     }
 
-    private void collectStreamsFrom(StreamInfoItemsCollector collector, Element element) {
+    private void collectStreamsFrom(@Nonnull StreamInfoItemsCollector collector, @Nullable Element element) {
         collector.reset();
+
+        if (element == null) {
+            return;
+        }
 
         final LinkHandlerFactory streamLinkHandlerFactory = getService().getStreamLHFactory();
         for (final Element li : element.children()) {
