@@ -35,7 +35,7 @@ import static org.schabi.newpipe.extractor.ServiceList.YouTube;
 /**
  * Test for {@link StreamExtractor}
  */
-public class YoutubeStreamExtractorDASHText {
+public class YoutubeStreamExtractorDASHTest {
     private static StreamInfo info;
 
     @BeforeClass

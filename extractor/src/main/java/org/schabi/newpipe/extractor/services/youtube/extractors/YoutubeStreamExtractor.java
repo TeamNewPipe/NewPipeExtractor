@@ -178,7 +178,8 @@ public class YoutubeStreamExtractor extends StreamExtractor {
                     // They refer to the youtube search. We do not handle them.
                     a.text(link);
 
-                } else if(redirectLink.toString().contains("watch?v=")) {
+                } else if(redirectLink.toString().contains("watch?v=")
+                        || redirectLink.toString().contains("https://www.youtube.com/")) {
                     // Another posibility is that this link is pointing to another video
                     // we need to put the redirectLink in here explicitly in order to add the domain part to the link.
                     a.text(redirectLink.toString());

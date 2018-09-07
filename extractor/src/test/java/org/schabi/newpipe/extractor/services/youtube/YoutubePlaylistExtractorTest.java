@@ -120,7 +120,7 @@ public class YoutubePlaylistExtractorTest {
         }
     }
 
-    public static class ImportantVideos implements BasePlaylistExtractorTest {
+    public static class HugePlaylist implements BasePlaylistExtractorTest {
         private static YoutubePlaylistExtractor extractor;
 
         @BeforeClass
