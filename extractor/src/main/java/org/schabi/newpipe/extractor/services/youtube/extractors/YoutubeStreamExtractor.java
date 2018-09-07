@@ -698,8 +698,10 @@ public class YoutubeStreamExtractor extends StreamExtractor {
             }
             String playerCode = downloader.download(playerUrl);
 
-            decryptionFuncName =
-                    Parser.matchGroup("([\"\\'])signature\\1\\s*,\\s*([a-zA-Z0-9$]+)\\(", playerCode, 2);
+            decryptionFuncName = Parser.matchGroup(
+                    // Look for a function with the first line containing pattern of: [var]=[var].split("")
+                    "(\\w+)\\s*=\\s*function\\((\\w+)\\)\\{\\s*\\2=\\s*\\2\\.split\\(\"\"\\)\\s*;",
+                    playerCode, 1);
 
             String functionPattern = "("
                     + decryptionFuncName.replace("$", "\\$")
