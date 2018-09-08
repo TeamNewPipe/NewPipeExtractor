@@ -560,6 +560,13 @@ public class YoutubeStreamExtractor extends StreamExtractor {
 
     private static final String VERIFIED_URL_PARAMS = "&has_verified=1&bpctr=9999999999";
 
+    private final static String DECYRYPTION_SIGNATURE_FUNCTION_REGEX =
+            "(\\w+)\\s*=\\s*function\\((\\w+)\\)\\{\\s*\\2=\\s*\\2\\.split\\(\"\"\\)\\s*;";
+    private final static String DECRYPTION_AKAMAIZED_STRING_REGEX =
+            "yt\\.akamaized\\.net/\\)\\s*\\|\\|\\s*.*?\\s*c\\s*&&\\s*d\\.set\\([^,]+\\s*,\\s*([a-zA-Z0-9$]+)\\(";
+    private final static String DECRYPTION_AKAMAIZED_SHORT_STRING_REGEX =
+            "\\bc\\s*&&\\s*d\\.set\\([^,]+\\s*,\\s*([a-zA-Z0-9$]+)\\(";
+
     private volatile String decryptionCode = "";
 
     private String pageHtml = null;
@@ -682,13 +689,6 @@ public class YoutubeStreamExtractor extends StreamExtractor {
     }
 
     private String loadDecryptionCode(String playerUrl) throws DecryptException {
-        String decryptionFuncName;
-        String decryptionFunc;
-        String helperObjectName;
-        String helperObject;
-        String callerFunc = "function " + DECRYPTION_FUNC_NAME + "(a){return %%(a);}";
-        String decryptionCode;
-
         try {
             Downloader downloader = NewPipe.getDownloader();
             if (!playerUrl.contains("https://youtube.com")) {
@@ -696,35 +696,38 @@ public class YoutubeStreamExtractor extends StreamExtractor {
                 //than we have to add it by hand
                 playerUrl = "https://youtube.com" + playerUrl;
             }
-            String playerCode = downloader.download(playerUrl);
 
-            decryptionFuncName = Parser.matchGroup(
-                    // Look for a function with the first line containing pattern of: [var]=[var].split("")
-                    "(\\w+)\\s*=\\s*function\\((\\w+)\\)\\{\\s*\\2=\\s*\\2\\.split\\(\"\"\\)\\s*;",
-                    playerCode, 1);
+            final String playerCode = downloader.download(playerUrl);
 
-            String functionPattern = "("
-                    + decryptionFuncName.replace("$", "\\$")
+            final String decryptionFunctionName;
+            if (Parser.isMatch(DECRYPTION_AKAMAIZED_SHORT_STRING_REGEX, playerCode)) {
+                decryptionFunctionName = Parser.matchGroup1(DECRYPTION_AKAMAIZED_SHORT_STRING_REGEX, playerCode);
+            } else if (Parser.isMatch(DECRYPTION_AKAMAIZED_STRING_REGEX, playerCode)) {
+                decryptionFunctionName = Parser.matchGroup1(DECRYPTION_AKAMAIZED_STRING_REGEX, playerCode);
+            } else {
+                decryptionFunctionName = Parser.matchGroup1(DECYRYPTION_SIGNATURE_FUNCTION_REGEX, playerCode);
+            }
+            final String functionPattern = "("
+                    + decryptionFunctionName.replace("$", "\\$")
                     + "=function\\([a-zA-Z0-9_]+\\)\\{.+?\\})";
-            decryptionFunc = "var " + Parser.matchGroup1(functionPattern, playerCode) + ";";
+            final String decryptionFunction = "var " + Parser.matchGroup1(functionPattern, playerCode) + ";";
 
-            helperObjectName = Parser
-                    .matchGroup1(";([A-Za-z0-9_\\$]{2})\\...\\(", decryptionFunc);
+            final String helperObjectName =
+                    Parser.matchGroup1(";([A-Za-z0-9_\\$]{2})\\...\\(", decryptionFunction);
+            final String helperPattern =
+                    "(var " + helperObjectName.replace("$", "\\$") + "=\\{.+?\\}\\};)";
+            final String helperObject =
+                    Parser.matchGroup1(helperPattern, playerCode.replace("\n", ""));
 
-            String helperPattern = "(var "
-                    + helperObjectName.replace("$", "\\$") + "=\\{.+?\\}\\};)";
-            helperObject = Parser.matchGroup1(helperPattern, playerCode.replace("\n", ""));
+            final String callerFunction =
+                    "function " + DECRYPTION_FUNC_NAME + "(a){return " + decryptionFunctionName + "(a);}";
 
-
-            callerFunc = callerFunc.replace("%%", decryptionFuncName);
-            decryptionCode = helperObject + decryptionFunc + callerFunc;
+            return helperObject + decryptionFunction + callerFunction;
         } catch (IOException ioe) {
             throw new DecryptException("Could not load decrypt function", ioe);
         } catch (Exception e) {
             throw new DecryptException("Could not parse decrypt function ", e);
         }
-
-        return decryptionCode;
     }
 
     private String decryptSignature(String encryptedSig, String decryptionCode) throws DecryptException {
