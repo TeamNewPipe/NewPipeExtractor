@@ -12,6 +12,7 @@ import org.schabi.newpipe.extractor.stream.StreamInfo;
 import org.schabi.newpipe.extractor.stream.VideoStream;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
+import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
 import javax.xml.parsers.DocumentBuilder;
@@ -19,6 +20,8 @@ import javax.xml.parsers.DocumentBuilderFactory;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.ArrayList;
+import java.util.List;
 
 /*
  * Created by Christian Schabesberger on 02.02.16.
@@ -51,6 +54,30 @@ public class DashMpdParser {
         }
     }
 
+    public static class ParserResult {
+        private final List<VideoStream> videoStreams;
+        private final List<AudioStream> audioStreams;
+        private final List<VideoStream> videoOnlyStreams;
+
+        public ParserResult(List<VideoStream> videoStreams, List<AudioStream> audioStreams, List<VideoStream> videoOnlyStreams) {
+            this.videoStreams = videoStreams;
+            this.audioStreams = audioStreams;
+            this.videoOnlyStreams = videoOnlyStreams;
+        }
+
+        public List<VideoStream> getVideoStreams() {
+            return videoStreams;
+        }
+
+        public List<AudioStream> getAudioStreams() {
+            return audioStreams;
+        }
+
+        public List<VideoStream> getVideoOnlyStreams() {
+            return videoOnlyStreams;
+        }
+    }
+
     /**
      * Will try to download (using {@link StreamInfo#dashMpdUrl}) and parse the dash manifest,
      * then it will search for any stream that the ItagItem has (by the id).
@@ -58,9 +85,12 @@ public class DashMpdParser {
      * It has video, video only and audio streams and will only add to the list if it don't
      * find a similar stream in the respective lists (calling {@link Stream#equalStats}).
      *
+     * Info about dash MPD can be found here
+     * @see <a href="https://www.brendanlong.com/the-structure-of-an-mpeg-dash-mpd.html">www.brendanlog.com</a>
+     *
      * @param streamInfo where the parsed streams will be added
      */
-    public static void getStreams(StreamInfo streamInfo) throws DashMpdParsingException, ReCaptchaException {
+    public static ParserResult getStreams(final StreamInfo streamInfo) throws DashMpdParsingException, ReCaptchaException {
         String dashDoc;
         Downloader downloader = NewPipe.getDownloader();
         try {
@@ -72,45 +102,58 @@ public class DashMpdParser {
         }
 
         try {
-            DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
-            DocumentBuilder builder = factory.newDocumentBuilder();
-            InputStream stream = new ByteArrayInputStream(dashDoc.getBytes());
+            final DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
+            final DocumentBuilder builder = factory.newDocumentBuilder();
+            final InputStream stream = new ByteArrayInputStream(dashDoc.getBytes());
 
-            Document doc = builder.parse(stream);
-            NodeList representationList = doc.getElementsByTagName("Representation");
+            final Document doc = builder.parse(stream);
+            final NodeList representationList = doc.getElementsByTagName("Representation");
+
+            final List<VideoStream> videoStreams = new ArrayList<>();
+            final List<AudioStream> audioStreams = new ArrayList<>();
+            final List<VideoStream> videoOnlyStreams = new ArrayList<>();
 
             for (int i = 0; i < representationList.getLength(); i++) {
-                Element representation = ((Element) representationList.item(i));
+                final Element representation = (Element) representationList.item(i);
                 try {
-                    String mimeType = ((Element) representation.getParentNode()).getAttribute("mimeType");
-                    String id = representation.getAttribute("id");
-                    String url = representation.getElementsByTagName("BaseURL").item(0).getTextContent();
-                    ItagItem itag = ItagItem.getItag(Integer.parseInt(id));
-                    if (itag != null) {
-                        MediaFormat mediaFormat = MediaFormat.getFromMimeType(mimeType);
+                    final String mimeType = ((Element) representation.getParentNode()).getAttribute("mimeType");
+                    final String id = representation.getAttribute("id");
+                    final String url = representation.getElementsByTagName("BaseURL").item(0).getTextContent();
+                    final ItagItem itag = ItagItem.getItag(Integer.parseInt(id));
+                    final Node segmentationList = representation.getElementsByTagName("SegmentList").item(0);
+
+                    // if SegmentList is not null this means that BaseUrl is not representing the url to the stream.
+                    // instead we need to add the "media=" value from the <SegementURL/> tags inside the <SegmentList/>
+                    // tag in order to get a full working url. However each of these is just pointing to a part of the
+                    // video, so we can not return a URL with a working stream here.
+                    // We decided not to ignore such streams for the moment.
+                    if (itag != null && segmentationList == null) {
+                        final MediaFormat mediaFormat = MediaFormat.getFromMimeType(mimeType);
 
                         if (itag.itagType.equals(ItagItem.ItagType.AUDIO)) {
-                            AudioStream audioStream = new AudioStream(url, mediaFormat, itag.avgBitrate);
+                            final AudioStream audioStream = new AudioStream(url, mediaFormat, itag.avgBitrate);
 
                             if (!Stream.containSimilarStream(audioStream, streamInfo.getAudioStreams())) {
-                                streamInfo.getAudioStreams().add(audioStream);
+                                audioStreams.add(audioStream);
                             }
                         } else {
                             boolean isVideoOnly = itag.itagType.equals(ItagItem.ItagType.VIDEO_ONLY);
-                            VideoStream videoStream = new VideoStream(url, mediaFormat, itag.resolutionString, isVideoOnly);
+                            final VideoStream videoStream = new VideoStream(url, mediaFormat, itag.resolutionString, isVideoOnly);
 
                             if (isVideoOnly) {
                                 if (!Stream.containSimilarStream(videoStream, streamInfo.getVideoOnlyStreams())) {
                                     streamInfo.getVideoOnlyStreams().add(videoStream);
+                                    videoOnlyStreams.add(videoStream);
                                 }
                             } else if (!Stream.containSimilarStream(videoStream, streamInfo.getVideoStreams())) {
-                                streamInfo.getVideoStreams().add(videoStream);
+                                videoStreams.add(videoStream);
                             }
                         }
                     }
                 } catch (Exception ignored) {
                 }
             }
+            return new ParserResult(videoStreams, audioStreams, videoOnlyStreams);
         } catch (Exception e) {
             throw new DashMpdParsingException("Could not parse Dash mpd", e);
         }

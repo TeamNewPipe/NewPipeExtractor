@@ -26,22 +26,22 @@ public class SoundcloudService extends StreamingService {
     }
 
     @Override
-    public SearchQueryHandlerFactory getSearchQIHFactory() {
+    public SearchQueryHandlerFactory getSearchQHFactory() {
         return new SoundcloudSearchQueryHandlerFactory();
     }
 
     @Override
-    public LinkHandlerFactory getStreamUIHFactory() {
+    public LinkHandlerFactory getStreamLHFactory() {
         return SoundcloudStreamLinkHandlerFactory.getInstance();
     }
 
     @Override
-    public ListLinkHandlerFactory getChannelUIHFactory() {
+    public ListLinkHandlerFactory getChannelLHFactory() {
         return SoundcloudChannelLinkHandlerFactory.getInstance();
     }
 
     @Override
-    public ListLinkHandlerFactory getPlaylistUIHFactory() {
+    public ListLinkHandlerFactory getPlaylistLHFactory() {
         return SoundcloudPlaylistLinkHandlerFactory.getInstance();
     }
 

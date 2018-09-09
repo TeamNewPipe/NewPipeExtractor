@@ -49,22 +49,22 @@ public class YoutubeService extends StreamingService {
     }
 
     @Override
-    public LinkHandlerFactory getStreamUIHFactory() {
+    public LinkHandlerFactory getStreamLHFactory() {
         return YoutubeStreamLinkHandlerFactory.getInstance();
     }
 
     @Override
-    public ListLinkHandlerFactory getChannelUIHFactory() {
+    public ListLinkHandlerFactory getChannelLHFactory() {
         return YoutubeChannelLinkHandlerFactory.getInstance();
     }
 
     @Override
-    public ListLinkHandlerFactory getPlaylistUIHFactory() {
+    public ListLinkHandlerFactory getPlaylistLHFactory() {
         return YoutubePlaylistLinkHandlerFactory.getInstance();
     }
 
     @Override
-    public SearchQueryHandlerFactory getSearchQIHFactory() {
+    public SearchQueryHandlerFactory getSearchQHFactory() {
         return YoutubeSearchQueryHandlerFactory.getInstance();
     }
 

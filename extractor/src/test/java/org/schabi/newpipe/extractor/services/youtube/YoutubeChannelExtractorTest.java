@@ -114,6 +114,103 @@ public class YoutubeChannelExtractorTest {
         }
     }
 
+    // Youtube RED/Premium ad blocking test
+    public static class VSauce implements BaseChannelExtractorTest {
+        private static YoutubeChannelExtractor extractor;
+
+        @BeforeClass
+        public static void setUp() throws Exception {
+            NewPipe.init(Downloader.getInstance());
+            extractor = (YoutubeChannelExtractor) YouTube
+                    .getChannelExtractor("https://www.youtube.com/user/Vsauce");
+            extractor.fetchPage();
+        }
+
+        /*//////////////////////////////////////////////////////////////////////////
+        // Extractor
+        //////////////////////////////////////////////////////////////////////////*/
+
+        @Test
+        public void testServiceId() {
+            assertEquals(YouTube.getServiceId(), extractor.getServiceId());
+        }
+
+        @Test
+        public void testName() throws Exception {
+            assertEquals("Vsauce", extractor.getName());
+        }
+
+        @Test
+        public void testId() throws Exception {
+            assertEquals("UC6nSFpj9HTCZ5t-N3Rm3-HA", extractor.getId());
+        }
+
+        @Test
+        public void testUrl() throws ParsingException {
+            assertEquals("https://www.youtube.com/channel/UC6nSFpj9HTCZ5t-N3Rm3-HA", extractor.getUrl());
+        }
+
+        @Test
+        public void testOriginalUrl() throws ParsingException {
+            assertEquals("https://www.youtube.com/user/Vsauce", extractor.getOriginalUrl());
+        }
+
+        /*//////////////////////////////////////////////////////////////////////////
+        // ListExtractor
+        //////////////////////////////////////////////////////////////////////////*/
+
+        @Test
+        public void testRelatedItems() throws Exception {
+            defaultTestRelatedItems(extractor, YouTube.getServiceId());
+        }
+
+        @Test
+        public void testMoreRelatedItems() throws Exception {
+            defaultTestMoreItems(extractor, ServiceList.YouTube.getServiceId());
+        }
+
+         /*//////////////////////////////////////////////////////////////////////////
+         // ChannelExtractor
+         //////////////////////////////////////////////////////////////////////////*/
+
+        @Test
+        public void testDescription() throws Exception {
+            assertTrue("What it actually was: " + extractor.getDescription(),
+                    extractor.getDescription().contains("Our World is Amazing. Questions? Ideas? Tweet me:"));
+        }
+
+        @Test
+        public void testAvatarUrl() throws Exception {
+            String avatarUrl = extractor.getAvatarUrl();
+            assertIsSecureUrl(avatarUrl);
+            assertTrue(avatarUrl, avatarUrl.contains("yt3"));
+        }
+
+        @Test
+        public void testBannerUrl() throws Exception {
+            String bannerUrl = extractor.getBannerUrl();
+            assertIsSecureUrl(bannerUrl);
+            assertTrue(bannerUrl, bannerUrl.contains("yt3"));
+        }
+
+        @Test
+        public void testFeedUrl() throws Exception {
+            assertEquals("https://www.youtube.com/feeds/videos.xml?channel_id=UC6nSFpj9HTCZ5t-N3Rm3-HA", extractor.getFeedUrl());
+        }
+
+        @Test
+        public void testSubscriberCount() throws Exception {
+            assertTrue("Wrong subscriber count", extractor.getSubscriberCount() >= 0);
+        }
+
+        @Test
+        public void testChannelDonation() throws Exception {
+            // this needs to be ignored since wed have to upgrade channel extractor to the new yt interface
+            // in order to make this work
+            assertTrue(extractor.getDonationLinks().length == 0);
+        }
+    }
+
     public static class Kurzgesagt implements BaseChannelExtractorTest {
         private static YoutubeChannelExtractor extractor;
 

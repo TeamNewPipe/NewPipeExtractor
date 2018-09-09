@@ -18,13 +18,15 @@ import org.schabi.newpipe.extractor.exceptions.ReCaptchaException;
 import org.schabi.newpipe.extractor.linkhandler.LinkHandler;
 import org.schabi.newpipe.extractor.services.youtube.ItagItem;
 import org.schabi.newpipe.extractor.stream.*;
-import org.schabi.newpipe.extractor.utils.DonationLinkHelper;
 import org.schabi.newpipe.extractor.utils.Parser;
 import org.schabi.newpipe.extractor.utils.Utils;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.io.IOException;
+import java.io.UnsupportedEncodingException;
+import java.net.MalformedURLException;
+import java.net.URL;
 import java.util.*;
 
 /*
@@ -152,10 +154,39 @@ public class YoutubeStreamExtractor extends StreamExtractor {
     public String getDescription() throws ParsingException {
         assertPageFetched();
         try {
-            return doc.select("p[id=\"eow-description\"]").first().html();
-        } catch (Exception e) {//todo: add fallback method <-- there is no ... as long as i know
+            return parseHtmlAndGetFullLinks(doc.select("p[id=\"eow-description\"]").first().html());
+        } catch (Exception e) {
             throw new ParsingException("Could not get the description", e);
         }
+    }
+
+    private String parseHtmlAndGetFullLinks(String descriptionHtml)
+            throws MalformedURLException, UnsupportedEncodingException, ParsingException {
+        final Document description = Jsoup.parse(descriptionHtml, getUrl());
+        for(Element a : description.select("a")) {
+            final URL redirectLink = new URL(
+                    a.attr("abs:href"));
+            final String queryString = redirectLink.getQuery();
+            if(queryString != null) {
+                // if the query string is null we are not dealing with a redirect link,
+                // so we don't need to override it.
+                final String link =
+                        Parser.compatParseMap(queryString).get("q");
+
+                if(link != null) {
+                    // if link is null the a tag is a hashtag.
+                    // They refer to the youtube search. We do not handle them.
+                    a.text(link);
+
+                }
+            } else if(redirectLink.toString().contains("watch?v=")
+                    || redirectLink.toString().contains("https://www.youtube.com/")) {
+                // Another posibility is that this link is pointing to another video
+                // we need to put the redirectLink in here explicitly in order to add the domain part to the link.
+                a.text(redirectLink.toString());
+            }
+        }
+        return description.select("body").first().html();
     }
 
     @Override
@@ -409,7 +440,7 @@ public class YoutubeStreamExtractor extends StreamExtractor {
     }
 
     @Override
-    public List<VideoStream> getVideoOnlyStreams() throws IOException, ExtractionException {
+    public List<VideoStream> getVideoOnlyStreams() throws ExtractionException {
         assertPageFetched();
         List<VideoStream> videoOnlyStreams = new ArrayList<>();
         try {
@@ -668,8 +699,10 @@ public class YoutubeStreamExtractor extends StreamExtractor {
             }
             String playerCode = downloader.download(playerUrl);
 
-            decryptionFuncName =
-                    Parser.matchGroup("([\"\\'])signature\\1\\s*,\\s*([a-zA-Z0-9$]+)\\(", playerCode, 2);
+            decryptionFuncName = Parser.matchGroup(
+                    // Look for a function with the first line containing pattern of: [var]=[var].split("")
+                    "(\\w+)\\s*=\\s*function\\((\\w+)\\)\\{\\s*\\2=\\s*\\2\\.split\\(\"\"\\)\\s*;",
+                    playerCode, 1);
 
             String functionPattern = "("
                     + decryptionFuncName.replace("$", "\\$")

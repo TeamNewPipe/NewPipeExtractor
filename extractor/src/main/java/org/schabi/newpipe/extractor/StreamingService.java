@@ -67,10 +67,10 @@ public abstract class StreamingService {
     ////////////////////////////////////////////
     // Url Id handler
     ////////////////////////////////////////////
-    public abstract LinkHandlerFactory getStreamUIHFactory();
-    public abstract ListLinkHandlerFactory getChannelUIHFactory();
-    public abstract ListLinkHandlerFactory getPlaylistUIHFactory();
-    public abstract SearchQueryHandlerFactory getSearchQIHFactory();
+    public abstract LinkHandlerFactory getStreamLHFactory();
+    public abstract ListLinkHandlerFactory getChannelLHFactory();
+    public abstract ListLinkHandlerFactory getPlaylistLHFactory();
+    public abstract SearchQueryHandlerFactory getSearchQHFactory();
 
 
     ////////////////////////////////////////////
@@ -86,31 +86,31 @@ public abstract class StreamingService {
     public abstract StreamExtractor getStreamExtractor(LinkHandler UIHFactory) throws ExtractionException;
 
     public SearchExtractor getSearchExtractor(String query, List<String> contentFilter, String sortFilter, String contentCountry) throws ExtractionException {
-        return getSearchExtractor(getSearchQIHFactory().fromQuery(query, contentFilter, sortFilter), contentCountry);
+        return getSearchExtractor(getSearchQHFactory().fromQuery(query, contentFilter, sortFilter), contentCountry);
     }
 
     public ChannelExtractor getChannelExtractor(String id, List<String> contentFilter, String sortFilter) throws ExtractionException {
-        return getChannelExtractor(getChannelUIHFactory().fromQuery(id, contentFilter, sortFilter));
+        return getChannelExtractor(getChannelLHFactory().fromQuery(id, contentFilter, sortFilter));
     }
 
     public PlaylistExtractor getPlaylistExtractor(String id, List<String> contentFilter, String sortFilter) throws ExtractionException {
-        return getPlaylistExtractor(getPlaylistUIHFactory().fromQuery(id, contentFilter, sortFilter));
+        return getPlaylistExtractor(getPlaylistLHFactory().fromQuery(id, contentFilter, sortFilter));
     }
 
     public SearchExtractor getSearchExtractor(String query, String contentCountry) throws ExtractionException {
-        return getSearchExtractor(getSearchQIHFactory().fromQuery(query), contentCountry);
+        return getSearchExtractor(getSearchQHFactory().fromQuery(query), contentCountry);
     }
 
     public ChannelExtractor getChannelExtractor(String url) throws ExtractionException {
-        return getChannelExtractor(getChannelUIHFactory().fromUrl(url));
+        return getChannelExtractor(getChannelLHFactory().fromUrl(url));
     }
 
     public PlaylistExtractor getPlaylistExtractor(String url) throws ExtractionException {
-        return getPlaylistExtractor(getPlaylistUIHFactory().fromUrl(url));
+        return getPlaylistExtractor(getPlaylistLHFactory().fromUrl(url));
     }
 
     public StreamExtractor getStreamExtractor(String url) throws ExtractionException {
-        return getStreamExtractor(getStreamUIHFactory().fromUrl(url));
+        return getStreamExtractor(getStreamLHFactory().fromUrl(url));
     }
 
 
@@ -119,9 +119,9 @@ public abstract class StreamingService {
      * figure out where the link is pointing to (a channel, video, playlist, etc.)
      */
     public final LinkType getLinkTypeByUrl(String url) throws ParsingException {
-        LinkHandlerFactory sH = getStreamUIHFactory();
-        LinkHandlerFactory cH = getChannelUIHFactory();
-        LinkHandlerFactory pH = getPlaylistUIHFactory();
+        LinkHandlerFactory sH = getStreamLHFactory();
+        LinkHandlerFactory cH = getChannelLHFactory();
+        LinkHandlerFactory pH = getPlaylistLHFactory();
 
         if (sH.acceptUrl(url)) {
             return LinkType.STREAM;

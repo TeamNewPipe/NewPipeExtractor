@@ -57,11 +57,11 @@ public class SoundcloudChartsExtractor extends KioskExtractor {
             apiUrl += "&kind=trending";
         }
 
-        List<String> supportedCountries = Arrays.asList("AU", "CA", "FR", "DE", "IE", "NL", "NZ", "GB", "US");
+        /*List<String> supportedCountries = Arrays.asList("AU", "CA", "FR", "DE", "IE", "NL", "NZ", "GB", "US");
         String contentCountry = getContentCountry();
         if (supportedCountries.contains(contentCountry)) {
             apiUrl += "&region=soundcloud:regions:" + contentCountry;
-        }
+        }*/
 
         nextPageUrl = SoundcloudParsingHelper.getStreamsFromApi(collector, apiUrl, true);
     }

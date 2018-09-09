@@ -48,18 +48,22 @@ public class YoutubePlaylistInfoItemExtractor implements PlaylistInfoItemExtract
 
     @Override
     public String getUrl() throws ParsingException {
-        String url;
-
         try {
-            final Element href = el.select("div[class=\"yt-lockup-meta\"]").first()
-                    .select("a").first();
+            final Element div = el.select("div[class=\"yt-lockup-meta\"]").first();
 
-            url = href.attr("abs:href");
+            if(div != null) {
+                final Element a = div.select("a").first();
+                return a.attr("abs:href");
+            }
+
+            // this is for yt premium playlists
+            return el.select("h3[class=\"yt-lockup-title\"").first()
+                    .select("a").first()
+                    .attr("abs:href");
+
         } catch (Exception e) {
             throw new ParsingException("Failed to extract playlist url", e);
         }
-
-        return url;
     }
 
     @Override
