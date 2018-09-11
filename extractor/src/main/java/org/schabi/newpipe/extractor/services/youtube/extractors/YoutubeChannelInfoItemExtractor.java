@@ -62,7 +62,7 @@ public class YoutubeChannelInfoItemExtractor implements ChannelInfoItemExtractor
         final Element subsEl = el.select("span[class*=\"yt-subscriber-count\"]").first();
         if (subsEl != null) {
             try {
-                return Long.parseLong(Utils.removeNonDigitCharacters(el.text()));
+                return Long.parseLong(Utils.removeNonDigitCharacters(subsEl.text()));
             } catch (NumberFormatException e) {
                 throw new ParsingException("Could not get subscriber count", e);
             }
