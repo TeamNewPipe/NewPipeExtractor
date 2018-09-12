@@ -2,6 +2,7 @@ package org.schabi.newpipe.extractor.services.youtube.extractors;
 
 import org.jsoup.nodes.Element;
 import org.schabi.newpipe.extractor.channel.ChannelInfoItemExtractor;
+import org.schabi.newpipe.extractor.exceptions.ParsingException;
 import org.schabi.newpipe.extractor.utils.Utils;
 
 /*
