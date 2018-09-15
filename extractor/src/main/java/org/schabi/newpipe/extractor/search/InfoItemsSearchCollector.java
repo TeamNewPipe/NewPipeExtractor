@@ -45,7 +45,6 @@ import org.schabi.newpipe.extractor.stream.StreamInfoItemsCollector;
  * other extractor type will raise an exception.
  */
 public class InfoItemsSearchCollector extends InfoItemsCollector<InfoItem, InfoItemExtractor> {
-    private String suggestion = "";
     private final StreamInfoItemsCollector streamCollector;
     private final ChannelInfoItemsCollector userCollector;
     private final PlaylistInfoItemsCollector playlistCollector;
@@ -55,14 +54,6 @@ public class InfoItemsSearchCollector extends InfoItemsCollector<InfoItem, InfoI
         streamCollector = new StreamInfoItemsCollector(serviceId);
         userCollector = new ChannelInfoItemsCollector(serviceId);
         playlistCollector = new PlaylistInfoItemsCollector(serviceId);
-    }
-
-    public void setSuggestion(String suggestion) {
-        this.suggestion = suggestion;
-    }
-
-    public SearchResult getSearchResult() throws ExtractionException {
-        return new SearchResult(getServiceId(), suggestion, getItems(), getErrors());
     }
 
     @Override

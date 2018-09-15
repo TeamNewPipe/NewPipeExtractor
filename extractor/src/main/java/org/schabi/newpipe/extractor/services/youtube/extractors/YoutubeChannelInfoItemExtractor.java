@@ -59,11 +59,16 @@ public class YoutubeChannelInfoItemExtractor implements ChannelInfoItemExtractor
 
     @Override
     public long getSubscriberCount() throws ParsingException {
-        Element subsEl = el.select("span[class*=\"yt-subscriber-count\"]").first();
-        if (subsEl == null) {
-            return 0;
+        final Element subsEl = el.select("span[class*=\"yt-subscriber-count\"]").first();
+        if (subsEl != null) {
+            try {
+                return Long.parseLong(Utils.removeNonDigitCharacters(subsEl.text()));
+            } catch (NumberFormatException e) {
+                throw new ParsingException("Could not get subscriber count", e);
+            }
         } else {
-            return Long.parseLong(Utils.removeNonDigitCharacters(subsEl.text()));
+            // If the element is null, the channel have the subscriber count disabled
+            return -1;
         }
     }
 

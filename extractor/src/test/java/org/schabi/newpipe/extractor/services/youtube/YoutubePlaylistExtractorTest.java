@@ -46,7 +46,7 @@ public class YoutubePlaylistExtractorTest {
         @Test
         public void testName() throws Exception {
             String name = extractor.getName();
-            assertTrue(name, name.startsWith("Pop Music Playlist: Timeless Pop Hits"));
+            assertTrue(name, name.startsWith("Pop Music Playlist"));
         }
 
         @Test
@@ -120,14 +120,14 @@ public class YoutubePlaylistExtractorTest {
         }
     }
 
-    public static class ImportantVideos implements BasePlaylistExtractorTest {
+    public static class HugePlaylist implements BasePlaylistExtractorTest {
         private static YoutubePlaylistExtractor extractor;
 
         @BeforeClass
         public static void setUp() throws Exception {
             NewPipe.init(Downloader.getInstance());
             extractor = (YoutubePlaylistExtractor) YouTube
-                    .getPlaylistExtractor("https://www.youtube.com/playlist?list=PLOy0j9AvlVZPto6IkjKfpu0Scx--7PGTC");
+                    .getPlaylistExtractor("https://www.youtube.com/watch?v=8SbUC-UaAxE&list=PLWwAypAcFRgKAIIFqBr9oy-ZYZnixa_Fj");
             extractor.fetchPage();
         }
 
@@ -152,23 +152,23 @@ public class YoutubePlaylistExtractorTest {
 
         @Test
         public void testName() throws Exception {
-            String name = extractor.getName();
-            assertTrue(name, name.contains("Important videos"));
+            final String name = extractor.getName();
+            assertEquals("I Wanna Rock Super Gigantic Playlist 1: Hardrock, AOR, Metal and more !!! 5000 music videos !!!", name);
         }
 
         @Test
         public void testId() throws Exception {
-            assertEquals("PLOy0j9AvlVZPto6IkjKfpu0Scx--7PGTC", extractor.getId());
+            assertEquals("PLWwAypAcFRgKAIIFqBr9oy-ZYZnixa_Fj", extractor.getId());
         }
 
         @Test
         public void testUrl() throws ParsingException {
-            assertEquals("https://www.youtube.com/playlist?list=PLOy0j9AvlVZPto6IkjKfpu0Scx--7PGTC", extractor.getUrl());
+            assertEquals("https://www.youtube.com/playlist?list=PLWwAypAcFRgKAIIFqBr9oy-ZYZnixa_Fj", extractor.getUrl());
         }
 
         @Test
         public void testOriginalUrl() throws ParsingException {
-            assertEquals("https://www.youtube.com/playlist?list=PLOy0j9AvlVZPto6IkjKfpu0Scx--7PGTC", extractor.getOriginalUrl());
+            assertEquals("https://www.youtube.com/watch?v=8SbUC-UaAxE&list=PLWwAypAcFRgKAIIFqBr9oy-ZYZnixa_Fj", extractor.getOriginalUrl());
         }
 
         /*//////////////////////////////////////////////////////////////////////////
@@ -182,8 +182,10 @@ public class YoutubePlaylistExtractorTest {
 
         @Test
         public void testMoreRelatedItems() throws Exception {
-            ListExtractor.InfoItemsPage<StreamInfoItem> currentPage = defaultTestMoreItems(extractor, ServiceList.YouTube.getServiceId());
+            ListExtractor.InfoItemsPage<StreamInfoItem> currentPage
+                    = defaultTestMoreItems(extractor, ServiceList.YouTube.getServiceId());
             // Test for 2 more levels
+
             for (int i = 0; i < 2; i++) {
                 currentPage = extractor.getPage(currentPage.getNextPageUrl());
                 defaultTestListOfItems(YouTube.getServiceId(), currentPage.getItems(), currentPage.getErrors());
@@ -216,7 +218,7 @@ public class YoutubePlaylistExtractorTest {
 
         @Test
         public void testUploaderName() throws Exception {
-            assertEquals("Crazy Horse", extractor.getUploaderName());
+            assertEquals("Tomas Nilsson", extractor.getUploaderName());
         }
 
         @Test

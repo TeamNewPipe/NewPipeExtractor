@@ -25,7 +25,7 @@ import org.junit.Test;
 import org.schabi.newpipe.Downloader;
 import org.schabi.newpipe.extractor.NewPipe;
 import org.schabi.newpipe.extractor.StreamingService;
-import org.schabi.newpipe.extractor.UrlIdHandler;
+import org.schabi.newpipe.extractor.linkhandler.LinkHandlerFactory;
 import org.schabi.newpipe.extractor.kiosk.KioskInfo;
 
 import static org.junit.Assert.assertFalse;
@@ -43,9 +43,9 @@ public class YoutubeTrendingKioskInfoTest {
             throws Exception {
         NewPipe.init(Downloader.getInstance());
         StreamingService service = YouTube;
-        UrlIdHandler urlIdHandler = service.getKioskList().getUrlIdHandlerByType("Trending");
+        LinkHandlerFactory LinkHandlerFactory = service.getKioskList().getListLinkHandlerFactoryByType("Trending");
 
-        kioskInfo = KioskInfo.getInfo(YouTube, urlIdHandler.setId("Trending").getUrl(), null);
+        kioskInfo = KioskInfo.getInfo(YouTube, LinkHandlerFactory.fromId("Trending").getUrl(), null);
     }
 
     @Test

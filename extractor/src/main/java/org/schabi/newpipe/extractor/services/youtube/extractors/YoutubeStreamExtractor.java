@@ -16,21 +16,24 @@ import org.schabi.newpipe.extractor.exceptions.ContentNotAvailableException;
 import org.schabi.newpipe.extractor.exceptions.ExtractionException;
 import org.schabi.newpipe.extractor.exceptions.ParsingException;
 import org.schabi.newpipe.extractor.exceptions.ReCaptchaException;
+import org.schabi.newpipe.extractor.linkhandler.LinkHandler;
 import org.schabi.newpipe.extractor.services.youtube.ItagItem;
 import org.schabi.newpipe.extractor.stream.*;
-import org.schabi.newpipe.extractor.utils.DonationLinkHelper;
 import org.schabi.newpipe.extractor.utils.Parser;
 import org.schabi.newpipe.extractor.utils.Utils;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.io.IOException;
+import java.io.UnsupportedEncodingException;
+import java.net.MalformedURLException;
+import java.net.URL;
 import java.util.*;
 
 /*
  * Created by Christian Schabesberger on 06.08.15.
  *
- * Copyright (C) Christian Schabesberger 2015 <chris.schabesberger@mailbox.org>
+ * Copyright (C) Christian Schabesberger 2018 <chris.schabesberger@mailbox.org>
  * YoutubeStreamExtractor.java is part of NewPipe.
  *
  * NewPipe is free software: you can redistribute it and/or modify
@@ -85,8 +88,8 @@ public class YoutubeStreamExtractor extends StreamExtractor {
 
     private boolean isAgeRestricted;
 
-    public YoutubeStreamExtractor(StreamingService service, UrlIdHandler urlIdHandler) throws ExtractionException {
-        super(service, urlIdHandler);
+    public YoutubeStreamExtractor(StreamingService service, LinkHandler linkHandler) {
+        super(service, linkHandler);
     }
 
     /*//////////////////////////////////////////////////////////////////////////
@@ -152,10 +155,39 @@ public class YoutubeStreamExtractor extends StreamExtractor {
     public String getDescription() throws ParsingException {
         assertPageFetched();
         try {
-            return doc.select("p[id=\"eow-description\"]").first().html();
-        } catch (Exception e) {//todo: add fallback method <-- there is no ... as long as i know
+            return parseHtmlAndGetFullLinks(doc.select("p[id=\"eow-description\"]").first().html());
+        } catch (Exception e) {
             throw new ParsingException("Could not get the description", e);
         }
+    }
+
+    private String parseHtmlAndGetFullLinks(String descriptionHtml)
+            throws MalformedURLException, UnsupportedEncodingException, ParsingException {
+        final Document description = Jsoup.parse(descriptionHtml, getUrl());
+        for(Element a : description.select("a")) {
+            final URL redirectLink = new URL(
+                    a.attr("abs:href"));
+            final String queryString = redirectLink.getQuery();
+            if(queryString != null) {
+                // if the query string is null we are not dealing with a redirect link,
+                // so we don't need to override it.
+                final String link =
+                        Parser.compatParseMap(queryString).get("q");
+
+                if(link != null) {
+                    // if link is null the a tag is a hashtag.
+                    // They refer to the youtube search. We do not handle them.
+                    a.text(link);
+
+                }
+            } else if(redirectLink.toString().contains("watch?v=")
+                    || redirectLink.toString().contains("https://www.youtube.com/")) {
+                // Another posibility is that this link is pointing to another video
+                // we need to put the redirectLink in here explicitly in order to add the domain part to the link.
+                a.text(redirectLink.toString());
+            }
+        }
+        return description.select("body").first().html();
     }
 
     @Override
@@ -409,7 +441,7 @@ public class YoutubeStreamExtractor extends StreamExtractor {
     }
 
     @Override
-    public List<VideoStream> getVideoOnlyStreams() throws IOException, ExtractionException {
+    public List<VideoStream> getVideoOnlyStreams() throws ExtractionException {
         assertPageFetched();
         List<VideoStream> videoOnlyStreams = new ArrayList<>();
         try {
@@ -523,41 +555,6 @@ public class YoutubeStreamExtractor extends StreamExtractor {
         return errorReason != null ? errorReason.toString() : null;
     }
 
-    @Override
-    public String[] getDonationLinks() throws ParsingException {
-        try {
-            ArrayList<String> donationLinks = new ArrayList<>();
-            for (String s : Parser.getLinksFromString(getDescription())) {
-                if (DonationLinkHelper.getDonatoinServiceByLink(s) != DonationLinkHelper.DonationService.NO_DONATION) {
-                    donationLinks.add(s);
-                }
-            }
-            String[] donlret = new String[donationLinks.size()];
-            donlret = donationLinks.toArray(donlret);
-            return donlret;
-        } catch (Exception e) {
-            throw new ParsingException("Could not get donation links", e);
-        }
-    }
-
-    @Override
-    public String[] getAffiliateLinks() throws ParsingException {
-        try {
-            ArrayList<String> donationLinks = new ArrayList<>();
-            for (String s : Parser.getLinksFromString(getDescription())) {
-                if (DonationLinkHelper.getAffiliateServiceByLink(s) != DonationLinkHelper.AffiliateService.NO_AFILIATE) {
-                    donationLinks.add(s);
-                }
-            }
-            String[] donlret = new String[donationLinks.size()];
-            donlret = donationLinks.toArray(donlret);
-            return donlret;
-        } catch (Exception e) {
-            throw new ParsingException("Could not get afiliate links", e);
-        }
-    }
-
-
     /*//////////////////////////////////////////////////////////////////////////
     // Fetch page
     //////////////////////////////////////////////////////////////////////////*/
@@ -569,6 +566,13 @@ public class YoutubeStreamExtractor extends StreamExtractor {
     private static final String DECRYPTION_FUNC_NAME = "decrypt";
 
     private static final String VERIFIED_URL_PARAMS = "&has_verified=1&bpctr=9999999999";
+
+    private final static String DECYRYPTION_SIGNATURE_FUNCTION_REGEX =
+            "(\\w+)\\s*=\\s*function\\((\\w+)\\)\\{\\s*\\2=\\s*\\2\\.split\\(\"\"\\)\\s*;";
+    private final static String DECRYPTION_AKAMAIZED_STRING_REGEX =
+            "yt\\.akamaized\\.net/\\)\\s*\\|\\|\\s*.*?\\s*c\\s*&&\\s*d\\.set\\([^,]+\\s*,\\s*([a-zA-Z0-9$]+)\\(";
+    private final static String DECRYPTION_AKAMAIZED_SHORT_STRING_REGEX =
+            "\\bc\\s*&&\\s*d\\.set\\([^,]+\\s*,\\s*([a-zA-Z0-9$]+)\\(";
 
     private volatile String decryptionCode = "";
 
@@ -692,13 +696,6 @@ public class YoutubeStreamExtractor extends StreamExtractor {
     }
 
     private String loadDecryptionCode(String playerUrl) throws DecryptException {
-        String decryptionFuncName;
-        String decryptionFunc;
-        String helperObjectName;
-        String helperObject;
-        String callerFunc = "function " + DECRYPTION_FUNC_NAME + "(a){return %%(a);}";
-        String decryptionCode;
-
         try {
             Downloader downloader = NewPipe.getDownloader();
             if (!playerUrl.contains("https://youtube.com")) {
@@ -706,33 +703,38 @@ public class YoutubeStreamExtractor extends StreamExtractor {
                 //than we have to add it by hand
                 playerUrl = "https://youtube.com" + playerUrl;
             }
-            String playerCode = downloader.download(playerUrl);
 
-            decryptionFuncName =
-                    Parser.matchGroup("([\"\\'])signature\\1\\s*,\\s*([a-zA-Z0-9$]+)\\(", playerCode, 2);
+            final String playerCode = downloader.download(playerUrl);
 
-            String functionPattern = "("
-                    + decryptionFuncName.replace("$", "\\$")
+            final String decryptionFunctionName;
+            if (Parser.isMatch(DECRYPTION_AKAMAIZED_SHORT_STRING_REGEX, playerCode)) {
+                decryptionFunctionName = Parser.matchGroup1(DECRYPTION_AKAMAIZED_SHORT_STRING_REGEX, playerCode);
+            } else if (Parser.isMatch(DECRYPTION_AKAMAIZED_STRING_REGEX, playerCode)) {
+                decryptionFunctionName = Parser.matchGroup1(DECRYPTION_AKAMAIZED_STRING_REGEX, playerCode);
+            } else {
+                decryptionFunctionName = Parser.matchGroup1(DECYRYPTION_SIGNATURE_FUNCTION_REGEX, playerCode);
+            }
+            final String functionPattern = "("
+                    + decryptionFunctionName.replace("$", "\\$")
                     + "=function\\([a-zA-Z0-9_]+\\)\\{.+?\\})";
-            decryptionFunc = "var " + Parser.matchGroup1(functionPattern, playerCode) + ";";
+            final String decryptionFunction = "var " + Parser.matchGroup1(functionPattern, playerCode) + ";";
 
-            helperObjectName = Parser
-                    .matchGroup1(";([A-Za-z0-9_\\$]{2})\\...\\(", decryptionFunc);
+            final String helperObjectName =
+                    Parser.matchGroup1(";([A-Za-z0-9_\\$]{2})\\...\\(", decryptionFunction);
+            final String helperPattern =
+                    "(var " + helperObjectName.replace("$", "\\$") + "=\\{.+?\\}\\};)";
+            final String helperObject =
+                    Parser.matchGroup1(helperPattern, playerCode.replace("\n", ""));
 
-            String helperPattern = "(var "
-                    + helperObjectName.replace("$", "\\$") + "=\\{.+?\\}\\};)";
-            helperObject = Parser.matchGroup1(helperPattern, playerCode.replace("\n", ""));
+            final String callerFunction =
+                    "function " + DECRYPTION_FUNC_NAME + "(a){return " + decryptionFunctionName + "(a);}";
 
-
-            callerFunc = callerFunc.replace("%%", decryptionFuncName);
-            decryptionCode = helperObject + decryptionFunc + callerFunc;
+            return helperObject + decryptionFunction + callerFunction;
         } catch (IOException ioe) {
             throw new DecryptException("Could not load decrypt function", ioe);
         } catch (Exception e) {
             throw new DecryptException("Could not parse decrypt function ", e);
         }
-
-        return decryptionCode;
     }
 
     private String decryptSignature(String encryptedSig, String decryptionCode) throws DecryptException {

@@ -7,10 +7,13 @@ import com.grack.nanojson.JsonParserException;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
-import org.schabi.newpipe.extractor.*;
+import org.schabi.newpipe.extractor.Downloader;
+import org.schabi.newpipe.extractor.NewPipe;
+import org.schabi.newpipe.extractor.StreamingService;
 import org.schabi.newpipe.extractor.channel.ChannelExtractor;
 import org.schabi.newpipe.extractor.exceptions.ExtractionException;
 import org.schabi.newpipe.extractor.exceptions.ParsingException;
+import org.schabi.newpipe.extractor.linkhandler.ListLinkHandler;
 import org.schabi.newpipe.extractor.stream.StreamInfoItem;
 import org.schabi.newpipe.extractor.stream.StreamInfoItemsCollector;
 import org.schabi.newpipe.extractor.utils.DonationLinkHelper;
@@ -24,7 +27,7 @@ import java.util.ArrayList;
 /*
  * Created by Christian Schabesberger on 25.07.16.
  *
- * Copyright (C) Christian Schabesberger 2016 <chris.schabesberger@mailbox.org>
+ * Copyright (C) Christian Schabesberger 2018 <chris.schabesberger@mailbox.org>
  * YoutubeChannelExtractor.java is part of NewPipe.
  *
  * NewPipe is free software: you can redistribute it and/or modify
@@ -48,7 +51,7 @@ public class YoutubeChannelExtractor extends ChannelExtractor {
 
     private Document doc;
 
-    public YoutubeChannelExtractor(StreamingService service, ListUrlIdHandler urlIdHandler) {
+    public YoutubeChannelExtractor(StreamingService service, ListLinkHandler urlIdHandler) {
         super(service, urlIdHandler);
     }
 
@@ -130,11 +133,16 @@ public class YoutubeChannelExtractor extends ChannelExtractor {
 
     @Override
     public long getSubscriberCount() throws ParsingException {
-        Element el = doc.select("span[class*=\"yt-subscription-button-subscriber-count\"]").first();
+        final Element el = doc.select("span[class*=\"yt-subscription-button-subscriber-count\"]").first();
         if (el != null) {
-            return Long.parseLong(Utils.removeNonDigitCharacters(el.text()));
+            try {
+                return Long.parseLong(Utils.removeNonDigitCharacters(el.text()));
+            } catch (NumberFormatException e) {
+                throw new ParsingException("Could not get subscriber count", e);
+            }
         } else {
-            throw new ParsingException("Could not get subscriber count");
+            // If the element is null, the channel have the subscriber count disabled
+            return -1;
         }
     }
 

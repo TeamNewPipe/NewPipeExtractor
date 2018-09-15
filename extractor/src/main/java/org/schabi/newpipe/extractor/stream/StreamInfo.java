@@ -147,7 +147,10 @@ public class StreamInfo extends Info {
         Exception dashMpdError = null;
         if (streamInfo.getDashMpdUrl() != null && !streamInfo.getDashMpdUrl().isEmpty()) {
             try {
-                DashMpdParser.getStreams(streamInfo);
+                DashMpdParser.ParserResult result = DashMpdParser.getStreams(streamInfo);
+                streamInfo.getVideoOnlyStreams().addAll(result.getVideoOnlyStreams());
+                streamInfo.getAudioStreams().addAll(result.getAudioStreams());
+                streamInfo.getVideoStreams().addAll(result.getVideoStreams());
             } catch (Exception e) {
                 // Sometimes we receive 403 (forbidden) error when trying to download the manifest (similar to what happens with youtube-dl),
                 // just skip the exception (but store it somewhere), as we later check if we have streams anyway.
@@ -242,16 +245,6 @@ public class StreamInfo extends Info {
         } catch (Exception e) {
             streamInfo.addError(e);
         }
-        try {
-            streamInfo.setAffiliateLinks(extractor.getAffiliateLinks());
-        } catch (Exception e) {
-            streamInfo.addError(e);
-        }
-        try {
-            streamInfo.setDonationLinks(extractor.getDonationLinks());
-        } catch (Exception e) {
-            streamInfo.addError(e);
-        }
 
         streamInfo.setRelatedStreams(ExtractorHelper.getRelatedVideosOrLogError(streamInfo, extractor));
         return streamInfo;
@@ -283,9 +276,6 @@ public class StreamInfo extends Info {
 
     private long startPosition = 0;
     private List<SubtitlesStream> subtitles;
-
-    private String[] donationLinks;
-    private String[] affiliateLinks;
 
     /**
      * Get the stream type
@@ -480,19 +470,4 @@ public class StreamInfo extends Info {
         this.subtitles = subtitles;
     }
 
-    public String[] getDonationLinks() {
-        return donationLinks;
-    }
-
-    public void setDonationLinks(String[] donationLinks) {
-        this.donationLinks = donationLinks;
-    }
-
-    public String[] getAffiliateLinks() {
-        return affiliateLinks;
-    }
-
-    public void setAffiliateLinks(String[] affiliateLinks) {
-        this.affiliateLinks = affiliateLinks;
-    }
 }

@@ -5,6 +5,8 @@ import org.schabi.newpipe.extractor.ListInfo;
 import org.schabi.newpipe.extractor.NewPipe;
 import org.schabi.newpipe.extractor.StreamingService;
 import org.schabi.newpipe.extractor.exceptions.ExtractionException;
+import org.schabi.newpipe.extractor.exceptions.ParsingException;
+import org.schabi.newpipe.extractor.linkhandler.ListLinkHandler;
 import org.schabi.newpipe.extractor.stream.StreamInfoItem;
 import org.schabi.newpipe.extractor.utils.ExtractorHelper;
 
@@ -12,8 +14,8 @@ import java.io.IOException;
 
 public class PlaylistInfo extends ListInfo<StreamInfoItem> {
 
-    public PlaylistInfo(int serviceId, String id, String url, String originalUrl, String name) {
-        super(serviceId, id, url, originalUrl, name);
+    private PlaylistInfo(int serviceId, ListLinkHandler urlIdHandler, String name) throws ParsingException {
+        super(serviceId, urlIdHandler, name);
     }
 
     public static PlaylistInfo getInfo(String url) throws IOException, ExtractionException {
@@ -35,14 +37,12 @@ public class PlaylistInfo extends ListInfo<StreamInfoItem> {
      *
      * @param extractor an extractor where fetchPage() was already got called on.
      */
-    public static PlaylistInfo getInfo(PlaylistExtractor extractor) throws IOException, ExtractionException {
+    public static PlaylistInfo getInfo(PlaylistExtractor extractor) throws ExtractionException {
 
-        int serviceId = extractor.getServiceId();
-        String url = extractor.getUrl();
-        String originalUrl = extractor.getOriginalUrl();
-        String id = extractor.getId();
-        String name = extractor.getName();
-        PlaylistInfo info = new PlaylistInfo(serviceId, id, url, originalUrl, name);
+        final PlaylistInfo info = new PlaylistInfo(
+                extractor.getServiceId(),
+                extractor.getUIHandler(),
+                extractor.getName());
 
         try {
             info.setStreamCount(extractor.getStreamCount());

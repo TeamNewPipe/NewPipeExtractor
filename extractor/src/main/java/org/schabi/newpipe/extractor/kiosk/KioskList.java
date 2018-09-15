@@ -2,7 +2,7 @@ package org.schabi.newpipe.extractor.kiosk;
 
 import org.schabi.newpipe.extractor.NewPipe;
 import org.schabi.newpipe.extractor.StreamingService;
-import org.schabi.newpipe.extractor.UrlIdHandler;
+import org.schabi.newpipe.extractor.linkhandler.ListLinkHandlerFactory;
 import org.schabi.newpipe.extractor.exceptions.ExtractionException;
 
 import java.io.IOException;
@@ -23,24 +23,24 @@ public  class KioskList {
     private String defaultKiosk = null;
 
     private class KioskEntry {
-        public KioskEntry(KioskExtractorFactory ef, UrlIdHandler h) {
+        public KioskEntry(KioskExtractorFactory ef, ListLinkHandlerFactory h) {
             extractorFactory = ef;
-            handler = h;
+            handlerFactory = h;
         }
         final KioskExtractorFactory extractorFactory;
-        final UrlIdHandler handler;
+        final ListLinkHandlerFactory handlerFactory;
     }
 
     public KioskList(int service_id) {
         this.service_id = service_id;
     }
 
-    public void addKioskEntry(KioskExtractorFactory extractorFactory, UrlIdHandler handler, String id)
+    public void addKioskEntry(KioskExtractorFactory extractorFactory, ListLinkHandlerFactory handlerFactory, String id)
         throws Exception {
         if(kioskList.get(id) != null) {
             throw new Exception("Kiosk with type " + id + " already exists.");
         }
-        kioskList.put(id, new KioskEntry(extractorFactory, handler));
+        kioskList.put(id, new KioskEntry(extractorFactory, handlerFactory));
     }
 
     public void setDefaultKiosk(String kioskType) {
@@ -73,7 +73,7 @@ public  class KioskList {
             throw new ExtractionException("No kiosk found with the type: " + kioskId);
         } else {
             return ke.extractorFactory.createNewKiosk(NewPipe.getService(service_id),
-                    ke.handler.setId(kioskId).getUrl(), kioskId);
+                    ke.handlerFactory.fromId(kioskId).getUrl(), kioskId);
         }
     }
 
@@ -85,14 +85,14 @@ public  class KioskList {
             throws ExtractionException, IOException {
         for(Map.Entry<String, KioskEntry> e : kioskList.entrySet()) {
             KioskEntry ke = e.getValue();
-            if(ke.handler.acceptUrl(url)) {
+            if(ke.handlerFactory.acceptUrl(url)) {
                 return getExtractorById(e.getKey(), nextPageUrl);
             }
         }
         throw new ExtractionException("Could not find a kiosk that fits to the url: " + url);
     }
 
-    public UrlIdHandler getUrlIdHandlerByType(String type) {
-        return kioskList.get(type).handler;
+    public ListLinkHandlerFactory getListLinkHandlerFactoryByType(String type) {
+        return kioskList.get(type).handlerFactory;
     }
 }

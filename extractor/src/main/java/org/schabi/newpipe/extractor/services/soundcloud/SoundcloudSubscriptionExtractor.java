@@ -31,7 +31,7 @@ public class SoundcloudSubscriptionExtractor extends SubscriptionExtractor {
 
         String id;
         try {
-            id = service.getChannelUrlIdHandler().setUrl(getUrlFrom(channelUrl)).getId();
+            id = service.getChannelLHFactory().fromUrl(getUrlFrom(channelUrl)).getId();
         } catch (ExtractionException e) {
             throw new InvalidSourceException(e);
         }
