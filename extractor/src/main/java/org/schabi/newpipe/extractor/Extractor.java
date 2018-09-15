@@ -3,6 +3,7 @@ package org.schabi.newpipe.extractor;
 import org.schabi.newpipe.extractor.exceptions.ExtractionException;
 import org.schabi.newpipe.extractor.exceptions.ParsingException;
 import org.schabi.newpipe.extractor.linkhandler.LinkHandler;
+import org.schabi.newpipe.extractor.utils.Localization;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -16,17 +17,19 @@ public abstract class Extractor {
     private final StreamingService service;
 
     private final LinkHandler linkHandler;
+    private final Localization localization;
 
     @Nullable
     private boolean pageFetched = false;
     private final Downloader downloader;
 
-    public Extractor(final StreamingService service, final LinkHandler linkHandler) {
+    public Extractor(final StreamingService service, final LinkHandler linkHandler, final Localization localization) {
         if(service == null) throw new NullPointerException("service is null");
         if(linkHandler == null) throw new NullPointerException("LinkHandler is null");
         this.service = service;
         this.linkHandler = linkHandler;
         this.downloader = NewPipe.getDownloader();
+        this.localization = localization;
         if(downloader == null) throw new NullPointerException("downloader is null");
     }
 
@@ -99,5 +102,10 @@ public abstract class Extractor {
 
     public Downloader getDownloader() {
         return downloader;
+    }
+
+    @Nonnull
+    public Localization getLocalization() {
+        return localization;
     }
 }

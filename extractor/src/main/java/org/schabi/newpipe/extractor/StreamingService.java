@@ -9,6 +9,7 @@ import org.schabi.newpipe.extractor.search.SearchExtractor;
 import org.schabi.newpipe.extractor.linkhandler.*;
 import org.schabi.newpipe.extractor.stream.StreamExtractor;
 import org.schabi.newpipe.extractor.subscription.SubscriptionExtractor;
+import org.schabi.newpipe.extractor.utils.Localization;
 
 import java.util.Collections;
 import java.util.List;
@@ -76,43 +77,97 @@ public abstract class StreamingService {
     ////////////////////////////////////////////
     // Extractor
     ////////////////////////////////////////////
-    public abstract SearchExtractor getSearchExtractor(SearchQueryHandler queryHandler, String contentCountry);
-    public abstract SuggestionExtractor getSuggestionExtractor();
+    public abstract SearchExtractor getSearchExtractor(SearchQueryHandler queryHandler, Localization localization);
+    public abstract SuggestionExtractor getSuggestionExtractor(Localization localization);
     public abstract SubscriptionExtractor getSubscriptionExtractor();
-    public abstract KioskList getKioskList() throws ExtractionException;
+    public abstract KioskList getKioskList(Localization localization) throws ExtractionException;
 
-    public abstract ChannelExtractor getChannelExtractor(ListLinkHandler urlIdHandler) throws ExtractionException;
-    public abstract PlaylistExtractor getPlaylistExtractor(ListLinkHandler urlIdHandler) throws ExtractionException;
-    public abstract StreamExtractor getStreamExtractor(LinkHandler UIHFactory) throws ExtractionException;
+    public abstract ChannelExtractor getChannelExtractor(ListLinkHandler linkHandler,
+                                                         Localization localization) throws ExtractionException;
+    public abstract PlaylistExtractor getPlaylistExtractor(ListLinkHandler linkHandler,
+                                                           Localization localization) throws ExtractionException;
+    public abstract StreamExtractor getStreamExtractor(LinkHandler linkHandler,
+                                                       Localization localization) throws ExtractionException;
+    ////////////////////////////////////////////
+    // Extractor with default localization
+    ////////////////////////////////////////////
 
-    public SearchExtractor getSearchExtractor(String query, List<String> contentFilter, String sortFilter, String contentCountry) throws ExtractionException {
-        return getSearchExtractor(getSearchQHFactory().fromQuery(query, contentFilter, sortFilter), contentCountry);
+    public SearchExtractor getSearchExtractor(SearchQueryHandler queryHandler) {
+        return getSearchExtractor(queryHandler, NewPipe.getLocalization());
     }
 
-    public ChannelExtractor getChannelExtractor(String id, List<String> contentFilter, String sortFilter) throws ExtractionException {
-        return getChannelExtractor(getChannelLHFactory().fromQuery(id, contentFilter, sortFilter));
+    public SuggestionExtractor getSuggestionExtractor() {
+        return getSuggestionExtractor(NewPipe.getLocalization());
     }
 
-    public PlaylistExtractor getPlaylistExtractor(String id, List<String> contentFilter, String sortFilter) throws ExtractionException {
-        return getPlaylistExtractor(getPlaylistLHFactory().fromQuery(id, contentFilter, sortFilter));
+    public KioskList getKioskList() throws ExtractionException {
+        return getKioskList(NewPipe.getLocalization());
     }
 
-    public SearchExtractor getSearchExtractor(String query, String contentCountry) throws ExtractionException {
-        return getSearchExtractor(getSearchQHFactory().fromQuery(query), contentCountry);
+    public ChannelExtractor getChannelExtractor(ListLinkHandler linkHandler) throws ExtractionException {
+        return getChannelExtractor(linkHandler, NewPipe.getLocalization());
+    }
+
+    public PlaylistExtractor getPlaylistExtractor(ListLinkHandler linkHandler) throws ExtractionException {
+        return getPlaylistExtractor(linkHandler, NewPipe.getLocalization());
+    }
+
+    public StreamExtractor getStreamExtractor(LinkHandler linkHandler) throws ExtractionException {
+        return getStreamExtractor(linkHandler, NewPipe.getLocalization());
+    }
+
+    ////////////////////////////////////////////
+    // Extractor without link handler
+    ////////////////////////////////////////////
+
+    public SearchExtractor getSearchExtractor(String query,
+                                              List<String> contentFilter,
+                                              String sortFilter,
+                                              Localization localization) throws ExtractionException {
+        return getSearchExtractor(getSearchQHFactory()
+                .fromQuery(query,
+                        contentFilter,
+                        sortFilter),
+                localization);
+    }
+
+    public ChannelExtractor getChannelExtractor(String id,
+                                                List<String> contentFilter,
+                                                String sortFilter,
+                                                Localization localization) throws ExtractionException {
+        return getChannelExtractor(getChannelLHFactory().fromQuery(id, contentFilter, sortFilter), localization);
+    }
+
+    public PlaylistExtractor getPlaylistExtractor(String id,
+                                                  List<String> contentFilter,
+                                                  String sortFilter,
+                                                  Localization localization) throws ExtractionException {
+        return getPlaylistExtractor(getPlaylistLHFactory()
+                .fromQuery(id,
+                        contentFilter,
+                        sortFilter),
+                localization);
+    }
+
+    ////////////////////////////////////////////
+    // Short extractor without localization
+    ////////////////////////////////////////////
+
+    public SearchExtractor getSearchExtractor(String query) throws ExtractionException {
+        return getSearchExtractor(getSearchQHFactory().fromQuery(query), NewPipe.getLocalization());
     }
 
     public ChannelExtractor getChannelExtractor(String url) throws ExtractionException {
-        return getChannelExtractor(getChannelLHFactory().fromUrl(url));
+        return getChannelExtractor(getChannelLHFactory().fromUrl(url), NewPipe.getLocalization());
     }
 
     public PlaylistExtractor getPlaylistExtractor(String url) throws ExtractionException {
-        return getPlaylistExtractor(getPlaylistLHFactory().fromUrl(url));
+        return getPlaylistExtractor(getPlaylistLHFactory().fromUrl(url), NewPipe.getLocalization());
     }
 
     public StreamExtractor getStreamExtractor(String url) throws ExtractionException {
-        return getStreamExtractor(getStreamLHFactory().fromUrl(url));
+        return getStreamExtractor(getStreamLHFactory().fromUrl(url), NewPipe.getLocalization());
     }
-
 
 
     /**

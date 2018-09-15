@@ -9,6 +9,7 @@ import org.schabi.newpipe.extractor.exceptions.ParsingException;
 import org.schabi.newpipe.extractor.services.youtube.extractors.YoutubeStreamExtractor;
 import org.schabi.newpipe.extractor.stream.*;
 import org.schabi.newpipe.extractor.utils.DashMpdParser;
+import org.schabi.newpipe.extractor.utils.Localization;
 import org.schabi.newpipe.extractor.utils.Utils;
 
 import java.io.IOException;
@@ -48,7 +49,7 @@ public class YoutubeStreamExtractorDefaultTest {
 
         @BeforeClass
         public static void setUp() throws Exception {
-            NewPipe.init(Downloader.getInstance());
+            NewPipe.init(Downloader.getInstance(), new Localization("GB", "en"));
             extractor = (YoutubeStreamExtractor) YouTube
                     .getStreamExtractor("https://www.youtube.com/watch?v=rYEDA3JcQqw");
             extractor.fetchPage();
@@ -174,7 +175,7 @@ public class YoutubeStreamExtractorDefaultTest {
 
         @BeforeClass
         public static void setUp() throws Exception {
-            NewPipe.init(Downloader.getInstance());
+            NewPipe.init(Downloader.getInstance(), new Localization("GB", "en"));
             extractor = (YoutubeStreamExtractor) YouTube
                     .getStreamExtractor("https://www.youtube.com/watch?v=dJY8iT341F4");
             extractor.fetchPage();

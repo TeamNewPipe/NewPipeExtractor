@@ -8,6 +8,7 @@ import org.schabi.newpipe.extractor.ListExtractor;
 import org.schabi.newpipe.extractor.NewPipe;
 import org.schabi.newpipe.extractor.kiosk.KioskExtractor;
 import org.schabi.newpipe.extractor.stream.StreamInfoItem;
+import org.schabi.newpipe.extractor.utils.Localization;
 
 import java.util.List;
 
@@ -23,7 +24,7 @@ public class SoundcloudChartsExtractorTest {
 
     @BeforeClass
     public static void setUp() throws Exception {
-        NewPipe.init(Downloader.getInstance());
+        NewPipe.init(Downloader.getInstance(), new Localization("GB", "en"));
         extractor = SoundCloud
                 .getKioskList()
                 .getExtractorById("Top 50", null);

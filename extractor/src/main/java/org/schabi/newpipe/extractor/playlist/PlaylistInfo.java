@@ -9,13 +9,14 @@ import org.schabi.newpipe.extractor.exceptions.ParsingException;
 import org.schabi.newpipe.extractor.linkhandler.ListLinkHandler;
 import org.schabi.newpipe.extractor.stream.StreamInfoItem;
 import org.schabi.newpipe.extractor.utils.ExtractorHelper;
+import org.schabi.newpipe.extractor.utils.Localization;
 
 import java.io.IOException;
 
 public class PlaylistInfo extends ListInfo<StreamInfoItem> {
 
-    private PlaylistInfo(int serviceId, ListLinkHandler urlIdHandler, String name) throws ParsingException {
-        super(serviceId, urlIdHandler, name);
+    private PlaylistInfo(int serviceId, ListLinkHandler linkHandler, String name) throws ParsingException {
+        super(serviceId, linkHandler, name);
     }
 
     public static PlaylistInfo getInfo(String url) throws IOException, ExtractionException {
@@ -28,7 +29,9 @@ public class PlaylistInfo extends ListInfo<StreamInfoItem> {
         return getInfo(extractor);
     }
 
-    public static InfoItemsPage<StreamInfoItem> getMoreItems(StreamingService service, String url, String pageUrl) throws IOException, ExtractionException {
+    public static InfoItemsPage<StreamInfoItem> getMoreItems(StreamingService service,
+                                                             String url,
+                                                             String pageUrl) throws IOException, ExtractionException {
         return service.getPlaylistExtractor(url).getPage(pageUrl);
     }
 

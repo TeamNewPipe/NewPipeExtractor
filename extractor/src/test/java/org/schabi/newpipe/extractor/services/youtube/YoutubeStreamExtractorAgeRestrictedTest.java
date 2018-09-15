@@ -12,6 +12,7 @@ import org.schabi.newpipe.extractor.services.youtube.linkHandler.YoutubeStreamLi
 import org.schabi.newpipe.extractor.stream.StreamExtractor;
 import org.schabi.newpipe.extractor.stream.SubtitlesFormat;
 import org.schabi.newpipe.extractor.stream.VideoStream;
+import org.schabi.newpipe.extractor.utils.Localization;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -30,7 +31,7 @@ public class YoutubeStreamExtractorAgeRestrictedTest {
 
     @BeforeClass
     public static void setUp() throws Exception {
-        NewPipe.init(Downloader.getInstance());
+        NewPipe.init(Downloader.getInstance(), new Localization("GB", "en"));
         extractor = (YoutubeStreamExtractor) YouTube
                 .getStreamExtractor("https://www.youtube.com/watch?v=MmBeUZqv1QA");
         extractor.fetchPage();

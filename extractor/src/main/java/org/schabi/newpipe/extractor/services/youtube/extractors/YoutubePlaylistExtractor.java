@@ -17,6 +17,7 @@ import org.schabi.newpipe.extractor.services.youtube.linkHandler.YoutubeParsingH
 import org.schabi.newpipe.extractor.stream.StreamInfoItem;
 import org.schabi.newpipe.extractor.stream.StreamInfoItemsCollector;
 import org.schabi.newpipe.extractor.stream.StreamType;
+import org.schabi.newpipe.extractor.utils.Localization;
 import org.schabi.newpipe.extractor.utils.Utils;
 
 import javax.annotation.Nonnull;
@@ -28,8 +29,8 @@ public class YoutubePlaylistExtractor extends PlaylistExtractor {
 
     private Document doc;
 
-    public YoutubePlaylistExtractor(StreamingService service, ListLinkHandler urlIdHandler) throws ExtractionException {
-        super(service, urlIdHandler);
+    public YoutubePlaylistExtractor(StreamingService service, ListLinkHandler linkHandler, Localization localization) {
+        super(service, linkHandler, localization);
     }
 
     @Override

@@ -9,6 +9,7 @@ import org.schabi.newpipe.extractor.channel.ChannelExtractor;
 import org.schabi.newpipe.extractor.exceptions.ParsingException;
 import org.schabi.newpipe.extractor.services.BaseChannelExtractorTest;
 import org.schabi.newpipe.extractor.services.youtube.extractors.YoutubeChannelExtractor;
+import org.schabi.newpipe.extractor.utils.Localization;
 
 import static org.junit.Assert.*;
 import static org.schabi.newpipe.extractor.ExtractorAsserts.assertIsSecureUrl;
@@ -24,7 +25,7 @@ public class YoutubeChannelExtractorTest {
 
         @BeforeClass
         public static void setUp() throws Exception {
-            NewPipe.init(Downloader.getInstance());
+            NewPipe.init(Downloader.getInstance(), new Localization("GB", "en"));
             extractor = (YoutubeChannelExtractor) YouTube
                     .getChannelExtractor("http://www.youtube.com/user/Gronkh");
             extractor.fetchPage();
@@ -120,7 +121,7 @@ public class YoutubeChannelExtractorTest {
 
         @BeforeClass
         public static void setUp() throws Exception {
-            NewPipe.init(Downloader.getInstance());
+            NewPipe.init(Downloader.getInstance(), new Localization("GB", "en"));
             extractor = (YoutubeChannelExtractor) YouTube
                     .getChannelExtractor("https://www.youtube.com/user/Vsauce");
             extractor.fetchPage();
@@ -216,7 +217,7 @@ public class YoutubeChannelExtractorTest {
 
         @BeforeClass
         public static void setUp() throws Exception {
-            NewPipe.init(Downloader.getInstance());
+            NewPipe.init(Downloader.getInstance(), new Localization("GB", "en"));
             extractor = (YoutubeChannelExtractor) YouTube
                     .getChannelExtractor("https://www.youtube.com/channel/UCsXVk37bltHxD1rDPwtNM8Q");
             extractor.fetchPage();
@@ -323,7 +324,7 @@ public class YoutubeChannelExtractorTest {
 
         @BeforeClass
         public static void setUp() throws Exception {
-            NewPipe.init(Downloader.getInstance());
+            NewPipe.init(Downloader.getInstance(), new Localization("GB", "en"));
             extractor = (YoutubeChannelExtractor) YouTube
                     .getChannelExtractor("https://www.youtube.com/user/CaptainDisillusion/videos");
             extractor.fetchPage();
@@ -412,7 +413,7 @@ public class YoutubeChannelExtractorTest {
 
         @BeforeClass
         public static void setUp() throws Exception {
-            NewPipe.init(Downloader.getInstance());
+            NewPipe.init(Downloader.getInstance(), new Localization("GB", "en"));
             extractor = (YoutubeChannelExtractor) YouTube
                     .getChannelExtractor("https://www.youtube.com/channel/UCUaQMQS9lY5lit3vurpXQ6w");
             extractor.fetchPage();

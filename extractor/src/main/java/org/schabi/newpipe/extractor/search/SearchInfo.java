@@ -7,6 +7,7 @@ import org.schabi.newpipe.extractor.StreamingService;
 import org.schabi.newpipe.extractor.exceptions.ExtractionException;
 import org.schabi.newpipe.extractor.linkhandler.SearchQueryHandler;
 import org.schabi.newpipe.extractor.utils.ExtractorHelper;
+import org.schabi.newpipe.extractor.utils.Localization;
 
 import java.io.IOException;
 
@@ -24,8 +25,8 @@ public class SearchInfo extends ListInfo<InfoItem> {
     }
 
 
-    public static SearchInfo getInfo(StreamingService service, SearchQueryHandler searchQuery, String contentCountry) throws ExtractionException, IOException {
-        SearchExtractor extractor = service.getSearchExtractor(searchQuery, contentCountry);
+    public static SearchInfo getInfo(StreamingService service, SearchQueryHandler searchQuery) throws ExtractionException, IOException {
+        SearchExtractor extractor = service.getSearchExtractor(searchQuery);
         extractor.fetchPage();
         return getInfo(extractor);
     }
@@ -52,10 +53,9 @@ public class SearchInfo extends ListInfo<InfoItem> {
 
     public static ListExtractor.InfoItemsPage<InfoItem> getMoreItems(StreamingService service,
                                                                      SearchQueryHandler query,
-                                                                     String contentCountry,
                                                                      String pageUrl)
             throws IOException, ExtractionException {
-        return service.getSearchExtractor(query, contentCountry).getPage(pageUrl);
+        return service.getSearchExtractor(query).getPage(pageUrl);
     }
 
     // Getter

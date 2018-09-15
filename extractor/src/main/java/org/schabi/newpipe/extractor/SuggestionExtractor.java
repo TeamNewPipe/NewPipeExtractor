@@ -1,6 +1,7 @@
 package org.schabi.newpipe.extractor;
 
 import org.schabi.newpipe.extractor.exceptions.ExtractionException;
+import org.schabi.newpipe.extractor.utils.Localization;
 
 import java.io.IOException;
 import java.util.List;
@@ -28,14 +29,20 @@ import java.util.List;
 public abstract class SuggestionExtractor {
 
     private final int serviceId;
+    private final Localization localization;
 
-    public SuggestionExtractor(int serviceId) {
+    public SuggestionExtractor(int serviceId, Localization localization) {
         this.serviceId = serviceId;
+        this.localization = localization;
     }
 
-    public abstract List<String> suggestionList(String query, String contentCountry) throws IOException, ExtractionException;
+    public abstract List<String> suggestionList(String query) throws IOException, ExtractionException;
 
     public int getServiceId() {
         return serviceId;
+    }
+
+    protected Localization getLocalization() {
+        return localization;
     }
 }

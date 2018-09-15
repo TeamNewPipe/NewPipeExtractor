@@ -10,6 +10,7 @@ import org.schabi.newpipe.extractor.channel.ChannelInfoItem;
 import org.schabi.newpipe.extractor.services.soundcloud.SoundcloudSearchExtractor;
 import org.schabi.newpipe.extractor.services.youtube.extractors.YoutubeSearchExtractor;
 import org.schabi.newpipe.extractor.stream.StreamInfoItem;
+import org.schabi.newpipe.extractor.utils.Localization;
 
 import static org.junit.Assert.*;
 import static org.schabi.newpipe.extractor.ServiceList.SoundCloud;
@@ -42,8 +43,8 @@ public class SoundcloudSearchExtractorDefaultTest extends SoundcloudSearchExtrac
 
     @BeforeClass
     public static void setUpClass() throws Exception {
-        NewPipe.init(Downloader.getInstance());
-        extractor = (SoundcloudSearchExtractor) SoundCloud.getSearchExtractor("lill uzi vert", "de");
+        NewPipe.init(Downloader.getInstance(), new Localization("GB", "en"));
+        extractor = (SoundcloudSearchExtractor) SoundCloud.getSearchExtractor("lill uzi vert");
         extractor.fetchPage();
         itemsPage = extractor.getInitialPage();
     }
@@ -76,7 +77,8 @@ public class SoundcloudSearchExtractorDefaultTest extends SoundcloudSearchExtrac
 
     @Test
     public void testGetSecondPage() throws Exception {
-        SoundcloudSearchExtractor secondExtractor = (SoundcloudSearchExtractor) SoundCloud.getSearchExtractor("lill uzi vert", "de");
+        SoundcloudSearchExtractor secondExtractor =
+                (SoundcloudSearchExtractor) SoundCloud.getSearchExtractor("lill uzi vert");
         ListExtractor.InfoItemsPage<InfoItem> secondPage = secondExtractor.getPage(itemsPage.getNextPageUrl());
         assertTrue(Integer.toString(secondPage.getItems().size()),
                 secondPage.getItems().size() >= 10);

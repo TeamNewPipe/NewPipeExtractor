@@ -9,6 +9,7 @@ import org.schabi.newpipe.extractor.linkhandler.LinkHandlerFactory;
 import org.schabi.newpipe.extractor.exceptions.ParsingException;
 import org.schabi.newpipe.extractor.subscription.SubscriptionExtractor;
 import org.schabi.newpipe.extractor.subscription.SubscriptionItem;
+import org.schabi.newpipe.extractor.utils.Localization;
 
 import java.io.IOException;
 import java.util.Arrays;
@@ -25,7 +26,7 @@ public class SoundcloudSubscriptionExtractorTest {
 
     @BeforeClass
     public static void setupClass() {
-        NewPipe.init(Downloader.getInstance());
+        NewPipe.init(Downloader.getInstance(), new Localization("GB", "en"));
         subscriptionExtractor = new SoundcloudSubscriptionExtractor(ServiceList.SoundCloud);
         urlHandler = ServiceList.SoundCloud.getChannelLHFactory();
     }

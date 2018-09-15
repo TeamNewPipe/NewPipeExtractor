@@ -18,6 +18,7 @@ import org.schabi.newpipe.extractor.exceptions.ReCaptchaException;
 import org.schabi.newpipe.extractor.linkhandler.LinkHandler;
 import org.schabi.newpipe.extractor.services.youtube.ItagItem;
 import org.schabi.newpipe.extractor.stream.*;
+import org.schabi.newpipe.extractor.utils.Localization;
 import org.schabi.newpipe.extractor.utils.Parser;
 import org.schabi.newpipe.extractor.utils.Utils;
 
@@ -87,8 +88,8 @@ public class YoutubeStreamExtractor extends StreamExtractor {
 
     private boolean isAgeRestricted;
 
-    public YoutubeStreamExtractor(StreamingService service, LinkHandler linkHandler) {
-        super(service, linkHandler);
+    public YoutubeStreamExtractor(StreamingService service, LinkHandler linkHandler, Localization localization) {
+        super(service, linkHandler, localization);
     }
 
     /*//////////////////////////////////////////////////////////////////////////

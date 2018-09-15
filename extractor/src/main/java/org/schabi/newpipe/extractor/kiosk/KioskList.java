@@ -4,6 +4,7 @@ import org.schabi.newpipe.extractor.NewPipe;
 import org.schabi.newpipe.extractor.StreamingService;
 import org.schabi.newpipe.extractor.linkhandler.ListLinkHandlerFactory;
 import org.schabi.newpipe.extractor.exceptions.ExtractionException;
+import org.schabi.newpipe.extractor.utils.Localization;
 
 import java.io.IOException;
 import java.util.HashMap;
@@ -13,14 +14,16 @@ import java.util.Set;
 public  class KioskList {
     public interface KioskExtractorFactory {
         KioskExtractor createNewKiosk(final StreamingService streamingService,
-                                             final String url,
-                                             final String kioskId)
+                                      final String url,
+                                      final String kioskId,
+                                      final Localization localization)
             throws ExtractionException, IOException;
     }
 
     private final int service_id;
     private final HashMap<String, KioskEntry> kioskList = new HashMap<>();
     private String defaultKiosk = null;
+    private final Localization localization;
 
     private class KioskEntry {
         public KioskEntry(KioskExtractorFactory ef, ListLinkHandlerFactory h) {
@@ -31,8 +34,9 @@ public  class KioskList {
         final ListLinkHandlerFactory handlerFactory;
     }
 
-    public KioskList(int service_id) {
+    public KioskList(int service_id, Localization localization) {
         this.service_id = service_id;
+        this.localization = localization;
     }
 
     public void addKioskEntry(KioskExtractorFactory extractorFactory, ListLinkHandlerFactory handlerFactory, String id)
@@ -73,7 +77,7 @@ public  class KioskList {
             throw new ExtractionException("No kiosk found with the type: " + kioskId);
         } else {
             return ke.extractorFactory.createNewKiosk(NewPipe.getService(service_id),
-                    ke.handlerFactory.fromId(kioskId).getUrl(), kioskId);
+                    ke.handlerFactory.fromId(kioskId).getUrl(), kioskId, localization);
         }
     }
 

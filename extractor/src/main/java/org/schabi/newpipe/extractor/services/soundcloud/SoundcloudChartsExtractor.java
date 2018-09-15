@@ -7,6 +7,7 @@ import org.schabi.newpipe.extractor.exceptions.ExtractionException;
 import org.schabi.newpipe.extractor.kiosk.KioskExtractor;
 import org.schabi.newpipe.extractor.stream.StreamInfoItem;
 import org.schabi.newpipe.extractor.stream.StreamInfoItemsCollector;
+import org.schabi.newpipe.extractor.utils.Localization;
 
 import javax.annotation.Nonnull;
 import java.io.IOException;
@@ -17,8 +18,11 @@ public class SoundcloudChartsExtractor extends KioskExtractor {
 	private StreamInfoItemsCollector collector = null;
 	private String nextPageUrl = null;
 
-    public SoundcloudChartsExtractor(StreamingService service, ListLinkHandler urlIdHandler, String kioskId) {
-        super(service, urlIdHandler, kioskId);
+    public SoundcloudChartsExtractor(StreamingService service,
+                                     ListLinkHandler linkHandler,
+                                     String kioskId,
+                                     Localization localization) {
+        super(service, linkHandler, kioskId, localization);
     }
 
     @Override

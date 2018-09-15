@@ -7,6 +7,7 @@ import org.schabi.newpipe.extractor.NewPipe;
 import org.schabi.newpipe.extractor.channel.ChannelInfoItem;
 import org.schabi.newpipe.extractor.services.youtube.extractors.YoutubeSearchExtractor;
 import org.schabi.newpipe.extractor.services.youtube.linkHandler.YoutubeSearchQueryHandlerFactory;
+import org.schabi.newpipe.extractor.utils.Localization;
 
 import static java.util.Collections.singletonList;
 import static junit.framework.TestCase.assertTrue;
@@ -16,9 +17,9 @@ public class YoutubeSearchCountTest {
     public static class YoutubeChannelViewCountTest extends YoutubeSearchExtractorBaseTest {
         @BeforeClass
         public static void setUpClass() throws Exception {
-            NewPipe.init(Downloader.getInstance());
+            NewPipe.init(Downloader.getInstance(), new Localization("GB", "en"));
             extractor = (YoutubeSearchExtractor) YouTube.getSearchExtractor("pewdiepie",
-                    singletonList(YoutubeSearchQueryHandlerFactory.CHANNELS), null,"de");
+                    singletonList(YoutubeSearchQueryHandlerFactory.CHANNELS), null, new Localization("GB", "en"));
             extractor.fetchPage();
             itemsPage = extractor.getInitialPage();
         }

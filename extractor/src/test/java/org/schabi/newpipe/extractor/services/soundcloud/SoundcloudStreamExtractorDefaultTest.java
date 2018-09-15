@@ -9,6 +9,7 @@ import org.schabi.newpipe.extractor.exceptions.ParsingException;
 import org.schabi.newpipe.extractor.stream.StreamExtractor;
 import org.schabi.newpipe.extractor.stream.StreamInfoItemsCollector;
 import org.schabi.newpipe.extractor.stream.StreamType;
+import org.schabi.newpipe.extractor.utils.Localization;
 
 import java.io.IOException;
 
@@ -24,7 +25,7 @@ public class SoundcloudStreamExtractorDefaultTest {
 
     @BeforeClass
     public static void setUp() throws Exception {
-        NewPipe.init(Downloader.getInstance());
+        NewPipe.init(Downloader.getInstance(), new Localization("GB", "en"));
         extractor = (SoundcloudStreamExtractor) SoundCloud.getStreamExtractor("https://soundcloud.com/liluzivert/do-what-i-want-produced-by-maaly-raw-don-cannon");
         extractor.fetchPage();
     }

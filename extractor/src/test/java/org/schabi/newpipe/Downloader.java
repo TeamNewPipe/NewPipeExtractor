@@ -1,6 +1,7 @@
 package org.schabi.newpipe;
 
 import org.schabi.newpipe.extractor.exceptions.ReCaptchaException;
+import org.schabi.newpipe.extractor.utils.Localization;
 
 import javax.net.ssl.HttpsURLConnection;
 import java.io.BufferedReader;
@@ -66,12 +67,12 @@ public class Downloader implements org.schabi.newpipe.extractor.Downloader {
      * but set the HTTP header field "Accept-Language" to the supplied string.
      *
      * @param siteUrl  the URL of the text file to return the contents of
-     * @param language the language (usually a 2-character code) to set as the preferred language
+     * @param localization the language and country (usually a 2-character code for both values)
      * @return the contents of the specified text file
      */
-    public String download(String siteUrl, String language) throws IOException, ReCaptchaException {
+    public String download(String siteUrl, Localization localization) throws IOException, ReCaptchaException {
         Map<String, String> requestProperties = new HashMap<>();
-        requestProperties.put("Accept-Language", language);
+        requestProperties.put("Accept-Language", localization.getLanguage());
         return download(siteUrl, requestProperties);
     }
 

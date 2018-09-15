@@ -11,6 +11,7 @@ import org.schabi.newpipe.extractor.exceptions.ParsingException;
 import org.schabi.newpipe.extractor.playlist.PlaylistExtractor;
 import org.schabi.newpipe.extractor.stream.StreamInfoItem;
 import org.schabi.newpipe.extractor.stream.StreamInfoItemsCollector;
+import org.schabi.newpipe.extractor.utils.Localization;
 
 import javax.annotation.Nonnull;
 import java.io.IOException;
@@ -23,8 +24,8 @@ public class SoundcloudPlaylistExtractor extends PlaylistExtractor {
     private StreamInfoItemsCollector streamInfoItemsCollector = null;
     private String nextPageUrl = null;
 
-    public SoundcloudPlaylistExtractor(StreamingService service, ListLinkHandler urlIdHandler) {
-        super(service, urlIdHandler);
+    public SoundcloudPlaylistExtractor(StreamingService service, ListLinkHandler linkHandler, Localization localization) {
+        super(service, linkHandler, localization);
     }
 
     @Override
