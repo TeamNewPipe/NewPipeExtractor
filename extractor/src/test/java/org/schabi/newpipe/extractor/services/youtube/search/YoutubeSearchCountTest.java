@@ -3,7 +3,6 @@ package org.schabi.newpipe.extractor.services.youtube.search;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import org.schabi.newpipe.Downloader;
-import org.schabi.newpipe.extractor.InfoItem;
 import org.schabi.newpipe.extractor.NewPipe;
 import org.schabi.newpipe.extractor.channel.ChannelInfoItem;
 import org.schabi.newpipe.extractor.services.youtube.extractors.YoutubeSearchExtractor;
@@ -25,8 +24,7 @@ public class YoutubeSearchCountTest {
         }
 
         @Test
-        public void testViewCount() throws Exception {
-            boolean foundKnownChannel = false;
+        public void testViewCount() {
             ChannelInfoItem ci = (ChannelInfoItem) itemsPage.getItems().get(0);
             assertTrue("Count does not fit: " + Long.toString(ci.getSubscriberCount()),
                     65043316 < ci.getSubscriberCount() && ci.getSubscriberCount() < 68043316);

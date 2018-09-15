@@ -33,7 +33,7 @@ public class SearchInfo extends ListInfo<InfoItem> {
     public static SearchInfo getInfo(SearchExtractor extractor) throws ExtractionException, IOException {
         final SearchInfo info = new SearchInfo(
                 extractor.getServiceId(),
-                extractor.getUIHandler(),
+                extractor.getLinkHandler(),
                 extractor.getSearchString());
 
         try {

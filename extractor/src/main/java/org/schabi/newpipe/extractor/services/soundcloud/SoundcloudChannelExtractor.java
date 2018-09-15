@@ -31,7 +31,7 @@ public class SoundcloudChannelExtractor extends ChannelExtractor {
     @Override
     public void onFetchPage(@Nonnull Downloader downloader) throws IOException, ExtractionException {
 
-        userId = getUIHandler().getId();
+        userId = getLinkHandler().getId();
         String apiUrl = "https://api-v2.soundcloud.com/users/" + userId +
                 "?client_id=" + SoundcloudParsingHelper.clientId();
 

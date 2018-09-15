@@ -15,17 +15,17 @@ public abstract class Extractor {
      */
     private final StreamingService service;
 
-    private final LinkHandler uIHandler;
+    private final LinkHandler linkHandler;
 
     @Nullable
     private boolean pageFetched = false;
     private final Downloader downloader;
 
-    public Extractor(final StreamingService service, final LinkHandler uIHandler) {
+    public Extractor(final StreamingService service, final LinkHandler linkHandler) {
         if(service == null) throw new NullPointerException("service is null");
-        if(uIHandler == null) throw new NullPointerException("LinkHandler is null");
+        if(linkHandler == null) throw new NullPointerException("LinkHandler is null");
         this.service = service;
-        this.uIHandler = uIHandler;
+        this.linkHandler = linkHandler;
         this.downloader = NewPipe.getDownloader();
         if(downloader == null) throw new NullPointerException("downloader is null");
     }
@@ -34,8 +34,8 @@ public abstract class Extractor {
      * @return The {@link LinkHandler} of the current extractor object (e.g. a ChannelExtractor should return a channel url handler).
      */
     @Nonnull
-    public LinkHandler getUIHandler() {
-        return uIHandler;
+    public LinkHandler getLinkHandler() {
+        return linkHandler;
     }
 
     /**
@@ -67,7 +67,7 @@ public abstract class Extractor {
 
     @Nonnull
     public String getId() throws ParsingException {
-        return uIHandler.getId();
+        return linkHandler.getId();
     }
 
     /**
@@ -80,12 +80,12 @@ public abstract class Extractor {
 
     @Nonnull
     public String getOriginalUrl() throws ParsingException {
-        return uIHandler.getOriginalUrl();
+        return linkHandler.getOriginalUrl();
     }
 
     @Nonnull
     public String getUrl() throws ParsingException {
-        return uIHandler.getUrl();
+        return linkHandler.getUrl();
     }
 
     @Nonnull

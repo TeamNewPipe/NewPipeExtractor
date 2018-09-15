@@ -68,7 +68,7 @@ public class KioskInfo extends ListInfo<StreamInfoItem> {
     public static KioskInfo getInfo(KioskExtractor extractor) throws ExtractionException {
 
         final KioskInfo info = new KioskInfo(extractor.getServiceId(),
-                extractor.getUIHandler(),
+                extractor.getLinkHandler(),
                 extractor.getName());
 
         final ListExtractor.InfoItemsPage<StreamInfoItem> itemsPage = ExtractorHelper.getItemsPageOrLogError(info, extractor);

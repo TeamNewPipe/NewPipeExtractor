@@ -41,7 +41,7 @@ public class PlaylistInfo extends ListInfo<StreamInfoItem> {
 
         final PlaylistInfo info = new PlaylistInfo(
                 extractor.getServiceId(),
-                extractor.getUIHandler(),
+                extractor.getLinkHandler(),
                 extractor.getName());
 
         try {

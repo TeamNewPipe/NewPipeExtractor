@@ -13,8 +13,8 @@ import java.util.List;
  */
 public abstract class ListExtractor<R extends InfoItem> extends Extractor {
 
-    public ListExtractor(StreamingService service, ListLinkHandler uiHandler) {
-        super(service, uiHandler);
+    public ListExtractor(StreamingService service, ListLinkHandler linkHandler) {
+        super(service, linkHandler);
     }
 
     /**
@@ -51,8 +51,8 @@ public abstract class ListExtractor<R extends InfoItem> extends Extractor {
     }
 
     @Override
-    public ListLinkHandler getUIHandler() {
-        return (ListLinkHandler) super.getUIHandler();
+    public ListLinkHandler getLinkHandler() {
+        return (ListLinkHandler) super.getLinkHandler();
     }
 
     /*//////////////////////////////////////////////////////////////////////////

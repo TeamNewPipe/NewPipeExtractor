@@ -55,7 +55,7 @@ public class ChannelInfo extends ListInfo<StreamInfoItem> {
     public static ChannelInfo getInfo(ChannelExtractor extractor) throws IOException, ExtractionException {
 
         ChannelInfo info = new ChannelInfo(extractor.getServiceId(),
-                extractor.getUIHandler(),
+                extractor.getLinkHandler(),
                 extractor.getName());
 
 

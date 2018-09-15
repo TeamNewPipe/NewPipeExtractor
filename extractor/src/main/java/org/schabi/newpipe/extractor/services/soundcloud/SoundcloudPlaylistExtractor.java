@@ -30,7 +30,7 @@ public class SoundcloudPlaylistExtractor extends PlaylistExtractor {
     @Override
     public void onFetchPage(@Nonnull Downloader downloader) throws IOException, ExtractionException {
 
-        playlistId = getUIHandler().getId();
+        playlistId = getLinkHandler().getId();
         String apiUrl = "https://api.soundcloud.com/playlists/" + playlistId +
                 "?client_id=" + SoundcloudParsingHelper.clientId() +
                 "&representation=compact";

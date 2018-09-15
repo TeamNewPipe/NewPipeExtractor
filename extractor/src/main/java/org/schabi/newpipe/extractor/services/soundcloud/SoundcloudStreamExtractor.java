@@ -21,8 +21,8 @@ import java.util.List;
 public class SoundcloudStreamExtractor extends StreamExtractor {
     private JsonObject track;
 
-    public SoundcloudStreamExtractor(StreamingService service, LinkHandler uIHandler) {
-        super(service, uIHandler);
+    public SoundcloudStreamExtractor(StreamingService service, LinkHandler linkHandler) {
+        super(service, linkHandler);
     }
 
     @Override

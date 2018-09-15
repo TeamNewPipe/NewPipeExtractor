@@ -25,7 +25,7 @@ public abstract class SearchExtractor extends ListExtractor<InfoItem> {
     }
 
     public String getSearchString() {
-        return getUIHandler().getSearchString();
+        return getLinkHandler().getSearchString();
     }
 
     public abstract String getSearchSuggestion() throws ParsingException;
@@ -35,13 +35,13 @@ public abstract class SearchExtractor extends ListExtractor<InfoItem> {
     }
 
     @Override
-    public SearchQueryHandler getUIHandler() {
-        return (SearchQueryHandler) super.getUIHandler();
+    public SearchQueryHandler getLinkHandler() {
+        return (SearchQueryHandler) super.getLinkHandler();
     }
 
     @Override
     public String getName() {
-        return getUIHandler().getSearchString();
+        return getLinkHandler().getSearchString();
     }
 
     protected String getContentCountry() {
