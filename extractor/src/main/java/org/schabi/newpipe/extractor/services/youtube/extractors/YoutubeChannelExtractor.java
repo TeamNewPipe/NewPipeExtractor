@@ -7,13 +7,15 @@ import com.grack.nanojson.JsonParserException;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
-import org.schabi.newpipe.extractor.*;
+import org.schabi.newpipe.extractor.Downloader;
+import org.schabi.newpipe.extractor.NewPipe;
+import org.schabi.newpipe.extractor.StreamingService;
 import org.schabi.newpipe.extractor.channel.ChannelExtractor;
 import org.schabi.newpipe.extractor.exceptions.ExtractionException;
 import org.schabi.newpipe.extractor.exceptions.ParsingException;
+import org.schabi.newpipe.extractor.linkhandler.ListLinkHandler;
 import org.schabi.newpipe.extractor.stream.StreamInfoItem;
 import org.schabi.newpipe.extractor.stream.StreamInfoItemsCollector;
-import org.schabi.newpipe.extractor.linkhandler.ListLinkHandler;
 import org.schabi.newpipe.extractor.utils.DonationLinkHelper;
 import org.schabi.newpipe.extractor.utils.Parser;
 import org.schabi.newpipe.extractor.utils.Utils;
@@ -131,11 +133,16 @@ public class YoutubeChannelExtractor extends ChannelExtractor {
 
     @Override
     public long getSubscriberCount() throws ParsingException {
-        Element el = doc.select("span[class*=\"yt-subscription-button-subscriber-count\"]").first();
+        final Element el = doc.select("span[class*=\"yt-subscription-button-subscriber-count\"]").first();
         if (el != null) {
-            return Long.parseLong(Utils.removeNonDigitCharacters(el.text()));
+            try {
+                return Long.parseLong(Utils.removeNonDigitCharacters(el.text()));
+            } catch (NumberFormatException e) {
+                throw new ParsingException("Could not get subscriber count", e);
+            }
         } else {
-            throw new ParsingException("Could not get subscriber count");
+            // If the element is null, the channel have the subscriber count disabled
+            return -1;
         }
     }
 

@@ -30,11 +30,17 @@ public class YoutubeParsingHelper {
 
     public static long parseDurationString(String input)
             throws ParsingException, NumberFormatException {
-        String[] splitInput = input.split(":");
+
+        // If time separator : is not detected, try . instead
+
+        final String[] splitInput = input.contains(":")
+                ? input.split(":")
+                : input.split("\\.");
+
         String days = "0";
         String hours = "0";
         String minutes = "0";
-        String seconds;
+        final String seconds;
 
         switch (splitInput.length) {
             case 4:
