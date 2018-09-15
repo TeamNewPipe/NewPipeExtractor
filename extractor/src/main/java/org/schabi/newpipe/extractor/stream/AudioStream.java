@@ -23,7 +23,7 @@ package org.schabi.newpipe.extractor.stream;
 import org.schabi.newpipe.extractor.MediaFormat;
 
 public class AudioStream extends Stream {
-    public int average_bitrate = -1;
+    public int average_bitrate;
 
     /**
      * Create a new audio stream

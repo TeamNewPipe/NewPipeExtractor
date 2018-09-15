@@ -54,7 +54,7 @@ public class SoundcloudChannelExtractorTest {
         }
 
         @Test
-        public void testOriginalUrl() throws ParsingException {
+        public void testOriginalUrl() {
             assertEquals("http://soundcloud.com/liluzivert/sets", extractor.getOriginalUrl());
         }
 
@@ -148,7 +148,7 @@ public class SoundcloudChannelExtractorTest {
         }
 
         @Test
-        public void testOriginalUrl() throws ParsingException {
+        public void testOriginalUrl() {
             assertEquals("https://soundcloud.com/dubmatix", extractor.getOriginalUrl());
         }
 

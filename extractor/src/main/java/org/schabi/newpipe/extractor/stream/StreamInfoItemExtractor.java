@@ -31,14 +31,14 @@ public interface StreamInfoItemExtractor extends InfoItemExtractor {
      * @return the stream type
      * @throws ParsingException thrown if there is an error in the extraction
      */
-    StreamType getStreamType() throws ParsingException;
+    StreamType getStreamType();
 
     /**
      * Check if the stream is an ad.
      * @return {@code true} if the stream is an ad.
      * @throws ParsingException thrown if there is an error in the extraction
      */
-    boolean isAd() throws ParsingException;
+    boolean isAd();
 
     /**
      * Get the stream duration in seconds

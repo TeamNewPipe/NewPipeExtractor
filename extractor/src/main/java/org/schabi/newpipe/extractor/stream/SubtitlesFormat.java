@@ -11,11 +11,10 @@ public enum SubtitlesFormat {
     TRANSCRIPT2 (0x3, "srv2"),
     TRANSCRIPT3 (0x4, "srv3");
 
-    private final int id;
     private final String extension;
 
     SubtitlesFormat(int id, String extension) {
-        this.id = id;
+        int id1 = id;
         this.extension = extension;
     }
 

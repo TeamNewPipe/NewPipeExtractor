@@ -96,7 +96,7 @@ public class SoundcloudParsingHelper {
      *
      * @return the url resolved
      */
-    public static String resolveUrlWithEmbedPlayer(String apiUrl) throws IOException, ReCaptchaException, ParsingException {
+    public static String resolveUrlWithEmbedPlayer(String apiUrl) throws IOException, ReCaptchaException {
 
         String response = NewPipe.getDownloader().download("https://w.soundcloud.com/player/?url="
                 + URLEncoder.encode(apiUrl, "UTF-8"));
@@ -124,14 +124,13 @@ public class SoundcloudParsingHelper {
      *
      * @param minItems the method will return only when it have extracted that many items (equal or more)
      */
-    public static String getUsersFromApiMinItems(int minItems, ChannelInfoItemsCollector collector, String apiUrl) throws IOException, ReCaptchaException, ParsingException {
+    public static void getUsersFromApiMinItems(int minItems, ChannelInfoItemsCollector collector, String apiUrl) throws IOException, ReCaptchaException, ParsingException {
         String nextPageUrl = SoundcloudParsingHelper.getUsersFromApi(collector, apiUrl);
 
         while (!nextPageUrl.isEmpty() && collector.getItems().size() < minItems) {
             nextPageUrl = SoundcloudParsingHelper.getUsersFromApi(collector, nextPageUrl);
         }
 
-        return nextPageUrl;
     }
 
     /**

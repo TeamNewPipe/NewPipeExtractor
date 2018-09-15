@@ -1,6 +1,5 @@
 package org.schabi.newpipe.extractor.linkhandler;
 
-import org.schabi.newpipe.extractor.exceptions.FoundAdException;
 import org.schabi.newpipe.extractor.exceptions.ParsingException;
 
 /*
@@ -59,10 +58,6 @@ public abstract class LinkHandlerFactory {
      * Return false if this service shall not allow to be called through ACTIONs.
      */
     public boolean acceptUrl(final String url) throws ParsingException {
-        try {
-            return onAcceptUrl(url);
-        } catch (FoundAdException fe) {
-            throw fe;
-        }
+        return onAcceptUrl(url);
     }
 }

@@ -81,9 +81,9 @@ public abstract class StreamingService {
     public abstract SubscriptionExtractor getSubscriptionExtractor();
     public abstract KioskList getKioskList() throws ExtractionException;
 
-    public abstract ChannelExtractor getChannelExtractor(ListLinkHandler urlIdHandler) throws ExtractionException;
-    public abstract PlaylistExtractor getPlaylistExtractor(ListLinkHandler urlIdHandler) throws ExtractionException;
-    public abstract StreamExtractor getStreamExtractor(LinkHandler UIHFactory) throws ExtractionException;
+    public abstract ChannelExtractor getChannelExtractor(ListLinkHandler urlIdHandler);
+    public abstract PlaylistExtractor getPlaylistExtractor(ListLinkHandler urlIdHandler);
+    public abstract StreamExtractor getStreamExtractor(LinkHandler UIHFactory);
 
     public SearchExtractor getSearchExtractor(String query, List<String> contentFilter, String sortFilter, String contentCountry) throws ExtractionException {
         return getSearchExtractor(getSearchQHFactory().fromQuery(query, contentFilter, sortFilter), contentCountry);

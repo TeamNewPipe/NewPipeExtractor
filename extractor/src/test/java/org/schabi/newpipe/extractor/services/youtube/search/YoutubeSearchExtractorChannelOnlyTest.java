@@ -10,7 +10,8 @@ import org.schabi.newpipe.extractor.channel.ChannelInfoItem;
 import org.schabi.newpipe.extractor.services.youtube.extractors.YoutubeSearchExtractor;
 import org.schabi.newpipe.extractor.services.youtube.linkHandler.YoutubeSearchQueryHandlerFactory;
 
-import static java.util.Arrays.asList;
+import java.util.Collections;
+
 import static org.junit.Assert.*;
 import static org.schabi.newpipe.extractor.ServiceList.YouTube;
 
@@ -20,7 +21,7 @@ public class YoutubeSearchExtractorChannelOnlyTest extends YoutubeSearchExtracto
     public static void setUpClass() throws Exception {
         NewPipe.init(Downloader.getInstance());
         extractor = (YoutubeSearchExtractor) YouTube.getSearchExtractor("pewdiepie",
-                asList(YoutubeSearchQueryHandlerFactory.CHANNELS), null, "de");
+                Collections.singletonList(YoutubeSearchQueryHandlerFactory.CHANNELS), null, "de");
         extractor.fetchPage();
         itemsPage = extractor.getInitialPage();
     }
@@ -28,7 +29,7 @@ public class YoutubeSearchExtractorChannelOnlyTest extends YoutubeSearchExtracto
     @Test
     public void testGetSecondPage() throws Exception {
         YoutubeSearchExtractor secondExtractor = (YoutubeSearchExtractor) YouTube.getSearchExtractor("pewdiepie",
-                asList(YoutubeSearchQueryHandlerFactory.CHANNELS), null, "de");
+                Collections.singletonList(YoutubeSearchQueryHandlerFactory.CHANNELS), null, "de");
         ListExtractor.InfoItemsPage<InfoItem> secondPage = secondExtractor.getPage(itemsPage.getNextPageUrl());
         assertTrue(Integer.toString(secondPage.getItems().size()),
                 secondPage.getItems().size() > 10);

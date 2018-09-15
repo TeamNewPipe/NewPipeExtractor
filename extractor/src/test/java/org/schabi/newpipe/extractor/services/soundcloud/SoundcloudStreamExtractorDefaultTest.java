@@ -36,33 +36,33 @@ public class SoundcloudStreamExtractorDefaultTest {
     }
 
     @Test
-    public void testGetValidTimeStamp() throws IOException, ExtractionException {
+    public void testGetValidTimeStamp() throws ExtractionException {
         StreamExtractor extractor = SoundCloud.getStreamExtractor("https://soundcloud.com/liluzivert/do-what-i-want-produced-by-maaly-raw-don-cannon#t=69");
         assertEquals(extractor.getTimeStamp() + "", "69");
     }
 
     @Test
-    public void testGetTitle() throws ParsingException {
+    public void testGetTitle() {
         assertEquals(extractor.getName(), "Do What I Want [Produced By Maaly Raw + Don Cannon]");
     }
 
     @Test
-    public void testGetDescription() throws ParsingException {
+    public void testGetDescription() {
         assertEquals(extractor.getDescription(), "The Perfect LUV Tape®️");
     }
 
     @Test
-    public void testGetUploaderName() throws ParsingException {
+    public void testGetUploaderName() {
         assertEquals(extractor.getUploaderName(), "LIL UZI VERT");
     }
 
     @Test
-    public void testGetLength() throws ParsingException {
+    public void testGetLength() {
         assertEquals(extractor.getLength(), 175);
     }
 
     @Test
-    public void testGetViewCount() throws ParsingException {
+    public void testGetViewCount() {
         assertTrue(Long.toString(extractor.getViewCount()),
                 extractor.getViewCount() > 44227978);
     }
@@ -73,18 +73,18 @@ public class SoundcloudStreamExtractorDefaultTest {
     }
 
     @Test
-    public void testGetUploaderUrl() throws ParsingException {
+    public void testGetUploaderUrl() {
         assertIsSecureUrl(extractor.getUploaderUrl());
         assertEquals("https://soundcloud.com/liluzivert", extractor.getUploaderUrl());
     }
 
     @Test
-    public void testGetThumbnailUrl() throws ParsingException {
+    public void testGetThumbnailUrl() {
         assertIsSecureUrl(extractor.getThumbnailUrl());
     }
 
     @Test
-    public void testGetUploaderAvatarUrl() throws ParsingException {
+    public void testGetUploaderAvatarUrl() {
         assertIsSecureUrl(extractor.getUploaderAvatarUrl());
     }
 
@@ -94,7 +94,7 @@ public class SoundcloudStreamExtractorDefaultTest {
     }
 
     @Test
-    public void testStreamType() throws ParsingException {
+    public void testStreamType() {
         assertTrue(extractor.getStreamType() == StreamType.AUDIO_STREAM);
     }
 
@@ -106,13 +106,13 @@ public class SoundcloudStreamExtractorDefaultTest {
     }
 
     @Test
-    public void testGetSubtitlesListDefault() throws IOException, ExtractionException {
+    public void testGetSubtitlesListDefault() {
         // Video (/view?v=YQHsXMglC9A) set in the setUp() method has no captions => null
         assertTrue(extractor.getSubtitlesDefault().isEmpty());
     }
 
     @Test
-    public void testGetSubtitlesList() throws IOException, ExtractionException {
+    public void testGetSubtitlesList() {
         // Video (/view?v=YQHsXMglC9A) set in the setUp() method has no captions => null
         assertTrue(extractor.getSubtitlesDefault().isEmpty());
     }

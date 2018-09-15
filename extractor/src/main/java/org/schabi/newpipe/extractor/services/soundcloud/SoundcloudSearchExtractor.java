@@ -31,7 +31,7 @@ public class SoundcloudSearchExtractor extends SearchExtractor {
     }
 
     @Override
-    public String getSearchSuggestion() throws ParsingException {
+    public String getSearchSuggestion() {
         return null;
     }
 

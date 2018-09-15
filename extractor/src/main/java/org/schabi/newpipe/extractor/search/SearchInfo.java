@@ -13,7 +13,7 @@ import java.io.IOException;
 
 public class SearchInfo extends ListInfo<InfoItem> {
 
-    private String searchString;
+    private final String searchString;
     private String searchSuggestion;
 
     public SearchInfo(int serviceId,
@@ -30,7 +30,7 @@ public class SearchInfo extends ListInfo<InfoItem> {
         return getInfo(extractor);
     }
 
-    public static SearchInfo getInfo(SearchExtractor extractor) throws ExtractionException, IOException {
+    public static SearchInfo getInfo(SearchExtractor extractor) {
         final SearchInfo info = new SearchInfo(
                 extractor.getServiceId(),
                 extractor.getUIHandler(),

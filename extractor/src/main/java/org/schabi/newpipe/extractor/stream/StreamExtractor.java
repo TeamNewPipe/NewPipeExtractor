@@ -102,7 +102,7 @@ public abstract class StreamExtractor extends Extractor {
             }
         } else {
             return 0;
-        }};
+        }}
 
     public abstract long getViewCount() throws ParsingException;
     public abstract long getLikeCount() throws ParsingException;
@@ -123,16 +123,16 @@ public abstract class StreamExtractor extends Extractor {
     @Nonnull public abstract String getDashMpdUrl() throws ParsingException;
     @Nonnull public abstract String getHlsUrl() throws ParsingException;
     public abstract List<AudioStream> getAudioStreams() throws IOException, ExtractionException;
-    public abstract List<VideoStream> getVideoStreams() throws IOException, ExtractionException;
-    public abstract List<VideoStream> getVideoOnlyStreams() throws IOException, ExtractionException;
+    public abstract List<VideoStream> getVideoStreams() throws ExtractionException;
+    public abstract List<VideoStream> getVideoOnlyStreams() throws ExtractionException;
 
     @Nonnull
-    public abstract List<Subtitles> getSubtitlesDefault() throws IOException, ExtractionException;
+    public abstract List<Subtitles> getSubtitlesDefault();
     @Nonnull
-    public abstract List<Subtitles> getSubtitles(SubtitlesFormat format) throws IOException, ExtractionException;
+    public abstract List<Subtitles> getSubtitles(SubtitlesFormat format);
 
     public abstract StreamType getStreamType() throws ParsingException;
-    public abstract StreamInfoItem getNextVideo() throws IOException, ExtractionException;
+    public abstract StreamInfoItem getNextVideo() throws ExtractionException;
     public abstract StreamInfoItemsCollector getRelatedVideos() throws IOException, ExtractionException;
 
     /**

@@ -54,7 +54,7 @@ public class YoutubeTrendingExtractorTest {
     }
 
     @Test
-    public void testGetDownloader() throws Exception {
+    public void testGetDownloader() {
         assertNotNull(NewPipe.getDownloader());
     }
 
@@ -64,19 +64,19 @@ public class YoutubeTrendingExtractorTest {
     }
 
     @Test
-    public void testId() throws Exception {
+    public void testId() {
         assertEquals(extractor.getId(), "Trending");
     }
 
     @Test
-    public void testGetStreamsQuantity() throws Exception {
+    public void testGetStreamsQuantity() {
         ListExtractor.InfoItemsPage<StreamInfoItem> page = extractor.getInitialPage();
         Utils.printErrors(page.getErrors());
         assertTrue("no streams are received", page.getItems().size() >= 20);
     }
 
     @Test
-    public void testGetStreamsErrors() throws Exception {
+    public void testGetStreamsErrors() {
         assertEmptyErrors("errors during stream list extraction", extractor.getInitialPage().getErrors());
     }
 

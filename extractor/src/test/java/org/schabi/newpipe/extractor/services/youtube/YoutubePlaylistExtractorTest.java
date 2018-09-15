@@ -60,7 +60,7 @@ public class YoutubePlaylistExtractorTest {
         }
 
         @Test
-        public void testOriginalUrl() throws ParsingException {
+        public void testOriginalUrl() {
             assertEquals("http://www.youtube.com/watch?v=lp-EO5I60KA&list=PLMC9KNkIncKtPzgY-5rmhvj7fax8fdxoj", extractor.getOriginalUrl());
         }
 
@@ -91,7 +91,7 @@ public class YoutubePlaylistExtractorTest {
 
         @Ignore
         @Test
-        public void testBannerUrl() throws Exception {
+        public void testBannerUrl() {
             final String bannerUrl = extractor.getBannerUrl();
             assertIsSecureUrl(bannerUrl);
             assertTrue(bannerUrl, bannerUrl.contains("yt"));
@@ -167,7 +167,7 @@ public class YoutubePlaylistExtractorTest {
         }
 
         @Test
-        public void testOriginalUrl() throws ParsingException {
+        public void testOriginalUrl() {
             assertEquals("https://www.youtube.com/watch?v=8SbUC-UaAxE&list=PLWwAypAcFRgKAIIFqBr9oy-ZYZnixa_Fj", extractor.getOriginalUrl());
         }
 
@@ -205,7 +205,7 @@ public class YoutubePlaylistExtractorTest {
 
         @Ignore
         @Test
-        public void testBannerUrl() throws Exception {
+        public void testBannerUrl() {
             final String bannerUrl = extractor.getBannerUrl();
             assertIsSecureUrl(bannerUrl);
             assertTrue(bannerUrl, bannerUrl.contains("yt"));

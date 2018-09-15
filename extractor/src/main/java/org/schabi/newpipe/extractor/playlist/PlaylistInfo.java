@@ -5,7 +5,6 @@ import org.schabi.newpipe.extractor.ListInfo;
 import org.schabi.newpipe.extractor.NewPipe;
 import org.schabi.newpipe.extractor.StreamingService;
 import org.schabi.newpipe.extractor.exceptions.ExtractionException;
-import org.schabi.newpipe.extractor.exceptions.ParsingException;
 import org.schabi.newpipe.extractor.linkhandler.ListLinkHandler;
 import org.schabi.newpipe.extractor.stream.StreamInfoItem;
 import org.schabi.newpipe.extractor.utils.ExtractorHelper;
@@ -14,7 +13,7 @@ import java.io.IOException;
 
 public class PlaylistInfo extends ListInfo<StreamInfoItem> {
 
-    private PlaylistInfo(int serviceId, ListLinkHandler urlIdHandler, String name) throws ParsingException {
+    private PlaylistInfo(int serviceId, ListLinkHandler urlIdHandler, String name) {
         super(serviceId, urlIdHandler, name);
     }
 

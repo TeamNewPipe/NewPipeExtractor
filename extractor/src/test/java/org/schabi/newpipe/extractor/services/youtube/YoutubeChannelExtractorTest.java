@@ -55,7 +55,7 @@ public class YoutubeChannelExtractorTest {
         }
 
         @Test
-        public void testOriginalUrl() throws ParsingException {
+        public void testOriginalUrl() {
             assertEquals("http://www.youtube.com/user/Gronkh", extractor.getOriginalUrl());
         }
 
@@ -151,7 +151,7 @@ public class YoutubeChannelExtractorTest {
         }
 
         @Test
-        public void testOriginalUrl() throws ParsingException {
+        public void testOriginalUrl() {
             assertEquals("https://www.youtube.com/user/Vsauce", extractor.getOriginalUrl());
         }
 
@@ -258,7 +258,7 @@ public class YoutubeChannelExtractorTest {
         }
 
         @Test
-        public void testOriginalUrl() throws ParsingException {
+        public void testOriginalUrl() {
             assertEquals("https://www.youtube.com/channel/UCsXVk37bltHxD1rDPwtNM8Q", extractor.getOriginalUrl());
         }
 
@@ -354,7 +354,7 @@ public class YoutubeChannelExtractorTest {
         }
 
         @Test
-        public void testOriginalUrl() throws ParsingException {
+        public void testOriginalUrl() {
             assertEquals("https://www.youtube.com/user/CaptainDisillusion/videos", extractor.getOriginalUrl());
         }
 
@@ -443,7 +443,7 @@ public class YoutubeChannelExtractorTest {
         }
 
         @Test
-        public void testOriginalUrl() throws ParsingException {
+        public void testOriginalUrl() {
             assertEquals("https://www.youtube.com/channel/UCUaQMQS9lY5lit3vurpXQ6w", extractor.getOriginalUrl());
         }
 
@@ -506,5 +506,5 @@ public class YoutubeChannelExtractorTest {
             assertTrue(extractor.getDonationLinks().length == 0);
         }
     }
-};
+}
 

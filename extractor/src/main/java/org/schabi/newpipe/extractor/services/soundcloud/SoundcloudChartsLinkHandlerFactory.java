@@ -6,12 +6,11 @@ import org.schabi.newpipe.extractor.utils.Parser;
 import java.util.List;
 
 public class SoundcloudChartsLinkHandlerFactory extends ListLinkHandlerFactory {
-    private final String TOP_URL_PATTERN = "^https?://(www\\.|m\\.)?soundcloud.com/charts(/top)?/?([#?].*)?$";
-    private final String URL_PATTERN = "^https?://(www\\.|m\\.)?soundcloud.com/charts(/top|/new)?/?([#?].*)?$";
 
 
     @Override
     public String getId(String url) {
+        String TOP_URL_PATTERN = "^https?://(www\\.|m\\.)?soundcloud.com/charts(/top)?/?([#?].*)?$";
         if (Parser.isMatch(TOP_URL_PATTERN, url.toLowerCase())) {
             return "Top 50";
         } else {
@@ -30,6 +29,7 @@ public class SoundcloudChartsLinkHandlerFactory extends ListLinkHandlerFactory {
 
     @Override
     public boolean onAcceptUrl(final String url) {
+        String URL_PATTERN = "^https?://(www\\.|m\\.)?soundcloud.com/charts(/top|/new)?/?([#?].*)?$";
         return Parser.isMatch(URL_PATTERN, url.toLowerCase());
     }
 }

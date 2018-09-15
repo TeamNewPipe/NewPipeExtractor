@@ -15,7 +15,7 @@ public  class KioskList {
         KioskExtractor createNewKiosk(final StreamingService streamingService,
                                              final String url,
                                              final String kioskId)
-            throws ExtractionException, IOException;
+            throws ExtractionException;
     }
 
     private final int service_id;

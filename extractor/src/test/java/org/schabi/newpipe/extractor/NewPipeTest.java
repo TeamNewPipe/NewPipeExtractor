@@ -10,12 +10,12 @@ import static org.schabi.newpipe.extractor.ServiceList.YouTube;
 
 public class NewPipeTest {
     @Test
-    public void getAllServicesTest() throws Exception {
+    public void getAllServicesTest() {
         assertEquals(NewPipe.getServices().size(), ServiceList.all().size());
     }
 
     @Test
-    public void testAllServicesHaveDifferentId() throws Exception {
+    public void testAllServicesHaveDifferentId() {
         HashSet<Integer> servicesId = new HashSet<>();
         for (StreamingService streamingService : NewPipe.getServices()) {
             String errorMsg = "There are services with the same id = " + streamingService.getServiceId() + " (current service > " + streamingService.getServiceInfo().getName() + ")";
@@ -44,12 +44,12 @@ public class NewPipeTest {
     }
 
     @Test
-    public void getIdWithServiceName() throws Exception {
+    public void getIdWithServiceName() {
         assertEquals(NewPipe.getIdOfService(YouTube.getServiceInfo().getName()), YouTube.getServiceId());
     }
 
     @Test
-    public void getServiceNameWithId() throws Exception {
+    public void getServiceNameWithId() {
         assertEquals(NewPipe.getNameOfService(YouTube.getServiceId()), YouTube.getServiceInfo().getName());
     }
 }

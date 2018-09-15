@@ -34,7 +34,7 @@ public class YoutubeStreamInfoItemExtractor implements StreamInfoItemExtractor {
     }
 
     @Override
-    public StreamType getStreamType() throws ParsingException {
+    public StreamType getStreamType() {
         if (isLiveStream(item)) {
             return StreamType.LIVE_STREAM;
         } else {
@@ -43,7 +43,7 @@ public class YoutubeStreamInfoItemExtractor implements StreamInfoItemExtractor {
     }
 
     @Override
-    public boolean isAd() throws ParsingException {
+    public boolean isAd() {
         return !item.select("span[class*=\"icon-not-available\"]").isEmpty()
                 || !item.select("span[class*=\"yt-badge-ad\"]").isEmpty()
                 || isPremiumVideo();
@@ -54,8 +54,7 @@ public class YoutubeStreamInfoItemExtractor implements StreamInfoItemExtractor {
         if(premiumSpan == null) return false;
 
         // if this span has text it most likely says ("Free Video") so we can play this
-        if(premiumSpan.hasText()) return false;
-        return true;
+        return !premiumSpan.hasText();
     }
 
     @Override
@@ -112,7 +111,7 @@ public class YoutubeStreamInfoItemExtractor implements StreamInfoItemExtractor {
                 return item.select("div[class=\"yt-lockup-byline\"]").first()
                         .select("a").first()
                         .attr("abs:href");
-            } catch (Exception e){}
+            } catch (Exception ignored){}
 
             // try this if the first didn't work
             return item.select("span[class=\"title\"")

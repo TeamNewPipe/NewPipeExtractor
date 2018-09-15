@@ -42,65 +42,68 @@ public class ResourceBundleUTF8 {
 
             String bundleName = toBundleName(baseName, locale);
             ResourceBundle bundle = null;
-            if (format.equals("java.class")) {
-                try {
-                    @SuppressWarnings("unchecked")
-                    Class<? extends ResourceBundle> bundleClass
-                            = (Class<? extends ResourceBundle>) loader.loadClass(bundleName);
-
-                    // If the class isn't a ResourceBundle subclass, throw a
-                    // ClassCastException.
-                    if (ResourceBundle.class.isAssignableFrom(bundleClass)) {
-                        bundle = bundleClass.newInstance();
-                    } else {
-                        throw new ClassCastException(bundleClass.getName()
-                                + " cannot be cast to ResourceBundle");
-                    }
-                } catch (ClassNotFoundException e) {
-                }
-            } else if (format.equals("java.properties")) {
-                final String resourceName = bundleName.contains("://") ? null : toResourceName(bundleName, "properties");
-                if (resourceName == null) {
-                    return bundle;
-                }
-                final ClassLoader classLoader = loader;
-                final boolean reloadFlag = reload;
-                InputStream stream = null;
-                try {
-                    stream = AccessController.doPrivileged(
-                            new PrivilegedExceptionAction<InputStream>() {
-                                public InputStream run() throws IOException {
-                                    InputStream is = null;
-                                    if (reloadFlag) {
-                                        URL url = classLoader.getResource(resourceName);
-                                        if (url != null) {
-                                            URLConnection connection = url.openConnection();
-                                            if (connection != null) {
-                                                // Disable caches to get fresh data for
-                                                // reloading.
-                                                connection.setUseCaches(false);
-                                                is = connection.getInputStream();
-                                            }
-                                        }
-                                    } else {
-                                        is = classLoader.getResourceAsStream(resourceName);
-                                    }
-                                    return is;
-                                }
-                            });
-                } catch (PrivilegedActionException e) {
-                    throw (IOException) e.getException();
-                }
-                if (stream != null) {
+            switch (format) {
+                case "java.class":
                     try {
-                        ////// Line changed to support UTF-8
-                        bundle = new PropertyResourceBundle(new InputStreamReader(stream, "UTF-8"));
-                    } finally {
-                        stream.close();
+                        @SuppressWarnings("unchecked")
+                        Class<? extends ResourceBundle> bundleClass
+                                = (Class<? extends ResourceBundle>) loader.loadClass(bundleName);
+
+                        // If the class isn't a ResourceBundle subclass, throw a
+                        // ClassCastException.
+                        if (ResourceBundle.class.isAssignableFrom(bundleClass)) {
+                            bundle = bundleClass.newInstance();
+                        } else {
+                            throw new ClassCastException(bundleClass.getName()
+                                    + " cannot be cast to ResourceBundle");
+                        }
+                    } catch (ClassNotFoundException ignored) {
                     }
-                }
-            } else {
-                throw new IllegalArgumentException("unknown format: " + format);
+                    break;
+                case "java.properties":
+                    final String resourceName = bundleName.contains("://") ? null : toResourceName(bundleName, "properties");
+                    if (resourceName == null) {
+                        return bundle;
+                    }
+                    final ClassLoader classLoader = loader;
+                    final boolean reloadFlag = reload;
+                    InputStream stream;
+                    try {
+                        stream = AccessController.doPrivileged(
+                                new PrivilegedExceptionAction<InputStream>() {
+                                    public InputStream run() throws IOException {
+                                        InputStream is = null;
+                                        if (reloadFlag) {
+                                            URL url = classLoader.getResource(resourceName);
+                                            if (url != null) {
+                                                URLConnection connection = url.openConnection();
+                                                if (connection != null) {
+                                                    // Disable caches to get fresh data for
+                                                    // reloading.
+                                                    connection.setUseCaches(false);
+                                                    is = connection.getInputStream();
+                                                }
+                                            }
+                                        } else {
+                                            is = classLoader.getResourceAsStream(resourceName);
+                                        }
+                                        return is;
+                                    }
+                                });
+                    } catch (PrivilegedActionException e) {
+                        throw (IOException) e.getException();
+                    }
+                    if (stream != null) {
+                        try {
+                            ////// Line changed to support UTF-8
+                            bundle = new PropertyResourceBundle(new InputStreamReader(stream, "UTF-8"));
+                        } finally {
+                            stream.close();
+                        }
+                    }
+                    break;
+                default:
+                    throw new IllegalArgumentException("unknown format: " + format);
             }
             return bundle;
         }

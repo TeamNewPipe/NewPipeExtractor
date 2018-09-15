@@ -79,7 +79,7 @@ public abstract class Extractor {
     public abstract String getName() throws ParsingException;
 
     @Nonnull
-    public String getOriginalUrl() throws ParsingException {
+    public String getOriginalUrl() {
         return uIHandler.getOriginalUrl();
     }
 

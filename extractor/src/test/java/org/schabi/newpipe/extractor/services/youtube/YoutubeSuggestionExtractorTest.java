@@ -39,7 +39,7 @@ public class YoutubeSuggestionExtractorTest {
     private static SuggestionExtractor suggestionExtractor;
 
     @BeforeClass
-    public static void setUp() throws Exception {
+    public static void setUp() {
         NewPipe.init(Downloader.getInstance());
         suggestionExtractor = YouTube.getSuggestionExtractor();
     }

@@ -69,17 +69,17 @@ public class YoutubeService extends StreamingService {
     }
 
     @Override
-    public StreamExtractor getStreamExtractor(LinkHandler linkHandler) throws ExtractionException {
+    public StreamExtractor getStreamExtractor(LinkHandler linkHandler) {
         return new YoutubeStreamExtractor(this, linkHandler);
     }
 
     @Override
-    public ChannelExtractor getChannelExtractor(ListLinkHandler urlIdHandler) throws ExtractionException {
+    public ChannelExtractor getChannelExtractor(ListLinkHandler urlIdHandler) {
         return new YoutubeChannelExtractor(this, urlIdHandler);
     }
 
     @Override
-    public PlaylistExtractor getPlaylistExtractor(ListLinkHandler urlIdHandler) throws ExtractionException {
+    public PlaylistExtractor getPlaylistExtractor(ListLinkHandler urlIdHandler) {
         return new YoutubePlaylistExtractor(this, urlIdHandler);
     }
 

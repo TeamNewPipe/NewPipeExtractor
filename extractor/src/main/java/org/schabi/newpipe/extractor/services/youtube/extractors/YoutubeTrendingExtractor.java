@@ -83,7 +83,7 @@ public class YoutubeTrendingExtractor extends KioskExtractor {
 
     @Nonnull
     @Override
-    public InfoItemsPage<StreamInfoItem> getInitialPage() throws ParsingException {
+    public InfoItemsPage<StreamInfoItem> getInitialPage() {
         StreamInfoItemsCollector collector = new StreamInfoItemsCollector(getServiceId());
         Elements uls = doc.select("ul[class*=\"expanded-shelf-content-list\"]");
         for(Element ul : uls) {
