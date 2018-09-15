@@ -49,8 +49,9 @@ public class YoutubeTrendingExtractorTest {
         extractor = (YoutubeTrendingExtractor) YouTube
                 .getKioskList()
                 .getExtractorById("Trending", null);
-        extractor.fetchPage();
+        extractor.setLanguage("ru");
         extractor.setContentCountry("de");
+        extractor.fetchPage();
     }
 
     @Test

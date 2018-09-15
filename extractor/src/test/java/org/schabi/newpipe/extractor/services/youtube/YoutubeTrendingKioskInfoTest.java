@@ -45,7 +45,7 @@ public class YoutubeTrendingKioskInfoTest {
         StreamingService service = YouTube;
         LinkHandlerFactory LinkHandlerFactory = service.getKioskList().getListLinkHandlerFactoryByType("Trending");
 
-        kioskInfo = KioskInfo.getInfo(YouTube, LinkHandlerFactory.fromId("Trending").getUrl(), null);
+        kioskInfo = KioskInfo.getInfo(YouTube, LinkHandlerFactory.fromId("Trending").getUrl(), null, null);
     }
 
     @Test

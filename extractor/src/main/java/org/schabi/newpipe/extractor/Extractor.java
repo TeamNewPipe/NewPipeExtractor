@@ -20,6 +20,8 @@ public abstract class Extractor {
     @Nullable
     private boolean pageFetched = false;
     private final Downloader downloader;
+    @Nullable
+    private String language = null;
 
     public Extractor(final StreamingService service, final LinkHandler uIHandler) {
         if(service == null) throw new NullPointerException("service is null");
@@ -99,5 +101,14 @@ public abstract class Extractor {
 
     public Downloader getDownloader() {
         return downloader;
+    }
+
+    public void setLanguage(@Nullable String language) {
+        this.language = language;
+    }
+
+    @Nonnull
+    public String getLanguage() {
+        return language == null ? "en" : language;
     }
 }

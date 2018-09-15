@@ -35,27 +35,53 @@ public class KioskInfo extends ListInfo<StreamInfoItem> {
         super(serviceId, urlIdHandler, name);
     }
 
+    @Deprecated
     public static ListExtractor.InfoItemsPage<StreamInfoItem> getMoreItems(StreamingService service,
                                                                            String url,
                                                                            String pageUrl,
                                                                            String contentCountry) throws IOException, ExtractionException {
+        return getMoreItems(service, url, pageUrl, contentCountry, null);
+    }
+
+    public static ListExtractor.InfoItemsPage<StreamInfoItem> getMoreItems(StreamingService service,
+                                                                           String url,
+                                                                           String pageUrl,
+                                                                           String contentCountry,
+                                                                           String language) throws IOException, ExtractionException {
         KioskList kl = service.getKioskList();
         KioskExtractor extractor = kl.getExtractorByUrl(url, pageUrl);
         extractor.setContentCountry(contentCountry);
+        extractor.setLanguage(language);
         return extractor.getPage(pageUrl);
     }
 
+    @Deprecated
     public static KioskInfo getInfo(String url,
                                     String contentCountry) throws IOException, ExtractionException {
-        return getInfo(NewPipe.getServiceByUrl(url), url, contentCountry);
+        return getInfo(url, contentCountry, null);
+    }
+
+    public static KioskInfo getInfo(String url,
+                                    String contentCountry,
+                                    String language) throws IOException, ExtractionException {
+        return getInfo(NewPipe.getServiceByUrl(url), url, contentCountry, language);
+    }
+
+    @Deprecated
+    public static KioskInfo getInfo(StreamingService service,
+                                    String url,
+                                    String contentCountry) throws IOException, ExtractionException {
+        return getInfo(service, url, contentCountry, null);
     }
 
     public static KioskInfo getInfo(StreamingService service,
                                     String url,
-                                    String contentCountry) throws IOException, ExtractionException {
+                                    String contentCountry,
+                                    String language) throws IOException, ExtractionException {
         KioskList kl = service.getKioskList();
         KioskExtractor extractor = kl.getExtractorByUrl(url, null);
         extractor.setContentCountry(contentCountry);
+        extractor.setLanguage(language);
         extractor.fetchPage();
         return getInfo(extractor);
     }
