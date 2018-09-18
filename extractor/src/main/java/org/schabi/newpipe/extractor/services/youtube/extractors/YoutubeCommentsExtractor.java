@@ -31,13 +31,13 @@ public class YoutubeCommentsExtractor extends CommentsExtractor {
 
     private List<String> cookies;
     private String sessionToken;
-    private String commentsToken;
+    private String title;
+    private InfoItemsPage<CommentsInfoItem> initPage;
 
     private ObjectMapper mapper = new ObjectMapper();
 
     public YoutubeCommentsExtractor(StreamingService service, ListLinkHandler uiHandler) {
         super(service, uiHandler);
-        // TODO Auto-generated constructor stub
     }
 
     @Override
@@ -45,12 +45,16 @@ public class YoutubeCommentsExtractor extends CommentsExtractor {
         // initial page does not load any comments but is required to get session token
         // and cookies
         super.fetchPage();
-        return getPage(getNextPageUrl());
+        return initPage;
     }
 
+    // isn't this method redundant. you can just call getnextpage on getInitialPage
     @Override
     public String getNextPageUrl() throws IOException, ExtractionException {
-        return getNextPageUrl(commentsToken);
+        // initial page does not load any comments but is required to get session token
+        // and cookies
+        super.fetchPage();
+        return initPage.getNextPageUrl();
     }
 
     private String getNextPageUrl(JsonNode ajaxJson) throws IOException, ExtractionException {
@@ -91,6 +95,9 @@ public class YoutubeCommentsExtractor extends CommentsExtractor {
     }
 
     private void collectCommentsFrom(CommentsInfoItemsCollector collector, JsonNode ajaxJson, String pageUrl) {
+        
+        fetchTitle(ajaxJson);
+        
         List<JsonNode> comments = ajaxJson.findValues("commentRenderer");
         comments.stream().forEach(c -> {
             CommentsInfoItemExtractor extractor = new CommentsInfoItemExtractor() {
@@ -192,19 +199,29 @@ public class YoutubeCommentsExtractor extends CommentsExtractor {
 
     }
 
+    private void fetchTitle(JsonNode ajaxJson) {
+        if(null == title) {
+            try {
+                title = ajaxJson.findValue("commentTargetTitle").get("simpleText").asText();
+            } catch (Exception e) {
+                title = "Youtube Comments";
+            }
+        }
+    }
+
     @Override
     public void onFetchPage(Downloader downloader) throws IOException, ExtractionException {
         DownloadResponse response = downloader.get(getUrl());
         String responseBody = response.getResponseBody();
         cookies = response.getResponseHeaders().get("Set-Cookie");
         sessionToken = findValue(responseBody, "XSRF_TOKEN");
-        commentsToken = findValue(responseBody, "COMMENTS_TOKEN");
+        String commentsToken = findValue(responseBody, "COMMENTS_TOKEN");
+        initPage = getPage(getNextPageUrl(commentsToken));
     }
 
     @Override
     public String getName() throws ParsingException {
-        // TODO Auto-generated method stub
-        return null;
+        return title;
     }
 
     private String makeAjaxRequest(String siteUrl) throws IOException, ReCaptchaException {

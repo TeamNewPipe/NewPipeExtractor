@@ -1,20 +1,11 @@
 package org.schabi.newpipe.extractor.services.youtube.linkHandler;
 
-import java.io.IOException;
 import java.io.UnsupportedEncodingException;
-import java.net.URI;
-import java.net.URISyntaxException;
 import java.net.URLDecoder;
 import java.util.List;
 
-import org.jsoup.Jsoup;
-import org.jsoup.nodes.Document;
-import org.jsoup.nodes.Element;
-import org.schabi.newpipe.extractor.Downloader;
-import org.schabi.newpipe.extractor.NewPipe;
 import org.schabi.newpipe.extractor.exceptions.FoundAdException;
 import org.schabi.newpipe.extractor.exceptions.ParsingException;
-import org.schabi.newpipe.extractor.exceptions.ReCaptchaException;
 import org.schabi.newpipe.extractor.linkhandler.ListLinkHandlerFactory;
 import org.schabi.newpipe.extractor.utils.Parser;
 
@@ -25,6 +16,11 @@ public class YoutubeCommentsLinkHandlerFactory extends ListLinkHandlerFactory {
 
     public static YoutubeCommentsLinkHandlerFactory getInstance() {
         return instance;
+    }
+
+    @Override
+    public String getUrl(String id) {
+        return "https://www.youtube.com/watch?v=" + id;
     }
 
     @Override
@@ -44,8 +40,6 @@ public class YoutubeCommentsLinkHandlerFactory extends ListLinkHandlerFactory {
                 } catch (UnsupportedEncodingException uee) {
                     throw new ParsingException("Could not parse attribution_link", uee);
                 }
-            } else if (lowercaseUrl.contains("youtube.com/shared?ci=")) {
-                return getRealIdFromSharedLink(url);
             } else if (url.contains("vnd.youtube")) {
                 id = Parser.matchGroup1(ID_PATTERN, url);
             } else if (url.contains("embed")) {
@@ -86,56 +80,6 @@ public class YoutubeCommentsLinkHandlerFactory extends ListLinkHandlerFactory {
         }
     }
 
-    /**
-     * Get the real url from a shared uri.
-     * <p>
-     * Shared URI's look like this:
-     * <pre>
-     *     * https://www.youtube.com/shared?ci=PJICrTByb3E
-     *     * vnd.youtube://www.youtube.com/shared?ci=PJICrTByb3E&amp;feature=twitter-deep-link
-     * </pre>
-     *
-     * @param url The shared url
-     * @return the id of the stream
-     * @throws ParsingException
-     */
-    private String getRealIdFromSharedLink(String url) throws ParsingException {
-        URI uri;
-        try {
-            uri = new URI(url);
-        } catch (URISyntaxException e) {
-            throw new ParsingException("Invalid shared link", e);
-        }
-        String sharedId = getSharedId(uri);
-        Downloader downloader = NewPipe.getDownloader();
-        String content;
-        try {
-            content = downloader.download("https://www.youtube.com/shared?ci=" + sharedId);
-        } catch (IOException | ReCaptchaException e) {
-            throw new ParsingException("Unable to resolve shared link", e);
-        }
-        final Document document = Jsoup.parse(content);
-
-        final Element element = document.select("link[rel=\"canonical\"]").first();
-        final String urlWithRealId = (element != null)
-                ? element.attr("abs:href")
-                : document.select("meta[property=\"og:url\"]").first()
-                    .attr("abs:content");
-
-        String realId = Parser.matchGroup1(ID_PATTERN, urlWithRealId);
-        if (sharedId.equals(realId)) {
-            throw new ParsingException("Got same id for as shared info_id: " + sharedId);
-        }
-        return realId;
-    }
-
-    private String getSharedId(URI uri) throws ParsingException {
-        if (!"/shared".equals(uri.getPath())) {
-            throw new ParsingException("Not a shared link: " + uri.toString() + " (path != " + uri.getPath() + ")");
-        }
-        return Parser.matchGroup1("ci=" + ID_PATTERN, uri.getQuery());
-    }
-
     @Override
     public boolean onAcceptUrl(final String url) throws FoundAdException {
         final String lowercaseUrl = url.toLowerCase();
@@ -156,8 +100,8 @@ public class YoutubeCommentsLinkHandlerFactory extends ListLinkHandlerFactory {
         }
     }
 
-	@Override
-	public String getUrl(String id, List<String> contentFilter, String sortFilter) throws ParsingException {
-		return "https://www.youtube.com/watch?v=" + id;
-	}
+    @Override
+    public String getUrl(String id, List<String> contentFilter, String sortFilter) throws ParsingException {
+        return "https://www.youtube.com/watch?v=" + id;
+    }
 }

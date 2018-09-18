@@ -11,6 +11,7 @@ import org.junit.Test;
 import org.schabi.newpipe.Downloader;
 import org.schabi.newpipe.extractor.ListExtractor.InfoItemsPage;
 import org.schabi.newpipe.extractor.NewPipe;
+import org.schabi.newpipe.extractor.comments.CommentsInfo;
 import org.schabi.newpipe.extractor.comments.CommentsInfoItem;
 import org.schabi.newpipe.extractor.exceptions.ExtractionException;
 import org.schabi.newpipe.extractor.services.youtube.extractors.YoutubeCommentsExtractor;
@@ -51,6 +52,21 @@ public class YoutubeCommentsExtractorTest {
         while (streamInfo.hasMoreComments() && !result) {
             StreamInfo.loadMoreComments(streamInfo);
             result = findInComments(streamInfo.getComments(), "i should really be in the top comment.lol");
+        }
+
+        assertTrue(result);
+    }
+    
+    @Test
+    public void testGetCommentsFromCommentsInfo() throws IOException, ExtractionException {
+        boolean result = false;
+        CommentsInfo commentsInfo = CommentsInfo.getInfo("https://www.youtube.com/watch?v=rrgFN3AxGfs");
+        assertTrue("what the fuck am i doing with my life.wmv".equals(commentsInfo.getName()));
+        result = findInComments(commentsInfo.getComments(), "i should really be in the top comment.lol");
+
+        while (commentsInfo.hasMoreComments() && !result) {
+            CommentsInfo.loadMoreComments(commentsInfo);
+            result = findInComments(commentsInfo.getComments(), "i should really be in the top comment.lol");
         }
 
         assertTrue(result);
