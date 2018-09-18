@@ -6,12 +6,10 @@ import java.util.List;
 
 import org.schabi.newpipe.extractor.Info;
 import org.schabi.newpipe.extractor.InfoItem;
-import org.schabi.newpipe.extractor.ListExtractor.InfoItemsPage;
 import org.schabi.newpipe.extractor.NewPipe;
 import org.schabi.newpipe.extractor.StreamingService;
 import org.schabi.newpipe.extractor.Subtitles;
-import org.schabi.newpipe.extractor.comments.CommentsExtractor;
-import org.schabi.newpipe.extractor.comments.CommentsInfoItem;
+import org.schabi.newpipe.extractor.comments.CommentsInfo;
 import org.schabi.newpipe.extractor.exceptions.ContentNotAvailableException;
 import org.schabi.newpipe.extractor.exceptions.ExtractionException;
 import org.schabi.newpipe.extractor.utils.DashMpdParser;
@@ -267,38 +265,13 @@ public class StreamInfo extends Info {
 
         streamInfo.setRelatedStreams(ExtractorHelper.getRelatedVideosOrLogError(streamInfo, extractor));
 
-        CommentsExtractor commentsExtractor = null;
         try {
-            commentsExtractor = NewPipe.getService(streamInfo.getServiceId()).getCommentsExtractor(streamInfo.getUrl());
-            streamInfo.setCommentsExtractor(commentsExtractor);
+            streamInfo.setCommentsInfo(CommentsInfo.getInfo(streamInfo.getUrl()));
         } catch (Exception e) {
             streamInfo.addError(e);
         }
 
-        if (null != commentsExtractor) {
-            InfoItemsPage<CommentsInfoItem> initialCommentsPage = ExtractorHelper.getItemsPageOrLogError(streamInfo,
-                    commentsExtractor);
-            streamInfo.setComments(new ArrayList<>());
-            streamInfo.getComments().addAll(initialCommentsPage.getItems());
-            streamInfo.setHasMoreComments(initialCommentsPage.hasNextPage());
-            streamInfo.setNextCommentsPageUrl(initialCommentsPage.getNextPageUrl());
-        }
-
         return streamInfo;
-    }
-
-    public static void loadMoreComments(StreamInfo streamInfo) {
-        if (streamInfo.hasMoreComments() && null != streamInfo.getCommentsExtractor()) {
-            try {
-                InfoItemsPage<CommentsInfoItem> commentsPage = streamInfo.getCommentsExtractor()
-                        .getPage(streamInfo.getNextCommentsPageUrl());
-                streamInfo.getComments().addAll(commentsPage.getItems());
-                streamInfo.setHasMoreComments(commentsPage.hasNextPage());
-                streamInfo.setNextCommentsPageUrl(commentsPage.getNextPageUrl());
-            } catch (IOException | ExtractionException e) {
-                streamInfo.addError(e);
-            }
-        }
     }
 
     private StreamType streamType;
@@ -325,10 +298,7 @@ public class StreamInfo extends Info {
     private StreamInfoItem nextVideo;
     private List<InfoItem> relatedStreams;
 
-    private CommentsExtractor commentsExtractor;
-    private List<CommentsInfoItem> comments;
-    private boolean hasMoreComments;
-    private String nextCommentsPageUrl;
+    private CommentsInfo commentsInfo;
 
     private long startPosition = 0;
     private List<Subtitles> subtitles;
@@ -526,36 +496,12 @@ public class StreamInfo extends Info {
         this.subtitles = subtitles;
     }
 
-    public List<CommentsInfoItem> getComments() {
-        return comments;
+    public CommentsInfo getCommentsInfo() {
+        return commentsInfo;
     }
 
-    public void setComments(List<CommentsInfoItem> comments) {
-        this.comments = comments;
-    }
-
-    public boolean hasMoreComments() {
-        return hasMoreComments;
-    }
-
-    public void setHasMoreComments(boolean hasMoreComments) {
-        this.hasMoreComments = hasMoreComments;
-    }
-
-    public CommentsExtractor getCommentsExtractor() {
-        return commentsExtractor;
-    }
-
-    public void setCommentsExtractor(CommentsExtractor commentsExtractor) {
-        this.commentsExtractor = commentsExtractor;
-    }
-
-    public String getNextCommentsPageUrl() {
-        return nextCommentsPageUrl;
-    }
-
-    public void setNextCommentsPageUrl(String nextCommentsPageUrl) {
-        this.nextCommentsPageUrl = nextCommentsPageUrl;
+    public void setCommentsInfo(CommentsInfo commentsInfo) {
+        this.commentsInfo = commentsInfo;
     }
 
 }

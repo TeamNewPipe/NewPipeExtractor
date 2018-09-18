@@ -47,11 +47,11 @@ public class YoutubeCommentsExtractorTest {
         boolean result = false;
         StreamInfo streamInfo = StreamInfo.getInfo("https://www.youtube.com/watch?v=rrgFN3AxGfs");
 
-        result = findInComments(streamInfo.getComments(), "i should really be in the top comment.lol");
+        result = findInComments(streamInfo.getCommentsInfo().getComments(), "i should really be in the top comment.lol");
 
-        while (streamInfo.hasMoreComments() && !result) {
-            StreamInfo.loadMoreComments(streamInfo);
-            result = findInComments(streamInfo.getComments(), "i should really be in the top comment.lol");
+        while (streamInfo.getCommentsInfo().hasMoreComments() && !result) {
+            CommentsInfo.loadMoreComments(streamInfo.getCommentsInfo());
+            result = findInComments(streamInfo.getCommentsInfo().getComments(), "i should really be in the top comment.lol");
         }
 
         assertTrue(result);
