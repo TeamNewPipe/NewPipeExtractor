@@ -122,7 +122,11 @@ public abstract class StreamingService {
     }
     
     public CommentsExtractor getCommentsExtractor(String url) throws ExtractionException {
-        return getCommentsExtractor(getCommentsLHFactory().fromUrl(url));
+        ListLinkHandlerFactory llhf = getCommentsLHFactory();
+        if(null == llhf) {
+            return null;
+        }
+        return getCommentsExtractor(llhf.fromUrl(url));
     }
 
 
