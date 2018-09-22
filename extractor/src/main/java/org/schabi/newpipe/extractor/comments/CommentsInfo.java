@@ -45,7 +45,7 @@ public class CommentsInfo extends ListInfo<CommentsInfoItem>{
         commentsInfo.getComments().addAll(initialCommentsPage.getItems());
         //tmp
         commentsInfo.setRelatedItems(initialCommentsPage.getItems());
-        commentsInfo.setNextCommentsPageUrl(initialCommentsPage.getNextPageUrl());
+        commentsInfo.setNextPageUrl(initialCommentsPage.getNextPageUrl());
         
         commentsInfo.setHasMoreComments(initialCommentsPage.hasNextPage());
         commentsInfo.setNextCommentsPageUrl(initialCommentsPage.getNextPageUrl());
