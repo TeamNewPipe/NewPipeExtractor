@@ -102,13 +102,16 @@ public class SoundcloudService extends StreamingService {
 
 	@Override
 	public ListLinkHandlerFactory getCommentsLHFactory() {
-		// TODO Auto-generated method stub
 		return null;
 	}
 
 	@Override
 	public CommentsExtractor getCommentsExtractor(ListLinkHandler urlIdHandler) throws ExtractionException {
-		// TODO Auto-generated method stub
 		return null;
 	}
+
+    @Override
+    public boolean isCommentsSupported() {
+        return false;
+    }
 }

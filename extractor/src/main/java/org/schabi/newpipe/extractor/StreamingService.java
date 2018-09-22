@@ -92,7 +92,8 @@ public abstract class StreamingService {
     public abstract PlaylistExtractor getPlaylistExtractor(ListLinkHandler urlIdHandler) throws ExtractionException;
     public abstract StreamExtractor getStreamExtractor(LinkHandler UIHFactory) throws ExtractionException;
     public abstract CommentsExtractor getCommentsExtractor(ListLinkHandler urlIdHandler) throws ExtractionException;
-
+    public abstract boolean isCommentsSupported();
+    
     public SearchExtractor getSearchExtractor(String query, List<String> contentFilter, String sortFilter, String contentCountry) throws ExtractionException {
         return getSearchExtractor(getSearchQHFactory().fromQuery(query, contentFilter, sortFilter), contentCountry);
     }

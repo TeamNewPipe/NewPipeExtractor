@@ -146,4 +146,9 @@ public class YoutubeService extends StreamingService {
 		return new YoutubeCommentsExtractor(this, urlIdHandler);
 	}
 
+    @Override
+    public boolean isCommentsSupported() {
+        return true;
+    }
+
 }
