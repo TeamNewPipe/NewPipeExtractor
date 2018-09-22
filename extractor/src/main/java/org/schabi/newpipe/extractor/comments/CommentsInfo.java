@@ -43,6 +43,10 @@ public class CommentsInfo extends ListInfo<CommentsInfoItem>{
                     commentsExtractor);
         commentsInfo.setComments(new ArrayList<>());
         commentsInfo.getComments().addAll(initialCommentsPage.getItems());
+        //tmp
+        commentsInfo.setRelatedItems(initialCommentsPage.getItems());
+        commentsInfo.setNextCommentsPageUrl(initialCommentsPage.getNextPageUrl());
+        
         commentsInfo.setHasMoreComments(initialCommentsPage.hasNextPage());
         commentsInfo.setNextCommentsPageUrl(initialCommentsPage.getNextPageUrl());
         return commentsInfo;
@@ -53,7 +57,8 @@ public class CommentsInfo extends ListInfo<CommentsInfoItem>{
             if(null == commentsInfo.getCommentsExtractor()) {
                 try {
                     commentsInfo.setCommentsExtractor(NewPipe.getService(commentsInfo.getServiceId()).getCommentsExtractor(commentsInfo.getUrl()));
-                } catch (ExtractionException e) {
+                    commentsInfo.getCommentsExtractor().fetchPage();
+                } catch (ExtractionException | IOException e) {
                     commentsInfo.addError(e);
                     return;
                 }
