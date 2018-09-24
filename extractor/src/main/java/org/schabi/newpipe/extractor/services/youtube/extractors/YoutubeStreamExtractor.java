@@ -7,6 +7,7 @@ import com.grack.nanojson.JsonParserException;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
+import org.jsoup.select.Elements;
 import org.mozilla.javascript.Context;
 import org.mozilla.javascript.Function;
 import org.mozilla.javascript.ScriptableObject;
@@ -460,15 +461,15 @@ public class YoutubeStreamExtractor extends StreamExtractor {
 
     @Override
     @Nonnull
-    public List<Subtitles> getSubtitlesDefault() throws IOException, ExtractionException {
-        return getSubtitles(SubtitlesFormat.TTML);
+    public List<SubtitlesStream> getSubtitlesDefault() throws IOException, ExtractionException {
+        return getSubtitles(MediaFormat.TTML);
     }
 
     @Override
     @Nonnull
-    public List<Subtitles> getSubtitles(final SubtitlesFormat format) throws IOException, ExtractionException {
+    public List<SubtitlesStream> getSubtitles(final MediaFormat format) throws IOException, ExtractionException {
         assertPageFetched();
-        List<Subtitles> subtitles = new ArrayList<>();
+        List<SubtitlesStream> subtitles = new ArrayList<>();
         for (final SubtitlesInfo subtitlesInfo : subtitlesInfos) {
             subtitles.add(subtitlesInfo.getSubtitle(format));
         }
@@ -494,8 +495,13 @@ public class YoutubeStreamExtractor extends StreamExtractor {
         assertPageFetched();
         try {
             StreamInfoItemsCollector collector = new StreamInfoItemsCollector(getServiceId());
-            collector.commit(extractVideoPreviewInfo(doc.select("div[class=\"watch-sidebar-section\"]")
-                    .first().select("li").first()));
+
+            Elements watch = doc.select("div[class=\"watch-sidebar-section\"]");
+            if (watch.size() < 1) {
+                return null;// prevent the snackbar notification "report error" on age-restricted videos
+            }
+
+            collector.commit(extractVideoPreviewInfo(watch.first().select("li").first()));
 
             return collector.getItems().get(0);
         } catch (Exception e) {
@@ -815,7 +821,6 @@ public class YoutubeStreamExtractor extends StreamExtractor {
         final String languageCode;
         final boolean isGenerated;
 
-        final Locale locale;
 
         public SubtitlesInfo(final String baseUrl, final String languageCode, final boolean isGenerated) {
             this.cleanUrl = baseUrl
@@ -823,13 +828,10 @@ public class YoutubeStreamExtractor extends StreamExtractor {
                     .replaceAll("&tlang=[^&]*", ""); // Remove translation language
             this.languageCode = languageCode;
             this.isGenerated = isGenerated;
-
-            final String[] splits = languageCode.split("-");
-            this.locale = splits.length == 2 ? new Locale(splits[0], splits[1]) : new Locale(languageCode);
         }
 
-        public Subtitles getSubtitle(final SubtitlesFormat format) {
-            return new Subtitles(format, locale, cleanUrl + "&fmt=" + format.getExtension(), isGenerated);
+        public SubtitlesStream getSubtitle(final MediaFormat format) {
+            return new SubtitlesStream(format, languageCode, cleanUrl + "&fmt=" + format.getSuffix(), isGenerated);
         }
     }
 
