@@ -283,7 +283,7 @@ public class StreamInfo extends Info {
     private List<InfoItem> relatedStreams;
 
     private long startPosition = 0;
-    private List<Subtitles> subtitles;
+    private List<SubtitlesStream> subtitles;
 
     /**
      * Get the stream type
@@ -494,11 +494,11 @@ public class StreamInfo extends Info {
         this.startPosition = startPosition;
     }
 
-    public List<Subtitles> getSubtitles() {
+    public List<SubtitlesStream> getSubtitles() {
         return subtitles;
     }
 
-    public void setSubtitles(List<Subtitles> subtitles) {
+    public void setSubtitles(List<SubtitlesStream> subtitles) {
         this.subtitles = subtitles;
     }
 

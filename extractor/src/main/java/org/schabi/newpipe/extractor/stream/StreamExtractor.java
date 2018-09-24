@@ -21,6 +21,7 @@ package org.schabi.newpipe.extractor.stream;
  */
 
 import org.schabi.newpipe.extractor.Extractor;
+import org.schabi.newpipe.extractor.MediaFormat;
 import org.schabi.newpipe.extractor.StreamingService;
 import org.schabi.newpipe.extractor.exceptions.ExtractionException;
 import org.schabi.newpipe.extractor.exceptions.ParsingException;
@@ -314,5 +315,44 @@ public abstract class StreamExtractor extends Extractor {
             }
         } else {
             return 0;
-        }};
+        }
+    }
+
+    public abstract long getViewCount() throws ParsingException;
+    public abstract long getLikeCount() throws ParsingException;
+    public abstract long getDislikeCount() throws ParsingException;
+
+    @Nonnull
+    public abstract String getUploaderUrl() throws ParsingException;
+    @Nonnull
+    public abstract String getUploaderName() throws ParsingException;
+    @Nonnull
+    public abstract String getUploaderAvatarUrl() throws ParsingException;
+
+    /**
+     * Get the dash mpd url
+     * @return the url as a string or an empty string
+     * @throws ParsingException if an error occurs while reading
+     */
+    @Nonnull public abstract String getDashMpdUrl() throws ParsingException;
+    @Nonnull public abstract String getHlsUrl() throws ParsingException;
+    public abstract List<AudioStream> getAudioStreams() throws IOException, ExtractionException;
+    public abstract List<VideoStream> getVideoStreams() throws IOException, ExtractionException;
+    public abstract List<VideoStream> getVideoOnlyStreams() throws IOException, ExtractionException;
+
+    @Nonnull
+    public abstract List<SubtitlesStream> getSubtitlesDefault() throws IOException, ExtractionException;
+    @Nonnull
+    public abstract List<SubtitlesStream> getSubtitles(MediaFormat format) throws IOException, ExtractionException;
+
+    public abstract StreamType getStreamType() throws ParsingException;
+    public abstract StreamInfoItem getNextVideo() throws IOException, ExtractionException;
+    public abstract StreamInfoItemsCollector getRelatedVideos() throws IOException, ExtractionException;
+
+    /**
+     * Analyses the webpage's document and extracts any error message there might be.
+     *
+     * @return Error message; null if there is no error message.
+     */
+    public abstract String getErrorMessage();
 }
