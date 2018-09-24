@@ -177,7 +177,7 @@ public class YoutubeStreamExtractorDefaultTest {
         public static void setUp() throws Exception {
             NewPipe.init(Downloader.getInstance(), new Localization("GB", "en"));
             extractor = (YoutubeStreamExtractor) YouTube
-                    .getStreamExtractor("https://www.youtube.com/watch?v=LUldijpMUew");
+                    .getStreamExtractor("https://www.youtube.com/watch?v=LzR8Sf5PK2Q");
             extractor.fetchPage();
         }
 
@@ -190,13 +190,11 @@ public class YoutubeStreamExtractorDefaultTest {
         @Test
         public void testGetFullLinksInDescription() throws ParsingException {
             assertTrue(extractor.getDescription().contains("https://www.reddit.com/r/PewdiepieSubmissions/"));
-            assertTrue(extractor.getDescription().contains("https://www.youtube.com/channel/UCeKXymg6S6Pt4EjjOlA759w"));
-            assertTrue(extractor.getDescription().contains("https://www.youtube.com/watch?v=N6hVmn9FM7o"));
+            assertTrue(extractor.getDescription().contains("https://www.youtube.com/channel/UC3e8EMTOn4g6ZSKggHTnNng"));
             assertTrue(extractor.getDescription().contains("https://usa.clutchchairz.com/product/pewdiepie-edition-throttle-series/"));
 
             assertFalse(extractor.getDescription().contains("https://www.reddit.com/r/PewdiepieSub..."));
-            assertFalse(extractor.getDescription().contains("https://www.youtube.com/channel/UCeKX..."));
-            assertFalse(extractor.getDescription().contains("https://www.youtube.com/watch?v=qpaV3..."));
+            assertFalse(extractor.getDescription().contains("https://www.youtube.com/channel/UC3e8..."));
             assertFalse(extractor.getDescription().contains("https://usa.clutchchairz.com/product/..."));
         }
     }
