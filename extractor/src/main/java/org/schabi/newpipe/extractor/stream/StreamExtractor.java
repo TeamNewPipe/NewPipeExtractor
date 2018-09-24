@@ -23,7 +23,7 @@ package org.schabi.newpipe.extractor.stream;
 import org.schabi.newpipe.extractor.Extractor;
 import org.schabi.newpipe.extractor.MediaFormat;
 import org.schabi.newpipe.extractor.StreamingService;
-import org.schabi.newpipe.extractor.Subtitles;
+import org.schabi.newpipe.extractor.SubtitlesStream;
 import org.schabi.newpipe.extractor.exceptions.ExtractionException;
 import org.schabi.newpipe.extractor.exceptions.ParsingException;
 import org.schabi.newpipe.extractor.linkhandler.LinkHandler;
