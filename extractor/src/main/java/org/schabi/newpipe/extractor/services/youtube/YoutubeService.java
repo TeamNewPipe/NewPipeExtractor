@@ -12,6 +12,7 @@ import org.schabi.newpipe.extractor.services.youtube.extractors.*;
 import org.schabi.newpipe.extractor.services.youtube.linkHandler.*;
 import org.schabi.newpipe.extractor.stream.StreamExtractor;
 import org.schabi.newpipe.extractor.subscription.SubscriptionExtractor;
+import org.schabi.newpipe.extractor.utils.Localization;
 
 import static java.util.Arrays.asList;
 import static org.schabi.newpipe.extractor.StreamingService.ServiceInfo.MediaCapability.*;
@@ -44,8 +45,8 @@ public class YoutubeService extends StreamingService {
     }
 
     @Override
-    public SearchExtractor getSearchExtractor(SearchQueryHandler query, String contentCountry) {
-        return new YoutubeSearchExtractor(this, query, contentCountry);
+    public SearchExtractor getSearchExtractor(SearchQueryHandler query, Localization localization) {
+        return new YoutubeSearchExtractor(this, query, localization);
     }
 
     @Override
@@ -69,37 +70,40 @@ public class YoutubeService extends StreamingService {
     }
 
     @Override
-    public StreamExtractor getStreamExtractor(LinkHandler linkHandler) throws ExtractionException {
-        return new YoutubeStreamExtractor(this, linkHandler);
+    public StreamExtractor getStreamExtractor(LinkHandler linkHandler, Localization localization) {
+        return new YoutubeStreamExtractor(this, linkHandler, localization);
     }
 
     @Override
-    public ChannelExtractor getChannelExtractor(ListLinkHandler urlIdHandler) throws ExtractionException {
-        return new YoutubeChannelExtractor(this, urlIdHandler);
+    public ChannelExtractor getChannelExtractor(ListLinkHandler linkHandler, Localization localization) {
+        return new YoutubeChannelExtractor(this, linkHandler, localization);
     }
 
     @Override
-    public PlaylistExtractor getPlaylistExtractor(ListLinkHandler urlIdHandler) throws ExtractionException {
-        return new YoutubePlaylistExtractor(this, urlIdHandler);
+    public PlaylistExtractor getPlaylistExtractor(ListLinkHandler linkHandler, Localization localization) {
+        return new YoutubePlaylistExtractor(this, linkHandler, localization);
     }
 
     @Override
-    public SuggestionExtractor getSuggestionExtractor() {
-        return new YoutubeSuggestionExtractor(getServiceId());
+    public SuggestionExtractor getSuggestionExtractor(Localization localization) {
+        return new YoutubeSuggestionExtractor(getServiceId(), localization);
     }
 
     @Override
-    public KioskList getKioskList() throws ExtractionException {
-        KioskList list = new KioskList(getServiceId());
+    public KioskList getKioskList(final Localization localization) throws ExtractionException {
+        KioskList list = new KioskList(getServiceId(), localization);
 
         // add kiosks here e.g.:
         try {
             list.addKioskEntry(new KioskList.KioskExtractorFactory() {
                 @Override
-                public KioskExtractor createNewKiosk(StreamingService streamingService, String url, String id)
+                public KioskExtractor createNewKiosk(StreamingService streamingService,
+                                                     String url,
+                                                     String id,
+                                                     Localization local)
                 throws ExtractionException {
                     return new YoutubeTrendingExtractor(YoutubeService.this,
-                            new YoutubeTrendingLinkHandlerFactory().fromUrl(url), id);
+                            new YoutubeTrendingLinkHandlerFactory().fromUrl(url), id, local);
                 }
             }, new YoutubeTrendingLinkHandlerFactory(), "Trending");
             list.setDefaultKiosk("Trending");

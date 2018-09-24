@@ -8,6 +8,7 @@ import org.schabi.newpipe.extractor.NewPipe;
 import org.schabi.newpipe.extractor.SuggestionExtractor;
 import org.schabi.newpipe.extractor.exceptions.ExtractionException;
 import org.schabi.newpipe.extractor.exceptions.ParsingException;
+import org.schabi.newpipe.extractor.utils.Localization;
 
 import java.io.IOException;
 import java.net.URLEncoder;
@@ -38,12 +39,12 @@ public class YoutubeSuggestionExtractor extends SuggestionExtractor {
 
     public static final String CHARSET_UTF_8 = "UTF-8";
 
-    public YoutubeSuggestionExtractor(int serviceId) {
-        super(serviceId);
+    public YoutubeSuggestionExtractor(int serviceId, Localization localization) {
+        super(serviceId, localization);
     }
 
     @Override
-    public List<String> suggestionList(String query, String contentCountry) throws IOException, ExtractionException {
+    public List<String> suggestionList(String query) throws IOException, ExtractionException {
         Downloader dl = NewPipe.getDownloader();
         List<String> suggestions = new ArrayList<>();
 
@@ -51,7 +52,7 @@ public class YoutubeSuggestionExtractor extends SuggestionExtractor {
                 + "?client=" + "youtube" //"firefox" for JSON, 'toolbar' for xml
                 + "&jsonp=" + "JP"
                 + "&ds=" + "yt"
-                + "&hl=" + URLEncoder.encode(contentCountry, CHARSET_UTF_8)
+                + "&hl=" + URLEncoder.encode(getLocalization().getCountry(), CHARSET_UTF_8)
                 + "&q=" + URLEncoder.encode(query, CHARSET_UTF_8);
 
         String response = dl.download(url);

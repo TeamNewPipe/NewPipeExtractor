@@ -3,6 +3,7 @@ package org.schabi.newpipe.extractor;
 import org.schabi.newpipe.extractor.exceptions.ExtractionException;
 import org.schabi.newpipe.extractor.exceptions.ParsingException;
 import org.schabi.newpipe.extractor.linkhandler.LinkHandler;
+import org.schabi.newpipe.extractor.utils.Localization;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -15,18 +16,20 @@ public abstract class Extractor {
      */
     private final StreamingService service;
 
-    private final LinkHandler uIHandler;
+    private final LinkHandler linkHandler;
+    private final Localization localization;
 
     @Nullable
     private boolean pageFetched = false;
     private final Downloader downloader;
 
-    public Extractor(final StreamingService service, final LinkHandler uIHandler) {
+    public Extractor(final StreamingService service, final LinkHandler linkHandler, final Localization localization) {
         if(service == null) throw new NullPointerException("service is null");
-        if(uIHandler == null) throw new NullPointerException("LinkHandler is null");
+        if(linkHandler == null) throw new NullPointerException("LinkHandler is null");
         this.service = service;
-        this.uIHandler = uIHandler;
+        this.linkHandler = linkHandler;
         this.downloader = NewPipe.getDownloader();
+        this.localization = localization;
         if(downloader == null) throw new NullPointerException("downloader is null");
     }
 
@@ -34,8 +37,8 @@ public abstract class Extractor {
      * @return The {@link LinkHandler} of the current extractor object (e.g. a ChannelExtractor should return a channel url handler).
      */
     @Nonnull
-    public LinkHandler getUIHandler() {
-        return uIHandler;
+    public LinkHandler getLinkHandler() {
+        return linkHandler;
     }
 
     /**
@@ -67,7 +70,7 @@ public abstract class Extractor {
 
     @Nonnull
     public String getId() throws ParsingException {
-        return uIHandler.getId();
+        return linkHandler.getId();
     }
 
     /**
@@ -80,12 +83,12 @@ public abstract class Extractor {
 
     @Nonnull
     public String getOriginalUrl() throws ParsingException {
-        return uIHandler.getOriginalUrl();
+        return linkHandler.getOriginalUrl();
     }
 
     @Nonnull
     public String getUrl() throws ParsingException {
-        return uIHandler.getUrl();
+        return linkHandler.getUrl();
     }
 
     @Nonnull
@@ -99,5 +102,10 @@ public abstract class Extractor {
 
     public Downloader getDownloader() {
         return downloader;
+    }
+
+    @Nonnull
+    public Localization getLocalization() {
+        return localization;
     }
 }

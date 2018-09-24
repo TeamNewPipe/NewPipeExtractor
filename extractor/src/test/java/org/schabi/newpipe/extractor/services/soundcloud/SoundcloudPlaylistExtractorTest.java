@@ -10,6 +10,7 @@ import org.schabi.newpipe.extractor.ServiceList;
 import org.schabi.newpipe.extractor.playlist.PlaylistExtractor;
 import org.schabi.newpipe.extractor.services.BasePlaylistExtractorTest;
 import org.schabi.newpipe.extractor.stream.StreamInfoItem;
+import org.schabi.newpipe.extractor.utils.Localization;
 
 import static org.junit.Assert.*;
 import static org.schabi.newpipe.extractor.ExtractorAsserts.assertIsSecureUrl;
@@ -25,7 +26,7 @@ public class SoundcloudPlaylistExtractorTest {
 
         @BeforeClass
         public static void setUp() throws Exception {
-            NewPipe.init(Downloader.getInstance());
+            NewPipe.init(Downloader.getInstance(), new Localization("GB", "en"));
             extractor = (SoundcloudPlaylistExtractor) SoundCloud
                     .getPlaylistExtractor("https://soundcloud.com/liluzivert/sets/the-perfect-luv-tape-r?test=123");
             extractor.fetchPage();
@@ -123,7 +124,7 @@ public class SoundcloudPlaylistExtractorTest {
 
         @BeforeClass
         public static void setUp() throws Exception {
-            NewPipe.init(Downloader.getInstance());
+            NewPipe.init(Downloader.getInstance(), new Localization("GB", "en"));
             extractor = (SoundcloudPlaylistExtractor) SoundCloud
                     .getPlaylistExtractor("https://soundcloud.com/hunter-leader/sets/house-electro-dance-music-2");
             extractor.fetchPage();
@@ -215,7 +216,7 @@ public class SoundcloudPlaylistExtractorTest {
 
         @BeforeClass
         public static void setUp() throws Exception {
-            NewPipe.init(Downloader.getInstance());
+            NewPipe.init(Downloader.getInstance(), new Localization("GB", "en"));
             extractor = (SoundcloudPlaylistExtractor) SoundCloud
                     .getPlaylistExtractor("https://soundcloud.com/user350509423/sets/edm-xxx");
             extractor.fetchPage();

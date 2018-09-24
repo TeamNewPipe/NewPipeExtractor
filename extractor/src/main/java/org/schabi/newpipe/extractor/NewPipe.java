@@ -21,6 +21,7 @@ package org.schabi.newpipe.extractor;
  */
 
 import org.schabi.newpipe.extractor.exceptions.ExtractionException;
+import org.schabi.newpipe.extractor.utils.Localization;
 
 import java.util.List;
 
@@ -29,12 +30,14 @@ import java.util.List;
  */
 public class NewPipe {
     private static Downloader downloader = null;
+    private static Localization localization = null;
 
     private NewPipe() {
     }
 
-    public static void init(Downloader d) {
+    public static void init(Downloader d, Localization l) {
         downloader = d;
+        localization = l;
     }
 
     public static Downloader getDownloader() {
@@ -94,5 +97,13 @@ public class NewPipe {
             e.printStackTrace();
             return "<unknown>";
         }
+    }
+
+    public static void setLocalization(Localization localization) {
+        NewPipe.localization = localization;
+    }
+
+    public static Localization getLocalization() {
+        return localization;
     }
 }

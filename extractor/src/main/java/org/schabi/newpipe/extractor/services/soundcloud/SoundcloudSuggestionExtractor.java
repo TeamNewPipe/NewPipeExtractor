@@ -9,6 +9,7 @@ import org.schabi.newpipe.extractor.NewPipe;
 import org.schabi.newpipe.extractor.SuggestionExtractor;
 import org.schabi.newpipe.extractor.exceptions.ExtractionException;
 import org.schabi.newpipe.extractor.exceptions.ParsingException;
+import org.schabi.newpipe.extractor.utils.Localization;
 
 import java.io.IOException;
 import java.net.URLEncoder;
@@ -19,12 +20,12 @@ public class SoundcloudSuggestionExtractor extends SuggestionExtractor {
 
     public static final String CHARSET_UTF_8 = "UTF-8";
 
-    public SoundcloudSuggestionExtractor(int serviceId) {
-        super(serviceId);
+    public SoundcloudSuggestionExtractor(int serviceId, Localization localization) {
+        super(serviceId, localization);
     }
 
     @Override
-    public List<String> suggestionList(String query, String contentCountry) throws IOException, ExtractionException {
+    public List<String> suggestionList(String query) throws IOException, ExtractionException {
         List<String> suggestions = new ArrayList<>();
 
         Downloader dl = NewPipe.getDownloader();

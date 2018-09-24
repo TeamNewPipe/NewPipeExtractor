@@ -11,6 +11,7 @@ import org.schabi.newpipe.extractor.exceptions.ParsingException;
 import org.schabi.newpipe.extractor.search.InfoItemsSearchCollector;
 import org.schabi.newpipe.extractor.search.SearchExtractor;
 import org.schabi.newpipe.extractor.linkhandler.SearchQueryHandler;
+import org.schabi.newpipe.extractor.utils.Localization;
 import org.schabi.newpipe.extractor.utils.Parser;
 
 import javax.annotation.Nonnull;
@@ -44,21 +45,21 @@ public class YoutubeSearchExtractor extends SearchExtractor {
     private Document doc;
 
     public YoutubeSearchExtractor(StreamingService service,
-                                  SearchQueryHandler urlIdHandler,
-                                  String contentCountry) {
-        super(service, urlIdHandler, contentCountry);
+                                  SearchQueryHandler linkHandler,
+                                  Localization localization) {
+        super(service, linkHandler, localization);
     }
 
     @Override
     public void onFetchPage(@Nonnull Downloader downloader) throws IOException, ExtractionException {
         final String site;
         final String url = getUrl();
-        final String contentCountry = getContentCountry();
+        final String contentCountry = getLocalization().getCountry();
         //String url = builder.build().toString();
         //if we've been passed a valid language code, append it to the URL
         if (!contentCountry.isEmpty()) {
             //assert Pattern.matches("[a-z]{2}(-([A-Z]{2}|[0-9]{1,3}))?", languageCode);
-            site = downloader.download(url, contentCountry);
+            site = downloader.download(url, getLocalization());
         } else {
             site = downloader.download(url);
         }

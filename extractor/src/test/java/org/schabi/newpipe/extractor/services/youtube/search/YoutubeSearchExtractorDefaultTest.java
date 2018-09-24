@@ -9,6 +9,7 @@ import org.schabi.newpipe.extractor.NewPipe;
 import org.schabi.newpipe.extractor.channel.ChannelInfoItem;
 import org.schabi.newpipe.extractor.services.youtube.extractors.YoutubeSearchExtractor;
 import org.schabi.newpipe.extractor.stream.StreamInfoItem;
+import org.schabi.newpipe.extractor.utils.Localization;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
@@ -42,8 +43,8 @@ public class YoutubeSearchExtractorDefaultTest extends YoutubeSearchExtractorBas
 
     @BeforeClass
     public static void setUpClass() throws Exception {
-        NewPipe.init(Downloader.getInstance());
-        extractor = (YoutubeSearchExtractor) YouTube.getSearchExtractor("pewdiepie", "de");
+        NewPipe.init(Downloader.getInstance(), new Localization("GB", "en"));
+        extractor = (YoutubeSearchExtractor) YouTube.getSearchExtractor("pewdiepie");
         extractor.fetchPage();
         itemsPage = extractor.getInitialPage();
     }
@@ -79,7 +80,7 @@ public class YoutubeSearchExtractorDefaultTest extends YoutubeSearchExtractorBas
     @Test
     public void testGetSecondPage() throws Exception {
         YoutubeSearchExtractor secondExtractor =
-                (YoutubeSearchExtractor) YouTube.getSearchExtractor("pewdiepie", "de");
+                (YoutubeSearchExtractor) YouTube.getSearchExtractor("pewdiepie");
         ListExtractor.InfoItemsPage<InfoItem> secondPage = secondExtractor.getPage(itemsPage.getNextPageUrl());
         assertTrue(Integer.toString(secondPage.getItems().size()),
                 secondPage.getItems().size() > 10);
