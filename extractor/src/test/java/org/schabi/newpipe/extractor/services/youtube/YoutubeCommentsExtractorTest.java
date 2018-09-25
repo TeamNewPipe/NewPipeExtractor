@@ -1,5 +1,6 @@
 package org.schabi.newpipe.extractor.services.youtube;
 
+import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 import static org.schabi.newpipe.extractor.ServiceList.YouTube;
 
@@ -57,6 +58,23 @@ public class YoutubeCommentsExtractorTest {
         }
 
         assertTrue(result);
+    }
+    
+    @Test
+    public void testGetCommentsAllData() throws IOException, ExtractionException {
+        InfoItemsPage<CommentsInfoItem> comments = extractor.getInitialPage();
+        for(CommentsInfoItem c: comments.getItems()) {
+            assertFalse(StringUtil.isBlank(c.getAuthorEndpoint()));
+            assertFalse(StringUtil.isBlank(c.getAuthorName()));
+            assertFalse(StringUtil.isBlank(c.getAuthorThumbnail()));
+            assertFalse(StringUtil.isBlank(c.getCommentId()));
+            assertFalse(StringUtil.isBlank(c.getCommentText()));
+            assertFalse(StringUtil.isBlank(c.getName()));
+            assertFalse(StringUtil.isBlank(c.getPublishedTime()));
+            assertFalse(StringUtil.isBlank(c.getThumbnailUrl()));
+            assertFalse(StringUtil.isBlank(c.getUrl()));
+            assertFalse(c.getLikeCount() == null);
+        }
     }
 
     private boolean findInComments(InfoItemsPage<CommentsInfoItem> comments, String comment) {

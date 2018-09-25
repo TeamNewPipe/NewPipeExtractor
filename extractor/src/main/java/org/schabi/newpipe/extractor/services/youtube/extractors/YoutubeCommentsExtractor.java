@@ -61,17 +61,17 @@ public class YoutubeCommentsExtractor extends CommentsExtractor {
         
         JsonArray arr;
         try {
-            arr = JsonUtils.getValue(ajaxJson, "response.continuationContents.itemSectionContinuation.continuations");
-        } catch (ParsingException e) {
+            arr = (JsonArray) JsonUtils.getValue(ajaxJson, "response.continuationContents.itemSectionContinuation.continuations");
+        } catch (Exception e) {
             return "";
         }
-        if(null == arr || arr.isEmpty()) {
+        if(arr.isEmpty()) {
             return "";
         }
         String continuation;
         try {
-            continuation = JsonUtils.getValue(arr.getObject(0), "nextContinuationData.continuation");
-        } catch (ParsingException e) {
+            continuation = (String) JsonUtils.getValue(arr.getObject(0), "nextContinuationData.continuation");
+        } catch (Exception e) {
             return "";
         }
         return getNextPageUrl(continuation);
@@ -109,14 +109,26 @@ public class YoutubeCommentsExtractor extends CommentsExtractor {
 
     private void collectCommentsFrom(CommentsInfoItemsCollector collector, JsonObject ajaxJson, String pageUrl) throws ParsingException {
         
-        
-        JsonArray contents = JsonUtils.getValue(ajaxJson, "response.continuationContents.itemSectionContinuation.contents");
+        JsonArray contents;
+        try {
+            contents = (JsonArray) JsonUtils.getValue(ajaxJson, "response.continuationContents.itemSectionContinuation.contents");
+        }catch(Exception e) {
+            throw new ParsingException("unable to get parse youtube comments", e);
+        }
         fetchTitle(contents);
-        List<JsonObject> comments = JsonUtils.getValues(contents, "commentThreadRenderer.comment.commentRenderer");
+        List<Object> comments;
+        try {
+            comments = JsonUtils.getValues(contents, "commentThreadRenderer.comment.commentRenderer");
+        }catch(Exception e) {
+            throw new ParsingException("unable to get parse youtube comments", e);
+        }
         
-        for(JsonObject c: comments) {
-            CommentsInfoItemExtractor extractor = new YoutubeCommentsInfoItemExtractor(c, pageUrl);
-            collector.commit(extractor);
+        
+        for(Object c: comments) {
+            if(c instanceof JsonObject) {
+                CommentsInfoItemExtractor extractor = new YoutubeCommentsInfoItemExtractor((JsonObject) c, pageUrl);
+                collector.commit(extractor);
+            }
         }
 
     }
@@ -124,7 +136,7 @@ public class YoutubeCommentsExtractor extends CommentsExtractor {
     private void fetchTitle(JsonArray contents) {
         if(null == title) {
             try {
-                title = JsonUtils.getValue(contents.getObject(0), "commentThreadRenderer.commentTargetTitle.simpleText");
+                title = (String) JsonUtils.getValue(contents.getObject(0), "commentThreadRenderer.commentTargetTitle.simpleText");
             } catch (Exception e) {
                 title = "Youtube Comments";
             }

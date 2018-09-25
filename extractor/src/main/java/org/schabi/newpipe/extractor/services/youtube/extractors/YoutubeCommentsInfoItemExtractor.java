@@ -7,11 +7,11 @@ import org.schabi.newpipe.extractor.utils.JsonUtils;
 import com.grack.nanojson.JsonArray;
 import com.grack.nanojson.JsonObject;
 
-public class YoutubeCommentsInfoItemExtractor implements CommentsInfoItemExtractor{
-    
+public class YoutubeCommentsInfoItemExtractor implements CommentsInfoItemExtractor {
+
     private final JsonObject json;
     private final String url;
-    
+
     public YoutubeCommentsInfoItemExtractor(JsonObject json, String url) {
         this.json = json;
         this.url = url;
@@ -24,55 +24,92 @@ public class YoutubeCommentsInfoItemExtractor implements CommentsInfoItemExtract
 
     @Override
     public String getThumbnailUrl() throws ParsingException {
-        JsonArray arr = JsonUtils.getValue(json, "authorThumbnail.thumbnails");
-        return JsonUtils.getValue(arr.getObject(2), "url");
+        try {
+            JsonArray arr = (JsonArray) JsonUtils.getValue(json, "authorThumbnail.thumbnails");
+            return (String) JsonUtils.getValue(arr.getObject(2), "url");
+        } catch (Exception e) {
+            throw new ParsingException("Could not get thumbnail url", e);
+        }
     }
 
     @Override
     public String getName() throws ParsingException {
-        return JsonUtils.getValue(json, "authorText.simpleText");
+        try {
+            return (String) JsonUtils.getValue(json, "authorText.simpleText");
+        } catch (Exception e) {
+            throw new ParsingException("Could not get author name", e);
+        }
     }
 
     @Override
     public String getPublishedTime() throws ParsingException {
-        JsonArray arr = JsonUtils.getValue(json, "publishedTimeText.runs");
-        return JsonUtils.getValue(arr.getObject(0), "text");
+        try {
+            JsonArray arr = (JsonArray) JsonUtils.getValue(json, "publishedTimeText.runs");
+            return (String) JsonUtils.getValue(arr.getObject(0), "text");
+        } catch (Exception e) {
+            throw new ParsingException("Could not get publishedTimeText", e);
+        }
     }
 
     @Override
     public Integer getLikeCount() throws ParsingException {
-        return JsonUtils.getValue(json, "likeCount");
+        try {
+            return (Integer) JsonUtils.getValue(json, "likeCount");
+        } catch (Exception e) {
+            throw new ParsingException("Could not get like count", e);
+        }
     }
 
     @Override
     public String getCommentText() throws ParsingException {
         try {
-            return JsonUtils.getValue(json, "contentText.simpleText");
-        } catch (Exception e) {
-            JsonArray arr = JsonUtils.getValue(json, "contentText.runs");
-            return JsonUtils.getValue(arr.getObject(0), "text");
+            return (String) JsonUtils.getValue(json, "contentText.simpleText");
+        } catch (Exception e1) {
+            try {
+                JsonArray arr = (JsonArray) JsonUtils.getValue(json, "contentText.runs");
+                return (String) JsonUtils.getValue(arr.getObject(0), "text");
+            } catch (Exception e2) {
+                throw new ParsingException("Could not get comment text", e2);
+            }
         }
     }
 
     @Override
     public String getCommentId() throws ParsingException {
-        return JsonUtils.getValue(json, "commentId");
+        try {
+            return (String) JsonUtils.getValue(json, "commentId");
+        } catch (Exception e) {
+            throw new ParsingException("Could not get comment id", e);
+        }
     }
 
     @Override
     public String getAuthorThumbnail() throws ParsingException {
-        JsonArray arr = JsonUtils.getValue(json, "authorThumbnail.thumbnails");
-        return JsonUtils.getValue(arr.getObject(2), "url");
+        try {
+            JsonArray arr = (JsonArray) JsonUtils.getValue(json, "authorThumbnail.thumbnails");
+            return (String) JsonUtils.getValue(arr.getObject(2), "url");
+        } catch (Exception e) {
+            throw new ParsingException("Could not get author thumbnail", e);
+        }
     }
 
     @Override
     public String getAuthorName() throws ParsingException {
-        return JsonUtils.getValue(json, "authorText.simpleText");
+        try {
+            return (String) JsonUtils.getValue(json, "authorText.simpleText");
+        } catch (Exception e) {
+            throw new ParsingException("Could not get author name", e);
+        }
     }
 
     @Override
     public String getAuthorEndpoint() throws ParsingException {
-            return "https://youtube.com" + JsonUtils.getValue(json, "authorEndpoint.browseEndpoint.canonicalBaseUrl");
+        try {
+            return "https://youtube.com"
+                    + (String) JsonUtils.getValue(json, "authorEndpoint.browseEndpoint.canonicalBaseUrl");
+        } catch (Exception e) {
+            throw new ParsingException("Could not get author endpoint", e);
+        }
     }
 
 }
