@@ -7,7 +7,6 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Optional;
 
 import org.schabi.newpipe.extractor.DownloadResponse;
 import org.schabi.newpipe.extractor.Downloader;
@@ -21,9 +20,12 @@ import org.schabi.newpipe.extractor.exceptions.ExtractionException;
 import org.schabi.newpipe.extractor.exceptions.ParsingException;
 import org.schabi.newpipe.extractor.exceptions.ReCaptchaException;
 import org.schabi.newpipe.extractor.linkhandler.ListLinkHandler;
+import org.schabi.newpipe.extractor.utils.JsonUtils;
 
-import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.ObjectMapper;
+import com.grack.nanojson.JsonArray;
+import com.grack.nanojson.JsonObject;
+import com.grack.nanojson.JsonParser;
+import com.grack.nanojson.JsonParserException;
 
 public class YoutubeCommentsExtractor extends CommentsExtractor {
 
@@ -33,8 +35,6 @@ public class YoutubeCommentsExtractor extends CommentsExtractor {
     private String sessionToken;
     private String title;
     private InfoItemsPage<CommentsInfoItem> initPage;
-
-    private ObjectMapper mapper = new ObjectMapper();
 
     public YoutubeCommentsExtractor(StreamingService service, ListLinkHandler uiHandler) {
         super(service, uiHandler);
@@ -57,16 +57,24 @@ public class YoutubeCommentsExtractor extends CommentsExtractor {
         return initPage.getNextPageUrl();
     }
 
-    private String getNextPageUrl(JsonNode ajaxJson) throws IOException, ExtractionException {
-        Optional<JsonNode> element = Optional.ofNullable(ajaxJson.findValue("itemSectionContinuation"))
-                .map(e -> e.get("continuations")).map(e -> e.findValue("continuation"));
-
-        if (element.isPresent()) {
-            return getNextPageUrl(element.get().asText());
-        } else {
-            // no more comments
+    private String getNextPageUrl(JsonObject ajaxJson) throws IOException, ParsingException {
+        
+        JsonArray arr;
+        try {
+            arr = JsonUtils.getValue(ajaxJson, "response.continuationContents.itemSectionContinuation.continuations");
+        } catch (ParsingException e) {
             return "";
         }
+        if(null == arr || arr.isEmpty()) {
+            return "";
+        }
+        String continuation;
+        try {
+            continuation = JsonUtils.getValue(arr.getObject(0), "nextContinuationData.continuation");
+        } catch (ParsingException e) {
+            return "";
+        }
+        return getNextPageUrl(continuation);
     }
 
     private String getNextPageUrl(String continuation) throws ParsingException {
@@ -88,121 +96,35 @@ public class YoutubeCommentsExtractor extends CommentsExtractor {
             throw new ExtractionException(new IllegalArgumentException("Page url is empty or null"));
         }
         String ajaxResponse = makeAjaxRequest(pageUrl);
-        JsonNode ajaxJson = mapper.readTree(ajaxResponse);
+        JsonObject ajaxJson;
+        try {
+            ajaxJson = JsonParser.object().from(ajaxResponse);
+        } catch (JsonParserException e) {
+            throw new ParsingException("Could not parse json data for comments", e);
+        }
         CommentsInfoItemsCollector collector = new CommentsInfoItemsCollector(getServiceId());
         collectCommentsFrom(collector, ajaxJson, pageUrl);
         return new InfoItemsPage<>(collector, getNextPageUrl(ajaxJson));
     }
 
-    private void collectCommentsFrom(CommentsInfoItemsCollector collector, JsonNode ajaxJson, String pageUrl) {
+    private void collectCommentsFrom(CommentsInfoItemsCollector collector, JsonObject ajaxJson, String pageUrl) throws ParsingException {
         
-        fetchTitle(ajaxJson);
         
-        List<JsonNode> comments = ajaxJson.findValues("commentRenderer");
-        comments.stream().forEach(c -> {
-            CommentsInfoItemExtractor extractor = new CommentsInfoItemExtractor() {
-
-                @Override
-                public String getUrl() throws ParsingException {
-                    return pageUrl;
-                }
-
-                @Override
-                public String getThumbnailUrl() throws ParsingException {
-                    try {
-                        return c.get("authorThumbnail").get("thumbnails").get(2).get("url").asText();
-                    } catch (Exception e) {
-                        throw new ParsingException("Could not get thumbnail url", e);
-                    }
-                }
-
-                @Override
-                public String getName() throws ParsingException {
-                    try {
-                        return c.get("authorText").get("simpleText").asText();
-                    } catch (Exception e) {
-                        throw new ParsingException("Could not get author name", e);
-                    }
-                }
-
-                @Override
-                public String getPublishedTime() throws ParsingException {
-                    try {
-                        return c.get("publishedTimeText").get("runs").get(0).get("text").asText();
-                    } catch (Exception e) {
-                        throw new ParsingException("Could not get publishedTimeText", e);
-                    }
-                }
-
-                @Override
-                public Integer getLikeCount() throws ParsingException {
-                    try {
-                        return c.get("likeCount").intValue();
-                    } catch (Exception e) {
-                        throw new ParsingException("Could not get like count", e);
-                    }
-                }
-
-                @Override
-                public String getCommentText() throws ParsingException {
-                    try {
-                        if (null != c.get("contentText").get("simpleText")) {
-                            return c.get("contentText").get("simpleText").asText();
-                        } else {
-                            return c.get("contentText").get("runs").get(0).get("text").asText();
-                        }
-                    } catch (Exception e) {
-                        throw new ParsingException("Could not get comment text", e);
-                    }
-                }
-
-                @Override
-                public String getCommentId() throws ParsingException {
-                    try {
-                        return c.get("commentId").asText();
-                    } catch (Exception e) {
-                        throw new ParsingException("Could not get comment id", e);
-                    }
-                }
-
-                @Override
-                public String getAuthorThumbnail() throws ParsingException {
-                    try {
-                        return c.get("authorThumbnail").get("thumbnails").get(2).get("url").asText();
-                    } catch (Exception e) {
-                        throw new ParsingException("Could not get author thumbnail", e);
-                    }
-                }
-
-                @Override
-                public String getAuthorName() throws ParsingException {
-                    try {
-                        return c.get("authorText").get("simpleText").asText();
-                    } catch (Exception e) {
-                        throw new ParsingException("Could not get author name", e);
-                    }
-                }
-
-                @Override
-                public String getAuthorEndpoint() throws ParsingException {
-                    try {
-                        return "https://youtube.com"
-                                + c.get("authorEndpoint").get("browseEndpoint").get("canonicalBaseUrl").asText();
-                    } catch (Exception e) {
-                        throw new ParsingException("Could not get author endpoint", e);
-                    }
-                }
-            };
-
+        JsonArray contents = JsonUtils.getValue(ajaxJson, "response.continuationContents.itemSectionContinuation.contents");
+        fetchTitle(contents);
+        List<JsonObject> comments = JsonUtils.getValues(contents, "commentThreadRenderer.comment.commentRenderer");
+        
+        for(JsonObject c: comments) {
+            CommentsInfoItemExtractor extractor = new YoutubeCommentsInfoItemExtractor(c, pageUrl);
             collector.commit(extractor);
-        });
+        }
 
     }
 
-    private void fetchTitle(JsonNode ajaxJson) {
+    private void fetchTitle(JsonArray contents) {
         if(null == title) {
             try {
-                title = ajaxJson.findValue("commentTargetTitle").get("simpleText").asText();
+                title = JsonUtils.getValue(contents.getObject(0), "commentThreadRenderer.commentTargetTitle.simpleText");
             } catch (Exception e) {
                 title = "Youtube Comments";
             }

@@ -41,7 +41,7 @@ public class YoutubeCommentsExtractorTest {
 
         assertTrue(result);
     }
-    
+
     @Test
     public void testGetCommentsFromCommentsInfo() throws IOException, ExtractionException {
         boolean result = false;
@@ -64,6 +64,11 @@ public class YoutubeCommentsExtractorTest {
     }
 
     private boolean findInComments(List<CommentsInfoItem> comments, String comment) {
-        return comments.stream().filter(c -> c.getCommentText().contains(comment)).findAny().isPresent();
+        for(CommentsInfoItem c: comments) {
+            if(c.getCommentText().contains(comment)) {
+                return true;
+            }
+        }
+        return false;
     }
 }

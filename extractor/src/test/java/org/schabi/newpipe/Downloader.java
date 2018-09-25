@@ -177,7 +177,9 @@ public class Downloader implements org.schabi.newpipe.extractor.Downloader {
         URL url = new URL(siteUrl);
         HttpsURLConnection con = (HttpsURLConnection) url.openConnection();
         for (Map.Entry<String, List<String>> pair : requestHeaders.entrySet()) {
-            pair.getValue().stream().forEach(value -> con.addRequestProperty(pair.getKey(), value));
+            for(String value: pair.getValue()) {
+                con.addRequestProperty(pair.getKey(), value);
+            }
         }
         String responseBody = dl(con);
         return new DownloadResponse(responseBody, con.getHeaderFields());
@@ -185,7 +187,7 @@ public class Downloader implements org.schabi.newpipe.extractor.Downloader {
 
     @Override
     public DownloadResponse get(String siteUrl) throws IOException, ReCaptchaException {
-        return get(siteUrl, Collections.emptyMap());
+        return get(siteUrl, Collections.EMPTY_MAP);
     }
 
     @Override
@@ -195,7 +197,9 @@ public class Downloader implements org.schabi.newpipe.extractor.Downloader {
         HttpsURLConnection con = (HttpsURLConnection) url.openConnection();
         con.setRequestMethod("POST");
         for (Map.Entry<String, List<String>> pair : requestHeaders.entrySet()) {
-            pair.getValue().stream().forEach(value -> con.addRequestProperty(pair.getKey(), value));
+            for(String value: pair.getValue()) {
+                con.addRequestProperty(pair.getKey(), value);
+            }
         }
         // set fields to default if not set already
         setDefaults(con);
