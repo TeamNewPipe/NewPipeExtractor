@@ -123,14 +123,12 @@ public class YoutubeCommentsExtractor extends CommentsExtractor {
             throw new ParsingException("unable to get parse youtube comments", e);
         }
         
-        
         for(Object c: comments) {
             if(c instanceof JsonObject) {
                 CommentsInfoItemExtractor extractor = new YoutubeCommentsInfoItemExtractor((JsonObject) c, pageUrl);
                 collector.commit(extractor);
             }
         }
-
     }
 
     private void fetchTitle(JsonArray contents) {
@@ -160,10 +158,9 @@ public class YoutubeCommentsExtractor extends CommentsExtractor {
 
     private String makeAjaxRequest(String siteUrl) throws IOException, ReCaptchaException {
 
-        StringBuilder postData = new StringBuilder();
-        postData.append(URLEncoder.encode("session_token", "UTF-8"));
-        postData.append('=');
-        postData.append(URLEncoder.encode(sessionToken, "UTF-8"));
+        Map<String, String> postDataMap = new HashMap<>();
+        postDataMap.put("session_token", sessionToken);
+        String postData = getDataString(postDataMap);
 
         Map<String, List<String>> requestHeaders = new HashMap<>();
         requestHeaders.put("Content-Type", Arrays.asList("application/x-www-form-urlencoded"));
@@ -173,7 +170,7 @@ public class YoutubeCommentsExtractor extends CommentsExtractor {
         requestHeaders.put("X-YouTube-Client-Name", Arrays.asList("1"));
         requestHeaders.put("Cookie", cookies);
 
-        return NewPipe.getDownloader().post(siteUrl, postData.toString(), requestHeaders).getResponseBody();
+        return NewPipe.getDownloader().post(siteUrl, postData, requestHeaders).getResponseBody();
     }
 
     private String getDataString(Map<String, String> params) throws UnsupportedEncodingException {
