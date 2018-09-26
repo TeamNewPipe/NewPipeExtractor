@@ -1,68 +1,82 @@
 package org.schabi.newpipe.extractor.utils;
 
-import org.xmlpull.v1.XmlPullParser;
-import org.xmlpull.v1.XmlPullParserException;
+import android.util.Log;
 
-import java.io.BufferedInputStream;
+import org.w3c.dom.Document;
+import org.w3c.dom.Element;
+import org.w3c.dom.Node;
+import org.w3c.dom.NodeList;
+import org.xml.sax.SAXException;
+
+import java.io.ByteArrayInputStream;
 import java.io.IOException;
-import java.io.InputStream;
 import java.nio.charset.Charset;
 import java.text.ParseException;
-import java.util.HashMap;
 import java.util.Locale;
-import java.util.Map;
 
 import org.schabi.newpipe.extractor.utils.io.SharpStream;
-import org.xmlpull.v1.XmlPullParserFactory;
+
+import javax.xml.parsers.DocumentBuilder;
+import javax.xml.parsers.DocumentBuilderFactory;
+import javax.xml.parsers.ParserConfigurationException;
+import javax.xml.xpath.XPathExpressionException;
 
 /**
- *
  * @author kapodamy
  */
 public class SubtitleConverter {
-    private static final int BUFFER_SIZE = 64 * 1024;
+    private static final String TAG = "SubtitleConverter";
     private static final String NEW_LINE = "\r\n";
 
-    public int dumpTTML(InputStream in, final SharpStream out, final boolean ignoreEmptyFrames, final boolean detectYoutubeDuplicateLines) {
+    public int dumpTTML(SharpStream in, final SharpStream out, final boolean ignoreEmptyFrames, final boolean detectYoutubeDuplicateLines) {
         try {
             final int[] frame_index = {0};// ugly workaround
             final Charset charset = Charset.forName("utf-8");
 
             read_xml_based(in, new FrameWriter() {
-                @Override
-                public void yield(SubtitleFrame frame) throws IOException {
-                    if (ignoreEmptyFrames && frame.isEmptyText()) {
-                        return;
-                    }
-                    out.write(String.valueOf(frame_index[0]++).getBytes(charset));
-                    out.write(NEW_LINE.getBytes(charset));
-                    out.write(getTime(frame.start, true).getBytes(charset));
-                    out.write(" --> ".getBytes(charset));
-                    out.write(getTime(frame.end, true).getBytes(charset));
-                    out.write(NEW_LINE.getBytes(charset));
-                    out.write(frame.text.getBytes(charset));
-                    out.write(NEW_LINE.getBytes(charset));
-                    out.write(NEW_LINE.getBytes(charset));
-                }
-            }, detectYoutubeDuplicateLines, "tt", "xmlns", "http://www.w3.org/ns/ttml", new String[]{"tt", "body", "div", "p"}, "begin", "end", true);
+                        @Override
+                        public void yield(SubtitleFrame frame) throws IOException {
+                            if (ignoreEmptyFrames && frame.isEmptyText()) {
+                                return;
+                            }
+                            out.write(String.valueOf(frame_index[0]++).getBytes(charset));
+                            out.write(NEW_LINE.getBytes(charset));
+                            out.write(getTime(frame.start, true).getBytes(charset));
+                            out.write(" --> ".getBytes(charset));
+                            out.write(getTime(frame.end, true).getBytes(charset));
+                            out.write(NEW_LINE.getBytes(charset));
+                            out.write(frame.text.getBytes(charset));
+                            out.write(NEW_LINE.getBytes(charset));
+                            out.write(NEW_LINE.getBytes(charset));
+                        }
+                    },
+                    detectYoutubeDuplicateLines, "tt", "xmlns", "http://www.w3.org/ns/ttml",
+                    new String[]{"timedtext", "head", "wp"}, new String[]{"body", "div", "p"},
+                    "begin", "end", true);
         } catch (Exception err) {
+            Log.e(TAG, "subtitle parse failed", err);
+
             if (err instanceof IOException) {
                 return 1;
             } else if (err instanceof ParseException) {
                 return 2;
-            } else if (err instanceof XmlPullParserException) {
+            } else if (err instanceof SAXException) {
                 return 3;
+            } else if (err instanceof ParserConfigurationException) {
+                return 4;
+            } else if (err instanceof XPathExpressionException) {
+                return 7;
             }
-            return 4;
+            return 8;
         }
 
         return 0;
     }
 
-    private void read_xml_based(InputStream reader, FrameWriter callback, boolean detectYoutubeDuplicateLines,
-                               String root, String formatAttr, String formatVersion, String[] framePath,
-                               String timeAttr, String durationAttr, boolean hasTimestamp
-    ) throws XmlPullParserException, IOException, ParseException {
+    private void read_xml_based(SharpStream source, FrameWriter callback, boolean detectYoutubeDuplicateLines,
+                                String root, String formatAttr, String formatVersion, String[] cuePath, String[] framePath,
+                                String timeAttr, String durationAttr, boolean hasTimestamp
+    ) throws IOException, ParseException, SAXException, ParserConfigurationException, XPathExpressionException {
         /*
          * XML based subtitles parser with BASIC support
          * multiple CUE is not supported
@@ -72,21 +86,31 @@ public class SubtitleConverter {
          * Language parsing is not supported
          */
 
-        XmlDocument xml = new XmlDocument(reader, BUFFER_SIZE);
+        byte[] buffer = new byte[source.available()];
+        source.read(buffer);
+
+        DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
+        factory.setNamespaceAware(true);
+        DocumentBuilder builder = factory.newDocumentBuilder();
+        Document xml = builder.parse(new ByteArrayInputStream(buffer));
+
         String attr;
 
         // get the format version or namespace
-        XmlNode node = xml.selectSingleNode(root);
+        Element node = xml.getDocumentElement();
+
         if (node == null) {
             throw new ParseException("Can't get the format version. ¿wrong namespace?", -1);
+        } else if (!node.getNodeName().equals(root)) {
+            throw new ParseException("Invalid root", -1);
         }
 
         if (formatAttr.equals("xmlns")) {
-            if (!node.getNameSpace().equals(formatVersion)) {
+            if (!node.getNamespaceURI().equals(formatVersion)) {
                 throw new UnsupportedOperationException("Expected xml namespace: " + formatVersion);
             }
         } else {
-            attr = node.getAttribute(formatAttr);
+            attr = node.getAttributeNS(formatVersion, formatAttr);
             if (attr == null) {
                 throw new ParseException("Can't get the format attribute", -1);
             }
@@ -95,29 +119,29 @@ public class SubtitleConverter {
             }
         }
 
-        XmlNodeList node_list;
+        NodeList node_list;
 
         int line_break = 0;// Maximum characters per line if present (valid for TranScript v3)
 
         if (!hasTimestamp) {
-            node_list = xml.selectNodes("timedtext", "head", "wp");
+            node_list = selectNodes(xml, cuePath, formatVersion);
 
             if (node_list != null) {
                 // if the subtitle has multiple CUEs, use the highest value
-                while ((node = node_list.getNextNode()) != null) {
+                for (int i = 0; i < node_list.getLength(); i++) {
                     try {
-                        int tmp = Integer.parseInt(node.getAttribute("ah"));
+                        int tmp = Integer.parseInt(((Element) node_list.item(i)).getAttributeNS(formatVersion, "ah"));
                         if (tmp > line_break) {
                             line_break = tmp;
                         }
-                    } catch (NumberFormatException err) {
+                    } catch (Exception err) {
                     }
                 }
             }
         }
 
         // parse every frame
-        node_list = xml.selectNodes(framePath);
+        node_list = selectNodes(xml, framePath, formatVersion);
 
         if (node_list == null) {
             return;// no frames detected
@@ -126,14 +150,15 @@ public class SubtitleConverter {
         int fs_ff = -1;// first timestamp of first frame
         boolean limit_lines = false;
 
-        while ((node = node_list.getNextNode()) != null) {
+        for (int i = 0; i < node_list.getLength(); i++) {
+            Element elem = (Element) node_list.item(i);
             SubtitleFrame obj = new SubtitleFrame();
-            obj.text = node.getInnerText();
+            obj.text = elem.getTextContent();
 
-            attr = node.getAttribute(timeAttr);// ¡this cant be null!
+            attr = elem.getAttribute(timeAttr);// ¡this cant be null!
             obj.start = hasTimestamp ? parseTimestamp(attr) : Integer.parseInt(attr);
 
-            attr = node.getAttribute(durationAttr);
+            attr = elem.getAttribute(durationAttr);
             if (obj.text == null || attr == null) {
                 continue;// normally is a blank line (on auto-generated subtitles) ignore
             }
@@ -195,6 +220,30 @@ public class SubtitleConverter {
 
             callback.yield(obj);
         }
+    }
+
+    private static NodeList selectNodes(Document xml, String[] path, String namespaceUri) throws XPathExpressionException {
+        Element ref = xml.getDocumentElement();
+
+        for (int i = 0; i < path.length - 1; i++) {
+            NodeList nodes = ref.getChildNodes();
+            if (nodes.getLength() < 1) {
+                return null;
+            }
+
+            Element elem;
+            for (int j = 0; j < nodes.getLength(); j++) {
+                if (nodes.item(j).getNodeType() == Node.ELEMENT_NODE) {
+                    elem = (Element) nodes.item(j);
+                    if (elem.getNodeName().equals(path[i]) && elem.getNamespaceURI().equals(namespaceUri)) {
+                        ref = elem;
+                        break;
+                    }
+                }
+            }
+        }
+
+        return ref.getElementsByTagNameNS(namespaceUri, path[path.length - 1]);
     }
 
     private static int parseTimestamp(String multiImpl) throws NumberFormatException, ParseException {
@@ -296,43 +345,6 @@ public class SubtitleConverter {
         return String.format(Locale.ENGLISH, "%0".concat(String.valueOf(pad)).concat("d"), nro);
     }
 
-    /**
-     * XmlPullParser wrapper
-     * @param parser XmlPullParser instance
-     * @param name node name
-     * @param depth current tree deep
-     * @return true if the node was reached, otherwise, false
-     * @throws XmlPullParserException if cant read the next XML tag
-     * @throws IOException I/O error
-     */
-    private static boolean getNextNode(XmlPullParser parser, String name, int depth) throws XmlPullParserException, IOException {
-        int cursor = 0;
-        int eventType = 0;
-
-        while (eventType != XmlPullParser.END_DOCUMENT) {
-            eventType = parser.next();
-            switch (eventType) {
-                case XmlPullParser.START_TAG:
-                    int tmp = parser.getDepth();
-
-                    if (tmp < depth) {
-                        return false;
-                    }
-                    if (tmp == depth && cursor == 0 && parser.getName().equals(name)) {
-                        return true;
-                    }
-                    cursor++;
-                    break;
-                case XmlPullParser.END_TAG:
-                    if (cursor > 0) {
-                        cursor--;
-                    }
-            }
-        }
-
-        return false;
-    }
-
 
     /******************
      * helper classes *
@@ -371,169 +383,4 @@ public class SubtitleConverter {
         }
     }
 
-    private class XmlDocument {
-        private BufferedInputStream src;
-        private XmlPullParserFactory fac;
-
-        XmlDocument(InputStream stream, int bufferSize) throws XmlPullParserException {
-            // due how xml parsing works is necessary a wrapper
-            src = new BufferedInputStream(stream, bufferSize);
-            src.mark(0);
-
-            XmlPullParserFactory factory = XmlPullParserFactory.newInstance();
-            factory.setNamespaceAware(true);
-            fac = factory;
-        }
-
-        XmlNode selectSingleNode(String... path) throws XmlPullParserException, IOException {
-            if (path.length < 1) {
-                return null;
-            }
-
-            src.reset();// ¡this is very much important!
-
-            XmlPullParser parser = fac.newPullParser();
-            parser.setInput(src, null);
-
-            for (int i = 0; i < path.length; i++) {
-                if (!getNextNode(parser, path[i], i + 1)) {
-                    return null;
-                }
-            }
-
-            return new XmlNode(parser);
-        }
-
-        XmlNodeList selectNodes(String... path) throws XmlPullParserException, IOException {
-            XmlNode node = selectSingleNode(path);
-            if (node == null) {
-                return null;
-            }
-
-            return new XmlNodeList(node.parser);
-        }
-
-    }
-
-    private class XmlNode {
-        XmlPullParser parser;
-
-        XmlNode(XmlPullParser parser) {
-            this.parser = parser;
-        }
-
-        private void init_attrs() {
-            if (attrs != null) {
-                return;
-            }
-
-            // backup attributes first
-            attrs = new HashMap<String, String>(parser.getAttributeCount());
-            for (int i = 0; i < parser.getAttributeCount(); i++) {
-                attrs.put(parser.getAttributeName(i), parser.getAttributeValue(i));
-            }
-        }
-
-        String getText() throws IOException, XmlPullParserException {
-            init_attrs();
-
-            int eventType = 0;
-            boolean crash = false;
-            int deep = parser.getDepth();
-
-            while (!crash && eventType != XmlPullParser.END_DOCUMENT) {
-                eventType = parser.next();
-
-                switch (eventType) {
-                    case XmlPullParser.TEXT:
-                        if (parser.getDepth() != deep) {
-                            continue;
-                        }
-                        return parser.getText();
-                    case XmlPullParser.END_TAG:
-                        if (parser.getDepth() > deep) {
-                            continue;
-                        }
-                        return null;
-                    case XmlPullParser.START_TAG:
-                        if (parser.getDepth() < deep) {
-                            crash = true;
-                        }
-                        break;
-                }
-            }
-
-            throw new XmlPullParserException("cant read the text node, XmlPullParser crashed");
-        }
-
-        String getInnerText() throws IOException, XmlPullParserException {
-            init_attrs();
-
-            int eventType = 0;
-            boolean crash = false;
-            int deep = parser.getDepth();
-            StringBuilder buffer = new StringBuilder(128);
-
-            while (!crash && eventType != XmlPullParser.END_DOCUMENT) {
-                eventType = parser.next();
-
-                switch (eventType) {
-                    case XmlPullParser.TEXT:
-                        String str = parser.getText();
-                        if (str != null) {
-                            buffer.append(str);
-                        }
-                        break;
-                    case XmlPullParser.END_TAG:
-                        if (parser.getDepth() > deep) {
-                            continue;
-                        }
-                        return buffer.toString();
-                    case XmlPullParser.START_TAG:
-                        if (parser.getDepth() < deep) {
-                            crash = true;
-                        }
-                        break;
-                }
-            }
-
-            throw new XmlPullParserException("cant read the text node, XmlPullParser crashed");
-        }
-
-        String getAttribute(String name) {
-            return attrs == null ? parser.getAttributeValue(null, name) : attrs.get(name);
-        }
-
-        String getNameSpace() {
-            return parser.getNamespace();
-        }
-
-        private Map<String, String> attrs;
-    }
-
-    private class XmlNodeList {
-        private XmlPullParser parser;
-        boolean first = true;
-        String node_name;
-        int node_depth;
-
-        XmlNodeList(XmlPullParser parser) {
-            this.parser = parser;
-            node_name = parser.getName();
-            node_depth = parser.getDepth();
-        }
-
-        XmlNode getNextNode() throws XmlPullParserException, IOException {
-            if (first) {
-                first = false;
-                return new XmlNode(parser);
-            }
-
-            if (!SubtitleConverter.getNextNode(parser, node_name, node_depth)) {
-                parser = null;
-            }
-
-            return parser == null ? null : new XmlNode(parser);
-        }
-    }
 }
