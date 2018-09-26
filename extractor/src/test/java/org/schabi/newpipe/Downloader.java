@@ -12,6 +12,7 @@ import java.util.Map;
 
 import javax.net.ssl.HttpsURLConnection;
 
+import org.schabi.newpipe.extractor.DownloadRequest;
 import org.schabi.newpipe.extractor.DownloadResponse;
 import org.schabi.newpipe.extractor.exceptions.ReCaptchaException;
 
@@ -172,11 +173,11 @@ public class Downloader implements org.schabi.newpipe.extractor.Downloader {
     }
 
     @Override
-    public DownloadResponse get(String siteUrl, Map<String, List<String>> requestHeaders)
+    public DownloadResponse get(String siteUrl, DownloadRequest request)
             throws IOException, ReCaptchaException {
         URL url = new URL(siteUrl);
         HttpsURLConnection con = (HttpsURLConnection) url.openConnection();
-        for (Map.Entry<String, List<String>> pair : requestHeaders.entrySet()) {
+        for (Map.Entry<String, List<String>> pair : request.getRequestHeaders().entrySet()) {
             for(String value: pair.getValue()) {
                 con.addRequestProperty(pair.getKey(), value);
             }
@@ -187,16 +188,16 @@ public class Downloader implements org.schabi.newpipe.extractor.Downloader {
 
     @Override
     public DownloadResponse get(String siteUrl) throws IOException, ReCaptchaException {
-        return get(siteUrl, Collections.EMPTY_MAP);
+        return get(siteUrl, DownloadRequest.emptyRequest);
     }
 
     @Override
-    public DownloadResponse post(String siteUrl, String requestBody, Map<String, List<String>> requestHeaders)
+    public DownloadResponse post(String siteUrl, DownloadRequest request)
             throws IOException, ReCaptchaException {
         URL url = new URL(siteUrl);
         HttpsURLConnection con = (HttpsURLConnection) url.openConnection();
         con.setRequestMethod("POST");
-        for (Map.Entry<String, List<String>> pair : requestHeaders.entrySet()) {
+        for (Map.Entry<String, List<String>> pair : request.getRequestHeaders().entrySet()) {
             for(String value: pair.getValue()) {
                 con.addRequestProperty(pair.getKey(), value);
             }
@@ -204,11 +205,12 @@ public class Downloader implements org.schabi.newpipe.extractor.Downloader {
         // set fields to default if not set already
         setDefaults(con);
 
-        byte[] postDataBytes = requestBody.toString().getBytes("UTF-8");
-        con.setRequestProperty("Content-Length", String.valueOf(postDataBytes.length));
-
-        con.setDoOutput(true);
-        con.getOutputStream().write(postDataBytes);
+        if(null != request.getRequestBody()) {
+            byte[] postDataBytes = request.getRequestBody().getBytes("UTF-8");
+            con.setRequestProperty("Content-Length", String.valueOf(postDataBytes.length));
+            con.setDoOutput(true);
+            con.getOutputStream().write(postDataBytes);
+        }
 
         StringBuilder sb = new StringBuilder();
         try (BufferedReader in = new BufferedReader(new InputStreamReader(con.getInputStream()))) {

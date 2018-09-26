@@ -61,11 +61,11 @@ public interface Downloader {
      */
     String download(String siteUrl) throws IOException, ReCaptchaException;
 
-    DownloadResponse get(String siteUrl, Map<String, List<String>> requestHeaders)
+    DownloadResponse get(String siteUrl, DownloadRequest request)
             throws IOException, ReCaptchaException;
 
     DownloadResponse get(String siteUrl) throws IOException, ReCaptchaException;
 
-    DownloadResponse post(String siteUrl, String requestBody, Map<String, List<String>> requestHeaders)
+    DownloadResponse post(String siteUrl, DownloadRequest request)
             throws IOException, ReCaptchaException;
 }

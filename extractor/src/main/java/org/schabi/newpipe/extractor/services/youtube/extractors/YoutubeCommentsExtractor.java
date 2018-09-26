@@ -8,6 +8,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.schabi.newpipe.extractor.DownloadRequest;
 import org.schabi.newpipe.extractor.DownloadResponse;
 import org.schabi.newpipe.extractor.Downloader;
 import org.schabi.newpipe.extractor.NewPipe;
@@ -145,7 +146,7 @@ public class YoutubeCommentsExtractor extends CommentsExtractor {
     public void onFetchPage(Downloader downloader) throws IOException, ExtractionException {
         DownloadResponse response = downloader.get(getUrl());
         String responseBody = response.getResponseBody();
-        cookies = response.getResponseHeaders().get("Set-Cookie");
+        cookies = response.getResponseCookies();
         sessionToken = findValue(responseBody, "XSRF_TOKEN");
         String commentsToken = findValue(responseBody, "COMMENTS_TOKEN");
         initPage = getPage(getNextPageUrl(commentsToken));
@@ -168,9 +169,10 @@ public class YoutubeCommentsExtractor extends CommentsExtractor {
         requestHeaders.put("User-Agent", Arrays.asList(USER_AGENT));
         requestHeaders.put("X-YouTube-Client-Version", Arrays.asList("2.20180815"));
         requestHeaders.put("X-YouTube-Client-Name", Arrays.asList("1"));
-        requestHeaders.put("Cookie", cookies);
+        DownloadRequest request = new DownloadRequest(postData, requestHeaders);
+        request.setRequestCookies(cookies);
 
-        return NewPipe.getDownloader().post(siteUrl, postData, requestHeaders).getResponseBody();
+        return NewPipe.getDownloader().post(siteUrl, request).getResponseBody();
     }
 
     private String getDataString(Map<String, String> params) throws UnsupportedEncodingException {
