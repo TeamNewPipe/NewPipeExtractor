@@ -34,6 +34,8 @@ public class YoutubeCommentsExtractor extends CommentsExtractor {
 
     private List<String> cookies;
     private String sessionToken;
+    private String ytClientVersion;
+    private String ytClientName;
     private String title;
     private InfoItemsPage<CommentsInfoItem> initPage;
 
@@ -144,11 +146,17 @@ public class YoutubeCommentsExtractor extends CommentsExtractor {
 
     @Override
     public void onFetchPage(Downloader downloader) throws IOException, ExtractionException {
-        DownloadResponse response = downloader.get(getUrl());
+        Map<String, List<String>> requestHeaders = new HashMap<>();
+        requestHeaders.put("User-Agent", Arrays.asList(USER_AGENT));
+        DownloadRequest request = new DownloadRequest(null, requestHeaders);
+        DownloadResponse response = downloader.get(getUrl(), request);
         String responseBody = response.getResponseBody();
         cookies = response.getResponseCookies();
-        sessionToken = findValue(responseBody, "XSRF_TOKEN");
-        String commentsToken = findValue(responseBody, "COMMENTS_TOKEN");
+        sessionToken = findValue(responseBody, "XSRF_TOKEN\":\"", "\"");
+        ytClientVersion = findValue(responseBody, "INNERTUBE_CONTEXT_CLIENT_VERSION\":\"", "\"");
+        ytClientName = findValue(responseBody, "INNERTUBE_CONTEXT_CLIENT_NAME\":", ",");
+        String commentsTokenInside = findValue(responseBody, "itemSectionRenderer", "comment-item-section");
+        String commentsToken = findValue(commentsTokenInside, "continuation\":\"", "\"");
         initPage = getPage(getNextPageUrl(commentsToken));
     }
 
@@ -167,8 +175,8 @@ public class YoutubeCommentsExtractor extends CommentsExtractor {
         requestHeaders.put("Content-Type", Arrays.asList("application/x-www-form-urlencoded"));
         requestHeaders.put("Accept", Arrays.asList("*/*"));
         requestHeaders.put("User-Agent", Arrays.asList(USER_AGENT));
-        requestHeaders.put("X-YouTube-Client-Version", Arrays.asList("2.20180815"));
-        requestHeaders.put("X-YouTube-Client-Name", Arrays.asList("1"));
+        requestHeaders.put("X-YouTube-Client-Version", Arrays.asList(ytClientVersion));
+        requestHeaders.put("X-YouTube-Client-Name", Arrays.asList(ytClientName));
         DownloadRequest request = new DownloadRequest(postData, requestHeaders);
         request.setRequestCookies(cookies);
 
@@ -190,10 +198,10 @@ public class YoutubeCommentsExtractor extends CommentsExtractor {
         return result.toString();
     }
 
-    private String findValue(String doc, String key) {
-        int beginIndex = doc.indexOf(key) + key.length() + 4;
-        int endIndex = doc.indexOf("\"", beginIndex);
+    private String findValue(String doc, String start, String end) {
+        int beginIndex = doc.indexOf(start) + start.length();
+        int endIndex = doc.indexOf(end, beginIndex);
         return doc.substring(beginIndex, endIndex);
     }
-
+    
 }
