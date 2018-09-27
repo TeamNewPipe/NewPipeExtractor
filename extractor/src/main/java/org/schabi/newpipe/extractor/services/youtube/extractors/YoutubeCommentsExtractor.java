@@ -116,7 +116,8 @@ public class YoutubeCommentsExtractor extends CommentsExtractor {
         try {
             contents = (JsonArray) JsonUtils.getValue(ajaxJson, "response.continuationContents.itemSectionContinuation.contents");
         }catch(Exception e) {
-            throw new ParsingException("unable to get parse youtube comments", e);
+            //no comments
+            return;
         }
         fetchTitle(contents);
         List<Object> comments;
