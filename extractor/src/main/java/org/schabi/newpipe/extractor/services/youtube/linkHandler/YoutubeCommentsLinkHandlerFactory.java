@@ -20,7 +20,7 @@ public class YoutubeCommentsLinkHandlerFactory extends ListLinkHandlerFactory {
 
     @Override
     public String getUrl(String id) {
-        return "https://www.youtube.com/watch?v=" + id;
+        return "https://m.youtube.com/watch?v=" + id;
     }
 
     @Override
@@ -102,6 +102,6 @@ public class YoutubeCommentsLinkHandlerFactory extends ListLinkHandlerFactory {
 
     @Override
     public String getUrl(String id, List<String> contentFilter, String sortFilter) throws ParsingException {
-        return "https://www.youtube.com/watch?v=" + id;
+        return getUrl(id);
     }
 }

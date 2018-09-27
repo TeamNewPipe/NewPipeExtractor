@@ -7,6 +7,7 @@ import org.schabi.newpipe.extractor.utils.JsonUtils;
 import com.grack.nanojson.JsonArray;
 import com.grack.nanojson.JsonObject;
 
+
 public class YoutubeCommentsInfoItemExtractor implements CommentsInfoItemExtractor {
 
     private final JsonObject json;
@@ -35,7 +36,7 @@ public class YoutubeCommentsInfoItemExtractor implements CommentsInfoItemExtract
     @Override
     public String getName() throws ParsingException {
         try {
-            return (String) JsonUtils.getValue(json, "authorText.simpleText");
+            return YoutubeCommentsExtractor.getYoutubeText((JsonObject) JsonUtils.getValue(json, "authorText"));
         } catch (Exception e) {
             throw new ParsingException("Could not get author name", e);
         }
@@ -44,8 +45,7 @@ public class YoutubeCommentsInfoItemExtractor implements CommentsInfoItemExtract
     @Override
     public String getPublishedTime() throws ParsingException {
         try {
-            JsonArray arr = (JsonArray) JsonUtils.getValue(json, "publishedTimeText.runs");
-            return (String) JsonUtils.getValue(arr.getObject(0), "text");
+            return YoutubeCommentsExtractor.getYoutubeText((JsonObject) JsonUtils.getValue(json, "publishedTimeText"));
         } catch (Exception e) {
             throw new ParsingException("Could not get publishedTimeText", e);
         }
@@ -63,14 +63,9 @@ public class YoutubeCommentsInfoItemExtractor implements CommentsInfoItemExtract
     @Override
     public String getCommentText() throws ParsingException {
         try {
-            return (String) JsonUtils.getValue(json, "contentText.simpleText");
-        } catch (Exception e1) {
-            try {
-                JsonArray arr = (JsonArray) JsonUtils.getValue(json, "contentText.runs");
-                return (String) JsonUtils.getValue(arr.getObject(0), "text");
-            } catch (Exception e2) {
-                throw new ParsingException("Could not get comment text", e2);
-            }
+            return YoutubeCommentsExtractor.getYoutubeText((JsonObject) JsonUtils.getValue(json, "contentText"));
+        } catch (Exception e) {
+            throw new ParsingException("Could not get comment text", e);
         }
     }
 
@@ -96,7 +91,7 @@ public class YoutubeCommentsInfoItemExtractor implements CommentsInfoItemExtract
     @Override
     public String getAuthorName() throws ParsingException {
         try {
-            return (String) JsonUtils.getValue(json, "authorText.simpleText");
+            return YoutubeCommentsExtractor.getYoutubeText((JsonObject) JsonUtils.getValue(json, "authorText"));
         } catch (Exception e) {
             throw new ParsingException("Could not get author name", e);
         }

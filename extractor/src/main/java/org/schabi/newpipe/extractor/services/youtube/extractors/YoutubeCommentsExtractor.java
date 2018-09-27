@@ -8,6 +8,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import javax.annotation.Nonnull;
+
 import org.schabi.newpipe.extractor.DownloadRequest;
 import org.schabi.newpipe.extractor.DownloadResponse;
 import org.schabi.newpipe.extractor.Downloader;
@@ -26,14 +28,12 @@ import org.schabi.newpipe.extractor.utils.JsonUtils;
 import com.grack.nanojson.JsonArray;
 import com.grack.nanojson.JsonObject;
 import com.grack.nanojson.JsonParser;
-import com.grack.nanojson.JsonParserException;
+
 
 public class YoutubeCommentsExtractor extends CommentsExtractor {
 
-    private static final String USER_AGENT = "Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:61.0) Gecko/20100101 Firefox/61.0";
+    private static final String USER_AGENT = "Mozilla/5.0 (Android 8.1.0; Mobile; rv:62.0) Gecko/62.0 Firefox/62.0";
 
-    private List<String> cookies;
-    private String sessionToken;
     private String ytClientVersion;
     private String ytClientName;
     private String title;
@@ -45,17 +45,14 @@ public class YoutubeCommentsExtractor extends CommentsExtractor {
 
     @Override
     public InfoItemsPage<CommentsInfoItem> getInitialPage() throws IOException, ExtractionException {
-        // initial page does not load any comments but is required to get session token
-        // and cookies
+        // initial page does not load any comments but is required to get comments token
         super.fetchPage();
         return initPage;
     }
 
-    // isn't this method redundant. you can just call getnextpage on getInitialPage
     @Override
     public String getNextPageUrl() throws IOException, ExtractionException {
-        // initial page does not load any comments but is required to get session token
-        // and cookies
+        // initial page does not load any comments but is required to get comments token
         super.fetchPage();
         return initPage.getNextPageUrl();
     }
@@ -64,7 +61,7 @@ public class YoutubeCommentsExtractor extends CommentsExtractor {
         
         JsonArray arr;
         try {
-            arr = (JsonArray) JsonUtils.getValue(ajaxJson, "response.continuationContents.itemSectionContinuation.continuations");
+            arr = (JsonArray) JsonUtils.getValue(ajaxJson, "response.continuationContents.commentSectionContinuation.continuations");
         } catch (Exception e) {
             return "";
         }
@@ -85,9 +82,8 @@ public class YoutubeCommentsExtractor extends CommentsExtractor {
         params.put("action_get_comments", "1");
         params.put("pbj", "1");
         params.put("ctoken", continuation);
-        params.put("continuation", continuation);
         try {
-            return "https://www.youtube.com/comment_service_ajax?" + getDataString(params);
+            return "https://m.youtube.com/watch_comment?" + getDataString(params);
         } catch (UnsupportedEncodingException e) {
             throw new ParsingException("Could not get next page url", e);
         }
@@ -101,8 +97,8 @@ public class YoutubeCommentsExtractor extends CommentsExtractor {
         String ajaxResponse = makeAjaxRequest(pageUrl);
         JsonObject ajaxJson;
         try {
-            ajaxJson = JsonParser.object().from(ajaxResponse);
-        } catch (JsonParserException e) {
+            ajaxJson = JsonParser.array().from(ajaxResponse).getObject(1);
+        } catch (Exception e) {
             throw new ParsingException("Could not parse json data for comments", e);
         }
         CommentsInfoItemsCollector collector = new CommentsInfoItemsCollector(getServiceId());
@@ -114,7 +110,7 @@ public class YoutubeCommentsExtractor extends CommentsExtractor {
         
         JsonArray contents;
         try {
-            contents = (JsonArray) JsonUtils.getValue(ajaxJson, "response.continuationContents.itemSectionContinuation.contents");
+            contents = (JsonArray) JsonUtils.getValue(ajaxJson, "response.continuationContents.commentSectionContinuation.items");
         }catch(Exception e) {
             //no comments
             return;
@@ -138,7 +134,7 @@ public class YoutubeCommentsExtractor extends CommentsExtractor {
     private void fetchTitle(JsonArray contents) {
         if(null == title) {
             try {
-                title = (String) JsonUtils.getValue(contents.getObject(0), "commentThreadRenderer.commentTargetTitle.simpleText");
+                title = getYoutubeText((JsonObject) JsonUtils.getValue(contents.getObject(0), "commentThreadRenderer.commentTargetTitle"));
             } catch (Exception e) {
                 title = "Youtube Comments";
             }
@@ -152,11 +148,9 @@ public class YoutubeCommentsExtractor extends CommentsExtractor {
         DownloadRequest request = new DownloadRequest(null, requestHeaders);
         DownloadResponse response = downloader.get(getUrl(), request);
         String responseBody = response.getResponseBody();
-        cookies = response.getResponseCookies();
-        sessionToken = findValue(responseBody, "XSRF_TOKEN\":\"", "\"");
         ytClientVersion = findValue(responseBody, "INNERTUBE_CONTEXT_CLIENT_VERSION\":\"", "\"");
         ytClientName = findValue(responseBody, "INNERTUBE_CONTEXT_CLIENT_NAME\":", ",");
-        String commentsTokenInside = findValue(responseBody, "itemSectionRenderer", "comment-item-section");
+        String commentsTokenInside = findValue(responseBody, "commentSectionRenderer", "}");
         String commentsToken = findValue(commentsTokenInside, "continuation\":\"", "\"");
         initPage = getPage(getNextPageUrl(commentsToken));
     }
@@ -168,20 +162,14 @@ public class YoutubeCommentsExtractor extends CommentsExtractor {
 
     private String makeAjaxRequest(String siteUrl) throws IOException, ReCaptchaException {
 
-        Map<String, String> postDataMap = new HashMap<>();
-        postDataMap.put("session_token", sessionToken);
-        String postData = getDataString(postDataMap);
-
         Map<String, List<String>> requestHeaders = new HashMap<>();
-        requestHeaders.put("Content-Type", Arrays.asList("application/x-www-form-urlencoded"));
         requestHeaders.put("Accept", Arrays.asList("*/*"));
         requestHeaders.put("User-Agent", Arrays.asList(USER_AGENT));
         requestHeaders.put("X-YouTube-Client-Version", Arrays.asList(ytClientVersion));
         requestHeaders.put("X-YouTube-Client-Name", Arrays.asList(ytClientName));
-        DownloadRequest request = new DownloadRequest(postData, requestHeaders);
-        request.setRequestCookies(cookies);
+        DownloadRequest request = new DownloadRequest(null, requestHeaders);
 
-        return NewPipe.getDownloader().post(siteUrl, request).getResponseBody();
+        return NewPipe.getDownloader().get(siteUrl, request).getResponseBody();
     }
 
     private String getDataString(Map<String, String> params) throws UnsupportedEncodingException {
@@ -203,6 +191,23 @@ public class YoutubeCommentsExtractor extends CommentsExtractor {
         int beginIndex = doc.indexOf(start) + start.length();
         int endIndex = doc.indexOf(end, beginIndex);
         return doc.substring(beginIndex, endIndex);
+    }
+    
+    public static String getYoutubeText(@Nonnull JsonObject object) throws ParsingException {
+        try {
+            return (String) JsonUtils.getValue(object, "simpleText");
+        } catch (Exception e1) {
+            try {
+                JsonArray arr = (JsonArray) JsonUtils.getValue(object, "runs");
+                String result = "";
+                for(int i=0; i<arr.size();i++) {
+                    result = result + (String) JsonUtils.getValue(arr.getObject(i), "text");
+                }
+                return result;
+            } catch (Exception e2) {
+                throw new ParsingException("Could not get text", e2);
+            }
+        }
     }
     
 }
