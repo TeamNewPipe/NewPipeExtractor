@@ -9,6 +9,7 @@ import org.schabi.newpipe.extractor.exceptions.ParsingException;
 import org.schabi.newpipe.extractor.stream.StreamInfoItem;
 import org.schabi.newpipe.extractor.linkhandler.ListLinkHandler;
 import org.schabi.newpipe.extractor.utils.ExtractorHelper;
+import org.schabi.newpipe.extractor.utils.Localization;
 
 import java.io.IOException;
 
@@ -34,8 +35,8 @@ import java.io.IOException;
 
 public class ChannelInfo extends ListInfo<StreamInfoItem> {
 
-    public ChannelInfo(int serviceId, ListLinkHandler urlIdHandler, String name) throws ParsingException {
-        super(serviceId, urlIdHandler, name);
+    public ChannelInfo(int serviceId, ListLinkHandler linkHandler, String name) throws ParsingException {
+        super(serviceId, linkHandler, name);
     }
 
     public static ChannelInfo getInfo(String url) throws IOException, ExtractionException {
@@ -48,14 +49,17 @@ public class ChannelInfo extends ListInfo<StreamInfoItem> {
         return getInfo(extractor);
     }
 
-    public static InfoItemsPage<StreamInfoItem> getMoreItems(StreamingService service, String url, String pageUrl) throws IOException, ExtractionException {
+    public static InfoItemsPage<StreamInfoItem> getMoreItems(StreamingService service,
+                                                             String url,
+                                                             String pageUrl,
+                                                             Localization localization) throws IOException, ExtractionException {
         return service.getChannelExtractor(url).getPage(pageUrl);
     }
 
     public static ChannelInfo getInfo(ChannelExtractor extractor) throws IOException, ExtractionException {
 
         ChannelInfo info = new ChannelInfo(extractor.getServiceId(),
-                extractor.getUIHandler(),
+                extractor.getLinkHandler(),
                 extractor.getName());
 
 

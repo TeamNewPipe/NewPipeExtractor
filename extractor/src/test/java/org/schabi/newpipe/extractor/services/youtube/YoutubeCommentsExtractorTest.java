@@ -17,6 +17,7 @@ import org.schabi.newpipe.extractor.comments.CommentsInfo;
 import org.schabi.newpipe.extractor.comments.CommentsInfoItem;
 import org.schabi.newpipe.extractor.exceptions.ExtractionException;
 import org.schabi.newpipe.extractor.services.youtube.extractors.YoutubeCommentsExtractor;
+import org.schabi.newpipe.extractor.utils.Localization;
 
 public class YoutubeCommentsExtractorTest {
 
@@ -24,7 +25,7 @@ public class YoutubeCommentsExtractorTest {
 
     @BeforeClass
     public static void setUp() throws Exception {
-        NewPipe.init(Downloader.getInstance());
+        NewPipe.init(Downloader.getInstance(), new Localization("GB", "en"));
         extractor = (YoutubeCommentsExtractor) YouTube
                 .getCommentsExtractor("https://www.youtube.com/watch?v=rrgFN3AxGfs");
     }

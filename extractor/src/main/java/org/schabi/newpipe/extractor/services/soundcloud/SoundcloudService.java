@@ -11,6 +11,7 @@ import org.schabi.newpipe.extractor.playlist.PlaylistExtractor;
 import org.schabi.newpipe.extractor.search.SearchExtractor;
 import org.schabi.newpipe.extractor.stream.StreamExtractor;
 import org.schabi.newpipe.extractor.subscription.SubscriptionExtractor;
+import org.schabi.newpipe.extractor.utils.Localization;
 
 import static java.util.Collections.singletonList;
 import static org.schabi.newpipe.extractor.StreamingService.ServiceInfo.MediaCapability.AUDIO;
@@ -22,8 +23,8 @@ public class SoundcloudService extends StreamingService {
     }
 
     @Override
-    public SearchExtractor getSearchExtractor(SearchQueryHandler queryHandler, String contentCountry) {
-        return new SoundcloudSearchExtractor(this, queryHandler, contentCountry);
+    public SearchExtractor getSearchExtractor(SearchQueryHandler queryHandler, Localization localization) {
+        return new SoundcloudSearchExtractor(this, queryHandler, localization);
     }
 
     @Override
@@ -48,39 +49,40 @@ public class SoundcloudService extends StreamingService {
 
 
     @Override
-    public StreamExtractor getStreamExtractor(LinkHandler LinkHandler) {
-        return new SoundcloudStreamExtractor(this, LinkHandler);
+    public StreamExtractor getStreamExtractor(LinkHandler LinkHandler, Localization localization) {
+        return new SoundcloudStreamExtractor(this, LinkHandler, localization);
     }
 
     @Override
-    public ChannelExtractor getChannelExtractor(ListLinkHandler urlIdHandler) {
-        return new SoundcloudChannelExtractor(this, urlIdHandler);
+    public ChannelExtractor getChannelExtractor(ListLinkHandler linkHandler, Localization localization) {
+        return new SoundcloudChannelExtractor(this, linkHandler, localization);
     }
 
     @Override
-    public PlaylistExtractor getPlaylistExtractor(ListLinkHandler urlIdHandler) {
-        return new SoundcloudPlaylistExtractor(this, urlIdHandler);
+    public PlaylistExtractor getPlaylistExtractor(ListLinkHandler linkHandler, Localization localization) {
+        return new SoundcloudPlaylistExtractor(this, linkHandler, localization);
     }
 
     @Override
-    public SuggestionExtractor getSuggestionExtractor() {
-        return new SoundcloudSuggestionExtractor(getServiceId());
+    public SuggestionExtractor getSuggestionExtractor(Localization localization) {
+        return new SoundcloudSuggestionExtractor(getServiceId(), localization);
     }
 
     @Override
-    public KioskList getKioskList() throws ExtractionException {
+    public KioskList getKioskList(Localization localization) throws ExtractionException {
         KioskList.KioskExtractorFactory chartsFactory = new KioskList.KioskExtractorFactory() {
             @Override
             public KioskExtractor createNewKiosk(StreamingService streamingService,
                                                  String url,
-                                                 String id)
+                                                 String id,
+                                                 Localization local)
                     throws ExtractionException {
                 return new SoundcloudChartsExtractor(SoundcloudService.this,
-                        new SoundcloudChartsLinkHandlerFactory().fromUrl(url), id);
+                        new SoundcloudChartsLinkHandlerFactory().fromUrl(url), id, local);
             }
         };
 
-        KioskList list = new KioskList(getServiceId());
+        KioskList list = new KioskList(getServiceId(), localization);
 
         // add kiosks here e.g.:
         final SoundcloudChartsLinkHandlerFactory h = new SoundcloudChartsLinkHandlerFactory();
@@ -106,12 +108,14 @@ public class SoundcloudService extends StreamingService {
 	}
 
 	@Override
-	public CommentsExtractor getCommentsExtractor(ListLinkHandler urlIdHandler) throws ExtractionException {
-		return null;
-	}
-
+    public CommentsExtractor getCommentsExtractor(ListLinkHandler linkHandler, Localization localization)
+            throws ExtractionException {
+        return null;
+    }
+	
     @Override
     public boolean isCommentsSupported() {
         return false;
     }
+    
 }

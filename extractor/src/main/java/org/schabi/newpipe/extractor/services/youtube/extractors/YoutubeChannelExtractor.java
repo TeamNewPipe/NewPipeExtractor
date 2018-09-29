@@ -17,6 +17,7 @@ import org.schabi.newpipe.extractor.linkhandler.ListLinkHandler;
 import org.schabi.newpipe.extractor.stream.StreamInfoItem;
 import org.schabi.newpipe.extractor.stream.StreamInfoItemsCollector;
 import org.schabi.newpipe.extractor.utils.DonationLinkHelper;
+import org.schabi.newpipe.extractor.utils.Localization;
 import org.schabi.newpipe.extractor.utils.Parser;
 import org.schabi.newpipe.extractor.utils.Utils;
 
@@ -51,8 +52,8 @@ public class YoutubeChannelExtractor extends ChannelExtractor {
 
     private Document doc;
 
-    public YoutubeChannelExtractor(StreamingService service, ListLinkHandler urlIdHandler) {
-        super(service, urlIdHandler);
+    public YoutubeChannelExtractor(StreamingService service, ListLinkHandler linkHandler, Localization localization) {
+        super(service, linkHandler, localization);
     }
 
     @Override

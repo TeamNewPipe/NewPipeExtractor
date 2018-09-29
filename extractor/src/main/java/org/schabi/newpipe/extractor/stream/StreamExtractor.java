@@ -26,6 +26,7 @@ import org.schabi.newpipe.extractor.Subtitles;
 import org.schabi.newpipe.extractor.exceptions.ExtractionException;
 import org.schabi.newpipe.extractor.exceptions.ParsingException;
 import org.schabi.newpipe.extractor.linkhandler.LinkHandler;
+import org.schabi.newpipe.extractor.utils.Localization;
 import org.schabi.newpipe.extractor.utils.Parser;
 
 import javax.annotation.Nonnull;
@@ -39,8 +40,8 @@ public abstract class StreamExtractor extends Extractor {
 
     public static final int NO_AGE_LIMIT = 0;
 
-    public StreamExtractor(StreamingService service, LinkHandler linkHandler) {
-        super(service, linkHandler);
+    public StreamExtractor(StreamingService service, LinkHandler linkHandler, Localization localization) {
+        super(service, linkHandler, localization);
     }
 
     @Nonnull

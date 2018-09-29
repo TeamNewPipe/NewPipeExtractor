@@ -7,6 +7,7 @@ import org.schabi.newpipe.extractor.NewPipe;
 import org.schabi.newpipe.extractor.channel.ChannelExtractor;
 import org.schabi.newpipe.extractor.exceptions.ParsingException;
 import org.schabi.newpipe.extractor.services.BaseChannelExtractorTest;
+import org.schabi.newpipe.extractor.utils.Localization;
 
 import static org.junit.Assert.*;
 import static org.schabi.newpipe.extractor.ExtractorAsserts.assertEmpty;
@@ -23,7 +24,7 @@ public class SoundcloudChannelExtractorTest {
 
         @BeforeClass
         public static void setUp() throws Exception {
-            NewPipe.init(Downloader.getInstance());
+            NewPipe.init(Downloader.getInstance(), new Localization("GB", "en"));
             extractor = (SoundcloudChannelExtractor) SoundCloud
                     .getChannelExtractor("http://soundcloud.com/liluzivert/sets");
             extractor.fetchPage();
@@ -107,7 +108,7 @@ public class SoundcloudChannelExtractorTest {
 
         @BeforeClass
         public static void setUp() throws Exception {
-            NewPipe.init(Downloader.getInstance());
+            NewPipe.init(Downloader.getInstance(), new Localization("GB", "en"));
             extractor = (SoundcloudChannelExtractor) SoundCloud
                     .getChannelExtractor("https://soundcloud.com/dubmatix");
             extractor.fetchPage();

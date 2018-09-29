@@ -26,6 +26,7 @@ import org.schabi.newpipe.Downloader;
 import org.schabi.newpipe.extractor.NewPipe;
 import org.schabi.newpipe.extractor.SuggestionExtractor;
 import org.schabi.newpipe.extractor.exceptions.ExtractionException;
+import org.schabi.newpipe.extractor.utils.Localization;
 
 import java.io.IOException;
 
@@ -40,12 +41,12 @@ public class YoutubeSuggestionExtractorTest {
 
     @BeforeClass
     public static void setUp() throws Exception {
-        NewPipe.init(Downloader.getInstance());
+        NewPipe.init(Downloader.getInstance(), new Localization("DE", "de"));
         suggestionExtractor = YouTube.getSuggestionExtractor();
     }
 
     @Test
     public void testIfSuggestions() throws IOException, ExtractionException {
-        assertFalse(suggestionExtractor.suggestionList("hello", "de").isEmpty());
+        assertFalse(suggestionExtractor.suggestionList("hello").isEmpty());
     }
 }

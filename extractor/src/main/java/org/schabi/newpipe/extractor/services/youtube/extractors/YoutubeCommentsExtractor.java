@@ -24,6 +24,7 @@ import org.schabi.newpipe.extractor.exceptions.ParsingException;
 import org.schabi.newpipe.extractor.exceptions.ReCaptchaException;
 import org.schabi.newpipe.extractor.linkhandler.ListLinkHandler;
 import org.schabi.newpipe.extractor.utils.JsonUtils;
+import org.schabi.newpipe.extractor.utils.Localization;
 
 import com.grack.nanojson.JsonArray;
 import com.grack.nanojson.JsonObject;
@@ -39,8 +40,8 @@ public class YoutubeCommentsExtractor extends CommentsExtractor {
     private String title;
     private InfoItemsPage<CommentsInfoItem> initPage;
 
-    public YoutubeCommentsExtractor(StreamingService service, ListLinkHandler uiHandler) {
-        super(service, uiHandler);
+    public YoutubeCommentsExtractor(StreamingService service, ListLinkHandler uiHandler, Localization localization) {
+        super(service, uiHandler, localization);
     }
 
     @Override

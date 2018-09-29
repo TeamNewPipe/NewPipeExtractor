@@ -18,6 +18,7 @@ import org.schabi.newpipe.extractor.exceptions.ReCaptchaException;
 import org.schabi.newpipe.extractor.linkhandler.LinkHandler;
 import org.schabi.newpipe.extractor.services.youtube.ItagItem;
 import org.schabi.newpipe.extractor.stream.*;
+import org.schabi.newpipe.extractor.utils.Localization;
 import org.schabi.newpipe.extractor.utils.Parser;
 import org.schabi.newpipe.extractor.utils.Utils;
 
@@ -87,8 +88,8 @@ public class YoutubeStreamExtractor extends StreamExtractor {
 
     private boolean isAgeRestricted;
 
-    public YoutubeStreamExtractor(StreamingService service, LinkHandler linkHandler) {
-        super(service, linkHandler);
+    public YoutubeStreamExtractor(StreamingService service, LinkHandler linkHandler, Localization localization) {
+        super(service, linkHandler, localization);
     }
 
     /*//////////////////////////////////////////////////////////////////////////
@@ -177,12 +178,10 @@ public class YoutubeStreamExtractor extends StreamExtractor {
                     // if link is null the a tag is a hashtag.
                     // They refer to the youtube search. We do not handle them.
                     a.text(link);
-
+                } else if(redirectLink.toString().contains("https://www.youtube.com/")) {
+                    a.text(redirectLink.toString());
                 }
-            } else if(redirectLink.toString().contains("watch?v=")
-                    || redirectLink.toString().contains("https://www.youtube.com/")) {
-                // Another posibility is that this link is pointing to another video
-                // we need to put the redirectLink in here explicitly in order to add the domain part to the link.
+            } else if(redirectLink.toString().contains("https://www.youtube.com/")) {
                 a.text(redirectLink.toString());
             }
         }

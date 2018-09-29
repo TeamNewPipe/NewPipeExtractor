@@ -6,6 +6,7 @@ import org.schabi.newpipe.extractor.StreamingService;
 import org.schabi.newpipe.extractor.exceptions.ExtractionException;
 import org.schabi.newpipe.extractor.exceptions.ParsingException;
 import org.schabi.newpipe.extractor.linkhandler.SearchQueryHandler;
+import org.schabi.newpipe.extractor.utils.Localization;
 
 public abstract class SearchExtractor extends ListExtractor<InfoItem> {
 
@@ -16,16 +17,16 @@ public abstract class SearchExtractor extends ListExtractor<InfoItem> {
     }
 
     private final InfoItemsSearchCollector collector;
-    private final String contentCountry;
 
-    public SearchExtractor(StreamingService service, SearchQueryHandler urlIdHandler, String contentCountry) {
-        super(service, urlIdHandler);
+    public SearchExtractor(StreamingService service,
+                           SearchQueryHandler linkHandler,
+                           Localization localization) {
+        super(service, linkHandler, localization);
         collector = new InfoItemsSearchCollector(service.getServiceId());
-        this.contentCountry = contentCountry;
     }
 
     public String getSearchString() {
-        return getUIHandler().getSearchString();
+        return getLinkHandler().getSearchString();
     }
 
     public abstract String getSearchSuggestion() throws ParsingException;
@@ -35,16 +36,12 @@ public abstract class SearchExtractor extends ListExtractor<InfoItem> {
     }
 
     @Override
-    public SearchQueryHandler getUIHandler() {
-        return (SearchQueryHandler) super.getUIHandler();
+    public SearchQueryHandler getLinkHandler() {
+        return (SearchQueryHandler) super.getLinkHandler();
     }
 
     @Override
     public String getName() {
-        return getUIHandler().getSearchString();
-    }
-
-    protected String getContentCountry() {
-        return contentCountry;
+        return getLinkHandler().getSearchString();
     }
 }

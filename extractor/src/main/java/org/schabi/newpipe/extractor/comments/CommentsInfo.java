@@ -1,8 +1,6 @@
 package org.schabi.newpipe.extractor.comments;
 
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
 
 import org.schabi.newpipe.extractor.ListExtractor.InfoItemsPage;
 import org.schabi.newpipe.extractor.ListInfo;
@@ -10,7 +8,6 @@ import org.schabi.newpipe.extractor.NewPipe;
 import org.schabi.newpipe.extractor.StreamingService;
 import org.schabi.newpipe.extractor.exceptions.ExtractionException;
 import org.schabi.newpipe.extractor.linkhandler.ListLinkHandler;
-import org.schabi.newpipe.extractor.stream.StreamInfoItem;
 import org.schabi.newpipe.extractor.utils.ExtractorHelper;
 
 public class CommentsInfo extends ListInfo<CommentsInfoItem>{
@@ -37,7 +34,7 @@ public class CommentsInfo extends ListInfo<CommentsInfoItem>{
         commentsExtractor.fetchPage();
         String name = commentsExtractor.getName();
         int serviceId = commentsExtractor.getServiceId();
-        ListLinkHandler listUrlIdHandler = commentsExtractor.getUIHandler();
+        ListLinkHandler listUrlIdHandler = commentsExtractor.getLinkHandler();
         CommentsInfo commentsInfo = new CommentsInfo(serviceId, listUrlIdHandler, name);
         commentsInfo.setCommentsExtractor(commentsExtractor);
         InfoItemsPage<CommentsInfoItem> initialCommentsPage = ExtractorHelper.getItemsPageOrLogError(commentsInfo,
