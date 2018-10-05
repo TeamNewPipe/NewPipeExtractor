@@ -177,7 +177,7 @@ public class YoutubeStreamExtractorDefaultTest {
         public static void setUp() throws Exception {
             NewPipe.init(Downloader.getInstance(), new Localization("GB", "en"));
             extractor = (YoutubeStreamExtractor) YouTube
-                    .getStreamExtractor("https://www.youtube.com/watch?v=LzR8Sf5PK2Q");
+                    .getStreamExtractor("https://www.youtube.com/watch?v=fBc4Q_htqPg");
             extractor.fetchPage();
         }
 

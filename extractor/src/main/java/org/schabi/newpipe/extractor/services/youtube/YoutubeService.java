@@ -90,8 +90,8 @@ public class YoutubeService extends StreamingService {
     }
 
     @Override
-    public KioskList getKioskList(final Localization localization) throws ExtractionException {
-        KioskList list = new KioskList(getServiceId(), localization);
+    public KioskList getKioskList() throws ExtractionException {
+        KioskList list = new KioskList(getServiceId());
 
         // add kiosks here e.g.:
         try {
