@@ -79,7 +79,7 @@ public class YoutubeSearchExtractor extends SearchExtractor {
 
     @Override
     public String getNextPageUrl() throws ExtractionException {
-        return getUrl() + "&page=" + 2;
+        return getUrl() + "&page=" + 2 + "&gl=" + getLocalization().getCountry();
     }
 
     @Override
