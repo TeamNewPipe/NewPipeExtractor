@@ -4,7 +4,6 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
-import java.util.Map;
 
 import org.jsoup.helper.StringUtil;
 import org.schabi.newpipe.extractor.DownloadResponse;
@@ -20,8 +19,6 @@ import org.schabi.newpipe.extractor.linkhandler.LinkHandler;
 import org.schabi.newpipe.extractor.services.peertube.PeertubeParsingHelper;
 import org.schabi.newpipe.extractor.services.peertube.linkHandler.PeertubeChannelLinkHandlerFactory;
 import org.schabi.newpipe.extractor.services.peertube.linkHandler.PeertubeTrendingLinkHandlerFactory;
-import org.schabi.newpipe.extractor.services.soundcloud.SoundcloudParsingHelper;
-import org.schabi.newpipe.extractor.services.youtube.ItagItem;
 import org.schabi.newpipe.extractor.stream.AudioStream;
 import org.schabi.newpipe.extractor.stream.Stream;
 import org.schabi.newpipe.extractor.stream.StreamExtractor;
@@ -60,7 +57,11 @@ public class PeertubeStreamExtractor extends StreamExtractor {
 
     @Override
     public String getDescription() throws ParsingException {
-        return JsonUtils.getString(json, "description");
+        try {
+            return JsonUtils.getString(json, "description");
+        }catch(ParsingException e) {
+            return "No description";
+        }
     }
 
     @Override
@@ -112,8 +113,13 @@ public class PeertubeStreamExtractor extends StreamExtractor {
 
     @Override
     public String getUploaderAvatarUrl() throws ParsingException {
-        String avatarPath = JsonUtils.getString(json, "account.avatar.path");
-        return ServiceList.PeerTube.getBaseUrl() + avatarPath;
+        String value;
+        try {
+            value = JsonUtils.getString(json, "account.avatar.path");
+        }catch(Exception e) {
+            value = "/client/assets/images/default-avatar.png";
+        }
+        return ServiceList.PeerTube.getBaseUrl() + value;
     }
 
     @Override
