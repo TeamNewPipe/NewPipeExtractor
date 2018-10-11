@@ -46,6 +46,6 @@ public class PeertubeTrendingLinkHandlerFactory extends ListLinkHandlerFactory {
 
     @Override
     public boolean onAcceptUrl(final String url) {
-        return url.contains("/videos/trending") || url.contains("/videos/recently-added") || url.contains("/videos/local");
+        return url.contains("/videos?") || url.contains("/videos/trending") || url.contains("/videos/recently-added") || url.contains("/videos/local");
     }
 }
