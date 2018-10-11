@@ -1,5 +1,6 @@
 package org.schabi.newpipe.extractor;
 
+import org.schabi.newpipe.extractor.services.peertube.PeertubeService;
 import org.schabi.newpipe.extractor.services.soundcloud.SoundcloudService;
 import org.schabi.newpipe.extractor.services.youtube.YoutubeService;
 
@@ -18,11 +19,14 @@ public final class ServiceList {
 
     public static final YoutubeService YouTube;
     public static final SoundcloudService SoundCloud;
+    public static final PeertubeService PeerTube; 
 
     private static final List<StreamingService> SERVICES = unmodifiableList(
             asList(
                     YouTube = new YoutubeService(0),
-                    SoundCloud = new SoundcloudService(1)
+                    SoundCloud = new SoundcloudService(1),
+                    PeerTube = new PeertubeService(2)
+                    
             ));
 
     /**

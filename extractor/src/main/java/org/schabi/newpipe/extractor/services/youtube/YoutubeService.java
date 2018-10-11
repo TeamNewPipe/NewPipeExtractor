@@ -155,4 +155,9 @@ public class YoutubeService extends StreamingService {
         return true;
     }
 
+    @Override
+    public String getBaseUrl() {
+        return "https://youtube.com";
+    }
+
 }

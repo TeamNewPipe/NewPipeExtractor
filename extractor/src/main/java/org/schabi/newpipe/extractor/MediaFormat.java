@@ -117,6 +117,13 @@ public enum MediaFormat {
         return null;
     }
 
+    public static MediaFormat getFromSuffix(String suffix) {
+        for (MediaFormat vf: values()) {
+            if (vf.suffix.equals(suffix)) return vf;
+        }
+        return null;
+    }
+    
     /**
      * Get the name of the format
      * @return the name of the format
@@ -140,4 +147,5 @@ public enum MediaFormat {
     public String getMimeType() {
         return mimeType;
     }
+    
 }

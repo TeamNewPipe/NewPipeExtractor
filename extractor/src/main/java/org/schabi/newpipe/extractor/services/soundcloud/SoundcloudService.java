@@ -117,5 +117,10 @@ public class SoundcloudService extends StreamingService {
     public boolean isCommentsSupported() {
         return false;
     }
+
+    @Override
+    public String getBaseUrl() {
+        return "https://soundcloud.com";
+    }
     
 }

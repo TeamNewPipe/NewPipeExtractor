@@ -22,7 +22,8 @@ import org.schabi.newpipe.extractor.utils.Localization;
 
 public abstract class StreamingService {
     public static class ServiceInfo {
-        private final String name;
+        private String name;
+
         private final List<MediaCapability> mediaCapabilities;
 
         public ServiceInfo(String name, List<MediaCapability> mediaCapabilities) {
@@ -32,6 +33,10 @@ public abstract class StreamingService {
 
         public String getName() {
             return name;
+        }
+        
+        public void setName(String name) {
+            this.name = name;
         }
 
         public List<MediaCapability> getMediaCapabilities() {
@@ -191,6 +196,8 @@ public abstract class StreamingService {
     }
 
     public abstract boolean isCommentsSupported();
+    
+    public abstract String getBaseUrl();
 
 
 

@@ -28,6 +28,26 @@ public class JsonUtils {
         return result;
     }
     
+    @Nonnull
+    public static String getString(@Nonnull JsonObject object, @Nonnull String path) throws ParsingException{
+        Object value = getValue(object, path);
+        if(value instanceof String) {
+            return (String) getValue(object, path);
+        }else {
+            throw new ParsingException("Unable to get " + path);
+        }
+    }
+    
+    @Nonnull
+    public static Number getNumber(@Nonnull JsonObject object, @Nonnull String path) throws ParsingException{
+        Object value = getValue(object, path);
+        if(value instanceof Number) {
+            return (Number) getValue(object, path);
+        }else {
+            throw new ParsingException("Unable to get " + path);
+        }
+    }
+    
 
     @Nonnull
     public static List<Object> getValues(@Nonnull JsonArray array, @Nonnull String path) throws ParsingException {
