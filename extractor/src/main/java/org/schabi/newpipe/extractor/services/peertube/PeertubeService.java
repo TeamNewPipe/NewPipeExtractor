@@ -27,6 +27,7 @@ import org.schabi.newpipe.extractor.services.peertube.extractors.PeertubeChannel
 import org.schabi.newpipe.extractor.services.peertube.extractors.PeertubeCommentsExtractor;
 import org.schabi.newpipe.extractor.services.peertube.extractors.PeertubeSearchExtractor;
 import org.schabi.newpipe.extractor.services.peertube.extractors.PeertubeStreamExtractor;
+import org.schabi.newpipe.extractor.services.peertube.extractors.PeertubeSuggestionExtractor;
 import org.schabi.newpipe.extractor.services.peertube.extractors.PeertubeTrendingExtractor;
 import org.schabi.newpipe.extractor.services.peertube.linkHandler.PeertubeChannelLinkHandlerFactory;
 import org.schabi.newpipe.extractor.services.peertube.linkHandler.PeertubeCommentsLinkHandlerFactory;
@@ -87,8 +88,7 @@ public class PeertubeService extends StreamingService {
 
     @Override
     public SuggestionExtractor getSuggestionExtractor(Localization localization) {
-        // TODO Auto-generated method stub
-        return null;
+        return new PeertubeSuggestionExtractor(this.getServiceId(), localization);
     }
 
     @Override
