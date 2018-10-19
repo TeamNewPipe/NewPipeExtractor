@@ -51,8 +51,7 @@ public class ChannelInfo extends ListInfo<StreamInfoItem> {
 
     public static InfoItemsPage<StreamInfoItem> getMoreItems(StreamingService service,
                                                              String url,
-                                                             String pageUrl,
-                                                             Localization localization) throws IOException, ExtractionException {
+                                                             String pageUrl) throws IOException, ExtractionException {
         return service.getChannelExtractor(url).getPage(pageUrl);
     }
 

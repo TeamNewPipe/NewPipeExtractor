@@ -37,25 +37,20 @@ public class KioskInfo extends ListInfo<StreamInfoItem> {
 
     public static ListExtractor.InfoItemsPage<StreamInfoItem> getMoreItems(StreamingService service,
                                                                            String url,
-                                                                           String pageUrl,
-                                                                           String contentCountry) throws IOException, ExtractionException {
+                                                                           String pageUrl) throws IOException, ExtractionException {
         KioskList kl = service.getKioskList();
         KioskExtractor extractor = kl.getExtractorByUrl(url, pageUrl);
-        extractor.setContentCountry(contentCountry);
         return extractor.getPage(pageUrl);
     }
 
-    public static KioskInfo getInfo(String url,
-                                    String contentCountry) throws IOException, ExtractionException {
-        return getInfo(NewPipe.getServiceByUrl(url), url, contentCountry);
+    public static KioskInfo getInfo(String url) throws IOException, ExtractionException {
+        return getInfo(NewPipe.getServiceByUrl(url), url);
     }
 
     public static KioskInfo getInfo(StreamingService service,
-                                    String url,
-                                    String contentCountry) throws IOException, ExtractionException {
+                                    String url) throws IOException, ExtractionException {
         KioskList kl = service.getKioskList();
         KioskExtractor extractor = kl.getExtractorByUrl(url, null);
-        extractor.setContentCountry(contentCountry);
         extractor.fetchPage();
         return getInfo(extractor);
     }

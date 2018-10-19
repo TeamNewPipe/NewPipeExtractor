@@ -23,7 +23,6 @@ public  class KioskList {
     private final int service_id;
     private final HashMap<String, KioskEntry> kioskList = new HashMap<>();
     private String defaultKiosk = null;
-    private final Localization localization;
 
     private class KioskEntry {
         public KioskEntry(KioskExtractorFactory ef, ListLinkHandlerFactory h) {
@@ -34,9 +33,8 @@ public  class KioskList {
         final ListLinkHandlerFactory handlerFactory;
     }
 
-    public KioskList(int service_id, Localization localization) {
+    public KioskList(int service_id) {
         this.service_id = service_id;
-        this.localization = localization;
     }
 
     public void addKioskEntry(KioskExtractorFactory extractorFactory, ListLinkHandlerFactory handlerFactory, String id)
@@ -53,13 +51,18 @@ public  class KioskList {
 
     public KioskExtractor getDefaultKioskExtractor(String nextPageUrl)
             throws ExtractionException, IOException {
+        return getDefaultKioskExtractor(nextPageUrl, NewPipe.getPreferredLocalization());
+    }
+
+    public KioskExtractor getDefaultKioskExtractor(String nextPageUrl, Localization localization)
+            throws ExtractionException, IOException {
         if(defaultKiosk != null && !defaultKiosk.equals("")) {
-            return getExtractorById(defaultKiosk, nextPageUrl);
+            return getExtractorById(defaultKiosk, nextPageUrl, localization);
         } else {
             if(!kioskList.isEmpty()) {
                 // if not set get any entry
                 Object[] keySet = kioskList.keySet().toArray();
-                return getExtractorById(keySet[0].toString(), nextPageUrl);
+                return getExtractorById(keySet[0].toString(), nextPageUrl, localization);
             } else {
                 return null;
             }
@@ -71,6 +74,11 @@ public  class KioskList {
     }
 
     public KioskExtractor getExtractorById(String kioskId, String nextPageUrl)
+            throws ExtractionException, IOException {
+        return getExtractorById(kioskId, nextPageUrl, NewPipe.getPreferredLocalization());
+    }
+
+    public KioskExtractor getExtractorById(String kioskId, String nextPageUrl, Localization localization)
             throws ExtractionException, IOException {
         KioskEntry ke = kioskList.get(kioskId);
         if(ke == null) {
@@ -86,11 +94,16 @@ public  class KioskList {
     }
 
     public KioskExtractor getExtractorByUrl(String url, String nextPageUrl)
+            throws ExtractionException, IOException{
+        return getExtractorByUrl(url, nextPageUrl, NewPipe.getPreferredLocalization());
+    }
+
+    public KioskExtractor getExtractorByUrl(String url, String nextPageUrl, Localization localization)
             throws ExtractionException, IOException {
         for(Map.Entry<String, KioskEntry> e : kioskList.entrySet()) {
             KioskEntry ke = e.getValue();
             if(ke.handlerFactory.acceptUrl(url)) {
-                return getExtractorById(e.getKey(), nextPageUrl);
+                return getExtractorById(e.getKey(), nextPageUrl, localization);
             }
         }
         throw new ExtractionException("Could not find a kiosk that fits to the url: " + url);

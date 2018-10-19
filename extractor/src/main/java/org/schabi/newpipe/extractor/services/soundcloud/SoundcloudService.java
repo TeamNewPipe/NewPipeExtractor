@@ -69,7 +69,7 @@ public class SoundcloudService extends StreamingService {
     }
 
     @Override
-    public KioskList getKioskList(Localization localization) throws ExtractionException {
+    public KioskList getKioskList() throws ExtractionException {
         KioskList.KioskExtractorFactory chartsFactory = new KioskList.KioskExtractorFactory() {
             @Override
             public KioskExtractor createNewKiosk(StreamingService streamingService,
@@ -82,7 +82,7 @@ public class SoundcloudService extends StreamingService {
             }
         };
 
-        KioskList list = new KioskList(getServiceId(), localization);
+        KioskList list = new KioskList(getServiceId());
 
         // add kiosks here e.g.:
         final SoundcloudChartsLinkHandlerFactory h = new SoundcloudChartsLinkHandlerFactory();

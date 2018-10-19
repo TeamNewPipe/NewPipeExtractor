@@ -53,22 +53,16 @@ public class YoutubeSearchExtractor extends SearchExtractor {
     @Override
     public void onFetchPage(@Nonnull Downloader downloader) throws IOException, ExtractionException {
         final String site;
-        final String url = getUrl();
-        final String contentCountry = getLocalization().getCountry();
+        final String url = getUrl() + "?gl="+ getLocalization().getCountry();
         //String url = builder.build().toString();
         //if we've been passed a valid language code, append it to the URL
-        if (!contentCountry.isEmpty()) {
-            //assert Pattern.matches("[a-z]{2}(-([A-Z]{2}|[0-9]{1,3}))?", languageCode);
-            site = downloader.download(url, getLocalization());
-        } else {
-            site = downloader.download(url);
-        }
+        site = downloader.download(url, getLocalization());
 
         doc = Jsoup.parse(site, url);
     }
 
     @Override
-    public String getSearchSuggestion() throws ParsingException {
+    public String getSearchSuggestion() {
         final Element el = doc.select("div[class*=\"spell-correction\"]").first();
         if (el != null) {
             return el.select("a").first().text();
@@ -79,13 +73,13 @@ public class YoutubeSearchExtractor extends SearchExtractor {
 
     @Nonnull
     @Override
-    public InfoItemsPage<InfoItem> getInitialPage() throws IOException, ExtractionException {
+    public InfoItemsPage<InfoItem> getInitialPage() throws ExtractionException {
         return new InfoItemsPage<>(collectItems(doc), getNextPageUrl());
     }
 
     @Override
     public String getNextPageUrl() throws ExtractionException {
-        return getUrl() + "&page=" + Integer.toString( 2);
+        return getUrl() + "&page=" + 2 + "&gl=" + getLocalization().getCountry();
     }
 
     @Override
@@ -104,7 +98,7 @@ public class YoutubeSearchExtractor extends SearchExtractor {
                                 .getQuery())
                         .get("page"));
 
-        return currentUrl.replace("&page=" + Integer.toString( pageNr),
+        return currentUrl.replace("&page=" + pageNr,
                 "&page=" + Integer.toString(pageNr + 1));
     }
 
