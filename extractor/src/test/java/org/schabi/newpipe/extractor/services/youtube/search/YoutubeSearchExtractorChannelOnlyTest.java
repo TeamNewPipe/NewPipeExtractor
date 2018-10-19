@@ -8,28 +8,35 @@ import org.schabi.newpipe.extractor.ListExtractor;
 import org.schabi.newpipe.extractor.NewPipe;
 import org.schabi.newpipe.extractor.channel.ChannelInfoItem;
 import org.schabi.newpipe.extractor.services.youtube.extractors.YoutubeSearchExtractor;
-import org.schabi.newpipe.extractor.services.youtube.linkHandler.YoutubeSearchQueryHandlerFactory;
+import org.schabi.newpipe.extractor.services.youtube.linkHandler.YoutubeSearchQueryHandlerFactory.ContentFilter;
 import org.schabi.newpipe.extractor.utils.Localization;
 
-import static java.util.Arrays.asList;
+import java.util.Collections;
+
 import static org.junit.Assert.*;
 import static org.schabi.newpipe.extractor.ServiceList.YouTube;
 
 public class YoutubeSearchExtractorChannelOnlyTest extends YoutubeSearchExtractorBaseTest {
 
+    private static final String SEARCH_QUERY = "pewdiepie";
+    private static final Localization DEFAULT_LOCALIZATION = new Localization("GB", "en");
+
+    private static String baseSearchPageURL;
+
     @BeforeClass
     public static void setUpClass() throws Exception {
-        NewPipe.init(Downloader.getInstance(), new Localization("GB", "en"));
-        extractor = (YoutubeSearchExtractor) YouTube.getSearchExtractor("pewdiepie",
-                asList(YoutubeSearchQueryHandlerFactory.CHANNELS), null, new Localization("GB", "en"));
+        NewPipe.init(Downloader.getInstance(), DEFAULT_LOCALIZATION);
+        extractor = (YoutubeSearchExtractor) YouTube.getSearchExtractor(SEARCH_QUERY,
+                Collections.singletonList(ContentFilter.channels.name()), null, DEFAULT_LOCALIZATION);
         extractor.fetchPage();
         itemsPage = extractor.getInitialPage();
+        baseSearchPageURL = extractor.getUrl();
     }
 
     @Test
     public void testGetSecondPage() throws Exception {
-        YoutubeSearchExtractor secondExtractor = (YoutubeSearchExtractor) YouTube.getSearchExtractor("pewdiepie",
-                asList(YoutubeSearchQueryHandlerFactory.CHANNELS), null, new Localization("GB", "en"));
+        YoutubeSearchExtractor secondExtractor = (YoutubeSearchExtractor) YouTube.getSearchExtractor(SEARCH_QUERY,
+                Collections.singletonList(ContentFilter.channels.name()), null, DEFAULT_LOCALIZATION);
         ListExtractor.InfoItemsPage<InfoItem> secondPage = secondExtractor.getPage(itemsPage.getNextPageUrl());
         assertTrue(Integer.toString(secondPage.getItems().size()),
                 secondPage.getItems().size() > 10);
@@ -45,12 +52,16 @@ public class YoutubeSearchExtractorChannelOnlyTest extends YoutubeSearchExtracto
         }
         assertFalse("First and second page are equal", equals);
 
-        assertEquals("https://www.youtube.com/results?q=pewdiepie&sp=EgIQAlAU&page=3&gl=GB", secondPage.getNextPageUrl());
+        String thirdSearchPageURL = secondPage.getNextPageUrl();
+        assertTrue("Third search page URL contains base search page URL along with page 3 identifier",
+                thirdSearchPageURL.contains(baseSearchPageURL) && thirdSearchPageURL.contains("&page=3"));
     }
 
     @Test
     public void testGetSecondPageUrl() throws Exception {
-        assertEquals("https://www.youtube.com/results?q=pewdiepie&sp=EgIQAlAU&page=2&gl=GB", extractor.getNextPageUrl());
+        String secondSearchPageURL = extractor.getNextPageUrl();
+        assertTrue("Second search page URL contains base search page URL along with page 2 identifier",
+                secondSearchPageURL.contains(baseSearchPageURL) && secondSearchPageURL.contains("&page=2"));
     }
 
     @Test

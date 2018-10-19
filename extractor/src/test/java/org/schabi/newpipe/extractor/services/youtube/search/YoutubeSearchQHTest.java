@@ -3,12 +3,10 @@ package org.schabi.newpipe.extractor.services.youtube.search;
 import org.junit.Test;
 import org.schabi.newpipe.extractor.services.youtube.linkHandler.YoutubeSearchQueryHandlerFactory;
 
-import static java.util.Arrays.asList;
+import java.util.Collections;
+
 import static org.junit.Assert.assertEquals;
 import static org.schabi.newpipe.extractor.ServiceList.YouTube;
-import static org.schabi.newpipe.extractor.services.youtube.linkHandler.YoutubeSearchQueryHandlerFactory.CHANNELS;
-import static org.schabi.newpipe.extractor.services.youtube.linkHandler.YoutubeSearchQueryHandlerFactory.PLAYLISTS;
-import static org.schabi.newpipe.extractor.services.youtube.linkHandler.YoutubeSearchQueryHandlerFactory.VIDEOS;
 
 public class YoutubeSearchQHTest {
 
@@ -23,37 +21,43 @@ public class YoutubeSearchQHTest {
 
     @Test
     public void testGetContentFilter() throws Exception {
-        assertEquals(VIDEOS, YouTube.getSearchQHFactory()
-                .fromQuery("", asList(new String[]{VIDEOS}), "").getContentFilters().get(0));
-        assertEquals(CHANNELS, YouTube.getSearchQHFactory()
-                .fromQuery("asdf", asList(new String[]{CHANNELS}), "").getContentFilters().get(0));
+        assertEquals(YoutubeSearchQueryHandlerFactory.ContentFilter.videos.name(), YouTube.getSearchQHFactory()
+                .fromQuery("", Collections.singletonList(YoutubeSearchQueryHandlerFactory.ContentFilter.videos.name()), "").getContentFilters().get(0));
+        assertEquals(YoutubeSearchQueryHandlerFactory.ContentFilter.channels.name(), YouTube.getSearchQHFactory()
+                .fromQuery("asdf", Collections.singletonList(YoutubeSearchQueryHandlerFactory.ContentFilter.channels.name()), "").getContentFilters().get(0));
     }
 
     @Test
-    public void testWithContentfilter() throws Exception {
-        assertEquals("https://www.youtube.com/results?q=asdf&sp=EgIQAVAU", YouTube.getSearchQHFactory()
-                .fromQuery("asdf", asList(new String[]{VIDEOS}), "").getUrl());
-        assertEquals("https://www.youtube.com/results?q=asdf&sp=EgIQAlAU", YouTube.getSearchQHFactory()
-                .fromQuery("asdf", asList(new String[]{CHANNELS}), "").getUrl());
-        assertEquals("https://www.youtube.com/results?q=asdf&sp=EgIQA1AU", YouTube.getSearchQHFactory()
-                .fromQuery("asdf", asList(new String[]{PLAYLISTS}), "").getUrl());
+    public void testWithGenuineContentfilter() throws Exception {
+        // TODO: 19/10/18
+    }
+
+    @Test
+    public void testWithGenuineSortfilter() throws Exception {
+        // TODO: 19/10/18
+    }
+
+    @Test
+    public void testWithGibbershContentFilter() throws Exception {
         assertEquals("https://www.youtube.com/results?q=asdf", YouTube.getSearchQHFactory()
-                .fromQuery("asdf", asList(new String[]{"fjiijie"}), "").getUrl());
+                .fromQuery("asdf", Collections.singletonList("gibberish"), "").getUrl());
+    }
+
+    @Test
+    public void testWithGibbershSortFilter() throws Exception {
+        assertEquals("https://www.youtube.com/results?q=asdf", YouTube.getSearchQHFactory()
+                .fromQuery("asdf", Collections.<String>emptyList(), "gibberish").getUrl());
     }
 
     @Test
     public void testGetAvailableContentFilter() {
         final String[] contentFilter = YouTube.getSearchQHFactory().getAvailableContentFilter();
-        assertEquals(4, contentFilter.length);
-        assertEquals("all", contentFilter[0]);
-        assertEquals("videos", contentFilter[1]);
-        assertEquals("channels", contentFilter[2]);
-        assertEquals("playlists", contentFilter[3]);
+        assertEquals(YoutubeSearchQueryHandlerFactory.ContentFilter.values().length, contentFilter.length);
     }
 
     @Test
     public void testGetAvailableSortFilter() {
-        final String[] contentFilter = YouTube.getSearchQHFactory().getAvailableSortFilter();
-        assertEquals(0, contentFilter.length);
+        final String[] sortFilters = YouTube.getSearchQHFactory().getAvailableSortFilter();
+        assertEquals(YoutubeSearchQueryHandlerFactory.SortFilter.values().length, sortFilters.length);
     }
 }
