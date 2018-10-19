@@ -122,7 +122,7 @@ public abstract class StreamingService {
     }
     
     public CommentsExtractor getCommentsExtractor(ListLinkHandler urlIdHandler) throws ExtractionException {
-        return getCommentsExtractor(urlIdHandler, NewPipe.getLocalization());
+        return getCommentsExtractor(urlIdHandler, NewPipe.getPreferredLocalization());
     }
 
     ////////////////////////////////////////////
@@ -183,7 +183,7 @@ public abstract class StreamingService {
         if(null == llhf) {
             return null;
         }
-        return getCommentsExtractor(llhf.fromUrl(url), NewPipe.getLocalization());
+        return getCommentsExtractor(llhf.fromUrl(url), NewPipe.getPreferredLocalization());
     }
 
     public abstract boolean isCommentsSupported();
