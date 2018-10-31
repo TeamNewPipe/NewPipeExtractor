@@ -49,11 +49,15 @@ public class YoutubeSearchExtractorDefaultTest extends YoutubeSearchExtractorBas
         itemsPage = extractor.getInitialPage();
     }
 
+    @Test
+    public void testGetUrl() throws Exception {
+        assertEquals("https://www.youtube.com/results?q=pewdiepie&gl=GB", extractor.getUrl());
+    }
 
 
     @Test
     public void testGetSecondPageUrl() throws Exception {
-        assertEquals("https://www.youtube.com/results?q=pewdiepie&page=2", extractor.getNextPageUrl());
+        assertEquals("https://www.youtube.com/results?q=pewdiepie&gl=GB&page=2", extractor.getNextPageUrl());
     }
 
     @Test
@@ -96,7 +100,7 @@ public class YoutubeSearchExtractorDefaultTest extends YoutubeSearchExtractorBas
         }
         assertFalse("First and second page are equal", equals);
 
-        assertEquals("https://www.youtube.com/results?q=pewdiepie&page=3", secondPage.getNextPageUrl());
+        assertEquals("https://www.youtube.com/results?q=pewdiepie&gl=GB&page=3", secondPage.getNextPageUrl());
     }
 
     @Test

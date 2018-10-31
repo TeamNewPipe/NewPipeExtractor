@@ -30,7 +30,6 @@ import org.schabi.newpipe.extractor.utils.Localization;
 import javax.annotation.Nonnull;
 
 public abstract class KioskExtractor extends ListExtractor<StreamInfoItem> {
-    private String contentCountry = null;
     private final String id;
 
     public KioskExtractor(StreamingService streamingService,
@@ -40,17 +39,6 @@ public abstract class KioskExtractor extends ListExtractor<StreamInfoItem> {
         super(streamingService, linkHandler, localization);
         this.id = kioskId;
     }
-
-    /**
-     * For certain Websites the content of a kiosk will be different depending
-     * on the country you want to poen the website in. Therefore you should
-     * set the contentCountry.
-     * @param contentCountry Set the country decoded as Country Code: http://www.1728.org/countries.htm
-     */
-    public void setContentCountry(String contentCountry) {
-        this.contentCountry = contentCountry;
-    }
-
 
     @Nonnull
     @Override
@@ -69,9 +57,4 @@ public abstract class KioskExtractor extends ListExtractor<StreamInfoItem> {
     @Nonnull
     @Override
     public abstract String getName() throws ParsingException;
-
-
-    public String getContentCountry() {
-        return contentCountry;
-    }
 }

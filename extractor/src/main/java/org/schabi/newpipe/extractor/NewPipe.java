@@ -103,7 +103,7 @@ public class NewPipe {
         NewPipe.localization = localization;
     }
 
-    public static Localization getLocalization() {
+    public static Localization getPreferredLocalization() {
         return localization;
     }
 }

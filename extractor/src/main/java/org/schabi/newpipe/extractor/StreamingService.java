@@ -80,7 +80,7 @@ public abstract class StreamingService {
     public abstract SearchExtractor getSearchExtractor(SearchQueryHandler queryHandler, Localization localization);
     public abstract SuggestionExtractor getSuggestionExtractor(Localization localization);
     public abstract SubscriptionExtractor getSubscriptionExtractor();
-    public abstract KioskList getKioskList(Localization localization) throws ExtractionException;
+    public abstract KioskList getKioskList() throws ExtractionException;
 
     public abstract ChannelExtractor getChannelExtractor(ListLinkHandler linkHandler,
                                                          Localization localization) throws ExtractionException;
@@ -93,27 +93,23 @@ public abstract class StreamingService {
     ////////////////////////////////////////////
 
     public SearchExtractor getSearchExtractor(SearchQueryHandler queryHandler) {
-        return getSearchExtractor(queryHandler, NewPipe.getLocalization());
+        return getSearchExtractor(queryHandler, NewPipe.getPreferredLocalization());
     }
 
     public SuggestionExtractor getSuggestionExtractor() {
-        return getSuggestionExtractor(NewPipe.getLocalization());
-    }
-
-    public KioskList getKioskList() throws ExtractionException {
-        return getKioskList(NewPipe.getLocalization());
+        return getSuggestionExtractor(NewPipe.getPreferredLocalization());
     }
 
     public ChannelExtractor getChannelExtractor(ListLinkHandler linkHandler) throws ExtractionException {
-        return getChannelExtractor(linkHandler, NewPipe.getLocalization());
+        return getChannelExtractor(linkHandler, NewPipe.getPreferredLocalization());
     }
 
     public PlaylistExtractor getPlaylistExtractor(ListLinkHandler linkHandler) throws ExtractionException {
-        return getPlaylistExtractor(linkHandler, NewPipe.getLocalization());
+        return getPlaylistExtractor(linkHandler, NewPipe.getPreferredLocalization());
     }
 
     public StreamExtractor getStreamExtractor(LinkHandler linkHandler) throws ExtractionException {
-        return getStreamExtractor(linkHandler, NewPipe.getLocalization());
+        return getStreamExtractor(linkHandler, NewPipe.getPreferredLocalization());
     }
 
     ////////////////////////////////////////////
@@ -154,19 +150,19 @@ public abstract class StreamingService {
     ////////////////////////////////////////////
 
     public SearchExtractor getSearchExtractor(String query) throws ExtractionException {
-        return getSearchExtractor(getSearchQHFactory().fromQuery(query), NewPipe.getLocalization());
+        return getSearchExtractor(getSearchQHFactory().fromQuery(query), NewPipe.getPreferredLocalization());
     }
 
     public ChannelExtractor getChannelExtractor(String url) throws ExtractionException {
-        return getChannelExtractor(getChannelLHFactory().fromUrl(url), NewPipe.getLocalization());
+        return getChannelExtractor(getChannelLHFactory().fromUrl(url), NewPipe.getPreferredLocalization());
     }
 
     public PlaylistExtractor getPlaylistExtractor(String url) throws ExtractionException {
-        return getPlaylistExtractor(getPlaylistLHFactory().fromUrl(url), NewPipe.getLocalization());
+        return getPlaylistExtractor(getPlaylistLHFactory().fromUrl(url), NewPipe.getPreferredLocalization());
     }
 
     public StreamExtractor getStreamExtractor(String url) throws ExtractionException {
-        return getStreamExtractor(getStreamLHFactory().fromUrl(url), NewPipe.getLocalization());
+        return getStreamExtractor(getStreamLHFactory().fromUrl(url), NewPipe.getPreferredLocalization());
     }
 
 
