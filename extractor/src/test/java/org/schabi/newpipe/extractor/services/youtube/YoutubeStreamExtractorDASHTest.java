@@ -47,15 +47,21 @@ public class YoutubeStreamExtractorDASHTest {
 
     @Test
     public void testGetDashMpd() {
-        System.out.println(info.getDashMpdUrl());
         assertTrue(info.getDashMpdUrl(),
                 info.getDashMpdUrl() != null && !info.getDashMpdUrl().isEmpty());
     }
 
     @Test
-    public void testDashMpdParser() {
+    public void testRegularStreams() {
         assertEquals(0, info.getAudioStreams().size());
         assertEquals(0, info.getVideoOnlyStreams().size());
         assertEquals(4, info.getVideoStreams().size());
+    }
+
+    @Test
+    public void testSegmentedStreams() {
+        assertEquals(2, info.getSegmentedAudioStreams().size());
+        assertEquals(3, info.getSegmentedVideoOnlyStreams().size());
+        assertEquals(0, info.getSegmentedVideoStreams().size());
     }
 }
