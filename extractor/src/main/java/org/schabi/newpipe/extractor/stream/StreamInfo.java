@@ -5,7 +5,6 @@ import org.schabi.newpipe.extractor.exceptions.ContentNotAvailableException;
 import org.schabi.newpipe.extractor.exceptions.ExtractionException;
 import org.schabi.newpipe.extractor.utils.DashMpdParser;
 import org.schabi.newpipe.extractor.utils.ExtractorHelper;
-import org.schabi.newpipe.extractor.utils.Localization;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -240,7 +239,7 @@ public class StreamInfo extends Info {
             streamInfo.addError(e);
         }
         try {
-            streamInfo.setNextVideo(extractor.getNextVideo());
+            streamInfo.setNextVideo(extractor.getNextStream());
         } catch (Exception e) {
             streamInfo.addError(e);
         }

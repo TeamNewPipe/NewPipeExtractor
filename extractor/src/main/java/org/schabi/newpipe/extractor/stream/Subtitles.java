@@ -1,4 +1,4 @@
-package org.schabi.newpipe.extractor;
+package org.schabi.newpipe.extractor.stream;
 
 import org.schabi.newpipe.extractor.stream.SubtitlesFormat;
 
