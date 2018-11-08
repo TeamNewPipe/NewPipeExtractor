@@ -17,25 +17,67 @@ public class YoutubeSearchQueryHandlerFactory extends SearchQueryHandlerFactory 
 
     public static final String CHARSET_UTF_8 = "UTF-8";
 
-    private static final SortFilter DEFAULT_SORT_FILTER = SortFilter.relevance;
-    private static final ContentFilter DEFAULT_CONTENT_FILTER = ContentFilter.all;
+    public enum FilterType {
+        Content((byte)0x10),
+        Time((byte)0x08),
+        Duration((byte)0x18);
 
-    public enum ContentFilter {
-        all,
-        videos,
-        channels,
-        playlists,
-        movie,
-        show
+        private final byte value;
+
+        FilterType(byte value) {
+            this.value = value;
+        }
     }
 
-    public enum SortFilter {
-        relevance,
-        rating,
-        upload_date,
-        date,
-        view_count,
-        views
+    public enum Filter {
+        All(FilterType.Content,(byte)0),
+        Video(FilterType.Content,(byte)0x01),
+        Channel(FilterType.Content,(byte)0x02),
+        Playlist(FilterType.Content,(byte)0x03),
+        Movie(FilterType.Content,(byte)0x04),
+        Show(FilterType.Content,(byte)0x05),
+
+        Hour(FilterType.Time,(byte)0x01),
+        Today(FilterType.Time,(byte)0x02),
+        Week(FilterType.Time,(byte)0x03),
+        Month(FilterType.Time,(byte)0x04),
+        Year(FilterType.Time,(byte)0x05),
+
+        Short(FilterType.Duration, (byte)0x01),
+        Long(FilterType.Duration, (byte)0x02);
+
+        private final FilterType type;
+        private final byte value;
+
+        Filter(FilterType type, byte value) {
+            this.type = type;
+            this.value = value;
+        }
+    }
+
+    public enum SorterType {
+        Default((byte)0x08);
+
+        private final byte value;
+
+        SorterType(byte value) {
+            this.value = value;
+        }
+    }
+
+    public enum Sorter {
+        Relevance(SorterType.Default, (byte)0x00),
+        Rating(SorterType.Default, (byte)0x01),
+        Upload_Date(SorterType.Default, (byte)0x02),
+        View_Count(SorterType.Default, (byte)0x03);
+
+        private final SorterType type;
+        private final byte value;
+
+        Sorter(SorterType type, byte value) {
+            this.type = type;
+            this.value = value;
+        }
     }
 
     public static YoutubeSearchQueryHandlerFactory getInstance() {
@@ -59,7 +101,7 @@ public class YoutubeSearchQueryHandlerFactory extends SearchQueryHandlerFactory 
     @Override
     public String[] getAvailableContentFilter() {
         List<String> contentFiltersList = new ArrayList<>();
-        for(ContentFilter contentFilter : ContentFilter.values()) {
+        for(Filter contentFilter : Filter.values()) {
             contentFiltersList.add(contentFilter.name());
         }
         String[] contentFiltersArray = new String[contentFiltersList.size()];
@@ -70,7 +112,7 @@ public class YoutubeSearchQueryHandlerFactory extends SearchQueryHandlerFactory 
     @Override
     public String[] getAvailableSortFilter() {
         List<String> sortFiltersList = new ArrayList<>();
-        for(SortFilter sortFilter : SortFilter.values()) {
+        for(Sorter sortFilter : Sorter.values()) {
             sortFiltersList.add(sortFilter.name());
         }
         String[] sortFiltersArray = new String[sortFiltersList.size()];
@@ -121,29 +163,19 @@ public class YoutubeSearchQueryHandlerFactory extends SearchQueryHandlerFactory 
     }
 
     private List<Byte> getContentFilterQueryParams(String filter) {
-        ContentFilter contentFilter;
+        Filter contentFilter;
         try {
-            contentFilter = ContentFilter.valueOf(filter);
+            contentFilter = Filter.valueOf(filter);
         } catch (IllegalArgumentException iae) {
             iae.printStackTrace();
             System.err.println("Unknown content filter type provided = " + filter +", none will be applied");
             return Collections.emptyList();
         }
         switch (contentFilter) {
-            case all:
+            case All:
                 return Collections.emptyList();
-            case videos:
-                return Arrays.asList((byte)0x10, (byte)0x01);
-            case channels:
-                return Arrays.asList((byte)0x10, (byte)0x02);
-            case playlists:
-                return Arrays.asList((byte)0x10, (byte)0x03);
-            case movie:
-                return Arrays.asList((byte)0x10, (byte)0x04);
-            case show:
-                return Arrays.asList((byte)0x10, (byte)0x05);
             default:
-                throw new IllegalArgumentException("Unexpected content filter found = " + contentFilter);
+                return Arrays.asList(contentFilter.type.value, contentFilter.value);
         }
     }
 
@@ -151,28 +183,15 @@ public class YoutubeSearchQueryHandlerFactory extends SearchQueryHandlerFactory 
         if(filter == null || filter.isEmpty()) {
             return Collections.emptyList();
         }
-        SortFilter sortFilter;
+        Sorter sorter;
         try {
-            sortFilter = SortFilter.valueOf(filter);
+            sorter = Sorter.valueOf(filter);
         } catch (IllegalArgumentException e) {
             e.printStackTrace();
             System.err.println("Unknown sort filter = " + filter + ", provided, none applied.");
             return Collections.emptyList();
         }
-        switch (sortFilter) {
-            case relevance:
-                return new ArrayList<>(Arrays.asList((byte)0x08, (byte)0x00));
-            case rating:
-                return new ArrayList<>(Arrays.asList((byte)0x08, (byte)0x01));
-            case upload_date:
-            case date:
-                return new ArrayList<>(Arrays.asList((byte)0x08, (byte)0x02));
-            case view_count:
-            case views:
-                return new ArrayList<>(Arrays.asList((byte)0x08, (byte)0x03));
-            default:
-                throw new IllegalArgumentException("Unexpected sort filter = " + sortFilter);
-        }
+        return Arrays.asList(sorter.type.value, sorter.value);
     }
 
     private byte[] convert(@Nonnull List<Byte> bigByteList) {

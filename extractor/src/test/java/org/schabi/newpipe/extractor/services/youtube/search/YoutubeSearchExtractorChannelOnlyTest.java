@@ -8,7 +8,7 @@ import org.schabi.newpipe.extractor.ListExtractor;
 import org.schabi.newpipe.extractor.NewPipe;
 import org.schabi.newpipe.extractor.channel.ChannelInfoItem;
 import org.schabi.newpipe.extractor.services.youtube.extractors.YoutubeSearchExtractor;
-import org.schabi.newpipe.extractor.services.youtube.linkHandler.YoutubeSearchQueryHandlerFactory.ContentFilter;
+import org.schabi.newpipe.extractor.services.youtube.linkHandler.YoutubeSearchQueryHandlerFactory.Filter;
 import org.schabi.newpipe.extractor.utils.Localization;
 
 import java.util.Collections;
@@ -27,7 +27,7 @@ public class YoutubeSearchExtractorChannelOnlyTest extends YoutubeSearchExtracto
     public static void setUpClass() throws Exception {
         NewPipe.init(Downloader.getInstance(), DEFAULT_LOCALIZATION);
         extractor = (YoutubeSearchExtractor) YouTube.getSearchExtractor(SEARCH_QUERY,
-                Collections.singletonList(ContentFilter.channels.name()), null, DEFAULT_LOCALIZATION);
+                Collections.singletonList(Filter.Channel.name()), null, DEFAULT_LOCALIZATION);
         extractor.fetchPage();
         itemsPage = extractor.getInitialPage();
         baseSearchPageURL = extractor.getUrl();
@@ -36,7 +36,7 @@ public class YoutubeSearchExtractorChannelOnlyTest extends YoutubeSearchExtracto
     @Test
     public void testGetSecondPage() throws Exception {
         YoutubeSearchExtractor secondExtractor = (YoutubeSearchExtractor) YouTube.getSearchExtractor(SEARCH_QUERY,
-                Collections.singletonList(ContentFilter.channels.name()), null, DEFAULT_LOCALIZATION);
+                Collections.singletonList(Filter.Channel.name()), null, DEFAULT_LOCALIZATION);
         ListExtractor.InfoItemsPage<InfoItem> secondPage = secondExtractor.getPage(itemsPage.getNextPageUrl());
         assertTrue(Integer.toString(secondPage.getItems().size()),
                 secondPage.getItems().size() > 10);
