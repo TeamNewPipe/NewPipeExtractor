@@ -1,7 +1,7 @@
 package org.schabi.newpipe.extractor.stream;
 
 /*
- * Created by Christian Schabesberger on 10.08.15.
+ * Created by Christian Schabesberger on 10.08.18.
  *
  * Copyright (C) Christian Schabesberger 2016 <chris.schabesberger@mailbox.org>
  * StreamExtractor.java is part of NewPipe.
@@ -211,19 +211,20 @@ public abstract class StreamExtractor extends Extractor {
      * @throws ExtractionException
      */
     @Nonnull
-    public abstract List<Subtitles> getSubtitlesDefault() throws IOException, ExtractionException;
+    public abstract List<SubtitlesStream> getSubtitlesDefault() throws IOException, ExtractionException;
 
     /**
      * This will return a list of available
      * <a href="https://teamnewpipe.github.io/NewPipeExtractor/javadoc/org/schabi/newpipe/extractor/stream/Subtitles.html">Subtitles</a>s.
      * given by a specific type.
      * If no subtitles in that specific format are available an empty list can returned.
+     * @param format the media format by which the subtitles should be filtered
      * @return a list of available subtitles or an empty list
      * @throws IOException
      * @throws ExtractionException
      */
     @Nonnull
-    public abstract List<Subtitles> getSubtitles(SubtitlesFormat format) throws IOException, ExtractionException;
+    public abstract List<SubtitlesStream> getSubtitles(MediaFormat format) throws IOException, ExtractionException;
 
     /**
      * Get the <a href="https://teamnewpipe.github.io/NewPipeExtractor/javadoc/">StreamType</a>.
@@ -317,42 +318,4 @@ public abstract class StreamExtractor extends Extractor {
             return 0;
         }
     }
-
-    public abstract long getViewCount() throws ParsingException;
-    public abstract long getLikeCount() throws ParsingException;
-    public abstract long getDislikeCount() throws ParsingException;
-
-    @Nonnull
-    public abstract String getUploaderUrl() throws ParsingException;
-    @Nonnull
-    public abstract String getUploaderName() throws ParsingException;
-    @Nonnull
-    public abstract String getUploaderAvatarUrl() throws ParsingException;
-
-    /**
-     * Get the dash mpd url
-     * @return the url as a string or an empty string
-     * @throws ParsingException if an error occurs while reading
-     */
-    @Nonnull public abstract String getDashMpdUrl() throws ParsingException;
-    @Nonnull public abstract String getHlsUrl() throws ParsingException;
-    public abstract List<AudioStream> getAudioStreams() throws IOException, ExtractionException;
-    public abstract List<VideoStream> getVideoStreams() throws IOException, ExtractionException;
-    public abstract List<VideoStream> getVideoOnlyStreams() throws IOException, ExtractionException;
-
-    @Nonnull
-    public abstract List<SubtitlesStream> getSubtitlesDefault() throws IOException, ExtractionException;
-    @Nonnull
-    public abstract List<SubtitlesStream> getSubtitles(MediaFormat format) throws IOException, ExtractionException;
-
-    public abstract StreamType getStreamType() throws ParsingException;
-    public abstract StreamInfoItem getNextVideo() throws IOException, ExtractionException;
-    public abstract StreamInfoItemsCollector getRelatedVideos() throws IOException, ExtractionException;
-
-    /**
-     * Analyses the webpage's document and extracts any error message there might be.
-     *
-     * @return Error message; null if there is no error message.
-     */
-    public abstract String getErrorMessage();
 }
