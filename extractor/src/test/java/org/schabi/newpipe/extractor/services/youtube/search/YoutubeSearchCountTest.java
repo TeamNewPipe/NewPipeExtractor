@@ -28,7 +28,7 @@ public class YoutubeSearchCountTest {
         public void testViewCount() {
             ChannelInfoItem ci = (ChannelInfoItem) itemsPage.getItems().get(0);
             assertTrue("Count does not fit: " + Long.toString(ci.getSubscriberCount()),
-                    65043316 < ci.getSubscriberCount() && ci.getSubscriberCount() < 68043316);
+                    69043316 < ci.getSubscriberCount() && ci.getSubscriberCount() < 73043316);
         }
     }
 }

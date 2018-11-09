@@ -8,7 +8,6 @@ import org.schabi.newpipe.extractor.exceptions.ExtractionException;
 import org.schabi.newpipe.extractor.exceptions.ParsingException;
 import org.schabi.newpipe.extractor.services.youtube.extractors.YoutubeStreamExtractor;
 import org.schabi.newpipe.extractor.stream.*;
-import org.schabi.newpipe.extractor.utils.DashMpdParser;
 import org.schabi.newpipe.extractor.utils.Localization;
 import org.schabi.newpipe.extractor.utils.Utils;
 
@@ -17,7 +16,6 @@ import java.io.IOException;
 import static org.junit.Assert.*;
 import static org.schabi.newpipe.extractor.ExtractorAsserts.assertIsSecureUrl;
 import static org.schabi.newpipe.extractor.ServiceList.YouTube;
-import static org.schabi.newpipe.extractor.services.youtube.YoutubeTrendingExtractorTest.extractor;
 
 /*
  * Created by Christian Schabesberger on 30.12.15.
@@ -151,7 +149,7 @@ public class YoutubeStreamExtractorDefaultTest {
 
         @Test
         public void testGetRelatedVideos() throws ExtractionException, IOException {
-            StreamInfoItemsCollector relatedVideos = extractor.getRelatedVideos();
+            StreamInfoItemsCollector relatedVideos = extractor.getRelatedStreams();
             Utils.printErrors(relatedVideos.getErrors());
             assertFalse(relatedVideos.getItems().isEmpty());
             assertTrue(relatedVideos.getErrors().isEmpty());

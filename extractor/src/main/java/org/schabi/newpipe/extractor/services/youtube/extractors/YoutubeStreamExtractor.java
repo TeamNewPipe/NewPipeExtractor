@@ -490,7 +490,7 @@ public class YoutubeStreamExtractor extends StreamExtractor {
     }
 
     @Override
-    public StreamInfoItem getNextVideo() throws IOException, ExtractionException {
+    public StreamInfoItem getNextStream() throws IOException, ExtractionException {
         assertPageFetched();
         try {
             StreamInfoItemsCollector collector = new StreamInfoItemsCollector(getServiceId());
@@ -504,7 +504,7 @@ public class YoutubeStreamExtractor extends StreamExtractor {
     }
 
     @Override
-    public StreamInfoItemsCollector getRelatedVideos() throws IOException, ExtractionException {
+    public StreamInfoItemsCollector getRelatedStreams() throws IOException, ExtractionException {
         assertPageFetched();
         try {
             StreamInfoItemsCollector collector = new StreamInfoItemsCollector(getServiceId());

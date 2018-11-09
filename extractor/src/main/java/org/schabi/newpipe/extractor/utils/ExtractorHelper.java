@@ -29,7 +29,7 @@ public class ExtractorHelper {
 
     public static List<InfoItem> getRelatedVideosOrLogError(StreamInfo info, StreamExtractor extractor) {
         try {
-            InfoItemsCollector<? extends InfoItem, ?> collector = extractor.getRelatedVideos();
+            InfoItemsCollector<? extends InfoItem, ?> collector = extractor.getRelatedStreams();
             info.addAllErrors(collector.getErrors());
 
             //noinspection unchecked
