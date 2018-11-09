@@ -5,7 +5,6 @@ import org.schabi.newpipe.extractor.exceptions.ContentNotAvailableException;
 import org.schabi.newpipe.extractor.exceptions.ExtractionException;
 import org.schabi.newpipe.extractor.utils.DashMpdParser;
 import org.schabi.newpipe.extractor.utils.ExtractorHelper;
-import org.schabi.newpipe.extractor.utils.Localization;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -152,6 +151,9 @@ public class StreamInfo extends Info {
                 streamInfo.getVideoOnlyStreams().addAll(result.getVideoOnlyStreams());
                 streamInfo.getAudioStreams().addAll(result.getAudioStreams());
                 streamInfo.getVideoStreams().addAll(result.getVideoStreams());
+                streamInfo.segmentedVideoOnlyStreams = result.getSegmentedVideoOnlyStreams();
+                streamInfo.segmentedAudioStreams = result.getSegmentedAudioStreams();
+                streamInfo.segmentedVideoStreams = result.getSegmentedVideoStreams();
             } catch (Exception e) {
                 // Sometimes we receive 403 (forbidden) error when trying to download the manifest (similar to what happens with youtube-dl),
                 // just skip the exception (but store it somewhere), as we later check if we have streams anyway.
@@ -237,7 +239,7 @@ public class StreamInfo extends Info {
             streamInfo.addError(e);
         }
         try {
-            streamInfo.setNextVideo(extractor.getNextVideo());
+            streamInfo.setNextVideo(extractor.getNextStream());
         } catch (Exception e) {
             streamInfo.addError(e);
         }
@@ -271,6 +273,11 @@ public class StreamInfo extends Info {
     private List<VideoStream> videoOnlyStreams;
 
     private String dashMpdUrl;
+    private List<VideoStream> segmentedVideoStreams;
+    private List<AudioStream> segmentedAudioStreams;
+    private List<VideoStream> segmentedVideoOnlyStreams;
+
+
     private String hlsUrl;
     private StreamInfoItem nextVideo;
     private List<InfoItem> relatedStreams;
@@ -429,6 +436,30 @@ public class StreamInfo extends Info {
 
     public void setDashMpdUrl(String dashMpdUrl) {
         this.dashMpdUrl = dashMpdUrl;
+    }
+
+    public List<VideoStream> getSegmentedVideoStreams() {
+        return segmentedVideoStreams;
+    }
+
+    public void setSegmentedVideoStreams(List<VideoStream> segmentedVideoStreams) {
+        this.segmentedVideoStreams = segmentedVideoStreams;
+    }
+
+    public List<AudioStream> getSegmentedAudioStreams() {
+        return segmentedAudioStreams;
+    }
+
+    public void setSegmentedAudioStreams(List<AudioStream> segmentedAudioStreams) {
+        this.segmentedAudioStreams = segmentedAudioStreams;
+    }
+
+    public List<VideoStream> getSegmentedVideoOnlyStreams() {
+        return segmentedVideoOnlyStreams;
+    }
+
+    public void setSegmentedVideoOnlyStreams(List<VideoStream> segmentedVideoOnlyStreams) {
+        this.segmentedVideoOnlyStreams = segmentedVideoOnlyStreams;
     }
 
     public String getHlsUrl() {
