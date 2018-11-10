@@ -3,6 +3,7 @@ package org.schabi.newpipe.extractor.services.youtube;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import org.schabi.newpipe.Downloader;
+import org.schabi.newpipe.extractor.MediaFormat;
 import org.schabi.newpipe.extractor.NewPipe;
 import org.schabi.newpipe.extractor.exceptions.ExtractionException;
 import org.schabi.newpipe.extractor.exceptions.ParsingException;
@@ -164,7 +165,7 @@ public class YoutubeStreamExtractorDefaultTest {
         @Test
         public void testGetSubtitlesList() throws IOException, ExtractionException {
             // Video (/view?v=YQHsXMglC9A) set in the setUp() method has no captions => null
-            assertTrue(extractor.getSubtitles(SubtitlesFormat.TTML).isEmpty());
+            assertTrue(extractor.getSubtitles(MediaFormat.TTML).isEmpty());
         }
     }
 

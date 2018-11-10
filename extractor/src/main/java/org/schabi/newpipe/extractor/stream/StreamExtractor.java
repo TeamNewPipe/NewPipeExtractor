@@ -1,7 +1,7 @@
 package org.schabi.newpipe.extractor.stream;
 
 /*
- * Created by Christian Schabesberger on 10.08.15.
+ * Created by Christian Schabesberger on 10.08.18.
  *
  * Copyright (C) Christian Schabesberger 2016 <chris.schabesberger@mailbox.org>
  * StreamExtractor.java is part of NewPipe.
@@ -21,6 +21,7 @@ package org.schabi.newpipe.extractor.stream;
  */
 
 import org.schabi.newpipe.extractor.Extractor;
+import org.schabi.newpipe.extractor.MediaFormat;
 import org.schabi.newpipe.extractor.StreamingService;
 import org.schabi.newpipe.extractor.exceptions.ExtractionException;
 import org.schabi.newpipe.extractor.exceptions.ParsingException;
@@ -210,19 +211,20 @@ public abstract class StreamExtractor extends Extractor {
      * @throws ExtractionException
      */
     @Nonnull
-    public abstract List<Subtitles> getSubtitlesDefault() throws IOException, ExtractionException;
+    public abstract List<SubtitlesStream> getSubtitlesDefault() throws IOException, ExtractionException;
 
     /**
      * This will return a list of available
      * <a href="https://teamnewpipe.github.io/NewPipeExtractor/javadoc/org/schabi/newpipe/extractor/stream/Subtitles.html">Subtitles</a>s.
      * given by a specific type.
      * If no subtitles in that specific format are available an empty list can returned.
+     * @param format the media format by which the subtitles should be filtered
      * @return a list of available subtitles or an empty list
      * @throws IOException
      * @throws ExtractionException
      */
     @Nonnull
-    public abstract List<Subtitles> getSubtitles(SubtitlesFormat format) throws IOException, ExtractionException;
+    public abstract List<SubtitlesStream> getSubtitles(MediaFormat format) throws IOException, ExtractionException;
 
     /**
      * Get the <a href="https://teamnewpipe.github.io/NewPipeExtractor/javadoc/">StreamType</a>.
@@ -314,5 +316,6 @@ public abstract class StreamExtractor extends Extractor {
             }
         } else {
             return 0;
-        }};
+        }
+    }
 }
