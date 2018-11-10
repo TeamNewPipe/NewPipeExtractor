@@ -2,10 +2,10 @@ package org.schabi.newpipe.extractor.services.youtube.linkHandler;
 
 import org.schabi.newpipe.extractor.exceptions.ParsingException;
 import org.schabi.newpipe.extractor.linkhandler.SearchQueryHandlerFactory;
+import org.schabi.newpipe.extractor.utils.Base64;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
-import javax.xml.bind.DatatypeConverter;
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
 import java.util.ArrayList;
@@ -145,7 +145,7 @@ public class YoutubeSearchQueryHandlerFactory extends SearchQueryHandlerFactory 
         if(returnList.isEmpty()) {
             return null;
         }
-        return URLEncoder.encode(DatatypeConverter.printBase64Binary(convert(returnList)), CHARSET_UTF_8);
+        return URLEncoder.encode(Base64.encodeToString(convert(returnList), Base64.URL_SAFE));
     }
 
     private List<Byte> getContentFiltersQueryParams(List<String> contentFilter) {
@@ -188,7 +188,7 @@ public class YoutubeSearchQueryHandlerFactory extends SearchQueryHandlerFactory 
             sorter = Sorter.valueOf(filter);
         } catch (IllegalArgumentException e) {
             e.printStackTrace();
-            System.err.println("Unknown sort filter = " + filter + ", provided, none applied.");
+            System.err.println("Unknown sort filter = " + filter + " provided, none applied.");
             return Collections.emptyList();
         }
         return Arrays.asList(sorter.type.value, sorter.value);
