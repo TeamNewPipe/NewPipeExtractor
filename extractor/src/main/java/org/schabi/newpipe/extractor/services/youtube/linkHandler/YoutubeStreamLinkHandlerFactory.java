@@ -109,6 +109,15 @@ public class YoutubeStreamLinkHandlerFactory extends LinkHandlerFactory {
                 return Parser.matchGroup1("watch/" + ID_PATTERN, url);
             }
         }
+        if (lowercaseUrl.contains("invidio.us")) {
+            if (lowercaseUrl.contains("&v=")
+                    || lowercaseUrl.contains("?v=")) {
+                return Parser.matchGroup1("[?&]v=" + ID_PATTERN, url);
+            }
+            if (url.contains("/embed/")) {
+                return Parser.matchGroup1("embed/" + ID_PATTERN, url);
+            }
+        }
         throw new ParsingException("Error no suitable url: " + url);
     }
 
@@ -117,7 +126,8 @@ public class YoutubeStreamLinkHandlerFactory extends LinkHandlerFactory {
         final String lowercaseUrl = url.toLowerCase();
         if (!lowercaseUrl.contains("youtube")  &&
             !lowercaseUrl.contains("youtu.be") &&
-            !lowercaseUrl.contains("hooktube")) {
+            !lowercaseUrl.contains("hooktube") &&
+            !lowercaseUrl.contains("invidio.us")) {
             return false;
             // bad programming I know <-- nice meme
         }

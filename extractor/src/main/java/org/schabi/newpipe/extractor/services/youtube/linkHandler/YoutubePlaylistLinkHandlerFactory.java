@@ -34,7 +34,7 @@ public class YoutubePlaylistLinkHandlerFactory extends ListLinkHandlerFactory {
     @Override
     public boolean onAcceptUrl(final String url) {
         final boolean hasNotEmptyUrl = url != null && !url.isEmpty();
-        final boolean isYoutubeDomain = hasNotEmptyUrl && (url.contains("youtube") || url.contains("youtu.be"));
-        return isYoutubeDomain && url.contains("list=");
+        final boolean isValidDomain = hasNotEmptyUrl && (url.contains("youtube") || url.contains("youtu.be") || url.contains("invidio.us"));
+        return isValidDomain && url.contains("list=");
     }
 }

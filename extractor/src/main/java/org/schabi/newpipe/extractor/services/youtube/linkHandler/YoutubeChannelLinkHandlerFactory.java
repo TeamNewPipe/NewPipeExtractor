@@ -47,7 +47,7 @@ public class YoutubeChannelLinkHandlerFactory extends ListLinkHandlerFactory {
 
     @Override
     public boolean onAcceptUrl(String url) {
-        return (url.contains("youtube") || url.contains("youtu.be") || url.contains("hooktube.com"))
+        return (url.contains("youtube") || url.contains("youtu.be") || url.contains("hooktube.com") || url.contains("invidio.us"))
                 && (url.contains("/user/") || url.contains("/channel/"));
     }
 }
