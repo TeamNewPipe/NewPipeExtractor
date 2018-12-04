@@ -3,12 +3,12 @@ package org.schabi.newpipe.extractor.services.youtube;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import org.schabi.newpipe.Downloader;
+import org.schabi.newpipe.extractor.MediaFormat;
 import org.schabi.newpipe.extractor.NewPipe;
 import org.schabi.newpipe.extractor.exceptions.ExtractionException;
 import org.schabi.newpipe.extractor.exceptions.ParsingException;
 import org.schabi.newpipe.extractor.services.youtube.extractors.YoutubeStreamExtractor;
 import org.schabi.newpipe.extractor.stream.*;
-import org.schabi.newpipe.extractor.utils.DashMpdParser;
 import org.schabi.newpipe.extractor.utils.Localization;
 import org.schabi.newpipe.extractor.utils.Utils;
 
@@ -17,7 +17,6 @@ import java.io.IOException;
 import static org.junit.Assert.*;
 import static org.schabi.newpipe.extractor.ExtractorAsserts.assertIsSecureUrl;
 import static org.schabi.newpipe.extractor.ServiceList.YouTube;
-import static org.schabi.newpipe.extractor.services.youtube.YoutubeTrendingExtractorTest.extractor;
 
 /*
  * Created by Christian Schabesberger on 30.12.15.
@@ -151,7 +150,7 @@ public class YoutubeStreamExtractorDefaultTest {
 
         @Test
         public void testGetRelatedVideos() throws ExtractionException, IOException {
-            StreamInfoItemsCollector relatedVideos = extractor.getRelatedVideos();
+            StreamInfoItemsCollector relatedVideos = extractor.getRelatedStreams();
             Utils.printErrors(relatedVideos.getErrors());
             assertFalse(relatedVideos.getItems().isEmpty());
             assertTrue(relatedVideos.getErrors().isEmpty());
@@ -166,7 +165,7 @@ public class YoutubeStreamExtractorDefaultTest {
         @Test
         public void testGetSubtitlesList() throws IOException, ExtractionException {
             // Video (/view?v=YQHsXMglC9A) set in the setUp() method has no captions => null
-            assertTrue(extractor.getSubtitles(SubtitlesFormat.TTML).isEmpty());
+            assertTrue(extractor.getSubtitles(MediaFormat.TTML).isEmpty());
         }
     }
 

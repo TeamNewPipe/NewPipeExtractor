@@ -101,7 +101,7 @@ public class SoundcloudStreamExtractorDefaultTest {
 
     @Test
     public void testGetRelatedVideos() throws ExtractionException, IOException {
-        StreamInfoItemsCollector relatedVideos = extractor.getRelatedVideos();
+        StreamInfoItemsCollector relatedVideos = extractor.getRelatedStreams();
         assertFalse(relatedVideos.getItems().isEmpty());
         assertTrue(relatedVideos.getErrors().isEmpty());
     }

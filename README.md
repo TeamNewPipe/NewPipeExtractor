@@ -1,6 +1,6 @@
 # NewPipe Extractor
 
-[![Build Status](https://travis-ci.org/TeamNewPipe/NewPipeExtractor.svg?branch=master)](https://travis-ci.org/TeamNewPipe/NewPipeExtractor) [![JIT Pack Badge](https://jitpack.io/v/TeamNewPipe/NewPipeExtractor.svg)](https://jitpack.io/#TeamNewPipe/NewPipeExtractor) [Documentation](https://teamnewpipe.github.io/NewPipeExtractor/javadoc/)
+[![Build Status](https://travis-ci.org/TeamNewPipe/NewPipeExtractor.svg?branch=master)](https://travis-ci.org/TeamNewPipe/NewPipeExtractor) [![JIT Pack Badge](https://jitpack.io/v/TeamNewPipe/NewPipeExtractor.svg)](https://jitpack.io/#TeamNewPipe/NewPipeExtractor) [Documentation](https://teamnewpipe.github.io/documentation/)
 
 NewPipe Extractor is a library for extracting things from streaming sites. It is a core component of [NewPipe](https://github.com/TeamNewPipe/NewPipe), but could be used independently.
 

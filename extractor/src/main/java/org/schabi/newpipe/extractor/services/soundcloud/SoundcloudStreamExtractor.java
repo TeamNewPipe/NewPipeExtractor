@@ -172,13 +172,13 @@ public class SoundcloudStreamExtractor extends StreamExtractor {
 
     @Override
     @Nonnull
-    public List<Subtitles> getSubtitlesDefault() throws IOException, ExtractionException {
+    public List<SubtitlesStream> getSubtitlesDefault() throws IOException, ExtractionException {
         return Collections.emptyList();
     }
 
     @Override
     @Nonnull
-    public List<Subtitles> getSubtitles(SubtitlesFormat format) throws IOException, ExtractionException {
+    public List<SubtitlesStream> getSubtitles(MediaFormat format) throws IOException, ExtractionException {
         return Collections.emptyList();
     }
 
@@ -188,12 +188,12 @@ public class SoundcloudStreamExtractor extends StreamExtractor {
     }
 
     @Override
-    public StreamInfoItem getNextVideo() throws IOException, ExtractionException {
+    public StreamInfoItem getNextStream() throws IOException, ExtractionException {
         return null;
     }
 
     @Override
-    public StreamInfoItemsCollector getRelatedVideos() throws IOException, ExtractionException {
+    public StreamInfoItemsCollector getRelatedStreams() throws IOException, ExtractionException {
         StreamInfoItemsCollector collector = new StreamInfoItemsCollector(getServiceId());
 
         String apiUrl = "https://api-v2.soundcloud.com/tracks/" + urlEncode(getId()) + "/related"

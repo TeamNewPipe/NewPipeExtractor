@@ -53,12 +53,17 @@ public class YoutubeSearchExtractor extends SearchExtractor {
     @Override
     public void onFetchPage(@Nonnull Downloader downloader) throws IOException, ExtractionException {
         final String site;
-        final String url = getUrl() + "?gl="+ getLocalization().getCountry();
+        final String url = getUrl();
         //String url = builder.build().toString();
         //if we've been passed a valid language code, append it to the URL
         site = downloader.download(url, getLocalization());
 
         doc = Jsoup.parse(site, url);
+    }
+
+    @Override
+    public String getUrl() throws ParsingException {
+        return super.getUrl() + "&gl="+ getLocalization().getCountry();
     }
 
     @Override
@@ -79,7 +84,7 @@ public class YoutubeSearchExtractor extends SearchExtractor {
 
     @Override
     public String getNextPageUrl() throws ExtractionException {
-        return getUrl() + "&page=" + 2 + "&gl=" + getLocalization().getCountry();
+        return getUrl() + "&page=" + 2;
     }
 
     @Override
