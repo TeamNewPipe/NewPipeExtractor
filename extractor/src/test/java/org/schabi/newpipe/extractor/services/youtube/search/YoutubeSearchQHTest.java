@@ -62,7 +62,7 @@ public class YoutubeSearchQHTest {
                 Filter.Channel.name(),
                 filterList
         );
-        if(matchingElement == null) {
+        if (matchingElement == null) {
             fail("Channel filter has not been selected");
         }
     }
@@ -80,7 +80,7 @@ public class YoutubeSearchQHTest {
                 Sorter.Rating.name(),
                 filterList
         );
-        if(matchingElement == null) {
+        if (matchingElement == null) {
             fail("Rating sorter has not been selected");
         }
     }
@@ -102,10 +102,10 @@ public class YoutubeSearchQHTest {
                 Filter.Short.name(),
                 filterList
         );
-        if(videoMatchingElement == null) {
+        if (videoMatchingElement == null) {
             fail("Channel filter has not been selected");
         }
-        if(shortMatchingElement == null) {
+        if (shortMatchingElement == null) {
             fail("Short filter has not been selected");
         }
     }
@@ -127,10 +127,10 @@ public class YoutubeSearchQHTest {
                 Sorter.Rating.name(),
                 filterList
         );
-        if(channelMatchingElement == null) {
+        if (channelMatchingElement == null) {
             fail("Channel filter has not been selected");
         }
-        if(ratingMatchingElement == null) {
+        if (ratingMatchingElement == null) {
             fail("Rating sorter has not been selected");
         }
     }
