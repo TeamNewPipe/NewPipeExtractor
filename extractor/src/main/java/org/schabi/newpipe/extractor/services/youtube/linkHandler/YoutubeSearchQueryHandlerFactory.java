@@ -18,54 +18,58 @@ public class YoutubeSearchQueryHandlerFactory extends SearchQueryHandlerFactory 
     public static final String CHARSET_UTF_8 = "UTF-8";
 
     public enum FilterType {
-        Content((byte) 0x10),
-        Time((byte) 0x08),
-        Duration((byte) 0x18),
-        Feature((byte) 0);
+        Content(new byte[]{0x10}),
+        Time(new byte[]{0x08}),
+        Duration(new byte[]{0x18}),
+        Feature(new byte[]{});
 
-        private final byte value;
+        private final byte[] values;
 
-        FilterType(byte value) {
-            this.value = value;
+        FilterType(byte[] values) {
+            this.values = values;
         }
     }
 
     public enum Filter {
-        All("All", FilterType.Content, (byte) 0),
-        Video("Video", FilterType.Content, (byte) 0x01),
-        Channel("Channel", FilterType.Content, (byte) 0x02),
-        Playlist("Playlist", FilterType.Content, (byte) 0x03),
-        Movie("Movie", FilterType.Content, (byte) 0x04),
-        Show("Show", FilterType.Content, (byte) 0x05),
+        All("All", FilterType.Content, new byte[]{0}),
+        Video("Video", FilterType.Content, new byte[]{0x01}),
+        Channel("Channel", FilterType.Content, new byte[]{0x02}),
+        Playlist("Playlist", FilterType.Content, new byte[]{0x03}),
+        Movie("Movie", FilterType.Content, new byte[]{0x04}),
+        Show("Show", FilterType.Content, new byte[]{0x05}),
 
-        Hour("Hour", FilterType.Time, (byte) 0x01),
-        Today("Today", FilterType.Time, (byte) 0x02),
-        Week("Week", FilterType.Time, (byte) 0x03),
-        Month("Month", FilterType.Time, (byte) 0x04),
-        Year("Year", FilterType.Time, (byte) 0x05),
+        Hour("Hour", FilterType.Time, new byte[]{0x01}),
+        Today("Today", FilterType.Time, new byte[]{0x02}),
+        Week("Week", FilterType.Time, new byte[]{0x03}),
+        Month("Month", FilterType.Time, new byte[]{0x04}),
+        Year("Year", FilterType.Time, new byte[]{0x05}),
 
-        Short("Short", FilterType.Duration, (byte) 0x01),
-        Long("Long", FilterType.Duration, (byte) 0x02),
+        Short("Short", FilterType.Duration, new byte[]{0x01}),
+        Long("Long", FilterType.Duration, new byte[]{0x02}),
 
-        HD("HD", FilterType.Feature, (byte) 0x2001),
-        Subtitles("Subtitles", FilterType.Feature, (byte) 0x2801),
-        CreativeCommons("Creative Commons", FilterType.Feature, (byte) 0x3001),
-        ThreeDimensional("3D", FilterType.Feature, (byte) 0x3801),
-        Live("Live", FilterType.Feature, (byte) 0x4001),
-        Purchased("Purchased", FilterType.Feature, (byte) 0x4801),
-        FourK("4k", FilterType.Feature, (byte) 0x7001),
-        ThreeSixty("360", FilterType.Feature, (byte) 0x7801),
-        Location("Location", FilterType.Feature, (byte) 0xb80101),
-        HDR("HDR", FilterType.Feature, (byte) 0xc80101);
+        HD("HD", FilterType.Feature, new byte[]{0x20, 0x01}),
+        Subtitles("Subtitles", FilterType.Feature, new byte[]{0x28, 0x01}),
+        CreativeCommons("Creative Commons", FilterType.Feature, new byte[]{0x30, 0x01}),
+        ThreeDimensional("3D", FilterType.Feature, new byte[]{0x38, 0x01}),
+        Live("Live", FilterType.Feature, new byte[]{0x40, 0x01}),
+        Purchased("Purchased", FilterType.Feature, new byte[]{0x48, 0x01}),
+        FourK("4k", FilterType.Feature, new byte[]{0x70, 0x01}),
+        ThreeSixty("360", FilterType.Feature, new byte[]{0x78, 0x01}),
+        Location("Location", FilterType.Feature, new byte[]{(byte) 0xb8, 0x01, 0x01}),
+        HDR("HDR", FilterType.Feature, new byte[]{(byte) 0xc8, 0x01, 0x01});
 
         private final String title;
         private final FilterType type;
-        private final byte value;
+        private final byte[] values;
 
-        Filter(String title, FilterType type, byte value) {
+        Filter(String title, FilterType type, byte[] values) {
             this.title = title;
             this.type = type;
-            this.value = value;
+            this.values = values;
+        }
+
+        public String getTitle() {
+            return title;
         }
     }
 
@@ -192,7 +196,10 @@ public class YoutubeSearchQueryHandlerFactory extends SearchQueryHandlerFactory 
             case All:
                 return Collections.emptyList();
             default:
-                return Arrays.asList(contentFilter.type.value, contentFilter.value);
+                List<Byte> returnList = new ArrayList<>();
+                returnList.addAll(convert(contentFilter.type.values));
+                returnList.addAll(convert(contentFilter.values));
+                return returnList;
         }
     }
 
@@ -216,5 +223,13 @@ public class YoutubeSearchQueryHandlerFactory extends SearchQueryHandlerFactory 
             returnArray[i] = bigByteList.get(i);
         }
         return returnArray;
+    }
+
+    private List<Byte> convert(@Nonnull byte[] byteArray) {
+        List<Byte> returnList = new ArrayList<>(byteArray.length);
+        for (int i = 0; i < byteArray.length; i++) {
+            returnList.add(i, byteArray[0]);
+        }
+        return returnList;
     }
 }

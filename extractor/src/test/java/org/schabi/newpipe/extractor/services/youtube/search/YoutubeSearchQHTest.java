@@ -8,13 +8,13 @@ import org.junit.BeforeClass;
 import org.junit.Test;
 import org.schabi.newpipe.Downloader;
 import org.schabi.newpipe.extractor.NewPipe;
+import org.schabi.newpipe.extractor.exceptions.ParsingException;
 import org.schabi.newpipe.extractor.linkhandler.SearchQueryHandler;
 import org.schabi.newpipe.extractor.services.youtube.linkHandler.YoutubeSearchQueryHandlerFactory.Filter;
 import org.schabi.newpipe.extractor.services.youtube.linkHandler.YoutubeSearchQueryHandlerFactory.Sorter;
 import org.schabi.newpipe.extractor.utils.Localization;
 
 import javax.annotation.Nullable;
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
@@ -64,6 +64,49 @@ public class YoutubeSearchQHTest {
         );
         if (matchingElement == null) {
             fail("Channel filter has not been selected");
+        }
+    }
+
+    @Test
+    public void testWith360ContentFilterAndNoSortFilter() throws Exception {
+        String url = getYouTubeDefaultSearchQueryHandler(
+                Collections.singletonList(Filter.ThreeSixty.name()),
+                ""
+        ).getUrl();
+        String html = getHtml(url);
+        Document document = Jsoup.parse(html);
+        Elements filterList = getFilterList(document);
+        Element matchingElement = getMatchingElement(
+                Filter.ThreeSixty.getTitle(),
+                filterList
+        );
+        if (matchingElement == null) {
+            fail("360 filter has not been selected");
+        }
+    }
+
+    @Test
+    public void testWith360ContentFilterAndRatingSortFilter() throws Exception {
+        String url = getYouTubeDefaultSearchQueryHandler(
+                Collections.singletonList(Filter.ThreeSixty.name()),
+                Sorter.Rating.name()
+        ).getUrl();
+        String html = getHtml(url);
+        Document document = Jsoup.parse(html);
+        Elements filterList = getFilterList(document);
+        Element threeSixtyMatchingElement = getMatchingElement(
+                Filter.ThreeSixty.getTitle(),
+                filterList
+        );
+        Element ratingMatchingElement = getMatchingElement(
+                Sorter.Rating.name(),
+                filterList
+        );
+        if (threeSixtyMatchingElement == null) {
+            fail("360 filter has not been selected");
+        }
+        if (ratingMatchingElement == null) {
+            fail("Rating sorter has not been selected");
         }
     }
 
@@ -135,16 +178,18 @@ public class YoutubeSearchQHTest {
         }
     }
 
-    @Test
+    @Test(expected = ParsingException.class)
     public void testWithGibberishContentFilter() throws Exception {
-        assertEquals("https://www.youtube.com/results?q=" + DEFAULT_SEARCH_QUERY, YouTube.getSearchQHFactory()
-                .fromQuery(DEFAULT_SEARCH_QUERY, Collections.singletonList("gibberish"), "").getUrl());
+        YouTube.getSearchQHFactory()
+                .fromQuery(DEFAULT_SEARCH_QUERY, Collections.singletonList("gibberish"), "")
+                .getUrl();
     }
 
-    @Test
-    public void testWithGibbershSortFilter() throws Exception {
-        assertEquals("https://www.youtube.com/results?q=" + DEFAULT_SEARCH_QUERY, YouTube.getSearchQHFactory()
-                .fromQuery(DEFAULT_SEARCH_QUERY, Collections.<String>emptyList(), "gibberish").getUrl());
+    @Test(expected = ParsingException.class)
+    public void testWithGibberishSortFilter() throws Exception {
+        YouTube.getSearchQHFactory()
+                .fromQuery(DEFAULT_SEARCH_QUERY, Collections.<String>emptyList(), "gibberish")
+                .getUrl();
     }
 
     @Test
