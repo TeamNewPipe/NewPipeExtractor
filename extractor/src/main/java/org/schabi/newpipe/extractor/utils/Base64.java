@@ -1,4 +1,8 @@
 /*
+ * Added a comment explaining why the file/class was pulled
+ * into the NewPipe project in the first place along with a URL
+ * pointing to the source. 
+ *
  * Copyright (C) 2010 The Android Open Source Project
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
