@@ -7,7 +7,6 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import javax.annotation.Nonnull;
@@ -210,7 +209,7 @@ public class YoutubeCommentsExtractor extends CommentsExtractor {
                 }
                 return result;
             } catch (Exception e2) {
-                throw new ParsingException("Could not get text", e2);
+                return "";
             }
         }
     }
