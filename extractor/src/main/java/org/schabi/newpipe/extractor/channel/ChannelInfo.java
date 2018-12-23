@@ -61,7 +61,11 @@ public class ChannelInfo extends ListInfo<StreamInfoItem> {
                 extractor.getLinkHandler(),
                 extractor.getName());
 
-
+        try {
+            info.setOriginalUrl(extractor.getOriginalUrl());
+        } catch (Exception e) {
+            info.addError(e);
+        }
         try {
             info.setAvatarUrl(extractor.getAvatarUrl());
         } catch (Exception e) {
