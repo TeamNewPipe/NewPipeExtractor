@@ -150,10 +150,8 @@ public class MediaCCCStreamExtractor extends StreamExtractor {
                     throw new ExtractionException("Unknown media format: " + mimeType);
                 }
 
-
                 videoStreams.add(new VideoStream(recording.getString("recording_url"),
-                        mediaFormat,
-                        Integer.toString(recording.getInt("height"))));
+                        mediaFormat, recording.getInt("height") + "p"));
             }
         }
         return videoStreams;
