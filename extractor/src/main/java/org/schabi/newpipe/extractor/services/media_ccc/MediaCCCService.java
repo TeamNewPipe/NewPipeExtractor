@@ -23,7 +23,7 @@ import static org.schabi.newpipe.extractor.StreamingService.ServiceInfo.MediaCap
 
 public class MediaCCCService extends StreamingService {
     public MediaCCCService(int id) {
-        super(id, "Media.CCC", asList(AUDIO, VIDEO));
+        super(id, "MediaCCC", asList(AUDIO, VIDEO));
     }
 
     @Override
