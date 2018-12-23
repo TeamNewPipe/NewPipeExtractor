@@ -188,7 +188,7 @@ public class MediaCCCStreamExtractor extends StreamExtractor {
 
     @Override
     public StreamInfoItemsCollector getRelatedStreams() throws IOException, ExtractionException {
-        return null;
+        return new StreamInfoItemsCollector(getServiceId());
     }
 
     @Override
