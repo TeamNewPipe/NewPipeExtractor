@@ -8,8 +8,12 @@ import org.schabi.newpipe.extractor.kiosk.KioskList;
 import org.schabi.newpipe.extractor.linkhandler.*;
 import org.schabi.newpipe.extractor.playlist.PlaylistExtractor;
 import org.schabi.newpipe.extractor.search.SearchExtractor;
+import org.schabi.newpipe.extractor.services.media_ccc.extractors.MediaCCCConferenceExtractor;
 import org.schabi.newpipe.extractor.services.media_ccc.extractors.MediaCCCSearchExtractor;
+import org.schabi.newpipe.extractor.services.media_ccc.extractors.MediaCCCStreamExtractor;
+import org.schabi.newpipe.extractor.services.media_ccc.linkHandler.MediaCCCConferenceLinkHandlerFactory;
 import org.schabi.newpipe.extractor.services.media_ccc.linkHandler.MediaCCCSearchQueryHandlerFactory;
+import org.schabi.newpipe.extractor.services.media_ccc.linkHandler.MediaCCCStreamLinkHandlerFactory;
 import org.schabi.newpipe.extractor.stream.StreamExtractor;
 import org.schabi.newpipe.extractor.subscription.SubscriptionExtractor;
 import org.schabi.newpipe.extractor.utils.Localization;
@@ -29,12 +33,12 @@ public class MediaCCCService extends StreamingService {
 
     @Override
     public LinkHandlerFactory getStreamLHFactory() {
-        return null;
+        return new MediaCCCStreamLinkHandlerFactory();
     }
 
     @Override
     public ListLinkHandlerFactory getChannelLHFactory() {
-        return null;
+        return new MediaCCCConferenceLinkHandlerFactory();
     }
 
     @Override
@@ -49,12 +53,12 @@ public class MediaCCCService extends StreamingService {
 
     @Override
     public StreamExtractor getStreamExtractor(LinkHandler linkHandler, Localization localization) {
-        return null;
+        return new MediaCCCStreamExtractor(this, linkHandler, localization);
     }
 
     @Override
     public ChannelExtractor getChannelExtractor(ListLinkHandler linkHandler, Localization localization) {
-        return null;
+        return new MediaCCCConferenceExtractor(this, linkHandler, localization);
     }
 
     @Override

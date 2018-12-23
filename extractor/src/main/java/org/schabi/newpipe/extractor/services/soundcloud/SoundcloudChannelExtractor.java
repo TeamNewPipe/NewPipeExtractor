@@ -127,9 +127,4 @@ public class SoundcloudChannelExtractor extends ChannelExtractor {
 
         return new InfoItemsPage<>(collector, nextPageUrl);
     }
-
-    @Override
-    public String[] getDonationLinks() {
-        return new String[0];
-    }
 }

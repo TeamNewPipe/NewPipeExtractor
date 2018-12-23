@@ -92,11 +92,6 @@ public class ChannelInfo extends ListInfo<StreamInfoItem> {
         } catch (Exception e) {
             info.addError(e);
         }
-        try {
-            info.setDonationLinks(extractor.getDonationLinks());
-        } catch (Exception e) {
-            info.addError(e);
-        }
 
         return info;
     }

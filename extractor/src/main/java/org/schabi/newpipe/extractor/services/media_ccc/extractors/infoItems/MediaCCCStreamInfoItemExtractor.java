@@ -62,6 +62,6 @@ public class MediaCCCStreamInfoItemExtractor implements StreamInfoItemExtractor 
 
     @Override
     public String getThumbnailUrl() throws ParsingException {
-        return event.getString("thumbnails_url");
+        return event.getString("thumb_url");
     }
 }

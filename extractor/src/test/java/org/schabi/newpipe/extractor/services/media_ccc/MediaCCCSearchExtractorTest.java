@@ -10,7 +10,9 @@ import org.schabi.newpipe.extractor.search.SearchExtractor;
 import org.schabi.newpipe.extractor.services.media_ccc.extractors.MediaCCCSearchExtractor;
 import org.schabi.newpipe.extractor.utils.Localization;
 
+import static junit.framework.TestCase.assertEquals;
 import static junit.framework.TestCase.assertTrue;
+import static org.junit.Assert.assertFalse;
 import static org.schabi.newpipe.extractor.ServiceList.MediaCCC;
 
 /**
@@ -32,5 +34,28 @@ public class MediaCCCSearchExtractorTest {
     public void testCount() throws Exception {
         assertTrue(Integer.toString(itemsPage.getItems().size()),
                 itemsPage.getItems().size() >= 25);
+    }
+
+    @Test
+    public void testServiceId() throws Exception {
+        assertEquals(2, extractor.getServiceId());
+    }
+
+    @Test
+    public void testName() throws Exception {
+        assertFalse(itemsPage.getItems().get(0).getName(), itemsPage.getItems().get(0).getName().isEmpty());
+    }
+
+    @Test
+    public void testUrl() throws Exception {
+        assertTrue("Url should start with: https://api.media.ccc.de/public/events/",
+                itemsPage.getItems().get(0).getUrl().startsWith("https://api.media.ccc.de/public/events/"));
+    }
+
+    @Test
+    public void testThumbnailUrl() throws Exception {
+        assertTrue(itemsPage.getItems().get(0).getThumbnailUrl(),
+                itemsPage.getItems().get(0).getThumbnailUrl().startsWith("https://static.media.ccc.de/media/")
+                && itemsPage.getItems().get(0).getThumbnailUrl().endsWith(".jpg"));
     }
 }

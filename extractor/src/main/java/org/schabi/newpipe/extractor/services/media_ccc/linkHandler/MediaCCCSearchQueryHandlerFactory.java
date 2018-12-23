@@ -11,12 +11,12 @@ public class MediaCCCSearchQueryHandlerFactory extends SearchQueryHandlerFactory
 
     @Override
     public String[] getAvailableContentFilter() {
-        return null;
+        return new String[0];
     }
 
     @Override
     public String[] getAvailableSortFilter() {
-        return null;
+        return new String[0];
     }
 
     @Override
