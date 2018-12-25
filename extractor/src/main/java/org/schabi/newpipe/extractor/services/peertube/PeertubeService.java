@@ -98,36 +98,6 @@ public class PeertubeService extends StreamingService {
     }
 
     @Override
-    public KioskList getKioskList(Localization localization) throws ExtractionException {
-        KioskList.KioskExtractorFactory kioskFactory = new KioskList.KioskExtractorFactory() {
-            @Override
-            public KioskExtractor createNewKiosk(StreamingService streamingService,
-                                                 String url,
-                                                 String id,
-                                                 Localization local)
-                    throws ExtractionException {
-                return new PeertubeTrendingExtractor(PeertubeService.this,
-                        new PeertubeTrendingLinkHandlerFactory().fromId(id), id, local);
-            }
-        };
-
-        KioskList list = new KioskList(getServiceId(), localization);
-
-        // add kiosks here e.g.:
-        final PeertubeTrendingLinkHandlerFactory h = new PeertubeTrendingLinkHandlerFactory();
-        try {
-            list.addKioskEntry(kioskFactory, h, PeertubeTrendingLinkHandlerFactory.KIOSK_TRENDING);
-            list.addKioskEntry(kioskFactory, h, PeertubeTrendingLinkHandlerFactory.KIOSK_RECENT);
-            list.addKioskEntry(kioskFactory, h, PeertubeTrendingLinkHandlerFactory.KIOSK_LOCAL);
-            list.setDefaultKiosk(PeertubeTrendingLinkHandlerFactory.KIOSK_TRENDING);
-        } catch (Exception e) {
-            throw new ExtractionException(e);
-        }
-
-        return list;
-    }
-
-    @Override
     public ChannelExtractor getChannelExtractor(ListLinkHandler linkHandler, Localization localization)
             throws ExtractionException {
         return new PeertubeChannelExtractor(this, linkHandler, localization);
@@ -169,6 +139,36 @@ public class PeertubeService extends StreamingService {
         }else {
             this.getServiceInfo().setName("PeerTube");
         }
+    }
+
+    @Override
+    public KioskList getKioskList() throws ExtractionException {
+        KioskList.KioskExtractorFactory kioskFactory = new KioskList.KioskExtractorFactory() {
+            @Override
+            public KioskExtractor createNewKiosk(StreamingService streamingService,
+                                                 String url,
+                                                 String id,
+                                                 Localization local)
+                    throws ExtractionException {
+                return new PeertubeTrendingExtractor(PeertubeService.this,
+                        new PeertubeTrendingLinkHandlerFactory().fromId(id), id, local);
+            }
+        };
+
+        KioskList list = new KioskList(getServiceId());
+
+        // add kiosks here e.g.:
+        final PeertubeTrendingLinkHandlerFactory h = new PeertubeTrendingLinkHandlerFactory();
+        try {
+            list.addKioskEntry(kioskFactory, h, PeertubeTrendingLinkHandlerFactory.KIOSK_TRENDING);
+            list.addKioskEntry(kioskFactory, h, PeertubeTrendingLinkHandlerFactory.KIOSK_RECENT);
+            list.addKioskEntry(kioskFactory, h, PeertubeTrendingLinkHandlerFactory.KIOSK_LOCAL);
+            list.setDefaultKiosk(PeertubeTrendingLinkHandlerFactory.KIOSK_TRENDING);
+        } catch (Exception e) {
+            throw new ExtractionException(e);
+        }
+
+        return list;
     }
     
 

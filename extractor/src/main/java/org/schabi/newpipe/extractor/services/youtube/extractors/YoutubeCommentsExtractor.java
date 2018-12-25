@@ -7,6 +7,7 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.regex.Pattern;
 
 import javax.annotation.Nonnull;
 
@@ -25,6 +26,7 @@ import org.schabi.newpipe.extractor.exceptions.ReCaptchaException;
 import org.schabi.newpipe.extractor.linkhandler.ListLinkHandler;
 import org.schabi.newpipe.extractor.utils.JsonUtils;
 import org.schabi.newpipe.extractor.utils.Localization;
+import org.schabi.newpipe.extractor.utils.Parser;
 
 import com.grack.nanojson.JsonArray;
 import com.grack.nanojson.JsonObject;
@@ -34,6 +36,7 @@ import com.grack.nanojson.JsonParser;
 public class YoutubeCommentsExtractor extends CommentsExtractor {
 
     private static final String USER_AGENT = "Mozilla/5.0 (Android 8.1.0; Mobile; rv:62.0) Gecko/62.0 Firefox/62.0";
+    private static final Pattern YT_CLIENT_NAME_PATTERN = Pattern.compile("INNERTUBE_CONTEXT_CLIENT_NAME\\\":(.*?)[,}]");
 
     private String ytClientVersion;
     private String ytClientName;
@@ -62,7 +65,7 @@ public class YoutubeCommentsExtractor extends CommentsExtractor {
         
         JsonArray arr;
         try {
-            arr = (JsonArray) JsonUtils.getValue(ajaxJson, "response.continuationContents.commentSectionContinuation.continuations");
+            arr = JsonUtils.getArray(ajaxJson, "response.continuationContents.commentSectionContinuation.continuations");
         } catch (Exception e) {
             return "";
         }
@@ -71,7 +74,7 @@ public class YoutubeCommentsExtractor extends CommentsExtractor {
         }
         String continuation;
         try {
-            continuation = (String) JsonUtils.getValue(arr.getObject(0), "nextContinuationData.continuation");
+            continuation = JsonUtils.getString(arr.getObject(0), "nextContinuationData.continuation");
         } catch (Exception e) {
             return "";
         }
@@ -111,7 +114,7 @@ public class YoutubeCommentsExtractor extends CommentsExtractor {
         
         JsonArray contents;
         try {
-            contents = (JsonArray) JsonUtils.getValue(ajaxJson, "response.continuationContents.commentSectionContinuation.items");
+            contents = JsonUtils.getArray(ajaxJson, "response.continuationContents.commentSectionContinuation.items");
         }catch(Exception e) {
             //no comments
             return;
@@ -135,7 +138,7 @@ public class YoutubeCommentsExtractor extends CommentsExtractor {
     private void fetchTitle(JsonArray contents) {
         if(null == title) {
             try {
-                title = getYoutubeText((JsonObject) JsonUtils.getValue(contents.getObject(0), "commentThreadRenderer.commentTargetTitle"));
+                title = getYoutubeText(JsonUtils.getObject(contents.getObject(0), "commentThreadRenderer.commentTargetTitle"));
             } catch (Exception e) {
                 title = "Youtube Comments";
             }
@@ -150,7 +153,7 @@ public class YoutubeCommentsExtractor extends CommentsExtractor {
         DownloadResponse response = downloader.get(getUrl(), request);
         String responseBody = response.getResponseBody();
         ytClientVersion = findValue(responseBody, "INNERTUBE_CONTEXT_CLIENT_VERSION\":\"", "\"");
-        ytClientName = findValue(responseBody, "INNERTUBE_CONTEXT_CLIENT_NAME\":", ",");
+        ytClientName = Parser.matchGroup1(YT_CLIENT_NAME_PATTERN, responseBody);
         String commentsTokenInside = findValue(responseBody, "commentSectionRenderer", "}");
         String commentsToken = findValue(commentsTokenInside, "continuation\":\"", "\"");
         initPage = getPage(getNextPageUrl(commentsToken));
@@ -196,17 +199,17 @@ public class YoutubeCommentsExtractor extends CommentsExtractor {
     
     public static String getYoutubeText(@Nonnull JsonObject object) throws ParsingException {
         try {
-            return (String) JsonUtils.getValue(object, "simpleText");
+            return JsonUtils.getString(object, "simpleText");
         } catch (Exception e1) {
             try {
-                JsonArray arr = (JsonArray) JsonUtils.getValue(object, "runs");
+                JsonArray arr = JsonUtils.getArray(object, "runs");
                 String result = "";
                 for(int i=0; i<arr.size();i++) {
-                    result = result + (String) JsonUtils.getValue(arr.getObject(i), "text");
+                    result = result + JsonUtils.getString(arr.getObject(i), "text");
                 }
                 return result;
             } catch (Exception e2) {
-                throw new ParsingException("Could not get text", e2);
+                return "";
             }
         }
     }

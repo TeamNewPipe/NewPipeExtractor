@@ -32,7 +32,7 @@ public class JsonUtils {
     public static String getString(@Nonnull JsonObject object, @Nonnull String path) throws ParsingException{
         Object value = getValue(object, path);
         if(value instanceof String) {
-            return (String) getValue(object, path);
+            return (String) value;
         }else {
             throw new ParsingException("Unable to get " + path);
         }
@@ -42,12 +42,31 @@ public class JsonUtils {
     public static Number getNumber(@Nonnull JsonObject object, @Nonnull String path) throws ParsingException{
         Object value = getValue(object, path);
         if(value instanceof Number) {
-            return (Number) getValue(object, path);
+            return (Number) value;
         }else {
             throw new ParsingException("Unable to get " + path);
         }
     }
     
+    @Nonnull
+    public static JsonObject getObject(@Nonnull JsonObject object, @Nonnull String path) throws ParsingException{
+        Object value = getValue(object, path);
+        if(value instanceof JsonObject) {
+            return (JsonObject) value;
+        }else {
+            throw new ParsingException("Unable to get " + path);
+        }
+    }
+    
+    @Nonnull
+    public static JsonArray getArray(@Nonnull JsonObject object, @Nonnull String path) throws ParsingException{
+        Object value = getValue(object, path);
+        if(value instanceof JsonArray) {
+            return (JsonArray) value;
+        }else {
+            throw new ParsingException("Unable to get " + path);
+        }
+    }
 
     @Nonnull
     public static List<Object> getValues(@Nonnull JsonArray array, @Nonnull String path) throws ParsingException {

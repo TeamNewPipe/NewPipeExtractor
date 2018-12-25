@@ -11,7 +11,6 @@ import org.schabi.newpipe.extractor.Downloader;
 import org.schabi.newpipe.extractor.MediaFormat;
 import org.schabi.newpipe.extractor.ServiceList;
 import org.schabi.newpipe.extractor.StreamingService;
-import org.schabi.newpipe.extractor.Subtitles;
 import org.schabi.newpipe.extractor.exceptions.ExtractionException;
 import org.schabi.newpipe.extractor.exceptions.ParsingException;
 import org.schabi.newpipe.extractor.exceptions.ReCaptchaException;
@@ -25,7 +24,7 @@ import org.schabi.newpipe.extractor.stream.StreamExtractor;
 import org.schabi.newpipe.extractor.stream.StreamInfoItem;
 import org.schabi.newpipe.extractor.stream.StreamInfoItemsCollector;
 import org.schabi.newpipe.extractor.stream.StreamType;
-import org.schabi.newpipe.extractor.stream.SubtitlesFormat;
+import org.schabi.newpipe.extractor.stream.SubtitlesStream;
 import org.schabi.newpipe.extractor.stream.VideoStream;
 import org.schabi.newpipe.extractor.utils.JsonUtils;
 import org.schabi.newpipe.extractor.utils.Localization;
@@ -170,12 +169,12 @@ public class PeertubeStreamExtractor extends StreamExtractor {
     }
 
     @Override
-    public List<Subtitles> getSubtitlesDefault() throws IOException, ExtractionException {
+    public List<SubtitlesStream> getSubtitlesDefault() throws IOException, ExtractionException {
         return Collections.emptyList();
     }
 
     @Override
-    public List<Subtitles> getSubtitles(SubtitlesFormat format) throws IOException, ExtractionException {
+    public List<SubtitlesStream> getSubtitles(final MediaFormat format) throws IOException, ExtractionException {
         return Collections.emptyList();
     }
 
@@ -185,12 +184,12 @@ public class PeertubeStreamExtractor extends StreamExtractor {
     }
 
     @Override
-    public StreamInfoItem getNextVideo() throws IOException, ExtractionException {
+    public StreamInfoItem getNextStream() throws IOException, ExtractionException {
         return null;
     }
 
     @Override
-    public StreamInfoItemsCollector getRelatedVideos() throws IOException, ExtractionException {
+    public StreamInfoItemsCollector getRelatedStreams() throws IOException, ExtractionException {
         StreamInfoItemsCollector collector = new StreamInfoItemsCollector(getServiceId());
 
         //TODO fetch related videos not trending

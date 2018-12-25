@@ -219,7 +219,7 @@ public class YoutubePlaylistExtractorTest {
 
         @Test
         public void testUploaderName() throws Exception {
-            assertEquals("Tomas Nilsson", extractor.getUploaderName());
+            assertEquals("Tomas Nilsson TOMPA571", extractor.getUploaderName());
         }
 
         @Test

@@ -1,5 +1,13 @@
 package org.schabi.newpipe.extractor.services.peertube;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
+import static org.schabi.newpipe.extractor.ExtractorAsserts.assertIsSecureUrl;
+import static org.schabi.newpipe.extractor.ServiceList.PeerTube;
+
+import java.io.IOException;
+
 import org.junit.BeforeClass;
 import org.junit.Test;
 import org.schabi.newpipe.Downloader;
@@ -12,12 +20,6 @@ import org.schabi.newpipe.extractor.stream.StreamInfoItemsCollector;
 import org.schabi.newpipe.extractor.stream.StreamType;
 import org.schabi.newpipe.extractor.utils.Localization;
 
-import java.io.IOException;
-
-import static org.junit.Assert.*;
-import static org.schabi.newpipe.extractor.ExtractorAsserts.assertIsSecureUrl;
-import static org.schabi.newpipe.extractor.ServiceList.PeerTube;
-
 /**
  * Test for {@link StreamExtractor}
  */
@@ -27,7 +29,7 @@ public class PeertubeStreamExtractorDefaultTest {
     @BeforeClass
     public static void setUp() throws Exception {
         NewPipe.init(Downloader.getInstance(), new Localization("GB", "en"));
-        extractor = (PeertubeStreamExtractor) PeerTube.getStreamExtractor("https://peertube.mastodon.host/videos/watch/86fe4f24-64c3-4ab4-9e7e-66177219ed21");
+        extractor = (PeertubeStreamExtractor) PeerTube.getStreamExtractor("https://peertube.mastodon.host/videos/watch/04af977f-4201-4697-be67-a8d8cae6fa7a");
         extractor.fetchPage();
     }
 
@@ -39,22 +41,22 @@ public class PeertubeStreamExtractorDefaultTest {
 
     @Test
     public void testGetTitle() throws ParsingException {
-        assertEquals(extractor.getName(), "Pažadėtoji 1 Sezonas 1050 Serija - Ziuri.me");
+        assertEquals(extractor.getName(), "The Internet's Own Boy");
     }
 
     @Test
     public void testGetDescription() throws ParsingException {
-        assertEquals(extractor.getDescription(), "Serialo veiksmas vyksta Radžastane. kur vis dar gyvos liaudies tradicijos. o jo centre - Anandi gimusi varguolių šeimoje. Mergaitė privalės ištekėti už turtingo paveldėtojo vos tik sulaukusi aštuonerių metų ir priprasti prie naujojo nuotakos vaidm...");
+        assertEquals(extractor.getDescription(), "The story of programming prodigy and information activist Aaron Swartz, who took his own life at the age of 26.");
     }
 
     @Test
     public void testGetUploaderName() throws ParsingException {
-        assertEquals(extractor.getUploaderName(), "djsets");
+        assertEquals(extractor.getUploaderName(), "root");
     }
 
     @Test
     public void testGetLength() throws ParsingException {
-        assertEquals(extractor.getLength(), 1238);
+        assertEquals(extractor.getLength(), 6299);
     }
 
     @Test
@@ -65,13 +67,13 @@ public class PeertubeStreamExtractorDefaultTest {
 
     @Test
     public void testGetUploadDate() throws ParsingException {
-        assertEquals("2018-10-06", extractor.getUploadDate());
+        assertEquals("2017-10-17", extractor.getUploadDate());
     }
 
     @Test
     public void testGetUploaderUrl() throws ParsingException {
         assertIsSecureUrl(extractor.getUploaderUrl());
-        assertEquals("https://peertube.mastodon.host/api/v1/accounts/djsets@hostyour.tv", extractor.getUploaderUrl());
+        assertEquals("https://peertube.mastodon.host/api/v1/accounts/root@peertube2.cpy.re", extractor.getUploaderUrl());
     }
 
     @Test
@@ -96,7 +98,7 @@ public class PeertubeStreamExtractorDefaultTest {
 
     @Test
     public void testGetRelatedVideos() throws ExtractionException, IOException {
-        StreamInfoItemsCollector relatedVideos = extractor.getRelatedVideos();
+        StreamInfoItemsCollector relatedVideos = extractor.getRelatedStreams();
         assertFalse(relatedVideos.getItems().isEmpty());
         assertTrue(relatedVideos.getErrors().isEmpty());
     }

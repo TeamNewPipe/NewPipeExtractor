@@ -8,13 +8,10 @@ import org.schabi.newpipe.extractor.Info;
 import org.schabi.newpipe.extractor.InfoItem;
 import org.schabi.newpipe.extractor.NewPipe;
 import org.schabi.newpipe.extractor.StreamingService;
-import org.schabi.newpipe.extractor.Subtitles;
-import org.schabi.newpipe.extractor.comments.CommentsInfo;
 import org.schabi.newpipe.extractor.exceptions.ContentNotAvailableException;
 import org.schabi.newpipe.extractor.exceptions.ExtractionException;
 import org.schabi.newpipe.extractor.utils.DashMpdParser;
 import org.schabi.newpipe.extractor.utils.ExtractorHelper;
-import org.schabi.newpipe.extractor.utils.Localization;
 
 /*
  * Created by Christian Schabesberger on 26.08.15.
@@ -163,6 +160,9 @@ public class StreamInfo extends Info {
                 streamInfo.getVideoOnlyStreams().addAll(result.getVideoOnlyStreams());
                 streamInfo.getAudioStreams().addAll(result.getAudioStreams());
                 streamInfo.getVideoStreams().addAll(result.getVideoStreams());
+                streamInfo.segmentedVideoOnlyStreams = result.getSegmentedVideoOnlyStreams();
+                streamInfo.segmentedAudioStreams = result.getSegmentedAudioStreams();
+                streamInfo.segmentedVideoStreams = result.getSegmentedVideoStreams();
             } catch (Exception e) {
                 // Sometimes we receive 403 (forbidden) error when trying to download the
                 // manifest (similar to what happens with youtube-dl),
@@ -254,7 +254,7 @@ public class StreamInfo extends Info {
             streamInfo.addError(e);
         }
         try {
-            streamInfo.setNextVideo(extractor.getNextVideo());
+            streamInfo.setNextVideo(extractor.getNextStream());
         } catch (Exception e) {
             streamInfo.addError(e);
         }
@@ -289,12 +289,17 @@ public class StreamInfo extends Info {
     private List<VideoStream> videoOnlyStreams;
 
     private String dashMpdUrl;
+    private List<VideoStream> segmentedVideoStreams;
+    private List<AudioStream> segmentedAudioStreams;
+    private List<VideoStream> segmentedVideoOnlyStreams;
+
+
     private String hlsUrl;
     private StreamInfoItem nextVideo;
     private List<InfoItem> relatedStreams;
 
     private long startPosition = 0;
-    private List<Subtitles> subtitles;
+    private List<SubtitlesStream> subtitles;
 
     /**
      * Get the stream type
@@ -449,6 +454,30 @@ public class StreamInfo extends Info {
         this.dashMpdUrl = dashMpdUrl;
     }
 
+    public List<VideoStream> getSegmentedVideoStreams() {
+        return segmentedVideoStreams;
+    }
+
+    public void setSegmentedVideoStreams(List<VideoStream> segmentedVideoStreams) {
+        this.segmentedVideoStreams = segmentedVideoStreams;
+    }
+
+    public List<AudioStream> getSegmentedAudioStreams() {
+        return segmentedAudioStreams;
+    }
+
+    public void setSegmentedAudioStreams(List<AudioStream> segmentedAudioStreams) {
+        this.segmentedAudioStreams = segmentedAudioStreams;
+    }
+
+    public List<VideoStream> getSegmentedVideoOnlyStreams() {
+        return segmentedVideoOnlyStreams;
+    }
+
+    public void setSegmentedVideoOnlyStreams(List<VideoStream> segmentedVideoOnlyStreams) {
+        this.segmentedVideoOnlyStreams = segmentedVideoOnlyStreams;
+    }
+
     public String getHlsUrl() {
         return hlsUrl;
     }
@@ -481,11 +510,11 @@ public class StreamInfo extends Info {
         this.startPosition = startPosition;
     }
 
-    public List<Subtitles> getSubtitles() {
+    public List<SubtitlesStream> getSubtitles() {
         return subtitles;
     }
 
-    public void setSubtitles(List<Subtitles> subtitles) {
+    public void setSubtitles(List<SubtitlesStream> subtitles) {
         this.subtitles = subtitles;
     }
 
