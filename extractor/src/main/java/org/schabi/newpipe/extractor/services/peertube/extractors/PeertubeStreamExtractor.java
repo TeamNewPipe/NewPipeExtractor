@@ -1,6 +1,8 @@
 package org.schabi.newpipe.extractor.services.peertube.extractors;
 
 import java.io.IOException;
+import java.io.UnsupportedEncodingException;
+import java.net.URLEncoder;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -17,7 +19,7 @@ import org.schabi.newpipe.extractor.exceptions.ReCaptchaException;
 import org.schabi.newpipe.extractor.linkhandler.LinkHandler;
 import org.schabi.newpipe.extractor.services.peertube.PeertubeParsingHelper;
 import org.schabi.newpipe.extractor.services.peertube.linkHandler.PeertubeChannelLinkHandlerFactory;
-import org.schabi.newpipe.extractor.services.peertube.linkHandler.PeertubeTrendingLinkHandlerFactory;
+import org.schabi.newpipe.extractor.services.peertube.linkHandler.PeertubeSearchQueryHandlerFactory;
 import org.schabi.newpipe.extractor.stream.AudioStream;
 import org.schabi.newpipe.extractor.stream.Stream;
 import org.schabi.newpipe.extractor.stream.StreamExtractor;
@@ -191,11 +193,35 @@ public class PeertubeStreamExtractor extends StreamExtractor {
     @Override
     public StreamInfoItemsCollector getRelatedStreams() throws IOException, ExtractionException {
         StreamInfoItemsCollector collector = new StreamInfoItemsCollector(getServiceId());
-
-        //TODO fetch related videos not trending
-        String apiUrl = new PeertubeTrendingLinkHandlerFactory().getUrl(PeertubeTrendingLinkHandlerFactory.KIOSK_TRENDING);
-        getStreamsFromApi(collector, apiUrl);
+        List<String> tags = getTags();
+        String apiUrl = null;
+        if(!tags.isEmpty()) {
+            apiUrl = getRelatedStreamsUrl(tags);
+            
+        }else {
+            apiUrl = getUploaderUrl() + "/videos?start=0&count=8";
+        }
+        if(!StringUtil.isBlank(apiUrl)) getStreamsFromApi(collector, apiUrl);
         return collector;
+    }
+    
+    private List<String> getTags(){
+        try {
+            return (List) JsonUtils.getArray(json, "tags");
+        } catch (Exception e) {
+            return Collections.emptyList();
+        }
+    }
+    
+    private String getRelatedStreamsUrl(List<String> tags) throws UnsupportedEncodingException {
+        String url = ServiceList.PeerTube.getBaseUrl() + PeertubeSearchQueryHandlerFactory.SEARCH_ENDPOINT;
+        StringBuilder params = new StringBuilder();
+        params.append("start=0&count=8&sort=-createdAt");
+        for(String tag : tags) {
+            params.append("&tagsOneOf=");
+            params.append(URLEncoder.encode(tag, "UTF-8"));
+        }
+        return url + "?" + params.toString();
     }
 
     private void getStreamsFromApi(StreamInfoItemsCollector collector, String apiUrl) throws ReCaptchaException, IOException, ParsingException {
@@ -226,7 +252,8 @@ public class PeertubeStreamExtractor extends StreamExtractor {
             if(c instanceof JsonObject) {
                 final JsonObject item = (JsonObject) c;
                 PeertubeStreamInfoItemExtractor extractor = new PeertubeStreamInfoItemExtractor(item);
-                collector.commit(extractor);
+                //do not add the same stream in related streams
+                if(!extractor.getUrl().equals(getUrl())) collector.commit(extractor);
             }
         }
         

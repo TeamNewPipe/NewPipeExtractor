@@ -12,7 +12,7 @@ public class PeertubeSearchQueryHandlerFactory extends SearchQueryHandlerFactory
 
     public static final String CHARSET_UTF_8 = "UTF-8";
     public static final String VIDEOS = "videos";
-    private static final String SEARCH_ENDPOINT = "/api/v1/search/videos";
+    public static final String SEARCH_ENDPOINT = "/api/v1/search/videos";
 
     public static PeertubeSearchQueryHandlerFactory getInstance() {
         return new PeertubeSearchQueryHandlerFactory();

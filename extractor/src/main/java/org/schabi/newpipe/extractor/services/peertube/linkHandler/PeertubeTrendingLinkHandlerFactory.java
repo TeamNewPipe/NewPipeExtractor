@@ -12,6 +12,8 @@ import org.schabi.newpipe.extractor.linkhandler.ListLinkHandlerFactory;
 public class PeertubeTrendingLinkHandlerFactory extends ListLinkHandlerFactory {
     
     
+    private static final PeertubeTrendingLinkHandlerFactory instance = new PeertubeTrendingLinkHandlerFactory();
+    
     public static final Map<String, String> KIOSK_MAP;
     public static final Map<String, String> REVERSE_KIOSK_MAP;
     public static final String KIOSK_TRENDING = "Trending";
@@ -30,6 +32,10 @@ public class PeertubeTrendingLinkHandlerFactory extends ListLinkHandlerFactory {
             reverseMap.put(entry.getValue(), entry.getKey());
         }
         REVERSE_KIOSK_MAP = Collections.unmodifiableMap(reverseMap);
+    }
+    
+    public static PeertubeTrendingLinkHandlerFactory getInstance() {
+        return instance;
     }
     
     public String getUrl(String id, List<String> contentFilters, String sortFilter) {
