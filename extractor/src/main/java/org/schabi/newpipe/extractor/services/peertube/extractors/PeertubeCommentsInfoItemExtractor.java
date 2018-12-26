@@ -1,5 +1,10 @@
 package org.schabi.newpipe.extractor.services.peertube.extractors;
 
+import java.text.DateFormat;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Locale;
+
 import org.schabi.newpipe.extractor.ServiceList;
 import org.schabi.newpipe.extractor.comments.CommentsInfoItemExtractor;
 import org.schabi.newpipe.extractor.exceptions.ParsingException;
@@ -42,7 +47,8 @@ public class PeertubeCommentsInfoItemExtractor implements CommentsInfoItemExtrac
 
     @Override
     public String getPublishedTime() throws ParsingException {
-        return JsonUtils.getString(item, "createdAt");
+        String date = JsonUtils.getString(item, "createdAt");
+        return getFormattedDate(date);
     }
 
     @Override
@@ -83,6 +89,16 @@ public class PeertubeCommentsInfoItemExtractor implements CommentsInfoItemExtrac
         String name = JsonUtils.getString(item, "account.name");
         String host = JsonUtils.getString(item, "account.host");
         return PeertubeChannelLinkHandlerFactory.getInstance().fromId(name + "@" + host).getUrl();
+    }
+    
+    private String getFormattedDate(String date) {
+        DateFormat sourceDf = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'");
+        DateFormat targetDf = new SimpleDateFormat("dd-MM-yyyy hh:mm a", Locale.ENGLISH);
+        try {
+            return targetDf.format(sourceDf.parse(date));
+        } catch (ParseException e) {
+            return date;
+        }
     }
 
 }

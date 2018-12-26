@@ -18,7 +18,7 @@ public class PeertubeInstance {
     
     private final String url;
     private String name;
-    public static final PeertubeInstance defaultInstance = new PeertubeInstance("https://peertube.mastodon.host", "PeerTube on Mastodon.host");
+    public static final PeertubeInstance defaultInstance = new PeertubeInstance("https://framatube.org", "FramaTube");
     
     public PeertubeInstance(String url) throws IOException {
         this.url = url;
