@@ -13,6 +13,7 @@ public class PeertubeTrendingLinkHandlerFactory extends ListLinkHandlerFactory {
     
     
     public static final Map<String, String> KIOSK_MAP;
+    public static final Map<String, String> REVERSE_KIOSK_MAP;
     public static final String KIOSK_TRENDING = "Trending";
     public static final String KIOSK_RECENT = "Recently added";
     public static final String KIOSK_LOCAL = "Local";
@@ -23,6 +24,12 @@ public class PeertubeTrendingLinkHandlerFactory extends ListLinkHandlerFactory {
         map.put(KIOSK_RECENT, "%s/api/v1/videos?sort=-publishedAt");
         map.put(KIOSK_LOCAL, "%s/api/v1/videos?filter=local");
         KIOSK_MAP = Collections.unmodifiableMap(map);
+        
+        Map<String, String> reverseMap = new HashMap<>();
+        for(Map.Entry<String, String> entry : KIOSK_MAP.entrySet()){
+            reverseMap.put(entry.getValue(), entry.getKey());
+        }
+        REVERSE_KIOSK_MAP = Collections.unmodifiableMap(reverseMap);
     }
     
     public String getUrl(String id, List<String> contentFilters, String sortFilter) {
@@ -33,13 +40,15 @@ public class PeertubeTrendingLinkHandlerFactory extends ListLinkHandlerFactory {
     @Override
     public String getId(String url) throws ParsingException {
         
-        if(url.contains("/videos/trending")) {
+        if (url.contains("/videos/trending")) {
             return KIOSK_TRENDING;
-        }else if(url.contains("/videos/recently-added")) {
+        } else if (url.contains("/videos/recently-added")) {
             return KIOSK_RECENT;
-        }else if(url.contains("/videos/local")){
+        } else if (url.contains("/videos/local")) {
             return KIOSK_LOCAL;
-        }else {
+        } else if (REVERSE_KIOSK_MAP.containsKey(url)) {
+            return REVERSE_KIOSK_MAP.get(url);
+        } else {
             throw new ParsingException("no id found for this url");
         }
     }
