@@ -40,7 +40,7 @@ public class PeertubeTrendingLinkHandlerFactory extends ListLinkHandlerFactory {
     @Override
     public String getId(String url) throws ParsingException {
         String baseUrl = ServiceList.PeerTube.getBaseUrl();
-        url = url.replace(baseUrl, "");
+        url = url.replace(baseUrl, "%s");
         if (url.contains("/videos/trending")) {
             return KIOSK_TRENDING;
         } else if (url.contains("/videos/recently-added")) {
