@@ -140,6 +140,15 @@ public class PeertubeService extends StreamingService {
             this.getServiceInfo().setName("PeerTube");
         }
     }
+    
+    public void setInstance(String url, String name) throws IOException {
+        this.instance = new PeertubeInstance(url, name);
+        if(!StringUtil.isBlank(instance.getName())) {
+            this.getServiceInfo().setName(instance.getName());
+        }else {
+            this.getServiceInfo().setName("PeerTube");
+        }
+    }
 
     @Override
     public KioskList getKioskList() throws ExtractionException {

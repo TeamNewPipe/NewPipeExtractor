@@ -26,7 +26,7 @@ public class PeertubeInstance {
         setInstanceMetaData(response);
     }
     
-    private PeertubeInstance(String url , String name) {
+    public PeertubeInstance(String url , String name) {
         this.url = url;
         this.name = name;
     }
