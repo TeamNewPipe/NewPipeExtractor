@@ -141,7 +141,7 @@ public class PeertubeService extends StreamingService {
         }
     }
     
-    public void setInstance(String url, String name) throws IOException {
+    public void setInstance(String url, String name) {
         this.instance = new PeertubeInstance(url, name);
         if(!StringUtil.isBlank(instance.getName())) {
             this.getServiceInfo().setName(instance.getName());
