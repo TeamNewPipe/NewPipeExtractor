@@ -1,13 +1,14 @@
 package org.schabi.newpipe.extractor.stream;
 
-import org.schabi.newpipe.extractor.MediaFormat;
-
 import java.io.Serializable;
 import java.util.List;
+
+import org.schabi.newpipe.extractor.MediaFormat;
 
 public abstract class Stream implements Serializable {
     private final MediaFormat mediaFormat;
     public final String url;
+    public final String torrentUrl;
 
     /**
      * @deprecated Use {@link #getFormat()}  or {@link #getFormatId()}
@@ -16,7 +17,12 @@ public abstract class Stream implements Serializable {
     public final int format;
 
     public Stream(String url, MediaFormat format) {
+        this(url, null, format);
+    }
+    
+    public Stream(String url, String torrentUrl, MediaFormat format) {
         this.url = url;
+        this.torrentUrl = torrentUrl;
         this.format = format.id;
         this.mediaFormat = format;
     }

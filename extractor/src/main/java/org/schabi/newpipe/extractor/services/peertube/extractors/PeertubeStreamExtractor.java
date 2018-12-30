@@ -148,10 +148,11 @@ public class PeertubeStreamExtractor extends StreamExtractor {
                 if(!(s instanceof JsonObject)) continue;
                 JsonObject stream = (JsonObject) s;
                 String url = JsonUtils.getString(stream, "fileUrl");
+                String torrentUrl = JsonUtils.getString(stream, "torrentUrl");
                 String resolution = JsonUtils.getString(stream, "resolution.label");
                 String extension = url.substring(url.lastIndexOf(".") + 1);
                 MediaFormat format = MediaFormat.getFromSuffix(extension);
-                VideoStream videoStream = new VideoStream(url, format, resolution);
+                VideoStream videoStream = new VideoStream(url, torrentUrl, format, resolution);
                 if (!Stream.containSimilarStream(videoStream, videoStreams)) {
                     videoStreams.add(videoStream);
                 }
