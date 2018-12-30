@@ -55,6 +55,10 @@ public abstract class Stream implements Serializable {
     public String getUrl() {
         return url;
     }
+    
+    public String getTorrentUrl() {
+        return torrentUrl;
+    }
 
     public MediaFormat getFormat() {
         return mediaFormat;
