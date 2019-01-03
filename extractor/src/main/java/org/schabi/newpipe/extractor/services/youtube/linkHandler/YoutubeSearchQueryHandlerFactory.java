@@ -228,7 +228,7 @@ public class YoutubeSearchQueryHandlerFactory extends SearchQueryHandlerFactory 
     private List<Byte> convert(@Nonnull byte[] byteArray) {
         List<Byte> returnList = new ArrayList<>(byteArray.length);
         for (int i = 0; i < byteArray.length; i++) {
-            returnList.add(i, byteArray[0]);
+            returnList.add(i, byteArray[i]);
         }
         return returnList;
     }
