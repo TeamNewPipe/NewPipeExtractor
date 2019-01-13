@@ -2,6 +2,9 @@ package org.schabi.newpipe.extractor.utils;
 
 import org.schabi.newpipe.extractor.exceptions.ParsingException;
 
+import java.io.UnsupportedEncodingException;
+import java.net.URL;
+import java.net.URLDecoder;
 import java.util.List;
 
 public class Utils {
@@ -57,5 +60,43 @@ public class Utils {
         }
         return url;
     }
-}
 
+    /**
+     * get the value of a URL-query by name.
+     * if a url-query is give multiple times, only the value of the first query is returned
+     *
+     * @param url           the url to be used
+     * @param parameterName the pattern that will be used to check the url
+     * @return a string that contains the value of the query parameter or null if nothing was found
+     */
+    public static String getQueryValue(URL url, String parameterName) {
+        String urlQuery = url.getQuery();
+
+        if (urlQuery != null) {
+            for (String param : urlQuery.split("&")) {
+                String[] params = param.split("=", 2);
+
+                String query;
+                try {
+                    query = URLDecoder.decode(params[0], "UTF-8");
+                } catch (UnsupportedEncodingException e) {
+                    System.err.println("Cannot decode string with UTF-8. using the string without decoding");
+                    e.printStackTrace();
+                    query = params[0];
+                }
+
+                if (query.equals(parameterName)) {
+                    try {
+                        return URLDecoder.decode(params[1], "UTF-8");
+                    } catch (UnsupportedEncodingException e) {
+                        System.err.println("Cannot decode string with UTF-8. using the string without decoding");
+                        e.printStackTrace();
+                        return params[1];
+                    }
+                }
+            }
+        }
+
+        return null;
+    }
+}
