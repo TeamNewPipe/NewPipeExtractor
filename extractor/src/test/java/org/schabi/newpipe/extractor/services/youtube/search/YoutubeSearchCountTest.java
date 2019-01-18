@@ -13,6 +13,9 @@ import static java.util.Collections.singletonList;
 import static junit.framework.TestCase.assertTrue;
 import static org.schabi.newpipe.extractor.ServiceList.YouTube;
 
+/**
+ * Test for {@link YoutubeSearchExtractor}
+ */
 public class YoutubeSearchCountTest {
     public static class YoutubeChannelViewCountTest extends YoutubeSearchExtractorBaseTest {
         @BeforeClass
@@ -28,7 +31,7 @@ public class YoutubeSearchCountTest {
         public void testViewCount() {
             ChannelInfoItem ci = (ChannelInfoItem) itemsPage.getItems().get(0);
             assertTrue("Count does not fit: " + Long.toString(ci.getSubscriberCount()),
-                    69043316 < ci.getSubscriberCount() && ci.getSubscriberCount() < 73043316);
+                    69043316 < ci.getSubscriberCount() && ci.getSubscriberCount() < 103043316);
         }
     }
 }
