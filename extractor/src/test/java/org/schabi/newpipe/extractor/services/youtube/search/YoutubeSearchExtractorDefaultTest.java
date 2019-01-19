@@ -62,7 +62,9 @@ public class YoutubeSearchExtractorDefaultTest extends YoutubeSearchExtractorBas
 
     @Test
     public void testResultList_FirstElement() {
-        InfoItem firstInfoItem = itemsPage.getItems().get(1);
+        InfoItem firstInfoItem = itemsPage.getItems().get(0);
+        if(! (firstInfoItem instanceof ChannelInfoItem))
+            firstInfoItem = itemsPage.getItems().get(1);
 
         // The channel should be the first item
         assertTrue(firstInfoItem instanceof ChannelInfoItem);

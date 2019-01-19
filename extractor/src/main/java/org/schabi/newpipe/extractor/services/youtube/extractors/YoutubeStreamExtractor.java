@@ -568,9 +568,9 @@ public class YoutubeStreamExtractor extends StreamExtractor {
     private final static String DECYRYPTION_SIGNATURE_FUNCTION_REGEX =
             "(\\w+)\\s*=\\s*function\\((\\w+)\\)\\{\\s*\\2=\\s*\\2\\.split\\(\"\"\\)\\s*;";
     private final static String DECRYPTION_AKAMAIZED_STRING_REGEX =
-            "yt\\.akamaized\\.net/\\)\\s*\\|\\|\\s*.*?\\s*c\\s*&&\\s*d\\.set\\([^,]+\\s*,\\s*([a-zA-Z0-9$]+)\\(";
+            "yt\\.akamaized\\.net/\\)\\s*\\|\\|\\s*.*?\\s*c\\s*&&\\s*d\\.set\\([^,]+\\s*,\\s*(:encodeURIComponent\\s*\\()([a-zA-Z0-9$]+)\\(";
     private final static String DECRYPTION_AKAMAIZED_SHORT_STRING_REGEX =
-            "\\bc\\s*&&\\s*d\\.set\\([^,]+\\s*,\\s*([a-zA-Z0-9$]+)\\(";
+            "\\bc\\s*&&\\s*d\\.set\\([^,]+\\s*,\\s*(:encodeURIComponent\\s*\\()([a-zA-Z0-9$]+)\\(";
 
     private volatile String decryptionCode = "";
 

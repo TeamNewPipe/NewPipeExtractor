@@ -1,10 +1,5 @@
 package org.schabi.newpipe.extractor.services.youtube;
 
-import static java.util.Arrays.asList;
-import static org.schabi.newpipe.extractor.StreamingService.ServiceInfo.MediaCapability.AUDIO;
-import static org.schabi.newpipe.extractor.StreamingService.ServiceInfo.MediaCapability.LIVE;
-import static org.schabi.newpipe.extractor.StreamingService.ServiceInfo.MediaCapability.VIDEO;
-
 import org.schabi.newpipe.extractor.StreamingService;
 import org.schabi.newpipe.extractor.SuggestionExtractor;
 import org.schabi.newpipe.extractor.channel.ChannelExtractor;
@@ -38,6 +33,10 @@ import org.schabi.newpipe.extractor.stream.StreamExtractor;
 import org.schabi.newpipe.extractor.subscription.SubscriptionExtractor;
 import org.schabi.newpipe.extractor.utils.Localization;
 
+import static java.util.Arrays.asList;
+import static org.schabi.newpipe.extractor.StreamingService.ServiceInfo.MediaCapability.AUDIO;
+import static org.schabi.newpipe.extractor.StreamingService.ServiceInfo.MediaCapability.LIVE;
+import static org.schabi.newpipe.extractor.StreamingService.ServiceInfo.MediaCapability.VIDEO;
 
 /*
  * Created by Christian Schabesberger on 23.08.15.
@@ -140,15 +139,16 @@ public class YoutubeService extends StreamingService {
         return new YoutubeSubscriptionExtractor(this);
     }
 
-	@Override
-	public ListLinkHandlerFactory getCommentsLHFactory() {
-		return YoutubeCommentsLinkHandlerFactory.getInstance();
-	}
+    @Override
+    public ListLinkHandlerFactory getCommentsLHFactory() {
+        return YoutubeCommentsLinkHandlerFactory.getInstance();
+    }
 
-	@Override
-	public CommentsExtractor getCommentsExtractor(ListLinkHandler urlIdHandler, Localization localization) throws ExtractionException {
-		return new YoutubeCommentsExtractor(this, urlIdHandler, localization);
-	}
+    @Override
+    public CommentsExtractor getCommentsExtractor(ListLinkHandler urlIdHandler, Localization localization)
+            throws ExtractionException {
+        return new YoutubeCommentsExtractor(this, urlIdHandler, localization);
+    }
 
     @Override
     public boolean isCommentsSupported() {

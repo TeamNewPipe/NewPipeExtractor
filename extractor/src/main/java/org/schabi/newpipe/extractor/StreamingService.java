@@ -227,7 +227,7 @@ public abstract class StreamingService {
     public ChannelExtractor getChannelExtractor(ListLinkHandler linkHandler) throws ExtractionException {
         return getChannelExtractor(linkHandler, NewPipe.getPreferredLocalization());
     }
- 
+    
     public PlaylistExtractor getPlaylistExtractor(ListLinkHandler linkHandler) throws ExtractionException {
         return getPlaylistExtractor(linkHandler, NewPipe.getPreferredLocalization());
     }
@@ -307,8 +307,6 @@ public abstract class StreamingService {
 
 
 
-	/**
-     * figure out where the link is pointing to (a channel, video, playlist, etc.)
     /**
      * Figures out where the link is pointing to (a channel, a video, a playlist, etc.)
      * @param url the url on which it should be decided of which link type it is
