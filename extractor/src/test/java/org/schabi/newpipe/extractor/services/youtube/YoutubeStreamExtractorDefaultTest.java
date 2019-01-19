@@ -43,6 +43,9 @@ import static org.schabi.newpipe.extractor.ServiceList.YouTube;
  */
 public class YoutubeStreamExtractorDefaultTest {
 
+    /**
+     * Test for {@link StreamExtractor}
+     */
     public static class AdeleHello {
         private static YoutubeStreamExtractor extractor;
 

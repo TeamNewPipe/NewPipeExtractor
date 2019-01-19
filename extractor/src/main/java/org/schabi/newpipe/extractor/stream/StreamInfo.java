@@ -270,8 +270,8 @@ public class StreamInfo extends Info {
     }
 
     private StreamType streamType;
-    private String thumbnailUrl;
-    private String uploadDate;
+    private String thumbnailUrl = "";
+    private String uploadDate = "";
     private long duration = -1;
     private int ageLimit = -1;
     private String description;
@@ -280,26 +280,26 @@ public class StreamInfo extends Info {
     private long likeCount = -1;
     private long dislikeCount = -1;
 
-    private String uploaderName;
-    private String uploaderUrl;
-    private String uploaderAvatarUrl;
+    private String uploaderName = "";
+    private String uploaderUrl = "";
+    private String uploaderAvatarUrl = "";
 
-    private List<VideoStream> videoStreams;
-    private List<AudioStream> audioStreams;
-    private List<VideoStream> videoOnlyStreams;
+    private List<VideoStream> videoStreams = new ArrayList<>();
+    private List<AudioStream> audioStreams = new ArrayList<>();
+    private List<VideoStream> videoOnlyStreams = new ArrayList<>();
 
-    private String dashMpdUrl;
-    private List<VideoStream> segmentedVideoStreams;
-    private List<AudioStream> segmentedAudioStreams;
-    private List<VideoStream> segmentedVideoOnlyStreams;
+    private String dashMpdUrl = "";
+    private List<VideoStream> segmentedVideoStreams = new ArrayList<>();
+    private List<AudioStream> segmentedAudioStreams = new ArrayList<>();
+    private List<VideoStream> segmentedVideoOnlyStreams = new ArrayList<>();
 
 
-    private String hlsUrl;
+    private String hlsUrl = "";
     private StreamInfoItem nextVideo;
-    private List<InfoItem> relatedStreams;
+    private List<InfoItem> relatedStreams = new ArrayList<>();
 
     private long startPosition = 0;
-    private List<SubtitlesStream> subtitles;
+    private List<SubtitlesStream> subtitles = new ArrayList<>();
 
     /**
      * Get the stream type
