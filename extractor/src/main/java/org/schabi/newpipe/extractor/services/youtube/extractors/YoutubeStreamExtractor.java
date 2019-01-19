@@ -5,7 +5,6 @@ import com.grack.nanojson.JsonObject;
 import com.grack.nanojson.JsonParser;
 import com.grack.nanojson.JsonParserException;
 import org.jsoup.Jsoup;
-import org.jsoup.helper.StringUtil;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
@@ -398,7 +397,7 @@ public class YoutubeStreamExtractor extends StreamExtractor {
                             .getString("hlsManifestUrl", "");
                 }
             }
-            
+
             return hlsvp;
         } catch (Exception e) {
             throw new ParsingException("Could not get hls manifest url", e);
