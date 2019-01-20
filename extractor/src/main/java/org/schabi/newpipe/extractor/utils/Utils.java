@@ -3,6 +3,7 @@ package org.schabi.newpipe.extractor.utils;
 import org.schabi.newpipe.extractor.exceptions.ParsingException;
 
 import java.io.UnsupportedEncodingException;
+import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLDecoder;
 import java.util.List;
@@ -43,7 +44,7 @@ public class Utils {
     }
 
     public static void printErrors(List<Throwable> errors) {
-        for(Throwable e : errors) {
+        for (Throwable e : errors) {
             e.printStackTrace();
             System.err.println("----------------");
         }
@@ -55,7 +56,7 @@ public class Utils {
     public static String replaceHttpWithHttps(final String url) {
         if (url == null) return null;
 
-        if(!url.isEmpty() && url.startsWith(HTTP)) {
+        if (!url.isEmpty() && url.startsWith(HTTP)) {
             return HTTPS + url.substring(HTTP.length());
         }
         return url;
@@ -98,5 +99,25 @@ public class Utils {
         }
 
         return null;
+    }
+
+    /**
+     * converts a string to a URL-Object.
+     * defaults to HTTP if no protocol is given
+     *
+     * @param url the string to be converted to a URL-Object
+     * @return a URL-Object containing the url
+     */
+    public static URL stringToURL(String url) throws MalformedURLException {
+        try {
+            return new URL(url);
+        } catch (MalformedURLException e) {
+            // if no protocol is given try prepending "http://"
+            if (e.getMessage().equals("no protocol: " + url)) {
+                return new URL(HTTP + url);
+            }
+
+            throw e;
+        }
     }
 }

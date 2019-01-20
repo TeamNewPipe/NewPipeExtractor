@@ -2,6 +2,7 @@ package org.schabi.newpipe.extractor.services.youtube.linkHandler;
 
 import org.schabi.newpipe.extractor.exceptions.ParsingException;
 import org.schabi.newpipe.extractor.linkhandler.ListLinkHandlerFactory;
+import org.schabi.newpipe.extractor.utils.Utils;
 
 import java.net.URL;
 import java.util.List;
@@ -42,7 +43,7 @@ public class YoutubeChannelLinkHandlerFactory extends ListLinkHandlerFactory {
     @Override
     public String getId(String url) throws ParsingException {
         try {
-            URL urlObj = new URL(url);
+            URL urlObj = Utils.stringToURL(url);
             String path = urlObj.getPath();
 
             if (!(YoutubeParsingHelper.isYoutubeURL(urlObj) || urlObj.getHost().equalsIgnoreCase("hooktube.com"))) {

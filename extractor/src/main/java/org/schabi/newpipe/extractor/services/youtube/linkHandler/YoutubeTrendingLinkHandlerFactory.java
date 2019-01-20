@@ -21,6 +21,7 @@ package org.schabi.newpipe.extractor.services.youtube.linkHandler;
  */
 
 import org.schabi.newpipe.extractor.linkhandler.ListLinkHandlerFactory;
+import org.schabi.newpipe.extractor.utils.Utils;
 
 import java.net.MalformedURLException;
 import java.net.URL;
@@ -41,7 +42,7 @@ public class YoutubeTrendingLinkHandlerFactory extends ListLinkHandlerFactory {
     public boolean onAcceptUrl(final String url) {
         URL urlObj;
         try {
-            urlObj = new URL(url);
+            urlObj = Utils.stringToURL(url);
         } catch (MalformedURLException e) {
             return false;
         }

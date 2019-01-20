@@ -23,7 +23,7 @@ public class YoutubePlaylistLinkHandlerFactory extends ListLinkHandlerFactory {
     @Override
     public String getId(String url) throws ParsingException {
         try {
-            URL urlObj = new URL(url);
+            URL urlObj = Utils.stringToURL(url);
 
             if (!YoutubeParsingHelper.isYoutubeURL(urlObj)) {
                 throw new ParsingException("the url given is not a Youtube-URL");

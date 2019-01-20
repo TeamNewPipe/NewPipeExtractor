@@ -58,13 +58,14 @@ public class YoutubeStreamLinkHandlerFactory extends LinkHandlerFactory {
     public String getId(String urlString) throws ParsingException, IllegalArgumentException {
         try {
             URI uri = new URI(urlString);
+            String scheme = uri.getScheme();
 
-            if (uri.getScheme().equals("vnd.youtube")) {
-                String scheme = uri.getSchemeSpecificPart();
-                if (scheme.startsWith("//")) {
-                    urlString = "https:" + scheme;
+            if (scheme != null && scheme.equals("vnd.youtube")) {
+                String schemeSpecificPart = uri.getSchemeSpecificPart();
+                if (schemeSpecificPart.startsWith("//")) {
+                    urlString = "https:" + schemeSpecificPart;
                 } else {
-                    return assertIsID(scheme);
+                    return assertIsID(schemeSpecificPart);
                 }
             }
         } catch (URISyntaxException ignored) {
@@ -72,7 +73,7 @@ public class YoutubeStreamLinkHandlerFactory extends LinkHandlerFactory {
 
         URL url;
         try {
-            url = new URL(urlString);
+            url = Utils.stringToURL(urlString);
         } catch (MalformedURLException e) {
             throw new IllegalArgumentException("The given URL is not valid");
         }
@@ -115,7 +116,7 @@ public class YoutubeStreamLinkHandlerFactory extends LinkHandlerFactory {
 
                     URL decodedURL;
                     try {
-                        decodedURL = new URL("http://www.youtube.com" + uQueryValue);
+                        decodedURL = Utils.stringToURL("http://www.youtube.com" + uQueryValue);
                     } catch (MalformedURLException e) {
                         throw new ParsingException("Error no suitable url: " + urlString);
                     }
