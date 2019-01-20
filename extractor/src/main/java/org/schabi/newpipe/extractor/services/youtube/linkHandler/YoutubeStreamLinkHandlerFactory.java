@@ -106,6 +106,8 @@ public class YoutubeStreamLinkHandlerFactory extends LinkHandlerFactory {
 
                     return assertIsID(id);
                 }
+
+                break;
             }
 
             case "YOUTUBE.COM":
@@ -167,6 +169,8 @@ public class YoutubeStreamLinkHandlerFactory extends LinkHandlerFactory {
                     return assertIsID(id);
                 }
             }
+
+            break;
         }
 
         throw new ParsingException("Error no suitable url: " + urlString);
