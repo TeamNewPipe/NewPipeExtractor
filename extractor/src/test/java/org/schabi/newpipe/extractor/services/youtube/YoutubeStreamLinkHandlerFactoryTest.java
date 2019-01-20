@@ -60,9 +60,9 @@ public class YoutubeStreamLinkHandlerFactoryTest {
     public void getIdfromYt() throws Exception {
         assertEquals("jZViOEv90dI", linkHandler.fromUrl("https://www.youtube.com/watch?v=jZViOEv90dI").getId());
         assertEquals("W-fFHeTX70Q", linkHandler.fromUrl("https://www.youtube.com/watch?v=W-fFHeTX70Q").getId());
-        assertEquals("jZViOEv90dI", linkHandler.fromUrl("https://www.youtube.com/watch?v=jZViOEv90dI?t=100").getId());
-        assertEquals("jZViOEv90dI", linkHandler.fromUrl("https://WWW.YouTube.com/watch?v=jZViOEv90dI?t=100").getId());
-        assertEquals("jZViOEv90dI", linkHandler.fromUrl("HTTPS://www.youtube.com/watch?v=jZViOEv90dI?t=100").getId());
+        assertEquals("jZViOEv90dI", linkHandler.fromUrl("https://www.youtube.com/watch?v=jZViOEv90dI&t=100").getId());
+        assertEquals("jZViOEv90dI", linkHandler.fromUrl("https://WWW.YouTube.com/watch?v=jZViOEv90dI&t=100").getId());
+        assertEquals("jZViOEv90dI", linkHandler.fromUrl("HTTPS://www.youtube.com/watch?v=jZViOEv90dI&t=100").getId());
         assertEquals("jZViOEv90dI", linkHandler.fromUrl("https://youtu.be/jZViOEv90dI?t=9s").getId());
         assertEquals("jZViOEv90dI", linkHandler.fromUrl("HTTPS://Youtu.be/jZViOEv90dI?t=9s").getId());
         assertEquals("uEJuoEs1UxY", linkHandler.fromUrl("http://www.youtube.com/watch_popup?v=uEJuoEs1UxY").getId());
@@ -85,9 +85,9 @@ public class YoutubeStreamLinkHandlerFactoryTest {
     @Test
     public void testAcceptYtUrl() throws ParsingException {
         assertTrue(linkHandler.acceptUrl("https://www.youtube.com/watch?v=jZViOEv90dI"));
-        assertTrue(linkHandler.acceptUrl("https://www.youtube.com/watch?v=jZViOEv90dI?t=100"));
-        assertTrue(linkHandler.acceptUrl("https://WWW.YouTube.com/watch?v=jZViOEv90dI?t=100"));
-        assertTrue(linkHandler.acceptUrl("HTTPS://www.youtube.com/watch?v=jZViOEv90dI?t=100"));
+        assertTrue(linkHandler.acceptUrl("https://www.youtube.com/watch?v=jZViOEv90dI&t=100"));
+        assertTrue(linkHandler.acceptUrl("https://WWW.YouTube.com/watch?v=jZViOEv90dI&t=100"));
+        assertTrue(linkHandler.acceptUrl("HTTPS://www.youtube.com/watch?v=jZViOEv90dI&t=100"));
         assertTrue(linkHandler.acceptUrl("https://youtu.be/jZViOEv90dI?t=9s"));
         assertTrue(linkHandler.acceptUrl("https://www.youtube.com/embed/jZViOEv90dI"));
         assertTrue(linkHandler.acceptUrl("https://www.youtube-nocookie.com/embed/jZViOEv90dI"));

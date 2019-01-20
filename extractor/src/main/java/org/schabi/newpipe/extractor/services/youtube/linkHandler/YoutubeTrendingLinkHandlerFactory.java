@@ -21,8 +21,10 @@ package org.schabi.newpipe.extractor.services.youtube.linkHandler;
  */
 
 import org.schabi.newpipe.extractor.linkhandler.ListLinkHandlerFactory;
-import org.schabi.newpipe.extractor.utils.Parser;
+import org.schabi.newpipe.extractor.utils.Utils;
 
+import java.net.MalformedURLException;
+import java.net.URL;
 import java.util.List;
 
 public class YoutubeTrendingLinkHandlerFactory extends ListLinkHandlerFactory {
@@ -38,6 +40,14 @@ public class YoutubeTrendingLinkHandlerFactory extends ListLinkHandlerFactory {
 
     @Override
     public boolean onAcceptUrl(final String url) {
-        return Parser.isMatch("^(https://|http://|)(www.|m.|)youtube.com/feed/trending(|\\?.*)$", url);
+        URL urlObj;
+        try {
+            urlObj = Utils.stringToURL(url);
+        } catch (MalformedURLException e) {
+            return false;
+        }
+
+        String urlPath = urlObj.getPath();
+        return YoutubeParsingHelper.isYoutubeURL(urlObj) && urlPath.equals("/feed/trending");
     }
 }
