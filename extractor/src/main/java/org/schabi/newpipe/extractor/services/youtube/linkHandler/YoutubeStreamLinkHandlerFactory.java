@@ -147,17 +147,6 @@ public class YoutubeStreamLinkHandlerFactory extends LinkHandlerFactory {
             }
 
             case "HOOKTUBE.COM": {
-                if (path.equals("watch")) {
-                    String viewQueryValue = Utils.getQueryValue(url, "v");
-                    if (viewQueryValue != null) {
-                        return assertIsID(viewQueryValue);
-                    }
-                }
-                if (path.startsWith("embed/")) {
-                    String id = path.substring("embed/".length());
-
-                    return assertIsID(id);
-                }
                 if (path.startsWith("v/")) {
                     String id = path.substring("v/".length());
 
@@ -168,9 +157,24 @@ public class YoutubeStreamLinkHandlerFactory extends LinkHandlerFactory {
 
                     return assertIsID(id);
                 }
+                // there is no break-statement here on purpose so the next code-block gets also run for hooktube
             }
-
-            break;
+	
+	        case "INVIDIO.US": { // code-block for hooktube.com and invidio.us
+                if (path.equals("watch")) {
+                    String viewQueryValue = Utils.getQueryValue(url, "v");
+                    if (viewQueryValue != null) {
+                        return assertIsID(viewQueryValue);
+                    }
+                }
+                if (path.startsWith("embed/")) {
+                    String id = path.substring("embed/".length());
+            
+                    return assertIsID(id);
+                }
+                
+                break;
+            }
         }
 
         throw new ParsingException("Error no suitable url: " + urlString);
