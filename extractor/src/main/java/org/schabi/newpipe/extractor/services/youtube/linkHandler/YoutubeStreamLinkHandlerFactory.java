@@ -60,7 +60,7 @@ public class YoutubeStreamLinkHandlerFactory extends LinkHandlerFactory {
             URI uri = new URI(urlString);
             String scheme = uri.getScheme();
 
-            if (scheme != null && scheme.equals("vnd.youtube")) {
+            if (scheme != null && (scheme.equals("vnd.youtube") || scheme.equals("vnd.youtube.launch"))) {
                 String schemeSpecificPart = uri.getSchemeSpecificPart();
                 if (schemeSpecificPart.startsWith("//")) {
                     urlString = "https:" + schemeSpecificPart;

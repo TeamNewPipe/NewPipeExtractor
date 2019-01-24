@@ -99,7 +99,7 @@ public class YoutubeStreamLinkHandlerFactoryTest {
         assertTrue(linkHandler.acceptUrl("vnd.youtube://www.youtube.com/watch?v=jZViOEv90dI"));
         assertTrue(linkHandler.acceptUrl("vnd.youtube:jZViOEv90dI"));
 
-        assertTrue(linkHandler.acceptUrl("vnd.youtube:jZViOEv90dI"));
+        assertTrue(linkHandler.acceptUrl("vnd.youtube.launch:jZViOEv90dI"));
     }
 
     @Test
