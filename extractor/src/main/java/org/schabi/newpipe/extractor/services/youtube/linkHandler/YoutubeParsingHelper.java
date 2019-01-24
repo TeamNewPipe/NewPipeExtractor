@@ -63,7 +63,8 @@ public class YoutubeParsingHelper {
         String host = url.getHost();
         return host.equalsIgnoreCase("youtube.com") || host.equalsIgnoreCase("www.youtube.com")
                 || host.equalsIgnoreCase("m.youtube.com") || host.equalsIgnoreCase("www.youtube-nocookie.com")
-                || host.equalsIgnoreCase("youtu.be") || host.equalsIgnoreCase("hooktube.com");
+                || host.equalsIgnoreCase("youtu.be") || host.equalsIgnoreCase("hooktube.com")
+                || host.equalsIgnoreCase("invidio.us");
     }
 
     public static long parseDurationString(String input)

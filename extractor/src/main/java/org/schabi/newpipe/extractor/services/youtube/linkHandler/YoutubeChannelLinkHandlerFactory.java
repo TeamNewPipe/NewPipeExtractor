@@ -46,7 +46,7 @@ public class YoutubeChannelLinkHandlerFactory extends ListLinkHandlerFactory {
             URL urlObj = Utils.stringToURL(url);
             String path = urlObj.getPath();
 
-            if (!(YoutubeParsingHelper.isYoutubeURL(urlObj) || urlObj.getHost().equalsIgnoreCase("hooktube.com"))) {
+            if (!YoutubeParsingHelper.isYoutubeALikeURL(urlObj)) { // fixme: accepts youtu.be and youtube-nocookie.com
                 throw new ParsingException("the URL given is not a Youtube-URL");
             }
 
