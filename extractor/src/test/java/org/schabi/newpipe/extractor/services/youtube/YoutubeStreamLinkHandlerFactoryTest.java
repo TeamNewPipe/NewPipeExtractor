@@ -121,4 +121,20 @@ public class YoutubeStreamLinkHandlerFactoryTest {
         assertEquals("3msbfr6pBNE", linkHandler.fromUrl("hooktube.com/v/3msbfr6pBNE").getId());
         assertEquals("3msbfr6pBNE", linkHandler.fromUrl("hooktube.com/embed/3msbfr6pBNE").getId());
     }
+
+    @Test
+    public void testAcceptInvidiousUrl() throws ParsingException {
+        assertTrue(linkHandler.acceptUrl("https://invidio.us/watch?v=TglNG-yjabU"));
+        assertTrue(linkHandler.acceptUrl("https://invidio.us/watch?v=TglNG-yjabU&listen=1"));
+        assertTrue(linkHandler.acceptUrl("invidio.us/watch?v=3msbfr6pBNE"));
+        assertTrue(linkHandler.acceptUrl("invidio.us/embed/3msbfr6pBNE"));
+    }
+
+    @Test
+    public void testGetInvidiousIdfromUrl() throws ParsingException {
+        assertEquals("TglNG-yjabU", linkHandler.fromUrl("https://invidio.us/watch?v=TglNG-yjabU").getId());
+        assertEquals("TglNG-yjabU", linkHandler.fromUrl("https://invidio.us/watch?v=TglNG-yjabU&listen=1").getId());
+        assertEquals("3msbfr6pBNE", linkHandler.fromUrl("invidio.us/watch?v=3msbfr6pBNE").getId());
+        assertEquals("3msbfr6pBNE", linkHandler.fromUrl("invidio.us/embed/3msbfr6pBNE").getId());
+    }
 }

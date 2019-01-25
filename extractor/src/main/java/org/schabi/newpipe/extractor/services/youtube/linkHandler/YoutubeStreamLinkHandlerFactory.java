@@ -170,6 +170,20 @@ public class YoutubeStreamLinkHandlerFactory extends LinkHandlerFactory {
                 }
             }
 
+            case "INVIDIO.US": {
+                if (path.equals("watch")) {
+                    String viewQueryValue = Utils.getQueryValue(url, "v");
+                    if (viewQueryValue != null) {
+                        return assertIsID(viewQueryValue);
+                    }
+                }
+                if (path.startsWith("embed/")) {
+                    String id = path.substring("embed/".length());
+
+                    return assertIsID(id);
+                }
+            }
+
             break;
         }
 
