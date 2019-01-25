@@ -37,6 +37,8 @@ public class YoutubeChannelLinkHandlerFactoryTest {
 
         assertTrue(linkHandler.acceptUrl("https://hooktube.com/channel/UClq42foiSgl7sSpLupnugGA"));
         assertTrue(linkHandler.acceptUrl("https://hooktube.com/channel/UClq42foiSgl7sSpLupnugGA/videos?disable_polymer=1"));
+
+        assertTrue(linkHandler.acceptUrl("https://invidio.us/channel/UCl2mFZoRqjw_ELax4Yisf6w"));
     }
 
     @Test
@@ -53,5 +55,7 @@ public class YoutubeChannelLinkHandlerFactoryTest {
 
         assertEquals("channel/UClq42foiSgl7sSpLupnugGA", linkHandler.fromUrl("https://hooktube.com/channel/UClq42foiSgl7sSpLupnugGA").getId());
         assertEquals("channel/UClq42foiSgl7sSpLupnugGA", linkHandler.fromUrl("https://hooktube.com/channel/UClq42foiSgl7sSpLupnugGA/videos?disable_polymer=1").getId());
+
+        assertEquals("channel/UCl2mFZoRqjw_ELax4Yisf6w", linkHandler.fromUrl("https://invidio.us/channel/UCl2mFZoRqjw_ELax4Yisf6w").getId());
     }
 }
