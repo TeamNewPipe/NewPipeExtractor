@@ -45,7 +45,7 @@ public class MediaCCCSearchExtractor extends SearchExtractor {
 
     @Override
     public String getNextPageUrl() throws IOException, ExtractionException {
-        return null;
+        return "";
     }
 
     @Override
