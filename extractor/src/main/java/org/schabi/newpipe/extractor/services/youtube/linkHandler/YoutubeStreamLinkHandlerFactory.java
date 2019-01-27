@@ -85,7 +85,9 @@ public class YoutubeStreamLinkHandlerFactory extends LinkHandlerFactory {
             path = path.substring(1);
         }
 
-        if (!YoutubeParsingHelper.isYoutubeALikeURL(url)) {
+        if (!Utils.isHTTP(url) || !(YoutubeParsingHelper.isYoutubeURL(url) ||
+                YoutubeParsingHelper.isYoutubeServiceURL(url) || YoutubeParsingHelper.isHooktubeURL(url) ||
+                YoutubeParsingHelper.isInvidioURL(url))) {
             if (host.equalsIgnoreCase("googleads.g.doubleclick.net")) {
                 throw new FoundAdException("Error found ad: " + urlString);
             }
@@ -159,8 +161,9 @@ public class YoutubeStreamLinkHandlerFactory extends LinkHandlerFactory {
                 }
                 // there is no break-statement here on purpose so the next code-block gets also run for hooktube
             }
-	
-	        case "INVIDIO.US": { // code-block for hooktube.com and invidio.us
+
+            case "WWW.INVIDIO.US":
+            case "INVIDIO.US": { // code-block for hooktube.com and invidio.us
                 if (path.equals("watch")) {
                     String viewQueryValue = Utils.getQueryValue(url, "v");
                     if (viewQueryValue != null) {
@@ -169,10 +172,10 @@ public class YoutubeStreamLinkHandlerFactory extends LinkHandlerFactory {
                 }
                 if (path.startsWith("embed/")) {
                     String id = path.substring("embed/".length());
-            
+
                     return assertIsID(id);
                 }
-                
+
                 break;
             }
         }

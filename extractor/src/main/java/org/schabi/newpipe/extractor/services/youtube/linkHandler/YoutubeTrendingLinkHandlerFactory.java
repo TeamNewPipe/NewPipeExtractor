@@ -48,6 +48,6 @@ public class YoutubeTrendingLinkHandlerFactory extends ListLinkHandlerFactory {
         }
 
         String urlPath = urlObj.getPath();
-        return YoutubeParsingHelper.isYoutubeURL(urlObj) && urlPath.equals("/feed/trending");
+        return Utils.isHTTP(urlObj) && (YoutubeParsingHelper.isYoutubeURL(urlObj)) && urlPath.equals("/feed/trending");
     }
 }

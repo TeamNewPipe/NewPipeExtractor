@@ -120,4 +120,17 @@ public class Utils {
             throw e;
         }
     }
+
+    public static boolean isHTTP(URL url) {
+        // make sure its http or https
+        String protocol = url.getProtocol();
+        if (!protocol.equals("http") && !protocol.equals("https")) {
+            return false;
+        }
+
+        boolean usesDefaultPort = url.getPort() == url.getDefaultPort();
+        boolean setsNoPort = url.getPort() == -1;
+
+        return setsNoPort || usesDefaultPort;
+    }
 }
