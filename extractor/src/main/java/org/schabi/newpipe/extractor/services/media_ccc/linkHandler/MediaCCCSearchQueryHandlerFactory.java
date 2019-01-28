@@ -9,9 +9,17 @@ import java.util.List;
 
 public class MediaCCCSearchQueryHandlerFactory extends SearchQueryHandlerFactory {
 
+    public static final String ALL = "all";
+    public static final String CONFERENCES = "conferences";
+    public static final String EVENTS = "events";
+
     @Override
     public String[] getAvailableContentFilter() {
-        return new String[0];
+        return new String[] {
+                ALL,
+                CONFERENCES,
+                EVENTS
+        };
     }
 
     @Override
