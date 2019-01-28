@@ -4,19 +4,24 @@ import org.schabi.newpipe.extractor.StreamingService;
 import org.schabi.newpipe.extractor.SuggestionExtractor;
 import org.schabi.newpipe.extractor.channel.ChannelExtractor;
 import org.schabi.newpipe.extractor.exceptions.ExtractionException;
+import org.schabi.newpipe.extractor.kiosk.KioskExtractor;
 import org.schabi.newpipe.extractor.kiosk.KioskList;
 import org.schabi.newpipe.extractor.linkhandler.*;
 import org.schabi.newpipe.extractor.playlist.PlaylistExtractor;
 import org.schabi.newpipe.extractor.search.SearchExtractor;
 import org.schabi.newpipe.extractor.services.media_ccc.extractors.MediaCCCConferenceExtractor;
+import org.schabi.newpipe.extractor.services.media_ccc.extractors.MediaCCCConferenceKiosk;
 import org.schabi.newpipe.extractor.services.media_ccc.extractors.MediaCCCSearchExtractor;
 import org.schabi.newpipe.extractor.services.media_ccc.extractors.MediaCCCStreamExtractor;
 import org.schabi.newpipe.extractor.services.media_ccc.linkHandler.MediaCCCConferenceLinkHandlerFactory;
+import org.schabi.newpipe.extractor.services.media_ccc.linkHandler.MediaCCCConferencesListLinkHandlerFactory;
 import org.schabi.newpipe.extractor.services.media_ccc.linkHandler.MediaCCCSearchQueryHandlerFactory;
 import org.schabi.newpipe.extractor.services.media_ccc.linkHandler.MediaCCCStreamLinkHandlerFactory;
 import org.schabi.newpipe.extractor.stream.StreamExtractor;
 import org.schabi.newpipe.extractor.subscription.SubscriptionExtractor;
 import org.schabi.newpipe.extractor.utils.Localization;
+
+import java.io.IOException;
 
 import static java.util.Arrays.asList;
 import static org.schabi.newpipe.extractor.StreamingService.ServiceInfo.MediaCapability.*;
@@ -77,7 +82,17 @@ public class MediaCCCService extends StreamingService {
 
         // add kiosks here e.g.:
         try {
-            // Add kiosk here
+            list.addKioskEntry(new KioskList.KioskExtractorFactory() {
+                @Override
+                public KioskExtractor createNewKiosk(StreamingService streamingService,
+                                                     String url,
+                                                     String kioskId,
+                                                     Localization localization) throws ExtractionException, IOException {
+                    return new MediaCCCConferenceKiosk(MediaCCCService.this,
+                            new MediaCCCConferencesListLinkHandlerFactory().fromUrl(url), kioskId, localization);
+                }
+            }, new MediaCCCConferencesListLinkHandlerFactory(), "conferences");
+            list.setDefaultKiosk("conferences");
         } catch (Exception e) {
             throw new ExtractionException(e);
         }

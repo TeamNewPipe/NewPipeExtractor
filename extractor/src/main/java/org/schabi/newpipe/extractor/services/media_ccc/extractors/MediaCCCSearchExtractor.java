@@ -20,7 +20,7 @@ import java.io.IOException;
 
 public class MediaCCCSearchExtractor extends SearchExtractor {
 
-    JsonObject doc;
+    private JsonObject doc;
 
     public MediaCCCSearchExtractor(StreamingService service, SearchQueryHandler linkHandler, Localization localization) {
         super(service, linkHandler, localization);
@@ -50,7 +50,7 @@ public class MediaCCCSearchExtractor extends SearchExtractor {
 
     @Override
     public InfoItemsPage<InfoItem> getPage(String pageUrl) throws IOException, ExtractionException {
-        return null;
+        return InfoItemsPage.emptyPage();
     }
 
     @Override

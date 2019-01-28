@@ -49,6 +49,11 @@ public  class KioskList {
         defaultKiosk = kioskType;
     }
 
+    public KioskExtractor getDefaultKioskExtractor()
+            throws ExtractionException, IOException {
+        return getDefaultKioskExtractor("");
+    }
+
     public KioskExtractor getDefaultKioskExtractor(String nextPageUrl)
             throws ExtractionException, IOException {
         return getDefaultKioskExtractor(nextPageUrl, NewPipe.getPreferredLocalization());
