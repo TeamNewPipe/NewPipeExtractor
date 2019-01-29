@@ -30,7 +30,7 @@ public class MediaCCCSearchExtractorAllTest {
     public static void setUpClass() throws Exception {
         NewPipe.init(Downloader.getInstance(), new Localization("GB", "en"));
         extractor =  MediaCCC.getSearchExtractor( new MediaCCCSearchQueryHandlerFactory()
-                        .fromQuery("c3", Arrays.asList(new String[] {"all"}), "")
+                        .fromQuery("c3", Arrays.asList(new String[0]), "")
                 ,new Localization("GB", "en"));
         extractor.fetchPage();
         itemsPage = extractor.getInitialPage();
@@ -40,7 +40,6 @@ public class MediaCCCSearchExtractorAllTest {
     public void testIfChannelInfoItemsAvailable() {
         boolean isAvialable = false;
         for(InfoItem item : itemsPage.getItems()) {
-            System.out.println(item);
             if(item instanceof ChannelInfoItem) {
                 isAvialable = true;
             }
@@ -52,7 +51,6 @@ public class MediaCCCSearchExtractorAllTest {
     public void testIfStreamInfoitemsAvailable() {
         boolean isAvialable = false;
         for(InfoItem item : itemsPage.getItems()) {
-            System.out.println(item);
             if(item instanceof StreamInfoItem) {
                 isAvialable = true;
             }

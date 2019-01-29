@@ -6,7 +6,6 @@ import com.grack.nanojson.JsonParser;
 import com.grack.nanojson.JsonParserException;
 import org.schabi.newpipe.extractor.Downloader;
 import org.schabi.newpipe.extractor.InfoItem;
-import org.schabi.newpipe.extractor.InfoItemsCollector;
 import org.schabi.newpipe.extractor.StreamingService;
 import org.schabi.newpipe.extractor.channel.ChannelInfoItem;
 import org.schabi.newpipe.extractor.channel.ChannelInfoItemExtractor;
@@ -16,7 +15,6 @@ import org.schabi.newpipe.extractor.linkhandler.SearchQueryHandler;
 import org.schabi.newpipe.extractor.search.InfoItemsSearchCollector;
 import org.schabi.newpipe.extractor.search.SearchExtractor;
 import org.schabi.newpipe.extractor.services.media_ccc.extractors.infoItems.MediaCCCStreamInfoItemExtractor;
-import org.schabi.newpipe.extractor.services.media_ccc.linkHandler.MediaCCCConferenceLinkHandlerFactory;
 import org.schabi.newpipe.extractor.services.media_ccc.linkHandler.MediaCCCConferencesListLinkHandlerFactory;
 import org.schabi.newpipe.extractor.utils.Localization;
 import static org.schabi.newpipe.extractor.services.media_ccc.linkHandler.MediaCCCSearchQueryHandlerFactory.CONFERENCES;
@@ -54,14 +52,16 @@ public class MediaCCCSearchExtractor extends SearchExtractor {
         InfoItemsSearchCollector searchItems = getInfoItemSearchCollector();
 
         if(getLinkHandler().getContentFilters().contains(CONFERENCES)
-                || getLinkHandler().getContentFilters().contains(ALL)) {
+                || getLinkHandler().getContentFilters().contains(ALL)
+                || getLinkHandler().getContentFilters().isEmpty()) {
             searchConferences(getSearchString(),
                     conferenceKiosk.getInitialPage().getItems(),
                     searchItems);
         }
 
         if(getLinkHandler().getContentFilters().contains(EVENTS)
-                || getLinkHandler().getContentFilters().contains(ALL)) {
+                || getLinkHandler().getContentFilters().contains(ALL)
+                || getLinkHandler().getContentFilters().isEmpty()) {
             JsonArray events = doc.getArray("events");
             for (int i = 0; i < events.size(); i++) {
                 searchItems.commit(new MediaCCCStreamInfoItemExtractor(
@@ -84,7 +84,8 @@ public class MediaCCCSearchExtractor extends SearchExtractor {
     @Override
     public void onFetchPage(@Nonnull Downloader downloader) throws IOException, ExtractionException {
         if(getLinkHandler().getContentFilters().contains(EVENTS)
-            || getLinkHandler().getContentFilters().contains(ALL)) {
+            || getLinkHandler().getContentFilters().contains(ALL)
+                || getLinkHandler().getContentFilters().isEmpty()) {
             final String site;
             final String url = getUrl();
             site = downloader.download(url, getLocalization());
@@ -95,7 +96,8 @@ public class MediaCCCSearchExtractor extends SearchExtractor {
             }
         }
         if(getLinkHandler().getContentFilters().contains(CONFERENCES)
-                || getLinkHandler().getContentFilters().contains(ALL))
+                || getLinkHandler().getContentFilters().contains(ALL)
+                || getLinkHandler().getContentFilters().isEmpty())
         conferenceKiosk.fetchPage();
     }
 
