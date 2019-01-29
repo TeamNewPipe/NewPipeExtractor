@@ -121,6 +121,8 @@ public class MediaCCCStreamExtractor extends StreamExtractor {
                     mediaFormat = MediaFormat.OPUS;
                 } else if(mimeType.endsWith("mpeg")) {
                     mediaFormat = MediaFormat.MP3;
+                } else if(mimeType.endsWith("ogg")){
+                    mediaFormat = MediaFormat.OGG;
                 } else {
                     throw new ExtractionException("Unknown media format: " + mimeType);
                 }
@@ -146,8 +148,6 @@ public class MediaCCCStreamExtractor extends StreamExtractor {
                     mediaFormat = MediaFormat.WEBM;
                 } else if(mimeType.endsWith("mp4")) {
                     mediaFormat = MediaFormat.MPEG_4;
-                } else if(mimeType.endsWith("ogg")){
-                    mediaFormat = MediaFormat.OGG;
                 } else {
                     throw new ExtractionException("Unknown media format: " + mimeType);
                 }
