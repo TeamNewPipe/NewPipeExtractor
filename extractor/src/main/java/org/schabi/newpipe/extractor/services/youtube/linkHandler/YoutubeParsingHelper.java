@@ -3,6 +3,8 @@ package org.schabi.newpipe.extractor.services.youtube.linkHandler;
 
 import org.schabi.newpipe.extractor.exceptions.ParsingException;
 
+import java.net.URL;
+
 /*
  * Created by Christian Schabesberger on 02.03.16.
  *
@@ -26,6 +28,42 @@ import org.schabi.newpipe.extractor.exceptions.ParsingException;
 public class YoutubeParsingHelper {
 
     private YoutubeParsingHelper() {
+    }
+
+    private static boolean isHTTP(URL url) {
+        // make sure its http or https
+        String protocol = url.getProtocol();
+        if (!protocol.equals("http") && !protocol.equals("https")) {
+            return false;
+        }
+
+        boolean usesDefaultPort = url.getPort() == url.getDefaultPort();
+        boolean setsNoPort = url.getPort() == -1;
+
+        return setsNoPort || usesDefaultPort;
+    }
+
+    public static boolean isYoutubeURL(URL url) {
+        // make sure its http or https
+        if (!isHTTP(url))
+            return false;
+
+        // make sure its a known youtube url
+        String host = url.getHost();
+        return host.equalsIgnoreCase("youtube.com") || host.equalsIgnoreCase("www.youtube.com")
+                || host.equalsIgnoreCase("m.youtube.com");
+    }
+
+    public static boolean isYoutubeALikeURL(URL url) {
+        // make sure its http or https
+        if (!isHTTP(url))
+            return false;
+
+        // make sure its a known youtube url
+        String host = url.getHost();
+        return host.equalsIgnoreCase("youtube.com") || host.equalsIgnoreCase("www.youtube.com")
+                || host.equalsIgnoreCase("m.youtube.com") || host.equalsIgnoreCase("www.youtube-nocookie.com")
+                || host.equalsIgnoreCase("youtu.be") || host.equalsIgnoreCase("hooktube.com");
     }
 
     public static long parseDurationString(String input)

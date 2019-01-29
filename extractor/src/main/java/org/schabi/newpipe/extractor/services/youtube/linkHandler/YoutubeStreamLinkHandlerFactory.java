@@ -1,21 +1,14 @@
 package org.schabi.newpipe.extractor.services.youtube.linkHandler;
 
-import org.jsoup.Jsoup;
-import org.jsoup.nodes.Document;
-import org.jsoup.nodes.Element;
-import org.schabi.newpipe.extractor.Downloader;
-import org.schabi.newpipe.extractor.NewPipe;
-import org.schabi.newpipe.extractor.linkhandler.LinkHandlerFactory;
 import org.schabi.newpipe.extractor.exceptions.FoundAdException;
 import org.schabi.newpipe.extractor.exceptions.ParsingException;
-import org.schabi.newpipe.extractor.exceptions.ReCaptchaException;
-import org.schabi.newpipe.extractor.utils.Parser;
+import org.schabi.newpipe.extractor.linkhandler.LinkHandlerFactory;
+import org.schabi.newpipe.extractor.utils.Utils;
 
-import java.io.IOException;
-import java.io.UnsupportedEncodingException;
+import java.net.MalformedURLException;
 import java.net.URI;
 import java.net.URISyntaxException;
-import java.net.URLDecoder;
+import java.net.URL;
 
 /*
  * Created by Christian Schabesberger on 02.02.16.
@@ -40,7 +33,6 @@ import java.net.URLDecoder;
 public class YoutubeStreamLinkHandlerFactory extends LinkHandlerFactory {
 
     private static final YoutubeStreamLinkHandlerFactory instance = new YoutubeStreamLinkHandlerFactory();
-    private static final String ID_PATTERN = "([\\-a-zA-Z0-9_]{11})";
 
     private YoutubeStreamLinkHandlerFactory() {
     }
@@ -49,78 +41,143 @@ public class YoutubeStreamLinkHandlerFactory extends LinkHandlerFactory {
         return instance;
     }
 
+    private static String assertIsID(String id) throws ParsingException {
+        if (id == null || !id.matches("[a-zA-Z0-9_-]{11}")) {
+            throw new ParsingException("The given string is not a Youtube-Video-ID");
+        }
+
+        return id;
+    }
+
     @Override
     public String getUrl(String id) {
         return "https://www.youtube.com/watch?v=" + id;
     }
 
     @Override
-    public String getId(String url) throws ParsingException, IllegalArgumentException {
-        if (url.isEmpty()) {
-            throw new IllegalArgumentException("The url parameter should not be empty");
-        }
+    public String getId(String urlString) throws ParsingException, IllegalArgumentException {
+        try {
+            URI uri = new URI(urlString);
+            String scheme = uri.getScheme();
 
-        String lowercaseUrl = url.toLowerCase();
-        if (lowercaseUrl.contains("youtube")) {
-            if (lowercaseUrl.contains("list=")) {
-                throw new ParsingException("Error no suitable url: " + url);
-            }
-            if (url.contains("attribution_link")) {
-                try {
-                    String escapedQuery = Parser.matchGroup1("u=(.[^&|$]*)", url);
-                    String query = URLDecoder.decode(escapedQuery, "UTF-8");
-                    return Parser.matchGroup1("v=" + ID_PATTERN, query);
-                } catch (UnsupportedEncodingException uee) {
-                    throw new ParsingException("Could not parse attribution_link", uee);
+            if (scheme != null && scheme.equals("vnd.youtube")) {
+                String schemeSpecificPart = uri.getSchemeSpecificPart();
+                if (schemeSpecificPart.startsWith("//")) {
+                    urlString = "https:" + schemeSpecificPart;
+                } else {
+                    return assertIsID(schemeSpecificPart);
                 }
             }
-            if (url.contains("vnd.youtube")) {
-                return Parser.matchGroup1(ID_PATTERN, url);
-            }
-            if (url.contains("embed")) {
-                return Parser.matchGroup1("embed/" + ID_PATTERN, url);
-            }
-            if (url.contains("googleads")) {
-                throw new FoundAdException("Error found add: " + url);
-            }
-            return Parser.matchGroup1("[?&]v=" + ID_PATTERN, url);
+        } catch (URISyntaxException ignored) {
         }
-        if (lowercaseUrl.contains("youtu.be")) {
-            if (lowercaseUrl.contains("list=")) {
-                throw new ParsingException("Error no suitable url: " + url);
-            }
-            if (url.contains("v=")) {
-                return Parser.matchGroup1("v=" + ID_PATTERN, url);
-            }
-            return Parser.matchGroup1("[Yy][Oo][Uu][Tt][Uu]\\.[Bb][Ee]/" + ID_PATTERN, url);
+
+        URL url;
+        try {
+            url = Utils.stringToURL(urlString);
+        } catch (MalformedURLException e) {
+            throw new IllegalArgumentException("The given URL is not valid");
         }
-        if (lowercaseUrl.contains("hooktube")) {
-            if (lowercaseUrl.contains("&v=")
-                    || lowercaseUrl.contains("?v=")) {
-                return Parser.matchGroup1("[?&]v=" + ID_PATTERN, url);
-            }
-            if (url.contains("/embed/")) {
-                return Parser.matchGroup1("embed/" + ID_PATTERN, url);
-            }
-            if (url.contains("/v/")) {
-                return Parser.matchGroup1("v/" + ID_PATTERN, url);
-            }
-            if (url.contains("/watch/")) {
-                return Parser.matchGroup1("watch/" + ID_PATTERN, url);
-            }
+
+        String host = url.getHost();
+        String path = url.getPath();
+        // remove leading "/" of URL-path if URL-path is given
+        if (!path.isEmpty()) {
+            path = path.substring(1);
         }
-        throw new ParsingException("Error no suitable url: " + url);
+
+        if (!YoutubeParsingHelper.isYoutubeALikeURL(url)) {
+            if (host.equalsIgnoreCase("googleads.g.doubleclick.net")) {
+                throw new FoundAdException("Error found ad: " + urlString);
+            }
+
+            throw new ParsingException("The url is not a Youtube-URL");
+        }
+
+        if (YoutubePlaylistLinkHandlerFactory.getInstance().acceptUrl(urlString)) {
+            throw new ParsingException("Error no suitable url: " + urlString);
+        }
+
+        // using uppercase instead of lowercase, because toLowercase replaces some unicode characters
+        // with their lowercase ASCII equivalent. Using toLowercase could result in faultily matching unicode urls.
+        switch (host.toUpperCase()) {
+            case "WWW.YOUTUBE-NOCOOKIE.COM": {
+                if (path.startsWith("embed/")) {
+                    String id = path.split("/")[1];
+
+                    return assertIsID(id);
+                }
+
+                break;
+            }
+
+            case "YOUTUBE.COM":
+            case "WWW.YOUTUBE.COM":
+            case "M.YOUTUBE.COM": {
+                if (path.equals("attribution_link")) {
+                    String uQueryValue = Utils.getQueryValue(url, "u");
+
+                    URL decodedURL;
+                    try {
+                        decodedURL = Utils.stringToURL("http://www.youtube.com" + uQueryValue);
+                    } catch (MalformedURLException e) {
+                        throw new ParsingException("Error no suitable url: " + urlString);
+                    }
+
+                    String viewQueryValue = Utils.getQueryValue(decodedURL, "v");
+                    return assertIsID(viewQueryValue);
+                }
+
+                if (path.startsWith("embed/")) {
+                    String id = path.split("/")[1];
+
+                    return assertIsID(id);
+                }
+
+                String viewQueryValue = Utils.getQueryValue(url, "v");
+                return assertIsID(viewQueryValue);
+            }
+
+            case "YOUTU.BE": {
+                String viewQueryValue = Utils.getQueryValue(url, "v");
+                if (viewQueryValue != null) {
+                    return assertIsID(viewQueryValue);
+                }
+
+                return assertIsID(path);
+            }
+
+            case "HOOKTUBE.COM": {
+                if (path.equals("watch")) {
+                    String viewQueryValue = Utils.getQueryValue(url, "v");
+                    if (viewQueryValue != null) {
+                        return assertIsID(viewQueryValue);
+                    }
+                }
+                if (path.startsWith("embed/")) {
+                    String id = path.substring("embed/".length());
+
+                    return assertIsID(id);
+                }
+                if (path.startsWith("v/")) {
+                    String id = path.substring("v/".length());
+
+                    return assertIsID(id);
+                }
+                if (path.startsWith("watch/")) {
+                    String id = path.substring("watch/".length());
+
+                    return assertIsID(id);
+                }
+            }
+
+            break;
+        }
+
+        throw new ParsingException("Error no suitable url: " + urlString);
     }
 
     @Override
     public boolean onAcceptUrl(final String url) throws FoundAdException {
-        final String lowercaseUrl = url.toLowerCase();
-        if (!lowercaseUrl.contains("youtube")  &&
-            !lowercaseUrl.contains("youtu.be") &&
-            !lowercaseUrl.contains("hooktube")) {
-            return false;
-            // bad programming I know <-- nice meme
-        }
         try {
             getId(url);
             return true;
