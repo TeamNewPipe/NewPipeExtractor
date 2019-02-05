@@ -189,29 +189,6 @@ public class YoutubeChannelExtractor extends ChannelExtractor {
         return new InfoItemsPage<>(collector, getNextPageUrlFromAjaxPage(ajaxJson, pageUrl));
     }
 
-    @Override
-    public String[] getDonationLinks() throws ParsingException {
-        try {
-            ArrayList<String> links = new ArrayList<>();
-            Element linkHolder = doc.select("div[id=\"header-links\"]").first();
-            if(linkHolder == null) {
-                // this occures if no links are embeded into the channel
-                return new String[0];
-            }
-            for(Element a : linkHolder.select("a")) {
-                String link = a.attr("abs:href");
-                if(DonationLinkHelper.getDonatoinServiceByLink(link) != DonationLinkHelper.DonationService.NO_DONATION) {
-                    links.add(link);
-                }
-            }
-            String[] retLinks = new String[links.size()];
-            retLinks = links.toArray(retLinks);
-            return retLinks;
-        } catch (Exception e) {
-            throw new ParsingException("Could not get donation links", e);
-        }
-    }
-
     private String getNextPageUrlFromAjaxPage(final JsonObject ajaxJson, final String pageUrl)
         throws ParsingException {
         String loadMoreHtmlDataRaw = ajaxJson.getString("load_more_widget_html");

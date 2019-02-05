@@ -27,7 +27,7 @@ public abstract class Info implements Serializable {
      *
      * @see Extractor#getOriginalUrl()
      */
-    private final String originalUrl;
+    private String originalUrl;
     private final String name;
 
     private final List<Throwable> errors = new ArrayList<>();
@@ -60,6 +60,12 @@ public abstract class Info implements Serializable {
     public String toString() {
         final String ifDifferentString = !url.equals(originalUrl) ? " (originalUrl=\"" + originalUrl + "\")" : "";
         return getClass().getSimpleName() + "[url=\"" + url + "\"" + ifDifferentString + ", name=\"" + name + "\"]";
+    }
+
+    // if you use an api and want to handle the website url
+    // overriding original url is essential
+    public void setOriginalUrl(String url) {
+        originalUrl = url;
     }
 
     public int getServiceId() {

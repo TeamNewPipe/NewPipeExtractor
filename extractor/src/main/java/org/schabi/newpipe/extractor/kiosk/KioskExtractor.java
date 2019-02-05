@@ -20,6 +20,7 @@ package org.schabi.newpipe.extractor.kiosk;
  * along with NewPipe.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+import org.schabi.newpipe.extractor.InfoItem;
 import org.schabi.newpipe.extractor.ListExtractor;
 import org.schabi.newpipe.extractor.StreamingService;
 import org.schabi.newpipe.extractor.exceptions.ParsingException;
@@ -29,7 +30,7 @@ import org.schabi.newpipe.extractor.utils.Localization;
 
 import javax.annotation.Nonnull;
 
-public abstract class KioskExtractor extends ListExtractor<StreamInfoItem> {
+public abstract class KioskExtractor<T extends InfoItem> extends ListExtractor<T> {
     private final String id;
 
     public KioskExtractor(StreamingService streamingService,
