@@ -14,7 +14,7 @@ import java.io.IOException;
 import java.util.Arrays;
 import java.util.List;
 
-public class SoundcloudChartsExtractor extends KioskExtractor {
+public class SoundcloudChartsExtractor extends KioskExtractor<StreamInfoItem> {
 	private StreamInfoItemsCollector collector = null;
 	private String nextPageUrl = null;
 

@@ -38,6 +38,11 @@ public class SearchInfo extends ListInfo<InfoItem> {
                 extractor.getSearchString());
 
         try {
+            info.setOriginalUrl(extractor.getOriginalUrl());
+        } catch (Exception e) {
+            info.addError(e);
+        }
+        try {
             info.searchSuggestion = extractor.getSearchSuggestion();
         } catch (Exception e) {
             info.addError(e);

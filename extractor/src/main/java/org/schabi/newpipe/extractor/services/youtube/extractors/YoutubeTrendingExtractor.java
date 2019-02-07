@@ -37,7 +37,7 @@ import org.schabi.newpipe.extractor.utils.Localization;
 import javax.annotation.Nonnull;
 import java.io.IOException;
 
-public class YoutubeTrendingExtractor extends KioskExtractor {
+public class YoutubeTrendingExtractor extends KioskExtractor<StreamInfoItem> {
 
     private Document doc;
 

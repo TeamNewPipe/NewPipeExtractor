@@ -8,9 +8,12 @@ import org.schabi.newpipe.extractor.ListExtractor;
 import org.schabi.newpipe.extractor.NewPipe;
 import org.schabi.newpipe.extractor.channel.ChannelInfoItem;
 import org.schabi.newpipe.extractor.services.soundcloud.SoundcloudSearchExtractor;
+import org.schabi.newpipe.extractor.services.soundcloud.SoundcloudSearchQueryHandlerFactory;
 import org.schabi.newpipe.extractor.services.youtube.extractors.YoutubeSearchExtractor;
 import org.schabi.newpipe.extractor.stream.StreamInfoItem;
 import org.schabi.newpipe.extractor.utils.Localization;
+
+import java.util.Arrays;
 
 import static org.junit.Assert.*;
 import static org.schabi.newpipe.extractor.ServiceList.SoundCloud;
@@ -44,24 +47,18 @@ public class SoundcloudSearchExtractorDefaultTest extends SoundcloudSearchExtrac
     @BeforeClass
     public static void setUpClass() throws Exception {
         NewPipe.init(Downloader.getInstance(), new Localization("GB", "en"));
-        extractor = (SoundcloudSearchExtractor) SoundCloud.getSearchExtractor("lill uzi vert");
+        extractor = (SoundcloudSearchExtractor) SoundCloud.getSearchExtractor(
+                new SoundcloudSearchQueryHandlerFactory().fromQuery("lill uzi vert",
+                        Arrays.asList(new String[]{"tracks"}), ""),
+                        new Localization("GB", "en"));
         extractor.fetchPage();
         itemsPage = extractor.getInitialPage();
     }
 
     @Test
     public void testGetSecondPageUrl() throws Exception {
-        assertEquals("https://api-v2.soundcloud.com/search?q=lill+uzi+vert&limit=10&offset=10",
+        assertEquals("https://api-v2.soundcloud.com/search/tracks?q=lill+uzi+vert&limit=10&offset=10",
                 removeClientId(extractor.getNextPageUrl()));
-    }
-
-    @Test
-    public void testResultList_FirstElement() {
-        InfoItem firstInfoItem = itemsPage.getItems().get(0);
-
-        // THe channel should be the first item
-        assertEquals("name", "Bad and Boujee (Feat. Lil Uzi Vert) [Prod. By Metro Boomin]", firstInfoItem.getName());
-        assertEquals("url","https://soundcloud.com/migosatl/bad-and-boujee-feat-lil-uzi-vert-prod-by-metro-boomin", firstInfoItem.getUrl());
     }
 
     @Test
@@ -94,7 +91,7 @@ public class SoundcloudSearchExtractorDefaultTest extends SoundcloudSearchExtrac
         }
         assertFalse("First and second page are equal", equals);
 
-        assertEquals("https://api-v2.soundcloud.com/search?q=lill+uzi+vert&limit=10&offset=20",
+        assertEquals("https://api-v2.soundcloud.com/search/tracks?q=lill+uzi+vert&limit=10&offset=20",
                 removeClientId(secondPage.getNextPageUrl()));
     }
 
