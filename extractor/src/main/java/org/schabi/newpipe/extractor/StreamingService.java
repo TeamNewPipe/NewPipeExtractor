@@ -66,7 +66,7 @@ public abstract class StreamingService {
         }
 
         public enum MediaCapability {
-            AUDIO, VIDEO, LIVE
+            AUDIO, VIDEO, LIVE, COMMENTS
         }
     }
 
@@ -295,9 +295,6 @@ public abstract class StreamingService {
         }
         return getCommentsExtractor(llhf.fromUrl(url), NewPipe.getPreferredLocalization());
     }
-
-    public abstract boolean isCommentsSupported();
-
 
 
     /**

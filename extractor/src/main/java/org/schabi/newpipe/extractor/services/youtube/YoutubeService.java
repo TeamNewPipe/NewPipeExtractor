@@ -1,5 +1,11 @@
 package org.schabi.newpipe.extractor.services.youtube;
 
+import static java.util.Arrays.asList;
+import static org.schabi.newpipe.extractor.StreamingService.ServiceInfo.MediaCapability.AUDIO;
+import static org.schabi.newpipe.extractor.StreamingService.ServiceInfo.MediaCapability.COMMENTS;
+import static org.schabi.newpipe.extractor.StreamingService.ServiceInfo.MediaCapability.LIVE;
+import static org.schabi.newpipe.extractor.StreamingService.ServiceInfo.MediaCapability.VIDEO;
+
 import org.schabi.newpipe.extractor.StreamingService;
 import org.schabi.newpipe.extractor.SuggestionExtractor;
 import org.schabi.newpipe.extractor.channel.ChannelExtractor;
@@ -33,11 +39,6 @@ import org.schabi.newpipe.extractor.stream.StreamExtractor;
 import org.schabi.newpipe.extractor.subscription.SubscriptionExtractor;
 import org.schabi.newpipe.extractor.utils.Localization;
 
-import static java.util.Arrays.asList;
-import static org.schabi.newpipe.extractor.StreamingService.ServiceInfo.MediaCapability.AUDIO;
-import static org.schabi.newpipe.extractor.StreamingService.ServiceInfo.MediaCapability.LIVE;
-import static org.schabi.newpipe.extractor.StreamingService.ServiceInfo.MediaCapability.VIDEO;
-
 /*
  * Created by Christian Schabesberger on 23.08.15.
  *
@@ -61,7 +62,7 @@ import static org.schabi.newpipe.extractor.StreamingService.ServiceInfo.MediaCap
 public class YoutubeService extends StreamingService {
 
     public YoutubeService(int id) {
-        super(id, "YouTube", asList(AUDIO, VIDEO, LIVE));
+        super(id, "YouTube", asList(AUDIO, VIDEO, LIVE, COMMENTS));
     }
 
     @Override
@@ -148,11 +149,6 @@ public class YoutubeService extends StreamingService {
     public CommentsExtractor getCommentsExtractor(ListLinkHandler urlIdHandler, Localization localization)
             throws ExtractionException {
         return new YoutubeCommentsExtractor(this, urlIdHandler, localization);
-    }
-
-    @Override
-    public boolean isCommentsSupported() {
-        return true;
     }
 
 }
