@@ -3,6 +3,7 @@ package org.schabi.newpipe.extractor.services.media_ccc;
 import org.schabi.newpipe.extractor.StreamingService;
 import org.schabi.newpipe.extractor.SuggestionExtractor;
 import org.schabi.newpipe.extractor.channel.ChannelExtractor;
+import org.schabi.newpipe.extractor.comments.CommentsExtractor;
 import org.schabi.newpipe.extractor.exceptions.ExtractionException;
 import org.schabi.newpipe.extractor.kiosk.KioskExtractor;
 import org.schabi.newpipe.extractor.kiosk.KioskList;
@@ -103,5 +104,21 @@ public class MediaCCCService extends StreamingService {
     @Override
     public SubscriptionExtractor getSubscriptionExtractor() {
         return null;
+    }
+
+    @Override
+    public ListLinkHandlerFactory getCommentsLHFactory() {
+        return null;
+    }
+
+    @Override
+    public CommentsExtractor getCommentsExtractor(ListLinkHandler linkHandler, Localization localization)
+            throws ExtractionException {
+        return null;
+    }
+
+    @Override
+    public boolean isCommentsSupported() {
+        return false;
     }
 }
