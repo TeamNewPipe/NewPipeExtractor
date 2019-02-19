@@ -1,10 +1,10 @@
 package org.schabi.newpipe.extractor;
 
-import org.schabi.newpipe.extractor.exceptions.ReCaptchaException;
-import org.schabi.newpipe.extractor.utils.Localization;
-
 import java.io.IOException;
 import java.util.Map;
+
+import org.schabi.newpipe.extractor.exceptions.ReCaptchaException;
+import org.schabi.newpipe.extractor.utils.Localization;
 
 /*
  * Created by Christian Schabesberger on 28.01.16.
@@ -29,8 +29,8 @@ import java.util.Map;
 public interface Downloader {
 
     /**
-     * Download the text file at the supplied URL as in download(String),
-     * but set the HTTP header field "Accept-Language" to the supplied string.
+     * Download the text file at the supplied URL as in download(String), but set
+     * the HTTP header field "Accept-Language" to the supplied string.
      *
      * @param siteUrl  the URL of the text file to return the contents of
      * @param localization the language and country (usually a 2-character code for each)
@@ -40,8 +40,8 @@ public interface Downloader {
     String download(String siteUrl, Localization localization) throws IOException, ReCaptchaException;
 
     /**
-     * Download the text file at the supplied URL as in download(String),
-     * but set the HTTP header field "Accept-Language" to the supplied string.
+     * Download the text file at the supplied URL as in download(String), but set
+     * the HTTP header field "Accept-Language" to the supplied string.
      *
      * @param siteUrl          the URL of the text file to return the contents of
      * @param customProperties set request header properties
@@ -51,12 +51,20 @@ public interface Downloader {
     String download(String siteUrl, Map<String, String> customProperties) throws IOException, ReCaptchaException;
 
     /**
-     * Download (via HTTP) the text file located at the supplied URL, and return its contents.
-     * Primarily intended for downloading web pages.
+     * Download (via HTTP) the text file located at the supplied URL, and return its
+     * contents. Primarily intended for downloading web pages.
      *
      * @param siteUrl the URL of the text file to download
      * @return the contents of the specified text file
      * @throws IOException
      */
     String download(String siteUrl) throws IOException, ReCaptchaException;
+
+    DownloadResponse get(String siteUrl, DownloadRequest request)
+            throws IOException, ReCaptchaException;
+
+    DownloadResponse get(String siteUrl) throws IOException, ReCaptchaException;
+
+    DownloadResponse post(String siteUrl, DownloadRequest request)
+            throws IOException, ReCaptchaException;
 }
