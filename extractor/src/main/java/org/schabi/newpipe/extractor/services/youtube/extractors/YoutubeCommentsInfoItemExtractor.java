@@ -99,7 +99,7 @@ public class YoutubeCommentsInfoItemExtractor implements CommentsInfoItemExtract
     @Override
     public String getAuthorEndpoint() throws ParsingException {
         try {
-            return "https://youtube.com" + JsonUtils.getString(json, "authorEndpoint.browseEndpoint.canonicalBaseUrl");
+            return "https://youtube.com/channel/" + JsonUtils.getString(json, "authorEndpoint.browseEndpoint.browseId");
         } catch (Exception e) {
             throw new ParsingException("Could not get author endpoint", e);
         }
