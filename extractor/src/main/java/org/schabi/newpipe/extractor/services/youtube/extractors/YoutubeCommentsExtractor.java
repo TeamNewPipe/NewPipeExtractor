@@ -107,11 +107,11 @@ public class YoutubeCommentsExtractor extends CommentsExtractor {
             throw new ParsingException("Could not parse json data for comments", e);
         }
         CommentsInfoItemsCollector collector = new CommentsInfoItemsCollector(getServiceId());
-        collectCommentsFrom(collector, ajaxJson, pageUrl);
+        collectCommentsFrom(collector, ajaxJson);
         return new InfoItemsPage<>(collector, getNextPageUrl(ajaxJson));
     }
 
-    private void collectCommentsFrom(CommentsInfoItemsCollector collector, JsonObject ajaxJson, String pageUrl) throws ParsingException {
+    private void collectCommentsFrom(CommentsInfoItemsCollector collector, JsonObject ajaxJson) throws ParsingException {
         
         JsonArray contents;
         try {
@@ -130,7 +130,7 @@ public class YoutubeCommentsExtractor extends CommentsExtractor {
         
         for(Object c: comments) {
             if(c instanceof JsonObject) {
-                CommentsInfoItemExtractor extractor = new YoutubeCommentsInfoItemExtractor((JsonObject) c, pageUrl);
+                CommentsInfoItemExtractor extractor = new YoutubeCommentsInfoItemExtractor((JsonObject) c, getUrl());
                 collector.commit(extractor);
             }
         }
