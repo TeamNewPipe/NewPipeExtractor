@@ -1,12 +1,12 @@
 package org.schabi.newpipe.extractor.utils;
 
-import org.schabi.newpipe.extractor.exceptions.ParsingException;
-
 import java.io.UnsupportedEncodingException;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLDecoder;
 import java.util.List;
+
+import org.schabi.newpipe.extractor.exceptions.ParsingException;
 
 public class Utils {
 
@@ -119,5 +119,15 @@ public class Utils {
 
             throw e;
         }
+    }
+    
+    public static String removeUTF8BOM(String s) {
+        if (s.startsWith("\uFEFF")) {
+            s = s.substring(1);
+        }
+        if (s.endsWith("\uFEFF")) {
+            s = s.substring(0,  s.length()-1);
+        }
+        return s;
     }
 }
