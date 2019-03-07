@@ -76,11 +76,6 @@ public class PeertubeChannelExtractor extends ChannelExtractor {
     }
 
     @Override
-    public String[] getDonationLinks() throws ParsingException {
-        return new String[0];
-    }
-    
-    @Override
     public InfoItemsPage<StreamInfoItem> getInitialPage() throws IOException, ExtractionException {
         super.fetchPage();
         return initPage;

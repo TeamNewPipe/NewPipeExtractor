@@ -1,9 +1,10 @@
 package org.schabi.newpipe.extractor.services.youtube.linkHandler;
 
-import org.schabi.newpipe.extractor.linkhandler.ListLinkHandlerFactory;
 import org.schabi.newpipe.extractor.exceptions.ParsingException;
-import org.schabi.newpipe.extractor.utils.Parser;
+import org.schabi.newpipe.extractor.linkhandler.ListLinkHandlerFactory;
+import org.schabi.newpipe.extractor.utils.Utils;
 
+import java.net.URL;
 import java.util.List;
 
 /*
@@ -29,15 +30,9 @@ import java.util.List;
 public class YoutubeChannelLinkHandlerFactory extends ListLinkHandlerFactory {
 
     private static final YoutubeChannelLinkHandlerFactory instance = new YoutubeChannelLinkHandlerFactory();
-    private static final String ID_PATTERN = "/(user/[A-Za-z0-9_-]*|channel/[A-Za-z0-9_-]*)";
 
     public static YoutubeChannelLinkHandlerFactory getInstance() {
         return instance;
-    }
-
-    @Override
-    public String getId(String url) throws ParsingException {
-        return Parser.matchGroup1(ID_PATTERN, url);
     }
 
     @Override
@@ -46,8 +41,42 @@ public class YoutubeChannelLinkHandlerFactory extends ListLinkHandlerFactory {
     }
 
     @Override
+    public String getId(String url) throws ParsingException {
+        try {
+            URL urlObj = Utils.stringToURL(url);
+            String path = urlObj.getPath();
+
+            if (!(YoutubeParsingHelper.isYoutubeURL(urlObj) || urlObj.getHost().equalsIgnoreCase("hooktube.com"))) {
+                throw new ParsingException("the URL given is not a Youtube-URL");
+            }
+
+            if (!path.startsWith("/user/") && !path.startsWith("/channel/")) {
+                throw new ParsingException("the URL given is neither a channel nor an user");
+            }
+
+            // remove leading "/"
+            path = path.substring(1);
+
+            String[] splitPath = path.split("/");
+            String id = splitPath[1];
+
+            if (id == null || !id.matches("[A-Za-z0-9_-]+")) {
+                throw new ParsingException("The given id is not a Youtube-Video-ID");
+            }
+
+            return splitPath[0] + "/" + id;
+        } catch (final Exception exception) {
+            throw new ParsingException("Error could not parse url :" + exception.getMessage(), exception);
+        }
+    }
+
+    @Override
     public boolean onAcceptUrl(String url) {
-        return (url.contains("youtube") || url.contains("youtu.be") || url.contains("hooktube.com"))
-                && (url.contains("/user/") || url.contains("/channel/"));
+        try {
+            getId(url);
+        } catch (ParsingException e) {
+            return false;
+        }
+        return true;
     }
 }

@@ -1,6 +1,7 @@
 package org.schabi.newpipe.extractor.services.peertube;
 
-import static java.util.Collections.singletonList;
+import static java.util.Arrays.asList;
+import static org.schabi.newpipe.extractor.StreamingService.ServiceInfo.MediaCapability.COMMENTS;
 import static org.schabi.newpipe.extractor.StreamingService.ServiceInfo.MediaCapability.VIDEO;
 
 import java.io.IOException;
@@ -47,7 +48,7 @@ public class PeertubeService extends StreamingService {
     }
     
     public PeertubeService(int id, PeertubeInstance instance) {
-        super(id, instance.getName(), singletonList(VIDEO));
+        super(id, instance.getName(), asList(VIDEO, COMMENTS));
         this.instance  = instance;
     }
 
@@ -120,11 +121,6 @@ public class PeertubeService extends StreamingService {
     public CommentsExtractor getCommentsExtractor(ListLinkHandler linkHandler, Localization localization)
             throws ExtractionException {
         return new PeertubeCommentsExtractor(this, linkHandler, localization);
-    }
-
-    @Override
-    public boolean isCommentsSupported() {
-        return true;
     }
 
     @Override

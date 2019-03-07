@@ -71,7 +71,7 @@ public abstract class StreamingService {
         }
 
         public enum MediaCapability {
-            AUDIO, VIDEO, LIVE
+            AUDIO, VIDEO, LIVE, COMMENTS
         }
     }
 
@@ -301,11 +301,7 @@ public abstract class StreamingService {
         return getCommentsExtractor(llhf.fromUrl(url), NewPipe.getPreferredLocalization());
     }
 
-    public abstract boolean isCommentsSupported();
-    
     public abstract String getBaseUrl();
-
-
 
     /**
      * Figures out where the link is pointing to (a channel, a video, a playlist, etc.)
@@ -318,11 +314,11 @@ public abstract class StreamingService {
         LinkHandlerFactory cH = getChannelLHFactory();
         LinkHandlerFactory pH = getPlaylistLHFactory();
 
-        if (sH.acceptUrl(url)) {
+        if (sH != null && sH.acceptUrl(url)) {
             return LinkType.STREAM;
-        } else if (cH.acceptUrl(url)) {
+        } else if (cH != null && cH.acceptUrl(url)) {
             return LinkType.CHANNEL;
-        } else if (pH.acceptUrl(url)) {
+        } else if (pH != null && pH.acceptUrl(url)) {
             return LinkType.PLAYLIST;
         } else {
             return LinkType.NONE;

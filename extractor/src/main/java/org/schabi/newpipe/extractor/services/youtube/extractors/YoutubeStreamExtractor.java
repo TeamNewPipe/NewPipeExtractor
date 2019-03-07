@@ -386,11 +386,16 @@ public class YoutubeStreamExtractor extends StreamExtractor {
     public String getHlsUrl() throws ParsingException {
         assertPageFetched();
         try {
-            String hlsvp;
-            if (playerArgs != null && playerArgs.isString("hlsvp")) {
-                hlsvp = playerArgs.getString("hlsvp", "");
-            } else {
-                return "";
+            String hlsvp = "";
+            if (playerArgs != null) {
+                if( playerArgs.isString("hlsvp") ) {
+                    hlsvp = playerArgs.getString("hlsvp", "");
+                }else {
+                    hlsvp = JsonParser.object()
+                            .from(playerArgs.getString("player_response", "{}"))
+                            .getObject("streamingData", new JsonObject())
+                            .getString("hlsManifestUrl", "");
+                }
             }
 
             return hlsvp;

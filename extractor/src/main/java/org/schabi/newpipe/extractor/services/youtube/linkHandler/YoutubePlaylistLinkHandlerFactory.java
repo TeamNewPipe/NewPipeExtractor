@@ -1,16 +1,15 @@
 package org.schabi.newpipe.extractor.services.youtube.linkHandler;
 
-
-import org.schabi.newpipe.extractor.linkhandler.ListLinkHandlerFactory;
 import org.schabi.newpipe.extractor.exceptions.ParsingException;
-import org.schabi.newpipe.extractor.utils.Parser;
+import org.schabi.newpipe.extractor.linkhandler.ListLinkHandlerFactory;
+import org.schabi.newpipe.extractor.utils.Utils;
 
+import java.net.URL;
 import java.util.List;
 
 public class YoutubePlaylistLinkHandlerFactory extends ListLinkHandlerFactory {
 
     private static final YoutubePlaylistLinkHandlerFactory instance = new YoutubePlaylistLinkHandlerFactory();
-    private static final String ID_PATTERN = "([\\-a-zA-Z0-9_]{10,})";
 
     public static YoutubePlaylistLinkHandlerFactory getInstance() {
         return instance;
@@ -24,17 +23,35 @@ public class YoutubePlaylistLinkHandlerFactory extends ListLinkHandlerFactory {
     @Override
     public String getId(String url) throws ParsingException {
         try {
-            return Parser.matchGroup1("list=" + ID_PATTERN, url);
+            URL urlObj = Utils.stringToURL(url);
+
+            if (!YoutubeParsingHelper.isYoutubeURL(urlObj)) {
+                throw new ParsingException("the url given is not a Youtube-URL");
+            }
+
+            String listID = Utils.getQueryValue(urlObj, "list");
+
+            if (listID == null) {
+                throw new ParsingException("the url given does not include a playlist");
+            }
+
+            if (!listID.matches("[a-zA-Z0-9_-]{10,}")) {
+                throw new ParsingException("the list-ID given in the URL does not match the list pattern");
+            }
+
+            return listID;
         } catch (final Exception exception) {
             throw new ParsingException("Error could not parse url :" + exception.getMessage(), exception);
         }
     }
 
-
     @Override
     public boolean onAcceptUrl(final String url) {
-        final boolean hasNotEmptyUrl = url != null && !url.isEmpty();
-        final boolean isYoutubeDomain = hasNotEmptyUrl && (url.contains("youtube") || url.contains("youtu.be"));
-        return isYoutubeDomain && url.contains("list=");
+        try {
+            getId(url);
+        } catch (ParsingException e) {
+            return false;
+        }
+        return true;
     }
 }

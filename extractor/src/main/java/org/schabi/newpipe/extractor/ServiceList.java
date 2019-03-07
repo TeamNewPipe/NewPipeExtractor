@@ -1,13 +1,13 @@
 package org.schabi.newpipe.extractor;
 
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.List;
+
+import org.schabi.newpipe.extractor.services.media_ccc.MediaCCCService;
 import org.schabi.newpipe.extractor.services.peertube.PeertubeService;
 import org.schabi.newpipe.extractor.services.soundcloud.SoundcloudService;
 import org.schabi.newpipe.extractor.services.youtube.YoutubeService;
-
-import java.util.List;
-
-import static java.util.Arrays.asList;
-import static java.util.Collections.unmodifiableList;
 
 /*
  * Copyright (C) Christian Schabesberger 2018 <chris.schabesberger@mailbox.org>
@@ -38,17 +38,18 @@ public final class ServiceList {
     public static final YoutubeService YouTube;
     public static final SoundcloudService SoundCloud;
     public static final PeertubeService PeerTube; 
+    public static final MediaCCCService MediaCCC;
 
     /**
      * When creating a new service, put this service in the end of this list,
      * and give it the next free id.
      */
-    private static final List<StreamingService> SERVICES = unmodifiableList(
-            asList(
+    private static final List<StreamingService> SERVICES = Collections.unmodifiableList(
+            Arrays.asList(
                     YouTube = new YoutubeService(0),
                     SoundCloud = new SoundcloudService(1),
-                    PeerTube = new PeertubeService(2)
-                    
+                    PeerTube = new PeertubeService(2),
+                    MediaCCC = new MediaCCCService(3)
             ));
 
     /**

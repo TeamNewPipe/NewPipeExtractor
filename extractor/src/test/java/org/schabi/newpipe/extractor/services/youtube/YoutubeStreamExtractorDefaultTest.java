@@ -135,7 +135,7 @@ public class YoutubeStreamExtractorDefaultTest {
                 assertIsSecureUrl(s.url);
                 assertTrue(s.resolution.length() > 0);
                 assertTrue(Integer.toString(s.getFormatId()),
-                        0 <= s.getFormatId() && s.getFormatId() <= 4);
+                        0 <= s.getFormatId() && s.getFormatId() <= 0x100);
             }
         }
 
