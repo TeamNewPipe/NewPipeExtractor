@@ -11,6 +11,7 @@ import org.schabi.newpipe.extractor.channel.ChannelExtractor;
 import org.schabi.newpipe.extractor.exceptions.ExtractionException;
 import org.schabi.newpipe.extractor.exceptions.ParsingException;
 import org.schabi.newpipe.extractor.linkhandler.ListLinkHandler;
+import org.schabi.newpipe.extractor.services.peertube.PeertubeParsingHelper;
 import org.schabi.newpipe.extractor.stream.StreamInfoItem;
 import org.schabi.newpipe.extractor.stream.StreamInfoItemsCollector;
 import org.schabi.newpipe.extractor.utils.JsonUtils;
@@ -119,6 +120,7 @@ public class PeertubeChannelExtractor extends ChannelExtractor {
         
         StreamInfoItemsCollector collector = new StreamInfoItemsCollector(getServiceId());
         if(json != null) {
+            PeertubeParsingHelper.validate(json);
             Number number = JsonUtils.getNumber(json, "total");
             if(number != null) this.total = number.longValue();
             collectStreamsFrom(collector, json, pageUrl);
