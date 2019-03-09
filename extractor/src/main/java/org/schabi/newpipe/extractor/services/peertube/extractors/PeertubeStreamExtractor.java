@@ -283,6 +283,7 @@ public class PeertubeStreamExtractor extends StreamExtractor {
             throw new ExtractionException("Unable to extract peertube stream data", e);
         }
         if(null == json) throw new ExtractionException("Unable to extract peertube stream data");
+        PeertubeParsingHelper.validate(json);
     }
 
     @Override

@@ -23,6 +23,8 @@ public class PeertubeSearchExtractorDefaultTest extends PeertubeSearchExtractorB
     @BeforeClass
     public static void setUpClass() throws Exception {
         NewPipe.init(Downloader.getInstance(), new Localization("GB", "en"));
+        // setting instance might break test when running in parallel
+        PeerTube.setInstance("https://peertube.mastodon.host", "PeerTube on Mastodon.host");
         extractor = (PeertubeSearchExtractor) PeerTube.getSearchExtractor("internet's own boy");
         extractor.fetchPage();
         itemsPage = extractor.getInitialPage();
@@ -30,7 +32,7 @@ public class PeertubeSearchExtractorDefaultTest extends PeertubeSearchExtractorB
 
     @Test
     public void testGetSecondPageUrl() throws Exception {
-        assertEquals("", extractor.getNextPageUrl());
+        assertEquals("https://peertube.mastodon.host/api/v1/search/videos?search=internet%27s+own+boy&start=12&count=12", extractor.getNextPageUrl());
     }
 
     @Test
