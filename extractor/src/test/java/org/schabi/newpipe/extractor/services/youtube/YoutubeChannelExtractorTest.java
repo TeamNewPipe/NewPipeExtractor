@@ -323,7 +323,7 @@ public class YoutubeChannelExtractorTest {
 
         @Test
         public void testName() throws Exception {
-            assertEquals("CaptainDisillusion", extractor.getName());
+            assertEquals("Captain Disillusion", extractor.getName());
         }
 
         @Test
