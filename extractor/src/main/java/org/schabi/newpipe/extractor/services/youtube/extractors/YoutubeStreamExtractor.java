@@ -34,7 +34,7 @@ import java.util.*;
 /*
  * Created by Christian Schabesberger on 06.08.15.
  *
- * Copyright (C) Christian Schabesberger 2018 <chris.schabesberger@mailbox.org>
+ * Copyright (C) Christian Schabesberger 2019 <chris.schabesberger@mailbox.org>
  * YoutubeStreamExtractor.java is part of NewPipe.
  *
  * NewPipe is free software: you can redistribute it and/or modify
@@ -571,7 +571,7 @@ public class YoutubeStreamExtractor extends StreamExtractor {
     private static final String VERIFIED_URL_PARAMS = "&has_verified=1&bpctr=9999999999";
 
     private final static String DECYRYPTION_SIGNATURE_FUNCTION_REGEX =
-            "(\\w+)\\s*=\\s*function\\((\\w+)\\)\\{\\s*\\2=\\s*\\2\\.split\\(\"\"\\)\\s*;";
+            "([\\w$]+)\\s*=\\s*function\\((\\w+)\\)\\{\\s*\\2=\\s*\\2\\.split\\(\"\"\\)\\s*;";
     private final static String DECRYPTION_AKAMAIZED_STRING_REGEX =
             "yt\\.akamaized\\.net/\\)\\s*\\|\\|\\s*.*?\\s*c\\s*&&\\s*d\\.set\\([^,]+\\s*,\\s*(:encodeURIComponent\\s*\\()([a-zA-Z0-9$]+)\\(";
     private final static String DECRYPTION_AKAMAIZED_SHORT_STRING_REGEX =
