@@ -762,7 +762,7 @@ public class YoutubeStreamExtractor extends StreamExtractor {
                 decryptionFunctionName = Parser.matchGroup1(DECRYPTION_AKAMAIZED_SHORT_STRING_REGEX, playerCode);
             } catch (Parser.RegexException re2) {
                 try {
-                    decryptionFunctionName = Parser.matchGroup1(DECRYPTION_AKAMAIZED_SHORT_STRING_REGEX, playerCode);
+                    decryptionFunctionName = Parser.matchGroup1(DECRYPTION_AKAMAIZED_STRING_REGEX, playerCode);
                 } catch (Parser.RegexException re3) {
                     throw new DecryptException("Could not find decrypt function with any of the given patterns.", re);
                 }
