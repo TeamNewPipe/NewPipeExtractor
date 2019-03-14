@@ -708,15 +708,8 @@ public class YoutubeStreamExtractor extends StreamExtractor {
             }
 
             final String playerCode = downloader.download(playerUrl);
+            final String decryptionFunctionName = getDecryptionFuncName(playerCode);
 
-            final String decryptionFunctionName;
-            if (Parser.isMatch(DECRYPTION_AKAMAIZED_SHORT_STRING_REGEX, playerCode)) {
-                decryptionFunctionName = Parser.matchGroup1(DECRYPTION_AKAMAIZED_SHORT_STRING_REGEX, playerCode);
-            } else if (Parser.isMatch(DECRYPTION_AKAMAIZED_STRING_REGEX, playerCode)) {
-                decryptionFunctionName = Parser.matchGroup1(DECRYPTION_AKAMAIZED_STRING_REGEX, playerCode);
-            } else {
-                decryptionFunctionName = Parser.matchGroup1(DECYRYPTION_SIGNATURE_FUNCTION_REGEX, playerCode);
-            }
             final String functionPattern = "("
                     + decryptionFunctionName.replace("$", "\\$")
                     + "=function\\([a-zA-Z0-9_]+\\)\\{.+?\\})";
@@ -755,6 +748,27 @@ public class YoutubeStreamExtractor extends StreamExtractor {
             Context.exit();
         }
         return result == null ? "" : result.toString();
+    }
+
+    private String getDecryptionFuncName(String playerCode) throws DecryptException {
+        String decryptionFunctionName;
+        // Cascading things in catch is ugly, but its faster than running a match before getting the actual name
+        // to se if the function can actually be found with the given regex.
+        // However if this cascading should propably be cleaned up somehow as it looks a bit weird.
+        try {
+            decryptionFunctionName = Parser.matchGroup1(DECYRYPTION_SIGNATURE_FUNCTION_REGEX, playerCode);
+        } catch (Parser.RegexException re) {
+            try {
+                decryptionFunctionName = Parser.matchGroup1(DECRYPTION_AKAMAIZED_SHORT_STRING_REGEX, playerCode);
+            } catch (Parser.RegexException re2) {
+                try {
+                    decryptionFunctionName = Parser.matchGroup1(DECRYPTION_AKAMAIZED_SHORT_STRING_REGEX, playerCode);
+                } catch (Parser.RegexException re3) {
+                    throw new DecryptException("Could not find decrypt function with any of the given patterns.", re);
+                }
+            }
+        }
+        return decryptionFunctionName;
     }
 
     @Nonnull
