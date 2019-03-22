@@ -38,7 +38,7 @@ public class YoutubeCommentsInfoItemExtractor implements CommentsInfoItemExtract
         try {
             return YoutubeCommentsExtractor.getYoutubeText(JsonUtils.getObject(json, "authorText"));
         } catch (Exception e) {
-            throw new ParsingException("Could not get author name", e);
+            return "";
         }
     }
 
@@ -95,7 +95,7 @@ public class YoutubeCommentsInfoItemExtractor implements CommentsInfoItemExtract
         try {
             return YoutubeCommentsExtractor.getYoutubeText(JsonUtils.getObject(json, "authorText"));
         } catch (Exception e) {
-            throw new ParsingException("Could not get author name", e);
+            return "";
         }
     }
 
@@ -104,7 +104,7 @@ public class YoutubeCommentsInfoItemExtractor implements CommentsInfoItemExtract
         try {
             return "https://youtube.com/channel/" + JsonUtils.getString(json, "authorEndpoint.browseEndpoint.browseId");
         } catch (Exception e) {
-            throw new ParsingException("Could not get author endpoint", e);
+            return "";
         }
     }
 
