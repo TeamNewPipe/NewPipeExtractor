@@ -1,11 +1,12 @@
 package org.schabi.newpipe.extractor.services.youtube.linkHandler;
 
+import org.apache.commons.codec.binary.Base64;
 import org.schabi.newpipe.extractor.exceptions.ParsingException;
 import org.schabi.newpipe.extractor.linkhandler.SearchQueryHandlerFactory;
-import org.schabi.newpipe.extractor.utils.Base64;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
+import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
 import java.util.ArrayList;
@@ -115,7 +116,7 @@ public class YoutubeSearchQueryHandlerFactory extends SearchQueryHandlerFactory 
             return returnURL;
         } catch (UnsupportedEncodingException e) {
             throw new ParsingException("Could not encode query", e);
-        } catch (IllegalArgumentException e) {
+        } catch (IllegalArgumentException | IOException e) {
             throw new ParsingException("Failed to get search results", e);
         }
     }
@@ -151,7 +152,7 @@ public class YoutubeSearchQueryHandlerFactory extends SearchQueryHandlerFactory 
 
     @Nullable
     private String getFilterQueryParams(List<String> contentFilters, String sortFilter)
-            throws IllegalArgumentException {
+            throws IllegalArgumentException, IOException {
         List<Byte> returnList = new ArrayList<>();
         List<Byte> sortFilterParams = getSortFiltersQueryParam(sortFilter);
         if (!sortFilterParams.isEmpty()) {
@@ -167,7 +168,7 @@ public class YoutubeSearchQueryHandlerFactory extends SearchQueryHandlerFactory 
         if (returnList.isEmpty()) {
             return null;
         }
-        return URLEncoder.encode(Base64.encodeToString(convert(returnList), Base64.URL_SAFE));
+        return URLEncoder.encode(Base64.encodeBase64String(convert(returnList)), "UTF-8");
     }
 
     private List<Byte> getContentFiltersQueryParams(List<String> contentFilter) throws IllegalArgumentException {
