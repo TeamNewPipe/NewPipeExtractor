@@ -3,6 +3,7 @@ package org.schabi.newpipe.extractor.services.youtube.linkHandler;
 import org.apache.commons.codec.binary.Base64;
 import org.schabi.newpipe.extractor.exceptions.ParsingException;
 import org.schabi.newpipe.extractor.linkhandler.SearchQueryHandlerFactory;
+import org.schabi.newpipe.extractor.utils.Base64Utils;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -168,7 +169,7 @@ public class YoutubeSearchQueryHandlerFactory extends SearchQueryHandlerFactory 
         if (returnList.isEmpty()) {
             return null;
         }
-        return URLEncoder.encode(Base64.encodeBase64String(convert(returnList)), "UTF-8");
+        return URLEncoder.encode(Base64Utils.encodeBase64String(convert(returnList)), "UTF-8");
     }
 
     private List<Byte> getContentFiltersQueryParams(List<String> contentFilter) throws IllegalArgumentException {
