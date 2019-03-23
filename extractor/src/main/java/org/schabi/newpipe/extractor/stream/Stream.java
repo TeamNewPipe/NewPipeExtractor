@@ -5,6 +5,9 @@ import java.util.List;
 
 import org.schabi.newpipe.extractor.MediaFormat;
 
+/**
+ * Creates a stream object from url, format and optional torrent url
+ */
 public abstract class Stream implements Serializable {
     private final MediaFormat mediaFormat;
     public final String url;
