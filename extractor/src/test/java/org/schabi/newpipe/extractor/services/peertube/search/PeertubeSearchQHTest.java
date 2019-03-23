@@ -3,9 +3,16 @@ package org.schabi.newpipe.extractor.services.peertube.search;
 import static org.junit.Assert.assertEquals;
 import static org.schabi.newpipe.extractor.ServiceList.PeerTube;
 
+import org.junit.BeforeClass;
 import org.junit.Test;
 
 public class PeertubeSearchQHTest {
+    
+    @BeforeClass
+    public static void setUpClass() throws Exception {
+        // setting instance might break test when running in parallel
+        PeerTube.setInstance("https://peertube.mastodon.host", "PeerTube on Mastodon.host");
+    }
 
     @Test
     public void testRegularValues() throws Exception {
