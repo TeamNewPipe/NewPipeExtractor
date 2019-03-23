@@ -44,7 +44,7 @@ public class MediaCCCSearchExtractorEventsTest {
 
     @Test
     public void testServiceId() throws Exception {
-        assertEquals(3, extractor.getServiceId());
+        assertEquals(2, extractor.getServiceId());
     }
 
     @Test

@@ -37,8 +37,8 @@ public final class ServiceList {
 
     public static final YoutubeService YouTube;
     public static final SoundcloudService SoundCloud;
-    public static final PeertubeService PeerTube; 
     public static final MediaCCCService MediaCCC;
+    public static final PeertubeService PeerTube;
 
     /**
      * When creating a new service, put this service in the end of this list,
@@ -48,8 +48,8 @@ public final class ServiceList {
             Arrays.asList(
                     YouTube = new YoutubeService(0),
                     SoundCloud = new SoundcloudService(1),
-                    PeerTube = new PeertubeService(2),
-                    MediaCCC = new MediaCCCService(3)
+                    MediaCCC = new MediaCCCService(2),
+                    PeerTube = new PeertubeService(3)
             ));
 
     /**
