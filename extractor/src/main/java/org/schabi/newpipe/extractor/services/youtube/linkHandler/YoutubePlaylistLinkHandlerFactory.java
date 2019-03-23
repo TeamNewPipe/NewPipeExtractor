@@ -25,8 +25,14 @@ public class YoutubePlaylistLinkHandlerFactory extends ListLinkHandlerFactory {
         try {
             URL urlObj = Utils.stringToURL(url);
 
-            if (!YoutubeParsingHelper.isYoutubeURL(urlObj)) {
+            if (!Utils.isHTTP(urlObj) || !(YoutubeParsingHelper.isYoutubeURL(urlObj)
+                    || YoutubeParsingHelper.isInvidioURL(urlObj))) {
                 throw new ParsingException("the url given is not a Youtube-URL");
+            }
+
+            String path = urlObj.getPath();
+            if (!path.equals("/watch" ) && !path.equals("/playlist")) {
+                throw new ParsingException("the url given is neither a video nor a playlist URL");
             }
 
             String listID = Utils.getQueryValue(urlObj, "list");
