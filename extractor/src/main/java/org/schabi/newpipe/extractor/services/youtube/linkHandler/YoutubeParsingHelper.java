@@ -3,6 +3,8 @@ package org.schabi.newpipe.extractor.services.youtube.linkHandler;
 
 import org.schabi.newpipe.extractor.exceptions.ParsingException;
 
+import java.net.URL;
+
 /*
  * Created by Christian Schabesberger on 02.03.16.
  *
@@ -26,6 +28,27 @@ import org.schabi.newpipe.extractor.exceptions.ParsingException;
 public class YoutubeParsingHelper {
 
     private YoutubeParsingHelper() {
+    }
+
+    public static boolean isYoutubeURL(URL url) {
+        String host = url.getHost();
+        return host.equalsIgnoreCase("youtube.com") || host.equalsIgnoreCase("www.youtube.com")
+                || host.equalsIgnoreCase("m.youtube.com");
+    }
+
+    public static boolean isYoutubeServiceURL(URL url) {
+        String host = url.getHost();
+        return host.equalsIgnoreCase("www.youtube-nocookie.com") || host.equalsIgnoreCase("youtu.be");
+    }
+
+    public static boolean isHooktubeURL(URL url) {
+        String host = url.getHost();
+        return host.equalsIgnoreCase("hooktube.com");
+    }
+
+    public static boolean isInvidioURL(URL url) {
+        String host = url.getHost();
+        return host.equalsIgnoreCase("invidio.us") || host.equalsIgnoreCase("www.invidio.us");
     }
 
     public static long parseDurationString(String input)

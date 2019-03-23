@@ -48,6 +48,11 @@ public class PlaylistInfo extends ListInfo<StreamInfoItem> {
                 extractor.getName());
 
         try {
+            info.setOriginalUrl(extractor.getOriginalUrl());
+        } catch (Exception e) {
+            info.addError(e);
+        }
+        try {
             info.setStreamCount(extractor.getStreamCount());
         } catch (Exception e) {
             info.addError(e);

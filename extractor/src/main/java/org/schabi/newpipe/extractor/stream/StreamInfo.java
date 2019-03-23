@@ -1,14 +1,17 @@
 package org.schabi.newpipe.extractor.stream;
 
-import org.schabi.newpipe.extractor.*;
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
+
+import org.schabi.newpipe.extractor.Info;
+import org.schabi.newpipe.extractor.InfoItem;
+import org.schabi.newpipe.extractor.NewPipe;
+import org.schabi.newpipe.extractor.StreamingService;
 import org.schabi.newpipe.extractor.exceptions.ContentNotAvailableException;
 import org.schabi.newpipe.extractor.exceptions.ExtractionException;
 import org.schabi.newpipe.extractor.utils.DashMpdParser;
 import org.schabi.newpipe.extractor.utils.ExtractorHelper;
-
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
 
 /*
  * Created by Christian Schabesberger on 26.08.15.
@@ -41,7 +44,8 @@ public class StreamInfo extends Info {
         }
     }
 
-    public StreamInfo(int serviceId, String url, String originalUrl, StreamType streamType, String id, String name, int ageLimit) {
+    public StreamInfo(int serviceId, String url, String originalUrl, StreamType streamType, String id, String name,
+            int ageLimit) {
         super(serviceId, id, url, originalUrl, name);
         this.streamType = streamType;
         this.ageLimit = ageLimit;
@@ -63,9 +67,12 @@ public class StreamInfo extends Info {
             streamInfo = extractStreams(streamInfo, extractor);
             streamInfo = extractOptionalData(streamInfo, extractor);
         } catch (ExtractionException e) {
-            // Currently YouTube does not distinguish between age restricted videos and videos blocked
-            // by country.  This means that during the initialisation of the extractor, the extractor
-            // will assume that a video is age restricted while in reality it it blocked by country.
+            // Currently YouTube does not distinguish between age restricted videos and
+            // videos blocked
+            // by country. This means that during the initialisation of the extractor, the
+            // extractor
+            // will assume that a video is age restricted while in reality it it blocked by
+            // country.
             //
             // We will now detect whether the video is blocked by country or not.
             String errorMsg = extractor.getErrorMessage();
@@ -82,7 +89,8 @@ public class StreamInfo extends Info {
 
     private static StreamInfo extractImportantData(StreamExtractor extractor) throws ExtractionException {
         /* ---- important data, without the video can't be displayed goes here: ---- */
-        // if one of these is not available an exception is meant to be thrown directly into the frontend.
+        // if one of these is not available an exception is meant to be thrown directly
+        // into the frontend.
 
         int serviceId = extractor.getServiceId();
         String url = extractor.getUrl();
@@ -92,18 +100,16 @@ public class StreamInfo extends Info {
         String name = extractor.getName();
         int ageLimit = extractor.getAgeLimit();
 
-        if ((streamType == StreamType.NONE)
-                || (url == null || url.isEmpty())
-                || (id == null || id.isEmpty())
-                || (name == null /* streamInfo.title can be empty of course */)
-                || (ageLimit == -1)) {
+        if ((streamType == StreamType.NONE) || (url == null || url.isEmpty()) || (id == null || id.isEmpty())
+                || (name == null /* streamInfo.title can be empty of course */) || (ageLimit == -1)) {
             throw new ExtractionException("Some important stream information was not given.");
         }
 
         return new StreamInfo(serviceId, url, originalUrl, streamType, id, name, ageLimit);
     }
 
-    private static StreamInfo extractStreams(StreamInfo streamInfo, StreamExtractor extractor) throws ExtractionException {
+    private static StreamInfo extractStreams(StreamInfo streamInfo, StreamExtractor extractor)
+            throws ExtractionException {
         /* ---- stream extraction goes here ---- */
         // At least one type of stream has to be available,
         // otherwise an exception will be thrown directly into the frontend.
@@ -120,19 +126,19 @@ public class StreamInfo extends Info {
             streamInfo.addError(new ExtractionException("Couldn't get HLS manifest", e));
         }
 
-        /*  Load and extract audio */
+        /* Load and extract audio */
         try {
             streamInfo.setAudioStreams(extractor.getAudioStreams());
         } catch (Exception e) {
             streamInfo.addError(new ExtractionException("Couldn't get audio streams", e));
         }
-        /* Extract video stream url*/
+        /* Extract video stream url */
         try {
             streamInfo.setVideoStreams(extractor.getVideoStreams());
         } catch (Exception e) {
             streamInfo.addError(new ExtractionException("Couldn't get video streams", e));
         }
-        /* Extract video only stream url*/
+        /* Extract video only stream url */
         try {
             streamInfo.setVideoOnlyStreams(extractor.getVideoOnlyStreams());
         } catch (Exception e) {
@@ -140,9 +146,12 @@ public class StreamInfo extends Info {
         }
 
         // Lists can be null if a exception was thrown during extraction
-        if (streamInfo.getVideoStreams() == null) streamInfo.setVideoStreams(new ArrayList<VideoStream>());
-        if (streamInfo.getVideoOnlyStreams() == null) streamInfo.setVideoOnlyStreams(new ArrayList<VideoStream>());
-        if (streamInfo.getAudioStreams() == null) streamInfo.setAudioStreams(new ArrayList<AudioStream>());
+        if (streamInfo.getVideoStreams() == null)
+            streamInfo.setVideoStreams(new ArrayList<VideoStream>());
+        if (streamInfo.getVideoOnlyStreams() == null)
+            streamInfo.setVideoOnlyStreams(new ArrayList<VideoStream>());
+        if (streamInfo.getAudioStreams() == null)
+            streamInfo.setAudioStreams(new ArrayList<AudioStream>());
 
         Exception dashMpdError = null;
         if (streamInfo.getDashMpdUrl() != null && !streamInfo.getDashMpdUrl().isEmpty()) {
@@ -155,19 +164,23 @@ public class StreamInfo extends Info {
                 streamInfo.segmentedAudioStreams = result.getSegmentedAudioStreams();
                 streamInfo.segmentedVideoStreams = result.getSegmentedVideoStreams();
             } catch (Exception e) {
-                // Sometimes we receive 403 (forbidden) error when trying to download the manifest (similar to what happens with youtube-dl),
-                // just skip the exception (but store it somewhere), as we later check if we have streams anyway.
+                // Sometimes we receive 403 (forbidden) error when trying to download the
+                // manifest (similar to what happens with youtube-dl),
+                // just skip the exception (but store it somewhere), as we later check if we
+                // have streams anyway.
                 dashMpdError = e;
             }
         }
 
-        // Either audio or video has to be available, otherwise we didn't get a stream (since videoOnly are optional, they don't count).
-        if ((streamInfo.videoStreams.isEmpty())
-                && (streamInfo.audioStreams.isEmpty())) {
+        // Either audio or video has to be available, otherwise we didn't get a stream
+        // (since videoOnly are optional, they don't count).
+        if ((streamInfo.videoStreams.isEmpty()) && (streamInfo.audioStreams.isEmpty())) {
 
             if (dashMpdError != null) {
-                // If we don't have any video or audio and the dashMpd 'errored', add it to the error list
-                // (it's optional and it don't get added automatically, but it's good to have some additional error context)
+                // If we don't have any video or audio and the dashMpd 'errored', add it to the
+                // error list
+                // (it's optional and it don't get added automatically, but it's good to have
+                // some additional error context)
                 streamInfo.addError(dashMpdError);
             }
 
@@ -178,9 +191,11 @@ public class StreamInfo extends Info {
     }
 
     private static StreamInfo extractOptionalData(StreamInfo streamInfo, StreamExtractor extractor) {
-        /*  ---- optional data goes here: ---- */
-        // If one of these fails, the frontend needs to handle that they are not available.
-        // Exceptions are therefore not thrown into the frontend, but stored into the error List,
+        /* ---- optional data goes here: ---- */
+        // If one of these fails, the frontend needs to handle that they are not
+        // available.
+        // Exceptions are therefore not thrown into the frontend, but stored into the
+        // error List,
         // so the frontend can afterwards check where errors happened.
 
         try {
@@ -250,12 +265,13 @@ public class StreamInfo extends Info {
         }
 
         streamInfo.setRelatedStreams(ExtractorHelper.getRelatedVideosOrLogError(streamInfo, extractor));
+
         return streamInfo;
     }
 
     private StreamType streamType;
-    private String thumbnailUrl;
-    private String uploadDate;
+    private String thumbnailUrl = "";
+    private String uploadDate = "";
     private long duration = -1;
     private int ageLimit = -1;
     private String description;
@@ -264,26 +280,26 @@ public class StreamInfo extends Info {
     private long likeCount = -1;
     private long dislikeCount = -1;
 
-    private String uploaderName;
-    private String uploaderUrl;
-    private String uploaderAvatarUrl;
+    private String uploaderName = "";
+    private String uploaderUrl = "";
+    private String uploaderAvatarUrl = "";
 
-    private List<VideoStream> videoStreams;
-    private List<AudioStream> audioStreams;
-    private List<VideoStream> videoOnlyStreams;
+    private List<VideoStream> videoStreams = new ArrayList<>();
+    private List<AudioStream> audioStreams = new ArrayList<>();
+    private List<VideoStream> videoOnlyStreams = new ArrayList<>();
 
-    private String dashMpdUrl;
-    private List<VideoStream> segmentedVideoStreams;
-    private List<AudioStream> segmentedAudioStreams;
-    private List<VideoStream> segmentedVideoOnlyStreams;
+    private String dashMpdUrl = "";
+    private List<VideoStream> segmentedVideoStreams = new ArrayList<>();
+    private List<AudioStream> segmentedAudioStreams = new ArrayList<>();
+    private List<VideoStream> segmentedVideoOnlyStreams = new ArrayList<>();
 
 
-    private String hlsUrl;
+    private String hlsUrl = "";
     private StreamInfoItem nextVideo;
-    private List<InfoItem> relatedStreams;
+    private List<InfoItem> relatedStreams = new ArrayList<>();
 
     private long startPosition = 0;
-    private List<SubtitlesStream> subtitles;
+    private List<SubtitlesStream> subtitles = new ArrayList<>();
 
     /**
      * Get the stream type

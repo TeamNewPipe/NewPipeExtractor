@@ -6,6 +6,7 @@ import org.schabi.newpipe.Downloader;
 import org.schabi.newpipe.extractor.InfoItem;
 import org.schabi.newpipe.extractor.ListExtractor;
 import org.schabi.newpipe.extractor.NewPipe;
+import org.schabi.newpipe.extractor.channel.ChannelExtractor;
 import org.schabi.newpipe.extractor.channel.ChannelInfoItem;
 import org.schabi.newpipe.extractor.services.youtube.extractors.YoutubeSearchExtractor;
 import org.schabi.newpipe.extractor.stream.StreamInfoItem;
@@ -62,12 +63,17 @@ public class YoutubeSearchExtractorDefaultTest extends YoutubeSearchExtractorBas
 
     @Test
     public void testResultList_FirstElement() {
-        InfoItem firstInfoItem = itemsPage.getItems().get(1);
+        InfoItem firstInfoItem = itemsPage.getItems().get(0);
+        InfoItem secondInfoItem = itemsPage.getItems().get(1);
+
+        InfoItem channelItem = firstInfoItem instanceof ChannelInfoItem ? firstInfoItem
+                : secondInfoItem;
 
         // The channel should be the first item
-        assertTrue(firstInfoItem instanceof ChannelInfoItem);
-        assertEquals("name", "PewDiePie", firstInfoItem.getName());
-        assertEquals("url","https://www.youtube.com/user/PewDiePie", firstInfoItem.getUrl());
+        assertTrue((firstInfoItem instanceof ChannelInfoItem)
+                || (secondInfoItem instanceof ChannelInfoItem));
+        assertEquals("name", "PewDiePie", channelItem.getName());
+        assertEquals("url","https://www.youtube.com/user/PewDiePie", channelItem.getUrl());
     }
 
     @Test

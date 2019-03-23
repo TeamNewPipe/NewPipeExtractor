@@ -43,6 +43,9 @@ import static org.schabi.newpipe.extractor.ServiceList.YouTube;
  */
 public class YoutubeStreamExtractorDefaultTest {
 
+    /**
+     * Test for {@link StreamExtractor}
+     */
     public static class AdeleHello {
         private static YoutubeStreamExtractor extractor;
 
@@ -132,7 +135,7 @@ public class YoutubeStreamExtractorDefaultTest {
                 assertIsSecureUrl(s.url);
                 assertTrue(s.resolution.length() > 0);
                 assertTrue(Integer.toString(s.getFormatId()),
-                        0 <= s.getFormatId() && s.getFormatId() <= 4);
+                        0 <= s.getFormatId() && s.getFormatId() <= 0x100);
             }
         }
 

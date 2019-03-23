@@ -1,18 +1,24 @@
 package org.schabi.newpipe.extractor;
 
+import java.util.Collections;
+import java.util.List;
+
 import org.schabi.newpipe.extractor.channel.ChannelExtractor;
+import org.schabi.newpipe.extractor.comments.CommentsExtractor;
 import org.schabi.newpipe.extractor.exceptions.ExtractionException;
 import org.schabi.newpipe.extractor.exceptions.ParsingException;
 import org.schabi.newpipe.extractor.kiosk.KioskList;
+import org.schabi.newpipe.extractor.linkhandler.LinkHandler;
+import org.schabi.newpipe.extractor.linkhandler.LinkHandlerFactory;
+import org.schabi.newpipe.extractor.linkhandler.ListLinkHandler;
+import org.schabi.newpipe.extractor.linkhandler.ListLinkHandlerFactory;
+import org.schabi.newpipe.extractor.linkhandler.SearchQueryHandler;
+import org.schabi.newpipe.extractor.linkhandler.SearchQueryHandlerFactory;
 import org.schabi.newpipe.extractor.playlist.PlaylistExtractor;
 import org.schabi.newpipe.extractor.search.SearchExtractor;
-import org.schabi.newpipe.extractor.linkhandler.*;
 import org.schabi.newpipe.extractor.stream.StreamExtractor;
 import org.schabi.newpipe.extractor.subscription.SubscriptionExtractor;
 import org.schabi.newpipe.extractor.utils.Localization;
-
-import java.util.Collections;
-import java.util.List;
 
 /*
  * Copyright (C) Christian Schabesberger 2018 <chris.schabesberger@mailbox.org>
@@ -60,7 +66,7 @@ public abstract class StreamingService {
         }
 
         public enum MediaCapability {
-            AUDIO, VIDEO, LIVE
+            AUDIO, VIDEO, LIVE, COMMENTS
         }
     }
 
@@ -135,6 +141,7 @@ public abstract class StreamingService {
      * @return an instance of a SearchQueryHandlerFactory
      */
     public abstract SearchQueryHandlerFactory getSearchQHFactory();
+    public abstract ListLinkHandlerFactory getCommentsLHFactory();
 
 
     ////////////////////////////////////////////
@@ -198,6 +205,8 @@ public abstract class StreamingService {
      */
     public abstract StreamExtractor getStreamExtractor(LinkHandler linkHandler,
                                                        Localization localization) throws ExtractionException;
+    public abstract CommentsExtractor getCommentsExtractor(ListLinkHandler linkHandler,
+                                                           Localization localization) throws ExtractionException;
     ////////////////////////////////////////////
     // Extractor with default localization
     ////////////////////////////////////////////
@@ -213,13 +222,17 @@ public abstract class StreamingService {
     public ChannelExtractor getChannelExtractor(ListLinkHandler linkHandler) throws ExtractionException {
         return getChannelExtractor(linkHandler, NewPipe.getPreferredLocalization());
     }
-
+    
     public PlaylistExtractor getPlaylistExtractor(ListLinkHandler linkHandler) throws ExtractionException {
         return getPlaylistExtractor(linkHandler, NewPipe.getPreferredLocalization());
     }
 
     public StreamExtractor getStreamExtractor(LinkHandler linkHandler) throws ExtractionException {
         return getStreamExtractor(linkHandler, NewPipe.getPreferredLocalization());
+    }
+    
+    public CommentsExtractor getCommentsExtractor(ListLinkHandler urlIdHandler) throws ExtractionException {
+        return getCommentsExtractor(urlIdHandler, NewPipe.getPreferredLocalization());
     }
 
     ////////////////////////////////////////////
@@ -274,6 +287,15 @@ public abstract class StreamingService {
     public StreamExtractor getStreamExtractor(String url) throws ExtractionException {
         return getStreamExtractor(getStreamLHFactory().fromUrl(url), NewPipe.getPreferredLocalization());
     }
+    
+    public CommentsExtractor getCommentsExtractor(String url) throws ExtractionException {
+        ListLinkHandlerFactory llhf = getCommentsLHFactory();
+        if(null == llhf) {
+            return null;
+        }
+        return getCommentsExtractor(llhf.fromUrl(url), NewPipe.getPreferredLocalization());
+    }
+
 
     /**
      * Figures out where the link is pointing to (a channel, a video, a playlist, etc.)
@@ -286,11 +308,11 @@ public abstract class StreamingService {
         LinkHandlerFactory cH = getChannelLHFactory();
         LinkHandlerFactory pH = getPlaylistLHFactory();
 
-        if (sH.acceptUrl(url)) {
+        if (sH != null && sH.acceptUrl(url)) {
             return LinkType.STREAM;
-        } else if (cH.acceptUrl(url)) {
+        } else if (cH != null && cH.acceptUrl(url)) {
             return LinkType.CHANNEL;
-        } else if (pH.acceptUrl(url)) {
+        } else if (pH != null && pH.acceptUrl(url)) {
             return LinkType.PLAYLIST;
         } else {
             return LinkType.NONE;
