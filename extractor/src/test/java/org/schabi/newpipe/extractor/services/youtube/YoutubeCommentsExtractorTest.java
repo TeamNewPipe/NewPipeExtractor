@@ -27,18 +27,18 @@ public class YoutubeCommentsExtractorTest {
     public static void setUp() throws Exception {
         NewPipe.init(Downloader.getInstance(), new Localization("GB", "en"));
         extractor = (YoutubeCommentsExtractor) YouTube
-                .getCommentsExtractor("https://www.youtube.com/watch?v=rrgFN3AxGfs");
+                .getCommentsExtractor("https://www.youtube.com/watch?v=ehn8mJ8vvsI");
     }
 
     @Test
     public void testGetComments() throws IOException, ExtractionException {
         boolean result = false;
         InfoItemsPage<CommentsInfoItem> comments = extractor.getInitialPage();
-        result = findInComments(comments, "i should really be in the top comment.lol");
+        result = findInComments(comments, "Tsuki blyat");
 
         while (comments.hasNextPage() && !result) {
             comments = extractor.getPage(comments.getNextPageUrl());
-            result = findInComments(comments, "i should really be in the top comment.lol");
+            result = findInComments(comments, "Tsuki blyat");
         }
 
         assertTrue(result);
@@ -47,14 +47,14 @@ public class YoutubeCommentsExtractorTest {
     @Test
     public void testGetCommentsFromCommentsInfo() throws IOException, ExtractionException {
         boolean result = false;
-        CommentsInfo commentsInfo = CommentsInfo.getInfo("https://www.youtube.com/watch?v=rrgFN3AxGfs");
-        assertTrue("what the fuck am i doing with my life.wmv".equals(commentsInfo.getName()));
-        result = findInComments(commentsInfo.getRelatedItems(), "i should really be in the top comment.lol");
+        CommentsInfo commentsInfo = CommentsInfo.getInfo("https://www.youtube.com/watch?v=ehn8mJ8vvsI");
+        assertTrue("the dark side of YouTube...".equals(commentsInfo.getName()));
+        result = findInComments(commentsInfo.getRelatedItems(), "Tsuki blyat");
 
         String nextPage = commentsInfo.getNextPageUrl();
         while (!StringUtil.isBlank(nextPage) && !result) {
             InfoItemsPage<CommentsInfoItem> moreItems = CommentsInfo.getMoreItems(YouTube, commentsInfo, nextPage);
-            result = findInComments(moreItems.getItems(), "i should really be in the top comment.lol");
+            result = findInComments(moreItems.getItems(), "Tsuki blyat");
             nextPage = moreItems.getNextPageUrl();
         }
 
