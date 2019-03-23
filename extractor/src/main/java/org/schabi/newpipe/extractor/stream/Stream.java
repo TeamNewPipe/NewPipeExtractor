@@ -16,10 +16,23 @@ public abstract class Stream implements Serializable {
     @Deprecated
     public final int format;
 
+    /**
+     * Instantiates a new stream object.
+     *
+     * @param url the url
+     * @param format the format
+     */
     public Stream(String url, MediaFormat format) {
         this(url, null, format);
     }
     
+    /**
+     * Instantiates a new stream object.
+     *
+     * @param url the url
+     * @param torrentUrl the url to torrent file, example https://webtorrent.io/torrents/big-buck-bunny.torrent
+     * @param format the format
+     */
     public Stream(String url, String torrentUrl, MediaFormat format) {
         this.url = url;
         this.torrentUrl = torrentUrl;
@@ -52,18 +65,38 @@ public abstract class Stream implements Serializable {
         return false;
     }
 
+    /**
+     * Gets the url.
+     *
+     * @return the url
+     */
     public String getUrl() {
         return url;
     }
     
+    /**
+     * Gets the torrent url.
+     *
+     * @return the torrent url, example https://webtorrent.io/torrents/big-buck-bunny.torrent
+     */
     public String getTorrentUrl() {
         return torrentUrl;
     }
 
+    /**
+     * Gets the format.
+     *
+     * @return the format
+     */
     public MediaFormat getFormat() {
         return mediaFormat;
     }
 
+    /**
+     * Gets the format id.
+     *
+     * @return the format id
+     */
     public int getFormatId() {
         return mediaFormat.id;
     }
