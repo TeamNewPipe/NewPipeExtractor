@@ -40,22 +40,22 @@ public class YoutubeSearchQueryHandlerFactory extends SearchQueryHandlerFactory 
         Movie("Movie", FilterType.Content, new byte[]{0x04}),
         Show("Show", FilterType.Content, new byte[]{0x05}),
 
-        Hour("Hour", FilterType.Time, new byte[]{0x01}),
+        Hour("Last hour", FilterType.Time, new byte[]{0x01}),
         Today("Today", FilterType.Time, new byte[]{0x02}),
-        Week("Week", FilterType.Time, new byte[]{0x03}),
-        Month("Month", FilterType.Time, new byte[]{0x04}),
-        Year("Year", FilterType.Time, new byte[]{0x05}),
+        Week("This week", FilterType.Time, new byte[]{0x03}),
+        Month("This month", FilterType.Time, new byte[]{0x04}),
+        Year("This year", FilterType.Time, new byte[]{0x05}),
 
         Short("Short", FilterType.Duration, new byte[]{0x01}),
         Long("Long", FilterType.Duration, new byte[]{0x02}),
 
         HD("HD", FilterType.Feature, new byte[]{0x20, 0x01}),
-        Subtitles("Subtitles", FilterType.Feature, new byte[]{0x28, 0x01}),
+        Subtitles("Subtitles/CC", FilterType.Feature, new byte[]{0x28, 0x01}),
         CreativeCommons("Creative Commons", FilterType.Feature, new byte[]{0x30, 0x01}),
         ThreeDimensional("3D", FilterType.Feature, new byte[]{0x38, 0x01}),
         Live("Live", FilterType.Feature, new byte[]{0x40, 0x01}),
         Purchased("Purchased", FilterType.Feature, new byte[]{0x48, 0x01}),
-        FourK("4k", FilterType.Feature, new byte[]{0x70, 0x01}),
+        FourK("4K", FilterType.Feature, new byte[]{0x70, 0x01}),
         ThreeSixty("360", FilterType.Feature, new byte[]{0x78, 0x01}),
         Location("Location", FilterType.Feature, new byte[]{(byte) 0xb8, 0x01, 0x01}),
         HDR("HDR", FilterType.Feature, new byte[]{(byte) 0xc8, 0x01, 0x01});
@@ -88,8 +88,8 @@ public class YoutubeSearchQueryHandlerFactory extends SearchQueryHandlerFactory 
     public enum Sorter {
         Relevance("Relevance", SorterType.Default, (byte) 0x00),
         Rating("Rating", SorterType.Default, (byte) 0x01),
-        Upload_Date("Upload_Date", SorterType.Default, (byte) 0x02),
-        View_Count("View_Count", SorterType.Default, (byte) 0x03);
+        Upload_Date("Upload date", SorterType.Default, (byte) 0x02),
+        View_Count("View count", SorterType.Default, (byte) 0x03);
 
         private final String title;
         private final SorterType type;
@@ -99,6 +99,10 @@ public class YoutubeSearchQueryHandlerFactory extends SearchQueryHandlerFactory 
             this.title = title;
             this.type = type;
             this.value = value;
+        }
+
+        public String getTitle() {
+            return title;
         }
     }
 

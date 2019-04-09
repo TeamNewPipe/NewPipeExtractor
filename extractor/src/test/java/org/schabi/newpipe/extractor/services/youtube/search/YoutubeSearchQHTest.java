@@ -50,38 +50,45 @@ public class YoutubeSearchQHTest {
     }
 
     @Test
-    public void testWithChannelContentFilter() throws Exception {
-        String url = getYouTubeDefaultSearchQueryHandler(
-                Collections.singletonList(Filter.Channel.name()),
-                ""
-        ).getUrl();
-        String html = getHtml(url);
-        Document document = Jsoup.parse(html);
-        Elements filterList = getFilterList(document);
-        Element matchingElement = getMatchingElement(
-                Filter.Channel.name(),
-                filterList
-        );
-        if (matchingElement == null) {
-            fail("Channel filter has not been selected");
+    public void testWithAllContentFiltersIndividually() throws Exception {
+        for(Filter filter : Filter.values()) {
+            if(filter == Filter.All) {
+                continue;
+            }
+            String url = getYouTubeDefaultSearchQueryHandler(
+                    Collections.singletonList(filter.name()),
+                    ""
+            ).getUrl();
+            String html = getHtml(url);
+            Document document = Jsoup.parse(html);
+            Elements filterList = getFilterList(document);
+            Element matchingElement = getMatchingElement(
+                    filter.getTitle(),
+                    filterList
+            );
+            if (matchingElement == null) {
+                fail(filter.name() + " filter has not been selected");
+            }
         }
     }
 
     @Test
-    public void testWith360ContentFilterAndNoSortFilter() throws Exception {
-        String url = getYouTubeDefaultSearchQueryHandler(
-                Collections.singletonList(Filter.ThreeSixty.name()),
-                ""
-        ).getUrl();
-        String html = getHtml(url);
-        Document document = Jsoup.parse(html);
-        Elements filterList = getFilterList(document);
-        Element matchingElement = getMatchingElement(
-                Filter.ThreeSixty.getTitle(),
-                filterList
-        );
-        if (matchingElement == null) {
-            fail("360 filter has not been selected");
+    public void testWithAllSortFiltersIndividually() throws Exception {
+        for(Sorter sorter : Sorter.values()) {
+            String url = getYouTubeDefaultSearchQueryHandler(
+                    Collections.<String>emptyList(),
+                    sorter.name()
+            ).getUrl();
+            String html = getHtml(url);
+            Document document = Jsoup.parse(html);
+            Elements filterList = getFilterList(document);
+            Element matchingElement = getMatchingElement(
+                    sorter.getTitle(),
+                    filterList
+            );
+            if (matchingElement == null) {
+                fail("Rating sorter has not been selected");
+            }
         }
     }
 
@@ -99,31 +106,13 @@ public class YoutubeSearchQHTest {
                 filterList
         );
         Element ratingMatchingElement = getMatchingElement(
-                Sorter.Rating.name(),
+                Sorter.Rating.getTitle(),
                 filterList
         );
         if (threeSixtyMatchingElement == null) {
             fail("360 filter has not been selected");
         }
         if (ratingMatchingElement == null) {
-            fail("Rating sorter has not been selected");
-        }
-    }
-
-    @Test
-    public void testWithRatingSortFilter() throws Exception {
-        String url = getYouTubeDefaultSearchQueryHandler(
-                Collections.<String>emptyList(),
-                Sorter.Rating.name()
-        ).getUrl();
-        String html = getHtml(url);
-        Document document = Jsoup.parse(html);
-        Elements filterList = getFilterList(document);
-        Element matchingElement = getMatchingElement(
-                Sorter.Rating.name(),
-                filterList
-        );
-        if (matchingElement == null) {
             fail("Rating sorter has not been selected");
         }
     }
