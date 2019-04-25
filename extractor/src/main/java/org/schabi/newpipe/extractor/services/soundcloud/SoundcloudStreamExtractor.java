@@ -57,7 +57,12 @@ public class SoundcloudStreamExtractor extends StreamExtractor {
     @Nonnull
     @Override
     public String getThumbnailUrl() {
-        return track.getString("artwork_url", "");
+        String artworkUrl = track.getString("artwork_url", "");
+        if (artworkUrl.isEmpty()) {
+            artworkUrl = track.getObject("user").getString("avatar_url", "");
+        }
+        String artworkUrlBetterResolution = artworkUrl.replace("large.jpg", "crop.jpg");
+        return artworkUrlBetterResolution;
     }
 
     @Nonnull

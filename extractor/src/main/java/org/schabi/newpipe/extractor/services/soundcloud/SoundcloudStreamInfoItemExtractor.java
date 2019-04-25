@@ -52,7 +52,12 @@ public class SoundcloudStreamInfoItemExtractor implements StreamInfoItemExtracto
 
     @Override
     public String getThumbnailUrl() {
-        return itemObject.getString("artwork_url");
+        String artworkUrl = itemObject.getString("artwork_url", "");
+        if (artworkUrl.isEmpty()) {
+            artworkUrl = itemObject.getObject("user").getString("avatar_url");
+        }
+        String artworkUrlBetterResolution = artworkUrl.replace("large.jpg", "crop.jpg");
+        return artworkUrlBetterResolution;
     }
 
     @Override
