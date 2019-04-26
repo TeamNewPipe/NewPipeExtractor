@@ -60,6 +60,23 @@ public class YoutubeSubscriptionExtractorTest {
     }
 
     @Test
+    public void testSubscriptionWithEmptyTitleInSource() throws Exception {
+        String channelName = "NAME OF CHANNEL";
+        String emptySource = "<opml version=\"1.1\"><body><outline text=\"YouTube Subscriptions\" title=\"YouTube Subscriptions\">" +
+
+                "<outline text=\"\" title=\"\" type=\"rss\" xmlUrl=\"https://www.youtube.com/feeds/videos.xml?channel_id=AA0AaAa0AaaaAAAAAA0aa0AA\" />" +
+
+                "<outline text=\"" + channelName + "\" title=\"" + channelName +
+                "\" type=\"rss\" xmlUrl=\"https://www.youtube.com/feeds/videos.xml?channel_id=AA0AaAa0AaaaAAAAAA0aa0AA\" />" +
+
+                "</outline></body></opml>";
+
+        List<SubscriptionItem> items = subscriptionExtractor.fromInputStream(new ByteArrayInputStream(emptySource.getBytes("UTF-8")));
+        assertTrue("List doesn't have exactly 1 item (had " + items.size() + ")", items.size() == 1);
+        assertTrue("Item does not have the right title \"" + channelName + "\" (had \"" + items.get(0).getName() + "\")", items.get(0).getName().equals(channelName));
+    }
+
+    @Test
     public void testInvalidSourceException() {
         List<String> invalidList = Arrays.asList(
                 "<xml><notvalid></notvalid></xml>",
