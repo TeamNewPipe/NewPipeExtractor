@@ -63,7 +63,11 @@ public class YoutubeSubscriptionExtractor extends SubscriptionExtractor {
             String title = outline.attr("title");
             String xmlUrl = outline.attr("abs:xmlUrl");
 
-            if (title.isEmpty() || xmlUrl.isEmpty()) {
+            if (title.isEmpty()) {
+                continue;
+            }
+
+            if (xmlUrl.isEmpty()) {
                 throw new InvalidSourceException("document has invalid entries");
             }
 
