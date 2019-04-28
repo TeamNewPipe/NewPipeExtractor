@@ -61,19 +61,28 @@ public class YoutubeSubscriptionExtractorTest {
 
     @Test
     public void testSubscriptionWithEmptyTitleInSource() throws Exception {
-        String channelName = "NAME OF CHANNEL";
-        String emptySource = "<opml version=\"1.1\"><body><outline text=\"YouTube Subscriptions\" title=\"YouTube Subscriptions\">" +
-
-                "<outline text=\"\" title=\"\" type=\"rss\" xmlUrl=\"https://www.youtube.com/feeds/videos.xml?channel_id=AA0AaAa0AaaaAAAAAA0aa0AA\" />" +
-
-                "<outline text=\"" + channelName + "\" title=\"" + channelName +
-                "\" type=\"rss\" xmlUrl=\"https://www.youtube.com/feeds/videos.xml?channel_id=AA0AaAa0AaaaAAAAAA0aa0AA\" />" +
-
+        String channelId = "AA0AaAa0AaaaAAAAAA0aa0AA";
+        String source = "<opml version=\"1.1\"><body><outline text=\"YouTube Subscriptions\" title=\"YouTube Subscriptions\">" +
+                "<outline text=\"\" title=\"\" type=\"rss\" xmlUrl=\"https://www.youtube.com/feeds/videos.xml?channel_id=" + channelId + "\" />" +
                 "</outline></body></opml>";
 
-        List<SubscriptionItem> items = subscriptionExtractor.fromInputStream(new ByteArrayInputStream(emptySource.getBytes("UTF-8")));
+        List<SubscriptionItem> items = subscriptionExtractor.fromInputStream(new ByteArrayInputStream(source.getBytes("UTF-8")));
         assertTrue("List doesn't have exactly 1 item (had " + items.size() + ")", items.size() == 1);
-        assertTrue("Item does not have the right title \"" + channelName + "\" (had \"" + items.get(0).getName() + "\")", items.get(0).getName().equals(channelName));
+        assertTrue("Item does not have an empty title (had \"" + items.get(0).getName() + "\")", items.get(0).getName().isEmpty());
+        assertTrue("Item does not have the right channel id \"" + channelId + "\" (the whole url is \"" + items.get(0).getUrl() + "\")", items.get(0).getUrl().endsWith(channelId));
+    }
+
+    @Test
+    public void testSubscriptionWithInvalidUrlInSource() throws Exception {
+        String source = "<opml version=\"1.1\"><body><outline text=\"YouTube Subscriptions\" title=\"YouTube Subscriptions\">" +
+                "<outline text=\"invalid\" title=\"url\" type=\"rss\" xmlUrl=\"https://www.youtube.com/feeds/videos.xml?channel_not_id=|||||||\"/>" +
+                "<outline text=\"fail\" title=\"fail\" type=\"rss\" xmlUgrl=\"invalidTag\"/>" +
+                "<outline text=\"invalid\" title=\"url\" type=\"rss\" xmlUrl=\"\"/>" +
+                "<outline text=\"\" title=\"\" type=\"rss\" xmlUrl=\"\"/>" +
+                "</outline></body></opml>";
+
+        List<SubscriptionItem> items = subscriptionExtractor.fromInputStream(new ByteArrayInputStream(source.getBytes("UTF-8")));
+        assertTrue(items.isEmpty());
     }
 
     @Test
@@ -82,9 +91,6 @@ public class YoutubeSubscriptionExtractorTest {
                 "<xml><notvalid></notvalid></xml>",
                 "<opml><notvalid></notvalid></opml>",
                 "<opml><body></body></opml>",
-                "<opml><body><outline text=\"fail\" title=\"fail\" type=\"rss\" xmlUgrl=\"invalidTag\"/></outline></body></opml>",
-                "<opml><body><outline><outline text=\"invalid\" title=\"url\" type=\"rss\"" +
-                        " xmlUrl=\"https://www.youtube.com/feeds/videos.xml?channel_not_id=|||||||\"/></outline></body></opml>",
                 "",
                 null,
                 "\uD83D\uDC28\uD83D\uDC28\uD83D\uDC28",
@@ -95,11 +101,11 @@ public class YoutubeSubscriptionExtractorTest {
                 if (invalidContent != null) {
                     byte[] bytes = invalidContent.getBytes("UTF-8");
                     subscriptionExtractor.fromInputStream(new ByteArrayInputStream(bytes));
+                    fail("Extracting from \"" + invalidContent + "\" didn't throw an exception");
                 } else {
                     subscriptionExtractor.fromInputStream(null);
+                    fail("Extracting from null String didn't throw an exception");
                 }
-
-                fail("didn't throw exception");
             } catch (Exception e) {
                 // System.out.println(" -> " + e);
                 boolean isExpectedException = e instanceof SubscriptionExtractor.InvalidSourceException;
