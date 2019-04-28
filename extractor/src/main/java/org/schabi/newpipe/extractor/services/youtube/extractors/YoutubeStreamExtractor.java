@@ -1039,19 +1039,6 @@ public class YoutubeStreamExtractor extends StreamExtractor {
             }
 
             @Override
-            public long getViewCount() throws ParsingException {
-                try {
-                    if (getStreamType() == StreamType.LIVE_STREAM) return -1;
-
-                    return Long.parseLong(Utils.removeNonDigitCharacters(
-                            li.select("span.view-count").first().text()));
-                } catch (Exception e) {
-                    //related videos sometimes have no view count
-                    return 0;
-                }
-            }
-
-            @Override
             public String getThumbnailUrl() throws ParsingException {
                 Element img = li.select("img").first();
                 String thumbnailUrl = img.attr("abs:src");

@@ -10,7 +10,9 @@ import org.schabi.newpipe.extractor.stream.StreamType;
 import org.schabi.newpipe.extractor.utils.Utils;
 
 import javax.annotation.Nullable;
+import java.text.SimpleDateFormat;
 import java.util.Calendar;
+import java.util.Date;
 
 /*
  * Copyright (C) Christian Schabesberger 2016 <chris.schabesberger@mailbox.org>
@@ -150,6 +152,15 @@ public class YoutubeStreamInfoItemExtractor implements StreamInfoItemExtractor {
         }
 
         try {
+            if (isVideoReminder()) {
+                final Calendar calendar = getDateFromReminder();
+                if (calendar != null) {
+                    return cachedUploadDate = new SimpleDateFormat("yyyy-MM-dd HH:mm")
+                            .format(calendar.getTime());
+                }
+            }
+
+
             Element meta = item.select("div[class=\"yt-lockup-meta\"]").first();
             if (meta == null) return "";
 
@@ -168,6 +179,13 @@ public class YoutubeStreamInfoItemExtractor implements StreamInfoItemExtractor {
             return null;
         }
 
+        if (isVideoReminder()) {
+            final Calendar calendar = getDateFromReminder();
+            if (calendar != null) {
+                return calendar;
+            }
+        }
+
         String textualUploadDate = getTextualUploadDate();
         if (timeAgoParser != null && textualUploadDate != null && !textualUploadDate.isEmpty()) {
             return timeAgoParser.parse(textualUploadDate);
@@ -180,8 +198,12 @@ public class YoutubeStreamInfoItemExtractor implements StreamInfoItemExtractor {
     public long getViewCount() throws ParsingException {
         String input;
 
-        if (getStreamType().equals(StreamType.LIVE_STREAM)) {
-            Element meta = item.select("ul[class=\"yt-lockup-meta-info\"]").first();
+        final Element spanViewCount = item.select("span.view-count").first();
+        if (spanViewCount != null) {
+            input = spanViewCount.text();
+
+        } else if (getStreamType().equals(StreamType.LIVE_STREAM)) {
+            Element meta = item.select("ul.yt-lockup-meta-info").first();
             if (meta == null) return 0;
 
             final Elements li = meta.select("li");
@@ -190,7 +212,7 @@ public class YoutubeStreamInfoItemExtractor implements StreamInfoItemExtractor {
             input = li.first().text();
         } else {
             try {
-                Element meta = item.select("div[class=\"yt-lockup-meta\"]").first();
+                Element meta = item.select("div.yt-lockup-meta").first();
                 if (meta == null) return -1;
 
                 // This case can happen if google releases a special video
@@ -236,6 +258,32 @@ public class YoutubeStreamInfoItemExtractor implements StreamInfoItemExtractor {
         } catch (Exception e) {
             throw new ParsingException("Could not get thumbnail url", e);
         }
+    }
+
+
+    private boolean isVideoReminder() {
+        return !item.select("span.yt-uix-livereminder").isEmpty();
+    }
+
+    private Calendar getDateFromReminder() throws ParsingException {
+        final Element timeFuture = item.select("span.yt-badge.localized-date").first();
+
+        if (timeFuture == null) {
+            throw new ParsingException("Span timeFuture is null");
+        }
+
+        final String timestamp = timeFuture.attr("data-timestamp");
+        if (!timestamp.isEmpty()) {
+            try {
+                final Calendar calendar = Calendar.getInstance();
+                calendar.setTime(new Date(Long.parseLong(timestamp) * 1000L));
+                return calendar;
+            } catch (Exception e) {
+                throw new ParsingException("Could not parse = \"" + timestamp + "\"");
+            }
+        }
+
+        throw new ParsingException("Could not parse date from reminder element: \"" + timeFuture + "\"");
     }
 
     /**
