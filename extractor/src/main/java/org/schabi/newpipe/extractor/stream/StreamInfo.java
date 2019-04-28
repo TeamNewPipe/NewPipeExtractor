@@ -2,6 +2,7 @@ package org.schabi.newpipe.extractor.stream;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.List;
 
 import org.schabi.newpipe.extractor.Info;
@@ -229,6 +230,11 @@ public class StreamInfo extends Info {
             streamInfo.addError(e);
         }
         try {
+            streamInfo.setTextualUploadDate(extractor.getTextualUploadDate());
+        } catch (Exception e) {
+            streamInfo.addError(e);
+        }
+        try {
             streamInfo.setUploadDate(extractor.getUploadDate());
         } catch (Exception e) {
             streamInfo.addError(e);
@@ -271,7 +277,8 @@ public class StreamInfo extends Info {
 
     private StreamType streamType;
     private String thumbnailUrl = "";
-    private String uploadDate = "";
+    private String textualUploadDate;
+    private Calendar uploadDate;
     private long duration = -1;
     private int ageLimit = -1;
     private String description;
@@ -327,11 +334,19 @@ public class StreamInfo extends Info {
         this.thumbnailUrl = thumbnailUrl;
     }
 
-    public String getUploadDate() {
+    public String getTextualUploadDate() {
+        return textualUploadDate;
+    }
+
+    public void setTextualUploadDate(String textualUploadDate) {
+        this.textualUploadDate = textualUploadDate;
+    }
+
+    public Calendar getUploadDate() {
         return uploadDate;
     }
 
-    public void setUploadDate(String uploadDate) {
+    public void setUploadDate(Calendar uploadDate) {
         this.uploadDate = uploadDate;
     }
 

@@ -24,9 +24,8 @@ import org.schabi.newpipe.extractor.InfoItem;
 import org.schabi.newpipe.extractor.ListExtractor;
 import org.schabi.newpipe.extractor.StreamingService;
 import org.schabi.newpipe.extractor.exceptions.ParsingException;
-import org.schabi.newpipe.extractor.stream.StreamInfoItem;
 import org.schabi.newpipe.extractor.linkhandler.ListLinkHandler;
-import org.schabi.newpipe.extractor.utils.Localization;
+import org.schabi.newpipe.extractor.stream.StreamInfoItem;
 
 import javax.annotation.Nonnull;
 
@@ -35,9 +34,8 @@ public abstract class KioskExtractor<T extends InfoItem> extends ListExtractor<T
 
     public KioskExtractor(StreamingService streamingService,
                           ListLinkHandler linkHandler,
-                          String kioskId,
-                          Localization localization) {
-        super(streamingService, linkHandler, localization);
+                          String kioskId) {
+        super(streamingService, linkHandler);
         this.id = kioskId;
     }
 

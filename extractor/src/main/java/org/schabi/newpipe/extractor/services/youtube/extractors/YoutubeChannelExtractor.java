@@ -1,32 +1,27 @@
 package org.schabi.newpipe.extractor.services.youtube.extractors;
 
-
 import com.grack.nanojson.JsonObject;
 import com.grack.nanojson.JsonParser;
 import com.grack.nanojson.JsonParserException;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
-import org.schabi.newpipe.extractor.DownloadResponse;
-import org.schabi.newpipe.extractor.Downloader;
-import org.schabi.newpipe.extractor.NewPipe;
 import org.schabi.newpipe.extractor.StreamingService;
 import org.schabi.newpipe.extractor.channel.ChannelExtractor;
+import org.schabi.newpipe.extractor.downloader.Downloader;
+import org.schabi.newpipe.extractor.downloader.Response;
 import org.schabi.newpipe.extractor.exceptions.ExtractionException;
 import org.schabi.newpipe.extractor.exceptions.ParsingException;
 import org.schabi.newpipe.extractor.linkhandler.ListLinkHandler;
+import org.schabi.newpipe.extractor.localization.TimeAgoParser;
 import org.schabi.newpipe.extractor.services.youtube.linkHandler.YoutubeParsingHelper;
 import org.schabi.newpipe.extractor.stream.StreamInfoItem;
 import org.schabi.newpipe.extractor.stream.StreamInfoItemsCollector;
-import org.schabi.newpipe.extractor.stream.TimeAgoParser;
-import org.schabi.newpipe.extractor.utils.DonationLinkHelper;
-import org.schabi.newpipe.extractor.utils.Localization;
 import org.schabi.newpipe.extractor.utils.Parser;
 import org.schabi.newpipe.extractor.utils.Utils;
 
 import javax.annotation.Nonnull;
 import java.io.IOException;
-import java.util.ArrayList;
 
 /*
  * Created by Christian Schabesberger on 25.07.16.
@@ -54,18 +49,16 @@ public class YoutubeChannelExtractor extends ChannelExtractor {
     private static final String CHANNEL_FEED_BASE = "https://www.youtube.com/feeds/videos.xml?channel_id=";
     private static final String CHANNEL_URL_PARAMETERS = "/videos?view=0&flow=list&sort=dd&live_view=10000&gl=US&hl=en";
 
-    private final TimeAgoParser timeAgoParser = getService().getTimeAgoParser();
-
     private Document doc;
 
-    public YoutubeChannelExtractor(StreamingService service, ListLinkHandler linkHandler, Localization localization) {
-        super(service, linkHandler, localization);
+    public YoutubeChannelExtractor(StreamingService service, ListLinkHandler linkHandler) {
+        super(service, linkHandler);
     }
 
     @Override
     public void onFetchPage(@Nonnull Downloader downloader) throws IOException, ExtractionException {
         String channelUrl = super.getUrl() + CHANNEL_URL_PARAMETERS;
-        final DownloadResponse response = downloader.get(channelUrl);
+        final Response response = downloader.get(channelUrl, getExtractorLocalization());
         doc = YoutubeParsingHelper.parseAndCheckPage(channelUrl, response);
     }
 
@@ -191,7 +184,8 @@ public class YoutubeChannelExtractor extends ChannelExtractor {
         StreamInfoItemsCollector collector = new StreamInfoItemsCollector(getServiceId());
         JsonObject ajaxJson;
         try {
-            ajaxJson = JsonParser.object().from(NewPipe.getDownloader().download(pageUrl));
+            final String response = getDownloader().get(pageUrl, getExtractorLocalization()).responseBody();
+            ajaxJson = JsonParser.object().from(response);
         } catch (JsonParserException pe) {
             throw new ParsingException("Could not parse json data for next streams", pe);
         }
@@ -231,6 +225,8 @@ public class YoutubeChannelExtractor extends ChannelExtractor {
 
         final String uploaderName = getName();
         final String uploaderUrl = getUrl();
+        final TimeAgoParser timeAgoParser = getTimeAgoParser();
+
         for (final Element li : element.children()) {
             if (li.select("div[class=\"feed-item-dismissable\"]").first() != null) {
                 collector.commit(new YoutubeStreamInfoItemExtractor(li, timeAgoParser) {

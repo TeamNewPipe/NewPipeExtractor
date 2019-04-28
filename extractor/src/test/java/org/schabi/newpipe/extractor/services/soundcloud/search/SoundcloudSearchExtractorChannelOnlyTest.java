@@ -2,14 +2,14 @@ package org.schabi.newpipe.extractor.services.soundcloud.search;
 
 import org.junit.BeforeClass;
 import org.junit.Test;
-import org.schabi.newpipe.Downloader;
+import org.schabi.newpipe.DownloaderTestImpl;
 import org.schabi.newpipe.extractor.InfoItem;
 import org.schabi.newpipe.extractor.ListExtractor;
 import org.schabi.newpipe.extractor.NewPipe;
 import org.schabi.newpipe.extractor.channel.ChannelInfoItem;
+import org.schabi.newpipe.extractor.localization.Localization;
 import org.schabi.newpipe.extractor.services.soundcloud.SoundcloudSearchExtractor;
 import org.schabi.newpipe.extractor.services.soundcloud.SoundcloudSearchQueryHandlerFactory;
-import org.schabi.newpipe.extractor.utils.Localization;
 
 import static java.util.Arrays.asList;
 import static org.junit.Assert.*;
@@ -19,9 +19,9 @@ public class SoundcloudSearchExtractorChannelOnlyTest extends SoundcloudSearchEx
 
     @BeforeClass
     public static void setUpClass() throws Exception {
-        NewPipe.init(Downloader.getInstance(), new Localization("DE", "de"));
+        NewPipe.init(DownloaderTestImpl.getInstance(), new Localization("de", "DE"));
         extractor = (SoundcloudSearchExtractor) SoundCloud.getSearchExtractor("lill uzi vert",
-                asList(SoundcloudSearchQueryHandlerFactory.USERS), null, new Localization("DE", "de"));
+                asList(SoundcloudSearchQueryHandlerFactory.USERS), null);
         extractor.fetchPage();
         itemsPage = extractor.getInitialPage();
     }
@@ -29,7 +29,7 @@ public class SoundcloudSearchExtractorChannelOnlyTest extends SoundcloudSearchEx
     @Test
     public void testGetSecondPage() throws Exception {
         SoundcloudSearchExtractor secondExtractor = (SoundcloudSearchExtractor) SoundCloud.getSearchExtractor("lill uzi vert",
-                asList(SoundcloudSearchQueryHandlerFactory.USERS), null, new Localization("DE", "de"));
+                asList(SoundcloudSearchQueryHandlerFactory.USERS), null);
         ListExtractor.InfoItemsPage<InfoItem> secondPage = secondExtractor.getPage(itemsPage.getNextPageUrl());
         assertTrue(Integer.toString(secondPage.getItems().size()),
                 secondPage.getItems().size() >= 3);

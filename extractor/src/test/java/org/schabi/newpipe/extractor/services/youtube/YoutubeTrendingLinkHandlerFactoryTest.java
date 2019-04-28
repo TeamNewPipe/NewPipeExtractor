@@ -22,12 +22,11 @@ package org.schabi.newpipe.extractor.services.youtube;
 
 import org.junit.BeforeClass;
 import org.junit.Test;
-import org.schabi.newpipe.Downloader;
+import org.schabi.newpipe.DownloaderTestImpl;
 import org.schabi.newpipe.extractor.NewPipe;
 import org.schabi.newpipe.extractor.exceptions.ParsingException;
 import org.schabi.newpipe.extractor.linkhandler.LinkHandlerFactory;
 import org.schabi.newpipe.extractor.services.youtube.linkHandler.YoutubeTrendingLinkHandlerFactory;
-import org.schabi.newpipe.extractor.utils.Localization;
 
 import static junit.framework.TestCase.assertFalse;
 import static org.junit.Assert.assertEquals;
@@ -43,7 +42,7 @@ public class YoutubeTrendingLinkHandlerFactoryTest {
     @BeforeClass
     public static void setUp() throws Exception {
         LinkHandlerFactory = YouTube.getKioskList().getListLinkHandlerFactoryByType("Trending");
-        NewPipe.init(Downloader.getInstance(), new Localization("GB", "en"));
+        NewPipe.init(DownloaderTestImpl.getInstance());
     }
 
     @Test

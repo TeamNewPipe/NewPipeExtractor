@@ -20,24 +20,42 @@ package org.schabi.newpipe.extractor;
  * along with NewPipe.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+import org.schabi.newpipe.extractor.downloader.Downloader;
 import org.schabi.newpipe.extractor.exceptions.ExtractionException;
-import org.schabi.newpipe.extractor.utils.Localization;
+import org.schabi.newpipe.extractor.localization.ContentCountry;
+import org.schabi.newpipe.extractor.localization.Localization;
 
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import java.util.List;
 
 /**
  * Provides access to streaming services supported by NewPipe.
  */
 public class NewPipe {
-    private static Downloader downloader = null;
-    private static Localization localization = null;
+    private static Downloader downloader;
+    private static Localization preferredLocalization;
+    private static ContentCountry preferredContentCountry;
 
     private NewPipe() {
     }
 
+    public static void init(Downloader d) {
+        downloader = d;
+        preferredLocalization = Localization.DEFAULT;
+        preferredContentCountry = ContentCountry.DEFAULT;
+    }
+
     public static void init(Downloader d, Localization l) {
         downloader = d;
-        localization = l;
+        preferredLocalization = l;
+        preferredContentCountry = l.getCountryCode().isEmpty() ? ContentCountry.DEFAULT : new ContentCountry(l.getCountryCode());
+    }
+
+    public static void init(Downloader d, Localization l, ContentCountry c) {
+        downloader = d;
+        preferredLocalization = l;
+        preferredContentCountry = c;
     }
 
     public static Downloader getDownloader() {
@@ -99,11 +117,41 @@ public class NewPipe {
         }
     }
 
-    public static void setLocalization(Localization localization) {
-        NewPipe.localization = localization;
+    /*//////////////////////////////////////////////////////////////////////////
+    // Localization
+    //////////////////////////////////////////////////////////////////////////*/
+
+    public static void setupLocalization(Localization preferredLocalization) {
+        setupLocalization(preferredLocalization, null);
     }
 
+    public static void setupLocalization(Localization preferredLocalization, @Nullable ContentCountry preferredContentCountry) {
+        NewPipe.preferredLocalization = preferredLocalization;
+
+        if (preferredContentCountry != null) {
+            NewPipe.preferredContentCountry = preferredContentCountry;
+        } else {
+            NewPipe.preferredContentCountry = preferredLocalization.getCountryCode().isEmpty()
+                    ? ContentCountry.DEFAULT
+                    : new ContentCountry(preferredLocalization.getCountryCode());
+        }
+    }
+
+    @Nonnull
     public static Localization getPreferredLocalization() {
-        return localization;
+        return preferredLocalization == null ? Localization.DEFAULT : preferredLocalization;
+    }
+
+    public static void setPreferredLocalization(Localization preferredLocalization) {
+        NewPipe.preferredLocalization = preferredLocalization;
+    }
+
+    @Nonnull
+    public static ContentCountry getPreferredContentCountry() {
+        return preferredContentCountry == null ? ContentCountry.DEFAULT : preferredContentCountry;
+    }
+
+    public static void setPreferredContentCountry(ContentCountry preferredContentCountry) {
+        NewPipe.preferredContentCountry = preferredContentCountry;
     }
 }

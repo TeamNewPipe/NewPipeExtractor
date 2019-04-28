@@ -22,11 +22,10 @@ package org.schabi.newpipe.extractor.services.youtube;
 
 import org.junit.BeforeClass;
 import org.junit.Test;
-import org.schabi.newpipe.Downloader;
+import org.schabi.newpipe.DownloaderTestImpl;
 import org.schabi.newpipe.extractor.NewPipe;
 import org.schabi.newpipe.extractor.StreamingService;
 import org.schabi.newpipe.extractor.kiosk.KioskList;
-import org.schabi.newpipe.extractor.utils.Localization;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
@@ -41,7 +40,7 @@ public class YoutubeServiceTest {
 
     @BeforeClass
     public static void setUp() throws Exception {
-        NewPipe.init(Downloader.getInstance(), new Localization("GB", "en"));
+        NewPipe.init(DownloaderTestImpl.getInstance());
         service = YouTube;
         kioskList = service.getKioskList();
     }

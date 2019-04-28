@@ -2,12 +2,11 @@ package org.schabi.newpipe.extractor.services.youtube;
 
 import org.junit.BeforeClass;
 import org.junit.Test;
-import org.schabi.newpipe.Downloader;
+import org.schabi.newpipe.DownloaderTestImpl;
 import org.schabi.newpipe.extractor.NewPipe;
 import org.schabi.newpipe.extractor.exceptions.FoundAdException;
 import org.schabi.newpipe.extractor.exceptions.ParsingException;
 import org.schabi.newpipe.extractor.services.youtube.linkHandler.YoutubeStreamLinkHandlerFactory;
-import org.schabi.newpipe.extractor.utils.Localization;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -24,7 +23,7 @@ public class YoutubeStreamLinkHandlerFactoryTest {
     @BeforeClass
     public static void setUp() {
         linkHandler = YoutubeStreamLinkHandlerFactory.getInstance();
-        NewPipe.init(Downloader.getInstance(), new Localization("GB", "en"));
+        NewPipe.init(DownloaderTestImpl.getInstance());
     }
 
     @Test(expected = IllegalArgumentException.class)

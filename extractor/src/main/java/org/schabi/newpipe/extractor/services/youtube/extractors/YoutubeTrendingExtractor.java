@@ -20,48 +20,40 @@ package org.schabi.newpipe.extractor.services.youtube.extractors;
  * along with NewPipe.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
-import org.schabi.newpipe.extractor.DownloadResponse;
-import org.schabi.newpipe.extractor.Downloader;
-import org.schabi.newpipe.extractor.linkhandler.ListLinkHandler;
 import org.schabi.newpipe.extractor.StreamingService;
+import org.schabi.newpipe.extractor.downloader.Downloader;
+import org.schabi.newpipe.extractor.downloader.Response;
 import org.schabi.newpipe.extractor.exceptions.ExtractionException;
 import org.schabi.newpipe.extractor.exceptions.ParsingException;
 import org.schabi.newpipe.extractor.kiosk.KioskExtractor;
+import org.schabi.newpipe.extractor.linkhandler.ListLinkHandler;
+import org.schabi.newpipe.extractor.localization.TimeAgoParser;
 import org.schabi.newpipe.extractor.services.youtube.linkHandler.YoutubeParsingHelper;
 import org.schabi.newpipe.extractor.stream.StreamInfoItem;
 import org.schabi.newpipe.extractor.stream.StreamInfoItemsCollector;
-import org.schabi.newpipe.extractor.utils.Localization;
-import org.schabi.newpipe.extractor.stream.TimeAgoParser;
 
 import javax.annotation.Nonnull;
 import java.io.IOException;
 
 public class YoutubeTrendingExtractor extends KioskExtractor<StreamInfoItem> {
 
-    private final TimeAgoParser timeAgoParser = getService().getTimeAgoParser();
-
     private Document doc;
 
     public YoutubeTrendingExtractor(StreamingService service,
                                     ListLinkHandler linkHandler,
-                                    String kioskId,
-                                    Localization localization) {
-        super(service, linkHandler, kioskId, localization);
+                                    String kioskId) {
+        super(service, linkHandler, kioskId);
     }
 
     @Override
     public void onFetchPage(@Nonnull Downloader downloader) throws IOException, ExtractionException {
-        final String contentCountry = getLocalization().getCountry();
-        String url = getUrl();
-        if(contentCountry != null && !contentCountry.isEmpty()) {
-            url += "?gl=" + contentCountry;
-        }
+        final String url = getUrl() +
+                "?gl=" + getExtractorContentCountry().getCountryCode();
 
-        final DownloadResponse response = downloader.get(url);
+        final Response response = downloader.get(url, getExtractorLocalization());
         doc = YoutubeParsingHelper.parseAndCheckPage(url, response);
     }
 
@@ -93,6 +85,9 @@ public class YoutubeTrendingExtractor extends KioskExtractor<StreamInfoItem> {
     public InfoItemsPage<StreamInfoItem> getInitialPage() throws ParsingException {
         StreamInfoItemsCollector collector = new StreamInfoItemsCollector(getServiceId());
         Elements uls = doc.select("ul[class*=\"expanded-shelf-content-list\"]");
+
+        final TimeAgoParser timeAgoParser = getTimeAgoParser();
+
         for(Element ul : uls) {
             for(final Element li : ul.children()) {
                 final Element el = li.select("div[class*=\"yt-lockup-dismissable\"]").first();

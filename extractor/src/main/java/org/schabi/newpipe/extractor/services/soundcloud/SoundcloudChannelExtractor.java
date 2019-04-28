@@ -4,15 +4,14 @@ import com.grack.nanojson.JsonArray;
 import com.grack.nanojson.JsonObject;
 import com.grack.nanojson.JsonParser;
 import com.grack.nanojson.JsonParserException;
-import org.schabi.newpipe.extractor.Downloader;
-import org.schabi.newpipe.extractor.linkhandler.ListLinkHandler;
+import org.schabi.newpipe.extractor.downloader.Downloader;
 import org.schabi.newpipe.extractor.StreamingService;
 import org.schabi.newpipe.extractor.channel.ChannelExtractor;
 import org.schabi.newpipe.extractor.exceptions.ExtractionException;
 import org.schabi.newpipe.extractor.exceptions.ParsingException;
+import org.schabi.newpipe.extractor.linkhandler.ListLinkHandler;
 import org.schabi.newpipe.extractor.stream.StreamInfoItem;
 import org.schabi.newpipe.extractor.stream.StreamInfoItemsCollector;
-import org.schabi.newpipe.extractor.utils.Localization;
 
 import javax.annotation.Nonnull;
 import java.io.IOException;
@@ -25,8 +24,8 @@ public class SoundcloudChannelExtractor extends ChannelExtractor {
     private StreamInfoItemsCollector streamInfoItemsCollector = null;
     private String nextPageUrl = null;
 
-    public SoundcloudChannelExtractor(StreamingService service, ListLinkHandler linkHandler, Localization localization) {
-        super(service, linkHandler, localization);
+    public SoundcloudChannelExtractor(StreamingService service, ListLinkHandler linkHandler) {
+        super(service, linkHandler);
     }
 
     @Override
@@ -36,7 +35,7 @@ public class SoundcloudChannelExtractor extends ChannelExtractor {
         String apiUrl = "https://api-v2.soundcloud.com/users/" + userId +
                 "?client_id=" + SoundcloudParsingHelper.clientId();
 
-        String response = downloader.download(apiUrl);
+        String response = downloader.get(apiUrl, getExtractorLocalization()).responseBody();
         try {
             user = JsonParser.object().from(response);
         } catch (JsonParserException e) {

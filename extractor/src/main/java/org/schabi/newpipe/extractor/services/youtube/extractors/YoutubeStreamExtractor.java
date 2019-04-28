@@ -11,16 +11,22 @@ import org.jsoup.select.Elements;
 import org.mozilla.javascript.Context;
 import org.mozilla.javascript.Function;
 import org.mozilla.javascript.ScriptableObject;
-import org.schabi.newpipe.extractor.*;
+import org.schabi.newpipe.extractor.MediaFormat;
+import org.schabi.newpipe.extractor.NewPipe;
+import org.schabi.newpipe.extractor.StreamingService;
+import org.schabi.newpipe.extractor.downloader.Downloader;
+import org.schabi.newpipe.extractor.downloader.Request;
+import org.schabi.newpipe.extractor.downloader.Response;
 import org.schabi.newpipe.extractor.exceptions.ContentNotAvailableException;
 import org.schabi.newpipe.extractor.exceptions.ExtractionException;
 import org.schabi.newpipe.extractor.exceptions.ParsingException;
 import org.schabi.newpipe.extractor.exceptions.ReCaptchaException;
 import org.schabi.newpipe.extractor.linkhandler.LinkHandler;
+import org.schabi.newpipe.extractor.localization.TimeAgoParser;
 import org.schabi.newpipe.extractor.services.youtube.ItagItem;
 import org.schabi.newpipe.extractor.services.youtube.linkHandler.YoutubeParsingHelper;
 import org.schabi.newpipe.extractor.stream.*;
-import org.schabi.newpipe.extractor.utils.Localization;
+import org.schabi.newpipe.extractor.utils.JsonUtils;
 import org.schabi.newpipe.extractor.utils.Parser;
 import org.schabi.newpipe.extractor.utils.Utils;
 
@@ -75,8 +81,6 @@ public class YoutubeStreamExtractor extends StreamExtractor {
 
     /*//////////////////////////////////////////////////////////////////////////*/
 
-    private final TimeAgoParser timeAgoParser = getService().getTimeAgoParser();
-
     private Document doc;
     @Nullable
     private JsonObject playerArgs;
@@ -89,8 +93,8 @@ public class YoutubeStreamExtractor extends StreamExtractor {
 
     private boolean isAgeRestricted;
 
-    public YoutubeStreamExtractor(StreamingService service, LinkHandler linkHandler, Localization localization) {
-        super(service, linkHandler, localization);
+    public YoutubeStreamExtractor(StreamingService service, LinkHandler linkHandler) {
+        super(service, linkHandler);
     }
 
     /*//////////////////////////////////////////////////////////////////////////
@@ -116,15 +120,28 @@ public class YoutubeStreamExtractor extends StreamExtractor {
         return name;
     }
 
-    @Nonnull
     @Override
-    public String getUploadDate() throws ParsingException {
-        assertPageFetched();
+    public String getTextualUploadDate() throws ParsingException {
+        if (getStreamType().equals(StreamType.LIVE_STREAM)) {
+            return null;
+        }
+
         try {
             return doc.select("meta[itemprop=datePublished]").attr(CONTENT);
         } catch (Exception e) {//todo: add fallback method
             throw new ParsingException("Could not get upload date", e);
         }
+    }
+
+    @Override
+    public Calendar getUploadDate() throws ParsingException {
+        final String textualUploadDate = getTextualUploadDate();
+
+        if (textualUploadDate == null) {
+            return null;
+        }
+
+        return YoutubeParsingHelper.parseDateFrom(textualUploadDate);
     }
 
     @Nonnull
@@ -534,13 +551,14 @@ public class YoutubeStreamExtractor extends StreamExtractor {
         assertPageFetched();
         try {
             StreamInfoItemsCollector collector = new StreamInfoItemsCollector(getServiceId());
+            final TimeAgoParser timeAgoParser = getTimeAgoParser();
 
             Elements watch = doc.select("div[class=\"watch-sidebar-section\"]");
             if (watch.size() < 1) {
                 return null;// prevent the snackbar notification "report error" on age-restricted videos
             }
 
-            collector.commit(extractVideoPreviewInfo(watch.first().select("li").first()));
+            collector.commit(extractVideoPreviewInfo(watch.first().select("li").first(), timeAgoParser));
             return collector.getItems().get(0);
         } catch (Exception e) {
             throw new ParsingException("Could not get next video", e);
@@ -552,12 +570,14 @@ public class YoutubeStreamExtractor extends StreamExtractor {
         assertPageFetched();
         try {
             StreamInfoItemsCollector collector = new StreamInfoItemsCollector(getServiceId());
+            final TimeAgoParser timeAgoParser = getTimeAgoParser();
+
             Element ul = doc.select("ul[id=\"watch-related\"]").first();
             if (ul != null) {
                 for (Element li : ul.children()) {
                     // first check if we have a playlist. If so leave them out
                     if (li.select("a[class*=\"content-link\"]").first() != null) {
-                        collector.commit(extractVideoPreviewInfo(li));
+                        collector.commit(extractVideoPreviewInfo(li, timeAgoParser));
                     }
                 }
             }
@@ -617,8 +637,8 @@ public class YoutubeStreamExtractor extends StreamExtractor {
     @Override
     public void onFetchPage(@Nonnull Downloader downloader) throws IOException, ExtractionException {
         final String verifiedUrl = getUrl() + VERIFIED_URL_PARAMS;
-        final DownloadResponse response = downloader.get(verifiedUrl);
-        pageHtml = response.getResponseBody();
+        final Response response = downloader.get(verifiedUrl, getExtractorLocalization());
+        pageHtml = response.responseBody();
         doc = YoutubeParsingHelper.parseAndCheckPage(verifiedUrl, response);
 
         final String playerUrl;
@@ -626,7 +646,7 @@ public class YoutubeStreamExtractor extends StreamExtractor {
         if (!doc.select("meta[property=\"og:restrictions:age\"").isEmpty()) {
             final EmbeddedInfo info = getEmbeddedInfo();
             final String videoInfoUrl = getVideoInfoUrl(getId(), info.sts);
-            final String infoPageResponse = downloader.download(videoInfoUrl);
+            final String infoPageResponse = downloader.get(videoInfoUrl, getExtractorLocalization()).responseBody();
             videoInfoPage.putAll(Parser.compatParseMap(infoPageResponse));
             playerUrl = info.url;
             isAgeRestricted = true;
@@ -715,7 +735,7 @@ public class YoutubeStreamExtractor extends StreamExtractor {
         try {
             final Downloader downloader = NewPipe.getDownloader();
             final String embedUrl = "https://www.youtube.com/embed/" + getId();
-            final String embedPageContent = downloader.download(embedUrl);
+            final String embedPageContent = downloader.get(embedUrl, getExtractorLocalization()).responseBody();
 
             // Get player url
             final String assetsPattern = "\"assets\":.+?\"js\":\\s*(\"[^\"]+\")";
@@ -750,7 +770,7 @@ public class YoutubeStreamExtractor extends StreamExtractor {
                 playerUrl = "https://youtube.com" + playerUrl;
             }
 
-            final String playerCode = downloader.download(playerUrl);
+            final String playerCode = downloader.get(playerUrl, getExtractorLocalization()).responseBody();
             final String decryptionFunctionName = getDecryptionFuncName(playerCode);
 
             final String functionPattern = "("
@@ -933,7 +953,7 @@ public class YoutubeStreamExtractor extends StreamExtractor {
      * Provides information about links to other videos on the video page, such as related videos.
      * This is encapsulated in a StreamInfoItem object, which is a subset of the fields in a full StreamInfo.
      */
-    private StreamInfoItemExtractor extractVideoPreviewInfo(final Element li) {
+    private StreamInfoItemExtractor extractVideoPreviewInfo(final Element li, final TimeAgoParser timeAgoParser) {
         return new YoutubeStreamInfoItemExtractor(li, timeAgoParser) {
 
             @Override

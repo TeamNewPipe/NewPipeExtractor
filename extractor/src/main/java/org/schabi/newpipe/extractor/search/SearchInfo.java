@@ -7,7 +7,6 @@ import org.schabi.newpipe.extractor.StreamingService;
 import org.schabi.newpipe.extractor.exceptions.ExtractionException;
 import org.schabi.newpipe.extractor.linkhandler.SearchQueryHandler;
 import org.schabi.newpipe.extractor.utils.ExtractorHelper;
-import org.schabi.newpipe.extractor.utils.Localization;
 
 import java.io.IOException;
 

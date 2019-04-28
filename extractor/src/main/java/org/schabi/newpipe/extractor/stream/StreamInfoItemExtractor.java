@@ -66,11 +66,10 @@ public interface StreamInfoItemExtractor extends InfoItemExtractor {
     String getUploaderUrl() throws ParsingException;
 
     /**
-     * Extract the textual upload date of this item.
-     * The original textual date provided by the service may be used if it is short;
-     * otherwise the format "yyyy-MM-dd" or an locale specific version is preferred.
+     * The original textual date provided by the service. Should be used as a fallback if
+     * {@link #getUploadDate()} isn't provided by the service, or it fails for some reason.
      *
-     * @return The original textual upload date.
+     * @return The original textual date provided by the service.
      * @throws ParsingException if there is an error in the extraction
      * @see #getUploadDate()
      */

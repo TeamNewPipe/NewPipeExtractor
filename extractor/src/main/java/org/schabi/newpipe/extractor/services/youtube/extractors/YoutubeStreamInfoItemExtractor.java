@@ -6,7 +6,7 @@ import org.schabi.newpipe.extractor.exceptions.ParsingException;
 import org.schabi.newpipe.extractor.services.youtube.linkHandler.YoutubeParsingHelper;
 import org.schabi.newpipe.extractor.stream.StreamInfoItemExtractor;
 import org.schabi.newpipe.extractor.stream.StreamType;
-import org.schabi.newpipe.extractor.stream.TimeAgoParser;
+import org.schabi.newpipe.extractor.localization.TimeAgoParser;
 import org.schabi.newpipe.extractor.utils.Utils;
 
 import javax.annotation.Nullable;

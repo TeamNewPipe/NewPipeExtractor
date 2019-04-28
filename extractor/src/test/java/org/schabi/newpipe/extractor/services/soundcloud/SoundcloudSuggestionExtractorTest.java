@@ -2,11 +2,10 @@ package org.schabi.newpipe.extractor.services.soundcloud;
 
 import org.junit.BeforeClass;
 import org.junit.Test;
-import org.schabi.newpipe.Downloader;
+import org.schabi.newpipe.DownloaderTestImpl;
 import org.schabi.newpipe.extractor.NewPipe;
-import org.schabi.newpipe.extractor.SuggestionExtractor;
 import org.schabi.newpipe.extractor.exceptions.ExtractionException;
-import org.schabi.newpipe.extractor.utils.Localization;
+import org.schabi.newpipe.extractor.suggestion.SuggestionExtractor;
 
 import java.io.IOException;
 
@@ -21,7 +20,7 @@ public class SoundcloudSuggestionExtractorTest {
 
     @BeforeClass
     public static void setUp() {
-        NewPipe.init(Downloader.getInstance(), new Localization("GB", "en"));
+        NewPipe.init(DownloaderTestImpl.getInstance());
         suggestionExtractor = SoundCloud.getSuggestionExtractor();
     }
 

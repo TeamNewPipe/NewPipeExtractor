@@ -22,6 +22,7 @@ package org.schabi.newpipe.extractor.stream;
 
 import org.schabi.newpipe.extractor.InfoItem;
 
+import javax.annotation.Nullable;
 import java.util.Calendar;
 
 /**
@@ -83,18 +84,20 @@ public class StreamInfoItem extends InfoItem {
      * @return The original textual upload date as returned by the streaming service.
      * @see #getUploadDate()
      */
+    @Nullable
     public String getTextualUploadDate() {
         return textualUploadDate;
     }
 
-    public void setTextualUploadDate(String upload_date) {
-        this.textualUploadDate = upload_date;
+    public void setTextualUploadDate(String uploadDate) {
+        this.textualUploadDate = uploadDate;
     }
 
     /**
      * @return The (approximated) date and time this item was uploaded or {@code null}.
      * @see #getTextualUploadDate()
      */
+    @Nullable
     public Calendar getUploadDate() {
         return uploadDate;
     }
