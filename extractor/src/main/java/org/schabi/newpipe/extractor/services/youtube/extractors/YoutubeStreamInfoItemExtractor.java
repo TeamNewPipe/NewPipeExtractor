@@ -3,10 +3,10 @@ package org.schabi.newpipe.extractor.services.youtube.extractors;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 import org.schabi.newpipe.extractor.exceptions.ParsingException;
+import org.schabi.newpipe.extractor.localization.TimeAgoParser;
 import org.schabi.newpipe.extractor.services.youtube.linkHandler.YoutubeParsingHelper;
 import org.schabi.newpipe.extractor.stream.StreamInfoItemExtractor;
 import org.schabi.newpipe.extractor.stream.StreamType;
-import org.schabi.newpipe.extractor.localization.TimeAgoParser;
 import org.schabi.newpipe.extractor.utils.Utils;
 
 import javax.annotation.Nullable;
@@ -141,6 +141,10 @@ public class YoutubeStreamInfoItemExtractor implements StreamInfoItemExtractor {
 
     @Override
     public String getTextualUploadDate() throws ParsingException {
+        if (getStreamType().equals(StreamType.LIVE_STREAM)) {
+            return null;
+        }
+
         if (cachedUploadDate != null) {
             return cachedUploadDate;
         }
@@ -160,9 +164,12 @@ public class YoutubeStreamInfoItemExtractor implements StreamInfoItemExtractor {
 
     @Override
     public Calendar getUploadDate() throws ParsingException {
+        if (getStreamType().equals(StreamType.LIVE_STREAM)) {
+            return null;
+        }
+
         String textualUploadDate = getTextualUploadDate();
-        if (timeAgoParser != null
-                && textualUploadDate != null && !"".equals(textualUploadDate)) {
+        if (timeAgoParser != null && textualUploadDate != null && !textualUploadDate.isEmpty()) {
             return timeAgoParser.parse(textualUploadDate);
         } else {
             return null;
@@ -172,24 +179,35 @@ public class YoutubeStreamInfoItemExtractor implements StreamInfoItemExtractor {
     @Override
     public long getViewCount() throws ParsingException {
         String input;
-        try {
-            // TODO: Return the actual live stream's watcher count
-            // -1 for no view count
-            if (getStreamType() == StreamType.LIVE_STREAM) return -1;
 
-            Element meta = item.select("div[class=\"yt-lockup-meta\"]").first();
-            if (meta == null) return -1;
+        if (getStreamType().equals(StreamType.LIVE_STREAM)) {
+            Element meta = item.select("ul[class=\"yt-lockup-meta-info\"]").first();
+            if (meta == null) return 0;
 
-            // This case can happen if google releases a special video
-            if(meta.select("li").size() < 2)  return -1;
+            final Elements li = meta.select("li");
+            if (li.isEmpty()) return 0;
 
-            input = meta.select("li").get(1).text();
+            input = li.first().text();
+        } else {
+            try {
+                Element meta = item.select("div[class=\"yt-lockup-meta\"]").first();
+                if (meta == null) return -1;
 
-        } catch (IndexOutOfBoundsException e) {
-            throw new ParsingException("Could not parse yt-lockup-meta although available: " + getUrl(), e);
+                // This case can happen if google releases a special video
+                if (meta.select("li").size() < 2) return -1;
+
+                input = meta.select("li").get(1).text();
+            } catch (IndexOutOfBoundsException e) {
+                throw new ParsingException("Could not parse yt-lockup-meta although available: " + getUrl(), e);
+            }
+        }
+
+        if (input == null) {
+            throw new ParsingException("Input is null");
         }
 
         try {
+
             return Long.parseLong(Utils.removeNonDigitCharacters(input));
         } catch (NumberFormatException e) {
             // if this happens the video probably has no views

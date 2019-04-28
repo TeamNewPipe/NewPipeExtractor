@@ -304,10 +304,63 @@ public class YoutubeStreamExtractor extends StreamExtractor {
     public long getViewCount() throws ParsingException {
         assertPageFetched();
         try {
+            if (getStreamType().equals(StreamType.LIVE_STREAM)) {
+                return getLiveStreamWatchingCount();
+            }
+
             return Long.parseLong(doc.select("meta[itemprop=interactionCount]").attr(CONTENT));
         } catch (Exception e) {//todo: find fallback method
             throw new ParsingException("Could not get number of views", e);
         }
+    }
+
+    private long getLiveStreamWatchingCount() throws ExtractionException, IOException, JsonParserException {
+        // https://www.youtube.com/youtubei/v1/updated_metadata?alt=json&key=
+        String innerTubeKey = null, clientVersion = null;
+        if (playerArgs != null && !playerArgs.isEmpty()) {
+            innerTubeKey = playerArgs.getString("innertube_api_key");
+            clientVersion = playerArgs.getString("innertube_context_client_version");
+        } else if (!videoInfoPage.isEmpty()) {
+            innerTubeKey = videoInfoPage.get("innertube_api_key");
+            clientVersion = videoInfoPage.get("innertube_context_client_version");
+        }
+
+        if (innerTubeKey == null || innerTubeKey.isEmpty()) {
+            throw new ExtractionException("Couldn't get innerTube key");
+        }
+
+        if (clientVersion == null || clientVersion.isEmpty()) {
+            throw new ExtractionException("Couldn't get innerTube client version");
+        }
+
+        final String metadataUrl = "https://www.youtube.com/youtubei/v1/updated_metadata?alt=json&key=" + innerTubeKey;
+        final byte[] dataBody = ("{\"context\":{\"client\":{\"clientName\":1,\"clientVersion\":\"" + clientVersion + "\"}}" +
+                ",\"videoId\":\"" + getId() + "\"}").getBytes("UTF-8");
+        final Response response = getDownloader().execute(Request.newBuilder()
+                .post(metadataUrl, dataBody)
+                .addHeader("Content-Type", "application/json")
+                .build());
+        final JsonObject jsonObject = JsonParser.object().from(response.responseBody());
+
+        for (Object actionEntry : jsonObject.getArray("actions")) {
+            if (!(actionEntry instanceof JsonObject)) continue;
+            final JsonObject entry = (JsonObject) actionEntry;
+
+            final JsonObject updateViewershipAction = entry.getObject("updateViewershipAction", null);
+            if (updateViewershipAction == null) continue;
+
+            final JsonArray viewCountRuns = JsonUtils.getArray(updateViewershipAction, "viewership.videoViewCountRenderer.viewCount.runs");
+            if (viewCountRuns.isEmpty()) continue;
+
+            final JsonObject textObject = viewCountRuns.getObject(0);
+            if (!textObject.has("text")) {
+                throw new ExtractionException("Response don't have \"text\" element");
+            }
+
+            return Long.parseLong(Utils.removeNonDigitCharacters(textObject.getString("text")));
+        }
+
+        throw new ExtractionException("Could not find correct results in response");
     }
 
     @Override
