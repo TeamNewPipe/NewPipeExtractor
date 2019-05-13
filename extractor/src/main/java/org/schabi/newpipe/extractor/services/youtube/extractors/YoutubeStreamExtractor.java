@@ -888,7 +888,7 @@ public class YoutubeStreamExtractor extends StreamExtractor {
                         String streamUrl = tags.get("url");
                         // if video has a signature: decrypt it and add it to the url
                         if (tags.get("s") != null) {
-                            streamUrl = streamUrl + "&signature=" + decryptSignature(tags.get("s"), decryptionCode);
+                            streamUrl = streamUrl + "&" + tags.get("sp") + "=" + decryptSignature(tags.get("s"), decryptionCode);
                         }
                         urlAndItags.put(streamUrl, itagItem);
                     }
