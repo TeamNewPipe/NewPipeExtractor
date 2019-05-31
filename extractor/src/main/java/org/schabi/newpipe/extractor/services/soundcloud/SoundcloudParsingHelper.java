@@ -113,7 +113,7 @@ public class SoundcloudParsingHelper {
 
         String response = NewPipe.getDownloader().download("https://w.soundcloud.com/player/?url="
                 + URLEncoder.encode(url, "UTF-8"));
-        return Parser.matchGroup1(",\"id\":(.*?),", response);
+        return Parser.matchGroup1(",\"id\":(([^}\\n])*?),", response);
     }
 
     /**
