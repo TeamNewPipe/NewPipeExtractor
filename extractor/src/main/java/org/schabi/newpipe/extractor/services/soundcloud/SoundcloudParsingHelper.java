@@ -113,6 +113,9 @@ public class SoundcloudParsingHelper {
 
         String response = NewPipe.getDownloader().download("https://w.soundcloud.com/player/?url="
                 + URLEncoder.encode(url, "UTF-8"));
+        // handle playlists / sets different and get playlist id via uir field in JSON
+        if (url.contains("sets") && !url.endsWith("sets") && !url.endsWith("sets/"))
+            return Parser.matchGroup1("\"uri\":\\s*\"https:\\/\\/api\\.soundcloud\\.com\\/playlists\\/((\\d)*?)\"", response);
         return Parser.matchGroup1(",\"id\":(([^}\\n])*?),", response);
     }
 
