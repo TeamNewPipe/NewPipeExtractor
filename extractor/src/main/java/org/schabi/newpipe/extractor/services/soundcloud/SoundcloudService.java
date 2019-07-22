@@ -18,6 +18,18 @@ import org.schabi.newpipe.extractor.linkhandler.SearchQueryHandler;
 import org.schabi.newpipe.extractor.linkhandler.SearchQueryHandlerFactory;
 import org.schabi.newpipe.extractor.playlist.PlaylistExtractor;
 import org.schabi.newpipe.extractor.search.SearchExtractor;
+import org.schabi.newpipe.extractor.services.soundcloud.channel.SoundcloudChannelExtractor;
+import org.schabi.newpipe.extractor.services.soundcloud.channel.SoundcloudChannelLinkHandlerFactory;
+import org.schabi.newpipe.extractor.services.soundcloud.kiosk.JedenTagEinSetExtractor;
+import org.schabi.newpipe.extractor.services.soundcloud.kiosk.JedenTagEinSetLinkHandlerFactory;
+import org.schabi.newpipe.extractor.services.soundcloud.kiosk.SoundcloudChartsExtractor;
+import org.schabi.newpipe.extractor.services.soundcloud.kiosk.SoundcloudChartsLinkHandlerFactory;
+import org.schabi.newpipe.extractor.services.soundcloud.playlist.SoundcloudPlaylistExtractor;
+import org.schabi.newpipe.extractor.services.soundcloud.playlist.SoundcloudPlaylistLinkHandlerFactory;
+import org.schabi.newpipe.extractor.services.soundcloud.search.SoundcloudSearchExtractor;
+import org.schabi.newpipe.extractor.services.soundcloud.search.SoundcloudSearchQueryHandlerFactory;
+import org.schabi.newpipe.extractor.services.soundcloud.streams.SoundcloudStreamExtractor;
+import org.schabi.newpipe.extractor.services.soundcloud.streams.SoundcloudStreamLinkHandlerFactory;
 import org.schabi.newpipe.extractor.stream.StreamExtractor;
 import org.schabi.newpipe.extractor.subscription.SubscriptionExtractor;
 import org.schabi.newpipe.extractor.utils.Localization;
@@ -83,8 +95,13 @@ public class SoundcloudService extends StreamingService {
                                                  String id,
                                                  Localization local)
                     throws ExtractionException {
-                return new SoundcloudChartsExtractor(SoundcloudService.this,
-                        new SoundcloudChartsLinkHandlerFactory().fromUrl(url), id, local);
+                if(new JedenTagEinSetLinkHandlerFactory().onAcceptUrl(url)) {
+                    return new JedenTagEinSetExtractor(SoundcloudService.this,
+                            new JedenTagEinSetLinkHandlerFactory().fromUrl(url), id, local);
+                } else {
+                    return new SoundcloudChartsExtractor(SoundcloudService.this,
+                            new SoundcloudChartsLinkHandlerFactory().fromUrl(url), id, local);
+                }
             }
         };
 
@@ -92,9 +109,11 @@ public class SoundcloudService extends StreamingService {
 
         // add kiosks here e.g.:
         final SoundcloudChartsLinkHandlerFactory h = new SoundcloudChartsLinkHandlerFactory();
+        final JedenTagEinSetLinkHandlerFactory jh = new JedenTagEinSetLinkHandlerFactory();
         try {
             list.addKioskEntry(chartsFactory, h, "Top 50");
             list.addKioskEntry(chartsFactory, h, "New & hot");
+            list.addKioskEntry(chartsFactory, jh, "jedentageinset");
             list.setDefaultKiosk("New & hot");
         } catch (Exception e) {
             throw new ExtractionException(e);

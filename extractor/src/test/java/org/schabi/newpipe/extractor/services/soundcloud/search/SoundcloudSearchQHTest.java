@@ -9,9 +9,9 @@ import org.schabi.newpipe.extractor.utils.Localization;
 import static java.util.Arrays.asList;
 import static org.junit.Assert.assertEquals;
 import static org.schabi.newpipe.extractor.ServiceList.SoundCloud;
-import static org.schabi.newpipe.extractor.services.soundcloud.SoundcloudSearchQueryHandlerFactory.PLAYLISTS;
-import static org.schabi.newpipe.extractor.services.soundcloud.SoundcloudSearchQueryHandlerFactory.TRACKS;
-import static org.schabi.newpipe.extractor.services.soundcloud.SoundcloudSearchQueryHandlerFactory.USERS;
+import static org.schabi.newpipe.extractor.services.soundcloud.search.SoundcloudSearchQueryHandlerFactory.PLAYLISTS;
+import static org.schabi.newpipe.extractor.services.soundcloud.search.SoundcloudSearchQueryHandlerFactory.TRACKS;
+import static org.schabi.newpipe.extractor.services.soundcloud.search.SoundcloudSearchQueryHandlerFactory.USERS;
 
 public class SoundcloudSearchQHTest {
 

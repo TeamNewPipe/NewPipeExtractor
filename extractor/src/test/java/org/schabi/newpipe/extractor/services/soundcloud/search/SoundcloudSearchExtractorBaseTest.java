@@ -3,7 +3,6 @@ package org.schabi.newpipe.extractor.services.soundcloud.search;
 import org.junit.Test;
 import org.schabi.newpipe.extractor.InfoItem;
 import org.schabi.newpipe.extractor.ListExtractor;
-import org.schabi.newpipe.extractor.services.soundcloud.SoundcloudSearchExtractor;
 
 import static org.junit.Assert.assertTrue;
 

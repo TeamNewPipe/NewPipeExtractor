@@ -12,6 +12,8 @@ import org.schabi.newpipe.extractor.NewPipe;
 import org.schabi.newpipe.extractor.channel.ChannelInfoItemsCollector;
 import org.schabi.newpipe.extractor.exceptions.ParsingException;
 import org.schabi.newpipe.extractor.exceptions.ReCaptchaException;
+import org.schabi.newpipe.extractor.services.soundcloud.channel.SoundcloudChannelInfoItemExtractor;
+import org.schabi.newpipe.extractor.services.soundcloud.streams.SoundcloudStreamInfoItemExtractor;
 import org.schabi.newpipe.extractor.stream.StreamInfoItemsCollector;
 import org.schabi.newpipe.extractor.utils.Parser;
 import org.schabi.newpipe.extractor.utils.Parser.RegexException;
@@ -96,7 +98,7 @@ public class SoundcloudParsingHelper {
      *
      * @return the url resolved
      */
-    public static String resolveUrlWithEmbedPlayer(String apiUrl) throws IOException, ReCaptchaException, ParsingException {
+    public static String resolveUrlWithEmbedPlayer(String apiUrl) throws IOException, ReCaptchaException {
 
         String response = NewPipe.getDownloader().download("https://w.soundcloud.com/player/?url="
                 + URLEncoder.encode(apiUrl, "UTF-8"));
@@ -226,13 +228,13 @@ public class SoundcloudParsingHelper {
     }
 
     @Nonnull
-    static String getUploaderUrl(JsonObject object) {
+    public static String getUploaderUrl(JsonObject object) {
         String url = object.getObject("user").getString("permalink_url", "");
         return replaceHttpWithHttps(url);
     }
 
     @Nonnull
-    static String getAvatarUrl(JsonObject object) {
+    public static String getAvatarUrl(JsonObject object) {
         String url = object.getObject("user", new JsonObject()).getString("avatar_url", "");
         return replaceHttpWithHttps(url);
     }

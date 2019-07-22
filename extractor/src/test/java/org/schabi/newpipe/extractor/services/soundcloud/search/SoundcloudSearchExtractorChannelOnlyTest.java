@@ -7,8 +7,6 @@ import org.schabi.newpipe.extractor.InfoItem;
 import org.schabi.newpipe.extractor.ListExtractor;
 import org.schabi.newpipe.extractor.NewPipe;
 import org.schabi.newpipe.extractor.channel.ChannelInfoItem;
-import org.schabi.newpipe.extractor.services.soundcloud.SoundcloudSearchExtractor;
-import org.schabi.newpipe.extractor.services.soundcloud.SoundcloudSearchQueryHandlerFactory;
 import org.schabi.newpipe.extractor.utils.Localization;
 
 import static java.util.Arrays.asList;

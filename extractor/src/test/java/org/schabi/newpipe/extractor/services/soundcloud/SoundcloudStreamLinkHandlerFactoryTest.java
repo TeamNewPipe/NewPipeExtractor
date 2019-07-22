@@ -5,6 +5,7 @@ import org.junit.Test;
 import org.schabi.newpipe.Downloader;
 import org.schabi.newpipe.extractor.NewPipe;
 import org.schabi.newpipe.extractor.exceptions.ParsingException;
+import org.schabi.newpipe.extractor.services.soundcloud.streams.SoundcloudStreamLinkHandlerFactory;
 import org.schabi.newpipe.extractor.utils.Localization;
 
 import java.util.ArrayList;

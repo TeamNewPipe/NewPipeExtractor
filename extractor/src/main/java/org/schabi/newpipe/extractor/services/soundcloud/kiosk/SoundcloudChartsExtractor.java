@@ -1,10 +1,11 @@
-package org.schabi.newpipe.extractor.services.soundcloud;
+package org.schabi.newpipe.extractor.services.soundcloud.kiosk;
 
 import org.schabi.newpipe.extractor.Downloader;
 import org.schabi.newpipe.extractor.linkhandler.ListLinkHandler;
 import org.schabi.newpipe.extractor.StreamingService;
 import org.schabi.newpipe.extractor.exceptions.ExtractionException;
 import org.schabi.newpipe.extractor.kiosk.KioskExtractor;
+import org.schabi.newpipe.extractor.services.soundcloud.SoundcloudParsingHelper;
 import org.schabi.newpipe.extractor.stream.StreamInfoItem;
 import org.schabi.newpipe.extractor.stream.StreamInfoItemsCollector;
 import org.schabi.newpipe.extractor.utils.Localization;
@@ -60,12 +61,6 @@ public class SoundcloudChartsExtractor extends KioskExtractor<StreamInfoItem> {
         } else {
             apiUrl += "&kind=trending";
         }
-
-        /*List<String> supportedCountries = Arrays.asList("AU", "CA", "FR", "DE", "IE", "NL", "NZ", "GB", "US");
-        String contentCountry = getContentCountry();
-        if (supportedCountries.contains(contentCountry)) {
-            apiUrl += "&region=soundcloud:regions:" + contentCountry;
-        }*/
 
         nextPageUrl = SoundcloudParsingHelper.getStreamsFromApi(collector, apiUrl, true);
     }
