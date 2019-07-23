@@ -14,6 +14,7 @@ import static org.schabi.newpipe.extractor.ServiceList.SoundCloud;
 public class JedenTagEinSetKioskTest {
     static KioskExtractor extractor;
     static ListExtractor.InfoItemsPage<StreamInfoItem> initPage;
+    static ListExtractor.InfoItemsPage<StreamInfoItem> secondPage;
 
     @BeforeClass
     public static void setUp() throws Exception {
@@ -23,6 +24,7 @@ public class JedenTagEinSetKioskTest {
                 .getExtractorById("jedentageinset", null);
         extractor.fetchPage();
         initPage = extractor.getInitialPage();
+        secondPage = extractor.getPage("https://www.jedentageinset.de/page/2");
     }
 
     @Test
@@ -70,18 +72,43 @@ public class JedenTagEinSetKioskTest {
     }
 
     @Test
-    public void getNextPageUrl() {
+    public void testGetNextPageUrl() {
         assertEquals("https://www.jedentageinset.de/page/2",
                 initPage.getNextPageUrl());
     }
 
     @Test
-    public void getSecondPage() throws Exception {
-        ListExtractor.InfoItemsPage<StreamInfoItem> secondPage =
-                extractor.getPage("https://www.jedentageinset.de/page/2");
+    public void testForErrors() {
+        assertTrue(initPage.getErrors().toString(), initPage.getErrors().size() == 0);
+    }
 
+    @Test
+    public void testSecondPageEqualsFirstPage() {
+        for(int i = 0; i < secondPage.getItems().size(); i++) {
+            assertFalse("items from first page seem to exist in second: " +
+                            initPage.getItems().get(i).getUrl()
+                    , initPage.getItems().get(i).getUrl()
+                            .equals(secondPage.getItems().get(i).getUrl()));
+        }
+    }
+
+    @Test
+    public void testSecondPageItemCount() {
         assertEquals(6, secondPage.getItems().size());
-        assertEquals("https://www.jedentageinset.de/page/3", secondPage.getNextPageUrl());
+    }
 
+    @Test
+    public void testSecondPageHasErrors() {
+        if(!secondPage.getErrors().isEmpty()) {
+            for(Throwable e : secondPage.getErrors()) {
+                e.printStackTrace();
+                System.err.println("---------------");
+            }
+        }
+    }
+
+    @Test
+    public void testThirdPageUrl() {
+        assertEquals("https://www.jedentageinset.de/page/3", secondPage.getNextPageUrl());
     }
 }

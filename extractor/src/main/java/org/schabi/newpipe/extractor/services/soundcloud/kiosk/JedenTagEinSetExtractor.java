@@ -21,6 +21,7 @@ import org.schabi.newpipe.extractor.utils.Parser;
 
 import javax.annotation.Nonnull;
 import java.io.IOException;
+import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -57,7 +58,7 @@ public class JedenTagEinSetExtractor extends KioskExtractor<StreamInfoItem> {
     public InfoItemsPage<StreamInfoItem> getPage(String pageUrl) throws IOException, ExtractionException {
         try {
             final Downloader d = getDownloader();
-            final String rawPage = d.download("https://jedentageinset.de");
+            final String rawPage = d.download(pageUrl);
             final Document page = Jsoup.parse(rawPage, JedenTagEinSetLinkHandlerFactory.URL);
 
             final Elements homeBoxes = page.getElementById("posts_cont")
@@ -83,12 +84,22 @@ public class JedenTagEinSetExtractor extends KioskExtractor<StreamInfoItem> {
                 final int index = i;
                 final Element homeBox = homeBoxes.get(i);
                 final Thread t = new Thread(new Runnable() {
+
+                    private URL getSoundCloudFrameUrl(Document setPage) throws MalformedURLException, ParsingException {
+                        Elements frames = setPage.getElementsByTag("iframe");
+                        for(Element frame : frames) {
+                            if(frame.attr("src").startsWith("https://w.soundcloud.com/player/")) {
+                                return new URL(frame.attr("src"));
+                            }
+                        }
+                        throw new ParsingException("No soundcloud iframe found");
+                    }
+
                     @Override
                     public void run() {
                         try {
                             final Document setPage = Jsoup.parse(d.download(setLink), setLink);
-                            final URL frameUrl = new URL(setPage.getElementsByTag("iframe")
-                                    .last().attr("src"));
+                            final URL frameUrl = getSoundCloudFrameUrl(setPage);
 
                             final String apiUrl = Parser.compatParseMap(frameUrl.getQuery()).get("url");
                             final String streamUrl = SoundcloudParsingHelper.resolveUrlWithEmbedPlayer(apiUrl);
