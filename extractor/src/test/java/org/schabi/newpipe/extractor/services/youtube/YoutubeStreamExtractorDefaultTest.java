@@ -53,7 +53,7 @@ public class YoutubeStreamExtractorDefaultTest {
         public static void setUp() throws Exception {
             NewPipe.init(Downloader.getInstance(), new Localization("GB", "en"));
             extractor = (YoutubeStreamExtractor) YouTube
-                    .getStreamExtractor("https://www.youtube.com/watch?v=rYEDA3JcQqw");
+                    .getStreamExtractor("https://www.youtube.com/watch?v=YQHsXMglC9A");
             extractor.fetchPage();
         }
 
@@ -82,7 +82,7 @@ public class YoutubeStreamExtractorDefaultTest {
 
         @Test
         public void testGetFullLinksInDescriptlion() throws ParsingException {
-            assertTrue(extractor.getDescription().contains("http://smarturl.it/SubscribeAdele?IQid=yt"));
+            assertTrue(extractor.getDescription().contains("http://adele.com"));
             assertFalse(extractor.getDescription().contains("http://smarturl.it/SubscribeAdele?IQi..."));
         }
 
@@ -95,7 +95,7 @@ public class YoutubeStreamExtractorDefaultTest {
 
         @Test
         public void testGetLength() throws ParsingException {
-            assertTrue(extractor.getLength() > 0);
+            assertEquals(366, extractor.getLength());
         }
 
         @Test

@@ -71,10 +71,9 @@ public class YoutubeStreamExtractorControversialTest {
         assertFalse(extractor.getUploaderName().isEmpty());
     }
 
-    @Ignore // Currently there is no way get the length from restricted videos
     @Test
     public void testGetLength() throws ParsingException {
-        assertTrue(extractor.getLength() > 0);
+        assertEquals(219, extractor.getLength());
     }
 
     @Test
@@ -97,8 +96,6 @@ public class YoutubeStreamExtractorControversialTest {
         assertIsSecureUrl(extractor.getUploaderAvatarUrl());
     }
 
-    // FIXME: 25.11.17 Are there no streams or are they not listed?
-    @Ignore
     @Test
     public void testGetAudioStreams() throws IOException, ExtractionException {
         // audio streams are not always necessary
@@ -113,17 +110,15 @@ public class YoutubeStreamExtractorControversialTest {
         assertTrue(streams.size() > 0);
     }
 
-    @Ignore
     @Test
     public void testGetSubtitlesListDefault() throws IOException, ExtractionException {
         // Video (/view?v=YQHsXMglC9A) set in the setUp() method has no captions => null
-        assertTrue(!extractor.getSubtitlesDefault().isEmpty());
+        assertFalse(extractor.getSubtitlesDefault().isEmpty());
     }
 
-    @Ignore
     @Test
     public void testGetSubtitlesList() throws IOException, ExtractionException {
         // Video (/view?v=YQHsXMglC9A) set in the setUp() method has no captions => null
-        assertTrue(!extractor.getSubtitles(MediaFormat.TTML).isEmpty());
+        assertFalse(extractor.getSubtitles(MediaFormat.TTML).isEmpty());
     }
 }

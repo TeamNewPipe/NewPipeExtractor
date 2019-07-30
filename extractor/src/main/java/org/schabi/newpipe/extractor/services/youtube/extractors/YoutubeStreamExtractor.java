@@ -166,8 +166,8 @@ public class YoutubeStreamExtractor extends StreamExtractor {
             throws MalformedURLException, UnsupportedEncodingException, ParsingException {
         final Document description = Jsoup.parse(descriptionHtml, getUrl());
         for(Element a : description.select("a")) {
-            final URL redirectLink = new URL(
-                    a.attr("abs:href"));
+            final String rawUrl = a.attr("abs:href");
+            final URL redirectLink = new URL(rawUrl);
             final String queryString = redirectLink.getQuery();
             if(queryString != null) {
                 // if the query string is null we are not dealing with a redirect link,
@@ -179,11 +179,15 @@ public class YoutubeStreamExtractor extends StreamExtractor {
                     // if link is null the a tag is a hashtag.
                     // They refer to the youtube search. We do not handle them.
                     a.text(link);
+                    a.attr("href", link);
                 } else if(redirectLink.toString().contains("https://www.youtube.com/")) {
                     a.text(redirectLink.toString());
+                    a.attr("href", redirectLink.toString());
                 }
             } else if(redirectLink.toString().contains("https://www.youtube.com/")) {
+                descriptionHtml = descriptionHtml.replace(rawUrl, redirectLink.toString());
                 a.text(redirectLink.toString());
+                a.attr("href", redirectLink.toString());
             }
         }
         return description.select("body").first().html();
@@ -206,29 +210,40 @@ public class YoutubeStreamExtractor extends StreamExtractor {
     @Override
     public long getLength() throws ParsingException {
         assertPageFetched();
-        if(playerArgs != null) {
-            try {
-                long returnValue = Long.parseLong(playerArgs.get("length_seconds") + "");
-                if (returnValue >= 0) return returnValue;
-            } catch (Exception ignored) {
-                // Try other method...
+
+        final JsonObject playerResponse;
+        try {
+            final String pr;
+            if(playerArgs != null) {
+                pr = playerArgs.getString("player_response");
+            } else {
+                pr = videoInfoPage.get("player_response");
             }
-        }
-
-        String lengthString = videoInfoPage.get("length_seconds");
-        try {
-            return Long.parseLong(lengthString);
-        } catch (Exception ignored) {
-            // Try other method...
-        }
-
-        // TODO: 25.11.17 Implement a way to get the length for age restricted videos #44
-        try {
-            // Fallback to HTML method
-            return Long.parseLong(doc.select("div[class~=\"ytp-progress-bar\"][role=\"slider\"]").first()
-                    .attr("aria-valuemax"));
+            playerResponse = JsonParser.object()
+                    .from(pr);
         } catch (Exception e) {
-            throw new ParsingException("Could not get video length", e);
+            throw new ParsingException("Could not get playerResponse", e);
+        }
+
+        // try getting duration from playerargs
+        try {
+            String durationMs = playerResponse
+                    .getObject("streamingData")
+                    .getArray("formats")
+                    .getObject(0)
+                    .getString("approxDurationMs");
+            return Long.parseLong(durationMs)/1000;
+        } catch (Exception e) {
+        }
+
+        //try getting value from age gated video
+        try {
+            String duration = playerResponse
+                    .getObject("videoDetails")
+                    .getString("lengthSeconds");
+            return Long.parseLong(duration);
+        } catch (Exception e) {
+            throw new ParsingException("Every methode to get the duration has failed: ", e);
         }
     }
 
@@ -597,6 +612,7 @@ public class YoutubeStreamExtractor extends StreamExtractor {
         final String playerUrl;
         // Check if the video is age restricted
         if (pageContent.contains("<meta property=\"og:restrictions:age")) {
+            // do this if it is age gated
             final EmbeddedInfo info = getEmbeddedInfo();
             final String videoInfoUrl = getVideoInfoUrl(getId(), info.sts);
             final String infoPageResponse = downloader.download(videoInfoUrl);
@@ -685,11 +701,16 @@ public class YoutubeStreamExtractor extends StreamExtractor {
                 playerUrl = HTTPS + playerUrl;
             }
 
-            // Get embed sts
-            final String stsPattern = "\"sts\"\\s*:\\s*(\\d+)";
-            final String sts = Parser.matchGroup1(stsPattern, embedPageContent);
+            try {
+                // Get embed sts
+                final String stsPattern = "\"sts\"\\s*:\\s*(\\d+)";
+                final String sts = Parser.matchGroup1(stsPattern, embedPageContent);
+                return new EmbeddedInfo(playerUrl, sts);
+            } catch (Exception i) {
+                // if it failes we simply reply with no sts as then it does not seem to be necessary
+                return new EmbeddedInfo(playerUrl, "");
+            }
 
-            return new EmbeddedInfo(playerUrl, sts);
         } catch (IOException e) {
             throw new ParsingException(
                     "Could load decryption code form restricted video for the Youtube service.", e);

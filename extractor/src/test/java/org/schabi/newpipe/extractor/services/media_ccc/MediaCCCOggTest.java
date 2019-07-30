@@ -36,7 +36,7 @@ public class MediaCCCOggTest {
     @Test
     public void getAudioStreamsContainOgg() throws Exception {
         for(AudioStream stream : extractor.getAudioStreams()) {
-            System.out.println(stream.getFormat());
+            assertEquals("OGG", stream.getFormat().toString());
         }
     }
 }

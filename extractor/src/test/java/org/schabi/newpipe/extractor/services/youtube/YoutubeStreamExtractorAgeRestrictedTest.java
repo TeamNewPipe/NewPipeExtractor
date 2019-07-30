@@ -71,10 +71,9 @@ public class YoutubeStreamExtractorAgeRestrictedTest {
         assertFalse(extractor.getUploaderName().isEmpty());
     }
 
-    @Ignore // Currently there is no way get the length from restricted videos
     @Test
     public void testGetLength() throws ParsingException {
-        assertTrue(extractor.getLength() > 0);
+        assertEquals(1789, extractor.getLength());
     }
 
     @Test
@@ -97,8 +96,6 @@ public class YoutubeStreamExtractorAgeRestrictedTest {
         assertIsSecureUrl(extractor.getUploaderAvatarUrl());
     }
 
-    // FIXME: 25.11.17 Are there no streams or are they not listed?
-    @Ignore
     @Test
     public void testGetAudioStreams() throws IOException, ExtractionException {
         // audio streams are not always necessary
