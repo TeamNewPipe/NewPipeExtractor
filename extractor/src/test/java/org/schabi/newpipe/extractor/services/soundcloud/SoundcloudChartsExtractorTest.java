@@ -36,7 +36,6 @@ public class SoundcloudChartsExtractorTest {
         assertNotNull(NewPipe.getDownloader());
     }
 
-    @Ignore
     @Test
     public void testGetName() throws Exception {
         assertEquals(extractor.getName(), "Top 50");
