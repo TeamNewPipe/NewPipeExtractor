@@ -26,7 +26,6 @@ import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
 
 public class NewPipeTestRunner extends Runner {
-    private static final float errorRatioTriggeringIgnore = 0.6f;
 
     private class TestException extends Exception {
         TestException(Throwable throwable) {
@@ -91,7 +90,7 @@ public class NewPipeTestRunner extends Runner {
                 } else if (ignoreAnyError) {
                     notifier.fireTestIgnored(methodDescription);
                     System.out.println(methodName + "() ignored since the whole class " + testClass.getName() +
-                            " has more than " + (int)(errorRatioTriggeringIgnore*100) + "% of failed tests");
+                            " has more than " + (int)(failRatioTriggeringIgnore*100) + "% of failed tests");
                     thrownException.printStackTrace(System.out);
 
                 } else {
@@ -107,13 +106,14 @@ public class NewPipeTestRunner extends Runner {
 
 
     private Class testClass;
+    private float failRatioTriggeringIgnore;
     private final ArrayList<Method> testMethods,
             beforeMethods, afterMethods,
             beforeClassMethods, afterClassMethods;
 
     public NewPipeTestRunner(Class testClass) throws InitializationError {
         this.testClass = testClass;
-        Method[] allMethods = testClass.getDeclaredMethods();
+        obtainRunnerOptions();
 
         testMethods = new ArrayList<>();
         beforeMethods = new ArrayList<>();
@@ -121,7 +121,7 @@ public class NewPipeTestRunner extends Runner {
         beforeClassMethods = new ArrayList<>();
         afterClassMethods = new ArrayList<>();
 
-        for (Method method : allMethods) {
+        for (Method method : testClass.getDeclaredMethods()) {
             if (method.isAnnotationPresent(Test.class)) {
                 validatePublicVoidNoArg(method, false);
                 testMethods.add(method);
@@ -249,6 +249,18 @@ public class NewPipeTestRunner extends Runner {
         }
     }
 
+
+    private void obtainRunnerOptions() {
+        if (testClass.isAnnotationPresent(NewPipeTestRunnerOptions.class)) {
+            NewPipeTestRunnerOptions options = (NewPipeTestRunnerOptions) testClass.getAnnotation(NewPipeTestRunnerOptions.class);
+
+            failRatioTriggeringIgnore = options.failRatioTriggeringIgnore();
+        } else {
+            throw new IllegalArgumentException("Test classes running with " + NewPipeTestRunner.class.getName() + " should also have @NewPipeTestRunnerOptions");
+        }
+    }
+
+
     @Override
     public void run(RunNotifier notifier) {
         try {
@@ -271,7 +283,7 @@ public class NewPipeTestRunner extends Runner {
             }
 
             for (MethodResultCollector savedResult : savedResults) {
-                savedResult.showResults(notifier, (float)(nrNotIgnoredByUser - nrSuccessful) / nrNotIgnoredByUser >= errorRatioTriggeringIgnore);
+                savedResult.showResults(notifier, (float)(nrNotIgnoredByUser - nrSuccessful) / nrNotIgnoredByUser > failRatioTriggeringIgnore);
             }
 
             invokeAllMethods(afterClassMethods, testClassInstance);
