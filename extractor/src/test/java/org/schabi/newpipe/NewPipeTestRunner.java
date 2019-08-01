@@ -19,6 +19,7 @@ import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
@@ -39,7 +40,7 @@ public class NewPipeTestRunner extends Runner {
         String methodName;
         Throwable thrownException;
 
-        MethodResultCollector(Method method, Object testClassInstance) throws IllegalAccessException {
+        MethodResultCollector(Method method, Object testClassInstance) throws IllegalAccessException, ExecutionException, InterruptedException {
             ignoredByUser = method.isAnnotationPresent(Ignore.class);
             methodName = method.getName();
             thrownException = null;
@@ -181,36 +182,41 @@ public class NewPipeTestRunner extends Runner {
         }
     }
 
-    abstract class RunnableCollectingThrowables implements Runnable {
-        Throwable collectedThrowable;
+    class MethodRunnableCollectingExceptions implements Runnable {
+        InvocationTargetException collectedInvocationTargetException;
+        IllegalAccessException collectedIllegalAccessException;
+        Method method;
+        Object testClassInstance;
 
-        abstract void runWithExceptions() throws Throwable;
+        MethodRunnableCollectingExceptions(Method method, Object testClassInstance) {
+            this.method = method;
+            this.testClassInstance = testClassInstance;
+        }
 
         @Override
         public final void run() {
             try {
-                runWithExceptions();
-            } catch (Throwable e) {
-                collectedThrowable = e;
+                method.invoke(testClassInstance);
+            } catch (InvocationTargetException e) {
+                collectedInvocationTargetException = e;
+            } catch (IllegalAccessException e) {
+                collectedIllegalAccessException = e;
             }
         }
 
-        void throwCollectedThrowableIfPresent() throws Throwable {
-            if (collectedThrowable != null) {
-                throw collectedThrowable;
+        void throwCollectedThrowableIfPresent() throws InvocationTargetException, IllegalAccessException {
+            if (collectedInvocationTargetException != null) {
+                throw collectedInvocationTargetException;
+            } else if (collectedIllegalAccessException != null) {
+                throw collectedIllegalAccessException;
             }
         }
     }
 
-    private void invokeWithTimeout(final Method method, final Object testClassInstance, long timeout) throws InvocationTargetException, IllegalAccessException, TestException {
+    private void invokeWithTimeout(final Method method, final Object testClassInstance, long timeout) throws InvocationTargetException, IllegalAccessException, TestException, InterruptedException, ExecutionException {
         if (timeout > 0) {
             final ExecutorService executorService = Executors.newSingleThreadExecutor();
-            RunnableCollectingThrowables runnable = new RunnableCollectingThrowables() {
-                @Override
-                void runWithExceptions() throws Throwable {
-                    method.invoke(testClassInstance);
-                }
-            };
+            MethodRunnableCollectingExceptions runnable = new MethodRunnableCollectingExceptions(method, testClassInstance);
 
             try {
                 final Future<Object> f = (Future<Object>) executorService.submit(runnable);
@@ -218,8 +224,6 @@ public class NewPipeTestRunner extends Runner {
                 runnable.throwCollectedThrowableIfPresent();
             } catch (final TimeoutException e) {
                 throw new TestException(new TestTimedOutException(timeout, TimeUnit.MILLISECONDS));
-            } catch (Throwable e) {
-                throw new TestException(e);
             } finally {
                 executorService.shutdown();
             }
@@ -228,7 +232,7 @@ public class NewPipeTestRunner extends Runner {
         }
     }
 
-    private void invokeCheckingTimeAndExceptions(Method method, Object testClassInstance, long timeout, Class expectedThrowable) throws InvocationTargetException, IllegalAccessException, TestException {
+    private void invokeCheckingTimeAndExceptions(Method method, Object testClassInstance, long timeout, Class expectedThrowable) throws InvocationTargetException, IllegalAccessException, TestException, ExecutionException, InterruptedException {
         boolean complete = false;
         try {
             invokeWithTimeout(method, testClassInstance, timeout);
@@ -291,4 +295,5 @@ public class NewPipeTestRunner extends Runner {
             throw new RuntimeException(e);
         }
     }
+
 }
