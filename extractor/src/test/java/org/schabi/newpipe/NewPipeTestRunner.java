@@ -37,6 +37,7 @@ public class NewPipeTestRunner extends Runner {
     
     private class MethodResultCollector {
         boolean ignoredByUser;
+        String ignoredByUserReason;
         String methodName;
         Throwable thrownException;
 
@@ -44,7 +45,11 @@ public class NewPipeTestRunner extends Runner {
             ignoredByUser = method.isAnnotationPresent(Ignore.class);
             methodName = method.getName();
             thrownException = null;
-            if (ignoredByUser) return;
+
+            if (ignoredByUser) {
+                ignoredByUserReason = method.getAnnotation(Ignore.class).value();
+                return;
+            }
 
             Test testAnnotation = method.getAnnotation(Test.class);
             Class expectedThrowable = testAnnotation.expected();
@@ -76,7 +81,11 @@ public class NewPipeTestRunner extends Runner {
 
             if (ignoredByUser) {
                 notifier.fireTestIgnored(methodDescription);
-                System.out.println(methodName + "() ignored because of @Ignore");
+                if (ignoredByUserReason.isEmpty()) {
+                    System.out.println(methodName + "() ignored because of @Ignore");
+                } else {
+                    System.out.println(methodName + "() ignored because of @Ignore: " + ignoredByUserReason);
+                }
 
             } else {
                 if (thrownException == null) {
