@@ -163,7 +163,7 @@ public class YoutubeStreamLinkHandlerFactory extends LinkHandlerFactory {
             }
 
             case "WWW.INVIDIO.US":
-            case "DEV.INVIDIO.US"
+            case "DEV.INVIDIO.US":
             case "INVIDIO.US":
             case "INVIDIOUS.SNOPYTA.ORG":
             case "DE.INVIDIOUS.SNOPYTA.ORG":
