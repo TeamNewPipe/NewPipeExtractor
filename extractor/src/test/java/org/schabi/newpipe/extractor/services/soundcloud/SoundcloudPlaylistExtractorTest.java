@@ -266,6 +266,7 @@ public class SoundcloudPlaylistExtractorTest {
         // ListExtractor
         //////////////////////////////////////////////////////////////////////////*/
 
+        @Ignore
         @Test
         public void testRelatedItems() throws Exception {
             defaultTestRelatedItems(extractor, SoundCloud.getServiceId());
@@ -287,6 +288,7 @@ public class SoundcloudPlaylistExtractorTest {
         // PlaylistExtractor
         //////////////////////////////////////////////////////////////////////////*/
 
+        @Ignore
         @Test
         public void testThumbnailUrl() {
             assertIsSecureUrl(extractor.getThumbnailUrl());
