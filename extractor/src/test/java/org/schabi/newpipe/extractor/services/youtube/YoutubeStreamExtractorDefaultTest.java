@@ -111,7 +111,7 @@ public class YoutubeStreamExtractorDefaultTest {
 
         @Test
         public void testGetUploaderUrl() throws ParsingException {
-            assertTrue(extractor.getUploaderUrl().length() > 0);
+            assertEquals("https://www.youtube.com/channel/UCsRM0YB_dabtEPGPTKo-gcw", extractor.getUploaderUrl());
         }
 
         @Test
