@@ -68,9 +68,8 @@ public class YoutubeSearchExtractorChannelOnlyTest extends YoutubeSearchExtracto
     @Test
     public void testChannelUrl() {
         for(InfoItem item : itemsPage.getItems()) {
-            if (item.getName().contains("PewDiePie")) {
+            if (item.getName().equals("PewDiePie")) {
                 assertEquals("https://www.youtube.com/channel/UC-lHJZR3Gqxm24_Vd_AJ5Yw", item.getUrl());
-                break;
             } else {
                 assertThat(item.getUrl(), CoreMatchers.startsWith("https://www.youtube.com/channel/"));
             }
