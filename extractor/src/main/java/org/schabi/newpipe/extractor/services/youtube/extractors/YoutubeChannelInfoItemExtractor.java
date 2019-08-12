@@ -5,6 +5,9 @@ import org.schabi.newpipe.extractor.channel.ChannelInfoItemExtractor;
 import org.schabi.newpipe.extractor.exceptions.ParsingException;
 import org.schabi.newpipe.extractor.utils.Utils;
 
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
 /*
  * Created by Christian Schabesberger on 12.02.17.
  *
@@ -53,8 +56,20 @@ public class YoutubeChannelInfoItemExtractor implements ChannelInfoItemExtractor
 
     @Override
     public String getUrl() throws ParsingException {
-        return el.select("a[class*=\"yt-uix-tile-link\"]").first()
-                .attr("abs:href");
+        String buttonTrackingUrl = el.select("button[class*=\"yt-uix-button\"]").first()
+                .attr("abs:data-href");
+
+        Pattern channelIdPattern = Pattern.compile("(?:.*?)\\%252Fchannel\\%252F(.+?)\\%26(?:.*)");
+        Matcher match = channelIdPattern.matcher(buttonTrackingUrl);
+
+        if (match.matches()) {
+            return YoutubeChannelExtractor.CHANNEL_URL_BASE + match.group(1);
+        } else {
+            // fallback method just in case youtube changes things; it should never run and tests will fail
+            // provides an url with "/user/NAME", that is inconsistent with stream and channel extractor
+            return el.select("a[class*=\"yt-uix-tile-link\"]").first()
+                    .attr("abs:href");
+        }
     }
 
     @Override
