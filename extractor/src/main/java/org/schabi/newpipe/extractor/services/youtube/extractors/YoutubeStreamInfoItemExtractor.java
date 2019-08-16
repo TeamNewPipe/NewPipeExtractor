@@ -107,6 +107,8 @@ public class YoutubeStreamInfoItemExtractor implements StreamInfoItemExtractor {
 
     @Override
     public String getUploaderUrl() throws ParsingException {
+        // this url is not always in the form "/channel/..."
+        // sometimes Youtube provides urls in the from "/user/..."
         try {
             try {
                 return item.select("div[class=\"yt-lockup-byline\"]").first()
@@ -119,7 +121,7 @@ public class YoutubeStreamInfoItemExtractor implements StreamInfoItemExtractor {
                     .text().split(" - ")[0];
         } catch (Exception e) {
             System.out.println(item.html());
-            throw new ParsingException("Could not get uploader", e);
+            throw new ParsingException("Could not get uploader url", e);
         }
     }
 

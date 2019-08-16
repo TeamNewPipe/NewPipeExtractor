@@ -126,6 +126,8 @@ public class YoutubeTrendingExtractor extends KioskExtractor<StreamInfoItem> {
                     }
 
                     private Element getUploaderLink() {
+                        // this url is not always in the form "/channel/..."
+                        // sometimes Youtube provides urls in the from "/user/..."
                         Element uploaderEl = el.select("div[class*=\"yt-lockup-byline \"]").first();
                         return uploaderEl.select("a").first();
                     }
