@@ -47,6 +47,7 @@ import java.util.ArrayList;
 
 @SuppressWarnings("WeakerAccess")
 public class YoutubeChannelExtractor extends ChannelExtractor {
+    /*package-private*/ static final String CHANNEL_URL_BASE = "https://www.youtube.com/channel/";
     private static final String CHANNEL_FEED_BASE = "https://www.youtube.com/feeds/videos.xml?channel_id=";
     private static final String CHANNEL_URL_PARAMETERS = "/videos?view=0&flow=list&sort=dd&live_view=10000";
 
@@ -72,7 +73,7 @@ public class YoutubeChannelExtractor extends ChannelExtractor {
     @Override
     public String getUrl() throws ParsingException {
         try {
-            return "https://www.youtube.com/channel/" + getId();
+            return CHANNEL_URL_BASE + getId();
         } catch (ParsingException e) {
             return super.getUrl();
         }
