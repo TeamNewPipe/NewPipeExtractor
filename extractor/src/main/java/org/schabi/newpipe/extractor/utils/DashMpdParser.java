@@ -123,8 +123,6 @@ public class DashMpdParser {
             dashDoc = downloader.download(streamInfo.getDashMpdUrl());
         } catch (IOException ioe) {
             throw new DashMpdParsingException("Could not get dash mpd: " + streamInfo.getDashMpdUrl(), ioe);
-        } catch (ReCaptchaException e) {
-            throw new ReCaptchaException("reCaptcha Challenge needed");
         }
 
         try {

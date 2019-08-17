@@ -714,8 +714,6 @@ public class YoutubeStreamExtractor extends StreamExtractor {
         } catch (IOException e) {
             throw new ParsingException(
                     "Could load decryption code form restricted video for the Youtube service.", e);
-        } catch (ReCaptchaException e) {
-            throw new ReCaptchaException("reCaptcha Challenge requested");
         }
     }
 
