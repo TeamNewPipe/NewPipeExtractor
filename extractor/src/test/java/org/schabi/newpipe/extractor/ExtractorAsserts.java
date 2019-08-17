@@ -2,6 +2,9 @@ package org.schabi.newpipe.extractor;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
+
+import java.io.IOException;
+import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.List;
@@ -20,6 +23,7 @@ public class ExtractorAsserts {
         }
     }
 
+
     @Nonnull
     private static URL urlFromString(String url) {
         try {
@@ -37,6 +41,14 @@ public class ExtractorAsserts {
         URL url = urlFromString(urlToCheck);
         assertEquals("Protocol of URL is not secure", "https", url.getProtocol());
     }
+
+    public static void assertResponseCodeOk(String url) throws IOException {
+        HttpURLConnection connection = (HttpURLConnection) urlFromString(url).openConnection();
+        int responseCode = connection.getResponseCode();
+        assertTrue("Url returned error code " + responseCode + ": " + url, responseCode < 400);
+    }
+
+
 
     public static void assertNotEmpty(String stringToCheck) {
         assertNotEmpty(null, stringToCheck);
