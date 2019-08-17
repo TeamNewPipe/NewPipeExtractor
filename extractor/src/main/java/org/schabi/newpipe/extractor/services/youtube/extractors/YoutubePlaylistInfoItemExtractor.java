@@ -49,10 +49,11 @@ public class YoutubePlaylistInfoItemExtractor implements PlaylistInfoItemExtract
     @Override
     public String getUrl() throws ParsingException {
         try {
-            final Element div = el.select("div[class=\"yt-lockup-meta\"]").first();
+            final Element a = el.select("div[class=\"yt-lockup-meta\"]")
+                    .select("ul[class=\"yt-lockup-meta-info\"]")
+                    .select("li").select("a").first();
 
-            if(div != null) {
-                final Element a = div.select("a").first();
+            if(a != null) {
                 return a.attr("abs:href");
             }
 
