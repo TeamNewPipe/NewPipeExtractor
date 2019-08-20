@@ -7,6 +7,7 @@ import com.grack.nanojson.JsonParserException;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
+import org.jsoup.select.Elements;
 import org.schabi.newpipe.extractor.Downloader;
 import org.schabi.newpipe.extractor.NewPipe;
 import org.schabi.newpipe.extractor.StreamingService;
@@ -16,14 +17,14 @@ import org.schabi.newpipe.extractor.exceptions.ParsingException;
 import org.schabi.newpipe.extractor.linkhandler.ListLinkHandler;
 import org.schabi.newpipe.extractor.stream.StreamInfoItem;
 import org.schabi.newpipe.extractor.stream.StreamInfoItemsCollector;
-import org.schabi.newpipe.extractor.utils.DonationLinkHelper;
 import org.schabi.newpipe.extractor.utils.Localization;
 import org.schabi.newpipe.extractor.utils.Parser;
 import org.schabi.newpipe.extractor.utils.Utils;
 
 import javax.annotation.Nonnull;
 import java.io.IOException;
-import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
 
 /*
  * Created by Christian Schabesberger on 25.07.16.
@@ -52,6 +53,7 @@ public class YoutubeChannelExtractor extends ChannelExtractor {
     private static final String CHANNEL_URL_PARAMETERS = "/videos?view=0&flow=list&sort=dd&live_view=10000";
 
     private Document doc;
+    private Map<String, String> videoPublishIsoTimeStrLookup = new HashMap<>();
 
     public YoutubeChannelExtractor(StreamingService service, ListLinkHandler linkHandler, Localization localization) {
         super(service, linkHandler, localization);
@@ -62,6 +64,29 @@ public class YoutubeChannelExtractor extends ChannelExtractor {
         String channelUrl = super.getUrl() + CHANNEL_URL_PARAMETERS;
         String pageContent = downloader.download(channelUrl);
         doc = Jsoup.parse(pageContent, channelUrl);
+
+        String feedUrl = getFeedUrl();
+        retrieveVideoTimestampFromXml(Jsoup.parse(
+                downloader.download(feedUrl),
+                feedUrl,
+                org.jsoup.parser.Parser.xmlParser()));
+    }
+
+    private void retrieveVideoTimestampFromXml(Document feedXmlDoc) {
+        Elements feedEls = feedXmlDoc.getElementsByTag("feed");
+
+        for (Element feedEl : feedEls) {
+            Elements entryEls = feedEl.getElementsByTag("entry");
+
+            for (Element entryEl : entryEls) {
+                Elements videoIdEls = entryEl.getElementsByTag("yt:videoId");
+                Elements publishedEls = entryEl.getElementsByTag("published");
+
+                if (publishedEls.size() != 1 || videoIdEls.size() != 1) continue;
+
+                videoPublishIsoTimeStrLookup.put(videoIdEls.get(0).text(), publishedEls.get(0).text());
+            }
+        }
     }
 
     @Override
@@ -88,7 +113,7 @@ public class YoutubeChannelExtractor extends ChannelExtractor {
 
             return element.attr("data-channel-external-id");
         } catch (Exception e) {
-            throw new ParsingException("Could not get channel id", e);
+            return super.getId();
         }
     }
 
@@ -155,6 +180,11 @@ public class YoutubeChannelExtractor extends ChannelExtractor {
         } catch (Exception e) {
             throw new ParsingException("Could not get channel description", e);
         }
+    }
+
+    @Override
+    public Map<String, String> getPublishIsoTimeStrLookup() {
+        return videoPublishIsoTimeStrLookup;
     }
 
     @Nonnull
