@@ -1035,4 +1035,29 @@ public class YoutubeStreamExtractor extends StreamExtractor {
             }
         };
     }
+
+    @Nullable
+    public StreamFrames getFrames() {
+        try {
+            final String script = doc.select("#player-api").first().siblingElements().select("script").html();
+            int p = script.indexOf("ytplayer.config");
+            if (p == -1) {
+                return null;
+            }
+            p = script.indexOf('{', p);
+            int e = script.indexOf("ytplayer.load", p);
+            if (e == -1) {
+                return null;
+            }
+            JsonObject jo = JsonParser.object().from(script.substring(p, e - 1));
+            final String resp = jo.getObject("args").getString("player_response");
+            jo = JsonParser.object().from(resp);
+            final String[] spec = jo.getObject("storyboards").getObject("playerStoryboardSpecRenderer").getString("spec").split("\\|");
+            final String url = spec[0];
+            final List<String> opts = Arrays.asList(spec).subList(1, spec.length);
+            return new StreamFrames(url, opts);
+        } catch (Exception e) {
+            return null;
+        }
+    }
 }

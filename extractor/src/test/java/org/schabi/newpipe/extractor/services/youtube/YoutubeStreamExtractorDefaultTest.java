@@ -231,4 +231,29 @@ public class YoutubeStreamExtractorDefaultTest {
             assertFalse(extractor.getDescription().contains("https://youtu.be/U-9tUEOFKNU?list=PL7..."));
         }
     }
+
+    public static class FramesTest {
+        private static YoutubeStreamExtractor extractor;
+
+        @BeforeClass
+        public static void setUp() throws Exception {
+            NewPipe.init(Downloader.getInstance(), new Localization("GB", "en"));
+            extractor = (YoutubeStreamExtractor) YouTube
+                    .getStreamExtractor("https://www.youtube.com/watch?v=HoK9shIJ2xQ");
+            extractor.fetchPage();
+        }
+
+        @Test
+        public void testGetFrames() {
+            final StreamFrames frames = extractor.getFrames();
+            assertNotNull(frames);
+            assertNotNull(frames.getDefaultVariant());
+            for (int i=0;i<frames.getVariantsCount();i++) {
+                final StreamFrames.Frameset frameset = frames.getVariant(i);
+                final int pages = frameset.getTotalPages();
+                final String url = pages == 0 ? frameset.getUrl() : frameset.getUrl(pages - 1);
+                assertNotNull(url);
+            }
+        }
+    }
 }
