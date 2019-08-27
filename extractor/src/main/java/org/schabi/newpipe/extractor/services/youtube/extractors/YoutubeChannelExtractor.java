@@ -83,6 +83,11 @@ public class YoutubeChannelExtractor extends ChannelExtractor {
     @Override
     public String getId() throws ParsingException {
         try {
+            return doc.select("meta[itemprop=\"channelId\"]").first().attr("content");
+        } catch (Exception ignored) {}
+
+        // fallback method; does not work with channels that have no "Subscribe" button (e.g. EminemVEVO)
+        try {
             Element element = doc.getElementsByClass("yt-uix-subscription-button").first();
             if (element == null) element = doc.getElementsByClass("yt-uix-subscription-preferences-button").first();
 
