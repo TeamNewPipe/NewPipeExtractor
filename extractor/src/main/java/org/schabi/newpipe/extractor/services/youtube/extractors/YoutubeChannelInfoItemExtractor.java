@@ -56,19 +56,25 @@ public class YoutubeChannelInfoItemExtractor implements ChannelInfoItemExtractor
 
     @Override
     public String getUrl() throws ParsingException {
-        String buttonTrackingUrl = el.select("button[class*=\"yt-uix-button\"]").first()
-                .attr("abs:data-href");
+        try {
+            String buttonTrackingUrl = el.select("button[class*=\"yt-uix-button\"]").first()
+                    .attr("abs:data-href");
 
-        Pattern channelIdPattern = Pattern.compile("(?:.*?)\\%252Fchannel\\%252F([A-Za-z0-9\\-\\_]+)(?:.*)");
-        Matcher match = channelIdPattern.matcher(buttonTrackingUrl);
+            Pattern channelIdPattern = Pattern.compile("(?:.*?)\\%252Fchannel\\%252F([A-Za-z0-9\\-\\_]+)(?:.*)");
+            Matcher match = channelIdPattern.matcher(buttonTrackingUrl);
 
-        if (match.matches()) {
-            return YoutubeChannelExtractor.CHANNEL_URL_BASE + match.group(1);
-        } else {
+            if (match.matches()) {
+                return YoutubeChannelExtractor.CHANNEL_URL_BASE + match.group(1);
+            }
+        } catch(Throwable ignored) {}
+
+        try {
             // fallback method just in case youtube changes things; it should never run and tests will fail
             // provides an url with "/user/NAME", that is inconsistent with stream and channel extractor
             return el.select("a[class*=\"yt-uix-tile-link\"]").first()
                     .attr("abs:href");
+        } catch (Throwable e) {
+            throw new ParsingException("Could not get channel url", e);
         }
     }
 
