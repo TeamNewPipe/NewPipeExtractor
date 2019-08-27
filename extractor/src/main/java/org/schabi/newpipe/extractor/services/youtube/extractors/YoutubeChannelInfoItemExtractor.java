@@ -66,14 +66,14 @@ public class YoutubeChannelInfoItemExtractor implements ChannelInfoItemExtractor
             if (match.matches()) {
                 return YoutubeChannelExtractor.CHANNEL_URL_BASE + match.group(1);
             }
-        } catch(Throwable ignored) {}
+        } catch(Exception ignored) {}
 
         try {
             // fallback method just in case youtube changes things; it should never run and tests will fail
             // provides an url with "/user/NAME", that is inconsistent with stream and channel extractor
             return el.select("a[class*=\"yt-uix-tile-link\"]").first()
                     .attr("abs:href");
-        } catch (Throwable e) {
+        } catch (Exception e) {
             throw new ParsingException("Could not get channel url", e);
         }
     }
