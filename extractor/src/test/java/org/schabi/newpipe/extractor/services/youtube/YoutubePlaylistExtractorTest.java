@@ -100,7 +100,7 @@ public class YoutubePlaylistExtractorTest {
 
         @Test
         public void testUploaderUrl() throws Exception {
-            assertTrue(extractor.getUploaderUrl().contains("youtube.com"));
+            assertEquals("https://www.youtube.com/channel/UCs72iRpTEuwV3y6pdWYLgiw", extractor.getUploaderUrl());
         }
 
         @Test
@@ -185,8 +185,8 @@ public class YoutubePlaylistExtractorTest {
         public void testMoreRelatedItems() throws Exception {
             ListExtractor.InfoItemsPage<StreamInfoItem> currentPage
                     = defaultTestMoreItems(extractor, ServiceList.YouTube.getServiceId());
-            // Test for 2 more levels
 
+            // test for 2 more levels
             for (int i = 0; i < 2; i++) {
                 currentPage = extractor.getPage(currentPage.getNextPageUrl());
                 defaultTestListOfItems(YouTube.getServiceId(), currentPage.getItems(), currentPage.getErrors());
@@ -214,7 +214,7 @@ public class YoutubePlaylistExtractorTest {
 
         @Test
         public void testUploaderUrl() throws Exception {
-            assertTrue(extractor.getUploaderUrl().contains("youtube.com"));
+            assertEquals("https://www.youtube.com/channel/UCHSPWoY1J5fbDVbcnyeqwdw", extractor.getUploaderUrl());
         }
 
         @Test

@@ -81,7 +81,7 @@ public class YoutubeStreamExtractorDefaultTest {
         }
 
         @Test
-        public void testGetFullLinksInDescriptlion() throws ParsingException {
+        public void testGetFullLinksInDescription() throws ParsingException {
             assertTrue(extractor.getDescription().contains("http://adele.com"));
             assertFalse(extractor.getDescription().contains("http://smarturl.it/SubscribeAdele?IQi..."));
         }
@@ -111,7 +111,7 @@ public class YoutubeStreamExtractorDefaultTest {
 
         @Test
         public void testGetUploaderUrl() throws ParsingException {
-            assertTrue(extractor.getUploaderUrl().length() > 0);
+            assertEquals("https://www.youtube.com/channel/UCsRM0YB_dabtEPGPTKo-gcw", extractor.getUploaderUrl());
         }
 
         @Test

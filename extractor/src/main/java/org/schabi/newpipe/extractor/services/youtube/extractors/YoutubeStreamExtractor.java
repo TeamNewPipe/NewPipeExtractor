@@ -30,6 +30,8 @@ import java.io.UnsupportedEncodingException;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.*;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 /*
  * Created by Christian Schabesberger on 06.08.15.
@@ -162,14 +164,54 @@ public class YoutubeStreamExtractor extends StreamExtractor {
         }
     }
 
+    // onclick="yt.www.watch.player.seekTo(0*3600+00*60+00);return false;"
+    // :00 is NOT recognized as a timestamp in description or comments.
+    // 0:00 is recognized in both description and comments.
+    // https://www.youtube.com/watch?v=4cccfDXu1vA
+    private final static Pattern DESCRIPTION_TIMESTAMP_ONCLICK_REGEX = Pattern.compile(
+        "seekTo\\("
+            + "(?:(\\d+)\\*3600\\+)?"  // hours?
+            + "(\\d+)\\*60\\+"  // minutes
+            + "(\\d+)"  // seconds
+            + "\\)");
+
+    @SafeVarargs
+    private static <T> T coalesce(T... args) {
+        for (T arg : args) {
+            if (arg != null) return arg;
+        }
+        throw new IllegalArgumentException("all arguments to coalesce() were null");
+    }
+
     private String parseHtmlAndGetFullLinks(String descriptionHtml)
             throws MalformedURLException, UnsupportedEncodingException, ParsingException {
         final Document description = Jsoup.parse(descriptionHtml, getUrl());
         for(Element a : description.select("a")) {
             final String rawUrl = a.attr("abs:href");
             final URL redirectLink = new URL(rawUrl);
-            final String queryString = redirectLink.getQuery();
-            if(queryString != null) {
+
+            final Matcher onClickTimestamp;
+            final String queryString;
+            if ((onClickTimestamp = DESCRIPTION_TIMESTAMP_ONCLICK_REGEX.matcher(a.attr("onclick")))
+                    .find()) {
+                a.removeAttr("onclick");
+
+                String hours = coalesce(onClickTimestamp.group(1), "0");
+                String minutes = onClickTimestamp.group(2);
+                String seconds = onClickTimestamp.group(3);
+
+                int timestamp = 0;
+                timestamp += Integer.parseInt(hours) * 3600;
+                timestamp += Integer.parseInt(minutes) * 60;
+                timestamp += Integer.parseInt(seconds);
+
+                String setTimestamp = "&t=" + timestamp;
+
+                // Even after clicking https://youtu.be/...?t=6,
+                // getUrl() is https://www.youtube.com/watch?v=..., never youtu.be, never &t=.
+                a.attr("href", getUrl() + setTimestamp);
+
+            } else if((queryString = redirectLink.getQuery()) != null) {
                 // if the query string is null we are not dealing with a redirect link,
                 // so we don't need to override it.
                 final String link =
@@ -714,8 +756,6 @@ public class YoutubeStreamExtractor extends StreamExtractor {
         } catch (IOException e) {
             throw new ParsingException(
                     "Could load decryption code form restricted video for the Youtube service.", e);
-        } catch (ReCaptchaException e) {
-            throw new ReCaptchaException("reCaptcha Challenge requested");
         }
     }
 
