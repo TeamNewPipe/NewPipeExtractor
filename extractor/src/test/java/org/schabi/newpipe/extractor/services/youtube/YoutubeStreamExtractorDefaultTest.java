@@ -3,6 +3,7 @@ package org.schabi.newpipe.extractor.services.youtube;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import org.schabi.newpipe.Downloader;
+import org.schabi.newpipe.extractor.ExtractorAsserts;
 import org.schabi.newpipe.extractor.MediaFormat;
 import org.schabi.newpipe.extractor.NewPipe;
 import org.schabi.newpipe.extractor.exceptions.ExtractionException;
@@ -13,6 +14,7 @@ import org.schabi.newpipe.extractor.utils.Localization;
 import org.schabi.newpipe.extractor.utils.Utils;
 
 import java.io.IOException;
+import java.util.List;
 
 import static org.junit.Assert.*;
 import static org.schabi.newpipe.extractor.ExtractorAsserts.assertIsSecureUrl;
@@ -244,15 +246,14 @@ public class YoutubeStreamExtractorDefaultTest {
         }
 
         @Test
-        public void testGetFrames() {
-            final StreamFrames frames = extractor.getFrames();
+        public void testGetFrames() throws ExtractionException {
+            final List<Frameset> frames = extractor.getFrames();
             assertNotNull(frames);
-            assertNotNull(frames.getDefaultVariant());
-            for (int i=0;i<frames.getVariantsCount();i++) {
-                final StreamFrames.Frameset frameset = frames.getVariant(i);
-                final int pages = frameset.getTotalPages();
-                final String url = pages == 0 ? frameset.getUrl() : frameset.getUrl(pages - 1);
-                assertNotNull(url);
+            assertFalse(frames.isEmpty());
+            for (final Frameset f : frames) {
+                for (final String url : f.getUrls()) {
+                    ExtractorAsserts.assertIsValidUrl(url);
+                }
             }
         }
     }

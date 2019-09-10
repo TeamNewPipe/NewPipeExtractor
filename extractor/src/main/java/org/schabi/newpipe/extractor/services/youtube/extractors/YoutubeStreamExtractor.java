@@ -1036,28 +1036,60 @@ public class YoutubeStreamExtractor extends StreamExtractor {
         };
     }
 
-    @Nullable
-    public StreamFrames getFrames() {
-        try {
-            final String script = doc.select("#player-api").first().siblingElements().select("script").html();
-            int p = script.indexOf("ytplayer.config");
-            if (p == -1) {
-                return null;
-            }
-            p = script.indexOf('{', p);
-            int e = script.indexOf("ytplayer.load", p);
-            if (e == -1) {
-                return null;
-            }
-            JsonObject jo = JsonParser.object().from(script.substring(p, e - 1));
-            final String resp = jo.getObject("args").getString("player_response");
-            jo = JsonParser.object().from(resp);
-            final String[] spec = jo.getObject("storyboards").getObject("playerStoryboardSpecRenderer").getString("spec").split("\\|");
-            final String url = spec[0];
-            final List<String> opts = Arrays.asList(spec).subList(1, spec.length);
-            return new StreamFrames(url, opts);
-        } catch (Exception e) {
-            return null;
-        }
-    }
+	@Nonnull
+	@Override
+	public List<Frameset> getFrames() throws ExtractionException {
+		try {
+			final String script = doc.select("#player-api").first().siblingElements().select("script").html();
+			int p = script.indexOf("ytplayer.config");
+			if (p == -1) {
+				return Collections.emptyList();
+			}
+			p = script.indexOf('{', p);
+			int e = script.indexOf("ytplayer.load", p);
+			if (e == -1) {
+				return Collections.emptyList();
+			}
+			JsonObject jo = JsonParser.object().from(script.substring(p, e - 1));
+			final String resp = jo.getObject("args").getString("player_response");
+			jo = JsonParser.object().from(resp);
+			final String[] spec = jo.getObject("storyboards").getObject("playerStoryboardSpecRenderer").getString("spec").split("\\|");
+			final String url = spec[0];
+			final ArrayList<Frameset> result = new ArrayList<>(spec.length - 1);
+			for (int i = 1; i < spec.length; ++i) {
+				final String[] parts = spec[i].split("#");
+				if (parts.length != 8) {
+					continue;
+				}
+				final int frameWidth = Integer.parseInt(parts[0]);
+				final int frameHeight = Integer.parseInt(parts[1]);
+				final int totalCount = Integer.parseInt(parts[2]);
+				final int framesPerPageX = Integer.parseInt(parts[3]);
+				final int framesPerPageY = Integer.parseInt(parts[4]);
+				final String baseUrl = url.replace("$L", String.valueOf(i - 1)).replace("$N", parts[6]) + "&sigh=" + parts[7];
+				final List<String> urls;
+				if (baseUrl.contains("$M")) {
+					final int totalPages = (int) Math.ceil(totalCount / (double) (framesPerPageX * framesPerPageY));
+					urls = new ArrayList<>(totalPages);
+					for (int j = 0; j < totalPages; j++) {
+						urls.add(baseUrl.replace("$M", String.valueOf(j)));
+					}
+				} else {
+					urls = Collections.singletonList(baseUrl);
+				}
+				result.add(new Frameset(
+						urls,
+						frameWidth,
+						frameHeight,
+						totalCount,
+						framesPerPageX,
+						framesPerPageY
+				));
+			}
+			result.trimToSize();
+			return result;
+		} catch (Exception e) {
+			throw new ExtractionException(e);
+		}
+	}
 }
