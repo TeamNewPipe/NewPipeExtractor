@@ -253,6 +253,7 @@ public class YoutubeStreamExtractorDefaultTest {
             for (final Frameset f : frames) {
                 for (final String url : f.getUrls()) {
                     ExtractorAsserts.assertIsValidUrl(url);
+                    ExtractorAsserts.assertIsSecureUrl(url);
                 }
             }
         }
