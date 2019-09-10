@@ -61,7 +61,7 @@ public class YoutubeStreamInfoItemExtractor implements StreamInfoItemExtractor {
     @Override
     public String getUrl() throws ParsingException {
         try {
-            Element el = item.select("div[class*=\"yt-lockup-video\"").first();
+            Element el = item.select("div[class*=\"yt-lockup-video\"]").first();
             Element dl = el.select("h3").first().select("a").first();
             return dl.attr("abs:href");
         } catch (Exception e) {
@@ -72,7 +72,7 @@ public class YoutubeStreamInfoItemExtractor implements StreamInfoItemExtractor {
     @Override
     public String getName() throws ParsingException {
         try {
-            Element el = item.select("div[class*=\"yt-lockup-video\"").first();
+            Element el = item.select("div[class*=\"yt-lockup-video\"]").first();
             Element dl = el.select("h3").first().select("a").first();
             return dl.text();
         } catch (Exception e) {
