@@ -929,10 +929,22 @@ public class YoutubeStreamExtractor extends StreamExtractor {
             int itag = formatData.getInt("itag");
 
             if (ItagItem.isSupported(itag)) {
-                ItagItem itagItem = ItagItem.getItag(itag);
-                if (itagItem.itagType == itagTypeWanted) {
-                    String streamUrl = formatData.getString("url");
-                    urlAndItags.put(streamUrl, itagItem);
+                try {
+                    ItagItem itagItem = ItagItem.getItag(itag);
+                    if (itagItem.itagType == itagTypeWanted) {
+                        String streamUrl;
+                        if (formatData.has("url")) {
+                            streamUrl = formatData.getString("url");
+                        } else {
+                            // this url has an encrypted signature
+                            Map<String, String> cipher = Parser.compatParseMap(formatData.getString("cipher"));
+                            streamUrl = cipher.get("url") + "&" + cipher.get("sp") + "=" + decryptSignature(cipher.get("s"), decryptionCode);
+                        }
+
+                        urlAndItags.put(streamUrl, itagItem);
+                    }
+                } catch (UnsupportedEncodingException ignored) {
+
                 }
             }
         }
