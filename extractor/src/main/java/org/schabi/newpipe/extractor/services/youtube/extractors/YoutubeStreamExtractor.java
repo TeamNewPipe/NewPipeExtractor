@@ -429,22 +429,15 @@ public class YoutubeStreamExtractor extends StreamExtractor {
     @Override
     public String getHlsUrl() throws ParsingException {
         assertPageFetched();
-        try {
-            String hlsvp = "";
-            if (playerArgs != null) {
-                if( playerArgs.isString("hlsvp") ) {
-                    hlsvp = playerArgs.getString("hlsvp", "");
-                }else {
-                    hlsvp = JsonParser.object()
-                            .from(playerArgs.getString("player_response", "{}"))
-                            .getObject("streamingData", new JsonObject())
-                            .getString("hlsManifestUrl", "");
-                }
-            }
 
-            return hlsvp;
+        try {
+            return playerResponse.getObject("streamingData").getString("hlsManifestUrl");
         } catch (Exception e) {
-            throw new ParsingException("Could not get hls manifest url", e);
+            if (playerArgs != null && playerArgs.isString("hlsvp")) {
+                return playerArgs.getString("hlsvp");
+            } else {
+                throw new ParsingException("Could not get hls manifest url", e);
+            }
         }
     }
 
