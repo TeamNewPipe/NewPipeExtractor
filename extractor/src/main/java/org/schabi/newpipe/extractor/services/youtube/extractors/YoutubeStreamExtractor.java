@@ -449,11 +449,11 @@ public class YoutubeStreamExtractor extends StreamExtractor {
     }
 
     @Override
-    public List<AudioStream> getAudioStreams() throws IOException, ExtractionException {
+    public List<AudioStream> getAudioStreams() throws ExtractionException {
         assertPageFetched();
         List<AudioStream> audioStreams = new ArrayList<>();
         try {
-            for (Map.Entry<String, ItagItem> entry : getItags(ADAPTIVE_FMTS, ItagItem.ItagType.AUDIO).entrySet()) {
+            for (Map.Entry<String, ItagItem> entry : getItags(ADAPTIVE_FORMATS, ItagItem.ItagType.AUDIO).entrySet()) {
                 ItagItem itag = entry.getValue();
 
                 AudioStream audioStream = new AudioStream(entry.getKey(), itag.getMediaFormat(), itag.avgBitrate);
@@ -469,11 +469,11 @@ public class YoutubeStreamExtractor extends StreamExtractor {
     }
 
     @Override
-    public List<VideoStream> getVideoStreams() throws IOException, ExtractionException {
+    public List<VideoStream> getVideoStreams() throws ExtractionException {
         assertPageFetched();
         List<VideoStream> videoStreams = new ArrayList<>();
         try {
-            for (Map.Entry<String, ItagItem> entry : getItags(ADAPTIVE_FMTS, ItagItem.ItagType.VIDEO).entrySet()) {
+            for (Map.Entry<String, ItagItem> entry : getItags(FORMATS, ItagItem.ItagType.VIDEO).entrySet()) {
                 ItagItem itag = entry.getValue();
 
                 VideoStream videoStream = new VideoStream(entry.getKey(), itag.getMediaFormat(), itag.resolutionString);
@@ -493,7 +493,7 @@ public class YoutubeStreamExtractor extends StreamExtractor {
         assertPageFetched();
         List<VideoStream> videoOnlyStreams = new ArrayList<>();
         try {
-            for (Map.Entry<String, ItagItem> entry : getItags(ADAPTIVE_FMTS, ItagItem.ItagType.VIDEO_ONLY).entrySet()) {
+            for (Map.Entry<String, ItagItem> entry : getItags(ADAPTIVE_FORMATS, ItagItem.ItagType.VIDEO_ONLY).entrySet()) {
                 ItagItem itag = entry.getValue();
 
                 VideoStream videoStream = new VideoStream(entry.getKey(), itag.getMediaFormat(), itag.resolutionString, true);
@@ -530,7 +530,7 @@ public class YoutubeStreamExtractor extends StreamExtractor {
         assertPageFetched();
         try {
             if (playerArgs != null && (playerArgs.has("ps") && playerArgs.get("ps").toString().equals("live") ||
-                    playerArgs.get(URL_ENCODED_FMT_STREAM_MAP).toString().isEmpty())) {
+                    playerResponse.getObject("streamingData").getArray(FORMATS).isEmpty())) {
                 return StreamType.LIVE_STREAM;
             }
         } catch (Exception e) {
@@ -606,8 +606,8 @@ public class YoutubeStreamExtractor extends StreamExtractor {
     // Fetch page
     //////////////////////////////////////////////////////////////////////////*/
 
-    private static final String URL_ENCODED_FMT_STREAM_MAP = "url_encoded_fmt_stream_map";
-    private static final String ADAPTIVE_FMTS = "adaptiveFormats";
+    private static final String FORMATS = "formats";
+    private static final String ADAPTIVE_FORMATS = "adaptiveFormats";
     private static final String HTTPS = "https:";
     private static final String CONTENT = "content";
     private static final String DECRYPTION_FUNC_NAME = "decrypt";
