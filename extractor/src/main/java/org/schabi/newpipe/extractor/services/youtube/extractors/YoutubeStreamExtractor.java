@@ -952,7 +952,6 @@ public class YoutubeStreamExtractor extends StreamExtractor {
                 ItagItem itagItem = ItagItem.getItag(itag);
                 if (itagItem.itagType == itagTypeWanted) {
                     String streamUrl = formatData.getString("url");
-                    System.out.println(streamUrl);
                     urlAndItags.put(streamUrl, itagItem);
                 }
             }
