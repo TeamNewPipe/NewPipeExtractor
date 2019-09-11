@@ -254,20 +254,6 @@ public class YoutubeStreamExtractor extends StreamExtractor {
     public long getLength() throws ParsingException {
         assertPageFetched();
 
-        final JsonObject playerResponse;
-        try {
-            final String pr;
-            if(playerArgs != null) {
-                pr = playerArgs.getString("player_response");
-            } else {
-                pr = videoInfoPage.get("player_response");
-            }
-            playerResponse = JsonParser.object()
-                    .from(pr);
-        } catch (Exception e) {
-            throw new ParsingException("Could not get playerResponse", e);
-        }
-
         // try getting duration from playerargs
         try {
             String durationMs = playerResponse
@@ -859,19 +845,13 @@ public class YoutubeStreamExtractor extends StreamExtractor {
         } catch (IOException | ExtractionException e) {
             throw new SubtitlesException("Unable to download player configs", e);
         }
-        final String playerResponse = playerConfig.getObject("args", new JsonObject())
-                .getString("player_response");
 
         final JsonObject captions;
-        try {
-            if (playerResponse == null || !JsonParser.object().from(playerResponse).has("captions")) {
-                // Captions does not exist
-                return Collections.emptyList();
-            }
-            captions = JsonParser.object().from(playerResponse).getObject("captions");
-        } catch (JsonParserException e) {
-            throw new SubtitlesException("Unable to parse subtitles listing", e);
+        if (!playerResponse.has("captions")) {
+            // Captions does not exist
+            return Collections.emptyList();
         }
+        captions = playerResponse.getObject("captions");
 
         final JsonObject renderer = captions.getObject("playerCaptionsTracklistRenderer", new JsonObject());
         final JsonArray captionsArray = renderer.getArray("captionTracks", new JsonArray());
