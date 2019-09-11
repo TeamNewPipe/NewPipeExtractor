@@ -22,6 +22,9 @@ public final class Frameset {
 		this.framesPerPageY = framesPerPageY;
 	}
 
+	/**
+	 * @return list of urls to images with frames
+	 */
 	public List<String> getUrls() {
 		return urls;
 	}

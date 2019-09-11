@@ -259,8 +259,10 @@ public abstract class StreamExtractor extends Extractor {
     public abstract StreamInfoItemsCollector getRelatedStreams() throws IOException, ExtractionException;
 
     /**
-     * Should return a list of frames
-     * @return
+     * Should return a list of Frameset object that contains preview of stream frames
+     * @return list of preview frames or empty list if frames preview is not supported or not found for specified stream
+     * @throws IOException
+     * @throws ExtractionException
      */
     @Nonnull
     public List<Frameset> getFrames() throws IOException, ExtractionException {
