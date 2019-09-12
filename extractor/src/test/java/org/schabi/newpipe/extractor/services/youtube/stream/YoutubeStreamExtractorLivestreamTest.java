@@ -8,7 +8,6 @@ import org.schabi.newpipe.extractor.NewPipe;
 import org.schabi.newpipe.extractor.exceptions.ExtractionException;
 import org.schabi.newpipe.extractor.exceptions.ParsingException;
 import org.schabi.newpipe.extractor.services.youtube.extractors.YoutubeStreamExtractor;
-import org.schabi.newpipe.extractor.stream.StreamExtractor;
 import org.schabi.newpipe.extractor.stream.StreamInfoItemsCollector;
 import org.schabi.newpipe.extractor.stream.StreamType;
 import org.schabi.newpipe.extractor.stream.VideoStream;
@@ -110,7 +109,7 @@ public class YoutubeStreamExtractorLivestreamTest {
 
     @Test
     public void testStreamType() throws ParsingException {
-        assertTrue(extractor.getStreamType() == StreamType.LIVE_STREAM);
+        assertSame(extractor.getStreamType(), StreamType.LIVE_STREAM);
     }
 
     @Test
@@ -129,13 +128,11 @@ public class YoutubeStreamExtractorLivestreamTest {
 
     @Test
     public void testGetSubtitlesListDefault() throws IOException, ExtractionException {
-        // Video (/view?v=YQHsXMglC9A) set in the setUp() method has no captions => null
         assertTrue(extractor.getSubtitlesDefault().isEmpty());
     }
 
     @Test
     public void testGetSubtitlesList() throws IOException, ExtractionException {
-        // Video (/view?v=YQHsXMglC9A) set in the setUp() method has no captions => null
         assertTrue(extractor.getSubtitles(MediaFormat.TTML).isEmpty());
     }
 }
