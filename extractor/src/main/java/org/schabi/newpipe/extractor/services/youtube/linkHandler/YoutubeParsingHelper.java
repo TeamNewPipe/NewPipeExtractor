@@ -33,7 +33,7 @@ public class YoutubeParsingHelper {
     public static boolean isYoutubeURL(URL url) {
         String host = url.getHost();
         return host.equalsIgnoreCase("youtube.com") || host.equalsIgnoreCase("www.youtube.com")
-                || host.equalsIgnoreCase("m.youtube.com");
+                || host.equalsIgnoreCase("m.youtube.com") || host.equalsIgnoreCase("music.youtube.com");
     }
 
     public static boolean isYoutubeServiceURL(URL url) {
