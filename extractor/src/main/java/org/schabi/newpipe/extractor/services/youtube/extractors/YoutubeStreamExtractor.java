@@ -523,7 +523,7 @@ public class YoutubeStreamExtractor extends StreamExtractor {
         assertPageFetched();
         try {
             if (playerArgs != null && (playerArgs.has("ps") && playerArgs.get("ps").toString().equals("live") ||
-                    playerResponse.getObject("streamingData").getArray(FORMATS).isEmpty())) {
+                    (!playerResponse.getObject("streamingData").has(FORMATS)))) {
                 return StreamType.LIVE_STREAM;
             }
         } catch (Exception e) {
