@@ -915,8 +915,12 @@ public class YoutubeStreamExtractor extends StreamExtractor {
 
     private Map<String, ItagItem> getItags(String streamingDataKey, ItagItem.ItagType itagTypeWanted) throws ParsingException {
         Map<String, ItagItem> urlAndItags = new LinkedHashMap<>();
+        JsonObject streamingData = playerResponse.getObject("streamingData");
+        if (!streamingData.has(streamingDataKey)) {
+            return urlAndItags;
+        }
 
-        JsonArray formats = playerResponse.getObject("streamingData").getArray(streamingDataKey);
+        JsonArray formats = streamingData.getArray(streamingDataKey);
         for (int i = 0; i != formats.size(); ++i) {
             JsonObject formatData = formats.getObject(i);
             int itag = formatData.getInt("itag");
