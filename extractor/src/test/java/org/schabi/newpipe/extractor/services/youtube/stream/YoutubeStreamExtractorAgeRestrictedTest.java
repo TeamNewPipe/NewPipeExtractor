@@ -1,4 +1,4 @@
-package org.schabi.newpipe.extractor.services.youtube;
+package org.schabi.newpipe.extractor.services.youtube.stream;
 
 import org.junit.BeforeClass;
 import org.junit.Ignore;
