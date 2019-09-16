@@ -28,6 +28,35 @@ public class Utils {
     }
 
     /**
+     * <p>Convert a mixed number word to a long.</p>
+     * <p>Examples:</p>
+     * <ul>
+     *     <li>123 -&gt; 123</li>
+     *     <li>1.23K -&gt; 1230</li>
+     *     <li>1.23M -&gt; 1230000</li>
+     * </ul>
+     * @param numberWord string to be converted to a long
+     * @return a long
+     * @throws NumberFormatException
+     * @throws ParsingException
+     */
+    public static long mixedNumberWordToLong(String numberWord) throws NumberFormatException, ParsingException {
+        String multiplier = "";
+        try {
+            multiplier = Parser.matchGroup("[\\d]+([\\.,][\\d]+)?([KMkm])+", numberWord, 2);
+        } catch(ParsingException ignored) {}
+        double count = Double.parseDouble(Parser.matchGroup1("([\\d]+([\\.,][\\d]+)?)", numberWord));
+        switch (multiplier.toUpperCase()) {
+            case "K":
+                return (long) (count * 1e3);
+            case "M":
+                return (long) (count * 1e6);
+            default:
+                return (long) (count);
+        }
+    }
+
+    /**
      * Check if the url matches the pattern.
      *
      * @param pattern the pattern that will be used to check the url

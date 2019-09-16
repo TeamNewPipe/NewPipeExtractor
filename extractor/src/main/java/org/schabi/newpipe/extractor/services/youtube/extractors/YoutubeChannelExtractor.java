@@ -49,7 +49,7 @@ import java.util.ArrayList;
 public class YoutubeChannelExtractor extends ChannelExtractor {
     /*package-private*/ static final String CHANNEL_URL_BASE = "https://www.youtube.com/channel/";
     private static final String CHANNEL_FEED_BASE = "https://www.youtube.com/feeds/videos.xml?channel_id=";
-    private static final String CHANNEL_URL_PARAMETERS = "/videos?view=0&flow=list&sort=dd&live_view=10000";
+    private static final String CHANNEL_URL_PARAMETERS = "/videos?view=0&flow=list&sort=dd&live_view=10000&gl=US&hl=en";
 
     private Document doc;
 
@@ -135,10 +135,11 @@ public class YoutubeChannelExtractor extends ChannelExtractor {
 
     @Override
     public long getSubscriberCount() throws ParsingException {
-        final Element el = doc.select("span[class*=\"yt-subscription-button-subscriber-count\"]").first();
+        final String el = doc.select("span[class*=\"yt-subscription-button-subscriber-count\"]")
+                .first().attr("title");
         if (el != null) {
             try {
-                return Long.parseLong(Utils.removeNonDigitCharacters(el.text()));
+                return Utils.mixedNumberWordToLong(el);
             } catch (NumberFormatException e) {
                 throw new ParsingException("Could not get subscriber count", e);
             }

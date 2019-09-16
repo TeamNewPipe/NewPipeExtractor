@@ -105,6 +105,7 @@ public class YoutubeChannelExtractorTest {
         @Test
         public void testSubscriberCount() throws Exception {
             assertTrue("Wrong subscriber count", extractor.getSubscriberCount() >= 0);
+            assertTrue("Subscriber count too small", extractor.getSubscriberCount() >= 4e6);
         }
     }
 
@@ -195,6 +196,7 @@ public class YoutubeChannelExtractorTest {
         @Test
         public void testSubscriberCount() throws Exception {
             assertTrue("Wrong subscriber count", extractor.getSubscriberCount() >= 0);
+            assertTrue("Subscriber count too small", extractor.getSubscriberCount() >= 10e6);
         }
 
     }
