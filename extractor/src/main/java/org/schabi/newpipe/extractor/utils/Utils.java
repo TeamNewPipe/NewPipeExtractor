@@ -43,14 +43,17 @@ public class Utils {
     public static long mixedNumberWordToLong(String numberWord) throws NumberFormatException, ParsingException {
         String multiplier = "";
         try {
-            multiplier = Parser.matchGroup("[\\d]+([\\.,][\\d]+)?([KMkm])+", numberWord, 2);
+            multiplier = Parser.matchGroup("[\\d]+([\\.,][\\d]+)?([KMBkmb])+", numberWord, 2);
         } catch(ParsingException ignored) {}
-        double count = Double.parseDouble(Parser.matchGroup1("([\\d]+([\\.,][\\d]+)?)", numberWord));
+        double count = Double.parseDouble(Parser.matchGroup1("([\\d]+([\\.,][\\d]+)?)", numberWord)
+                .replace(",", "."));
         switch (multiplier.toUpperCase()) {
             case "K":
                 return (long) (count * 1e3);
             case "M":
                 return (long) (count * 1e6);
+            case "B":
+                return (long) (count * 1e9);
             default:
                 return (long) (count);
         }
