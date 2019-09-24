@@ -56,20 +56,30 @@ public class YoutubeChannelInfoItemExtractor implements ChannelInfoItemExtractor
 
     @Override
     public String getUrl() throws ParsingException {
-        String buttonTrackingUrl = el.select("button[class*=\"yt-uix-button\"]").first()
-                .attr("abs:data-href");
+        try {
+            String buttonTrackingUrl = el.select("button[class*=\"yt-uix-button\"]").first()
+                    .attr("abs:data-href");
 
-        Pattern channelIdPattern = Pattern.compile("(?:.*?)\\%252Fchannel\\%252F([A-Za-z0-9\\-\\_]+)(?:.*)");
-        Matcher match = channelIdPattern.matcher(buttonTrackingUrl);
+            Pattern channelIdPattern = Pattern.compile("(?:.*?)\\%252Fchannel\\%252F([A-Za-z0-9\\-\\_]+)(?:.*)");
+            Matcher match = channelIdPattern.matcher(buttonTrackingUrl);
 
-        if (match.matches()) {
-            return YoutubeChannelExtractor.CHANNEL_URL_BASE + match.group(1);
-        } else {
-            // fallback method just in case youtube changes things; it should never run and tests will fail
-            // provides an url with "/user/NAME", that is inconsistent with stream and channel extractor
-            return el.select("a[class*=\"yt-uix-tile-link\"]").first()
-                    .attr("abs:href");
+            if (match.matches()) {
+                return YoutubeChannelExtractor.CHANNEL_URL_BASE + match.group(1);
+            }
+        } catch (NullPointerException ignored) {
+
         }
+
+        // fallback method just in case youtube changes things; it should never run and tests will fail
+        // provides an url with "/user/NAME", that is inconsistent with stream and channel extractor
+        // update 25th of September 2019: YouTube sometimes does not show subscribe buttons in searches any more
+        String link = el.select("a[class*=\"yt-uix-tile-link\"]").first()
+                .attr("abs:href");
+        if (link != null && link.length() > 0)
+            return link;
+
+        return el.select("a[class*=\"yt-uix-tile-link\"]").first()
+                .attr("href");
     }
 
     @Override
