@@ -140,11 +140,12 @@ public class YoutubeChannelExtractor extends ChannelExtractor {
 
     @Override
     public long getSubscriberCount() throws ParsingException {
-        final String el = doc.select("span[class*=\"yt-subscription-button-subscriber-count\"]")
-                .first().attr("title");
+
+        final Element el = doc.select("span[class*=\"yt-subscription-button-subscriber-count\"]").first();
         if (el != null) {
+            String elTitle = el.attr("title");
             try {
-                return Utils.mixedNumberWordToLong(el);
+                return Utils.mixedNumberWordToLong(elTitle);
             } catch (NumberFormatException e) {
                 throw new ParsingException("Could not get subscriber count", e);
             }
