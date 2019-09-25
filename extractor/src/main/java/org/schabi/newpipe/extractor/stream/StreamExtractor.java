@@ -270,7 +270,7 @@ public abstract class StreamExtractor extends Extractor {
     }
 
     /**
-     * Should analyse the webpage's document and extracts any error message there might be. (e.g. GEMA block)
+     * Should analyse the webpage's document and extracts any error message there might be.
      *
      * @return Error message; null if there is no error message.
      */
