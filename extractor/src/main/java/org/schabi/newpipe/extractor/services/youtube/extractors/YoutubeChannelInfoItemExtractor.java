@@ -56,19 +56,25 @@ public class YoutubeChannelInfoItemExtractor implements ChannelInfoItemExtractor
 
     @Override
     public String getUrl() throws ParsingException {
-        String buttonTrackingUrl = el.select("button[class*=\"yt-uix-button\"]").first()
-                .attr("abs:data-href");
+        try {
+            String buttonTrackingUrl = el.select("button[class*=\"yt-uix-button\"]").first()
+                    .attr("abs:data-href");
 
-        Pattern channelIdPattern = Pattern.compile("(?:.*?)\\%252Fchannel\\%252F([A-Za-z0-9\\-\\_]+)(?:.*)");
-        Matcher match = channelIdPattern.matcher(buttonTrackingUrl);
+            Pattern channelIdPattern = Pattern.compile("(?:.*?)\\%252Fchannel\\%252F([A-Za-z0-9\\-\\_]+)(?:.*)");
+            Matcher match = channelIdPattern.matcher(buttonTrackingUrl);
 
-        if (match.matches()) {
-            return YoutubeChannelExtractor.CHANNEL_URL_BASE + match.group(1);
-        } else {
-            // fallback method just in case youtube changes things; it should never run and tests will fail
-            // provides an url with "/user/NAME", that is inconsistent with stream and channel extractor
+            if (match.matches()) {
+                return YoutubeChannelExtractor.CHANNEL_URL_BASE + match.group(1);
+            }
+        } catch(Exception ignored) {}
+
+        // fallback method for channels without "Subscribe" button (or just in case yt changes things)
+        // provides an url with "/user/NAME", inconsistent with stream and channel extractor: tests will fail
+        try {
             return el.select("a[class*=\"yt-uix-tile-link\"]").first()
                     .attr("abs:href");
+        } catch (Exception e) {
+            throw new ParsingException("Could not get channel url", e);
         }
     }
 

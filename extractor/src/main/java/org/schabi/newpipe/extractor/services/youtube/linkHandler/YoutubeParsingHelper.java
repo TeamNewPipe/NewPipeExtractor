@@ -33,7 +33,7 @@ public class YoutubeParsingHelper {
     public static boolean isYoutubeURL(URL url) {
         String host = url.getHost();
         return host.equalsIgnoreCase("youtube.com") || host.equalsIgnoreCase("www.youtube.com")
-                || host.equalsIgnoreCase("m.youtube.com");
+                || host.equalsIgnoreCase("m.youtube.com") || host.equalsIgnoreCase("music.youtube.com");
     }
 
     public static boolean isYoutubeServiceURL(URL url) {
@@ -48,7 +48,7 @@ public class YoutubeParsingHelper {
 
     public static boolean isInvidioURL(URL url) {
         String host = url.getHost();
-        return host.equalsIgnoreCase("invidio.us") || host.equalsIgnoreCase("www.invidio.us");
+        return host.equalsIgnoreCase("invidio.us") || host.equalsIgnoreCase("dev.invidio.us") || host.equalsIgnoreCase("www.invidio.us") || host.equalsIgnoreCase("invidious.snopyta.org") || host.equalsIgnoreCase("de.invidious.snopyta.org") || host.equalsIgnoreCase("fi.invidious.snopyta.org") || host.equalsIgnoreCase("vid.wxzm.sx") || host.equalsIgnoreCase("invidious.kabi.tk") || host.equalsIgnoreCase("invidiou.sh") || host.equalsIgnoreCase("www.invidiou.sh") || host.equalsIgnoreCase("no.invidiou.sh") || host.equalsIgnoreCase("invidious.enkirton.net") || host.equalsIgnoreCase("tube.poal.co") || host.equalsIgnoreCase("invidious.13ad.de") || host.equalsIgnoreCase("yt.elukerio.org");
     }
 
     public static long parseDurationString(String input)
