@@ -114,7 +114,8 @@ public class YoutubeStreamLinkHandlerFactory extends LinkHandlerFactory {
 
             case "YOUTUBE.COM":
             case "WWW.YOUTUBE.COM":
-            case "M.YOUTUBE.COM": {
+            case "M.YOUTUBE.COM":
+            case "MUSIC.YOUTUBE.COM": {
                 if (path.equals("attribution_link")) {
                     String uQueryValue = Utils.getQueryValue(url, "u");
 

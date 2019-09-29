@@ -523,7 +523,7 @@ public class YoutubeStreamExtractor extends StreamExtractor {
         assertPageFetched();
         try {
             if (playerArgs != null && (playerArgs.has("ps") && playerArgs.get("ps").toString().equals("live") ||
-                    playerResponse.getObject("streamingData").getArray(FORMATS).isEmpty())) {
+                    (!playerResponse.getObject("streamingData").has(FORMATS)))) {
                 return StreamType.LIVE_STREAM;
             }
         } catch (Exception e) {
@@ -575,21 +575,26 @@ public class YoutubeStreamExtractor extends StreamExtractor {
      */
     @Override
     public String getErrorMessage() {
-        String errorMessage = doc.select("h1[id=\"unavailable-message\"]").first().text();
         StringBuilder errorReason;
+        Element errorElement = doc.select("h1[id=\"unavailable-message\"]").first();
 
-        if (errorMessage == null || errorMessage.isEmpty()) {
+        if (errorElement == null) {
             errorReason = null;
-        } else if (errorMessage.contains("GEMA")) {
-            // Gema sometimes blocks youtube music content in germany:
-            // https://www.gema.de/en/
-            // Detailed description:
-            // https://en.wikipedia.org/wiki/GEMA_%28German_organization%29
-            errorReason = new StringBuilder("GEMA");
         } else {
-            errorReason = new StringBuilder(errorMessage);
-            errorReason.append("  ");
-            errorReason.append(doc.select("[id=\"unavailable-submessage\"]").first().text());
+            String errorMessage = errorElement.text();
+            if (errorMessage == null || errorMessage.isEmpty()) {
+                errorReason = null;
+            } else if (errorMessage.contains("GEMA")) {
+                // Gema sometimes blocks youtube music content in germany:
+                // https://www.gema.de/en/
+                // Detailed description:
+                // https://en.wikipedia.org/wiki/GEMA_%28German_organization%29
+                errorReason = new StringBuilder("GEMA");
+            } else {
+                errorReason = new StringBuilder(errorMessage);
+                errorReason.append("  ");
+                errorReason.append(doc.select("[id=\"unavailable-submessage\"]").first().text());
+            }
         }
 
         return errorReason != null ? errorReason.toString() : null;
@@ -915,8 +920,12 @@ public class YoutubeStreamExtractor extends StreamExtractor {
 
     private Map<String, ItagItem> getItags(String streamingDataKey, ItagItem.ItagType itagTypeWanted) throws ParsingException {
         Map<String, ItagItem> urlAndItags = new LinkedHashMap<>();
+        JsonObject streamingData = playerResponse.getObject("streamingData");
+        if (!streamingData.has(streamingDataKey)) {
+            return urlAndItags;
+        }
 
-        JsonArray formats = playerResponse.getObject("streamingData").getArray(streamingDataKey);
+        JsonArray formats = streamingData.getArray(streamingDataKey);
         for (int i = 0; i != formats.size(); ++i) {
             JsonObject formatData = formats.getObject(i);
             int itag = formatData.getInt("itag");

@@ -50,7 +50,7 @@ import java.util.Map;
 public class YoutubeChannelExtractor extends ChannelExtractor {
     /*package-private*/ static final String CHANNEL_URL_BASE = "https://www.youtube.com/channel/";
     private static final String CHANNEL_FEED_BASE = "https://www.youtube.com/feeds/videos.xml?channel_id=";
-    private static final String CHANNEL_URL_PARAMETERS = "/videos?view=0&flow=list&sort=dd&live_view=10000";
+    private static final String CHANNEL_URL_PARAMETERS = "/videos?view=0&flow=list&sort=dd&live_view=10000&gl=US&hl=en";
 
     private Document doc;
     private Map<String, String> videoPublishIsoTimeStrLookup = new HashMap<>();
@@ -108,6 +108,11 @@ public class YoutubeChannelExtractor extends ChannelExtractor {
     @Override
     public String getId() throws ParsingException {
         try {
+            return doc.select("meta[itemprop=\"channelId\"]").first().attr("content");
+        } catch (Exception ignored) {}
+
+        // fallback method; does not work with channels that have no "Subscribe" button (e.g. EminemVEVO)
+        try {
             Element element = doc.getElementsByClass("yt-uix-subscription-button").first();
             if (element == null) element = doc.getElementsByClass("yt-uix-subscription-preferences-button").first();
 
@@ -160,10 +165,12 @@ public class YoutubeChannelExtractor extends ChannelExtractor {
 
     @Override
     public long getSubscriberCount() throws ParsingException {
+
         final Element el = doc.select("span[class*=\"yt-subscription-button-subscriber-count\"]").first();
         if (el != null) {
+            String elTitle = el.attr("title");
             try {
-                return Long.parseLong(Utils.removeNonDigitCharacters(el.text()));
+                return Utils.mixedNumberWordToLong(elTitle);
             } catch (NumberFormatException e) {
                 throw new ParsingException("Could not get subscriber count", e);
             }
