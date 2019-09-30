@@ -53,7 +53,8 @@ public class YoutubeChannelExtractor extends ChannelExtractor {
     private static final String CHANNEL_URL_PARAMETERS = "/videos?view=0&flow=list&sort=dd&live_view=10000&gl=US&hl=en";
 
     private Document doc;
-    private Map<String, String> videoPublishIsoTimeStrLookup = new HashMap<>();
+    private Document feedXmlDoc;
+    private Map<String, String> videoPublishIsoTimeStrLookup;
 
     public YoutubeChannelExtractor(StreamingService service, ListLinkHandler linkHandler, Localization localization) {
         super(service, linkHandler, localization);
@@ -66,10 +67,10 @@ public class YoutubeChannelExtractor extends ChannelExtractor {
         doc = Jsoup.parse(pageContent, channelUrl);
 
         String feedUrl = getFeedUrl();
-        retrieveVideoTimestampFromXml(Jsoup.parse(
-                downloader.download(feedUrl),
-                feedUrl,
-                org.jsoup.parser.Parser.xmlParser()));
+        feedXmlDoc = Jsoup.parse(
+            downloader.download(feedUrl),
+            feedUrl,
+            org.jsoup.parser.Parser.xmlParser());
     }
 
     private void retrieveVideoTimestampFromXml(Document feedXmlDoc) {
@@ -118,7 +119,7 @@ public class YoutubeChannelExtractor extends ChannelExtractor {
 
             return element.attr("data-channel-external-id");
         } catch (Exception e) {
-            return super.getId();
+            throw new ParsingException("Could not get channel id", e);
         }
     }
 
@@ -191,6 +192,10 @@ public class YoutubeChannelExtractor extends ChannelExtractor {
 
     @Override
     public Map<String, String> getPublishIsoTimeStrLookup() {
+        if (videoPublishIsoTimeStrLookup == null) {
+            videoPublishIsoTimeStrLookup = new HashMap<>();
+            retrieveVideoTimestampFromXml(feedXmlDoc);
+        }
         return videoPublishIsoTimeStrLookup;
     }
 
