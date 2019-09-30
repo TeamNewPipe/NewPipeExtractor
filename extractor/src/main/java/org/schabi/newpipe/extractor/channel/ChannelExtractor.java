@@ -32,7 +32,7 @@ import java.util.Map;
 
 public abstract class ChannelExtractor extends ListExtractor<StreamInfoItem> {
 
-    private static Map<String, String> EmptyPublishIsoTimeStrLookup = new HashMap<>();
+    private static Map<String, String> emptyPublishIsoTimeStrLookup = new HashMap<>();
 
     public ChannelExtractor(StreamingService service, ListLinkHandler linkHandler, Localization localization) {
         super(service, linkHandler, localization);
@@ -45,6 +45,6 @@ public abstract class ChannelExtractor extends ListExtractor<StreamInfoItem> {
     public abstract String getDescription() throws ParsingException;
 
     public Map<String, String> getPublishIsoTimeStrLookup() {
-        return EmptyPublishIsoTimeStrLookup;
+        return emptyPublishIsoTimeStrLookup;
     }
 }
