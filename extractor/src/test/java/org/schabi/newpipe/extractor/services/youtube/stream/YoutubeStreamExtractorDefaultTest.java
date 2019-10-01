@@ -3,6 +3,7 @@ package org.schabi.newpipe.extractor.services.youtube.stream;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import org.schabi.newpipe.Downloader;
+import org.schabi.newpipe.extractor.ExtractorAsserts;
 import org.schabi.newpipe.extractor.MediaFormat;
 import org.schabi.newpipe.extractor.NewPipe;
 import org.schabi.newpipe.extractor.exceptions.ExtractionException;
@@ -13,6 +14,7 @@ import org.schabi.newpipe.extractor.utils.Localization;
 import org.schabi.newpipe.extractor.utils.Utils;
 
 import java.io.IOException;
+import java.util.List;
 
 import static org.junit.Assert.*;
 import static org.schabi.newpipe.extractor.ExtractorAsserts.assertIsSecureUrl;
@@ -229,6 +231,31 @@ public class YoutubeStreamExtractorDefaultTest {
             assertFalse(extractor.getDescription().contains("https://youtu.be/Lqv6G0pDNnw?list=PL7..."));
             assertFalse(extractor.getDescription().contains("https://youtu.be/XxaRBPyrnBU?list=PL7..."));
             assertFalse(extractor.getDescription().contains("https://youtu.be/U-9tUEOFKNU?list=PL7..."));
+        }
+    }
+
+    public static class FramesTest {
+        private static YoutubeStreamExtractor extractor;
+
+        @BeforeClass
+        public static void setUp() throws Exception {
+            NewPipe.init(Downloader.getInstance(), new Localization("GB", "en"));
+            extractor = (YoutubeStreamExtractor) YouTube
+                    .getStreamExtractor("https://www.youtube.com/watch?v=HoK9shIJ2xQ");
+            extractor.fetchPage();
+        }
+
+        @Test
+        public void testGetFrames() throws ExtractionException {
+            final List<Frameset> frames = extractor.getFrames();
+            assertNotNull(frames);
+            assertFalse(frames.isEmpty());
+            for (final Frameset f : frames) {
+                for (final String url : f.getUrls()) {
+                    ExtractorAsserts.assertIsValidUrl(url);
+                    ExtractorAsserts.assertIsSecureUrl(url);
+                }
+            }
         }
     }
 }
