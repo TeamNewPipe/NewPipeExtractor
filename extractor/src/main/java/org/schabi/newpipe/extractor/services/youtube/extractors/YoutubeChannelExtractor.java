@@ -17,6 +17,7 @@ import org.schabi.newpipe.extractor.exceptions.ParsingException;
 import org.schabi.newpipe.extractor.linkhandler.ListLinkHandler;
 import org.schabi.newpipe.extractor.stream.StreamInfoItem;
 import org.schabi.newpipe.extractor.stream.StreamInfoItemsCollector;
+import org.schabi.newpipe.extractor.utils.DateUtils;
 import org.schabi.newpipe.extractor.utils.Localization;
 import org.schabi.newpipe.extractor.utils.Parser;
 import org.schabi.newpipe.extractor.utils.Utils;
@@ -73,20 +74,26 @@ public class YoutubeChannelExtractor extends ChannelExtractor {
             org.jsoup.parser.Parser.xmlParser());
     }
 
-    private void retrieveVideoTimestampFromXml(Document feedXmlDoc) {
-        Elements feedEls = feedXmlDoc.getElementsByTag("feed");
+    private void retrieveVideoTimestampFromXml(Document feedXmlDoc) throws ParsingException {
+        try {
+            Elements feedEls = feedXmlDoc.getElementsByTag("feed");
 
-        for (Element feedEl : feedEls) {
-            Elements entryEls = feedEl.getElementsByTag("entry");
+            for (Element feedEl : feedEls) {
+                Elements entryEls = feedEl.getElementsByTag("entry");
 
-            for (Element entryEl : entryEls) {
-                Elements videoIdEls = entryEl.getElementsByTag("yt:videoId");
-                Elements publishedEls = entryEl.getElementsByTag("published");
+                for (Element entryEl : entryEls) {
+                    Elements videoIdEls = entryEl.getElementsByTag("yt:videoId");
+                    Elements publishedEls = entryEl.getElementsByTag("published");
 
-                if (publishedEls.size() != 1 || videoIdEls.size() != 1) continue;
+                    if (publishedEls.size() != 1 || videoIdEls.size() != 1) continue;
 
-                videoPublishIsoTimeStrLookup.put(videoIdEls.get(0).text(), publishedEls.get(0).text());
+                    videoPublishIsoTimeStrLookup.put(
+                        videoIdEls.get(0).text(),
+                        DateUtils.toISODateTimeString(publishedEls.get(0).text()));
+                }
             }
+        } catch (Exception ex) {
+            throw new ParsingException(ex.getMessage(), ex);
         }
     }
 
@@ -191,7 +198,7 @@ public class YoutubeChannelExtractor extends ChannelExtractor {
     }
 
     @Override
-    public Map<String, String> getPublishIsoTimeStrLookup() {
+    public Map<String, String> getPublishIsoTimeStrLookup() throws ParsingException {
         if (videoPublishIsoTimeStrLookup == null) {
             videoPublishIsoTimeStrLookup = new HashMap<>();
             retrieveVideoTimestampFromXml(feedXmlDoc);

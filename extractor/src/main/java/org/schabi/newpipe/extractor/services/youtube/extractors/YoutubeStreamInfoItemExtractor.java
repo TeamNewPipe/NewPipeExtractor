@@ -3,6 +3,7 @@ package org.schabi.newpipe.extractor.services.youtube.extractors;
 import org.jsoup.nodes.Element;
 import org.schabi.newpipe.extractor.exceptions.ParsingException;
 import org.schabi.newpipe.extractor.services.youtube.linkHandler.YoutubeParsingHelper;
+import org.schabi.newpipe.extractor.services.youtube.linkHandler.YoutubeStreamLinkHandlerFactory;
 import org.schabi.newpipe.extractor.stream.StreamInfoItemExtractor;
 import org.schabi.newpipe.extractor.stream.StreamType;
 import org.schabi.newpipe.extractor.utils.Utils;
@@ -26,6 +27,8 @@ import org.schabi.newpipe.extractor.utils.Utils;
  */
 
 public class YoutubeStreamInfoItemExtractor implements StreamInfoItemExtractor {
+    private static final YoutubeStreamLinkHandlerFactory youtubeStreamLinkHandler =
+        YoutubeStreamLinkHandlerFactory.getInstance();
 
     private final Element item;
 
@@ -56,6 +59,11 @@ public class YoutubeStreamInfoItemExtractor implements StreamInfoItemExtractor {
         // if this span has text it most likely says ("Free Video") so we can play this
         if(premiumSpan.hasText()) return false;
         return true;
+    }
+
+    @Override
+    public String getId() throws ParsingException {
+        return youtubeStreamLinkHandler.getId(getUrl());
     }
 
     @Override
@@ -138,6 +146,11 @@ public class YoutubeStreamInfoItemExtractor implements StreamInfoItemExtractor {
         } catch (Exception e) {
             throw new ParsingException("Could not get upload date", e);
         }
+    }
+
+    @Override
+    public String getRawUploadDate() throws ParsingException {
+        return getUploadDate();
     }
 
     @Override

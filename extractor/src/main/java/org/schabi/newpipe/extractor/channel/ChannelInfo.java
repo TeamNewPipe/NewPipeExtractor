@@ -11,6 +11,7 @@ import org.schabi.newpipe.extractor.linkhandler.ListLinkHandler;
 import org.schabi.newpipe.extractor.utils.ExtractorHelper;
 
 import java.io.IOException;
+import java.util.HashMap;
 import java.util.Map;
 
 /*
@@ -158,6 +159,9 @@ public class ChannelInfo extends ListInfo<StreamInfoItem> {
     }
 
     public Map<String, String> getPublishIsoTimeStrLookup() {
+        if (publishIsoTimeStrLookup == null) {
+            publishIsoTimeStrLookup = new HashMap<>();
+        }
         return publishIsoTimeStrLookup;
     }
 

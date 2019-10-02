@@ -44,7 +44,7 @@ public abstract class ChannelExtractor extends ListExtractor<StreamInfoItem> {
     public abstract long getSubscriberCount() throws ParsingException;
     public abstract String getDescription() throws ParsingException;
 
-    public Map<String, String> getPublishIsoTimeStrLookup() {
+    public Map<String, String> getPublishIsoTimeStrLookup() throws ParsingException {
         return emptyPublishIsoTimeStrLookup;
     }
 }

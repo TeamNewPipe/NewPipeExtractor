@@ -70,4 +70,17 @@ public interface StreamInfoItemExtractor extends InfoItemExtractor {
      */
     String getUploadDate() throws ParsingException;
 
+    /**
+     * Extract the raw upload date, where getUploadDate extracts the upload date for display
+     * @return The upload date
+     * @throws ParsingException thrown if there is an error in the extraction
+     */
+    String getRawUploadDate() throws ParsingException;
+
+    /**
+     * Extract item ID
+     * @return Item ID
+     * @throws ParsingException thrown if there is an error in the extraction
+     */
+    String getId() throws ParsingException;
 }
