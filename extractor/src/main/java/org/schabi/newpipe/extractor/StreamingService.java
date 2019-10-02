@@ -17,6 +17,7 @@ import org.schabi.newpipe.extractor.linkhandler.SearchQueryHandlerFactory;
 import org.schabi.newpipe.extractor.playlist.PlaylistExtractor;
 import org.schabi.newpipe.extractor.search.SearchExtractor;
 import org.schabi.newpipe.extractor.stream.StreamExtractor;
+import org.schabi.newpipe.extractor.stream.TimeAgoParser;
 import org.schabi.newpipe.extractor.subscription.SubscriptionExtractor;
 import org.schabi.newpipe.extractor.utils.Localization;
 
@@ -222,7 +223,7 @@ public abstract class StreamingService {
     public ChannelExtractor getChannelExtractor(ListLinkHandler linkHandler) throws ExtractionException {
         return getChannelExtractor(linkHandler, NewPipe.getPreferredLocalization());
     }
-    
+
     public PlaylistExtractor getPlaylistExtractor(ListLinkHandler linkHandler) throws ExtractionException {
         return getPlaylistExtractor(linkHandler, NewPipe.getPreferredLocalization());
     }
@@ -230,7 +231,7 @@ public abstract class StreamingService {
     public StreamExtractor getStreamExtractor(LinkHandler linkHandler) throws ExtractionException {
         return getStreamExtractor(linkHandler, NewPipe.getPreferredLocalization());
     }
-    
+
     public CommentsExtractor getCommentsExtractor(ListLinkHandler urlIdHandler) throws ExtractionException {
         return getCommentsExtractor(urlIdHandler, NewPipe.getPreferredLocalization());
     }
@@ -287,7 +288,7 @@ public abstract class StreamingService {
     public StreamExtractor getStreamExtractor(String url) throws ExtractionException {
         return getStreamExtractor(getStreamLHFactory().fromUrl(url), NewPipe.getPreferredLocalization());
     }
-    
+
     public CommentsExtractor getCommentsExtractor(String url) throws ExtractionException {
         ListLinkHandlerFactory llhf = getCommentsLHFactory();
         if(null == llhf) {
@@ -296,6 +297,9 @@ public abstract class StreamingService {
         return getCommentsExtractor(llhf.fromUrl(url), NewPipe.getPreferredLocalization());
     }
 
+    public TimeAgoParser getTimeAgoParser() {
+        return new TimeAgoParser(TimeAgoParser.DEFAULT_AGO_PHRASES);
+    }
 
     /**
      * Figures out where the link is pointing to (a channel, a video, a playlist, etc.)

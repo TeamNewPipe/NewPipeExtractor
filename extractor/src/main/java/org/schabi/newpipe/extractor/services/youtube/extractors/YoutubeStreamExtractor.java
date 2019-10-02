@@ -75,6 +75,8 @@ public class YoutubeStreamExtractor extends StreamExtractor {
 
     /*//////////////////////////////////////////////////////////////////////////*/
 
+    private final TimeAgoParser timeAgoParser = getService().getTimeAgoParser();
+
     private Document doc;
     @Nullable
     private JsonObject playerArgs;
@@ -932,7 +934,7 @@ public class YoutubeStreamExtractor extends StreamExtractor {
      * This is encapsulated in a StreamInfoItem object, which is a subset of the fields in a full StreamInfo.
      */
     private StreamInfoItemExtractor extractVideoPreviewInfo(final Element li) {
-        return new YoutubeStreamInfoItemExtractor(li) {
+        return new YoutubeStreamInfoItemExtractor(li, timeAgoParser) {
 
             @Override
             public String getUrl() throws ParsingException {
@@ -959,7 +961,7 @@ public class YoutubeStreamExtractor extends StreamExtractor {
             }
 
             @Override
-            public String getUploadDate() throws ParsingException {
+            public String getTextualUploadDate() throws ParsingException {
                 return "";
             }
 

@@ -18,6 +18,7 @@ import org.schabi.newpipe.extractor.linkhandler.ListLinkHandler;
 import org.schabi.newpipe.extractor.services.youtube.linkHandler.YoutubeParsingHelper;
 import org.schabi.newpipe.extractor.stream.StreamInfoItem;
 import org.schabi.newpipe.extractor.stream.StreamInfoItemsCollector;
+import org.schabi.newpipe.extractor.stream.TimeAgoParser;
 import org.schabi.newpipe.extractor.utils.DonationLinkHelper;
 import org.schabi.newpipe.extractor.utils.Localization;
 import org.schabi.newpipe.extractor.utils.Parser;
@@ -52,6 +53,8 @@ public class YoutubeChannelExtractor extends ChannelExtractor {
     /*package-private*/ static final String CHANNEL_URL_BASE = "https://www.youtube.com/channel/";
     private static final String CHANNEL_FEED_BASE = "https://www.youtube.com/feeds/videos.xml?channel_id=";
     private static final String CHANNEL_URL_PARAMETERS = "/videos?view=0&flow=list&sort=dd&live_view=10000&gl=US&hl=en";
+
+    private final TimeAgoParser timeAgoParser = getService().getTimeAgoParser();
 
     private Document doc;
 
@@ -230,7 +233,7 @@ public class YoutubeChannelExtractor extends ChannelExtractor {
         final String uploaderUrl = getUrl();
         for (final Element li : element.children()) {
             if (li.select("div[class=\"feed-item-dismissable\"]").first() != null) {
-                collector.commit(new YoutubeStreamInfoItemExtractor(li) {
+                collector.commit(new YoutubeStreamInfoItemExtractor(li, timeAgoParser) {
                     @Override
                     public String getUrl() throws ParsingException {
                         try {

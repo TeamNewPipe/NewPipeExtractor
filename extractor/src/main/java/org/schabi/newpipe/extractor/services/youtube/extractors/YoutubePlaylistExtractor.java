@@ -18,6 +18,7 @@ import org.schabi.newpipe.extractor.services.youtube.linkHandler.YoutubeParsingH
 import org.schabi.newpipe.extractor.stream.StreamInfoItem;
 import org.schabi.newpipe.extractor.stream.StreamInfoItemsCollector;
 import org.schabi.newpipe.extractor.stream.StreamType;
+import org.schabi.newpipe.extractor.stream.TimeAgoParser;
 import org.schabi.newpipe.extractor.utils.Localization;
 import org.schabi.newpipe.extractor.utils.Utils;
 
@@ -27,6 +28,8 @@ import java.io.IOException;
 
 @SuppressWarnings("WeakerAccess")
 public class YoutubePlaylistExtractor extends PlaylistExtractor {
+
+    private final TimeAgoParser timeAgoParser = getService().getTimeAgoParser();
 
     private Document doc;
 
@@ -192,7 +195,7 @@ public class YoutubePlaylistExtractor extends PlaylistExtractor {
                 continue;
             }
 
-            collector.commit(new YoutubeStreamInfoItemExtractor(li) {
+            collector.commit(new YoutubeStreamInfoItemExtractor(li, timeAgoParser) {
                 public Element uploaderLink;
 
                 @Override
@@ -258,7 +261,7 @@ public class YoutubePlaylistExtractor extends PlaylistExtractor {
                 }
 
                 @Override
-                public String getUploadDate() throws ParsingException {
+                public String getTextualUploadDate() throws ParsingException {
                     return "";
                 }
 

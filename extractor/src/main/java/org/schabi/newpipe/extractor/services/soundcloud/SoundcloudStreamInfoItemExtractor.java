@@ -5,6 +5,8 @@ import org.schabi.newpipe.extractor.exceptions.ParsingException;
 import org.schabi.newpipe.extractor.stream.StreamInfoItemExtractor;
 import org.schabi.newpipe.extractor.stream.StreamType;
 
+import java.util.Calendar;
+
 import static org.schabi.newpipe.extractor.utils.Utils.replaceHttpWithHttps;
 
 public class SoundcloudStreamInfoItemExtractor implements StreamInfoItemExtractor {
@@ -41,8 +43,19 @@ public class SoundcloudStreamInfoItemExtractor implements StreamInfoItemExtracto
     }
 
     @Override
-    public String getUploadDate() throws ParsingException {
-        return SoundcloudParsingHelper.toDateString(itemObject.getString("created_at"));
+    public String getTextualUploadDate() throws ParsingException {
+        return SoundcloudParsingHelper.toTextualDate(getCreatedAt());
+    }
+
+    @Override
+    public Calendar getUploadDate() throws ParsingException {
+        Calendar uploadTime = Calendar.getInstance();
+        uploadTime.setTime(SoundcloudParsingHelper.parseDate(getCreatedAt()));
+        return uploadTime;
+    }
+
+    private String getCreatedAt() {
+        return itemObject.getString("created_at");
     }
 
     @Override

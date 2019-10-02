@@ -51,7 +51,7 @@ public class SoundcloudStreamExtractor extends StreamExtractor {
     @Nonnull
     @Override
     public String getUploadDate() throws ParsingException {
-        return SoundcloudParsingHelper.toDateString(track.getString("created_at"));
+        return SoundcloudParsingHelper.toTextualDate(track.getString("created_at"));
     }
 
     @Nonnull

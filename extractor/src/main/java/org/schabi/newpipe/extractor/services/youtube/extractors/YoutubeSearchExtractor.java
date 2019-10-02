@@ -9,6 +9,7 @@ import org.schabi.newpipe.extractor.InfoItem;
 import org.schabi.newpipe.extractor.StreamingService;
 import org.schabi.newpipe.extractor.exceptions.ExtractionException;
 import org.schabi.newpipe.extractor.exceptions.ParsingException;
+import org.schabi.newpipe.extractor.linkhandler.SearchQueryHandler;
 import org.schabi.newpipe.extractor.search.InfoItemsSearchCollector;
 import org.schabi.newpipe.extractor.search.SearchExtractor;
 import org.schabi.newpipe.extractor.linkhandler.SearchQueryHandler;
@@ -129,7 +130,7 @@ public class YoutubeSearchExtractor extends SearchExtractor {
 
                 // video item type
             } else if ((el = item.select("div[class*=\"yt-lockup-video\"]").first()) != null) {
-                collector.commit(new YoutubeStreamInfoItemExtractor(el));
+                collector.commit(new YoutubeStreamInfoItemExtractor(el, getService().getTimeAgoParser()));
             } else if ((el = item.select("div[class*=\"yt-lockup-channel\"]").first()) != null) {
                 collector.commit(new YoutubeChannelInfoItemExtractor(el));
             } else if ((el = item.select("div[class*=\"yt-lockup-playlist\"]").first()) != null &&

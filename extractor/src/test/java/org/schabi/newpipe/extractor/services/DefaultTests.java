@@ -4,6 +4,7 @@ import org.schabi.newpipe.extractor.InfoItem;
 import org.schabi.newpipe.extractor.ListExtractor;
 import org.schabi.newpipe.extractor.stream.StreamInfoItem;
 
+import java.util.Calendar;
 import java.util.List;
 
 import static org.junit.Assert.*;
@@ -27,6 +28,14 @@ public final class DefaultTests {
                 StreamInfoItem streamInfoItem = (StreamInfoItem) item;
                 assertNotEmpty("Uploader name not set: " + item, streamInfoItem.getUploaderName());
                 assertNotEmpty("Uploader url not set: " + item, streamInfoItem.getUploaderUrl());
+
+                final String textualUploadDate = streamInfoItem.getTextualUploadDate();
+                if (textualUploadDate != null && !textualUploadDate.isEmpty()) {
+                    final Calendar uploadDate = streamInfoItem.getUploadDate();
+                    assertNotNull("No parsed upload date", uploadDate);
+                    assertTrue("Upload date not in the past", uploadDate.before(Calendar.getInstance()));
+                }
+
             }
         }
     }

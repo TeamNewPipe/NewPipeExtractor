@@ -35,11 +35,14 @@ import org.schabi.newpipe.extractor.services.youtube.linkHandler.YoutubeParsingH
 import org.schabi.newpipe.extractor.stream.StreamInfoItem;
 import org.schabi.newpipe.extractor.stream.StreamInfoItemsCollector;
 import org.schabi.newpipe.extractor.utils.Localization;
+import org.schabi.newpipe.extractor.stream.TimeAgoParser;
 
 import javax.annotation.Nonnull;
 import java.io.IOException;
 
 public class YoutubeTrendingExtractor extends KioskExtractor<StreamInfoItem> {
+
+    private final TimeAgoParser timeAgoParser = getService().getTimeAgoParser();
 
     private Document doc;
 
@@ -93,7 +96,7 @@ public class YoutubeTrendingExtractor extends KioskExtractor<StreamInfoItem> {
         for(Element ul : uls) {
             for(final Element li : ul.children()) {
                 final Element el = li.select("div[class*=\"yt-lockup-dismissable\"]").first();
-                collector.commit(new YoutubeStreamInfoItemExtractor(li) {
+                collector.commit(new YoutubeStreamInfoItemExtractor(li, timeAgoParser) {
                     @Override
                     public String getUrl() throws ParsingException {
                         try {
