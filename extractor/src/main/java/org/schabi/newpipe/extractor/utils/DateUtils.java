@@ -9,13 +9,14 @@ import java.util.Date;
 import java.util.List;
 
 public class DateUtils {
-    private static final List<SimpleDateFormat> possibleDateTimeFormats = Arrays.asList(
-        new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss+00:00"),    // Youtube RSS feed
-        new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss'Z'"),       // SoundCloud API
-        new SimpleDateFormat("yyyy/MM/dd HH:mm:ss +0000")       // SoundCloud API
-    );
-
     private static Date tryParseDateTimeString(String dateTime) throws ParsingException {
+        // Since SimpleDateFormat::parse is not thread-safe, we create new SimpleDateFormat instances here
+        List<SimpleDateFormat> possibleDateTimeFormats = Arrays.asList(
+            new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss+00:00"),    // Youtube RSS feed
+            new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss'Z'"),       // SoundCloud API
+            new SimpleDateFormat("yyyy/MM/dd HH:mm:ss +0000")       // SoundCloud API
+        );
+
         ParseException ex = null;
         for (SimpleDateFormat format: possibleDateTimeFormats) {
             try {
