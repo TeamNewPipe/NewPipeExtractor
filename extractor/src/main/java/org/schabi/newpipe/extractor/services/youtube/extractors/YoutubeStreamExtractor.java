@@ -943,6 +943,9 @@ public class YoutubeStreamExtractor extends StreamExtractor {
                             streamUrl = cipher.get("url") + "&" + cipher.get("sp") + "=" + decryptSignature(cipher.get("s"), decryptionCode);
                         }
 
+                        if (formatData.has("type") && formatData.getString("type").equals("FORMAT_STREAM_TYPE_OTF")) {
+                            streamUrl += "&sq=1";
+                        }
                         urlAndItags.put(streamUrl, itagItem);
                     }
                 } catch (UnsupportedEncodingException ignored) {
