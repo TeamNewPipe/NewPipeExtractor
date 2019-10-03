@@ -101,7 +101,7 @@ public abstract class YoutubeStreamExtractorBaseTest {
 
     @Test
     public void testStreamType() throws ParsingException {
-        assertTrue(extractor.getStreamType() == StreamType.VIDEO_STREAM);
+        assertSame(extractor.getStreamType(), StreamType.VIDEO_STREAM);
     }
 
     @Test

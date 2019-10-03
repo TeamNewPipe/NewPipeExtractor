@@ -82,7 +82,7 @@ public class YoutubeStreamExtractorDefaultTest {
         @Test
         @Override
         public void testGetViewCount() throws ParsingException {
-            Long count = extractor.getViewCount();
+            long count = extractor.getViewCount();
             assertTrue(Long.toString(count), count >= /* specific to that video */ 1220025784);
         }
 
