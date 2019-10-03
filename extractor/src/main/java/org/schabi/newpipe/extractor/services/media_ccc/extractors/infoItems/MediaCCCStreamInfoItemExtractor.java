@@ -56,7 +56,7 @@ public class MediaCCCStreamInfoItemExtractor implements StreamInfoItemExtractor 
 
     @Override
     public String getRawUploadDate() throws ParsingException {
-        return getUploadDate();
+        return event.getString("date");
     }
 
     @Override

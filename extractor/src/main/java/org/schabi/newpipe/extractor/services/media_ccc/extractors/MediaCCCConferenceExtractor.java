@@ -13,14 +13,19 @@ import org.schabi.newpipe.extractor.linkhandler.ListLinkHandler;
 import org.schabi.newpipe.extractor.services.media_ccc.extractors.infoItems.MediaCCCStreamInfoItemExtractor;
 import org.schabi.newpipe.extractor.stream.StreamInfoItem;
 import org.schabi.newpipe.extractor.stream.StreamInfoItemsCollector;
+import org.schabi.newpipe.extractor.utils.DateUtils;
 import org.schabi.newpipe.extractor.utils.Localization;
 
 import javax.annotation.Nonnull;
 import java.io.IOException;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 public class MediaCCCConferenceExtractor extends ChannelExtractor {
 
     private JsonObject conferenceData;
+    private Map<String, String> videoPublishIsoTimeStrLookup;
 
     public MediaCCCConferenceExtractor(StreamingService service, ListLinkHandler linkHandler, Localization localization) {
         super(service, linkHandler, localization);
@@ -49,6 +54,24 @@ public class MediaCCCConferenceExtractor extends ChannelExtractor {
     @Override
     public String getDescription() throws ParsingException {
         return null;
+    }
+
+    @Override
+    public Map<String, String> getPublishIsoTimeStrLookup() throws ParsingException {
+        try {
+            if (videoPublishIsoTimeStrLookup == null) {
+                videoPublishIsoTimeStrLookup = new HashMap<>();
+                List<StreamInfoItem> items = getInitialPage().getItems();
+                for (StreamInfoItem item: items) {
+                    videoPublishIsoTimeStrLookup.put(
+                        item.getId(),
+                        DateUtils.toISODateTimeString(item.getRawUploadDate()));
+                }
+            }
+            return videoPublishIsoTimeStrLookup;
+        } catch (Exception ex) {
+            throw new ParsingException(ex.getMessage(), ex);
+        }
     }
 
     @Nonnull

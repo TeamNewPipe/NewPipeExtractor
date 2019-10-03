@@ -14,7 +14,8 @@ public class DateUtils {
         List<SimpleDateFormat> possibleDateTimeFormats = Arrays.asList(
             new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss+00:00"),    // Youtube RSS feed
             new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss'Z'"),       // SoundCloud API
-            new SimpleDateFormat("yyyy/MM/dd HH:mm:ss +0000")       // SoundCloud API
+            new SimpleDateFormat("yyyy/MM/dd HH:mm:ss +0000"),      // SoundCloud API
+            new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSXXX")    // MediaCCC API
         );
 
         ParseException ex = null;
