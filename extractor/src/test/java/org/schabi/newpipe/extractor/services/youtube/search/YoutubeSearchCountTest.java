@@ -1,7 +1,6 @@
 package org.schabi.newpipe.extractor.services.youtube.search;
 
 import org.junit.BeforeClass;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.schabi.newpipe.DownloaderTestImpl;
 import org.schabi.newpipe.extractor.NewPipe;
@@ -27,7 +26,6 @@ public class YoutubeSearchCountTest {
             itemsPage = extractor.getInitialPage();
         }
 
-        @Ignore("The subscriber count was removed from the old interface that NewPipe fetches the content from, ignoring it for now.")
         @Test
         public void testViewCount() {
             ChannelInfoItem ci = (ChannelInfoItem) itemsPage.getItems().get(0);
