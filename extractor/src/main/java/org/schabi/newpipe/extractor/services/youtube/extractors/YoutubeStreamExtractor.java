@@ -66,12 +66,6 @@ public class YoutubeStreamExtractor extends StreamExtractor {
         }
     }
 
-    public class GemaException extends ContentNotAvailableException {
-        GemaException(String message) {
-            super(message);
-        }
-    }
-
     public class SubtitlesException extends ContentNotAvailableException {
         SubtitlesException(String message, Throwable cause) {
             super(message, cause);
@@ -584,12 +578,6 @@ public class YoutubeStreamExtractor extends StreamExtractor {
             String errorMessage = errorElement.text();
             if (errorMessage == null || errorMessage.isEmpty()) {
                 errorReason = null;
-            } else if (errorMessage.contains("GEMA")) {
-                // Gema sometimes blocks youtube music content in germany:
-                // https://www.gema.de/en/
-                // Detailed description:
-                // https://en.wikipedia.org/wiki/GEMA_%28German_organization%29
-                errorReason = new StringBuilder("GEMA");
             } else {
                 errorReason = new StringBuilder(errorMessage);
                 errorReason.append("  ");
@@ -670,8 +658,6 @@ public class YoutubeStreamExtractor extends StreamExtractor {
         } catch (Parser.RegexException e) {
             String errorReason = getErrorMessage();
             switch (errorReason) {
-                case "GEMA":
-                    throw new GemaException(errorReason);
                 case "":
                     throw new ContentNotAvailableException("Content not available: player config empty", e);
                 default:
