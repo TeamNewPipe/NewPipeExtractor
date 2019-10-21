@@ -36,8 +36,15 @@ public class SoundcloudParsingHelper {
         if (clientId != null && !clientId.isEmpty()) return clientId;
 
         Downloader dl = NewPipe.getDownloader();
-        String response = dl.download("https://soundcloud.com");
+        // use mobile version although the document is larger because it contains the client_id
+        String response = dl.download("https://m.soundcloud.com");
 
+        String jsonClientId = Parser.matchGroup1("client_id:[\\s]*\"([^\"]+)\"", response);
+        if (jsonClientId != null)
+            return jsonClientId;
+
+        // This worked for https://soundcloud.com in case there ae changes again,
+        // we might meed to download that page again
         Document doc = Jsoup.parse(response);
         Element jsElement = doc.select("script[src^=https://a-v2.sndcdn.com/assets/app]").first();
 
