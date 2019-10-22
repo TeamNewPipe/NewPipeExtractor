@@ -7,13 +7,19 @@ import java.util.Map;
 import javax.annotation.Nonnull;
 
 public class DownloadResponse {
+    private final int responseCode;
     private final String responseBody;
     private final Map<String, List<String>> responseHeaders;
 
-    public DownloadResponse(String responseBody, Map<String, List<String>> headers) {
+    public DownloadResponse(int responseCode, String responseBody, Map<String, List<String>> headers) {
         super();
+        this.responseCode = responseCode;
         this.responseBody = responseBody;
         this.responseHeaders = headers;
+    }
+
+    public int getResponseCode() {
+        return responseCode;
     }
 
     public String getResponseBody() {
@@ -33,5 +39,4 @@ public class DownloadResponse {
         else
             return cookies;
     }
-
 }
