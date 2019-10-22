@@ -1,5 +1,6 @@
 package org.schabi.newpipe.extractor.services.soundcloud;
 
+import org.schabi.newpipe.extractor.exceptions.ExtractionException;
 import org.schabi.newpipe.extractor.exceptions.ParsingException;
 import org.schabi.newpipe.extractor.exceptions.ReCaptchaException;
 import org.schabi.newpipe.extractor.linkhandler.SearchQueryHandlerFactory;
@@ -48,10 +49,10 @@ public class SoundcloudSearchQueryHandlerFactory extends SearchQueryHandlerFacto
 
         } catch (UnsupportedEncodingException e) {
             throw new ParsingException("Could not encode query", e);
-        } catch (IOException e) {
-            throw new ParsingException("Could not get client id", e);
         } catch (ReCaptchaException e) {
             throw new ParsingException("ReCaptcha required", e);
+        } catch (IOException | ExtractionException e) {
+            throw new ParsingException("Could not get client id", e);
         }
     }
 
