@@ -31,6 +31,7 @@ import java.util.HashMap;
 import static org.schabi.newpipe.extractor.utils.Utils.replaceHttpWithHttps;
 
 public class SoundcloudParsingHelper {
+    private static final String HARDCODED_CLIENT_ID = "LHzSAKe8eP9Yy3FgBugfBapRPLncO6Ng"; // Updated on 22/10/19
     private static String clientId;
     
     private SoundcloudParsingHelper() {
@@ -40,11 +41,8 @@ public class SoundcloudParsingHelper {
         if (clientId != null && !clientId.isEmpty()) return clientId;
 
         Downloader dl = NewPipe.getDownloader();
-        clientId = "LHzSAKe8eP9Yy3FgBugfBapRPLncO6Ng"; // Updated on 22/10/19
-        final String apiUrl = "https://api.soundcloud.com/connect?client_id=" + clientId;
-        // Should return 200 to indicate that the client id is valid, a 401 is returned otherwise.
-        // In that case, the fallback method is used.
-        if (dl.head(apiUrl).getResponseCode() == 200) {
+        clientId = HARDCODED_CLIENT_ID;
+        if (checkIfHardcodedClientIdIsValid(dl)) {
             return clientId;
         }
 
@@ -73,6 +71,12 @@ public class SoundcloudParsingHelper {
 
         // Officially give up
         throw new ExtractionException("Couldn't extract client id");
+    }
+
+    static boolean checkIfHardcodedClientIdIsValid(Downloader dl) throws IOException, ReCaptchaException {
+        final String apiUrl = "https://api.soundcloud.com/connect?client_id=" + HARDCODED_CLIENT_ID;
+        // Should return 200 to indicate that the client id is valid, a 401 is returned otherwise.
+        return dl.head(apiUrl).getResponseCode() == 200;
     }
 
     public static String toDateString(String time) throws ParsingException {
