@@ -17,7 +17,7 @@ import static org.schabi.newpipe.extractor.ServiceList.YouTube;
  * Test for {@link YoutubeSearchExtractor}
  */
 public class YoutubeSearchCountTest {
-    public static class YoutubeChannelViewCountTest extends YoutubeSearchExtractorBaseTest {
+    public static class YoutubeChannelSubscriberCountTest extends YoutubeSearchExtractorBaseTest {
         @BeforeClass
         public static void setUpClass() throws Exception {
             NewPipe.init(Downloader.getInstance(), new Localization("GB", "en"));
@@ -28,10 +28,15 @@ public class YoutubeSearchCountTest {
         }
 
         @Test
-        public void testViewCount() {
+        public void testSubscriberCount() {
             ChannelInfoItem ci = (ChannelInfoItem) itemsPage.getItems().get(0);
-            assertTrue("Count does not fit: " + Long.toString(ci.getSubscriberCount()),
-                    69043316 < ci.getSubscriberCount() && ci.getSubscriberCount() < 103043316);
+            long subscriberCount = ci.getSubscriberCount();
+
+            // Only test if subscribers count is available in the search page
+            if (subscriberCount != -1) {
+                assertTrue("Count does not fit: " + Long.toString(subscriberCount),
+                        69043316 < subscriberCount && subscriberCount < 103043316);
+            }
         }
     }
 }
