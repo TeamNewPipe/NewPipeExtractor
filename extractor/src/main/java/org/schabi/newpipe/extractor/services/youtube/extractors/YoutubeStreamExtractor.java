@@ -18,6 +18,7 @@ import org.schabi.newpipe.extractor.exceptions.ParsingException;
 import org.schabi.newpipe.extractor.exceptions.ReCaptchaException;
 import org.schabi.newpipe.extractor.linkhandler.LinkHandler;
 import org.schabi.newpipe.extractor.services.youtube.ItagItem;
+import org.schabi.newpipe.extractor.services.youtube.linkHandler.YoutubeParsingHelper;
 import org.schabi.newpipe.extractor.stream.*;
 import org.schabi.newpipe.extractor.utils.Localization;
 import org.schabi.newpipe.extractor.utils.Parser;
@@ -536,7 +537,7 @@ public class YoutubeStreamExtractor extends StreamExtractor {
             if (watch.size() < 1) {
                 return null;// prevent the snackbar notification "report error" on age-restricted videos
             }
-            
+
             collector.commit(extractVideoPreviewInfo(watch.first().select("li").first()));
             return collector.getItems().get(0);
         } catch (Exception e) {
@@ -611,18 +612,12 @@ public class YoutubeStreamExtractor extends StreamExtractor {
 
     private String pageHtml = null;
 
-    private String getPageHtml(Downloader downloader) throws IOException, ExtractionException {
-        final String verifiedUrl = getUrl() + VERIFIED_URL_PARAMS;
-        if (pageHtml == null) {
-            pageHtml = downloader.download(verifiedUrl);
-        }
-        return pageHtml;
-    }
-
     @Override
     public void onFetchPage(@Nonnull Downloader downloader) throws IOException, ExtractionException {
-        final String pageContent = getPageHtml(downloader);
-        doc = Jsoup.parse(pageContent, getUrl());
+        final String verifiedUrl = getUrl() + VERIFIED_URL_PARAMS;
+        final DownloadResponse response = downloader.get(verifiedUrl);
+        pageHtml = response.getResponseBody();
+        doc = YoutubeParsingHelper.parseAndCheckPage(verifiedUrl, response);
 
         final String playerUrl;
         // Check if the video is age restricted
@@ -634,7 +629,7 @@ public class YoutubeStreamExtractor extends StreamExtractor {
             playerUrl = info.url;
             isAgeRestricted = true;
         } else {
-            final JsonObject ytPlayerConfig = getPlayerConfig(pageContent);
+            final JsonObject ytPlayerConfig = getPlayerConfig();
             playerArgs = getPlayerArgs(ytPlayerConfig);
             playerUrl = getPlayerUrl(ytPlayerConfig);
             isAgeRestricted = false;
@@ -650,9 +645,9 @@ public class YoutubeStreamExtractor extends StreamExtractor {
         }
     }
 
-    private JsonObject getPlayerConfig(String pageContent) throws ParsingException {
+    private JsonObject getPlayerConfig() throws ParsingException {
         try {
-            String ytPlayerConfigRaw = Parser.matchGroup1("ytplayer.config\\s*=\\s*(\\{.*?\\});", pageContent);
+            String ytPlayerConfigRaw = Parser.matchGroup1("ytplayer.config\\s*=\\s*(\\{.*?\\});", pageHtml);
             return JsonParser.object().from(ytPlayerConfigRaw);
         } catch (Parser.RegexException e) {
             String errorReason = getErrorMessage();

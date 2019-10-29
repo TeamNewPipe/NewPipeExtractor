@@ -1,7 +1,11 @@
 package org.schabi.newpipe.extractor.services.youtube.linkHandler;
 
 
+import org.jsoup.Jsoup;
+import org.jsoup.nodes.Document;
+import org.schabi.newpipe.extractor.DownloadResponse;
 import org.schabi.newpipe.extractor.exceptions.ParsingException;
+import org.schabi.newpipe.extractor.exceptions.ReCaptchaException;
 
 import java.net.URL;
 
@@ -28,6 +32,23 @@ import java.net.URL;
 public class YoutubeParsingHelper {
 
     private YoutubeParsingHelper() {
+    }
+
+    private static final String[] RECAPTCHA_DETECTION_SELECTORS = {
+            "form[action*=\"/das_captcha\"]",
+            "input[name*=\"action_recaptcha_verify\"]"
+    };
+
+    public static Document parseAndCheckPage(final String url, final DownloadResponse response) throws ReCaptchaException {
+        final Document document = Jsoup.parse(response.getResponseBody(), url);
+
+        for (String detectionSelector : RECAPTCHA_DETECTION_SELECTORS) {
+            if (!document.select(detectionSelector).isEmpty()) {
+                throw new ReCaptchaException("reCAPTCHA challenge requested (detected with selector: \"" + detectionSelector + "\")", url);
+            }
+        }
+
+        return document;
     }
 
     public static boolean isYoutubeURL(URL url) {

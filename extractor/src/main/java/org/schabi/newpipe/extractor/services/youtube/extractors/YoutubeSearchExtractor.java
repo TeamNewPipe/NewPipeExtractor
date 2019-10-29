@@ -3,6 +3,7 @@ package org.schabi.newpipe.extractor.services.youtube.extractors;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
+import org.schabi.newpipe.extractor.DownloadResponse;
 import org.schabi.newpipe.extractor.Downloader;
 import org.schabi.newpipe.extractor.InfoItem;
 import org.schabi.newpipe.extractor.StreamingService;
@@ -12,6 +13,7 @@ import org.schabi.newpipe.extractor.search.InfoItemsSearchCollector;
 import org.schabi.newpipe.extractor.search.SearchExtractor;
 import org.schabi.newpipe.extractor.linkhandler.SearchQueryHandler;
 import org.schabi.newpipe.extractor.utils.Localization;
+import org.schabi.newpipe.extractor.services.youtube.linkHandler.YoutubeParsingHelper;
 import org.schabi.newpipe.extractor.utils.Parser;
 
 import javax.annotation.Nonnull;
@@ -52,13 +54,9 @@ public class YoutubeSearchExtractor extends SearchExtractor {
 
     @Override
     public void onFetchPage(@Nonnull Downloader downloader) throws IOException, ExtractionException {
-        final String site;
         final String url = getUrl();
-        //String url = builder.build().toString();
-        //if we've been passed a valid language code, append it to the URL
-        site = downloader.download(url, getLocalization());
-
-        doc = Jsoup.parse(site, url);
+        final DownloadResponse response = downloader.get(url, getLocalization());
+        doc = YoutubeParsingHelper.parseAndCheckPage(url, response);
     }
 
     @Override

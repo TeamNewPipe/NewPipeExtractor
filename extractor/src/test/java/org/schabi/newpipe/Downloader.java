@@ -16,6 +16,8 @@ import org.schabi.newpipe.extractor.DownloadResponse;
 import org.schabi.newpipe.extractor.exceptions.ReCaptchaException;
 import org.schabi.newpipe.extractor.utils.Localization;
 
+import static java.util.Collections.singletonList;
+
 /*
  * Created by Christian Schabesberger on 28.01.16.
  *
@@ -192,6 +194,14 @@ public class Downloader implements org.schabi.newpipe.extractor.Downloader {
         }
 
         return new DownloadResponse(con.getResponseCode(), null, con.getHeaderFields());
+    }
+
+    @Override
+    public DownloadResponse get(String siteUrl, Localization localization) throws IOException, ReCaptchaException {
+        final Map<String, List<String>> requestHeaders = new HashMap<>();
+        requestHeaders.put("Accept-Language", singletonList(localization.getLanguage()));
+
+        return get(siteUrl, new DownloadRequest(null, requestHeaders));
     }
 
     @Override
