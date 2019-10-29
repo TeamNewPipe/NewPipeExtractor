@@ -823,13 +823,6 @@ public class YoutubeStreamExtractor extends StreamExtractor {
         // If the video is age restricted getPlayerConfig will fail
         if(isAgeRestricted) return Collections.emptyList();
 
-        final JsonObject playerConfig;
-        try {
-            playerConfig = getPlayerConfig(getPageHtml(NewPipe.getDownloader()));
-        } catch (IOException | ExtractionException e) {
-            throw new SubtitlesException("Unable to download player configs", e);
-        }
-
         final JsonObject captions;
         if (!playerResponse.has("captions")) {
             // Captions does not exist
