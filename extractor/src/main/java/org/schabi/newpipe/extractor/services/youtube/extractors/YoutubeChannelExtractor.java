@@ -7,6 +7,7 @@ import com.grack.nanojson.JsonParserException;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
+import org.schabi.newpipe.extractor.DownloadResponse;
 import org.schabi.newpipe.extractor.Downloader;
 import org.schabi.newpipe.extractor.NewPipe;
 import org.schabi.newpipe.extractor.StreamingService;
@@ -14,6 +15,7 @@ import org.schabi.newpipe.extractor.channel.ChannelExtractor;
 import org.schabi.newpipe.extractor.exceptions.ExtractionException;
 import org.schabi.newpipe.extractor.exceptions.ParsingException;
 import org.schabi.newpipe.extractor.linkhandler.ListLinkHandler;
+import org.schabi.newpipe.extractor.services.youtube.linkHandler.YoutubeParsingHelper;
 import org.schabi.newpipe.extractor.stream.StreamInfoItem;
 import org.schabi.newpipe.extractor.stream.StreamInfoItemsCollector;
 import org.schabi.newpipe.extractor.utils.DonationLinkHelper;
@@ -60,8 +62,8 @@ public class YoutubeChannelExtractor extends ChannelExtractor {
     @Override
     public void onFetchPage(@Nonnull Downloader downloader) throws IOException, ExtractionException {
         String channelUrl = super.getUrl() + CHANNEL_URL_PARAMETERS;
-        String pageContent = downloader.download(channelUrl);
-        doc = Jsoup.parse(pageContent, channelUrl);
+        final DownloadResponse response = downloader.get(channelUrl);
+        doc = YoutubeParsingHelper.parseAndCheckPage(channelUrl, response);
     }
 
     @Override

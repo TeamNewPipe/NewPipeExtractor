@@ -6,6 +6,7 @@ import com.grack.nanojson.JsonParserException;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
+import org.schabi.newpipe.extractor.DownloadResponse;
 import org.schabi.newpipe.extractor.Downloader;
 import org.schabi.newpipe.extractor.StreamingService;
 import org.schabi.newpipe.extractor.exceptions.ExtractionException;
@@ -35,8 +36,9 @@ public class YoutubePlaylistExtractor extends PlaylistExtractor {
 
     @Override
     public void onFetchPage(@Nonnull Downloader downloader) throws IOException, ExtractionException {
-        String pageContent = downloader.download(getUrl());
-        doc = Jsoup.parse(pageContent, getUrl());
+        final String url = getUrl();
+        final DownloadResponse response = downloader.get(url);
+        doc = YoutubeParsingHelper.parseAndCheckPage(url, response);
     }
 
     @Override
