@@ -56,13 +56,13 @@ public abstract class YoutubeStreamExtractorBaseTest {
 
     @Test
     public void testGetUploadDate() throws ParsingException {
-        assertTrue(extractor.getUploadDate().length() > 0);
+        assertFalse(extractor.getUploadDate().isEmpty());
     }
 
     @Test
     public void testGetUploaderUrl() throws ParsingException {
         String uploaderUrl = extractor.getUploaderUrl();
-        assertTrue(uploaderUrl.startsWith("https://www.youtube.com/channel/"));
+        assertTrue(uploaderUrl, uploaderUrl.startsWith("https://www.youtube.com/channel/"));
     }
 
     @Test
