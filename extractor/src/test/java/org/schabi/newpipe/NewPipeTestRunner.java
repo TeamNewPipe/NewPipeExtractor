@@ -9,12 +9,16 @@ import org.junit.runners.BlockJUnit4ClassRunner;
 import org.junit.runners.model.FrameworkMethod;
 import org.junit.runners.model.InitializationError;
 import org.junit.runners.model.Statement;
-import org.schabi.newpipe.extractor.exceptions.ReCaptchaException;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.concurrent.TimeUnit;
 
 public class NewPipeTestRunner extends BlockJUnit4ClassRunner {
     private final NewPipeTestRunnerOptions options;
+
+    private List<String> methodsNotFailing;
+    private int currentRetry;
 
     public NewPipeTestRunner(Class testClass) throws InitializationError {
         super(testClass);
@@ -38,6 +42,10 @@ public class NewPipeTestRunner extends BlockJUnit4ClassRunner {
             throw new InitializationError("methodDelayMs value should not be negative in annotation @" +
                     NewPipeTestRunnerOptions.class.getSimpleName() + " in class " + testClass.getCanonicalName());
         }
+        if (options.retry() < 1) {
+            throw new InitializationError("retry value should be bigger than 0 in annotation @" +
+                    NewPipeTestRunnerOptions.class.getSimpleName() + " in class " + testClass.getCanonicalName());
+        }
     }
 
 
@@ -54,15 +62,24 @@ public class NewPipeTestRunner extends BlockJUnit4ClassRunner {
     @Override
     public void run(RunNotifier notifier) {
         sleep(options.classDelayMs()); // @see NewPipeTestRunnerOptions.classDelayMs
-        super.run(notifier);
+
+        methodsNotFailing = new ArrayList<>();
+        for (currentRetry = 1; currentRetry <= options.retry(); ++currentRetry) {
+            if (getChildren().size() == methodsNotFailing.size()) {
+                break;
+            }
+            super.run(notifier);
+        }
     }
 
     @Override
     protected void runChild(FrameworkMethod method, RunNotifier notifier) {
+        if (isMethodAlreadyNotFailing(method)) return;
         Description description = describeChild(method);
 
         if (isIgnored(method)) {
             notifier.fireTestIgnored(description);
+            markMethodAsNotFailing(method);
 
             String ignoreReason = method.getAnnotation(Ignore.class).value();
             System.out.println(method.getName() + "() ignored because of @Ignore" +
@@ -75,18 +92,27 @@ public class NewPipeTestRunner extends BlockJUnit4ClassRunner {
 
             try {
                 statement.evaluate();
-            } catch (AssumptionViolatedException | ReCaptchaException e) {
-                notifier.fireTestAssumptionFailed(new Failure(description, e));
-
-                if (e instanceof ReCaptchaException) {
-                    System.out.println(method.getName() + "() ignored since it threw a ReCaptchaException");
-                }
+                markMethodAsNotFailing(method);
 
             } catch (Throwable e) {
-                notifier.fireTestFailure(new Failure(description, e));
+                if (currentRetry < options.retry() || e instanceof AssumptionViolatedException) {
+                    notifier.fireTestAssumptionFailed(new Failure(description, e));
+                } else {
+                    notifier.fireTestFailure(new Failure(description, e)); // test is not going to be retried anymore
+                }
+
             } finally {
                 notifier.fireTestFinished(description);
             }
         }
+    }
+
+
+    private void markMethodAsNotFailing(FrameworkMethod method) {
+        methodsNotFailing.add(method.getName());
+    }
+
+    private boolean isMethodAlreadyNotFailing(FrameworkMethod method) {
+        return methodsNotFailing.contains(method.getName());
     }
 }
