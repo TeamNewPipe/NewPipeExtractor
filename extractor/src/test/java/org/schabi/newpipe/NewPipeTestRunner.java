@@ -21,12 +21,27 @@ public class NewPipeTestRunner extends BlockJUnit4ClassRunner {
 
         if (testClass.isAnnotationPresent(NewPipeTestRunnerOptions.class)) {
             options = (NewPipeTestRunnerOptions) testClass.getAnnotation(NewPipeTestRunnerOptions.class);
+            validateOptions(testClass);
         } else {
-            throw new IllegalArgumentException("Test classes running with " + NewPipeTestRunner.class.getName() + " should also have @NewPipeTestRunnerOptions");
+            throw new InitializationError("Test class " + testClass.getCanonicalName() +
+                    " running with " + NewPipeTestRunner.class.getSimpleName() + " should have the @" +
+                    NewPipeTestRunnerOptions.class.getSimpleName() + " annotation");
         }
     }
 
-    public void sleep(int milliseconds) {
+    private void validateOptions(Class testClass) throws InitializationError {
+        if (options.classDelayMs() < 0) {
+            throw new InitializationError("classDelayMs value should not be negative in annotation @" +
+                    NewPipeTestRunnerOptions.class.getSimpleName() + " in class " + testClass.getCanonicalName());
+        }
+        if (options.methodDelayMs() < 0) {
+            throw new InitializationError("methodDelayMs value should not be negative in annotation @" +
+                    NewPipeTestRunnerOptions.class.getSimpleName() + " in class " + testClass.getCanonicalName());
+        }
+    }
+
+
+    private void sleep(int milliseconds) {
         if (milliseconds > 0) {
             try {
                 TimeUnit.MILLISECONDS.sleep(milliseconds);
