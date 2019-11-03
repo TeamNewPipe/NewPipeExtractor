@@ -111,4 +111,11 @@ public abstract class YoutubeStreamExtractorBaseTest {
         assertFalse(relatedVideos.getItems().isEmpty());
         assertTrue(relatedVideos.getErrors().isEmpty());
     }
+
+    @Test
+    public void testGetTimestamp() throws ParsingException {
+        // invalid timestamp
+        long timestamp = extractor.getTimeStamp();
+        assertTrue( timestamp + "", timestamp <= 0);
+    }
 }

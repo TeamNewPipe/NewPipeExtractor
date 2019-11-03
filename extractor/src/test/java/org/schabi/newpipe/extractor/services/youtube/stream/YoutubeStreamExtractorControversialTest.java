@@ -32,17 +32,6 @@ public class YoutubeStreamExtractorControversialTest extends YoutubeStreamExtrac
     }
 
     @Test
-    public void testGetInvalidTimeStamp() throws ParsingException {
-        assertTrue(extractor.getTimeStamp() + "", extractor.getTimeStamp() <= 0);
-    }
-
-    @Test
-    public void testGetValidTimeStamp() throws ExtractionException {
-        StreamExtractor extractor = YouTube.getStreamExtractor("https://youtu.be/FmG385_uUys?t=174");
-        assertEquals(extractor.getTimeStamp() + "", "174");
-    }
-
-    @Test
     @Ignore
     public void testGetAgeLimit() throws ParsingException {
         assertEquals(18, extractor.getAgeLimit());

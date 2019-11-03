@@ -10,7 +10,6 @@ import org.schabi.newpipe.extractor.exceptions.ExtractionException;
 import org.schabi.newpipe.extractor.exceptions.ParsingException;
 import org.schabi.newpipe.extractor.services.youtube.extractors.YoutubeStreamExtractor;
 import org.schabi.newpipe.extractor.services.youtube.linkHandler.YoutubeStreamLinkHandlerFactory;
-import org.schabi.newpipe.extractor.stream.StreamExtractor;
 import org.schabi.newpipe.extractor.utils.Localization;
 
 import java.io.IOException;
@@ -29,17 +28,6 @@ public class YoutubeStreamExtractorAgeRestrictedTest extends YoutubeStreamExtrac
         extractor = (YoutubeStreamExtractor) YouTube
                 .getStreamExtractor("https://www.youtube.com/watch?v=MmBeUZqv1QA");
         extractor.fetchPage();
-    }
-
-    @Test
-    public void testGetInvalidTimeStamp() throws ParsingException {
-        assertTrue(extractor.getTimeStamp() + "", extractor.getTimeStamp() <= 0);
-    }
-
-    @Test
-    public void testGetValidTimeStamp() throws IOException, ExtractionException {
-        StreamExtractor extractor = YouTube.getStreamExtractor("https://youtu.be/FmG385_uUys?t=174");
-        assertEquals(extractor.getTimeStamp() + "", "174");
     }
 
     @Test

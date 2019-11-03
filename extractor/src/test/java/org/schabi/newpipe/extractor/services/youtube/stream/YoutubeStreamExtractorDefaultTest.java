@@ -56,18 +56,6 @@ public class YoutubeStreamExtractorDefaultTest {
         }
 
         @Test
-        public void testGetInvalidTimeStamp() throws ParsingException {
-            assertTrue(extractor.getTimeStamp() + "",
-                    extractor.getTimeStamp() <= 0);
-        }
-
-        @Test
-        public void testGetValidTimeStamp() throws ExtractionException {
-            StreamExtractor extractor = YouTube.getStreamExtractor("https://youtu.be/FmG385_uUys?t=174");
-            assertEquals(extractor.getTimeStamp() + "", "174");
-        }
-
-        @Test
         public void testGetFullLinksInDescription() throws ParsingException {
             assertTrue(extractor.getDescription().contains("http://adele.com"));
             assertFalse(extractor.getDescription().contains("http://smarturl.it/SubscribeAdele?IQi..."));
@@ -150,9 +138,7 @@ public class YoutubeStreamExtractorDefaultTest {
         }
     }
 
-    public static class FramesTest {
-        private static YoutubeStreamExtractor extractor;
-
+    public static class FramesTest extends YoutubeStreamExtractorBaseTest {
         @BeforeClass
         public static void setUp() throws Exception {
             NewPipe.init(Downloader.getInstance(), new Localization("GB", "en"));
