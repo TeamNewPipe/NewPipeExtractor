@@ -31,15 +31,16 @@ public class TimeAgoParser {
     }
 
     /**
-     * Parses a textual date in the format '2 days ago' into a Calendar representation.
-     * Beginning with weeks ago, marks the date as approximated by setting minutes, seconds
-     * and milliseconds to 0.
+     * Parses a textual date in the format '2 days ago' into a Calendar representation which is then wrapped in a
+     * {@link DateWrapper} object.
+     * <p>
+     * Beginning with days ago, the date is considered as an approximation.
      *
      * @param textualDate The original date as provided by the streaming service
-     * @return The parsed (approximated) time
+     * @return The parsed time (can be approximated)
      * @throws ParsingException if the time unit could not be recognized
      */
-    public Calendar parse(String textualDate) throws ParsingException {
+    public DateWrapper parse(String textualDate) throws ParsingException {
         for (Map.Entry<TimeAgoUnit, Map<String, Integer>> caseUnitEntry : patternsHolder.specialCases().entrySet()) {
             final TimeAgoUnit timeAgoUnit = caseUnitEntry.getKey();
             for (Map.Entry<String, Integer> caseMapToAmountEntry : caseUnitEntry.getValue().entrySet()) {
@@ -47,7 +48,7 @@ public class TimeAgoParser {
                 final Integer caseAmount = caseMapToAmountEntry.getValue();
 
                 if (textualDateMatches(textualDate, caseText)) {
-                    return getCalendar(caseAmount, timeAgoUnit);
+                    return getResultFor(caseAmount, timeAgoUnit);
                 }
             }
         }
@@ -61,8 +62,8 @@ public class TimeAgoParser {
             timeAgoAmount = 1;
         }
 
-        TimeAgoUnit timeAgoUnit = parseTimeAgoUnit(textualDate);
-        return getCalendar(timeAgoAmount, timeAgoUnit);
+        final TimeAgoUnit timeAgoUnit = parseTimeAgoUnit(textualDate);
+        return getResultFor(timeAgoAmount, timeAgoUnit);
     }
 
     private int parseTimeAgoAmount(String textualDate) throws NumberFormatException {
@@ -110,8 +111,9 @@ public class TimeAgoParser {
         }
     }
 
-    private Calendar getCalendar(int timeAgoAmount, TimeAgoUnit timeAgoUnit) {
-        Calendar calendarTime = getNow();
+    private DateWrapper getResultFor(int timeAgoAmount, TimeAgoUnit timeAgoUnit) {
+        final Calendar calendarTime = getNow();
+        boolean isApproximation = false;
 
         switch (timeAgoUnit) {
             case SECONDS:
@@ -128,28 +130,32 @@ public class TimeAgoParser {
 
             case DAYS:
                 calendarTime.add(Calendar.DAY_OF_MONTH, -timeAgoAmount);
-                markApproximatedTime(calendarTime);
+                isApproximation = true;
                 break;
 
             case WEEKS:
                 calendarTime.add(Calendar.WEEK_OF_YEAR, -timeAgoAmount);
-                markApproximatedTime(calendarTime);
+                isApproximation = true;
                 break;
 
             case MONTHS:
                 calendarTime.add(Calendar.MONTH, -timeAgoAmount);
-                markApproximatedTime(calendarTime);
+                isApproximation = true;
                 break;
 
             case YEARS:
                 calendarTime.add(Calendar.YEAR, -timeAgoAmount);
                 // Prevent `PrettyTime` from showing '12 months ago'.
                 calendarTime.add(Calendar.DAY_OF_MONTH, -1);
-                markApproximatedTime(calendarTime);
+                isApproximation = true;
                 break;
         }
 
-        return calendarTime;
+        if (isApproximation) {
+            markApproximatedTime(calendarTime);
+        }
+
+        return new DateWrapper(calendarTime, isApproximation);
     }
 
     private Calendar getNow() {

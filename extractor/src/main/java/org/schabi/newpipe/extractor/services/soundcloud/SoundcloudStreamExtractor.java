@@ -9,15 +9,14 @@ import org.schabi.newpipe.extractor.exceptions.ContentNotAvailableException;
 import org.schabi.newpipe.extractor.exceptions.ExtractionException;
 import org.schabi.newpipe.extractor.exceptions.ParsingException;
 import org.schabi.newpipe.extractor.linkhandler.LinkHandler;
+import org.schabi.newpipe.extractor.localization.DateWrapper;
 import org.schabi.newpipe.extractor.stream.*;
 
 import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
 import java.util.ArrayList;
-import java.util.Calendar;
 import java.util.Collections;
 import java.util.List;
 
@@ -58,8 +57,8 @@ public class SoundcloudStreamExtractor extends StreamExtractor {
 
     @Nonnull
     @Override
-    public Calendar getUploadDate() throws ParsingException {
-        return SoundcloudParsingHelper.parseDate(getTextualUploadDate());
+    public DateWrapper getUploadDate() throws ParsingException {
+        return new DateWrapper(SoundcloudParsingHelper.parseDate(getTextualUploadDate()));
     }
 
     @Nonnull

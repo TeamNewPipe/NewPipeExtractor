@@ -5,10 +5,11 @@ import com.grack.nanojson.JsonObject;
 import org.schabi.newpipe.extractor.comments.CommentsInfoItemExtractor;
 import org.schabi.newpipe.extractor.exceptions.ParsingException;
 import org.schabi.newpipe.extractor.localization.TimeAgoParser;
+import org.schabi.newpipe.extractor.localization.DateWrapper;
 import org.schabi.newpipe.extractor.utils.JsonUtils;
 import org.schabi.newpipe.extractor.utils.Utils;
 
-import java.util.Calendar;
+import javax.annotation.Nullable;
 
 public class YoutubeCommentsInfoItemExtractor implements CommentsInfoItemExtractor {
 
@@ -55,8 +56,9 @@ public class YoutubeCommentsInfoItemExtractor implements CommentsInfoItemExtract
         }
     }
 
+    @Nullable
     @Override
-    public Calendar getPublishedTime() throws ParsingException {
+    public DateWrapper getPublishedTime() throws ParsingException {
         String textualPublishedTime = getTextualPublishedTime();
         if (timeAgoParser != null && textualPublishedTime != null && !textualPublishedTime.isEmpty()) {
             return timeAgoParser.parse(textualPublishedTime);

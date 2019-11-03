@@ -4,6 +4,7 @@ import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 import org.schabi.newpipe.extractor.exceptions.ParsingException;
 import org.schabi.newpipe.extractor.localization.TimeAgoParser;
+import org.schabi.newpipe.extractor.localization.DateWrapper;
 import org.schabi.newpipe.extractor.services.youtube.linkHandler.YoutubeParsingHelper;
 import org.schabi.newpipe.extractor.stream.StreamInfoItemExtractor;
 import org.schabi.newpipe.extractor.stream.StreamType;
@@ -141,6 +142,7 @@ public class YoutubeStreamInfoItemExtractor implements StreamInfoItemExtractor {
         }
     }
 
+    @Nullable
     @Override
     public String getTextualUploadDate() throws ParsingException {
         if (getStreamType().equals(StreamType.LIVE_STREAM)) {
@@ -173,17 +175,15 @@ public class YoutubeStreamInfoItemExtractor implements StreamInfoItemExtractor {
         }
     }
 
+    @Nullable
     @Override
-    public Calendar getUploadDate() throws ParsingException {
+    public DateWrapper getUploadDate() throws ParsingException {
         if (getStreamType().equals(StreamType.LIVE_STREAM)) {
             return null;
         }
 
         if (isVideoReminder()) {
-            final Calendar calendar = getDateFromReminder();
-            if (calendar != null) {
-                return calendar;
-            }
+            return new DateWrapper(getDateFromReminder());
         }
 
         String textualUploadDate = getTextualUploadDate();

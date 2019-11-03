@@ -17,9 +17,9 @@ import java.io.IOException;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
-import java.util.Date;
 import java.util.List;
 
+import static java.util.Objects.*;
 import static org.junit.Assert.*;
 import static org.schabi.newpipe.extractor.ExtractorAsserts.assertIsSecureUrl;
 import static org.schabi.newpipe.extractor.ServiceList.YouTube;
@@ -119,7 +119,7 @@ public class YoutubeStreamExtractorDefaultTest {
         public void testGetUploadDate() throws ParsingException, ParseException {
             final Calendar instance = Calendar.getInstance();
             instance.setTime(new SimpleDateFormat("yyyy-MM-dd").parse("2015-10-22"));
-            Assert.assertEquals(instance, extractor.getUploadDate());
+            assertEquals(instance, requireNonNull(extractor.getUploadDate()).date());
         }
 
         @Test

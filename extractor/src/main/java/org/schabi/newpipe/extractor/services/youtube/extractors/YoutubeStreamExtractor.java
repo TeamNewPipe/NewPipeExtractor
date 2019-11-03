@@ -23,6 +23,7 @@ import org.schabi.newpipe.extractor.exceptions.ParsingException;
 import org.schabi.newpipe.extractor.exceptions.ReCaptchaException;
 import org.schabi.newpipe.extractor.linkhandler.LinkHandler;
 import org.schabi.newpipe.extractor.localization.TimeAgoParser;
+import org.schabi.newpipe.extractor.localization.DateWrapper;
 import org.schabi.newpipe.extractor.services.youtube.ItagItem;
 import org.schabi.newpipe.extractor.services.youtube.linkHandler.YoutubeParsingHelper;
 import org.schabi.newpipe.extractor.stream.*;
@@ -134,14 +135,14 @@ public class YoutubeStreamExtractor extends StreamExtractor {
     }
 
     @Override
-    public Calendar getUploadDate() throws ParsingException {
+    public DateWrapper getUploadDate() throws ParsingException {
         final String textualUploadDate = getTextualUploadDate();
 
         if (textualUploadDate == null) {
             return null;
         }
 
-        return YoutubeParsingHelper.parseDateFrom(textualUploadDate);
+        return new DateWrapper(YoutubeParsingHelper.parseDateFrom(textualUploadDate));
     }
 
     @Nonnull

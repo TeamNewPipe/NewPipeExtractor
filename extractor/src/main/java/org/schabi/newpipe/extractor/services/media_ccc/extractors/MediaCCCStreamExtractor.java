@@ -10,15 +10,12 @@ import org.schabi.newpipe.extractor.downloader.Downloader;
 import org.schabi.newpipe.extractor.exceptions.ExtractionException;
 import org.schabi.newpipe.extractor.exceptions.ParsingException;
 import org.schabi.newpipe.extractor.linkhandler.LinkHandler;
+import org.schabi.newpipe.extractor.localization.DateWrapper;
 import org.schabi.newpipe.extractor.stream.*;
 
 import javax.annotation.Nonnull;
 import java.io.IOException;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.Date;
 import java.util.List;
 
 public class MediaCCCStreamExtractor extends StreamExtractor {
@@ -38,8 +35,8 @@ public class MediaCCCStreamExtractor extends StreamExtractor {
 
     @Nonnull
     @Override
-    public Calendar getUploadDate() throws ParsingException {
-        return MediaCCCParsingHelper.parseDateFrom(getTextualUploadDate());
+    public DateWrapper getUploadDate() throws ParsingException {
+        return new DateWrapper(MediaCCCParsingHelper.parseDateFrom(getTextualUploadDate()));
     }
 
     @Nonnull

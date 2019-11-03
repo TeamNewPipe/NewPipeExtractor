@@ -14,6 +14,7 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 
+import static java.util.Objects.requireNonNull;
 import static junit.framework.TestCase.assertEquals;
 import static org.schabi.newpipe.extractor.ServiceList.MediaCCC;
 
@@ -95,6 +96,6 @@ public class MediaCCCStreamExtractorTest implements BaseExtractorTest {
     public void testGetUploadDate() throws ParsingException, ParseException {
         final Calendar instance = Calendar.getInstance();
         instance.setTime(new SimpleDateFormat("yyyy-MM-dd").parse("2018-05-11"));
-        Assert.assertEquals(instance, extractor.getUploadDate());
+        assertEquals(instance, requireNonNull(extractor.getUploadDate()).date());
     }
 }

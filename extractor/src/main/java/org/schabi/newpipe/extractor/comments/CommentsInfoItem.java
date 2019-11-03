@@ -1,8 +1,9 @@
 package org.schabi.newpipe.extractor.comments;
 
 import org.schabi.newpipe.extractor.InfoItem;
+import org.schabi.newpipe.extractor.localization.DateWrapper;
 
-import java.util.Calendar;
+import javax.annotation.Nullable;
 
 public class CommentsInfoItem extends InfoItem {
 
@@ -12,7 +13,7 @@ public class CommentsInfoItem extends InfoItem {
     private String authorThumbnail;
     private String authorEndpoint;
     private String textualPublishedTime;
-    private Calendar publishedTime;
+    @Nullable private DateWrapper publishedTime;
     private int likeCount;
 
     public CommentsInfoItem(int serviceId, String url, String name) {
@@ -67,11 +68,12 @@ public class CommentsInfoItem extends InfoItem {
         this.textualPublishedTime = textualPublishedTime;
     }
 
-    public Calendar getPublishedTime() {
+    @Nullable
+    public DateWrapper getPublishedTime() {
         return publishedTime;
     }
 
-    public void setPublishedTime(Calendar publishedTime) {
+    public void setPublishedTime(@Nullable DateWrapper publishedTime) {
         this.publishedTime = publishedTime;
     }
 

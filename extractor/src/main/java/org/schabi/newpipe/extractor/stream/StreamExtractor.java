@@ -26,13 +26,12 @@ import org.schabi.newpipe.extractor.StreamingService;
 import org.schabi.newpipe.extractor.exceptions.ExtractionException;
 import org.schabi.newpipe.extractor.exceptions.ParsingException;
 import org.schabi.newpipe.extractor.linkhandler.LinkHandler;
+import org.schabi.newpipe.extractor.localization.DateWrapper;
 import org.schabi.newpipe.extractor.utils.Parser;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Calendar;
 import java.util.Collections;
 import java.util.List;
 
@@ -72,7 +71,7 @@ public abstract class StreamExtractor extends Extractor {
      * @see #getTextualUploadDate()
      */
     @Nullable
-    public abstract Calendar getUploadDate() throws ParsingException;
+    public abstract DateWrapper getUploadDate() throws ParsingException;
 
     /**
      * This will return the url to the thumbnail of the stream. Try to return the medium resolution here.

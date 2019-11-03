@@ -21,9 +21,9 @@ package org.schabi.newpipe.extractor.stream;
  */
 
 import org.schabi.newpipe.extractor.InfoItem;
+import org.schabi.newpipe.extractor.localization.DateWrapper;
 
 import javax.annotation.Nullable;
-import java.util.Calendar;
 
 /**
  * Info object for previews of unopened videos, eg search results, related videos
@@ -33,7 +33,7 @@ public class StreamInfoItem extends InfoItem {
 
     private String uploaderName;
     private String textualUploadDate;
-    private Calendar uploadDate;
+    @Nullable private DateWrapper uploadDate;
     private long viewCount = -1;
     private long duration = -1;
 
@@ -80,10 +80,6 @@ public class StreamInfoItem extends InfoItem {
         this.uploaderUrl = uploaderUrl;
     }
 
-    /**
-     * @return The original textual upload date as returned by the streaming service.
-     * @see #getUploadDate()
-     */
     @Nullable
     public String getTextualUploadDate() {
         return textualUploadDate;
@@ -93,16 +89,12 @@ public class StreamInfoItem extends InfoItem {
         this.textualUploadDate = uploadDate;
     }
 
-    /**
-     * @return The (approximated) date and time this item was uploaded or {@code null}.
-     * @see #getTextualUploadDate()
-     */
     @Nullable
-    public Calendar getUploadDate() {
+    public DateWrapper getUploadDate() {
         return uploadDate;
     }
 
-    public void setUploadDate(Calendar uploadDate) {
+    public void setUploadDate(@Nullable DateWrapper uploadDate) {
         this.uploadDate = uploadDate;
     }
 

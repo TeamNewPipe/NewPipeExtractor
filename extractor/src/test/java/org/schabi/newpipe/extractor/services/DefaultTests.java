@@ -2,6 +2,7 @@ package org.schabi.newpipe.extractor.services;
 
 import org.schabi.newpipe.extractor.InfoItem;
 import org.schabi.newpipe.extractor.ListExtractor;
+import org.schabi.newpipe.extractor.localization.DateWrapper;
 import org.schabi.newpipe.extractor.stream.StreamInfoItem;
 
 import java.util.Calendar;
@@ -31,9 +32,9 @@ public final class DefaultTests {
 
                 final String textualUploadDate = streamInfoItem.getTextualUploadDate();
                 if (textualUploadDate != null && !textualUploadDate.isEmpty()) {
-                    final Calendar uploadDate = streamInfoItem.getUploadDate();
+                    final DateWrapper uploadDate = streamInfoItem.getUploadDate();
                     assertNotNull("No parsed upload date", uploadDate);
-                    assertTrue("Upload date not in the past", uploadDate.before(Calendar.getInstance()));
+                    assertTrue("Upload date not in the past", uploadDate.date().before(Calendar.getInstance()));
                 }
 
             }

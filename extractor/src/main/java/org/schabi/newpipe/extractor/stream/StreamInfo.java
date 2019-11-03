@@ -1,18 +1,18 @@
 package org.schabi.newpipe.extractor.stream;
 
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.List;
-
 import org.schabi.newpipe.extractor.Info;
 import org.schabi.newpipe.extractor.InfoItem;
 import org.schabi.newpipe.extractor.NewPipe;
 import org.schabi.newpipe.extractor.StreamingService;
 import org.schabi.newpipe.extractor.exceptions.ContentNotAvailableException;
 import org.schabi.newpipe.extractor.exceptions.ExtractionException;
+import org.schabi.newpipe.extractor.localization.DateWrapper;
 import org.schabi.newpipe.extractor.utils.DashMpdParser;
 import org.schabi.newpipe.extractor.utils.ExtractorHelper;
+
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 
 /*
  * Created by Christian Schabesberger on 26.08.15.
@@ -278,7 +278,7 @@ public class StreamInfo extends Info {
     private StreamType streamType;
     private String thumbnailUrl = "";
     private String textualUploadDate;
-    private Calendar uploadDate;
+    private DateWrapper uploadDate;
     private long duration = -1;
     private int ageLimit = -1;
     private String description;
@@ -342,11 +342,11 @@ public class StreamInfo extends Info {
         this.textualUploadDate = textualUploadDate;
     }
 
-    public Calendar getUploadDate() {
+    public DateWrapper getUploadDate() {
         return uploadDate;
     }
 
-    public void setUploadDate(Calendar uploadDate) {
+    public void setUploadDate(DateWrapper uploadDate) {
         this.uploadDate = uploadDate;
     }
 

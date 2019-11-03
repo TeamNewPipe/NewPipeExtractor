@@ -1,7 +1,6 @@
 package org.schabi.newpipe.extractor.services.youtube.stream;
 
 import org.junit.BeforeClass;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.schabi.newpipe.DownloaderTestImpl;
 import org.schabi.newpipe.extractor.MediaFormat;
@@ -18,9 +17,9 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
-import java.util.Date;
 import java.util.List;
 
+import static java.util.Objects.requireNonNull;
 import static org.junit.Assert.*;
 import static org.schabi.newpipe.extractor.ExtractorAsserts.assertIsSecureUrl;
 import static org.schabi.newpipe.extractor.ServiceList.YouTube;
@@ -93,7 +92,7 @@ public class YoutubeStreamExtractorAgeRestrictedTest {
     public void testGetUploadDate() throws ParsingException, ParseException {
         final Calendar instance = Calendar.getInstance();
         instance.setTime(new SimpleDateFormat("yyyy-MM-dd").parse("2017-01-25"));
-        assertEquals(instance, extractor.getUploadDate());
+        assertEquals(instance, requireNonNull(extractor.getUploadDate()).date());
     }
 
     @Test

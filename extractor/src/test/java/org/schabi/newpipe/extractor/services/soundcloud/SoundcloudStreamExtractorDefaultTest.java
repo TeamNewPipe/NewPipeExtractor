@@ -16,6 +16,7 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 
+import static java.util.Objects.requireNonNull;
 import static org.junit.Assert.*;
 import static org.schabi.newpipe.extractor.ExtractorAsserts.assertIsSecureUrl;
 import static org.schabi.newpipe.extractor.ServiceList.SoundCloud;
@@ -80,7 +81,7 @@ public class SoundcloudStreamExtractorDefaultTest {
     public void testGetUploadDate() throws ParsingException, ParseException {
         final Calendar instance = Calendar.getInstance();
         instance.setTime(new SimpleDateFormat("yyyy/MM/dd HH:mm:ss +0000").parse("2016/07/31 18:18:07 +0000"));
-        Assert.assertEquals(instance, extractor.getUploadDate());
+        assertEquals(instance, requireNonNull(extractor.getUploadDate()).date());
     }
 
     @Test

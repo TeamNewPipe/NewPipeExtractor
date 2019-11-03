@@ -7,6 +7,7 @@ import org.schabi.newpipe.extractor.ListExtractor;
 import org.schabi.newpipe.extractor.NewPipe;
 import org.schabi.newpipe.extractor.channel.ChannelExtractor;
 import org.schabi.newpipe.extractor.localization.Localization;
+import org.schabi.newpipe.extractor.localization.DateWrapper;
 import org.schabi.newpipe.extractor.stream.StreamInfoItem;
 
 import java.text.SimpleDateFormat;
@@ -61,9 +62,9 @@ public class YoutubeChannelLocalizationTest {
                 String debugMessage = "[" + String.format("%02d", i) + "] "
                         + currentLocalization.getLocalizationCode() + " → " + item.getName()
                         + "\n:::: " + item.getStreamType() + ", views = " + item.getViewCount();
-                final Calendar uploadDate = item.getUploadDate();
+                final DateWrapper uploadDate = item.getUploadDate();
                 if (uploadDate != null) {
-                    String dateAsText = dateFormat.format(uploadDate.getTime());
+                    String dateAsText = dateFormat.format(uploadDate.date().getTime());
                     debugMessage += "\n:::: " + item.getTextualUploadDate() +
                             "\n:::: " + dateAsText;
                 }
@@ -102,17 +103,17 @@ public class YoutubeChannelLocalizationTest {
                 final StreamInfoItem referenceItem = referenceList.get(i);
                 final StreamInfoItem currentItem = currentList.get(i);
 
-                final Calendar referenceUploadDate = referenceItem.getUploadDate();
-                final Calendar currentUploadDate = currentItem.getUploadDate();
+                final DateWrapper referenceUploadDate = referenceItem.getUploadDate();
+                final DateWrapper currentUploadDate = currentItem.getUploadDate();
 
                 final String referenceDateString = referenceUploadDate == null ? "null" :
-                        dateFormat.format(referenceUploadDate.getTime());
+                        dateFormat.format(referenceUploadDate.date().getTime());
                 final String currentDateString = currentUploadDate == null ? "null" :
-                        dateFormat.format(currentUploadDate.getTime());
+                        dateFormat.format(currentUploadDate.date().getTime());
 
                 long difference = -1;
                 if (referenceUploadDate != null && currentUploadDate != null) {
-                    difference = Math.abs(referenceUploadDate.getTimeInMillis() - currentUploadDate.getTimeInMillis());
+                    difference = Math.abs(referenceUploadDate.date().getTimeInMillis() - currentUploadDate.date().getTimeInMillis());
                 }
 
                 final boolean areTimeEquals = difference < 5 * 60 * 1000L;
