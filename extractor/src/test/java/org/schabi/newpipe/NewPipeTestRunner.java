@@ -11,15 +11,35 @@ import org.junit.runners.model.InitializationError;
 import org.junit.runners.model.Statement;
 import org.schabi.newpipe.extractor.exceptions.ReCaptchaException;
 
+import java.util.concurrent.TimeUnit;
+
 public class NewPipeTestRunner extends BlockJUnit4ClassRunner {
+    private final NewPipeTestRunnerOptions options;
+
     public NewPipeTestRunner(Class testClass) throws InitializationError {
         super(testClass);
 
         if (testClass.isAnnotationPresent(NewPipeTestRunnerOptions.class)) {
-            NewPipeTestRunnerOptions options = (NewPipeTestRunnerOptions) testClass.getAnnotation(NewPipeTestRunnerOptions.class);
+            options = (NewPipeTestRunnerOptions) testClass.getAnnotation(NewPipeTestRunnerOptions.class);
         } else {
             throw new IllegalArgumentException("Test classes running with " + NewPipeTestRunner.class.getName() + " should also have @NewPipeTestRunnerOptions");
         }
+    }
+
+    public void sleep(int milliseconds) {
+        if (milliseconds > 0) {
+            try {
+                TimeUnit.MILLISECONDS.sleep(milliseconds);
+            } catch (InterruptedException e) {
+                throw new RuntimeException(e);
+            }
+        }
+    }
+
+    @Override
+    public void run(RunNotifier notifier) {
+        sleep(options.classDelayMs()); // @see NewPipeTestRunnerOptions.classDelayMs
+        super.run(notifier);
     }
 
     @Override
@@ -32,10 +52,12 @@ public class NewPipeTestRunner extends BlockJUnit4ClassRunner {
             String ignoreReason = method.getAnnotation(Ignore.class).value();
             System.out.println(method.getName() + "() ignored because of @Ignore" +
                     (ignoreReason.isEmpty() ? "" : ": " + ignoreReason));
-        } else {
-            Statement statement = methodBlock(method);
 
+        } else {
+            sleep(options.methodDelayMs()); // @see NewPipeTestRunnerOptions.methodDelayMs
+            Statement statement = methodBlock(method);
             notifier.fireTestStarted(description);
+
             try {
                 statement.evaluate();
             } catch (AssumptionViolatedException | ReCaptchaException e) {
