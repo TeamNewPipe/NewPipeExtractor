@@ -1,6 +1,7 @@
 package org.schabi.newpipe.extractor.services.youtube.stream;
 
 import org.junit.BeforeClass;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.schabi.newpipe.Downloader;
 import org.schabi.newpipe.extractor.MediaFormat;
@@ -58,6 +59,12 @@ public class YoutubeStreamExtractorAgeRestrictedTest extends YoutubeStreamExtrac
         assertFalse(extractor.getAudioStreams().isEmpty());
     }
 
+    @Test
+    @Ignore("Apparently age restricted videos have no related videos")
+    @Override
+    public void testGetRelatedVideos() throws IOException, ExtractionException {
+        super.testGetRelatedVideos();
+    }
 
     @Test
     public void testGetSubtitlesListDefault() throws IOException, ExtractionException {
