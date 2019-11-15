@@ -27,18 +27,18 @@ public class YoutubeCommentsExtractorTest {
     public static void setUp() throws Exception {
         NewPipe.init(Downloader.getInstance(), new Localization("GB", "en"));
         extractor = (YoutubeCommentsExtractor) YouTube
-                .getCommentsExtractor("https://www.youtube.com/watch?v=ehn8mJ8vvsI");
+                .getCommentsExtractor("https://www.youtube.com/watch?v=D00Au7k3i6o");
     }
 
     @Test
     public void testGetComments() throws IOException, ExtractionException {
-        boolean result = false;
+        boolean result;
         InfoItemsPage<CommentsInfoItem> comments = extractor.getInitialPage();
-        result = findInComments(comments, "Tsuki blyat");
+        result = findInComments(comments, "s1ck m3m3");
 
         while (comments.hasNextPage() && !result) {
             comments = extractor.getPage(comments.getNextPageUrl());
-            result = findInComments(comments, "Tsuki blyat");
+            result = findInComments(comments, "s1ck m3m3");
         }
 
         assertTrue(result);
@@ -47,14 +47,14 @@ public class YoutubeCommentsExtractorTest {
     @Test
     public void testGetCommentsFromCommentsInfo() throws IOException, ExtractionException {
         boolean result = false;
-        CommentsInfo commentsInfo = CommentsInfo.getInfo("https://www.youtube.com/watch?v=ehn8mJ8vvsI");
-        assertTrue("the dark side of YouTube...".equals(commentsInfo.getName()));
-        result = findInComments(commentsInfo.getRelatedItems(), "Tsuki blyat");
+        CommentsInfo commentsInfo = CommentsInfo.getInfo("https://www.youtube.com/watch?v=D00Au7k3i6o");
+        assertTrue("what the fuck am i doing with my life".equals(commentsInfo.getName()));
+        result = findInComments(commentsInfo.getRelatedItems(), "s1ck m3m3");
 
         String nextPage = commentsInfo.getNextPageUrl();
         while (!StringUtil.isBlank(nextPage) && !result) {
             InfoItemsPage<CommentsInfoItem> moreItems = CommentsInfo.getMoreItems(YouTube, commentsInfo, nextPage);
-            result = findInComments(moreItems.getItems(), "Tsuki blyat");
+            result = findInComments(moreItems.getItems(), "s1ck m3m3");
             nextPage = moreItems.getNextPageUrl();
         }
 

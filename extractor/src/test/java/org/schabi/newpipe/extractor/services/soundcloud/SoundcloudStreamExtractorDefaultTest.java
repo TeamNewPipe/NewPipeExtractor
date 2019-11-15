@@ -39,27 +39,27 @@ public class SoundcloudStreamExtractorDefaultTest {
     @Test
     public void testGetValidTimeStamp() throws IOException, ExtractionException {
         StreamExtractor extractor = SoundCloud.getStreamExtractor("https://soundcloud.com/liluzivert/do-what-i-want-produced-by-maaly-raw-don-cannon#t=69");
-        assertEquals(extractor.getTimeStamp() + "", "69");
+        assertEquals("69", extractor.getTimeStamp() + "");
     }
 
     @Test
     public void testGetTitle() throws ParsingException {
-        assertEquals(extractor.getName(), "Do What I Want [Produced By Maaly Raw + Don Cannon]");
+        assertEquals("Do What I Want [Produced By Maaly Raw + Don Cannon]", extractor.getName());
     }
 
     @Test
     public void testGetDescription() throws ParsingException {
-        assertEquals(extractor.getDescription(), "The Perfect LUV Tape®️");
+        assertEquals("The Perfect LUV Tape®️", extractor.getDescription());
     }
 
     @Test
     public void testGetUploaderName() throws ParsingException {
-        assertEquals(extractor.getUploaderName(), "LIL UZI VERT");
+        assertEquals("LIL UZI VERT", extractor.getUploaderName());
     }
 
     @Test
     public void testGetLength() throws ParsingException {
-        assertEquals(extractor.getLength(), 175);
+        assertEquals(175, extractor.getLength());
     }
 
     @Test

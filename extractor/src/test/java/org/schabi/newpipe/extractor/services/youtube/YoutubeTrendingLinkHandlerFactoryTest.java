@@ -69,6 +69,10 @@ public class YoutubeTrendingLinkHandlerFactoryTest {
         assertTrue(LinkHandlerFactory.acceptUrl("https://youtube.com/feed/trending"));
         assertTrue(LinkHandlerFactory.acceptUrl("m.youtube.com/feed/trending"));
 
+        assertTrue(LinkHandlerFactory.acceptUrl("https://www.invidio.us/feed/trending"));
+        assertTrue(LinkHandlerFactory.acceptUrl("https://invidio.us/feed/trending"));
+        assertTrue(LinkHandlerFactory.acceptUrl("invidio.us/feed/trending"));
+
         assertFalse(LinkHandlerFactory.acceptUrl("https://youtu.be/feed/trending"));
         assertFalse(LinkHandlerFactory.acceptUrl("kdskjfiiejfia"));
         assertFalse(LinkHandlerFactory.acceptUrl("https://www.youtube.com/bullshit/feed/trending"));

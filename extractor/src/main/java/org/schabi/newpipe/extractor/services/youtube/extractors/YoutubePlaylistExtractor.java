@@ -6,6 +6,7 @@ import com.grack.nanojson.JsonParserException;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
+import org.schabi.newpipe.extractor.DownloadResponse;
 import org.schabi.newpipe.extractor.Downloader;
 import org.schabi.newpipe.extractor.StreamingService;
 import org.schabi.newpipe.extractor.exceptions.ExtractionException;
@@ -35,8 +36,9 @@ public class YoutubePlaylistExtractor extends PlaylistExtractor {
 
     @Override
     public void onFetchPage(@Nonnull Downloader downloader) throws IOException, ExtractionException {
-        String pageContent = downloader.download(getUrl());
-        doc = Jsoup.parse(pageContent, getUrl());
+        final String url = getUrl();
+        final DownloadResponse response = downloader.get(url);
+        doc = YoutubeParsingHelper.parseAndCheckPage(url, response);
     }
 
     @Override
@@ -50,7 +52,7 @@ public class YoutubePlaylistExtractor extends PlaylistExtractor {
         try {
             return doc.select("div[id=pl-header] h1[class=pl-header-title]").first().text();
         } catch (Exception e) {
-            throw new ParsingException("Could not get playlist name");
+            throw new ParsingException("Could not get playlist name", e);
         }
     }
 
@@ -59,7 +61,7 @@ public class YoutubePlaylistExtractor extends PlaylistExtractor {
         try {
             return doc.select("div[id=pl-header] div[class=pl-header-thumb] img").first().attr("abs:src");
         } catch (Exception e) {
-            throw new ParsingException("Could not get playlist thumbnail");
+            throw new ParsingException("Could not get playlist thumbnail", e);
         }
     }
 
@@ -72,9 +74,11 @@ public class YoutubePlaylistExtractor extends PlaylistExtractor {
     @Override
     public String getUploaderUrl() throws ParsingException {
         try {
-            return doc.select("ul[class=\"pl-header-details\"] li").first().select("a").first().attr("abs:href");
+            return YoutubeChannelExtractor.CHANNEL_URL_BASE +
+                    doc.select("button[class*=\"yt-uix-subscription-button\"]")
+                            .first().attr("data-channel-external-id");
         } catch (Exception e) {
-            throw new ParsingException("Could not get playlist uploader name");
+            throw new ParsingException("Could not get playlist uploader url", e);
         }
     }
 
@@ -83,7 +87,7 @@ public class YoutubePlaylistExtractor extends PlaylistExtractor {
         try {
             return doc.select("span[class=\"qualified-channel-title-text\"]").first().select("a").first().text();
         } catch (Exception e) {
-            throw new ParsingException("Could not get playlist uploader name");
+            throw new ParsingException("Could not get playlist uploader name", e);
         }
     }
 
@@ -92,7 +96,7 @@ public class YoutubePlaylistExtractor extends PlaylistExtractor {
         try {
             return doc.select("div[id=gh-banner] img[class=channel-header-profile-image]").first().attr("abs:src");
         } catch (Exception e) {
-            throw new ParsingException("Could not get playlist uploader avatar");
+            throw new ParsingException("Could not get playlist uploader avatar", e);
         }
     }
 
@@ -248,6 +252,8 @@ public class YoutubePlaylistExtractor extends PlaylistExtractor {
 
                 @Override
                 public String getUploaderUrl() throws ParsingException {
+                    // this url is not always in the form "/channel/..."
+                    // sometimes Youtube provides urls in the from "/user/..."
                     return getUploaderLink().attr("abs:href");
                 }
 

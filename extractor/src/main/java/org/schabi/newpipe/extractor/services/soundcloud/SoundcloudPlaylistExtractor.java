@@ -71,13 +71,15 @@ public class SoundcloudPlaylistExtractor extends PlaylistExtractor {
                     final String thumbnailUrl = item.getThumbnailUrl();
                     if (thumbnailUrl == null || thumbnailUrl.isEmpty()) continue;
 
-                    return thumbnailUrl;
+                    String thumbnailUrlBetterResolution = thumbnailUrl.replace("large.jpg", "crop.jpg");
+                    return thumbnailUrlBetterResolution;
                 }
             } catch (Exception ignored) {
             }
         }
 
-        return artworkUrl;
+        String artworkUrlBetterResolution = artworkUrl.replace("large.jpg", "crop.jpg");
+        return artworkUrlBetterResolution;
     }
 
     @Override

@@ -30,7 +30,10 @@ import org.schabi.newpipe.extractor.utils.Localization;
 import org.schabi.newpipe.extractor.utils.Parser;
 
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 /**
@@ -256,7 +259,18 @@ public abstract class StreamExtractor extends Extractor {
     public abstract StreamInfoItemsCollector getRelatedStreams() throws IOException, ExtractionException;
 
     /**
-     * Should analyse the webpage's document and extracts any error message there might be. (e.g. GEMA block)
+     * Should return a list of Frameset object that contains preview of stream frames
+     * @return list of preview frames or empty list if frames preview is not supported or not found for specified stream
+     * @throws IOException
+     * @throws ExtractionException
+     */
+    @Nonnull
+    public List<Frameset> getFrames() throws IOException, ExtractionException {
+        return Collections.emptyList();
+    }
+
+    /**
+     * Should analyse the webpage's document and extracts any error message there might be.
      *
      * @return Error message; null if there is no error message.
      */

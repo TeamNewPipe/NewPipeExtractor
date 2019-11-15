@@ -1,6 +1,8 @@
 package org.schabi.newpipe.extractor.services.youtube.search;
 
+import org.hamcrest.CoreMatchers;
 import org.junit.BeforeClass;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.schabi.newpipe.Downloader;
 import org.schabi.newpipe.extractor.InfoItem;
@@ -53,11 +55,27 @@ public class YoutubeSearchExtractorChannelOnlyTest extends YoutubeSearchExtracto
         assertEquals("https://www.youtube.com/results?q=pewdiepie&sp=EgIQAlAU&gl=GB&page=2", extractor.getNextPageUrl());
     }
 
+    @Ignore
     @Test
     public void testOnlyContainChannels() {
         for(InfoItem item : itemsPage.getItems()) {
             if(!(item instanceof ChannelInfoItem)) {
                 fail("The following item is no channel item: " + item.toString());
+            }
+        }
+    }
+
+    @Test
+    public void testChannelUrl() {
+        for(InfoItem item : itemsPage.getItems()) {
+            if (item instanceof ChannelInfoItem) {
+                ChannelInfoItem channel = (ChannelInfoItem) item;
+
+                if (channel.getSubscriberCount() > 5e7) { // the real PewDiePie
+                    assertEquals("https://www.youtube.com/channel/UC-lHJZR3Gqxm24_Vd_AJ5Yw", item.getUrl());
+                } else {
+                    assertThat(item.getUrl(), CoreMatchers.startsWith("https://www.youtube.com/channel/"));
+                }
             }
         }
     }

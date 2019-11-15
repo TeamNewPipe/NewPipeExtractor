@@ -61,7 +61,7 @@ public class YoutubeStreamInfoItemExtractor implements StreamInfoItemExtractor {
     @Override
     public String getUrl() throws ParsingException {
         try {
-            Element el = item.select("div[class*=\"yt-lockup-video\"").first();
+            Element el = item.select("div[class*=\"yt-lockup-video\"]").first();
             Element dl = el.select("h3").first().select("a").first();
             return dl.attr("abs:href");
         } catch (Exception e) {
@@ -72,7 +72,7 @@ public class YoutubeStreamInfoItemExtractor implements StreamInfoItemExtractor {
     @Override
     public String getName() throws ParsingException {
         try {
-            Element el = item.select("div[class*=\"yt-lockup-video\"").first();
+            Element el = item.select("div[class*=\"yt-lockup-video\"]").first();
             Element dl = el.select("h3").first().select("a").first();
             return dl.text();
         } catch (Exception e) {
@@ -107,6 +107,8 @@ public class YoutubeStreamInfoItemExtractor implements StreamInfoItemExtractor {
 
     @Override
     public String getUploaderUrl() throws ParsingException {
+        // this url is not always in the form "/channel/..."
+        // sometimes Youtube provides urls in the from "/user/..."
         try {
             try {
                 return item.select("div[class=\"yt-lockup-byline\"]").first()
@@ -119,7 +121,7 @@ public class YoutubeStreamInfoItemExtractor implements StreamInfoItemExtractor {
                     .text().split(" - ")[0];
         } catch (Exception e) {
             System.out.println(item.html());
-            throw new ParsingException("Could not get uploader", e);
+            throw new ParsingException("Could not get uploader url", e);
         }
     }
 

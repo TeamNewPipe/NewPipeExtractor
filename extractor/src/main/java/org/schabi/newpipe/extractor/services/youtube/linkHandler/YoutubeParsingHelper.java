@@ -1,7 +1,11 @@
 package org.schabi.newpipe.extractor.services.youtube.linkHandler;
 
 
+import org.jsoup.Jsoup;
+import org.jsoup.nodes.Document;
+import org.schabi.newpipe.extractor.DownloadResponse;
 import org.schabi.newpipe.extractor.exceptions.ParsingException;
+import org.schabi.newpipe.extractor.exceptions.ReCaptchaException;
 
 import java.net.URL;
 
@@ -30,40 +34,42 @@ public class YoutubeParsingHelper {
     private YoutubeParsingHelper() {
     }
 
-    private static boolean isHTTP(URL url) {
-        // make sure its http or https
-        String protocol = url.getProtocol();
-        if (!protocol.equals("http") && !protocol.equals("https")) {
-            return false;
+    private static final String[] RECAPTCHA_DETECTION_SELECTORS = {
+            "form[action*=\"/das_captcha\"]",
+            "input[name*=\"action_recaptcha_verify\"]"
+    };
+
+    public static Document parseAndCheckPage(final String url, final DownloadResponse response) throws ReCaptchaException {
+        final Document document = Jsoup.parse(response.getResponseBody(), url);
+
+        for (String detectionSelector : RECAPTCHA_DETECTION_SELECTORS) {
+            if (!document.select(detectionSelector).isEmpty()) {
+                throw new ReCaptchaException("reCAPTCHA challenge requested (detected with selector: \"" + detectionSelector + "\")", url);
+            }
         }
 
-        boolean usesDefaultPort = url.getPort() == url.getDefaultPort();
-        boolean setsNoPort = url.getPort() == -1;
-
-        return setsNoPort || usesDefaultPort;
+        return document;
     }
 
     public static boolean isYoutubeURL(URL url) {
-        // make sure its http or https
-        if (!isHTTP(url))
-            return false;
-
-        // make sure its a known youtube url
         String host = url.getHost();
         return host.equalsIgnoreCase("youtube.com") || host.equalsIgnoreCase("www.youtube.com")
-                || host.equalsIgnoreCase("m.youtube.com");
+                || host.equalsIgnoreCase("m.youtube.com") || host.equalsIgnoreCase("music.youtube.com");
     }
 
-    public static boolean isYoutubeALikeURL(URL url) {
-        // make sure its http or https
-        if (!isHTTP(url))
-            return false;
-
-        // make sure its a known youtube url
+    public static boolean isYoutubeServiceURL(URL url) {
         String host = url.getHost();
-        return host.equalsIgnoreCase("youtube.com") || host.equalsIgnoreCase("www.youtube.com")
-                || host.equalsIgnoreCase("m.youtube.com") || host.equalsIgnoreCase("www.youtube-nocookie.com")
-                || host.equalsIgnoreCase("youtu.be") || host.equalsIgnoreCase("hooktube.com");
+        return host.equalsIgnoreCase("www.youtube-nocookie.com") || host.equalsIgnoreCase("youtu.be");
+    }
+
+    public static boolean isHooktubeURL(URL url) {
+        String host = url.getHost();
+        return host.equalsIgnoreCase("hooktube.com");
+    }
+
+    public static boolean isInvidioURL(URL url) {
+        String host = url.getHost();
+        return host.equalsIgnoreCase("invidio.us") || host.equalsIgnoreCase("dev.invidio.us") || host.equalsIgnoreCase("www.invidio.us") || host.equalsIgnoreCase("invidious.snopyta.org") || host.equalsIgnoreCase("de.invidious.snopyta.org") || host.equalsIgnoreCase("fi.invidious.snopyta.org") || host.equalsIgnoreCase("vid.wxzm.sx") || host.equalsIgnoreCase("invidious.kabi.tk") || host.equalsIgnoreCase("invidiou.sh") || host.equalsIgnoreCase("www.invidiou.sh") || host.equalsIgnoreCase("no.invidiou.sh") || host.equalsIgnoreCase("invidious.enkirton.net") || host.equalsIgnoreCase("tube.poal.co") || host.equalsIgnoreCase("invidious.13ad.de") || host.equalsIgnoreCase("yt.elukerio.org");
     }
 
     public static long parseDurationString(String input)

@@ -7,9 +7,12 @@ import com.grack.nanojson.JsonParserException;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
+import org.jsoup.select.Elements;
+import org.schabi.newpipe.extractor.DownloadResponse;
 import org.schabi.newpipe.extractor.Downloader;
 import org.schabi.newpipe.extractor.NewPipe;
 import org.schabi.newpipe.extractor.channel.ChannelInfoItemsCollector;
+import org.schabi.newpipe.extractor.exceptions.ExtractionException;
 import org.schabi.newpipe.extractor.exceptions.ParsingException;
 import org.schabi.newpipe.extractor.exceptions.ReCaptchaException;
 import org.schabi.newpipe.extractor.stream.StreamInfoItemsCollector;
@@ -21,40 +24,59 @@ import java.io.IOException;
 import java.net.URLEncoder;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.Collections;
 import java.util.Date;
 import java.util.HashMap;
 
 import static org.schabi.newpipe.extractor.utils.Utils.replaceHttpWithHttps;
 
 public class SoundcloudParsingHelper {
+    private static final String HARDCODED_CLIENT_ID = "LHzSAKe8eP9Yy3FgBugfBapRPLncO6Ng"; // Updated on 22/10/19
     private static String clientId;
     
     private SoundcloudParsingHelper() {
     }
 
-    public static String clientId() throws ReCaptchaException, IOException, RegexException {
+    public static String clientId() throws ExtractionException, IOException {
         if (clientId != null && !clientId.isEmpty()) return clientId;
 
         Downloader dl = NewPipe.getDownloader();
-        String response = dl.download("https://soundcloud.com");
-
-        Document doc = Jsoup.parse(response);
-        Element jsElement = doc.select("script[src^=https://a-v2.sndcdn.com/assets/app]").first();
-
-        final String clientIdPattern = ",client_id:\"(.*?)\"";
-
-        try {
-            final HashMap<String, String> headers = new HashMap<>();
-            headers.put("Range", "bytes=0-16384");
-            String js = dl.download(jsElement.attr("src"), headers);
-
-            return clientId = Parser.matchGroup1(clientIdPattern, js);
-        } catch (IOException | RegexException ignored) {
-            // Ignore it and proceed to download the whole js file
+        clientId = HARDCODED_CLIENT_ID;
+        if (checkIfHardcodedClientIdIsValid(dl)) {
+            return clientId;
         }
 
-        String js = dl.download(jsElement.attr("src"));
-        return clientId = Parser.matchGroup1(clientIdPattern, js);
+        final DownloadResponse download = dl.get("https://soundcloud.com");
+        String response = download.getResponseBody();
+        final String clientIdPattern = ",client_id:\"(.*?)\"";
+
+        Document doc = Jsoup.parse(response);
+        final Elements possibleScripts = doc.select("script[src*=\"sndcdn.com/assets/\"][src$=\".js\"]");
+        // The one containing the client id will likely be the last one
+        Collections.reverse(possibleScripts);
+
+        final HashMap<String, String> headers = new HashMap<>();
+        headers.put("Range", "bytes=0-16384");
+
+        for (Element element : possibleScripts) {
+            final String srcUrl = element.attr("src");
+            if (srcUrl != null && !srcUrl.isEmpty()) {
+                try {
+                    return clientId = Parser.matchGroup1(clientIdPattern, dl.download(srcUrl, headers));
+                } catch (RegexException ignored) {
+                    // Ignore it and proceed to try searching other script
+                }
+            }
+        }
+
+        // Officially give up
+        throw new ExtractionException("Couldn't extract client id");
+    }
+
+    static boolean checkIfHardcodedClientIdIsValid(Downloader dl) throws IOException, ReCaptchaException {
+        final String apiUrl = "https://api.soundcloud.com/connect?client_id=" + HARDCODED_CLIENT_ID;
+        // Should return 200 to indicate that the client id is valid, a 401 is returned otherwise.
+        return dl.head(apiUrl).getResponseCode() == 200;
     }
 
     public static String toDateString(String time) throws ParsingException {
@@ -79,7 +101,7 @@ public class SoundcloudParsingHelper {
      * 
      * See https://developers.soundcloud.com/docs/api/reference#resolve
      */
-    public static JsonObject resolveFor(Downloader downloader, String url) throws IOException, ReCaptchaException, ParsingException {
+    public static JsonObject resolveFor(Downloader downloader, String url) throws IOException, ExtractionException {
         String apiUrl = "https://api.soundcloud.com/resolve"
                 + "?url=" + URLEncoder.encode(url, "UTF-8")
                 + "&client_id=" + clientId();
@@ -113,7 +135,10 @@ public class SoundcloudParsingHelper {
 
         String response = NewPipe.getDownloader().download("https://w.soundcloud.com/player/?url="
                 + URLEncoder.encode(url, "UTF-8"));
-        return Parser.matchGroup1(",\"id\":(.*?),", response);
+        // handle playlists / sets different and get playlist id via uir field in JSON
+        if (url.contains("sets") && !url.endsWith("sets") && !url.endsWith("sets/"))
+            return Parser.matchGroup1("\"uri\":\\s*\"https:\\/\\/api\\.soundcloud\\.com\\/playlists\\/((\\d)*?)\"", response);
+        return Parser.matchGroup1(",\"id\":(([^}\\n])*?),", response);
     }
 
     /**

@@ -32,7 +32,7 @@ public class PeertubeStreamExtractorDefaultTest {
         NewPipe.init(Downloader.getInstance(), new Localization("GB", "en"));
         // setting instance might break test when running in parallel
         PeerTube.setInstance("https://peertube.mastodon.host", "PeerTube on Mastodon.host");
-        extractor = (PeertubeStreamExtractor) PeerTube.getStreamExtractor("https://peertube.mastodon.host/videos/watch/04af977f-4201-4697-be67-a8d8cae6fa7a");
+        extractor = (PeertubeStreamExtractor) PeerTube.getStreamExtractor("https://peertube.mastodon.host/videos/watch/afe5bf12-c58b-4efd-b56e-29c5a59e04bc");
         extractor.fetchPage();
     }
 
@@ -44,39 +44,39 @@ public class PeertubeStreamExtractorDefaultTest {
 
     @Test
     public void testGetTitle() throws ParsingException {
-        assertEquals(extractor.getName(), "The Internet's Own Boy");
+        assertEquals(extractor.getName(), "Power Corrupts the Best");
     }
 
     @Test
     public void testGetDescription() throws ParsingException {
-        assertEquals(extractor.getDescription(), "The story of programming prodigy and information activist Aaron Swartz, who took his own life at the age of 26.");
+        assertEquals(extractor.getDescription(), "A short reading from Bakunin, made for the group Audible Anarchist https://audibleanarchist.github.io/Webpage/");
     }
 
     @Test
     public void testGetUploaderName() throws ParsingException {
-        assertEquals(extractor.getUploaderName(), "root");
+        assertEquals(extractor.getUploaderName(), "Rowsedower");
     }
 
     @Test
     public void testGetLength() throws ParsingException {
-        assertEquals(extractor.getLength(), 6299);
+        assertEquals(extractor.getLength(), 269);
     }
 
     @Test
     public void testGetViewCount() throws ParsingException {
         assertTrue(Long.toString(extractor.getViewCount()),
-                extractor.getViewCount() > 700);
+                extractor.getViewCount() > 10);
     }
 
     @Test
     public void testGetUploadDate() throws ParsingException {
-        assertEquals("2017-10-17", extractor.getUploadDate());
+        assertEquals("2018-09-30", extractor.getUploadDate());
     }
 
     @Test
     public void testGetUploaderUrl() throws ParsingException {
         assertIsSecureUrl(extractor.getUploaderUrl());
-        assertEquals("https://peertube.mastodon.host/api/v1/accounts/root@peertube2.cpy.re", extractor.getUploaderUrl());
+        assertEquals("https://peertube.mastodon.host/api/v1/accounts/reddebrek@peertube.mastodon.host", extractor.getUploaderUrl());
     }
 
     @Test

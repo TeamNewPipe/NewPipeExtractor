@@ -25,23 +25,21 @@ public class PeertubeSearchExtractorDefaultTest extends PeertubeSearchExtractorB
         NewPipe.init(Downloader.getInstance(), new Localization("GB", "en"));
         // setting instance might break test when running in parallel
         PeerTube.setInstance("https://peertube.mastodon.host", "PeerTube on Mastodon.host");
-        extractor = (PeertubeSearchExtractor) PeerTube.getSearchExtractor("internet's own boy");
+        extractor = (PeertubeSearchExtractor) PeerTube.getSearchExtractor("kde");
         extractor.fetchPage();
         itemsPage = extractor.getInitialPage();
     }
 
     @Test
     public void testGetSecondPageUrl() throws Exception {
-        assertEquals("https://peertube.mastodon.host/api/v1/search/videos?search=internet%27s+own+boy&start=12&count=12", extractor.getNextPageUrl());
+        assertEquals("https://peertube.mastodon.host/api/v1/search/videos?search=kde&start=12&count=12", extractor.getNextPageUrl());
     }
 
     @Test
     public void testResultList_FirstElement() {
         InfoItem firstInfoItem = itemsPage.getItems().get(0);
-
-        // THe channel should be the first item
-        assertEquals("name", "The Internet's Own Boy", firstInfoItem.getName());
-        assertEquals("url","https://peertube.mastodon.host/api/v1/videos/04af977f-4201-4697-be67-a8d8cae6fa7a", firstInfoItem.getUrl());
+        
+        assertTrue("search does not match", firstInfoItem.getName().toLowerCase().contains("kde"));
     }
 
     @Test
@@ -83,11 +81,11 @@ public class PeertubeSearchExtractorDefaultTest extends PeertubeSearchExtractorB
 
     @Test
     public void testId() throws Exception {
-        assertEquals("internet's own boy", extractor.getId());
+        assertEquals("kde", extractor.getId());
     }
 
     @Test
     public void testName() {
-        assertEquals("internet's own boy", extractor.getName());
+        assertEquals("kde", extractor.getName());
     }
 }

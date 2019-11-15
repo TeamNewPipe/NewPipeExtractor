@@ -80,6 +80,7 @@ public class YoutubeStreamLinkHandlerFactoryTest {
         assertEquals("EhxJLojIE_o", linkHandler.fromUrl("http://www.youtube.com/attribution_link?a=JdfC0C9V6ZI&u=%2Fwatch%3Fv%3DEhxJLojIE_o%26feature%3Dshare").getId());
         assertEquals("jZViOEv90dI", linkHandler.fromUrl("vnd.youtube://www.youtube.com/watch?v=jZViOEv90dI").getId());
         assertEquals("jZViOEv90dI", linkHandler.fromUrl("vnd.youtube:jZViOEv90dI").getId());
+        assertEquals("O0EDx9WAelc", linkHandler.fromUrl("https://music.youtube.com/watch?v=O0EDx9WAelc").getId());
     }
 
     @Test
@@ -98,13 +99,14 @@ public class YoutubeStreamLinkHandlerFactoryTest {
         assertTrue(linkHandler.acceptUrl("http://www.youtube.com/attribution_link?a=JdfC0C9V6ZI&u=%2Fwatch%3Fv%3DEhxJLojIE_o%26feature%3Dshare"));
         assertTrue(linkHandler.acceptUrl("vnd.youtube://www.youtube.com/watch?v=jZViOEv90dI"));
         assertTrue(linkHandler.acceptUrl("vnd.youtube:jZViOEv90dI"));
-
-        assertTrue(linkHandler.acceptUrl("vnd.youtube:jZViOEv90dI"));
+        assertTrue(linkHandler.acceptUrl("vnd.youtube.launch:jZViOEv90dI"));
+        assertTrue(linkHandler.acceptUrl("https://music.youtube.com/watch?v=O0EDx9WAelc"));
     }
 
     @Test
     public void testAcceptHookUrl() throws ParsingException {
         assertTrue(linkHandler.acceptUrl("https://hooktube.com/watch?v=TglNG-yjabU"));
+        assertTrue(linkHandler.acceptUrl("http://hooktube.com/watch?v=TglNG-yjabU"));
         assertTrue(linkHandler.acceptUrl("hooktube.com/watch?v=3msbfr6pBNE"));
         assertTrue(linkHandler.acceptUrl("https://hooktube.com/watch?v=ocH3oSnZG3c&list=PLS2VU1j4vzuZwooPjV26XM9UEBY2CPNn2"));
         assertTrue(linkHandler.acceptUrl("hooktube.com/watch/3msbfr6pBNE"));
@@ -115,10 +117,31 @@ public class YoutubeStreamLinkHandlerFactoryTest {
     @Test
     public void testGetHookIdfromUrl() throws ParsingException {
         assertEquals("TglNG-yjabU", linkHandler.fromUrl("https://hooktube.com/watch?v=TglNG-yjabU").getId());
+        assertEquals("TglNG-yjabU", linkHandler.fromUrl("http://hooktube.com/watch?v=TglNG-yjabU").getId());
         assertEquals("3msbfr6pBNE", linkHandler.fromUrl("hooktube.com/watch?v=3msbfr6pBNE").getId());
         assertEquals("ocH3oSnZG3c", linkHandler.fromUrl("https://hooktube.com/watch?v=ocH3oSnZG3c&list=PLS2VU1j4vzuZwooPjV26XM9UEBY2CPNn2").getId());
         assertEquals("3msbfr6pBNE", linkHandler.fromUrl("hooktube.com/watch/3msbfr6pBNE").getId());
         assertEquals("3msbfr6pBNE", linkHandler.fromUrl("hooktube.com/v/3msbfr6pBNE").getId());
         assertEquals("3msbfr6pBNE", linkHandler.fromUrl("hooktube.com/embed/3msbfr6pBNE").getId());
+    }
+    
+    @Test
+    public void testAcceptInvidioUrl() throws ParsingException {
+        assertTrue(linkHandler.acceptUrl("https://invidio.us/watch?v=TglNG-yjabU"));
+        assertTrue(linkHandler.acceptUrl("http://www.invidio.us/watch?v=TglNG-yjabU"));
+        assertTrue(linkHandler.acceptUrl("http://invidio.us/watch?v=TglNG-yjabU"));
+        assertTrue(linkHandler.acceptUrl("invidio.us/watch?v=3msbfr6pBNE"));
+        assertTrue(linkHandler.acceptUrl("https://invidio.us/watch?v=ocH3oSnZG3c&test=PLS2VU1j4vzuZwooPjV26XM9UEBY2CPNn2"));
+        assertTrue(linkHandler.acceptUrl("invidio.us/embed/3msbfr6pBNE"));
+    }
+    
+    @Test
+    public void testGetInvidioIdfromUrl() throws ParsingException {
+        assertEquals("TglNG-yjabU", linkHandler.fromUrl("https://invidio.us/watch?v=TglNG-yjabU").getId());
+        assertEquals("TglNG-yjabU", linkHandler.fromUrl("http://www.invidio.us/watch?v=TglNG-yjabU").getId());
+        assertEquals("TglNG-yjabU", linkHandler.fromUrl("http://invidio.us/watch?v=TglNG-yjabU").getId());
+        assertEquals("3msbfr6pBNE", linkHandler.fromUrl("invidio.us/watch?v=3msbfr6pBNE").getId());
+        assertEquals("ocH3oSnZG3c", linkHandler.fromUrl("https://invidio.us/watch?v=ocH3oSnZG3c&test=PLS2VU1j4vzuZwooPjV26XM9UEBY2CPNn2").getId());
+        assertEquals("3msbfr6pBNE", linkHandler.fromUrl("invidio.us/embed/3msbfr6pBNE").getId());
     }
 }

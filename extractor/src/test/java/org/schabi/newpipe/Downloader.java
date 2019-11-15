@@ -16,6 +16,8 @@ import org.schabi.newpipe.extractor.DownloadResponse;
 import org.schabi.newpipe.extractor.exceptions.ReCaptchaException;
 import org.schabi.newpipe.extractor.utils.Localization;
 
+import static java.util.Collections.singletonList;
+
 /*
  * Created by Christian Schabesberger on 28.01.16.
  *
@@ -129,7 +131,7 @@ public class Downloader implements org.schabi.newpipe.extractor.Downloader {
              * request See : https://github.com/rg3/youtube-dl/issues/5138
              */
             if (con.getResponseCode() == 429) {
-                throw new ReCaptchaException("reCaptcha Challenge requested");
+                throw new ReCaptchaException("reCaptcha Challenge requested", con.getURL().toString());
             }
 
             throw new IOException(con.getResponseCode() + " " + con.getResponseMessage(), e);
@@ -173,6 +175,36 @@ public class Downloader implements org.schabi.newpipe.extractor.Downloader {
     }
 
     @Override
+    public DownloadResponse head(String siteUrl) throws IOException, ReCaptchaException {
+        final HttpsURLConnection con = (HttpsURLConnection) new URL(siteUrl).openConnection();
+
+        try {
+            con.setRequestMethod("HEAD");
+            setDefaults(con);
+        } catch (Exception e) {
+            /*
+             * HTTP 429 == Too Many Request Receive from Youtube.com = ReCaptcha challenge
+             * request See : https://github.com/rg3/youtube-dl/issues/5138
+             */
+            if (con.getResponseCode() == 429) {
+                throw new ReCaptchaException("reCaptcha Challenge requested", con.getURL().toString());
+            }
+
+            throw new IOException(con.getResponseCode() + " " + con.getResponseMessage(), e);
+        }
+
+        return new DownloadResponse(con.getResponseCode(), null, con.getHeaderFields());
+    }
+
+    @Override
+    public DownloadResponse get(String siteUrl, Localization localization) throws IOException, ReCaptchaException {
+        final Map<String, List<String>> requestHeaders = new HashMap<>();
+        requestHeaders.put("Accept-Language", singletonList(localization.getLanguage()));
+
+        return get(siteUrl, new DownloadRequest(null, requestHeaders));
+    }
+
+    @Override
     public DownloadResponse get(String siteUrl, DownloadRequest request)
             throws IOException, ReCaptchaException {
         URL url = new URL(siteUrl);
@@ -183,7 +215,7 @@ public class Downloader implements org.schabi.newpipe.extractor.Downloader {
             }
         }
         String responseBody = dl(con);
-        return new DownloadResponse(responseBody, con.getHeaderFields());
+        return new DownloadResponse(con.getResponseCode(), responseBody, con.getHeaderFields());
     }
 
     @Override
@@ -219,6 +251,6 @@ public class Downloader implements org.schabi.newpipe.extractor.Downloader {
                 sb.append(inputLine);
             }
         }
-        return new DownloadResponse(sb.toString(), con.getHeaderFields());
+        return new DownloadResponse(con.getResponseCode(), sb.toString(), con.getHeaderFields());
     }
 }

@@ -60,6 +60,11 @@ public interface Downloader {
      */
     String download(String siteUrl) throws IOException, ReCaptchaException;
 
+    DownloadResponse head(String siteUrl) throws IOException, ReCaptchaException;
+
+    DownloadResponse get(String siteUrl, Localization localization)
+            throws IOException, ReCaptchaException;
+
     DownloadResponse get(String siteUrl, DownloadRequest request)
             throws IOException, ReCaptchaException;
 

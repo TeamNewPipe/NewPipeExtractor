@@ -1,4 +1,4 @@
-package org.schabi.newpipe.extractor.services.youtube;
+package org.schabi.newpipe.extractor.services.youtube.stream;
 
 import org.junit.BeforeClass;
 import org.junit.Ignore;
@@ -25,14 +25,15 @@ import static org.schabi.newpipe.extractor.ServiceList.YouTube;
 /**
  * Test for {@link YoutubeStreamLinkHandlerFactory}
  */
-public class YoutubeStreamExtractorControversialTest {
+public class YoutubeStreamExtractorAgeRestrictedTest {
+    public static final String HTTPS = "https://";
     private static YoutubeStreamExtractor extractor;
 
     @BeforeClass
     public static void setUp() throws Exception {
         NewPipe.init(Downloader.getInstance(), new Localization("GB", "en"));
         extractor = (YoutubeStreamExtractor) YouTube
-                .getStreamExtractor("https://www.youtube.com/watch?v=T4XJQO3qol8");
+                .getStreamExtractor("https://www.youtube.com/watch?v=MmBeUZqv1QA");
         extractor.fetchPage();
     }
 
@@ -48,7 +49,6 @@ public class YoutubeStreamExtractorControversialTest {
     }
 
     @Test
-    @Ignore
     public void testGetAgeLimit() throws ParsingException {
         assertEquals(18, extractor.getAgeLimit());
     }
@@ -62,7 +62,7 @@ public class YoutubeStreamExtractorControversialTest {
     @Test
     public void testGetDescription() throws ParsingException {
         assertNotNull(extractor.getDescription());
-//        assertFalse(extractor.getDescription().isEmpty());
+        assertFalse(extractor.getDescription().isEmpty());
     }
 
     @Test
@@ -71,10 +71,9 @@ public class YoutubeStreamExtractorControversialTest {
         assertFalse(extractor.getUploaderName().isEmpty());
     }
 
-    @Ignore // Currently there is no way get the length from restricted videos
     @Test
     public void testGetLength() throws ParsingException {
-        assertTrue(extractor.getLength() > 0);
+        assertEquals(1789, extractor.getLength());
     }
 
     @Test
@@ -97,8 +96,6 @@ public class YoutubeStreamExtractorControversialTest {
         assertIsSecureUrl(extractor.getUploaderAvatarUrl());
     }
 
-    // FIXME: 25.11.17 Are there no streams or are they not listed?
-    @Ignore
     @Test
     public void testGetAudioStreams() throws IOException, ExtractionException {
         // audio streams are not always necessary
@@ -110,20 +107,27 @@ public class YoutubeStreamExtractorControversialTest {
         List<VideoStream> streams = new ArrayList<>();
         streams.addAll(extractor.getVideoStreams());
         streams.addAll(extractor.getVideoOnlyStreams());
-        assertTrue(streams.size() > 0);
+
+        assertTrue(Integer.toString(streams.size()),streams.size() > 0);
+        for (VideoStream s : streams) {
+            assertTrue(s.getUrl(),
+                    s.getUrl().contains(HTTPS));
+            assertTrue(s.resolution.length() > 0);
+            assertTrue(Integer.toString(s.getFormatId()),
+                    0 <= s.getFormatId() && s.getFormatId() <= 0x100);
+        }
     }
 
-    @Ignore
+
     @Test
     public void testGetSubtitlesListDefault() throws IOException, ExtractionException {
         // Video (/view?v=YQHsXMglC9A) set in the setUp() method has no captions => null
-        assertTrue(!extractor.getSubtitlesDefault().isEmpty());
+        assertTrue(extractor.getSubtitlesDefault().isEmpty());
     }
 
-    @Ignore
     @Test
     public void testGetSubtitlesList() throws IOException, ExtractionException {
         // Video (/view?v=YQHsXMglC9A) set in the setUp() method has no captions => null
-        assertTrue(!extractor.getSubtitles(MediaFormat.TTML).isEmpty());
+        assertTrue(extractor.getSubtitles(MediaFormat.TTML).isEmpty());
     }
 }

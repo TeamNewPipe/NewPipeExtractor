@@ -24,12 +24,14 @@ import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
+import org.schabi.newpipe.extractor.DownloadResponse;
 import org.schabi.newpipe.extractor.Downloader;
 import org.schabi.newpipe.extractor.linkhandler.ListLinkHandler;
 import org.schabi.newpipe.extractor.StreamingService;
 import org.schabi.newpipe.extractor.exceptions.ExtractionException;
 import org.schabi.newpipe.extractor.exceptions.ParsingException;
 import org.schabi.newpipe.extractor.kiosk.KioskExtractor;
+import org.schabi.newpipe.extractor.services.youtube.linkHandler.YoutubeParsingHelper;
 import org.schabi.newpipe.extractor.stream.StreamInfoItem;
 import org.schabi.newpipe.extractor.stream.StreamInfoItemsCollector;
 import org.schabi.newpipe.extractor.utils.Localization;
@@ -56,8 +58,8 @@ public class YoutubeTrendingExtractor extends KioskExtractor<StreamInfoItem> {
             url += "?gl=" + contentCountry;
         }
 
-        String pageContent = downloader.download(url);
-        doc = Jsoup.parse(pageContent, url);
+        final DownloadResponse response = downloader.get(url);
+        doc = YoutubeParsingHelper.parseAndCheckPage(url, response);
     }
 
     @Override
@@ -126,6 +128,8 @@ public class YoutubeTrendingExtractor extends KioskExtractor<StreamInfoItem> {
                     }
 
                     private Element getUploaderLink() {
+                        // this url is not always in the form "/channel/..."
+                        // sometimes Youtube provides urls in the from "/user/..."
                         Element uploaderEl = el.select("div[class*=\"yt-lockup-byline \"]").first();
                         return uploaderEl.select("a").first();
                     }

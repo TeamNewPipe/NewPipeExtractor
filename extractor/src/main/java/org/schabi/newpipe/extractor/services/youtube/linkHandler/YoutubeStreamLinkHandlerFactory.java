@@ -60,7 +60,7 @@ public class YoutubeStreamLinkHandlerFactory extends LinkHandlerFactory {
             URI uri = new URI(urlString);
             String scheme = uri.getScheme();
 
-            if (scheme != null && scheme.equals("vnd.youtube")) {
+            if (scheme != null && (scheme.equals("vnd.youtube") || scheme.equals("vnd.youtube.launch"))) {
                 String schemeSpecificPart = uri.getSchemeSpecificPart();
                 if (schemeSpecificPart.startsWith("//")) {
                     urlString = "https:" + schemeSpecificPart;
@@ -85,7 +85,9 @@ public class YoutubeStreamLinkHandlerFactory extends LinkHandlerFactory {
             path = path.substring(1);
         }
 
-        if (!YoutubeParsingHelper.isYoutubeALikeURL(url)) {
+        if (!Utils.isHTTP(url) || !(YoutubeParsingHelper.isYoutubeURL(url) ||
+                YoutubeParsingHelper.isYoutubeServiceURL(url) || YoutubeParsingHelper.isHooktubeURL(url) ||
+                YoutubeParsingHelper.isInvidioURL(url))) {
             if (host.equalsIgnoreCase("googleads.g.doubleclick.net")) {
                 throw new FoundAdException("Error found ad: " + urlString);
             }
@@ -112,7 +114,8 @@ public class YoutubeStreamLinkHandlerFactory extends LinkHandlerFactory {
 
             case "YOUTUBE.COM":
             case "WWW.YOUTUBE.COM":
-            case "M.YOUTUBE.COM": {
+            case "M.YOUTUBE.COM":
+            case "MUSIC.YOUTUBE.COM": {
                 if (path.equals("attribution_link")) {
                     String uQueryValue = Utils.getQueryValue(url, "u");
 
@@ -147,6 +150,34 @@ public class YoutubeStreamLinkHandlerFactory extends LinkHandlerFactory {
             }
 
             case "HOOKTUBE.COM": {
+                if (path.startsWith("v/")) {
+                    String id = path.substring("v/".length());
+
+                    return assertIsID(id);
+                }
+                if (path.startsWith("watch/")) {
+                    String id = path.substring("watch/".length());
+
+                    return assertIsID(id);
+                }
+                // there is no break-statement here on purpose so the next code-block gets also run for hooktube
+            }
+
+            case "WWW.INVIDIO.US":
+            case "DEV.INVIDIO.US":
+            case "INVIDIO.US":
+            case "INVIDIOUS.SNOPYTA.ORG":
+            case "DE.INVIDIOUS.SNOPYTA.ORG":
+            case "FI.INVIDIOUS.SNOPYTA.ORG":
+            case "VID.WXZM.SX":
+            case "INVIDIOUS.KABI.TK":
+            case "INVIDIOU.SH":
+            case "WWW.INVIDIOU.SH":
+            case "NO.INVIDIOU.SH":
+            case "INVIDIOUS.ENKIRTON.NET":
+            case "TUBE.POAL.CO":
+            case "INVIDIOUS.13AD.DE":
+            case "YT.ELUKERIO.ORG": { // code-block for hooktube.com and Invidious instances
                 if (path.equals("watch")) {
                     String viewQueryValue = Utils.getQueryValue(url, "v");
                     if (viewQueryValue != null) {
@@ -158,19 +189,9 @@ public class YoutubeStreamLinkHandlerFactory extends LinkHandlerFactory {
 
                     return assertIsID(id);
                 }
-                if (path.startsWith("v/")) {
-                    String id = path.substring("v/".length());
 
-                    return assertIsID(id);
-                }
-                if (path.startsWith("watch/")) {
-                    String id = path.substring("watch/".length());
-
-                    return assertIsID(id);
-                }
+                break;
             }
-
-            break;
         }
 
         throw new ParsingException("Error no suitable url: " + urlString);

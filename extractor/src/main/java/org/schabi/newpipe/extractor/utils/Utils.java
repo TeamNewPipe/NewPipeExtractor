@@ -28,6 +28,38 @@ public class Utils {
     }
 
     /**
+     * <p>Convert a mixed number word to a long.</p>
+     * <p>Examples:</p>
+     * <ul>
+     *     <li>123 -&gt; 123</li>
+     *     <li>1.23K -&gt; 1230</li>
+     *     <li>1.23M -&gt; 1230000</li>
+     * </ul>
+     * @param numberWord string to be converted to a long
+     * @return a long
+     * @throws NumberFormatException
+     * @throws ParsingException
+     */
+    public static long mixedNumberWordToLong(String numberWord) throws NumberFormatException, ParsingException {
+        String multiplier = "";
+        try {
+            multiplier = Parser.matchGroup("[\\d]+([\\.,][\\d]+)?([KMBkmb])+", numberWord, 2);
+        } catch(ParsingException ignored) {}
+        double count = Double.parseDouble(Parser.matchGroup1("([\\d]+([\\.,][\\d]+)?)", numberWord)
+                .replace(",", "."));
+        switch (multiplier.toUpperCase()) {
+            case "K":
+                return (long) (count * 1e3);
+            case "M":
+                return (long) (count * 1e6);
+            case "B":
+                return (long) (count * 1e9);
+            default:
+                return (long) (count);
+        }
+    }
+
+    /**
      * Check if the url matches the pattern.
      *
      * @param pattern the pattern that will be used to check the url
@@ -119,6 +151,19 @@ public class Utils {
 
             throw e;
         }
+    }
+
+    public static boolean isHTTP(URL url) {
+        // make sure its http or https
+        String protocol = url.getProtocol();
+        if (!protocol.equals("http") && !protocol.equals("https")) {
+            return false;
+        }
+
+        boolean usesDefaultPort = url.getPort() == url.getDefaultPort();
+        boolean setsNoPort = url.getPort() == -1;
+
+        return setsNoPort || usesDefaultPort;
     }
     
     public static String removeUTF8BOM(String s) {
