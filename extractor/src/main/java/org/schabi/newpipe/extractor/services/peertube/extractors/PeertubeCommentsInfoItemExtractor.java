@@ -5,6 +5,8 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Locale;
 
+import org.jsoup.Jsoup;
+import org.jsoup.nodes.Document;
 import org.schabi.newpipe.extractor.ServiceList;
 import org.schabi.newpipe.extractor.comments.CommentsInfoItemExtractor;
 import org.schabi.newpipe.extractor.exceptions.ParsingException;
@@ -59,7 +61,12 @@ public class PeertubeCommentsInfoItemExtractor implements CommentsInfoItemExtrac
     @Override
     public String getCommentText() throws ParsingException {
         String htmlText = JsonUtils.getString(item, "text");
-        return htmlText.replaceAll("(?s)<[^>]*>(\\s*<[^>]*>)*", "");
+        try {
+            Document doc = Jsoup.parse(htmlText);
+            return doc.body().text();
+        }catch(Exception e) {
+            return htmlText.replaceAll("(?s)<[^>]*>(\\s*<[^>]*>)*", "");
+        }
     }
 
     @Override
