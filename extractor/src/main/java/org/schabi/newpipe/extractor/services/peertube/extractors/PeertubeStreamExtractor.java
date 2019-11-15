@@ -40,6 +40,7 @@ public class PeertubeStreamExtractor extends StreamExtractor {
 
     
     private JsonObject json;
+    private List<SubtitlesStream> subtitles = new ArrayList<>();
     
     public PeertubeStreamExtractor(StreamingService service, LinkHandler linkHandler, Localization localization) {
         super(service, linkHandler, localization);
@@ -173,12 +174,18 @@ public class PeertubeStreamExtractor extends StreamExtractor {
 
     @Override
     public List<SubtitlesStream> getSubtitlesDefault() throws IOException, ExtractionException {
-        return Collections.emptyList();
+        return subtitles;
     }
 
     @Override
     public List<SubtitlesStream> getSubtitles(final MediaFormat format) throws IOException, ExtractionException {
-        return Collections.emptyList();
+        List<SubtitlesStream> filteredSubs = new ArrayList<>();
+        for(SubtitlesStream sub: subtitles) {
+            if(sub.getFormat() == format) {
+                filteredSubs.add(sub);
+            }
+        }
+        return filteredSubs;
     }
 
     @Override
@@ -274,6 +281,8 @@ public class PeertubeStreamExtractor extends StreamExtractor {
         }else {
             throw new ExtractionException("Unable to extract peertube channel data");
         }
+        
+        loadSubtitles();
     }
 
     private void setInitialData(String responseBody) throws ExtractionException {
@@ -284,6 +293,28 @@ public class PeertubeStreamExtractor extends StreamExtractor {
         }
         if(null == json) throw new ExtractionException("Unable to extract peertube stream data");
         PeertubeParsingHelper.validate(json);
+    }
+    
+    private void loadSubtitles() {
+        if (subtitles.isEmpty()) {
+            try {
+                DownloadResponse response = getDownloader().get(getUrl() + "/captions"); 
+                JsonObject captionsJson = JsonParser.object().from(response.getResponseBody());
+                JsonArray captions = JsonUtils.getArray(captionsJson, "data");
+                for(Object c: captions) {
+                    if(c instanceof JsonObject) {
+                        JsonObject caption = (JsonObject)c;
+                        String url = ServiceList.PeerTube.getBaseUrl() + JsonUtils.getString(caption, "captionPath");
+                        String languageCode = JsonUtils.getString(caption, "language.id");
+                        String ext = url.substring(url.lastIndexOf(".") + 1);
+                        MediaFormat fmt = MediaFormat.getFromSuffix(ext);
+                        if(fmt != null && languageCode != null) subtitles.add(new SubtitlesStream(fmt, languageCode, url, false));
+                    }
+                }
+            } catch (Exception e) {
+                // ignore all exceptions
+            }
+        }
     }
 
     @Override
