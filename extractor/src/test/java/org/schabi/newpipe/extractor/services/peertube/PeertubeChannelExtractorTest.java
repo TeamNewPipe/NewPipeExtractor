@@ -64,7 +64,7 @@ public class PeertubeChannelExtractorTest {
 
         @Test
         public void testOriginalUrl() throws ParsingException {
-            assertEquals("https://peertube.mastodon.host/api/v1/accounts/kde", extractor.getOriginalUrl());
+            assertEquals("https://peertube.mastodon.host/accounts/kde", extractor.getOriginalUrl());
         }
 
         /*//////////////////////////////////////////////////////////////////////////

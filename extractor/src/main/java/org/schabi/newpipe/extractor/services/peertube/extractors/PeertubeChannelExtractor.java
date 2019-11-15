@@ -179,5 +179,10 @@ public class PeertubeChannelExtractor extends ChannelExtractor {
     public String getName() throws ParsingException {
         return JsonUtils.getString(json, "displayName");
     }
+    
+    @Override
+    public String getOriginalUrl() throws ParsingException {
+        return ServiceList.PeerTube.getBaseUrl() + "/accounts/" + getId();
+    }
 
 }

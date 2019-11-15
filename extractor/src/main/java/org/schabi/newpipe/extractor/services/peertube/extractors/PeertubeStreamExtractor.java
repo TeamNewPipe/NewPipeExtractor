@@ -291,4 +291,9 @@ public class PeertubeStreamExtractor extends StreamExtractor {
         return JsonUtils.getString(json, "name");
     }
 
+    @Override
+    public String getOriginalUrl() throws ParsingException {
+        return ServiceList.PeerTube.getBaseUrl() + "/videos/watch/" + getId();
+    }
+
 }
