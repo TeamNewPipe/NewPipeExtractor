@@ -1,3 +1,6 @@
 dependencies {
     testImplementation 'junit:junit:4.12'
+
+    implementation 'com.grack:nanojson:1.1'
+    implementation 'com.github.spotbugs:spotbugs-annotations:3.1.0'
 }

@@ -4,15 +4,14 @@ import com.grack.nanojson.JsonArray;
 import com.grack.nanojson.JsonObject;
 import com.grack.nanojson.JsonParser;
 import com.grack.nanojson.JsonParserException;
-import org.schabi.newpipe.extractor.Downloader;
 import org.schabi.newpipe.extractor.MediaFormat;
 import org.schabi.newpipe.extractor.StreamingService;
+import org.schabi.newpipe.extractor.downloader.Downloader;
 import org.schabi.newpipe.extractor.exceptions.ExtractionException;
 import org.schabi.newpipe.extractor.exceptions.ParsingException;
 import org.schabi.newpipe.extractor.linkhandler.LinkHandler;
+import org.schabi.newpipe.extractor.localization.DateWrapper;
 import org.schabi.newpipe.extractor.stream.*;
-import org.schabi.newpipe.extractor.utils.Localization;
-import org.schabi.newpipe.extractor.utils.Parser;
 
 import javax.annotation.Nonnull;
 import java.io.IOException;
@@ -24,14 +23,20 @@ public class MediaCCCStreamExtractor extends StreamExtractor {
     private JsonObject data;
     private JsonObject conferenceData;
 
-    public MediaCCCStreamExtractor(StreamingService service, LinkHandler linkHandler, Localization localization) {
-        super(service, linkHandler, localization);
+    public MediaCCCStreamExtractor(StreamingService service, LinkHandler linkHandler) {
+        super(service, linkHandler);
     }
 
     @Nonnull
     @Override
-    public String getUploadDate() throws ParsingException {
+    public String getTextualUploadDate() throws ParsingException {
         return data.getString("release_date");
+    }
+
+    @Nonnull
+    @Override
+    public DateWrapper getUploadDate() throws ParsingException {
+        return new DateWrapper(MediaCCCParsingHelper.parseDateFrom(getTextualUploadDate()));
     }
 
     @Nonnull
@@ -200,9 +205,9 @@ public class MediaCCCStreamExtractor extends StreamExtractor {
     public void onFetchPage(@Nonnull Downloader downloader) throws IOException, ExtractionException {
         try {
             data = JsonParser.object().from(
-                    downloader.download(getLinkHandler().getUrl()));
+                    downloader.get(getLinkHandler().getUrl()).responseBody());
             conferenceData = JsonParser.object()
-                    .from(downloader.download(getUploaderUrl()));
+                    .from(downloader.get(getUploaderUrl()).responseBody());
         } catch (JsonParserException jpe) {
             throw new ExtractionException("Could not parse json returned by url: " + getLinkHandler().getUrl(), jpe);
         }
@@ -215,6 +220,7 @@ public class MediaCCCStreamExtractor extends StreamExtractor {
         return data.getString("title");
     }
 
+    @Nonnull
     @Override
     public String getOriginalUrl() throws ParsingException {
         return data.getString("frontend_link");

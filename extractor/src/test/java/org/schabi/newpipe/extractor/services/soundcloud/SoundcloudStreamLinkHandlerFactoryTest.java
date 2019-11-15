@@ -2,10 +2,9 @@ package org.schabi.newpipe.extractor.services.soundcloud;
 
 import org.junit.BeforeClass;
 import org.junit.Test;
-import org.schabi.newpipe.Downloader;
+import org.schabi.newpipe.DownloaderTestImpl;
 import org.schabi.newpipe.extractor.NewPipe;
 import org.schabi.newpipe.extractor.exceptions.ParsingException;
-import org.schabi.newpipe.extractor.utils.Localization;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -21,7 +20,7 @@ public class SoundcloudStreamLinkHandlerFactoryTest {
     @BeforeClass
     public static void setUp() throws Exception {
         linkHandler = SoundcloudStreamLinkHandlerFactory.getInstance();
-        NewPipe.init(Downloader.getInstance(), new Localization("GB", "en"));
+        NewPipe.init(DownloaderTestImpl.getInstance());
     }
 
     @Test(expected = IllegalArgumentException.class)

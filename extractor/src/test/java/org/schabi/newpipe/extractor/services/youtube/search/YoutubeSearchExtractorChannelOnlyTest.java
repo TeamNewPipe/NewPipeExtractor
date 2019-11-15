@@ -4,14 +4,13 @@ import org.hamcrest.CoreMatchers;
 import org.junit.BeforeClass;
 import org.junit.Ignore;
 import org.junit.Test;
-import org.schabi.newpipe.Downloader;
+import org.schabi.newpipe.DownloaderTestImpl;
 import org.schabi.newpipe.extractor.InfoItem;
 import org.schabi.newpipe.extractor.ListExtractor;
 import org.schabi.newpipe.extractor.NewPipe;
 import org.schabi.newpipe.extractor.channel.ChannelInfoItem;
 import org.schabi.newpipe.extractor.services.youtube.extractors.YoutubeSearchExtractor;
 import org.schabi.newpipe.extractor.services.youtube.linkHandler.YoutubeSearchQueryHandlerFactory;
-import org.schabi.newpipe.extractor.utils.Localization;
 
 import static java.util.Arrays.asList;
 import static org.junit.Assert.*;
@@ -21,9 +20,9 @@ public class YoutubeSearchExtractorChannelOnlyTest extends YoutubeSearchExtracto
 
     @BeforeClass
     public static void setUpClass() throws Exception {
-        NewPipe.init(Downloader.getInstance(), new Localization("GB", "en"));
+        NewPipe.init(DownloaderTestImpl.getInstance());
         extractor = (YoutubeSearchExtractor) YouTube.getSearchExtractor("pewdiepie",
-                asList(YoutubeSearchQueryHandlerFactory.CHANNELS), null, new Localization("GB", "en"));
+                asList(YoutubeSearchQueryHandlerFactory.CHANNELS), null);
         extractor.fetchPage();
         itemsPage = extractor.getInitialPage();
     }
@@ -31,7 +30,7 @@ public class YoutubeSearchExtractorChannelOnlyTest extends YoutubeSearchExtracto
     @Test
     public void testGetSecondPage() throws Exception {
         YoutubeSearchExtractor secondExtractor = (YoutubeSearchExtractor) YouTube.getSearchExtractor("pewdiepie",
-                asList(YoutubeSearchQueryHandlerFactory.CHANNELS), null, new Localization("GB", "en"));
+                asList(YoutubeSearchQueryHandlerFactory.CHANNELS), null);
         ListExtractor.InfoItemsPage<InfoItem> secondPage = secondExtractor.getPage(itemsPage.getNextPageUrl());
         assertTrue(Integer.toString(secondPage.getItems().size()),
                 secondPage.getItems().size() > 10);

@@ -3,7 +3,7 @@ package org.schabi.newpipe.extractor.services.youtube.stream;
 import org.junit.BeforeClass;
 import org.junit.Ignore;
 import org.junit.Test;
-import org.schabi.newpipe.Downloader;
+import org.schabi.newpipe.DownloaderTestImpl;
 import org.schabi.newpipe.extractor.MediaFormat;
 import org.schabi.newpipe.extractor.NewPipe;
 import org.schabi.newpipe.extractor.exceptions.ExtractionException;
@@ -12,12 +12,15 @@ import org.schabi.newpipe.extractor.services.youtube.extractors.YoutubeStreamExt
 import org.schabi.newpipe.extractor.services.youtube.linkHandler.YoutubeStreamLinkHandlerFactory;
 import org.schabi.newpipe.extractor.stream.StreamExtractor;
 import org.schabi.newpipe.extractor.stream.VideoStream;
-import org.schabi.newpipe.extractor.utils.Localization;
 
 import java.io.IOException;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.List;
 
+import static java.util.Objects.requireNonNull;
 import static org.junit.Assert.*;
 import static org.schabi.newpipe.extractor.ExtractorAsserts.assertIsSecureUrl;
 import static org.schabi.newpipe.extractor.ServiceList.YouTube;
@@ -30,7 +33,7 @@ public class YoutubeStreamExtractorControversialTest {
 
     @BeforeClass
     public static void setUp() throws Exception {
-        NewPipe.init(Downloader.getInstance(), new Localization("GB", "en"));
+        NewPipe.init(DownloaderTestImpl.getInstance());
         extractor = (YoutubeStreamExtractor) YouTube
                 .getStreamExtractor("https://www.youtube.com/watch?v=T4XJQO3qol8");
         extractor.fetchPage();
@@ -82,8 +85,15 @@ public class YoutubeStreamExtractorControversialTest {
     }
 
     @Test
-    public void testGetUploadDate() throws ParsingException {
-        assertTrue(extractor.getUploadDate().length() > 0);
+    public void testGetTextualUploadDate() throws ParsingException {
+        assertEquals("2010-09-09", extractor.getTextualUploadDate());
+    }
+
+    @Test
+    public void testGetUploadDate() throws ParsingException, ParseException {
+        final Calendar instance = Calendar.getInstance();
+        instance.setTime(new SimpleDateFormat("yyyy-MM-dd").parse("2010-09-09"));
+        assertEquals(instance, requireNonNull(extractor.getUploadDate()).date());
     }
 
     @Test

@@ -1,76 +1,87 @@
 package org.schabi.newpipe.extractor.comments;
 
 import org.schabi.newpipe.extractor.InfoItem;
+import org.schabi.newpipe.extractor.localization.DateWrapper;
 
-public class CommentsInfoItem extends InfoItem{
+import javax.annotation.Nullable;
 
-	private String commentId;
-	private String commentText;
-	private String authorName;
-	private String authorThumbnail;
-	private String authorEndpoint;
-	private String publishedTime;
-	private Integer likeCount;
-	
-	public CommentsInfoItem(int serviceId, String url, String name) {
-		super(InfoType.COMMENT, serviceId, url, name);
-		// TODO Auto-generated constructor stub
-	}
-	
-	public String getCommentText() {
-		return commentText;
-	}
+public class CommentsInfoItem extends InfoItem {
 
-	public void setCommentText(String contentText) {
-		this.commentText = contentText;
-	}
+    private String commentId;
+    private String commentText;
+    private String authorName;
+    private String authorThumbnail;
+    private String authorEndpoint;
+    private String textualPublishedTime;
+    @Nullable private DateWrapper publishedTime;
+    private int likeCount;
 
-	public String getAuthorName() {
-		return authorName;
-	}
+    public CommentsInfoItem(int serviceId, String url, String name) {
+        super(InfoType.COMMENT, serviceId, url, name);
+    }
 
-	public void setAuthorName(String authorName) {
-		this.authorName = authorName;
-	}
+    public String getCommentId() {
+        return commentId;
+    }
 
-	public String getAuthorThumbnail() {
-		return authorThumbnail;
-	}
+    public void setCommentId(String commentId) {
+        this.commentId = commentId;
+    }
 
-	public void setAuthorThumbnail(String authorThumbnail) {
-		this.authorThumbnail = authorThumbnail;
-	}
+    public String getCommentText() {
+        return commentText;
+    }
 
-	public String getAuthorEndpoint() {
-		return authorEndpoint;
-	}
+    public void setCommentText(String commentText) {
+        this.commentText = commentText;
+    }
 
-	public void setAuthorEndpoint(String authorEndpoint) {
-		this.authorEndpoint = authorEndpoint;
-	}
+    public String getAuthorName() {
+        return authorName;
+    }
 
-	public String getPublishedTime() {
-		return publishedTime;
-	}
+    public void setAuthorName(String authorName) {
+        this.authorName = authorName;
+    }
 
-	public void setPublishedTime(String publishedTime) {
-		this.publishedTime = publishedTime;
-	}
+    public String getAuthorThumbnail() {
+        return authorThumbnail;
+    }
 
-	public Integer getLikeCount() {
-		return likeCount;
-	}
+    public void setAuthorThumbnail(String authorThumbnail) {
+        this.authorThumbnail = authorThumbnail;
+    }
 
-	public void setLikeCount(Integer likeCount) {
-		this.likeCount = likeCount;
-	}
+    public String getAuthorEndpoint() {
+        return authorEndpoint;
+    }
 
-	public String getCommentId() {
-		return commentId;
-	}
+    public void setAuthorEndpoint(String authorEndpoint) {
+        this.authorEndpoint = authorEndpoint;
+    }
 
-	public void setCommentId(String commentId) {
-		this.commentId = commentId;
-	}
+    public String getTextualPublishedTime() {
+        return textualPublishedTime;
+    }
 
+    public void setTextualPublishedTime(String textualPublishedTime) {
+        this.textualPublishedTime = textualPublishedTime;
+    }
+
+    @Nullable
+    public DateWrapper getPublishedTime() {
+        return publishedTime;
+    }
+
+    public void setPublishedTime(@Nullable DateWrapper publishedTime) {
+        this.publishedTime = publishedTime;
+    }
+
+    public int getLikeCount() {
+        return likeCount;
+    }
+
+    public void setLikeCount(int likeCount) {
+        this.likeCount = likeCount;
+    }
 }

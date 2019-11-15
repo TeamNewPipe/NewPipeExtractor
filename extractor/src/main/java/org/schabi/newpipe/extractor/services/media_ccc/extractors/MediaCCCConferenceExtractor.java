@@ -4,16 +4,15 @@ import com.grack.nanojson.JsonArray;
 import com.grack.nanojson.JsonObject;
 import com.grack.nanojson.JsonParser;
 import com.grack.nanojson.JsonParserException;
-import org.schabi.newpipe.extractor.Downloader;
 import org.schabi.newpipe.extractor.StreamingService;
 import org.schabi.newpipe.extractor.channel.ChannelExtractor;
+import org.schabi.newpipe.extractor.downloader.Downloader;
 import org.schabi.newpipe.extractor.exceptions.ExtractionException;
 import org.schabi.newpipe.extractor.exceptions.ParsingException;
 import org.schabi.newpipe.extractor.linkhandler.ListLinkHandler;
 import org.schabi.newpipe.extractor.services.media_ccc.extractors.infoItems.MediaCCCStreamInfoItemExtractor;
 import org.schabi.newpipe.extractor.stream.StreamInfoItem;
 import org.schabi.newpipe.extractor.stream.StreamInfoItemsCollector;
-import org.schabi.newpipe.extractor.utils.Localization;
 
 import javax.annotation.Nonnull;
 import java.io.IOException;
@@ -22,8 +21,8 @@ public class MediaCCCConferenceExtractor extends ChannelExtractor {
 
     private JsonObject conferenceData;
 
-    public MediaCCCConferenceExtractor(StreamingService service, ListLinkHandler linkHandler, Localization localization) {
-        super(service, linkHandler, localization);
+    public MediaCCCConferenceExtractor(StreamingService service, ListLinkHandler linkHandler) {
+        super(service, linkHandler);
     }
 
     @Override
@@ -75,7 +74,7 @@ public class MediaCCCConferenceExtractor extends ChannelExtractor {
     @Override
     public void onFetchPage(@Nonnull Downloader downloader) throws IOException, ExtractionException {
         try {
-            conferenceData = JsonParser.object().from(downloader.download(getUrl()));
+            conferenceData = JsonParser.object().from(downloader.get(getUrl()).responseBody());
         } catch (JsonParserException jpe) {
             throw new ExtractionException("Could not parse json returnd by url: " + getUrl());
         }
@@ -87,6 +86,7 @@ public class MediaCCCConferenceExtractor extends ChannelExtractor {
         return conferenceData.getString("title");
     }
 
+    @Nonnull
     @Override
     public String getOriginalUrl() throws ParsingException {
         return "https://media.ccc.de/c/" + conferenceData.getString("acronym");

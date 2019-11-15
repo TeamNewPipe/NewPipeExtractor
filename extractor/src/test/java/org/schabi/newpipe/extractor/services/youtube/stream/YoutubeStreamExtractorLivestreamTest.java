@@ -2,7 +2,7 @@ package org.schabi.newpipe.extractor.services.youtube.stream;
 
 import org.junit.BeforeClass;
 import org.junit.Test;
-import org.schabi.newpipe.Downloader;
+import org.schabi.newpipe.DownloaderTestImpl;
 import org.schabi.newpipe.extractor.MediaFormat;
 import org.schabi.newpipe.extractor.NewPipe;
 import org.schabi.newpipe.extractor.exceptions.ExtractionException;
@@ -11,7 +11,6 @@ import org.schabi.newpipe.extractor.services.youtube.extractors.YoutubeStreamExt
 import org.schabi.newpipe.extractor.stream.StreamInfoItemsCollector;
 import org.schabi.newpipe.extractor.stream.StreamType;
 import org.schabi.newpipe.extractor.stream.VideoStream;
-import org.schabi.newpipe.extractor.utils.Localization;
 import org.schabi.newpipe.extractor.utils.Utils;
 
 import java.io.IOException;
@@ -25,7 +24,7 @@ public class YoutubeStreamExtractorLivestreamTest {
 
     @BeforeClass
     public static void setUp() throws Exception {
-        NewPipe.init(Downloader.getInstance(), new Localization("GB", "en"));
+        NewPipe.init(DownloaderTestImpl.getInstance());
         extractor = (YoutubeStreamExtractor) YouTube
                 .getStreamExtractor("https://www.youtube.com/watch?v=EcEMX-63PKY");
         extractor.fetchPage();
@@ -69,12 +68,13 @@ public class YoutubeStreamExtractorLivestreamTest {
     @Test
     public void testGetViewCount() throws ParsingException {
         long count = extractor.getViewCount();
-        assertTrue(Long.toString(count), count >= 7148995);
+        assertTrue(Long.toString(count), count > -1);
     }
 
     @Test
     public void testGetUploadDate() throws ParsingException {
-        assertTrue(extractor.getUploadDate().length() > 0);
+        assertNull(extractor.getUploadDate());
+        assertNull(extractor.getTextualUploadDate());
     }
 
     @Test

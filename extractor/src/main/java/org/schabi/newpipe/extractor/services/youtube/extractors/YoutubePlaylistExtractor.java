@@ -6,19 +6,19 @@ import com.grack.nanojson.JsonParserException;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
-import org.schabi.newpipe.extractor.DownloadResponse;
-import org.schabi.newpipe.extractor.Downloader;
 import org.schabi.newpipe.extractor.StreamingService;
+import org.schabi.newpipe.extractor.downloader.Downloader;
+import org.schabi.newpipe.extractor.downloader.Response;
 import org.schabi.newpipe.extractor.exceptions.ExtractionException;
 import org.schabi.newpipe.extractor.exceptions.ParsingException;
 import org.schabi.newpipe.extractor.linkhandler.LinkHandlerFactory;
 import org.schabi.newpipe.extractor.linkhandler.ListLinkHandler;
+import org.schabi.newpipe.extractor.localization.TimeAgoParser;
 import org.schabi.newpipe.extractor.playlist.PlaylistExtractor;
 import org.schabi.newpipe.extractor.services.youtube.linkHandler.YoutubeParsingHelper;
 import org.schabi.newpipe.extractor.stream.StreamInfoItem;
 import org.schabi.newpipe.extractor.stream.StreamInfoItemsCollector;
 import org.schabi.newpipe.extractor.stream.StreamType;
-import org.schabi.newpipe.extractor.utils.Localization;
 import org.schabi.newpipe.extractor.utils.Utils;
 
 import javax.annotation.Nonnull;
@@ -30,14 +30,14 @@ public class YoutubePlaylistExtractor extends PlaylistExtractor {
 
     private Document doc;
 
-    public YoutubePlaylistExtractor(StreamingService service, ListLinkHandler linkHandler, Localization localization) {
-        super(service, linkHandler, localization);
+    public YoutubePlaylistExtractor(StreamingService service, ListLinkHandler linkHandler) {
+        super(service, linkHandler);
     }
 
     @Override
     public void onFetchPage(@Nonnull Downloader downloader) throws IOException, ExtractionException {
         final String url = getUrl();
-        final DownloadResponse response = downloader.get(url);
+        final Response response = downloader.get(url, getExtractorLocalization());
         doc = YoutubeParsingHelper.parseAndCheckPage(url, response);
     }
 
@@ -141,7 +141,8 @@ public class YoutubePlaylistExtractor extends PlaylistExtractor {
         StreamInfoItemsCollector collector = new StreamInfoItemsCollector(getServiceId());
         JsonObject pageJson;
         try {
-            pageJson = JsonParser.object().from(getDownloader().download(pageUrl));
+            final String responseBody = getDownloader().get(pageUrl, getExtractorLocalization()).responseBody();
+            pageJson = JsonParser.object().from(responseBody);
         } catch (JsonParserException pe) {
             throw new ParsingException("Could not parse ajax json", pe);
         }
@@ -187,12 +188,14 @@ public class YoutubePlaylistExtractor extends PlaylistExtractor {
         }
 
         final LinkHandlerFactory streamLinkHandlerFactory = getService().getStreamLHFactory();
+        final TimeAgoParser timeAgoParser = getTimeAgoParser();
+
         for (final Element li : element.children()) {
             if(isDeletedItem(li)) {
                 continue;
             }
 
-            collector.commit(new YoutubeStreamInfoItemExtractor(li) {
+            collector.commit(new YoutubeStreamInfoItemExtractor(li, timeAgoParser) {
                 public Element uploaderLink;
 
                 @Override
@@ -258,7 +261,7 @@ public class YoutubePlaylistExtractor extends PlaylistExtractor {
                 }
 
                 @Override
-                public String getUploadDate() throws ParsingException {
+                public String getTextualUploadDate() throws ParsingException {
                     return "";
                 }
 

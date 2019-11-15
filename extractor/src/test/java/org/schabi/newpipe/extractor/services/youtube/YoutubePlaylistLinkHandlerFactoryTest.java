@@ -2,11 +2,10 @@ package org.schabi.newpipe.extractor.services.youtube;
 
 import org.junit.BeforeClass;
 import org.junit.Test;
-import org.schabi.newpipe.Downloader;
+import org.schabi.newpipe.DownloaderTestImpl;
 import org.schabi.newpipe.extractor.NewPipe;
 import org.schabi.newpipe.extractor.exceptions.ParsingException;
 import org.schabi.newpipe.extractor.services.youtube.linkHandler.YoutubePlaylistLinkHandlerFactory;
-import org.schabi.newpipe.extractor.utils.Localization;
 
 import static org.junit.Assert.*;
 
@@ -18,8 +17,8 @@ public class YoutubePlaylistLinkHandlerFactoryTest {
 
     @BeforeClass
     public static void setUp() {
+        NewPipe.init(DownloaderTestImpl.getInstance());
         linkHandler = YoutubePlaylistLinkHandlerFactory.getInstance();
-        NewPipe.init(Downloader.getInstance(), new Localization("GB", "en"));
     }
 
     @Test(expected = IllegalArgumentException.class)
