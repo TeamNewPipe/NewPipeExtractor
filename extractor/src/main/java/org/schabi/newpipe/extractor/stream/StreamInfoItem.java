@@ -28,8 +28,10 @@ import org.schabi.newpipe.extractor.InfoItem;
 public class StreamInfoItem extends InfoItem {
     private final StreamType streamType;
 
+    private String id;
     private String uploaderName;
     private String uploadDate;
+    private String rawUploadDate;
     private long viewCount = -1;
     private long duration = -1;
 
@@ -84,12 +86,30 @@ public class StreamInfoItem extends InfoItem {
         this.uploaderUrl = uploaderUrl;
     }
 
+    public String getRawUploadDate() {
+        return rawUploadDate;
+    }
+
+    public void setRawUploadDate(String rawUploadDate) {
+        this.rawUploadDate = rawUploadDate;
+    }
+
+    public String getId() {
+        return id;
+    }
+
+    public void setId(String id) {
+        this.id = id;
+    }
+
     @Override
     public String toString() {
         return "StreamInfoItem{" +
-                "streamType=" + streamType +
+                "id='" + id + '\'' +
+                ", streamType=" + streamType +
                 ", uploaderName='" + uploaderName + '\'' +
                 ", uploadDate='" + uploadDate + '\'' +
+                ", rawUploadDate='" + rawUploadDate + '\'' +
                 ", viewCount=" + viewCount +
                 ", duration=" + duration +
                 ", uploaderUrl='" + uploaderUrl + '\'' +

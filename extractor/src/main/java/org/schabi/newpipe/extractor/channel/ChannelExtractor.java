@@ -7,6 +7,9 @@ import org.schabi.newpipe.extractor.stream.StreamInfoItem;
 import org.schabi.newpipe.extractor.linkhandler.ListLinkHandler;
 import org.schabi.newpipe.extractor.utils.Localization;
 
+import java.util.HashMap;
+import java.util.Map;
+
 /*
  * Created by Christian Schabesberger on 25.07.16.
  *
@@ -29,6 +32,8 @@ import org.schabi.newpipe.extractor.utils.Localization;
 
 public abstract class ChannelExtractor extends ListExtractor<StreamInfoItem> {
 
+    private static Map<String, String> emptyPublishIsoTimeStrLookup = new HashMap<>();
+
     public ChannelExtractor(StreamingService service, ListLinkHandler linkHandler, Localization localization) {
         super(service, linkHandler, localization);
     }
@@ -38,4 +43,8 @@ public abstract class ChannelExtractor extends ListExtractor<StreamInfoItem> {
     public abstract String getFeedUrl() throws ParsingException;
     public abstract long getSubscriberCount() throws ParsingException;
     public abstract String getDescription() throws ParsingException;
+
+    public Map<String, String> getPublishIsoTimeStrLookup() throws ParsingException {
+        return emptyPublishIsoTimeStrLookup;
+    }
 }

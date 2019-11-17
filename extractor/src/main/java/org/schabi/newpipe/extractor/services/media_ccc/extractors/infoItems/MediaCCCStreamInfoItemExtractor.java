@@ -24,6 +24,11 @@ public class MediaCCCStreamInfoItemExtractor implements StreamInfoItemExtractor 
     }
 
     @Override
+    public String getId() throws ParsingException {
+        return event.getString("guid");
+    }
+
+    @Override
     public long getDuration() throws ParsingException {
         return event.getInt("length");
     }
@@ -50,14 +55,18 @@ public class MediaCCCStreamInfoItemExtractor implements StreamInfoItemExtractor 
     }
 
     @Override
+    public String getRawUploadDate() throws ParsingException {
+        return event.getString("date");
+    }
+
+    @Override
     public String getName() throws ParsingException {
         return event.getString("title");
     }
 
     @Override
     public String getUrl() throws ParsingException {
-        return "https://api.media.ccc.de/public/events/" +
-                event.getString("guid");
+        return "https://api.media.ccc.de/public/events/" + getId();
     }
 
     @Override

@@ -51,6 +51,11 @@ public class StreamInfoItemsCollector extends InfoItemsCollector<StreamInfoItem,
 
         // optional information
         try {
+            resultItem.setId(extractor.getId());
+        } catch (Exception e) {
+            addError(e);
+        }
+        try {
             resultItem.setDuration(extractor.getDuration());
         } catch (Exception e) {
             addError(e);
@@ -62,6 +67,11 @@ public class StreamInfoItemsCollector extends InfoItemsCollector<StreamInfoItem,
         }
         try {
             resultItem.setUploadDate(extractor.getUploadDate());
+        } catch (Exception e) {
+            addError(e);
+        }
+        try {
+            resultItem.setRawUploadDate(extractor.getRawUploadDate());
         } catch (Exception e) {
             addError(e);
         }
