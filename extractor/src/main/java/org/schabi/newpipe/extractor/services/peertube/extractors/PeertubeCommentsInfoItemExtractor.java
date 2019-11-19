@@ -1,15 +1,12 @@
 package org.schabi.newpipe.extractor.services.peertube.extractors;
 
-import java.text.DateFormat;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
-import java.util.Locale;
-
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.schabi.newpipe.extractor.ServiceList;
 import org.schabi.newpipe.extractor.comments.CommentsInfoItemExtractor;
 import org.schabi.newpipe.extractor.exceptions.ParsingException;
+import org.schabi.newpipe.extractor.localization.DateWrapper;
+import org.schabi.newpipe.extractor.services.peertube.PeertubeParsingHelper;
 import org.schabi.newpipe.extractor.services.peertube.linkHandler.PeertubeChannelLinkHandlerFactory;
 import org.schabi.newpipe.extractor.utils.JsonUtils;
 
@@ -48,13 +45,18 @@ public class PeertubeCommentsInfoItemExtractor implements CommentsInfoItemExtrac
     }
 
     @Override
-    public String getPublishedTime() throws ParsingException {
-        String date = JsonUtils.getString(item, "createdAt");
-        return getFormattedDate(date);
+    public String getTextualPublishedTime() throws ParsingException {
+        return JsonUtils.getString(item, "createdAt");
     }
-
+    
     @Override
-    public Integer getLikeCount() throws ParsingException {
+    public DateWrapper getPublishedTime() throws ParsingException {
+        String textualUploadDate = getTextualPublishedTime();
+        return new DateWrapper(PeertubeParsingHelper.parseDateFrom(textualUploadDate));
+    }
+    
+    @Override
+    public int getLikeCount() throws ParsingException {
         return 0;
     }
 
@@ -98,14 +100,4 @@ public class PeertubeCommentsInfoItemExtractor implements CommentsInfoItemExtrac
         return PeertubeChannelLinkHandlerFactory.getInstance().fromId(name + "@" + host).getUrl();
     }
     
-    private String getFormattedDate(String date) {
-        DateFormat sourceDf = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'");
-        DateFormat targetDf = new SimpleDateFormat("dd-MM-yyyy hh:mm a", Locale.ENGLISH);
-        try {
-            return targetDf.format(sourceDf.parse(date));
-        } catch (ParseException e) {
-            return date;
-        }
-    }
-
 }

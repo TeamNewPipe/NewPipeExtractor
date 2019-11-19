@@ -4,14 +4,14 @@ import java.io.IOException;
 import java.util.Collections;
 import java.util.List;
 
-import org.schabi.newpipe.extractor.SuggestionExtractor;
+import org.schabi.newpipe.extractor.StreamingService;
 import org.schabi.newpipe.extractor.exceptions.ExtractionException;
-import org.schabi.newpipe.extractor.utils.Localization;
+import org.schabi.newpipe.extractor.suggestion.SuggestionExtractor;
 
 public class PeertubeSuggestionExtractor extends SuggestionExtractor{
 
-    public PeertubeSuggestionExtractor(int serviceId, Localization localization) {
-        super(serviceId, localization);
+    public PeertubeSuggestionExtractor(StreamingService service) {
+        super(service);
     }
 
     @Override

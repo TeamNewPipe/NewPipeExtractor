@@ -10,14 +10,13 @@ import java.util.List;
 import org.jsoup.helper.StringUtil;
 import org.junit.BeforeClass;
 import org.junit.Test;
-import org.schabi.newpipe.Downloader;
+import org.schabi.newpipe.DownloaderTestImpl;
 import org.schabi.newpipe.extractor.ListExtractor.InfoItemsPage;
 import org.schabi.newpipe.extractor.NewPipe;
 import org.schabi.newpipe.extractor.comments.CommentsInfo;
 import org.schabi.newpipe.extractor.comments.CommentsInfoItem;
 import org.schabi.newpipe.extractor.exceptions.ExtractionException;
 import org.schabi.newpipe.extractor.services.peertube.extractors.PeertubeCommentsExtractor;
-import org.schabi.newpipe.extractor.utils.Localization;
 
 public class PeertubeCommentsExtractorTest {
 
@@ -25,7 +24,7 @@ public class PeertubeCommentsExtractorTest {
 
     @BeforeClass
     public static void setUp() throws Exception {
-        NewPipe.init(Downloader.getInstance(), new Localization("GB", "en"));
+        NewPipe.init(DownloaderTestImpl.getInstance());
         extractor = (PeertubeCommentsExtractor) PeerTube
                 .getCommentsExtractor("https://peertube.mastodon.host/videos/watch/04af977f-4201-4697-be67-a8d8cae6fa7a");
     }
@@ -71,10 +70,10 @@ public class PeertubeCommentsExtractorTest {
             assertFalse(StringUtil.isBlank(c.getCommentId()));
             assertFalse(StringUtil.isBlank(c.getCommentText()));
             assertFalse(StringUtil.isBlank(c.getName()));
-            assertFalse(StringUtil.isBlank(c.getPublishedTime()));
+            assertFalse(StringUtil.isBlank(c.getTextualPublishedTime()));
             assertFalse(StringUtil.isBlank(c.getThumbnailUrl()));
             assertFalse(StringUtil.isBlank(c.getUrl()));
-            assertFalse(c.getLikeCount() == null);
+            assertFalse(c.getLikeCount() == -1);
         }
     }
 

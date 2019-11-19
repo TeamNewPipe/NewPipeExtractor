@@ -2,22 +2,19 @@ package org.schabi.newpipe.extractor.services.soundcloud.search;
 
 import org.junit.BeforeClass;
 import org.junit.Test;
-import org.schabi.newpipe.Downloader;
+import org.schabi.newpipe.DownloaderTestImpl;
 import org.schabi.newpipe.extractor.InfoItem;
 import org.schabi.newpipe.extractor.ListExtractor;
 import org.schabi.newpipe.extractor.NewPipe;
-import org.schabi.newpipe.extractor.channel.ChannelInfoItem;
 import org.schabi.newpipe.extractor.services.soundcloud.SoundcloudSearchExtractor;
 import org.schabi.newpipe.extractor.services.soundcloud.SoundcloudSearchQueryHandlerFactory;
 import org.schabi.newpipe.extractor.services.youtube.extractors.YoutubeSearchExtractor;
 import org.schabi.newpipe.extractor.stream.StreamInfoItem;
-import org.schabi.newpipe.extractor.utils.Localization;
 
 import java.util.Arrays;
 
 import static org.junit.Assert.*;
 import static org.schabi.newpipe.extractor.ServiceList.SoundCloud;
-import static org.schabi.newpipe.extractor.ServiceList.YouTube;
 
 /*
  * Created by Christian Schabesberger on 27.05.18
@@ -46,11 +43,10 @@ public class SoundcloudSearchExtractorDefaultTest extends SoundcloudSearchExtrac
 
     @BeforeClass
     public static void setUpClass() throws Exception {
-        NewPipe.init(Downloader.getInstance(), new Localization("GB", "en"));
+        NewPipe.init(DownloaderTestImpl.getInstance());
         extractor = (SoundcloudSearchExtractor) SoundCloud.getSearchExtractor(
                 new SoundcloudSearchQueryHandlerFactory().fromQuery("lill uzi vert",
-                        Arrays.asList(new String[]{"tracks"}), ""),
-                        new Localization("GB", "en"));
+                        Arrays.asList(new String[]{"tracks"}), ""));
         extractor.fetchPage();
         itemsPage = extractor.getInitialPage();
     }

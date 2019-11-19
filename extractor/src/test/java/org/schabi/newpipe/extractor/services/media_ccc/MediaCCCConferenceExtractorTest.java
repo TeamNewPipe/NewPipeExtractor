@@ -2,11 +2,10 @@ package org.schabi.newpipe.extractor.services.media_ccc;
 
 import org.junit.BeforeClass;
 import org.junit.Test;
-import org.schabi.newpipe.Downloader;
+import org.schabi.newpipe.DownloaderTestImpl;
 import org.schabi.newpipe.extractor.NewPipe;
 import org.schabi.newpipe.extractor.channel.ChannelExtractor;
 import org.schabi.newpipe.extractor.services.media_ccc.extractors.MediaCCCConferenceExtractor;
-import org.schabi.newpipe.extractor.utils.Localization;
 
 import static junit.framework.TestCase.assertEquals;
 import static org.schabi.newpipe.extractor.ServiceList.MediaCCC;
@@ -19,7 +18,7 @@ public class MediaCCCConferenceExtractorTest {
 
     @BeforeClass
     public static void setUpClass() throws Exception {
-        NewPipe.init(Downloader.getInstance(), new Localization("en", "en_GB"));
+        NewPipe.init(DownloaderTestImpl.getInstance());
         extractor = MediaCCC.getChannelExtractor("https://api.media.ccc.de/public/conferences/froscon2017");
         extractor.fetchPage();
     }

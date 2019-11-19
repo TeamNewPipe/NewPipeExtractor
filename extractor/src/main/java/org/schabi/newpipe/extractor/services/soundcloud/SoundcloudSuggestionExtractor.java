@@ -4,12 +4,12 @@ import com.grack.nanojson.JsonArray;
 import com.grack.nanojson.JsonObject;
 import com.grack.nanojson.JsonParser;
 import com.grack.nanojson.JsonParserException;
-import org.schabi.newpipe.extractor.Downloader;
+import org.schabi.newpipe.extractor.downloader.Downloader;
 import org.schabi.newpipe.extractor.NewPipe;
-import org.schabi.newpipe.extractor.SuggestionExtractor;
+import org.schabi.newpipe.extractor.StreamingService;
 import org.schabi.newpipe.extractor.exceptions.ExtractionException;
 import org.schabi.newpipe.extractor.exceptions.ParsingException;
-import org.schabi.newpipe.extractor.utils.Localization;
+import org.schabi.newpipe.extractor.suggestion.SuggestionExtractor;
 
 import java.io.IOException;
 import java.net.URLEncoder;
@@ -20,8 +20,8 @@ public class SoundcloudSuggestionExtractor extends SuggestionExtractor {
 
     public static final String CHARSET_UTF_8 = "UTF-8";
 
-    public SoundcloudSuggestionExtractor(int serviceId, Localization localization) {
-        super(serviceId, localization);
+    public SoundcloudSuggestionExtractor(StreamingService service) {
+        super(service);
     }
 
     @Override
@@ -35,7 +35,7 @@ public class SoundcloudSuggestionExtractor extends SuggestionExtractor {
                 + "&client_id=" + SoundcloudParsingHelper.clientId()
                 + "&limit=10";
 
-        String response = dl.download(url);
+        String response = dl.get(url, getExtractorLocalization()).responseBody();
         try {
             JsonArray collection = JsonParser.object().from(response).getArray("collection");
             for (Object suggestion : collection) {

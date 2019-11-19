@@ -2,6 +2,7 @@ package org.schabi.newpipe.extractor.services.peertube.extractors;
 
 import org.schabi.newpipe.extractor.ServiceList;
 import org.schabi.newpipe.extractor.exceptions.ParsingException;
+import org.schabi.newpipe.extractor.localization.DateWrapper;
 import org.schabi.newpipe.extractor.services.peertube.PeertubeParsingHelper;
 import org.schabi.newpipe.extractor.services.peertube.linkHandler.PeertubeChannelLinkHandlerFactory;
 import org.schabi.newpipe.extractor.services.peertube.linkHandler.PeertubeStreamLinkHandlerFactory;
@@ -60,11 +61,21 @@ public class PeertubeStreamInfoItemExtractor implements StreamInfoItemExtractor 
     }
     
     @Override
-    public String getUploadDate() throws ParsingException {
-        String date = JsonUtils.getString(item, "publishedAt");
-        return PeertubeParsingHelper.toDateString(date);
+    public String getTextualUploadDate() throws ParsingException {
+        return JsonUtils.getString(item, "publishedAt");
     }
-    
+
+    @Override
+    public DateWrapper getUploadDate() throws ParsingException {
+        final String textualUploadDate = getTextualUploadDate();
+
+        if (textualUploadDate == null) {
+            return null;
+        }
+
+        return new DateWrapper(PeertubeParsingHelper.parseDateFrom(textualUploadDate));
+    }
+   
     @Override
     public StreamType getStreamType() throws ParsingException {
         return StreamType.VIDEO_STREAM;
@@ -75,4 +86,5 @@ public class PeertubeStreamInfoItemExtractor implements StreamInfoItemExtractor 
         Number value = JsonUtils.getNumber(item, "duration");
         return value.longValue();
     }
+
 }

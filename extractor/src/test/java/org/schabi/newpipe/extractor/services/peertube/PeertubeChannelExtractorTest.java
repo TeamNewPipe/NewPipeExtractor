@@ -13,13 +13,12 @@ import static org.schabi.newpipe.extractor.services.DefaultTests.defaultTestRela
 import org.junit.BeforeClass;
 import org.junit.Ignore;
 import org.junit.Test;
-import org.schabi.newpipe.Downloader;
+import org.schabi.newpipe.DownloaderTestImpl;
 import org.schabi.newpipe.extractor.NewPipe;
 import org.schabi.newpipe.extractor.channel.ChannelExtractor;
 import org.schabi.newpipe.extractor.exceptions.ParsingException;
 import org.schabi.newpipe.extractor.services.BaseChannelExtractorTest;
 import org.schabi.newpipe.extractor.services.peertube.extractors.PeertubeChannelExtractor;
-import org.schabi.newpipe.extractor.utils.Localization;
 
 /**
  * Test for {@link PeertubeChannelExtractor}
@@ -30,7 +29,7 @@ public class PeertubeChannelExtractorTest {
 
         @BeforeClass
         public static void setUp() throws Exception {
-            NewPipe.init(Downloader.getInstance(), new Localization("GB", "en"));
+            NewPipe.init(DownloaderTestImpl.getInstance());
             // setting instance might break test when running in parallel
             PeerTube.setInstance("https://peertube.mastodon.host", "PeerTube on Mastodon.host");
             extractor = (PeertubeChannelExtractor) PeerTube
@@ -117,7 +116,7 @@ public class PeertubeChannelExtractorTest {
 
         @BeforeClass
         public static void setUp() throws Exception {
-            NewPipe.init(Downloader.getInstance(), new Localization("GB", "en"));
+            NewPipe.init(DownloaderTestImpl.getInstance());
             // setting instance might break test when running in parallel
             PeerTube.setInstance("https://peertube.mastodon.host", "PeerTube on Mastodon.host");
             extractor = (PeertubeChannelExtractor) PeerTube

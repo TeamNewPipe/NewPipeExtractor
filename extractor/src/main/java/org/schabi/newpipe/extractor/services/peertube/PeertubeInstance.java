@@ -3,9 +3,9 @@ package org.schabi.newpipe.extractor.services.peertube;
 import java.io.IOException;
 
 import org.jsoup.helper.StringUtil;
-import org.schabi.newpipe.extractor.DownloadResponse;
-import org.schabi.newpipe.extractor.Downloader;
 import org.schabi.newpipe.extractor.NewPipe;
+import org.schabi.newpipe.extractor.downloader.Downloader;
+import org.schabi.newpipe.extractor.downloader.Response;
 import org.schabi.newpipe.extractor.exceptions.ParsingException;
 import org.schabi.newpipe.extractor.exceptions.ReCaptchaException;
 import org.schabi.newpipe.extractor.utils.JsonUtils;
@@ -37,7 +37,7 @@ public class PeertubeInstance {
     
     private String validateInstance(String url) throws IOException {
         Downloader downloader = NewPipe.getDownloader();
-        DownloadResponse response = null;
+        Response response = null;
         
         try {
             response = downloader.get(url + "/api/v1/config");
@@ -45,11 +45,11 @@ public class PeertubeInstance {
             throw new IOException("unable to configure instance " + url, e);
         }
         
-        if(null == response || StringUtil.isBlank(response.getResponseBody())) {
+        if(null == response || StringUtil.isBlank(response.responseBody())) {
             throw new IOException("unable to configure instance " + url);
         }
         
-        return response.getResponseBody();
+        return response.responseBody();
     }
 
     private void setInstanceMetaData(String responseBody) {

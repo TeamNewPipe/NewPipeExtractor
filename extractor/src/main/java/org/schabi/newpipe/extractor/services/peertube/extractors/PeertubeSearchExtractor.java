@@ -3,19 +3,18 @@ package org.schabi.newpipe.extractor.services.peertube.extractors;
 import java.io.IOException;
 
 import org.jsoup.helper.StringUtil;
-import org.schabi.newpipe.extractor.DownloadResponse;
-import org.schabi.newpipe.extractor.Downloader;
 import org.schabi.newpipe.extractor.InfoItem;
 import org.schabi.newpipe.extractor.InfoItemExtractor;
 import org.schabi.newpipe.extractor.InfoItemsCollector;
 import org.schabi.newpipe.extractor.StreamingService;
+import org.schabi.newpipe.extractor.downloader.Downloader;
+import org.schabi.newpipe.extractor.downloader.Response;
 import org.schabi.newpipe.extractor.exceptions.ExtractionException;
 import org.schabi.newpipe.extractor.exceptions.ParsingException;
 import org.schabi.newpipe.extractor.linkhandler.SearchQueryHandler;
 import org.schabi.newpipe.extractor.search.InfoItemsSearchCollector;
 import org.schabi.newpipe.extractor.search.SearchExtractor;
 import org.schabi.newpipe.extractor.utils.JsonUtils;
-import org.schabi.newpipe.extractor.utils.Localization;
 import org.schabi.newpipe.extractor.utils.Parser;
 import org.schabi.newpipe.extractor.utils.Parser.RegexException;
 
@@ -33,9 +32,8 @@ public class PeertubeSearchExtractor extends SearchExtractor {
     private InfoItemsPage<InfoItem> initPage;
     private long total;
     
-    public PeertubeSearchExtractor(StreamingService service, SearchQueryHandler linkHandler,
-            Localization localization) {
-        super(service, linkHandler, localization);
+    public PeertubeSearchExtractor(StreamingService service, SearchQueryHandler linkHandler) {
+        super(service, linkHandler);
     }
 
     @Override
@@ -80,11 +78,11 @@ public class PeertubeSearchExtractor extends SearchExtractor {
 
     @Override
     public InfoItemsPage<InfoItem> getPage(String pageUrl) throws IOException, ExtractionException {
-        DownloadResponse response = getDownloader().get(pageUrl);
+        Response response = getDownloader().get(pageUrl);
         JsonObject json = null;
-        if(null != response && !StringUtil.isBlank(response.getResponseBody())) {
+        if(null != response && !StringUtil.isBlank(response.responseBody())) {
             try {
-                json = JsonParser.object().from(response.getResponseBody());
+                json = JsonParser.object().from(response.responseBody());
             } catch (Exception e) {
                 throw new ParsingException("Could not parse json data for search info", e);
             }

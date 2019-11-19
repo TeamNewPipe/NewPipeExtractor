@@ -5,11 +5,10 @@ import static org.junit.Assert.assertTrue;
 
 import org.junit.BeforeClass;
 import org.junit.Test;
-import org.schabi.newpipe.Downloader;
+import org.schabi.newpipe.DownloaderTestImpl;
 import org.schabi.newpipe.extractor.NewPipe;
 import org.schabi.newpipe.extractor.exceptions.ParsingException;
 import org.schabi.newpipe.extractor.services.peertube.linkHandler.PeertubeChannelLinkHandlerFactory;
-import org.schabi.newpipe.extractor.utils.Localization;
 
 /**
  * Test for {@link PeertubeChannelLinkHandlerFactory}
@@ -21,7 +20,7 @@ public class PeertubeChannelLinkHandlerFactoryTest {
     @BeforeClass
     public static void setUp() {
         linkHandler = PeertubeChannelLinkHandlerFactory.getInstance();
-        NewPipe.init(Downloader.getInstance(), new Localization("GB", "en"));
+        NewPipe.init(DownloaderTestImpl.getInstance());
     }
 
     @Test

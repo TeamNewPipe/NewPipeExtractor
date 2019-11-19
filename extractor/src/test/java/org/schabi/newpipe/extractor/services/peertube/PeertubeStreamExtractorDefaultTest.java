@@ -1,5 +1,6 @@
 package org.schabi.newpipe.extractor.services.peertube;
 
+import static java.util.Objects.requireNonNull;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
@@ -7,11 +8,14 @@ import static org.schabi.newpipe.extractor.ExtractorAsserts.assertIsSecureUrl;
 import static org.schabi.newpipe.extractor.ServiceList.PeerTube;
 
 import java.io.IOException;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
 
 import org.junit.BeforeClass;
 import org.junit.Ignore;
 import org.junit.Test;
-import org.schabi.newpipe.Downloader;
+import org.schabi.newpipe.DownloaderTestImpl;
 import org.schabi.newpipe.extractor.NewPipe;
 import org.schabi.newpipe.extractor.exceptions.ExtractionException;
 import org.schabi.newpipe.extractor.exceptions.ParsingException;
@@ -19,7 +23,6 @@ import org.schabi.newpipe.extractor.services.peertube.extractors.PeertubeStreamE
 import org.schabi.newpipe.extractor.stream.StreamExtractor;
 import org.schabi.newpipe.extractor.stream.StreamInfoItemsCollector;
 import org.schabi.newpipe.extractor.stream.StreamType;
-import org.schabi.newpipe.extractor.utils.Localization;
 
 /**
  * Test for {@link StreamExtractor}
@@ -29,7 +32,7 @@ public class PeertubeStreamExtractorDefaultTest {
 
     @BeforeClass
     public static void setUp() throws Exception {
-        NewPipe.init(Downloader.getInstance(), new Localization("GB", "en"));
+        NewPipe.init(DownloaderTestImpl.getInstance());
         // setting instance might break test when running in parallel
         PeerTube.setInstance("https://peertube.mastodon.host", "PeerTube on Mastodon.host");
         extractor = (PeertubeStreamExtractor) PeerTube.getStreamExtractor("https://peertube.mastodon.host/videos/watch/afe5bf12-c58b-4efd-b56e-29c5a59e04bc");
@@ -69,8 +72,11 @@ public class PeertubeStreamExtractorDefaultTest {
     }
 
     @Test
-    public void testGetUploadDate() throws ParsingException {
-        assertEquals("2018-09-30", extractor.getUploadDate());
+    public void testGetUploadDate() throws ParsingException, ParseException {
+        final Calendar instance = Calendar.getInstance();
+        instance.setTime(new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.S'Z'").parse("2018-09-30T14:08:24.378Z"));
+        assertEquals(instance, requireNonNull(extractor.getUploadDate()).date());
+
     }
 
     @Test

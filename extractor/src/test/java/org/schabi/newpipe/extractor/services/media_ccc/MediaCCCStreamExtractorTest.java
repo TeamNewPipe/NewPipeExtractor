@@ -1,14 +1,20 @@
 package org.schabi.newpipe.extractor.services.media_ccc;
 
+import org.junit.Assert;
 import org.junit.BeforeClass;
 import org.junit.Test;
-import org.schabi.newpipe.Downloader;
+import org.schabi.newpipe.DownloaderTestImpl;
 import org.schabi.newpipe.extractor.NewPipe;
+import org.schabi.newpipe.extractor.exceptions.ParsingException;
 import org.schabi.newpipe.extractor.services.BaseExtractorTest;
-import org.schabi.newpipe.extractor.stream.StreamExtractor;
 import org.schabi.newpipe.extractor.services.media_ccc.extractors.MediaCCCStreamExtractor;
-import org.schabi.newpipe.extractor.utils.Localization;
+import org.schabi.newpipe.extractor.stream.StreamExtractor;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
+
+import static java.util.Objects.requireNonNull;
 import static junit.framework.TestCase.assertEquals;
 import static org.schabi.newpipe.extractor.ServiceList.MediaCCC;
 
@@ -20,7 +26,7 @@ public class MediaCCCStreamExtractorTest implements BaseExtractorTest {
 
     @BeforeClass
     public static void setUpClass() throws Exception {
-        NewPipe.init(Downloader.getInstance(), new Localization("GB", "en"));
+        NewPipe.init(DownloaderTestImpl.getInstance());
 
         extractor =  MediaCCC.getStreamExtractor("https://api.media.ccc.de/public/events/8afc16c2-d76a-53f6-85e4-90494665835d");
         extractor.fetchPage();
@@ -79,5 +85,17 @@ public class MediaCCCStreamExtractorTest implements BaseExtractorTest {
     @Test
     public void testAudioStreams() throws Exception {
         assertEquals(2, extractor.getAudioStreams().size());
+    }
+
+    @Test
+    public void testGetTextualUploadDate() throws ParsingException {
+        Assert.assertEquals("2018-05-11", extractor.getTextualUploadDate());
+    }
+
+    @Test
+    public void testGetUploadDate() throws ParsingException, ParseException {
+        final Calendar instance = Calendar.getInstance();
+        instance.setTime(new SimpleDateFormat("yyyy-MM-dd").parse("2018-05-11"));
+        assertEquals(instance, requireNonNull(extractor.getUploadDate()).date());
     }
 }

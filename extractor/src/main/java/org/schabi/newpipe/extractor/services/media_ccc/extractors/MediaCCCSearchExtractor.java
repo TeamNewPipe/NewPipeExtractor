@@ -4,11 +4,11 @@ import com.grack.nanojson.JsonArray;
 import com.grack.nanojson.JsonObject;
 import com.grack.nanojson.JsonParser;
 import com.grack.nanojson.JsonParserException;
-import org.schabi.newpipe.extractor.Downloader;
 import org.schabi.newpipe.extractor.InfoItem;
 import org.schabi.newpipe.extractor.StreamingService;
 import org.schabi.newpipe.extractor.channel.ChannelInfoItem;
 import org.schabi.newpipe.extractor.channel.ChannelInfoItemExtractor;
+import org.schabi.newpipe.extractor.downloader.Downloader;
 import org.schabi.newpipe.extractor.exceptions.ExtractionException;
 import org.schabi.newpipe.extractor.exceptions.ParsingException;
 import org.schabi.newpipe.extractor.linkhandler.SearchQueryHandler;
@@ -16,26 +16,24 @@ import org.schabi.newpipe.extractor.search.InfoItemsSearchCollector;
 import org.schabi.newpipe.extractor.search.SearchExtractor;
 import org.schabi.newpipe.extractor.services.media_ccc.extractors.infoItems.MediaCCCStreamInfoItemExtractor;
 import org.schabi.newpipe.extractor.services.media_ccc.linkHandler.MediaCCCConferencesListLinkHandlerFactory;
-import org.schabi.newpipe.extractor.utils.Localization;
-import static org.schabi.newpipe.extractor.services.media_ccc.linkHandler.MediaCCCSearchQueryHandlerFactory.CONFERENCES;
-import static org.schabi.newpipe.extractor.services.media_ccc.linkHandler.MediaCCCSearchQueryHandlerFactory.EVENTS;
-import static org.schabi.newpipe.extractor.services.media_ccc.linkHandler.MediaCCCSearchQueryHandlerFactory.ALL;
+
 import javax.annotation.Nonnull;
 import java.io.IOException;
 import java.util.List;
+
+import static org.schabi.newpipe.extractor.services.media_ccc.linkHandler.MediaCCCSearchQueryHandlerFactory.*;
 
 public class MediaCCCSearchExtractor extends SearchExtractor {
 
     private JsonObject doc;
     private MediaCCCConferenceKiosk conferenceKiosk;
 
-    public MediaCCCSearchExtractor(StreamingService service, SearchQueryHandler linkHandler, Localization localization) {
-        super(service, linkHandler, localization);
+    public MediaCCCSearchExtractor(StreamingService service, SearchQueryHandler linkHandler) {
+        super(service, linkHandler);
         try {
             conferenceKiosk = new MediaCCCConferenceKiosk(service,
                     new MediaCCCConferencesListLinkHandlerFactory().fromId("conferences"),
-                    "conferences",
-                    localization);
+                    "conferences");
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -88,7 +86,7 @@ public class MediaCCCSearchExtractor extends SearchExtractor {
                 || getLinkHandler().getContentFilters().isEmpty()) {
             final String site;
             final String url = getUrl();
-            site = downloader.download(url, getLocalization());
+            site = downloader.get(url, getExtractorLocalization()).responseBody();
             try {
                 doc = JsonParser.object().from(site);
             } catch (JsonParserException jpe) {

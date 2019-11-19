@@ -1,23 +1,23 @@
 package org.schabi.newpipe.extractor.services.youtube;
 
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
-import static org.schabi.newpipe.extractor.ServiceList.YouTube;
-
-import java.io.IOException;
-import java.util.List;
-
 import org.jsoup.helper.StringUtil;
 import org.junit.BeforeClass;
 import org.junit.Test;
-import org.schabi.newpipe.Downloader;
+import org.schabi.newpipe.DownloaderTestImpl;
+import org.schabi.newpipe.DownloaderTestImpl;
 import org.schabi.newpipe.extractor.ListExtractor.InfoItemsPage;
 import org.schabi.newpipe.extractor.NewPipe;
 import org.schabi.newpipe.extractor.comments.CommentsInfo;
 import org.schabi.newpipe.extractor.comments.CommentsInfoItem;
 import org.schabi.newpipe.extractor.exceptions.ExtractionException;
+import org.schabi.newpipe.extractor.services.DefaultTests;
 import org.schabi.newpipe.extractor.services.youtube.extractors.YoutubeCommentsExtractor;
-import org.schabi.newpipe.extractor.utils.Localization;
+
+import java.io.IOException;
+import java.util.List;
+
+import static org.junit.Assert.*;
+import static org.schabi.newpipe.extractor.ServiceList.YouTube;
 
 public class YoutubeCommentsExtractorTest {
 
@@ -25,7 +25,7 @@ public class YoutubeCommentsExtractorTest {
 
     @BeforeClass
     public static void setUp() throws Exception {
-        NewPipe.init(Downloader.getInstance(), new Localization("GB", "en"));
+        NewPipe.init(DownloaderTestImpl.getInstance());
         extractor = (YoutubeCommentsExtractor) YouTube
                 .getCommentsExtractor("https://www.youtube.com/watch?v=D00Au7k3i6o");
     }
@@ -64,6 +64,8 @@ public class YoutubeCommentsExtractorTest {
     @Test
     public void testGetCommentsAllData() throws IOException, ExtractionException {
         InfoItemsPage<CommentsInfoItem> comments = extractor.getInitialPage();
+
+        DefaultTests.defaultTestListOfItems(YouTube.getServiceId(), comments.getItems(), comments.getErrors());
         for(CommentsInfoItem c: comments.getItems()) {
             assertFalse(StringUtil.isBlank(c.getAuthorEndpoint()));
             assertFalse(StringUtil.isBlank(c.getAuthorName()));
@@ -71,10 +73,11 @@ public class YoutubeCommentsExtractorTest {
             assertFalse(StringUtil.isBlank(c.getCommentId()));
             assertFalse(StringUtil.isBlank(c.getCommentText()));
             assertFalse(StringUtil.isBlank(c.getName()));
-            assertFalse(StringUtil.isBlank(c.getPublishedTime()));
+            assertFalse(StringUtil.isBlank(c.getTextualPublishedTime()));
+            assertNotNull(c.getPublishedTime());
             assertFalse(StringUtil.isBlank(c.getThumbnailUrl()));
             assertFalse(StringUtil.isBlank(c.getUrl()));
-            assertFalse(c.getLikeCount() == null);
+            assertFalse(c.getLikeCount() < 0);
         }
     }
 

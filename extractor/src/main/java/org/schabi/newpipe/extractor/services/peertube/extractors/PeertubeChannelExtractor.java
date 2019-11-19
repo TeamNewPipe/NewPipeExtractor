@@ -3,11 +3,11 @@ package org.schabi.newpipe.extractor.services.peertube.extractors;
 import java.io.IOException;
 
 import org.jsoup.helper.StringUtil;
-import org.schabi.newpipe.extractor.DownloadResponse;
-import org.schabi.newpipe.extractor.Downloader;
 import org.schabi.newpipe.extractor.ServiceList;
 import org.schabi.newpipe.extractor.StreamingService;
 import org.schabi.newpipe.extractor.channel.ChannelExtractor;
+import org.schabi.newpipe.extractor.downloader.Downloader;
+import org.schabi.newpipe.extractor.downloader.Response;
 import org.schabi.newpipe.extractor.exceptions.ExtractionException;
 import org.schabi.newpipe.extractor.exceptions.ParsingException;
 import org.schabi.newpipe.extractor.linkhandler.ListLinkHandler;
@@ -15,7 +15,6 @@ import org.schabi.newpipe.extractor.services.peertube.PeertubeParsingHelper;
 import org.schabi.newpipe.extractor.stream.StreamInfoItem;
 import org.schabi.newpipe.extractor.stream.StreamInfoItemsCollector;
 import org.schabi.newpipe.extractor.utils.JsonUtils;
-import org.schabi.newpipe.extractor.utils.Localization;
 import org.schabi.newpipe.extractor.utils.Parser;
 import org.schabi.newpipe.extractor.utils.Parser.RegexException;
 
@@ -36,8 +35,8 @@ public class PeertubeChannelExtractor extends ChannelExtractor {
     
     private JsonObject json;
 
-    public PeertubeChannelExtractor(StreamingService service, ListLinkHandler linkHandler, Localization localization) {
-        super(service, linkHandler, localization);
+    public PeertubeChannelExtractor(StreamingService service, ListLinkHandler linkHandler) {
+        super(service, linkHandler);
     }
 
     @Override
@@ -108,11 +107,11 @@ public class PeertubeChannelExtractor extends ChannelExtractor {
 
     @Override
     public InfoItemsPage<StreamInfoItem> getPage(String pageUrl) throws IOException, ExtractionException {
-        DownloadResponse response = getDownloader().get(pageUrl);
+        Response response = getDownloader().get(pageUrl);
         JsonObject json = null;
-        if(null != response && !StringUtil.isBlank(response.getResponseBody())) {
+        if(null != response && !StringUtil.isBlank(response.responseBody())) {
             try {
-                json = JsonParser.object().from(response.getResponseBody());
+                json = JsonParser.object().from(response.responseBody());
             } catch (Exception e) {
                 throw new ParsingException("Could not parse json data for kiosk info", e);
             }
@@ -155,9 +154,9 @@ public class PeertubeChannelExtractor extends ChannelExtractor {
     
     @Override
     public void onFetchPage(Downloader downloader) throws IOException, ExtractionException {
-        DownloadResponse response = downloader.get(getUrl());
-        if(null != response && null != response.getResponseBody()) {
-            setInitialData(response.getResponseBody());
+        Response response = downloader.get(getUrl());
+        if(null != response && null != response.responseBody()) {
+            setInitialData(response.responseBody());
         }else {
             throw new ExtractionException("Unable to extract peertube channel data");
         }

@@ -10,7 +10,6 @@ import java.util.List;
 import org.jsoup.helper.StringUtil;
 import org.schabi.newpipe.extractor.StreamingService;
 import org.schabi.newpipe.extractor.StreamingService.ServiceInfo.MediaCapability;
-import org.schabi.newpipe.extractor.SuggestionExtractor;
 import org.schabi.newpipe.extractor.channel.ChannelExtractor;
 import org.schabi.newpipe.extractor.comments.CommentsExtractor;
 import org.schabi.newpipe.extractor.exceptions.ExtractionException;
@@ -37,7 +36,7 @@ import org.schabi.newpipe.extractor.services.peertube.linkHandler.PeertubeStream
 import org.schabi.newpipe.extractor.services.peertube.linkHandler.PeertubeTrendingLinkHandlerFactory;
 import org.schabi.newpipe.extractor.stream.StreamExtractor;
 import org.schabi.newpipe.extractor.subscription.SubscriptionExtractor;
-import org.schabi.newpipe.extractor.utils.Localization;
+import org.schabi.newpipe.extractor.suggestion.SuggestionExtractor;
 
 public class PeertubeService extends StreamingService {
     
@@ -83,13 +82,13 @@ public class PeertubeService extends StreamingService {
     }
 
     @Override
-    public SearchExtractor getSearchExtractor(SearchQueryHandler queryHandler, Localization localization) {
-        return new PeertubeSearchExtractor(this, queryHandler, localization);
+    public SearchExtractor getSearchExtractor(SearchQueryHandler queryHandler) {
+        return new PeertubeSearchExtractor(this, queryHandler);
     }
 
     @Override
-    public SuggestionExtractor getSuggestionExtractor(Localization localization) {
-        return new PeertubeSuggestionExtractor(this.getServiceId(), localization);
+    public SuggestionExtractor getSuggestionExtractor() {
+        return new PeertubeSuggestionExtractor(this);
     }
 
     @Override
@@ -99,28 +98,28 @@ public class PeertubeService extends StreamingService {
     }
 
     @Override
-    public ChannelExtractor getChannelExtractor(ListLinkHandler linkHandler, Localization localization)
+    public ChannelExtractor getChannelExtractor(ListLinkHandler linkHandler)
             throws ExtractionException {
-        return new PeertubeChannelExtractor(this, linkHandler, localization);
+        return new PeertubeChannelExtractor(this, linkHandler);
     }
 
     @Override
-    public PlaylistExtractor getPlaylistExtractor(ListLinkHandler linkHandler, Localization localization)
+    public PlaylistExtractor getPlaylistExtractor(ListLinkHandler linkHandler)
             throws ExtractionException {
         // TODO Auto-generated method stub
         return null;
     }
 
     @Override
-    public StreamExtractor getStreamExtractor(LinkHandler linkHandler, Localization localization)
+    public StreamExtractor getStreamExtractor(LinkHandler linkHandler)
             throws ExtractionException {
-        return new PeertubeStreamExtractor(this, linkHandler, localization);
+        return new PeertubeStreamExtractor(this, linkHandler);
     }
 
     @Override
-    public CommentsExtractor getCommentsExtractor(ListLinkHandler linkHandler, Localization localization)
+    public CommentsExtractor getCommentsExtractor(ListLinkHandler linkHandler)
             throws ExtractionException {
-        return new PeertubeCommentsExtractor(this, linkHandler, localization);
+        return new PeertubeCommentsExtractor(this, linkHandler);
     }
 
     @Override
@@ -152,15 +151,14 @@ public class PeertubeService extends StreamingService {
             @Override
             public KioskExtractor createNewKiosk(StreamingService streamingService,
                                                  String url,
-                                                 String id,
-                                                 Localization local)
+                                                 String id)
                     throws ExtractionException {
                 return new PeertubeTrendingExtractor(PeertubeService.this,
-                        new PeertubeTrendingLinkHandlerFactory().fromId(id), id, local);
+                        new PeertubeTrendingLinkHandlerFactory().fromId(id), id);
             }
         };
 
-        KioskList list = new KioskList(getServiceId());
+        KioskList list = new KioskList(this);
 
         // add kiosks here e.g.:
         final PeertubeTrendingLinkHandlerFactory h = new PeertubeTrendingLinkHandlerFactory();

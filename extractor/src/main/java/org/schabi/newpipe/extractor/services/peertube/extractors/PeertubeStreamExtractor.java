@@ -8,15 +8,16 @@ import java.util.Collections;
 import java.util.List;
 
 import org.jsoup.helper.StringUtil;
-import org.schabi.newpipe.extractor.DownloadResponse;
-import org.schabi.newpipe.extractor.Downloader;
 import org.schabi.newpipe.extractor.MediaFormat;
 import org.schabi.newpipe.extractor.ServiceList;
 import org.schabi.newpipe.extractor.StreamingService;
+import org.schabi.newpipe.extractor.downloader.Downloader;
+import org.schabi.newpipe.extractor.downloader.Response;
 import org.schabi.newpipe.extractor.exceptions.ExtractionException;
 import org.schabi.newpipe.extractor.exceptions.ParsingException;
 import org.schabi.newpipe.extractor.exceptions.ReCaptchaException;
 import org.schabi.newpipe.extractor.linkhandler.LinkHandler;
+import org.schabi.newpipe.extractor.localization.DateWrapper;
 import org.schabi.newpipe.extractor.services.peertube.PeertubeParsingHelper;
 import org.schabi.newpipe.extractor.services.peertube.linkHandler.PeertubeChannelLinkHandlerFactory;
 import org.schabi.newpipe.extractor.services.peertube.linkHandler.PeertubeSearchQueryHandlerFactory;
@@ -29,7 +30,6 @@ import org.schabi.newpipe.extractor.stream.StreamType;
 import org.schabi.newpipe.extractor.stream.SubtitlesStream;
 import org.schabi.newpipe.extractor.stream.VideoStream;
 import org.schabi.newpipe.extractor.utils.JsonUtils;
-import org.schabi.newpipe.extractor.utils.Localization;
 
 import com.grack.nanojson.JsonArray;
 import com.grack.nanojson.JsonObject;
@@ -42,16 +42,26 @@ public class PeertubeStreamExtractor extends StreamExtractor {
     private JsonObject json;
     private List<SubtitlesStream> subtitles = new ArrayList<>();
     
-    public PeertubeStreamExtractor(StreamingService service, LinkHandler linkHandler, Localization localization) {
-        super(service, linkHandler, localization);
+    public PeertubeStreamExtractor(StreamingService service, LinkHandler linkHandler) {
+        super(service, linkHandler);
+    }
+    
+    @Override
+    public String getTextualUploadDate() throws ParsingException {
+        return JsonUtils.getString(json, "publishedAt");
     }
 
     @Override
-    public String getUploadDate() throws ParsingException {
-        String date = JsonUtils.getString(json, "publishedAt");
-        return PeertubeParsingHelper.toDateString(date);
-    }
+    public DateWrapper getUploadDate() throws ParsingException {
+        final String textualUploadDate = getTextualUploadDate();
 
+        if (textualUploadDate == null) {
+            return null;
+        }
+
+        return new DateWrapper(PeertubeParsingHelper.parseDateFrom(textualUploadDate));
+    }
+ 
     @Override
     public String getThumbnailUrl() throws ParsingException {
         return ServiceList.PeerTube.getBaseUrl() + JsonUtils.getString(json, "thumbnailPath");
@@ -233,11 +243,11 @@ public class PeertubeStreamExtractor extends StreamExtractor {
     }
 
     private void getStreamsFromApi(StreamInfoItemsCollector collector, String apiUrl) throws ReCaptchaException, IOException, ParsingException {
-        DownloadResponse response = getDownloader().get(apiUrl);
+        Response response = getDownloader().get(apiUrl);
         JsonObject relatedVideosJson = null;
-        if(null != response && !StringUtil.isBlank(response.getResponseBody())) {
+        if(null != response && !StringUtil.isBlank(response.responseBody())) {
             try {
-                relatedVideosJson = JsonParser.object().from(response.getResponseBody());
+                relatedVideosJson = JsonParser.object().from(response.responseBody());
             } catch (JsonParserException e) {
                 throw new ParsingException("Could not parse json data for related videos", e);
             }
@@ -275,9 +285,9 @@ public class PeertubeStreamExtractor extends StreamExtractor {
 
     @Override
     public void onFetchPage(Downloader downloader) throws IOException, ExtractionException {
-        DownloadResponse response = downloader.get(getUrl());
-        if(null != response && null != response.getResponseBody()) {
-            setInitialData(response.getResponseBody());
+        Response response = downloader.get(getUrl());
+        if(null != response && null != response.responseBody()) {
+            setInitialData(response.responseBody());
         }else {
             throw new ExtractionException("Unable to extract peertube channel data");
         }
@@ -298,8 +308,8 @@ public class PeertubeStreamExtractor extends StreamExtractor {
     private void loadSubtitles() {
         if (subtitles.isEmpty()) {
             try {
-                DownloadResponse response = getDownloader().get(getUrl() + "/captions"); 
-                JsonObject captionsJson = JsonParser.object().from(response.getResponseBody());
+                Response response = getDownloader().get(getUrl() + "/captions"); 
+                JsonObject captionsJson = JsonParser.object().from(response.responseBody());
                 JsonArray captions = JsonUtils.getArray(captionsJson, "data");
                 for(Object c: captions) {
                     if(c instanceof JsonObject) {

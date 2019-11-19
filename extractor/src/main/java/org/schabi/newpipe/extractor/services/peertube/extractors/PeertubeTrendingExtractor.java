@@ -3,22 +3,16 @@ package org.schabi.newpipe.extractor.services.peertube.extractors;
 import java.io.IOException;
 
 import org.jsoup.helper.StringUtil;
-import org.schabi.newpipe.extractor.DownloadResponse;
-import org.schabi.newpipe.extractor.Downloader;
-import org.schabi.newpipe.extractor.ServiceList;
 import org.schabi.newpipe.extractor.StreamingService;
+import org.schabi.newpipe.extractor.downloader.Downloader;
+import org.schabi.newpipe.extractor.downloader.Response;
 import org.schabi.newpipe.extractor.exceptions.ExtractionException;
 import org.schabi.newpipe.extractor.exceptions.ParsingException;
 import org.schabi.newpipe.extractor.kiosk.KioskExtractor;
 import org.schabi.newpipe.extractor.linkhandler.ListLinkHandler;
-import org.schabi.newpipe.extractor.services.peertube.linkHandler.PeertubeChannelLinkHandlerFactory;
-import org.schabi.newpipe.extractor.services.peertube.linkHandler.PeertubeStreamLinkHandlerFactory;
 import org.schabi.newpipe.extractor.stream.StreamInfoItem;
-import org.schabi.newpipe.extractor.stream.StreamInfoItemExtractor;
 import org.schabi.newpipe.extractor.stream.StreamInfoItemsCollector;
-import org.schabi.newpipe.extractor.stream.StreamType;
 import org.schabi.newpipe.extractor.utils.JsonUtils;
-import org.schabi.newpipe.extractor.utils.Localization;
 import org.schabi.newpipe.extractor.utils.Parser;
 import org.schabi.newpipe.extractor.utils.Parser.RegexException;
 
@@ -36,9 +30,8 @@ public class PeertubeTrendingExtractor extends KioskExtractor {
     private InfoItemsPage<StreamInfoItem> initPage;
     private long total;
 
-    public PeertubeTrendingExtractor(StreamingService streamingService, ListLinkHandler linkHandler, String kioskId,
-            Localization localization) {
-        super(streamingService, linkHandler, kioskId, localization);
+    public PeertubeTrendingExtractor(StreamingService streamingService, ListLinkHandler linkHandler, String kioskId) {
+        super(streamingService, linkHandler, kioskId);
     }
 
     @Override
@@ -78,11 +71,11 @@ public class PeertubeTrendingExtractor extends KioskExtractor {
 
     @Override
     public InfoItemsPage<StreamInfoItem> getPage(String pageUrl) throws IOException, ExtractionException {
-        DownloadResponse response = getDownloader().get(pageUrl);
+        Response response = getDownloader().get(pageUrl);
         JsonObject json = null;
-        if(null != response && !StringUtil.isBlank(response.getResponseBody())) {
+        if(null != response && !StringUtil.isBlank(response.responseBody())) {
             try {
-                json = JsonParser.object().from(response.getResponseBody());
+                json = JsonParser.object().from(response.responseBody());
             } catch (Exception e) {
                 throw new ParsingException("Could not parse json data for kiosk info", e);
             }

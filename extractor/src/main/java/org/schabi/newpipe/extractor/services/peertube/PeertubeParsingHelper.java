@@ -2,6 +2,7 @@ package org.schabi.newpipe.extractor.services.peertube;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.Calendar;
 import java.util.Date;
 
 import org.jsoup.helper.StringUtil;
@@ -15,20 +16,24 @@ public class PeertubeParsingHelper {
     private PeertubeParsingHelper() {
     }
 
-    public static String toDateString(String time) throws ParsingException {
-        try {
-            Date date = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.S'Z'").parse(time);
-            SimpleDateFormat newDateFormat = new SimpleDateFormat("yyyy-MM-dd");
-            return newDateFormat.format(date);
-        } catch (ParseException e) {
-            throw new ParsingException(e.getMessage(), e);
-        }
-    }
-    
     public static void validate(JsonObject json) throws ContentNotAvailableException {
         String error = json.getString("error");
         if(!StringUtil.isBlank(error)) {
             throw new ContentNotAvailableException(error);
         }
     }
+    
+    public static Calendar parseDateFrom(String textualUploadDate) throws ParsingException {
+        Date date;
+        try {
+            date = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.S'Z'").parse(textualUploadDate);
+        } catch (ParseException e) {
+            throw new ParsingException("Could not parse date: \"" + textualUploadDate + "\"", e);
+        }
+
+        final Calendar uploadDate = Calendar.getInstance();
+        uploadDate.setTime(date);
+        return uploadDate;
+    }
+
 }
