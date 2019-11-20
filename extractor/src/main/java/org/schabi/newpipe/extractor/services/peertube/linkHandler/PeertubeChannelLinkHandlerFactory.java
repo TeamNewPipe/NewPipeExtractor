@@ -23,8 +23,14 @@ public class PeertubeChannelLinkHandlerFactory extends ListLinkHandlerFactory {
     }
 
     @Override
-    public String getUrl(String id, List<String> contentFilters, String searchFilter) {
+    public String getUrl(String id, List<String> contentFilters, String searchFilter) throws ParsingException {
         String baseUrl = ServiceList.PeerTube.getBaseUrl();
+        return getUrl(id, contentFilters, searchFilter, baseUrl);
+    }
+    
+    @Override
+    public String getUrl(String id, List<String> contentFilter, String sortFilter, String baseUrl)
+            throws ParsingException {
         return baseUrl + ACCOUNTS_ENDPOINT + id;
     }
 

@@ -17,6 +17,7 @@ import org.schabi.newpipe.extractor.stream.StreamInfoItemsCollector;
 import org.schabi.newpipe.extractor.utils.JsonUtils;
 import org.schabi.newpipe.extractor.utils.Parser;
 import org.schabi.newpipe.extractor.utils.Parser.RegexException;
+import org.schabi.newpipe.extractor.utils.Utils;
 
 import com.grack.nanojson.JsonArray;
 import com.grack.nanojson.JsonObject;
@@ -89,10 +90,11 @@ public class PeertubeChannelExtractor extends ChannelExtractor {
             throw new ParsingException("unable to extract channel streams", e);
         }
         
+        String baseUrl = Utils.getBaseUrl(getUrl());
         for(Object c: contents) {
             if(c instanceof JsonObject) {
                 final JsonObject item = (JsonObject) c;
-                PeertubeStreamInfoItemExtractor extractor = new PeertubeStreamInfoItemExtractor(item);
+                PeertubeStreamInfoItemExtractor extractor = new PeertubeStreamInfoItemExtractor(item, baseUrl);
                 collector.commit(extractor);
             }
         }

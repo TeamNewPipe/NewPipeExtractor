@@ -37,9 +37,15 @@ public class PeertubeTrendingLinkHandlerFactory extends ListLinkHandlerFactory {
     public static PeertubeTrendingLinkHandlerFactory getInstance() {
         return instance;
     }
-    
+   
+    @Override
     public String getUrl(String id, List<String> contentFilters, String sortFilter) {
         String baseUrl = ServiceList.PeerTube.getBaseUrl();
+        return getUrl(id, contentFilters, sortFilter, baseUrl);
+    }
+    
+    @Override
+    public String getUrl(String id, List<String> contentFilters, String sortFilter, String baseUrl) {
         return String.format(KIOSK_MAP.get(id), baseUrl);
     }
 

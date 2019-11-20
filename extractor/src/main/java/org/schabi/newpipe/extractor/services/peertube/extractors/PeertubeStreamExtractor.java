@@ -19,7 +19,6 @@ import org.schabi.newpipe.extractor.exceptions.ReCaptchaException;
 import org.schabi.newpipe.extractor.linkhandler.LinkHandler;
 import org.schabi.newpipe.extractor.localization.DateWrapper;
 import org.schabi.newpipe.extractor.services.peertube.PeertubeParsingHelper;
-import org.schabi.newpipe.extractor.services.peertube.linkHandler.PeertubeChannelLinkHandlerFactory;
 import org.schabi.newpipe.extractor.services.peertube.linkHandler.PeertubeSearchQueryHandlerFactory;
 import org.schabi.newpipe.extractor.stream.AudioStream;
 import org.schabi.newpipe.extractor.stream.Stream;
@@ -30,6 +29,7 @@ import org.schabi.newpipe.extractor.stream.StreamType;
 import org.schabi.newpipe.extractor.stream.SubtitlesStream;
 import org.schabi.newpipe.extractor.stream.VideoStream;
 import org.schabi.newpipe.extractor.utils.JsonUtils;
+import org.schabi.newpipe.extractor.utils.Utils;
 
 import com.grack.nanojson.JsonArray;
 import com.grack.nanojson.JsonObject;
@@ -115,7 +115,8 @@ public class PeertubeStreamExtractor extends StreamExtractor {
     public String getUploaderUrl() throws ParsingException {
         String name = JsonUtils.getString(json, "account.name");
         String host = JsonUtils.getString(json, "account.host");
-        return PeertubeChannelLinkHandlerFactory.getInstance().fromId(name + "@" + host).getUrl();
+        String baseUrl = Utils.getBaseUrl(getUrl());
+        return getService().getChannelLHFactory().fromId(name + "@" + host, baseUrl).getUrl();
     }
 
     @Override
@@ -266,10 +267,11 @@ public class PeertubeStreamExtractor extends StreamExtractor {
             throw new ParsingException("unable to extract related videos", e);
         }
         
+        String baseUrl = Utils.getBaseUrl(getUrl());
         for(Object c: contents) {
             if(c instanceof JsonObject) {
                 final JsonObject item = (JsonObject) c;
-                PeertubeStreamInfoItemExtractor extractor = new PeertubeStreamInfoItemExtractor(item);
+                PeertubeStreamInfoItemExtractor extractor = new PeertubeStreamInfoItemExtractor(item, baseUrl);
                 //do not add the same stream in related streams
                 if(!extractor.getUrl().equals(getUrl())) collector.commit(extractor);
             }

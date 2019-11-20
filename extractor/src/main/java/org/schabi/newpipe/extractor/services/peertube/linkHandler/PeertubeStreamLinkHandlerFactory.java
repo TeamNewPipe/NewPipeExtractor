@@ -22,6 +22,11 @@ public class PeertubeStreamLinkHandlerFactory extends LinkHandlerFactory {
     @Override
     public String getUrl(String id) {
         String baseUrl = ServiceList.PeerTube.getBaseUrl();
+        return getUrl(id, baseUrl);
+    }
+    
+    @Override
+    public String getUrl(String id, String baseUrl) {
         return baseUrl + VIDEO_ENDPOINT + id;
     }
 

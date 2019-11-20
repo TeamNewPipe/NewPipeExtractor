@@ -19,12 +19,6 @@ public class PeertubeCommentsLinkHandlerFactory extends ListLinkHandlerFactory {
     }
 
     @Override
-    public String getUrl(String id) {
-        String baseUrl = ServiceList.PeerTube.getBaseUrl();
-        return baseUrl + String.format(COMMENTS_ENDPOINT, id);
-    }
-
-    @Override
     public String getId(String url) throws ParsingException, IllegalArgumentException {
         return Parser.matchGroup(ID_PATTERN, url, 2);
     }
@@ -36,6 +30,13 @@ public class PeertubeCommentsLinkHandlerFactory extends ListLinkHandlerFactory {
 
     @Override
     public String getUrl(String id, List<String> contentFilter, String sortFilter) throws ParsingException {
-        return getUrl(id);
+        String baseUrl = ServiceList.PeerTube.getBaseUrl();
+        return getUrl(id, contentFilter, sortFilter, baseUrl);
     }
+    
+    @Override
+    public String getUrl(String id, List<String> contentFilter, String sortFilter, String baseUrl) throws ParsingException {
+        return baseUrl + String.format(COMMENTS_ENDPOINT, id);
+    }
+   
 }

@@ -9,6 +9,7 @@ import org.schabi.newpipe.extractor.localization.DateWrapper;
 import org.schabi.newpipe.extractor.services.peertube.PeertubeParsingHelper;
 import org.schabi.newpipe.extractor.services.peertube.linkHandler.PeertubeChannelLinkHandlerFactory;
 import org.schabi.newpipe.extractor.utils.JsonUtils;
+import org.schabi.newpipe.extractor.utils.Utils;
 
 import com.grack.nanojson.JsonObject;
 
@@ -97,7 +98,8 @@ public class PeertubeCommentsInfoItemExtractor implements CommentsInfoItemExtrac
     public String getAuthorEndpoint() throws ParsingException {
         String name = JsonUtils.getString(item, "account.name");
         String host = JsonUtils.getString(item, "account.host");
-        return PeertubeChannelLinkHandlerFactory.getInstance().fromId(name + "@" + host).getUrl();
+        String baseUrl = Utils.getBaseUrl(url);
+        return ServiceList.PeerTube.getChannelLHFactory().fromId(name + "@" + host, baseUrl).getUrl();
     }
     
 }

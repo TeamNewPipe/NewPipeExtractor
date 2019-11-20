@@ -15,15 +15,17 @@ import com.grack.nanojson.JsonObject;
 public class PeertubeStreamInfoItemExtractor implements StreamInfoItemExtractor {
     
     protected final JsonObject item;
+    private final String baseUrl;
     
-    public PeertubeStreamInfoItemExtractor(JsonObject item) {
+    public PeertubeStreamInfoItemExtractor(JsonObject item, String baseUrl) {
         this.item = item;
+        this.baseUrl = baseUrl;
     }
     
     @Override
     public String getUrl() throws ParsingException {
         String uuid = JsonUtils.getString(item, "uuid");
-        return PeertubeStreamLinkHandlerFactory.getInstance().fromId(uuid).getUrl();
+        return ServiceList.PeerTube.getStreamLHFactory().fromId(uuid, baseUrl).getUrl();
     }
     
     @Override
@@ -52,7 +54,7 @@ public class PeertubeStreamInfoItemExtractor implements StreamInfoItemExtractor 
     public String getUploaderUrl() throws ParsingException {
         String name = JsonUtils.getString(item, "account.name");
         String host = JsonUtils.getString(item, "account.host");
-        return PeertubeChannelLinkHandlerFactory.getInstance().fromId(name + "@" + host).getUrl();
+        return ServiceList.PeerTube.getChannelLHFactory().fromId(name + "@" + host, baseUrl).getUrl();
     }
     
     @Override
