@@ -3,7 +3,6 @@ package org.schabi.newpipe.extractor.services.peertube.extractors;
 import java.io.IOException;
 
 import org.jsoup.helper.StringUtil;
-import org.schabi.newpipe.extractor.ServiceList;
 import org.schabi.newpipe.extractor.StreamingService;
 import org.schabi.newpipe.extractor.channel.ChannelExtractor;
 import org.schabi.newpipe.extractor.downloader.Downloader;
@@ -35,9 +34,11 @@ public class PeertubeChannelExtractor extends ChannelExtractor {
     private long total;
     
     private JsonObject json;
+    private final String baseUrl;
 
-    public PeertubeChannelExtractor(StreamingService service, ListLinkHandler linkHandler) {
+    public PeertubeChannelExtractor(StreamingService service, ListLinkHandler linkHandler) throws ParsingException {
         super(service, linkHandler);
+        this.baseUrl = Utils.getBaseUrl(getUrl());
     }
 
     @Override
@@ -48,7 +49,7 @@ public class PeertubeChannelExtractor extends ChannelExtractor {
         }catch(Exception e) {
             value = "/client/assets/images/default-avatar.png";
         }
-        return ServiceList.PeerTube.getBaseUrl() + value;
+        return baseUrl + value;
     }
 
     @Override
@@ -90,7 +91,6 @@ public class PeertubeChannelExtractor extends ChannelExtractor {
             throw new ParsingException("unable to extract channel streams", e);
         }
         
-        String baseUrl = Utils.getBaseUrl(getUrl());
         for(Object c: contents) {
             if(c instanceof JsonObject) {
                 final JsonObject item = (JsonObject) c;
@@ -183,7 +183,7 @@ public class PeertubeChannelExtractor extends ChannelExtractor {
     
     @Override
     public String getOriginalUrl() throws ParsingException {
-        return ServiceList.PeerTube.getBaseUrl() + "/accounts/" + getId();
+        return baseUrl + "/accounts/" + getId();
     }
 
 }

@@ -41,9 +41,11 @@ public class PeertubeStreamExtractor extends StreamExtractor {
     
     private JsonObject json;
     private List<SubtitlesStream> subtitles = new ArrayList<>();
+    private final String baseUrl;
     
-    public PeertubeStreamExtractor(StreamingService service, LinkHandler linkHandler) {
+    public PeertubeStreamExtractor(StreamingService service, LinkHandler linkHandler) throws ParsingException {
         super(service, linkHandler);
+        this.baseUrl = Utils.getBaseUrl(getUrl());
     }
     
     @Override
@@ -64,7 +66,7 @@ public class PeertubeStreamExtractor extends StreamExtractor {
  
     @Override
     public String getThumbnailUrl() throws ParsingException {
-        return ServiceList.PeerTube.getBaseUrl() + JsonUtils.getString(json, "thumbnailPath");
+        return baseUrl + JsonUtils.getString(json, "thumbnailPath");
     }
 
     @Override
@@ -115,7 +117,6 @@ public class PeertubeStreamExtractor extends StreamExtractor {
     public String getUploaderUrl() throws ParsingException {
         String name = JsonUtils.getString(json, "account.name");
         String host = JsonUtils.getString(json, "account.host");
-        String baseUrl = Utils.getBaseUrl(getUrl());
         return getService().getChannelLHFactory().fromId(name + "@" + host, baseUrl).getUrl();
     }
 
@@ -132,7 +133,7 @@ public class PeertubeStreamExtractor extends StreamExtractor {
         }catch(Exception e) {
             value = "/client/assets/images/default-avatar.png";
         }
-        return ServiceList.PeerTube.getBaseUrl() + value;
+        return baseUrl + value;
     }
 
     @Override
@@ -233,7 +234,7 @@ public class PeertubeStreamExtractor extends StreamExtractor {
     }
     
     private String getRelatedStreamsUrl(List<String> tags) throws UnsupportedEncodingException {
-        String url = ServiceList.PeerTube.getBaseUrl() + PeertubeSearchQueryHandlerFactory.SEARCH_ENDPOINT;
+        String url = baseUrl + PeertubeSearchQueryHandlerFactory.SEARCH_ENDPOINT;
         StringBuilder params = new StringBuilder();
         params.append("start=0&count=8&sort=-createdAt");
         for(String tag : tags) {
@@ -267,7 +268,6 @@ public class PeertubeStreamExtractor extends StreamExtractor {
             throw new ParsingException("unable to extract related videos", e);
         }
         
-        String baseUrl = Utils.getBaseUrl(getUrl());
         for(Object c: contents) {
             if(c instanceof JsonObject) {
                 final JsonObject item = (JsonObject) c;
@@ -316,7 +316,7 @@ public class PeertubeStreamExtractor extends StreamExtractor {
                 for(Object c: captions) {
                     if(c instanceof JsonObject) {
                         JsonObject caption = (JsonObject)c;
-                        String url = ServiceList.PeerTube.getBaseUrl() + JsonUtils.getString(caption, "captionPath");
+                        String url = baseUrl + JsonUtils.getString(caption, "captionPath");
                         String languageCode = JsonUtils.getString(caption, "language.id");
                         String ext = url.substring(url.lastIndexOf(".") + 1);
                         MediaFormat fmt = MediaFormat.getFromSuffix(ext);
@@ -336,7 +336,7 @@ public class PeertubeStreamExtractor extends StreamExtractor {
 
     @Override
     public String getOriginalUrl() throws ParsingException {
-        return ServiceList.PeerTube.getBaseUrl() + "/videos/watch/" + getId();
+        return baseUrl + "/videos/watch/" + getId();
     }
 
 }

@@ -7,7 +7,6 @@ import org.schabi.newpipe.extractor.comments.CommentsInfoItemExtractor;
 import org.schabi.newpipe.extractor.exceptions.ParsingException;
 import org.schabi.newpipe.extractor.localization.DateWrapper;
 import org.schabi.newpipe.extractor.services.peertube.PeertubeParsingHelper;
-import org.schabi.newpipe.extractor.services.peertube.linkHandler.PeertubeChannelLinkHandlerFactory;
 import org.schabi.newpipe.extractor.utils.JsonUtils;
 import org.schabi.newpipe.extractor.utils.Utils;
 
@@ -18,10 +17,12 @@ public class PeertubeCommentsInfoItemExtractor implements CommentsInfoItemExtrac
 
     private final JsonObject item;
     private final String url;
+    private final String baseUrl;
 
-    public PeertubeCommentsInfoItemExtractor(JsonObject item, String url) {
+    public PeertubeCommentsInfoItemExtractor(JsonObject item, String url) throws ParsingException {
         this.item = item;
         this.url = url;
+        this.baseUrl = Utils.getBaseUrl(url);
     }
 
     @Override
@@ -37,7 +38,7 @@ public class PeertubeCommentsInfoItemExtractor implements CommentsInfoItemExtrac
         }catch(Exception e) {
             value = "/client/assets/images/default-avatar.png";
         }
-        return ServiceList.PeerTube.getBaseUrl() + value;
+        return baseUrl + value;
     }
 
     @Override
@@ -58,7 +59,7 @@ public class PeertubeCommentsInfoItemExtractor implements CommentsInfoItemExtrac
     
     @Override
     public int getLikeCount() throws ParsingException {
-        return 0;
+        return -1;
     }
 
     @Override
@@ -86,7 +87,7 @@ public class PeertubeCommentsInfoItemExtractor implements CommentsInfoItemExtrac
         }catch(Exception e) {
             value = "/client/assets/images/default-avatar.png";
         }
-        return ServiceList.PeerTube.getBaseUrl() + value;
+        return baseUrl + value;
     }
 
     @Override
@@ -98,7 +99,6 @@ public class PeertubeCommentsInfoItemExtractor implements CommentsInfoItemExtrac
     public String getAuthorEndpoint() throws ParsingException {
         String name = JsonUtils.getString(item, "account.name");
         String host = JsonUtils.getString(item, "account.host");
-        String baseUrl = Utils.getBaseUrl(url);
         return ServiceList.PeerTube.getChannelLHFactory().fromId(name + "@" + host, baseUrl).getUrl();
     }
     

@@ -4,8 +4,6 @@ import org.schabi.newpipe.extractor.ServiceList;
 import org.schabi.newpipe.extractor.exceptions.ParsingException;
 import org.schabi.newpipe.extractor.localization.DateWrapper;
 import org.schabi.newpipe.extractor.services.peertube.PeertubeParsingHelper;
-import org.schabi.newpipe.extractor.services.peertube.linkHandler.PeertubeChannelLinkHandlerFactory;
-import org.schabi.newpipe.extractor.services.peertube.linkHandler.PeertubeStreamLinkHandlerFactory;
 import org.schabi.newpipe.extractor.stream.StreamInfoItemExtractor;
 import org.schabi.newpipe.extractor.stream.StreamType;
 import org.schabi.newpipe.extractor.utils.JsonUtils;
@@ -31,7 +29,7 @@ public class PeertubeStreamInfoItemExtractor implements StreamInfoItemExtractor 
     @Override
     public String getThumbnailUrl() throws ParsingException {
         String value = JsonUtils.getString(item, "thumbnailPath");
-        return ServiceList.PeerTube.getBaseUrl() + value;
+        return baseUrl + value;
     }
     
     @Override
