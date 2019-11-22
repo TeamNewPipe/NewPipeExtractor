@@ -31,7 +31,7 @@ public class PeertubeChannelExtractorTest {
         public static void setUp() throws Exception {
             NewPipe.init(DownloaderTestImpl.getInstance());
             // setting instance might break test when running in parallel
-            PeerTube.setInstance("https://peertube.mastodon.host", "PeerTube on Mastodon.host");
+            PeerTube.setInstance(new PeertubeInstance("https://peertube.mastodon.host", "PeerTube on Mastodon.host"));
             extractor = (PeertubeChannelExtractor) PeerTube
                     .getChannelExtractor("https://peertube.mastodon.host/api/v1/accounts/kde");
             extractor.fetchPage();
@@ -118,7 +118,7 @@ public class PeertubeChannelExtractorTest {
         public static void setUp() throws Exception {
             NewPipe.init(DownloaderTestImpl.getInstance());
             // setting instance might break test when running in parallel
-            PeerTube.setInstance("https://peertube.mastodon.host", "PeerTube on Mastodon.host");
+            PeerTube.setInstance(new PeertubeInstance("https://peertube.mastodon.host", "PeerTube on Mastodon.host"));
             extractor = (PeertubeChannelExtractor) PeerTube
                     .getChannelExtractor("https://peertube.mastodon.host/accounts/booteille");
             extractor.fetchPage();

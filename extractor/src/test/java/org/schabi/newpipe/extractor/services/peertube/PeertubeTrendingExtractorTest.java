@@ -28,7 +28,7 @@ public class PeertubeTrendingExtractorTest {
     public static void setUp() throws Exception {
         NewPipe.init(DownloaderTestImpl.getInstance());
         // setting instance might break test when running in parallel
-        PeerTube.setInstance("https://peertube.mastodon.host", "PeerTube on Mastodon.host");
+        PeerTube.setInstance(new PeertubeInstance("https://peertube.mastodon.host", "PeerTube on Mastodon.host"));
         extractor = PeerTube
                 .getKioskList()
                 .getExtractorById("Trending", null);

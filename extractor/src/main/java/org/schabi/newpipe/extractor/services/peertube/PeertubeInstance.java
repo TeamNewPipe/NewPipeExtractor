@@ -20,10 +20,9 @@ public class PeertubeInstance {
     private String name;
     public static final PeertubeInstance defaultInstance = new PeertubeInstance("https://framatube.org", "FramaTube");
     
-    public PeertubeInstance(String url) throws IOException {
+    public PeertubeInstance(String url) {
         this.url = url;
-        String response = validateInstance(url);
-        setInstanceMetaData(response);
+        this.name = "PeerTube";
     }
     
     public PeertubeInstance(String url , String name) {
@@ -35,37 +34,25 @@ public class PeertubeInstance {
         return url;
     }
     
-    private String validateInstance(String url) throws IOException {
+    public void fetchInstanceMetaData() throws Exception {
         Downloader downloader = NewPipe.getDownloader();
         Response response = null;
         
         try {
             response = downloader.get(url + "/api/v1/config");
         } catch (ReCaptchaException | IOException e) {
-            throw new IOException("unable to configure instance " + url, e);
+            throw new Exception("unable to configure instance " + url, e);
         }
         
         if(null == response || StringUtil.isBlank(response.responseBody())) {
-            throw new IOException("unable to configure instance " + url);
+            throw new Exception("unable to configure instance " + url);
         }
         
-        return response.responseBody();
-    }
-
-    private void setInstanceMetaData(String responseBody) {
-        JsonObject json;
-        try {
-            json = JsonParser.object().from(responseBody);
-        } catch (JsonParserException e) {
-            return;
-        }
-        
-        if(null == json) return;
-        
-        try {
+         try {
+            JsonObject json = JsonParser.object().from(response.responseBody());
             this.name = JsonUtils.getString(json, "instance.name");
-        } catch (ParsingException e) {
-            return;
+        } catch (JsonParserException | ParsingException e) {
+            throw new Exception("unable to parse instance config", e);
         }
     }
 

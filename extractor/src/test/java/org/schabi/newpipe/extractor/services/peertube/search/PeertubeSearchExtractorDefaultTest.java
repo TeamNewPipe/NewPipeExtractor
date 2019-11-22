@@ -11,6 +11,7 @@ import org.schabi.newpipe.DownloaderTestImpl;
 import org.schabi.newpipe.extractor.InfoItem;
 import org.schabi.newpipe.extractor.ListExtractor;
 import org.schabi.newpipe.extractor.NewPipe;
+import org.schabi.newpipe.extractor.services.peertube.PeertubeInstance;
 import org.schabi.newpipe.extractor.services.peertube.extractors.PeertubeSearchExtractor;
 import org.schabi.newpipe.extractor.stream.StreamInfoItem;
 
@@ -23,7 +24,7 @@ public class PeertubeSearchExtractorDefaultTest extends PeertubeSearchExtractorB
     public static void setUpClass() throws Exception {
         NewPipe.init(DownloaderTestImpl.getInstance());
         // setting instance might break test when running in parallel
-        PeerTube.setInstance("https://peertube.mastodon.host", "PeerTube on Mastodon.host");
+        PeerTube.setInstance(new PeertubeInstance("https://peertube.mastodon.host", "PeerTube on Mastodon.host"));
         extractor = (PeertubeSearchExtractor) PeerTube.getSearchExtractor("kde");
         extractor.fetchPage();
         itemsPage = extractor.getInitialPage();

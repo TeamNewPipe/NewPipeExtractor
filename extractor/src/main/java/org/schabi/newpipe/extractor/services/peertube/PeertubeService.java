@@ -7,7 +7,6 @@ import static org.schabi.newpipe.extractor.StreamingService.ServiceInfo.MediaCap
 import java.io.IOException;
 import java.util.List;
 
-import org.jsoup.helper.StringUtil;
 import org.schabi.newpipe.extractor.StreamingService;
 import org.schabi.newpipe.extractor.StreamingService.ServiceInfo.MediaCapability;
 import org.schabi.newpipe.extractor.channel.ChannelExtractor;
@@ -49,10 +48,6 @@ public class PeertubeService extends StreamingService {
     public PeertubeService(int id, PeertubeInstance instance) {
         super(id, instance.getName(), asList(VIDEO, COMMENTS));
         this.instance  = instance;
-    }
-
-    public PeertubeService(int id, String name, List<MediaCapability> capabilities) {
-        super(id, name, capabilities);
     }
 
     @Override
@@ -127,24 +122,11 @@ public class PeertubeService extends StreamingService {
         return instance.getUrl();
     }
     
-    public void setInstance(String url) throws IOException {
-        this.instance = new PeertubeInstance(url);
-        if(!StringUtil.isBlank(instance.getName())) {
-            this.getServiceInfo().setName(instance.getName());
-        }else {
-            this.getServiceInfo().setName("PeerTube");
-        }
+    public void setInstance(PeertubeInstance instance) throws IOException {
+        this.instance = instance;
+        this.getServiceInfo().setName(instance.getName());
     }
     
-    public void setInstance(String url, String name) {
-        this.instance = new PeertubeInstance(url, name);
-        if(!StringUtil.isBlank(instance.getName())) {
-            this.getServiceInfo().setName(instance.getName());
-        }else {
-            this.getServiceInfo().setName("PeerTube");
-        }
-    }
-
     @Override
     public KioskList getKioskList() throws ExtractionException {
         KioskList.KioskExtractorFactory kioskFactory = new KioskList.KioskExtractorFactory() {

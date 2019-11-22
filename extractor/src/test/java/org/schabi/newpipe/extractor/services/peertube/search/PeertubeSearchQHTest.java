@@ -5,13 +5,14 @@ import static org.schabi.newpipe.extractor.ServiceList.PeerTube;
 
 import org.junit.BeforeClass;
 import org.junit.Test;
+import org.schabi.newpipe.extractor.services.peertube.PeertubeInstance;
 
 public class PeertubeSearchQHTest {
     
     @BeforeClass
     public static void setUpClass() throws Exception {
         // setting instance might break test when running in parallel
-        PeerTube.setInstance("https://peertube.mastodon.host", "PeerTube on Mastodon.host");
+        PeerTube.setInstance(new PeertubeInstance("https://peertube.mastodon.host", "PeerTube on Mastodon.host"));
     }
 
     @Test
