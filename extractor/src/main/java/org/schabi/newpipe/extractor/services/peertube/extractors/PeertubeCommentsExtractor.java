@@ -56,7 +56,7 @@ public class PeertubeCommentsExtractor extends CommentsExtractor {
         for(Object c: contents) {
             if(c instanceof JsonObject) {
                 final JsonObject item = (JsonObject) c;
-                PeertubeCommentsInfoItemExtractor extractor = new PeertubeCommentsInfoItemExtractor(item, pageUrl);
+                PeertubeCommentsInfoItemExtractor extractor = new PeertubeCommentsInfoItemExtractor(item, this);
                 collector.commit(extractor);
             }
         }

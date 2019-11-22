@@ -8,7 +8,6 @@ import org.schabi.newpipe.extractor.exceptions.ParsingException;
 import org.schabi.newpipe.extractor.localization.DateWrapper;
 import org.schabi.newpipe.extractor.services.peertube.PeertubeParsingHelper;
 import org.schabi.newpipe.extractor.utils.JsonUtils;
-import org.schabi.newpipe.extractor.utils.Utils;
 
 import com.grack.nanojson.JsonObject;
 
@@ -19,10 +18,10 @@ public class PeertubeCommentsInfoItemExtractor implements CommentsInfoItemExtrac
     private final String url;
     private final String baseUrl;
 
-    public PeertubeCommentsInfoItemExtractor(JsonObject item, String url) throws ParsingException {
+    public PeertubeCommentsInfoItemExtractor(JsonObject item, PeertubeCommentsExtractor extractor) throws ParsingException {
         this.item = item;
-        this.url = url;
-        this.baseUrl = Utils.getBaseUrl(url);
+        this.url = extractor.getUrl();
+        this.baseUrl = extractor.getBaseUrl();
     }
 
     @Override

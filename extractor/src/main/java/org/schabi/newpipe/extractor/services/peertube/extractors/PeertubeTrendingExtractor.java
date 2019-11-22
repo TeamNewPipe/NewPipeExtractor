@@ -15,7 +15,6 @@ import org.schabi.newpipe.extractor.stream.StreamInfoItemsCollector;
 import org.schabi.newpipe.extractor.utils.JsonUtils;
 import org.schabi.newpipe.extractor.utils.Parser;
 import org.schabi.newpipe.extractor.utils.Parser.RegexException;
-import org.schabi.newpipe.extractor.utils.Utils;
 
 import com.grack.nanojson.JsonArray;
 import com.grack.nanojson.JsonObject;
@@ -54,7 +53,7 @@ public class PeertubeTrendingExtractor extends KioskExtractor {
             throw new ParsingException("unable to extract kiosk info", e);
         }
         
-        String baseUrl = Utils.getBaseUrl(getUrl());
+        String baseUrl = getBaseUrl();
         for(Object c: contents) {
             if(c instanceof JsonObject) {
                 final JsonObject item = (JsonObject) c;

@@ -16,7 +16,6 @@ import org.schabi.newpipe.extractor.stream.StreamInfoItemsCollector;
 import org.schabi.newpipe.extractor.utils.JsonUtils;
 import org.schabi.newpipe.extractor.utils.Parser;
 import org.schabi.newpipe.extractor.utils.Parser.RegexException;
-import org.schabi.newpipe.extractor.utils.Utils;
 
 import com.grack.nanojson.JsonArray;
 import com.grack.nanojson.JsonObject;
@@ -38,7 +37,7 @@ public class PeertubeChannelExtractor extends ChannelExtractor {
 
     public PeertubeChannelExtractor(StreamingService service, ListLinkHandler linkHandler) throws ParsingException {
         super(service, linkHandler);
-        this.baseUrl = Utils.getBaseUrl(getUrl());
+        this.baseUrl = getBaseUrl();
     }
 
     @Override

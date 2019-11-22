@@ -45,7 +45,7 @@ public class PeertubeStreamExtractor extends StreamExtractor {
     
     public PeertubeStreamExtractor(StreamingService service, LinkHandler linkHandler) throws ParsingException {
         super(service, linkHandler);
-        this.baseUrl = Utils.getBaseUrl(getUrl());
+        this.baseUrl = getBaseUrl();
     }
     
     @Override

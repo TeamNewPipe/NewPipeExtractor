@@ -122,7 +122,7 @@ public class PeertubeService extends StreamingService {
         return instance.getUrl();
     }
     
-    public void setInstance(PeertubeInstance instance) throws IOException {
+    public void setInstance(PeertubeInstance instance) {
         this.instance = instance;
         this.getServiceInfo().setName(instance.getName());
     }
