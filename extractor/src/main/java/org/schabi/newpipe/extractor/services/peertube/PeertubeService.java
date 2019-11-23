@@ -4,11 +4,7 @@ import static java.util.Arrays.asList;
 import static org.schabi.newpipe.extractor.StreamingService.ServiceInfo.MediaCapability.COMMENTS;
 import static org.schabi.newpipe.extractor.StreamingService.ServiceInfo.MediaCapability.VIDEO;
 
-import java.io.IOException;
-import java.util.List;
-
 import org.schabi.newpipe.extractor.StreamingService;
-import org.schabi.newpipe.extractor.StreamingService.ServiceInfo.MediaCapability;
 import org.schabi.newpipe.extractor.channel.ChannelExtractor;
 import org.schabi.newpipe.extractor.comments.CommentsExtractor;
 import org.schabi.newpipe.extractor.exceptions.ExtractionException;
@@ -120,6 +116,10 @@ public class PeertubeService extends StreamingService {
     @Override
     public String getBaseUrl() {
         return instance.getUrl();
+    }
+    
+    public PeertubeInstance getInstance() {
+        return this.instance;
     }
     
     public void setInstance(PeertubeInstance instance) {
