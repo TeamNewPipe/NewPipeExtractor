@@ -46,7 +46,7 @@ public class PeertubeService extends StreamingService {
     }
     
     public PeertubeService(int id, PeertubeInstance instance) {
-        super(id, instance.getName(), asList(VIDEO, COMMENTS));
+        super(id, "PeerTube", asList(VIDEO, COMMENTS));
         this.instance  = instance;
     }
 
@@ -124,7 +124,6 @@ public class PeertubeService extends StreamingService {
     
     public void setInstance(PeertubeInstance instance) {
         this.instance = instance;
-        this.getServiceInfo().setName(instance.getName());
     }
     
     @Override

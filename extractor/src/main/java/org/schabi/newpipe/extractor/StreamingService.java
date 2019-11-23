@@ -48,7 +48,7 @@ public abstract class StreamingService {
      * This class holds meta information about the service implementation.
      */
     public static class ServiceInfo {
-        private String name;
+        private final String name;
 
         private final List<MediaCapability> mediaCapabilities;
 
@@ -66,10 +66,6 @@ public abstract class StreamingService {
             return name;
         }
         
-        public void setName(String name) {
-            this.name = name;
-        }
-
         public List<MediaCapability> getMediaCapabilities() {
             return mediaCapabilities;
         }
