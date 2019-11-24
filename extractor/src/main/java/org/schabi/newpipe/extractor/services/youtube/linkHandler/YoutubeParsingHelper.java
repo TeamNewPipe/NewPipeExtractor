@@ -1,9 +1,17 @@
 package org.schabi.newpipe.extractor.services.youtube.linkHandler;
 
 
+import org.jsoup.Jsoup;
+import org.jsoup.nodes.Document;
+import org.schabi.newpipe.extractor.downloader.Response;
 import org.schabi.newpipe.extractor.exceptions.ParsingException;
+import org.schabi.newpipe.extractor.exceptions.ReCaptchaException;
 
 import java.net.URL;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
+import java.util.Date;
 
 /*
  * Created by Christian Schabesberger on 02.03.16.
@@ -28,6 +36,23 @@ import java.net.URL;
 public class YoutubeParsingHelper {
 
     private YoutubeParsingHelper() {
+    }
+
+    private static final String[] RECAPTCHA_DETECTION_SELECTORS = {
+            "form[action*=\"/das_captcha\"]",
+            "input[name*=\"action_recaptcha_verify\"]"
+    };
+
+    public static Document parseAndCheckPage(final String url, final Response response) throws ReCaptchaException {
+        final Document document = Jsoup.parse(response.responseBody(), url);
+
+        for (String detectionSelector : RECAPTCHA_DETECTION_SELECTORS) {
+            if (!document.select(detectionSelector).isEmpty()) {
+                throw new ReCaptchaException("reCAPTCHA challenge requested (detected with selector: \"" + detectionSelector + "\")", url);
+            }
+        }
+
+        return document;
     }
 
     public static boolean isYoutubeURL(URL url) {
@@ -91,5 +116,18 @@ public class YoutubeParsingHelper {
                 + Long.parseLong(hours) * 60)
                 + Long.parseLong(minutes)) * 60)
                 + Long.parseLong(seconds);
+    }
+
+    public static Calendar parseDateFrom(String textualUploadDate) throws ParsingException {
+        Date date;
+        try {
+            date = new SimpleDateFormat("yyyy-MM-dd").parse(textualUploadDate);
+        } catch (ParseException e) {
+            throw new ParsingException("Could not parse date: \"" + textualUploadDate + "\"", e);
+        }
+
+        final Calendar uploadDate = Calendar.getInstance();
+        uploadDate.setTime(date);
+        return uploadDate;
     }
 }

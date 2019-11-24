@@ -1,21 +1,26 @@
 package org.schabi.newpipe.extractor.services.youtube.extractors;
 
+import com.grack.nanojson.JsonArray;
+import com.grack.nanojson.JsonObject;
 import org.schabi.newpipe.extractor.comments.CommentsInfoItemExtractor;
 import org.schabi.newpipe.extractor.exceptions.ParsingException;
+import org.schabi.newpipe.extractor.localization.TimeAgoParser;
+import org.schabi.newpipe.extractor.localization.DateWrapper;
 import org.schabi.newpipe.extractor.utils.JsonUtils;
 import org.schabi.newpipe.extractor.utils.Utils;
 
-import com.grack.nanojson.JsonArray;
-import com.grack.nanojson.JsonObject;
+import javax.annotation.Nullable;
 
 public class YoutubeCommentsInfoItemExtractor implements CommentsInfoItemExtractor {
 
     private final JsonObject json;
     private final String url;
+    private final TimeAgoParser timeAgoParser;
 
-    public YoutubeCommentsInfoItemExtractor(JsonObject json, String url) {
+    public YoutubeCommentsInfoItemExtractor(JsonObject json, String url, TimeAgoParser timeAgoParser) {
         this.json = json;
         this.url = url;
+        this.timeAgoParser = timeAgoParser;
     }
 
     @Override
@@ -43,7 +48,7 @@ public class YoutubeCommentsInfoItemExtractor implements CommentsInfoItemExtract
     }
 
     @Override
-    public String getPublishedTime() throws ParsingException {
+    public String getTextualPublishedTime() throws ParsingException {
         try {
             return YoutubeCommentsExtractor.getYoutubeText(JsonUtils.getObject(json, "publishedTimeText"));
         } catch (Exception e) {
@@ -51,8 +56,19 @@ public class YoutubeCommentsInfoItemExtractor implements CommentsInfoItemExtract
         }
     }
 
+    @Nullable
     @Override
-    public Integer getLikeCount() throws ParsingException {
+    public DateWrapper getPublishedTime() throws ParsingException {
+        String textualPublishedTime = getTextualPublishedTime();
+        if (timeAgoParser != null && textualPublishedTime != null && !textualPublishedTime.isEmpty()) {
+            return timeAgoParser.parse(textualPublishedTime);
+        } else {
+            return null;
+        }
+    }
+
+    @Override
+    public int getLikeCount() throws ParsingException {
         try {
             return JsonUtils.getNumber(json, "likeCount").intValue();
         } catch (Exception e) {

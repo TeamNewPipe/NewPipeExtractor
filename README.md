@@ -13,6 +13,17 @@ If you're using Gradle, you could add NewPipe Extractor as a dependency with the
 1. Add `maven { url 'https://jitpack.io' }` to the `repositories` in your `build.gradle`.
 2. Add `compile 'com.github.TeamNewPipe:NewPipeExtractor:v0.11.0'`the `dependencies` in your `build.gradle`. Replace `v0.11.0` with the latest release.
 
+### Testing changes
+
+To test changes quickly you can build the library locally. Using the local Maven repository is a good approach, here's a gist of how to use it:
+
+1. Add `mavenLocal()` in your project `repositories` list (usually as the first entry to give priority above the others).
+2. It's _recommended_ that you change the `version` of this library (e.g. `LOCAL_SNAPSHOT`).
+3. Run gradle's `ìnstall` task to deploy this library to your local repository (using the wrapper, present in the root of this project: `./gradlew install`)
+4. Change the dependency version used in your project to match the one you chose in step 2 (`implementation 'com.github.TeamNewPipe:NewPipeExtractor:LOCAL_SNAPSHOT'`)
+     
+> Tip for Android Studio users: After you make changes and run the `install` task, use the menu option `File → "Sync with File System"` to refresh the library in your project.
+
 ## Supported sites
 
 The following sites are currently supported:

@@ -1,13 +1,21 @@
 allprojects {
     apply plugin: 'java-library'
+    apply plugin: 'maven'
+
     sourceCompatibility = 1.7
     targetCompatibility = 1.7
 
     version 'v0.13.0'
+    group 'com.github.TeamNewPipe'
 
     repositories {
         jcenter()
     }
+}
+
+dependencies {
+    implementation project(':extractor')
+    implementation project(':timeago-parser')
 }
 
 subprojects {

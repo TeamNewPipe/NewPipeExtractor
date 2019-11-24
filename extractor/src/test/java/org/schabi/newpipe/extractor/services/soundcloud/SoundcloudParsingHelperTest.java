@@ -1,16 +1,21 @@
 package org.schabi.newpipe.extractor.services.soundcloud;
 
-import org.junit.Assert;
-import org.junit.BeforeClass;
-import org.junit.Test;
-import org.schabi.newpipe.Downloader;
+import org.junit.*;
+import org.schabi.newpipe.DownloaderTestImpl;
 import org.schabi.newpipe.extractor.NewPipe;
-import org.schabi.newpipe.extractor.utils.Localization;
+
+import static org.junit.Assert.*;
 
 public class SoundcloudParsingHelperTest {
     @BeforeClass
     public static void setUp() {
-        NewPipe.init(Downloader.getInstance(), new Localization("GB", "en"));
+        NewPipe.init(DownloaderTestImpl.getInstance());
+    }
+
+    @Test
+    public void assertThatHardcodedClientIdIsValid() throws Exception {
+        assertTrue("Hardcoded client id is not valid anymore",
+                SoundcloudParsingHelper.checkIfHardcodedClientIdIsValid(DownloaderTestImpl.getInstance()));
     }
 
     @Test

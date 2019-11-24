@@ -5,12 +5,12 @@ import com.grack.nanojson.JsonObject;
 import com.grack.nanojson.JsonParser;
 import com.grack.nanojson.JsonParserException;
 import org.schabi.newpipe.extractor.*;
+import org.schabi.newpipe.extractor.downloader.Downloader;
 import org.schabi.newpipe.extractor.exceptions.ExtractionException;
 import org.schabi.newpipe.extractor.exceptions.ParsingException;
+import org.schabi.newpipe.extractor.linkhandler.SearchQueryHandler;
 import org.schabi.newpipe.extractor.search.InfoItemsSearchCollector;
 import org.schabi.newpipe.extractor.search.SearchExtractor;
-import org.schabi.newpipe.extractor.linkhandler.SearchQueryHandler;
-import org.schabi.newpipe.extractor.utils.Localization;
 import org.schabi.newpipe.extractor.utils.Parser;
 
 import javax.annotation.Nonnull;
@@ -25,10 +25,8 @@ public class SoundcloudSearchExtractor extends SearchExtractor {
 
     private JsonArray searchCollection;
 
-    public SoundcloudSearchExtractor(StreamingService service,
-                                     SearchQueryHandler linkHandler,
-                                     Localization localization) {
-        super(service, linkHandler, localization);
+    public SoundcloudSearchExtractor(StreamingService service, SearchQueryHandler linkHandler) {
+        super(service, linkHandler);
     }
 
     @Override
@@ -51,7 +49,8 @@ public class SoundcloudSearchExtractor extends SearchExtractor {
     public InfoItemsPage<InfoItem> getPage(String pageUrl) throws IOException, ExtractionException {
         final Downloader dl = getDownloader();
         try {
-            searchCollection = JsonParser.object().from(dl.download(pageUrl)).getArray("collection");
+            final String response = dl.get(pageUrl, getExtractorLocalization()).responseBody();
+            searchCollection = JsonParser.object().from(response).getArray("collection");
         } catch (JsonParserException e) {
             throw new ParsingException("Could not parse json response", e);
         }
@@ -64,7 +63,8 @@ public class SoundcloudSearchExtractor extends SearchExtractor {
         final Downloader dl = getDownloader();
         final String url = getUrl();
         try {
-            searchCollection = JsonParser.object().from(dl.download(url)).getArray("collection");
+            final String response = dl.get(url, getExtractorLocalization()).responseBody();
+            searchCollection = JsonParser.object().from(response).getArray("collection");
         } catch (JsonParserException e) {
             throw new ParsingException("Could not parse json response", e);
         }

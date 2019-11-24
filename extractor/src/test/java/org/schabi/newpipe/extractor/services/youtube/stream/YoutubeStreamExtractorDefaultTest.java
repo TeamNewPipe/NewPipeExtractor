@@ -1,8 +1,9 @@
 package org.schabi.newpipe.extractor.services.youtube.stream;
 
+import org.junit.Assert;
 import org.junit.BeforeClass;
 import org.junit.Test;
-import org.schabi.newpipe.Downloader;
+import org.schabi.newpipe.DownloaderTestImpl;
 import org.schabi.newpipe.extractor.ExtractorAsserts;
 import org.schabi.newpipe.extractor.MediaFormat;
 import org.schabi.newpipe.extractor.NewPipe;
@@ -10,12 +11,15 @@ import org.schabi.newpipe.extractor.exceptions.ExtractionException;
 import org.schabi.newpipe.extractor.exceptions.ParsingException;
 import org.schabi.newpipe.extractor.services.youtube.extractors.YoutubeStreamExtractor;
 import org.schabi.newpipe.extractor.stream.*;
-import org.schabi.newpipe.extractor.utils.Localization;
 import org.schabi.newpipe.extractor.utils.Utils;
 
 import java.io.IOException;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
 import java.util.List;
 
+import static java.util.Objects.*;
 import static org.junit.Assert.*;
 import static org.schabi.newpipe.extractor.ExtractorAsserts.assertIsSecureUrl;
 import static org.schabi.newpipe.extractor.ServiceList.YouTube;
@@ -53,7 +57,7 @@ public class YoutubeStreamExtractorDefaultTest {
 
         @BeforeClass
         public static void setUp() throws Exception {
-            NewPipe.init(Downloader.getInstance(), new Localization("GB", "en"));
+            NewPipe.init(DownloaderTestImpl.getInstance());
             extractor = (YoutubeStreamExtractor) YouTube
                     .getStreamExtractor("https://www.youtube.com/watch?v=YQHsXMglC9A");
             extractor.fetchPage();
@@ -107,8 +111,15 @@ public class YoutubeStreamExtractorDefaultTest {
         }
 
         @Test
-        public void testGetUploadDate() throws ParsingException {
-            assertTrue(extractor.getUploadDate().length() > 0);
+        public void testGetTextualUploadDate() throws ParsingException {
+            Assert.assertEquals("2015-10-22", extractor.getTextualUploadDate());
+        }
+
+        @Test
+        public void testGetUploadDate() throws ParsingException, ParseException {
+            final Calendar instance = Calendar.getInstance();
+            instance.setTime(new SimpleDateFormat("yyyy-MM-dd").parse("2015-10-22"));
+            assertEquals(instance, requireNonNull(extractor.getUploadDate()).date());
         }
 
         @Test
@@ -179,7 +190,7 @@ public class YoutubeStreamExtractorDefaultTest {
 
         @BeforeClass
         public static void setUp() throws Exception {
-            NewPipe.init(Downloader.getInstance(), new Localization("GB", "en"));
+            NewPipe.init(DownloaderTestImpl.getInstance());
             extractor = (YoutubeStreamExtractor) YouTube
                     .getStreamExtractor("https://www.youtube.com/watch?v=fBc4Q_htqPg");
             extractor.fetchPage();
@@ -208,7 +219,7 @@ public class YoutubeStreamExtractorDefaultTest {
 
         @BeforeClass
         public static void setUp() throws Exception {
-            NewPipe.init(Downloader.getInstance(), new Localization("GB", "en"));
+            NewPipe.init(DownloaderTestImpl.getInstance());
             extractor = (YoutubeStreamExtractor) YouTube
                     .getStreamExtractor("https://www.youtube.com/watch?v=cV5TjZCJkuA");
             extractor.fetchPage();
@@ -239,7 +250,7 @@ public class YoutubeStreamExtractorDefaultTest {
 
         @BeforeClass
         public static void setUp() throws Exception {
-            NewPipe.init(Downloader.getInstance(), new Localization("GB", "en"));
+            NewPipe.init(DownloaderTestImpl.getInstance());
             extractor = (YoutubeStreamExtractor) YouTube
                     .getStreamExtractor("https://www.youtube.com/watch?v=HoK9shIJ2xQ");
             extractor.fetchPage();

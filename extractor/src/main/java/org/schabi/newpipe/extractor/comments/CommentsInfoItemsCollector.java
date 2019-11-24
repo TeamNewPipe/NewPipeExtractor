@@ -1,11 +1,11 @@
 package org.schabi.newpipe.extractor.comments;
 
-import java.util.List;
-import java.util.Vector;
-
 import org.schabi.newpipe.extractor.InfoItem;
 import org.schabi.newpipe.extractor.InfoItemsCollector;
 import org.schabi.newpipe.extractor.exceptions.ParsingException;
+
+import java.util.List;
+import java.util.Vector;
 
 public class CommentsInfoItemsCollector extends InfoItemsCollector<CommentsInfoItem, CommentsInfoItemExtractor> {
 
@@ -46,6 +46,11 @@ public class CommentsInfoItemsCollector extends InfoItemsCollector<CommentsInfoI
         }
         try {
             resultItem.setAuthorEndpoint(extractor.getAuthorEndpoint());
+        } catch (Exception e) {
+            addError(e);
+        }
+        try {
+            resultItem.setTextualPublishedTime(extractor.getTextualPublishedTime());
         } catch (Exception e) {
             addError(e);
         }

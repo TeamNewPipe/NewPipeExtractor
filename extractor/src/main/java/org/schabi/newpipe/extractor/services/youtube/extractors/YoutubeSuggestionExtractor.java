@@ -3,12 +3,12 @@ package org.schabi.newpipe.extractor.services.youtube.extractors;
 import com.grack.nanojson.JsonArray;
 import com.grack.nanojson.JsonParser;
 import com.grack.nanojson.JsonParserException;
-import org.schabi.newpipe.extractor.Downloader;
+import org.schabi.newpipe.extractor.downloader.Downloader;
 import org.schabi.newpipe.extractor.NewPipe;
-import org.schabi.newpipe.extractor.SuggestionExtractor;
+import org.schabi.newpipe.extractor.StreamingService;
 import org.schabi.newpipe.extractor.exceptions.ExtractionException;
 import org.schabi.newpipe.extractor.exceptions.ParsingException;
-import org.schabi.newpipe.extractor.utils.Localization;
+import org.schabi.newpipe.extractor.suggestion.SuggestionExtractor;
 
 import java.io.IOException;
 import java.net.URLEncoder;
@@ -39,8 +39,8 @@ public class YoutubeSuggestionExtractor extends SuggestionExtractor {
 
     public static final String CHARSET_UTF_8 = "UTF-8";
 
-    public YoutubeSuggestionExtractor(int serviceId, Localization localization) {
-        super(serviceId, localization);
+    public YoutubeSuggestionExtractor(StreamingService service) {
+        super(service);
     }
 
     @Override
@@ -52,10 +52,10 @@ public class YoutubeSuggestionExtractor extends SuggestionExtractor {
                 + "?client=" + "youtube" //"firefox" for JSON, 'toolbar' for xml
                 + "&jsonp=" + "JP"
                 + "&ds=" + "yt"
-                + "&hl=" + URLEncoder.encode(getLocalization().getCountry(), CHARSET_UTF_8)
+                + "&gl=" + URLEncoder.encode(getExtractorContentCountry().getCountryCode(), CHARSET_UTF_8)
                 + "&q=" + URLEncoder.encode(query, CHARSET_UTF_8);
 
-        String response = dl.download(url);
+        String response = dl.get(url, getExtractorLocalization()).responseBody();
         // trim JSONP part "JP(...)"
         response = response.substring(3, response.length()-1);
         try {

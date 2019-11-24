@@ -2,22 +2,19 @@ package org.schabi.newpipe.extractor.services.soundcloud.search;
 
 import org.junit.BeforeClass;
 import org.junit.Test;
-import org.schabi.newpipe.Downloader;
+import org.schabi.newpipe.DownloaderTestImpl;
 import org.schabi.newpipe.extractor.NewPipe;
-import org.schabi.newpipe.extractor.utils.Localization;
 
 import static java.util.Arrays.asList;
 import static org.junit.Assert.assertEquals;
 import static org.schabi.newpipe.extractor.ServiceList.SoundCloud;
-import static org.schabi.newpipe.extractor.services.soundcloud.SoundcloudSearchQueryHandlerFactory.PLAYLISTS;
-import static org.schabi.newpipe.extractor.services.soundcloud.SoundcloudSearchQueryHandlerFactory.TRACKS;
-import static org.schabi.newpipe.extractor.services.soundcloud.SoundcloudSearchQueryHandlerFactory.USERS;
+import static org.schabi.newpipe.extractor.services.soundcloud.SoundcloudSearchQueryHandlerFactory.*;
 
 public class SoundcloudSearchQHTest {
 
     @BeforeClass
     public static void setUpClass() throws Exception {
-        NewPipe.init(Downloader.getInstance(), new Localization("GB", "en"));
+        NewPipe.init(DownloaderTestImpl.getInstance());
     }
 
     private static String removeClientId(String url) {

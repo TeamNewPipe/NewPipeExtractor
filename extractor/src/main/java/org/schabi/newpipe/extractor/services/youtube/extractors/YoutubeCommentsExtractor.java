@@ -1,36 +1,31 @@
 package org.schabi.newpipe.extractor.services.youtube.extractors;
 
-import java.io.IOException;
-import java.io.UnsupportedEncodingException;
-import java.net.URLEncoder;
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.regex.Pattern;
-
-import javax.annotation.Nonnull;
-
-import org.schabi.newpipe.extractor.DownloadRequest;
-import org.schabi.newpipe.extractor.DownloadResponse;
-import org.schabi.newpipe.extractor.Downloader;
+import com.grack.nanojson.JsonArray;
+import com.grack.nanojson.JsonObject;
+import com.grack.nanojson.JsonParser;
 import org.schabi.newpipe.extractor.NewPipe;
 import org.schabi.newpipe.extractor.StreamingService;
 import org.schabi.newpipe.extractor.comments.CommentsExtractor;
 import org.schabi.newpipe.extractor.comments.CommentsInfoItem;
 import org.schabi.newpipe.extractor.comments.CommentsInfoItemExtractor;
 import org.schabi.newpipe.extractor.comments.CommentsInfoItemsCollector;
+import org.schabi.newpipe.extractor.downloader.Downloader;
+import org.schabi.newpipe.extractor.downloader.Response;
 import org.schabi.newpipe.extractor.exceptions.ExtractionException;
 import org.schabi.newpipe.extractor.exceptions.ParsingException;
 import org.schabi.newpipe.extractor.exceptions.ReCaptchaException;
 import org.schabi.newpipe.extractor.linkhandler.ListLinkHandler;
 import org.schabi.newpipe.extractor.utils.JsonUtils;
-import org.schabi.newpipe.extractor.utils.Localization;
 import org.schabi.newpipe.extractor.utils.Parser;
 
-import com.grack.nanojson.JsonArray;
-import com.grack.nanojson.JsonObject;
-import com.grack.nanojson.JsonParser;
+import javax.annotation.Nonnull;
+import java.io.IOException;
+import java.io.UnsupportedEncodingException;
+import java.net.URLEncoder;
+import java.util.*;
+import java.util.regex.Pattern;
+
+import static java.util.Collections.singletonList;
 
 
 public class YoutubeCommentsExtractor extends CommentsExtractor {
@@ -44,8 +39,8 @@ public class YoutubeCommentsExtractor extends CommentsExtractor {
     private String title;
     private InfoItemsPage<CommentsInfoItem> initPage;
 
-    public YoutubeCommentsExtractor(StreamingService service, ListLinkHandler uiHandler, Localization localization) {
-        super(service, uiHandler, localization);
+    public YoutubeCommentsExtractor(StreamingService service, ListLinkHandler uiHandler) {
+        super(service, uiHandler);
     }
 
     @Override
@@ -130,7 +125,7 @@ public class YoutubeCommentsExtractor extends CommentsExtractor {
         
         for(Object c: comments) {
             if(c instanceof JsonObject) {
-                CommentsInfoItemExtractor extractor = new YoutubeCommentsInfoItemExtractor((JsonObject) c, getUrl());
+                CommentsInfoItemExtractor extractor = new YoutubeCommentsInfoItemExtractor((JsonObject) c, getUrl(), getTimeAgoParser());
                 collector.commit(extractor);
             }
         }
@@ -147,12 +142,11 @@ public class YoutubeCommentsExtractor extends CommentsExtractor {
     }
 
     @Override
-    public void onFetchPage(Downloader downloader) throws IOException, ExtractionException {
-        Map<String, List<String>> requestHeaders = new HashMap<>();
-        requestHeaders.put("User-Agent", Arrays.asList(USER_AGENT));
-        DownloadRequest request = new DownloadRequest(null, requestHeaders);
-        DownloadResponse response = downloader.get(getUrl(), request);
-        String responseBody = response.getResponseBody();
+    public void onFetchPage(@Nonnull Downloader downloader) throws IOException, ExtractionException {
+        final Map<String, List<String>> requestHeaders = new HashMap<>();
+        requestHeaders.put("User-Agent", singletonList(USER_AGENT));
+        final Response response = downloader.get(getUrl(), requestHeaders, getExtractorLocalization());
+        String responseBody = response.responseBody();
         ytClientVersion = findValue(responseBody, "INNERTUBE_CONTEXT_CLIENT_VERSION\":\"", "\"");
         ytClientName = Parser.matchGroup1(YT_CLIENT_NAME_PATTERN, responseBody);
         String commentsTokenInside = findValue(responseBody, "commentSectionRenderer", "}");
@@ -160,6 +154,7 @@ public class YoutubeCommentsExtractor extends CommentsExtractor {
         initPage = getPage(getNextPageUrl(commentsToken));
     }
 
+    @Nonnull
     @Override
     public String getName() throws ParsingException {
         return title;
@@ -168,13 +163,11 @@ public class YoutubeCommentsExtractor extends CommentsExtractor {
     private String makeAjaxRequest(String siteUrl) throws IOException, ReCaptchaException {
 
         Map<String, List<String>> requestHeaders = new HashMap<>();
-        requestHeaders.put("Accept", Arrays.asList("*/*"));
-        requestHeaders.put("User-Agent", Arrays.asList(USER_AGENT));
-        requestHeaders.put("X-YouTube-Client-Version", Arrays.asList(ytClientVersion));
-        requestHeaders.put("X-YouTube-Client-Name", Arrays.asList(ytClientName));
-        DownloadRequest request = new DownloadRequest(null, requestHeaders);
-
-        return NewPipe.getDownloader().get(siteUrl, request).getResponseBody();
+        requestHeaders.put("Accept", singletonList("*/*"));
+        requestHeaders.put("User-Agent", singletonList(USER_AGENT));
+        requestHeaders.put("X-YouTube-Client-Version", singletonList(ytClientVersion));
+        requestHeaders.put("X-YouTube-Client-Name", singletonList(ytClientName));
+        return getDownloader().get(siteUrl, requestHeaders, getExtractorLocalization()).responseBody();
     }
 
     private String getDataString(Map<String, String> params) throws UnsupportedEncodingException {

@@ -4,14 +4,13 @@ import org.hamcrest.CoreMatchers;
 import org.junit.BeforeClass;
 import org.junit.Ignore;
 import org.junit.Test;
-import org.schabi.newpipe.Downloader;
+import org.schabi.newpipe.DownloaderTestImpl;
 import org.schabi.newpipe.extractor.ListExtractor;
 import org.schabi.newpipe.extractor.NewPipe;
 import org.schabi.newpipe.extractor.ServiceList;
 import org.schabi.newpipe.extractor.playlist.PlaylistExtractor;
 import org.schabi.newpipe.extractor.services.BasePlaylistExtractorTest;
 import org.schabi.newpipe.extractor.stream.StreamInfoItem;
-import org.schabi.newpipe.extractor.utils.Localization;
 
 import static org.junit.Assert.*;
 import static org.schabi.newpipe.extractor.ExtractorAsserts.assertIsSecureUrl;
@@ -27,7 +26,7 @@ public class SoundcloudPlaylistExtractorTest {
 
         @BeforeClass
         public static void setUp() throws Exception {
-            NewPipe.init(Downloader.getInstance(), new Localization("GB", "en"));
+            NewPipe.init(DownloaderTestImpl.getInstance());
             extractor = (SoundcloudPlaylistExtractor) SoundCloud
                     .getPlaylistExtractor("https://soundcloud.com/liluzivert/sets/the-perfect-luv-tape-r?test=123");
             extractor.fetchPage();
@@ -125,7 +124,7 @@ public class SoundcloudPlaylistExtractorTest {
 
         @BeforeClass
         public static void setUp() throws Exception {
-            NewPipe.init(Downloader.getInstance(), new Localization("GB", "en"));
+            NewPipe.init(DownloaderTestImpl.getInstance());
             extractor = (SoundcloudPlaylistExtractor) SoundCloud
                     .getPlaylistExtractor("https://soundcloud.com/micky96/sets/house");
             extractor.fetchPage();
@@ -217,7 +216,7 @@ public class SoundcloudPlaylistExtractorTest {
 
         @BeforeClass
         public static void setUp() throws Exception {
-            NewPipe.init(Downloader.getInstance(), new Localization("GB", "en"));
+            NewPipe.init(DownloaderTestImpl.getInstance());
             extractor = (SoundcloudPlaylistExtractor) SoundCloud
                     .getPlaylistExtractor("https://soundcloud.com/user350509423/sets/edm-xxx");
             extractor.fetchPage();

@@ -21,6 +21,9 @@ package org.schabi.newpipe.extractor.stream;
  */
 
 import org.schabi.newpipe.extractor.InfoItem;
+import org.schabi.newpipe.extractor.localization.DateWrapper;
+
+import javax.annotation.Nullable;
 
 /**
  * Info object for previews of unopened videos, eg search results, related videos
@@ -29,7 +32,8 @@ public class StreamInfoItem extends InfoItem {
     private final StreamType streamType;
 
     private String uploaderName;
-    private String uploadDate;
+    private String textualUploadDate;
+    @Nullable private DateWrapper uploadDate;
     private long viewCount = -1;
     private long duration = -1;
 
@@ -50,14 +54,6 @@ public class StreamInfoItem extends InfoItem {
 
     public void setUploaderName(String uploader_name) {
         this.uploaderName = uploader_name;
-    }
-
-    public String getUploadDate() {
-        return uploadDate;
-    }
-
-    public void setUploadDate(String upload_date) {
-        this.uploadDate = upload_date;
     }
 
     public long getViewCount() {
@@ -84,12 +80,30 @@ public class StreamInfoItem extends InfoItem {
         this.uploaderUrl = uploaderUrl;
     }
 
+    @Nullable
+    public String getTextualUploadDate() {
+        return textualUploadDate;
+    }
+
+    public void setTextualUploadDate(String uploadDate) {
+        this.textualUploadDate = uploadDate;
+    }
+
+    @Nullable
+    public DateWrapper getUploadDate() {
+        return uploadDate;
+    }
+
+    public void setUploadDate(@Nullable DateWrapper uploadDate) {
+        this.uploadDate = uploadDate;
+    }
+
     @Override
     public String toString() {
         return "StreamInfoItem{" +
                 "streamType=" + streamType +
                 ", uploaderName='" + uploaderName + '\'' +
-                ", uploadDate='" + uploadDate + '\'' +
+                ", textualUploadDate='" + textualUploadDate + '\'' +
                 ", viewCount=" + viewCount +
                 ", duration=" + duration +
                 ", uploaderUrl='" + uploaderUrl + '\'' +

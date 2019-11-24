@@ -4,12 +4,13 @@ import com.grack.nanojson.JsonObject;
 import com.grack.nanojson.JsonParser;
 import com.grack.nanojson.JsonParserException;
 import org.schabi.newpipe.extractor.*;
+import org.schabi.newpipe.extractor.downloader.Downloader;
 import org.schabi.newpipe.extractor.exceptions.ContentNotAvailableException;
 import org.schabi.newpipe.extractor.exceptions.ExtractionException;
 import org.schabi.newpipe.extractor.exceptions.ParsingException;
 import org.schabi.newpipe.extractor.linkhandler.LinkHandler;
+import org.schabi.newpipe.extractor.localization.DateWrapper;
 import org.schabi.newpipe.extractor.stream.*;
-import org.schabi.newpipe.extractor.utils.Localization;
 
 import javax.annotation.Nonnull;
 import java.io.IOException;
@@ -22,8 +23,8 @@ import java.util.List;
 public class SoundcloudStreamExtractor extends StreamExtractor {
     private JsonObject track;
 
-    public SoundcloudStreamExtractor(StreamingService service, LinkHandler linkHandler, Localization localization) {
-        super(service, linkHandler, localization);
+    public SoundcloudStreamExtractor(StreamingService service, LinkHandler linkHandler) {
+        super(service, linkHandler);
     }
 
     @Override
@@ -50,8 +51,14 @@ public class SoundcloudStreamExtractor extends StreamExtractor {
 
     @Nonnull
     @Override
-    public String getUploadDate() throws ParsingException {
-        return SoundcloudParsingHelper.toDateString(track.getString("created_at"));
+    public String getTextualUploadDate() {
+        return track.getString("created_at");
+    }
+
+    @Nonnull
+    @Override
+    public DateWrapper getUploadDate() throws ParsingException {
+        return new DateWrapper(SoundcloudParsingHelper.parseDate(getTextualUploadDate()));
     }
 
     @Nonnull
@@ -139,7 +146,7 @@ public class SoundcloudStreamExtractor extends StreamExtractor {
         String apiUrl = "https://api.soundcloud.com/i1/tracks/" + urlEncode(getId()) + "/streams"
                 + "?client_id=" + urlEncode(SoundcloudParsingHelper.clientId());
 
-        String response = dl.download(apiUrl);
+        String response = dl.get(apiUrl, getExtractorLocalization()).responseBody();
         JsonObject responseObject;
         try {
             responseObject = JsonParser.object().from(response);

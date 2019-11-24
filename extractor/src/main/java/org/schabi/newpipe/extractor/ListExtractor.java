@@ -2,7 +2,6 @@ package org.schabi.newpipe.extractor;
 
 import org.schabi.newpipe.extractor.exceptions.ExtractionException;
 import org.schabi.newpipe.extractor.linkhandler.ListLinkHandler;
-import org.schabi.newpipe.extractor.utils.Localization;
 
 import javax.annotation.Nonnull;
 import java.io.IOException;
@@ -14,8 +13,8 @@ import java.util.List;
  */
 public abstract class ListExtractor<R extends InfoItem> extends Extractor {
 
-    public ListExtractor(StreamingService service, ListLinkHandler linkHandler, Localization localization) {
-        super(service, linkHandler, localization);
+    public ListExtractor(StreamingService service, ListLinkHandler linkHandler) {
+        super(service, linkHandler);
     }
 
     /**

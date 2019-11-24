@@ -6,7 +6,8 @@ import org.schabi.newpipe.extractor.StreamingService;
 import org.schabi.newpipe.extractor.exceptions.ExtractionException;
 import org.schabi.newpipe.extractor.exceptions.ParsingException;
 import org.schabi.newpipe.extractor.linkhandler.SearchQueryHandler;
-import org.schabi.newpipe.extractor.utils.Localization;
+
+import javax.annotation.Nonnull;
 
 public abstract class SearchExtractor extends ListExtractor<InfoItem> {
 
@@ -18,10 +19,8 @@ public abstract class SearchExtractor extends ListExtractor<InfoItem> {
 
     private final InfoItemsSearchCollector collector;
 
-    public SearchExtractor(StreamingService service,
-                           SearchQueryHandler linkHandler,
-                           Localization localization) {
-        super(service, linkHandler, localization);
+    public SearchExtractor(StreamingService service, SearchQueryHandler linkHandler) {
+        super(service, linkHandler);
         collector = new InfoItemsSearchCollector(service.getServiceId());
     }
 
@@ -40,6 +39,7 @@ public abstract class SearchExtractor extends ListExtractor<InfoItem> {
         return (SearchQueryHandler) super.getLinkHandler();
     }
 
+    @Nonnull
     @Override
     public String getName() {
         return getLinkHandler().getSearchString();

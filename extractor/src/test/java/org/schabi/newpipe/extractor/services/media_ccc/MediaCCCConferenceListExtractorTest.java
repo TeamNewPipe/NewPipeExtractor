@@ -1,18 +1,17 @@
 package org.schabi.newpipe.extractor.services.media_ccc;
+
 import org.junit.BeforeClass;
 import org.junit.Test;
-import org.schabi.newpipe.Downloader;
+import org.schabi.newpipe.DownloaderTestImpl;
 import org.schabi.newpipe.extractor.InfoItem;
 import org.schabi.newpipe.extractor.NewPipe;
-import org.schabi.newpipe.extractor.channel.ChannelInfoItem;
 import org.schabi.newpipe.extractor.kiosk.KioskExtractor;
 import org.schabi.newpipe.extractor.services.media_ccc.extractors.MediaCCCConferenceKiosk;
-import org.schabi.newpipe.extractor.utils.Localization;
 
 import java.util.List;
 
-import static org.schabi.newpipe.extractor.ServiceList.MediaCCC;
 import static org.junit.Assert.assertTrue;
+import static org.schabi.newpipe.extractor.ServiceList.MediaCCC;
 
 
 /**
@@ -24,7 +23,7 @@ public class MediaCCCConferenceListExtractorTest {
 
     @BeforeClass
     public static void setUpClass() throws Exception {
-        NewPipe.init(Downloader.getInstance(), new Localization("en", "en_GB"));
+        NewPipe.init(DownloaderTestImpl.getInstance());
         extractor =  MediaCCC.getKioskList().getDefaultKioskExtractor();
         extractor.fetchPage();
     }

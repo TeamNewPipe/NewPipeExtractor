@@ -2,6 +2,7 @@ package org.schabi.newpipe.extractor.services.soundcloud;
 
 import com.grack.nanojson.JsonObject;
 import org.schabi.newpipe.extractor.exceptions.ParsingException;
+import org.schabi.newpipe.extractor.localization.DateWrapper;
 import org.schabi.newpipe.extractor.stream.StreamInfoItemExtractor;
 import org.schabi.newpipe.extractor.stream.StreamType;
 
@@ -41,8 +42,17 @@ public class SoundcloudStreamInfoItemExtractor implements StreamInfoItemExtracto
     }
 
     @Override
-    public String getUploadDate() throws ParsingException {
-        return SoundcloudParsingHelper.toDateString(itemObject.getString("created_at"));
+    public String getTextualUploadDate() {
+        return itemObject.getString("created_at");
+    }
+
+    @Override
+    public DateWrapper getUploadDate() throws ParsingException {
+        return new DateWrapper(SoundcloudParsingHelper.parseDate(getTextualUploadDate()));
+    }
+
+    private String getCreatedAt() {
+        return itemObject.getString("created_at");
     }
 
     @Override

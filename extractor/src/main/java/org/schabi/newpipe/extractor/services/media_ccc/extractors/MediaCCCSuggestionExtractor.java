@@ -1,8 +1,8 @@
 package org.schabi.newpipe.extractor.services.media_ccc.extractors;
 
-import org.schabi.newpipe.extractor.SuggestionExtractor;
+import org.schabi.newpipe.extractor.StreamingService;
 import org.schabi.newpipe.extractor.exceptions.ExtractionException;
-import org.schabi.newpipe.extractor.utils.Localization;
+import org.schabi.newpipe.extractor.suggestion.SuggestionExtractor;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -10,8 +10,8 @@ import java.util.List;
 
 public class MediaCCCSuggestionExtractor extends SuggestionExtractor {
 
-    public MediaCCCSuggestionExtractor(int serviceId, Localization localization) {
-        super(serviceId, localization);
+    public MediaCCCSuggestionExtractor(StreamingService service) {
+        super(service);
     }
 
     @Override

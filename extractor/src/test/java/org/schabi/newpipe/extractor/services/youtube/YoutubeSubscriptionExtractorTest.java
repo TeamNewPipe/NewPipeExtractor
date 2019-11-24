@@ -2,14 +2,13 @@ package org.schabi.newpipe.extractor.services.youtube;
 
 import org.junit.BeforeClass;
 import org.junit.Test;
-import org.schabi.newpipe.Downloader;
+import org.schabi.newpipe.DownloaderTestImpl;
 import org.schabi.newpipe.extractor.NewPipe;
 import org.schabi.newpipe.extractor.ServiceList;
 import org.schabi.newpipe.extractor.linkhandler.LinkHandlerFactory;
 import org.schabi.newpipe.extractor.services.youtube.extractors.YoutubeSubscriptionExtractor;
 import org.schabi.newpipe.extractor.subscription.SubscriptionExtractor;
 import org.schabi.newpipe.extractor.subscription.SubscriptionItem;
-import org.schabi.newpipe.extractor.utils.Localization;
 
 import java.io.ByteArrayInputStream;
 import java.io.File;
@@ -28,7 +27,7 @@ public class YoutubeSubscriptionExtractorTest {
 
     @BeforeClass
     public static void setupClass() {
-        NewPipe.init(Downloader.getInstance(), new Localization("GB", "en"));
+        NewPipe.init(DownloaderTestImpl.getInstance());
         subscriptionExtractor = new YoutubeSubscriptionExtractor(ServiceList.YouTube);
         urlHandler = ServiceList.YouTube.getChannelLHFactory();
     }

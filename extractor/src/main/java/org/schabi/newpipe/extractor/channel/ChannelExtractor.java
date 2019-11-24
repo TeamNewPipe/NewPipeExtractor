@@ -3,9 +3,8 @@ package org.schabi.newpipe.extractor.channel;
 import org.schabi.newpipe.extractor.ListExtractor;
 import org.schabi.newpipe.extractor.StreamingService;
 import org.schabi.newpipe.extractor.exceptions.ParsingException;
-import org.schabi.newpipe.extractor.stream.StreamInfoItem;
 import org.schabi.newpipe.extractor.linkhandler.ListLinkHandler;
-import org.schabi.newpipe.extractor.utils.Localization;
+import org.schabi.newpipe.extractor.stream.StreamInfoItem;
 
 /*
  * Created by Christian Schabesberger on 25.07.16.
@@ -29,8 +28,8 @@ import org.schabi.newpipe.extractor.utils.Localization;
 
 public abstract class ChannelExtractor extends ListExtractor<StreamInfoItem> {
 
-    public ChannelExtractor(StreamingService service, ListLinkHandler linkHandler, Localization localization) {
-        super(service, linkHandler, localization);
+    public ChannelExtractor(StreamingService service, ListLinkHandler linkHandler) {
+        super(service, linkHandler);
     }
 
     public abstract String getAvatarUrl() throws ParsingException;
