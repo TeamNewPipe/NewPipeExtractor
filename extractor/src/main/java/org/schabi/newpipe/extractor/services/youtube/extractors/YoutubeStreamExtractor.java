@@ -697,7 +697,7 @@ public class YoutubeStreamExtractor extends StreamExtractor {
 
         final String playerUrl;
         // Check if the video is age restricted
-        if (!doc.select("meta[property=\"og:restrictions:age\"").isEmpty()) {
+        if (!doc.select("meta[property=\"og:restrictions:age\"]").isEmpty()) {
             final EmbeddedInfo info = getEmbeddedInfo();
             final String videoInfoUrl = getVideoInfoUrl(getId(), info.sts);
             final String infoPageResponse = downloader.get(videoInfoUrl, getExtractorLocalization()).responseBody();
