@@ -15,6 +15,7 @@ import org.schabi.newpipe.extractor.channel.ChannelExtractor;
 import org.schabi.newpipe.extractor.exceptions.ExtractionException;
 import org.schabi.newpipe.extractor.exceptions.ParsingException;
 import org.schabi.newpipe.extractor.linkhandler.ListLinkHandler;
+import org.schabi.newpipe.extractor.services.youtube.linkHandler.YoutubeChannelLinkHandlerFactory;
 import org.schabi.newpipe.extractor.stream.StreamInfoItem;
 import org.schabi.newpipe.extractor.stream.StreamInfoItemsCollector;
 import org.schabi.newpipe.extractor.utils.DateUtils;
@@ -52,6 +53,7 @@ public class YoutubeChannelExtractor extends ChannelExtractor {
     /*package-private*/ static final String CHANNEL_URL_BASE = "https://www.youtube.com/channel/";
     private static final String CHANNEL_FEED_BASE = "https://www.youtube.com/feeds/videos.xml?channel_id=";
     private static final String CHANNEL_URL_PARAMETERS = "/videos?view=0&flow=list&sort=dd&live_view=10000&gl=US&hl=en";
+    private static final YoutubeChannelLinkHandlerFactory youtubeChannelLinkHandler = new YoutubeChannelLinkHandlerFactory();
 
     private Document doc;
     private Document feedXmlDoc;
@@ -115,6 +117,12 @@ public class YoutubeChannelExtractor extends ChannelExtractor {
     @Nonnull
     @Override
     public String getId() throws ParsingException {
+        try {
+            String prefixedId = youtubeChannelLinkHandler.getId(super.getUrl());
+            String[] chunks = prefixedId.split("/");
+            return chunks[chunks.length - 1];
+        } catch (Exception ignored) {}
+
         try {
             return doc.select("meta[itemprop=\"channelId\"]").first().attr("content");
         } catch (Exception ignored) {}
