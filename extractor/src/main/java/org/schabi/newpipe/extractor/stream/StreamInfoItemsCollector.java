@@ -51,6 +51,11 @@ public class StreamInfoItemsCollector extends InfoItemsCollector<StreamInfoItem,
 
         // optional information
         try {
+            resultItem.setId(extractor.getId());
+        } catch (Exception e) {
+            addError(e);
+        }
+        try {
             resultItem.setDuration(extractor.getDuration());
         } catch (Exception e) {
             addError(e);

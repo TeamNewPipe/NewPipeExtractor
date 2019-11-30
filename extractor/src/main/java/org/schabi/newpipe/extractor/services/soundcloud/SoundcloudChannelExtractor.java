@@ -12,9 +12,13 @@ import org.schabi.newpipe.extractor.exceptions.ParsingException;
 import org.schabi.newpipe.extractor.linkhandler.ListLinkHandler;
 import org.schabi.newpipe.extractor.stream.StreamInfoItem;
 import org.schabi.newpipe.extractor.stream.StreamInfoItemsCollector;
+import org.schabi.newpipe.extractor.utils.DateUtils;
 
 import javax.annotation.Nonnull;
 import java.io.IOException;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 @SuppressWarnings("WeakerAccess")
 public class SoundcloudChannelExtractor extends ChannelExtractor {
@@ -23,6 +27,8 @@ public class SoundcloudChannelExtractor extends ChannelExtractor {
 
     private StreamInfoItemsCollector streamInfoItemsCollector = null;
     private String nextPageUrl = null;
+
+    private Map<String, String> audioPublishIsoTimeStrLookup;
 
     public SoundcloudChannelExtractor(StreamingService service, ListLinkHandler linkHandler) {
         super(service, linkHandler);
@@ -81,6 +87,28 @@ public class SoundcloudChannelExtractor extends ChannelExtractor {
     @Override
     public String getDescription() {
         return user.getString("description", "");
+    }
+
+    @Override
+    public Map<String, String> getPublishIsoTimeStrLookup() throws ParsingException {
+        try {
+            if (audioPublishIsoTimeStrLookup == null) {
+                audioPublishIsoTimeStrLookup = new HashMap<>();
+                if(streamInfoItemsCollector == null) {
+                    computeNextPageAndGetStreams();
+                }
+
+                List<StreamInfoItem> streamInfoItemList = streamInfoItemsCollector.getStreamInfoItemList();
+                for (StreamInfoItem item: streamInfoItemList) {
+                    audioPublishIsoTimeStrLookup.put(
+                        item.getId(),
+                        DateUtils.toISODateTimeString(item.getTextualUploadDate()));
+                }
+            }
+            return audioPublishIsoTimeStrLookup;
+        } catch (Exception ex) {
+            throw new ParsingException(ex.getMessage(), ex);
+        }
     }
 
     @Nonnull

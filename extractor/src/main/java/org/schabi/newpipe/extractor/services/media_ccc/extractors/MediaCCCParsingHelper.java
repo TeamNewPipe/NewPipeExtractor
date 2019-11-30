@@ -1,6 +1,7 @@
 package org.schabi.newpipe.extractor.services.media_ccc.extractors;
 
 import org.schabi.newpipe.extractor.exceptions.ParsingException;
+import org.schabi.newpipe.extractor.utils.DateUtils;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -12,15 +13,8 @@ public class MediaCCCParsingHelper {
     }
 
     public static Calendar parseDateFrom(String textualUploadDate) throws ParsingException {
-        Date date;
-        try {
-            date = new SimpleDateFormat("yyyy-MM-dd").parse(textualUploadDate);
-        } catch (ParseException e) {
-            throw new ParsingException("Could not parse date: \"" + textualUploadDate + "\"", e);
-        }
-
         final Calendar uploadDate = Calendar.getInstance();
-        uploadDate.setTime(date);
+        uploadDate.setTime(DateUtils.tryParseDateTimeString(textualUploadDate));
         return uploadDate;
     }
 

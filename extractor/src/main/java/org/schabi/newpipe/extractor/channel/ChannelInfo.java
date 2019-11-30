@@ -12,6 +12,8 @@ import org.schabi.newpipe.extractor.stream.StreamInfoItem;
 import org.schabi.newpipe.extractor.utils.ExtractorHelper;
 
 import java.io.IOException;
+import java.util.HashMap;
+import java.util.Map;
 
 /*
  * Created by Christian Schabesberger on 31.07.16.
@@ -85,6 +87,7 @@ public class ChannelInfo extends ListInfo<StreamInfoItem> {
         final InfoItemsPage<StreamInfoItem> itemsPage = ExtractorHelper.getItemsPageOrLogError(info, extractor);
         info.setRelatedItems(itemsPage.getItems());
         info.setNextPageUrl(itemsPage.getNextPageUrl());
+        info.setPublishIsoTimeStrLookup(extractor.getPublishIsoTimeStrLookup());
 
         try {
             info.setSubscriberCount(extractor.getSubscriberCount());
@@ -106,6 +109,7 @@ public class ChannelInfo extends ListInfo<StreamInfoItem> {
     private long subscriberCount = -1;
     private String description;
     private String[] donationLinks;
+    private Map<String, String> publishIsoTimeStrLookup;
 
     public String getAvatarUrl() {
         return avatarUrl;
@@ -153,5 +157,16 @@ public class ChannelInfo extends ListInfo<StreamInfoItem> {
 
     public void setDonationLinks(String[] donationLinks) {
         this.donationLinks = donationLinks;
+    }
+
+    public Map<String, String> getPublishIsoTimeStrLookup() {
+        if (publishIsoTimeStrLookup == null) {
+            publishIsoTimeStrLookup = new HashMap<>();
+        }
+        return publishIsoTimeStrLookup;
+    }
+
+    public void setPublishIsoTimeStrLookup(Map<String, String> publishIsoTimeStrLookup) {
+        this.publishIsoTimeStrLookup = publishIsoTimeStrLookup;
     }
 }

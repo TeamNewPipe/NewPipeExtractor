@@ -6,6 +6,7 @@ import org.schabi.newpipe.extractor.exceptions.ParsingException;
 import org.schabi.newpipe.extractor.localization.TimeAgoParser;
 import org.schabi.newpipe.extractor.localization.DateWrapper;
 import org.schabi.newpipe.extractor.services.youtube.linkHandler.YoutubeParsingHelper;
+import org.schabi.newpipe.extractor.services.youtube.linkHandler.YoutubeStreamLinkHandlerFactory;
 import org.schabi.newpipe.extractor.stream.StreamInfoItemExtractor;
 import org.schabi.newpipe.extractor.stream.StreamType;
 import org.schabi.newpipe.extractor.utils.Utils;
@@ -34,6 +35,8 @@ import java.util.Date;
  */
 
 public class YoutubeStreamInfoItemExtractor implements StreamInfoItemExtractor {
+    private static final YoutubeStreamLinkHandlerFactory youtubeStreamLinkHandler =
+        YoutubeStreamLinkHandlerFactory.getInstance();
 
     private final Element item;
     private final TimeAgoParser timeAgoParser;
@@ -73,6 +76,11 @@ public class YoutubeStreamInfoItemExtractor implements StreamInfoItemExtractor {
         // if this span has text it most likely says ("Free Video") so we can play this
         if(premiumSpan.hasText()) return false;
         return true;
+    }
+
+    @Override
+    public String getId() throws ParsingException {
+        return youtubeStreamLinkHandler.getId(getUrl());
     }
 
     @Override

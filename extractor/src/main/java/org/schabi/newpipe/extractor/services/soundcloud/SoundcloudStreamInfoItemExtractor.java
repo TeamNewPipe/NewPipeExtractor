@@ -17,6 +17,11 @@ public class SoundcloudStreamInfoItemExtractor implements StreamInfoItemExtracto
     }
 
     @Override
+    public String getId() {
+        return String.format("%d", itemObject.getInt("id"));
+    }
+
+    @Override
     public String getUrl() {
         return replaceHttpWithHttps(itemObject.getString("permalink_url"));
     }
@@ -49,10 +54,6 @@ public class SoundcloudStreamInfoItemExtractor implements StreamInfoItemExtracto
     @Override
     public DateWrapper getUploadDate() throws ParsingException {
         return new DateWrapper(SoundcloudParsingHelper.parseDate(getTextualUploadDate()));
-    }
-
-    private String getCreatedAt() {
-        return itemObject.getString("created_at");
     }
 
     @Override

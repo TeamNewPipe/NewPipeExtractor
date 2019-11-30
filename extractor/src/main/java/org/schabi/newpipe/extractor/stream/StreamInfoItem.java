@@ -31,6 +31,7 @@ import javax.annotation.Nullable;
 public class StreamInfoItem extends InfoItem {
     private final StreamType streamType;
 
+    private String id;
     private String uploaderName;
     private String textualUploadDate;
     @Nullable private DateWrapper uploadDate;
@@ -98,10 +99,19 @@ public class StreamInfoItem extends InfoItem {
         this.uploadDate = uploadDate;
     }
 
+    public String getId() {
+        return id;
+    }
+
+    public void setId(String id) {
+        this.id = id;
+    }
+
     @Override
     public String toString() {
         return "StreamInfoItem{" +
-                "streamType=" + streamType +
+                "id='" + id + '\'' +
+                ", streamType=" + streamType +
                 ", uploaderName='" + uploaderName + '\'' +
                 ", textualUploadDate='" + textualUploadDate + '\'' +
                 ", viewCount=" + viewCount +

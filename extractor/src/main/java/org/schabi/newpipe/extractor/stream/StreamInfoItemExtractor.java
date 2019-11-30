@@ -93,4 +93,10 @@ public interface StreamInfoItemExtractor extends InfoItemExtractor {
     @Nullable
     DateWrapper getUploadDate() throws ParsingException;
 
+    /**
+     * Extract item ID
+     * @return Item ID
+     * @throws ParsingException thrown if there is an error in the extraction
+     */
+    String getId() throws ParsingException;
 }

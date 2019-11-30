@@ -6,6 +6,7 @@ import com.grack.nanojson.JsonParserException;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
+import org.jsoup.select.Elements;
 import org.schabi.newpipe.extractor.StreamingService;
 import org.schabi.newpipe.extractor.channel.ChannelExtractor;
 import org.schabi.newpipe.extractor.downloader.Downloader;
@@ -17,11 +18,15 @@ import org.schabi.newpipe.extractor.localization.TimeAgoParser;
 import org.schabi.newpipe.extractor.services.youtube.linkHandler.YoutubeParsingHelper;
 import org.schabi.newpipe.extractor.stream.StreamInfoItem;
 import org.schabi.newpipe.extractor.stream.StreamInfoItemsCollector;
+import org.schabi.newpipe.extractor.services.youtube.linkHandler.YoutubeChannelLinkHandlerFactory;
+import org.schabi.newpipe.extractor.utils.DateUtils;
 import org.schabi.newpipe.extractor.utils.Parser;
 import org.schabi.newpipe.extractor.utils.Utils;
 
 import javax.annotation.Nonnull;
 import java.io.IOException;
+import java.util.HashMap;
+import java.util.Map;
 
 /*
  * Created by Christian Schabesberger on 25.07.16.
@@ -48,8 +53,11 @@ public class YoutubeChannelExtractor extends ChannelExtractor {
     /*package-private*/ static final String CHANNEL_URL_BASE = "https://www.youtube.com/channel/";
     private static final String CHANNEL_FEED_BASE = "https://www.youtube.com/feeds/videos.xml?channel_id=";
     private static final String CHANNEL_URL_PARAMETERS = "/videos?view=0&flow=list&sort=dd&live_view=10000";
+    private static final YoutubeChannelLinkHandlerFactory youtubeChannelLinkHandler = new YoutubeChannelLinkHandlerFactory();
 
     private Document doc;
+    private Document feedXmlDoc;
+    private Map<String, String> videoPublishIsoTimeStrLookup;
 
     public YoutubeChannelExtractor(StreamingService service, ListLinkHandler linkHandler) {
         super(service, linkHandler);
@@ -60,6 +68,35 @@ public class YoutubeChannelExtractor extends ChannelExtractor {
         String channelUrl = super.getUrl() + CHANNEL_URL_PARAMETERS;
         final Response response = downloader.get(channelUrl, getExtractorLocalization());
         doc = YoutubeParsingHelper.parseAndCheckPage(channelUrl, response);
+
+        String feedUrl = getFeedUrl();
+        feedXmlDoc = Jsoup.parse(
+            downloader.get(feedUrl, getExtractorLocalization()).responseBody(),
+            feedUrl,
+            org.jsoup.parser.Parser.xmlParser());
+    }
+
+    private void retrieveVideoTimestampFromXml(Document feedXmlDoc) throws ParsingException {
+        try {
+            Elements feedEls = feedXmlDoc.getElementsByTag("feed");
+
+            for (Element feedEl : feedEls) {
+                Elements entryEls = feedEl.getElementsByTag("entry");
+
+                for (Element entryEl : entryEls) {
+                    Elements videoIdEls = entryEl.getElementsByTag("yt:videoId");
+                    Elements publishedEls = entryEl.getElementsByTag("published");
+
+                    if (publishedEls.size() != 1 || videoIdEls.size() != 1) continue;
+
+                    videoPublishIsoTimeStrLookup.put(
+                        videoIdEls.get(0).text(),
+                        DateUtils.toISODateTimeString(publishedEls.get(0).text()));
+                }
+            }
+        } catch (Exception ex) {
+            throw new ParsingException(ex.getMessage(), ex);
+        }
     }
 
     @Override
@@ -80,6 +117,12 @@ public class YoutubeChannelExtractor extends ChannelExtractor {
     @Nonnull
     @Override
     public String getId() throws ParsingException {
+        try {
+            String prefixedId = youtubeChannelLinkHandler.getId(super.getUrl());
+            String[] chunks = prefixedId.split("/");
+            return chunks[chunks.length - 1];
+        } catch (Exception ignored) {}
+
         try {
             return doc.select("meta[itemprop=\"channelId\"]").first().attr("content");
         } catch (Exception ignored) {}
@@ -160,6 +203,15 @@ public class YoutubeChannelExtractor extends ChannelExtractor {
         } catch (Exception e) {
             throw new ParsingException("Could not get channel description", e);
         }
+    }
+
+    @Override
+    public Map<String, String> getPublishIsoTimeStrLookup() throws ParsingException {
+        if (videoPublishIsoTimeStrLookup == null) {
+            videoPublishIsoTimeStrLookup = new HashMap<>();
+            retrieveVideoTimestampFromXml(feedXmlDoc);
+        }
+        return videoPublishIsoTimeStrLookup;
     }
 
     @Nonnull
