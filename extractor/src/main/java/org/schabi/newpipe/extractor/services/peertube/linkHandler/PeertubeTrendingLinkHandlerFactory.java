@@ -17,14 +17,16 @@ public class PeertubeTrendingLinkHandlerFactory extends ListLinkHandlerFactory {
     public static final Map<String, String> KIOSK_MAP;
     public static final Map<String, String> REVERSE_KIOSK_MAP;
     public static final String KIOSK_TRENDING = "Trending";
+    public static final String KIOSK_MOST_LIKED = "Most liked";
     public static final String KIOSK_RECENT = "Recently added";
     public static final String KIOSK_LOCAL = "Local";
     
     static {
         Map<String, String> map = new HashMap<>();
-        map.put(KIOSK_TRENDING, "%s/api/v1/videos?sort=-views");
+        map.put(KIOSK_TRENDING, "%s/api/v1/videos?sort=-trending");
+        map.put(KIOSK_MOST_LIKED, "%s/api/v1/videos?sort=-likes");
         map.put(KIOSK_RECENT, "%s/api/v1/videos?sort=-publishedAt");
-        map.put(KIOSK_LOCAL, "%s/api/v1/videos?filter=local");
+        map.put(KIOSK_LOCAL, "%s/api/v1/videos?sort=-publishedAt&filter=local");
         KIOSK_MAP = Collections.unmodifiableMap(map);
         
         Map<String, String> reverseMap = new HashMap<>();
@@ -55,6 +57,8 @@ public class PeertubeTrendingLinkHandlerFactory extends ListLinkHandlerFactory {
         url = url.replace(baseUrl, "%s");
         if (url.contains("/videos/trending")) {
             return KIOSK_TRENDING;
+        } else if (url.contains("/videos/most-liked")) {
+            return KIOSK_MOST_LIKED;
         } else if (url.contains("/videos/recently-added")) {
             return KIOSK_RECENT;
         } else if (url.contains("/videos/local")) {
@@ -68,6 +72,6 @@ public class PeertubeTrendingLinkHandlerFactory extends ListLinkHandlerFactory {
 
     @Override
     public boolean onAcceptUrl(final String url) {
-        return url.contains("/videos?") || url.contains("/videos/trending") || url.contains("/videos/recently-added") || url.contains("/videos/local");
+        return url.contains("/videos?") || url.contains("/videos/trending") || url.contains("/videos/most-liked") || url.contains("/videos/recently-added") || url.contains("/videos/local");
     }
 }

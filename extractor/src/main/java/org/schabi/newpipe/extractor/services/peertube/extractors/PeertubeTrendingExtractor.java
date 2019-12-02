@@ -20,7 +20,7 @@ import com.grack.nanojson.JsonArray;
 import com.grack.nanojson.JsonObject;
 import com.grack.nanojson.JsonParser;
 
-public class PeertubeTrendingExtractor extends KioskExtractor {
+public class PeertubeTrendingExtractor extends KioskExtractor<StreamInfoItem> {
     
     private static final String START_KEY = "start";
     private static final String COUNT_KEY = "count";

@@ -92,6 +92,6 @@ public class PeertubeTrendingExtractorTest {
 
     @Test
     public void testGetCleanUrl() throws Exception {
-        assertEquals(extractor.getUrl(), "https://peertube.mastodon.host/api/v1/videos?sort=-views");
+        assertEquals(extractor.getUrl(), "https://peertube.mastodon.host/api/v1/videos?sort=-trending");
     }
 }
