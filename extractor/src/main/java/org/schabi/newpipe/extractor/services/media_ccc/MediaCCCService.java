@@ -116,4 +116,9 @@ public class MediaCCCService extends StreamingService {
         return null;
     }
 
+    @Override
+    public String getBaseUrl() {
+        return "https://media.ccc.de";
+    }
+
 }

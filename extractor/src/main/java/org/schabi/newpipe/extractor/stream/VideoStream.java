@@ -36,6 +36,16 @@ public class VideoStream extends Stream {
         this.resolution = resolution;
         this.isVideoOnly = isVideoOnly;
     }
+    
+    public VideoStream(String url, String torrentUrl, MediaFormat format, String resolution) {
+        this(url, torrentUrl, format, resolution, false);
+    }
+
+    public VideoStream(String url, String torrentUrl, MediaFormat format, String resolution, boolean isVideoOnly) {
+        super(url, torrentUrl, format);
+        this.resolution = resolution;
+        this.isVideoOnly = isVideoOnly;
+    }
 
     @Override
     public boolean equalStats(Stream cmp) {

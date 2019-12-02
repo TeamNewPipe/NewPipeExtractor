@@ -1,9 +1,10 @@
 package org.schabi.newpipe.extractor.linkhandler;
 
-import org.schabi.newpipe.extractor.exceptions.ParsingException;
-
 import java.util.ArrayList;
 import java.util.List;
+
+import org.schabi.newpipe.extractor.exceptions.ParsingException;
+import org.schabi.newpipe.extractor.utils.Utils;
 
 public abstract class ListLinkHandlerFactory extends LinkHandlerFactory {
 
@@ -14,22 +15,36 @@ public abstract class ListLinkHandlerFactory extends LinkHandlerFactory {
     public List<String> getContentFilter(String url) throws ParsingException { return new ArrayList<>(0);}
     public String getSortFilter(String url) throws ParsingException {return ""; }
     public abstract String getUrl(String id, List<String> contentFilter, String sortFilter) throws ParsingException;
+    
+    public String getUrl(String id, List<String> contentFilter, String sortFilter, String baseUrl) throws ParsingException {
+       return getUrl(id, contentFilter, sortFilter); 
+    }
 
     ///////////////////////////////////
     // Logic
     ///////////////////////////////////
-
-
+    
     @Override
     public ListLinkHandler fromUrl(String url) throws ParsingException {
+        String baseUrl = Utils.getBaseUrl(url);
+        return fromUrl(url, baseUrl);
+    }
+
+    @Override
+    public ListLinkHandler fromUrl(String url, String baseUrl) throws ParsingException {
         if(url == null) throw new IllegalArgumentException("url may not be null");
 
-        return new ListLinkHandler(super.fromUrl(url), getContentFilter(url), getSortFilter(url));
+        return new ListLinkHandler(super.fromUrl(url, baseUrl), getContentFilter(url), getSortFilter(url));
     }
 
     @Override
     public ListLinkHandler fromId(String id) throws ParsingException {
         return new ListLinkHandler(super.fromId(id), new ArrayList<String>(0), "");
+    }
+    
+    @Override
+    public ListLinkHandler fromId(String id, String baseUrl) throws ParsingException {
+        return new ListLinkHandler(super.fromId(id, baseUrl), new ArrayList<String>(0), "");
     }
 
     public ListLinkHandler fromQuery(String id,
@@ -38,8 +53,15 @@ public abstract class ListLinkHandlerFactory extends LinkHandlerFactory {
         final String url = getUrl(id, contentFilters, sortFilter);
         return new ListLinkHandler(url, url, id, contentFilters, sortFilter);
     }
+    
+    public ListLinkHandler fromQuery(String id,
+                                     List<String> contentFilters,
+                                     String sortFilter, String baseUrl) throws ParsingException {
+        final String url = getUrl(id, contentFilters, sortFilter, baseUrl);
+        return new ListLinkHandler(url, url, id, contentFilters, sortFilter);
+    }
 
-
+    
     /**
      * For makeing ListLinkHandlerFactory compatible with LinkHandlerFactory we need to override this,
      * however it should not be overridden by the actual implementation.
@@ -50,6 +72,11 @@ public abstract class ListLinkHandlerFactory extends LinkHandlerFactory {
         return getUrl(id, new ArrayList<String>(0), "");
     }
 
+    @Override
+    public String getUrl(String id, String baseUrl) throws ParsingException {
+        return getUrl(id, new ArrayList<String>(0), "", baseUrl);
+    }
+    
     /**
      * Will returns content filter the corresponding extractor can handle like "channels", "videos", "music", etc.
      *

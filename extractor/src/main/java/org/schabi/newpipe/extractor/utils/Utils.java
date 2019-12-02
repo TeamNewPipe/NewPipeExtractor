@@ -144,9 +144,9 @@ public class Utils {
         try {
             return new URL(url);
         } catch (MalformedURLException e) {
-            // if no protocol is given try prepending "http://"
+            // if no protocol is given try prepending "https://"
             if (e.getMessage().equals("no protocol: " + url)) {
-                return new URL(HTTP + url);
+                return new URL(HTTPS + url);
             }
 
             throw e;
@@ -175,4 +175,15 @@ public class Utils {
         }
         return s;
     }
+    
+    public static String getBaseUrl(String url) throws ParsingException {
+        URL uri;
+        try {
+            uri = stringToURL(url);
+        } catch (MalformedURLException e) {
+            throw new ParsingException("Malformed url: " + url, e);
+        }
+        return uri.getProtocol() + "://" + uri.getAuthority();
+    }
+    
 }

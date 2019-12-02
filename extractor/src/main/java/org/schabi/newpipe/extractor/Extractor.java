@@ -1,5 +1,10 @@
 package org.schabi.newpipe.extractor;
 
+import java.io.IOException;
+
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
+
 import org.schabi.newpipe.extractor.downloader.Downloader;
 import org.schabi.newpipe.extractor.exceptions.ExtractionException;
 import org.schabi.newpipe.extractor.exceptions.ParsingException;
@@ -7,11 +12,6 @@ import org.schabi.newpipe.extractor.linkhandler.LinkHandler;
 import org.schabi.newpipe.extractor.localization.ContentCountry;
 import org.schabi.newpipe.extractor.localization.Localization;
 import org.schabi.newpipe.extractor.localization.TimeAgoParser;
-
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
-import java.io.IOException;
-import java.io.Serializable;
 
 public abstract class Extractor{ 
     /**
@@ -92,6 +92,11 @@ public abstract class Extractor{
     @Nonnull
     public String getUrl() throws ParsingException {
         return linkHandler.getUrl();
+    }
+   
+    @Nonnull
+    public String getBaseUrl() throws ParsingException {
+       return linkHandler.getBaseUrl();
     }
 
     @Nonnull
