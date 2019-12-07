@@ -47,7 +47,7 @@ public class PlaylistInfo extends ListInfo<StreamInfoItem> {
                 extractor.getName());
         // collect uploader extraction failures until we are sure this is not
         // just a playlist without an uploader
-        List<Throwable> uploaderParsingErros = new ArrayList<Throwable>(3);
+        List<Throwable> uploaderParsingErrors = new ArrayList<Throwable>(3);
 
         try {
             info.setOriginalUrl(extractor.getOriginalUrl());
@@ -68,19 +68,19 @@ public class PlaylistInfo extends ListInfo<StreamInfoItem> {
             info.setUploaderUrl(extractor.getUploaderUrl());
         } catch (Exception e) {
             info.setUploaderUrl("");
-            uploaderParsingErros.add(e);
+            uploaderParsingErrors.add(e);
         }
         try {
             info.setUploaderName(extractor.getUploaderName());
         } catch (Exception e) {
             info.setUploaderName("");
-            uploaderParsingErros.add(e);
+            uploaderParsingErrors.add(e);
         }
         try {
             info.setUploaderAvatarUrl(extractor.getUploaderAvatarUrl());
         } catch (Exception e) {
             info.setUploaderAvatarUrl("");
-            uploaderParsingErros.add(e);
+            uploaderParsingErrors.add(e);
         }
         try {
             info.setBannerUrl(extractor.getBannerUrl());
@@ -88,9 +88,9 @@ public class PlaylistInfo extends ListInfo<StreamInfoItem> {
             info.addError(e);
         }
         // do not fail if everything but the uploader infos could be collected
-        if (uploaderParsingErros.size() > 0 &&
-                (!info.getErrors().isEmpty() || uploaderParsingErros.size() < 3)) {
-            info.addAllErrors(uploaderParsingErros);
+        if (uploaderParsingErrors.size() > 0 &&
+                (!info.getErrors().isEmpty() || uploaderParsingErrors.size() < 3)) {
+            info.addAllErrors(uploaderParsingErrors);
         }
 
         final InfoItemsPage<StreamInfoItem> itemsPage = ExtractorHelper.getItemsPageOrLogError(info, extractor);
