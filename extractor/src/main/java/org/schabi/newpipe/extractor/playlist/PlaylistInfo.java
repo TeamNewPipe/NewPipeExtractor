@@ -11,6 +11,8 @@ import org.schabi.newpipe.extractor.stream.StreamInfoItem;
 import org.schabi.newpipe.extractor.utils.ExtractorHelper;
 
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 
 public class PlaylistInfo extends ListInfo<StreamInfoItem> {
 
