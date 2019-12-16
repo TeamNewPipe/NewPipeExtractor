@@ -22,8 +22,8 @@ import org.schabi.newpipe.extractor.exceptions.ExtractionException;
 import org.schabi.newpipe.extractor.exceptions.ParsingException;
 import org.schabi.newpipe.extractor.exceptions.ReCaptchaException;
 import org.schabi.newpipe.extractor.linkhandler.LinkHandler;
-import org.schabi.newpipe.extractor.localization.TimeAgoParser;
 import org.schabi.newpipe.extractor.localization.DateWrapper;
+import org.schabi.newpipe.extractor.localization.TimeAgoParser;
 import org.schabi.newpipe.extractor.services.youtube.ItagItem;
 import org.schabi.newpipe.extractor.services.youtube.linkHandler.YoutubeParsingHelper;
 import org.schabi.newpipe.extractor.stream.*;
@@ -152,7 +152,7 @@ public class YoutubeStreamExtractor extends StreamExtractor {
             return null;
         }
 
-        return new DateWrapper(YoutubeParsingHelper.parseDateFrom(textualUploadDate));
+        return new DateWrapper(YoutubeParsingHelper.parseDateFrom(textualUploadDate), true);
     }
 
     @Nonnull
