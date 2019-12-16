@@ -7,6 +7,7 @@ import org.schabi.newpipe.extractor.channel.ChannelExtractor;
 import org.schabi.newpipe.extractor.comments.CommentsExtractor;
 import org.schabi.newpipe.extractor.exceptions.ExtractionException;
 import org.schabi.newpipe.extractor.exceptions.ParsingException;
+import org.schabi.newpipe.extractor.feed.FeedExtractor;
 import org.schabi.newpipe.extractor.kiosk.KioskList;
 import org.schabi.newpipe.extractor.linkhandler.LinkHandler;
 import org.schabi.newpipe.extractor.linkhandler.LinkHandlerFactory;
@@ -23,6 +24,8 @@ import org.schabi.newpipe.extractor.search.SearchExtractor;
 import org.schabi.newpipe.extractor.stream.StreamExtractor;
 import org.schabi.newpipe.extractor.subscription.SubscriptionExtractor;
 import org.schabi.newpipe.extractor.suggestion.SuggestionExtractor;
+
+import javax.annotation.Nullable;
 
 /*
  * Copyright (C) Christian Schabesberger 2018 <chris.schabesberger@mailbox.org>
@@ -65,7 +68,7 @@ public abstract class StreamingService {
         public String getName() {
             return name;
         }
-        
+
         public List<MediaCapability> getMediaCapabilities() {
             return mediaCapabilities;
         }
@@ -116,7 +119,7 @@ public abstract class StreamingService {
     public String toString() {
         return serviceId + ":" + serviceInfo.getName();
     }
-    
+
     public abstract String getBaseUrl();
 
     /*//////////////////////////////////////////////////////////////////////////
@@ -172,6 +175,19 @@ public abstract class StreamingService {
      * @return just null
      */
     public abstract SubscriptionExtractor getSubscriptionExtractor();
+
+    /**
+     * This method decides which strategy will be chosen to fetch the feed. In YouTube, for example, a separate feed
+     * exists which is lightweight and made specifically to be used like this.
+     * <p>
+     * In services which there's no other way to retrieve them, null should be returned.
+     *
+     * @return a {@link FeedExtractor} instance or null.
+     */
+    @Nullable
+    public FeedExtractor getFeedExtractor(String url) throws ExtractionException {
+        return null;
+    }
 
     /**
      * Must create a new instance of a KioskList implementation.
@@ -258,7 +274,7 @@ public abstract class StreamingService {
         }
         return getCommentsExtractor(llhf.fromUrl(url));
     }
-    
+
     /*//////////////////////////////////////////////////////////////////////////
     // Utils
     //////////////////////////////////////////////////////////////////////////*/
