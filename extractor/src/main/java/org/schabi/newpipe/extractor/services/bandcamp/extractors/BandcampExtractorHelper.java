@@ -42,7 +42,8 @@ public class BandcampExtractorHelper {
                     level--;
                     if (level == 0) {
                         return new JSONObject(firstHalfGone.substring(0, position + 1)
-                                .replaceAll(" {4}//.+", "") // Remove comments in JSON
+                                .replaceAll(" {4}//.+", "") // Remove "for the curious" in JSON
+                                .replaceAll("// xxx: note - don't internationalize this variable", "") // Remove this comment
                         );
                     }
             }

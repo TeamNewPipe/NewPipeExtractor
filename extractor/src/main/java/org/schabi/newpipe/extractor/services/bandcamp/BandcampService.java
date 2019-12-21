@@ -41,8 +41,7 @@ public class BandcampService extends StreamingService {
 
     @Override
     public ListLinkHandlerFactory getChannelLHFactory() {
-        //return new BandcampChannelLinkHandlerFactory(); TODO
-        return null;
+        return new BandcampChannelLinkHandlerFactory();
     }
 
     @Override

@@ -30,11 +30,25 @@ public class BandcampChannelLinkHandlerFactoryTest {
         assertTrue(linkHandler.acceptUrl("http://interovgm.com/releases/"));
         assertTrue(linkHandler.acceptUrl("https://interovgm.com/releases"));
         assertTrue(linkHandler.acceptUrl("http://zachbenson.bandcamp.com"));
+        assertTrue(linkHandler.acceptUrl("https://zachbenson.bandcamp.com/"));
 
         // Tests expecting false
         assertFalse(linkHandler.acceptUrl("https://bandcamp.com"));
         assertFalse(linkHandler.acceptUrl("https://zachbenson.bandcamp.com/track/kitchen"));
-        assertFalse(linkHandler.acceptUrl("https://zachbenson.bandcamp.com/"));
+    }
+
+    @Test
+    public void testGetId() throws ParsingException {
+        assertEquals("1196681540", linkHandler.getId("https://macbenson.bandcamp.com/"));
+        assertEquals("1581461772", linkHandler.getId("https://interovgm.com/releases"));
+        assertEquals("3321800855", linkHandler.getId("https://infiniteammo.bandcamp.com/"));
+    }
+
+    @Test
+    public void testGetUrl() throws ParsingException {
+        assertEquals("https://macbenson.bandcamp.com", linkHandler.getUrl("1196681540"));
+        assertEquals("https://interovgm.com", linkHandler.getUrl("1581461772"));
+        assertEquals("https://infiniteammo.bandcamp.com", linkHandler.getUrl("3321800855"));
     }
 
 }

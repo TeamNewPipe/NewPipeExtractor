@@ -56,7 +56,7 @@ public class BandcampStreamExtractor extends StreamExtractor {
         try {
             return BandcampExtractorHelper.getJSONFromJavaScriptVariables(html, "TralbumData");
         } catch (JSONException e) {
-            throw new ParsingException("Faulty JSON", e);
+            throw new ParsingException("Faulty JSON; page likely does not contain album data", e);
         }
     }
 
@@ -211,17 +211,17 @@ public class BandcampStreamExtractor extends StreamExtractor {
     }
 
     @Override
-    public StreamType getStreamType() throws ParsingException {
+    public StreamType getStreamType() {
         return StreamType.AUDIO_STREAM;
     }
 
     @Override
-    public StreamInfoItem getNextStream() throws IOException, ExtractionException {
+    public StreamInfoItem getNextStream() {
         return null;
     }
 
     @Override
-    public StreamInfoItemsCollector getRelatedStreams() throws IOException, ExtractionException {
+    public StreamInfoItemsCollector getRelatedStreams() {
         return null;
     }
 

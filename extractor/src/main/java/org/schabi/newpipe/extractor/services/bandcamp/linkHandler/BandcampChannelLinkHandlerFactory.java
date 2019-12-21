@@ -2,13 +2,15 @@
 
 package org.schabi.newpipe.extractor.services.bandcamp.linkHandler;
 
+import org.json.JSONObject;
 import org.schabi.newpipe.extractor.NewPipe;
+import org.schabi.newpipe.extractor.exceptions.ExtractionException;
 import org.schabi.newpipe.extractor.exceptions.ParsingException;
 import org.schabi.newpipe.extractor.exceptions.ReCaptchaException;
-import org.schabi.newpipe.extractor.linkhandler.LinkHandlerFactory;
 import org.schabi.newpipe.extractor.linkhandler.ListLinkHandlerFactory;
 import org.schabi.newpipe.extractor.services.bandcamp.extractors.BandcampExtractorHelper;
 import org.schabi.newpipe.extractor.services.bandcamp.extractors.BandcampStreamExtractor;
+import org.schabi.newpipe.extractor.utils.ExtractorHelper;
 
 import java.io.IOException;
 import java.util.List;
@@ -23,16 +25,41 @@ public class BandcampChannelLinkHandlerFactory extends ListLinkHandlerFactory {
     public String getId(String url) throws ParsingException {
         try {
             String response = NewPipe.getDownloader().get(url).responseBody();
-            return BandcampStreamExtractor.getAlbumInfoJson(response)
-                    .getString("band_id");
+
+            // This variable contains band data!
+            JSONObject bandData = BandcampExtractorHelper.getJSONFromJavaScriptVariables(response, "BandData");
+
+            return String.valueOf(bandData.getLong("id"));
+
         } catch (IOException | ReCaptchaException e) {
             throw new ParsingException("Download failed", e);
         }
     }
 
+    /**
+     * Fetch artist details from mobile endpoint, thereby receiving their URL.
+     * <a href=https://notabug.org/fynngodau/bandcampDirect/wiki/rewindBandcamp+%E2%80%93+Fetching+artist+details>
+     * I once took a moment to note down how it works.</a>
+     *
+     * @throws ParsingException
+     */
     @Override
     public String getUrl(String id, List<String> contentFilter, String sortFilter) throws ParsingException {
-        return null; // TODO
+        try {
+            String data = NewPipe.getDownloader().post(
+                    "https://bandcamp.com/api/mobile/22/band_details",
+                    null,
+                    ("{\"band_id\":\"" + id + "\"}").getBytes()
+            ).responseBody();
+
+            return new JSONObject(data)
+                    .getString("bandcamp_url")
+                    .replace("http://", "https://");
+
+
+        } catch (IOException | ReCaptchaException e) {
+            throw new ParsingException("Download failed", e);
+        }
     }
 
     /**
@@ -40,17 +67,10 @@ public class BandcampChannelLinkHandlerFactory extends ListLinkHandlerFactory {
      * where the profile is at <code>* . * /releases</code>
      */
     @Override
-    public boolean onAcceptUrl(String url) throws ParsingException {
-
-        // Ends with "bandcamp.com" or "bandcamp.com/"?
-        boolean endsWithBandcampCom =  url.endsWith("bandcamp.com")
-                || url.endsWith("bandcamp.com/");
+    public boolean onAcceptUrl(String url) {
 
         // Is a subdomain of bandcamp.com?
-        boolean isBandcampComSubdomain = url.matches("https?://.+\\.bandcamp\\.com");
-
-        // Is root of bandcamp.com subdomain?
-        boolean isBandcampComArtistPage = endsWithBandcampCom && isBandcampComSubdomain;
+        boolean isBandcampComArtistPage = url.matches("https?://.+\\.bandcamp\\.com/?");
 
         boolean isCustomDomainReleases = url.matches("https?://.+\\..+/releases/?(?!.)");
 
