@@ -77,7 +77,7 @@ public class BandcampService extends StreamingService {
 
     @Override
     public KioskList getKioskList() throws ExtractionException {
-        return null;
+        return new KioskList(this);
     }
 
     @Override
