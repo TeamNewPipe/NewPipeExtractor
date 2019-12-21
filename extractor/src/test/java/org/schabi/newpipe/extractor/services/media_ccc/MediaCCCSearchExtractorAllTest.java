@@ -1,6 +1,5 @@
 package org.schabi.newpipe.extractor.services.media_ccc;
 
-import java.util.Collections;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import org.schabi.newpipe.DownloaderTestImpl;
@@ -13,7 +12,7 @@ import org.schabi.newpipe.extractor.services.media_ccc.extractors.MediaCCCSearch
 import org.schabi.newpipe.extractor.services.media_ccc.linkHandler.MediaCCCSearchQueryHandlerFactory;
 import org.schabi.newpipe.extractor.stream.StreamInfoItem;
 
-import java.util.Arrays;
+import java.util.Collections;
 
 import static junit.framework.TestCase.assertTrue;
 import static org.schabi.newpipe.extractor.ServiceList.MediaCCC;

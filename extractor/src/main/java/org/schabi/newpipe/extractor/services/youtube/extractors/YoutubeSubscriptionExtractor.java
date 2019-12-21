@@ -1,6 +1,5 @@
 package org.schabi.newpipe.extractor.services.youtube.extractors;
 
-import java.nio.charset.StandardCharsets;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
@@ -12,6 +11,7 @@ import org.schabi.newpipe.extractor.utils.Parser;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;

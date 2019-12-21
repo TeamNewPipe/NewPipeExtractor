@@ -1,6 +1,5 @@
 package org.schabi.newpipe.extractor.services.youtube.search;
 
-import java.util.Collections;
 import org.hamcrest.CoreMatchers;
 import org.junit.BeforeClass;
 import org.junit.Ignore;
@@ -13,7 +12,8 @@ import org.schabi.newpipe.extractor.channel.ChannelInfoItem;
 import org.schabi.newpipe.extractor.services.youtube.extractors.YoutubeSearchExtractor;
 import org.schabi.newpipe.extractor.services.youtube.linkHandler.YoutubeSearchQueryHandlerFactory;
 
-import static java.util.Arrays.asList;
+import java.util.Collections;
+
 import static org.junit.Assert.*;
 import static org.schabi.newpipe.extractor.ServiceList.YouTube;
 
