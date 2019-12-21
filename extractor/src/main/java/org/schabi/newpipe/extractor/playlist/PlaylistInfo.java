@@ -49,7 +49,7 @@ public class PlaylistInfo extends ListInfo<StreamInfoItem> {
                 extractor.getName());
         // collect uploader extraction failures until we are sure this is not
         // just a playlist without an uploader
-        List<Throwable> uploaderParsingErrors = new ArrayList<Throwable>(3);
+        List<Throwable> uploaderParsingErrors = new ArrayList<>(3);
 
         try {
             info.setOriginalUrl(extractor.getOriginalUrl());

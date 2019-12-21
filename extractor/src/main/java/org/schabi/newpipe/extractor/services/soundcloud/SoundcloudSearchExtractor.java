@@ -107,7 +107,7 @@ public class SoundcloudSearchExtractor extends SearchExtractor {
                         .get("offset"));
 
         return currentUrl.replace("&offset=" +
-                        Integer.toString(pageOffset),
-                "&offset=" + Integer.toString(pageOffset + ITEMS_PER_PAGE));
+                        pageOffset,
+                "&offset=" + (pageOffset + ITEMS_PER_PAGE));
     }
 }

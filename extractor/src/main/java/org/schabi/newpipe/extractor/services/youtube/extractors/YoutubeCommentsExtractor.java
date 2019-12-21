@@ -3,7 +3,6 @@ package org.schabi.newpipe.extractor.services.youtube.extractors;
 import com.grack.nanojson.JsonArray;
 import com.grack.nanojson.JsonObject;
 import com.grack.nanojson.JsonParser;
-import org.schabi.newpipe.extractor.NewPipe;
 import org.schabi.newpipe.extractor.StreamingService;
 import org.schabi.newpipe.extractor.comments.CommentsExtractor;
 import org.schabi.newpipe.extractor.comments.CommentsInfoItem;
@@ -32,7 +31,7 @@ public class YoutubeCommentsExtractor extends CommentsExtractor {
 
     // using the mobile site for comments because it loads faster and uses get requests instead of post
     private static final String USER_AGENT = "Mozilla/5.0 (Android 8.1.0; Mobile; rv:62.0) Gecko/62.0 Firefox/62.0";
-    private static final Pattern YT_CLIENT_NAME_PATTERN = Pattern.compile("INNERTUBE_CONTEXT_CLIENT_NAME\\\":(.*?)[,}]");
+    private static final Pattern YT_CLIENT_NAME_PATTERN = Pattern.compile("INNERTUBE_CONTEXT_CLIENT_NAME\":(.*?)[,}]");
 
     private String ytClientVersion;
     private String ytClientName;
@@ -197,11 +196,11 @@ public class YoutubeCommentsExtractor extends CommentsExtractor {
         } catch (Exception e1) {
             try {
                 JsonArray arr = JsonUtils.getArray(object, "runs");
-                String result = "";
+                StringBuilder result = new StringBuilder();
                 for(int i=0; i<arr.size();i++) {
-                    result = result + JsonUtils.getString(arr.getObject(i), "text");
+                    result.append(JsonUtils.getString(arr.getObject(i), "text"));
                 }
-                return result;
+                return result.toString();
             } catch (Exception e2) {
                 return "";
             }

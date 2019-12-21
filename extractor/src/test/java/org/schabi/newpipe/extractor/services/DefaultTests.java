@@ -13,7 +13,7 @@ import static org.schabi.newpipe.extractor.ExtractorAsserts.*;
 
 public final class DefaultTests {
     public static void defaultTestListOfItems(int expectedServiceId, List<? extends InfoItem> itemsList, List<Throwable> errors) {
-        assertTrue("List of items is empty", !itemsList.isEmpty());
+        assertFalse("List of items is empty", itemsList.isEmpty());
         assertFalse("List of items contains a null element", itemsList.contains(null));
         assertEmptyErrors("Errors during stream list extraction", errors);
 
@@ -54,7 +54,7 @@ public final class DefaultTests {
         assertTrue("Doesn't have more items", extractor.hasNextPage());
         ListExtractor.InfoItemsPage<T> nextPage = extractor.getPage(extractor.getNextPageUrl());
         final List<T> items = nextPage.getItems();
-        assertTrue("Next page is empty", !items.isEmpty());
+        assertFalse("Next page is empty", items.isEmpty());
         assertEmptyErrors("Next page have errors", nextPage.getErrors());
 
         defaultTestListOfItems(expectedServiceId, nextPage.getItems(), nextPage.getErrors());

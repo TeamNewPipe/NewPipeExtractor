@@ -1,5 +1,6 @@
 package org.schabi.newpipe.extractor.services.media_ccc;
 
+import java.util.Collections;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import org.schabi.newpipe.DownloaderTestImpl;
@@ -22,14 +23,13 @@ import static org.schabi.newpipe.extractor.ServiceList.MediaCCC;
  */
 public class MediaCCCSearchExtractorAllTest {
 
-    private static SearchExtractor extractor;
     private static ListExtractor.InfoItemsPage<InfoItem> itemsPage;
 
     @BeforeClass
     public static void setUpClass() throws Exception {
         NewPipe.init(DownloaderTestImpl.getInstance());
-        extractor =  MediaCCC.getSearchExtractor( new MediaCCCSearchQueryHandlerFactory()
-                .fromQuery("c3", Arrays.asList(new String[0]), ""));
+        SearchExtractor extractor = MediaCCC.getSearchExtractor(new MediaCCCSearchQueryHandlerFactory()
+                .fromQuery("c3", Collections.<String>emptyList(), ""));
         extractor.fetchPage();
         itemsPage = extractor.getInitialPage();
     }
@@ -38,8 +38,9 @@ public class MediaCCCSearchExtractorAllTest {
     public void testIfChannelInfoItemsAvailable() {
         boolean isAvialable = false;
         for(InfoItem item : itemsPage.getItems()) {
-            if(item instanceof ChannelInfoItem) {
+            if (item instanceof ChannelInfoItem) {
                 isAvialable = true;
+                break;
             }
         }
         assertTrue("ChannelInfoItem not in all list", isAvialable);
@@ -49,8 +50,9 @@ public class MediaCCCSearchExtractorAllTest {
     public void testIfStreamInfoitemsAvailable() {
         boolean isAvialable = false;
         for(InfoItem item : itemsPage.getItems()) {
-            if(item instanceof StreamInfoItem) {
+            if (item instanceof StreamInfoItem) {
                 isAvialable = true;
+                break;
             }
         }
         assertTrue("ChannelInfoItem not in all list", isAvialable);

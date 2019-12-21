@@ -108,7 +108,7 @@ public class PeertubeCommentsExtractor extends CommentsExtractor {
         if(StringUtil.isBlank(prevStart)) return "";
         long nextStart = 0;
         try {
-            nextStart = Long.valueOf(prevStart) + ITEMS_PER_PAGE;
+            nextStart = Long.parseLong(prevStart) + ITEMS_PER_PAGE;
         } catch (NumberFormatException e) {
             return "";
         }
@@ -116,7 +116,7 @@ public class PeertubeCommentsExtractor extends CommentsExtractor {
         if(nextStart >= total) {
             return "";
         }else {
-            return prevPageUrl.replace(START_KEY + "=" + prevStart, START_KEY + "=" + String.valueOf(nextStart));
+            return prevPageUrl.replace(START_KEY + "=" + prevStart, START_KEY + "=" + nextStart);
         }
     }
 

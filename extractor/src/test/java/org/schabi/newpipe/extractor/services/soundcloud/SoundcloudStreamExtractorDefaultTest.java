@@ -107,7 +107,7 @@ public class SoundcloudStreamExtractorDefaultTest {
 
     @Test
     public void testStreamType() throws ParsingException {
-        assertTrue(extractor.getStreamType() == StreamType.AUDIO_STREAM);
+        assertSame(extractor.getStreamType(), StreamType.AUDIO_STREAM);
     }
 
     @Test

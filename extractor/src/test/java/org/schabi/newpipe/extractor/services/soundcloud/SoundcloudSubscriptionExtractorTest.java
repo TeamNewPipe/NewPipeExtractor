@@ -70,7 +70,7 @@ public class SoundcloudSubscriptionExtractorTest {
             assertNotNull(item.getName());
             assertNotNull(item.getUrl());
             assertTrue(urlHandler.acceptUrl(item.getUrl()));
-            assertFalse(item.getServiceId() == -1);
+            assertNotEquals(item.getServiceId(), -1);
         }
     }
 }

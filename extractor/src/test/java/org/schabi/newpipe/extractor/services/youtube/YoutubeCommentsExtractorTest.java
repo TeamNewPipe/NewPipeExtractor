@@ -4,7 +4,6 @@ import org.jsoup.helper.StringUtil;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import org.schabi.newpipe.DownloaderTestImpl;
-import org.schabi.newpipe.DownloaderTestImpl;
 import org.schabi.newpipe.extractor.ListExtractor.InfoItemsPage;
 import org.schabi.newpipe.extractor.NewPipe;
 import org.schabi.newpipe.extractor.comments.CommentsInfo;
@@ -48,7 +47,7 @@ public class YoutubeCommentsExtractorTest {
     public void testGetCommentsFromCommentsInfo() throws IOException, ExtractionException {
         boolean result = false;
         CommentsInfo commentsInfo = CommentsInfo.getInfo("https://www.youtube.com/watch?v=D00Au7k3i6o");
-        assertTrue("what the fuck am i doing with my life".equals(commentsInfo.getName()));
+        assertEquals("what the fuck am i doing with my life", commentsInfo.getName());
         result = findInComments(commentsInfo.getRelatedItems(), "s1ck m3m3");
 
         String nextPage = commentsInfo.getNextPageUrl();

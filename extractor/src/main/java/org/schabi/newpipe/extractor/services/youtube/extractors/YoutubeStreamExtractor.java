@@ -4,6 +4,7 @@ import com.grack.nanojson.JsonArray;
 import com.grack.nanojson.JsonObject;
 import com.grack.nanojson.JsonParser;
 import com.grack.nanojson.JsonParserException;
+import java.nio.charset.StandardCharsets;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
@@ -68,13 +69,13 @@ public class YoutubeStreamExtractor extends StreamExtractor {
     // Exceptions
     //////////////////////////////////////////////////////////////////////////*/
 
-    public class DecryptException extends ParsingException {
+    public static class DecryptException extends ParsingException {
         DecryptException(String message, Throwable cause) {
             super(message, cause);
         }
     }
 
-    public class SubtitlesException extends ContentNotAvailableException {
+    public static class SubtitlesException extends ContentNotAvailableException {
         SubtitlesException(String message, Throwable cause) {
             super(message, cause);
         }
@@ -258,7 +259,7 @@ public class YoutubeStreamExtractor extends StreamExtractor {
             return NO_AGE_LIMIT;
         }
         try {
-            return Integer.valueOf(doc.select("meta[property=\"og:restrictions:age\"]")
+            return Integer.parseInt(doc.select("meta[property=\"og:restrictions:age\"]")
                     .attr(CONTENT).replace("+", ""));
         } catch (Exception e) {
             throw new ParsingException("Could not get age restriction");
@@ -277,7 +278,7 @@ public class YoutubeStreamExtractor extends StreamExtractor {
                     .getObject(0)
                     .getString("approxDurationMs");
             return Long.parseLong(durationMs)/1000;
-        } catch (Exception e) {
+        } catch (Exception ignored) {
         }
 
         //try getting value from age gated video
@@ -336,7 +337,7 @@ public class YoutubeStreamExtractor extends StreamExtractor {
 
         final String metadataUrl = "https://www.youtube.com/youtubei/v1/updated_metadata?alt=json&key=" + innerTubeKey;
         final byte[] dataBody = ("{\"context\":{\"client\":{\"clientName\":1,\"clientVersion\":\"" + clientVersion + "\"}}" +
-                ",\"videoId\":\"" + getId() + "\"}").getBytes("UTF-8");
+                ",\"videoId\":\"" + getId() + "\"}").getBytes(StandardCharsets.UTF_8);
         final Response response = getDownloader().execute(Request.newBuilder()
                 .post(metadataUrl, dataBody)
                 .addHeader("Content-Type", "application/json")
@@ -928,7 +929,7 @@ public class YoutubeStreamExtractor extends StreamExtractor {
     // Data Class
     //////////////////////////////////////////////////////////////////////////*/
 
-    private class EmbeddedInfo {
+    private static class EmbeddedInfo {
         final String url;
         final String sts;
 
@@ -938,7 +939,7 @@ public class YoutubeStreamExtractor extends StreamExtractor {
         }
     }
 
-    private class SubtitlesInfo {
+    private static class SubtitlesInfo {
         final String cleanUrl;
         final String languageCode;
         final boolean isGenerated;

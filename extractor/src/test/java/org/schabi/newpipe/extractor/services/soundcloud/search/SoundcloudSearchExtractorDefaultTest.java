@@ -61,8 +61,9 @@ public class SoundcloudSearchExtractorDefaultTest extends SoundcloudSearchExtrac
     public void testResultListCheckIfContainsStreamItems() {
         boolean hasStreams = false;
         for(InfoItem item : itemsPage.getItems()) {
-            if(item instanceof StreamInfoItem) {
+            if (item instanceof StreamInfoItem) {
                 hasStreams = true;
+                break;
             }
         }
         assertTrue("Has no InfoItemStreams", hasStreams);
@@ -80,9 +81,10 @@ public class SoundcloudSearchExtractorDefaultTest extends SoundcloudSearchExtrac
         boolean equals = true;
         for (int i = 0; i < secondPage.getItems().size()
                 && i < itemsPage.getItems().size(); i++) {
-            if(!secondPage.getItems().get(i).getUrl().equals(
+            if (!secondPage.getItems().get(i).getUrl().equals(
                     itemsPage.getItems().get(i).getUrl())) {
                 equals = false;
+                break;
             }
         }
         assertFalse("First and second page are equal", equals);

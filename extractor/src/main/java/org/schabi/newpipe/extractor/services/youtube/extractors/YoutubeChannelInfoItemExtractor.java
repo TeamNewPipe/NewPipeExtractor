@@ -60,7 +60,7 @@ public class YoutubeChannelInfoItemExtractor implements ChannelInfoItemExtractor
             String buttonTrackingUrl = el.select("button[class*=\"yt-uix-button\"]").first()
                     .attr("abs:data-href");
 
-            Pattern channelIdPattern = Pattern.compile("(?:.*?)\\%252Fchannel\\%252F([A-Za-z0-9\\-\\_]+)(?:.*)");
+            Pattern channelIdPattern = Pattern.compile("(?:.*?)%252Fchannel%252F([A-Za-z0-9\\-_]+)(?:.*)");
             Matcher match = channelIdPattern.matcher(buttonTrackingUrl);
 
             if (match.matches()) {

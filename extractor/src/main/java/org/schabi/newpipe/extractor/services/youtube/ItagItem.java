@@ -94,7 +94,7 @@ public class ItagItem {
                 return item;
             }
         }
-        throw new ParsingException("itag=" + Integer.toString(itagId) + " not supported");
+        throw new ParsingException("itag=" + itagId + " not supported");
     }
 
     /*//////////////////////////////////////////////////////////////////////////

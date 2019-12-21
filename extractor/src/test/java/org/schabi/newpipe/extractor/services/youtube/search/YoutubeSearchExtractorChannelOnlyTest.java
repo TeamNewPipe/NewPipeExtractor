@@ -1,5 +1,6 @@
 package org.schabi.newpipe.extractor.services.youtube.search;
 
+import java.util.Collections;
 import org.hamcrest.CoreMatchers;
 import org.junit.BeforeClass;
 import org.junit.Ignore;
@@ -22,7 +23,7 @@ public class YoutubeSearchExtractorChannelOnlyTest extends YoutubeSearchExtracto
     public static void setUpClass() throws Exception {
         NewPipe.init(DownloaderTestImpl.getInstance());
         extractor = (YoutubeSearchExtractor) YouTube.getSearchExtractor("pewdiepie",
-                asList(YoutubeSearchQueryHandlerFactory.CHANNELS), null);
+                Collections.singletonList(YoutubeSearchQueryHandlerFactory.CHANNELS), null);
         extractor.fetchPage();
         itemsPage = extractor.getInitialPage();
     }
@@ -30,7 +31,7 @@ public class YoutubeSearchExtractorChannelOnlyTest extends YoutubeSearchExtracto
     @Test
     public void testGetSecondPage() throws Exception {
         YoutubeSearchExtractor secondExtractor = (YoutubeSearchExtractor) YouTube.getSearchExtractor("pewdiepie",
-                asList(YoutubeSearchQueryHandlerFactory.CHANNELS), null);
+                Collections.singletonList(YoutubeSearchQueryHandlerFactory.CHANNELS), null);
         ListExtractor.InfoItemsPage<InfoItem> secondPage = secondExtractor.getPage(itemsPage.getNextPageUrl());
         assertTrue(Integer.toString(secondPage.getItems().size()),
                 secondPage.getItems().size() > 10);
@@ -39,9 +40,10 @@ public class YoutubeSearchExtractorChannelOnlyTest extends YoutubeSearchExtracto
         boolean equals = true;
         for (int i = 0; i < secondPage.getItems().size()
                 && i < itemsPage.getItems().size(); i++) {
-            if(!secondPage.getItems().get(i).getUrl().equals(
+            if (!secondPage.getItems().get(i).getUrl().equals(
                     itemsPage.getItems().get(i).getUrl())) {
                 equals = false;
+                break;
             }
         }
         assertFalse("First and second page are equal", equals);

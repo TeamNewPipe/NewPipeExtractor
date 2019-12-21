@@ -1,5 +1,6 @@
 package org.schabi.newpipe.extractor.services.peertube;
 
+import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 import static org.schabi.newpipe.extractor.ServiceList.PeerTube;
@@ -47,7 +48,7 @@ public class PeertubeCommentsExtractorTest {
     public void testGetCommentsFromCommentsInfo() throws IOException, ExtractionException {
         boolean result = false;
         CommentsInfo commentsInfo = CommentsInfo.getInfo("https://peertube.mastodon.host/videos/watch/a8ea95b8-0396-49a6-8f30-e25e25fb2828");
-        assertTrue("Comments".equals(commentsInfo.getName()));
+        assertEquals("Comments", commentsInfo.getName());
         result = findInComments(commentsInfo.getRelatedItems(), "Loved it!!!");
 
         String nextPage = commentsInfo.getNextPageUrl();

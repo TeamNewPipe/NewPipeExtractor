@@ -1,5 +1,6 @@
 package org.schabi.newpipe.extractor.services.youtube;
 
+import java.nio.charset.StandardCharsets;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import org.schabi.newpipe.DownloaderTestImpl;
@@ -38,13 +39,13 @@ public class YoutubeSubscriptionExtractorTest {
         if (!testFile.exists()) testFile = new File("src/test/resources/youtube_export_test.xml");
 
         List<SubscriptionItem> subscriptionItems = subscriptionExtractor.fromInputStream(new FileInputStream(testFile));
-        assertTrue("List doesn't have exactly 8 items (had " + subscriptionItems.size() + ")", subscriptionItems.size() == 8);
+        assertEquals("List doesn't have exactly 8 items (had " + subscriptionItems.size() + ")", 8, subscriptionItems.size());
 
         for (SubscriptionItem item : subscriptionItems) {
             assertNotNull(item.getName());
             assertNotNull(item.getUrl());
             assertTrue(urlHandler.acceptUrl(item.getUrl()));
-            assertFalse(item.getServiceId() == -1);
+            assertNotEquals(item.getServiceId(), -1);
         }
     }
 
@@ -54,7 +55,7 @@ public class YoutubeSubscriptionExtractorTest {
                 "<outline text=\"Testing\" title=\"123\" />" +
                 "</body></opml>";
 
-        List<SubscriptionItem> items = subscriptionExtractor.fromInputStream(new ByteArrayInputStream(emptySource.getBytes("UTF-8")));
+        List<SubscriptionItem> items = subscriptionExtractor.fromInputStream(new ByteArrayInputStream(emptySource.getBytes(StandardCharsets.UTF_8)));
         assertTrue(items.isEmpty());
     }
 
@@ -65,8 +66,8 @@ public class YoutubeSubscriptionExtractorTest {
                 "<outline text=\"\" title=\"\" type=\"rss\" xmlUrl=\"https://www.youtube.com/feeds/videos.xml?channel_id=" + channelId + "\" />" +
                 "</outline></body></opml>";
 
-        List<SubscriptionItem> items = subscriptionExtractor.fromInputStream(new ByteArrayInputStream(source.getBytes("UTF-8")));
-        assertTrue("List doesn't have exactly 1 item (had " + items.size() + ")", items.size() == 1);
+        List<SubscriptionItem> items = subscriptionExtractor.fromInputStream(new ByteArrayInputStream(source.getBytes(StandardCharsets.UTF_8)));
+        assertEquals("List doesn't have exactly 1 item (had " + items.size() + ")", 1, items.size());
         assertTrue("Item does not have an empty title (had \"" + items.get(0).getName() + "\")", items.get(0).getName().isEmpty());
         assertTrue("Item does not have the right channel id \"" + channelId + "\" (the whole url is \"" + items.get(0).getUrl() + "\")", items.get(0).getUrl().endsWith(channelId));
     }
@@ -80,7 +81,7 @@ public class YoutubeSubscriptionExtractorTest {
                 "<outline text=\"\" title=\"\" type=\"rss\" xmlUrl=\"\"/>" +
                 "</outline></body></opml>";
 
-        List<SubscriptionItem> items = subscriptionExtractor.fromInputStream(new ByteArrayInputStream(source.getBytes("UTF-8")));
+        List<SubscriptionItem> items = subscriptionExtractor.fromInputStream(new ByteArrayInputStream(source.getBytes(StandardCharsets.UTF_8)));
         assertTrue(items.isEmpty());
     }
 
@@ -98,7 +99,7 @@ public class YoutubeSubscriptionExtractorTest {
         for (String invalidContent : invalidList) {
             try {
                 if (invalidContent != null) {
-                    byte[] bytes = invalidContent.getBytes("UTF-8");
+                    byte[] bytes = invalidContent.getBytes(StandardCharsets.UTF_8);
                     subscriptionExtractor.fromInputStream(new ByteArrayInputStream(bytes));
                     fail("Extracting from \"" + invalidContent + "\" didn't throw an exception");
                 } else {

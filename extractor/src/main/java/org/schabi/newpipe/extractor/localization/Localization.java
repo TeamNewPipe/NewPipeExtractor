@@ -87,7 +87,7 @@ public class Localization implements Serializable {
         Localization that = (Localization) o;
 
         if (!languageCode.equals(that.languageCode)) return false;
-        return countryCode != null ? countryCode.equals(that.countryCode) : that.countryCode == null;
+        return Objects.equals(countryCode, that.countryCode);
     }
 
     @Override

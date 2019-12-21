@@ -1,5 +1,6 @@
 package org.schabi.newpipe.extractor.services.soundcloud.search;
 
+import java.util.Collections;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import org.schabi.newpipe.DownloaderTestImpl;
@@ -21,7 +22,7 @@ public class SoundcloudSearchExtractorChannelOnlyTest extends SoundcloudSearchEx
     public static void setUpClass() throws Exception {
         NewPipe.init(DownloaderTestImpl.getInstance(), new Localization("de", "DE"));
         extractor = (SoundcloudSearchExtractor) SoundCloud.getSearchExtractor("lill uzi vert",
-                asList(SoundcloudSearchQueryHandlerFactory.USERS), null);
+                Collections.singletonList(SoundcloudSearchQueryHandlerFactory.USERS), null);
         extractor.fetchPage();
         itemsPage = extractor.getInitialPage();
     }
@@ -29,7 +30,7 @@ public class SoundcloudSearchExtractorChannelOnlyTest extends SoundcloudSearchEx
     @Test
     public void testGetSecondPage() throws Exception {
         SoundcloudSearchExtractor secondExtractor = (SoundcloudSearchExtractor) SoundCloud.getSearchExtractor("lill uzi vert",
-                asList(SoundcloudSearchQueryHandlerFactory.USERS), null);
+                Collections.singletonList(SoundcloudSearchQueryHandlerFactory.USERS), null);
         ListExtractor.InfoItemsPage<InfoItem> secondPage = secondExtractor.getPage(itemsPage.getNextPageUrl());
         assertTrue(Integer.toString(secondPage.getItems().size()),
                 secondPage.getItems().size() >= 3);
@@ -38,9 +39,10 @@ public class SoundcloudSearchExtractorChannelOnlyTest extends SoundcloudSearchEx
         boolean equals = true;
         for (int i = 0; i < secondPage.getItems().size()
                 && i < itemsPage.getItems().size(); i++) {
-            if(!secondPage.getItems().get(i).getUrl().equals(
+            if (!secondPage.getItems().get(i).getUrl().equals(
                     itemsPage.getItems().get(i).getUrl())) {
                 equals = false;
+                break;
             }
         }
         assertFalse("First and second page are equal", equals);

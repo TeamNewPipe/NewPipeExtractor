@@ -1,7 +1,5 @@
 package org.schabi.newpipe.extractor.stream;
 
-import javax.annotation.Nullable;
-import java.util.Collection;
 import java.util.List;
 
 public final class Frameset {

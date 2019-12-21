@@ -29,7 +29,7 @@ public  class KioskList {
     @Nullable private Localization forcedLocalization;
     @Nullable private ContentCountry forcedContentCountry;
 
-    private class KioskEntry {
+    private static class KioskEntry {
         public KioskEntry(KioskExtractorFactory ef, ListLinkHandlerFactory h) {
             extractorFactory = ef;
             handlerFactory = h;

@@ -101,7 +101,7 @@ public class YoutubeSearchExtractor extends SearchExtractor {
                         .get("page"));
 
         return currentUrl.replace("&page=" + pageNr,
-                "&page=" + Integer.toString(pageNr + 1));
+                "&page=" + (pageNr + 1));
     }
 
     private InfoItemsSearchCollector collectItems(Document doc) throws NothingFoundException  {

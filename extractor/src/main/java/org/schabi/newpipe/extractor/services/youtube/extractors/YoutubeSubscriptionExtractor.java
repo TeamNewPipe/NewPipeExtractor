@@ -1,5 +1,6 @@
 package org.schabi.newpipe.extractor.services.youtube.extractors;
 
+import java.nio.charset.StandardCharsets;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
@@ -92,7 +93,7 @@ public class YoutubeSubscriptionExtractor extends SubscriptionExtractor {
             byte[] buffer = new byte[16 * 1024];
             int read;
             while ((read = inputStream.read(buffer)) != -1) {
-                String currentPartOfContent = new String(buffer, 0, read, "UTF-8");
+                String currentPartOfContent = new String(buffer, 0, read, StandardCharsets.UTF_8);
                 contentBuilder.append(currentPartOfContent);
 
                 // Fail-fast in case of reading a long unsupported input stream

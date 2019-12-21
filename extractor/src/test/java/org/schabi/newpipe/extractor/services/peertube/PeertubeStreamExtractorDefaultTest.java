@@ -3,6 +3,7 @@ package org.schabi.newpipe.extractor.services.peertube;
 import static java.util.Objects.requireNonNull;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertSame;
 import static org.junit.Assert.assertTrue;
 import static org.schabi.newpipe.extractor.ExtractorAsserts.assertIsSecureUrl;
 import static org.schabi.newpipe.extractor.ServiceList.PeerTube;
@@ -102,7 +103,7 @@ public class PeertubeStreamExtractorDefaultTest {
 
     @Test
     public void testStreamType() throws ParsingException {
-        assertTrue(extractor.getStreamType() == StreamType.VIDEO_STREAM);
+        assertSame(extractor.getStreamType(), StreamType.VIDEO_STREAM);
     }
 
     @Ignore
