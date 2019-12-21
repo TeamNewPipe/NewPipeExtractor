@@ -71,7 +71,7 @@ public class BandcampChannelExtractor extends ChannelExtractor {
     @Override
     public String getBannerUrl() throws ParsingException {
         try {
-            String html = getDownloader().get(channelInfo.getString("bandcamp_url"))
+            String html = getDownloader().get(channelInfo.getString("bandcamp_url").replace("http://", "https://"))
                     .responseBody();
 
             return new Document(html).getElementById("customHeader")
