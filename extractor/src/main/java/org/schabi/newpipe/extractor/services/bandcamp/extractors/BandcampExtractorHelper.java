@@ -4,8 +4,11 @@ package org.schabi.newpipe.extractor.services.bandcamp.extractors;
 
 import org.json.JSONException;
 import org.json.JSONObject;
+import org.schabi.newpipe.extractor.NewPipe;
 import org.schabi.newpipe.extractor.exceptions.ParsingException;
+import org.schabi.newpipe.extractor.exceptions.ReCaptchaException;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
 
@@ -21,7 +24,7 @@ public class BandcampExtractorHelper {
      * @param variable Name of the variable
      * @return The JsonObject stored in the variable with this name
      */
-    public static JSONObject getJSONFromJavaScriptVariables(String html, String variable) throws JSONException, ParsingException {
+    public static JSONObject getJSONFromJavaScriptVariables(String html, String variable) throws JSONException, ArrayIndexOutOfBoundsException, ParsingException {
 
         String[] part = html.split("var " + variable + " = ");
 
@@ -50,6 +53,26 @@ public class BandcampExtractorHelper {
         }
 
         throw new ParsingException("Unexpected HTML: JSON never ends");
+    }
+
+    /**
+     * Translate all these parameters together to the URL of the corresponding album or track
+     * using the mobile api
+     */
+    public static String getStreamUrlFromIds(long bandId, long itemId, String itemType) throws ParsingException {
+
+        try {
+            String html = NewPipe.getDownloader().get(
+                    "https://bandcamp.com/api/mobile/22/tralbum_details?band_id=" + bandId
+                            + "&tralbum_id=" + itemId + "&tralbum_type=" + itemType.substring(0, 1))
+                    .responseBody();
+
+            return new JSONObject(html).getString("bandcamp_url").replace("http://", "https://");
+
+        } catch (JSONException | ReCaptchaException | IOException e) {
+            throw new ParsingException("Ids could not be translated to URL", e);
+        }
+
     }
 
     /**

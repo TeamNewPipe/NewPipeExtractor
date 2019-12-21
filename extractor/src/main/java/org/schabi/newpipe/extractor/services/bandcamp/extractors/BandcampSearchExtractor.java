@@ -88,14 +88,12 @@ public class BandcampSearchExtractor extends SearchExtractor {
                     break;
 
                 case "TRACK":
-                    String album = subhead.split("from ")[0].split(" by")[0];
-
                     String[] splitBy = subhead.split(" by");
                     String artist1 = null;
                     if (splitBy.length > 1) {
                         artist1 = subhead.split(" by")[1];
                     }
-                    collector.commit(new BandcampStreamInfoItemExtractor(heading, url, image, artist1, album));
+                    collector.commit(new BandcampStreamInfoItemExtractor(heading, url, image, artist1));
                     break;
             }
 

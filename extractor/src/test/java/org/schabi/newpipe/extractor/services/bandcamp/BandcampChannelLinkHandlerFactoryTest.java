@@ -51,4 +51,14 @@ public class BandcampChannelLinkHandlerFactoryTest {
         assertEquals("https://infiniteammo.bandcamp.com", linkHandler.getUrl("3321800855"));
     }
 
+    @Test(expected = ParsingException.class)
+    public void testGetUrlWithInvalidId() throws ParsingException {
+        linkHandler.getUrl("0");
+    }
+
+    @Test(expected = ParsingException.class)
+    public void testGetIdWithInvalidUrl() throws ParsingException {
+        linkHandler.getId("https://bandcamp.com");
+    }
+
 }

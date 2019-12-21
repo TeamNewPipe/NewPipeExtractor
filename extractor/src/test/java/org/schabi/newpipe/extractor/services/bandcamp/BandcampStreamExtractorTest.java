@@ -67,4 +67,9 @@ public class BandcampStreamExtractorTest {
         assertEquals(1, extractor.getAudioStreams().size());
     }
 
+    @Test(expected = ParsingException.class)
+    public void testInvalidUrl() throws ExtractionException {
+        bandcamp.getStreamExtractor("https://bandcamp.com");
+    }
+
 }

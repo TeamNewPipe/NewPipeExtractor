@@ -15,14 +15,12 @@ public class BandcampStreamInfoItemExtractor implements StreamInfoItemExtractor 
     private String url;
     private String cover;
     private String artist;
-    private String albumName;
 
-    public BandcampStreamInfoItemExtractor(String title, String url, String cover, String artist, String albumName) {
+    public BandcampStreamInfoItemExtractor(String title, String url, String cover, String artist) {
         this.title = title;
         this.url = url;
         this.cover = cover;
         this.artist = artist;
-        this.albumName = albumName;
     }
 
     @Override

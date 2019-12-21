@@ -2,15 +2,14 @@
 
 package org.schabi.newpipe.extractor.services.bandcamp.linkHandler;
 
+import org.json.JSONException;
 import org.json.JSONObject;
 import org.schabi.newpipe.extractor.NewPipe;
-import org.schabi.newpipe.extractor.exceptions.ExtractionException;
 import org.schabi.newpipe.extractor.exceptions.ParsingException;
 import org.schabi.newpipe.extractor.exceptions.ReCaptchaException;
 import org.schabi.newpipe.extractor.linkhandler.ListLinkHandlerFactory;
+import org.schabi.newpipe.extractor.services.bandcamp.extractors.BandcampChannelExtractor;
 import org.schabi.newpipe.extractor.services.bandcamp.extractors.BandcampExtractorHelper;
-import org.schabi.newpipe.extractor.services.bandcamp.extractors.BandcampStreamExtractor;
-import org.schabi.newpipe.extractor.utils.ExtractorHelper;
 
 import java.io.IOException;
 import java.util.List;
@@ -31,35 +30,24 @@ public class BandcampChannelLinkHandlerFactory extends ListLinkHandlerFactory {
 
             return String.valueOf(bandData.getLong("id"));
 
-        } catch (IOException | ReCaptchaException e) {
+        } catch (IOException | ReCaptchaException | ArrayIndexOutOfBoundsException e) {
             throw new ParsingException("Download failed", e);
         }
     }
 
     /**
-     * Fetch artist details from mobile endpoint, thereby receiving their URL.
-     * <a href=https://notabug.org/fynngodau/bandcampDirect/wiki/rewindBandcamp+%E2%80%93+Fetching+artist+details>
-     * I once took a moment to note down how it works.</a>
-     *
-     * @throws ParsingException
+     * Uses the mobile endpoint as a "translator" from id to url
      */
     @Override
     public String getUrl(String id, List<String> contentFilter, String sortFilter) throws ParsingException {
         try {
-            String data = NewPipe.getDownloader().post(
-                    "https://bandcamp.com/api/mobile/22/band_details",
-                    null,
-                    ("{\"band_id\":\"" + id + "\"}").getBytes()
-            ).responseBody();
-
-            return new JSONObject(data)
+            return BandcampChannelExtractor.getArtistDetails(id)
                     .getString("bandcamp_url")
                     .replace("http://", "https://");
-
-
-        } catch (IOException | ReCaptchaException e) {
-            throw new ParsingException("Download failed", e);
+        } catch (JSONException e) {
+            throw new ParsingException("JSON does not contain URL (invalid id?) or is otherwise invalid", e);
         }
+
     }
 
     /**

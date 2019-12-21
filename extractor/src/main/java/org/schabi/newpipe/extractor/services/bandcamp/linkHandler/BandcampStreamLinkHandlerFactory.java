@@ -6,8 +6,8 @@ import org.schabi.newpipe.extractor.exceptions.ParsingException;
 import org.schabi.newpipe.extractor.linkhandler.LinkHandlerFactory;
 
 /**
- * Tracks do have IDs, but they are not really useful. That's why id = url.
- * Instead, URLs are cleaned up so that they always look the same.
+ * Tracks don't have standalone ids, they are always in combination with the band id.
+ * That's why id = url. Instead, URLs are cleaned up so that they always look the same.
  */
 public class BandcampStreamLinkHandlerFactory extends LinkHandlerFactory {
 

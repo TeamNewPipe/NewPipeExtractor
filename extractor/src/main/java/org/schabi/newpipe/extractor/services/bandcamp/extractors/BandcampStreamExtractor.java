@@ -57,6 +57,8 @@ public class BandcampStreamExtractor extends StreamExtractor {
             return BandcampExtractorHelper.getJSONFromJavaScriptVariables(html, "TralbumData");
         } catch (JSONException e) {
             throw new ParsingException("Faulty JSON; page likely does not contain album data", e);
+        } catch (ArrayIndexOutOfBoundsException e) {
+            throw new ParsingException("JSON does not exist", e);
         }
     }
 
