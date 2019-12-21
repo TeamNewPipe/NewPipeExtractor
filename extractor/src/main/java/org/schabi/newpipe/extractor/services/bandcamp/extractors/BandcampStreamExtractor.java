@@ -177,36 +177,36 @@ public class BandcampStreamExtractor extends StreamExtractor {
     }
 
     @Override
-    public List<AudioStream> getAudioStreams() throws IOException, ExtractionException {
+    public List<AudioStream> getAudioStreams() {
         List<AudioStream> audioStreams = new ArrayList<>();
 
         audioStreams.add(new AudioStream(
                 albumJson.getJSONArray("trackinfo").getJSONObject(0)
-                .getJSONArray("file").getJSONObject(0).getString("mp3-128"),
+                .getJSONObject("file").getString("mp3-128"),
                 MediaFormat.MP3, 128
         ));
         return audioStreams;
     }
 
     @Override
-    public List<VideoStream> getVideoStreams() throws IOException, ExtractionException {
+    public List<VideoStream> getVideoStreams() {
         return null;
     }
 
     @Override
-    public List<VideoStream> getVideoOnlyStreams() throws IOException, ExtractionException {
-        return null;
-    }
-
-    @Nonnull
-    @Override
-    public List<SubtitlesStream> getSubtitlesDefault() throws IOException, ExtractionException {
+    public List<VideoStream> getVideoOnlyStreams() {
         return null;
     }
 
     @Nonnull
     @Override
-    public List<SubtitlesStream> getSubtitles(MediaFormat format) throws IOException, ExtractionException {
+    public List<SubtitlesStream> getSubtitlesDefault() {
+        return null;
+    }
+
+    @Nonnull
+    @Override
+    public List<SubtitlesStream> getSubtitles(MediaFormat format) {
         return null;
     }
 

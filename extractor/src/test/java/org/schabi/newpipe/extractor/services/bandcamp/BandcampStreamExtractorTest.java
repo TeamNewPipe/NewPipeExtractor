@@ -61,4 +61,10 @@ public class BandcampStreamExtractorTest {
         assertTrue(url.contains("://f4.bcbits.com/img/") && url.endsWith(".jpg"));
     }
 
+    @Test
+    public void testAudioStream() {
+        assertTrue(extractor.getAudioStreams().get(0).getUrl().contains("bcbits.com/stream"));
+        assertEquals(1, extractor.getAudioStreams().size());
+    }
+
 }
