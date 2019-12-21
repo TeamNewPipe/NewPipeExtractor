@@ -662,7 +662,7 @@ public class YoutubeStreamExtractor extends StreamExtractor {
             }
         }
 
-        return errorReason != null ? errorReason.toString() : null;
+        return errorReason != null ? errorReason.toString() : "";
     }
 
     /*//////////////////////////////////////////////////////////////////////////
