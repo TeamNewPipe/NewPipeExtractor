@@ -3,18 +3,14 @@
 package org.schabi.newpipe.extractor.services.bandcamp.extractors;
 
 import org.json.JSONObject;
-import org.schabi.newpipe.extractor.NewPipe;
 import org.schabi.newpipe.extractor.exceptions.ParsingException;
-import org.schabi.newpipe.extractor.exceptions.ReCaptchaException;
 import org.schabi.newpipe.extractor.localization.DateWrapper;
 import org.schabi.newpipe.extractor.stream.StreamInfoItemExtractor;
 import org.schabi.newpipe.extractor.stream.StreamType;
 
 import javax.annotation.Nullable;
-import java.io.IOException;
 
 import static org.schabi.newpipe.extractor.services.bandcamp.extractors.BandcampChannelExtractor.getImageUrl;
-import static org.schabi.newpipe.extractor.services.bandcamp.extractors.BandcampRadioStreamExtractor.query;
 
 public class BandcampRadioInfoItemExtractor implements StreamInfoItemExtractor {
 
@@ -37,7 +33,7 @@ public class BandcampRadioInfoItemExtractor implements StreamInfoItemExtractor {
     @Nullable
     @Override
     public String getTextualUploadDate() {
-        return show.getString("date");
+        return show.getString("date").replace(" 00:00:00 GMT", "");
     }
 
     @Nullable
@@ -48,7 +44,7 @@ public class BandcampRadioInfoItemExtractor implements StreamInfoItemExtractor {
 
     @Override
     public String getName() throws ParsingException {
-        return show.getString("date");
+        return show.getString("subtitle");
     }
 
     @Override

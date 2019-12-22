@@ -1,6 +1,5 @@
 package org.schabi.newpipe.extractor.services.bandcamp.extractors;
 
-import org.json.JSONArray;
 import org.json.JSONObject;
 import org.jsoup.Jsoup;
 import org.schabi.newpipe.extractor.MediaFormat;
@@ -11,7 +10,6 @@ import org.schabi.newpipe.extractor.exceptions.ExtractionException;
 import org.schabi.newpipe.extractor.exceptions.ParsingException;
 import org.schabi.newpipe.extractor.exceptions.ReCaptchaException;
 import org.schabi.newpipe.extractor.linkhandler.LinkHandler;
-import org.schabi.newpipe.extractor.localization.DateWrapper;
 import org.schabi.newpipe.extractor.stream.AudioStream;
 
 import javax.annotation.Nonnull;
@@ -76,7 +74,7 @@ public class BandcampRadioStreamExtractor extends BandcampStreamExtractor {
     @Nullable
     @Override
     public String getTextualUploadDate() {
-        return showInfo.getString("published_date");
+        return showInfo.getString("published_date").replace(" 00:00:00 GMT", "");
     }
 
     @Nonnull
