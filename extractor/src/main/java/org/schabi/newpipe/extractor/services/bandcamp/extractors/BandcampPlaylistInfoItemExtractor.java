@@ -11,14 +11,14 @@ import java.io.IOException;
 public class BandcampPlaylistInfoItemExtractor implements PlaylistInfoItemExtractor {
 
     private String title, artist, url, cover;
-    private StreamingService service;
+    private int trackCount;
 
-    public BandcampPlaylistInfoItemExtractor(String title, String artist, String url, String cover, StreamingService service) {
+    public BandcampPlaylistInfoItemExtractor(String title, String artist, String url, String cover, int trackCount) {
         this.title = title;
         this.artist = artist;
         this.url = url;
         this.cover = cover;
-        this.service = service;
+        this.trackCount = trackCount;
     }
 
     @Override
@@ -27,14 +27,8 @@ public class BandcampPlaylistInfoItemExtractor implements PlaylistInfoItemExtrac
     }
 
     @Override
-    public long getStreamCount() throws ParsingException {
-        try {
-            PlaylistExtractor extractor = service.getPlaylistExtractor(url);
-            extractor.fetchPage();
-            return extractor.getStreamCount();
-        } catch (ExtractionException | IOException e) {
-            throw new ParsingException("Could not find out how many tracks there are", e);
-        }
+    public long getStreamCount() {
+        return trackCount;
     }
 
     @Override

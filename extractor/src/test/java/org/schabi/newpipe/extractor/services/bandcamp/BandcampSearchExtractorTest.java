@@ -85,7 +85,7 @@ public class BandcampSearchExtractorTest {
         assertTrue(minecraft.getThumbnailUrl().contains("f4.bcbits.com/img/"));
         assertEquals("https://c418.bandcamp.com/album/minecraft-volume-alpha", minecraft.getUrl());
 
-        // Verify that playlists get counted correctly
+        // Verify that playlist tracks counts get extracted correctly
         assertEquals(24, ((PlaylistInfoItem) minecraft).getStreamCount());
 
     }
