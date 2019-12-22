@@ -62,6 +62,11 @@ public class BandcampStreamExtractorTest {
     }
 
     @Test
+    public void testNoArtistProfilePicture() throws ExtractionException {
+        assertEquals("", bandcamp.getStreamExtractor("https://powertothequeerkids.bandcamp.com/track/human-nature").getUploaderAvatarUrl());
+    }
+
+    @Test
     public void testAudioStream() {
         assertTrue(extractor.getAudioStreams().get(0).getUrl().contains("bcbits.com/stream"));
         assertEquals(1, extractor.getAudioStreams().size());
