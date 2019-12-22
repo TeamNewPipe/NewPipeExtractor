@@ -4,7 +4,7 @@ package org.schabi.newpipe.extractor.services.bandcamp.extractors;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
-import org.jsoup.nodes.Document;
+import org.jsoup.Jsoup;
 import org.schabi.newpipe.extractor.NewPipe;
 import org.schabi.newpipe.extractor.StreamingService;
 import org.schabi.newpipe.extractor.channel.ChannelExtractor;
@@ -74,8 +74,10 @@ public class BandcampChannelExtractor extends ChannelExtractor {
             String html = getDownloader().get(channelInfo.getString("bandcamp_url").replace("http://", "https://"))
                     .responseBody();
 
-            return new Document(html).getElementById("customHeader")
+            return Jsoup.parse(html)
+                    .getElementById("customHeader")
                     .getElementsByTag("img")
+                    .first()
                     .attr("src");
 
         } catch (IOException | ReCaptchaException e) {

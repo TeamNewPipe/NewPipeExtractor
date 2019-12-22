@@ -39,4 +39,10 @@ public class BandcampChannelExtractorTest {
     public void testLength() throws ParsingException {
         assertTrue(extractor.getInitialPage().getItems().size() > 2);
     }
+
+    @Test
+    public void testGetBannerUrl() throws ParsingException {
+        // Why is this picture in png format when all other pictures are jpg?
+        assertTrue(extractor.getBannerUrl().endsWith(".png"));
+    }
 }
