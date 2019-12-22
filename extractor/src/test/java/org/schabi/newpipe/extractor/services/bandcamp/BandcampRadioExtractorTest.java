@@ -8,7 +8,7 @@ import org.schabi.newpipe.DownloaderTestImpl;
 import org.schabi.newpipe.extractor.InfoItem;
 import org.schabi.newpipe.extractor.NewPipe;
 import org.schabi.newpipe.extractor.exceptions.ExtractionException;
-import org.schabi.newpipe.extractor.services.bandcamp.extractors.BandcampFeaturedExtractor;
+import org.schabi.newpipe.extractor.services.bandcamp.extractors.BandcampRadioExtractor;
 
 import java.io.IOException;
 import java.util.List;
@@ -17,23 +17,24 @@ import static org.junit.Assert.assertTrue;
 import static org.schabi.newpipe.extractor.ServiceList.bandcamp;
 
 /**
- * Tests for {@link BandcampFeaturedExtractor}
+ * Tests for {@link BandcampRadioExtractor}
  */
-public class BandcampFeaturedExtractorTest {
+public class BandcampRadioExtractorTest {
 
-    private static BandcampFeaturedExtractor extractor;
+    private static BandcampRadioExtractor extractor;
 
     @BeforeClass
     public static void setUp() throws ExtractionException, IOException {
         NewPipe.init(DownloaderTestImpl.getInstance());
-        extractor = (BandcampFeaturedExtractor) bandcamp
-                .getKioskList().getDefaultKioskExtractor();
+        extractor = (BandcampRadioExtractor) bandcamp
+                .getKioskList()
+                .getExtractorById("Radio", null);
     }
 
     @Test
-    public void testFeaturedCount() throws ExtractionException, IOException {
-        List<InfoItem> list = extractor.getInitialPage().getItems();
-        assertTrue(list.size() > 1);
+    public void testRadioCount() throws ExtractionException, IOException {
+        List<InfoItem> list = bandcamp.getKioskList().getExtractorById("Radio", null).getInitialPage().getItems();
+        System.out.println(list.size());
+        assertTrue(list.size() > 300);
     }
-
 }

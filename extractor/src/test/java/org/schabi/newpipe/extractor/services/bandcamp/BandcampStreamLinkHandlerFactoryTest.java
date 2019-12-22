@@ -31,6 +31,16 @@ public class BandcampStreamLinkHandlerFactoryTest {
     }
 
     @Test
+    public void testGetRadioUrl() {
+        assertEquals("https://bandcamp.com/?show=1", linkHandler.getUrl("1"));
+    }
+
+    @Test
+    public void testGetRadioId() throws ParsingException {
+        assertEquals("2", linkHandler.getId("https://bandcamp.com/?show=2"));
+    }
+
+    @Test
     public void testAcceptUrl() throws ParsingException {
         // Tests expecting false
         assertFalse(linkHandler.acceptUrl("http://interovgm.com/releases/"));
@@ -44,5 +54,6 @@ public class BandcampStreamLinkHandlerFactoryTest {
         assertTrue(linkHandler.acceptUrl("https://zachbenson.bandcamp.com/track/kitchen"));
         assertTrue(linkHandler.acceptUrl("http://ZachBenson.Bandcamp.COM/Track/U-I-Tonite/"));
         assertTrue(linkHandler.acceptUrl("https://interovgm.com/track/title"));
+        assertTrue(linkHandler.acceptUrl("http://bandcamP.com/?show=38"));
     }
 }

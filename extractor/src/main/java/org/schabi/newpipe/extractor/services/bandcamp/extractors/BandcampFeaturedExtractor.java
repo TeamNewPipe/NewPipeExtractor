@@ -22,11 +22,11 @@ import javax.annotation.Nonnull;
 import java.io.IOException;
 
 import static org.schabi.newpipe.extractor.services.bandcamp.extractors.BandcampChannelExtractor.getImageUrl;
-import static org.schabi.newpipe.extractor.services.bandcamp.linkHandler.BandcampFeaturedLinkHandlerFactory.FEATURED_API_URL;
 
 public class BandcampFeaturedExtractor extends KioskExtractor<InfoItem> {
 
     public static final String KIOSK_FEATURED = "Featured";
+    public static final String FEATURED_API_URL = "https://bandcamp.com/api/mobile/24/bootstrap_data";
 
     public BandcampFeaturedExtractor(StreamingService streamingService, ListLinkHandler listLinkHandler, String kioskId) {
         super(streamingService, listLinkHandler, kioskId);
@@ -40,7 +40,7 @@ public class BandcampFeaturedExtractor extends KioskExtractor<InfoItem> {
     @Nonnull
     @Override
     public String getName() throws ParsingException {
-        return null;
+        return KIOSK_FEATURED;
     }
 
     @Nonnull

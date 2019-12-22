@@ -2,33 +2,35 @@
 
 package org.schabi.newpipe.extractor.services.bandcamp.linkHandler;
 
-import org.schabi.newpipe.extractor.exceptions.ParsingException;
 import org.schabi.newpipe.extractor.linkhandler.ListLinkHandlerFactory;
 
 import java.util.List;
 
+import static org.schabi.newpipe.extractor.services.bandcamp.extractors.BandcampFeaturedExtractor.FEATURED_API_URL;
 import static org.schabi.newpipe.extractor.services.bandcamp.extractors.BandcampFeaturedExtractor.KIOSK_FEATURED;
+import static org.schabi.newpipe.extractor.services.bandcamp.extractors.BandcampRadioExtractor.KIOSK_RADIO;
+import static org.schabi.newpipe.extractor.services.bandcamp.extractors.BandcampRadioExtractor.RADIO_API_URL;
 
 public class BandcampFeaturedLinkHandlerFactory extends ListLinkHandlerFactory {
 
-    /**
-     * This kiosk doesn't have a corresponding website
-     */
-    public static final String FEATURED_API_URL = "https://bandcamp.com/api/mobile/24/bootstrap_data";
-
     @Override
     public String getUrl(String id, List<String> contentFilter, String sortFilter) {
-        if (id.equals(KIOSK_FEATURED)) return FEATURED_API_URL;
+        if (id.equals(KIOSK_FEATURED)) return FEATURED_API_URL; // doesn't have a website
+        else if (id.equals(KIOSK_RADIO)) return RADIO_API_URL; // doesn't have its own website
         else return null;
     }
 
     @Override
     public String getId(String url) {
-        return KIOSK_FEATURED;
+        if (url.matches("https?://bandcamp\\.com/\\?show=\\d+") || url.equals(RADIO_API_URL))
+            return KIOSK_RADIO;
+        else if (url.equals(FEATURED_API_URL))
+            return KIOSK_FEATURED;
+        else return null;
     }
 
     @Override
     public boolean onAcceptUrl(String url) {
-        return url.equals(FEATURED_API_URL);
+        return url.equals(FEATURED_API_URL) || (url.equals(RADIO_API_URL) || url.matches("https?://bandcamp\\.com/\\?show=\\d+"));
     }
 }
