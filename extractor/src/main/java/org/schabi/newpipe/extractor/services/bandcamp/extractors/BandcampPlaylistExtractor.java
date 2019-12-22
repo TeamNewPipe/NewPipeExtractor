@@ -49,9 +49,9 @@ public class BandcampPlaylistExtractor extends PlaylistExtractor {
 
 
 
-        if (trackInfo.length() <= 1) {
-            // In this case, we are actually viewing a track page!
-            throw new ContentNotAvailableException("Album needs to be purchased or is actually a track");
+        if (trackInfo.length() < 0) {
+            // Albums without trackInfo need to be purchased before they can be played
+            throw new ContentNotAvailableException("Album needs to be purchased");
         }
     }
 

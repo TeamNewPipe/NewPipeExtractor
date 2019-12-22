@@ -60,4 +60,16 @@ public class BandcampPlaylistExtractorTest {
         PlaylistExtractor extractor = bandcamp.getPlaylistExtractor("https://billwurtz.bandcamp.com/album/high-enough");
         extractor.fetchPage();
     }
+
+    /**
+     * Test playlist with just one track
+     */
+    @Test
+    public void testSingleStreamPlaylist() throws ExtractionException, IOException {
+        PlaylistExtractor extractor = bandcamp.getPlaylistExtractor("https://zachjohnson1.bandcamp.com/album/endless");
+        extractor.fetchPage();
+
+        assertEquals(1, extractor.getStreamCount());
+
+    }
 }
