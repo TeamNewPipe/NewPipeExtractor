@@ -1,3 +1,5 @@
+// Created by Fynn Godau 2019, licensed GNU GPL version 3 or later
+
 package org.schabi.newpipe.extractor.services.bandcamp.extractors;
 
 import org.schabi.newpipe.extractor.channel.ChannelInfoItemExtractor;

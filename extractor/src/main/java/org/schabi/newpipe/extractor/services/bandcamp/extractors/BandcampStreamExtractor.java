@@ -50,7 +50,7 @@ public class BandcampStreamExtractor extends StreamExtractor {
      *
      * @param html Website
      * @return Album metadata JSON
-     * @throws ParsingException    In case of a faulty website
+     * @throws ParsingException In case of a faulty website
      */
     public static JSONObject getAlbumInfoJson(String html) throws ParsingException {
         try {
@@ -103,7 +103,11 @@ public class BandcampStreamExtractor extends StreamExtractor {
     @Nonnull
     @Override
     public String getThumbnailUrl() throws ParsingException {
-        return document.getElementsByAttributeValue("property", "og:image").get(0).attr("content");
+        try {
+            return document.getElementsByAttributeValue("property", "og:image").get(0).attr("content");
+        } catch (NullPointerException e) {
+            return "";
+        }
     }
 
     @Nonnull
@@ -188,7 +192,7 @@ public class BandcampStreamExtractor extends StreamExtractor {
 
         audioStreams.add(new AudioStream(
                 albumJson.getJSONArray("trackinfo").getJSONObject(0)
-                .getJSONObject("file").getString("mp3-128"),
+                        .getJSONObject("file").getString("mp3-128"),
                 MediaFormat.MP3, 128
         ));
         return audioStreams;

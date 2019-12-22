@@ -15,48 +15,54 @@ public class BandcampStreamInfoItemExtractor implements StreamInfoItemExtractor 
     private String url;
     private String cover;
     private String artist;
+    private long duration;
 
     public BandcampStreamInfoItemExtractor(String title, String url, String cover, String artist) {
+        this(title, url, cover, artist, -1);
+    }
+
+    public BandcampStreamInfoItemExtractor(String title, String url, String cover, String artist, long duration) {
         this.title = title;
         this.url = url;
         this.cover = cover;
         this.artist = artist;
+        this.duration = duration;
     }
 
     @Override
-    public StreamType getStreamType() throws ParsingException {
+    public StreamType getStreamType() {
         return StreamType.AUDIO_STREAM;
     }
 
     @Override
-    public long getDuration() throws ParsingException {
+    public long getDuration() {
+        return duration;
+    }
+
+    @Override
+    public long getViewCount() {
         return -1;
     }
 
     @Override
-    public long getViewCount() throws ParsingException {
-        return -1;
-    }
-
-    @Override
-    public String getUploaderName() throws ParsingException {
+    public String getUploaderName() {
         return artist;
     }
 
     @Override
-    public String getUploaderUrl() throws ParsingException {
+    public String getUploaderUrl() {
         return null;
     }
 
     @Nullable
     @Override
-    public String getTextualUploadDate() throws ParsingException {
+    public String getTextualUploadDate() {
         return null; // TODO
     }
 
     @Nullable
     @Override
-    public DateWrapper getUploadDate() throws ParsingException {
+    public DateWrapper getUploadDate() {
         return null;
     }
 

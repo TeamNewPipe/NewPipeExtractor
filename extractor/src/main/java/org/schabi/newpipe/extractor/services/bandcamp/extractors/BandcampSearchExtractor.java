@@ -74,8 +74,7 @@ public class BandcampSearchExtractor extends SearchExtractor {
 
                 case "ALBUM":
                     String artist = subhead.split(" by")[0];
-                    //searchResults.add(new Album(heading, artist, url, image));
-                    //collector.commit Playlist with heading, artist, url, image
+                    collector.commit(new BandcampPlaylistInfoItemExtractor(heading, artist, url, image));
                     break;
 
                 case "TRACK":

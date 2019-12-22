@@ -11,9 +11,11 @@ import org.schabi.newpipe.extractor.linkhandler.*;
 import org.schabi.newpipe.extractor.playlist.PlaylistExtractor;
 import org.schabi.newpipe.extractor.search.SearchExtractor;
 import org.schabi.newpipe.extractor.services.bandcamp.extractors.BandcampChannelExtractor;
+import org.schabi.newpipe.extractor.services.bandcamp.extractors.BandcampPlaylistExtractor;
 import org.schabi.newpipe.extractor.services.bandcamp.extractors.BandcampSearchExtractor;
 import org.schabi.newpipe.extractor.services.bandcamp.extractors.BandcampStreamExtractor;
 import org.schabi.newpipe.extractor.services.bandcamp.linkHandler.BandcampChannelLinkHandlerFactory;
+import org.schabi.newpipe.extractor.services.bandcamp.linkHandler.BandcampPlaylistLinkHandlerFactory;
 import org.schabi.newpipe.extractor.services.bandcamp.linkHandler.BandcampSearchQueryHandlerFactory;
 import org.schabi.newpipe.extractor.services.bandcamp.linkHandler.BandcampStreamLinkHandlerFactory;
 import org.schabi.newpipe.extractor.stream.StreamExtractor;
@@ -47,7 +49,7 @@ public class BandcampService extends StreamingService {
 
     @Override
     public ListLinkHandlerFactory getPlaylistLHFactory() {
-        return null;
+        return new BandcampPlaylistLinkHandlerFactory();
     }
 
     @Override
@@ -87,7 +89,7 @@ public class BandcampService extends StreamingService {
 
     @Override
     public PlaylistExtractor getPlaylistExtractor(ListLinkHandler linkHandler) throws ExtractionException {
-        return null;
+        return new BandcampPlaylistExtractor(this, linkHandler);
     }
 
     @Override

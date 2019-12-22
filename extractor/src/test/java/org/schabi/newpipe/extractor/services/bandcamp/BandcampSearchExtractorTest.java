@@ -38,7 +38,7 @@ public class BandcampSearchExtractorTest {
      * the accordingly named song by Zach Benson
      */
     @Test
-    public void testBestFriendsBasement() throws ExtractionException, IOException {
+    public void testStreamSearch() throws ExtractionException, IOException {
         SearchExtractor extractor = bandcamp.getSearchExtractor("best friend's basement");
 
         ListExtractor.InfoItemsPage<InfoItem> page = extractor.getInitialPage();
@@ -55,7 +55,7 @@ public class BandcampSearchExtractorTest {
      * Tests whether searching bandcamp for "C418" returns the artist's profile
      */
     @Test
-    public void testC418() throws ExtractionException, IOException {
+    public void testChannelSearch() throws ExtractionException, IOException {
         SearchExtractor extractor = bandcamp.getSearchExtractor("C418");
         InfoItem c418 = extractor.getInitialPage()
                 .getItems().get(0);
@@ -65,6 +65,23 @@ public class BandcampSearchExtractorTest {
         assertTrue(c418.getThumbnailUrl().endsWith(".jpg"));
         assertTrue(c418.getThumbnailUrl().contains("f4.bcbits.com/img/"));
         assertEquals("https://c418.bandcamp.com", c418.getUrl());
+
+    }
+
+    /**
+     * Tests whether searching bandcamp for "minecraft volume alpha" returns the corresponding album
+     */
+    @Test
+    public void testAlbumSearch() throws ExtractionException, IOException {
+        SearchExtractor extractor = bandcamp.getSearchExtractor("minecraft volume alpha");
+        InfoItem minecraft = extractor.getInitialPage()
+                .getItems().get(0);
+
+        // C418's artist profile should be the first result, no?
+        assertEquals("Minecraft - Volume Alpha", minecraft.getName());
+        assertTrue(minecraft.getThumbnailUrl().endsWith(".jpg"));
+        assertTrue(minecraft.getThumbnailUrl().contains("f4.bcbits.com/img/"));
+        assertEquals("https://c418.bandcamp.com/album/minecraft-volume-alpha", minecraft.getUrl());
 
     }
 }
