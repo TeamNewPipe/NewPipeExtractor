@@ -107,8 +107,8 @@ public class BandcampPlaylistExtractor extends PlaylistExtractor {
                     track.getString("title"),
                     getUploaderUrl() + track.getString("title_link"),
                     "",
-                    "",
-                    track.getLong("duration")
+                    track.getLong("duration"),
+                    getService()
             ));
         }
 

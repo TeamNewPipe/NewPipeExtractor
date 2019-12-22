@@ -2,12 +2,16 @@
 
 package org.schabi.newpipe.extractor.services.bandcamp.extractors;
 
+import org.schabi.newpipe.extractor.StreamingService;
+import org.schabi.newpipe.extractor.exceptions.ExtractionException;
 import org.schabi.newpipe.extractor.exceptions.ParsingException;
 import org.schabi.newpipe.extractor.localization.DateWrapper;
+import org.schabi.newpipe.extractor.stream.StreamExtractor;
 import org.schabi.newpipe.extractor.stream.StreamInfoItemExtractor;
 import org.schabi.newpipe.extractor.stream.StreamType;
 
 import javax.annotation.Nullable;
+import java.io.IOException;
 
 public class BandcampStreamInfoItemExtractor implements StreamInfoItemExtractor {
 
@@ -16,6 +20,12 @@ public class BandcampStreamInfoItemExtractor implements StreamInfoItemExtractor 
     private String cover;
     private String artist;
     private long duration;
+    private StreamingService service;
+
+    public BandcampStreamInfoItemExtractor(String title, String url, String artist, long duration, StreamingService service) {
+        this(title, url, null, artist, duration);
+        this.service = service;
+    }
 
     public BandcampStreamInfoItemExtractor(String title, String url, String cover, String artist) {
         this(title, url, cover, artist, -1);
@@ -76,9 +86,22 @@ public class BandcampStreamInfoItemExtractor implements StreamInfoItemExtractor 
         return url;
     }
 
+    /**
+     * There is no guarantee that every track of an album has the same cover art, so it needs to be fetched
+     * per-track if in playlist view
+     */
     @Override
     public String getThumbnailUrl() throws ParsingException {
-        return cover;
+        if (cover != null) return cover;
+        else {
+            try {
+                StreamExtractor extractor = service.getStreamExtractor(getUrl());
+                extractor.fetchPage();
+                return extractor.getThumbnailUrl();
+            } catch (ExtractionException | IOException e) {
+                throw new ParsingException("could not download cover art location", e);
+            }
+        }
     }
 
     /**
