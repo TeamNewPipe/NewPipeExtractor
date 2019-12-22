@@ -3,6 +3,7 @@
 package org.schabi.newpipe.extractor.services.bandcamp.extractors;
 
 import org.json.JSONArray;
+import org.json.JSONException;
 import org.json.JSONObject;
 import org.jsoup.Jsoup;
 import org.schabi.newpipe.extractor.NewPipe;
@@ -61,7 +62,12 @@ public class BandcampChannelExtractor extends ChannelExtractor {
 
     @Override
     public String getAvatarUrl() {
-        return getImageUrl(channelInfo.getLong("bio_image_id"), false);
+        try {
+            return getImageUrl(channelInfo.getLong("bio_image_id"), false);
+        } catch (JSONException e) {
+            // In this case, the id is null and no image is available
+            return "";
+        }
     }
 
     /**
@@ -82,6 +88,9 @@ public class BandcampChannelExtractor extends ChannelExtractor {
 
         } catch (IOException | ReCaptchaException e) {
             throw new ParsingException("Could not download artist web site", e);
+        } catch (NullPointerException e) {
+            // No banner available
+            return "";
         }
     }
 
