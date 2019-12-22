@@ -7,6 +7,7 @@ import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.schabi.newpipe.extractor.StreamingService;
 import org.schabi.newpipe.extractor.downloader.Downloader;
+import org.schabi.newpipe.extractor.exceptions.ContentNotAvailableException;
 import org.schabi.newpipe.extractor.exceptions.ExtractionException;
 import org.schabi.newpipe.extractor.exceptions.ParsingException;
 import org.schabi.newpipe.extractor.linkhandler.ListLinkHandler;
@@ -50,7 +51,7 @@ public class BandcampPlaylistExtractor extends PlaylistExtractor {
 
         if (trackInfo.length() <= 1) {
             // In this case, we are actually viewing a track page!
-            throw new ExtractionException("Page is actually a track, not an album");
+            throw new ContentNotAvailableException("Album needs to be purchased or is actually a track");
         }
     }
 

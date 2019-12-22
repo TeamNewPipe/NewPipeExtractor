@@ -10,8 +10,10 @@ import org.schabi.newpipe.extractor.InfoItem;
 import org.schabi.newpipe.extractor.ListExtractor;
 import org.schabi.newpipe.extractor.NewPipe;
 import org.schabi.newpipe.extractor.exceptions.ExtractionException;
+import org.schabi.newpipe.extractor.playlist.PlaylistInfoItem;
 import org.schabi.newpipe.extractor.search.SearchExtractor;
 import org.schabi.newpipe.extractor.services.bandcamp.extractors.BandcampChannelInfoItemExtractor;
+import org.schabi.newpipe.extractor.services.bandcamp.extractors.BandcampPlaylistInfoItemExtractor;
 import org.schabi.newpipe.extractor.services.bandcamp.extractors.BandcampSearchExtractor;
 
 import java.io.IOException;
@@ -77,11 +79,14 @@ public class BandcampSearchExtractorTest {
         InfoItem minecraft = extractor.getInitialPage()
                 .getItems().get(0);
 
-        // C418's artist profile should be the first result, no?
+        // Minecraft volume alpha should be the first result, no?
         assertEquals("Minecraft - Volume Alpha", minecraft.getName());
         assertTrue(minecraft.getThumbnailUrl().endsWith(".jpg"));
         assertTrue(minecraft.getThumbnailUrl().contains("f4.bcbits.com/img/"));
         assertEquals("https://c418.bandcamp.com/album/minecraft-volume-alpha", minecraft.getUrl());
+
+        // Verify that playlists get counted correctly
+        assertEquals(24, ((PlaylistInfoItem) minecraft).getStreamCount());
 
     }
 }
