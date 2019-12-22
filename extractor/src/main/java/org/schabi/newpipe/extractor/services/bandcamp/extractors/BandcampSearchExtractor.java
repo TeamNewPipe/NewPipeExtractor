@@ -89,19 +89,45 @@ public class BandcampSearchExtractor extends SearchExtractor {
 
         }
 
+        // Count pages
+        Elements pageLists = d.getElementsByClass("pagelist");
+        if (pageLists.size() == 0)
+            return new InfoItemsPage<>(collector, null);
 
-        return new InfoItemsPage<>(getInfoItemSearchCollector(), null);
+        Elements pages = pageLists.first().getElementsByTag("li");
+
+        // Find current page
+        int currentPage = -1;
+        for (int i = 0; i < pages.size(); i++) {
+            Element page = pages.get(i);
+            if (page.getElementsByTag("span").size() > 0) {
+                currentPage = i + 1;
+                break;
+            }
+        }
+
+        // Search results appear to be capped at six pages
+        assert pages.size() < 10;
+
+        String nextUrl = null;
+        if (currentPage < pages.size()) {
+            nextUrl = pageUrl.substring(0, pageUrl.length() - 1) + (currentPage + 1);
+        }
+
+        return new InfoItemsPage<>(collector, nextUrl);
+
     }
 
     @Nonnull
     @Override
     public InfoItemsPage<InfoItem> getInitialPage() throws IOException, ExtractionException {
-        return getPage(getUrl());//new InfoItemsPage<>(getInfoItemSearchCollector(), null);
+        return getPage(getUrl());
     }
 
     @Override
-    public String getNextPageUrl() throws IOException, ExtractionException {
-        return null;
+    public String getNextPageUrl() throws ExtractionException {
+        String url = getUrl();
+        return url.substring(0, url.length() - 1).concat("2");
     }
 
     @Override

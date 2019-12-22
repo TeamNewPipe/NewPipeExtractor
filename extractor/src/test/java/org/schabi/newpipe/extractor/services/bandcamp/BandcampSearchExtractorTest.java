@@ -89,4 +89,17 @@ public class BandcampSearchExtractorTest {
         assertEquals(24, ((PlaylistInfoItem) minecraft).getStreamCount());
 
     }
+
+    /**
+     * Tests searches with multiple pages
+     */
+    @Test
+    public void testMultiplePages() throws ExtractionException, IOException {
+        // A query practically guaranteed to have the maximum amount of pages
+        SearchExtractor extractor = bandcamp.getSearchExtractor("e");
+
+        assertEquals("https://bandcamp.com/search?q=e&page=2", extractor.getInitialPage().getNextPageUrl());
+
+        assertEquals("https://bandcamp.com/search?q=e&page=3", extractor.getPage(extractor.getNextPageUrl()).getNextPageUrl());
+    }
 }

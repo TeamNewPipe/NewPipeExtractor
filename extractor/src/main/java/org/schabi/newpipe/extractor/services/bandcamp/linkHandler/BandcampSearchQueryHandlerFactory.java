@@ -21,7 +21,8 @@ public class BandcampSearchQueryHandlerFactory extends SearchQueryHandlerFactory
         try {
 
             return SEARCH_URL +
-                    URLEncoder.encode(query, CHARSET_UTF_8);
+                    URLEncoder.encode(query, CHARSET_UTF_8)
+                    + "&page=1";
 
         } catch (UnsupportedEncodingException e) {
             throw new ParsingException("query \"" + query + "\" could not be encoded", e);
