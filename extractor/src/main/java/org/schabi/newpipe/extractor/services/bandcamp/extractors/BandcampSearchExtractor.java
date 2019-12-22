@@ -69,16 +69,7 @@ public class BandcampSearchExtractor extends SearchExtractor {
                     break;
 
                 case "ARTIST":
-                    String id = resultInfo.getElementsByClass("itemurl").first()
-                            .getElementsByTag("a").first()
-                            .attr("href") // the link contains the id
-                            .split("search_item_id=")
-                            [1] // the number is behind its name
-                            .split("&") // there is another attribute behind the name
-                            [0]; // get the number
-
-                    //searchResults.add(new Artist(heading, Long.parseLong(id), image, subhead));
-                    //collector.commit Channel with heading, id, image, subhead
+                    collector.commit(new BandcampChannelInfoItemExtractor(heading, url, image, subhead));
                     break;
 
                 case "ALBUM":

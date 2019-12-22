@@ -5,10 +5,13 @@ package org.schabi.newpipe.extractor.services.bandcamp;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import org.schabi.newpipe.DownloaderTestImpl;
+import org.schabi.newpipe.extractor.Extractor;
 import org.schabi.newpipe.extractor.InfoItem;
 import org.schabi.newpipe.extractor.ListExtractor;
 import org.schabi.newpipe.extractor.NewPipe;
 import org.schabi.newpipe.extractor.exceptions.ExtractionException;
+import org.schabi.newpipe.extractor.search.SearchExtractor;
+import org.schabi.newpipe.extractor.services.bandcamp.extractors.BandcampChannelInfoItemExtractor;
 import org.schabi.newpipe.extractor.services.bandcamp.extractors.BandcampSearchExtractor;
 
 import java.io.IOException;
@@ -36,8 +39,7 @@ public class BandcampSearchExtractorTest {
      */
     @Test
     public void testBestFriendsBasement() throws ExtractionException, IOException {
-        extractor = (BandcampSearchExtractor) bandcamp
-                .getSearchExtractor("best friend's basement");
+        SearchExtractor extractor = bandcamp.getSearchExtractor("best friend's basement");
 
         ListExtractor.InfoItemsPage<InfoItem> page = extractor.getInitialPage();
         InfoItem bestFriendsBasement = page.getItems().get(0);
@@ -47,9 +49,22 @@ public class BandcampSearchExtractorTest {
         assertTrue(bestFriendsBasement.getThumbnailUrl().endsWith(".jpg"));
         assertTrue(bestFriendsBasement.getThumbnailUrl().contains("f4.bcbits.com/img/"));
         assertEquals(InfoItem.InfoType.STREAM, bestFriendsBasement.getInfoType());
+    }
 
+    /**
+     * Tests whether searching bandcamp for "C418" returns the artist's profile
+     */
+    @Test
+    public void testC418() throws ExtractionException, IOException {
+        SearchExtractor extractor = bandcamp.getSearchExtractor("C418");
+        InfoItem c418 = extractor.getInitialPage()
+                .getItems().get(0);
 
-
+        // C418's artist profile should be the first result, no?
+        assertEquals("C418", c418.getName());
+        assertTrue(c418.getThumbnailUrl().endsWith(".jpg"));
+        assertTrue(c418.getThumbnailUrl().contains("f4.bcbits.com/img/"));
+        assertEquals("https://c418.bandcamp.com", c418.getUrl());
 
     }
 }
