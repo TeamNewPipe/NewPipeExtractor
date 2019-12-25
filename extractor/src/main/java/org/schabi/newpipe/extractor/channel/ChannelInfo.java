@@ -7,7 +7,7 @@ import org.schabi.newpipe.extractor.StreamingService;
 import org.schabi.newpipe.extractor.exceptions.ExtractionException;
 import org.schabi.newpipe.extractor.exceptions.ParsingException;
 import org.schabi.newpipe.extractor.linkhandler.ListLinkHandler;
-import org.schabi.newpipe.extractor.localization.Localization;
+import org.schabi.newpipe.extractor.services.youtube.extractors.YoutubeChannelExtractor;
 import org.schabi.newpipe.extractor.stream.StreamInfoItem;
 import org.schabi.newpipe.extractor.utils.ExtractorHelper;
 
@@ -57,9 +57,31 @@ public class ChannelInfo extends ListInfo<StreamInfoItem> {
 
     public static ChannelInfo getInfo(ChannelExtractor extractor) throws IOException, ExtractionException {
 
-        ChannelInfo info = new ChannelInfo(extractor.getServiceId(),
-                extractor.getLinkHandler(),
-                extractor.getName());
+        ChannelInfo info;
+        try {
+            info = new ChannelInfo(extractor.getServiceId(),
+                    extractor.getLinkHandler(),
+                    extractor.getName());
+        } catch (ParsingException e) {
+            info = new ChannelInfo(extractor.getServiceId(),
+                    extractor.getLinkHandler(),
+                    "");
+            Throwable nameFailure;
+            if (extractor instanceof YoutubeChannelExtractor) {
+                String errorMessage = ((YoutubeChannelExtractor) extractor).getYoutubeError();
+                if (errorMessage != null) {
+                    nameFailure = new ParsingException(errorMessage);
+                } else {
+                    nameFailure = e;
+                }
+            } else {
+                nameFailure = e;
+            }
+            info.addError(nameFailure);
+            // this is so severe, that other extractions most likely fail anyway,
+            // so skip them
+            return info;
+        }
 
         try {
             info.setOriginalUrl(extractor.getOriginalUrl());

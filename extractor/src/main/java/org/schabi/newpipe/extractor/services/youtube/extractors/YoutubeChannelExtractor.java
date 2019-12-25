@@ -3,6 +3,7 @@ package org.schabi.newpipe.extractor.services.youtube.extractors;
 import com.grack.nanojson.JsonObject;
 import com.grack.nanojson.JsonParser;
 import com.grack.nanojson.JsonParserException;
+
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
@@ -20,8 +21,9 @@ import org.schabi.newpipe.extractor.stream.StreamInfoItemsCollector;
 import org.schabi.newpipe.extractor.utils.Parser;
 import org.schabi.newpipe.extractor.utils.Utils;
 
-import javax.annotation.Nonnull;
 import java.io.IOException;
+
+import javax.annotation.Nonnull;
 
 /*
  * Created by Christian Schabesberger on 25.07.16.
@@ -159,6 +161,15 @@ public class YoutubeChannelExtractor extends ChannelExtractor {
             return doc.select("meta[name=\"description\"]").first().attr("content");
         } catch (Exception e) {
             throw new ParsingException("Could not get channel description", e);
+        }
+    }
+
+    public String getYoutubeError() throws ParsingException {
+        try {
+            return doc.select("div.yt-alert-message").first().text();
+        } catch (Exception e) {
+            // div.yt-alert-message does not exist, so there is no message to obtain
+            return null;
         }
     }
 
