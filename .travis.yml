@@ -1,7 +1,8 @@
 language: java
 
-script: ./gradlew check
-after_success: ./gradlew aggregatedJavadocs
+script:
+  ./gradlew check
+  ./gradlew aggregatedJavadocs
 
 deploy:
   provider: pages
