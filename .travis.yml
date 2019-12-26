@@ -1,8 +1,8 @@
 language: java
 
 script:
-  ./gradlew check
-  ./gradlew aggregatedJavadocs
+  - ./gradlew check
+  - ./gradlew aggregatedJavadocs
 
 deploy:
   provider: pages
