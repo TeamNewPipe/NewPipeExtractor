@@ -37,8 +37,8 @@ public class YoutubeSearchQueryHandlerFactory extends SearchQueryHandlerFactory 
         Video("Video", FilterType.Content, new byte[]{0x01}),
         Channel("Channel", FilterType.Content, new byte[]{0x02}),
         Playlist("Playlist", FilterType.Content, new byte[]{0x03}),
-        Movie("Movie", FilterType.Content, new byte[]{0x04}),
-        Show("Show", FilterType.Content, new byte[]{0x05}),
+        Film("Film", FilterType.Content, new byte[]{0x04}),
+        Programme("Programme", FilterType.Content, new byte[]{0x05}),
 
         Hour("Last hour", FilterType.Time, new byte[]{0x01}),
         Today("Today", FilterType.Time, new byte[]{0x02}),
