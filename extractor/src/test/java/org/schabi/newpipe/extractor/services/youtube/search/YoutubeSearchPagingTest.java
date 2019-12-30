@@ -24,7 +24,8 @@ public class YoutubeSearchPagingTest {
     private static ListExtractor.InfoItemsPage<InfoItem> page2;
     private static Set<String> urlList1;
     private static Set<String> urlList2;
-    private static int pageSize;
+    private static int page1Size;
+    private static int page2Size;
 
     @BeforeClass
     public static void setUpClass() throws Exception {
@@ -36,14 +37,15 @@ public class YoutubeSearchPagingTest {
         extractor.fetchPage();
         page1 = extractor.getInitialPage();
         urlList1 = extractUrls(page1.getItems());
-        assertTrue("page with items loaded", 15 < page1.getItems().size());
-        pageSize = page1.getItems().size();
-        assertEquals("they are all distinct, no repetition", pageSize, urlList1.size());
+        assertTrue("failed to load search result page one: too few items", 15 < page1.getItems().size());
+        page1Size = page1.getItems().size();
+        assertEquals("duplicated items in search result on page one", page1Size, urlList1.size());
 
-        assertTrue("has more than one page of results", page1.hasNextPage());
-        assertNotNull("has next page url", page1.getNextPageUrl());
+        assertTrue("search result has no second page", page1.hasNextPage());
+        assertNotNull("next page url is null", page1.getNextPageUrl());
         page2 = extractor.getPage(page1.getNextPageUrl());
         urlList2 = extractUrls(page2.getItems());
+        page2Size = page2.getItems().size();
     }
 
     private static Set<String> extractUrls(List<InfoItem> list) {
@@ -55,26 +57,15 @@ public class YoutubeSearchPagingTest {
     }
 
     @Test
-    public void firstPageOk() {
-        assertTrue("first page contains the expected number of items", 15 < page1.getItems().size());
-        assertEquals("they are all distinct, no repetition", pageSize, urlList1.size());
-    }
-
-    @Test
-    public void secondPageLength() {
-        assertEquals("second page contains only the expected number of items", pageSize, page2.getItems().size());
-    }
-
-    @Test
     public void secondPageUniqueVideos() {
-        assertEquals("they are all distinct, no repetition", pageSize, urlList2.size());
+        assertEquals("Second search result page has duplicated items", page2Size, urlList2.size());
     }
 
     @Test
     public void noRepeatingVideosInPages() {
         Set<String> intersection = new HashSet<>(urlList2);
         intersection.retainAll(urlList1);
-        assertEquals("Found a duplicated video on second search page", 0, intersection.size());
+        assertEquals("Found the same item on first AND second search page", 0, intersection.size());
     }
 
 }
