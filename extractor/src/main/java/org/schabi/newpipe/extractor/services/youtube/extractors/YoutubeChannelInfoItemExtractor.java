@@ -5,6 +5,9 @@ import org.schabi.newpipe.extractor.channel.ChannelInfoItemExtractor;
 import org.schabi.newpipe.extractor.exceptions.ParsingException;
 import org.schabi.newpipe.extractor.utils.Utils;
 
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
 /*
  * Created by Christian Schabesberger on 12.02.17.
  *
@@ -53,8 +56,26 @@ public class YoutubeChannelInfoItemExtractor implements ChannelInfoItemExtractor
 
     @Override
     public String getUrl() throws ParsingException {
-        return el.select("a[class*=\"yt-uix-tile-link\"]").first()
-                .attr("abs:href");
+        try {
+            String buttonTrackingUrl = el.select("button[class*=\"yt-uix-button\"]").first()
+                    .attr("abs:data-href");
+
+            Pattern channelIdPattern = Pattern.compile("(?:.*?)\\%252Fchannel\\%252F([A-Za-z0-9\\-\\_]+)(?:.*)");
+            Matcher match = channelIdPattern.matcher(buttonTrackingUrl);
+
+            if (match.matches()) {
+                return YoutubeChannelExtractor.CHANNEL_URL_BASE + match.group(1);
+            }
+        } catch(Exception ignored) {}
+
+        // fallback method for channels without "Subscribe" button (or just in case yt changes things)
+        // provides an url with "/user/NAME", inconsistent with stream and channel extractor: tests will fail
+        try {
+            return el.select("a[class*=\"yt-uix-tile-link\"]").first()
+                    .attr("abs:href");
+        } catch (Exception e) {
+            throw new ParsingException("Could not get channel url", e);
+        }
     }
 
     @Override

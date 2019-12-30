@@ -24,7 +24,9 @@ public class SoundcloudChannelInfoItemExtractor implements ChannelInfoItemExtrac
 
     @Override
     public String getThumbnailUrl() {
-        return itemObject.getString("avatar_url", "");
+        String avatarUrl = itemObject.getString("avatar_url", "");
+        String avatarUrlBetterResolution = avatarUrl.replace("large.jpg", "crop.jpg");
+        return avatarUrlBetterResolution;
     }
 
     @Override

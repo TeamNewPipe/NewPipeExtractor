@@ -1,11 +1,19 @@
 package org.schabi.newpipe.extractor.services.youtube.extractors;
 
 import org.jsoup.nodes.Element;
+import org.jsoup.select.Elements;
 import org.schabi.newpipe.extractor.exceptions.ParsingException;
+import org.schabi.newpipe.extractor.localization.TimeAgoParser;
+import org.schabi.newpipe.extractor.localization.DateWrapper;
 import org.schabi.newpipe.extractor.services.youtube.linkHandler.YoutubeParsingHelper;
 import org.schabi.newpipe.extractor.stream.StreamInfoItemExtractor;
 import org.schabi.newpipe.extractor.stream.StreamType;
 import org.schabi.newpipe.extractor.utils.Utils;
+
+import javax.annotation.Nullable;
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
+import java.util.Date;
 
 /*
  * Copyright (C) Christian Schabesberger 2016 <chris.schabesberger@mailbox.org>
@@ -28,9 +36,18 @@ import org.schabi.newpipe.extractor.utils.Utils;
 public class YoutubeStreamInfoItemExtractor implements StreamInfoItemExtractor {
 
     private final Element item;
+    private final TimeAgoParser timeAgoParser;
 
-    public YoutubeStreamInfoItemExtractor(Element item) {
+    private String cachedUploadDate;
+
+    /**
+     * Creates an extractor of StreamInfoItems from a YouTube page.
+     * @param item          The page element
+     * @param timeAgoParser A parser of the textual dates or {@code null}.
+     */
+    public YoutubeStreamInfoItemExtractor(Element item, @Nullable TimeAgoParser timeAgoParser) {
         this.item = item;
+        this.timeAgoParser = timeAgoParser;
     }
 
     @Override
@@ -61,7 +78,7 @@ public class YoutubeStreamInfoItemExtractor implements StreamInfoItemExtractor {
     @Override
     public String getUrl() throws ParsingException {
         try {
-            Element el = item.select("div[class*=\"yt-lockup-video\"").first();
+            Element el = item.select("div[class*=\"yt-lockup-video\"]").first();
             Element dl = el.select("h3").first().select("a").first();
             return dl.attr("abs:href");
         } catch (Exception e) {
@@ -72,7 +89,7 @@ public class YoutubeStreamInfoItemExtractor implements StreamInfoItemExtractor {
     @Override
     public String getName() throws ParsingException {
         try {
-            Element el = item.select("div[class*=\"yt-lockup-video\"").first();
+            Element el = item.select("div[class*=\"yt-lockup-video\"]").first();
             Element dl = el.select("h3").first().select("a").first();
             return dl.text();
         } catch (Exception e) {
@@ -107,6 +124,8 @@ public class YoutubeStreamInfoItemExtractor implements StreamInfoItemExtractor {
 
     @Override
     public String getUploaderUrl() throws ParsingException {
+        // this url is not always in the form "/channel/..."
+        // sometimes Youtube provides urls in the from "/user/..."
         try {
             try {
                 return item.select("div[class=\"yt-lockup-byline\"]").first()
@@ -119,46 +138,98 @@ public class YoutubeStreamInfoItemExtractor implements StreamInfoItemExtractor {
                     .text().split(" - ")[0];
         } catch (Exception e) {
             System.out.println(item.html());
-            throw new ParsingException("Could not get uploader", e);
+            throw new ParsingException("Could not get uploader url", e);
         }
     }
 
+    @Nullable
     @Override
-    public String getUploadDate() throws ParsingException {
+    public String getTextualUploadDate() throws ParsingException {
+        if (getStreamType().equals(StreamType.LIVE_STREAM)) {
+            return null;
+        }
+
+        if (cachedUploadDate != null) {
+            return cachedUploadDate;
+        }
+
         try {
+            if (isVideoReminder()) {
+                final Calendar calendar = getDateFromReminder();
+                if (calendar != null) {
+                    return cachedUploadDate = new SimpleDateFormat("yyyy-MM-dd HH:mm")
+                            .format(calendar.getTime());
+                }
+            }
+
+
             Element meta = item.select("div[class=\"yt-lockup-meta\"]").first();
             if (meta == null) return "";
 
-            Element li = meta.select("li").first();
-            if(li == null) return "";
+            final Elements li = meta.select("li");
+            if (li.isEmpty()) return "";
 
-            return meta.select("li").first().text();
+            return cachedUploadDate = li.first().text();
         } catch (Exception e) {
             throw new ParsingException("Could not get upload date", e);
+        }
+    }
+
+    @Nullable
+    @Override
+    public DateWrapper getUploadDate() throws ParsingException {
+        if (getStreamType().equals(StreamType.LIVE_STREAM)) {
+            return null;
+        }
+
+        if (isVideoReminder()) {
+            return new DateWrapper(getDateFromReminder());
+        }
+
+        String textualUploadDate = getTextualUploadDate();
+        if (timeAgoParser != null && textualUploadDate != null && !textualUploadDate.isEmpty()) {
+            return timeAgoParser.parse(textualUploadDate);
+        } else {
+            return null;
         }
     }
 
     @Override
     public long getViewCount() throws ParsingException {
         String input;
-        try {
-            // TODO: Return the actual live stream's watcher count
-            // -1 for no view count
-            if (getStreamType() == StreamType.LIVE_STREAM) return -1;
 
-            Element meta = item.select("div[class=\"yt-lockup-meta\"]").first();
-            if (meta == null) return -1;
+        final Element spanViewCount = item.select("span.view-count").first();
+        if (spanViewCount != null) {
+            input = spanViewCount.text();
 
-            // This case can happen if google releases a special video
-            if(meta.select("li").size() < 2)  return -1;
+        } else if (getStreamType().equals(StreamType.LIVE_STREAM)) {
+            Element meta = item.select("ul.yt-lockup-meta-info").first();
+            if (meta == null) return 0;
 
-            input = meta.select("li").get(1).text();
+            final Elements li = meta.select("li");
+            if (li.isEmpty()) return 0;
 
-        } catch (IndexOutOfBoundsException e) {
-            throw new ParsingException("Could not parse yt-lockup-meta although available: " + getUrl(), e);
+            input = li.first().text();
+        } else {
+            try {
+                Element meta = item.select("div.yt-lockup-meta").first();
+                if (meta == null) return -1;
+
+                // This case can happen if google releases a special video
+                if (meta.select("li").size() < 2) return -1;
+
+                input = meta.select("li").get(1).text();
+            } catch (IndexOutOfBoundsException e) {
+                throw new ParsingException("Could not parse yt-lockup-meta although available: " + getUrl(), e);
+            }
+        }
+
+        if (input == null) {
+            throw new ParsingException("Input is null");
         }
 
         try {
+
             return Long.parseLong(Utils.removeNonDigitCharacters(input));
         } catch (NumberFormatException e) {
             // if this happens the video probably has no views
@@ -187,6 +258,32 @@ public class YoutubeStreamInfoItemExtractor implements StreamInfoItemExtractor {
         } catch (Exception e) {
             throw new ParsingException("Could not get thumbnail url", e);
         }
+    }
+
+
+    private boolean isVideoReminder() {
+        return !item.select("span.yt-uix-livereminder").isEmpty();
+    }
+
+    private Calendar getDateFromReminder() throws ParsingException {
+        final Element timeFuture = item.select("span.yt-badge.localized-date").first();
+
+        if (timeFuture == null) {
+            throw new ParsingException("Span timeFuture is null");
+        }
+
+        final String timestamp = timeFuture.attr("data-timestamp");
+        if (!timestamp.isEmpty()) {
+            try {
+                final Calendar calendar = Calendar.getInstance();
+                calendar.setTime(new Date(Long.parseLong(timestamp) * 1000L));
+                return calendar;
+            } catch (Exception e) {
+                throw new ParsingException("Could not parse = \"" + timestamp + "\"");
+            }
+        }
+
+        throw new ParsingException("Could not parse date from reminder element: \"" + timeFuture + "\"");
     }
 
     /**

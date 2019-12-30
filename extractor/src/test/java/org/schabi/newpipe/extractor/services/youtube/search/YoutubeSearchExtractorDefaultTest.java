@@ -2,7 +2,7 @@ package org.schabi.newpipe.extractor.services.youtube.search;
 
 import org.junit.BeforeClass;
 import org.junit.Test;
-import org.schabi.newpipe.Downloader;
+import org.schabi.newpipe.DownloaderTestImpl;
 import org.schabi.newpipe.extractor.InfoItem;
 import org.schabi.newpipe.extractor.ListExtractor;
 import org.schabi.newpipe.extractor.NewPipe;
@@ -10,11 +10,8 @@ import org.schabi.newpipe.extractor.channel.ChannelExtractor;
 import org.schabi.newpipe.extractor.channel.ChannelInfoItem;
 import org.schabi.newpipe.extractor.services.youtube.extractors.YoutubeSearchExtractor;
 import org.schabi.newpipe.extractor.stream.StreamInfoItem;
-import org.schabi.newpipe.extractor.utils.Localization;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.*;
 import static org.schabi.newpipe.extractor.ServiceList.YouTube;
 
 /*
@@ -44,7 +41,7 @@ public class YoutubeSearchExtractorDefaultTest extends YoutubeSearchExtractorBas
 
     @BeforeClass
     public static void setUpClass() throws Exception {
-        NewPipe.init(Downloader.getInstance(), new Localization("GB", "en"));
+        NewPipe.init(DownloaderTestImpl.getInstance());
         extractor = (YoutubeSearchExtractor) YouTube.getSearchExtractor("pewdiepie");
         extractor.fetchPage();
         itemsPage = extractor.getInitialPage();
@@ -73,7 +70,7 @@ public class YoutubeSearchExtractorDefaultTest extends YoutubeSearchExtractorBas
         assertTrue((firstInfoItem instanceof ChannelInfoItem)
                 || (secondInfoItem instanceof ChannelInfoItem));
         assertEquals("name", "PewDiePie", channelItem.getName());
-        assertEquals("url","https://www.youtube.com/user/PewDiePie", channelItem.getUrl());
+        assertEquals("url", "https://www.youtube.com/channel/UC-lHJZR3Gqxm24_Vd_AJ5Yw", channelItem.getUrl());
     }
 
     @Test

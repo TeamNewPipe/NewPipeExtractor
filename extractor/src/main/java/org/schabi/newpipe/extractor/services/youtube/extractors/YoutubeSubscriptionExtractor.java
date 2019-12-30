@@ -63,16 +63,10 @@ public class YoutubeSubscriptionExtractor extends SubscriptionExtractor {
             String title = outline.attr("title");
             String xmlUrl = outline.attr("abs:xmlUrl");
 
-            if (title.isEmpty() || xmlUrl.isEmpty()) {
-                throw new InvalidSourceException("document has invalid entries");
-            }
-
             try {
                 String id = Parser.matchGroup1(ID_PATTERN, xmlUrl);
                 result.add(new SubscriptionItem(service.getServiceId(), BASE_CHANNEL_URL + id, title));
-            } catch (Parser.RegexException e) {
-                throw new InvalidSourceException("document has invalid entries", e);
-            }
+            } catch (Parser.RegexException ignored) { /* ignore invalid subscriptions */ }
         }
 
         return result;

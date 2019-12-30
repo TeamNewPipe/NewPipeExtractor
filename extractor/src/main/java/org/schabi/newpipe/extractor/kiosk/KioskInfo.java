@@ -20,11 +20,14 @@ package org.schabi.newpipe.extractor.kiosk;
  * along with NewPipe.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-import org.schabi.newpipe.extractor.*;
+import org.schabi.newpipe.extractor.ListExtractor;
+import org.schabi.newpipe.extractor.ListInfo;
+import org.schabi.newpipe.extractor.NewPipe;
+import org.schabi.newpipe.extractor.StreamingService;
 import org.schabi.newpipe.extractor.exceptions.ExtractionException;
 import org.schabi.newpipe.extractor.exceptions.ParsingException;
-import org.schabi.newpipe.extractor.stream.StreamInfoItem;
 import org.schabi.newpipe.extractor.linkhandler.ListLinkHandler;
+import org.schabi.newpipe.extractor.stream.StreamInfoItem;
 import org.schabi.newpipe.extractor.utils.ExtractorHelper;
 
 import java.io.IOException;
@@ -37,7 +40,8 @@ public class KioskInfo extends ListInfo<StreamInfoItem> {
 
     public static ListExtractor.InfoItemsPage<StreamInfoItem> getMoreItems(StreamingService service,
                                                                            String url,
-                                                                           String pageUrl) throws IOException, ExtractionException {
+                                                                           String pageUrl)
+            throws IOException, ExtractionException {
         KioskList kl = service.getKioskList();
         KioskExtractor extractor = kl.getExtractorByUrl(url, pageUrl);
         return extractor.getPage(pageUrl);
@@ -47,8 +51,7 @@ public class KioskInfo extends ListInfo<StreamInfoItem> {
         return getInfo(NewPipe.getServiceByUrl(url), url);
     }
 
-    public static KioskInfo getInfo(StreamingService service,
-                                    String url) throws IOException, ExtractionException {
+    public static KioskInfo getInfo(StreamingService service, String url) throws IOException, ExtractionException {
         KioskList kl = service.getKioskList();
         KioskExtractor extractor = kl.getExtractorByUrl(url, null);
         extractor.fetchPage();

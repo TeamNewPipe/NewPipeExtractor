@@ -1,15 +1,17 @@
 package org.schabi.newpipe.extractor.services.soundcloud;
 
+import com.grack.nanojson.JsonArray;
 import com.grack.nanojson.JsonObject;
 import com.grack.nanojson.JsonParser;
 import com.grack.nanojson.JsonParserException;
 import org.schabi.newpipe.extractor.*;
+import org.schabi.newpipe.extractor.downloader.Downloader;
 import org.schabi.newpipe.extractor.exceptions.ContentNotAvailableException;
 import org.schabi.newpipe.extractor.exceptions.ExtractionException;
 import org.schabi.newpipe.extractor.exceptions.ParsingException;
 import org.schabi.newpipe.extractor.linkhandler.LinkHandler;
+import org.schabi.newpipe.extractor.localization.DateWrapper;
 import org.schabi.newpipe.extractor.stream.*;
-import org.schabi.newpipe.extractor.utils.Localization;
 
 import javax.annotation.Nonnull;
 import java.io.IOException;
@@ -22,8 +24,8 @@ import java.util.List;
 public class SoundcloudStreamExtractor extends StreamExtractor {
     private JsonObject track;
 
-    public SoundcloudStreamExtractor(StreamingService service, LinkHandler linkHandler, Localization localization) {
-        super(service, linkHandler, localization);
+    public SoundcloudStreamExtractor(StreamingService service, LinkHandler linkHandler) {
+        super(service, linkHandler);
     }
 
     @Override
@@ -50,14 +52,25 @@ public class SoundcloudStreamExtractor extends StreamExtractor {
 
     @Nonnull
     @Override
-    public String getUploadDate() throws ParsingException {
-        return SoundcloudParsingHelper.toDateString(track.getString("created_at"));
+    public String getTextualUploadDate() {
+        return track.getString("created_at");
+    }
+
+    @Nonnull
+    @Override
+    public DateWrapper getUploadDate() throws ParsingException {
+        return new DateWrapper(SoundcloudParsingHelper.parseDate(getTextualUploadDate()));
     }
 
     @Nonnull
     @Override
     public String getThumbnailUrl() {
-        return track.getString("artwork_url", "");
+        String artworkUrl = track.getString("artwork_url", "");
+        if (artworkUrl.isEmpty()) {
+            artworkUrl = track.getObject("user").getString("avatar_url", "");
+        }
+        String artworkUrlBetterResolution = artworkUrl.replace("large.jpg", "crop.jpg");
+        return artworkUrlBetterResolution;
     }
 
     @Nonnull
@@ -131,10 +144,10 @@ public class SoundcloudStreamExtractor extends StreamExtractor {
         List<AudioStream> audioStreams = new ArrayList<>();
         Downloader dl = NewPipe.getDownloader();
 
-        String apiUrl = "https://api.soundcloud.com/i1/tracks/" + urlEncode(getId()) + "/streams"
+        String apiUrl = "https://api-v2.soundcloud.com/tracks/" + urlEncode(getId())
                 + "?client_id=" + urlEncode(SoundcloudParsingHelper.clientId());
 
-        String response = dl.download(apiUrl);
+        String response = dl.get(apiUrl, getExtractorLocalization()).responseBody();
         JsonObject responseObject;
         try {
             responseObject = JsonParser.object().from(response);
@@ -142,11 +155,45 @@ public class SoundcloudStreamExtractor extends StreamExtractor {
             throw new ParsingException("Could not parse json response", e);
         }
 
-        String mp3Url = responseObject.getString("http_mp3_128_url");
-        if (mp3Url != null && !mp3Url.isEmpty()) {
-            audioStreams.add(new AudioStream(mp3Url, MediaFormat.MP3, 128));
-        } else {
-            throw new ExtractionException("Could not get SoundCloud's track audio url");
+        // Streams can be streamable and downloadable - or explicitly not.
+        // For playing the track, it is only necessary to have a streamable track.
+        // If this is not the case, this track might not be published yet.
+        if (!responseObject.getBoolean("streamable")) return audioStreams;
+
+        try {
+            JsonArray transcodings = responseObject.getObject("media").getArray("transcodings");
+
+            // get information about what stream formats are available
+            for (Object transcoding : transcodings) {
+
+                JsonObject t = (JsonObject) transcoding;
+                String url = t.getString("url");
+
+                if (url != null && !url.isEmpty()) {
+
+                    // We can only play the mp3 format, but not handle m3u playlists / streams.
+                    // what about Opus?
+                    if (t.getString("preset").contains("mp3")
+                            && t.getObject("format").getString("protocol").equals("progressive")) {
+                        // This url points to the endpoint which generates a unique and short living url to the stream.
+                        // TODO: move this to a separate method to generate valid urls when needed (e.g. resuming a paused stream)
+                        url += "?client_id=" + SoundcloudParsingHelper.clientId();
+                        String res = dl.get(url).responseBody();
+
+                        try {
+                            JsonObject mp3UrlObject = JsonParser.object().from(res);
+                            // Links in this file are also only valid for a short period.
+                            audioStreams.add(new AudioStream(mp3UrlObject.getString("url"), 
+                                    MediaFormat.MP3, 128));
+                        } catch (JsonParserException e) {
+                            throw new ParsingException("Could not parse streamable url", e);
+                        }
+                    }
+                }
+            }
+
+        } catch (NullPointerException e) {
+            throw new ExtractionException("Could not get SoundCloud's track audio url", e);
         }
 
         return audioStreams;

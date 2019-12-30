@@ -2,11 +2,10 @@ package org.schabi.newpipe.extractor.services.youtube;
 
 import org.junit.BeforeClass;
 import org.junit.Test;
-import org.schabi.newpipe.Downloader;
+import org.schabi.newpipe.DownloaderTestImpl;
 import org.schabi.newpipe.extractor.NewPipe;
 import org.schabi.newpipe.extractor.exceptions.ParsingException;
 import org.schabi.newpipe.extractor.services.youtube.linkHandler.YoutubePlaylistLinkHandlerFactory;
-import org.schabi.newpipe.extractor.utils.Localization;
 
 import static org.junit.Assert.*;
 
@@ -18,8 +17,8 @@ public class YoutubePlaylistLinkHandlerFactoryTest {
 
     @BeforeClass
     public static void setUp() {
+        NewPipe.init(DownloaderTestImpl.getInstance());
         linkHandler = YoutubePlaylistLinkHandlerFactory.getInstance();
-        NewPipe.init(Downloader.getInstance(), new Localization("GB", "en"));
     }
 
     @Test(expected = IllegalArgumentException.class)
@@ -40,6 +39,7 @@ public class YoutubePlaylistLinkHandlerFactoryTest {
         assertEquals("PLW5y1tjAOzI3orQNF1yGGVL5x-pR2K1dC", linkHandler.fromUrl("https://youtube.com/playlist?list=PLW5y1tjAOzI3orQNF1yGGVL5x-pR2K1dC").getId());
         assertEquals("PLW5y1tjAOzI3orQNF1yGGVL5x-pR2K1dC", linkHandler.fromUrl("www.youtube.com/playlist?list=PLW5y1tjAOzI3orQNF1yGGVL5x-pR2K1dC").getId());
         assertEquals("PLz8YL4HVC87WJQDzVoY943URKQCsHS9XV", linkHandler.fromUrl("www.youtube.com/playlist?list=PLz8YL4HVC87WJQDzVoY943URKQCsHS9XV").getId());
+        assertEquals("OLAK5uy_lEBUW9iTwqf0IlYPxZ8LrzpgqjAHZgZpM", linkHandler.fromUrl("https://music.youtube.com/playlist?list=OLAK5uy_lEBUW9iTwqf0IlYPxZ8LrzpgqjAHZgZpM").getId());
     }
 
     @Test
@@ -54,6 +54,7 @@ public class YoutubePlaylistLinkHandlerFactoryTest {
         assertTrue(linkHandler.acceptUrl("https://youtube.com/playlist?list=PLW5y1tjAOzI3orQNF1yGGVL5x-pR2K1dC"));
         assertTrue(linkHandler.acceptUrl("www.youtube.com/playlist?list=PLW5y1tjAOzI3orQNF1yGGVL5x-pR2K1dC"));
         assertTrue(linkHandler.acceptUrl("www.youtube.com/playlist?list=PLz8YL4HVC87WJQDzVoY943URKQCsHS9XV"));
+        assertTrue(linkHandler.acceptUrl("https://music.youtube.com/playlist?list=OLAK5uy_lEBUW9iTwqf0IlYPxZ8LrzpgqjAHZgZpM"));
     }
 
     @Test

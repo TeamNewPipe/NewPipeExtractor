@@ -2,6 +2,9 @@ package org.schabi.newpipe.extractor.stream;
 
 import org.schabi.newpipe.extractor.InfoItemExtractor;
 import org.schabi.newpipe.extractor.exceptions.ParsingException;
+import org.schabi.newpipe.extractor.localization.DateWrapper;
+
+import javax.annotation.Nullable;
 
 /*
  * Created by Christian Schabesberger on 28.02.16.
@@ -64,10 +67,30 @@ public interface StreamInfoItemExtractor extends InfoItemExtractor {
     String getUploaderUrl() throws ParsingException;
 
     /**
-     * Extract the uploader name
-     * @return the uploader name
-     * @throws ParsingException thrown if there is an error in the extraction
+     * The original textual date provided by the service. Should be used as a fallback if
+     * {@link #getUploadDate()} isn't provided by the service, or it fails for some reason.
+     *
+     * @return The original textual date provided by the service or {@code null} if not provided.
+     * @throws ParsingException if there is an error in the extraction
+     * @see #getUploadDate()
      */
-    String getUploadDate() throws ParsingException;
+    @Nullable
+    String getTextualUploadDate() throws ParsingException;
+
+    /**
+     * Extracts the upload date and time of this item and parses it.
+     * <p>
+     *     If the service doesn't provide an exact time, an approximation can be returned.
+     *     <br>
+     *     If the service doesn't provide any date at all, then {@code null} should be returned.
+     * </p>
+     *
+     * @return The date and time (can be approximated) this item was uploaded or {@code null}.
+     * @throws ParsingException if there is an error in the extraction
+     *                          or the extracted date couldn't be parsed.
+     * @see #getTextualUploadDate()
+     */
+    @Nullable
+    DateWrapper getUploadDate() throws ParsingException;
 
 }

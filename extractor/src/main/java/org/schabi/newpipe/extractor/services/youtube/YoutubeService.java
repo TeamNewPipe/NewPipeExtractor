@@ -6,8 +6,9 @@ import static org.schabi.newpipe.extractor.StreamingService.ServiceInfo.MediaCap
 import static org.schabi.newpipe.extractor.StreamingService.ServiceInfo.MediaCapability.LIVE;
 import static org.schabi.newpipe.extractor.StreamingService.ServiceInfo.MediaCapability.VIDEO;
 
+import java.util.List;
+
 import org.schabi.newpipe.extractor.StreamingService;
-import org.schabi.newpipe.extractor.SuggestionExtractor;
 import org.schabi.newpipe.extractor.channel.ChannelExtractor;
 import org.schabi.newpipe.extractor.comments.CommentsExtractor;
 import org.schabi.newpipe.extractor.exceptions.ExtractionException;
@@ -19,6 +20,8 @@ import org.schabi.newpipe.extractor.linkhandler.ListLinkHandler;
 import org.schabi.newpipe.extractor.linkhandler.ListLinkHandlerFactory;
 import org.schabi.newpipe.extractor.linkhandler.SearchQueryHandler;
 import org.schabi.newpipe.extractor.linkhandler.SearchQueryHandlerFactory;
+import org.schabi.newpipe.extractor.localization.ContentCountry;
+import org.schabi.newpipe.extractor.localization.Localization;
 import org.schabi.newpipe.extractor.playlist.PlaylistExtractor;
 import org.schabi.newpipe.extractor.search.SearchExtractor;
 import org.schabi.newpipe.extractor.services.youtube.extractors.YoutubeChannelExtractor;
@@ -37,7 +40,7 @@ import org.schabi.newpipe.extractor.services.youtube.linkHandler.YoutubeStreamLi
 import org.schabi.newpipe.extractor.services.youtube.linkHandler.YoutubeTrendingLinkHandlerFactory;
 import org.schabi.newpipe.extractor.stream.StreamExtractor;
 import org.schabi.newpipe.extractor.subscription.SubscriptionExtractor;
-import org.schabi.newpipe.extractor.utils.Localization;
+import org.schabi.newpipe.extractor.suggestion.SuggestionExtractor;
 
 /*
  * Created by Christian Schabesberger on 23.08.15.
@@ -66,10 +69,10 @@ public class YoutubeService extends StreamingService {
     }
 
     @Override
-    public SearchExtractor getSearchExtractor(SearchQueryHandler query, Localization localization) {
-        return new YoutubeSearchExtractor(this, query, localization);
+    public String getBaseUrl() {
+        return "https://youtube.com";
     }
-
+    
     @Override
     public LinkHandlerFactory getStreamLHFactory() {
         return YoutubeStreamLinkHandlerFactory.getInstance();
@@ -91,28 +94,33 @@ public class YoutubeService extends StreamingService {
     }
 
     @Override
-    public StreamExtractor getStreamExtractor(LinkHandler linkHandler, Localization localization) {
-        return new YoutubeStreamExtractor(this, linkHandler, localization);
+    public StreamExtractor getStreamExtractor(LinkHandler linkHandler) {
+        return new YoutubeStreamExtractor(this, linkHandler);
     }
 
     @Override
-    public ChannelExtractor getChannelExtractor(ListLinkHandler linkHandler, Localization localization) {
-        return new YoutubeChannelExtractor(this, linkHandler, localization);
+    public ChannelExtractor getChannelExtractor(ListLinkHandler linkHandler) {
+        return new YoutubeChannelExtractor(this, linkHandler);
     }
 
     @Override
-    public PlaylistExtractor getPlaylistExtractor(ListLinkHandler linkHandler, Localization localization) {
-        return new YoutubePlaylistExtractor(this, linkHandler, localization);
+    public PlaylistExtractor getPlaylistExtractor(ListLinkHandler linkHandler) {
+        return new YoutubePlaylistExtractor(this, linkHandler);
     }
 
     @Override
-    public SuggestionExtractor getSuggestionExtractor(Localization localization) {
-        return new YoutubeSuggestionExtractor(getServiceId(), localization);
+    public SearchExtractor getSearchExtractor(SearchQueryHandler query) {
+        return new YoutubeSearchExtractor(this, query);
+    }
+
+    @Override
+    public SuggestionExtractor getSuggestionExtractor() {
+        return new YoutubeSuggestionExtractor(this);
     }
 
     @Override
     public KioskList getKioskList() throws ExtractionException {
-        KioskList list = new KioskList(getServiceId());
+        KioskList list = new KioskList(this);
 
         // add kiosks here e.g.:
         try {
@@ -120,11 +128,10 @@ public class YoutubeService extends StreamingService {
                 @Override
                 public KioskExtractor createNewKiosk(StreamingService streamingService,
                                                      String url,
-                                                     String id,
-                                                     Localization local)
+                                                     String id)
                 throws ExtractionException {
                     return new YoutubeTrendingExtractor(YoutubeService.this,
-                            new YoutubeTrendingLinkHandlerFactory().fromUrl(url), id, local);
+                            new YoutubeTrendingLinkHandlerFactory().fromUrl(url), id);
                 }
             }, new YoutubeTrendingLinkHandlerFactory(), "Trending");
             list.setDefaultKiosk("Trending");
@@ -146,9 +153,52 @@ public class YoutubeService extends StreamingService {
     }
 
     @Override
-    public CommentsExtractor getCommentsExtractor(ListLinkHandler urlIdHandler, Localization localization)
+    public CommentsExtractor getCommentsExtractor(ListLinkHandler urlIdHandler)
             throws ExtractionException {
-        return new YoutubeCommentsExtractor(this, urlIdHandler, localization);
+        return new YoutubeCommentsExtractor(this, urlIdHandler);
     }
 
+    /*//////////////////////////////////////////////////////////////////////////
+    // Localization
+    //////////////////////////////////////////////////////////////////////////*/
+
+    // https://www.youtube.com/picker_ajax?action_language_json=1
+    private static final List<Localization> SUPPORTED_LANGUAGES = Localization.listFrom(
+            "en-GB"
+            /*"af", "am", "ar", "az", "be", "bg", "bn", "bs", "ca", "cs", "da", "de",
+            "el", "en", "en-GB", "es", "es-419", "es-US", "et", "eu", "fa", "fi", "fil", "fr",
+            "fr-CA", "gl", "gu", "hi", "hr", "hu", "hy", "id", "is", "it", "iw", "ja",
+            "ka", "kk", "km", "kn", "ko", "ky", "lo", "lt", "lv", "mk", "ml", "mn",
+            "mr", "ms", "my", "ne", "nl", "no", "pa", "pl", "pt", "pt-PT", "ro", "ru",
+            "si", "sk", "sl", "sq", "sr", "sr-Latn", "sv", "sw", "ta", "te", "th", "tr",
+            "uk", "ur", "uz", "vi", "zh-CN", "zh-HK", "zh-TW", "zu"*/
+    );
+
+    // https://www.youtube.com/picker_ajax?action_country_json=1
+    private static final List<ContentCountry> SUPPORTED_COUNTRIES = ContentCountry.listFrom(
+            "AD", "AE", "AF", "AG", "AI", "AL", "AM", "AO", "AQ", "AR", "AS", "AT", "AU", "AW", "AX", "AZ", "BA",
+            "BB", "BD", "BE", "BF", "BG", "BH", "BI", "BJ", "BL", "BM", "BN", "BO", "BQ", "BR", "BS", "BT", "BV",
+            "BW", "BY", "BZ", "CA", "CC", "CD", "CF", "CG", "CH", "CI", "CK", "CL", "CM", "CN", "CO", "CR", "CU",
+            "CV", "CW", "CX", "CY", "CZ", "DE", "DJ", "DK", "DM", "DO", "DZ", "EC", "EE", "EG", "EH", "ER", "ES",
+            "ET", "FI", "FJ", "FK", "FM", "FO", "FR", "GA", "GB", "GD", "GE", "GF", "GG", "GH", "GI", "GL", "GM",
+            "GN", "GP", "GQ", "GR", "GS", "GT", "GU", "GW", "GY", "HK", "HM", "HN", "HR", "HT", "HU", "ID", "IE",
+            "IL", "IM", "IN", "IO", "IQ", "IR", "IS", "IT", "JE", "JM", "JO", "JP", "KE", "KG", "KH", "KI", "KM",
+            "KN", "KP", "KR", "KW", "KY", "KZ", "LA", "LB", "LC", "LI", "LK", "LR", "LS", "LT", "LU", "LV", "LY",
+            "MA", "MC", "MD", "ME", "MF", "MG", "MH", "MK", "ML", "MM", "MN", "MO", "MP", "MQ", "MR", "MS", "MT",
+            "MU", "MV", "MW", "MX", "MY", "MZ", "NA", "NC", "NE", "NF", "NG", "NI", "NL", "NO", "NP", "NR", "NU",
+            "NZ", "OM", "PA", "PE", "PF", "PG", "PH", "PK", "PL", "PM", "PN", "PR", "PS", "PT", "PW", "PY", "QA",
+            "RE", "RO", "RS", "RU", "RW", "SA", "SB", "SC", "SD", "SE", "SG", "SH", "SI", "SJ", "SK", "SL", "SM",
+            "SN", "SO", "SR", "SS", "ST", "SV", "SX", "SY", "SZ", "TC", "TD", "TF", "TG", "TH", "TJ", "TK", "TL",
+            "TM", "TN", "TO", "TR", "TT", "TV", "TW", "TZ", "UA", "UG", "UM", "US", "UY", "UZ", "VA", "VC", "VE",
+            "VG", "VI", "VN", "VU", "WF", "WS", "YE", "YT", "ZA", "ZM", "ZW"
+    );
+
+    @Override
+    public List<Localization> getSupportedLocalizations() {
+        return SUPPORTED_LANGUAGES;
+    }
+
+    public List<ContentCountry> getSupportedCountries() {
+        return SUPPORTED_COUNTRIES;
+    }
 }

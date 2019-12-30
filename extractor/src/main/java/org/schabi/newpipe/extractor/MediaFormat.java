@@ -38,6 +38,7 @@ public enum MediaFormat {
     MP3         (0x300,   "MP3",   "mp3",  "audio/mpeg"),
     OPUS        (0x400,   "opus",  "opus", "audio/opus"),
     OGG         (0x500, "ogg", "ogg", "audio/ogg"),
+    WEBMA_OPUS  (0x200,   "WebM Opus",  "webm", "audio/webm"),
     // subtitles formats
     VTT         (0x1000,   "WebVTT",                      "vtt",   "text/vtt"),
     TTML        (0x2000,   "Timed Text Markup Language",  "ttml",  "application/ttml+xml"),
@@ -125,6 +126,13 @@ public enum MediaFormat {
         return null;
     }
 
+    public static MediaFormat getFromSuffix(String suffix) {
+        for (MediaFormat vf: values()) {
+            if (vf.suffix.equals(suffix)) return vf;
+        }
+        return null;
+    }
+    
     /**
      * Get the name of the format
      * @return the name of the format
@@ -148,4 +156,5 @@ public enum MediaFormat {
     public String getMimeType() {
         return mimeType;
     }
+    
 }

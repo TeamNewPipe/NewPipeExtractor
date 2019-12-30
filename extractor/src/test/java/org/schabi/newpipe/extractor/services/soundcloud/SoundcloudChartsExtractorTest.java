@@ -3,12 +3,11 @@ package org.schabi.newpipe.extractor.services.soundcloud;
 import org.junit.BeforeClass;
 import org.junit.Ignore;
 import org.junit.Test;
-import org.schabi.newpipe.Downloader;
+import org.schabi.newpipe.DownloaderTestImpl;
 import org.schabi.newpipe.extractor.ListExtractor;
 import org.schabi.newpipe.extractor.NewPipe;
 import org.schabi.newpipe.extractor.kiosk.KioskExtractor;
 import org.schabi.newpipe.extractor.stream.StreamInfoItem;
-import org.schabi.newpipe.extractor.utils.Localization;
 
 import java.util.List;
 
@@ -24,7 +23,7 @@ public class SoundcloudChartsExtractorTest {
 
     @BeforeClass
     public static void setUp() throws Exception {
-        NewPipe.init(Downloader.getInstance(), new Localization("GB", "en"));
+        NewPipe.init(DownloaderTestImpl.getInstance());
         extractor = SoundCloud
                 .getKioskList()
                 .getExtractorById("Top 50", null);
@@ -36,7 +35,6 @@ public class SoundcloudChartsExtractorTest {
         assertNotNull(NewPipe.getDownloader());
     }
 
-    @Ignore
     @Test
     public void testGetName() throws Exception {
         assertEquals(extractor.getName(), "Top 50");

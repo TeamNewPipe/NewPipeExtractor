@@ -2,27 +2,32 @@ package org.schabi.newpipe.extractor.kiosk;
 
 import org.schabi.newpipe.extractor.NewPipe;
 import org.schabi.newpipe.extractor.StreamingService;
-import org.schabi.newpipe.extractor.linkhandler.ListLinkHandlerFactory;
 import org.schabi.newpipe.extractor.exceptions.ExtractionException;
-import org.schabi.newpipe.extractor.utils.Localization;
+import org.schabi.newpipe.extractor.linkhandler.ListLinkHandlerFactory;
+import org.schabi.newpipe.extractor.localization.ContentCountry;
+import org.schabi.newpipe.extractor.localization.Localization;
 
+import javax.annotation.Nullable;
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
 
 public  class KioskList {
+
     public interface KioskExtractorFactory {
         KioskExtractor createNewKiosk(final StreamingService streamingService,
                                       final String url,
-                                      final String kioskId,
-                                      final Localization localization)
+                                      final String kioskId)
             throws ExtractionException, IOException;
     }
 
-    private final int service_id;
+    private final StreamingService service;
     private final HashMap<String, KioskEntry> kioskList = new HashMap<>();
     private String defaultKiosk = null;
+
+    @Nullable private Localization forcedLocalization;
+    @Nullable private ContentCountry forcedContentCountry;
 
     private class KioskEntry {
         public KioskEntry(KioskExtractorFactory ef, ListLinkHandlerFactory h) {
@@ -33,8 +38,8 @@ public  class KioskList {
         final ListLinkHandlerFactory handlerFactory;
     }
 
-    public KioskList(int service_id) {
-        this.service_id = service_id;
+    public KioskList(StreamingService service) {
+        this.service = service;
     }
 
     public void addKioskEntry(KioskExtractorFactory extractorFactory, ListLinkHandlerFactory handlerFactory, String id)
@@ -89,8 +94,13 @@ public  class KioskList {
         if(ke == null) {
             throw new ExtractionException("No kiosk found with the type: " + kioskId);
         } else {
-            return ke.extractorFactory.createNewKiosk(NewPipe.getService(service_id),
-                    ke.handlerFactory.fromId(kioskId).getUrl(), kioskId, localization);
+            final KioskExtractor kioskExtractor = ke.extractorFactory.createNewKiosk(service,
+                    ke.handlerFactory.fromId(kioskId).getUrl(), kioskId);
+
+            if (forcedLocalization != null) kioskExtractor.forceLocalization(forcedLocalization);
+            if (forcedContentCountry != null) kioskExtractor.forceContentCountry(forcedContentCountry);
+
+            return kioskExtractor;
         }
     }
 
@@ -108,7 +118,7 @@ public  class KioskList {
         for(Map.Entry<String, KioskEntry> e : kioskList.entrySet()) {
             KioskEntry ke = e.getValue();
             if(ke.handlerFactory.acceptUrl(url)) {
-                return getExtractorById(e.getKey(), nextPageUrl, localization);
+                return getExtractorById(ke.handlerFactory.getId(url), nextPageUrl, localization);
             }
         }
         throw new ExtractionException("Could not find a kiosk that fits to the url: " + url);
@@ -116,5 +126,13 @@ public  class KioskList {
 
     public ListLinkHandlerFactory getListLinkHandlerFactoryByType(String type) {
         return kioskList.get(type).handlerFactory;
+    }
+
+    public void forceLocalization(@Nullable Localization localization) {
+        this.forcedLocalization = localization;
+    }
+
+    public void forceContentCountry(@Nullable ContentCountry contentCountry) {
+        this.forcedContentCountry = contentCountry;
     }
 }

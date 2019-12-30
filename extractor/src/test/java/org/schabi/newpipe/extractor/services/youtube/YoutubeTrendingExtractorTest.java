@@ -22,13 +22,13 @@ package org.schabi.newpipe.extractor.services.youtube;
 
 import org.junit.BeforeClass;
 import org.junit.Test;
-import org.schabi.newpipe.Downloader;
+import org.schabi.newpipe.DownloaderTestImpl;
 import org.schabi.newpipe.extractor.ListExtractor;
 import org.schabi.newpipe.extractor.NewPipe;
+import org.schabi.newpipe.extractor.localization.ContentCountry;
 import org.schabi.newpipe.extractor.services.youtube.extractors.YoutubeTrendingExtractor;
 import org.schabi.newpipe.extractor.services.youtube.linkHandler.YoutubeTrendingLinkHandlerFactory;
 import org.schabi.newpipe.extractor.stream.StreamInfoItem;
-import org.schabi.newpipe.extractor.utils.Localization;
 import org.schabi.newpipe.extractor.utils.Utils;
 
 import static junit.framework.TestCase.assertFalse;
@@ -46,10 +46,11 @@ public class YoutubeTrendingExtractorTest {
 
     @BeforeClass
     public static void setUp() throws Exception {
-        NewPipe.init(Downloader.getInstance(), new Localization("GB", "en"));
+        NewPipe.init(DownloaderTestImpl.getInstance());
         extractor = (YoutubeTrendingExtractor) YouTube
                 .getKioskList()
                 .getExtractorById("Trending", null);
+        extractor.forceContentCountry(new ContentCountry("de"));
         extractor.fetchPage();
     }
 

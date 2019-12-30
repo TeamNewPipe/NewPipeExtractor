@@ -28,6 +28,38 @@ public class Utils {
     }
 
     /**
+     * <p>Convert a mixed number word to a long.</p>
+     * <p>Examples:</p>
+     * <ul>
+     *     <li>123 -&gt; 123</li>
+     *     <li>1.23K -&gt; 1230</li>
+     *     <li>1.23M -&gt; 1230000</li>
+     * </ul>
+     * @param numberWord string to be converted to a long
+     * @return a long
+     * @throws NumberFormatException
+     * @throws ParsingException
+     */
+    public static long mixedNumberWordToLong(String numberWord) throws NumberFormatException, ParsingException {
+        String multiplier = "";
+        try {
+            multiplier = Parser.matchGroup("[\\d]+([\\.,][\\d]+)?([KMBkmb])+", numberWord, 2);
+        } catch(ParsingException ignored) {}
+        double count = Double.parseDouble(Parser.matchGroup1("([\\d]+([\\.,][\\d]+)?)", numberWord)
+                .replace(",", "."));
+        switch (multiplier.toUpperCase()) {
+            case "K":
+                return (long) (count * 1e3);
+            case "M":
+                return (long) (count * 1e6);
+            case "B":
+                return (long) (count * 1e9);
+            default:
+                return (long) (count);
+        }
+    }
+
+    /**
      * Check if the url matches the pattern.
      *
      * @param pattern the pattern that will be used to check the url
@@ -112,9 +144,9 @@ public class Utils {
         try {
             return new URL(url);
         } catch (MalformedURLException e) {
-            // if no protocol is given try prepending "http://"
+            // if no protocol is given try prepending "https://"
             if (e.getMessage().equals("no protocol: " + url)) {
-                return new URL(HTTP + url);
+                return new URL(HTTPS + url);
             }
 
             throw e;
@@ -143,4 +175,15 @@ public class Utils {
         }
         return s;
     }
+    
+    public static String getBaseUrl(String url) throws ParsingException {
+        URL uri;
+        try {
+            uri = stringToURL(url);
+        } catch (MalformedURLException e) {
+            throw new ParsingException("Malformed url: " + url, e);
+        }
+        return uri.getProtocol() + "://" + uri.getAuthority();
+    }
+    
 }

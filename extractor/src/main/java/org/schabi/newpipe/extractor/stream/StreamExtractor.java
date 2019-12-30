@@ -26,11 +26,13 @@ import org.schabi.newpipe.extractor.StreamingService;
 import org.schabi.newpipe.extractor.exceptions.ExtractionException;
 import org.schabi.newpipe.extractor.exceptions.ParsingException;
 import org.schabi.newpipe.extractor.linkhandler.LinkHandler;
-import org.schabi.newpipe.extractor.utils.Localization;
+import org.schabi.newpipe.extractor.localization.DateWrapper;
 import org.schabi.newpipe.extractor.utils.Parser;
 
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import java.io.IOException;
+import java.util.Collections;
 import java.util.List;
 
 /**
@@ -40,18 +42,36 @@ public abstract class StreamExtractor extends Extractor {
 
     public static final int NO_AGE_LIMIT = 0;
 
-    public StreamExtractor(StreamingService service, LinkHandler linkHandler, Localization localization) {
-        super(service, linkHandler, localization);
+    public StreamExtractor(StreamingService service, LinkHandler linkHandler) {
+        super(service, linkHandler);
     }
 
     /**
-     * The day on which the stream got uploaded/created. The return information should be in the format
-     * dd.mm.yyyy, however it NewPipe will not crash if its not.
-     * @return The day on which the stream got uploaded.
-     * @throws ParsingException
+     * The original textual date provided by the service. Should be used as a fallback if
+     * {@link #getUploadDate()} isn't provided by the service, or it fails for some reason.
+     *
+     * <p>If the stream is a live stream, {@code null} should be returned.</p>
+     *
+     * @return The original textual date provided by the service, or {@code null}.
+     * @throws ParsingException if there is an error in the extraction
+     * @see #getUploadDate()
      */
-    @Nonnull
-    public abstract String getUploadDate() throws ParsingException;
+    @Nullable
+    public abstract String getTextualUploadDate() throws ParsingException;
+
+    /**
+     * A more general {@code Calendar} instance set to the date provided by the service.<br>
+     * Implementations usually will just parse the date returned from the {@link #getTextualUploadDate()}.
+     *
+     * <p>If the stream is a live stream, {@code null} should be returned.</p>
+     *
+     * @return The date this item was uploaded, or {@code null}.
+     * @throws ParsingException if there is an error in the extraction
+     *                          or the extracted date couldn't be parsed.
+     * @see #getTextualUploadDate()
+     */
+    @Nullable
+    public abstract DateWrapper getUploadDate() throws ParsingException;
 
     /**
      * This will return the url to the thumbnail of the stream. Try to return the medium resolution here.
@@ -256,7 +276,18 @@ public abstract class StreamExtractor extends Extractor {
     public abstract StreamInfoItemsCollector getRelatedStreams() throws IOException, ExtractionException;
 
     /**
-     * Should analyse the webpage's document and extracts any error message there might be. (e.g. GEMA block)
+     * Should return a list of Frameset object that contains preview of stream frames
+     * @return list of preview frames or empty list if frames preview is not supported or not found for specified stream
+     * @throws IOException
+     * @throws ExtractionException
+     */
+    @Nonnull
+    public List<Frameset> getFrames() throws IOException, ExtractionException {
+        return Collections.emptyList();
+    }
+
+    /**
+     * Should analyse the webpage's document and extracts any error message there might be.
      *
      * @return Error message; null if there is no error message.
      */

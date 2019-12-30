@@ -6,13 +6,12 @@ import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 import org.junit.BeforeClass;
 import org.junit.Test;
-import org.schabi.newpipe.Downloader;
+import org.schabi.newpipe.DownloaderTestImpl;
 import org.schabi.newpipe.extractor.NewPipe;
 import org.schabi.newpipe.extractor.exceptions.ParsingException;
 import org.schabi.newpipe.extractor.linkhandler.SearchQueryHandler;
 import org.schabi.newpipe.extractor.services.youtube.linkHandler.YoutubeSearchQueryHandlerFactory.Filter;
 import org.schabi.newpipe.extractor.services.youtube.linkHandler.YoutubeSearchQueryHandlerFactory.Sorter;
-import org.schabi.newpipe.extractor.utils.Localization;
 
 import javax.annotation.Nullable;
 import java.util.Arrays;
@@ -29,7 +28,7 @@ public class YoutubeSearchQHTest {
 
     @BeforeClass
     public static void setupClass() throws Exception {
-        NewPipe.init(Downloader.getInstance(), new Localization("GB", "en"));
+        NewPipe.init(DownloaderTestImpl.getInstance());
     }
 
     @Test
@@ -207,7 +206,7 @@ public class YoutubeSearchQHTest {
     }
 
     private String getHtml(String url) throws Exception {
-        return NewPipe.getDownloader().download(url);
+        return NewPipe.getDownloader().get(url).responseBody();
     }
 
     private Elements getFilterList(Document document) {

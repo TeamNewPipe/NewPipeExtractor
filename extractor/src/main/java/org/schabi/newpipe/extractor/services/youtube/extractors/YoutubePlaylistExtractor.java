@@ -6,18 +6,19 @@ import com.grack.nanojson.JsonParserException;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
-import org.schabi.newpipe.extractor.Downloader;
 import org.schabi.newpipe.extractor.StreamingService;
+import org.schabi.newpipe.extractor.downloader.Downloader;
+import org.schabi.newpipe.extractor.downloader.Response;
 import org.schabi.newpipe.extractor.exceptions.ExtractionException;
 import org.schabi.newpipe.extractor.exceptions.ParsingException;
 import org.schabi.newpipe.extractor.linkhandler.LinkHandlerFactory;
 import org.schabi.newpipe.extractor.linkhandler.ListLinkHandler;
+import org.schabi.newpipe.extractor.localization.TimeAgoParser;
 import org.schabi.newpipe.extractor.playlist.PlaylistExtractor;
 import org.schabi.newpipe.extractor.services.youtube.linkHandler.YoutubeParsingHelper;
 import org.schabi.newpipe.extractor.stream.StreamInfoItem;
 import org.schabi.newpipe.extractor.stream.StreamInfoItemsCollector;
 import org.schabi.newpipe.extractor.stream.StreamType;
-import org.schabi.newpipe.extractor.utils.Localization;
 import org.schabi.newpipe.extractor.utils.Utils;
 
 import javax.annotation.Nonnull;
@@ -29,14 +30,15 @@ public class YoutubePlaylistExtractor extends PlaylistExtractor {
 
     private Document doc;
 
-    public YoutubePlaylistExtractor(StreamingService service, ListLinkHandler linkHandler, Localization localization) {
-        super(service, linkHandler, localization);
+    public YoutubePlaylistExtractor(StreamingService service, ListLinkHandler linkHandler) {
+        super(service, linkHandler);
     }
 
     @Override
     public void onFetchPage(@Nonnull Downloader downloader) throws IOException, ExtractionException {
-        String pageContent = downloader.download(getUrl());
-        doc = Jsoup.parse(pageContent, getUrl());
+        final String url = getUrl();
+        final Response response = downloader.get(url, getExtractorLocalization());
+        doc = YoutubeParsingHelper.parseAndCheckPage(url, response);
     }
 
     @Override
@@ -50,7 +52,7 @@ public class YoutubePlaylistExtractor extends PlaylistExtractor {
         try {
             return doc.select("div[id=pl-header] h1[class=pl-header-title]").first().text();
         } catch (Exception e) {
-            throw new ParsingException("Could not get playlist name");
+            throw new ParsingException("Could not get playlist name", e);
         }
     }
 
@@ -59,7 +61,7 @@ public class YoutubePlaylistExtractor extends PlaylistExtractor {
         try {
             return doc.select("div[id=pl-header] div[class=pl-header-thumb] img").first().attr("abs:src");
         } catch (Exception e) {
-            throw new ParsingException("Could not get playlist thumbnail");
+            throw new ParsingException("Could not get playlist thumbnail", e);
         }
     }
 
@@ -72,9 +74,11 @@ public class YoutubePlaylistExtractor extends PlaylistExtractor {
     @Override
     public String getUploaderUrl() throws ParsingException {
         try {
-            return doc.select("ul[class=\"pl-header-details\"] li").first().select("a").first().attr("abs:href");
+            return YoutubeChannelExtractor.CHANNEL_URL_BASE +
+                    doc.select("button[class*=\"yt-uix-subscription-button\"]")
+                            .first().attr("data-channel-external-id");
         } catch (Exception e) {
-            throw new ParsingException("Could not get playlist uploader name");
+            throw new ParsingException("Could not get playlist uploader url", e);
         }
     }
 
@@ -83,7 +87,7 @@ public class YoutubePlaylistExtractor extends PlaylistExtractor {
         try {
             return doc.select("span[class=\"qualified-channel-title-text\"]").first().select("a").first().text();
         } catch (Exception e) {
-            throw new ParsingException("Could not get playlist uploader name");
+            throw new ParsingException("Could not get playlist uploader name", e);
         }
     }
 
@@ -92,7 +96,7 @@ public class YoutubePlaylistExtractor extends PlaylistExtractor {
         try {
             return doc.select("div[id=gh-banner] img[class=channel-header-profile-image]").first().attr("abs:src");
         } catch (Exception e) {
-            throw new ParsingException("Could not get playlist uploader avatar");
+            throw new ParsingException("Could not get playlist uploader avatar", e);
         }
     }
 
@@ -137,7 +141,8 @@ public class YoutubePlaylistExtractor extends PlaylistExtractor {
         StreamInfoItemsCollector collector = new StreamInfoItemsCollector(getServiceId());
         JsonObject pageJson;
         try {
-            pageJson = JsonParser.object().from(getDownloader().download(pageUrl));
+            final String responseBody = getDownloader().get(pageUrl, getExtractorLocalization()).responseBody();
+            pageJson = JsonParser.object().from(responseBody);
         } catch (JsonParserException pe) {
             throw new ParsingException("Could not parse ajax json", pe);
         }
@@ -183,12 +188,14 @@ public class YoutubePlaylistExtractor extends PlaylistExtractor {
         }
 
         final LinkHandlerFactory streamLinkHandlerFactory = getService().getStreamLHFactory();
+        final TimeAgoParser timeAgoParser = getTimeAgoParser();
+
         for (final Element li : element.children()) {
             if(isDeletedItem(li)) {
                 continue;
             }
 
-            collector.commit(new YoutubeStreamInfoItemExtractor(li) {
+            collector.commit(new YoutubeStreamInfoItemExtractor(li, timeAgoParser) {
                 public Element uploaderLink;
 
                 @Override
@@ -248,11 +255,13 @@ public class YoutubePlaylistExtractor extends PlaylistExtractor {
 
                 @Override
                 public String getUploaderUrl() throws ParsingException {
+                    // this url is not always in the form "/channel/..."
+                    // sometimes Youtube provides urls in the from "/user/..."
                     return getUploaderLink().attr("abs:href");
                 }
 
                 @Override
-                public String getUploadDate() throws ParsingException {
+                public String getTextualUploadDate() throws ParsingException {
                     return "";
                 }
 

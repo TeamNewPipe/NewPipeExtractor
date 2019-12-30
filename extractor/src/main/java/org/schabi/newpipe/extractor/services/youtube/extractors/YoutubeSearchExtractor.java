@@ -3,15 +3,17 @@ package org.schabi.newpipe.extractor.services.youtube.extractors;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
-import org.schabi.newpipe.extractor.Downloader;
 import org.schabi.newpipe.extractor.InfoItem;
 import org.schabi.newpipe.extractor.StreamingService;
+import org.schabi.newpipe.extractor.downloader.Downloader;
+import org.schabi.newpipe.extractor.downloader.Response;
 import org.schabi.newpipe.extractor.exceptions.ExtractionException;
 import org.schabi.newpipe.extractor.exceptions.ParsingException;
+import org.schabi.newpipe.extractor.linkhandler.SearchQueryHandler;
+import org.schabi.newpipe.extractor.localization.TimeAgoParser;
 import org.schabi.newpipe.extractor.search.InfoItemsSearchCollector;
 import org.schabi.newpipe.extractor.search.SearchExtractor;
-import org.schabi.newpipe.extractor.linkhandler.SearchQueryHandler;
-import org.schabi.newpipe.extractor.utils.Localization;
+import org.schabi.newpipe.extractor.services.youtube.linkHandler.YoutubeParsingHelper;
 import org.schabi.newpipe.extractor.utils.Parser;
 
 import javax.annotation.Nonnull;
@@ -44,26 +46,21 @@ public class YoutubeSearchExtractor extends SearchExtractor {
 
     private Document doc;
 
-    public YoutubeSearchExtractor(StreamingService service,
-                                  SearchQueryHandler linkHandler,
-                                  Localization localization) {
-        super(service, linkHandler, localization);
+    public YoutubeSearchExtractor(StreamingService service, SearchQueryHandler linkHandler) {
+        super(service, linkHandler);
     }
 
     @Override
     public void onFetchPage(@Nonnull Downloader downloader) throws IOException, ExtractionException {
-        final String site;
         final String url = getUrl();
-        //String url = builder.build().toString();
-        //if we've been passed a valid language code, append it to the URL
-        site = downloader.download(url, getLocalization());
-
-        doc = Jsoup.parse(site, url);
+        final Response response = downloader.get(url, getExtractorLocalization());
+        doc = YoutubeParsingHelper.parseAndCheckPage(url, response);
     }
 
+    @Nonnull
     @Override
     public String getUrl() throws ParsingException {
-        return super.getUrl() + "&gl="+ getLocalization().getCountry();
+        return super.getUrl() + "&gl=" + getExtractorContentCountry().getCountryCode();
     }
 
     @Override
@@ -89,8 +86,8 @@ public class YoutubeSearchExtractor extends SearchExtractor {
 
     @Override
     public InfoItemsPage<InfoItem> getPage(String pageUrl) throws IOException, ExtractionException {
-        String site = getDownloader().download(pageUrl);
-        doc = Jsoup.parse(site, pageUrl);
+        final String response = getDownloader().get(pageUrl, getExtractorLocalization()).responseBody();
+        doc = Jsoup.parse(response, pageUrl);
 
         return new InfoItemsPage<>(collectItems(doc), getNextPageUrlFromCurrentUrl(pageUrl));
     }
@@ -111,6 +108,7 @@ public class YoutubeSearchExtractor extends SearchExtractor {
         InfoItemsSearchCollector collector = getInfoItemSearchCollector();
 
         Element list = doc.select("ol[class=\"item-section\"]").first();
+        final TimeAgoParser timeAgoParser = getTimeAgoParser();
 
         for (Element item : list.children()) {
             /* First we need to determine which kind of item we are working with.
@@ -131,7 +129,7 @@ public class YoutubeSearchExtractor extends SearchExtractor {
 
                 // video item type
             } else if ((el = item.select("div[class*=\"yt-lockup-video\"]").first()) != null) {
-                collector.commit(new YoutubeStreamInfoItemExtractor(el));
+                collector.commit(new YoutubeStreamInfoItemExtractor(el, timeAgoParser));
             } else if ((el = item.select("div[class*=\"yt-lockup-channel\"]").first()) != null) {
                 collector.commit(new YoutubeChannelInfoItemExtractor(el));
             } else if ((el = item.select("div[class*=\"yt-lockup-playlist\"]").first()) != null &&

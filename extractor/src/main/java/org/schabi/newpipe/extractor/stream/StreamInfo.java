@@ -1,17 +1,18 @@
 package org.schabi.newpipe.extractor.stream;
 
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
-
 import org.schabi.newpipe.extractor.Info;
 import org.schabi.newpipe.extractor.InfoItem;
 import org.schabi.newpipe.extractor.NewPipe;
 import org.schabi.newpipe.extractor.StreamingService;
 import org.schabi.newpipe.extractor.exceptions.ContentNotAvailableException;
 import org.schabi.newpipe.extractor.exceptions.ExtractionException;
+import org.schabi.newpipe.extractor.localization.DateWrapper;
 import org.schabi.newpipe.extractor.utils.DashMpdParser;
 import org.schabi.newpipe.extractor.utils.ExtractorHelper;
+
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 
 /*
  * Created by Christian Schabesberger on 26.08.15.
@@ -229,6 +230,11 @@ public class StreamInfo extends Info {
             streamInfo.addError(e);
         }
         try {
+            streamInfo.setTextualUploadDate(extractor.getTextualUploadDate());
+        } catch (Exception e) {
+            streamInfo.addError(e);
+        }
+        try {
             streamInfo.setUploadDate(extractor.getUploadDate());
         } catch (Exception e) {
             streamInfo.addError(e);
@@ -271,7 +277,8 @@ public class StreamInfo extends Info {
 
     private StreamType streamType;
     private String thumbnailUrl = "";
-    private String uploadDate = "";
+    private String textualUploadDate;
+    private DateWrapper uploadDate;
     private long duration = -1;
     private int ageLimit = -1;
     private String description;
@@ -327,11 +334,19 @@ public class StreamInfo extends Info {
         this.thumbnailUrl = thumbnailUrl;
     }
 
-    public String getUploadDate() {
+    public String getTextualUploadDate() {
+        return textualUploadDate;
+    }
+
+    public void setTextualUploadDate(String textualUploadDate) {
+        this.textualUploadDate = textualUploadDate;
+    }
+
+    public DateWrapper getUploadDate() {
         return uploadDate;
     }
 
-    public void setUploadDate(String uploadDate) {
+    public void setUploadDate(DateWrapper uploadDate) {
         this.uploadDate = uploadDate;
     }
 

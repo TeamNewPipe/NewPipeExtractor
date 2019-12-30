@@ -3,7 +3,7 @@ package org.schabi.newpipe.extractor.services.youtube;
 import org.junit.BeforeClass;
 import org.junit.Ignore;
 import org.junit.Test;
-import org.schabi.newpipe.Downloader;
+import org.schabi.newpipe.DownloaderTestImpl;
 import org.schabi.newpipe.extractor.ListExtractor;
 import org.schabi.newpipe.extractor.NewPipe;
 import org.schabi.newpipe.extractor.ServiceList;
@@ -12,7 +12,6 @@ import org.schabi.newpipe.extractor.playlist.PlaylistExtractor;
 import org.schabi.newpipe.extractor.services.BasePlaylistExtractorTest;
 import org.schabi.newpipe.extractor.services.youtube.extractors.YoutubePlaylistExtractor;
 import org.schabi.newpipe.extractor.stream.StreamInfoItem;
-import org.schabi.newpipe.extractor.utils.Localization;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
@@ -29,7 +28,7 @@ public class YoutubePlaylistExtractorTest {
 
         @BeforeClass
         public static void setUp() throws Exception {
-            NewPipe.init(Downloader.getInstance(), new Localization("GB", "en"));
+            NewPipe.init(DownloaderTestImpl.getInstance());
             extractor = (YoutubePlaylistExtractor) YouTube
                     .getPlaylistExtractor("http://www.youtube.com/watch?v=lp-EO5I60KA&list=PLMC9KNkIncKtPzgY-5rmhvj7fax8fdxoj");
             extractor.fetchPage();
@@ -100,7 +99,7 @@ public class YoutubePlaylistExtractorTest {
 
         @Test
         public void testUploaderUrl() throws Exception {
-            assertTrue(extractor.getUploaderUrl().contains("youtube.com"));
+            assertEquals("https://www.youtube.com/channel/UCs72iRpTEuwV3y6pdWYLgiw", extractor.getUploaderUrl());
         }
 
         @Test
@@ -126,7 +125,7 @@ public class YoutubePlaylistExtractorTest {
 
         @BeforeClass
         public static void setUp() throws Exception {
-            NewPipe.init(Downloader.getInstance(), new Localization("GB", "en"));
+            NewPipe.init(DownloaderTestImpl.getInstance());
             extractor = (YoutubePlaylistExtractor) YouTube
                     .getPlaylistExtractor("https://www.youtube.com/watch?v=8SbUC-UaAxE&list=PLWwAypAcFRgKAIIFqBr9oy-ZYZnixa_Fj");
             extractor.fetchPage();
@@ -185,8 +184,8 @@ public class YoutubePlaylistExtractorTest {
         public void testMoreRelatedItems() throws Exception {
             ListExtractor.InfoItemsPage<StreamInfoItem> currentPage
                     = defaultTestMoreItems(extractor, ServiceList.YouTube.getServiceId());
-            // Test for 2 more levels
 
+            // test for 2 more levels
             for (int i = 0; i < 2; i++) {
                 currentPage = extractor.getPage(currentPage.getNextPageUrl());
                 defaultTestListOfItems(YouTube.getServiceId(), currentPage.getItems(), currentPage.getErrors());
@@ -214,7 +213,7 @@ public class YoutubePlaylistExtractorTest {
 
         @Test
         public void testUploaderUrl() throws Exception {
-            assertTrue(extractor.getUploaderUrl().contains("youtube.com"));
+            assertEquals("https://www.youtube.com/channel/UCHSPWoY1J5fbDVbcnyeqwdw", extractor.getUploaderUrl());
         }
 
         @Test

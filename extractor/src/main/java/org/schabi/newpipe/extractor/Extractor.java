@@ -1,14 +1,17 @@
 package org.schabi.newpipe.extractor;
 
-import org.schabi.newpipe.extractor.exceptions.ExtractionException;
-import org.schabi.newpipe.extractor.exceptions.ParsingException;
-import org.schabi.newpipe.extractor.linkhandler.LinkHandler;
-import org.schabi.newpipe.extractor.utils.Localization;
+import java.io.IOException;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
-import java.io.IOException;
-import java.io.Serializable;
+
+import org.schabi.newpipe.extractor.downloader.Downloader;
+import org.schabi.newpipe.extractor.exceptions.ExtractionException;
+import org.schabi.newpipe.extractor.exceptions.ParsingException;
+import org.schabi.newpipe.extractor.linkhandler.LinkHandler;
+import org.schabi.newpipe.extractor.localization.ContentCountry;
+import org.schabi.newpipe.extractor.localization.Localization;
+import org.schabi.newpipe.extractor.localization.TimeAgoParser;
 
 public abstract class Extractor{ 
     /**
@@ -16,21 +19,20 @@ public abstract class Extractor{
      * Useful for getting other things from a service (like the url handlers for cleaning/accepting/get id from urls).
      */
     private final StreamingService service;
-
     private final LinkHandler linkHandler;
-    private final Localization localization;
 
-    @Nullable
+    @Nullable private Localization forcedLocalization = null;
+    @Nullable private ContentCountry forcedContentCountry = null;
+
     private boolean pageFetched = false;
     private final Downloader downloader;
 
-    public Extractor(final StreamingService service, final LinkHandler linkHandler, final Localization localization) {
+    public Extractor(final StreamingService service, final LinkHandler linkHandler) {
         if(service == null) throw new NullPointerException("service is null");
         if(linkHandler == null) throw new NullPointerException("LinkHandler is null");
         this.service = service;
         this.linkHandler = linkHandler;
         this.downloader = NewPipe.getDownloader();
-        this.localization = localization;
         if(downloader == null) throw new NullPointerException("downloader is null");
     }
 
@@ -91,6 +93,11 @@ public abstract class Extractor{
     public String getUrl() throws ParsingException {
         return linkHandler.getUrl();
     }
+   
+    @Nonnull
+    public String getBaseUrl() throws ParsingException {
+       return linkHandler.getBaseUrl();
+    }
 
     @Nonnull
     public StreamingService getService() {
@@ -105,8 +112,30 @@ public abstract class Extractor{
         return downloader;
     }
 
+    /*//////////////////////////////////////////////////////////////////////////
+    // Localization
+    //////////////////////////////////////////////////////////////////////////*/
+
+    public void forceLocalization(Localization localization) {
+        this.forcedLocalization = localization;
+    }
+
+    public void forceContentCountry(ContentCountry contentCountry) {
+        this.forcedContentCountry = contentCountry;
+    }
+
     @Nonnull
-    public Localization getLocalization() {
-        return localization;
+    public Localization getExtractorLocalization() {
+        return forcedLocalization == null ? getService().getLocalization() : forcedLocalization;
+    }
+
+    @Nonnull
+    public ContentCountry getExtractorContentCountry() {
+        return forcedContentCountry == null ? getService().getContentCountry() : forcedContentCountry;
+    }
+
+    @Nonnull
+    public TimeAgoParser getTimeAgoParser() {
+        return getService().getTimeAgoParser(getExtractorLocalization());
     }
 }

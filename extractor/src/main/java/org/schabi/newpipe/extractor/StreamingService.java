@@ -14,11 +14,15 @@ import org.schabi.newpipe.extractor.linkhandler.ListLinkHandler;
 import org.schabi.newpipe.extractor.linkhandler.ListLinkHandlerFactory;
 import org.schabi.newpipe.extractor.linkhandler.SearchQueryHandler;
 import org.schabi.newpipe.extractor.linkhandler.SearchQueryHandlerFactory;
+import org.schabi.newpipe.extractor.localization.ContentCountry;
+import org.schabi.newpipe.extractor.localization.Localization;
+import org.schabi.newpipe.extractor.localization.TimeAgoParser;
+import org.schabi.newpipe.extractor.localization.TimeAgoPatternsManager;
 import org.schabi.newpipe.extractor.playlist.PlaylistExtractor;
 import org.schabi.newpipe.extractor.search.SearchExtractor;
 import org.schabi.newpipe.extractor.stream.StreamExtractor;
 import org.schabi.newpipe.extractor.subscription.SubscriptionExtractor;
-import org.schabi.newpipe.extractor.utils.Localization;
+import org.schabi.newpipe.extractor.suggestion.SuggestionExtractor;
 
 /*
  * Copyright (C) Christian Schabesberger 2018 <chris.schabesberger@mailbox.org>
@@ -45,6 +49,7 @@ public abstract class StreamingService {
      */
     public static class ServiceInfo {
         private final String name;
+
         private final List<MediaCapability> mediaCapabilities;
 
         /**
@@ -60,7 +65,7 @@ public abstract class StreamingService {
         public String getName() {
             return name;
         }
-
+        
         public List<MediaCapability> getMediaCapabilities() {
             return mediaCapabilities;
         }
@@ -111,10 +116,12 @@ public abstract class StreamingService {
     public String toString() {
         return serviceId + ":" + serviceInfo.getName();
     }
+    
+    public abstract String getBaseUrl();
 
-    ////////////////////////////////////////////
+    /*//////////////////////////////////////////////////////////////////////////
     // Url Id handler
-    ////////////////////////////////////////////
+    //////////////////////////////////////////////////////////////////////////*/
 
     /**
      * Must return a new instance of an implementation of LinkHandlerFactory for streams.
@@ -143,25 +150,22 @@ public abstract class StreamingService {
     public abstract SearchQueryHandlerFactory getSearchQHFactory();
     public abstract ListLinkHandlerFactory getCommentsLHFactory();
 
-
-    ////////////////////////////////////////////
-    // Extractor
-    ////////////////////////////////////////////
+    /*//////////////////////////////////////////////////////////////////////////
+    // Extractors
+    //////////////////////////////////////////////////////////////////////////*/
 
     /**
      * Must create a new instance of a SearchExtractor implementation.
      * @param queryHandler specifies the keyword lock for, and the filters which should be applied.
-     * @param localization specifies the language/country for the extractor.
      * @return a new SearchExtractor instance
      */
-    public abstract SearchExtractor getSearchExtractor(SearchQueryHandler queryHandler, Localization localization);
+    public abstract SearchExtractor getSearchExtractor(SearchQueryHandler queryHandler);
 
     /**
      * Must create a new instance of a SuggestionExtractor implementation.
-     * @param localization specifies the language/country for the extractor.
      * @return a new SuggestionExtractor instance
      */
-    public abstract SuggestionExtractor getSuggestionExtractor(Localization localization);
+    public abstract SuggestionExtractor getSuggestionExtractor();
 
     /**
      * Outdated or obsolete. null can be returned.
@@ -179,123 +183,85 @@ public abstract class StreamingService {
     /**
      * Must create a new instance of a ChannelExtractor implementation.
      * @param linkHandler is pointing to the channel which should be handled by this new instance.
-     * @param localization specifies the language used for the request.
      * @return a new ChannelExtractor
      * @throws ExtractionException
      */
-    public abstract ChannelExtractor getChannelExtractor(ListLinkHandler linkHandler,
-                                                         Localization localization) throws ExtractionException;
+    public abstract ChannelExtractor getChannelExtractor(ListLinkHandler linkHandler) throws ExtractionException;
 
     /**
      * Must crete a new instance of a PlaylistExtractor implementation.
      * @param linkHandler is pointing to the playlist which should be handled by this new instance.
-     * @param localization specifies the language used for the request.
      * @return a new PlaylistExtractor
      * @throws ExtractionException
      */
-    public abstract PlaylistExtractor getPlaylistExtractor(ListLinkHandler linkHandler,
-                                                           Localization localization) throws ExtractionException;
+    public abstract PlaylistExtractor getPlaylistExtractor(ListLinkHandler linkHandler) throws ExtractionException;
 
     /**
      * Must create a new instance of a StreamExtractor implementation.
      * @param linkHandler is pointing to the stream which should be handled by this new instance.
-     * @param localization specifies the language used for the request.
      * @return a new StreamExtractor
      * @throws ExtractionException
      */
-    public abstract StreamExtractor getStreamExtractor(LinkHandler linkHandler,
-                                                       Localization localization) throws ExtractionException;
-    public abstract CommentsExtractor getCommentsExtractor(ListLinkHandler linkHandler,
-                                                           Localization localization) throws ExtractionException;
-    ////////////////////////////////////////////
-    // Extractor with default localization
-    ////////////////////////////////////////////
+    public abstract StreamExtractor getStreamExtractor(LinkHandler linkHandler) throws ExtractionException;
 
-    public SearchExtractor getSearchExtractor(SearchQueryHandler queryHandler) {
-        return getSearchExtractor(queryHandler, NewPipe.getPreferredLocalization());
-    }
+    public abstract CommentsExtractor getCommentsExtractor(ListLinkHandler linkHandler) throws ExtractionException;
 
-    public SuggestionExtractor getSuggestionExtractor() {
-        return getSuggestionExtractor(NewPipe.getPreferredLocalization());
-    }
-
-    public ChannelExtractor getChannelExtractor(ListLinkHandler linkHandler) throws ExtractionException {
-        return getChannelExtractor(linkHandler, NewPipe.getPreferredLocalization());
-    }
-    
-    public PlaylistExtractor getPlaylistExtractor(ListLinkHandler linkHandler) throws ExtractionException {
-        return getPlaylistExtractor(linkHandler, NewPipe.getPreferredLocalization());
-    }
-
-    public StreamExtractor getStreamExtractor(LinkHandler linkHandler) throws ExtractionException {
-        return getStreamExtractor(linkHandler, NewPipe.getPreferredLocalization());
-    }
-    
-    public CommentsExtractor getCommentsExtractor(ListLinkHandler urlIdHandler) throws ExtractionException {
-        return getCommentsExtractor(urlIdHandler, NewPipe.getPreferredLocalization());
-    }
-
-    ////////////////////////////////////////////
-    // Extractor without link handler
-    ////////////////////////////////////////////
+    /*//////////////////////////////////////////////////////////////////////////
+    // Extractors without link handler
+    //////////////////////////////////////////////////////////////////////////*/
 
     public SearchExtractor getSearchExtractor(String query,
                                               List<String> contentFilter,
-                                              String sortFilter,
-                                              Localization localization) throws ExtractionException {
+                                              String sortFilter) throws ExtractionException {
         return getSearchExtractor(getSearchQHFactory()
-                .fromQuery(query,
-                        contentFilter,
-                        sortFilter),
-                localization);
+                .fromQuery(query, contentFilter, sortFilter));
     }
 
     public ChannelExtractor getChannelExtractor(String id,
                                                 List<String> contentFilter,
-                                                String sortFilter,
-                                                Localization localization) throws ExtractionException {
-        return getChannelExtractor(getChannelLHFactory().fromQuery(id, contentFilter, sortFilter), localization);
+                                                String sortFilter) throws ExtractionException {
+        return getChannelExtractor(getChannelLHFactory()
+                .fromQuery(id, contentFilter, sortFilter));
     }
 
     public PlaylistExtractor getPlaylistExtractor(String id,
                                                   List<String> contentFilter,
-                                                  String sortFilter,
-                                                  Localization localization) throws ExtractionException {
+                                                  String sortFilter) throws ExtractionException {
         return getPlaylistExtractor(getPlaylistLHFactory()
-                .fromQuery(id,
-                        contentFilter,
-                        sortFilter),
-                localization);
+                .fromQuery(id, contentFilter, sortFilter));
     }
 
-    ////////////////////////////////////////////
-    // Short extractor without localization
-    ////////////////////////////////////////////
+    /*//////////////////////////////////////////////////////////////////////////
+    // Short extractors overloads
+    //////////////////////////////////////////////////////////////////////////*/
 
     public SearchExtractor getSearchExtractor(String query) throws ExtractionException {
-        return getSearchExtractor(getSearchQHFactory().fromQuery(query), NewPipe.getPreferredLocalization());
+        return getSearchExtractor(getSearchQHFactory().fromQuery(query));
     }
 
     public ChannelExtractor getChannelExtractor(String url) throws ExtractionException {
-        return getChannelExtractor(getChannelLHFactory().fromUrl(url), NewPipe.getPreferredLocalization());
+        return getChannelExtractor(getChannelLHFactory().fromUrl(url));
     }
 
     public PlaylistExtractor getPlaylistExtractor(String url) throws ExtractionException {
-        return getPlaylistExtractor(getPlaylistLHFactory().fromUrl(url), NewPipe.getPreferredLocalization());
+        return getPlaylistExtractor(getPlaylistLHFactory().fromUrl(url));
     }
 
     public StreamExtractor getStreamExtractor(String url) throws ExtractionException {
-        return getStreamExtractor(getStreamLHFactory().fromUrl(url), NewPipe.getPreferredLocalization());
+        return getStreamExtractor(getStreamLHFactory().fromUrl(url));
     }
-    
+
     public CommentsExtractor getCommentsExtractor(String url) throws ExtractionException {
         ListLinkHandlerFactory llhf = getCommentsLHFactory();
         if(null == llhf) {
             return null;
         }
-        return getCommentsExtractor(llhf.fromUrl(url), NewPipe.getPreferredLocalization());
+        return getCommentsExtractor(llhf.fromUrl(url));
     }
-
+    
+    /*//////////////////////////////////////////////////////////////////////////
+    // Utils
+    //////////////////////////////////////////////////////////////////////////*/
 
     /**
      * Figures out where the link is pointing to (a channel, a video, a playlist, etc.)
@@ -318,4 +284,95 @@ public abstract class StreamingService {
             return LinkType.NONE;
         }
     }
+
+    /*//////////////////////////////////////////////////////////////////////////
+    // Localization
+    //////////////////////////////////////////////////////////////////////////*/
+
+    /**
+     * Returns a list of localizations that this service supports.
+     */
+    public List<Localization> getSupportedLocalizations() {
+        return Collections.singletonList(Localization.DEFAULT);
+    }
+
+    /**
+     * Returns a list of countries that this service supports.<br>
+     */
+    public List<ContentCountry> getSupportedCountries() {
+        return Collections.singletonList(ContentCountry.DEFAULT);
+    }
+
+    /**
+     * Returns the localization that should be used in this service. It will get which localization
+     * the user prefer (using {@link NewPipe#getPreferredLocalization()}), then it will:
+     * <ul>
+     * <li>Check if the exactly localization is supported by this service.</li>
+     * <li>If not, check if a less specific localization is available, using only the language code.</li>
+     * <li>Fallback to the {@link Localization#DEFAULT default} localization.</li>
+     * </ul>
+     */
+    public Localization getLocalization() {
+        final Localization preferredLocalization = NewPipe.getPreferredLocalization();
+
+        // Check the localization's language and country
+        if (getSupportedLocalizations().contains(preferredLocalization)) {
+            return preferredLocalization;
+        }
+
+        // Fallback to the first supported language that matches the preferred language
+        for (Localization supportedLanguage : getSupportedLocalizations()) {
+            if (supportedLanguage.getLanguageCode().equals(preferredLocalization.getLanguageCode())) {
+                return supportedLanguage;
+            }
+        }
+
+        return Localization.DEFAULT;
+    }
+
+    /**
+     * Returns the country that should be used to fetch content in this service. It will get which country
+     * the user prefer (using {@link NewPipe#getPreferredContentCountry()}), then it will:
+     * <ul>
+     * <li>Check if the country is supported by this service.</li>
+     * <li>If not, fallback to the {@link ContentCountry#DEFAULT default} country.</li>
+     * </ul>
+     */
+    public ContentCountry getContentCountry() {
+        final ContentCountry preferredContentCountry = NewPipe.getPreferredContentCountry();
+
+        if (getSupportedCountries().contains(preferredContentCountry)) {
+            return preferredContentCountry;
+        }
+
+        return ContentCountry.DEFAULT;
+    }
+
+    /**
+     * Get an instance of the time ago parser using the patterns related to the passed localization.<br>
+     * <br>
+     * Just like {@link #getLocalization()}, it will also try to fallback to a less specific localization if
+     * the exact one is not available/supported.
+     *
+     * @throws IllegalArgumentException if the localization is not supported (parsing patterns are not present).
+     */
+    public TimeAgoParser getTimeAgoParser(Localization localization) {
+        final TimeAgoParser targetParser = TimeAgoPatternsManager.getTimeAgoParserFor(localization);
+
+        if (targetParser != null) {
+            return targetParser;
+        }
+
+        if (!localization.getCountryCode().isEmpty()) {
+            final Localization lessSpecificLocalization = new Localization(localization.getLanguageCode());
+            final TimeAgoParser lessSpecificParser = TimeAgoPatternsManager.getTimeAgoParserFor(lessSpecificLocalization);
+
+            if (lessSpecificParser != null) {
+                return lessSpecificParser;
+            }
+        }
+
+        throw new IllegalArgumentException("Localization is not supported (\"" + localization.toString() + "\")");
+    }
+
 }
