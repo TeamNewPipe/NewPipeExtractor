@@ -106,6 +106,7 @@ public class YoutubeSearchExtractor extends SearchExtractor {
 
     private InfoItemsSearchCollector collectItems(Document doc) throws NothingFoundException  {
         InfoItemsSearchCollector collector = getInfoItemSearchCollector();
+        collector.reset();
 
         Element list = doc.select("ol[class=\"item-section\"]").first();
         final TimeAgoParser timeAgoParser = getTimeAgoParser();
