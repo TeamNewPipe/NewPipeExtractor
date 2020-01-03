@@ -49,7 +49,7 @@ public class BandcampPlaylistExtractor extends PlaylistExtractor {
 
 
 
-        if (trackInfo.length() < 0) {
+        if (trackInfo.length() <= 0) {
             // Albums without trackInfo need to be purchased before they can be played
             throw new ContentNotAvailableException("Album needs to be purchased");
         }
