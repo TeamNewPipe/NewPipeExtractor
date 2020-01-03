@@ -53,6 +53,22 @@ public class BandcampPlaylistExtractorTest {
     }
 
     /**
+     * Tests that no attempt to load every track's cover individually is made
+     */
+    @Test(timeout = 10000L)
+    public void testDifferentTrackCoversDuration() throws ExtractionException, IOException {
+        PlaylistExtractor extractor = bandcamp.getPlaylistExtractor("https://infiniteammo.bandcamp.com/album/night-in-the-woods-vol-1-at-the-end-of-everything");
+        extractor.fetchPage();
+
+        /* All tracks in this album have the same cover art, but I don't know any albums with more than 10 tracks
+         * that has at least one track with a cover art different from the rest.
+         */
+        List<StreamInfoItem> l = extractor.getInitialPage().getItems();
+        assertEquals(extractor.getThumbnailUrl(), l.get(0).getThumbnailUrl());
+        assertEquals(extractor.getThumbnailUrl(), l.get(5).getThumbnailUrl());
+    }
+
+    /**
      * Test playlists with locked content
      */
     @Test(expected = ContentNotAvailableException.class)

@@ -34,7 +34,6 @@ public class BandcampRadioExtractorTest {
     @Test
     public void testRadioCount() throws ExtractionException, IOException {
         List<InfoItem> list = bandcamp.getKioskList().getExtractorById("Radio", null).getInitialPage().getItems();
-        System.out.println(list.size());
         assertTrue(list.size() > 300);
     }
 }

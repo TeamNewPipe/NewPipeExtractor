@@ -21,6 +21,8 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
+import static org.schabi.newpipe.extractor.services.bandcamp.extractors.BandcampChannelExtractor.getImageUrl;
+
 public class BandcampStreamExtractor extends StreamExtractor {
 
     private JSONObject albumJson;
@@ -103,11 +105,8 @@ public class BandcampStreamExtractor extends StreamExtractor {
     @Nonnull
     @Override
     public String getThumbnailUrl() throws ParsingException {
-        try {
-            return document.getElementsByAttributeValue("property", "og:image").get(0).attr("content");
-        } catch (NullPointerException e) {
-            return "";
-        }
+        if (albumJson.isNull("art_id")) return "";
+        else return getImageUrl(albumJson.getLong("art_id"), true);
     }
 
     @Nonnull

@@ -18,10 +18,18 @@ import org.schabi.newpipe.extractor.stream.StreamInfoItemsCollector;
 import javax.annotation.Nonnull;
 import java.io.IOException;
 
+import static org.schabi.newpipe.extractor.services.bandcamp.extractors.BandcampChannelExtractor.getImageUrl;
 import static org.schabi.newpipe.extractor.services.bandcamp.extractors.BandcampExtractorHelper.getJSONFromJavaScriptVariables;
 import static org.schabi.newpipe.extractor.services.bandcamp.extractors.BandcampStreamExtractor.getAlbumInfoJson;
 
 public class BandcampPlaylistExtractor extends PlaylistExtractor {
+
+    /**
+     * An arbitrarily chosen number above which cover arts won't be fetched individually for each track;
+     * instead, it will be assumed that every track has the same cover art as the album, which is not
+     * always the case.
+     */
+    private static final int MAXIMUM_INDIVIDUAL_COVER_ARTS = 10;
 
     private Document document;
     private JSONObject albumJson;
@@ -57,11 +65,8 @@ public class BandcampPlaylistExtractor extends PlaylistExtractor {
 
     @Override
     public String getThumbnailUrl() throws ParsingException {
-        try {
-            return document.getElementsByAttributeValue("property", "og:image").get(0).attr("content");
-        } catch (NullPointerException e) {
-            return "";
-        }
+        if (albumJson.isNull("art_id")) return "";
+        else return getImageUrl(albumJson.getLong("art_id"), true);
     }
 
     @Override
@@ -104,13 +109,26 @@ public class BandcampPlaylistExtractor extends PlaylistExtractor {
         for (int i = 0; i < trackInfo.length(); i++) {
             JSONObject track = trackInfo.getJSONObject(i);
 
-            collector.commit(new BandcampStreamInfoItemExtractor(
-                    track.getString("title"),
-                    getUploaderUrl() + track.getString("title_link"),
-                    "",
-                    track.getLong("duration"),
-                    getService()
-            ));
+            if (trackInfo.length() < MAXIMUM_INDIVIDUAL_COVER_ARTS) {
+                // Load cover art of every track individually
+                collector.commit(new BandcampStreamInfoItemExtractor(
+                        track.getString("title"),
+                        getUploaderUrl() + track.getString("title_link"),
+                        "",
+                        track.getLong("duration"),
+                        getService()
+                ));
+            } else {
+                // Pretend every track has the same cover art as the album
+                collector.commit(new BandcampStreamInfoItemExtractor(
+                        track.getString("title"),
+                        getUploaderUrl() + track.getString("title_link"),
+                        getThumbnailUrl(),
+                        "",
+                        track.getLong("duration")
+                ));
+            }
+
         }
 
         return new InfoItemsPage<>(collector, null);
