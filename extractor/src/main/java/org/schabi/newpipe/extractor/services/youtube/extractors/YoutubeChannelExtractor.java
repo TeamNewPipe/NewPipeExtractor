@@ -24,7 +24,6 @@ import org.schabi.newpipe.extractor.utils.Utils;
 import java.io.IOException;
 
 import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
 
 /*
  * Created by Christian Schabesberger on 25.07.16.
@@ -169,12 +168,12 @@ public class YoutubeChannelExtractor extends ChannelExtractor {
      * Youtube might show a red warning text for example
      * "This account has been terminated due to multiple or severe violations of
      * YouTube's policy prohibiting hate speech."
-     * In that case parsing of the channel informations will fail. This error text should
+     * In that case parsing of the channel information will fail. This error text should
      * be displayed to the user instead of a cryptic ParsingException.
      * @return the text as String or null if no warning text could be found
      */
-    @Nullable
-    public String getYoutubeError() {
+    @Override
+    public String obtainErrorMessage() {
         try {
             return doc.select("div.yt-alert-message").first().text();
         } catch (Exception e) {

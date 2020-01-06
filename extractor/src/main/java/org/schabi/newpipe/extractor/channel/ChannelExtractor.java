@@ -6,6 +6,8 @@ import org.schabi.newpipe.extractor.exceptions.ParsingException;
 import org.schabi.newpipe.extractor.linkhandler.ListLinkHandler;
 import org.schabi.newpipe.extractor.stream.StreamInfoItem;
 
+import javax.annotation.Nullable;
+
 /*
  * Created by Christian Schabesberger on 25.07.16.
  *
@@ -37,4 +39,8 @@ public abstract class ChannelExtractor extends ListExtractor<StreamInfoItem> {
     public abstract String getFeedUrl() throws ParsingException;
     public abstract long getSubscriberCount() throws ParsingException;
     public abstract String getDescription() throws ParsingException;
+    @Nullable
+    public String obtainErrorMessage() {
+        return null;
+    }
 }

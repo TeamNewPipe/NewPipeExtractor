@@ -7,7 +7,6 @@ import org.schabi.newpipe.extractor.StreamingService;
 import org.schabi.newpipe.extractor.exceptions.ExtractionException;
 import org.schabi.newpipe.extractor.exceptions.ParsingException;
 import org.schabi.newpipe.extractor.linkhandler.ListLinkHandler;
-import org.schabi.newpipe.extractor.services.youtube.extractors.YoutubeChannelExtractor;
 import org.schabi.newpipe.extractor.stream.StreamInfoItem;
 import org.schabi.newpipe.extractor.utils.ExtractorHelper;
 
@@ -67,13 +66,9 @@ public class ChannelInfo extends ListInfo<StreamInfoItem> {
                     extractor.getLinkHandler(),
                     "");
             Throwable nameFailure;
-            if (extractor instanceof YoutubeChannelExtractor) {
-                String errorMessage = ((YoutubeChannelExtractor) extractor).getYoutubeError();
-                if (errorMessage != null) {
-                    nameFailure = new ParsingException(errorMessage);
-                } else {
-                    nameFailure = e;
-                }
+            String errorMessage = extractor.obtainErrorMessage();
+            if (errorMessage != null) {
+                nameFailure = new ParsingException(errorMessage);
             } else {
                 nameFailure = e;
             }
