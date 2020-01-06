@@ -164,7 +164,15 @@ public class YoutubeChannelExtractor extends ChannelExtractor {
         }
     }
 
-    public String getYoutubeError() throws ParsingException {
+    /**
+     * Youtube might show a red warning text for example
+     * "This account has been terminated due to multiple or severe violations of
+     * YouTube's policy prohibiting hate speech."
+     * In that case parsing of the channel informations will fail. This error text should
+     * be displayed to the user instead of a cryptic ParsingException.
+     * @return the text as String or null if no warning text could be found
+     */
+    public String getYoutubeError() {
         try {
             return doc.select("div.yt-alert-message").first().text();
         } catch (Exception e) {
