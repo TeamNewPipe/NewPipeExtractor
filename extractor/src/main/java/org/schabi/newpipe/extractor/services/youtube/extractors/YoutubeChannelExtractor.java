@@ -24,6 +24,7 @@ import org.schabi.newpipe.extractor.utils.Utils;
 import java.io.IOException;
 
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 
 /*
  * Created by Christian Schabesberger on 25.07.16.
@@ -172,6 +173,7 @@ public class YoutubeChannelExtractor extends ChannelExtractor {
      * be displayed to the user instead of a cryptic ParsingException.
      * @return the text as String or null if no warning text could be found
      */
+    @Nullable
     public String getYoutubeError() {
         try {
             return doc.select("div.yt-alert-message").first().text();
