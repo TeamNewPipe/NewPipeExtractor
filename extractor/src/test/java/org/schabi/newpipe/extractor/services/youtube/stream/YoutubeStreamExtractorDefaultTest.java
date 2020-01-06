@@ -101,7 +101,7 @@ public class YoutubeStreamExtractorDefaultTest {
 
         @Test
         public void testGetLength() throws ParsingException {
-            assertEquals(366, extractor.getLength());
+            assertEquals(367, extractor.getLength());
         }
 
         @Test
