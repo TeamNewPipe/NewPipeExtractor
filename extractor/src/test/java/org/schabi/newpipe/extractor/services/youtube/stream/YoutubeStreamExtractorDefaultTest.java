@@ -124,7 +124,11 @@ public class YoutubeStreamExtractorDefaultTest {
 
         @Test
         public void testGetUploaderUrl() throws ParsingException {
-            assertEquals("https://www.youtube.com/channel/UCsRM0YB_dabtEPGPTKo-gcw", extractor.getUploaderUrl());
+            String url = extractor.getUploaderUrl();
+            if (!url.equals("https://www.youtube.com/channel/UCsRM0YB_dabtEPGPTKo-gcw") &&
+                !url.equals("https://www.youtube.com/channel/UComP_epzeKzvBX156r6pm1Q")) {
+                fail("Uploader url is neither the music channel one nor the Vevo one");
+            }
         }
 
         @Test
