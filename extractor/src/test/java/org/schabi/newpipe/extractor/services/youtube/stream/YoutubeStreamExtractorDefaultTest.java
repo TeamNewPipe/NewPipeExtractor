@@ -187,6 +187,18 @@ public class YoutubeStreamExtractorDefaultTest {
             // Video (/view?v=YQHsXMglC9A) set in the setUp() method has no captions => null
             assertTrue(extractor.getSubtitles(MediaFormat.TTML).isEmpty());
         }
+
+        @Test
+        public void testGetLikeCount() throws ParsingException {
+            long likeCount = extractor.getLikeCount();
+            assertTrue("" + likeCount, likeCount >= 15000000);
+        }
+
+        @Test
+        public void testGetDislikeCount() throws ParsingException {
+            long dislikeCount = extractor.getDislikeCount();
+            assertTrue("" + dislikeCount, dislikeCount >= 818000);
+        }
     }
 
     public static class DescriptionTestPewdiepie {
@@ -247,6 +259,29 @@ public class YoutubeStreamExtractorDefaultTest {
             assertFalse(extractor.getDescription().contains("https://youtu.be/XxaRBPyrnBU?list=PL7..."));
             assertFalse(extractor.getDescription().contains("https://youtu.be/U-9tUEOFKNU?list=PL7..."));
         }
+    }
+
+    public static class RatingsDisabledTest {
+        private static YoutubeStreamExtractor extractor;
+
+        @BeforeClass
+        public static void setUp() throws Exception {
+            NewPipe.init(DownloaderTestImpl.getInstance());
+            extractor = (YoutubeStreamExtractor) YouTube
+                    .getStreamExtractor("https://www.youtube.com/watch?v=HRKu0cvrr_o");
+            extractor.fetchPage();
+        }
+
+        @Test
+        public void testGetLikeCount() throws ParsingException {
+            assertEquals(-1, extractor.getLikeCount());
+        }
+
+        @Test
+        public void testGetDislikeCount() throws ParsingException {
+            assertEquals(-1, extractor.getDislikeCount());
+        }
+
     }
 
     public static class FramesTest {
