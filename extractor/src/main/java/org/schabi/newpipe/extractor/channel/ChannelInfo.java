@@ -4,6 +4,7 @@ import org.schabi.newpipe.extractor.ListExtractor.InfoItemsPage;
 import org.schabi.newpipe.extractor.ListInfo;
 import org.schabi.newpipe.extractor.NewPipe;
 import org.schabi.newpipe.extractor.StreamingService;
+import org.schabi.newpipe.extractor.exceptions.ContentNotAvailableException;
 import org.schabi.newpipe.extractor.exceptions.ExtractionException;
 import org.schabi.newpipe.extractor.exceptions.ParsingException;
 import org.schabi.newpipe.extractor.linkhandler.ListLinkHandler;
@@ -65,17 +66,11 @@ public class ChannelInfo extends ListInfo<StreamInfoItem> {
             info = new ChannelInfo(extractor.getServiceId(),
                     extractor.getLinkHandler(),
                     "");
-            Throwable nameFailure;
             String errorMessage = extractor.obtainErrorMessage();
             if (errorMessage != null) {
-                nameFailure = new ParsingException(errorMessage);
-            } else {
-                nameFailure = e;
+                throw new ContentNotAvailableException(errorMessage);
             }
-            info.addError(nameFailure);
-            // this is so severe, that other extractions most likely fail anyway,
-            // so skip them
-            return info;
+            info.addError(e);
         }
 
         try {
