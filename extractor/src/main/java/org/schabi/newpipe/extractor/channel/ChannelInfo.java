@@ -63,13 +63,13 @@ public class ChannelInfo extends ListInfo<StreamInfoItem> {
                     extractor.getLinkHandler(),
                     extractor.getName());
         } catch (ParsingException e) {
-            info = new ChannelInfo(extractor.getServiceId(),
-                    extractor.getLinkHandler(),
-                    "");
             String errorMessage = extractor.obtainErrorMessage();
             if (errorMessage != null) {
                 throw new ContentNotAvailableException(errorMessage);
             }
+            info = new ChannelInfo(extractor.getServiceId(),
+                    extractor.getLinkHandler(),
+                    "");
             info.addError(e);
         }
 
