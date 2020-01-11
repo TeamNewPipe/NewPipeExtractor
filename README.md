@@ -31,6 +31,7 @@ The following sites are currently supported:
 - YouTube
 - SoundCloud
 - MediaCCC
+- bandcamp
 
 ## License
 
