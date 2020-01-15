@@ -24,7 +24,7 @@ public class PeertubeChannelLinkHandlerFactoryTest {
     }
 
     @Test
-    public void acceptrUrlTest() throws ParsingException {
+    public void acceptUrlTest() throws ParsingException {
         assertTrue(linkHandler.acceptUrl("https://peertube.mastodon.host/accounts/kranti@videos.squat.net"));
     }
 

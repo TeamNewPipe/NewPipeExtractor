@@ -24,7 +24,7 @@ public class YoutubeChannelLinkHandlerFactoryTest {
     }
 
     @Test
-    public void acceptrUrlTest() throws ParsingException {
+    public void acceptUrlTest() throws ParsingException {
         assertTrue(linkHandler.acceptUrl("https://www.youtube.com/user/Gronkh"));
         assertTrue(linkHandler.acceptUrl("https://www.youtube.com/user/Netzkino/videos"));
 
