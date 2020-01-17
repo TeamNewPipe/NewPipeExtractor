@@ -4,7 +4,6 @@ import org.jsoup.helper.StringUtil;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import org.schabi.newpipe.DownloaderTestImpl;
-import org.schabi.newpipe.DownloaderTestImpl;
 import org.schabi.newpipe.extractor.ListExtractor.InfoItemsPage;
 import org.schabi.newpipe.extractor.NewPipe;
 import org.schabi.newpipe.extractor.comments.CommentsInfo;
@@ -21,17 +20,32 @@ import static org.schabi.newpipe.extractor.ServiceList.YouTube;
 
 public class YoutubeCommentsExtractorTest {
 
-    private static YoutubeCommentsExtractor extractor;
+    private static final String urlYT = "https://www.youtube.com/watch?v=D00Au7k3i6o";
+    private static final String urlInvidious = "https://invidio.us/watch?v=D00Au7k3i6o";
+    private static final String urlInvidioush = "https://invidiou.sh/watch?v=D00Au7k3i6o";
+    private static YoutubeCommentsExtractor extractorYT;
+    private static YoutubeCommentsExtractor extractorInvidious;
+    private static YoutubeCommentsExtractor extractorInvidioush;
 
     @BeforeClass
     public static void setUp() throws Exception {
         NewPipe.init(DownloaderTestImpl.getInstance());
-        extractor = (YoutubeCommentsExtractor) YouTube
-                .getCommentsExtractor("https://www.invidio.us/watch?v=D00Au7k3i6o");
+        extractorYT = (YoutubeCommentsExtractor) YouTube
+                .getCommentsExtractor(urlYT);
+        extractorInvidious = (YoutubeCommentsExtractor) YouTube
+                .getCommentsExtractor(urlInvidious);
+        extractorInvidioush = (YoutubeCommentsExtractor) YouTube
+                .getCommentsExtractor(urlInvidioush);
     }
 
     @Test
     public void testGetComments() throws IOException, ExtractionException {
+        assertTrue(getCommentsHelper(extractorYT));
+        assertTrue(getCommentsHelper(extractorInvidious));
+        assertTrue(getCommentsHelper(extractorInvidioush));
+    }
+
+    private boolean getCommentsHelper(YoutubeCommentsExtractor extractor) throws IOException, ExtractionException {
         boolean result;
         InfoItemsPage<CommentsInfoItem> comments = extractor.getInitialPage();
         result = findInComments(comments, "s1ck m3m3");
@@ -41,13 +55,20 @@ public class YoutubeCommentsExtractorTest {
             result = findInComments(comments, "s1ck m3m3");
         }
 
-        assertTrue(result);
+        return result;
+
     }
 
     @Test
     public void testGetCommentsFromCommentsInfo() throws IOException, ExtractionException {
+        assertTrue(getCommentsFromCommentsInfoHelper(urlYT));
+        assertTrue(getCommentsFromCommentsInfoHelper(urlInvidious));
+        assertTrue(getCommentsFromCommentsInfoHelper(urlInvidioush));
+    }
+
+    private boolean getCommentsFromCommentsInfoHelper(String url) throws IOException, ExtractionException {
         boolean result = false;
-        CommentsInfo commentsInfo = CommentsInfo.getInfo("https://www.invidio.us/watch?v=D00Au7k3i6o");
+        CommentsInfo commentsInfo = CommentsInfo.getInfo(url);
         assertTrue("what the fuck am i doing with my life".equals(commentsInfo.getName()));
         result = findInComments(commentsInfo.getRelatedItems(), "s1ck m3m3");
 
@@ -57,16 +78,15 @@ public class YoutubeCommentsExtractorTest {
             result = findInComments(moreItems.getItems(), "s1ck m3m3");
             nextPage = moreItems.getNextPageUrl();
         }
-
-        assertTrue(result);
+        return result;
     }
-    
+
     @Test
     public void testGetCommentsAllData() throws IOException, ExtractionException {
-        InfoItemsPage<CommentsInfoItem> comments = extractor.getInitialPage();
+        InfoItemsPage<CommentsInfoItem> comments = extractorYT.getInitialPage();
 
         DefaultTests.defaultTestListOfItems(YouTube.getServiceId(), comments.getItems(), comments.getErrors());
-        for(CommentsInfoItem c: comments.getItems()) {
+        for (CommentsInfoItem c : comments.getItems()) {
             assertFalse(StringUtil.isBlank(c.getAuthorEndpoint()));
             assertFalse(StringUtil.isBlank(c.getAuthorName()));
             assertFalse(StringUtil.isBlank(c.getAuthorThumbnail()));
@@ -86,8 +106,8 @@ public class YoutubeCommentsExtractorTest {
     }
 
     private boolean findInComments(List<CommentsInfoItem> comments, String comment) {
-        for(CommentsInfoItem c: comments) {
-            if(c.getCommentText().contains(comment)) {
+        for (CommentsInfoItem c : comments) {
+            if (c.getCommentText().contains(comment)) {
                 return true;
             }
         }

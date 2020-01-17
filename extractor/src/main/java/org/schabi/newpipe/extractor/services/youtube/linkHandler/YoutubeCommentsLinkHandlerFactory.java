@@ -14,7 +14,6 @@ import java.util.List;
 public class YoutubeCommentsLinkHandlerFactory extends ListLinkHandlerFactory {
 
     private static final YoutubeCommentsLinkHandlerFactory instance = new YoutubeCommentsLinkHandlerFactory();
-    private static final String ID_PATTERN = "([\\-a-zA-Z0-9_]{11})";
 
     public static YoutubeCommentsLinkHandlerFactory getInstance() {
         return instance;
