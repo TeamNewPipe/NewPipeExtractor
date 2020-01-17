@@ -28,6 +28,8 @@ public class YoutubeChannelLinkHandlerFactoryTest {
         assertTrue(linkHandler.acceptUrl("https://www.youtube.com/user/Gronkh"));
         assertTrue(linkHandler.acceptUrl("https://www.youtube.com/user/Netzkino/videos"));
 
+        assertTrue(linkHandler.acceptUrl("https://www.youtube.com/c/creatoracademy"));
+
         assertTrue(linkHandler.acceptUrl("https://www.youtube.com/channel/UClq42foiSgl7sSpLupnugGA"));
         assertTrue(linkHandler.acceptUrl("https://www.youtube.com/channel/UClq42foiSgl7sSpLupnugGA/videos?disable_polymer=1"));
 
@@ -64,5 +66,8 @@ public class YoutubeChannelLinkHandlerFactoryTest {
     
         assertEquals("channel/UClq42foiSgl7sSpLupnugGA", linkHandler.fromUrl("https://invidio.us/channel/UClq42foiSgl7sSpLupnugGA").getId());
         assertEquals("channel/UClq42foiSgl7sSpLupnugGA", linkHandler.fromUrl("https://invidio.us/channel/UClq42foiSgl7sSpLupnugGA/videos?disable_polymer=1").getId());
+
+        assertEquals("c/creatoracademy", linkHandler.fromUrl("https://www.youtube.com/c/creatoracademy").getId());
+        assertEquals("c/YouTubeCreators", linkHandler.fromUrl("https://www.youtube.com/c/YouTubeCreators").getId());
     }
 }
