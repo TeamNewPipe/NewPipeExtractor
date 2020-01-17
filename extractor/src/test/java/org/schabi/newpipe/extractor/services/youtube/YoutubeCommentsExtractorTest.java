@@ -56,7 +56,6 @@ public class YoutubeCommentsExtractorTest {
         }
 
         return result;
-
     }
 
     @Test
@@ -69,7 +68,7 @@ public class YoutubeCommentsExtractorTest {
     private boolean getCommentsFromCommentsInfoHelper(String url) throws IOException, ExtractionException {
         boolean result = false;
         CommentsInfo commentsInfo = CommentsInfo.getInfo(url);
-        assertTrue("what the fuck am i doing with my life".equals(commentsInfo.getName()));
+        assertEquals("what the fuck am i doing with my life", commentsInfo.getName());
         result = findInComments(commentsInfo.getRelatedItems(), "s1ck m3m3");
 
         String nextPage = commentsInfo.getNextPageUrl();
