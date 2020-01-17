@@ -27,7 +27,7 @@ public class YoutubeCommentsExtractorTest {
     public static void setUp() throws Exception {
         NewPipe.init(DownloaderTestImpl.getInstance());
         extractor = (YoutubeCommentsExtractor) YouTube
-                .getCommentsExtractor("https://www.youtube.com/watch?v=D00Au7k3i6o");
+                .getCommentsExtractor("https://www.invidio.us/watch?v=D00Au7k3i6o");
     }
 
     @Test
@@ -47,7 +47,7 @@ public class YoutubeCommentsExtractorTest {
     @Test
     public void testGetCommentsFromCommentsInfo() throws IOException, ExtractionException {
         boolean result = false;
-        CommentsInfo commentsInfo = CommentsInfo.getInfo("https://www.youtube.com/watch?v=D00Au7k3i6o");
+        CommentsInfo commentsInfo = CommentsInfo.getInfo("https://www.invidio.us/watch?v=D00Au7k3i6o");
         assertTrue("what the fuck am i doing with my life".equals(commentsInfo.getName()));
         result = findInComments(commentsInfo.getRelatedItems(), "s1ck m3m3");
 
