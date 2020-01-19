@@ -24,7 +24,7 @@ public class PeertubeCommentsLinkHandlerFactoryTest {
     }
 
     @Test
-    public void acceptrUrlTest() throws ParsingException {
+    public void acceptUrlTest() throws ParsingException {
         assertTrue(linkHandler.acceptUrl("https://peertube.mastodon.host/api/v1/videos/19319/comment-threads?start=0&count=10&sort=-createdAt"));
     }
 
