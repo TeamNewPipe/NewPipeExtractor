@@ -270,6 +270,38 @@ public class StreamInfo extends Info {
             streamInfo.addError(e);
         }
 
+        //additional info
+        try {
+            streamInfo.setHost(extractor.getHost());
+        } catch (Exception e) {
+            streamInfo.addError(e);
+        }
+        try {
+            streamInfo.setPrivacy(extractor.getPrivacy());
+        } catch (Exception e) {
+            streamInfo.addError(e);
+        }
+        try {
+            streamInfo.setCategory(extractor.getCategory());
+        } catch (Exception e) {
+            streamInfo.addError(e);
+        }
+        try {
+            streamInfo.setLicence(extractor.getLicence());
+        } catch (Exception e) {
+            streamInfo.addError(e);
+        }
+        try {
+            streamInfo.setLanguage(extractor.getStreamInfoLanguage());
+        } catch (Exception e) {
+            streamInfo.addError(e);
+        }
+        try {
+            streamInfo.setTags(extractor.getTags());
+        } catch (Exception e) {
+            streamInfo.addError(e);
+        }
+
         streamInfo.setRelatedStreams(ExtractorHelper.getRelatedVideosOrLogError(streamInfo, extractor));
 
         return streamInfo;
@@ -307,6 +339,13 @@ public class StreamInfo extends Info {
 
     private long startPosition = 0;
     private List<SubtitlesStream> subtitles = new ArrayList<>();
+
+    private String host = "";
+    private String privacy = "";
+    private String category = "";
+    private String licence = "";
+    private String language = "";
+    private List<String> tags = new ArrayList<>();
 
     /**
      * Get the stream type
@@ -532,5 +571,54 @@ public class StreamInfo extends Info {
     public void setSubtitles(List<SubtitlesStream> subtitles) {
         this.subtitles = subtitles;
     }
+
+    public String getHost() {
+        return this.host;
+    }
+
+    public void setHost(String str) {
+        this.host = str;
+    }
+
+    public String getPrivacy() {
+        return this.privacy;
+    }
+
+    public void setPrivacy(String str) {
+        this.privacy = str;
+    }
+
+    public String getCategory() {
+        return this.category;
+    }
+
+    public void setCategory(String cat) {
+        this.category = cat;
+    }
+
+    public String getLicence() {
+        return this.licence;
+    }
+
+    public void setLicence(String str) {
+        this.licence = str;
+    }
+
+    public String getLanguage() {
+        return this.language;
+    }
+
+    public void setLanguage(String lang) {
+        this.language = lang;
+    }
+
+    public List<String> getTags() {
+        return this.tags;
+    }
+
+    public void setTags(List<String> tags) {
+        this.tags = tags;
+    }
+
 
 }

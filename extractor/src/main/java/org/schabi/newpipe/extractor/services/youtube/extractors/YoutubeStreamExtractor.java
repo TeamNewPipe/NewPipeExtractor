@@ -1113,4 +1113,35 @@ public class YoutubeStreamExtractor extends StreamExtractor {
 			throw new ExtractionException(e);
 		}
 	}
+
+    @Override
+    public String getHost() throws ParsingException {
+        return "";
+    }
+
+    @Override
+    public String getPrivacy() throws ParsingException {
+        return "";
+    }
+
+    @Override
+    public String getCategory() throws ParsingException {
+        return "";
+    }
+
+    @Override
+    public String getLicence() throws ParsingException {
+        return "";
+    }
+
+    @Override
+    public String getStreamInfoLanguage() throws ParsingException {
+        return "";
+    }
+
+    @Nonnull
+    @Override
+    public List<String> getTags() throws ParsingException {
+        return new ArrayList<>();
+    }
 }

@@ -27,6 +27,7 @@ import org.schabi.newpipe.extractor.exceptions.ExtractionException;
 import org.schabi.newpipe.extractor.exceptions.ParsingException;
 import org.schabi.newpipe.extractor.linkhandler.LinkHandler;
 import org.schabi.newpipe.extractor.localization.DateWrapper;
+import org.schabi.newpipe.extractor.utils.JsonUtils;
 import org.schabi.newpipe.extractor.utils.Parser;
 
 import javax.annotation.Nonnull;
@@ -349,4 +350,60 @@ public abstract class StreamExtractor extends Extractor {
             return 0;
         }
     }
+
+    /**
+     * The host of the stream (Eg. peertube.cpy.re).
+     * If the privacy is not available, or if the service doesn't use
+     * a federated system, but a centralised system,
+     * you can simply return an empty string.
+     * @return the host of the stream or an empty String.
+     * @throws ParsingException
+     */
+    @Nonnull
+    public abstract String getHost() throws ParsingException;
+
+    /**
+     * The privacy of the stream (Eg. Public, Private, Unlisted…).
+     * If the privacy is not available you can simply return an empty string.
+     * @return the privacy of the stream or an empty String.
+     * @throws ParsingException
+     */
+    @Nonnull
+    public abstract String getPrivacy() throws ParsingException;
+
+    /**
+     * The name of the category of the stream.
+     * If the category is not available you can simply return an empty string.
+     * @return the category of the stream or an empty String.
+     * @throws ParsingException
+     */
+    @Nonnull
+    public abstract String getCategory() throws ParsingException;
+
+    /**
+     * The name of the licence of the stream.
+     * If the licence is not available you can simply return an empty string.
+     * @return the licence of the stream or an empty String.
+     * @throws ParsingException
+     */
+    @Nonnull
+    public abstract String getLicence() throws ParsingException;
+
+    /**
+     * The language of the stream.
+     * If the language is not available you can simply return an empty string.
+     * @return the licence of the stream or an empty String.
+     * @throws ParsingException
+     */
+    @Nonnull
+    public abstract String getStreamInfoLanguage() throws ParsingException;
+
+    /**
+     * The list of tags of the stream.
+     * If the tag list is not available you can simply return an empty list.
+     * @return the list of tags of the stream or an empty list.
+     * @throws ParsingException
+     */
+    @Nonnull
+    public abstract List<String> getTags() throws ParsingException;
 }

@@ -12,6 +12,7 @@ import org.schabi.newpipe.extractor.exceptions.ParsingException;
 import org.schabi.newpipe.extractor.linkhandler.LinkHandler;
 import org.schabi.newpipe.extractor.localization.DateWrapper;
 import org.schabi.newpipe.extractor.stream.*;
+import org.schabi.newpipe.extractor.utils.JsonUtils;
 
 import javax.annotation.Nonnull;
 import java.io.IOException;
@@ -224,5 +225,36 @@ public class MediaCCCStreamExtractor extends StreamExtractor {
     @Override
     public String getOriginalUrl() throws ParsingException {
         return data.getString("frontend_link");
+    }
+
+    @Override
+    public String getHost() throws ParsingException {
+        return "";
+    }
+
+    @Override
+    public String getPrivacy() throws ParsingException {
+        return "";
+    }
+
+    @Override
+    public String getCategory() throws ParsingException {
+        return "";
+    }
+
+    @Override
+    public String getLicence() throws ParsingException {
+        return "";
+    }
+
+    @Override
+    public String getStreamInfoLanguage() throws ParsingException {
+        return "";
+    }
+
+    @Nonnull
+    @Override
+    public List<String> getTags() throws ParsingException {
+        return new ArrayList<>();
     }
 }

@@ -29,13 +29,14 @@ import org.schabi.newpipe.extractor.stream.StreamType;
  */
 public class PeertubeStreamExtractorDefaultTest {
     private static PeertubeStreamExtractor extractor;
+    private static final String expectedDescription = "**[Want to help to translate this video?](https://weblate.framasoft.org/projects/what-is-peertube-video/)**\r\n\r\n**Take back the control of your videos! [#JoinPeertube](https://joinpeertube.org)**\r\n*A decentralized video hosting network, based on free/libre software!*\r\n\r\n**Animation Produced by:** [LILA](https://libreart.info) - [ZeMarmot Team](https://film.zemarmot.net)\r\n*Directed by* Aryeom\r\n*Assistant* Jehan\r\n**Licence**: [CC-By-SA 4.0](https://creativecommons.org/licenses/by-sa/4.0/)\r\n\r\n**Sponsored by** [Framasoft](https://framasoft.org)\r\n\r\n**Music**: [Red Step Forward](http://play.dogmazic.net/song.php?song_id=52491) - CC-By Ken Bushima\r\n\r\n**Movie Clip**: [Caminades 3: Llamigos](http://www.caminandes.com/) CC-By Blender Institute\r\n\r\n**Video sources**: https://gitlab.gnome.org/Jehan/what-is-peertube/";
 
     @BeforeClass
     public static void setUp() throws Exception {
         NewPipe.init(DownloaderTestImpl.getInstance());
         // setting instance might break test when running in parallel
-        PeerTube.setInstance(new PeertubeInstance("https://peertube.mastodon.host", "PeerTube on Mastodon.host"));
-        extractor = (PeertubeStreamExtractor) PeerTube.getStreamExtractor("https://peertube.mastodon.host/videos/watch/afe5bf12-c58b-4efd-b56e-29c5a59e04bc");
+        PeerTube.setInstance(new PeertubeInstance("https://framatube.org", "FramaTube"));
+        extractor = (PeertubeStreamExtractor) PeerTube.getStreamExtractor("https://framatube.org/videos/watch/9c9de5e8-0a1e-484a-b099-e80766180a6d");
         extractor.fetchPage();
     }
 
@@ -47,22 +48,22 @@ public class PeertubeStreamExtractorDefaultTest {
 
     @Test
     public void testGetTitle() throws ParsingException {
-        assertEquals(extractor.getName(), "Power Corrupts the Best");
+        assertEquals("What is PeerTube?", extractor.getName());
     }
 
     @Test
     public void testGetDescription() throws ParsingException {
-        assertEquals(extractor.getDescription(), "A short reading from Bakunin, made for the group Audible Anarchist https://audibleanarchist.github.io/Webpage/");
+        assertEquals(expectedDescription, extractor.getDescription());
     }
 
     @Test
     public void testGetUploaderName() throws ParsingException {
-        assertEquals(extractor.getUploaderName(), "Rowsedower");
+        assertEquals("Framasoft", extractor.getUploaderName());
     }
 
     @Test
     public void testGetLength() throws ParsingException {
-        assertEquals(extractor.getLength(), 269);
+        assertEquals(113, extractor.getLength());
     }
 
     @Test
@@ -74,7 +75,7 @@ public class PeertubeStreamExtractorDefaultTest {
     @Test
     public void testGetUploadDate() throws ParsingException, ParseException {
         final Calendar instance = Calendar.getInstance();
-        instance.setTime(new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.S'Z'").parse("2018-09-30T14:08:24.378Z"));
+        instance.setTime(new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.S'Z'").parse("2018-10-01T10:52:46.396Z"));
         assertEquals(instance, requireNonNull(extractor.getUploadDate()).date());
 
     }
@@ -82,7 +83,7 @@ public class PeertubeStreamExtractorDefaultTest {
     @Test
     public void testGetUploaderUrl() throws ParsingException {
         assertIsSecureUrl(extractor.getUploaderUrl());
-        assertEquals("https://peertube.mastodon.host/api/v1/accounts/reddebrek@peertube.mastodon.host", extractor.getUploaderUrl());
+        assertEquals("https://framatube.org/api/v1/accounts/framasoft@framatube.org", extractor.getUploaderUrl());
     }
 
     @Test
@@ -115,11 +116,11 @@ public class PeertubeStreamExtractorDefaultTest {
 
     @Test
     public void testGetSubtitlesListDefault() throws IOException, ExtractionException {
-        assertTrue(extractor.getSubtitlesDefault().isEmpty());
+        assertFalse(extractor.getSubtitlesDefault().isEmpty());
     }
 
     @Test
     public void testGetSubtitlesList() throws IOException, ExtractionException {
-        assertTrue(extractor.getSubtitlesDefault().isEmpty());
+        assertFalse(extractor.getSubtitlesDefault().isEmpty());
     }
 }

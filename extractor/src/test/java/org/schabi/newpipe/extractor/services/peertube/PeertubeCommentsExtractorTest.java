@@ -26,7 +26,7 @@ public class PeertubeCommentsExtractorTest {
     public static void setUp() throws Exception {
         NewPipe.init(DownloaderTestImpl.getInstance());
         extractor = (PeertubeCommentsExtractor) PeerTube
-                .getCommentsExtractor("https://peertube.mastodon.host/videos/watch/04af977f-4201-4697-be67-a8d8cae6fa7a");
+                .getCommentsExtractor("https://framatube.org/videos/watch/04af977f-4201-4697-be67-a8d8cae6fa7a");
     }
 
     @Test
@@ -46,7 +46,7 @@ public class PeertubeCommentsExtractorTest {
     @Test
     public void testGetCommentsFromCommentsInfo() throws IOException, ExtractionException {
         boolean result = false;
-        CommentsInfo commentsInfo = CommentsInfo.getInfo("https://peertube.mastodon.host/videos/watch/a8ea95b8-0396-49a6-8f30-e25e25fb2828");
+        CommentsInfo commentsInfo = CommentsInfo.getInfo("https://framatube.org/videos/watch/a8ea95b8-0396-49a6-8f30-e25e25fb2828");
         assertTrue("Comments".equals(commentsInfo.getName()));
         result = findInComments(commentsInfo.getRelatedItems(), "Loved it!!!");
 

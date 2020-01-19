@@ -185,5 +185,4 @@ public class Utils {
         }
         return uri.getProtocol() + "://" + uri.getAuthority();
     }
-    
 }
