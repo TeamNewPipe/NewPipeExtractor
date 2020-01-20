@@ -70,20 +70,23 @@ public class PeertubeStreamExtractor extends StreamExtractor {
 
     @Override
     public String getDescription() throws ParsingException {
-        String description = "";
-        Downloader dl = NewPipe.getDownloader();
+        String desc;
         try {
-            Response response = dl.get(getUrl() + "/description");
-            JsonObject jsonObject = JsonParser.object().from(response.responseBody());
-            description = JsonUtils.getString(jsonObject, "description");
-        } catch (ReCaptchaException | IOException | JsonParserException e) {
-            e.printStackTrace();
+            desc = JsonUtils.getString(json, "description");
+        } catch (ParsingException e) {
+            return "No description";
         }
-        if (description.equals("")) {
-            //if the request above failed
-            description = JsonUtils.getString(json, "description");
+        if (desc.length() >= 255 && desc.substring(desc.length() - 3).equals("...")) {
+            Downloader dl = NewPipe.getDownloader();
+            try {
+                Response response = dl.get(getUrl() + "/description");
+                JsonObject jsonObject = JsonParser.object().from(response.responseBody());
+                desc = JsonUtils.getString(jsonObject, "description");
+            } catch (ReCaptchaException | IOException | JsonParserException e) {
+                e.printStackTrace();
+            }
         }
-        return description;
+        return desc;
     }
 
     @Override
