@@ -77,8 +77,8 @@ public class YoutubeStreamLinkHandlerFactoryTest {
         assertEquals("jZViOEv90dI", linkHandler.fromUrl("http://www.Youtube.com/embed/jZViOEv90dI").getId());
         assertEquals("jZViOEv90dI", linkHandler.fromUrl("http://www.youtube-nocookie.com/embed/jZViOEv90dI").getId());
         assertEquals("EhxJLojIE_o", linkHandler.fromUrl("http://www.youtube.com/attribution_link?a=JdfC0C9V6ZI&u=%2Fwatch%3Fv%3DEhxJLojIE_o%26feature%3Dshare").getId());
-        assertEquals("jZViOEv90dI", linkHandler.fromUrl("vnd.youtube://www.youtube.com/watch?v=jZViOEv90dI").getId());
-        assertEquals("jZViOEv90dI", linkHandler.fromUrl("vnd.youtube:jZViOEv90dI").getId());
+        assertEquals("jZViOEv90dI", linkHandler.fromUrl("vnd.youtube://www.youtube.com/watch?v=jZViOEv90dI", "youtube.com").getId());
+        assertEquals("jZViOEv90dI", linkHandler.fromUrl("vnd.youtube:jZViOEv90dI", "youtube.com").getId());
         assertEquals("O0EDx9WAelc", linkHandler.fromUrl("https://music.youtube.com/watch?v=O0EDx9WAelc").getId());
     }
 
