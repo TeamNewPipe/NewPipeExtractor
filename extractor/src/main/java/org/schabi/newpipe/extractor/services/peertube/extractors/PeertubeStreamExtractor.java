@@ -76,7 +76,7 @@ public class PeertubeStreamExtractor extends StreamExtractor {
         } catch (ParsingException e) {
             return "No description";
         }
-        if (desc.length() == 250 && desc.substring(desc.length() - 3).equals("...")) {
+        if (desc.length() == 250 && desc.substring(247).equals("...")) {
             //if description is shortened, get full description
             Downloader dl = NewPipe.getDownloader();
             try {
