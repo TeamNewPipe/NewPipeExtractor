@@ -296,7 +296,7 @@ public class YoutubeStreamExtractor extends StreamExtractor {
                         .getArray("formats")
                         .getObject(0)
                         .getString("approxDurationMs");
-                return Math.round(Long.parseLong(durationMs)/1000.0f);
+                return Math.round(Long.parseLong(durationMs) / 1000f);
             } catch (Exception ignored) {
                 throw new ParsingException("Could not get duration", e);
             }
