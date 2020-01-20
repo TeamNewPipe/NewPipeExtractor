@@ -162,7 +162,7 @@ public class YoutubeStreamExtractor extends StreamExtractor {
         try {
             JsonArray thumbnails = playerResponse.getObject("videoDetails").getObject("thumbnail").getArray("thumbnails");
             // the last thumbnail is the one with the highest resolution
-            return thumbnails.getObject(thumbnails.size()-1).getString("url");
+            return thumbnails.getObject(thumbnails.size() - 1).getString("url");
 
         } catch (Exception e) {
             String url = null;
