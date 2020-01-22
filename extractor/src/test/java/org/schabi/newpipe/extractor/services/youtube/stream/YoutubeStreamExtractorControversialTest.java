@@ -65,7 +65,7 @@ public class YoutubeStreamExtractorControversialTest {
     @Test
     public void testGetDescription() throws ParsingException {
         assertNotNull(extractor.getDescription());
-//        assertFalse(extractor.getDescription().isEmpty());
+        assertFalse(extractor.getDescription().isEmpty());
     }
 
     @Test
@@ -122,13 +122,13 @@ public class YoutubeStreamExtractorControversialTest {
 
     @Test
     public void testGetSubtitlesListDefault() throws IOException, ExtractionException {
-        // Video (/view?v=YQHsXMglC9A) set in the setUp() method has no captions => null
+        // Video (/view?v=T4XJQO3qol8) set in the setUp() method has at least auto-generated (English) captions
         assertFalse(extractor.getSubtitlesDefault().isEmpty());
     }
 
     @Test
     public void testGetSubtitlesList() throws IOException, ExtractionException {
-        // Video (/view?v=YQHsXMglC9A) set in the setUp() method has no captions => null
+        // Video (/view?v=T4XJQO3qol8) set in the setUp() method has at least auto-generated (English) captions
         assertFalse(extractor.getSubtitles(MediaFormat.TTML).isEmpty());
     }
 }
