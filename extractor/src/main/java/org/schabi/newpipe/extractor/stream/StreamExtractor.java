@@ -396,7 +396,7 @@ public abstract class StreamExtractor extends Extractor {
      * @throws ParsingException
      */
     @Nonnull
-    public abstract String getStreamInfoLanguage() throws ParsingException;
+    public abstract String getLanguageInfo() throws ParsingException;
 
     /**
      * The list of tags of the stream.
@@ -406,4 +406,16 @@ public abstract class StreamExtractor extends Extractor {
      */
     @Nonnull
     public abstract List<String> getTags() throws ParsingException;
+
+    /**
+     * The support information of the stream.
+     * see: https://framatube.org/videos/watch/ee408ec8-07cd-4e35-b884-fb681a4b9d37
+     * (support button).
+     * If the support information are not available,
+     * you can simply return an empty String.
+     * @return the support information of the stream or an empty String.
+     * @throws ParsingException
+     */
+    @Nonnull
+    public abstract String getSupportInfo() throws ParsingException;
 }

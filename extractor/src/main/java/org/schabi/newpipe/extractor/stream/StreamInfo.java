@@ -292,12 +292,17 @@ public class StreamInfo extends Info {
             streamInfo.addError(e);
         }
         try {
-            streamInfo.setLanguage(extractor.getStreamInfoLanguage());
+            streamInfo.setLanguageInfo(extractor.getLanguageInfo());
         } catch (Exception e) {
             streamInfo.addError(e);
         }
         try {
             streamInfo.setTags(extractor.getTags());
+        } catch (Exception e) {
+            streamInfo.addError(e);
+        }
+        try {
+            streamInfo.setSupportInfo(extractor.getSupportInfo());
         } catch (Exception e) {
             streamInfo.addError(e);
         }
@@ -345,6 +350,7 @@ public class StreamInfo extends Info {
     private String category = "";
     private String licence = "";
     private String language = "";
+    private String support = "";
     private List<String> tags = new ArrayList<>();
 
     /**
@@ -604,11 +610,11 @@ public class StreamInfo extends Info {
         this.licence = str;
     }
 
-    public String getLanguage() {
+    public String getLanguageInfo() {
         return this.language;
     }
 
-    public void setLanguage(String lang) {
+    public void setLanguageInfo(String lang) {
         this.language = lang;
     }
 
@@ -620,5 +626,11 @@ public class StreamInfo extends Info {
         this.tags = tags;
     }
 
+    public void setSupportInfo(String support) {
+        this.support = support;
+    }
 
+    public String getSupportInfo() {
+        return this.support;
+    }
 }

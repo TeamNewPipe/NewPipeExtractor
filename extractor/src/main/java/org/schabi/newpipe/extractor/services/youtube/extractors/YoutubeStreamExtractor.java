@@ -1156,7 +1156,7 @@ public class YoutubeStreamExtractor extends StreamExtractor {
     }
 
     @Override
-    public String getStreamInfoLanguage() throws ParsingException {
+    public String getLanguageInfo() throws ParsingException {
         return "";
     }
 
@@ -1164,5 +1164,11 @@ public class YoutubeStreamExtractor extends StreamExtractor {
     @Override
     public List<String> getTags() throws ParsingException {
         return new ArrayList<>();
+    }
+
+    @Nonnull
+    @Override
+    public String getSupportInfo() throws ParsingException {
+        return "";
     }
 }

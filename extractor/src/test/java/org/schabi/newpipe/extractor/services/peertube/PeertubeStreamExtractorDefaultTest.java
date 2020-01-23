@@ -147,4 +147,11 @@ public class PeertubeStreamExtractorDefaultTest {
         ageLimit.fetchPage();
         assertEquals(18, ageLimit.getAgeLimit());
     }
+
+    @Test
+    public void testGetSupportInformation() throws ExtractionException, IOException {
+        PeertubeStreamExtractor supportInfoExtractor = (PeertubeStreamExtractor) PeerTube.getStreamExtractor("https://framatube.org/videos/watch/ee408ec8-07cd-4e35-b884-fb681a4b9d37");
+        supportInfoExtractor.fetchPage();
+        assertEquals("https://utip.io/chatsceptique", supportInfoExtractor.getSupportInfo());
+    }
 }

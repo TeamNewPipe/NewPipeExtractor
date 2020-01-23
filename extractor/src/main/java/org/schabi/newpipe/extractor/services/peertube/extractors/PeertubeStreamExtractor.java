@@ -35,6 +35,8 @@ import com.grack.nanojson.JsonObject;
 import com.grack.nanojson.JsonParser;
 import com.grack.nanojson.JsonParserException;
 
+import javax.annotation.Nonnull;
+
 public class PeertubeStreamExtractor extends StreamExtractor {
 
     
@@ -250,7 +252,13 @@ public class PeertubeStreamExtractor extends StreamExtractor {
             return Collections.emptyList();
         }
     }
-    
+
+    @Nonnull
+    @Override
+    public String getSupportInfo() throws ParsingException {
+        return JsonUtils.getString(json, "support");
+    }
+
     private String getRelatedStreamsUrl(List<String> tags) throws UnsupportedEncodingException {
         String url = baseUrl + PeertubeSearchQueryHandlerFactory.SEARCH_ENDPOINT;
         StringBuilder params = new StringBuilder();
@@ -378,7 +386,7 @@ public class PeertubeStreamExtractor extends StreamExtractor {
     }
 
     @Override
-    public String getStreamInfoLanguage() throws ParsingException {
+    public String getLanguageInfo() throws ParsingException {
         return JsonUtils.getString(json, "language.label");
     }
 }
