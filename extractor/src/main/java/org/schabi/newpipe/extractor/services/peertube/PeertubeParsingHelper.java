@@ -4,6 +4,7 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.concurrent.TimeUnit;
 
 import org.jsoup.helper.StringUtil;
 import org.schabi.newpipe.extractor.exceptions.ContentNotAvailableException;
@@ -27,6 +28,7 @@ public class PeertubeParsingHelper {
         Date date;
         try {
             date = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.S'Z'").parse(textualUploadDate);
+            date = new Date(date.getTime() + TimeUnit.HOURS.toMillis(1));
         } catch (ParseException e) {
             throw new ParsingException("Could not parse date: \"" + textualUploadDate + "\"", e);
         }
