@@ -91,7 +91,7 @@ public class PeertubeStreamExtractorDefaultTest {
     @Test
     public void testGetUploadDate() throws ParsingException, ParseException {
         final Calendar instance = Calendar.getInstance();
-        instance.setTime(new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.S'Z'").parse("2018-10-01T10:52:46.396Z"));
+        instance.setTime(new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.S'Z'").parse("2018-10-01T11:52:46.396Z"));
         assertEquals(instance, requireNonNull(extractor.getUploadDate()).date());
 
     }
