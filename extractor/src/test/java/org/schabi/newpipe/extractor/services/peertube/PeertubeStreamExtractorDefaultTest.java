@@ -61,7 +61,7 @@ public class PeertubeStreamExtractorDefaultTest {
     public void testGetEmptyDescription() throws Exception {
         PeertubeStreamExtractor extractorEmpty = (PeertubeStreamExtractor) PeerTube.getStreamExtractor("https://framatube.org/api/v1/videos/d5907aad-2252-4207-89ec-a4b687b9337d");
         extractorEmpty.fetchPage();
-        assertEquals("No description", extractorEmpty.getDescription());
+        assertEquals("", extractorEmpty.getDescription());
     }
 
     @Test

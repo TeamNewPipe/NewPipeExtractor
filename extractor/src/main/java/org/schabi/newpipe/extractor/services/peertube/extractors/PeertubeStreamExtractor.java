@@ -76,7 +76,7 @@ public class PeertubeStreamExtractor extends StreamExtractor {
         try {
             desc = JsonUtils.getString(json, "description");
         } catch (ParsingException e) {
-            return "No description";
+            return "";
         }
         if (desc.length() == 250 && desc.substring(247).equals("...")) {
             //if description is shortened, get full description
@@ -256,7 +256,11 @@ public class PeertubeStreamExtractor extends StreamExtractor {
     @Nonnull
     @Override
     public String getSupportInfo() throws ParsingException {
-        return JsonUtils.getString(json, "support");
+        try {
+            return JsonUtils.getString(json, "support");
+        } catch (ParsingException e) {
+            return "";
+        }
     }
 
     private String getRelatedStreamsUrl(List<String> tags) throws UnsupportedEncodingException {
