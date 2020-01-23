@@ -677,7 +677,7 @@ public class YoutubeStreamExtractor extends StreamExtractor {
 
     private static final String VERIFIED_URL_PARAMS = "&has_verified=1&bpctr=9999999999";
 
-    private final static String DECYRYPTION_SIGNATURE_FUNCTION_REGEX =
+    private final static String DECRYPTION_SIGNATURE_FUNCTION_REGEX =
             "([\\w$]+)\\s*=\\s*function\\((\\w+)\\)\\{\\s*\\2=\\s*\\2\\.split\\(\"\"\\)\\s*;";
     private final static String DECRYPTION_AKAMAIZED_STRING_REGEX =
             "yt\\.akamaized\\.net/\\)\\s*\\|\\|\\s*.*?\\s*c\\s*&&\\s*d\\.set\\([^,]+\\s*,\\s*(:encodeURIComponent\\s*\\()([a-zA-Z0-9$]+)\\(";
@@ -873,7 +873,7 @@ public class YoutubeStreamExtractor extends StreamExtractor {
         // to se if the function can actually be found with the given regex.
         // However if this cascading should propably be cleaned up somehow as it looks a bit weird.
         try {
-            decryptionFunctionName = Parser.matchGroup1(DECYRYPTION_SIGNATURE_FUNCTION_REGEX, playerCode);
+            decryptionFunctionName = Parser.matchGroup1(DECRYPTION_SIGNATURE_FUNCTION_REGEX, playerCode);
         } catch (Parser.RegexException re) {
             try {
                 decryptionFunctionName = Parser.matchGroup1(DECRYPTION_AKAMAIZED_SHORT_STRING_REGEX, playerCode);
