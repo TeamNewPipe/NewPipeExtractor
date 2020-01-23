@@ -92,7 +92,12 @@ public class PeertubeStreamExtractor extends StreamExtractor {
 
     @Override
     public int getAgeLimit() throws ParsingException {
-        return NO_AGE_LIMIT;
+        boolean isNSFW = JsonUtils.getBoolean(json, "nsfw");
+        if (isNSFW) {
+            return 18;
+        } else {
+            return NO_AGE_LIMIT;
+        }
     }
 
     @Override
@@ -352,7 +357,6 @@ public class PeertubeStreamExtractor extends StreamExtractor {
         return baseUrl + "/videos/watch/" + getId();
     }
 
-    //TODO: change privacy, category, licence by getting ID, therefore we will be able to translate it
     @Override
     public String getHost() throws ParsingException {
         return JsonUtils.getString(json, "account.host");

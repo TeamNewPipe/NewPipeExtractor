@@ -139,4 +139,12 @@ public class PeertubeStreamExtractorDefaultTest {
     public void testGetSubtitlesList() throws IOException, ExtractionException {
         assertFalse(extractor.getSubtitlesDefault().isEmpty());
     }
+
+    @Test
+    public void testGetAgeLimit() throws ExtractionException, IOException {
+        assertEquals(0, extractor.getAgeLimit());
+        PeertubeStreamExtractor ageLimit = (PeertubeStreamExtractor) PeerTube.getStreamExtractor("https://peertube.co.uk/videos/watch/6762bb04-cad5-407b-81ee-c18eac4715a7");
+        ageLimit.fetchPage();
+        assertEquals(18, ageLimit.getAgeLimit());
+    }
 }

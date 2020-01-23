@@ -37,6 +37,16 @@ public class JsonUtils {
             throw new ParsingException("Unable to get " + path);
         }
     }
+
+    @Nonnull
+    public static Boolean getBoolean(@Nonnull JsonObject object, @Nonnull String path) throws ParsingException{
+        Object value = getValue(object, path);
+        if(value instanceof Boolean) {
+            return (Boolean) value;
+        }else {
+            throw new ParsingException("Unable to get " + path);
+        }
+    }
     
     @Nonnull
     public static Number getNumber(@Nonnull JsonObject object, @Nonnull String path) throws ParsingException{
