@@ -67,6 +67,7 @@ public class Parser {
         if (foundMatch) {
             return mat.group(group);
         } else {
+            // only pass input to exception message when it is not too long
             if (input.length() > 1024) {
                 throw new RegexException("failed to find pattern \"" + pat.pattern());
             } else {
