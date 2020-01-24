@@ -773,7 +773,7 @@ public class YoutubeStreamExtractor extends StreamExtractor {
     private JsonObject getPlayerResponse() throws ParsingException {
         try {
             String playerResponseStr;
-            if(playerArgs != null) {
+            if (playerArgs != null) {
                 playerResponseStr = playerArgs.getString("player_response");
             } else {
                 playerResponseStr = videoInfoPage.get("player_response");
@@ -805,7 +805,7 @@ public class YoutubeStreamExtractor extends StreamExtractor {
                 final String sts = Parser.matchGroup1(stsPattern, embedPageContent);
                 return new EmbeddedInfo(playerUrl, sts);
             } catch (Exception i) {
-                // if it failes we simply reply with no sts as then it does not seem to be necessary
+                // if it fails we simply reply with no sts as then it does not seem to be necessary
                 return new EmbeddedInfo(playerUrl, "");
             }
 
@@ -871,7 +871,7 @@ public class YoutubeStreamExtractor extends StreamExtractor {
         String decryptionFunctionName;
         // Cascading things in catch is ugly, but its faster than running a match before getting the actual name
         // to se if the function can actually be found with the given regex.
-        // However if this cascading should propably be cleaned up somehow as it looks a bit weird.
+        // However if this cascading should probably be cleaned up somehow as it looks a bit weird.
         try {
             decryptionFunctionName = Parser.matchGroup1(DECRYPTION_SIGNATURE_FUNCTION_REGEX, playerCode);
         } catch (Parser.RegexException re) {
@@ -891,7 +891,7 @@ public class YoutubeStreamExtractor extends StreamExtractor {
     @Nonnull
     private List<SubtitlesInfo> getAvailableSubtitlesInfo() throws SubtitlesException {
         // If the video is age restricted getPlayerConfig will fail
-        if(isAgeRestricted) return Collections.emptyList();
+        if (isAgeRestricted) return Collections.emptyList();
 
         final JsonObject captions;
         if (!playerResponse.has("captions")) {
@@ -908,7 +908,7 @@ public class YoutubeStreamExtractor extends StreamExtractor {
         // This check is necessary since there may be cases where subtitles metadata do not contain caption track info
         // e.g. https://www.youtube.com/watch?v=-Vpwatutnko
         final int captionsSize = captionsArray.size();
-        if(captionsSize == 0) return Collections.emptyList();
+        if (captionsSize == 0) return Collections.emptyList();
 
         List<SubtitlesInfo> result = new ArrayList<>();
         for (int i = 0; i < captionsSize; i++) {
