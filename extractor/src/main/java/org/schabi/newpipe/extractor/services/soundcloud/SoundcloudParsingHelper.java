@@ -31,7 +31,7 @@ import static org.schabi.newpipe.extractor.ServiceList.SoundCloud;
 import static org.schabi.newpipe.extractor.utils.Utils.replaceHttpWithHttps;
 
 public class SoundcloudParsingHelper {
-    private static final String HARDCODED_CLIENT_ID = "LHzSAKe8eP9Yy3FgBugfBapRPLncO6Ng"; // Updated on 22/10/19
+    private static final String HARDCODED_CLIENT_ID = "r5ELVSy3RkcjX7ilaL7n2v1Z8irA9SL8"; // Updated on 31/12/19
     private static String clientId;
     
     private SoundcloudParsingHelper() {
@@ -73,10 +73,15 @@ public class SoundcloudParsingHelper {
         throw new ExtractionException("Couldn't extract client id");
     }
 
-    static boolean checkIfHardcodedClientIdIsValid(Downloader dl) throws IOException, ReCaptchaException {
+    static boolean checkIfHardcodedClientIdIsValid(Downloader dl) {
         final String apiUrl = "https://api.soundcloud.com/connect?client_id=" + HARDCODED_CLIENT_ID;
-        // Should return 200 to indicate that the client id is valid, a 401 is returned otherwise.
-        return dl.head(apiUrl).responseCode() == 200;
+        try {
+            // Should return 200 to indicate that the client id is valid, a 401 is returned otherwise.
+            return dl.head(apiUrl).responseCode() == 200;
+        } catch (Exception ignored) {
+            // No need to throw an exception here. If something went wrong, the client_id is wrong
+            return false;
+        }
     }
 
     static Calendar parseDate(String textualUploadDate) throws ParsingException {

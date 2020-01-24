@@ -39,7 +39,7 @@ public class YoutubeSearchExtractorChannelOnlyTest extends YoutubeSearchExtracto
         boolean equals = true;
         for (int i = 0; i < secondPage.getItems().size()
                 && i < itemsPage.getItems().size(); i++) {
-            if(!secondPage.getItems().get(i).getUrl().equals(
+            if (!secondPage.getItems().get(i).getUrl().equals(
                     itemsPage.getItems().get(i).getUrl())) {
                 equals = false;
             }
@@ -58,7 +58,7 @@ public class YoutubeSearchExtractorChannelOnlyTest extends YoutubeSearchExtracto
     @Test
     public void testOnlyContainChannels() {
         for(InfoItem item : itemsPage.getItems()) {
-            if(!(item instanceof ChannelInfoItem)) {
+            if (!(item instanceof ChannelInfoItem)) {
                 fail("The following item is no channel item: " + item.toString());
             }
         }
@@ -77,5 +77,12 @@ public class YoutubeSearchExtractorChannelOnlyTest extends YoutubeSearchExtracto
                 }
             }
         }
+    }
+
+    @Test
+    public void testStreamCount() {
+        ChannelInfoItem ci = (ChannelInfoItem) itemsPage.getItems().get(0);
+        assertTrue("Stream count does not fit: " + ci.getStreamCount(),
+                4000 < ci.getStreamCount() && ci.getStreamCount() < 5500);
     }
 }

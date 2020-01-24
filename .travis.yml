@@ -1,7 +1,10 @@
 language: java
+jdk:
+  - openjdk8
 
-script: ./gradlew check
-after_success: ./gradlew aggregatedJavadocs
+script:
+  - ./gradlew check
+  - ./gradlew aggregatedJavadocs
 
 deploy:
   provider: pages

@@ -89,7 +89,7 @@ public class MediaCCCStreamExtractorTest implements BaseExtractorTest {
 
     @Test
     public void testGetTextualUploadDate() throws ParsingException {
-        Assert.assertEquals("2018-05-11", extractor.getTextualUploadDate());
+        Assert.assertEquals("2018-05-11T02:00:00.000+02:00", extractor.getTextualUploadDate());
     }
 
     @Test

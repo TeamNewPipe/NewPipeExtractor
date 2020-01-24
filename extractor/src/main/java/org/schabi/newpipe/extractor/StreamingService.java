@@ -1,11 +1,19 @@
 package org.schabi.newpipe.extractor;
 
+import java.util.Collections;
+import java.util.List;
+
 import org.schabi.newpipe.extractor.channel.ChannelExtractor;
 import org.schabi.newpipe.extractor.comments.CommentsExtractor;
 import org.schabi.newpipe.extractor.exceptions.ExtractionException;
 import org.schabi.newpipe.extractor.exceptions.ParsingException;
 import org.schabi.newpipe.extractor.kiosk.KioskList;
-import org.schabi.newpipe.extractor.linkhandler.*;
+import org.schabi.newpipe.extractor.linkhandler.LinkHandler;
+import org.schabi.newpipe.extractor.linkhandler.LinkHandlerFactory;
+import org.schabi.newpipe.extractor.linkhandler.ListLinkHandler;
+import org.schabi.newpipe.extractor.linkhandler.ListLinkHandlerFactory;
+import org.schabi.newpipe.extractor.linkhandler.SearchQueryHandler;
+import org.schabi.newpipe.extractor.linkhandler.SearchQueryHandlerFactory;
 import org.schabi.newpipe.extractor.localization.ContentCountry;
 import org.schabi.newpipe.extractor.localization.Localization;
 import org.schabi.newpipe.extractor.localization.TimeAgoParser;
@@ -15,9 +23,6 @@ import org.schabi.newpipe.extractor.search.SearchExtractor;
 import org.schabi.newpipe.extractor.stream.StreamExtractor;
 import org.schabi.newpipe.extractor.subscription.SubscriptionExtractor;
 import org.schabi.newpipe.extractor.suggestion.SuggestionExtractor;
-
-import java.util.Collections;
-import java.util.List;
 
 /*
  * Copyright (C) Christian Schabesberger 2018 <chris.schabesberger@mailbox.org>
@@ -44,6 +49,7 @@ public abstract class StreamingService {
      */
     public static class ServiceInfo {
         private final String name;
+
         private final List<MediaCapability> mediaCapabilities;
 
         /**
@@ -59,7 +65,7 @@ public abstract class StreamingService {
         public String getName() {
             return name;
         }
-
+        
         public List<MediaCapability> getMediaCapabilities() {
             return mediaCapabilities;
         }
@@ -110,6 +116,8 @@ public abstract class StreamingService {
     public String toString() {
         return serviceId + ":" + serviceInfo.getName();
     }
+    
+    public abstract String getBaseUrl();
 
     /*//////////////////////////////////////////////////////////////////////////
     // Url Id handler
@@ -250,7 +258,7 @@ public abstract class StreamingService {
         }
         return getCommentsExtractor(llhf.fromUrl(url));
     }
-
+    
     /*//////////////////////////////////////////////////////////////////////////
     // Utils
     //////////////////////////////////////////////////////////////////////////*/
