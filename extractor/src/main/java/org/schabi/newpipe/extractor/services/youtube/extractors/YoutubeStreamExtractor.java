@@ -698,8 +698,10 @@ public class YoutubeStreamExtractor extends StreamExtractor {
 
     private static final String VERIFIED_URL_PARAMS = "&has_verified=1&bpctr=9999999999";
 
-    private final static String DECYRYPTION_SIGNATURE_FUNCTION_REGEX =
+    private final static String DECRYPTION_SIGNATURE_FUNCTION_REGEX =
             "([\\w$]+)\\s*=\\s*function\\((\\w+)\\)\\{\\s*\\2=\\s*\\2\\.split\\(\"\"\\)\\s*;";
+    private final static String DECRYPTION_SIGNATURE_FUNCTION_REGEX_2 =
+            "\\b([\\w$]{2})\\s*=\\s*function\\((\\w+)\\)\\{\\s*\\2=\\s*\\2\\.split\\(\"\"\\)\\s*;";
     private final static String DECRYPTION_AKAMAIZED_STRING_REGEX =
             "yt\\.akamaized\\.net/\\)\\s*\\|\\|\\s*.*?\\s*c\\s*&&\\s*d\\.set\\([^,]+\\s*,\\s*(:encodeURIComponent\\s*\\()([a-zA-Z0-9$]+)\\(";
     private final static String DECRYPTION_AKAMAIZED_SHORT_STRING_REGEX =
@@ -718,7 +720,8 @@ public class YoutubeStreamExtractor extends StreamExtractor {
 
         final String playerUrl;
         // Check if the video is age restricted
-        if (!doc.select("meta[property=\"og:restrictions:age\"]").isEmpty()) {
+        Elements e = doc.select("meta[property=\"og:restrictions:age\"]");
+        if (!e.isEmpty()) {
             final EmbeddedInfo info = getEmbeddedInfo();
             final String videoInfoUrl = getVideoInfoUrl(getId(), info.sts);
             final String infoPageResponse = downloader.get(videoInfoUrl, getExtractorLocalization()).responseBody();
@@ -794,7 +797,7 @@ public class YoutubeStreamExtractor extends StreamExtractor {
     private JsonObject getPlayerResponse() throws ParsingException {
         try {
             String playerResponseStr;
-            if(playerArgs != null) {
+            if (playerArgs != null) {
                 playerResponseStr = playerArgs.getString("player_response");
             } else {
                 playerResponseStr = videoInfoPage.get("player_response");
@@ -826,7 +829,7 @@ public class YoutubeStreamExtractor extends StreamExtractor {
                 final String sts = Parser.matchGroup1(stsPattern, embedPageContent);
                 return new EmbeddedInfo(playerUrl, sts);
             } catch (Exception i) {
-                // if it failes we simply reply with no sts as then it does not seem to be necessary
+                // if it fails we simply reply with no sts as then it does not seem to be necessary
                 return new EmbeddedInfo(playerUrl, "");
             }
 
@@ -889,30 +892,28 @@ public class YoutubeStreamExtractor extends StreamExtractor {
     }
 
     private String getDecryptionFuncName(String playerCode) throws DecryptException {
-        String decryptionFunctionName;
-        // Cascading things in catch is ugly, but its faster than running a match before getting the actual name
-        // to se if the function can actually be found with the given regex.
-        // However if this cascading should propably be cleaned up somehow as it looks a bit weird.
-        try {
-            decryptionFunctionName = Parser.matchGroup1(DECYRYPTION_SIGNATURE_FUNCTION_REGEX, playerCode);
-        } catch (Parser.RegexException re) {
+        String[] decryptionFuncNameRegexes = {
+                DECRYPTION_SIGNATURE_FUNCTION_REGEX_2,
+                DECRYPTION_SIGNATURE_FUNCTION_REGEX,
+                DECRYPTION_AKAMAIZED_SHORT_STRING_REGEX,
+                DECRYPTION_AKAMAIZED_STRING_REGEX
+        };
+        Parser.RegexException exception = null;
+        for (String regex : decryptionFuncNameRegexes) {
             try {
-                decryptionFunctionName = Parser.matchGroup1(DECRYPTION_AKAMAIZED_SHORT_STRING_REGEX, playerCode);
-            } catch (Parser.RegexException re2) {
-                try {
-                    decryptionFunctionName = Parser.matchGroup1(DECRYPTION_AKAMAIZED_STRING_REGEX, playerCode);
-                } catch (Parser.RegexException re3) {
-                    throw new DecryptException("Could not find decrypt function with any of the given patterns.", re);
-                }
+                return Parser.matchGroup1(regex, playerCode);
+            } catch (Parser.RegexException re) {
+                if (exception == null)
+                    exception = re;
             }
         }
-        return decryptionFunctionName;
+        throw new DecryptException("Could not find decrypt function with any of the given patterns.", exception);
     }
 
     @Nonnull
     private List<SubtitlesInfo> getAvailableSubtitlesInfo() throws SubtitlesException {
         // If the video is age restricted getPlayerConfig will fail
-        if(isAgeRestricted) return Collections.emptyList();
+        if (isAgeRestricted) return Collections.emptyList();
 
         final JsonObject captions;
         if (!playerResponse.has("captions")) {
@@ -929,7 +930,7 @@ public class YoutubeStreamExtractor extends StreamExtractor {
         // This check is necessary since there may be cases where subtitles metadata do not contain caption track info
         // e.g. https://www.youtube.com/watch?v=-Vpwatutnko
         final int captionsSize = captionsArray.size();
-        if(captionsSize == 0) return Collections.emptyList();
+        if (captionsSize == 0) return Collections.emptyList();
 
         List<SubtitlesInfo> result = new ArrayList<>();
         for (int i = 0; i < captionsSize; i++) {
