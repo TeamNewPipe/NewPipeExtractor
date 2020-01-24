@@ -868,24 +868,21 @@ public class YoutubeStreamExtractor extends StreamExtractor {
     }
 
     private String getDecryptionFuncName(String playerCode) throws DecryptException {
-        String decryptionFunctionName;
-        // Cascading things in catch is ugly, but its faster than running a match before getting the actual name
-        // to se if the function can actually be found with the given regex.
-        // However if this cascading should probably be cleaned up somehow as it looks a bit weird.
-        try {
-            decryptionFunctionName = Parser.matchGroup1(DECRYPTION_SIGNATURE_FUNCTION_REGEX, playerCode);
-        } catch (Parser.RegexException re) {
+        String[] decryptionFuncNameRegexes = {
+                DECRYPTION_SIGNATURE_FUNCTION_REGEX,
+                DECRYPTION_AKAMAIZED_SHORT_STRING_REGEX,
+                DECRYPTION_AKAMAIZED_STRING_REGEX
+        };
+        Parser.RegexException exception = null;
+        for (String regex : decryptionFuncNameRegexes) {
             try {
-                decryptionFunctionName = Parser.matchGroup1(DECRYPTION_AKAMAIZED_SHORT_STRING_REGEX, playerCode);
-            } catch (Parser.RegexException re2) {
-                try {
-                    decryptionFunctionName = Parser.matchGroup1(DECRYPTION_AKAMAIZED_STRING_REGEX, playerCode);
-                } catch (Parser.RegexException re3) {
-                    throw new DecryptException("Could not find decrypt function with any of the given patterns.", re);
-                }
+                return Parser.matchGroup1(regex, playerCode);
+            } catch (Parser.RegexException re) {
+                if (exception == null)
+                    exception = re;
             }
         }
-        return decryptionFunctionName;
+        throw new DecryptException("Could not find decrypt function with any of the given patterns.", exception);
     }
 
     @Nonnull
