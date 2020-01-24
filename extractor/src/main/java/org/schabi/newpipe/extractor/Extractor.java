@@ -56,7 +56,7 @@ public abstract class Extractor{
     }
 
     protected void assertPageFetched() {
-        if(!pageFetched) throw new IllegalStateException("Page is not fetched. Make sure you call fetchPage()");
+        if (!pageFetched) throw new IllegalStateException("Page is not fetched. Make sure you call fetchPage()");
     }
 
     protected boolean isPageFetched() {
