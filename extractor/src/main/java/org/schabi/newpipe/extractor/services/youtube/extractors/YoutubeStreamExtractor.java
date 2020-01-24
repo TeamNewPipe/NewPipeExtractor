@@ -679,6 +679,8 @@ public class YoutubeStreamExtractor extends StreamExtractor {
 
     private final static String DECRYPTION_SIGNATURE_FUNCTION_REGEX =
             "([\\w$]+)\\s*=\\s*function\\((\\w+)\\)\\{\\s*\\2=\\s*\\2\\.split\\(\"\"\\)\\s*;";
+    private final static String DECRYPTION_SIGNATURE_FUNCTION_REGEX_2 =
+            "\\b([\\w$]{2})\\s*=\\s*function\\((\\w+)\\)\\{\\s*\\2=\\s*\\2\\.split\\(\"\"\\)\\s*;";
     private final static String DECRYPTION_AKAMAIZED_STRING_REGEX =
             "yt\\.akamaized\\.net/\\)\\s*\\|\\|\\s*.*?\\s*c\\s*&&\\s*d\\.set\\([^,]+\\s*,\\s*(:encodeURIComponent\\s*\\()([a-zA-Z0-9$]+)\\(";
     private final static String DECRYPTION_AKAMAIZED_SHORT_STRING_REGEX =
@@ -697,7 +699,8 @@ public class YoutubeStreamExtractor extends StreamExtractor {
 
         final String playerUrl;
         // Check if the video is age restricted
-        if (!doc.select("meta[property=\"og:restrictions:age\"]").isEmpty()) {
+        Elements e = doc.select("meta[property=\"og:restrictions:age\"]");
+        if (!e.isEmpty()) {
             final EmbeddedInfo info = getEmbeddedInfo();
             final String videoInfoUrl = getVideoInfoUrl(getId(), info.sts);
             final String infoPageResponse = downloader.get(videoInfoUrl, getExtractorLocalization()).responseBody();
@@ -869,6 +872,7 @@ public class YoutubeStreamExtractor extends StreamExtractor {
 
     private String getDecryptionFuncName(String playerCode) throws DecryptException {
         String[] decryptionFuncNameRegexes = {
+                DECRYPTION_SIGNATURE_FUNCTION_REGEX_2,
                 DECRYPTION_SIGNATURE_FUNCTION_REGEX,
                 DECRYPTION_AKAMAIZED_SHORT_STRING_REGEX,
                 DECRYPTION_AKAMAIZED_STRING_REGEX
