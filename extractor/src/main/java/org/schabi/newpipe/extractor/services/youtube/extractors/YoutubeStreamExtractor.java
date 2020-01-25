@@ -1157,8 +1157,8 @@ public class YoutubeStreamExtractor extends StreamExtractor {
     }
 
     @Override
-    public String getLanguageInfo() throws ParsingException {
-        return "";
+    public Locale getLanguageInfo() throws ParsingException {
+        return null;
     }
 
     @Nonnull

@@ -13,6 +13,7 @@ import org.schabi.newpipe.extractor.utils.ExtractorHelper;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
 
 /*
  * Created by Christian Schabesberger on 26.08.15.
@@ -349,8 +350,8 @@ public class StreamInfo extends Info {
     private String privacy = "";
     private String category = "";
     private String licence = "";
-    private String language = "";
     private String support = "";
+    private Locale language = null;
     private List<String> tags = new ArrayList<>();
 
     /**
@@ -610,11 +611,11 @@ public class StreamInfo extends Info {
         this.licence = str;
     }
 
-    public String getLanguageInfo() {
+    public Locale getLanguageInfo() {
         return this.language;
     }
 
-    public void setLanguageInfo(String lang) {
+    public void setLanguageInfo(Locale lang) {
         this.language = lang;
     }
 

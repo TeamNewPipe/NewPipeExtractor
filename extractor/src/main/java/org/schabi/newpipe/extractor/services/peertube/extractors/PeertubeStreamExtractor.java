@@ -6,6 +6,7 @@ import java.net.URLEncoder;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.Locale;
 
 import org.jsoup.helper.StringUtil;
 import org.schabi.newpipe.extractor.MediaFormat;
@@ -391,7 +392,11 @@ public class PeertubeStreamExtractor extends StreamExtractor {
     }
 
     @Override
-    public String getLanguageInfo() throws ParsingException {
-        return JsonUtils.getString(json, "language.label");
+    public Locale getLanguageInfo() throws ParsingException {
+        try {
+            return new Locale(JsonUtils.getString(json, "language.id"));
+        } catch (ParsingException e) {
+            return null;
+        }
     }
 }

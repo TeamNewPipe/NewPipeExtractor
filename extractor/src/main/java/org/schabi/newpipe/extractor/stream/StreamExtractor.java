@@ -35,6 +35,7 @@ import javax.annotation.Nullable;
 import java.io.IOException;
 import java.util.Collections;
 import java.util.List;
+import java.util.Locale;
 
 /**
  * Scrapes information from a video/audio streaming service (eg, YouTube).
@@ -390,13 +391,15 @@ public abstract class StreamExtractor extends Extractor {
     public abstract String getLicence() throws ParsingException;
 
     /**
-     * The language of the stream.
-     * If the language is not available you can simply return an empty string.
-     * @return the licence of the stream or an empty String.
+     * The locale language of the stream.
+     * If the language is not available you can simply return null.
+     * If the language is provided by a language code, you can return
+     * new Locale(language_code);
+     * @return the locale language of the stream or null.
      * @throws ParsingException
      */
-    @Nonnull
-    public abstract String getLanguageInfo() throws ParsingException;
+    @Nullable
+    public abstract Locale getLanguageInfo() throws ParsingException;
 
     /**
      * The list of tags of the stream.

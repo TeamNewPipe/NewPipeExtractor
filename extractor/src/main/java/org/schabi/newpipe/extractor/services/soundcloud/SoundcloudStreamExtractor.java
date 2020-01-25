@@ -20,6 +20,7 @@ import java.net.URLEncoder;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.Locale;
 
 public class SoundcloudStreamExtractor extends StreamExtractor {
     private JsonObject track;
@@ -276,8 +277,8 @@ public class SoundcloudStreamExtractor extends StreamExtractor {
     }
 
     @Override
-    public String getLanguageInfo() throws ParsingException {
-        return "";
+    public Locale getLanguageInfo() throws ParsingException {
+        return null;
     }
 
     @Nonnull

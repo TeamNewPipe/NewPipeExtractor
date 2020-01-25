@@ -18,6 +18,7 @@ import javax.annotation.Nonnull;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
 
 public class MediaCCCStreamExtractor extends StreamExtractor {
 
@@ -248,8 +249,8 @@ public class MediaCCCStreamExtractor extends StreamExtractor {
     }
 
     @Override
-    public String getLanguageInfo() throws ParsingException {
-        return "";
+    public Locale getLanguageInfo() throws ParsingException {
+        return null;
     }
 
     @Nonnull

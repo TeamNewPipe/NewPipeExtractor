@@ -11,6 +11,7 @@ import java.io.IOException;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
+import java.util.Locale;
 
 import org.junit.BeforeClass;
 import org.junit.Ignore;
@@ -153,5 +154,10 @@ public class PeertubeStreamExtractorDefaultTest {
         PeertubeStreamExtractor supportInfoExtractor = (PeertubeStreamExtractor) PeerTube.getStreamExtractor("https://framatube.org/videos/watch/ee408ec8-07cd-4e35-b884-fb681a4b9d37");
         supportInfoExtractor.fetchPage();
         assertEquals("https://utip.io/chatsceptique", supportInfoExtractor.getSupportInfo());
+    }
+
+    @Test
+    public void testGetLanguageInformation() throws ParsingException {
+        assertEquals(new Locale("en"), extractor.getLanguageInfo());
     }
 }
