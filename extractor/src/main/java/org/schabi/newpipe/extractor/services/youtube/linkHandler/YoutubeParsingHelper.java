@@ -38,6 +38,9 @@ public class YoutubeParsingHelper {
     private YoutubeParsingHelper() {
     }
 
+    private static final String FEED_BASE_CHANNEL_ID = "https://www.youtube.com/feeds/videos.xml?channel_id=";
+    private static final String FEED_BASE_USER = "https://www.youtube.com/feeds/videos.xml?user=";
+
     private static final String[] RECAPTCHA_DETECTION_SELECTORS = {
             "form[action*=\"/das_captcha\"]",
             "input[name*=\"action_recaptcha_verify\"]"
@@ -116,6 +119,16 @@ public class YoutubeParsingHelper {
                 + Long.parseLong(hours) * 60)
                 + Long.parseLong(minutes)) * 60)
                 + Long.parseLong(seconds);
+    }
+
+    public static String getFeedUrlFrom(final String channelIdOrUser) {
+        if (channelIdOrUser.startsWith("user/")) {
+            return FEED_BASE_USER + channelIdOrUser.replace("user/", "");
+        } else if (channelIdOrUser.startsWith("channel/")) {
+            return FEED_BASE_CHANNEL_ID + channelIdOrUser.replace("channel/", "");
+        } else {
+            return FEED_BASE_CHANNEL_ID + channelIdOrUser;
+        }
     }
 
     public static Calendar parseDateFrom(String textualUploadDate) throws ParsingException {
