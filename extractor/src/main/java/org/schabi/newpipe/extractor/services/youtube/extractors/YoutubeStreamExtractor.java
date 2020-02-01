@@ -22,8 +22,8 @@ import org.schabi.newpipe.extractor.exceptions.ExtractionException;
 import org.schabi.newpipe.extractor.exceptions.ParsingException;
 import org.schabi.newpipe.extractor.exceptions.ReCaptchaException;
 import org.schabi.newpipe.extractor.linkhandler.LinkHandler;
-import org.schabi.newpipe.extractor.localization.TimeAgoParser;
 import org.schabi.newpipe.extractor.localization.DateWrapper;
+import org.schabi.newpipe.extractor.localization.TimeAgoParser;
 import org.schabi.newpipe.extractor.services.youtube.ItagItem;
 import org.schabi.newpipe.extractor.services.youtube.linkHandler.YoutubeParsingHelper;
 import org.schabi.newpipe.extractor.stream.*;
@@ -152,7 +152,7 @@ public class YoutubeStreamExtractor extends StreamExtractor {
             return null;
         }
 
-        return new DateWrapper(YoutubeParsingHelper.parseDateFrom(textualUploadDate));
+        return new DateWrapper(YoutubeParsingHelper.parseDateFrom(textualUploadDate), true);
     }
 
     @Nonnull
@@ -720,8 +720,7 @@ public class YoutubeStreamExtractor extends StreamExtractor {
 
         final String playerUrl;
         // Check if the video is age restricted
-        Elements e = doc.select("meta[property=\"og:restrictions:age\"]");
-        if (!e.isEmpty()) {
+        if (!doc.select("meta[property=\"og:restrictions:age\"]").isEmpty()) {
             final EmbeddedInfo info = getEmbeddedInfo();
             final String videoInfoUrl = getVideoInfoUrl(getId(), info.sts);
             final String infoPageResponse = downloader.get(videoInfoUrl, getExtractorLocalization()).responseBody();
