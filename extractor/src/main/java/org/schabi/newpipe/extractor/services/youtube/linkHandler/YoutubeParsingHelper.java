@@ -143,4 +143,8 @@ public class YoutubeParsingHelper {
         uploadDate.setTime(date);
         return uploadDate;
     }
+
+    public static boolean isYoutubeMixId(String playlistId) {
+        return playlistId.startsWith("RD");
+    }
 }

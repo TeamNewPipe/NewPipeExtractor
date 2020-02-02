@@ -28,6 +28,7 @@ import org.schabi.newpipe.extractor.search.SearchExtractor;
 import org.schabi.newpipe.extractor.services.youtube.extractors.*;
 import org.schabi.newpipe.extractor.services.youtube.linkHandler.YoutubeChannelLinkHandlerFactory;
 import org.schabi.newpipe.extractor.services.youtube.linkHandler.YoutubeCommentsLinkHandlerFactory;
+import org.schabi.newpipe.extractor.services.youtube.linkHandler.YoutubeParsingHelper;
 import org.schabi.newpipe.extractor.services.youtube.linkHandler.YoutubePlaylistLinkHandlerFactory;
 import org.schabi.newpipe.extractor.services.youtube.linkHandler.YoutubeSearchQueryHandlerFactory;
 import org.schabi.newpipe.extractor.services.youtube.linkHandler.YoutubeStreamLinkHandlerFactory;
@@ -101,7 +102,11 @@ public class YoutubeService extends StreamingService {
 
     @Override
     public PlaylistExtractor getPlaylistExtractor(ListLinkHandler linkHandler) {
-        return new YoutubePlaylistExtractor(this, linkHandler);
+        if (YoutubeParsingHelper.isYoutubeMixId(linkHandler.getId())) {
+            return new YoutubeMixPlaylistExtractor(this, linkHandler);
+        } else {
+            return new YoutubePlaylistExtractor(this, linkHandler);
+        }
     }
 
     @Override
