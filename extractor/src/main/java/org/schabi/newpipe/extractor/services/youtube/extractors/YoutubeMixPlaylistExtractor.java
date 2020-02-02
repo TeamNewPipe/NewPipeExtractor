@@ -1,12 +1,8 @@
 package org.schabi.newpipe.extractor.services.youtube.extractors;
 
-import com.grack.nanojson.JsonObject;
-import com.grack.nanojson.JsonParser;
-import com.grack.nanojson.JsonParserException;
 import java.io.IOException;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
-import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.schabi.newpipe.extractor.StreamingService;
@@ -50,7 +46,16 @@ public class YoutubeMixPlaylistExtractor extends PlaylistExtractor {
   @Override
   public String getThumbnailUrl() throws ParsingException {
     try {
-      return doc.select("ol[class*=\"playlist-videos-list\"] li").first().attr("data-thumbnail-url");
+      Element li = doc.select("ol[class*=\"playlist-videos-list\"] li").first();
+      String videoId = li.attr("data-video-id");
+      if (videoId != null && !videoId.isEmpty()) {
+        //higher quality
+        return getThumbnailUrlFromId(videoId);
+      } else {
+        //lower quality
+        return doc.select("ol[class*=\"playlist-videos-list\"] li").first()
+            .attr("data-thumbnail-url");
+      }
     } catch (Exception e) {
       throw new ParsingException("Could not get playlist thumbnail", e);
     }
@@ -146,21 +151,18 @@ public class YoutubeMixPlaylistExtractor extends PlaylistExtractor {
         }
 
         @Override
-        public long getDuration() throws ParsingException {
+        public long getDuration() {
           //Not present in doc
           return 0;
         }
 
         @Override
         public String getUploaderName() throws ParsingException {
-          try {
-            return li.select(
-                "div[class=\"playlist-video-description\"]"
-                    + "span[class=\"video-uploader-byline\"]")
-                .first()
-                .text();
-          } catch (Exception e) {
-            throw new ParsingException("Could not get uploader", e);
+          String uploaderName = li.attr("data-video-username");
+          if (uploaderName == null || uploaderName.isEmpty()) {
+            throw new ParsingException("Could not get uploader name");
+          } else {
+            return uploaderName;
           }
         }
 
@@ -184,13 +186,16 @@ public class YoutubeMixPlaylistExtractor extends PlaylistExtractor {
         @Override
         public String getThumbnailUrl() throws ParsingException {
           try {
-            return "https://i.ytimg.com/vi/" + streamLinkHandlerFactory.fromUrl(getUrl()).getId()
-                + "/hqdefault.jpg";
+            return getThumbnailUrlFromId(streamLinkHandlerFactory.fromUrl(getUrl()).getId());
           } catch (Exception e) {
             throw new ParsingException("Could not get thumbnail url", e);
           }
         }
       });
     }
+  }
+
+  private String getThumbnailUrlFromId(String videoId) {
+    return "https://i.ytimg.com/vi/" + videoId + "/hqdefault.jpg";
   }
 }
