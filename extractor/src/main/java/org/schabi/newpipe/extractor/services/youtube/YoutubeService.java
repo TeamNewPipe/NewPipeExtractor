@@ -110,7 +110,11 @@ public class YoutubeService extends StreamingService {
 
     @Override
     public PlaylistExtractor getPlaylistExtractor(ListLinkHandler linkHandler) {
-        return new YoutubePlaylistExtractor(this, linkHandler);
+        if (YoutubeParsingHelper.isYoutubeMixId(linkHandler.getId())) {
+            return new YoutubeMixPlaylistExtractor(this, linkHandler);
+        } else {
+            return new YoutubePlaylistExtractor(this, linkHandler);
+        }
     }
 
     @Override
@@ -140,7 +144,7 @@ public class YoutubeService extends StreamingService {
                 public KioskExtractor createNewKiosk(StreamingService streamingService,
                                                      String url,
                                                      String id)
-                        throws ExtractionException {
+                throws ExtractionException {
                     return new YoutubeTrendingExtractor(YoutubeService.this,
                             new YoutubeTrendingLinkHandlerFactory().fromUrl(url), id);
                 }

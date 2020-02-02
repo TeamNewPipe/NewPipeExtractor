@@ -192,6 +192,10 @@ public class YoutubeParsingHelper {
         }
     }
 
+    public static boolean isYoutubeMixId(String playlistId) {
+        return playlistId.startsWith("RD");
+    }
+
     public static JsonObject getInitialData(String html) throws ParsingException {
         try {
             try {

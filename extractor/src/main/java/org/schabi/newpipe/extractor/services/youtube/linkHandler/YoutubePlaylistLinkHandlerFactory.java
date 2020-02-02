@@ -2,10 +2,13 @@ package org.schabi.newpipe.extractor.services.youtube.linkHandler;
 
 import org.schabi.newpipe.extractor.exceptions.ContentNotSupportedException;
 import org.schabi.newpipe.extractor.exceptions.ParsingException;
+import org.schabi.newpipe.extractor.linkhandler.LinkHandler;
+import org.schabi.newpipe.extractor.linkhandler.ListLinkHandler;
 import org.schabi.newpipe.extractor.linkhandler.ListLinkHandlerFactory;
 import org.schabi.newpipe.extractor.services.youtube.YoutubeParsingHelper;
 import org.schabi.newpipe.extractor.utils.Utils;
 
+import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.List;
 
@@ -66,5 +69,23 @@ public class YoutubePlaylistLinkHandlerFactory extends ListLinkHandlerFactory {
             return false;
         }
         return true;
+    }
+
+    @Override
+    public ListLinkHandler fromUrl(String url) throws ParsingException {
+        try {
+            URL urlObj = Utils.stringToURL(url);
+            String listID = Utils.getQueryValue(urlObj, "list");
+            if (listID != null && YoutubeParsingHelper.isYoutubeMixId(listID)) {
+                String videoID = Utils.getQueryValue(urlObj, "v");
+                String newUrl = "https://www.youtube.com/watch?v=" + videoID + "&list=" + listID;
+                return new ListLinkHandler(new LinkHandler(url, newUrl, listID), getContentFilter(url),
+                    getSortFilter(url));
+            }
+        } catch (MalformedURLException exception) {
+            throw new ParsingException("Error could not parse url :" + exception.getMessage(),
+                exception);
+        }
+        return super.fromUrl(url);
     }
 }
