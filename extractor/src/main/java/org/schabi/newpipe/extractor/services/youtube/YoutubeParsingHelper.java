@@ -192,6 +192,12 @@ public class YoutubeParsingHelper {
         }
     }
 
+    /**
+     * Checks if the given playlist id is a mix (auto-generated playlist)
+     * Ids from a mix start with "RD"
+     * @param playlistId
+     * @return Whether given id belongs to a mix
+     */
     public static boolean isYoutubeMixId(String playlistId) {
         return playlistId.startsWith("RD");
     }

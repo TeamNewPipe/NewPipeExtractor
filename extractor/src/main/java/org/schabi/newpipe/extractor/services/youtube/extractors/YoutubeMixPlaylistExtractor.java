@@ -18,6 +18,10 @@ import org.schabi.newpipe.extractor.services.youtube.linkHandler.YoutubeParsingH
 import org.schabi.newpipe.extractor.stream.StreamInfoItem;
 import org.schabi.newpipe.extractor.stream.StreamInfoItemsCollector;
 
+/**
+ * A YoutubePlaylistExtractor for a mix (auto-generated playlist).
+ * It handles urls in the format of "youtube.com/watch?v=videoId&list=playlistId"
+ */
 public class YoutubeMixPlaylistExtractor extends PlaylistExtractor {
 
   private Document doc;
