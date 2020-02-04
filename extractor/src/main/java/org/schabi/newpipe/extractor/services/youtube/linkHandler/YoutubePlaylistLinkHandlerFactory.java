@@ -75,9 +75,6 @@ public class YoutubePlaylistLinkHandlerFactory extends ListLinkHandlerFactory {
      * If it is a mix (auto-generated playlist) url, return a Linkhandler where the url is like
      * youtube.com/watch?v=videoId&list=playlistId
      * <p>Otherwise use super</p>
-     * @param url
-     * @return
-     * @throws ParsingException
      */
     @Override
     public ListLinkHandler fromUrl(String url) throws ParsingException {
@@ -86,6 +83,9 @@ public class YoutubePlaylistLinkHandlerFactory extends ListLinkHandlerFactory {
             String listID = Utils.getQueryValue(urlObj, "list");
             if (listID != null && YoutubeParsingHelper.isYoutubeMixId(listID)) {
                 String videoID = Utils.getQueryValue(urlObj, "v");
+                if (videoID == null) {
+                    videoID = listID.substring(2);
+                }
                 String newUrl = "https://www.youtube.com/watch?v=" + videoID + "&list=" + listID;
                 return new ListLinkHandler(new LinkHandler(url, newUrl, listID), getContentFilter(url),
                     getSortFilter(url));
