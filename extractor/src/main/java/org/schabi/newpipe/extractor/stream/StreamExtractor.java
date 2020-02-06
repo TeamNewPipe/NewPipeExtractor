@@ -84,12 +84,12 @@ public abstract class StreamExtractor extends Extractor {
     public abstract String getThumbnailUrl() throws ParsingException;
 
     /**
-     * This is the stream description. On YouTube this is the video description. You can return simple HTML here.
-     * @return The description of the stream/video.
+     * This is the stream description.
+     * @return The description of the stream/video or Description.emptyDescription if the description is empty.
      * @throws ParsingException
      */
     @Nonnull
-    public abstract String getDescription() throws ParsingException;
+    public abstract Description getDescription() throws ParsingException;
 
     /**
      * Get the age limit.

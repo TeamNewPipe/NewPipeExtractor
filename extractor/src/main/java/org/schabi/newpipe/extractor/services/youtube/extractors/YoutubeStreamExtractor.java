@@ -180,15 +180,15 @@ public class YoutubeStreamExtractor extends StreamExtractor {
 
     @Nonnull
     @Override
-    public String getDescription() throws ParsingException {
+    public Description getDescription() throws ParsingException {
         assertPageFetched();
         try {
             // first try to get html-formatted description
-            return parseHtmlAndGetFullLinks(doc.select("p[id=\"eow-description\"]").first().html());
+            return new Description(getServiceId(), parseHtmlAndGetFullLinks(doc.select("p[id=\"eow-description\"]").first().html()));
         } catch (Exception e) {
             try {
                 // fallback to raw non-html description
-                return playerResponse.getObject("videoDetails").getString("shortDescription");
+                return new Description(playerResponse.getObject("videoDetails").getString("shortDescription"), Description.PLAIN_TEXT);
             } catch (Exception ignored) {
                 throw new ParsingException("Could not get the description", e);
             }

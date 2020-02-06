@@ -21,14 +21,7 @@ import org.schabi.newpipe.extractor.linkhandler.LinkHandler;
 import org.schabi.newpipe.extractor.localization.DateWrapper;
 import org.schabi.newpipe.extractor.services.peertube.PeertubeParsingHelper;
 import org.schabi.newpipe.extractor.services.peertube.linkHandler.PeertubeSearchQueryHandlerFactory;
-import org.schabi.newpipe.extractor.stream.AudioStream;
-import org.schabi.newpipe.extractor.stream.Stream;
-import org.schabi.newpipe.extractor.stream.StreamExtractor;
-import org.schabi.newpipe.extractor.stream.StreamInfoItem;
-import org.schabi.newpipe.extractor.stream.StreamInfoItemsCollector;
-import org.schabi.newpipe.extractor.stream.StreamType;
-import org.schabi.newpipe.extractor.stream.SubtitlesStream;
-import org.schabi.newpipe.extractor.stream.VideoStream;
+import org.schabi.newpipe.extractor.stream.*;
 import org.schabi.newpipe.extractor.utils.JsonUtils;
 
 import com.grack.nanojson.JsonArray;
@@ -72,25 +65,25 @@ public class PeertubeStreamExtractor extends StreamExtractor {
     }
 
     @Override
-    public String getDescription() throws ParsingException {
-        String desc;
+    public Description getDescription() throws ParsingException {
+        String text;
         try {
-            desc = JsonUtils.getString(json, "description");
+            text = JsonUtils.getString(json, "description");
         } catch (ParsingException e) {
-            return "";
+            return Description.emptyDescription;
         }
-        if (desc.length() == 250 && desc.substring(247).equals("...")) {
+        if (text.length() == 250 && text.substring(247).equals("...")) {
             //if description is shortened, get full description
             Downloader dl = NewPipe.getDownloader();
             try {
                 Response response = dl.get(getUrl() + "/description");
                 JsonObject jsonObject = JsonParser.object().from(response.responseBody());
-                desc = JsonUtils.getString(jsonObject, "description");
+                text = JsonUtils.getString(jsonObject, "description");
             } catch (ReCaptchaException | IOException | JsonParserException e) {
                 e.printStackTrace();
             }
         }
-        return desc;
+        return new Description(getServiceId(), text);
     }
 
     @Override

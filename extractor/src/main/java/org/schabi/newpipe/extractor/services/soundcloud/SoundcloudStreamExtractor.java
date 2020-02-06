@@ -74,10 +74,9 @@ public class SoundcloudStreamExtractor extends StreamExtractor {
         return artworkUrlBetterResolution;
     }
 
-    @Nonnull
     @Override
-    public String getDescription() {
-        return track.getString("description");
+    public Description getDescription() {
+        return new Description(getServiceId(), track.getString("description"));
     }
 
     @Override

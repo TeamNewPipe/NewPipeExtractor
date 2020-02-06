@@ -12,7 +12,6 @@ import org.schabi.newpipe.extractor.exceptions.ParsingException;
 import org.schabi.newpipe.extractor.linkhandler.LinkHandler;
 import org.schabi.newpipe.extractor.localization.DateWrapper;
 import org.schabi.newpipe.extractor.stream.*;
-import org.schabi.newpipe.extractor.utils.JsonUtils;
 
 import javax.annotation.Nonnull;
 import java.io.IOException;
@@ -49,8 +48,8 @@ public class MediaCCCStreamExtractor extends StreamExtractor {
 
     @Nonnull
     @Override
-    public String getDescription() throws ParsingException {
-        return data.getString("description");
+    public Description getDescription() throws ParsingException {
+        return new Description(getServiceId(), data.getString("description"));
     }
 
     @Override

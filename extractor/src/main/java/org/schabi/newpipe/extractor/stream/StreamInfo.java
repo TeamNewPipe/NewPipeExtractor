@@ -319,7 +319,7 @@ public class StreamInfo extends Info {
     private DateWrapper uploadDate;
     private long duration = -1;
     private int ageLimit = -1;
-    private String description;
+    private Description description;
 
     private long viewCount = -1;
     private long likeCount = -1;
@@ -417,11 +417,11 @@ public class StreamInfo extends Info {
         this.ageLimit = ageLimit;
     }
 
-    public String getDescription() {
+    public Description getDescription() {
         return description;
     }
 
-    public void setDescription(String description) {
+    public void setDescription(Description description) {
         this.description = description;
     }
 

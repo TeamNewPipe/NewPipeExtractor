@@ -65,7 +65,7 @@ public class YoutubeStreamExtractorControversialTest {
     @Test
     public void testGetDescription() throws ParsingException {
         assertNotNull(extractor.getDescription());
-        assertFalse(extractor.getDescription().isEmpty());
+        assertFalse(extractor.getDescription().getContent().isEmpty());
     }
 
     @Test
