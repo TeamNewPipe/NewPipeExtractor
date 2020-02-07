@@ -175,7 +175,7 @@ public class YoutubeChannelExtractor extends ChannelExtractor {
     @Override
     public String obtainErrorMessage() {
         try {
-            return doc.select("div.yt-alert-message").first().text();
+            return doc.select("div.yt-alert-message:not(#old-browser-alert)").first().text();
         } catch (Exception e) {
             // div.yt-alert-message does not exist, so there is no message to obtain
             return null;
