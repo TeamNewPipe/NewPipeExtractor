@@ -184,7 +184,7 @@ public class YoutubeStreamExtractor extends StreamExtractor {
         assertPageFetched();
         try {
             // first try to get html-formatted description
-            return new Description(getServiceId(), parseHtmlAndGetFullLinks(doc.select("p[id=\"eow-description\"]").first().html()));
+            return new Description(parseHtmlAndGetFullLinks(doc.select("p[id=\"eow-description\"]").first().html()), Description.HTML);
         } catch (Exception e) {
             try {
                 // fallback to raw non-html description

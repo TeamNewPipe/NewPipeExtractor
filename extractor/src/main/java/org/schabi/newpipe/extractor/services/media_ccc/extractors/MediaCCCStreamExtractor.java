@@ -49,7 +49,7 @@ public class MediaCCCStreamExtractor extends StreamExtractor {
     @Nonnull
     @Override
     public Description getDescription() throws ParsingException {
-        return new Description(getServiceId(), data.getString("description"));
+        return new Description(data.getString("description"), Description.PLAIN_TEXT);
     }
 
     @Override

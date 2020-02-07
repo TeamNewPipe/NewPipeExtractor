@@ -83,7 +83,7 @@ public class PeertubeStreamExtractor extends StreamExtractor {
                 e.printStackTrace();
             }
         }
-        return new Description(getServiceId(), text);
+        return new Description(text, Description.MARKDOWN);
     }
 
     @Override
