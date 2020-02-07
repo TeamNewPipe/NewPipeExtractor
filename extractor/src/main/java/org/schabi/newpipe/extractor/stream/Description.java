@@ -1,6 +1,8 @@
 package org.schabi.newpipe.extractor.stream;
 
-public class Description {
+import java.io.Serializable;
+
+public class Description implements Serializable {
 
     public static final int HTML = 1;
     public static final int MARKDOWN = 2;
