@@ -48,7 +48,6 @@ import javax.annotation.Nonnull;
 @SuppressWarnings("WeakerAccess")
 public class YoutubeChannelExtractor extends ChannelExtractor {
     /*package-private*/ static final String CHANNEL_URL_BASE = "https://www.youtube.com/channel/";
-    private static final String CHANNEL_FEED_BASE = "https://www.youtube.com/feeds/videos.xml?channel_id=";
     private static final String CHANNEL_URL_PARAMETERS = "/videos?view=0&flow=list&sort=dd&live_view=10000";
 
     private Document doc;
@@ -132,7 +131,7 @@ public class YoutubeChannelExtractor extends ChannelExtractor {
     @Override
     public String getFeedUrl() throws ParsingException {
         try {
-            return CHANNEL_FEED_BASE + getId();
+            return YoutubeParsingHelper.getFeedUrlFrom(getId());
         } catch (Exception e) {
             throw new ParsingException("Could not get feed url", e);
         }

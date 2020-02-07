@@ -51,7 +51,7 @@ public class YoutubeChannelLinkHandlerFactory extends ListLinkHandlerFactory {
                 throw new ParsingException("the URL given is not a Youtube-URL");
             }
 
-            if (!path.startsWith("/user/") && !path.startsWith("/channel/")) {
+            if (!path.startsWith("/user/") && !path.startsWith("/channel/") && !path.startsWith("/c/")) {
                 throw new ParsingException("the URL given is neither a channel nor an user");
             }
 
