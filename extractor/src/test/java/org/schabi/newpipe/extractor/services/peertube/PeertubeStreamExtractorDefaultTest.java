@@ -12,6 +12,7 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Locale;
+import java.util.TimeZone;
 
 import org.junit.BeforeClass;
 import org.junit.Ignore;
@@ -40,6 +41,16 @@ public class PeertubeStreamExtractorDefaultTest {
         PeerTube.setInstance(new PeertubeInstance("https://framatube.org", "FramaTube"));
         extractor = (PeertubeStreamExtractor) PeerTube.getStreamExtractor("https://framatube.org/videos/watch/9c9de5e8-0a1e-484a-b099-e80766180a6d");
         extractor.fetchPage();
+    }
+
+    @Test
+    public void testGetUploadDate() throws ParsingException, ParseException {
+        final Calendar instance = Calendar.getInstance();
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.S'Z'");
+        sdf.setTimeZone(TimeZone.getTimeZone("GMT"));
+        instance.setTime(sdf.parse("2018-10-01T10:52:46.396Z"));
+        assertEquals(instance, requireNonNull(extractor.getUploadDate()).date());
+
     }
 
     @Test
@@ -87,15 +98,6 @@ public class PeertubeStreamExtractorDefaultTest {
     public void testGetViewCount() throws ParsingException {
         assertTrue(Long.toString(extractor.getViewCount()),
                 extractor.getViewCount() > 10);
-    }
-
-    @Ignore //fixme
-    @Test
-    public void testGetUploadDate() throws ParsingException, ParseException {
-        final Calendar instance = Calendar.getInstance();
-        instance.setTime(new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.S'Z'").parse("2018-10-01T11:52:46.396Z"));
-        assertEquals(instance, requireNonNull(extractor.getUploadDate()).date());
-
     }
 
     @Test
