@@ -57,11 +57,11 @@ public class ChannelInfo extends ListInfo<StreamInfoItem> {
     public static ChannelInfo getInfo(ChannelExtractor extractor) throws IOException, ExtractionException {
 
         ExtractionException getNameFailure = null;
-        final int serviceId = extractor.getServiceId();
-        final String id = extractor.getId();
-        final String url = extractor.getUrl();
-        final String originalUrl = extractor.getOriginalUrl();
-        final String name;
+        int serviceId = extractor.getServiceId();
+        String id = extractor.getId();
+        String url = extractor.getUrl();
+        String originalUrl = extractor.getOriginalUrl();
+        String name;
         try {
             name = extractor.getName();
         } catch (ExtractionException e) {
