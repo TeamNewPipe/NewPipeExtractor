@@ -67,7 +67,7 @@ public class PeertubeCommentsInfoItemExtractor implements CommentsInfoItemExtrac
         try {
             Document doc = Jsoup.parse(htmlText);
             return doc.body().text();
-        }catch(Exception e) {
+        } catch(Exception e) {
             return htmlText.replaceAll("(?s)<[^>]*>(\\s*<[^>]*>)*", "");
         }
     }
@@ -83,7 +83,7 @@ public class PeertubeCommentsInfoItemExtractor implements CommentsInfoItemExtrac
         String value;
         try {
             value = JsonUtils.getString(item, "account.avatar.path");
-        }catch(Exception e) {
+        } catch(Exception e) {
             value = "/client/assets/images/default-avatar.png";
         }
         return baseUrl + value;
@@ -91,7 +91,7 @@ public class PeertubeCommentsInfoItemExtractor implements CommentsInfoItemExtrac
 
     @Override
     public String getAuthorName() throws ParsingException {
-        return JsonUtils.getString(item, "account.displayName");
+        return JsonUtils.getString(item, "account.name") + "@" + JsonUtils.getString(item, "account.host");
     }
 
     @Override

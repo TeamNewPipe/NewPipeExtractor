@@ -20,6 +20,7 @@ import java.net.URLEncoder;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.Locale;
 
 public class SoundcloudStreamExtractor extends StreamExtractor {
     private JsonObject track;
@@ -73,10 +74,9 @@ public class SoundcloudStreamExtractor extends StreamExtractor {
         return artworkUrlBetterResolution;
     }
 
-    @Nonnull
     @Override
-    public String getDescription() {
-        return track.getString("description");
+    public Description getDescription() {
+        return new Description(track.getString("description"), Description.PLAIN_TEXT);
     }
 
     @Override
@@ -253,5 +253,42 @@ public class SoundcloudStreamExtractor extends StreamExtractor {
     @Override
     public String getErrorMessage() {
         return null;
+    }
+
+    @Override
+    public String getHost() throws ParsingException {
+        return "";
+    }
+
+    @Override
+    public String getPrivacy() throws ParsingException {
+        return "";
+    }
+
+    @Override
+    public String getCategory() throws ParsingException {
+        return "";
+    }
+
+    @Override
+    public String getLicence() throws ParsingException {
+        return "";
+    }
+
+    @Override
+    public Locale getLanguageInfo() throws ParsingException {
+        return null;
+    }
+
+    @Nonnull
+    @Override
+    public List<String> getTags() throws ParsingException {
+        return new ArrayList<>();
+    }
+
+    @Nonnull
+    @Override
+    public String getSupportInfo() throws ParsingException {
+        return "";
     }
 }

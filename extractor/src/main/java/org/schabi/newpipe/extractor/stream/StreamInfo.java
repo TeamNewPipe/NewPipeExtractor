@@ -13,6 +13,7 @@ import org.schabi.newpipe.extractor.utils.ExtractorHelper;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
 
 /*
  * Created by Christian Schabesberger on 26.08.15.
@@ -270,6 +271,43 @@ public class StreamInfo extends Info {
             streamInfo.addError(e);
         }
 
+        //additional info
+        try {
+            streamInfo.setHost(extractor.getHost());
+        } catch (Exception e) {
+            streamInfo.addError(e);
+        }
+        try {
+            streamInfo.setPrivacy(extractor.getPrivacy());
+        } catch (Exception e) {
+            streamInfo.addError(e);
+        }
+        try {
+            streamInfo.setCategory(extractor.getCategory());
+        } catch (Exception e) {
+            streamInfo.addError(e);
+        }
+        try {
+            streamInfo.setLicence(extractor.getLicence());
+        } catch (Exception e) {
+            streamInfo.addError(e);
+        }
+        try {
+            streamInfo.setLanguageInfo(extractor.getLanguageInfo());
+        } catch (Exception e) {
+            streamInfo.addError(e);
+        }
+        try {
+            streamInfo.setTags(extractor.getTags());
+        } catch (Exception e) {
+            streamInfo.addError(e);
+        }
+        try {
+            streamInfo.setSupportInfo(extractor.getSupportInfo());
+        } catch (Exception e) {
+            streamInfo.addError(e);
+        }
+
         streamInfo.setRelatedStreams(ExtractorHelper.getRelatedVideosOrLogError(streamInfo, extractor));
 
         return streamInfo;
@@ -281,7 +319,7 @@ public class StreamInfo extends Info {
     private DateWrapper uploadDate;
     private long duration = -1;
     private int ageLimit = -1;
-    private String description;
+    private Description description;
 
     private long viewCount = -1;
     private long likeCount = -1;
@@ -307,6 +345,14 @@ public class StreamInfo extends Info {
 
     private long startPosition = 0;
     private List<SubtitlesStream> subtitles = new ArrayList<>();
+
+    private String host = "";
+    private String privacy = "";
+    private String category = "";
+    private String licence = "";
+    private String support = "";
+    private Locale language = null;
+    private List<String> tags = new ArrayList<>();
 
     /**
      * Get the stream type
@@ -371,11 +417,11 @@ public class StreamInfo extends Info {
         this.ageLimit = ageLimit;
     }
 
-    public String getDescription() {
+    public Description getDescription() {
         return description;
     }
 
-    public void setDescription(String description) {
+    public void setDescription(Description description) {
         this.description = description;
     }
 
@@ -533,4 +579,59 @@ public class StreamInfo extends Info {
         this.subtitles = subtitles;
     }
 
+    public String getHost() {
+        return this.host;
+    }
+
+    public void setHost(String str) {
+        this.host = str;
+    }
+
+    public String getPrivacy() {
+        return this.privacy;
+    }
+
+    public void setPrivacy(String str) {
+        this.privacy = str;
+    }
+
+    public String getCategory() {
+        return this.category;
+    }
+
+    public void setCategory(String cat) {
+        this.category = cat;
+    }
+
+    public String getLicence() {
+        return this.licence;
+    }
+
+    public void setLicence(String str) {
+        this.licence = str;
+    }
+
+    public Locale getLanguageInfo() {
+        return this.language;
+    }
+
+    public void setLanguageInfo(Locale lang) {
+        this.language = lang;
+    }
+
+    public List<String> getTags() {
+        return this.tags;
+    }
+
+    public void setTags(List<String> tags) {
+        this.tags = tags;
+    }
+
+    public void setSupportInfo(String support) {
+        this.support = support;
+    }
+
+    public String getSupportInfo() {
+        return this.support;
+    }
 }

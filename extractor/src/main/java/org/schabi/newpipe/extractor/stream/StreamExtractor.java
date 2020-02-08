@@ -27,6 +27,7 @@ import org.schabi.newpipe.extractor.exceptions.ExtractionException;
 import org.schabi.newpipe.extractor.exceptions.ParsingException;
 import org.schabi.newpipe.extractor.linkhandler.LinkHandler;
 import org.schabi.newpipe.extractor.localization.DateWrapper;
+import org.schabi.newpipe.extractor.utils.JsonUtils;
 import org.schabi.newpipe.extractor.utils.Parser;
 
 import javax.annotation.Nonnull;
@@ -34,6 +35,7 @@ import javax.annotation.Nullable;
 import java.io.IOException;
 import java.util.Collections;
 import java.util.List;
+import java.util.Locale;
 
 /**
  * Scrapes information from a video/audio streaming service (eg, YouTube).
@@ -82,12 +84,12 @@ public abstract class StreamExtractor extends Extractor {
     public abstract String getThumbnailUrl() throws ParsingException;
 
     /**
-     * This is the stream description. On YouTube this is the video description. You can return simple HTML here.
-     * @return The description of the stream/video.
+     * This is the stream description.
+     * @return The description of the stream/video or Description.emptyDescription if the description is empty.
      * @throws ParsingException
      */
     @Nonnull
-    public abstract String getDescription() throws ParsingException;
+    public abstract Description getDescription() throws ParsingException;
 
     /**
      * Get the age limit.
@@ -349,4 +351,74 @@ public abstract class StreamExtractor extends Extractor {
             return 0;
         }
     }
+
+    /**
+     * The host of the stream (Eg. peertube.cpy.re).
+     * If the host is not available, or if the service doesn't use
+     * a federated system, but a centralised system,
+     * you can simply return an empty string.
+     * @return the host of the stream or an empty String.
+     * @throws ParsingException
+     */
+    @Nonnull
+    public abstract String getHost() throws ParsingException;
+
+    /**
+     * The privacy of the stream (Eg. Public, Private, Unlisted…).
+     * If the privacy is not available you can simply return an empty string.
+     * @return the privacy of the stream or an empty String.
+     * @throws ParsingException
+     */
+    @Nonnull
+    public abstract String getPrivacy() throws ParsingException;
+
+    /**
+     * The name of the category of the stream.
+     * If the category is not available you can simply return an empty string.
+     * @return the category of the stream or an empty String.
+     * @throws ParsingException
+     */
+    @Nonnull
+    public abstract String getCategory() throws ParsingException;
+
+    /**
+     * The name of the licence of the stream.
+     * If the licence is not available you can simply return an empty string.
+     * @return the licence of the stream or an empty String.
+     * @throws ParsingException
+     */
+    @Nonnull
+    public abstract String getLicence() throws ParsingException;
+
+    /**
+     * The locale language of the stream.
+     * If the language is not available you can simply return null.
+     * If the language is provided by a language code, you can return
+     * new Locale(language_code);
+     * @return the locale language of the stream or null.
+     * @throws ParsingException
+     */
+    @Nullable
+    public abstract Locale getLanguageInfo() throws ParsingException;
+
+    /**
+     * The list of tags of the stream.
+     * If the tag list is not available you can simply return an empty list.
+     * @return the list of tags of the stream or an empty list.
+     * @throws ParsingException
+     */
+    @Nonnull
+    public abstract List<String> getTags() throws ParsingException;
+
+    /**
+     * The support information of the stream.
+     * see: https://framatube.org/videos/watch/ee408ec8-07cd-4e35-b884-fb681a4b9d37
+     * (support button).
+     * If the support information are not available,
+     * you can simply return an empty String.
+     * @return the support information of the stream or an empty String.
+     * @throws ParsingException
+     */
+    @Nonnull
+    public abstract String getSupportInfo() throws ParsingException;
 }

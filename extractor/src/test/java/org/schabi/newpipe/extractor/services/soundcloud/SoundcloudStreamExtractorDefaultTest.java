@@ -53,7 +53,7 @@ public class SoundcloudStreamExtractorDefaultTest {
 
     @Test
     public void testGetDescription() throws ParsingException {
-        assertEquals("The Perfect LUV Tape®️", extractor.getDescription());
+        assertEquals("The Perfect LUV Tape®️", extractor.getDescription().getContent());
     }
 
     @Test

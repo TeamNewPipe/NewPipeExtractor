@@ -17,6 +17,7 @@ import javax.annotation.Nonnull;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
 
 public class MediaCCCStreamExtractor extends StreamExtractor {
 
@@ -47,8 +48,8 @@ public class MediaCCCStreamExtractor extends StreamExtractor {
 
     @Nonnull
     @Override
-    public String getDescription() throws ParsingException {
-        return data.getString("description");
+    public Description getDescription() throws ParsingException {
+        return new Description(data.getString("description"), Description.PLAIN_TEXT);
     }
 
     @Override
@@ -224,5 +225,42 @@ public class MediaCCCStreamExtractor extends StreamExtractor {
     @Override
     public String getOriginalUrl() throws ParsingException {
         return data.getString("frontend_link");
+    }
+
+    @Override
+    public String getHost() throws ParsingException {
+        return "";
+    }
+
+    @Override
+    public String getPrivacy() throws ParsingException {
+        return "";
+    }
+
+    @Override
+    public String getCategory() throws ParsingException {
+        return "";
+    }
+
+    @Override
+    public String getLicence() throws ParsingException {
+        return "";
+    }
+
+    @Override
+    public Locale getLanguageInfo() throws ParsingException {
+        return null;
+    }
+
+    @Nonnull
+    @Override
+    public List<String> getTags() throws ParsingException {
+        return new ArrayList<>();
+    }
+
+    @Nonnull
+    @Override
+    public String getSupportInfo() throws ParsingException {
+        return "";
     }
 }

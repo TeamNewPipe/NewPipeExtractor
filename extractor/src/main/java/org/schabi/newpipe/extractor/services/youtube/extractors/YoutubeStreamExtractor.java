@@ -180,15 +180,15 @@ public class YoutubeStreamExtractor extends StreamExtractor {
 
     @Nonnull
     @Override
-    public String getDescription() throws ParsingException {
+    public Description getDescription() throws ParsingException {
         assertPageFetched();
         try {
             // first try to get html-formatted description
-            return parseHtmlAndGetFullLinks(doc.select("p[id=\"eow-description\"]").first().html());
+            return new Description(parseHtmlAndGetFullLinks(doc.select("p[id=\"eow-description\"]").first().html()), Description.HTML);
         } catch (Exception e) {
             try {
                 // fallback to raw non-html description
-                return playerResponse.getObject("videoDetails").getString("shortDescription");
+                return new Description(playerResponse.getObject("videoDetails").getString("shortDescription"), Description.PLAIN_TEXT);
             } catch (Exception ignored) {
                 throw new ParsingException("Could not get the description", e);
             }
@@ -1134,4 +1134,41 @@ public class YoutubeStreamExtractor extends StreamExtractor {
 			throw new ExtractionException(e);
 		}
 	}
+
+    @Override
+    public String getHost() throws ParsingException {
+        return "";
+    }
+
+    @Override
+    public String getPrivacy() throws ParsingException {
+        return "";
+    }
+
+    @Override
+    public String getCategory() throws ParsingException {
+        return "";
+    }
+
+    @Override
+    public String getLicence() throws ParsingException {
+        return "";
+    }
+
+    @Override
+    public Locale getLanguageInfo() throws ParsingException {
+        return null;
+    }
+
+    @Nonnull
+    @Override
+    public List<String> getTags() throws ParsingException {
+        return new ArrayList<>();
+    }
+
+    @Nonnull
+    @Override
+    public String getSupportInfo() throws ParsingException {
+        return "";
+    }
 }

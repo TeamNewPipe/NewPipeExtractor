@@ -83,13 +83,13 @@ public class YoutubeStreamExtractorDefaultTest {
         @Test
         public void testGetDescription() throws ParsingException {
             assertNotNull(extractor.getDescription());
-            assertFalse(extractor.getDescription().isEmpty());
+            assertFalse(extractor.getDescription().getContent().isEmpty());
         }
 
         @Test
         public void testGetFullLinksInDescription() throws ParsingException {
-            assertTrue(extractor.getDescription().contains("http://adele.com"));
-            assertFalse(extractor.getDescription().contains("http://smarturl.it/SubscribeAdele?IQi..."));
+            assertTrue(extractor.getDescription().getContent().contains("http://adele.com"));
+            assertFalse(extractor.getDescription().getContent().contains("http://smarturl.it/SubscribeAdele?IQi..."));
         }
 
         @Test
@@ -215,18 +215,18 @@ public class YoutubeStreamExtractorDefaultTest {
         @Test
         public void testGetDescription() throws ParsingException {
             assertNotNull(extractor.getDescription());
-            assertFalse(extractor.getDescription().isEmpty());
+            assertFalse(extractor.getDescription().getContent().isEmpty());
         }
 
         @Test
         public void testGetFullLinksInDescription() throws ParsingException {
-            assertTrue(extractor.getDescription().contains("https://www.reddit.com/r/PewdiepieSubmissions/"));
-            assertTrue(extractor.getDescription().contains("https://www.youtube.com/channel/UC3e8EMTOn4g6ZSKggHTnNng"));
-            assertTrue(extractor.getDescription().contains("https://usa.clutchchairz.com/product/pewdiepie-edition-throttle-series/"));
+            assertTrue(extractor.getDescription().getContent().contains("https://www.reddit.com/r/PewdiepieSubmissions/"));
+            assertTrue(extractor.getDescription().getContent().contains("https://www.youtube.com/channel/UC3e8EMTOn4g6ZSKggHTnNng"));
+            assertTrue(extractor.getDescription().getContent().contains("https://usa.clutchchairz.com/product/pewdiepie-edition-throttle-series/"));
 
-            assertFalse(extractor.getDescription().contains("https://www.reddit.com/r/PewdiepieSub..."));
-            assertFalse(extractor.getDescription().contains("https://www.youtube.com/channel/UC3e8..."));
-            assertFalse(extractor.getDescription().contains("https://usa.clutchchairz.com/product/..."));
+            assertFalse(extractor.getDescription().getContent().contains("https://www.reddit.com/r/PewdiepieSub..."));
+            assertFalse(extractor.getDescription().getContent().contains("https://www.youtube.com/channel/UC3e8..."));
+            assertFalse(extractor.getDescription().getContent().contains("https://usa.clutchchairz.com/product/..."));
         }
     }
 
@@ -244,20 +244,20 @@ public class YoutubeStreamExtractorDefaultTest {
         @Test
         public void testGetDescription() throws ParsingException {
             assertNotNull(extractor.getDescription());
-            assertFalse(extractor.getDescription().isEmpty());
+            assertFalse(extractor.getDescription().getContent().isEmpty());
         }
 
         @Test
         public void testGetFullLinksInDescription() throws ParsingException {
-            assertTrue(extractor.getDescription().contains("https://www.youtube.com/watch?v=X7FLCHVXpsA&amp;list=PL7u4lWXQ3wfI_7PgX0C-VTiwLeu0S4v34"));
-            assertTrue(extractor.getDescription().contains("https://www.youtube.com/watch?v=Lqv6G0pDNnw&amp;list=PL7u4lWXQ3wfI_7PgX0C-VTiwLeu0S4v34"));
-            assertTrue(extractor.getDescription().contains("https://www.youtube.com/watch?v=XxaRBPyrnBU&amp;list=PL7u4lWXQ3wfI_7PgX0C-VTiwLeu0S4v34"));
-            assertTrue(extractor.getDescription().contains("https://www.youtube.com/watch?v=U-9tUEOFKNU&amp;list=PL7u4lWXQ3wfI_7PgX0C-VTiwLeu0S4v34"));
+            assertTrue(extractor.getDescription().getContent().contains("https://www.youtube.com/watch?v=X7FLCHVXpsA&amp;list=PL7u4lWXQ3wfI_7PgX0C-VTiwLeu0S4v34"));
+            assertTrue(extractor.getDescription().getContent().contains("https://www.youtube.com/watch?v=Lqv6G0pDNnw&amp;list=PL7u4lWXQ3wfI_7PgX0C-VTiwLeu0S4v34"));
+            assertTrue(extractor.getDescription().getContent().contains("https://www.youtube.com/watch?v=XxaRBPyrnBU&amp;list=PL7u4lWXQ3wfI_7PgX0C-VTiwLeu0S4v34"));
+            assertTrue(extractor.getDescription().getContent().contains("https://www.youtube.com/watch?v=U-9tUEOFKNU&amp;list=PL7u4lWXQ3wfI_7PgX0C-VTiwLeu0S4v34"));
 
-            assertFalse(extractor.getDescription().contains("https://youtu.be/X7FLCHVXpsA?list=PL7..."));
-            assertFalse(extractor.getDescription().contains("https://youtu.be/Lqv6G0pDNnw?list=PL7..."));
-            assertFalse(extractor.getDescription().contains("https://youtu.be/XxaRBPyrnBU?list=PL7..."));
-            assertFalse(extractor.getDescription().contains("https://youtu.be/U-9tUEOFKNU?list=PL7..."));
+            assertFalse(extractor.getDescription().getContent().contains("https://youtu.be/X7FLCHVXpsA?list=PL7..."));
+            assertFalse(extractor.getDescription().getContent().contains("https://youtu.be/Lqv6G0pDNnw?list=PL7..."));
+            assertFalse(extractor.getDescription().getContent().contains("https://youtu.be/XxaRBPyrnBU?list=PL7..."));
+            assertFalse(extractor.getDescription().getContent().contains("https://youtu.be/U-9tUEOFKNU?list=PL7..."));
         }
     }
 
