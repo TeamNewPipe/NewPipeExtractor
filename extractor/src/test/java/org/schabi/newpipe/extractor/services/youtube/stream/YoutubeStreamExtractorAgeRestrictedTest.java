@@ -75,7 +75,7 @@ public class YoutubeStreamExtractorAgeRestrictedTest {
 
     @Test
     public void testGetLength() throws ParsingException {
-        assertEquals(1789, extractor.getLength());
+        assertEquals(1790, extractor.getLength());
     }
 
     @Test
