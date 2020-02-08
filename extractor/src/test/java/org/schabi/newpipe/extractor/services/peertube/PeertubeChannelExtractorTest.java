@@ -204,7 +204,7 @@ public class PeertubeChannelExtractorTest {
 
         @Test
         public void testSubscriberCount() throws ParsingException {
-            assertTrue("Wrong subscriber count", extractor.getSubscriberCount() >= 2);
+            assertTrue("Wrong subscriber count", extractor.getSubscriberCount() >= 1);
         }
     }
 }
