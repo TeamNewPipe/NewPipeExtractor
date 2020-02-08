@@ -33,7 +33,7 @@ import static org.schabi.newpipe.extractor.utils.Utils.replaceHttpWithHttps;
 public class SoundcloudParsingHelper {
     private static final String HARDCODED_CLIENT_ID = "cZQKaMjH39KNADF4y2aeFtVqNSpgoKVj"; // Updated on 08/02/20
     private static String clientId;
-    
+
     private SoundcloudParsingHelper() {
     }
 
@@ -103,7 +103,7 @@ public class SoundcloudParsingHelper {
 
     /**
      * Call the endpoint "/resolve" of the api.<p>
-     * 
+     * <p>
      * See https://developers.soundcloud.com/docs/api/reference#resolve
      */
     public static JsonObject resolveFor(Downloader downloader, String url) throws IOException, ExtractionException {

@@ -1,13 +1,13 @@
 package org.schabi.newpipe.extractor;
 
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.List;
-
 import org.schabi.newpipe.extractor.services.media_ccc.MediaCCCService;
 import org.schabi.newpipe.extractor.services.peertube.PeertubeService;
 import org.schabi.newpipe.extractor.services.soundcloud.SoundcloudService;
 import org.schabi.newpipe.extractor.services.youtube.YoutubeService;
+
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.List;
 
 /*
  * Copyright (C) Christian Schabesberger 2018 <chris.schabesberger@mailbox.org>

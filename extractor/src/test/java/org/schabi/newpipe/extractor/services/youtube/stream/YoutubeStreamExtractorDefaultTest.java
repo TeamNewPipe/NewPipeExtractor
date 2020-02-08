@@ -19,7 +19,7 @@ import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.List;
 
-import static java.util.Objects.*;
+import static java.util.Objects.requireNonNull;
 import static org.junit.Assert.*;
 import static org.schabi.newpipe.extractor.ExtractorAsserts.assertIsSecureUrl;
 import static org.schabi.newpipe.extractor.ServiceList.YouTube;
@@ -126,7 +126,7 @@ public class YoutubeStreamExtractorDefaultTest {
         public void testGetUploaderUrl() throws ParsingException {
             String url = extractor.getUploaderUrl();
             if (!url.equals("https://www.youtube.com/channel/UCsRM0YB_dabtEPGPTKo-gcw") &&
-                !url.equals("https://www.youtube.com/channel/UComP_epzeKzvBX156r6pm1Q")) {
+                    !url.equals("https://www.youtube.com/channel/UComP_epzeKzvBX156r6pm1Q")) {
                 fail("Uploader url is neither the music channel one nor the Vevo one");
             }
         }

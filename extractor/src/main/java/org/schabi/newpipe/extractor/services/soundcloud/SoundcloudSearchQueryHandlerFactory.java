@@ -25,7 +25,7 @@ public class SoundcloudSearchQueryHandlerFactory extends SearchQueryHandlerFacto
         try {
             String url = "https://api-v2.soundcloud.com/search";
 
-            if(contentFilter.size() > 0) {
+            if (contentFilter.size() > 0) {
                 switch (contentFilter.get(0)) {
                     case TRACKS:
                         url += "/tracks";
@@ -58,7 +58,7 @@ public class SoundcloudSearchQueryHandlerFactory extends SearchQueryHandlerFacto
 
     @Override
     public String[] getAvailableContentFilter() {
-        return new String[] {
+        return new String[]{
                 ALL,
                 TRACKS,
                 USERS,

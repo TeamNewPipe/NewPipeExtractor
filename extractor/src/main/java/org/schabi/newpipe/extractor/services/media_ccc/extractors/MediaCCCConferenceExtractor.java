@@ -55,7 +55,7 @@ public class MediaCCCConferenceExtractor extends ChannelExtractor {
     public InfoItemsPage<StreamInfoItem> getInitialPage() throws IOException, ExtractionException {
         StreamInfoItemsCollector collector = new StreamInfoItemsCollector(getServiceId());
         JsonArray events = conferenceData.getArray("events");
-        for(int i = 0; i < events.size(); i++) {
+        for (int i = 0; i < events.size(); i++) {
             collector.commit(new MediaCCCStreamInfoItemExtractor(events.getObject(i)));
         }
         return new InfoItemsPage<>(collector, null);

@@ -38,7 +38,7 @@ public class SoundcloudSearchExtractorChannelOnlyTest extends SoundcloudSearchEx
         boolean equals = true;
         for (int i = 0; i < secondPage.getItems().size()
                 && i < itemsPage.getItems().size(); i++) {
-            if(!secondPage.getItems().get(i).getUrl().equals(
+            if (!secondPage.getItems().get(i).getUrl().equals(
                     itemsPage.getItems().get(i).getUrl())) {
                 equals = false;
             }
@@ -57,8 +57,8 @@ public class SoundcloudSearchExtractorChannelOnlyTest extends SoundcloudSearchEx
 
     @Test
     public void testOnlyContainChannels() {
-        for(InfoItem item : itemsPage.getItems()) {
-            if(!(item instanceof ChannelInfoItem)) {
+        for (InfoItem item : itemsPage.getItems()) {
+            if (!(item instanceof ChannelInfoItem)) {
                 fail("The following item is no channel item: " + item.toString());
             }
         }

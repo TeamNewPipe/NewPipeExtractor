@@ -1,16 +1,14 @@
 package org.schabi.newpipe.extractor.utils;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
+import com.grack.nanojson.JsonArray;
+import com.grack.nanojson.JsonObject;
+import org.schabi.newpipe.extractor.exceptions.ParsingException;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
-
-import org.schabi.newpipe.extractor.exceptions.ParsingException;
-
-import com.grack.nanojson.JsonArray;
-import com.grack.nanojson.JsonObject;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 
 public class JsonUtils {
 

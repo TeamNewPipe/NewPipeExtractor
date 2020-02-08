@@ -4,7 +4,9 @@ import com.grack.nanojson.JsonArray;
 import com.grack.nanojson.JsonObject;
 import com.grack.nanojson.JsonParser;
 import com.grack.nanojson.JsonParserException;
-import org.schabi.newpipe.extractor.*;
+import org.schabi.newpipe.extractor.MediaFormat;
+import org.schabi.newpipe.extractor.NewPipe;
+import org.schabi.newpipe.extractor.StreamingService;
 import org.schabi.newpipe.extractor.downloader.Downloader;
 import org.schabi.newpipe.extractor.exceptions.ContentNotAvailableException;
 import org.schabi.newpipe.extractor.exceptions.ExtractionException;
@@ -183,7 +185,7 @@ public class SoundcloudStreamExtractor extends StreamExtractor {
                         try {
                             JsonObject mp3UrlObject = JsonParser.object().from(res);
                             // Links in this file are also only valid for a short period.
-                            audioStreams.add(new AudioStream(mp3UrlObject.getString("url"), 
+                            audioStreams.add(new AudioStream(mp3UrlObject.getString("url"),
                                     MediaFormat.MP3, 128));
                         } catch (JsonParserException e) {
                             throw new ParsingException("Could not parse streamable url", e);

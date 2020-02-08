@@ -1,13 +1,5 @@
 package org.schabi.newpipe.extractor.services.peertube;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
-import static org.schabi.newpipe.extractor.ServiceList.PeerTube;
-
-import java.util.List;
-
 import org.junit.BeforeClass;
 import org.junit.Test;
 import org.schabi.newpipe.DownloaderTestImpl;
@@ -16,6 +8,11 @@ import org.schabi.newpipe.extractor.NewPipe;
 import org.schabi.newpipe.extractor.kiosk.KioskExtractor;
 import org.schabi.newpipe.extractor.services.peertube.extractors.PeertubeTrendingExtractor;
 import org.schabi.newpipe.extractor.stream.StreamInfoItem;
+
+import java.util.List;
+
+import static org.junit.Assert.*;
+import static org.schabi.newpipe.extractor.ServiceList.PeerTube;
 
 /**
  * Test for {@link PeertubeTrendingExtractor}
@@ -53,10 +50,10 @@ public class PeertubeTrendingExtractorTest {
     @Test
     public void testGetStreams() throws Exception {
         ListExtractor.InfoItemsPage<StreamInfoItem> page = extractor.getInitialPage();
-        if(!page.getErrors().isEmpty()) {
+        if (!page.getErrors().isEmpty()) {
             System.err.println("----------");
             List<Throwable> errors = page.getErrors();
-            for(Throwable e: errors) {
+            for (Throwable e : errors) {
                 e.printStackTrace();
                 System.err.println("----------");
             }

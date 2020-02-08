@@ -1,7 +1,6 @@
 package org.schabi.newpipe.extractor.services.soundcloud;
 
 import org.junit.BeforeClass;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.schabi.newpipe.DownloaderTestImpl;
 import org.schabi.newpipe.extractor.ListExtractor;
@@ -48,10 +47,10 @@ public class SoundcloudChartsExtractorTest {
     @Test
     public void testGetStreams() throws Exception {
         ListExtractor.InfoItemsPage<StreamInfoItem> page = extractor.getInitialPage();
-        if(!page.getErrors().isEmpty()) {
+        if (!page.getErrors().isEmpty()) {
             System.err.println("----------");
             List<Throwable> errors = page.getErrors();
-            for(Throwable e: errors) {
+            for (Throwable e : errors) {
                 e.printStackTrace();
                 System.err.println("----------");
             }

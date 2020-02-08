@@ -1,7 +1,8 @@
 package org.schabi.newpipe.extractor.services.peertube.extractors;
 
-import java.io.IOException;
-
+import com.grack.nanojson.JsonArray;
+import com.grack.nanojson.JsonObject;
+import com.grack.nanojson.JsonParser;
 import org.jsoup.helper.StringUtil;
 import org.schabi.newpipe.extractor.InfoItem;
 import org.schabi.newpipe.extractor.InfoItemExtractor;
@@ -18,9 +19,7 @@ import org.schabi.newpipe.extractor.utils.JsonUtils;
 import org.schabi.newpipe.extractor.utils.Parser;
 import org.schabi.newpipe.extractor.utils.Parser.RegexException;
 
-import com.grack.nanojson.JsonArray;
-import com.grack.nanojson.JsonObject;
-import com.grack.nanojson.JsonParser;
+import java.io.IOException;
 
 public class PeertubeSearchExtractor extends SearchExtractor {
 
@@ -28,10 +27,10 @@ public class PeertubeSearchExtractor extends SearchExtractor {
     private static final String COUNT_KEY = "count";
     private static final int ITEMS_PER_PAGE = 12;
     private static final String START_PATTERN = "start=(\\d*)";
-    
+
     private InfoItemsPage<InfoItem> initPage;
     private long total;
-    
+
     public PeertubeSearchExtractor(StreamingService service, SearchQueryHandler linkHandler) {
         super(service, linkHandler);
     }
@@ -40,7 +39,7 @@ public class PeertubeSearchExtractor extends SearchExtractor {
     public String getSearchSuggestion() throws ParsingException {
         return null;
     }
-    
+
     @Override
     public InfoItemsPage<InfoItem> getInitialPage() throws IOException, ExtractionException {
         super.fetchPage();
@@ -48,27 +47,27 @@ public class PeertubeSearchExtractor extends SearchExtractor {
     }
 
     private InfoItemsCollector<InfoItem, InfoItemExtractor> collectStreamsFrom(JsonObject json) throws ParsingException {
-        
+
         final InfoItemsSearchCollector collector = getInfoItemSearchCollector();
-        
+
         JsonArray contents;
         try {
             contents = (JsonArray) JsonUtils.getValue(json, "data");
-        }catch(Exception e) {
+        } catch (Exception e) {
             throw new ParsingException("unable to extract search info", e);
         }
-        
+
         String baseUrl = getBaseUrl();
-        for(Object c: contents) {
-            if(c instanceof JsonObject) {
+        for (Object c : contents) {
+            if (c instanceof JsonObject) {
                 final JsonObject item = (JsonObject) c;
                 PeertubeStreamInfoItemExtractor extractor = new PeertubeStreamInfoItemExtractor(item, baseUrl);
                 collector.commit(extractor);
             }
         }
-        
+
         return collector;
-        
+
     }
 
     @Override
@@ -81,17 +80,17 @@ public class PeertubeSearchExtractor extends SearchExtractor {
     public InfoItemsPage<InfoItem> getPage(String pageUrl) throws IOException, ExtractionException {
         Response response = getDownloader().get(pageUrl);
         JsonObject json = null;
-        if(null != response && !StringUtil.isBlank(response.responseBody())) {
+        if (null != response && !StringUtil.isBlank(response.responseBody())) {
             try {
                 json = JsonParser.object().from(response.responseBody());
             } catch (Exception e) {
                 throw new ParsingException("Could not parse json data for search info", e);
             }
         }
-        
-        if(json != null) {
+
+        if (json != null) {
             Number number = JsonUtils.getNumber(json, "total");
-            if(number != null) this.total = number.longValue();
+            if (number != null) this.total = number.longValue();
             return new InfoItemsPage<>(collectStreamsFrom(json), getNextPageUrl(pageUrl));
         } else {
             throw new ExtractionException("Unable to get peertube search info");
@@ -103,7 +102,7 @@ public class PeertubeSearchExtractor extends SearchExtractor {
         String pageUrl = getUrl() + "&" + START_KEY + "=0&" + COUNT_KEY + "=" + ITEMS_PER_PAGE;
         this.initPage = getPage(pageUrl);
     }
-    
+
     private String getNextPageUrl(String prevPageUrl) {
         String prevStart;
         try {
@@ -111,20 +110,20 @@ public class PeertubeSearchExtractor extends SearchExtractor {
         } catch (RegexException e) {
             return "";
         }
-        if(StringUtil.isBlank(prevStart)) return "";
+        if (StringUtil.isBlank(prevStart)) return "";
         long nextStart = 0;
         try {
             nextStart = Long.valueOf(prevStart) + ITEMS_PER_PAGE;
         } catch (NumberFormatException e) {
             return "";
         }
-        
-        if(nextStart >= total) {
+
+        if (nextStart >= total) {
             return "";
-        }else {
+        } else {
             return prevPageUrl.replace(START_KEY + "=" + prevStart, START_KEY + "=" + String.valueOf(nextStart));
         }
     }
-    
+
 
 }
