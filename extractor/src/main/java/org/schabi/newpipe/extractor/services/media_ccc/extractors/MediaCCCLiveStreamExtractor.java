@@ -257,8 +257,8 @@ public class MediaCCCLiveStreamExtractor extends StreamExtractor {
 
     @Nonnull
     @Override
-    public String getPrivacy() {
-        return "Public";
+    public Privacy getPrivacy() {
+        return Privacy.PUBLIC;
     }
 
     @Nonnull

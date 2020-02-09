@@ -262,8 +262,8 @@ public class BandcampStreamExtractor extends StreamExtractor {
 
     @Nonnull
     @Override
-    public String getPrivacy() {
-        return "";
+    public Privacy getPrivacy() {
+        return Privacy.PUBLIC;
     }
 
     @Nonnull

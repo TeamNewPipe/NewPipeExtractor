@@ -428,8 +428,7 @@ public abstract class StreamExtractor extends Extractor {
      * @return the privacy of the stream or an empty String.
      * @throws ParsingException
      */
-    @Nonnull
-    public abstract String getPrivacy() throws ParsingException;
+    public abstract Privacy getPrivacy() throws ParsingException;
 
     /**
      * The name of the category of the stream.
@@ -467,7 +466,7 @@ public abstract class StreamExtractor extends Extractor {
      * The list of tags of the stream.
      * If the tag list is not available you can simply return an empty list.
      *
-     * @return the list of tags of the stream or an empty list.
+     * @return the list of tags of the stream or Collections.emptyList().
      * @throws ParsingException
      */
     @Nonnull
@@ -510,4 +509,10 @@ public abstract class StreamExtractor extends Extractor {
      */
     @Nonnull
     public abstract List<MetaInfo> getMetaInfo() throws ParsingException;
+    public enum Privacy {
+        PUBLIC,
+        UNLISTED,
+        PRIVATE,
+        INTERNAL
+    }
 }

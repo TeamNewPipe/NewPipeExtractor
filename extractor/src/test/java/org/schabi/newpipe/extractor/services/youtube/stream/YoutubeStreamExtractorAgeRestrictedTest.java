@@ -54,4 +54,16 @@ public class YoutubeStreamExtractorAgeRestrictedTest extends DefaultStreamExtrac
     @Override public int expectedAgeLimit() { return 18; }
     @Nullable @Override public String expectedErrorMessage() { return "Sign in to confirm your age"; }
     @Override public boolean expectedHasSubtitles() { return false; }
+
+    @Override public String expectedCategory() {return "Entertainment"; }
+    @Override public String expectedLicence() { return "YouTube licence"; }
+    @Override
+    public List<String> expectedTags() {
+        return Arrays.asList("AEE", "AEE 2017", "AVN", "AVN 2016", "AVN 2017", "AVN 2017 Expo In Las Vegas",
+                "AVN Awards Show", "AVN Expo", "AVN Las Vegas", "AVN Magazine", "AVN Vlog", "Ariana Marie",
+                "August Ames", "Brenna Sparks", "CeCe Capella", "Cindy Starfall", "Elsa Jean", "Emma Hix",
+                "FINGERING", "FINGERING P0RNSTARS", "FINGERING PORNSTARS", "Kaho Shibuya", "Keisha Grey",
+                "Kimberly Chi", "Las Vegas", "Mia Martinez", "Pornstar", "Pornstars", "Riley Reid",
+                "Samantha Saint", "Vegas", "Vicki Chase");
+    }
 }

@@ -66,7 +66,7 @@ public abstract class DefaultStreamExtractorTest extends DefaultExtractorTest<St
     @Nullable public String expectedDashMpdUrlContains() { return null; } // default: no dash mpd
     public boolean expectedHasFrames() { return true; } // default: there are frames
     public String expectedHost() { return ""; } // default: no host for centralized platforms
-    public String expectedPrivacy() { return ""; } // default: no privacy policy available
+    public StreamExtractor.Privacy expectedPrivacy() { return StreamExtractor.Privacy.PUBLIC; } // default: public
     public String expectedCategory() { return ""; } // default: no category
     public String expectedLicence() { return ""; } // default: no licence
     public Locale expectedLanguageInfo() { return null; } // default: no language info available

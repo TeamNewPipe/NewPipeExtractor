@@ -2,6 +2,7 @@ package org.schabi.newpipe.extractor;
 
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
@@ -9,6 +10,7 @@ import java.util.List;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
+import static org.junit.Assert.assertArrayEquals;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
@@ -69,7 +71,8 @@ public class ExtractorAsserts {
     }
 
     // this assumes that sorting a and b in-place is not an issue, so it's only intended for tests
-    public static void assertEqualsOrderIndependent(List<String> expected, List<String> actual) {
+    public static void assertEqualsOrderIndependent(final List<String> expected,
+                                                    final List<String> actual) {
         if (expected == null) {
             assertNull(actual);
             return;
@@ -79,6 +82,7 @@ public class ExtractorAsserts {
 
         Collections.sort(expected);
         Collections.sort(actual);
-        assertEquals(expected, actual);
+        // using new ArrayList<> to make sure the type is the same
+        assertEquals(new ArrayList<>(expected), new ArrayList<>(actual));
     }
 }

@@ -88,7 +88,6 @@ public class PeertubeStreamExtractorTest {
         @Override public boolean expectedHasAudioStreams() { return false; }
         @Override public boolean expectedHasFrames() { return false; }
         @Override public String expectedHost() { return "framatube.org"; }
-        @Override public String expectedPrivacy() { return "Public"; }
         @Override public String expectedCategory() { return "Science & Technology"; }
         @Override public String expectedLicence() { return "Attribution - Share Alike"; }
         @Override public Locale expectedLanguageInfo() { return Locale.forLanguageTag("en"); }
@@ -139,7 +138,6 @@ public class PeertubeStreamExtractorTest {
         @Override public boolean expectedHasSubtitles() { return false; }
         @Override public boolean expectedHasFrames() { return false; }
         @Override public String expectedHost() { return "nocensoring.net"; }
-        @Override public String expectedPrivacy() { return "Public"; }
         @Override public String expectedCategory() { return "Art"; }
         @Override public String expectedLicence() { return "Attribution"; }
         @Override public List<String> expectedTags() { return Arrays.asList("Covid-19", "Gérôme-Mary trebor", "Horreur et beauté", "court-métrage", "nue artistique"); }

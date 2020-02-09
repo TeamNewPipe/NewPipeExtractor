@@ -34,6 +34,7 @@ import org.schabi.newpipe.extractor.services.youtube.ItagItem;
 import org.schabi.newpipe.extractor.services.youtube.YoutubeParsingHelper;
 import org.schabi.newpipe.extractor.services.youtube.linkHandler.YoutubeChannelLinkHandlerFactory;
 import org.schabi.newpipe.extractor.stream.*;
+import org.schabi.newpipe.extractor.utils.JsonUtils;
 import org.schabi.newpipe.extractor.utils.Parser;
 import org.schabi.newpipe.extractor.utils.Utils;
 
@@ -214,7 +215,7 @@ public class YoutubeStreamExtractor extends StreamExtractor {
         // description with more info on links
         try {
             String description = getTextFromObject(getVideoSecondaryInfoRenderer().getObject("description"), true);
-            if (description != null && !description.isEmpty()) return new Description(description, Description.HTML);
+            if (!isNullOrEmpty(description)) return new Description(description, Description.HTML);
         } catch (final ParsingException ignored) {
             // age-restricted videos cause a ParsingException here
         }
@@ -1107,20 +1108,32 @@ public class YoutubeStreamExtractor extends StreamExtractor {
 
     @Nonnull
     @Override
-    public String getPrivacy() {
-        return "";
+    public Privacy getPrivacy() {
+        boolean isUnlisted = playerResponse
+                .getObject("microformat")
+                .getObject("playerMicroformatRenderer")
+                .getBoolean("isUnlisted");
+        return isUnlisted ? Privacy.UNLISTED : Privacy.PUBLIC;
     }
 
     @Nonnull
     @Override
     public String getCategory() {
-        return "";
+        return playerResponse.getObject("microformat")
+                .getObject("playerMicroformatRenderer")
+                .getString("category");
     }
 
     @Nonnull
     @Override
-    public String getLicence() {
-        return "";
+    public String getLicence() throws ParsingException {
+        final JsonObject metadataRowRenderer = getVideoSecondaryInfoRenderer()
+                .getObject("metadataRowContainer").getObject("metadataRowContainerRenderer").getArray("rows")
+                .getObject(0).getObject("metadataRowRenderer");
+
+        final JsonArray contents = metadataRowRenderer.getArray("contents");
+        final String license = getTextFromObject(contents.getObject(0));
+        return license != null && "Licence".equals(getTextFromObject(metadataRowRenderer.getObject("title"))) ? license : "YouTube licence";
     }
 
     @Override
@@ -1131,7 +1144,7 @@ public class YoutubeStreamExtractor extends StreamExtractor {
     @Nonnull
     @Override
     public List<String> getTags() {
-        return Collections.emptyList();
+        return JsonUtils.getStringListFromJsonArray(playerResponse.getObject("videoDetails").getArray("keywords"));
     }
 
     @Nonnull

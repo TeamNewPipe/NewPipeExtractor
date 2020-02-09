@@ -1,19 +1,19 @@
 package org.schabi.newpipe.extractor.localization;
 
+import org.schabi.newpipe.extractor.exceptions.ParsingException;
+
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.io.Serializable;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-import java.util.Locale;
-import java.util.Objects;
+import java.util.*;
 
 public class Localization implements Serializable {
     public static final Localization DEFAULT = new Localization("en", "GB");
 
-    @Nonnull private final String languageCode;
-    @Nullable private final String countryCode;
+    @Nonnull
+    private final String languageCode;
+    @Nullable
+    private final String countryCode;
 
     /**
      * @param localizationCodeList a list of localization code, formatted like {@link #getLocalizationCode()}
@@ -99,5 +99,26 @@ public class Localization implements Serializable {
         int result = languageCode.hashCode();
         result = 31 * result + Objects.hashCode(countryCode);
         return result;
+    }
+
+    /**
+     * Converts a three letter language code (ISO 639-2/T) to a Locale
+     * in the limit of Java Locale class.
+     *
+     * @param code a three letter language code
+     * @return the Locale corresponding
+     */
+    public static Locale getLocaleFromThreeLetterCode(@Nonnull String code) throws ParsingException {
+        String[] languages = Locale.getISOLanguages();
+        Map<String, Locale> localeMap = new HashMap<>(languages.length);
+        for (String language : languages) {
+            final Locale locale = new Locale(language);
+            localeMap.put(locale.getISO3Language(), locale);
+        }
+        if (localeMap.containsKey(code)) {
+            return localeMap.get(code);
+        } else {
+            throw new ParsingException("Could not get Locale from this three letter language code" + code);
+        }
     }
 }

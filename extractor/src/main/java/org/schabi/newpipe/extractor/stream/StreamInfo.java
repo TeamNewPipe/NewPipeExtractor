@@ -10,7 +10,6 @@ import org.schabi.newpipe.extractor.utils.ExtractorHelper;
 
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 import java.util.Locale;
 
@@ -377,7 +376,7 @@ public class StreamInfo extends Info {
     private List<SubtitlesStream> subtitles = new ArrayList<>();
 
     private String host = "";
-    private String privacy = "";
+    private StreamExtractor.Privacy privacy;
     private String category = "";
     private String licence = "";
     private String support = "";
@@ -635,11 +634,11 @@ public class StreamInfo extends Info {
         this.host = str;
     }
 
-    public String getPrivacy() {
+    public StreamExtractor.Privacy getPrivacy() {
         return this.privacy;
     }
 
-    public void setPrivacy(String str) {
+    public void setPrivacy(StreamExtractor.Privacy str) {
         this.privacy = str;
     }
 
