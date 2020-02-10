@@ -39,7 +39,7 @@ public abstract class SearchQueryHandlerFactory extends ListLinkHandlerFactory {
     }
 
     /**
-     * It's not mandatorry for NewPipe to handle the Url
+     * It's not mandatory for NewPipe to handle the Url
      *
      * @param url
      * @return

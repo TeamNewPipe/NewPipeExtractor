@@ -124,7 +124,7 @@ public class PeertubeChannelExtractor extends ChannelExtractor {
             if (number != null) this.total = number.longValue();
             collectStreamsFrom(collector, json, pageUrl);
         } else {
-            throw new ExtractionException("Unable to get peertube kiosk info");
+            throw new ExtractionException("Unable to get PeerTube kiosk info");
         }
         return new InfoItemsPage<>(collector, getNextPageUrl(pageUrl));
     }
@@ -158,7 +158,7 @@ public class PeertubeChannelExtractor extends ChannelExtractor {
         if (null != response && null != response.responseBody()) {
             setInitialData(response.responseBody());
         } else {
-            throw new ExtractionException("Unable to extract peertube channel data");
+            throw new ExtractionException("Unable to extract PeerTube channel data");
         }
 
         String pageUrl = getUrl() + "/videos?" + START_KEY + "=0&" + COUNT_KEY + "=" + ITEMS_PER_PAGE;
@@ -171,7 +171,7 @@ public class PeertubeChannelExtractor extends ChannelExtractor {
         } catch (JsonParserException e) {
             throw new ExtractionException("Unable to extract peertube channel data", e);
         }
-        if (null == json) throw new ExtractionException("Unable to extract peertube channel data");
+        if (null == json) throw new ExtractionException("Unable to extract PeerTube channel data");
     }
 
     @Override

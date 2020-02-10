@@ -68,7 +68,7 @@ public class YoutubePlaylistExtractor extends PlaylistExtractor {
     @Override
     public String getBannerUrl() {
         return "";      // Banner can't be handled by frontend right now.
-        // Whoever is willing to implement this should also implement this in the fornt end
+        // Whoever is willing to implement this should also implement this in the front end.
     }
 
     @Override

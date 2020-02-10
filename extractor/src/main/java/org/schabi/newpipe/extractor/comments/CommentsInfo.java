@@ -14,7 +14,6 @@ public class CommentsInfo extends ListInfo<CommentsInfoItem> {
 
     private CommentsInfo(int serviceId, ListLinkHandler listUrlIdHandler, String name) {
         super(serviceId, listUrlIdHandler, name);
-        // TODO Auto-generated constructor stub
     }
 
     public static CommentsInfo getInfo(String url) throws IOException, ExtractionException {

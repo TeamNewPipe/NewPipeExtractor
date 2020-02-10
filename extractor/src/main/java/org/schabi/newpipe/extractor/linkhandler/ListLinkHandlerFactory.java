@@ -69,7 +69,7 @@ public abstract class ListLinkHandlerFactory extends LinkHandlerFactory {
 
 
     /**
-     * For makeing ListLinkHandlerFactory compatible with LinkHandlerFactory we need to override this,
+     * For making ListLinkHandlerFactory compatible with LinkHandlerFactory we need to override this,
      * however it should not be overridden by the actual implementation.
      *
      * @param id

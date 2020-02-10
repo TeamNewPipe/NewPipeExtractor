@@ -73,7 +73,6 @@ public class PeertubePlaylistExtractor extends PlaylistExtractor {
 
     @Override
     public void onFetchPage(Downloader downloader) throws IOException, ExtractionException {
-        // TODO Auto-generated method stub
 
     }
 

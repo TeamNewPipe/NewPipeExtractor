@@ -49,7 +49,7 @@ public class PeertubeTrendingExtractor extends KioskExtractor<StreamInfoItem> {
         try {
             contents = (JsonArray) JsonUtils.getValue(json, "data");
         } catch (Exception e) {
-            throw new ParsingException("unable to extract kiosk info", e);
+            throw new ParsingException("Unable to extract kiosk info", e);
         }
 
         String baseUrl = getBaseUrl();

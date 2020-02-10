@@ -115,7 +115,7 @@ public enum MediaFormat {
     }
 
     /**
-     * Get the media format by it's id.
+     * Get the media format by its id.
      *
      * @param id the id
      * @return the id of the media format or null.

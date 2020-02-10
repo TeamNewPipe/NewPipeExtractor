@@ -128,7 +128,7 @@ public abstract class StreamExtractor extends Extractor {
     public abstract long getViewCount() throws ParsingException;
 
     /**
-     * The Amount of likes a video/audio stream got.
+     * The amount of likes a video/audio stream got.
      * If the current stream has no likes or its not available simply return -1
      *
      * @return the amount of likes the stream got
@@ -137,7 +137,7 @@ public abstract class StreamExtractor extends Extractor {
     public abstract long getLikeCount() throws ParsingException;
 
     /**
-     * The Amount of dislikes a video/audio stream got.
+     * The amount of dislikes a video/audio stream got.
      * If the current stream has no dislikes or its not available simply return -1
      *
      * @return the amount of likes the stream got
@@ -276,7 +276,7 @@ public abstract class StreamExtractor extends Extractor {
     public abstract StreamType getStreamType() throws ParsingException;
 
     /**
-     * should return the url of the next stream. NewPipe will automatically play
+     * Should return the url of the next stream. NewPipe will automatically play
      * the next stream if the user wants that.
      * If the next stream is is not available simply return null
      *
@@ -291,7 +291,7 @@ public abstract class StreamExtractor extends Extractor {
      * streams. If you don't like suggested streams you should implement them anyway since they can
      * be disabled by the user later in the frontend.
      * This list MUST NOT contain the next available video as this should be return through getNextStream()
-     * If  is is not available simply return null
+     * If it is not available simply return null
      *
      * @return a list of InfoItems showing the related videos/streams
      * @throws IOException
@@ -324,10 +324,10 @@ public abstract class StreamExtractor extends Extractor {
 
     /**
      * Override this function if the format of time stamp in the url is not the same format as that form youtube.
-     * Honestly I don't even know the time stamp fromat of youtube.
+     * Honestly I don't even know the time stamp format of YouTube.
      *
      * @param regexPattern
-     * @return the sime stamp/seek for the video in seconds
+     * @return the time stamp/seek for the video in seconds
      * @throws ParsingException
      */
     protected long getTimestampSeconds(String regexPattern) throws ParsingException {
