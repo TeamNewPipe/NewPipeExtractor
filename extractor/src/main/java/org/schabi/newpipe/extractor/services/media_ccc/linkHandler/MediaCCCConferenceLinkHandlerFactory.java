@@ -1,9 +1,13 @@
 package org.schabi.newpipe.extractor.services.media_ccc.linkHandler;
 
+import org.schabi.newpipe.extractor.exceptions.FoundAdException;
 import org.schabi.newpipe.extractor.exceptions.ParsingException;
 import org.schabi.newpipe.extractor.linkhandler.ListLinkHandlerFactory;
 import org.schabi.newpipe.extractor.utils.Parser;
+import org.schabi.newpipe.extractor.utils.Utils;
 
+import java.net.MalformedURLException;
+import java.net.URL;
 import java.util.List;
 
 public class MediaCCCConferenceLinkHandlerFactory extends ListLinkHandlerFactory {
@@ -14,19 +18,43 @@ public class MediaCCCConferenceLinkHandlerFactory extends ListLinkHandlerFactory
     }
 
     @Override
-    public String getId(String url) throws ParsingException {
-        if (url.startsWith("https://api.media.ccc.de/public/conferences/")) {
-            return url.replace("https://api.media.ccc.de/public/conferences/", "");
-        } else if (url.startsWith("https://media.ccc.de/c/")) {
-            return Parser.matchGroup1("https://media.ccc.de/c/([^?#]*)", url);
-        } else {
-            throw new ParsingException("Could not get id from url: " + url);
+    public String getId(String urlString) throws ParsingException {
+        if (urlString.startsWith("https://api.media.ccc.de/public/conferences/")) {
+            return urlString.replace("https://api.media.ccc.de/public/conferences/", "");
+        } else if (urlString.startsWith("https://media.ccc.de/c/")) {
+            return Parser.matchGroup1("https://media.ccc.de/c/([^?#]*)", urlString);
         }
+
+        URL url;
+        try {
+            url = Utils.stringToURL(urlString);
+        } catch (MalformedURLException e) {
+            throw new IllegalArgumentException("The given URL is not valid");
+        }
+
+        String path = url.getPath();
+        // remove leading "/" of URL-path if URL-path is given
+        if (!path.isEmpty()) {
+            path = path.substring(1);
+        }
+
+        if (path.contains("b/")) {
+            return path.substring(2);
+        }
+
+        throw new ParsingException("Could not get id from url: " + url);
+
     }
 
     @Override
     public boolean onAcceptUrl(String url) throws ParsingException {
-        return url.startsWith("https://api.media.ccc.de/public/conferences/")
-                || url.startsWith("https://media.ccc.de/c/");
+        try {
+            getId(url);
+            return true;
+        } catch (FoundAdException fe) {
+            throw fe;
+        } catch (ParsingException e) {
+            return false;
+        }
     }
 }

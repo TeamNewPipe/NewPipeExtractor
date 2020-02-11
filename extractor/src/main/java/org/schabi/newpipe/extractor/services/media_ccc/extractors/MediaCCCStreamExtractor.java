@@ -170,15 +170,13 @@ public class MediaCCCStreamExtractor extends StreamExtractor {
         return null;
     }
 
-    @Nonnull
     @Override
     public List<SubtitlesStream> getSubtitlesDefault() throws IOException, ExtractionException {
         return null;
     }
 
-    @Nonnull
     @Override
-    public List<SubtitlesStream> getSubtitles(MediaFormat format) throws IOException, ExtractionException {
+    public List<SubtitlesStream> getSubtitles(final MediaFormat format) throws IOException, ExtractionException {
         return null;
     }
 
@@ -212,7 +210,6 @@ public class MediaCCCStreamExtractor extends StreamExtractor {
         } catch (JsonParserException jpe) {
             throw new ExtractionException("Could not parse json returned by url: " + getLinkHandler().getUrl(), jpe);
         }
-
     }
 
     @Nonnull

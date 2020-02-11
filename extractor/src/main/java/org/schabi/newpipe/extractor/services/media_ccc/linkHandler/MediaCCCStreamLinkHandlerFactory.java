@@ -1,16 +1,39 @@
 package org.schabi.newpipe.extractor.services.media_ccc.linkHandler;
 
+import org.schabi.newpipe.extractor.exceptions.FoundAdException;
 import org.schabi.newpipe.extractor.exceptions.ParsingException;
 import org.schabi.newpipe.extractor.linkhandler.LinkHandlerFactory;
+import org.schabi.newpipe.extractor.utils.Utils;
+
+import java.net.MalformedURLException;
+import java.net.URL;
 
 public class MediaCCCStreamLinkHandlerFactory extends LinkHandlerFactory {
 
     @Override
-    public String getId(String url) throws ParsingException {
-        if (url.startsWith("https://api.media.ccc.de/public/events/") &&
-                !url.contains("?q=")) {
-            return url.replace("https://api.media.ccc.de/public/events/", "");
+    public String getId(String urlString) throws ParsingException {
+        if (urlString.startsWith("https://api.media.ccc.de/public/events/") &&
+                !urlString.contains("?q=")) {
+            return urlString.replace("https://api.media.ccc.de/public/events/", "");
         }
+
+        URL url;
+        try {
+            url = Utils.stringToURL(urlString);
+        } catch (MalformedURLException e) {
+            throw new IllegalArgumentException("The given URL is not valid");
+        }
+
+        String path = url.getPath();
+        // remove leading "/" of URL-path if URL-path is given
+        if (!path.isEmpty()) {
+            path = path.substring(1);
+        }
+
+        if (path.contains("v/")) {
+            return path.substring(2);
+        }
+
         throw new ParsingException("Could not get id from url: " + url);
     }
 
@@ -21,7 +44,13 @@ public class MediaCCCStreamLinkHandlerFactory extends LinkHandlerFactory {
 
     @Override
     public boolean onAcceptUrl(String url) throws ParsingException {
-        return url.startsWith("https://api.media.ccc.de/public/events/") &&
-                !url.contains("?q=");
+        try {
+            getId(url);
+            return true;
+        } catch (FoundAdException fe) {
+            throw fe;
+        } catch (ParsingException e) {
+            return false;
+        }
     }
 }
