@@ -30,7 +30,7 @@ public class MediaCCCStreamLinkHandlerFactory extends LinkHandlerFactory {
             path = path.substring(1);
         }
 
-        if (path.contains("v/")) {
+        if (path.startsWith("v/")) {
             return path.substring(2);
         }
 
@@ -47,8 +47,6 @@ public class MediaCCCStreamLinkHandlerFactory extends LinkHandlerFactory {
         try {
             getId(url);
             return true;
-        } catch (FoundAdException fe) {
-            throw fe;
         } catch (ParsingException e) {
             return false;
         }
