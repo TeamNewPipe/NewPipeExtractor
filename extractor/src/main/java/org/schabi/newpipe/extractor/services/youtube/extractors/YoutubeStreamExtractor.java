@@ -41,6 +41,8 @@ import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import static org.schabi.newpipe.extractor.utils.JsonUtils.getString;
+
 /*
  * Created by Christian Schabesberger on 06.08.15.
  *
@@ -87,7 +89,7 @@ public class YoutubeStreamExtractor extends StreamExtractor {
     private JsonObject playerArgs;
     @Nonnull
     private final Map<String, String> videoInfoPage = new HashMap<>();
-    private JsonObject playerResponse;
+    public JsonObject playerResponse;
 
     @Nonnull
     private List<SubtitlesInfo> subtitlesInfos = new ArrayList<>();
@@ -107,8 +109,7 @@ public class YoutubeStreamExtractor extends StreamExtractor {
     public String getName() throws ParsingException {
         assertPageFetched();
         try {
-            return playerResponse.getObject("videoDetails").getString("title");
-
+            return getString(playerResponse.getObject("microformat").getObject("playerMicroformatRenderer").getObject("title"), "simpleText");
         } catch (Exception e) {
             // fallback HTML method
             String name = null;
@@ -183,12 +184,10 @@ public class YoutubeStreamExtractor extends StreamExtractor {
     public Description getDescription() throws ParsingException {
         assertPageFetched();
         try {
-            // first try to get html-formatted description
-            return new Description(parseHtmlAndGetFullLinks(doc.select("p[id=\"eow-description\"]").first().html()), Description.HTML);
+            return new Description(getString(playerResponse.getObject("microformat").getObject("playerMicroformatRenderer").getObject("description"), "simpleText"), Description.PLAIN_TEXT);
         } catch (Exception e) {
             try {
-                // fallback to raw non-html description
-                return new Description(playerResponse.getObject("videoDetails").getString("shortDescription"), Description.PLAIN_TEXT);
+                return new Description(parseHtmlAndGetFullLinks(doc.select("p[id=\"eow-description\"]").first().html()), Description.HTML);
             } catch (Exception ignored) {
                 throw new ParsingException("Could not get the description", e);
             }

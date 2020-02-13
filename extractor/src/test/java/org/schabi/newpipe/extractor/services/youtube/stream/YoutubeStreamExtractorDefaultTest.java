@@ -9,6 +9,7 @@ import org.schabi.newpipe.extractor.MediaFormat;
 import org.schabi.newpipe.extractor.NewPipe;
 import org.schabi.newpipe.extractor.exceptions.ExtractionException;
 import org.schabi.newpipe.extractor.exceptions.ParsingException;
+import org.schabi.newpipe.extractor.localization.Localization;
 import org.schabi.newpipe.extractor.services.youtube.extractors.YoutubeStreamExtractor;
 import org.schabi.newpipe.extractor.stream.*;
 import org.schabi.newpipe.extractor.utils.Utils;
@@ -306,6 +307,28 @@ public class YoutubeStreamExtractorDefaultTest {
                     ExtractorAsserts.assertIsSecureUrl(url);
                 }
             }
+        }
+    }
+
+    public static class LocalizationTest {
+        private static YoutubeStreamExtractor extractor;
+
+        @BeforeClass
+        public static void setUp() throws Exception {
+            NewPipe.init(DownloaderTestImpl.getInstance(), new Localization("de"));
+            extractor = (YoutubeStreamExtractor) YouTube
+                    .getStreamExtractor("https://www.youtube.com/watch?v=BWQ0BFVuSXA");
+            extractor.fetchPage();
+        }
+
+        @Test
+        public void testGetName() throws ParsingException {
+            assertEquals("SKAM FRANCE EP.6 S5: Sonntag, 16:21 Uhr - Was jetzt?", extractor.getName());
+        }
+
+        @Test
+        public void testGetDescription() throws ParsingException {
+            assertTrue(extractor.getDescription().getContent().contains("Folgen Sie france.tv auf:"));
         }
     }
 }

@@ -166,14 +166,13 @@ public class YoutubeService extends StreamingService {
 
     // https://www.youtube.com/picker_ajax?action_language_json=1
     private static final List<Localization> SUPPORTED_LANGUAGES = Localization.listFrom(
-            "en-GB"
-            /*"af", "am", "ar", "az", "be", "bg", "bn", "bs", "ca", "cs", "da", "de",
+            "af", "am", "ar", "az", "be", "bg", "bn", "bs", "ca", "cs", "da", "de",
             "el", "en", "en-GB", "es", "es-419", "es-US", "et", "eu", "fa", "fi", "fil", "fr",
             "fr-CA", "gl", "gu", "hi", "hr", "hu", "hy", "id", "is", "it", "iw", "ja",
             "ka", "kk", "km", "kn", "ko", "ky", "lo", "lt", "lv", "mk", "ml", "mn",
             "mr", "ms", "my", "ne", "nl", "no", "pa", "pl", "pt", "pt-PT", "ro", "ru",
             "si", "sk", "sl", "sq", "sr", "sr-Latn", "sv", "sw", "ta", "te", "th", "tr",
-            "uk", "ur", "uz", "vi", "zh-CN", "zh-HK", "zh-TW", "zu"*/
+            "uk", "ur", "uz", "vi", "zh-CN", "zh-HK", "zh-TW", "zu"
     );
 
     // https://www.youtube.com/picker_ajax?action_country_json=1
