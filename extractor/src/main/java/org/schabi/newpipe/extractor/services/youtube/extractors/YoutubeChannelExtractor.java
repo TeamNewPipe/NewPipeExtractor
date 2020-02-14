@@ -6,22 +6,26 @@ import com.grack.nanojson.JsonParserException;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
+import org.schabi.newpipe.extractor.NewPipe;
 import org.schabi.newpipe.extractor.StreamingService;
 import org.schabi.newpipe.extractor.channel.ChannelExtractor;
 import org.schabi.newpipe.extractor.downloader.Downloader;
 import org.schabi.newpipe.extractor.downloader.Response;
 import org.schabi.newpipe.extractor.exceptions.ExtractionException;
 import org.schabi.newpipe.extractor.exceptions.ParsingException;
+import org.schabi.newpipe.extractor.exceptions.ReCaptchaException;
 import org.schabi.newpipe.extractor.linkhandler.ListLinkHandler;
+import org.schabi.newpipe.extractor.localization.Localization;
 import org.schabi.newpipe.extractor.localization.TimeAgoParser;
 import org.schabi.newpipe.extractor.services.youtube.linkHandler.YoutubeParsingHelper;
 import org.schabi.newpipe.extractor.stream.StreamInfoItem;
 import org.schabi.newpipe.extractor.stream.StreamInfoItemsCollector;
 import org.schabi.newpipe.extractor.utils.Parser;
-import org.schabi.newpipe.extractor.utils.Utils;
 
 import javax.annotation.Nonnull;
 import java.io.IOException;
+
+import static org.schabi.newpipe.extractor.utils.Utils.mixedNumberWordToLong;
 
 /*
  * Created by Christian Schabesberger on 25.07.16.
@@ -81,7 +85,8 @@ public class YoutubeChannelExtractor extends ChannelExtractor {
     public String getId() throws ParsingException {
         try {
             return doc.select("meta[itemprop=\"channelId\"]").first().attr("content");
-        } catch (Exception ignored) {}
+        } catch (Exception ignored) {
+        }
 
         // fallback method; does not work with channels that have no "Subscribe" button (e.g. EminemVEVO)
         try {
@@ -137,19 +142,32 @@ public class YoutubeChannelExtractor extends ChannelExtractor {
 
     @Override
     public long getSubscriberCount() throws ParsingException {
-
+        long subCount = -1;
         final Element el = doc.select("span[class*=\"yt-subscription-button-subscriber-count\"]").first();
         if (el != null) {
+            // If the element is null, the channel have the subscriber count disabled
             String elTitle = el.attr("title");
             try {
-                return Utils.mixedNumberWordToLong(elTitle);
+                subCount = mixedNumberWordToLong(elTitle);
             } catch (NumberFormatException e) {
                 throw new ParsingException("Could not get subscriber count", e);
             }
-        } else {
-            // If the element is null, the channel have the subscriber count disabled
-            return -1;
+
+            if (!getExtractorLocalization().getLanguageCode().equals("en") && subCount < 1000 && subCount != -1) {
+                //if it's not gathered from English page, and if shortened (https://support.google.com/youtube/thread/6543166)
+                //see https://github.com/TeamNewPipe/NewPipe/issues/2632
+                Downloader dl = NewPipe.getDownloader();
+                String aboutUrl = "https://m.youtube.com/channel/" + getId() + "/about";
+                try {
+                    Response response = dl.get(aboutUrl, new Localization("en", "gb"));
+                    Document docEN = YoutubeParsingHelper.parseAndCheckPage(aboutUrl, response);
+                    subCount = mixedNumberWordToLong(docEN.select(".subscribed").attr("title"));
+                } catch (IOException | ReCaptchaException e) {
+                    e.printStackTrace();
+                }
+            }
         }
+        return subCount;
     }
 
     @Override
@@ -196,7 +214,7 @@ public class YoutubeChannelExtractor extends ChannelExtractor {
     }
 
     private String getNextPageUrlFromAjaxPage(final JsonObject ajaxJson, final String pageUrl)
-        throws ParsingException {
+            throws ParsingException {
         String loadMoreHtmlDataRaw = ajaxJson.getString("load_more_widget_html");
         if (!loadMoreHtmlDataRaw.isEmpty()) {
             return getNextPageUrlFrom(Jsoup.parse(loadMoreHtmlDataRaw, pageUrl));
