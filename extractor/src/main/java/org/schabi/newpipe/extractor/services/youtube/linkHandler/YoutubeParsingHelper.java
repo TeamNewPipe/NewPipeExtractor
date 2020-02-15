@@ -53,9 +53,14 @@ public class YoutubeParsingHelper {
     private YoutubeParsingHelper() {
     }
 
+    /**
+     * The official youtube app supports intents in this format, where after the ':' is the videoId.
+     * Accordingly there are other apps sharing streams in this format.
+     */
+    public final static String BASE_YOUTUBE_INTENT_URL = "vnd.youtube";
+
     private static final String HARDCODED_CLIENT_VERSION = "2.20200214.04.00";
     private static String clientVersion;
-
 
     private static final String FEED_BASE_CHANNEL_ID = "https://www.youtube.com/feeds/videos.xml?channel_id=";
     private static final String FEED_BASE_USER = "https://www.youtube.com/feeds/videos.xml?user=";
