@@ -4,6 +4,10 @@ import com.grack.nanojson.JsonParserException;
 import org.junit.Test;
 import org.schabi.newpipe.extractor.exceptions.ParsingException;
 
+import java.io.BufferedWriter;
+import java.io.FileWriter;
+import java.io.IOException;
+
 import static org.junit.Assert.assertEquals;
 
 public class UtilsTest {
@@ -14,5 +18,11 @@ public class UtilsTest {
         assertEquals(10.5e6, Utils.mixedNumberWordToLong("10.5M"), 0.0);
         assertEquals(10.5e6, Utils.mixedNumberWordToLong("10,5M"), 0.0);
         assertEquals(1.5e9, Utils.mixedNumberWordToLong("1,5B"), 0.0);
+    }
+
+    public static void createFile(String path, String content) throws IOException {
+        BufferedWriter writer = new BufferedWriter(new FileWriter(path));
+        writer.write(content);
+        writer.close();
     }
 }

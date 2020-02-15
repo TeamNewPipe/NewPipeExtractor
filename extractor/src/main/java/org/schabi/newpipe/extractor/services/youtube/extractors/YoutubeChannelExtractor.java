@@ -54,6 +54,10 @@ public class YoutubeChannelExtractor extends ChannelExtractor {
 
     private Document doc;
 
+    public Document getDoc() {
+        return doc;
+    }
+
     public YoutubeChannelExtractor(StreamingService service, ListLinkHandler linkHandler) {
         super(service, linkHandler);
     }
@@ -148,23 +152,9 @@ public class YoutubeChannelExtractor extends ChannelExtractor {
             // If the element is null, the channel have the subscriber count disabled
             String elTitle = el.attr("title");
             try {
-                subCount = mixedNumberWordToLong(elTitle);
+                subCount = mixedNumberWordToLong(elTitle, getExtractorLocalization());
             } catch (NumberFormatException e) {
                 throw new ParsingException("Could not get subscriber count", e);
-            }
-
-            if (!getExtractorLocalization().getLanguageCode().equals("en") && subCount < 1000 && subCount != -1) {
-                //if it's not gathered from English page, and if shortened (https://support.google.com/youtube/thread/6543166)
-                //see https://github.com/TeamNewPipe/NewPipe/issues/2632
-                Downloader dl = NewPipe.getDownloader();
-                String aboutUrl = "https://m.youtube.com/channel/" + getId() + "/about";
-                try {
-                    Response response = dl.get(aboutUrl, new Localization("en", "gb"));
-                    Document docEN = YoutubeParsingHelper.parseAndCheckPage(aboutUrl, response);
-                    subCount = mixedNumberWordToLong(docEN.select(".subscribed").attr("title"));
-                } catch (IOException | ReCaptchaException e) {
-                    e.printStackTrace();
-                }
             }
         }
         return subCount;

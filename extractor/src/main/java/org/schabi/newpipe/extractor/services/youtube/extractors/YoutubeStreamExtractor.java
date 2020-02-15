@@ -89,7 +89,7 @@ public class YoutubeStreamExtractor extends StreamExtractor {
     private JsonObject playerArgs;
     @Nonnull
     private final Map<String, String> videoInfoPage = new HashMap<>();
-    public JsonObject playerResponse;
+    private JsonObject playerResponse;
 
     @Nonnull
     private List<SubtitlesInfo> subtitlesInfos = new ArrayList<>();

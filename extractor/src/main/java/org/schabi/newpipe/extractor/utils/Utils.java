@@ -1,14 +1,20 @@
 package org.schabi.newpipe.extractor.utils;
 
+import org.schabi.newpipe.extractor.exceptions.ParsingException;
+import org.schabi.newpipe.extractor.localization.Localization;
+
 import java.io.UnsupportedEncodingException;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLDecoder;
 import java.util.List;
 
-import org.schabi.newpipe.extractor.exceptions.ParsingException;
+import static org.schabi.newpipe.extractor.services.youtube.extractors.YoutubeAbbreviationSubCountMap.abbreviationSubscribersCount;
 
 public class Utils {
+
+    private static final String HTTP = "http://";
+    private static final String HTTPS = "https://";
 
     private Utils() {
         //no instance
@@ -28,6 +34,24 @@ public class Utils {
     }
 
     /**
+     * <p>Remove a number from a string.</p>
+     * <p>Examples:</p>
+     * <ul>
+     *     <li>"123" -&gt; "123"</li>
+     *     <li>"1.23K" -&gt; "K"</li>
+     *     <li>"1.23 M" -&gt; " M"</li>
+     * </ul>
+     * Pay attention, it may remove the final dot.
+     * eg: "8,93 хил." -> " хил"
+     *
+     * @param toRemove string to remove a number
+     * @return a string that contains only not a number
+     */
+    public static String removeNumber(String toRemove) {
+        return toRemove.replaceAll("[0-9,.]", "");
+    }
+
+    /**
      * <p>Convert a mixed number word to a long.</p>
      * <p>Examples:</p>
      * <ul>
@@ -35,6 +59,7 @@ public class Utils {
      *     <li>1.23K -&gt; 1230</li>
      *     <li>1.23M -&gt; 1230000</li>
      * </ul>
+     *
      * @param numberWord string to be converted to a long
      * @return a long
      * @throws NumberFormatException
@@ -43,20 +68,64 @@ public class Utils {
     public static long mixedNumberWordToLong(String numberWord) throws NumberFormatException, ParsingException {
         String multiplier = "";
         try {
-            multiplier = Parser.matchGroup("[\\d]+([\\.,][\\d]+)?([KMBkmb])+", numberWord, 2);
-        } catch(ParsingException ignored) {}
+            multiplier = Parser.matchGroup("[\\d]+([\\.,][\\d]+)?([KMBkmb万লক億])+", numberWord, 2);
+        } catch (ParsingException ignored) {
+        }
         double count = Double.parseDouble(Parser.matchGroup1("([\\d]+([\\.,][\\d]+)?)", numberWord)
                 .replace(",", "."));
         switch (multiplier.toUpperCase()) {
             case "K":
                 return (long) (count * 1e3);
+            case "万": //10K
+                return (long) (count * 1e4);
+            case "ল": //100K
+                return (long) (count * 1e5);
             case "M":
                 return (long) (count * 1e6);
+            case "ক": //10M
+                return (long) (count * 1e7);
+            case "億": //100M
+                return (long) (count * 1e8);
             case "B":
                 return (long) (count * 1e9);
             default:
                 return (long) (count);
         }
+    }
+
+    //does the same as the function above, but for the 80 languages supported by YouTube.
+    public static long mixedNumberWordToLong(String numberWord, Localization loc) throws NumberFormatException, ParsingException {
+        String langCode = loc.getLanguageCode();
+        String abbreviation = removeNumber(numberWord);
+
+        //special case for portugal, " mil" is the abbreviation for thousand, but is Million for many other languages
+        if (langCode.equals("pt") && abbreviation.equals(" mil")) {
+            numberWord = numberWord.replace(" mil", "K");
+        }
+        //special case for languages written right to left
+        else if (langCode.equals("sw") && abbreviation.equals("elfu ")) {
+            numberWord = moveAtRight("elfu ", numberWord);
+        } else if (langCode.equals("si")) {
+            numberWord = moveAtRight(abbreviation, numberWord);
+        }
+
+        try { //special cases where it gives a number directly for some languages, or with a dot or a comma, or space
+            String maybeAlreadyNumber = numberWord.replaceAll("([ .,])", ""); //dot, comma or narrow non-breaking space, ie U+202Fw
+            return Long.parseLong(maybeAlreadyNumber);
+        } catch (NumberFormatException e) {
+            //the number had an abbreviation, so it will be handled below
+        }
+
+        if (!langCode.equals("en")) {
+            numberWord = numberWord.replace(abbreviation, abbreviationSubscribersCount.get(abbreviation));
+        }
+        return mixedNumberWordToLong(numberWord);
+    }
+
+    public static String moveAtRight(String toMove, String whole) {
+        whole = whole.replace(toMove, "");
+        whole += toMove;
+        return whole;
     }
 
     /**
@@ -81,9 +150,6 @@ public class Utils {
             System.err.println("----------------");
         }
     }
-
-    private static final String HTTP = "http://";
-    private static final String HTTPS = "https://";
 
     public static String replaceHttpWithHttps(final String url) {
         if (url == null) return null;
@@ -165,17 +231,17 @@ public class Utils {
 
         return setsNoPort || usesDefaultPort;
     }
-    
+
     public static String removeUTF8BOM(String s) {
         if (s.startsWith("\uFEFF")) {
             s = s.substring(1);
         }
         if (s.endsWith("\uFEFF")) {
-            s = s.substring(0,  s.length()-1);
+            s = s.substring(0, s.length() - 1);
         }
         return s;
     }
-    
+
     public static String getBaseUrl(String url) throws ParsingException {
         URL uri;
         try {
