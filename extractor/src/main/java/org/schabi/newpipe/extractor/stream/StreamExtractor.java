@@ -337,7 +337,7 @@ public abstract class StreamExtractor extends Extractor {
         } catch (Parser.RegexException e) {
             // catch this instantly since an url does not necessarily have to have a time stamp
 
-            // -2 because well the testing system will then know its the regex that failed :/
+            // -2 because the testing system will consequently know that the regex failed
             // not good i know
             return -2;
         }
