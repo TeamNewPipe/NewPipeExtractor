@@ -43,7 +43,7 @@ public class PeertubeInstance {
             throw new Exception("unable to configure instance " + url, e);
         }
 
-        if (null == response || StringUtil.isBlank(response.responseBody())) {
+        if (response == null || StringUtil.isBlank(response.responseBody())) {
             throw new Exception("unable to configure instance " + url);
         }
 

@@ -263,7 +263,7 @@ public abstract class StreamingService {
 
     public CommentsExtractor getCommentsExtractor(String url) throws ExtractionException {
         ListLinkHandlerFactory llhf = getCommentsLHFactory();
-        if (null == llhf) {
+        if (llhf == null) {
             return null;
         }
         return getCommentsExtractor(llhf.fromUrl(url));

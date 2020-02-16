@@ -335,10 +335,10 @@ public abstract class StreamExtractor extends Extractor {
         try {
             timeStamp = Parser.matchGroup1(regexPattern, getOriginalUrl());
         } catch (Parser.RegexException e) {
-            // catch this instantly since an url does not necessarily have to have a time stamp
+            // catch this instantly since a url does not necessarily have a timestamp
 
             // -2 because the testing system will consequently know that the regex failed
-            // not good i know
+            // not good, I know
             return -2;
         }
 

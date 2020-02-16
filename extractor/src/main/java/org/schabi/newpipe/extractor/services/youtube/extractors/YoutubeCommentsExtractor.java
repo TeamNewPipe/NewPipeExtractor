@@ -133,7 +133,7 @@ public class YoutubeCommentsExtractor extends CommentsExtractor {
     }
 
     private void fetchTitle(JsonArray contents) {
-        if (null == title) {
+        if (title == null) {
             try {
                 title = getYoutubeText(JsonUtils.getObject(contents.getObject(0), "commentThreadRenderer.commentTargetTitle"));
             } catch (Exception e) {

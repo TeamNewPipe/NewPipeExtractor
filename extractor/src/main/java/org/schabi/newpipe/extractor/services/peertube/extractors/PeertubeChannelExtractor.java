@@ -171,7 +171,7 @@ public class PeertubeChannelExtractor extends ChannelExtractor {
         } catch (JsonParserException e) {
             throw new ExtractionException("Unable to extract peertube channel data", e);
         }
-        if (null == json) throw new ExtractionException("Unable to extract PeerTube channel data");
+        if (json == null) throw new ExtractionException("Unable to extract PeerTube channel data");
     }
 
     @Override
