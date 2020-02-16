@@ -37,7 +37,7 @@ public class Utils {
      * <p>Remove a number from a string.</p>
      * <p>Examples:</p>
      * <ul>
-     *     <li>"123" -&gt; "123"</li>
+     *     <li>"123" -&gt; ""</li>
      *     <li>"1.23K" -&gt; "K"</li>
      *     <li>"1.23 M" -&gt; " M"</li>
      * </ul>

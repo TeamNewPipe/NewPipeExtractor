@@ -54,10 +54,6 @@ public class YoutubeChannelExtractor extends ChannelExtractor {
 
     private Document doc;
 
-    public Document getDoc() {
-        return doc;
-    }
-
     public YoutubeChannelExtractor(StreamingService service, ListLinkHandler linkHandler) {
         super(service, linkHandler);
     }

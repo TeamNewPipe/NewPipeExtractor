@@ -489,7 +489,6 @@ public class YoutubeChannelExtractorTest {
         }
     }
 
-
     public static class RandomChannel implements BaseChannelExtractorTest {
         private static YoutubeChannelExtractor extractor;
 

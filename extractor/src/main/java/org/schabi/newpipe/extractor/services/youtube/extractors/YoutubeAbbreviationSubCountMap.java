@@ -6,12 +6,12 @@ public class YoutubeAbbreviationSubCountMap {
 
     //should be safe until someone has 1 billion subscribers on YouTube
     public static final HashMap<String, String> abbreviationSubscribersCount = new HashMap<>();
-    public static String englishMillionAbbreviation = "M";
-    public static String englishThousandAbbreviation = "K";
-    public static String tenThousandAbbreviation = "万";
-    public static String hundredThousandAbbreviation = "ল";
-    public static String tenMillionAbbreviation = "ক";
-    public static String hundredMillionAbbreviation = "億";
+    public static final String englishMillionAbbreviation = "M";
+    public static final String englishThousandAbbreviation = "K";
+    public static final String tenThousandAbbreviation = "万";
+    public static final String hundredThousandAbbreviation = "ল";
+    public static final String tenMillionAbbreviation = "ক";
+    public static final String hundredMillionAbbreviation = "億";
 
     static {
         abbreviationSubscribersCount.put(englishThousandAbbreviation, englishThousandAbbreviation); //az, iw, en

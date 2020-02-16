@@ -184,6 +184,7 @@ public class YoutubeStreamExtractor extends StreamExtractor {
     public Description getDescription() throws ParsingException {
         assertPageFetched();
         try {
+            //JSON first because formatting is better, see https://github.com/TeamNewPipe/NewPipeExtractor/pull/257#discussion_r379828770
             return new Description(getString(playerResponse.getObject("microformat").getObject("playerMicroformatRenderer").getObject("description"), "simpleText"), Description.PLAIN_TEXT);
         } catch (Exception e) {
             try {

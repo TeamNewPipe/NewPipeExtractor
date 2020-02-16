@@ -35,7 +35,11 @@ testzhTwk = Chinese (Taiwan) thousand
 
 /*
 Commenting the whole file because otherwise it will slow down too much the CI test.
-And also, often one up to three tests fail if you launch the whole tests, because some requests fail.
+And also, often one up to three tests fail if you launch the whole tests, because some requests fail
+(it could be reCAPTCHAs) but they, as of today (2020-02-16) success if you run each one.
+
+To run the test (to investigate maybe future problems),
+You should create public Document getDoc() { return this.doc;} method in YoutubeChannelExtractor.
  */
 
 /*
@@ -1166,7 +1170,7 @@ public class YoutubeSubscriberTest {
 
     @Test
     public void build() throws IOException, ExtractionException, InterruptedException {
-        Localization current = YoutubeService.SUPPORTED_LANGUAGES.get(79);
+        Localization current = YouTube.getSupportedLocalizations().get(79);
         buildthousand(current);
         buildmillion(current);
         System.out.println();
@@ -1174,5 +1178,3 @@ public class YoutubeSubscriberTest {
         System.out.println();
     }
 }
-
-*/
