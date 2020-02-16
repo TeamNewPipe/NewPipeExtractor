@@ -1,3 +1,4 @@
+/*
 package org.schabi.newpipe.extractor.services.youtube;
 
 import org.jsoup.nodes.Document;
@@ -17,20 +18,18 @@ import static org.schabi.newpipe.extractor.ServiceList.YouTube;
 import static org.schabi.newpipe.extractor.utils.Utils.removeNumber;
 
 /**
- * Test for {@link }
+ * Test for {@link YoutubeChannelExtractor}
  * and specifically YoutubeChannelExtractor.getSubscriberCount()
  * in all the languages supported by YouTube.
  * Takes a long time because we need to test make 146 requests to YouTube
  * DON'T RUN ON MOBILE DATA
- */
-
-/*
-pattern for functions name:
-testlangcodeRegionabbreviation
-eg:
-testenk = english thousand
-testfrCam = French (Canada) million
-testzhTwk = Chinese (Taiwan) thousand
+ * <p>
+ * pattern for functions name:
+ * testlangcodeRegionabbreviation (Region is optional)
+ * eg:
+ * testenk = english thousand
+ * testfrCam = French (Canada) million
+ * testzhTwk = Chinese (Taiwan) thousand
  */
 
 /*
@@ -39,7 +38,7 @@ And also, often one up to three tests fail if you launch the whole tests, becaus
 (it could be reCAPTCHAs) but they, as of today (2020-02-16) success if you run each one.
 
 To run the test (to investigate maybe future problems),
-You should create public Document getDoc() { return this.doc;} method in YoutubeChannelExtractor.
+You should temporarily create « public Document getDoc() { return this.doc;} » method in YoutubeChannelExtractor.
  */
 
 /*
@@ -1178,3 +1177,4 @@ public class YoutubeSubscriberTest {
         System.out.println();
     }
 }
+*/

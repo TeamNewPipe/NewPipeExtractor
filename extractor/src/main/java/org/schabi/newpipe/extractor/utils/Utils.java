@@ -9,7 +9,7 @@ import java.net.URL;
 import java.net.URLDecoder;
 import java.util.List;
 
-import static org.schabi.newpipe.extractor.services.youtube.extractors.YoutubeAbbreviationSubCountMap.abbreviationSubscribersCount;
+import static org.schabi.newpipe.extractor.utils.AbbreviationHashMap.abbreviationSubscribersCount;
 
 public class Utils {
 
@@ -76,15 +76,15 @@ public class Utils {
         switch (multiplier.toUpperCase()) {
             case "K":
                 return (long) (count * 1e3);
-            case "万": //10K
+            case "万": //10K, used by east-asian languages
                 return (long) (count * 1e4);
-            case "ল": //100K
+            case "ল": //100K, used by indo-arabic languages
                 return (long) (count * 1e5);
             case "M":
                 return (long) (count * 1e6);
-            case "ক": //10M
+            case "ক": //10M, used by indo-arabic languages
                 return (long) (count * 1e7);
-            case "億": //100M
+            case "億": //100M, used by east-asian languages
                 return (long) (count * 1e8);
             case "B":
                 return (long) (count * 1e9);
