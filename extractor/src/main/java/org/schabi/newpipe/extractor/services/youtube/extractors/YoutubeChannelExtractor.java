@@ -165,10 +165,11 @@ public class YoutubeChannelExtractor extends ChannelExtractor {
     @Override
     public long getSubscriberCount() throws ParsingException {
 
-        final String simpleText = ytInitialData.getObject("header").getObject("c4TabbedHeaderRenderer").getObject("subscriberCountText").getArray("runs").getObject(0).getString("text");
-        if (simpleText != null) {
+        final JsonObject subscriberInfo = ytInitialData.getObject("header").getObject("c4TabbedHeaderRenderer").getObject("subscriberCountText");
+        if (subscriberInfo != null) {
             try {
-                return Utils.mixedNumberWordToLong(simpleText);
+
+                return Utils.mixedNumberWordToLong(subscriberInfo.getArray("runs").getObject(0).getString("text"));
             } catch (NumberFormatException e) {
                 throw new ParsingException("Could not get subscriber count", e);
             }
