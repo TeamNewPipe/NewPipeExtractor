@@ -1,5 +1,6 @@
 package org.schabi.newpipe.extractor.services.youtube.extractors;
 
+import com.grack.nanojson.JsonArray;
 import com.grack.nanojson.JsonObject;
 import com.grack.nanojson.JsonParser;
 import com.grack.nanojson.JsonParserException;
@@ -19,6 +20,7 @@ import org.schabi.newpipe.extractor.services.youtube.linkHandler.YoutubeParsingH
 import org.schabi.newpipe.extractor.stream.StreamInfoItem;
 import org.schabi.newpipe.extractor.stream.StreamInfoItemsCollector;
 import org.schabi.newpipe.extractor.stream.StreamType;
+import org.schabi.newpipe.extractor.utils.Parser;
 import org.schabi.newpipe.extractor.utils.Utils;
 
 import javax.annotation.Nonnull;
@@ -29,6 +31,10 @@ import java.io.IOException;
 public class YoutubePlaylistExtractor extends PlaylistExtractor {
 
     private Document doc;
+    private JsonObject initialData;
+    private JsonObject uploaderInfo;
+    private JsonObject playlistInfo;
+    private JsonObject playlistVideos;
 
     public YoutubePlaylistExtractor(StreamingService service, ListLinkHandler linkHandler) {
         super(service, linkHandler);
@@ -39,6 +45,62 @@ public class YoutubePlaylistExtractor extends PlaylistExtractor {
         final String url = getUrl();
         final Response response = downloader.get(url, getExtractorLocalization());
         doc = YoutubeParsingHelper.parseAndCheckPage(url, response);
+        initialData = getInitialData();
+        uploaderInfo = getUploaderInfo();
+        playlistInfo = getPlaylistInfo();
+        playlistVideos = getPlaylistVideos();
+    }
+
+    private JsonObject getInitialData() throws ParsingException {
+        try {
+            String initialData = Parser.matchGroup1("window\\[\"ytInitialData\"\\]\\s*=\\s*(\\{.*?\\});", doc.toString());
+            return JsonParser.object().from(initialData);
+        } catch (JsonParserException | Parser.RegexException e) {
+            throw new ParsingException("Could not get ytInitialData", e);
+        }
+    }
+
+    private JsonObject getUploaderInfo() throws ParsingException {
+        JsonArray items = initialData.getObject("sidebar").getObject("playlistSidebarRenderer").getArray("items");
+        try {
+            JsonObject uploaderInfo = items.getObject(1).getObject("playlistSidebarSecondaryInfoRenderer")
+                    .getObject("videoOwner").getObject("videoOwnerRenderer");
+            if (uploaderInfo != null) {
+                return uploaderInfo;
+            }
+        } catch (Exception ignored) {}
+
+        // we might want to create a loop here instead of using duplicated code
+        try {
+            JsonObject uploaderInfo = items.getObject(items.size()).getObject("playlistSidebarSecondaryInfoRenderer")
+                    .getObject("videoOwner").getObject("videoOwnerRenderer");
+            if (uploaderInfo != null) {
+                return uploaderInfo;
+            }
+        } catch (Exception e) {
+            throw new ParsingException("Could not get uploader info", e);
+        }
+        throw new ParsingException("Could not get uploader info");
+    }
+
+    private JsonObject getPlaylistInfo() throws ParsingException {
+        try {
+            return initialData.getObject("sidebar").getObject("playlistSidebarRenderer").getArray("items")
+                    .getObject(0).getObject("playlistSidebarPrimaryInfoRenderer");
+        } catch (Exception e) {
+            throw new ParsingException("Could not get PlaylistInfo", e);
+        }
+    }
+
+    private JsonObject getPlaylistVideos() throws ParsingException {
+        try {
+            return initialData.getObject("contents").getObject("twoColumnBrowseResultsRenderer")
+                    .getArray("tabs").getObject(0).getObject("tabRenderer").getObject("content").getObject("sectionListRenderer")
+                    .getArray("contents").getObject(0).getObject("itemSectionRenderer").getArray("contents")
+                    .getObject(0).getObject("playlistVideoListRenderer");
+        } catch (Exception e) {
+            throw new ParsingException("Could not get playlist info", e);
+        }
     }
 
     @Override
@@ -50,7 +112,11 @@ public class YoutubePlaylistExtractor extends PlaylistExtractor {
     @Override
     public String getName() throws ParsingException {
         try {
-            return doc.select("div[id=pl-header] h1[class=pl-header-title]").first().text();
+            String name = playlistInfo.getObject("title").getArray("runs").getObject(0).getString("text");
+            if (name != null) return name;
+        } catch (Exception ignored) {}
+        try {
+            return initialData.getObject("microformat").getObject("microformatDataRenderer").getString("title");
         } catch (Exception e) {
             throw new ParsingException("Could not get playlist name", e);
         }
@@ -59,7 +125,12 @@ public class YoutubePlaylistExtractor extends PlaylistExtractor {
     @Override
     public String getThumbnailUrl() throws ParsingException {
         try {
-            return doc.select("div[id=pl-header] div[class=pl-header-thumb] img").first().attr("abs:src");
+            return playlistInfo.getObject("thumbnailRenderer").getObject("playlistVideoThumbnailRenderer")
+                    .getObject("thumbnail").getArray("thumbnails").getObject(0).getString("url");
+        } catch (Exception ignored) {}
+        try {
+            return initialData.getObject("microformat").getObject("microformatDataRenderer").getObject("thumbnail")
+                    .getArray("thumbnails").getObject(0).getString("url");
         } catch (Exception e) {
             throw new ParsingException("Could not get playlist thumbnail", e);
         }
@@ -75,8 +146,7 @@ public class YoutubePlaylistExtractor extends PlaylistExtractor {
     public String getUploaderUrl() throws ParsingException {
         try {
             return YoutubeChannelExtractor.CHANNEL_URL_BASE +
-                    doc.select("button[class*=\"yt-uix-subscription-button\"]")
-                            .first().attr("data-channel-external-id");
+                    uploaderInfo.getObject("navigationEndpoint").getObject("browseEndpoint").getString("browseId");
         } catch (Exception e) {
             throw new ParsingException("Could not get playlist uploader url", e);
         }
@@ -85,7 +155,7 @@ public class YoutubePlaylistExtractor extends PlaylistExtractor {
     @Override
     public String getUploaderName() throws ParsingException {
         try {
-            return doc.select("span[class=\"qualified-channel-title-text\"]").first().select("a").first().text();
+            return uploaderInfo.getObject("title").getArray("runs").getObject(0).getString("text");
         } catch (Exception e) {
             throw new ParsingException("Could not get playlist uploader name", e);
         }
@@ -94,7 +164,7 @@ public class YoutubePlaylistExtractor extends PlaylistExtractor {
     @Override
     public String getUploaderAvatarUrl() throws ParsingException {
         try {
-            return doc.select("div[id=gh-banner] img[class=channel-header-profile-image]").first().attr("abs:src");
+            return uploaderInfo.getObject("thumbnail").getArray("thumbnails").getObject(0).getString("url");
         } catch (Exception e) {
             throw new ParsingException("Could not get playlist uploader avatar", e);
         }
@@ -102,24 +172,11 @@ public class YoutubePlaylistExtractor extends PlaylistExtractor {
 
     @Override
     public long getStreamCount() throws ParsingException {
-        String input;
-
         try {
-            input = doc.select("ul[class=\"pl-header-details\"] li").get(1).text();
-        } catch (IndexOutOfBoundsException e) {
+            String viewsText = getPlaylistInfo().getArray("stats").getObject(0).getArray("runs").getObject(0).getString("text");
+            return Long.parseLong(Utils.removeNonDigitCharacters(viewsText));
+        } catch (Exception e) {
             throw new ParsingException("Could not get video count from playlist", e);
-        }
-
-        try {
-            return Long.parseLong(Utils.removeNonDigitCharacters(input));
-        } catch (NumberFormatException e) {
-            // When there's no videos in a playlist, there's no number in the "innerHtml",
-            // all characters that is not a number is removed, so we try to parse a empty string
-            if (!input.isEmpty()) {
-                return 0;
-            } else {
-                throw new ParsingException("Could not handle input: " + input, e);
-            }
         }
     }
 
