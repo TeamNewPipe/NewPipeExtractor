@@ -476,9 +476,11 @@ public class YoutubeStreamExtractor extends StreamExtractor {
 
         String uploaderAvatarUrl = null;
         try {
-            uploaderAvatarUrl = doc.select("a[class*=\"yt-user-photo\"]").first()
-                    .select("img").first()
-                    .attr("abs:data-thumb");
+            uploaderAvatarUrl = ytInitialData.getObject("contents").getObject("twoColumnWatchNextResults").getObject("secondaryResults")
+                    .getObject("secondaryResults").getArray("results").getObject(0).getObject("compactAutoplayRenderer")
+                    .getArray("contents").getObject(0).getObject("compactVideoRenderer").getObject("channelThumbnail")
+                    .getArray("thumbnails").getObject(0).getString("url");
+
         } catch (Exception e) {//todo: add fallback method
             throw new ParsingException("Could not get uploader avatar url", e);
         }
