@@ -20,6 +20,9 @@ package org.schabi.newpipe.extractor.services.youtube.extractors;
  * along with NewPipe.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+import com.grack.nanojson.JsonObject;
+import com.grack.nanojson.JsonParser;
+import com.grack.nanojson.JsonParserException;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
@@ -34,6 +37,7 @@ import org.schabi.newpipe.extractor.localization.TimeAgoParser;
 import org.schabi.newpipe.extractor.services.youtube.linkHandler.YoutubeParsingHelper;
 import org.schabi.newpipe.extractor.stream.StreamInfoItem;
 import org.schabi.newpipe.extractor.stream.StreamInfoItemsCollector;
+import org.schabi.newpipe.extractor.utils.Parser;
 
 import javax.annotation.Nonnull;
 import java.io.IOException;
@@ -41,6 +45,7 @@ import java.io.IOException;
 public class YoutubeTrendingExtractor extends KioskExtractor<StreamInfoItem> {
 
     private Document doc;
+    private JsonObject initialData;
 
     public YoutubeTrendingExtractor(StreamingService service,
                                     ListLinkHandler linkHandler,
@@ -55,6 +60,16 @@ public class YoutubeTrendingExtractor extends KioskExtractor<StreamInfoItem> {
 
         final Response response = downloader.get(url, getExtractorLocalization());
         doc = YoutubeParsingHelper.parseAndCheckPage(url, response);
+        initialData = getInitialData();
+    }
+
+    private JsonObject getInitialData() throws ParsingException {
+        try {
+            String initialData = Parser.matchGroup1("window\\[\"ytInitialData\"\\]\\s*=\\s*(\\{.*?\\});", doc.toString());
+            return JsonParser.object().from(initialData);
+        } catch (JsonParserException | Parser.RegexException e) {
+            throw new ParsingException("Could not get ytInitialData", e);
+        }
     }
 
     @Override
@@ -70,14 +85,17 @@ public class YoutubeTrendingExtractor extends KioskExtractor<StreamInfoItem> {
     @Nonnull
     @Override
     public String getName() throws ParsingException {
+        String name;
         try {
-            Element a = doc.select("a[href*=\"/feed/trending\"]").first();
-            Element span = a.select("span[class*=\"display-name\"]").first();
-            Element nameSpan = span.select("span").first();
-            return nameSpan.text();
+            name = initialData.getObject("header").getObject("feedTabbedHeaderRenderer").getObject("title")
+                    .getArray("runs").getObject(0).getString("text");
         } catch (Exception e) {
             throw new ParsingException("Could not get Trending name", e);
         }
+        if (name != null && !name.isEmpty()) {
+            return name;
+        }
+        throw new ParsingException("Could not get Trending name");
     }
 
     @Nonnull
