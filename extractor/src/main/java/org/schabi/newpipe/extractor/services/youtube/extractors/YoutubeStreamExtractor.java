@@ -88,6 +88,7 @@ public class YoutubeStreamExtractor extends StreamExtractor {
     @Nonnull
     private final Map<String, String> videoInfoPage = new HashMap<>();
     private JsonObject playerResponse;
+    private JsonObject ytInitialData;
 
     @Nonnull
     private List<SubtitlesInfo> subtitlesInfos = new ArrayList<>();
@@ -736,6 +737,7 @@ public class YoutubeStreamExtractor extends StreamExtractor {
             isAgeRestricted = false;
         }
         playerResponse = getPlayerResponse();
+        ytInitialData = getInitialData();
 
         if (decryptionCode.isEmpty()) {
             decryptionCode = loadDecryptionCode(playerUrl);
@@ -806,6 +808,15 @@ public class YoutubeStreamExtractor extends StreamExtractor {
             return JsonParser.object().from(playerResponseStr);
         } catch (Exception e) {
             throw new ParsingException("Could not parse yt player response", e);
+        }
+    }
+
+    private JsonObject getInitialData() throws ParsingException {
+        try {
+            String initialData = Parser.matchGroup1("window\\[\"ytInitialData\"\\]\\s*=\\s*(\\{.*?\\});", doc.toString());
+            return JsonParser.object().from(initialData);
+        } catch (JsonParserException | Parser.RegexException e) {
+            throw new ParsingException("Could not get ytInitialData", e);
         }
     }
 
