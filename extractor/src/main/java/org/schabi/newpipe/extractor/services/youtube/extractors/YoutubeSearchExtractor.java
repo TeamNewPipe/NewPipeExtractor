@@ -104,7 +104,7 @@ public class YoutubeSearchExtractor extends SearchExtractor {
                 "&page=" + Integer.toString(pageNr + 1));
     }
 
-    private InfoItemsSearchCollector collectItems(Document doc) throws NothingFoundException  {
+    private InfoItemsSearchCollector collectItems(Document doc) throws NothingFoundException {
         InfoItemsSearchCollector collector = getInfoItemSearchCollector();
         collector.reset();
 

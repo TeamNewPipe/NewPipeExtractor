@@ -15,7 +15,7 @@ public class MediaCCCSearchQueryHandlerFactory extends SearchQueryHandlerFactory
 
     @Override
     public String[] getAvailableContentFilter() {
-        return new String[] {
+        return new String[]{
                 ALL,
                 CONFERENCES,
                 EVENTS

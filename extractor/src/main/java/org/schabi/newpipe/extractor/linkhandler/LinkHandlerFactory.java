@@ -35,9 +35,9 @@ public abstract class LinkHandlerFactory {
     public abstract boolean onAcceptUrl(final String url) throws ParsingException;
 
     public String getUrl(String id, String baseUrl) throws ParsingException {
-       return getUrl(id);
+        return getUrl(id);
     }
-    
+
     ///////////////////////////////////
     // Logic
     ///////////////////////////////////
@@ -47,7 +47,7 @@ public abstract class LinkHandlerFactory {
         final String baseUrl = Utils.getBaseUrl(url);
         return fromUrl(url, baseUrl);
     }
-    
+
     public LinkHandler fromUrl(String url, String baseUrl) throws ParsingException {
         if (url == null) throw new IllegalArgumentException("url can not be null");
         if (!acceptUrl(url)) {
@@ -55,9 +55,9 @@ public abstract class LinkHandlerFactory {
         }
 
         final String id = getId(url);
-        return new LinkHandler(url, getUrl(id,baseUrl), id);
+        return new LinkHandler(url, getUrl(id, baseUrl), id);
     }
-    
+
     public LinkHandler fromId(String id) throws ParsingException {
         if (id == null) throw new IllegalArgumentException("id can not be null");
         final String url = getUrl(id);
@@ -82,5 +82,5 @@ public abstract class LinkHandlerFactory {
             throw fe;
         }
     }
-    
+
 }

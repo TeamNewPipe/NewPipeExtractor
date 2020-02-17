@@ -27,7 +27,7 @@ public class MediaCCCSearchExtractorConferencesTest {
     @BeforeClass
     public static void setUpClass() throws Exception {
         NewPipe.init(DownloaderTestImpl.getInstance());
-        extractor =  MediaCCC.getSearchExtractor( new MediaCCCSearchQueryHandlerFactory()
+        extractor = MediaCCC.getSearchExtractor(new MediaCCCSearchQueryHandlerFactory()
                 .fromQuery("c3", Arrays.asList(new String[]{"conferences"}), ""));
         extractor.fetchPage();
         itemsPage = extractor.getInitialPage();
@@ -35,7 +35,7 @@ public class MediaCCCSearchExtractorConferencesTest {
 
     @Test
     public void testReturnTypeChannel() {
-        for(InfoItem item : itemsPage.getItems()) {
+        for (InfoItem item : itemsPage.getItems()) {
             assertTrue("Item is not of type channel", item instanceof ChannelInfoItem);
         }
     }

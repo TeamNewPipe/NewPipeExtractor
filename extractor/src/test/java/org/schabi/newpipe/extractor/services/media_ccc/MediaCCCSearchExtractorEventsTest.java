@@ -28,7 +28,7 @@ public class MediaCCCSearchExtractorEventsTest {
     @BeforeClass
     public static void setUpClass() throws Exception {
         NewPipe.init(DownloaderTestImpl.getInstance());
-        extractor =  MediaCCC.getSearchExtractor( new MediaCCCSearchQueryHandlerFactory()
+        extractor = MediaCCC.getSearchExtractor(new MediaCCCSearchQueryHandlerFactory()
                 .fromQuery("linux", Arrays.asList(new String[]{"events"}), ""));
         extractor.fetchPage();
         itemsPage = extractor.getInitialPage();
@@ -65,7 +65,7 @@ public class MediaCCCSearchExtractorEventsTest {
 
     @Test
     public void testReturnTypeStream() throws Exception {
-        for(InfoItem item : itemsPage.getItems()) {
+        for (InfoItem item : itemsPage.getItems()) {
             assertTrue("Item is not of type StreamInfoItem", item instanceof StreamInfoItem);
         }
     }

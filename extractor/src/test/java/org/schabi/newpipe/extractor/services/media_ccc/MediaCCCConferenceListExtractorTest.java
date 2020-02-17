@@ -24,7 +24,7 @@ public class MediaCCCConferenceListExtractorTest {
     @BeforeClass
     public static void setUpClass() throws Exception {
         NewPipe.init(DownloaderTestImpl.getInstance());
-        extractor =  MediaCCC.getKioskList().getDefaultKioskExtractor();
+        extractor = MediaCCC.getKioskList().getDefaultKioskExtractor();
         extractor.fetchPage();
     }
 
@@ -49,8 +49,8 @@ public class MediaCCCConferenceListExtractorTest {
     }
 
     private boolean contains(List<InfoItem> itemList, String name) {
-        for(InfoItem item : itemList) {
-            if(item.getName().equals(name))
+        for (InfoItem item : itemList) {
+            if (item.getName().equals(name))
                 return true;
         }
         return false;

@@ -26,7 +26,7 @@ public class YoutubeSearchQueryHandlerFactory extends SearchQueryHandlerFactory 
             final String url = "https://www.youtube.com/results"
                     + "?q=" + URLEncoder.encode(searchString, CHARSET_UTF_8);
 
-            if(contentFilters.size() > 0) {
+            if (contentFilters.size() > 0) {
                 switch (contentFilters.get(0)) {
                     case VIDEOS: return url + "&sp=EgIQAVAU";
                     case CHANNELS: return url + "&sp=EgIQAlAU";
@@ -44,7 +44,7 @@ public class YoutubeSearchQueryHandlerFactory extends SearchQueryHandlerFactory 
 
     @Override
     public String[] getAvailableContentFilter() {
-        return new String[] {
+        return new String[]{
                 ALL,
                 VIDEOS,
                 CHANNELS,

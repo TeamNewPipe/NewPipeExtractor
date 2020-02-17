@@ -1,12 +1,12 @@
 package org.schabi.newpipe.extractor.utils;
 
+import org.schabi.newpipe.extractor.exceptions.ParsingException;
+
 import java.io.UnsupportedEncodingException;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLDecoder;
 import java.util.List;
-
-import org.schabi.newpipe.extractor.exceptions.ParsingException;
 
 public class Utils {
 
@@ -35,6 +35,7 @@ public class Utils {
      *     <li>1.23K -&gt; 1230</li>
      *     <li>1.23M -&gt; 1230000</li>
      * </ul>
+     *
      * @param numberWord string to be converted to a long
      * @return a long
      * @throws NumberFormatException
@@ -165,17 +166,17 @@ public class Utils {
 
         return setsNoPort || usesDefaultPort;
     }
-    
+
     public static String removeUTF8BOM(String s) {
         if (s.startsWith("\uFEFF")) {
             s = s.substring(1);
         }
         if (s.endsWith("\uFEFF")) {
-            s = s.substring(0,  s.length()-1);
+            s = s.substring(0, s.length() - 1);
         }
         return s;
     }
-    
+
     public static String getBaseUrl(String url) throws ParsingException {
         URL uri;
         try {

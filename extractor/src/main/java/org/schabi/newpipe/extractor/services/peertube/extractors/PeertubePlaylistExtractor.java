@@ -1,7 +1,5 @@
 package org.schabi.newpipe.extractor.services.peertube.extractors;
 
-import java.io.IOException;
-
 import org.schabi.newpipe.extractor.StreamingService;
 import org.schabi.newpipe.extractor.downloader.Downloader;
 import org.schabi.newpipe.extractor.exceptions.ExtractionException;
@@ -10,7 +8,9 @@ import org.schabi.newpipe.extractor.linkhandler.ListLinkHandler;
 import org.schabi.newpipe.extractor.playlist.PlaylistExtractor;
 import org.schabi.newpipe.extractor.stream.StreamInfoItem;
 
-public class PeertubePlaylistExtractor extends PlaylistExtractor{
+import java.io.IOException;
+
+public class PeertubePlaylistExtractor extends PlaylistExtractor {
 
     public PeertubePlaylistExtractor(StreamingService service, ListLinkHandler linkHandler) {
         super(service, linkHandler);
@@ -73,8 +73,7 @@ public class PeertubePlaylistExtractor extends PlaylistExtractor{
 
     @Override
     public void onFetchPage(Downloader downloader) throws IOException, ExtractionException {
-        // TODO Auto-generated method stub
-        
+
     }
 
     @Override

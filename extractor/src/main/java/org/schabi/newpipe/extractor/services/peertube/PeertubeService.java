@@ -1,49 +1,35 @@
 package org.schabi.newpipe.extractor.services.peertube;
 
-import static java.util.Arrays.asList;
-import static org.schabi.newpipe.extractor.StreamingService.ServiceInfo.MediaCapability.COMMENTS;
-import static org.schabi.newpipe.extractor.StreamingService.ServiceInfo.MediaCapability.VIDEO;
-
 import org.schabi.newpipe.extractor.StreamingService;
 import org.schabi.newpipe.extractor.channel.ChannelExtractor;
 import org.schabi.newpipe.extractor.comments.CommentsExtractor;
 import org.schabi.newpipe.extractor.exceptions.ExtractionException;
 import org.schabi.newpipe.extractor.kiosk.KioskExtractor;
 import org.schabi.newpipe.extractor.kiosk.KioskList;
-import org.schabi.newpipe.extractor.linkhandler.LinkHandler;
-import org.schabi.newpipe.extractor.linkhandler.LinkHandlerFactory;
-import org.schabi.newpipe.extractor.linkhandler.ListLinkHandler;
-import org.schabi.newpipe.extractor.linkhandler.ListLinkHandlerFactory;
-import org.schabi.newpipe.extractor.linkhandler.SearchQueryHandler;
-import org.schabi.newpipe.extractor.linkhandler.SearchQueryHandlerFactory;
+import org.schabi.newpipe.extractor.linkhandler.*;
 import org.schabi.newpipe.extractor.playlist.PlaylistExtractor;
 import org.schabi.newpipe.extractor.search.SearchExtractor;
-import org.schabi.newpipe.extractor.services.peertube.extractors.PeertubeChannelExtractor;
-import org.schabi.newpipe.extractor.services.peertube.extractors.PeertubeCommentsExtractor;
-import org.schabi.newpipe.extractor.services.peertube.extractors.PeertubeSearchExtractor;
-import org.schabi.newpipe.extractor.services.peertube.extractors.PeertubeStreamExtractor;
-import org.schabi.newpipe.extractor.services.peertube.extractors.PeertubeSuggestionExtractor;
-import org.schabi.newpipe.extractor.services.peertube.extractors.PeertubeTrendingExtractor;
-import org.schabi.newpipe.extractor.services.peertube.linkHandler.PeertubeChannelLinkHandlerFactory;
-import org.schabi.newpipe.extractor.services.peertube.linkHandler.PeertubeCommentsLinkHandlerFactory;
-import org.schabi.newpipe.extractor.services.peertube.linkHandler.PeertubeSearchQueryHandlerFactory;
-import org.schabi.newpipe.extractor.services.peertube.linkHandler.PeertubeStreamLinkHandlerFactory;
-import org.schabi.newpipe.extractor.services.peertube.linkHandler.PeertubeTrendingLinkHandlerFactory;
+import org.schabi.newpipe.extractor.services.peertube.extractors.*;
+import org.schabi.newpipe.extractor.services.peertube.linkHandler.*;
 import org.schabi.newpipe.extractor.stream.StreamExtractor;
 import org.schabi.newpipe.extractor.subscription.SubscriptionExtractor;
 import org.schabi.newpipe.extractor.suggestion.SuggestionExtractor;
 
+import static java.util.Arrays.asList;
+import static org.schabi.newpipe.extractor.StreamingService.ServiceInfo.MediaCapability.COMMENTS;
+import static org.schabi.newpipe.extractor.StreamingService.ServiceInfo.MediaCapability.VIDEO;
+
 public class PeertubeService extends StreamingService {
-    
+
     private PeertubeInstance instance;
-    
+
     public PeertubeService(int id) {
         this(id, PeertubeInstance.defaultInstance);
     }
-    
+
     public PeertubeService(int id, PeertubeInstance instance) {
         super(id, "PeerTube", asList(VIDEO, COMMENTS));
-        this.instance  = instance;
+        this.instance = instance;
     }
 
     @Override
@@ -117,15 +103,15 @@ public class PeertubeService extends StreamingService {
     public String getBaseUrl() {
         return instance.getUrl();
     }
-    
+
     public PeertubeInstance getInstance() {
         return this.instance;
     }
-    
+
     public void setInstance(PeertubeInstance instance) {
         this.instance = instance;
     }
-    
+
     @Override
     public KioskList getKioskList() throws ExtractionException {
         KioskList.KioskExtractorFactory kioskFactory = new KioskList.KioskExtractorFactory() {
@@ -155,6 +141,6 @@ public class PeertubeService extends StreamingService {
 
         return list;
     }
-    
+
 
 }

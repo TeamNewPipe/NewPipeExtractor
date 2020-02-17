@@ -117,17 +117,17 @@ public class MediaCCCStreamExtractor extends StreamExtractor {
     public List<AudioStream> getAudioStreams() throws IOException, ExtractionException {
         final JsonArray recordings = data.getArray("recordings");
         final List<AudioStream> audioStreams = new ArrayList<>();
-        for(int i = 0; i < recordings.size(); i++) {
+        for (int i = 0; i < recordings.size(); i++) {
             final JsonObject recording = recordings.getObject(i);
             final String mimeType = recording.getString("mime_type");
-            if(mimeType.startsWith("audio")) {
+            if (mimeType.startsWith("audio")) {
                 //first we need to resolve the actual video data from CDN
                 final MediaFormat mediaFormat;
-                if(mimeType.endsWith("opus")) {
+                if (mimeType.endsWith("opus")) {
                     mediaFormat = MediaFormat.OPUS;
-                } else if(mimeType.endsWith("mpeg")) {
+                } else if (mimeType.endsWith("mpeg")) {
                     mediaFormat = MediaFormat.MP3;
-                } else if(mimeType.endsWith("ogg")){
+                } else if (mimeType.endsWith("ogg")) {
                     mediaFormat = MediaFormat.OGG;
                 } else {
                     throw new ExtractionException("Unknown media format: " + mimeType);
@@ -143,16 +143,16 @@ public class MediaCCCStreamExtractor extends StreamExtractor {
     public List<VideoStream> getVideoStreams() throws IOException, ExtractionException {
         final JsonArray recordings = data.getArray("recordings");
         final List<VideoStream> videoStreams = new ArrayList<>();
-        for(int i = 0; i < recordings.size(); i++) {
+        for (int i = 0; i < recordings.size(); i++) {
             final JsonObject recording = recordings.getObject(i);
             final String mimeType = recording.getString("mime_type");
-            if(mimeType.startsWith("video")) {
+            if (mimeType.startsWith("video")) {
                 //first we need to resolve the actual video data from CDN
 
                 final MediaFormat mediaFormat;
-                if(mimeType.endsWith("webm")) {
+                if (mimeType.endsWith("webm")) {
                     mediaFormat = MediaFormat.WEBM;
-                } else if(mimeType.endsWith("mp4")) {
+                } else if (mimeType.endsWith("mp4")) {
                     mediaFormat = MediaFormat.MPEG_4;
                 } else {
                     throw new ExtractionException("Unknown media format: " + mimeType);

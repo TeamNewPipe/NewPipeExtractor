@@ -33,7 +33,7 @@ public class ChannelInfoItemsCollector extends InfoItemsCollector<ChannelInfoIte
         // important information
         int serviceId = getServiceId();
         String name = extractor.getName();
-        String  url = extractor.getUrl();
+        String url = extractor.getUrl();
 
         ChannelInfoItem resultItem = new ChannelInfoItem(serviceId, url, name);
 
