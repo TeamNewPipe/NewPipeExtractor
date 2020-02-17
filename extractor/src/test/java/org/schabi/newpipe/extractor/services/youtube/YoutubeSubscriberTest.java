@@ -22,21 +22,21 @@ import java.util.List;
 import static org.junit.Assert.assertEquals;
 import static org.schabi.newpipe.extractor.ServiceList.YouTube;
 import static org.schabi.newpipe.extractor.localization.AbbreviationHelper.abbreviationSubscribersCount;
-import static org.schabi.newpipe.extractor.utils.Utils.cleanWhiteSpaces;
 import static org.schabi.newpipe.extractor.utils.Utils.removeNumber;
+import static org.schabi.newpipe.extractor.utils.Utils.removeWhiteSpaces;
 
 /**
  * A class that tests abbreviations and subscriber counts for all the languages YouTube supports.
  */
 @Ignore("Should be ran manually from time to time, as it's too time consuming.")
-public class YoutubeSubcriberTest {
+public class YoutubeSubscriberTest {
 
     private static final String url = "https://www.youtube.com/feed/guide_builder";
     private static final int PAUSE_DURATION_EXTRACTORS = 250;
     private static final int PAUSE_DURATION_ABBREVIATIONS = 125;
 
     public static String getAbbreviation(String count) {
-        return removeNumber(cleanWhiteSpaces(count));
+        return removeNumber(removeWhiteSpaces(count));
     }
 
     public static void assertEqualsWithEnglish(String channelUrl) throws ExtractionException, IOException, InterruptedException {

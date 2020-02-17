@@ -93,13 +93,20 @@ public class Utils {
         }
     }
 
-    public static String cleanWhiteSpaces(String s) {
+    public static String removeWhiteSpaces(String s) {
         return s.replaceAll("(\\s| | )", "");
     }
 
-    //does the same as the function above, but for the 80 languages supported by YouTube.
+    /**
+     * Does the same as {@link #mixedNumberWordToLong(String)}, but for the 80 languages supported by YouTube.
+     *
+     * @param numberWord string to be converted to a long
+     * @param loc:       a {@link Localization}
+     * @return a long
+     * @throws ParsingException
+     */
     public static long mixedNumberWordToLong(String numberWord, Localization loc) throws ParsingException {
-        numberWord = cleanWhiteSpaces(numberWord);
+        numberWord = removeWhiteSpaces(numberWord);
         String langCode = loc.getLanguageCode();
         String abbreviation = removeNumber(numberWord);
 
