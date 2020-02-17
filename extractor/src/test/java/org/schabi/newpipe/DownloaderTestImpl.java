@@ -20,7 +20,7 @@ import java.util.Map;
 
 public class DownloaderTestImpl extends Downloader {
 
-    private static final String USER_AGENT = "Mozilla/5.0 (Windows NT 6.1; WOW64; rv:54.0) Gecko/20100101 Firefox/73.0";
+    private static final String USER_AGENT = "Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101 Firefox/68.0";
     private static final String DEFAULT_HTTP_ACCEPT_LANGUAGE = "en";
 
     private static DownloaderTestImpl instance = null;
