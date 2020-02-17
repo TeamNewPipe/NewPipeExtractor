@@ -41,7 +41,7 @@ To run the test (to investigate maybe future problems),
 You should temporarily create « public Document getDoc() { return this.doc;} » method in YoutubeChannelExtractor.
  */
 
-@Ignore
+//@Ignore
 public class YoutubeSubscriberTest {
 
     private static final String channelThousand = "https://www.youtube.com/channel/UC_Fh8kvtkVPkeihBs42jGcA";

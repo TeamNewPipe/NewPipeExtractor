@@ -5,7 +5,7 @@ import java.util.HashMap;
 
 /**
  * Map matching abbreviations with their English equivalents
- *
+ * <p>
  * Created by B0pol on 2020-02-16.
  *
  * <p>
@@ -22,6 +22,7 @@ import java.util.HashMap;
  * </p>
  * <p>
  * The languages using the abbreviation is commented with the language code at the left.
+ *
  * @see <a href="https://en.wikipedia.org/wiki/List_of_ISO_639-1_codes">Wikipedia page of language codes</a>
  * </p>
  */
