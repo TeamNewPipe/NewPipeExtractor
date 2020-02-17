@@ -1,9 +1,9 @@
-/*
 package org.schabi.newpipe.extractor.services.youtube;
 
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.junit.BeforeClass;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.schabi.newpipe.DownloaderTestImpl;
 import org.schabi.newpipe.extractor.NewPipe;
@@ -33,7 +33,7 @@ import static org.schabi.newpipe.extractor.utils.Utils.removeNumber;
  */
 
 /*
-Commenting the whole file because otherwise it will slow down too much the CI test.
+Ignoring the test because otherwise it will slow down too much the CI test.
 And also, often one up to three tests fail if you launch the whole tests, because some requests fail
 (it could be reCAPTCHAs) but they, as of today (2020-02-16) success if you run each one.
 
@@ -41,7 +41,7 @@ To run the test (to investigate maybe future problems),
 You should temporarily create « public Document getDoc() { return this.doc;} » method in YoutubeChannelExtractor.
  */
 
-/*
+@Ignore
 public class YoutubeSubscriberTest {
 
     private static final String channelThousand = "https://www.youtube.com/channel/UC_Fh8kvtkVPkeihBs42jGcA";
@@ -73,6 +73,7 @@ public class YoutubeSubscriberTest {
     }
 
     public static String getAbbreviation(String count) {
+        count = count.replaceAll("(\\s| | )", "");
         return removeNumber(count);
     }
 
@@ -1167,6 +1168,7 @@ public class YoutubeSubscriberTest {
         assertEquals(countMillion, extractor.getSubscriberCount());
     }
 
+    @Ignore
     @Test
     public void build() throws IOException, ExtractionException, InterruptedException {
         Localization current = YouTube.getSupportedLocalizations().get(79);
@@ -1177,4 +1179,3 @@ public class YoutubeSubscriberTest {
         System.out.println();
     }
 }
-*/

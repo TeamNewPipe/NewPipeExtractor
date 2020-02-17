@@ -9,7 +9,7 @@ import java.net.URL;
 import java.net.URLDecoder;
 import java.util.List;
 
-import static org.schabi.newpipe.extractor.utils.AbbreviationHashMap.abbreviationSubscribersCount;
+import static org.schabi.newpipe.extractor.localization.AbbreviationHelper.abbreviationSubscribersCount;
 
 public class Utils {
 
@@ -94,30 +94,37 @@ public class Utils {
     }
 
     //does the same as the function above, but for the 80 languages supported by YouTube.
-    public static long mixedNumberWordToLong(String numberWord, Localization loc) throws NumberFormatException, ParsingException {
+    public static long mixedNumberWordToLong(String numberWord, Localization loc) throws ParsingException {
+        numberWord = numberWord.replaceAll("(\\s| | )", ""); //remove whitespaces
         String langCode = loc.getLanguageCode();
         String abbreviation = removeNumber(numberWord);
 
-        //special case for portugal, " mil" is the abbreviation for thousand, but is Million for many other languages
-        if (langCode.equals("pt") && abbreviation.equals(" mil")) {
-            numberWord = numberWord.replace(" mil", "K");
+        //special case for portugal, "mil" is the abbreviation for thousand, but is Million for many other languages
+        if (langCode.equals("pt") && abbreviation.equals("mil")) {
+            numberWord = numberWord.replace("mil", "K");
+        } else if (langCode.equals("ca") && abbreviation.equals("m")) { //same for catalan but for "m"
+            numberWord = numberWord.replace("m", "K");
         }
         //special case for languages written right to left
-        else if (langCode.equals("sw") && abbreviation.equals("elfu ")) {
-            numberWord = moveAtRight("elfu ", numberWord);
+        else if (langCode.equals("sw") && abbreviation.equals("elfu")) {
+            numberWord = moveAtRight("elfu", numberWord);
         } else if (langCode.equals("si")) {
             numberWord = moveAtRight(abbreviation, numberWord);
         }
 
-        try { //special cases where it gives a number directly for some languages, or with a dot or a comma, or space
-            String maybeAlreadyNumber = numberWord.replaceAll("([ .,])", ""); //dot, comma or narrow non-breaking space, ie U+202Fw
+        try { //special cases where it gives a number directly for some languages, or with a dot or a comma
+            String maybeAlreadyNumber = numberWord.replaceAll("([.,])", "");
             return Long.parseLong(maybeAlreadyNumber);
         } catch (NumberFormatException e) {
             //the number had an abbreviation, so it will be handled below
         }
 
         if (!langCode.equals("en")) {
-            numberWord = numberWord.replace(abbreviation, abbreviationSubscribersCount.get(abbreviation));
+            try {
+                numberWord = numberWord.replace(abbreviation, abbreviationSubscribersCount.get(abbreviation));
+            } catch (NullPointerException e) {
+                throw new ParsingException("The abbreviation \"" + abbreviation + "\" is missing in AbbreviationHelper map");
+            }
         }
         return mixedNumberWordToLong(numberWord);
     }
