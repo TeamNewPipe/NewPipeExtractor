@@ -1,5 +1,6 @@
 package org.schabi.newpipe.extractor.services.youtube.extractors;
 
+import com.grack.nanojson.JsonObject;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 import org.schabi.newpipe.extractor.exceptions.ParsingException;
@@ -35,7 +36,8 @@ import java.util.Date;
 
 public class YoutubeStreamInfoItemExtractor implements StreamInfoItemExtractor {
 
-    private final Element item;
+    private JsonObject videoInfoItem;
+    private Element item;
     private final TimeAgoParser timeAgoParser;
 
     private String cachedUploadDate;
@@ -48,6 +50,17 @@ public class YoutubeStreamInfoItemExtractor implements StreamInfoItemExtractor {
      */
     public YoutubeStreamInfoItemExtractor(Element item, @Nullable TimeAgoParser timeAgoParser) {
         this.item = item;
+        this.timeAgoParser = timeAgoParser;
+    }
+
+    /**
+     * Creates an extractor of StreamInfoItems from a YouTube page.
+     *
+     * @param videoInfoItem The JSON page element
+     * @param timeAgoParser A parser of the textual dates or {@code null}.
+     */
+    public YoutubeStreamInfoItemExtractor(JsonObject videoInfoItem, @Nullable TimeAgoParser timeAgoParser) {
+        this.videoInfoItem = videoInfoItem;
         this.timeAgoParser = timeAgoParser;
     }
 
