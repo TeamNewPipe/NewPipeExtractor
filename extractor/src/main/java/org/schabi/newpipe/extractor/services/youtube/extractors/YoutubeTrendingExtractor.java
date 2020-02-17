@@ -20,6 +20,7 @@ package org.schabi.newpipe.extractor.services.youtube.extractors;
  * along with NewPipe.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+import com.grack.nanojson.JsonArray;
 import com.grack.nanojson.JsonObject;
 import com.grack.nanojson.JsonParser;
 import com.grack.nanojson.JsonParserException;
@@ -34,7 +35,9 @@ import org.schabi.newpipe.extractor.exceptions.ParsingException;
 import org.schabi.newpipe.extractor.kiosk.KioskExtractor;
 import org.schabi.newpipe.extractor.linkhandler.ListLinkHandler;
 import org.schabi.newpipe.extractor.localization.TimeAgoParser;
+import org.schabi.newpipe.extractor.services.youtube.linkHandler.YoutubeChannelLinkHandlerFactory;
 import org.schabi.newpipe.extractor.services.youtube.linkHandler.YoutubeParsingHelper;
+import org.schabi.newpipe.extractor.services.youtube.linkHandler.YoutubeStreamLinkHandlerFactory;
 import org.schabi.newpipe.extractor.stream.StreamInfoItem;
 import org.schabi.newpipe.extractor.stream.StreamInfoItemsCollector;
 import org.schabi.newpipe.extractor.utils.Parser;
@@ -102,85 +105,79 @@ public class YoutubeTrendingExtractor extends KioskExtractor<StreamInfoItem> {
     @Override
     public InfoItemsPage<StreamInfoItem> getInitialPage() throws ParsingException {
         StreamInfoItemsCollector collector = new StreamInfoItemsCollector(getServiceId());
-        Elements uls = doc.select("ul[class*=\"expanded-shelf-content-list\"]");
+        JsonArray firstPageElements = initialData.getObject("contents").getObject("twoColumnBrowseResultsRenderer")
+                .getArray("tabs").getObject(0).getObject("tabRenderer").getObject("content")
+                .getObject("sectionListRenderer").getArray("contents").getObject(0).getObject("itemSectionRenderer")
+                .getArray("contents").getObject(0).getObject("shelfRenderer").getObject("content")
+                .getObject("expandedShelfContentsRenderer").getArray("items");
 
         final TimeAgoParser timeAgoParser = getTimeAgoParser();
 
-        for (Element ul : uls) {
-            for (final Element li : ul.children()) {
-                final Element el = li.select("div[class*=\"yt-lockup-dismissable\"]").first();
-                collector.commit(new YoutubeStreamInfoItemExtractor(li, timeAgoParser) {
-                    @Override
-                    public String getUrl() throws ParsingException {
-                        try {
-                            Element dl = el.select("h3").first().select("a").first();
-                            return dl.attr("abs:href");
-                        } catch (Exception e) {
-                            throw new ParsingException("Could not get web page url for the video", e);
-                        }
+        for (Object ul : firstPageElements) {
+            final JsonObject videoInfo = ((JsonObject) ul).getObject("videoRenderer");
+            collector.commit(new YoutubeStreamInfoItemExtractor(videoInfo, timeAgoParser) {
+                @Override
+                public String getUrl() throws ParsingException {
+                    try {
+                        String videoId = videoInfo.getString("videoId");
+                        return YoutubeStreamLinkHandlerFactory.getInstance().getUrl(videoId);
+                    } catch (Exception e) {
+                        throw new ParsingException("Could not get web page url for the video", e);
                     }
+                }
 
-                    @Override
-                    public String getName() throws ParsingException {
-                        try {
-                            Element dl = el.select("h3").first().select("a").first();
-                            return dl.text();
-                        } catch (Exception e) {
-                            throw new ParsingException("Could not get web page url for the video", e);
-                        }
+                @Override
+                public String getName() throws ParsingException {
+                    String name = null;
+                    try {
+                        name = videoInfo.getObject("title").getObject("accessibility")
+                                .getObject("accessibilityData").getString("label");
+                    } catch (Exception ignored) {
                     }
+                    if (name != null && !name.isEmpty()) return name;
+                    try {
+                        name = videoInfo.getObject("title").getArray("runs").getObject(0).getString("text");
+                    } catch (Exception e) {
+                        throw new ParsingException("Could not get web page url for the video", e);
+                    }
+                    if (name != null && !name.isEmpty()) return name;
+                    throw new ParsingException("Could not get web page url for the video");
+                }
 
-                    @Override
-                    public String getUploaderUrl() throws ParsingException {
-                        try {
-                            String link = getUploaderLink().attr("abs:href");
-                            if (link.isEmpty()) {
-                                throw new IllegalArgumentException("is empty");
-                            }
-                            return link;
-                        } catch (Exception e) {
-                            throw new ParsingException("Could not get Uploader name");
+                @Override
+                public String getUploaderUrl() throws ParsingException {
+                    try {
+                        String id = videoInfo.getObject("ownerText").getArray("runs").getObject(0).
+                                getObject("browseEndpoint").getString("browseId");
+                        if (id == null || id.isEmpty()) {
+                            throw new IllegalArgumentException("is empty");
                         }
+                        return YoutubeChannelLinkHandlerFactory.getInstance().getUrl(id);
+                    } catch (Exception e) {
+                        throw new ParsingException("Could not get Uploader url");
                     }
+                }
 
-                    private Element getUploaderLink() {
-                        // this url is not always in the form "/channel/..."
-                        // sometimes Youtube provides urls in the from "/user/..."
-                        Element uploaderEl = el.select("div[class*=\"yt-lockup-byline \"]").first();
-                        return uploaderEl.select("a").first();
+                @Override
+                public String getUploaderName() throws ParsingException {
+                    try {
+                        return videoInfo.getObject("ownerText").getArray("runs").getObject(0).getString("text");
+                    } catch (Exception e) {
+                        throw new ParsingException("Could not get uploader name");
                     }
+                }
 
-                    @Override
-                    public String getUploaderName() throws ParsingException {
-                        try {
-                            return getUploaderLink().text();
-                        } catch (Exception e) {
-                            throw new ParsingException("Could not get Uploader name");
-                        }
+                @Override
+                public String getThumbnailUrl() throws ParsingException {
+                    try {
+                        return videoInfo.getObject("thumbnail").getArray("thumbnails").getObject(0).getString("url");
+                    } catch (Exception e) {
+                        throw new ParsingException("Could not get thumbnail url", e);
                     }
-
-                    @Override
-                    public String getThumbnailUrl() throws ParsingException {
-                        try {
-                            String url;
-                            Element te = li.select("span[class=\"yt-thumb-simple\"]").first()
-                                    .select("img").first();
-                            url = te.attr("abs:src");
-                            // Sometimes youtube sends links to gif files which somehow seem to not exist
-                            // anymore. Items with such gif also offer a secondary image source. So we are going
-                            // to use that if we've caught such an item.
-                            if (url.contains(".gif")) {
-                                url = te.attr("abs:data-thumb");
-                            }
-                            return url;
-                        } catch (Exception e) {
-                            throw new ParsingException("Could not get thumbnail url", e);
-                        }
-                    }
-                });
-            }
+                }
+            });
         }
-
         return new InfoItemsPage<>(collector, getNextPageUrl());
+
     }
 }
