@@ -49,6 +49,7 @@ public class YoutubeChannelExtractor extends ChannelExtractor {
     private static final String CHANNEL_URL_PARAMETERS = "/videos?view=0&flow=list&sort=dd&live_view=10000";
 
     private Document doc;
+    private JsonObject ytInitialData;
 
     public YoutubeChannelExtractor(StreamingService service, ListLinkHandler linkHandler) {
         super(service, linkHandler);
@@ -59,6 +60,16 @@ public class YoutubeChannelExtractor extends ChannelExtractor {
         String channelUrl = super.getUrl() + CHANNEL_URL_PARAMETERS;
         final Response response = downloader.get(channelUrl, getExtractorLocalization());
         doc = YoutubeParsingHelper.parseAndCheckPage(channelUrl, response);
+        ytInitialData = getInitialData();
+    }
+
+    private JsonObject getInitialData() throws ParsingException {
+        try {
+            String initialData = Parser.matchGroup1("window\\[\"ytInitialData\"\\]\\s*=\\s*(\\{.*?\\});", doc.toString());
+            return JsonParser.object().from(initialData);
+        } catch (JsonParserException | Parser.RegexException e) {
+            throw new ParsingException("Could not get ytInitialData", e);
+        }
     }
 
     @Override
