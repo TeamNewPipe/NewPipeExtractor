@@ -115,26 +115,28 @@ public enum MediaFormat {
     }
 
     /**
-     * Get the media format by it's id.
+     * Get the media format by its id.
+     *
      * @param id the id
      * @return the id of the media format or null.
      */
     public static MediaFormat getFormatById(int id) {
-        for (MediaFormat vf: values()) {
+        for (MediaFormat vf : values()) {
             if (vf.id == id) return vf;
         }
         return null;
     }
 
     public static MediaFormat getFromSuffix(String suffix) {
-        for (MediaFormat vf: values()) {
+        for (MediaFormat vf : values()) {
             if (vf.suffix.equals(suffix)) return vf;
         }
         return null;
     }
-    
+
     /**
      * Get the name of the format
+     *
      * @return the name of the format
      */
     public String getName() {
@@ -143,6 +145,7 @@ public enum MediaFormat {
 
     /**
      * Get the filename extension
+     *
      * @return the filename extension
      */
     public String getSuffix() {
@@ -151,10 +154,11 @@ public enum MediaFormat {
 
     /**
      * Get the mime type
+     *
      * @return the mime type
      */
     public String getMimeType() {
         return mimeType;
     }
-    
+
 }

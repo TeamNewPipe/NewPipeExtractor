@@ -6,7 +6,6 @@ import org.schabi.newpipe.DownloaderTestImpl;
 import org.schabi.newpipe.extractor.InfoItem;
 import org.schabi.newpipe.extractor.ListExtractor;
 import org.schabi.newpipe.extractor.NewPipe;
-import org.schabi.newpipe.extractor.channel.ChannelExtractor;
 import org.schabi.newpipe.extractor.channel.ChannelInfoItem;
 import org.schabi.newpipe.extractor.services.youtube.extractors.YoutubeSearchExtractor;
 import org.schabi.newpipe.extractor.stream.StreamInfoItem;
@@ -76,8 +75,8 @@ public class YoutubeSearchExtractorDefaultTest extends YoutubeSearchExtractorBas
     @Test
     public void testResultListCheckIfContainsStreamItems() {
         boolean hasStreams = false;
-        for(InfoItem item : itemsPage.getItems()) {
-            if(item instanceof StreamInfoItem) {
+        for (InfoItem item : itemsPage.getItems()) {
+            if (item instanceof StreamInfoItem) {
                 hasStreams = true;
             }
         }
@@ -96,7 +95,7 @@ public class YoutubeSearchExtractorDefaultTest extends YoutubeSearchExtractorBas
         boolean equals = true;
         for (int i = 0; i < secondPage.getItems().size()
                 && i < itemsPage.getItems().size(); i++) {
-            if(!secondPage.getItems().get(i).getUrl().equals(
+            if (!secondPage.getItems().get(i).getUrl().equals(
                     itemsPage.getItems().get(i).getUrl())) {
                 equals = false;
             }

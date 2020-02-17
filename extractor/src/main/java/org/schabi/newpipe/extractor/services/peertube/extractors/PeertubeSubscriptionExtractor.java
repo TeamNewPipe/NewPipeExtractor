@@ -1,9 +1,9 @@
 package org.schabi.newpipe.extractor.services.peertube.extractors;
 
-import java.util.List;
-
 import org.schabi.newpipe.extractor.StreamingService;
 import org.schabi.newpipe.extractor.subscription.SubscriptionExtractor;
+
+import java.util.List;
 
 public class PeertubeSubscriptionExtractor extends SubscriptionExtractor {
 

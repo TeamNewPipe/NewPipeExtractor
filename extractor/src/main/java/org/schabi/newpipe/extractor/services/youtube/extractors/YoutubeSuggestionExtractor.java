@@ -3,9 +3,9 @@ package org.schabi.newpipe.extractor.services.youtube.extractors;
 import com.grack.nanojson.JsonArray;
 import com.grack.nanojson.JsonParser;
 import com.grack.nanojson.JsonParserException;
-import org.schabi.newpipe.extractor.downloader.Downloader;
 import org.schabi.newpipe.extractor.NewPipe;
 import org.schabi.newpipe.extractor.StreamingService;
+import org.schabi.newpipe.extractor.downloader.Downloader;
 import org.schabi.newpipe.extractor.exceptions.ExtractionException;
 import org.schabi.newpipe.extractor.exceptions.ParsingException;
 import org.schabi.newpipe.extractor.suggestion.SuggestionExtractor;
@@ -57,12 +57,12 @@ public class YoutubeSuggestionExtractor extends SuggestionExtractor {
 
         String response = dl.get(url, getExtractorLocalization()).responseBody();
         // trim JSONP part "JP(...)"
-        response = response.substring(3, response.length()-1);
+        response = response.substring(3, response.length() - 1);
         try {
             JsonArray collection = JsonParser.array().from(response).getArray(1, new JsonArray());
             for (Object suggestion : collection) {
                 if (!(suggestion instanceof JsonArray)) continue;
-                String suggestionStr = ((JsonArray)suggestion).getString(0);
+                String suggestionStr = ((JsonArray) suggestion).getString(0);
                 if (suggestionStr == null) continue;
                 suggestions.add(suggestionStr);
             }

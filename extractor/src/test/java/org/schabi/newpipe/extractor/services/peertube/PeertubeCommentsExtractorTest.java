@@ -1,12 +1,5 @@
 package org.schabi.newpipe.extractor.services.peertube;
 
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
-import static org.schabi.newpipe.extractor.ServiceList.PeerTube;
-
-import java.io.IOException;
-import java.util.List;
-
 import org.jsoup.helper.StringUtil;
 import org.junit.BeforeClass;
 import org.junit.Test;
@@ -17,6 +10,13 @@ import org.schabi.newpipe.extractor.comments.CommentsInfo;
 import org.schabi.newpipe.extractor.comments.CommentsInfoItem;
 import org.schabi.newpipe.extractor.exceptions.ExtractionException;
 import org.schabi.newpipe.extractor.services.peertube.extractors.PeertubeCommentsExtractor;
+
+import java.io.IOException;
+import java.util.List;
+
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
+import static org.schabi.newpipe.extractor.ServiceList.PeerTube;
 
 public class PeertubeCommentsExtractorTest {
 
@@ -59,11 +59,11 @@ public class PeertubeCommentsExtractorTest {
 
         assertTrue(result);
     }
-    
+
     @Test
     public void testGetCommentsAllData() throws IOException, ExtractionException {
         InfoItemsPage<CommentsInfoItem> comments = extractor.getInitialPage();
-        for(CommentsInfoItem c: comments.getItems()) {
+        for (CommentsInfoItem c : comments.getItems()) {
             assertFalse(StringUtil.isBlank(c.getAuthorEndpoint()));
             assertFalse(StringUtil.isBlank(c.getAuthorName()));
             assertFalse(StringUtil.isBlank(c.getAuthorThumbnail()));
@@ -82,8 +82,8 @@ public class PeertubeCommentsExtractorTest {
     }
 
     private boolean findInComments(List<CommentsInfoItem> comments, String comment) {
-        for(CommentsInfoItem c: comments) {
-            if(c.getCommentText().contains(comment)) {
+        for (CommentsInfoItem c : comments) {
+            if (c.getCommentText().contains(comment)) {
                 return true;
             }
         }

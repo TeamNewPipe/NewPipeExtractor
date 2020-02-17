@@ -123,7 +123,7 @@ public class YoutubeStreamLinkHandlerFactoryTest {
         assertEquals("3msbfr6pBNE", linkHandler.fromUrl("hooktube.com/v/3msbfr6pBNE").getId());
         assertEquals("3msbfr6pBNE", linkHandler.fromUrl("hooktube.com/embed/3msbfr6pBNE").getId());
     }
-    
+
     @Test
     public void testAcceptInvidioUrl() throws ParsingException {
         assertTrue(linkHandler.acceptUrl("https://invidio.us/watch?v=TglNG-yjabU"));
@@ -133,7 +133,7 @@ public class YoutubeStreamLinkHandlerFactoryTest {
         assertTrue(linkHandler.acceptUrl("https://invidio.us/watch?v=ocH3oSnZG3c&test=PLS2VU1j4vzuZwooPjV26XM9UEBY2CPNn2"));
         assertTrue(linkHandler.acceptUrl("invidio.us/embed/3msbfr6pBNE"));
     }
-    
+
     @Test
     public void testGetInvidioIdfromUrl() throws ParsingException {
         assertEquals("TglNG-yjabU", linkHandler.fromUrl("https://invidio.us/watch?v=TglNG-yjabU").getId());

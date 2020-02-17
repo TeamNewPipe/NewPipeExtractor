@@ -57,7 +57,7 @@ public class YoutubeSearchExtractorChannelOnlyTest extends YoutubeSearchExtracto
     @Ignore
     @Test
     public void testOnlyContainChannels() {
-        for(InfoItem item : itemsPage.getItems()) {
+        for (InfoItem item : itemsPage.getItems()) {
             if (!(item instanceof ChannelInfoItem)) {
                 fail("The following item is no channel item: " + item.toString());
             }
@@ -66,7 +66,7 @@ public class YoutubeSearchExtractorChannelOnlyTest extends YoutubeSearchExtracto
 
     @Test
     public void testChannelUrl() {
-        for(InfoItem item : itemsPage.getItems()) {
+        for (InfoItem item : itemsPage.getItems()) {
             if (item instanceof ChannelInfoItem) {
                 ChannelInfoItem channel = (ChannelInfoItem) item;
 

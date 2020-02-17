@@ -68,7 +68,7 @@ public class YoutubePlaylistExtractor extends PlaylistExtractor {
     @Override
     public String getBannerUrl() {
         return "";      // Banner can't be handled by frontend right now.
-                        // Whoever is willing to implement this should also implement this in the fornt end
+        // Whoever is willing to implement this should also implement it in the frontend.
     }
 
     @Override
@@ -157,7 +157,7 @@ public class YoutubePlaylistExtractor extends PlaylistExtractor {
     }
 
     private String getNextPageUrlFromAjax(final JsonObject pageJson, final String pageUrl)
-            throws ParsingException{
+            throws ParsingException {
         String nextPageHtml = pageJson.getString("load_more_widget_html");
         if (!nextPageHtml.isEmpty()) {
             return getNextPageUrlFrom(Jsoup.parse(nextPageHtml, pageUrl));
@@ -191,7 +191,7 @@ public class YoutubePlaylistExtractor extends PlaylistExtractor {
         final TimeAgoParser timeAgoParser = getTimeAgoParser();
 
         for (final Element li : element.children()) {
-            if(isDeletedItem(li)) {
+            if (isDeletedItem(li)) {
                 continue;
             }
 
@@ -242,7 +242,7 @@ public class YoutubePlaylistExtractor extends PlaylistExtractor {
 
                 private Element getUploaderLink() {
                     // should always be present since we filter deleted items
-                    if(uploaderLink == null) {
+                    if (uploaderLink == null) {
                         uploaderLink = li.select("div[class=pl-video-owner] a").first();
                     }
                     return uploaderLink;
@@ -284,6 +284,7 @@ public class YoutubePlaylistExtractor extends PlaylistExtractor {
 
     /**
      * Check if the playlist item is deleted
+     *
      * @param li the list item
      * @return true if the item is deleted
      */

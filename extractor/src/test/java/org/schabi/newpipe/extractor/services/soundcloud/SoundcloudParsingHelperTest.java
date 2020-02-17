@@ -1,10 +1,12 @@
 package org.schabi.newpipe.extractor.services.soundcloud;
 
-import org.junit.*;
+import org.junit.Assert;
+import org.junit.BeforeClass;
+import org.junit.Test;
 import org.schabi.newpipe.DownloaderTestImpl;
 import org.schabi.newpipe.extractor.NewPipe;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertTrue;
 
 public class SoundcloudParsingHelperTest {
     @BeforeClass

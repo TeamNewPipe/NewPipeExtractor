@@ -31,7 +31,7 @@ public class YoutubePlaylistLinkHandlerFactory extends ListLinkHandlerFactory {
             }
 
             String path = urlObj.getPath();
-            if (!path.equals("/watch" ) && !path.equals("/playlist")) {
+            if (!path.equals("/watch") && !path.equals("/playlist")) {
                 throw new ParsingException("the url given is neither a video nor a playlist URL");
             }
 
