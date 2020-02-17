@@ -102,6 +102,7 @@ public class AbbreviationHelper {
         abbreviationSubscribersCount.put("Mio", englishMillionAbbreviation); //de
         abbreviationSubscribersCount.put("εκ", englishMillionAbbreviation); //el
         abbreviationSubscribersCount.put("میلیون", englishMillionAbbreviation); //fa
+        abbreviationSubscribersCount.put("م", englishMillionAbbreviation); //fa
         abbreviationSubscribersCount.put("milj", englishMillionAbbreviation); //fi, lv
         abbreviationSubscribersCount.put("մլն", englishMillionAbbreviation); //hy
         abbreviationSubscribersCount.put("jt", englishMillionAbbreviation); //id
@@ -127,6 +128,8 @@ public class AbbreviationHelper {
         abbreviationSubscribersCount.put("만", tenThousandAbbreviation); //ko
         abbreviationSubscribersCount.put("万", tenThousandAbbreviation); //ja, zh-CN
         abbreviationSubscribersCount.put("萬", tenThousandAbbreviation); //zh-TW
+        abbreviationSubscribersCount.put("သောင်း", tenThousandAbbreviation); //my
+        abbreviationSubscribersCount.put("หมื่น", tenThousandAbbreviation); //th
 
         abbreviationSubscribersCount.put("লা", hundredThousandAbbreviation); //bn
         abbreviationSubscribersCount.put("લાખ", hundredThousandAbbreviation); //gu

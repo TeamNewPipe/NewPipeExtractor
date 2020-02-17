@@ -15,6 +15,7 @@ import java.io.IOException;
 
 import static org.junit.Assert.assertEquals;
 import static org.schabi.newpipe.extractor.ServiceList.YouTube;
+import static org.schabi.newpipe.extractor.localization.AbbreviationHelper.abbreviationSubscribersCount;
 import static org.schabi.newpipe.extractor.utils.Utils.removeNumber;
 
 /**
@@ -41,10 +42,33 @@ To run the test (to investigate maybe future problems),
 You should temporarily create « public Document getDoc() { return this.doc;} » method in YoutubeChannelExtractor.
  */
 
-//@Ignore
+/*
+Tested channels:
+https://www.youtube.com/user/NeekoMonster, 1K
+https://www.youtube.com/channel/UCZ8PPBXJmEW4UV53zm3pC_w, 8.64K
+https://www.youtube.com/channel/UCgd-Ztt8sr_J7nSdz25FQgA, 51.6K
+https://www.youtube.com/channel/UC_Fh8kvtkVPkeihBs42jGcA, 104K
+https://invidio.us/channel/TroncheEnBiais, 181K
+https://invidio.us/channel/UCsTK8xMZKkrbTeWc8REbn8Q, 651K
+https://invidio.us/channel/UCYpRDnhk5H8h16jpS84uqsA, 744K
+
+https://invidio.us/channel/UClOeGHFiUlegRJFGhkMxoHg, 1.2M
+https://www.youtube.com/user/lemondealenversvideo, 3M
+https://www.youtube.com/channel/UC-J-KZfRV8c13fOCkhXdLiQ, 12.M
+https://invidio.us/channel/BANGTANTV, 25M
+https://www.youtube.com/user/zeemusiccompany, 50,5M
+https://invidio.us/channel/UC-lHJZR3Gqxm24_Vd_AJ5Yw, 103M
+https://www.youtube.com/user/tseries, 129M
+
+https://www.youtube.com/user/EminemVEVO/, disabled
+The test fails (because of the ut function), but actually it's ok.
+see testDisabled()
+ */
+
+@Ignore
 public class YoutubeSubscriberTest {
 
-    private static final String channelThousand = "https://www.youtube.com/channel/UC_Fh8kvtkVPkeihBs42jGcA";
+    private static final String channelThousand = "https://invidio.us/channel/UCq-8pBMM3I40QlrhM9ExXJQ ";
     private static final String channelMillion = "https://www.youtube.com/channel/UC-J-KZfRV8c13fOCkhXdLiQ";
     private static long countMillion;
     private static long countThousand;
@@ -81,6 +105,21 @@ public class YoutubeSubscriberTest {
         return getAbbreviation(getSubscriberCount(extractor));
     }
 
+    @Test
+    public void testDisabled() throws ExtractionException, IOException {
+        NewPipe.init(DownloaderTestImpl.getInstance(), Localization.DEFAULT);
+        YoutubeChannelExtractor en = (YoutubeChannelExtractor) YouTube.getChannelExtractor("https://www.youtube.com/user/EminemVEVO/");
+        en.fetchPage();
+        System.out.println(en.getSubscriberCount() + " " + en.getExtractorLocalization());
+
+        NewPipe.init(DownloaderTestImpl.getInstance(), Localization.fromLocalizationCode("ar"));
+        YoutubeChannelExtractor fr = (YoutubeChannelExtractor) YouTube.getChannelExtractor("https://www.youtube.com/user/EminemVEVO/");
+        fr.fetchPage();
+        System.out.println(fr.getSubscriberCount() + " " + fr.getExtractorLocalization());
+
+        assertEquals(fr.getSubscriberCount(), en.getSubscriberCount());
+    }
+
     public YoutubeChannelExtractor getExtractor(Localization loc, String channelUrl) throws ExtractionException, IOException {
         NewPipe.init(DownloaderTestImpl.getInstance(), loc);
         YoutubeChannelExtractor extractor = (YoutubeChannelExtractor) YouTube
@@ -109,8 +148,29 @@ public class YoutubeSubscriberTest {
     public void ut(YoutubeChannelExtractor extractor) {
         String subscriberCount = getSubscriberCount(extractor);
         System.out.println(extractor.getExtractorLocalization() + ": " + subscriberCount);
-        System.out.println(getAbbreviation(subscriberCount));
-//        System.out.println("abbreviation =\"" + getAbbreviation(getSubscriberCount(extractor)) + "\"");
+        String abbreviation = getAbbreviation(subscriberCount);
+        try {
+            abbreviation = abbreviation.replace(abbreviation, abbreviationSubscribersCount.get(abbreviation));
+        } catch (NullPointerException e) {
+            if (!abbreviation.isEmpty()) {
+                try {
+                    throw new Exception("this should be a real failed test. Abbreviation=\"" + abbreviation + "\"" +
+                            "Localization :" + extractor.getExtractorLocalization());
+                } catch (Exception ex) {
+                    ex.printStackTrace(); //do that instead of adding "throws Exception" to signature, because otherwise I would have
+                    //to edit the 146 signatures.
+                }
+            } else {
+                //see if it's not one of the languages giving a number directly
+                try { //special cases where it gives a number directly for some languages, or with a dot or a comma
+                    String maybeAlreadyNumber = subscriberCount.replaceAll("([ ., ])", "");
+                    long count = Long.parseLong(maybeAlreadyNumber);
+                } catch (NumberFormatException i) {
+                    System.out.println("The abbreviation is empty, this is probably a failed request" +
+                            "Localization :" + extractor.getExtractorLocalization());
+                }
+            }
+        }
     }
 
     public void buildthousand(Localization loc) throws IOException, ExtractionException {
@@ -150,12 +210,14 @@ public class YoutubeSubscriberTest {
     @Test
     public void testafk() throws IOException, ExtractionException {
         YoutubeChannelExtractor extractor = getExtractor("k", new Localization("af"));
+        ut(extractor);
         assertEquals(countThousand, extractor.getSubscriberCount());
     }
 
     @Test
     public void testafm() throws IOException, ExtractionException {
         YoutubeChannelExtractor extractor = getExtractor("m", new Localization("af"));
+        ut(extractor);
         assertEquals(countMillion, extractor.getSubscriberCount());
     }
 
