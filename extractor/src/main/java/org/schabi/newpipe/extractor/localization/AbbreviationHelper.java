@@ -63,6 +63,7 @@ public class AbbreviationHelper {
         abbreviationSubscribersCount.put("þ", englishThousandAbbreviation); //is
         abbreviationSubscribersCount.put("ათ", englishThousandAbbreviation); //ka
         abbreviationSubscribersCount.put("мың", englishThousandAbbreviation); //kk
+        abbreviationSubscribersCount.put("м", englishThousandAbbreviation); //kk
         abbreviationSubscribersCount.put("ពាន់", englishThousandAbbreviation); //km
         abbreviationSubscribersCount.put("ಸಾ", englishThousandAbbreviation); //kn
         abbreviationSubscribersCount.put("천", englishThousandAbbreviation); //ko
@@ -114,6 +115,7 @@ public class AbbreviationHelper {
         abbreviationSubscribersCount.put("М", englishMillionAbbreviation); //mk
         abbreviationSubscribersCount.put("мил", englishMillionAbbreviation); //mk, sr
         abbreviationSubscribersCount.put("сая", englishMillionAbbreviation); //mn
+        abbreviationSubscribersCount.put("J", englishMillionAbbreviation); //ms
         abbreviationSubscribersCount.put("သန်း", englishMillionAbbreviation); //my
         abbreviationSubscribersCount.put("mill", englishMillionAbbreviation); //no
         abbreviationSubscribersCount.put("mi", englishMillionAbbreviation); //pt
