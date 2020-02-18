@@ -388,9 +388,8 @@ public class YoutubeStreamExtractor extends StreamExtractor {
         assertPageFetched();
         String likesString = "";
         try {
-            Element button = doc.select("button.like-button-renderer-like-button").first();
             try {
-                likesString = button.select("span.yt-uix-button-content").first().text();
+                likesString = ytInitialData.getObject("contents").getObject("twoColumnWatchNextResults").getObject("results").getObject("results").getArray("contents").getObject(0).getObject("videoPrimaryInfoRenderer").getObject("sentimentBar").getObject("sentimentBarRenderer").getString("tooltip").split("/")[0];
             } catch (NullPointerException e) {
                 //if this kicks in our button has no content and therefore ratings must be disabled
                 if (playerResponse.getObject("videoDetails").getBoolean("allowRatings")) {
@@ -413,7 +412,7 @@ public class YoutubeStreamExtractor extends StreamExtractor {
         try {
             Element button = doc.select("button.like-button-renderer-dislike-button").first();
             try {
-                dislikesString = button.select("span.yt-uix-button-content").first().text();
+                dislikesString = ytInitialData.getObject("contents").getObject("twoColumnWatchNextResults").getObject("results").getObject("results").getArray("contents").getObject(0).getObject("videoPrimaryInfoRenderer").getObject("sentimentBar").getObject("sentimentBarRenderer").getString("tooltip").split("/")[1];
             } catch (NullPointerException e) {
                 //if this kicks in our button has no content and therefore ratings must be disabled
                 if (playerResponse.getObject("videoDetails").getBoolean("allowRatings")) {
