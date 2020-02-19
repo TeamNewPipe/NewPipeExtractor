@@ -186,8 +186,8 @@ public class YoutubeSubscriberTest {
                     .getChannelExtractor("https://www.youtube.com/user/EminemVEVO/");
             extractor.fetchPage();
 
-            long subcriberCount = extractor.getSubscriberCount();
-            assertEquals("Language that failed: " + localization.toString() + "\n We ", -1, subcriberCount);
+            long subscriberCount = extractor.getSubscriberCount();
+            assertEquals("Language that failed: " + localization.toString() + "\n We ", -1, subscriberCount);
             Thread.sleep(PAUSE_DURATION_EXTRACTORS);
         }
     }
