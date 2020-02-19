@@ -75,19 +75,19 @@ public class Utils {
                 .replace(",", "."));
         switch (multiplier.toUpperCase()) {
             case "K":
-                return (long) (count * 1e3);
+                return (long) (count * 1000);
             case "万": //10K, used by east-asian languages
-                return (long) (count * 1e4);
+                return (long) (count * 10_000);
             case "ল": //100K, used by indo-arabic languages
-                return (long) (count * 1e5);
+                return (long) (count * 100_000);
             case "M":
-                return (long) (count * 1e6);
+                return (long) (count * 1_000_000);
             case "ক": //10M, used by indo-arabic languages
-                return (long) (count * 1e7);
+                return (long) (count * 10_000_000);
             case "億": //100M, used by east-asian languages
-                return (long) (count * 1e8);
+                return (long) (count * 100_000_000);
             case "B":
-                return (long) (count * 1e9);
+                return (long) (count * 1_000_000_000);
             default:
                 return (long) (count);
         }
