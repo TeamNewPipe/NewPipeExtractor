@@ -323,7 +323,23 @@ public class YoutubeStreamExtractor extends StreamExtractor {
         assertPageFetched();
         try {
             if (getStreamType().equals(StreamType.LIVE_STREAM)) {
-                return getLiveStreamWatchingCount();
+                // The array index is variable, therefore we loop throw the complete array.
+                // videoPrimaryInfoRenderer is often stored at index 1
+                JsonArray contents = ytInitialData.getObject("contents").getObject("twoColumnWatchNextResults")
+                        .getObject("results").getObject("results").getArray("contents");
+                for (Object c : contents) {
+                    try {
+                        // this gets current view count, but there is also an overall view count which is stored here:
+                        // contents.twoColumnWatchNextResults.secondaryResults.secondaryResults.results[0]
+                        // .compactAutoplayRenderer.contents[0].compactVideoRenderer.viewCountText.simpleText
+                        String views = ((JsonObject) c).getObject("videoPrimaryInfoRenderer")
+                                .getObject("viewCount").getObject("videoViewCountRenderer").getObject("viewCount")
+                                .getArray("runs").getObject(0).getString("text");
+                        return Long.parseLong(Utils.removeNonDigitCharacters(views));
+                    } catch (Exception ignored) {}
+                }
+                throw new ParsingException("Could not get view count from live stream");
+
             } else {
                 return Long.parseLong(playerResponse.getObject("videoDetails").getString("viewCount"));
             }
