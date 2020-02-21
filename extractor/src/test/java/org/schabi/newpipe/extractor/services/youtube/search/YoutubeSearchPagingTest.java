@@ -1,15 +1,5 @@
 package org.schabi.newpipe.extractor.services.youtube.search;
 
-import static java.util.Collections.singletonList;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
-import static org.schabi.newpipe.extractor.ServiceList.YouTube;
-
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
-
 import org.junit.BeforeClass;
 import org.junit.Test;
 import org.schabi.newpipe.DownloaderTestImpl;
@@ -18,6 +8,14 @@ import org.schabi.newpipe.extractor.ListExtractor;
 import org.schabi.newpipe.extractor.NewPipe;
 import org.schabi.newpipe.extractor.services.youtube.extractors.YoutubeSearchExtractor;
 import org.schabi.newpipe.extractor.services.youtube.linkHandler.YoutubeSearchQueryHandlerFactory;
+
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
+
+import static java.util.Collections.singletonList;
+import static org.junit.Assert.*;
+import static org.schabi.newpipe.extractor.ServiceList.YouTube;
 
 public class YoutubeSearchPagingTest {
     private static ListExtractor.InfoItemsPage<InfoItem> page1;

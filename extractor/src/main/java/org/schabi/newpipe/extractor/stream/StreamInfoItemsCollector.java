@@ -101,8 +101,8 @@ public class StreamInfoItemsCollector extends InfoItemsCollector<StreamInfoItem,
 
     public List<StreamInfoItem> getStreamInfoItemList() {
         List<StreamInfoItem> siiList = new Vector<>();
-        for(InfoItem ii : super.getItems()) {
-            if(ii instanceof StreamInfoItem) {
+        for (InfoItem ii : super.getItems()) {
+            if (ii instanceof StreamInfoItem) {
                 siiList.add((StreamInfoItem) ii);
             }
         }

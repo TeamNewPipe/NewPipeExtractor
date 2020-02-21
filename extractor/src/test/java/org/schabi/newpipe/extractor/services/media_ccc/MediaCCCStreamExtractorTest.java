@@ -28,7 +28,7 @@ public class MediaCCCStreamExtractorTest implements BaseExtractorTest {
     public static void setUpClass() throws Exception {
         NewPipe.init(DownloaderTestImpl.getInstance());
 
-        extractor =  MediaCCC.getStreamExtractor("https://api.media.ccc.de/public/events/8afc16c2-d76a-53f6-85e4-90494665835d");
+        extractor = MediaCCC.getStreamExtractor("https://api.media.ccc.de/public/events/8afc16c2-d76a-53f6-85e4-90494665835d");
         extractor.fetchPage();
     }
 
@@ -89,7 +89,7 @@ public class MediaCCCStreamExtractorTest implements BaseExtractorTest {
 
     @Test
     public void testGetTextualUploadDate() throws ParsingException {
-        Assert.assertEquals("2018-05-11", extractor.getTextualUploadDate());
+        Assert.assertEquals("2018-05-11T02:00:00.000+02:00", extractor.getTextualUploadDate());
     }
 
     @Test

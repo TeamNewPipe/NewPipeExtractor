@@ -44,13 +44,13 @@ public class YoutubeStreamExtractorLivestreamTest {
     @Test
     public void testGetDescription() throws ParsingException {
         assertNotNull(extractor.getDescription());
-        assertFalse(extractor.getDescription().isEmpty());
+        assertFalse(extractor.getDescription().getContent().isEmpty());
     }
 
     @Test
     public void testGetFullLinksInDescription() throws ParsingException {
-        assertTrue(extractor.getDescription().contains("https://www.instagram.com/nathalie.baraton/"));
-        assertFalse(extractor.getDescription().contains("https://www.instagram.com/nathalie.ba..."));
+        assertTrue(extractor.getDescription().getContent().contains("https://www.instagram.com/nathalie.baraton/"));
+        assertFalse(extractor.getDescription().getContent().contains("https://www.instagram.com/nathalie.ba..."));
     }
 
     @Test

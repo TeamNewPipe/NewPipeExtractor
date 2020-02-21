@@ -19,7 +19,7 @@ import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.List;
 
-import static java.util.Objects.*;
+import static java.util.Objects.requireNonNull;
 import static org.junit.Assert.*;
 import static org.schabi.newpipe.extractor.ExtractorAsserts.assertIsSecureUrl;
 import static org.schabi.newpipe.extractor.ServiceList.YouTube;
@@ -83,13 +83,13 @@ public class YoutubeStreamExtractorDefaultTest {
         @Test
         public void testGetDescription() throws ParsingException {
             assertNotNull(extractor.getDescription());
-            assertFalse(extractor.getDescription().isEmpty());
+            assertFalse(extractor.getDescription().getContent().isEmpty());
         }
 
         @Test
         public void testGetFullLinksInDescription() throws ParsingException {
-            assertTrue(extractor.getDescription().contains("http://adele.com"));
-            assertFalse(extractor.getDescription().contains("http://smarturl.it/SubscribeAdele?IQi..."));
+            assertTrue(extractor.getDescription().getContent().contains("http://adele.com"));
+            assertFalse(extractor.getDescription().getContent().contains("http://smarturl.it/SubscribeAdele?IQi..."));
         }
 
         @Test
@@ -101,7 +101,7 @@ public class YoutubeStreamExtractorDefaultTest {
 
         @Test
         public void testGetLength() throws ParsingException {
-            assertEquals(366, extractor.getLength());
+            assertEquals(367, extractor.getLength());
         }
 
         @Test
@@ -124,7 +124,11 @@ public class YoutubeStreamExtractorDefaultTest {
 
         @Test
         public void testGetUploaderUrl() throws ParsingException {
-            assertEquals("https://www.youtube.com/channel/UCsRM0YB_dabtEPGPTKo-gcw", extractor.getUploaderUrl());
+            String url = extractor.getUploaderUrl();
+            if (!url.equals("https://www.youtube.com/channel/UCsRM0YB_dabtEPGPTKo-gcw") &&
+                    !url.equals("https://www.youtube.com/channel/UComP_epzeKzvBX156r6pm1Q")) {
+                fail("Uploader url is neither the music channel one nor the Vevo one");
+            }
         }
 
         @Test
@@ -183,6 +187,18 @@ public class YoutubeStreamExtractorDefaultTest {
             // Video (/view?v=YQHsXMglC9A) set in the setUp() method has no captions => null
             assertTrue(extractor.getSubtitles(MediaFormat.TTML).isEmpty());
         }
+
+        @Test
+        public void testGetLikeCount() throws ParsingException {
+            long likeCount = extractor.getLikeCount();
+            assertTrue("" + likeCount, likeCount >= 15000000);
+        }
+
+        @Test
+        public void testGetDislikeCount() throws ParsingException {
+            long dislikeCount = extractor.getDislikeCount();
+            assertTrue("" + dislikeCount, dislikeCount >= 818000);
+        }
     }
 
     public static class DescriptionTestPewdiepie {
@@ -199,18 +215,18 @@ public class YoutubeStreamExtractorDefaultTest {
         @Test
         public void testGetDescription() throws ParsingException {
             assertNotNull(extractor.getDescription());
-            assertFalse(extractor.getDescription().isEmpty());
+            assertFalse(extractor.getDescription().getContent().isEmpty());
         }
 
         @Test
         public void testGetFullLinksInDescription() throws ParsingException {
-            assertTrue(extractor.getDescription().contains("https://www.reddit.com/r/PewdiepieSubmissions/"));
-            assertTrue(extractor.getDescription().contains("https://www.youtube.com/channel/UC3e8EMTOn4g6ZSKggHTnNng"));
-            assertTrue(extractor.getDescription().contains("https://usa.clutchchairz.com/product/pewdiepie-edition-throttle-series/"));
+            assertTrue(extractor.getDescription().getContent().contains("https://www.reddit.com/r/PewdiepieSubmissions/"));
+            assertTrue(extractor.getDescription().getContent().contains("https://www.youtube.com/channel/UC3e8EMTOn4g6ZSKggHTnNng"));
+            assertTrue(extractor.getDescription().getContent().contains("https://usa.clutchchairz.com/product/pewdiepie-edition-throttle-series/"));
 
-            assertFalse(extractor.getDescription().contains("https://www.reddit.com/r/PewdiepieSub..."));
-            assertFalse(extractor.getDescription().contains("https://www.youtube.com/channel/UC3e8..."));
-            assertFalse(extractor.getDescription().contains("https://usa.clutchchairz.com/product/..."));
+            assertFalse(extractor.getDescription().getContent().contains("https://www.reddit.com/r/PewdiepieSub..."));
+            assertFalse(extractor.getDescription().getContent().contains("https://www.youtube.com/channel/UC3e8..."));
+            assertFalse(extractor.getDescription().getContent().contains("https://usa.clutchchairz.com/product/..."));
         }
     }
 
@@ -228,21 +244,44 @@ public class YoutubeStreamExtractorDefaultTest {
         @Test
         public void testGetDescription() throws ParsingException {
             assertNotNull(extractor.getDescription());
-            assertFalse(extractor.getDescription().isEmpty());
+            assertFalse(extractor.getDescription().getContent().isEmpty());
         }
 
         @Test
         public void testGetFullLinksInDescription() throws ParsingException {
-            assertTrue(extractor.getDescription().contains("https://www.youtube.com/watch?v=X7FLCHVXpsA&amp;list=PL7u4lWXQ3wfI_7PgX0C-VTiwLeu0S4v34"));
-            assertTrue(extractor.getDescription().contains("https://www.youtube.com/watch?v=Lqv6G0pDNnw&amp;list=PL7u4lWXQ3wfI_7PgX0C-VTiwLeu0S4v34"));
-            assertTrue(extractor.getDescription().contains("https://www.youtube.com/watch?v=XxaRBPyrnBU&amp;list=PL7u4lWXQ3wfI_7PgX0C-VTiwLeu0S4v34"));
-            assertTrue(extractor.getDescription().contains("https://www.youtube.com/watch?v=U-9tUEOFKNU&amp;list=PL7u4lWXQ3wfI_7PgX0C-VTiwLeu0S4v34"));
+            assertTrue(extractor.getDescription().getContent().contains("https://www.youtube.com/watch?v=X7FLCHVXpsA&amp;list=PL7u4lWXQ3wfI_7PgX0C-VTiwLeu0S4v34"));
+            assertTrue(extractor.getDescription().getContent().contains("https://www.youtube.com/watch?v=Lqv6G0pDNnw&amp;list=PL7u4lWXQ3wfI_7PgX0C-VTiwLeu0S4v34"));
+            assertTrue(extractor.getDescription().getContent().contains("https://www.youtube.com/watch?v=XxaRBPyrnBU&amp;list=PL7u4lWXQ3wfI_7PgX0C-VTiwLeu0S4v34"));
+            assertTrue(extractor.getDescription().getContent().contains("https://www.youtube.com/watch?v=U-9tUEOFKNU&amp;list=PL7u4lWXQ3wfI_7PgX0C-VTiwLeu0S4v34"));
 
-            assertFalse(extractor.getDescription().contains("https://youtu.be/X7FLCHVXpsA?list=PL7..."));
-            assertFalse(extractor.getDescription().contains("https://youtu.be/Lqv6G0pDNnw?list=PL7..."));
-            assertFalse(extractor.getDescription().contains("https://youtu.be/XxaRBPyrnBU?list=PL7..."));
-            assertFalse(extractor.getDescription().contains("https://youtu.be/U-9tUEOFKNU?list=PL7..."));
+            assertFalse(extractor.getDescription().getContent().contains("https://youtu.be/X7FLCHVXpsA?list=PL7..."));
+            assertFalse(extractor.getDescription().getContent().contains("https://youtu.be/Lqv6G0pDNnw?list=PL7..."));
+            assertFalse(extractor.getDescription().getContent().contains("https://youtu.be/XxaRBPyrnBU?list=PL7..."));
+            assertFalse(extractor.getDescription().getContent().contains("https://youtu.be/U-9tUEOFKNU?list=PL7..."));
         }
+    }
+
+    public static class RatingsDisabledTest {
+        private static YoutubeStreamExtractor extractor;
+
+        @BeforeClass
+        public static void setUp() throws Exception {
+            NewPipe.init(DownloaderTestImpl.getInstance());
+            extractor = (YoutubeStreamExtractor) YouTube
+                    .getStreamExtractor("https://www.youtube.com/watch?v=HRKu0cvrr_o");
+            extractor.fetchPage();
+        }
+
+        @Test
+        public void testGetLikeCount() throws ParsingException {
+            assertEquals(-1, extractor.getLikeCount());
+        }
+
+        @Test
+        public void testGetDislikeCount() throws ParsingException {
+            assertEquals(-1, extractor.getDislikeCount());
+        }
+
     }
 
     public static class FramesTest {

@@ -45,6 +45,6 @@ public class MediaCCCConferenceExtractorTest {
 
     @Test
     public void testGetInitalPage() throws Exception {
-        assertEquals(97,extractor.getInitialPage().getItems().size());
+        assertEquals(97, extractor.getInitialPage().getItems().size());
     }
 }

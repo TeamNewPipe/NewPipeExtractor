@@ -1,11 +1,11 @@
 package org.schabi.newpipe.extractor.services.peertube.search;
 
-import static org.junit.Assert.assertTrue;
-
 import org.junit.Test;
 import org.schabi.newpipe.extractor.InfoItem;
 import org.schabi.newpipe.extractor.ListExtractor;
 import org.schabi.newpipe.extractor.services.peertube.extractors.PeertubeSearchExtractor;
+
+import static org.junit.Assert.assertTrue;
 
 /**
  * Test for {@link PeertubeSearchExtractor}

@@ -1,7 +1,8 @@
 package org.schabi.newpipe.extractor.services.peertube.extractors;
 
-import java.io.IOException;
-
+import com.grack.nanojson.JsonArray;
+import com.grack.nanojson.JsonObject;
+import com.grack.nanojson.JsonParser;
 import org.jsoup.helper.StringUtil;
 import org.schabi.newpipe.extractor.StreamingService;
 import org.schabi.newpipe.extractor.comments.CommentsExtractor;
@@ -16,9 +17,7 @@ import org.schabi.newpipe.extractor.utils.JsonUtils;
 import org.schabi.newpipe.extractor.utils.Parser;
 import org.schabi.newpipe.extractor.utils.Parser.RegexException;
 
-import com.grack.nanojson.JsonArray;
-import com.grack.nanojson.JsonObject;
-import com.grack.nanojson.JsonParser;
+import java.io.IOException;
 
 public class PeertubeCommentsExtractor extends CommentsExtractor {
 
@@ -26,10 +25,10 @@ public class PeertubeCommentsExtractor extends CommentsExtractor {
     private static final String COUNT_KEY = "count";
     private static final int ITEMS_PER_PAGE = 12;
     private static final String START_PATTERN = "start=(\\d*)";
-    
+
     private InfoItemsPage<CommentsInfoItem> initPage;
     private long total;
-    
+
     public PeertubeCommentsExtractor(StreamingService service, ListLinkHandler uiHandler) {
         super(service, uiHandler);
     }
@@ -38,7 +37,7 @@ public class PeertubeCommentsExtractor extends CommentsExtractor {
     public String getName() throws ParsingException {
         return "Comments";
     }
-    
+
     @Override
     public InfoItemsPage<CommentsInfoItem> getInitialPage() throws IOException, ExtractionException {
         super.fetchPage();
@@ -49,18 +48,18 @@ public class PeertubeCommentsExtractor extends CommentsExtractor {
         JsonArray contents;
         try {
             contents = (JsonArray) JsonUtils.getValue(json, "data");
-        }catch(Exception e) {
+        } catch (Exception e) {
             throw new ParsingException("unable to extract comments info", e);
         }
-        
-        for(Object c: contents) {
-            if(c instanceof JsonObject) {
+
+        for (Object c : contents) {
+            if (c instanceof JsonObject) {
                 final JsonObject item = (JsonObject) c;
                 PeertubeCommentsInfoItemExtractor extractor = new PeertubeCommentsInfoItemExtractor(item, this);
                 collector.commit(extractor);
             }
         }
-        
+
     }
 
     @Override
@@ -73,18 +72,18 @@ public class PeertubeCommentsExtractor extends CommentsExtractor {
     public InfoItemsPage<CommentsInfoItem> getPage(String pageUrl) throws IOException, ExtractionException {
         Response response = getDownloader().get(pageUrl);
         JsonObject json = null;
-        if(null != response && !StringUtil.isBlank(response.responseBody())) {
+        if (null != response && !StringUtil.isBlank(response.responseBody())) {
             try {
                 json = JsonParser.object().from(response.responseBody());
             } catch (Exception e) {
                 throw new ParsingException("Could not parse json data for comments info", e);
             }
         }
-        
+
         CommentsInfoItemsCollector collector = new CommentsInfoItemsCollector(getServiceId());
-        if(json != null) {
+        if (json != null) {
             Number number = JsonUtils.getNumber(json, "total");
-            if(number != null) this.total = number.longValue();
+            if (number != null) this.total = number.longValue();
             collectStreamsFrom(collector, json, pageUrl);
         } else {
             throw new ExtractionException("Unable to get peertube comments info");
@@ -97,7 +96,7 @@ public class PeertubeCommentsExtractor extends CommentsExtractor {
         String pageUrl = getUrl() + "?" + START_KEY + "=0&" + COUNT_KEY + "=" + ITEMS_PER_PAGE;
         this.initPage = getPage(pageUrl);
     }
-    
+
     private String getNextPageUrl(String prevPageUrl) {
         String prevStart;
         try {
@@ -105,17 +104,17 @@ public class PeertubeCommentsExtractor extends CommentsExtractor {
         } catch (RegexException e) {
             return "";
         }
-        if(StringUtil.isBlank(prevStart)) return "";
+        if (StringUtil.isBlank(prevStart)) return "";
         long nextStart = 0;
         try {
             nextStart = Long.valueOf(prevStart) + ITEMS_PER_PAGE;
         } catch (NumberFormatException e) {
             return "";
         }
-        
-        if(nextStart >= total) {
+
+        if (nextStart >= total) {
             return "";
-        }else {
+        } else {
             return prevPageUrl.replace(START_KEY + "=" + prevStart, START_KEY + "=" + String.valueOf(nextStart));
         }
     }
