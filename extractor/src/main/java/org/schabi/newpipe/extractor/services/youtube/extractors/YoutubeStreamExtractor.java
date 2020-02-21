@@ -1072,6 +1072,11 @@ public class YoutubeStreamExtractor extends StreamExtractor {
         return new YoutubeStreamInfoItemExtractor(videoInfo, timeAgoParser) {
             @Override
             public StreamType getStreamType() {
+                try {
+                    if (videoInfo.getArray("badges").getObject(0).getObject("metadataBadgeRenderer").getString("label").equals("LIVE NOW")) {
+                        return StreamType.LIVE_STREAM;
+                    }
+                } catch (Exception ignored) {}
                 return StreamType.VIDEO_STREAM;
             }
 
@@ -1103,6 +1108,7 @@ public class YoutubeStreamExtractor extends StreamExtractor {
             @Override
             public long getDuration() throws ParsingException {
                 try {
+                    if (getStreamType() == StreamType.LIVE_STREAM) return -1;
                     return YoutubeParsingHelper.parseDurationString(videoInfo.getObject("lengthText").getString("simpleText"));
                 } catch (Exception e) {
                     throw new ParsingException("Could not get duration", e);
@@ -1139,7 +1145,13 @@ public class YoutubeStreamExtractor extends StreamExtractor {
             @Override
             public long getViewCount() throws ParsingException {
                 try {
-                    String viewCount = videoInfo.getObject("viewCountText").getString("simpleText");
+                    String viewCount;
+                    if (getStreamType() == StreamType.LIVE_STREAM)  {
+                        viewCount = videoInfo.getObject("viewCountText")
+                                .getArray("runs").getObject(0).getString("text");
+                    } else {
+                        viewCount = videoInfo.getObject("viewCountText").getString("simpleText");
+                    }
                     if (viewCount.equals("Recommended for you")) return -1;
                     return Long.parseLong(Utils.removeNonDigitCharacters(viewCount));
                 } catch (Exception e) {
