@@ -101,7 +101,7 @@ public class Utils {
      * Does the same as {@link #mixedNumberWordToLong(String)}, but for the 80 languages supported by YouTube.
      *
      * @param numberWord string to be converted to a long
-     * @param loc:       a {@link Localization}
+     * @param loc        a {@link Localization}
      * @return a long
      * @throws ParsingException
      */
