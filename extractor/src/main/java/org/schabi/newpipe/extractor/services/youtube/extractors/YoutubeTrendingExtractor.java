@@ -24,9 +24,8 @@ import com.grack.nanojson.JsonArray;
 import com.grack.nanojson.JsonObject;
 import com.grack.nanojson.JsonParser;
 import com.grack.nanojson.JsonParserException;
+
 import org.jsoup.nodes.Document;
-import org.jsoup.nodes.Element;
-import org.jsoup.select.Elements;
 import org.schabi.newpipe.extractor.StreamingService;
 import org.schabi.newpipe.extractor.downloader.Downloader;
 import org.schabi.newpipe.extractor.downloader.Response;
@@ -35,15 +34,14 @@ import org.schabi.newpipe.extractor.exceptions.ParsingException;
 import org.schabi.newpipe.extractor.kiosk.KioskExtractor;
 import org.schabi.newpipe.extractor.linkhandler.ListLinkHandler;
 import org.schabi.newpipe.extractor.localization.TimeAgoParser;
-import org.schabi.newpipe.extractor.services.youtube.linkHandler.YoutubeChannelLinkHandlerFactory;
 import org.schabi.newpipe.extractor.services.youtube.linkHandler.YoutubeParsingHelper;
-import org.schabi.newpipe.extractor.services.youtube.linkHandler.YoutubeStreamLinkHandlerFactory;
 import org.schabi.newpipe.extractor.stream.StreamInfoItem;
 import org.schabi.newpipe.extractor.stream.StreamInfoItemsCollector;
 import org.schabi.newpipe.extractor.utils.Parser;
 
-import javax.annotation.Nonnull;
 import java.io.IOException;
+
+import javax.annotation.Nonnull;
 
 public class YoutubeTrendingExtractor extends KioskExtractor<StreamInfoItem> {
 
@@ -115,67 +113,7 @@ public class YoutubeTrendingExtractor extends KioskExtractor<StreamInfoItem> {
 
         for (Object ul : firstPageElements) {
             final JsonObject videoInfo = ((JsonObject) ul).getObject("videoRenderer");
-            collector.commit(new YoutubeStreamInfoItemExtractor(videoInfo, timeAgoParser) {
-                @Override
-                public String getUrl() throws ParsingException {
-                    try {
-                        String videoId = videoInfo.getString("videoId");
-                        return YoutubeStreamLinkHandlerFactory.getInstance().getUrl(videoId);
-                    } catch (Exception e) {
-                        throw new ParsingException("Could not get web page url for the video", e);
-                    }
-                }
-
-                @Override
-                public String getName() throws ParsingException {
-                    String name = null;
-                    try {
-                        name = videoInfo.getObject("title").getObject("accessibility")
-                                .getObject("accessibilityData").getString("label");
-                    } catch (Exception ignored) {
-                    }
-                    if (name != null && !name.isEmpty()) return name;
-                    try {
-                        name = videoInfo.getObject("title").getArray("runs").getObject(0).getString("text");
-                    } catch (Exception e) {
-                        throw new ParsingException("Could not get web page url for the video", e);
-                    }
-                    if (name != null && !name.isEmpty()) return name;
-                    throw new ParsingException("Could not get web page url for the video");
-                }
-
-                @Override
-                public String getUploaderUrl() throws ParsingException {
-                    try {
-                        String id = videoInfo.getObject("ownerText").getArray("runs").getObject(0).
-                                getObject("browseEndpoint").getString("browseId");
-                        if (id == null || id.isEmpty()) {
-                            throw new IllegalArgumentException("is empty");
-                        }
-                        return YoutubeChannelLinkHandlerFactory.getInstance().getUrl(id);
-                    } catch (Exception e) {
-                        throw new ParsingException("Could not get Uploader url");
-                    }
-                }
-
-                @Override
-                public String getUploaderName() throws ParsingException {
-                    try {
-                        return videoInfo.getObject("ownerText").getArray("runs").getObject(0).getString("text");
-                    } catch (Exception e) {
-                        throw new ParsingException("Could not get uploader name");
-                    }
-                }
-
-                @Override
-                public String getThumbnailUrl() throws ParsingException {
-                    try {
-                        return videoInfo.getObject("thumbnail").getArray("thumbnails").getObject(0).getString("url");
-                    } catch (Exception e) {
-                        throw new ParsingException("Could not get thumbnail url", e);
-                    }
-                }
-            });
+            collector.commit(new YoutubeStreamInfoItemExtractor(videoInfo, timeAgoParser));
         }
         return new InfoItemsPage<>(collector, getNextPageUrl());
 
