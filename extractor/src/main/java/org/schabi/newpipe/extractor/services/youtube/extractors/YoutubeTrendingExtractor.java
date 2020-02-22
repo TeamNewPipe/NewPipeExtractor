@@ -61,16 +61,7 @@ public class YoutubeTrendingExtractor extends KioskExtractor<StreamInfoItem> {
 
         final Response response = downloader.get(url, getExtractorLocalization());
         doc = YoutubeParsingHelper.parseAndCheckPage(url, response);
-        initialData = getInitialData();
-    }
-
-    private JsonObject getInitialData() throws ParsingException {
-        try {
-            String initialData = Parser.matchGroup1("window\\[\"ytInitialData\"\\]\\s*=\\s*(\\{.*?\\});", doc.toString());
-            return JsonParser.object().from(initialData);
-        } catch (JsonParserException | Parser.RegexException e) {
-            throw new ParsingException("Could not get ytInitialData", e);
-        }
+        initialData = YoutubeParsingHelper.getInitialData(response.responseBody());
     }
 
     @Override

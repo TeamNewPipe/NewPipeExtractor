@@ -51,7 +51,7 @@ import javax.annotation.Nonnull;
 public class YoutubeSearchExtractor extends SearchExtractor {
 
     private Document doc;
-    private JsonObject ytInitialData;
+    private JsonObject initialData;
 
     public YoutubeSearchExtractor(StreamingService service, SearchQueryHandler linkHandler) {
         super(service, linkHandler);
@@ -62,7 +62,7 @@ public class YoutubeSearchExtractor extends SearchExtractor {
         final String url = getUrl();
         final Response response = downloader.get(url, getExtractorLocalization());
         doc = YoutubeParsingHelper.parseAndCheckPage(url, response);
-        ytInitialData = getInitialData();
+        initialData = YoutubeParsingHelper.getInitialData(response.responseBody());
     }
 
     @Nonnull
@@ -119,7 +119,7 @@ public class YoutubeSearchExtractor extends SearchExtractor {
 
         final TimeAgoParser timeAgoParser = getTimeAgoParser();
 
-        JsonArray list = ytInitialData.getObject("contents").getObject("twoColumnSearchResultsRenderer")
+        JsonArray list = initialData.getObject("contents").getObject("twoColumnSearchResultsRenderer")
                 .getObject("primaryContents").getObject("sectionListRenderer").getArray("contents")
                 .getObject(0).getObject("itemSectionRenderer").getArray("contents");
 
@@ -138,12 +138,4 @@ public class YoutubeSearchExtractor extends SearchExtractor {
         return collector;
     }
 
-    private JsonObject getInitialData() throws ParsingException {
-        try {
-            String initialData = Parser.matchGroup1("window\\[\"ytInitialData\"\\]\\s*=\\s*(\\{.*?\\});", doc.toString());
-            return JsonParser.object().from(initialData);
-        } catch (JsonParserException | Parser.RegexException e) {
-            throw new ParsingException("Could not get ytInitialData", e);
-        }
-    }
 }

@@ -47,19 +47,10 @@ public class YoutubePlaylistExtractor extends PlaylistExtractor {
         final String url = getUrl();
         final Response response = downloader.get(url, getExtractorLocalization());
         doc = YoutubeParsingHelper.parseAndCheckPage(url, response);
-        initialData = getInitialData();
+        initialData = YoutubeParsingHelper.getInitialData(response.responseBody());
         uploaderInfo = getUploaderInfo();
         playlistInfo = getPlaylistInfo();
         playlistVideos = getPlaylistVideos();
-    }
-
-    private JsonObject getInitialData() throws ParsingException {
-        try {
-            String initialData = Parser.matchGroup1("window\\[\"ytInitialData\"\\]\\s*=\\s*(\\{.*?\\});", doc.toString());
-            return JsonParser.object().from(initialData);
-        } catch (JsonParserException | Parser.RegexException e) {
-            throw new ParsingException("Could not get ytInitialData", e);
-        }
     }
 
     private JsonObject getUploaderInfo() throws ParsingException {

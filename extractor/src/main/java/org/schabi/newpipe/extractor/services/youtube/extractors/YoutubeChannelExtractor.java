@@ -52,7 +52,7 @@ public class YoutubeChannelExtractor extends ChannelExtractor {
     private static final String CHANNEL_URL_PARAMETERS = "/videos?view=0&flow=list&sort=dd&live_view=10000";
 
     private Document doc;
-    private JsonObject ytInitialData;
+    private JsonObject initialData;
 
     public YoutubeChannelExtractor(StreamingService service, ListLinkHandler linkHandler) {
         super(service, linkHandler);
@@ -63,17 +63,9 @@ public class YoutubeChannelExtractor extends ChannelExtractor {
         String channelUrl = super.getUrl() + CHANNEL_URL_PARAMETERS;
         final Response response = downloader.get(channelUrl, getExtractorLocalization());
         doc = YoutubeParsingHelper.parseAndCheckPage(channelUrl, response);
-        ytInitialData = getInitialData();
+        initialData = YoutubeParsingHelper.getInitialData(response.responseBody());
     }
 
-    private JsonObject getInitialData() throws ParsingException {
-        try {
-            String initialData = Parser.matchGroup1("window\\[\"ytInitialData\"\\]\\s*=\\s*(\\{.*?\\});", doc.toString());
-            return JsonParser.object().from(initialData);
-        } catch (JsonParserException | Parser.RegexException e) {
-            throw new ParsingException("Could not get ytInitialData", e);
-        }
-    }
 
     @Override
     public String getNextPageUrl() throws ExtractionException {
@@ -97,7 +89,7 @@ public class YoutubeChannelExtractor extends ChannelExtractor {
             return doc.select("meta[property=\"og:url\"]").first().attr("content").replace(CHANNEL_URL_BASE, "");
         } catch (Exception ignored) {}
         try {
-            return ytInitialData.getObject("header").getObject("c4TabbedHeaderRenderer").getObject("navigationEndpoint").getObject("browseEndpoint").getString("browseId");
+            return initialData.getObject("header").getObject("c4TabbedHeaderRenderer").getObject("navigationEndpoint").getObject("browseEndpoint").getString("browseId");
         } catch (Exception ignored) {}
 
         // fallback method; does not work with channels that have no "Subscribe" button (e.g. EminemVEVO)
@@ -124,7 +116,7 @@ public class YoutubeChannelExtractor extends ChannelExtractor {
     @Override
     public String getAvatarUrl() throws ParsingException {
         try {
-            return ytInitialData.getObject("header").getObject("c4TabbedHeaderRenderer").getObject("avatar").getArray("thumbnails").getObject(0).getString("url");
+            return initialData.getObject("header").getObject("c4TabbedHeaderRenderer").getObject("avatar").getArray("thumbnails").getObject(0).getString("url");
         } catch (Exception e) {
             throw new ParsingException("Could not get avatar", e);
         }
@@ -133,7 +125,7 @@ public class YoutubeChannelExtractor extends ChannelExtractor {
     @Override
     public String getBannerUrl() throws ParsingException {
         try {
-            String url = ytInitialData.getObject("header").getObject("c4TabbedHeaderRenderer").getObject("banner").getArray("thumbnails").getObject(0).getString("url");
+            String url = initialData.getObject("header").getObject("c4TabbedHeaderRenderer").getObject("banner").getArray("thumbnails").getObject(0).getString("url");
             if (url.contains("s.ytimg.com") || url.contains("default_banner")) {
                 return null;
             }
@@ -165,7 +157,7 @@ public class YoutubeChannelExtractor extends ChannelExtractor {
     @Override
     public long getSubscriberCount() throws ParsingException {
 
-        final JsonObject subscriberInfo = ytInitialData.getObject("header").getObject("c4TabbedHeaderRenderer").getObject("subscriberCountText");
+        final JsonObject subscriberInfo = initialData.getObject("header").getObject("c4TabbedHeaderRenderer").getObject("subscriberCountText");
         if (subscriberInfo != null) {
             try {
 
@@ -182,7 +174,7 @@ public class YoutubeChannelExtractor extends ChannelExtractor {
     @Override
     public String getDescription() throws ParsingException {
         try {
-            return ytInitialData.getObject("metadata").getObject("channelMetadataRenderer").getString("description");
+            return initialData.getObject("metadata").getObject("channelMetadataRenderer").getString("description");
         } catch (Exception e) {
             throw new ParsingException("Could not get channel description", e);
         }

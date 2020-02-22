@@ -1,11 +1,15 @@
 package org.schabi.newpipe.extractor.services.youtube.linkHandler;
 
 
+import com.grack.nanojson.JsonObject;
+import com.grack.nanojson.JsonParser;
+import com.grack.nanojson.JsonParserException;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.schabi.newpipe.extractor.downloader.Response;
 import org.schabi.newpipe.extractor.exceptions.ParsingException;
 import org.schabi.newpipe.extractor.exceptions.ReCaptchaException;
+import org.schabi.newpipe.extractor.utils.Parser;
 
 import java.net.URL;
 import java.text.ParseException;
@@ -143,4 +147,14 @@ public class YoutubeParsingHelper {
         uploadDate.setTime(date);
         return uploadDate;
     }
+
+    public static JsonObject getInitialData(String html) throws ParsingException {
+        try {
+            String initialData = Parser.matchGroup1("window\\[\"ytInitialData\"\\]\\s*=\\s*(\\{.*?\\});", html);
+            return JsonParser.object().from(initialData);
+        } catch (JsonParserException | Parser.RegexException e) {
+            throw new ParsingException("Could not get ytInitialData", e);
+        }
+    }
+
 }

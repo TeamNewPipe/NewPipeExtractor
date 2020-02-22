@@ -104,7 +104,7 @@ public class YoutubeStreamExtractor extends StreamExtractor {
     @Nonnull
     private final Map<String, String> videoInfoPage = new HashMap<>();
     private JsonObject playerResponse;
-    private JsonObject ytInitialData;
+    private JsonObject initialData;
 
     @Nonnull
     private List<SubtitlesInfo> subtitlesInfos = new ArrayList<>();
@@ -339,7 +339,7 @@ public class YoutubeStreamExtractor extends StreamExtractor {
             if (getStreamType().equals(StreamType.LIVE_STREAM)) {
                 // The array index is variable, therefore we loop throw the complete array.
                 // videoPrimaryInfoRenderer is often stored at index 1
-                JsonArray contents = ytInitialData.getObject("contents").getObject("twoColumnWatchNextResults")
+                JsonArray contents = initialData.getObject("contents").getObject("twoColumnWatchNextResults")
                         .getObject("results").getObject("results").getArray("contents");
                 for (Object c : contents) {
                     try {
@@ -421,7 +421,7 @@ public class YoutubeStreamExtractor extends StreamExtractor {
         String likesString = "";
         try {
             try {
-                likesString = ytInitialData.getObject("contents").getObject("twoColumnWatchNextResults").getObject("results").getObject("results").getArray("contents").getObject(0).getObject("videoPrimaryInfoRenderer").getObject("sentimentBar").getObject("sentimentBarRenderer").getString("tooltip").split("/")[0];
+                likesString = initialData.getObject("contents").getObject("twoColumnWatchNextResults").getObject("results").getObject("results").getArray("contents").getObject(0).getObject("videoPrimaryInfoRenderer").getObject("sentimentBar").getObject("sentimentBarRenderer").getString("tooltip").split("/")[0];
             } catch (NullPointerException e) {
                 //if this kicks in our button has no content and therefore ratings must be disabled
                 if (playerResponse.getObject("videoDetails").getBoolean("allowRatings")) {
@@ -444,7 +444,7 @@ public class YoutubeStreamExtractor extends StreamExtractor {
         try {
             Element button = doc.select("button.like-button-renderer-dislike-button").first();
             try {
-                dislikesString = ytInitialData.getObject("contents").getObject("twoColumnWatchNextResults").getObject("results").getObject("results").getArray("contents").getObject(0).getObject("videoPrimaryInfoRenderer").getObject("sentimentBar").getObject("sentimentBarRenderer").getString("tooltip").split("/")[1];
+                dislikesString = initialData.getObject("contents").getObject("twoColumnWatchNextResults").getObject("results").getObject("results").getArray("contents").getObject(0).getObject("videoPrimaryInfoRenderer").getObject("sentimentBar").getObject("sentimentBarRenderer").getString("tooltip").split("/")[1];
             } catch (NullPointerException e) {
                 //if this kicks in our button has no content and therefore ratings must be disabled
                 if (playerResponse.getObject("videoDetails").getBoolean("allowRatings")) {
@@ -507,7 +507,7 @@ public class YoutubeStreamExtractor extends StreamExtractor {
 
         String uploaderAvatarUrl = null;
         try {
-            uploaderAvatarUrl = ytInitialData.getObject("contents").getObject("twoColumnWatchNextResults").getObject("secondaryResults")
+            uploaderAvatarUrl = initialData.getObject("contents").getObject("twoColumnWatchNextResults").getObject("secondaryResults")
                     .getObject("secondaryResults").getArray("results").getObject(0).getObject("compactAutoplayRenderer")
                     .getArray("contents").getObject(0).getObject("compactVideoRenderer").getObject("channelThumbnail")
                     .getArray("thumbnails").getObject(0).getString("url");
@@ -517,7 +517,7 @@ public class YoutubeStreamExtractor extends StreamExtractor {
         } catch (Exception ignored) {}
 
         try {
-            uploaderAvatarUrl = ytInitialData.getObject("contents").getObject("twoColumnWatchNextResults").getObject("results")
+            uploaderAvatarUrl = initialData.getObject("contents").getObject("twoColumnWatchNextResults").getObject("results")
                     .getObject("results").getArray("contents").getObject(1).getObject("videoSecondaryInfoRenderer")
                     .getObject("owner").getObject("videoOwnerRenderer").getObject("thumbnail").getArray("thumbnails")
                     .getObject(0).getString("url");
@@ -670,7 +670,7 @@ public class YoutubeStreamExtractor extends StreamExtractor {
     public StreamInfoItem getNextStream() throws IOException, ExtractionException {
         assertPageFetched();
         try {
-            final JsonObject videoInfo = ytInitialData.getObject("contents").getObject("twoColumnWatchNextResults")
+            final JsonObject videoInfo = initialData.getObject("contents").getObject("twoColumnWatchNextResults")
                     .getObject("secondaryResults").getObject("secondaryResults").getArray("results")
                     .getObject(0).getObject("compactAutoplayRenderer").getArray("contents")
                     .getObject(0).getObject("compactVideoRenderer");
@@ -690,7 +690,7 @@ public class YoutubeStreamExtractor extends StreamExtractor {
         assertPageFetched();
         try {
             StreamInfoItemsCollector collector = new StreamInfoItemsCollector(getServiceId());
-            JsonArray results = ytInitialData.getObject("contents").getObject("twoColumnWatchNextResults")
+            JsonArray results = initialData.getObject("contents").getObject("twoColumnWatchNextResults")
                     .getObject("secondaryResults").getObject("secondaryResults").getArray("results");
 
             final TimeAgoParser timeAgoParser = getTimeAgoParser();
@@ -778,7 +778,7 @@ public class YoutubeStreamExtractor extends StreamExtractor {
             isAgeRestricted = false;
         }
         playerResponse = getPlayerResponse();
-        ytInitialData = getInitialData();
+        initialData = YoutubeParsingHelper.getInitialData(pageHtml);
 
         if (decryptionCode.isEmpty()) {
             decryptionCode = loadDecryptionCode(playerUrl);
@@ -852,14 +852,6 @@ public class YoutubeStreamExtractor extends StreamExtractor {
         }
     }
 
-    private JsonObject getInitialData() throws ParsingException {
-        try {
-            String initialData = Parser.matchGroup1("window\\[\"ytInitialData\"\\]\\s*=\\s*(\\{.*?\\});", doc.toString());
-            return JsonParser.object().from(initialData);
-        } catch (JsonParserException | Parser.RegexException e) {
-            throw new ParsingException("Could not get ytInitialData", e);
-        }
-    }
 
     @Nonnull
     private EmbeddedInfo getEmbeddedInfo() throws ParsingException, ReCaptchaException {
