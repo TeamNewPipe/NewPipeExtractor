@@ -104,20 +104,37 @@ public class YoutubeStreamInfoItemExtractor implements StreamInfoItemExtractor {
 
     @Override
     public String getUploaderName() throws ParsingException {
+        String name = null;
         try {
-            return videoInfo.getObject("longBylineText").getArray("runs")
+            name = videoInfo.getObject("longBylineText").getArray("runs")
                     .getObject(0).getString("text");
-        } catch (Exception e) {
-            throw new ParsingException("Could not get uploader name", e);
+        } catch (Exception ignored) {}
+        if (name == null) {
+            try {
+                name = videoInfo.getObject("ownerText").getArray("runs")
+                        .getObject(0).getString("text");
+            } catch (Exception ignored) {}
         }
+        if (name != null && !name.isEmpty()) return name;
+        throw new ParsingException("Could not get uploader name");
     }
 
     @Override
     public String getUploaderUrl() throws ParsingException {
         try {
-            String id = videoInfo.getObject("longBylineText").getArray("runs")
-                    .getObject(0).getObject("navigationEndpoint")
-                    .getObject("browseEndpoint").getString("browseId");
+            String id = null;
+            try {
+                id = videoInfo.getObject("longBylineText").getArray("runs")
+                        .getObject(0).getObject("navigationEndpoint")
+                        .getObject("browseEndpoint").getString("browseId");
+            } catch (Exception ignored) {}
+            if (id == null) {
+                try {
+                    id = videoInfo.getObject("ownerText").getArray("runs")
+                            .getObject(0).getObject("navigationEndpoint")
+                            .getObject("browseEndpoint").getString("browseId");
+                } catch (Exception ignored) {}
+            }
             if (id == null || id.isEmpty()) {
                 throw new IllegalArgumentException("is empty");
             }
