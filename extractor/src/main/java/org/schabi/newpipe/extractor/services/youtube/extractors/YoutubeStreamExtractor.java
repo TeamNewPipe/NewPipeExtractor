@@ -4,10 +4,10 @@ import com.grack.nanojson.JsonArray;
 import com.grack.nanojson.JsonObject;
 import com.grack.nanojson.JsonParser;
 import com.grack.nanojson.JsonParserException;
+
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
-import org.jsoup.select.Elements;
 import org.mozilla.javascript.Context;
 import org.mozilla.javascript.Function;
 import org.mozilla.javascript.ScriptableObject;
@@ -25,23 +25,37 @@ import org.schabi.newpipe.extractor.linkhandler.LinkHandler;
 import org.schabi.newpipe.extractor.localization.DateWrapper;
 import org.schabi.newpipe.extractor.localization.TimeAgoParser;
 import org.schabi.newpipe.extractor.services.youtube.ItagItem;
-import org.schabi.newpipe.extractor.services.youtube.linkHandler.YoutubeChannelLinkHandlerFactory;
 import org.schabi.newpipe.extractor.services.youtube.linkHandler.YoutubeParsingHelper;
-import org.schabi.newpipe.extractor.services.youtube.linkHandler.YoutubeStreamLinkHandlerFactory;
-import org.schabi.newpipe.extractor.stream.*;
+import org.schabi.newpipe.extractor.stream.AudioStream;
+import org.schabi.newpipe.extractor.stream.Description;
+import org.schabi.newpipe.extractor.stream.Frameset;
+import org.schabi.newpipe.extractor.stream.Stream;
+import org.schabi.newpipe.extractor.stream.StreamExtractor;
+import org.schabi.newpipe.extractor.stream.StreamInfoItem;
+import org.schabi.newpipe.extractor.stream.StreamInfoItemsCollector;
+import org.schabi.newpipe.extractor.stream.StreamType;
+import org.schabi.newpipe.extractor.stream.SubtitlesStream;
+import org.schabi.newpipe.extractor.stream.VideoStream;
 import org.schabi.newpipe.extractor.utils.JsonUtils;
 import org.schabi.newpipe.extractor.utils.Parser;
 import org.schabi.newpipe.extractor.utils.Utils;
 
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.net.MalformedURLException;
 import java.net.URL;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Locale;
+import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 
 /*
  * Created by Christian Schabesberger on 06.08.15.
@@ -663,7 +677,7 @@ public class YoutubeStreamExtractor extends StreamExtractor {
             final TimeAgoParser timeAgoParser = getTimeAgoParser();
             StreamInfoItemsCollector collector = new StreamInfoItemsCollector(getServiceId());
 
-            collector.commit(extractVideoPreviewInfo(videoInfo, timeAgoParser));
+            collector.commit(new YoutubeStreamInfoItemExtractor(videoInfo, timeAgoParser));
             return collector.getItems().get(0);
         } catch (Exception e) {
             throw new ParsingException("Could not get next video", e);
@@ -684,7 +698,7 @@ public class YoutubeStreamExtractor extends StreamExtractor {
             for (Object ul : results) {
                 final JsonObject videoInfo = ((JsonObject) ul).getObject("compactVideoRenderer");
 
-                if (videoInfo != null) collector.commit(extractVideoPreviewInfo(videoInfo, timeAgoParser));
+                if (videoInfo != null) collector.commit(new YoutubeStreamInfoItemExtractor(videoInfo, timeAgoParser));
             }
             return collector;
         } catch (Exception e) {
@@ -1062,123 +1076,6 @@ public class YoutubeStreamExtractor extends StreamExtractor {
         }
 
         return urlAndItags;
-    }
-
-    /**
-     * Provides information about links to other videos on the video page, such as related videos.
-     * This is encapsulated in a StreamInfoItem object, which is a subset of the fields in a full StreamInfo.
-     */
-    private StreamInfoItemExtractor extractVideoPreviewInfo(final JsonObject videoInfo, final TimeAgoParser timeAgoParser) {
-        return new YoutubeStreamInfoItemExtractor(videoInfo, timeAgoParser) {
-            @Override
-            public StreamType getStreamType() {
-                try {
-                    if (videoInfo.getArray("badges").getObject(0).getObject("metadataBadgeRenderer").getString("label").equals("LIVE NOW")) {
-                        return StreamType.LIVE_STREAM;
-                    }
-                } catch (Exception ignored) {}
-                return StreamType.VIDEO_STREAM;
-            }
-
-            @Override
-            public boolean isAd() {
-                return false;
-            }
-
-            @Override
-            public String getUrl() throws ParsingException {
-                try {
-                    String videoId = videoInfo.getString("videoId");
-                    return YoutubeStreamLinkHandlerFactory.getInstance().getUrl(videoId);
-                } catch (Exception e) {
-                    throw new ParsingException("Could not get url", e);
-                }
-            }
-
-            @Override
-            public String getName() throws ParsingException {
-                String name = null;
-                try {
-                    name = videoInfo.getObject("title").getString("simpleText");
-                } catch (Exception ignored) {}
-                if (name != null && !name.isEmpty()) return name;
-                throw new ParsingException("Could not get title");
-            }
-
-            @Override
-            public long getDuration() throws ParsingException {
-                try {
-                    if (getStreamType() == StreamType.LIVE_STREAM) return -1;
-                    return YoutubeParsingHelper.parseDurationString(videoInfo.getObject("lengthText").getString("simpleText"));
-                } catch (Exception e) {
-                    throw new ParsingException("Could not get duration", e);
-                }
-            }
-
-            @Override
-            public String getUploaderUrl() throws ParsingException {
-                try {
-                    String id = videoInfo.getObject("longBylineText").getArray("runs")
-                            .getObject(0).getObject("navigationEndpoint")
-                            .getObject("browseEndpoint").getString("browseId");
-                    if (id == null || id.isEmpty()) {
-                        throw new IllegalArgumentException("is empty");
-                    }
-                    return YoutubeChannelLinkHandlerFactory.getInstance().getUrl(id);
-                } catch (Exception e) {
-                    throw new ParsingException("Could not get uploader url");
-                }
-            }
-
-            @Nullable
-            @Override
-            public String getTextualUploadDate() {
-                return null;
-            }
-
-            @Nullable
-            @Override
-            public DateWrapper getUploadDate() {
-                return null;
-            }
-
-            @Override
-            public long getViewCount() throws ParsingException {
-                try {
-                    String viewCount;
-                    if (getStreamType() == StreamType.LIVE_STREAM)  {
-                        viewCount = videoInfo.getObject("viewCountText")
-                                .getArray("runs").getObject(0).getString("text");
-                    } else {
-                        viewCount = videoInfo.getObject("viewCountText").getString("simpleText");
-                    }
-                    if (viewCount.equals("Recommended for you")) return -1;
-                    return Long.parseLong(Utils.removeNonDigitCharacters(viewCount));
-                } catch (Exception e) {
-                    throw new ParsingException("Could not get view count", e);
-                }
-            }
-
-            @Override
-            public String getUploaderName() throws ParsingException {
-                try {
-                    return videoInfo.getObject("longBylineText").getArray("runs")
-                            .getObject(0).getString("text");
-                } catch (Exception e) {
-                    throw new ParsingException("Could not get uploader name", e);
-                }
-            }
-
-            @Override
-            public String getThumbnailUrl() throws ParsingException {
-                try {
-                    return videoInfo.getObject("thumbnail").getArray("thumbnails")
-                            .getObject(0).getString("url");
-                } catch (Exception e) {
-                    throw new ParsingException("Could not get thumbnail url", e);
-                }
-            }
-        };
     }
 
     @Nonnull

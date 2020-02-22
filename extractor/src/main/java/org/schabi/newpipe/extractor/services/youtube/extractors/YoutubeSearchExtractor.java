@@ -1,5 +1,10 @@
 package org.schabi.newpipe.extractor.services.youtube.extractors;
 
+import com.grack.nanojson.JsonArray;
+import com.grack.nanojson.JsonObject;
+import com.grack.nanojson.JsonParser;
+import com.grack.nanojson.JsonParserException;
+
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
@@ -16,11 +21,12 @@ import org.schabi.newpipe.extractor.search.SearchExtractor;
 import org.schabi.newpipe.extractor.services.youtube.linkHandler.YoutubeParsingHelper;
 import org.schabi.newpipe.extractor.utils.Parser;
 
-import javax.annotation.Nonnull;
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.net.MalformedURLException;
 import java.net.URL;
+
+import javax.annotation.Nonnull;
 
 /*
  * Created by Christian Schabesberger on 22.07.2018
@@ -45,6 +51,7 @@ import java.net.URL;
 public class YoutubeSearchExtractor extends SearchExtractor {
 
     private Document doc;
+    private JsonObject ytInitialData;
 
     public YoutubeSearchExtractor(StreamingService service, SearchQueryHandler linkHandler) {
         super(service, linkHandler);
@@ -55,6 +62,7 @@ public class YoutubeSearchExtractor extends SearchExtractor {
         final String url = getUrl();
         final Response response = downloader.get(url, getExtractorLocalization());
         doc = YoutubeParsingHelper.parseAndCheckPage(url, response);
+        ytInitialData = getInitialData();
     }
 
     @Nonnull
@@ -86,6 +94,7 @@ public class YoutubeSearchExtractor extends SearchExtractor {
 
     @Override
     public InfoItemsPage<InfoItem> getPage(String pageUrl) throws IOException, ExtractionException {
+        // TODO: Get extracting next pages working
         final String response = getDownloader().get(pageUrl, getExtractorLocalization()).responseBody();
         doc = Jsoup.parse(response, pageUrl);
 
@@ -108,37 +117,33 @@ public class YoutubeSearchExtractor extends SearchExtractor {
         InfoItemsSearchCollector collector = getInfoItemSearchCollector();
         collector.reset();
 
-        Element list = doc.select("ol[class=\"item-section\"]").first();
         final TimeAgoParser timeAgoParser = getTimeAgoParser();
 
-        for (Element item : list.children()) {
-            /* First we need to determine which kind of item we are working with.
-               Youtube depicts five different kinds of items on its search result page. These are
-               regular videos, playlists, channels, two types of video suggestions, and a "no video
-               found" item. Since we only want videos, we need to filter out all the others.
-               An example for this can be seen here:
-               https://www.youtube.com/results?search_query=asdf&page=1
+        JsonArray list = ytInitialData.getObject("contents").getObject("twoColumnSearchResultsRenderer")
+                .getObject("primaryContents").getObject("sectionListRenderer").getArray("contents")
+                .getObject(0).getObject("itemSectionRenderer").getArray("contents");
 
-               We already applied a filter to the url, so we don't need to care about channels and
-               playlists now.
-            */
-
-            Element el;
-
-            if ((el = item.select("div[class*=\"search-message\"]").first()) != null) {
-                throw new NothingFoundException(el.text());
-
-                // video item type
-            } else if ((el = item.select("div[class*=\"yt-lockup-video\"]").first()) != null) {
-                collector.commit(new YoutubeStreamInfoItemExtractor(el, timeAgoParser));
-            } else if ((el = item.select("div[class*=\"yt-lockup-channel\"]").first()) != null) {
-                collector.commit(new YoutubeChannelInfoItemExtractor(el));
-            } else if ((el = item.select("div[class*=\"yt-lockup-playlist\"]").first()) != null &&
-                    item.select(".yt-pl-icon-mix").isEmpty()) {
-                collector.commit(new YoutubePlaylistInfoItemExtractor(el));
+        for (Object item : list) {
+            if (((JsonObject) item).getObject("backgroundPromoRenderer") != null) {
+                throw new NothingFoundException(((JsonObject) item).getObject("backgroundPromoRenderer")
+                        .getObject("bodyText").getArray("runs").getObject(0).getString("text"));
+            } else if (((JsonObject) item).getObject("videoRenderer") != null) {
+                collector.commit(new YoutubeStreamInfoItemExtractor(((JsonObject) item).getObject("videoRenderer"), timeAgoParser));
+            } else if (((JsonObject) item).getObject("channelRenderer") != null) {
+//                collector.commit(new YoutubeChannelInfoItemExtractor(((JsonObject) item).getObject("channelRenderer")));
+            } else if (((JsonObject) item).getObject("playlistRenderer") != null) {
+//                collector.commit(new YoutubePlaylistInfoItemExtractor(((JsonObject) item).getObject("playlistRenderer")));
             }
         }
-
         return collector;
+    }
+
+    private JsonObject getInitialData() throws ParsingException {
+        try {
+            String initialData = Parser.matchGroup1("window\\[\"ytInitialData\"\\]\\s*=\\s*(\\{.*?\\});", doc.toString());
+            return JsonParser.object().from(initialData);
+        } catch (JsonParserException | Parser.RegexException e) {
+            throw new ParsingException("Could not get ytInitialData", e);
+        }
     }
 }
