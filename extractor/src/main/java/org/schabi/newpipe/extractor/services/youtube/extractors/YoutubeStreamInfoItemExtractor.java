@@ -1,5 +1,6 @@
 package org.schabi.newpipe.extractor.services.youtube.extractors;
 
+import com.grack.nanojson.JsonArray;
 import com.grack.nanojson.JsonObject;
 
 import org.schabi.newpipe.extractor.exceptions.ParsingException;
@@ -60,7 +61,7 @@ public class YoutubeStreamInfoItemExtractor implements StreamInfoItemExtractor {
 
     @Override
     public boolean isAd() {
-        return false;
+        return isPremium();
     }
 
     @Override
@@ -169,6 +170,9 @@ public class YoutubeStreamInfoItemExtractor implements StreamInfoItemExtractor {
     @Override
     public long getViewCount() throws ParsingException {
         try {
+            if (videoInfo.getObject("topStandaloneBadge") != null || isPremium()) {
+                return -1;
+            }
             String viewCount;
             if (getStreamType() == StreamType.LIVE_STREAM)  {
                 viewCount = videoInfo.getObject("viewCountText")
@@ -192,5 +196,17 @@ public class YoutubeStreamInfoItemExtractor implements StreamInfoItemExtractor {
         } catch (Exception e) {
             throw new ParsingException("Could not get thumbnail url", e);
         }
+    }
+
+    private boolean isPremium() {
+        try {
+            JsonArray badges = videoInfo.getArray("badges");
+            for (Object badge : badges) {
+                if (((JsonObject) badge).getObject("metadataBadgeRenderer").getString("label").equals("Premium")) {
+                    return true;
+                }
+            }
+        } catch (Exception ignored) {}
+        return false;
     }
 }
