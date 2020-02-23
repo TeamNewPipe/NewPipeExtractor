@@ -248,9 +248,22 @@ public class YoutubeChannelExtractor extends ChannelExtractor {
         final String uploaderUrl = getUrl();
         final TimeAgoParser timeAgoParser = getTimeAgoParser();
 
-        JsonArray videos = initialData.getObject("contents").getObject("twoColumnBrowseResultsRenderer")
-                .getArray("tabs").getObject(1).getObject("tabRenderer").getObject("content")
-                .getObject("sectionListRenderer").getArray("contents");
+        JsonArray tabs = initialData.getObject("contents").getObject("twoColumnBrowseResultsRenderer")
+                .getArray("tabs");
+        JsonArray videos = null;
+
+        for (Object tab : tabs) {
+            if (((JsonObject) tab).getObject("tabRenderer") != null) {
+                if (((JsonObject) tab).getObject("tabRenderer").getString("title").equals("Videos")) {
+                    videos = ((JsonObject) tab).getObject("tabRenderer").getObject("content")
+                            .getObject("sectionListRenderer").getArray("contents");
+                }
+            }
+        }
+
+        if (videos == null) {
+            throw new ParsingException("Could not find Videos tab");
+        }
 
         for (Object video : videos) {
             JsonObject videoInfo = ((JsonObject) video).getObject("itemSectionRenderer")
