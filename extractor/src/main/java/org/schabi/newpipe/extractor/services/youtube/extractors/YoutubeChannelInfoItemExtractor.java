@@ -37,7 +37,7 @@ public class YoutubeChannelInfoItemExtractor implements ChannelInfoItemExtractor
     @Override
     public String getThumbnailUrl() throws ParsingException {
         try {
-            return channelInfoItem.getObject("thumbnails").getArray("thumbnails").getObject(0).getString("url");
+            return channelInfoItem.getObject("thumbnail").getArray("thumbnails").getObject(0).getString("url");
         } catch (Exception e) {
             throw new ParsingException("Could not get thumbnail url", e);
         }
@@ -74,7 +74,7 @@ public class YoutubeChannelInfoItemExtractor implements ChannelInfoItemExtractor
             return Long.parseLong(Utils.removeNonDigitCharacters(channelInfoItem.getObject("videoCountText")
                     .getArray("runs").getObject(0).getString("text")));
         } catch (Exception e) {
-            throw new ParsingException("Could not get name", e);
+            throw new ParsingException("Could not get stream count", e);
         }
     }
 
@@ -83,7 +83,7 @@ public class YoutubeChannelInfoItemExtractor implements ChannelInfoItemExtractor
         try {
             return channelInfoItem.getObject("descriptionSnippet").getArray("runs").getObject(0).getString("text");
         } catch (Exception e) {
-            throw new ParsingException("Could not get description url", e);
+            throw new ParsingException("Could not get description", e);
         }
     }
 }

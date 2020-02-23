@@ -132,7 +132,7 @@ public class YoutubeSearchExtractor extends SearchExtractor {
             } else if (((JsonObject) item).getObject("channelRenderer") != null) {
                 collector.commit(new YoutubeChannelInfoItemExtractor(((JsonObject) item).getObject("channelRenderer")));
             } else if (((JsonObject) item).getObject("playlistRenderer") != null) {
-//                collector.commit(new YoutubePlaylistInfoItemExtractor(((JsonObject) item).getObject("playlistRenderer")));
+                collector.commit(new YoutubePlaylistInfoItemExtractor(((JsonObject) item).getObject("playlistRenderer")));
             }
         }
         return collector;
