@@ -113,12 +113,13 @@ public class YoutubeSearchExtractor extends SearchExtractor {
                 "&page=" + Integer.toString(pageNr + 1));
     }
 
-    private InfoItemsSearchCollector collectItems(Document doc) throws NothingFoundException {
+    private InfoItemsSearchCollector collectItems(Document doc) throws NothingFoundException, ParsingException {
         InfoItemsSearchCollector collector = getInfoItemSearchCollector();
         collector.reset();
 
         final TimeAgoParser timeAgoParser = getTimeAgoParser();
 
+        if (initialData == null) initialData = YoutubeParsingHelper.getInitialData(doc.toString());
         JsonArray list = initialData.getObject("contents").getObject("twoColumnSearchResultsRenderer")
                 .getObject("primaryContents").getObject("sectionListRenderer").getArray("contents")
                 .getObject(0).getObject("itemSectionRenderer").getArray("contents");
