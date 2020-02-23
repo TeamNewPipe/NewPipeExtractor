@@ -13,15 +13,12 @@ import org.schabi.newpipe.extractor.downloader.Downloader;
 import org.schabi.newpipe.extractor.downloader.Response;
 import org.schabi.newpipe.extractor.exceptions.ExtractionException;
 import org.schabi.newpipe.extractor.exceptions.ParsingException;
-import org.schabi.newpipe.extractor.linkhandler.LinkHandlerFactory;
 import org.schabi.newpipe.extractor.linkhandler.ListLinkHandler;
 import org.schabi.newpipe.extractor.localization.TimeAgoParser;
 import org.schabi.newpipe.extractor.playlist.PlaylistExtractor;
 import org.schabi.newpipe.extractor.services.youtube.linkHandler.YoutubeParsingHelper;
 import org.schabi.newpipe.extractor.stream.StreamInfoItem;
 import org.schabi.newpipe.extractor.stream.StreamInfoItemsCollector;
-import org.schabi.newpipe.extractor.stream.StreamType;
-import org.schabi.newpipe.extractor.utils.Parser;
 import org.schabi.newpipe.extractor.utils.Utils;
 
 import java.io.IOException;
@@ -233,112 +230,23 @@ public class YoutubePlaylistExtractor extends PlaylistExtractor {
     private void collectStreamsFrom(@Nonnull StreamInfoItemsCollector collector, @Nullable Element element) {
         collector.reset();
 
-        if (element == null) {
-            return;
-        }
-
-        final LinkHandlerFactory streamLinkHandlerFactory = getService().getStreamLHFactory();
         final TimeAgoParser timeAgoParser = getTimeAgoParser();
 
-        for (final Element li : element.children()) {
-            if (isDeletedItem(li)) {
-                continue;
+        JsonArray videos = initialData.getObject("contents").getObject("twoColumnBrowseResultsRenderer")
+                .getArray("tabs").getObject(0).getObject("tabRenderer").getObject("content")
+                .getObject("sectionListRenderer").getArray("contents").getObject(0)
+                .getObject("itemSectionRenderer").getArray("contents").getObject(0)
+                .getObject("playlistVideoListRenderer").getArray("contents");
+
+        for (Object video : videos) {
+            if (((JsonObject) video).getObject("playlistVideoRenderer") != null) {
+                collector.commit(new YoutubeStreamInfoItemExtractor(((JsonObject) video).getObject("playlistVideoRenderer"), timeAgoParser) {
+                    @Override
+                    public long getViewCount() {
+                        return -1;
+                    }
+                });
             }
-
-            collector.commit(new YoutubeStreamInfoItemExtractor(li, timeAgoParser) {
-                public Element uploaderLink;
-
-                @Override
-                public boolean isAd() {
-                    return false;
-                }
-
-                @Override
-                public String getUrl() throws ParsingException {
-                    try {
-                        return streamLinkHandlerFactory.fromId(li.attr("data-video-id")).getUrl();
-                    } catch (Exception e) {
-                        throw new ParsingException("Could not get web page url for the video", e);
-                    }
-                }
-
-                @Override
-                public String getName() throws ParsingException {
-                    try {
-                        return li.attr("data-title");
-                    } catch (Exception e) {
-                        throw new ParsingException("Could not get title", e);
-                    }
-                }
-
-                @Override
-                public long getDuration() throws ParsingException {
-                    try {
-                        if (getStreamType() == StreamType.LIVE_STREAM) return -1;
-
-                        Element first = li.select("div[class=\"timestamp\"] span").first();
-                        if (first == null) {
-                            // Video unavailable (private, deleted, etc.), this is a thing that happens specifically with playlists,
-                            // because in other cases, those videos don't even show up
-                            return -1;
-                        }
-
-                        return YoutubeParsingHelper.parseDurationString(first.text());
-                    } catch (Exception e) {
-                        throw new ParsingException("Could not get duration" + getUrl(), e);
-                    }
-                }
-
-
-                private Element getUploaderLink() {
-                    // should always be present since we filter deleted items
-                    if (uploaderLink == null) {
-                        uploaderLink = li.select("div[class=pl-video-owner] a").first();
-                    }
-                    return uploaderLink;
-                }
-
-                @Override
-                public String getUploaderName() throws ParsingException {
-                    return getUploaderLink().text();
-                }
-
-                @Override
-                public String getUploaderUrl() throws ParsingException {
-                    // this url is not always in the form "/channel/..."
-                    // sometimes Youtube provides urls in the from "/user/..."
-                    return getUploaderLink().attr("abs:href");
-                }
-
-                @Override
-                public String getTextualUploadDate() {
-                    return "";
-                }
-
-                @Override
-                public long getViewCount() throws ParsingException {
-                    return -1;
-                }
-
-                @Override
-                public String getThumbnailUrl() throws ParsingException {
-                    try {
-                        return "https://i.ytimg.com/vi/" + streamLinkHandlerFactory.fromUrl(getUrl()).getId() + "/hqdefault.jpg";
-                    } catch (Exception e) {
-                        throw new ParsingException("Could not get thumbnail url", e);
-                    }
-                }
-            });
         }
-    }
-
-    /**
-     * Check if the playlist item is deleted
-     *
-     * @param li the list item
-     * @return true if the item is deleted
-     */
-    private boolean isDeletedItem(Element li) {
-        return li.select("div[class=pl-video-owner] a").isEmpty();
     }
 }

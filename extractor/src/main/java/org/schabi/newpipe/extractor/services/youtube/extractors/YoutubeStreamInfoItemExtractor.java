@@ -1,7 +1,7 @@
 package org.schabi.newpipe.extractor.services.youtube.extractors;
 
 import com.grack.nanojson.JsonObject;
-import org.jsoup.nodes.Element;
+
 import org.schabi.newpipe.extractor.exceptions.ParsingException;
 import org.schabi.newpipe.extractor.localization.DateWrapper;
 import org.schabi.newpipe.extractor.localization.TimeAgoParser;
@@ -36,10 +36,6 @@ public class YoutubeStreamInfoItemExtractor implements StreamInfoItemExtractor {
 
     private JsonObject videoInfo;
     private final TimeAgoParser timeAgoParser;
-
-    public YoutubeStreamInfoItemExtractor(Element a, @Nullable TimeAgoParser timeAgoParser) {
-        this.timeAgoParser = timeAgoParser;
-    }
 
     /**
      * Creates an extractor of StreamInfoItems from a YouTube page.
@@ -115,6 +111,12 @@ public class YoutubeStreamInfoItemExtractor implements StreamInfoItemExtractor {
                         .getObject(0).getString("text");
             } catch (Exception ignored) {}
         }
+        if (name == null) {
+            try {
+                name = videoInfo.getObject("shortBylineText").getArray("runs")
+                        .getObject(0).getString("text");
+            } catch (Exception ignored) {}
+        }
         if (name != null && !name.isEmpty()) return name;
         throw new ParsingException("Could not get uploader name");
     }
@@ -131,6 +133,13 @@ public class YoutubeStreamInfoItemExtractor implements StreamInfoItemExtractor {
             if (id == null) {
                 try {
                     id = videoInfo.getObject("ownerText").getArray("runs")
+                            .getObject(0).getObject("navigationEndpoint")
+                            .getObject("browseEndpoint").getString("browseId");
+                } catch (Exception ignored) {}
+            }
+            if (id == null) {
+                try {
+                    id = videoInfo.getObject("shortBylineText").getArray("runs")
                             .getObject(0).getObject("navigationEndpoint")
                             .getObject("browseEndpoint").getString("browseId");
                 } catch (Exception ignored) {}
