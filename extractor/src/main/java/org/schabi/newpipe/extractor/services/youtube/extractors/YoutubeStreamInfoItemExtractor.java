@@ -60,8 +60,8 @@ public class YoutubeStreamInfoItemExtractor implements StreamInfoItemExtractor {
     }
 
     @Override
-    public boolean isAd() {
-        return isPremium();
+    public boolean isAd() throws ParsingException {
+        return isPremium() || getName().equals("[Private video]") || getName().equals("[Deleted video]");
     }
 
     @Override
