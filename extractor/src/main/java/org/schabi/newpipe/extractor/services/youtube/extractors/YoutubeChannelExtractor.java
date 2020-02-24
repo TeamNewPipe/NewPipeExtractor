@@ -231,6 +231,10 @@ public class YoutubeChannelExtractor extends ChannelExtractor {
 
 
     private String getNextPageUrlFrom(JsonArray continuations) {
+        if (continuations == null) {
+            return "";
+        }
+
         JsonObject nextContinuationData = continuations.getObject(0).getObject("nextContinuationData");
         String continuation = nextContinuationData.getString("continuation");
         String clickTrackingParams = nextContinuationData.getString("clickTrackingParams");

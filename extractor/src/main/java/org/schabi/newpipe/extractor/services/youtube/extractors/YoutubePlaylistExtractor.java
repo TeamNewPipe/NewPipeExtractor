@@ -5,9 +5,7 @@ import com.grack.nanojson.JsonObject;
 import com.grack.nanojson.JsonParser;
 import com.grack.nanojson.JsonParserException;
 
-import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
-import org.jsoup.nodes.Element;
 import org.schabi.newpipe.extractor.StreamingService;
 import org.schabi.newpipe.extractor.downloader.Downloader;
 import org.schabi.newpipe.extractor.downloader.Response;
@@ -22,9 +20,12 @@ import org.schabi.newpipe.extractor.stream.StreamInfoItemsCollector;
 import org.schabi.newpipe.extractor.utils.Utils;
 
 import java.io.IOException;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
 
 @SuppressWarnings("WeakerAccess")
 public class YoutubePlaylistExtractor extends PlaylistExtractor {
@@ -95,7 +96,11 @@ public class YoutubePlaylistExtractor extends PlaylistExtractor {
 
     @Override
     public String getNextPageUrl() throws ExtractionException {
-        return getNextPageUrlFrom(doc);
+        return getNextPageUrlFrom(initialData.getObject("contents").getObject("twoColumnBrowseResultsRenderer")
+                .getArray("tabs").getObject(0).getObject("tabRenderer").getObject("content")
+                .getObject("sectionListRenderer").getArray("contents").getObject(0)
+                .getObject("itemSectionRenderer").getArray("contents").getObject(0)
+                .getObject("playlistVideoListRenderer").getArray("continuations"));
     }
 
     @Nonnull
@@ -174,8 +179,14 @@ public class YoutubePlaylistExtractor extends PlaylistExtractor {
     @Override
     public InfoItemsPage<StreamInfoItem> getInitialPage() throws ExtractionException {
         StreamInfoItemsCollector collector = new StreamInfoItemsCollector(getServiceId());
-        Element tbody = doc.select("tbody[id=\"pl-load-more-destination\"]").first();
-        collectStreamsFrom(collector, tbody);
+
+        JsonArray videos = initialData.getObject("contents").getObject("twoColumnBrowseResultsRenderer")
+                .getArray("tabs").getObject(0).getObject("tabRenderer").getObject("content")
+                .getObject("sectionListRenderer").getArray("contents").getObject(0)
+                .getObject("itemSectionRenderer").getArray("contents").getObject(0)
+                .getObject("playlistVideoListRenderer").getArray("contents");
+
+        collectStreamsFrom(collector, videos);
         return new InfoItemsPage<>(collector, getNextPageUrl());
     }
 
@@ -186,57 +197,41 @@ public class YoutubePlaylistExtractor extends PlaylistExtractor {
         }
 
         StreamInfoItemsCollector collector = new StreamInfoItemsCollector(getServiceId());
-        JsonObject pageJson;
+        JsonArray ajaxJson;
         try {
-            final String responseBody = getDownloader().get(pageUrl, getExtractorLocalization()).responseBody();
-            pageJson = JsonParser.object().from(responseBody);
+            Map<String, List<String>> headers = new HashMap<>();
+            headers.put("X-YouTube-Client-Name", Collections.singletonList("1"));
+            headers.put("X-YouTube-Client-Version", Collections.singletonList("2.20200221.03.00")); // TODO: Automatically get YouTube client version somehow
+            final String response = getDownloader().get(pageUrl, headers, getExtractorLocalization()).responseBody();
+            ajaxJson = JsonParser.array().from(response);
         } catch (JsonParserException pe) {
-            throw new ParsingException("Could not parse ajax json", pe);
+            throw new ParsingException("Could not parse json data for next streams", pe);
         }
 
-        final Document pageHtml = Jsoup.parse("<table><tbody id=\"pl-load-more-destination\">"
-                + pageJson.getString("content_html")
-                + "</tbody></table>", pageUrl);
+        JsonObject sectionListContinuation = ajaxJson.getObject(1).getObject("response")
+                .getObject("continuationContents").getObject("playlistVideoListContinuation");
 
-        collectStreamsFrom(collector, pageHtml.select("tbody[id=\"pl-load-more-destination\"]").first());
+        collectStreamsFrom(collector, sectionListContinuation.getArray("contents"));
 
-        return new InfoItemsPage<>(collector, getNextPageUrlFromAjax(pageJson, pageUrl));
+        return new InfoItemsPage<>(collector, getNextPageUrlFrom(sectionListContinuation.getArray("continuations")));
     }
 
-    private String getNextPageUrlFromAjax(final JsonObject pageJson, final String pageUrl)
-            throws ParsingException {
-        String nextPageHtml = pageJson.getString("load_more_widget_html");
-        if (!nextPageHtml.isEmpty()) {
-            return getNextPageUrlFrom(Jsoup.parse(nextPageHtml, pageUrl));
-        } else {
+    private String getNextPageUrlFrom(JsonArray continuations) {
+        if (continuations == null) {
             return "";
         }
+
+        JsonObject nextContinuationData = continuations.getObject(0).getObject("nextContinuationData");
+        String continuation = nextContinuationData.getString("continuation");
+        String clickTrackingParams = nextContinuationData.getString("clickTrackingParams");
+        return "https://www.youtube.com/browse_ajax?ctoken=" + continuation + "&continuation=" + continuation
+                + "&itct=" + clickTrackingParams;
     }
 
-    private String getNextPageUrlFrom(Document d) throws ParsingException {
-        try {
-            Element button = d.select("button[class*=\"yt-uix-load-more\"]").first();
-            if (button != null) {
-                return button.attr("abs:data-uix-load-more-href");
-            } else {
-                // Sometimes playlists are simply so small, they don't have a more streams/videos
-                return "";
-            }
-        } catch (Exception e) {
-            throw new ParsingException("could not get next streams' url", e);
-        }
-    }
-
-    private void collectStreamsFrom(@Nonnull StreamInfoItemsCollector collector, @Nullable Element element) {
+    private void collectStreamsFrom(StreamInfoItemsCollector collector, JsonArray videos) {
         collector.reset();
 
         final TimeAgoParser timeAgoParser = getTimeAgoParser();
-
-        JsonArray videos = initialData.getObject("contents").getObject("twoColumnBrowseResultsRenderer")
-                .getArray("tabs").getObject(0).getObject("tabRenderer").getObject("content")
-                .getObject("sectionListRenderer").getArray("contents").getObject(0)
-                .getObject("itemSectionRenderer").getArray("contents").getObject(0)
-                .getObject("playlistVideoListRenderer").getArray("contents");
 
         for (Object video : videos) {
             if (((JsonObject) video).getObject("playlistVideoRenderer") != null) {
