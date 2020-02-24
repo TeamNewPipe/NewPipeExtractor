@@ -65,9 +65,9 @@ public class ChannelInfo extends ListInfo<StreamInfoItem> {
         try {
             name = extractor.getName();
         } catch (ExtractionException e) {
-            String errorMessage = extractor.obtainErrorMessage();
+            String errorMessage = extractor.obtainLocalizedErrorMessage();
             if (errorMessage != null) {
-                throw new ContentNotAvailableException(errorMessage);
+                throw new ContentNotAvailableException(e.getMessage(), errorMessage, e);
             }
             name = "";
             getNameFailure = e;

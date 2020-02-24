@@ -40,7 +40,7 @@ public abstract class ChannelExtractor extends ListExtractor<StreamInfoItem> {
     public abstract long getSubscriberCount() throws ParsingException;
     public abstract String getDescription() throws ParsingException;
     @Nullable
-    public String obtainErrorMessage() {
+    public String obtainLocalizedErrorMessage() {
         return null;
     }
 }

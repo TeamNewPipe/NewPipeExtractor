@@ -172,7 +172,7 @@ public class YoutubeChannelExtractor extends ChannelExtractor {
      * @return the text as String or null if no warning text could be found
      */
     @Override
-    public String obtainErrorMessage() {
+    public String obtainLocalizedErrorMessage() {
         try {
             return doc.select("div.yt-alert-message:not(#old-browser-alert)").first().text();
         } catch (Exception e) {
