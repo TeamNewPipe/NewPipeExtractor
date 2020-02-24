@@ -208,7 +208,7 @@ public class YoutubeChannelExtractor extends ChannelExtractor {
 
         // Unfortunately, we have to fetch the page even if we are only getting next streams,
         // as they don't deliver enough information on their own (the channel name, for example).
-//        fetchPage();
+        fetchPage();
 
         StreamInfoItemsCollector collector = new StreamInfoItemsCollector(getServiceId());
         JsonArray ajaxJson;
