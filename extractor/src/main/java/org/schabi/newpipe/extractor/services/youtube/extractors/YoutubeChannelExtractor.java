@@ -219,7 +219,7 @@ public class YoutubeChannelExtractor extends ChannelExtractor {
             headers.put("X-YouTube-Client-Version",
                     Collections.singletonList(YoutubeParsingHelper.HARDCODED_CLIENT_VERSION));
             final String response = getDownloader().get(pageUrl, headers, getExtractorLocalization()).responseBody();
-            if (response.length() > 50) { // ensure to have a valid response
+            if (response.length() < 50) { // ensure to have a valid response
                 throw new ParsingException("Could not parse json data for next streams");
             }
             ajaxJson = JsonParser.array().from(response);
@@ -228,7 +228,7 @@ public class YoutubeChannelExtractor extends ChannelExtractor {
                 headers.put("X-YouTube-Client-Version",
                         Collections.singletonList(YoutubeParsingHelper.getClientVersion(initialData, doc.toString())));
                 final String response = getDownloader().get(pageUrl, headers, getExtractorLocalization()).responseBody();
-                if (response.length() > 50) { // ensure to have a valid response
+                if (response.length() < 50) { // ensure to have a valid response
                     throw new ParsingException("Could not parse json data for next streams");
                 }
                 ajaxJson = JsonParser.array().from(response);
