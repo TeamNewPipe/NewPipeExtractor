@@ -415,13 +415,33 @@ public class YoutubeStreamExtractor extends StreamExtractor {
         throw new ExtractionException("Could not find correct results in response");
     }
 
+    private JsonObject getVideoPrimaryInfoRenderer() throws ParsingException {
+        JsonArray contents = initialData.getObject("contents").getObject("twoColumnWatchNextResults")
+                .getObject("results").getObject("results").getArray("contents");
+        JsonObject videoPrimaryInfoRenderer = null;
+
+        for (Object content : contents) {
+            if (((JsonObject) content).getObject("videoPrimaryInfoRenderer") != null) {
+                videoPrimaryInfoRenderer = ((JsonObject) content).getObject("videoPrimaryInfoRenderer");
+                break;
+            }
+        }
+
+        if (videoPrimaryInfoRenderer == null) {
+            throw new ParsingException("Could not find videoPrimaryInfoRenderer");
+        }
+
+        return videoPrimaryInfoRenderer;
+    }
+
     @Override
     public long getLikeCount() throws ParsingException {
         assertPageFetched();
         String likesString = "";
         try {
             try {
-                likesString = initialData.getObject("contents").getObject("twoColumnWatchNextResults").getObject("results").getObject("results").getArray("contents").getObject(0).getObject("videoPrimaryInfoRenderer").getObject("sentimentBar").getObject("sentimentBarRenderer").getString("tooltip").split("/")[0];
+                likesString = getVideoPrimaryInfoRenderer().getObject("sentimentBar")
+                        .getObject("sentimentBarRenderer").getString("tooltip").split("/")[0];
             } catch (NullPointerException e) {
                 //if this kicks in our button has no content and therefore ratings must be disabled
                 if (playerResponse.getObject("videoDetails").getBoolean("allowRatings")) {
@@ -442,9 +462,9 @@ public class YoutubeStreamExtractor extends StreamExtractor {
         assertPageFetched();
         String dislikesString = "";
         try {
-            Element button = doc.select("button.like-button-renderer-dislike-button").first();
             try {
-                dislikesString = initialData.getObject("contents").getObject("twoColumnWatchNextResults").getObject("results").getObject("results").getArray("contents").getObject(0).getObject("videoPrimaryInfoRenderer").getObject("sentimentBar").getObject("sentimentBarRenderer").getString("tooltip").split("/")[1];
+                dislikesString = getVideoPrimaryInfoRenderer().getObject("sentimentBar")
+                        .getObject("sentimentBarRenderer").getString("tooltip").split("/")[1];
             } catch (NullPointerException e) {
                 //if this kicks in our button has no content and therefore ratings must be disabled
                 if (playerResponse.getObject("videoDetails").getBoolean("allowRatings")) {
