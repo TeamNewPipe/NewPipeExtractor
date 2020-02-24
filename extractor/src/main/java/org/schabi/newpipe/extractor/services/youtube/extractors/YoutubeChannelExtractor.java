@@ -127,8 +127,11 @@ public class YoutubeChannelExtractor extends ChannelExtractor {
     @Override
     public String getBannerUrl() throws ParsingException {
         try {
-            String url = initialData.getObject("header").getObject("c4TabbedHeaderRenderer").getObject("banner").getArray("thumbnails").getObject(0).getString("url");
-            if (url.contains("s.ytimg.com") || url.contains("default_banner")) {
+            String url = null;
+            try {
+                url = initialData.getObject("header").getObject("c4TabbedHeaderRenderer").getObject("banner").getArray("thumbnails").getObject(0).getString("url");
+            } catch (Exception ignored) {}
+            if (url == null || url.contains("s.ytimg.com") || url.contains("default_banner")) {
                 return null;
             }
             // the first characters of the banner URLs are different for each channel and some are not even valid URLs
