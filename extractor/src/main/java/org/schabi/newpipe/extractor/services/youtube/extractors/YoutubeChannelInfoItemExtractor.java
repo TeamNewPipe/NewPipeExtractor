@@ -63,9 +63,13 @@ public class YoutubeChannelInfoItemExtractor implements ChannelInfoItemExtractor
     }
 
     @Override
-    public long getSubscriberCount() {
-        // TODO: get subscriber count, it's in subscriberCountText.simpleText as a string like "103M subscribers"
-        return -1;
+    public long getSubscriberCount() throws ParsingException {
+        try {
+            String subscribers = channelInfoItem.getObject("subscriberCountText").getString("simpleText").split(" ")[0];
+            return Utils.mixedNumberWordToLong(subscribers);
+        } catch (Exception e) {
+            throw new ParsingException("Could not get subscriber count", e);
+        }
     }
 
     @Override
