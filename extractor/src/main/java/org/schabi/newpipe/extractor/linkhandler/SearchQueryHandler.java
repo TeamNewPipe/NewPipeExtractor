@@ -24,6 +24,7 @@ public class SearchQueryHandler extends ListLinkHandler {
     /**
      * Returns the search string. Since ListQIHandler is based on ListLinkHandler
      * getSearchString() is equivalent to calling getId().
+     *
      * @return the search string
      */
     public String getSearchString() {

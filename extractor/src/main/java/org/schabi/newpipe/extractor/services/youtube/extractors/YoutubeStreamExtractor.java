@@ -114,7 +114,8 @@ public class YoutubeStreamExtractor extends StreamExtractor {
             String name = null;
             try {
                 name = doc.select("meta[name=title]").attr(CONTENT);
-            } catch (Exception ignored) {}
+            } catch (Exception ignored) {
+            }
 
             if (name == null) {
                 throw new ParsingException("Could not get name", e);
@@ -135,7 +136,8 @@ public class YoutubeStreamExtractor extends StreamExtractor {
             String uploadDate = null;
             try {
                 uploadDate = doc.select("meta[itemprop=datePublished]").attr(CONTENT);
-            } catch (Exception ignored) {}
+            } catch (Exception ignored) {
+            }
 
             if (uploadDate == null) {
                 throw new ParsingException("Could not get upload date", e);
@@ -180,15 +182,15 @@ public class YoutubeStreamExtractor extends StreamExtractor {
 
     @Nonnull
     @Override
-    public String getDescription() throws ParsingException {
+    public Description getDescription() throws ParsingException {
         assertPageFetched();
         try {
             // first try to get html-formatted description
-            return parseHtmlAndGetFullLinks(doc.select("p[id=\"eow-description\"]").first().html());
+            return new Description(parseHtmlAndGetFullLinks(doc.select("p[id=\"eow-description\"]").first().html()), Description.HTML);
         } catch (Exception e) {
             try {
                 // fallback to raw non-html description
-                return playerResponse.getObject("videoDetails").getString("shortDescription");
+                return new Description(playerResponse.getObject("videoDetails").getString("shortDescription"), Description.PLAIN_TEXT);
             } catch (Exception ignored) {
                 throw new ParsingException("Could not get the description", e);
             }
@@ -217,7 +219,7 @@ public class YoutubeStreamExtractor extends StreamExtractor {
     private String parseHtmlAndGetFullLinks(String descriptionHtml)
             throws MalformedURLException, UnsupportedEncodingException, ParsingException {
         final Document description = Jsoup.parse(descriptionHtml, getUrl());
-        for(Element a : description.select("a")) {
+        for (Element a : description.select("a")) {
             final String rawUrl = a.attr("abs:href");
             final URL redirectLink = new URL(rawUrl);
 
@@ -242,22 +244,22 @@ public class YoutubeStreamExtractor extends StreamExtractor {
                 // getUrl() is https://www.youtube.com/watch?v=..., never youtu.be, never &t=.
                 a.attr("href", getUrl() + setTimestamp);
 
-            } else if((queryString = redirectLink.getQuery()) != null) {
+            } else if ((queryString = redirectLink.getQuery()) != null) {
                 // if the query string is null we are not dealing with a redirect link,
                 // so we don't need to override it.
                 final String link =
                         Parser.compatParseMap(queryString).get("q");
 
-                if(link != null) {
+                if (link != null) {
                     // if link is null the a tag is a hashtag.
                     // They refer to the youtube search. We do not handle them.
                     a.text(link);
                     a.attr("href", link);
-                } else if(redirectLink.toString().contains("https://www.youtube.com/")) {
+                } else if (redirectLink.toString().contains("https://www.youtube.com/")) {
                     a.text(redirectLink.toString());
                     a.attr("href", redirectLink.toString());
                 }
-            } else if(redirectLink.toString().contains("https://www.youtube.com/")) {
+            } else if (redirectLink.toString().contains("https://www.youtube.com/")) {
                 descriptionHtml = descriptionHtml.replace(rawUrl, redirectLink.toString());
                 a.text(redirectLink.toString());
                 a.attr("href", redirectLink.toString());
@@ -1078,60 +1080,97 @@ public class YoutubeStreamExtractor extends StreamExtractor {
         };
     }
 
-	@Nonnull
-	@Override
-	public List<Frameset> getFrames() throws ExtractionException {
-		try {
-			final String script = doc.select("#player-api").first().siblingElements().select("script").html();
-			int p = script.indexOf("ytplayer.config");
-			if (p == -1) {
-				return Collections.emptyList();
-			}
-			p = script.indexOf('{', p);
-			int e = script.indexOf("ytplayer.load", p);
-			if (e == -1) {
-				return Collections.emptyList();
-			}
-			JsonObject jo = JsonParser.object().from(script.substring(p, e - 1));
-			final String resp = jo.getObject("args").getString("player_response");
-			jo = JsonParser.object().from(resp);
-			final String[] spec = jo.getObject("storyboards").getObject("playerStoryboardSpecRenderer").getString("spec").split("\\|");
-			final String url = spec[0];
-			final ArrayList<Frameset> result = new ArrayList<>(spec.length - 1);
-			for (int i = 1; i < spec.length; ++i) {
-				final String[] parts = spec[i].split("#");
-				if (parts.length != 8) {
-					continue;
-				}
-				final int frameWidth = Integer.parseInt(parts[0]);
-				final int frameHeight = Integer.parseInt(parts[1]);
-				final int totalCount = Integer.parseInt(parts[2]);
-				final int framesPerPageX = Integer.parseInt(parts[3]);
-				final int framesPerPageY = Integer.parseInt(parts[4]);
-				final String baseUrl = url.replace("$L", String.valueOf(i - 1)).replace("$N", parts[6]) + "&sigh=" + parts[7];
-				final List<String> urls;
-				if (baseUrl.contains("$M")) {
-					final int totalPages = (int) Math.ceil(totalCount / (double) (framesPerPageX * framesPerPageY));
-					urls = new ArrayList<>(totalPages);
-					for (int j = 0; j < totalPages; j++) {
-						urls.add(baseUrl.replace("$M", String.valueOf(j)));
-					}
-				} else {
-					urls = Collections.singletonList(baseUrl);
-				}
-				result.add(new Frameset(
-						urls,
-						frameWidth,
-						frameHeight,
-						totalCount,
-						framesPerPageX,
-						framesPerPageY
-				));
-			}
-			result.trimToSize();
-			return result;
-		} catch (Exception e) {
-			throw new ExtractionException(e);
-		}
-	}
+    @Nonnull
+    @Override
+    public List<Frameset> getFrames() throws ExtractionException {
+        try {
+            final String script = doc.select("#player-api").first().siblingElements().select("script").html();
+            int p = script.indexOf("ytplayer.config");
+            if (p == -1) {
+                return Collections.emptyList();
+            }
+            p = script.indexOf('{', p);
+            int e = script.indexOf("ytplayer.load", p);
+            if (e == -1) {
+                return Collections.emptyList();
+            }
+            JsonObject jo = JsonParser.object().from(script.substring(p, e - 1));
+            final String resp = jo.getObject("args").getString("player_response");
+            jo = JsonParser.object().from(resp);
+            final String[] spec = jo.getObject("storyboards").getObject("playerStoryboardSpecRenderer").getString("spec").split("\\|");
+            final String url = spec[0];
+            final ArrayList<Frameset> result = new ArrayList<>(spec.length - 1);
+            for (int i = 1; i < spec.length; ++i) {
+                final String[] parts = spec[i].split("#");
+                if (parts.length != 8) {
+                    continue;
+                }
+                final int frameWidth = Integer.parseInt(parts[0]);
+                final int frameHeight = Integer.parseInt(parts[1]);
+                final int totalCount = Integer.parseInt(parts[2]);
+                final int framesPerPageX = Integer.parseInt(parts[3]);
+                final int framesPerPageY = Integer.parseInt(parts[4]);
+                final String baseUrl = url.replace("$L", String.valueOf(i - 1)).replace("$N", parts[6]) + "&sigh=" + parts[7];
+                final List<String> urls;
+                if (baseUrl.contains("$M")) {
+                    final int totalPages = (int) Math.ceil(totalCount / (double) (framesPerPageX * framesPerPageY));
+                    urls = new ArrayList<>(totalPages);
+                    for (int j = 0; j < totalPages; j++) {
+                        urls.add(baseUrl.replace("$M", String.valueOf(j)));
+                    }
+                } else {
+                    urls = Collections.singletonList(baseUrl);
+                }
+                result.add(new Frameset(
+                        urls,
+                        frameWidth,
+                        frameHeight,
+                        totalCount,
+                        framesPerPageX,
+                        framesPerPageY
+                ));
+            }
+            result.trimToSize();
+            return result;
+        } catch (Exception e) {
+            throw new ExtractionException(e);
+        }
+    }
+
+    @Override
+    public String getHost() throws ParsingException {
+        return "";
+    }
+
+    @Override
+    public String getPrivacy() throws ParsingException {
+        return "";
+    }
+
+    @Override
+    public String getCategory() throws ParsingException {
+        return "";
+    }
+
+    @Override
+    public String getLicence() throws ParsingException {
+        return "";
+    }
+
+    @Override
+    public Locale getLanguageInfo() throws ParsingException {
+        return null;
+    }
+
+    @Nonnull
+    @Override
+    public List<String> getTags() throws ParsingException {
+        return new ArrayList<>();
+    }
+
+    @Nonnull
+    @Override
+    public String getSupportInfo() throws ParsingException {
+        return "";
+    }
 }

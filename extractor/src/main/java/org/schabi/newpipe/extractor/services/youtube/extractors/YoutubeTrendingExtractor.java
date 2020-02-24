@@ -88,8 +88,8 @@ public class YoutubeTrendingExtractor extends KioskExtractor<StreamInfoItem> {
 
         final TimeAgoParser timeAgoParser = getTimeAgoParser();
 
-        for(Element ul : uls) {
-            for(final Element li : ul.children()) {
+        for (Element ul : uls) {
+            for (final Element li : ul.children()) {
                 final Element el = li.select("div[class*=\"yt-lockup-dismissable\"]").first();
                 collector.commit(new YoutubeStreamInfoItemExtractor(li, timeAgoParser) {
                     @Override

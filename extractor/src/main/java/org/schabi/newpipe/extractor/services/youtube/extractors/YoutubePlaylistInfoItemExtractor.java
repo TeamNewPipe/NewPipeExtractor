@@ -53,7 +53,7 @@ public class YoutubePlaylistInfoItemExtractor implements PlaylistInfoItemExtract
                     .select("ul[class=\"yt-lockup-meta-info\"]")
                     .select("li").select("a").first();
 
-            if(a != null) {
+            if (a != null) {
                 return a.attr("abs:href");
             }
 

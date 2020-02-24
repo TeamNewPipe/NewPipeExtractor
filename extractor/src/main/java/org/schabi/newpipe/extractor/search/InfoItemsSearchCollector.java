@@ -5,7 +5,6 @@ import org.schabi.newpipe.extractor.InfoItemExtractor;
 import org.schabi.newpipe.extractor.InfoItemsCollector;
 import org.schabi.newpipe.extractor.channel.ChannelInfoItemExtractor;
 import org.schabi.newpipe.extractor.channel.ChannelInfoItemsCollector;
-import org.schabi.newpipe.extractor.exceptions.ExtractionException;
 import org.schabi.newpipe.extractor.exceptions.ParsingException;
 import org.schabi.newpipe.extractor.playlist.PlaylistInfoItemExtractor;
 import org.schabi.newpipe.extractor.playlist.PlaylistInfoItemsCollector;
@@ -34,7 +33,7 @@ import org.schabi.newpipe.extractor.stream.StreamInfoItemsCollector;
 
 /**
  * Collector for search results
- *
+ * <p>
  * This collector can handle the following extractor types:
  * <ul>
  *     <li>{@link StreamInfoItemExtractor}</li>
@@ -59,11 +58,11 @@ public class InfoItemsSearchCollector extends InfoItemsCollector<InfoItem, InfoI
     @Override
     public InfoItem extract(InfoItemExtractor extractor) throws ParsingException {
         // Use the corresponding collector for each item extractor type
-        if(extractor instanceof StreamInfoItemExtractor) {
+        if (extractor instanceof StreamInfoItemExtractor) {
             return streamCollector.extract((StreamInfoItemExtractor) extractor);
-        } else if(extractor instanceof ChannelInfoItemExtractor) {
+        } else if (extractor instanceof ChannelInfoItemExtractor) {
             return userCollector.extract((ChannelInfoItemExtractor) extractor);
-        } else if(extractor instanceof PlaylistInfoItemExtractor) {
+        } else if (extractor instanceof PlaylistInfoItemExtractor) {
             return playlistCollector.extract((PlaylistInfoItemExtractor) extractor);
         } else {
             throw new IllegalArgumentException("Invalid extractor type: " + extractor);

@@ -216,7 +216,7 @@ public class YoutubeChannelExtractor extends ChannelExtractor {
     }
 
     private String getNextPageUrlFromAjaxPage(final JsonObject ajaxJson, final String pageUrl)
-        throws ParsingException {
+            throws ParsingException {
         String loadMoreHtmlDataRaw = ajaxJson.getString("load_more_widget_html");
         if (!loadMoreHtmlDataRaw.isEmpty()) {
             return getNextPageUrlFrom(Jsoup.parse(loadMoreHtmlDataRaw, pageUrl));

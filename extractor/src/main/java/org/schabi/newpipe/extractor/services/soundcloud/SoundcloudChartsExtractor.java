@@ -1,7 +1,7 @@
 package org.schabi.newpipe.extractor.services.soundcloud;
 
-import org.schabi.newpipe.extractor.downloader.Downloader;
 import org.schabi.newpipe.extractor.StreamingService;
+import org.schabi.newpipe.extractor.downloader.Downloader;
 import org.schabi.newpipe.extractor.exceptions.ExtractionException;
 import org.schabi.newpipe.extractor.kiosk.KioskExtractor;
 import org.schabi.newpipe.extractor.linkhandler.ListLinkHandler;
@@ -12,8 +12,8 @@ import javax.annotation.Nonnull;
 import java.io.IOException;
 
 public class SoundcloudChartsExtractor extends KioskExtractor<StreamInfoItem> {
-	private StreamInfoItemsCollector collector = null;
-	private String nextPageUrl = null;
+    private StreamInfoItemsCollector collector = null;
+    private String nextPageUrl = null;
 
     public SoundcloudChartsExtractor(StreamingService service,
                                      ListLinkHandler linkHandler,
@@ -68,7 +68,7 @@ public class SoundcloudChartsExtractor extends KioskExtractor<StreamInfoItem> {
 
     @Override
     public String getNextPageUrl() throws IOException, ExtractionException {
-        if(nextPageUrl == null) {
+        if (nextPageUrl == null) {
             computNextPageAndStreams();
         }
         return nextPageUrl;
@@ -77,7 +77,7 @@ public class SoundcloudChartsExtractor extends KioskExtractor<StreamInfoItem> {
     @Nonnull
     @Override
     public InfoItemsPage<StreamInfoItem> getInitialPage() throws IOException, ExtractionException {
-        if(collector == null) {
+        if (collector == null) {
             computNextPageAndStreams();
         }
         return new InfoItemsPage<>(collector, getNextPageUrl());

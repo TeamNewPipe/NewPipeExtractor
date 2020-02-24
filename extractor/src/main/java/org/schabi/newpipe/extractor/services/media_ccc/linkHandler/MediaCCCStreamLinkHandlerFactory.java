@@ -7,8 +7,8 @@ public class MediaCCCStreamLinkHandlerFactory extends LinkHandlerFactory {
 
     @Override
     public String getId(String url) throws ParsingException {
-        if(url.startsWith("https://api.media.ccc.de/public/events/") &&
-            !url.contains("?q=")) {
+        if (url.startsWith("https://api.media.ccc.de/public/events/") &&
+                !url.contains("?q=")) {
             return url.replace("https://api.media.ccc.de/public/events/", "");
         }
         throw new ParsingException("Could not get id from url: " + url);

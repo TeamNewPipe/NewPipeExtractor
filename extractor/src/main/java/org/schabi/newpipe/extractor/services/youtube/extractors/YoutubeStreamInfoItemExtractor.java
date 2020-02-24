@@ -3,8 +3,8 @@ package org.schabi.newpipe.extractor.services.youtube.extractors;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 import org.schabi.newpipe.extractor.exceptions.ParsingException;
-import org.schabi.newpipe.extractor.localization.TimeAgoParser;
 import org.schabi.newpipe.extractor.localization.DateWrapper;
+import org.schabi.newpipe.extractor.localization.TimeAgoParser;
 import org.schabi.newpipe.extractor.services.youtube.linkHandler.YoutubeParsingHelper;
 import org.schabi.newpipe.extractor.stream.StreamInfoItemExtractor;
 import org.schabi.newpipe.extractor.stream.StreamType;
@@ -42,6 +42,7 @@ public class YoutubeStreamInfoItemExtractor implements StreamInfoItemExtractor {
 
     /**
      * Creates an extractor of StreamInfoItems from a YouTube page.
+     *
      * @param item          The page element
      * @param timeAgoParser A parser of the textual dates or {@code null}.
      */
@@ -68,10 +69,10 @@ public class YoutubeStreamInfoItemExtractor implements StreamInfoItemExtractor {
 
     private boolean isPremiumVideo() {
         Element premiumSpan = item.select("span[class=\"standalone-collection-badge-renderer-red-text\"]").first();
-        if(premiumSpan == null) return false;
+        if (premiumSpan == null) return false;
 
         // if this span has text it most likely says ("Free Video") so we can play this
-        if(premiumSpan.hasText()) return false;
+        if (premiumSpan.hasText()) return false;
         return true;
     }
 
@@ -233,7 +234,7 @@ public class YoutubeStreamInfoItemExtractor implements StreamInfoItemExtractor {
             return Long.parseLong(Utils.removeNonDigitCharacters(input));
         } catch (NumberFormatException e) {
             // if this happens the video probably has no views
-            if (!input.isEmpty()){
+            if (!input.isEmpty()) {
                 return 0;
             }
 

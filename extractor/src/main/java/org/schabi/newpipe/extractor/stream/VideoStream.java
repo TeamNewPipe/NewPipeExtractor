@@ -36,7 +36,7 @@ public class VideoStream extends Stream {
         this.resolution = resolution;
         this.isVideoOnly = isVideoOnly;
     }
-    
+
     public VideoStream(String url, String torrentUrl, MediaFormat format, String resolution) {
         this(url, torrentUrl, format, resolution, false);
     }
@@ -56,6 +56,7 @@ public class VideoStream extends Stream {
 
     /**
      * Get the video resolution
+     *
      * @return the video resolution
      */
     public String getResolution() {
@@ -64,8 +65,9 @@ public class VideoStream extends Stream {
 
     /**
      * Check if the video is video only.
-     *
+     * <p>
      * Video only streams have no audio
+     *
      * @return {@code true} if this stream is vid
      */
     public boolean isVideoOnly() {

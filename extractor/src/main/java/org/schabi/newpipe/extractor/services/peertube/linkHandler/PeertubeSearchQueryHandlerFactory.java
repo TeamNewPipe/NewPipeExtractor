@@ -1,12 +1,12 @@
 package org.schabi.newpipe.extractor.services.peertube.linkHandler;
 
-import java.io.UnsupportedEncodingException;
-import java.net.URLEncoder;
-import java.util.List;
-
 import org.schabi.newpipe.extractor.ServiceList;
 import org.schabi.newpipe.extractor.exceptions.ParsingException;
 import org.schabi.newpipe.extractor.linkhandler.SearchQueryHandlerFactory;
+
+import java.io.UnsupportedEncodingException;
+import java.net.URLEncoder;
+import java.util.List;
 
 public class PeertubeSearchQueryHandlerFactory extends SearchQueryHandlerFactory {
 
@@ -21,9 +21,9 @@ public class PeertubeSearchQueryHandlerFactory extends SearchQueryHandlerFactory
     @Override
     public String getUrl(String searchString, List<String> contentFilters, String sortFilter) throws ParsingException {
         String baseUrl = ServiceList.PeerTube.getBaseUrl();
-        return getUrl(searchString, contentFilters, sortFilter, baseUrl); 
+        return getUrl(searchString, contentFilters, sortFilter, baseUrl);
     }
-    
+
     @Override
     public String getUrl(String searchString, List<String> contentFilters, String sortFilter, String baseUrl) throws ParsingException {
         try {
@@ -38,6 +38,6 @@ public class PeertubeSearchQueryHandlerFactory extends SearchQueryHandlerFactory
 
     @Override
     public String[] getAvailableContentFilter() {
-        return new String[] { VIDEOS };
+        return new String[]{VIDEOS};
     }
 }
