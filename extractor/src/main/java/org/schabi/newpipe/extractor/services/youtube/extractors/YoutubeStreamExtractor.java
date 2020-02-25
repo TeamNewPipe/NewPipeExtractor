@@ -127,8 +127,8 @@ public class YoutubeStreamExtractor extends StreamExtractor {
 
         try {
             // TODO this parses English formatted dates only, we need a better approach to parse the textual date
-            Date d = new SimpleDateFormat("dd MMM yyy").parse(getVideoPrimaryInfoRenderer()
-                    .getObject("dateText").getString("simpleText"));
+            Date d = new SimpleDateFormat("dd MMM yyyy", Locale.ENGLISH).parse(
+                    getVideoPrimaryInfoRenderer().getObject("dateText").getString("simpleText"));
             return new SimpleDateFormat("yyyy-MM-dd").format(d);
         } catch (Exception ignored) {}
         throw new ParsingException("Could not get upload date");
