@@ -12,6 +12,8 @@ import org.schabi.newpipe.extractor.channel.ChannelInfoItem;
 import org.schabi.newpipe.extractor.services.youtube.extractors.YoutubeSearchExtractor;
 import org.schabi.newpipe.extractor.services.youtube.linkHandler.YoutubeSearchQueryHandlerFactory;
 
+import java.util.regex.Pattern;
+
 import static java.util.Arrays.asList;
 import static org.junit.Assert.*;
 import static org.schabi.newpipe.extractor.ServiceList.YouTube;
@@ -51,7 +53,12 @@ public class YoutubeSearchExtractorChannelOnlyTest extends YoutubeSearchExtracto
 
     @Test
     public void testGetSecondPageUrl() throws Exception {
-        assertEquals("https://www.youtube.com/results?q=pewdiepie&sp=EgIQAlAU&gl=GB&page=2", extractor.getNextPageUrl());
+        // check that ctoken, continuation and itct are longer than 5 characters
+        Pattern pattern = Pattern.compile(
+                "https:\\/\\/www.youtube.com\\/results\\?search_query=pewdiepie&sp=EgIQAg%253D%253D&gl=GB&pbj=1"
+                + "&ctoken=[\\w%]{5,}?&continuation=[\\w%]{5,}?&itct=[\\w]{5,}?"
+        );
+        assertTrue(pattern.matcher(extractor.getNextPageUrl()).find());
     }
 
     @Ignore
