@@ -38,6 +38,7 @@ import org.schabi.newpipe.extractor.utils.Utils;
 
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
+import java.nio.charset.StandardCharsets;
 import java.text.SimpleDateFormat;
 import java.util.*;
 
@@ -164,22 +165,57 @@ public class YoutubeStreamExtractor extends StreamExtractor {
     @Override
     public Description getDescription() throws ParsingException {
         assertPageFetched();
-        // raw non-html description
+
+        // description with more info on links
         try {
-            return new Description(playerResponse.getObject("videoDetails").getString("shortDescription"), Description.PLAIN_TEXT);
-        } catch (Exception ignored) { }
-        try {
+            boolean htmlConversionRequired = false;
             JsonArray descriptions = getVideoSecondaryInfoRenderer().getObject("description").getArray("runs");
             StringBuilder descriptionBuilder = new StringBuilder(descriptions.size());
             for (Object textObjectHolder : descriptions) {
                 JsonObject textHolder = (JsonObject) textObjectHolder;
                 String text = textHolder.getString("text");
-                if (text != null) descriptionBuilder.append(text);
+                if (textHolder.getObject("navigationEndpoint") != null) {
+                    // The text is a link. Get the URL it points to and generate a HTML link of it
+                    String internUrl = textHolder.getObject("navigationEndpoint").getObject("urlEndpoint").getString("url");
+                    if (internUrl.startsWith("/redirect?")) {
+                        // q parameter can be the first parameter
+                        internUrl = internUrl.substring(10);
+                    }
+                    String[] params = internUrl.split("&");
+                    for (String param : params) {
+                        if (param.charAt(0) == 'q') {
+                            String url = java.net.URLDecoder.decode(param.substring(2), StandardCharsets.UTF_8.name());
+                            if (url != null && !url.isEmpty()) {
+                                descriptionBuilder.append("<a href=\"").append(url).append("\">").append(text).append("</a>");
+                                htmlConversionRequired = true;
+                            } else {
+                                descriptionBuilder.append(text);
+                            }
+                        }
+                    }
+                } else if (text != null) {
+                     descriptionBuilder.append(text);
+                }
             }
+
             String description = descriptionBuilder.toString();
-            if (!description.isEmpty()) return new Description(description, Description.PLAIN_TEXT);
+
+            if (!description.isEmpty()) {
+                if (htmlConversionRequired) {
+                    description = description.replaceAll("\\n", "<br>");
+                    return new Description(description, Description.HTML);
+                }
+                return new Description(description, Description.PLAIN_TEXT);
+            }
+
         } catch (Exception ignored) { }
-        throw new ParsingException("Could not get description");
+
+        // raw non-html description
+        try {
+            return new Description(playerResponse.getObject("videoDetails").getString("shortDescription"), Description.PLAIN_TEXT);
+        } catch (Exception ignored) {
+            throw new ParsingException("Could not get description");
+        }
     }
 
     @Override
