@@ -113,7 +113,7 @@ public class YoutubeStreamExtractor extends StreamExtractor {
         } catch (Exception ignored) {}
         if (title == null) {
             try {
-                title =  playerResponse.getObject("videoDetails").getString("title");
+                title = playerResponse.getObject("videoDetails").getString("title");
             } catch (Exception ignored) {}
         }
         if (title != null) return title;
@@ -296,40 +296,36 @@ public class YoutubeStreamExtractor extends StreamExtractor {
     @Override
     public String getUploaderUrl() throws ParsingException {
         assertPageFetched();
+        String uploaderId = null;
         try {
-            return "https://www.youtube.com/channel/" +
-                    playerResponse.getObject("videoDetails").getString("channelId");
-        } catch (Exception e) {
-            String uploaderUrl = null;
+            uploaderId = getVideoSecondaryInfoRenderer().getObject("owner").getObject("videoOwnerRenderer")
+                    .getObject("navigationEndpoint").getObject("browseEndpoint").getString("browseId");
+        } catch (Exception ignored) {}
+        if (uploaderId == null) {
             try {
-                uploaderUrl = doc.select("div[class=\"yt-user-info\"]").first().children()
-                        .select("a").first().attr("abs:href");
+                uploaderId = playerResponse.getObject("videoDetails").getString("channelId");
             } catch (Exception ignored) {}
-
-            if (uploaderUrl == null) {
-                throw new ParsingException("Could not get channel link", e);
-            }
-            return uploaderUrl;
         }
+        if (uploaderId != null) return "https://www.youtube.com/channel/" + uploaderId;
+        throw new ParsingException("Could not get uploader url");
     }
 
     @Nonnull
     @Override
     public String getUploaderName() throws ParsingException {
         assertPageFetched();
+        String uploaderName = null;
         try {
-            return playerResponse.getObject("videoDetails").getString("author");
-        } catch (Exception e) {
-            String name = null;
+            uploaderName = getVideoSecondaryInfoRenderer().getObject("owner").getObject("videoOwnerRenderer")
+                    .getObject("title").getArray("runs").getObject(0).getString("text");
+        } catch (Exception ignored) {}
+        if (uploaderName == null) {
             try {
-                name = doc.select("div.yt-user-info").first().text();
+                uploaderName = playerResponse.getObject("videoDetails").getString("author");
             } catch (Exception ignored) {}
-
-            if (name == null) {
-                throw new ParsingException("Could not get uploader name");
-            }
-            return name;
         }
+        if (uploaderName != null) return uploaderName;
+        throw new ParsingException("Could not get uploader name");
     }
 
     @Nonnull
@@ -874,6 +870,25 @@ public class YoutubeStreamExtractor extends StreamExtractor {
         }
 
         return videoPrimaryInfoRenderer;
+    }
+
+    private JsonObject getVideoSecondaryInfoRenderer() throws ParsingException {
+        JsonArray contents = initialData.getObject("contents").getObject("twoColumnWatchNextResults")
+                .getObject("results").getObject("results").getArray("contents");
+        JsonObject videoSecondaryInfoRenderer = null;
+
+        for (Object content : contents) {
+            if (((JsonObject) content).getObject("videoSecondaryInfoRenderer") != null) {
+                videoSecondaryInfoRenderer = ((JsonObject) content).getObject("videoSecondaryInfoRenderer");
+                break;
+            }
+        }
+
+        if (videoSecondaryInfoRenderer == null) {
+            throw new ParsingException("Could not find videoSecondaryInfoRenderer");
+        }
+
+        return videoSecondaryInfoRenderer;
     }
 
     @Nonnull
