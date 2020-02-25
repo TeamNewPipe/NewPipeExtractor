@@ -20,7 +20,9 @@ import org.schabi.newpipe.extractor.exceptions.ParsingException;
 import org.schabi.newpipe.extractor.exceptions.ReCaptchaException;
 import org.schabi.newpipe.extractor.linkhandler.LinkHandler;
 import org.schabi.newpipe.extractor.localization.DateWrapper;
+import org.schabi.newpipe.extractor.localization.Localization;
 import org.schabi.newpipe.extractor.localization.TimeAgoParser;
+import org.schabi.newpipe.extractor.localization.TimeAgoPatternsManager;
 import org.schabi.newpipe.extractor.services.youtube.ItagItem;
 import org.schabi.newpipe.extractor.services.youtube.linkHandler.YoutubeParsingHelper;
 import org.schabi.newpipe.extractor.stream.AudioStream;
@@ -42,6 +44,7 @@ import java.net.URLDecoder;
 import java.nio.charset.StandardCharsets;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Collections;
 import java.util.Date;
 import java.util.HashMap;
@@ -132,6 +135,15 @@ public class YoutubeStreamExtractor extends StreamExtractor {
 
         try {
             //return playerResponse.getObject("microformat").getObject("playerMicroformatRenderer").getString("publishDate");
+        } catch (Exception ignored) {}
+
+        try {
+            if (getVideoPrimaryInfoRenderer().getObject("dateText").getString("simpleText").startsWith("Premiered")) {
+                String timeAgo = getVideoPrimaryInfoRenderer().getObject("dateText").getString("simpleText").substring(10);
+                TimeAgoParser timeAgoParser = TimeAgoPatternsManager.getTimeAgoParserFor(Localization.fromLocalizationCode("en"));
+                Calendar parsedTimeAgo = timeAgoParser.parse(timeAgo).date();
+                return new SimpleDateFormat("yyyy-MM-dd").format(parsedTimeAgo.getTime());
+            }
         } catch (Exception ignored) {}
 
         try {
