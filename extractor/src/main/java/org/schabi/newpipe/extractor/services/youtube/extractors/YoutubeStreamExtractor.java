@@ -242,7 +242,7 @@ public class YoutubeStreamExtractor extends StreamExtractor {
                 views = playerResponse.getObject("videoDetails").getString("viewCount");
             } catch (Exception ignored) {}
         }
-        if (views != null) return Long.parseLong(views);
+        if (views != null) return Long.parseLong(Utils.removeNonDigitCharacters(views));
         throw new ParsingException("Could not get view count");
     }
 
