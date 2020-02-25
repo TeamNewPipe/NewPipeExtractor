@@ -134,7 +134,13 @@ public class YoutubeStreamExtractor extends StreamExtractor {
         }
 
         try {
-            // return playerResponse.getObject("microformat").getObject("playerMicroformatRenderer").getString("publishDate");
+            JsonObject micro = playerResponse.getObject("microformat").getObject("playerMicroformatRenderer");
+            if (micro.getString("uploadDate") != null && !micro.getString("uploadDate").isEmpty()) {
+                return micro.getString("uploadDate");
+            }
+            if (micro.getString("publishDate") != null && !micro.getString("publishDate").isEmpty()) {
+                return micro.getString("publishDate");
+            }
         } catch (Exception ignored) {}
 
         try {
@@ -147,7 +153,7 @@ public class YoutubeStreamExtractor extends StreamExtractor {
                     return new SimpleDateFormat("yyyy-MM-dd").format(parsedTime.getTime());
                 } catch (Exception ignored) {}
 
-                try { // Premiered Premiered Feb 21, 2020
+                try { // Premiered Feb 21, 2020
                     Date d = new SimpleDateFormat("MMM dd, YYYY", Locale.ENGLISH).parse(time);
                     return new SimpleDateFormat("yyyy-MM-dd").format(d.getTime());
                 } catch (Exception ignored) {}
