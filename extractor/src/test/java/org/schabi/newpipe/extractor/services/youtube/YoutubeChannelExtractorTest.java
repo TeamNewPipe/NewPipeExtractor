@@ -170,7 +170,7 @@ public class YoutubeChannelExtractorTest {
         @Test
         public void testDescription() throws Exception {
             assertTrue("What it actually was: " + extractor.getDescription(),
-                    extractor.getDescription().contains("Our World is Amazing. Questions? Ideas? Tweet me:"));
+                    extractor.getDescription().contains("Our World is Amazing. \n\nQuestions? Ideas? Tweet me:"));
         }
 
         @Test

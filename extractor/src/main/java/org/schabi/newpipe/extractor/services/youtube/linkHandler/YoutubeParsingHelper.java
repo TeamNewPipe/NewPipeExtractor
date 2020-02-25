@@ -1,11 +1,16 @@
 package org.schabi.newpipe.extractor.services.youtube.linkHandler;
 
 
+import com.grack.nanojson.JsonArray;
+import com.grack.nanojson.JsonObject;
+import com.grack.nanojson.JsonParser;
+import com.grack.nanojson.JsonParserException;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.schabi.newpipe.extractor.downloader.Response;
 import org.schabi.newpipe.extractor.exceptions.ParsingException;
 import org.schabi.newpipe.extractor.exceptions.ReCaptchaException;
+import org.schabi.newpipe.extractor.utils.Parser;
 
 import java.net.URL;
 import java.text.ParseException;
@@ -37,6 +42,8 @@ public class YoutubeParsingHelper {
 
     private YoutubeParsingHelper() {
     }
+
+    public static final String HARDCODED_CLIENT_VERSION = "2.20200214.04.00";
 
     private static final String FEED_BASE_CHANNEL_ID = "https://www.youtube.com/feeds/videos.xml?channel_id=";
     private static final String FEED_BASE_USER = "https://www.youtube.com/feeds/videos.xml?user=";
@@ -142,5 +149,69 @@ public class YoutubeParsingHelper {
         final Calendar uploadDate = Calendar.getInstance();
         uploadDate.setTime(date);
         return uploadDate;
+    }
+
+    public static JsonObject getInitialData(String html) throws ParsingException {
+        try {
+            String initialData = Parser.matchGroup1("window\\[\"ytInitialData\"\\]\\s*=\\s*(\\{.*?\\});", html);
+            return JsonParser.object().from(initialData);
+        } catch (JsonParserException | Parser.RegexException e) {
+            throw new ParsingException("Could not get ytInitialData", e);
+        }
+    }
+
+    /**
+     * Get the client version from a page
+     * @param initialData
+     * @param html The page HTML
+     * @return
+     * @throws ParsingException
+     */
+    public static String getClientVersion(JsonObject initialData, String html) throws ParsingException {
+        if (initialData == null) initialData = getInitialData(html);
+        JsonArray serviceTrackingParams = initialData.getObject("responseContext").getArray("serviceTrackingParams");
+        String shortClientVersion = null;
+
+        // try to get version from initial data first
+        for (Object service : serviceTrackingParams) {
+            JsonObject s = (JsonObject) service;
+            if (s.getString("service").equals("CSI")) {
+                JsonArray params = s.getArray("params");
+                for (Object param: params) {
+                    JsonObject p = (JsonObject) param;
+                    String key = p.getString("key");
+                    if (key != null && key.equals("cver")) {
+                        return p.getString("value");
+                    }
+                }
+            } else if (s.getString("service").equals("ECATCHER")) {
+                // fallback to get a shortened client version which does not contain the last do digits
+                JsonArray params = s.getArray("params");
+                for (Object param: params) {
+                    JsonObject p = (JsonObject) param;
+                    String key = p.getString("key");
+                    if (key != null && key.equals("client.version")) {
+                        shortClientVersion = p.getString("value");
+                    }
+                }
+            }
+        }
+
+        String clientVersion;
+        String[] patterns = {
+                "INNERTUBE_CONTEXT_CLIENT_VERSION\":\"([0-9\\.]+?)\"",
+                "innertube_context_client_version\":\"([0-9\\.]+?)\"",
+                "client.version=([0-9\\.]+)"
+        };
+        for (String pattern: patterns) {
+            try {
+                clientVersion = Parser.matchGroup1(pattern, html);
+                if (clientVersion != null && !clientVersion.isEmpty()) return clientVersion;
+            } catch (Exception ignored) {}
+        }
+
+        if (shortClientVersion != null) return shortClientVersion;
+
+        throw new ParsingException("Could not get client version");
     }
 }

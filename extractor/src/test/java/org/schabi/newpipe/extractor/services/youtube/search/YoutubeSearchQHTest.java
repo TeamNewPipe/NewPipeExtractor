@@ -28,13 +28,13 @@ public class YoutubeSearchQHTest {
 
     @Test
     public void testWithContentfilter() throws Exception {
-        assertEquals("https://www.youtube.com/results?q=asdf&sp=EgIQAVAU", YouTube.getSearchQHFactory()
+        assertEquals("https://www.youtube.com/results?search_query=asdf&sp=EgIQAQ%253D%253D", YouTube.getSearchQHFactory()
                 .fromQuery("asdf", asList(new String[]{VIDEOS}), "").getUrl());
-        assertEquals("https://www.youtube.com/results?q=asdf&sp=EgIQAlAU", YouTube.getSearchQHFactory()
+        assertEquals("https://www.youtube.com/results?search_query=asdf&sp=EgIQAg%253D%253D", YouTube.getSearchQHFactory()
                 .fromQuery("asdf", asList(new String[]{CHANNELS}), "").getUrl());
-        assertEquals("https://www.youtube.com/results?q=asdf&sp=EgIQA1AU", YouTube.getSearchQHFactory()
+        assertEquals("https://www.youtube.com/results?search_query=asdf&sp=EgIQAw%253D%253D", YouTube.getSearchQHFactory()
                 .fromQuery("asdf", asList(new String[]{PLAYLISTS}), "").getUrl());
-        assertEquals("https://www.youtube.com/results?q=asdf", YouTube.getSearchQHFactory()
+        assertEquals("https://www.youtube.com/results?search_query=asdf", YouTube.getSearchQHFactory()
                 .fromQuery("asdf", asList(new String[]{"fjiijie"}), "").getUrl());
     }
 

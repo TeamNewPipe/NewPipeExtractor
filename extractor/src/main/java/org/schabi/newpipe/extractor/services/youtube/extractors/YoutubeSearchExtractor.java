@@ -1,8 +1,11 @@
 package org.schabi.newpipe.extractor.services.youtube.extractors;
 
-import org.jsoup.Jsoup;
+import com.grack.nanojson.JsonArray;
+import com.grack.nanojson.JsonObject;
+import com.grack.nanojson.JsonParser;
+import com.grack.nanojson.JsonParserException;
+
 import org.jsoup.nodes.Document;
-import org.jsoup.nodes.Element;
 import org.schabi.newpipe.extractor.InfoItem;
 import org.schabi.newpipe.extractor.StreamingService;
 import org.schabi.newpipe.extractor.downloader.Downloader;
@@ -14,13 +17,14 @@ import org.schabi.newpipe.extractor.localization.TimeAgoParser;
 import org.schabi.newpipe.extractor.search.InfoItemsSearchCollector;
 import org.schabi.newpipe.extractor.search.SearchExtractor;
 import org.schabi.newpipe.extractor.services.youtube.linkHandler.YoutubeParsingHelper;
-import org.schabi.newpipe.extractor.utils.Parser;
+
+import java.io.IOException;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 import javax.annotation.Nonnull;
-import java.io.IOException;
-import java.io.UnsupportedEncodingException;
-import java.net.MalformedURLException;
-import java.net.URL;
 
 /*
  * Created by Christian Schabesberger on 22.07.2018
@@ -45,6 +49,7 @@ import java.net.URL;
 public class YoutubeSearchExtractor extends SearchExtractor {
 
     private Document doc;
+    private JsonObject initialData;
 
     public YoutubeSearchExtractor(StreamingService service, SearchQueryHandler linkHandler) {
         super(service, linkHandler);
@@ -55,6 +60,7 @@ public class YoutubeSearchExtractor extends SearchExtractor {
         final String url = getUrl();
         final Response response = downloader.get(url, getExtractorLocalization());
         doc = YoutubeParsingHelper.parseAndCheckPage(url, response);
+        initialData = YoutubeParsingHelper.getInitialData(response.responseBody());
     }
 
     @Nonnull
@@ -65,80 +71,109 @@ public class YoutubeSearchExtractor extends SearchExtractor {
 
     @Override
     public String getSearchSuggestion() {
-        final Element el = doc.select("div[class*=\"spell-correction\"]").first();
-        if (el != null) {
-            return el.select("a").first().text();
-        } else {
+        JsonObject showingResultsForRenderer = initialData.getObject("contents")
+                .getObject("twoColumnSearchResultsRenderer").getObject("primaryContents")
+                .getObject("sectionListRenderer").getArray("contents").getObject(0)
+                .getObject("itemSectionRenderer").getArray("contents").getObject(0)
+                .getObject("showingResultsForRenderer");
+        if (showingResultsForRenderer == null) {
             return "";
+        } else {
+            return showingResultsForRenderer.getObject("correctedQuery").getArray("runs")
+                    .getObject(0).getString("text");
         }
     }
 
     @Nonnull
     @Override
     public InfoItemsPage<InfoItem> getInitialPage() throws ExtractionException {
-        return new InfoItemsPage<>(collectItems(doc), getNextPageUrl());
+        InfoItemsSearchCollector collector = getInfoItemSearchCollector();
+        JsonArray videos = initialData.getObject("contents").getObject("twoColumnSearchResultsRenderer")
+                .getObject("primaryContents").getObject("sectionListRenderer").getArray("contents")
+                .getObject(0).getObject("itemSectionRenderer").getArray("contents");
+
+        collectStreamsFrom(collector, videos);
+        return new InfoItemsPage<>(collector, getNextPageUrl());
     }
 
     @Override
     public String getNextPageUrl() throws ExtractionException {
-        return getUrl() + "&page=" + 2;
+        return getNextPageUrlFrom(initialData.getObject("contents").getObject("twoColumnSearchResultsRenderer")
+                .getObject("primaryContents").getObject("sectionListRenderer").getArray("contents")
+                .getObject(0).getObject("itemSectionRenderer").getArray("continuations"));
     }
 
     @Override
     public InfoItemsPage<InfoItem> getPage(String pageUrl) throws IOException, ExtractionException {
-        final String response = getDownloader().get(pageUrl, getExtractorLocalization()).responseBody();
-        doc = Jsoup.parse(response, pageUrl);
+        if (pageUrl == null || pageUrl.isEmpty()) {
+            throw new ExtractionException(new IllegalArgumentException("Page url is empty or null"));
+        }
 
-        return new InfoItemsPage<>(collectItems(doc), getNextPageUrlFromCurrentUrl(pageUrl));
-    }
-
-    private String getNextPageUrlFromCurrentUrl(String currentUrl)
-            throws MalformedURLException, UnsupportedEncodingException {
-        final int pageNr = Integer.parseInt(
-                Parser.compatParseMap(
-                        new URL(currentUrl)
-                                .getQuery())
-                        .get("page"));
-
-        return currentUrl.replace("&page=" + pageNr,
-                "&page=" + Integer.toString(pageNr + 1));
-    }
-
-    private InfoItemsSearchCollector collectItems(Document doc) throws NothingFoundException {
         InfoItemsSearchCollector collector = getInfoItemSearchCollector();
-        collector.reset();
+        JsonArray ajaxJson;
 
-        Element list = doc.select("ol[class=\"item-section\"]").first();
-        final TimeAgoParser timeAgoParser = getTimeAgoParser();
+        Map<String, List<String>> headers = new HashMap<>();
+        headers.put("X-YouTube-Client-Name", Collections.singletonList("1"));
 
-        for (Element item : list.children()) {
-            /* First we need to determine which kind of item we are working with.
-               Youtube depicts five different kinds of items on its search result page. These are
-               regular videos, playlists, channels, two types of video suggestions, and a "no video
-               found" item. Since we only want videos, we need to filter out all the others.
-               An example for this can be seen here:
-               https://www.youtube.com/results?search_query=asdf&page=1
-
-               We already applied a filter to the url, so we don't need to care about channels and
-               playlists now.
-            */
-
-            Element el;
-
-            if ((el = item.select("div[class*=\"search-message\"]").first()) != null) {
-                throw new NothingFoundException(el.text());
-
-                // video item type
-            } else if ((el = item.select("div[class*=\"yt-lockup-video\"]").first()) != null) {
-                collector.commit(new YoutubeStreamInfoItemExtractor(el, timeAgoParser));
-            } else if ((el = item.select("div[class*=\"yt-lockup-channel\"]").first()) != null) {
-                collector.commit(new YoutubeChannelInfoItemExtractor(el));
-            } else if ((el = item.select("div[class*=\"yt-lockup-playlist\"]").first()) != null &&
-                    item.select(".yt-pl-icon-mix").isEmpty()) {
-                collector.commit(new YoutubePlaylistInfoItemExtractor(el));
+        try {
+            // Use the hardcoded client version first to get JSON with a structure we know
+            headers.put("X-YouTube-Client-Version",
+                    Collections.singletonList(YoutubeParsingHelper.HARDCODED_CLIENT_VERSION));
+            final String response = getDownloader().get(pageUrl, headers, getExtractorLocalization()).responseBody();
+            if (response.length() < 50) { // ensure to have a valid response
+                throw new ParsingException("Could not parse json data for next streams");
+            }
+            ajaxJson = JsonParser.array().from(response);
+        } catch (Exception e) {
+            try {
+                headers.put("X-YouTube-Client-Version",
+                        Collections.singletonList(YoutubeParsingHelper.getClientVersion(initialData, doc.toString())));
+                final String response = getDownloader().get(pageUrl, headers, getExtractorLocalization()).responseBody();
+                if (response.length() < 50) { // ensure to have a valid response
+                    throw new ParsingException("Could not parse json data for next streams");
+                }
+                ajaxJson = JsonParser.array().from(response);
+            } catch (JsonParserException ignored) {
+                throw new ParsingException("Could not parse json data for next streams", e);
             }
         }
 
-        return collector;
+        JsonObject itemSectionRenderer = ajaxJson.getObject(1).getObject("response")
+                .getObject("continuationContents").getObject("itemSectionContinuation");
+
+        collectStreamsFrom(collector, itemSectionRenderer.getArray("contents"));
+
+        return new InfoItemsPage<>(collector, getNextPageUrlFrom(itemSectionRenderer.getArray("continuations")));
+    }
+
+    private void collectStreamsFrom(InfoItemsSearchCollector collector, JsonArray videos) throws NothingFoundException {
+        collector.reset();
+
+        final TimeAgoParser timeAgoParser = getTimeAgoParser();
+
+        for (Object item : videos) {
+            if (((JsonObject) item).getObject("backgroundPromoRenderer") != null) {
+                throw new NothingFoundException(((JsonObject) item).getObject("backgroundPromoRenderer")
+                        .getObject("bodyText").getArray("runs").getObject(0).getString("text"));
+            } else if (((JsonObject) item).getObject("videoRenderer") != null) {
+                collector.commit(new YoutubeStreamInfoItemExtractor(((JsonObject) item).getObject("videoRenderer"), timeAgoParser));
+            } else if (((JsonObject) item).getObject("channelRenderer") != null) {
+                collector.commit(new YoutubeChannelInfoItemExtractor(((JsonObject) item).getObject("channelRenderer")));
+            } else if (((JsonObject) item).getObject("playlistRenderer") != null) {
+                collector.commit(new YoutubePlaylistInfoItemExtractor(((JsonObject) item).getObject("playlistRenderer")));
+            }
+        }
+    }
+
+    private String getNextPageUrlFrom(JsonArray continuations) throws ParsingException {
+        if (continuations == null) {
+            return "";
+        }
+
+        JsonObject nextContinuationData = continuations.getObject(0).getObject("nextContinuationData");
+        String continuation = nextContinuationData.getString("continuation");
+        String clickTrackingParams = nextContinuationData.getString("clickTrackingParams");
+        return getUrl() + "&pbj=1&ctoken=" + continuation + "&continuation=" + continuation
+                + "&itct=" + clickTrackingParams;
     }
 }
