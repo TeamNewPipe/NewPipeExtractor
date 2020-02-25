@@ -3,7 +3,6 @@ package org.schabi.newpipe.extractor.services.youtube.extractors;
 import com.grack.nanojson.JsonArray;
 import com.grack.nanojson.JsonObject;
 import com.grack.nanojson.JsonParser;
-import com.grack.nanojson.JsonParserException;
 
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
@@ -15,7 +14,6 @@ import org.schabi.newpipe.extractor.MediaFormat;
 import org.schabi.newpipe.extractor.NewPipe;
 import org.schabi.newpipe.extractor.StreamingService;
 import org.schabi.newpipe.extractor.downloader.Downloader;
-import org.schabi.newpipe.extractor.downloader.Request;
 import org.schabi.newpipe.extractor.downloader.Response;
 import org.schabi.newpipe.extractor.exceptions.ContentNotAvailableException;
 import org.schabi.newpipe.extractor.exceptions.ExtractionException;
@@ -36,7 +34,6 @@ import org.schabi.newpipe.extractor.stream.StreamInfoItemsCollector;
 import org.schabi.newpipe.extractor.stream.StreamType;
 import org.schabi.newpipe.extractor.stream.SubtitlesStream;
 import org.schabi.newpipe.extractor.stream.VideoStream;
-import org.schabi.newpipe.extractor.utils.JsonUtils;
 import org.schabi.newpipe.extractor.utils.Parser;
 import org.schabi.newpipe.extractor.utils.Utils;
 
@@ -366,55 +363,6 @@ public class YoutubeStreamExtractor extends StreamExtractor {
         }
     }
 
-    private long getLiveStreamWatchingCount() throws ExtractionException, IOException, JsonParserException {
-        // https://www.youtube.com/youtubei/v1/updated_metadata?alt=json&key=
-        String innerTubeKey = null, clientVersion = null;
-        if (playerArgs != null && !playerArgs.isEmpty()) {
-            innerTubeKey = playerArgs.getString("innertube_api_key");
-            clientVersion = playerArgs.getString("innertube_context_client_version");
-        } else if (!videoInfoPage.isEmpty()) {
-            innerTubeKey = videoInfoPage.get("innertube_api_key");
-            clientVersion = videoInfoPage.get("innertube_context_client_version");
-        }
-
-        if (innerTubeKey == null || innerTubeKey.isEmpty()) {
-            throw new ExtractionException("Couldn't get innerTube key");
-        }
-
-        if (clientVersion == null || clientVersion.isEmpty()) {
-            throw new ExtractionException("Couldn't get innerTube client version");
-        }
-
-        final String metadataUrl = "https://www.youtube.com/youtubei/v1/updated_metadata?alt=json&key=" + innerTubeKey;
-        final byte[] dataBody = ("{\"context\":{\"client\":{\"clientName\":1,\"clientVersion\":\"" + clientVersion + "\"}}" +
-                ",\"videoId\":\"" + getId() + "\"}").getBytes("UTF-8");
-        final Response response = getDownloader().execute(Request.newBuilder()
-                .post(metadataUrl, dataBody)
-                .addHeader("Content-Type", "application/json")
-                .build());
-        final JsonObject jsonObject = JsonParser.object().from(response.responseBody());
-
-        for (Object actionEntry : jsonObject.getArray("actions")) {
-            if (!(actionEntry instanceof JsonObject)) continue;
-            final JsonObject entry = (JsonObject) actionEntry;
-
-            final JsonObject updateViewershipAction = entry.getObject("updateViewershipAction", null);
-            if (updateViewershipAction == null) continue;
-
-            final JsonArray viewCountRuns = JsonUtils.getArray(updateViewershipAction, "viewership.videoViewCountRenderer.viewCount.runs");
-            if (viewCountRuns.isEmpty()) continue;
-
-            final JsonObject textObject = viewCountRuns.getObject(0);
-            if (!textObject.has("text")) {
-                throw new ExtractionException("Response don't have \"text\" element");
-            }
-
-            return Long.parseLong(Utils.removeNonDigitCharacters(textObject.getString("text")));
-        }
-
-        throw new ExtractionException("Could not find correct results in response");
-    }
-
     private JsonObject getVideoPrimaryInfoRenderer() throws ParsingException {
         JsonArray contents = initialData.getObject("contents").getObject("twoColumnWatchNextResults")
                 .getObject("results").getObject("results").getArray("contents");
@@ -525,7 +473,7 @@ public class YoutubeStreamExtractor extends StreamExtractor {
     public String getUploaderAvatarUrl() throws ParsingException {
         assertPageFetched();
 
-        String uploaderAvatarUrl = null;
+        String uploaderAvatarUrl;
         try {
             uploaderAvatarUrl = initialData.getObject("contents").getObject("twoColumnWatchNextResults").getObject("secondaryResults")
                     .getObject("secondaryResults").getArray("results").getObject(0).getObject("compactAutoplayRenderer")
@@ -657,13 +605,13 @@ public class YoutubeStreamExtractor extends StreamExtractor {
 
     @Override
     @Nonnull
-    public List<SubtitlesStream> getSubtitlesDefault() throws IOException, ExtractionException {
+    public List<SubtitlesStream> getSubtitlesDefault() {
         return getSubtitles(MediaFormat.TTML);
     }
 
     @Override
     @Nonnull
-    public List<SubtitlesStream> getSubtitles(final MediaFormat format) throws IOException, ExtractionException {
+    public List<SubtitlesStream> getSubtitles(final MediaFormat format) {
         assertPageFetched();
         List<SubtitlesStream> subtitles = new ArrayList<>();
         for (final SubtitlesInfo subtitlesInfo : subtitlesInfos) {
@@ -687,7 +635,7 @@ public class YoutubeStreamExtractor extends StreamExtractor {
     }
 
     @Override
-    public StreamInfoItem getNextStream() throws IOException, ExtractionException {
+    public StreamInfoItem getNextStream() throws ExtractionException {
         assertPageFetched();
         try {
             final JsonObject videoInfo = initialData.getObject("contents").getObject("twoColumnWatchNextResults")
@@ -815,12 +763,10 @@ public class YoutubeStreamExtractor extends StreamExtractor {
             return JsonParser.object().from(ytPlayerConfigRaw);
         } catch (Parser.RegexException e) {
             String errorReason = getErrorMessage();
-            switch (errorReason) {
-                case "":
-                    throw new ContentNotAvailableException("Content not available: player config empty", e);
-                default:
-                    throw new ContentNotAvailableException("Content not available", e);
+            if (errorReason.isEmpty()) {
+                throw new ContentNotAvailableException("Content not available: player config empty", e);
             }
+            throw new ContentNotAvailableException("Content not available", e);
         } catch (Exception e) {
             throw new ParsingException("Could not parse yt player config", e);
         }
@@ -976,7 +922,7 @@ public class YoutubeStreamExtractor extends StreamExtractor {
     }
 
     @Nonnull
-    private List<SubtitlesInfo> getAvailableSubtitlesInfo() throws SubtitlesException {
+    private List<SubtitlesInfo> getAvailableSubtitlesInfo() {
         // If the video is age restricted getPlayerConfig will fail
         if (isAgeRestricted) return Collections.emptyList();
 
@@ -990,7 +936,7 @@ public class YoutubeStreamExtractor extends StreamExtractor {
         final JsonObject renderer = captions.getObject("playerCaptionsTracklistRenderer", new JsonObject());
         final JsonArray captionsArray = renderer.getArray("captionTracks", new JsonArray());
         // todo: use this to apply auto translation to different language from a source language
-        final JsonArray autoCaptionsArray = renderer.getArray("translationLanguages", new JsonArray());
+//        final JsonArray autoCaptionsArray = renderer.getArray("translationLanguages", new JsonArray());
 
         // This check is necessary since there may be cases where subtitles metadata do not contain caption track info
         // e.g. https://www.youtube.com/watch?v=-Vpwatutnko
@@ -1147,40 +1093,44 @@ public class YoutubeStreamExtractor extends StreamExtractor {
         }
     }
 
+    @Nonnull
     @Override
-    public String getHost() throws ParsingException {
+    public String getHost() {
+        return "";
+    }
+
+    @Nonnull
+    @Override
+    public String getPrivacy() {
+        return "";
+    }
+
+    @Nonnull
+    @Override
+    public String getCategory() {
+        return "";
+    }
+
+    @Nonnull
+    @Override
+    public String getLicence() {
         return "";
     }
 
     @Override
-    public String getPrivacy() throws ParsingException {
-        return "";
-    }
-
-    @Override
-    public String getCategory() throws ParsingException {
-        return "";
-    }
-
-    @Override
-    public String getLicence() throws ParsingException {
-        return "";
-    }
-
-    @Override
-    public Locale getLanguageInfo() throws ParsingException {
+    public Locale getLanguageInfo() {
         return null;
     }
 
     @Nonnull
     @Override
-    public List<String> getTags() throws ParsingException {
+    public List<String> getTags() {
         return new ArrayList<>();
     }
 
     @Nonnull
     @Override
-    public String getSupportInfo() throws ParsingException {
+    public String getSupportInfo() {
         return "";
     }
 }

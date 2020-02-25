@@ -22,10 +22,7 @@ package org.schabi.newpipe.extractor.services.youtube.extractors;
 
 import com.grack.nanojson.JsonArray;
 import com.grack.nanojson.JsonObject;
-import com.grack.nanojson.JsonParser;
-import com.grack.nanojson.JsonParserException;
 
-import org.jsoup.nodes.Document;
 import org.schabi.newpipe.extractor.StreamingService;
 import org.schabi.newpipe.extractor.downloader.Downloader;
 import org.schabi.newpipe.extractor.downloader.Response;
@@ -37,15 +34,12 @@ import org.schabi.newpipe.extractor.localization.TimeAgoParser;
 import org.schabi.newpipe.extractor.services.youtube.linkHandler.YoutubeParsingHelper;
 import org.schabi.newpipe.extractor.stream.StreamInfoItem;
 import org.schabi.newpipe.extractor.stream.StreamInfoItemsCollector;
-import org.schabi.newpipe.extractor.utils.Parser;
 
 import java.io.IOException;
 
 import javax.annotation.Nonnull;
 
 public class YoutubeTrendingExtractor extends KioskExtractor<StreamInfoItem> {
-
-    private Document doc;
     private JsonObject initialData;
 
     public YoutubeTrendingExtractor(StreamingService service,
@@ -60,7 +54,6 @@ public class YoutubeTrendingExtractor extends KioskExtractor<StreamInfoItem> {
                 "?gl=" + getExtractorContentCountry().getCountryCode();
 
         final Response response = downloader.get(url, getExtractorLocalization());
-        doc = YoutubeParsingHelper.parseAndCheckPage(url, response);
         initialData = YoutubeParsingHelper.getInitialData(response.responseBody());
     }
 
@@ -92,7 +85,7 @@ public class YoutubeTrendingExtractor extends KioskExtractor<StreamInfoItem> {
 
     @Nonnull
     @Override
-    public InfoItemsPage<StreamInfoItem> getInitialPage() throws ParsingException {
+    public InfoItemsPage<StreamInfoItem> getInitialPage() {
         StreamInfoItemsCollector collector = new StreamInfoItemsCollector(getServiceId());
         JsonArray firstPageElements = initialData.getObject("contents").getObject("twoColumnBrowseResultsRenderer")
                 .getArray("tabs").getObject(0).getObject("tabRenderer").getObject("content")

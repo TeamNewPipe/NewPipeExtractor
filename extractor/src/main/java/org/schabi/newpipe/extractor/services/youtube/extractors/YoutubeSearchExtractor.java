@@ -17,7 +17,6 @@ import org.schabi.newpipe.extractor.localization.TimeAgoParser;
 import org.schabi.newpipe.extractor.search.InfoItemsSearchCollector;
 import org.schabi.newpipe.extractor.search.SearchExtractor;
 import org.schabi.newpipe.extractor.services.youtube.linkHandler.YoutubeParsingHelper;
-import org.schabi.newpipe.extractor.stream.StreamInfoItemsCollector;
 
 import java.io.IOException;
 import java.util.Collections;
@@ -147,7 +146,7 @@ public class YoutubeSearchExtractor extends SearchExtractor {
         return new InfoItemsPage<>(collector, getNextPageUrlFrom(itemSectionRenderer.getArray("continuations")));
     }
 
-    private void collectStreamsFrom(InfoItemsSearchCollector collector, JsonArray videos) throws NothingFoundException, ParsingException {
+    private void collectStreamsFrom(InfoItemsSearchCollector collector, JsonArray videos) throws NothingFoundException {
         collector.reset();
 
         final TimeAgoParser timeAgoParser = getTimeAgoParser();

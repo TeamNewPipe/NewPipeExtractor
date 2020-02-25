@@ -34,7 +34,6 @@ public class YoutubePlaylistExtractor extends PlaylistExtractor {
     private JsonObject initialData;
     private JsonObject uploaderInfo;
     private JsonObject playlistInfo;
-    private JsonObject playlistVideos;
 
     public YoutubePlaylistExtractor(StreamingService service, ListLinkHandler linkHandler) {
         super(service, linkHandler);
@@ -48,7 +47,6 @@ public class YoutubePlaylistExtractor extends PlaylistExtractor {
         initialData = YoutubeParsingHelper.getInitialData(response.responseBody());
         uploaderInfo = getUploaderInfo();
         playlistInfo = getPlaylistInfo();
-        playlistVideos = getPlaylistVideos();
     }
 
     private JsonObject getUploaderInfo() throws ParsingException {
@@ -83,19 +81,8 @@ public class YoutubePlaylistExtractor extends PlaylistExtractor {
         }
     }
 
-    private JsonObject getPlaylistVideos() throws ParsingException {
-        try {
-            return initialData.getObject("contents").getObject("twoColumnBrowseResultsRenderer")
-                    .getArray("tabs").getObject(0).getObject("tabRenderer").getObject("content").getObject("sectionListRenderer")
-                    .getArray("contents").getObject(0).getObject("itemSectionRenderer").getArray("contents")
-                    .getObject(0).getObject("playlistVideoListRenderer");
-        } catch (Exception e) {
-            throw new ParsingException("Could not get playlist info", e);
-        }
-    }
-
     @Override
-    public String getNextPageUrl() throws ExtractionException {
+    public String getNextPageUrl() {
         return getNextPageUrlFrom(initialData.getObject("contents").getObject("twoColumnBrowseResultsRenderer")
                 .getArray("tabs").getObject(0).getObject("tabRenderer").getObject("content")
                 .getObject("sectionListRenderer").getArray("contents").getObject(0)
@@ -177,7 +164,7 @@ public class YoutubePlaylistExtractor extends PlaylistExtractor {
 
     @Nonnull
     @Override
-    public InfoItemsPage<StreamInfoItem> getInitialPage() throws ExtractionException {
+    public InfoItemsPage<StreamInfoItem> getInitialPage() {
         StreamInfoItemsCollector collector = new StreamInfoItemsCollector(getServiceId());
 
         JsonArray videos = initialData.getObject("contents").getObject("twoColumnBrowseResultsRenderer")
