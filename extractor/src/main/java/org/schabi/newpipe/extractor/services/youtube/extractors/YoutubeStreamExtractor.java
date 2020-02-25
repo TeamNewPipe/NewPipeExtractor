@@ -177,7 +177,6 @@ public class YoutubeStreamExtractor extends StreamExtractor {
     @Override
     public int getAgeLimit() throws ParsingException {
         assertPageFetched();
-        // TODO: Find new way to get age limit
         if (!isAgeRestricted) {
             return NO_AGE_LIMIT;
         }
@@ -497,6 +496,9 @@ public class YoutubeStreamExtractor extends StreamExtractor {
     @Override
     public StreamInfoItem getNextStream() throws ExtractionException {
         assertPageFetched();
+        if (isAgeRestricted) {
+            return null;
+        }
         try {
             final JsonObject videoInfo = initialData.getObject("contents").getObject("twoColumnWatchNextResults")
                     .getObject("secondaryResults").getObject("secondaryResults").getArray("results")
@@ -515,6 +517,9 @@ public class YoutubeStreamExtractor extends StreamExtractor {
     @Override
     public StreamInfoItemsCollector getRelatedStreams() throws ExtractionException {
         assertPageFetched();
+        if (isAgeRestricted) {
+            return null;
+        }
         try {
             StreamInfoItemsCollector collector = new StreamInfoItemsCollector(getServiceId());
             JsonArray results = initialData.getObject("contents").getObject("twoColumnWatchNextResults")
