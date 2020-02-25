@@ -512,7 +512,6 @@ public class YoutubeStreamExtractor extends StreamExtractor {
         }
     }
 
-
     @Override
     public StreamInfoItemsCollector getRelatedStreams() throws ExtractionException {
         assertPageFetched();
@@ -677,7 +676,6 @@ public class YoutubeStreamExtractor extends StreamExtractor {
             throw new ParsingException("Could not parse yt player response", e);
         }
     }
-
 
     @Nonnull
     private EmbeddedInfo getEmbeddedInfo() throws ParsingException, ReCaptchaException {

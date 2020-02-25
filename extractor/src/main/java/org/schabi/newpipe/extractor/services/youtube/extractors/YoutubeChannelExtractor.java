@@ -164,11 +164,9 @@ public class YoutubeChannelExtractor extends ChannelExtractor {
 
     @Override
     public long getSubscriberCount() throws ParsingException {
-
         final JsonObject subscriberInfo = initialData.getObject("header").getObject("c4TabbedHeaderRenderer").getObject("subscriberCountText");
         if (subscriberInfo != null) {
             try {
-
                 return Utils.mixedNumberWordToLong(subscriberInfo.getArray("runs").getObject(0).getString("text"));
             } catch (NumberFormatException e) {
                 throw new ParsingException("Could not get subscriber count", e);

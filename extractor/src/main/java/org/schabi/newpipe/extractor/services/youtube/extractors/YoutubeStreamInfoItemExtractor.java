@@ -158,12 +158,26 @@ public class YoutubeStreamInfoItemExtractor implements StreamInfoItemExtractor {
     @Override
     public String getTextualUploadDate() {
         // TODO: Get upload date in case of a videoRenderer (not available in case of a compactVideoRenderer)
-        return null;
+        try {
+            String s =videoInfo.getObject("publishedTimeText").getString("simpleText");
+            return s;
+        } catch (Exception e) {
+            // upload date is not always available, e.g. in playlists
+            return null;
+        }
     }
 
     @Nullable
     @Override
-    public DateWrapper getUploadDate() {
+    public DateWrapper getUploadDate() throws ParsingException {
+        String textualUploadDate = getTextualUploadDate();
+        if (timeAgoParser != null && textualUploadDate != null && !textualUploadDate.isEmpty()) {
+            try {
+                return timeAgoParser.parse(textualUploadDate);
+            } catch (ParsingException e) {
+                throw new ParsingException("Could not get upload date", e);
+            }
+        }
         return null;
     }
 
