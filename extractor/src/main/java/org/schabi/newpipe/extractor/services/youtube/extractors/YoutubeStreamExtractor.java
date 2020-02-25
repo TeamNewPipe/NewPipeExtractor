@@ -134,15 +134,23 @@ public class YoutubeStreamExtractor extends StreamExtractor {
         }
 
         try {
-            //return playerResponse.getObject("microformat").getObject("playerMicroformatRenderer").getString("publishDate");
+            // return playerResponse.getObject("microformat").getObject("playerMicroformatRenderer").getString("publishDate");
         } catch (Exception ignored) {}
 
         try {
             if (getVideoPrimaryInfoRenderer().getObject("dateText").getString("simpleText").startsWith("Premiered")) {
-                String timeAgo = getVideoPrimaryInfoRenderer().getObject("dateText").getString("simpleText").substring(10);
-                TimeAgoParser timeAgoParser = TimeAgoPatternsManager.getTimeAgoParserFor(Localization.fromLocalizationCode("en"));
-                Calendar parsedTimeAgo = timeAgoParser.parse(timeAgo).date();
-                return new SimpleDateFormat("yyyy-MM-dd").format(parsedTimeAgo.getTime());
+                String time = getVideoPrimaryInfoRenderer().getObject("dateText").getString("simpleText").substring(10);
+
+                try { // Premiered 20 hours ago
+                    TimeAgoParser timeAgoParser = TimeAgoPatternsManager.getTimeAgoParserFor(Localization.fromLocalizationCode("en"));
+                    Calendar parsedTime = timeAgoParser.parse(time).date();
+                    return new SimpleDateFormat("yyyy-MM-dd").format(parsedTime.getTime());
+                } catch (Exception ignored) {}
+
+                try { // Premiered Premiered Feb 21, 2020
+                    Date d = new SimpleDateFormat("MMM dd, YYYY", Locale.ENGLISH).parse(time);
+                    return new SimpleDateFormat("yyyy-MM-dd").format(d.getTime());
+                } catch (Exception ignored) {}
             }
         } catch (Exception ignored) {}
 
