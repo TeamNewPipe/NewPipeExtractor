@@ -173,7 +173,6 @@ public class YoutubeStreamExtractor extends StreamExtractor {
     @Override
     public Description getDescription() throws ParsingException {
         assertPageFetched();
-
         // description with more info on links
         try {
             boolean htmlConversionRequired = false;
@@ -184,30 +183,33 @@ public class YoutubeStreamExtractor extends StreamExtractor {
                 String text = textHolder.getString("text");
                 if (textHolder.getObject("navigationEndpoint") != null) {
                     // The text is a link. Get the URL it points to and generate a HTML link of it
-                    String internUrl = textHolder.getObject("navigationEndpoint").getObject("urlEndpoint").getString("url");
-                    if (internUrl.startsWith("/redirect?")) {
-                        // q parameter can be the first parameter
-                        internUrl = internUrl.substring(10);
-                        String[] params = internUrl.split("&");
-                        for (String param : params) {
-                            if (param.split("=")[0].equals("q")) {
-                                String url = URLDecoder.decode(param.split("=")[1], StandardCharsets.UTF_8.name());
-                                if (url != null && !url.isEmpty()) {
-                                    descriptionBuilder.append("<a href=\"").append(url).append("\">").append(text).append("</a>");
-                                    htmlConversionRequired = true;
-                                } else {
-                                    descriptionBuilder.append(text);
+                    if (textHolder.getObject("navigationEndpoint").getObject("urlEndpoint") != null) {
+                        String internUrl = textHolder.getObject("navigationEndpoint").getObject("urlEndpoint").getString("url");
+                        if (internUrl.startsWith("/redirect?")) {
+                            // q parameter can be the first parameter
+                            internUrl = internUrl.substring(10);
+                            String[] params = internUrl.split("&");
+                            for (String param : params) {
+                                if (param.split("=")[0].equals("q")) {
+                                    String url = URLDecoder.decode(param.split("=")[1], StandardCharsets.UTF_8.name());
+                                    if (url != null && !url.isEmpty()) {
+                                        descriptionBuilder.append("<a href=\"").append(url).append("\">").append(text).append("</a>");
+                                        htmlConversionRequired = true;
+                                    } else {
+                                        descriptionBuilder.append(text);
+                                    }
+                                    break;
                                 }
-                                break;
                             }
+                        } else if (internUrl.startsWith("http")) {
+                            descriptionBuilder.append("<a href=\"").append(internUrl).append("\">").append(text).append("</a>");
+                            htmlConversionRequired = true;
                         }
-                    } else if (internUrl.startsWith("http")) {
-                        descriptionBuilder.append("<a href=\"").append(internUrl).append("\">").append(text).append("</a>");
-                        htmlConversionRequired = true;
-                    } else if (text != null) {
-                        descriptionBuilder.append(text);
+                        continue;
                     }
-                } else if (text != null) {
+                    continue;
+                }
+                if (text != null) {
                      descriptionBuilder.append(text);
                 }
             }
