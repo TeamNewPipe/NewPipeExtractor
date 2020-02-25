@@ -38,9 +38,17 @@ import org.schabi.newpipe.extractor.utils.Utils;
 
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
+import java.net.URLDecoder;
 import java.nio.charset.StandardCharsets;
 import java.text.SimpleDateFormat;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Locale;
+import java.util.Map;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -180,18 +188,24 @@ public class YoutubeStreamExtractor extends StreamExtractor {
                     if (internUrl.startsWith("/redirect?")) {
                         // q parameter can be the first parameter
                         internUrl = internUrl.substring(10);
-                    }
-                    String[] params = internUrl.split("&");
-                    for (String param : params) {
-                        if (param.charAt(0) == 'q') {
-                            String url = java.net.URLDecoder.decode(param.substring(2), StandardCharsets.UTF_8.name());
-                            if (url != null && !url.isEmpty()) {
-                                descriptionBuilder.append("<a href=\"").append(url).append("\">").append(text).append("</a>");
-                                htmlConversionRequired = true;
-                            } else {
-                                descriptionBuilder.append(text);
+                        String[] params = internUrl.split("&");
+                        for (String param : params) {
+                            if (param.split("=")[0].equals("q")) {
+                                String url = URLDecoder.decode(param.split("=")[1], StandardCharsets.UTF_8.name());
+                                if (url != null && !url.isEmpty()) {
+                                    descriptionBuilder.append("<a href=\"").append(url).append("\">").append(text).append("</a>");
+                                    htmlConversionRequired = true;
+                                } else {
+                                    descriptionBuilder.append(text);
+                                }
+                                break;
                             }
                         }
+                    } else if (internUrl.startsWith("http")) {
+                        descriptionBuilder.append("<a href=\"").append(internUrl).append("\">").append(text).append("</a>");
+                        htmlConversionRequired = true;
+                    } else if (text != null) {
+                        descriptionBuilder.append(text);
                     }
                 } else if (text != null) {
                      descriptionBuilder.append(text);
@@ -203,11 +217,11 @@ public class YoutubeStreamExtractor extends StreamExtractor {
             if (!description.isEmpty()) {
                 if (htmlConversionRequired) {
                     description = description.replaceAll("\\n", "<br>");
+                    description = description.replaceAll("  ", " &nbsp;");
                     return new Description(description, Description.HTML);
                 }
                 return new Description(description, Description.PLAIN_TEXT);
             }
-
         } catch (Exception ignored) { }
 
         // raw non-html description
