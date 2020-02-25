@@ -6,7 +6,6 @@ import com.grack.nanojson.JsonParser;
 import com.grack.nanojson.JsonParserException;
 
 import org.jsoup.nodes.Document;
-import org.jsoup.nodes.Element;
 import org.schabi.newpipe.extractor.StreamingService;
 import org.schabi.newpipe.extractor.channel.ChannelExtractor;
 import org.schabi.newpipe.extractor.downloader.Downloader;
@@ -91,18 +90,7 @@ public class YoutubeChannelExtractor extends ChannelExtractor {
     @Override
     public String getId() throws ParsingException {
         try {
-            return doc.select("meta[property=\"og:url\"]").first().attr("content").replace(CHANNEL_URL_BASE, "");
-        } catch (Exception ignored) {}
-        try {
-            return initialData.getObject("header").getObject("c4TabbedHeaderRenderer").getObject("navigationEndpoint").getObject("browseEndpoint").getString("browseId");
-        } catch (Exception ignored) {}
-
-        // fallback method; does not work with channels that have no "Subscribe" button (e.g. EminemVEVO)
-        try {
-            Element element = doc.getElementsByClass("yt-uix-subscription-button").first();
-            if (element == null) element = doc.getElementsByClass("yt-uix-subscription-preferences-button").first();
-
-            return element.attr("data-channel-external-id");
+            return initialData.getObject("header").getObject("c4TabbedHeaderRenderer").getString("channelId");
         } catch (Exception e) {
             throw new ParsingException("Could not get channel id", e);
         }
@@ -112,7 +100,7 @@ public class YoutubeChannelExtractor extends ChannelExtractor {
     @Override
     public String getName() throws ParsingException {
         try {
-            return doc.select("meta[property=\"og:title\"]").first().attr("content");
+            return initialData.getObject("header").getObject("c4TabbedHeaderRenderer").getString("title");
         } catch (Exception e) {
             throw new ParsingException("Could not get channel name", e);
         }
@@ -121,7 +109,8 @@ public class YoutubeChannelExtractor extends ChannelExtractor {
     @Override
     public String getAvatarUrl() throws ParsingException {
         try {
-            return initialData.getObject("header").getObject("c4TabbedHeaderRenderer").getObject("avatar").getArray("thumbnails").getObject(0).getString("url");
+            return initialData.getObject("header").getObject("c4TabbedHeaderRenderer").getObject("avatar")
+                    .getArray("thumbnails").getObject(0).getString("url");
         } catch (Exception e) {
             throw new ParsingException("Could not get avatar", e);
         }
@@ -132,7 +121,8 @@ public class YoutubeChannelExtractor extends ChannelExtractor {
         try {
             String url = null;
             try {
-                url = initialData.getObject("header").getObject("c4TabbedHeaderRenderer").getObject("banner").getArray("thumbnails").getObject(0).getString("url");
+                url = initialData.getObject("header").getObject("c4TabbedHeaderRenderer").getObject("banner")
+                        .getArray("thumbnails").getObject(0).getString("url");
             } catch (Exception ignored) {}
             if (url == null || url.contains("s.ytimg.com") || url.contains("default_banner")) {
                 return null;
@@ -149,7 +139,7 @@ public class YoutubeChannelExtractor extends ChannelExtractor {
 
             return url;
         } catch (Exception e) {
-            throw new ParsingException("Could not get Banner", e);
+            throw new ParsingException("Could not get banner", e);
         }
     }
 

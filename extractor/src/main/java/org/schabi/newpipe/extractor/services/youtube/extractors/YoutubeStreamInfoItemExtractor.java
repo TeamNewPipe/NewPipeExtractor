@@ -157,10 +157,8 @@ public class YoutubeStreamInfoItemExtractor implements StreamInfoItemExtractor {
     @Nullable
     @Override
     public String getTextualUploadDate() {
-        // TODO: Get upload date in case of a videoRenderer (not available in case of a compactVideoRenderer)
         try {
-            String s =videoInfo.getObject("publishedTimeText").getString("simpleText");
-            return s;
+            return videoInfo.getObject("publishedTimeText").getString("simpleText");
         } catch (Exception e) {
             // upload date is not always available, e.g. in playlists
             return null;
