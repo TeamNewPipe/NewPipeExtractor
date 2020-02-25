@@ -126,22 +126,11 @@ public class YoutubeStreamExtractor extends StreamExtractor {
         } catch (Exception ignored) {}
 
         try {
-            JsonArray contents = initialData.getObject("contents").getObject("twoColumnWatchNextResults").getObject("results")
-                    .getObject("results").getArray("contents");
-            for (Object c: contents) {
-                String unformattedDate = "";
-                try {
-                    JsonObject o = (JsonObject) c;
-                    unformattedDate = o.getObject("videoPrimaryInfoRenderer").getObject("dateText").getString("simpleText");
-
-                } catch (Exception ignored) {/* we got the wrong element form the array */}
-                // TODO this parses English formatted dates only, we need a better approach to parse teh textual date
-                Date d = new SimpleDateFormat("dd MMM yyy").parse(unformattedDate);
-                return new SimpleDateFormat("yyyy-MM-dd").format(d);
-            }
-        } catch (Exception e) {
-            throw new ParsingException("Could not get upload date", e);
-        }
+            // TODO this parses English formatted dates only, we need a better approach to parse the textual date
+            Date d = new SimpleDateFormat("dd MMM yyy").parse(getVideoPrimaryInfoRenderer()
+                    .getObject("dateText").getString("simpleText"));
+            return new SimpleDateFormat("yyyy-MM-dd").format(d);
+        } catch (Exception ignored) {}
         throw new ParsingException("Could not get upload date");
     }
 
@@ -351,7 +340,7 @@ public class YoutubeStreamExtractor extends StreamExtractor {
     public String getUploaderAvatarUrl() throws ParsingException {
         assertPageFetched();
 
-        String uploaderAvatarUrl;
+        String uploaderAvatarUrl = null;
         try {
             uploaderAvatarUrl = initialData.getObject("contents").getObject("twoColumnWatchNextResults").getObject("secondaryResults")
                     .getObject("secondaryResults").getArray("results").getObject(0).getObject("compactAutoplayRenderer")
@@ -363,13 +352,9 @@ public class YoutubeStreamExtractor extends StreamExtractor {
         } catch (Exception ignored) {}
 
         try {
-            uploaderAvatarUrl = initialData.getObject("contents").getObject("twoColumnWatchNextResults").getObject("results")
-                    .getObject("results").getArray("contents").getObject(1).getObject("videoSecondaryInfoRenderer")
-                    .getObject("owner").getObject("videoOwnerRenderer").getObject("thumbnail").getArray("thumbnails")
-                    .getObject(0).getString("url");
-        } catch (Exception e) {
-            throw new ParsingException("Could not get uploader avatar url", e);
-        }
+            uploaderAvatarUrl = getVideoSecondaryInfoRenderer().getObject("owner").getObject("videoOwnerRenderer")
+                    .getObject("thumbnail").getArray("thumbnails").getObject(0).getString("url");
+        } catch (Exception ignored) {}
 
         if (uploaderAvatarUrl == null) {
             throw new ParsingException("Could not get uploader avatar url");
