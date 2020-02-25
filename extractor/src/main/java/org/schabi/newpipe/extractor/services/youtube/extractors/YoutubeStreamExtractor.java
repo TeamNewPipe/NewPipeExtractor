@@ -38,13 +38,8 @@ import org.schabi.newpipe.extractor.utils.Utils;
 
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.Locale;
-import java.util.Map;
+import java.text.SimpleDateFormat;
+import java.util.*;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -126,13 +121,28 @@ public class YoutubeStreamExtractor extends StreamExtractor {
             return null;
         }
 
-        // TODO: try videoPrimaryInfoRenderer.dateText.simpleText
+        try {
+            //return playerResponse.getObject("microformat").getObject("playerMicroformatRenderer").getString("publishDate");
+        } catch (Exception ignored) {}
 
         try {
-            return playerResponse.getObject("microformat").getObject("playerMicroformatRenderer").getString("publishDate");
+            JsonArray contents = initialData.getObject("contents").getObject("twoColumnWatchNextResults").getObject("results")
+                    .getObject("results").getArray("contents");
+            for (Object c: contents) {
+                String unformattedDate = "";
+                try {
+                    JsonObject o = (JsonObject) c;
+                    unformattedDate = o.getObject("videoPrimaryInfoRenderer").getObject("dateText").getString("simpleText");
+
+                } catch (Exception ignored) {/* we got the wrong element form the array */}
+                // TODO this parses English formatted dates only, we need a better approach to parse teh textual date
+                Date d = new SimpleDateFormat("dd MMM yyy").parse(unformattedDate);
+                return new SimpleDateFormat("yyyy-MM-dd").format(d);
+            }
         } catch (Exception e) {
-            throw new ParsingException("Could not get upload date");
+            throw new ParsingException("Could not get upload date", e);
         }
+        throw new ParsingException("Could not get upload date");
     }
 
     @Override
@@ -165,13 +175,22 @@ public class YoutubeStreamExtractor extends StreamExtractor {
     @Override
     public Description getDescription() throws ParsingException {
         assertPageFetched();
-        // TODO: Parse videoSecondaryInfoRenderer.description
+        // raw non-html description
         try {
-            // raw non-html description
             return new Description(playerResponse.getObject("videoDetails").getString("shortDescription"), Description.PLAIN_TEXT);
-        } catch (Exception ignored) {
-            throw new ParsingException("Could not get the description");
-        }
+        } catch (Exception ignored) { }
+        try {
+            JsonArray descriptions = getVideoSecondaryInfoRenderer().getObject("description").getArray("runs");
+            StringBuilder descriptionBuilder = new StringBuilder(descriptions.size());
+            for (Object textObjectHolder : descriptions) {
+                JsonObject textHolder = (JsonObject) textObjectHolder;
+                String text = textHolder.getString("text");
+                if (text != null) descriptionBuilder.append(text);
+            }
+            String description = descriptionBuilder.toString();
+            if (!description.isEmpty()) return new Description(description, Description.PLAIN_TEXT);
+        } catch (Exception ignored) { }
+        throw new ParsingException("Could not get description");
     }
 
     @Override
