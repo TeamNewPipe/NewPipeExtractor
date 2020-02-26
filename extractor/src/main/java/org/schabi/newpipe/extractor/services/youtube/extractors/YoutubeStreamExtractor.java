@@ -260,7 +260,7 @@ public class YoutubeStreamExtractor extends StreamExtractor {
 
     @Override
     public int getAgeLimit() {
-        assertPageFetched();
+        if (initialData == null || initialData.isEmpty()) throw new IllegalStateException("initialData is not parsed yet");
         if (initialData.getObject("contents").getObject("twoColumnWatchNextResults")
                 .getObject("secondaryResults") == null) {
             return 18;
@@ -672,6 +672,7 @@ public class YoutubeStreamExtractor extends StreamExtractor {
         doc = YoutubeParsingHelper.parseAndCheckPage(verifiedUrl, response);
 
         final String playerUrl;
+        initialData = YoutubeParsingHelper.getInitialData(pageHtml);
         // Check if the video is age restricted
         if (getAgeLimit() == 18) {
             final EmbeddedInfo info = getEmbeddedInfo();
@@ -685,7 +686,6 @@ public class YoutubeStreamExtractor extends StreamExtractor {
             playerUrl = getPlayerUrl(ytPlayerConfig);
         }
         playerResponse = getPlayerResponse();
-        initialData = YoutubeParsingHelper.getInitialData(pageHtml);
 
         if (decryptionCode.isEmpty()) {
             decryptionCode = loadDecryptionCode(playerUrl);
