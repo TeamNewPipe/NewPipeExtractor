@@ -100,8 +100,6 @@ public class YoutubeStreamExtractor extends StreamExtractor {
     @Nonnull
     private List<SubtitlesInfo> subtitlesInfos = new ArrayList<>();
 
-    private boolean isAgeRestricted;
-
     public YoutubeStreamExtractor(StreamingService service, LinkHandler linkHandler) {
         super(service, linkHandler);
     }
@@ -261,16 +259,13 @@ public class YoutubeStreamExtractor extends StreamExtractor {
     }
 
     @Override
-    public int getAgeLimit() throws ParsingException {
+    public int getAgeLimit() {
         assertPageFetched();
-        if (!isAgeRestricted) {
+        if (initialData.getObject("contents").getObject("twoColumnWatchNextResults")
+                .getObject("secondaryResults") == null) {
+            return 18;
+        } else {
             return NO_AGE_LIMIT;
-        }
-        try {
-            return Integer.valueOf(doc.select("meta[property=\"og:restrictions:age\"]")
-                    .attr(CONTENT).replace("+", ""));
-        } catch (Exception e) {
-            throw new ParsingException("Could not get age restriction");
         }
     }
 
@@ -578,7 +573,7 @@ public class YoutubeStreamExtractor extends StreamExtractor {
     @Override
     public StreamInfoItem getNextStream() throws ExtractionException {
         assertPageFetched();
-        if (isAgeRestricted) {
+        if (getAgeLimit() == 18) {
             return null;
         }
         try {
@@ -599,7 +594,7 @@ public class YoutubeStreamExtractor extends StreamExtractor {
     @Override
     public StreamInfoItemsCollector getRelatedStreams() throws ExtractionException {
         assertPageFetched();
-        if (isAgeRestricted) {
+        if (getAgeLimit() == 18) {
             return null;
         }
         try {
@@ -678,18 +673,16 @@ public class YoutubeStreamExtractor extends StreamExtractor {
 
         final String playerUrl;
         // Check if the video is age restricted
-        if (!doc.select("meta[property=\"og:restrictions:age\"]").isEmpty()) {
+        if (getAgeLimit() == 18) {
             final EmbeddedInfo info = getEmbeddedInfo();
             final String videoInfoUrl = getVideoInfoUrl(getId(), info.sts);
             final String infoPageResponse = downloader.get(videoInfoUrl, getExtractorLocalization()).responseBody();
             videoInfoPage.putAll(Parser.compatParseMap(infoPageResponse));
             playerUrl = info.url;
-            isAgeRestricted = true;
         } else {
             final JsonObject ytPlayerConfig = getPlayerConfig();
             playerArgs = getPlayerArgs(ytPlayerConfig);
             playerUrl = getPlayerUrl(ytPlayerConfig);
-            isAgeRestricted = false;
         }
         playerResponse = getPlayerResponse();
         initialData = YoutubeParsingHelper.getInitialData(pageHtml);
@@ -869,7 +862,7 @@ public class YoutubeStreamExtractor extends StreamExtractor {
     @Nonnull
     private List<SubtitlesInfo> getAvailableSubtitlesInfo() {
         // If the video is age restricted getPlayerConfig will fail
-        if (isAgeRestricted) return Collections.emptyList();
+        if (getAgeLimit() == 18) return Collections.emptyList();
 
         final JsonObject captions;
         if (!playerResponse.has("captions")) {
