@@ -235,18 +235,18 @@ public class YoutubeStreamExtractor extends StreamExtractor {
                                         .getString("canonicalBaseUrl")).append("\">").append(text).append("</a>");
                         htmlConversionRequired = true;
                     } else if (textHolder.getObject("navigationEndpoint").getObject("watchEndpoint") != null) {
+                        descriptionBuilder.append("<a href=\"https://www.youtube.com/watch?v=").append(
+                                textHolder.getObject("navigationEndpoint").getObject("watchEndpoint")
+                                        .getString("videoId"));
                         if (textHolder.getObject("navigationEndpoint").getObject("watchEndpoint").getString("playlistId") != null) {
-                            descriptionBuilder.append("<a href=\"https://www.youtube.com/watch?v=").append(
-                                    textHolder.getObject("navigationEndpoint").getObject("watchEndpoint")
-                                            .getString("videoId")).append("&amp;list=")
-                                    .append(textHolder.getObject("navigationEndpoint")
-                                            .getObject("watchEndpoint").getString("playlistId"))
-                                    .append("\">").append(text).append("</a>");
-                        } else {
-                            descriptionBuilder.append("<a href=\"https://www.youtube.com/watch?v=").append(
-                                    textHolder.getObject("navigationEndpoint").getObject("watchEndpoint")
-                                            .getString("videoId")).append("\">").append(text).append("</a>");
+                            descriptionBuilder.append("&amp;list=").append(textHolder.getObject("navigationEndpoint")
+                                            .getObject("watchEndpoint").getString("playlistId"));
                         }
+                        if (textHolder.getObject("navigationEndpoint").getObject("watchEndpoint").has("startTimeSeconds")) {
+                            descriptionBuilder.append("&amp;t=").append(textHolder.getObject("navigationEndpoint")
+                                    .getObject("watchEndpoint").getInt("startTimeSeconds"));
+                        }
+                        descriptionBuilder.append("\">").append(text).append("</a>");
                         htmlConversionRequired = true;
                     }
                     continue;
