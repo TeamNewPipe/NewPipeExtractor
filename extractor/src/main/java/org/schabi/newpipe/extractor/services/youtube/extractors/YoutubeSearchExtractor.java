@@ -47,8 +47,6 @@ import javax.annotation.Nonnull;
  */
 
 public class YoutubeSearchExtractor extends SearchExtractor {
-
-    private Document doc;
     private JsonObject initialData;
 
     public YoutubeSearchExtractor(StreamingService service, SearchQueryHandler linkHandler) {
@@ -57,10 +55,28 @@ public class YoutubeSearchExtractor extends SearchExtractor {
 
     @Override
     public void onFetchPage(@Nonnull Downloader downloader) throws IOException, ExtractionException {
-        final String url = getUrl();
-        final Response response = downloader.get(url, getExtractorLocalization());
-        doc = YoutubeParsingHelper.parseAndCheckPage(url, response);
-        initialData = YoutubeParsingHelper.getInitialData(response.responseBody());
+        final String url = getUrl() + "&pbj=1";
+
+        JsonArray ajaxJson;
+
+        Map<String, List<String>> headers = new HashMap<>();
+        headers.put("X-YouTube-Client-Name", Collections.singletonList("1"));
+        // Use the hardcoded client version first to get JSON with a structure we know
+        // TODO: Use YoutubeParsingHelper.getClientVersion() as fallback
+        headers.put("X-YouTube-Client-Version",
+                Collections.singletonList(YoutubeParsingHelper.HARDCODED_CLIENT_VERSION));
+        final String response = getDownloader().get(url, headers, getExtractorLocalization()).responseBody();
+        if (response.length() < 50) { // ensure to have a valid response
+            throw new ParsingException("Could not parse json data for next streams");
+        }
+
+        try {
+            ajaxJson = JsonParser.array().from(response);
+        } catch (JsonParserException e) {
+            throw new ParsingException("Could not parse json data for next streams", e);
+        }
+
+        initialData = ajaxJson.getObject(1).getObject("response");
     }
 
     @Nonnull
@@ -114,29 +130,21 @@ public class YoutubeSearchExtractor extends SearchExtractor {
 
         Map<String, List<String>> headers = new HashMap<>();
         headers.put("X-YouTube-Client-Name", Collections.singletonList("1"));
+        // Use the hardcoded client version first to get JSON with a structure we know
+        // TODO: Use YoutubeParsingHelper.getClientVersion() as fallback
+        headers.put("X-YouTube-Client-Version",
+                Collections.singletonList(YoutubeParsingHelper.HARDCODED_CLIENT_VERSION));
+        final String response = getDownloader().get(pageUrl, headers, getExtractorLocalization()).responseBody();
+        if (response.length() < 50) { // ensure to have a valid response
+            throw new ParsingException("Could not parse json data for next streams");
+        }
 
         try {
-            // Use the hardcoded client version first to get JSON with a structure we know
-            headers.put("X-YouTube-Client-Version",
-                    Collections.singletonList(YoutubeParsingHelper.HARDCODED_CLIENT_VERSION));
-            final String response = getDownloader().get(pageUrl, headers, getExtractorLocalization()).responseBody();
-            if (response.length() < 50) { // ensure to have a valid response
-                throw new ParsingException("Could not parse json data for next streams");
-            }
             ajaxJson = JsonParser.array().from(response);
-        } catch (Exception e) {
-            try {
-                headers.put("X-YouTube-Client-Version",
-                        Collections.singletonList(YoutubeParsingHelper.getClientVersion(initialData, doc.toString())));
-                final String response = getDownloader().get(pageUrl, headers, getExtractorLocalization()).responseBody();
-                if (response.length() < 50) { // ensure to have a valid response
-                    throw new ParsingException("Could not parse json data for next streams");
-                }
-                ajaxJson = JsonParser.array().from(response);
-            } catch (JsonParserException ignored) {
-                throw new ParsingException("Could not parse json data for next streams", e);
-            }
+        } catch (JsonParserException e) {
+            throw new ParsingException("Could not parse json data for next streams", e);
         }
+
 
         JsonObject itemSectionRenderer = ajaxJson.getObject(1).getObject("response")
                 .getObject("continuationContents").getObject("itemSectionContinuation");
