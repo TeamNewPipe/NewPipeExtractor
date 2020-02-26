@@ -53,9 +53,7 @@ import static org.schabi.newpipe.extractor.utils.Utils.HTTPS;
 @SuppressWarnings("WeakerAccess")
 public class YoutubeChannelExtractor extends ChannelExtractor {
     /*package-private*/ static final String CHANNEL_URL_BASE = "https://www.youtube.com/channel/";
-    private static final String CHANNEL_URL_PARAMETERS = "/videos?view=0&flow=list&sort=dd&live_view=10000";
 
-    private Document doc;
     private JsonObject initialData;
 
     public YoutubeChannelExtractor(StreamingService service, ListLinkHandler linkHandler) {
@@ -64,16 +62,36 @@ public class YoutubeChannelExtractor extends ChannelExtractor {
 
     @Override
     public void onFetchPage(@Nonnull Downloader downloader) throws IOException, ExtractionException {
-        String channelUrl = super.getUrl() + CHANNEL_URL_PARAMETERS;
-        final Response response = downloader.get(channelUrl, getExtractorLocalization());
-        doc = YoutubeParsingHelper.parseAndCheckPage(channelUrl, response);
-        initialData = YoutubeParsingHelper.getInitialData(response.responseBody());
+        final String url = super.getUrl() + "/videos?pbj=1";
+
+        JsonArray ajaxJson;
+
+        Map<String, List<String>> headers = new HashMap<>();
+        headers.put("X-YouTube-Client-Name", Collections.singletonList("1"));
+        // Use the hardcoded client version first to get JSON with a structure we know
+        // TODO: Use YoutubeParsingHelper.getClientVersion() as fallback
+        headers.put("X-YouTube-Client-Version",
+                Collections.singletonList(YoutubeParsingHelper.HARDCODED_CLIENT_VERSION));
+        final String response = getDownloader().get(url, headers, getExtractorLocalization()).responseBody();
+        if (response.length() < 50) { // ensure to have a valid response
+            throw new ParsingException("Could not parse json data for next streams");
+        }
+
+        try {
+            ajaxJson = JsonParser.array().from(response);
+        } catch (JsonParserException e) {
+            throw new ParsingException("Could not parse json data for next streams", e);
+        }
+
+        initialData = ajaxJson.getObject(1).getObject("response");
     }
 
 
     @Override
     public String getNextPageUrl() throws ExtractionException {
-        return getNextPageUrlFrom(getVideoTab().getObject("content").getObject("sectionListRenderer").getArray("continuations"));
+        return getNextPageUrlFrom(getVideoTab().getObject("content").getObject("sectionListRenderer")
+                .getArray("contents").getObject(0).getObject("itemSectionRenderer")
+                .getArray("contents").getObject(0).getObject("gridRenderer").getArray("continuations"));
     }
 
     @Nonnull
@@ -181,7 +199,9 @@ public class YoutubeChannelExtractor extends ChannelExtractor {
     public InfoItemsPage<StreamInfoItem> getInitialPage() throws ExtractionException {
         StreamInfoItemsCollector collector = new StreamInfoItemsCollector(getServiceId());
 
-        JsonArray videos = getVideoTab().getObject("content").getObject("sectionListRenderer").getArray("contents");
+        JsonArray videos = getVideoTab().getObject("content").getObject("sectionListRenderer").getArray("contents")
+                .getObject(0).getObject("itemSectionRenderer").getArray("contents").getObject(0)
+                .getObject("gridRenderer").getArray("items");
         collectStreamsFrom(collector, videos);
 
         return new InfoItemsPage<>(collector, getNextPageUrl());
@@ -202,33 +222,25 @@ public class YoutubeChannelExtractor extends ChannelExtractor {
 
         Map<String, List<String>> headers = new HashMap<>();
         headers.put("X-YouTube-Client-Name", Collections.singletonList("1"));
+        // Use the hardcoded client version first to get JSON with a structure we know
+        // TODO: Use YoutubeParsingHelper.getClientVersion() as fallback
+        headers.put("X-YouTube-Client-Version",
+                Collections.singletonList(YoutubeParsingHelper.HARDCODED_CLIENT_VERSION));
+        final String response = getDownloader().get(pageUrl, headers, getExtractorLocalization()).responseBody();
+        if (response.length() < 50) { // ensure to have a valid response
+            throw new ParsingException("Could not parse json data for next streams");
+        }
+
         try {
-            // Use the hardcoded client version first to get JSON with a structure we know
-            headers.put("X-YouTube-Client-Version",
-                    Collections.singletonList(YoutubeParsingHelper.HARDCODED_CLIENT_VERSION));
-            final String response = getDownloader().get(pageUrl, headers, getExtractorLocalization()).responseBody();
-            if (response.length() < 50) { // ensure to have a valid response
-                throw new ParsingException("Could not parse json data for next streams");
-            }
             ajaxJson = JsonParser.array().from(response);
-        } catch (Exception e) {
-            try {
-                headers.put("X-YouTube-Client-Version",
-                        Collections.singletonList(YoutubeParsingHelper.getClientVersion(initialData, doc.toString())));
-                final String response = getDownloader().get(pageUrl, headers, getExtractorLocalization()).responseBody();
-                if (response.length() < 50) { // ensure to have a valid response
-                    throw new ParsingException("Could not parse json data for next streams");
-                }
-                ajaxJson = JsonParser.array().from(response);
-            } catch (JsonParserException ignored) {
-                throw new ParsingException("Could not parse json data for next streams", e);
-            }
+        } catch (JsonParserException e) {
+            throw new ParsingException("Could not parse json data for next streams", e);
         }
 
         JsonObject sectionListContinuation = ajaxJson.getObject(1).getObject("response")
-                .getObject("continuationContents").getObject("sectionListContinuation");
+                .getObject("continuationContents").getObject("gridContinuation");
 
-        collectStreamsFrom(collector, sectionListContinuation.getArray("contents"));
+        collectStreamsFrom(collector, sectionListContinuation.getArray("items"));
 
         return new InfoItemsPage<>(collector, getNextPageUrlFrom(sectionListContinuation.getArray("continuations")));
     }
@@ -254,10 +266,9 @@ public class YoutubeChannelExtractor extends ChannelExtractor {
         final TimeAgoParser timeAgoParser = getTimeAgoParser();
 
         for (Object video : videos) {
-            JsonObject videoInfo = ((JsonObject) video).getObject("itemSectionRenderer")
-                    .getArray("contents").getObject(0);
-            if (videoInfo.getObject("videoRenderer") != null) {
-                collector.commit(new YoutubeStreamInfoItemExtractor(videoInfo.getObject("videoRenderer"), timeAgoParser) {
+            if (((JsonObject) video).getObject("gridVideoRenderer") != null) {
+                collector.commit(new YoutubeStreamInfoItemExtractor(
+                        ((JsonObject) video).getObject("gridVideoRenderer"), timeAgoParser) {
                     @Override
                     public String getUploaderName() {
                         return uploaderName;

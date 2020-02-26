@@ -91,12 +91,23 @@ public class YoutubeStreamInfoItemExtractor implements StreamInfoItemExtractor {
 
     @Override
     public long getDuration() throws ParsingException {
+        if (getStreamType() == StreamType.LIVE_STREAM) return -1;
+        String duration = null;
         try {
-            if (getStreamType() == StreamType.LIVE_STREAM) return -1;
-            return YoutubeParsingHelper.parseDurationString(videoInfo.getObject("lengthText").getString("simpleText"));
-        } catch (Exception e) {
-            throw new ParsingException("Could not get duration", e);
+            duration = videoInfo.getObject("lengthText").getString("simpleText");
+        } catch (Exception ignored) {}
+        if (duration == null) {
+            try {
+                for (Object thumbnailOverlay : videoInfo.getArray("thumbnailOverlays")) {
+                    if (((JsonObject) thumbnailOverlay).getObject("thumbnailOverlayTimeStatusRenderer") != null) {
+                        duration = ((JsonObject) thumbnailOverlay).getObject("thumbnailOverlayTimeStatusRenderer")
+                                .getObject("text").getString("simpleText");
+                    }
+                }
+            } catch (Exception ignored) {}
         }
+        if (duration != null) return YoutubeParsingHelper.parseDurationString(duration);
+        throw new ParsingException("Could not get duration");
     }
 
     @Override
