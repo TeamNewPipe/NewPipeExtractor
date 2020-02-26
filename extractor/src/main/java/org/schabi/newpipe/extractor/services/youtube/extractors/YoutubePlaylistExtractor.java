@@ -5,10 +5,8 @@ import com.grack.nanojson.JsonObject;
 import com.grack.nanojson.JsonParser;
 import com.grack.nanojson.JsonParserException;
 
-import org.jsoup.nodes.Document;
 import org.schabi.newpipe.extractor.StreamingService;
 import org.schabi.newpipe.extractor.downloader.Downloader;
-import org.schabi.newpipe.extractor.downloader.Response;
 import org.schabi.newpipe.extractor.exceptions.ExtractionException;
 import org.schabi.newpipe.extractor.exceptions.ParsingException;
 import org.schabi.newpipe.extractor.linkhandler.ListLinkHandler;
@@ -29,8 +27,6 @@ import javax.annotation.Nonnull;
 
 @SuppressWarnings("WeakerAccess")
 public class YoutubePlaylistExtractor extends PlaylistExtractor {
-
-    private Document doc;
     private JsonObject initialData;
     private JsonObject uploaderInfo;
     private JsonObject playlistInfo;
@@ -41,10 +37,28 @@ public class YoutubePlaylistExtractor extends PlaylistExtractor {
 
     @Override
     public void onFetchPage(@Nonnull Downloader downloader) throws IOException, ExtractionException {
-        final String url = getUrl();
-        final Response response = downloader.get(url, getExtractorLocalization());
-        doc = YoutubeParsingHelper.parseAndCheckPage(url, response);
-        initialData = YoutubeParsingHelper.getInitialData(response.responseBody());
+        final String url = getUrl() + "&pbj=1";
+
+        JsonArray ajaxJson;
+
+        Map<String, List<String>> headers = new HashMap<>();
+        headers.put("X-YouTube-Client-Name", Collections.singletonList("1"));
+        // Use the hardcoded client version first to get JSON with a structure we know
+        // TODO: Use YoutubeParsingHelper.getClientVersion() as fallback
+        headers.put("X-YouTube-Client-Version",
+                Collections.singletonList(YoutubeParsingHelper.HARDCODED_CLIENT_VERSION));
+        final String response = getDownloader().get(url, headers, getExtractorLocalization()).responseBody();
+        if (response.length() < 50) { // ensure to have a valid response
+            throw new ParsingException("Could not parse json data for next streams");
+        }
+
+        try {
+            ajaxJson = JsonParser.array().from(response);
+        } catch (JsonParserException e) {
+            throw new ParsingException("Could not parse json data for next streams", e);
+        }
+
+        initialData = ajaxJson.getObject(1).getObject("response");
         uploaderInfo = getUploaderInfo();
         playlistInfo = getPlaylistInfo();
     }
@@ -188,27 +202,19 @@ public class YoutubePlaylistExtractor extends PlaylistExtractor {
 
         Map<String, List<String>> headers = new HashMap<>();
         headers.put("X-YouTube-Client-Name", Collections.singletonList("1"));
+        // Use the hardcoded client version first to get JSON with a structure we know
+        // TODO: Use YoutubeParsingHelper.getClientVersion() as fallback
+        headers.put("X-YouTube-Client-Version",
+                Collections.singletonList(YoutubeParsingHelper.HARDCODED_CLIENT_VERSION));
+        final String response = getDownloader().get(pageUrl, headers, getExtractorLocalization()).responseBody();
+        if (response.length() < 50) { // ensure to have a valid response
+            throw new ParsingException("Could not parse json data for next streams");
+        }
+
         try {
-            // Use the hardcoded client version first to get JSON with a structure we know
-            headers.put("X-YouTube-Client-Version",
-                    Collections.singletonList(YoutubeParsingHelper.HARDCODED_CLIENT_VERSION));
-            final String response = getDownloader().get(pageUrl, headers, getExtractorLocalization()).responseBody();
-            if (response.length() < 50) { // ensure to have a valid response
-                throw new ParsingException("Could not parse json data for next streams");
-            }
             ajaxJson = JsonParser.array().from(response);
-        } catch (Exception e) {
-            try {
-                headers.put("X-YouTube-Client-Version",
-                        Collections.singletonList(YoutubeParsingHelper.getClientVersion(initialData, doc.toString())));
-                final String response = getDownloader().get(pageUrl, headers, getExtractorLocalization()).responseBody();
-                if (response.length() < 50) { // ensure to have a valid response
-                    throw new ParsingException("Could not parse json data for next streams");
-                }
-                ajaxJson = JsonParser.array().from(response);
-            } catch (JsonParserException ignored) {
-                throw new ParsingException("Could not parse json data for next streams", e);
-            }
+        } catch (JsonParserException e) {
+            throw new ParsingException("Could not parse json data for next streams", e);
         }
 
         JsonObject sectionListContinuation = ajaxJson.getObject(1).getObject("response")
