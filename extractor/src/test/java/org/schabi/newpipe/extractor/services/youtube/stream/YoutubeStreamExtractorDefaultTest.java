@@ -245,21 +245,18 @@ public class YoutubeStreamExtractorDefaultTest {
 
         @Test
         public void testGetDescription() throws ParsingException {
+            System.out.println(extractor.getDescription().getContent());
             assertNotNull(extractor.getDescription());
             assertFalse(extractor.getDescription().getContent().isEmpty());
         }
 
         @Test
         public void testGetFullLinksInDescription() throws ParsingException {
-            assertTrue(extractor.getDescription().getContent().contains("https://www.youtube.com/watch?v=X7FLCHVXpsA&amp;list=PL7u4lWXQ3wfI_7PgX0C-VTiwLeu0S4v34"));
-            assertTrue(extractor.getDescription().getContent().contains("https://www.youtube.com/watch?v=Lqv6G0pDNnw&amp;list=PL7u4lWXQ3wfI_7PgX0C-VTiwLeu0S4v34"));
-            assertTrue(extractor.getDescription().getContent().contains("https://www.youtube.com/watch?v=XxaRBPyrnBU&amp;list=PL7u4lWXQ3wfI_7PgX0C-VTiwLeu0S4v34"));
-            assertTrue(extractor.getDescription().getContent().contains("https://www.youtube.com/watch?v=U-9tUEOFKNU&amp;list=PL7u4lWXQ3wfI_7PgX0C-VTiwLeu0S4v34"));
-
-            assertFalse(extractor.getDescription().getContent().contains("https://youtu.be/X7FLCHVXpsA?list=PL7..."));
-            assertFalse(extractor.getDescription().getContent().contains("https://youtu.be/Lqv6G0pDNnw?list=PL7..."));
-            assertFalse(extractor.getDescription().getContent().contains("https://youtu.be/XxaRBPyrnBU?list=PL7..."));
-            assertFalse(extractor.getDescription().getContent().contains("https://youtu.be/U-9tUEOFKNU?list=PL7..."));
+            final String description = extractor.getDescription().getContent();
+            assertTrue(description.contains("https://www.youtube.com/watch?v=X7FLCHVXpsA&amp;list=PL7u4lWXQ3wfI_7PgX0C-VTiwLeu0S4v34"));
+            assertTrue(description.contains("https://www.youtube.com/watch?v=Lqv6G0pDNnw&amp;list=PL7u4lWXQ3wfI_7PgX0C-VTiwLeu0S4v34"));
+            assertTrue(description.contains("https://www.youtube.com/watch?v=XxaRBPyrnBU&amp;list=PL7u4lWXQ3wfI_7PgX0C-VTiwLeu0S4v34"));
+            assertTrue(description.contains("https://www.youtube.com/watch?v=U-9tUEOFKNU&amp;list=PL7u4lWXQ3wfI_7PgX0C-VTiwLeu0S4v34"));
         }
     }
 

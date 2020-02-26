@@ -229,7 +229,25 @@ public class YoutubeStreamExtractor extends StreamExtractor {
                             descriptionBuilder.append("<a href=\"").append(internUrl).append("\">").append(text).append("</a>");
                             htmlConversionRequired = true;
                         }
-                        continue;
+                    } else if (textHolder.getObject("navigationEndpoint").getObject("browseEndpoint") != null) {
+                        descriptionBuilder.append("<a href=\"https://www.youtube.com").append(
+                                textHolder.getObject("navigationEndpoint").getObject("browseEndpoint")
+                                        .getString("canonicalBaseUrl")).append("\">").append(text).append("</a>");
+                        htmlConversionRequired = true;
+                    } else if (textHolder.getObject("navigationEndpoint").getObject("watchEndpoint") != null) {
+                        if (textHolder.getObject("navigationEndpoint").getObject("watchEndpoint").getString("playlistId") != null) {
+                            descriptionBuilder.append("<a href=\"https://www.youtube.com/watch?v=").append(
+                                    textHolder.getObject("navigationEndpoint").getObject("watchEndpoint")
+                                            .getString("videoId")).append("&amp;list=")
+                                    .append(textHolder.getObject("navigationEndpoint")
+                                            .getObject("watchEndpoint").getString("playlistId"))
+                                    .append("\">").append(text).append("</a>");
+                        } else {
+                            descriptionBuilder.append("<a href=\"https://www.youtube.com/watch?v=").append(
+                                    textHolder.getObject("navigationEndpoint").getObject("watchEndpoint")
+                                            .getString("videoId")).append("\">").append(text).append("</a>");
+                        }
+                        htmlConversionRequired = true;
                     }
                     continue;
                 }
