@@ -108,17 +108,21 @@ public class YoutubeTrendingExtractor extends KioskExtractor<StreamInfoItem> {
     @Override
     public InfoItemsPage<StreamInfoItem> getInitialPage() {
         StreamInfoItemsCollector collector = new StreamInfoItemsCollector(getServiceId());
-        JsonArray firstPageElements = initialData.getObject("contents").getObject("twoColumnBrowseResultsRenderer")
-                .getArray("tabs").getObject(0).getObject("tabRenderer").getObject("content")
-                .getObject("sectionListRenderer").getArray("contents").getObject(0).getObject("itemSectionRenderer")
-                .getArray("contents").getObject(0).getObject("shelfRenderer").getObject("content")
-                .getObject("expandedShelfContentsRenderer").getArray("items");
-
         final TimeAgoParser timeAgoParser = getTimeAgoParser();
+        JsonArray itemSectionRenderers = initialData.getObject("contents").getObject("twoColumnBrowseResultsRenderer")
+                .getArray("tabs").getObject(0).getObject("tabRenderer").getObject("content")
+                .getObject("sectionListRenderer").getArray("contents");
 
-        for (Object ul : firstPageElements) {
-            final JsonObject videoInfo = ((JsonObject) ul).getObject("videoRenderer");
-            collector.commit(new YoutubeStreamInfoItemExtractor(videoInfo, timeAgoParser));
+        for (Object itemSectionRenderer : itemSectionRenderers) {
+            JsonObject expandedShelfContentsRenderer = ((JsonObject) itemSectionRenderer).getObject("itemSectionRenderer")
+                    .getArray("contents").getObject(0).getObject("shelfRenderer").getObject("content")
+                    .getObject("expandedShelfContentsRenderer");
+            if (expandedShelfContentsRenderer != null) {
+                for (Object ul : expandedShelfContentsRenderer.getArray("items")) {
+                    final JsonObject videoInfo = ((JsonObject) ul).getObject("videoRenderer");
+                    collector.commit(new YoutubeStreamInfoItemExtractor(videoInfo, timeAgoParser));
+                }
+            }
         }
         return new InfoItemsPage<>(collector, getNextPageUrl());
 
