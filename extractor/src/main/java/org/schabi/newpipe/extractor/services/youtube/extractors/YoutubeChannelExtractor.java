@@ -5,11 +5,9 @@ import com.grack.nanojson.JsonObject;
 import com.grack.nanojson.JsonParser;
 import com.grack.nanojson.JsonParserException;
 
-import org.jsoup.nodes.Document;
 import org.schabi.newpipe.extractor.StreamingService;
 import org.schabi.newpipe.extractor.channel.ChannelExtractor;
 import org.schabi.newpipe.extractor.downloader.Downloader;
-import org.schabi.newpipe.extractor.downloader.Response;
 import org.schabi.newpipe.extractor.exceptions.ExtractionException;
 import org.schabi.newpipe.extractor.exceptions.ParsingException;
 import org.schabi.newpipe.extractor.linkhandler.ListLinkHandler;
@@ -68,10 +66,8 @@ public class YoutubeChannelExtractor extends ChannelExtractor {
 
         Map<String, List<String>> headers = new HashMap<>();
         headers.put("X-YouTube-Client-Name", Collections.singletonList("1"));
-        // Use the hardcoded client version first to get JSON with a structure we know
-        // TODO: Use YoutubeParsingHelper.getClientVersion() as fallback
         headers.put("X-YouTube-Client-Version",
-                Collections.singletonList(YoutubeParsingHelper.HARDCODED_CLIENT_VERSION));
+                Collections.singletonList(YoutubeParsingHelper.getClientVersion()));
         final String response = getDownloader().get(url, headers, getExtractorLocalization()).responseBody();
         if (response.length() < 50) { // ensure to have a valid response
             throw new ParsingException("Could not parse json data for next streams");
@@ -222,10 +218,8 @@ public class YoutubeChannelExtractor extends ChannelExtractor {
 
         Map<String, List<String>> headers = new HashMap<>();
         headers.put("X-YouTube-Client-Name", Collections.singletonList("1"));
-        // Use the hardcoded client version first to get JSON with a structure we know
-        // TODO: Use YoutubeParsingHelper.getClientVersion() as fallback
         headers.put("X-YouTube-Client-Version",
-                Collections.singletonList(YoutubeParsingHelper.HARDCODED_CLIENT_VERSION));
+                Collections.singletonList(YoutubeParsingHelper.getClientVersion()));
         final String response = getDownloader().get(pageUrl, headers, getExtractorLocalization()).responseBody();
         if (response.length() < 50) { // ensure to have a valid response
             throw new ParsingException("Could not parse json data for next streams");

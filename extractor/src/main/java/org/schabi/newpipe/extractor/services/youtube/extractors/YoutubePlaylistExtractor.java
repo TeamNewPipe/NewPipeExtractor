@@ -43,10 +43,8 @@ public class YoutubePlaylistExtractor extends PlaylistExtractor {
 
         Map<String, List<String>> headers = new HashMap<>();
         headers.put("X-YouTube-Client-Name", Collections.singletonList("1"));
-        // Use the hardcoded client version first to get JSON with a structure we know
-        // TODO: Use YoutubeParsingHelper.getClientVersion() as fallback
         headers.put("X-YouTube-Client-Version",
-                Collections.singletonList(YoutubeParsingHelper.HARDCODED_CLIENT_VERSION));
+                Collections.singletonList(YoutubeParsingHelper.getClientVersion()));
         final String response = getDownloader().get(url, headers, getExtractorLocalization()).responseBody();
         if (response.length() < 50) { // ensure to have a valid response
             throw new ParsingException("Could not parse json data for next streams");
@@ -202,10 +200,8 @@ public class YoutubePlaylistExtractor extends PlaylistExtractor {
 
         Map<String, List<String>> headers = new HashMap<>();
         headers.put("X-YouTube-Client-Name", Collections.singletonList("1"));
-        // Use the hardcoded client version first to get JSON with a structure we know
-        // TODO: Use YoutubeParsingHelper.getClientVersion() as fallback
         headers.put("X-YouTube-Client-Version",
-                Collections.singletonList(YoutubeParsingHelper.HARDCODED_CLIENT_VERSION));
+                Collections.singletonList(YoutubeParsingHelper.getClientVersion()));
         final String response = getDownloader().get(pageUrl, headers, getExtractorLocalization()).responseBody();
         if (response.length() < 50) { // ensure to have a valid response
             throw new ParsingException("Could not parse json data for next streams");
