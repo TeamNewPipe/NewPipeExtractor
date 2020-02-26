@@ -10,17 +10,24 @@ import org.schabi.newpipe.extractor.NewPipe;
 import org.schabi.newpipe.extractor.exceptions.ExtractionException;
 import org.schabi.newpipe.extractor.exceptions.ParsingException;
 import org.schabi.newpipe.extractor.services.youtube.extractors.YoutubeStreamExtractor;
-import org.schabi.newpipe.extractor.stream.*;
+import org.schabi.newpipe.extractor.stream.Frameset;
+import org.schabi.newpipe.extractor.stream.StreamExtractor;
+import org.schabi.newpipe.extractor.stream.StreamInfoItemsCollector;
+import org.schabi.newpipe.extractor.stream.StreamType;
+import org.schabi.newpipe.extractor.stream.VideoStream;
 import org.schabi.newpipe.extractor.utils.Utils;
 
-import java.io.IOException;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.List;
 
 import static java.util.Objects.requireNonNull;
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
 import static org.schabi.newpipe.extractor.ExtractorAsserts.assertIsSecureUrl;
 import static org.schabi.newpipe.extractor.ServiceList.YouTube;
 
@@ -89,7 +96,6 @@ public class YoutubeStreamExtractorDefaultTest {
         @Test
         public void testGetFullLinksInDescription() throws ParsingException {
             assertTrue(extractor.getDescription().getContent().contains("http://adele.com"));
-            assertFalse(extractor.getDescription().getContent().contains("http://smarturl.it/SubscribeAdele?IQi..."));
         }
 
         @Test
@@ -142,12 +148,12 @@ public class YoutubeStreamExtractorDefaultTest {
         }
 
         @Test
-        public void testGetAudioStreams() throws IOException, ExtractionException {
+        public void testGetAudioStreams() throws ExtractionException {
             assertFalse(extractor.getAudioStreams().isEmpty());
         }
 
         @Test
-        public void testGetVideoStreams() throws IOException, ExtractionException {
+        public void testGetVideoStreams() throws ExtractionException {
             for (VideoStream s : extractor.getVideoStreams()) {
                 assertIsSecureUrl(s.url);
                 assertTrue(s.resolution.length() > 0);
@@ -169,7 +175,7 @@ public class YoutubeStreamExtractorDefaultTest {
         }
 
         @Test
-        public void testGetRelatedVideos() throws ExtractionException, IOException {
+        public void testGetRelatedVideos() throws ExtractionException {
             StreamInfoItemsCollector relatedVideos = extractor.getRelatedStreams();
             Utils.printErrors(relatedVideos.getErrors());
             assertFalse(relatedVideos.getItems().isEmpty());
@@ -177,13 +183,13 @@ public class YoutubeStreamExtractorDefaultTest {
         }
 
         @Test
-        public void testGetSubtitlesListDefault() throws IOException, ExtractionException {
+        public void testGetSubtitlesListDefault() {
             // Video (/view?v=YQHsXMglC9A) set in the setUp() method has no captions => null
             assertTrue(extractor.getSubtitlesDefault().isEmpty());
         }
 
         @Test
-        public void testGetSubtitlesList() throws IOException, ExtractionException {
+        public void testGetSubtitlesList() {
             // Video (/view?v=YQHsXMglC9A) set in the setUp() method has no captions => null
             assertTrue(extractor.getSubtitles(MediaFormat.TTML).isEmpty());
         }
@@ -223,10 +229,6 @@ public class YoutubeStreamExtractorDefaultTest {
             assertTrue(extractor.getDescription().getContent().contains("https://www.reddit.com/r/PewdiepieSubmissions/"));
             assertTrue(extractor.getDescription().getContent().contains("https://www.youtube.com/channel/UC3e8EMTOn4g6ZSKggHTnNng"));
             assertTrue(extractor.getDescription().getContent().contains("https://usa.clutchchairz.com/product/pewdiepie-edition-throttle-series/"));
-
-            assertFalse(extractor.getDescription().getContent().contains("https://www.reddit.com/r/PewdiepieSub..."));
-            assertFalse(extractor.getDescription().getContent().contains("https://www.youtube.com/channel/UC3e8..."));
-            assertFalse(extractor.getDescription().getContent().contains("https://usa.clutchchairz.com/product/..."));
         }
     }
 

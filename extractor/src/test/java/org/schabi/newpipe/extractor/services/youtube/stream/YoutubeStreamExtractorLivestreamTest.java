@@ -13,9 +13,12 @@ import org.schabi.newpipe.extractor.stream.StreamType;
 import org.schabi.newpipe.extractor.stream.VideoStream;
 import org.schabi.newpipe.extractor.utils.Utils;
 
-import java.io.IOException;
-
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertSame;
+import static org.junit.Assert.assertTrue;
 import static org.schabi.newpipe.extractor.ExtractorAsserts.assertIsSecureUrl;
 import static org.schabi.newpipe.extractor.ServiceList.YouTube;
 
@@ -26,7 +29,7 @@ public class YoutubeStreamExtractorLivestreamTest {
     public static void setUp() throws Exception {
         NewPipe.init(DownloaderTestImpl.getInstance());
         extractor = (YoutubeStreamExtractor) YouTube
-                .getStreamExtractor("https://www.youtube.com/watch?v=EcEMX-63PKY");
+                .getStreamExtractor("https://www.youtube.com/watch?v=5qap5aO4i9A");
         extractor.fetchPage();
     }
 
@@ -49,8 +52,7 @@ public class YoutubeStreamExtractorLivestreamTest {
 
     @Test
     public void testGetFullLinksInDescription() throws ParsingException {
-        assertTrue(extractor.getDescription().getContent().contains("https://www.instagram.com/nathalie.baraton/"));
-        assertFalse(extractor.getDescription().getContent().contains("https://www.instagram.com/nathalie.ba..."));
+        assertTrue(extractor.getDescription().getContent().contains("https://bit.ly/chilledcow-playlists"));
     }
 
     @Test
@@ -119,7 +121,7 @@ public class YoutubeStreamExtractorLivestreamTest {
     }
 
     @Test
-    public void testGetRelatedVideos() throws ExtractionException, IOException {
+    public void testGetRelatedVideos() throws ExtractionException {
         StreamInfoItemsCollector relatedVideos = extractor.getRelatedStreams();
         Utils.printErrors(relatedVideos.getErrors());
         assertFalse(relatedVideos.getItems().isEmpty());
@@ -127,12 +129,12 @@ public class YoutubeStreamExtractorLivestreamTest {
     }
 
     @Test
-    public void testGetSubtitlesListDefault() throws IOException, ExtractionException {
+    public void testGetSubtitlesListDefault() {
         assertTrue(extractor.getSubtitlesDefault().isEmpty());
     }
 
     @Test
-    public void testGetSubtitlesList() throws IOException, ExtractionException {
+    public void testGetSubtitlesList() {
         assertTrue(extractor.getSubtitles(MediaFormat.TTML).isEmpty());
     }
 }

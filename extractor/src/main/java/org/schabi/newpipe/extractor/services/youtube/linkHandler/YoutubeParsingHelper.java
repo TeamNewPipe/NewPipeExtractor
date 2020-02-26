@@ -214,7 +214,7 @@ public class YoutubeParsingHelper {
                         }
                     }
                 } else if (s.getString("service").equals("ECATCHER")) {
-                    // fallback to get a shortened client version which does not contain the last do digits
+                    // fallback to get a shortened client version which does not contain the last two digits
                     JsonArray params = s.getArray("params");
                     for (Object param : params) {
                         JsonObject p = (JsonObject) param;
