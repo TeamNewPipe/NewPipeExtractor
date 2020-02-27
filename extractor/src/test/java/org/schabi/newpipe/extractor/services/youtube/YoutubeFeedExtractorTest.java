@@ -10,6 +10,7 @@ import org.schabi.newpipe.extractor.services.youtube.extractors.YoutubeFeedExtra
 
 import static org.junit.Assert.*;
 import static org.schabi.newpipe.extractor.ServiceList.YouTube;
+import static org.schabi.newpipe.extractor.services.DefaultTests.assertNoMoreItems;
 import static org.schabi.newpipe.extractor.services.DefaultTests.defaultTestRelatedItems;
 
 public class YoutubeFeedExtractorTest {
@@ -60,13 +61,12 @@ public class YoutubeFeedExtractorTest {
 
         @Test
         public void testRelatedItems() throws Exception {
-            defaultTestRelatedItems(extractor, YouTube.getServiceId());
+            defaultTestRelatedItems(extractor);
         }
 
         @Test
-        public void testMoreRelatedItems() {
-            assertFalse(extractor.hasNextPage());
-            assertNull(extractor.getNextPageUrl());
+        public void testMoreRelatedItems() throws Exception {
+            assertNoMoreItems(extractor);
         }
     }
 }

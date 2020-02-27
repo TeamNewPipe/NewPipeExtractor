@@ -7,7 +7,6 @@ import org.junit.Test;
 import org.schabi.newpipe.DownloaderTestImpl;
 import org.schabi.newpipe.extractor.ListExtractor;
 import org.schabi.newpipe.extractor.NewPipe;
-import org.schabi.newpipe.extractor.ServiceList;
 import org.schabi.newpipe.extractor.playlist.PlaylistExtractor;
 import org.schabi.newpipe.extractor.services.BasePlaylistExtractorTest;
 import org.schabi.newpipe.extractor.stream.StreamInfoItem;
@@ -67,13 +66,13 @@ public class SoundcloudPlaylistExtractorTest {
 
         @Test
         public void testRelatedItems() throws Exception {
-            defaultTestRelatedItems(extractor, SoundCloud.getServiceId());
+            defaultTestRelatedItems(extractor);
         }
 
         @Test
         public void testMoreRelatedItems() {
             try {
-                defaultTestMoreItems(extractor, SoundCloud.getServiceId());
+                defaultTestMoreItems(extractor);
             } catch (Throwable ignored) {
                 return;
             }
@@ -165,12 +164,12 @@ public class SoundcloudPlaylistExtractorTest {
 
         @Test
         public void testRelatedItems() throws Exception {
-            defaultTestRelatedItems(extractor, SoundCloud.getServiceId());
+            defaultTestRelatedItems(extractor);
         }
 
         @Test
         public void testMoreRelatedItems() throws Exception {
-            defaultTestMoreItems(extractor, SoundCloud.getServiceId());
+            defaultTestMoreItems(extractor);
         }
 
         /*//////////////////////////////////////////////////////////////////////////
@@ -226,11 +225,10 @@ public class SoundcloudPlaylistExtractorTest {
         // Additional Testing
         //////////////////////////////////////////////////////////////////////////*/
 
-        @Ignore
         @Test
         public void testGetPageInNewExtractor() throws Exception {
             final PlaylistExtractor newExtractor = SoundCloud.getPlaylistExtractor(extractor.getUrl());
-            defaultTestGetPageInNewExtractor(extractor, newExtractor, SoundCloud.getServiceId());
+            defaultTestGetPageInNewExtractor(extractor, newExtractor);
         }
 
         /*//////////////////////////////////////////////////////////////////////////
@@ -269,18 +267,18 @@ public class SoundcloudPlaylistExtractorTest {
         @Ignore
         @Test
         public void testRelatedItems() throws Exception {
-            defaultTestRelatedItems(extractor, SoundCloud.getServiceId());
+            defaultTestRelatedItems(extractor);
         }
 
         //TODO: FUCK THIS: This triggers a 500 at sever
         @Ignore
         @Test
         public void testMoreRelatedItems() throws Exception {
-            ListExtractor.InfoItemsPage<StreamInfoItem> currentPage = defaultTestMoreItems(extractor, ServiceList.SoundCloud.getServiceId());
+            ListExtractor.InfoItemsPage<StreamInfoItem> currentPage = defaultTestMoreItems(extractor);
             // Test for 2 more levels
             for (int i = 0; i < 2; i++) {
                 currentPage = extractor.getPage(currentPage.getNextPageUrl());
-                defaultTestListOfItems(SoundCloud.getServiceId(), currentPage.getItems(), currentPage.getErrors());
+                defaultTestListOfItems(SoundCloud, currentPage.getItems(), currentPage.getErrors());
             }
         }
 
