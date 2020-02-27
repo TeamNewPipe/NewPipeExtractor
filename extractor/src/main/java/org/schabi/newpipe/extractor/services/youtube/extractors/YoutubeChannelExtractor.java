@@ -85,6 +85,7 @@ public class YoutubeChannelExtractor extends ChannelExtractor {
 
     @Override
     public String getNextPageUrl() throws ExtractionException {
+        if (getVideoTab() == null) return "";
         return getNextPageUrlFrom(getVideoTab().getObject("content").getObject("sectionListRenderer")
                 .getArray("contents").getObject(0).getObject("itemSectionRenderer")
                 .getArray("contents").getObject(0).getObject("gridRenderer").getArray("continuations"));
@@ -195,10 +196,12 @@ public class YoutubeChannelExtractor extends ChannelExtractor {
     public InfoItemsPage<StreamInfoItem> getInitialPage() throws ExtractionException {
         StreamInfoItemsCollector collector = new StreamInfoItemsCollector(getServiceId());
 
-        JsonArray videos = getVideoTab().getObject("content").getObject("sectionListRenderer").getArray("contents")
-                .getObject(0).getObject("itemSectionRenderer").getArray("contents").getObject(0)
-                .getObject("gridRenderer").getArray("items");
-        collectStreamsFrom(collector, videos);
+        if (getVideoTab() != null) {
+            JsonArray videos = getVideoTab().getObject("content").getObject("sectionListRenderer").getArray("contents")
+                    .getObject(0).getObject("itemSectionRenderer").getArray("contents").getObject(0)
+                    .getObject("gridRenderer").getArray("items");
+            collectStreamsFrom(collector, videos);
+        }
 
         return new InfoItemsPage<>(collector, getNextPageUrl());
     }
@@ -241,9 +244,7 @@ public class YoutubeChannelExtractor extends ChannelExtractor {
 
 
     private String getNextPageUrlFrom(JsonArray continuations) {
-        if (continuations == null) {
-            return "";
-        }
+        if (continuations == null) return "";
 
         JsonObject nextContinuationData = continuations.getObject(0).getObject("nextContinuationData");
         String continuation = nextContinuationData.getString("continuation");
@@ -294,6 +295,14 @@ public class YoutubeChannelExtractor extends ChannelExtractor {
         if (videoTab == null) {
             throw new ParsingException("Could not find Videos tab");
         }
+
+        try {
+            if (videoTab.getObject("content").getObject("sectionListRenderer").getArray("contents")
+                    .getObject(0).getObject("itemSectionRenderer").getArray("contents")
+                    .getObject(0).getObject("messageRenderer").getObject("text").getArray("runs")
+                    .getObject(0).getString("text").equals("This channel has no videos."))
+                return null;
+        } catch (Exception ignored) {}
 
         return videoTab;
     }
