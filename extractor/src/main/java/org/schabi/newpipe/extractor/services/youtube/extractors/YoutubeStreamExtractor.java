@@ -114,7 +114,12 @@ public class YoutubeStreamExtractor extends StreamExtractor {
         assertPageFetched();
         String title = null;
         try {
-            title = getVideoPrimaryInfoRenderer().getObject("title").getArray("runs").getObject(0).getString("text");
+            StringBuilder titleBuilder = new StringBuilder();
+            JsonArray titleArray = getVideoPrimaryInfoRenderer().getObject("title").getArray("runs");
+            for (Object titlePart : titleArray) {
+                titleBuilder.append(((JsonObject) titlePart).getString("text"));
+            }
+            title = titleBuilder.toString();
         } catch (Exception ignored) {}
         if (title == null) {
             try {
