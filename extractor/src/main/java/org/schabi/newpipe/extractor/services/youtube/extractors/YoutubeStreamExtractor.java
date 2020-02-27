@@ -116,9 +116,8 @@ public class YoutubeStreamExtractor extends StreamExtractor {
         try {
             StringBuilder titleBuilder = new StringBuilder();
             JsonArray titleArray = getVideoPrimaryInfoRenderer().getObject("title").getArray("runs");
-            for (Object titlePart : titleArray) {
+            for (Object titlePart : titleArray)
                 titleBuilder.append(((JsonObject) titlePart).getString("text"));
-            }
             title = titleBuilder.toString();
         } catch (Exception ignored) {}
         if (title == null) {

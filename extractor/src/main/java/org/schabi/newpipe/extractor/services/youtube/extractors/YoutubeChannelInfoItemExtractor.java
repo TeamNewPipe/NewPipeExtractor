@@ -1,5 +1,6 @@
 package org.schabi.newpipe.extractor.services.youtube.extractors;
 
+import com.grack.nanojson.JsonArray;
 import com.grack.nanojson.JsonObject;
 
 import org.schabi.newpipe.extractor.channel.ChannelInfoItemExtractor;
@@ -97,7 +98,11 @@ public class YoutubeChannelInfoItemExtractor implements ChannelInfoItemExtractor
     @Override
     public String getDescription() throws ParsingException {
         try {
-            return channelInfoItem.getObject("descriptionSnippet").getArray("runs").getObject(0).getString("text");
+            StringBuilder description = new StringBuilder();
+            JsonArray descriptionArray = channelInfoItem.getObject("descriptionSnippet").getArray("runs");
+            for (Object descriptionPart : descriptionArray)
+                description.append(((JsonObject) descriptionPart).getString("text"));
+            return description.toString();
         } catch (Exception e) {
             throw new ParsingException("Could not get description", e);
         }
