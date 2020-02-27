@@ -25,6 +25,7 @@ import java.util.Map;
 
 import javax.annotation.Nonnull;
 
+import static org.schabi.newpipe.extractor.services.youtube.linkHandler.YoutubeParsingHelper.getTextFromObject;
 import static org.schabi.newpipe.extractor.utils.Utils.HTTP;
 import static org.schabi.newpipe.extractor.utils.Utils.HTTPS;
 
@@ -124,8 +125,20 @@ public class YoutubeChannelExtractor extends ChannelExtractor {
     @Override
     public String getAvatarUrl() throws ParsingException {
         try {
-            return initialData.getObject("header").getObject("c4TabbedHeaderRenderer").getObject("avatar")
+            String url = initialData.getObject("header").getObject("c4TabbedHeaderRenderer").getObject("avatar")
                     .getArray("thumbnails").getObject(0).getString("url");
+
+            // the first characters of the avatar URLs are different for each channel and some are not even valid URLs
+            if (url.startsWith("//")) {
+                url = url.substring(2);
+            }
+            if (url.startsWith(HTTP)) {
+                url = Utils.replaceHttpWithHttps(url);
+            } else if (!url.startsWith(HTTPS)) {
+                url = HTTPS + url;
+            }
+
+            return url;
         } catch (Exception e) {
             throw new ParsingException("Could not get avatar", e);
         }
@@ -172,7 +185,7 @@ public class YoutubeChannelExtractor extends ChannelExtractor {
         final JsonObject subscriberInfo = initialData.getObject("header").getObject("c4TabbedHeaderRenderer").getObject("subscriberCountText");
         if (subscriberInfo != null) {
             try {
-                return Utils.mixedNumberWordToLong(subscriberInfo.getArray("runs").getObject(0).getString("text"));
+                return Utils.mixedNumberWordToLong(getTextFromObject(subscriberInfo));
             } catch (NumberFormatException e) {
                 throw new ParsingException("Could not get subscriber count", e);
             }
@@ -301,10 +314,10 @@ public class YoutubeChannelExtractor extends ChannelExtractor {
         }
 
         try {
-            if (videoTab.getObject("content").getObject("sectionListRenderer").getArray("contents")
-                    .getObject(0).getObject("itemSectionRenderer").getArray("contents")
-                    .getObject(0).getObject("messageRenderer").getObject("text").getArray("runs")
-                    .getObject(0).getString("text").equals("This channel has no videos."))
+            if (getTextFromObject(videoTab.getObject("content").getObject("sectionListRenderer")
+                    .getArray("contents").getObject(0).getObject("itemSectionRenderer")
+                    .getArray("contents").getObject(0).getObject("messageRenderer")
+                    .getObject("text")).equals("This channel has no videos."))
                 return null;
         } catch (Exception ignored) {}
 

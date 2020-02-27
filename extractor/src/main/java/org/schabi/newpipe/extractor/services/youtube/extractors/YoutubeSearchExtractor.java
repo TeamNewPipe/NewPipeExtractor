@@ -24,6 +24,8 @@ import java.util.Map;
 
 import javax.annotation.Nonnull;
 
+import static org.schabi.newpipe.extractor.services.youtube.linkHandler.YoutubeParsingHelper.getTextFromObject;
+
 /*
  * Created by Christian Schabesberger on 22.07.2018
  *
@@ -91,8 +93,7 @@ public class YoutubeSearchExtractor extends SearchExtractor {
         if (showingResultsForRenderer == null) {
             return "";
         } else {
-            return showingResultsForRenderer.getObject("correctedQuery").getArray("runs")
-                    .getObject(0).getString("text");
+            return getTextFromObject(showingResultsForRenderer.getObject("correctedQuery"));
         }
     }
 
@@ -155,8 +156,8 @@ public class YoutubeSearchExtractor extends SearchExtractor {
 
         for (Object item : videos) {
             if (((JsonObject) item).getObject("backgroundPromoRenderer") != null) {
-                throw new NothingFoundException(((JsonObject) item).getObject("backgroundPromoRenderer")
-                        .getObject("bodyText").getArray("runs").getObject(0).getString("text"));
+                throw new NothingFoundException(getTextFromObject(((JsonObject) item)
+                        .getObject("backgroundPromoRenderer").getObject("bodyText")));
             } else if (((JsonObject) item).getObject("videoRenderer") != null) {
                 collector.commit(new YoutubeStreamInfoItemExtractor(((JsonObject) item).getObject("videoRenderer"), timeAgoParser));
             } else if (((JsonObject) item).getObject("channelRenderer") != null) {

@@ -44,6 +44,8 @@ import java.util.Map;
 
 import javax.annotation.Nonnull;
 
+import static org.schabi.newpipe.extractor.services.youtube.linkHandler.YoutubeParsingHelper.getTextFromObject;
+
 public class YoutubeTrendingExtractor extends KioskExtractor<StreamInfoItem> {
     private JsonObject initialData;
 
@@ -93,8 +95,7 @@ public class YoutubeTrendingExtractor extends KioskExtractor<StreamInfoItem> {
     public String getName() throws ParsingException {
         String name;
         try {
-            name = initialData.getObject("header").getObject("feedTabbedHeaderRenderer").getObject("title")
-                    .getArray("runs").getObject(0).getString("text");
+            name = getTextFromObject(initialData.getObject("header").getObject("feedTabbedHeaderRenderer").getObject("title"));
         } catch (Exception e) {
             throw new ParsingException("Could not get Trending name", e);
         }

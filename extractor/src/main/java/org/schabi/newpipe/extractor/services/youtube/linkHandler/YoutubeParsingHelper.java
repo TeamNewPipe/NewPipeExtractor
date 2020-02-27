@@ -13,7 +13,10 @@ import org.schabi.newpipe.extractor.exceptions.ParsingException;
 import org.schabi.newpipe.extractor.exceptions.ReCaptchaException;
 import org.schabi.newpipe.extractor.utils.Parser;
 
+import java.io.UnsupportedEncodingException;
 import java.net.URL;
+import java.net.URLDecoder;
+import java.nio.charset.StandardCharsets;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
@@ -250,5 +253,70 @@ public class YoutubeParsingHelper {
         } catch (Exception ignored) {}
 
         throw new ParsingException("Could not get client version");
+    }
+
+    public static String getUrlFromNavigationEndpoint(JsonObject navigationEndpoint) {
+        if (navigationEndpoint.getObject("urlEndpoint") != null) {
+            String internUrl = navigationEndpoint.getObject("urlEndpoint").getString("url");
+            if (internUrl.startsWith("/redirect?")) {
+                // q parameter can be the first parameter
+                internUrl = internUrl.substring(10);
+                String[] params = internUrl.split("&");
+                for (String param : params) {
+                    if (param.split("=")[0].equals("q")) {
+                        String url;
+                        try {
+                            url = URLDecoder.decode(param.split("=")[1], StandardCharsets.UTF_8.name());
+                        } catch (UnsupportedEncodingException e) {
+                            return null;
+                        }
+                        return url;
+                    }
+                }
+            } else if (internUrl.startsWith("http")) {
+                return internUrl;
+            }
+        } else if (navigationEndpoint.getObject("browseEndpoint") != null) {
+            return "https://www.youtube.com" + navigationEndpoint.getObject("browseEndpoint").getString("canonicalBaseUrl");
+        } else if (navigationEndpoint.getObject("watchEndpoint") != null) {
+            StringBuilder url = new StringBuilder();
+            url.append("https://www.youtube.com/watch?v=").append(navigationEndpoint.getObject("watchEndpoint").getString("videoId"));
+            if (navigationEndpoint.getObject("watchEndpoint").has("playlistId"))
+                url.append("&amp;list=").append(navigationEndpoint.getObject("watchEndpoint").getString("playlistId"));
+            if (navigationEndpoint.getObject("watchEndpoint").has("startTimeSeconds"))
+                url.append("&amp;t=").append(navigationEndpoint.getObject("watchEndpoint").getInt("startTimeSeconds"));
+            return url.toString();
+        }
+        return null;
+    }
+
+    public static String getTextFromObject(JsonObject textObject, boolean html) {
+        if (textObject.has("simpleText")) return textObject.getString("simpleText");
+
+        StringBuilder textBuilder = new StringBuilder();
+        for (Object textPart : textObject.getArray("runs")) {
+            String text = ((JsonObject) textPart).getString("text");
+            if (html && ((JsonObject) textPart).getObject("navigationEndpoint") != null) {
+                String url = getUrlFromNavigationEndpoint(((JsonObject) textPart).getObject("navigationEndpoint"));
+                if (url != null && !url.isEmpty()) {
+                    textBuilder.append("<a href=\"").append(url).append("\">").append(text).append("</a>");
+                    continue;
+                }
+            }
+            textBuilder.append(text);
+        }
+
+        String text = textBuilder.toString();
+
+        if (html) {
+            text = text.replaceAll("\\n", "<br>");
+            text = text.replaceAll("  ", " &nbsp;");
+        }
+
+        return text;
+    }
+
+    public static String getTextFromObject(JsonObject textObject) {
+        return getTextFromObject(textObject, false);
     }
 }

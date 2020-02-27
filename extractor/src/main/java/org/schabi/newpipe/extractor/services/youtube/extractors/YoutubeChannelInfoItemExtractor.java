@@ -1,6 +1,5 @@
 package org.schabi.newpipe.extractor.services.youtube.extractors;
 
-import com.grack.nanojson.JsonArray;
 import com.grack.nanojson.JsonObject;
 
 import org.schabi.newpipe.extractor.channel.ChannelInfoItemExtractor;
@@ -8,6 +7,7 @@ import org.schabi.newpipe.extractor.exceptions.ParsingException;
 import org.schabi.newpipe.extractor.services.youtube.linkHandler.YoutubeChannelLinkHandlerFactory;
 import org.schabi.newpipe.extractor.utils.Utils;
 
+import static org.schabi.newpipe.extractor.services.youtube.linkHandler.YoutubeParsingHelper.getTextFromObject;
 import static org.schabi.newpipe.extractor.utils.Utils.HTTP;
 import static org.schabi.newpipe.extractor.utils.Utils.HTTPS;
 
@@ -59,7 +59,7 @@ public class YoutubeChannelInfoItemExtractor implements ChannelInfoItemExtractor
     @Override
     public String getName() throws ParsingException {
         try {
-            return channelInfoItem.getObject("title").getString("simpleText");
+            return getTextFromObject(channelInfoItem.getObject("title"));
         } catch (Exception e) {
             throw new ParsingException("Could not get name", e);
         }
@@ -68,7 +68,7 @@ public class YoutubeChannelInfoItemExtractor implements ChannelInfoItemExtractor
     @Override
     public String getUrl() throws ParsingException {
         try {
-            String id = "channel/" + channelInfoItem.getString("channelId"); // Does prepending 'channel/' always work?
+            String id = "channel/" + channelInfoItem.getString("channelId");
             return YoutubeChannelLinkHandlerFactory.getInstance().getUrl(id);
         } catch (Exception e) {
             throw new ParsingException("Could not get url", e);
@@ -78,7 +78,7 @@ public class YoutubeChannelInfoItemExtractor implements ChannelInfoItemExtractor
     @Override
     public long getSubscriberCount() throws ParsingException {
         try {
-            String subscribers = channelInfoItem.getObject("subscriberCountText").getString("simpleText").split(" ")[0];
+            String subscribers = getTextFromObject(channelInfoItem.getObject("subscriberCountText"));
             return Utils.mixedNumberWordToLong(subscribers);
         } catch (Exception e) {
             throw new ParsingException("Could not get subscriber count", e);
@@ -88,8 +88,7 @@ public class YoutubeChannelInfoItemExtractor implements ChannelInfoItemExtractor
     @Override
     public long getStreamCount() throws ParsingException {
         try {
-            return Long.parseLong(Utils.removeNonDigitCharacters(channelInfoItem.getObject("videoCountText")
-                    .getArray("runs").getObject(0).getString("text")));
+            return Long.parseLong(Utils.removeNonDigitCharacters(getTextFromObject(channelInfoItem.getObject("videoCountText"))));
         } catch (Exception e) {
             throw new ParsingException("Could not get stream count", e);
         }
@@ -98,11 +97,7 @@ public class YoutubeChannelInfoItemExtractor implements ChannelInfoItemExtractor
     @Override
     public String getDescription() throws ParsingException {
         try {
-            StringBuilder description = new StringBuilder();
-            JsonArray descriptionArray = channelInfoItem.getObject("descriptionSnippet").getArray("runs");
-            for (Object descriptionPart : descriptionArray)
-                description.append(((JsonObject) descriptionPart).getString("text"));
-            return description.toString();
+            return getTextFromObject(channelInfoItem.getObject("descriptionSnippet"));
         } catch (Exception e) {
             throw new ParsingException("Could not get description", e);
         }

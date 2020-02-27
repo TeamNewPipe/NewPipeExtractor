@@ -25,6 +25,11 @@ import java.util.Map;
 
 import javax.annotation.Nonnull;
 
+import static org.schabi.newpipe.extractor.services.youtube.linkHandler.YoutubeParsingHelper.getTextFromObject;
+import static org.schabi.newpipe.extractor.services.youtube.linkHandler.YoutubeParsingHelper.getUrlFromNavigationEndpoint;
+import static org.schabi.newpipe.extractor.utils.Utils.HTTP;
+import static org.schabi.newpipe.extractor.utils.Utils.HTTPS;
+
 @SuppressWarnings("WeakerAccess")
 public class YoutubePlaylistExtractor extends PlaylistExtractor {
     private JsonObject initialData;
@@ -104,7 +109,7 @@ public class YoutubePlaylistExtractor extends PlaylistExtractor {
     @Override
     public String getName() throws ParsingException {
         try {
-            String name = playlistInfo.getObject("title").getArray("runs").getObject(0).getString("text");
+            String name = getTextFromObject(playlistInfo.getObject("title"));
             if (name != null) return name;
         } catch (Exception ignored) {}
         try {
@@ -137,8 +142,7 @@ public class YoutubePlaylistExtractor extends PlaylistExtractor {
     @Override
     public String getUploaderUrl() throws ParsingException {
         try {
-            return YoutubeChannelExtractor.CHANNEL_URL_BASE +
-                    getUploaderInfo().getObject("navigationEndpoint").getObject("browseEndpoint").getString("browseId");
+            return getUrlFromNavigationEndpoint(getUploaderInfo().getObject("navigationEndpoint"));
         } catch (Exception e) {
             throw new ParsingException("Could not get playlist uploader url", e);
         }
@@ -147,7 +151,7 @@ public class YoutubePlaylistExtractor extends PlaylistExtractor {
     @Override
     public String getUploaderName() throws ParsingException {
         try {
-            return getUploaderInfo().getObject("title").getArray("runs").getObject(0).getString("text");
+            return getTextFromObject(getUploaderInfo().getObject("title"));
         } catch (Exception e) {
             throw new ParsingException("Could not get playlist uploader name", e);
         }
@@ -156,7 +160,19 @@ public class YoutubePlaylistExtractor extends PlaylistExtractor {
     @Override
     public String getUploaderAvatarUrl() throws ParsingException {
         try {
-            return getUploaderInfo().getObject("thumbnail").getArray("thumbnails").getObject(0).getString("url");
+            String url = getUploaderInfo().getObject("thumbnail").getArray("thumbnails").getObject(0).getString("url");
+
+            // the first characters of the avatar URLs are different for each channel and some are not even valid URLs
+            if (url.startsWith("//")) {
+                url = url.substring(2);
+            }
+            if (url.startsWith(HTTP)) {
+                url = Utils.replaceHttpWithHttps(url);
+            } else if (!url.startsWith(HTTPS)) {
+                url = HTTPS + url;
+            }
+
+            return url;
         } catch (Exception e) {
             throw new ParsingException("Could not get playlist uploader avatar", e);
         }
@@ -165,7 +181,7 @@ public class YoutubePlaylistExtractor extends PlaylistExtractor {
     @Override
     public long getStreamCount() throws ParsingException {
         try {
-            String viewsText = getPlaylistInfo().getArray("stats").getObject(0).getArray("runs").getObject(0).getString("text");
+            String viewsText = getTextFromObject(getPlaylistInfo().getArray("stats").getObject(0));
             return Long.parseLong(Utils.removeNonDigitCharacters(viewsText));
         } catch (Exception e) {
             throw new ParsingException("Could not get video count from playlist", e);

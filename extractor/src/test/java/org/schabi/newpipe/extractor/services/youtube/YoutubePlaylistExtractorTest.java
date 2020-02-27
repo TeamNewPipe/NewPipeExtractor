@@ -99,7 +99,7 @@ public class YoutubePlaylistExtractorTest {
 
         @Test
         public void testUploaderUrl() throws Exception {
-            assertEquals("https://www.youtube.com/channel/UCs72iRpTEuwV3y6pdWYLgiw", extractor.getUploaderUrl());
+            assertEquals("https://www.youtube.com/user/andre0y0you", extractor.getUploaderUrl());
         }
 
         @Test

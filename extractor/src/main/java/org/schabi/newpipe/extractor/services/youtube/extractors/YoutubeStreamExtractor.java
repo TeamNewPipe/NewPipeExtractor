@@ -40,8 +40,6 @@ import org.schabi.newpipe.extractor.utils.Utils;
 
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
-import java.net.URLDecoder;
-import java.nio.charset.StandardCharsets;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -55,6 +53,10 @@ import java.util.Map;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
+
+import static org.schabi.newpipe.extractor.services.youtube.linkHandler.YoutubeParsingHelper.getTextFromObject;
+import static org.schabi.newpipe.extractor.services.youtube.linkHandler.YoutubeParsingHelper.getUrlFromNavigationEndpoint;
+import static org.schabi.newpipe.extractor.utils.Utils.HTTP;
 
 /*
  * Created by Christian Schabesberger on 06.08.15.
@@ -114,11 +116,7 @@ public class YoutubeStreamExtractor extends StreamExtractor {
         assertPageFetched();
         String title = null;
         try {
-            StringBuilder titleBuilder = new StringBuilder();
-            JsonArray titleArray = getVideoPrimaryInfoRenderer().getObject("title").getArray("runs");
-            for (Object titlePart : titleArray)
-                titleBuilder.append(((JsonObject) titlePart).getString("text"));
-            title = titleBuilder.toString();
+            title = getTextFromObject(getVideoPrimaryInfoRenderer().getObject("title"));
         } catch (Exception ignored) {}
         if (title == null) {
             try {
@@ -146,8 +144,8 @@ public class YoutubeStreamExtractor extends StreamExtractor {
         } catch (Exception ignored) {}
 
         try {
-            if (getVideoPrimaryInfoRenderer().getObject("dateText").getString("simpleText").startsWith("Premiered")) {
-                String time = getVideoPrimaryInfoRenderer().getObject("dateText").getString("simpleText").substring(10);
+            if (getTextFromObject(getVideoPrimaryInfoRenderer().getObject("dateText")).startsWith("Premiered")) {
+                String time = getTextFromObject(getVideoPrimaryInfoRenderer().getObject("dateText")).substring(10);
 
                 try { // Premiered 20 hours ago
                     TimeAgoParser timeAgoParser = TimeAgoPatternsManager.getTimeAgoParserFor(Localization.fromLocalizationCode("en"));
@@ -165,7 +163,7 @@ public class YoutubeStreamExtractor extends StreamExtractor {
         try {
             // TODO this parses English formatted dates only, we need a better approach to parse the textual date
             Date d = new SimpleDateFormat("dd MMM yyyy", Locale.ENGLISH).parse(
-                    getVideoPrimaryInfoRenderer().getObject("dateText").getString("simpleText"));
+                    getTextFromObject(getVideoPrimaryInfoRenderer().getObject("dateText")));
             return new SimpleDateFormat("yyyy-MM-dd").format(d);
         } catch (Exception ignored) {}
         throw new ParsingException("Could not get upload date");
@@ -203,73 +201,8 @@ public class YoutubeStreamExtractor extends StreamExtractor {
         assertPageFetched();
         // description with more info on links
         try {
-            boolean htmlConversionRequired = false;
-            JsonArray descriptions = getVideoSecondaryInfoRenderer().getObject("description").getArray("runs");
-            StringBuilder descriptionBuilder = new StringBuilder(descriptions.size());
-            for (Object textObjectHolder : descriptions) {
-                JsonObject textHolder = (JsonObject) textObjectHolder;
-                String text = textHolder.getString("text");
-                if (textHolder.getObject("navigationEndpoint") != null) {
-                    // The text is a link. Get the URL it points to and generate a HTML link of it
-                    if (textHolder.getObject("navigationEndpoint").getObject("urlEndpoint") != null) {
-                        String internUrl = textHolder.getObject("navigationEndpoint").getObject("urlEndpoint").getString("url");
-                        if (internUrl.startsWith("/redirect?")) {
-                            // q parameter can be the first parameter
-                            internUrl = internUrl.substring(10);
-                            String[] params = internUrl.split("&");
-                            for (String param : params) {
-                                if (param.split("=")[0].equals("q")) {
-                                    String url = URLDecoder.decode(param.split("=")[1], StandardCharsets.UTF_8.name());
-                                    if (url != null && !url.isEmpty()) {
-                                        descriptionBuilder.append("<a href=\"").append(url).append("\">").append(text).append("</a>");
-                                        htmlConversionRequired = true;
-                                    } else {
-                                        descriptionBuilder.append(text);
-                                    }
-                                    break;
-                                }
-                            }
-                        } else if (internUrl.startsWith("http")) {
-                            descriptionBuilder.append("<a href=\"").append(internUrl).append("\">").append(text).append("</a>");
-                            htmlConversionRequired = true;
-                        }
-                    } else if (textHolder.getObject("navigationEndpoint").getObject("browseEndpoint") != null) {
-                        descriptionBuilder.append("<a href=\"https://www.youtube.com").append(
-                                textHolder.getObject("navigationEndpoint").getObject("browseEndpoint")
-                                        .getString("canonicalBaseUrl")).append("\">").append(text).append("</a>");
-                        htmlConversionRequired = true;
-                    } else if (textHolder.getObject("navigationEndpoint").getObject("watchEndpoint") != null) {
-                        descriptionBuilder.append("<a href=\"https://www.youtube.com/watch?v=").append(
-                                textHolder.getObject("navigationEndpoint").getObject("watchEndpoint")
-                                        .getString("videoId"));
-                        if (textHolder.getObject("navigationEndpoint").getObject("watchEndpoint").getString("playlistId") != null) {
-                            descriptionBuilder.append("&amp;list=").append(textHolder.getObject("navigationEndpoint")
-                                            .getObject("watchEndpoint").getString("playlistId"));
-                        }
-                        if (textHolder.getObject("navigationEndpoint").getObject("watchEndpoint").has("startTimeSeconds")) {
-                            descriptionBuilder.append("&amp;t=").append(textHolder.getObject("navigationEndpoint")
-                                    .getObject("watchEndpoint").getInt("startTimeSeconds"));
-                        }
-                        descriptionBuilder.append("\">").append(text).append("</a>");
-                        htmlConversionRequired = true;
-                    }
-                    continue;
-                }
-                if (text != null) {
-                     descriptionBuilder.append(text);
-                }
-            }
-
-            String description = descriptionBuilder.toString();
-
-            if (!description.isEmpty()) {
-                if (htmlConversionRequired) {
-                    description = description.replaceAll("\\n", "<br>");
-                    description = description.replaceAll("  ", " &nbsp;");
-                    return new Description(description, Description.HTML);
-                }
-                return new Description(description, Description.PLAIN_TEXT);
-            }
+            String description = getTextFromObject(getVideoSecondaryInfoRenderer().getObject("description"), true);
+            return new Description(description, Description.HTML);
         } catch (Exception ignored) { }
 
         // raw non-html description
@@ -329,16 +262,9 @@ public class YoutubeStreamExtractor extends StreamExtractor {
         assertPageFetched();
         String views = null;
         try {
-            views = getVideoPrimaryInfoRenderer().getObject("viewCount")
-                    .getObject("videoViewCountRenderer").getObject("viewCount")
-                    .getArray("runs").getObject(0).getString("text");
+            views = getTextFromObject(getVideoPrimaryInfoRenderer().getObject("viewCount")
+                    .getObject("videoViewCountRenderer").getObject("viewCount"));
         } catch (Exception ignored) {}
-        if (views == null) {
-            try {
-                views = getVideoPrimaryInfoRenderer().getObject("viewCount")
-                        .getObject("videoViewCountRenderer").getObject("viewCount").getString("simpleText");
-            } catch (Exception ignored) {}
-        }
         if (views == null) {
             try {
                 views = playerResponse.getObject("videoDetails").getString("viewCount");
@@ -398,17 +324,15 @@ public class YoutubeStreamExtractor extends StreamExtractor {
     @Override
     public String getUploaderUrl() throws ParsingException {
         assertPageFetched();
-        String uploaderId = null;
         try {
-            uploaderId = getVideoSecondaryInfoRenderer().getObject("owner").getObject("videoOwnerRenderer")
-                    .getObject("navigationEndpoint").getObject("browseEndpoint").getString("browseId");
+            String uploaderUrl = getUrlFromNavigationEndpoint(getVideoSecondaryInfoRenderer()
+                    .getObject("owner").getObject("videoOwnerRenderer").getObject("navigationEndpoint"));
+            if (uploaderUrl != null) return uploaderUrl;
         } catch (Exception ignored) {}
-        if (uploaderId == null) {
-            try {
-                uploaderId = playerResponse.getObject("videoDetails").getString("channelId");
-            } catch (Exception ignored) {}
-        }
-        if (uploaderId != null) return "https://www.youtube.com/channel/" + uploaderId;
+        try {
+            String uploaderId = playerResponse.getObject("videoDetails").getString("channelId");
+            if (uploaderId != null) return "https://www.youtube.com/channel/" + uploaderId;
+        } catch (Exception ignored) {}
         throw new ParsingException("Could not get uploader url");
     }
 
@@ -418,8 +342,8 @@ public class YoutubeStreamExtractor extends StreamExtractor {
         assertPageFetched();
         String uploaderName = null;
         try {
-            uploaderName = getVideoSecondaryInfoRenderer().getObject("owner").getObject("videoOwnerRenderer")
-                    .getObject("title").getArray("runs").getObject(0).getString("text");
+            uploaderName = getTextFromObject(getVideoSecondaryInfoRenderer().getObject("owner")
+                    .getObject("videoOwnerRenderer").getObject("title"));
         } catch (Exception ignored) {}
         if (uploaderName == null) {
             try {
@@ -435,8 +359,20 @@ public class YoutubeStreamExtractor extends StreamExtractor {
     public String getUploaderAvatarUrl() throws ParsingException {
         assertPageFetched();
         try {
-            return getVideoSecondaryInfoRenderer().getObject("owner").getObject("videoOwnerRenderer")
+            String url = getVideoSecondaryInfoRenderer().getObject("owner").getObject("videoOwnerRenderer")
                     .getObject("thumbnail").getArray("thumbnails").getObject(0).getString("url");
+
+            // the first characters of the avatar URLs are different for each channel and some are not even valid URLs
+            if (url.startsWith("//")) {
+                url = url.substring(2);
+            }
+            if (url.startsWith(HTTP)) {
+                url = Utils.replaceHttpWithHttps(url);
+            } else if (!url.startsWith(HTTPS)) {
+                url = HTTPS + url;
+            }
+
+            return url;
         } catch (Exception e) {
             throw new ParsingException("Could not get uploader avatar url", e);
         }

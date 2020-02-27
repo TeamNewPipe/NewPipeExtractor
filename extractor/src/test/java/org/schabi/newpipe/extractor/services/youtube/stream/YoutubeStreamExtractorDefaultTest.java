@@ -245,7 +245,6 @@ public class YoutubeStreamExtractorDefaultTest {
 
         @Test
         public void testGetDescription() throws ParsingException {
-            System.out.println(extractor.getDescription().getContent());
             assertNotNull(extractor.getDescription());
             assertFalse(extractor.getDescription().getContent().isEmpty());
         }
