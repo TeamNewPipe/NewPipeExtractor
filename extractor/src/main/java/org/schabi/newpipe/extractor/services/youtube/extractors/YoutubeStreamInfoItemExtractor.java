@@ -159,7 +159,7 @@ public class YoutubeStreamInfoItemExtractor implements StreamInfoItemExtractor {
             if (id == null || id.isEmpty()) {
                 throw new IllegalArgumentException("is empty");
             }
-            return YoutubeChannelLinkHandlerFactory.getInstance().getUrl(id);
+            return YoutubeChannelLinkHandlerFactory.getInstance().getUrl("channel/" + id);
         } catch (Exception e) {
             throw new ParsingException("Could not get uploader url");
         }
