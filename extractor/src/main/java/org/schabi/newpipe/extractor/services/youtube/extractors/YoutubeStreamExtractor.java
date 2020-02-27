@@ -435,27 +435,12 @@ public class YoutubeStreamExtractor extends StreamExtractor {
     @Override
     public String getUploaderAvatarUrl() throws ParsingException {
         assertPageFetched();
-
-        String uploaderAvatarUrl = null;
         try {
-            uploaderAvatarUrl = initialData.getObject("contents").getObject("twoColumnWatchNextResults").getObject("secondaryResults")
-                    .getObject("secondaryResults").getArray("results").getObject(0).getObject("compactAutoplayRenderer")
-                    .getArray("contents").getObject(0).getObject("compactVideoRenderer").getObject("channelThumbnail")
-                    .getArray("thumbnails").getObject(0).getString("url");
-            if (uploaderAvatarUrl != null && !uploaderAvatarUrl.isEmpty()) {
-                return uploaderAvatarUrl;
-            }
-        } catch (Exception ignored) {}
-
-        try {
-            uploaderAvatarUrl = getVideoSecondaryInfoRenderer().getObject("owner").getObject("videoOwnerRenderer")
+            return getVideoSecondaryInfoRenderer().getObject("owner").getObject("videoOwnerRenderer")
                     .getObject("thumbnail").getArray("thumbnails").getObject(0).getString("url");
-        } catch (Exception ignored) {}
-
-        if (uploaderAvatarUrl == null) {
-            throw new ParsingException("Could not get uploader avatar url");
+        } catch (Exception e) {
+            throw new ParsingException("Could not get uploader avatar url", e);
         }
-        return uploaderAvatarUrl;
     }
 
     @Nonnull
