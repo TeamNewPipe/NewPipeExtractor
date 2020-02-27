@@ -5,87 +5,127 @@ import org.junit.Test;
 import org.schabi.newpipe.DownloaderTestImpl;
 import org.schabi.newpipe.extractor.ListExtractor;
 import org.schabi.newpipe.extractor.NewPipe;
+import org.schabi.newpipe.extractor.exceptions.ParsingException;
 import org.schabi.newpipe.extractor.kiosk.KioskExtractor;
+import org.schabi.newpipe.extractor.services.BaseListExtractorTest;
+import org.schabi.newpipe.extractor.services.youtube.extractors.YoutubeTrendingExtractor;
 import org.schabi.newpipe.extractor.stream.StreamInfoItem;
 
 import java.util.List;
 
 import static org.junit.Assert.*;
 import static org.schabi.newpipe.extractor.ServiceList.SoundCloud;
+import static org.schabi.newpipe.extractor.ServiceList.YouTube;
+import static org.schabi.newpipe.extractor.services.DefaultTests.*;
 
-/**
- * Test for {@link SoundcloudChartsLinkHandlerFactory}
- */
 public class SoundcloudChartsExtractorTest {
+    public static class NewAndHot implements BaseListExtractorTest {
+        private static SoundcloudChartsExtractor extractor;
 
-    static KioskExtractor extractor;
-
-    @BeforeClass
-    public static void setUp() throws Exception {
-        NewPipe.init(DownloaderTestImpl.getInstance());
-        extractor = SoundCloud
-                .getKioskList()
-                .getExtractorById("Top 50", null);
-        extractor.fetchPage();
-    }
-
-    @Test
-    public void testGetDownloader() throws Exception {
-        assertNotNull(NewPipe.getDownloader());
-    }
-
-    @Test
-    public void testGetName() throws Exception {
-        assertEquals(extractor.getName(), "Top 50");
-    }
-
-    @Test
-    public void testId() {
-        assertEquals(extractor.getId(), "Top 50");
-    }
-
-    @Test
-    public void testGetStreams() throws Exception {
-        ListExtractor.InfoItemsPage<StreamInfoItem> page = extractor.getInitialPage();
-        if (!page.getErrors().isEmpty()) {
-            System.err.println("----------");
-            List<Throwable> errors = page.getErrors();
-            for (Throwable e : errors) {
-                e.printStackTrace();
-                System.err.println("----------");
-            }
+        @BeforeClass
+        public static void setUp() throws Exception {
+            NewPipe.init(DownloaderTestImpl.getInstance());
+            extractor = (SoundcloudChartsExtractor) SoundCloud.getKioskList()
+                    .getExtractorById("New & hot", null);
+            extractor.fetchPage();
         }
-        assertTrue("no streams are received",
-                !page.getItems().isEmpty()
-                        && page.getErrors().isEmpty());
+
+        /*//////////////////////////////////////////////////////////////////////////
+        // Extractor
+        //////////////////////////////////////////////////////////////////////////*/
+
+        @Test
+        public void testServiceId() {
+            assertEquals(SoundCloud.getServiceId(), extractor.getServiceId());
+        }
+
+        @Test
+        public void testName() {
+            assertEquals("New & hot", extractor.getName());
+        }
+
+        @Test
+        public void testId() {
+            assertEquals("New & hot", extractor.getId());
+        }
+
+        @Test
+        public void testUrl() throws ParsingException {
+            assertEquals("https://soundcloud.com/charts/new", extractor.getUrl());
+        }
+
+        @Test
+        public void testOriginalUrl() throws ParsingException {
+            assertEquals("https://soundcloud.com/charts/new", extractor.getOriginalUrl());
+        }
+
+        /*//////////////////////////////////////////////////////////////////////////
+        // ListExtractor
+        //////////////////////////////////////////////////////////////////////////*/
+
+        @Test
+        public void testRelatedItems() throws Exception {
+            defaultTestRelatedItems(extractor);
+        }
+
+        @Test
+        public void testMoreRelatedItems() throws Exception {
+            defaultTestMoreItems(extractor);
+        }
     }
 
-    @Test
-    public void testGetStreamsErrors() throws Exception {
-        assertTrue("errors during stream list extraction", extractor.getInitialPage().getErrors().isEmpty());
-    }
+    public static class Top50Charts implements BaseListExtractorTest {
+        private static SoundcloudChartsExtractor extractor;
 
-    @Test
-    public void testHasMoreStreams() throws Exception {
-        // Setup the streams
-        extractor.getInitialPage();
-        assertTrue("has more streams", extractor.hasNextPage());
-    }
+        @BeforeClass
+        public static void setUp() throws Exception {
+            NewPipe.init(DownloaderTestImpl.getInstance());
+            extractor = (SoundcloudChartsExtractor) SoundCloud.getKioskList()
+                    .getExtractorById("Top 50", null);
+            extractor.fetchPage();
+        }
 
-    @Test
-    public void testGetNextPageUrl() throws Exception {
-        assertTrue(extractor.hasNextPage());
-    }
+        /*//////////////////////////////////////////////////////////////////////////
+        // Extractor
+        //////////////////////////////////////////////////////////////////////////*/
 
-    @Test
-    public void testGetNextPage() throws Exception {
-        extractor.getInitialPage().getItems();
-        assertFalse("extractor has next streams", extractor.getPage(extractor.getNextPageUrl()) == null
-                || extractor.getPage(extractor.getNextPageUrl()).getItems().isEmpty());
-    }
+        @Test
+        public void testServiceId() {
+            assertEquals(SoundCloud.getServiceId(), extractor.getServiceId());
+        }
 
-    @Test
-    public void testGetCleanUrl() throws Exception {
-        assertEquals(extractor.getUrl(), "https://soundcloud.com/charts/top");
+        @Test
+        public void testName() {
+            assertEquals("Top 50", extractor.getName());
+        }
+
+        @Test
+        public void testId() {
+            assertEquals("Top 50", extractor.getId());
+        }
+
+        @Test
+        public void testUrl() throws ParsingException {
+            assertEquals("https://soundcloud.com/charts/top", extractor.getUrl());
+        }
+
+        @Test
+        public void testOriginalUrl() throws ParsingException {
+            assertEquals("https://soundcloud.com/charts/top", extractor.getOriginalUrl());
+        }
+
+        /*//////////////////////////////////////////////////////////////////////////
+        // ListExtractor
+        //////////////////////////////////////////////////////////////////////////*/
+
+        @Test
+        public void testRelatedItems() throws Exception {
+            defaultTestRelatedItems(extractor);
+        }
+
+        @Test
+        public void testMoreRelatedItems() throws Exception {
+            defaultTestMoreItems(extractor);
+        }
     }
 }
