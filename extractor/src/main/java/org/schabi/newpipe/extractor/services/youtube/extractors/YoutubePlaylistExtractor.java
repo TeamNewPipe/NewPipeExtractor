@@ -121,16 +121,30 @@ public class YoutubePlaylistExtractor extends PlaylistExtractor {
 
     @Override
     public String getThumbnailUrl() throws ParsingException {
+        String url = null;
+
         try {
-            return playlistInfo.getObject("thumbnailRenderer").getObject("playlistVideoThumbnailRenderer")
+            url = playlistInfo.getObject("thumbnailRenderer").getObject("playlistVideoThumbnailRenderer")
                     .getObject("thumbnail").getArray("thumbnails").getObject(0).getString("url");
         } catch (Exception ignored) {}
-        try {
-            return initialData.getObject("microformat").getObject("microformatDataRenderer").getObject("thumbnail")
-                    .getArray("thumbnails").getObject(0).getString("url");
-        } catch (Exception e) {
-            throw new ParsingException("Could not get playlist thumbnail", e);
+
+        if (url == null) {
+            try {
+                return initialData.getObject("microformat").getObject("microformatDataRenderer").getObject("thumbnail")
+                        .getArray("thumbnails").getObject(0).getString("url");
+            } catch (Exception ignored) {}
         }
+
+        if (url != null && !url.isEmpty()) {
+            if (url.startsWith(HTTP)) {
+                url = Utils.replaceHttpWithHttps(url);
+            } else if (!url.startsWith(HTTPS)) {
+                url = HTTPS + url;
+            }
+
+            return url;
+        }
+        throw new ParsingException("Could not get playlist thumbnail");
     }
 
     @Override
@@ -162,10 +176,6 @@ public class YoutubePlaylistExtractor extends PlaylistExtractor {
         try {
             String url = getUploaderInfo().getObject("thumbnail").getArray("thumbnails").getObject(0).getString("url");
 
-            // the first characters of the avatar URLs are different for each channel and some are not even valid URLs
-            if (url.startsWith("//")) {
-                url = url.substring(2);
-            }
             if (url.startsWith(HTTP)) {
                 url = Utils.replaceHttpWithHttps(url);
             } else if (!url.startsWith(HTTPS)) {

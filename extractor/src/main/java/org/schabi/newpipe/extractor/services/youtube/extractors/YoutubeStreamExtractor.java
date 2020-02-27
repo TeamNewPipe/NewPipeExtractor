@@ -187,8 +187,15 @@ public class YoutubeStreamExtractor extends StreamExtractor {
         try {
             JsonArray thumbnails = playerResponse.getObject("videoDetails").getObject("thumbnail").getArray("thumbnails");
             // the last thumbnail is the one with the highest resolution
-            return thumbnails.getObject(thumbnails.size() - 1).getString("url");
+            String url = thumbnails.getObject(thumbnails.size() - 1).getString("url");
 
+            if (url.startsWith(HTTP)) {
+                url = Utils.replaceHttpWithHttps(url);
+            } else if (!url.startsWith(HTTPS)) {
+                url = HTTPS + url;
+            }
+
+            return url;
         } catch (Exception e) {
             throw new ParsingException("Could not get thumbnail url");
         }
@@ -362,10 +369,6 @@ public class YoutubeStreamExtractor extends StreamExtractor {
             String url = getVideoSecondaryInfoRenderer().getObject("owner").getObject("videoOwnerRenderer")
                     .getObject("thumbnail").getArray("thumbnails").getObject(0).getString("url");
 
-            // the first characters of the avatar URLs are different for each channel and some are not even valid URLs
-            if (url.startsWith("//")) {
-                url = url.substring(2);
-            }
             if (url.startsWith(HTTP)) {
                 url = Utils.replaceHttpWithHttps(url);
             } else if (!url.startsWith(HTTPS)) {

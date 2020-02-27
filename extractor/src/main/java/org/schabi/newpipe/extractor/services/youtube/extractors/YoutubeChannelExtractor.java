@@ -128,10 +128,6 @@ public class YoutubeChannelExtractor extends ChannelExtractor {
             String url = initialData.getObject("header").getObject("c4TabbedHeaderRenderer").getObject("avatar")
                     .getArray("thumbnails").getObject(0).getString("url");
 
-            // the first characters of the avatar URLs are different for each channel and some are not even valid URLs
-            if (url.startsWith("//")) {
-                url = url.substring(2);
-            }
             if (url.startsWith(HTTP)) {
                 url = Utils.replaceHttpWithHttps(url);
             } else if (!url.startsWith(HTTPS)) {
@@ -155,10 +151,7 @@ public class YoutubeChannelExtractor extends ChannelExtractor {
             if (url == null || url.contains("s.ytimg.com") || url.contains("default_banner")) {
                 return null;
             }
-            // the first characters of the banner URLs are different for each channel and some are not even valid URLs
-            if (url.startsWith("//")) {
-                url = url.substring(2);
-            }
+
             if (url.startsWith(HTTP)) {
                 url = Utils.replaceHttpWithHttps(url);
             } else if (!url.startsWith(HTTPS)) {

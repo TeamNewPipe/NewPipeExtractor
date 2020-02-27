@@ -42,14 +42,13 @@ public class YoutubeChannelInfoItemExtractor implements ChannelInfoItemExtractor
     public String getThumbnailUrl() throws ParsingException {
         try {
             String url = channelInfoItem.getObject("thumbnail").getArray("thumbnails").getObject(0).getString("url");
-            if (url.startsWith("//")) {
-                url = url.substring(2);
-            }
+
             if (url.startsWith(HTTP)) {
                 url = Utils.replaceHttpWithHttps(url);
             } else if (!url.startsWith(HTTPS)) {
                 url = HTTPS + url;
             }
+
             return url;
         } catch (Exception e) {
             throw new ParsingException("Could not get thumbnail url", e);
