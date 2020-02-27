@@ -61,7 +61,7 @@ public class YoutubeChannelExtractor extends ChannelExtractor {
 
     @Override
     public void onFetchPage(@Nonnull Downloader downloader) throws IOException, ExtractionException {
-        final String url = super.getUrl() + "/videos?pbj=1";
+        final String url = super.getUrl() + "/videos?pbj=1&view=0&flow=grid";
 
         JsonArray ajaxJson;
 
