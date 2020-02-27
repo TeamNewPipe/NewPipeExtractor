@@ -28,7 +28,6 @@ import javax.annotation.Nonnull;
 @SuppressWarnings("WeakerAccess")
 public class YoutubePlaylistExtractor extends PlaylistExtractor {
     private JsonObject initialData;
-    private JsonObject uploaderInfo;
     private JsonObject playlistInfo;
 
     public YoutubePlaylistExtractor(StreamingService service, ListLinkHandler linkHandler) {
@@ -57,7 +56,6 @@ public class YoutubePlaylistExtractor extends PlaylistExtractor {
         }
 
         initialData = ajaxJson.getObject(1).getObject("response");
-        uploaderInfo = getUploaderInfo();
         playlistInfo = getPlaylistInfo();
     }
 
@@ -140,7 +138,7 @@ public class YoutubePlaylistExtractor extends PlaylistExtractor {
     public String getUploaderUrl() throws ParsingException {
         try {
             return YoutubeChannelExtractor.CHANNEL_URL_BASE +
-                    uploaderInfo.getObject("navigationEndpoint").getObject("browseEndpoint").getString("browseId");
+                    getUploaderInfo().getObject("navigationEndpoint").getObject("browseEndpoint").getString("browseId");
         } catch (Exception e) {
             throw new ParsingException("Could not get playlist uploader url", e);
         }
@@ -149,7 +147,7 @@ public class YoutubePlaylistExtractor extends PlaylistExtractor {
     @Override
     public String getUploaderName() throws ParsingException {
         try {
-            return uploaderInfo.getObject("title").getArray("runs").getObject(0).getString("text");
+            return getUploaderInfo().getObject("title").getArray("runs").getObject(0).getString("text");
         } catch (Exception e) {
             throw new ParsingException("Could not get playlist uploader name", e);
         }
@@ -158,7 +156,7 @@ public class YoutubePlaylistExtractor extends PlaylistExtractor {
     @Override
     public String getUploaderAvatarUrl() throws ParsingException {
         try {
-            return uploaderInfo.getObject("thumbnail").getArray("thumbnails").getObject(0).getString("url");
+            return getUploaderInfo().getObject("thumbnail").getArray("thumbnails").getObject(0).getString("url");
         } catch (Exception e) {
             throw new ParsingException("Could not get playlist uploader avatar", e);
         }
