@@ -504,9 +504,9 @@ public class YoutubeStreamExtractor extends StreamExtractor {
     @Override
     public StreamInfoItem getNextStream() throws ExtractionException {
         assertPageFetched();
-        if (getAgeLimit() == 18) {
-            return null;
-        }
+
+        if (getAgeLimit() != NO_AGE_LIMIT) return null;
+
         try {
             final JsonObject videoInfo = initialData.getObject("contents").getObject("twoColumnWatchNextResults")
                     .getObject("secondaryResults").getObject("secondaryResults").getArray("results")
@@ -525,9 +525,9 @@ public class YoutubeStreamExtractor extends StreamExtractor {
     @Override
     public StreamInfoItemsCollector getRelatedStreams() throws ExtractionException {
         assertPageFetched();
-        if (getAgeLimit() == 18) {
-            return null;
-        }
+
+        if (getAgeLimit() != NO_AGE_LIMIT) return null;
+
         try {
             StreamInfoItemsCollector collector = new StreamInfoItemsCollector(getServiceId());
             JsonArray results = initialData.getObject("contents").getObject("twoColumnWatchNextResults")
@@ -773,7 +773,7 @@ public class YoutubeStreamExtractor extends StreamExtractor {
     @Nonnull
     private List<SubtitlesInfo> getAvailableSubtitlesInfo() {
         // If the video is age restricted getPlayerConfig will fail
-        if (getAgeLimit() == 18) return Collections.emptyList();
+        if (getAgeLimit() != NO_AGE_LIMIT) return Collections.emptyList();
 
         final JsonObject captions;
         if (!playerResponse.has("captions")) {
