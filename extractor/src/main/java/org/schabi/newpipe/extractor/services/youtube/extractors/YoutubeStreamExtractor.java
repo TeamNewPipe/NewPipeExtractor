@@ -95,6 +95,8 @@ public class YoutubeStreamExtractor extends StreamExtractor {
     private final Map<String, String> videoInfoPage = new HashMap<>();
     private JsonObject playerResponse;
     private JsonObject initialData;
+    private JsonObject videoPrimaryInfoRenderer;
+    private JsonObject videoSecondaryInfoRenderer;
 
     @Nonnull
     private List<SubtitlesInfo> subtitlesInfos = new ArrayList<>();
@@ -843,6 +845,8 @@ public class YoutubeStreamExtractor extends StreamExtractor {
     //////////////////////////////////////////////////////////////////////////*/
 
     private JsonObject getVideoPrimaryInfoRenderer() throws ParsingException {
+        if (this.videoPrimaryInfoRenderer != null) return this.videoPrimaryInfoRenderer;
+
         JsonArray contents = initialData.getObject("contents").getObject("twoColumnWatchNextResults")
                 .getObject("results").getObject("results").getArray("contents");
         JsonObject videoPrimaryInfoRenderer = null;
@@ -858,10 +862,13 @@ public class YoutubeStreamExtractor extends StreamExtractor {
             throw new ParsingException("Could not find videoPrimaryInfoRenderer");
         }
 
+        this.videoPrimaryInfoRenderer = videoPrimaryInfoRenderer;
         return videoPrimaryInfoRenderer;
     }
 
     private JsonObject getVideoSecondaryInfoRenderer() throws ParsingException {
+        if (this.videoSecondaryInfoRenderer != null) return this.videoSecondaryInfoRenderer;
+
         JsonArray contents = initialData.getObject("contents").getObject("twoColumnWatchNextResults")
                 .getObject("results").getObject("results").getArray("contents");
         JsonObject videoSecondaryInfoRenderer = null;
@@ -877,6 +884,7 @@ public class YoutubeStreamExtractor extends StreamExtractor {
             throw new ParsingException("Could not find videoSecondaryInfoRenderer");
         }
 
+        this.videoSecondaryInfoRenderer = videoSecondaryInfoRenderer;
         return videoSecondaryInfoRenderer;
     }
 
