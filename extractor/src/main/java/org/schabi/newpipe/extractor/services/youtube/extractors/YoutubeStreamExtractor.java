@@ -3,9 +3,8 @@ package org.schabi.newpipe.extractor.services.youtube.extractors;
 import com.grack.nanojson.JsonArray;
 import com.grack.nanojson.JsonObject;
 import com.grack.nanojson.JsonParser;
+import com.grack.nanojson.JsonParserException;
 
-import org.jsoup.nodes.Document;
-import org.jsoup.nodes.Element;
 import org.mozilla.javascript.Context;
 import org.mozilla.javascript.Function;
 import org.mozilla.javascript.ScriptableObject;
@@ -13,8 +12,6 @@ import org.schabi.newpipe.extractor.MediaFormat;
 import org.schabi.newpipe.extractor.NewPipe;
 import org.schabi.newpipe.extractor.StreamingService;
 import org.schabi.newpipe.extractor.downloader.Downloader;
-import org.schabi.newpipe.extractor.downloader.Response;
-import org.schabi.newpipe.extractor.exceptions.ContentNotAvailableException;
 import org.schabi.newpipe.extractor.exceptions.ExtractionException;
 import org.schabi.newpipe.extractor.exceptions.ParsingException;
 import org.schabi.newpipe.extractor.exceptions.ReCaptchaException;
@@ -91,7 +88,7 @@ public class YoutubeStreamExtractor extends StreamExtractor {
 
     /*//////////////////////////////////////////////////////////////////////////*/
 
-    private Document doc;
+    private JsonArray initialAjaxJson;
     @Nullable
     private JsonObject playerArgs;
     @Nonnull
@@ -554,23 +551,8 @@ public class YoutubeStreamExtractor extends StreamExtractor {
      */
     @Override
     public String getErrorMessage() {
-        StringBuilder errorReason;
-        Element errorElement = doc.select("h1[id=\"unavailable-message\"]").first();
-
-        if (errorElement == null) {
-            errorReason = null;
-        } else {
-            String errorMessage = errorElement.text();
-            if (errorMessage == null || errorMessage.isEmpty()) {
-                errorReason = null;
-            } else {
-                errorReason = new StringBuilder(errorMessage);
-                errorReason.append("  ");
-                errorReason.append(doc.select("[id=\"unavailable-submessage\"]").first().text());
-            }
-        }
-
-        return errorReason != null ? errorReason.toString() : "";
+        return getTextFromObject(initialAjaxJson.getObject(2).getObject("playerResponse").getObject("playabilityStatus")
+                .getObject("errorScreen").getObject("playerErrorMessageRenderer").getObject("reason"));
     }
 
     /*//////////////////////////////////////////////////////////////////////////
@@ -580,10 +562,7 @@ public class YoutubeStreamExtractor extends StreamExtractor {
     private static final String FORMATS = "formats";
     private static final String ADAPTIVE_FORMATS = "adaptiveFormats";
     private static final String HTTPS = "https:";
-    private static final String CONTENT = "content";
     private static final String DECRYPTION_FUNC_NAME = "decrypt";
-
-    private static final String VERIFIED_URL_PARAMS = "&has_verified=1&bpctr=9999999999";
 
     private final static String DECRYPTION_SIGNATURE_FUNCTION_REGEX =
             "([\\w$]+)\\s*=\\s*function\\((\\w+)\\)\\{\\s*\\2=\\s*\\2\\.split\\(\"\"\\)\\s*;";
@@ -596,29 +575,42 @@ public class YoutubeStreamExtractor extends StreamExtractor {
 
     private volatile String decryptionCode = "";
 
-    private String pageHtml = null;
-
     @Override
     public void onFetchPage(@Nonnull Downloader downloader) throws IOException, ExtractionException {
-        final String verifiedUrl = getUrl() + VERIFIED_URL_PARAMS;
-        final Response response = downloader.get(verifiedUrl, getExtractorLocalization());
-        pageHtml = response.responseBody();
-        doc = YoutubeParsingHelper.parseAndCheckPage(verifiedUrl, response);
+        final String url = getUrl() + "&pbj=1";
+
+        Map<String, List<String>> headers = new HashMap<>();
+        headers.put("X-YouTube-Client-Name", Collections.singletonList("1"));
+        headers.put("X-YouTube-Client-Version",
+                Collections.singletonList(YoutubeParsingHelper.getClientVersion()));
+        final String response = getDownloader().get(url, headers, getExtractorLocalization()).responseBody();
+        if (response.length() < 50) { // ensure to have a valid response
+            throw new ParsingException("Could not parse json data for next streams");
+        }
+
+        try {
+            initialAjaxJson = JsonParser.array().from(response);
+        } catch (JsonParserException e) {
+            throw new ParsingException("Could not parse json data for next streams", e);
+        }
 
         final String playerUrl;
-        initialData = YoutubeParsingHelper.getInitialData(pageHtml);
-        // Check if the video is age restricted
-        if (getAgeLimit() == 18) {
+
+        if (initialAjaxJson.getObject(2).getObject("response") != null) { // age-restricted videos
+            initialData = initialAjaxJson.getObject(2).getObject("response");
+
             final EmbeddedInfo info = getEmbeddedInfo();
             final String videoInfoUrl = getVideoInfoUrl(getId(), info.sts);
             final String infoPageResponse = downloader.get(videoInfoUrl, getExtractorLocalization()).responseBody();
             videoInfoPage.putAll(Parser.compatParseMap(infoPageResponse));
             playerUrl = info.url;
         } else {
-            final JsonObject ytPlayerConfig = getPlayerConfig();
-            playerArgs = getPlayerArgs(ytPlayerConfig);
-            playerUrl = getPlayerUrl(ytPlayerConfig);
+            initialData = initialAjaxJson.getObject(3).getObject("response");
+
+            playerArgs = getPlayerArgs(initialAjaxJson.getObject(2).getObject("player"));
+            playerUrl = getPlayerUrl(initialAjaxJson.getObject(2).getObject("player"));
         }
+
         playerResponse = getPlayerResponse();
 
         if (decryptionCode.isEmpty()) {
@@ -627,21 +619,6 @@ public class YoutubeStreamExtractor extends StreamExtractor {
 
         if (subtitlesInfos.isEmpty()) {
             subtitlesInfos.addAll(getAvailableSubtitlesInfo());
-        }
-    }
-
-    private JsonObject getPlayerConfig() throws ParsingException {
-        try {
-            String ytPlayerConfigRaw = Parser.matchGroup1("ytplayer.config\\s*=\\s*(\\{.*?\\});", pageHtml);
-            return JsonParser.object().from(ytPlayerConfigRaw);
-        } catch (Parser.RegexException e) {
-            String errorReason = getErrorMessage();
-            if (errorReason.isEmpty()) {
-                throw new ContentNotAvailableException("Content not available: player config empty", e);
-            }
-            throw new ContentNotAvailableException("Content not available", e);
-        } catch (Exception e) {
-            throw new ParsingException("Could not parse yt player config", e);
         }
     }
 
@@ -950,17 +927,7 @@ public class YoutubeStreamExtractor extends StreamExtractor {
     @Override
     public List<Frameset> getFrames() throws ExtractionException {
         try {
-            final String script = doc.select("#player-api").first().siblingElements().select("script").html();
-            int p = script.indexOf("ytplayer.config");
-            if (p == -1) {
-                return Collections.emptyList();
-            }
-            p = script.indexOf('{', p);
-            int e = script.indexOf("ytplayer.load", p);
-            if (e == -1) {
-                return Collections.emptyList();
-            }
-            JsonObject jo = JsonParser.object().from(script.substring(p, e - 1));
+            JsonObject jo = initialAjaxJson.getObject(2).getObject("player");
             final String resp = jo.getObject("args").getString("player_response");
             jo = JsonParser.object().from(resp);
             final String[] spec = jo.getObject("storyboards").getObject("playerStoryboardSpecRenderer").getString("spec").split("\\|");
