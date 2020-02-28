@@ -175,15 +175,7 @@ public class YoutubeParsingHelper {
         }
     }
 
-    /**
-     * Get the client version from a page
-     * @return
-     * @throws ParsingException
-     */
-    public static String getClientVersion() throws ParsingException {
-        if (clientVersion != null && !clientVersion.isEmpty()) return clientVersion;
-
-        // Test if hard-coded client version is valid
+    public static boolean isHardcodedClientVersionValid() {
         try {
             final String url = "https://www.youtube.com/results?search_query=test&pbj=1";
 
@@ -193,10 +185,25 @@ public class YoutubeParsingHelper {
                     Collections.singletonList(HARDCODED_CLIENT_VERSION));
             final String response = getDownloader().get(url, headers).responseBody();
             if (response.length() > 50) { // ensure to have a valid response
-                clientVersion = HARDCODED_CLIENT_VERSION;
-                return clientVersion;
+                return true;
             }
         } catch (Exception ignored) {}
+
+        return false;
+    }
+
+    /**
+     * Get the client version from a page
+     * @return
+     * @throws ParsingException
+     */
+    public static String getClientVersion() throws ParsingException {
+        if (clientVersion != null && !clientVersion.isEmpty()) return clientVersion;
+
+        if (isHardcodedClientVersionValid()) {
+            clientVersion = HARDCODED_CLIENT_VERSION;
+            return clientVersion;
+        }
 
         // Try extracting it from YouTube's website otherwise
         try {
