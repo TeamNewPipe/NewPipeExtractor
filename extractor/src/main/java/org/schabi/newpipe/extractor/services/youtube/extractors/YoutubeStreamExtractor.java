@@ -97,6 +97,7 @@ public class YoutubeStreamExtractor extends StreamExtractor {
     private JsonObject initialData;
     private JsonObject videoPrimaryInfoRenderer;
     private JsonObject videoSecondaryInfoRenderer;
+    private int ageLimit;
 
     @Nonnull
     private List<SubtitlesInfo> subtitlesInfos = new ArrayList<>();
@@ -216,12 +217,8 @@ public class YoutubeStreamExtractor extends StreamExtractor {
     @Override
     public int getAgeLimit() {
         if (initialData == null || initialData.isEmpty()) throw new IllegalStateException("initialData is not parsed yet");
-        if (initialData.getObject("contents").getObject("twoColumnWatchNextResults")
-                .getObject("secondaryResults") == null) {
-            return 18;
-        } else {
-            return NO_AGE_LIMIT;
-        }
+
+        return ageLimit;
     }
 
     @Override
@@ -600,6 +597,7 @@ public class YoutubeStreamExtractor extends StreamExtractor {
 
         if (initialAjaxJson.getObject(2).getObject("response") != null) { // age-restricted videos
             initialData = initialAjaxJson.getObject(2).getObject("response");
+            ageLimit = 18;
 
             final EmbeddedInfo info = getEmbeddedInfo();
             final String videoInfoUrl = getVideoInfoUrl(getId(), info.sts);
@@ -608,6 +606,7 @@ public class YoutubeStreamExtractor extends StreamExtractor {
             playerUrl = info.url;
         } else {
             initialData = initialAjaxJson.getObject(3).getObject("response");
+            ageLimit = NO_AGE_LIMIT;
 
             playerArgs = getPlayerArgs(initialAjaxJson.getObject(2).getObject("player"));
             playerUrl = getPlayerUrl(initialAjaxJson.getObject(2).getObject("player"));
