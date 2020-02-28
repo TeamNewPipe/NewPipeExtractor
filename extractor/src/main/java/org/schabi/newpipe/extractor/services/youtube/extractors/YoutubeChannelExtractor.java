@@ -53,6 +53,7 @@ public class YoutubeChannelExtractor extends ChannelExtractor {
     /*package-private*/ static final String CHANNEL_URL_BASE = "https://www.youtube.com/channel/";
 
     private JsonObject initialData;
+    private JsonObject videoTab;
 
     public YoutubeChannelExtractor(StreamingService service, ListLinkHandler linkHandler) {
         super(service, linkHandler);
@@ -276,6 +277,8 @@ public class YoutubeChannelExtractor extends ChannelExtractor {
     }
 
     private JsonObject getVideoTab() throws ParsingException {
+        if (this.videoTab != null) return this.videoTab;
+
         JsonArray tabs = initialData.getObject("contents").getObject("twoColumnBrowseResultsRenderer")
                 .getArray("tabs");
         JsonObject videoTab = null;
@@ -301,6 +304,7 @@ public class YoutubeChannelExtractor extends ChannelExtractor {
                 return null;
         } catch (Exception ignored) {}
 
+        this.videoTab = videoTab;
         return videoTab;
     }
 }
