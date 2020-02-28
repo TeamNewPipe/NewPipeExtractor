@@ -101,11 +101,13 @@ public class YoutubeSearchExtractor extends SearchExtractor {
     @Override
     public InfoItemsPage<InfoItem> getInitialPage() throws ExtractionException {
         InfoItemsSearchCollector collector = getInfoItemSearchCollector();
-        JsonArray videos = initialData.getObject("contents").getObject("twoColumnSearchResultsRenderer")
-                .getObject("primaryContents").getObject("sectionListRenderer").getArray("contents")
-                .getObject(0).getObject("itemSectionRenderer").getArray("contents");
+        JsonArray sections = initialData.getObject("contents").getObject("twoColumnSearchResultsRenderer")
+                .getObject("primaryContents").getObject("sectionListRenderer").getArray("contents");
 
-        collectStreamsFrom(collector, videos);
+        for (Object section : sections) {
+            collectStreamsFrom(collector, ((JsonObject) section).getObject("itemSectionRenderer").getArray("contents"));
+        }
+
         return new InfoItemsPage<>(collector, getNextPageUrl());
     }
 
