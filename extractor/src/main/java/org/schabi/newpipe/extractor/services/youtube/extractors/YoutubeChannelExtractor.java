@@ -25,9 +25,8 @@ import java.util.Map;
 
 import javax.annotation.Nonnull;
 
+import static org.schabi.newpipe.extractor.services.youtube.linkHandler.YoutubeParsingHelper.fixThumbnailUrl;
 import static org.schabi.newpipe.extractor.services.youtube.linkHandler.YoutubeParsingHelper.getTextFromObject;
-import static org.schabi.newpipe.extractor.utils.Utils.HTTP;
-import static org.schabi.newpipe.extractor.utils.Utils.HTTPS;
 
 /*
  * Created by Christian Schabesberger on 25.07.16.
@@ -128,13 +127,7 @@ public class YoutubeChannelExtractor extends ChannelExtractor {
             String url = initialData.getObject("header").getObject("c4TabbedHeaderRenderer").getObject("avatar")
                     .getArray("thumbnails").getObject(0).getString("url");
 
-            if (url.startsWith(HTTP)) {
-                url = Utils.replaceHttpWithHttps(url);
-            } else if (!url.startsWith(HTTPS)) {
-                url = HTTPS + url;
-            }
-
-            return url;
+            return fixThumbnailUrl(url);
         } catch (Exception e) {
             throw new ParsingException("Could not get avatar", e);
         }
@@ -152,13 +145,7 @@ public class YoutubeChannelExtractor extends ChannelExtractor {
                 return null;
             }
 
-            if (url.startsWith(HTTP)) {
-                url = Utils.replaceHttpWithHttps(url);
-            } else if (!url.startsWith(HTTPS)) {
-                url = HTTPS + url;
-            }
-
-            return url;
+            return fixThumbnailUrl(url);
         } catch (Exception e) {
             throw new ParsingException("Could not get banner", e);
         }

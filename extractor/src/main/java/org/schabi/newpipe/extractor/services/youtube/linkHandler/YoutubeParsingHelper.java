@@ -12,6 +12,7 @@ import org.schabi.newpipe.extractor.downloader.Response;
 import org.schabi.newpipe.extractor.exceptions.ParsingException;
 import org.schabi.newpipe.extractor.exceptions.ReCaptchaException;
 import org.schabi.newpipe.extractor.utils.Parser;
+import org.schabi.newpipe.extractor.utils.Utils;
 
 import java.io.UnsupportedEncodingException;
 import java.net.URL;
@@ -27,6 +28,8 @@ import java.util.List;
 import java.util.Map;
 
 import static org.schabi.newpipe.extractor.NewPipe.getDownloader;
+import static org.schabi.newpipe.extractor.utils.Utils.HTTP;
+import static org.schabi.newpipe.extractor.utils.Utils.HTTPS;
 
 /*
  * Created by Christian Schabesberger on 02.03.16.
@@ -318,5 +321,19 @@ public class YoutubeParsingHelper {
 
     public static String getTextFromObject(JsonObject textObject) {
         return getTextFromObject(textObject, false);
+    }
+
+    public static String fixThumbnailUrl(String thumbnailUrl) {
+        if (thumbnailUrl.startsWith("//")) {
+            thumbnailUrl = thumbnailUrl.substring(2);
+        }
+
+        if (thumbnailUrl.startsWith(HTTP)) {
+            thumbnailUrl = Utils.replaceHttpWithHttps(thumbnailUrl);
+        } else if (!thumbnailUrl.startsWith(HTTPS)) {
+            thumbnailUrl = "https://" + thumbnailUrl;
+        }
+
+        return thumbnailUrl;
     }
 }

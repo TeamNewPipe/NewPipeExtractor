@@ -7,9 +7,8 @@ import org.schabi.newpipe.extractor.exceptions.ParsingException;
 import org.schabi.newpipe.extractor.services.youtube.linkHandler.YoutubeChannelLinkHandlerFactory;
 import org.schabi.newpipe.extractor.utils.Utils;
 
+import static org.schabi.newpipe.extractor.services.youtube.linkHandler.YoutubeParsingHelper.fixThumbnailUrl;
 import static org.schabi.newpipe.extractor.services.youtube.linkHandler.YoutubeParsingHelper.getTextFromObject;
-import static org.schabi.newpipe.extractor.utils.Utils.HTTP;
-import static org.schabi.newpipe.extractor.utils.Utils.HTTPS;
 
 /*
  * Created by Christian Schabesberger on 12.02.17.
@@ -43,13 +42,7 @@ public class YoutubeChannelInfoItemExtractor implements ChannelInfoItemExtractor
         try {
             String url = channelInfoItem.getObject("thumbnail").getArray("thumbnails").getObject(0).getString("url");
 
-            if (url.startsWith(HTTP)) {
-                url = Utils.replaceHttpWithHttps(url);
-            } else if (!url.startsWith(HTTPS)) {
-                url = HTTPS + url;
-            }
-
-            return url;
+            return fixThumbnailUrl(url);
         } catch (Exception e) {
             throw new ParsingException("Could not get thumbnail url", e);
         }

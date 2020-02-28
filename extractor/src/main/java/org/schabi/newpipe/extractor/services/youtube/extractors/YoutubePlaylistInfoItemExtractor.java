@@ -7,9 +7,8 @@ import org.schabi.newpipe.extractor.playlist.PlaylistInfoItemExtractor;
 import org.schabi.newpipe.extractor.services.youtube.linkHandler.YoutubePlaylistLinkHandlerFactory;
 import org.schabi.newpipe.extractor.utils.Utils;
 
+import static org.schabi.newpipe.extractor.services.youtube.linkHandler.YoutubeParsingHelper.fixThumbnailUrl;
 import static org.schabi.newpipe.extractor.services.youtube.linkHandler.YoutubeParsingHelper.getTextFromObject;
-import static org.schabi.newpipe.extractor.utils.Utils.HTTP;
-import static org.schabi.newpipe.extractor.utils.Utils.HTTPS;
 
 public class YoutubePlaylistInfoItemExtractor implements PlaylistInfoItemExtractor {
     private JsonObject playlistInfoItem;
@@ -24,13 +23,7 @@ public class YoutubePlaylistInfoItemExtractor implements PlaylistInfoItemExtract
             String url = playlistInfoItem.getArray("thumbnails").getObject(0)
                     .getArray("thumbnails").getObject(0).getString("url");
 
-            if (url.startsWith(HTTP)) {
-                url = Utils.replaceHttpWithHttps(url);
-            } else if (!url.startsWith(HTTPS)) {
-                url = HTTPS + url;
-            }
-
-            return url;
+            return fixThumbnailUrl(url);
         } catch (Exception e) {
             throw new ParsingException("Could not get thumbnail url", e);
         }

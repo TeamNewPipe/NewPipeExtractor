@@ -25,10 +25,9 @@ import java.util.Map;
 
 import javax.annotation.Nonnull;
 
+import static org.schabi.newpipe.extractor.services.youtube.linkHandler.YoutubeParsingHelper.fixThumbnailUrl;
 import static org.schabi.newpipe.extractor.services.youtube.linkHandler.YoutubeParsingHelper.getTextFromObject;
 import static org.schabi.newpipe.extractor.services.youtube.linkHandler.YoutubeParsingHelper.getUrlFromNavigationEndpoint;
-import static org.schabi.newpipe.extractor.utils.Utils.HTTP;
-import static org.schabi.newpipe.extractor.utils.Utils.HTTPS;
 
 @SuppressWarnings("WeakerAccess")
 public class YoutubePlaylistExtractor extends PlaylistExtractor {
@@ -136,13 +135,7 @@ public class YoutubePlaylistExtractor extends PlaylistExtractor {
         }
 
         if (url != null && !url.isEmpty()) {
-            if (url.startsWith(HTTP)) {
-                url = Utils.replaceHttpWithHttps(url);
-            } else if (!url.startsWith(HTTPS)) {
-                url = HTTPS + url;
-            }
-
-            return url;
+            return fixThumbnailUrl(url);
         }
         throw new ParsingException("Could not get playlist thumbnail");
     }
@@ -176,13 +169,7 @@ public class YoutubePlaylistExtractor extends PlaylistExtractor {
         try {
             String url = getUploaderInfo().getObject("thumbnail").getArray("thumbnails").getObject(0).getString("url");
 
-            if (url.startsWith(HTTP)) {
-                url = Utils.replaceHttpWithHttps(url);
-            } else if (!url.startsWith(HTTPS)) {
-                url = HTTPS + url;
-            }
-
-            return url;
+            return fixThumbnailUrl(url);
         } catch (Exception e) {
             throw new ParsingException("Could not get playlist uploader avatar", e);
         }
