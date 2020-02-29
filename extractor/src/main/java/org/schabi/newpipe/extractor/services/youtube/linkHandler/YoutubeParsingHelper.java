@@ -5,7 +5,6 @@ import com.grack.nanojson.JsonArray;
 import com.grack.nanojson.JsonObject;
 import com.grack.nanojson.JsonParser;
 import com.grack.nanojson.JsonParserException;
-
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.schabi.newpipe.extractor.downloader.Response;
@@ -22,12 +21,7 @@ import java.net.URL;
 import java.net.URLDecoder;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.util.Calendar;
-import java.util.Collections;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 import static org.schabi.newpipe.extractor.NewPipe.getDownloader;
 import static org.schabi.newpipe.extractor.utils.Utils.HTTP;
@@ -177,21 +171,16 @@ public class YoutubeParsingHelper {
         }
     }
 
-    public static boolean isHardcodedClientVersionValid() throws IOException {
-        try {
-            final String url = "https://www.youtube.com/results?search_query=test&pbj=1";
+    public static boolean isHardcodedClientVersionValid() throws IOException, ExtractionException {
+        final String url = "https://www.youtube.com/results?search_query=test&pbj=1";
 
-            Map<String, List<String>> headers = new HashMap<>();
-            headers.put("X-YouTube-Client-Name", Collections.singletonList("1"));
-            headers.put("X-YouTube-Client-Version",
-                    Collections.singletonList(HARDCODED_CLIENT_VERSION));
-            final String response = getDownloader().get(url, headers).responseBody();
-            if (response.length() > 50) { // ensure to have a valid response
-                return true;
-            }
-        } catch (ReCaptchaException ignored) {}
+        Map<String, List<String>> headers = new HashMap<>();
+        headers.put("X-YouTube-Client-Name", Collections.singletonList("1"));
+        headers.put("X-YouTube-Client-Version",
+                Collections.singletonList(HARDCODED_CLIENT_VERSION));
+        final String response = getDownloader().get(url, headers).responseBody();
 
-        return false;
+        return response.length() > 50; // ensure to have a valid response
     }
 
     /**
@@ -199,7 +188,7 @@ public class YoutubeParsingHelper {
      * @return
      * @throws ParsingException
      */
-    public static String getClientVersion() throws ParsingException, IOException {
+    public static String getClientVersion() throws IOException, ExtractionException {
         if (clientVersion != null && !clientVersion.isEmpty()) return clientVersion;
 
         if (isHardcodedClientVersionValid()) {
@@ -207,62 +196,59 @@ public class YoutubeParsingHelper {
             return clientVersion;
         }
 
-        // Try extracting it from YouTube's website otherwise
-        try {
-            final String url = "https://www.youtube.com/results?search_query=test";
-            final String html = getDownloader().get(url).responseBody();
-            JsonObject initialData = getInitialData(html);
-            JsonArray serviceTrackingParams = initialData.getObject("responseContext").getArray("serviceTrackingParams");
-            String shortClientVersion = null;
+        final String url = "https://www.youtube.com/results?search_query=test";
+        final String html = getDownloader().get(url).responseBody();
+        JsonObject initialData = getInitialData(html);
+        JsonArray serviceTrackingParams = initialData.getObject("responseContext").getArray("serviceTrackingParams");
+        String shortClientVersion = null;
 
-            // try to get version from initial data first
-            for (Object service : serviceTrackingParams) {
-                JsonObject s = (JsonObject) service;
-                if (s.getString("service").equals("CSI")) {
-                    JsonArray params = s.getArray("params");
-                    for (Object param : params) {
-                        JsonObject p = (JsonObject) param;
-                        String key = p.getString("key");
-                        if (key != null && key.equals("cver")) {
-                            clientVersion = p.getString("value");
-                            return clientVersion;
-                        }
-                    }
-                } else if (s.getString("service").equals("ECATCHER")) {
-                    // fallback to get a shortened client version which does not contain the last two digits
-                    JsonArray params = s.getArray("params");
-                    for (Object param : params) {
-                        JsonObject p = (JsonObject) param;
-                        String key = p.getString("key");
-                        if (key != null && key.equals("client.version")) {
-                            shortClientVersion = p.getString("value");
-                        }
-                    }
-                }
-            }
-
-            String contextClientVersion;
-            String[] patterns = {
-                    "INNERTUBE_CONTEXT_CLIENT_VERSION\":\"([0-9\\.]+?)\"",
-                    "innertube_context_client_version\":\"([0-9\\.]+?)\"",
-                    "client.version=([0-9\\.]+)"
-            };
-            for (String pattern : patterns) {
-                try {
-                    contextClientVersion = Parser.matchGroup1(pattern, html);
-                    if (contextClientVersion != null && !contextClientVersion.isEmpty()) {
-                        clientVersion = contextClientVersion;
+        // try to get version from initial data first
+        for (Object service : serviceTrackingParams) {
+            JsonObject s = (JsonObject) service;
+            if (s.getString("service").equals("CSI")) {
+                JsonArray params = s.getArray("params");
+                for (Object param : params) {
+                    JsonObject p = (JsonObject) param;
+                    String key = p.getString("key");
+                    if (key != null && key.equals("cver")) {
+                        clientVersion = p.getString("value");
                         return clientVersion;
                     }
-                } catch (Exception ignored) {
+                }
+            } else if (s.getString("service").equals("ECATCHER")) {
+                // fallback to get a shortened client version which does not contain the last two digits
+                JsonArray params = s.getArray("params");
+                for (Object param : params) {
+                    JsonObject p = (JsonObject) param;
+                    String key = p.getString("key");
+                    if (key != null && key.equals("client.version")) {
+                        shortClientVersion = p.getString("value");
+                    }
                 }
             }
+        }
 
-            if (shortClientVersion != null) {
-                clientVersion = shortClientVersion;
-                return clientVersion;
+        String contextClientVersion;
+        String[] patterns = {
+                "INNERTUBE_CONTEXT_CLIENT_VERSION\":\"([0-9\\.]+?)\"",
+                "innertube_context_client_version\":\"([0-9\\.]+?)\"",
+                "client.version=([0-9\\.]+)"
+        };
+        for (String pattern : patterns) {
+            try {
+                contextClientVersion = Parser.matchGroup1(pattern, html);
+                if (contextClientVersion != null && !contextClientVersion.isEmpty()) {
+                    clientVersion = contextClientVersion;
+                    return clientVersion;
+                }
+            } catch (Exception ignored) {
             }
-        } catch (Exception ignored) {}
+        }
+
+        if (shortClientVersion != null) {
+            clientVersion = shortClientVersion;
+            return clientVersion;
+        }
 
         throw new ParsingException("Could not get client version");
     }
