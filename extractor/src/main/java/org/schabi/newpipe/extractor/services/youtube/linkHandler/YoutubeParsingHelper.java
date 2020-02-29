@@ -253,7 +253,7 @@ public class YoutubeParsingHelper {
         throw new ParsingException("Could not get client version");
     }
 
-    public static String getUrlFromNavigationEndpoint(JsonObject navigationEndpoint) {
+    public static String getUrlFromNavigationEndpoint(JsonObject navigationEndpoint) throws ParsingException {
         if (navigationEndpoint.getObject("urlEndpoint") != null) {
             String internUrl = navigationEndpoint.getObject("urlEndpoint").getString("url");
             if (internUrl.startsWith("/redirect?")) {
@@ -275,7 +275,20 @@ public class YoutubeParsingHelper {
                 return internUrl;
             }
         } else if (navigationEndpoint.getObject("browseEndpoint") != null) {
-            return "https://www.youtube.com" + navigationEndpoint.getObject("browseEndpoint").getString("canonicalBaseUrl");
+            final JsonObject browseEndpoint = navigationEndpoint.getObject("browseEndpoint");
+            final String canonicalBaseUrl = browseEndpoint.getString("canonicalBaseUrl");
+            final String browseId = browseEndpoint.getString("browseId");
+
+            // All channel ids are prefixed with UC
+            if (browseId != null && browseId.startsWith("UC")) {
+                return "https://www.youtube.com/channel/" + browseId;
+            }
+
+            if (canonicalBaseUrl != null && !canonicalBaseUrl.isEmpty()) {
+                return "https://www.youtube.com" + canonicalBaseUrl;
+            }
+
+            throw new ParsingException("canonicalBaseUrl is null and browseId is not a channel (\"" + browseEndpoint + "\")");
         } else if (navigationEndpoint.getObject("watchEndpoint") != null) {
             StringBuilder url = new StringBuilder();
             url.append("https://www.youtube.com/watch?v=").append(navigationEndpoint.getObject("watchEndpoint").getString("videoId"));
@@ -288,7 +301,7 @@ public class YoutubeParsingHelper {
         return null;
     }
 
-    public static String getTextFromObject(JsonObject textObject, boolean html) {
+    public static String getTextFromObject(JsonObject textObject, boolean html) throws ParsingException {
         if (textObject.has("simpleText")) return textObject.getString("simpleText");
 
         StringBuilder textBuilder = new StringBuilder();
@@ -314,7 +327,7 @@ public class YoutubeParsingHelper {
         return text;
     }
 
-    public static String getTextFromObject(JsonObject textObject) {
+    public static String getTextFromObject(JsonObject textObject) throws ParsingException {
         return getTextFromObject(textObject, false);
     }
 
