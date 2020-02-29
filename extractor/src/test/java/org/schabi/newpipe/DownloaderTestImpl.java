@@ -102,16 +102,20 @@ public class DownloaderTestImpl extends Downloader {
 
             return new Response(responseCode, responseMessage, responseHeaders, response.toString());
         } catch (Exception e) {
+            final int responseCode = connection.getResponseCode();
+
             /*
              * HTTP 429 == Too Many Request
              * Receive from Youtube.com = ReCaptcha challenge request
              * See : https://github.com/rg3/youtube-dl/issues/5138
              */
-            if (connection.getResponseCode() == 429) {
+            if (responseCode == 429) {
                 throw new ReCaptchaException("reCaptcha Challenge requested", url);
+            } else if (responseCode != -1) {
+                return new Response(responseCode, connection.getResponseMessage(), connection.getHeaderFields(), null);
             }
 
-            throw new IOException(connection.getResponseCode() + " " + connection.getResponseMessage(), e);
+            throw new IOException("Error occurred while fetching the content", e);
         } finally {
             if (outputStream != null) outputStream.close();
             if (input != null) input.close();
