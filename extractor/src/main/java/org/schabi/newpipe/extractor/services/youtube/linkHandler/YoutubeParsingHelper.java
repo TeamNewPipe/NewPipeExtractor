@@ -9,11 +9,13 @@ import com.grack.nanojson.JsonParserException;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.schabi.newpipe.extractor.downloader.Response;
+import org.schabi.newpipe.extractor.exceptions.ExtractionException;
 import org.schabi.newpipe.extractor.exceptions.ParsingException;
 import org.schabi.newpipe.extractor.exceptions.ReCaptchaException;
 import org.schabi.newpipe.extractor.utils.Parser;
 import org.schabi.newpipe.extractor.utils.Utils;
 
+import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.net.URL;
 import java.net.URLDecoder;
@@ -342,5 +344,23 @@ public class YoutubeParsingHelper {
         }
 
         return thumbnailUrl;
+    }
+
+    public static JsonArray getJsonResponse(String url) throws IOException, ExtractionException {
+        Map<String, List<String>> headers = new HashMap<>();
+        headers.put("X-YouTube-Client-Name", Collections.singletonList("1"));
+        headers.put("X-YouTube-Client-Version",
+                Collections.singletonList(YoutubeParsingHelper.getClientVersion()));
+        final String response = getDownloader().get(url, headers).responseBody();
+
+        if (response.length() < 50) { // ensure to have a valid response
+            throw new ParsingException("JSON response is too short");
+        }
+
+        try {
+            return JsonParser.array().from(response);
+        } catch (JsonParserException e) {
+            throw new ParsingException("Could not parse JSON", e);
+        }
     }
 }

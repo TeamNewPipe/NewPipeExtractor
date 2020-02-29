@@ -3,7 +3,6 @@ package org.schabi.newpipe.extractor.services.youtube.extractors;
 import com.grack.nanojson.JsonArray;
 import com.grack.nanojson.JsonObject;
 import com.grack.nanojson.JsonParser;
-import com.grack.nanojson.JsonParserException;
 
 import org.mozilla.javascript.Context;
 import org.mozilla.javascript.Function;
@@ -53,6 +52,7 @@ import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
 import static org.schabi.newpipe.extractor.services.youtube.linkHandler.YoutubeParsingHelper.fixThumbnailUrl;
+import static org.schabi.newpipe.extractor.services.youtube.linkHandler.YoutubeParsingHelper.getJsonResponse;
 import static org.schabi.newpipe.extractor.services.youtube.linkHandler.YoutubeParsingHelper.getTextFromObject;
 import static org.schabi.newpipe.extractor.services.youtube.linkHandler.YoutubeParsingHelper.getUrlFromNavigationEndpoint;
 
@@ -580,20 +580,7 @@ public class YoutubeStreamExtractor extends StreamExtractor {
     public void onFetchPage(@Nonnull Downloader downloader) throws IOException, ExtractionException {
         final String url = getUrl() + "&pbj=1";
 
-        Map<String, List<String>> headers = new HashMap<>();
-        headers.put("X-YouTube-Client-Name", Collections.singletonList("1"));
-        headers.put("X-YouTube-Client-Version",
-                Collections.singletonList(YoutubeParsingHelper.getClientVersion()));
-        final String response = getDownloader().get(url, headers, getExtractorLocalization()).responseBody();
-        if (response.length() < 50) { // ensure to have a valid response
-            throw new ParsingException("Could not parse json data for next streams");
-        }
-
-        try {
-            initialAjaxJson = JsonParser.array().from(response);
-        } catch (JsonParserException e) {
-            throw new ParsingException("Could not parse json data for next streams", e);
-        }
+        initialAjaxJson = getJsonResponse(url);
 
         final String playerUrl;
 

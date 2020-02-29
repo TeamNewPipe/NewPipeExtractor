@@ -2,8 +2,6 @@ package org.schabi.newpipe.extractor.services.youtube.extractors;
 
 import com.grack.nanojson.JsonArray;
 import com.grack.nanojson.JsonObject;
-import com.grack.nanojson.JsonParser;
-import com.grack.nanojson.JsonParserException;
 
 import org.schabi.newpipe.extractor.StreamingService;
 import org.schabi.newpipe.extractor.downloader.Downloader;
@@ -12,20 +10,16 @@ import org.schabi.newpipe.extractor.exceptions.ParsingException;
 import org.schabi.newpipe.extractor.linkhandler.ListLinkHandler;
 import org.schabi.newpipe.extractor.localization.TimeAgoParser;
 import org.schabi.newpipe.extractor.playlist.PlaylistExtractor;
-import org.schabi.newpipe.extractor.services.youtube.linkHandler.YoutubeParsingHelper;
 import org.schabi.newpipe.extractor.stream.StreamInfoItem;
 import org.schabi.newpipe.extractor.stream.StreamInfoItemsCollector;
 import org.schabi.newpipe.extractor.utils.Utils;
 
 import java.io.IOException;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
 
 import javax.annotation.Nonnull;
 
 import static org.schabi.newpipe.extractor.services.youtube.linkHandler.YoutubeParsingHelper.fixThumbnailUrl;
+import static org.schabi.newpipe.extractor.services.youtube.linkHandler.YoutubeParsingHelper.getJsonResponse;
 import static org.schabi.newpipe.extractor.services.youtube.linkHandler.YoutubeParsingHelper.getTextFromObject;
 import static org.schabi.newpipe.extractor.services.youtube.linkHandler.YoutubeParsingHelper.getUrlFromNavigationEndpoint;
 
@@ -42,22 +36,7 @@ public class YoutubePlaylistExtractor extends PlaylistExtractor {
     public void onFetchPage(@Nonnull Downloader downloader) throws IOException, ExtractionException {
         final String url = getUrl() + "&pbj=1";
 
-        JsonArray ajaxJson;
-
-        Map<String, List<String>> headers = new HashMap<>();
-        headers.put("X-YouTube-Client-Name", Collections.singletonList("1"));
-        headers.put("X-YouTube-Client-Version",
-                Collections.singletonList(YoutubeParsingHelper.getClientVersion()));
-        final String response = getDownloader().get(url, headers, getExtractorLocalization()).responseBody();
-        if (response.length() < 50) { // ensure to have a valid response
-            throw new ParsingException("Could not parse json data for next streams");
-        }
-
-        try {
-            ajaxJson = JsonParser.array().from(response);
-        } catch (JsonParserException e) {
-            throw new ParsingException("Could not parse json data for next streams", e);
-        }
+        final JsonArray ajaxJson = getJsonResponse(url);
 
         initialData = ajaxJson.getObject(1).getObject("response");
         playlistInfo = getPlaylistInfo();
@@ -207,22 +186,7 @@ public class YoutubePlaylistExtractor extends PlaylistExtractor {
         }
 
         StreamInfoItemsCollector collector = new StreamInfoItemsCollector(getServiceId());
-        JsonArray ajaxJson;
-
-        Map<String, List<String>> headers = new HashMap<>();
-        headers.put("X-YouTube-Client-Name", Collections.singletonList("1"));
-        headers.put("X-YouTube-Client-Version",
-                Collections.singletonList(YoutubeParsingHelper.getClientVersion()));
-        final String response = getDownloader().get(pageUrl, headers, getExtractorLocalization()).responseBody();
-        if (response.length() < 50) { // ensure to have a valid response
-            throw new ParsingException("Could not parse json data for next streams");
-        }
-
-        try {
-            ajaxJson = JsonParser.array().from(response);
-        } catch (JsonParserException e) {
-            throw new ParsingException("Could not parse json data for next streams", e);
-        }
+        final JsonArray ajaxJson = getJsonResponse(pageUrl);
 
         JsonObject sectionListContinuation = ajaxJson.getObject(1).getObject("response")
                 .getObject("continuationContents").getObject("playlistVideoListContinuation");
