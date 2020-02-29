@@ -178,7 +178,7 @@ public class YoutubeParsingHelper {
         }
     }
 
-    public static boolean isHardcodedClientVersionValid() {
+    public static boolean isHardcodedClientVersionValid() throws IOException {
         try {
             final String url = "https://www.youtube.com/results?search_query=test&pbj=1";
 
@@ -190,7 +190,7 @@ public class YoutubeParsingHelper {
             if (response.length() > 50) { // ensure to have a valid response
                 return true;
             }
-        } catch (Exception ignored) {}
+        } catch (ReCaptchaException ignored) {}
 
         return false;
     }
@@ -200,7 +200,7 @@ public class YoutubeParsingHelper {
      * @return
      * @throws ParsingException
      */
-    public static String getClientVersion() throws ParsingException {
+    public static String getClientVersion() throws ParsingException, IOException {
         if (clientVersion != null && !clientVersion.isEmpty()) return clientVersion;
 
         if (isHardcodedClientVersionValid()) {
@@ -350,8 +350,7 @@ public class YoutubeParsingHelper {
     public static JsonArray getJsonResponse(String url, Localization localization) throws IOException, ExtractionException {
         Map<String, List<String>> headers = new HashMap<>();
         headers.put("X-YouTube-Client-Name", Collections.singletonList("1"));
-        headers.put("X-YouTube-Client-Version",
-                Collections.singletonList(YoutubeParsingHelper.getClientVersion()));
+        headers.put("X-YouTube-Client-Version", Collections.singletonList(getClientVersion()));
         final String response = getDownloader().get(url, headers, localization).responseBody();
 
         if (response.length() < 50) { // ensure to have a valid response
