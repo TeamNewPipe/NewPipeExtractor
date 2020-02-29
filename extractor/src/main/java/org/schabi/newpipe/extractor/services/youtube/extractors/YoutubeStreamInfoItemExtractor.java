@@ -195,8 +195,10 @@ public class YoutubeStreamInfoItemExtractor implements StreamInfoItemExtractor {
                 return -1;
             }
             String viewCount = getTextFromObject(videoInfo.getObject("viewCountText"));
-            if (viewCount.equals("Recommended for you")) return -1;
+
             return Long.parseLong(Utils.removeNonDigitCharacters(viewCount));
+        } catch (NumberFormatException e) {
+            return -1;
         } catch (Exception e) {
             throw new ParsingException("Could not get view count", e);
         }
