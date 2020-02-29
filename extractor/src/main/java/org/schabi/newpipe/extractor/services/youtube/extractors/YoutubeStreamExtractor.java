@@ -4,8 +4,6 @@ import com.grack.nanojson.JsonArray;
 import com.grack.nanojson.JsonObject;
 import com.grack.nanojson.JsonParser;
 
-import org.jsoup.nodes.Document;
-import org.jsoup.nodes.Element;
 import org.mozilla.javascript.Context;
 import org.mozilla.javascript.Function;
 import org.mozilla.javascript.ScriptableObject;
@@ -13,8 +11,6 @@ import org.schabi.newpipe.extractor.MediaFormat;
 import org.schabi.newpipe.extractor.NewPipe;
 import org.schabi.newpipe.extractor.StreamingService;
 import org.schabi.newpipe.extractor.downloader.Downloader;
-import org.schabi.newpipe.extractor.downloader.Response;
-import org.schabi.newpipe.extractor.exceptions.ContentNotAvailableException;
 import org.schabi.newpipe.extractor.exceptions.ExtractionException;
 import org.schabi.newpipe.extractor.exceptions.ParsingException;
 import org.schabi.newpipe.extractor.exceptions.ReCaptchaException;
@@ -24,6 +20,7 @@ import org.schabi.newpipe.extractor.localization.Localization;
 import org.schabi.newpipe.extractor.localization.TimeAgoParser;
 import org.schabi.newpipe.extractor.localization.TimeAgoPatternsManager;
 import org.schabi.newpipe.extractor.services.youtube.ItagItem;
+import org.schabi.newpipe.extractor.services.youtube.linkHandler.YoutubeChannelLinkHandlerFactory;
 import org.schabi.newpipe.extractor.services.youtube.linkHandler.YoutubeParsingHelper;
 import org.schabi.newpipe.extractor.stream.AudioStream;
 import org.schabi.newpipe.extractor.stream.Description;
@@ -40,8 +37,6 @@ import org.schabi.newpipe.extractor.utils.Utils;
 
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
-import java.net.URLDecoder;
-import java.nio.charset.StandardCharsets;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -55,6 +50,11 @@ import java.util.Map;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
+
+import static org.schabi.newpipe.extractor.services.youtube.linkHandler.YoutubeParsingHelper.fixThumbnailUrl;
+import static org.schabi.newpipe.extractor.services.youtube.linkHandler.YoutubeParsingHelper.getJsonResponse;
+import static org.schabi.newpipe.extractor.services.youtube.linkHandler.YoutubeParsingHelper.getTextFromObject;
+import static org.schabi.newpipe.extractor.services.youtube.linkHandler.YoutubeParsingHelper.getUrlFromNavigationEndpoint;
 
 /*
  * Created by Christian Schabesberger on 06.08.15.
@@ -89,18 +89,19 @@ public class YoutubeStreamExtractor extends StreamExtractor {
 
     /*//////////////////////////////////////////////////////////////////////////*/
 
-    private Document doc;
+    private JsonArray initialAjaxJson;
     @Nullable
     private JsonObject playerArgs;
     @Nonnull
     private final Map<String, String> videoInfoPage = new HashMap<>();
     private JsonObject playerResponse;
     private JsonObject initialData;
+    private JsonObject videoPrimaryInfoRenderer;
+    private JsonObject videoSecondaryInfoRenderer;
+    private int ageLimit;
 
     @Nonnull
     private List<SubtitlesInfo> subtitlesInfos = new ArrayList<>();
-
-    private boolean isAgeRestricted;
 
     public YoutubeStreamExtractor(StreamingService service, LinkHandler linkHandler) {
         super(service, linkHandler);
@@ -115,16 +116,20 @@ public class YoutubeStreamExtractor extends StreamExtractor {
     public String getName() throws ParsingException {
         assertPageFetched();
         String title = null;
+
         try {
-            title = getVideoPrimaryInfoRenderer().getObject("title").getArray("runs").getObject(0).getString("text");
+            title = getTextFromObject(getVideoPrimaryInfoRenderer().getObject("title"));
         } catch (Exception ignored) {}
+
         if (title == null) {
             try {
                 title = playerResponse.getObject("videoDetails").getString("title");
             } catch (Exception ignored) {}
+
+            if (title == null) throw new ParsingException("Could not get name");
         }
-        if (title != null) return title;
-        throw new ParsingException("Could not get name");
+
+        return title;
     }
 
     @Override
@@ -144,8 +149,8 @@ public class YoutubeStreamExtractor extends StreamExtractor {
         } catch (Exception ignored) {}
 
         try {
-            if (getVideoPrimaryInfoRenderer().getObject("dateText").getString("simpleText").startsWith("Premiered")) {
-                String time = getVideoPrimaryInfoRenderer().getObject("dateText").getString("simpleText").substring(10);
+            if (getTextFromObject(getVideoPrimaryInfoRenderer().getObject("dateText")).startsWith("Premiered")) {
+                String time = getTextFromObject(getVideoPrimaryInfoRenderer().getObject("dateText")).substring(10);
 
                 try { // Premiered 20 hours ago
                     TimeAgoParser timeAgoParser = TimeAgoPatternsManager.getTimeAgoParserFor(Localization.fromLocalizationCode("en"));
@@ -163,7 +168,7 @@ public class YoutubeStreamExtractor extends StreamExtractor {
         try {
             // TODO this parses English formatted dates only, we need a better approach to parse the textual date
             Date d = new SimpleDateFormat("dd MMM yyyy", Locale.ENGLISH).parse(
-                    getVideoPrimaryInfoRenderer().getObject("dateText").getString("simpleText"));
+                    getTextFromObject(getVideoPrimaryInfoRenderer().getObject("dateText")));
             return new SimpleDateFormat("yyyy-MM-dd").format(d);
         } catch (Exception ignored) {}
         throw new ParsingException("Could not get upload date");
@@ -187,8 +192,9 @@ public class YoutubeStreamExtractor extends StreamExtractor {
         try {
             JsonArray thumbnails = playerResponse.getObject("videoDetails").getObject("thumbnail").getArray("thumbnails");
             // the last thumbnail is the one with the highest resolution
-            return thumbnails.getObject(thumbnails.size() - 1).getString("url");
+            String url = thumbnails.getObject(thumbnails.size() - 1).getString("url");
 
+            return fixThumbnailUrl(url);
         } catch (Exception e) {
             throw new ParsingException("Could not get thumbnail url");
         }
@@ -201,55 +207,8 @@ public class YoutubeStreamExtractor extends StreamExtractor {
         assertPageFetched();
         // description with more info on links
         try {
-            boolean htmlConversionRequired = false;
-            JsonArray descriptions = getVideoSecondaryInfoRenderer().getObject("description").getArray("runs");
-            StringBuilder descriptionBuilder = new StringBuilder(descriptions.size());
-            for (Object textObjectHolder : descriptions) {
-                JsonObject textHolder = (JsonObject) textObjectHolder;
-                String text = textHolder.getString("text");
-                if (textHolder.getObject("navigationEndpoint") != null) {
-                    // The text is a link. Get the URL it points to and generate a HTML link of it
-                    if (textHolder.getObject("navigationEndpoint").getObject("urlEndpoint") != null) {
-                        String internUrl = textHolder.getObject("navigationEndpoint").getObject("urlEndpoint").getString("url");
-                        if (internUrl.startsWith("/redirect?")) {
-                            // q parameter can be the first parameter
-                            internUrl = internUrl.substring(10);
-                            String[] params = internUrl.split("&");
-                            for (String param : params) {
-                                if (param.split("=")[0].equals("q")) {
-                                    String url = URLDecoder.decode(param.split("=")[1], StandardCharsets.UTF_8.name());
-                                    if (url != null && !url.isEmpty()) {
-                                        descriptionBuilder.append("<a href=\"").append(url).append("\">").append(text).append("</a>");
-                                        htmlConversionRequired = true;
-                                    } else {
-                                        descriptionBuilder.append(text);
-                                    }
-                                    break;
-                                }
-                            }
-                        } else if (internUrl.startsWith("http")) {
-                            descriptionBuilder.append("<a href=\"").append(internUrl).append("\">").append(text).append("</a>");
-                            htmlConversionRequired = true;
-                        }
-                        continue;
-                    }
-                    continue;
-                }
-                if (text != null) {
-                     descriptionBuilder.append(text);
-                }
-            }
-
-            String description = descriptionBuilder.toString();
-
-            if (!description.isEmpty()) {
-                if (htmlConversionRequired) {
-                    description = description.replaceAll("\\n", "<br>");
-                    description = description.replaceAll("  ", " &nbsp;");
-                    return new Description(description, Description.HTML);
-                }
-                return new Description(description, Description.PLAIN_TEXT);
-            }
+            String description = getTextFromObject(getVideoSecondaryInfoRenderer().getObject("description"), true);
+            return new Description(description, Description.HTML);
         } catch (Exception ignored) { }
 
         // raw non-html description
@@ -261,17 +220,10 @@ public class YoutubeStreamExtractor extends StreamExtractor {
     }
 
     @Override
-    public int getAgeLimit() throws ParsingException {
-        assertPageFetched();
-        if (!isAgeRestricted) {
-            return NO_AGE_LIMIT;
-        }
-        try {
-            return Integer.valueOf(doc.select("meta[property=\"og:restrictions:age\"]")
-                    .attr(CONTENT).replace("+", ""));
-        } catch (Exception e) {
-            throw new ParsingException("Could not get age restriction");
-        }
+    public int getAgeLimit() {
+        if (initialData == null || initialData.isEmpty()) throw new IllegalStateException("initialData is not parsed yet");
+
+        return ageLimit;
     }
 
     @Override
@@ -311,24 +263,21 @@ public class YoutubeStreamExtractor extends StreamExtractor {
     public long getViewCount() throws ParsingException {
         assertPageFetched();
         String views = null;
+
         try {
-            views = getVideoPrimaryInfoRenderer().getObject("viewCount")
-                    .getObject("videoViewCountRenderer").getObject("viewCount")
-                    .getArray("runs").getObject(0).getString("text");
+            views = getTextFromObject(getVideoPrimaryInfoRenderer().getObject("viewCount")
+                    .getObject("videoViewCountRenderer").getObject("viewCount"));
         } catch (Exception ignored) {}
-        if (views == null) {
-            try {
-                views = getVideoPrimaryInfoRenderer().getObject("viewCount")
-                        .getObject("videoViewCountRenderer").getObject("viewCount").getString("simpleText");
-            } catch (Exception ignored) {}
-        }
+
         if (views == null) {
             try {
                 views = playerResponse.getObject("videoDetails").getString("viewCount");
             } catch (Exception ignored) {}
+
+            if (views == null) throw new ParsingException("Could not get view count");
         }
-        if (views != null) return Long.parseLong(Utils.removeNonDigitCharacters(views));
-        throw new ParsingException("Could not get view count");
+
+        return Long.parseLong(Utils.removeNonDigitCharacters(views));
     }
 
     @Override
@@ -381,17 +330,16 @@ public class YoutubeStreamExtractor extends StreamExtractor {
     @Override
     public String getUploaderUrl() throws ParsingException {
         assertPageFetched();
-        String uploaderId = null;
         try {
-            uploaderId = getVideoSecondaryInfoRenderer().getObject("owner").getObject("videoOwnerRenderer")
-                    .getObject("navigationEndpoint").getObject("browseEndpoint").getString("browseId");
+            String uploaderUrl = getUrlFromNavigationEndpoint(getVideoSecondaryInfoRenderer()
+                    .getObject("owner").getObject("videoOwnerRenderer").getObject("navigationEndpoint"));
+            if (uploaderUrl != null) return uploaderUrl;
         } catch (Exception ignored) {}
-        if (uploaderId == null) {
-            try {
-                uploaderId = playerResponse.getObject("videoDetails").getString("channelId");
-            } catch (Exception ignored) {}
-        }
-        if (uploaderId != null) return "https://www.youtube.com/channel/" + uploaderId;
+        try {
+            String uploaderId = playerResponse.getObject("videoDetails").getString("channelId");
+            if (uploaderId != null)
+                return YoutubeChannelLinkHandlerFactory.getInstance().getUrl("channel/" + uploaderId);
+        } catch (Exception ignored) {}
         throw new ParsingException("Could not get uploader url");
     }
 
@@ -400,44 +348,35 @@ public class YoutubeStreamExtractor extends StreamExtractor {
     public String getUploaderName() throws ParsingException {
         assertPageFetched();
         String uploaderName = null;
+
         try {
-            uploaderName = getVideoSecondaryInfoRenderer().getObject("owner").getObject("videoOwnerRenderer")
-                    .getObject("title").getArray("runs").getObject(0).getString("text");
+            uploaderName = getTextFromObject(getVideoSecondaryInfoRenderer().getObject("owner")
+                    .getObject("videoOwnerRenderer").getObject("title"));
         } catch (Exception ignored) {}
+
         if (uploaderName == null) {
             try {
                 uploaderName = playerResponse.getObject("videoDetails").getString("author");
             } catch (Exception ignored) {}
+
+            if (uploaderName == null) throw new ParsingException("Could not get uploader name");
         }
-        if (uploaderName != null) return uploaderName;
-        throw new ParsingException("Could not get uploader name");
+
+        return uploaderName;
     }
 
     @Nonnull
     @Override
     public String getUploaderAvatarUrl() throws ParsingException {
         assertPageFetched();
-
-        String uploaderAvatarUrl = null;
         try {
-            uploaderAvatarUrl = initialData.getObject("contents").getObject("twoColumnWatchNextResults").getObject("secondaryResults")
-                    .getObject("secondaryResults").getArray("results").getObject(0).getObject("compactAutoplayRenderer")
-                    .getArray("contents").getObject(0).getObject("compactVideoRenderer").getObject("channelThumbnail")
-                    .getArray("thumbnails").getObject(0).getString("url");
-            if (uploaderAvatarUrl != null && !uploaderAvatarUrl.isEmpty()) {
-                return uploaderAvatarUrl;
-            }
-        } catch (Exception ignored) {}
-
-        try {
-            uploaderAvatarUrl = getVideoSecondaryInfoRenderer().getObject("owner").getObject("videoOwnerRenderer")
+            String url = getVideoSecondaryInfoRenderer().getObject("owner").getObject("videoOwnerRenderer")
                     .getObject("thumbnail").getArray("thumbnails").getObject(0).getString("url");
-        } catch (Exception ignored) {}
 
-        if (uploaderAvatarUrl == null) {
-            throw new ParsingException("Could not get uploader avatar url");
+            return fixThumbnailUrl(url);
+        } catch (Exception e) {
+            throw new ParsingException("Could not get uploader avatar url", e);
         }
-        return uploaderAvatarUrl;
     }
 
     @Nonnull
@@ -578,9 +517,9 @@ public class YoutubeStreamExtractor extends StreamExtractor {
     @Override
     public StreamInfoItem getNextStream() throws ExtractionException {
         assertPageFetched();
-        if (isAgeRestricted) {
-            return null;
-        }
+
+        if (getAgeLimit() != NO_AGE_LIMIT) return null;
+
         try {
             final JsonObject videoInfo = initialData.getObject("contents").getObject("twoColumnWatchNextResults")
                     .getObject("secondaryResults").getObject("secondaryResults").getArray("results")
@@ -599,9 +538,9 @@ public class YoutubeStreamExtractor extends StreamExtractor {
     @Override
     public StreamInfoItemsCollector getRelatedStreams() throws ExtractionException {
         assertPageFetched();
-        if (isAgeRestricted) {
-            return null;
-        }
+
+        if (getAgeLimit() != NO_AGE_LIMIT) return null;
+
         try {
             StreamInfoItemsCollector collector = new StreamInfoItemsCollector(getServiceId());
             JsonArray results = initialData.getObject("contents").getObject("twoColumnWatchNextResults")
@@ -625,23 +564,8 @@ public class YoutubeStreamExtractor extends StreamExtractor {
      */
     @Override
     public String getErrorMessage() {
-        StringBuilder errorReason;
-        Element errorElement = doc.select("h1[id=\"unavailable-message\"]").first();
-
-        if (errorElement == null) {
-            errorReason = null;
-        } else {
-            String errorMessage = errorElement.text();
-            if (errorMessage == null || errorMessage.isEmpty()) {
-                errorReason = null;
-            } else {
-                errorReason = new StringBuilder(errorMessage);
-                errorReason.append("  ");
-                errorReason.append(doc.select("[id=\"unavailable-submessage\"]").first().text());
-            }
-        }
-
-        return errorReason != null ? errorReason.toString() : "";
+        return getTextFromObject(initialAjaxJson.getObject(2).getObject("playerResponse").getObject("playabilityStatus")
+                .getObject("errorScreen").getObject("playerErrorMessageRenderer").getObject("reason"));
     }
 
     /*//////////////////////////////////////////////////////////////////////////
@@ -651,10 +575,7 @@ public class YoutubeStreamExtractor extends StreamExtractor {
     private static final String FORMATS = "formats";
     private static final String ADAPTIVE_FORMATS = "adaptiveFormats";
     private static final String HTTPS = "https:";
-    private static final String CONTENT = "content";
     private static final String DECRYPTION_FUNC_NAME = "decrypt";
-
-    private static final String VERIFIED_URL_PARAMS = "&has_verified=1&bpctr=9999999999";
 
     private final static String DECRYPTION_SIGNATURE_FUNCTION_REGEX =
             "([\\w$]+)\\s*=\\s*function\\((\\w+)\\)\\{\\s*\\2=\\s*\\2\\.split\\(\"\"\\)\\s*;";
@@ -667,32 +588,32 @@ public class YoutubeStreamExtractor extends StreamExtractor {
 
     private volatile String decryptionCode = "";
 
-    private String pageHtml = null;
-
     @Override
     public void onFetchPage(@Nonnull Downloader downloader) throws IOException, ExtractionException {
-        final String verifiedUrl = getUrl() + VERIFIED_URL_PARAMS;
-        final Response response = downloader.get(verifiedUrl, getExtractorLocalization());
-        pageHtml = response.responseBody();
-        doc = YoutubeParsingHelper.parseAndCheckPage(verifiedUrl, response);
+        final String url = getUrl() + "&pbj=1";
+
+        initialAjaxJson = getJsonResponse(url, getExtractorLocalization());
 
         final String playerUrl;
-        // Check if the video is age restricted
-        if (!doc.select("meta[property=\"og:restrictions:age\"]").isEmpty()) {
+
+        if (initialAjaxJson.getObject(2).getObject("response") != null) { // age-restricted videos
+            initialData = initialAjaxJson.getObject(2).getObject("response");
+            ageLimit = 18;
+
             final EmbeddedInfo info = getEmbeddedInfo();
             final String videoInfoUrl = getVideoInfoUrl(getId(), info.sts);
             final String infoPageResponse = downloader.get(videoInfoUrl, getExtractorLocalization()).responseBody();
             videoInfoPage.putAll(Parser.compatParseMap(infoPageResponse));
             playerUrl = info.url;
-            isAgeRestricted = true;
         } else {
-            final JsonObject ytPlayerConfig = getPlayerConfig();
-            playerArgs = getPlayerArgs(ytPlayerConfig);
-            playerUrl = getPlayerUrl(ytPlayerConfig);
-            isAgeRestricted = false;
+            initialData = initialAjaxJson.getObject(3).getObject("response");
+            ageLimit = NO_AGE_LIMIT;
+
+            playerArgs = getPlayerArgs(initialAjaxJson.getObject(2).getObject("player"));
+            playerUrl = getPlayerUrl(initialAjaxJson.getObject(2).getObject("player"));
         }
+
         playerResponse = getPlayerResponse();
-        initialData = YoutubeParsingHelper.getInitialData(pageHtml);
 
         if (decryptionCode.isEmpty()) {
             decryptionCode = loadDecryptionCode(playerUrl);
@@ -700,21 +621,6 @@ public class YoutubeStreamExtractor extends StreamExtractor {
 
         if (subtitlesInfos.isEmpty()) {
             subtitlesInfos.addAll(getAvailableSubtitlesInfo());
-        }
-    }
-
-    private JsonObject getPlayerConfig() throws ParsingException {
-        try {
-            String ytPlayerConfigRaw = Parser.matchGroup1("ytplayer.config\\s*=\\s*(\\{.*?\\});", pageHtml);
-            return JsonParser.object().from(ytPlayerConfigRaw);
-        } catch (Parser.RegexException e) {
-            String errorReason = getErrorMessage();
-            if (errorReason.isEmpty()) {
-                throw new ContentNotAvailableException("Content not available: player config empty", e);
-            }
-            throw new ContentNotAvailableException("Content not available", e);
-        } catch (Exception e) {
-            throw new ParsingException("Could not parse yt player config", e);
         }
     }
 
@@ -869,7 +775,7 @@ public class YoutubeStreamExtractor extends StreamExtractor {
     @Nonnull
     private List<SubtitlesInfo> getAvailableSubtitlesInfo() {
         // If the video is age restricted getPlayerConfig will fail
-        if (isAgeRestricted) return Collections.emptyList();
+        if (getAgeLimit() != NO_AGE_LIMIT) return Collections.emptyList();
 
         final JsonObject captions;
         if (!playerResponse.has("captions")) {
@@ -939,6 +845,8 @@ public class YoutubeStreamExtractor extends StreamExtractor {
     //////////////////////////////////////////////////////////////////////////*/
 
     private JsonObject getVideoPrimaryInfoRenderer() throws ParsingException {
+        if (this.videoPrimaryInfoRenderer != null) return this.videoPrimaryInfoRenderer;
+
         JsonArray contents = initialData.getObject("contents").getObject("twoColumnWatchNextResults")
                 .getObject("results").getObject("results").getArray("contents");
         JsonObject videoPrimaryInfoRenderer = null;
@@ -954,10 +862,13 @@ public class YoutubeStreamExtractor extends StreamExtractor {
             throw new ParsingException("Could not find videoPrimaryInfoRenderer");
         }
 
+        this.videoPrimaryInfoRenderer = videoPrimaryInfoRenderer;
         return videoPrimaryInfoRenderer;
     }
 
     private JsonObject getVideoSecondaryInfoRenderer() throws ParsingException {
+        if (this.videoSecondaryInfoRenderer != null) return this.videoSecondaryInfoRenderer;
+
         JsonArray contents = initialData.getObject("contents").getObject("twoColumnWatchNextResults")
                 .getObject("results").getObject("results").getArray("contents");
         JsonObject videoSecondaryInfoRenderer = null;
@@ -973,6 +884,7 @@ public class YoutubeStreamExtractor extends StreamExtractor {
             throw new ParsingException("Could not find videoSecondaryInfoRenderer");
         }
 
+        this.videoSecondaryInfoRenderer = videoSecondaryInfoRenderer;
         return videoSecondaryInfoRenderer;
     }
 
@@ -1010,9 +922,7 @@ public class YoutubeStreamExtractor extends StreamExtractor {
 
                         urlAndItags.put(streamUrl, itagItem);
                     }
-                } catch (UnsupportedEncodingException ignored) {
-
-                }
+                } catch (UnsupportedEncodingException ignored) {}
             }
         }
 
@@ -1023,17 +933,7 @@ public class YoutubeStreamExtractor extends StreamExtractor {
     @Override
     public List<Frameset> getFrames() throws ExtractionException {
         try {
-            final String script = doc.select("#player-api").first().siblingElements().select("script").html();
-            int p = script.indexOf("ytplayer.config");
-            if (p == -1) {
-                return Collections.emptyList();
-            }
-            p = script.indexOf('{', p);
-            int e = script.indexOf("ytplayer.load", p);
-            if (e == -1) {
-                return Collections.emptyList();
-            }
-            JsonObject jo = JsonParser.object().from(script.substring(p, e - 1));
+            JsonObject jo = initialAjaxJson.getObject(2).getObject("player");
             final String resp = jo.getObject("args").getString("player_response");
             jo = JsonParser.object().from(resp);
             final String[] spec = jo.getObject("storyboards").getObject("playerStoryboardSpecRenderer").getString("spec").split("\\|");

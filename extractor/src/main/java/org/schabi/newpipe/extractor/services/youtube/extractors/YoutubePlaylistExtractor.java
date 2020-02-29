@@ -2,37 +2,30 @@ package org.schabi.newpipe.extractor.services.youtube.extractors;
 
 import com.grack.nanojson.JsonArray;
 import com.grack.nanojson.JsonObject;
-import com.grack.nanojson.JsonParser;
-import com.grack.nanojson.JsonParserException;
 
-import org.jsoup.nodes.Document;
 import org.schabi.newpipe.extractor.StreamingService;
 import org.schabi.newpipe.extractor.downloader.Downloader;
-import org.schabi.newpipe.extractor.downloader.Response;
 import org.schabi.newpipe.extractor.exceptions.ExtractionException;
 import org.schabi.newpipe.extractor.exceptions.ParsingException;
 import org.schabi.newpipe.extractor.linkhandler.ListLinkHandler;
 import org.schabi.newpipe.extractor.localization.TimeAgoParser;
 import org.schabi.newpipe.extractor.playlist.PlaylistExtractor;
-import org.schabi.newpipe.extractor.services.youtube.linkHandler.YoutubeParsingHelper;
 import org.schabi.newpipe.extractor.stream.StreamInfoItem;
 import org.schabi.newpipe.extractor.stream.StreamInfoItemsCollector;
 import org.schabi.newpipe.extractor.utils.Utils;
 
 import java.io.IOException;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
 
 import javax.annotation.Nonnull;
 
+import static org.schabi.newpipe.extractor.services.youtube.linkHandler.YoutubeParsingHelper.fixThumbnailUrl;
+import static org.schabi.newpipe.extractor.services.youtube.linkHandler.YoutubeParsingHelper.getJsonResponse;
+import static org.schabi.newpipe.extractor.services.youtube.linkHandler.YoutubeParsingHelper.getTextFromObject;
+import static org.schabi.newpipe.extractor.services.youtube.linkHandler.YoutubeParsingHelper.getUrlFromNavigationEndpoint;
+
 @SuppressWarnings("WeakerAccess")
 public class YoutubePlaylistExtractor extends PlaylistExtractor {
-
-    private Document doc;
     private JsonObject initialData;
-    private JsonObject uploaderInfo;
     private JsonObject playlistInfo;
 
     public YoutubePlaylistExtractor(StreamingService service, ListLinkHandler linkHandler) {
@@ -41,11 +34,11 @@ public class YoutubePlaylistExtractor extends PlaylistExtractor {
 
     @Override
     public void onFetchPage(@Nonnull Downloader downloader) throws IOException, ExtractionException {
-        final String url = getUrl();
-        final Response response = downloader.get(url, getExtractorLocalization());
-        doc = YoutubeParsingHelper.parseAndCheckPage(url, response);
-        initialData = YoutubeParsingHelper.getInitialData(response.responseBody());
-        uploaderInfo = getUploaderInfo();
+        final String url = getUrl() + "&pbj=1";
+
+        final JsonArray ajaxJson = getJsonResponse(url, getExtractorLocalization());
+
+        initialData = ajaxJson.getObject(1).getObject("response");
         playlistInfo = getPlaylistInfo();
     }
 
@@ -94,7 +87,7 @@ public class YoutubePlaylistExtractor extends PlaylistExtractor {
     @Override
     public String getName() throws ParsingException {
         try {
-            String name = playlistInfo.getObject("title").getArray("runs").getObject(0).getString("text");
+            String name = getTextFromObject(playlistInfo.getObject("title"));
             if (name != null) return name;
         } catch (Exception ignored) {}
         try {
@@ -106,16 +99,23 @@ public class YoutubePlaylistExtractor extends PlaylistExtractor {
 
     @Override
     public String getThumbnailUrl() throws ParsingException {
+        String url = null;
+
         try {
-            return playlistInfo.getObject("thumbnailRenderer").getObject("playlistVideoThumbnailRenderer")
+            url = playlistInfo.getObject("thumbnailRenderer").getObject("playlistVideoThumbnailRenderer")
                     .getObject("thumbnail").getArray("thumbnails").getObject(0).getString("url");
         } catch (Exception ignored) {}
-        try {
-            return initialData.getObject("microformat").getObject("microformatDataRenderer").getObject("thumbnail")
-                    .getArray("thumbnails").getObject(0).getString("url");
-        } catch (Exception e) {
-            throw new ParsingException("Could not get playlist thumbnail", e);
+
+        if (url == null) {
+            try {
+                url = initialData.getObject("microformat").getObject("microformatDataRenderer").getObject("thumbnail")
+                        .getArray("thumbnails").getObject(0).getString("url");
+            } catch (Exception ignored) {}
+
+            if (url == null) throw new ParsingException("Could not get playlist thumbnail");
         }
+
+        return fixThumbnailUrl(url);
     }
 
     @Override
@@ -127,8 +127,7 @@ public class YoutubePlaylistExtractor extends PlaylistExtractor {
     @Override
     public String getUploaderUrl() throws ParsingException {
         try {
-            return YoutubeChannelExtractor.CHANNEL_URL_BASE +
-                    uploaderInfo.getObject("navigationEndpoint").getObject("browseEndpoint").getString("browseId");
+            return getUrlFromNavigationEndpoint(getUploaderInfo().getObject("navigationEndpoint"));
         } catch (Exception e) {
             throw new ParsingException("Could not get playlist uploader url", e);
         }
@@ -137,7 +136,7 @@ public class YoutubePlaylistExtractor extends PlaylistExtractor {
     @Override
     public String getUploaderName() throws ParsingException {
         try {
-            return uploaderInfo.getObject("title").getArray("runs").getObject(0).getString("text");
+            return getTextFromObject(getUploaderInfo().getObject("title"));
         } catch (Exception e) {
             throw new ParsingException("Could not get playlist uploader name", e);
         }
@@ -146,7 +145,9 @@ public class YoutubePlaylistExtractor extends PlaylistExtractor {
     @Override
     public String getUploaderAvatarUrl() throws ParsingException {
         try {
-            return uploaderInfo.getObject("thumbnail").getArray("thumbnails").getObject(0).getString("url");
+            String url = getUploaderInfo().getObject("thumbnail").getArray("thumbnails").getObject(0).getString("url");
+
+            return fixThumbnailUrl(url);
         } catch (Exception e) {
             throw new ParsingException("Could not get playlist uploader avatar", e);
         }
@@ -155,7 +156,7 @@ public class YoutubePlaylistExtractor extends PlaylistExtractor {
     @Override
     public long getStreamCount() throws ParsingException {
         try {
-            String viewsText = getPlaylistInfo().getArray("stats").getObject(0).getArray("runs").getObject(0).getString("text");
+            String viewsText = getTextFromObject(getPlaylistInfo().getArray("stats").getObject(0));
             return Long.parseLong(Utils.removeNonDigitCharacters(viewsText));
         } catch (Exception e) {
             throw new ParsingException("Could not get video count from playlist", e);
@@ -184,32 +185,7 @@ public class YoutubePlaylistExtractor extends PlaylistExtractor {
         }
 
         StreamInfoItemsCollector collector = new StreamInfoItemsCollector(getServiceId());
-        JsonArray ajaxJson;
-
-        Map<String, List<String>> headers = new HashMap<>();
-        headers.put("X-YouTube-Client-Name", Collections.singletonList("1"));
-        try {
-            // Use the hardcoded client version first to get JSON with a structure we know
-            headers.put("X-YouTube-Client-Version",
-                    Collections.singletonList(YoutubeParsingHelper.HARDCODED_CLIENT_VERSION));
-            final String response = getDownloader().get(pageUrl, headers, getExtractorLocalization()).responseBody();
-            if (response.length() < 50) { // ensure to have a valid response
-                throw new ParsingException("Could not parse json data for next streams");
-            }
-            ajaxJson = JsonParser.array().from(response);
-        } catch (Exception e) {
-            try {
-                headers.put("X-YouTube-Client-Version",
-                        Collections.singletonList(YoutubeParsingHelper.getClientVersion(initialData, doc.toString())));
-                final String response = getDownloader().get(pageUrl, headers, getExtractorLocalization()).responseBody();
-                if (response.length() < 50) { // ensure to have a valid response
-                    throw new ParsingException("Could not parse json data for next streams");
-                }
-                ajaxJson = JsonParser.array().from(response);
-            } catch (JsonParserException ignored) {
-                throw new ParsingException("Could not parse json data for next streams", e);
-            }
-        }
+        final JsonArray ajaxJson = getJsonResponse(pageUrl, getExtractorLocalization());
 
         JsonObject sectionListContinuation = ajaxJson.getObject(1).getObject("response")
                 .getObject("continuationContents").getObject("playlistVideoListContinuation");

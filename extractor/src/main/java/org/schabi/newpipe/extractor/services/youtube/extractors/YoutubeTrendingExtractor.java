@@ -25,19 +25,20 @@ import com.grack.nanojson.JsonObject;
 
 import org.schabi.newpipe.extractor.StreamingService;
 import org.schabi.newpipe.extractor.downloader.Downloader;
-import org.schabi.newpipe.extractor.downloader.Response;
 import org.schabi.newpipe.extractor.exceptions.ExtractionException;
 import org.schabi.newpipe.extractor.exceptions.ParsingException;
 import org.schabi.newpipe.extractor.kiosk.KioskExtractor;
 import org.schabi.newpipe.extractor.linkhandler.ListLinkHandler;
 import org.schabi.newpipe.extractor.localization.TimeAgoParser;
-import org.schabi.newpipe.extractor.services.youtube.linkHandler.YoutubeParsingHelper;
 import org.schabi.newpipe.extractor.stream.StreamInfoItem;
 import org.schabi.newpipe.extractor.stream.StreamInfoItemsCollector;
 
 import java.io.IOException;
 
 import javax.annotation.Nonnull;
+
+import static org.schabi.newpipe.extractor.services.youtube.linkHandler.YoutubeParsingHelper.getJsonResponse;
+import static org.schabi.newpipe.extractor.services.youtube.linkHandler.YoutubeParsingHelper.getTextFromObject;
 
 public class YoutubeTrendingExtractor extends KioskExtractor<StreamInfoItem> {
     private JsonObject initialData;
@@ -50,11 +51,12 @@ public class YoutubeTrendingExtractor extends KioskExtractor<StreamInfoItem> {
 
     @Override
     public void onFetchPage(@Nonnull Downloader downloader) throws IOException, ExtractionException {
-        final String url = getUrl() +
-                "?gl=" + getExtractorContentCountry().getCountryCode();
+        final String url = getUrl() + "?pbj=1&gl="
+                + getExtractorContentCountry().getCountryCode();
 
-        final Response response = downloader.get(url, getExtractorLocalization());
-        initialData = YoutubeParsingHelper.getInitialData(response.responseBody());
+        final JsonArray ajaxJson = getJsonResponse(url, getExtractorLocalization());
+
+        initialData = ajaxJson.getObject(1).getObject("response");
     }
 
     @Override
@@ -72,8 +74,7 @@ public class YoutubeTrendingExtractor extends KioskExtractor<StreamInfoItem> {
     public String getName() throws ParsingException {
         String name;
         try {
-            name = initialData.getObject("header").getObject("feedTabbedHeaderRenderer").getObject("title")
-                    .getArray("runs").getObject(0).getString("text");
+            name = getTextFromObject(initialData.getObject("header").getObject("feedTabbedHeaderRenderer").getObject("title"));
         } catch (Exception e) {
             throw new ParsingException("Could not get Trending name", e);
         }
@@ -87,17 +88,21 @@ public class YoutubeTrendingExtractor extends KioskExtractor<StreamInfoItem> {
     @Override
     public InfoItemsPage<StreamInfoItem> getInitialPage() {
         StreamInfoItemsCollector collector = new StreamInfoItemsCollector(getServiceId());
-        JsonArray firstPageElements = initialData.getObject("contents").getObject("twoColumnBrowseResultsRenderer")
-                .getArray("tabs").getObject(0).getObject("tabRenderer").getObject("content")
-                .getObject("sectionListRenderer").getArray("contents").getObject(0).getObject("itemSectionRenderer")
-                .getArray("contents").getObject(0).getObject("shelfRenderer").getObject("content")
-                .getObject("expandedShelfContentsRenderer").getArray("items");
-
         final TimeAgoParser timeAgoParser = getTimeAgoParser();
+        JsonArray itemSectionRenderers = initialData.getObject("contents").getObject("twoColumnBrowseResultsRenderer")
+                .getArray("tabs").getObject(0).getObject("tabRenderer").getObject("content")
+                .getObject("sectionListRenderer").getArray("contents");
 
-        for (Object ul : firstPageElements) {
-            final JsonObject videoInfo = ((JsonObject) ul).getObject("videoRenderer");
-            collector.commit(new YoutubeStreamInfoItemExtractor(videoInfo, timeAgoParser));
+        for (Object itemSectionRenderer : itemSectionRenderers) {
+            JsonObject expandedShelfContentsRenderer = ((JsonObject) itemSectionRenderer).getObject("itemSectionRenderer")
+                    .getArray("contents").getObject(0).getObject("shelfRenderer").getObject("content")
+                    .getObject("expandedShelfContentsRenderer");
+            if (expandedShelfContentsRenderer != null) {
+                for (Object ul : expandedShelfContentsRenderer.getArray("items")) {
+                    final JsonObject videoInfo = ((JsonObject) ul).getObject("videoRenderer");
+                    collector.commit(new YoutubeStreamInfoItemExtractor(videoInfo, timeAgoParser));
+                }
+            }
         }
         return new InfoItemsPage<>(collector, getNextPageUrl());
 

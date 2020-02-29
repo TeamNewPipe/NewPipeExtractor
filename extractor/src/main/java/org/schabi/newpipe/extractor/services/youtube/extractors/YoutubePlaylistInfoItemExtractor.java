@@ -7,6 +7,9 @@ import org.schabi.newpipe.extractor.playlist.PlaylistInfoItemExtractor;
 import org.schabi.newpipe.extractor.services.youtube.linkHandler.YoutubePlaylistLinkHandlerFactory;
 import org.schabi.newpipe.extractor.utils.Utils;
 
+import static org.schabi.newpipe.extractor.services.youtube.linkHandler.YoutubeParsingHelper.fixThumbnailUrl;
+import static org.schabi.newpipe.extractor.services.youtube.linkHandler.YoutubeParsingHelper.getTextFromObject;
+
 public class YoutubePlaylistInfoItemExtractor implements PlaylistInfoItemExtractor {
     private JsonObject playlistInfoItem;
 
@@ -17,8 +20,10 @@ public class YoutubePlaylistInfoItemExtractor implements PlaylistInfoItemExtract
     @Override
     public String getThumbnailUrl() throws ParsingException {
         try {
-            return playlistInfoItem.getArray("thumbnails").getObject(0).getArray("thumbnails")
-                    .getObject(0).getString("url");
+            String url = playlistInfoItem.getArray("thumbnails").getObject(0)
+                    .getArray("thumbnails").getObject(0).getString("url");
+
+            return fixThumbnailUrl(url);
         } catch (Exception e) {
             throw new ParsingException("Could not get thumbnail url", e);
         }
@@ -27,7 +32,7 @@ public class YoutubePlaylistInfoItemExtractor implements PlaylistInfoItemExtract
     @Override
     public String getName() throws ParsingException {
         try {
-            return playlistInfoItem.getObject("title").getString("simpleText");
+            return getTextFromObject(playlistInfoItem.getObject("title"));
         } catch (Exception e) {
             throw new ParsingException("Could not get name", e);
         }
@@ -46,7 +51,7 @@ public class YoutubePlaylistInfoItemExtractor implements PlaylistInfoItemExtract
     @Override
     public String getUploaderName() throws ParsingException {
         try {
-            return playlistInfoItem.getObject("longBylineText").getArray("runs").getObject(0).getString("text");
+            return getTextFromObject(playlistInfoItem.getObject("longBylineText"));
         } catch (Exception e) {
             throw new ParsingException("Could not get uploader name", e);
         }

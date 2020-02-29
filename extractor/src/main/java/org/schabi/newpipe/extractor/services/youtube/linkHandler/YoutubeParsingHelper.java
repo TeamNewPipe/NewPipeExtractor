@@ -5,18 +5,34 @@ import com.grack.nanojson.JsonArray;
 import com.grack.nanojson.JsonObject;
 import com.grack.nanojson.JsonParser;
 import com.grack.nanojson.JsonParserException;
+
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.schabi.newpipe.extractor.downloader.Response;
+import org.schabi.newpipe.extractor.exceptions.ExtractionException;
 import org.schabi.newpipe.extractor.exceptions.ParsingException;
 import org.schabi.newpipe.extractor.exceptions.ReCaptchaException;
+import org.schabi.newpipe.extractor.localization.Localization;
 import org.schabi.newpipe.extractor.utils.Parser;
+import org.schabi.newpipe.extractor.utils.Utils;
 
+import java.io.IOException;
+import java.io.UnsupportedEncodingException;
 import java.net.URL;
+import java.net.URLDecoder;
+import java.nio.charset.StandardCharsets;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
+import java.util.Collections;
 import java.util.Date;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+import static org.schabi.newpipe.extractor.NewPipe.getDownloader;
+import static org.schabi.newpipe.extractor.utils.Utils.HTTP;
+import static org.schabi.newpipe.extractor.utils.Utils.HTTPS;
 
 /*
  * Created by Christian Schabesberger on 02.03.16.
@@ -43,7 +59,9 @@ public class YoutubeParsingHelper {
     private YoutubeParsingHelper() {
     }
 
-    public static final String HARDCODED_CLIENT_VERSION = "2.20200214.04.00";
+    private static final String HARDCODED_CLIENT_VERSION = "2.20200214.04.00";
+    private static String clientVersion;
+
 
     private static final String FEED_BASE_CHANNEL_ID = "https://www.youtube.com/feeds/videos.xml?channel_id=";
     private static final String FEED_BASE_USER = "https://www.youtube.com/feeds/videos.xml?user=";
@@ -160,58 +178,189 @@ public class YoutubeParsingHelper {
         }
     }
 
+    public static boolean isHardcodedClientVersionValid() throws IOException {
+        try {
+            final String url = "https://www.youtube.com/results?search_query=test&pbj=1";
+
+            Map<String, List<String>> headers = new HashMap<>();
+            headers.put("X-YouTube-Client-Name", Collections.singletonList("1"));
+            headers.put("X-YouTube-Client-Version",
+                    Collections.singletonList(HARDCODED_CLIENT_VERSION));
+            final String response = getDownloader().get(url, headers).responseBody();
+            if (response.length() > 50) { // ensure to have a valid response
+                return true;
+            }
+        } catch (ReCaptchaException ignored) {}
+
+        return false;
+    }
+
     /**
      * Get the client version from a page
-     * @param initialData
-     * @param html The page HTML
      * @return
      * @throws ParsingException
      */
-    public static String getClientVersion(JsonObject initialData, String html) throws ParsingException {
-        if (initialData == null) initialData = getInitialData(html);
-        JsonArray serviceTrackingParams = initialData.getObject("responseContext").getArray("serviceTrackingParams");
-        String shortClientVersion = null;
+    public static String getClientVersion() throws ParsingException, IOException {
+        if (clientVersion != null && !clientVersion.isEmpty()) return clientVersion;
 
-        // try to get version from initial data first
-        for (Object service : serviceTrackingParams) {
-            JsonObject s = (JsonObject) service;
-            if (s.getString("service").equals("CSI")) {
-                JsonArray params = s.getArray("params");
-                for (Object param: params) {
-                    JsonObject p = (JsonObject) param;
-                    String key = p.getString("key");
-                    if (key != null && key.equals("cver")) {
-                        return p.getString("value");
+        if (isHardcodedClientVersionValid()) {
+            clientVersion = HARDCODED_CLIENT_VERSION;
+            return clientVersion;
+        }
+
+        // Try extracting it from YouTube's website otherwise
+        try {
+            final String url = "https://www.youtube.com/results?search_query=test";
+            final String html = getDownloader().get(url).responseBody();
+            JsonObject initialData = getInitialData(html);
+            JsonArray serviceTrackingParams = initialData.getObject("responseContext").getArray("serviceTrackingParams");
+            String shortClientVersion = null;
+
+            // try to get version from initial data first
+            for (Object service : serviceTrackingParams) {
+                JsonObject s = (JsonObject) service;
+                if (s.getString("service").equals("CSI")) {
+                    JsonArray params = s.getArray("params");
+                    for (Object param : params) {
+                        JsonObject p = (JsonObject) param;
+                        String key = p.getString("key");
+                        if (key != null && key.equals("cver")) {
+                            clientVersion = p.getString("value");
+                            return clientVersion;
+                        }
                     }
-                }
-            } else if (s.getString("service").equals("ECATCHER")) {
-                // fallback to get a shortened client version which does not contain the last do digits
-                JsonArray params = s.getArray("params");
-                for (Object param: params) {
-                    JsonObject p = (JsonObject) param;
-                    String key = p.getString("key");
-                    if (key != null && key.equals("client.version")) {
-                        shortClientVersion = p.getString("value");
+                } else if (s.getString("service").equals("ECATCHER")) {
+                    // fallback to get a shortened client version which does not contain the last two digits
+                    JsonArray params = s.getArray("params");
+                    for (Object param : params) {
+                        JsonObject p = (JsonObject) param;
+                        String key = p.getString("key");
+                        if (key != null && key.equals("client.version")) {
+                            shortClientVersion = p.getString("value");
+                        }
                     }
                 }
             }
-        }
 
-        String clientVersion;
-        String[] patterns = {
-                "INNERTUBE_CONTEXT_CLIENT_VERSION\":\"([0-9\\.]+?)\"",
-                "innertube_context_client_version\":\"([0-9\\.]+?)\"",
-                "client.version=([0-9\\.]+)"
-        };
-        for (String pattern: patterns) {
-            try {
-                clientVersion = Parser.matchGroup1(pattern, html);
-                if (clientVersion != null && !clientVersion.isEmpty()) return clientVersion;
-            } catch (Exception ignored) {}
-        }
+            String contextClientVersion;
+            String[] patterns = {
+                    "INNERTUBE_CONTEXT_CLIENT_VERSION\":\"([0-9\\.]+?)\"",
+                    "innertube_context_client_version\":\"([0-9\\.]+?)\"",
+                    "client.version=([0-9\\.]+)"
+            };
+            for (String pattern : patterns) {
+                try {
+                    contextClientVersion = Parser.matchGroup1(pattern, html);
+                    if (contextClientVersion != null && !contextClientVersion.isEmpty()) {
+                        clientVersion = contextClientVersion;
+                        return clientVersion;
+                    }
+                } catch (Exception ignored) {
+                }
+            }
 
-        if (shortClientVersion != null) return shortClientVersion;
+            if (shortClientVersion != null) {
+                clientVersion = shortClientVersion;
+                return clientVersion;
+            }
+        } catch (Exception ignored) {}
 
         throw new ParsingException("Could not get client version");
+    }
+
+    public static String getUrlFromNavigationEndpoint(JsonObject navigationEndpoint) {
+        if (navigationEndpoint.getObject("urlEndpoint") != null) {
+            String internUrl = navigationEndpoint.getObject("urlEndpoint").getString("url");
+            if (internUrl.startsWith("/redirect?")) {
+                // q parameter can be the first parameter
+                internUrl = internUrl.substring(10);
+                String[] params = internUrl.split("&");
+                for (String param : params) {
+                    if (param.split("=")[0].equals("q")) {
+                        String url;
+                        try {
+                            url = URLDecoder.decode(param.split("=")[1], StandardCharsets.UTF_8.name());
+                        } catch (UnsupportedEncodingException e) {
+                            return null;
+                        }
+                        return url;
+                    }
+                }
+            } else if (internUrl.startsWith("http")) {
+                return internUrl;
+            }
+        } else if (navigationEndpoint.getObject("browseEndpoint") != null) {
+            return "https://www.youtube.com" + navigationEndpoint.getObject("browseEndpoint").getString("canonicalBaseUrl");
+        } else if (navigationEndpoint.getObject("watchEndpoint") != null) {
+            StringBuilder url = new StringBuilder();
+            url.append("https://www.youtube.com/watch?v=").append(navigationEndpoint.getObject("watchEndpoint").getString("videoId"));
+            if (navigationEndpoint.getObject("watchEndpoint").has("playlistId"))
+                url.append("&amp;list=").append(navigationEndpoint.getObject("watchEndpoint").getString("playlistId"));
+            if (navigationEndpoint.getObject("watchEndpoint").has("startTimeSeconds"))
+                url.append("&amp;t=").append(navigationEndpoint.getObject("watchEndpoint").getInt("startTimeSeconds"));
+            return url.toString();
+        }
+        return null;
+    }
+
+    public static String getTextFromObject(JsonObject textObject, boolean html) {
+        if (textObject.has("simpleText")) return textObject.getString("simpleText");
+
+        StringBuilder textBuilder = new StringBuilder();
+        for (Object textPart : textObject.getArray("runs")) {
+            String text = ((JsonObject) textPart).getString("text");
+            if (html && ((JsonObject) textPart).getObject("navigationEndpoint") != null) {
+                String url = getUrlFromNavigationEndpoint(((JsonObject) textPart).getObject("navigationEndpoint"));
+                if (url != null && !url.isEmpty()) {
+                    textBuilder.append("<a href=\"").append(url).append("\">").append(text).append("</a>");
+                    continue;
+                }
+            }
+            textBuilder.append(text);
+        }
+
+        String text = textBuilder.toString();
+
+        if (html) {
+            text = text.replaceAll("\\n", "<br>");
+            text = text.replaceAll("  ", " &nbsp;");
+        }
+
+        return text;
+    }
+
+    public static String getTextFromObject(JsonObject textObject) {
+        return getTextFromObject(textObject, false);
+    }
+
+    public static String fixThumbnailUrl(String thumbnailUrl) {
+        if (thumbnailUrl.startsWith("//")) {
+            thumbnailUrl = thumbnailUrl.substring(2);
+        }
+
+        if (thumbnailUrl.startsWith(HTTP)) {
+            thumbnailUrl = Utils.replaceHttpWithHttps(thumbnailUrl);
+        } else if (!thumbnailUrl.startsWith(HTTPS)) {
+            thumbnailUrl = "https://" + thumbnailUrl;
+        }
+
+        return thumbnailUrl;
+    }
+
+    public static JsonArray getJsonResponse(String url, Localization localization) throws IOException, ExtractionException {
+        Map<String, List<String>> headers = new HashMap<>();
+        headers.put("X-YouTube-Client-Name", Collections.singletonList("1"));
+        headers.put("X-YouTube-Client-Version", Collections.singletonList(getClientVersion()));
+        final String response = getDownloader().get(url, headers, localization).responseBody();
+
+        if (response.length() < 50) { // ensure to have a valid response
+            throw new ParsingException("JSON response is too short");
+        }
+
+        try {
+            return JsonParser.array().from(response);
+        } catch (JsonParserException e) {
+            throw new ParsingException("Could not parse JSON", e);
+        }
     }
 }

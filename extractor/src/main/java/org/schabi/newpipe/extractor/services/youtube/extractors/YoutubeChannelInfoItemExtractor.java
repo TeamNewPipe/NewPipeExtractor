@@ -7,8 +7,8 @@ import org.schabi.newpipe.extractor.exceptions.ParsingException;
 import org.schabi.newpipe.extractor.services.youtube.linkHandler.YoutubeChannelLinkHandlerFactory;
 import org.schabi.newpipe.extractor.utils.Utils;
 
-import static org.schabi.newpipe.extractor.utils.Utils.HTTP;
-import static org.schabi.newpipe.extractor.utils.Utils.HTTPS;
+import static org.schabi.newpipe.extractor.services.youtube.linkHandler.YoutubeParsingHelper.fixThumbnailUrl;
+import static org.schabi.newpipe.extractor.services.youtube.linkHandler.YoutubeParsingHelper.getTextFromObject;
 
 /*
  * Created by Christian Schabesberger on 12.02.17.
@@ -41,15 +41,8 @@ public class YoutubeChannelInfoItemExtractor implements ChannelInfoItemExtractor
     public String getThumbnailUrl() throws ParsingException {
         try {
             String url = channelInfoItem.getObject("thumbnail").getArray("thumbnails").getObject(0).getString("url");
-            if (url.startsWith("//")) {
-                url = url.substring(2);
-            }
-            if (url.startsWith(HTTP)) {
-                url = Utils.replaceHttpWithHttps(url);
-            } else if (!url.startsWith(HTTPS)) {
-                url = HTTPS + url;
-            }
-            return url;
+
+            return fixThumbnailUrl(url);
         } catch (Exception e) {
             throw new ParsingException("Could not get thumbnail url", e);
         }
@@ -58,7 +51,7 @@ public class YoutubeChannelInfoItemExtractor implements ChannelInfoItemExtractor
     @Override
     public String getName() throws ParsingException {
         try {
-            return channelInfoItem.getObject("title").getString("simpleText");
+            return getTextFromObject(channelInfoItem.getObject("title"));
         } catch (Exception e) {
             throw new ParsingException("Could not get name", e);
         }
@@ -67,7 +60,7 @@ public class YoutubeChannelInfoItemExtractor implements ChannelInfoItemExtractor
     @Override
     public String getUrl() throws ParsingException {
         try {
-            String id = "channel/" + channelInfoItem.getString("channelId"); // Does prepending 'channel/' always work?
+            String id = "channel/" + channelInfoItem.getString("channelId");
             return YoutubeChannelLinkHandlerFactory.getInstance().getUrl(id);
         } catch (Exception e) {
             throw new ParsingException("Could not get url", e);
@@ -77,7 +70,7 @@ public class YoutubeChannelInfoItemExtractor implements ChannelInfoItemExtractor
     @Override
     public long getSubscriberCount() throws ParsingException {
         try {
-            String subscribers = channelInfoItem.getObject("subscriberCountText").getString("simpleText").split(" ")[0];
+            String subscribers = getTextFromObject(channelInfoItem.getObject("subscriberCountText"));
             return Utils.mixedNumberWordToLong(subscribers);
         } catch (Exception e) {
             throw new ParsingException("Could not get subscriber count", e);
@@ -87,8 +80,7 @@ public class YoutubeChannelInfoItemExtractor implements ChannelInfoItemExtractor
     @Override
     public long getStreamCount() throws ParsingException {
         try {
-            return Long.parseLong(Utils.removeNonDigitCharacters(channelInfoItem.getObject("videoCountText")
-                    .getArray("runs").getObject(0).getString("text")));
+            return Long.parseLong(Utils.removeNonDigitCharacters(getTextFromObject(channelInfoItem.getObject("videoCountText"))));
         } catch (Exception e) {
             throw new ParsingException("Could not get stream count", e);
         }
@@ -97,7 +89,7 @@ public class YoutubeChannelInfoItemExtractor implements ChannelInfoItemExtractor
     @Override
     public String getDescription() throws ParsingException {
         try {
-            return channelInfoItem.getObject("descriptionSnippet").getArray("runs").getObject(0).getString("text");
+            return getTextFromObject(channelInfoItem.getObject("descriptionSnippet"));
         } catch (Exception e) {
             throw new ParsingException("Could not get description", e);
         }

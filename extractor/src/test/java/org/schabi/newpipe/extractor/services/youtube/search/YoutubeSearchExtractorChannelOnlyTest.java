@@ -12,10 +12,17 @@ import org.schabi.newpipe.extractor.channel.ChannelInfoItem;
 import org.schabi.newpipe.extractor.services.youtube.extractors.YoutubeSearchExtractor;
 import org.schabi.newpipe.extractor.services.youtube.linkHandler.YoutubeSearchQueryHandlerFactory;
 
-import java.util.regex.Pattern;
+import java.net.URL;
+import java.net.URLDecoder;
+import java.util.LinkedHashMap;
+import java.util.Map;
 
 import static java.util.Arrays.asList;
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertThat;
+import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
 import static org.schabi.newpipe.extractor.ServiceList.YouTube;
 
 public class YoutubeSearchExtractorChannelOnlyTest extends YoutubeSearchExtractorBaseTest {
@@ -47,18 +54,26 @@ public class YoutubeSearchExtractorChannelOnlyTest extends YoutubeSearchExtracto
             }
         }
         assertFalse("First and second page are equal", equals);
-
-        assertEquals("https://www.youtube.com/results?q=pewdiepie&sp=EgIQAlAU&gl=GB&page=3", secondPage.getNextPageUrl());
     }
 
     @Test
     public void testGetSecondPageUrl() throws Exception {
-        // check that ctoken, continuation and itct are longer than 5 characters
-        Pattern pattern = Pattern.compile(
-                "https:\\/\\/www.youtube.com\\/results\\?search_query=pewdiepie&sp=EgIQAg%253D%253D&gl=GB&pbj=1"
-                + "&ctoken=[\\w%]{5,}?&continuation=[\\w%]{5,}?&itct=[\\w]{5,}?"
-        );
-        assertTrue(pattern.matcher(extractor.getNextPageUrl()).find());
+        URL url = new URL(extractor.getNextPageUrl());
+
+        assertEquals(url.getHost(), "www.youtube.com");
+        assertEquals(url.getPath(), "/results");
+
+        Map<String, String> queryPairs = new LinkedHashMap<>();
+        for (String queryPair : url.getQuery().split("&")) {
+            int index = queryPair.indexOf("=");
+            queryPairs.put(URLDecoder.decode(queryPair.substring(0, index), "UTF-8"),
+                    URLDecoder.decode(queryPair.substring(index + 1), "UTF-8"));
+        }
+
+        assertEquals("pewdiepie", queryPairs.get("search_query"));
+        assertEquals(queryPairs.get("ctoken"), queryPairs.get("continuation"));
+        assertTrue(queryPairs.get("continuation").length() > 5);
+        assertTrue(queryPairs.get("itct").length() > 5);
     }
 
     @Ignore
@@ -77,11 +92,16 @@ public class YoutubeSearchExtractorChannelOnlyTest extends YoutubeSearchExtracto
             if (item instanceof ChannelInfoItem) {
                 ChannelInfoItem channel = (ChannelInfoItem) item;
 
-                if (channel.getSubscriberCount() > 5e7) { // the real PewDiePie
+                if (channel.getSubscriberCount() > 1e8) { // the real PewDiePie
                     assertEquals("https://www.youtube.com/channel/UC-lHJZR3Gqxm24_Vd_AJ5Yw", item.getUrl());
-                } else {
-                    assertThat(item.getUrl(), CoreMatchers.startsWith("https://www.youtube.com/channel/"));
+                    break;
                 }
+            }
+        }
+
+        for (InfoItem item : itemsPage.getItems()) {
+            if (item instanceof ChannelInfoItem) {
+                assertThat(item.getUrl(), CoreMatchers.startsWith("https://www.youtube.com/channel/"));
             }
         }
     }
