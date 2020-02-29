@@ -15,12 +15,16 @@ public class Response {
     private final Map<String, List<String>> responseHeaders;
     private final String responseBody;
 
-    public Response(int responseCode, String responseMessage, Map<String, List<String>> responseHeaders, @Nullable String responseBody) {
+    private final String latestUrl;
+
+    public Response(int responseCode, String responseMessage, Map<String, List<String>> responseHeaders,
+                    @Nullable String responseBody, @Nullable String latestUrl) {
         this.responseCode = responseCode;
         this.responseMessage = responseMessage;
         this.responseHeaders = responseHeaders != null ? responseHeaders : Collections.<String, List<String>>emptyMap();
 
         this.responseBody = responseBody == null ? "" : responseBody;
+        this.latestUrl = latestUrl;
     }
 
     public int responseCode() {
@@ -38,6 +42,16 @@ public class Response {
     @Nonnull
     public String responseBody() {
         return responseBody;
+    }
+
+    /**
+     * Used for detecting a possible redirection, limited to the latest one.
+     *
+     * @return latest url known right before this response object was created
+     */
+    @Nonnull
+    public String latestUrl() {
+        return latestUrl;
     }
 
     /*//////////////////////////////////////////////////////////////////////////

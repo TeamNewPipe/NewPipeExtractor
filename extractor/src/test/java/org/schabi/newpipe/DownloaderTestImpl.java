@@ -99,8 +99,9 @@ public class DownloaderTestImpl extends Downloader {
             final int responseCode = connection.getResponseCode();
             final String responseMessage = connection.getResponseMessage();
             final Map<String, List<String>> responseHeaders = connection.getHeaderFields();
+            final String latestUrl = connection.getURL().toString();
 
-            return new Response(responseCode, responseMessage, responseHeaders, response.toString());
+            return new Response(responseCode, responseMessage, responseHeaders, response.toString(), latestUrl);
         } catch (Exception e) {
             final int responseCode = connection.getResponseCode();
 
@@ -112,7 +113,8 @@ public class DownloaderTestImpl extends Downloader {
             if (responseCode == 429) {
                 throw new ReCaptchaException("reCaptcha Challenge requested", url);
             } else if (responseCode != -1) {
-                return new Response(responseCode, connection.getResponseMessage(), connection.getHeaderFields(), null);
+                final String latestUrl = connection.getURL().toString();
+                return new Response(responseCode, connection.getResponseMessage(), connection.getHeaderFields(), null, latestUrl);
             }
 
             throw new IOException("Error occurred while fetching the content", e);
