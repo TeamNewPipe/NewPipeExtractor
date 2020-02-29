@@ -21,6 +21,7 @@ import org.schabi.newpipe.extractor.localization.Localization;
 import org.schabi.newpipe.extractor.localization.TimeAgoParser;
 import org.schabi.newpipe.extractor.localization.TimeAgoPatternsManager;
 import org.schabi.newpipe.extractor.services.youtube.ItagItem;
+import org.schabi.newpipe.extractor.services.youtube.linkHandler.YoutubeChannelLinkHandlerFactory;
 import org.schabi.newpipe.extractor.services.youtube.linkHandler.YoutubeParsingHelper;
 import org.schabi.newpipe.extractor.stream.AudioStream;
 import org.schabi.newpipe.extractor.stream.Description;
@@ -328,7 +329,8 @@ public class YoutubeStreamExtractor extends StreamExtractor {
         } catch (Exception ignored) {}
         try {
             String uploaderId = playerResponse.getObject("videoDetails").getString("channelId");
-            if (uploaderId != null) return "https://www.youtube.com/channel/" + uploaderId;
+            if (uploaderId != null)
+                return YoutubeChannelLinkHandlerFactory.getInstance().getUrl("channel/" + uploaderId);
         } catch (Exception ignored) {}
         throw new ParsingException("Could not get uploader url");
     }

@@ -12,6 +12,7 @@ import org.schabi.newpipe.extractor.exceptions.ExtractionException;
 import org.schabi.newpipe.extractor.exceptions.ParsingException;
 import org.schabi.newpipe.extractor.linkhandler.ListLinkHandler;
 import org.schabi.newpipe.extractor.localization.TimeAgoParser;
+import org.schabi.newpipe.extractor.services.youtube.linkHandler.YoutubeChannelLinkHandlerFactory;
 import org.schabi.newpipe.extractor.services.youtube.linkHandler.YoutubeParsingHelper;
 import org.schabi.newpipe.extractor.stream.StreamInfoItem;
 import org.schabi.newpipe.extractor.stream.StreamInfoItemsCollector;
@@ -50,8 +51,6 @@ import static org.schabi.newpipe.extractor.services.youtube.linkHandler.YoutubeP
 
 @SuppressWarnings("WeakerAccess")
 public class YoutubeChannelExtractor extends ChannelExtractor {
-    /*package-private*/ static final String CHANNEL_URL_BASE = "https://www.youtube.com/channel/";
-
     private JsonObject initialData;
     private JsonObject videoTab;
 
@@ -96,7 +95,7 @@ public class YoutubeChannelExtractor extends ChannelExtractor {
     @Override
     public String getUrl() throws ParsingException {
         try {
-            return CHANNEL_URL_BASE + getId();
+            return YoutubeChannelLinkHandlerFactory.getInstance().getUrl("channel/" + getId());
         } catch (ParsingException e) {
             return super.getUrl();
         }
