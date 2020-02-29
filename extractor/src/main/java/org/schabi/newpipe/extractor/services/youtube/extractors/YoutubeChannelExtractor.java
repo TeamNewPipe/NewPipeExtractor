@@ -57,7 +57,7 @@ public class YoutubeChannelExtractor extends ChannelExtractor {
     public void onFetchPage(@Nonnull Downloader downloader) throws IOException, ExtractionException {
         final String url = super.getUrl() + "/videos?pbj=1&view=0&flow=grid";
 
-        final JsonArray ajaxJson = getJsonResponse(url);
+        final JsonArray ajaxJson = getJsonResponse(url, getExtractorLocalization());
 
         initialData = ajaxJson.getObject(1).getObject("response");
     }
@@ -194,7 +194,7 @@ public class YoutubeChannelExtractor extends ChannelExtractor {
         fetchPage();
 
         StreamInfoItemsCollector collector = new StreamInfoItemsCollector(getServiceId());
-        final JsonArray ajaxJson = getJsonResponse(pageUrl);
+        final JsonArray ajaxJson = getJsonResponse(pageUrl, getExtractorLocalization());
 
         JsonObject sectionListContinuation = ajaxJson.getObject(1).getObject("response")
                 .getObject("continuationContents").getObject("gridContinuation");

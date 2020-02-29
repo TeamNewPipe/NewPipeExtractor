@@ -54,7 +54,7 @@ public class YoutubeTrendingExtractor extends KioskExtractor<StreamInfoItem> {
         final String url = getUrl() + "?pbj=1&gl="
                 + getExtractorContentCountry().getCountryCode();
 
-        final JsonArray ajaxJson = getJsonResponse(url);
+        final JsonArray ajaxJson = getJsonResponse(url, getExtractorLocalization());
 
         initialData = ajaxJson.getObject(1).getObject("response");
     }

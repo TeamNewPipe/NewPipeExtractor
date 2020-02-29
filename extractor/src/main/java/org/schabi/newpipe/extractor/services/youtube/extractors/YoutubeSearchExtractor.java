@@ -51,7 +51,7 @@ public class YoutubeSearchExtractor extends SearchExtractor {
     public void onFetchPage(@Nonnull Downloader downloader) throws IOException, ExtractionException {
         final String url = getUrl() + "&pbj=1";
 
-        final JsonArray ajaxJson = getJsonResponse(url);
+        final JsonArray ajaxJson = getJsonResponse(url, getExtractorLocalization());
 
         initialData = ajaxJson.getObject(1).getObject("response");
     }
@@ -104,7 +104,7 @@ public class YoutubeSearchExtractor extends SearchExtractor {
         }
 
         InfoItemsSearchCollector collector = getInfoItemSearchCollector();
-        final JsonArray ajaxJson = getJsonResponse(pageUrl);
+        final JsonArray ajaxJson = getJsonResponse(pageUrl, getExtractorLocalization());
 
         JsonObject itemSectionRenderer = ajaxJson.getObject(1).getObject("response")
                 .getObject("continuationContents").getObject("itemSectionContinuation");

@@ -36,7 +36,7 @@ public class YoutubePlaylistExtractor extends PlaylistExtractor {
     public void onFetchPage(@Nonnull Downloader downloader) throws IOException, ExtractionException {
         final String url = getUrl() + "&pbj=1";
 
-        final JsonArray ajaxJson = getJsonResponse(url);
+        final JsonArray ajaxJson = getJsonResponse(url, getExtractorLocalization());
 
         initialData = ajaxJson.getObject(1).getObject("response");
         playlistInfo = getPlaylistInfo();
@@ -186,7 +186,7 @@ public class YoutubePlaylistExtractor extends PlaylistExtractor {
         }
 
         StreamInfoItemsCollector collector = new StreamInfoItemsCollector(getServiceId());
-        final JsonArray ajaxJson = getJsonResponse(pageUrl);
+        final JsonArray ajaxJson = getJsonResponse(pageUrl, getExtractorLocalization());
 
         JsonObject sectionListContinuation = ajaxJson.getObject(1).getObject("response")
                 .getObject("continuationContents").getObject("playlistVideoListContinuation");

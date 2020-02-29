@@ -12,6 +12,7 @@ import org.schabi.newpipe.extractor.downloader.Response;
 import org.schabi.newpipe.extractor.exceptions.ExtractionException;
 import org.schabi.newpipe.extractor.exceptions.ParsingException;
 import org.schabi.newpipe.extractor.exceptions.ReCaptchaException;
+import org.schabi.newpipe.extractor.localization.Localization;
 import org.schabi.newpipe.extractor.utils.Parser;
 import org.schabi.newpipe.extractor.utils.Utils;
 
@@ -346,12 +347,12 @@ public class YoutubeParsingHelper {
         return thumbnailUrl;
     }
 
-    public static JsonArray getJsonResponse(String url) throws IOException, ExtractionException {
+    public static JsonArray getJsonResponse(String url, Localization localization) throws IOException, ExtractionException {
         Map<String, List<String>> headers = new HashMap<>();
         headers.put("X-YouTube-Client-Name", Collections.singletonList("1"));
         headers.put("X-YouTube-Client-Version",
                 Collections.singletonList(YoutubeParsingHelper.getClientVersion()));
-        final String response = getDownloader().get(url, headers).responseBody();
+        final String response = getDownloader().get(url, headers, localization).responseBody();
 
         if (response.length() < 50) { // ensure to have a valid response
             throw new ParsingException("JSON response is too short");

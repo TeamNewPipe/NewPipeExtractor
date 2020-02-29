@@ -580,7 +580,7 @@ public class YoutubeStreamExtractor extends StreamExtractor {
     public void onFetchPage(@Nonnull Downloader downloader) throws IOException, ExtractionException {
         final String url = getUrl() + "&pbj=1";
 
-        initialAjaxJson = getJsonResponse(url);
+        initialAjaxJson = getJsonResponse(url, getExtractorLocalization());
 
         final String playerUrl;
 
