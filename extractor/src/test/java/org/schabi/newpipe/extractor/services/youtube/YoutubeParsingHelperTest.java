@@ -6,6 +6,8 @@ import org.schabi.newpipe.DownloaderTestImpl;
 import org.schabi.newpipe.extractor.NewPipe;
 import org.schabi.newpipe.extractor.services.youtube.linkHandler.YoutubeParsingHelper;
 
+import java.io.IOException;
+
 import static org.junit.Assert.assertTrue;
 
 public class YoutubeParsingHelperTest {
@@ -15,7 +17,7 @@ public class YoutubeParsingHelperTest {
     }
 
     @Test
-    public void testIsHardcodedClientVersionValid() {
+    public void testIsHardcodedClientVersionValid() throws IOException {
         assertTrue("Hardcoded client version is not valid anymore",
                 YoutubeParsingHelper.isHardcodedClientVersionValid());
     }

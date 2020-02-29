@@ -87,10 +87,13 @@ public class YoutubeStreamInfoItemExtractor implements StreamInfoItemExtractor {
     @Override
     public long getDuration() throws ParsingException {
         if (getStreamType() == StreamType.LIVE_STREAM) return -1;
+
         String duration = null;
+
         try {
             duration = getTextFromObject(videoInfo.getObject("lengthText"));
         } catch (Exception ignored) {}
+
         if (duration == null) {
             try {
                 for (Object thumbnailOverlay : videoInfo.getArray("thumbnailOverlays")) {
@@ -100,58 +103,64 @@ public class YoutubeStreamInfoItemExtractor implements StreamInfoItemExtractor {
                     }
                 }
             } catch (Exception ignored) {}
+
+            if (duration == null) throw new ParsingException("Could not get duration");
         }
-        if (duration != null) return YoutubeParsingHelper.parseDurationString(duration);
-        throw new ParsingException("Could not get duration");
+
+        return YoutubeParsingHelper.parseDurationString(duration);
     }
 
     @Override
     public String getUploaderName() throws ParsingException {
         String name = null;
+
         try {
             name = getTextFromObject(videoInfo.getObject("longBylineText"));
         } catch (Exception ignored) {}
+
         if (name == null) {
             try {
                 name = getTextFromObject(videoInfo.getObject("ownerText"));
             } catch (Exception ignored) {}
+
+            if (name == null) {
+                try {
+                    name = getTextFromObject(videoInfo.getObject("shortBylineText"));
+                } catch (Exception ignored) {}
+
+                if (name == null) throw new ParsingException("Could not get uploader name");
+            }
         }
-        if (name == null) {
-            try {
-                name = getTextFromObject(videoInfo.getObject("shortBylineText"));
-            } catch (Exception ignored) {}
-        }
-        if (name != null && !name.isEmpty()) return name;
-        throw new ParsingException("Could not get uploader name");
+
+        return name;
     }
 
     @Override
     public String getUploaderUrl() throws ParsingException {
+        String url = null;
+
         try {
-            String url = null;
+            url = getUrlFromNavigationEndpoint(videoInfo.getObject("longBylineText")
+                    .getArray("runs").getObject(0).getObject("navigationEndpoint"));
+        } catch (Exception ignored) {}
+
+        if (url == null) {
             try {
-                url = getUrlFromNavigationEndpoint(videoInfo.getObject("longBylineText")
+                url = getUrlFromNavigationEndpoint(videoInfo.getObject("ownerText")
                         .getArray("runs").getObject(0).getObject("navigationEndpoint"));
             } catch (Exception ignored) {}
-            if (url == null) {
-                try {
-                    url = getUrlFromNavigationEndpoint(videoInfo.getObject("ownerText")
-                            .getArray("runs").getObject(0).getObject("navigationEndpoint"));
-                } catch (Exception ignored) {}
-            }
+
             if (url == null) {
                 try {
                     url = getUrlFromNavigationEndpoint(videoInfo.getObject("shortBylineText")
                             .getArray("runs").getObject(0).getObject("navigationEndpoint"));
                 } catch (Exception ignored) {}
+
+                if (url == null) throw new ParsingException("Could not get uploader url");
             }
-            if (url == null || url.isEmpty()) {
-                throw new IllegalArgumentException("is empty");
-            }
-            return url;
-        } catch (Exception e) {
-            throw new ParsingException("Could not get uploader url");
         }
+
+        return url;
     }
 
     @Nullable

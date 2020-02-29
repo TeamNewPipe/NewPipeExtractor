@@ -108,15 +108,14 @@ public class YoutubePlaylistExtractor extends PlaylistExtractor {
 
         if (url == null) {
             try {
-                return initialData.getObject("microformat").getObject("microformatDataRenderer").getObject("thumbnail")
+                url = initialData.getObject("microformat").getObject("microformatDataRenderer").getObject("thumbnail")
                         .getArray("thumbnails").getObject(0).getString("url");
             } catch (Exception ignored) {}
+
+            if (url == null) throw new ParsingException("Could not get playlist thumbnail");
         }
 
-        if (url != null && !url.isEmpty()) {
-            return fixThumbnailUrl(url);
-        }
-        throw new ParsingException("Could not get playlist thumbnail");
+        return fixThumbnailUrl(url);
     }
 
     @Override

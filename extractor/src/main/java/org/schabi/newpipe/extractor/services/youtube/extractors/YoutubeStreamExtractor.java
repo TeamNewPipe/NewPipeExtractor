@@ -116,16 +116,20 @@ public class YoutubeStreamExtractor extends StreamExtractor {
     public String getName() throws ParsingException {
         assertPageFetched();
         String title = null;
+
         try {
             title = getTextFromObject(getVideoPrimaryInfoRenderer().getObject("title"));
         } catch (Exception ignored) {}
+
         if (title == null) {
             try {
                 title = playerResponse.getObject("videoDetails").getString("title");
             } catch (Exception ignored) {}
+
+            if (title == null) throw new ParsingException("Could not get name");
         }
-        if (title != null) return title;
-        throw new ParsingException("Could not get name");
+
+        return title;
     }
 
     @Override
@@ -259,17 +263,21 @@ public class YoutubeStreamExtractor extends StreamExtractor {
     public long getViewCount() throws ParsingException {
         assertPageFetched();
         String views = null;
+
         try {
             views = getTextFromObject(getVideoPrimaryInfoRenderer().getObject("viewCount")
                     .getObject("videoViewCountRenderer").getObject("viewCount"));
         } catch (Exception ignored) {}
+
         if (views == null) {
             try {
                 views = playerResponse.getObject("videoDetails").getString("viewCount");
             } catch (Exception ignored) {}
+
+            if (views == null) throw new ParsingException("Could not get view count");
         }
-        if (views != null) return Long.parseLong(Utils.removeNonDigitCharacters(views));
-        throw new ParsingException("Could not get view count");
+
+        return Long.parseLong(Utils.removeNonDigitCharacters(views));
     }
 
     @Override
@@ -340,17 +348,21 @@ public class YoutubeStreamExtractor extends StreamExtractor {
     public String getUploaderName() throws ParsingException {
         assertPageFetched();
         String uploaderName = null;
+
         try {
             uploaderName = getTextFromObject(getVideoSecondaryInfoRenderer().getObject("owner")
                     .getObject("videoOwnerRenderer").getObject("title"));
         } catch (Exception ignored) {}
+
         if (uploaderName == null) {
             try {
                 uploaderName = playerResponse.getObject("videoDetails").getString("author");
             } catch (Exception ignored) {}
+
+            if (uploaderName == null) throw new ParsingException("Could not get uploader name");
         }
-        if (uploaderName != null) return uploaderName;
-        throw new ParsingException("Could not get uploader name");
+
+        return uploaderName;
     }
 
     @Nonnull
@@ -910,9 +922,7 @@ public class YoutubeStreamExtractor extends StreamExtractor {
 
                         urlAndItags.put(streamUrl, itagItem);
                     }
-                } catch (UnsupportedEncodingException ignored) {
-
-                }
+                } catch (UnsupportedEncodingException ignored) {}
             }
         }
 
