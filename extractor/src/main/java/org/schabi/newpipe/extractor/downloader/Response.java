@@ -68,7 +68,8 @@ public class Response {
     @Nullable
     public String getHeader(String name) {
         for (Map.Entry<String, List<String>> headerEntry : responseHeaders.entrySet()) {
-            if (headerEntry.getKey().equalsIgnoreCase(name)) {
+            final String key = headerEntry.getKey();
+            if (key != null && key.equalsIgnoreCase(name)) {
                 if (headerEntry.getValue().size() > 0) {
                     return headerEntry.getValue().get(0);
                 }
