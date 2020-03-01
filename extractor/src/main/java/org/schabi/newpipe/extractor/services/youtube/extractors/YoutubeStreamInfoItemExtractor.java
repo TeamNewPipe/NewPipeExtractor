@@ -55,9 +55,13 @@ public class YoutubeStreamInfoItemExtractor implements StreamInfoItemExtractor {
     @Override
     public StreamType getStreamType() {
         try {
-            if (videoInfo.getArray("badges").getObject(0).getObject("metadataBadgeRenderer").getString("label").equals("LIVE NOW")) {
-                return StreamType.LIVE_STREAM;
+            JsonArray badges = videoInfo.getArray("badges");
+            for (Object badge : badges) {
+                if (((JsonObject) badge).getObject("metadataBadgeRenderer").getString("label").equals("LIVE NOW")) {
+                    return StreamType.LIVE_STREAM;
+                }
             }
+
         } catch (Exception ignored) {}
         return StreamType.VIDEO_STREAM;
     }
