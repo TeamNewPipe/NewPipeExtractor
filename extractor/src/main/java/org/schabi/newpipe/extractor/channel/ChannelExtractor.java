@@ -1,5 +1,6 @@
 package org.schabi.newpipe.extractor.channel;
 
+import org.schabi.newpipe.extractor.Image;
 import org.schabi.newpipe.extractor.ListExtractor;
 import org.schabi.newpipe.extractor.StreamingService;
 import org.schabi.newpipe.extractor.exceptions.ParsingException;
@@ -32,8 +33,8 @@ public abstract class ChannelExtractor extends ListExtractor<StreamInfoItem> {
         super(service, linkHandler);
     }
 
-    public abstract String getAvatarUrl() throws ParsingException;
-    public abstract String getBannerUrl() throws ParsingException;
+    public abstract Image getAvatar() throws ParsingException;
+    public abstract Image getBanner() throws ParsingException;
     public abstract String getFeedUrl() throws ParsingException;
     public abstract long getSubscriberCount() throws ParsingException;
     public abstract String getDescription() throws ParsingException;

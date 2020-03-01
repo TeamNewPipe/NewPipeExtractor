@@ -94,7 +94,7 @@ public class YoutubeCommentsExtractorTest {
             assertFalse(StringUtil.isBlank(c.getName()));
             assertFalse(StringUtil.isBlank(c.getTextualPublishedTime()));
             assertNotNull(c.getPublishedTime());
-            assertFalse(StringUtil.isBlank(c.getThumbnailUrl()));
+            assertFalse(StringUtil.isBlank(c.getThumbnail().getUrl()));
             assertFalse(StringUtil.isBlank(c.getUrl()));
             assertFalse(c.getLikeCount() < 0);
         }

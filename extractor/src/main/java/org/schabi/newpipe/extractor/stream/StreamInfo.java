@@ -1,5 +1,6 @@
 package org.schabi.newpipe.extractor.stream;
 
+import org.schabi.newpipe.extractor.Image;
 import org.schabi.newpipe.extractor.Info;
 import org.schabi.newpipe.extractor.InfoItem;
 import org.schabi.newpipe.extractor.NewPipe;
@@ -201,7 +202,7 @@ public class StreamInfo extends Info {
         // so the frontend can afterwards check where errors happened.
 
         try {
-            streamInfo.setThumbnailUrl(extractor.getThumbnailUrl());
+            streamInfo.setThumbnail(extractor.getThumbnail());
         } catch (Exception e) {
             streamInfo.addError(e);
         }
@@ -241,7 +242,7 @@ public class StreamInfo extends Info {
             streamInfo.addError(e);
         }
         try {
-            streamInfo.setUploaderAvatarUrl(extractor.getUploaderAvatarUrl());
+            streamInfo.setUploaderAvatar(extractor.getUploaderAvatar());
         } catch (Exception e) {
             streamInfo.addError(e);
         }
@@ -314,7 +315,7 @@ public class StreamInfo extends Info {
     }
 
     private StreamType streamType;
-    private String thumbnailUrl = "";
+    private Image thumbnail = null;
     private String textualUploadDate;
     private DateWrapper uploadDate;
     private long duration = -1;
@@ -327,7 +328,7 @@ public class StreamInfo extends Info {
 
     private String uploaderName = "";
     private String uploaderUrl = "";
-    private String uploaderAvatarUrl = "";
+    private Image uploaderAvatar = null;
 
     private List<VideoStream> videoStreams = new ArrayList<>();
     private List<AudioStream> audioStreams = new ArrayList<>();
@@ -370,14 +371,14 @@ public class StreamInfo extends Info {
     /**
      * Get the thumbnail url
      *
-     * @return the thumbnail url as a string
+     * @return An {@code Image} instance with the thumbnail URL
      */
-    public String getThumbnailUrl() {
-        return thumbnailUrl;
+    public Image getThumbnail() {
+        return thumbnail;
     }
 
-    public void setThumbnailUrl(String thumbnailUrl) {
-        this.thumbnailUrl = thumbnailUrl;
+    public void setThumbnail(Image thumbnail) {
+        this.thumbnail = thumbnail;
     }
 
     public String getTextualUploadDate() {
@@ -475,12 +476,12 @@ public class StreamInfo extends Info {
         this.uploaderUrl = uploaderUrl;
     }
 
-    public String getUploaderAvatarUrl() {
-        return uploaderAvatarUrl;
+    public Image getUploaderAvatar() {
+        return uploaderAvatar;
     }
 
-    public void setUploaderAvatarUrl(String uploaderAvatarUrl) {
-        this.uploaderAvatarUrl = uploaderAvatarUrl;
+    public void setUploaderAvatar(Image uploaderAvatar) {
+        this.uploaderAvatar = uploaderAvatar;
     }
 
     public List<VideoStream> getVideoStreams() {

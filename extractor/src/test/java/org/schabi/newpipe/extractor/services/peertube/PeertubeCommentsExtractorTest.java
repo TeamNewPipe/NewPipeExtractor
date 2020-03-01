@@ -71,7 +71,7 @@ public class PeertubeCommentsExtractorTest {
             assertFalse(StringUtil.isBlank(c.getCommentText()));
             assertFalse(StringUtil.isBlank(c.getName()));
             assertFalse(StringUtil.isBlank(c.getTextualPublishedTime()));
-            assertFalse(StringUtil.isBlank(c.getThumbnailUrl()));
+            assertFalse(StringUtil.isBlank(c.getThumbnail().getUrl()));
             assertFalse(StringUtil.isBlank(c.getUrl()));
             assertFalse(c.getLikeCount() != -1);
         }

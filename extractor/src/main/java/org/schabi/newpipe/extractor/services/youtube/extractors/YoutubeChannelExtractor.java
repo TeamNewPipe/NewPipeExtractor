@@ -3,6 +3,7 @@ package org.schabi.newpipe.extractor.services.youtube.extractors;
 import com.grack.nanojson.JsonArray;
 import com.grack.nanojson.JsonObject;
 
+import org.schabi.newpipe.extractor.Image;
 import org.schabi.newpipe.extractor.StreamingService;
 import org.schabi.newpipe.extractor.channel.ChannelExtractor;
 import org.schabi.newpipe.extractor.downloader.Downloader;
@@ -102,30 +103,33 @@ public class YoutubeChannelExtractor extends ChannelExtractor {
     }
 
     @Override
-    public String getAvatarUrl() throws ParsingException {
+    public Image getAvatar() throws ParsingException {
         try {
-            String url = initialData.getObject("header").getObject("c4TabbedHeaderRenderer").getObject("avatar")
-                    .getArray("thumbnails").getObject(0).getString("url");
+            JsonObject thumbnail = initialData.getObject("header").getObject("c4TabbedHeaderRenderer").getObject("avatar")
+                    .getArray("thumbnails").getObject(0);
 
-            return fixThumbnailUrl(url);
+            return new Image(fixThumbnailUrl(thumbnail.getString("url")),
+                    thumbnail.getInt("width"), thumbnail.getInt("height"));
         } catch (Exception e) {
             throw new ParsingException("Could not get avatar", e);
         }
     }
 
     @Override
-    public String getBannerUrl() throws ParsingException {
+    public Image getBanner() throws ParsingException {
         try {
-            String url = null;
+            JsonObject thumbnail = null;
             try {
-                url = initialData.getObject("header").getObject("c4TabbedHeaderRenderer").getObject("banner")
-                        .getArray("thumbnails").getObject(0).getString("url");
+                thumbnail = initialData.getObject("header").getObject("c4TabbedHeaderRenderer")
+                        .getObject("banner").getArray("thumbnails").getObject(0);
             } catch (Exception ignored) {}
-            if (url == null || url.contains("s.ytimg.com") || url.contains("default_banner")) {
+            if (thumbnail == null || thumbnail.getString("url").contains("s.ytimg.com")
+                    || thumbnail.getString("url").contains("default_banner")) {
                 return null;
             }
 
-            return fixThumbnailUrl(url);
+            return new Image(fixThumbnailUrl(thumbnail.getString("url")),
+                    thumbnail.getInt("width"), thumbnail.getInt("height"));
         } catch (Exception e) {
             throw new ParsingException("Could not get banner", e);
         }

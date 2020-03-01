@@ -57,10 +57,10 @@ public class MediaCCCSearchExtractorEventsTest {
     }
 
     @Test
-    public void testThumbnailUrl() throws Exception {
-        assertTrue(itemsPage.getItems().get(0).getThumbnailUrl(),
-                itemsPage.getItems().get(0).getThumbnailUrl().startsWith("https://static.media.ccc.de/media/")
-                && itemsPage.getItems().get(0).getThumbnailUrl().endsWith(".jpg"));
+    public void testThumbnail() throws Exception {
+        assertTrue(itemsPage.getItems().get(0).getThumbnail().getUrl(),
+                itemsPage.getItems().get(0).getThumbnail().getUrl().startsWith("https://static.media.ccc.de/media/")
+                && itemsPage.getItems().get(0).getThumbnail().getUrl().endsWith(".jpg"));
     }
 
     @Test

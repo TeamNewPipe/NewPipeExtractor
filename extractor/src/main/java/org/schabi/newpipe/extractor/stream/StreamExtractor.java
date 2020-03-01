@@ -21,6 +21,7 @@ package org.schabi.newpipe.extractor.stream;
  */
 
 import org.schabi.newpipe.extractor.Extractor;
+import org.schabi.newpipe.extractor.Image;
 import org.schabi.newpipe.extractor.MediaFormat;
 import org.schabi.newpipe.extractor.StreamingService;
 import org.schabi.newpipe.extractor.exceptions.ExtractionException;
@@ -77,11 +78,11 @@ public abstract class StreamExtractor extends Extractor {
     /**
      * This will return the url to the thumbnail of the stream. Try to return the medium resolution here.
      *
-     * @return The url of the thumbnail.
+     * @return An {@code Image} instance with the URL of the thumbnail.
      * @throws ParsingException
      */
     @Nonnull
-    public abstract String getThumbnailUrl() throws ParsingException;
+    public abstract Image getThumbnail() throws ParsingException;
 
     /**
      * This is the stream description.
@@ -172,11 +173,11 @@ public abstract class StreamExtractor extends Extractor {
      * The url to the image file/profile picture/avatar of the creator/uploader of the stream.
      * If the url is not available you can return an empty String.
      *
-     * @return The url of the image file of the uploader or an empty String
+     * @return An {@code Image} instance with the URL of the image file of the uploader
      * @throws ParsingException
      */
     @Nonnull
-    public abstract String getUploaderAvatarUrl() throws ParsingException;
+    public abstract Image getUploaderAvatar() throws ParsingException;
 
     /**
      * Get the dash mpd url. If you don't know what a dash MPD is you can read about it

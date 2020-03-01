@@ -4,6 +4,8 @@ import com.grack.nanojson.JsonArray;
 import com.grack.nanojson.JsonObject;
 import com.grack.nanojson.JsonParser;
 import com.grack.nanojson.JsonParserException;
+
+import org.schabi.newpipe.extractor.Image;
 import org.schabi.newpipe.extractor.InfoItem;
 import org.schabi.newpipe.extractor.StreamingService;
 import org.schabi.newpipe.extractor.channel.ChannelInfoItem;
@@ -133,8 +135,8 @@ public class MediaCCCSearchExtractor extends SearchExtractor {
                     }
 
                     @Override
-                    public String getThumbnailUrl() throws ParsingException {
-                        return item.getThumbnailUrl();
+                    public Image getThumbnail() throws ParsingException {
+                        return item.getThumbnail();
                     }
                 });
             }

@@ -5,6 +5,7 @@ import com.grack.nanojson.JsonObject;
 import com.grack.nanojson.JsonParser;
 import com.grack.nanojson.JsonParserException;
 import org.jsoup.helper.StringUtil;
+import org.schabi.newpipe.extractor.Image;
 import org.schabi.newpipe.extractor.StreamingService;
 import org.schabi.newpipe.extractor.channel.ChannelExtractor;
 import org.schabi.newpipe.extractor.downloader.Downloader;
@@ -40,18 +41,18 @@ public class PeertubeChannelExtractor extends ChannelExtractor {
     }
 
     @Override
-    public String getAvatarUrl() throws ParsingException {
+    public Image getAvatar() throws ParsingException {
         String value;
         try {
             value = JsonUtils.getString(json, "avatar.path");
         } catch (Exception e) {
             value = "/client/assets/images/default-avatar.png";
         }
-        return baseUrl + value;
+        return new Image(baseUrl + value, -1, -1);
     }
 
     @Override
-    public String getBannerUrl() throws ParsingException {
+    public Image getBanner() throws ParsingException {
         return null;
     }
 

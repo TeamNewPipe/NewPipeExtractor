@@ -3,6 +3,7 @@ package org.schabi.newpipe.extractor.services.youtube.extractors;
 import com.grack.nanojson.JsonArray;
 import com.grack.nanojson.JsonObject;
 
+import org.schabi.newpipe.extractor.Image;
 import org.schabi.newpipe.extractor.StreamingService;
 import org.schabi.newpipe.extractor.downloader.Downloader;
 import org.schabi.newpipe.extractor.exceptions.ExtractionException;
@@ -101,29 +102,30 @@ public class YoutubePlaylistExtractor extends PlaylistExtractor {
     }
 
     @Override
-    public String getThumbnailUrl() throws ParsingException {
-        String url = null;
+    public Image getThumbnail() throws ParsingException {
+        JsonObject thumbnail = null;
 
         try {
-            url = playlistInfo.getObject("thumbnailRenderer").getObject("playlistVideoThumbnailRenderer")
-                    .getObject("thumbnail").getArray("thumbnails").getObject(0).getString("url");
+            thumbnail = playlistInfo.getObject("thumbnailRenderer").getObject("playlistVideoThumbnailRenderer")
+                    .getObject("thumbnail").getArray("thumbnails").getObject(0);
         } catch (Exception ignored) {}
 
-        if (url == null) {
+        if (thumbnail == null) {
             try {
-                url = initialData.getObject("microformat").getObject("microformatDataRenderer").getObject("thumbnail")
-                        .getArray("thumbnails").getObject(0).getString("url");
+                thumbnail = initialData.getObject("microformat").getObject("microformatDataRenderer")
+                        .getObject("thumbnail").getArray("thumbnails").getObject(0);
             } catch (Exception ignored) {}
 
-            if (url == null) throw new ParsingException("Could not get playlist thumbnail");
+            if (thumbnail == null) throw new ParsingException("Could not get playlist thumbnail");
         }
 
-        return fixThumbnailUrl(url);
+        return new Image(fixThumbnailUrl(thumbnail.getString("url")),
+                thumbnail.getInt("width"), thumbnail.getInt("height"));
     }
 
     @Override
-    public String getBannerUrl() {
-        return "";      // Banner can't be handled by frontend right now.
+    public Image getBanner() {
+        return null;      // Banner can't be handled by frontend right now.
         // Whoever is willing to implement this should also implement it in the frontend.
     }
 
@@ -146,11 +148,12 @@ public class YoutubePlaylistExtractor extends PlaylistExtractor {
     }
 
     @Override
-    public String getUploaderAvatarUrl() throws ParsingException {
+    public Image getUploaderAvatar() throws ParsingException {
         try {
-            String url = getUploaderInfo().getObject("thumbnail").getArray("thumbnails").getObject(0).getString("url");
+            JsonObject thumbnail = getUploaderInfo().getObject("thumbnail").getArray("thumbnails").getObject(0);
 
-            return fixThumbnailUrl(url);
+            return new Image(fixThumbnailUrl(thumbnail.getString("url")),
+                    thumbnail.getInt("width"), thumbnail.getInt("height"));
         } catch (Exception e) {
             throw new ParsingException("Could not get playlist uploader avatar", e);
         }

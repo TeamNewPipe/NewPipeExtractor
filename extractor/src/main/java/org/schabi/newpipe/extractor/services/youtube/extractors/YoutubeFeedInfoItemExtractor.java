@@ -1,6 +1,7 @@
 package org.schabi.newpipe.extractor.services.youtube.extractors;
 
 import org.jsoup.nodes.Element;
+import org.schabi.newpipe.extractor.Image;
 import org.schabi.newpipe.extractor.exceptions.ParsingException;
 import org.schabi.newpipe.extractor.localization.DateWrapper;
 import org.schabi.newpipe.extractor.stream.StreamInfoItemExtractor;
@@ -88,7 +89,7 @@ public class YoutubeFeedInfoItemExtractor implements StreamInfoItemExtractor {
     }
 
     @Override
-    public String getThumbnailUrl() {
-        return entryElement.getElementsByTag("media:thumbnail").first().attr("url");
+    public Image getThumbnail() {
+        return new Image(entryElement.getElementsByTag("media:thumbnail").first().attr("url"), -1, -1);
     }
 }

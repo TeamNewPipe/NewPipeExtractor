@@ -1,6 +1,8 @@
 package org.schabi.newpipe.extractor.services.media_ccc.extractors.infoItems;
 
 import com.grack.nanojson.JsonObject;
+
+import org.schabi.newpipe.extractor.Image;
 import org.schabi.newpipe.extractor.exceptions.ParsingException;
 import org.schabi.newpipe.extractor.localization.DateWrapper;
 import org.schabi.newpipe.extractor.services.media_ccc.extractors.MediaCCCParsingHelper;
@@ -72,7 +74,7 @@ public class MediaCCCStreamInfoItemExtractor implements StreamInfoItemExtractor 
     }
 
     @Override
-    public String getThumbnailUrl() throws ParsingException {
-        return event.getString("thumb_url");
+    public Image getThumbnail() throws ParsingException {
+        return new Image(event.getString("thumb_url"), -1, -1);
     }
 }

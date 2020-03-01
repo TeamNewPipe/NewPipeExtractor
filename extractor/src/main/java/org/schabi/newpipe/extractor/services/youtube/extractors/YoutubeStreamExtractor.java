@@ -7,6 +7,7 @@ import com.grack.nanojson.JsonParser;
 import org.mozilla.javascript.Context;
 import org.mozilla.javascript.Function;
 import org.mozilla.javascript.ScriptableObject;
+import org.schabi.newpipe.extractor.Image;
 import org.schabi.newpipe.extractor.MediaFormat;
 import org.schabi.newpipe.extractor.NewPipe;
 import org.schabi.newpipe.extractor.StreamingService;
@@ -189,14 +190,15 @@ public class YoutubeStreamExtractor extends StreamExtractor {
 
     @Nonnull
     @Override
-    public String getThumbnailUrl() throws ParsingException {
+    public Image getThumbnail() throws ParsingException {
         assertPageFetched();
         try {
             JsonArray thumbnails = playerResponse.getObject("videoDetails").getObject("thumbnail").getArray("thumbnails");
             // the last thumbnail is the one with the highest resolution
-            String url = thumbnails.getObject(thumbnails.size() - 1).getString("url");
+            JsonObject thumbnail = thumbnails.getObject(thumbnails.size() - 1);
 
-            return fixThumbnailUrl(url);
+            return new Image(fixThumbnailUrl(thumbnail.getString("url")),
+                    thumbnail.getInt("width"), thumbnail.getInt("height"));
         } catch (Exception e) {
             throw new ParsingException("Could not get thumbnail url");
         }
@@ -369,13 +371,14 @@ public class YoutubeStreamExtractor extends StreamExtractor {
 
     @Nonnull
     @Override
-    public String getUploaderAvatarUrl() throws ParsingException {
+    public Image getUploaderAvatar() throws ParsingException {
         assertPageFetched();
         try {
-            String url = getVideoSecondaryInfoRenderer().getObject("owner").getObject("videoOwnerRenderer")
-                    .getObject("thumbnail").getArray("thumbnails").getObject(0).getString("url");
+            JsonObject thumbnail = getVideoSecondaryInfoRenderer().getObject("owner").getObject("videoOwnerRenderer")
+                    .getObject("thumbnail").getArray("thumbnails").getObject(0);
 
-            return fixThumbnailUrl(url);
+            return new Image(fixThumbnailUrl(thumbnail.getString("url")),
+                    thumbnail.getInt("width"), thumbnail.getInt("height"));
         } catch (Exception e) {
             throw new ParsingException("Could not get uploader avatar url", e);
         }

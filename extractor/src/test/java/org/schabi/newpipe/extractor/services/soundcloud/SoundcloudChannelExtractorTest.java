@@ -82,13 +82,13 @@ public class SoundcloudChannelExtractorTest {
         }
 
         @Test
-        public void testAvatarUrl() {
-            assertIsSecureUrl(extractor.getAvatarUrl());
+        public void testAvatar() {
+            assertIsSecureUrl(extractor.getAvatar().getUrl());
         }
 
         @Test
-        public void testBannerUrl() {
-            assertIsSecureUrl(extractor.getBannerUrl());
+        public void testBanner() {
+            assertIsSecureUrl(extractor.getBanner().getUrl());
         }
 
         @Test
@@ -176,13 +176,13 @@ public class SoundcloudChannelExtractorTest {
         }
 
         @Test
-        public void testAvatarUrl() {
-            assertIsSecureUrl(extractor.getAvatarUrl());
+        public void testAvatar() {
+            assertIsSecureUrl(extractor.getAvatar().getUrl());
         }
 
         @Test
-        public void testBannerUrl() {
-            assertIsSecureUrl(extractor.getBannerUrl());
+        public void testBanner() {
+            assertIsSecureUrl(extractor.getBanner().getUrl());
         }
 
         @Test

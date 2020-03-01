@@ -111,7 +111,7 @@ public class StreamInfoItem extends InfoItem {
                 ", serviceId=" + getServiceId() +
                 ", url='" + getUrl() + '\'' +
                 ", name='" + getName() + '\'' +
-                ", thumbnailUrl='" + getThumbnailUrl() + '\'' +
+                ", thumbnailUrl='" + getThumbnail().getUrl() + '\'' +
                 '}';
     }
 }

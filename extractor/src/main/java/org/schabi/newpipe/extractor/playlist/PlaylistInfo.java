@@ -1,5 +1,6 @@
 package org.schabi.newpipe.extractor.playlist;
 
+import org.schabi.newpipe.extractor.Image;
 import org.schabi.newpipe.extractor.ListExtractor.InfoItemsPage;
 import org.schabi.newpipe.extractor.ListInfo;
 import org.schabi.newpipe.extractor.NewPipe;
@@ -62,7 +63,7 @@ public class PlaylistInfo extends ListInfo<StreamInfoItem> {
             info.addError(e);
         }
         try {
-            info.setThumbnailUrl(extractor.getThumbnailUrl());
+            info.setThumbnail(extractor.getThumbnail());
         } catch (Exception e) {
             info.addError(e);
         }
@@ -79,13 +80,13 @@ public class PlaylistInfo extends ListInfo<StreamInfoItem> {
             uploaderParsingErrors.add(e);
         }
         try {
-            info.setUploaderAvatarUrl(extractor.getUploaderAvatarUrl());
+            info.setUploaderAvatar(extractor.getUploaderAvatar());
         } catch (Exception e) {
-            info.setUploaderAvatarUrl("");
+            info.setUploaderAvatar(null);
             uploaderParsingErrors.add(e);
         }
         try {
-            info.setBannerUrl(extractor.getBannerUrl());
+            info.setBanner(extractor.getBanner());
         } catch (Exception e) {
             info.addError(e);
         }
@@ -102,27 +103,27 @@ public class PlaylistInfo extends ListInfo<StreamInfoItem> {
         return info;
     }
 
-    private String thumbnailUrl;
-    private String bannerUrl;
+    private Image thumbnail;
+    private Image banner;
     private String uploaderUrl;
     private String uploaderName;
-    private String uploaderAvatarUrl;
+    private Image uploaderAvatar;
     private long streamCount = 0;
 
-    public String getThumbnailUrl() {
-        return thumbnailUrl;
+    public Image getThumbnail() {
+        return thumbnail;
     }
 
-    public void setThumbnailUrl(String thumbnailUrl) {
-        this.thumbnailUrl = thumbnailUrl;
+    public void setThumbnail(Image thumbnail) {
+        this.thumbnail = thumbnail;
     }
 
-    public String getBannerUrl() {
-        return bannerUrl;
+    public Image getBanner() {
+        return banner;
     }
 
-    public void setBannerUrl(String bannerUrl) {
-        this.bannerUrl = bannerUrl;
+    public void setBanner(Image banner) {
+        this.banner = banner;
     }
 
     public String getUploaderUrl() {
@@ -141,12 +142,12 @@ public class PlaylistInfo extends ListInfo<StreamInfoItem> {
         this.uploaderName = uploaderName;
     }
 
-    public String getUploaderAvatarUrl() {
-        return uploaderAvatarUrl;
+    public Image getUploaderAvatar() {
+        return uploaderAvatar;
     }
 
-    public void setUploaderAvatarUrl(String uploaderAvatarUrl) {
-        this.uploaderAvatarUrl = uploaderAvatarUrl;
+    public void setUploaderAvatar(Image uploaderAvatar) {
+        this.uploaderAvatar = uploaderAvatar;
     }
 
     public long getStreamCount() {

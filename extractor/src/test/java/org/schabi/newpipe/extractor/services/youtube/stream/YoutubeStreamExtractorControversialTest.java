@@ -97,13 +97,13 @@ public class YoutubeStreamExtractorControversialTest {
     }
 
     @Test
-    public void testGetThumbnailUrl() throws ParsingException {
-        assertIsSecureUrl(extractor.getThumbnailUrl());
+    public void testGetThumbnail() throws ParsingException {
+        assertIsSecureUrl(extractor.getThumbnail().getUrl());
     }
 
     @Test
-    public void testGetUploaderAvatarUrl() throws ParsingException {
-        assertIsSecureUrl(extractor.getUploaderAvatarUrl());
+    public void testGetUploaderAvatar() throws ParsingException {
+        assertIsSecureUrl(extractor.getUploaderAvatar().getUrl());
     }
 
     @Test

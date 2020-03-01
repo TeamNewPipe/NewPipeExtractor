@@ -4,6 +4,8 @@ import com.grack.nanojson.JsonArray;
 import com.grack.nanojson.JsonObject;
 import com.grack.nanojson.JsonParser;
 import com.grack.nanojson.JsonParserException;
+
+import org.schabi.newpipe.extractor.Image;
 import org.schabi.newpipe.extractor.StreamingService;
 import org.schabi.newpipe.extractor.channel.ChannelExtractor;
 import org.schabi.newpipe.extractor.downloader.Downloader;
@@ -26,13 +28,13 @@ public class MediaCCCConferenceExtractor extends ChannelExtractor {
     }
 
     @Override
-    public String getAvatarUrl() throws ParsingException {
-        return conferenceData.getString("logo_url");
+    public Image getAvatar() throws ParsingException {
+        return new Image(conferenceData.getString("logo_url"), -1, -1);
     }
 
     @Override
-    public String getBannerUrl() throws ParsingException {
-        return conferenceData.getString("logo_url");
+    public Image getBanner() throws ParsingException {
+        return new Image(conferenceData.getString("logo_url"), -1, -1);
     }
 
     @Override

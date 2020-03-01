@@ -91,13 +91,13 @@ public class SoundcloudStreamExtractorDefaultTest {
     }
 
     @Test
-    public void testGetThumbnailUrl() throws ParsingException {
-        assertIsSecureUrl(extractor.getThumbnailUrl());
+    public void testGetThumbnail() throws ParsingException {
+        assertIsSecureUrl(extractor.getThumbnail().getUrl());
     }
 
     @Test
-    public void testGetUploaderAvatarUrl() throws ParsingException {
-        assertIsSecureUrl(extractor.getUploaderAvatarUrl());
+    public void testGetUploaderAvatar() throws ParsingException {
+        assertIsSecureUrl(extractor.getUploaderAvatar().getUrl());
     }
 
     @Test
@@ -107,7 +107,7 @@ public class SoundcloudStreamExtractorDefaultTest {
 
     @Test
     public void testStreamType() throws ParsingException {
-        assertTrue(extractor.getStreamType() == StreamType.AUDIO_STREAM);
+        assertSame(extractor.getStreamType(), StreamType.AUDIO_STREAM);
     }
 
     @Test

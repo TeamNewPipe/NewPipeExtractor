@@ -1,6 +1,8 @@
 package org.schabi.newpipe.extractor.services.peertube.extractors;
 
 import com.grack.nanojson.JsonObject;
+
+import org.schabi.newpipe.extractor.Image;
 import org.schabi.newpipe.extractor.ServiceList;
 import org.schabi.newpipe.extractor.exceptions.ParsingException;
 import org.schabi.newpipe.extractor.localization.DateWrapper;
@@ -26,9 +28,9 @@ public class PeertubeStreamInfoItemExtractor implements StreamInfoItemExtractor 
     }
 
     @Override
-    public String getThumbnailUrl() throws ParsingException {
+    public Image getThumbnail() throws ParsingException {
         String value = JsonUtils.getString(item, "thumbnailPath");
-        return baseUrl + value;
+        return new Image(baseUrl + value, -1, -1);
     }
 
     @Override

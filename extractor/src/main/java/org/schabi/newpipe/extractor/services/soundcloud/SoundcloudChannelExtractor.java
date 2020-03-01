@@ -4,6 +4,8 @@ import com.grack.nanojson.JsonArray;
 import com.grack.nanojson.JsonObject;
 import com.grack.nanojson.JsonParser;
 import com.grack.nanojson.JsonParserException;
+
+import org.schabi.newpipe.extractor.Image;
 import org.schabi.newpipe.extractor.StreamingService;
 import org.schabi.newpipe.extractor.channel.ChannelExtractor;
 import org.schabi.newpipe.extractor.downloader.Downloader;
@@ -56,16 +58,16 @@ public class SoundcloudChannelExtractor extends ChannelExtractor {
     }
 
     @Override
-    public String getAvatarUrl() {
-        return user.getString("avatar_url");
+    public Image getAvatar() {
+        return new Image(user.getString("avatar_url"), -1, -1);
     }
 
     @Override
-    public String getBannerUrl() {
-        return user.getObject("visuals", new JsonObject())
+    public Image getBanner() {
+        return new Image(user.getObject("visuals", new JsonObject())
                 .getArray("visuals", new JsonArray())
                 .getObject(0, new JsonObject())
-                .getString("visual_url");
+                .getString("visual_url"), -1, -1);
     }
 
     @Override

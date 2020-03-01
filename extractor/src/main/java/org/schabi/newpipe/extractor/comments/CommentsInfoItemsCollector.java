@@ -65,7 +65,7 @@ public class CommentsInfoItemsCollector extends InfoItemsCollector<CommentsInfoI
             addError(e);
         }
         try {
-            resultItem.setThumbnailUrl(extractor.getThumbnailUrl());
+            resultItem.setThumbnail(extractor.getThumbnail());
         } catch (Exception e) {
             addError(e);
         }

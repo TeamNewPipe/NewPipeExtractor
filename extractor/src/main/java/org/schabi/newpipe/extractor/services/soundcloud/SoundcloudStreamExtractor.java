@@ -4,6 +4,8 @@ import com.grack.nanojson.JsonArray;
 import com.grack.nanojson.JsonObject;
 import com.grack.nanojson.JsonParser;
 import com.grack.nanojson.JsonParserException;
+
+import org.schabi.newpipe.extractor.Image;
 import org.schabi.newpipe.extractor.MediaFormat;
 import org.schabi.newpipe.extractor.NewPipe;
 import org.schabi.newpipe.extractor.StreamingService;
@@ -67,13 +69,13 @@ public class SoundcloudStreamExtractor extends StreamExtractor {
 
     @Nonnull
     @Override
-    public String getThumbnailUrl() {
+    public Image getThumbnail() {
         String artworkUrl = track.getString("artwork_url", "");
         if (artworkUrl.isEmpty()) {
             artworkUrl = track.getObject("user").getString("avatar_url", "");
         }
         String artworkUrlBetterResolution = artworkUrl.replace("large.jpg", "crop.jpg");
-        return artworkUrlBetterResolution;
+        return new Image(artworkUrlBetterResolution, -1, -1);
     }
 
     @Override
@@ -125,8 +127,8 @@ public class SoundcloudStreamExtractor extends StreamExtractor {
 
     @Nonnull
     @Override
-    public String getUploaderAvatarUrl() {
-        return SoundcloudParsingHelper.getAvatarUrl(track);
+    public Image getUploaderAvatar() {
+        return new Image(SoundcloudParsingHelper.getAvatarUrl(track), -1, -1);
     }
 
     @Nonnull

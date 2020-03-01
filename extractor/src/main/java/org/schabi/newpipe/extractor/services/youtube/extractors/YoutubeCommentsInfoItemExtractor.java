@@ -2,6 +2,8 @@ package org.schabi.newpipe.extractor.services.youtube.extractors;
 
 import com.grack.nanojson.JsonArray;
 import com.grack.nanojson.JsonObject;
+
+import org.schabi.newpipe.extractor.Image;
 import org.schabi.newpipe.extractor.comments.CommentsInfoItemExtractor;
 import org.schabi.newpipe.extractor.exceptions.ParsingException;
 import org.schabi.newpipe.extractor.localization.DateWrapper;
@@ -10,6 +12,8 @@ import org.schabi.newpipe.extractor.utils.JsonUtils;
 import org.schabi.newpipe.extractor.utils.Utils;
 
 import javax.annotation.Nullable;
+
+import static org.schabi.newpipe.extractor.services.youtube.linkHandler.YoutubeParsingHelper.fixThumbnailUrl;
 
 public class YoutubeCommentsInfoItemExtractor implements CommentsInfoItemExtractor {
 
@@ -29,10 +33,13 @@ public class YoutubeCommentsInfoItemExtractor implements CommentsInfoItemExtract
     }
 
     @Override
-    public String getThumbnailUrl() throws ParsingException {
+    public Image getThumbnail() throws ParsingException {
         try {
-            JsonArray arr = JsonUtils.getArray(json, "authorThumbnail.thumbnails");
-            return JsonUtils.getString(arr.getObject(2), "url");
+            JsonObject thumbnail = json.getObject("authorThumbnail").getArray("thumbnails")
+                    .getObject(2);
+
+            return new Image(fixThumbnailUrl(thumbnail.getString("url")),
+                    thumbnail.getInt("width"), thumbnail.getInt("height"));
         } catch (Exception e) {
             throw new ParsingException("Could not get thumbnail url", e);
         }

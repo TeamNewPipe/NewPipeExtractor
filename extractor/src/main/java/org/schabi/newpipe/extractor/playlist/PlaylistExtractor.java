@@ -1,5 +1,6 @@
 package org.schabi.newpipe.extractor.playlist;
 
+import org.schabi.newpipe.extractor.Image;
 import org.schabi.newpipe.extractor.ListExtractor;
 import org.schabi.newpipe.extractor.StreamingService;
 import org.schabi.newpipe.extractor.exceptions.ParsingException;
@@ -12,12 +13,12 @@ public abstract class PlaylistExtractor extends ListExtractor<StreamInfoItem> {
         super(service, linkHandler);
     }
 
-    public abstract String getThumbnailUrl() throws ParsingException;
-    public abstract String getBannerUrl() throws ParsingException;
+    public abstract Image getThumbnail() throws ParsingException;
+    public abstract Image getBanner() throws ParsingException;
 
     public abstract String getUploaderUrl() throws ParsingException;
     public abstract String getUploaderName() throws ParsingException;
-    public abstract String getUploaderAvatarUrl() throws ParsingException;
+    public abstract Image getUploaderAvatar() throws ParsingException;
 
     public abstract long getStreamCount() throws ParsingException;
 }

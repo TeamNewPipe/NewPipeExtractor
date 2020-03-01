@@ -1,5 +1,6 @@
 package org.schabi.newpipe.extractor.channel;
 
+import org.schabi.newpipe.extractor.Image;
 import org.schabi.newpipe.extractor.ListExtractor.InfoItemsPage;
 import org.schabi.newpipe.extractor.ListInfo;
 import org.schabi.newpipe.extractor.NewPipe;
@@ -64,12 +65,12 @@ public class ChannelInfo extends ListInfo<StreamInfoItem> {
         final ChannelInfo info = new ChannelInfo(serviceId, id, url, originalUrl, name, extractor.getLinkHandler());
 
         try {
-            info.setAvatarUrl(extractor.getAvatarUrl());
+            info.setAvatar(extractor.getAvatar());
         } catch (Exception e) {
             info.addError(e);
         }
         try {
-            info.setBannerUrl(extractor.getBannerUrl());
+            info.setBanner(extractor.getBanner());
         } catch (Exception e) {
             info.addError(e);
         }
@@ -97,27 +98,27 @@ public class ChannelInfo extends ListInfo<StreamInfoItem> {
         return info;
     }
 
-    private String avatarUrl;
-    private String bannerUrl;
+    private Image avatar;
+    private Image banner;
     private String feedUrl;
     private long subscriberCount = -1;
     private String description;
     private String[] donationLinks;
 
-    public String getAvatarUrl() {
-        return avatarUrl;
+    public Image getAvatar() {
+        return avatar;
     }
 
-    public void setAvatarUrl(String avatarUrl) {
-        this.avatarUrl = avatarUrl;
+    public void setAvatar(Image avatar) {
+        this.avatar = avatar;
     }
 
-    public String getBannerUrl() {
-        return bannerUrl;
+    public Image getBanner() {
+        return banner;
     }
 
-    public void setBannerUrl(String bannerUrl) {
-        this.bannerUrl = bannerUrl;
+    public void setBanner(Image banner) {
+        this.banner = banner;
     }
 
     public String getFeedUrl() {

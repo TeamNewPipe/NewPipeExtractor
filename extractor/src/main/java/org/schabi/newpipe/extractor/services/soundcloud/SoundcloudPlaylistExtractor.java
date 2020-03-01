@@ -3,6 +3,8 @@ package org.schabi.newpipe.extractor.services.soundcloud;
 import com.grack.nanojson.JsonObject;
 import com.grack.nanojson.JsonParser;
 import com.grack.nanojson.JsonParserException;
+
+import org.schabi.newpipe.extractor.Image;
 import org.schabi.newpipe.extractor.StreamingService;
 import org.schabi.newpipe.extractor.downloader.Downloader;
 import org.schabi.newpipe.extractor.exceptions.ExtractionException;
@@ -56,7 +58,7 @@ public class SoundcloudPlaylistExtractor extends PlaylistExtractor {
     }
 
     @Override
-    public String getThumbnailUrl() {
+    public Image getThumbnail() {
         String artworkUrl = playlist.getString("artwork_url");
 
         if (artworkUrl == null) {
@@ -67,22 +69,22 @@ public class SoundcloudPlaylistExtractor extends PlaylistExtractor {
                 if (infoItems.getItems().isEmpty()) return null;
 
                 for (StreamInfoItem item : infoItems.getItems()) {
-                    final String thumbnailUrl = item.getThumbnailUrl();
-                    if (thumbnailUrl == null || thumbnailUrl.isEmpty()) continue;
+                    final Image thumbnail = item.getThumbnail();
+                    if (thumbnail.getUrl() == null || thumbnail.getUrl().isEmpty()) continue;
 
-                    String thumbnailUrlBetterResolution = thumbnailUrl.replace("large.jpg", "crop.jpg");
-                    return thumbnailUrlBetterResolution;
+                    String thumbnailUrlBetterResolution = thumbnail.getUrl().replace("large.jpg", "crop.jpg");
+                    return new Image(thumbnailUrlBetterResolution, -1, -1);
                 }
             } catch (Exception ignored) {
             }
         }
 
         String artworkUrlBetterResolution = artworkUrl.replace("large.jpg", "crop.jpg");
-        return artworkUrlBetterResolution;
+        return new Image(artworkUrlBetterResolution, -1, -1);
     }
 
     @Override
-    public String getBannerUrl() {
+    public Image getBanner() {
         return null;
     }
 
@@ -97,8 +99,8 @@ public class SoundcloudPlaylistExtractor extends PlaylistExtractor {
     }
 
     @Override
-    public String getUploaderAvatarUrl() {
-        return SoundcloudParsingHelper.getAvatarUrl(playlist);
+    public Image getUploaderAvatar() {
+        return new Image(SoundcloudParsingHelper.getAvatarUrl(playlist), -1, -1);
     }
 
     @Override

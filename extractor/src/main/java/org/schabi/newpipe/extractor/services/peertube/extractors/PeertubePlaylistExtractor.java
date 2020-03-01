@@ -1,5 +1,6 @@
 package org.schabi.newpipe.extractor.services.peertube.extractors;
 
+import org.schabi.newpipe.extractor.Image;
 import org.schabi.newpipe.extractor.StreamingService;
 import org.schabi.newpipe.extractor.downloader.Downloader;
 import org.schabi.newpipe.extractor.exceptions.ExtractionException;
@@ -18,13 +19,13 @@ public class PeertubePlaylistExtractor extends PlaylistExtractor {
     }
 
     @Override
-    public String getThumbnailUrl() throws ParsingException {
+    public Image getThumbnail() throws ParsingException {
         // TODO Auto-generated method stub
         return null;
     }
 
     @Override
-    public String getBannerUrl() throws ParsingException {
+    public Image getBanner() throws ParsingException {
         // TODO Auto-generated method stub
         return null;
     }
@@ -42,7 +43,7 @@ public class PeertubePlaylistExtractor extends PlaylistExtractor {
     }
 
     @Override
-    public String getUploaderAvatarUrl() throws ParsingException {
+    public Image getUploaderAvatar() throws ParsingException {
         // TODO Auto-generated method stub
         return null;
     }
