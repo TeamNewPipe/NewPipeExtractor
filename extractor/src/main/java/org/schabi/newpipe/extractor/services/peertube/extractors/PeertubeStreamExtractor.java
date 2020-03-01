@@ -61,7 +61,10 @@ public class PeertubeStreamExtractor extends StreamExtractor {
     @Override
     public List<Image> getThumbnails() throws ParsingException {
         List<Image> images = new ArrayList<>();
-        images.add(new Image(baseUrl + JsonUtils.getString(json, "previewPath"), -1, -1));
+
+        images.add(new Image(baseUrl + JsonUtils.getString(json, "thumbnailPath"), 223, 122)); // See https://github.com/Chocobozzz/PeerTube/blob/366caf8b71f3d82336b6ac243845c783ef673fc1/server/initializers/constants.ts#L548
+        images.add(new Image(baseUrl + JsonUtils.getString(json, "previewPath"), 850, 480)); // See https://github.com/Chocobozzz/PeerTube/blob/366caf8b71f3d82336b6ac243845c783ef673fc1/server/initializers/constants.ts#L553
+
         return images;
     }
 
@@ -150,7 +153,8 @@ public class PeertubeStreamExtractor extends StreamExtractor {
             value = "/client/assets/images/default-avatar.png";
         }
 
-        images.add(new Image(baseUrl + value, -1, -1));
+        images.add(new Image(baseUrl + value, 120, 120)); // See https://github.com/Chocobozzz/PeerTube/blob/366caf8b71f3d82336b6ac243845c783ef673fc1/server/initializers/constants.ts#L558
+
         return images;
     }
 
