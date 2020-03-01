@@ -10,6 +10,7 @@ import org.schabi.newpipe.extractor.exceptions.ParsingException;
 import org.schabi.newpipe.extractor.linkhandler.ListLinkHandler;
 import org.schabi.newpipe.extractor.localization.TimeAgoParser;
 import org.schabi.newpipe.extractor.playlist.PlaylistExtractor;
+import org.schabi.newpipe.extractor.services.youtube.linkHandler.YoutubeParsingHelper;
 import org.schabi.newpipe.extractor.stream.StreamInfoItem;
 import org.schabi.newpipe.extractor.stream.StreamInfoItemsCollector;
 import org.schabi.newpipe.extractor.utils.Utils;
@@ -39,6 +40,8 @@ public class YoutubePlaylistExtractor extends PlaylistExtractor {
         final JsonArray ajaxJson = getJsonResponse(url, getExtractorLocalization());
 
         initialData = ajaxJson.getObject(1).getObject("response");
+        YoutubeParsingHelper.defaultAlertsCheck(initialData);
+
         playlistInfo = getPlaylistInfo();
     }
 

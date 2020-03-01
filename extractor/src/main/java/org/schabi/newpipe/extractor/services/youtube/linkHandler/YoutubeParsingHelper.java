@@ -362,10 +362,45 @@ public class YoutubeParsingHelper {
             throw new ParsingException("JSON response is too short");
         }
 
+        // Check if the request was redirected to the error page.
+        final URL latestUrl = new URL(response.latestUrl());
+        if (latestUrl.getHost().equalsIgnoreCase("www.youtube.com")) {
+            final String path = latestUrl.getPath();
+            if (path.equalsIgnoreCase("/oops") || path.equalsIgnoreCase("/error")) {
+                throw new ContentNotAvailableException("Content unavailable");
+            }
+        }
+
+        final String responseContentType = response.getHeader("Content-Type");
+        if (responseContentType != null && responseContentType.toLowerCase().contains("text/html")) {
+            throw new ParsingException("Got HTML document, expected JSON response" +
+                    " (latest url was: \"" + response.latestUrl() + "\")");
+        }
+
         try {
             return JsonParser.array().from(responseBody);
         } catch (JsonParserException e) {
             throw new ParsingException("Could not parse JSON", e);
+        }
+    }
+
+    /**
+     * Shared alert detection function, multiple endpoints return the error similarly structured.
+     * <p>
+     * Will check if the object has an alert of the type "ERROR".
+     *
+     * @param initialData the object which will be checked if an alert is present
+     * @throws ContentNotAvailableException if an alert is detected
+     */
+    public static void defaultAlertsCheck(JsonObject initialData) throws ContentNotAvailableException {
+        final JsonArray alerts = initialData.getArray("alerts");
+        if (alerts != null && !alerts.isEmpty()) {
+            final JsonObject alertRenderer = alerts.getObject(0).getObject("alertRenderer");
+            final String alertText = alertRenderer.getObject("text").getString("simpleText");
+            final String alertType = alertRenderer.getString("type");
+            if (alertType.equalsIgnoreCase("ERROR")) {
+                throw new ContentNotAvailableException("Got error: \"" + alertText + "\"");
+            }
         }
     }
 }

@@ -58,8 +58,8 @@ public class YoutubeChannelExtractor extends ChannelExtractor {
         final String url = super.getUrl() + "/videos?pbj=1&view=0&flow=grid";
 
         final JsonArray ajaxJson = getJsonResponse(url, getExtractorLocalization());
-
         initialData = ajaxJson.getObject(1).getObject("response");
+        YoutubeParsingHelper.defaultAlertsCheck(initialData);
     }
 
 

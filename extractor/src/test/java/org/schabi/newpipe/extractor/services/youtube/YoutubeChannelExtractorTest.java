@@ -6,6 +6,7 @@ import org.schabi.newpipe.DownloaderTestImpl;
 import org.schabi.newpipe.extractor.NewPipe;
 import org.schabi.newpipe.extractor.ServiceList;
 import org.schabi.newpipe.extractor.channel.ChannelExtractor;
+import org.schabi.newpipe.extractor.exceptions.ContentNotAvailableException;
 import org.schabi.newpipe.extractor.exceptions.ParsingException;
 import org.schabi.newpipe.extractor.services.BaseChannelExtractorTest;
 import org.schabi.newpipe.extractor.services.youtube.extractors.YoutubeChannelExtractor;
@@ -19,6 +20,28 @@ import static org.schabi.newpipe.extractor.services.DefaultTests.*;
  * Test for {@link ChannelExtractor}
  */
 public class YoutubeChannelExtractorTest {
+
+    public static class NotAvailable {
+        @BeforeClass
+        public static void setUp() {
+            NewPipe.init(DownloaderTestImpl.getInstance());
+        }
+
+        @Test(expected = ContentNotAvailableException.class)
+        public void deletedFetch() throws Exception {
+            final ChannelExtractor extractor =
+                    YouTube.getChannelExtractor("https://www.youtube.com/channel/UCAUc4iz6edWerIjlnL8OSSw");
+            extractor.fetchPage();
+        }
+
+        @Test(expected = ContentNotAvailableException.class)
+        public void nonExistentFetch() throws Exception {
+            final ChannelExtractor extractor =
+                    YouTube.getChannelExtractor("https://www.youtube.com/channel/DOESNT-EXIST");
+            extractor.fetchPage();
+        }
+    }
+
     public static class Gronkh implements BaseChannelExtractorTest {
         private static YoutubeChannelExtractor extractor;
 
