@@ -8,6 +8,7 @@ import com.grack.nanojson.JsonParserException;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.schabi.newpipe.extractor.downloader.Response;
+import org.schabi.newpipe.extractor.exceptions.ContentNotAvailableException;
 import org.schabi.newpipe.extractor.exceptions.ExtractionException;
 import org.schabi.newpipe.extractor.exceptions.ParsingException;
 import org.schabi.newpipe.extractor.exceptions.ReCaptchaException;
@@ -349,14 +350,20 @@ public class YoutubeParsingHelper {
         Map<String, List<String>> headers = new HashMap<>();
         headers.put("X-YouTube-Client-Name", Collections.singletonList("1"));
         headers.put("X-YouTube-Client-Version", Collections.singletonList(getClientVersion()));
-        final String response = getDownloader().get(url, headers, localization).responseBody();
+        final Response response = getDownloader().get(url, headers, localization);
 
-        if (response.length() < 50) { // ensure to have a valid response
+        if (response.responseCode() == 404) {
+            throw new ContentNotAvailableException("Not found" +
+                    " (\"" + response.responseCode() + " " + response.responseMessage() + "\")");
+        }
+
+        final String responseBody = response.responseBody();
+        if (responseBody.length() < 50) { // ensure to have a valid response
             throw new ParsingException("JSON response is too short");
         }
 
         try {
-            return JsonParser.array().from(response);
+            return JsonParser.array().from(responseBody);
         } catch (JsonParserException e) {
             throw new ParsingException("Could not parse JSON", e);
         }
