@@ -45,7 +45,7 @@ public class MediaCCCConferenceInfoItemExtractor implements ChannelInfoItemExtra
     @Override
     public List<Image> getThumbnails() throws ParsingException {
         List<Image> images = new ArrayList<>();
-        images.add(new Image(conference.getString("logo_url"), -1, -1));
+        images.add(new Image(conference.getString("logo_url"), Image.HIGH, Image.HIGH));
         return images;
     }
 }

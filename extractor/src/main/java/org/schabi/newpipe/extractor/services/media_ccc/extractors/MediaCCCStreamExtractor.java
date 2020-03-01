@@ -46,7 +46,7 @@ public class MediaCCCStreamExtractor extends StreamExtractor {
     @Override
     public List<Image> getThumbnails() throws ParsingException {
         List<Image> images = new ArrayList<>();
-        images.add(new Image(data.getString("thumb_url"), -1, -1));
+        images.add(new Image(data.getString("thumb_url"), Image.HIGH, Image.HIGH));
         return images;
     }
 
@@ -103,7 +103,7 @@ public class MediaCCCStreamExtractor extends StreamExtractor {
     @Override
     public List<Image> getUploaderAvatars() throws ParsingException {
         List<Image> images = new ArrayList<>();
-        images.add(new Image(conferenceData.getString("logo_url"), -1, -1));
+        images.add(new Image(conferenceData.getString("logo_url"), Image.HIGH, Image.HIGH));
         return images;
     }
 

@@ -79,7 +79,7 @@ public class MediaCCCStreamInfoItemExtractor implements StreamInfoItemExtractor 
     @Override
     public List<Image> getThumbnails() throws ParsingException {
         List<Image> images = new ArrayList<>();
-        images.add(new Image(event.getString("thumb_url"), -1, -1));
+        images.add(new Image(event.getString("thumb_url"), Image.HIGH, Image.HIGH));
         return images;
     }
 }

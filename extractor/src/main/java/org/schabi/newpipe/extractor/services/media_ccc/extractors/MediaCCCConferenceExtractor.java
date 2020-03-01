@@ -32,14 +32,14 @@ public class MediaCCCConferenceExtractor extends ChannelExtractor {
     @Override
     public List<Image> getAvatars() throws ParsingException {
         List<Image> images = new ArrayList<>();
-        images.add(new Image(conferenceData.getString("logo_url"), -1, -1));
+        images.add(new Image(conferenceData.getString("logo_url"), Image.HIGH, Image.HIGH));
         return images;
     }
 
     @Override
     public List<Image> getBanners() throws ParsingException {
         List<Image> images = new ArrayList<>();
-        images.add(new Image(conferenceData.getString("logo_url"), -1, -1));
+        images.add(new Image(conferenceData.getString("logo_url"), Image.HIGH, Image.HIGH));
         return images;
     }
 
