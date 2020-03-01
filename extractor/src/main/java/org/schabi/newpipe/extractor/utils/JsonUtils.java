@@ -11,6 +11,7 @@ import java.util.Arrays;
 import java.util.List;
 
 public class JsonUtils {
+    public static final JsonObject DEFAULT_EMPTY = new JsonObject();
 
     private JsonUtils() {
     }

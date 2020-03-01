@@ -63,7 +63,7 @@ public class YoutubeSearchExtractor extends SearchExtractor {
     }
 
     @Override
-    public String getSearchSuggestion() {
+    public String getSearchSuggestion() throws ParsingException {
         JsonObject showingResultsForRenderer = initialData.getObject("contents")
                 .getObject("twoColumnSearchResultsRenderer").getObject("primaryContents")
                 .getObject("sectionListRenderer").getArray("contents").getObject(0)
@@ -114,7 +114,7 @@ public class YoutubeSearchExtractor extends SearchExtractor {
         return new InfoItemsPage<>(collector, getNextPageUrlFrom(itemSectionRenderer.getArray("continuations")));
     }
 
-    private void collectStreamsFrom(InfoItemsSearchCollector collector, JsonArray videos) throws NothingFoundException {
+    private void collectStreamsFrom(InfoItemsSearchCollector collector, JsonArray videos) throws NothingFoundException, ParsingException {
         collector.reset();
 
         final TimeAgoParser timeAgoParser = getTimeAgoParser();

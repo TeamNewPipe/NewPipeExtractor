@@ -2,7 +2,6 @@ package org.schabi.newpipe.extractor.services.youtube.extractors;
 
 import com.grack.nanojson.JsonArray;
 import com.grack.nanojson.JsonObject;
-
 import org.schabi.newpipe.extractor.exceptions.ParsingException;
 import org.schabi.newpipe.extractor.localization.DateWrapper;
 import org.schabi.newpipe.extractor.localization.TimeAgoParser;
@@ -13,10 +12,11 @@ import org.schabi.newpipe.extractor.stream.StreamType;
 import org.schabi.newpipe.extractor.utils.Utils;
 
 import javax.annotation.Nullable;
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
+import java.util.Date;
 
-import static org.schabi.newpipe.extractor.services.youtube.linkHandler.YoutubeParsingHelper.fixThumbnailUrl;
-import static org.schabi.newpipe.extractor.services.youtube.linkHandler.YoutubeParsingHelper.getTextFromObject;
-import static org.schabi.newpipe.extractor.services.youtube.linkHandler.YoutubeParsingHelper.getUrlFromNavigationEndpoint;
+import static org.schabi.newpipe.extractor.services.youtube.linkHandler.YoutubeParsingHelper.*;
 
 /*
  * Copyright (C) Christian Schabesberger 2016 <chris.schabesberger@mailbox.org>
@@ -86,7 +86,9 @@ public class YoutubeStreamInfoItemExtractor implements StreamInfoItemExtractor {
 
     @Override
     public long getDuration() throws ParsingException {
-        if (getStreamType() == StreamType.LIVE_STREAM) return -1;
+        if (getStreamType() == StreamType.LIVE_STREAM || isPremiere()) {
+            return -1;
+        }
 
         String duration = null;
 
@@ -165,7 +167,16 @@ public class YoutubeStreamInfoItemExtractor implements StreamInfoItemExtractor {
 
     @Nullable
     @Override
-    public String getTextualUploadDate() {
+    public String getTextualUploadDate() throws ParsingException {
+        if (getStreamType().equals(StreamType.LIVE_STREAM)) {
+            return null;
+        }
+
+        if (isPremiere()) {
+            final Date date = getDateFromPremiere().getTime();
+            return new SimpleDateFormat("yyyy-MM-dd HH:mm").format(date);
+        }
+
         try {
             return getTextFromObject(videoInfo.getObject("publishedTimeText"));
         } catch (Exception e) {
@@ -177,7 +188,15 @@ public class YoutubeStreamInfoItemExtractor implements StreamInfoItemExtractor {
     @Nullable
     @Override
     public DateWrapper getUploadDate() throws ParsingException {
-        String textualUploadDate = getTextualUploadDate();
+        if (getStreamType().equals(StreamType.LIVE_STREAM)) {
+            return null;
+        }
+
+        if (isPremiere()) {
+            return new DateWrapper(getDateFromPremiere());
+        }
+
+        final String textualUploadDate = getTextualUploadDate();
         if (timeAgoParser != null && textualUploadDate != null && !textualUploadDate.isEmpty()) {
             try {
                 return timeAgoParser.parse(textualUploadDate);
@@ -194,11 +213,22 @@ public class YoutubeStreamInfoItemExtractor implements StreamInfoItemExtractor {
             if (videoInfo.getObject("topStandaloneBadge") != null || isPremium()) {
                 return -1;
             }
-            String viewCount = getTextFromObject(videoInfo.getObject("viewCountText"));
+
+            final JsonObject viewCountObject = videoInfo.getObject("viewCountText");
+            if (viewCountObject == null) {
+                // This object is null when a video has its views hidden.
+                return -1;
+            }
+
+            final String viewCount = getTextFromObject(viewCountObject);
+
+            if (viewCount.toLowerCase().contains("no views")) {
+                return 0;
+            } else if (viewCount.toLowerCase().contains("recommended")) {
+                return -1;
+            }
 
             return Long.parseLong(Utils.removeNonDigitCharacters(viewCount));
-        } catch (NumberFormatException e) {
-            return -1;
         } catch (Exception e) {
             throw new ParsingException("Could not get view count", e);
         }
@@ -225,7 +255,26 @@ public class YoutubeStreamInfoItemExtractor implements StreamInfoItemExtractor {
                     return true;
                 }
             }
-        } catch (Exception ignored) {}
+        } catch (Exception ignored) {
+        }
         return false;
+    }
+
+    private boolean isPremiere() {
+        return videoInfo.has("upcomingEventData");
+    }
+
+    private Calendar getDateFromPremiere() throws ParsingException {
+        final JsonObject upcomingEventData = videoInfo.getObject("upcomingEventData");
+        final String startTime = upcomingEventData.getString("startTime");
+
+        try {
+            final long startTimeTimestamp = Long.parseLong(startTime);
+            final Calendar calendar = Calendar.getInstance();
+            calendar.setTime(new Date(startTimeTimestamp * 1000L));
+            return calendar;
+        } catch (Exception e) {
+            throw new ParsingException("Could not parse date from premiere:  \"" + startTime + "\"");
+        }
     }
 }

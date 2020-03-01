@@ -124,7 +124,7 @@ public class YoutubeSearchExtractorDefaultTest extends YoutubeSearchExtractorBas
     }
 
     @Test
-    public void testSuggestionNotNull() {
+    public void testSuggestionNotNull() throws Exception {
         //todo write a real test
         assertNotNull(extractor.getSearchSuggestion());
     }
