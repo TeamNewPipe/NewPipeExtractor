@@ -40,8 +40,9 @@ public class SoundcloudPlaylistInfoItemExtractor implements PlaylistInfoItemExtr
         if (itemObject.isString(ARTWORK_URL_KEY)) {
             final String artworkUrl = itemObject.getString(ARTWORK_URL_KEY, "");
             if (!artworkUrl.isEmpty()) {
-                String artworkUrlBetterResolution = artworkUrl.replace("large.jpg", "crop.jpg");
-                images.add(new Image(artworkUrlBetterResolution, -1, -1));
+                images.add(new Image(artworkUrl, Image.LOW, Image.LOW));
+                images.add(new Image(artworkUrl.replace("large.jpg", "crop.jpg"), Image.HIGH, Image.HIGH));
+
                 return images;
             }
         }
@@ -55,8 +56,9 @@ public class SoundcloudPlaylistInfoItemExtractor implements PlaylistInfoItemExtr
                 if (trackObject.isString(ARTWORK_URL_KEY)) {
                     String artworkUrl = trackObject.getString(ARTWORK_URL_KEY, "");
                     if (!artworkUrl.isEmpty()) {
-                        String artworkUrlBetterResolution = artworkUrl.replace("large.jpg", "crop.jpg");
-                        images.add(new Image(artworkUrlBetterResolution, -1, -1));
+                        images.add(new Image(artworkUrl, Image.LOW, Image.LOW));
+                        images.add(new Image(artworkUrl.replace("large.jpg", "crop.jpg"), Image.HIGH, Image.HIGH));
+
                         return images;
                     }
                 }
@@ -65,7 +67,9 @@ public class SoundcloudPlaylistInfoItemExtractor implements PlaylistInfoItemExtr
                 final JsonObject creator = trackObject.getObject(USER_KEY, new JsonObject());
                 final String creatorAvatar = creator.getString(AVATAR_URL_KEY, "");
                 if (!creatorAvatar.isEmpty()) {
-                    images.add(new Image(creatorAvatar, -1, -1));
+                    images.add(new Image(creatorAvatar, Image.LOW, Image.LOW));
+                    images.add(new Image(creatorAvatar.replace("large.jpg", "crop.jpg"), Image.HIGH, Image.HIGH));
+
                     return images;
                 }
             }
@@ -75,7 +79,11 @@ public class SoundcloudPlaylistInfoItemExtractor implements PlaylistInfoItemExtr
 
         try {
             // Last resort, use user avatar url. If still not found, then throw exception.
-            images.add(new Image(itemObject.getObject(USER_KEY).getString(AVATAR_URL_KEY, ""), -1, -1));
+            final String creatorAvatar = itemObject.getObject(USER_KEY).getString(AVATAR_URL_KEY, "");
+
+            images.add(new Image(creatorAvatar, Image.LOW, Image.LOW));
+            images.add(new Image(creatorAvatar.replace("large.jpg", "crop.jpg"), Image.HIGH, Image.HIGH));
+
             return images;
         } catch (Exception e) {
             throw new ParsingException("Failed to extract playlist thumbnail url", e);

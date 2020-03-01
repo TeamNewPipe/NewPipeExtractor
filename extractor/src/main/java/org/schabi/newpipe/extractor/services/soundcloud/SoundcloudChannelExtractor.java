@@ -62,17 +62,22 @@ public class SoundcloudChannelExtractor extends ChannelExtractor {
     @Override
     public List<Image> getAvatars() {
         List<Image> images = new ArrayList<>();
-        images.add(new Image(user.getString("avatar_url"), -1, -1));
+
+        images.add(new Image(user.getString("avatar_url"), Image.LOW, Image.LOW));
+        images.add(new Image(user.getString("avatar_url").replace("large.jpg", "crop.jpg"), Image.HIGH, Image.HIGH));
+
         return images;
     }
 
     @Override
     public List<Image> getBanners() {
         List<Image> images = new ArrayList<>();
+
         images.add(new Image(user.getObject("visuals", new JsonObject())
                 .getArray("visuals", new JsonArray())
                 .getObject(0, new JsonObject())
-                .getString("visual_url"), -1, -1));
+                .getString("visual_url"), Image.HIGH, Image.HIGH));
+
         return images;
     }
 

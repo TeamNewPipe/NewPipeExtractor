@@ -77,8 +77,8 @@ public class SoundcloudStreamExtractor extends StreamExtractor {
             artworkUrl = track.getObject("user").getString("avatar_url", "");
         }
 
-        String artworkUrlBetterResolution = artworkUrl.replace("large.jpg", "crop.jpg");
-        images.add(new Image(artworkUrlBetterResolution, -1, -1));
+        images.add(new Image(artworkUrl, Image.LOW, Image.LOW));
+        images.add(new Image(artworkUrl.replace("large.jpg", "crop.jpg"), Image.HIGH, Image.HIGH));
 
         return images;
     }
@@ -134,7 +134,12 @@ public class SoundcloudStreamExtractor extends StreamExtractor {
     @Override
     public List<Image> getUploaderAvatars() {
         List<Image> images = new ArrayList<>();
-        images.add(new Image(SoundcloudParsingHelper.getAvatarUrl(track), -1, -1));
+
+        String avatarUrl = SoundcloudParsingHelper.getAvatarUrl(track);
+
+        images.add(new Image(avatarUrl, Image.LOW, Image.LOW));
+        images.add(new Image(avatarUrl.replace("large.jpg", "crop.jpg"), Image.HIGH, Image.HIGH));
+
         return images;
     }
 

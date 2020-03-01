@@ -1,6 +1,10 @@
 package org.schabi.newpipe.extractor;
 
 public class Image {
+    // Make it so that HIGH > LOW
+    public final static int LOW = -2;
+    public final static int HIGH = -1;
+
     private final String url;
     private final int width;
     private final int height;

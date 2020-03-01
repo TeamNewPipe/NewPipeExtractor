@@ -81,8 +81,8 @@ public class SoundcloudPlaylistExtractor extends PlaylistExtractor {
 
         List<Image> images = new ArrayList<>();
 
-        String artworkUrlBetterResolution = artworkUrl.replace("large.jpg", "crop.jpg");
-        images.add(new Image(artworkUrlBetterResolution, -1, -1));
+        images.add(new Image(artworkUrl, Image.LOW, Image.LOW));
+        images.add(new Image(artworkUrl.replace("large.jpg", "crop.jpg"), Image.HIGH, Image.HIGH));
 
         return images;
     }
@@ -105,7 +105,12 @@ public class SoundcloudPlaylistExtractor extends PlaylistExtractor {
     @Override
     public List<Image> getUploaderAvatars() {
         List<Image> images = new ArrayList<>();
-        images.add(new Image(SoundcloudParsingHelper.getAvatarUrl(playlist), -1, -1));
+
+        String avatarUrl = SoundcloudParsingHelper.getAvatarUrl(playlist);
+
+        images.add(new Image(avatarUrl, Image.LOW, Image.LOW));
+        images.add(new Image(avatarUrl.replace("large.jpg", "crop.jpg"), Image.HIGH, Image.HIGH));
+
         return images;
     }
 
