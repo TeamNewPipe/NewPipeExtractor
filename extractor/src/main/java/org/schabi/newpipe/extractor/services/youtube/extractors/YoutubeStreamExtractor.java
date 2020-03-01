@@ -11,6 +11,7 @@ import org.schabi.newpipe.extractor.MediaFormat;
 import org.schabi.newpipe.extractor.NewPipe;
 import org.schabi.newpipe.extractor.StreamingService;
 import org.schabi.newpipe.extractor.downloader.Downloader;
+import org.schabi.newpipe.extractor.exceptions.ContentNotAvailableException;
 import org.schabi.newpipe.extractor.exceptions.ExtractionException;
 import org.schabi.newpipe.extractor.exceptions.ParsingException;
 import org.schabi.newpipe.extractor.exceptions.ReCaptchaException;
@@ -32,6 +33,7 @@ import org.schabi.newpipe.extractor.stream.StreamInfoItemsCollector;
 import org.schabi.newpipe.extractor.stream.StreamType;
 import org.schabi.newpipe.extractor.stream.SubtitlesStream;
 import org.schabi.newpipe.extractor.stream.VideoStream;
+import org.schabi.newpipe.extractor.utils.JsonUtils;
 import org.schabi.newpipe.extractor.utils.Parser;
 import org.schabi.newpipe.extractor.utils.Utils;
 
@@ -618,6 +620,13 @@ public class YoutubeStreamExtractor extends StreamExtractor {
         }
 
         playerResponse = getPlayerResponse();
+
+        final JsonObject playabilityStatus = playerResponse.getObject("playabilityStatus", JsonUtils.DEFAULT_EMPTY);
+        final String status = playabilityStatus.getString("status");
+        if (status != null && status.toLowerCase().equals("error")) {
+            final String reason = playabilityStatus.getString("reason");
+            throw new ContentNotAvailableException("Got error: \"" + reason + "\"");
+        }
 
         if (decryptionCode.isEmpty()) {
             decryptionCode = loadDecryptionCode(playerUrl);

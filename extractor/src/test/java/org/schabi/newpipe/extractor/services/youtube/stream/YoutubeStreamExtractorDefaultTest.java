@@ -7,6 +7,7 @@ import org.schabi.newpipe.DownloaderTestImpl;
 import org.schabi.newpipe.extractor.ExtractorAsserts;
 import org.schabi.newpipe.extractor.MediaFormat;
 import org.schabi.newpipe.extractor.NewPipe;
+import org.schabi.newpipe.extractor.exceptions.ContentNotAvailableException;
 import org.schabi.newpipe.extractor.exceptions.ExtractionException;
 import org.schabi.newpipe.extractor.exceptions.ParsingException;
 import org.schabi.newpipe.extractor.services.youtube.extractors.YoutubeStreamExtractor;
@@ -55,6 +56,27 @@ import static org.schabi.newpipe.extractor.ServiceList.YouTube;
  * Test for {@link StreamExtractor}
  */
 public class YoutubeStreamExtractorDefaultTest {
+
+    public static class NotAvailable {
+        @BeforeClass
+        public static void setUp() {
+            NewPipe.init(DownloaderTestImpl.getInstance());
+        }
+
+        @Test(expected = ContentNotAvailableException.class)
+        public void nonExistentFetch() throws Exception {
+            final StreamExtractor extractor =
+                    YouTube.getStreamExtractor("https://www.youtube.com/watch?v=don-t-exist");
+            extractor.fetchPage();
+        }
+
+        @Test(expected = ParsingException.class)
+        public void invalidId() throws Exception {
+            final StreamExtractor extractor =
+                    YouTube.getStreamExtractor("https://www.youtube.com/watch?v=INVALID_ID_INVALID_ID");
+            extractor.fetchPage();
+        }
+    }
 
     /**
      * Test for {@link StreamExtractor}
