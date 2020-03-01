@@ -1,9 +1,9 @@
 package org.schabi.newpipe.extractor.linkhandler;
 
-import java.io.Serializable;
-
 import org.schabi.newpipe.extractor.exceptions.ParsingException;
 import org.schabi.newpipe.extractor.utils.Utils;
+
+import java.io.Serializable;
 
 public class LinkHandler implements Serializable {
     protected final String originalUrl;
@@ -31,8 +31,8 @@ public class LinkHandler implements Serializable {
     public String getId() {
         return id;
     }
-    
+
     public String getBaseUrl() throws ParsingException {
-       return Utils.getBaseUrl(url);
+        return Utils.getBaseUrl(url);
     }
 }

@@ -31,6 +31,7 @@ public interface StreamInfoItemExtractor extends InfoItemExtractor {
 
     /**
      * Get the stream type
+     *
      * @return the stream type
      * @throws ParsingException thrown if there is an error in the extraction
      */
@@ -38,6 +39,7 @@ public interface StreamInfoItemExtractor extends InfoItemExtractor {
 
     /**
      * Check if the stream is an ad.
+     *
      * @return {@code true} if the stream is an ad.
      * @throws ParsingException thrown if there is an error in the extraction
      */
@@ -45,6 +47,7 @@ public interface StreamInfoItemExtractor extends InfoItemExtractor {
 
     /**
      * Get the stream duration in seconds
+     *
      * @return the stream duration in seconds
      * @throws ParsingException thrown if there is an error in the extraction
      */
@@ -52,6 +55,7 @@ public interface StreamInfoItemExtractor extends InfoItemExtractor {
 
     /**
      * Parses the number of views
+     *
      * @return the number of views or -1 for live streams
      * @throws ParsingException thrown if there is an error in the extraction
      */
@@ -59,6 +63,7 @@ public interface StreamInfoItemExtractor extends InfoItemExtractor {
 
     /**
      * Get the uploader name
+     *
      * @return the uploader name
      * @throws ParsingException if parsing fails
      */
@@ -80,9 +85,9 @@ public interface StreamInfoItemExtractor extends InfoItemExtractor {
     /**
      * Extracts the upload date and time of this item and parses it.
      * <p>
-     *     If the service doesn't provide an exact time, an approximation can be returned.
-     *     <br>
-     *     If the service doesn't provide any date at all, then {@code null} should be returned.
+     * If the service doesn't provide an exact time, an approximation can be returned.
+     * <br>
+     * If the service doesn't provide any date at all, then {@code null} should be returned.
      * </p>
      *
      * @return The date and time (can be approximated) this item was uploaded or {@code null}.

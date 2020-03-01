@@ -1,12 +1,14 @@
 package org.schabi.newpipe.extractor.services.youtube.extractors;
 
-import org.jsoup.nodes.Element;
+import com.grack.nanojson.JsonObject;
+
 import org.schabi.newpipe.extractor.channel.ChannelInfoItemExtractor;
 import org.schabi.newpipe.extractor.exceptions.ParsingException;
+import org.schabi.newpipe.extractor.services.youtube.linkHandler.YoutubeChannelLinkHandlerFactory;
 import org.schabi.newpipe.extractor.utils.Utils;
 
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
+import static org.schabi.newpipe.extractor.services.youtube.linkHandler.YoutubeParsingHelper.fixThumbnailUrl;
+import static org.schabi.newpipe.extractor.services.youtube.linkHandler.YoutubeParsingHelper.getTextFromObject;
 
 /*
  * Created by Christian Schabesberger on 12.02.17.
@@ -29,87 +31,67 @@ import java.util.regex.Pattern;
  */
 
 public class YoutubeChannelInfoItemExtractor implements ChannelInfoItemExtractor {
-    private final Element el;
+    private JsonObject channelInfoItem;
 
-    public YoutubeChannelInfoItemExtractor(Element el) {
-        this.el = el;
+    public YoutubeChannelInfoItemExtractor(JsonObject channelInfoItem) {
+        this.channelInfoItem = channelInfoItem;
     }
 
     @Override
     public String getThumbnailUrl() throws ParsingException {
-        Element img = el.select("span[class*=\"yt-thumb-simple\"]").first()
-                .select("img").first();
+        try {
+            String url = channelInfoItem.getObject("thumbnail").getArray("thumbnails").getObject(0).getString("url");
 
-        String url = img.attr("abs:src");
-
-        if (url.contains("gif")) {
-            url = img.attr("abs:data-thumb");
+            return fixThumbnailUrl(url);
+        } catch (Exception e) {
+            throw new ParsingException("Could not get thumbnail url", e);
         }
-        return url;
     }
 
     @Override
     public String getName() throws ParsingException {
-        return el.select("a[class*=\"yt-uix-tile-link\"]").first()
-                .text();
+        try {
+            return getTextFromObject(channelInfoItem.getObject("title"));
+        } catch (Exception e) {
+            throw new ParsingException("Could not get name", e);
+        }
     }
 
     @Override
     public String getUrl() throws ParsingException {
         try {
-            String buttonTrackingUrl = el.select("button[class*=\"yt-uix-button\"]").first()
-                    .attr("abs:data-href");
-
-            Pattern channelIdPattern = Pattern.compile("(?:.*?)\\%252Fchannel\\%252F([A-Za-z0-9\\-\\_]+)(?:.*)");
-            Matcher match = channelIdPattern.matcher(buttonTrackingUrl);
-
-            if (match.matches()) {
-                return YoutubeChannelExtractor.CHANNEL_URL_BASE + match.group(1);
-            }
-        } catch(Exception ignored) {}
-
-        // fallback method for channels without "Subscribe" button (or just in case yt changes things)
-        // provides an url with "/user/NAME", inconsistent with stream and channel extractor: tests will fail
-        try {
-            return el.select("a[class*=\"yt-uix-tile-link\"]").first()
-                    .attr("abs:href");
+            String id = "channel/" + channelInfoItem.getString("channelId");
+            return YoutubeChannelLinkHandlerFactory.getInstance().getUrl(id);
         } catch (Exception e) {
-            throw new ParsingException("Could not get channel url", e);
+            throw new ParsingException("Could not get url", e);
         }
     }
 
     @Override
     public long getSubscriberCount() throws ParsingException {
-        final Element subsEl = el.select("span[class*=\"yt-subscriber-count\"]").first();
-        if (subsEl != null) {
-            try {
-                return Long.parseLong(Utils.removeNonDigitCharacters(subsEl.text()));
-            } catch (NumberFormatException e) {
-                throw new ParsingException("Could not get subscriber count", e);
-            }
-        } else {
-            // If the element is null, the channel have the subscriber count disabled
-            return -1;
+        try {
+            String subscribers = getTextFromObject(channelInfoItem.getObject("subscriberCountText"));
+            return Utils.mixedNumberWordToLong(subscribers);
+        } catch (Exception e) {
+            throw new ParsingException("Could not get subscriber count", e);
         }
     }
 
     @Override
     public long getStreamCount() throws ParsingException {
-        Element metaEl = el.select("ul[class*=\"yt-lockup-meta-info\"]").first();
-        if (metaEl == null) {
-            return 0;
-        } else {
-            return Long.parseLong(Utils.removeNonDigitCharacters(metaEl.text()));
+        try {
+            return Long.parseLong(Utils.removeNonDigitCharacters(getTextFromObject(channelInfoItem.getObject("videoCountText"))));
+        } catch (Exception e) {
+            throw new ParsingException("Could not get stream count", e);
         }
     }
 
     @Override
     public String getDescription() throws ParsingException {
-        Element desEl = el.select("div[class*=\"yt-lockup-description\"]").first();
-        if (desEl == null) {
-            return "";
-        } else {
-            return desEl.text();
+        try {
+            return getTextFromObject(channelInfoItem.getObject("descriptionSnippet"));
+        } catch (Exception e) {
+            throw new ParsingException("Could not get description", e);
         }
     }
 }

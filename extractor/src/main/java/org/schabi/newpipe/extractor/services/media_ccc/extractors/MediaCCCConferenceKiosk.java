@@ -32,7 +32,7 @@ public class MediaCCCConferenceKiosk extends KioskExtractor<ChannelInfoItem> {
     public InfoItemsPage<ChannelInfoItem> getInitialPage() throws IOException, ExtractionException {
         JsonArray conferences = doc.getArray("conferences");
         ChannelInfoItemsCollector collector = new ChannelInfoItemsCollector(getServiceId());
-        for(int i = 0; i < conferences.size(); i++) {
+        for (int i = 0; i < conferences.size(); i++) {
             collector.commit(new MediaCCCConferenceInfoItemExtractor(conferences.getObject(i)));
         }
 

@@ -1,26 +1,26 @@
 package org.schabi.newpipe.extractor.services.peertube.linkHandler;
 
+import org.schabi.newpipe.extractor.ServiceList;
+import org.schabi.newpipe.extractor.exceptions.ParsingException;
+import org.schabi.newpipe.extractor.linkhandler.ListLinkHandlerFactory;
+
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.schabi.newpipe.extractor.ServiceList;
-import org.schabi.newpipe.extractor.exceptions.ParsingException;
-import org.schabi.newpipe.extractor.linkhandler.ListLinkHandlerFactory;
-
 public class PeertubeTrendingLinkHandlerFactory extends ListLinkHandlerFactory {
-    
-    
+
+
     private static final PeertubeTrendingLinkHandlerFactory instance = new PeertubeTrendingLinkHandlerFactory();
-    
+
     public static final Map<String, String> KIOSK_MAP;
     public static final Map<String, String> REVERSE_KIOSK_MAP;
     public static final String KIOSK_TRENDING = "Trending";
     public static final String KIOSK_MOST_LIKED = "Most liked";
     public static final String KIOSK_RECENT = "Recently added";
     public static final String KIOSK_LOCAL = "Local";
-    
+
     static {
         Map<String, String> map = new HashMap<>();
         map.put(KIOSK_TRENDING, "%s/api/v1/videos?sort=-trending");
@@ -28,24 +28,24 @@ public class PeertubeTrendingLinkHandlerFactory extends ListLinkHandlerFactory {
         map.put(KIOSK_RECENT, "%s/api/v1/videos?sort=-publishedAt");
         map.put(KIOSK_LOCAL, "%s/api/v1/videos?sort=-publishedAt&filter=local");
         KIOSK_MAP = Collections.unmodifiableMap(map);
-        
+
         Map<String, String> reverseMap = new HashMap<>();
-        for(Map.Entry<String, String> entry : KIOSK_MAP.entrySet()){
+        for (Map.Entry<String, String> entry : KIOSK_MAP.entrySet()) {
             reverseMap.put(entry.getValue(), entry.getKey());
         }
         REVERSE_KIOSK_MAP = Collections.unmodifiableMap(reverseMap);
     }
-    
+
     public static PeertubeTrendingLinkHandlerFactory getInstance() {
         return instance;
     }
-   
+
     @Override
     public String getUrl(String id, List<String> contentFilters, String sortFilter) {
         String baseUrl = ServiceList.PeerTube.getBaseUrl();
         return getUrl(id, contentFilters, sortFilter, baseUrl);
     }
-    
+
     @Override
     public String getUrl(String id, List<String> contentFilters, String sortFilter, String baseUrl) {
         return String.format(KIOSK_MAP.get(id), baseUrl);

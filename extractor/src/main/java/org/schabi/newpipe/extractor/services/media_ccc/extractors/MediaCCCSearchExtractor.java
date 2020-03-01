@@ -50,7 +50,7 @@ public class MediaCCCSearchExtractor extends SearchExtractor {
         InfoItemsSearchCollector searchItems = getInfoItemSearchCollector();
         searchItems.reset();
 
-        if(getLinkHandler().getContentFilters().contains(CONFERENCES)
+        if (getLinkHandler().getContentFilters().contains(CONFERENCES)
                 || getLinkHandler().getContentFilters().contains(ALL)
                 || getLinkHandler().getContentFilters().isEmpty()) {
             searchConferences(getSearchString(),
@@ -58,7 +58,7 @@ public class MediaCCCSearchExtractor extends SearchExtractor {
                     searchItems);
         }
 
-        if(getLinkHandler().getContentFilters().contains(EVENTS)
+        if (getLinkHandler().getContentFilters().contains(EVENTS)
                 || getLinkHandler().getContentFilters().contains(ALL)
                 || getLinkHandler().getContentFilters().isEmpty()) {
             JsonArray events = doc.getArray("events");
@@ -82,8 +82,8 @@ public class MediaCCCSearchExtractor extends SearchExtractor {
 
     @Override
     public void onFetchPage(@Nonnull Downloader downloader) throws IOException, ExtractionException {
-        if(getLinkHandler().getContentFilters().contains(EVENTS)
-            || getLinkHandler().getContentFilters().contains(ALL)
+        if (getLinkHandler().getContentFilters().contains(EVENTS)
+                || getLinkHandler().getContentFilters().contains(ALL)
                 || getLinkHandler().getContentFilters().isEmpty()) {
             final String site;
             final String url = getUrl();
@@ -94,17 +94,17 @@ public class MediaCCCSearchExtractor extends SearchExtractor {
                 throw new ExtractionException("Could not parse json.", jpe);
             }
         }
-        if(getLinkHandler().getContentFilters().contains(CONFERENCES)
+        if (getLinkHandler().getContentFilters().contains(CONFERENCES)
                 || getLinkHandler().getContentFilters().contains(ALL)
                 || getLinkHandler().getContentFilters().isEmpty())
-        conferenceKiosk.fetchPage();
+            conferenceKiosk.fetchPage();
     }
 
     private void searchConferences(String searchString,
-                                                    List<ChannelInfoItem> channelItems,
-                                                    InfoItemsSearchCollector collector) {
-        for(final ChannelInfoItem item : channelItems) {
-            if(item.getName().toUpperCase().contains(
+                                   List<ChannelInfoItem> channelItems,
+                                   InfoItemsSearchCollector collector) {
+        for (final ChannelInfoItem item : channelItems) {
+            if (item.getName().toUpperCase().contains(
                     searchString.toUpperCase())) {
                 collector.commit(new ChannelInfoItemExtractor() {
                     @Override

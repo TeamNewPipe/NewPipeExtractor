@@ -1,7 +1,5 @@
 package org.schabi.newpipe.extractor.comments;
 
-import java.io.IOException;
-
 import org.schabi.newpipe.extractor.ListExtractor.InfoItemsPage;
 import org.schabi.newpipe.extractor.ListInfo;
 import org.schabi.newpipe.extractor.NewPipe;
@@ -10,20 +8,21 @@ import org.schabi.newpipe.extractor.exceptions.ExtractionException;
 import org.schabi.newpipe.extractor.linkhandler.ListLinkHandler;
 import org.schabi.newpipe.extractor.utils.ExtractorHelper;
 
-public class CommentsInfo extends ListInfo<CommentsInfoItem>{
+import java.io.IOException;
 
-	private CommentsInfo(int serviceId, ListLinkHandler listUrlIdHandler, String name) {
-		super(serviceId, listUrlIdHandler, name);
-		// TODO Auto-generated constructor stub
-	}
-	
-	public static CommentsInfo getInfo(String url) throws IOException, ExtractionException {
+public class CommentsInfo extends ListInfo<CommentsInfoItem> {
+
+    private CommentsInfo(int serviceId, ListLinkHandler listUrlIdHandler, String name) {
+        super(serviceId, listUrlIdHandler, name);
+    }
+
+    public static CommentsInfo getInfo(String url) throws IOException, ExtractionException {
         return getInfo(NewPipe.getServiceByUrl(url), url);
     }
 
-	public static CommentsInfo getInfo(StreamingService serviceByUrl, String url) throws ExtractionException, IOException {
-	    return getInfo(serviceByUrl.getCommentsExtractor(url));
-	}
+    public static CommentsInfo getInfo(StreamingService serviceByUrl, String url) throws ExtractionException, IOException {
+        return getInfo(serviceByUrl.getCommentsExtractor(url));
+    }
 
     private static CommentsInfo getInfo(CommentsExtractor commentsExtractor) throws IOException, ExtractionException {
         // for services which do not have a comments extractor
@@ -44,21 +43,21 @@ public class CommentsInfo extends ListInfo<CommentsInfoItem>{
 
         return commentsInfo;
     }
-    
+
     public static InfoItemsPage<CommentsInfoItem> getMoreItems(CommentsInfo commentsInfo, String pageUrl)
             throws ExtractionException, IOException {
         return getMoreItems(NewPipe.getService(commentsInfo.getServiceId()), commentsInfo, pageUrl);
     }
-    
+
     public static InfoItemsPage<CommentsInfoItem> getMoreItems(StreamingService service, CommentsInfo commentsInfo,
-            String pageUrl) throws IOException, ExtractionException {
+                                                               String pageUrl) throws IOException, ExtractionException {
         if (null == commentsInfo.getCommentsExtractor()) {
             commentsInfo.setCommentsExtractor(service.getCommentsExtractor(commentsInfo.getUrl()));
             commentsInfo.getCommentsExtractor().fetchPage();
         }
         return commentsInfo.getCommentsExtractor().getPage(pageUrl);
     }
-    
+
     private transient CommentsExtractor commentsExtractor;
 
     public CommentsExtractor getCommentsExtractor() {

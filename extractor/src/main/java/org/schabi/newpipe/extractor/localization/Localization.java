@@ -3,7 +3,10 @@ package org.schabi.newpipe.extractor.localization;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.io.Serializable;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+import java.util.Locale;
 
 public class Localization implements Serializable {
     public static final Localization DEFAULT = new Localization("en", "GB");

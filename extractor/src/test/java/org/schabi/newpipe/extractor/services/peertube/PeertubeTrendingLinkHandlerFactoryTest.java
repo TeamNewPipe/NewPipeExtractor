@@ -1,9 +1,5 @@
 package org.schabi.newpipe.extractor.services.peertube;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
-import static org.schabi.newpipe.extractor.ServiceList.PeerTube;
-
 import org.junit.BeforeClass;
 import org.junit.Test;
 import org.schabi.newpipe.DownloaderTestImpl;
@@ -11,6 +7,10 @@ import org.schabi.newpipe.extractor.NewPipe;
 import org.schabi.newpipe.extractor.exceptions.ParsingException;
 import org.schabi.newpipe.extractor.linkhandler.LinkHandlerFactory;
 import org.schabi.newpipe.extractor.services.peertube.linkHandler.PeertubeTrendingLinkHandlerFactory;
+
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
+import static org.schabi.newpipe.extractor.ServiceList.PeerTube;
 
 /**
  * Test for {@link PeertubeTrendingLinkHandlerFactory}
@@ -48,13 +48,13 @@ public class PeertubeTrendingLinkHandlerFactoryTest {
     public void acceptUrl() throws ParsingException {
         assertTrue(LinkHandlerFactory.acceptUrl("https://peertube.mastodon.host/videos/trending"));
         assertTrue(LinkHandlerFactory.acceptUrl("https://peertube.mastodon.host/videos/trending?adsf=fjaj#fhe"));
-        
+
         assertTrue(LinkHandlerFactory.acceptUrl("https://peertube.mastodon.host/videos/most-liked"));
         assertTrue(LinkHandlerFactory.acceptUrl("https://peertube.mastodon.host/videos/most-liked?adsf=fjaj#fhe"));
-        
+
         assertTrue(LinkHandlerFactory.acceptUrl("https://peertube.mastodon.host/videos/recently-added"));
         assertTrue(LinkHandlerFactory.acceptUrl("https://peertube.mastodon.host/videos/recently-added?adsf=fjaj#fhe"));
-        
+
         assertTrue(LinkHandlerFactory.acceptUrl("https://peertube.mastodon.host/videos/local"));
         assertTrue(LinkHandlerFactory.acceptUrl("https://peertube.mastodon.host/videos/local?adsf=fjaj#fhe"));
     }

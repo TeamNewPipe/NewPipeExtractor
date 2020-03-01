@@ -4,9 +4,9 @@ import com.grack.nanojson.JsonArray;
 import com.grack.nanojson.JsonObject;
 import com.grack.nanojson.JsonParser;
 import com.grack.nanojson.JsonParserException;
-import org.schabi.newpipe.extractor.downloader.Downloader;
 import org.schabi.newpipe.extractor.StreamingService;
 import org.schabi.newpipe.extractor.channel.ChannelExtractor;
+import org.schabi.newpipe.extractor.downloader.Downloader;
 import org.schabi.newpipe.extractor.exceptions.ExtractionException;
 import org.schabi.newpipe.extractor.exceptions.ParsingException;
 import org.schabi.newpipe.extractor.linkhandler.ListLinkHandler;
@@ -114,7 +114,7 @@ public class SoundcloudChannelExtractor extends ChannelExtractor {
     @Nonnull
     @Override
     public InfoItemsPage<StreamInfoItem> getInitialPage() throws ExtractionException {
-        if(streamInfoItemsCollector == null) {
+        if (streamInfoItemsCollector == null) {
             computeNextPageAndGetStreams();
         }
         return new InfoItemsPage<>(streamInfoItemsCollector, getNextPageUrl());
@@ -122,7 +122,7 @@ public class SoundcloudChannelExtractor extends ChannelExtractor {
 
     @Override
     public String getNextPageUrl() throws ExtractionException {
-        if(nextPageUrl == null) {
+        if (nextPageUrl == null) {
             computeNextPageAndGetStreams();
         }
         return nextPageUrl;

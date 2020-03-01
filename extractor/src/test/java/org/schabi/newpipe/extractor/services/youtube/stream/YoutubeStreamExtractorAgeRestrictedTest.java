@@ -64,7 +64,7 @@ public class YoutubeStreamExtractorAgeRestrictedTest {
     @Test
     public void testGetDescription() throws ParsingException {
         assertNotNull(extractor.getDescription());
-        assertFalse(extractor.getDescription().isEmpty());
+        assertFalse(extractor.getDescription().getContent().isEmpty());
     }
 
     @Test
@@ -117,7 +117,7 @@ public class YoutubeStreamExtractorAgeRestrictedTest {
         streams.addAll(extractor.getVideoStreams());
         streams.addAll(extractor.getVideoOnlyStreams());
 
-        assertTrue(Integer.toString(streams.size()),streams.size() > 0);
+        assertTrue(Integer.toString(streams.size()), streams.size() > 0);
         for (VideoStream s : streams) {
             assertTrue(s.getUrl(),
                     s.getUrl().contains(HTTPS));
