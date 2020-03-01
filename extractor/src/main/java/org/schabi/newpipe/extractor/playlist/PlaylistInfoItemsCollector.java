@@ -24,7 +24,7 @@ public class PlaylistInfoItemsCollector extends InfoItemsCollector<PlaylistInfoI
             addError(e);
         }
         try {
-            resultItem.setThumbnail(extractor.getThumbnail());
+            resultItem.setThumbnails(extractor.getThumbnails());
         } catch (Exception e) {
             addError(e);
         }

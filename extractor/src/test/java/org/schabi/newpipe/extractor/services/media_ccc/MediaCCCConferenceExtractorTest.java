@@ -39,8 +39,8 @@ public class MediaCCCConferenceExtractorTest {
     }
 
     @Test
-    public void testGetThumbnail() throws Exception {
-        assertEquals("https://static.media.ccc.de/media/events/froscon/2017/logo.png", extractor.getAvatar().getUrl());
+    public void testGetThumbnails() throws Exception {
+        assertEquals("https://static.media.ccc.de/media/events/froscon/2017/logo.png", extractor.getAvatars().get(0).getUrl());
     }
 
     @Test

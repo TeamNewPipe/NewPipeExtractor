@@ -3,6 +3,7 @@ package org.schabi.newpipe.extractor.services.youtube.extractors;
 import com.grack.nanojson.JsonArray;
 import com.grack.nanojson.JsonObject;
 
+import org.omg.PortableServer.LIFESPAN_POLICY_ID;
 import org.schabi.newpipe.extractor.Image;
 import org.schabi.newpipe.extractor.comments.CommentsInfoItemExtractor;
 import org.schabi.newpipe.extractor.exceptions.ParsingException;
@@ -10,6 +11,9 @@ import org.schabi.newpipe.extractor.localization.DateWrapper;
 import org.schabi.newpipe.extractor.localization.TimeAgoParser;
 import org.schabi.newpipe.extractor.utils.JsonUtils;
 import org.schabi.newpipe.extractor.utils.Utils;
+
+import java.util.ArrayList;
+import java.util.List;
 
 import javax.annotation.Nullable;
 
@@ -33,13 +37,18 @@ public class YoutubeCommentsInfoItemExtractor implements CommentsInfoItemExtract
     }
 
     @Override
-    public Image getThumbnail() throws ParsingException {
+    public List<Image> getThumbnails() throws ParsingException {
         try {
-            JsonObject thumbnail = json.getObject("authorThumbnail").getArray("thumbnails")
-                    .getObject(2);
+            List<Image> images = new ArrayList<>();
+            JsonArray thumbnails = json.getObject("authorThumbnail").getArray("thumbnails");
 
-            return new Image(fixThumbnailUrl(thumbnail.getString("url")),
-                    thumbnail.getInt("width"), thumbnail.getInt("height"));
+            for (Object thumbnailObject : thumbnails) {
+                final JsonObject thumbnail = (JsonObject) thumbnailObject;
+                images.add(new Image(fixThumbnailUrl(thumbnail.getString("url")),
+                        thumbnail.getInt("width"), thumbnail.getInt("height")));
+            }
+
+            return images;
         } catch (Exception e) {
             throw new ParsingException("Could not get thumbnail url", e);
         }
@@ -104,10 +113,18 @@ public class YoutubeCommentsInfoItemExtractor implements CommentsInfoItemExtract
     }
 
     @Override
-    public String getAuthorThumbnail() throws ParsingException {
+    public List<Image> getAuthorThumbnails() throws ParsingException {
         try {
-            JsonArray arr = JsonUtils.getArray(json, "authorThumbnail.thumbnails");
-            return JsonUtils.getString(arr.getObject(2), "url");
+            List<Image> images = new ArrayList<>();
+            JsonArray thumbnails = JsonUtils.getArray(json, "authorThumbnail.thumbnails");
+
+            for (Object thumbnailObject : thumbnails) {
+                final JsonObject thumbnail = (JsonObject) thumbnailObject;
+                images.add(new Image(fixThumbnailUrl(thumbnail.getString("url")),
+                        thumbnail.getInt("width"), thumbnail.getInt("height")));
+            }
+
+            return images;
         } catch (Exception e) {
             throw new ParsingException("Could not get author thumbnail", e);
         }

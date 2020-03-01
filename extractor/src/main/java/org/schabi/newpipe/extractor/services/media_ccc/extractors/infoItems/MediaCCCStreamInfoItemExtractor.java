@@ -9,6 +9,9 @@ import org.schabi.newpipe.extractor.services.media_ccc.extractors.MediaCCCParsin
 import org.schabi.newpipe.extractor.stream.StreamInfoItemExtractor;
 import org.schabi.newpipe.extractor.stream.StreamType;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import javax.annotation.Nullable;
 
 public class MediaCCCStreamInfoItemExtractor implements StreamInfoItemExtractor {
@@ -74,7 +77,9 @@ public class MediaCCCStreamInfoItemExtractor implements StreamInfoItemExtractor 
     }
 
     @Override
-    public Image getThumbnail() throws ParsingException {
-        return new Image(event.getString("thumb_url"), -1, -1);
+    public List<Image> getThumbnails() throws ParsingException {
+        List<Image> images = new ArrayList<>();
+        images.add(new Image(event.getString("thumb_url"), -1, -1));
+        return images;
     }
 }

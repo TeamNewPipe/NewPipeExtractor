@@ -5,6 +5,9 @@ import com.grack.nanojson.JsonObject;
 import org.schabi.newpipe.extractor.Image;
 import org.schabi.newpipe.extractor.channel.ChannelInfoItemExtractor;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import static org.schabi.newpipe.extractor.utils.Utils.replaceHttpWithHttps;
 
 public class SoundcloudChannelInfoItemExtractor implements ChannelInfoItemExtractor {
@@ -25,10 +28,12 @@ public class SoundcloudChannelInfoItemExtractor implements ChannelInfoItemExtrac
     }
 
     @Override
-    public Image getThumbnail() {
+    public List<Image> getThumbnails() {
+        List<Image> images = new ArrayList<>();
         String avatarUrl = itemObject.getString("avatar_url", "");
         String avatarUrlBetterResolution = avatarUrl.replace("large.jpg", "crop.jpg");
-        return new Image(avatarUrlBetterResolution, -1, -1);
+        images.add(new Image(avatarUrlBetterResolution, -1, -1));
+        return images;
     }
 
     @Override

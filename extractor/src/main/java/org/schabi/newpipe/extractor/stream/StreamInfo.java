@@ -202,7 +202,7 @@ public class StreamInfo extends Info {
         // so the frontend can afterwards check where errors happened.
 
         try {
-            streamInfo.setThumbnail(extractor.getThumbnail());
+            streamInfo.setThumbnails(extractor.getThumbnails());
         } catch (Exception e) {
             streamInfo.addError(e);
         }
@@ -242,7 +242,7 @@ public class StreamInfo extends Info {
             streamInfo.addError(e);
         }
         try {
-            streamInfo.setUploaderAvatar(extractor.getUploaderAvatar());
+            streamInfo.setUploaderAvatars(extractor.getUploaderAvatars());
         } catch (Exception e) {
             streamInfo.addError(e);
         }
@@ -315,7 +315,7 @@ public class StreamInfo extends Info {
     }
 
     private StreamType streamType;
-    private Image thumbnail = null;
+    private List<Image> thumbnails = null;
     private String textualUploadDate;
     private DateWrapper uploadDate;
     private long duration = -1;
@@ -328,7 +328,7 @@ public class StreamInfo extends Info {
 
     private String uploaderName = "";
     private String uploaderUrl = "";
-    private Image uploaderAvatar = null;
+    private List<Image> uploaderAvatars = null;
 
     private List<VideoStream> videoStreams = new ArrayList<>();
     private List<AudioStream> audioStreams = new ArrayList<>();
@@ -371,14 +371,14 @@ public class StreamInfo extends Info {
     /**
      * Get the thumbnail url
      *
-     * @return An {@code Image} instance with the thumbnail URL
+     * @return A {@code List} of {@code Image} instances with the thumbnail URL
      */
-    public Image getThumbnail() {
-        return thumbnail;
+    public List<Image> getThumbnails() {
+        return thumbnails;
     }
 
-    public void setThumbnail(Image thumbnail) {
-        this.thumbnail = thumbnail;
+    public void setThumbnails(List<Image> thumbnails) {
+        this.thumbnails = thumbnails;
     }
 
     public String getTextualUploadDate() {
@@ -476,12 +476,12 @@ public class StreamInfo extends Info {
         this.uploaderUrl = uploaderUrl;
     }
 
-    public Image getUploaderAvatar() {
-        return uploaderAvatar;
+    public List<Image> getUploaderAvatars() {
+        return uploaderAvatars;
     }
 
-    public void setUploaderAvatar(Image uploaderAvatar) {
-        this.uploaderAvatar = uploaderAvatar;
+    public void setUploaderAvatars(List<Image> uploaderAvatars) {
+        this.uploaderAvatars = uploaderAvatars;
     }
 
     public List<VideoStream> getVideoStreams() {

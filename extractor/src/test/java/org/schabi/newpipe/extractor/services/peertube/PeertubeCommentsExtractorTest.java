@@ -66,12 +66,12 @@ public class PeertubeCommentsExtractorTest {
         for (CommentsInfoItem c : comments.getItems()) {
             assertFalse(StringUtil.isBlank(c.getAuthorEndpoint()));
             assertFalse(StringUtil.isBlank(c.getAuthorName()));
-            assertFalse(StringUtil.isBlank(c.getAuthorThumbnail()));
+            assertFalse(StringUtil.isBlank(c.getAuthorThumbnails().get(0).getUrl()));
             assertFalse(StringUtil.isBlank(c.getCommentId()));
             assertFalse(StringUtil.isBlank(c.getCommentText()));
             assertFalse(StringUtil.isBlank(c.getName()));
             assertFalse(StringUtil.isBlank(c.getTextualPublishedTime()));
-            assertFalse(StringUtil.isBlank(c.getThumbnail().getUrl()));
+            assertFalse(StringUtil.isBlank(c.getThumbnails().get(0).getUrl()));
             assertFalse(StringUtil.isBlank(c.getUrl()));
             assertFalse(c.getLikeCount() != -1);
         }

@@ -1,5 +1,6 @@
 package org.schabi.newpipe.extractor.services.youtube.extractors;
 
+import com.grack.nanojson.JsonArray;
 import com.grack.nanojson.JsonObject;
 
 import org.schabi.newpipe.extractor.Image;
@@ -7,6 +8,9 @@ import org.schabi.newpipe.extractor.channel.ChannelInfoItemExtractor;
 import org.schabi.newpipe.extractor.exceptions.ParsingException;
 import org.schabi.newpipe.extractor.services.youtube.linkHandler.YoutubeChannelLinkHandlerFactory;
 import org.schabi.newpipe.extractor.utils.Utils;
+
+import java.util.ArrayList;
+import java.util.List;
 
 import static org.schabi.newpipe.extractor.services.youtube.linkHandler.YoutubeParsingHelper.fixThumbnailUrl;
 import static org.schabi.newpipe.extractor.services.youtube.linkHandler.YoutubeParsingHelper.getTextFromObject;
@@ -39,12 +43,18 @@ public class YoutubeChannelInfoItemExtractor implements ChannelInfoItemExtractor
     }
 
     @Override
-    public Image getThumbnail() throws ParsingException {
+    public List<Image> getThumbnails() throws ParsingException {
         try {
-            JsonObject thumbnail = channelInfoItem.getObject("thumbnail").getArray("thumbnails").getObject(0);
+            List<Image> images = new ArrayList<>();
+            JsonArray thumbnails = channelInfoItem.getObject("thumbnail").getArray("thumbnails");
 
-            return new Image(fixThumbnailUrl(thumbnail.getString("url")),
-                    thumbnail.getInt("width"), thumbnail.getInt("height"));
+            for (Object thumbnailObject : thumbnails) {
+                final JsonObject thumbnail = (JsonObject) thumbnailObject;
+                images.add(new Image(fixThumbnailUrl(thumbnail.getString("url")),
+                        thumbnail.getInt("width"), thumbnail.getInt("height")));
+            }
+
+            return images;
         } catch (Exception e) {
             throw new ParsingException("Could not get thumbnail url", e);
         }

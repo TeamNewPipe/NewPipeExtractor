@@ -11,6 +11,9 @@ import org.schabi.newpipe.extractor.stream.StreamInfoItemExtractor;
 import org.schabi.newpipe.extractor.stream.StreamType;
 import org.schabi.newpipe.extractor.utils.JsonUtils;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public class PeertubeStreamInfoItemExtractor implements StreamInfoItemExtractor {
 
     protected final JsonObject item;
@@ -28,9 +31,10 @@ public class PeertubeStreamInfoItemExtractor implements StreamInfoItemExtractor 
     }
 
     @Override
-    public Image getThumbnail() throws ParsingException {
-        String value = JsonUtils.getString(item, "thumbnailPath");
-        return new Image(baseUrl + value, -1, -1);
+    public List<Image> getThumbnails() throws ParsingException {
+        List<Image> images = new ArrayList<>();
+        images.add(new Image(baseUrl + JsonUtils.getString(item, "thumbnailPath"), -1, -1));
+        return images;
     }
 
     @Override

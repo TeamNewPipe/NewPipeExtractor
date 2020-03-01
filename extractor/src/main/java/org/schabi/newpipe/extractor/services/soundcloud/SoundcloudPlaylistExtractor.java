@@ -16,6 +16,8 @@ import org.schabi.newpipe.extractor.stream.StreamInfoItemsCollector;
 
 import javax.annotation.Nonnull;
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 
 @SuppressWarnings("WeakerAccess")
 public class SoundcloudPlaylistExtractor extends PlaylistExtractor {
@@ -58,7 +60,7 @@ public class SoundcloudPlaylistExtractor extends PlaylistExtractor {
     }
 
     @Override
-    public Image getThumbnail() {
+    public List<Image> getThumbnails() {
         String artworkUrl = playlist.getString("artwork_url");
 
         if (artworkUrl == null) {
@@ -69,22 +71,24 @@ public class SoundcloudPlaylistExtractor extends PlaylistExtractor {
                 if (infoItems.getItems().isEmpty()) return null;
 
                 for (StreamInfoItem item : infoItems.getItems()) {
-                    final Image thumbnail = item.getThumbnail();
-                    if (thumbnail.getUrl() == null || thumbnail.getUrl().isEmpty()) continue;
-
-                    String thumbnailUrlBetterResolution = thumbnail.getUrl().replace("large.jpg", "crop.jpg");
-                    return new Image(thumbnailUrlBetterResolution, -1, -1);
+                    final List<Image> thumbnails = item.getThumbnails();
+                    if (thumbnails.isEmpty()) continue;
+                    return thumbnails;
                 }
             } catch (Exception ignored) {
             }
         }
 
+        List<Image> images = new ArrayList<>();
+
         String artworkUrlBetterResolution = artworkUrl.replace("large.jpg", "crop.jpg");
-        return new Image(artworkUrlBetterResolution, -1, -1);
+        images.add(new Image(artworkUrlBetterResolution, -1, -1));
+
+        return images;
     }
 
     @Override
-    public Image getBanner() {
+    public List<Image> getBanners() {
         return null;
     }
 
@@ -99,8 +103,10 @@ public class SoundcloudPlaylistExtractor extends PlaylistExtractor {
     }
 
     @Override
-    public Image getUploaderAvatar() {
-        return new Image(SoundcloudParsingHelper.getAvatarUrl(playlist), -1, -1);
+    public List<Image> getUploaderAvatars() {
+        List<Image> images = new ArrayList<>();
+        images.add(new Image(SoundcloudParsingHelper.getAvatarUrl(playlist), -1, -1));
+        return images;
     }
 
     @Override

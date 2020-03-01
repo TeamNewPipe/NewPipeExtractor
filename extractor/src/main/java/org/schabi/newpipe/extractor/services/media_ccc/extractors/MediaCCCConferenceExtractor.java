@@ -18,6 +18,8 @@ import org.schabi.newpipe.extractor.stream.StreamInfoItemsCollector;
 
 import javax.annotation.Nonnull;
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 
 public class MediaCCCConferenceExtractor extends ChannelExtractor {
 
@@ -28,13 +30,17 @@ public class MediaCCCConferenceExtractor extends ChannelExtractor {
     }
 
     @Override
-    public Image getAvatar() throws ParsingException {
-        return new Image(conferenceData.getString("logo_url"), -1, -1);
+    public List<Image> getAvatars() throws ParsingException {
+        List<Image> images = new ArrayList<>();
+        images.add(new Image(conferenceData.getString("logo_url"), -1, -1));
+        return images;
     }
 
     @Override
-    public Image getBanner() throws ParsingException {
-        return new Image(conferenceData.getString("logo_url"), -1, -1);
+    public List<Image> getBanners() throws ParsingException {
+        List<Image> images = new ArrayList<>();
+        images.add(new Image(conferenceData.getString("logo_url"), -1, -1));
+        return images;
     }
 
     @Override

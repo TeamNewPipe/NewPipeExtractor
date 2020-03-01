@@ -1,7 +1,10 @@
 package org.schabi.newpipe.extractor.comments;
 
+import org.schabi.newpipe.extractor.Image;
 import org.schabi.newpipe.extractor.InfoItem;
 import org.schabi.newpipe.extractor.localization.DateWrapper;
+
+import java.util.List;
 
 import javax.annotation.Nullable;
 
@@ -10,7 +13,7 @@ public class CommentsInfoItem extends InfoItem {
     private String commentId;
     private String commentText;
     private String authorName;
-    private String authorThumbnail;
+    private List<Image> authorThumbnails;
     private String authorEndpoint;
     private String textualPublishedTime;
     @Nullable private DateWrapper publishedTime;
@@ -44,12 +47,12 @@ public class CommentsInfoItem extends InfoItem {
         this.authorName = authorName;
     }
 
-    public String getAuthorThumbnail() {
-        return authorThumbnail;
+    public List<Image> getAuthorThumbnails() {
+        return authorThumbnails;
     }
 
-    public void setAuthorThumbnail(String authorThumbnail) {
-        this.authorThumbnail = authorThumbnail;
+    public void setAuthorThumbnails(List<Image> authorThumbnails) {
+        this.authorThumbnails = authorThumbnails;
     }
 
     public String getAuthorEndpoint() {

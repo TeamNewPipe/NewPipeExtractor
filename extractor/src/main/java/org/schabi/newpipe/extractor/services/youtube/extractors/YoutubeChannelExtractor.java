@@ -18,6 +18,8 @@ import org.schabi.newpipe.extractor.stream.StreamInfoItemsCollector;
 import org.schabi.newpipe.extractor.utils.Utils;
 
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 
 import javax.annotation.Nonnull;
 
@@ -103,33 +105,43 @@ public class YoutubeChannelExtractor extends ChannelExtractor {
     }
 
     @Override
-    public Image getAvatar() throws ParsingException {
+    public List<Image> getAvatars() throws ParsingException {
         try {
-            JsonObject thumbnail = initialData.getObject("header").getObject("c4TabbedHeaderRenderer").getObject("avatar")
-                    .getArray("thumbnails").getObject(0);
+            List<Image> images = new ArrayList<>();
+            JsonArray thumbnails = initialData.getObject("header").getObject("c4TabbedHeaderRenderer")
+                    .getObject("avatar").getArray("thumbnails");
 
-            return new Image(fixThumbnailUrl(thumbnail.getString("url")),
-                    thumbnail.getInt("width"), thumbnail.getInt("height"));
+            for (Object thumbnailObject : thumbnails) {
+                final JsonObject thumbnail = (JsonObject) thumbnailObject;
+                images.add(new Image(fixThumbnailUrl(thumbnail.getString("url")),
+                        thumbnail.getInt("width"), thumbnail.getInt("height")));
+            }
+
+            return images;
         } catch (Exception e) {
             throw new ParsingException("Could not get avatar", e);
         }
     }
 
     @Override
-    public Image getBanner() throws ParsingException {
+    public List<Image> getBanners() throws ParsingException {
         try {
-            JsonObject thumbnail = null;
-            try {
-                thumbnail = initialData.getObject("header").getObject("c4TabbedHeaderRenderer")
-                        .getObject("banner").getArray("thumbnails").getObject(0);
-            } catch (Exception ignored) {}
-            if (thumbnail == null || thumbnail.getString("url").contains("s.ytimg.com")
-                    || thumbnail.getString("url").contains("default_banner")) {
-                return null;
+            List<Image> images = new ArrayList<>();
+            JsonArray thumbnails = initialData.getObject("header").getObject("c4TabbedHeaderRenderer")
+                    .getObject("avatar").getArray("thumbnails");
+
+            for (Object thumbnailObject : thumbnails) {
+                final JsonObject thumbnail = (JsonObject) thumbnailObject;
+
+                if (thumbnail.getString("url").contains("s.ytimg.com")
+                        || thumbnail.getString("url").contains("default_banner"))
+                    return null;
+
+                images.add(new Image(fixThumbnailUrl(thumbnail.getString("url")),
+                        thumbnail.getInt("width"), thumbnail.getInt("height")));
             }
 
-            return new Image(fixThumbnailUrl(thumbnail.getString("url")),
-                    thumbnail.getInt("width"), thumbnail.getInt("height"));
+            return images;
         } catch (Exception e) {
             throw new ParsingException("Could not get banner", e);
         }

@@ -40,7 +40,7 @@ public class CommentsInfoItemsCollector extends InfoItemsCollector<CommentsInfoI
             addError(e);
         }
         try {
-            resultItem.setAuthorThumbnail(extractor.getAuthorThumbnail());
+            resultItem.setAuthorThumbnails(extractor.getAuthorThumbnails());
         } catch (Exception e) {
             addError(e);
         }
@@ -65,7 +65,7 @@ public class CommentsInfoItemsCollector extends InfoItemsCollector<CommentsInfoI
             addError(e);
         }
         try {
-            resultItem.setThumbnail(extractor.getThumbnail());
+            resultItem.setThumbnails(extractor.getThumbnails());
         } catch (Exception e) {
             addError(e);
         }

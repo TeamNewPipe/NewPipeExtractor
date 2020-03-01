@@ -21,6 +21,8 @@ import org.schabi.newpipe.extractor.utils.Parser;
 import org.schabi.newpipe.extractor.utils.Parser.RegexException;
 
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 
 public class PeertubeChannelExtractor extends ChannelExtractor {
 
@@ -41,18 +43,22 @@ public class PeertubeChannelExtractor extends ChannelExtractor {
     }
 
     @Override
-    public Image getAvatar() throws ParsingException {
+    public List<Image> getAvatars() throws ParsingException {
+        List<Image> images = new ArrayList<>();
+
         String value;
         try {
             value = JsonUtils.getString(json, "avatar.path");
         } catch (Exception e) {
             value = "/client/assets/images/default-avatar.png";
         }
-        return new Image(baseUrl + value, -1, -1);
+
+        images.add(new Image(baseUrl + value, -1, -1));
+        return images;
     }
 
     @Override
-    public Image getBanner() throws ParsingException {
+    public List<Image> getBanners() throws ParsingException {
         return null;
     }
 

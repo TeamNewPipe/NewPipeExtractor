@@ -11,6 +11,9 @@ import org.schabi.newpipe.extractor.localization.DateWrapper;
 import org.schabi.newpipe.extractor.services.peertube.PeertubeParsingHelper;
 import org.schabi.newpipe.extractor.utils.JsonUtils;
 
+import java.util.ArrayList;
+import java.util.List;
+
 
 public class PeertubeCommentsInfoItemExtractor implements CommentsInfoItemExtractor {
 
@@ -30,14 +33,18 @@ public class PeertubeCommentsInfoItemExtractor implements CommentsInfoItemExtrac
     }
 
     @Override
-    public Image getThumbnail() throws ParsingException {
+    public List<Image> getThumbnails() throws ParsingException {
+        List<Image> images = new ArrayList<>();
+
         String value;
         try {
             value = JsonUtils.getString(item, "account.avatar.path");
         } catch (Exception e) {
             value = "/client/assets/images/default-avatar.png";
         }
-        return new Image(baseUrl + value, -1, -1);
+
+        images.add(new Image(baseUrl + value, -1, -1));
+        return images;
     }
 
     @Override
@@ -79,14 +86,18 @@ public class PeertubeCommentsInfoItemExtractor implements CommentsInfoItemExtrac
     }
 
     @Override
-    public String getAuthorThumbnail() throws ParsingException {
+    public List<Image> getAuthorThumbnails() throws ParsingException {
+        List<Image> images = new ArrayList<>();
+
         String value;
         try {
             value = JsonUtils.getString(item, "account.avatar.path");
         } catch (Exception e) {
             value = "/client/assets/images/default-avatar.png";
         }
-        return baseUrl + value;
+
+        images.add(new Image(baseUrl + value, -1, -1));
+        return images;
     }
 
     @Override

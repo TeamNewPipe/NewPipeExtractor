@@ -86,14 +86,14 @@ public class PeertubeChannelExtractorTest {
         }
 
         @Test
-        public void testAvatar() throws ParsingException {
-            assertIsSecureUrl(extractor.getAvatar().getUrl());
+        public void testAvatars() throws ParsingException {
+            assertIsSecureUrl(extractor.getAvatars().get(0).getUrl());
         }
 
         @Ignore
         @Test
-        public void testBanner() throws ParsingException {
-            assertIsSecureUrl(extractor.getBanner().getUrl());
+        public void testBanners() throws ParsingException {
+            assertIsSecureUrl(extractor.getBanners().get(0).getUrl());
         }
 
         @Test
@@ -183,14 +183,14 @@ public class PeertubeChannelExtractorTest {
         }
 
         @Test
-        public void testAvatar() throws ParsingException {
-            assertIsSecureUrl(extractor.getAvatar().getUrl());
+        public void testAvatars() throws ParsingException {
+            assertIsSecureUrl(extractor.getAvatars().get(0).getUrl());
         }
 
         @Ignore
         @Test
-        public void testBanner() throws ParsingException {
-            assertIsSecureUrl(extractor.getBanner().getUrl());
+        public void testBanners() throws ParsingException {
+            assertIsSecureUrl(extractor.getBanners().get(0).getUrl());
         }
 
         @Test

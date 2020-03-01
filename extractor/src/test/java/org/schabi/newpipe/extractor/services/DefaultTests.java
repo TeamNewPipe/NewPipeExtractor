@@ -28,8 +28,8 @@ public final class DefaultTests {
 
         for (InfoItem item : itemsList) {
             assertIsSecureUrl(item.getUrl());
-            if (item.getThumbnail() != null && !item.getThumbnail().getUrl().isEmpty()) {
-                assertIsSecureUrl(item.getThumbnail().getUrl());
+            if (item.getThumbnails() != null && !item.getThumbnails().get(0).getUrl().isEmpty()) {
+                assertIsSecureUrl(item.getThumbnails().get(0).getUrl());
             }
             assertNotNull("InfoItem type not set: " + item, item.getInfoType());
             assertEquals("Unexpected item service id", expectedService.getServiceId(), item.getServiceId());

@@ -85,14 +85,14 @@ public class SoundcloudPlaylistExtractorTest {
         //////////////////////////////////////////////////////////////////////////*/
 
         @Test
-        public void testThumbnail() {
-            assertIsSecureUrl(extractor.getThumbnail().getUrl());
+        public void testThumbnails() {
+            assertIsSecureUrl(extractor.getThumbnails().get(0).getUrl());
         }
 
         @Ignore
         @Test
-        public void testBanner() {
-            assertIsSecureUrl(extractor.getBanner().getUrl());
+        public void testBanners() {
+            assertIsSecureUrl(extractor.getBanners().get(0).getUrl());
         }
 
         @Test
@@ -108,8 +108,8 @@ public class SoundcloudPlaylistExtractorTest {
         }
 
         @Test
-        public void testUploaderAvatar() {
-            assertIsSecureUrl(extractor.getUploaderAvatar().getUrl());
+        public void testUploaderAvatars() {
+            assertIsSecureUrl(extractor.getUploaderAvatars().get(0).getUrl());
         }
 
         @Test
@@ -177,14 +177,14 @@ public class SoundcloudPlaylistExtractorTest {
         //////////////////////////////////////////////////////////////////////////*/
 
         @Test
-        public void testThumbnail() {
-            assertIsSecureUrl(extractor.getThumbnail().getUrl());
+        public void testThumbnails() {
+            assertIsSecureUrl(extractor.getThumbnails().get(0).getUrl());
         }
 
         @Ignore("not implemented")
         @Test
-        public void testBanner() {
-            assertIsSecureUrl(extractor.getBanner().getUrl());
+        public void testBanners() {
+            assertIsSecureUrl(extractor.getBanners().get(0).getUrl());
         }
 
         @Test
@@ -200,8 +200,8 @@ public class SoundcloudPlaylistExtractorTest {
         }
 
         @Test
-        public void testUploaderAvatar() {
-            assertIsSecureUrl(extractor.getUploaderAvatar().getUrl());
+        public void testUploaderAvatars() {
+            assertIsSecureUrl(extractor.getUploaderAvatars().get(0).getUrl());
         }
 
         @Test
@@ -288,14 +288,14 @@ public class SoundcloudPlaylistExtractorTest {
 
         @Ignore
         @Test
-        public void testThumbnail() {
-            assertIsSecureUrl(extractor.getThumbnail().getUrl());
+        public void testThumbnails() {
+            assertIsSecureUrl(extractor.getThumbnails().get(0).getUrl());
         }
 
         @Ignore
         @Test
-        public void testBanner() {
-            assertIsSecureUrl(extractor.getBanner().getUrl());
+        public void testBanners() {
+            assertIsSecureUrl(extractor.getBanners().get(0).getUrl());
         }
 
         @Test
@@ -311,8 +311,8 @@ public class SoundcloudPlaylistExtractorTest {
         }
 
         @Test
-        public void testUploaderAvatar() {
-            assertIsSecureUrl(extractor.getUploaderAvatar().getUrl());
+        public void testUploaderAvatars() {
+            assertIsSecureUrl(extractor.getUploaderAvatars().get(0).getUrl());
         }
 
         @Test

@@ -21,13 +21,14 @@ package org.schabi.newpipe.extractor;
  */
 
 import java.io.Serializable;
+import java.util.List;
 
 public abstract class InfoItem implements Serializable {
     private final InfoType infoType;
     private final int serviceId;
     private final String url;
     private final String name;
-    private Image thumbnail;
+    private List<Image> thumbnails;
 
     public InfoItem(InfoType infoType, int serviceId, String url, String name) {
         this.infoType = infoType;
@@ -52,12 +53,12 @@ public abstract class InfoItem implements Serializable {
         return name;
     }
 
-    public void setThumbnail(Image thumbnail) {
-        this.thumbnail = thumbnail;
+    public void setThumbnails(List<Image> thumbnails) {
+        this.thumbnails = thumbnails;
     }
 
-    public Image getThumbnail() {
-        return thumbnail;
+    public List<Image> getThumbnails() {
+        return thumbnails;
     }
 
     @Override

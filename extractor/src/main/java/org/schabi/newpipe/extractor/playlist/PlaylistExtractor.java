@@ -7,18 +7,20 @@ import org.schabi.newpipe.extractor.exceptions.ParsingException;
 import org.schabi.newpipe.extractor.linkhandler.ListLinkHandler;
 import org.schabi.newpipe.extractor.stream.StreamInfoItem;
 
+import java.util.List;
+
 public abstract class PlaylistExtractor extends ListExtractor<StreamInfoItem> {
 
     public PlaylistExtractor(StreamingService service, ListLinkHandler linkHandler) {
         super(service, linkHandler);
     }
 
-    public abstract Image getThumbnail() throws ParsingException;
-    public abstract Image getBanner() throws ParsingException;
+    public abstract List<Image> getThumbnails() throws ParsingException;
+    public abstract List<Image> getBanners() throws ParsingException;
 
     public abstract String getUploaderUrl() throws ParsingException;
     public abstract String getUploaderName() throws ParsingException;
-    public abstract Image getUploaderAvatar() throws ParsingException;
+    public abstract List<Image> getUploaderAvatars() throws ParsingException;
 
     public abstract long getStreamCount() throws ParsingException;
 }

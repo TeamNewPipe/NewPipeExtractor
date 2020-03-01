@@ -190,15 +190,19 @@ public class YoutubeStreamExtractor extends StreamExtractor {
 
     @Nonnull
     @Override
-    public Image getThumbnail() throws ParsingException {
+    public List<Image> getThumbnails() throws ParsingException {
         assertPageFetched();
         try {
+            List<Image> images = new ArrayList<>();
             JsonArray thumbnails = playerResponse.getObject("videoDetails").getObject("thumbnail").getArray("thumbnails");
-            // the last thumbnail is the one with the highest resolution
-            JsonObject thumbnail = thumbnails.getObject(thumbnails.size() - 1);
 
-            return new Image(fixThumbnailUrl(thumbnail.getString("url")),
-                    thumbnail.getInt("width"), thumbnail.getInt("height"));
+            for (Object thumbnailObject : thumbnails) {
+                final JsonObject thumbnail = (JsonObject) thumbnailObject;
+                images.add(new Image(fixThumbnailUrl(thumbnail.getString("url")),
+                        thumbnail.getInt("width"), thumbnail.getInt("height")));
+            }
+
+            return images;
         } catch (Exception e) {
             throw new ParsingException("Could not get thumbnail url");
         }
@@ -371,14 +375,20 @@ public class YoutubeStreamExtractor extends StreamExtractor {
 
     @Nonnull
     @Override
-    public Image getUploaderAvatar() throws ParsingException {
+    public List<Image> getUploaderAvatars() throws ParsingException {
         assertPageFetched();
         try {
-            JsonObject thumbnail = getVideoSecondaryInfoRenderer().getObject("owner").getObject("videoOwnerRenderer")
-                    .getObject("thumbnail").getArray("thumbnails").getObject(0);
+            List<Image> images = new ArrayList<>();
+            JsonArray thumbnails = getVideoSecondaryInfoRenderer().getObject("owner")
+                    .getObject("videoOwnerRenderer").getObject("thumbnail").getArray("thumbnails");
 
-            return new Image(fixThumbnailUrl(thumbnail.getString("url")),
-                    thumbnail.getInt("width"), thumbnail.getInt("height"));
+            for (Object thumbnailObject : thumbnails) {
+                final JsonObject thumbnail = (JsonObject) thumbnailObject;
+                images.add(new Image(fixThumbnailUrl(thumbnail.getString("url")),
+                        thumbnail.getInt("width"), thumbnail.getInt("height")));
+            }
+
+            return images;
         } catch (Exception e) {
             throw new ParsingException("Could not get uploader avatar url", e);
         }

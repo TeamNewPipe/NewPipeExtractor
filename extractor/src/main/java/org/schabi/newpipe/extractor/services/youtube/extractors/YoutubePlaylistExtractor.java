@@ -17,6 +17,8 @@ import org.schabi.newpipe.extractor.stream.StreamInfoItemsCollector;
 import org.schabi.newpipe.extractor.utils.Utils;
 
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 
 import javax.annotation.Nonnull;
 
@@ -102,29 +104,42 @@ public class YoutubePlaylistExtractor extends PlaylistExtractor {
     }
 
     @Override
-    public Image getThumbnail() throws ParsingException {
-        JsonObject thumbnail = null;
+    public List<Image> getThumbnails() throws ParsingException {
+        List<Image> images = new ArrayList<>();
 
         try {
-            thumbnail = playlistInfo.getObject("thumbnailRenderer").getObject("playlistVideoThumbnailRenderer")
-                    .getObject("thumbnail").getArray("thumbnails").getObject(0);
+            JsonArray thumbnails = playlistInfo.getObject("thumbnailRenderer")
+                    .getObject("playlistVideoThumbnailRenderer")
+                    .getObject("thumbnail").getArray("thumbnails");
+
+            for (Object thumbnailObject : thumbnails) {
+                final JsonObject thumbnail = (JsonObject) thumbnailObject;
+                images.add(new Image(fixThumbnailUrl(thumbnail.getString("url")),
+                        thumbnail.getInt("width"), thumbnail.getInt("height")));
+            }
         } catch (Exception ignored) {}
 
-        if (thumbnail == null) {
+        if (images.isEmpty()) {
             try {
-                thumbnail = initialData.getObject("microformat").getObject("microformatDataRenderer")
-                        .getObject("thumbnail").getArray("thumbnails").getObject(0);
+                JsonArray thumbnails = initialData.getObject("microformat")
+                        .getObject("microformatDataRenderer")
+                        .getObject("thumbnail").getArray("thumbnails");
+
+                for (Object thumbnailObject : thumbnails) {
+                    final JsonObject thumbnail = (JsonObject) thumbnailObject;
+                    images.add(new Image(fixThumbnailUrl(thumbnail.getString("url")),
+                            thumbnail.getInt("width"), thumbnail.getInt("height")));
+                }
             } catch (Exception ignored) {}
 
-            if (thumbnail == null) throw new ParsingException("Could not get playlist thumbnail");
+            if (images.isEmpty()) throw new ParsingException("Could not get playlist thumbnail");
         }
 
-        return new Image(fixThumbnailUrl(thumbnail.getString("url")),
-                thumbnail.getInt("width"), thumbnail.getInt("height"));
+        return images;
     }
 
     @Override
-    public Image getBanner() {
+    public List<Image> getBanners() {
         return null;      // Banner can't be handled by frontend right now.
         // Whoever is willing to implement this should also implement it in the frontend.
     }
@@ -148,12 +163,18 @@ public class YoutubePlaylistExtractor extends PlaylistExtractor {
     }
 
     @Override
-    public Image getUploaderAvatar() throws ParsingException {
+    public List<Image> getUploaderAvatars() throws ParsingException {
         try {
-            JsonObject thumbnail = getUploaderInfo().getObject("thumbnail").getArray("thumbnails").getObject(0);
+            List<Image> images = new ArrayList<>();
+            JsonArray thumbnails = getUploaderInfo().getObject("thumbnail").getArray("thumbnails");
 
-            return new Image(fixThumbnailUrl(thumbnail.getString("url")),
-                    thumbnail.getInt("width"), thumbnail.getInt("height"));
+            for (Object thumbnailObject : thumbnails) {
+                final JsonObject thumbnail = (JsonObject) thumbnailObject;
+                images.add(new Image(fixThumbnailUrl(thumbnail.getString("url")),
+                        thumbnail.getInt("width"), thumbnail.getInt("height")));
+            }
+
+            return images;
         } catch (Exception e) {
             throw new ParsingException("Could not get playlist uploader avatar", e);
         }

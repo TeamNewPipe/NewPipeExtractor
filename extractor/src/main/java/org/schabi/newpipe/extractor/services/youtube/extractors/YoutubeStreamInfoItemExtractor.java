@@ -13,6 +13,9 @@ import org.schabi.newpipe.extractor.stream.StreamInfoItemExtractor;
 import org.schabi.newpipe.extractor.stream.StreamType;
 import org.schabi.newpipe.extractor.utils.Utils;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import javax.annotation.Nullable;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
@@ -241,14 +244,18 @@ public class YoutubeStreamInfoItemExtractor implements StreamInfoItemExtractor {
     }
 
     @Override
-    public Image getThumbnail() throws ParsingException {
+    public List<Image> getThumbnails() throws ParsingException {
         try {
-            // TODO: Don't simply get the first item, but look at all thumbnails and their resolution
-            JsonObject thumbnail = videoInfo.getObject("thumbnail").getArray("thumbnails")
-                    .getObject(0);
+            List<Image> images = new ArrayList<>();
+            JsonArray thumbnails = videoInfo.getObject("thumbnail").getArray("thumbnails");
 
-            return new Image(fixThumbnailUrl(thumbnail.getString("url")),
-                    thumbnail.getInt("width"), thumbnail.getInt("height"));
+            for (Object thumbnailObject : thumbnails) {
+                final JsonObject thumbnail = (JsonObject) thumbnailObject;
+                images.add(new Image(fixThumbnailUrl(thumbnail.getString("url")),
+                        thumbnail.getInt("width"), thumbnail.getInt("height")));
+            }
+
+            return images;
         } catch (Exception e) {
             throw new ParsingException("Could not get thumbnail url", e);
         }

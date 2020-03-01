@@ -58,8 +58,8 @@ public class MediaCCCStreamExtractorTest implements BaseExtractorTest {
     }
 
     @Test
-    public void testThumbnail() throws Exception {
-        assertEquals("https://static.media.ccc.de/media/events/gpn/gpn18/105-hd.jpg", extractor.getThumbnail().getUrl());
+    public void testThumbnails() throws Exception {
+        assertEquals("https://static.media.ccc.de/media/events/gpn/gpn18/105-hd.jpg", extractor.getThumbnails().get(0).getUrl());
     }
 
     @Test
@@ -73,8 +73,8 @@ public class MediaCCCStreamExtractorTest implements BaseExtractorTest {
     }
 
     @Test
-    public void testUploaderAvatar() throws Exception {
-        assertEquals("https://static.media.ccc.de/media/events/gpn/gpn18/logo.png", extractor.getUploaderAvatar().getUrl());
+    public void testUploaderAvatars() throws Exception {
+        assertEquals("https://static.media.ccc.de/media/events/gpn/gpn18/logo.png", extractor.getUploaderAvatars().get(0).getUrl());
     }
 
     @Test

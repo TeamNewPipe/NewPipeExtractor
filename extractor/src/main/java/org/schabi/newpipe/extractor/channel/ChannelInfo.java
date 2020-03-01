@@ -11,6 +11,7 @@ import org.schabi.newpipe.extractor.stream.StreamInfoItem;
 import org.schabi.newpipe.extractor.utils.ExtractorHelper;
 
 import java.io.IOException;
+import java.util.List;
 
 /*
  * Created by Christian Schabesberger on 31.07.16.
@@ -65,12 +66,12 @@ public class ChannelInfo extends ListInfo<StreamInfoItem> {
         final ChannelInfo info = new ChannelInfo(serviceId, id, url, originalUrl, name, extractor.getLinkHandler());
 
         try {
-            info.setAvatar(extractor.getAvatar());
+            info.setAvatars(extractor.getAvatars());
         } catch (Exception e) {
             info.addError(e);
         }
         try {
-            info.setBanner(extractor.getBanner());
+            info.setBanners(extractor.getBanners());
         } catch (Exception e) {
             info.addError(e);
         }
@@ -98,27 +99,27 @@ public class ChannelInfo extends ListInfo<StreamInfoItem> {
         return info;
     }
 
-    private Image avatar;
-    private Image banner;
+    private List<Image> avatars;
+    private List<Image> banners;
     private String feedUrl;
     private long subscriberCount = -1;
     private String description;
     private String[] donationLinks;
 
-    public Image getAvatar() {
-        return avatar;
+    public List<Image> getAvatars() {
+        return avatars;
     }
 
-    public void setAvatar(Image avatar) {
-        this.avatar = avatar;
+    public void setAvatars(List<Image> avatars) {
+        this.avatars = avatars;
     }
 
-    public Image getBanner() {
-        return banner;
+    public List<Image> getBanners() {
+        return banners;
     }
 
-    public void setBanner(Image banner) {
-        this.banner = banner;
+    public void setBanners(List<Image> banners) {
+        this.banners = banners;
     }
 
     public String getFeedUrl() {

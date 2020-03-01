@@ -135,8 +135,8 @@ public class MediaCCCSearchExtractor extends SearchExtractor {
                     }
 
                     @Override
-                    public Image getThumbnail() throws ParsingException {
-                        return item.getThumbnail();
+                    public List<Image> getThumbnails() throws ParsingException {
+                        return item.getThumbnails();
                     }
                 });
             }

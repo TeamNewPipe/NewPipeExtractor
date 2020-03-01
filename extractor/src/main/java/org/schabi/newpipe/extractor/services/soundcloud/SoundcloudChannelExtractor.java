@@ -17,6 +17,8 @@ import org.schabi.newpipe.extractor.stream.StreamInfoItemsCollector;
 
 import javax.annotation.Nonnull;
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 
 @SuppressWarnings("WeakerAccess")
 public class SoundcloudChannelExtractor extends ChannelExtractor {
@@ -58,16 +60,20 @@ public class SoundcloudChannelExtractor extends ChannelExtractor {
     }
 
     @Override
-    public Image getAvatar() {
-        return new Image(user.getString("avatar_url"), -1, -1);
+    public List<Image> getAvatars() {
+        List<Image> images = new ArrayList<>();
+        images.add(new Image(user.getString("avatar_url"), -1, -1));
+        return images;
     }
 
     @Override
-    public Image getBanner() {
-        return new Image(user.getObject("visuals", new JsonObject())
+    public List<Image> getBanners() {
+        List<Image> images = new ArrayList<>();
+        images.add(new Image(user.getObject("visuals", new JsonObject())
                 .getArray("visuals", new JsonArray())
                 .getObject(0, new JsonObject())
-                .getString("visual_url"), -1, -1);
+                .getString("visual_url"), -1, -1));
+        return images;
     }
 
     @Override

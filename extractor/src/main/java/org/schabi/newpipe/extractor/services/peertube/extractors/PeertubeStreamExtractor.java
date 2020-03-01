@@ -59,8 +59,10 @@ public class PeertubeStreamExtractor extends StreamExtractor {
     }
 
     @Override
-    public Image getThumbnail() throws ParsingException {
-        return new Image(baseUrl + JsonUtils.getString(json, "previewPath"), -1, -1);
+    public List<Image> getThumbnails() throws ParsingException {
+        List<Image> images = new ArrayList<>();
+        images.add(new Image(baseUrl + JsonUtils.getString(json, "previewPath"), -1, -1));
+        return images;
     }
 
     @Override
@@ -138,14 +140,18 @@ public class PeertubeStreamExtractor extends StreamExtractor {
     }
 
     @Override
-    public Image getUploaderAvatar() throws ParsingException {
+    public List<Image> getUploaderAvatars() throws ParsingException {
+        List<Image> images = new ArrayList<>();
+
         String value;
         try {
             value = JsonUtils.getString(json, "account.avatar.path");
         } catch (Exception e) {
             value = "/client/assets/images/default-avatar.png";
         }
-        return new Image(baseUrl + value, -1, -1);
+
+        images.add(new Image(baseUrl + value, -1, -1));
+        return images;
     }
 
     @Override

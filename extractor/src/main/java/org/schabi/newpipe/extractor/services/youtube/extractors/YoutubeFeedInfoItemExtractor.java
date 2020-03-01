@@ -1,5 +1,8 @@
 package org.schabi.newpipe.extractor.services.youtube.extractors;
 
+import com.grack.nanojson.JsonArray;
+import com.grack.nanojson.JsonObject;
+
 import org.jsoup.nodes.Element;
 import org.schabi.newpipe.extractor.Image;
 import org.schabi.newpipe.extractor.exceptions.ParsingException;
@@ -10,9 +13,13 @@ import org.schabi.newpipe.extractor.stream.StreamType;
 import javax.annotation.Nullable;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.List;
 import java.util.TimeZone;
+
+import static org.schabi.newpipe.extractor.services.youtube.linkHandler.YoutubeParsingHelper.fixThumbnailUrl;
 
 public class YoutubeFeedInfoItemExtractor implements StreamInfoItemExtractor {
     private final Element entryElement;
@@ -89,7 +96,14 @@ public class YoutubeFeedInfoItemExtractor implements StreamInfoItemExtractor {
     }
 
     @Override
-    public Image getThumbnail() {
-        return new Image(entryElement.getElementsByTag("media:thumbnail").first().attr("url"), -1, -1);
+    public List<Image> getThumbnails() {
+        List<Image> images = new ArrayList<>();
+        Element thumbnail = entryElement.getElementsByTag("media:thumbnail").first();
+
+        images.add(new Image(fixThumbnailUrl(thumbnail.attr("url")),
+                Integer.parseInt(thumbnail.attr("width")),
+                Integer.parseInt(thumbnail.attr("height"))));
+
+        return images;
     }
 }

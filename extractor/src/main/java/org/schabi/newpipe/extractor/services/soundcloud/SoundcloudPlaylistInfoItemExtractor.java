@@ -6,6 +6,9 @@ import org.schabi.newpipe.extractor.Image;
 import org.schabi.newpipe.extractor.exceptions.ParsingException;
 import org.schabi.newpipe.extractor.playlist.PlaylistInfoItemExtractor;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import static org.schabi.newpipe.extractor.utils.Utils.replaceHttpWithHttps;
 
 public class SoundcloudPlaylistInfoItemExtractor implements PlaylistInfoItemExtractor {
@@ -30,13 +33,16 @@ public class SoundcloudPlaylistInfoItemExtractor implements PlaylistInfoItemExtr
     }
 
     @Override
-    public Image getThumbnail() throws ParsingException {
+    public List<Image> getThumbnails() throws ParsingException {
+        List<Image> images = new ArrayList<>();
+
         // Over-engineering at its finest
         if (itemObject.isString(ARTWORK_URL_KEY)) {
             final String artworkUrl = itemObject.getString(ARTWORK_URL_KEY, "");
             if (!artworkUrl.isEmpty()) {
                 String artworkUrlBetterResolution = artworkUrl.replace("large.jpg", "crop.jpg");
-                return new Image(artworkUrlBetterResolution, -1, -1);
+                images.add(new Image(artworkUrlBetterResolution, -1, -1));
+                return images;
             }
         }
 
@@ -50,14 +56,18 @@ public class SoundcloudPlaylistInfoItemExtractor implements PlaylistInfoItemExtr
                     String artworkUrl = trackObject.getString(ARTWORK_URL_KEY, "");
                     if (!artworkUrl.isEmpty()) {
                         String artworkUrlBetterResolution = artworkUrl.replace("large.jpg", "crop.jpg");
-                        return new Image(artworkUrlBetterResolution, -1, -1);
+                        images.add(new Image(artworkUrlBetterResolution, -1, -1));
+                        return images;
                     }
                 }
 
                 // Then look for track creator avatar url
                 final JsonObject creator = trackObject.getObject(USER_KEY, new JsonObject());
                 final String creatorAvatar = creator.getString(AVATAR_URL_KEY, "");
-                if (!creatorAvatar.isEmpty()) return new Image(creatorAvatar, -1, -1);
+                if (!creatorAvatar.isEmpty()) {
+                    images.add(new Image(creatorAvatar, -1, -1));
+                    return images;
+                }
             }
         } catch (Exception ignored) {
             // Try other method
@@ -65,7 +75,8 @@ public class SoundcloudPlaylistInfoItemExtractor implements PlaylistInfoItemExtr
 
         try {
             // Last resort, use user avatar url. If still not found, then throw exception.
-            return new Image(itemObject.getObject(USER_KEY).getString(AVATAR_URL_KEY, ""), -1, -1);
+            images.add(new Image(itemObject.getObject(USER_KEY).getString(AVATAR_URL_KEY, ""), -1, -1));
+            return images;
         } catch (Exception e) {
             throw new ParsingException("Failed to extract playlist thumbnail url", e);
         }

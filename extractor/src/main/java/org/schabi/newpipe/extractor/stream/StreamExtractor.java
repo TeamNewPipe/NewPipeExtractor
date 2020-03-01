@@ -78,11 +78,11 @@ public abstract class StreamExtractor extends Extractor {
     /**
      * This will return the url to the thumbnail of the stream. Try to return the medium resolution here.
      *
-     * @return An {@code Image} instance with the URL of the thumbnail.
+     * @return A {@code List} of {@code Image} instances with the URL of the thumbnail.
      * @throws ParsingException
      */
     @Nonnull
-    public abstract Image getThumbnail() throws ParsingException;
+    public abstract List<Image> getThumbnails() throws ParsingException;
 
     /**
      * This is the stream description.
@@ -173,11 +173,11 @@ public abstract class StreamExtractor extends Extractor {
      * The url to the image file/profile picture/avatar of the creator/uploader of the stream.
      * If the url is not available you can return an empty String.
      *
-     * @return An {@code Image} instance with the URL of the image file of the uploader
+     * @return A {@code List} of {@code Image} instances with the URL of the image file of the uploader
      * @throws ParsingException
      */
     @Nonnull
-    public abstract Image getUploaderAvatar() throws ParsingException;
+    public abstract List<Image> getUploaderAvatars() throws ParsingException;
 
     /**
      * Get the dash mpd url. If you don't know what a dash MPD is you can read about it

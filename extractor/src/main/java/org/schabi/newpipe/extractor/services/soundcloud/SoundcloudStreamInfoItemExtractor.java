@@ -8,6 +8,9 @@ import org.schabi.newpipe.extractor.localization.DateWrapper;
 import org.schabi.newpipe.extractor.stream.StreamInfoItemExtractor;
 import org.schabi.newpipe.extractor.stream.StreamType;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import static org.schabi.newpipe.extractor.utils.Utils.replaceHttpWithHttps;
 
 public class SoundcloudStreamInfoItemExtractor implements StreamInfoItemExtractor {
@@ -63,13 +66,18 @@ public class SoundcloudStreamInfoItemExtractor implements StreamInfoItemExtracto
     }
 
     @Override
-    public Image getThumbnail() {
+    public List<Image> getThumbnails() {
+        List<Image> images = new ArrayList<>();
+
         String artworkUrl = itemObject.getString("artwork_url", "");
         if (artworkUrl.isEmpty()) {
             artworkUrl = itemObject.getObject("user").getString("avatar_url");
         }
+
         String artworkUrlBetterResolution = artworkUrl.replace("large.jpg", "crop.jpg");
-        return new Image(artworkUrlBetterResolution, -1, -1);
+        images.add(new Image(artworkUrlBetterResolution, -1, -1));
+
+        return images;
     }
 
     @Override

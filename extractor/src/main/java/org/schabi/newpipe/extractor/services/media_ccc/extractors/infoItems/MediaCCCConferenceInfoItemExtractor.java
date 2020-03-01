@@ -6,6 +6,9 @@ import org.schabi.newpipe.extractor.Image;
 import org.schabi.newpipe.extractor.channel.ChannelInfoItemExtractor;
 import org.schabi.newpipe.extractor.exceptions.ParsingException;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public class MediaCCCConferenceInfoItemExtractor implements ChannelInfoItemExtractor {
 
     JsonObject conference;
@@ -40,7 +43,9 @@ public class MediaCCCConferenceInfoItemExtractor implements ChannelInfoItemExtra
     }
 
     @Override
-    public Image getThumbnail() throws ParsingException {
-        return new Image(conference.getString("logo_url"), -1, -1);
+    public List<Image> getThumbnails() throws ParsingException {
+        List<Image> images = new ArrayList<>();
+        images.add(new Image(conference.getString("logo_url"), -1, -1));
+        return images;
     }
 }

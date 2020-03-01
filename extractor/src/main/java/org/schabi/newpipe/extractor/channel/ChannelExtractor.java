@@ -7,6 +7,8 @@ import org.schabi.newpipe.extractor.exceptions.ParsingException;
 import org.schabi.newpipe.extractor.linkhandler.ListLinkHandler;
 import org.schabi.newpipe.extractor.stream.StreamInfoItem;
 
+import java.util.List;
+
 /*
  * Created by Christian Schabesberger on 25.07.16.
  *
@@ -33,8 +35,8 @@ public abstract class ChannelExtractor extends ListExtractor<StreamInfoItem> {
         super(service, linkHandler);
     }
 
-    public abstract Image getAvatar() throws ParsingException;
-    public abstract Image getBanner() throws ParsingException;
+    public abstract List<Image> getAvatars() throws ParsingException;
+    public abstract List<Image> getBanners() throws ParsingException;
     public abstract String getFeedUrl() throws ParsingException;
     public abstract long getSubscriberCount() throws ParsingException;
     public abstract String getDescription() throws ParsingException;

@@ -50,7 +50,7 @@ public class ChannelInfoItemsCollector extends InfoItemsCollector<ChannelInfoIte
             addError(e);
         }
         try {
-            resultItem.setThumbnail(extractor.getThumbnail());
+            resultItem.setThumbnails(extractor.getThumbnails());
         } catch (Exception e) {
             addError(e);
         }
