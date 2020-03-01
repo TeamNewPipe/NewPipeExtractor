@@ -20,7 +20,6 @@ import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.net.URL;
 import java.net.URLDecoder;
-import java.nio.charset.StandardCharsets;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
@@ -279,7 +278,7 @@ public class YoutubeParsingHelper {
                     if (param.split("=")[0].equals("q")) {
                         String url;
                         try {
-                            url = URLDecoder.decode(param.split("=")[1], StandardCharsets.UTF_8.name());
+                            url = URLDecoder.decode(param.split("=")[1], "UTF-8");
                         } catch (UnsupportedEncodingException e) {
                             return null;
                         }
