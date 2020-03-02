@@ -7,6 +7,7 @@ import org.schabi.newpipe.DownloaderTestImpl;
 import org.schabi.newpipe.extractor.NewPipe;
 import org.schabi.newpipe.extractor.exceptions.ParsingException;
 import org.schabi.newpipe.extractor.services.media_ccc.extractors.MediaCCCStreamExtractor;
+import org.schabi.newpipe.extractor.utils.UtilsTest;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -14,6 +15,7 @@ import java.util.Calendar;
 
 import static java.util.Objects.requireNonNull;
 import static junit.framework.TestCase.assertEquals;
+import static org.schabi.newpipe.extractor.ExtractorAsserts.assertIsSecureUrl;
 import static org.schabi.newpipe.extractor.ServiceList.MediaCCC;
 
 /**
@@ -49,16 +51,19 @@ public class MediaCCCStreamExtractorTest {
 
         @Test
         public void testUrl() throws Exception {
+            assertIsSecureUrl(extractor.getUrl());
             assertEquals("https://api.media.ccc.de/public/events/gpn18-105-tmux-warum-ein-schwarzes-fenster-am-bildschirm-reicht", extractor.getUrl());
         }
 
         @Test
         public void testOriginalUrl() throws Exception {
+            assertIsSecureUrl(extractor.getOriginalUrl());
             assertEquals("https://media.ccc.de/v/gpn18-105-tmux-warum-ein-schwarzes-fenster-am-bildschirm-reicht", extractor.getOriginalUrl());
         }
 
         @Test
         public void testThumbnail() throws Exception {
+            assertIsSecureUrl(extractor.getThumbnailUrl());
             assertEquals("https://static.media.ccc.de/media/events/gpn/gpn18/105-hd.jpg", extractor.getThumbnailUrl());
         }
 
@@ -69,11 +74,13 @@ public class MediaCCCStreamExtractorTest {
 
         @Test
         public void testUploaderUrl() throws Exception {
+            assertIsSecureUrl(extractor.getUploaderUrl());
             assertEquals("https://api.media.ccc.de/public/conferences/gpn18", extractor.getUploaderUrl());
         }
 
         @Test
         public void testUploaderAvatarUrl() throws Exception {
+            assertIsSecureUrl(extractor.getUploaderAvatarUrl());
             assertEquals("https://static.media.ccc.de/media/events/gpn/gpn18/logo.png", extractor.getUploaderAvatarUrl());
         }
 
@@ -122,16 +129,19 @@ public class MediaCCCStreamExtractorTest {
 
         @Test
         public void testUrl() throws Exception {
+            assertIsSecureUrl(extractor.getUrl());
             assertEquals("https://api.media.ccc.de/public/events/36c3-10565-what_s_left_for_private_messaging", extractor.getUrl());
         }
 
         @Test
         public void testOriginalUrl() throws Exception {
+            assertIsSecureUrl(extractor.getOriginalUrl());
             assertEquals("https://media.ccc.de/v/36c3-10565-what_s_left_for_private_messaging", extractor.getOriginalUrl());
         }
 
         @Test
         public void testThumbnail() throws Exception {
+            assertIsSecureUrl(extractor.getThumbnailUrl());
             assertEquals("https://static.media.ccc.de/media/congress/2019/10565-hd.jpg", extractor.getThumbnailUrl());
         }
 
@@ -142,11 +152,13 @@ public class MediaCCCStreamExtractorTest {
 
         @Test
         public void testUploaderUrl() throws Exception {
+            assertIsSecureUrl(extractor.getUploaderUrl());
             assertEquals("https://api.media.ccc.de/public/conferences/36c3", extractor.getUploaderUrl());
         }
 
         @Test
         public void testUploaderAvatarUrl() throws Exception {
+            assertIsSecureUrl(extractor.getUploaderAvatarUrl());
             assertEquals("https://static.media.ccc.de/media/congress/2019/logo.png", extractor.getUploaderAvatarUrl());
         }
 

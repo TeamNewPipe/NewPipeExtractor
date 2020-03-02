@@ -16,6 +16,7 @@ import org.schabi.newpipe.extractor.stream.*;
 import javax.annotation.Nonnull;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Locale;
 
@@ -104,13 +105,13 @@ public class MediaCCCStreamExtractor extends StreamExtractor {
     @Nonnull
     @Override
     public String getDashMpdUrl() throws ParsingException {
-        return null;
+        return "";
     }
 
     @Nonnull
     @Override
     public String getHlsUrl() throws ParsingException {
-        return null;
+        return "";
     }
 
     @Override
@@ -170,14 +171,16 @@ public class MediaCCCStreamExtractor extends StreamExtractor {
         return null;
     }
 
+    @Nonnull
     @Override
     public List<SubtitlesStream> getSubtitlesDefault() throws IOException, ExtractionException {
-        return null;
+        return Collections.emptyList();
     }
 
+    @Nonnull
     @Override
     public List<SubtitlesStream> getSubtitles(final MediaFormat format) throws IOException, ExtractionException {
-        return null;
+        return Collections.emptyList();
     }
 
     @Override
