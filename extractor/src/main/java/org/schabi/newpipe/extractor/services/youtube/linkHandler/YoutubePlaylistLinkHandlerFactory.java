@@ -54,10 +54,9 @@ public class YoutubePlaylistLinkHandlerFactory extends ListLinkHandlerFactory {
     @Override
     public boolean onAcceptUrl(final String url) {
         try {
-            getId(url);
+            return !getId(url).startsWith("RD"); // Don't accept auto-generated "Mix" playlists
         } catch (ParsingException e) {
             return false;
         }
-        return true;
     }
 }
