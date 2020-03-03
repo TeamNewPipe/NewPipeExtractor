@@ -87,6 +87,7 @@ public class SoundcloudChannelExtractor extends ChannelExtractor {
     public List<ChannelTabExtractor> getTabs() {
         List<ChannelTabExtractor> tabs = new ArrayList<>();
 
+        tabs.add(new SoundcloudChannelPopularTracksExtractor(getService(), (ListLinkHandler) getLinkHandler()));
         tabs.add(new SoundcloudChannelTracksExtractor(getService(), (ListLinkHandler) getLinkHandler()));
 
         return tabs;
