@@ -6,6 +6,7 @@ import org.schabi.newpipe.DownloaderTestImpl;
 import org.schabi.newpipe.extractor.ListExtractor;
 import org.schabi.newpipe.extractor.NewPipe;
 import org.schabi.newpipe.extractor.channel.ChannelExtractor;
+import org.schabi.newpipe.extractor.channel.ChannelTabExtractor;
 import org.schabi.newpipe.extractor.localization.Localization;
 import org.schabi.newpipe.extractor.localization.DateWrapper;
 import org.schabi.newpipe.extractor.stream.StreamInfoItem;
@@ -44,12 +45,15 @@ public class YoutubeChannelLocalizationTest {
         for (Localization currentLocalization : supportedLocalizations) {
             if (DEBUG) System.out.println("Testing localization = " + currentLocalization);
 
-            ListExtractor.InfoItemsPage<StreamInfoItem> itemsPage;
+            ListExtractor.InfoItemsPage<StreamInfoItem> itemsPage = null;
             try {
                 final ChannelExtractor extractor = YouTube.getChannelExtractor(channelUrl);
                 extractor.forceLocalization(currentLocalization);
                 extractor.fetchPage();
-                itemsPage = defaultTestRelatedItems(extractor);
+
+                for (ChannelTabExtractor tab : extractor.getTabs()) {
+                    if (tab.getName().equals("Videos")) itemsPage = defaultTestRelatedItems(tab);
+                }
             } catch (Throwable e) {
                 System.out.println("[!] " + currentLocalization + " → failed");
                 throw e;

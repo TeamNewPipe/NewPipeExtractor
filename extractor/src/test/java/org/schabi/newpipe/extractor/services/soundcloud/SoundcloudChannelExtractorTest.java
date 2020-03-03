@@ -5,14 +5,19 @@ import org.junit.Test;
 import org.schabi.newpipe.DownloaderTestImpl;
 import org.schabi.newpipe.extractor.NewPipe;
 import org.schabi.newpipe.extractor.channel.ChannelExtractor;
+import org.schabi.newpipe.extractor.channel.ChannelTabExtractor;
 import org.schabi.newpipe.extractor.exceptions.ParsingException;
 import org.schabi.newpipe.extractor.services.BaseChannelExtractorTest;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
 import static org.schabi.newpipe.extractor.ExtractorAsserts.assertEmpty;
 import static org.schabi.newpipe.extractor.ExtractorAsserts.assertIsSecureUrl;
 import static org.schabi.newpipe.extractor.ServiceList.SoundCloud;
-import static org.schabi.newpipe.extractor.services.DefaultTests.*;
+import static org.schabi.newpipe.extractor.services.DefaultTests.defaultTestGetPageInNewExtractor;
+import static org.schabi.newpipe.extractor.services.DefaultTests.defaultTestMoreItems;
+import static org.schabi.newpipe.extractor.services.DefaultTests.defaultTestRelatedItems;
 
 /**
  * Test for {@link SoundcloudChannelExtractor}
@@ -64,12 +69,16 @@ public class SoundcloudChannelExtractorTest {
 
         @Test
         public void testRelatedItems() throws Exception {
-            defaultTestRelatedItems(extractor);
+            for (ChannelTabExtractor tab : extractor.getTabs()) {
+                defaultTestRelatedItems(tab);
+            }
         }
 
         @Test
         public void testMoreRelatedItems() throws Exception {
-            defaultTestMoreItems(extractor);
+            for (ChannelTabExtractor tab : extractor.getTabs()) {
+                defaultTestMoreItems(tab);
+            }
         }
 
         /*//////////////////////////////////////////////////////////////////////////
@@ -119,8 +128,11 @@ public class SoundcloudChannelExtractorTest {
 
         @Test
         public void testGetPageInNewExtractor() throws Exception {
-            final ChannelExtractor newExtractor = SoundCloud.getChannelExtractor(extractor.getUrl());
-            defaultTestGetPageInNewExtractor(extractor, newExtractor);
+            for (int i = 0; i < extractor.getTabs().size(); i++) {
+                final ChannelExtractor newExtractor = SoundCloud.getChannelExtractor(extractor.getUrl());
+                newExtractor.fetchPage();
+                defaultTestGetPageInNewExtractor(extractor.getTabs().get(i), newExtractor.getTabs().get(i));
+            }
         }
 
         /*//////////////////////////////////////////////////////////////////////////
@@ -158,12 +170,16 @@ public class SoundcloudChannelExtractorTest {
 
         @Test
         public void testRelatedItems() throws Exception {
-            defaultTestRelatedItems(extractor);
+            for (ChannelTabExtractor tab : extractor.getTabs()) {
+                defaultTestRelatedItems(tab);
+            }
         }
 
         @Test
         public void testMoreRelatedItems() throws Exception {
-            defaultTestMoreItems(extractor);
+            for (ChannelTabExtractor tab : extractor.getTabs()) {
+                defaultTestMoreItems(tab);
+            }
         }
 
         /*//////////////////////////////////////////////////////////////////////////

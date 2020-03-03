@@ -6,6 +6,7 @@ import org.junit.Test;
 import org.schabi.newpipe.DownloaderTestImpl;
 import org.schabi.newpipe.extractor.NewPipe;
 import org.schabi.newpipe.extractor.channel.ChannelExtractor;
+import org.schabi.newpipe.extractor.channel.ChannelTabExtractor;
 import org.schabi.newpipe.extractor.exceptions.ParsingException;
 import org.schabi.newpipe.extractor.services.BaseChannelExtractorTest;
 import org.schabi.newpipe.extractor.services.peertube.extractors.PeertubeChannelExtractor;
@@ -68,12 +69,13 @@ public class PeertubeChannelExtractorTest {
 
         @Test
         public void testRelatedItems() throws Exception {
-            defaultTestRelatedItems(extractor);
+            for (ChannelTabExtractor tab : extractor.getTabs()) {
+                defaultTestRelatedItems(tab);
+            }
         }
 
         @Test
         public void testMoreRelatedItems() throws Exception {
-            defaultTestMoreItems(extractor);
         }
 
         /*//////////////////////////////////////////////////////////////////////////
@@ -126,8 +128,11 @@ public class PeertubeChannelExtractorTest {
 
         @Test
         public void testGetPageInNewExtractor() throws Exception {
-            final ChannelExtractor newExtractor = PeerTube.getChannelExtractor(extractor.getUrl());
-            defaultTestGetPageInNewExtractor(extractor, newExtractor);
+            for (int i = 0; i < extractor.getTabs().size(); i++) {
+                final ChannelExtractor newExtractor = PeerTube.getChannelExtractor(extractor.getUrl());
+                newExtractor.fetchPage();
+                defaultTestGetPageInNewExtractor(extractor.getTabs().get(i), newExtractor.getTabs().get(i));
+            }
         }
 
         /*//////////////////////////////////////////////////////////////////////////
@@ -165,12 +170,16 @@ public class PeertubeChannelExtractorTest {
 
         @Test
         public void testRelatedItems() throws Exception {
-            defaultTestRelatedItems(extractor);
+            for (ChannelTabExtractor tab : extractor.getTabs()) {
+                defaultTestRelatedItems(tab);
+            }
         }
 
         @Test
         public void testMoreRelatedItems() throws Exception {
-            defaultTestMoreItems(extractor);
+            for (ChannelTabExtractor tab : extractor.getTabs()) {
+                defaultTestMoreItems(tab);
+            }
         }
 
         /*//////////////////////////////////////////////////////////////////////////

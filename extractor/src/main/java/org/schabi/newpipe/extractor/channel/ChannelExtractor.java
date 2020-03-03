@@ -1,10 +1,11 @@
 package org.schabi.newpipe.extractor.channel;
 
-import org.schabi.newpipe.extractor.ListExtractor;
+import org.schabi.newpipe.extractor.Extractor;
 import org.schabi.newpipe.extractor.StreamingService;
 import org.schabi.newpipe.extractor.exceptions.ParsingException;
-import org.schabi.newpipe.extractor.linkhandler.ListLinkHandler;
-import org.schabi.newpipe.extractor.stream.StreamInfoItem;
+import org.schabi.newpipe.extractor.linkhandler.LinkHandler;
+
+import java.util.List;
 
 /*
  * Created by Christian Schabesberger on 25.07.16.
@@ -26,9 +27,9 @@ import org.schabi.newpipe.extractor.stream.StreamInfoItem;
  * along with NewPipe.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-public abstract class ChannelExtractor extends ListExtractor<StreamInfoItem> {
+public abstract class ChannelExtractor extends Extractor {
 
-    public ChannelExtractor(StreamingService service, ListLinkHandler linkHandler) {
+    public ChannelExtractor(StreamingService service, LinkHandler linkHandler) {
         super(service, linkHandler);
     }
 
@@ -37,4 +38,6 @@ public abstract class ChannelExtractor extends ListExtractor<StreamInfoItem> {
     public abstract String getFeedUrl() throws ParsingException;
     public abstract long getSubscriberCount() throws ParsingException;
     public abstract String getDescription() throws ParsingException;
+
+    public abstract List<ChannelTabExtractor> getTabs() throws ParsingException;
 }
