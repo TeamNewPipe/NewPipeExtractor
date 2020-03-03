@@ -47,7 +47,6 @@ import static org.schabi.newpipe.extractor.services.youtube.linkHandler.YoutubeP
 @SuppressWarnings("WeakerAccess")
 public class YoutubeChannelExtractor extends ChannelExtractor {
     private JsonObject initialData;
-    private JsonObject videoTab;
 
     public YoutubeChannelExtractor(StreamingService service, ListLinkHandler linkHandler) {
         super(service, linkHandler);
@@ -163,41 +162,37 @@ public class YoutubeChannelExtractor extends ChannelExtractor {
     public List<ChannelTabExtractor> getTabs() throws ParsingException {
         List<ChannelTabExtractor> tabs = new ArrayList<>();
 
-        if (getVideoTab() != null)
-            tabs.add(new YoutubeChannelVideosExtractor(getService(), (ListLinkHandler) getLinkHandler(), getVideoTab()));
+        if (getTab("Videos") != null)
+            tabs.add(new YoutubeChannelVideosExtractor(getService(), (ListLinkHandler) getLinkHandler(), getTab("Videos")));
+
+        if (getTab("Playlists") != null)
+            tabs.add(new YoutubeChannelPlaylistsExtractor(getService(), (ListLinkHandler) getLinkHandler(), getName()));
 
         return tabs;
     }
 
-    private JsonObject getVideoTab() throws ParsingException {
-        if (this.videoTab != null) return this.videoTab;
-
+    private JsonObject getTab(String tabName) throws ParsingException {
         JsonArray tabs = initialData.getObject("contents").getObject("twoColumnBrowseResultsRenderer")
                 .getArray("tabs");
         JsonObject videoTab = null;
 
         for (Object tab : tabs) {
             if (((JsonObject) tab).getObject("tabRenderer") != null) {
-                if (((JsonObject) tab).getObject("tabRenderer").getString("title").equals("Videos")) {
+                if (((JsonObject) tab).getObject("tabRenderer").getString("title").equals(tabName)) {
                     videoTab = ((JsonObject) tab).getObject("tabRenderer");
                     break;
                 }
             }
         }
 
-        if (videoTab == null) {
-            throw new ParsingException("Could not find Videos tab");
-        }
-
         try {
             if (getTextFromObject(videoTab.getObject("content").getObject("sectionListRenderer")
                     .getArray("contents").getObject(0).getObject("itemSectionRenderer")
                     .getArray("contents").getObject(0).getObject("messageRenderer")
-                    .getObject("text")).equals("This channel has no videos."))
+                    .getObject("text")).startsWith("This channel has no "))
                 return null;
         } catch (Exception ignored) {}
 
-        this.videoTab = videoTab;
         return videoTab;
     }
 }

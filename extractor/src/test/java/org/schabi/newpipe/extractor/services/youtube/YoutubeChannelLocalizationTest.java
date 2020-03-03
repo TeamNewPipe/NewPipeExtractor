@@ -52,7 +52,10 @@ public class YoutubeChannelLocalizationTest {
                 extractor.fetchPage();
 
                 for (ChannelTabExtractor tab : extractor.getTabs()) {
-                    if (tab.getName().equals("Videos")) itemsPage = defaultTestRelatedItems(tab);
+                    if (tab.getName().equals("Videos")) {
+                        tab.fetchPage();
+                        itemsPage = defaultTestRelatedItems(tab);
+                    }
                 }
             } catch (Throwable e) {
                 System.out.println("[!] " + currentLocalization + " → failed");

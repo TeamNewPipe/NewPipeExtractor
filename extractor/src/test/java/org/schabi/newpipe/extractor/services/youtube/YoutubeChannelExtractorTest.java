@@ -93,6 +93,7 @@ public class YoutubeChannelExtractorTest {
         @Test
         public void testRelatedItems() throws Exception {
             for (ChannelTabExtractor tab : extractor.getTabs()) {
+                tab.fetchPage();
                 defaultTestRelatedItems(tab);
             }
         }
@@ -100,6 +101,7 @@ public class YoutubeChannelExtractorTest {
         @Test
         public void testMoreRelatedItems() throws Exception {
             for (ChannelTabExtractor tab : extractor.getTabs()) {
+                tab.fetchPage();
                 defaultTestMoreItems(tab);
             }
         }
@@ -152,6 +154,26 @@ public class YoutubeChannelExtractorTest {
         }
 
         /*//////////////////////////////////////////////////////////////////////////
+        // Additional Testing
+        //////////////////////////////////////////////////////////////////////////*/
+
+        @Test
+        public void testGetPageInNewExtractor() throws Exception {
+            final ChannelExtractor newExtractor = YouTube.getChannelExtractor(extractor.getUrl());
+            newExtractor.fetchPage();
+
+            for (int i = 0; i < extractor.getTabs().size(); i++) {
+                ChannelTabExtractor extractorTab = extractor.getTabs().get(i);
+                extractorTab.fetchPage();
+
+                ChannelTabExtractor newExtractorTab = extractor.getTabs().get(i);
+                newExtractorTab.fetchPage();
+
+                defaultTestGetPageInNewExtractor(extractorTab, newExtractorTab);
+            }
+        }
+
+        /*//////////////////////////////////////////////////////////////////////////
         // Extractor
         //////////////////////////////////////////////////////////////////////////*/
 
@@ -187,6 +209,7 @@ public class YoutubeChannelExtractorTest {
         @Test
         public void testRelatedItems() throws Exception {
             for (ChannelTabExtractor tab : extractor.getTabs()) {
+                tab.fetchPage();
                 defaultTestRelatedItems(tab);
             }
         }
@@ -194,6 +217,7 @@ public class YoutubeChannelExtractorTest {
         @Test
         public void testMoreRelatedItems() throws Exception {
             for (ChannelTabExtractor tab : extractor.getTabs()) {
+                tab.fetchPage();
                 defaultTestMoreItems(tab);
             }
         }
@@ -247,19 +271,6 @@ public class YoutubeChannelExtractorTest {
         }
 
         /*//////////////////////////////////////////////////////////////////////////
-        // Additional Testing
-        //////////////////////////////////////////////////////////////////////////*/
-
-        @Test
-        public void testGetPageInNewExtractor() throws Exception {
-            for (int i = 0; i < extractor.getTabs().size(); i++) {
-                final ChannelExtractor newExtractor = YouTube.getChannelExtractor(extractor.getUrl());
-                newExtractor.fetchPage();
-                defaultTestGetPageInNewExtractor(extractor.getTabs().get(i), newExtractor.getTabs().get(i));
-            }
-        }
-
-        /*//////////////////////////////////////////////////////////////////////////
         // Extractor
         //////////////////////////////////////////////////////////////////////////*/
 
@@ -296,6 +307,7 @@ public class YoutubeChannelExtractorTest {
         @Test
         public void testRelatedItems() throws Exception {
             for (ChannelTabExtractor tab : extractor.getTabs()) {
+                tab.fetchPage();
                 defaultTestRelatedItems(tab);
             }
         }
@@ -303,6 +315,7 @@ public class YoutubeChannelExtractorTest {
         @Test
         public void testMoreRelatedItems() throws Exception {
             for (ChannelTabExtractor tab : extractor.getTabs()) {
+                tab.fetchPage();
                 defaultTestMoreItems(tab);
             }
         }
@@ -391,6 +404,7 @@ public class YoutubeChannelExtractorTest {
         @Test
         public void testRelatedItems() throws Exception {
             for (ChannelTabExtractor tab : extractor.getTabs()) {
+                tab.fetchPage();
                 defaultTestRelatedItems(tab);
             }
         }
@@ -398,6 +412,7 @@ public class YoutubeChannelExtractorTest {
         @Test
         public void testMoreRelatedItems() throws Exception {
             for (ChannelTabExtractor tab : extractor.getTabs()) {
+                tab.fetchPage();
                 defaultTestMoreItems(tab);
             }
         }
@@ -485,6 +500,7 @@ public class YoutubeChannelExtractorTest {
         @Test
         public void testRelatedItems() throws Exception {
             for (ChannelTabExtractor tab : extractor.getTabs()) {
+                tab.fetchPage();
                 defaultTestRelatedItems(tab);
             }
         }
@@ -492,6 +508,7 @@ public class YoutubeChannelExtractorTest {
         @Test
         public void testMoreRelatedItems() throws Exception {
             for (ChannelTabExtractor tab : extractor.getTabs()) {
+                tab.fetchPage();
                 defaultTestMoreItems(tab);
             }
         }
@@ -581,6 +598,7 @@ public class YoutubeChannelExtractorTest {
         @Test
         public void testRelatedItems() throws Exception {
             for (ChannelTabExtractor tab : extractor.getTabs()) {
+                tab.fetchPage();
                 defaultTestRelatedItems(tab);
             }
         }
@@ -589,6 +607,7 @@ public class YoutubeChannelExtractorTest {
         public void testMoreRelatedItems() {
             try {
                 for (ChannelTabExtractor tab : extractor.getTabs()) {
+                    tab.fetchPage();
                     defaultTestMoreItems(tab);
                 }
             } catch (Throwable ignored) {

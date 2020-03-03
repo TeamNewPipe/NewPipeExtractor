@@ -70,6 +70,7 @@ public class SoundcloudChannelExtractorTest {
         @Test
         public void testRelatedItems() throws Exception {
             for (ChannelTabExtractor tab : extractor.getTabs()) {
+                tab.fetchPage();
                 defaultTestRelatedItems(tab);
             }
         }
@@ -77,6 +78,7 @@ public class SoundcloudChannelExtractorTest {
         @Test
         public void testMoreRelatedItems() throws Exception {
             for (ChannelTabExtractor tab : extractor.getTabs()) {
+                tab.fetchPage();
                 defaultTestMoreItems(tab);
             }
         }
@@ -128,10 +130,17 @@ public class SoundcloudChannelExtractorTest {
 
         @Test
         public void testGetPageInNewExtractor() throws Exception {
+            final ChannelExtractor newExtractor = SoundCloud.getChannelExtractor(extractor.getUrl());
+            newExtractor.fetchPage();
+
             for (int i = 0; i < extractor.getTabs().size(); i++) {
-                final ChannelExtractor newExtractor = SoundCloud.getChannelExtractor(extractor.getUrl());
-                newExtractor.fetchPage();
-                defaultTestGetPageInNewExtractor(extractor.getTabs().get(i), newExtractor.getTabs().get(i));
+                ChannelTabExtractor extractorTab = extractor.getTabs().get(i);
+                extractorTab.fetchPage();
+
+                ChannelTabExtractor newExtractorTab = extractor.getTabs().get(i);
+                newExtractorTab.fetchPage();
+
+                defaultTestGetPageInNewExtractor(extractorTab, newExtractorTab);
             }
         }
 
@@ -171,6 +180,7 @@ public class SoundcloudChannelExtractorTest {
         @Test
         public void testRelatedItems() throws Exception {
             for (ChannelTabExtractor tab : extractor.getTabs()) {
+                tab.fetchPage();
                 defaultTestRelatedItems(tab);
             }
         }
@@ -178,6 +188,7 @@ public class SoundcloudChannelExtractorTest {
         @Test
         public void testMoreRelatedItems() throws Exception {
             for (ChannelTabExtractor tab : extractor.getTabs()) {
+                tab.fetchPage();
                 defaultTestMoreItems(tab);
             }
         }

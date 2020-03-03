@@ -19,14 +19,23 @@ public class YoutubePlaylistInfoItemExtractor implements PlaylistInfoItemExtract
 
     @Override
     public String getThumbnailUrl() throws ParsingException {
-        try {
-            String url = playlistInfoItem.getArray("thumbnails").getObject(0)
-                    .getArray("thumbnails").getObject(0).getString("url");
+        String url = null;
 
-            return fixThumbnailUrl(url);
-        } catch (Exception e) {
-            throw new ParsingException("Could not get thumbnail url", e);
+        try {
+            url = playlistInfoItem.getArray("thumbnails").getObject(0)
+                    .getArray("thumbnails").getObject(0).getString("url");
+        } catch (Exception ignored) {}
+
+        if (url == null) {
+            try {
+                url = playlistInfoItem.getObject("thumbnail").getArray("thumbnails")
+                        .getObject(0).getString("url");
+            } catch (Exception ignored) {}
+
+            if (url == null) throw new ParsingException("Could not get thumbnail url");
         }
+
+        return fixThumbnailUrl(url);
     }
 
     @Override
@@ -59,10 +68,20 @@ public class YoutubePlaylistInfoItemExtractor implements PlaylistInfoItemExtract
 
     @Override
     public long getStreamCount() throws ParsingException {
+        String count = null;
+
         try {
-            return Long.parseLong(Utils.removeNonDigitCharacters(playlistInfoItem.getString("videoCount")));
-        } catch (Exception e) {
-            throw new ParsingException("Could not get stream count", e);
+            count = playlistInfoItem.getString("videoCount");
+        } catch (Exception ignored) {}
+
+        if (count == null) {
+            try {
+                count = getTextFromObject(playlistInfoItem.getObject("videoCountText"));
+            } catch (Exception ignored) {}
+
+            if (count == null) throw new ParsingException("Could not get stream count");
         }
+
+        return Long.parseLong(Utils.removeNonDigitCharacters(count));
     }
 }
