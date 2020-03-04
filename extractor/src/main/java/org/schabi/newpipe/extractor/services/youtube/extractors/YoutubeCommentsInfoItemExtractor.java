@@ -3,7 +3,6 @@ package org.schabi.newpipe.extractor.services.youtube.extractors;
 import com.grack.nanojson.JsonArray;
 import com.grack.nanojson.JsonObject;
 
-import org.omg.PortableServer.LIFESPAN_POLICY_ID;
 import org.schabi.newpipe.extractor.Image;
 import org.schabi.newpipe.extractor.comments.CommentsInfoItemExtractor;
 import org.schabi.newpipe.extractor.exceptions.ParsingException;
