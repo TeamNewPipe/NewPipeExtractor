@@ -206,6 +206,24 @@ public class SoundcloudParsingHelper {
     }
 
     /**
+     * Fetch the streams and playlists from the given api and commit each of them to the collector.
+     * <p>
+     * This differ from {@link #getStreamsFromApi(InfoItemsCollector, String, boolean)} in the sense that they will always
+     * get MIN_ITEMS or more items.
+     *
+     * @param minItems the method will return only when it have extracted that many items (equal or more)
+     */
+    public static String getMixedFromApiMinItems(int minItems, InfoItemsCollector collector, String apiUrl) throws IOException, ReCaptchaException, ParsingException {
+        String nextPageUrl = SoundcloudParsingHelper.getStreamsFromApi(collector, apiUrl, true);
+
+        while (!nextPageUrl.isEmpty() && collector.getItems().size() < minItems) {
+            nextPageUrl = SoundcloudParsingHelper.getStreamsFromApi(collector, nextPageUrl, true);
+        }
+
+        return nextPageUrl;
+    }
+
+    /**
      * Fetch the streams from the given api and commit each of them to the collector.
      * <p>
      * This differ from {@link #getStreamsFromApi(InfoItemsCollector, String)} in the sense that they will always
@@ -228,7 +246,7 @@ public class SoundcloudParsingHelper {
      *
      * @return the next streams url, empty if don't have
      */
-    public static String getStreamsFromApi(InfoItemsCollector collector, String apiUrl, boolean charts) throws IOException, ReCaptchaException, ParsingException {
+    public static String getStreamsFromApi(InfoItemsCollector collector, String apiUrl, boolean mixed) throws IOException, ReCaptchaException, ParsingException {
         String response = NewPipe.getDownloader().get(apiUrl, SoundCloud.getLocalization()).responseBody();
         JsonObject responseObject;
         try {
@@ -241,7 +259,13 @@ public class SoundcloudParsingHelper {
         for (Object o : responseCollection) {
             if (o instanceof JsonObject) {
                 JsonObject object = (JsonObject) o;
-                collector.commit(new SoundcloudStreamInfoItemExtractor(charts ? object.getObject("track") : object));
+                if (!mixed) {
+                    collector.commit(new SoundcloudStreamInfoItemExtractor(object));
+                } else if (object.getObject("track") != null) {
+                    collector.commit(new SoundcloudStreamInfoItemExtractor(object.getObject("track")));
+                } else if (object.getObject("playlist") != null) {
+                    collector.commit(new SoundcloudPlaylistInfoItemExtractor(object.getObject("playlist")));
+                }
             }
         }
 

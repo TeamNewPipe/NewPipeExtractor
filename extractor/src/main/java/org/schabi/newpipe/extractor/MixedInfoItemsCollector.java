@@ -1,8 +1,5 @@
 package org.schabi.newpipe.extractor;
 
-import org.schabi.newpipe.extractor.InfoItem;
-import org.schabi.newpipe.extractor.InfoItemExtractor;
-import org.schabi.newpipe.extractor.InfoItemsCollector;
 import org.schabi.newpipe.extractor.channel.ChannelInfoItemExtractor;
 import org.schabi.newpipe.extractor.channel.ChannelInfoItemsCollector;
 import org.schabi.newpipe.extractor.exceptions.ParsingException;
