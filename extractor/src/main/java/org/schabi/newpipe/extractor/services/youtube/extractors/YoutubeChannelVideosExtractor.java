@@ -62,12 +62,11 @@ public class YoutubeChannelVideosExtractor extends ChannelStreamsExtractor {
             throw new ExtractionException(new IllegalArgumentException("Page url is empty or null"));
         }
 
-        // Unfortunately, we have to fetch the page even if we are only getting next streams,
-        // as they don't deliver enough information on their own (the channel name, for example).
-        fetchPage();
-
         StreamInfoItemsCollector collector = new StreamInfoItemsCollector(getServiceId());
         final JsonArray ajaxJson = getJsonResponse(pageUrl, getExtractorLocalization());
+
+        if (ajaxJson.getObject(1).getObject("response").getObject("continuationContents") == null)
+            return null;
 
         JsonObject sectionListContinuation = ajaxJson.getObject(1).getObject("response")
                 .getObject("continuationContents").getObject("gridContinuation");

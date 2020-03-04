@@ -106,6 +106,9 @@ public class YoutubeSearchExtractor extends SearchExtractor {
         InfoItemsSearchCollector collector = getInfoItemSearchCollector();
         final JsonArray ajaxJson = getJsonResponse(pageUrl, getExtractorLocalization());
 
+        if (ajaxJson.getObject(1).getObject("response").getObject("continuationContents") == null)
+            return null;
+
         JsonObject itemSectionRenderer = ajaxJson.getObject(1).getObject("response")
                 .getObject("continuationContents").getObject("itemSectionContinuation");
 

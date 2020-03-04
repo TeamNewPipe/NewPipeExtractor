@@ -80,6 +80,9 @@ public class YoutubeChannelPlaylistsExtractor extends ChannelPlaylistsExtractor 
         PlaylistInfoItemsCollector collector = new PlaylistInfoItemsCollector(getServiceId());
         final JsonArray ajaxJson = getJsonResponse(pageUrl, getExtractorLocalization());
 
+        if (ajaxJson.getObject(1).getObject("response").getObject("continuationContents") == null)
+            return null;
+
         JsonObject sectionListContinuation = ajaxJson.getObject(1).getObject("response")
                 .getObject("continuationContents").getObject("gridContinuation");
 
