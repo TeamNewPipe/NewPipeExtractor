@@ -5,11 +5,13 @@ import org.junit.Test;
 import org.schabi.newpipe.DownloaderTestImpl;
 import org.schabi.newpipe.extractor.ListExtractor;
 import org.schabi.newpipe.extractor.NewPipe;
+import org.schabi.newpipe.extractor.exceptions.ExtractionException;
 import org.schabi.newpipe.extractor.playlist.PlaylistExtractor;
 import org.schabi.newpipe.extractor.services.BasePlaylistExtractorTest;
 import org.schabi.newpipe.extractor.stream.StreamInfoItem;
 
 import static org.hamcrest.CoreMatchers.*;
+import java.io.IOException;
 import static org.junit.Assert.*;
 import static org.schabi.newpipe.extractor.ExtractorAsserts.assertIsSecureUrl;
 import static org.schabi.newpipe.extractor.ServiceList.SoundCloud;
@@ -69,7 +71,7 @@ public class SoundcloudPlaylistExtractorTest {
         }
 
         @Test
-        public void testMoreRelatedItems() throws Exception {
+        public void testMoreRelatedItems() throws IOException, ExtractionException {
             defaultTestMoreItems(extractor);
         }
 

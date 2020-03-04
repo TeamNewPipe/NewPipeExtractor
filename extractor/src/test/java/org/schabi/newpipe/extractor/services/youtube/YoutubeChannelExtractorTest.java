@@ -7,9 +7,12 @@ import org.schabi.newpipe.extractor.NewPipe;
 import org.schabi.newpipe.extractor.channel.ChannelExtractor;
 import org.schabi.newpipe.extractor.channel.ChannelTabExtractor;
 import org.schabi.newpipe.extractor.exceptions.ContentNotAvailableException;
+import org.schabi.newpipe.extractor.exceptions.ExtractionException;
 import org.schabi.newpipe.extractor.exceptions.ParsingException;
 import org.schabi.newpipe.extractor.services.BaseChannelExtractorTest;
 import org.schabi.newpipe.extractor.services.youtube.extractors.YoutubeChannelExtractor;
+
+import java.io.IOException;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
@@ -604,17 +607,14 @@ public class YoutubeChannelExtractorTest {
         }
 
         @Test
-        public void testMoreRelatedItems() {
-            try {
-                for (ChannelTabExtractor tab : extractor.getTabs()) {
+        public void testMoreRelatedItems() throws ExtractionException, IOException {
+            for (ChannelTabExtractor tab : extractor.getTabs()) {
+                if (tab.getName().equals("Videos")) {
                     tab.fetchPage();
-                    defaultTestMoreItems(tab);
+                    if (defaultTestMoreItems(tab) != null)
+                        fail("This channel doesn't have more items, it should throw an error");
                 }
-            } catch (Throwable ignored) {
-                return;
             }
-
-            fail("This channel doesn't have more items, it should throw an error");
         }
 
          /*//////////////////////////////////////////////////////////////////////////

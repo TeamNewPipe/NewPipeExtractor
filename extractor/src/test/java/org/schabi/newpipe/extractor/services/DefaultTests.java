@@ -2,23 +2,27 @@ package org.schabi.newpipe.extractor.services;
 
 import org.schabi.newpipe.extractor.InfoItem;
 import org.schabi.newpipe.extractor.ListExtractor;
-import org.schabi.newpipe.extractor.NewPipe;
 import org.schabi.newpipe.extractor.StreamingService;
 import org.schabi.newpipe.extractor.channel.ChannelInfoItem;
+import org.schabi.newpipe.extractor.exceptions.ExtractionException;
 import org.schabi.newpipe.extractor.exceptions.ParsingException;
-import org.schabi.newpipe.extractor.linkhandler.LinkHandlerFactory;
-import org.schabi.newpipe.extractor.linkhandler.ListLinkHandlerFactory;
 import org.schabi.newpipe.extractor.localization.DateWrapper;
 import org.schabi.newpipe.extractor.playlist.PlaylistInfoItem;
 import org.schabi.newpipe.extractor.stream.StreamInfoItem;
 
+import java.io.IOException;
 import java.util.Calendar;
 import java.util.List;
 
 import static junit.framework.TestCase.assertFalse;
-import static org.junit.Assert.*;
-import static org.schabi.newpipe.extractor.ExtractorAsserts.*;
-import static org.schabi.newpipe.extractor.StreamingService.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotEquals;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
+import static org.schabi.newpipe.extractor.ExtractorAsserts.assertEmptyErrors;
+import static org.schabi.newpipe.extractor.ExtractorAsserts.assertIsSecureUrl;
+import static org.schabi.newpipe.extractor.ExtractorAsserts.assertNotEmpty;
+import static org.schabi.newpipe.extractor.StreamingService.LinkType;
 
 public final class DefaultTests {
     public static void defaultTestListOfItems(StreamingService expectedService, List<? extends InfoItem> itemsList, List<Throwable> errors) throws ParsingException {
@@ -86,21 +90,25 @@ public final class DefaultTests {
         return page;
     }
 
-    public static <T extends InfoItem> ListExtractor.InfoItemsPage<T> defaultTestMoreItems(ListExtractor<T> extractor) throws Exception {
-        assertTrue("Doesn't have more items", extractor.hasNextPage());
-        ListExtractor.InfoItemsPage<T> nextPage = extractor.getPage(extractor.getNextPageUrl());
-        final List<T> items = nextPage.getItems();
-        assertFalse("Next page is empty", items.isEmpty());
-        assertEmptyErrors("Next page have errors", nextPage.getErrors());
+    public static <T extends InfoItem> ListExtractor.InfoItemsPage<T> defaultTestMoreItems(ListExtractor<T> extractor) throws IOException, ExtractionException {
+        if (extractor.hasNextPage()) {
+            ListExtractor.InfoItemsPage<T> nextPage = extractor.getPage(extractor.getNextPageUrl());
+            final List<T> items = nextPage.getItems();
+            assertFalse("Next page is empty", items.isEmpty());
+            assertEmptyErrors("Next page have errors", nextPage.getErrors());
 
-        defaultTestListOfItems(extractor.getService(), nextPage.getItems(), nextPage.getErrors());
-        return nextPage;
+            defaultTestListOfItems(extractor.getService(), nextPage.getItems(), nextPage.getErrors());
+            return nextPage;
+        }
+        return null;
     }
 
     public static void defaultTestGetPageInNewExtractor(ListExtractor<? extends InfoItem> extractor, ListExtractor<? extends InfoItem> newExtractor) throws Exception {
-        final String nextPageUrl = extractor.getNextPageUrl();
+        if (extractor.hasNextPage()) {
+            final String nextPageUrl = extractor.getNextPageUrl();
 
-        final ListExtractor.InfoItemsPage<? extends InfoItem> page = newExtractor.getPage(nextPageUrl);
-        defaultTestListOfItems(extractor.getService(), page.getItems(), page.getErrors());
+            final ListExtractor.InfoItemsPage<? extends InfoItem> page = newExtractor.getPage(nextPageUrl);
+            defaultTestListOfItems(extractor.getService(), page.getItems(), page.getErrors());
+        }
     }
 }
