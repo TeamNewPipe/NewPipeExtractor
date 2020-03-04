@@ -4,6 +4,7 @@ import com.grack.nanojson.JsonArray;
 import com.grack.nanojson.JsonObject;
 import com.grack.nanojson.JsonParser;
 import com.grack.nanojson.JsonParserException;
+
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
@@ -15,16 +16,22 @@ import org.schabi.newpipe.extractor.downloader.Response;
 import org.schabi.newpipe.extractor.exceptions.ExtractionException;
 import org.schabi.newpipe.extractor.exceptions.ParsingException;
 import org.schabi.newpipe.extractor.exceptions.ReCaptchaException;
+import org.schabi.newpipe.extractor.playlist.PlaylistInfoItemsCollector;
 import org.schabi.newpipe.extractor.stream.StreamInfoItemsCollector;
 import org.schabi.newpipe.extractor.utils.Parser;
 import org.schabi.newpipe.extractor.utils.Parser.RegexException;
 
-import javax.annotation.Nonnull;
 import java.io.IOException;
 import java.net.URLEncoder;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.util.*;
+import java.util.Calendar;
+import java.util.Collections;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.List;
+
+import javax.annotation.Nonnull;
 
 import static java.util.Collections.singletonList;
 import static org.schabi.newpipe.extractor.ServiceList.SoundCloud;
@@ -252,6 +259,58 @@ public class SoundcloudParsingHelper {
 
     public static String getStreamsFromApi(StreamInfoItemsCollector collector, String apiUrl) throws ReCaptchaException, ParsingException, IOException {
         return getStreamsFromApi(collector, apiUrl, false);
+    }
+
+
+    /**
+     * Fetch the playlists from the given api and commit each of them to the collector.
+     * <p>
+     * This differ from {@link #getPlaylistsFromApi(PlaylistInfoItemsCollector, String)} in the sense that they will always
+     * get MIN_ITEMS or more items.
+     *
+     * @param minItems the method will return only when it have extracted that many items (equal or more)
+     */
+    public static String getPlaylistsFromApiMinItems(int minItems, PlaylistInfoItemsCollector collector, String apiUrl) throws IOException, ReCaptchaException, ParsingException {
+        String nextPageUrl = SoundcloudParsingHelper.getPlaylistsFromApi(collector, apiUrl);
+
+        while (!nextPageUrl.isEmpty() && collector.getItems().size() < minItems) {
+            nextPageUrl = SoundcloudParsingHelper.getPlaylistsFromApi(collector, nextPageUrl);
+        }
+
+        return nextPageUrl;
+    }
+
+    /**
+     * Fetch the playlists from the given api and commit each of them to the collector.
+     *
+     * @return the next playlists url, empty if don't have
+     */
+    public static String getPlaylistsFromApi(PlaylistInfoItemsCollector collector, String apiUrl) throws IOException, ReCaptchaException, ParsingException {
+        String response = NewPipe.getDownloader().get(apiUrl, SoundCloud.getLocalization()).responseBody();
+        JsonObject responseObject;
+        try {
+            responseObject = JsonParser.object().from(response);
+        } catch (JsonParserException e) {
+            throw new ParsingException("Could not parse json response", e);
+        }
+
+        JsonArray responseCollection = responseObject.getArray("collection");
+        for (Object o : responseCollection) {
+            if (o instanceof JsonObject) {
+                JsonObject object = (JsonObject) o;
+                collector.commit(new SoundcloudPlaylistInfoItemExtractor(object));
+            }
+        }
+
+        String nextPageUrl;
+        try {
+            nextPageUrl = responseObject.getString("next_href");
+            if (!nextPageUrl.contains("client_id=")) nextPageUrl += "&client_id=" + SoundcloudParsingHelper.clientId();
+        } catch (Exception ignored) {
+            nextPageUrl = "";
+        }
+
+        return nextPageUrl;
     }
 
     @Nonnull
