@@ -33,7 +33,8 @@ public class SoundcloudChannelInfoItemExtractor implements ChannelInfoItemExtrac
 
         String avatarUrl = itemObject.getString("avatar_url", "");
 
-        images.add(new Image(avatarUrl, Image.LOW, Image.LOW));
+        images.add(new Image(avatarUrl, Image.MEDIUM, Image.MEDIUM));
+        images.add(new Image(avatarUrl.replace("large.jpg", "small.jpg"), Image.LOW, Image.LOW));
         images.add(new Image(avatarUrl.replace("large.jpg", "crop.jpg"), Image.HIGH, Image.HIGH));
 
         return images;

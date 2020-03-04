@@ -15,9 +15,15 @@ import org.schabi.newpipe.extractor.exceptions.ExtractionException;
 import org.schabi.newpipe.extractor.exceptions.ParsingException;
 import org.schabi.newpipe.extractor.linkhandler.LinkHandler;
 import org.schabi.newpipe.extractor.localization.DateWrapper;
-import org.schabi.newpipe.extractor.stream.*;
+import org.schabi.newpipe.extractor.stream.AudioStream;
+import org.schabi.newpipe.extractor.stream.Description;
+import org.schabi.newpipe.extractor.stream.StreamExtractor;
+import org.schabi.newpipe.extractor.stream.StreamInfoItem;
+import org.schabi.newpipe.extractor.stream.StreamInfoItemsCollector;
+import org.schabi.newpipe.extractor.stream.StreamType;
+import org.schabi.newpipe.extractor.stream.SubtitlesStream;
+import org.schabi.newpipe.extractor.stream.VideoStream;
 
-import javax.annotation.Nonnull;
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
@@ -25,6 +31,8 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Locale;
+
+import javax.annotation.Nonnull;
 
 public class SoundcloudStreamExtractor extends StreamExtractor {
     private JsonObject track;
@@ -77,7 +85,8 @@ public class SoundcloudStreamExtractor extends StreamExtractor {
             artworkUrl = track.getObject("user").getString("avatar_url", "");
         }
 
-        images.add(new Image(artworkUrl, Image.LOW, Image.LOW));
+        images.add(new Image(artworkUrl, Image.MEDIUM, Image.MEDIUM));
+        images.add(new Image(artworkUrl.replace("large.jpg", "small.jpg"), Image.LOW, Image.LOW));
         images.add(new Image(artworkUrl.replace("large.jpg", "crop.jpg"), Image.HIGH, Image.HIGH));
 
         return images;
@@ -137,7 +146,8 @@ public class SoundcloudStreamExtractor extends StreamExtractor {
 
         String avatarUrl = SoundcloudParsingHelper.getAvatarUrl(track);
 
-        images.add(new Image(avatarUrl, Image.LOW, Image.LOW));
+        images.add(new Image(avatarUrl, Image.MEDIUM, Image.MEDIUM));
+        images.add(new Image(avatarUrl.replace("large.jpg", "small.jpg"), Image.LOW, Image.LOW));
         images.add(new Image(avatarUrl.replace("large.jpg", "crop.jpg"), Image.HIGH, Image.HIGH));
 
         return images;

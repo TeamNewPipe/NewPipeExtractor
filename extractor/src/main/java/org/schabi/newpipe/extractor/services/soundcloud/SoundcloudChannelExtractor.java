@@ -15,10 +15,11 @@ import org.schabi.newpipe.extractor.linkhandler.ListLinkHandler;
 import org.schabi.newpipe.extractor.stream.StreamInfoItem;
 import org.schabi.newpipe.extractor.stream.StreamInfoItemsCollector;
 
-import javax.annotation.Nonnull;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+
+import javax.annotation.Nonnull;
 
 @SuppressWarnings("WeakerAccess")
 public class SoundcloudChannelExtractor extends ChannelExtractor {
@@ -63,7 +64,8 @@ public class SoundcloudChannelExtractor extends ChannelExtractor {
     public List<Image> getAvatars() {
         List<Image> images = new ArrayList<>();
 
-        images.add(new Image(user.getString("avatar_url"), Image.LOW, Image.LOW));
+        images.add(new Image(user.getString("avatar_url"), Image.MEDIUM, Image.MEDIUM));
+        images.add(new Image(user.getString("avatar_url").replace("large.jpg", "small.jpg"), Image.LOW, Image.LOW));
         images.add(new Image(user.getString("avatar_url").replace("large.jpg", "crop.jpg"), Image.HIGH, Image.HIGH));
 
         return images;

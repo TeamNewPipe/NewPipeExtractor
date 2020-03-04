@@ -74,7 +74,8 @@ public class SoundcloudStreamInfoItemExtractor implements StreamInfoItemExtracto
             artworkUrl = itemObject.getObject("user").getString("avatar_url");
         }
 
-        images.add(new Image(artworkUrl, Image.LOW, Image.LOW));
+        images.add(new Image(artworkUrl, Image.MEDIUM, Image.MEDIUM));
+        images.add(new Image(artworkUrl.replace("large.jpg", "small.jpg"), Image.LOW, Image.LOW));
         images.add(new Image(artworkUrl.replace("large.jpg", "crop.jpg"), Image.HIGH, Image.HIGH));
 
         return images;

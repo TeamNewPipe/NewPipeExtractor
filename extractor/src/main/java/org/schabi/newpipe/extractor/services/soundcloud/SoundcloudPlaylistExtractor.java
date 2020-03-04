@@ -14,10 +14,11 @@ import org.schabi.newpipe.extractor.playlist.PlaylistExtractor;
 import org.schabi.newpipe.extractor.stream.StreamInfoItem;
 import org.schabi.newpipe.extractor.stream.StreamInfoItemsCollector;
 
-import javax.annotation.Nonnull;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+
+import javax.annotation.Nonnull;
 
 @SuppressWarnings("WeakerAccess")
 public class SoundcloudPlaylistExtractor extends PlaylistExtractor {
@@ -81,7 +82,8 @@ public class SoundcloudPlaylistExtractor extends PlaylistExtractor {
 
         List<Image> images = new ArrayList<>();
 
-        images.add(new Image(artworkUrl, Image.LOW, Image.LOW));
+        images.add(new Image(artworkUrl, Image.MEDIUM, Image.MEDIUM));
+        images.add(new Image(artworkUrl.replace("large.jpg", "small.jpg"), Image.LOW, Image.LOW));
         images.add(new Image(artworkUrl.replace("large.jpg", "crop.jpg"), Image.HIGH, Image.HIGH));
 
         return images;
@@ -108,7 +110,8 @@ public class SoundcloudPlaylistExtractor extends PlaylistExtractor {
 
         String avatarUrl = SoundcloudParsingHelper.getAvatarUrl(playlist);
 
-        images.add(new Image(avatarUrl, Image.LOW, Image.LOW));
+        images.add(new Image(avatarUrl, Image.MEDIUM, Image.MEDIUM));
+        images.add(new Image(avatarUrl.replace("large.jpg", "small.jpg"), Image.LOW, Image.LOW));
         images.add(new Image(avatarUrl.replace("large.jpg", "crop.jpg"), Image.HIGH, Image.HIGH));
 
         return images;
