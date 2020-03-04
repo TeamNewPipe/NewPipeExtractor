@@ -3,6 +3,7 @@ package org.schabi.newpipe.extractor.services.soundcloud;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import org.schabi.newpipe.DownloaderTestImpl;
+import org.schabi.newpipe.extractor.Image;
 import org.schabi.newpipe.extractor.NewPipe;
 import org.schabi.newpipe.extractor.channel.ChannelExtractor;
 import org.schabi.newpipe.extractor.exceptions.ParsingException;
@@ -83,12 +84,16 @@ public class SoundcloudChannelExtractorTest {
 
         @Test
         public void testAvatars() {
-            assertIsSecureUrl(extractor.getAvatars().get(0).getUrl());
+            for (Image image : extractor.getAvatars()) {
+                assertIsSecureUrl(image.getUrl());
+            }
         }
 
         @Test
         public void testBanners() {
-            assertIsSecureUrl(extractor.getBanners().get(0).getUrl());
+            for (Image image : extractor.getBanners()) {
+                assertIsSecureUrl(image.getUrl());
+            }
         }
 
         @Test
@@ -177,12 +182,16 @@ public class SoundcloudChannelExtractorTest {
 
         @Test
         public void testAvatars() {
-            assertIsSecureUrl(extractor.getAvatars().get(0).getUrl());
+            for (Image image : extractor.getAvatars()) {
+                assertIsSecureUrl(image.getUrl());
+            }
         }
 
         @Test
         public void testBanners() {
-            assertIsSecureUrl(extractor.getBanners().get(0).getUrl());
+            for (Image image : extractor.getBanners()) {
+                assertIsSecureUrl(image.getUrl());
+            }
         }
 
         @Test

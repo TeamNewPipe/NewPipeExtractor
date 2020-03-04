@@ -1,13 +1,11 @@
 package org.schabi.newpipe.extractor.services;
 
+import org.schabi.newpipe.extractor.Image;
 import org.schabi.newpipe.extractor.InfoItem;
 import org.schabi.newpipe.extractor.ListExtractor;
-import org.schabi.newpipe.extractor.NewPipe;
 import org.schabi.newpipe.extractor.StreamingService;
 import org.schabi.newpipe.extractor.channel.ChannelInfoItem;
 import org.schabi.newpipe.extractor.exceptions.ParsingException;
-import org.schabi.newpipe.extractor.linkhandler.LinkHandlerFactory;
-import org.schabi.newpipe.extractor.linkhandler.ListLinkHandlerFactory;
 import org.schabi.newpipe.extractor.localization.DateWrapper;
 import org.schabi.newpipe.extractor.playlist.PlaylistInfoItem;
 import org.schabi.newpipe.extractor.stream.StreamInfoItem;
@@ -16,9 +14,14 @@ import java.util.Calendar;
 import java.util.List;
 
 import static junit.framework.TestCase.assertFalse;
-import static org.junit.Assert.*;
-import static org.schabi.newpipe.extractor.ExtractorAsserts.*;
-import static org.schabi.newpipe.extractor.StreamingService.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotEquals;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
+import static org.schabi.newpipe.extractor.ExtractorAsserts.assertEmptyErrors;
+import static org.schabi.newpipe.extractor.ExtractorAsserts.assertIsSecureUrl;
+import static org.schabi.newpipe.extractor.ExtractorAsserts.assertNotEmpty;
+import static org.schabi.newpipe.extractor.StreamingService.LinkType;
 
 public final class DefaultTests {
     public static void defaultTestListOfItems(StreamingService expectedService, List<? extends InfoItem> itemsList, List<Throwable> errors) throws ParsingException {
@@ -28,8 +31,10 @@ public final class DefaultTests {
 
         for (InfoItem item : itemsList) {
             assertIsSecureUrl(item.getUrl());
-            if (item.getThumbnails() != null && !item.getThumbnails().get(0).getUrl().isEmpty()) {
-                assertIsSecureUrl(item.getThumbnails().get(0).getUrl());
+            if (item.getThumbnails() != null) {
+                for (Image image : item.getThumbnails()) {
+                    assertIsSecureUrl(image.getUrl());
+                }
             }
             assertNotNull("InfoItem type not set: " + item, item.getInfoType());
             assertEquals("Unexpected item service id", expectedService.getServiceId(), item.getServiceId());

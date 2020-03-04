@@ -3,6 +3,7 @@ package org.schabi.newpipe.extractor.services.youtube;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import org.schabi.newpipe.DownloaderTestImpl;
+import org.schabi.newpipe.extractor.Image;
 import org.schabi.newpipe.extractor.NewPipe;
 import org.schabi.newpipe.extractor.channel.ChannelExtractor;
 import org.schabi.newpipe.extractor.exceptions.ContentNotAvailableException;
@@ -106,16 +107,18 @@ public class YoutubeChannelExtractorTest {
 
         @Test
         public void testAvatars() throws Exception {
-            String avatarUrl = extractor.getAvatars().get(0).getUrl();
-            assertIsSecureUrl(avatarUrl);
-            assertTrue(avatarUrl, avatarUrl.contains("yt3"));
+            for (Image image : extractor.getAvatars()) {
+                assertIsSecureUrl(image.getUrl());
+                assertTrue(image.getUrl(), image.getUrl().contains("yt3"));
+            }
         }
 
         @Test
         public void testBanners() throws Exception {
-            String bannerUrl = extractor.getBanners().get(0).getUrl();
-            assertIsSecureUrl(bannerUrl);
-            assertTrue(bannerUrl, bannerUrl.contains("yt3"));
+            for (Image image : extractor.getBanners()) {
+                assertIsSecureUrl(image.getUrl());
+                assertTrue(image.getUrl(), image.getUrl().contains("yt3"));
+            }
         }
 
         @Test
@@ -197,16 +200,18 @@ public class YoutubeChannelExtractorTest {
 
         @Test
         public void testAvatars() throws Exception {
-            String avatarUrl = extractor.getAvatars().get(0).getUrl();
-            assertIsSecureUrl(avatarUrl);
-            assertTrue(avatarUrl, avatarUrl.contains("yt3"));
+            for (Image image : extractor.getAvatars()) {
+                assertIsSecureUrl(image.getUrl());
+                assertTrue(image.getUrl(), image.getUrl().contains("yt3"));
+            }
         }
 
         @Test
         public void testBanners() throws Exception {
-            String bannerUrl = extractor.getBanners().get(0).getUrl();
-            assertIsSecureUrl(bannerUrl);
-            assertTrue(bannerUrl, bannerUrl.contains("yt3"));
+            for (Image image : extractor.getBanners()) {
+                assertIsSecureUrl(image.getUrl());
+                assertTrue(image.getUrl(), image.getUrl().contains("yt3"));
+            }
         }
 
         @Test
@@ -301,16 +306,18 @@ public class YoutubeChannelExtractorTest {
 
         @Test
         public void testAvatars() throws Exception {
-            String avatarUrl = extractor.getAvatars().get(0).getUrl();
-            assertIsSecureUrl(avatarUrl);
-            assertTrue(avatarUrl, avatarUrl.contains("yt3"));
+            for (Image image : extractor.getAvatars()) {
+                assertIsSecureUrl(image.getUrl());
+                assertTrue(image.getUrl(), image.getUrl().contains("yt3"));
+            }
         }
 
         @Test
         public void testBanners() throws Exception {
-            String bannerUrl = extractor.getBanners().get(0).getUrl();
-            assertIsSecureUrl(bannerUrl);
-            assertTrue(bannerUrl, bannerUrl.contains("yt3"));
+            for (Image image : extractor.getBanners()) {
+                assertIsSecureUrl(image.getUrl());
+                assertTrue(image.getUrl(), image.getUrl().contains("yt3"));
+            }
         }
 
         @Test
@@ -390,16 +397,18 @@ public class YoutubeChannelExtractorTest {
 
         @Test
         public void testAvatars() throws Exception {
-            String avatarUrl = extractor.getAvatars().get(0).getUrl();
-            assertIsSecureUrl(avatarUrl);
-            assertTrue(avatarUrl, avatarUrl.contains("yt3"));
+            for (Image image : extractor.getAvatars()) {
+                assertIsSecureUrl(image.getUrl());
+                assertTrue(image.getUrl(), image.getUrl().contains("yt3"));
+            }
         }
 
         @Test
         public void testBanners() throws Exception {
-            String bannerUrl = extractor.getBanners().get(0).getUrl();
-            assertIsSecureUrl(bannerUrl);
-            assertTrue(bannerUrl, bannerUrl.contains("yt3"));
+            for (Image image : extractor.getBanners()) {
+                assertIsSecureUrl(image.getUrl());
+                assertTrue(image.getUrl(), image.getUrl().contains("yt3"));
+            }
         }
 
         @Test
@@ -480,16 +489,18 @@ public class YoutubeChannelExtractorTest {
 
         @Test
         public void testAvatars() throws Exception {
-            String avatarUrl = extractor.getAvatars().get(0).getUrl();
-            assertIsSecureUrl(avatarUrl);
-            assertTrue(avatarUrl, avatarUrl.contains("yt3"));
+            for (Image image : extractor.getAvatars()) {
+                assertIsSecureUrl(image.getUrl());
+                assertTrue(image.getUrl(), image.getUrl().contains("yt3"));
+            }
         }
 
         @Test
         public void testBanners() throws Exception {
-            String bannerUrl = extractor.getBanners().get(0).getUrl();
-            assertIsSecureUrl(bannerUrl);
-            assertTrue(bannerUrl, bannerUrl.contains("yt3"));
+            for (Image image : extractor.getBanners()) {
+                assertIsSecureUrl(image.getUrl());
+                assertTrue(image.getUrl(), image.getUrl().contains("yt3"));
+            }
         }
 
         @Test
@@ -578,16 +589,18 @@ public class YoutubeChannelExtractorTest {
 
         @Test
         public void testAvatars() throws Exception {
-            String avatarUrl = extractor.getAvatars().get(0).getUrl();
-            assertIsSecureUrl(avatarUrl);
-            assertTrue(avatarUrl, avatarUrl.contains("yt3"));
+            for (Image image : extractor.getAvatars()) {
+                assertIsSecureUrl(image.getUrl());
+                assertTrue(image.getUrl(), image.getUrl().contains("yt3"));
+            }
         }
 
         @Test
         public void testBanners() throws Exception {
-            String bannerUrl = extractor.getBanners().get(0).getUrl();
-            assertIsSecureUrl(bannerUrl);
-            assertTrue(bannerUrl, bannerUrl.contains("yt3"));
+            for (Image image : extractor.getBanners()) {
+                assertIsSecureUrl(image.getUrl());
+                assertTrue(image.getUrl(), image.getUrl().contains("yt3"));
+            }
         }
 
         @Test

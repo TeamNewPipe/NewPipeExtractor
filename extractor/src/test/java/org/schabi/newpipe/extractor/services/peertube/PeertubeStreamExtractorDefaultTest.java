@@ -4,6 +4,7 @@ import org.junit.BeforeClass;
 import org.junit.Ignore;
 import org.junit.Test;
 import org.schabi.newpipe.DownloaderTestImpl;
+import org.schabi.newpipe.extractor.Image;
 import org.schabi.newpipe.extractor.NewPipe;
 import org.schabi.newpipe.extractor.exceptions.ExtractionException;
 import org.schabi.newpipe.extractor.exceptions.ParsingException;
@@ -106,12 +107,16 @@ public class PeertubeStreamExtractorDefaultTest {
 
     @Test
     public void testGetThumbnails() throws ParsingException {
-        assertIsSecureUrl(extractor.getThumbnails().get(0).getUrl());
+        for (Image image : extractor.getThumbnails()) {
+            assertIsSecureUrl(image.getUrl());
+        }
     }
 
     @Test
     public void testGetUploaderAvatars() throws ParsingException {
-        assertIsSecureUrl(extractor.getUploaderAvatars().get(0).getUrl());
+        for (Image image : extractor.getUploaderAvatars()) {
+            assertIsSecureUrl(image.getUrl());
+        }
     }
 
     @Test

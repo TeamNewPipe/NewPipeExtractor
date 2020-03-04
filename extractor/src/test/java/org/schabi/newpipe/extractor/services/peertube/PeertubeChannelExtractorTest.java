@@ -4,17 +4,22 @@ import org.junit.BeforeClass;
 import org.junit.Ignore;
 import org.junit.Test;
 import org.schabi.newpipe.DownloaderTestImpl;
+import org.schabi.newpipe.extractor.Image;
 import org.schabi.newpipe.extractor.NewPipe;
 import org.schabi.newpipe.extractor.channel.ChannelExtractor;
 import org.schabi.newpipe.extractor.exceptions.ParsingException;
 import org.schabi.newpipe.extractor.services.BaseChannelExtractorTest;
 import org.schabi.newpipe.extractor.services.peertube.extractors.PeertubeChannelExtractor;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
 import static org.schabi.newpipe.extractor.ExtractorAsserts.assertEmpty;
 import static org.schabi.newpipe.extractor.ExtractorAsserts.assertIsSecureUrl;
 import static org.schabi.newpipe.extractor.ServiceList.PeerTube;
-import static org.schabi.newpipe.extractor.services.DefaultTests.*;
+import static org.schabi.newpipe.extractor.services.DefaultTests.defaultTestGetPageInNewExtractor;
+import static org.schabi.newpipe.extractor.services.DefaultTests.defaultTestMoreItems;
+import static org.schabi.newpipe.extractor.services.DefaultTests.defaultTestRelatedItems;
 
 /**
  * Test for {@link PeertubeChannelExtractor}
@@ -87,13 +92,17 @@ public class PeertubeChannelExtractorTest {
 
         @Test
         public void testAvatars() throws ParsingException {
-            assertIsSecureUrl(extractor.getAvatars().get(0).getUrl());
+            for (Image image : extractor.getAvatars()) {
+                assertIsSecureUrl(image.getUrl());
+            }
         }
 
         @Ignore
         @Test
         public void testBanners() throws ParsingException {
-            assertIsSecureUrl(extractor.getBanners().get(0).getUrl());
+            for (Image image : extractor.getBanners()) {
+                assertIsSecureUrl(image.getUrl());
+            }
         }
 
         @Test
@@ -184,13 +193,17 @@ public class PeertubeChannelExtractorTest {
 
         @Test
         public void testAvatars() throws ParsingException {
-            assertIsSecureUrl(extractor.getAvatars().get(0).getUrl());
+            for (Image image : extractor.getAvatars()) {
+                assertIsSecureUrl(image.getUrl());
+            }
         }
 
         @Ignore
         @Test
         public void testBanners() throws ParsingException {
-            assertIsSecureUrl(extractor.getBanners().get(0).getUrl());
+            for (Image image : extractor.getBanners()) {
+                assertIsSecureUrl(image.getUrl());
+            }
         }
 
         @Test

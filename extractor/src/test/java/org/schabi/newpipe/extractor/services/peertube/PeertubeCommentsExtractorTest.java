@@ -4,6 +4,7 @@ import org.jsoup.helper.StringUtil;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import org.schabi.newpipe.DownloaderTestImpl;
+import org.schabi.newpipe.extractor.Image;
 import org.schabi.newpipe.extractor.ListExtractor.InfoItemsPage;
 import org.schabi.newpipe.extractor.NewPipe;
 import org.schabi.newpipe.extractor.comments.CommentsInfo;
@@ -66,12 +67,21 @@ public class PeertubeCommentsExtractorTest {
         for (CommentsInfoItem c : comments.getItems()) {
             assertFalse(StringUtil.isBlank(c.getAuthorEndpoint()));
             assertFalse(StringUtil.isBlank(c.getAuthorName()));
-            assertFalse(StringUtil.isBlank(c.getAuthorThumbnails().get(0).getUrl()));
+
+
+            for (Image image : c.getAuthorThumbnails()) {
+                assertFalse(StringUtil.isBlank(image.getUrl()));
+            }
+
             assertFalse(StringUtil.isBlank(c.getCommentId()));
             assertFalse(StringUtil.isBlank(c.getCommentText()));
             assertFalse(StringUtil.isBlank(c.getName()));
             assertFalse(StringUtil.isBlank(c.getTextualPublishedTime()));
-            assertFalse(StringUtil.isBlank(c.getThumbnails().get(0).getUrl()));
+
+            for (Image image : c.getThumbnails()) {
+                assertFalse(StringUtil.isBlank(image.getUrl()));
+            }
+
             assertFalse(StringUtil.isBlank(c.getUrl()));
             assertFalse(c.getLikeCount() != -1);
         }
