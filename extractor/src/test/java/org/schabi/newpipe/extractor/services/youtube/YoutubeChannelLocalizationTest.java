@@ -3,16 +3,19 @@ package org.schabi.newpipe.extractor.services.youtube;
 import org.junit.Ignore;
 import org.junit.Test;
 import org.schabi.newpipe.DownloaderTestImpl;
+import org.schabi.newpipe.extractor.InfoItem;
 import org.schabi.newpipe.extractor.ListExtractor;
 import org.schabi.newpipe.extractor.NewPipe;
 import org.schabi.newpipe.extractor.channel.ChannelExtractor;
 import org.schabi.newpipe.extractor.channel.ChannelTabExtractor;
-import org.schabi.newpipe.extractor.localization.Localization;
 import org.schabi.newpipe.extractor.localization.DateWrapper;
+import org.schabi.newpipe.extractor.localization.Localization;
 import org.schabi.newpipe.extractor.stream.StreamInfoItem;
 
 import java.text.SimpleDateFormat;
-import java.util.*;
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Map;
 
 import static org.junit.Assert.fail;
 import static org.schabi.newpipe.extractor.ServiceList.YouTube;
@@ -40,12 +43,12 @@ public class YoutubeChannelLocalizationTest {
 
         final List<Localization> supportedLocalizations = YouTube.getSupportedLocalizations();
 //        final List<Localization> supportedLocalizations = Arrays.asList(Localization.DEFAULT, new Localization("sr"));
-        final Map<Localization, List<StreamInfoItem>> results = new LinkedHashMap<>();
+        final Map<Localization, List<InfoItem>> results = new LinkedHashMap<>();
 
         for (Localization currentLocalization : supportedLocalizations) {
             if (DEBUG) System.out.println("Testing localization = " + currentLocalization);
 
-            ListExtractor.InfoItemsPage<StreamInfoItem> itemsPage = null;
+            ListExtractor.InfoItemsPage<InfoItem> itemsPage = null;
             try {
                 final ChannelExtractor extractor = YouTube.getChannelExtractor(channelUrl);
                 extractor.forceLocalization(currentLocalization);
@@ -62,9 +65,9 @@ public class YoutubeChannelLocalizationTest {
                 throw e;
             }
 
-            final List<StreamInfoItem> items = itemsPage.getItems();
+            final List<InfoItem> items = itemsPage.getItems();
             for (int i = 0; i < items.size(); i++) {
-                final StreamInfoItem item = items.get(i);
+                final StreamInfoItem item = (StreamInfoItem) items.get(i);
 
                 String debugMessage = "[" + String.format("%02d", i) + "] "
                         + currentLocalization.getLocalizationCode() + " → " + item.getName()
@@ -84,10 +87,10 @@ public class YoutubeChannelLocalizationTest {
 
 
         // Check results
-        final List<StreamInfoItem> referenceList = results.get(Localization.DEFAULT);
+        final List<InfoItem> referenceList = results.get(Localization.DEFAULT);
         boolean someFail = false;
 
-        for (Map.Entry<Localization, List<StreamInfoItem>> currentResultEntry : results.entrySet()) {
+        for (Map.Entry<Localization, List<InfoItem>> currentResultEntry : results.entrySet()) {
             if (currentResultEntry.getKey().equals(Localization.DEFAULT)) {
                 continue;
             }
@@ -99,7 +102,7 @@ public class YoutubeChannelLocalizationTest {
                         currentLocalizationCode);
             }
 
-            final List<StreamInfoItem> currentList = currentResultEntry.getValue();
+            final List<InfoItem> currentList = currentResultEntry.getValue();
             if (referenceList.size() != currentList.size()) {
                 if (DEBUG) System.out.println("[!] " + currentLocalizationCode + " → Lists are not equal");
                 someFail = true;
@@ -107,8 +110,8 @@ public class YoutubeChannelLocalizationTest {
             }
 
             for (int i = 0; i < referenceList.size() - 1; i++) {
-                final StreamInfoItem referenceItem = referenceList.get(i);
-                final StreamInfoItem currentItem = currentList.get(i);
+                final StreamInfoItem referenceItem = (StreamInfoItem) referenceList.get(i);
+                final StreamInfoItem currentItem = (StreamInfoItem) currentList.get(i);
 
                 final DateWrapper referenceUploadDate = referenceItem.getUploadDate();
                 final DateWrapper currentUploadDate = currentItem.getUploadDate();

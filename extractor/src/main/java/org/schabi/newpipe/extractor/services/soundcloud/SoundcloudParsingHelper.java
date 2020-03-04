@@ -9,6 +9,7 @@ import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
+import org.schabi.newpipe.extractor.InfoItemsCollector;
 import org.schabi.newpipe.extractor.NewPipe;
 import org.schabi.newpipe.extractor.channel.ChannelInfoItemsCollector;
 import org.schabi.newpipe.extractor.downloader.Downloader;
@@ -16,8 +17,6 @@ import org.schabi.newpipe.extractor.downloader.Response;
 import org.schabi.newpipe.extractor.exceptions.ExtractionException;
 import org.schabi.newpipe.extractor.exceptions.ParsingException;
 import org.schabi.newpipe.extractor.exceptions.ReCaptchaException;
-import org.schabi.newpipe.extractor.playlist.PlaylistInfoItemsCollector;
-import org.schabi.newpipe.extractor.stream.StreamInfoItemsCollector;
 import org.schabi.newpipe.extractor.utils.Parser;
 import org.schabi.newpipe.extractor.utils.Parser.RegexException;
 
@@ -209,12 +208,12 @@ public class SoundcloudParsingHelper {
     /**
      * Fetch the streams from the given api and commit each of them to the collector.
      * <p>
-     * This differ from {@link #getStreamsFromApi(StreamInfoItemsCollector, String)} in the sense that they will always
+     * This differ from {@link #getStreamsFromApi(InfoItemsCollector, String)} in the sense that they will always
      * get MIN_ITEMS or more items.
      *
      * @param minItems the method will return only when it have extracted that many items (equal or more)
      */
-    public static String getStreamsFromApiMinItems(int minItems, StreamInfoItemsCollector collector, String apiUrl) throws IOException, ReCaptchaException, ParsingException {
+    public static String getStreamsFromApiMinItems(int minItems, InfoItemsCollector collector, String apiUrl) throws IOException, ReCaptchaException, ParsingException {
         String nextPageUrl = SoundcloudParsingHelper.getStreamsFromApi(collector, apiUrl);
 
         while (!nextPageUrl.isEmpty() && collector.getItems().size() < minItems) {
@@ -229,7 +228,7 @@ public class SoundcloudParsingHelper {
      *
      * @return the next streams url, empty if don't have
      */
-    public static String getStreamsFromApi(StreamInfoItemsCollector collector, String apiUrl, boolean charts) throws IOException, ReCaptchaException, ParsingException {
+    public static String getStreamsFromApi(InfoItemsCollector collector, String apiUrl, boolean charts) throws IOException, ReCaptchaException, ParsingException {
         String response = NewPipe.getDownloader().get(apiUrl, SoundCloud.getLocalization()).responseBody();
         JsonObject responseObject;
         try {
@@ -257,7 +256,7 @@ public class SoundcloudParsingHelper {
         return nextPageUrl;
     }
 
-    public static String getStreamsFromApi(StreamInfoItemsCollector collector, String apiUrl) throws ReCaptchaException, ParsingException, IOException {
+    public static String getStreamsFromApi(InfoItemsCollector collector, String apiUrl) throws ReCaptchaException, ParsingException, IOException {
         return getStreamsFromApi(collector, apiUrl, false);
     }
 
@@ -265,12 +264,12 @@ public class SoundcloudParsingHelper {
     /**
      * Fetch the playlists from the given api and commit each of them to the collector.
      * <p>
-     * This differ from {@link #getPlaylistsFromApi(PlaylistInfoItemsCollector, String)} in the sense that they will always
+     * This differ from {@link #getPlaylistsFromApi(InfoItemsCollector, String)} in the sense that they will always
      * get MIN_ITEMS or more items.
      *
      * @param minItems the method will return only when it have extracted that many items (equal or more)
      */
-    public static String getPlaylistsFromApiMinItems(int minItems, PlaylistInfoItemsCollector collector, String apiUrl) throws IOException, ReCaptchaException, ParsingException {
+    public static String getPlaylistsFromApiMinItems(int minItems, InfoItemsCollector collector, String apiUrl) throws IOException, ReCaptchaException, ParsingException {
         String nextPageUrl = SoundcloudParsingHelper.getPlaylistsFromApi(collector, apiUrl);
 
         while (!nextPageUrl.isEmpty() && collector.getItems().size() < minItems) {
@@ -285,7 +284,7 @@ public class SoundcloudParsingHelper {
      *
      * @return the next playlists url, empty if don't have
      */
-    public static String getPlaylistsFromApi(PlaylistInfoItemsCollector collector, String apiUrl) throws IOException, ReCaptchaException, ParsingException {
+    public static String getPlaylistsFromApi(InfoItemsCollector collector, String apiUrl) throws IOException, ReCaptchaException, ParsingException {
         String response = NewPipe.getDownloader().get(apiUrl, SoundCloud.getLocalization()).responseBody();
         JsonObject responseObject;
         try {

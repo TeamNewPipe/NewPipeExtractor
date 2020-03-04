@@ -2,6 +2,7 @@ package org.schabi.newpipe.extractor.search;
 
 import org.schabi.newpipe.extractor.InfoItem;
 import org.schabi.newpipe.extractor.ListExtractor;
+import org.schabi.newpipe.extractor.MixedInfoItemsCollector;
 import org.schabi.newpipe.extractor.StreamingService;
 import org.schabi.newpipe.extractor.exceptions.ExtractionException;
 import org.schabi.newpipe.extractor.exceptions.ParsingException;
@@ -17,11 +18,11 @@ public abstract class SearchExtractor extends ListExtractor<InfoItem> {
         }
     }
 
-    private final InfoItemsSearchCollector collector;
+    private final MixedInfoItemsCollector collector;
 
     public SearchExtractor(StreamingService service, SearchQueryHandler linkHandler) {
         super(service, linkHandler);
-        collector = new InfoItemsSearchCollector(service.getServiceId());
+        collector = new MixedInfoItemsCollector(service.getServiceId());
     }
 
     public String getSearchString() {
@@ -30,7 +31,7 @@ public abstract class SearchExtractor extends ListExtractor<InfoItem> {
 
     public abstract String getSearchSuggestion() throws ParsingException;
 
-    protected InfoItemsSearchCollector getInfoItemSearchCollector() {
+    protected MixedInfoItemsCollector getInfoItemSearchCollector() {
         return collector;
     }
 

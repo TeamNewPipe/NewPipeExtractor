@@ -1,20 +1,20 @@
 package org.schabi.newpipe.extractor.services.soundcloud;
 
+import org.schabi.newpipe.extractor.InfoItem;
 import org.schabi.newpipe.extractor.StreamingService;
-import org.schabi.newpipe.extractor.channel.ChannelStreamsExtractor;
+import org.schabi.newpipe.extractor.channel.ChannelTabExtractor;
 import org.schabi.newpipe.extractor.downloader.Downloader;
 import org.schabi.newpipe.extractor.exceptions.ExtractionException;
 import org.schabi.newpipe.extractor.exceptions.ParsingException;
 import org.schabi.newpipe.extractor.linkhandler.ListLinkHandler;
-import org.schabi.newpipe.extractor.stream.StreamInfoItem;
-import org.schabi.newpipe.extractor.stream.StreamInfoItemsCollector;
+import org.schabi.newpipe.extractor.MixedInfoItemsCollector;
 
 import java.io.IOException;
 
 import javax.annotation.Nonnull;
 
-public class SoundcloudChannelPopularTracksExtractor extends ChannelStreamsExtractor {
-    private StreamInfoItemsCollector streamInfoItemsCollector = null;
+public class SoundcloudChannelPopularTracksExtractor extends ChannelTabExtractor {
+    private MixedInfoItemsCollector streamInfoItemsCollector = null;
     private String nextPageUrl = null;
 
     public SoundcloudChannelPopularTracksExtractor(StreamingService service, ListLinkHandler linkHandler) {
@@ -32,7 +32,7 @@ public class SoundcloudChannelPopularTracksExtractor extends ChannelStreamsExtra
 
     @Nonnull
     @Override
-    public InfoItemsPage<StreamInfoItem> getInitialPage() throws ExtractionException {
+    public InfoItemsPage<InfoItem> getInitialPage() throws ExtractionException {
         if (streamInfoItemsCollector == null) {
             computeNextPageAndGetStreams();
         }
@@ -49,7 +49,7 @@ public class SoundcloudChannelPopularTracksExtractor extends ChannelStreamsExtra
 
     private void computeNextPageAndGetStreams() throws ExtractionException {
         try {
-            streamInfoItemsCollector = new StreamInfoItemsCollector(getServiceId());
+            streamInfoItemsCollector = new MixedInfoItemsCollector(getServiceId());
 
             String apiUrl = "https://api-v2.soundcloud.com/users/" + getId() + "/toptracks"
                     + "?client_id=" + SoundcloudParsingHelper.clientId()
@@ -63,12 +63,12 @@ public class SoundcloudChannelPopularTracksExtractor extends ChannelStreamsExtra
     }
 
     @Override
-    public InfoItemsPage<StreamInfoItem> getPage(final String pageUrl) throws IOException, ExtractionException {
+    public InfoItemsPage<InfoItem> getPage(final String pageUrl) throws IOException, ExtractionException {
         if (pageUrl == null || pageUrl.isEmpty()) {
             throw new ExtractionException(new IllegalArgumentException("Page url is empty or null"));
         }
 
-        StreamInfoItemsCollector collector = new StreamInfoItemsCollector(getServiceId());
+        MixedInfoItemsCollector collector = new MixedInfoItemsCollector(getServiceId());
         String nextPageUrl = SoundcloudParsingHelper.getStreamsFromApiMinItems(15, collector, pageUrl);
 
         return new InfoItemsPage<>(collector, nextPageUrl);

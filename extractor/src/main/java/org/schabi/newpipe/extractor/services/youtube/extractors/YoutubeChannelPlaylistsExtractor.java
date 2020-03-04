@@ -3,14 +3,14 @@ package org.schabi.newpipe.extractor.services.youtube.extractors;
 import com.grack.nanojson.JsonArray;
 import com.grack.nanojson.JsonObject;
 
+import org.schabi.newpipe.extractor.InfoItem;
 import org.schabi.newpipe.extractor.StreamingService;
-import org.schabi.newpipe.extractor.channel.ChannelPlaylistsExtractor;
+import org.schabi.newpipe.extractor.channel.ChannelTabExtractor;
 import org.schabi.newpipe.extractor.downloader.Downloader;
 import org.schabi.newpipe.extractor.exceptions.ExtractionException;
 import org.schabi.newpipe.extractor.exceptions.ParsingException;
 import org.schabi.newpipe.extractor.linkhandler.ListLinkHandler;
-import org.schabi.newpipe.extractor.playlist.PlaylistInfoItem;
-import org.schabi.newpipe.extractor.playlist.PlaylistInfoItemsCollector;
+import org.schabi.newpipe.extractor.MixedInfoItemsCollector;
 import org.schabi.newpipe.extractor.services.youtube.linkHandler.YoutubeParsingHelper;
 
 import java.io.IOException;
@@ -20,7 +20,7 @@ import javax.annotation.Nonnull;
 import static org.schabi.newpipe.extractor.services.youtube.linkHandler.YoutubeParsingHelper.getJsonResponse;
 import static org.schabi.newpipe.extractor.services.youtube.linkHandler.YoutubeParsingHelper.getTextFromObject;
 
-public class YoutubeChannelPlaylistsExtractor extends ChannelPlaylistsExtractor {
+public class YoutubeChannelPlaylistsExtractor extends ChannelTabExtractor {
     private JsonObject initialData;
     private JsonObject playlistsTab;
     private String channelName;
@@ -56,8 +56,8 @@ public class YoutubeChannelPlaylistsExtractor extends ChannelPlaylistsExtractor 
 
     @Nonnull
     @Override
-    public InfoItemsPage<PlaylistInfoItem> getInitialPage() throws ExtractionException {
-        PlaylistInfoItemsCollector collector = new PlaylistInfoItemsCollector(getServiceId());
+    public InfoItemsPage<InfoItem> getInitialPage() throws ExtractionException {
+        MixedInfoItemsCollector collector = new MixedInfoItemsCollector(getServiceId());
 
         JsonArray playlists = playlistsTab.getObject("content").getObject("sectionListRenderer").getArray("contents")
                 .getObject(0).getObject("itemSectionRenderer").getArray("contents").getObject(0)
@@ -68,16 +68,12 @@ public class YoutubeChannelPlaylistsExtractor extends ChannelPlaylistsExtractor 
     }
 
     @Override
-    public InfoItemsPage<PlaylistInfoItem> getPage(String pageUrl) throws IOException, ExtractionException {
+    public InfoItemsPage<InfoItem> getPage(String pageUrl) throws IOException, ExtractionException {
         if (pageUrl == null || pageUrl.isEmpty()) {
             throw new ExtractionException(new IllegalArgumentException("Page url is empty or null"));
         }
 
-        // Unfortunately, we have to fetch the page even if we are only getting next streams,
-        // as they don't deliver enough information on their own (the channel name, for example).
-        fetchPage();
-
-        PlaylistInfoItemsCollector collector = new PlaylistInfoItemsCollector(getServiceId());
+        MixedInfoItemsCollector collector = new MixedInfoItemsCollector(getServiceId());
         final JsonArray ajaxJson = getJsonResponse(pageUrl, getExtractorLocalization());
 
         if (ajaxJson.getObject(1).getObject("response").getObject("continuationContents") == null)
@@ -102,7 +98,7 @@ public class YoutubeChannelPlaylistsExtractor extends ChannelPlaylistsExtractor 
                 + "&itct=" + clickTrackingParams;
     }
 
-    private void collectPlaylistsFrom(PlaylistInfoItemsCollector collector, JsonArray playlists) throws ParsingException {
+    private void collectPlaylistsFrom(MixedInfoItemsCollector collector, JsonArray playlists) throws ParsingException {
         collector.reset();
 
         for (Object playlist : playlists) {

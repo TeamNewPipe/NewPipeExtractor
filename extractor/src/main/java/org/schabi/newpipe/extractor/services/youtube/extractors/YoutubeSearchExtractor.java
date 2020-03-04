@@ -10,7 +10,7 @@ import org.schabi.newpipe.extractor.exceptions.ExtractionException;
 import org.schabi.newpipe.extractor.exceptions.ParsingException;
 import org.schabi.newpipe.extractor.linkhandler.SearchQueryHandler;
 import org.schabi.newpipe.extractor.localization.TimeAgoParser;
-import org.schabi.newpipe.extractor.search.InfoItemsSearchCollector;
+import org.schabi.newpipe.extractor.MixedInfoItemsCollector;
 import org.schabi.newpipe.extractor.search.SearchExtractor;
 
 import java.io.IOException;
@@ -79,7 +79,7 @@ public class YoutubeSearchExtractor extends SearchExtractor {
     @Nonnull
     @Override
     public InfoItemsPage<InfoItem> getInitialPage() throws ExtractionException {
-        InfoItemsSearchCollector collector = getInfoItemSearchCollector();
+        MixedInfoItemsCollector collector = getInfoItemSearchCollector();
         JsonArray sections = initialData.getObject("contents").getObject("twoColumnSearchResultsRenderer")
                 .getObject("primaryContents").getObject("sectionListRenderer").getArray("contents");
 
@@ -103,7 +103,7 @@ public class YoutubeSearchExtractor extends SearchExtractor {
             throw new ExtractionException(new IllegalArgumentException("Page url is empty or null"));
         }
 
-        InfoItemsSearchCollector collector = getInfoItemSearchCollector();
+        MixedInfoItemsCollector collector = getInfoItemSearchCollector();
         final JsonArray ajaxJson = getJsonResponse(pageUrl, getExtractorLocalization());
 
         if (ajaxJson.getObject(1).getObject("response").getObject("continuationContents") == null)
@@ -117,7 +117,7 @@ public class YoutubeSearchExtractor extends SearchExtractor {
         return new InfoItemsPage<>(collector, getNextPageUrlFrom(itemSectionRenderer.getArray("continuations")));
     }
 
-    private void collectStreamsFrom(InfoItemsSearchCollector collector, JsonArray videos) throws NothingFoundException, ParsingException {
+    private void collectStreamsFrom(MixedInfoItemsCollector collector, JsonArray videos) throws NothingFoundException, ParsingException {
         collector.reset();
 
         final TimeAgoParser timeAgoParser = getTimeAgoParser();

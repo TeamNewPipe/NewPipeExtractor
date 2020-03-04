@@ -3,21 +3,21 @@ package org.schabi.newpipe.extractor.services.media_ccc.extractors;
 import com.grack.nanojson.JsonArray;
 import com.grack.nanojson.JsonObject;
 
+import org.schabi.newpipe.extractor.InfoItem;
 import org.schabi.newpipe.extractor.StreamingService;
-import org.schabi.newpipe.extractor.channel.ChannelStreamsExtractor;
+import org.schabi.newpipe.extractor.channel.ChannelTabExtractor;
 import org.schabi.newpipe.extractor.downloader.Downloader;
 import org.schabi.newpipe.extractor.exceptions.ExtractionException;
 import org.schabi.newpipe.extractor.exceptions.ParsingException;
 import org.schabi.newpipe.extractor.linkhandler.ListLinkHandler;
+import org.schabi.newpipe.extractor.MixedInfoItemsCollector;
 import org.schabi.newpipe.extractor.services.media_ccc.extractors.infoItems.MediaCCCStreamInfoItemExtractor;
-import org.schabi.newpipe.extractor.stream.StreamInfoItem;
-import org.schabi.newpipe.extractor.stream.StreamInfoItemsCollector;
 
 import java.io.IOException;
 
 import javax.annotation.Nonnull;
 
-public class MediaCCCConferenceEventsExtractor extends ChannelStreamsExtractor {
+public class MediaCCCConferenceEventsExtractor extends ChannelTabExtractor {
     private JsonObject conferenceData;
 
     public MediaCCCConferenceEventsExtractor(StreamingService service, ListLinkHandler linkHandler, JsonObject conferenceData) {
@@ -28,8 +28,8 @@ public class MediaCCCConferenceEventsExtractor extends ChannelStreamsExtractor {
 
     @Nonnull
     @Override
-    public InfoItemsPage<StreamInfoItem> getInitialPage() throws IOException, ExtractionException {
-        StreamInfoItemsCollector collector = new StreamInfoItemsCollector(getServiceId());
+    public InfoItemsPage<InfoItem> getInitialPage() throws IOException, ExtractionException {
+        MixedInfoItemsCollector collector = new MixedInfoItemsCollector(getServiceId());
         JsonArray events = conferenceData.getArray("events");
         for (int i = 0; i < events.size(); i++) {
             collector.commit(new MediaCCCStreamInfoItemExtractor(events.getObject(i)));
@@ -43,7 +43,7 @@ public class MediaCCCConferenceEventsExtractor extends ChannelStreamsExtractor {
     }
 
     @Override
-    public InfoItemsPage<StreamInfoItem> getPage(String pageUrl) throws IOException, ExtractionException {
+    public InfoItemsPage<InfoItem> getPage(String pageUrl) throws IOException, ExtractionException {
         return null;
     }
 

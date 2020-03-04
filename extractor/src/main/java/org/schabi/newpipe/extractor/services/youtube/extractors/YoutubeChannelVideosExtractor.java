@@ -3,15 +3,15 @@ package org.schabi.newpipe.extractor.services.youtube.extractors;
 import com.grack.nanojson.JsonArray;
 import com.grack.nanojson.JsonObject;
 
+import org.schabi.newpipe.extractor.InfoItem;
 import org.schabi.newpipe.extractor.StreamingService;
-import org.schabi.newpipe.extractor.channel.ChannelStreamsExtractor;
+import org.schabi.newpipe.extractor.channel.ChannelTabExtractor;
 import org.schabi.newpipe.extractor.downloader.Downloader;
 import org.schabi.newpipe.extractor.exceptions.ExtractionException;
 import org.schabi.newpipe.extractor.exceptions.ParsingException;
 import org.schabi.newpipe.extractor.linkhandler.ListLinkHandler;
 import org.schabi.newpipe.extractor.localization.TimeAgoParser;
-import org.schabi.newpipe.extractor.stream.StreamInfoItem;
-import org.schabi.newpipe.extractor.stream.StreamInfoItemsCollector;
+import org.schabi.newpipe.extractor.MixedInfoItemsCollector;
 
 import java.io.IOException;
 
@@ -19,7 +19,7 @@ import javax.annotation.Nonnull;
 
 import static org.schabi.newpipe.extractor.services.youtube.linkHandler.YoutubeParsingHelper.getJsonResponse;
 
-public class YoutubeChannelVideosExtractor extends ChannelStreamsExtractor {
+public class YoutubeChannelVideosExtractor extends ChannelTabExtractor {
     private JsonObject videoTab;
 
     public YoutubeChannelVideosExtractor(StreamingService service, ListLinkHandler linkHandler, JsonObject videoTab) {
@@ -45,8 +45,8 @@ public class YoutubeChannelVideosExtractor extends ChannelStreamsExtractor {
 
     @Nonnull
     @Override
-    public InfoItemsPage<StreamInfoItem> getInitialPage() throws ExtractionException {
-        StreamInfoItemsCollector collector = new StreamInfoItemsCollector(getServiceId());
+    public InfoItemsPage<InfoItem> getInitialPage() throws ExtractionException {
+        MixedInfoItemsCollector collector = new MixedInfoItemsCollector(getServiceId());
 
         JsonArray videos = videoTab.getObject("content").getObject("sectionListRenderer").getArray("contents")
                 .getObject(0).getObject("itemSectionRenderer").getArray("contents").getObject(0)
@@ -57,12 +57,12 @@ public class YoutubeChannelVideosExtractor extends ChannelStreamsExtractor {
     }
 
     @Override
-    public InfoItemsPage<StreamInfoItem> getPage(String pageUrl) throws IOException, ExtractionException {
+    public InfoItemsPage<InfoItem> getPage(String pageUrl) throws IOException, ExtractionException {
         if (pageUrl == null || pageUrl.isEmpty()) {
             throw new ExtractionException(new IllegalArgumentException("Page url is empty or null"));
         }
 
-        StreamInfoItemsCollector collector = new StreamInfoItemsCollector(getServiceId());
+        MixedInfoItemsCollector collector = new MixedInfoItemsCollector(getServiceId());
         final JsonArray ajaxJson = getJsonResponse(pageUrl, getExtractorLocalization());
 
         if (ajaxJson.getObject(1).getObject("response").getObject("continuationContents") == null)
@@ -87,7 +87,7 @@ public class YoutubeChannelVideosExtractor extends ChannelStreamsExtractor {
                 + "&itct=" + clickTrackingParams;
     }
 
-    private void collectStreamsFrom(StreamInfoItemsCollector collector, JsonArray videos) throws ParsingException {
+    private void collectStreamsFrom(MixedInfoItemsCollector collector, JsonArray videos) throws ParsingException {
         collector.reset();
 
         final String uploaderName = getName();

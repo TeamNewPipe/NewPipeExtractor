@@ -13,7 +13,7 @@ import org.schabi.newpipe.extractor.downloader.Response;
 import org.schabi.newpipe.extractor.exceptions.ExtractionException;
 import org.schabi.newpipe.extractor.exceptions.ParsingException;
 import org.schabi.newpipe.extractor.linkhandler.SearchQueryHandler;
-import org.schabi.newpipe.extractor.search.InfoItemsSearchCollector;
+import org.schabi.newpipe.extractor.MixedInfoItemsCollector;
 import org.schabi.newpipe.extractor.search.SearchExtractor;
 import org.schabi.newpipe.extractor.utils.JsonUtils;
 import org.schabi.newpipe.extractor.utils.Parser;
@@ -48,7 +48,7 @@ public class PeertubeSearchExtractor extends SearchExtractor {
 
     private InfoItemsCollector<InfoItem, InfoItemExtractor> collectStreamsFrom(JsonObject json) throws ParsingException {
 
-        final InfoItemsSearchCollector collector = getInfoItemSearchCollector();
+        final MixedInfoItemsCollector collector = getInfoItemSearchCollector();
 
         JsonArray contents;
         try {

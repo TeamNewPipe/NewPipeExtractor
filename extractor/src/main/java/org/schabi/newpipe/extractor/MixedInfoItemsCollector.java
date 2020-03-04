@@ -1,4 +1,4 @@
-package org.schabi.newpipe.extractor.search;
+package org.schabi.newpipe.extractor;
 
 import org.schabi.newpipe.extractor.InfoItem;
 import org.schabi.newpipe.extractor.InfoItemExtractor;
@@ -43,12 +43,12 @@ import org.schabi.newpipe.extractor.stream.StreamInfoItemsCollector;
  * Calling {@link #extract(InfoItemExtractor)} or {@link #commit(Object)} with any
  * other extractor type will raise an exception.
  */
-public class InfoItemsSearchCollector extends InfoItemsCollector<InfoItem, InfoItemExtractor> {
+public class MixedInfoItemsCollector extends InfoItemsCollector<InfoItem, InfoItemExtractor> {
     private final StreamInfoItemsCollector streamCollector;
     private final ChannelInfoItemsCollector userCollector;
     private final PlaylistInfoItemsCollector playlistCollector;
 
-    InfoItemsSearchCollector(int serviceId) {
+    public MixedInfoItemsCollector(int serviceId) {
         super(serviceId);
         streamCollector = new StreamInfoItemsCollector(serviceId);
         userCollector = new ChannelInfoItemsCollector(serviceId);

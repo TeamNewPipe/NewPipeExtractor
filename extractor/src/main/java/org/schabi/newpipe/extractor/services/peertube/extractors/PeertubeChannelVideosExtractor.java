@@ -5,16 +5,16 @@ import com.grack.nanojson.JsonObject;
 import com.grack.nanojson.JsonParser;
 
 import org.jsoup.helper.StringUtil;
+import org.schabi.newpipe.extractor.InfoItem;
 import org.schabi.newpipe.extractor.StreamingService;
-import org.schabi.newpipe.extractor.channel.ChannelStreamsExtractor;
+import org.schabi.newpipe.extractor.channel.ChannelTabExtractor;
 import org.schabi.newpipe.extractor.downloader.Downloader;
 import org.schabi.newpipe.extractor.downloader.Response;
 import org.schabi.newpipe.extractor.exceptions.ExtractionException;
 import org.schabi.newpipe.extractor.exceptions.ParsingException;
 import org.schabi.newpipe.extractor.linkhandler.ListLinkHandler;
+import org.schabi.newpipe.extractor.MixedInfoItemsCollector;
 import org.schabi.newpipe.extractor.services.peertube.PeertubeParsingHelper;
-import org.schabi.newpipe.extractor.stream.StreamInfoItem;
-import org.schabi.newpipe.extractor.stream.StreamInfoItemsCollector;
 import org.schabi.newpipe.extractor.utils.JsonUtils;
 import org.schabi.newpipe.extractor.utils.Parser;
 
@@ -22,13 +22,13 @@ import java.io.IOException;
 
 import javax.annotation.Nonnull;
 
-public class PeertubeChannelVideosExtractor extends ChannelStreamsExtractor {
+public class PeertubeChannelVideosExtractor extends ChannelTabExtractor {
     private static final String START_KEY = "start";
     private static final String COUNT_KEY = "count";
     private static final int ITEMS_PER_PAGE = 12;
     private static final String START_PATTERN = "start=(\\d*)";
 
-    private InfoItemsPage<StreamInfoItem> initPage;
+    private InfoItemsPage<InfoItem> initPage;
     private long total;
 
     public PeertubeChannelVideosExtractor(StreamingService service, ListLinkHandler linkHandler) {
@@ -36,7 +36,7 @@ public class PeertubeChannelVideosExtractor extends ChannelStreamsExtractor {
     }
 
     @Override
-    public InfoItemsPage<StreamInfoItem> getInitialPage() throws IOException, ExtractionException {
+    public InfoItemsPage<InfoItem> getInitialPage() throws IOException, ExtractionException {
         super.fetchPage();
         return initPage;
     }
@@ -53,7 +53,7 @@ public class PeertubeChannelVideosExtractor extends ChannelStreamsExtractor {
         return "Videos";
     }
 
-    private void collectStreamsFrom(StreamInfoItemsCollector collector, JsonObject json, String pageUrl) throws ParsingException {
+    private void collectStreamsFrom(MixedInfoItemsCollector collector, JsonObject json, String pageUrl) throws ParsingException {
         JsonArray contents;
         try {
             contents = (JsonArray) JsonUtils.getValue(json, "data");
@@ -78,7 +78,7 @@ public class PeertubeChannelVideosExtractor extends ChannelStreamsExtractor {
     }
 
     @Override
-    public InfoItemsPage<StreamInfoItem> getPage(String pageUrl) throws IOException, ExtractionException {
+    public InfoItemsPage<InfoItem> getPage(String pageUrl) throws IOException, ExtractionException {
         Response response = getDownloader().get(pageUrl);
         JsonObject json = null;
         if (null != response && !StringUtil.isBlank(response.responseBody())) {
@@ -89,7 +89,7 @@ public class PeertubeChannelVideosExtractor extends ChannelStreamsExtractor {
             }
         }
 
-        StreamInfoItemsCollector collector = new StreamInfoItemsCollector(getServiceId());
+        MixedInfoItemsCollector collector = new MixedInfoItemsCollector(getServiceId());
         if (json != null) {
             PeertubeParsingHelper.validate(json);
             Number number = JsonUtils.getNumber(json, "total");
