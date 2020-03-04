@@ -162,10 +162,10 @@ public class YoutubeChannelExtractor extends ChannelExtractor {
     public List<ChannelTabExtractor> getTabs() throws ParsingException {
         List<ChannelTabExtractor> tabs = new ArrayList<>();
 
-        if (getTab("Videos") != null)
-            tabs.add(new YoutubeChannelVideosExtractor(getService(), (ListLinkHandler) getLinkHandler(), getTab("Videos")));
+        if (getTab("videos") != null)
+            tabs.add(new YoutubeChannelVideosExtractor(getService(), (ListLinkHandler) getLinkHandler(), getTab("videos")));
 
-        if (getTab("Playlists") != null)
+        if (getTab("playlists") != null)
             tabs.add(new YoutubeChannelPlaylistsExtractor(getService(), (ListLinkHandler) getLinkHandler(), getName()));
 
         return tabs;
@@ -178,7 +178,8 @@ public class YoutubeChannelExtractor extends ChannelExtractor {
 
         for (Object tab : tabs) {
             if (((JsonObject) tab).getObject("tabRenderer") != null) {
-                if (((JsonObject) tab).getObject("tabRenderer").getString("title").equals(tabName)) {
+                if (((JsonObject) tab).getObject("tabRenderer").getObject("endpoint").getObject("commandMetadata")
+                        .getObject("webCommandMetadata").getString("url").endsWith(tabName)) {
                     videoTab = ((JsonObject) tab).getObject("tabRenderer");
                     break;
                 }

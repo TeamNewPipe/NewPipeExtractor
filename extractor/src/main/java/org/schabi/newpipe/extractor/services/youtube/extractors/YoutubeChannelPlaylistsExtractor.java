@@ -39,7 +39,7 @@ public class YoutubeChannelPlaylistsExtractor extends ChannelTabExtractor {
 
         initialData = ajaxJson.getObject(1).getObject("response");
         YoutubeParsingHelper.defaultAlertsCheck(initialData);
-        playlistsTab = getTab("Playlists");
+        playlistsTab = getTab("playlists");
     }
 
     @Override
@@ -120,7 +120,8 @@ public class YoutubeChannelPlaylistsExtractor extends ChannelTabExtractor {
 
         for (Object tab : tabs) {
             if (((JsonObject) tab).getObject("tabRenderer") != null) {
-                if (((JsonObject) tab).getObject("tabRenderer").getString("title").equals(tabName)) {
+                if (((JsonObject) tab).getObject("tabRenderer").getObject("endpoint").getObject("commandMetadata")
+                        .getObject("webCommandMetadata").getString("url").endsWith(tabName)) {
                     videoTab = ((JsonObject) tab).getObject("tabRenderer");
                     break;
                 }
