@@ -60,7 +60,9 @@ public class YoutubeMixPlaylistExtractor extends PlaylistExtractor {
   @Override
   public String getThumbnailUrl() throws ParsingException {
     try {
-      final String videoId = playlistData.getArray("contents").getObject(0).getString("videoId");
+      final String videoId = playlistData.getArray("contents").getObject(0)
+          .getObject("playlistPanelVideoRenderer").getString("videoId");
+      if (videoId == null || videoId.isEmpty()) throw new ParsingException("");
       return getThumbnailUrlFromId(videoId);
     } catch (Exception e) {
       throw new ParsingException("Could not get playlist thumbnail", e);
