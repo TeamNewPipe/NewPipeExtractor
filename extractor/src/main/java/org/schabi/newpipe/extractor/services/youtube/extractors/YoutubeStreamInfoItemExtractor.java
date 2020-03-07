@@ -63,6 +63,15 @@ public class YoutubeStreamInfoItemExtractor implements StreamInfoItemExtractor {
             }
 
         } catch (Exception ignored) {}
+
+        try {
+            final String style = videoInfo.getArray("thumbnailOverlays").getObject(0)
+                    .getObject("thumbnailOverlayTimeStatusRenderer").getString("style");
+            if (style.equalsIgnoreCase("LIVE")) {
+                return StreamType.LIVE_STREAM;
+            }
+        } catch (Exception ignored) {}
+
         return StreamType.VIDEO_STREAM;
     }
 
