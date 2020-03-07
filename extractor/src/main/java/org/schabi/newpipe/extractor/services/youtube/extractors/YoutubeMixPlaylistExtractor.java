@@ -1,5 +1,6 @@
 package org.schabi.newpipe.extractor.services.youtube.extractors;
 
+import static org.schabi.newpipe.extractor.services.youtube.linkHandler.YoutubeParsingHelper.fixThumbnailUrl;
 import static org.schabi.newpipe.extractor.services.youtube.linkHandler.YoutubeParsingHelper.getJsonResponse;
 
 import com.grack.nanojson.JsonArray;
@@ -29,7 +30,7 @@ import org.schabi.newpipe.extractor.stream.StreamInfoItemsCollector;
 public class YoutubeMixPlaylistExtractor extends PlaylistExtractor {
 
   private JsonObject initialData;
-  private Document doc;
+  private JsonObject playlistData;
 
   public YoutubeMixPlaylistExtractor(StreamingService service, ListLinkHandler linkHandler) {
     super(service, linkHandler);
@@ -40,10 +41,7 @@ public class YoutubeMixPlaylistExtractor extends PlaylistExtractor {
     final String url = getUrl() + "&pbj=1";
     final JsonArray ajaxJson = getJsonResponse(url, getExtractorLocalization());
     initialData = ajaxJson.getObject(3).getObject("response");
-    JsonObject a = initialData.getObject("contents");
-    JsonObject b = initialData.getObject("contents").getObject("twoColumnWatchNextResults");
-    JsonObject c = initialData.getObject("contents");
-    JsonObject playlist = initialData.getObject("contents").getObject("twoColumnWatchNextResults").getObject("playlist").getObject("playlist");
+    playlistData = initialData.getObject("contents").getObject("twoColumnWatchNextResults").getObject("playlist").getObject("playlist");
     System.out.println();
   }
 
@@ -51,7 +49,9 @@ public class YoutubeMixPlaylistExtractor extends PlaylistExtractor {
   @Override
   public String getName() throws ParsingException {
     try {
-      return doc.select("div[class=\"playlist-info\"] h3[class=\"playlist-title\"]").first().text();
+      final String name = playlistData.getString("title");
+      if (name!= null) return name;
+      else return "";
     } catch (Exception e) {
       throw new ParsingException("Could not get playlist name", e);
     }
@@ -60,16 +60,8 @@ public class YoutubeMixPlaylistExtractor extends PlaylistExtractor {
   @Override
   public String getThumbnailUrl() throws ParsingException {
     try {
-      Element li = doc.select("ol[class*=\"playlist-videos-list\"] li").first();
-      String videoId = li.attr("data-video-id");
-      if (videoId != null && !videoId.isEmpty()) {
-        //higher quality
-        return getThumbnailUrlFromId(videoId);
-      } else {
-        //lower quality
-        return doc.select("ol[class*=\"playlist-videos-list\"] li").first()
-            .attr("data-thumbnail-url");
-      }
+      final String videoId = playlistData.getArray("contents").getObject(0).getString("videoId");
+      return getThumbnailUrlFromId(videoId);
     } catch (Exception e) {
       throw new ParsingException("Could not get playlist thumbnail", e);
     }
@@ -101,112 +93,66 @@ public class YoutubeMixPlaylistExtractor extends PlaylistExtractor {
   @Override
   public long getStreamCount() {
     // Auto-generated playlist always start with 25 videos and are endless
-    // But the html doesn't have a continuation url
-    return doc.select("ol[class*=\"playlist-videos-list\"] li").size();
+    return 25;
   }
 
   @Nonnull
   @Override
   public InfoItemsPage<StreamInfoItem> getInitialPage() {
     StreamInfoItemsCollector collector = new StreamInfoItemsCollector(getServiceId());
-    Element ol = doc.select("ol[class*=\"playlist-videos-list\"]").first();
-    collectStreamsFrom(collector, ol);
+    collectStreamsFrom(collector, playlistData.getArray("contents"));
     return new InfoItemsPage<>(collector, getNextPageUrl());
   }
 
   @Override
   public String getNextPageUrl() {
-    return "";
+    final JsonObject lastStream = ((JsonObject) playlistData.getArray("contents")
+        .get(playlistData.getArray("contents").size() - 1));
+    final String lastStreamId = lastStream.getObject("playlistPanelVideoRenderer")
+        .getString("videoId");
+    return "https://youtube.com" + lastStream.getObject("playlistPanelVideoRenderer").getObject("navigationEndpoint")
+        .getObject("commandMetadata").getObject("webCommandMetadata").getString("url") + "&pbj=1";
   }
 
   @Override
-  public InfoItemsPage<StreamInfoItem> getPage(final String pageUrl) {
-    //Continuations are not implemented
-    return null;
+  public InfoItemsPage<StreamInfoItem> getPage(final String pageUrl)
+      throws ExtractionException, IOException {
+    if (pageUrl == null || pageUrl.isEmpty()) {
+      throw new ExtractionException(new IllegalArgumentException("Page url is empty or null"));
+    }
+
+    StreamInfoItemsCollector collector = new StreamInfoItemsCollector(getServiceId());
+    final JsonArray ajaxJson = getJsonResponse(pageUrl, getExtractorLocalization());
+    playlistData =
+        ajaxJson.getObject(3).getObject("response").getObject("contents")
+            .getObject("twoColumnWatchNextResults").getObject("playlist")
+            .getObject("playlist");
+    final JsonArray streams = playlistData.getArray("contents");
+    //Because continuation requests are created with the last video of previous request as start
+    streams.remove(0);
+    collectStreamsFrom(collector, streams);
+    return new InfoItemsPage<>(collector, getNextPageUrl());
   }
 
   private void collectStreamsFrom(
       @Nonnull StreamInfoItemsCollector collector,
-      @Nullable Element element) {
+      @Nullable JsonArray streams) {
     collector.reset();
 
-    if (element == null) {
+    if (streams == null) {
       return;
     }
 
-    final LinkHandlerFactory streamLinkHandlerFactory = getService().getStreamLHFactory();
     final TimeAgoParser timeAgoParser = getTimeAgoParser();
 
-//    for (final Element li : element.children()) {
-//
-//      collector.commit(new YoutubeStreamInfoItemExtractor(li, timeAgoParser) {
-//
-//        @Override
-//        public boolean isAd() {
-//          return false;
-//        }
-//
-//        @Override
-//        public String getUrl() throws ParsingException {
-//          try {
-//            return streamLinkHandlerFactory.fromId(li.attr("data-video-id")).getUrl();
-//          } catch (Exception e) {
-//            throw new ParsingException("Could not get web page url for the video", e);
-//          }
-//        }
-//
-//        @Override
-//        public String getName() throws ParsingException {
-//          try {
-//            return li.attr("data-video-title");
-//          } catch (Exception e) {
-//            throw new ParsingException("Could not get name", e);
-//          }
-//        }
-//
-//        @Override
-//        public long getDuration() {
-//          //Not present in doc
-//          return 0;
-//        }
-//
-//        @Override
-//        public String getUploaderName() throws ParsingException {
-//          String uploaderName = li.attr("data-video-username");
-//          if (uploaderName == null || uploaderName.isEmpty()) {
-//            throw new ParsingException("Could not get uploader name");
-//          } else {
-//            return uploaderName;
-//          }
-//        }
-//
-//        @Override
-//        public String getUploaderUrl() {
-//          //Not present in doc
-//          return "";
-//        }
-//
-//        @Override
-//        public String getTextualUploadDate() {
-//          //Not present in doc
-//          return "";
-//        }
-//
-//        @Override
-//        public long getViewCount() {
-//          return -1;
-//        }
-//
-//        @Override
-//        public String getThumbnailUrl() throws ParsingException {
-//          try {
-//            return getThumbnailUrlFromId(streamLinkHandlerFactory.fromUrl(getUrl()).getId());
-//          } catch (Exception e) {
-//            throw new ParsingException("Could not get thumbnail url", e);
-//          }
-//        }
-//      });
-//    }
+    for (Object stream : streams) {
+      if (stream instanceof JsonObject) {
+        JsonObject streamInfo = ((JsonObject) stream).getObject("playlistPanelVideoRenderer");
+        if (streamInfo != null) {
+          collector.commit(new YoutubeStreamInfoItemExtractor(streamInfo, timeAgoParser));
+        }
+      }
+    }
   }
 
   private String getThumbnailUrlFromId(String videoId) {
