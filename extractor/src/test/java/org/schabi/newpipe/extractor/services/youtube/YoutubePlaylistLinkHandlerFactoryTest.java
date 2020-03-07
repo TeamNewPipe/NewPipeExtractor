@@ -105,4 +105,23 @@ public class YoutubePlaylistLinkHandlerFactoryTest {
         assertEquals("PLW5y1tjAOzI3orQNF1yGGVL5x-pR2K1dC", linkHandler.fromUrl("www.invidio.us/playlist?list=PLW5y1tjAOzI3orQNF1yGGVL5x-pR2K1dC").getId());
         assertEquals("PLz8YL4HVC87WJQDzVoY943URKQCsHS9XV", linkHandler.fromUrl("www.invidio.us/playlist?list=PLz8YL4HVC87WJQDzVoY943URKQCsHS9XV").getId());
     }
+
+    @Test
+    public void fromUrlIsMixVideo() throws Exception {
+        final String videoId = "_AzeUSL9lZc";
+        String url = "https://www.youtube.com/watch?v=" + videoId + "&list=RD" + videoId;
+        assertEquals(url, linkHandler.fromUrl(url).getUrl());
+
+        final String mixVideoId = "qHtzO49SDmk";
+        url = "https://www.youtube.com/watch?v=" + mixVideoId + "&list=RD" + videoId;
+        assertEquals(url, linkHandler.fromUrl(url).getUrl());
+    }
+
+    @Test
+    public void fromUrlIsMixPlaylist() throws Exception {
+        final String videoId = "_AzeUSL9lZc";
+        final String url = "https://www.youtube.com/watch?v=" + videoId + "&list=RD" + videoId;
+        assertEquals(url,
+            linkHandler.fromUrl("https://www.youtube.com/watch?list=RD" + videoId).getUrl());
+    }
 }
