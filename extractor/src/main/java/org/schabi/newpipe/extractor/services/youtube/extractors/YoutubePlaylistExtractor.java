@@ -217,8 +217,6 @@ public class YoutubePlaylistExtractor extends PlaylistExtractor {
     }
 
     private void collectStreamsFrom(StreamInfoItemsCollector collector, JsonArray videos) {
-        collector.reset();
-
         final TimeAgoParser timeAgoParser = getTimeAgoParser();
 
         for (Object video : videos) {

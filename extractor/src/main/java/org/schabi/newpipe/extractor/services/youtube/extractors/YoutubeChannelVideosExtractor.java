@@ -93,8 +93,6 @@ public class YoutubeChannelVideosExtractor extends ChannelTabExtractor {
     }
 
     private void collectStreamsFrom(MixedInfoItemsCollector collector, JsonArray videos) throws ParsingException {
-        collector.reset();
-
         final String uploaderUrl = getUrl();
         final TimeAgoParser timeAgoParser = getTimeAgoParser();
 

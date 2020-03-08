@@ -103,9 +103,7 @@ public class YoutubeChannelPlaylistsExtractor extends ChannelTabExtractor {
                 + "&itct=" + clickTrackingParams;
     }
 
-    private void collectPlaylistsFrom(MixedInfoItemsCollector collector, JsonArray playlists) throws ParsingException {
-        collector.reset();
-
+    private void collectPlaylistsFrom(MixedInfoItemsCollector collector, JsonArray playlists) {
         for (Object playlist : playlists) {
             if (((JsonObject) playlist).getObject("gridPlaylistRenderer") != null) {
                 collector.commit(new YoutubePlaylistInfoItemExtractor(((JsonObject) playlist).getObject("gridPlaylistRenderer")) {
