@@ -82,6 +82,9 @@ public class YoutubeChannelPlaylistsExtractor extends ChannelTabExtractor {
         JsonObject sectionListContinuation = ajaxJson.getObject(1).getObject("response")
                 .getObject("continuationContents").getObject("gridContinuation");
 
+        if (sectionListContinuation.getArray("items") == null)
+            return null;
+
         collectPlaylistsFrom(collector, sectionListContinuation.getArray("items"));
 
         return new InfoItemsPage<>(collector, getNextPageUrlFrom(sectionListContinuation.getArray("continuations")));

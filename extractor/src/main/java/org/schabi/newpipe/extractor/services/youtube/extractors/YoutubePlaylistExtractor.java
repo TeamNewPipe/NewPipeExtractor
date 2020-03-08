@@ -196,6 +196,9 @@ public class YoutubePlaylistExtractor extends PlaylistExtractor {
         JsonObject sectionListContinuation = ajaxJson.getObject(1).getObject("response")
                 .getObject("continuationContents").getObject("playlistVideoListContinuation");
 
+        if (sectionListContinuation.getArray("contents") == null)
+            return null;
+
         collectStreamsFrom(collector, sectionListContinuation.getArray("contents"));
 
         return new InfoItemsPage<>(collector, getNextPageUrlFrom(sectionListContinuation.getArray("continuations")));
