@@ -68,13 +68,13 @@ public class YoutubeChannelVideosExtractor extends ChannelTabExtractor {
         final JsonArray ajaxJson = getJsonResponse(pageUrl, getExtractorLocalization());
 
         if (ajaxJson.getObject(1).getObject("response").getObject("continuationContents") == null)
-            return null;
+            return new InfoItemsPage<>(collector, null);
 
         JsonObject sectionListContinuation = ajaxJson.getObject(1).getObject("response")
                 .getObject("continuationContents").getObject("gridContinuation");
 
         if (sectionListContinuation.getArray("items") == null)
-            return null;
+            return new InfoItemsPage<>(collector, null);
 
         collectStreamsFrom(collector, sectionListContinuation.getArray("items"));
 

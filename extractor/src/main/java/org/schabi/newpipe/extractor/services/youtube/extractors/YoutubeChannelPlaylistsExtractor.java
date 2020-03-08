@@ -59,6 +59,8 @@ public class YoutubeChannelPlaylistsExtractor extends ChannelTabExtractor {
     public InfoItemsPage<InfoItem> getInitialPage() throws ExtractionException {
         MixedInfoItemsCollector collector = new MixedInfoItemsCollector(getServiceId());
 
+        if (playlistsTab == null) return new InfoItemsPage<>(collector, null);
+
         JsonArray playlists = playlistsTab.getObject("content").getObject("sectionListRenderer").getArray("contents")
                 .getObject(0).getObject("itemSectionRenderer").getArray("contents").getObject(0)
                 .getObject("gridRenderer").getArray("items");
@@ -77,13 +79,13 @@ public class YoutubeChannelPlaylistsExtractor extends ChannelTabExtractor {
         final JsonArray ajaxJson = getJsonResponse(pageUrl, getExtractorLocalization());
 
         if (ajaxJson.getObject(1).getObject("response").getObject("continuationContents") == null)
-            return null;
+            return new InfoItemsPage<>(collector, null);
 
         JsonObject sectionListContinuation = ajaxJson.getObject(1).getObject("response")
                 .getObject("continuationContents").getObject("gridContinuation");
 
         if (sectionListContinuation.getArray("items") == null)
-            return null;
+            return new InfoItemsPage<>(collector, null);
 
         collectPlaylistsFrom(collector, sectionListContinuation.getArray("items"));
 
