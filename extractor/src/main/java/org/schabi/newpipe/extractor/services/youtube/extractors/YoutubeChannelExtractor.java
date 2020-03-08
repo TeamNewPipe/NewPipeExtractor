@@ -163,7 +163,7 @@ public class YoutubeChannelExtractor extends ChannelExtractor {
         List<ChannelTabExtractor> tabs = new ArrayList<>();
 
         if (getTab("videos") != null)
-            tabs.add(new YoutubeChannelVideosExtractor(getService(), (ListLinkHandler) getLinkHandler(), getTab("videos")));
+            tabs.add(new YoutubeChannelVideosExtractor(getService(), (ListLinkHandler) getLinkHandler(), getTab("videos"), getName()));
 
         if (getTab("playlists") != null)
             tabs.add(new YoutubeChannelPlaylistsExtractor(getService(), (ListLinkHandler) getLinkHandler(), getName()));

@@ -6,6 +6,8 @@ import org.schabi.newpipe.extractor.StreamingService;
 import org.schabi.newpipe.extractor.exceptions.ExtractionException;
 
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 
 /*
  * Created by Christian Schabesberger on 31.07.16.
@@ -42,7 +44,7 @@ public class ChannelInfo extends Info {
         return getInfo(extractor);
     }
 
-    public static ChannelInfo getInfo(ChannelExtractor extractor) throws IOException, ExtractionException {
+    public static ChannelInfo getInfo(ChannelExtractor extractor) throws ExtractionException {
 
         final int serviceId = extractor.getServiceId();
         final String id = extractor.getId();
@@ -79,6 +81,18 @@ public class ChannelInfo extends Info {
             info.addError(e);
         }
 
+        List<ChannelTabInfo> tabs = new ArrayList<>();
+        for (ChannelTabExtractor tab : extractor.getTabs()) {
+            try {
+                tab.fetchPage();
+                ChannelTabInfo tabInfo = ChannelTabInfo.getInfo(tab);
+                tabs.add(tabInfo);
+            } catch (Exception e) {
+                info.addError(e);
+            }
+        }
+        info.setTabs(tabs);
+
         return info;
     }
 
@@ -88,6 +102,7 @@ public class ChannelInfo extends Info {
     private long subscriberCount = -1;
     private String description;
     private String[] donationLinks;
+    private List<ChannelTabInfo> tabs;
 
     public String getAvatarUrl() {
         return avatarUrl;
@@ -135,5 +150,13 @@ public class ChannelInfo extends Info {
 
     public void setDonationLinks(String[] donationLinks) {
         this.donationLinks = donationLinks;
+    }
+
+    public void setTabs(List<ChannelTabInfo> tabs) {
+        this.tabs = tabs;
+    }
+
+    public List<ChannelTabInfo> getTabs() {
+        return tabs;
     }
 }

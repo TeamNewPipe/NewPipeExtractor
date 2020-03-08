@@ -21,11 +21,13 @@ import static org.schabi.newpipe.extractor.services.youtube.linkHandler.YoutubeP
 
 public class YoutubeChannelVideosExtractor extends ChannelTabExtractor {
     private JsonObject videoTab;
+    private String channelName;
 
-    public YoutubeChannelVideosExtractor(StreamingService service, ListLinkHandler linkHandler, JsonObject videoTab) {
+    public YoutubeChannelVideosExtractor(StreamingService service, ListLinkHandler linkHandler, JsonObject videoTab, String channelName) {
         super(service, linkHandler);
 
         this.videoTab = videoTab;
+        this.channelName = channelName;
     }
 
     @Override
@@ -90,7 +92,6 @@ public class YoutubeChannelVideosExtractor extends ChannelTabExtractor {
     private void collectStreamsFrom(MixedInfoItemsCollector collector, JsonArray videos) throws ParsingException {
         collector.reset();
 
-        final String uploaderName = getName();
         final String uploaderUrl = getUrl();
         final TimeAgoParser timeAgoParser = getTimeAgoParser();
 
@@ -100,7 +101,7 @@ public class YoutubeChannelVideosExtractor extends ChannelTabExtractor {
                         ((JsonObject) video).getObject("gridVideoRenderer"), timeAgoParser) {
                     @Override
                     public String getUploaderName() {
-                        return uploaderName;
+                        return channelName;
                     }
 
                     @Override
