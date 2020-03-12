@@ -485,13 +485,26 @@ public class YoutubeParsingHelper {
      * @throws ContentNotAvailableException if an alert is detected
      */
     public static void defaultAlertsCheck(JsonObject initialData) throws ContentNotAvailableException {
-        final JsonArray alerts = initialData.getArray("alerts");
-        if (alerts != null && !alerts.isEmpty()) {
-            final JsonObject alertRenderer = alerts.getObject(0).getObject("alertRenderer");
-            final String alertText = alertRenderer.getObject("text").getString("simpleText");
-            final String alertType = alertRenderer.getString("type");
-            if (alertType.equalsIgnoreCase("ERROR")) {
-                throw new ContentNotAvailableException("Got error: \"" + alertText + "\"");
+        /* Should ignore this
+        Get high-quality audio, gapless playback and personalised music recommendations.
+         */
+        if (initialData.has("alerts")) {
+            final JsonArray alerts = initialData.getArray("alerts");
+            if (!alerts.isEmpty() && alerts.has(0)) {
+                final JsonObject alertRendererHolder = alerts.getObject(0);
+                if (alertRendererHolder.has("alertRenderer")){
+                    final JsonObject alertRenderer = alertRendererHolder.getObject("alertRenderer");
+
+                    String alertText = "Failed To Generate Error Text";
+                    String alertType = "Failed To Generate Error Type";
+                    try {
+                        alertText = alertRenderer.getObject("text").getString("simpleText");
+                        alertType = alertRenderer.getString("type");
+                    } catch (Exception ignored) {}
+                    if (alertType.equalsIgnoreCase("ERROR")) {
+                        throw new ContentNotAvailableException("Got error: \"" + alertText + "\"");
+                    }
+                }
             }
         }
     }
