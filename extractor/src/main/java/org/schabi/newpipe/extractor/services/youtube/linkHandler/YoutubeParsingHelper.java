@@ -495,8 +495,7 @@ public class YoutubeParsingHelper {
                 if (alertRendererHolder.has("alertRenderer")){
                     final JsonObject alertRenderer = alertRendererHolder.getObject("alertRenderer");
 
-                    String alertText = "Failed To Generate Error Text";
-                    String alertType = "Failed To Generate Error Type";
+                    String alertText, alertType;
                     try {
                         alertText = alertRenderer.getObject("text").getString("simpleText");
                         alertType = alertRenderer.getString("type");
