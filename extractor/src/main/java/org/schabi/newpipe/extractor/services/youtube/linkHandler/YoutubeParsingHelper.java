@@ -485,29 +485,28 @@ public class YoutubeParsingHelper {
      * @throws ContentNotAvailableException if an alert is detected
      */
     public static void defaultAlertsCheck(JsonObject initialData) throws ContentNotAvailableException {
-        /* Should ignore this alert type
+        /* Should ignore this alert text
         Get high-quality audio, gapless playback and personalised music recommendations.
-         */
+        */
 
         try {
-            System.out.println("Getting alert renderer");
+            //System.out.println("Getting alert renderer");
             final JsonObject alertRenderer = initialData.getArray("alerts").getObject(0).getObject("alertRenderer");
-            System.out.println("Getting alert type");
-            final String alertType = alertRenderer.getString("type");
+            //System.out.println("Getting alert type");
+            final String alertType = alertRenderer.getString("type"); // Often Fails Here With Youtube-Music
 
             if (alertType.equalsIgnoreCase("ERROR")) {
                 try {
-                    //final String alertText = alertRenderer.getObject("text").getString("simpleText");
                     throw new ContentNotAvailableException("Got alert error: \"" + alertRenderer.getObject("text").getString("simpleText") + "\"");
                 } catch (Exception ignored) {
                     throw new ContentNotAvailableException("Got unknown alert error");
                 }
             } else {
-                System.out.println("Non Error Alert Caught, and ignored.");
+                //System.out.println("Non Error Alert Caught, and ignored.");
             }
 
         } catch (Exception ignored) {
-            System.out.println("Failed to parse alert.");
+            //System.out.println("Failed to parse alert.");
         }
 
     }
