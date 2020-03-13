@@ -499,7 +499,10 @@ public class YoutubeParsingHelper {
                     try {
                         alertText = alertRenderer.getObject("text").getString("simpleText");
                         alertType = alertRenderer.getString("type");
-                    } catch (Exception ignored) {}
+                    } catch (Exception ignored) {
+                        alertText = null;
+                        alertType = null;
+                    }
                     if (alertType.equalsIgnoreCase("ERROR")) {
                         if (alertText == null || alertText.isEmpty())
                             throw new ContentNotAvailableException("Got unknown alert error");
