@@ -488,29 +488,20 @@ public class YoutubeParsingHelper {
         /* Should ignore this alert type
         Get high-quality audio, gapless playback and personalised music recommendations.
          */
-        if (initialData.has("alerts")) {
-            final JsonArray alerts = initialData.getArray("alerts");
-            if (!alerts.isEmpty() && alerts.has(0)) {
-                final JsonObject alertRendererHolder = alerts.getObject(0);
-                if (alertRendererHolder.has("alertRenderer")){
-                    final JsonObject alertRenderer = alertRendererHolder.getObject("alertRenderer");
+        
+        try {
+            final JsonObject alertRenderer = initialData.getArray("alerts").getObject(0).getObject("alertRenderer");
+            final String alertText = alertRenderer.getObject("text").getString("simpleText");
+            final String alertType = alertRenderer.getString("type");
 
-                    String alertText, alertType;
-                    try {
-                        alertText = alertRenderer.getObject("text").getString("simpleText");
-                        alertType = alertRenderer.getString("type");
-                    } catch (Exception ignored) {
-                        alertText = null;
-                        alertType = null;
-                    }
-                    if (alertType.equalsIgnoreCase("ERROR")) {
-                        if (alertText == null || alertText.isEmpty())
-                            throw new ContentNotAvailableException("Got unknown alert error");
-                        else
-                            throw new ContentNotAvailableException("Got alert error: \"" + alertText + "\"");
-                    }
-                }
+            if (alertType.equalsIgnoreCase("ERROR")) {
+                if (alertText == null || alertText.isEmpty())
+                    throw new ContentNotAvailableException("Got unknown alert error");
+                else
+                    throw new ContentNotAvailableException("Got alert error: \"" + alertText + "\"");
             }
-        }
+
+        } catch (Exception ignored) {}
+
     }
 }
