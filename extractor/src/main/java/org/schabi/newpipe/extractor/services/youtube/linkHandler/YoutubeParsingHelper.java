@@ -493,9 +493,7 @@ public class YoutubeParsingHelper {
             //System.out.println("Getting alert renderer");
             final JsonObject alertRenderer = initialData.getArray("alerts").getObject(0).getObject("alertRenderer");
             //System.out.println("Getting alert type");
-            final String alertType = alertRenderer.getString("type"); // Often Fails Here With Youtube-Music
-
-            if (alertType.equalsIgnoreCase("ERROR")) {
+            if (alertRenderer.getString("type").equalsIgnoreCase("ERROR")) { // Often Fails Here With Youtube-Music
                 try {
                     throw new ContentNotAvailableException("Got alert error: \"" + alertRenderer.getObject("text").getString("simpleText") + "\"");
                 } catch (Exception ignored) {
