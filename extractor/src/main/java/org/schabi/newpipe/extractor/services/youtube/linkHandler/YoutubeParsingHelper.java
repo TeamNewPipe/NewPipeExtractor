@@ -500,10 +500,12 @@ public class YoutubeParsingHelper {
                 } catch (Exception ignored) {
                     throw new ContentNotAvailableException("Got unknown alert error");
                 }
+            } else {
+                System.out.println("Non Error Alert Caught, and ignored.");
             }
 
         } catch (Exception ignored) {
-            System.out.println("Failed to parse alert. Could be Youtube-Music Page.");
+            System.out.println("Failed to parse alert.");
         }
 
     }
