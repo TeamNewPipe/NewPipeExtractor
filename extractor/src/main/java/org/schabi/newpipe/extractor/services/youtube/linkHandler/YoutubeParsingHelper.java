@@ -490,7 +490,9 @@ public class YoutubeParsingHelper {
          */
 
         try {
+            System.out.println("Getting alert renderer");
             final JsonObject alertRenderer = initialData.getArray("alerts").getObject(0).getObject("alertRenderer");
+            System.out.println("Getting alert type");
             final String alertType = alertRenderer.getString("type");
 
             if (alertType.equalsIgnoreCase("ERROR")) {
