@@ -501,7 +501,10 @@ public class YoutubeParsingHelper {
                         alertType = alertRenderer.getString("type");
                     } catch (Exception ignored) {}
                     if (alertType.equalsIgnoreCase("ERROR")) {
-                        throw new ContentNotAvailableException("Got error: \"" + alertText + "\"");
+                        if (alertText == null || alertText.isEmpty())
+                            throw new ContentNotAvailableException("Got unknown alert error");
+                        else
+                            throw new ContentNotAvailableException("Got alert error: \"" + alertText + "\"");
                     }
                 }
             }
