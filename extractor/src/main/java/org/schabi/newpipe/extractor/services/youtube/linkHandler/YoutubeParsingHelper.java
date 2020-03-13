@@ -485,7 +485,7 @@ public class YoutubeParsingHelper {
      * @throws ContentNotAvailableException if an alert is detected
      */
     public static void defaultAlertsCheck(JsonObject initialData) throws ContentNotAvailableException {
-        /* Should ignore this
+        /* Should ignore this alert type
         Get high-quality audio, gapless playback and personalised music recommendations.
          */
         if (initialData.has("alerts")) {
