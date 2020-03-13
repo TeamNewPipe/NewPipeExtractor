@@ -488,20 +488,23 @@ public class YoutubeParsingHelper {
         /* Should ignore this alert type
         Get high-quality audio, gapless playback and personalised music recommendations.
          */
-        
+
         try {
             final JsonObject alertRenderer = initialData.getArray("alerts").getObject(0).getObject("alertRenderer");
-            final String alertText = alertRenderer.getObject("text").getString("simpleText");
             final String alertType = alertRenderer.getString("type");
 
             if (alertType.equalsIgnoreCase("ERROR")) {
-                if (alertText == null || alertText.isEmpty())
+                try {
+                    //final String alertText = alertRenderer.getObject("text").getString("simpleText");
+                    throw new ContentNotAvailableException("Got alert error: \"" + alertRenderer.getObject("text").getString("simpleText") + "\"");
+                } catch (Exception ignored) {
                     throw new ContentNotAvailableException("Got unknown alert error");
-                else
-                    throw new ContentNotAvailableException("Got alert error: \"" + alertText + "\"");
+                }
             }
 
-        } catch (Exception ignored) {}
+        } catch (Exception ignored) {
+            System.out.println("Failed to parse alert. Could be Youtube-Music Page.");
+        }
 
     }
 }
