@@ -488,16 +488,23 @@ public class YoutubeParsingHelper {
         /* Should ignore this alert text
         Get high-quality audio, gapless playback and personalised music recommendations.
         */
+        /*
+        Possibilities:
+        No alerts,
+        alerts with no errors,
+        errors with no text,
+        errors with text
+         */
 
         try {
             //System.out.println("Getting alert renderer");
-            final JsonObject alertRenderer = initialData.getArray("alerts").getObject(0).getObject("alertRenderer");
+            final JsonObject alertRenderer = initialData.getArray("alerts").getObject(0).getObject("alertRenderer"); // Exits here if No Alerts
             //System.out.println("Getting alert type");
-            if (alertRenderer.getString("type").equalsIgnoreCase("ERROR")) { // Often Fails Here With Youtube-Music
+            if (alertRenderer.getString("type").equalsIgnoreCase("ERROR")) { // Often exits here With Youtube-Music // Exits here if no errors
                 try {
-                    throw new ContentNotAvailableException("Got alert error: \"" + alertRenderer.getObject("text").getString("simpleText") + "\"");
+                    throw new ContentNotAvailableException("Got alert error: \"" + alertRenderer.getObject("text").getString("simpleText") + "\""); // Finishes here if errors have text
                 } catch (Exception ignored) {
-                    throw new ContentNotAvailableException("Got unknown alert error");
+                    throw new ContentNotAvailableException("Got unknown alert error"); // Finishes here if errors have no text
                 }
             } else {
                 //System.out.println("Non Error Alert Caught, and ignored.");
