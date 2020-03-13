@@ -7,11 +7,14 @@ import org.schabi.newpipe.DownloaderTestImpl;
 import org.schabi.newpipe.extractor.NewPipe;
 import org.schabi.newpipe.extractor.exceptions.ParsingException;
 import org.schabi.newpipe.extractor.services.media_ccc.extractors.MediaCCCStreamExtractor;
+import org.schabi.newpipe.extractor.stream.AudioStream;
+import org.schabi.newpipe.extractor.stream.VideoStream;
 import org.schabi.newpipe.extractor.utils.UtilsTest;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
+import java.util.List;
 
 import static java.util.Objects.requireNonNull;
 import static junit.framework.TestCase.assertEquals;
@@ -86,12 +89,20 @@ public class MediaCCCStreamExtractorTest {
 
         @Test
         public void testVideoStreams() throws Exception {
-            assertEquals(4, extractor.getVideoStreams().size());
+            List<VideoStream> videoStreamList = extractor.getVideoStreams();
+            assertEquals(4, videoStreamList.size());
+            for (VideoStream stream : videoStreamList) {
+                assertIsSecureUrl(stream.getUrl());
+            }
         }
 
         @Test
         public void testAudioStreams() throws Exception {
-            assertEquals(2, extractor.getAudioStreams().size());
+            List<AudioStream> audioStreamList = extractor.getAudioStreams();
+            assertEquals(2, audioStreamList.size());
+            for (AudioStream stream : audioStreamList) {
+                assertIsSecureUrl(stream.getUrl());
+            }
         }
 
         @Test
@@ -164,12 +175,20 @@ public class MediaCCCStreamExtractorTest {
 
         @Test
         public void testVideoStreams() throws Exception {
-            assertEquals(8, extractor.getVideoStreams().size());
+            List<VideoStream> videoStreamList = extractor.getVideoStreams();
+            assertEquals(8, videoStreamList.size());
+            for (VideoStream stream : videoStreamList) {
+                assertIsSecureUrl(stream.getUrl());
+            }
         }
 
         @Test
         public void testAudioStreams() throws Exception {
-            assertEquals(2, extractor.getAudioStreams().size());
+            List<AudioStream> audioStreamList = extractor.getAudioStreams();
+            assertEquals(2, audioStreamList.size());
+            for (AudioStream stream : audioStreamList) {
+                assertIsSecureUrl(stream.getUrl());
+            }
         }
 
         @Test
