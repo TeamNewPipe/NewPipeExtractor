@@ -497,21 +497,19 @@ public class YoutubeParsingHelper {
          */
 
         try {
-            //System.out.println("Getting alert renderer");
             final JsonObject alertRenderer = initialData.getArray("alerts").getObject(0).getObject("alertRenderer"); // Exits here if No Alerts
-            //System.out.println("Getting alert type");
-            if (alertRenderer.getString("type").equalsIgnoreCase("ERROR")) { // Often exits here With Youtube-Music // Exits here if no errors
+            if (alertRenderer.getString("type").equalsIgnoreCase("ERROR")) { // Often exits here With Youtube-Music // Exits here if alert has no errors
                 try {
                     throw new ContentNotAvailableException("Got alert error: \"" + alertRenderer.getObject("text").getString("simpleText") + "\""); // Finishes here if errors have text
                 } catch (Exception ignored) {
                     throw new ContentNotAvailableException("Got unknown alert error"); // Finishes here if errors have no text
                 }
             } else {
-                //System.out.println("Non Error Alert Caught, and ignored.");
+                // This condition will only be reached if we encounter an alert that has a type, but is not an error
             }
 
         } catch (Exception ignored) {
-            //System.out.println("Failed to parse alert.");
+            // We will frequently reach this condition when alerts are found with no type (eg. youtube music ad text)
         }
 
     }
