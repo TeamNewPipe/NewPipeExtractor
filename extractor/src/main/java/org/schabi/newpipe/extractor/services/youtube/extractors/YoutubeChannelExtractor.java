@@ -2,7 +2,6 @@ package org.schabi.newpipe.extractor.services.youtube.extractors;
 
 import com.grack.nanojson.JsonArray;
 import com.grack.nanojson.JsonObject;
-
 import org.schabi.newpipe.extractor.StreamingService;
 import org.schabi.newpipe.extractor.channel.ChannelExtractor;
 import org.schabi.newpipe.extractor.downloader.Downloader;
@@ -16,13 +15,11 @@ import org.schabi.newpipe.extractor.stream.StreamInfoItem;
 import org.schabi.newpipe.extractor.stream.StreamInfoItemsCollector;
 import org.schabi.newpipe.extractor.utils.Utils;
 
+import javax.annotation.Nonnull;
 import java.io.IOException;
 
-import javax.annotation.Nonnull;
-
-import static org.schabi.newpipe.extractor.services.youtube.linkHandler.YoutubeParsingHelper.fixThumbnailUrl;
-import static org.schabi.newpipe.extractor.services.youtube.linkHandler.YoutubeParsingHelper.getJsonResponse;
-import static org.schabi.newpipe.extractor.services.youtube.linkHandler.YoutubeParsingHelper.getTextFromObject;
+import static org.schabi.newpipe.extractor.services.youtube.linkHandler.YoutubeParsingHelper.*;
+import static org.schabi.newpipe.extractor.utils.JsonUtils.*;
 
 /*
  * Created by Christian Schabesberger on 25.07.16.
@@ -55,9 +52,45 @@ public class YoutubeChannelExtractor extends ChannelExtractor {
 
     @Override
     public void onFetchPage(@Nonnull Downloader downloader) throws IOException, ExtractionException {
-        final String url = super.getUrl() + "/videos?pbj=1&view=0&flow=grid";
+        String url = super.getUrl() + "/videos?pbj=1&view=0&flow=grid";
+        JsonArray ajaxJson = null;
 
-        final JsonArray ajaxJson = getJsonResponse(url, getExtractorLocalization());
+        int level = 0;
+        while (level < 3) {
+            final JsonArray jsonResponse = getJsonResponse(url, getExtractorLocalization());
+
+            final JsonObject endpoint = jsonResponse.getObject(1, EMPTY_OBJECT)
+                    .getObject("response", EMPTY_OBJECT).getArray("onResponseReceivedActions", EMPTY_ARRAY)
+                    .getObject(0, EMPTY_OBJECT).getObject("navigateAction", EMPTY_OBJECT)
+                    .getObject("endpoint", EMPTY_OBJECT);
+
+            final String webPageType = endpoint
+                    .getObject("commandMetadata", EMPTY_OBJECT)
+                    .getObject("webCommandMetadata", EMPTY_OBJECT)
+                    .getString("webPageType", EMPTY_STRING);
+
+            final String browseId = endpoint
+                    .getObject("browseEndpoint", EMPTY_OBJECT)
+                    .getString("browseId", EMPTY_STRING);
+
+            if (webPageType.equalsIgnoreCase("WEB_PAGE_TYPE_BROWSE") && !browseId.isEmpty()) {
+
+                if (!browseId.startsWith("UC")) {
+                    throw new ExtractionException("Redirected id is not pointing to a channel");
+                }
+
+                url = "https://www.youtube.com/channel/" + browseId + "/videos?pbj=1&view=0&flow=grid";
+                level++;
+            } else {
+                ajaxJson = jsonResponse;
+                break;
+            }
+        }
+
+        if (ajaxJson == null) {
+            throw new ExtractionException("Could not fetch initial JSON data");
+        }
+
         initialData = ajaxJson.getObject(1).getObject("response");
         YoutubeParsingHelper.defaultAlertsCheck(initialData);
     }

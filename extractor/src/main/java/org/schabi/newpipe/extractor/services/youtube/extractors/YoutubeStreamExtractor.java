@@ -621,7 +621,7 @@ public class YoutubeStreamExtractor extends StreamExtractor {
 
         playerResponse = getPlayerResponse();
 
-        final JsonObject playabilityStatus = playerResponse.getObject("playabilityStatus", JsonUtils.DEFAULT_EMPTY);
+        final JsonObject playabilityStatus = playerResponse.getObject("playabilityStatus", JsonUtils.EMPTY_OBJECT);
         final String status = playabilityStatus.getString("status");
         // If status exist, and is not "OK", throw a ContentNotAvailableException with the reason.
         if (status != null && !status.toLowerCase().equals("ok")) {
