@@ -46,6 +46,18 @@ public class YoutubeChannelExtractor extends ChannelExtractor {
     private JsonObject initialData;
     private JsonObject videoTab;
 
+    /**
+     * Some channels have response redirects and the only way to reliably get the id is by saving it.
+     *<p>
+     * "Movies & Shows":
+     * <pre>
+     * UCuJcl0Ju-gPDoksRjK1ya-w ┐
+     * UChBfWrfBXL9wS6tQtgjt_OQ ├ UClgRkhTL3_hImCAmdLfDE4g
+     * UCok7UTQQEP1Rsctxiv3gwSQ ┘
+     * </pre>
+     */
+    private String redirectedChannelId;
+
     public YoutubeChannelExtractor(StreamingService service, ListLinkHandler linkHandler) {
         super(service, linkHandler);
     }
@@ -80,6 +92,7 @@ public class YoutubeChannelExtractor extends ChannelExtractor {
                 }
 
                 url = "https://www.youtube.com/channel/" + browseId + "/videos?pbj=1&view=0&flow=grid";
+                redirectedChannelId = browseId;
                 level++;
             } else {
                 ajaxJson = jsonResponse;
@@ -117,10 +130,17 @@ public class YoutubeChannelExtractor extends ChannelExtractor {
     @Nonnull
     @Override
     public String getId() throws ParsingException {
-        try {
-            return initialData.getObject("header").getObject("c4TabbedHeaderRenderer").getString("channelId");
-        } catch (Exception e) {
-            throw new ParsingException("Could not get channel id", e);
+        final String channelId = initialData
+            .getObject("header", EMPTY_OBJECT)
+            .getObject("c4TabbedHeaderRenderer", EMPTY_OBJECT)
+            .getString("channelId", EMPTY_STRING);
+
+        if (!channelId.isEmpty()) {
+            return channelId;
+        } else if (redirectedChannelId != null && !redirectedChannelId.isEmpty()) {
+            return redirectedChannelId;
+        } else {
+            throw new ParsingException("Could not get channel id");
         }
     }
 
