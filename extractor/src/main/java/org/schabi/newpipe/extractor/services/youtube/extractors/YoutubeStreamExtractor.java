@@ -523,10 +523,18 @@ public class YoutubeStreamExtractor extends StreamExtractor {
         if (getAgeLimit() != NO_AGE_LIMIT) return null;
 
         try {
-            final JsonObject videoInfo = initialData.getObject("contents").getObject("twoColumnWatchNextResults")
-                    .getObject("secondaryResults").getObject("secondaryResults").getArray("results")
-                    .getObject(0).getObject("compactAutoplayRenderer").getArray("contents")
-                    .getObject(0).getObject("compactVideoRenderer");
+            final JsonObject firstWatchNextItem = initialData.getObject("contents")
+                    .getObject("twoColumnWatchNextResults").getObject("secondaryResults")
+                    .getObject("secondaryResults").getArray("results").getObject(0);
+
+            if (!firstWatchNextItem.has("compactAutoplayRenderer")) {
+                // there is no "next" stream
+                return null;
+            }
+
+            final JsonObject videoInfo = firstWatchNextItem.getObject("compactAutoplayRenderer")
+                    .getArray("contents").getObject(0).getObject("compactVideoRenderer");
+
             final TimeAgoParser timeAgoParser = getTimeAgoParser();
             StreamInfoItemsCollector collector = new StreamInfoItemsCollector(getServiceId());
 
