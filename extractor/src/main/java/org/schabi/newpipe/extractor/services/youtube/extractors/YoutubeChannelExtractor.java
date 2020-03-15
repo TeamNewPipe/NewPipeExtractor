@@ -162,16 +162,13 @@ public class YoutubeChannelExtractor extends ChannelExtractor {
     public List<ChannelTabExtractor> getTabs() throws ParsingException {
         List<ChannelTabExtractor> tabs = new ArrayList<>();
 
-        if (getTab("videos") != null)
-            tabs.add(new YoutubeChannelVideosExtractor(getService(), (ListLinkHandler) getLinkHandler(), getTab("videos"), getName()));
-
-        if (getTab("playlists") != null)
-            tabs.add(new YoutubeChannelPlaylistsExtractor(getService(), (ListLinkHandler) getLinkHandler(), getName()));
+        tabs.add(new YoutubeChannelVideosExtractor(getService(), (ListLinkHandler) getLinkHandler(), getTab("videos"), getName()));
+        tabs.add(new YoutubeChannelPlaylistsExtractor(getService(), (ListLinkHandler) getLinkHandler(), getName()));
 
         return tabs;
     }
 
-    private JsonObject getTab(String tabName) throws ParsingException {
+    private JsonObject getTab(String tabName) {
         JsonArray tabs = initialData.getObject("contents").getObject("twoColumnBrowseResultsRenderer")
                 .getArray("tabs");
         JsonObject videoTab = null;

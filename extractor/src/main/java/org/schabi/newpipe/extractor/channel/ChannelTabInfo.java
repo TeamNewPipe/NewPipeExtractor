@@ -3,11 +3,13 @@ package org.schabi.newpipe.extractor.channel;
 import org.schabi.newpipe.extractor.InfoItem;
 import org.schabi.newpipe.extractor.ListExtractor;
 import org.schabi.newpipe.extractor.ListInfo;
+import org.schabi.newpipe.extractor.NewPipe;
 import org.schabi.newpipe.extractor.exceptions.ExtractionException;
 import org.schabi.newpipe.extractor.linkhandler.ListLinkHandler;
 import org.schabi.newpipe.extractor.utils.ExtractorHelper;
 
 import java.io.IOException;
+import java.util.List;
 
 public class ChannelTabInfo extends ListInfo<InfoItem> {
     public ChannelTabInfo(int serviceId, String id, String url, String originalUrl, String name, ListLinkHandler listLinkHandler) {
@@ -15,6 +17,18 @@ public class ChannelTabInfo extends ListInfo<InfoItem> {
     }
 
     public static ListExtractor.InfoItemsPage<InfoItem> getMoreItems(ChannelTabInfo tabInfo, String pageUrl) throws IOException, ExtractionException {
+        if (tabInfo.getChannelTabExtractor() == null) {
+            ChannelExtractor channelExtractor = NewPipe.getServiceByUrl(tabInfo.getUrl()).getChannelExtractor(tabInfo.getUrl());
+            channelExtractor.fetchPage();
+
+            List<ChannelTabExtractor> channelTabExtractors = channelExtractor.getTabs();
+            for (ChannelTabExtractor channelTabExtractor : channelTabExtractors) {
+                if (channelTabExtractor.getName().equals(tabInfo.getName())) {
+                    tabInfo.setChannelTabExtractor(channelTabExtractor);
+                }
+            }
+        }
+
         return tabInfo.getChannelTabExtractor().getPage(pageUrl);
     }
 

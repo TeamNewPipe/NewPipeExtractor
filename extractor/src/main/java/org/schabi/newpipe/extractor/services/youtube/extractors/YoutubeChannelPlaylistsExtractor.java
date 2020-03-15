@@ -56,7 +56,7 @@ public class YoutubeChannelPlaylistsExtractor extends ChannelTabExtractor {
 
     @Nonnull
     @Override
-    public InfoItemsPage<InfoItem> getInitialPage() throws ExtractionException {
+    public InfoItemsPage<InfoItem> getInitialPage() {
         MixedInfoItemsCollector collector = new MixedInfoItemsCollector(getServiceId());
 
         if (playlistsTab == null) return new InfoItemsPage<>(collector, null);

@@ -50,6 +50,8 @@ public class YoutubeChannelVideosExtractor extends ChannelTabExtractor {
     public InfoItemsPage<InfoItem> getInitialPage() throws ExtractionException {
         MixedInfoItemsCollector collector = new MixedInfoItemsCollector(getServiceId());
 
+        if (videoTab == null) return new InfoItemsPage<>(collector, null);
+
         JsonArray videos = videoTab.getObject("content").getObject("sectionListRenderer").getArray("contents")
                 .getObject(0).getObject("itemSectionRenderer").getArray("contents").getObject(0)
                 .getObject("gridRenderer").getArray("items");
