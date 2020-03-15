@@ -202,7 +202,12 @@ public class YoutubeStreamLinkHandlerFactory extends LinkHandlerFactory {
                     return assertIsID(id);
                 }
 
-                break;
+                String viewQueryValue = Utils.getQueryValue(url, "v");
+                if (viewQueryValue != null) {
+                    return assertIsID(viewQueryValue);
+                }
+
+                return assertIsID(path);
             }
         }
 
