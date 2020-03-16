@@ -77,6 +77,7 @@ public class SoundcloudParsingHelper {
         try {
             SoundcloudStreamExtractor e = (SoundcloudStreamExtractor) SoundCloud
                     .getStreamExtractor("https://soundcloud.com/liluzivert/do-what-i-want-produced-by-maaly-raw-don-cannon");
+            e.fetchPage();
             return e.getAudioStreams().size() >= 1;
         } catch (Exception ignored) {
             // No need to throw an exception here. If something went wrong, the client_id is wrong
