@@ -42,7 +42,7 @@ public class SoundcloudParsingHelper {
 
         Downloader dl = NewPipe.getDownloader();
         clientId = HARDCODED_CLIENT_ID;
-        if (checkIfHardcodedClientIdIsValid(dl)) {
+        if (checkIfHardcodedClientIdIsValid()) {
             return clientId;
         }
 
@@ -73,11 +73,11 @@ public class SoundcloudParsingHelper {
         throw new ExtractionException("Couldn't extract client id");
     }
 
-    static boolean checkIfHardcodedClientIdIsValid(Downloader dl) {
-        final String apiUrl = "https://api.soundcloud.com/connect?client_id=" + HARDCODED_CLIENT_ID;
+    static boolean checkIfHardcodedClientIdIsValid() {
         try {
-            // Should return 200 to indicate that the client id is valid, a 401 is returned otherwise.
-            return dl.head(apiUrl).responseCode() == 200;
+            SoundcloudStreamExtractor e = (SoundcloudStreamExtractor) SoundCloud
+                    .getStreamExtractor("https://soundcloud.com/liluzivert/do-what-i-want-produced-by-maaly-raw-don-cannon");
+            return e.getAudioStreams().size() >= 1;
         } catch (Exception ignored) {
             // No need to throw an exception here. If something went wrong, the client_id is wrong
             return false;

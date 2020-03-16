@@ -17,7 +17,7 @@ public class SoundcloudParsingHelperTest {
     @Test
     public void assertThatHardcodedClientIdIsValid() throws Exception {
         assertTrue("Hardcoded client id is not valid anymore",
-                SoundcloudParsingHelper.checkIfHardcodedClientIdIsValid(DownloaderTestImpl.getInstance()));
+                SoundcloudParsingHelper.checkIfHardcodedClientIdIsValid());
     }
 
     @Test
