@@ -66,6 +66,7 @@ public class SoundcloudPlaylistExtractor extends PlaylistExtractor {
         return playlist.getString("title");
     }
 
+    @Nullable
     @Override
     public String getThumbnailUrl() {
         String artworkUrl = playlist.getString("artwork_url");
@@ -75,21 +76,20 @@ public class SoundcloudPlaylistExtractor extends PlaylistExtractor {
             // if it also fails, return null
             try {
                 final InfoItemsPage<StreamInfoItem> infoItems = getInitialPage();
-                if (infoItems.getItems().isEmpty()) return null;
 
                 for (StreamInfoItem item : infoItems.getItems()) {
-                    final String thumbnailUrl = item.getThumbnailUrl();
-                    if (thumbnailUrl == null || thumbnailUrl.isEmpty()) continue;
-
-                    String thumbnailUrlBetterResolution = thumbnailUrl.replace("large.jpg", "crop.jpg");
-                    return thumbnailUrlBetterResolution;
+                    artworkUrl = item.getThumbnailUrl();
+                    if (artworkUrl != null && !artworkUrl.isEmpty()) break;
                 }
             } catch (Exception ignored) {
             }
+
+            if (artworkUrl == null) {
+                return null;
+            }
         }
 
-        String artworkUrlBetterResolution = artworkUrl.replace("large.jpg", "crop.jpg");
-        return artworkUrlBetterResolution;
+        return artworkUrl.replace("large.jpg", "crop.jpg");
     }
 
     @Override
