@@ -279,6 +279,8 @@ public class YoutubeStreamExtractor extends StreamExtractor {
             if (views == null) throw new ParsingException("Could not get view count");
         }
 
+        if (views.toLowerCase().contains("no views")) return 0;
+
         return Long.parseLong(Utils.removeNonDigitCharacters(views));
     }
 
