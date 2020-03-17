@@ -145,7 +145,7 @@ public class SoundcloudPlaylistExtractor extends PlaylistExtractor {
     }
 
     private void computeAnotherNextPageUrl() throws IOException, ExtractionException {
-        if (nextTrackIdsIndex >= nextTrackIds.size()) {
+        if (nextTrackIds == null || nextTrackIdsIndex >= nextTrackIds.size()) {
             nextPageUrl = ""; // there are no more tracks
             return;
         }
@@ -160,6 +160,7 @@ public class SoundcloudPlaylistExtractor extends PlaylistExtractor {
             urlBuilder.append(","); // a , at the end is ok
         }
 
+        nextTrackIdsIndex = upperIndex;
         nextPageUrl = urlBuilder.toString();
     }
 

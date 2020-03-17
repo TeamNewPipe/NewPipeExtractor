@@ -7,9 +7,12 @@ import org.junit.Test;
 import org.schabi.newpipe.DownloaderTestImpl;
 import org.schabi.newpipe.extractor.ListExtractor;
 import org.schabi.newpipe.extractor.NewPipe;
+import org.schabi.newpipe.extractor.exceptions.ExtractionException;
 import org.schabi.newpipe.extractor.playlist.PlaylistExtractor;
 import org.schabi.newpipe.extractor.services.BasePlaylistExtractorTest;
 import org.schabi.newpipe.extractor.stream.StreamInfoItem;
+
+import java.io.IOException;
 
 import static org.junit.Assert.*;
 import static org.schabi.newpipe.extractor.ExtractorAsserts.assertIsSecureUrl;
@@ -70,7 +73,9 @@ public class SoundcloudPlaylistExtractorTest {
         }
 
         @Test
-        public void testMoreRelatedItems() {
+        public void testMoreRelatedItems() throws Exception {
+            defaultTestMoreItems(extractor);
+
             try {
                 defaultTestMoreItems(extractor);
             } catch (Throwable ignored) {
