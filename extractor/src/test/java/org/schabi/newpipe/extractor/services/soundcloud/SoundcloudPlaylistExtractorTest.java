@@ -269,14 +269,11 @@ public class SoundcloudPlaylistExtractorTest {
         // ListExtractor
         //////////////////////////////////////////////////////////////////////////*/
 
-        @Ignore
         @Test
         public void testRelatedItems() throws Exception {
             defaultTestRelatedItems(extractor);
         }
 
-        //TODO: FUCK THIS: This triggers a 500 at sever
-        @Ignore
         @Test
         public void testMoreRelatedItems() throws Exception {
             ListExtractor.InfoItemsPage<StreamInfoItem> currentPage = defaultTestMoreItems(extractor);
@@ -291,7 +288,6 @@ public class SoundcloudPlaylistExtractorTest {
         // PlaylistExtractor
         //////////////////////////////////////////////////////////////////////////*/
 
-        @Ignore
         @Test
         public void testThumbnailUrl() {
             assertIsSecureUrl(extractor.getThumbnailUrl());
