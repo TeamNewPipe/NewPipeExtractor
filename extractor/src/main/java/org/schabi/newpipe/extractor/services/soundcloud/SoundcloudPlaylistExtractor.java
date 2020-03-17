@@ -141,8 +141,9 @@ public class SoundcloudPlaylistExtractor extends PlaylistExtractor {
             }
         }
 
+        nextPageUrlBuilder.setLength(nextPageUrlBuilder.length() - 1); // remove trailing ,
         nextPageUrl = nextPageUrlBuilder.toString();
-        if (nextPageUrl.endsWith("&ids=")) {
+        if (nextPageUrl.endsWith("&ids")) {
             // there are no other videos
             nextPageUrl = "";
         }
