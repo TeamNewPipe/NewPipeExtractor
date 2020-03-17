@@ -317,7 +317,7 @@ public class SoundcloudPlaylistExtractorTest {
 
         @Test
         public void testStreamCount() {
-            assertTrue("Error in the streams count", extractor.getStreamCount() >= 3900);
+            assertTrue("Stream count does not fit: " + extractor.getStreamCount(), extractor.getStreamCount() >= 370);
         }
     }
 }
