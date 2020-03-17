@@ -169,14 +169,14 @@ public class SoundcloudPlaylistExtractor extends PlaylistExtractor {
                 + "&ids=").length();
         final int lengthOfEveryStream = 11;
 
-        String currentPageUrl;
+        String currentPageUrl, nextUrl;
         int lengthMaxStreams = lengthFirstPartOfUrl + lengthOfEveryStream * streamsPerRequestedPage;
         if (pageUrl.length() <= lengthMaxStreams) {
             currentPageUrl = pageUrl; // fetch every remaining video, there are less than the max
-            nextPageUrl = ""; // afterwards the list is complete
+            nextUrl = ""; // afterwards the list is complete
         } else {
             currentPageUrl = pageUrl.substring(0, lengthMaxStreams);
-            nextPageUrl = pageUrl.substring(0, lengthFirstPartOfUrl) + pageUrl.substring(lengthMaxStreams);
+            nextUrl = pageUrl.substring(0, lengthFirstPartOfUrl) + pageUrl.substring(lengthMaxStreams);
         }
 
         StreamInfoItemsCollector collector = new StreamInfoItemsCollector(getServiceId());
@@ -193,6 +193,6 @@ public class SoundcloudPlaylistExtractor extends PlaylistExtractor {
             throw new ParsingException("Could not parse json response", e);
         }
 
-        return new InfoItemsPage<>(collector, nextPageUrl);
+        return new InfoItemsPage<>(collector, nextUrl);
     }
 }
