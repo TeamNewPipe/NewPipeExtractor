@@ -36,7 +36,7 @@ public class SoundcloudSubscriptionExtractor extends SubscriptionExtractor {
             throw new InvalidSourceException(e);
         }
 
-        String apiUrl = "https://api.soundcloud.com/users/" + id + "/followings"
+        String apiUrl = "https://api-v2.soundcloud.com/users/" + id + "/followings"
                 + "?client_id=" + SoundcloudParsingHelper.clientId()
                 + "&limit=200";
         ChannelInfoItemsCollector collector = new ChannelInfoItemsCollector(service.getServiceId());
