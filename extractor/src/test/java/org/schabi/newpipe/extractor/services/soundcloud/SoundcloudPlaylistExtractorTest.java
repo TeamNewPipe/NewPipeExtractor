@@ -234,6 +234,15 @@ public class SoundcloudPlaylistExtractorTest {
         public void testGetPageInNewExtractor() throws Exception {
             final PlaylistExtractor newExtractor = SoundCloud.getPlaylistExtractor(extractor.getUrl());
             defaultTestGetPageInNewExtractor(extractor, newExtractor);
+            String page1 = newExtractor.getNextPageUrl();
+            defaultTestMoreItems(newExtractor); // there has to be another page
+            String page2 = newExtractor.getNextPageUrl();
+            defaultTestMoreItems(newExtractor); // and another one
+            String page3 = newExtractor.getNextPageUrl();
+
+            assertNotEquals("Same pages", page1, page2);
+            assertNotEquals("Same pages", page2, page3);
+            assertNotEquals("Same pages", page3, page1);
         }
 
         /*//////////////////////////////////////////////////////////////////////////
