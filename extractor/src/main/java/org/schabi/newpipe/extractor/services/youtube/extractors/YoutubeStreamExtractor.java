@@ -278,8 +278,11 @@ public class YoutubeStreamExtractor extends StreamExtractor {
 
             if (views == null) throw new ParsingException("Could not get view count");
         }
-
-        return Long.parseLong(Utils.removeNonDigitCharacters(views));
+        try {
+            return Long.parseLong(Utils.removeNonDigitCharacters(views));
+        } catch (NumberFormatException nfe) {
+            throw new ParsingException("Could not parse \"" + views + "\" as a Long", nfe);
+        }
     }
 
     @Override
