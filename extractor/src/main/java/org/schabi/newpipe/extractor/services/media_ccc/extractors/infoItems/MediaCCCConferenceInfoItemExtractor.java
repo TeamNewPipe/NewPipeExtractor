@@ -1,6 +1,8 @@
 package org.schabi.newpipe.extractor.services.media_ccc.extractors.infoItems;
 
 import com.grack.nanojson.JsonObject;
+
+import org.schabi.newpipe.extractor.ListExtractor;
 import org.schabi.newpipe.extractor.channel.ChannelInfoItemExtractor;
 import org.schabi.newpipe.extractor.exceptions.ParsingException;
 
@@ -23,7 +25,7 @@ public class MediaCCCConferenceInfoItemExtractor implements ChannelInfoItemExtra
 
     @Override
     public long getStreamCount() {
-        return -1;
+        return ListExtractor.ITEM_COUNT_UNKNOWN;
     }
 
     @Override

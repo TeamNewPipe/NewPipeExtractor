@@ -93,6 +93,11 @@ public class YoutubeMixPlaylistExtractorTest {
         public void getStreamCount() throws Exception {
             assertEquals(ListExtractor.ITEM_COUNT_INFINITE, extractor.getStreamCount());
         }
+
+        @Test
+        public void getStreamCount() throws Exception {
+            assertEquals(ListExtractor.ITEM_COUNT_INFINITE, extractor.getStreamCount());
+        }
     }
 
     public static class MixWithIndex {
@@ -163,6 +168,11 @@ public class YoutubeMixPlaylistExtractorTest {
 
         @Test
         public void getStreamCount() {
+            assertEquals(ListExtractor.ITEM_COUNT_INFINITE, extractor.getStreamCount());
+        }
+
+        @Test
+        public void getStreamCount() throws Exception {
             assertEquals(ListExtractor.ITEM_COUNT_INFINITE, extractor.getStreamCount());
         }
     }
@@ -313,6 +323,11 @@ public class YoutubeMixPlaylistExtractorTest {
             InfoItemsPage<StreamInfoItem> streams = extractor.getPage(extractor.getNextPageUrl());
             assertFalse(streams.getItems().isEmpty());
             assertTrue(streams.hasNextPage());
+        }
+
+        @Test
+        public void getStreamCount() throws Exception {
+            assertEquals(ListExtractor.ITEM_COUNT_INFINITE, extractor.getStreamCount());
         }
 
         @Test

@@ -75,7 +75,13 @@ public class YoutubeServiceTest {
         assertTrue(extractor instanceof YoutubeMixPlaylistExtractor);
 
         extractor = YouTube.getPlaylistExtractor(
-            "https://www.youtube.com/watch?v=" + videoId + "&list=RD" + videoId);
+            "https://www.youtube.com/watch?v=" + videoId + "&list=RDMM" + videoId);
+        assertTrue(extractor instanceof YoutubeMixPlaylistExtractor);
+
+        final String mixVideoId = "qHtzO49SDmk";
+
+        extractor = YouTube.getPlaylistExtractor(
+            "https://www.youtube.com/watch?v=" + mixVideoId + "&list=RD" + videoId);
         assertTrue(extractor instanceof YoutubeMixPlaylistExtractor);
     }
 }
