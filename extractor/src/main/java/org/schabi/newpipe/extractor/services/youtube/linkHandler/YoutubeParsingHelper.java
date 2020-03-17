@@ -62,6 +62,8 @@ public class YoutubeParsingHelper {
     private static final String HARDCODED_CLIENT_VERSION = "2.20200214.04.00";
     private static String clientVersion;
 
+    private static String[] youtubeMusicKeys;
+
     private static final String FEED_BASE_CHANNEL_ID = "https://www.youtube.com/feeds/videos.xml?channel_id=";
     private static final String FEED_BASE_USER = "https://www.youtube.com/feeds/videos.xml?user=";
 
@@ -259,6 +261,19 @@ public class YoutubeParsingHelper {
         throw new ParsingException("Could not get client version");
     }
 
+    public static String[] getYoutubeMusicKeys() throws IOException, ReCaptchaException, Parser.RegexException {
+        if (youtubeMusicKeys != null && youtubeMusicKeys.length == 3) return youtubeMusicKeys;
+
+        final String url = "https://music.youtube.com/";
+        final String html = getDownloader().get(url).responseBody();
+
+        final String key = Parser.matchGroup1("INNERTUBE_API_KEY\":\"([0-9a-zA-Z_-]+?)\"", html);
+        final String clientName = Parser.matchGroup1("INNERTUBE_CONTEXT_CLIENT_NAME\":([0-9]+?),", html);
+        final String clientVersion = Parser.matchGroup1("INNERTUBE_CLIENT_VERSION\":\"([0-9\\.]+?)\"", html);
+
+        return youtubeMusicKeys = new String[]{key, clientName, clientVersion};
+    }
+
     public static String getUrlFromNavigationEndpoint(JsonObject navigationEndpoint) throws ParsingException {
         if (navigationEndpoint.getObject("urlEndpoint") != null) {
             String internUrl = navigationEndpoint.getObject("urlEndpoint").getString("url");
@@ -303,6 +318,9 @@ public class YoutubeParsingHelper {
             if (navigationEndpoint.getObject("watchEndpoint").has("startTimeSeconds"))
                 url.append("&amp;t=").append(navigationEndpoint.getObject("watchEndpoint").getInt("startTimeSeconds"));
             return url.toString();
+        } else if (navigationEndpoint.getObject("watchPlaylistEndpoint") != null) {
+            return "https://www.youtube.com/playlist?list=" +
+                    navigationEndpoint.getObject("watchPlaylistEndpoint").getString("playlistId");
         }
         return null;
     }
