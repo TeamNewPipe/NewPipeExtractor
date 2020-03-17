@@ -94,10 +94,10 @@ public class SoundcloudPlaylistExtractorTest {
             assertIsSecureUrl(extractor.getThumbnailUrl());
         }
 
-        @Ignore
         @Test
         public void testBannerUrl() {
-            assertIsSecureUrl(extractor.getBannerUrl());
+            // SoundCloud playlists do not have a banner
+            assertNull(extractor.getBannerUrl());
         }
 
         @Test
@@ -186,10 +186,10 @@ public class SoundcloudPlaylistExtractorTest {
             assertIsSecureUrl(extractor.getThumbnailUrl());
         }
 
-        @Ignore("not implemented")
         @Test
         public void testBannerUrl() {
-            assertIsSecureUrl(extractor.getBannerUrl());
+            // SoundCloud playlists do not have a banner
+            assertNull(extractor.getBannerUrl());
         }
 
         @Test
@@ -293,10 +293,10 @@ public class SoundcloudPlaylistExtractorTest {
             assertIsSecureUrl(extractor.getThumbnailUrl());
         }
 
-        @Ignore
         @Test
         public void testBannerUrl() {
-            assertIsSecureUrl(extractor.getBannerUrl());
+            // SoundCloud playlists do not have a banner
+            assertNull(extractor.getBannerUrl());
         }
 
         @Test
