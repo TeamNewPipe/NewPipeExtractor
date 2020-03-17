@@ -19,6 +19,8 @@ import javax.annotation.Nonnull;
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
+import java.text.SimpleDateFormat;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -55,14 +57,14 @@ public class SoundcloudStreamExtractor extends StreamExtractor {
 
     @Nonnull
     @Override
-    public String getTextualUploadDate() {
-        return track.getString("created_at");
+    public String getTextualUploadDate() throws ParsingException {
+        return track.getString("created_at").replace("T"," ").replace("Z", "");
     }
 
     @Nonnull
     @Override
     public DateWrapper getUploadDate() throws ParsingException {
-        return new DateWrapper(SoundcloudParsingHelper.parseDate(getTextualUploadDate()));
+        return new DateWrapper(SoundcloudParsingHelper.parseDate(track.getString("created_at")));
     }
 
     @Nonnull

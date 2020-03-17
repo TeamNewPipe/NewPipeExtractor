@@ -74,7 +74,7 @@ public class SoundcloudStreamExtractorDefaultTest {
 
     @Test
     public void testGetTextualUploadDate() throws ParsingException {
-        Assert.assertEquals("2016/07/31 18:18:07 +0000", extractor.getTextualUploadDate());
+        Assert.assertEquals("2016-07-31 18:18:07", extractor.getTextualUploadDate());
     }
 
     @Test
