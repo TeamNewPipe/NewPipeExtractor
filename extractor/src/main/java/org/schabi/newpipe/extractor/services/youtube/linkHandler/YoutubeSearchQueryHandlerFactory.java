@@ -24,13 +24,13 @@ public class YoutubeSearchQueryHandlerFactory extends SearchQueryHandlerFactory 
     public String getUrl(String searchString, List<String> contentFilters, String sortFilter) throws ParsingException {
         try {
             final String url = "https://www.youtube.com/results"
-                    + "?q=" + URLEncoder.encode(searchString, CHARSET_UTF_8);
+                    + "?search_query=" + URLEncoder.encode(searchString, CHARSET_UTF_8);
 
-            if(contentFilters.size() > 0) {
+            if (contentFilters.size() > 0) {
                 switch (contentFilters.get(0)) {
-                    case VIDEOS: return url + "&sp=EgIQAVAU";
-                    case CHANNELS: return url + "&sp=EgIQAlAU";
-                    case PLAYLISTS: return url + "&sp=EgIQA1AU";
+                    case VIDEOS: return url + "&sp=EgIQAQ%253D%253D";
+                    case CHANNELS: return url + "&sp=EgIQAg%253D%253D";
+                    case PLAYLISTS: return url + "&sp=EgIQAw%253D%253D";
                     case ALL:
                     default:
                 }
@@ -44,7 +44,7 @@ public class YoutubeSearchQueryHandlerFactory extends SearchQueryHandlerFactory 
 
     @Override
     public String[] getAvailableContentFilter() {
-        return new String[] {
+        return new String[]{
                 ALL,
                 VIDEOS,
                 CHANNELS,

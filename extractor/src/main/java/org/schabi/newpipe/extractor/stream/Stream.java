@@ -1,9 +1,9 @@
 package org.schabi.newpipe.extractor.stream;
 
+import org.schabi.newpipe.extractor.MediaFormat;
+
 import java.io.Serializable;
 import java.util.List;
-
-import org.schabi.newpipe.extractor.MediaFormat;
 
 /**
  * Creates a stream object from url, format and optional torrent url
@@ -22,19 +22,19 @@ public abstract class Stream implements Serializable {
     /**
      * Instantiates a new stream object.
      *
-     * @param url the url
+     * @param url    the url
      * @param format the format
      */
     public Stream(String url, MediaFormat format) {
         this(url, null, format);
     }
-    
+
     /**
      * Instantiates a new stream object.
      *
-     * @param url the url
+     * @param url        the url
      * @param torrentUrl the url to torrent file, example https://webtorrent.io/torrents/big-buck-bunny.torrent
-     * @param format the format
+     * @param format     the format
      */
     public Stream(String url, String torrentUrl, MediaFormat format) {
         this.url = url;
@@ -76,7 +76,7 @@ public abstract class Stream implements Serializable {
     public String getUrl() {
         return url;
     }
-    
+
     /**
      * Gets the torrent url.
      *

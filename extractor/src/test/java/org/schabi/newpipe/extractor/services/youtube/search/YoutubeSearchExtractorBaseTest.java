@@ -3,10 +3,8 @@ package org.schabi.newpipe.extractor.services.youtube.search;
 import org.junit.Test;
 import org.schabi.newpipe.extractor.InfoItem;
 import org.schabi.newpipe.extractor.ListExtractor;
-import org.schabi.newpipe.extractor.services.BaseListExtractorTest;
 import org.schabi.newpipe.extractor.services.youtube.extractors.YoutubeSearchExtractor;
 
-import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
 

@@ -1,5 +1,10 @@
 package org.schabi.newpipe.extractor.utils;
 
+import org.nibor.autolink.LinkExtractor;
+import org.nibor.autolink.LinkSpan;
+import org.nibor.autolink.LinkType;
+import org.schabi.newpipe.extractor.exceptions.ParsingException;
+
 import java.io.UnsupportedEncodingException;
 import java.net.URLDecoder;
 import java.util.ArrayList;
@@ -8,11 +13,6 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-
-import org.nibor.autolink.LinkExtractor;
-import org.nibor.autolink.LinkSpan;
-import org.nibor.autolink.LinkType;
-import org.schabi.newpipe.extractor.exceptions.ParsingException;
 
 /*
  * Created by Christian Schabesberger on 02.02.16.
@@ -51,7 +51,7 @@ public class Parser {
     public static String matchGroup1(String pattern, String input) throws RegexException {
         return matchGroup(pattern, input, 1);
     }
-    
+
     public static String matchGroup1(Pattern pattern, String input) throws RegexException {
         return matchGroup(pattern, input, 1);
     }
@@ -60,7 +60,7 @@ public class Parser {
         Pattern pat = Pattern.compile(pattern);
         return matchGroup(pat, input, group);
     }
-    
+
     public static String matchGroup(Pattern pat, String input, int group) throws RegexException {
         Matcher mat = pat.matcher(input);
         boolean foundMatch = mat.find();
@@ -102,7 +102,7 @@ public class Parser {
                     .linkTypes(EnumSet.of(LinkType.URL, LinkType.WWW))
                     .build();
             Iterable<LinkSpan> linkss = linkExtractor.extractLinks(txt);
-            for(LinkSpan ls : linkss) {
+            for (LinkSpan ls : linkss) {
                 links.add(txt.substring(ls.getBeginIndex(), ls.getEndIndex()));
             }
 

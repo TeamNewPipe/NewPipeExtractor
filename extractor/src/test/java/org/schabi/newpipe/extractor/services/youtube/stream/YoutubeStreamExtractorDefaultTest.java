@@ -7,20 +7,28 @@ import org.schabi.newpipe.DownloaderTestImpl;
 import org.schabi.newpipe.extractor.ExtractorAsserts;
 import org.schabi.newpipe.extractor.MediaFormat;
 import org.schabi.newpipe.extractor.NewPipe;
+import org.schabi.newpipe.extractor.exceptions.ContentNotAvailableException;
 import org.schabi.newpipe.extractor.exceptions.ExtractionException;
 import org.schabi.newpipe.extractor.exceptions.ParsingException;
 import org.schabi.newpipe.extractor.services.youtube.extractors.YoutubeStreamExtractor;
-import org.schabi.newpipe.extractor.stream.*;
+import org.schabi.newpipe.extractor.stream.Frameset;
+import org.schabi.newpipe.extractor.stream.StreamExtractor;
+import org.schabi.newpipe.extractor.stream.StreamInfoItemsCollector;
+import org.schabi.newpipe.extractor.stream.StreamType;
+import org.schabi.newpipe.extractor.stream.VideoStream;
 import org.schabi.newpipe.extractor.utils.Utils;
 
-import java.io.IOException;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.List;
 
-import static java.util.Objects.*;
-import static org.junit.Assert.*;
+import static java.util.Objects.requireNonNull;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
 import static org.schabi.newpipe.extractor.ExtractorAsserts.assertIsSecureUrl;
 import static org.schabi.newpipe.extractor.ServiceList.YouTube;
 
@@ -48,6 +56,27 @@ import static org.schabi.newpipe.extractor.ServiceList.YouTube;
  * Test for {@link StreamExtractor}
  */
 public class YoutubeStreamExtractorDefaultTest {
+
+    public static class NotAvailable {
+        @BeforeClass
+        public static void setUp() {
+            NewPipe.init(DownloaderTestImpl.getInstance());
+        }
+
+        @Test(expected = ContentNotAvailableException.class)
+        public void nonExistentFetch() throws Exception {
+            final StreamExtractor extractor =
+                    YouTube.getStreamExtractor("https://www.youtube.com/watch?v=don-t-exist");
+            extractor.fetchPage();
+        }
+
+        @Test(expected = ParsingException.class)
+        public void invalidId() throws Exception {
+            final StreamExtractor extractor =
+                    YouTube.getStreamExtractor("https://www.youtube.com/watch?v=INVALID_ID_INVALID_ID");
+            extractor.fetchPage();
+        }
+    }
 
     /**
      * Test for {@link StreamExtractor}
@@ -83,13 +112,12 @@ public class YoutubeStreamExtractorDefaultTest {
         @Test
         public void testGetDescription() throws ParsingException {
             assertNotNull(extractor.getDescription());
-            assertFalse(extractor.getDescription().isEmpty());
+            assertFalse(extractor.getDescription().getContent().isEmpty());
         }
 
         @Test
         public void testGetFullLinksInDescription() throws ParsingException {
-            assertTrue(extractor.getDescription().contains("http://adele.com"));
-            assertFalse(extractor.getDescription().contains("http://smarturl.it/SubscribeAdele?IQi..."));
+            assertTrue(extractor.getDescription().getContent().contains("http://adele.com"));
         }
 
         @Test
@@ -126,7 +154,7 @@ public class YoutubeStreamExtractorDefaultTest {
         public void testGetUploaderUrl() throws ParsingException {
             String url = extractor.getUploaderUrl();
             if (!url.equals("https://www.youtube.com/channel/UCsRM0YB_dabtEPGPTKo-gcw") &&
-                !url.equals("https://www.youtube.com/channel/UComP_epzeKzvBX156r6pm1Q")) {
+                    !url.equals("https://www.youtube.com/channel/UComP_epzeKzvBX156r6pm1Q")) {
                 fail("Uploader url is neither the music channel one nor the Vevo one");
             }
         }
@@ -142,12 +170,12 @@ public class YoutubeStreamExtractorDefaultTest {
         }
 
         @Test
-        public void testGetAudioStreams() throws IOException, ExtractionException {
+        public void testGetAudioStreams() throws ExtractionException {
             assertFalse(extractor.getAudioStreams().isEmpty());
         }
 
         @Test
-        public void testGetVideoStreams() throws IOException, ExtractionException {
+        public void testGetVideoStreams() throws ExtractionException {
             for (VideoStream s : extractor.getVideoStreams()) {
                 assertIsSecureUrl(s.url);
                 assertTrue(s.resolution.length() > 0);
@@ -169,7 +197,7 @@ public class YoutubeStreamExtractorDefaultTest {
         }
 
         @Test
-        public void testGetRelatedVideos() throws ExtractionException, IOException {
+        public void testGetRelatedVideos() throws ExtractionException {
             StreamInfoItemsCollector relatedVideos = extractor.getRelatedStreams();
             Utils.printErrors(relatedVideos.getErrors());
             assertFalse(relatedVideos.getItems().isEmpty());
@@ -177,13 +205,13 @@ public class YoutubeStreamExtractorDefaultTest {
         }
 
         @Test
-        public void testGetSubtitlesListDefault() throws IOException, ExtractionException {
+        public void testGetSubtitlesListDefault() {
             // Video (/view?v=YQHsXMglC9A) set in the setUp() method has no captions => null
             assertTrue(extractor.getSubtitlesDefault().isEmpty());
         }
 
         @Test
-        public void testGetSubtitlesList() throws IOException, ExtractionException {
+        public void testGetSubtitlesList() {
             // Video (/view?v=YQHsXMglC9A) set in the setUp() method has no captions => null
             assertTrue(extractor.getSubtitles(MediaFormat.TTML).isEmpty());
         }
@@ -215,18 +243,14 @@ public class YoutubeStreamExtractorDefaultTest {
         @Test
         public void testGetDescription() throws ParsingException {
             assertNotNull(extractor.getDescription());
-            assertFalse(extractor.getDescription().isEmpty());
+            assertFalse(extractor.getDescription().getContent().isEmpty());
         }
 
         @Test
         public void testGetFullLinksInDescription() throws ParsingException {
-            assertTrue(extractor.getDescription().contains("https://www.reddit.com/r/PewdiepieSubmissions/"));
-            assertTrue(extractor.getDescription().contains("https://www.youtube.com/channel/UC3e8EMTOn4g6ZSKggHTnNng"));
-            assertTrue(extractor.getDescription().contains("https://usa.clutchchairz.com/product/pewdiepie-edition-throttle-series/"));
-
-            assertFalse(extractor.getDescription().contains("https://www.reddit.com/r/PewdiepieSub..."));
-            assertFalse(extractor.getDescription().contains("https://www.youtube.com/channel/UC3e8..."));
-            assertFalse(extractor.getDescription().contains("https://usa.clutchchairz.com/product/..."));
+            assertTrue(extractor.getDescription().getContent().contains("https://www.reddit.com/r/PewdiepieSubmissions/"));
+            assertTrue(extractor.getDescription().getContent().contains("https://www.youtube.com/channel/UC3e8EMTOn4g6ZSKggHTnNng"));
+            assertTrue(extractor.getDescription().getContent().contains("https://usa.clutchchairz.com/product/pewdiepie-edition-throttle-series/"));
         }
     }
 
@@ -244,20 +268,16 @@ public class YoutubeStreamExtractorDefaultTest {
         @Test
         public void testGetDescription() throws ParsingException {
             assertNotNull(extractor.getDescription());
-            assertFalse(extractor.getDescription().isEmpty());
+            assertFalse(extractor.getDescription().getContent().isEmpty());
         }
 
         @Test
         public void testGetFullLinksInDescription() throws ParsingException {
-            assertTrue(extractor.getDescription().contains("https://www.youtube.com/watch?v=X7FLCHVXpsA&amp;list=PL7u4lWXQ3wfI_7PgX0C-VTiwLeu0S4v34"));
-            assertTrue(extractor.getDescription().contains("https://www.youtube.com/watch?v=Lqv6G0pDNnw&amp;list=PL7u4lWXQ3wfI_7PgX0C-VTiwLeu0S4v34"));
-            assertTrue(extractor.getDescription().contains("https://www.youtube.com/watch?v=XxaRBPyrnBU&amp;list=PL7u4lWXQ3wfI_7PgX0C-VTiwLeu0S4v34"));
-            assertTrue(extractor.getDescription().contains("https://www.youtube.com/watch?v=U-9tUEOFKNU&amp;list=PL7u4lWXQ3wfI_7PgX0C-VTiwLeu0S4v34"));
-
-            assertFalse(extractor.getDescription().contains("https://youtu.be/X7FLCHVXpsA?list=PL7..."));
-            assertFalse(extractor.getDescription().contains("https://youtu.be/Lqv6G0pDNnw?list=PL7..."));
-            assertFalse(extractor.getDescription().contains("https://youtu.be/XxaRBPyrnBU?list=PL7..."));
-            assertFalse(extractor.getDescription().contains("https://youtu.be/U-9tUEOFKNU?list=PL7..."));
+            final String description = extractor.getDescription().getContent();
+            assertTrue(description.contains("https://www.youtube.com/watch?v=X7FLCHVXpsA&amp;list=PL7u4lWXQ3wfI_7PgX0C-VTiwLeu0S4v34"));
+            assertTrue(description.contains("https://www.youtube.com/watch?v=Lqv6G0pDNnw&amp;list=PL7u4lWXQ3wfI_7PgX0C-VTiwLeu0S4v34"));
+            assertTrue(description.contains("https://www.youtube.com/watch?v=XxaRBPyrnBU&amp;list=PL7u4lWXQ3wfI_7PgX0C-VTiwLeu0S4v34"));
+            assertTrue(description.contains("https://www.youtube.com/watch?v=U-9tUEOFKNU&amp;list=PL7u4lWXQ3wfI_7PgX0C-VTiwLeu0S4v34"));
         }
     }
 

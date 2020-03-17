@@ -49,7 +49,7 @@ public class YoutubeChannelLocalizationTest {
                 final ChannelExtractor extractor = YouTube.getChannelExtractor(channelUrl);
                 extractor.forceLocalization(currentLocalization);
                 extractor.fetchPage();
-                itemsPage = defaultTestRelatedItems(extractor, YouTube.getServiceId());
+                itemsPage = defaultTestRelatedItems(extractor);
             } catch (Throwable e) {
                 System.out.println("[!] " + currentLocalization + " → failed");
                 throw e;

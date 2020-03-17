@@ -6,7 +6,8 @@ import org.junit.Test;
 import org.schabi.newpipe.DownloaderTestImpl;
 import org.schabi.newpipe.extractor.ListExtractor;
 import org.schabi.newpipe.extractor.NewPipe;
-import org.schabi.newpipe.extractor.ServiceList;
+
+import org.schabi.newpipe.extractor.exceptions.ContentNotAvailableException;
 import org.schabi.newpipe.extractor.exceptions.ParsingException;
 import org.schabi.newpipe.extractor.playlist.PlaylistExtractor;
 import org.schabi.newpipe.extractor.services.BasePlaylistExtractorTest;
@@ -23,6 +24,28 @@ import static org.schabi.newpipe.extractor.services.DefaultTests.*;
  * Test for {@link YoutubePlaylistExtractor}
  */
 public class YoutubePlaylistExtractorTest {
+
+    public static class NotAvailable {
+        @BeforeClass
+        public static void setUp() {
+            NewPipe.init(DownloaderTestImpl.getInstance());
+        }
+
+        @Test(expected = ContentNotAvailableException.class)
+        public void nonExistentFetch() throws Exception {
+            final PlaylistExtractor extractor =
+                    YouTube.getPlaylistExtractor("https://www.youtube.com/playlist?list=PL11111111111111111111111111111111");
+            extractor.fetchPage();
+        }
+
+        @Test(expected = ContentNotAvailableException.class)
+        public void invalidId() throws Exception {
+            final PlaylistExtractor extractor =
+                    YouTube.getPlaylistExtractor("https://www.youtube.com/playlist?list=INVALID_ID");
+            extractor.fetchPage();
+        }
+    }
+
     public static class TimelessPopHits implements BasePlaylistExtractorTest {
         private static YoutubePlaylistExtractor extractor;
 
@@ -70,12 +93,12 @@ public class YoutubePlaylistExtractorTest {
 
         @Test
         public void testRelatedItems() throws Exception {
-            defaultTestRelatedItems(extractor, YouTube.getServiceId());
+            defaultTestRelatedItems(extractor);
         }
 
         @Test
         public void testMoreRelatedItems() throws Exception {
-            defaultTestMoreItems(extractor, ServiceList.YouTube.getServiceId());
+            defaultTestMoreItems(extractor);
         }
 
         /*//////////////////////////////////////////////////////////////////////////
@@ -138,7 +161,7 @@ public class YoutubePlaylistExtractorTest {
         @Test
         public void testGetPageInNewExtractor() throws Exception {
             final PlaylistExtractor newExtractor = YouTube.getPlaylistExtractor(extractor.getUrl());
-            defaultTestGetPageInNewExtractor(extractor, newExtractor, YouTube.getServiceId());
+            defaultTestGetPageInNewExtractor(extractor, newExtractor);
         }
 
         /*//////////////////////////////////////////////////////////////////////////
@@ -177,18 +200,17 @@ public class YoutubePlaylistExtractorTest {
 
         @Test
         public void testRelatedItems() throws Exception {
-            defaultTestRelatedItems(extractor, YouTube.getServiceId());
+            defaultTestRelatedItems(extractor);
         }
 
         @Test
         public void testMoreRelatedItems() throws Exception {
-            ListExtractor.InfoItemsPage<StreamInfoItem> currentPage
-                    = defaultTestMoreItems(extractor, ServiceList.YouTube.getServiceId());
+            ListExtractor.InfoItemsPage<StreamInfoItem> currentPage = defaultTestMoreItems(extractor);
 
             // test for 2 more levels
             for (int i = 0; i < 2; i++) {
                 currentPage = extractor.getPage(currentPage.getNextPageUrl());
-                defaultTestListOfItems(YouTube.getServiceId(), currentPage.getItems(), currentPage.getErrors());
+                defaultTestListOfItems(YouTube, currentPage.getItems(), currentPage.getErrors());
             }
         }
 

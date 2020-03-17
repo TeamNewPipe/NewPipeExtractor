@@ -6,22 +6,21 @@ import org.schabi.newpipe.DownloaderTestImpl;
 import org.schabi.newpipe.extractor.NewPipe;
 import org.schabi.newpipe.extractor.exceptions.ParsingException;
 import org.schabi.newpipe.extractor.services.BaseListExtractorTest;
-import org.schabi.newpipe.extractor.services.youtube.extractors.YoutubeFeedExtractor;
+import org.schabi.newpipe.extractor.services.youtube.extractors.YoutubeTrendingExtractor;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
 import static org.schabi.newpipe.extractor.ServiceList.YouTube;
 import static org.schabi.newpipe.extractor.services.DefaultTests.assertNoMoreItems;
 import static org.schabi.newpipe.extractor.services.DefaultTests.defaultTestRelatedItems;
 
-public class YoutubeFeedExtractorTest {
-    public static class Kurzgesagt implements BaseListExtractorTest {
-        private static YoutubeFeedExtractor extractor;
+public class YoutubeKioskExtractorTest {
+    public static class Trending implements BaseListExtractorTest {
+        private static YoutubeTrendingExtractor extractor;
 
         @BeforeClass
         public static void setUp() throws Exception {
             NewPipe.init(DownloaderTestImpl.getInstance());
-            extractor = (YoutubeFeedExtractor) YouTube
-                    .getFeedExtractor("https://www.youtube.com/user/Kurzgesagt");
+            extractor = (YoutubeTrendingExtractor) YouTube.getKioskList().getDefaultKioskExtractor();
             extractor.fetchPage();
         }
 
@@ -35,24 +34,23 @@ public class YoutubeFeedExtractorTest {
         }
 
         @Test
-        public void testName() {
-            String name = extractor.getName();
-            assertTrue(name, name.startsWith("Kurzgesagt"));
+        public void testName() throws Exception {
+            assertEquals("Trending", extractor.getName());
         }
 
         @Test
-        public void testId() {
-            assertEquals("UCsXVk37bltHxD1rDPwtNM8Q", extractor.getId());
+        public void testId() throws Exception {
+            assertEquals("Trending", extractor.getId());
         }
 
         @Test
-        public void testUrl() {
-            assertEquals("https://www.youtube.com/channel/UCsXVk37bltHxD1rDPwtNM8Q", extractor.getUrl());
+        public void testUrl() throws ParsingException {
+            assertEquals("https://www.youtube.com/feed/trending", extractor.getUrl());
         }
 
         @Test
         public void testOriginalUrl() throws ParsingException {
-            assertEquals("https://www.youtube.com/user/Kurzgesagt", extractor.getOriginalUrl());
+            assertEquals("https://www.youtube.com/feed/trending", extractor.getOriginalUrl());
         }
 
         /*//////////////////////////////////////////////////////////////////////////

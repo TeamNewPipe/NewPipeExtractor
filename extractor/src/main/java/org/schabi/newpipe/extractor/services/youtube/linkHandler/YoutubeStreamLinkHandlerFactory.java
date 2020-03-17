@@ -1,7 +1,10 @@
 package org.schabi.newpipe.extractor.services.youtube.linkHandler;
 
+import static org.schabi.newpipe.extractor.services.youtube.linkHandler.YoutubeParsingHelper.BASE_YOUTUBE_INTENT_URL;
+
 import org.schabi.newpipe.extractor.exceptions.FoundAdException;
 import org.schabi.newpipe.extractor.exceptions.ParsingException;
+import org.schabi.newpipe.extractor.linkhandler.LinkHandler;
 import org.schabi.newpipe.extractor.linkhandler.LinkHandlerFactory;
 import org.schabi.newpipe.extractor.utils.Utils;
 
@@ -47,6 +50,15 @@ public class YoutubeStreamLinkHandlerFactory extends LinkHandlerFactory {
         }
 
         return id;
+    }
+
+    @Override
+    public LinkHandler fromUrl(String url) throws ParsingException {
+        if (url.startsWith(BASE_YOUTUBE_INTENT_URL)){
+            return super.fromUrl(url, BASE_YOUTUBE_INTENT_URL);
+        } else {
+            return super.fromUrl(url);
+        }
     }
 
     @Override
@@ -190,7 +202,12 @@ public class YoutubeStreamLinkHandlerFactory extends LinkHandlerFactory {
                     return assertIsID(id);
                 }
 
-                break;
+                String viewQueryValue = Utils.getQueryValue(url, "v");
+                if (viewQueryValue != null) {
+                    return assertIsID(viewQueryValue);
+                }
+
+                return assertIsID(path);
             }
         }
 

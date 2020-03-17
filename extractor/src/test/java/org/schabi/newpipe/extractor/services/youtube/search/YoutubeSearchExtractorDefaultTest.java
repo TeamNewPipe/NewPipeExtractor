@@ -6,10 +6,14 @@ import org.schabi.newpipe.DownloaderTestImpl;
 import org.schabi.newpipe.extractor.InfoItem;
 import org.schabi.newpipe.extractor.ListExtractor;
 import org.schabi.newpipe.extractor.NewPipe;
-import org.schabi.newpipe.extractor.channel.ChannelExtractor;
 import org.schabi.newpipe.extractor.channel.ChannelInfoItem;
 import org.schabi.newpipe.extractor.services.youtube.extractors.YoutubeSearchExtractor;
 import org.schabi.newpipe.extractor.stream.StreamInfoItem;
+
+import java.net.URL;
+import java.net.URLDecoder;
+import java.util.LinkedHashMap;
+import java.util.Map;
 
 import static org.junit.Assert.*;
 import static org.schabi.newpipe.extractor.ServiceList.YouTube;
@@ -49,13 +53,28 @@ public class YoutubeSearchExtractorDefaultTest extends YoutubeSearchExtractorBas
 
     @Test
     public void testGetUrl() throws Exception {
-        assertEquals("https://www.youtube.com/results?q=pewdiepie&gl=GB", extractor.getUrl());
+        assertEquals("https://www.youtube.com/results?search_query=pewdiepie&gl=GB", extractor.getUrl());
     }
 
 
     @Test
     public void testGetSecondPageUrl() throws Exception {
-        assertEquals("https://www.youtube.com/results?q=pewdiepie&gl=GB&page=2", extractor.getNextPageUrl());
+        URL url = new URL(extractor.getNextPageUrl());
+
+        assertEquals(url.getHost(), "www.youtube.com");
+        assertEquals(url.getPath(), "/results");
+
+        Map<String, String> queryPairs = new LinkedHashMap<>();
+        for (String queryPair : url.getQuery().split("&")) {
+            int index = queryPair.indexOf("=");
+            queryPairs.put(URLDecoder.decode(queryPair.substring(0, index), "UTF-8"),
+                    URLDecoder.decode(queryPair.substring(index + 1), "UTF-8"));
+        }
+
+        assertEquals("pewdiepie", queryPairs.get("search_query"));
+        assertEquals(queryPairs.get("ctoken"), queryPairs.get("continuation"));
+        assertTrue(queryPairs.get("continuation").length() > 5);
+        assertTrue(queryPairs.get("itct").length() > 5);
     }
 
     @Test
@@ -76,8 +95,8 @@ public class YoutubeSearchExtractorDefaultTest extends YoutubeSearchExtractorBas
     @Test
     public void testResultListCheckIfContainsStreamItems() {
         boolean hasStreams = false;
-        for(InfoItem item : itemsPage.getItems()) {
-            if(item instanceof StreamInfoItem) {
+        for (InfoItem item : itemsPage.getItems()) {
+            if (item instanceof StreamInfoItem) {
                 hasStreams = true;
             }
         }
@@ -96,20 +115,18 @@ public class YoutubeSearchExtractorDefaultTest extends YoutubeSearchExtractorBas
         boolean equals = true;
         for (int i = 0; i < secondPage.getItems().size()
                 && i < itemsPage.getItems().size(); i++) {
-            if(!secondPage.getItems().get(i).getUrl().equals(
+            if (!secondPage.getItems().get(i).getUrl().equals(
                     itemsPage.getItems().get(i).getUrl())) {
                 equals = false;
             }
         }
         assertFalse("First and second page are equal", equals);
-
-        assertEquals("https://www.youtube.com/results?q=pewdiepie&gl=GB&page=3", secondPage.getNextPageUrl());
     }
 
     @Test
     public void testSuggestionNotNull() throws Exception {
         //todo write a real test
-        assertTrue(extractor.getSearchSuggestion() != null);
+        assertNotNull(extractor.getSearchSuggestion());
     }
 
 

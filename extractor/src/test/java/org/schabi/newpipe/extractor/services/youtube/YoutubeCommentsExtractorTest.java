@@ -84,7 +84,7 @@ public class YoutubeCommentsExtractorTest {
     public void testGetCommentsAllData() throws IOException, ExtractionException {
         InfoItemsPage<CommentsInfoItem> comments = extractorYT.getInitialPage();
 
-        DefaultTests.defaultTestListOfItems(YouTube.getServiceId(), comments.getItems(), comments.getErrors());
+        DefaultTests.defaultTestListOfItems(YouTube, comments.getItems(), comments.getErrors());
         for (CommentsInfoItem c : comments.getItems()) {
             assertFalse(StringUtil.isBlank(c.getAuthorEndpoint()));
             assertFalse(StringUtil.isBlank(c.getAuthorName()));

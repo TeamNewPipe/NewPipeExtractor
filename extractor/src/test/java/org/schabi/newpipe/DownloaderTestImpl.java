@@ -20,7 +20,7 @@ import java.util.Map;
 
 public class DownloaderTestImpl extends Downloader {
 
-    private static final String USER_AGENT = "Mozilla/5.0 (Windows NT 6.1; WOW64; rv:43.0) Gecko/20100101 Firefox/43.0";
+    private static final String USER_AGENT = "Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101 Firefox/68.0";
     private static final String DEFAULT_HTTP_ACCEPT_LANGUAGE = "en";
 
     private static DownloaderTestImpl instance = null;
@@ -99,19 +99,25 @@ public class DownloaderTestImpl extends Downloader {
             final int responseCode = connection.getResponseCode();
             final String responseMessage = connection.getResponseMessage();
             final Map<String, List<String>> responseHeaders = connection.getHeaderFields();
+            final String latestUrl = connection.getURL().toString();
 
-            return new Response(responseCode, responseMessage, responseHeaders, response.toString());
+            return new Response(responseCode, responseMessage, responseHeaders, response.toString(), latestUrl);
         } catch (Exception e) {
+            final int responseCode = connection.getResponseCode();
+
             /*
              * HTTP 429 == Too Many Request
              * Receive from Youtube.com = ReCaptcha challenge request
              * See : https://github.com/rg3/youtube-dl/issues/5138
              */
-            if (connection.getResponseCode() == 429) {
+            if (responseCode == 429) {
                 throw new ReCaptchaException("reCaptcha Challenge requested", url);
+            } else if (responseCode != -1) {
+                final String latestUrl = connection.getURL().toString();
+                return new Response(responseCode, connection.getResponseMessage(), connection.getHeaderFields(), null, latestUrl);
             }
 
-            throw new IOException(connection.getResponseCode() + " " + connection.getResponseMessage(), e);
+            throw new IOException("Error occurred while fetching the content", e);
         } finally {
             if (outputStream != null) outputStream.close();
             if (input != null) input.close();

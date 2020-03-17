@@ -34,6 +34,7 @@ import javax.annotation.Nullable;
 import java.io.IOException;
 import java.util.Collections;
 import java.util.List;
+import java.util.Locale;
 
 /**
  * Scrapes information from a video/audio streaming service (eg, YouTube).
@@ -75,6 +76,7 @@ public abstract class StreamExtractor extends Extractor {
 
     /**
      * This will return the url to the thumbnail of the stream. Try to return the medium resolution here.
+     *
      * @return The url of the thumbnail.
      * @throws ParsingException
      */
@@ -82,15 +84,17 @@ public abstract class StreamExtractor extends Extractor {
     public abstract String getThumbnailUrl() throws ParsingException;
 
     /**
-     * This is the stream description. On YouTube this is the video description. You can return simple HTML here.
-     * @return The description of the stream/video.
+     * This is the stream description.
+     *
+     * @return The description of the stream/video or Description.emptyDescription if the description is empty.
      * @throws ParsingException
      */
     @Nonnull
-    public abstract String getDescription() throws ParsingException;
+    public abstract Description getDescription() throws ParsingException;
 
     /**
      * Get the age limit.
+     *
      * @return The age which limits the content or {@value NO_AGE_LIMIT} if there is no limit
      * @throws ParsingException if an error occurs while parsing
      */
@@ -98,6 +102,7 @@ public abstract class StreamExtractor extends Extractor {
 
     /**
      * This should return the length of a video in seconds.
+     *
      * @return The length of the stream in seconds.
      * @throws ParsingException
      */
@@ -107,6 +112,7 @@ public abstract class StreamExtractor extends Extractor {
      * If the url you are currently handling contains a time stamp/seek, you can return the
      * position it represents here.
      * If the url has no time stamp simply return zero.
+     *
      * @return the timestamp in seconds
      * @throws ParsingException
      */
@@ -115,22 +121,25 @@ public abstract class StreamExtractor extends Extractor {
     /**
      * The count of how many people have watched the video/listened to the audio stream.
      * If the current stream has no view count or its not available simply return -1
+     *
      * @return amount of views.
      * @throws ParsingException
      */
     public abstract long getViewCount() throws ParsingException;
 
     /**
-     * The Amount of likes a video/audio stream got.
+     * The amount of likes a video/audio stream got.
      * If the current stream has no likes or its not available simply return -1
+     *
      * @return the amount of likes the stream got
      * @throws ParsingException
      */
     public abstract long getLikeCount() throws ParsingException;
 
     /**
-     * The Amount of dislikes a video/audio stream got.
+     * The amount of dislikes a video/audio stream got.
      * If the current stream has no dislikes or its not available simply return -1
+     *
      * @return the amount of likes the stream got
      * @throws ParsingException
      */
@@ -142,6 +151,7 @@ public abstract class StreamExtractor extends Extractor {
      * <a href="https://teamnewpipe.github.io/documentation/03_Implement_a_service/#channel">ChannelExtractor</a>,
      * so be sure to implement that one before you return a value here, otherwise NewPipe will crash if one selects
      * this url.
+     *
      * @return the url to the page of the creator/uploader of the stream or an empty String
      * @throws ParsingException
      */
@@ -151,6 +161,7 @@ public abstract class StreamExtractor extends Extractor {
     /**
      * The name of the creator/uploader of the stream.
      * If the name is not available you can simply return an empty string.
+     *
      * @return the name of the creator/uploader of the stream or an empty String
      * @throws ParsingException
      */
@@ -160,6 +171,7 @@ public abstract class StreamExtractor extends Extractor {
     /**
      * The url to the image file/profile picture/avatar of the creator/uploader of the stream.
      * If the url is not available you can return an empty String.
+     *
      * @return The url of the image file of the uploader or an empty String
      * @throws ParsingException
      */
@@ -169,20 +181,24 @@ public abstract class StreamExtractor extends Extractor {
     /**
      * Get the dash mpd url. If you don't know what a dash MPD is you can read about it
      * <a href="https://www.brendanlong.com/the-structure-of-an-mpeg-dash-mpd.html">here</a>.
+     *
      * @return the url as a string or an empty string
      * @throws ParsingException if an error occurs while reading
      */
-    @Nonnull public abstract String getDashMpdUrl() throws ParsingException;
+    @Nonnull
+    public abstract String getDashMpdUrl() throws ParsingException;
 
     /**
      * I am not sure if this is in use, and how this is used. However the frontend is missing support
      * for HLS streams. Prove me if I am wrong. Please open an
      * <a href="https://github.com/teamnewpipe/newpipe/issues">issue</a>,
      * or fix this description if you know whats up with this.
+     *
      * @return The Url to the hls stream.
      * @throws ParsingException
      */
-    @Nonnull public abstract String getHlsUrl() throws ParsingException;
+    @Nonnull
+    public abstract String getHlsUrl() throws ParsingException;
 
     /**
      * This should return a list of available
@@ -190,6 +206,7 @@ public abstract class StreamExtractor extends Extractor {
      * You can also return null or an empty list, however be aware that if you don't return anything
      * in getVideoStreams(), getVideoOnlyStreams() and getDashMpdUrl() either the Collector will handle this as
      * a failed extraction procedure.
+     *
      * @return a list of audio only streams in the format of AudioStream
      * @throws IOException
      * @throws ExtractionException
@@ -203,6 +220,7 @@ public abstract class StreamExtractor extends Extractor {
      * You can also return null or an empty list, however be aware that if you don't return anything
      * in getAudioStreams(), getVideoOnlyStreams() and getDashMpdUrl() either the Collector will handle this as
      * a failed extraction procedure.
+     *
      * @return a list of combined video and streams in the format of AudioStream
      * @throws IOException
      * @throws ExtractionException
@@ -216,6 +234,7 @@ public abstract class StreamExtractor extends Extractor {
      * You can also return null or an empty list, however be aware that if you don't return anything
      * in getAudioStreams(), getVideoStreams() and getDashMpdUrl() either the Collector will handle this as
      * a failed extraction procedure.
+     *
      * @return a list of video and streams in the format of AudioStream
      * @throws IOException
      * @throws ExtractionException
@@ -226,6 +245,7 @@ public abstract class StreamExtractor extends Extractor {
      * This will return a list of available
      * <a href="https://teamnewpipe.github.io/NewPipeExtractor/javadoc/org/schabi/newpipe/extractor/stream/Subtitles.html">Subtitles</a>s.
      * If no subtitles are available an empty list can returned.
+     *
      * @return a list of available subtitles or an empty list
      * @throws IOException
      * @throws ExtractionException
@@ -238,6 +258,7 @@ public abstract class StreamExtractor extends Extractor {
      * <a href="https://teamnewpipe.github.io/NewPipeExtractor/javadoc/org/schabi/newpipe/extractor/stream/Subtitles.html">Subtitles</a>s.
      * given by a specific type.
      * If no subtitles in that specific format are available an empty list can returned.
+     *
      * @param format the media format by which the subtitles should be filtered
      * @return a list of available subtitles or an empty list
      * @throws IOException
@@ -248,15 +269,17 @@ public abstract class StreamExtractor extends Extractor {
 
     /**
      * Get the <a href="https://teamnewpipe.github.io/NewPipeExtractor/javadoc/">StreamType</a>.
+     *
      * @return the type of the stream
      * @throws ParsingException
      */
     public abstract StreamType getStreamType() throws ParsingException;
 
     /**
-     * should return the url of the next stream. NewPipe will automatically play
+     * Should return the url of the next stream. NewPipe will automatically play
      * the next stream if the user wants that.
      * If the next stream is is not available simply return null
+     *
      * @return the InfoItem of the next stream
      * @throws IOException
      * @throws ExtractionException
@@ -268,7 +291,8 @@ public abstract class StreamExtractor extends Extractor {
      * streams. If you don't like suggested streams you should implement them anyway since they can
      * be disabled by the user later in the frontend.
      * This list MUST NOT contain the next available video as this should be return through getNextStream()
-     * If  is is not available simply return null
+     * If it is not available simply return null
+     *
      * @return a list of InfoItems showing the related videos/streams
      * @throws IOException
      * @throws ExtractionException
@@ -277,6 +301,7 @@ public abstract class StreamExtractor extends Extractor {
 
     /**
      * Should return a list of Frameset object that contains preview of stream frames
+     *
      * @return list of preview frames or empty list if frames preview is not supported or not found for specified stream
      * @throws IOException
      * @throws ExtractionException
@@ -299,9 +324,10 @@ public abstract class StreamExtractor extends Extractor {
 
     /**
      * Override this function if the format of time stamp in the url is not the same format as that form youtube.
-     * Honestly I don't even know the time stamp fromat of youtube.
+     * Honestly I don't even know the time stamp format of YouTube.
+     *
      * @param regexPattern
-     * @return the sime stamp/seek for the video in seconds
+     * @return the time stamp/seek for the video in seconds
      * @throws ParsingException
      */
     protected long getTimestampSeconds(String regexPattern) throws ParsingException {
@@ -309,10 +335,10 @@ public abstract class StreamExtractor extends Extractor {
         try {
             timeStamp = Parser.matchGroup1(regexPattern, getOriginalUrl());
         } catch (Parser.RegexException e) {
-            // catch this instantly since an url does not necessarily have to have a time stamp
+            // catch this instantly since a url does not necessarily have a timestamp
 
-            // -2 because well the testing system will then know its the regex that failed :/
-            // not good i know
+            // -2 because the testing system will consequently know that the regex failed
+            // not good, I know
             return -2;
         }
 
@@ -349,4 +375,81 @@ public abstract class StreamExtractor extends Extractor {
             return 0;
         }
     }
+
+    /**
+     * The host of the stream (Eg. peertube.cpy.re).
+     * If the host is not available, or if the service doesn't use
+     * a federated system, but a centralised system,
+     * you can simply return an empty string.
+     *
+     * @return the host of the stream or an empty String.
+     * @throws ParsingException
+     */
+    @Nonnull
+    public abstract String getHost() throws ParsingException;
+
+    /**
+     * The privacy of the stream (Eg. Public, Private, Unlisted…).
+     * If the privacy is not available you can simply return an empty string.
+     *
+     * @return the privacy of the stream or an empty String.
+     * @throws ParsingException
+     */
+    @Nonnull
+    public abstract String getPrivacy() throws ParsingException;
+
+    /**
+     * The name of the category of the stream.
+     * If the category is not available you can simply return an empty string.
+     *
+     * @return the category of the stream or an empty String.
+     * @throws ParsingException
+     */
+    @Nonnull
+    public abstract String getCategory() throws ParsingException;
+
+    /**
+     * The name of the licence of the stream.
+     * If the licence is not available you can simply return an empty string.
+     *
+     * @return the licence of the stream or an empty String.
+     * @throws ParsingException
+     */
+    @Nonnull
+    public abstract String getLicence() throws ParsingException;
+
+    /**
+     * The locale language of the stream.
+     * If the language is not available you can simply return null.
+     * If the language is provided by a language code, you can return
+     * new Locale(language_code);
+     *
+     * @return the locale language of the stream or null.
+     * @throws ParsingException
+     */
+    @Nullable
+    public abstract Locale getLanguageInfo() throws ParsingException;
+
+    /**
+     * The list of tags of the stream.
+     * If the tag list is not available you can simply return an empty list.
+     *
+     * @return the list of tags of the stream or an empty list.
+     * @throws ParsingException
+     */
+    @Nonnull
+    public abstract List<String> getTags() throws ParsingException;
+
+    /**
+     * The support information of the stream.
+     * see: https://framatube.org/videos/watch/ee408ec8-07cd-4e35-b884-fb681a4b9d37
+     * (support button).
+     * If the support information are not available,
+     * you can simply return an empty String.
+     *
+     * @return the support information of the stream or an empty String.
+     * @throws ParsingException
+     */
+    @Nonnull
+    public abstract String getSupportInfo() throws ParsingException;
 }

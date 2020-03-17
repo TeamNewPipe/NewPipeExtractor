@@ -22,7 +22,7 @@ public class MediaCCCOggTest {
     public static void setUpClass() throws Exception {
         NewPipe.init(DownloaderTestImpl.getInstance());
 
-        extractor =  MediaCCC.getStreamExtractor("https://api.media.ccc.de/public/events/1317");
+        extractor = MediaCCC.getStreamExtractor("https://api.media.ccc.de/public/events/1317");
         extractor.fetchPage();
     }
 
@@ -33,7 +33,7 @@ public class MediaCCCOggTest {
 
     @Test
     public void getAudioStreamsContainOgg() throws Exception {
-        for(AudioStream stream : extractor.getAudioStreams()) {
+        for (AudioStream stream : extractor.getAudioStreams()) {
             assertEquals("OGG", stream.getFormat().toString());
         }
     }

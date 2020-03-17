@@ -1,29 +1,46 @@
 package org.schabi.newpipe.extractor.services.youtube;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.fail;
-import static org.schabi.newpipe.extractor.ExtractorAsserts.assertIsSecureUrl;
-import static org.schabi.newpipe.extractor.ServiceList.YouTube;
-import static org.schabi.newpipe.extractor.services.DefaultTests.defaultTestGetPageInNewExtractor;
-import static org.schabi.newpipe.extractor.services.DefaultTests.defaultTestMoreItems;
-import static org.schabi.newpipe.extractor.services.DefaultTests.defaultTestRelatedItems;
-
 import org.junit.BeforeClass;
 import org.junit.Test;
 import org.schabi.newpipe.DownloaderTestImpl;
 import org.schabi.newpipe.extractor.NewPipe;
-import org.schabi.newpipe.extractor.ServiceList;
 import org.schabi.newpipe.extractor.channel.ChannelExtractor;
+import org.schabi.newpipe.extractor.exceptions.ContentNotAvailableException;
 import org.schabi.newpipe.extractor.exceptions.ParsingException;
-import org.schabi.newpipe.extractor.localization.Localization;
 import org.schabi.newpipe.extractor.services.BaseChannelExtractorTest;
 import org.schabi.newpipe.extractor.services.youtube.extractors.YoutubeChannelExtractor;
+
+import static org.junit.Assert.*;
+import static org.schabi.newpipe.extractor.ExtractorAsserts.assertIsSecureUrl;
+import static org.schabi.newpipe.extractor.ServiceList.YouTube;
+import static org.schabi.newpipe.extractor.services.DefaultTests.*;
 
 /**
  * Test for {@link ChannelExtractor}
  */
 public class YoutubeChannelExtractorTest {
+
+    public static class NotAvailable {
+        @BeforeClass
+        public static void setUp() {
+            NewPipe.init(DownloaderTestImpl.getInstance());
+        }
+
+        @Test(expected = ContentNotAvailableException.class)
+        public void deletedFetch() throws Exception {
+            final ChannelExtractor extractor =
+                    YouTube.getChannelExtractor("https://www.youtube.com/channel/UCAUc4iz6edWerIjlnL8OSSw");
+            extractor.fetchPage();
+        }
+
+        @Test(expected = ContentNotAvailableException.class)
+        public void nonExistentFetch() throws Exception {
+            final ChannelExtractor extractor =
+                    YouTube.getChannelExtractor("https://www.youtube.com/channel/DOESNT-EXIST");
+            extractor.fetchPage();
+        }
+    }
+
     public static class Gronkh implements BaseChannelExtractorTest {
         private static YoutubeChannelExtractor extractor;
 
@@ -70,12 +87,12 @@ public class YoutubeChannelExtractorTest {
 
         @Test
         public void testRelatedItems() throws Exception {
-            defaultTestRelatedItems(extractor, YouTube.getServiceId());
+            defaultTestRelatedItems(extractor);
         }
 
         @Test
         public void testMoreRelatedItems() throws Exception {
-            defaultTestMoreItems(extractor, ServiceList.YouTube.getServiceId());
+            defaultTestMoreItems(extractor);
         }
 
          /*//////////////////////////////////////////////////////////////////////////
@@ -160,12 +177,12 @@ public class YoutubeChannelExtractorTest {
 
         @Test
         public void testRelatedItems() throws Exception {
-            defaultTestRelatedItems(extractor, YouTube.getServiceId());
+            defaultTestRelatedItems(extractor);
         }
 
         @Test
         public void testMoreRelatedItems() throws Exception {
-            defaultTestMoreItems(extractor, ServiceList.YouTube.getServiceId());
+            defaultTestMoreItems(extractor);
         }
 
          /*//////////////////////////////////////////////////////////////////////////
@@ -175,7 +192,7 @@ public class YoutubeChannelExtractorTest {
         @Test
         public void testDescription() throws Exception {
             assertTrue("What it actually was: " + extractor.getDescription(),
-                    extractor.getDescription().contains("Our World is Amazing. Questions? Ideas? Tweet me:"));
+                    extractor.getDescription().contains("Our World is Amazing. \n\nQuestions? Ideas? Tweet me:"));
         }
 
         @Test
@@ -223,7 +240,7 @@ public class YoutubeChannelExtractorTest {
         @Test
         public void testGetPageInNewExtractor() throws Exception {
             final ChannelExtractor newExtractor = YouTube.getChannelExtractor(extractor.getUrl());
-            defaultTestGetPageInNewExtractor(extractor, newExtractor, YouTube.getServiceId());
+            defaultTestGetPageInNewExtractor(extractor, newExtractor);
         }
 
         /*//////////////////////////////////////////////////////////////////////////
@@ -262,12 +279,12 @@ public class YoutubeChannelExtractorTest {
 
         @Test
         public void testRelatedItems() throws Exception {
-            defaultTestRelatedItems(extractor, YouTube.getServiceId());
+            defaultTestRelatedItems(extractor);
         }
 
         @Test
         public void testMoreRelatedItems() throws Exception {
-            defaultTestMoreItems(extractor, ServiceList.YouTube.getServiceId());
+            defaultTestMoreItems(extractor);
         }
 
          /*//////////////////////////////////////////////////////////////////////////
@@ -353,12 +370,12 @@ public class YoutubeChannelExtractorTest {
 
         @Test
         public void testRelatedItems() throws Exception {
-            defaultTestRelatedItems(extractor, YouTube.getServiceId());
+            defaultTestRelatedItems(extractor);
         }
 
         @Test
         public void testMoreRelatedItems() throws Exception {
-            defaultTestMoreItems(extractor, ServiceList.YouTube.getServiceId());
+            defaultTestMoreItems(extractor);
         }
 
          /*//////////////////////////////////////////////////////////////////////////
@@ -443,12 +460,12 @@ public class YoutubeChannelExtractorTest {
 
         @Test
         public void testRelatedItems() throws Exception {
-            defaultTestRelatedItems(extractor, YouTube.getServiceId());
+            defaultTestRelatedItems(extractor);
         }
 
         @Test
         public void testMoreRelatedItems() throws Exception {
-            defaultTestMoreItems(extractor, YouTube.getServiceId());
+            defaultTestMoreItems(extractor);
         }
 
          /*//////////////////////////////////////////////////////////////////////////
@@ -487,7 +504,6 @@ public class YoutubeChannelExtractorTest {
             assertEquals("Wrong subscriber count", -1, subscribers);
         }
     }
-
 
 
     public static class RandomChannel implements BaseChannelExtractorTest {
@@ -536,13 +552,13 @@ public class YoutubeChannelExtractorTest {
 
         @Test
         public void testRelatedItems() throws Exception {
-            defaultTestRelatedItems(extractor, YouTube.getServiceId());
+            defaultTestRelatedItems(extractor);
         }
 
         @Test
         public void testMoreRelatedItems() {
             try {
-                defaultTestMoreItems(extractor, YouTube.getServiceId());
+                defaultTestMoreItems(extractor);
             } catch (Throwable ignored) {
                 return;
             }

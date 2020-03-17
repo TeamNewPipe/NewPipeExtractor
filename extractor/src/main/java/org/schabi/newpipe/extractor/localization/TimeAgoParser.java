@@ -21,8 +21,9 @@ public class TimeAgoParser {
     /**
      * Creates a helper to parse upload dates in the format '2 days ago'.
      * <p>
-     *     Instantiate a new {@link TimeAgoParser} every time you extract a new batch of items.
+     * Instantiate a new {@link TimeAgoParser} every time you extract a new batch of items.
      * </p>
+     *
      * @param patternsHolder An object that holds the "time ago" patterns, special cases, and the language word separator.
      */
     public TimeAgoParser(PatternsHolder patternsHolder) {
@@ -164,6 +165,7 @@ public class TimeAgoParser {
 
     /**
      * Marks the time as approximated by setting minutes, seconds and milliseconds to 0.
+     *
      * @param calendarTime Time to be marked as approximated
      */
     private void markApproximatedTime(Calendar calendarTime) {

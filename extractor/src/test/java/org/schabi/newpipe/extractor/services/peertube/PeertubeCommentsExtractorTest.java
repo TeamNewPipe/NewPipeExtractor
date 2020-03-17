@@ -1,12 +1,5 @@
 package org.schabi.newpipe.extractor.services.peertube;
 
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
-import static org.schabi.newpipe.extractor.ServiceList.PeerTube;
-
-import java.io.IOException;
-import java.util.List;
-
 import org.jsoup.helper.StringUtil;
 import org.junit.BeforeClass;
 import org.junit.Test;
@@ -18,6 +11,13 @@ import org.schabi.newpipe.extractor.comments.CommentsInfoItem;
 import org.schabi.newpipe.extractor.exceptions.ExtractionException;
 import org.schabi.newpipe.extractor.services.peertube.extractors.PeertubeCommentsExtractor;
 
+import java.io.IOException;
+import java.util.List;
+
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
+import static org.schabi.newpipe.extractor.ServiceList.PeerTube;
+
 public class PeertubeCommentsExtractorTest {
 
     private static PeertubeCommentsExtractor extractor;
@@ -26,7 +26,7 @@ public class PeertubeCommentsExtractorTest {
     public static void setUp() throws Exception {
         NewPipe.init(DownloaderTestImpl.getInstance());
         extractor = (PeertubeCommentsExtractor) PeerTube
-                .getCommentsExtractor("https://peertube.mastodon.host/videos/watch/04af977f-4201-4697-be67-a8d8cae6fa7a");
+                .getCommentsExtractor("https://framatube.org/videos/watch/04af977f-4201-4697-be67-a8d8cae6fa7a");
     }
 
     @Test
@@ -46,7 +46,7 @@ public class PeertubeCommentsExtractorTest {
     @Test
     public void testGetCommentsFromCommentsInfo() throws IOException, ExtractionException {
         boolean result = false;
-        CommentsInfo commentsInfo = CommentsInfo.getInfo("https://peertube.mastodon.host/videos/watch/a8ea95b8-0396-49a6-8f30-e25e25fb2828");
+        CommentsInfo commentsInfo = CommentsInfo.getInfo("https://framatube.org/videos/watch/a8ea95b8-0396-49a6-8f30-e25e25fb2828");
         assertTrue("Comments".equals(commentsInfo.getName()));
         result = findInComments(commentsInfo.getRelatedItems(), "Loved it!!!");
 
@@ -59,11 +59,11 @@ public class PeertubeCommentsExtractorTest {
 
         assertTrue(result);
     }
-    
+
     @Test
     public void testGetCommentsAllData() throws IOException, ExtractionException {
         InfoItemsPage<CommentsInfoItem> comments = extractor.getInitialPage();
-        for(CommentsInfoItem c: comments.getItems()) {
+        for (CommentsInfoItem c : comments.getItems()) {
             assertFalse(StringUtil.isBlank(c.getAuthorEndpoint()));
             assertFalse(StringUtil.isBlank(c.getAuthorName()));
             assertFalse(StringUtil.isBlank(c.getAuthorThumbnail()));
@@ -82,8 +82,8 @@ public class PeertubeCommentsExtractorTest {
     }
 
     private boolean findInComments(List<CommentsInfoItem> comments, String comment) {
-        for(CommentsInfoItem c: comments) {
-            if(c.getCommentText().contains(comment)) {
+        for (CommentsInfoItem c : comments) {
+            if (c.getCommentText().contains(comment)) {
                 return true;
             }
         }

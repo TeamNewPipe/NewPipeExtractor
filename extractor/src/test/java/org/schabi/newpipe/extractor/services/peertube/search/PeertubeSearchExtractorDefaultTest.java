@@ -1,10 +1,5 @@
 package org.schabi.newpipe.extractor.services.peertube.search;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
-import static org.schabi.newpipe.extractor.ServiceList.PeerTube;
-
 import org.junit.BeforeClass;
 import org.junit.Test;
 import org.schabi.newpipe.DownloaderTestImpl;
@@ -14,6 +9,9 @@ import org.schabi.newpipe.extractor.NewPipe;
 import org.schabi.newpipe.extractor.services.peertube.PeertubeInstance;
 import org.schabi.newpipe.extractor.services.peertube.extractors.PeertubeSearchExtractor;
 import org.schabi.newpipe.extractor.stream.StreamInfoItem;
+
+import static org.junit.Assert.*;
+import static org.schabi.newpipe.extractor.ServiceList.PeerTube;
 
 /**
  * Test for {@link PeertubeSearchExtractor}
@@ -38,15 +36,15 @@ public class PeertubeSearchExtractorDefaultTest extends PeertubeSearchExtractorB
     @Test
     public void testResultList_FirstElement() {
         InfoItem firstInfoItem = itemsPage.getItems().get(0);
-        
+
         assertTrue("search does not match", firstInfoItem.getName().toLowerCase().contains("kde"));
     }
 
     @Test
     public void testResultListCheckIfContainsStreamItems() {
         boolean hasStreams = false;
-        for(InfoItem item : itemsPage.getItems()) {
-            if(item instanceof StreamInfoItem) {
+        for (InfoItem item : itemsPage.getItems()) {
+            if (item instanceof StreamInfoItem) {
                 hasStreams = true;
             }
         }
@@ -67,7 +65,7 @@ public class PeertubeSearchExtractorDefaultTest extends PeertubeSearchExtractorB
         boolean equals = true;
         for (int i = 0; i < secondPage.getItems().size()
                 && i < itemsPage.getItems().size(); i++) {
-            if(!secondPage.getItems().get(i).getUrl().equals(
+            if (!secondPage.getItems().get(i).getUrl().equals(
                     itemsPage.getItems().get(i).getUrl())) {
                 equals = false;
             }
@@ -75,7 +73,7 @@ public class PeertubeSearchExtractorDefaultTest extends PeertubeSearchExtractorB
         assertFalse("First and second page are equal", equals);
 
         assertEquals("https://peertube.mastodon.host/api/v1/search/videos?search=internet&start=24&count=12",
-                     secondPage.getNextPageUrl());
+                secondPage.getNextPageUrl());
     }
 
 

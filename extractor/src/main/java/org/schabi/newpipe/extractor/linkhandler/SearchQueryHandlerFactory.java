@@ -13,14 +13,19 @@ public abstract class SearchQueryHandlerFactory extends ListLinkHandlerFactory {
 
     @Override
     public abstract String getUrl(String querry, List<String> contentFilter, String sortFilter) throws ParsingException;
-    public  String getSearchString(String url) { return "";}
+
+    public String getSearchString(String url) {
+        return "";
+    }
 
     ///////////////////////////////////
     // Logic
     ///////////////////////////////////
 
     @Override
-    public String getId(String url) { return getSearchString(url); }
+    public String getId(String url) {
+        return getSearchString(url);
+    }
 
     @Override
     public SearchQueryHandler fromQuery(String querry,
@@ -34,10 +39,13 @@ public abstract class SearchQueryHandlerFactory extends ListLinkHandlerFactory {
     }
 
     /**
-     * It's not mandatorry for NewPipe to handle the Url
+     * It's not mandatory for NewPipe to handle the Url
+     *
      * @param url
      * @return
      */
     @Override
-    public boolean onAcceptUrl(String url) { return false; }
+    public boolean onAcceptUrl(String url) {
+        return false;
+    }
 }

@@ -1,8 +1,8 @@
 package org.schabi.newpipe.extractor.utils;
 
-import org.schabi.newpipe.extractor.downloader.Downloader;
 import org.schabi.newpipe.extractor.MediaFormat;
 import org.schabi.newpipe.extractor.NewPipe;
+import org.schabi.newpipe.extractor.downloader.Downloader;
 import org.schabi.newpipe.extractor.exceptions.ParsingException;
 import org.schabi.newpipe.extractor.exceptions.ReCaptchaException;
 import org.schabi.newpipe.extractor.services.youtube.ItagItem;
@@ -109,11 +109,11 @@ public class DashMpdParser {
      * <p>
      * It has video, video only and audio streams and will only add to the list if it don't
      * find a similar stream in the respective lists (calling {@link Stream#equalStats}).
-     *
+     * <p>
      * Info about dash MPD can be found here
-     * @see <a href="https://www.brendanlong.com/the-structure-of-an-mpeg-dash-mpd.html">www.brendanlog.com</a>
      *
      * @param streamInfo where the parsed streams will be added
+     * @see <a href="https://www.brendanlong.com/the-structure-of-an-mpeg-dash-mpd.html">www.brendanlog.com</a>
      */
     public static ParserResult getStreams(final StreamInfo streamInfo)
             throws DashMpdParsingException, ReCaptchaException {
@@ -160,7 +160,7 @@ public class DashMpdParser {
                         final MediaFormat mediaFormat = MediaFormat.getFromMimeType(mimeType);
 
                         if (itag.itagType.equals(ItagItem.ItagType.AUDIO)) {
-                            if(segmentationList == null) {
+                            if (segmentationList == null) {
                                 final AudioStream audioStream = new AudioStream(url, mediaFormat, itag.avgBitrate);
                                 if (!Stream.containSimilarStream(audioStream, streamInfo.getAudioStreams())) {
                                     audioStreams.add(audioStream);
@@ -172,7 +172,7 @@ public class DashMpdParser {
                         } else {
                             boolean isVideoOnly = itag.itagType.equals(ItagItem.ItagType.VIDEO_ONLY);
 
-                            if(segmentationList == null) {
+                            if (segmentationList == null) {
                                 final VideoStream videoStream = new VideoStream(url,
                                         mediaFormat,
                                         itag.resolutionString,
@@ -191,7 +191,7 @@ public class DashMpdParser {
                                         itag.resolutionString,
                                         isVideoOnly);
 
-                                if(isVideoOnly) {
+                                if (isVideoOnly) {
                                     segmentedVideoOnlyStreams.add(videoStream);
                                 } else {
                                     segmentedVideoStreams.add(videoStream);
