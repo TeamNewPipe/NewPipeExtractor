@@ -6,6 +6,8 @@ import org.json.JSONException;
 import org.json.JSONObject;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
+import org.jsoup.nodes.Element;
+import org.jsoup.select.Elements;
 import org.schabi.newpipe.extractor.MediaFormat;
 import org.schabi.newpipe.extractor.StreamingService;
 import org.schabi.newpipe.extractor.downloader.Downloader;
@@ -20,6 +22,7 @@ import javax.annotation.Nullable;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
 
 import static org.schabi.newpipe.extractor.services.bandcamp.extractors.BandcampChannelExtractor.getImageUrl;
 
@@ -121,14 +124,15 @@ public class BandcampStreamExtractor extends StreamExtractor {
 
     @Nonnull
     @Override
-    public String getDescription() {
-        return BandcampExtractorHelper.smartConcatenate(
+    public Description getDescription() {
+        String s = BandcampExtractorHelper.smartConcatenate(
                 new String[]{
                         getStringOrNull(current, "about"),
                         getStringOrNull(current, "lyrics"),
                         getStringOrNull(current, "credits")
                 }, "\n\n"
         );
+        return new Description(s, Description.PLAIN_TEXT);
     }
 
     /**
@@ -176,7 +180,7 @@ public class BandcampStreamExtractor extends StreamExtractor {
     @Nonnull
     @Override
     public String getDashMpdUrl() throws ParsingException {
-        return null;
+        return "";
     }
 
     @Nonnull
@@ -210,13 +214,13 @@ public class BandcampStreamExtractor extends StreamExtractor {
     @Nonnull
     @Override
     public List<SubtitlesStream> getSubtitlesDefault() {
-        return null;
+        return new ArrayList<>();
     }
 
     @Nonnull
     @Override
     public List<SubtitlesStream> getSubtitles(MediaFormat format) {
-        return null;
+        return new ArrayList<>();
     }
 
     @Override
@@ -237,5 +241,78 @@ public class BandcampStreamExtractor extends StreamExtractor {
     @Override
     public String getErrorMessage() {
         return null;
+    }
+
+    @Nonnull
+    @Override
+    public String getHost() {
+        return "";
+    }
+
+    @Nonnull
+    @Override
+    public String getPrivacy() {
+        return "";
+    }
+
+    @Nonnull
+    @Override
+    public String getCategory() {
+        // Get first tag from html, which is the artist's Genre
+        return document.getElementsByAttributeValue("itemprop", "keywords").first().text();
+    }
+
+    @Nonnull
+    @Override
+    public String getLicence() {
+
+        int license = current.getInt("license_type");
+
+        // Tests resulted in this mapping of ints to licence: https://cloud.disroot.org/s/ZTWBxbQ9fKRmRWJ/preview
+
+        switch (license) {
+            case 1:
+                return "All rights reserved ©";
+            case 2:
+                return "CC BY-NC-ND 3.0";
+            case 3:
+                return "CC BY-NC-SA 3.0";
+            case 4:
+                return "CC BY-NC 3.0";
+            case 5:
+                return "CC BY-ND 3.0";
+            case 8:
+                return "CC BY-SA 3.0";
+            case 6:
+                return "CC BY 3.0";
+            default:
+                return "Unknown license (internal ID " + license + ")";
+        }
+    }
+
+    @Nullable
+    @Override
+    public Locale getLanguageInfo() {
+        return null;
+    }
+
+    @Nonnull
+    @Override
+    public List<String> getTags() {
+        Elements tagElements = document.getElementsByAttributeValue("itemprop", "keywords");
+
+        ArrayList<String> tags = new ArrayList<>();
+
+        for (Element e : tagElements) {
+            tags.add(e.text());
+        }
+
+        return tags;
+    }
+
+    @Nonnull
+    @Override
+    public String getSupportInfo() {
+        return "";
     }
 }

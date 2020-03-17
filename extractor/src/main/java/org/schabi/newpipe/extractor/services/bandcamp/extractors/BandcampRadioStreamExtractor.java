@@ -11,6 +11,7 @@ import org.schabi.newpipe.extractor.exceptions.ParsingException;
 import org.schabi.newpipe.extractor.exceptions.ReCaptchaException;
 import org.schabi.newpipe.extractor.linkhandler.LinkHandler;
 import org.schabi.newpipe.extractor.stream.AudioStream;
+import org.schabi.newpipe.extractor.stream.Description;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -91,8 +92,8 @@ public class BandcampRadioStreamExtractor extends BandcampStreamExtractor {
 
     @Nonnull
     @Override
-    public String getDescription() {
-        return showInfo.getString("desc");
+    public Description getDescription() {
+        return new Description(showInfo.getString("desc"), Description.PLAIN_TEXT);
     }
 
     @Override
@@ -119,5 +120,23 @@ public class BandcampRadioStreamExtractor extends BandcampStreamExtractor {
         }
 
         return list;
+    }
+
+    @Nonnull
+    @Override
+    public String getLicence() {
+        return "";
+    }
+
+    @Nonnull
+    @Override
+    public String getCategory() {
+        return "";
+    }
+
+    @Nonnull
+    @Override
+    public List<String> getTags() {
+        return new ArrayList<>();
     }
 }

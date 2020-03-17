@@ -9,6 +9,9 @@ import org.schabi.newpipe.extractor.NewPipe;
 import org.schabi.newpipe.extractor.exceptions.ExtractionException;
 import org.schabi.newpipe.extractor.exceptions.ParsingException;
 import org.schabi.newpipe.extractor.services.bandcamp.extractors.BandcampStreamExtractor;
+import org.schabi.newpipe.extractor.stream.StreamExtractor;
+
+import java.io.IOException;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
@@ -52,7 +55,7 @@ public class BandcampStreamExtractorTest {
 
     @Test
     public void testDescription() {
-        assertEquals(831, extractor.getDescription().length());
+        assertEquals(831, extractor.getDescription().getContent().length());
     }
 
     @Test
@@ -76,5 +79,20 @@ public class BandcampStreamExtractorTest {
     public void testInvalidUrl() throws ExtractionException {
         bandcamp.getStreamExtractor("https://bandcamp.com");
     }
+
+    @Test
+    public void testCategory() throws ExtractionException, IOException {
+        StreamExtractor se = bandcamp.getStreamExtractor("https://npet.bandcamp.com/track/track-1");
+        se.fetchPage();
+        assertEquals("acoustic", se.getCategory());
+    }
+
+    @Test
+    public void testLicense() throws ExtractionException, IOException {
+        StreamExtractor se = bandcamp.getStreamExtractor("https://npet.bandcamp.com/track/track-1");
+        se.fetchPage();
+        assertEquals("CC BY 3.0", se.getLicence());
+    }
+
 
 }
