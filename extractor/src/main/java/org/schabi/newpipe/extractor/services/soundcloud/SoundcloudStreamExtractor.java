@@ -14,7 +14,14 @@ import org.schabi.newpipe.extractor.exceptions.ExtractionException;
 import org.schabi.newpipe.extractor.exceptions.ParsingException;
 import org.schabi.newpipe.extractor.linkhandler.LinkHandler;
 import org.schabi.newpipe.extractor.localization.DateWrapper;
-import org.schabi.newpipe.extractor.stream.*;
+import org.schabi.newpipe.extractor.stream.AudioStream;
+import org.schabi.newpipe.extractor.stream.Description;
+import org.schabi.newpipe.extractor.stream.StreamExtractor;
+import org.schabi.newpipe.extractor.stream.StreamInfoItem;
+import org.schabi.newpipe.extractor.stream.StreamInfoItemsCollector;
+import org.schabi.newpipe.extractor.stream.StreamType;
+import org.schabi.newpipe.extractor.stream.SubtitlesStream;
+import org.schabi.newpipe.extractor.stream.VideoStream;
 
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
@@ -148,24 +155,13 @@ public class SoundcloudStreamExtractor extends StreamExtractor {
         List<AudioStream> audioStreams = new ArrayList<>();
         Downloader dl = NewPipe.getDownloader();
 
-        String apiUrl = "https://api-v2.soundcloud.com/tracks/" + urlEncode(getId())
-                + "?client_id=" + urlEncode(SoundcloudParsingHelper.clientId());
-
-        String response = dl.get(apiUrl, getExtractorLocalization()).responseBody();
-        JsonObject responseObject;
-        try {
-            responseObject = JsonParser.object().from(response);
-        } catch (JsonParserException e) {
-            throw new ParsingException("Could not parse json response", e);
-        }
-
         // Streams can be streamable and downloadable - or explicitly not.
         // For playing the track, it is only necessary to have a streamable track.
         // If this is not the case, this track might not be published yet.
-        if (!responseObject.getBoolean("streamable")) return audioStreams;
+        if (!track.getBoolean("streamable")) return audioStreams;
 
         try {
-            JsonArray transcodings = responseObject.getObject("media").getArray("transcodings");
+            JsonArray transcodings = track.getObject("media").getArray("transcodings");
 
             // get information about what stream formats are available
             for (Object transcoding : transcodings) {
