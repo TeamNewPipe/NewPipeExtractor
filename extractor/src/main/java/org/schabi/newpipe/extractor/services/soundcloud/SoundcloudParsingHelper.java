@@ -31,7 +31,7 @@ import static org.schabi.newpipe.extractor.ServiceList.SoundCloud;
 import static org.schabi.newpipe.extractor.utils.Utils.replaceHttpWithHttps;
 
 public class SoundcloudParsingHelper {
-    private static final String HARDCODED_CLIENT_ID = "t0h1jzYMsaZXy6ggnZO71gHK3Ms6CFwE"; // Updated on 14/03/20
+    private static final String HARDCODED_CLIENT_ID = "Uz4aPhG7GAl1VYGOnvOPW1wQ0M6xKtA9"; // Updated on 16/03/20
     private static String clientId;
 
     private SoundcloudParsingHelper() {
@@ -42,7 +42,7 @@ public class SoundcloudParsingHelper {
 
         Downloader dl = NewPipe.getDownloader();
         clientId = HARDCODED_CLIENT_ID;
-        if (checkIfHardcodedClientIdIsValid(dl)) {
+        if (checkIfHardcodedClientIdIsValid()) {
             return clientId;
         }
 
@@ -73,11 +73,12 @@ public class SoundcloudParsingHelper {
         throw new ExtractionException("Couldn't extract client id");
     }
 
-    static boolean checkIfHardcodedClientIdIsValid(Downloader dl) {
-        final String apiUrl = "https://api.soundcloud.com/connect?client_id=" + HARDCODED_CLIENT_ID;
+    static boolean checkIfHardcodedClientIdIsValid() {
         try {
-            // Should return 200 to indicate that the client id is valid, a 401 is returned otherwise.
-            return dl.head(apiUrl).responseCode() == 200;
+            SoundcloudStreamExtractor e = (SoundcloudStreamExtractor) SoundCloud
+                    .getStreamExtractor("https://soundcloud.com/liluzivert/do-what-i-want-produced-by-maaly-raw-don-cannon");
+            e.fetchPage();
+            return e.getAudioStreams().size() >= 1;
         } catch (Exception ignored) {
             // No need to throw an exception here. If something went wrong, the client_id is wrong
             return false;
@@ -107,7 +108,7 @@ public class SoundcloudParsingHelper {
      * See https://developers.soundcloud.com/docs/api/reference#resolve
      */
     public static JsonObject resolveFor(Downloader downloader, String url) throws IOException, ExtractionException {
-        String apiUrl = "https://api.soundcloud.com/resolve"
+        String apiUrl = "https://api-v2.soundcloud.com/resolve"
                 + "?url=" + URLEncoder.encode(url, "UTF-8")
                 + "&client_id=" + clientId();
 
