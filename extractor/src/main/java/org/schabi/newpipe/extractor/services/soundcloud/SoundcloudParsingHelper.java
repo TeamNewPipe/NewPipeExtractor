@@ -108,7 +108,7 @@ public class SoundcloudParsingHelper {
      * See https://developers.soundcloud.com/docs/api/reference#resolve
      */
     public static JsonObject resolveFor(Downloader downloader, String url) throws IOException, ExtractionException {
-        String apiUrl = "https://api.soundcloud.com/resolve"
+        String apiUrl = "https://api-v2.soundcloud.com/resolve"
                 + "?url=" + URLEncoder.encode(url, "UTF-8")
                 + "&client_id=" + clientId();
 

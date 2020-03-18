@@ -44,7 +44,7 @@ public class SoundcloudChartsExtractor extends KioskExtractor<StreamInfoItem> {
     }
 
 
-    private void computNextPageAndStreams() throws IOException, ExtractionException {
+    private void computeNextPageAndStreams() throws IOException, ExtractionException {
         collector = new StreamInfoItemsCollector(getServiceId());
 
         String apiUrl = "https://api-v2.soundcloud.com/charts" +
@@ -69,7 +69,7 @@ public class SoundcloudChartsExtractor extends KioskExtractor<StreamInfoItem> {
     @Override
     public String getNextPageUrl() throws IOException, ExtractionException {
         if (nextPageUrl == null) {
-            computNextPageAndStreams();
+            computeNextPageAndStreams();
         }
         return nextPageUrl;
     }
@@ -78,7 +78,7 @@ public class SoundcloudChartsExtractor extends KioskExtractor<StreamInfoItem> {
     @Override
     public InfoItemsPage<StreamInfoItem> getInitialPage() throws IOException, ExtractionException {
         if (collector == null) {
-            computNextPageAndStreams();
+            computeNextPageAndStreams();
         }
         return new InfoItemsPage<>(collector, getNextPageUrl());
     }
