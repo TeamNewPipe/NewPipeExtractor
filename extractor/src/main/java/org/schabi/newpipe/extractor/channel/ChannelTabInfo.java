@@ -16,7 +16,7 @@ public class ChannelTabInfo extends ListInfo<InfoItem> {
         super(serviceId, id, url, originalUrl, name, listLinkHandler.getContentFilters(), listLinkHandler.getSortFilter());
     }
 
-    public static ListExtractor.InfoItemsPage<InfoItem> getMoreItems(ChannelTabInfo tabInfo, String pageUrl) throws IOException, ExtractionException {
+    public static void assureChannelTabExtractor(ChannelTabInfo tabInfo) throws ExtractionException, IOException {
         if (tabInfo.getChannelTabExtractor() == null) {
             ChannelExtractor channelExtractor = NewPipe.getServiceByUrl(tabInfo.getUrl()).getChannelExtractor(tabInfo.getUrl());
             channelExtractor.fetchPage();
@@ -28,6 +28,10 @@ public class ChannelTabInfo extends ListInfo<InfoItem> {
                 }
             }
         }
+    }
+
+    public static ListExtractor.InfoItemsPage<InfoItem> getMoreItems(ChannelTabInfo tabInfo, String pageUrl) throws IOException, ExtractionException {
+        assureChannelTabExtractor(tabInfo);
 
         return tabInfo.getChannelTabExtractor().getPage(pageUrl);
     }
@@ -43,11 +47,30 @@ public class ChannelTabInfo extends ListInfo<InfoItem> {
 
         info.setChannelTabExtractor(extractor);
 
-        final ListExtractor.InfoItemsPage<InfoItem> itemsPage = ExtractorHelper.getItemsPageOrLogError(info, extractor);
-        info.setRelatedItems(itemsPage.getItems());
-        info.setNextPageUrl(itemsPage.getNextPageUrl());
-
         return info;
+    }
+
+    public static ChannelTabInfo getInfo(ChannelTabExtractor extractor, boolean usedForFeed) throws ExtractionException {
+        ChannelTabInfo channelTabInfo = getInfo(extractor);
+        channelTabInfo.setUsedForFeed(usedForFeed);
+        return channelTabInfo;
+    }
+
+    private boolean isLoaded = false;
+
+    public ChannelTabInfo loadTab() throws IOException, ExtractionException {
+        if (isLoaded) return this;
+
+        assureChannelTabExtractor(this);
+        this.getChannelTabExtractor().fetchPage();
+
+        final ListExtractor.InfoItemsPage<InfoItem> itemsPage = ExtractorHelper.getItemsPageOrLogError(this, this.getChannelTabExtractor());
+        this.setRelatedItems(itemsPage.getItems());
+        this.setNextPageUrl(itemsPage.getNextPageUrl());
+
+        isLoaded = true;
+
+        return this;
     }
 
     private transient ChannelTabExtractor channelTabExtractor;
@@ -58,5 +81,15 @@ public class ChannelTabInfo extends ListInfo<InfoItem> {
 
     public void setChannelTabExtractor(ChannelTabExtractor channelTabExtractor) {
         this.channelTabExtractor = channelTabExtractor;
+    }
+
+    private boolean usedForFeed = false;
+
+    public boolean isUsedForFeed() {
+        return usedForFeed;
+    }
+
+    public void setUsedForFeed(boolean usedForFeed) {
+        this.usedForFeed = usedForFeed;
     }
 }

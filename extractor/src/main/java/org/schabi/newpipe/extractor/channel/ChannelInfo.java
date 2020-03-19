@@ -82,10 +82,9 @@ public class ChannelInfo extends Info {
         }
 
         List<ChannelTabInfo> tabs = new ArrayList<>();
-        for (ChannelTabExtractor tab : extractor.getTabs()) {
+        for (int i = 0; i < extractor.getTabs().size(); i++) {
             try {
-                tab.fetchPage();
-                ChannelTabInfo tabInfo = ChannelTabInfo.getInfo(tab);
+                ChannelTabInfo tabInfo = ChannelTabInfo.getInfo(extractor.getTabs().get(i), i == 0);
                 tabs.add(tabInfo);
             } catch (Exception e) {
                 info.addError(e);
