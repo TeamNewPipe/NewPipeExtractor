@@ -2,8 +2,8 @@
 
 package org.schabi.newpipe.extractor.services.bandcamp.extractors;
 
-import org.json.JSONException;
-import org.json.JSONObject;
+import com.grack.nanojson.JsonObject;
+import com.grack.nanojson.JsonParserException;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
@@ -28,8 +28,8 @@ import static org.schabi.newpipe.extractor.services.bandcamp.extractors.Bandcamp
 
 public class BandcampStreamExtractor extends StreamExtractor {
 
-    private JSONObject albumJson;
-    private JSONObject current;
+    private JsonObject albumJson;
+    private JsonObject current;
     private Document document;
 
     public BandcampStreamExtractor(StreamingService service, LinkHandler linkHandler) {
@@ -42,9 +42,9 @@ public class BandcampStreamExtractor extends StreamExtractor {
         String html = downloader.get(getLinkHandler().getUrl()).responseBody();
         document = Jsoup.parse(html);
         albumJson = getAlbumInfoJson(html);
-        current = albumJson.getJSONObject("current");
+        current = albumJson.getObject("current");
 
-        if (albumJson.getJSONArray("trackinfo").length() > 1) {
+        if (albumJson.getArray("trackinfo").size() > 1) {
             // In this case, we are actually viewing an album page!
             throw new ExtractionException("Page is actually an album, not a track");
         }
@@ -57,10 +57,10 @@ public class BandcampStreamExtractor extends StreamExtractor {
      * @return Album metadata JSON
      * @throws ParsingException In case of a faulty website
      */
-    public static JSONObject getAlbumInfoJson(String html) throws ParsingException {
+    public static JsonObject getAlbumInfoJson(String html) throws ParsingException {
         try {
             return BandcampExtractorHelper.getJSONFromJavaScriptVariables(html, "TralbumData");
-        } catch (JSONException e) {
+        } catch (JsonParserException e) {
             throw new ParsingException("Faulty JSON; page likely does not contain album data", e);
         } catch (ArrayIndexOutOfBoundsException e) {
             throw new ParsingException("JSON does not exist", e);
@@ -127,24 +127,12 @@ public class BandcampStreamExtractor extends StreamExtractor {
     public Description getDescription() {
         String s = BandcampExtractorHelper.smartConcatenate(
                 new String[]{
-                        getStringOrNull(current, "about"),
-                        getStringOrNull(current, "lyrics"),
-                        getStringOrNull(current, "credits")
+                        current.getString("about"),
+                        current.getString("lyrics"),
+                        current.getString("credits")
                 }, "\n\n"
         );
         return new Description(s, Description.PLAIN_TEXT);
-    }
-
-    /**
-     * Avoid exceptions like "<code>JSONObject["about"] not a string.</code>" and instead just return null.
-     * This is for the case that the actual JSON has something like <code>"about": null</code>.
-     */
-    private String getStringOrNull(JSONObject jsonObject, String value) {
-        try {
-            return jsonObject.getString(value);
-        } catch (JSONException e) {
-            return null;
-        }
     }
 
     @Override
@@ -194,8 +182,8 @@ public class BandcampStreamExtractor extends StreamExtractor {
         List<AudioStream> audioStreams = new ArrayList<>();
 
         audioStreams.add(new AudioStream(
-                albumJson.getJSONArray("trackinfo").getJSONObject(0)
-                        .getJSONObject("file").getString("mp3-128"),
+                albumJson.getArray("trackinfo").getObject(0)
+                        .getObject("file").getString("mp3-128"),
                 MediaFormat.MP3, 128
         ));
         return audioStreams;

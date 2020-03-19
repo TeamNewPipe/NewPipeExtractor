@@ -2,8 +2,9 @@
 
 package org.schabi.newpipe.extractor.services.bandcamp.extractors;
 
-import org.json.JSONException;
-import org.json.JSONObject;
+import com.grack.nanojson.JsonObject;
+import com.grack.nanojson.JsonParser;
+import com.grack.nanojson.JsonParserException;
 import org.schabi.newpipe.extractor.NewPipe;
 import org.schabi.newpipe.extractor.exceptions.ParsingException;
 import org.schabi.newpipe.extractor.exceptions.ReCaptchaException;
@@ -24,7 +25,7 @@ public class BandcampExtractorHelper {
      * @param variable Name of the variable
      * @return The JsonObject stored in the variable with this name
      */
-    public static JSONObject getJSONFromJavaScriptVariables(String html, String variable) throws JSONException, ArrayIndexOutOfBoundsException, ParsingException {
+    public static JsonObject getJSONFromJavaScriptVariables(String html, String variable) throws JsonParserException, ArrayIndexOutOfBoundsException, ParsingException {
 
         String[] part = html.split("var " + variable + " = ");
 
@@ -44,7 +45,7 @@ public class BandcampExtractorHelper {
                 case '}':
                     level--;
                     if (level == 0) {
-                        return new JSONObject(firstHalfGone.substring(0, position + 1)
+                        return JsonParser.object().from(firstHalfGone.substring(0, position + 1)
                                 .replaceAll(" {4}//.+", "") // Remove "for the curious" in JSON
                                 .replaceAll("// xxx: note - don't internationalize this variable", "") // Remove this comment
                         );
@@ -62,14 +63,14 @@ public class BandcampExtractorHelper {
     public static String getStreamUrlFromIds(long bandId, long itemId, String itemType) throws ParsingException {
 
         try {
-            String html = NewPipe.getDownloader().get(
+            String jsonString = NewPipe.getDownloader().get(
                     "https://bandcamp.com/api/mobile/22/tralbum_details?band_id=" + bandId
                             + "&tralbum_id=" + itemId + "&tralbum_type=" + itemType.substring(0, 1))
                     .responseBody();
 
-            return new JSONObject(html).getString("bandcamp_url").replace("http://", "https://");
+            return JsonParser.object().from(jsonString).getString("bandcamp_url").replace("http://", "https://");
 
-        } catch (JSONException | ReCaptchaException | IOException e) {
+        } catch (JsonParserException | ReCaptchaException | IOException e) {
             throw new ParsingException("Ids could not be translated to URL", e);
         }
 

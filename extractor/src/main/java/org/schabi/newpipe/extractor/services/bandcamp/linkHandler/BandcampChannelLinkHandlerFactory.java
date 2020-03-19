@@ -2,8 +2,8 @@
 
 package org.schabi.newpipe.extractor.services.bandcamp.linkHandler;
 
-import org.json.JSONException;
-import org.json.JSONObject;
+import com.grack.nanojson.JsonObject;
+import com.grack.nanojson.JsonParserException;
 import org.schabi.newpipe.extractor.NewPipe;
 import org.schabi.newpipe.extractor.exceptions.ParsingException;
 import org.schabi.newpipe.extractor.exceptions.ReCaptchaException;
@@ -26,11 +26,11 @@ public class BandcampChannelLinkHandlerFactory extends ListLinkHandlerFactory {
             String response = NewPipe.getDownloader().get(url).responseBody();
 
             // This variable contains band data!
-            JSONObject bandData = BandcampExtractorHelper.getJSONFromJavaScriptVariables(response, "BandData");
+            JsonObject bandData = BandcampExtractorHelper.getJSONFromJavaScriptVariables(response, "BandData");
 
             return String.valueOf(bandData.getLong("id"));
 
-        } catch (IOException | ReCaptchaException | ArrayIndexOutOfBoundsException e) {
+        } catch (IOException | ReCaptchaException | ArrayIndexOutOfBoundsException | JsonParserException e) {
             throw new ParsingException("Download failed", e);
         }
     }
@@ -44,7 +44,7 @@ public class BandcampChannelLinkHandlerFactory extends ListLinkHandlerFactory {
             return BandcampChannelExtractor.getArtistDetails(id)
                     .getString("bandcamp_url")
                     .replace("http://", "https://");
-        } catch (JSONException e) {
+        } catch (NullPointerException e) {
             throw new ParsingException("JSON does not contain URL (invalid id?) or is otherwise invalid", e);
         }
 

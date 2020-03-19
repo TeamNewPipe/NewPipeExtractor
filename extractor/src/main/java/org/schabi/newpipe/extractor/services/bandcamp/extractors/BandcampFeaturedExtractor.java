@@ -2,8 +2,10 @@
 
 package org.schabi.newpipe.extractor.services.bandcamp.extractors;
 
-import org.json.JSONArray;
-import org.json.JSONObject;
+import com.grack.nanojson.JsonArray;
+import com.grack.nanojson.JsonObject;
+import com.grack.nanojson.JsonParser;
+import com.grack.nanojson.JsonParserException;
 import org.schabi.newpipe.extractor.Collector;
 import org.schabi.newpipe.extractor.InfoItem;
 import org.schabi.newpipe.extractor.InfoItemsCollector;
@@ -49,34 +51,41 @@ public class BandcampFeaturedExtractor extends KioskExtractor<InfoItem> {
 
         InfoItemsCollector c = new PlaylistInfoItemsCollector(getServiceId());
 
-        JSONObject json = new JSONObject(
-                getDownloader().post(
-                        FEATURED_API_URL, null, "{\"platform\":\"\",\"version\":0}".getBytes()
-                ).responseBody()
-        );
+        try {
 
-        JSONArray featuredStories = json.getJSONObject("feed_content")
-                .getJSONObject("stories")
-                .getJSONArray("featured");
 
-        for (int i = 0; i < featuredStories.length(); i++) {
-            JSONObject featuredStory = featuredStories.getJSONObject(i);
+            JsonObject json = JsonParser.object().from(
+                    getDownloader().post(
+                            FEATURED_API_URL, null, "{\"platform\":\"\",\"version\":0}".getBytes()
+                    ).responseBody()
+            );
 
-            if (featuredStory.isNull("album_title")) {
-                // Is not an album, ignore
-                continue;
+            JsonArray featuredStories = json.getObject("feed_content")
+                    .getObject("stories")
+                    .getArray("featured");
+
+            for (int i = 0; i < featuredStories.size(); i++) {
+                JsonObject featuredStory = featuredStories.getObject(i);
+
+                if (featuredStory.isNull("album_title")) {
+                    // Is not an album, ignore
+                    continue;
+                }
+
+                c.commit(new BandcampPlaylistInfoItemExtractor(
+                        featuredStory.getString("album_title"),
+                        featuredStory.getString("band_name"),
+                        featuredStory.getString("item_url"),
+                        featuredStory.has("art_id") ? getImageUrl(featuredStory.getLong("art_id"), true) : "",
+                        featuredStory.getInt("num_streamable_tracks")
+                ));
             }
 
-            c.commit(new BandcampPlaylistInfoItemExtractor(
-                    featuredStory.getString("album_title"),
-                    featuredStory.getString("band_name"),
-                    featuredStory.getString("item_url"),
-                    featuredStory.has("art_id") ? getImageUrl(featuredStory.getLong("art_id"), true) : "",
-                    featuredStory.getInt("num_streamable_tracks")
-            ));
+            return new InfoItemsPage<InfoItem>(c, null);
+        } catch (JsonParserException e) {
+            e.printStackTrace();
+            throw new ParsingException("JSON error", e);
         }
-
-        return new InfoItemsPage<InfoItem>(c, null);
     }
 
     @Override

@@ -1,6 +1,8 @@
 package org.schabi.newpipe.extractor.services.bandcamp.extractors;
 
-import org.json.JSONObject;
+import com.grack.nanojson.JsonObject;
+import com.grack.nanojson.JsonParser;
+import com.grack.nanojson.JsonParserException;
 import org.jsoup.Jsoup;
 import org.schabi.newpipe.extractor.MediaFormat;
 import org.schabi.newpipe.extractor.NewPipe;
@@ -23,7 +25,7 @@ import static org.schabi.newpipe.extractor.services.bandcamp.extractors.Bandcamp
 
 public class BandcampRadioStreamExtractor extends BandcampStreamExtractor {
 
-    private JSONObject showInfo;
+    private JsonObject showInfo;
     private LinkHandler linkHandler;
 
     public BandcampRadioStreamExtractor(StreamingService service, LinkHandler linkHandler) {
@@ -31,12 +33,12 @@ public class BandcampRadioStreamExtractor extends BandcampStreamExtractor {
         this.linkHandler = linkHandler;
     }
 
-    static JSONObject query(int id) throws ParsingException {
+    static JsonObject query(int id) throws ParsingException {
         try {
-            return new JSONObject(
+            return JsonParser.object().from(
                     NewPipe.getDownloader().get("https://bandcamp.com/api/bcweekly/1/get?id=" + id).responseBody()
             );
-        } catch (IOException | ReCaptchaException e) {
+        } catch (IOException | ReCaptchaException | JsonParserException e) {
             throw new ParsingException("could not get show data", e);
         }
     }
@@ -104,7 +106,7 @@ public class BandcampRadioStreamExtractor extends BandcampStreamExtractor {
     @Override
     public List<AudioStream> getAudioStreams() {
         ArrayList<AudioStream> list = new ArrayList<>();
-        JSONObject streams = showInfo.getJSONObject("audio_stream");
+        JsonObject streams = showInfo.getObject("audio_stream");
 
         if (streams.has("opus-lo")) {
             list.add(new AudioStream(

@@ -2,11 +2,11 @@
 
 package org.schabi.newpipe.extractor.services.bandcamp.extractors;
 
-import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
+import com.grack.nanojson.JsonArray;
+import com.grack.nanojson.JsonObject;
+import com.grack.nanojson.JsonParser;
+import com.grack.nanojson.JsonParserException;
 import org.jsoup.Jsoup;
-import org.schabi.newpipe.extractor.InfoItemsCollector;
 import org.schabi.newpipe.extractor.NewPipe;
 import org.schabi.newpipe.extractor.StreamingService;
 import org.schabi.newpipe.extractor.channel.ChannelExtractor;
@@ -23,7 +23,7 @@ import java.io.IOException;
 
 public class BandcampChannelExtractor extends ChannelExtractor {
 
-    private JSONObject channelInfo;
+    private JsonObject channelInfo;
 
     public BandcampChannelExtractor(StreamingService service, ListLinkHandler linkHandler) throws ParsingException {
         super(service, linkHandler);
@@ -36,17 +36,17 @@ public class BandcampChannelExtractor extends ChannelExtractor {
      * <a href=https://notabug.org/fynngodau/bandcampDirect/wiki/rewindBandcamp+%E2%80%93+Fetching+artist+details>
      * I once took a moment to note down how it works.</a>
      */
-    public static JSONObject getArtistDetails(String id) throws ParsingException {
+    public static JsonObject getArtistDetails(String id) throws ParsingException {
         try {
             return
-                    new JSONObject(
+                    JsonParser.object().from(
                             NewPipe.getDownloader().post(
                                     "https://bandcamp.com/api/mobile/22/band_details",
                                     null,
                                     ("{\"band_id\":\"" + id + "\"}").getBytes()
                             ).responseBody()
                     );
-        } catch (IOException | ReCaptchaException e) {
+        } catch (IOException | ReCaptchaException | JsonParserException e) {
             throw new ParsingException("Could not download band details", e);
         }
     }
@@ -63,12 +63,9 @@ public class BandcampChannelExtractor extends ChannelExtractor {
 
     @Override
     public String getAvatarUrl() {
-        try {
-            return getImageUrl(channelInfo.getLong("bio_image_id"), false);
-        } catch (JSONException e) {
-            // In this case, the id is null and no image is available
-            return "";
-        }
+        if (channelInfo.getLong("bio_image_id") == 0) return "";
+
+        return getImageUrl(channelInfo.getLong("bio_image_id"), false);
     }
 
     /**
@@ -120,11 +117,11 @@ public class BandcampChannelExtractor extends ChannelExtractor {
 
         StreamInfoItemsCollector collector = new StreamInfoItemsCollector(getServiceId());
 
-        JSONArray discography = channelInfo.getJSONArray("discography");
+        JsonArray discography = channelInfo.getArray("discography");
 
-        for (int i = 0; i < discography.length(); i++) {
+        for (int i = 0; i < discography.size(); i++) {
             // I define discograph as an item that can appear in a discography
-            JSONObject discograph = discography.getJSONObject(i);
+            JsonObject discograph = discography.getObject(i);
 
             if (!discograph.getString("item_type").equals("track")) continue;
 

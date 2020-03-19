@@ -2,7 +2,7 @@
 
 package org.schabi.newpipe.extractor.services.bandcamp.extractors;
 
-import org.json.JSONObject;
+import com.grack.nanojson.JsonObject;
 import org.schabi.newpipe.extractor.exceptions.ParsingException;
 import org.schabi.newpipe.extractor.localization.DateWrapper;
 import org.schabi.newpipe.extractor.stream.StreamInfoItemExtractor;
@@ -14,9 +14,9 @@ import static org.schabi.newpipe.extractor.services.bandcamp.extractors.Bandcamp
 
 public class BandcampRadioInfoItemExtractor implements StreamInfoItemExtractor {
 
-    private JSONObject show;
+    private JsonObject show;
 
-    public BandcampRadioInfoItemExtractor(JSONObject radioShow) {
+    public BandcampRadioInfoItemExtractor(JsonObject radioShow) {
         show = radioShow;
     }
 

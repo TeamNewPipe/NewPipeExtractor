@@ -2,8 +2,10 @@
 
 package org.schabi.newpipe.extractor.services.bandcamp.extractors;
 
-import org.json.JSONArray;
-import org.json.JSONObject;
+import com.grack.nanojson.JsonArray;
+import com.grack.nanojson.JsonObject;
+import com.grack.nanojson.JsonParser;
+import com.grack.nanojson.JsonParserException;
 import org.schabi.newpipe.extractor.InfoItem;
 import org.schabi.newpipe.extractor.InfoItemsCollector;
 import org.schabi.newpipe.extractor.StreamingService;
@@ -12,7 +14,7 @@ import org.schabi.newpipe.extractor.exceptions.ExtractionException;
 import org.schabi.newpipe.extractor.exceptions.ParsingException;
 import org.schabi.newpipe.extractor.kiosk.KioskExtractor;
 import org.schabi.newpipe.extractor.linkhandler.ListLinkHandler;
-import org.schabi.newpipe.extractor.playlist.PlaylistInfoItemsCollector;
+import org.schabi.newpipe.extractor.stream.StreamInfoItem;
 import org.schabi.newpipe.extractor.stream.StreamInfoItemsCollector;
 
 import javax.annotation.Nonnull;
@@ -43,20 +45,26 @@ public class BandcampRadioExtractor extends KioskExtractor<InfoItem> {
     public InfoItemsPage<InfoItem> getInitialPage() throws IOException, ExtractionException {
         InfoItemsCollector c = new StreamInfoItemsCollector(getServiceId());
 
-        JSONObject json = new JSONObject(
-                getDownloader().get(
-                        RADIO_API_URL
-                ).responseBody()
-        );
+        try {
 
-        JSONArray radioShows = json.getJSONArray("results");
-
-        for (int i = 0; i < radioShows.length(); i++) {
-            JSONObject radioShow = radioShows.getJSONObject(i);
-
-            c.commit(
-                    new BandcampRadioInfoItemExtractor(radioShow)
+            JsonObject json = JsonParser.object().from(
+                    getDownloader().get(
+                            RADIO_API_URL
+                    ).responseBody()
             );
+
+            JsonArray radioShows = json.getArray("results");
+
+            for (int i = 0; i < radioShows.size(); i++) {
+                JsonObject radioShow = radioShows.getObject(i);
+
+                c.commit(
+                        new BandcampRadioInfoItemExtractor(radioShow)
+                );
+            }
+
+        } catch (JsonParserException e) {
+            e.printStackTrace();
         }
 
         return new InfoItemsPage<InfoItem>(c, null);
