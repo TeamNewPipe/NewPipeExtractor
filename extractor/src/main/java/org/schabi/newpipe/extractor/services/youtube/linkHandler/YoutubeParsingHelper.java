@@ -5,6 +5,8 @@ import com.grack.nanojson.JsonArray;
 import com.grack.nanojson.JsonObject;
 import com.grack.nanojson.JsonParser;
 import com.grack.nanojson.JsonParserException;
+import com.grack.nanojson.JsonWriter;
+
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.schabi.newpipe.extractor.downloader.Response;
@@ -62,6 +64,7 @@ public class YoutubeParsingHelper {
     private static final String HARDCODED_CLIENT_VERSION = "2.20200214.04.00";
     private static String clientVersion;
 
+    private static final String[] HARDCODED_YOUTUBE_MUSIC_KEYS = {"AIzaSyC9XL3ZjWddXya6X74dJoCTL-WEYFDNX30", "67", "0.1"};
     private static String[] youtubeMusicKeys;
 
     private static final String FEED_BASE_CHANNEL_ID = "https://www.youtube.com/feeds/videos.xml?channel_id=";
@@ -198,11 +201,7 @@ public class YoutubeParsingHelper {
      */
     public static String getClientVersion() throws IOException, ExtractionException {
         if (clientVersion != null && !clientVersion.isEmpty()) return clientVersion;
-
-        if (isHardcodedClientVersionValid()) {
-            clientVersion = HARDCODED_CLIENT_VERSION;
-            return clientVersion;
-        }
+        if (isHardcodedClientVersionValid()) return clientVersion = HARDCODED_CLIENT_VERSION;
 
         final String url = "https://www.youtube.com/results?search_query=test";
         final String html = getDownloader().get(url).responseBody();
@@ -219,8 +218,7 @@ public class YoutubeParsingHelper {
                     JsonObject p = (JsonObject) param;
                     String key = p.getString("key");
                     if (key != null && key.equals("cver")) {
-                        clientVersion = p.getString("value");
-                        return clientVersion;
+                        return clientVersion = p.getString("value");
                     }
                 }
             } else if (s.getString("service").equals("ECATCHER")) {
@@ -246,30 +244,89 @@ public class YoutubeParsingHelper {
             try {
                 contextClientVersion = Parser.matchGroup1(pattern, html);
                 if (contextClientVersion != null && !contextClientVersion.isEmpty()) {
-                    clientVersion = contextClientVersion;
-                    return clientVersion;
+                    return clientVersion = contextClientVersion;
                 }
             } catch (Exception ignored) {
             }
         }
 
         if (shortClientVersion != null) {
-            clientVersion = shortClientVersion;
-            return clientVersion;
+            return clientVersion = shortClientVersion;
         }
 
         throw new ParsingException("Could not get client version");
     }
 
+    public static boolean areHardcodedYoutubeMusicKeysValid() throws IOException, ReCaptchaException {
+        final String url = "https://music.youtube.com/youtubei/v1/search?alt=json&key=" + HARDCODED_YOUTUBE_MUSIC_KEYS[0];
+
+        // @formatter:off
+        byte[] json = JsonWriter.string()
+            .object()
+                .object("context")
+                    .object("client")
+                        .value("clientName", "WEB_REMIX")
+                        .value("clientVersion", HARDCODED_YOUTUBE_MUSIC_KEYS[2])
+                        .value("hl", "en")
+                        .value("gl", "GB")
+                        .array("experimentIds").end()
+                        .value("experimentsToken", "")
+                        .value("utcOffsetMinutes", 0)
+                        .object("locationInfo").end()
+                        .object("musicAppInfo").end()
+                    .end()
+                    .object("capabilities").end()
+                    .object("request")
+                        .array("internalExperimentFlags").end()
+                        .object("sessionIndex").end()
+                    .end()
+                    .object("activePlayers").end()
+                    .object("user")
+                        .value("enableSafetyMode", false)
+                    .end()
+                .end()
+                .value("query", "test")
+                .value("params", "Eg-KAQwIARAAGAAgACgAMABqChAEEAUQAxAKEAk%3D")
+            .end().done().getBytes("UTF-8");
+        // @formatter:on
+
+        Map<String, List<String>> headers = new HashMap<>();
+        headers.put("X-YouTube-Client-Name", Collections.singletonList(HARDCODED_YOUTUBE_MUSIC_KEYS[1]));
+        headers.put("X-YouTube-Client-Version", Collections.singletonList(HARDCODED_YOUTUBE_MUSIC_KEYS[2]));
+        headers.put("Origin", Collections.singletonList("https://music.youtube.com"));
+        headers.put("Content-Type", Collections.singletonList("application/json"));
+
+        String response = getDownloader().post(url, headers, json).responseBody();
+
+        return response.length() > 50; // ensure to have a valid response
+    }
+
     public static String[] getYoutubeMusicKeys() throws IOException, ReCaptchaException, Parser.RegexException {
         if (youtubeMusicKeys != null && youtubeMusicKeys.length == 3) return youtubeMusicKeys;
+        if (areHardcodedYoutubeMusicKeysValid()) return youtubeMusicKeys = HARDCODED_YOUTUBE_MUSIC_KEYS;
 
         final String url = "https://music.youtube.com/";
         final String html = getDownloader().get(url).responseBody();
 
-        final String key = Parser.matchGroup1("INNERTUBE_API_KEY\":\"([0-9a-zA-Z_-]+?)\"", html);
+        String key;
+        try {
+            key = Parser.matchGroup1("INNERTUBE_API_KEY\":\"([0-9a-zA-Z_-]+?)\"", html);
+        } catch (Parser.RegexException e) {
+            key = Parser.matchGroup1("innertube_api_key\":\"([0-9a-zA-Z_-]+?)\"", html);
+        }
+
         final String clientName = Parser.matchGroup1("INNERTUBE_CONTEXT_CLIENT_NAME\":([0-9]+?),", html);
-        final String clientVersion = Parser.matchGroup1("INNERTUBE_CLIENT_VERSION\":\"([0-9\\.]+?)\"", html);
+
+        String clientVersion;
+        try {
+            clientVersion = Parser.matchGroup1("INNERTUBE_CONTEXT_CLIENT_VERSION\":\"([0-9\\.]+?)\"", html);
+        } catch (Parser.RegexException e) {
+            try {
+                clientVersion = Parser.matchGroup1("INNERTUBE_CLIENT_VERSION\":\"([0-9\\.]+?)\"", html);
+            } catch (Parser.RegexException ee) {
+                clientVersion = Parser.matchGroup1("innertube_context_client_version\":\"([0-9\\.]+?)\"", html);
+            }
+        }
 
         return youtubeMusicKeys = new String[]{key, clientName, clientVersion};
     }
