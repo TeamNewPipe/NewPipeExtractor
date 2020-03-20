@@ -7,6 +7,9 @@ import org.schabi.newpipe.extractor.linkhandler.ListLinkHandler;
 import org.schabi.newpipe.extractor.stream.StreamInfoItem;
 
 public abstract class PlaylistExtractor extends ListExtractor<StreamInfoItem> {
+    public final static long UNKNOWN_ITEMS = -1;
+    public final static long INFINITE_ITEMS = -2;
+    public final static long MORE_THAN_100_ITEMS = -3;
 
     public PlaylistExtractor(StreamingService service, ListLinkHandler linkHandler) {
         super(service, linkHandler);
