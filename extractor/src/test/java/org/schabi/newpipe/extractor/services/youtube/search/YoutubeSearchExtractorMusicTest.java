@@ -76,4 +76,14 @@ public class YoutubeSearchExtractorMusicTest extends YoutubeSearchExtractorBaseT
         assertEquals("json", queryPairs.get("alt"));
         assertTrue(queryPairs.get("key").length() > 5);
     }
+
+    @Test
+    public void testSuggestions() throws Exception {
+        YoutubeSearchExtractor newExtractor = (YoutubeSearchExtractor) YouTube.getSearchExtractor("megaman x3",
+                asList(YoutubeSearchQueryHandlerFactory.MUSIC_SONGS), null);
+        newExtractor.fetchPage();
+
+        assertTrue(newExtractor.getInitialPage().getItems().size() > 10);
+        assertEquals("mega man x3", newExtractor.getSearchSuggestion());
+    }
 }

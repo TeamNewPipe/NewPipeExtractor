@@ -174,16 +174,19 @@ public class YoutubeSearchExtractor extends SearchExtractor {
 
     @Override
     public String getSearchSuggestion() throws ParsingException {
-        if (isMusicSearch()) return "";
-
-        JsonObject showingResultsForRenderer = initialData.getObject("contents")
-                .getObject("twoColumnSearchResultsRenderer").getObject("primaryContents")
-                .getObject("sectionListRenderer").getArray("contents").getObject(0)
-                .getObject("itemSectionRenderer").getArray("contents").getObject(0)
-                .getObject("showingResultsForRenderer");
-        if (showingResultsForRenderer == null) {
-            return "";
+        if (isMusicSearch()) {
+            final JsonObject itemSectionRenderer = initialData.getObject("contents").getObject("sectionListRenderer")
+                    .getArray("contents").getObject(0).getObject("itemSectionRenderer");
+            if (itemSectionRenderer == null) return "";
+            return getTextFromObject(itemSectionRenderer.getArray("contents").getObject(0)
+                    .getObject("didYouMeanRenderer").getObject("correctedQuery"));
         } else {
+            JsonObject showingResultsForRenderer = initialData.getObject("contents")
+                    .getObject("twoColumnSearchResultsRenderer").getObject("primaryContents")
+                    .getObject("sectionListRenderer").getArray("contents").getObject(0)
+                    .getObject("itemSectionRenderer").getArray("contents").getObject(0)
+                    .getObject("showingResultsForRenderer");
+            if (showingResultsForRenderer == null) return "";
             return getTextFromObject(showingResultsForRenderer.getObject("correctedQuery"));
         }
     }
@@ -194,10 +197,13 @@ public class YoutubeSearchExtractor extends SearchExtractor {
         final InfoItemsSearchCollector collector = new InfoItemsSearchCollector(getServiceId());
 
         if (isMusicSearch()) {
-            JsonArray sections = initialData.getObject("contents").getObject("sectionListRenderer")
-                    .getArray("contents").getObject(0).getObject("musicShelfRenderer").getArray("contents");
+            final JsonArray contents = initialData.getObject("contents").getObject("sectionListRenderer").getArray("contents");
 
-            collectMusicStreamsFrom(collector, sections);
+            for (Object content : contents) {
+                if (((JsonObject) content).getObject("musicShelfRenderer") != null) {
+                    collectMusicStreamsFrom(collector, ((JsonObject) content).getObject("musicShelfRenderer").getArray("contents"));
+                }
+            }
         } else {
             JsonArray sections = initialData.getObject("contents").getObject("twoColumnSearchResultsRenderer")
                     .getObject("primaryContents").getObject("sectionListRenderer").getArray("contents");
@@ -213,8 +219,15 @@ public class YoutubeSearchExtractor extends SearchExtractor {
     @Override
     public String getNextPageUrl() throws ExtractionException, IOException {
         if (isMusicSearch()) {
-            return getNextPageUrlFrom(initialData.getObject("contents").getObject("sectionListRenderer")
-                    .getArray("contents").getObject(0).getObject("musicShelfRenderer").getArray("continuations"));
+            final JsonArray contents = initialData.getObject("contents").getObject("sectionListRenderer").getArray("contents");
+
+            for (Object content : contents) {
+                if (((JsonObject) content).getObject("musicShelfRenderer") != null) {
+                    return getNextPageUrlFrom(((JsonObject) content).getObject("musicShelfRenderer").getArray("continuations"));
+                }
+            }
+
+            return "";
         } else {
             return getNextPageUrlFrom(initialData.getObject("contents").getObject("twoColumnSearchResultsRenderer")
                     .getObject("primaryContents").getObject("sectionListRenderer").getArray("contents")
@@ -517,9 +530,7 @@ public class YoutubeSearchExtractor extends SearchExtractor {
     }
 
     private String getNextPageUrlFrom(JsonArray continuations) throws ParsingException, IOException, ReCaptchaException {
-        if (continuations == null) {
-            return "";
-        }
+        if (continuations == null) return "";
 
         JsonObject nextContinuationData = continuations.getObject(0).getObject("nextContinuationData");
         String continuation = nextContinuationData.getString("continuation");
