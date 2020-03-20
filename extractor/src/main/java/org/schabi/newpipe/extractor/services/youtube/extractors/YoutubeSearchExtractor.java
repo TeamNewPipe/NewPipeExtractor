@@ -130,6 +130,7 @@ public class YoutubeSearchExtractor extends SearchExtractor {
             headers.put("X-YouTube-Client-Name", Collections.singletonList(youtubeMusicKeys[1]));
             headers.put("X-YouTube-Client-Version", Collections.singletonList(youtubeMusicKeys[2]));
             headers.put("Origin", Collections.singletonList("https://music.youtube.com"));
+            headers.put("Referer", Collections.singletonList("music.youtube.com"));
             headers.put("Content-Type", Collections.singletonList("application/json"));
 
             Response response = getDownloader().post(url, headers, json);
@@ -266,6 +267,7 @@ public class YoutubeSearchExtractor extends SearchExtractor {
             headers.put("X-YouTube-Client-Name", Collections.singletonList(youtubeMusicKeys[1]));
             headers.put("X-YouTube-Client-Version", Collections.singletonList(youtubeMusicKeys[2]));
             headers.put("Origin", Collections.singletonList("https://music.youtube.com"));
+            headers.put("Referer", Collections.singletonList("music.youtube.com"));
             headers.put("Content-Type", Collections.singletonList("application/json"));
 
             Response response = getDownloader().post(pageUrl, headers, json);

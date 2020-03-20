@@ -294,6 +294,7 @@ public class YoutubeParsingHelper {
         headers.put("X-YouTube-Client-Name", Collections.singletonList(HARDCODED_YOUTUBE_MUSIC_KEYS[1]));
         headers.put("X-YouTube-Client-Version", Collections.singletonList(HARDCODED_YOUTUBE_MUSIC_KEYS[2]));
         headers.put("Origin", Collections.singletonList("https://music.youtube.com"));
+        headers.put("Referer", Collections.singletonList("music.youtube.com"));
         headers.put("Content-Type", Collections.singletonList("application/json"));
 
         String response = getDownloader().post(url, headers, json).responseBody();
