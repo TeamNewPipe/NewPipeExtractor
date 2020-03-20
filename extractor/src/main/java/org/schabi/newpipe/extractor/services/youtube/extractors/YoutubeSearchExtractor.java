@@ -308,7 +308,9 @@ public class YoutubeSearchExtractor extends SearchExtractor {
                 throw new ParsingException("Could not parse JSON", e);
             }
 
-            if (ajaxJson.getObject("continuationContents") == null) return new InfoItemsPage<>(collector, null);
+            if (ajaxJson.getObject("continuationContents") == null) {
+                return InfoItemsPage.emptyPage();
+            }
 
             JsonObject musicShelfContinuation = ajaxJson.getObject("continuationContents").getObject("musicShelfContinuation");
 
@@ -329,8 +331,7 @@ public class YoutubeSearchExtractor extends SearchExtractor {
 
     private boolean isMusicSearch() {
         final List<String> contentFilters = getLinkHandler().getContentFilters();
-        if (contentFilters.size() > 0 && contentFilters.get(0).startsWith("music_")) return true;
-        return false;
+        return contentFilters.size() > 0 && contentFilters.get(0).startsWith("music_");
     }
 
     private void collectStreamsFrom(InfoItemsSearchCollector collector, JsonArray videos) throws NothingFoundException, ParsingException {
@@ -392,6 +393,16 @@ public class YoutubeSearchExtractor extends SearchExtractor {
                         }
 
                         @Override
+                        public String getUploaderUrl() throws ParsingException {
+                            if (searchType.equals(MUSIC_VIDEOS)) return null;
+                            String url = getUrlFromNavigationEndpoint(info.getArray("flexColumns")
+                                    .getObject(1).getObject("musicResponsiveListItemFlexColumnRenderer")
+                                    .getObject("text").getArray("runs").getObject(0).getObject("navigationEndpoint"));
+                            if (url != null && !url.isEmpty()) return url;
+                            throw new ParsingException("Could not get uploader url");
+                        }
+
+                        @Override
                         public String getTextualUploadDate() {
                             return null;
                         }
@@ -413,9 +424,12 @@ public class YoutubeSearchExtractor extends SearchExtractor {
                         @Override
                         public String getThumbnailUrl() throws ParsingException {
                             try {
-                                // TODO: Don't simply get the first item, but look at all thumbnails and their resolution
-                                return fixThumbnailUrl(info.getObject("thumbnail").getObject("musicThumbnailRenderer")
-                                        .getObject("thumbnail").getArray("thumbnails").getObject(0).getString("url"));
+                                JsonArray thumbnails = info.getObject("thumbnail").getObject("musicThumbnailRenderer")
+                                        .getObject("thumbnail").getArray("thumbnails");
+                                // the last thumbnail is the one with the highest resolution
+                                String url = thumbnails.getObject(thumbnails.size() - 1).getString("url");
+
+                                return fixThumbnailUrl(url);
                             } catch (Exception e) {
                                 throw new ParsingException("Could not get thumbnail url", e);
                             }
@@ -426,9 +440,12 @@ public class YoutubeSearchExtractor extends SearchExtractor {
                         @Override
                         public String getThumbnailUrl() throws ParsingException {
                             try {
-                                // TODO: Don't simply get the first item, but look at all thumbnails and their resolution
-                                return fixThumbnailUrl(info.getObject("thumbnail").getObject("musicThumbnailRenderer")
-                                        .getObject("thumbnail").getArray("thumbnails").getObject(0).getString("url"));
+                                JsonArray thumbnails = info.getObject("thumbnail").getObject("musicThumbnailRenderer")
+                                        .getObject("thumbnail").getArray("thumbnails");
+                                // the last thumbnail is the one with the highest resolution
+                                String url = thumbnails.getObject(thumbnails.size() - 1).getString("url");
+
+                                return fixThumbnailUrl(url);
                             } catch (Exception e) {
                                 throw new ParsingException("Could not get thumbnail url", e);
                             }
@@ -472,9 +489,12 @@ public class YoutubeSearchExtractor extends SearchExtractor {
                         @Override
                         public String getThumbnailUrl() throws ParsingException {
                             try {
-                                // TODO: Don't simply get the first item, but look at all thumbnails and their resolution
-                                return fixThumbnailUrl(info.getObject("thumbnail").getObject("musicThumbnailRenderer")
-                                        .getObject("thumbnail").getArray("thumbnails").getObject(0).getString("url"));
+                                JsonArray thumbnails = info.getObject("thumbnail").getObject("musicThumbnailRenderer")
+                                        .getObject("thumbnail").getArray("thumbnails");
+                                // the last thumbnail is the one with the highest resolution
+                                String url = thumbnails.getObject(thumbnails.size() - 1).getString("url");
+
+                                return fixThumbnailUrl(url);
                             } catch (Exception e) {
                                 throw new ParsingException("Could not get thumbnail url", e);
                             }

@@ -19,6 +19,7 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 import static org.schabi.newpipe.extractor.ServiceList.YouTube;
+import static org.schabi.newpipe.extractor.services.DefaultTests.defaultTestRelatedItems;
 
 public class YoutubeSearchExtractorMusicTest extends YoutubeSearchExtractorBaseTest {
     @BeforeClass
@@ -28,6 +29,11 @@ public class YoutubeSearchExtractorMusicTest extends YoutubeSearchExtractorBaseT
                 asList(YoutubeSearchQueryHandlerFactory.MUSIC_SONGS), null);
         extractor.fetchPage();
         itemsPage = extractor.getInitialPage();
+    }
+
+    @Test
+    public void testRelatedItems() throws Exception {
+        defaultTestRelatedItems(extractor);
     }
 
     @Test
