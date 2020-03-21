@@ -70,8 +70,14 @@ public class YoutubeChannelInfoItemExtractor implements ChannelInfoItemExtractor
     @Override
     public long getSubscriberCount() throws ParsingException {
         try {
-            String subscribers = getTextFromObject(channelInfoItem.getObject("subscriberCountText"));
-            return Utils.mixedNumberWordToLong(subscribers);
+            final JsonObject subscriberCountObject = channelInfoItem.getObject("subscriberCountText");
+
+            if (subscriberCountObject == null) {
+                // Subscription count is not available for this channel item.
+                return -1;
+            }
+
+            return Utils.mixedNumberWordToLong(getTextFromObject(subscriberCountObject));
         } catch (Exception e) {
             throw new ParsingException("Could not get subscriber count", e);
         }
