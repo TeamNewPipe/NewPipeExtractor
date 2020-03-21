@@ -176,8 +176,10 @@ public class YoutubeSearchExtractor extends SearchExtractor {
             final JsonObject itemSectionRenderer = initialData.getObject("contents").getObject("sectionListRenderer")
                     .getArray("contents").getObject(0).getObject("itemSectionRenderer");
             if (itemSectionRenderer == null) return "";
-            return getTextFromObject(itemSectionRenderer.getArray("contents").getObject(0)
-                    .getObject("didYouMeanRenderer").getObject("correctedQuery"));
+            final JsonObject didYouMeanRenderer = itemSectionRenderer.getArray("contents")
+                    .getObject(0).getObject("didYouMeanRenderer");
+            if (didYouMeanRenderer == null) return "";
+            return getTextFromObject(didYouMeanRenderer.getObject("correctedQuery"));
         } else {
             JsonObject showingResultsForRenderer = initialData.getObject("contents")
                     .getObject("twoColumnSearchResultsRenderer").getObject("primaryContents")
