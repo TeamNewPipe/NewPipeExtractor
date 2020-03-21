@@ -86,7 +86,14 @@ public class YoutubeChannelInfoItemExtractor implements ChannelInfoItemExtractor
     @Override
     public long getStreamCount() throws ParsingException {
         try {
-            return Long.parseLong(Utils.removeNonDigitCharacters(getTextFromObject(channelInfoItem.getObject("videoCountText"))));
+            final JsonObject videoCountObject = channelInfoItem.getObject("videoCountText");
+
+            if (videoCountObject == null) {
+                // Video count is not available, channel probably has no public uploads.
+                return -1;
+            }
+
+            return Long.parseLong(Utils.removeNonDigitCharacters(getTextFromObject(videoCountObject)));
         } catch (Exception e) {
             throw new ParsingException("Could not get stream count", e);
         }
