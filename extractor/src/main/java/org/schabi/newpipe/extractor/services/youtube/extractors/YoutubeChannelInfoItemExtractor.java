@@ -95,7 +95,14 @@ public class YoutubeChannelInfoItemExtractor implements ChannelInfoItemExtractor
     @Override
     public String getDescription() throws ParsingException {
         try {
-            return getTextFromObject(channelInfoItem.getObject("descriptionSnippet"));
+            final JsonObject descriptionObject = channelInfoItem.getObject("descriptionSnippet");
+
+            if (descriptionObject == null) {
+                // Channel have no description.
+                return null;
+            }
+
+            return getTextFromObject(descriptionObject);
         } catch (Exception e) {
             throw new ParsingException("Could not get description", e);
         }
