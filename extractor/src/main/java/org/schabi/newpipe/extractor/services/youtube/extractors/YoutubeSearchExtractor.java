@@ -30,8 +30,6 @@ import java.util.Map;
 
 import javax.annotation.Nonnull;
 
-import static org.schabi.newpipe.extractor.playlist.PlaylistExtractor.MORE_THAN_100_ITEMS;
-import static org.schabi.newpipe.extractor.playlist.PlaylistExtractor.UNKNOWN_ITEMS;
 import static org.schabi.newpipe.extractor.services.youtube.linkHandler.YoutubeParsingHelper.fixThumbnailUrl;
 import static org.schabi.newpipe.extractor.services.youtube.linkHandler.YoutubeParsingHelper.getJsonResponse;
 import static org.schabi.newpipe.extractor.services.youtube.linkHandler.YoutubeParsingHelper.getTextFromObject;
@@ -531,12 +529,12 @@ public class YoutubeSearchExtractor extends SearchExtractor {
 
                         @Override
                         public long getStreamCount() throws ParsingException {
-                            if (searchType.equals(MUSIC_ALBUMS)) return UNKNOWN_ITEMS;
+                            if (searchType.equals(MUSIC_ALBUMS)) return ITEM_COUNT_UNKNOWN;
                             String count = getTextFromObject(info.getArray("flexColumns").getObject(2)
                                     .getObject("musicResponsiveListItemFlexColumnRenderer").getObject("text"));
                             if (count != null && !count.isEmpty()) {
                                 if (count.contains("100+")) {
-                                    return MORE_THAN_100_ITEMS;
+                                    return ITEM_COUNT_MORE_THAN_100;
                                 } else {
                                     return Long.parseLong(Utils.removeNonDigitCharacters(count));
                                 }
