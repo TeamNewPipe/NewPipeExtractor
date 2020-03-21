@@ -79,7 +79,6 @@ public class SoundcloudSearchExtractor extends SearchExtractor {
 
     private InfoItemsCollector<InfoItem, InfoItemExtractor> collectItems(JsonArray searchCollection) {
         final InfoItemsSearchCollector collector = getInfoItemSearchCollector();
-        collector.reset();
 
         for (Object result : searchCollection) {
             if (!(result instanceof JsonObject)) continue;
