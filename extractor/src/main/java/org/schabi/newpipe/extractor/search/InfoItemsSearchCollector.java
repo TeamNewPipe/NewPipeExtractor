@@ -11,6 +11,10 @@ import org.schabi.newpipe.extractor.playlist.PlaylistInfoItemsCollector;
 import org.schabi.newpipe.extractor.stream.StreamInfoItemExtractor;
 import org.schabi.newpipe.extractor.stream.StreamInfoItemsCollector;
 
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+
 /*
  * Created by Christian Schabesberger on 12.02.17.
  *
@@ -53,6 +57,24 @@ public class InfoItemsSearchCollector extends InfoItemsCollector<InfoItem, InfoI
         streamCollector = new StreamInfoItemsCollector(serviceId);
         userCollector = new ChannelInfoItemsCollector(serviceId);
         playlistCollector = new PlaylistInfoItemsCollector(serviceId);
+    }
+
+    @Override
+    public List<Throwable> getErrors() {
+        final List<Throwable> errors = new ArrayList<>(super.getErrors());
+        errors.addAll(streamCollector.getErrors());
+        errors.addAll(userCollector.getErrors());
+        errors.addAll(playlistCollector.getErrors());
+
+        return Collections.unmodifiableList(errors);
+    }
+
+    @Override
+    public void reset() {
+        super.reset();
+        streamCollector.reset();
+        userCollector.reset();
+        playlistCollector.reset();
     }
 
     @Override
