@@ -13,6 +13,7 @@ import org.schabi.newpipe.extractor.ListExtractor;
 import org.schabi.newpipe.extractor.ListExtractor.InfoItemsPage;
 import org.schabi.newpipe.extractor.NewPipe;
 import org.schabi.newpipe.extractor.exceptions.ExtractionException;
+import org.schabi.newpipe.extractor.exceptions.ParsingException;
 import org.schabi.newpipe.extractor.services.youtube.extractors.YoutubeMixPlaylistExtractor;
 import org.schabi.newpipe.extractor.stream.StreamInfoItem;
 
@@ -93,11 +94,6 @@ public class YoutubeMixPlaylistExtractorTest {
         public void getStreamCount() throws Exception {
             assertEquals(ListExtractor.ITEM_COUNT_INFINITE, extractor.getStreamCount());
         }
-
-        @Test
-        public void getStreamCount() throws Exception {
-            assertEquals(ListExtractor.ITEM_COUNT_INFINITE, extractor.getStreamCount());
-        }
     }
 
     public static class MixWithIndex {
@@ -164,11 +160,6 @@ public class YoutubeMixPlaylistExtractorTest {
             }
             assertTrue(streams.hasNextPage());
             assertFalse(streams.getItems().isEmpty());
-        }
-
-        @Test
-        public void getStreamCount() {
-            assertEquals(ListExtractor.ITEM_COUNT_INFINITE, extractor.getStreamCount());
         }
 
         @Test
@@ -264,12 +255,13 @@ public class YoutubeMixPlaylistExtractorTest {
             extractor.getPage("");
         }
 
-        @Test(expected = NullPointerException.class)
+        @Test(expected = ExtractionException.class)
         public void invalidVideoId() throws Exception {
             extractor = (YoutubeMixPlaylistExtractor) YouTube
                 .getPlaylistExtractor(
                     "https://www.youtube.com/watch?v=" + "abcde" + "&list=RD" + "abcde");
             extractor.fetchPage();
+            extractor.getName();
         }
     }
 
@@ -323,11 +315,6 @@ public class YoutubeMixPlaylistExtractorTest {
             InfoItemsPage<StreamInfoItem> streams = extractor.getPage(extractor.getNextPageUrl());
             assertFalse(streams.getItems().isEmpty());
             assertTrue(streams.hasNextPage());
-        }
-
-        @Test
-        public void getStreamCount() throws Exception {
-            assertEquals(ListExtractor.ITEM_COUNT_INFINITE, extractor.getStreamCount());
         }
 
         @Test

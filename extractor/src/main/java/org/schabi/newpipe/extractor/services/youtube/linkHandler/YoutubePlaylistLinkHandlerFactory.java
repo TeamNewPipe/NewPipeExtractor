@@ -64,11 +64,12 @@ public class YoutubePlaylistLinkHandlerFactory extends ListLinkHandlerFactory {
     @Override
     public boolean onAcceptUrl(final String url) {
         try {
-            getId(url);
+            String playlistId = getId(url);
+            //Because youtube music mix are not supported yet.
+            return !YoutubeParsingHelper.isYoutubeMusicMixId(playlistId);
         } catch (ParsingException e) {
             return false;
         }
-        return true;
     }
 
     /**

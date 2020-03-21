@@ -193,13 +193,23 @@ public class YoutubeParsingHelper {
     }
 
     /**
-     * Checks if the given playlist id is a mix (auto-generated playlist)
-     * Ids from a mix start with "RD"
+     * Checks if the given playlist id is a youtube mix (auto-generated playlist)
+     * Ids from a youtube mix start with "RD"
      * @param playlistId
-     * @return Whether given id belongs to a mix
+     * @return Whether given id belongs to a youtube mix
      */
     public static boolean isYoutubeMixId(String playlistId) {
-        return playlistId.startsWith("RD");
+        return playlistId.startsWith("RD") && !isYoutubeMusicMixId(playlistId);
+    }
+
+    /**
+     * Checks if the given playlist id is a youtube music mix (auto-generated playlist)
+     * Ids from a youtube music mix start with "RD"
+     * @param playlistId
+     * @return Whether given id belongs to a youtube music mix
+     */
+    public static boolean isYoutubeMusicMixId(String playlistId) {
+        return playlistId.startsWith("RDAMVM");
     }
 
     public static JsonObject getInitialData(String html) throws ParsingException {
@@ -427,9 +437,9 @@ public class YoutubeParsingHelper {
             StringBuilder url = new StringBuilder();
             url.append("https://www.youtube.com/watch?v=").append(navigationEndpoint.getObject("watchEndpoint").getString("videoId"));
             if (navigationEndpoint.getObject("watchEndpoint").has("playlistId"))
-                url.append("&amp;list=").append(navigationEndpoint.getObject("watchEndpoint").getString("playlistId"));
+                url.append("&list=").append(navigationEndpoint.getObject("watchEndpoint").getString("playlistId"));
             if (navigationEndpoint.getObject("watchEndpoint").has("startTimeSeconds"))
-                url.append("&amp;t=").append(navigationEndpoint.getObject("watchEndpoint").getInt("startTimeSeconds"));
+                url.append("&t=").append(navigationEndpoint.getObject("watchEndpoint").getInt("startTimeSeconds"));
             return url.toString();
         } else if (navigationEndpoint.has("watchPlaylistEndpoint")) {
             return "https://www.youtube.com/playlist?list=" +
@@ -457,6 +467,7 @@ public class YoutubeParsingHelper {
             if (html && ((JsonObject) textPart).has("navigationEndpoint")) {
                 String url = getUrlFromNavigationEndpoint(((JsonObject) textPart).getObject("navigationEndpoint"));
                 if (!isNullOrEmpty(url)) {
+                    url = url.replaceAll("&", "&amp;");
                     textBuilder.append("<a href=\"").append(url).append("\">").append(text).append("</a>");
                     continue;
                 }

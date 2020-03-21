@@ -144,7 +144,7 @@ public class YoutubeService extends StreamingService {
                 public KioskExtractor createNewKiosk(StreamingService streamingService,
                                                      String url,
                                                      String id)
-                throws ExtractionException {
+                        throws ExtractionException {
                     return new YoutubeTrendingExtractor(YoutubeService.this,
                             new YoutubeTrendingLinkHandlerFactory().fromUrl(url), id);
                 }
