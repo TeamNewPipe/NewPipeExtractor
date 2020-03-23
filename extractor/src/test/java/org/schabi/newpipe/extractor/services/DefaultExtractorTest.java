@@ -4,8 +4,8 @@ import org.junit.Test;
 import org.schabi.newpipe.extractor.Extractor;
 import org.schabi.newpipe.extractor.StreamingService;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
+import static org.hamcrest.CoreMatchers.*;
+import static org.junit.Assert.*;
 import static org.schabi.newpipe.extractor.ExtractorAsserts.assertIsSecureUrl;
 
 public abstract class DefaultExtractorTest<T extends Extractor> implements BaseExtractorTest {
@@ -39,21 +39,15 @@ public abstract class DefaultExtractorTest<T extends Extractor> implements BaseE
     @Override
     public void testUrl() throws Exception {
         final String url = extractor().getUrl();
-        final String expectedContains = expectedUrlContains();
-
         assertIsSecureUrl(url);
-        assertTrue("Url \"" + url + "\" doesn't contains \"" + expectedContains + "\"",
-                url.contains(expectedContains));
+        assertThat(url, containsString(expectedUrlContains()));
     }
 
     @Test
     @Override
     public void testOriginalUrl() throws Exception {
         final String originalUrl = extractor().getOriginalUrl();
-        final String expectedContains = expectedOriginalUrlContains();
-
         assertIsSecureUrl(originalUrl);
-        assertTrue("Original url \"" + originalUrl + "\" doesn't contains \"" + expectedContains + "\"",
-                originalUrl.contains(expectedContains));
+        assertThat(originalUrl, containsString(expectedOriginalUrlContains()));
     }
 }
