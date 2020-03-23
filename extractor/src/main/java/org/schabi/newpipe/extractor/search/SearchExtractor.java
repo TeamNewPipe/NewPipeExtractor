@@ -27,10 +27,6 @@ public abstract class SearchExtractor extends ListExtractor<InfoItem> {
 
     public abstract String getSearchSuggestion() throws ParsingException;
 
-    protected InfoItemsSearchCollector getInfoItemSearchCollector() {
-        return new InfoItemsSearchCollector(getService().getServiceId());
-    }
-
     @Override
     public SearchQueryHandler getLinkHandler() {
         return (SearchQueryHandler) super.getLinkHandler();
