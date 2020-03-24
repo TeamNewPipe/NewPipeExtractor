@@ -47,8 +47,7 @@ public class PeertubeSearchExtractor extends SearchExtractor {
     }
 
     private InfoItemsCollector<InfoItem, InfoItemExtractor> collectStreamsFrom(JsonObject json) throws ParsingException {
-
-        final InfoItemsSearchCollector collector = getInfoItemSearchCollector();
+        final InfoItemsSearchCollector collector = new InfoItemsSearchCollector(getServiceId());
 
         JsonArray contents;
         try {

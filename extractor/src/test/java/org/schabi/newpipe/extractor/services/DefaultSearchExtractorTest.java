@@ -1,0 +1,34 @@
+package org.schabi.newpipe.extractor.services;
+
+import org.junit.Test;
+import org.schabi.newpipe.extractor.search.SearchExtractor;
+
+
+import javax.annotation.Nullable;
+
+import static org.junit.Assert.assertEquals;
+import static org.schabi.newpipe.extractor.ExtractorAsserts.assertEmpty;
+
+public abstract class DefaultSearchExtractorTest extends DefaultListExtractorTest<SearchExtractor>
+        implements BaseSearchExtractorTest {
+
+    public abstract String expectedSearchString();
+    @Nullable public abstract String expectedSearchSuggestion();
+
+    @Test
+    @Override
+    public void testSearchString() throws Exception {
+        assertEquals(expectedSearchString(), extractor().getSearchString());
+    }
+
+    @Test
+    @Override
+    public void testSearchSuggestion() throws Exception {
+        final String expectedSearchSuggestion = expectedSearchSuggestion();
+        if (expectedSearchSuggestion == null || expectedSearchSuggestion.isEmpty()) {
+            assertEmpty("Suggestion was expected to be empty", extractor().getSearchSuggestion());
+        } else {
+            assertEquals(expectedSearchSuggestion, extractor().getSearchSuggestion());
+        }
+    }
+}

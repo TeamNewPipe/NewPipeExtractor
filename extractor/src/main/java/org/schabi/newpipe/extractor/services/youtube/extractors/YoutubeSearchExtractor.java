@@ -79,7 +79,7 @@ public class YoutubeSearchExtractor extends SearchExtractor {
     @Nonnull
     @Override
     public InfoItemsPage<InfoItem> getInitialPage() throws ExtractionException {
-        InfoItemsSearchCollector collector = getInfoItemSearchCollector();
+        final InfoItemsSearchCollector collector = new InfoItemsSearchCollector(getServiceId());
         JsonArray sections = initialData.getObject("contents").getObject("twoColumnSearchResultsRenderer")
                 .getObject("primaryContents").getObject("sectionListRenderer").getArray("contents");
 
@@ -103,7 +103,7 @@ public class YoutubeSearchExtractor extends SearchExtractor {
             throw new ExtractionException(new IllegalArgumentException("Page url is empty or null"));
         }
 
-        InfoItemsSearchCollector collector = getInfoItemSearchCollector();
+        final InfoItemsSearchCollector collector = new InfoItemsSearchCollector(getServiceId());
         final JsonArray ajaxJson = getJsonResponse(pageUrl, getExtractorLocalization());
 
         JsonObject itemSectionRenderer = ajaxJson.getObject(1).getObject("response")

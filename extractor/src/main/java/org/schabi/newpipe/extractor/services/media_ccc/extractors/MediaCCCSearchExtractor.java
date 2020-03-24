@@ -47,8 +47,7 @@ public class MediaCCCSearchExtractor extends SearchExtractor {
     @Nonnull
     @Override
     public InfoItemsPage<InfoItem> getInitialPage() throws IOException, ExtractionException {
-        InfoItemsSearchCollector searchItems = getInfoItemSearchCollector();
-        searchItems.reset();
+        final InfoItemsSearchCollector searchItems = new InfoItemsSearchCollector(getServiceId());
 
         if (getLinkHandler().getContentFilters().contains(CONFERENCES)
                 || getLinkHandler().getContentFilters().contains(ALL)
