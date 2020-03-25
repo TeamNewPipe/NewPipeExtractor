@@ -45,6 +45,11 @@ public class YoutubePlaylistLinkHandlerFactory extends ListLinkHandlerFactory {
                 throw new ParsingException("the list-ID given in the URL does not match the list pattern");
             }
 
+            // Don't accept auto-generated "Mix" playlists but auto-generated YouTube Music playlists
+            if (listID.startsWith("RD") && !listID.startsWith("RDCLAK")) {
+                throw new ParsingException("YouTube Mix playlists are not yet supported");
+            }
+
             return listID;
         } catch (final Exception exception) {
             throw new ParsingException("Error could not parse url :" + exception.getMessage(), exception);
@@ -54,9 +59,10 @@ public class YoutubePlaylistLinkHandlerFactory extends ListLinkHandlerFactory {
     @Override
     public boolean onAcceptUrl(final String url) {
         try {
-            return !getId(url).startsWith("RD"); // Don't accept auto-generated "Mix" playlists
+            getId(url);
         } catch (ParsingException e) {
             return false;
         }
+        return true;
     }
 }

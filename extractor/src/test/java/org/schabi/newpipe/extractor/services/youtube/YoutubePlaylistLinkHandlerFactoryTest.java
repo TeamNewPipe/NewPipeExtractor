@@ -55,6 +55,8 @@ public class YoutubePlaylistLinkHandlerFactoryTest {
         assertTrue(linkHandler.acceptUrl("www.youtube.com/playlist?list=PLW5y1tjAOzI3orQNF1yGGVL5x-pR2K1dC"));
         assertTrue(linkHandler.acceptUrl("www.youtube.com/playlist?list=PLz8YL4HVC87WJQDzVoY943URKQCsHS9XV"));
         assertTrue(linkHandler.acceptUrl("https://music.youtube.com/playlist?list=OLAK5uy_lEBUW9iTwqf0IlYPxZ8LrzpgqjAHZgZpM"));
+        assertTrue(linkHandler.acceptUrl("https://www.youtube.com/playlist?list=RDCLAK5uy_ly6s4irLuZAcjEDwJmqcA_UtSipMyGgbQ")); // YouTube Music playlist
+        assertFalse(linkHandler.acceptUrl("https://www.youtube.com/watch?v=2kZVEUGLgy4&list=RDdoEcQv1wlsI&index=2, ")); // YouTube Mix
     }
 
     @Test
