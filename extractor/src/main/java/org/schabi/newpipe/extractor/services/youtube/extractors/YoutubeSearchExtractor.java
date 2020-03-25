@@ -395,9 +395,11 @@ public class YoutubeSearchExtractor extends SearchExtractor {
                         @Override
                         public String getUploaderUrl() throws ParsingException {
                             if (searchType.equals(MUSIC_VIDEOS)) return null;
-                            String url = getUrlFromNavigationEndpoint(info.getArray("flexColumns")
+                            JsonObject navigationEndpoint = info.getArray("flexColumns")
                                     .getObject(1).getObject("musicResponsiveListItemFlexColumnRenderer")
-                                    .getObject("text").getArray("runs").getObject(0).getObject("navigationEndpoint"));
+                                    .getObject("text").getArray("runs").getObject(0).getObject("navigationEndpoint");
+                            if (navigationEndpoint == null) return null;
+                            String url = getUrlFromNavigationEndpoint(navigationEndpoint);
                             if (url != null && !url.isEmpty()) return url;
                             throw new ParsingException("Could not get uploader url");
                         }

@@ -1,95 +1,63 @@
 package org.schabi.newpipe.extractor.services.youtube.search;
 
 import org.junit.BeforeClass;
-import org.junit.Test;
 import org.schabi.newpipe.DownloaderTestImpl;
 import org.schabi.newpipe.extractor.InfoItem;
-import org.schabi.newpipe.extractor.ListExtractor;
 import org.schabi.newpipe.extractor.NewPipe;
-import org.schabi.newpipe.extractor.services.youtube.extractors.YoutubeSearchExtractor;
+import org.schabi.newpipe.extractor.StreamingService;
+import org.schabi.newpipe.extractor.search.SearchExtractor;
+import org.schabi.newpipe.extractor.services.DefaultSearchExtractorTest;
 import org.schabi.newpipe.extractor.services.youtube.linkHandler.YoutubeSearchQueryHandlerFactory;
 
-import java.net.URL;
-import java.net.URLDecoder;
-import java.util.LinkedHashMap;
-import java.util.Map;
+import java.net.URLEncoder;
 
-import static java.util.Arrays.asList;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
+import javax.annotation.Nullable;
+
+import static java.util.Collections.singletonList;
 import static org.schabi.newpipe.extractor.ServiceList.YouTube;
-import static org.schabi.newpipe.extractor.services.DefaultTests.defaultTestRelatedItems;
 
-public class YoutubeSearchExtractorMusicTest extends YoutubeSearchExtractorBaseTest {
-    @BeforeClass
-    public static void setUpClass() throws Exception {
-        NewPipe.init(DownloaderTestImpl.getInstance());
-        extractor = (YoutubeSearchExtractor) YouTube.getSearchExtractor("mocromaniac",
-                asList(YoutubeSearchQueryHandlerFactory.MUSIC_SONGS), null);
-        extractor.fetchPage();
-        itemsPage = extractor.getInitialPage();
-    }
+public class YoutubeSearchExtractorMusicTest {
+    public static class MusicSongs extends DefaultSearchExtractorTest {
+        private static SearchExtractor extractor;
+        private static final String QUERY = "mocromaniac";
 
-    @Test
-    public void testRelatedItems() throws Exception {
-        defaultTestRelatedItems(extractor);
-    }
-
-    @Test
-    public void testGetSecondPage() throws Exception {
-        YoutubeSearchExtractor secondExtractor = (YoutubeSearchExtractor) YouTube.getSearchExtractor("mocromaniac",
-                asList(YoutubeSearchQueryHandlerFactory.MUSIC_SONGS), null);
-        ListExtractor.InfoItemsPage<InfoItem> secondPage = secondExtractor.getPage(itemsPage.getNextPageUrl());
-        assertTrue(Integer.toString(secondPage.getItems().size()),
-                secondPage.getItems().size() > 10);
-
-        // check if its the same result
-        boolean equals = true;
-        for (int i = 0; i < secondPage.getItems().size()
-                && i < itemsPage.getItems().size(); i++) {
-            if (!secondPage.getItems().get(i).getUrl().equals(
-                    itemsPage.getItems().get(i).getUrl())) {
-                equals = false;
-            }
-        }
-        assertFalse("First and second page are equal", equals);
-    }
-
-    @Override
-    @Test
-    public void testUrl() throws Exception {
-        assertTrue(extractor.getUrl(), extractor.getUrl().startsWith("https://music.youtube.com/search?q="));
-    }
-
-    @Test
-    public void testGetSecondPageUrl() throws Exception {
-        URL url = new URL(extractor.getNextPageUrl());
-
-        assertEquals(url.getHost(), "music.youtube.com");
-        assertEquals(url.getPath(), "/youtubei/v1/search");
-
-        Map<String, String> queryPairs = new LinkedHashMap<>();
-        for (String queryPair : url.getQuery().split("&")) {
-            int index = queryPair.indexOf("=");
-            queryPairs.put(URLDecoder.decode(queryPair.substring(0, index), "UTF-8"),
-                    URLDecoder.decode(queryPair.substring(index + 1), "UTF-8"));
+        @BeforeClass
+        public static void setUp() throws Exception {
+            NewPipe.init(DownloaderTestImpl.getInstance());
+            extractor = YouTube.getSearchExtractor(QUERY, singletonList(YoutubeSearchQueryHandlerFactory.MUSIC_SONGS), "");
+            extractor.fetchPage();
         }
 
-        assertEquals(queryPairs.get("ctoken"), queryPairs.get("continuation"));
-        assertTrue(queryPairs.get("continuation").length() > 5);
-        assertTrue(queryPairs.get("itct").length() > 5);
-        assertEquals("json", queryPairs.get("alt"));
-        assertTrue(queryPairs.get("key").length() > 5);
+        @Override public SearchExtractor extractor() { return extractor; }
+        @Override public StreamingService expectedService() { return YouTube; }
+        @Override public String expectedName() { return QUERY; }
+        @Override public String expectedId() { return QUERY; }
+        @Override public String expectedUrlContains() { return "music.youtube.com/search?q=" + QUERY; }
+        @Override public String expectedOriginalUrlContains() { return "music.youtube.com/search?q=" + QUERY; }
+        @Override public String expectedSearchString() { return QUERY; }
+        @Nullable @Override public String expectedSearchSuggestion() { return null; }
+        @Override public InfoItem.InfoType expectedInfoItemType() { return InfoItem.InfoType.STREAM; }
     }
 
-    @Test
-    public void testSuggestions() throws Exception {
-        YoutubeSearchExtractor newExtractor = (YoutubeSearchExtractor) YouTube.getSearchExtractor("megaman x3",
-                asList(YoutubeSearchQueryHandlerFactory.MUSIC_SONGS), null);
-        newExtractor.fetchPage();
+    public static class Suggestion extends DefaultSearchExtractorTest {
+        private static SearchExtractor extractor;
+        private static final String QUERY = "megaman x3";
 
-        assertTrue(newExtractor.getInitialPage().getItems().size() > 10);
-        assertEquals("mega man x3", newExtractor.getSearchSuggestion());
+        @BeforeClass
+        public static void setUp() throws Exception {
+            NewPipe.init(DownloaderTestImpl.getInstance());
+            extractor = YouTube.getSearchExtractor(QUERY, singletonList(YoutubeSearchQueryHandlerFactory.MUSIC_SONGS), "");
+            extractor.fetchPage();
+        }
+
+        @Override public SearchExtractor extractor() { return extractor; }
+        @Override public StreamingService expectedService() { return YouTube; }
+        @Override public String expectedName() { return QUERY; }
+        @Override public String expectedId() { return QUERY; }
+        @Override public String expectedUrlContains() { return "music.youtube.com/search?q=" + URLEncoder.encode(QUERY); }
+        @Override public String expectedOriginalUrlContains() { return "music.youtube.com/search?q=" + URLEncoder.encode(QUERY); }
+        @Override public String expectedSearchString() { return QUERY; }
+        @Nullable @Override public String expectedSearchSuggestion() { return "mega man x3"; }
+        @Override public InfoItem.InfoType expectedInfoItemType() { return InfoItem.InfoType.STREAM; }
     }
 }
