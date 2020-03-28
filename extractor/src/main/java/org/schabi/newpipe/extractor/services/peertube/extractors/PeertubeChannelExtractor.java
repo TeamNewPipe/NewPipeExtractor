@@ -57,7 +57,7 @@ public class PeertubeChannelExtractor extends ChannelExtractor {
 
     @Override
     public String getFeedUrl() throws ParsingException {
-        return null;
+        return getBaseUrl() + "/feeds/videos.xml?accountId=" + json.get("id");
     }
 
     @Override
