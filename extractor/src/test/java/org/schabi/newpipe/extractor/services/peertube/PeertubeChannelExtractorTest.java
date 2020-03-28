@@ -98,7 +98,7 @@ public class PeertubeChannelExtractorTest {
 
         @Test
         public void testFeedUrl() throws ParsingException {
-            assertEmpty(extractor.getFeedUrl());
+            assertEquals("https://peertube.mastodon.host/feeds/videos.xml?accountId=32465", extractor.getFeedUrl());
         }
 
         @Test
@@ -195,7 +195,7 @@ public class PeertubeChannelExtractorTest {
 
         @Test
         public void testFeedUrl() throws ParsingException {
-            assertEmpty(extractor.getFeedUrl());
+            assertEquals("https://peertube.mastodon.host/feeds/videos.xml?accountId=1753", extractor.getFeedUrl());
         }
 
         @Test
