@@ -508,8 +508,10 @@ public class YoutubeParsingHelper {
                 // This condition will only be reached if we encounter an alert that has a type, but is not an error
             }
 
+        } catch (ContentNotAvailableException e) {
+            throw e;
         } catch (Exception ignored) {
-            // We will frequently reach this condition when alerts are found with no type (eg. youtube music ad text)
+            // We will frequently reach this condition when alerts are found with no type (e.g. YouTube Music ad text)
         }
 
     }
