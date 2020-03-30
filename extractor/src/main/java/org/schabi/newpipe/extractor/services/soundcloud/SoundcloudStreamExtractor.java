@@ -10,6 +10,7 @@ import org.schabi.newpipe.extractor.NewPipe;
 import org.schabi.newpipe.extractor.StreamingService;
 import org.schabi.newpipe.extractor.downloader.Downloader;
 import org.schabi.newpipe.extractor.exceptions.ContentNotAvailableException;
+import org.schabi.newpipe.extractor.exceptions.ContentNotSupportedException;
 import org.schabi.newpipe.extractor.exceptions.ExtractionException;
 import org.schabi.newpipe.extractor.exceptions.ParsingException;
 import org.schabi.newpipe.extractor.linkhandler.LinkHandler;
@@ -194,6 +195,10 @@ public class SoundcloudStreamExtractor extends StreamExtractor {
 
         } catch (NullPointerException e) {
             throw new ExtractionException("Could not get SoundCloud's track audio url", e);
+        }
+
+        if (audioStreams.isEmpty()) {
+            throw new ContentNotSupportedException("HLS audio streams / opus streams are not yet supported");
         }
 
         return audioStreams;

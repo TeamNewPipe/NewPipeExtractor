@@ -5,6 +5,7 @@ import org.schabi.newpipe.extractor.InfoItem;
 import org.schabi.newpipe.extractor.NewPipe;
 import org.schabi.newpipe.extractor.StreamingService;
 import org.schabi.newpipe.extractor.exceptions.ContentNotAvailableException;
+import org.schabi.newpipe.extractor.exceptions.ContentNotSupportedException;
 import org.schabi.newpipe.extractor.exceptions.ExtractionException;
 import org.schabi.newpipe.extractor.localization.DateWrapper;
 import org.schabi.newpipe.extractor.utils.DashMpdParser;
@@ -47,7 +48,7 @@ public class StreamInfo extends Info {
     }
 
     public StreamInfo(int serviceId, String url, String originalUrl, StreamType streamType, String id, String name,
-            int ageLimit) {
+                      int ageLimit) {
         super(serviceId, id, url, originalUrl, name);
         this.streamType = streamType;
         this.ageLimit = ageLimit;
@@ -131,6 +132,8 @@ public class StreamInfo extends Info {
         /* Load and extract audio */
         try {
             streamInfo.setAudioStreams(extractor.getAudioStreams());
+        } catch (ContentNotSupportedException e) {
+            throw e;
         } catch (Exception e) {
             streamInfo.addError(new ExtractionException("Couldn't get audio streams", e));
         }
