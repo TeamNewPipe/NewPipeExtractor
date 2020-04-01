@@ -4,6 +4,7 @@ import com.grack.nanojson.JsonArray;
 import com.grack.nanojson.JsonObject;
 import com.grack.nanojson.JsonParser;
 import com.grack.nanojson.JsonParserException;
+
 import org.schabi.newpipe.extractor.StreamingService;
 import org.schabi.newpipe.extractor.channel.ChannelInfoItem;
 import org.schabi.newpipe.extractor.channel.ChannelInfoItemsCollector;
@@ -14,22 +15,22 @@ import org.schabi.newpipe.extractor.kiosk.KioskExtractor;
 import org.schabi.newpipe.extractor.linkhandler.ListLinkHandler;
 import org.schabi.newpipe.extractor.services.media_ccc.extractors.infoItems.MediaCCCConferenceInfoItemExtractor;
 
-import javax.annotation.Nonnull;
 import java.io.IOException;
 
-public class MediaCCCConferenceKiosk extends KioskExtractor<ChannelInfoItem> {
+import javax.annotation.Nonnull;
 
+public class MediaCCCConferenceKiosk extends KioskExtractor<ChannelInfoItem> {
     private JsonObject doc;
 
-    public MediaCCCConferenceKiosk(StreamingService streamingService,
-                                   ListLinkHandler linkHandler,
-                                   String kioskId) {
+    public MediaCCCConferenceKiosk(final StreamingService streamingService,
+                                   final ListLinkHandler linkHandler,
+                                   final String kioskId) {
         super(streamingService, linkHandler, kioskId);
     }
 
     @Nonnull
     @Override
-    public InfoItemsPage<ChannelInfoItem> getInitialPage() throws IOException, ExtractionException {
+    public InfoItemsPage<ChannelInfoItem> getInitialPage() {
         JsonArray conferences = doc.getArray("conferences");
         ChannelInfoItemsCollector collector = new ChannelInfoItemsCollector(getServiceId());
         for (int i = 0; i < conferences.size(); i++) {
@@ -40,18 +41,20 @@ public class MediaCCCConferenceKiosk extends KioskExtractor<ChannelInfoItem> {
     }
 
     @Override
-    public String getNextPageUrl() throws IOException, ExtractionException {
+    public String getNextPageUrl() {
         return "";
     }
 
     @Override
-    public InfoItemsPage<ChannelInfoItem> getPage(String pageUrl) throws IOException, ExtractionException {
+    public InfoItemsPage<ChannelInfoItem> getPage(final String pageUrl) {
         return InfoItemsPage.emptyPage();
     }
 
     @Override
-    public void onFetchPage(@Nonnull Downloader downloader) throws IOException, ExtractionException {
-        String site = downloader.get(getLinkHandler().getUrl(), getExtractorLocalization()).responseBody();
+    public void onFetchPage(@Nonnull final Downloader downloader)
+            throws IOException, ExtractionException {
+        final String site = downloader.get(getLinkHandler().getUrl(), getExtractorLocalization())
+                .responseBody();
         try {
             doc = JsonParser.object().from(site);
         } catch (JsonParserException jpe) {
