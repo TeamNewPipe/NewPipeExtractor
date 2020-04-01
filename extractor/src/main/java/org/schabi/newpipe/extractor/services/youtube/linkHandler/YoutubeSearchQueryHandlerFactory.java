@@ -67,7 +67,7 @@ public class YoutubeSearchQueryHandlerFactory extends SearchQueryHandlerFactory 
                 MUSIC_SONGS,
                 MUSIC_VIDEOS,
                 MUSIC_ALBUMS,
-                MUSIC_PLAYLISTS,
+                MUSIC_PLAYLISTS
 //                MUSIC_ARTISTS
         };
     }
