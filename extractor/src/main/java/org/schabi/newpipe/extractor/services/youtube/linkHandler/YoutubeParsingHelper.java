@@ -20,6 +20,7 @@ import org.schabi.newpipe.extractor.utils.Utils;
 
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
+import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLDecoder;
 import java.text.ParseException;
@@ -427,12 +428,8 @@ public class YoutubeParsingHelper {
         return thumbnailUrl;
     }
 
-    public static JsonArray getJsonResponse(String url, Localization localization) throws IOException, ExtractionException {
-        Map<String, List<String>> headers = new HashMap<>();
-        headers.put("X-YouTube-Client-Name", Collections.singletonList("1"));
-        headers.put("X-YouTube-Client-Version", Collections.singletonList(getClientVersion()));
-        final Response response = getDownloader().get(url, headers, localization);
-
+    public static String getValidResponseBody(final Response response)
+            throws ParsingException, MalformedURLException {
         if (response.responseCode() == 404) {
             throw new ContentNotAvailableException("Not found" +
                     " (\"" + response.responseCode() + " " + response.responseMessage() + "\")");
@@ -453,10 +450,23 @@ public class YoutubeParsingHelper {
         }
 
         final String responseContentType = response.getHeader("Content-Type");
-        if (responseContentType != null && responseContentType.toLowerCase().contains("text/html")) {
+        if (responseContentType != null
+                && responseContentType.toLowerCase().contains("text/html")) {
             throw new ParsingException("Got HTML document, expected JSON response" +
                     " (latest url was: \"" + response.latestUrl() + "\")");
         }
+
+        return responseBody;
+    }
+
+    public static JsonArray getJsonResponse(final String url, final Localization localization)
+            throws IOException, ExtractionException {
+        Map<String, List<String>> headers = new HashMap<>();
+        headers.put("X-YouTube-Client-Name", Collections.singletonList("1"));
+        headers.put("X-YouTube-Client-Version", Collections.singletonList(getClientVersion()));
+        final Response response = getDownloader().get(url, headers, localization);
+
+        final String responseBody = getValidResponseBody(response);
 
         try {
             return JsonParser.array().from(responseBody);
@@ -469,6 +479,7 @@ public class YoutubeParsingHelper {
      * Shared alert detection function, multiple endpoints return the error similarly structured.
      * <p>
      * Will check if the object has an alert of the type "ERROR".
+     * </p>
      *
      * @param initialData the object which will be checked if an alert is present
      * @throws ContentNotAvailableException if an alert is detected

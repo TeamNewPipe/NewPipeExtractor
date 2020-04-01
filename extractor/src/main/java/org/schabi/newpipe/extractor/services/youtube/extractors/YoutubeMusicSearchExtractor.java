@@ -9,8 +9,6 @@ import com.grack.nanojson.JsonWriter;
 import org.schabi.newpipe.extractor.InfoItem;
 import org.schabi.newpipe.extractor.StreamingService;
 import org.schabi.newpipe.extractor.downloader.Downloader;
-import org.schabi.newpipe.extractor.downloader.Response;
-import org.schabi.newpipe.extractor.exceptions.ContentNotAvailableException;
 import org.schabi.newpipe.extractor.exceptions.ExtractionException;
 import org.schabi.newpipe.extractor.exceptions.ParsingException;
 import org.schabi.newpipe.extractor.exceptions.ReCaptchaException;
@@ -31,6 +29,7 @@ import java.util.Map;
 import javax.annotation.Nonnull;
 
 import static org.schabi.newpipe.extractor.services.youtube.linkHandler.YoutubeParsingHelper.fixThumbnailUrl;
+import static org.schabi.newpipe.extractor.services.youtube.linkHandler.YoutubeParsingHelper.getValidResponseBody;
 import static org.schabi.newpipe.extractor.services.youtube.linkHandler.YoutubeParsingHelper.getTextFromObject;
 import static org.schabi.newpipe.extractor.services.youtube.linkHandler.YoutubeParsingHelper.getUrlFromNavigationEndpoint;
 import static org.schabi.newpipe.extractor.services.youtube.linkHandler.YoutubeSearchQueryHandlerFactory.MUSIC_ALBUMS;
@@ -112,23 +111,7 @@ public class YoutubeMusicSearchExtractor extends SearchExtractor {
         headers.put("Referer", Collections.singletonList("music.youtube.com"));
         headers.put("Content-Type", Collections.singletonList("application/json"));
 
-        final Response response = getDownloader().post(url, headers, json);
-
-        if (response.responseCode() == 404) {
-            throw new ContentNotAvailableException("Not found" +
-                    " (\"" + response.responseCode() + " " + response.responseMessage() + "\")");
-        }
-
-        final String responseBody = response.responseBody();
-        if (responseBody.length() < 50) { // ensure to have a valid response
-            throw new ParsingException("JSON response is too short");
-        }
-
-        final String responseContentType = response.getHeader("Content-Type");
-        if (responseContentType != null && responseContentType.toLowerCase().contains("text/html")) {
-            throw new ParsingException("Got HTML document, expected JSON response" +
-                    " (latest url was: \"" + response.latestUrl() + "\")");
-        }
+        final String responseBody = getValidResponseBody(getDownloader().post(url, headers, json));
 
         try {
             initialData = JsonParser.object().from(responseBody);
@@ -232,23 +215,7 @@ public class YoutubeMusicSearchExtractor extends SearchExtractor {
         headers.put("Referer", Collections.singletonList("music.youtube.com"));
         headers.put("Content-Type", Collections.singletonList("application/json"));
 
-        final Response response = getDownloader().post(pageUrl, headers, json);
-
-        if (response.responseCode() == 404) {
-            throw new ContentNotAvailableException("Not found" +
-                    " (\"" + response.responseCode() + " " + response.responseMessage() + "\")");
-        }
-
-        final String responseBody = response.responseBody();
-        if (responseBody.length() < 50) { // ensure to have a valid response
-            throw new ParsingException("JSON response is too short");
-        }
-
-        final String responseContentType = response.getHeader("Content-Type");
-        if (responseContentType != null && responseContentType.toLowerCase().contains("text/html")) {
-            throw new ParsingException("Got HTML document, expected JSON response" +
-                    " (latest url was: \"" + response.latestUrl() + "\")");
-        }
+        final String responseBody = getValidResponseBody(getDownloader().post(pageUrl, headers, json));
 
         final JsonObject ajaxJson;
         try {
