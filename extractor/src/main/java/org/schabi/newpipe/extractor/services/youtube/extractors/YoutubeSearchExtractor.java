@@ -132,7 +132,6 @@ public class YoutubeSearchExtractor extends SearchExtractor {
         }
     }
 
-
     private String getNextPageUrlFrom(final JsonArray continuations) throws ParsingException {
         if (continuations == null) {
             return "";

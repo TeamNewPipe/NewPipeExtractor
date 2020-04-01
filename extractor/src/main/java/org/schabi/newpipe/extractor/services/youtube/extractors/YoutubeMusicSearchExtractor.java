@@ -319,31 +319,32 @@ public class YoutubeMusicSearchExtractor extends SearchExtractor {
 
                         @Override
                         public String getUploaderUrl() throws ParsingException {
-                            String url = null;
-
                             if (searchType.equals(MUSIC_VIDEOS)) {
                                 JsonArray items = info.getObject("menu").getObject("menuRenderer").getArray("items");
                                 for (Object item : items) {
                                     final JsonObject menuNavigationItemRenderer = ((JsonObject) item).getObject("menuNavigationItemRenderer");
                                     if (menuNavigationItemRenderer != null && menuNavigationItemRenderer.getObject("icon").getString("iconType").equals("ARTIST")) {
-                                        url = getUrlFromNavigationEndpoint(menuNavigationItemRenderer.getObject("navigationEndpoint"));
-                                        break;
+                                        return getUrlFromNavigationEndpoint(menuNavigationItemRenderer.getObject("navigationEndpoint"));
                                     }
                                 }
+
+                                return null;
                             } else {
                                 final JsonObject navigationEndpoint = info.getArray("flexColumns")
                                         .getObject(1).getObject("musicResponsiveListItemFlexColumnRenderer")
                                         .getObject("text").getArray("runs").getObject(0).getObject("navigationEndpoint");
+
                                 if (navigationEndpoint == null) {
                                     return null;
                                 }
-                                url = getUrlFromNavigationEndpoint(navigationEndpoint);
-                            }
 
-                            if (url != null && !url.isEmpty()) {
-                                return url;
+                                final String url = getUrlFromNavigationEndpoint(navigationEndpoint);
+
+                                if (url != null && !url.isEmpty()) {
+                                    return url;
+                                }
+                                throw new ParsingException("Could not get uploader url");
                             }
-                            throw new ParsingException("Could not get uploader url");
                         }
 
                         @Override
