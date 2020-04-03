@@ -7,10 +7,13 @@ import org.schabi.newpipe.extractor.exceptions.ExtractionException;
 import org.schabi.newpipe.extractor.kiosk.KioskExtractor;
 import org.schabi.newpipe.extractor.kiosk.KioskList;
 import org.schabi.newpipe.extractor.linkhandler.*;
+import org.schabi.newpipe.extractor.localization.ContentCountry;
 import org.schabi.newpipe.extractor.playlist.PlaylistExtractor;
 import org.schabi.newpipe.extractor.search.SearchExtractor;
 import org.schabi.newpipe.extractor.stream.StreamExtractor;
 import org.schabi.newpipe.extractor.subscription.SubscriptionExtractor;
+
+import java.util.List;
 
 import static java.util.Collections.singletonList;
 import static org.schabi.newpipe.extractor.StreamingService.ServiceInfo.MediaCapability.AUDIO;
@@ -46,6 +49,13 @@ public class SoundcloudService extends StreamingService {
         return SoundcloudPlaylistLinkHandlerFactory.getInstance();
     }
 
+    @Override
+    public List<ContentCountry> getSupportedCountries() {
+        //Country selector here https://soundcloud.com/charts/top?genre=all-music
+        return ContentCountry.listFrom(
+                "AU", "CA", "DE", "FR", "GB", "IE", "NL", "NZ", "US"
+        );
+    }
 
     @Override
     public StreamExtractor getStreamExtractor(LinkHandler LinkHandler) {
