@@ -22,4 +22,10 @@ public class YoutubeParsingHelperTest {
         assertTrue("Hardcoded client version is not valid anymore",
                 YoutubeParsingHelper.isHardcodedClientVersionValid());
     }
+
+    @Test
+    public void testAreHardcodedYoutubeMusicKeysValid() throws IOException, ExtractionException {
+        assertTrue("Hardcoded YouTube Music keys are not valid anymore",
+                YoutubeParsingHelper.areHardcodedYoutubeMusicKeysValid());
+    }
 }
