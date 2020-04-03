@@ -29,7 +29,7 @@ import java.util.Map;
 import javax.annotation.Nonnull;
 
 import static org.schabi.newpipe.extractor.services.youtube.linkHandler.YoutubeParsingHelper.fixThumbnailUrl;
-import static org.schabi.newpipe.extractor.services.youtube.linkHandler.YoutubeParsingHelper.getValidResponseBody;
+import static org.schabi.newpipe.extractor.services.youtube.linkHandler.YoutubeParsingHelper.getValidJsonResponseBody;
 import static org.schabi.newpipe.extractor.services.youtube.linkHandler.YoutubeParsingHelper.getTextFromObject;
 import static org.schabi.newpipe.extractor.services.youtube.linkHandler.YoutubeParsingHelper.getUrlFromNavigationEndpoint;
 import static org.schabi.newpipe.extractor.services.youtube.linkHandler.YoutubeSearchQueryHandlerFactory.MUSIC_ALBUMS;
@@ -111,7 +111,7 @@ public class YoutubeMusicSearchExtractor extends SearchExtractor {
         headers.put("Referer", Collections.singletonList("music.youtube.com"));
         headers.put("Content-Type", Collections.singletonList("application/json"));
 
-        final String responseBody = getValidResponseBody(getDownloader().post(url, headers, json));
+        final String responseBody = getValidJsonResponseBody(getDownloader().post(url, headers, json));
 
         try {
             initialData = JsonParser.object().from(responseBody);
@@ -215,7 +215,7 @@ public class YoutubeMusicSearchExtractor extends SearchExtractor {
         headers.put("Referer", Collections.singletonList("music.youtube.com"));
         headers.put("Content-Type", Collections.singletonList("application/json"));
 
-        final String responseBody = getValidResponseBody(getDownloader().post(pageUrl, headers, json));
+        final String responseBody = getValidJsonResponseBody(getDownloader().post(pageUrl, headers, json));
 
         final JsonObject ajaxJson;
         try {

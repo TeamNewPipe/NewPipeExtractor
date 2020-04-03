@@ -428,7 +428,7 @@ public class YoutubeParsingHelper {
         return thumbnailUrl;
     }
 
-    public static String getValidResponseBody(final Response response)
+    public static String getValidJsonResponseBody(final Response response)
             throws ParsingException, MalformedURLException {
         if (response.responseCode() == 404) {
             throw new ContentNotAvailableException("Not found" +
@@ -466,7 +466,7 @@ public class YoutubeParsingHelper {
         headers.put("X-YouTube-Client-Version", Collections.singletonList(getClientVersion()));
         final Response response = getDownloader().get(url, headers, localization);
 
-        final String responseBody = getValidResponseBody(response);
+        final String responseBody = getValidJsonResponseBody(response);
 
         try {
             return JsonParser.array().from(responseBody);
