@@ -198,7 +198,7 @@ public class SoundcloudStreamExtractor extends StreamExtractor {
         }
 
         if (audioStreams.isEmpty()) {
-            throw new ContentNotSupportedException("HLS audio streams / opus streams are not yet supported");
+            throw new ContentNotSupportedException("HLS audio streams are not yet supported");
         }
 
         return audioStreams;
