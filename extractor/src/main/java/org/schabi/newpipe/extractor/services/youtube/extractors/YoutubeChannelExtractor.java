@@ -5,6 +5,7 @@ import com.grack.nanojson.JsonObject;
 import org.schabi.newpipe.extractor.StreamingService;
 import org.schabi.newpipe.extractor.channel.ChannelExtractor;
 import org.schabi.newpipe.extractor.downloader.Downloader;
+import org.schabi.newpipe.extractor.exceptions.ContentNotSupportedException;
 import org.schabi.newpipe.extractor.exceptions.ExtractionException;
 import org.schabi.newpipe.extractor.exceptions.ParsingException;
 import org.schabi.newpipe.extractor.linkhandler.ListLinkHandler;
@@ -310,7 +311,7 @@ public class YoutubeChannelExtractor extends ChannelExtractor {
         }
 
         if (videoTab == null) {
-            throw new ParsingException("Could not find Videos tab");
+            throw new ContentNotSupportedException("This channel has no Videos tab");
         }
 
         try {
