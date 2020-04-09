@@ -44,8 +44,7 @@ public class PeertubeService extends StreamingService {
 
     @Override
     public ListLinkHandlerFactory getPlaylistLHFactory() {
-        // TODO Auto-generated method stub
-        return null;
+        return PeertubePlaylistLinkHandlerFactory.getInstance();
     }
 
     @Override
@@ -70,7 +69,6 @@ public class PeertubeService extends StreamingService {
 
     @Override
     public SubscriptionExtractor getSubscriptionExtractor() {
-        // TODO Auto-generated method stub
         return null;
     }
 
@@ -88,8 +86,7 @@ public class PeertubeService extends StreamingService {
     @Override
     public PlaylistExtractor getPlaylistExtractor(ListLinkHandler linkHandler)
             throws ExtractionException {
-        // TODO Auto-generated method stub
-        return null;
+        return new PeertubePlaylistExtractor(this, linkHandler);
     }
 
     @Override

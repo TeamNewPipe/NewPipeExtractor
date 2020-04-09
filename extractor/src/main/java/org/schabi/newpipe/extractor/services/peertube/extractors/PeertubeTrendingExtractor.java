@@ -11,20 +11,16 @@ import org.schabi.newpipe.extractor.exceptions.ExtractionException;
 import org.schabi.newpipe.extractor.exceptions.ParsingException;
 import org.schabi.newpipe.extractor.kiosk.KioskExtractor;
 import org.schabi.newpipe.extractor.linkhandler.ListLinkHandler;
+import org.schabi.newpipe.extractor.services.peertube.PeertubeParsingHelper;
 import org.schabi.newpipe.extractor.stream.StreamInfoItem;
 import org.schabi.newpipe.extractor.stream.StreamInfoItemsCollector;
 import org.schabi.newpipe.extractor.utils.JsonUtils;
-import org.schabi.newpipe.extractor.utils.Parser;
-import org.schabi.newpipe.extractor.utils.Parser.RegexException;
 
 import java.io.IOException;
 
-public class PeertubeTrendingExtractor extends KioskExtractor<StreamInfoItem> {
+import static org.schabi.newpipe.extractor.services.peertube.PeertubeParsingHelper.*;
 
-    private static final String START_KEY = "start";
-    private static final String COUNT_KEY = "count";
-    private static final int ITEMS_PER_PAGE = 12;
-    private static final String START_PATTERN = "start=(\\d*)";
+public class PeertubeTrendingExtractor extends KioskExtractor<StreamInfoItem> {
 
     private InfoItemsPage<StreamInfoItem> initPage;
     private long total;
@@ -89,35 +85,12 @@ public class PeertubeTrendingExtractor extends KioskExtractor<StreamInfoItem> {
         } else {
             throw new ExtractionException("Unable to get peertube kiosk info");
         }
-        return new InfoItemsPage<>(collector, getNextPageUrl(pageUrl));
+        return new InfoItemsPage<>(collector, PeertubeParsingHelper.getNextPageUrl(pageUrl, total));
     }
 
     @Override
     public void onFetchPage(Downloader downloader) throws IOException, ExtractionException {
-        String pageUrl = getUrl() + "&" + START_KEY + "=0&" + COUNT_KEY + "=" + ITEMS_PER_PAGE;
-        this.initPage = getPage(pageUrl);
-    }
-
-    private String getNextPageUrl(String prevPageUrl) {
-        String prevStart;
-        try {
-            prevStart = Parser.matchGroup1(START_PATTERN, prevPageUrl);
-        } catch (RegexException e) {
-            return "";
-        }
-        if (StringUtil.isBlank(prevStart)) return "";
-        long nextStart = 0;
-        try {
-            nextStart = Long.valueOf(prevStart) + ITEMS_PER_PAGE;
-        } catch (NumberFormatException e) {
-            return "";
-        }
-
-        if (nextStart >= total) {
-            return "";
-        } else {
-            return prevPageUrl.replace(START_KEY + "=" + prevStart, START_KEY + "=" + String.valueOf(nextStart));
-        }
+        this.initPage = getPage(getUrl() + "&" + START_KEY + "=0&" + COUNT_KEY + "=" + ITEMS_PER_PAGE);
     }
 
 }
