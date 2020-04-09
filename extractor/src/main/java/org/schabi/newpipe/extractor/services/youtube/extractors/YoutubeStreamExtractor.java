@@ -253,7 +253,14 @@ public class YoutubeStreamExtractor extends StreamExtractor {
      */
     @Override
     public long getTimeStamp() throws ParsingException {
-        return getTimestampSeconds("((#|&|\\?)(t|start)=\\d{0,3}h?\\d{0,3}m?\\d{1,3}s?)");
+        long timestamp = getTimestampSeconds("((#|&|\\?)t=\\d{0,3}h?\\d{0,3}m?\\d{1,3}s?)");
+
+        if (timestamp == -2) {
+            // regex for timestamp was not found
+            return 0;
+        } else {
+            return timestamp;
+        }
     }
 
     @Override
