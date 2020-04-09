@@ -1087,7 +1087,7 @@ public class YoutubeStreamExtractor extends StreamExtractor {
     @Nonnull
     @Override
     public List<String> getTags() {
-        return new ArrayList<>();
+        return Collections.emptyList();
     }
 
     @Nonnull

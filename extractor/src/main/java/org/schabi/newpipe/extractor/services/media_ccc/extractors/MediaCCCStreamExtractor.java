@@ -277,8 +277,8 @@ public class MediaCCCStreamExtractor extends StreamExtractor {
 
     @Nonnull
     @Override
-    public List<String> getTags() {
-        return new ArrayList<>();
+    public List<String> getTags() throws ParsingException {
+        return Collections.emptyList();
     }
 
     @Nonnull

@@ -235,12 +235,12 @@ public class SoundcloudStreamExtractor extends StreamExtractor {
 
     @Override
     public List<VideoStream> getVideoStreams() throws IOException, ExtractionException {
-        return null;
+        return Collections.emptyList();
     }
 
     @Override
     public List<VideoStream> getVideoOnlyStreams() throws IOException, ExtractionException {
-        return null;
+        return Collections.emptyList();
     }
 
     @Override
@@ -304,7 +304,7 @@ public class SoundcloudStreamExtractor extends StreamExtractor {
     @Nonnull
     @Override
     public List<String> getTags() throws ParsingException {
-        return new ArrayList<>();
+        return Collections.emptyList();
     }
 
     @Nonnull
