@@ -41,7 +41,7 @@ import javax.annotation.Nonnull;
 public class PeertubeStreamExtractor extends StreamExtractor {
     private final String baseUrl;
     private JsonObject json;
-    private List<SubtitlesStream> subtitles = new ArrayList<>();
+    private final List<SubtitlesStream> subtitles = new ArrayList<>();
 
     public PeertubeStreamExtractor(final StreamingService service, final LinkHandler linkHandler) throws ParsingException {
         super(service, linkHandler);
@@ -64,11 +64,13 @@ public class PeertubeStreamExtractor extends StreamExtractor {
         return new DateWrapper(PeertubeParsingHelper.parseDateFrom(textualUploadDate));
     }
 
+    @Nonnull
     @Override
     public String getThumbnailUrl() throws ParsingException {
         return baseUrl + JsonUtils.getString(json, "previewPath");
     }
 
+    @Nonnull
     @Override
     public Description getDescription() throws ParsingException {
         String text;
@@ -127,6 +129,7 @@ public class PeertubeStreamExtractor extends StreamExtractor {
         return json.getLong("dislikes");
     }
 
+    @Nonnull
     @Override
     public String getUploaderUrl() throws ParsingException {
         final String name = JsonUtils.getString(json, "account.name");
@@ -134,11 +137,13 @@ public class PeertubeStreamExtractor extends StreamExtractor {
         return getService().getChannelLHFactory().fromId("accounts/" + name + "@" + host, baseUrl).getUrl();
     }
 
+    @Nonnull
     @Override
     public String getUploaderName() throws ParsingException {
         return JsonUtils.getString(json, "account.displayName");
     }
 
+    @Nonnull
     @Override
     public String getUploaderAvatarUrl() {
         String value;
@@ -150,6 +155,7 @@ public class PeertubeStreamExtractor extends StreamExtractor {
         return baseUrl + value;
     }
 
+    @Nonnull
     @Override
     public String getSubChannelUrl() throws ParsingException {
         return JsonUtils.getString(json, "channel.url");
@@ -173,11 +179,13 @@ public class PeertubeStreamExtractor extends StreamExtractor {
         return baseUrl + value;
     }
 
+    @Nonnull
     @Override
     public String getDashMpdUrl() {
         return "";
     }
 
+    @Nonnull
     @Override
     public String getHlsUrl() {
         return "";
@@ -185,7 +193,7 @@ public class PeertubeStreamExtractor extends StreamExtractor {
 
     @Override
     public List<AudioStream> getAudioStreams() {
-        return null;
+        return Collections.emptyList();
     }
 
     @Override
@@ -220,11 +228,13 @@ public class PeertubeStreamExtractor extends StreamExtractor {
         return Collections.emptyList();
     }
 
+    @Nonnull
     @Override
     public List<SubtitlesStream> getSubtitlesDefault() {
         return subtitles;
     }
 
+    @Nonnull
     @Override
     public List<SubtitlesStream> getSubtitles(final MediaFormat format) {
         final List<SubtitlesStream> filteredSubs = new ArrayList<>();
@@ -256,6 +266,7 @@ public class PeertubeStreamExtractor extends StreamExtractor {
         return collector;
     }
 
+    @Nonnull
     @Override
     public List<String> getTags() {
         try {
@@ -370,31 +381,37 @@ public class PeertubeStreamExtractor extends StreamExtractor {
         }
     }
 
+    @Nonnull
     @Override
     public String getName() throws ParsingException {
         return JsonUtils.getString(json, "name");
     }
 
+    @Nonnull
     @Override
     public String getOriginalUrl() throws ParsingException {
         return baseUrl + "/videos/watch/" + getId();
     }
 
+    @Nonnull
     @Override
     public String getHost() throws ParsingException {
         return JsonUtils.getString(json, "account.host");
     }
 
+    @Nonnull
     @Override
     public String getPrivacy() throws ParsingException {
         return JsonUtils.getString(json, "privacy.label");
     }
 
+    @Nonnull
     @Override
     public String getCategory() throws ParsingException {
         return JsonUtils.getString(json, "category.label");
     }
 
+    @Nonnull
     @Override
     public String getLicence() throws ParsingException {
         return JsonUtils.getString(json, "licence.label");
