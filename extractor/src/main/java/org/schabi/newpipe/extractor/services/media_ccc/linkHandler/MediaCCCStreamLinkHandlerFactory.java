@@ -8,6 +8,9 @@ import java.net.MalformedURLException;
 import java.net.URL;
 
 public class MediaCCCStreamLinkHandlerFactory extends LinkHandlerFactory {
+    public static final String VIDEO_API_ENDPOINT = "https://api.media.ccc.de/public/events/";
+    private static final String VIDEO_PATH = "https://media.ccc.de/v/";
+
     @Override
     public String getId(final String urlString) throws ParsingException {
         if (urlString.startsWith("https://media.ccc.de/public/events/")
@@ -15,7 +18,7 @@ public class MediaCCCStreamLinkHandlerFactory extends LinkHandlerFactory {
             return urlString.substring(35); //remove …/public/events part
         }
 
-        if (urlString.startsWith("https://api.media.ccc.de/public/events/")
+        if (urlString.startsWith(VIDEO_API_ENDPOINT)
                 && !urlString.contains("?q=")) {
             return urlString.substring(39); //remove api…/public/events part
         }
@@ -42,7 +45,7 @@ public class MediaCCCStreamLinkHandlerFactory extends LinkHandlerFactory {
 
     @Override
     public String getUrl(final String id) throws ParsingException {
-        return "https://media.ccc.de/public/events/" + id;
+        return VIDEO_PATH + id;
     }
 
     @Override
