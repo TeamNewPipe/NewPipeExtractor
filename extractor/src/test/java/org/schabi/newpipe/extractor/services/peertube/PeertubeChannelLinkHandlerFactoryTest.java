@@ -30,7 +30,7 @@ public class PeertubeChannelLinkHandlerFactoryTest {
 
     @Test
     public void getIdFromUrl() throws ParsingException {
-        assertEquals("kranti@videos.squat.net", linkHandler.fromUrl("https://peertube.mastodon.host/accounts/kranti@videos.squat.net").getId());
-        assertEquals("kranti@videos.squat.net", linkHandler.fromUrl("https://peertube.mastodon.host/accounts/kranti@videos.squat.net/videos").getId());
+        assertEquals("accounts/kranti@videos.squat.net", linkHandler.fromUrl("https://peertube.mastodon.host/accounts/kranti@videos.squat.net").getId());
+        assertEquals("accounts/kranti@videos.squat.net", linkHandler.fromUrl("https://peertube.mastodon.host/accounts/kranti@videos.squat.net/videos").getId());
     }
 }
