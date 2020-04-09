@@ -10,7 +10,6 @@ import org.schabi.newpipe.extractor.localization.DateWrapper;
 import org.schabi.newpipe.extractor.playlist.PlaylistInfoItem;
 import org.schabi.newpipe.extractor.stream.StreamInfoItem;
 
-import java.util.Calendar;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -42,7 +41,7 @@ public final class DefaultTests {
                 StreamInfoItem streamInfoItem = (StreamInfoItem) item;
                 assertNotEmpty("Uploader name not set: " + item, streamInfoItem.getUploaderName());
 
-//                assertNotEmpty("Uploader url not set: " + item, streamInfoItem.getUploaderUrl());
+                // assertNotEmpty("Uploader url not set: " + item, streamInfoItem.getUploaderUrl());
                 final String uploaderUrl = streamInfoItem.getUploaderUrl();
                 if (!isNullOrEmpty(uploaderUrl)) {
                     assertIsSecureUrl(uploaderUrl);
@@ -54,7 +53,6 @@ public final class DefaultTests {
                 if (!isNullOrEmpty(streamInfoItem.getTextualUploadDate())) {
                     final DateWrapper uploadDate = streamInfoItem.getUploadDate();
                     assertNotNull("No parsed upload date", uploadDate);
-                    assertTrue("Upload date not in the past", uploadDate.date().before(Calendar.getInstance()));
                 }
 
             } else if (item instanceof ChannelInfoItem) {
