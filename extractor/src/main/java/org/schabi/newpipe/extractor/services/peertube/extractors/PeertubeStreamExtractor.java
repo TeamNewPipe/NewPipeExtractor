@@ -112,9 +112,16 @@ public class PeertubeStreamExtractor extends StreamExtractor {
     }
 
     @Override
-    public long getTimeStamp() {
-        //TODO fetch timestamp from url if present;
-        return 0;
+    public long getTimeStamp() throws ParsingException {
+        long timestamp =
+                getTimestampSeconds("((#|&|\\?)start=\\d{0,3}h?\\d{0,3}m?\\d{1,3}s?)");
+
+        if (timestamp == -2) {
+            // regex for timestamp was not found
+            return 0;
+        } else {
+            return timestamp;
+        }
     }
 
     @Override

@@ -27,7 +27,9 @@ public class PeertubeStreamExtractorTest {
     public static class WhatIsPeertube extends DefaultStreamExtractorTest {
         private static final String ID = "9c9de5e8-0a1e-484a-b099-e80766180a6d";
         private static final String INSTANCE = "https://framatube.org";
-        private static final String URL = INSTANCE + BASE_URL + ID;
+        private static final int TIMESTAMP_MINUTE = 1;
+        private static final int TIMESTAMP_SECOND = 21;
+        private static final String URL = INSTANCE + BASE_URL + ID + "?start=" + TIMESTAMP_MINUTE + "m" + TIMESTAMP_SECOND + "s";
         private static StreamExtractor extractor;
 
         @BeforeClass
@@ -48,7 +50,7 @@ public class PeertubeStreamExtractorTest {
         @Override public StreamingService expectedService() { return PeerTube; }
         @Override public String expectedName() { return "What is PeerTube?"; }
         @Override public String expectedId() { return ID; }
-        @Override public String expectedUrlContains() { return BASE_URL + ID; }
+        @Override public String expectedUrlContains() { return INSTANCE + BASE_URL + ID; }
         @Override public String expectedOriginalUrlContains() { return URL; }
 
         @Override public StreamType expectedStreamType() { return StreamType.VIDEO_STREAM; }
@@ -74,6 +76,7 @@ public class PeertubeStreamExtractorTest {
                     + "**Video sources**: https://gitlab.gnome.org/Jehan/what-is-peertube/");
         }
         @Override public long expectedLength() { return 113; }
+        @Override public long expectedTimestamp() { return TIMESTAMP_MINUTE*60 + TIMESTAMP_SECOND; }
         @Override public long expectedViewCountAtLeast() { return 38600; }
         @Nullable @Override public String expectedUploadDate() { return "2018-10-01 12:52:46.396"; } // GMT (!)
         @Nullable @Override public String expectedTextualUploadDate() { return "2018-10-01T10:52:46.396Z"; }
@@ -103,7 +106,7 @@ public class PeertubeStreamExtractorTest {
         @Override public StreamingService expectedService() { return PeerTube; }
         @Override public String expectedName() { return "A DPR Combatant Describes how Orders are Given through Russian Officers"; }
         @Override public String expectedId() { return ID; }
-        @Override public String expectedUrlContains() { return BASE_URL + ID; }
+        @Override public String expectedUrlContains() { return URL; }
         @Override public String expectedOriginalUrlContains() { return URL; }
 
         @Override public StreamType expectedStreamType() { return StreamType.VIDEO_STREAM; }
