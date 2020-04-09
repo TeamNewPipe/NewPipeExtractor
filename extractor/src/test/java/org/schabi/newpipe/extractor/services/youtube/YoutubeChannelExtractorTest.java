@@ -59,6 +59,91 @@ public class YoutubeChannelExtractorTest {
             extractor.getInitialPage();
         }
     }
+    
+    public static class HiddenSubscribers implements BaseChannelExtractorTest {
+
+        private static YoutubeChannelExtractor extractor;
+
+        @BeforeClass
+        public static void setUp() throws Exception {
+            NewPipe.init(DownloaderTestImpl.getInstance());
+            extractor = (YoutubeChannelExtractor) YouTube
+                    .getChannelExtractor("https://www.youtube.com/channel/UCC76FBg2d-5NWFD8aK4ql5A/");
+            extractor.fetchPage();
+        }
+
+        @Test
+        public void testServiceId() {
+            assertEquals(YouTube.getServiceId(), extractor.getServiceId());
+        }
+
+        @Test
+        public void testName() throws Exception {
+            assertEquals("carlrogers", extractor.getName());
+        }
+
+        @Test
+        public void testId() throws Exception {
+            assertEquals("UCC76FBg2d-5NWFD8aK4ql5A", extractor.getId());
+        }
+
+        @Test
+        public void testUrl() throws ParsingException {
+            assertEquals("https://www.youtube.com/channel/UCC76FBg2d-5NWFD8aK4ql5A", extractor.getUrl());
+        }
+
+        @Test
+        public void testOriginalUrl() throws ParsingException {
+            assertEquals("https://www.youtube.com/channel/UCC76FBg2d-5NWFD8aK4ql5A/", extractor.getOriginalUrl());
+        }
+
+        /*//////////////////////////////////////////////////////////////////////////
+        // ListExtractor
+        //////////////////////////////////////////////////////////////////////////*/
+
+        @Test
+        public void testRelatedItems() throws Exception {
+            defaultTestRelatedItems(extractor);
+        }
+
+        @Test
+        public void testMoreRelatedItems() throws Exception {
+            assertNoMoreItems(extractor);
+        }
+
+         /*//////////////////////////////////////////////////////////////////////////
+         // ChannelExtractor
+         //////////////////////////////////////////////////////////////////////////*/
+
+        @Test
+        public void testDescription() throws Exception {
+            assertTrue(extractor.getDescription().contains("a father and son restoring a French farmhouse one video at a time"));
+        }
+
+        @Test
+        public void testAvatarUrl() throws Exception {
+            String avatarUrl = extractor.getAvatarUrl();
+            assertIsSecureUrl(avatarUrl);
+            assertTrue(avatarUrl, avatarUrl.contains("yt3"));
+        }
+
+        @Test
+        public void testBannerUrl() throws Exception {
+            String bannerUrl = extractor.getBannerUrl();
+            assertIsSecureUrl(bannerUrl);
+            assertTrue(bannerUrl, bannerUrl.contains("yt3"));
+        }
+
+        @Test
+        public void testFeedUrl() throws Exception {
+            assertEquals("https://www.youtube.com/feeds/videos.xml?channel_id=UCC76FBg2d-5NWFD8aK4ql5A", extractor.getFeedUrl());
+        }
+
+        @Test
+        public void testSubscriberCount() throws Exception {
+            assertTrue("Wrong subscriber count", extractor.getSubscriberCount() < 0);
+        }
+    }
 
     public static class Gronkh implements BaseChannelExtractorTest {
         private static YoutubeChannelExtractor extractor;

@@ -195,12 +195,7 @@ public class YoutubeChannelExtractor extends ChannelExtractor {
                 throw new ParsingException("Could not get subscriber count", e);
             }
         } else {
-            // If there's no subscribe button, the channel has the subscriber count disabled
-            if (c4TabbedHeaderRenderer.has("subscribeButton")) {
-                return 0;
-            } else {
-                return -1;
-            }
+            return -1;
         }
     }
 
