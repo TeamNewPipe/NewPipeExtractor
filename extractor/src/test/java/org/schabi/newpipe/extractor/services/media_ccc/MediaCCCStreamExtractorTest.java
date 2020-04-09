@@ -53,6 +53,7 @@ public class MediaCCCStreamExtractorTest {
         @Nullable @Override public String expectedTextualUploadDate() { return "2018-05-11T02:00:00.000+02:00"; }
         @Override public long expectedLikeCountAtLeast() { return -1; }
         @Override public long expectedDislikeCountAtLeast() { return -1; }
+        @Override public boolean expectedHasRelatedStreams() { return false; }
         @Override public boolean expectedHasSubtitles() { return false; }
         @Override public boolean expectedHasFrames() { return false; }
 
@@ -114,6 +115,7 @@ public class MediaCCCStreamExtractorTest {
         @Nullable @Override public String expectedTextualUploadDate() { return "2020-01-11T01:00:00.000+01:00"; }
         @Override public long expectedLikeCountAtLeast() { return -1; }
         @Override public long expectedDislikeCountAtLeast() { return -1; }
+        @Override public boolean expectedHasRelatedStreams() { return false; }
         @Override public boolean expectedHasSubtitles() { return false; }
         @Override public boolean expectedHasFrames() { return false; }
 

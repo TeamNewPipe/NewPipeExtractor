@@ -219,7 +219,7 @@ public class MediaCCCStreamExtractor extends StreamExtractor {
 
     @Override
     public StreamInfoItemsCollector getRelatedStreams() {
-        return new StreamInfoItemsCollector(getServiceId());
+        return null;
     }
 
     @Override
