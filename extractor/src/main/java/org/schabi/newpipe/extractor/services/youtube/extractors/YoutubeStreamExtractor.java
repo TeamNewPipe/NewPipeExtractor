@@ -1006,12 +1006,18 @@ public class YoutubeStreamExtractor extends StreamExtractor {
     @Override
     public List<Frameset> getFrames() throws ExtractionException {
         try {
-            JsonObject jo = initialAjaxJson.getObject(2).getObject("player");
-            final String resp = jo.getObject("args").getString("player_response");
-            jo = JsonParser.object().from(resp);
-            final String[] spec = jo.getObject("storyboards").getObject("playerStoryboardSpecRenderer").getString("spec").split("\\|");
+            final JsonObject storyboards = playerResponse.getObject("storyboards");
+            final JsonObject storyboardsRenderer;
+            if (storyboards.has("playerLiveStoryboardSpecRenderer")) {
+                storyboardsRenderer = storyboards.getObject("playerLiveStoryboardSpecRenderer");
+            } else {
+                storyboardsRenderer = storyboards.getObject("playerStoryboardSpecRenderer");
+            }
+
+            final String[] spec = storyboardsRenderer.getString("spec").split("\\|");
             final String url = spec[0];
             final ArrayList<Frameset> result = new ArrayList<>(spec.length - 1);
+
             for (int i = 1; i < spec.length; ++i) {
                 final String[] parts = spec[i].split("#");
                 if (parts.length != 8) {
