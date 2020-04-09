@@ -24,6 +24,7 @@ import org.schabi.newpipe.extractor.services.media_ccc.linkHandler.MediaCCCStrea
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.Locale;
@@ -282,8 +283,8 @@ public class MediaCCCStreamExtractor extends StreamExtractor {
 
     @Nonnull
     @Override
-    public List<String> getTags() {
-        return Collections.emptyList();
+    public List<String> getTags() throws ParsingException {
+        return Arrays.asList(data.getArray("tags").toArray(new String[0]));
     }
 
     @Nonnull
