@@ -10,7 +10,8 @@ public class PeertubeStreamLinkHandlerFactory extends LinkHandlerFactory {
 
     private static final PeertubeStreamLinkHandlerFactory instance = new PeertubeStreamLinkHandlerFactory();
     private static final String ID_PATTERN = "/videos/(watch/|embed/)?([^/?&#]*)";
-    private static final String VIDEO_ENDPOINT = "/api/v1/videos/";
+    public static final String VIDEO_API_ENDPOINT = "/api/v1/videos/";
+    private static final String VIDEO_PATH = "/videos/watch/";
 
     private PeertubeStreamLinkHandlerFactory() {
     }
@@ -27,7 +28,7 @@ public class PeertubeStreamLinkHandlerFactory extends LinkHandlerFactory {
 
     @Override
     public String getUrl(String id, String baseUrl) {
-        return baseUrl + VIDEO_ENDPOINT + id;
+        return baseUrl + VIDEO_PATH + id;
     }
 
     @Override

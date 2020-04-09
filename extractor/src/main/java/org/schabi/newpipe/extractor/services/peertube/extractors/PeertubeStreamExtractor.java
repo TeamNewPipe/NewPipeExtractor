@@ -17,6 +17,7 @@ import org.schabi.newpipe.extractor.linkhandler.LinkHandler;
 import org.schabi.newpipe.extractor.localization.DateWrapper;
 import org.schabi.newpipe.extractor.services.peertube.PeertubeParsingHelper;
 import org.schabi.newpipe.extractor.services.peertube.linkHandler.PeertubeSearchQueryHandlerFactory;
+import org.schabi.newpipe.extractor.services.peertube.linkHandler.PeertubeStreamLinkHandlerFactory;
 import org.schabi.newpipe.extractor.stream.AudioStream;
 import org.schabi.newpipe.extractor.stream.Description;
 import org.schabi.newpipe.extractor.stream.Stream;
@@ -83,7 +84,9 @@ public class PeertubeStreamExtractor extends StreamExtractor {
             //if description is shortened, get full description
             final Downloader dl = NewPipe.getDownloader();
             try {
-                final Response response = dl.get(getUrl() + "/description");
+                final Response response = dl.get(baseUrl
+                        + PeertubeStreamLinkHandlerFactory.VIDEO_API_ENDPOINT
+                        + getId() + "/description");
                 final JsonObject jsonObject = JsonParser.object().from(response.responseBody());
                 text = JsonUtils.getString(jsonObject, "description");
             } catch (ReCaptchaException | IOException | JsonParserException e) {
@@ -338,7 +341,7 @@ public class PeertubeStreamExtractor extends StreamExtractor {
 
     @Override
     public void onFetchPage(final Downloader downloader) throws IOException, ExtractionException {
-        final Response response = downloader.get(getUrl());
+        final Response response = downloader.get(baseUrl + PeertubeStreamLinkHandlerFactory.VIDEO_API_ENDPOINT + getId());
         if (response != null && response.responseBody() != null) {
             setInitialData(response.responseBody());
         } else {
@@ -354,14 +357,18 @@ public class PeertubeStreamExtractor extends StreamExtractor {
         } catch (JsonParserException e) {
             throw new ExtractionException("Unable to extract PeerTube stream data", e);
         }
-        if (json == null) throw new ExtractionException("Unable to extract PeerTube stream data");
+        if (json == null) {
+            throw new ExtractionException("Unable to extract PeerTube stream data");
+        }
         PeertubeParsingHelper.validate(json);
     }
 
     private void loadSubtitles() {
         if (subtitles.isEmpty()) {
             try {
-                final Response response = getDownloader().get(getUrl() + "/captions");
+                final Response response = getDownloader().get(baseUrl
+                        + PeertubeStreamLinkHandlerFactory.VIDEO_API_ENDPOINT
+                        + getId() + "/captions");
                 final JsonObject captionsJson = JsonParser.object().from(response.responseBody());
                 final JsonArray captions = JsonUtils.getArray(captionsJson, "data");
                 for (final Object c : captions) {
@@ -385,12 +392,6 @@ public class PeertubeStreamExtractor extends StreamExtractor {
     @Override
     public String getName() throws ParsingException {
         return JsonUtils.getString(json, "name");
-    }
-
-    @Nonnull
-    @Override
-    public String getOriginalUrl() throws ParsingException {
-        return baseUrl + "/videos/watch/" + getId();
     }
 
     @Nonnull

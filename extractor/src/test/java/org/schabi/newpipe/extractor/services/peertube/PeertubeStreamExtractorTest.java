@@ -53,7 +53,7 @@ public class PeertubeStreamExtractorTest {
 
         @Override public StreamType expectedStreamType() { return StreamType.VIDEO_STREAM; }
         @Override public String expectedUploaderName() { return "Framasoft"; }
-        @Override public String expectedUploaderUrl() { return "https://framatube.org/accounts/framasoft"; }
+        @Override public String expectedUploaderUrl() { return "https://framatube.org/accounts/framasoft@framatube.org"; }
         @Override public List<String> expectedDescriptionContains() { // CRLF line ending
             return Arrays.asList("**[Want to help to translate this video?](https://weblate.framasoft.org/projects/what-is-peertube-video/)**\r\n"
                     + "\r\n"
@@ -108,7 +108,7 @@ public class PeertubeStreamExtractorTest {
 
         @Override public StreamType expectedStreamType() { return StreamType.VIDEO_STREAM; }
         @Override public String expectedUploaderName() { return "Tomas Berezovskiy"; }
-        @Override public String expectedUploaderUrl() { return "https://peertube.iriseden.eu/accounts/tomas_berezovskiy"; }
+        @Override public String expectedUploaderUrl() { return "https://peertube.co.uk/accounts/tomas_berezovskiy@peertube.iriseden.eu"; }
         @Override public List<String> expectedDescriptionContains() { // LF line ending
             return Arrays.asList("https://en.informnapalm.org/dpr-combatant-describes-orders-given-russian-officers/ "
                     + " The InformNapalm team received another video of a separatist prisoner of war telling about his "
