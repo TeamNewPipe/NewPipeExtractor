@@ -606,7 +606,7 @@ public class YoutubeStreamExtractor extends StreamExtractor {
         try {
             return getTextFromObject(initialAjaxJson.getObject(2).getObject("playerResponse").getObject("playabilityStatus")
                     .getObject("errorScreen").getObject("playerErrorMessageRenderer").getObject("reason"));
-        } catch (ParsingException e) {
+        } catch (Exception e) {
             return null;
         }
     }
