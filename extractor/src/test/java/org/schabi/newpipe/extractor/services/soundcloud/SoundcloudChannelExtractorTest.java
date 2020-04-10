@@ -7,6 +7,7 @@ import org.schabi.newpipe.extractor.NewPipe;
 import org.schabi.newpipe.extractor.channel.ChannelExtractor;
 import org.schabi.newpipe.extractor.exceptions.ParsingException;
 import org.schabi.newpipe.extractor.services.BaseChannelExtractorTest;
+import org.schabi.newpipe.extractor.services.soundcloud.extractors.SoundcloudChannelExtractor;
 
 import static org.junit.Assert.*;
 import static org.schabi.newpipe.extractor.ExtractorAsserts.assertEmpty;

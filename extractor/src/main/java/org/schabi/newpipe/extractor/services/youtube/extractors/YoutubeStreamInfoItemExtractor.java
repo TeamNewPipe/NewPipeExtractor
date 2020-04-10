@@ -5,7 +5,7 @@ import com.grack.nanojson.JsonObject;
 import org.schabi.newpipe.extractor.exceptions.ParsingException;
 import org.schabi.newpipe.extractor.localization.DateWrapper;
 import org.schabi.newpipe.extractor.localization.TimeAgoParser;
-import org.schabi.newpipe.extractor.services.youtube.linkHandler.YoutubeParsingHelper;
+import org.schabi.newpipe.extractor.services.youtube.YoutubeParsingHelper;
 import org.schabi.newpipe.extractor.services.youtube.linkHandler.YoutubeStreamLinkHandlerFactory;
 import org.schabi.newpipe.extractor.stream.StreamInfoItemExtractor;
 import org.schabi.newpipe.extractor.stream.StreamType;
@@ -16,7 +16,7 @@ import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
 
-import static org.schabi.newpipe.extractor.services.youtube.linkHandler.YoutubeParsingHelper.*;
+import static org.schabi.newpipe.extractor.services.youtube.YoutubeParsingHelper.*;
 
 /*
  * Copyright (C) Christian Schabesberger 2016 <chris.schabesberger@mailbox.org>

@@ -1,4 +1,4 @@
-package org.schabi.newpipe.extractor.services.soundcloud;
+package org.schabi.newpipe.extractor.services.soundcloud.extractors;
 
 import com.grack.nanojson.JsonArray;
 import com.grack.nanojson.JsonObject;
@@ -22,7 +22,7 @@ import java.io.UnsupportedEncodingException;
 import java.net.MalformedURLException;
 import java.net.URL;
 
-import static org.schabi.newpipe.extractor.services.soundcloud.SoundcloudSearchQueryHandlerFactory.ITEMS_PER_PAGE;
+import static org.schabi.newpipe.extractor.services.soundcloud.linkHandler.SoundcloudSearchQueryHandlerFactory.ITEMS_PER_PAGE;
 
 public class SoundcloudSearchExtractor extends SearchExtractor {
 

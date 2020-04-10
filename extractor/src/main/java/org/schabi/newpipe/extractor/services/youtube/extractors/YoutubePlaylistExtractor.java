@@ -10,7 +10,7 @@ import org.schabi.newpipe.extractor.exceptions.ParsingException;
 import org.schabi.newpipe.extractor.linkhandler.ListLinkHandler;
 import org.schabi.newpipe.extractor.localization.TimeAgoParser;
 import org.schabi.newpipe.extractor.playlist.PlaylistExtractor;
-import org.schabi.newpipe.extractor.services.youtube.linkHandler.YoutubeParsingHelper;
+import org.schabi.newpipe.extractor.services.youtube.YoutubeParsingHelper;
 import org.schabi.newpipe.extractor.stream.StreamInfoItem;
 import org.schabi.newpipe.extractor.stream.StreamInfoItemsCollector;
 import org.schabi.newpipe.extractor.utils.Utils;
@@ -19,10 +19,10 @@ import java.io.IOException;
 
 import javax.annotation.Nonnull;
 
-import static org.schabi.newpipe.extractor.services.youtube.linkHandler.YoutubeParsingHelper.fixThumbnailUrl;
-import static org.schabi.newpipe.extractor.services.youtube.linkHandler.YoutubeParsingHelper.getJsonResponse;
-import static org.schabi.newpipe.extractor.services.youtube.linkHandler.YoutubeParsingHelper.getTextFromObject;
-import static org.schabi.newpipe.extractor.services.youtube.linkHandler.YoutubeParsingHelper.getUrlFromNavigationEndpoint;
+import static org.schabi.newpipe.extractor.services.youtube.YoutubeParsingHelper.fixThumbnailUrl;
+import static org.schabi.newpipe.extractor.services.youtube.YoutubeParsingHelper.getJsonResponse;
+import static org.schabi.newpipe.extractor.services.youtube.YoutubeParsingHelper.getTextFromObject;
+import static org.schabi.newpipe.extractor.services.youtube.YoutubeParsingHelper.getUrlFromNavigationEndpoint;
 
 @SuppressWarnings("WeakerAccess")
 public class YoutubePlaylistExtractor extends PlaylistExtractor {

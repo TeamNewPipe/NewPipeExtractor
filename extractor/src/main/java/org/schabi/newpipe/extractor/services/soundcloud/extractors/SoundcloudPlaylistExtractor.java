@@ -1,4 +1,4 @@
-package org.schabi.newpipe.extractor.services.soundcloud;
+package org.schabi.newpipe.extractor.services.soundcloud.extractors;
 
 import com.grack.nanojson.JsonArray;
 import com.grack.nanojson.JsonObject;
@@ -12,6 +12,7 @@ import org.schabi.newpipe.extractor.exceptions.ExtractionException;
 import org.schabi.newpipe.extractor.exceptions.ParsingException;
 import org.schabi.newpipe.extractor.linkhandler.ListLinkHandler;
 import org.schabi.newpipe.extractor.playlist.PlaylistExtractor;
+import org.schabi.newpipe.extractor.services.soundcloud.SoundcloudParsingHelper;
 import org.schabi.newpipe.extractor.stream.StreamInfoItem;
 import org.schabi.newpipe.extractor.stream.StreamInfoItemsCollector;
 

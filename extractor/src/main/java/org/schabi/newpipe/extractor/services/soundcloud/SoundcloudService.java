@@ -10,6 +10,8 @@ import org.schabi.newpipe.extractor.linkhandler.*;
 import org.schabi.newpipe.extractor.localization.ContentCountry;
 import org.schabi.newpipe.extractor.playlist.PlaylistExtractor;
 import org.schabi.newpipe.extractor.search.SearchExtractor;
+import org.schabi.newpipe.extractor.services.soundcloud.extractors.*;
+import org.schabi.newpipe.extractor.services.soundcloud.linkHandler.*;
 import org.schabi.newpipe.extractor.stream.StreamExtractor;
 import org.schabi.newpipe.extractor.subscription.SubscriptionExtractor;
 

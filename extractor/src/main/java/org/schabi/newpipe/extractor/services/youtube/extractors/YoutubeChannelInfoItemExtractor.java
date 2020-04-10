@@ -7,8 +7,8 @@ import org.schabi.newpipe.extractor.exceptions.ParsingException;
 import org.schabi.newpipe.extractor.services.youtube.linkHandler.YoutubeChannelLinkHandlerFactory;
 import org.schabi.newpipe.extractor.utils.Utils;
 
-import static org.schabi.newpipe.extractor.services.youtube.linkHandler.YoutubeParsingHelper.fixThumbnailUrl;
-import static org.schabi.newpipe.extractor.services.youtube.linkHandler.YoutubeParsingHelper.getTextFromObject;
+import static org.schabi.newpipe.extractor.services.youtube.YoutubeParsingHelper.fixThumbnailUrl;
+import static org.schabi.newpipe.extractor.services.youtube.YoutubeParsingHelper.getTextFromObject;
 
 /*
  * Created by Christian Schabesberger on 12.02.17.

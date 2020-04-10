@@ -17,7 +17,7 @@ import java.net.URLEncoder;
 import static java.util.Collections.singletonList;
 import static org.schabi.newpipe.extractor.ServiceList.SoundCloud;
 import static org.schabi.newpipe.extractor.services.DefaultTests.assertNoDuplicatedItems;
-import static org.schabi.newpipe.extractor.services.soundcloud.SoundcloudSearchQueryHandlerFactory.*;
+import static org.schabi.newpipe.extractor.services.soundcloud.linkHandler.SoundcloudSearchQueryHandlerFactory.*;
 
 public class SoundcloudSearchExtractorTest {
 

@@ -11,7 +11,7 @@ import org.schabi.newpipe.extractor.exceptions.ParsingException;
 import org.schabi.newpipe.extractor.linkhandler.ListLinkHandler;
 import org.schabi.newpipe.extractor.localization.TimeAgoParser;
 import org.schabi.newpipe.extractor.services.youtube.linkHandler.YoutubeChannelLinkHandlerFactory;
-import org.schabi.newpipe.extractor.services.youtube.linkHandler.YoutubeParsingHelper;
+import org.schabi.newpipe.extractor.services.youtube.YoutubeParsingHelper;
 import org.schabi.newpipe.extractor.stream.StreamInfoItem;
 import org.schabi.newpipe.extractor.stream.StreamInfoItemsCollector;
 import org.schabi.newpipe.extractor.utils.Utils;
@@ -19,7 +19,7 @@ import org.schabi.newpipe.extractor.utils.Utils;
 import javax.annotation.Nonnull;
 import java.io.IOException;
 
-import static org.schabi.newpipe.extractor.services.youtube.linkHandler.YoutubeParsingHelper.*;
+import static org.schabi.newpipe.extractor.services.youtube.YoutubeParsingHelper.*;
 import static org.schabi.newpipe.extractor.utils.JsonUtils.*;
 
 /*

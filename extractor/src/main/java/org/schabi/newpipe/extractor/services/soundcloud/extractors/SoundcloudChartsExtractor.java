@@ -1,10 +1,11 @@
-package org.schabi.newpipe.extractor.services.soundcloud;
+package org.schabi.newpipe.extractor.services.soundcloud.extractors;
 
 import org.schabi.newpipe.extractor.StreamingService;
 import org.schabi.newpipe.extractor.downloader.Downloader;
 import org.schabi.newpipe.extractor.exceptions.ExtractionException;
 import org.schabi.newpipe.extractor.kiosk.KioskExtractor;
 import org.schabi.newpipe.extractor.linkhandler.ListLinkHandler;
+import org.schabi.newpipe.extractor.services.soundcloud.SoundcloudParsingHelper;
 import org.schabi.newpipe.extractor.stream.StreamInfoItem;
 import org.schabi.newpipe.extractor.stream.StreamInfoItemsCollector;
 

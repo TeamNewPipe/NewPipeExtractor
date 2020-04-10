@@ -22,7 +22,7 @@ import org.schabi.newpipe.extractor.localization.TimeAgoParser;
 import org.schabi.newpipe.extractor.localization.TimeAgoPatternsManager;
 import org.schabi.newpipe.extractor.services.youtube.ItagItem;
 import org.schabi.newpipe.extractor.services.youtube.linkHandler.YoutubeChannelLinkHandlerFactory;
-import org.schabi.newpipe.extractor.services.youtube.linkHandler.YoutubeParsingHelper;
+import org.schabi.newpipe.extractor.services.youtube.YoutubeParsingHelper;
 import org.schabi.newpipe.extractor.stream.AudioStream;
 import org.schabi.newpipe.extractor.stream.Description;
 import org.schabi.newpipe.extractor.stream.Frameset;
@@ -53,10 +53,10 @@ import java.util.Map;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
-import static org.schabi.newpipe.extractor.services.youtube.linkHandler.YoutubeParsingHelper.fixThumbnailUrl;
-import static org.schabi.newpipe.extractor.services.youtube.linkHandler.YoutubeParsingHelper.getJsonResponse;
-import static org.schabi.newpipe.extractor.services.youtube.linkHandler.YoutubeParsingHelper.getTextFromObject;
-import static org.schabi.newpipe.extractor.services.youtube.linkHandler.YoutubeParsingHelper.getUrlFromNavigationEndpoint;
+import static org.schabi.newpipe.extractor.services.youtube.YoutubeParsingHelper.fixThumbnailUrl;
+import static org.schabi.newpipe.extractor.services.youtube.YoutubeParsingHelper.getJsonResponse;
+import static org.schabi.newpipe.extractor.services.youtube.YoutubeParsingHelper.getTextFromObject;
+import static org.schabi.newpipe.extractor.services.youtube.YoutubeParsingHelper.getUrlFromNavigationEndpoint;
 
 /*
  * Created by Christian Schabesberger on 06.08.15.

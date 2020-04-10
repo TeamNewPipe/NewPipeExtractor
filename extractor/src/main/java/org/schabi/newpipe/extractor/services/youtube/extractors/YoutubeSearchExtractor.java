@@ -17,8 +17,8 @@ import java.io.IOException;
 
 import javax.annotation.Nonnull;
 
-import static org.schabi.newpipe.extractor.services.youtube.linkHandler.YoutubeParsingHelper.getJsonResponse;
-import static org.schabi.newpipe.extractor.services.youtube.linkHandler.YoutubeParsingHelper.getTextFromObject;
+import static org.schabi.newpipe.extractor.services.youtube.YoutubeParsingHelper.getJsonResponse;
+import static org.schabi.newpipe.extractor.services.youtube.YoutubeParsingHelper.getTextFromObject;
 
 /*
  * Created by Christian Schabesberger on 22.07.2018
