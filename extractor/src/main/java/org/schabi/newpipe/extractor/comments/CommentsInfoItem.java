@@ -13,7 +13,8 @@ public class CommentsInfoItem extends InfoItem {
     private String authorThumbnail;
     private String authorEndpoint;
     private String textualPublishedTime;
-    @Nullable private DateWrapper publishedTime;
+    @Nullable
+    private DateWrapper publishedTime;
     private int likeCount;
 
     public CommentsInfoItem(int serviceId, String url, String name) {

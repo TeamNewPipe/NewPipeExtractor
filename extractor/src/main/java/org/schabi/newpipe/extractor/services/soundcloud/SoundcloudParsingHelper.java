@@ -88,10 +88,12 @@ public class SoundcloudParsingHelper {
         }
     }
 
-    public static Calendar parseDate(String textualUploadDate) throws ParsingException {
+    public static Calendar parseDateFrom(String textualUploadDate) throws ParsingException {
         Date date;
         try {
-            date = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss'Z'").parse(textualUploadDate);
+            SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss'Z'");
+            sdf.setTimeZone(TimeZone.getTimeZone("GMT"));
+            date = sdf.parse(textualUploadDate);
         } catch (ParseException e1) {
             try {
                 date = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss +0000").parse(textualUploadDate);

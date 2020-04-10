@@ -17,13 +17,15 @@ import org.schabi.newpipe.extractor.subscription.SubscriptionExtractor;
 
 import java.util.List;
 
+import static java.util.Arrays.asList;
 import static java.util.Collections.singletonList;
 import static org.schabi.newpipe.extractor.StreamingService.ServiceInfo.MediaCapability.AUDIO;
+import static org.schabi.newpipe.extractor.StreamingService.ServiceInfo.MediaCapability.COMMENTS;
 
 public class SoundcloudService extends StreamingService {
 
     public SoundcloudService(int id) {
-        super(id, "SoundCloud", singletonList(AUDIO));
+        super(id, "SoundCloud", asList(AUDIO, COMMENTS));
     }
 
     @Override
@@ -119,13 +121,13 @@ public class SoundcloudService extends StreamingService {
 
     @Override
     public ListLinkHandlerFactory getCommentsLHFactory() {
-        return null;
+        return SoundcloudCommentsLinkHandlerFactory.getInstance();
     }
 
     @Override
     public CommentsExtractor getCommentsExtractor(ListLinkHandler linkHandler)
             throws ExtractionException {
-        return null;
+        return new SoundcloudCommentsExtractor(this, linkHandler);
     }
 
 }

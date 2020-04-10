@@ -49,7 +49,7 @@ public class SoundcloudStreamInfoItemExtractor implements StreamInfoItemExtracto
 
     @Override
     public DateWrapper getUploadDate() throws ParsingException {
-        return new DateWrapper(SoundcloudParsingHelper.parseDate(getTextualUploadDate()));
+        return new DateWrapper(SoundcloudParsingHelper.parseDateFrom(getTextualUploadDate()));
     }
 
     private String getCreatedAt() {
