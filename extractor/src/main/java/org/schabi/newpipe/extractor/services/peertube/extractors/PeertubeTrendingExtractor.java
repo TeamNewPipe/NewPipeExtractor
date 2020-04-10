@@ -19,14 +19,14 @@ import org.schabi.newpipe.extractor.utils.Utils;
 
 import java.io.IOException;
 
-import static org.schabi.newpipe.extractor.services.peertube.PeertubeParsingHelper.*;
+import javax.annotation.Nonnull;
+
+import static org.schabi.newpipe.extractor.services.peertube.PeertubeParsingHelper.COUNT_KEY;
+import static org.schabi.newpipe.extractor.services.peertube.PeertubeParsingHelper.ITEMS_PER_PAGE;
+import static org.schabi.newpipe.extractor.services.peertube.PeertubeParsingHelper.START_KEY;
 
 public class PeertubeTrendingExtractor extends KioskExtractor<StreamInfoItem> {
-
-    private InfoItemsPage<StreamInfoItem> initPage;
-    private long total;
-
-    public PeertubeTrendingExtractor(StreamingService streamingService, ListLinkHandler linkHandler, String kioskId) {
+    public PeertubeTrendingExtractor(final StreamingService streamingService, final ListLinkHandler linkHandler, final String kioskId) {
         super(streamingService, linkHandler, kioskId);
     }
 
@@ -37,38 +37,31 @@ public class PeertubeTrendingExtractor extends KioskExtractor<StreamInfoItem> {
 
     @Override
     public InfoItemsPage<StreamInfoItem> getInitialPage() throws IOException, ExtractionException {
-        super.fetchPage();
-        return initPage;
+        final String pageUrl = getUrl() + "&" + START_KEY + "=0&" + COUNT_KEY + "=" + ITEMS_PER_PAGE;
+        return getPage(pageUrl);
     }
 
-    private void collectStreamsFrom(StreamInfoItemsCollector collector, JsonObject json, String pageUrl) throws ParsingException {
-        JsonArray contents;
+    private void collectStreamsFrom(final StreamInfoItemsCollector collector, final JsonObject json) throws ParsingException {
+        final JsonArray contents;
         try {
             contents = (JsonArray) JsonUtils.getValue(json, "data");
         } catch (Exception e) {
             throw new ParsingException("Unable to extract kiosk info", e);
         }
 
-        String baseUrl = getBaseUrl();
-        for (Object c : contents) {
+        final String baseUrl = getBaseUrl();
+        for (final Object c : contents) {
             if (c instanceof JsonObject) {
                 final JsonObject item = (JsonObject) c;
-                PeertubeStreamInfoItemExtractor extractor = new PeertubeStreamInfoItemExtractor(item, baseUrl);
+                final PeertubeStreamInfoItemExtractor extractor = new PeertubeStreamInfoItemExtractor(item, baseUrl);
                 collector.commit(extractor);
             }
         }
-
     }
 
     @Override
-    public String getNextPageUrl() throws IOException, ExtractionException {
-        super.fetchPage();
-        return initPage.getNextPageUrl();
-    }
-
-    @Override
-    public InfoItemsPage<StreamInfoItem> getPage(String pageUrl) throws IOException, ExtractionException {
-        Response response = getDownloader().get(pageUrl);
+    public InfoItemsPage<StreamInfoItem> getPage(final String pageUrl) throws IOException, ExtractionException {
+        final Response response = getDownloader().get(pageUrl);
         JsonObject json = null;
         if (response != null && !Utils.isBlank(response.responseBody())) {
             try {
@@ -78,11 +71,12 @@ public class PeertubeTrendingExtractor extends KioskExtractor<StreamInfoItem> {
             }
         }
 
-        StreamInfoItemsCollector collector = new StreamInfoItemsCollector(getServiceId());
+        final StreamInfoItemsCollector collector = new StreamInfoItemsCollector(getServiceId());
+        final long total;
         if (json != null) {
-            Number number = JsonUtils.getNumber(json, "total");
-            if (number != null) this.total = number.longValue();
-            collectStreamsFrom(collector, json, pageUrl);
+            final Number number = JsonUtils.getNumber(json, "total");
+            total = number.longValue();
+            collectStreamsFrom(collector, json);
         } else {
             throw new ExtractionException("Unable to get peertube kiosk info");
         }
@@ -90,8 +84,5 @@ public class PeertubeTrendingExtractor extends KioskExtractor<StreamInfoItem> {
     }
 
     @Override
-    public void onFetchPage(Downloader downloader) throws IOException, ExtractionException {
-        this.initPage = getPage(getUrl() + "&" + START_KEY + "=0&" + COUNT_KEY + "=" + ITEMS_PER_PAGE);
-    }
-
+    public void onFetchPage(@Nonnull final Downloader downloader) throws IOException, ExtractionException { }
 }

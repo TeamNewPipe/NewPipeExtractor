@@ -26,7 +26,6 @@ import static org.schabi.newpipe.extractor.services.soundcloud.linkHandler.Sound
 import static org.schabi.newpipe.extractor.utils.JsonUtils.EMPTY_STRING;
 
 public class SoundcloudSearchExtractor extends SearchExtractor {
-
     private JsonArray searchCollection;
 
     public SoundcloudSearchExtractor(StreamingService service, SearchQueryHandler linkHandler) {
@@ -47,12 +46,7 @@ public class SoundcloudSearchExtractor extends SearchExtractor {
     @Nonnull
     @Override
     public InfoItemsPage<InfoItem> getInitialPage() throws IOException, ExtractionException {
-        return new InfoItemsPage<>(collectItems(searchCollection), getNextPageUrl());
-    }
-
-    @Override
-    public String getNextPageUrl() throws IOException, ExtractionException {
-        return getNextPageUrlFromCurrentUrl(getUrl());
+        return new InfoItemsPage<>(collectItems(searchCollection), getNextPageUrlFromCurrentUrl(getUrl()));
     }
 
     @Override

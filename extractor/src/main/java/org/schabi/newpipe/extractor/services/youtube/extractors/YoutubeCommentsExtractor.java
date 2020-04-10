@@ -51,15 +51,7 @@ public class YoutubeCommentsExtractor extends CommentsExtractor {
         return initPage;
     }
 
-    @Override
-    public String getNextPageUrl() throws IOException, ExtractionException {
-        // initial page does not load any comments but is required to get comments token
-        super.fetchPage();
-        return initPage.getNextPageUrl();
-    }
-
-    private String getNextPageUrl(JsonObject ajaxJson) throws IOException, ParsingException {
-
+    private String getNextPageUrl(JsonObject ajaxJson) throws ParsingException {
         JsonArray arr;
         try {
             arr = JsonUtils.getArray(ajaxJson, "response.continuationContents.commentSectionContinuation.continuations");

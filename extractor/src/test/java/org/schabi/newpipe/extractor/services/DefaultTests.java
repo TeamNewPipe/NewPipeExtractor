@@ -84,8 +84,9 @@ public final class DefaultTests {
     }
 
     public static <T extends InfoItem> void assertNoMoreItems(ListExtractor<T> extractor) throws Exception {
-        assertFalse("More items available when it shouldn't", extractor.hasNextPage());
-        final String nextPageUrl = extractor.getNextPageUrl();
+        final ListExtractor.InfoItemsPage<T> initialPage = extractor.getInitialPage();
+        assertFalse("More items available when it shouldn't", initialPage.hasNextPage());
+        final String nextPageUrl = initialPage.getNextPageUrl();
         assertTrue("Next page is not empty or null", isNullOrEmpty(nextPageUrl));
     }
 
@@ -118,8 +119,9 @@ public final class DefaultTests {
     }
 
     public static <T extends InfoItem> ListExtractor.InfoItemsPage<T> defaultTestMoreItems(ListExtractor<T> extractor) throws Exception {
-        assertTrue("Doesn't have more items", extractor.hasNextPage());
-        ListExtractor.InfoItemsPage<T> nextPage = extractor.getPage(extractor.getNextPageUrl());
+        final ListExtractor.InfoItemsPage<T> initialPage = extractor.getInitialPage();
+        assertTrue("Doesn't have more items", initialPage.hasNextPage());
+        ListExtractor.InfoItemsPage<T> nextPage = extractor.getPage(initialPage.getNextPageUrl());
         final List<T> items = nextPage.getItems();
         assertFalse("Next page is empty", items.isEmpty());
         assertEmptyErrors("Next page have errors", nextPage.getErrors());
@@ -129,7 +131,7 @@ public final class DefaultTests {
     }
 
     public static void defaultTestGetPageInNewExtractor(ListExtractor<? extends InfoItem> extractor, ListExtractor<? extends InfoItem> newExtractor) throws Exception {
-        final String nextPageUrl = extractor.getNextPageUrl();
+        final String nextPageUrl = extractor.getInitialPage().getNextPageUrl();
 
         final ListExtractor.InfoItemsPage<? extends InfoItem> page = newExtractor.getPage(nextPageUrl);
         defaultTestListOfItems(extractor.getService(), page.getItems(), page.getErrors());

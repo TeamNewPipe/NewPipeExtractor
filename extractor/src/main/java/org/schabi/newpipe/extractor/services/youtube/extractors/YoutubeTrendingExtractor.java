@@ -61,11 +61,6 @@ public class YoutubeTrendingExtractor extends KioskExtractor<StreamInfoItem> {
     }
 
     @Override
-    public String getNextPageUrl() {
-        return "";
-    }
-
-    @Override
     public InfoItemsPage<StreamInfoItem> getPage(String pageUrl) {
         return null;
     }
@@ -98,6 +93,7 @@ public class YoutubeTrendingExtractor extends KioskExtractor<StreamInfoItem> {
                 collector.commit(new YoutubeStreamInfoItemExtractor(videoInfo, timeAgoParser));
             }
         }
-        return new InfoItemsPage<>(collector, getNextPageUrl());
+
+        return new InfoItemsPage<>(collector, null);
     }
 }

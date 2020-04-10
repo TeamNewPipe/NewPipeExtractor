@@ -16,9 +16,6 @@ import static org.schabi.newpipe.extractor.ServiceList.SoundCloud;
 import static org.schabi.newpipe.extractor.utils.Utils.isNullOrEmpty;
 
 public class SoundcloudChartsExtractor extends KioskExtractor<StreamInfoItem> {
-    private StreamInfoItemsCollector collector = null;
-    private String nextPageUrl = null;
-
     public SoundcloudChartsExtractor(StreamingService service,
                                      ListLinkHandler linkHandler,
                                      String kioskId) {
@@ -49,7 +46,12 @@ public class SoundcloudChartsExtractor extends KioskExtractor<StreamInfoItem> {
 
 
     private void computeNextPageAndStreams() throws IOException, ExtractionException {
-        collector = new StreamInfoItemsCollector(getServiceId());
+    }
+
+    @Nonnull
+    @Override
+    public InfoItemsPage<StreamInfoItem> getInitialPage() throws IOException, ExtractionException {
+        StreamInfoItemsCollector collector = new StreamInfoItemsCollector(getServiceId());
 
         String apiUrl = "https://api-v2.soundcloud.com/charts" +
                 "?genre=soundcloud:genres:all-music" +
@@ -61,27 +63,11 @@ public class SoundcloudChartsExtractor extends KioskExtractor<StreamInfoItem> {
             apiUrl += "&kind=trending";
         }
 
-
         String contentCountry = SoundCloud.getContentCountry().getCountryCode();
         apiUrl += "&region=soundcloud:regions:" + contentCountry;
 
-        nextPageUrl = SoundcloudParsingHelper.getStreamsFromApi(collector, apiUrl, true);
-    }
+        String nextPageUrl = SoundcloudParsingHelper.getStreamsFromApi(collector, apiUrl, true);
 
-    @Override
-    public String getNextPageUrl() throws IOException, ExtractionException {
-        if (nextPageUrl == null) {
-            computeNextPageAndStreams();
-        }
-        return nextPageUrl;
-    }
-
-    @Nonnull
-    @Override
-    public InfoItemsPage<StreamInfoItem> getInitialPage() throws IOException, ExtractionException {
-        if (collector == null) {
-            computeNextPageAndStreams();
-        }
-        return new InfoItemsPage<>(collector, getNextPageUrl());
+        return new InfoItemsPage<>(collector, nextPageUrl);
     }
 }

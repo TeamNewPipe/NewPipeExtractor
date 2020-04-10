@@ -16,29 +16,25 @@ import org.schabi.newpipe.extractor.services.peertube.PeertubeParsingHelper;
 import org.schabi.newpipe.extractor.stream.StreamInfoItem;
 import org.schabi.newpipe.extractor.stream.StreamInfoItemsCollector;
 import org.schabi.newpipe.extractor.utils.JsonUtils;
-import org.schabi.newpipe.extractor.utils.Parser;
-import org.schabi.newpipe.extractor.utils.Parser.RegexException;
 import org.schabi.newpipe.extractor.utils.Utils;
 
 import java.io.IOException;
 
-import static org.schabi.newpipe.extractor.services.peertube.PeertubeParsingHelper.*;
+import static org.schabi.newpipe.extractor.services.peertube.PeertubeParsingHelper.COUNT_KEY;
+import static org.schabi.newpipe.extractor.services.peertube.PeertubeParsingHelper.ITEMS_PER_PAGE;
+import static org.schabi.newpipe.extractor.services.peertube.PeertubeParsingHelper.START_KEY;
 
 public class PeertubeChannelExtractor extends ChannelExtractor {
-
-    private InfoItemsPage<StreamInfoItem> initPage;
-    private long total;
-
     private JsonObject json;
     private final String baseUrl;
 
-    public PeertubeChannelExtractor(StreamingService service, ListLinkHandler linkHandler) throws ParsingException {
+    public PeertubeChannelExtractor(final StreamingService service, final ListLinkHandler linkHandler) throws ParsingException {
         super(service, linkHandler);
         this.baseUrl = getBaseUrl();
     }
 
     @Override
-    public String getAvatarUrl() throws ParsingException {
+    public String getAvatarUrl() {
         String value;
         try {
             value = JsonUtils.getString(json, "avatar.path");
@@ -49,7 +45,7 @@ public class PeertubeChannelExtractor extends ChannelExtractor {
     }
 
     @Override
-    public String getBannerUrl() throws ParsingException {
+    public String getBannerUrl() {
         return null;
     }
 
@@ -60,12 +56,12 @@ public class PeertubeChannelExtractor extends ChannelExtractor {
 
     @Override
     public long getSubscriberCount() throws ParsingException {
-        Number number = JsonUtils.getNumber(json, "followersCount");
+        final Number number = JsonUtils.getNumber(json, "followersCount");
         return number.longValue();
     }
 
     @Override
-    public String getDescription() throws ParsingException {
+    public String getDescription() {
         try {
             return JsonUtils.getString(json, "description");
         } catch (ParsingException e) {
@@ -84,7 +80,7 @@ public class PeertubeChannelExtractor extends ChannelExtractor {
     }
 
     @Override
-    public String getParentChannelAvatarUrl() throws ParsingException {
+    public String getParentChannelAvatarUrl() {
         String value;
         try {
             value = JsonUtils.getString(json, "ownerAccount.avatar.path");
@@ -96,37 +92,30 @@ public class PeertubeChannelExtractor extends ChannelExtractor {
 
     @Override
     public InfoItemsPage<StreamInfoItem> getInitialPage() throws IOException, ExtractionException {
-        super.fetchPage();
-        return initPage;
+        final String pageUrl = getUrl() + "/videos?" + START_KEY + "=0&" + COUNT_KEY + "=" + ITEMS_PER_PAGE;
+        return getPage(pageUrl);
     }
 
-    private void collectStreamsFrom(StreamInfoItemsCollector collector, JsonObject json, String pageUrl) throws ParsingException {
-        JsonArray contents;
+    private void collectStreamsFrom(final StreamInfoItemsCollector collector, final JsonObject json) throws ParsingException {
+        final JsonArray contents;
         try {
             contents = (JsonArray) JsonUtils.getValue(json, "data");
         } catch (Exception e) {
             throw new ParsingException("unable to extract channel streams", e);
         }
 
-        for (Object c : contents) {
+        for (final Object c : contents) {
             if (c instanceof JsonObject) {
                 final JsonObject item = (JsonObject) c;
-                PeertubeStreamInfoItemExtractor extractor = new PeertubeStreamInfoItemExtractor(item, baseUrl);
+                final PeertubeStreamInfoItemExtractor extractor = new PeertubeStreamInfoItemExtractor(item, baseUrl);
                 collector.commit(extractor);
             }
         }
-
     }
 
     @Override
-    public String getNextPageUrl() throws IOException, ExtractionException {
-        super.fetchPage();
-        return initPage.getNextPageUrl();
-    }
-
-    @Override
-    public InfoItemsPage<StreamInfoItem> getPage(String pageUrl) throws IOException, ExtractionException {
-        Response response = getDownloader().get(pageUrl);
+    public InfoItemsPage<StreamInfoItem> getPage(final String pageUrl) throws IOException, ExtractionException {
+        final Response response = getDownloader().get(pageUrl);
         JsonObject json = null;
         if (response != null && !Utils.isBlank(response.responseBody())) {
             try {
@@ -136,11 +125,12 @@ public class PeertubeChannelExtractor extends ChannelExtractor {
             }
         }
 
-        StreamInfoItemsCollector collector = new StreamInfoItemsCollector(getServiceId());
+        final StreamInfoItemsCollector collector = new StreamInfoItemsCollector(getServiceId());
+        final long total;
         if (json != null) {
             PeertubeParsingHelper.validate(json);
-            this.total = JsonUtils.getNumber(json, "total").longValue();
-            collectStreamsFrom(collector, json, pageUrl);
+            total = JsonUtils.getNumber(json, "total").longValue();
+            collectStreamsFrom(collector, json);
         } else {
             throw new ExtractionException("Unable to get PeerTube kiosk info");
         }
@@ -148,22 +138,20 @@ public class PeertubeChannelExtractor extends ChannelExtractor {
     }
 
     @Override
-    public void onFetchPage(Downloader downloader) throws IOException, ExtractionException {
-        Response response = downloader.get(getUrl());
-        if (null != response && null != response.responseBody()) {
+    public void onFetchPage(final Downloader downloader) throws IOException, ExtractionException {
+        final Response response = downloader.get(getUrl());
+        if (response != null && response.responseBody() != null) {
             setInitialData(response.responseBody());
         } else {
             throw new ExtractionException("Unable to extract PeerTube channel data");
         }
-
-        this.initPage = getPage(getUrl() + "/videos?" + START_KEY + "=0&" + COUNT_KEY + "=" + ITEMS_PER_PAGE);
     }
 
-    private void setInitialData(String responseBody) throws ExtractionException {
+    private void setInitialData(final String responseBody) throws ExtractionException {
         try {
             json = JsonParser.object().from(responseBody);
         } catch (JsonParserException e) {
-            throw new ExtractionException("Unable to extract peertube channel data", e);
+            throw new ExtractionException("Unable to extract PeerTube channel data", e);
         }
         if (json == null) throw new ExtractionException("Unable to extract PeerTube channel data");
     }
@@ -177,5 +165,4 @@ public class PeertubeChannelExtractor extends ChannelExtractor {
     public String getOriginalUrl() throws ParsingException {
         return baseUrl + "/" + getId();
     }
-
 }

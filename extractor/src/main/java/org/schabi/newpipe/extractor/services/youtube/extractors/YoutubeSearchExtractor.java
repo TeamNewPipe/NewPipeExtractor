@@ -101,18 +101,17 @@ public class YoutubeSearchExtractor extends SearchExtractor {
         final JsonArray sections = initialData.getObject("contents").getObject("twoColumnSearchResultsRenderer")
                 .getObject("primaryContents").getObject("sectionListRenderer").getArray("contents");
 
+        String nextPageUrl = null;
+
         for (Object section : sections) {
-            collectStreamsFrom(collector, ((JsonObject) section).getObject("itemSectionRenderer").getArray("contents"));
+            final JsonObject itemSectionRenderer = ((JsonObject) section).getObject("itemSectionRenderer");
+
+            collectStreamsFrom(collector, itemSectionRenderer.getArray("contents"));
+
+            nextPageUrl = getNextPageUrlFrom(itemSectionRenderer.getArray("continuations"));
         }
 
-        return new InfoItemsPage<>(collector, getNextPageUrl());
-    }
-
-    @Override
-    public String getNextPageUrl() throws ExtractionException {
-        return getNextPageUrlFrom(initialData.getObject("contents").getObject("twoColumnSearchResultsRenderer")
-                .getObject("primaryContents").getObject("sectionListRenderer").getArray("contents")
-                .getObject(0).getObject("itemSectionRenderer").getArray("continuations"));
+        return new InfoItemsPage<>(collector, nextPageUrl);
     }
 
     @Override

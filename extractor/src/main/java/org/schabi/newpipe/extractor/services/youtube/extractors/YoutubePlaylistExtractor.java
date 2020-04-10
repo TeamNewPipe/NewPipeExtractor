@@ -77,15 +77,6 @@ public class YoutubePlaylistExtractor extends PlaylistExtractor {
         }
     }
 
-    @Override
-    public String getNextPageUrl() {
-        return getNextPageUrlFrom(initialData.getObject("contents").getObject("twoColumnBrowseResultsRenderer")
-                .getArray("tabs").getObject(0).getObject("tabRenderer").getObject("content")
-                .getObject("sectionListRenderer").getArray("contents").getObject(0)
-                .getObject("itemSectionRenderer").getArray("contents").getObject(0)
-                .getObject("playlistVideoListRenderer").getArray("continuations"));
-    }
-
     @Nonnull
     @Override
     public String getName() throws ParsingException {
@@ -178,6 +169,7 @@ public class YoutubePlaylistExtractor extends PlaylistExtractor {
     @Override
     public InfoItemsPage<StreamInfoItem> getInitialPage() {
         final StreamInfoItemsCollector collector = new StreamInfoItemsCollector(getServiceId());
+        String nextPageUrl = null;
 
         final JsonArray contents = initialData.getObject("contents").getObject("twoColumnBrowseResultsRenderer")
                 .getArray("tabs").getObject(0).getObject("tabRenderer").getObject("content")
@@ -193,13 +185,16 @@ public class YoutubePlaylistExtractor extends PlaylistExtractor {
                             .getObject("videoList").getObject("playlistVideoListRenderer").getArray("contents"));
                 }
             }
+
+            return new InfoItemsPage<>(collector, null);
         } else if (contents.getObject(0).has("playlistVideoListRenderer")) {
-            final JsonArray videos = contents.getObject(0)
-                    .getObject("playlistVideoListRenderer").getArray("contents");
-            collectStreamsFrom(collector, videos);
+            final JsonObject videos = contents.getObject(0).getObject("playlistVideoListRenderer");
+            collectStreamsFrom(collector, videos.getArray("contents"));
+
+            nextPageUrl = getNextPageUrlFrom(videos.getArray("continuations"));
         }
 
-        return new InfoItemsPage<>(collector, getNextPageUrl());
+        return new InfoItemsPage<>(collector, nextPageUrl);
     }
 
     @Override

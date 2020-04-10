@@ -41,11 +41,6 @@ public class MediaCCCConferenceKiosk extends KioskExtractor<ChannelInfoItem> {
     }
 
     @Override
-    public String getNextPageUrl() {
-        return "";
-    }
-
-    @Override
     public InfoItemsPage<ChannelInfoItem> getPage(final String pageUrl) {
         return InfoItemsPage.emptyPage();
     }

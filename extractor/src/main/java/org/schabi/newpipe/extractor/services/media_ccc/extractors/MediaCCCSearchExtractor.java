@@ -80,11 +80,6 @@ public class MediaCCCSearchExtractor extends SearchExtractor {
     }
 
     @Override
-    public String getNextPageUrl() {
-        return "";
-    }
-
-    @Override
     public InfoItemsPage<InfoItem> getPage(final String pageUrl) {
         return InfoItemsPage.emptyPage();
     }

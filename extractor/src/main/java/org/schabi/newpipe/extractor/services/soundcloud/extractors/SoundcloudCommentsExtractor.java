@@ -33,12 +33,7 @@ public class SoundcloudCommentsExtractor extends CommentsExtractor {
 
         collectStreamsFrom(collector, json.getArray("collection"));
 
-        return new InfoItemsPage<>(collector, getNextPageUrl());
-    }
-
-    @Override
-    public String getNextPageUrl() throws IOException, ExtractionException {
-        return json.getString("next_href");
+        return new InfoItemsPage<>(collector, json.getString("next_href"));
     }
 
     @Override
@@ -54,7 +49,7 @@ public class SoundcloudCommentsExtractor extends CommentsExtractor {
         final CommentsInfoItemsCollector collector = new CommentsInfoItemsCollector(getServiceId());
         collectStreamsFrom(collector, json.getArray("collection"));
 
-        return new InfoItemsPage<>(collector, getNextPageUrl());
+        return new InfoItemsPage<>(collector, json.getString("next_href"));
     }
 
     @Override

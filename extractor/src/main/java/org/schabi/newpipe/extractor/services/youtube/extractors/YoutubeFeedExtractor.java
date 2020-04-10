@@ -66,17 +66,7 @@ public class YoutubeFeedExtractor extends FeedExtractor {
     }
 
     @Override
-    public String getNextPageUrl() {
-        return null;
-    }
-
-    @Override
     public InfoItemsPage<StreamInfoItem> getPage(String pageUrl) {
         return null;
-    }
-
-    @Override
-    public boolean hasNextPage() {
-        return false;
     }
 }

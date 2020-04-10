@@ -25,9 +25,6 @@ public class SoundcloudChannelExtractor extends ChannelExtractor {
     private String userId;
     private JsonObject user;
 
-    private StreamInfoItemsCollector streamInfoItemsCollector = null;
-    private String nextPageUrl = null;
-
     public SoundcloudChannelExtractor(StreamingService service, ListLinkHandler linkHandler) {
         super(service, linkHandler);
     }
@@ -102,30 +99,17 @@ public class SoundcloudChannelExtractor extends ChannelExtractor {
     @Nonnull
     @Override
     public InfoItemsPage<StreamInfoItem> getInitialPage() throws ExtractionException {
-        if (streamInfoItemsCollector == null) {
-            computeNextPageAndGetStreams();
-        }
-        return new InfoItemsPage<>(streamInfoItemsCollector, getNextPageUrl());
-    }
-
-    @Override
-    public String getNextPageUrl() throws ExtractionException {
-        if (nextPageUrl == null) {
-            computeNextPageAndGetStreams();
-        }
-        return nextPageUrl;
-    }
-
-    private void computeNextPageAndGetStreams() throws ExtractionException {
         try {
-            streamInfoItemsCollector = new StreamInfoItemsCollector(getServiceId());
+            StreamInfoItemsCollector streamInfoItemsCollector = new StreamInfoItemsCollector(getServiceId());
 
             String apiUrl = "https://api-v2.soundcloud.com/users/" + getId() + "/tracks"
                     + "?client_id=" + SoundcloudParsingHelper.clientId()
                     + "&limit=20"
                     + "&linked_partitioning=1";
 
-            nextPageUrl = SoundcloudParsingHelper.getStreamsFromApiMinItems(15, streamInfoItemsCollector, apiUrl);
+            String nextPageUrl = SoundcloudParsingHelper.getStreamsFromApiMinItems(15, streamInfoItemsCollector, apiUrl);
+
+            return new InfoItemsPage<>(streamInfoItemsCollector, nextPageUrl);
         } catch (Exception e) {
             throw new ExtractionException("Could not get next page", e);
         }

@@ -104,15 +104,6 @@ public class YoutubeChannelExtractor extends ChannelExtractor {
         YoutubeParsingHelper.defaultAlertsCheck(initialData);
     }
 
-
-    @Override
-    public String getNextPageUrl() throws ExtractionException {
-        if (getVideoTab() == null) return "";
-        return getNextPageUrlFrom(getVideoTab().getObject("content").getObject("sectionListRenderer")
-                .getArray("contents").getObject(0).getObject("itemSectionRenderer")
-                .getArray("contents").getObject(0).getObject("gridRenderer").getArray("continuations"));
-    }
-
     @Nonnull
     @Override
     public String getUrl() throws ParsingException {
@@ -231,16 +222,21 @@ public class YoutubeChannelExtractor extends ChannelExtractor {
     @Nonnull
     @Override
     public InfoItemsPage<StreamInfoItem> getInitialPage() throws ExtractionException {
-        StreamInfoItemsCollector collector = new StreamInfoItemsCollector(getServiceId());
+        final StreamInfoItemsCollector collector = new StreamInfoItemsCollector(getServiceId());
+
+        String nextPageUrl = null;
 
         if (getVideoTab() != null) {
-            JsonArray videos = getVideoTab().getObject("content").getObject("sectionListRenderer").getArray("contents")
-                    .getObject(0).getObject("itemSectionRenderer").getArray("contents").getObject(0)
-                    .getObject("gridRenderer").getArray("items");
-            collectStreamsFrom(collector, videos);
+            final JsonObject gridRenderer = getVideoTab().getObject("content").getObject("sectionListRenderer")
+                    .getArray("contents").getObject(0).getObject("itemSectionRenderer")
+                    .getArray("contents").getObject(0).getObject("gridRenderer");
+
+            collectStreamsFrom(collector, gridRenderer.getArray("items"));
+
+            nextPageUrl = getNextPageUrlFrom(gridRenderer.getArray("continuations"));
         }
 
-        return new InfoItemsPage<>(collector, getNextPageUrl());
+        return new InfoItemsPage<>(collector, nextPageUrl);
     }
 
     @Override

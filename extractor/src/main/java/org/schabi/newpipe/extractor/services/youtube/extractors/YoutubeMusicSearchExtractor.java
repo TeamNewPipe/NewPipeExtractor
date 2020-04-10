@@ -169,26 +169,19 @@ public class YoutubeMusicSearchExtractor extends SearchExtractor {
 
         final JsonArray contents = initialData.getObject("contents").getObject("sectionListRenderer").getArray("contents");
 
-        for (Object content : contents) {
-            if (((JsonObject) content).has("musicShelfRenderer")) {
-                collectMusicStreamsFrom(collector, ((JsonObject) content).getObject("musicShelfRenderer").getArray("contents"));
-            }
-        }
-
-        return new InfoItemsPage<>(collector, getNextPageUrl());
-    }
-
-    @Override
-    public String getNextPageUrl() throws ExtractionException, IOException {
-        final JsonArray contents = initialData.getObject("contents").getObject("sectionListRenderer").getArray("contents");
+        String nextPageUrl = null;
 
         for (Object content : contents) {
             if (((JsonObject) content).has("musicShelfRenderer")) {
-                return getNextPageUrlFrom(((JsonObject) content).getObject("musicShelfRenderer").getArray("continuations"));
+                final JsonObject musicShelfRenderer = ((JsonObject) content).getObject("musicShelfRenderer");
+
+                collectMusicStreamsFrom(collector, musicShelfRenderer.getArray("contents"));
+
+                nextPageUrl = getNextPageUrlFrom(musicShelfRenderer.getArray("continuations"));
             }
         }
 
-        return "";
+        return new InfoItemsPage<>(collector, nextPageUrl);
     }
 
     @Override

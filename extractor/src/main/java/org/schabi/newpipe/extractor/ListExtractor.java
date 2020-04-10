@@ -16,7 +16,6 @@ import static org.schabi.newpipe.extractor.utils.Utils.isNullOrEmpty;
  * Base class to extractors that have a list (e.g. playlists, users).
  */
 public abstract class ListExtractor<R extends InfoItem> extends Extractor {
-
     /**
      * Constant that should be returned whenever
      * a list has an unknown number of items.
@@ -47,27 +46,13 @@ public abstract class ListExtractor<R extends InfoItem> extends Extractor {
     public abstract InfoItemsPage<R> getInitialPage() throws IOException, ExtractionException;
 
     /**
-     * Returns an url that can be used to get the next page relative to the initial one.
-     * <p>Usually, these links will only work in the implementation itself.</p>
-     *
-     * @return an url pointing to the next page relative to the initial page
-     * @see #getPage(String)
-     */
-    public abstract String getNextPageUrl() throws IOException, ExtractionException;
-
-    /**
      * Get a list of items corresponding to the specific requested page.
      *
      * @param pageUrl any page url got from the exclusive implementation of the list extractor
      * @return a {@link InfoItemsPage} corresponding to the requested page
-     * @see #getNextPageUrl()
      * @see InfoItemsPage#getNextPageUrl()
      */
     public abstract InfoItemsPage<R> getPage(final String pageUrl) throws IOException, ExtractionException;
-
-    public boolean hasNextPage() throws IOException, ExtractionException {
-        return !isNullOrEmpty(getNextPageUrl());
-    }
 
     @Override
     public ListLinkHandler getLinkHandler() {
@@ -140,5 +125,4 @@ public abstract class ListExtractor<R extends InfoItem> extends Extractor {
             return errors;
         }
     }
-
 }

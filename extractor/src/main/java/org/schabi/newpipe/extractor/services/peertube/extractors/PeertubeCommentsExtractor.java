@@ -24,7 +24,6 @@ import static org.schabi.newpipe.extractor.services.peertube.PeertubeParsingHelp
 import static org.schabi.newpipe.extractor.services.peertube.PeertubeParsingHelper.START_KEY;
 
 public class PeertubeCommentsExtractor extends CommentsExtractor {
-    private InfoItemsPage<CommentsInfoItem> initPage;
     private long total;
 
     public PeertubeCommentsExtractor(final StreamingService service, final ListLinkHandler uiHandler) {
@@ -33,8 +32,8 @@ public class PeertubeCommentsExtractor extends CommentsExtractor {
 
     @Override
     public InfoItemsPage<CommentsInfoItem> getInitialPage() throws IOException, ExtractionException {
-        super.fetchPage();
-        return initPage;
+        final String pageUrl = getUrl() + "?" + START_KEY + "=0&" + COUNT_KEY + "=" + ITEMS_PER_PAGE;
+        return getPage(pageUrl);
     }
 
     private void collectCommentsFrom(final CommentsInfoItemsCollector collector, final JsonObject json) throws ParsingException {
@@ -49,12 +48,6 @@ public class PeertubeCommentsExtractor extends CommentsExtractor {
                 }
             }
         }
-    }
-
-    @Override
-    public String getNextPageUrl() throws IOException, ExtractionException {
-        super.fetchPage();
-        return initPage.getNextPageUrl();
     }
 
     @Override
@@ -80,8 +73,5 @@ public class PeertubeCommentsExtractor extends CommentsExtractor {
         return new InfoItemsPage<>(collector, PeertubeParsingHelper.getNextPageUrl(pageUrl, total));
     }
 
-    @Override
-    public void onFetchPage(Downloader downloader) throws IOException, ExtractionException {
-        this.initPage = getPage(getUrl() + "?" + START_KEY + "=0&" + COUNT_KEY + "=" + ITEMS_PER_PAGE);
-    }
+    public void onFetchPage(final Downloader downloader) throws IOException, ExtractionException { }
 }

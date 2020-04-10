@@ -79,11 +79,6 @@ public class MediaCCCConferenceExtractor extends ChannelExtractor {
     }
 
     @Override
-    public String getNextPageUrl() {
-        return null;
-    }
-
-    @Override
     public InfoItemsPage<StreamInfoItem> getPage(final String pageUrl) {
         return null;
     }

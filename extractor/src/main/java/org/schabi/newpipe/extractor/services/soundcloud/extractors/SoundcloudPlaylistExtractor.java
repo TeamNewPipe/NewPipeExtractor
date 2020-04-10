@@ -30,9 +30,6 @@ public class SoundcloudPlaylistExtractor extends PlaylistExtractor {
     private String playlistId;
     private JsonObject playlist;
 
-    private StreamInfoItemsCollector streamInfoItemsCollector;
-    private String nextPageUrl;
-
     public SoundcloudPlaylistExtractor(StreamingService service, ListLinkHandler linkHandler) {
         super(service, linkHandler);
     }
@@ -137,14 +134,7 @@ public class SoundcloudPlaylistExtractor extends PlaylistExtractor {
     @Nonnull
     @Override
     public InfoItemsPage<StreamInfoItem> getInitialPage() throws IOException, ExtractionException {
-        if (streamInfoItemsCollector == null) {
-            computeInitialTracksAndNextPageUrl();
-        }
-        return new InfoItemsPage<>(streamInfoItemsCollector, nextPageUrl);
-    }
-
-    private void computeInitialTracksAndNextPageUrl() throws IOException, ExtractionException {
-        streamInfoItemsCollector = new StreamInfoItemsCollector(getServiceId());
+        StreamInfoItemsCollector streamInfoItemsCollector = new StreamInfoItemsCollector(getServiceId());
         StringBuilder nextPageUrlBuilder = new StringBuilder("https://api-v2.soundcloud.com/tracks?client_id=");
         nextPageUrlBuilder.append(SoundcloudParsingHelper.clientId());
         nextPageUrlBuilder.append("&ids=");
@@ -163,19 +153,12 @@ public class SoundcloudPlaylistExtractor extends PlaylistExtractor {
         }
 
         nextPageUrlBuilder.setLength(nextPageUrlBuilder.length() - 1); // remove trailing ,
-        nextPageUrl = nextPageUrlBuilder.toString();
+        String nextPageUrl = nextPageUrlBuilder.toString();
         if (nextPageUrl.endsWith("&ids")) {
             // there are no other videos
             nextPageUrl = "";
         }
-    }
-
-    @Override
-    public String getNextPageUrl() throws IOException, ExtractionException {
-        if (nextPageUrl == null) {
-            computeInitialTracksAndNextPageUrl();
-        }
-        return nextPageUrl;
+        return new InfoItemsPage<>(streamInfoItemsCollector, nextPageUrl);
     }
 
     @Override

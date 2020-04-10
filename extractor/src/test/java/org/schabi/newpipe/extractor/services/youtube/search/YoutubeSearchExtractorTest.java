@@ -186,9 +186,10 @@ public class YoutubeSearchExtractorTest {
 
         @Test
         public void testMoreRelatedItems() throws Exception {
+            final ListExtractor.InfoItemsPage<InfoItem> initialPage = extractor().getInitialPage();
             // YouTube actually gives us an empty next page, but after that, no more pages.
-            assertTrue(extractor.hasNextPage());
-            final ListExtractor.InfoItemsPage<InfoItem> nextEmptyPage = extractor.getPage(extractor.getNextPageUrl());
+            assertTrue(initialPage.hasNextPage());
+            final ListExtractor.InfoItemsPage<InfoItem> nextEmptyPage = extractor.getPage(initialPage.getNextPageUrl());
             assertEquals(0, nextEmptyPage.getItems().size());
             assertEmptyErrors("Empty page has errors", nextEmptyPage.getErrors());
 
