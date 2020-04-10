@@ -15,6 +15,7 @@ import org.schabi.newpipe.extractor.exceptions.ExtractionException;
 import org.schabi.newpipe.extractor.exceptions.ParsingException;
 import org.schabi.newpipe.extractor.exceptions.ReCaptchaException;
 import org.schabi.newpipe.extractor.localization.Localization;
+import org.schabi.newpipe.extractor.utils.JsonUtils;
 import org.schabi.newpipe.extractor.utils.Parser;
 import org.schabi.newpipe.extractor.utils.Utils;
 
@@ -28,6 +29,9 @@ import java.text.SimpleDateFormat;
 import java.util.*;
 
 import static org.schabi.newpipe.extractor.NewPipe.getDownloader;
+import static org.schabi.newpipe.extractor.utils.JsonUtils.EMPTY_ARRAY;
+import static org.schabi.newpipe.extractor.utils.JsonUtils.EMPTY_OBJECT;
+import static org.schabi.newpipe.extractor.utils.JsonUtils.EMPTY_STRING;
 import static org.schabi.newpipe.extractor.utils.Utils.HTTP;
 import static org.schabi.newpipe.extractor.utils.Utils.HTTPS;
 
@@ -496,22 +500,22 @@ public class YoutubeParsingHelper {
         errors with text
          */
 
-        try {
-            final JsonObject alertRenderer = initialData.getArray("alerts").getObject(0).getObject("alertRenderer"); // Exits here if No Alerts
-            if (alertRenderer.getString("type").equalsIgnoreCase("ERROR")) { // Often exits here With Youtube-Music // Exits here if alert has no errors
-                try {
-                    throw new ContentNotAvailableException("Got alert error: \"" + alertRenderer.getObject("text").getString("simpleText") + "\""); // Finishes here if errors have text
-                } catch (Exception ignored) {
-                    throw new ContentNotAvailableException("Got unknown alert error"); // Finishes here if errors have no text
-                }
-            } else {
-                // This condition will only be reached if we encounter an alert that has a type, but is not an error
-            }
+        final JsonObject alertRenderer = initialData
+                .getArray("alerts", EMPTY_ARRAY)
+                .getObject(0, EMPTY_OBJECT)
+                .getObject("alertRenderer", EMPTY_OBJECT);
 
-        } catch (ContentNotAvailableException e) {
-            throw e;
-        } catch (Exception ignored) {
-            // We will frequently reach this condition when alerts are found with no type (e.g. YouTube Music ad text)
+        final String alertType = alertRenderer.getString("type", EMPTY_STRING);
+        if (alertType.equalsIgnoreCase("ERROR")) {
+            final String alertText = alertRenderer
+                    .getObject("text", EMPTY_OBJECT)
+                    .getString("simpleText", EMPTY_STRING);
+
+            if (alertText.isEmpty()) {
+                throw new ContentNotAvailableException("Got an unknown alert error");
+            } else {
+                throw new ContentNotAvailableException("Got alert error: \"" + alertText + "\"");
+            }
         }
 
     }
