@@ -31,7 +31,13 @@ public class PeertubeChannelLinkHandlerFactory extends ListLinkHandlerFactory {
     @Override
     public String getUrl(String id, List<String> contentFilter, String sortFilter, String baseUrl)
             throws ParsingException {
-        return baseUrl + API_ENDPOINT + id;
+
+        if (id.matches(ID_PATTERN)) {
+            return baseUrl + API_ENDPOINT + id;
+        } else {
+            // This is needed for compatibility with older versions were we didn't support video channels yet
+            return baseUrl + API_ENDPOINT + "accounts/" + id;
+        }
     }
 
     @Override

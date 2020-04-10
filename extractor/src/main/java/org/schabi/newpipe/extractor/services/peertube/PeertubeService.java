@@ -78,9 +78,11 @@ public class PeertubeService extends StreamingService {
     public ChannelExtractor getChannelExtractor(ListLinkHandler linkHandler)
             throws ExtractionException {
 
-        return linkHandler.getUrl().matches("^.*\\/accounts\\/[^\\/]*$") ?
-                new PeertubeUserExtractor(this, linkHandler) :
-                new PeertubeChannelExtractor(this, linkHandler);
+        if (linkHandler.getUrl().contains("/video-channels/")) {
+            return new PeertubeChannelExtractor(this, linkHandler);
+        } else {
+            return new PeertubeAccountExtractor(this, linkHandler);
+        }
     }
 
     @Override

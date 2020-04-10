@@ -21,7 +21,7 @@ import org.schabi.newpipe.extractor.utils.Parser.RegexException;
 
 import java.io.IOException;
 
-public class PeertubeUserExtractor extends ChannelExtractor {
+public class PeertubeAccountExtractor extends ChannelExtractor {
 
     private static final String START_KEY = "start";
     private static final String COUNT_KEY = "count";
@@ -34,7 +34,7 @@ public class PeertubeUserExtractor extends ChannelExtractor {
     private JsonObject json;
     private final String baseUrl;
 
-    public PeertubeUserExtractor(StreamingService service, ListLinkHandler linkHandler) throws ParsingException {
+    public PeertubeAccountExtractor(StreamingService service, ListLinkHandler linkHandler) throws ParsingException {
         super(service, linkHandler);
         this.baseUrl = getBaseUrl();
     }
