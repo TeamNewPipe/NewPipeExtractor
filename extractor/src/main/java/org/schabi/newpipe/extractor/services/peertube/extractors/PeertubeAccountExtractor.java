@@ -126,9 +126,15 @@ public class PeertubeAccountExtractor extends ChannelExtractor {
     }
 
     @Override
-    public void onFetchPage(final Downloader downloader) throws IOException, ExtractionException {
-        final Response response = downloader.get(
-                baseUrl + PeertubeChannelLinkHandlerFactory.API_ENDPOINT + getId());
+    public void onFetchPage(@Nonnull Downloader downloader) throws IOException, ExtractionException {
+        String accountUrl = baseUrl + PeertubeChannelLinkHandlerFactory.API_ENDPOINT;
+        if (getId().contains("accounts/")) {
+            accountUrl += getId();
+        } else {
+            accountUrl += "accounts/" + getId();
+        }
+
+        final Response response = downloader.get(accountUrl);
         if (response != null && response.responseBody() != null) {
             setInitialData(response.responseBody());
         } else {
