@@ -283,7 +283,7 @@ public class MediaCCCStreamExtractor extends StreamExtractor {
 
     @Nonnull
     @Override
-    public List<String> getTags() throws ParsingException {
+    public List<String> getTags() {
         return Arrays.asList(data.getArray("tags").toArray(new String[0]));
     }
 

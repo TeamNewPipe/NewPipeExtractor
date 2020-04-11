@@ -72,8 +72,8 @@ public class MediaCCCConferenceExtractor extends ChannelExtractor {
     @Nonnull
     @Override
     public InfoItemsPage<StreamInfoItem> getInitialPage() {
-        StreamInfoItemsCollector collector = new StreamInfoItemsCollector(getServiceId());
-        JsonArray events = conferenceData.getArray("events");
+        final StreamInfoItemsCollector collector = new StreamInfoItemsCollector(getServiceId());
+        final JsonArray events = conferenceData.getArray("events");
         for (int i = 0; i < events.size(); i++) {
             collector.commit(new MediaCCCStreamInfoItemExtractor(events.getObject(i)));
         }
