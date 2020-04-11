@@ -37,4 +37,15 @@ public abstract class SearchExtractor extends ListExtractor<InfoItem> {
     public String getName() {
         return getLinkHandler().getSearchString();
     }
+
+    /**
+     * When you search on some service, it can give you another and corrected request.
+     * This method says if it's the case.
+     * <p>
+     * Example: on YouTube, if you search for "pewdeipie",
+     * it will give you results for "pewdiepie", then isCorrectedSearch should return true.
+     *
+     * @return whether the results comes from a corrected query or not.
+     */
+    public abstract boolean isCorrectedSearch() throws ParsingException;
 }

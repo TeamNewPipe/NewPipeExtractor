@@ -41,6 +41,11 @@ public class PeertubeSearchExtractor extends SearchExtractor {
     }
 
     @Override
+    public boolean isCorrectedSearch() {
+        return false;
+    }
+
+    @Override
     public InfoItemsPage<InfoItem> getInitialPage() throws IOException, ExtractionException {
         super.fetchPage();
         return initPage;

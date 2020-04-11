@@ -47,6 +47,11 @@ public class MediaCCCSearchExtractor extends SearchExtractor {
         return null;
     }
 
+    @Override
+    public boolean isCorrectedSearch() {
+        return false;
+    }
+
     @Nonnull
     @Override
     public InfoItemsPage<InfoItem> getInitialPage() {

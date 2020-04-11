@@ -15,6 +15,10 @@ public abstract class DefaultSearchExtractorTest extends DefaultListExtractorTes
     public abstract String expectedSearchString();
     @Nullable public abstract String expectedSearchSuggestion();
 
+    public boolean isCorrectedSearch() {
+        return false;
+    }
+
     @Test
     @Override
     public void testSearchString() throws Exception {
@@ -30,5 +34,10 @@ public abstract class DefaultSearchExtractorTest extends DefaultListExtractorTes
         } else {
             assertEquals(expectedSearchSuggestion, extractor().getSearchSuggestion());
         }
+    }
+
+    @Test
+    public void testSearchCorrected() throws Exception {
+        assertEquals(isCorrectedSearch(), extractor().isCorrectedSearch());
     }
 }

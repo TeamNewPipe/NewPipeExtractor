@@ -135,6 +135,19 @@ public class YoutubeMusicSearchExtractor extends SearchExtractor {
         return getTextFromObject(didYouMeanRenderer.getObject("correctedQuery"));
     }
 
+    @Override
+    public boolean isCorrectedSearch() {
+        final JsonObject itemSectionRenderer = initialData.getObject("contents").getObject("sectionListRenderer")
+                .getArray("contents").getObject(0).getObject("itemSectionRenderer");
+        if (itemSectionRenderer == null) {
+            return false;
+        }
+
+        JsonObject showingResultsForRenderer = itemSectionRenderer.getArray("contents").getObject(0)
+                .getObject("showingResultsForRenderer");
+        return showingResultsForRenderer != null;
+    }
+
     @Nonnull
     @Override
     public InfoItemsPage<InfoItem> getInitialPage() throws ExtractionException, IOException {

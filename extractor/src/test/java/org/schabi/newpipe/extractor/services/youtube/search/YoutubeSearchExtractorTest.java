@@ -114,8 +114,8 @@ public class YoutubeSearchExtractorTest {
 
     public static class Suggestion extends DefaultSearchExtractorTest {
         private static SearchExtractor extractor;
-        private static final String QUERY = "pewdeipie";
-        private static final String EXPECTED_SUGGESTION = "pewdiepie";
+        private static final String QUERY = "newpip";
+        private static final String EXPECTED_SUGGESTION = "newpipe";
 
         @BeforeClass
         public static void setUp() throws Exception {
@@ -132,8 +132,30 @@ public class YoutubeSearchExtractorTest {
         @Override public String expectedOriginalUrlContains() { return "youtube.com/results?search_query=" + QUERY; }
         @Override public String expectedSearchString() { return QUERY; }
         @Nullable @Override public String expectedSearchSuggestion() { return EXPECTED_SUGGESTION; }
-
         @Override public InfoItem.InfoType expectedInfoItemType() { return InfoItem.InfoType.STREAM; }
+    }
+
+    public static class CorrectedSearch extends DefaultSearchExtractorTest {
+        private static SearchExtractor extractor;
+        private static final String QUERY = "pewdeipie";
+
+        @BeforeClass
+        public static void setUp() throws Exception {
+            NewPipe.init(DownloaderTestImpl.getInstance());
+            extractor = YouTube.getSearchExtractor(QUERY, singletonList(VIDEOS), "");
+            extractor.fetchPage();
+        }
+
+        @Override public SearchExtractor extractor() { return extractor; }
+        @Override public StreamingService expectedService() { return YouTube; }
+        @Override public String expectedName() { return QUERY; }
+        @Override public String expectedId() { return QUERY; }
+        @Override public String expectedUrlContains() { return "youtube.com/results?search_query=" + QUERY; }
+        @Override public String expectedOriginalUrlContains() { return "youtube.com/results?search_query=" + QUERY; }
+        @Override public String expectedSearchString() { return QUERY; }
+        @Nullable @Override public String expectedSearchSuggestion() { return null; }
+        @Override public InfoItem.InfoType expectedInfoItemType() { return InfoItem.InfoType.STREAM; }
+        @Override public boolean isCorrectedSearch() { return true; }
     }
 
     public static class RandomQueryNoMorePages extends DefaultSearchExtractorTest {
