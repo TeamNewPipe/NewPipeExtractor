@@ -197,7 +197,7 @@ public class MediaCCCStreamExtractor extends StreamExtractor {
 
     @Override
     public List<VideoStream> getVideoOnlyStreams() {
-        return null;
+        return Collections.emptyList();
     }
 
     @Nonnull
