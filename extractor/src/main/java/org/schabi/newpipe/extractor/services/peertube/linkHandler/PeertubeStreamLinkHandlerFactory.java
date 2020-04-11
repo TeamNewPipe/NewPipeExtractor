@@ -37,7 +37,7 @@ public class PeertubeStreamLinkHandlerFactory extends LinkHandlerFactory {
 
     @Override
     public boolean onAcceptUrl(final String url) throws FoundAdException {
-        if (url.contains("playlist")) return false;
+        if (url.contains("/playlist/")) return false;
         try {
             getId(url);
             return true;
