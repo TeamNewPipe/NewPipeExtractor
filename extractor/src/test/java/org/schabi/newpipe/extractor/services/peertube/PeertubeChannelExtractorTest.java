@@ -28,7 +28,7 @@ public class PeertubeChannelExtractorTest {
             // setting instance might break test when running in parallel
             PeerTube.setInstance(new PeertubeInstance("https://peertube.mastodon.host", "PeerTube on Mastodon.host"));
             extractor = (PeertubeChannelExtractor) PeerTube
-                    .getChannelExtractor("https://peertube.mastodon.host/api/v1/video-channels/7682d9f2-07be-4622-862e-93ec812e2ffa");
+                    .getChannelExtractor("https://peertube.mastodon.host/video-channels/7682d9f2-07be-4622-862e-93ec812e2ffa");
             extractor.fetchPage();
         }
 
