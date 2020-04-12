@@ -143,7 +143,7 @@ public class YoutubeMusicSearchExtractor extends SearchExtractor {
             return false;
         }
 
-        JsonObject showingResultsForRenderer = itemSectionRenderer.getArray("contents").getObject(0)
+        final JsonObject showingResultsForRenderer = itemSectionRenderer.getArray("contents").getObject(0)
                 .getObject("showingResultsForRenderer");
         return showingResultsForRenderer != null;
     }

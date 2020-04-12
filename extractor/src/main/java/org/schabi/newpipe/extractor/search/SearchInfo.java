@@ -43,12 +43,12 @@ public class SearchInfo extends ListInfo<InfoItem> {
             info.addError(e);
         }
         try {
-            info.searchSuggestion = extractor.getSearchSuggestion();
+            info.setSearchSuggestion(extractor.getSearchSuggestion());
         } catch (Exception e) {
             info.addError(e);
         }
         try {
-            info.isCorrectedSearch = extractor.isCorrectedSearch();
+            info.setCorrectedSearch(extractor.isCorrectedSearch());
         } catch (Exception e) {
             info.addError(e);
         }
@@ -79,5 +79,13 @@ public class SearchInfo extends ListInfo<InfoItem> {
 
     public boolean isCorrectedSearch() {
         return this.isCorrectedSearch;
+    }
+
+    public void setCorrectedSearch(boolean correctedSearch) {
+        isCorrectedSearch = correctedSearch;
+    }
+
+    public void setSearchSuggestion(String searchSuggestion) {
+        this.searchSuggestion = searchSuggestion;
     }
 }
