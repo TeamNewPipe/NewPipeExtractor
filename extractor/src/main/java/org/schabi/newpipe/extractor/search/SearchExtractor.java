@@ -25,6 +25,16 @@ public abstract class SearchExtractor extends ListExtractor<InfoItem> {
         return getLinkHandler().getSearchString();
     }
 
+    /**
+     * The search suggestion provided by the service.
+     * <p>
+     * This method may also return the corrected query,
+     * see {@link SearchExtractor#isCorrectedSearch()}.
+     *
+     * @return a suggestion to another query, the corrected query, or an empty String.
+     * @throws ParsingException
+     */
+    @Nonnull
     public abstract String getSearchSuggestion() throws ParsingException;
 
     @Override

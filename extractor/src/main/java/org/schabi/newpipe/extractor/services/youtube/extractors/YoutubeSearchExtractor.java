@@ -61,17 +61,25 @@ public class YoutubeSearchExtractor extends SearchExtractor {
         return super.getUrl() + "&gl=" + getExtractorContentCountry().getCountryCode();
     }
 
+    @Nonnull
     @Override
     public String getSearchSuggestion() throws ParsingException {
-        final JsonObject didYouMeanRenderer = initialData.getObject("contents")
+        final JsonObject itemSectionRenderer = initialData.getObject("contents")
                 .getObject("twoColumnSearchResultsRenderer").getObject("primaryContents")
                 .getObject("sectionListRenderer").getArray("contents").getObject(0)
-                .getObject("itemSectionRenderer").getArray("contents").getObject(0)
+                .getObject("itemSectionRenderer");
+        final JsonObject didYouMeanRenderer = itemSectionRenderer.getArray("contents").getObject(0)
                 .getObject("didYouMeanRenderer");
-        if (didYouMeanRenderer == null) {
+        final JsonObject showingResultsForRenderer = itemSectionRenderer.getArray("contents").getObject(0)
+                .getObject("showingResultsForRenderer");
+
+        if (didYouMeanRenderer != null) {
+            return JsonUtils.getString(didYouMeanRenderer, "correctedQueryEndpoint.searchEndpoint.query");
+        } else if (showingResultsForRenderer != null) {
+            return getTextFromObject(showingResultsForRenderer.getObject("correctedQuery"));
+        } else {
             return "";
         }
-        return JsonUtils.getString(didYouMeanRenderer, "correctedQueryEndpoint.searchEndpoint.query");
     }
 
     @Override

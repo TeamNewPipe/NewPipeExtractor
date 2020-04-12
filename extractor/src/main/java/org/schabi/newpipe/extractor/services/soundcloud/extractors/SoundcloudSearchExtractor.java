@@ -33,9 +33,10 @@ public class SoundcloudSearchExtractor extends SearchExtractor {
         super(service, linkHandler);
     }
 
+    @Nonnull
     @Override
     public String getSearchSuggestion() {
-        return null;
+        return "";
     }
 
     @Override

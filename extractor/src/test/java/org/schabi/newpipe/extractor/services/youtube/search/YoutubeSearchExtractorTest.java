@@ -7,6 +7,7 @@ import org.schabi.newpipe.extractor.InfoItem;
 import org.schabi.newpipe.extractor.ListExtractor;
 import org.schabi.newpipe.extractor.NewPipe;
 import org.schabi.newpipe.extractor.StreamingService;
+import org.schabi.newpipe.extractor.exceptions.ParsingException;
 import org.schabi.newpipe.extractor.search.SearchExtractor;
 import org.schabi.newpipe.extractor.services.DefaultSearchExtractorTest;
 
@@ -138,6 +139,7 @@ public class YoutubeSearchExtractorTest {
     public static class CorrectedSearch extends DefaultSearchExtractorTest {
         private static SearchExtractor extractor;
         private static final String QUERY = "pewdeipie";
+        private static final String EXPECTED_SUGGESTION = "pewdiepie";
 
         @BeforeClass
         public static void setUp() throws Exception {
@@ -153,7 +155,7 @@ public class YoutubeSearchExtractorTest {
         @Override public String expectedUrlContains() { return "youtube.com/results?search_query=" + QUERY; }
         @Override public String expectedOriginalUrlContains() { return "youtube.com/results?search_query=" + QUERY; }
         @Override public String expectedSearchString() { return QUERY; }
-        @Nullable @Override public String expectedSearchSuggestion() { return null; }
+        @Nullable @Override public String expectedSearchSuggestion() { return EXPECTED_SUGGESTION; }
         @Override public InfoItem.InfoType expectedInfoItemType() { return InfoItem.InfoType.STREAM; }
         @Override public boolean isCorrectedSearch() { return true; }
     }

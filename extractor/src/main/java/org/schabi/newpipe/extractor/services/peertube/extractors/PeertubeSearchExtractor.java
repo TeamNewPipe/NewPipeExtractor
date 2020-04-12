@@ -19,6 +19,7 @@ import org.schabi.newpipe.extractor.utils.JsonUtils;
 import org.schabi.newpipe.extractor.utils.Parser;
 import org.schabi.newpipe.extractor.utils.Parser.RegexException;
 
+import javax.annotation.Nonnull;
 import java.io.IOException;
 
 public class PeertubeSearchExtractor extends SearchExtractor {
@@ -35,9 +36,10 @@ public class PeertubeSearchExtractor extends SearchExtractor {
         super(service, linkHandler);
     }
 
+    @Nonnull
     @Override
     public String getSearchSuggestion() throws ParsingException {
-        return null;
+        return "";
     }
 
     @Override

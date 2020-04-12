@@ -154,6 +154,7 @@ public class YoutubeMusicSearchExtractorTest {
     public static class CorrectedSearch extends DefaultSearchExtractorTest {
         private static SearchExtractor extractor;
         private static final String QUERY = "duo lipa";
+        private static final String EXPECTED_SUGGESTION = "dua lipa";
 
         @BeforeClass
         public static void setUp() throws Exception {
@@ -169,7 +170,7 @@ public class YoutubeMusicSearchExtractorTest {
         @Override public String expectedUrlContains() { return "music.youtube.com/search?q=" + URLEncoder.encode(QUERY); }
         @Override public String expectedOriginalUrlContains() { return "music.youtube.com/search?q=" + URLEncoder.encode(QUERY); }
         @Override public String expectedSearchString() { return QUERY; }
-        @Nullable @Override public String expectedSearchSuggestion() { return null; }
+        @Nullable @Override public String expectedSearchSuggestion() { return EXPECTED_SUGGESTION; }
         @Override public InfoItem.InfoType expectedInfoItemType() { return InfoItem.InfoType.STREAM; }
         @Override public boolean isCorrectedSearch() { return true; }
     }
