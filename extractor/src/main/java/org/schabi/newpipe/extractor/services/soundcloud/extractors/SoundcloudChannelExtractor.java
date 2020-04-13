@@ -83,6 +83,21 @@ public class SoundcloudChannelExtractor extends ChannelExtractor {
         return user.getString("description", EMPTY_STRING);
     }
 
+    @Override
+    public String getParentChannelName() throws ParsingException {
+        return "";
+    }
+
+    @Override
+    public String getParentChannelUrl() throws ParsingException {
+        return "";
+    }
+
+    @Override
+    public String getParentChannelAvatarUrl() throws ParsingException {
+        return "";
+    }
+
     @Nonnull
     @Override
     public InfoItemsPage<StreamInfoItem> getInitialPage() throws ExtractionException {

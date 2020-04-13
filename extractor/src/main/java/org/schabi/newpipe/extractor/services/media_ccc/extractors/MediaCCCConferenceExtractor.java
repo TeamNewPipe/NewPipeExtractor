@@ -52,6 +52,21 @@ public class MediaCCCConferenceExtractor extends ChannelExtractor {
         return null;
     }
 
+    @Override
+    public String getParentChannelName() throws ParsingException {
+        return "";
+    }
+
+    @Override
+    public String getParentChannelUrl() throws ParsingException {
+        return "";
+    }
+
+    @Override
+    public String getParentChannelAvatarUrl() throws ParsingException {
+        return "";
+    }
+
     @Nonnull
     @Override
     public InfoItemsPage<StreamInfoItem> getInitialPage() {
