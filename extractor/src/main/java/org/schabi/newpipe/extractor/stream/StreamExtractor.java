@@ -179,6 +179,39 @@ public abstract class StreamExtractor extends Extractor {
     public abstract String getUploaderAvatarUrl() throws ParsingException;
 
     /**
+     * The Url to the page of the parent chanel of the stream. This must not be a homepage,
+     * but the page offered by the service the extractor handles. This url will be handled by the
+     * <a href="https://teamnewpipe.github.io/documentation/03_Implement_a_service/#channel">ChannelExtractor</a>,
+     * so be sure to implement that one before you return a value here, otherwise NewPipe will crash if one selects
+     * this url.
+     *
+     * @return the url to the page of the parent chanel of the stream or an empty String
+     * @throws ParsingException
+     */
+    @Nonnull
+    public abstract String getParentChannelUrl() throws ParsingException;
+
+    /**
+     * The name of the parent chanel of the stream.
+     * If the name is not available you can simply return an empty string.
+     *
+     * @return the name of the parent chanel of the stream or an empty String
+     * @throws ParsingException
+     */
+    @Nonnull
+    public abstract String getParentChannelName() throws ParsingException;
+
+    /**
+     * The url to the image file/profile picture/avatar of the parent chanel of the stream.
+     * If the url is not available you can return an empty String.
+     *
+     * @return The url of the image file of the parent chanel or an empty String
+     * @throws ParsingException
+     */
+    @Nonnull
+    public abstract String getParentChannelAvatarUrl() throws ParsingException;
+
+    /**
      * Get the dash mpd url. If you don't know what a dash MPD is you can read about it
      * <a href="https://www.brendanlong.com/the-structure-of-an-mpeg-dash-mpd.html">here</a>.
      *

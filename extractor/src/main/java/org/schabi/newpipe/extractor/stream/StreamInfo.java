@@ -224,6 +224,28 @@ public class StreamInfo extends Info {
             streamInfo.addError(e);
         }
         try {
+            streamInfo.setUploaderAvatarUrl(extractor.getUploaderAvatarUrl());
+        } catch (Exception e) {
+            streamInfo.addError(e);
+        }
+
+        try {
+            streamInfo.setParentChannelName(extractor.getParentChannelName());
+        } catch (Exception e) {
+            streamInfo.addError(e);
+        }
+        try {
+            streamInfo.setParentChannelUrl(extractor.getParentChannelUrl());
+        } catch (Exception e) {
+            streamInfo.addError(e);
+        }
+        try {
+            streamInfo.setParentChannelAvatarUrl(extractor.getParentChannelAvatarUrl());
+        } catch (Exception e) {
+            streamInfo.addError(e);
+        }
+
+        try {
             streamInfo.setDescription(extractor.getDescription());
         } catch (Exception e) {
             streamInfo.addError(e);
@@ -240,11 +262,6 @@ public class StreamInfo extends Info {
         }
         try {
             streamInfo.setUploadDate(extractor.getUploadDate());
-        } catch (Exception e) {
-            streamInfo.addError(e);
-        }
-        try {
-            streamInfo.setUploaderAvatarUrl(extractor.getUploaderAvatarUrl());
         } catch (Exception e) {
             streamInfo.addError(e);
         }
@@ -331,6 +348,10 @@ public class StreamInfo extends Info {
     private String uploaderName = "";
     private String uploaderUrl = "";
     private String uploaderAvatarUrl = "";
+
+    private String parentChannelName = "";
+    private String parentChannelUrl = "";
+    private String parentChannelAvatarUrl = "";
 
     private List<VideoStream> videoStreams = new ArrayList<>();
     private List<AudioStream> audioStreams = new ArrayList<>();
@@ -484,6 +505,30 @@ public class StreamInfo extends Info {
 
     public void setUploaderAvatarUrl(String uploaderAvatarUrl) {
         this.uploaderAvatarUrl = uploaderAvatarUrl;
+    }
+
+    public String getParentChannelName() {
+        return parentChannelName;
+    }
+
+    public void setParentChannelName(String parentChannelName) {
+        this.parentChannelName = parentChannelName;
+    }
+
+    public String getParentChannelUrl() {
+        return parentChannelUrl;
+    }
+
+    public void setParentChannelUrl(String parentChannelUrl) {
+        this.parentChannelUrl = parentChannelUrl;
+    }
+
+    public String getParentChannelAvatarUrl() {
+        return parentChannelAvatarUrl;
+    }
+
+    public void setParentChannelAvatarUrl(String parentChannelAvatarUrl) {
+        this.parentChannelAvatarUrl = parentChannelAvatarUrl;
     }
 
     public List<VideoStream> getVideoStreams() {
