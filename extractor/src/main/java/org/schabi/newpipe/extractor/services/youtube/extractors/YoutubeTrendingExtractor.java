@@ -23,6 +23,7 @@ package org.schabi.newpipe.extractor.services.youtube.extractors;
 import com.grack.nanojson.JsonArray;
 import com.grack.nanojson.JsonObject;
 
+import org.schabi.newpipe.extractor.Page;
 import org.schabi.newpipe.extractor.StreamingService;
 import org.schabi.newpipe.extractor.downloader.Downloader;
 import org.schabi.newpipe.extractor.exceptions.ExtractionException;
@@ -61,7 +62,7 @@ public class YoutubeTrendingExtractor extends KioskExtractor<StreamInfoItem> {
     }
 
     @Override
-    public InfoItemsPage<StreamInfoItem> getPage(String pageUrl) {
+    public InfoItemsPage<StreamInfoItem> getPage(Page page) {
         return null;
     }
 

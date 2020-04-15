@@ -3,6 +3,7 @@ package org.schabi.newpipe.extractor.channel;
 import org.schabi.newpipe.extractor.ListExtractor.InfoItemsPage;
 import org.schabi.newpipe.extractor.ListInfo;
 import org.schabi.newpipe.extractor.NewPipe;
+import org.schabi.newpipe.extractor.Page;
 import org.schabi.newpipe.extractor.StreamingService;
 import org.schabi.newpipe.extractor.exceptions.ExtractionException;
 import org.schabi.newpipe.extractor.linkhandler.ListLinkHandler;
@@ -49,8 +50,8 @@ public class ChannelInfo extends ListInfo<StreamInfoItem> {
 
     public static InfoItemsPage<StreamInfoItem> getMoreItems(StreamingService service,
                                                              String url,
-                                                             String pageUrl) throws IOException, ExtractionException {
-        return service.getChannelExtractor(url).getPage(pageUrl);
+                                                             Page page) throws IOException, ExtractionException {
+        return service.getChannelExtractor(url).getPage(page);
     }
 
     public static ChannelInfo getInfo(ChannelExtractor extractor) throws IOException, ExtractionException {
@@ -81,7 +82,7 @@ public class ChannelInfo extends ListInfo<StreamInfoItem> {
 
         final InfoItemsPage<StreamInfoItem> itemsPage = ExtractorHelper.getItemsPageOrLogError(info, extractor);
         info.setRelatedItems(itemsPage.getItems());
-        info.setNextPageUrl(itemsPage.getNextPageUrl());
+        info.setNextPage(itemsPage.getNextPage());
 
         try {
             info.setSubscriberCount(extractor.getSubscriberCount());

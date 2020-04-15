@@ -2,6 +2,7 @@ package org.schabi.newpipe.extractor.services.peertube;
 
 import com.grack.nanojson.JsonObject;
 
+import org.schabi.newpipe.extractor.Page;
 import org.schabi.newpipe.extractor.exceptions.ContentNotAvailableException;
 import org.schabi.newpipe.extractor.exceptions.ParsingException;
 import org.schabi.newpipe.extractor.utils.Parser;
@@ -14,7 +15,6 @@ import java.util.Date;
 import java.util.TimeZone;
 
 public class PeertubeParsingHelper {
-
     public static final String START_KEY = "start";
     public static final String COUNT_KEY = "count";
     public static final int ITEMS_PER_PAGE = 12;
@@ -23,17 +23,17 @@ public class PeertubeParsingHelper {
     private PeertubeParsingHelper() {
     }
 
-    public static void validate(JsonObject json) throws ContentNotAvailableException {
-        String error = json.getString("error");
+    public static void validate(final JsonObject json) throws ContentNotAvailableException {
+        final String error = json.getString("error");
         if (!Utils.isBlank(error)) {
             throw new ContentNotAvailableException(error);
         }
     }
 
-    public static Calendar parseDateFrom(String textualUploadDate) throws ParsingException {
-        Date date;
+    public static Calendar parseDateFrom(final String textualUploadDate) throws ParsingException {
+        final Date date;
         try {
-            SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.S'Z'");
+            final SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.S'Z'");
             sdf.setTimeZone(TimeZone.getTimeZone("GMT"));
             date = sdf.parse(textualUploadDate);
         } catch (ParseException e) {
@@ -45,26 +45,25 @@ public class PeertubeParsingHelper {
         return uploadDate;
     }
 
-    public static String getNextPageUrl(String prevPageUrl, long total) {
-        String prevStart;
+    public static Page getNextPage(final String prevPageUrl, final long total) {
+        final String prevStart;
         try {
             prevStart = Parser.matchGroup1(START_PATTERN, prevPageUrl);
         } catch (Parser.RegexException e) {
-            return "";
+            return null;
         }
-        if (Utils.isBlank(prevStart)) return "";
-        long nextStart = 0;
+        if (Utils.isBlank(prevStart)) return null;
+        final long nextStart;
         try {
             nextStart = Long.parseLong(prevStart) + ITEMS_PER_PAGE;
         } catch (NumberFormatException e) {
-            return "";
+            return null;
         }
 
         if (nextStart >= total) {
-            return "";
+            return null;
         } else {
-            return prevPageUrl.replace(START_KEY + "=" + prevStart, START_KEY + "=" + nextStart);
+            return new Page(prevPageUrl.replace(START_KEY + "=" + prevStart, START_KEY + "=" + nextStart));
         }
     }
-
 }

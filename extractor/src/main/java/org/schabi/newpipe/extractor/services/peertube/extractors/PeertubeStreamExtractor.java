@@ -341,7 +341,7 @@ public class PeertubeStreamExtractor extends StreamExtractor {
         if (response != null && response.responseBody() != null) {
             setInitialData(response.responseBody());
         } else {
-            throw new ExtractionException("Unable to extract peertube channel data");
+            throw new ExtractionException("Unable to extract PeerTube channel data");
         }
 
         loadSubtitles();
@@ -351,9 +351,9 @@ public class PeertubeStreamExtractor extends StreamExtractor {
         try {
             json = JsonParser.object().from(responseBody);
         } catch (JsonParserException e) {
-            throw new ExtractionException("Unable to extract peertube stream data", e);
+            throw new ExtractionException("Unable to extract PeerTube stream data", e);
         }
-        if (json == null) throw new ExtractionException("Unable to extract peertube stream data");
+        if (json == null) throw new ExtractionException("Unable to extract PeerTube stream data");
         PeertubeParsingHelper.validate(json);
     }
 

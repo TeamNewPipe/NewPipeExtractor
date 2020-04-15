@@ -2,6 +2,7 @@ package org.schabi.newpipe.extractor.services.youtube.extractors;
 
 import com.grack.nanojson.JsonArray;
 import com.grack.nanojson.JsonObject;
+import org.schabi.newpipe.extractor.Page;
 import org.schabi.newpipe.extractor.StreamingService;
 import org.schabi.newpipe.extractor.channel.ChannelExtractor;
 import org.schabi.newpipe.extractor.downloader.Downloader;
@@ -224,7 +225,7 @@ public class YoutubeChannelExtractor extends ChannelExtractor {
     public InfoItemsPage<StreamInfoItem> getInitialPage() throws ExtractionException {
         final StreamInfoItemsCollector collector = new StreamInfoItemsCollector(getServiceId());
 
-        String nextPageUrl = null;
+        Page nextPage = null;
 
         if (getVideoTab() != null) {
             final JsonObject gridRenderer = getVideoTab().getObject("content").getObject("sectionListRenderer")
@@ -233,44 +234,39 @@ public class YoutubeChannelExtractor extends ChannelExtractor {
 
             collectStreamsFrom(collector, gridRenderer.getArray("items"));
 
-            nextPageUrl = getNextPageUrlFrom(gridRenderer.getArray("continuations"));
+            nextPage = getNextPageFrom(gridRenderer.getArray("continuations"));
         }
 
-        return new InfoItemsPage<>(collector, nextPageUrl);
+        return new InfoItemsPage<>(collector, nextPage);
     }
 
     @Override
-    public InfoItemsPage<StreamInfoItem> getPage(String pageUrl) throws IOException, ExtractionException {
-        if (isNullOrEmpty(pageUrl)) {
-            throw new ExtractionException(new IllegalArgumentException("Page url is empty or null"));
-        }
-
+    public InfoItemsPage<StreamInfoItem> getPage(Page page) throws IOException, ExtractionException {
         // Unfortunately, we have to fetch the page even if we are only getting next streams,
         // as they don't deliver enough information on their own (the channel name, for example).
         fetchPage();
 
         StreamInfoItemsCollector collector = new StreamInfoItemsCollector(getServiceId());
-        final JsonArray ajaxJson = getJsonResponse(pageUrl, getExtractorLocalization());
+        final JsonArray ajaxJson = getJsonResponse(page.getUrl(), getExtractorLocalization());
 
         JsonObject sectionListContinuation = ajaxJson.getObject(1).getObject("response")
                 .getObject("continuationContents").getObject("gridContinuation");
 
         collectStreamsFrom(collector, sectionListContinuation.getArray("items"));
 
-        return new InfoItemsPage<>(collector, getNextPageUrlFrom(sectionListContinuation.getArray("continuations")));
+        return new InfoItemsPage<>(collector, getNextPageFrom(sectionListContinuation.getArray("continuations")));
     }
 
-
-    private String getNextPageUrlFrom(JsonArray continuations) {
+    private Page getNextPageFrom(final JsonArray continuations) {
         if (isNullOrEmpty(continuations)) {
-            return "";
+            return null;
         }
 
-        JsonObject nextContinuationData = continuations.getObject(0).getObject("nextContinuationData");
-        String continuation = nextContinuationData.getString("continuation");
-        String clickTrackingParams = nextContinuationData.getString("clickTrackingParams");
-        return "https://www.youtube.com/browse_ajax?ctoken=" + continuation + "&continuation=" + continuation
-                + "&itct=" + clickTrackingParams;
+        final JsonObject nextContinuationData = continuations.getObject(0).getObject("nextContinuationData");
+        final String continuation = nextContinuationData.getString("continuation");
+        final String clickTrackingParams = nextContinuationData.getString("clickTrackingParams");
+        return new Page("https://www.youtube.com/browse_ajax?ctoken=" + continuation
+                + "&continuation=" + continuation + "&itct=" + clickTrackingParams);
     }
 
     private void collectStreamsFrom(StreamInfoItemsCollector collector, JsonArray videos) throws ParsingException {

@@ -5,6 +5,7 @@ import com.grack.nanojson.JsonObject;
 import com.grack.nanojson.JsonParser;
 import com.grack.nanojson.JsonParserException;
 
+import org.schabi.newpipe.extractor.Page;
 import org.schabi.newpipe.extractor.StreamingService;
 import org.schabi.newpipe.extractor.channel.ChannelExtractor;
 import org.schabi.newpipe.extractor.downloader.Downloader;
@@ -93,7 +94,7 @@ public class PeertubeChannelExtractor extends ChannelExtractor {
     @Override
     public InfoItemsPage<StreamInfoItem> getInitialPage() throws IOException, ExtractionException {
         final String pageUrl = getUrl() + "/videos?" + START_KEY + "=0&" + COUNT_KEY + "=" + ITEMS_PER_PAGE;
-        return getPage(pageUrl);
+        return getPage(new Page(pageUrl));
     }
 
     private void collectStreamsFrom(final StreamInfoItemsCollector collector, final JsonObject json) throws ParsingException {
@@ -101,7 +102,7 @@ public class PeertubeChannelExtractor extends ChannelExtractor {
         try {
             contents = (JsonArray) JsonUtils.getValue(json, "data");
         } catch (Exception e) {
-            throw new ParsingException("unable to extract channel streams", e);
+            throw new ParsingException("Unable to extract channel streams", e);
         }
 
         for (final Object c : contents) {
@@ -114,27 +115,28 @@ public class PeertubeChannelExtractor extends ChannelExtractor {
     }
 
     @Override
-    public InfoItemsPage<StreamInfoItem> getPage(final String pageUrl) throws IOException, ExtractionException {
-        final Response response = getDownloader().get(pageUrl);
+    public InfoItemsPage<StreamInfoItem> getPage(final Page page) throws IOException, ExtractionException {
+        final Response response = getDownloader().get(page.getUrl());
         JsonObject json = null;
         if (response != null && !Utils.isBlank(response.responseBody())) {
             try {
                 json = JsonParser.object().from(response.responseBody());
             } catch (Exception e) {
-                throw new ParsingException("Could not parse json data for kiosk info", e);
+                throw new ParsingException("Could not parse json data for channel info", e);
             }
         }
 
-        final StreamInfoItemsCollector collector = new StreamInfoItemsCollector(getServiceId());
-        final long total;
         if (json != null) {
             PeertubeParsingHelper.validate(json);
-            total = JsonUtils.getNumber(json, "total").longValue();
+            final long total = JsonUtils.getNumber(json, "total").longValue();
+
+            final StreamInfoItemsCollector collector = new StreamInfoItemsCollector(getServiceId());
             collectStreamsFrom(collector, json);
+
+            return new InfoItemsPage<>(collector, PeertubeParsingHelper.getNextPage(page.getUrl(), total));
         } else {
-            throw new ExtractionException("Unable to get PeerTube kiosk info");
+            throw new ExtractionException("Unable to get PeerTube channel info");
         }
-        return new InfoItemsPage<>(collector, PeertubeParsingHelper.getNextPageUrl(pageUrl, total));
     }
 
     @Override

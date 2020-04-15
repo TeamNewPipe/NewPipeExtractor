@@ -4,6 +4,7 @@ import com.grack.nanojson.JsonArray;
 import com.grack.nanojson.JsonObject;
 import com.grack.nanojson.JsonParser;
 import com.grack.nanojson.JsonParserException;
+import org.schabi.newpipe.extractor.Page;
 import org.schabi.newpipe.extractor.StreamingService;
 import org.schabi.newpipe.extractor.channel.ChannelExtractor;
 import org.schabi.newpipe.extractor.downloader.Downloader;
@@ -109,21 +110,17 @@ public class SoundcloudChannelExtractor extends ChannelExtractor {
 
             String nextPageUrl = SoundcloudParsingHelper.getStreamsFromApiMinItems(15, streamInfoItemsCollector, apiUrl);
 
-            return new InfoItemsPage<>(streamInfoItemsCollector, nextPageUrl);
+            return new InfoItemsPage<>(streamInfoItemsCollector, new Page(nextPageUrl));
         } catch (Exception e) {
             throw new ExtractionException("Could not get next page", e);
         }
     }
 
     @Override
-    public InfoItemsPage<StreamInfoItem> getPage(final String pageUrl) throws IOException, ExtractionException {
-        if (isNullOrEmpty(pageUrl)) {
-            throw new ExtractionException(new IllegalArgumentException("Page url is empty or null"));
-        }
-
+    public InfoItemsPage<StreamInfoItem> getPage(final Page page) throws IOException, ExtractionException {
         StreamInfoItemsCollector collector = new StreamInfoItemsCollector(getServiceId());
-        String nextPageUrl = SoundcloudParsingHelper.getStreamsFromApiMinItems(15, collector, pageUrl);
+        String nextPageUrl = SoundcloudParsingHelper.getStreamsFromApiMinItems(15, collector, page.getUrl());
 
-        return new InfoItemsPage<>(collector, nextPageUrl);
+        return new InfoItemsPage<>(collector, new Page(nextPageUrl));
     }
 }

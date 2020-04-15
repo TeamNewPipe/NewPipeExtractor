@@ -5,6 +5,7 @@ import com.grack.nanojson.JsonObject;
 import com.grack.nanojson.JsonParser;
 import com.grack.nanojson.JsonParserException;
 
+import org.schabi.newpipe.extractor.Page;
 import org.schabi.newpipe.extractor.StreamingService;
 import org.schabi.newpipe.extractor.downloader.Downloader;
 import org.schabi.newpipe.extractor.downloader.Response;
@@ -16,6 +17,7 @@ import org.schabi.newpipe.extractor.services.peertube.PeertubeParsingHelper;
 import org.schabi.newpipe.extractor.stream.StreamInfoItem;
 import org.schabi.newpipe.extractor.stream.StreamInfoItemsCollector;
 import org.schabi.newpipe.extractor.utils.JsonUtils;
+import org.schabi.newpipe.extractor.utils.Utils;
 
 import java.io.IOException;
 
@@ -27,7 +29,6 @@ import static org.schabi.newpipe.extractor.services.peertube.PeertubeParsingHelp
 
 public class PeertubePlaylistExtractor extends PlaylistExtractor {
     private JsonObject playlistInfo;
-    private String initialPageUrl;
 
     public PeertubePlaylistExtractor(final StreamingService service, final ListLinkHandler linkHandler) {
         super(service, linkHandler);
@@ -84,31 +85,50 @@ public class PeertubePlaylistExtractor extends PlaylistExtractor {
     @Nonnull
     @Override
     public InfoItemsPage<StreamInfoItem> getInitialPage() throws IOException, ExtractionException {
-        return getPage(initialPageUrl);
+        return getPage(new Page(getUrl() + "/videos?" + START_KEY + "=0&" + COUNT_KEY + "=" + ITEMS_PER_PAGE));
+    }
+
+    private void collectStreamsFrom(final StreamInfoItemsCollector collector, final JsonObject json) throws ParsingException {
+        final JsonArray contents;
+        try {
+            contents = (JsonArray) JsonUtils.getValue(json, "data");
+        } catch (Exception e) {
+            throw new ParsingException("Unable to extract playlist streams", e);
+        }
+
+        final String baseUrl = getBaseUrl();
+        for (final Object c : contents) {
+            if (c instanceof JsonObject) {
+                final JsonObject item = (JsonObject) c;
+                final PeertubeStreamInfoItemExtractor extractor = new PeertubeStreamInfoItemExtractor(item, baseUrl);
+                collector.commit(extractor);
+            }
+        }
     }
 
     @Override
-    public InfoItemsPage<StreamInfoItem> getPage(final String pageUrl) throws IOException, ExtractionException {
-        final Response response = getDownloader().get(pageUrl);
-        final JsonObject playlistVideos;
-        try {
-            playlistVideos = JsonParser.object().from(response.responseBody());
-        } catch (JsonParserException jpe) {
-            throw new ExtractionException("Could not parse json", jpe);
-        }
-        PeertubeParsingHelper.validate(playlistVideos);
-
-        final long total = JsonUtils.getNumber(playlistVideos, "total").longValue();
-
-        final StreamInfoItemsCollector collector = new StreamInfoItemsCollector(getServiceId());
-
-        final JsonArray videos = playlistVideos.getArray("data");
-        for (final Object o : videos) {
-            final JsonObject video = ((JsonObject) o).getObject("video");
-            collector.commit(new PeertubeStreamInfoItemExtractor(video, getBaseUrl()));
+    public InfoItemsPage<StreamInfoItem> getPage(final Page page) throws IOException, ExtractionException {
+        final Response response = getDownloader().get(page.getUrl());
+        JsonObject json = null;
+        if (response != null && !Utils.isBlank(response.responseBody())) {
+            try {
+                json = JsonParser.object().from(response.responseBody());
+            } catch (Exception e) {
+                throw new ParsingException("Could not parse json data for playlist info", e);
+            }
         }
 
-        return new InfoItemsPage<>(collector, PeertubeParsingHelper.getNextPageUrl(pageUrl, total));
+        if (json != null) {
+            PeertubeParsingHelper.validate(json);
+            final long total = JsonUtils.getNumber(json, "total").longValue();
+
+            final StreamInfoItemsCollector collector = new StreamInfoItemsCollector(getServiceId());
+            collectStreamsFrom(collector, json);
+
+            return new InfoItemsPage<>(collector, PeertubeParsingHelper.getNextPage(page.getUrl(), total));
+        } else {
+            throw new ExtractionException("Unable to get PeerTube playlist info");
+        }
     }
 
     @Override
@@ -120,7 +140,6 @@ public class PeertubePlaylistExtractor extends PlaylistExtractor {
             throw new ExtractionException("Could not parse json", jpe);
         }
         PeertubeParsingHelper.validate(playlistInfo);
-        initialPageUrl = getUrl() + "/videos?" + START_KEY + "=0&" + COUNT_KEY + "=" + ITEMS_PER_PAGE;
     }
 
     @Nonnull

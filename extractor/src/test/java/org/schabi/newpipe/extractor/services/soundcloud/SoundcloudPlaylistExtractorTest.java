@@ -268,7 +268,7 @@ public class SoundcloudPlaylistExtractorTest {
             ListExtractor.InfoItemsPage<StreamInfoItem> currentPage = defaultTestMoreItems(extractor);
             // Test for 2 more levels
             for (int i = 0; i < 2; i++) {
-                currentPage = extractor.getPage(currentPage.getNextPageUrl());
+                currentPage = extractor.getPage(currentPage.getNextPage());
                 defaultTestListOfItems(SoundCloud, currentPage.getItems(), currentPage.getErrors());
             }
         }

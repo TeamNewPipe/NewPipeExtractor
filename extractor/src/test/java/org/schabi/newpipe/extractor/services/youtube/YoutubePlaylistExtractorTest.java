@@ -209,7 +209,7 @@ public class YoutubePlaylistExtractorTest {
 
             // test for 2 more levels
             for (int i = 0; i < 2; i++) {
-                currentPage = extractor.getPage(currentPage.getNextPageUrl());
+                currentPage = extractor.getPage(currentPage.getNextPage());
                 defaultTestListOfItems(YouTube, currentPage.getItems(), currentPage.getErrors());
             }
         }

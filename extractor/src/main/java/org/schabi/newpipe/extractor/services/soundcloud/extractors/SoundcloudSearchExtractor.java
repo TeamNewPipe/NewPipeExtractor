@@ -7,6 +7,7 @@ import com.grack.nanojson.JsonParserException;
 import org.schabi.newpipe.extractor.InfoItem;
 import org.schabi.newpipe.extractor.InfoItemExtractor;
 import org.schabi.newpipe.extractor.InfoItemsCollector;
+import org.schabi.newpipe.extractor.Page;
 import org.schabi.newpipe.extractor.StreamingService;
 import org.schabi.newpipe.extractor.downloader.Downloader;
 import org.schabi.newpipe.extractor.exceptions.ExtractionException;
@@ -46,20 +47,20 @@ public class SoundcloudSearchExtractor extends SearchExtractor {
     @Nonnull
     @Override
     public InfoItemsPage<InfoItem> getInitialPage() throws IOException, ExtractionException {
-        return new InfoItemsPage<>(collectItems(searchCollection), getNextPageUrlFromCurrentUrl(getUrl()));
+        return new InfoItemsPage<>(collectItems(searchCollection), getNextPageFromCurrentUrl(getUrl()));
     }
 
     @Override
-    public InfoItemsPage<InfoItem> getPage(String pageUrl) throws IOException, ExtractionException {
+    public InfoItemsPage<InfoItem> getPage(Page page) throws IOException, ExtractionException {
         final Downloader dl = getDownloader();
         try {
-            final String response = dl.get(pageUrl, getExtractorLocalization()).responseBody();
+            final String response = dl.get(page.getUrl(), getExtractorLocalization()).responseBody();
             searchCollection = JsonParser.object().from(response).getArray("collection");
         } catch (JsonParserException e) {
             throw new ParsingException("Could not parse json response", e);
         }
 
-        return new InfoItemsPage<>(collectItems(searchCollection), getNextPageUrlFromCurrentUrl(pageUrl));
+        return new InfoItemsPage<>(collectItems(searchCollection), getNextPageFromCurrentUrl(page.getUrl()));
     }
 
     @Override
@@ -102,7 +103,7 @@ public class SoundcloudSearchExtractor extends SearchExtractor {
         return collector;
     }
 
-    private String getNextPageUrlFromCurrentUrl(String currentUrl)
+    private Page getNextPageFromCurrentUrl(String currentUrl)
             throws MalformedURLException, UnsupportedEncodingException {
         final int pageOffset = Integer.parseInt(
                 Parser.compatParseMap(
@@ -110,8 +111,7 @@ public class SoundcloudSearchExtractor extends SearchExtractor {
                                 .getQuery())
                         .get("offset"));
 
-        return currentUrl.replace("&offset=" +
-                        Integer.toString(pageOffset),
-                "&offset=" + Integer.toString(pageOffset + ITEMS_PER_PAGE));
+        return new Page(currentUrl.replace("&offset=" + pageOffset,
+                "&offset=" + (pageOffset + ITEMS_PER_PAGE)));
     }
 }
