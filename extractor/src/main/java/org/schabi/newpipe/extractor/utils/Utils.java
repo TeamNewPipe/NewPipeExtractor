@@ -6,6 +6,7 @@ import java.io.UnsupportedEncodingException;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLDecoder;
+import java.util.Collection;
 import java.util.List;
 
 public class Utils {
@@ -48,7 +49,8 @@ public class Utils {
         String multiplier = "";
         try {
             multiplier = Parser.matchGroup("[\\d]+([\\.,][\\d]+)?([KMBkmb])+", numberWord, 2);
-        } catch(ParsingException ignored) {}
+        } catch (ParsingException ignored) {
+        }
         double count = Double.parseDouble(Parser.matchGroup1("([\\d]+([\\.,][\\d]+)?)", numberWord)
                 .replace(",", "."));
         switch (multiplier.toUpperCase()) {
@@ -185,5 +187,13 @@ public class Utils {
             throw new ParsingException("Malformed url: " + url, e);
         }
         return uri.getProtocol() + "://" + uri.getAuthority();
+    }
+
+    public static boolean isNullOrEmpty(final String str) {
+        return str == null || str.isEmpty();
+    }
+
+    public static boolean isNullOrEmpty(final Collection<?> collection) {
+        return collection == null || collection.isEmpty();
     }
 }

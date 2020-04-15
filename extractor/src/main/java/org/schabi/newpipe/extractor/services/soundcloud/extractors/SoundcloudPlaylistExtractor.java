@@ -21,6 +21,8 @@ import java.io.IOException;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
+import static org.schabi.newpipe.extractor.utils.Utils.isNullOrEmpty;
+
 @SuppressWarnings("WeakerAccess")
 public class SoundcloudPlaylistExtractor extends PlaylistExtractor {
     private static final int streamsPerRequestedPage = 15;
@@ -76,7 +78,7 @@ public class SoundcloudPlaylistExtractor extends PlaylistExtractor {
 
                 for (StreamInfoItem item : infoItems.getItems()) {
                     artworkUrl = item.getThumbnailUrl();
-                    if (artworkUrl != null && !artworkUrl.isEmpty()) break;
+                    if (!isNullOrEmpty(artworkUrl)) break;
                 }
             } catch (Exception ignored) {
             }

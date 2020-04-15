@@ -16,6 +16,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
 
+import static org.schabi.newpipe.extractor.utils.Utils.isNullOrEmpty;
+
 /*
  * Created by Christian Schabesberger on 26.08.15.
  *
@@ -159,7 +161,7 @@ public class StreamInfo extends Info {
             streamInfo.setAudioStreams(new ArrayList<AudioStream>());
 
         Exception dashMpdError = null;
-        if (streamInfo.getDashMpdUrl() != null && !streamInfo.getDashMpdUrl().isEmpty()) {
+        if (!isNullOrEmpty(streamInfo.getDashMpdUrl())) {
             try {
                 DashMpdParser.ParserResult result = DashMpdParser.getStreams(streamInfo);
                 streamInfo.getVideoOnlyStreams().addAll(result.getVideoOnlyStreams());

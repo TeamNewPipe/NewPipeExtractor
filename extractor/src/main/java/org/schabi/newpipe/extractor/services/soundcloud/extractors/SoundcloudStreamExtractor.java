@@ -36,6 +36,7 @@ import java.util.Locale;
 import javax.annotation.Nonnull;
 
 import static org.schabi.newpipe.extractor.utils.JsonUtils.EMPTY_STRING;
+import static org.schabi.newpipe.extractor.utils.Utils.isNullOrEmpty;
 
 public class SoundcloudStreamExtractor extends StreamExtractor {
     private JsonObject track;
@@ -191,7 +192,7 @@ public class SoundcloudStreamExtractor extends StreamExtractor {
                 JsonObject t = (JsonObject) transcoding;
                 String url = t.getString("url");
 
-                if (url != null && !url.isEmpty()) {
+                if (!isNullOrEmpty(url)) {
 
                     // We can only play the mp3 format, but not handle m3u playlists / streams.
                     // what about Opus?

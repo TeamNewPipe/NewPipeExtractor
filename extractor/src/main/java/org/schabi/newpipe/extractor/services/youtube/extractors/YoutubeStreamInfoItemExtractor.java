@@ -18,6 +18,7 @@ import java.util.Date;
 
 import static org.schabi.newpipe.extractor.services.youtube.YoutubeParsingHelper.*;
 import static org.schabi.newpipe.extractor.utils.JsonUtils.EMPTY_STRING;
+import static org.schabi.newpipe.extractor.utils.Utils.isNullOrEmpty;
 
 /*
  * Copyright (C) Christian Schabesberger 2016 <chris.schabesberger@mailbox.org>
@@ -93,7 +94,7 @@ public class YoutubeStreamInfoItemExtractor implements StreamInfoItemExtractor {
     @Override
     public String getName() throws ParsingException {
         String name = getTextFromObject(videoInfo.getObject("title"));
-        if (name != null && !name.isEmpty()) return name;
+        if (!isNullOrEmpty(name)) return name;
         throw new ParsingException("Could not get name");
     }
 
@@ -186,7 +187,7 @@ public class YoutubeStreamInfoItemExtractor implements StreamInfoItemExtractor {
         }
 
         final String textualUploadDate = getTextualUploadDate();
-        if (timeAgoParser != null && textualUploadDate != null && !textualUploadDate.isEmpty()) {
+        if (timeAgoParser != null && !isNullOrEmpty(textualUploadDate)) {
             try {
                 return timeAgoParser.parse(textualUploadDate);
             } catch (ParsingException e) {
