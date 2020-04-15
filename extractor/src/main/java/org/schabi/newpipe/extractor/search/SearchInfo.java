@@ -70,11 +70,11 @@ public class SearchInfo extends ListInfo<InfoItem> {
 
     // Getter
     public String getSearchString() {
-        return searchString;
+        return this.searchString;
     }
 
     public String getSearchSuggestion() {
-        return searchSuggestion;
+        return this.searchSuggestion;
     }
 
     public boolean isCorrectedSearch() {
@@ -82,7 +82,7 @@ public class SearchInfo extends ListInfo<InfoItem> {
     }
 
     public void setCorrectedSearch(boolean correctedSearch) {
-        isCorrectedSearch = correctedSearch;
+        this.isCorrectedSearch = correctedSearch;
     }
 
     public void setSearchSuggestion(String searchSuggestion) {
