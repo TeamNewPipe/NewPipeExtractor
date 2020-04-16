@@ -109,7 +109,7 @@ public class PeertubeAccountExtractor extends ChannelExtractor {
     public InfoItemsPage<StreamInfoItem> getPage(String pageUrl) throws IOException, ExtractionException {
         Response response = getDownloader().get(pageUrl);
         JsonObject json = null;
-        if (null != response && !StringUtil.isBlank(response.responseBody())) {
+        if (response != null && !StringUtil.isBlank(response.responseBody())) {
             try {
                 json = JsonParser.object().from(response.responseBody());
             } catch (Exception e) {
@@ -169,7 +169,7 @@ public class PeertubeAccountExtractor extends ChannelExtractor {
         try {
             json = JsonParser.object().from(responseBody);
         } catch (JsonParserException e) {
-            throw new ExtractionException("Unable to extract peertube channel data", e);
+            throw new ExtractionException("Unable to extract PeerTube channel data", e);
         }
         if (json == null) throw new ExtractionException("Unable to extract PeerTube channel data");
     }

@@ -6,6 +6,7 @@ import org.schabi.newpipe.extractor.localization.DateWrapper;
 import org.schabi.newpipe.extractor.stream.StreamInfoItemExtractor;
 import org.schabi.newpipe.extractor.stream.StreamType;
 
+import static org.schabi.newpipe.extractor.utils.JsonUtils.EMPTY_STRING;
 import static org.schabi.newpipe.extractor.utils.Utils.replaceHttpWithHttps;
 
 public class SoundcloudStreamInfoItemExtractor implements StreamInfoItemExtractor {
@@ -62,7 +63,7 @@ public class SoundcloudStreamInfoItemExtractor implements StreamInfoItemExtracto
 
     @Override
     public String getThumbnailUrl() {
-        String artworkUrl = itemObject.getString("artwork_url", "");
+        String artworkUrl = itemObject.getString("artwork_url", EMPTY_STRING);
         if (artworkUrl.isEmpty()) {
             artworkUrl = itemObject.getObject("user").getString("avatar_url");
         }

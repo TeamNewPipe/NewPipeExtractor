@@ -334,7 +334,7 @@ public class YoutubeParsingHelper {
     }
 
     public static String getUrlFromNavigationEndpoint(JsonObject navigationEndpoint) throws ParsingException {
-        if (navigationEndpoint.getObject("urlEndpoint") != null) {
+        if (navigationEndpoint.has("urlEndpoint")) {
             String internUrl = navigationEndpoint.getObject("urlEndpoint").getString("url");
             if (internUrl.startsWith("/redirect?")) {
                 // q parameter can be the first parameter
@@ -354,7 +354,7 @@ public class YoutubeParsingHelper {
             } else if (internUrl.startsWith("http")) {
                 return internUrl;
             }
-        } else if (navigationEndpoint.getObject("browseEndpoint") != null) {
+        } else if (navigationEndpoint.has("browseEndpoint")) {
             final JsonObject browseEndpoint = navigationEndpoint.getObject("browseEndpoint");
             final String canonicalBaseUrl = browseEndpoint.getString("canonicalBaseUrl");
             final String browseId = browseEndpoint.getString("browseId");
@@ -369,7 +369,7 @@ public class YoutubeParsingHelper {
             }
 
             throw new ParsingException("canonicalBaseUrl is null and browseId is not a channel (\"" + browseEndpoint + "\")");
-        } else if (navigationEndpoint.getObject("watchEndpoint") != null) {
+        } else if (navigationEndpoint.has("watchEndpoint")) {
             StringBuilder url = new StringBuilder();
             url.append("https://www.youtube.com/watch?v=").append(navigationEndpoint.getObject("watchEndpoint").getString("videoId"));
             if (navigationEndpoint.getObject("watchEndpoint").has("playlistId"))
@@ -377,7 +377,7 @@ public class YoutubeParsingHelper {
             if (navigationEndpoint.getObject("watchEndpoint").has("startTimeSeconds"))
                 url.append("&amp;t=").append(navigationEndpoint.getObject("watchEndpoint").getInt("startTimeSeconds"));
             return url.toString();
-        } else if (navigationEndpoint.getObject("watchPlaylistEndpoint") != null) {
+        } else if (navigationEndpoint.has("watchPlaylistEndpoint")) {
             return "https://www.youtube.com/playlist?list=" +
                     navigationEndpoint.getObject("watchPlaylistEndpoint").getString("playlistId");
         }
@@ -390,7 +390,7 @@ public class YoutubeParsingHelper {
         StringBuilder textBuilder = new StringBuilder();
         for (Object textPart : textObject.getArray("runs")) {
             String text = ((JsonObject) textPart).getString("text");
-            if (html && ((JsonObject) textPart).getObject("navigationEndpoint") != null) {
+            if (html && ((JsonObject) textPart).has("navigationEndpoint")) {
                 String url = getUrlFromNavigationEndpoint(((JsonObject) textPart).getObject("navigationEndpoint"));
                 if (url != null && !url.isEmpty()) {
                     textBuilder.append("<a href=\"").append(url).append("\">").append(text).append("</a>");
@@ -486,7 +486,7 @@ public class YoutubeParsingHelper {
      */
     public static void defaultAlertsCheck(JsonObject initialData) throws ContentNotAvailableException {
         final JsonArray alerts = initialData.getArray("alerts");
-        if (alerts != null && !alerts.isEmpty()) {
+        if (!alerts.isEmpty()) {
             final JsonObject alertRenderer = alerts.getObject(0).getObject("alertRenderer");
             final String alertText = alertRenderer.getObject("text").getString("simpleText");
             final String alertType = alertRenderer.getString("type");

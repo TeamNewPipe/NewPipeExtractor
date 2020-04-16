@@ -97,14 +97,11 @@ public class YoutubeTrendingExtractor extends KioskExtractor<StreamInfoItem> {
             JsonObject expandedShelfContentsRenderer = ((JsonObject) itemSectionRenderer).getObject("itemSectionRenderer")
                     .getArray("contents").getObject(0).getObject("shelfRenderer").getObject("content")
                     .getObject("expandedShelfContentsRenderer");
-            if (expandedShelfContentsRenderer != null) {
-                for (Object ul : expandedShelfContentsRenderer.getArray("items")) {
-                    final JsonObject videoInfo = ((JsonObject) ul).getObject("videoRenderer");
-                    collector.commit(new YoutubeStreamInfoItemExtractor(videoInfo, timeAgoParser));
-                }
+            for (Object ul : expandedShelfContentsRenderer.getArray("items")) {
+                final JsonObject videoInfo = ((JsonObject) ul).getObject("videoRenderer");
+                collector.commit(new YoutubeStreamInfoItemExtractor(videoInfo, timeAgoParser));
             }
         }
         return new InfoItemsPage<>(collector, getNextPageUrl());
-
     }
 }

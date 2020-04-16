@@ -3,6 +3,7 @@ package org.schabi.newpipe.extractor.services.soundcloud;
 import com.grack.nanojson.JsonObject;
 import org.schabi.newpipe.extractor.channel.ChannelInfoItemExtractor;
 
+import static org.schabi.newpipe.extractor.utils.JsonUtils.EMPTY_STRING;
 import static org.schabi.newpipe.extractor.utils.Utils.replaceHttpWithHttps;
 
 public class SoundcloudChannelInfoItemExtractor implements ChannelInfoItemExtractor {
@@ -24,7 +25,7 @@ public class SoundcloudChannelInfoItemExtractor implements ChannelInfoItemExtrac
 
     @Override
     public String getThumbnailUrl() {
-        String avatarUrl = itemObject.getString("avatar_url", "");
+        String avatarUrl = itemObject.getString("avatar_url", EMPTY_STRING);
         String avatarUrlBetterResolution = avatarUrl.replace("large.jpg", "crop.jpg");
         return avatarUrlBetterResolution;
     }
@@ -41,6 +42,6 @@ public class SoundcloudChannelInfoItemExtractor implements ChannelInfoItemExtrac
 
     @Override
     public String getDescription() {
-        return itemObject.getString("description", "");
+        return itemObject.getString("description", EMPTY_STRING);
     }
 }

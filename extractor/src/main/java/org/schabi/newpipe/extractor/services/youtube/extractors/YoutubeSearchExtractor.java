@@ -69,7 +69,7 @@ public class YoutubeSearchExtractor extends SearchExtractor {
                 .getObject("sectionListRenderer").getArray("contents").getObject(0)
                 .getObject("itemSectionRenderer").getArray("contents").getObject(0)
                 .getObject("showingResultsForRenderer");
-        if (showingResultsForRenderer == null) {
+        if (!showingResultsForRenderer.has("correctedQuery")) {
             return "";
         }
         return getTextFromObject(showingResultsForRenderer.getObject("correctedQuery"));
@@ -119,21 +119,21 @@ public class YoutubeSearchExtractor extends SearchExtractor {
         final TimeAgoParser timeAgoParser = getTimeAgoParser();
 
         for (Object item : videos) {
-            if (((JsonObject) item).getObject("backgroundPromoRenderer") != null) {
+            if (((JsonObject) item).has("backgroundPromoRenderer")) {
                 throw new NothingFoundException(getTextFromObject(((JsonObject) item)
                         .getObject("backgroundPromoRenderer").getObject("bodyText")));
-            } else if (((JsonObject) item).getObject("videoRenderer") != null) {
+            } else if (((JsonObject) item).has("videoRenderer")) {
                 collector.commit(new YoutubeStreamInfoItemExtractor(((JsonObject) item).getObject("videoRenderer"), timeAgoParser));
-            } else if (((JsonObject) item).getObject("channelRenderer") != null) {
+            } else if (((JsonObject) item).has("channelRenderer")) {
                 collector.commit(new YoutubeChannelInfoItemExtractor(((JsonObject) item).getObject("channelRenderer")));
-            } else if (((JsonObject) item).getObject("playlistRenderer") != null) {
+            } else if (((JsonObject) item).has("playlistRenderer")) {
                 collector.commit(new YoutubePlaylistInfoItemExtractor(((JsonObject) item).getObject("playlistRenderer")));
             }
         }
     }
 
     private String getNextPageUrlFrom(final JsonArray continuations) throws ParsingException {
-        if (continuations == null) {
+        if (continuations == null || continuations.isEmpty()) {
             return "";
         }
 
