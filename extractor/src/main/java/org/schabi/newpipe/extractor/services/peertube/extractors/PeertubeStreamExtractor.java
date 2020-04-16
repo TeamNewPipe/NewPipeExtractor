@@ -148,19 +148,19 @@ public class PeertubeStreamExtractor extends StreamExtractor {
     }
 
     @Override
-    public String getParentChannelUrl() throws ParsingException {
+    public String getSubChannelUrl() throws ParsingException {
         return JsonUtils.getString(json, "channel.url");
     }
 
     @Nonnull
     @Override
-    public String getParentChannelName() throws ParsingException {
+    public String getSubChannelName() throws ParsingException {
         return JsonUtils.getString(json, "channel.displayName");
     }
 
     @Nonnull
     @Override
-    public String getParentChannelAvatarUrl() throws ParsingException {
+    public String getSubChannelAvatarUrl() throws ParsingException {
         String value;
         try {
             value = JsonUtils.getString(json, "channel.avatar.path");

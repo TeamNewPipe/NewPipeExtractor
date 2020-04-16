@@ -112,19 +112,19 @@ public class MediaCCCStreamExtractor extends StreamExtractor {
 
     @Nonnull
     @Override
-    public String getParentChannelUrl() throws ParsingException {
+    public String getSubChannelUrl() throws ParsingException {
         return "";
     }
 
     @Nonnull
     @Override
-    public String getParentChannelName() throws ParsingException {
+    public String getSubChannelName() throws ParsingException {
         return "";
     }
 
     @Nonnull
     @Override
-    public String getParentChannelAvatarUrl() throws ParsingException {
+    public String getSubChannelAvatarUrl() throws ParsingException {
         return "";
     }
 

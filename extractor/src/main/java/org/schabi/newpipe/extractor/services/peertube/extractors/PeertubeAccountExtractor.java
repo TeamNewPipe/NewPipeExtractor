@@ -76,17 +76,17 @@ public class PeertubeAccountExtractor extends ChannelExtractor {
     }
 
     @Override
-    public String getParentChannelName() throws ParsingException {
+    public String getSubChannelName() throws ParsingException {
         return "";
     }
 
     @Override
-    public String getParentChannelUrl() throws ParsingException {
+    public String getSubChannelUrl() throws ParsingException {
         return "";
     }
 
     @Override
-    public String getParentChannelAvatarUrl() throws ParsingException {
+    public String getSubChannelAvatarUrl() throws ParsingException {
         return "";
     }
 

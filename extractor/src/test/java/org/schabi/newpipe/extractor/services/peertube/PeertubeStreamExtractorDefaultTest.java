@@ -88,6 +88,33 @@ public class PeertubeStreamExtractorDefaultTest {
     }
 
     @Test
+    public void testGetUploaderUrl() throws ParsingException {
+        assertIsSecureUrl(extractor.getUploaderUrl());
+        assertEquals("https://framatube.org/api/v1/accounts/framasoft@framatube.org", extractor.getUploaderUrl());
+    }
+
+    @Test
+    public void testGetUploaderAvatarUrl() throws ParsingException {
+        assertIsSecureUrl(extractor.getUploaderAvatarUrl());
+    }
+
+    @Test
+    public void testGetSubChannelName() throws ParsingException {
+        assertEquals("Les vidéos de Framasoft", extractor.getSubChannelName());
+    }
+
+    @Test
+    public void testGetSubChannelUrl() throws ParsingException {
+        assertIsSecureUrl(extractor.getSubChannelUrl());
+        assertEquals("https://framatube.org/video-channels/bf54d359-cfad-4935-9d45-9d6be93f63e8", extractor.getSubChannelUrl());
+    }
+
+    @Test
+    public void testGetSubChannelAvatarUrl() throws ParsingException {
+        assertIsSecureUrl(extractor.getSubChannelAvatarUrl());
+    }
+
+    @Test
     public void testGetLength() throws ParsingException {
         assertEquals(113, extractor.getLength());
     }
@@ -99,19 +126,8 @@ public class PeertubeStreamExtractorDefaultTest {
     }
 
     @Test
-    public void testGetUploaderUrl() throws ParsingException {
-        assertIsSecureUrl(extractor.getUploaderUrl());
-        assertEquals("https://framatube.org/api/v1/accounts/framasoft@framatube.org", extractor.getUploaderUrl());
-    }
-
-    @Test
     public void testGetThumbnailUrl() throws ParsingException {
         assertIsSecureUrl(extractor.getThumbnailUrl());
-    }
-
-    @Test
-    public void testGetUploaderAvatarUrl() throws ParsingException {
-        assertIsSecureUrl(extractor.getUploaderAvatarUrl());
     }
 
     @Test

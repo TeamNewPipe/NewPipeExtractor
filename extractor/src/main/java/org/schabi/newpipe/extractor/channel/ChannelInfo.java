@@ -95,19 +95,19 @@ public class ChannelInfo extends ListInfo<StreamInfoItem> {
         }
 
         try {
-            info.setParentChannelName(extractor.getParentChannelName());
+            info.setSubChannelName(extractor.getSubChannelName());
         } catch (Exception e) {
             info.addError(e);
         }
 
         try {
-            info.setParentChannelUrl(extractor.getParentChannelUrl());
+            info.setSubChannelUrl(extractor.getSubChannelUrl());
         } catch (Exception e) {
             info.addError(e);
         }
 
         try {
-            info.setParentChannelAvatarUrl(extractor.getParentChannelAvatarUrl());
+            info.setSubChannelAvatarUrl(extractor.getSubChannelAvatarUrl());
         } catch (Exception e) {
             info.addError(e);
         }
@@ -116,37 +116,37 @@ public class ChannelInfo extends ListInfo<StreamInfoItem> {
     }
 
     private String avatarUrl;
-    private String parentChannelName;
-    private String parentChannelUrl;
-    private String parentChannelAvatarUrl;
+    private String subChannelName;
+    private String subChannelUrl;
+    private String subChannelAvatarUrl;
     private String bannerUrl;
     private String feedUrl;
     private long subscriberCount = -1;
     private String description;
     private String[] donationLinks;
 
-    public String getParentChannelName() {
-        return parentChannelName;
+    public String getSubChannelName() {
+        return subChannelName;
     }
 
-    public void setParentChannelName(String parentChannelName) {
-        this.parentChannelName = parentChannelName;
+    public void setSubChannelName(String subChannelName) {
+        this.subChannelName = subChannelName;
     }
 
-    public String getParentChannelUrl() {
-        return parentChannelUrl;
+    public String getSubChannelUrl() {
+        return subChannelUrl;
     }
 
-    public void setParentChannelUrl(String parentChannelUrl) {
-        this.parentChannelUrl = parentChannelUrl;
+    public void setSubChannelUrl(String subChannelUrl) {
+        this.subChannelUrl = subChannelUrl;
     }
 
-    public String getParentChannelAvatarUrl() {
-        return parentChannelAvatarUrl;
+    public String getSubChannelAvatarUrl() {
+        return subChannelAvatarUrl;
     }
 
-    public void setParentChannelAvatarUrl(String parentChannelAvatarUrl) {
-        this.parentChannelAvatarUrl = parentChannelAvatarUrl;
+    public void setSubChannelAvatarUrl(String subChannelAvatarUrl) {
+        this.subChannelAvatarUrl = subChannelAvatarUrl;
     }
 
     public String getAvatarUrl() {

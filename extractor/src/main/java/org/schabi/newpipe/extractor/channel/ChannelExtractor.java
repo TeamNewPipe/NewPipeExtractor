@@ -37,7 +37,7 @@ public abstract class ChannelExtractor extends ListExtractor<StreamInfoItem> {
     public abstract String getFeedUrl() throws ParsingException;
     public abstract long getSubscriberCount() throws ParsingException;
     public abstract String getDescription() throws ParsingException;
-    public abstract String getParentChannelName() throws ParsingException;
-    public abstract String getParentChannelUrl() throws ParsingException;
-    public abstract String getParentChannelAvatarUrl() throws ParsingException;
+    public abstract String getSubChannelName() throws ParsingException;
+    public abstract String getSubChannelUrl() throws ParsingException;
+    public abstract String getSubChannelAvatarUrl() throws ParsingException;
 }
