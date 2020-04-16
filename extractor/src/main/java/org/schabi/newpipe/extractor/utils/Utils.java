@@ -8,6 +8,7 @@ import java.net.URL;
 import java.net.URLDecoder;
 import java.util.Collection;
 import java.util.Iterator;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
@@ -260,4 +261,15 @@ public class Utils {
         }
         return stringBuilder.toString();
     }
+
+    public static String join(final String delimiter, final String mapJoin,
+        final Map<? extends CharSequence, ? extends CharSequence> elements) {
+        final List<String> list = new LinkedList<>();
+        for (final Map.Entry<? extends CharSequence, ? extends CharSequence> entry : elements
+            .entrySet()) {
+            list.add(entry.getKey() + mapJoin + entry.getValue());
+        }
+        return join(delimiter, list);
+    }
+
 }

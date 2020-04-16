@@ -62,14 +62,14 @@ public class YoutubeServiceTest {
 
     @Test
     public void getPlayListExtractorIsNormalPlaylist() throws Exception {
-        PlaylistExtractor extractor = service.getPlaylistExtractor(
+        final PlaylistExtractor extractor = service.getPlaylistExtractor(
             "https://www.youtube.com/watch?v=JhqtYOnNrTs&list=PL-EkZZikQIQVqk9rBWzEo5b-2GeozElS");
         assertTrue(extractor instanceof YoutubePlaylistExtractor);
     }
 
     @Test
     public void getPlaylistExtractorIsMix() throws Exception {
-        String videoId = "_AzeUSL9lZc";
+        final String videoId = "_AzeUSL9lZc";
         PlaylistExtractor extractor = YouTube.getPlaylistExtractor(
             "https://www.youtube.com/watch?v=" + videoId + "&list=RD" + videoId);
         assertTrue(extractor instanceof YoutubeMixPlaylistExtractor);

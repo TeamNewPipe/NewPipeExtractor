@@ -4,8 +4,10 @@ import com.grack.nanojson.JsonArray;
 import com.grack.nanojson.JsonObject;
 
 import org.schabi.newpipe.extractor.ListExtractor;
+import org.schabi.newpipe.extractor.Page;
 import org.schabi.newpipe.extractor.StreamingService;
 import org.schabi.newpipe.extractor.downloader.Downloader;
+import org.schabi.newpipe.extractor.downloader.Response;
 import org.schabi.newpipe.extractor.exceptions.ExtractionException;
 import org.schabi.newpipe.extractor.exceptions.ParsingException;
 import org.schabi.newpipe.extractor.linkhandler.ListLinkHandler;
@@ -15,34 +17,50 @@ import org.schabi.newpipe.extractor.stream.StreamInfoItem;
 import org.schabi.newpipe.extractor.stream.StreamInfoItemsCollector;
 
 import java.io.IOException;
+import java.util.Collections;
+import java.util.List;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
+import static org.schabi.newpipe.extractor.services.youtube.YoutubeParsingHelper.extractCookieValue;
 import static org.schabi.newpipe.extractor.services.youtube.YoutubeParsingHelper.getJsonResponse;
+import static org.schabi.newpipe.extractor.services.youtube.YoutubeParsingHelper.getResponse;
 import static org.schabi.newpipe.extractor.services.youtube.YoutubeParsingHelper.getUrlFromNavigationEndpoint;
+import static org.schabi.newpipe.extractor.services.youtube.YoutubeParsingHelper.toJsonArray;
 
 /**
- * A YoutubePlaylistExtractor for a mix (auto-generated playlist). It handles urls in the format of
- * "youtube.com/watch?v=videoId&list=playlistId"
+ * A {@link YoutubePlaylistExtractor} for a mix (auto-generated playlist).
+ * It handles URLs in the format of
+ * {@code youtube.com/watch?v=videoId&list=playlistId}
  */
 public class YoutubeMixPlaylistExtractor extends PlaylistExtractor {
 
+    /**
+     * YouTube identifies mixes based on this cookie. With this information it can generate
+     * continuations without duplicates.
+     */
+    private static final String COOKIE_NAME = "VISITOR_INFO1_LIVE";
+
     private JsonObject initialData;
     private JsonObject playlistData;
+    private String cookieValue;
 
-    public YoutubeMixPlaylistExtractor(StreamingService service, ListLinkHandler linkHandler) {
+    public YoutubeMixPlaylistExtractor(final StreamingService service,
+                                       final ListLinkHandler linkHandler) {
         super(service, linkHandler);
     }
 
     @Override
-    public void onFetchPage(@Nonnull Downloader downloader)
-        throws IOException, ExtractionException {
+    public void onFetchPage(@Nonnull final Downloader downloader)
+            throws IOException, ExtractionException {
         final String url = getUrl() + "&pbj=1";
-        final JsonArray ajaxJson = getJsonResponse(url, getExtractorLocalization());
+        final Response response = getResponse(url, getExtractorLocalization());
+        final JsonArray ajaxJson = toJsonArray(response.responseBody());
         initialData = ajaxJson.getObject(3).getObject("response");
         playlistData = initialData.getObject("contents").getObject("twoColumnWatchNextResults")
-            .getObject("playlist").getObject("playlist");
+                .getObject("playlist").getObject("playlist");
+        cookieValue = extractCookieValue(COOKIE_NAME, response);
     }
 
     @Nonnull
@@ -58,16 +76,15 @@ public class YoutubeMixPlaylistExtractor extends PlaylistExtractor {
     @Override
     public String getThumbnailUrl() throws ParsingException {
         try {
-            final String playlistId = playlistData.getString("playlistId");
+            return getThumbnailUrlFromPlaylistId(playlistData.getString("playlistId"));
+        } catch (final Exception e) {
             try {
-                return getThumbnailUrlFromPlaylistId(playlistId);
-            } catch (ParsingException e) {
                 //fallback to thumbnail of current video. Always the case for channel mix
                 return getThumbnailUrlFromVideoId(
                     initialData.getObject("currentVideoEndpoint").getObject("watchEndpoint")
                         .getString("videoId"));
+            } catch (final Exception ignored) {
             }
-        } catch (Exception e) {
             throw new ParsingException("Could not get playlist thumbnail", e);
         }
     }
@@ -104,53 +121,56 @@ public class YoutubeMixPlaylistExtractor extends PlaylistExtractor {
     @Nonnull
     @Override
     public InfoItemsPage<StreamInfoItem> getInitialPage() throws ExtractionException {
-        StreamInfoItemsCollector collector = new StreamInfoItemsCollector(getServiceId());
+        final StreamInfoItemsCollector collector = new StreamInfoItemsCollector(getServiceId());
         collectStreamsFrom(collector, playlistData.getArray("contents"));
-        return new InfoItemsPage<>(collector, getNextPageUrl());
+        return new InfoItemsPage<>(collector,
+                new Page(getNextPageUrl(), Collections.singletonMap(COOKIE_NAME, cookieValue)));
     }
 
-    @Override
-    public String getNextPageUrl() throws ExtractionException {
+    private String getNextPageUrl() throws ExtractionException {
         return getNextPageUrlFrom(playlistData);
     }
 
-    private String getNextPageUrlFrom(JsonObject playlistData) throws ExtractionException {
-        final JsonObject lastStream = ((JsonObject) playlistData.getArray("contents")
-            .get(playlistData.getArray("contents").size() - 1));
+    private String getNextPageUrlFrom(final JsonObject playlistJson) throws ExtractionException {
+        final JsonObject lastStream = ((JsonObject) playlistJson.getArray("contents")
+                .get(playlistJson.getArray("contents").size() - 1));
         if (lastStream == null || lastStream.getObject("playlistPanelVideoRenderer") == null) {
             throw new ExtractionException("Could not extract next page url");
         }
-        //Index of video in mix is missing, but adding it doesn't appear to have any effect.
-        //And since the index needs to be tracked by us, it is left out
+
         return getUrlFromNavigationEndpoint(
-            lastStream.getObject("playlistPanelVideoRenderer").getObject("navigationEndpoint"))
-            + "&pbj=1";
+                lastStream.getObject("playlistPanelVideoRenderer").getObject("navigationEndpoint"))
+                + "&pbj=1";
     }
 
     @Override
-    public InfoItemsPage<StreamInfoItem> getPage(final String pageUrl)
+    public InfoItemsPage<StreamInfoItem> getPage(final Page page)
             throws ExtractionException, IOException {
-        if (pageUrl == null || pageUrl.isEmpty()) {
+        if (page == null || page.getUrl().isEmpty()) {
             throw new ExtractionException(
                 new IllegalArgumentException("Page url is empty or null"));
         }
 
-        StreamInfoItemsCollector collector = new StreamInfoItemsCollector(getServiceId());
-        final JsonArray ajaxJson = getJsonResponse(pageUrl, getExtractorLocalization());
-        JsonObject playlistData =
-            ajaxJson.getObject(3).getObject("response").getObject("contents")
-                .getObject("twoColumnWatchNextResults").getObject("playlist")
-                .getObject("playlist");
-        final JsonArray streams = playlistData.getArray("contents");
-        //Because continuation requests are created with the last video of previous request as start
-        streams.remove(0);
-        collectStreamsFrom(collector, streams);
-        return new InfoItemsPage<>(collector, getNextPageUrlFrom(playlistData));
+        final JsonArray ajaxJson = getJsonResponse(page, getExtractorLocalization());
+        final JsonObject playlistJson =
+                ajaxJson.getObject(3).getObject("response").getObject("contents")
+                        .getObject("twoColumnWatchNextResults").getObject("playlist")
+                        .getObject("playlist");
+        final JsonArray allStreams = playlistJson.getArray("contents");
+        // Sublist because youtube returns up to 24 previous streams in the mix
+        // +1 because the stream of "currentIndex" was already extracted in previous request
+        final List<Object> newStreams =
+                allStreams.subList(playlistJson.getInt("currentIndex") + 1, allStreams.size());
+
+        final StreamInfoItemsCollector collector = new StreamInfoItemsCollector(getServiceId());
+        collectStreamsFrom(collector, newStreams);
+        return new InfoItemsPage<>(collector,
+                new Page(getNextPageUrlFrom(playlistJson), page.getCookies()));
     }
 
     private void collectStreamsFrom(
-            @Nonnull StreamInfoItemsCollector collector,
-            @Nullable JsonArray streams) {
+            @Nonnull final StreamInfoItemsCollector collector,
+            @Nullable final List<Object> streams) {
 
         if (streams == null) {
             return;
@@ -158,9 +178,9 @@ public class YoutubeMixPlaylistExtractor extends PlaylistExtractor {
 
         final TimeAgoParser timeAgoParser = getTimeAgoParser();
 
-        for (Object stream : streams) {
+        for (final Object stream : streams) {
             if (stream instanceof JsonObject) {
-                JsonObject streamInfo = ((JsonObject) stream)
+                final JsonObject streamInfo = ((JsonObject) stream)
                     .getObject("playlistPanelVideoRenderer");
                 if (streamInfo != null) {
                     collector.commit(new YoutubeStreamInfoItemExtractor(streamInfo, timeAgoParser));
@@ -169,7 +189,7 @@ public class YoutubeMixPlaylistExtractor extends PlaylistExtractor {
         }
     }
 
-    private String getThumbnailUrlFromPlaylistId(String playlistId) throws ParsingException {
+    private String getThumbnailUrlFromPlaylistId(final String playlistId) throws ParsingException {
         final String videoId;
         if (playlistId.startsWith("RDMM")) {
             videoId = playlistId.substring(4);
@@ -184,7 +204,7 @@ public class YoutubeMixPlaylistExtractor extends PlaylistExtractor {
         return getThumbnailUrlFromVideoId(videoId);
     }
 
-    private String getThumbnailUrlFromVideoId(String videoId) {
+    private String getThumbnailUrlFromVideoId(final String videoId) {
         return "https://i.ytimg.com/vi/" + videoId + "/hqdefault.jpg";
     }
 

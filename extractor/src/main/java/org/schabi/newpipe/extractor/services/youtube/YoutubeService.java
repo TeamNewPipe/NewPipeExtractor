@@ -110,7 +110,7 @@ public class YoutubeService extends StreamingService {
     }
 
     @Override
-    public PlaylistExtractor getPlaylistExtractor(ListLinkHandler linkHandler) {
+    public PlaylistExtractor getPlaylistExtractor(final ListLinkHandler linkHandler) {
         if (YoutubeParsingHelper.isYoutubeMixId(linkHandler.getId())) {
             return new YoutubeMixPlaylistExtractor(this, linkHandler);
         } else {
