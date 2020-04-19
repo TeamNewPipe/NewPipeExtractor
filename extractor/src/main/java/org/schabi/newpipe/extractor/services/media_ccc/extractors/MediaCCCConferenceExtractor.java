@@ -4,6 +4,7 @@ import com.grack.nanojson.JsonArray;
 import com.grack.nanojson.JsonObject;
 import com.grack.nanojson.JsonParser;
 import com.grack.nanojson.JsonParserException;
+
 import org.schabi.newpipe.extractor.StreamingService;
 import org.schabi.newpipe.extractor.channel.ChannelExtractor;
 import org.schabi.newpipe.extractor.downloader.Downloader;
@@ -14,45 +15,46 @@ import org.schabi.newpipe.extractor.services.media_ccc.extractors.infoItems.Medi
 import org.schabi.newpipe.extractor.stream.StreamInfoItem;
 import org.schabi.newpipe.extractor.stream.StreamInfoItemsCollector;
 
-import javax.annotation.Nonnull;
 import java.io.IOException;
 
-public class MediaCCCConferenceExtractor extends ChannelExtractor {
+import javax.annotation.Nonnull;
 
+public class MediaCCCConferenceExtractor extends ChannelExtractor {
     private JsonObject conferenceData;
 
-    public MediaCCCConferenceExtractor(StreamingService service, ListLinkHandler linkHandler) {
+    public MediaCCCConferenceExtractor(final StreamingService service,
+                                       final ListLinkHandler linkHandler) {
         super(service, linkHandler);
     }
 
     @Override
-    public String getAvatarUrl() throws ParsingException {
+    public String getAvatarUrl() {
         return conferenceData.getString("logo_url");
     }
 
     @Override
-    public String getBannerUrl() throws ParsingException {
+    public String getBannerUrl() {
         return conferenceData.getString("logo_url");
     }
 
     @Override
-    public String getFeedUrl() throws ParsingException {
+    public String getFeedUrl() {
         return null;
     }
 
     @Override
-    public long getSubscriberCount() throws ParsingException {
+    public long getSubscriberCount() {
         return -1;
     }
 
     @Override
-    public String getDescription() throws ParsingException {
+    public String getDescription() {
         return null;
     }
 
     @Nonnull
     @Override
-    public InfoItemsPage<StreamInfoItem> getInitialPage() throws IOException, ExtractionException {
+    public InfoItemsPage<StreamInfoItem> getInitialPage() {
         StreamInfoItemsCollector collector = new StreamInfoItemsCollector(getServiceId());
         JsonArray events = conferenceData.getArray("events");
         for (int i = 0; i < events.size(); i++) {
@@ -62,17 +64,18 @@ public class MediaCCCConferenceExtractor extends ChannelExtractor {
     }
 
     @Override
-    public String getNextPageUrl() throws IOException, ExtractionException {
+    public String getNextPageUrl() {
         return null;
     }
 
     @Override
-    public InfoItemsPage<StreamInfoItem> getPage(String pageUrl) throws IOException, ExtractionException {
+    public InfoItemsPage<StreamInfoItem> getPage(final String pageUrl) {
         return null;
     }
 
     @Override
-    public void onFetchPage(@Nonnull Downloader downloader) throws IOException, ExtractionException {
+    public void onFetchPage(@Nonnull final Downloader downloader)
+            throws IOException, ExtractionException {
         try {
             conferenceData = JsonParser.object().from(downloader.get(getUrl()).responseBody());
         } catch (JsonParserException jpe) {
@@ -88,7 +91,7 @@ public class MediaCCCConferenceExtractor extends ChannelExtractor {
 
     @Nonnull
     @Override
-    public String getOriginalUrl() throws ParsingException {
+    public String getOriginalUrl() {
         return "https://media.ccc.de/c/" + conferenceData.getString("acronym");
     }
 }

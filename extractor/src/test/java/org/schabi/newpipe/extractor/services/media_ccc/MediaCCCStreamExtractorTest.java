@@ -9,7 +9,6 @@ import org.schabi.newpipe.extractor.exceptions.ParsingException;
 import org.schabi.newpipe.extractor.services.media_ccc.extractors.MediaCCCStreamExtractor;
 import org.schabi.newpipe.extractor.stream.AudioStream;
 import org.schabi.newpipe.extractor.stream.VideoStream;
-import org.schabi.newpipe.extractor.utils.UtilsTest;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -25,7 +24,6 @@ import static org.schabi.newpipe.extractor.ServiceList.MediaCCC;
  * Test {@link MediaCCCStreamExtractor}
  */
 public class MediaCCCStreamExtractorTest {
-
     public static class Gpn18Tmux {
         private static MediaCCCStreamExtractor extractor;
 
@@ -55,7 +53,7 @@ public class MediaCCCStreamExtractorTest {
         @Test
         public void testUrl() throws Exception {
             assertIsSecureUrl(extractor.getUrl());
-            assertEquals("https://api.media.ccc.de/public/events/gpn18-105-tmux-warum-ein-schwarzes-fenster-am-bildschirm-reicht", extractor.getUrl());
+            assertEquals("https://media.ccc.de/public/events/gpn18-105-tmux-warum-ein-schwarzes-fenster-am-bildschirm-reicht", extractor.getUrl());
         }
 
         @Test
@@ -141,7 +139,7 @@ public class MediaCCCStreamExtractorTest {
         @Test
         public void testUrl() throws Exception {
             assertIsSecureUrl(extractor.getUrl());
-            assertEquals("https://api.media.ccc.de/public/events/36c3-10565-what_s_left_for_private_messaging", extractor.getUrl());
+            assertEquals("https://media.ccc.de/public/events/36c3-10565-what_s_left_for_private_messaging", extractor.getUrl());
         }
 
         @Test
@@ -164,7 +162,7 @@ public class MediaCCCStreamExtractorTest {
         @Test
         public void testUploaderUrl() throws Exception {
             assertIsSecureUrl(extractor.getUploaderUrl());
-            assertEquals("https://api.media.ccc.de/public/conferences/36c3", extractor.getUploaderUrl());
+            assertEquals("https://media.ccc.de/public/conferences/36c3", extractor.getUploaderUrl());
         }
 
         @Test
