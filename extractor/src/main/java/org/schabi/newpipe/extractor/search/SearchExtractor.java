@@ -17,11 +17,8 @@ public abstract class SearchExtractor extends ListExtractor<InfoItem> {
         }
     }
 
-    private final InfoItemsSearchCollector collector;
-
     public SearchExtractor(StreamingService service, SearchQueryHandler linkHandler) {
         super(service, linkHandler);
-        collector = new InfoItemsSearchCollector(service.getServiceId());
     }
 
     public String getSearchString() {
@@ -29,10 +26,6 @@ public abstract class SearchExtractor extends ListExtractor<InfoItem> {
     }
 
     public abstract String getSearchSuggestion() throws ParsingException;
-
-    protected InfoItemsSearchCollector getInfoItemSearchCollector() {
-        return collector;
-    }
 
     @Override
     public SearchQueryHandler getLinkHandler() {

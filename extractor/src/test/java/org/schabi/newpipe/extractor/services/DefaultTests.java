@@ -2,23 +2,22 @@ package org.schabi.newpipe.extractor.services;
 
 import org.schabi.newpipe.extractor.InfoItem;
 import org.schabi.newpipe.extractor.ListExtractor;
-import org.schabi.newpipe.extractor.NewPipe;
 import org.schabi.newpipe.extractor.StreamingService;
 import org.schabi.newpipe.extractor.channel.ChannelInfoItem;
 import org.schabi.newpipe.extractor.exceptions.ParsingException;
-import org.schabi.newpipe.extractor.linkhandler.LinkHandlerFactory;
-import org.schabi.newpipe.extractor.linkhandler.ListLinkHandlerFactory;
 import org.schabi.newpipe.extractor.localization.DateWrapper;
 import org.schabi.newpipe.extractor.playlist.PlaylistInfoItem;
 import org.schabi.newpipe.extractor.stream.StreamInfoItem;
 
 import java.util.Calendar;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import static junit.framework.TestCase.assertFalse;
 import static org.junit.Assert.*;
 import static org.schabi.newpipe.extractor.ExtractorAsserts.*;
-import static org.schabi.newpipe.extractor.StreamingService.*;
+import static org.schabi.newpipe.extractor.StreamingService.LinkType;
 
 public final class DefaultTests {
     public static void defaultTestListOfItems(StreamingService expectedService, List<? extends InfoItem> itemsList, List<Throwable> errors) throws ParsingException {
@@ -38,11 +37,14 @@ public final class DefaultTests {
             if (item instanceof StreamInfoItem) {
                 StreamInfoItem streamInfoItem = (StreamInfoItem) item;
                 assertNotEmpty("Uploader name not set: " + item, streamInfoItem.getUploaderName());
-                assertNotEmpty("Uploader url not set: " + item, streamInfoItem.getUploaderUrl());
-                assertIsSecureUrl(streamInfoItem.getUploaderUrl());
+
+//                assertNotEmpty("Uploader url not set: " + item, streamInfoItem.getUploaderUrl());
+                if (streamInfoItem.getUploaderUrl() != null && !streamInfoItem.getUploaderUrl().isEmpty()) {
+                    assertIsSecureUrl(streamInfoItem.getUploaderUrl());
+                    assertExpectedLinkType(expectedService, streamInfoItem.getUploaderUrl(), LinkType.CHANNEL);
+                }
 
                 assertExpectedLinkType(expectedService, streamInfoItem.getUrl(), LinkType.STREAM);
-                assertExpectedLinkType(expectedService, streamInfoItem.getUploaderUrl(), LinkType.CHANNEL);
 
                 final String textualUploadDate = streamInfoItem.getTextualUploadDate();
                 if (textualUploadDate != null && !textualUploadDate.isEmpty()) {
@@ -71,10 +73,36 @@ public final class DefaultTests {
                 expectedLinkType, linkTypeByUrl);
     }
 
+    public static void assertOnlyContainsType(ListExtractor.InfoItemsPage<? extends InfoItem> items, InfoItem.InfoType expectedType) {
+        for (InfoItem item : items.getItems()) {
+            assertEquals("Item list contains unexpected info types",
+                    expectedType, item.getInfoType());
+        }
+    }
+
     public static <T extends InfoItem> void assertNoMoreItems(ListExtractor<T> extractor) throws Exception {
         assertFalse("More items available when it shouldn't", extractor.hasNextPage());
         final String nextPageUrl = extractor.getNextPageUrl();
         assertTrue("Next page is not empty or null", nextPageUrl == null || nextPageUrl.isEmpty());
+    }
+
+    public static void assertNoDuplicatedItems(StreamingService expectedService,
+                                               ListExtractor.InfoItemsPage<InfoItem> page1,
+                                               ListExtractor.InfoItemsPage<InfoItem> page2) throws Exception {
+        defaultTestListOfItems(expectedService, page1.getItems(), page1.getErrors());
+        defaultTestListOfItems(expectedService, page2.getItems(), page2.getErrors());
+
+        final Set<String> urlsSet = new HashSet<>();
+        for (InfoItem item : page1.getItems()) {
+            urlsSet.add(item.getUrl());
+        }
+
+        for (InfoItem item : page2.getItems()) {
+            final boolean wasAdded = urlsSet.add(item.getUrl());
+            if (!wasAdded) {
+                fail("Same item was on the first and second page item list");
+            }
+        }
     }
 
     public static <T extends InfoItem> ListExtractor.InfoItemsPage<T> defaultTestRelatedItems(ListExtractor<T> extractor) throws Exception {

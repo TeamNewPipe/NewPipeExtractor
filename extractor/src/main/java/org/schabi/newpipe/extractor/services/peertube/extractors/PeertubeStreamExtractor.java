@@ -128,7 +128,7 @@ public class PeertubeStreamExtractor extends StreamExtractor {
     public String getUploaderUrl() throws ParsingException {
         String name = JsonUtils.getString(json, "account.name");
         String host = JsonUtils.getString(json, "account.host");
-        return getService().getChannelLHFactory().fromId(name + "@" + host, baseUrl).getUrl();
+        return getService().getChannelLHFactory().fromId("accounts/" + name + "@" + host, baseUrl).getUrl();
     }
 
     @Override

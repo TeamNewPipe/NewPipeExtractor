@@ -11,6 +11,8 @@ import org.schabi.newpipe.extractor.stream.StreamInfoItemsCollector;
 import javax.annotation.Nonnull;
 import java.io.IOException;
 
+import static org.schabi.newpipe.extractor.ServiceList.SoundCloud;
+
 public class SoundcloudChartsExtractor extends KioskExtractor<StreamInfoItem> {
     private StreamInfoItemsCollector collector = null;
     private String nextPageUrl = null;
@@ -44,7 +46,7 @@ public class SoundcloudChartsExtractor extends KioskExtractor<StreamInfoItem> {
     }
 
 
-    private void computNextPageAndStreams() throws IOException, ExtractionException {
+    private void computeNextPageAndStreams() throws IOException, ExtractionException {
         collector = new StreamInfoItemsCollector(getServiceId());
 
         String apiUrl = "https://api-v2.soundcloud.com/charts" +
@@ -57,11 +59,9 @@ public class SoundcloudChartsExtractor extends KioskExtractor<StreamInfoItem> {
             apiUrl += "&kind=trending";
         }
 
-        /*List<String> supportedCountries = Arrays.asList("AU", "CA", "FR", "DE", "IE", "NL", "NZ", "GB", "US");
-        String contentCountry = getContentCountry();
-        if (supportedCountries.contains(contentCountry)) {
-            apiUrl += "&region=soundcloud:regions:" + contentCountry;
-        }*/
+
+        String contentCountry = SoundCloud.getContentCountry().getCountryCode();
+        apiUrl += "&region=soundcloud:regions:" + contentCountry;
 
         nextPageUrl = SoundcloudParsingHelper.getStreamsFromApi(collector, apiUrl, true);
     }
@@ -69,7 +69,7 @@ public class SoundcloudChartsExtractor extends KioskExtractor<StreamInfoItem> {
     @Override
     public String getNextPageUrl() throws IOException, ExtractionException {
         if (nextPageUrl == null) {
-            computNextPageAndStreams();
+            computeNextPageAndStreams();
         }
         return nextPageUrl;
     }
@@ -78,7 +78,7 @@ public class SoundcloudChartsExtractor extends KioskExtractor<StreamInfoItem> {
     @Override
     public InfoItemsPage<StreamInfoItem> getInitialPage() throws IOException, ExtractionException {
         if (collector == null) {
-            computNextPageAndStreams();
+            computeNextPageAndStreams();
         }
         return new InfoItemsPage<>(collector, getNextPageUrl());
     }

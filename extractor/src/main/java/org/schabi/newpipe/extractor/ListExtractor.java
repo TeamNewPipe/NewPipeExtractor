@@ -3,15 +3,32 @@ package org.schabi.newpipe.extractor;
 import org.schabi.newpipe.extractor.exceptions.ExtractionException;
 import org.schabi.newpipe.extractor.linkhandler.ListLinkHandler;
 
-import javax.annotation.Nonnull;
 import java.io.IOException;
 import java.util.Collections;
 import java.util.List;
+
+import javax.annotation.Nonnull;
 
 /**
  * Base class to extractors that have a list (e.g. playlists, users).
  */
 public abstract class ListExtractor<R extends InfoItem> extends Extractor {
+
+    /**
+     * Constant that should be returned whenever
+     * a list has an unknown number of items.
+     */
+    public static final long ITEM_COUNT_UNKNOWN = -1;
+    /**
+     * Constant that should be returned whenever a list has an
+     * infinite number of items. For example a YouTube mix.
+     */
+    public static final long ITEM_COUNT_INFINITE = -2;
+    /**
+     * Constant that should be returned whenever a list
+     * has an unknown number of items bigger than 100.
+     */
+    public static final long ITEM_COUNT_MORE_THAN_100 = -3;
 
     public ListExtractor(StreamingService service, ListLinkHandler linkHandler) {
         super(service, linkHandler);

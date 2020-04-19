@@ -1,5 +1,6 @@
 package org.schabi.newpipe.extractor.services.youtube.linkHandler;
 
+import org.schabi.newpipe.extractor.exceptions.ContentNotSupportedException;
 import org.schabi.newpipe.extractor.exceptions.ParsingException;
 import org.schabi.newpipe.extractor.linkhandler.ListLinkHandlerFactory;
 import org.schabi.newpipe.extractor.utils.Utils;
@@ -43,6 +44,11 @@ public class YoutubePlaylistLinkHandlerFactory extends ListLinkHandlerFactory {
 
             if (!listID.matches("[a-zA-Z0-9_-]{10,}")) {
                 throw new ParsingException("the list-ID given in the URL does not match the list pattern");
+            }
+
+            // Don't accept auto-generated "Mix" playlists but auto-generated YouTube Music playlists
+            if (listID.startsWith("RD") && !listID.startsWith("RDCLAK")) {
+                throw new ContentNotSupportedException("YouTube Mix playlists are not yet supported");
             }
 
             return listID;

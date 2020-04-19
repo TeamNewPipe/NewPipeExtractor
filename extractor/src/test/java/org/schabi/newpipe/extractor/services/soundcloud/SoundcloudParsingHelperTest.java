@@ -17,13 +17,15 @@ public class SoundcloudParsingHelperTest {
     @Test
     public void assertThatHardcodedClientIdIsValid() throws Exception {
         assertTrue("Hardcoded client id is not valid anymore",
-                SoundcloudParsingHelper.checkIfHardcodedClientIdIsValid(DownloaderTestImpl.getInstance()));
+                SoundcloudParsingHelper.checkIfHardcodedClientIdIsValid());
     }
 
     @Test
     public void resolveUrlWithEmbedPlayerTest() throws Exception {
         Assert.assertEquals("https://soundcloud.com/trapcity", SoundcloudParsingHelper.resolveUrlWithEmbedPlayer("https://api.soundcloud.com/users/26057743"));
         Assert.assertEquals("https://soundcloud.com/nocopyrightsounds", SoundcloudParsingHelper.resolveUrlWithEmbedPlayer("https://api.soundcloud.com/users/16069159"));
+        Assert.assertEquals("https://soundcloud.com/trapcity", SoundcloudParsingHelper.resolveUrlWithEmbedPlayer("https://api-v2.soundcloud.com/users/26057743"));
+        Assert.assertEquals("https://soundcloud.com/nocopyrightsounds", SoundcloudParsingHelper.resolveUrlWithEmbedPlayer("https://api-v2.soundcloud.com/users/16069159"));
     }
 
     @Test

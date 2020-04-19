@@ -1,3 +1,3 @@
 - [ ] I carefully read the [contribution guidelines](https://github.com/TeamNewPipe/NewPipe/blob/HEAD/.github/CONTRIBUTING.md) and agree to them.
-- [ ] I did test the API against [NewPipe](https://github.com/TeamNewPipe/NewPipe).
-- [ ] I agree to ASAP create a PULL request for [NewPipe](https://github.com/TeamNewPipe/NewPipe) for making in compatible when I changed the api.
+- [ ] I have tested the API against [NewPipe](https://github.com/TeamNewPipe/NewPipe).
+- [ ] I agree to create a pull request for [NewPipe](https://github.com/TeamNewPipe/NewPipe) as soon as possible to make it compatible with the changed API.

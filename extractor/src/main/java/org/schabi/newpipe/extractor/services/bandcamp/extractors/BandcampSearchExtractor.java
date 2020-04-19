@@ -33,7 +33,7 @@ public class BandcampSearchExtractor extends SearchExtractor {
         // okay apparently this is where we DOWNLOAD the page and then COMMIT its ENTRIES to an INFOITEMPAGE
         String html = getDownloader().get(pageUrl).responseBody();
 
-        InfoItemsSearchCollector collector = getInfoItemSearchCollector();
+        InfoItemsSearchCollector collector = new InfoItemsSearchCollector(getServiceId());
 
 
         Document d = Jsoup.parse(html);
