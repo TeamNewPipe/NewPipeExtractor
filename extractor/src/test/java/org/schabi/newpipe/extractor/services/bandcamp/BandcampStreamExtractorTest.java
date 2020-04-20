@@ -29,11 +29,6 @@ public class BandcampStreamExtractorTest {
         extractor.fetchPage();
     }
 
-    @Test(expected = ExtractionException.class)
-    public void testAlbum() throws ExtractionException {
-        Bandcamp.getStreamExtractor("https://zachbenson.bandcamp.com/album/prom");
-    }
-
     @Test
     public void testServiceId() {
     }
@@ -73,11 +68,6 @@ public class BandcampStreamExtractorTest {
     public void testAudioStream() {
         assertTrue(extractor.getAudioStreams().get(0).getUrl().contains("bcbits.com/stream"));
         assertEquals(1, extractor.getAudioStreams().size());
-    }
-
-    @Test(expected = ParsingException.class)
-    public void testInvalidUrl() throws ExtractionException {
-        Bandcamp.getStreamExtractor("https://bandcamp.com");
     }
 
     @Test
