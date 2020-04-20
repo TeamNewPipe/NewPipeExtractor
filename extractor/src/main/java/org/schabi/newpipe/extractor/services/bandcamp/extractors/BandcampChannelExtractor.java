@@ -2,10 +2,7 @@
 
 package org.schabi.newpipe.extractor.services.bandcamp.extractors;
 
-import com.grack.nanojson.JsonArray;
-import com.grack.nanojson.JsonObject;
-import com.grack.nanojson.JsonParser;
-import com.grack.nanojson.JsonParserException;
+import com.grack.nanojson.*;
 import org.jsoup.Jsoup;
 import org.schabi.newpipe.extractor.NewPipe;
 import org.schabi.newpipe.extractor.StreamingService;
@@ -43,7 +40,12 @@ public class BandcampChannelExtractor extends ChannelExtractor {
                             NewPipe.getDownloader().post(
                                     "https://bandcamp.com/api/mobile/22/band_details",
                                     null,
-                                    ("{\"band_id\":\"" + id + "\"}").getBytes()
+                                    JsonWriter.string()
+                                            .object()
+                                            .value("band_id", id)
+                                            .end()
+                                            .done()
+                                            .getBytes()
                             ).responseBody()
                     );
         } catch (IOException | ReCaptchaException | JsonParserException e) {
