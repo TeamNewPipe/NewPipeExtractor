@@ -16,9 +16,9 @@ import java.util.Arrays;
 public class BandcampExtractorHelper {
 
     /**
-     * Get JSON behind <code>var $variable = </code> out of web page
-     * <br/<br/>
-     * Originally a part of bandcampDirect.
+     * <p>Get JSON behind <code>var $variable = </code> out of web page</p>
+     *
+     * <p>Originally a part of bandcampDirect.</p>
      *
      * @param html     The HTML where the JSON we're looking for is stored inside a
      *                 variable inside some JavaScript block
