@@ -11,17 +11,13 @@ import java.util.List;
 
 public class BandcampSearchQueryHandlerFactory extends SearchQueryHandlerFactory {
 
-    private static final String SEARCH_URL = "https://bandcamp.com/search?q=";
-
-    public static final String CHARSET_UTF_8 = "UTF-8";
-
 
     @Override
     public String getUrl(String query, List<String> contentFilter, String sortFilter) throws ParsingException {
         try {
 
-            return SEARCH_URL +
-                    URLEncoder.encode(query, CHARSET_UTF_8)
+            return "https://bandcamp.com/search?q=" +
+                    URLEncoder.encode(query, "UTF-8")
                     + "&page=1";
 
         } catch (UnsupportedEncodingException e) {

@@ -17,8 +17,6 @@ import java.net.URLEncoder;
 import java.util.ArrayList;
 import java.util.List;
 
-import static org.schabi.newpipe.extractor.services.bandcamp.linkHandler.BandcampSearchQueryHandlerFactory.CHARSET_UTF_8;
-
 public class BandcampSuggestionExtractor extends SuggestionExtractor {
 
     private static final String AUTOCOMPLETE_URL = "https://bandcamp.com/api/fuzzysearch/1/autocomplete?q=";
@@ -32,7 +30,7 @@ public class BandcampSuggestionExtractor extends SuggestionExtractor {
 
         try {
             JsonObject fuzzyResults = JsonParser.object().from(
-                    downloader.get(AUTOCOMPLETE_URL + URLEncoder.encode(query, CHARSET_UTF_8)).responseBody()
+                    downloader.get(AUTOCOMPLETE_URL + URLEncoder.encode(query, "UTF-8")).responseBody()
             );
 
             JsonArray jsonArray = fuzzyResults.getObject("auto")
