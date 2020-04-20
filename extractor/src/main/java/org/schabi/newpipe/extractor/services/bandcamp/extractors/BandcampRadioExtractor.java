@@ -76,7 +76,7 @@ public class BandcampRadioExtractor extends KioskExtractor<InfoItem> {
     }
 
     @Override
-    public InfoItemsPage<InfoItem> getPage(String pageUrl) throws IOException, ExtractionException {
+    public InfoItemsPage<InfoItem> getPage(String pageUrl) {
         return null;
     }
 }

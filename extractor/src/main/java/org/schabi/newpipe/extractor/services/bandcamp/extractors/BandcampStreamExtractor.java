@@ -89,13 +89,13 @@ public class BandcampStreamExtractor extends StreamExtractor {
 
     @Nonnull
     @Override
-    public String getUploaderName() throws ParsingException {
+    public String getUploaderName() {
         return albumJson.getString("artist");
     }
 
     @Nullable
     @Override
-    public String getTextualUploadDate() throws ParsingException {
+    public String getTextualUploadDate() {
         return current.getString("release_date");
     }
 
@@ -136,44 +136,44 @@ public class BandcampStreamExtractor extends StreamExtractor {
     }
 
     @Override
-    public int getAgeLimit() throws ParsingException {
+    public int getAgeLimit() {
         return NO_AGE_LIMIT;
     }
 
     @Override
-    public long getLength() throws ParsingException {
+    public long getLength() {
         return 0;
     }
 
     @Override
-    public long getTimeStamp() throws ParsingException {
+    public long getTimeStamp() {
         return 0;
     }
 
     @Override
-    public long getViewCount() throws ParsingException {
+    public long getViewCount() {
         return -1;
     }
 
     @Override
-    public long getLikeCount() throws ParsingException {
+    public long getLikeCount() {
         return -1;
     }
 
     @Override
-    public long getDislikeCount() throws ParsingException {
+    public long getDislikeCount() {
         return -1;
     }
 
     @Nonnull
     @Override
-    public String getDashMpdUrl() throws ParsingException {
+    public String getDashMpdUrl() {
         return "";
     }
 
     @Nonnull
     @Override
-    public String getHlsUrl() throws ParsingException {
+    public String getHlsUrl() {
         return null;
     }
 

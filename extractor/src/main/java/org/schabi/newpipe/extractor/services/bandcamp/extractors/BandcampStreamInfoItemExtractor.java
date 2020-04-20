@@ -128,7 +128,7 @@ public class BandcampStreamInfoItemExtractor implements StreamInfoItemExtractor 
      * There are no ads just like that, duh
      */
     @Override
-    public boolean isAd() throws ParsingException {
+    public boolean isAd() {
         return false;
     }
 }
