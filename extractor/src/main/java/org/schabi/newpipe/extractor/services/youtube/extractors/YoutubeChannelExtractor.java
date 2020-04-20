@@ -309,8 +309,9 @@ public class YoutubeChannelExtractor extends ChannelExtractor {
         if (getTextFromObject(videoTab.getObject("content").getObject("sectionListRenderer")
                 .getArray("contents").getObject(0).getObject("itemSectionRenderer")
                 .getArray("contents").getObject(0).getObject("messageRenderer")
-                .getObject("text")).equals("This channel has no videos."))
+                .getObject("text")).equals("This channel has no videos.")) {
             return null;
+        }
 
         this.videoTab = videoTab;
         return videoTab;

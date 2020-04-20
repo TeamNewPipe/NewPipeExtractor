@@ -93,7 +93,7 @@ public class YoutubeStreamInfoItemExtractor implements StreamInfoItemExtractor {
     @Override
     public String getName() throws ParsingException {
         String name = getTextFromObject(videoInfo.getObject("title"));
-        if (name == null || !name.isEmpty()) return name;
+        if (!name.isEmpty()) return name;
         throw new ParsingException("Could not get name");
     }
 
@@ -105,7 +105,7 @@ public class YoutubeStreamInfoItemExtractor implements StreamInfoItemExtractor {
 
         String duration = getTextFromObject(videoInfo.getObject("lengthText"));
 
-        if (duration == null || duration.isEmpty()) {
+        if (duration.isEmpty()) {
             for (Object thumbnailOverlay : videoInfo.getArray("thumbnailOverlays")) {
                 if (((JsonObject) thumbnailOverlay).has("thumbnailOverlayTimeStatusRenderer")) {
                     duration = getTextFromObject(((JsonObject) thumbnailOverlay)
@@ -113,7 +113,7 @@ public class YoutubeStreamInfoItemExtractor implements StreamInfoItemExtractor {
                 }
             }
 
-            if (duration == null || duration.isEmpty()) throw new ParsingException("Could not get duration");
+            if (duration.isEmpty()) throw new ParsingException("Could not get duration");
         }
 
         return YoutubeParsingHelper.parseDurationString(duration);
@@ -123,13 +123,13 @@ public class YoutubeStreamInfoItemExtractor implements StreamInfoItemExtractor {
     public String getUploaderName() throws ParsingException {
         String name = getTextFromObject(videoInfo.getObject("longBylineText"));
 
-        if (name == null || name.isEmpty()) {
+        if (name.isEmpty()) {
             name = getTextFromObject(videoInfo.getObject("ownerText"));
 
-            if (name == null || name.isEmpty()) {
+            if (name.isEmpty()) {
                 name = getTextFromObject(videoInfo.getObject("shortBylineText"));
 
-                if (name == null || name.isEmpty()) throw new ParsingException("Could not get uploader name");
+                if (name.isEmpty()) throw new ParsingException("Could not get uploader name");
             }
         }
 
@@ -169,7 +169,7 @@ public class YoutubeStreamInfoItemExtractor implements StreamInfoItemExtractor {
         }
 
         final String publishedTimeText = getTextFromObject(videoInfo.getObject("publishedTimeText"));
-        if (publishedTimeText != null && !publishedTimeText.isEmpty()) return publishedTimeText;
+        if (!publishedTimeText.isEmpty()) return publishedTimeText;
 
         return null;
     }

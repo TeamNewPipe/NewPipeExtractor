@@ -3,7 +3,6 @@ package org.schabi.newpipe.extractor.services.youtube.extractors;
 import com.grack.nanojson.JsonArray;
 import com.grack.nanojson.JsonObject;
 import com.grack.nanojson.JsonParser;
-
 import org.mozilla.javascript.Context;
 import org.mozilla.javascript.Function;
 import org.mozilla.javascript.ScriptableObject;
@@ -33,10 +32,11 @@ import org.schabi.newpipe.extractor.stream.StreamInfoItemsCollector;
 import org.schabi.newpipe.extractor.stream.StreamType;
 import org.schabi.newpipe.extractor.stream.SubtitlesStream;
 import org.schabi.newpipe.extractor.stream.VideoStream;
-import org.schabi.newpipe.extractor.utils.JsonUtils;
 import org.schabi.newpipe.extractor.utils.Parser;
 import org.schabi.newpipe.extractor.utils.Utils;
 
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.text.SimpleDateFormat;
@@ -49,9 +49,6 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
-
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
 
 import static org.schabi.newpipe.extractor.services.youtube.linkHandler.YoutubeParsingHelper.fixThumbnailUrl;
 import static org.schabi.newpipe.extractor.services.youtube.linkHandler.YoutubeParsingHelper.getJsonResponse;
@@ -120,7 +117,7 @@ public class YoutubeStreamExtractor extends StreamExtractor {
         assertPageFetched();
         String title = getTextFromObject(getVideoPrimaryInfoRenderer().getObject("title"));
 
-        if (title == null || title.isEmpty()) {
+        if (title.isEmpty()) {
             title = playerResponse.getObject("videoDetails").getString("title");
 
             if (title == null || title.isEmpty()) throw new ParsingException("Could not get name");
@@ -200,7 +197,7 @@ public class YoutubeStreamExtractor extends StreamExtractor {
         assertPageFetched();
         // description with more info on links
         String description = getTextFromObject(getVideoSecondaryInfoRenderer().getObject("description"), true);
-        if (description != null && !description.isEmpty()) return new Description(description, Description.HTML);
+        if (!description.isEmpty()) return new Description(description, Description.HTML);
 
         // raw non-html description
         return new Description(playerResponse.getObject("videoDetails").getString("shortDescription"), Description.PLAIN_TEXT);
@@ -252,7 +249,7 @@ public class YoutubeStreamExtractor extends StreamExtractor {
         String views = getTextFromObject(getVideoPrimaryInfoRenderer().getObject("viewCount")
                     .getObject("videoViewCountRenderer").getObject("viewCount"));
 
-        if (views == null || views.isEmpty()) {
+        if (views.isEmpty()) {
             views = playerResponse.getObject("videoDetails").getString("viewCount");
 
             if (views == null || views.isEmpty()) throw new ParsingException("Could not get view count");
@@ -333,7 +330,7 @@ public class YoutubeStreamExtractor extends StreamExtractor {
         String uploaderName = getTextFromObject(getVideoSecondaryInfoRenderer().getObject("owner")
                     .getObject("videoOwnerRenderer").getObject("title"));
 
-        if (uploaderName == null || uploaderName.isEmpty()) {
+        if (uploaderName.isEmpty()) {
             uploaderName = playerResponse.getObject("videoDetails").getString("author");
 
             if (uploaderName == null || uploaderName.isEmpty()) throw new ParsingException("Could not get uploader name");

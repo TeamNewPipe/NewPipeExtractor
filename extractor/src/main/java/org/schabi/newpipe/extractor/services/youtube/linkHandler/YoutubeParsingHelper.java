@@ -384,6 +384,12 @@ public class YoutubeParsingHelper {
         return null;
     }
 
+    /**
+     * Get the text from a JSON object that has either a simpleText or a runs array.
+     * @param textObject JSON object to get the text from
+     * @param html       whether to return HTML, by parsing the navigationEndpoint
+     * @return text in the JSON object or an empty string
+     */
     public static String getTextFromObject(JsonObject textObject, boolean html) throws ParsingException {
         if (textObject.has("simpleText")) return textObject.getString("simpleText");
 

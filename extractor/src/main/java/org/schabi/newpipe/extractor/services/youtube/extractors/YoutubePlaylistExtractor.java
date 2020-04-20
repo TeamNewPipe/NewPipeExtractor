@@ -2,7 +2,6 @@ package org.schabi.newpipe.extractor.services.youtube.extractors;
 
 import com.grack.nanojson.JsonArray;
 import com.grack.nanojson.JsonObject;
-
 import org.schabi.newpipe.extractor.StreamingService;
 import org.schabi.newpipe.extractor.downloader.Downloader;
 import org.schabi.newpipe.extractor.exceptions.ExtractionException;
@@ -15,9 +14,8 @@ import org.schabi.newpipe.extractor.stream.StreamInfoItem;
 import org.schabi.newpipe.extractor.stream.StreamInfoItemsCollector;
 import org.schabi.newpipe.extractor.utils.Utils;
 
-import java.io.IOException;
-
 import javax.annotation.Nonnull;
+import java.io.IOException;
 
 import static org.schabi.newpipe.extractor.services.youtube.linkHandler.YoutubeParsingHelper.fixThumbnailUrl;
 import static org.schabi.newpipe.extractor.services.youtube.linkHandler.YoutubeParsingHelper.getJsonResponse;
@@ -83,7 +81,7 @@ public class YoutubePlaylistExtractor extends PlaylistExtractor {
     @Override
     public String getName() throws ParsingException {
         String name = getTextFromObject(playlistInfo.getObject("title"));
-        if (name == null || !name.isEmpty()) return name;
+        if (!name.isEmpty()) return name;
 
         return initialData.getObject("microformat").getObject("microformatDataRenderer").getString("title");
     }

@@ -22,7 +22,6 @@ package org.schabi.newpipe.extractor.services.youtube.extractors;
 
 import com.grack.nanojson.JsonArray;
 import com.grack.nanojson.JsonObject;
-
 import org.schabi.newpipe.extractor.StreamingService;
 import org.schabi.newpipe.extractor.downloader.Downloader;
 import org.schabi.newpipe.extractor.exceptions.ExtractionException;
@@ -33,9 +32,8 @@ import org.schabi.newpipe.extractor.localization.TimeAgoParser;
 import org.schabi.newpipe.extractor.stream.StreamInfoItem;
 import org.schabi.newpipe.extractor.stream.StreamInfoItemsCollector;
 
-import java.io.IOException;
-
 import javax.annotation.Nonnull;
+import java.io.IOException;
 
 import static org.schabi.newpipe.extractor.services.youtube.linkHandler.YoutubeParsingHelper.getJsonResponse;
 import static org.schabi.newpipe.extractor.services.youtube.linkHandler.YoutubeParsingHelper.getTextFromObject;
@@ -72,13 +70,8 @@ public class YoutubeTrendingExtractor extends KioskExtractor<StreamInfoItem> {
     @Nonnull
     @Override
     public String getName() throws ParsingException {
-        String name;
-        try {
-            name = getTextFromObject(initialData.getObject("header").getObject("feedTabbedHeaderRenderer").getObject("title"));
-        } catch (Exception e) {
-            throw new ParsingException("Could not get Trending name", e);
-        }
-        if (name != null && !name.isEmpty()) {
+        String name = getTextFromObject(initialData.getObject("header").getObject("feedTabbedHeaderRenderer").getObject("title"));
+        if (!name.isEmpty()) {
             return name;
         }
         throw new ParsingException("Could not get Trending name");
