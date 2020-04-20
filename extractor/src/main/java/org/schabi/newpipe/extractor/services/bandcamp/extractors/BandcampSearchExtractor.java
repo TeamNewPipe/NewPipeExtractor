@@ -43,49 +43,26 @@ public class BandcampSearchExtractor extends SearchExtractor {
         for (Element searchResult :
                 searchResultsElements) {
 
-            Element resultInfo = searchResult.getElementsByClass("result-info").first();
-
-            String type = resultInfo
+            String type = searchResult.getElementsByClass("result-info").first()
                     .getElementsByClass("itemtype").first().text();
-
-            String image = null;
-            Element img = searchResult.getElementsByClass("art").first()
-                    .getElementsByTag("img").first();
-            if (img != null) {
-                image = img.attr("src");
-            }
-
-            String heading = resultInfo.getElementsByClass("heading").text();
-
-            String subhead = resultInfo.getElementsByClass("subhead").text();
-
-            String url = resultInfo.getElementsByClass("itemurl").text();
 
             switch (type) {
                 default:
                     continue;
                 case "FAN":
-                    //collector.commit Channel (?) with heading, url, image
+                    // don't display fan results
                     break;
 
                 case "ARTIST":
-                    collector.commit(new BandcampChannelInfoItemExtractor(heading, url, image, subhead));
+                    collector.commit(new BandcampChannelInfoItemExtractor(searchResult));
                     break;
 
                 case "ALBUM":
-                    String artist = subhead.split(" by")[0];
-                    String length = resultInfo.getElementsByClass("length").text();
-                    int tracks = Integer.parseInt(length.split(" track")[0]);
-                    collector.commit(new BandcampPlaylistInfoItemExtractor(heading, artist, url, image, tracks));
+                    collector.commit(new BandcampPlaylistInfoItemExtractor(searchResult));
                     break;
 
                 case "TRACK":
-                    String[] splitBy = subhead.split(" by");
-                    String artist1 = null;
-                    if (splitBy.length > 1) {
-                        artist1 = subhead.split(" by")[1];
-                    }
-                    collector.commit(new BandcampStreamInfoItemExtractor(heading, url, image, artist1));
+                    collector.commit(new BandcampStreamInfoItemExtractor(searchResult));
                     break;
             }
 

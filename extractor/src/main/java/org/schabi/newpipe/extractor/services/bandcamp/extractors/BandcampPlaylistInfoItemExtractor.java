@@ -1,9 +1,8 @@
 package org.schabi.newpipe.extractor.services.bandcamp.extractors;
 
+import com.grack.nanojson.JsonObject;
 import org.jsoup.nodes.Element;
 import org.schabi.newpipe.extractor.playlist.PlaylistInfoItemExtractor;
-
-import java.io.IOException;
 
 import static org.schabi.newpipe.extractor.services.bandcamp.extractors.BandcampChannelExtractor.getImageUrl;
 

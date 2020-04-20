@@ -2,6 +2,7 @@
 
 package org.schabi.newpipe.extractor.services.bandcamp.extractors;
 
+import org.jsoup.nodes.Element;
 import org.schabi.newpipe.extractor.channel.ChannelInfoItemExtractor;
 import org.schabi.newpipe.extractor.exceptions.ParsingException;
 
@@ -9,11 +10,21 @@ public class BandcampChannelInfoItemExtractor implements ChannelInfoItemExtracto
 
     private String name, url, image, location;
 
-    public BandcampChannelInfoItemExtractor(String name, String url, String image, String location) {
-        this.name = name;
-        this.url = url;
-        this.image = image;
-        this.location = location;
+    public BandcampChannelInfoItemExtractor(Element searchResult) {
+
+        Element resultInfo = searchResult.getElementsByClass("result-info").first();
+
+        Element img = searchResult.getElementsByClass("art").first()
+                .getElementsByTag("img").first();
+        if (img != null) {
+            image = img.attr("src");
+        }
+
+        name = resultInfo.getElementsByClass("heading").text();
+
+        location = resultInfo.getElementsByClass("subhead").text();
+
+        url = resultInfo.getElementsByClass("itemurl").text();
     }
 
     @Override
