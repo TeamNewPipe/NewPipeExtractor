@@ -33,12 +33,6 @@ public class BandcampChannelExtractorTest {
     }
 
     @Test
-    public void testImageUrl() {
-        assertEquals("https://f4.bcbits.com/img/a2405652335_10.jpg", BandcampChannelExtractor.getImageUrl(2405652335L, true));
-        assertEquals("https://f4.bcbits.com/img/17433693_10.jpg", BandcampChannelExtractor.getImageUrl(17433693L, false));
-    }
-
-    @Test
     public void testTranslateIdsToUrl() throws ParsingException {
         assertEquals("https://zachbenson.bandcamp.com/album/covers", BandcampExtractorHelper.getStreamUrlFromIds(2862267535L, 2063639444L, "album"));
         // TODO write more test cases

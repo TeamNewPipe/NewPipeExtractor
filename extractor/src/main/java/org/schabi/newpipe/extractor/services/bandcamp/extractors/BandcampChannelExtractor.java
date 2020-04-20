@@ -57,7 +57,7 @@ public class BandcampChannelExtractor extends ChannelExtractor {
      * @return Url of image with this ID in size 10 which is 1200x1200 (we could also choose size 0
      * but we don't want something as large as 3460x3460 here, do we?)
      */
-    public static String getImageUrl(long id, boolean album) {
+    static String getImageUrl(long id, boolean album) {
         return "https://f4.bcbits.com/img/" + (album ? 'a' : "") + id + "_10.jpg";
     }
 
