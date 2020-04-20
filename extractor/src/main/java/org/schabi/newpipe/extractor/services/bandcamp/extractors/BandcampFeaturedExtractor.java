@@ -72,13 +72,7 @@ public class BandcampFeaturedExtractor extends KioskExtractor<InfoItem> {
                     continue;
                 }
 
-                c.commit(new BandcampPlaylistInfoItemExtractor(
-                        featuredStory.getString("album_title"),
-                        featuredStory.getString("band_name"),
-                        featuredStory.getString("item_url"),
-                        featuredStory.has("art_id") ? getImageUrl(featuredStory.getLong("art_id"), true) : "",
-                        featuredStory.getInt("num_streamable_tracks")
-                ));
+                c.commit(new BandcampPlaylistInfoItemExtractor(featuredStory));
             }
 
             return new InfoItemsPage<InfoItem>(c, null);

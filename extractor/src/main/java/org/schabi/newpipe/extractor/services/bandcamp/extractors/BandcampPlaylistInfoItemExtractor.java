@@ -1,24 +1,44 @@
 package org.schabi.newpipe.extractor.services.bandcamp.extractors;
 
-import org.schabi.newpipe.extractor.StreamingService;
-import org.schabi.newpipe.extractor.exceptions.ExtractionException;
-import org.schabi.newpipe.extractor.exceptions.ParsingException;
-import org.schabi.newpipe.extractor.playlist.PlaylistExtractor;
+import org.jsoup.nodes.Element;
 import org.schabi.newpipe.extractor.playlist.PlaylistInfoItemExtractor;
 
 import java.io.IOException;
+
+import static org.schabi.newpipe.extractor.services.bandcamp.extractors.BandcampChannelExtractor.getImageUrl;
 
 public class BandcampPlaylistInfoItemExtractor implements PlaylistInfoItemExtractor {
 
     private String title, artist, url, cover;
     private int trackCount;
 
-    public BandcampPlaylistInfoItemExtractor(String title, String artist, String url, String cover, int trackCount) {
-        this.title = title;
-        this.artist = artist;
-        this.url = url;
-        this.cover = cover;
-        this.trackCount = trackCount;
+    public BandcampPlaylistInfoItemExtractor(Element searchResult) {
+
+        Element resultInfo = searchResult.getElementsByClass("result-info").first();
+
+        Element img = searchResult.getElementsByClass("art").first()
+                .getElementsByTag("img").first();
+        if (img != null) {
+            cover = img.attr("src");
+        }
+
+        title = resultInfo.getElementsByClass("heading").text();
+        url = resultInfo.getElementsByClass("itemurl").text();
+
+        artist = resultInfo.getElementsByClass("subhead").text()
+                .split(" by")[0];
+
+        String length = resultInfo.getElementsByClass("length").text();
+        trackCount = Integer.parseInt(length.split(" track")[0]);
+
+    }
+
+    public BandcampPlaylistInfoItemExtractor(JsonObject featuredStory) {
+        title = featuredStory.getString("album_title");
+        artist = featuredStory.getString("band_name");
+        url = featuredStory.getString("item_url");
+        cover = featuredStory.has("art_id") ? getImageUrl(featuredStory.getLong("art_id"), true) : "";
+        trackCount = featuredStory.getInt("num_streamable_tracks");
     }
 
     @Override

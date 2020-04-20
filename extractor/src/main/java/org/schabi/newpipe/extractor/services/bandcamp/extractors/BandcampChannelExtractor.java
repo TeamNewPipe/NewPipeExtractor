@@ -22,10 +22,8 @@ public class BandcampChannelExtractor extends ChannelExtractor {
 
     private JsonObject channelInfo;
 
-    public BandcampChannelExtractor(StreamingService service, ListLinkHandler linkHandler) throws ParsingException {
+    public BandcampChannelExtractor(StreamingService service, ListLinkHandler linkHandler) {
         super(service, linkHandler);
-
-        channelInfo = getArtistDetails(getId());
     }
 
     /**
@@ -156,6 +154,7 @@ public class BandcampChannelExtractor extends ChannelExtractor {
 
     @Override
     public void onFetchPage(@Nonnull Downloader downloader) throws IOException, ExtractionException {
+        channelInfo = getArtistDetails(getId());
     }
 
     @Nonnull

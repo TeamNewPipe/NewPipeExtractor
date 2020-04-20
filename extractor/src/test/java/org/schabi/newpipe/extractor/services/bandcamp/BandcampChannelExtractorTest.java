@@ -6,6 +6,7 @@ import org.junit.BeforeClass;
 import org.junit.Test;
 import org.schabi.newpipe.DownloaderTestImpl;
 import org.schabi.newpipe.extractor.NewPipe;
+import org.schabi.newpipe.extractor.channel.ChannelExtractor;
 import org.schabi.newpipe.extractor.exceptions.ExtractionException;
 import org.schabi.newpipe.extractor.exceptions.ParsingException;
 import org.schabi.newpipe.extractor.services.bandcamp.extractors.BandcampChannelExtractor;
@@ -18,12 +19,17 @@ import static org.schabi.newpipe.extractor.ServiceList.Bandcamp;
 public class BandcampChannelExtractorTest {
 
     private static BandcampChannelExtractor extractor;
+    private static ChannelExtractor noAvatarExtractor;
 
     @BeforeClass
     public static void setUp() throws Exception {
         NewPipe.init(DownloaderTestImpl.getInstance());
         extractor = (BandcampChannelExtractor) Bandcamp
                 .getChannelExtractor("https://zachbenson.bandcamp.com/");
+        extractor.fetchPage();
+
+        noAvatarExtractor = Bandcamp.getChannelExtractor("https://powertothequeerkids.bandcamp.com/");
+        noAvatarExtractor.fetchPage();
     }
 
     @Test
@@ -51,11 +57,11 @@ public class BandcampChannelExtractorTest {
 
     @Test
     public void testGetNoAvatar() throws ExtractionException {
-        assertEquals("", Bandcamp.getChannelExtractor("https://powertothequeerkids.bandcamp.com/").getAvatarUrl());
+        assertEquals("", noAvatarExtractor.getAvatarUrl());
     }
 
     @Test
     public void testGetNoBanner() throws ExtractionException {
-        assertEquals("", Bandcamp.getChannelExtractor("https://powertothequeerkids.bandcamp.com/").getBannerUrl());
+        assertEquals("", noAvatarExtractor.getBannerUrl());
     }
 }
