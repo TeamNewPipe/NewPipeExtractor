@@ -8,8 +8,11 @@ import org.schabi.newpipe.DownloaderTestImpl;
 import org.schabi.newpipe.extractor.NewPipe;
 import org.schabi.newpipe.extractor.exceptions.ContentNotAvailableException;
 import org.schabi.newpipe.extractor.exceptions.ExtractionException;
+import org.schabi.newpipe.extractor.exceptions.ParsingException;
 import org.schabi.newpipe.extractor.playlist.PlaylistExtractor;
 import org.schabi.newpipe.extractor.services.bandcamp.extractors.BandcampPlaylistExtractor;
+import org.schabi.newpipe.extractor.services.bandcamp.extractors.BandcampStreamExtractor;
+import org.schabi.newpipe.extractor.services.bandcamp.extractors.BandcampStreamInfoItemExtractor;
 import org.schabi.newpipe.extractor.stream.StreamInfoItem;
 
 import java.io.IOException;
@@ -87,5 +90,62 @@ public class BandcampPlaylistExtractorTest {
 
         assertEquals(1, extractor.getStreamCount());
 
+    }
+
+    public static class ComingOfAge {
+
+        private static PlaylistExtractor extractor;
+
+        @BeforeClass
+        public static void setUp() throws ExtractionException, IOException {
+            NewPipe.init(DownloaderTestImpl.getInstance());
+            extractor = Bandcamp.getPlaylistExtractor("https://macbenson.bandcamp.com/album/coming-of-age");
+            extractor.fetchPage();
+        }
+
+        @Test
+        public void getThumbnailUrl() throws ParsingException {
+            assertTrue(extractor.getThumbnailUrl().contains("f4.bcbits.com/img"));
+        }
+
+        @Test
+        public void getBannerUrl() throws ParsingException {
+            assertEquals("", extractor.getBannerUrl());
+        }
+
+        @Test
+        public void getUploaderUrl() throws ParsingException {
+            assertTrue(extractor.getUploaderUrl().contains("macbenson.bandcamp.com"));
+        }
+
+        @Test
+        public void getUploaderName() throws ParsingException {
+            assertEquals("mac benson", extractor.getUploaderName());
+        }
+
+        @Test
+        public void getUploaderAvatarUrl() throws ParsingException {
+            assertTrue(extractor.getUploaderAvatarUrl().contains("f4.bcbits.com/img"));
+        }
+
+        @Test
+        public void getStreamCount() throws ParsingException {
+            assertEquals(5, extractor.getStreamCount());
+        }
+
+        @Test
+        public void getInitialPage() throws IOException, ExtractionException {
+            assertNotNull(extractor.getInitialPage().getItems().get(0));
+        }
+
+        @Test
+        public void getName() throws ParsingException {
+            assertEquals("Coming of Age", extractor.getName());
+        }
+
+        @Test
+        public void getNextPageUrl() throws IOException, ExtractionException {
+            assertNull(extractor.getNextPageUrl());
+        }
     }
 }
