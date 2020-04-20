@@ -14,7 +14,7 @@ import java.io.IOException;
 import java.util.List;
 
 import static org.junit.Assert.assertTrue;
-import static org.schabi.newpipe.extractor.ServiceList.bandcamp;
+import static org.schabi.newpipe.extractor.ServiceList.Bandcamp;
 
 /**
  * Tests for {@link BandcampRadioExtractor}
@@ -26,14 +26,14 @@ public class BandcampRadioExtractorTest {
     @BeforeClass
     public static void setUp() throws ExtractionException, IOException {
         NewPipe.init(DownloaderTestImpl.getInstance());
-        extractor = (BandcampRadioExtractor) bandcamp
+        extractor = (BandcampRadioExtractor) Bandcamp
                 .getKioskList()
                 .getExtractorById("Radio", null);
     }
 
     @Test
     public void testRadioCount() throws ExtractionException, IOException {
-        List<InfoItem> list = bandcamp.getKioskList().getExtractorById("Radio", null).getInitialPage().getItems();
+        List<InfoItem> list = Bandcamp.getKioskList().getExtractorById("Radio", null).getInitialPage().getItems();
         assertTrue(list.size() > 300);
     }
 }

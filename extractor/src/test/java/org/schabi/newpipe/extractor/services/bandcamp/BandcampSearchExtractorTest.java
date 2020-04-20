@@ -20,7 +20,7 @@ import java.io.IOException;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
-import static org.schabi.newpipe.extractor.ServiceList.bandcamp;
+import static org.schabi.newpipe.extractor.ServiceList.Bandcamp;
 
 /**
  * Test for {@link BandcampSearchExtractor}
@@ -41,7 +41,7 @@ public class BandcampSearchExtractorTest {
      */
     @Test
     public void testStreamSearch() throws ExtractionException, IOException {
-        SearchExtractor extractor = bandcamp.getSearchExtractor("best friend's basement");
+        SearchExtractor extractor = Bandcamp.getSearchExtractor("best friend's basement");
 
         ListExtractor.InfoItemsPage<InfoItem> page = extractor.getInitialPage();
         InfoItem bestFriendsBasement = page.getItems().get(0);
@@ -58,7 +58,7 @@ public class BandcampSearchExtractorTest {
      */
     @Test
     public void testChannelSearch() throws ExtractionException, IOException {
-        SearchExtractor extractor = bandcamp.getSearchExtractor("C418");
+        SearchExtractor extractor = Bandcamp.getSearchExtractor("C418");
         InfoItem c418 = extractor.getInitialPage()
                 .getItems().get(0);
 
@@ -75,7 +75,7 @@ public class BandcampSearchExtractorTest {
      */
     @Test
     public void testAlbumSearch() throws ExtractionException, IOException {
-        SearchExtractor extractor = bandcamp.getSearchExtractor("minecraft volume alpha");
+        SearchExtractor extractor = Bandcamp.getSearchExtractor("minecraft volume alpha");
         InfoItem minecraft = extractor.getInitialPage()
                 .getItems().get(0);
 
@@ -96,7 +96,7 @@ public class BandcampSearchExtractorTest {
     @Test
     public void testMultiplePages() throws ExtractionException, IOException {
         // A query practically guaranteed to have the maximum amount of pages
-        SearchExtractor extractor = bandcamp.getSearchExtractor("e");
+        SearchExtractor extractor = Bandcamp.getSearchExtractor("e");
 
         assertEquals("https://bandcamp.com/search?q=e&page=2", extractor.getInitialPage().getNextPageUrl());
 

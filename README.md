@@ -42,7 +42,7 @@ The following sites are currently supported:
 - SoundCloud
 - MediaCCC
 - PeerTube (no P2P)
-- bandcamp
+- Bandcamp
 
 ## License
 

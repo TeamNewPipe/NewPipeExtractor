@@ -15,7 +15,7 @@ import java.io.IOException;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
-import static org.schabi.newpipe.extractor.ServiceList.bandcamp;
+import static org.schabi.newpipe.extractor.ServiceList.Bandcamp;
 
 public class BandcampStreamExtractorTest {
 
@@ -24,14 +24,14 @@ public class BandcampStreamExtractorTest {
     @BeforeClass
     public static void setUp() throws Exception {
         NewPipe.init(DownloaderTestImpl.getInstance());
-        extractor = (BandcampStreamExtractor) bandcamp
+        extractor = (BandcampStreamExtractor) Bandcamp
                 .getStreamExtractor("https://zachbenson.bandcamp.com/track/kitchen");
         extractor.fetchPage();
     }
 
     @Test(expected = ExtractionException.class)
     public void testAlbum() throws ExtractionException {
-        bandcamp.getStreamExtractor("https://zachbenson.bandcamp.com/album/prom");
+        Bandcamp.getStreamExtractor("https://zachbenson.bandcamp.com/album/prom");
     }
 
     @Test
@@ -66,7 +66,7 @@ public class BandcampStreamExtractorTest {
 
     @Test
     public void testNoArtistProfilePicture() throws ExtractionException {
-        assertEquals("", bandcamp.getStreamExtractor("https://powertothequeerkids.bandcamp.com/track/human-nature").getUploaderAvatarUrl());
+        assertEquals("", Bandcamp.getStreamExtractor("https://powertothequeerkids.bandcamp.com/track/human-nature").getUploaderAvatarUrl());
     }
 
     @Test
@@ -77,19 +77,19 @@ public class BandcampStreamExtractorTest {
 
     @Test(expected = ParsingException.class)
     public void testInvalidUrl() throws ExtractionException {
-        bandcamp.getStreamExtractor("https://bandcamp.com");
+        Bandcamp.getStreamExtractor("https://bandcamp.com");
     }
 
     @Test
     public void testCategory() throws ExtractionException, IOException {
-        StreamExtractor se = bandcamp.getStreamExtractor("https://npet.bandcamp.com/track/track-1");
+        StreamExtractor se = Bandcamp.getStreamExtractor("https://npet.bandcamp.com/track/track-1");
         se.fetchPage();
         assertEquals("acoustic", se.getCategory());
     }
 
     @Test
     public void testLicense() throws ExtractionException, IOException {
-        StreamExtractor se = bandcamp.getStreamExtractor("https://npet.bandcamp.com/track/track-1");
+        StreamExtractor se = Bandcamp.getStreamExtractor("https://npet.bandcamp.com/track/track-1");
         se.fetchPage();
         assertEquals("CC BY 3.0", se.getLicence());
     }

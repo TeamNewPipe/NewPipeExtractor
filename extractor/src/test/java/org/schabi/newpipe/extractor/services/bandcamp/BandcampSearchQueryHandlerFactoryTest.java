@@ -10,7 +10,7 @@ import org.schabi.newpipe.extractor.exceptions.ParsingException;
 import org.schabi.newpipe.extractor.services.bandcamp.linkHandler.BandcampSearchQueryHandlerFactory;
 
 import static org.junit.Assert.assertEquals;
-import static org.schabi.newpipe.extractor.ServiceList.bandcamp;
+import static org.schabi.newpipe.extractor.ServiceList.Bandcamp;
 
 public class BandcampSearchQueryHandlerFactoryTest {
 
@@ -20,7 +20,7 @@ public class BandcampSearchQueryHandlerFactoryTest {
     public static void setUp() {
         NewPipe.init(DownloaderTestImpl.getInstance());
 
-        searchQuery = (BandcampSearchQueryHandlerFactory) bandcamp
+        searchQuery = (BandcampSearchQueryHandlerFactory) Bandcamp
                 .getSearchQHFactory();
     }
 

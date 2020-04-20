@@ -40,7 +40,7 @@ public final class ServiceList {
     public static final SoundcloudService SoundCloud;
     public static final MediaCCCService MediaCCC;
     public static final PeertubeService PeerTube;
-    public static final BandcampService bandcamp;
+    public static final BandcampService Bandcamp;
 
     /**
      * When creating a new service, put this service in the end of this list,
@@ -52,7 +52,7 @@ public final class ServiceList {
                     SoundCloud = new SoundcloudService(1),
                     MediaCCC = new MediaCCCService(2),
                     PeerTube = new PeertubeService(3),
-                    bandcamp = new BandcampService(4)
+                    Bandcamp = new BandcampService(4)
             ));
 
     /**

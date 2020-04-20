@@ -14,7 +14,7 @@ import java.io.IOException;
 import java.util.List;
 
 import static org.junit.Assert.assertTrue;
-import static org.schabi.newpipe.extractor.ServiceList.bandcamp;
+import static org.schabi.newpipe.extractor.ServiceList.Bandcamp;
 
 /**
  * Tests for {@link BandcampFeaturedExtractor}
@@ -26,7 +26,7 @@ public class BandcampFeaturedExtractorTest {
     @BeforeClass
     public static void setUp() throws ExtractionException, IOException {
         NewPipe.init(DownloaderTestImpl.getInstance());
-        extractor = (BandcampFeaturedExtractor) bandcamp
+        extractor = (BandcampFeaturedExtractor) Bandcamp
                 .getKioskList().getDefaultKioskExtractor();
     }
 

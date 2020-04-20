@@ -13,7 +13,7 @@ import org.schabi.newpipe.extractor.services.bandcamp.extractors.BandcampExtract
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
-import static org.schabi.newpipe.extractor.ServiceList.bandcamp;
+import static org.schabi.newpipe.extractor.ServiceList.Bandcamp;
 
 public class BandcampChannelExtractorTest {
 
@@ -22,7 +22,7 @@ public class BandcampChannelExtractorTest {
     @BeforeClass
     public static void setUp() throws Exception {
         NewPipe.init(DownloaderTestImpl.getInstance());
-        extractor = (BandcampChannelExtractor) bandcamp
+        extractor = (BandcampChannelExtractor) Bandcamp
                 .getChannelExtractor("https://zachbenson.bandcamp.com/");
     }
 
@@ -51,11 +51,11 @@ public class BandcampChannelExtractorTest {
 
     @Test
     public void testGetNoAvatar() throws ExtractionException {
-        assertEquals("", bandcamp.getChannelExtractor("https://powertothequeerkids.bandcamp.com/").getAvatarUrl());
+        assertEquals("", Bandcamp.getChannelExtractor("https://powertothequeerkids.bandcamp.com/").getAvatarUrl());
     }
 
     @Test
     public void testGetNoBanner() throws ExtractionException {
-        assertEquals("", bandcamp.getChannelExtractor("https://powertothequeerkids.bandcamp.com/").getBannerUrl());
+        assertEquals("", Bandcamp.getChannelExtractor("https://powertothequeerkids.bandcamp.com/").getBannerUrl());
     }
 }

@@ -13,7 +13,7 @@ import java.io.IOException;
 import java.util.List;
 
 import static org.junit.Assert.assertTrue;
-import static org.schabi.newpipe.extractor.ServiceList.bandcamp;
+import static org.schabi.newpipe.extractor.ServiceList.Bandcamp;
 
 /**
  * Tests for {@link BandcampSuggestionExtractor}
@@ -25,7 +25,7 @@ public class BandcampSuggestionExtractorTest {
     @BeforeClass
     public static void setUp() {
         NewPipe.init(DownloaderTestImpl.getInstance());
-        extractor = (BandcampSuggestionExtractor) bandcamp.getSuggestionExtractor();
+        extractor = (BandcampSuggestionExtractor) Bandcamp.getSuggestionExtractor();
     }
 
     @Test
