@@ -137,7 +137,7 @@ public class BandcampStreamExtractor extends StreamExtractor {
 
     @Override
     public int getAgeLimit() throws ParsingException {
-        return 0;
+        return NO_AGE_LIMIT;
     }
 
     @Override
