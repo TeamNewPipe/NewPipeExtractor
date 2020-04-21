@@ -29,29 +29,29 @@ public class SoundcloudCommentsInfoItemExtractor implements CommentsInfoItemExtr
     }
 
     @Override
-    public String getAuthorName() throws ParsingException {
+    public String getUploaderName() throws ParsingException {
         return json.getObject("user").getString("username");
     }
 
     @Override
-    public String getAuthorThumbnail() throws ParsingException {
+    public String getUploaderAvatarUrl() throws ParsingException {
         return json.getObject("user").getString("avatar_url");
     }
 
     @Override
-    public String getAuthorEndpoint() throws ParsingException {
+    public String getUploaderUrl() throws ParsingException {
         return json.getObject("user").getString("permalink_url");
     }
 
     @Override
-    public String getTextualPublishedTime() throws ParsingException {
+    public String getTextualUploadDate() throws ParsingException {
         return json.getString("created_at");
     }
 
     @Nullable
     @Override
-    public DateWrapper getPublishedTime() throws ParsingException {
-        return new DateWrapper(SoundcloudParsingHelper.parseDateFrom(getTextualPublishedTime()));
+    public DateWrapper getUploadDate() throws ParsingException {
+        return new DateWrapper(SoundcloudParsingHelper.parseDateFrom(getTextualUploadDate()));
     }
 
     @Override

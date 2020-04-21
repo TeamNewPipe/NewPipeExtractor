@@ -34,11 +34,6 @@ public class PeertubeCommentsExtractor extends CommentsExtractor {
     }
 
     @Override
-    public String getName() throws ParsingException {
-        return "Comments";
-    }
-
-    @Override
     public InfoItemsPage<CommentsInfoItem> getInitialPage() throws IOException, ExtractionException {
         super.fetchPage();
         return initPage;

@@ -45,13 +45,13 @@ public class PeertubeCommentsInfoItemExtractor implements CommentsInfoItemExtrac
     }
 
     @Override
-    public String getTextualPublishedTime() throws ParsingException {
+    public String getTextualUploadDate() throws ParsingException {
         return JsonUtils.getString(item, "createdAt");
     }
 
     @Override
-    public DateWrapper getPublishedTime() throws ParsingException {
-        String textualUploadDate = getTextualPublishedTime();
+    public DateWrapper getUploadDate() throws ParsingException {
+        String textualUploadDate = getTextualUploadDate();
         return new DateWrapper(PeertubeParsingHelper.parseDateFrom(textualUploadDate));
     }
 
@@ -78,7 +78,7 @@ public class PeertubeCommentsInfoItemExtractor implements CommentsInfoItemExtrac
     }
 
     @Override
-    public String getAuthorThumbnail() throws ParsingException {
+    public String getUploaderAvatarUrl() throws ParsingException {
         String value;
         try {
             value = JsonUtils.getString(item, "account.avatar.path");
@@ -89,12 +89,12 @@ public class PeertubeCommentsInfoItemExtractor implements CommentsInfoItemExtrac
     }
 
     @Override
-    public String getAuthorName() throws ParsingException {
+    public String getUploaderName() throws ParsingException {
         return JsonUtils.getString(item, "account.name") + "@" + JsonUtils.getString(item, "account.host");
     }
 
     @Override
-    public String getAuthorEndpoint() throws ParsingException {
+    public String getUploaderUrl() throws ParsingException {
         String name = JsonUtils.getString(item, "account.name");
         String host = JsonUtils.getString(item, "account.host");
         return ServiceList.PeerTube.getChannelLHFactory().fromId(name + "@" + host, baseUrl).getUrl();

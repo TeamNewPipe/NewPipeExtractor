@@ -10,13 +10,8 @@ import javax.annotation.Nullable;
 public interface CommentsInfoItemExtractor extends InfoItemExtractor {
 
     /**
-     * AuthorEndpoint, in other words, link to authors' channel page
-     */
-    String getAuthorEndpoint() throws ParsingException;
-
-    /**
      * Return the like count of the comment, or -1 if it's unavailable
-     * see {@link StreamExtractor#getLikeCount()}
+     * @see StreamExtractor#getLikeCount()
      */
     int getLikeCount() throws ParsingException;
 
@@ -27,20 +22,22 @@ public interface CommentsInfoItemExtractor extends InfoItemExtractor {
 
     /**
      * The upload date given by the service, unmodified
-     * see {@link StreamExtractor#getTextualUploadDate()}
+     * @see StreamExtractor#getTextualUploadDate()
      */
-    String getTextualPublishedTime() throws ParsingException;
+    String getTextualUploadDate() throws ParsingException;
 
     /**
      * The upload date wrapped with DateWrapper class
-     * see {@link StreamExtractor#getUploadDate()}
+     * @see StreamExtractor#getUploadDate()
      */
     @Nullable
-    DateWrapper getPublishedTime() throws ParsingException;
+    DateWrapper getUploadDate() throws ParsingException;
 
     String getCommentId() throws ParsingException;
 
-    String getAuthorName() throws ParsingException;
+    String getUploaderUrl() throws ParsingException;
 
-    String getAuthorThumbnail() throws ParsingException;
+    String getUploaderName() throws ParsingException;
+
+    String getUploaderAvatarUrl() throws ParsingException;
 }

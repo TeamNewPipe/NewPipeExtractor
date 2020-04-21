@@ -67,14 +67,8 @@ public class SoundcloudCommentsExtractor extends CommentsExtractor {
         }
     }
 
-    @Nonnull
-    @Override
-    public String getName() throws ParsingException {
-        return "SoundCloud comments of track " + getId();
-    }
-
     private void collectStreamsFrom(final CommentsInfoItemsCollector collector, final JsonArray entries) throws ParsingException {
-        String url = getUrl();
+        final String url = getUrl();
         for (Object comment : entries) {
             collector.commit(new SoundcloudCommentsInfoItemExtractor((JsonObject) comment, url));
         }
