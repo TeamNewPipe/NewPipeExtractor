@@ -167,7 +167,7 @@ public class PeertubeStreamExtractor extends StreamExtractor {
         assertPageFetched();
         List<VideoStream> videoStreams = new ArrayList<>();
         try {
-            JsonArray streams = json.getArray("files", new JsonArray());
+            JsonArray streams = json.getArray("files");
             for (Object s : streams) {
                 if (!(s instanceof JsonObject)) continue;
                 JsonObject stream = (JsonObject) s;

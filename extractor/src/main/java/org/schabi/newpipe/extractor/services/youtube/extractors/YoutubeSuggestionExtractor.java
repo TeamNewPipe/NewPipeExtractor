@@ -59,7 +59,7 @@ public class YoutubeSuggestionExtractor extends SuggestionExtractor {
         // trim JSONP part "JP(...)"
         response = response.substring(3, response.length() - 1);
         try {
-            JsonArray collection = JsonParser.array().from(response).getArray(1, new JsonArray());
+            JsonArray collection = JsonParser.array().from(response).getArray(1);
             for (Object suggestion : collection) {
                 if (!(suggestion instanceof JsonArray)) continue;
                 String suggestionStr = ((JsonArray) suggestion).getString(0);
