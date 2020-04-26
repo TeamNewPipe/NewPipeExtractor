@@ -8,7 +8,6 @@ import org.schabi.newpipe.extractor.NewPipe;
 import org.schabi.newpipe.extractor.exceptions.ParsingException;
 import org.schabi.newpipe.extractor.exceptions.ReCaptchaException;
 import org.schabi.newpipe.extractor.linkhandler.ListLinkHandlerFactory;
-import org.schabi.newpipe.extractor.services.bandcamp.extractors.BandcampChannelExtractor;
 import org.schabi.newpipe.extractor.services.bandcamp.extractors.BandcampExtractorHelper;
 
 import java.io.IOException;
@@ -41,7 +40,7 @@ public class BandcampChannelLinkHandlerFactory extends ListLinkHandlerFactory {
     @Override
     public String getUrl(String id, List<String> contentFilter, String sortFilter) throws ParsingException {
         try {
-            return BandcampChannelExtractor.getArtistDetails(id)
+            return BandcampExtractorHelper.getArtistDetails(id)
                     .getString("bandcamp_url")
                     .replace("http://", "https://");
         } catch (NullPointerException e) {

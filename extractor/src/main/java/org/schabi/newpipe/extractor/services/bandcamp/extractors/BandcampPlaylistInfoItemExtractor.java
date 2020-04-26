@@ -4,7 +4,7 @@ import com.grack.nanojson.JsonObject;
 import org.jsoup.nodes.Element;
 import org.schabi.newpipe.extractor.playlist.PlaylistInfoItemExtractor;
 
-import static org.schabi.newpipe.extractor.services.bandcamp.extractors.BandcampChannelExtractor.getImageUrl;
+import static org.schabi.newpipe.extractor.services.bandcamp.extractors.BandcampExtractorHelper.getImageUrl;
 
 public class BandcampPlaylistInfoItemExtractor implements PlaylistInfoItemExtractor {
 

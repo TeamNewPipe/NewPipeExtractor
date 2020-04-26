@@ -10,7 +10,7 @@ import org.schabi.newpipe.extractor.stream.StreamType;
 
 import javax.annotation.Nullable;
 
-import static org.schabi.newpipe.extractor.services.bandcamp.extractors.BandcampChannelExtractor.getImageUrl;
+import static org.schabi.newpipe.extractor.services.bandcamp.extractors.BandcampExtractorHelper.getImageUrl;
 
 public class BandcampRadioInfoItemExtractor implements StreamInfoItemExtractor {
 

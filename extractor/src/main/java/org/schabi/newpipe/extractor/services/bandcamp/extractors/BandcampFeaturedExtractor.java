@@ -19,8 +19,6 @@ import org.schabi.newpipe.extractor.playlist.PlaylistInfoItemsCollector;
 import javax.annotation.Nonnull;
 import java.io.IOException;
 
-import static org.schabi.newpipe.extractor.services.bandcamp.extractors.BandcampChannelExtractor.getImageUrl;
-
 public class BandcampFeaturedExtractor extends KioskExtractor<InfoItem> {
 
     public static final String KIOSK_FEATURED = "Featured";

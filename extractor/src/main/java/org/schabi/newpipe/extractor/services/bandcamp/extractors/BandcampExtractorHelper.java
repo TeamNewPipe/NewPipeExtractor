@@ -5,6 +5,7 @@ package org.schabi.newpipe.extractor.services.bandcamp.extractors;
 import com.grack.nanojson.JsonObject;
 import com.grack.nanojson.JsonParser;
 import com.grack.nanojson.JsonParserException;
+import com.grack.nanojson.JsonWriter;
 import org.schabi.newpipe.extractor.NewPipe;
 import org.schabi.newpipe.extractor.exceptions.ParsingException;
 import org.schabi.newpipe.extractor.exceptions.ReCaptchaException;
@@ -104,5 +105,40 @@ public class BandcampExtractorHelper {
         }
 
         return String.valueOf(result);
+    }
+
+    /**
+     * Fetch artist details from mobile endpoint.
+     * <a href=https://notabug.org/fynngodau/bandcampDirect/wiki/rewindBandcamp+%E2%80%93+Fetching+artist+details>
+     * I once took a moment to note down how it works.</a>
+     */
+    public static JsonObject getArtistDetails(String id) throws ParsingException {
+        try {
+            return
+                    JsonParser.object().from(
+                            NewPipe.getDownloader().post(
+                                    "https://bandcamp.com/api/mobile/22/band_details",
+                                    null,
+                                    JsonWriter.string()
+                                            .object()
+                                            .value("band_id", id)
+                                            .end()
+                                            .done()
+                                            .getBytes()
+                            ).responseBody()
+                    );
+        } catch (IOException | ReCaptchaException | JsonParserException e) {
+            throw new ParsingException("Could not download band details", e);
+        }
+    }
+
+    /**
+     * @param id    The image ID
+     * @param album Whether this is the cover of an album
+     * @return Url of image with this ID in size 10 which is 1200x1200 (we could also choose size 0
+     * but we don't want something as large as 3460x3460 here, do we?)
+     */
+    static String getImageUrl(long id, boolean album) {
+        return "https://f4.bcbits.com/img/" + (album ? 'a' : "") + id + "_10.jpg";
     }
 }
