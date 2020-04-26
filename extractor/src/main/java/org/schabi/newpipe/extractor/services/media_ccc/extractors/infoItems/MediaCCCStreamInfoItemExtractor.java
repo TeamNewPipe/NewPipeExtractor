@@ -10,47 +10,46 @@ import org.schabi.newpipe.extractor.stream.StreamType;
 import javax.annotation.Nullable;
 
 public class MediaCCCStreamInfoItemExtractor implements StreamInfoItemExtractor {
+    private JsonObject event;
 
-    JsonObject event;
-
-    public MediaCCCStreamInfoItemExtractor(JsonObject event) {
+    public MediaCCCStreamInfoItemExtractor(final JsonObject event) {
         this.event = event;
     }
 
     @Override
-    public StreamType getStreamType() throws ParsingException {
+    public StreamType getStreamType() {
         return StreamType.VIDEO_STREAM;
     }
 
     @Override
-    public boolean isAd() throws ParsingException {
+    public boolean isAd() {
         return false;
     }
 
     @Override
-    public long getDuration() throws ParsingException {
+    public long getDuration() {
         return event.getInt("length");
     }
 
     @Override
-    public long getViewCount() throws ParsingException {
+    public long getViewCount() {
         return event.getInt("view_count");
     }
 
     @Override
-    public String getUploaderName() throws ParsingException {
+    public String getUploaderName() {
         return event.getString("conference_url")
-                .replace("https://api.media.ccc.de/public/conferences/", "");
+                .replaceFirst("https://(api\\.)?media\\.ccc\\.de/public/conferences/", "");
     }
 
     @Override
-    public String getUploaderUrl() throws ParsingException {
+    public String getUploaderUrl() {
         return event.getString("conference_url");
     }
 
     @Nullable
     @Override
-    public String getTextualUploadDate() throws ParsingException {
+    public String getTextualUploadDate() {
         return event.getString("release_date");
     }
 
@@ -67,12 +66,12 @@ public class MediaCCCStreamInfoItemExtractor implements StreamInfoItemExtractor 
 
     @Override
     public String getUrl() throws ParsingException {
-        return "https://api.media.ccc.de/public/events/" +
-                event.getString("guid");
+        return "https://media.ccc.de/public/events/"
+                + event.getString("guid");
     }
 
     @Override
-    public String getThumbnailUrl() throws ParsingException {
+    public String getThumbnailUrl() {
         return event.getString("thumb_url");
     }
 }

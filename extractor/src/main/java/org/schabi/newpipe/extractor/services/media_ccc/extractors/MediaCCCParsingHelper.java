@@ -7,11 +7,10 @@ import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
 
-public class MediaCCCParsingHelper {
-    private MediaCCCParsingHelper() {
-    }
+public final class MediaCCCParsingHelper {
+    private MediaCCCParsingHelper() { }
 
-    public static Calendar parseDateFrom(String textualUploadDate) throws ParsingException {
+    public static Calendar parseDateFrom(final String textualUploadDate) throws ParsingException {
         Date date;
         try {
             date = new SimpleDateFormat("yyyy-MM-dd").parse(textualUploadDate);

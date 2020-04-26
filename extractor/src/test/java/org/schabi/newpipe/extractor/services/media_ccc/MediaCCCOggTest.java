@@ -15,14 +15,14 @@ import static org.schabi.newpipe.extractor.ServiceList.MediaCCC;
  * Test {@link MediaCCCStreamExtractor}
  */
 public class MediaCCCOggTest {
-    // test against https://api.media.ccc.de/public/events/1317
+    // test against https://media.ccc.de/public/events/1317
     private static StreamExtractor extractor;
 
     @BeforeClass
     public static void setUpClass() throws Exception {
         NewPipe.init(DownloaderTestImpl.getInstance());
 
-        extractor = MediaCCC.getStreamExtractor("https://api.media.ccc.de/public/events/1317");
+        extractor = MediaCCC.getStreamExtractor("https://media.ccc.de/public/events/1317");
         extractor.fetchPage();
     }
 

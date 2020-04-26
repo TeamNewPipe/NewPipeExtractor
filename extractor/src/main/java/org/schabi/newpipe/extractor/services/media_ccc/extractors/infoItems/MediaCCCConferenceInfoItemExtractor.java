@@ -5,25 +5,24 @@ import org.schabi.newpipe.extractor.channel.ChannelInfoItemExtractor;
 import org.schabi.newpipe.extractor.exceptions.ParsingException;
 
 public class MediaCCCConferenceInfoItemExtractor implements ChannelInfoItemExtractor {
+    private JsonObject conference;
 
-    JsonObject conference;
-
-    public MediaCCCConferenceInfoItemExtractor(JsonObject conference) {
+    public MediaCCCConferenceInfoItemExtractor(final JsonObject conference) {
         this.conference = conference;
     }
 
     @Override
-    public String getDescription() throws ParsingException {
+    public String getDescription() {
         return "";
     }
 
     @Override
-    public long getSubscriberCount() throws ParsingException {
+    public long getSubscriberCount() {
         return -1;
     }
 
     @Override
-    public long getStreamCount() throws ParsingException {
+    public long getStreamCount() {
         return -1;
     }
 
@@ -38,7 +37,7 @@ public class MediaCCCConferenceInfoItemExtractor implements ChannelInfoItemExtra
     }
 
     @Override
-    public String getThumbnailUrl() throws ParsingException {
+    public String getThumbnailUrl() {
         return conference.getString("logo_url");
     }
 }

@@ -14,7 +14,6 @@ import static org.schabi.newpipe.extractor.ServiceList.MediaCCC;
  * Test {@link MediaCCCConferenceExtractor}
  */
 public class MediaCCCConferenceExtractorTest {
-
     public static class FrOSCon2017 {
         private static MediaCCCConferenceExtractor extractor;
 
@@ -32,7 +31,7 @@ public class MediaCCCConferenceExtractorTest {
 
         @Test
         public void testGetUrl() throws Exception {
-            assertEquals("https://api.media.ccc.de/public/conferences/froscon2017", extractor.getUrl());
+            assertEquals("https://media.ccc.de/public/conferences/froscon2017", extractor.getUrl());
         }
 
         @Test
@@ -68,7 +67,7 @@ public class MediaCCCConferenceExtractorTest {
 
         @Test
         public void testGetUrl() throws Exception {
-            assertEquals("https://api.media.ccc.de/public/conferences/oscal19", extractor.getUrl());
+            assertEquals("https://media.ccc.de/public/conferences/oscal19", extractor.getUrl());
         }
 
         @Test
