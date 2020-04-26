@@ -38,9 +38,8 @@ public class BandcampSuggestionExtractor extends SuggestionExtractor {
 
             ArrayList<String> suggestions = new ArrayList<>();
 
-            for (int i = 0; i < jsonArray.size(); i++) {
-                JsonObject fuzzyResult = jsonArray.getObject(i);
-                String res = fuzzyResult.getString("name");
+            for (Object fuzzyResult : jsonArray) {
+                String res = ((JsonObject) fuzzyResult).getString("name");
 
                 if (!suggestions.contains(res)) suggestions.add(res);
             }
