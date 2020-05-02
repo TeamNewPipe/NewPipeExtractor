@@ -2,6 +2,7 @@ package org.schabi.newpipe.extractor.services.youtube.extractors;
 
 import com.grack.nanojson.JsonArray;
 import com.grack.nanojson.JsonObject;
+
 import org.schabi.newpipe.extractor.exceptions.ParsingException;
 import org.schabi.newpipe.extractor.localization.DateWrapper;
 import org.schabi.newpipe.extractor.localization.TimeAgoParser;
@@ -11,12 +12,15 @@ import org.schabi.newpipe.extractor.stream.StreamInfoItemExtractor;
 import org.schabi.newpipe.extractor.stream.StreamType;
 import org.schabi.newpipe.extractor.utils.Utils;
 
-import javax.annotation.Nullable;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
 
-import static org.schabi.newpipe.extractor.services.youtube.linkHandler.YoutubeParsingHelper.*;
+import javax.annotation.Nullable;
+
+import static org.schabi.newpipe.extractor.services.youtube.linkHandler.YoutubeParsingHelper.fixThumbnailUrl;
+import static org.schabi.newpipe.extractor.services.youtube.linkHandler.YoutubeParsingHelper.getTextFromObject;
+import static org.schabi.newpipe.extractor.services.youtube.linkHandler.YoutubeParsingHelper.getUrlFromNavigationEndpoint;
 import static org.schabi.newpipe.extractor.utils.JsonUtils.EMPTY_STRING;
 
 /*
@@ -93,7 +97,7 @@ public class YoutubeStreamInfoItemExtractor implements StreamInfoItemExtractor {
     @Override
     public String getName() throws ParsingException {
         String name = getTextFromObject(videoInfo.getObject("title"));
-        if (!name.isEmpty()) return name;
+        if (name != null && !name.isEmpty()) return name;
         throw new ParsingException("Could not get name");
     }
 
@@ -105,7 +109,7 @@ public class YoutubeStreamInfoItemExtractor implements StreamInfoItemExtractor {
 
         String duration = getTextFromObject(videoInfo.getObject("lengthText"));
 
-        if (duration.isEmpty()) {
+        if (duration == null || duration.isEmpty()) {
             for (Object thumbnailOverlay : videoInfo.getArray("thumbnailOverlays")) {
                 if (((JsonObject) thumbnailOverlay).has("thumbnailOverlayTimeStatusRenderer")) {
                     duration = getTextFromObject(((JsonObject) thumbnailOverlay)
@@ -113,7 +117,7 @@ public class YoutubeStreamInfoItemExtractor implements StreamInfoItemExtractor {
                 }
             }
 
-            if (duration.isEmpty()) throw new ParsingException("Could not get duration");
+            if (duration == null || duration.isEmpty()) throw new ParsingException("Could not get duration");
         }
 
         return YoutubeParsingHelper.parseDurationString(duration);
@@ -123,13 +127,13 @@ public class YoutubeStreamInfoItemExtractor implements StreamInfoItemExtractor {
     public String getUploaderName() throws ParsingException {
         String name = getTextFromObject(videoInfo.getObject("longBylineText"));
 
-        if (name.isEmpty()) {
+        if (name == null || name.isEmpty()) {
             name = getTextFromObject(videoInfo.getObject("ownerText"));
 
-            if (name.isEmpty()) {
+            if (name == null || name.isEmpty()) {
                 name = getTextFromObject(videoInfo.getObject("shortBylineText"));
 
-                if (name.isEmpty()) throw new ParsingException("Could not get uploader name");
+                if (name == null || name.isEmpty()) throw new ParsingException("Could not get uploader name");
             }
         }
 
@@ -169,7 +173,7 @@ public class YoutubeStreamInfoItemExtractor implements StreamInfoItemExtractor {
         }
 
         final String publishedTimeText = getTextFromObject(videoInfo.getObject("publishedTimeText"));
-        if (!publishedTimeText.isEmpty()) return publishedTimeText;
+        if (publishedTimeText != null && !publishedTimeText.isEmpty()) return publishedTimeText;
 
         return null;
     }

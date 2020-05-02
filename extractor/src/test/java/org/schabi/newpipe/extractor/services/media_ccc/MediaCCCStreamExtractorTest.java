@@ -76,7 +76,7 @@ public class MediaCCCStreamExtractorTest {
         @Test
         public void testUploaderUrl() throws Exception {
             assertIsSecureUrl(extractor.getUploaderUrl());
-            assertEquals("https://api.media.ccc.de/public/conferences/gpn18", extractor.getUploaderUrl());
+            assertEquals("https://media.ccc.de/public/conferences/gpn18", extractor.getUploaderUrl());
         }
 
         @Test

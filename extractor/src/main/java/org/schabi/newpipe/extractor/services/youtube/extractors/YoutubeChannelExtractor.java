@@ -2,6 +2,7 @@ package org.schabi.newpipe.extractor.services.youtube.extractors;
 
 import com.grack.nanojson.JsonArray;
 import com.grack.nanojson.JsonObject;
+
 import org.schabi.newpipe.extractor.StreamingService;
 import org.schabi.newpipe.extractor.channel.ChannelExtractor;
 import org.schabi.newpipe.extractor.downloader.Downloader;
@@ -16,11 +17,14 @@ import org.schabi.newpipe.extractor.stream.StreamInfoItem;
 import org.schabi.newpipe.extractor.stream.StreamInfoItemsCollector;
 import org.schabi.newpipe.extractor.utils.Utils;
 
-import javax.annotation.Nonnull;
 import java.io.IOException;
 
-import static org.schabi.newpipe.extractor.services.youtube.linkHandler.YoutubeParsingHelper.*;
-import static org.schabi.newpipe.extractor.utils.JsonUtils.*;
+import javax.annotation.Nonnull;
+
+import static org.schabi.newpipe.extractor.services.youtube.linkHandler.YoutubeParsingHelper.fixThumbnailUrl;
+import static org.schabi.newpipe.extractor.services.youtube.linkHandler.YoutubeParsingHelper.getJsonResponse;
+import static org.schabi.newpipe.extractor.services.youtube.linkHandler.YoutubeParsingHelper.getTextFromObject;
+import static org.schabi.newpipe.extractor.utils.JsonUtils.EMPTY_STRING;
 
 /*
  * Created by Christian Schabesberger on 25.07.16.
@@ -306,10 +310,12 @@ public class YoutubeChannelExtractor extends ChannelExtractor {
             throw new ContentNotSupportedException("This channel has no Videos tab");
         }
 
-        if (getTextFromObject(videoTab.getObject("content").getObject("sectionListRenderer")
-                .getArray("contents").getObject(0).getObject("itemSectionRenderer")
-                .getArray("contents").getObject(0).getObject("messageRenderer")
-                .getObject("text")).equals("This channel has no videos.")) {
+        final String messageRendererText = getTextFromObject(videoTab.getObject("content")
+                .getObject("sectionListRenderer").getArray("contents").getObject(0)
+                .getObject("itemSectionRenderer").getArray("contents").getObject(0)
+                .getObject("messageRenderer").getObject("text"));
+        if (messageRendererText != null
+                && messageRendererText.equals("This channel has no videos.")) {
             return null;
         }
 
