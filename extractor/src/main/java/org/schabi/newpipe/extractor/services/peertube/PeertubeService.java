@@ -77,7 +77,12 @@ public class PeertubeService extends StreamingService {
     @Override
     public ChannelExtractor getChannelExtractor(ListLinkHandler linkHandler)
             throws ExtractionException {
-        return new PeertubeChannelExtractor(this, linkHandler);
+
+        if (linkHandler.getUrl().contains("/video-channels/")) {
+            return new PeertubeChannelExtractor(this, linkHandler);
+        } else {
+            return new PeertubeAccountExtractor(this, linkHandler);
+        }
     }
 
     @Override

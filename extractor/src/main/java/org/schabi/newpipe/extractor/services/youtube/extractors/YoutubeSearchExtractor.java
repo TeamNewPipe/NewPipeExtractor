@@ -43,12 +43,12 @@ import static org.schabi.newpipe.extractor.services.youtube.linkHandler.YoutubeP
 public class YoutubeSearchExtractor extends SearchExtractor {
     private JsonObject initialData;
 
-    public YoutubeSearchExtractor(StreamingService service, SearchQueryHandler linkHandler) {
+    public YoutubeSearchExtractor(final StreamingService service, final SearchQueryHandler linkHandler) {
         super(service, linkHandler);
     }
 
     @Override
-    public void onFetchPage(@Nonnull Downloader downloader) throws IOException, ExtractionException {
+    public void onFetchPage(@Nonnull final Downloader downloader) throws IOException, ExtractionException {
         final String url = getUrl() + "&pbj=1";
 
         final JsonArray ajaxJson = getJsonResponse(url, getExtractorLocalization());
@@ -64,23 +64,23 @@ public class YoutubeSearchExtractor extends SearchExtractor {
 
     @Override
     public String getSearchSuggestion() throws ParsingException {
-        JsonObject showingResultsForRenderer = initialData.getObject("contents")
+        final JsonObject showingResultsForRenderer = initialData.getObject("contents")
                 .getObject("twoColumnSearchResultsRenderer").getObject("primaryContents")
                 .getObject("sectionListRenderer").getArray("contents").getObject(0)
                 .getObject("itemSectionRenderer").getArray("contents").getObject(0)
                 .getObject("showingResultsForRenderer");
-        if (showingResultsForRenderer == null) {
+        if (!showingResultsForRenderer.has("correctedQuery")) {
             return "";
-        } else {
-            return getTextFromObject(showingResultsForRenderer.getObject("correctedQuery"));
         }
+        return getTextFromObject(showingResultsForRenderer.getObject("correctedQuery"));
     }
 
     @Nonnull
     @Override
     public InfoItemsPage<InfoItem> getInitialPage() throws ExtractionException {
         final InfoItemsSearchCollector collector = new InfoItemsSearchCollector(getServiceId());
-        JsonArray sections = initialData.getObject("contents").getObject("twoColumnSearchResultsRenderer")
+
+        final JsonArray sections = initialData.getObject("contents").getObject("twoColumnSearchResultsRenderer")
                 .getObject("primaryContents").getObject("sectionListRenderer").getArray("contents");
 
         for (Object section : sections) {
@@ -98,7 +98,7 @@ public class YoutubeSearchExtractor extends SearchExtractor {
     }
 
     @Override
-    public InfoItemsPage<InfoItem> getPage(String pageUrl) throws IOException, ExtractionException {
+    public InfoItemsPage<InfoItem> getPage(final String pageUrl) throws IOException, ExtractionException {
         if (pageUrl == null || pageUrl.isEmpty()) {
             throw new ExtractionException(new IllegalArgumentException("Page url is empty or null"));
         }
@@ -106,41 +106,41 @@ public class YoutubeSearchExtractor extends SearchExtractor {
         final InfoItemsSearchCollector collector = new InfoItemsSearchCollector(getServiceId());
         final JsonArray ajaxJson = getJsonResponse(pageUrl, getExtractorLocalization());
 
-        JsonObject itemSectionRenderer = ajaxJson.getObject(1).getObject("response")
+        final JsonObject itemSectionRenderer = ajaxJson.getObject(1).getObject("response")
                 .getObject("continuationContents").getObject("itemSectionContinuation");
 
         collectStreamsFrom(collector, itemSectionRenderer.getArray("contents"));
+        final JsonArray continuations = itemSectionRenderer.getArray("continuations");
 
-        return new InfoItemsPage<>(collector, getNextPageUrlFrom(itemSectionRenderer.getArray("continuations")));
+        return new InfoItemsPage<>(collector, getNextPageUrlFrom(continuations));
     }
 
-    private void collectStreamsFrom(InfoItemsSearchCollector collector, JsonArray videos) throws NothingFoundException, ParsingException {
-        collector.reset();
-
+    private void collectStreamsFrom(final InfoItemsSearchCollector collector, final JsonArray videos) throws NothingFoundException, ParsingException {
         final TimeAgoParser timeAgoParser = getTimeAgoParser();
 
         for (Object item : videos) {
-            if (((JsonObject) item).getObject("backgroundPromoRenderer") != null) {
+            if (((JsonObject) item).has("backgroundPromoRenderer")) {
                 throw new NothingFoundException(getTextFromObject(((JsonObject) item)
                         .getObject("backgroundPromoRenderer").getObject("bodyText")));
-            } else if (((JsonObject) item).getObject("videoRenderer") != null) {
+            } else if (((JsonObject) item).has("videoRenderer")) {
                 collector.commit(new YoutubeStreamInfoItemExtractor(((JsonObject) item).getObject("videoRenderer"), timeAgoParser));
-            } else if (((JsonObject) item).getObject("channelRenderer") != null) {
+            } else if (((JsonObject) item).has("channelRenderer")) {
                 collector.commit(new YoutubeChannelInfoItemExtractor(((JsonObject) item).getObject("channelRenderer")));
-            } else if (((JsonObject) item).getObject("playlistRenderer") != null) {
+            } else if (((JsonObject) item).has("playlistRenderer")) {
                 collector.commit(new YoutubePlaylistInfoItemExtractor(((JsonObject) item).getObject("playlistRenderer")));
             }
         }
     }
 
-    private String getNextPageUrlFrom(JsonArray continuations) throws ParsingException {
-        if (continuations == null) {
+    private String getNextPageUrlFrom(final JsonArray continuations) throws ParsingException {
+        if (continuations == null || continuations.isEmpty()) {
             return "";
         }
 
-        JsonObject nextContinuationData = continuations.getObject(0).getObject("nextContinuationData");
-        String continuation = nextContinuationData.getString("continuation");
-        String clickTrackingParams = nextContinuationData.getString("clickTrackingParams");
+        final JsonObject nextContinuationData = continuations.getObject(0).getObject("nextContinuationData");
+        final String continuation = nextContinuationData.getString("continuation");
+        final String clickTrackingParams = nextContinuationData.getString("clickTrackingParams");
+
         return getUrl() + "&pbj=1&ctoken=" + continuation + "&continuation=" + continuation
                 + "&itct=" + clickTrackingParams;
     }

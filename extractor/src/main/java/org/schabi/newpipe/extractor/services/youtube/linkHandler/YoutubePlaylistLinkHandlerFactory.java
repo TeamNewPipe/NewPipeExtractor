@@ -1,5 +1,6 @@
 package org.schabi.newpipe.extractor.services.youtube.linkHandler;
 
+import org.schabi.newpipe.extractor.exceptions.ContentNotSupportedException;
 import org.schabi.newpipe.extractor.exceptions.ParsingException;
 import org.schabi.newpipe.extractor.linkhandler.ListLinkHandlerFactory;
 import org.schabi.newpipe.extractor.utils.Utils;
@@ -47,7 +48,7 @@ public class YoutubePlaylistLinkHandlerFactory extends ListLinkHandlerFactory {
 
             // Don't accept auto-generated "Mix" playlists but auto-generated YouTube Music playlists
             if (listID.startsWith("RD") && !listID.startsWith("RDCLAK")) {
-                throw new ParsingException("YouTube Mix playlists are not yet supported");
+                throw new ContentNotSupportedException("YouTube Mix playlists are not yet supported");
             }
 
             return listID;

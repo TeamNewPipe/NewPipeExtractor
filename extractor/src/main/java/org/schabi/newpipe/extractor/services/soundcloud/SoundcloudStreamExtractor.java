@@ -10,6 +10,7 @@ import org.schabi.newpipe.extractor.NewPipe;
 import org.schabi.newpipe.extractor.StreamingService;
 import org.schabi.newpipe.extractor.downloader.Downloader;
 import org.schabi.newpipe.extractor.exceptions.ContentNotAvailableException;
+import org.schabi.newpipe.extractor.exceptions.ContentNotSupportedException;
 import org.schabi.newpipe.extractor.exceptions.ExtractionException;
 import org.schabi.newpipe.extractor.exceptions.ParsingException;
 import org.schabi.newpipe.extractor.linkhandler.LinkHandler;
@@ -33,6 +34,8 @@ import java.util.Locale;
 
 import javax.annotation.Nonnull;
 
+import static org.schabi.newpipe.extractor.utils.JsonUtils.EMPTY_STRING;
+
 public class SoundcloudStreamExtractor extends StreamExtractor {
     private JsonObject track;
 
@@ -44,7 +47,7 @@ public class SoundcloudStreamExtractor extends StreamExtractor {
     public void onFetchPage(@Nonnull Downloader downloader) throws IOException, ExtractionException {
         track = SoundcloudParsingHelper.resolveFor(downloader, getOriginalUrl());
 
-        String policy = track.getString("policy", "");
+        String policy = track.getString("policy", EMPTY_STRING);
         if (!policy.equals("ALLOW") && !policy.equals("MONETIZE")) {
             throw new ContentNotAvailableException("Content not available: policy " + policy);
         }
@@ -77,9 +80,9 @@ public class SoundcloudStreamExtractor extends StreamExtractor {
     @Nonnull
     @Override
     public String getThumbnailUrl() {
-        String artworkUrl = track.getString("artwork_url", "");
+        String artworkUrl = track.getString("artwork_url", EMPTY_STRING);
         if (artworkUrl.isEmpty()) {
-            artworkUrl = track.getObject("user").getString("avatar_url", "");
+            artworkUrl = track.getObject("user").getString("avatar_url", EMPTY_STRING);
         }
         String artworkUrlBetterResolution = artworkUrl.replace("large.jpg", "crop.jpg");
         return artworkUrlBetterResolution;
@@ -194,6 +197,10 @@ public class SoundcloudStreamExtractor extends StreamExtractor {
 
         } catch (NullPointerException e) {
             throw new ExtractionException("Could not get SoundCloud's track audio url", e);
+        }
+
+        if (audioStreams.isEmpty()) {
+            throw new ContentNotSupportedException("HLS audio streams are not yet supported");
         }
 
         return audioStreams;

@@ -1,6 +1,6 @@
 # NewPipe Extractor
 
-[![Build Status](https://travis-ci.org/TeamNewPipe/NewPipeExtractor.svg?branch=master)](https://travis-ci.org/TeamNewPipe/NewPipeExtractor) [![JIT Pack Badge](https://jitpack.io/v/TeamNewPipe/NewPipeExtractor.svg)](https://jitpack.io/#TeamNewPipe/NewPipeExtractor) [Documentation](https://teamnewpipe.github.io/documentation/)
+[![Build Status](https://travis-ci.org/TeamNewPipe/NewPipeExtractor.svg?branch=master)](https://travis-ci.org/TeamNewPipe/NewPipeExtractor) [![JIT Pack Badge](https://jitpack.io/v/TeamNewPipe/NewPipeExtractor.svg)](https://jitpack.io/#TeamNewPipe/NewPipeExtractor) [JDoc](https://teamnewpipe.github.io/NewPipeExtractor/javadoc/) • [Documentation](https://teamnewpipe.github.io/documentation/)
 
 NewPipe Extractor is a library for extracting things from streaming sites. It is a core component of [NewPipe](https://github.com/TeamNewPipe/NewPipe), but could be used independently.
 
@@ -11,11 +11,21 @@ NewPipe Extractor is available at JitPack's Maven repo.
 If you're using Gradle, you could add NewPipe Extractor as a dependency with the following steps:
 
 1. Add `maven { url 'https://jitpack.io' }` to the `repositories` in your `build.gradle`.
-2. Add `compile 'com.github.TeamNewPipe:NewPipeExtractor:v0.11.0'`the `dependencies` in your `build.gradle`. Replace `v0.11.0` with the latest release.
+2. Add `implementation 'com.github.TeamNewPipe:NewPipeExtractor:v0.19.0'`the `dependencies` in your `build.gradle`. Replace `v0.19.0` with the latest release.
 
 ### Testing changes
 
-To test changes quickly you can build the library locally. Using the local Maven repository is a good approach, here's a gist of how to use it:
+To test changes quickly you can build the library locally. A good approach would be to add something like the following to your `settings.gradle`:
+
+```groovy
+includeBuild('../NewPipeExtractor') {
+    dependencySubstitution {
+        substitute module('com.github.TeamNewPipe:NewPipeExtractor') with project(':extractor')
+    }
+}
+```
+
+Another approach would be to use the local Maven repository, here's a gist of how to use it:
 
 1. Add `mavenLocal()` in your project `repositories` list (usually as the first entry to give priority above the others).
 2. It's _recommended_ that you change the `version` of this library (e.g. `LOCAL_SNAPSHOT`).

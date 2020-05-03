@@ -128,7 +128,7 @@ public class PeertubeStreamExtractor extends StreamExtractor {
     public String getUploaderUrl() throws ParsingException {
         String name = JsonUtils.getString(json, "account.name");
         String host = JsonUtils.getString(json, "account.host");
-        return getService().getChannelLHFactory().fromId(name + "@" + host, baseUrl).getUrl();
+        return getService().getChannelLHFactory().fromId("accounts/" + name + "@" + host, baseUrl).getUrl();
     }
 
     @Override
@@ -167,7 +167,7 @@ public class PeertubeStreamExtractor extends StreamExtractor {
         assertPageFetched();
         List<VideoStream> videoStreams = new ArrayList<>();
         try {
-            JsonArray streams = json.getArray("files", new JsonArray());
+            JsonArray streams = json.getArray("files");
             for (Object s : streams) {
                 if (!(s instanceof JsonObject)) continue;
                 JsonObject stream = (JsonObject) s;

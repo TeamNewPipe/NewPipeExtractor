@@ -4,6 +4,7 @@ import com.grack.nanojson.JsonArray;
 import com.grack.nanojson.JsonObject;
 import com.grack.nanojson.JsonParser;
 import com.grack.nanojson.JsonParserException;
+
 import org.schabi.newpipe.extractor.MediaFormat;
 import org.schabi.newpipe.extractor.StreamingService;
 import org.schabi.newpipe.extractor.downloader.Downloader;
@@ -11,27 +12,34 @@ import org.schabi.newpipe.extractor.exceptions.ExtractionException;
 import org.schabi.newpipe.extractor.exceptions.ParsingException;
 import org.schabi.newpipe.extractor.linkhandler.LinkHandler;
 import org.schabi.newpipe.extractor.localization.DateWrapper;
-import org.schabi.newpipe.extractor.stream.*;
+import org.schabi.newpipe.extractor.stream.AudioStream;
+import org.schabi.newpipe.extractor.stream.Description;
+import org.schabi.newpipe.extractor.stream.StreamExtractor;
+import org.schabi.newpipe.extractor.stream.StreamInfoItem;
+import org.schabi.newpipe.extractor.stream.StreamInfoItemsCollector;
+import org.schabi.newpipe.extractor.stream.StreamType;
+import org.schabi.newpipe.extractor.stream.SubtitlesStream;
+import org.schabi.newpipe.extractor.stream.VideoStream;
 
-import javax.annotation.Nonnull;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Locale;
 
-public class MediaCCCStreamExtractor extends StreamExtractor {
+import javax.annotation.Nonnull;
 
+public class MediaCCCStreamExtractor extends StreamExtractor {
     private JsonObject data;
     private JsonObject conferenceData;
 
-    public MediaCCCStreamExtractor(StreamingService service, LinkHandler linkHandler) {
+    public MediaCCCStreamExtractor(final StreamingService service, final LinkHandler linkHandler) {
         super(service, linkHandler);
     }
 
     @Nonnull
     @Override
-    public String getTextualUploadDate() throws ParsingException {
+    public String getTextualUploadDate() {
         return data.getString("release_date");
     }
 
@@ -43,79 +51,79 @@ public class MediaCCCStreamExtractor extends StreamExtractor {
 
     @Nonnull
     @Override
-    public String getThumbnailUrl() throws ParsingException {
+    public String getThumbnailUrl() {
         return data.getString("thumb_url");
     }
 
     @Nonnull
     @Override
-    public Description getDescription() throws ParsingException {
+    public Description getDescription() {
         return new Description(data.getString("description"), Description.PLAIN_TEXT);
     }
 
     @Override
-    public int getAgeLimit() throws ParsingException {
+    public int getAgeLimit() {
         return 0;
     }
 
     @Override
-    public long getLength() throws ParsingException {
+    public long getLength() {
         return data.getInt("length");
     }
 
     @Override
-    public long getTimeStamp() throws ParsingException {
+    public long getTimeStamp() {
         return 0;
     }
 
     @Override
-    public long getViewCount() throws ParsingException {
+    public long getViewCount() {
         return data.getInt("view_count");
     }
 
     @Override
-    public long getLikeCount() throws ParsingException {
+    public long getLikeCount() {
         return -1;
     }
 
     @Override
-    public long getDislikeCount() throws ParsingException {
+    public long getDislikeCount() {
         return -1;
     }
 
     @Nonnull
     @Override
-    public String getUploaderUrl() throws ParsingException {
+    public String getUploaderUrl() {
         return data.getString("conference_url");
     }
 
     @Nonnull
     @Override
-    public String getUploaderName() throws ParsingException {
+    public String getUploaderName() {
         return data.getString("conference_url")
-                .replace("https://api.media.ccc.de/public/conferences/", "");
+                .replaceFirst("https://(api\\.)?media\\.ccc\\.de/public/conferences/", "");
     }
 
     @Nonnull
     @Override
-    public String getUploaderAvatarUrl() throws ParsingException {
+    public String getUploaderAvatarUrl() {
         return conferenceData.getString("logo_url");
     }
 
     @Nonnull
     @Override
-    public String getDashMpdUrl() throws ParsingException {
+    public String getDashMpdUrl() {
         return "";
     }
 
     @Nonnull
     @Override
-    public String getHlsUrl() throws ParsingException {
+    public String getHlsUrl() {
         return "";
     }
 
     @Override
-    public List<AudioStream> getAudioStreams() throws IOException, ExtractionException {
+    public List<AudioStream> getAudioStreams() throws ExtractionException {
         final JsonArray recordings = data.getArray("recordings");
         final List<AudioStream> audioStreams = new ArrayList<>();
         for (int i = 0; i < recordings.size(); i++) {
@@ -134,14 +142,15 @@ public class MediaCCCStreamExtractor extends StreamExtractor {
                     throw new ExtractionException("Unknown media format: " + mimeType);
                 }
 
-                audioStreams.add(new AudioStream(recording.getString("recording_url"), mediaFormat, -1));
+                audioStreams.add(new AudioStream(recording.getString("recording_url"),
+                        mediaFormat, -1));
             }
         }
         return audioStreams;
     }
 
     @Override
-    public List<VideoStream> getVideoStreams() throws IOException, ExtractionException {
+    public List<VideoStream> getVideoStreams() throws ExtractionException {
         final JsonArray recordings = data.getArray("recordings");
         final List<VideoStream> videoStreams = new ArrayList<>();
         for (int i = 0; i < recordings.size(); i++) {
@@ -167,34 +176,34 @@ public class MediaCCCStreamExtractor extends StreamExtractor {
     }
 
     @Override
-    public List<VideoStream> getVideoOnlyStreams() throws IOException, ExtractionException {
+    public List<VideoStream> getVideoOnlyStreams() {
         return null;
     }
 
     @Nonnull
     @Override
-    public List<SubtitlesStream> getSubtitlesDefault() throws IOException, ExtractionException {
+    public List<SubtitlesStream> getSubtitlesDefault() {
         return Collections.emptyList();
     }
 
     @Nonnull
     @Override
-    public List<SubtitlesStream> getSubtitles(final MediaFormat format) throws IOException, ExtractionException {
+    public List<SubtitlesStream> getSubtitles(final MediaFormat format) {
         return Collections.emptyList();
     }
 
     @Override
-    public StreamType getStreamType() throws ParsingException {
+    public StreamType getStreamType() {
         return StreamType.VIDEO_STREAM;
     }
 
     @Override
-    public StreamInfoItem getNextStream() throws IOException, ExtractionException {
+    public StreamInfoItem getNextStream() {
         return null;
     }
 
     @Override
-    public StreamInfoItemsCollector getRelatedStreams() throws IOException, ExtractionException {
+    public StreamInfoItemsCollector getRelatedStreams() {
         return new StreamInfoItemsCollector(getServiceId());
     }
 
@@ -204,14 +213,16 @@ public class MediaCCCStreamExtractor extends StreamExtractor {
     }
 
     @Override
-    public void onFetchPage(@Nonnull Downloader downloader) throws IOException, ExtractionException {
+    public void onFetchPage(@Nonnull final Downloader downloader)
+            throws IOException, ExtractionException {
         try {
             data = JsonParser.object().from(
                     downloader.get(getLinkHandler().getUrl()).responseBody());
             conferenceData = JsonParser.object()
                     .from(downloader.get(getUploaderUrl()).responseBody());
         } catch (JsonParserException jpe) {
-            throw new ExtractionException("Could not parse json returned by url: " + getLinkHandler().getUrl(), jpe);
+            throw new ExtractionException("Could not parse json returned by url: "
+                    + getLinkHandler().getUrl(), jpe);
         }
     }
 
@@ -223,44 +234,44 @@ public class MediaCCCStreamExtractor extends StreamExtractor {
 
     @Nonnull
     @Override
-    public String getOriginalUrl() throws ParsingException {
+    public String getOriginalUrl() {
         return data.getString("frontend_link");
     }
 
     @Override
-    public String getHost() throws ParsingException {
+    public String getHost() {
         return "";
     }
 
     @Override
-    public String getPrivacy() throws ParsingException {
+    public String getPrivacy() {
         return "";
     }
 
     @Override
-    public String getCategory() throws ParsingException {
+    public String getCategory() {
         return "";
     }
 
     @Override
-    public String getLicence() throws ParsingException {
+    public String getLicence() {
         return "";
     }
 
     @Override
-    public Locale getLanguageInfo() throws ParsingException {
+    public Locale getLanguageInfo() {
         return null;
     }
 
     @Nonnull
     @Override
-    public List<String> getTags() throws ParsingException {
+    public List<String> getTags() {
         return new ArrayList<>();
     }
 
     @Nonnull
     @Override
-    public String getSupportInfo() throws ParsingException {
+    public String getSupportInfo() {
         return "";
     }
 }
