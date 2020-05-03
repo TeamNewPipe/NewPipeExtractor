@@ -28,6 +28,7 @@ import java.text.SimpleDateFormat;
 import java.util.*;
 
 import static org.schabi.newpipe.extractor.NewPipe.getDownloader;
+import static org.schabi.newpipe.extractor.utils.JsonUtils.EMPTY_STRING;
 import static org.schabi.newpipe.extractor.utils.Utils.HTTP;
 import static org.schabi.newpipe.extractor.utils.Utils.HTTPS;
 
@@ -494,12 +495,12 @@ public class YoutubeParsingHelper {
      * @param initialData the object which will be checked if an alert is present
      * @throws ContentNotAvailableException if an alert is detected
      */
-    public static void defaultAlertsCheck(JsonObject initialData) throws ContentNotAvailableException {
+    public static void defaultAlertsCheck(final JsonObject initialData) throws ParsingException {
         final JsonArray alerts = initialData.getArray("alerts");
         if (!alerts.isEmpty()) {
             final JsonObject alertRenderer = alerts.getObject(0).getObject("alertRenderer");
-            final String alertText = alertRenderer.getObject("text").getString("simpleText");
-            final String alertType = alertRenderer.getString("type");
+            final String alertText = getTextFromObject(alertRenderer.getObject("text"));
+            final String alertType = alertRenderer.getString("type", EMPTY_STRING);
             if (alertType.equalsIgnoreCase("ERROR")) {
                 throw new ContentNotAvailableException("Got error: \"" + alertText + "\"");
             }
