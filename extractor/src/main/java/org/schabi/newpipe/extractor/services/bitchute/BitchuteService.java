@@ -25,7 +25,7 @@ import static java.util.Arrays.asList;
 
 public class BitchuteService extends StreamingService {
 
-    public BitchuteService(int id, String name, List<ServiceInfo.MediaCapability> capabilities) {
+    public BitchuteService(int id) {
         super(id, "BitChute", asList(ServiceInfo.MediaCapability.VIDEO));
     }
 
