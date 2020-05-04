@@ -20,10 +20,10 @@ import java.util.Map;
 import java.util.StringJoiner;
 
 import static org.schabi.newpipe.extractor.NewPipe.getDownloader;
+import static org.schabi.newpipe.extractor.services.bitchute.BitchuteService.BITCHUTE_LINK;
 
 public class BitchuteParserHelper {
 
-    private static final String BITCHUTE_LINK = "https://www.bitchute.com/";
 
     private static String cookies;
     private static String csrfToken;

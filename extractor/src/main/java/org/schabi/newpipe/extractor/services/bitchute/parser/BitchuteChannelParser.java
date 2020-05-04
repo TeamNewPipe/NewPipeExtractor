@@ -113,7 +113,7 @@ public class BitchuteChannelParser {
                 @Nullable
                 @Override
                 public String getTextualUploadDate() throws ParsingException {
-                    return null;
+                    return e.select("div.channel-videos-details").first().text();
                 }
 
                 @Nullable
@@ -123,7 +123,7 @@ public class BitchuteChannelParser {
                     Date date;
                     try {
                         SimpleDateFormat df = new SimpleDateFormat("MMM dd, yyyy");
-                        date = df.parse(e.select("div.channel-videos-details").first().text());
+                        date = df.parse(getTextualUploadDate());
                     } catch (ParseException e) {
                         throw new ParsingException("Couldn't parse date");
                     }
