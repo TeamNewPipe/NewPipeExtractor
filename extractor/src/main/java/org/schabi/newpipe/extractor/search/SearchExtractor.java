@@ -28,8 +28,8 @@ public abstract class SearchExtractor extends ListExtractor<InfoItem> {
     /**
      * The search suggestion provided by the service.
      * <p>
-     * This method may also return the corrected query,
-     * see {@link SearchExtractor#isCorrectedSearch()}.
+     * This method also returns the corrected query if
+     * {@link SearchExtractor#isCorrectedSearch()} is true.
      *
      * @return a suggestion to another query, the corrected query, or an empty String.
      * @throws ParsingException
@@ -49,8 +49,7 @@ public abstract class SearchExtractor extends ListExtractor<InfoItem> {
     }
 
     /**
-     * When you search on some service, it can give you another and corrected request.
-     * This method says if it's the case.
+     * Tell if the search was corrected by the service (if it's not exactly the search you typed).
      * <p>
      * Example: on YouTube, if you search for "pewdeipie",
      * it will give you results for "pewdiepie", then isCorrectedSearch should return true.
