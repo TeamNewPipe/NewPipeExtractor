@@ -15,8 +15,10 @@ import org.schabi.newpipe.extractor.stream.StreamInfoItem;
 import org.schabi.newpipe.extractor.stream.StreamInfoItemExtractor;
 import org.schabi.newpipe.extractor.stream.StreamInfoItemsCollector;
 import org.schabi.newpipe.extractor.stream.StreamType;
+import org.schabi.newpipe.extractor.utils.Utils;
 
 import java.io.IOException;
+import java.net.URL;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
@@ -42,10 +44,18 @@ public class BitchuteChannelParser {
         this.linkHandler = linkHandler;
         doc = Jsoup.parse(response.responseBody(), linkHandler.getUrl());
         avatarUrl = doc.select("#page-bar > div > div > div.image-container > a > img")
-                .first().text();
+                .first().attr("data-src");
         name = doc.select("#channel-title").first().text();
         description = doc.select("#channel-description").first().text();
-        subscriberCount = BitchuteParserHelper.getSubscriberCountForChannelID(linkHandler.getId());
+
+        //Getting Channel ID reliably as sometimes Channel name is used in the url instead
+
+        String channelID = Utils.stringToURL(avatarUrl).getPath().split("/",0)[3];
+
+        System.out.println("Oyyyyyye");
+        System.out.println(channelID);
+
+        subscriberCount = BitchuteParserHelper.getSubscriberCountForChannelID(channelID);
     }
 
     public String getAvatarUrl() {
@@ -77,7 +87,7 @@ public class BitchuteChannelParser {
     private InfoItemsPage<StreamInfoItem> getInfoItemsPage(int ServiceID, Document doc) {
         StreamInfoItemsCollector collector = new StreamInfoItemsCollector(ServiceID);
         Elements videos = doc.select(".channel-videos-container");
-        for (Element e : videos) {
+        for (final Element e : videos) {
             collector.commit(new StreamInfoItemExtractor() {
                 @Override
                 public StreamType getStreamType() throws ParsingException {

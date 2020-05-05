@@ -11,7 +11,7 @@ import static org.schabi.newpipe.extractor.services.bitchute.BitchuteService.BIT
 public class BitchuteTrendingTodayKioskLinkHandlerFactory extends ListLinkHandlerFactory {
     @Override
     public String getId(String url) throws ParsingException {
-        return "trending-day";
+        return "Trending Today";
     }
 
     @Override

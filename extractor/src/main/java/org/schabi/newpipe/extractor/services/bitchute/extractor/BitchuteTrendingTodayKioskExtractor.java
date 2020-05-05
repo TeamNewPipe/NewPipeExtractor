@@ -41,14 +41,14 @@ public class BitchuteTrendingTodayKioskExtractor extends KioskExtractor<StreamIn
     @Nonnull
     @Override
     public String getName() throws ParsingException {
-        return getId();
+        return "Trending Today";
     }
 
     @Nonnull
     @Override
     public InfoItemsPage<StreamInfoItem> getInitialPage() throws IOException, ExtractionException {
         StreamInfoItemsCollector collector = new StreamInfoItemsCollector(getServiceId());
-        for (Element e : doc.select("#trending-day  div.video-trending-container")) {
+        for (final Element e : doc.select("#trending-day  div.video-trending-container")) {
             collector.commit(
                     new StreamInfoItemExtractor() {
                         @Override

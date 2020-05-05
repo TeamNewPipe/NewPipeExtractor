@@ -18,7 +18,7 @@ public class BitchuteChannelLinkHandlerFactory extends ListLinkHandlerFactory {
     }
 
     private static String assertsID(String id) throws ParsingException {
-        if (id == null || !id.matches("[a-zA-Z0-9_-]")) {
+        if (id == null || !id.matches("[a-zA-Z0-9_-]{11,}")) {
             throw new ParsingException("Given string is not a Bitchute Channel ID");
         }
         return id;

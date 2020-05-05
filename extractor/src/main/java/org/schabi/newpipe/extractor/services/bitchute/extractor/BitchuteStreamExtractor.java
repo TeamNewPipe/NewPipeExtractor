@@ -56,7 +56,7 @@ public class BitchuteStreamExtractor extends StreamExtractor {
     @Nonnull
     @Override
     public String getName() throws ParsingException {
-        return doc.select("video-title").first().text();
+        return doc.select("#video-title").first().text();
     }
 
     @Nullable
@@ -175,7 +175,7 @@ public class BitchuteStreamExtractor extends StreamExtractor {
     @Override
     public List<VideoStream> getVideoStreams() throws IOException, ExtractionException {
         return Collections.singletonList(new VideoStream(doc.select("#player source")
-                .first().attr("src"), MediaFormat.M4A, "default"));
+                .first().attr("src"), MediaFormat.M4A, "480p"));
     }
 
     @Override
