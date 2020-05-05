@@ -17,6 +17,8 @@ import org.schabi.newpipe.extractor.stream.StreamInfoItemsCollector;
 import javax.annotation.Nonnull;
 import java.io.IOException;
 
+import static org.schabi.newpipe.extractor.utils.JsonUtils.EMPTY_STRING;
+
 @SuppressWarnings("WeakerAccess")
 public class SoundcloudChannelExtractor extends ChannelExtractor {
     private String userId;
@@ -63,10 +65,7 @@ public class SoundcloudChannelExtractor extends ChannelExtractor {
 
     @Override
     public String getBannerUrl() {
-        return user.getObject("visuals", new JsonObject())
-                .getArray("visuals", new JsonArray())
-                .getObject(0, new JsonObject())
-                .getString("visual_url");
+        return user.getObject("visuals").getArray("visuals").getObject(0).getString("visual_url");
     }
 
     @Override
@@ -81,7 +80,7 @@ public class SoundcloudChannelExtractor extends ChannelExtractor {
 
     @Override
     public String getDescription() {
-        return user.getString("description", "");
+        return user.getString("description", EMPTY_STRING);
     }
 
     @Nonnull

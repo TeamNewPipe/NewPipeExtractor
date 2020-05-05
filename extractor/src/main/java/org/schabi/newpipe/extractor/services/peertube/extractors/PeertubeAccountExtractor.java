@@ -21,7 +21,7 @@ import org.schabi.newpipe.extractor.utils.Parser.RegexException;
 
 import java.io.IOException;
 
-public class PeertubeChannelExtractor extends ChannelExtractor {
+public class PeertubeAccountExtractor extends ChannelExtractor {
 
     private static final String START_KEY = "start";
     private static final String COUNT_KEY = "count";
@@ -34,7 +34,7 @@ public class PeertubeChannelExtractor extends ChannelExtractor {
     private JsonObject json;
     private final String baseUrl;
 
-    public PeertubeChannelExtractor(StreamingService service, ListLinkHandler linkHandler) throws ParsingException {
+    public PeertubeAccountExtractor(StreamingService service, ListLinkHandler linkHandler) throws ParsingException {
         super(service, linkHandler);
         this.baseUrl = getBaseUrl();
     }
@@ -57,7 +57,7 @@ public class PeertubeChannelExtractor extends ChannelExtractor {
 
     @Override
     public String getFeedUrl() throws ParsingException {
-        return getBaseUrl() + "/feeds/videos.xml?videoChannelId=" + json.get("id");
+        return getBaseUrl() + "/feeds/videos.xml?accountId=" + json.get("id");
     }
 
     @Override
@@ -109,7 +109,7 @@ public class PeertubeChannelExtractor extends ChannelExtractor {
     public InfoItemsPage<StreamInfoItem> getPage(String pageUrl) throws IOException, ExtractionException {
         Response response = getDownloader().get(pageUrl);
         JsonObject json = null;
-        if (null != response && !StringUtil.isBlank(response.responseBody())) {
+        if (response != null && !StringUtil.isBlank(response.responseBody())) {
             try {
                 json = JsonParser.object().from(response.responseBody());
             } catch (Exception e) {
@@ -169,7 +169,7 @@ public class PeertubeChannelExtractor extends ChannelExtractor {
         try {
             json = JsonParser.object().from(responseBody);
         } catch (JsonParserException e) {
-            throw new ExtractionException("Unable to extract peertube channel data", e);
+            throw new ExtractionException("Unable to extract PeerTube channel data", e);
         }
         if (json == null) throw new ExtractionException("Unable to extract PeerTube channel data");
     }

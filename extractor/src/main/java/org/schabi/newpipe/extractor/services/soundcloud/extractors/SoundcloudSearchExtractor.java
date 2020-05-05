@@ -23,6 +23,7 @@ import java.net.MalformedURLException;
 import java.net.URL;
 
 import static org.schabi.newpipe.extractor.services.soundcloud.linkHandler.SoundcloudSearchQueryHandlerFactory.ITEMS_PER_PAGE;
+import static org.schabi.newpipe.extractor.utils.JsonUtils.EMPTY_STRING;
 
 public class SoundcloudSearchExtractor extends SearchExtractor {
 
@@ -84,7 +85,7 @@ public class SoundcloudSearchExtractor extends SearchExtractor {
             if (!(result instanceof JsonObject)) continue;
             //noinspection ConstantConditions
             JsonObject searchResult = (JsonObject) result;
-            String kind = searchResult.getString("kind", "");
+            String kind = searchResult.getString("kind", EMPTY_STRING);
             switch (kind) {
                 case "user":
                     collector.commit(new SoundcloudChannelInfoItemExtractor(searchResult));

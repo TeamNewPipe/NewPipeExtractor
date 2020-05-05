@@ -28,6 +28,7 @@ import java.text.SimpleDateFormat;
 import java.util.*;
 
 import static org.schabi.newpipe.extractor.NewPipe.getDownloader;
+import static org.schabi.newpipe.extractor.utils.JsonUtils.EMPTY_STRING;
 import static org.schabi.newpipe.extractor.utils.Utils.HTTP;
 import static org.schabi.newpipe.extractor.utils.Utils.HTTPS;
 
@@ -334,7 +335,7 @@ public class YoutubeParsingHelper {
     }
 
     public static String getUrlFromNavigationEndpoint(JsonObject navigationEndpoint) throws ParsingException {
-        if (navigationEndpoint.getObject("urlEndpoint") != null) {
+        if (navigationEndpoint.has("urlEndpoint")) {
             String internUrl = navigationEndpoint.getObject("urlEndpoint").getString("url");
             if (internUrl.startsWith("/redirect?")) {
                 // q parameter can be the first parameter
@@ -354,7 +355,7 @@ public class YoutubeParsingHelper {
             } else if (internUrl.startsWith("http")) {
                 return internUrl;
             }
-        } else if (navigationEndpoint.getObject("browseEndpoint") != null) {
+        } else if (navigationEndpoint.has("browseEndpoint")) {
             final JsonObject browseEndpoint = navigationEndpoint.getObject("browseEndpoint");
             final String canonicalBaseUrl = browseEndpoint.getString("canonicalBaseUrl");
             final String browseId = browseEndpoint.getString("browseId");
@@ -369,7 +370,7 @@ public class YoutubeParsingHelper {
             }
 
             throw new ParsingException("canonicalBaseUrl is null and browseId is not a channel (\"" + browseEndpoint + "\")");
-        } else if (navigationEndpoint.getObject("watchEndpoint") != null) {
+        } else if (navigationEndpoint.has("watchEndpoint")) {
             StringBuilder url = new StringBuilder();
             url.append("https://www.youtube.com/watch?v=").append(navigationEndpoint.getObject("watchEndpoint").getString("videoId"));
             if (navigationEndpoint.getObject("watchEndpoint").has("playlistId"))
@@ -377,20 +378,30 @@ public class YoutubeParsingHelper {
             if (navigationEndpoint.getObject("watchEndpoint").has("startTimeSeconds"))
                 url.append("&amp;t=").append(navigationEndpoint.getObject("watchEndpoint").getInt("startTimeSeconds"));
             return url.toString();
-        } else if (navigationEndpoint.getObject("watchPlaylistEndpoint") != null) {
+        } else if (navigationEndpoint.has("watchPlaylistEndpoint")) {
             return "https://www.youtube.com/playlist?list=" +
                     navigationEndpoint.getObject("watchPlaylistEndpoint").getString("playlistId");
         }
         return null;
     }
 
+    /**
+     * Get the text from a JSON object that has either a simpleText or a runs array.
+     * @param textObject JSON object to get the text from
+     * @param html       whether to return HTML, by parsing the navigationEndpoint
+     * @return text in the JSON object or {@code null}
+     */
     public static String getTextFromObject(JsonObject textObject, boolean html) throws ParsingException {
+        if (textObject == null || textObject.isEmpty()) return null;
+
         if (textObject.has("simpleText")) return textObject.getString("simpleText");
+
+        if (textObject.getArray("runs").isEmpty()) return null;
 
         StringBuilder textBuilder = new StringBuilder();
         for (Object textPart : textObject.getArray("runs")) {
             String text = ((JsonObject) textPart).getString("text");
-            if (html && ((JsonObject) textPart).getObject("navigationEndpoint") != null) {
+            if (html && ((JsonObject) textPart).has("navigationEndpoint")) {
                 String url = getUrlFromNavigationEndpoint(((JsonObject) textPart).getObject("navigationEndpoint"));
                 if (url != null && !url.isEmpty()) {
                     textBuilder.append("<a href=\"").append(url).append("\">").append(text).append("</a>");
@@ -484,12 +495,12 @@ public class YoutubeParsingHelper {
      * @param initialData the object which will be checked if an alert is present
      * @throws ContentNotAvailableException if an alert is detected
      */
-    public static void defaultAlertsCheck(JsonObject initialData) throws ContentNotAvailableException {
+    public static void defaultAlertsCheck(final JsonObject initialData) throws ParsingException {
         final JsonArray alerts = initialData.getArray("alerts");
-        if (alerts != null && !alerts.isEmpty()) {
+        if (!alerts.isEmpty()) {
             final JsonObject alertRenderer = alerts.getObject(0).getObject("alertRenderer");
-            final String alertText = alertRenderer.getObject("text").getString("simpleText");
-            final String alertType = alertRenderer.getString("type");
+            final String alertText = getTextFromObject(alertRenderer.getObject("text"));
+            final String alertType = alertRenderer.getString("type", EMPTY_STRING);
             if (alertType.equalsIgnoreCase("ERROR")) {
                 throw new ContentNotAvailableException("Got error: \"" + alertText + "\"");
             }

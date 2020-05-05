@@ -47,23 +47,16 @@ public class YoutubePlaylistExtractor extends PlaylistExtractor {
 
     private JsonObject getUploaderInfo() throws ParsingException {
         JsonArray items = initialData.getObject("sidebar").getObject("playlistSidebarRenderer").getArray("items");
-        try {
-            JsonObject uploaderInfo = items.getObject(1).getObject("playlistSidebarSecondaryInfoRenderer")
-                    .getObject("videoOwner").getObject("videoOwnerRenderer");
-            if (uploaderInfo != null) {
-                return uploaderInfo;
-            }
-        } catch (Exception ignored) {}
+
+        JsonObject videoOwner = items.getObject(1).getObject("playlistSidebarSecondaryInfoRenderer").getObject("videoOwner");
+        if (videoOwner.has("videoOwnerRenderer")) {
+            return videoOwner.getObject("videoOwnerRenderer");
+        }
 
         // we might want to create a loop here instead of using duplicated code
-        try {
-            JsonObject uploaderInfo = items.getObject(items.size()).getObject("playlistSidebarSecondaryInfoRenderer")
-                    .getObject("videoOwner").getObject("videoOwnerRenderer");
-            if (uploaderInfo != null) {
-                return uploaderInfo;
-            }
-        } catch (Exception e) {
-            throw new ParsingException("Could not get uploader info", e);
+        videoOwner = items.getObject(items.size()).getObject("playlistSidebarSecondaryInfoRenderer").getObject("videoOwner");
+        if (videoOwner.has("videoOwnerRenderer")) {
+            return videoOwner.getObject("videoOwnerRenderer");
         }
         throw new ParsingException("Could not get uploader info");
     }
@@ -89,33 +82,22 @@ public class YoutubePlaylistExtractor extends PlaylistExtractor {
     @Nonnull
     @Override
     public String getName() throws ParsingException {
-        try {
-            String name = getTextFromObject(playlistInfo.getObject("title"));
-            if (name != null) return name;
-        } catch (Exception ignored) {}
-        try {
-            return initialData.getObject("microformat").getObject("microformatDataRenderer").getString("title");
-        } catch (Exception e) {
-            throw new ParsingException("Could not get playlist name", e);
-        }
+        String name = getTextFromObject(playlistInfo.getObject("title"));
+        if (name != null && !name.isEmpty()) return name;
+
+        return initialData.getObject("microformat").getObject("microformatDataRenderer").getString("title");
     }
 
     @Override
     public String getThumbnailUrl() throws ParsingException {
-        String url = null;
+        String url = playlistInfo.getObject("thumbnailRenderer").getObject("playlistVideoThumbnailRenderer")
+                .getObject("thumbnail").getArray("thumbnails").getObject(0).getString("url");
 
-        try {
-            url = playlistInfo.getObject("thumbnailRenderer").getObject("playlistVideoThumbnailRenderer")
-                    .getObject("thumbnail").getArray("thumbnails").getObject(0).getString("url");
-        } catch (Exception ignored) {}
+        if (url == null || url.isEmpty()) {
+            url = initialData.getObject("microformat").getObject("microformatDataRenderer").getObject("thumbnail")
+                    .getArray("thumbnails").getObject(0).getString("url");
 
-        if (url == null) {
-            try {
-                url = initialData.getObject("microformat").getObject("microformatDataRenderer").getObject("thumbnail")
-                        .getArray("thumbnails").getObject(0).getString("url");
-            } catch (Exception ignored) {}
-
-            if (url == null) throw new ParsingException("Could not get playlist thumbnail");
+            if (url == null || url.isEmpty()) throw new ParsingException("Could not get playlist thumbnail");
         }
 
         return fixThumbnailUrl(url);
@@ -123,8 +105,9 @@ public class YoutubePlaylistExtractor extends PlaylistExtractor {
 
     @Override
     public String getBannerUrl() {
-        return "";      // Banner can't be handled by frontend right now.
+        // Banner can't be handled by frontend right now.
         // Whoever is willing to implement this should also implement it in the frontend.
+        return "";
     }
 
     @Override
@@ -199,7 +182,7 @@ public class YoutubePlaylistExtractor extends PlaylistExtractor {
     }
 
     private String getNextPageUrlFrom(JsonArray continuations) {
-        if (continuations == null) {
+        if (continuations == null || continuations.isEmpty()) {
             return "";
         }
 
@@ -216,7 +199,7 @@ public class YoutubePlaylistExtractor extends PlaylistExtractor {
         final TimeAgoParser timeAgoParser = getTimeAgoParser();
 
         for (Object video : videos) {
-            if (((JsonObject) video).getObject("playlistVideoRenderer") != null) {
+            if (((JsonObject) video).has("playlistVideoRenderer")) {
                 collector.commit(new YoutubeStreamInfoItemExtractor(((JsonObject) video).getObject("playlistVideoRenderer"), timeAgoParser) {
                     @Override
                     public long getViewCount() {

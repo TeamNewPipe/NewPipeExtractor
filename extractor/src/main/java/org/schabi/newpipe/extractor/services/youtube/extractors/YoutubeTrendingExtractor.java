@@ -72,12 +72,7 @@ public class YoutubeTrendingExtractor extends KioskExtractor<StreamInfoItem> {
     @Nonnull
     @Override
     public String getName() throws ParsingException {
-        String name;
-        try {
-            name = getTextFromObject(initialData.getObject("header").getObject("feedTabbedHeaderRenderer").getObject("title"));
-        } catch (Exception e) {
-            throw new ParsingException("Could not get Trending name", e);
-        }
+        String name = getTextFromObject(initialData.getObject("header").getObject("feedTabbedHeaderRenderer").getObject("title"));
         if (name != null && !name.isEmpty()) {
             return name;
         }
@@ -97,14 +92,11 @@ public class YoutubeTrendingExtractor extends KioskExtractor<StreamInfoItem> {
             JsonObject expandedShelfContentsRenderer = ((JsonObject) itemSectionRenderer).getObject("itemSectionRenderer")
                     .getArray("contents").getObject(0).getObject("shelfRenderer").getObject("content")
                     .getObject("expandedShelfContentsRenderer");
-            if (expandedShelfContentsRenderer != null) {
-                for (Object ul : expandedShelfContentsRenderer.getArray("items")) {
-                    final JsonObject videoInfo = ((JsonObject) ul).getObject("videoRenderer");
-                    collector.commit(new YoutubeStreamInfoItemExtractor(videoInfo, timeAgoParser));
-                }
+            for (Object ul : expandedShelfContentsRenderer.getArray("items")) {
+                final JsonObject videoInfo = ((JsonObject) ul).getObject("videoRenderer");
+                collector.commit(new YoutubeStreamInfoItemExtractor(videoInfo, timeAgoParser));
             }
         }
         return new InfoItemsPage<>(collector, getNextPageUrl());
-
     }
 }

@@ -31,6 +31,7 @@ import java.util.*;
 
 import static java.util.Collections.singletonList;
 import static org.schabi.newpipe.extractor.ServiceList.SoundCloud;
+import static org.schabi.newpipe.extractor.utils.JsonUtils.EMPTY_STRING;
 import static org.schabi.newpipe.extractor.utils.Utils.replaceHttpWithHttps;
 
 public class SoundcloudParsingHelper {
@@ -261,17 +262,17 @@ public class SoundcloudParsingHelper {
 
     @Nonnull
     public static String getUploaderUrl(JsonObject object) {
-        String url = object.getObject("user").getString("permalink_url", "");
+        String url = object.getObject("user").getString("permalink_url", EMPTY_STRING);
         return replaceHttpWithHttps(url);
     }
 
     @Nonnull
     public static String getAvatarUrl(JsonObject object) {
-        String url = object.getObject("user", new JsonObject()).getString("avatar_url", "");
+        String url = object.getObject("user").getString("avatar_url", EMPTY_STRING);
         return replaceHttpWithHttps(url);
     }
 
     public static String getUploaderName(JsonObject object) {
-        return object.getObject("user").getString("username", "");
+        return object.getObject("user").getString("username", EMPTY_STRING);
     }
 }

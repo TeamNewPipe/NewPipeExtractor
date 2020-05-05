@@ -16,7 +16,6 @@ import static org.schabi.newpipe.extractor.services.media_ccc.linkHandler.MediaC
 import static org.schabi.newpipe.extractor.services.media_ccc.linkHandler.MediaCCCSearchQueryHandlerFactory.EVENTS;
 
 public class MediaCCCSearchExtractorTest {
-
     public static class All extends DefaultSearchExtractorTest {
         private static SearchExtractor extractor;
         private static final String QUERY = "kde";
@@ -32,8 +31,8 @@ public class MediaCCCSearchExtractorTest {
         @Override public StreamingService expectedService() { return MediaCCC; }
         @Override public String expectedName() { return QUERY; }
         @Override public String expectedId() { return QUERY; }
-        @Override public String expectedUrlContains() { return "api.media.ccc.de/public/events/search?q=" + QUERY; }
-        @Override public String expectedOriginalUrlContains() { return "api.media.ccc.de/public/events/search?q=" + QUERY; }
+        @Override public String expectedUrlContains() { return "media.ccc.de/public/events/search?q=" + QUERY; }
+        @Override public String expectedOriginalUrlContains() { return "media.ccc.de/public/events/search?q=" + QUERY; }
         @Override public String expectedSearchString() { return QUERY; }
         @Nullable @Override public String expectedSearchSuggestion() { return null; }
 
@@ -55,8 +54,8 @@ public class MediaCCCSearchExtractorTest {
         @Override public StreamingService expectedService() { return MediaCCC; }
         @Override public String expectedName() { return QUERY; }
         @Override public String expectedId() { return QUERY; }
-        @Override public String expectedUrlContains() { return "api.media.ccc.de/public/events/search?q=" + QUERY; }
-        @Override public String expectedOriginalUrlContains() { return "api.media.ccc.de/public/events/search?q=" + QUERY; }
+        @Override public String expectedUrlContains() { return "media.ccc.de/public/events/search?q=" + QUERY; }
+        @Override public String expectedOriginalUrlContains() { return "media.ccc.de/public/events/search?q=" + QUERY; }
         @Override public String expectedSearchString() { return QUERY; }
         @Nullable @Override public String expectedSearchSuggestion() { return null; }
 
@@ -79,8 +78,8 @@ public class MediaCCCSearchExtractorTest {
         @Override public StreamingService expectedService() { return MediaCCC; }
         @Override public String expectedName() { return QUERY; }
         @Override public String expectedId() { return QUERY; }
-        @Override public String expectedUrlContains() { return "api.media.ccc.de/public/events/search?q=" + QUERY; }
-        @Override public String expectedOriginalUrlContains() { return "api.media.ccc.de/public/events/search?q=" + QUERY; }
+        @Override public String expectedUrlContains() { return "media.ccc.de/public/events/search?q=" + QUERY; }
+        @Override public String expectedOriginalUrlContains() { return "media.ccc.de/public/events/search?q=" + QUERY; }
         @Override public String expectedSearchString() { return QUERY; }
         @Nullable @Override public String expectedSearchSuggestion() { return null; }
 

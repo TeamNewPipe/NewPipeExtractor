@@ -70,14 +70,12 @@ public class YoutubeChannelInfoItemExtractor implements ChannelInfoItemExtractor
     @Override
     public long getSubscriberCount() throws ParsingException {
         try {
-            final JsonObject subscriberCountObject = channelInfoItem.getObject("subscriberCountText");
-
-            if (subscriberCountObject == null) {
+            if (!channelInfoItem.has("subscriberCountText")) {
                 // Subscription count is not available for this channel item.
                 return -1;
             }
 
-            return Utils.mixedNumberWordToLong(getTextFromObject(subscriberCountObject));
+            return Utils.mixedNumberWordToLong(getTextFromObject(channelInfoItem.getObject("subscriberCountText")));
         } catch (Exception e) {
             throw new ParsingException("Could not get subscriber count", e);
         }
@@ -86,14 +84,13 @@ public class YoutubeChannelInfoItemExtractor implements ChannelInfoItemExtractor
     @Override
     public long getStreamCount() throws ParsingException {
         try {
-            final JsonObject videoCountObject = channelInfoItem.getObject("videoCountText");
-
-            if (videoCountObject == null) {
+            if (!channelInfoItem.has("videoCountText")) {
                 // Video count is not available, channel probably has no public uploads.
                 return -1;
             }
 
-            return Long.parseLong(Utils.removeNonDigitCharacters(getTextFromObject(videoCountObject)));
+            return Long.parseLong(Utils.removeNonDigitCharacters(getTextFromObject(
+                    channelInfoItem.getObject("videoCountText"))));
         } catch (Exception e) {
             throw new ParsingException("Could not get stream count", e);
         }
@@ -102,14 +99,12 @@ public class YoutubeChannelInfoItemExtractor implements ChannelInfoItemExtractor
     @Override
     public String getDescription() throws ParsingException {
         try {
-            final JsonObject descriptionObject = channelInfoItem.getObject("descriptionSnippet");
-
-            if (descriptionObject == null) {
+            if (!channelInfoItem.has("descriptionSnippet")) {
                 // Channel have no description.
                 return null;
             }
 
-            return getTextFromObject(descriptionObject);
+            return getTextFromObject(channelInfoItem.getObject("descriptionSnippet"));
         } catch (Exception e) {
             throw new ParsingException("Could not get description", e);
         }
