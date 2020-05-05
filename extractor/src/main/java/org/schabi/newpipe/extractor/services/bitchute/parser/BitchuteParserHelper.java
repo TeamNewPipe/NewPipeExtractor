@@ -86,13 +86,36 @@ public class BitchuteParserHelper {
         }
     }
 
+    public static VideoCount getVideoCountObjectForStreamID(String streamID)
+            throws IOException, ExtractionException {
+        if(!isInitDone()){
+            init();
+        }
+
+        byte[] data = String.format("csrfmiddlewaretoken=%s", csrfToken).getBytes(StandardCharsets.UTF_8);
+        Response response = getDownloader().post(
+                String.format("https://www.bitchute.com/video/%s/counts/", streamID),
+                getPostHeader(data.length),
+                data
+        );
+
+        try {
+            JsonObject jsonObject = JsonParser.object().from(response.responseBody());
+            return (new VideoCount(jsonObject.getInt("like_count"),
+                    jsonObject.getInt("dislike_count"),jsonObject.getInt("view_count")));
+        } catch (JsonParserException e) {
+            throw new ParsingException("Could not parse bitchute sub count json");
+        }
+
+    }
+
     public static Document getExtendDocumentForUrl(String pageUrl, String offset)
             throws IOException, ExtractionException {
         if (!isInitDone()) {
             init();
         }
 
-        byte[] data = String.format("csrfmiddlewaretoken=%s&offset=%s", csrfToken,offset)
+        byte[] data = String.format("csrfmiddlewaretoken=%s&offset=%s", csrfToken, offset)
                 .getBytes(StandardCharsets.UTF_8);
         Response response = getDownloader().post(
                 String.format("%s/extend/", pageUrl),
@@ -103,9 +126,33 @@ public class BitchuteParserHelper {
         try {
             JsonObject jsonObject = JsonParser.object().from(response.responseBody());
             return Jsoup.parse(jsonObject.getString("html")
-                    .replace("\n",""),pageUrl);
+                    .replace("\n", ""), pageUrl);
         } catch (JsonParserException e) {
             throw new ParsingException("Could not parse bitchute sub count json");
+        }
+    }
+
+    public static class VideoCount {
+        private long likeCount;
+        private long dislikeCount;
+        private long viewCount;
+
+        public VideoCount(long likeCount, long dislikeCount, long viewCount) {
+            this.likeCount = likeCount;
+            this.dislikeCount = dislikeCount;
+            this.viewCount = viewCount;
+        }
+
+        public long getLikeCount() {
+            return likeCount;
+        }
+
+        public long getDislikeCount() {
+            return dislikeCount;
+        }
+
+        public long getViewCount() {
+            return viewCount;
         }
     }
 }
