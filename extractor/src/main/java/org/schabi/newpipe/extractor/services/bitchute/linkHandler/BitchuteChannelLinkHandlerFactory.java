@@ -17,14 +17,6 @@ public class BitchuteChannelLinkHandlerFactory extends ListLinkHandlerFactory {
         return instance;
     }
 
-    private static String assertsID(String id) throws ParsingException {
-        if (id == null || !id.matches("[a-zA-Z0-9_-]{11,}")) {
-            throw new ParsingException("Given string is not a Bitchute Channel ID");
-        }
-        return id;
-    }
-
-
     @Override
     public String getId(String urlString) throws ParsingException, IllegalArgumentException {
         URL url;
@@ -44,7 +36,7 @@ public class BitchuteChannelLinkHandlerFactory extends ListLinkHandlerFactory {
         try {
             String[] splitPath = path.split("/", 0);
             if (splitPath[0].equalsIgnoreCase("channel"))
-                return assertsID(splitPath[1]);
+                return splitPath[1];
         } catch (ArrayIndexOutOfBoundsException e) {
             throw new ParsingException("Error getting ID");
         }

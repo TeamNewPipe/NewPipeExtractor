@@ -2,6 +2,7 @@ package org.schabi.newpipe.extractor.services.bitchute.extractor;
 
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
+import org.jsoup.select.Elements;
 import org.schabi.newpipe.extractor.MediaFormat;
 import org.schabi.newpipe.extractor.StreamingService;
 import org.schabi.newpipe.extractor.downloader.Downloader;
@@ -15,6 +16,7 @@ import org.schabi.newpipe.extractor.stream.AudioStream;
 import org.schabi.newpipe.extractor.stream.Description;
 import org.schabi.newpipe.extractor.stream.StreamExtractor;
 import org.schabi.newpipe.extractor.stream.StreamInfoItem;
+import org.schabi.newpipe.extractor.stream.StreamInfoItemExtractor;
 import org.schabi.newpipe.extractor.stream.StreamInfoItemsCollector;
 import org.schabi.newpipe.extractor.stream.StreamType;
 import org.schabi.newpipe.extractor.stream.SubtitlesStream;
@@ -34,8 +36,9 @@ import javax.annotation.Nullable;
 
 public class BitchuteStreamExtractor extends StreamExtractor {
 
-    Document doc;
-    BitchuteParserHelper.VideoCount videoCount;
+    private Document doc;
+    private BitchuteParserHelper.VideoCount videoCount;
+    private Elements relatedStreamAsElements;
 
     public BitchuteStreamExtractor(StreamingService service, LinkHandler linkHandler) {
         super(service, linkHandler);
@@ -50,153 +53,200 @@ public class BitchuteStreamExtractor extends StreamExtractor {
 
         doc = Jsoup.parse(response.responseBody(), getUrl());
         videoCount = BitchuteParserHelper.getVideoCountObjectForStreamID(getId());
+        relatedStreamAsElements = doc.select(".video-card");
 
     }
 
     @Nonnull
     @Override
     public String getName() throws ParsingException {
-        return doc.select("#video-title").first().text();
+        try {
+            return doc.select("#video-title").first().text();
+        } catch (Exception e) {
+            throw new ParsingException("Error parsing stream name");
+        }
     }
 
     @Nullable
     @Override
     public String getTextualUploadDate() throws ParsingException {
-        return doc.select(".video-publish-date").first().text();
+        try {
+            return doc.select(".video-publish-date").first().text();
+        } catch (Exception e) {
+            throw new ParsingException("Error parsing textual upload date");
+        }
     }
 
     @Nullable
     @Override
     public DateWrapper getUploadDate() throws ParsingException {
-        int in = getTextualUploadDate().indexOf("on");
-        in += 2;
-        Date date;
         try {
-            SimpleDateFormat df = new SimpleDateFormat("MMM dd, yyyy");
-            date = df.parse(getTextualUploadDate().substring(in));
-        } catch (ParseException e) {
-            throw new ParsingException("Couldn't parse Date");
+            int in = getTextualUploadDate().indexOf("on");
+            in += 2;
+            Date date;
+            try {
+                SimpleDateFormat df = new SimpleDateFormat("MMM dd, yyyy");
+                date = df.parse(getTextualUploadDate().substring(in));
+            } catch (ParseException e) {
+                throw new ParsingException("Couldn't parse Date");
+            }
+            Calendar calendar = Calendar.getInstance();
+            calendar.setTime(date);
+            return new DateWrapper(calendar);
+        } catch (Exception e) {
+            throw new ParsingException("Error parsing upload date");
         }
-        Calendar calendar = Calendar.getInstance();
-        calendar.setTime(date);
-        return new DateWrapper(calendar);
     }
 
     @Nonnull
     @Override
     public String getThumbnailUrl() throws ParsingException {
-        return doc.select("#player").first().attr("poster");
+        try {
+            return doc.select("#player").first().attr("poster");
+        } catch (Exception e) {
+            throw new ParsingException("Error parsing thumbnail url");
+        }
     }
 
     @Nonnull
     @Override
     public Description getDescription() throws ParsingException {
-        return new Description(doc.select("#video-description").first().html(),
-                Description.HTML);
+        try {
+            return new Description(doc.select("#video-description").first().html(),
+                    Description.HTML);
+        } catch (Exception e) {
+            throw new ParsingException("Error parsing description");
+        }
     }
 
     @Override
-    public int getAgeLimit() throws ParsingException {
-        //TODO
+    public int getAgeLimit() {
         return 16;
     }
 
     @Override
-    public long getLength() throws ParsingException {
+    public long getLength() {
         return 0;
     }
 
     @Override
-    public long getTimeStamp() throws ParsingException {
+    public long getTimeStamp() {
         return 0;
     }
 
     @Override
-    public long getViewCount() throws ParsingException {
+    public long getViewCount() {
         return videoCount.getViewCount();
     }
 
     @Override
-    public long getLikeCount() throws ParsingException {
+    public long getLikeCount() {
         return videoCount.getLikeCount();
     }
 
     @Override
-    public long getDislikeCount() throws ParsingException {
+    public long getDislikeCount() {
         return videoCount.getDislikeCount();
     }
 
     @Override
-    public StreamInfoItem getNextStream() throws IOException, ExtractionException {
-        return null;
+    public StreamInfoItem getNextStream() throws ExtractionException {
+        StreamInfoItemsCollector collector = new StreamInfoItemsCollector(getServiceId());
+        collector.commit(new BitchuteStreamRelatedInfoItemExtractor(
+                getTimeAgoParser(), relatedStreamAsElements.get(0),
+                getUploaderName(), getUploaderUrl()));
+        return collector.getItems().get(0);
     }
 
     @Override
-    public StreamInfoItemsCollector getRelatedStreams() throws IOException, ExtractionException {
-        return null;
+    public StreamInfoItemsCollector getRelatedStreams() throws ExtractionException {
+        StreamInfoItemsCollector collector = new StreamInfoItemsCollector(getServiceId());
+        for (int i = 1; i < relatedStreamAsElements.size(); i++) {
+            collector.commit(new BitchuteStreamRelatedInfoItemExtractor(
+                    getTimeAgoParser(), relatedStreamAsElements.get(i),
+                    getUploaderName(), getUploaderUrl()
+            ));
+        }
+        return collector;
     }
 
     @Nonnull
     @Override
     public String getUploaderUrl() throws ParsingException {
-        return doc.select("#video-watch  p.name a").first().absUrl("href");
+        try {
+            return doc.select("#video-watch  p.name a").first().absUrl("href");
+        } catch (Exception e) {
+            throw new ParsingException("Error parsing uploader url");
+        }
     }
 
     @Nonnull
     @Override
     public String getUploaderName() throws ParsingException {
-        return doc.select("#video-watch  p.name").first().text();
+        try {
+            return doc.select("#video-watch  p.name").first().text();
+        } catch (Exception e) {
+            throw new ParsingException("Error parsing upload name");
+        }
     }
 
     @Nonnull
     @Override
     public String getUploaderAvatarUrl() throws ParsingException {
-        return doc.select("#video-watch div.image-container > a > img")
-                .first().attr("data-src");
+        try {
+            return doc.select("#video-watch div.image-container > a > img")
+                    .first().attr("data-src");
+        } catch (Exception e) {
+            throw new ParsingException("Error parsing upload avatar url");
+        }
     }
 
     @Nonnull
     @Override
-    public String getDashMpdUrl() throws ParsingException {
+    public String getDashMpdUrl() {
         return "";
     }
 
     @Nonnull
     @Override
-    public String getHlsUrl() throws ParsingException {
+    public String getHlsUrl() {
         return "";
     }
 
     @Override
-    public List<AudioStream> getAudioStreams() throws IOException, ExtractionException {
+    public List<AudioStream> getAudioStreams() {
         return null;
     }
 
     @Override
-    public List<VideoStream> getVideoStreams() throws IOException, ExtractionException {
-        return Collections.singletonList(new VideoStream(doc.select("#player source")
-                .first().attr("src"), MediaFormat.M4A, "480p"));
+    public List<VideoStream> getVideoStreams() throws ExtractionException {
+        try {
+            return Collections.singletonList(new VideoStream(doc.select("#player source")
+                    .first().attr("src"), MediaFormat.M4A, "480p"));
+        } catch (Exception e) {
+            throw new ParsingException("Error parsing video stream");
+        }
     }
 
     @Override
-    public List<VideoStream> getVideoOnlyStreams() throws IOException, ExtractionException {
+    public List<VideoStream> getVideoOnlyStreams() {
         return null;
     }
 
     @Nonnull
     @Override
-    public List<SubtitlesStream> getSubtitlesDefault() throws IOException, ExtractionException {
+    public List<SubtitlesStream> getSubtitlesDefault() {
         return Collections.emptyList();
     }
 
     @Nonnull
     @Override
-    public List<SubtitlesStream> getSubtitles(MediaFormat format) throws IOException, ExtractionException {
+    public List<SubtitlesStream> getSubtitles(MediaFormat format) {
         return Collections.emptyList();
     }
 
     @Override
-    public StreamType getStreamType() throws ParsingException {
+    public StreamType getStreamType() {
         return StreamType.VIDEO_STREAM;
     }
 
@@ -207,44 +257,47 @@ public class BitchuteStreamExtractor extends StreamExtractor {
 
     @Nonnull
     @Override
-    public String getHost() throws ParsingException {
+    public String getHost() {
         return "";
     }
 
     @Nonnull
     @Override
-    public String getPrivacy() throws ParsingException {
+    public String getPrivacy() {
         return "";
     }
 
     @Nonnull
     @Override
     public String getCategory() throws ParsingException {
-        return doc.select("#video-description + table tbody  td:nth-child(2) > a").first().text();
+        try {
+            return doc.select("#video-description + table tbody  td:nth-child(2) > a").first().text();
+        } catch (Exception e) {
+            throw new ParsingException("Error parsing category");
+        }
     }
 
     @Nonnull
     @Override
-    public String getLicence() throws ParsingException {
+    public String getLicence() {
         return "";
     }
 
     @Nullable
     @Override
-    public Locale getLanguageInfo() throws ParsingException {
+    public Locale getLanguageInfo() {
         return null;
     }
 
     @Nonnull
     @Override
-    public List<String> getTags() throws ParsingException {
-        return null;
+    public List<String> getTags() {
+        return Collections.emptyList();
     }
 
     @Nonnull
     @Override
-    public String getSupportInfo() throws ParsingException {
-        //TODO
-        return "";
+    public String getSupportInfo() {
+        return "https://www.bitchute.com/help-us-grow/";
     }
 }
