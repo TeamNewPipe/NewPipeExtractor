@@ -45,7 +45,7 @@ public class MediaCCCSearchExtractor extends SearchExtractor {
 
     @Nonnull
     @Override
-    public String getSearchSuggestion() throws ParsingException {
+    public String getSearchSuggestion() {
         return "";
     }
 

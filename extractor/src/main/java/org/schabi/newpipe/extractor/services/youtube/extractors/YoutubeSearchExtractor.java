@@ -73,7 +73,7 @@ public class YoutubeSearchExtractor extends SearchExtractor {
         final JsonObject showingResultsForRenderer = itemSectionRenderer.getArray("contents").getObject(0)
                 .getObject("showingResultsForRenderer");
 
-        if (didYouMeanRenderer != null) {
+        if (!didYouMeanRenderer.equals(JsonUtils.EMPTY_OBJECT)) {
             return JsonUtils.getString(didYouMeanRenderer, "correctedQueryEndpoint.searchEndpoint.query");
         } else if (showingResultsForRenderer != null) {
             return getTextFromObject(showingResultsForRenderer.getObject("correctedQuery"));
@@ -89,7 +89,7 @@ public class YoutubeSearchExtractor extends SearchExtractor {
                 .getObject("sectionListRenderer").getArray("contents").getObject(0)
                 .getObject("itemSectionRenderer").getArray("contents").getObject(0)
                 .getObject("showingResultsForRenderer");
-        return showingResultsForRenderer != null;
+        return !showingResultsForRenderer.equals(JsonUtils.EMPTY_OBJECT);
     }
 
     @Nonnull
