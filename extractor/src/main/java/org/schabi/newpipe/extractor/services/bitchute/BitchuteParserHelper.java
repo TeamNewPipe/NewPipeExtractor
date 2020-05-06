@@ -1,4 +1,4 @@
-package org.schabi.newpipe.extractor.services.bitchute.parser;
+package org.schabi.newpipe.extractor.services.bitchute;
 
 import com.grack.nanojson.JsonObject;
 import com.grack.nanojson.JsonParser;

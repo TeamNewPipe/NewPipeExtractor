@@ -7,6 +7,7 @@ import org.schabi.newpipe.extractor.localization.TimeAgoParser;
 import org.schabi.newpipe.extractor.services.youtube.linkHandler.YoutubeParsingHelper;
 import org.schabi.newpipe.extractor.stream.StreamInfoItemExtractor;
 import org.schabi.newpipe.extractor.stream.StreamType;
+import org.schabi.newpipe.extractor.utils.Utils;
 
 import javax.annotation.Nullable;
 
@@ -22,7 +23,7 @@ public class BitchuteStreamRelatedInfoItemExtractor implements StreamInfoItemExt
         this.parser = parser;
     }
 
-    public BitchuteStreamRelatedInfoItemExtractor(TimeAgoParser parser,Element element,  String channelName, String channelUrl) {
+    public BitchuteStreamRelatedInfoItemExtractor(TimeAgoParser parser, Element element, String channelName, String channelUrl) {
         this.element = element;
         this.parser = parser;
         this.channelName = channelName;
@@ -53,8 +54,10 @@ public class BitchuteStreamRelatedInfoItemExtractor implements StreamInfoItemExt
     @Override
     public long getViewCount() throws ParsingException {
         try {
-            return Long.parseLong(element.select(".video-views").first().text());
+            return Utils.mixedNumberWordToLong(element
+                            .select(".video-views").first().text());
         } catch (Exception e) {
+            e.printStackTrace();
             throw new ParsingException("Error parsing view count");
         }
     }

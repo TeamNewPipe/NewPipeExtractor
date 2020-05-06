@@ -11,12 +11,11 @@ import org.schabi.newpipe.extractor.exceptions.ExtractionException;
 import org.schabi.newpipe.extractor.exceptions.ParsingException;
 import org.schabi.newpipe.extractor.linkhandler.LinkHandler;
 import org.schabi.newpipe.extractor.localization.DateWrapper;
-import org.schabi.newpipe.extractor.services.bitchute.parser.BitchuteParserHelper;
+import org.schabi.newpipe.extractor.services.bitchute.BitchuteParserHelper;
 import org.schabi.newpipe.extractor.stream.AudioStream;
 import org.schabi.newpipe.extractor.stream.Description;
 import org.schabi.newpipe.extractor.stream.StreamExtractor;
 import org.schabi.newpipe.extractor.stream.StreamInfoItem;
-import org.schabi.newpipe.extractor.stream.StreamInfoItemExtractor;
 import org.schabi.newpipe.extractor.stream.StreamInfoItemsCollector;
 import org.schabi.newpipe.extractor.stream.StreamType;
 import org.schabi.newpipe.extractor.stream.SubtitlesStream;
@@ -85,8 +84,9 @@ public class BitchuteStreamExtractor extends StreamExtractor {
             in += 2;
             Date date;
             try {
-                SimpleDateFormat df = new SimpleDateFormat("MMM dd, yyyy");
-                date = df.parse(getTextualUploadDate().substring(in));
+                SimpleDateFormat df = new SimpleDateFormat("MMM d, yyyy.");
+                date = df.parse(getTextualUploadDate().substring(in)
+                        .replaceAll("(?<=\\d)(st|nd|rd|th)", "").trim());
             } catch (ParseException e) {
                 throw new ParsingException("Couldn't parse Date");
             }
@@ -112,7 +112,7 @@ public class BitchuteStreamExtractor extends StreamExtractor {
     @Override
     public Description getDescription() throws ParsingException {
         try {
-            return new Description(doc.select("#video-description").first().html(),
+            return new Description(doc.select("#video-description .full").first().html(),
                     Description.HTML);
         } catch (Exception e) {
             throw new ParsingException("Error parsing description");
