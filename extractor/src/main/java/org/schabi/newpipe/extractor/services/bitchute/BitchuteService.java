@@ -15,18 +15,22 @@ import org.schabi.newpipe.extractor.linkhandler.SearchQueryHandlerFactory;
 import org.schabi.newpipe.extractor.playlist.PlaylistExtractor;
 import org.schabi.newpipe.extractor.search.SearchExtractor;
 import org.schabi.newpipe.extractor.services.bitchute.extractor.BitchuteChannelExtractor;
+import org.schabi.newpipe.extractor.services.bitchute.extractor.BitchuteRecommendedChannelKioskExtractor;
 import org.schabi.newpipe.extractor.services.bitchute.extractor.BitchuteStreamExtractor;
-import org.schabi.newpipe.extractor.services.bitchute.extractor.BitchuteTrendingTodayKioskExtractor;
+import org.schabi.newpipe.extractor.services.bitchute.extractor.BitchuteTrendingKioskExtractor;
 import org.schabi.newpipe.extractor.services.bitchute.linkHandler.BitchuteChannelLinkHandlerFactory;
+import org.schabi.newpipe.extractor.services.bitchute.linkHandler.BitchuteKioskLinkHandlerFactory;
 import org.schabi.newpipe.extractor.services.bitchute.linkHandler.BitchuteStreamLinkHandlerFactory;
-import org.schabi.newpipe.extractor.services.bitchute.linkHandler.BitchuteTrendingTodayKioskLinkHandlerFactory;
 import org.schabi.newpipe.extractor.services.youtube.extractors.YoutubeSuggestionExtractor;
 import org.schabi.newpipe.extractor.stream.StreamExtractor;
 import org.schabi.newpipe.extractor.subscription.SubscriptionExtractor;
 import org.schabi.newpipe.extractor.suggestion.SuggestionExtractor;
 
-
 import static java.util.Arrays.asList;
+import static org.schabi.newpipe.extractor.services.bitchute.linkHandler.BitchuteKioskLinkHandlerFactory.RECOMMENDED_CHANNEL;
+import static org.schabi.newpipe.extractor.services.bitchute.linkHandler.BitchuteKioskLinkHandlerFactory.TRENDING_DAY;
+import static org.schabi.newpipe.extractor.services.bitchute.linkHandler.BitchuteKioskLinkHandlerFactory.TRENDING_MONTH;
+import static org.schabi.newpipe.extractor.services.bitchute.linkHandler.BitchuteKioskLinkHandlerFactory.TRENDING_WEEK;
 
 public class BitchuteService extends StreamingService {
 
@@ -85,21 +89,44 @@ public class BitchuteService extends StreamingService {
 
     @Override
     public KioskList getKioskList() throws ExtractionException {
+
+        KioskList.KioskExtractorFactory trendingKioskExtractorFactory = new KioskList.KioskExtractorFactory() {
+            @Override
+            public KioskExtractor createNewKiosk(StreamingService streamingService, String url
+                    , String kioskId) throws ExtractionException {
+                return new BitchuteTrendingKioskExtractor(
+                        BitchuteService.this,
+                        BitchuteKioskLinkHandlerFactory.getInstance().fromId(kioskId),
+                        kioskId);
+            }
+        };
+
+        KioskList.KioskExtractorFactory recommendedChannelKioskExtractorFactory = new KioskList.KioskExtractorFactory() {
+            @Override
+            public KioskExtractor createNewKiosk(StreamingService streamingService, String url
+                    , String kioskId) throws ExtractionException {
+                return new BitchuteRecommendedChannelKioskExtractor(
+                        BitchuteService.this,
+                        BitchuteKioskLinkHandlerFactory.getInstance().fromId(kioskId),
+                        kioskId);
+            }
+        };
+
         KioskList list = new KioskList(this);
         try {
-            list.addKioskEntry(new KioskList.KioskExtractorFactory() {
-                @Override
-                public KioskExtractor createNewKiosk(StreamingService streamingService, String url
-                        , String kioskId) throws ExtractionException {
-                    return new BitchuteTrendingTodayKioskExtractor(
-                            BitchuteService.this,
-                            new BitchuteTrendingTodayKioskLinkHandlerFactory().fromUrl(url),
-                            kioskId);
-                }
-            },new BitchuteTrendingTodayKioskLinkHandlerFactory(),"Trending Today");
-            list.setDefaultKiosk("Trending Today");
-        }
-        catch (Exception e){
+            list.addKioskEntry(trendingKioskExtractorFactory,
+                    BitchuteKioskLinkHandlerFactory.getInstance(), TRENDING_DAY);
+
+            list.addKioskEntry(trendingKioskExtractorFactory,
+                    BitchuteKioskLinkHandlerFactory.getInstance(), TRENDING_WEEK);
+
+            list.addKioskEntry(trendingKioskExtractorFactory,
+                    BitchuteKioskLinkHandlerFactory.getInstance(), TRENDING_MONTH);
+
+            list.addKioskEntry(recommendedChannelKioskExtractorFactory,
+                    BitchuteKioskLinkHandlerFactory.getInstance(), RECOMMENDED_CHANNEL);
+            list.setDefaultKiosk(TRENDING_DAY);
+        } catch (Exception e) {
             throw new ExtractionException(e);
         }
 
@@ -108,7 +135,7 @@ public class BitchuteService extends StreamingService {
 
     @Override
     public ChannelExtractor getChannelExtractor(ListLinkHandler linkHandler) throws ExtractionException {
-        return new BitchuteChannelExtractor(this,linkHandler);
+        return new BitchuteChannelExtractor(this, linkHandler);
     }
 
     @Override
@@ -118,7 +145,7 @@ public class BitchuteService extends StreamingService {
 
     @Override
     public StreamExtractor getStreamExtractor(LinkHandler linkHandler) throws ExtractionException {
-        return new BitchuteStreamExtractor(this,linkHandler);
+        return new BitchuteStreamExtractor(this, linkHandler);
     }
 
     @Override
