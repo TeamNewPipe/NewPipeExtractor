@@ -16,7 +16,7 @@ public class BitchuteStreamLinkHandlerFactory extends LinkHandlerFactory {
     }
 
     private static String assertsID(String id) throws ParsingException {
-        System.out.println("assertID: "+ id+ "\n");
+        System.out.println("assertID: " + id + "\n");
         if (id == null || !id.matches("[a-zA-Z0-9_-]{11,}")) {
             throw new ParsingException("Given string is not a Bitchute Video ID");
         }

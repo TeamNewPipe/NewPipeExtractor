@@ -55,7 +55,7 @@ public class BitchuteStreamRelatedInfoItemExtractor implements StreamInfoItemExt
     public long getViewCount() throws ParsingException {
         try {
             return Utils.mixedNumberWordToLong(element
-                            .select(".video-views").first().text());
+                    .select(".video-views").first().text());
         } catch (Exception e) {
             e.printStackTrace();
             throw new ParsingException("Error parsing view count");

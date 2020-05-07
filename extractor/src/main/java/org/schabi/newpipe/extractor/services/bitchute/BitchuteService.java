@@ -16,12 +16,14 @@ import org.schabi.newpipe.extractor.playlist.PlaylistExtractor;
 import org.schabi.newpipe.extractor.search.SearchExtractor;
 import org.schabi.newpipe.extractor.services.bitchute.extractor.BitchuteChannelExtractor;
 import org.schabi.newpipe.extractor.services.bitchute.extractor.BitchuteRecommendedChannelKioskExtractor;
+import org.schabi.newpipe.extractor.services.bitchute.extractor.BitchuteSearchExtractor;
 import org.schabi.newpipe.extractor.services.bitchute.extractor.BitchuteStreamExtractor;
+import org.schabi.newpipe.extractor.services.bitchute.extractor.BitchuteSuggestionExtractor;
 import org.schabi.newpipe.extractor.services.bitchute.extractor.BitchuteTrendingKioskExtractor;
 import org.schabi.newpipe.extractor.services.bitchute.linkHandler.BitchuteChannelLinkHandlerFactory;
 import org.schabi.newpipe.extractor.services.bitchute.linkHandler.BitchuteKioskLinkHandlerFactory;
+import org.schabi.newpipe.extractor.services.bitchute.linkHandler.BitchuteSearchQueryHandlerFactory;
 import org.schabi.newpipe.extractor.services.bitchute.linkHandler.BitchuteStreamLinkHandlerFactory;
-import org.schabi.newpipe.extractor.services.youtube.extractors.YoutubeSuggestionExtractor;
 import org.schabi.newpipe.extractor.stream.StreamExtractor;
 import org.schabi.newpipe.extractor.subscription.SubscriptionExtractor;
 import org.schabi.newpipe.extractor.suggestion.SuggestionExtractor;
@@ -62,8 +64,7 @@ public class BitchuteService extends StreamingService {
 
     @Override
     public SearchQueryHandlerFactory getSearchQHFactory() {
-        //TODO
-        return null;
+        return BitchuteSearchQueryHandlerFactory.getInstance();
     }
 
     @Override
@@ -73,13 +74,12 @@ public class BitchuteService extends StreamingService {
 
     @Override
     public SearchExtractor getSearchExtractor(SearchQueryHandler queryHandler) {
-        //TODO
-        return null;
+        return new BitchuteSearchExtractor(this, queryHandler);
     }
 
     @Override
     public SuggestionExtractor getSuggestionExtractor() {
-        return new YoutubeSuggestionExtractor(this);
+        return new BitchuteSuggestionExtractor(this);
     }
 
     @Override

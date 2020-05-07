@@ -17,7 +17,6 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.StringJoiner;
 
 import static org.schabi.newpipe.extractor.NewPipe.getDownloader;
 import static org.schabi.newpipe.extractor.services.bitchute.BitchuteService.BITCHUTE_LINK;
@@ -41,7 +40,7 @@ public class BitchuteParserHelper {
         for (Map.Entry entry : response.responseHeaders().entrySet()) {
             if (entry.getKey().equals("set-cookie")) {
                 List<String> values = (List<String>) entry.getValue();
-                for(String v: values) {
+                for (String v : values) {
                     String val = v.split(";", 2)[0];
                     sb.append(val).append(";");
                     if (val.contains("csrf"))
@@ -58,8 +57,8 @@ public class BitchuteParserHelper {
         headers.put("Content-Type", Collections.singletonList("application/x-www-form-urlencoded"));
         headers.put("Content-Length", Collections.singletonList(String.valueOf(contentLength)));
         System.out.println("Headers: ");
-        for(Map.Entry m: headers.entrySet())
-            System.out.println(m.getKey()+": "+m.getValue());
+        for (Map.Entry m : headers.entrySet())
+            System.out.println(m.getKey() + ": " + m.getValue());
         return headers;
     }
 
@@ -100,7 +99,7 @@ public class BitchuteParserHelper {
 
     public static VideoCount getVideoCountObjectForStreamID(String streamID)
             throws IOException, ExtractionException {
-        if(!isInitDone()){
+        if (!isInitDone()) {
             init();
         }
 
@@ -114,7 +113,7 @@ public class BitchuteParserHelper {
         try {
             JsonObject jsonObject = JsonParser.object().from(response.responseBody());
             return (new VideoCount(jsonObject.getInt("like_count"),
-                    jsonObject.getInt("dislike_count"),jsonObject.getInt("view_count")));
+                    jsonObject.getInt("dislike_count"), jsonObject.getInt("view_count")));
         } catch (JsonParserException e) {
             throw new ParsingException("Could not parse bitchute sub count json");
         }

@@ -47,7 +47,7 @@ public class BitchuteTrendingKioskExtractor extends KioskExtractor<StreamInfoIte
     public InfoItemsPage<StreamInfoItem> getInitialPage() {
         StreamInfoItemsCollector collector = new StreamInfoItemsCollector(getServiceId());
         String selector;
-        switch (getId()){
+        switch (getId()) {
             case TRENDING_MONTH:
                 selector = "#trending-month  div.video-trending-container";
                 break;
@@ -70,7 +70,7 @@ public class BitchuteTrendingKioskExtractor extends KioskExtractor<StreamInfoIte
     }
 
     @Override
-    public InfoItemsPage<StreamInfoItem> getPage(String pageUrl){
+    public InfoItemsPage<StreamInfoItem> getPage(String pageUrl) {
         return null;
     }
 }
