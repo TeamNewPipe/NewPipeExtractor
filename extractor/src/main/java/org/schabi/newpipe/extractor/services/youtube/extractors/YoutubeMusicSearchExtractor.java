@@ -130,7 +130,7 @@ public class YoutubeMusicSearchExtractor extends SearchExtractor {
     public String getSearchSuggestion() throws ParsingException {
         final JsonObject itemSectionRenderer = initialData.getObject("contents").getObject("sectionListRenderer")
                 .getArray("contents").getObject(0).getObject("itemSectionRenderer");
-        if (itemSectionRenderer.equals(JsonUtils.EMPTY_OBJECT)) {
+        if (itemSectionRenderer.isEmpty()) {
             return "";
         }
 
@@ -139,9 +139,9 @@ public class YoutubeMusicSearchExtractor extends SearchExtractor {
         final JsonObject showingResultsForRenderer = itemSectionRenderer.getArray("contents").getObject(0)
                 .getObject("showingResultsForRenderer");
 
-        if (!didYouMeanRenderer.equals(JsonUtils.EMPTY_OBJECT)) {
+        if (!didYouMeanRenderer.isEmpty()) {
             return getTextFromObject(didYouMeanRenderer.getObject("correctedQuery"));
-        } else if (!showingResultsForRenderer.equals(JsonUtils.EMPTY_OBJECT)) {
+        } else if (!showingResultsForRenderer.isEmpty()) {
             return JsonUtils.getString(showingResultsForRenderer, "correctedQueryEndpoint.searchEndpoint.query");
         } else {
             return "";
@@ -152,13 +152,13 @@ public class YoutubeMusicSearchExtractor extends SearchExtractor {
     public boolean isCorrectedSearch() {
         final JsonObject itemSectionRenderer = initialData.getObject("contents").getObject("sectionListRenderer")
                 .getArray("contents").getObject(0).getObject("itemSectionRenderer");
-        if (itemSectionRenderer.equals(JsonUtils.EMPTY_OBJECT)) {
+        if (itemSectionRenderer.isEmpty()) {
             return false;
         }
 
         final JsonObject showingResultsForRenderer = itemSectionRenderer.getArray("contents").getObject(0)
                 .getObject("showingResultsForRenderer");
-        return !showingResultsForRenderer.equals(JsonUtils.EMPTY_OBJECT);
+        return !showingResultsForRenderer.isEmpty();
     }
 
     @Nonnull
