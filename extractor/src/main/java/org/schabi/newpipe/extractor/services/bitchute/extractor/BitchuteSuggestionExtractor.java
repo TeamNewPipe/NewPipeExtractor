@@ -6,6 +6,7 @@ import org.schabi.newpipe.extractor.downloader.Response;
 import org.schabi.newpipe.extractor.suggestion.SuggestionExtractor;
 
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 
 public class BitchuteSuggestionExtractor extends SuggestionExtractor {
@@ -23,7 +24,7 @@ public class BitchuteSuggestionExtractor extends SuggestionExtractor {
             Response response = NewPipe.getDownloader().get(AUTOCOMPLETE_URL + query);
             return Arrays.asList(response.responseBody().split("\n", 0));
         } catch (Exception e) {
-            return Collections.emptyList();;
+            return Collections.emptyList();
         }
     }
 }
