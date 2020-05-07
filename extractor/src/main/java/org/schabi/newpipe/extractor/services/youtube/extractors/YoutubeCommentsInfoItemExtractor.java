@@ -48,7 +48,7 @@ public class YoutubeCommentsInfoItemExtractor implements CommentsInfoItemExtract
     }
 
     @Override
-    public String getTextualPublishedTime() throws ParsingException {
+    public String getTextualUploadDate() throws ParsingException {
         try {
             return YoutubeCommentsExtractor.getYoutubeText(JsonUtils.getObject(json, "publishedTimeText"));
         } catch (Exception e) {
@@ -58,8 +58,8 @@ public class YoutubeCommentsInfoItemExtractor implements CommentsInfoItemExtract
 
     @Nullable
     @Override
-    public DateWrapper getPublishedTime() throws ParsingException {
-        String textualPublishedTime = getTextualPublishedTime();
+    public DateWrapper getUploadDate() throws ParsingException {
+        String textualPublishedTime = getTextualUploadDate();
         if (timeAgoParser != null && textualPublishedTime != null && !textualPublishedTime.isEmpty()) {
             return timeAgoParser.parse(textualPublishedTime);
         } else {
@@ -97,7 +97,7 @@ public class YoutubeCommentsInfoItemExtractor implements CommentsInfoItemExtract
     }
 
     @Override
-    public String getAuthorThumbnail() throws ParsingException {
+    public String getUploaderAvatarUrl() throws ParsingException {
         try {
             JsonArray arr = JsonUtils.getArray(json, "authorThumbnail.thumbnails");
             return JsonUtils.getString(arr.getObject(2), "url");
@@ -107,7 +107,7 @@ public class YoutubeCommentsInfoItemExtractor implements CommentsInfoItemExtract
     }
 
     @Override
-    public String getAuthorName() throws ParsingException {
+    public String getUploaderName() throws ParsingException {
         try {
             return YoutubeCommentsExtractor.getYoutubeText(JsonUtils.getObject(json, "authorText"));
         } catch (Exception e) {
@@ -116,7 +116,7 @@ public class YoutubeCommentsInfoItemExtractor implements CommentsInfoItemExtract
     }
 
     @Override
-    public String getAuthorEndpoint() throws ParsingException {
+    public String getUploaderUrl() throws ParsingException {
         try {
             return "https://youtube.com/channel/" + JsonUtils.getString(json, "authorEndpoint.browseEndpoint.browseId");
         } catch (Exception e) {

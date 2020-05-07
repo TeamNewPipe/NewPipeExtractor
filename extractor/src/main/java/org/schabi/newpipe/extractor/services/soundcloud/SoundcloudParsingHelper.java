@@ -15,6 +15,9 @@ import org.schabi.newpipe.extractor.downloader.Response;
 import org.schabi.newpipe.extractor.exceptions.ExtractionException;
 import org.schabi.newpipe.extractor.exceptions.ParsingException;
 import org.schabi.newpipe.extractor.exceptions.ReCaptchaException;
+import org.schabi.newpipe.extractor.services.soundcloud.extractors.SoundcloudChannelInfoItemExtractor;
+import org.schabi.newpipe.extractor.services.soundcloud.extractors.SoundcloudStreamExtractor;
+import org.schabi.newpipe.extractor.services.soundcloud.extractors.SoundcloudStreamInfoItemExtractor;
 import org.schabi.newpipe.extractor.stream.StreamInfoItemsCollector;
 import org.schabi.newpipe.extractor.utils.Parser;
 import org.schabi.newpipe.extractor.utils.Parser.RegexException;
@@ -86,10 +89,12 @@ public class SoundcloudParsingHelper {
         }
     }
 
-    static Calendar parseDate(String textualUploadDate) throws ParsingException {
+    public static Calendar parseDateFrom(String textualUploadDate) throws ParsingException {
         Date date;
         try {
-            date = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss'Z'").parse(textualUploadDate);
+            SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss'Z'");
+            sdf.setTimeZone(TimeZone.getTimeZone("GMT"));
+            date = sdf.parse(textualUploadDate);
         } catch (ParseException e1) {
             try {
                 date = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss +0000").parse(textualUploadDate);
@@ -256,13 +261,13 @@ public class SoundcloudParsingHelper {
     }
 
     @Nonnull
-    static String getUploaderUrl(JsonObject object) {
+    public static String getUploaderUrl(JsonObject object) {
         String url = object.getObject("user").getString("permalink_url", EMPTY_STRING);
         return replaceHttpWithHttps(url);
     }
 
     @Nonnull
-    static String getAvatarUrl(JsonObject object) {
+    public static String getAvatarUrl(JsonObject object) {
         String url = object.getObject("user").getString("avatar_url", EMPTY_STRING);
         return replaceHttpWithHttps(url);
     }

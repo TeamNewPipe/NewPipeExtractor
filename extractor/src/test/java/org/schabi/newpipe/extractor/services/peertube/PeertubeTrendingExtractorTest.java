@@ -3,17 +3,10 @@ package org.schabi.newpipe.extractor.services.peertube;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import org.schabi.newpipe.DownloaderTestImpl;
-import org.schabi.newpipe.extractor.ListExtractor;
 import org.schabi.newpipe.extractor.NewPipe;
 import org.schabi.newpipe.extractor.exceptions.ParsingException;
-import org.schabi.newpipe.extractor.kiosk.KioskExtractor;
 import org.schabi.newpipe.extractor.services.BaseListExtractorTest;
 import org.schabi.newpipe.extractor.services.peertube.extractors.PeertubeTrendingExtractor;
-import org.schabi.newpipe.extractor.services.soundcloud.SoundcloudChartsExtractor;
-import org.schabi.newpipe.extractor.services.youtube.extractors.YoutubeTrendingExtractor;
-import org.schabi.newpipe.extractor.stream.StreamInfoItem;
-
-import java.util.List;
 
 import static org.junit.Assert.*;
 import static org.schabi.newpipe.extractor.ServiceList.*;

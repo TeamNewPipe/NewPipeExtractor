@@ -2,7 +2,6 @@ package org.schabi.newpipe.extractor.services.youtube.extractors;
 
 import com.grack.nanojson.JsonArray;
 import com.grack.nanojson.JsonObject;
-
 import org.schabi.newpipe.extractor.StreamingService;
 import org.schabi.newpipe.extractor.channel.ChannelExtractor;
 import org.schabi.newpipe.extractor.downloader.Downloader;
@@ -11,19 +10,16 @@ import org.schabi.newpipe.extractor.exceptions.ExtractionException;
 import org.schabi.newpipe.extractor.exceptions.ParsingException;
 import org.schabi.newpipe.extractor.linkhandler.ListLinkHandler;
 import org.schabi.newpipe.extractor.localization.TimeAgoParser;
+import org.schabi.newpipe.extractor.services.youtube.YoutubeParsingHelper;
 import org.schabi.newpipe.extractor.services.youtube.linkHandler.YoutubeChannelLinkHandlerFactory;
-import org.schabi.newpipe.extractor.services.youtube.linkHandler.YoutubeParsingHelper;
 import org.schabi.newpipe.extractor.stream.StreamInfoItem;
 import org.schabi.newpipe.extractor.stream.StreamInfoItemsCollector;
 import org.schabi.newpipe.extractor.utils.Utils;
 
+import javax.annotation.Nonnull;
 import java.io.IOException;
 
-import javax.annotation.Nonnull;
-
-import static org.schabi.newpipe.extractor.services.youtube.linkHandler.YoutubeParsingHelper.fixThumbnailUrl;
-import static org.schabi.newpipe.extractor.services.youtube.linkHandler.YoutubeParsingHelper.getJsonResponse;
-import static org.schabi.newpipe.extractor.services.youtube.linkHandler.YoutubeParsingHelper.getTextFromObject;
+import static org.schabi.newpipe.extractor.services.youtube.YoutubeParsingHelper.*;
 import static org.schabi.newpipe.extractor.utils.JsonUtils.EMPTY_STRING;
 
 /*
@@ -53,7 +49,7 @@ public class YoutubeChannelExtractor extends ChannelExtractor {
 
     /**
      * Some channels have response redirects and the only way to reliably get the id is by saving it.
-     *<p>
+     * <p>
      * "Movies & Shows":
      * <pre>
      * UCuJcl0Ju-gPDoksRjK1ya-w ┐
@@ -167,7 +163,7 @@ public class YoutubeChannelExtractor extends ChannelExtractor {
     public String getBannerUrl() throws ParsingException {
         try {
             String url = initialData.getObject("header").getObject("c4TabbedHeaderRenderer").getObject("banner")
-                        .getArray("thumbnails").getObject(0).getString("url");
+                    .getArray("thumbnails").getObject(0).getString("url");
 
             if (url == null || url.contains("s.ytimg.com") || url.contains("default_banner")) {
                 return null;

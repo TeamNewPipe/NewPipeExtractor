@@ -1,4 +1,4 @@
-package org.schabi.newpipe.extractor.services.youtube.linkHandler;
+package org.schabi.newpipe.extractor.services.youtube;
 
 
 import com.grack.nanojson.JsonArray;
