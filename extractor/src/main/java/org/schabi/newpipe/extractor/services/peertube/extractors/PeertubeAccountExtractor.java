@@ -76,6 +76,21 @@ public class PeertubeAccountExtractor extends ChannelExtractor {
     }
 
     @Override
+    public String getSubChannelName() throws ParsingException {
+        return "";
+    }
+
+    @Override
+    public String getSubChannelUrl() throws ParsingException {
+        return "";
+    }
+
+    @Override
+    public String getSubChannelAvatarUrl() throws ParsingException {
+        return "";
+    }
+
+    @Override
     public InfoItemsPage<StreamInfoItem> getInitialPage() throws IOException, ExtractionException {
         super.fetchPage();
         return initPage;

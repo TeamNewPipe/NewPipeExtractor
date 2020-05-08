@@ -94,15 +94,60 @@ public class ChannelInfo extends ListInfo<StreamInfoItem> {
             info.addError(e);
         }
 
+        try {
+            info.setSubChannelName(extractor.getSubChannelName());
+        } catch (Exception e) {
+            info.addError(e);
+        }
+
+        try {
+            info.setSubChannelUrl(extractor.getSubChannelUrl());
+        } catch (Exception e) {
+            info.addError(e);
+        }
+
+        try {
+            info.setSubChannelAvatarUrl(extractor.getSubChannelAvatarUrl());
+        } catch (Exception e) {
+            info.addError(e);
+        }
+
         return info;
     }
 
     private String avatarUrl;
+    private String subChannelName;
+    private String subChannelUrl;
+    private String subChannelAvatarUrl;
     private String bannerUrl;
     private String feedUrl;
     private long subscriberCount = -1;
     private String description;
     private String[] donationLinks;
+
+    public String getSubChannelName() {
+        return subChannelName;
+    }
+
+    public void setSubChannelName(String subChannelName) {
+        this.subChannelName = subChannelName;
+    }
+
+    public String getSubChannelUrl() {
+        return subChannelUrl;
+    }
+
+    public void setSubChannelUrl(String subChannelUrl) {
+        this.subChannelUrl = subChannelUrl;
+    }
+
+    public String getSubChannelAvatarUrl() {
+        return subChannelAvatarUrl;
+    }
+
+    public void setSubChannelAvatarUrl(String subChannelAvatarUrl) {
+        this.subChannelAvatarUrl = subChannelAvatarUrl;
+    }
 
     public String getAvatarUrl() {
         return avatarUrl;

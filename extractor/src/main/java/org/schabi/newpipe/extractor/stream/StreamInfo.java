@@ -224,6 +224,28 @@ public class StreamInfo extends Info {
             streamInfo.addError(e);
         }
         try {
+            streamInfo.setUploaderAvatarUrl(extractor.getUploaderAvatarUrl());
+        } catch (Exception e) {
+            streamInfo.addError(e);
+        }
+
+        try {
+            streamInfo.setSubChannelName(extractor.getSubChannelName());
+        } catch (Exception e) {
+            streamInfo.addError(e);
+        }
+        try {
+            streamInfo.setSubChannelUrl(extractor.getSubChannelUrl());
+        } catch (Exception e) {
+            streamInfo.addError(e);
+        }
+        try {
+            streamInfo.setSubChannelAvatarUrl(extractor.getSubChannelAvatarUrl());
+        } catch (Exception e) {
+            streamInfo.addError(e);
+        }
+
+        try {
             streamInfo.setDescription(extractor.getDescription());
         } catch (Exception e) {
             streamInfo.addError(e);
@@ -240,11 +262,6 @@ public class StreamInfo extends Info {
         }
         try {
             streamInfo.setUploadDate(extractor.getUploadDate());
-        } catch (Exception e) {
-            streamInfo.addError(e);
-        }
-        try {
-            streamInfo.setUploaderAvatarUrl(extractor.getUploaderAvatarUrl());
         } catch (Exception e) {
             streamInfo.addError(e);
         }
@@ -331,6 +348,10 @@ public class StreamInfo extends Info {
     private String uploaderName = "";
     private String uploaderUrl = "";
     private String uploaderAvatarUrl = "";
+
+    private String subChannelName = "";
+    private String subChannelUrl = "";
+    private String subChannelAvatarUrl = "";
 
     private List<VideoStream> videoStreams = new ArrayList<>();
     private List<AudioStream> audioStreams = new ArrayList<>();
@@ -484,6 +505,30 @@ public class StreamInfo extends Info {
 
     public void setUploaderAvatarUrl(String uploaderAvatarUrl) {
         this.uploaderAvatarUrl = uploaderAvatarUrl;
+    }
+
+    public String getSubChannelName() {
+        return subChannelName;
+    }
+
+    public void setSubChannelName(String subChannelName) {
+        this.subChannelName = subChannelName;
+    }
+
+    public String getSubChannelUrl() {
+        return subChannelUrl;
+    }
+
+    public void setSubChannelUrl(String subChannelUrl) {
+        this.subChannelUrl = subChannelUrl;
+    }
+
+    public String getSubChannelAvatarUrl() {
+        return subChannelAvatarUrl;
+    }
+
+    public void setSubChannelAvatarUrl(String subChannelAvatarUrl) {
+        this.subChannelAvatarUrl = subChannelAvatarUrl;
     }
 
     public List<VideoStream> getVideoStreams() {

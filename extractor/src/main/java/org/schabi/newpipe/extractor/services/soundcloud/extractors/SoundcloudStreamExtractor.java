@@ -144,6 +144,24 @@ public class SoundcloudStreamExtractor extends StreamExtractor {
 
     @Nonnull
     @Override
+    public String getSubChannelUrl() throws ParsingException {
+        return "";
+    }
+
+    @Nonnull
+    @Override
+    public String getSubChannelName() throws ParsingException {
+        return "";
+    }
+
+    @Nonnull
+    @Override
+    public String getSubChannelAvatarUrl() throws ParsingException {
+        return "";
+    }
+
+    @Nonnull
+    @Override
     public String getDashMpdUrl() {
         return "";
     }
