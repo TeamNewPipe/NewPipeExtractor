@@ -79,6 +79,7 @@ public class YoutubeStreamLinkHandlerFactoryTest {
         assertEquals("EhxJLojIE_o", linkHandler.fromUrl("http://www.youtube.com/attribution_link?a=JdfC0C9V6ZI&u=%2Fwatch%3Fv%3DEhxJLojIE_o%26feature%3Dshare").getId());
         assertEquals("jZViOEv90dI", linkHandler.fromUrl("vnd.youtube://www.youtube.com/watch?v=jZViOEv90dI").getId());
         assertEquals("jZViOEv90dI", linkHandler.fromUrl("vnd.youtube:jZViOEv90dI").getId());
+        assertEquals("n8X9_MgEdCg", linkHandler.fromUrl("vnd.youtube://n8X9_MgEdCg").getId());
         assertEquals("O0EDx9WAelc", linkHandler.fromUrl("https://music.youtube.com/watch?v=O0EDx9WAelc").getId());
     }
 
