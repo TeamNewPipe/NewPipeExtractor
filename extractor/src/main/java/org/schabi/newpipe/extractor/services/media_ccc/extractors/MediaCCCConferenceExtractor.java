@@ -53,17 +53,17 @@ public class MediaCCCConferenceExtractor extends ChannelExtractor {
     }
 
     @Override
-    public String getSubChannelName() throws ParsingException {
+    public String getParentChannelName() throws ParsingException {
         return "";
     }
 
     @Override
-    public String getSubChannelUrl() throws ParsingException {
+    public String getParentChannelUrl() throws ParsingException {
         return "";
     }
 
     @Override
-    public String getSubChannelAvatarUrl() throws ParsingException {
+    public String getParentChannelAvatarUrl() throws ParsingException {
         return "";
     }
 

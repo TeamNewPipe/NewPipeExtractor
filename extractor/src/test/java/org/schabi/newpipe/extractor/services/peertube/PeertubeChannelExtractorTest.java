@@ -85,13 +85,18 @@ public class PeertubeChannelExtractorTest {
         }
 
         @Test
-        public void testSubChannelName() throws ParsingException {
-            assertEquals("libux", extractor.getSubChannelName());
+        public void testParentChannelName() throws ParsingException {
+            assertEquals("libux", extractor.getParentChannelName());
         }
 
         @Test
-        public void testSubChannelUrl() throws ParsingException {
-            assertEquals("https://peertube.mastodon.host/accounts/libux", extractor.getSubChannelUrl());
+        public void testParentChannelUrl() throws ParsingException {
+            assertEquals("https://peertube.mastodon.host/accounts/libux", extractor.getParentChannelUrl());
+        }
+
+        @Test
+        public void testParentChannelAvatarUrl() throws ParsingException {
+            assertIsSecureUrl(extractor.getParentChannelAvatarUrl());
         }
 
         @Test
@@ -192,13 +197,18 @@ public class PeertubeChannelExtractorTest {
         }
 
         @Test
-        public void testSubChannelName() throws ParsingException {
-            assertEquals("booteille", extractor.getSubChannelName());
+        public void testParentChannelName() throws ParsingException {
+            assertEquals("booteille", extractor.getParentChannelName());
         }
 
         @Test
-        public void testSubChannelUrl() throws ParsingException {
-            assertEquals("https://peertube.mastodon.host/accounts/booteille", extractor.getSubChannelUrl());
+        public void testParentChannelUrl() throws ParsingException {
+            assertEquals("https://peertube.mastodon.host/accounts/booteille", extractor.getParentChannelUrl());
+        }
+
+        @Test
+        public void testParentChannelAvatarUrl() throws ParsingException {
+            assertIsSecureUrl(extractor.getParentChannelAvatarUrl());
         }
 
         @Test
