@@ -65,6 +65,24 @@ public class PeertubePlaylistExtractor extends PlaylistExtractor {
 
     @Nonnull
     @Override
+    public String getSubChannelName() throws ParsingException {
+        return playlistInfo.getObject("videoChannel").getString("displayName");
+    }
+
+    @Nonnull
+    @Override
+    public String getSubChannelUrl() throws ParsingException {
+        return playlistInfo.getObject("videoChannel").getString("url");
+    }
+
+    @Nonnull
+    @Override
+    public String getSubChannelAvatarUrl() throws ParsingException {
+        return getBaseUrl() + playlistInfo.getObject("videoChannel").getObject("avatar").getString("path");
+    }
+
+    @Nonnull
+    @Override
     public InfoItemsPage<StreamInfoItem> getInitialPage() throws IOException, ExtractionException {
         return getPage(initialPageUrl);
     }
