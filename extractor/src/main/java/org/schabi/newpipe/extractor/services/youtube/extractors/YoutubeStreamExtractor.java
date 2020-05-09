@@ -583,21 +583,14 @@ public class YoutubeStreamExtractor extends StreamExtractor {
     private static final String HTTPS = "https:";
     private static final String DECRYPTION_FUNC_NAME = "decrypt";
 
-    private final static String[] REGEXES = {
-            "\\b[cs]\\s*&&\\s*[adf]\\.set\\([^,]+\\s*,\\s*encodeURIComponent\\s*\\(\\s*([a-zA-Z0-9$]+)\\(",
-            "\\b[a-zA-Z0-9]+\\s*&&\\s*[a-zA-Z0-9]+\\.set\\([^,]+\\s*,\\s*encodeURIComponent\\s*\\(\\s*([a-zA-Z0-9$]+)\\(",
-            "\\b([a-zA-Z0-9$]{2})\\s*=\\s*function\\(\\s*a\\s*\\)\\s*\\{\\s*a\\s*=\\s*a\\.split\\(\\s*\"\"\\s*\\)",
-            "([a-zA-Z0-9$]+)\\s*=\\s*function\\(\\s*a\\s*\\)\\s*\\{\\s*a\\s*=\\s*a\\.split\\(\\s*\"\"\\s*\\)",
-            // Obsolete patterns
-            "[\"']signature[\"']\\s*,\\s*([a-zA-Z0-9$]+)\\(",
-            "\\.sig\\|\\|([a-zA-Z0-9$]+)\\(",
-            "yt\\.akamaized\\.net/\\)\\s*\\|\\|\\s*.*?\\s*[cs]\\s*&&\\s*[adf]\\.set\\([^,]+\\s*,\\s*(?:encodeURIComponent\\s*\\()?\\s*([a-zA-Z0-9$]+)\\(",
-            "\\b[cs]\\s*&&\\s*[adf]\\.set\\([^,]+\\s*,\\s*([a-zA-Z0-9$]+)\\(",
-            "\\b[a-zA-Z0-9]+\\s*&&\\s*[a-zA-Z0-9]+\\.set\\([^,]+\\s*,\\s*([a-zA-Z0-9$]+)\\(",
-            "\\bc\\s*&&\\s*a\\.set\\([^,]+\\s*,\\s*\\([^)]*\\)\\s*\\(\\s*([a-zA-Z0-9$]+)\\(",
-            "\\bc\\s*&&\\s*[a-zA-Z0-9]+\\.set\\([^,]+\\s*,\\s*\\([^)]*\\)\\s*\\(\\s*([a-zA-Z0-9$]+)\\(",
-            "\\bc\\s*&&\\s*[a-zA-Z0-9]+\\.set\\([^,]+\\s*,\\s*\\([^)]*\\)\\s*\\(\\s*([a-zA-Z0-9$]+)\\("
-    };
+    private final static String DECRYPTION_SIGNATURE_FUNCTION_REGEX =
+            "([\\w$]+)\\s*=\\s*function\\((\\w+)\\)\\{\\s*\\2=\\s*\\2\\.split\\(\"\"\\)\\s*;";
+    private final static String DECRYPTION_SIGNATURE_FUNCTION_REGEX_2 =
+            "\\b([\\w$]{2})\\s*=\\s*function\\((\\w+)\\)\\{\\s*\\2=\\s*\\2\\.split\\(\"\"\\)\\s*;";
+    private final static String DECRYPTION_AKAMAIZED_STRING_REGEX =
+            "yt\\.akamaized\\.net/\\)\\s*\\|\\|\\s*.*?\\s*c\\s*&&\\s*d\\.set\\([^,]+\\s*,\\s*(:encodeURIComponent\\s*\\()([a-zA-Z0-9$]+)\\(";
+    private final static String DECRYPTION_AKAMAIZED_SHORT_STRING_REGEX =
+            "\\bc\\s*&&\\s*d\\.set\\([^,]+\\s*,\\s*(:encodeURIComponent\\s*\\()([a-zA-Z0-9$]+)\\(";
 
     private volatile String decryptionCode = "";
 
@@ -774,15 +767,20 @@ public class YoutubeStreamExtractor extends StreamExtractor {
         return result == null ? "" : result.toString();
     }
 
-    private String getDecryptionFuncName(final String playerCode) throws DecryptException {
+    private String getDecryptionFuncName(String playerCode) throws DecryptException {
+        String[] decryptionFuncNameRegexes = {
+                DECRYPTION_SIGNATURE_FUNCTION_REGEX_2,
+                DECRYPTION_SIGNATURE_FUNCTION_REGEX,
+                DECRYPTION_AKAMAIZED_SHORT_STRING_REGEX,
+                DECRYPTION_AKAMAIZED_STRING_REGEX
+        };
         Parser.RegexException exception = null;
-        for (final String regex : REGEXES) {
+        for (String regex : decryptionFuncNameRegexes) {
             try {
                 return Parser.matchGroup1(regex, playerCode);
             } catch (Parser.RegexException re) {
-                if (exception == null) {
+                if (exception == null)
                     exception = re;
-                }
             }
         }
         throw new DecryptException("Could not find decrypt function with any of the given patterns.", exception);
