@@ -927,8 +927,12 @@ public class YoutubeStreamExtractor extends StreamExtractor {
                             streamUrl = formatData.getString("url");
                         } else {
                             // this url has an encrypted signature
-                            Map<String, String> cipher = Parser.compatParseMap(formatData.getString("cipher"));
-                            streamUrl = cipher.get("url") + "&" + cipher.get("sp") + "=" + decryptSignature(cipher.get("s"), decryptionCode);
+                            final String cipherString = formatData.has("cipher")
+                                    ? formatData.getString("cipher")
+                                    : formatData.getString("signatureCipher");
+                            final Map<String, String> cipher = Parser.compatParseMap(cipherString);
+                            streamUrl = cipher.get("url") + "&" + cipher.get("sp") + "="
+                                    + decryptSignature(cipher.get("s"), decryptionCode);
                         }
 
                         urlAndItags.put(streamUrl, itagItem);
