@@ -52,5 +52,21 @@ public class PeertubePlaylistExtractorTest {
         public void testGetStreamCount() throws ParsingException {
             assertEquals(35, extractor.getStreamCount());
         }
+
+        @Test
+        public void testGetSubChannelUrl() throws ParsingException {
+            assertEquals("https://skeptikon.fr/video-channels/metadechoc_channel", extractor.getSubChannelUrl());
+        }
+
+        @Test
+        public void testGetSubChannelName() throws ParsingException {
+            assertEquals("SHOCKING !", extractor.getSubChannelName());
+        }
+
+        @Test
+        public void testGetSubChannelAvatarUrl() throws ParsingException {
+            assertEquals("https://framatube.org/lazy-static/avatars/f1dcd0e8-e651-42ed-ae81-bb3bd4aff2bc.png",
+                    extractor.getSubChannelAvatarUrl());
+        }
     }
 }
