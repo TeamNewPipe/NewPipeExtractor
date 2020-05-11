@@ -21,6 +21,8 @@ import java.io.IOException;
 
 import javax.annotation.Nonnull;
 
+import static org.schabi.newpipe.extractor.utils.Utils.isNullOrEmpty;
+
 public class SoundcloudCommentsExtractor extends CommentsExtractor {
     public SoundcloudCommentsExtractor(final StreamingService service, final ListLinkHandler uiHandler) {
         super(service, uiHandler);
@@ -48,6 +50,10 @@ public class SoundcloudCommentsExtractor extends CommentsExtractor {
 
     @Override
     public InfoItemsPage<CommentsInfoItem> getPage(final Page page) throws ExtractionException, IOException {
+        if (page == null || isNullOrEmpty(page.getUrl())) {
+            throw new IllegalArgumentException("Page doesn't contain an URL");
+        }
+
         final Downloader downloader = NewPipe.getDownloader();
         final Response response = downloader.get(page.getUrl());
 

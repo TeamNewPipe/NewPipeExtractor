@@ -187,6 +187,10 @@ public class YoutubeMusicSearchExtractor extends SearchExtractor {
 
     @Override
     public InfoItemsPage<InfoItem> getPage(final Page page) throws IOException, ExtractionException {
+        if (page == null || isNullOrEmpty(page.getUrl())) {
+            throw new IllegalArgumentException("Page doesn't contain an URL");
+        }
+
         final InfoItemsSearchCollector collector = new InfoItemsSearchCollector(getServiceId());
 
         final String[] youtubeMusicKeys = YoutubeParsingHelper.getYoutubeMusicKeys();

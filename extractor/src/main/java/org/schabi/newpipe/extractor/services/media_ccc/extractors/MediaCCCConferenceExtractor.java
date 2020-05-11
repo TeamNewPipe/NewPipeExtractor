@@ -80,7 +80,6 @@ public class MediaCCCConferenceExtractor extends ChannelExtractor {
     }
 
     @Override
-
     public InfoItemsPage<StreamInfoItem> getPage(final Page page) {
         return InfoItemsPage.emptyPage();
     }

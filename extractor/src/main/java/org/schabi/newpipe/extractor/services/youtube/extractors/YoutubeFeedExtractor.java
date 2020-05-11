@@ -68,7 +68,7 @@ public class YoutubeFeedExtractor extends FeedExtractor {
     }
 
     @Override
-    public InfoItemsPage<StreamInfoItem> getPage(Page page) {
-        return null;
+    public InfoItemsPage<StreamInfoItem> getPage(final Page page) {
+        return InfoItemsPage.emptyPage();
     }
 }

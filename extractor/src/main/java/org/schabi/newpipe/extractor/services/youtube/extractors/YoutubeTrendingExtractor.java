@@ -62,8 +62,8 @@ public class YoutubeTrendingExtractor extends KioskExtractor<StreamInfoItem> {
     }
 
     @Override
-    public InfoItemsPage<StreamInfoItem> getPage(Page page) {
-        return null;
+    public InfoItemsPage<StreamInfoItem> getPage(final Page page) {
+        return InfoItemsPage.emptyPage();
     }
 
     @Nonnull

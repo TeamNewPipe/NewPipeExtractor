@@ -155,8 +155,11 @@ public class SoundcloudPlaylistExtractor extends PlaylistExtractor {
     }
 
     @Override
+    public InfoItemsPage<StreamInfoItem> getPage(final Page page) throws IOException, ExtractionException {
+        if (page == null || isNullOrEmpty(page.getIds())) {
+            throw new IllegalArgumentException("Page doesn't contain IDs");
+        }
 
-    public InfoItemsPage<StreamInfoItem> getPage(Page page) throws IOException, ExtractionException {
         final List<String> currentIds;
         final List<String> nextIds;
         if (page.getIds().size() <= STREAMS_PER_REQUESTED_PAGE) {

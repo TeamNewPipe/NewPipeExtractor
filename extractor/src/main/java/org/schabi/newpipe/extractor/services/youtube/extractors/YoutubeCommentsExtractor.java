@@ -30,6 +30,7 @@ import java.util.regex.Pattern;
 import javax.annotation.Nonnull;
 
 import static java.util.Collections.singletonList;
+import static org.schabi.newpipe.extractor.utils.Utils.isNullOrEmpty;
 
 public class YoutubeCommentsExtractor extends CommentsExtractor {
     // using the mobile site for comments because it loads faster and uses get requests instead of post
@@ -83,7 +84,11 @@ public class YoutubeCommentsExtractor extends CommentsExtractor {
     }
 
     @Override
-    public InfoItemsPage<CommentsInfoItem> getPage(Page page) throws IOException, ExtractionException {
+    public InfoItemsPage<CommentsInfoItem> getPage(final Page page) throws IOException, ExtractionException {
+        if (page == null || isNullOrEmpty(page.getUrl())) {
+            throw new IllegalArgumentException("Page doesn't contain an URL");
+        }
+
         String ajaxResponse = makeAjaxRequest(page.getUrl());
         JsonObject ajaxJson;
         try {

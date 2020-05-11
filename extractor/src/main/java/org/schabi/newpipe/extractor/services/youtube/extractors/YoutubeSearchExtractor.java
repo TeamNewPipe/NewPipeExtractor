@@ -117,6 +117,10 @@ public class YoutubeSearchExtractor extends SearchExtractor {
 
     @Override
     public InfoItemsPage<InfoItem> getPage(final Page page) throws IOException, ExtractionException {
+        if (page == null || isNullOrEmpty(page.getUrl())) {
+            throw new IllegalArgumentException("Page doesn't contain an URL");
+        }
+
         final InfoItemsSearchCollector collector = new InfoItemsSearchCollector(getServiceId());
         final JsonArray ajaxJson = getJsonResponse(page.getUrl(), getExtractorLocalization());
 

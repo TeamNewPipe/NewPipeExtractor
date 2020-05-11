@@ -200,7 +200,11 @@ public class YoutubePlaylistExtractor extends PlaylistExtractor {
 
     @Override
     public InfoItemsPage<StreamInfoItem> getPage(final Page page) throws IOException, ExtractionException {
-        StreamInfoItemsCollector collector = new StreamInfoItemsCollector(getServiceId());
+        if (page == null || isNullOrEmpty(page.getUrl())) {
+            throw new IllegalArgumentException("Page doesn't contain an URL");
+        }
+
+        final StreamInfoItemsCollector collector = new StreamInfoItemsCollector(getServiceId());
         final JsonArray ajaxJson = getJsonResponse(page.getUrl(), getExtractorLocalization());
 
         final JsonObject sectionListContinuation = ajaxJson.getObject(1).getObject("response")
