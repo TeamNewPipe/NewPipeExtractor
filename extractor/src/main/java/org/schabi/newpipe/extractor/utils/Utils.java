@@ -1,6 +1,5 @@
 package org.schabi.newpipe.extractor.utils;
 
-import com.grack.nanojson.JsonObject;
 import org.schabi.newpipe.extractor.exceptions.ParsingException;
 
 import java.io.UnsupportedEncodingException;
