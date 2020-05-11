@@ -19,6 +19,7 @@ import javax.annotation.Nonnull;
 
 import static org.schabi.newpipe.extractor.services.youtube.YoutubeParsingHelper.getJsonResponse;
 import static org.schabi.newpipe.extractor.services.youtube.YoutubeParsingHelper.getTextFromObject;
+import static org.schabi.newpipe.extractor.utils.Utils.isNullOrEmpty;
 
 /*
  * Created by Christian Schabesberger on 22.07.2018
@@ -99,7 +100,7 @@ public class YoutubeSearchExtractor extends SearchExtractor {
 
     @Override
     public InfoItemsPage<InfoItem> getPage(final String pageUrl) throws IOException, ExtractionException {
-        if (pageUrl == null || pageUrl.isEmpty()) {
+        if (isNullOrEmpty(pageUrl)) {
             throw new ExtractionException(new IllegalArgumentException("Page url is empty or null"));
         }
 
@@ -133,7 +134,7 @@ public class YoutubeSearchExtractor extends SearchExtractor {
     }
 
     private String getNextPageUrlFrom(final JsonArray continuations) throws ParsingException {
-        if (continuations == null || continuations.isEmpty()) {
+        if (isNullOrEmpty(continuations)) {
             return "";
         }
 

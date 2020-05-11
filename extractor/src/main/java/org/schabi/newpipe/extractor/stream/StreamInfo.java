@@ -105,7 +105,7 @@ public class StreamInfo extends Info {
         String name = extractor.getName();
         int ageLimit = extractor.getAgeLimit();
 
-        if ((streamType == StreamType.NONE) || (url == null || url.isEmpty()) || (id == null || id.isEmpty())
+        if ((streamType == StreamType.NONE) || isNullOrEmpty(url) || (isNullOrEmpty(id))
                 || (name == null /* streamInfo.title can be empty of course */) || (ageLimit == -1)) {
             throw new ExtractionException("Some important stream information was not given.");
         }

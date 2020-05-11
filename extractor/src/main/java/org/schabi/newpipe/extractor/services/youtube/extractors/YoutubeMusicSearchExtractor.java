@@ -167,7 +167,7 @@ public class YoutubeMusicSearchExtractor extends SearchExtractor {
 
     @Override
     public InfoItemsPage<InfoItem> getPage(final String pageUrl) throws IOException, ExtractionException {
-        if (pageUrl == null || pageUrl.isEmpty()) {
+        if (isNullOrEmpty(pageUrl)) {
             throw new ExtractionException(new IllegalArgumentException("Page url is empty or null"));
         }
 
@@ -470,7 +470,7 @@ public class YoutubeMusicSearchExtractor extends SearchExtractor {
     }
 
     private String getNextPageUrlFrom(final JsonArray continuations) throws ParsingException, IOException, ReCaptchaException {
-        if (continuations == null || continuations.isEmpty()) {
+        if (isNullOrEmpty(continuations)) {
             return "";
         }
 

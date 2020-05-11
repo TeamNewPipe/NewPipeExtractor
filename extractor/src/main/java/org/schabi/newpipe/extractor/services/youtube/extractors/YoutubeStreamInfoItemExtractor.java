@@ -106,7 +106,7 @@ public class YoutubeStreamInfoItemExtractor implements StreamInfoItemExtractor {
 
         String duration = getTextFromObject(videoInfo.getObject("lengthText"));
 
-        if (duration == null || duration.isEmpty()) {
+        if (isNullOrEmpty(duration)) {
             for (Object thumbnailOverlay : videoInfo.getArray("thumbnailOverlays")) {
                 if (((JsonObject) thumbnailOverlay).has("thumbnailOverlayTimeStatusRenderer")) {
                     duration = getTextFromObject(((JsonObject) thumbnailOverlay)
@@ -114,7 +114,7 @@ public class YoutubeStreamInfoItemExtractor implements StreamInfoItemExtractor {
                 }
             }
 
-            if (duration == null || duration.isEmpty()) throw new ParsingException("Could not get duration");
+            if (isNullOrEmpty(duration)) throw new ParsingException("Could not get duration");
         }
 
         return YoutubeParsingHelper.parseDurationString(duration);
@@ -124,13 +124,13 @@ public class YoutubeStreamInfoItemExtractor implements StreamInfoItemExtractor {
     public String getUploaderName() throws ParsingException {
         String name = getTextFromObject(videoInfo.getObject("longBylineText"));
 
-        if (name == null || name.isEmpty()) {
+        if (isNullOrEmpty(name)) {
             name = getTextFromObject(videoInfo.getObject("ownerText"));
 
-            if (name == null || name.isEmpty()) {
+            if (isNullOrEmpty(name)) {
                 name = getTextFromObject(videoInfo.getObject("shortBylineText"));
 
-                if (name == null || name.isEmpty()) throw new ParsingException("Could not get uploader name");
+                if (isNullOrEmpty(name)) throw new ParsingException("Could not get uploader name");
             }
         }
 
@@ -142,15 +142,15 @@ public class YoutubeStreamInfoItemExtractor implements StreamInfoItemExtractor {
         String url = getUrlFromNavigationEndpoint(videoInfo.getObject("longBylineText")
                 .getArray("runs").getObject(0).getObject("navigationEndpoint"));
 
-        if (url == null || url.isEmpty()) {
+        if (isNullOrEmpty(url)) {
             url = getUrlFromNavigationEndpoint(videoInfo.getObject("ownerText")
                     .getArray("runs").getObject(0).getObject("navigationEndpoint"));
 
-            if (url == null || url.isEmpty()) {
+            if (isNullOrEmpty(url)) {
                 url = getUrlFromNavigationEndpoint(videoInfo.getObject("shortBylineText")
                         .getArray("runs").getObject(0).getObject("navigationEndpoint"));
 
-                if (url == null || url.isEmpty()) throw new ParsingException("Could not get uploader url");
+                if (isNullOrEmpty(url)) throw new ParsingException("Could not get uploader url");
             }
         }
 

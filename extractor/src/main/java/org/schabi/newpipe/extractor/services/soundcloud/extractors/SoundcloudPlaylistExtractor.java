@@ -162,7 +162,7 @@ public class SoundcloudPlaylistExtractor extends PlaylistExtractor {
 
     @Override
     public InfoItemsPage<StreamInfoItem> getPage(String pageUrl) throws IOException, ExtractionException {
-        if (pageUrl == null || pageUrl.isEmpty()) {
+        if (isNullOrEmpty(pageUrl)) {
             throw new ExtractionException(new IllegalArgumentException("Page url is empty or null"));
         }
 

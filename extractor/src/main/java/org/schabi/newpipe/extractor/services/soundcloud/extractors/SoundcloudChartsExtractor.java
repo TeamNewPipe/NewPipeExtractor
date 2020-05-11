@@ -13,6 +13,7 @@ import javax.annotation.Nonnull;
 import java.io.IOException;
 
 import static org.schabi.newpipe.extractor.ServiceList.SoundCloud;
+import static org.schabi.newpipe.extractor.utils.Utils.isNullOrEmpty;
 
 public class SoundcloudChartsExtractor extends KioskExtractor<StreamInfoItem> {
     private StreamInfoItemsCollector collector = null;
@@ -36,7 +37,7 @@ public class SoundcloudChartsExtractor extends KioskExtractor<StreamInfoItem> {
 
     @Override
     public InfoItemsPage<StreamInfoItem> getPage(String pageUrl) throws IOException, ExtractionException {
-        if (pageUrl == null || pageUrl.isEmpty()) {
+        if (isNullOrEmpty(pageUrl)) {
             throw new ExtractionException(new IllegalArgumentException("Page url is empty or null"));
         }
 

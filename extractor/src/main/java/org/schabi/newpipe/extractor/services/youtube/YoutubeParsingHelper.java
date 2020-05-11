@@ -391,7 +391,7 @@ public class YoutubeParsingHelper {
      * @return text in the JSON object or {@code null}
      */
     public static String getTextFromObject(JsonObject textObject, boolean html) throws ParsingException {
-        if (textObject == null || textObject.isEmpty()) return null;
+        if (isNullOrEmpty(textObject)) return null;
 
         if (textObject.has("simpleText")) return textObject.getString("simpleText");
 

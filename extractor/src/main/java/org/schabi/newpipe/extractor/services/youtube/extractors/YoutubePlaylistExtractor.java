@@ -23,6 +23,7 @@ import static org.schabi.newpipe.extractor.services.youtube.YoutubeParsingHelper
 import static org.schabi.newpipe.extractor.services.youtube.YoutubeParsingHelper.getJsonResponse;
 import static org.schabi.newpipe.extractor.services.youtube.YoutubeParsingHelper.getTextFromObject;
 import static org.schabi.newpipe.extractor.services.youtube.YoutubeParsingHelper.getUrlFromNavigationEndpoint;
+import static org.schabi.newpipe.extractor.utils.Utils.isNullOrEmpty;
 
 @SuppressWarnings("WeakerAccess")
 public class YoutubePlaylistExtractor extends PlaylistExtractor {
@@ -93,11 +94,11 @@ public class YoutubePlaylistExtractor extends PlaylistExtractor {
         String url = playlistInfo.getObject("thumbnailRenderer").getObject("playlistVideoThumbnailRenderer")
                 .getObject("thumbnail").getArray("thumbnails").getObject(0).getString("url");
 
-        if (url == null || url.isEmpty()) {
+        if (isNullOrEmpty(url)) {
             url = initialData.getObject("microformat").getObject("microformatDataRenderer").getObject("thumbnail")
                     .getArray("thumbnails").getObject(0).getString("url");
 
-            if (url == null || url.isEmpty()) throw new ParsingException("Could not get playlist thumbnail");
+            if (isNullOrEmpty(url)) throw new ParsingException("Could not get playlist thumbnail");
         }
 
         return fixThumbnailUrl(url);
@@ -166,7 +167,7 @@ public class YoutubePlaylistExtractor extends PlaylistExtractor {
 
     @Override
     public InfoItemsPage<StreamInfoItem> getPage(final String pageUrl) throws IOException, ExtractionException {
-        if (pageUrl == null || pageUrl.isEmpty()) {
+        if (isNullOrEmpty(pageUrl)) {
             throw new ExtractionException(new IllegalArgumentException("Page url is empty or null"));
         }
 
@@ -182,7 +183,7 @@ public class YoutubePlaylistExtractor extends PlaylistExtractor {
     }
 
     private String getNextPageUrlFrom(JsonArray continuations) {
-        if (continuations == null || continuations.isEmpty()) {
+        if (isNullOrEmpty(continuations)) {
             return "";
         }
 

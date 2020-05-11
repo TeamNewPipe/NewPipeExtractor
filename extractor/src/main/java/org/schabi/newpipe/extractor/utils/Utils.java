@@ -1,5 +1,6 @@
 package org.schabi.newpipe.extractor.utils;
 
+import com.grack.nanojson.JsonObject;
 import org.schabi.newpipe.extractor.exceptions.ParsingException;
 
 import java.io.UnsupportedEncodingException;
@@ -8,6 +9,7 @@ import java.net.URL;
 import java.net.URLDecoder;
 import java.util.Collection;
 import java.util.List;
+import java.util.Map;
 
 public class Utils {
 
@@ -72,7 +74,7 @@ public class Utils {
      * @param url     the url to be tested
      */
     public static void checkUrl(String pattern, String url) throws ParsingException {
-        if (url == null || url.isEmpty()) {
+        if (isNullOrEmpty(url)) {
             throw new IllegalArgumentException("Url can't be null or empty");
         }
 
@@ -193,7 +195,13 @@ public class Utils {
         return str == null || str.isEmpty();
     }
 
+    // can be used for JsonArrays
     public static boolean isNullOrEmpty(final Collection<?> collection) {
         return collection == null || collection.isEmpty();
+    }
+
+    // can be used for JsonObjects
+    public static boolean isNullOrEmpty(final Map map) {
+        return map == null || map.isEmpty();
     }
 }

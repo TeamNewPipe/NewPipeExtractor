@@ -18,6 +18,7 @@ import javax.annotation.Nonnull;
 import java.io.IOException;
 
 import static org.schabi.newpipe.extractor.utils.JsonUtils.EMPTY_STRING;
+import static org.schabi.newpipe.extractor.utils.Utils.isNullOrEmpty;
 
 @SuppressWarnings("WeakerAccess")
 public class SoundcloudChannelExtractor extends ChannelExtractor {
@@ -132,7 +133,7 @@ public class SoundcloudChannelExtractor extends ChannelExtractor {
 
     @Override
     public InfoItemsPage<StreamInfoItem> getPage(final String pageUrl) throws IOException, ExtractionException {
-        if (pageUrl == null || pageUrl.isEmpty()) {
+        if (isNullOrEmpty(pageUrl)) {
             throw new ExtractionException(new IllegalArgumentException("Page url is empty or null"));
         }
 

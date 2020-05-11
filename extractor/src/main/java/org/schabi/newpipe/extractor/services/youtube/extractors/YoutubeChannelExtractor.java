@@ -245,7 +245,7 @@ public class YoutubeChannelExtractor extends ChannelExtractor {
 
     @Override
     public InfoItemsPage<StreamInfoItem> getPage(String pageUrl) throws IOException, ExtractionException {
-        if (pageUrl == null || pageUrl.isEmpty()) {
+        if (isNullOrEmpty(pageUrl)) {
             throw new ExtractionException(new IllegalArgumentException("Page url is empty or null"));
         }
 
@@ -266,7 +266,7 @@ public class YoutubeChannelExtractor extends ChannelExtractor {
 
 
     private String getNextPageUrlFrom(JsonArray continuations) {
-        if (continuations == null || continuations.isEmpty()) {
+        if (isNullOrEmpty(continuations)) {
             return "";
         }
 

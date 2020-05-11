@@ -86,7 +86,7 @@ public final class DefaultTests {
     public static <T extends InfoItem> void assertNoMoreItems(ListExtractor<T> extractor) throws Exception {
         assertFalse("More items available when it shouldn't", extractor.hasNextPage());
         final String nextPageUrl = extractor.getNextPageUrl();
-        assertTrue("Next page is not empty or null", nextPageUrl == null || nextPageUrl.isEmpty());
+        assertTrue("Next page is not empty or null", isNullOrEmpty(nextPageUrl));
     }
 
     public static void assertNoDuplicatedItems(StreamingService expectedService,
