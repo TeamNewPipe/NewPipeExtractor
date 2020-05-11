@@ -2,12 +2,15 @@ package org.schabi.newpipe.extractor;
 
 import org.schabi.newpipe.extractor.exceptions.ExtractionException;
 import org.schabi.newpipe.extractor.linkhandler.ListLinkHandler;
+import org.schabi.newpipe.extractor.utils.Utils;
 
 import java.io.IOException;
 import java.util.Collections;
 import java.util.List;
 
 import javax.annotation.Nonnull;
+
+import static org.schabi.newpipe.extractor.utils.Utils.isNullOrEmpty;
 
 /**
  * Base class to extractors that have a list (e.g. playlists, users).
@@ -63,8 +66,7 @@ public abstract class ListExtractor<R extends InfoItem> extends Extractor {
     public abstract InfoItemsPage<R> getPage(final String pageUrl) throws IOException, ExtractionException;
 
     public boolean hasNextPage() throws IOException, ExtractionException {
-        final String nextPageUrl = getNextPageUrl();
-        return nextPageUrl != null && !nextPageUrl.isEmpty();
+        return !isNullOrEmpty(getNextPageUrl());
     }
 
     @Override
@@ -123,7 +125,7 @@ public abstract class ListExtractor<R extends InfoItem> extends Extractor {
         }
 
         public boolean hasNextPage() {
-            return nextPageUrl != null && !nextPageUrl.isEmpty();
+            return !isNullOrEmpty(nextPageUrl);
         }
 
         public List<T> getItems() {

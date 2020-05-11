@@ -5,6 +5,8 @@ import org.schabi.newpipe.extractor.MediaFormat;
 import java.io.Serializable;
 import java.util.List;
 
+import static org.schabi.newpipe.extractor.utils.Utils.isNullOrEmpty;
+
 /**
  * Creates a stream object from url, format and optional torrent url
  */
@@ -61,7 +63,7 @@ public abstract class Stream implements Serializable {
      * Check if the list already contains one stream with equals stats
      */
     public static boolean containSimilarStream(Stream stream, List<? extends Stream> streamList) {
-        if (stream == null || streamList == null) return false;
+        if (isNullOrEmpty(streamList)) return false;
         for (Stream cmpStream : streamList) {
             if (stream.equalStats(cmpStream)) return true;
         }

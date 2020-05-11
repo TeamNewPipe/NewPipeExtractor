@@ -54,6 +54,7 @@ import javax.annotation.Nullable;
 
 import static org.schabi.newpipe.extractor.services.youtube.YoutubeParsingHelper.*;
 import static org.schabi.newpipe.extractor.utils.JsonUtils.EMPTY_STRING;
+import static org.schabi.newpipe.extractor.utils.Utils.isNullOrEmpty;
 
 /*
  * Created by Christian Schabesberger on 06.08.15.
@@ -116,10 +117,10 @@ public class YoutubeStreamExtractor extends StreamExtractor {
         assertPageFetched();
         String title = getTextFromObject(getVideoPrimaryInfoRenderer().getObject("title"));
 
-        if (title == null || title.isEmpty()) {
+        if (isNullOrEmpty(title)) {
             title = playerResponse.getObject("videoDetails").getString("title");
 
-            if (title == null || title.isEmpty()) throw new ParsingException("Could not get name");
+            if (isNullOrEmpty(title)) throw new ParsingException("Could not get name");
         }
 
         return title;
@@ -167,7 +168,7 @@ public class YoutubeStreamExtractor extends StreamExtractor {
     public DateWrapper getUploadDate() throws ParsingException {
         final String textualUploadDate = getTextualUploadDate();
 
-        if (textualUploadDate == null || textualUploadDate.isEmpty()) {
+        if (isNullOrEmpty(textualUploadDate)) {
             return null;
         }
 
@@ -204,7 +205,7 @@ public class YoutubeStreamExtractor extends StreamExtractor {
 
     @Override
     public int getAgeLimit() {
-        if (initialData == null || initialData.isEmpty()) throw new IllegalStateException("initialData is not parsed yet");
+        if (isNullOrEmpty(initialData)) throw new IllegalStateException("initialData is not parsed yet");
 
         return ageLimit;
     }
@@ -248,10 +249,10 @@ public class YoutubeStreamExtractor extends StreamExtractor {
         String views = getTextFromObject(getVideoPrimaryInfoRenderer().getObject("viewCount")
                     .getObject("videoViewCountRenderer").getObject("viewCount"));
 
-        if (views == null || views.isEmpty()) {
+        if (isNullOrEmpty(views)) {
             views = playerResponse.getObject("videoDetails").getString("viewCount");
 
-            if (views == null || views.isEmpty()) throw new ParsingException("Could not get view count");
+            if (isNullOrEmpty(views)) throw new ParsingException("Could not get view count");
         }
 
         if (views.toLowerCase().contains("no views")) return 0;
@@ -329,10 +330,10 @@ public class YoutubeStreamExtractor extends StreamExtractor {
         String uploaderName = getTextFromObject(getVideoSecondaryInfoRenderer().getObject("owner")
                     .getObject("videoOwnerRenderer").getObject("title"));
 
-        if (uploaderName == null || uploaderName.isEmpty()) {
+        if (isNullOrEmpty(uploaderName)) {
             uploaderName = playerResponse.getObject("videoDetails").getString("author");
 
-            if (uploaderName == null || uploaderName.isEmpty()) throw new ParsingException("Could not get uploader name");
+            if (isNullOrEmpty(uploaderName)) throw new ParsingException("Could not get uploader name");
         }
 
         return uploaderName;

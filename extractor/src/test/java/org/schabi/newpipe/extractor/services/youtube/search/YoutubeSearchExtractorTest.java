@@ -20,6 +20,7 @@ import static org.schabi.newpipe.extractor.ExtractorAsserts.assertEmptyErrors;
 import static org.schabi.newpipe.extractor.ServiceList.YouTube;
 import static org.schabi.newpipe.extractor.services.DefaultTests.assertNoDuplicatedItems;
 import static org.schabi.newpipe.extractor.services.youtube.linkHandler.YoutubeSearchQueryHandlerFactory.*;
+import static org.schabi.newpipe.extractor.utils.Utils.isNullOrEmpty;
 
 public class YoutubeSearchExtractorTest {
     public static class All extends DefaultSearchExtractorTest {
@@ -170,7 +171,7 @@ public class YoutubeSearchExtractorTest {
 
             assertFalse("More items available when it shouldn't", nextEmptyPage.hasNextPage());
             final String nextPageUrl = nextEmptyPage.getNextPageUrl();
-            assertTrue("Next page is not empty or null", nextPageUrl == null || nextPageUrl.isEmpty());
+            assertTrue("Next page is not empty or null", isNullOrEmpty(nextPageUrl));
         }
     }
 

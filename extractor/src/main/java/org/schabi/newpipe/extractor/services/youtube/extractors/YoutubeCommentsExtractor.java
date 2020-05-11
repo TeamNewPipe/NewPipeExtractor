@@ -27,6 +27,7 @@ import java.util.Map;
 import java.util.regex.Pattern;
 
 import static java.util.Collections.singletonList;
+import static org.schabi.newpipe.extractor.utils.Utils.isNullOrEmpty;
 
 
 public class YoutubeCommentsExtractor extends CommentsExtractor {
@@ -91,7 +92,7 @@ public class YoutubeCommentsExtractor extends CommentsExtractor {
 
     @Override
     public InfoItemsPage<CommentsInfoItem> getPage(String pageUrl) throws IOException, ExtractionException {
-        if (pageUrl == null || pageUrl.isEmpty()) {
+        if (isNullOrEmpty(pageUrl)) {
             throw new ExtractionException(new IllegalArgumentException("Page url is empty or null"));
         }
         String ajaxResponse = makeAjaxRequest(pageUrl);

@@ -8,6 +8,7 @@ import javax.annotation.Nullable;
 
 import static org.junit.Assert.assertEquals;
 import static org.schabi.newpipe.extractor.ExtractorAsserts.assertEmpty;
+import static org.schabi.newpipe.extractor.utils.Utils.isNullOrEmpty;
 
 public abstract class DefaultSearchExtractorTest extends DefaultListExtractorTest<SearchExtractor>
         implements BaseSearchExtractorTest {
@@ -25,7 +26,7 @@ public abstract class DefaultSearchExtractorTest extends DefaultListExtractorTes
     @Override
     public void testSearchSuggestion() throws Exception {
         final String expectedSearchSuggestion = expectedSearchSuggestion();
-        if (expectedSearchSuggestion == null || expectedSearchSuggestion.isEmpty()) {
+        if (isNullOrEmpty(expectedSearchSuggestion)) {
             assertEmpty("Suggestion was expected to be empty", extractor().getSearchSuggestion());
         } else {
             assertEquals(expectedSearchSuggestion, extractor().getSearchSuggestion());

@@ -11,6 +11,8 @@ import org.schabi.newpipe.extractor.utils.Utils;
 
 import javax.annotation.Nullable;
 
+import static org.schabi.newpipe.extractor.utils.Utils.isNullOrEmpty;
+
 public class YoutubeCommentsInfoItemExtractor implements CommentsInfoItemExtractor {
 
     private final JsonObject json;

@@ -21,6 +21,7 @@ import java.io.IOException;
 
 import static org.schabi.newpipe.extractor.services.youtube.YoutubeParsingHelper.*;
 import static org.schabi.newpipe.extractor.utils.JsonUtils.EMPTY_STRING;
+import static org.schabi.newpipe.extractor.utils.Utils.isNullOrEmpty;
 
 /*
  * Created by Christian Schabesberger on 25.07.16.
@@ -130,7 +131,7 @@ public class YoutubeChannelExtractor extends ChannelExtractor {
 
         if (!channelId.isEmpty()) {
             return channelId;
-        } else if (redirectedChannelId != null && !redirectedChannelId.isEmpty()) {
+        } else if (!isNullOrEmpty(redirectedChannelId)) {
             return redirectedChannelId;
         } else {
             throw new ParsingException("Could not get channel id");
@@ -244,7 +245,7 @@ public class YoutubeChannelExtractor extends ChannelExtractor {
 
     @Override
     public InfoItemsPage<StreamInfoItem> getPage(String pageUrl) throws IOException, ExtractionException {
-        if (pageUrl == null || pageUrl.isEmpty()) {
+        if (isNullOrEmpty(pageUrl)) {
             throw new ExtractionException(new IllegalArgumentException("Page url is empty or null"));
         }
 
@@ -265,7 +266,7 @@ public class YoutubeChannelExtractor extends ChannelExtractor {
 
 
     private String getNextPageUrlFrom(JsonArray continuations) {
-        if (continuations == null || continuations.isEmpty()) {
+        if (isNullOrEmpty(continuations)) {
             return "";
         }
 

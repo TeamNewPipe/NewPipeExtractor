@@ -29,8 +29,7 @@ import java.util.*;
 
 import static org.schabi.newpipe.extractor.NewPipe.getDownloader;
 import static org.schabi.newpipe.extractor.utils.JsonUtils.EMPTY_STRING;
-import static org.schabi.newpipe.extractor.utils.Utils.HTTP;
-import static org.schabi.newpipe.extractor.utils.Utils.HTTPS;
+import static org.schabi.newpipe.extractor.utils.Utils.*;
 
 /*
  * Created by Christian Schabesberger on 02.03.16.
@@ -202,7 +201,7 @@ public class YoutubeParsingHelper {
      * @throws ParsingException
      */
     public static String getClientVersion() throws IOException, ExtractionException {
-        if (clientVersion != null && !clientVersion.isEmpty()) return clientVersion;
+        if (!isNullOrEmpty(clientVersion)) return clientVersion;
         if (isHardcodedClientVersionValid()) return clientVersion = HARDCODED_CLIENT_VERSION;
 
         final String url = "https://www.youtube.com/results?search_query=test";
@@ -245,7 +244,7 @@ public class YoutubeParsingHelper {
         for (String pattern : patterns) {
             try {
                 contextClientVersion = Parser.matchGroup1(pattern, html);
-                if (contextClientVersion != null && !contextClientVersion.isEmpty()) {
+                if (!isNullOrEmpty(contextClientVersion)) {
                     return clientVersion = contextClientVersion;
                 }
             } catch (Exception ignored) {
@@ -365,7 +364,7 @@ public class YoutubeParsingHelper {
                 return "https://www.youtube.com/channel/" + browseId;
             }
 
-            if (canonicalBaseUrl != null && !canonicalBaseUrl.isEmpty()) {
+            if (!isNullOrEmpty(canonicalBaseUrl)) {
                 return "https://www.youtube.com" + canonicalBaseUrl;
             }
 
@@ -392,7 +391,7 @@ public class YoutubeParsingHelper {
      * @return text in the JSON object or {@code null}
      */
     public static String getTextFromObject(JsonObject textObject, boolean html) throws ParsingException {
-        if (textObject == null || textObject.isEmpty()) return null;
+        if (isNullOrEmpty(textObject)) return null;
 
         if (textObject.has("simpleText")) return textObject.getString("simpleText");
 
@@ -403,7 +402,7 @@ public class YoutubeParsingHelper {
             String text = ((JsonObject) textPart).getString("text");
             if (html && ((JsonObject) textPart).has("navigationEndpoint")) {
                 String url = getUrlFromNavigationEndpoint(((JsonObject) textPart).getObject("navigationEndpoint"));
-                if (url != null && !url.isEmpty()) {
+                if (!isNullOrEmpty(url)) {
                     textBuilder.append("<a href=\"").append(url).append("\">").append(text).append("</a>");
                     continue;
                 }
@@ -497,7 +496,7 @@ public class YoutubeParsingHelper {
      */
     public static void defaultAlertsCheck(final JsonObject initialData) throws ParsingException {
         final JsonArray alerts = initialData.getArray("alerts");
-        if (!alerts.isEmpty()) {
+        if (!isNullOrEmpty(alerts)) {
             final JsonObject alertRenderer = alerts.getObject(0).getObject("alertRenderer");
             final String alertText = getTextFromObject(alertRenderer.getObject("text"));
             final String alertType = alertRenderer.getString("type", EMPTY_STRING);

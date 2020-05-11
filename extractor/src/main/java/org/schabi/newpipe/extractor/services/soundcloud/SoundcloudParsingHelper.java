@@ -21,6 +21,7 @@ import org.schabi.newpipe.extractor.services.soundcloud.extractors.SoundcloudStr
 import org.schabi.newpipe.extractor.stream.StreamInfoItemsCollector;
 import org.schabi.newpipe.extractor.utils.Parser;
 import org.schabi.newpipe.extractor.utils.Parser.RegexException;
+import org.schabi.newpipe.extractor.utils.Utils;
 
 import javax.annotation.Nonnull;
 import java.io.IOException;
@@ -32,6 +33,7 @@ import java.util.*;
 import static java.util.Collections.singletonList;
 import static org.schabi.newpipe.extractor.ServiceList.SoundCloud;
 import static org.schabi.newpipe.extractor.utils.JsonUtils.EMPTY_STRING;
+import static org.schabi.newpipe.extractor.utils.Utils.isNullOrEmpty;
 import static org.schabi.newpipe.extractor.utils.Utils.replaceHttpWithHttps;
 
 public class SoundcloudParsingHelper {
@@ -42,7 +44,7 @@ public class SoundcloudParsingHelper {
     }
 
     public static String clientId() throws ExtractionException, IOException {
-        if (clientId != null && !clientId.isEmpty()) return clientId;
+        if (!isNullOrEmpty(clientId)) return clientId;
 
         Downloader dl = NewPipe.getDownloader();
         clientId = HARDCODED_CLIENT_ID;
@@ -64,7 +66,7 @@ public class SoundcloudParsingHelper {
 
         for (Element element : possibleScripts) {
             final String srcUrl = element.attr("src");
-            if (srcUrl != null && !srcUrl.isEmpty()) {
+            if (!isNullOrEmpty(srcUrl)) {
                 try {
                     return clientId = Parser.matchGroup1(clientIdPattern, dl.get(srcUrl, headers).responseBody());
                 } catch (RegexException ignored) {
