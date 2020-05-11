@@ -4,6 +4,7 @@ import com.grack.nanojson.JsonObject;
 import org.jsoup.helper.StringUtil;
 import org.schabi.newpipe.extractor.exceptions.ContentNotAvailableException;
 import org.schabi.newpipe.extractor.exceptions.ParsingException;
+import org.schabi.newpipe.extractor.utils.Parser;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -12,6 +13,11 @@ import java.util.Date;
 import java.util.TimeZone;
 
 public class PeertubeParsingHelper {
+
+    public static final String START_KEY = "start";
+    public static final String COUNT_KEY = "count";
+    public static final int ITEMS_PER_PAGE = 12;
+    public static final String START_PATTERN = "start=(\\d*)";
 
     private PeertubeParsingHelper() {
     }
@@ -36,6 +42,28 @@ public class PeertubeParsingHelper {
         final Calendar uploadDate = Calendar.getInstance();
         uploadDate.setTime(date);
         return uploadDate;
+    }
+
+    public static String getNextPageUrl(String prevPageUrl, long total) {
+        String prevStart;
+        try {
+            prevStart = Parser.matchGroup1(START_PATTERN, prevPageUrl);
+        } catch (Parser.RegexException e) {
+            return "";
+        }
+        if (StringUtil.isBlank(prevStart)) return "";
+        long nextStart = 0;
+        try {
+            nextStart = Long.parseLong(prevStart) + ITEMS_PER_PAGE;
+        } catch (NumberFormatException e) {
+            return "";
+        }
+
+        if (nextStart >= total) {
+            return "";
+        } else {
+            return prevPageUrl.replace(START_KEY + "=" + prevStart, START_KEY + "=" + nextStart);
+        }
     }
 
 }
