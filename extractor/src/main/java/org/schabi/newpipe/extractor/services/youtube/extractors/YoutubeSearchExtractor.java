@@ -2,7 +2,6 @@ package org.schabi.newpipe.extractor.services.youtube.extractors;
 
 import com.grack.nanojson.JsonArray;
 import com.grack.nanojson.JsonObject;
-
 import org.schabi.newpipe.extractor.InfoItem;
 import org.schabi.newpipe.extractor.StreamingService;
 import org.schabi.newpipe.extractor.downloader.Downloader;
@@ -12,10 +11,10 @@ import org.schabi.newpipe.extractor.linkhandler.SearchQueryHandler;
 import org.schabi.newpipe.extractor.localization.TimeAgoParser;
 import org.schabi.newpipe.extractor.search.InfoItemsSearchCollector;
 import org.schabi.newpipe.extractor.search.SearchExtractor;
-
-import java.io.IOException;
+import org.schabi.newpipe.extractor.utils.JsonUtils;
 
 import javax.annotation.Nonnull;
+import java.io.IOException;
 
 import static org.schabi.newpipe.extractor.services.youtube.YoutubeParsingHelper.getJsonResponse;
 import static org.schabi.newpipe.extractor.services.youtube.YoutubeParsingHelper.getTextFromObject;
@@ -63,17 +62,35 @@ public class YoutubeSearchExtractor extends SearchExtractor {
         return super.getUrl() + "&gl=" + getExtractorContentCountry().getCountryCode();
     }
 
+    @Nonnull
     @Override
     public String getSearchSuggestion() throws ParsingException {
+        final JsonObject itemSectionRenderer = initialData.getObject("contents")
+                .getObject("twoColumnSearchResultsRenderer").getObject("primaryContents")
+                .getObject("sectionListRenderer").getArray("contents").getObject(0)
+                .getObject("itemSectionRenderer");
+        final JsonObject didYouMeanRenderer = itemSectionRenderer.getArray("contents").getObject(0)
+                .getObject("didYouMeanRenderer");
+        final JsonObject showingResultsForRenderer = itemSectionRenderer.getArray("contents").getObject(0)
+                .getObject("showingResultsForRenderer");
+
+        if (!didYouMeanRenderer.isEmpty()) {
+            return JsonUtils.getString(didYouMeanRenderer, "correctedQueryEndpoint.searchEndpoint.query");
+        } else if (showingResultsForRenderer != null) {
+            return getTextFromObject(showingResultsForRenderer.getObject("correctedQuery"));
+        } else {
+            return "";
+        }
+    }
+
+    @Override
+    public boolean isCorrectedSearch() {
         final JsonObject showingResultsForRenderer = initialData.getObject("contents")
                 .getObject("twoColumnSearchResultsRenderer").getObject("primaryContents")
                 .getObject("sectionListRenderer").getArray("contents").getObject(0)
                 .getObject("itemSectionRenderer").getArray("contents").getObject(0)
                 .getObject("showingResultsForRenderer");
-        if (!showingResultsForRenderer.has("correctedQuery")) {
-            return "";
-        }
-        return getTextFromObject(showingResultsForRenderer.getObject("correctedQuery"));
+        return !showingResultsForRenderer.isEmpty();
     }
 
     @Nonnull

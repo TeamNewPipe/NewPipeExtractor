@@ -150,4 +150,28 @@ public class YoutubeMusicSearchExtractorTest {
         @Nullable @Override public String expectedSearchSuggestion() { return "mega man x3"; }
         @Override public InfoItem.InfoType expectedInfoItemType() { return InfoItem.InfoType.STREAM; }
     }
+
+    public static class CorrectedSearch extends DefaultSearchExtractorTest {
+        private static SearchExtractor extractor;
+        private static final String QUERY = "duo lipa";
+        private static final String EXPECTED_SUGGESTION = "dua lipa";
+
+        @BeforeClass
+        public static void setUp() throws Exception {
+            NewPipe.init(DownloaderTestImpl.getInstance());
+            extractor = YouTube.getSearchExtractor(QUERY, singletonList(YoutubeSearchQueryHandlerFactory.MUSIC_SONGS), "");
+            extractor.fetchPage();
+        }
+
+        @Override public SearchExtractor extractor() { return extractor; }
+        @Override public StreamingService expectedService() { return YouTube; }
+        @Override public String expectedName() { return QUERY; }
+        @Override public String expectedId() { return QUERY; }
+        @Override public String expectedUrlContains() { return "music.youtube.com/search?q=" + URLEncoder.encode(QUERY); }
+        @Override public String expectedOriginalUrlContains() { return "music.youtube.com/search?q=" + URLEncoder.encode(QUERY); }
+        @Override public String expectedSearchString() { return QUERY; }
+        @Nullable @Override public String expectedSearchSuggestion() { return EXPECTED_SUGGESTION; }
+        @Override public InfoItem.InfoType expectedInfoItemType() { return InfoItem.InfoType.STREAM; }
+        @Override public boolean isCorrectedSearch() { return true; }
+    }
 }

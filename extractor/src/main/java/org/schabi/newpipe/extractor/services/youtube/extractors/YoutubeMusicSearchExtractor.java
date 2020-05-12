@@ -18,6 +18,7 @@ import org.schabi.newpipe.extractor.localization.TimeAgoParser;
 import org.schabi.newpipe.extractor.search.InfoItemsSearchCollector;
 import org.schabi.newpipe.extractor.search.SearchExtractor;
 import org.schabi.newpipe.extractor.services.youtube.YoutubeParsingHelper;
+import org.schabi.newpipe.extractor.utils.JsonUtils;
 import org.schabi.newpipe.extractor.utils.Utils;
 
 import java.io.IOException;
@@ -125,15 +126,40 @@ public class YoutubeMusicSearchExtractor extends SearchExtractor {
         return super.getUrl();
     }
 
+    @Nonnull
     @Override
     public String getSearchSuggestion() throws ParsingException {
-        final JsonObject didYouMeanRenderer = initialData.getObject("contents").getObject("sectionListRenderer")
-                .getArray("contents").getObject(0).getObject("itemSectionRenderer")
-                .getArray("contents").getObject(0).getObject("didYouMeanRenderer");
-        if (!didYouMeanRenderer.has("correctedQuery")) {
+        final JsonObject itemSectionRenderer = initialData.getObject("contents").getObject("sectionListRenderer")
+                .getArray("contents").getObject(0).getObject("itemSectionRenderer");
+        if (itemSectionRenderer.isEmpty()) {
             return "";
         }
-        return getTextFromObject(didYouMeanRenderer.getObject("correctedQuery"));
+
+        final JsonObject didYouMeanRenderer = itemSectionRenderer.getArray("contents")
+                .getObject(0).getObject("didYouMeanRenderer");
+        final JsonObject showingResultsForRenderer = itemSectionRenderer.getArray("contents").getObject(0)
+                .getObject("showingResultsForRenderer");
+
+        if (!didYouMeanRenderer.isEmpty()) {
+            return getTextFromObject(didYouMeanRenderer.getObject("correctedQuery"));
+        } else if (!showingResultsForRenderer.isEmpty()) {
+            return JsonUtils.getString(showingResultsForRenderer, "correctedQueryEndpoint.searchEndpoint.query");
+        } else {
+            return "";
+        }
+    }
+
+    @Override
+    public boolean isCorrectedSearch() {
+        final JsonObject itemSectionRenderer = initialData.getObject("contents").getObject("sectionListRenderer")
+                .getArray("contents").getObject(0).getObject("itemSectionRenderer");
+        if (itemSectionRenderer.isEmpty()) {
+            return false;
+        }
+
+        final JsonObject showingResultsForRenderer = itemSectionRenderer.getArray("contents").getObject(0)
+                .getObject("showingResultsForRenderer");
+        return !showingResultsForRenderer.isEmpty();
     }
 
     @Nonnull
