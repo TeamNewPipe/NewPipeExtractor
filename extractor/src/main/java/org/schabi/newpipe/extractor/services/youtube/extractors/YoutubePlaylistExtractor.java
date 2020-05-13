@@ -32,6 +32,7 @@ import static org.schabi.newpipe.extractor.utils.Utils.isNullOrEmpty;
 
 @SuppressWarnings("WeakerAccess")
 public class YoutubePlaylistExtractor extends PlaylistExtractor {
+    private JsonArray initialAjaxJson;
     private JsonObject initialData;
     private JsonObject playlistInfo;
 
@@ -43,9 +44,9 @@ public class YoutubePlaylistExtractor extends PlaylistExtractor {
     public void onFetchPage(@Nonnull Downloader downloader) throws IOException, ExtractionException {
         final String url = getUrl() + "&pbj=1";
 
-        final JsonArray ajaxJson = getJsonResponse(url, getExtractorLocalization());
+        initialAjaxJson = getJsonResponse(url, getExtractorLocalization());
 
-        initialData = ajaxJson.getObject(1).getObject("response");
+        initialData = initialAjaxJson.getObject(1).getObject("response");
         YoutubeParsingHelper.defaultAlertsCheck(initialData);
 
         playlistInfo = getPlaylistInfo();
@@ -264,7 +265,11 @@ public class YoutubePlaylistExtractor extends PlaylistExtractor {
 
             @Override
             public String getThumbnailUrl() {
-                return null;
+                final JsonArray thumbnails = initialAjaxJson.getObject(1).getObject("playerResponse")
+                        .getObject("videoDetails").getObject("thumbnail").getArray("thumbnails");
+                // the last thumbnail is the one with the highest resolution
+                final String url = thumbnails.getObject(thumbnails.size() - 1).getString("url");
+                return fixThumbnailUrl(url);
             }
 
             @Override
