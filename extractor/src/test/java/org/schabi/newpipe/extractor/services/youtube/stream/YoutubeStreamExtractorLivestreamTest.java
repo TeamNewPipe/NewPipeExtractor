@@ -116,8 +116,7 @@ public class YoutubeStreamExtractorLivestreamTest {
 
     @Test
     public void testGetDashMpd() throws ParsingException {
-        // we dont expect this particular video to have a DASH file. For this purpouse we use a different test class.
-        assertTrue(extractor.getDashMpdUrl(), extractor.getDashMpdUrl().isEmpty());
+        assertTrue(extractor.getDashMpdUrl().startsWith("https://manifest.googlevideo.com/api/manifest/dash/"));
     }
 
     @Test

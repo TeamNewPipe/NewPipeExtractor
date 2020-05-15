@@ -377,7 +377,9 @@ public class YoutubeStreamExtractor extends StreamExtractor {
         assertPageFetched();
         try {
             String dashManifestUrl;
-            if (videoInfoPage.containsKey("dashmpd")) {
+            if (playerResponse.getObject("streamingData").isString("dashManifestUrl")) {
+                return playerResponse.getObject("streamingData").getString("dashManifestUrl");
+            } else if (videoInfoPage.containsKey("dashmpd")) {
                 dashManifestUrl = videoInfoPage.get("dashmpd");
             } else if (playerArgs != null && playerArgs.isString("dashmpd")) {
                 dashManifestUrl = playerArgs.getString("dashmpd", EMPTY_STRING);
