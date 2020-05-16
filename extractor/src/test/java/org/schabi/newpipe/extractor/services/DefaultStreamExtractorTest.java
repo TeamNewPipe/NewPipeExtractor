@@ -95,7 +95,7 @@ public abstract class DefaultStreamExtractorTest extends DefaultExtractorTest<St
         assertNotNull(description);
         assertFalse("description is empty", description.getContent().isEmpty());
 
-        for (String s : expectedDescriptionContains()) {
+        for (final String s : expectedDescriptionContains()) {
             assertThat(description.getContent(), containsString(s));
         }
     }
@@ -193,7 +193,7 @@ public abstract class DefaultStreamExtractorTest extends DefaultExtractorTest<St
     @Test
     @Override
     public void testVideoStreams() throws Exception {
-        List<VideoStream> videoStreams = extractor().getVideoStreams();
+        final List<VideoStream> videoStreams = extractor().getVideoStreams();
         final List<VideoStream> videoOnlyStreams = extractor().getVideoOnlyStreams();
         assertNotNull(videoStreams);
         assertNotNull(videoOnlyStreams);
@@ -202,11 +202,11 @@ public abstract class DefaultStreamExtractorTest extends DefaultExtractorTest<St
         if (expectedHasVideoStreams()) {
             assertFalse(videoStreams.isEmpty());
 
-            for (VideoStream stream : videoStreams) {
+            for (final VideoStream stream : videoStreams) {
                 assertIsSecureUrl(stream.getUrl());
                 assertFalse(stream.getResolution().isEmpty());
 
-                int formatId = stream.getFormatId();
+                final int formatId = stream.getFormatId();
                 assertTrue("format id does not fit a video stream: " + formatId,
                         0 <= formatId && formatId < 0x100);
             }
@@ -224,10 +224,10 @@ public abstract class DefaultStreamExtractorTest extends DefaultExtractorTest<St
         if (expectedHasAudioStreams()) {
             assertFalse(audioStreams.isEmpty());
 
-            for (AudioStream stream : audioStreams) {
+            for (final AudioStream stream : audioStreams) {
                 assertIsSecureUrl(stream.getUrl());
 
-                int formatId = stream.getFormatId();
+                final int formatId = stream.getFormatId();
                 assertTrue("format id does not fit an audio stream: " + formatId,
                         0x100 <= formatId && formatId < 0x1000);
             }
@@ -239,28 +239,28 @@ public abstract class DefaultStreamExtractorTest extends DefaultExtractorTest<St
     @Test
     @Override
     public void testSubtitles() throws Exception {
-        List<SubtitlesStream> subtitles = extractor().getSubtitlesDefault();
+        final List<SubtitlesStream> subtitles = extractor().getSubtitlesDefault();
         assertNotNull(subtitles);
 
         if (expectedHasSubtitles()) {
             assertFalse(subtitles.isEmpty());
 
-            for (SubtitlesStream stream : subtitles) {
+            for (final SubtitlesStream stream : subtitles) {
                 assertIsSecureUrl(stream.getUrl());
 
-                int formatId = stream.getFormatId();
-                assertTrue("format id does not fit an audio stream: " + formatId,
+                final int formatId = stream.getFormatId();
+                assertTrue("format id does not fit a subtitles stream: " + formatId,
                         0x1000 <= formatId && formatId < 0x10000);
             }
         } else {
             assertTrue(subtitles.isEmpty());
 
-            MediaFormat[] formats = {MediaFormat.VTT, MediaFormat.TTML, MediaFormat.TRANSCRIPT1,
-                    MediaFormat.TRANSCRIPT2, MediaFormat.TRANSCRIPT3, MediaFormat.SRT};
-            for (MediaFormat format : formats) {
-                subtitles = extractor().getSubtitles(format);
-                assertNotNull(subtitles);
-                assertTrue(subtitles.isEmpty());
+            final MediaFormat[] formats = {MediaFormat.VTT, MediaFormat.TTML, MediaFormat.SRT,
+                    MediaFormat.TRANSCRIPT1, MediaFormat.TRANSCRIPT2, MediaFormat.TRANSCRIPT3};
+            for (final MediaFormat format : formats) {
+                final List<SubtitlesStream> formatSubtitles = extractor().getSubtitles(format);
+                assertNotNull(formatSubtitles);
+                assertTrue(formatSubtitles.isEmpty());
             }
         }
     }
