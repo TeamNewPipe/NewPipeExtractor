@@ -43,6 +43,8 @@ public abstract class DefaultStreamExtractorTest extends DefaultExtractorTest<St
     public abstract StreamType expectedStreamType();
     public abstract String expectedUploaderName();
     public abstract String expectedUploaderUrl();
+    public String expectedSubChannelName() { return ""; } // default: there is no subchannel
+    public String expectedSubChannelUrl() { return ""; } // default: there is no subchannel
     public abstract List<String> expectedDescriptionContains(); // e.g. for full links
     public abstract long expectedLength();
     public long expectedTimestamp() { return 0; } // default: there is no timestamp
@@ -90,6 +92,36 @@ public abstract class DefaultStreamExtractorTest extends DefaultExtractorTest<St
     @Override
     public void testUploaderAvatarUrl() throws Exception {
         assertIsSecureUrl(extractor().getUploaderAvatarUrl());
+    }
+
+    @Test
+    @Override
+    public void testSubChannelName() throws Exception {
+        assertEquals(expectedSubChannelName(), extractor().getSubChannelName());
+    }
+
+    @Test
+    @Override
+    public void testSubChannelUrl() throws Exception {
+        final String subChannelUrl = extractor().getSubChannelUrl();
+        assertEquals(expectedSubChannelUrl(), subChannelUrl);
+
+        if (!expectedSubChannelUrl().isEmpty()) {
+            // this stream has a subchannel
+            assertIsSecureUrl(subChannelUrl);
+        }
+    }
+
+    @Test
+    @Override
+    public void testSubChannelAvatarUrl() throws Exception {
+        if (expectedSubChannelName().isEmpty() && expectedSubChannelUrl().isEmpty()) {
+            // this stream has no subchannel
+            assertEquals("", extractor().getSubChannelAvatarUrl());
+        } else {
+            // this stream has a subchannel
+            assertIsSecureUrl(extractor().getSubChannelAvatarUrl());
+        }
     }
 
     @Test
