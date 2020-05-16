@@ -84,7 +84,12 @@ public class PeertubeStreamExtractorTest {
         @Override public long expectedDislikeCountAtLeast() { return 0; }
         @Override public boolean expectedHasAudioStreams() { return false; }
         @Override public boolean expectedHasFrames() { return false; }
-
+        @Override public String expectedHost() { return "framatube.org"; }
+        @Override public String expectedPrivacy() { return "Public"; }
+        @Override public String expectedCategory() { return "Science & Technology"; }
+        @Override public String expectedLicence() { return "Attribution - Share Alike"; }
+        @Override public Locale expectedLanguageInfo() { return Locale.forLanguageTag("en"); }
+        @Override public List<String> expectedTags() { return Arrays.asList("framasoft", "peertube"); }
     }
 
     public static class AgeRestricted extends DefaultStreamExtractorTest {
@@ -136,6 +141,12 @@ public class PeertubeStreamExtractorTest {
         @Override public boolean expectedHasAudioStreams() { return false; }
         @Override public boolean expectedHasSubtitles() { return false; }
         @Override public boolean expectedHasFrames() { return false; }
+        @Override public String expectedHost() { return "peertube.iriseden.eu"; }
+        @Override public String expectedPrivacy() { return "Public"; }
+        @Override public String expectedCategory() { return "News & Politics"; }
+        @Override public String expectedLicence() { return "Attribution - Share Alike"; }
+        @Override public Locale expectedLanguageInfo() { return Locale.forLanguageTag("ru"); }
+        @Override public List<String> expectedTags() { return Arrays.asList("ДНР", "ЛНР", "Кремль", "Новороссия", "ФСБ"); }
     }
 
 

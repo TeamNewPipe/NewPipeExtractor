@@ -56,6 +56,7 @@ public class MediaCCCStreamExtractorTest {
         @Override public boolean expectedHasRelatedStreams() { return false; }
         @Override public boolean expectedHasSubtitles() { return false; }
         @Override public boolean expectedHasFrames() { return false; }
+        @Override public List<String> expectedTags() { return Arrays.asList("gpn18", "105"); }
 
         @Override
         @Test
@@ -118,6 +119,7 @@ public class MediaCCCStreamExtractorTest {
         @Override public boolean expectedHasRelatedStreams() { return false; }
         @Override public boolean expectedHasSubtitles() { return false; }
         @Override public boolean expectedHasFrames() { return false; }
+        @Override public List<String> expectedTags() { return Arrays.asList("36c3", "10565", "2019", "Security", "Main"); }
 
         @Override
         @Test

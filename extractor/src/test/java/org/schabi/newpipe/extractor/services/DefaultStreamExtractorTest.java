@@ -14,7 +14,9 @@ import org.schabi.newpipe.extractor.stream.VideoStream;
 
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
+import java.util.Collections;
 import java.util.List;
+import java.util.Locale;
 import java.util.TimeZone;
 
 import javax.annotation.Nullable;
@@ -27,6 +29,7 @@ import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertThat;
 import static org.junit.Assert.assertTrue;
 import static org.schabi.newpipe.extractor.ExtractorAsserts.assertAtLeast;
+import static org.schabi.newpipe.extractor.ExtractorAsserts.assertEqualsOrderIndependent;
 import static org.schabi.newpipe.extractor.ExtractorAsserts.assertIsSecureUrl;
 import static org.schabi.newpipe.extractor.ExtractorAsserts.assertIsValidUrl;
 import static org.schabi.newpipe.extractor.services.DefaultTests.defaultTestListOfItems;
@@ -42,7 +45,7 @@ public abstract class DefaultStreamExtractorTest extends DefaultExtractorTest<St
     public abstract String expectedUploaderUrl();
     public abstract List<String> expectedDescriptionContains(); // e.g. for full links
     public abstract long expectedLength();
-    public long expectedTimestamp() { return 0; }; // default: there is no timestamp
+    public long expectedTimestamp() { return 0; } // default: there is no timestamp
     public abstract long expectedViewCountAtLeast();
     @Nullable public abstract String expectedUploadDate(); // format: "yyyy-MM-dd HH:mm:ss.SSS"
     @Nullable public abstract String expectedTextualUploadDate();
@@ -55,6 +58,13 @@ public abstract class DefaultStreamExtractorTest extends DefaultExtractorTest<St
     public boolean expectedHasAudioStreams() { return true; } // default: there are audio streams
     public boolean expectedHasSubtitles() { return true; } // default: there are subtitles streams
     public boolean expectedHasFrames() { return true; } // default: there are frames
+    public String expectedHost() { return ""; } // default: no host for centralized platforms
+    public String expectedPrivacy() { return ""; } // default: no privacy policy available
+    public String expectedCategory() { return ""; } // default: no category
+    public String expectedLicence() { return ""; } // default: no licence
+    public Locale expectedLanguageInfo() { return null; } // default: no language info available
+    public List<String> expectedTags() { return Collections.emptyList(); } // default: no tags
+    public String expectedSupportInfo() { return ""; } // default: no support info available
 
     @Test
     @Override
@@ -282,5 +292,47 @@ public abstract class DefaultStreamExtractorTest extends DefaultExtractorTest<St
         } else {
             assertTrue(frames.isEmpty());
         }
+    }
+
+    @Test
+    @Override
+    public void testHost() throws Exception {
+        assertEquals(expectedHost(), extractor().getHost());
+    }
+
+    @Test
+    @Override
+    public void testPrivacy() throws Exception {
+        assertEquals(expectedPrivacy(), extractor().getPrivacy());
+    }
+
+    @Test
+    @Override
+    public void testCategory() throws Exception {
+        assertEquals(expectedCategory(), extractor().getCategory());
+    }
+
+    @Test
+    @Override
+    public void testLicence() throws Exception {
+        assertEquals(expectedLicence(), extractor().getLicence());
+    }
+
+    @Test
+    @Override
+    public void testLanguageInfo() throws Exception {
+        assertEquals(expectedLanguageInfo(), extractor().getLanguageInfo());
+    }
+
+    @Test
+    @Override
+    public void testTags() throws Exception {
+        assertEqualsOrderIndependent(expectedTags(), extractor().getTags());
+    }
+
+    @Test
+    @Override
+    public void testSupportInfo() throws Exception {
+        assertEquals(expectedSupportInfo(), extractor().getSupportInfo());
     }
 }
