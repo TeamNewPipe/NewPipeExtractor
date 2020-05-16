@@ -80,7 +80,7 @@ public class PeertubeStreamExtractorTest {
         @Override public long expectedLength() { return 113; }
         @Override public long expectedTimestamp() { return TIMESTAMP_MINUTE*60 + TIMESTAMP_SECOND; }
         @Override public long expectedViewCountAtLeast() { return 38600; }
-        @Nullable @Override public String expectedUploadDate() { return "2018-10-01 12:52:46.396"; } // GMT (!)
+        @Nullable @Override public String expectedUploadDate() { return "2018-10-01 10:52:46.396"; }
         @Nullable @Override public String expectedTextualUploadDate() { return "2018-10-01T10:52:46.396Z"; }
         @Override public long expectedLikeCountAtLeast() { return 120; }
         @Override public long expectedDislikeCountAtLeast() { return 0; }
@@ -137,7 +137,7 @@ public class PeertubeStreamExtractorTest {
         }
         @Override public long expectedLength() { return 512; }
         @Override public long expectedViewCountAtLeast() { return 7; }
-        @Nullable @Override public String expectedUploadDate() { return "2019-10-22 08:16:48.982"; } // GMT (!)
+        @Nullable @Override public String expectedUploadDate() { return "2019-10-22 06:16:48.982"; }
         @Nullable @Override public String expectedTextualUploadDate() { return "2019-10-22T06:16:48.982Z"; }
         @Override public long expectedLikeCountAtLeast() { return 3; }
         @Override public long expectedDislikeCountAtLeast() { return 0; }

@@ -172,10 +172,9 @@ public abstract class DefaultStreamExtractorTest extends DefaultExtractorTest<St
 
             final Calendar expectedDate = Calendar.getInstance();
             final Calendar actualDate = dateWrapper.date();
-            expectedDate.setTimeZone(TimeZone.getTimeZone("GMT"));
-            actualDate.setTimeZone(TimeZone.getTimeZone("GMT"));
 
             final SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.S");
+            sdf.setTimeZone(TimeZone.getTimeZone("GMT"));
             expectedDate.setTime(sdf.parse(expectedUploadDate()));
             assertEquals(expectedDate, actualDate);
         }
