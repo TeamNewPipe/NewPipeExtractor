@@ -1,13 +1,7 @@
 package org.schabi.newpipe.extractor.services.youtube.extractors;
 
-import static org.schabi.newpipe.extractor.services.youtube.linkHandler.YoutubeParsingHelper.getJsonResponse;
-import static org.schabi.newpipe.extractor.services.youtube.linkHandler.YoutubeParsingHelper.getUrlFromNavigationEndpoint;
-
 import com.grack.nanojson.JsonArray;
 import com.grack.nanojson.JsonObject;
-import java.io.IOException;
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
 
 import org.schabi.newpipe.extractor.ListExtractor;
 import org.schabi.newpipe.extractor.StreamingService;
@@ -19,6 +13,14 @@ import org.schabi.newpipe.extractor.localization.TimeAgoParser;
 import org.schabi.newpipe.extractor.playlist.PlaylistExtractor;
 import org.schabi.newpipe.extractor.stream.StreamInfoItem;
 import org.schabi.newpipe.extractor.stream.StreamInfoItemsCollector;
+
+import java.io.IOException;
+
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
+
+import static org.schabi.newpipe.extractor.services.youtube.YoutubeParsingHelper.getJsonResponse;
+import static org.schabi.newpipe.extractor.services.youtube.YoutubeParsingHelper.getUrlFromNavigationEndpoint;
 
 /**
  * A YoutubePlaylistExtractor for a mix (auto-generated playlist). It handles urls in the format of
@@ -184,5 +186,23 @@ public class YoutubeMixPlaylistExtractor extends PlaylistExtractor {
 
     private String getThumbnailUrlFromVideoId(String videoId) {
         return "https://i.ytimg.com/vi/" + videoId + "/hqdefault.jpg";
+    }
+
+    @Nonnull
+    @Override
+    public String getSubChannelName() {
+        return "";
+    }
+
+    @Nonnull
+    @Override
+    public String getSubChannelUrl() {
+        return "";
+    }
+
+    @Nonnull
+    @Override
+    public String getSubChannelAvatarUrl() {
+        return "";
     }
 }
