@@ -11,6 +11,7 @@ import org.schabi.newpipe.extractor.exceptions.ExtractionException;
 import org.schabi.newpipe.extractor.exceptions.ParsingException;
 import org.schabi.newpipe.extractor.exceptions.ReCaptchaException;
 import org.schabi.newpipe.extractor.linkhandler.ListLinkHandler;
+import org.schabi.newpipe.extractor.services.bandcamp.extractors.streaminfoitem.BandcampDiscographStreamInfoItemExtractor;
 import org.schabi.newpipe.extractor.stream.StreamInfoItem;
 import org.schabi.newpipe.extractor.stream.StreamInfoItemsCollector;
 
@@ -89,18 +90,7 @@ public class BandcampChannelExtractor extends ChannelExtractor {
 
             if (!discograph.getString("item_type").equals("track")) continue;
 
-            collector.commit(new BandcampStreamInfoItemExtractor(
-                    discograph.getString("title"),
-                    BandcampExtractorHelper.getStreamUrlFromIds(
-                            discograph.getLong("band_id"),
-                            discograph.getLong("item_id"),
-                            discograph.getString("item_type")
-                    ),
-                    BandcampExtractorHelper.getImageUrl(
-                            discograph.getLong("art_id"), true
-                    ),
-                    discograph.getString("band_name")
-            ));
+            collector.commit(new BandcampDiscographStreamInfoItemExtractor(discograph, getUrl()));
         }
 
         return new InfoItemsPage<>(collector, null);

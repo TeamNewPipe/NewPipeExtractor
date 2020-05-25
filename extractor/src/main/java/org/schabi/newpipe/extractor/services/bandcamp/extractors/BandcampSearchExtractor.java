@@ -13,6 +13,8 @@ import org.schabi.newpipe.extractor.exceptions.ExtractionException;
 import org.schabi.newpipe.extractor.linkhandler.SearchQueryHandler;
 import org.schabi.newpipe.extractor.search.InfoItemsSearchCollector;
 import org.schabi.newpipe.extractor.search.SearchExtractor;
+import org.schabi.newpipe.extractor.services.bandcamp.extractors.streaminfoitem.BandcampPlaylistStreamInfoItemExtractor;
+import org.schabi.newpipe.extractor.services.bandcamp.extractors.streaminfoitem.BandcampSearchStreamInfoItemExtractor;
 
 import javax.annotation.Nonnull;
 import java.io.IOException;
@@ -62,7 +64,7 @@ public class BandcampSearchExtractor extends SearchExtractor {
                     break;
 
                 case "TRACK":
-                    collector.commit(new BandcampStreamInfoItemExtractor(searchResult));
+                    collector.commit(new BandcampSearchStreamInfoItemExtractor(searchResult, null));
                     break;
             }
 

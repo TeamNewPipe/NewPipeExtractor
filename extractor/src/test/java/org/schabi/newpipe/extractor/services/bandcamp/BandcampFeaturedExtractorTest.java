@@ -8,6 +8,7 @@ import org.schabi.newpipe.DownloaderTestImpl;
 import org.schabi.newpipe.extractor.InfoItem;
 import org.schabi.newpipe.extractor.NewPipe;
 import org.schabi.newpipe.extractor.exceptions.ExtractionException;
+import org.schabi.newpipe.extractor.playlist.PlaylistInfoItem;
 import org.schabi.newpipe.extractor.services.bandcamp.extractors.BandcampFeaturedExtractor;
 
 import java.io.IOException;
@@ -32,7 +33,7 @@ public class BandcampFeaturedExtractorTest {
 
     @Test
     public void testFeaturedCount() throws ExtractionException, IOException {
-        List<InfoItem> list = extractor.getInitialPage().getItems();
+        List<PlaylistInfoItem> list = extractor.getInitialPage().getItems();
         assertTrue(list.size() > 1);
     }
 

@@ -12,6 +12,7 @@ import org.schabi.newpipe.extractor.exceptions.ExtractionException;
 import org.schabi.newpipe.extractor.exceptions.ParsingException;
 import org.schabi.newpipe.extractor.linkhandler.ListLinkHandler;
 import org.schabi.newpipe.extractor.playlist.PlaylistExtractor;
+import org.schabi.newpipe.extractor.services.bandcamp.extractors.streaminfoitem.BandcampPlaylistStreamInfoItemExtractor;
 import org.schabi.newpipe.extractor.stream.StreamInfoItem;
 import org.schabi.newpipe.extractor.stream.StreamInfoItemsCollector;
 
@@ -111,22 +112,12 @@ public class BandcampPlaylistExtractor extends PlaylistExtractor {
 
             if (trackInfo.size() < MAXIMUM_INDIVIDUAL_COVER_ARTS) {
                 // Load cover art of every track individually
-                collector.commit(new BandcampStreamInfoItemExtractor(
-                        track.getString("title"),
-                        getUploaderUrl() + track.getString("title_link"),
-                        "",
-                        track.getLong("duration"),
-                        getService()
-                ));
+                collector.commit(new BandcampPlaylistStreamInfoItemExtractor(
+                        track, getUploaderUrl(), getService()));
             } else {
                 // Pretend every track has the same cover art as the album
-                collector.commit(new BandcampStreamInfoItemExtractor(
-                        track.getString("title"),
-                        getUploaderUrl() + track.getString("title_link"),
-                        getThumbnailUrl(),
-                        "",
-                        track.getLong("duration")
-                ));
+                collector.commit(new BandcampPlaylistStreamInfoItemExtractor(
+                        track, getUploaderUrl(), getThumbnailUrl()));
             }
 
         }

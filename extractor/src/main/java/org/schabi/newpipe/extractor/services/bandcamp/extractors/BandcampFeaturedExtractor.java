@@ -14,12 +14,13 @@ import org.schabi.newpipe.extractor.exceptions.ExtractionException;
 import org.schabi.newpipe.extractor.exceptions.ParsingException;
 import org.schabi.newpipe.extractor.kiosk.KioskExtractor;
 import org.schabi.newpipe.extractor.linkhandler.ListLinkHandler;
+import org.schabi.newpipe.extractor.playlist.PlaylistInfoItem;
 import org.schabi.newpipe.extractor.playlist.PlaylistInfoItemsCollector;
 
 import javax.annotation.Nonnull;
 import java.io.IOException;
 
-public class BandcampFeaturedExtractor extends KioskExtractor<InfoItem> {
+public class BandcampFeaturedExtractor extends KioskExtractor<PlaylistInfoItem> {
 
     public static final String KIOSK_FEATURED = "Featured";
     public static final String FEATURED_API_URL = "https://bandcamp.com/api/mobile/24/bootstrap_data";
@@ -41,9 +42,9 @@ public class BandcampFeaturedExtractor extends KioskExtractor<InfoItem> {
 
     @Nonnull
     @Override
-    public InfoItemsPage<InfoItem> getInitialPage() throws IOException, ExtractionException {
+    public InfoItemsPage<PlaylistInfoItem> getInitialPage() throws IOException, ExtractionException {
 
-        InfoItemsCollector c = new PlaylistInfoItemsCollector(getServiceId());
+        PlaylistInfoItemsCollector c = new PlaylistInfoItemsCollector(getServiceId());
 
         try {
 
@@ -66,10 +67,10 @@ public class BandcampFeaturedExtractor extends KioskExtractor<InfoItem> {
                     continue;
                 }
 
-                c.commit(new BandcampPlaylistInfoItemExtractor(featuredStory));
+                c.commit(new BandcampPlaylistInfoItemFeaturedExtractor(featuredStory));
             }
 
-            return new InfoItemsPage<InfoItem>(c, null);
+            return new InfoItemsPage<>(c, null);
         } catch (JsonParserException e) {
             e.printStackTrace();
             throw new ParsingException("JSON error", e);

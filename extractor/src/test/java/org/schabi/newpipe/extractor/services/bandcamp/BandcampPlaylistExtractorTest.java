@@ -11,8 +11,6 @@ import org.schabi.newpipe.extractor.exceptions.ExtractionException;
 import org.schabi.newpipe.extractor.exceptions.ParsingException;
 import org.schabi.newpipe.extractor.playlist.PlaylistExtractor;
 import org.schabi.newpipe.extractor.services.bandcamp.extractors.BandcampPlaylistExtractor;
-import org.schabi.newpipe.extractor.services.bandcamp.extractors.BandcampStreamExtractor;
-import org.schabi.newpipe.extractor.services.bandcamp.extractors.BandcampStreamInfoItemExtractor;
 import org.schabi.newpipe.extractor.stream.StreamInfoItem;
 
 import java.io.IOException;

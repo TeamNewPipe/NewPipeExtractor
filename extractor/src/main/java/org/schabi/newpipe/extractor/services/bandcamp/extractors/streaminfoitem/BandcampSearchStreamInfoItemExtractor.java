@@ -1,18 +1,25 @@
-// Created by Fynn Godau 2019, licensed GNU GPL version 3 or later
-
-package org.schabi.newpipe.extractor.services.bandcamp.extractors;
+package org.schabi.newpipe.extractor.services.bandcamp.extractors.streaminfoitem;
 
 import org.jsoup.nodes.Element;
-import org.schabi.newpipe.extractor.channel.ChannelInfoItemExtractor;
 import org.schabi.newpipe.extractor.exceptions.ParsingException;
 
-public class BandcampChannelInfoItemExtractor implements ChannelInfoItemExtractor {
+public class BandcampSearchStreamInfoItemExtractor extends BandcampStreamInfoItemExtractor {
 
     private final Element resultInfo, searchResult;
 
-    public BandcampChannelInfoItemExtractor(Element searchResult) {
+    public BandcampSearchStreamInfoItemExtractor(Element searchResult, String uploaderUrl) {
+        super(uploaderUrl);
         this.searchResult = searchResult;
         resultInfo = searchResult.getElementsByClass("result-info").first();
+    }
+
+    @Override
+    public String getUploaderName() throws ParsingException {
+        String subhead = resultInfo.getElementsByClass("subhead").text();
+        String[] splitBy = subhead.split(" by");
+        if (splitBy.length > 1) {
+            return splitBy[1];
+        } else throw new ParsingException("Uploader name was not found as expected");
     }
 
     @Override
@@ -35,17 +42,7 @@ public class BandcampChannelInfoItemExtractor implements ChannelInfoItemExtracto
     }
 
     @Override
-    public String getDescription() {
-        return resultInfo.getElementsByClass("subhead").text();
-    }
-
-    @Override
-    public long getSubscriberCount() {
-        return -1;
-    }
-
-    @Override
-    public long getStreamCount() {
+    public long getDuration() {
         return -1;
     }
 }
