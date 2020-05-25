@@ -7,7 +7,7 @@ import org.schabi.newpipe.extractor.linkhandler.LinkHandlerFactory;
 
 /**
  * <p>Tracks don't have standalone ids, they are always in combination with the band id.
- * That's why id = url. Instead, URLs are cleaned up so that they always look the same.</p>
+ * That's why id = url.</p>
  *
  * <p>Radio (bandcamp weekly) shows do have ids.</p>
  */
@@ -33,10 +33,7 @@ public class BandcampStreamLinkHandlerFactory extends LinkHandlerFactory {
     public String getUrl(String input) {
         if (input.matches("\\d+"))
             return "https://bandcamp.com/?show=" + input;
-        if (input.endsWith("/"))
-            input = input.substring(0, input.length() - 1);
-        input = input.replace("http://", "https://").toLowerCase();
-        return input;
+        else return input;
     }
 
     /**
@@ -49,6 +46,6 @@ public class BandcampStreamLinkHandlerFactory extends LinkHandlerFactory {
      */
     @Override
     public boolean onAcceptUrl(String url) {
-        return getUrl(url).matches("https?://.+\\..+/track/.+") || getUrl(url).matches("https?://bandcamp\\.com/\\?show=\\d+");
+        return url.toLowerCase().matches("https?://.+\\..+/track/.+") || url.toLowerCase().matches("https?://bandcamp\\.com/\\?show=\\d+");
     }
 }

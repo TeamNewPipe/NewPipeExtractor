@@ -26,11 +26,6 @@ public class BandcampStreamLinkHandlerFactoryTest {
     }
 
     @Test
-    public void testUrlCleanup() {
-        assertEquals("https://zachbenson.bandcamp.com/track/u-i-tonite", linkHandler.getUrl("http://ZachBenson.Bandcamp.COM/Track/U-I-Tonite/"));
-    }
-
-    @Test
     public void testGetRadioUrl() {
         assertEquals("https://bandcamp.com/?show=1", linkHandler.getUrl("1"));
     }

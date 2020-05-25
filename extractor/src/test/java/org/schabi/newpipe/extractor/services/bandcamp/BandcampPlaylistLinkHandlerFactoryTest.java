@@ -40,6 +40,7 @@ public class BandcampPlaylistLinkHandlerFactoryTest {
         // Tests expecting true
         assertTrue(linkHandler.acceptUrl("https://powertothequeerkids.bandcamp.com/album/power-to-the-queer-kids"));
         assertTrue(linkHandler.acceptUrl("https://zachbenson.bandcamp.com/album/prom"));
+        assertTrue(linkHandler.acceptUrl("https://MACBENSON.BANDCAMP.COM/ALBUM/COMING-OF-AGE"));
     }
 
 }

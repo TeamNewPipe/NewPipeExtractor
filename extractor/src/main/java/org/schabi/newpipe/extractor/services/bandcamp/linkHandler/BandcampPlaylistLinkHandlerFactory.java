@@ -18,14 +18,11 @@ public class BandcampPlaylistLinkHandlerFactory extends ListLinkHandlerFactory {
 
     @Override
     public String getUrl(String url, List<String> contentFilter, String sortFilter) throws ParsingException {
-        if (url.endsWith("/"))
-            url = url.substring(0, url.length() - 1);
-        url = url.replace("http://", "https://").toLowerCase();
         return url;
     }
 
     @Override
-    public boolean onAcceptUrl(String url) throws ParsingException {
-        return getUrl(url).matches("https?://.+\\..+/album/.+");
+    public boolean onAcceptUrl(String url) {
+        return url.toLowerCase().matches("https?://.+\\..+/album/.+");
     }
 }
