@@ -8,54 +8,89 @@ import org.schabi.newpipe.DownloaderTestImpl;
 import org.schabi.newpipe.extractor.NewPipe;
 import org.schabi.newpipe.extractor.channel.ChannelExtractor;
 import org.schabi.newpipe.extractor.exceptions.ExtractionException;
-import org.schabi.newpipe.extractor.exceptions.ParsingException;
-import org.schabi.newpipe.extractor.services.bandcamp.extractors.BandcampChannelExtractor;
-import org.schabi.newpipe.extractor.services.bandcamp.extractors.BandcampExtractorHelper;
+import org.schabi.newpipe.extractor.services.BaseChannelExtractorTest;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
+import java.io.IOException;
+
+import static org.junit.Assert.*;
 import static org.schabi.newpipe.extractor.ServiceList.Bandcamp;
 
-public class BandcampChannelExtractorTest {
+public class BandcampChannelExtractorTest implements BaseChannelExtractorTest {
 
-    private static BandcampChannelExtractor extractor;
-    private static ChannelExtractor noAvatarExtractor;
+    private static ChannelExtractor extractor;
 
     @BeforeClass
     public static void setUp() throws Exception {
         NewPipe.init(DownloaderTestImpl.getInstance());
-        extractor = (BandcampChannelExtractor) Bandcamp
-                .getChannelExtractor("https://zachbenson.bandcamp.com/");
+        extractor = Bandcamp.getChannelExtractor("https://npet.bandcamp.com/releases");
         extractor.fetchPage();
-
-        noAvatarExtractor = Bandcamp.getChannelExtractor("https://npet.bandcamp.com/");
-        noAvatarExtractor.fetchPage();
     }
 
     @Test
-    public void testTranslateIdsToUrl() throws ParsingException {
-        assertEquals("https://zachbenson.bandcamp.com/album/covers", BandcampExtractorHelper.getStreamUrlFromIds(2862267535L, 2063639444L, "album"));
-        // TODO write more test cases
+    public void testLength() throws ExtractionException, IOException {
+        assertTrue(extractor.getInitialPage().getItems().size() >= 1);
     }
 
+    @Override
     @Test
-    public void testLength() throws ParsingException {
-        assertTrue(extractor.getInitialPage().getItems().size() > 2);
+    public void testDescription() throws Exception {
+        assertEquals("This string will be tested for in NewPipeExtractor tests.", extractor.getDescription());
     }
 
-    @Test
-    public void testGetBannerUrl() throws ParsingException {
-        // Why is this picture in png format when all other pictures are jpg?
-        assertTrue(extractor.getBannerUrl().endsWith(".png"));
+    @Override
+    public void testAvatarUrl() throws Exception {
+        // Has no avatar
+        assertEquals("", extractor.getAvatarUrl());
     }
 
-    @Test
-    public void testGetNoAvatar() throws ExtractionException {
-        assertEquals("", noAvatarExtractor.getAvatarUrl());
+    @Override
+    public void testBannerUrl() throws Exception {
+        // Has no banner
+        assertEquals("", extractor.getBannerUrl());
     }
 
-    @Test
-    public void testGetNoBanner() throws ExtractionException {
-        assertEquals("", noAvatarExtractor.getBannerUrl());
+    @Override
+    public void testFeedUrl() throws Exception {
+        assertNull(extractor.getFeedUrl());
+    }
+
+    @Override
+    public void testSubscriberCount() throws Exception {
+        assertEquals(-1, extractor.getSubscriberCount());
+    }
+
+    @Override
+    public void testRelatedItems() throws Exception {
+        // not implemented
+    }
+
+    @Override
+    public void testMoreRelatedItems() throws Exception {
+        // not implemented
+    }
+
+    @Override
+    public void testServiceId() throws Exception {
+        assertEquals(4, extractor.getServiceId());
+    }
+
+    @Override
+    public void testName() throws Exception {
+        assertEquals("NewPipeExtractorTest", extractor.getName());
+    }
+
+    @Override
+    public void testId() throws Exception {
+        assertEquals("https://npet.bandcamp.com/", extractor.getId());
+    }
+
+    @Override
+    public void testUrl() throws Exception {
+        assertEquals("https://npet.bandcamp.com/releases", extractor.getUrl());
+    }
+
+    @Override
+    public void testOriginalUrl() throws Exception {
+        assertEquals("https://npet.bandcamp.com/releases", extractor.getUrl());
     }
 }

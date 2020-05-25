@@ -8,6 +8,7 @@ import org.schabi.newpipe.DownloaderTestImpl;
 import org.schabi.newpipe.extractor.NewPipe;
 import org.schabi.newpipe.extractor.exceptions.ExtractionException;
 import org.schabi.newpipe.extractor.exceptions.ParsingException;
+import org.schabi.newpipe.extractor.services.bandcamp.extractors.BandcampExtractorHelper;
 import org.schabi.newpipe.extractor.services.bandcamp.extractors.BandcampStreamExtractor;
 import org.schabi.newpipe.extractor.stream.StreamExtractor;
 
@@ -84,5 +85,10 @@ public class BandcampStreamExtractorTest {
         assertEquals("CC BY 3.0", se.getLicence());
     }
 
+    @Test
+    public void testTranslateIdsToUrl() throws ParsingException {
+        assertEquals("https://zachbenson.bandcamp.com/album/covers", BandcampExtractorHelper.getStreamUrlFromIds(2862267535L, 2063639444L, "album"));
+        // TODO write more test cases
+    }
 
 }
