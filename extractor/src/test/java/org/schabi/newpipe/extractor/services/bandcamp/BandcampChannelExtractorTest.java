@@ -28,7 +28,7 @@ public class BandcampChannelExtractorTest {
                 .getChannelExtractor("https://zachbenson.bandcamp.com/");
         extractor.fetchPage();
 
-        noAvatarExtractor = Bandcamp.getChannelExtractor("https://powertothequeerkids.bandcamp.com/");
+        noAvatarExtractor = Bandcamp.getChannelExtractor("https://npet.bandcamp.com/");
         noAvatarExtractor.fetchPage();
     }
 
