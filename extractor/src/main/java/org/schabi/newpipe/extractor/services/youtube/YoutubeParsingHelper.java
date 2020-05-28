@@ -1,6 +1,5 @@
 package org.schabi.newpipe.extractor.services.youtube;
 
-
 import com.grack.nanojson.JsonArray;
 import com.grack.nanojson.JsonObject;
 import com.grack.nanojson.JsonParser;
@@ -111,9 +110,7 @@ public class YoutubeParsingHelper {
 
     public static long parseDurationString(String input)
             throws ParsingException, NumberFormatException {
-
         // If time separator : is not detected, try . instead
-
         final String[] splitInput = input.contains(":")
                 ? input.split(":")
                 : input.split("\\.");
@@ -145,10 +142,10 @@ public class YoutubeParsingHelper {
             default:
                 throw new ParsingException("Error duration string with unknown format: " + input);
         }
-        return ((((Long.parseLong(days) * 24)
-                + Long.parseLong(hours) * 60)
-                + Long.parseLong(minutes)) * 60)
-                + Long.parseLong(seconds);
+        return (((Long.parseLong(Utils.removeNonDigitCharacters(days)) * 24)
+                + Long.parseLong(Utils.removeNonDigitCharacters(hours)) * 60)
+                + Long.parseLong(Utils.removeNonDigitCharacters(minutes)) * 60)
+                + Long.parseLong(Utils.removeNonDigitCharacters(seconds));
     }
 
     public static String getFeedUrlFrom(final String channelIdOrUser) {

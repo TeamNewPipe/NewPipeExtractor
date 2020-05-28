@@ -1,10 +1,11 @@
 package org.schabi.newpipe.extractor.services.peertube;
 
 import com.grack.nanojson.JsonObject;
-import org.jsoup.helper.StringUtil;
+
 import org.schabi.newpipe.extractor.exceptions.ContentNotAvailableException;
 import org.schabi.newpipe.extractor.exceptions.ParsingException;
 import org.schabi.newpipe.extractor.utils.Parser;
+import org.schabi.newpipe.extractor.utils.Utils;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -24,7 +25,7 @@ public class PeertubeParsingHelper {
 
     public static void validate(JsonObject json) throws ContentNotAvailableException {
         String error = json.getString("error");
-        if (!StringUtil.isBlank(error)) {
+        if (!Utils.isBlank(error)) {
             throw new ContentNotAvailableException(error);
         }
     }
@@ -51,7 +52,7 @@ public class PeertubeParsingHelper {
         } catch (Parser.RegexException e) {
             return "";
         }
-        if (StringUtil.isBlank(prevStart)) return "";
+        if (Utils.isBlank(prevStart)) return "";
         long nextStart = 0;
         try {
             nextStart = Long.parseLong(prevStart) + ITEMS_PER_PAGE;

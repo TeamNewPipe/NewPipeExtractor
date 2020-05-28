@@ -3,13 +3,14 @@ package org.schabi.newpipe.extractor.services.peertube;
 import com.grack.nanojson.JsonObject;
 import com.grack.nanojson.JsonParser;
 import com.grack.nanojson.JsonParserException;
-import org.jsoup.helper.StringUtil;
+
 import org.schabi.newpipe.extractor.NewPipe;
 import org.schabi.newpipe.extractor.downloader.Downloader;
 import org.schabi.newpipe.extractor.downloader.Response;
 import org.schabi.newpipe.extractor.exceptions.ParsingException;
 import org.schabi.newpipe.extractor.exceptions.ReCaptchaException;
 import org.schabi.newpipe.extractor.utils.JsonUtils;
+import org.schabi.newpipe.extractor.utils.Utils;
 
 import java.io.IOException;
 
@@ -43,7 +44,7 @@ public class PeertubeInstance {
             throw new Exception("unable to configure instance " + url, e);
         }
 
-        if (response == null || StringUtil.isBlank(response.responseBody())) {
+        if (response == null || Utils.isBlank(response.responseBody())) {
             throw new Exception("unable to configure instance " + url);
         }
 
