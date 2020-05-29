@@ -254,4 +254,102 @@ public class YoutubePlaylistExtractorTest {
             assertTrue("Error in the streams count", extractor.getStreamCount() > 100);
         }
     }
+
+    public static class LearningPlaylist implements BasePlaylistExtractorTest {
+        private static YoutubePlaylistExtractor extractor;
+
+        @BeforeClass
+        public static void setUp() throws Exception {
+            NewPipe.init(DownloaderTestImpl.getInstance());
+            extractor = (YoutubePlaylistExtractor) YouTube
+                    .getPlaylistExtractor("https://www.youtube.com/playlist?list=PL8dPuuaLjXtOAKed_MxxWBNaPno5h3Zs8");
+            extractor.fetchPage();
+        }
+
+        /*//////////////////////////////////////////////////////////////////////////
+        // Extractor
+        //////////////////////////////////////////////////////////////////////////*/
+
+        @Test
+        public void testServiceId() {
+            assertEquals(YouTube.getServiceId(), extractor.getServiceId());
+        }
+
+        @Test
+        public void testName() throws Exception {
+            String name = extractor.getName();
+            assertTrue(name, name.startsWith("Anatomy & Physiology"));
+        }
+
+        @Test
+        public void testId() throws Exception {
+            assertEquals("PL8dPuuaLjXtOAKed_MxxWBNaPno5h3Zs8", extractor.getId());
+        }
+
+        @Test
+        public void testUrl() throws ParsingException {
+            assertEquals("https://www.youtube.com/playlist?list=PL8dPuuaLjXtOAKed_MxxWBNaPno5h3Zs8", extractor.getUrl());
+        }
+
+        @Test
+        public void testOriginalUrl() throws ParsingException {
+            assertEquals("https://www.youtube.com/playlist?list=PL8dPuuaLjXtOAKed_MxxWBNaPno5h3Zs8", extractor.getOriginalUrl());
+        }
+
+        /*//////////////////////////////////////////////////////////////////////////
+        // ListExtractor
+        //////////////////////////////////////////////////////////////////////////*/
+
+        @Test
+        public void testRelatedItems() throws Exception {
+            defaultTestRelatedItems(extractor);
+        }
+
+        @Ignore
+        @Test
+        public void testMoreRelatedItems() throws Exception {
+            defaultTestMoreItems(extractor);
+        }
+
+        /*//////////////////////////////////////////////////////////////////////////
+        // PlaylistExtractor
+        //////////////////////////////////////////////////////////////////////////*/
+
+        @Test
+        public void testThumbnailUrl() throws Exception {
+            final String thumbnailUrl = extractor.getThumbnailUrl();
+            assertIsSecureUrl(thumbnailUrl);
+            assertTrue(thumbnailUrl, thumbnailUrl.contains("yt"));
+        }
+
+        @Ignore
+        @Test
+        public void testBannerUrl() throws Exception {
+            final String bannerUrl = extractor.getBannerUrl();
+            assertIsSecureUrl(bannerUrl);
+            assertTrue(bannerUrl, bannerUrl.contains("yt"));
+        }
+
+        @Test
+        public void testUploaderUrl() throws Exception {
+            assertEquals("https://www.youtube.com/channel/UCX6b17PVsYBQ0ip5gyeme-Q", extractor.getUploaderUrl());
+        }
+
+        @Test
+        public void testUploaderName() throws Exception {
+            final String uploaderName = extractor.getUploaderName();
+            assertTrue(uploaderName, uploaderName.contains("CrashCourse"));
+        }
+
+        @Test
+        public void testUploaderAvatarUrl() throws Exception {
+            final String uploaderAvatarUrl = extractor.getUploaderAvatarUrl();
+            assertTrue(uploaderAvatarUrl, uploaderAvatarUrl.contains("yt"));
+        }
+
+        @Test
+        public void testStreamCount() throws Exception {
+            assertTrue("Error in the streams count", extractor.getStreamCount() > 40);
+        }
+    }
 }
