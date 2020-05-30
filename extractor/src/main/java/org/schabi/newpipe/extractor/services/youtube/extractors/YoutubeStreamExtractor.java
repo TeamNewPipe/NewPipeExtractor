@@ -21,14 +21,14 @@ import org.schabi.newpipe.extractor.localization.Localization;
 import org.schabi.newpipe.extractor.localization.TimeAgoParser;
 import org.schabi.newpipe.extractor.localization.TimeAgoPatternsManager;
 import org.schabi.newpipe.extractor.services.youtube.ItagItem;
-import org.schabi.newpipe.extractor.services.youtube.linkHandler.YoutubeChannelLinkHandlerFactory;
 import org.schabi.newpipe.extractor.services.youtube.YoutubeParsingHelper;
+import org.schabi.newpipe.extractor.services.youtube.linkHandler.YoutubeChannelLinkHandlerFactory;
 import org.schabi.newpipe.extractor.stream.AudioStream;
 import org.schabi.newpipe.extractor.stream.Description;
 import org.schabi.newpipe.extractor.stream.Frameset;
 import org.schabi.newpipe.extractor.stream.Stream;
 import org.schabi.newpipe.extractor.stream.StreamExtractor;
-import org.schabi.newpipe.extractor.stream.StreamInfoItem;
+import org.schabi.newpipe.extractor.stream.StreamInfoItemExtractor;
 import org.schabi.newpipe.extractor.stream.StreamInfoItemsCollector;
 import org.schabi.newpipe.extractor.stream.StreamType;
 import org.schabi.newpipe.extractor.stream.SubtitlesStream;
@@ -52,7 +52,10 @@ import java.util.Map;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
-import static org.schabi.newpipe.extractor.services.youtube.YoutubeParsingHelper.*;
+import static org.schabi.newpipe.extractor.services.youtube.YoutubeParsingHelper.fixThumbnailUrl;
+import static org.schabi.newpipe.extractor.services.youtube.YoutubeParsingHelper.getJsonResponse;
+import static org.schabi.newpipe.extractor.services.youtube.YoutubeParsingHelper.getTextFromObject;
+import static org.schabi.newpipe.extractor.services.youtube.YoutubeParsingHelper.getUrlFromNavigationEndpoint;
 import static org.schabi.newpipe.extractor.utils.JsonUtils.EMPTY_STRING;
 import static org.schabi.newpipe.extractor.utils.Utils.isNullOrEmpty;
 
@@ -508,12 +511,7 @@ public class YoutubeStreamExtractor extends StreamExtractor {
         return StreamType.VIDEO_STREAM;
     }
 
-    @Override
-    public StreamInfoItem getNextStream() throws ExtractionException {
-        assertPageFetched();
-
-        if (getAgeLimit() != NO_AGE_LIMIT) return null;
-
+    private StreamInfoItemExtractor getNextStream() throws ExtractionException {
         try {
             final JsonObject firstWatchNextItem = initialData.getObject("contents")
                     .getObject("twoColumnWatchNextResults").getObject("secondaryResults")
@@ -527,11 +525,7 @@ public class YoutubeStreamExtractor extends StreamExtractor {
             final JsonObject videoInfo = firstWatchNextItem.getObject("compactAutoplayRenderer")
                     .getArray("contents").getObject(0).getObject("compactVideoRenderer");
 
-            final TimeAgoParser timeAgoParser = getTimeAgoParser();
-            StreamInfoItemsCollector collector = new StreamInfoItemsCollector(getServiceId());
-
-            collector.commit(new YoutubeStreamInfoItemExtractor(videoInfo, timeAgoParser));
-            return collector.getItems().get(0);
+            return new YoutubeStreamInfoItemExtractor(videoInfo, getTimeAgoParser());
         } catch (Exception e) {
             throw new ParsingException("Could not get next video", e);
         }
@@ -544,13 +538,19 @@ public class YoutubeStreamExtractor extends StreamExtractor {
         if (getAgeLimit() != NO_AGE_LIMIT) return null;
 
         try {
-            StreamInfoItemsCollector collector = new StreamInfoItemsCollector(getServiceId());
-            JsonArray results = initialData.getObject("contents").getObject("twoColumnWatchNextResults")
+            final StreamInfoItemsCollector collector = new StreamInfoItemsCollector(getServiceId());
+
+            final StreamInfoItemExtractor nextStream = getNextStream();
+            if (nextStream != null) {
+                collector.commit(nextStream);
+            }
+
+            final JsonArray results = initialData.getObject("contents").getObject("twoColumnWatchNextResults")
                     .getObject("secondaryResults").getObject("secondaryResults").getArray("results");
 
             final TimeAgoParser timeAgoParser = getTimeAgoParser();
 
-            for (Object ul : results) {
+            for (final Object ul : results) {
                 if (((JsonObject) ul).has("compactVideoRenderer")) {
                     collector.commit(new YoutubeStreamInfoItemExtractor(((JsonObject) ul).getObject("compactVideoRenderer"), timeAgoParser));
                 }

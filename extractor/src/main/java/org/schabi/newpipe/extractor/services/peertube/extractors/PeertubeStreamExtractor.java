@@ -21,7 +21,6 @@ import org.schabi.newpipe.extractor.stream.AudioStream;
 import org.schabi.newpipe.extractor.stream.Description;
 import org.schabi.newpipe.extractor.stream.Stream;
 import org.schabi.newpipe.extractor.stream.StreamExtractor;
-import org.schabi.newpipe.extractor.stream.StreamInfoItem;
 import org.schabi.newpipe.extractor.stream.StreamInfoItemsCollector;
 import org.schabi.newpipe.extractor.stream.StreamType;
 import org.schabi.newpipe.extractor.stream.SubtitlesStream;
@@ -240,11 +239,6 @@ public class PeertubeStreamExtractor extends StreamExtractor {
     @Override
     public StreamType getStreamType() {
         return StreamType.VIDEO_STREAM;
-    }
-
-    @Override
-    public StreamInfoItem getNextStream() {
-        return null;
     }
 
     @Override

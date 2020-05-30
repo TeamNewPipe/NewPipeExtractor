@@ -30,12 +30,13 @@ import org.schabi.newpipe.extractor.linkhandler.LinkHandler;
 import org.schabi.newpipe.extractor.localization.DateWrapper;
 import org.schabi.newpipe.extractor.utils.Parser;
 
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
 import java.io.IOException;
 import java.util.Collections;
 import java.util.List;
 import java.util.Locale;
+
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 
 /**
  * Scrapes information from a video/audio streaming service (eg, YouTube).
@@ -310,21 +311,9 @@ public abstract class StreamExtractor extends Extractor {
     public abstract StreamType getStreamType() throws ParsingException;
 
     /**
-     * Should return the url of the next stream. NewPipe will automatically play
-     * the next stream if the user wants that.
-     * If the next stream is is not available simply return null
-     *
-     * @return the InfoItem of the next stream
-     * @throws IOException
-     * @throws ExtractionException
-     */
-    public abstract StreamInfoItem getNextStream() throws IOException, ExtractionException;
-
-    /**
      * Should return a list of streams related to the current handled. Many services show suggested
      * streams. If you don't like suggested streams you should implement them anyway since they can
      * be disabled by the user later in the frontend.
-     * This list MUST NOT contain the next available video as this should be return through getNextStream()
      * If it is not available simply return null
      *
      * @return a list of InfoItems showing the related videos/streams
