@@ -1,5 +1,4 @@
-package org.schabi.newpipe.extractor.services.youtube.linkHandler;
-
+package org.schabi.newpipe.extractor.services.youtube;
 
 import com.grack.nanojson.JsonArray;
 import com.grack.nanojson.JsonObject;
@@ -28,8 +27,8 @@ import java.text.SimpleDateFormat;
 import java.util.*;
 
 import static org.schabi.newpipe.extractor.NewPipe.getDownloader;
-import static org.schabi.newpipe.extractor.utils.Utils.HTTP;
-import static org.schabi.newpipe.extractor.utils.Utils.HTTPS;
+import static org.schabi.newpipe.extractor.utils.JsonUtils.EMPTY_STRING;
+import static org.schabi.newpipe.extractor.utils.Utils.*;
 
 /*
  * Created by Christian Schabesberger on 02.03.16.
@@ -111,9 +110,7 @@ public class YoutubeParsingHelper {
 
     public static long parseDurationString(String input)
             throws ParsingException, NumberFormatException {
-
         // If time separator : is not detected, try . instead
-
         final String[] splitInput = input.contains(":")
                 ? input.split(":")
                 : input.split("\\.");
@@ -145,10 +142,10 @@ public class YoutubeParsingHelper {
             default:
                 throw new ParsingException("Error duration string with unknown format: " + input);
         }
-        return ((((Long.parseLong(days) * 24)
-                + Long.parseLong(hours) * 60)
-                + Long.parseLong(minutes)) * 60)
-                + Long.parseLong(seconds);
+        return ((((Long.parseLong(Utils.removeNonDigitCharacters(days)) * 24)
+                + Long.parseLong(Utils.removeNonDigitCharacters(hours)) * 60)
+                + Long.parseLong(Utils.removeNonDigitCharacters(minutes))) * 60)
+                + Long.parseLong(Utils.removeNonDigitCharacters(seconds));
     }
 
     public static String getFeedUrlFrom(final String channelIdOrUser) {
@@ -201,7 +198,7 @@ public class YoutubeParsingHelper {
      * @throws ParsingException
      */
     public static String getClientVersion() throws IOException, ExtractionException {
-        if (clientVersion != null && !clientVersion.isEmpty()) return clientVersion;
+        if (!isNullOrEmpty(clientVersion)) return clientVersion;
         if (isHardcodedClientVersionValid()) return clientVersion = HARDCODED_CLIENT_VERSION;
 
         final String url = "https://www.youtube.com/results?search_query=test";
@@ -244,7 +241,7 @@ public class YoutubeParsingHelper {
         for (String pattern : patterns) {
             try {
                 contextClientVersion = Parser.matchGroup1(pattern, html);
-                if (contextClientVersion != null && !contextClientVersion.isEmpty()) {
+                if (!isNullOrEmpty(contextClientVersion)) {
                     return clientVersion = contextClientVersion;
                 }
             } catch (Exception ignored) {
@@ -364,7 +361,7 @@ public class YoutubeParsingHelper {
                 return "https://www.youtube.com/channel/" + browseId;
             }
 
-            if (canonicalBaseUrl != null && !canonicalBaseUrl.isEmpty()) {
+            if (!isNullOrEmpty(canonicalBaseUrl)) {
                 return "https://www.youtube.com" + canonicalBaseUrl;
             }
 
@@ -388,17 +385,21 @@ public class YoutubeParsingHelper {
      * Get the text from a JSON object that has either a simpleText or a runs array.
      * @param textObject JSON object to get the text from
      * @param html       whether to return HTML, by parsing the navigationEndpoint
-     * @return text in the JSON object or an empty string
+     * @return text in the JSON object or {@code null}
      */
     public static String getTextFromObject(JsonObject textObject, boolean html) throws ParsingException {
+        if (isNullOrEmpty(textObject)) return null;
+
         if (textObject.has("simpleText")) return textObject.getString("simpleText");
+
+        if (textObject.getArray("runs").isEmpty()) return null;
 
         StringBuilder textBuilder = new StringBuilder();
         for (Object textPart : textObject.getArray("runs")) {
             String text = ((JsonObject) textPart).getString("text");
             if (html && ((JsonObject) textPart).has("navigationEndpoint")) {
                 String url = getUrlFromNavigationEndpoint(((JsonObject) textPart).getObject("navigationEndpoint"));
-                if (url != null && !url.isEmpty()) {
+                if (!isNullOrEmpty(url)) {
                     textBuilder.append("<a href=\"").append(url).append("\">").append(text).append("</a>");
                     continue;
                 }
@@ -490,12 +491,12 @@ public class YoutubeParsingHelper {
      * @param initialData the object which will be checked if an alert is present
      * @throws ContentNotAvailableException if an alert is detected
      */
-    public static void defaultAlertsCheck(JsonObject initialData) throws ContentNotAvailableException {
+    public static void defaultAlertsCheck(final JsonObject initialData) throws ParsingException {
         final JsonArray alerts = initialData.getArray("alerts");
-        if (!alerts.isEmpty()) {
+        if (!isNullOrEmpty(alerts)) {
             final JsonObject alertRenderer = alerts.getObject(0).getObject("alertRenderer");
-            final String alertText = alertRenderer.getObject("text").getString("simpleText");
-            final String alertType = alertRenderer.getString("type");
+            final String alertText = getTextFromObject(alertRenderer.getObject("text"));
+            final String alertType = alertRenderer.getString("type", EMPTY_STRING);
             if (alertType.equalsIgnoreCase("ERROR")) {
                 throw new ContentNotAvailableException("Got error: \"" + alertText + "\"");
             }

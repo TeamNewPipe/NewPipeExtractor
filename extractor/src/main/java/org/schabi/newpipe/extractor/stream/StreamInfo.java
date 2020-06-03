@@ -16,6 +16,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
 
+import static org.schabi.newpipe.extractor.utils.Utils.isNullOrEmpty;
+
 /*
  * Created by Christian Schabesberger on 26.08.15.
  *
@@ -103,7 +105,7 @@ public class StreamInfo extends Info {
         String name = extractor.getName();
         int ageLimit = extractor.getAgeLimit();
 
-        if ((streamType == StreamType.NONE) || (url == null || url.isEmpty()) || (id == null || id.isEmpty())
+        if ((streamType == StreamType.NONE) || isNullOrEmpty(url) || (isNullOrEmpty(id))
                 || (name == null /* streamInfo.title can be empty of course */) || (ageLimit == -1)) {
             throw new ExtractionException("Some important stream information was not given.");
         }
@@ -159,7 +161,7 @@ public class StreamInfo extends Info {
             streamInfo.setAudioStreams(new ArrayList<AudioStream>());
 
         Exception dashMpdError = null;
-        if (streamInfo.getDashMpdUrl() != null && !streamInfo.getDashMpdUrl().isEmpty()) {
+        if (!isNullOrEmpty(streamInfo.getDashMpdUrl())) {
             try {
                 DashMpdParser.ParserResult result = DashMpdParser.getStreams(streamInfo);
                 streamInfo.getVideoOnlyStreams().addAll(result.getVideoOnlyStreams());
@@ -224,6 +226,28 @@ public class StreamInfo extends Info {
             streamInfo.addError(e);
         }
         try {
+            streamInfo.setUploaderAvatarUrl(extractor.getUploaderAvatarUrl());
+        } catch (Exception e) {
+            streamInfo.addError(e);
+        }
+
+        try {
+            streamInfo.setSubChannelName(extractor.getSubChannelName());
+        } catch (Exception e) {
+            streamInfo.addError(e);
+        }
+        try {
+            streamInfo.setSubChannelUrl(extractor.getSubChannelUrl());
+        } catch (Exception e) {
+            streamInfo.addError(e);
+        }
+        try {
+            streamInfo.setSubChannelAvatarUrl(extractor.getSubChannelAvatarUrl());
+        } catch (Exception e) {
+            streamInfo.addError(e);
+        }
+
+        try {
             streamInfo.setDescription(extractor.getDescription());
         } catch (Exception e) {
             streamInfo.addError(e);
@@ -240,11 +264,6 @@ public class StreamInfo extends Info {
         }
         try {
             streamInfo.setUploadDate(extractor.getUploadDate());
-        } catch (Exception e) {
-            streamInfo.addError(e);
-        }
-        try {
-            streamInfo.setUploaderAvatarUrl(extractor.getUploaderAvatarUrl());
         } catch (Exception e) {
             streamInfo.addError(e);
         }
@@ -331,6 +350,10 @@ public class StreamInfo extends Info {
     private String uploaderName = "";
     private String uploaderUrl = "";
     private String uploaderAvatarUrl = "";
+
+    private String subChannelName = "";
+    private String subChannelUrl = "";
+    private String subChannelAvatarUrl = "";
 
     private List<VideoStream> videoStreams = new ArrayList<>();
     private List<AudioStream> audioStreams = new ArrayList<>();
@@ -484,6 +507,30 @@ public class StreamInfo extends Info {
 
     public void setUploaderAvatarUrl(String uploaderAvatarUrl) {
         this.uploaderAvatarUrl = uploaderAvatarUrl;
+    }
+
+    public String getSubChannelName() {
+        return subChannelName;
+    }
+
+    public void setSubChannelName(String subChannelName) {
+        this.subChannelName = subChannelName;
+    }
+
+    public String getSubChannelUrl() {
+        return subChannelUrl;
+    }
+
+    public void setSubChannelUrl(String subChannelUrl) {
+        this.subChannelUrl = subChannelUrl;
+    }
+
+    public String getSubChannelAvatarUrl() {
+        return subChannelAvatarUrl;
+    }
+
+    public void setSubChannelAvatarUrl(String subChannelAvatarUrl) {
+        this.subChannelAvatarUrl = subChannelAvatarUrl;
     }
 
     public List<VideoStream> getVideoStreams() {

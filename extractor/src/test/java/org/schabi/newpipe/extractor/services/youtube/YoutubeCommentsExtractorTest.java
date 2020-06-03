@@ -1,6 +1,5 @@
 package org.schabi.newpipe.extractor.services.youtube;
 
-import org.jsoup.helper.StringUtil;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import org.schabi.newpipe.DownloaderTestImpl;
@@ -11,11 +10,15 @@ import org.schabi.newpipe.extractor.comments.CommentsInfoItem;
 import org.schabi.newpipe.extractor.exceptions.ExtractionException;
 import org.schabi.newpipe.extractor.services.DefaultTests;
 import org.schabi.newpipe.extractor.services.youtube.extractors.YoutubeCommentsExtractor;
+import org.schabi.newpipe.extractor.utils.Utils;
 
 import java.io.IOException;
 import java.util.List;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
 import static org.schabi.newpipe.extractor.ServiceList.YouTube;
 
 public class YoutubeCommentsExtractorTest {
@@ -68,15 +71,14 @@ public class YoutubeCommentsExtractorTest {
     private boolean getCommentsFromCommentsInfoHelper(String url) throws IOException, ExtractionException {
         boolean result = false;
         CommentsInfo commentsInfo = CommentsInfo.getInfo(url);
-        assertEquals("what the fuck am i doing with my life", commentsInfo.getName());
         result = findInComments(commentsInfo.getRelatedItems(), "s1ck m3m3");
 
-        String nextPage = commentsInfo.getNextPageUrl();
-        while (!StringUtil.isBlank(nextPage) && !result) {
+   /*     String nextPage = commentsInfo.getNextPageUrl();
+        while (!Utils.isBlank(nextPage) && !result) {
             InfoItemsPage<CommentsInfoItem> moreItems = CommentsInfo.getMoreItems(YouTube, commentsInfo, nextPage);
             result = findInComments(moreItems.getItems(), "s1ck m3m3");
             nextPage = moreItems.getNextPageUrl();
-        }
+        }*/
         return result;
     }
 
@@ -86,16 +88,16 @@ public class YoutubeCommentsExtractorTest {
 
         DefaultTests.defaultTestListOfItems(YouTube, comments.getItems(), comments.getErrors());
         for (CommentsInfoItem c : comments.getItems()) {
-            assertFalse(StringUtil.isBlank(c.getAuthorEndpoint()));
-            assertFalse(StringUtil.isBlank(c.getAuthorName()));
-            assertFalse(StringUtil.isBlank(c.getAuthorThumbnail()));
-            assertFalse(StringUtil.isBlank(c.getCommentId()));
-            assertFalse(StringUtil.isBlank(c.getCommentText()));
-            assertFalse(StringUtil.isBlank(c.getName()));
-            assertFalse(StringUtil.isBlank(c.getTextualPublishedTime()));
-            assertNotNull(c.getPublishedTime());
-            assertFalse(StringUtil.isBlank(c.getThumbnailUrl()));
-            assertFalse(StringUtil.isBlank(c.getUrl()));
+            assertFalse(Utils.isBlank(c.getUploaderUrl()));
+            assertFalse(Utils.isBlank(c.getUploaderName()));
+            assertFalse(Utils.isBlank(c.getUploaderAvatarUrl()));
+            assertFalse(Utils.isBlank(c.getCommentId()));
+            assertFalse(Utils.isBlank(c.getCommentText()));
+            assertFalse(Utils.isBlank(c.getName()));
+            assertFalse(Utils.isBlank(c.getTextualUploadDate()));
+            assertNotNull(c.getUploadDate());
+            assertFalse(Utils.isBlank(c.getThumbnailUrl()));
+            assertFalse(Utils.isBlank(c.getUrl()));
             assertFalse(c.getLikeCount() < 0);
         }
     }

@@ -35,27 +35,27 @@ public class CommentsInfoItemsCollector extends InfoItemsCollector<CommentsInfoI
             addError(e);
         }
         try {
-            resultItem.setAuthorName(extractor.getAuthorName());
+            resultItem.setUploaderName(extractor.getUploaderName());
         } catch (Exception e) {
             addError(e);
         }
         try {
-            resultItem.setAuthorThumbnail(extractor.getAuthorThumbnail());
+            resultItem.setUploaderAvatarUrl(extractor.getUploaderAvatarUrl());
         } catch (Exception e) {
             addError(e);
         }
         try {
-            resultItem.setAuthorEndpoint(extractor.getAuthorEndpoint());
+            resultItem.setUploaderUrl(extractor.getUploaderUrl());
         } catch (Exception e) {
             addError(e);
         }
         try {
-            resultItem.setTextualPublishedTime(extractor.getTextualPublishedTime());
+            resultItem.setTextualUploadDate(extractor.getTextualUploadDate());
         } catch (Exception e) {
             addError(e);
         }
         try {
-            resultItem.setPublishedTime(extractor.getPublishedTime());
+            resultItem.setUploadDate(extractor.getUploadDate());
         } catch (Exception e) {
             addError(e);
         }

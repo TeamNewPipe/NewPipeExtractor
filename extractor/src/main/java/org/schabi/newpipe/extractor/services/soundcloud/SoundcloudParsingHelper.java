@@ -15,9 +15,13 @@ import org.schabi.newpipe.extractor.downloader.Response;
 import org.schabi.newpipe.extractor.exceptions.ExtractionException;
 import org.schabi.newpipe.extractor.exceptions.ParsingException;
 import org.schabi.newpipe.extractor.exceptions.ReCaptchaException;
+import org.schabi.newpipe.extractor.services.soundcloud.extractors.SoundcloudChannelInfoItemExtractor;
+import org.schabi.newpipe.extractor.services.soundcloud.extractors.SoundcloudStreamExtractor;
+import org.schabi.newpipe.extractor.services.soundcloud.extractors.SoundcloudStreamInfoItemExtractor;
 import org.schabi.newpipe.extractor.stream.StreamInfoItemsCollector;
 import org.schabi.newpipe.extractor.utils.Parser;
 import org.schabi.newpipe.extractor.utils.Parser.RegexException;
+import org.schabi.newpipe.extractor.utils.Utils;
 
 import javax.annotation.Nonnull;
 import java.io.IOException;
@@ -29,6 +33,7 @@ import java.util.*;
 import static java.util.Collections.singletonList;
 import static org.schabi.newpipe.extractor.ServiceList.SoundCloud;
 import static org.schabi.newpipe.extractor.utils.JsonUtils.EMPTY_STRING;
+import static org.schabi.newpipe.extractor.utils.Utils.isNullOrEmpty;
 import static org.schabi.newpipe.extractor.utils.Utils.replaceHttpWithHttps;
 
 public class SoundcloudParsingHelper {
@@ -39,7 +44,7 @@ public class SoundcloudParsingHelper {
     }
 
     public static String clientId() throws ExtractionException, IOException {
-        if (clientId != null && !clientId.isEmpty()) return clientId;
+        if (!isNullOrEmpty(clientId)) return clientId;
 
         Downloader dl = NewPipe.getDownloader();
         clientId = HARDCODED_CLIENT_ID;
@@ -61,7 +66,7 @@ public class SoundcloudParsingHelper {
 
         for (Element element : possibleScripts) {
             final String srcUrl = element.attr("src");
-            if (srcUrl != null && !srcUrl.isEmpty()) {
+            if (!isNullOrEmpty(srcUrl)) {
                 try {
                     return clientId = Parser.matchGroup1(clientIdPattern, dl.get(srcUrl, headers).responseBody());
                 } catch (RegexException ignored) {
@@ -86,10 +91,12 @@ public class SoundcloudParsingHelper {
         }
     }
 
-    static Calendar parseDate(String textualUploadDate) throws ParsingException {
+    public static Calendar parseDateFrom(String textualUploadDate) throws ParsingException {
         Date date;
         try {
-            date = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss'Z'").parse(textualUploadDate);
+            SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss'Z'");
+            sdf.setTimeZone(TimeZone.getTimeZone("GMT"));
+            date = sdf.parse(textualUploadDate);
         } catch (ParseException e1) {
             try {
                 date = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss +0000").parse(textualUploadDate);
@@ -256,13 +263,13 @@ public class SoundcloudParsingHelper {
     }
 
     @Nonnull
-    static String getUploaderUrl(JsonObject object) {
+    public static String getUploaderUrl(JsonObject object) {
         String url = object.getObject("user").getString("permalink_url", EMPTY_STRING);
         return replaceHttpWithHttps(url);
     }
 
     @Nonnull
-    static String getAvatarUrl(JsonObject object) {
+    public static String getAvatarUrl(JsonObject object) {
         String url = object.getObject("user").getString("avatar_url", EMPTY_STRING);
         return replaceHttpWithHttps(url);
     }

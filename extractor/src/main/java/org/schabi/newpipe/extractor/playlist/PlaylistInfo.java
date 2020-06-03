@@ -85,6 +85,21 @@ public class PlaylistInfo extends ListInfo<StreamInfoItem> {
             uploaderParsingErrors.add(e);
         }
         try {
+            info.setSubChannelUrl(extractor.getSubChannelUrl());
+        } catch (Exception e) {
+            uploaderParsingErrors.add(e);
+        }
+        try {
+            info.setSubChannelName(extractor.getSubChannelName());
+        } catch (Exception e) {
+            uploaderParsingErrors.add(e);
+        }
+        try {
+            info.setSubChannelAvatarUrl(extractor.getSubChannelAvatarUrl());
+        } catch (Exception e) {
+            uploaderParsingErrors.add(e);
+        }
+        try {
             info.setBannerUrl(extractor.getBannerUrl());
         } catch (Exception e) {
             info.addError(e);
@@ -107,6 +122,9 @@ public class PlaylistInfo extends ListInfo<StreamInfoItem> {
     private String uploaderUrl;
     private String uploaderName;
     private String uploaderAvatarUrl;
+    private String subChannelUrl;
+    private String subChannelName;
+    private String subChannelAvatarUrl;
     private long streamCount = 0;
 
     public String getThumbnailUrl() {
@@ -147,6 +165,30 @@ public class PlaylistInfo extends ListInfo<StreamInfoItem> {
 
     public void setUploaderAvatarUrl(String uploaderAvatarUrl) {
         this.uploaderAvatarUrl = uploaderAvatarUrl;
+    }
+
+    public String getSubChannelUrl() {
+        return subChannelUrl;
+    }
+
+    public void setSubChannelUrl(String subChannelUrl) {
+        this.subChannelUrl = subChannelUrl;
+    }
+
+    public String getSubChannelName() {
+        return subChannelName;
+    }
+
+    public void setSubChannelName(String subChannelName) {
+        this.subChannelName = subChannelName;
+    }
+
+    public String getSubChannelAvatarUrl() {
+        return subChannelAvatarUrl;
+    }
+
+    public void setSubChannelAvatarUrl(String subChannelAvatarUrl) {
+        this.subChannelAvatarUrl = subChannelAvatarUrl;
     }
 
     public long getStreamCount() {

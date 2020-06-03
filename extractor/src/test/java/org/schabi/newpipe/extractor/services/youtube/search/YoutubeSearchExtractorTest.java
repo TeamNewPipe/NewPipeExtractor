@@ -20,6 +20,7 @@ import static org.schabi.newpipe.extractor.ExtractorAsserts.assertEmptyErrors;
 import static org.schabi.newpipe.extractor.ServiceList.YouTube;
 import static org.schabi.newpipe.extractor.services.DefaultTests.assertNoDuplicatedItems;
 import static org.schabi.newpipe.extractor.services.youtube.linkHandler.YoutubeSearchQueryHandlerFactory.*;
+import static org.schabi.newpipe.extractor.utils.Utils.isNullOrEmpty;
 
 public class YoutubeSearchExtractorTest {
     public static class All extends DefaultSearchExtractorTest {
@@ -114,6 +115,29 @@ public class YoutubeSearchExtractorTest {
 
     public static class Suggestion extends DefaultSearchExtractorTest {
         private static SearchExtractor extractor;
+        private static final String QUERY = "newpip";
+        private static final String EXPECTED_SUGGESTION = "newpipe";
+
+        @BeforeClass
+        public static void setUp() throws Exception {
+            NewPipe.init(DownloaderTestImpl.getInstance());
+            extractor = YouTube.getSearchExtractor(QUERY, singletonList(VIDEOS), "");
+            extractor.fetchPage();
+        }
+
+        @Override public SearchExtractor extractor() { return extractor; }
+        @Override public StreamingService expectedService() { return YouTube; }
+        @Override public String expectedName() { return QUERY; }
+        @Override public String expectedId() { return QUERY; }
+        @Override public String expectedUrlContains() { return "youtube.com/results?search_query=" + QUERY; }
+        @Override public String expectedOriginalUrlContains() { return "youtube.com/results?search_query=" + QUERY; }
+        @Override public String expectedSearchString() { return QUERY; }
+        @Nullable @Override public String expectedSearchSuggestion() { return EXPECTED_SUGGESTION; }
+        @Override public InfoItem.InfoType expectedInfoItemType() { return InfoItem.InfoType.STREAM; }
+    }
+
+    public static class CorrectedSearch extends DefaultSearchExtractorTest {
+        private static SearchExtractor extractor;
         private static final String QUERY = "pewdeipie";
         private static final String EXPECTED_SUGGESTION = "pewdiepie";
 
@@ -132,8 +156,8 @@ public class YoutubeSearchExtractorTest {
         @Override public String expectedOriginalUrlContains() { return "youtube.com/results?search_query=" + QUERY; }
         @Override public String expectedSearchString() { return QUERY; }
         @Nullable @Override public String expectedSearchSuggestion() { return EXPECTED_SUGGESTION; }
-
         @Override public InfoItem.InfoType expectedInfoItemType() { return InfoItem.InfoType.STREAM; }
+        @Override public boolean isCorrectedSearch() { return true; }
     }
 
     public static class RandomQueryNoMorePages extends DefaultSearchExtractorTest {
@@ -170,7 +194,7 @@ public class YoutubeSearchExtractorTest {
 
             assertFalse("More items available when it shouldn't", nextEmptyPage.hasNextPage());
             final String nextPageUrl = nextEmptyPage.getNextPageUrl();
-            assertTrue("Next page is not empty or null", nextPageUrl == null || nextPageUrl.isEmpty());
+            assertTrue("Next page is not empty or null", isNullOrEmpty(nextPageUrl));
         }
     }
 

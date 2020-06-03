@@ -18,6 +18,7 @@ import static junit.framework.TestCase.assertFalse;
 import static org.junit.Assert.*;
 import static org.schabi.newpipe.extractor.ExtractorAsserts.*;
 import static org.schabi.newpipe.extractor.StreamingService.LinkType;
+import static org.schabi.newpipe.extractor.utils.Utils.isNullOrEmpty;
 
 public final class DefaultTests {
     public static void defaultTestListOfItems(StreamingService expectedService, List<? extends InfoItem> itemsList, List<Throwable> errors) throws ParsingException {
@@ -27,8 +28,10 @@ public final class DefaultTests {
 
         for (InfoItem item : itemsList) {
             assertIsSecureUrl(item.getUrl());
-            if (item.getThumbnailUrl() != null && !item.getThumbnailUrl().isEmpty()) {
-                assertIsSecureUrl(item.getThumbnailUrl());
+
+            final String thumbnailUrl = item.getThumbnailUrl();
+            if (!isNullOrEmpty(thumbnailUrl)) {
+                assertIsSecureUrl(thumbnailUrl);
             }
             assertNotNull("InfoItem type not set: " + item, item.getInfoType());
             assertEquals("Unexpected item service id", expectedService.getServiceId(), item.getServiceId());
@@ -39,15 +42,15 @@ public final class DefaultTests {
                 assertNotEmpty("Uploader name not set: " + item, streamInfoItem.getUploaderName());
 
 //                assertNotEmpty("Uploader url not set: " + item, streamInfoItem.getUploaderUrl());
-                if (streamInfoItem.getUploaderUrl() != null && !streamInfoItem.getUploaderUrl().isEmpty()) {
-                    assertIsSecureUrl(streamInfoItem.getUploaderUrl());
-                    assertExpectedLinkType(expectedService, streamInfoItem.getUploaderUrl(), LinkType.CHANNEL);
+                final String uploaderUrl = streamInfoItem.getUploaderUrl();
+                if (!isNullOrEmpty(uploaderUrl)) {
+                    assertIsSecureUrl(uploaderUrl);
+                    assertExpectedLinkType(expectedService, uploaderUrl, LinkType.CHANNEL);
                 }
 
                 assertExpectedLinkType(expectedService, streamInfoItem.getUrl(), LinkType.STREAM);
 
-                final String textualUploadDate = streamInfoItem.getTextualUploadDate();
-                if (textualUploadDate != null && !textualUploadDate.isEmpty()) {
+                if (!isNullOrEmpty(streamInfoItem.getTextualUploadDate())) {
                     final DateWrapper uploadDate = streamInfoItem.getUploadDate();
                     assertNotNull("No parsed upload date", uploadDate);
                     assertTrue("Upload date not in the past", uploadDate.date().before(Calendar.getInstance()));
@@ -83,7 +86,7 @@ public final class DefaultTests {
     public static <T extends InfoItem> void assertNoMoreItems(ListExtractor<T> extractor) throws Exception {
         assertFalse("More items available when it shouldn't", extractor.hasNextPage());
         final String nextPageUrl = extractor.getNextPageUrl();
-        assertTrue("Next page is not empty or null", nextPageUrl == null || nextPageUrl.isEmpty());
+        assertTrue("Next page is not empty or null", isNullOrEmpty(nextPageUrl));
     }
 
     public static void assertNoDuplicatedItems(StreamingService expectedService,

@@ -23,6 +23,7 @@ package org.schabi.newpipe.extractor.stream;
 import org.schabi.newpipe.extractor.Extractor;
 import org.schabi.newpipe.extractor.MediaFormat;
 import org.schabi.newpipe.extractor.StreamingService;
+import org.schabi.newpipe.extractor.channel.ChannelExtractor;
 import org.schabi.newpipe.extractor.exceptions.ExtractionException;
 import org.schabi.newpipe.extractor.exceptions.ParsingException;
 import org.schabi.newpipe.extractor.linkhandler.LinkHandler;
@@ -148,7 +149,7 @@ public abstract class StreamExtractor extends Extractor {
     /**
      * The Url to the page of the creator/uploader of the stream. This must not be a homepage,
      * but the page offered by the service the extractor handles. This url will be handled by the
-     * <a href="https://teamnewpipe.github.io/documentation/03_Implement_a_service/#channel">ChannelExtractor</a>,
+     * {@link ChannelExtractor},
      * so be sure to implement that one before you return a value here, otherwise NewPipe will crash if one selects
      * this url.
      *
@@ -177,6 +178,39 @@ public abstract class StreamExtractor extends Extractor {
      */
     @Nonnull
     public abstract String getUploaderAvatarUrl() throws ParsingException;
+
+    /**
+     * The Url to the page of the sub-channel of the stream. This must not be a homepage,
+     * but the page offered by the service the extractor handles. This url will be handled by the
+     * {@link ChannelExtractor},
+     * so be sure to implement that one before you return a value here, otherwise NewPipe will crash if one selects
+     * this url.
+     *
+     * @return the url to the page of the sub-channel of the stream or an empty String
+     * @throws ParsingException
+     */
+    @Nonnull
+    public abstract String getSubChannelUrl() throws ParsingException;
+
+    /**
+     * The name of the sub-channel of the stream.
+     * If the name is not available you can simply return an empty string.
+     *
+     * @return the name of the sub-channel of the stream or an empty String
+     * @throws ParsingException
+     */
+    @Nonnull
+    public abstract String getSubChannelName() throws ParsingException;
+
+    /**
+     * The url to the image file/profile picture/avatar of the sub-channel of the stream.
+     * If the url is not available you can return an empty String.
+     *
+     * @return The url of the image file of the sub-channel or an empty String
+     * @throws ParsingException
+     */
+    @Nonnull
+    public abstract String getSubChannelAvatarUrl() throws ParsingException;
 
     /**
      * Get the dash mpd url. If you don't know what a dash MPD is you can read about it

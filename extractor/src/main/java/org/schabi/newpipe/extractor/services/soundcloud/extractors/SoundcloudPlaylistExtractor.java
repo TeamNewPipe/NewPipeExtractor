@@ -1,4 +1,4 @@
-package org.schabi.newpipe.extractor.services.soundcloud;
+package org.schabi.newpipe.extractor.services.soundcloud.extractors;
 
 import com.grack.nanojson.JsonArray;
 import com.grack.nanojson.JsonObject;
@@ -12,6 +12,7 @@ import org.schabi.newpipe.extractor.exceptions.ExtractionException;
 import org.schabi.newpipe.extractor.exceptions.ParsingException;
 import org.schabi.newpipe.extractor.linkhandler.ListLinkHandler;
 import org.schabi.newpipe.extractor.playlist.PlaylistExtractor;
+import org.schabi.newpipe.extractor.services.soundcloud.SoundcloudParsingHelper;
 import org.schabi.newpipe.extractor.stream.StreamInfoItem;
 import org.schabi.newpipe.extractor.stream.StreamInfoItemsCollector;
 
@@ -19,6 +20,8 @@ import java.io.IOException;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
+
+import static org.schabi.newpipe.extractor.utils.Utils.isNullOrEmpty;
 
 @SuppressWarnings("WeakerAccess")
 public class SoundcloudPlaylistExtractor extends PlaylistExtractor {
@@ -75,7 +78,7 @@ public class SoundcloudPlaylistExtractor extends PlaylistExtractor {
 
                 for (StreamInfoItem item : infoItems.getItems()) {
                     artworkUrl = item.getThumbnailUrl();
-                    if (artworkUrl != null && !artworkUrl.isEmpty()) break;
+                    if (!isNullOrEmpty(artworkUrl)) break;
                 }
             } catch (Exception ignored) {
             }
@@ -111,6 +114,24 @@ public class SoundcloudPlaylistExtractor extends PlaylistExtractor {
     @Override
     public long getStreamCount() {
         return playlist.getNumber("track_count", 0).longValue();
+    }
+
+    @Nonnull
+    @Override
+    public String getSubChannelName() throws ParsingException {
+        return "";
+    }
+
+    @Nonnull
+    @Override
+    public String getSubChannelUrl() throws ParsingException {
+        return "";
+    }
+
+    @Nonnull
+    @Override
+    public String getSubChannelAvatarUrl() throws ParsingException {
+        return "";
     }
 
     @Nonnull
@@ -159,7 +180,7 @@ public class SoundcloudPlaylistExtractor extends PlaylistExtractor {
 
     @Override
     public InfoItemsPage<StreamInfoItem> getPage(String pageUrl) throws IOException, ExtractionException {
-        if (pageUrl == null || pageUrl.isEmpty()) {
+        if (isNullOrEmpty(pageUrl)) {
             throw new ExtractionException(new IllegalArgumentException("Page url is empty or null"));
         }
 

@@ -15,6 +15,7 @@ public class SearchInfo extends ListInfo<InfoItem> {
 
     private String searchString;
     private String searchSuggestion;
+    private boolean isCorrectedSearch;
 
     public SearchInfo(int serviceId,
                       SearchQueryHandler qIHandler,
@@ -42,7 +43,12 @@ public class SearchInfo extends ListInfo<InfoItem> {
             info.addError(e);
         }
         try {
-            info.searchSuggestion = extractor.getSearchSuggestion();
+            info.setSearchSuggestion(extractor.getSearchSuggestion());
+        } catch (Exception e) {
+            info.addError(e);
+        }
+        try {
+            info.setIsCorrectedSearch(extractor.isCorrectedSearch());
         } catch (Exception e) {
             info.addError(e);
         }
@@ -64,10 +70,22 @@ public class SearchInfo extends ListInfo<InfoItem> {
 
     // Getter
     public String getSearchString() {
-        return searchString;
+        return this.searchString;
     }
 
     public String getSearchSuggestion() {
-        return searchSuggestion;
+        return this.searchSuggestion;
+    }
+
+    public boolean isCorrectedSearch() {
+        return this.isCorrectedSearch;
+    }
+
+    public void setIsCorrectedSearch(boolean isCorrectedSearch) {
+        this.isCorrectedSearch = isCorrectedSearch;
+    }
+
+    public void setSearchSuggestion(String searchSuggestion) {
+        this.searchSuggestion = searchSuggestion;
     }
 }

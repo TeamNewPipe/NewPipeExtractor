@@ -1,4 +1,4 @@
-package org.schabi.newpipe.extractor.services.soundcloud;
+package org.schabi.newpipe.extractor.services.soundcloud.extractors;
 
 import com.grack.nanojson.JsonArray;
 import com.grack.nanojson.JsonObject;
@@ -10,6 +10,7 @@ import org.schabi.newpipe.extractor.downloader.Downloader;
 import org.schabi.newpipe.extractor.exceptions.ExtractionException;
 import org.schabi.newpipe.extractor.exceptions.ParsingException;
 import org.schabi.newpipe.extractor.linkhandler.ListLinkHandler;
+import org.schabi.newpipe.extractor.services.soundcloud.SoundcloudParsingHelper;
 import org.schabi.newpipe.extractor.stream.StreamInfoItem;
 import org.schabi.newpipe.extractor.stream.StreamInfoItemsCollector;
 
@@ -17,6 +18,7 @@ import javax.annotation.Nonnull;
 import java.io.IOException;
 
 import static org.schabi.newpipe.extractor.utils.JsonUtils.EMPTY_STRING;
+import static org.schabi.newpipe.extractor.utils.Utils.isNullOrEmpty;
 
 @SuppressWarnings("WeakerAccess")
 public class SoundcloudChannelExtractor extends ChannelExtractor {
@@ -82,6 +84,21 @@ public class SoundcloudChannelExtractor extends ChannelExtractor {
         return user.getString("description", EMPTY_STRING);
     }
 
+    @Override
+    public String getParentChannelName() throws ParsingException {
+        return "";
+    }
+
+    @Override
+    public String getParentChannelUrl() throws ParsingException {
+        return "";
+    }
+
+    @Override
+    public String getParentChannelAvatarUrl() throws ParsingException {
+        return "";
+    }
+
     @Nonnull
     @Override
     public InfoItemsPage<StreamInfoItem> getInitialPage() throws ExtractionException {
@@ -116,7 +133,7 @@ public class SoundcloudChannelExtractor extends ChannelExtractor {
 
     @Override
     public InfoItemsPage<StreamInfoItem> getPage(final String pageUrl) throws IOException, ExtractionException {
-        if (pageUrl == null || pageUrl.isEmpty()) {
+        if (isNullOrEmpty(pageUrl)) {
             throw new ExtractionException(new IllegalArgumentException("Page url is empty or null"));
         }
 

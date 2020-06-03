@@ -4,4 +4,5 @@ package org.schabi.newpipe.extractor.services;
 public interface BaseSearchExtractorTest extends BaseListExtractorTest {
     void testSearchString() throws Exception;
     void testSearchSuggestion() throws Exception;
+    void testSearchCorrected() throws Exception;
 }

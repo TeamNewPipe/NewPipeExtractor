@@ -21,6 +21,7 @@ package org.schabi.newpipe.extractor.services.youtube.linkHandler;
  */
 
 import org.schabi.newpipe.extractor.linkhandler.ListLinkHandlerFactory;
+import org.schabi.newpipe.extractor.services.youtube.YoutubeParsingHelper;
 import org.schabi.newpipe.extractor.utils.Utils;
 
 import java.net.MalformedURLException;

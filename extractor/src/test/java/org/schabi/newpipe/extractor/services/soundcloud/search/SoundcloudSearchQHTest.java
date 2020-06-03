@@ -8,7 +8,7 @@ import org.schabi.newpipe.extractor.NewPipe;
 import static java.util.Arrays.asList;
 import static org.junit.Assert.assertEquals;
 import static org.schabi.newpipe.extractor.ServiceList.SoundCloud;
-import static org.schabi.newpipe.extractor.services.soundcloud.SoundcloudSearchQueryHandlerFactory.*;
+import static org.schabi.newpipe.extractor.services.soundcloud.linkHandler.SoundcloudSearchQueryHandlerFactory.*;
 
 public class SoundcloudSearchQHTest {
 

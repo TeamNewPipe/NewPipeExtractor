@@ -8,6 +8,7 @@ import org.schabi.newpipe.extractor.NewPipe;
 import org.schabi.newpipe.extractor.exceptions.ContentNotSupportedException;
 import org.schabi.newpipe.extractor.exceptions.ExtractionException;
 import org.schabi.newpipe.extractor.exceptions.ParsingException;
+import org.schabi.newpipe.extractor.services.soundcloud.extractors.SoundcloudStreamExtractor;
 import org.schabi.newpipe.extractor.stream.StreamExtractor;
 import org.schabi.newpipe.extractor.stream.StreamInfoItemsCollector;
 import org.schabi.newpipe.extractor.stream.StreamType;
@@ -16,6 +17,7 @@ import java.io.IOException;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
+import java.util.TimeZone;
 
 import static java.util.Objects.requireNonNull;
 import static org.junit.Assert.*;
@@ -83,7 +85,9 @@ public class SoundcloudStreamExtractorDefaultTest {
         @Test
         public void testGetUploadDate() throws ParsingException, ParseException {
             final Calendar instance = Calendar.getInstance();
-            instance.setTime(new SimpleDateFormat("yyyy/MM/dd HH:mm:ss +0000").parse("2016/07/31 18:18:07 +0000"));
+            SimpleDateFormat sdf = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss +0000");
+            sdf.setTimeZone(TimeZone.getTimeZone("GMT"));
+            instance.setTime(sdf.parse("2016/07/31 18:18:07 +0000"));
             assertEquals(instance, requireNonNull(extractor.getUploadDate()).date());
         }
 

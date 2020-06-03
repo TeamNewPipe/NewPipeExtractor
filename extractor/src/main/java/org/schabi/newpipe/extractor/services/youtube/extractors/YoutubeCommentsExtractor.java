@@ -27,6 +27,7 @@ import java.util.Map;
 import java.util.regex.Pattern;
 
 import static java.util.Collections.singletonList;
+import static org.schabi.newpipe.extractor.utils.Utils.isNullOrEmpty;
 
 
 public class YoutubeCommentsExtractor extends CommentsExtractor {
@@ -37,7 +38,6 @@ public class YoutubeCommentsExtractor extends CommentsExtractor {
 
     private String ytClientVersion;
     private String ytClientName;
-    private String title;
     private InfoItemsPage<CommentsInfoItem> initPage;
 
     public YoutubeCommentsExtractor(StreamingService service, ListLinkHandler uiHandler) {
@@ -92,7 +92,7 @@ public class YoutubeCommentsExtractor extends CommentsExtractor {
 
     @Override
     public InfoItemsPage<CommentsInfoItem> getPage(String pageUrl) throws IOException, ExtractionException {
-        if (pageUrl == null || pageUrl.isEmpty()) {
+        if (isNullOrEmpty(pageUrl)) {
             throw new ExtractionException(new IllegalArgumentException("Page url is empty or null"));
         }
         String ajaxResponse = makeAjaxRequest(pageUrl);
@@ -116,7 +116,6 @@ public class YoutubeCommentsExtractor extends CommentsExtractor {
             //no comments
             return;
         }
-        fetchTitle(contents);
         List<Object> comments;
         try {
             comments = JsonUtils.getValues(contents, "commentThreadRenderer.comment.commentRenderer");
@@ -132,16 +131,6 @@ public class YoutubeCommentsExtractor extends CommentsExtractor {
         }
     }
 
-    private void fetchTitle(JsonArray contents) {
-        if (title == null) {
-            try {
-                title = getYoutubeText(JsonUtils.getObject(contents.getObject(0), "commentThreadRenderer.commentTargetTitle"));
-            } catch (Exception e) {
-                title = "Youtube Comments";
-            }
-        }
-    }
-
     @Override
     public void onFetchPage(@Nonnull Downloader downloader) throws IOException, ExtractionException {
         final Map<String, List<String>> requestHeaders = new HashMap<>();
@@ -153,12 +142,6 @@ public class YoutubeCommentsExtractor extends CommentsExtractor {
         String commentsTokenInside = findValue(responseBody, "commentSectionRenderer", "}");
         String commentsToken = findValue(commentsTokenInside, "continuation\":\"", "\"");
         initPage = getPage(getNextPageUrl(commentsToken));
-    }
-
-    @Nonnull
-    @Override
-    public String getName() throws ParsingException {
-        return title;
     }
 
     private String makeAjaxRequest(String siteUrl) throws IOException, ReCaptchaException {

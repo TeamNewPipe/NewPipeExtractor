@@ -112,7 +112,25 @@ public class MediaCCCStreamExtractor extends StreamExtractor {
 
     @Nonnull
     @Override
-    public String getDashMpdUrl() {
+    public String getSubChannelUrl() throws ParsingException {
+        return "";
+    }
+
+    @Nonnull
+    @Override
+    public String getSubChannelName() throws ParsingException {
+        return "";
+    }
+
+    @Nonnull
+    @Override
+    public String getSubChannelAvatarUrl() throws ParsingException {
+        return "";
+    }
+
+    @Nonnull
+    @Override
+    public String getDashMpdUrl() throws ParsingException {
         return "";
     }
 

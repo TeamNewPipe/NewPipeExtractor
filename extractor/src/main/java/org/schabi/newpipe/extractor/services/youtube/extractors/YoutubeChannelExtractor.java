@@ -10,8 +10,8 @@ import org.schabi.newpipe.extractor.exceptions.ExtractionException;
 import org.schabi.newpipe.extractor.exceptions.ParsingException;
 import org.schabi.newpipe.extractor.linkhandler.ListLinkHandler;
 import org.schabi.newpipe.extractor.localization.TimeAgoParser;
+import org.schabi.newpipe.extractor.services.youtube.YoutubeParsingHelper;
 import org.schabi.newpipe.extractor.services.youtube.linkHandler.YoutubeChannelLinkHandlerFactory;
-import org.schabi.newpipe.extractor.services.youtube.linkHandler.YoutubeParsingHelper;
 import org.schabi.newpipe.extractor.stream.StreamInfoItem;
 import org.schabi.newpipe.extractor.stream.StreamInfoItemsCollector;
 import org.schabi.newpipe.extractor.utils.Utils;
@@ -19,8 +19,9 @@ import org.schabi.newpipe.extractor.utils.Utils;
 import javax.annotation.Nonnull;
 import java.io.IOException;
 
-import static org.schabi.newpipe.extractor.services.youtube.linkHandler.YoutubeParsingHelper.*;
-import static org.schabi.newpipe.extractor.utils.JsonUtils.*;
+import static org.schabi.newpipe.extractor.services.youtube.YoutubeParsingHelper.*;
+import static org.schabi.newpipe.extractor.utils.JsonUtils.EMPTY_STRING;
+import static org.schabi.newpipe.extractor.utils.Utils.isNullOrEmpty;
 
 /*
  * Created by Christian Schabesberger on 25.07.16.
@@ -49,7 +50,7 @@ public class YoutubeChannelExtractor extends ChannelExtractor {
 
     /**
      * Some channels have response redirects and the only way to reliably get the id is by saving it.
-     *<p>
+     * <p>
      * "Movies & Shows":
      * <pre>
      * UCuJcl0Ju-gPDoksRjK1ya-w ┐
@@ -130,7 +131,7 @@ public class YoutubeChannelExtractor extends ChannelExtractor {
 
         if (!channelId.isEmpty()) {
             return channelId;
-        } else if (redirectedChannelId != null && !redirectedChannelId.isEmpty()) {
+        } else if (!isNullOrEmpty(redirectedChannelId)) {
             return redirectedChannelId;
         } else {
             throw new ParsingException("Could not get channel id");
@@ -163,7 +164,7 @@ public class YoutubeChannelExtractor extends ChannelExtractor {
     public String getBannerUrl() throws ParsingException {
         try {
             String url = initialData.getObject("header").getObject("c4TabbedHeaderRenderer").getObject("banner")
-                        .getArray("thumbnails").getObject(0).getString("url");
+                    .getArray("thumbnails").getObject(0).getString("url");
 
             if (url == null || url.contains("s.ytimg.com") || url.contains("default_banner")) {
                 return null;
@@ -212,6 +213,21 @@ public class YoutubeChannelExtractor extends ChannelExtractor {
         }
     }
 
+    @Override
+    public String getParentChannelName() throws ParsingException {
+        return "";
+    }
+
+    @Override
+    public String getParentChannelUrl() throws ParsingException {
+        return "";
+    }
+
+    @Override
+    public String getParentChannelAvatarUrl() throws ParsingException {
+        return "";
+    }
+
     @Nonnull
     @Override
     public InfoItemsPage<StreamInfoItem> getInitialPage() throws ExtractionException {
@@ -229,7 +245,7 @@ public class YoutubeChannelExtractor extends ChannelExtractor {
 
     @Override
     public InfoItemsPage<StreamInfoItem> getPage(String pageUrl) throws IOException, ExtractionException {
-        if (pageUrl == null || pageUrl.isEmpty()) {
+        if (isNullOrEmpty(pageUrl)) {
             throw new ExtractionException(new IllegalArgumentException("Page url is empty or null"));
         }
 
@@ -250,7 +266,7 @@ public class YoutubeChannelExtractor extends ChannelExtractor {
 
 
     private String getNextPageUrlFrom(JsonArray continuations) {
-        if (continuations == null || continuations.isEmpty()) {
+        if (isNullOrEmpty(continuations)) {
             return "";
         }
 
@@ -306,10 +322,12 @@ public class YoutubeChannelExtractor extends ChannelExtractor {
             throw new ContentNotSupportedException("This channel has no Videos tab");
         }
 
-        if (getTextFromObject(videoTab.getObject("content").getObject("sectionListRenderer")
-                .getArray("contents").getObject(0).getObject("itemSectionRenderer")
-                .getArray("contents").getObject(0).getObject("messageRenderer")
-                .getObject("text")).equals("This channel has no videos.")) {
+        final String messageRendererText = getTextFromObject(videoTab.getObject("content")
+                .getObject("sectionListRenderer").getArray("contents").getObject(0)
+                .getObject("itemSectionRenderer").getArray("contents").getObject(0)
+                .getObject("messageRenderer").getObject("text"));
+        if (messageRendererText != null
+                && messageRendererText.equals("This channel has no videos.")) {
             return null;
         }
 

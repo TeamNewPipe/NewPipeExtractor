@@ -1,4 +1,4 @@
-package org.schabi.newpipe.extractor.services.soundcloud;
+package org.schabi.newpipe.extractor.services.soundcloud.extractors;
 
 import com.grack.nanojson.JsonArray;
 import com.grack.nanojson.JsonObject;
@@ -15,6 +15,7 @@ import org.schabi.newpipe.extractor.exceptions.ExtractionException;
 import org.schabi.newpipe.extractor.exceptions.ParsingException;
 import org.schabi.newpipe.extractor.linkhandler.LinkHandler;
 import org.schabi.newpipe.extractor.localization.DateWrapper;
+import org.schabi.newpipe.extractor.services.soundcloud.SoundcloudParsingHelper;
 import org.schabi.newpipe.extractor.stream.AudioStream;
 import org.schabi.newpipe.extractor.stream.Description;
 import org.schabi.newpipe.extractor.stream.StreamExtractor;
@@ -35,6 +36,7 @@ import java.util.Locale;
 import javax.annotation.Nonnull;
 
 import static org.schabi.newpipe.extractor.utils.JsonUtils.EMPTY_STRING;
+import static org.schabi.newpipe.extractor.utils.Utils.isNullOrEmpty;
 
 public class SoundcloudStreamExtractor extends StreamExtractor {
     private JsonObject track;
@@ -74,7 +76,7 @@ public class SoundcloudStreamExtractor extends StreamExtractor {
     @Nonnull
     @Override
     public DateWrapper getUploadDate() throws ParsingException {
-        return new DateWrapper(SoundcloudParsingHelper.parseDate(track.getString("created_at")));
+        return new DateWrapper(SoundcloudParsingHelper.parseDateFrom(track.getString("created_at")));
     }
 
     @Nonnull
@@ -143,6 +145,24 @@ public class SoundcloudStreamExtractor extends StreamExtractor {
 
     @Nonnull
     @Override
+    public String getSubChannelUrl() throws ParsingException {
+        return "";
+    }
+
+    @Nonnull
+    @Override
+    public String getSubChannelName() throws ParsingException {
+        return "";
+    }
+
+    @Nonnull
+    @Override
+    public String getSubChannelAvatarUrl() throws ParsingException {
+        return "";
+    }
+
+    @Nonnull
+    @Override
     public String getDashMpdUrl() {
         return "";
     }
@@ -172,7 +192,7 @@ public class SoundcloudStreamExtractor extends StreamExtractor {
                 JsonObject t = (JsonObject) transcoding;
                 String url = t.getString("url");
 
-                if (url != null && !url.isEmpty()) {
+                if (!isNullOrEmpty(url)) {
 
                     // We can only play the mp3 format, but not handle m3u playlists / streams.
                     // what about Opus?

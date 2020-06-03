@@ -9,11 +9,12 @@ public class CommentsInfoItem extends InfoItem {
 
     private String commentId;
     private String commentText;
-    private String authorName;
-    private String authorThumbnail;
-    private String authorEndpoint;
-    private String textualPublishedTime;
-    @Nullable private DateWrapper publishedTime;
+    private String uploaderName;
+    private String uploaderAvatarUrl;
+    private String uploaderUrl;
+    private String textualUploadDate;
+    @Nullable
+    private DateWrapper uploadDate;
     private int likeCount;
 
     public CommentsInfoItem(int serviceId, String url, String name) {
@@ -36,45 +37,45 @@ public class CommentsInfoItem extends InfoItem {
         this.commentText = commentText;
     }
 
-    public String getAuthorName() {
-        return authorName;
+    public String getUploaderName() {
+        return uploaderName;
     }
 
-    public void setAuthorName(String authorName) {
-        this.authorName = authorName;
+    public void setUploaderName(String uploaderName) {
+        this.uploaderName = uploaderName;
     }
 
-    public String getAuthorThumbnail() {
-        return authorThumbnail;
+    public String getUploaderAvatarUrl() {
+        return uploaderAvatarUrl;
     }
 
-    public void setAuthorThumbnail(String authorThumbnail) {
-        this.authorThumbnail = authorThumbnail;
+    public void setUploaderAvatarUrl(String uploaderAvatarUrl) {
+        this.uploaderAvatarUrl = uploaderAvatarUrl;
     }
 
-    public String getAuthorEndpoint() {
-        return authorEndpoint;
+    public String getUploaderUrl() {
+        return uploaderUrl;
     }
 
-    public void setAuthorEndpoint(String authorEndpoint) {
-        this.authorEndpoint = authorEndpoint;
+    public void setUploaderUrl(String uploaderUrl) {
+        this.uploaderUrl = uploaderUrl;
     }
 
-    public String getTextualPublishedTime() {
-        return textualPublishedTime;
+    public String getTextualUploadDate() {
+        return textualUploadDate;
     }
 
-    public void setTextualPublishedTime(String textualPublishedTime) {
-        this.textualPublishedTime = textualPublishedTime;
+    public void setTextualUploadDate(String textualUploadDate) {
+        this.textualUploadDate = textualUploadDate;
     }
 
     @Nullable
-    public DateWrapper getPublishedTime() {
-        return publishedTime;
+    public DateWrapper getUploadDate() {
+        return uploadDate;
     }
 
-    public void setPublishedTime(@Nullable DateWrapper publishedTime) {
-        this.publishedTime = publishedTime;
+    public void setUploadDate(@Nullable DateWrapper uploadDate) {
+        this.uploadDate = uploadDate;
     }
 
     public int getLikeCount() {

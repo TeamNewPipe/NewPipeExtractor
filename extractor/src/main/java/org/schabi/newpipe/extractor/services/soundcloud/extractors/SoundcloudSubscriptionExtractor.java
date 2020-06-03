@@ -1,8 +1,10 @@
-package org.schabi.newpipe.extractor.services.soundcloud;
+package org.schabi.newpipe.extractor.services.soundcloud.extractors;
 
 import org.schabi.newpipe.extractor.channel.ChannelInfoItem;
 import org.schabi.newpipe.extractor.channel.ChannelInfoItemsCollector;
 import org.schabi.newpipe.extractor.exceptions.ExtractionException;
+import org.schabi.newpipe.extractor.services.soundcloud.SoundcloudParsingHelper;
+import org.schabi.newpipe.extractor.services.soundcloud.SoundcloudService;
 import org.schabi.newpipe.extractor.subscription.SubscriptionExtractor;
 import org.schabi.newpipe.extractor.subscription.SubscriptionItem;
 

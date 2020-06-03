@@ -5,6 +5,7 @@ import com.grack.nanojson.JsonObject;
 import com.grack.nanojson.JsonParser;
 import com.grack.nanojson.JsonParserException;
 import com.grack.nanojson.JsonWriter;
+
 import org.schabi.newpipe.extractor.InfoItem;
 import org.schabi.newpipe.extractor.StreamingService;
 import org.schabi.newpipe.extractor.downloader.Downloader;
@@ -16,26 +17,26 @@ import org.schabi.newpipe.extractor.localization.DateWrapper;
 import org.schabi.newpipe.extractor.localization.TimeAgoParser;
 import org.schabi.newpipe.extractor.search.InfoItemsSearchCollector;
 import org.schabi.newpipe.extractor.search.SearchExtractor;
-import org.schabi.newpipe.extractor.services.youtube.linkHandler.YoutubeParsingHelper;
+import org.schabi.newpipe.extractor.services.youtube.YoutubeParsingHelper;
+import org.schabi.newpipe.extractor.utils.JsonUtils;
 import org.schabi.newpipe.extractor.utils.Utils;
 
-import javax.annotation.Nonnull;
 import java.io.IOException;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import static org.schabi.newpipe.extractor.services.youtube.linkHandler.YoutubeParsingHelper.fixThumbnailUrl;
-import static org.schabi.newpipe.extractor.services.youtube.linkHandler.YoutubeParsingHelper.getTextFromObject;
-import static org.schabi.newpipe.extractor.services.youtube.linkHandler.YoutubeParsingHelper.getUrlFromNavigationEndpoint;
-import static org.schabi.newpipe.extractor.services.youtube.linkHandler.YoutubeParsingHelper.getValidJsonResponseBody;
+import javax.annotation.Nonnull;
+
+import static org.schabi.newpipe.extractor.services.youtube.YoutubeParsingHelper.*;
 import static org.schabi.newpipe.extractor.services.youtube.linkHandler.YoutubeSearchQueryHandlerFactory.MUSIC_ALBUMS;
 import static org.schabi.newpipe.extractor.services.youtube.linkHandler.YoutubeSearchQueryHandlerFactory.MUSIC_ARTISTS;
 import static org.schabi.newpipe.extractor.services.youtube.linkHandler.YoutubeSearchQueryHandlerFactory.MUSIC_PLAYLISTS;
 import static org.schabi.newpipe.extractor.services.youtube.linkHandler.YoutubeSearchQueryHandlerFactory.MUSIC_SONGS;
 import static org.schabi.newpipe.extractor.services.youtube.linkHandler.YoutubeSearchQueryHandlerFactory.MUSIC_VIDEOS;
 import static org.schabi.newpipe.extractor.utils.JsonUtils.EMPTY_STRING;
+import static org.schabi.newpipe.extractor.utils.Utils.isNullOrEmpty;
 
 public class YoutubeMusicSearchExtractor extends SearchExtractor {
     private JsonObject initialData;
@@ -125,15 +126,40 @@ public class YoutubeMusicSearchExtractor extends SearchExtractor {
         return super.getUrl();
     }
 
+    @Nonnull
     @Override
     public String getSearchSuggestion() throws ParsingException {
-        final JsonObject didYouMeanRenderer = initialData.getObject("contents").getObject("sectionListRenderer")
-                .getArray("contents").getObject(0).getObject("itemSectionRenderer")
-                .getArray("contents").getObject(0).getObject("didYouMeanRenderer");
-        if (!didYouMeanRenderer.has("correctedQuery")) {
+        final JsonObject itemSectionRenderer = initialData.getObject("contents").getObject("sectionListRenderer")
+                .getArray("contents").getObject(0).getObject("itemSectionRenderer");
+        if (itemSectionRenderer.isEmpty()) {
             return "";
         }
-        return getTextFromObject(didYouMeanRenderer.getObject("correctedQuery"));
+
+        final JsonObject didYouMeanRenderer = itemSectionRenderer.getArray("contents")
+                .getObject(0).getObject("didYouMeanRenderer");
+        final JsonObject showingResultsForRenderer = itemSectionRenderer.getArray("contents").getObject(0)
+                .getObject("showingResultsForRenderer");
+
+        if (!didYouMeanRenderer.isEmpty()) {
+            return getTextFromObject(didYouMeanRenderer.getObject("correctedQuery"));
+        } else if (!showingResultsForRenderer.isEmpty()) {
+            return JsonUtils.getString(showingResultsForRenderer, "correctedQueryEndpoint.searchEndpoint.query");
+        } else {
+            return "";
+        }
+    }
+
+    @Override
+    public boolean isCorrectedSearch() {
+        final JsonObject itemSectionRenderer = initialData.getObject("contents").getObject("sectionListRenderer")
+                .getArray("contents").getObject(0).getObject("itemSectionRenderer");
+        if (itemSectionRenderer.isEmpty()) {
+            return false;
+        }
+
+        final JsonObject showingResultsForRenderer = itemSectionRenderer.getArray("contents").getObject(0)
+                .getObject("showingResultsForRenderer");
+        return !showingResultsForRenderer.isEmpty();
     }
 
     @Nonnull
@@ -167,7 +193,7 @@ public class YoutubeMusicSearchExtractor extends SearchExtractor {
 
     @Override
     public InfoItemsPage<InfoItem> getPage(final String pageUrl) throws IOException, ExtractionException {
-        if (pageUrl == null || pageUrl.isEmpty()) {
+        if (isNullOrEmpty(pageUrl)) {
             throw new ExtractionException(new IllegalArgumentException("Page url is empty or null"));
         }
 
@@ -239,7 +265,7 @@ public class YoutubeMusicSearchExtractor extends SearchExtractor {
                         @Override
                         public String getUrl() throws ParsingException {
                             final String url = getUrlFromNavigationEndpoint(info.getObject("doubleTapCommand"));
-                            if (url != null && !url.isEmpty()) {
+                            if (!isNullOrEmpty(url)) {
                                 return url;
                             }
                             throw new ParsingException("Could not get url");
@@ -249,7 +275,7 @@ public class YoutubeMusicSearchExtractor extends SearchExtractor {
                         public String getName() throws ParsingException {
                             final String name = getTextFromObject(info.getArray("flexColumns").getObject(0)
                                     .getObject("musicResponsiveListItemFlexColumnRenderer").getObject("text"));
-                            if (!name.isEmpty()) {
+                            if (!isNullOrEmpty(name)) {
                                 return name;
                             }
                             throw new ParsingException("Could not get name");
@@ -259,7 +285,7 @@ public class YoutubeMusicSearchExtractor extends SearchExtractor {
                         public long getDuration() throws ParsingException {
                             final String duration = getTextFromObject(info.getArray("flexColumns").getObject(3)
                                     .getObject("musicResponsiveListItemFlexColumnRenderer").getObject("text"));
-                            if (!duration.isEmpty()) {
+                            if (!isNullOrEmpty(duration)) {
                                 return YoutubeParsingHelper.parseDurationString(duration);
                             }
                             throw new ParsingException("Could not get duration");
@@ -269,7 +295,7 @@ public class YoutubeMusicSearchExtractor extends SearchExtractor {
                         public String getUploaderName() throws ParsingException {
                             final String name = getTextFromObject(info.getArray("flexColumns").getObject(1)
                                     .getObject("musicResponsiveListItemFlexColumnRenderer").getObject("text"));
-                            if (!name.isEmpty()) {
+                            if (!isNullOrEmpty(name)) {
                                 return name;
                             }
                             throw new ParsingException("Could not get uploader name");
@@ -288,13 +314,15 @@ public class YoutubeMusicSearchExtractor extends SearchExtractor {
 
                                 return null;
                             } else {
-                                final JsonObject navigationEndpoint = info.getArray("flexColumns")
+                                final JsonObject navigationEndpointHolder = info.getArray("flexColumns")
                                         .getObject(1).getObject("musicResponsiveListItemFlexColumnRenderer")
-                                        .getObject("text").getArray("runs").getObject(0).getObject("navigationEndpoint");
+                                        .getObject("text").getArray("runs").getObject(0);
 
-                                final String url = getUrlFromNavigationEndpoint(navigationEndpoint);
+                                if (!navigationEndpointHolder.has("navigationEndpoint")) return null;
 
-                                if (url != null && !url.isEmpty()) {
+                                final String url = getUrlFromNavigationEndpoint(navigationEndpointHolder.getObject("navigationEndpoint"));
+
+                                if (!isNullOrEmpty(url)) {
                                     return url;
                                 }
 
@@ -319,7 +347,7 @@ public class YoutubeMusicSearchExtractor extends SearchExtractor {
                             }
                             final String viewCount = getTextFromObject(info.getArray("flexColumns").getObject(2)
                                     .getObject("musicResponsiveListItemFlexColumnRenderer").getObject("text"));
-                            if (!viewCount.isEmpty()) {
+                            if (!isNullOrEmpty(viewCount)) {
                                 return Utils.mixedNumberWordToLong(viewCount);
                             }
                             throw new ParsingException("Could not get view count");
@@ -359,7 +387,7 @@ public class YoutubeMusicSearchExtractor extends SearchExtractor {
                         public String getName() throws ParsingException {
                             final String name = getTextFromObject(info.getArray("flexColumns").getObject(0)
                                     .getObject("musicResponsiveListItemFlexColumnRenderer").getObject("text"));
-                            if (!name.isEmpty()) {
+                            if (!isNullOrEmpty(name)) {
                                 return name;
                             }
                             throw new ParsingException("Could not get name");
@@ -368,7 +396,7 @@ public class YoutubeMusicSearchExtractor extends SearchExtractor {
                         @Override
                         public String getUrl() throws ParsingException {
                             final String url = getUrlFromNavigationEndpoint(info.getObject("navigationEndpoint"));
-                            if (url != null && !url.isEmpty()) {
+                            if (!isNullOrEmpty(url)) {
                                 return url;
                             }
                             throw new ParsingException("Could not get url");
@@ -378,7 +406,7 @@ public class YoutubeMusicSearchExtractor extends SearchExtractor {
                         public long getSubscriberCount() throws ParsingException {
                             final String viewCount = getTextFromObject(info.getArray("flexColumns").getObject(2)
                                     .getObject("musicResponsiveListItemFlexColumnRenderer").getObject("text"));
-                            if (!viewCount.isEmpty()) {
+                            if (!isNullOrEmpty(viewCount)) {
                                 return Utils.mixedNumberWordToLong(viewCount);
                             }
                             throw new ParsingException("Could not get subscriber count");
@@ -414,7 +442,7 @@ public class YoutubeMusicSearchExtractor extends SearchExtractor {
                         public String getName() throws ParsingException {
                             final String name = getTextFromObject(info.getArray("flexColumns").getObject(0)
                                     .getObject("musicResponsiveListItemFlexColumnRenderer").getObject("text"));
-                            if (!name.isEmpty()) {
+                            if (!isNullOrEmpty(name)) {
                                 return name;
                             }
                             throw new ParsingException("Could not get name");
@@ -423,7 +451,7 @@ public class YoutubeMusicSearchExtractor extends SearchExtractor {
                         @Override
                         public String getUrl() throws ParsingException {
                             final String url = getUrlFromNavigationEndpoint(info.getObject("doubleTapCommand"));
-                            if (url != null && !url.isEmpty()) {
+                            if (!isNullOrEmpty(url)) {
                                 return url;
                             }
                             throw new ParsingException("Could not get url");
@@ -439,7 +467,7 @@ public class YoutubeMusicSearchExtractor extends SearchExtractor {
                                 name = getTextFromObject(info.getArray("flexColumns").getObject(1)
                                         .getObject("musicResponsiveListItemFlexColumnRenderer").getObject("text"));
                             }
-                            if (!name.isEmpty()) {
+                            if (!isNullOrEmpty(name)) {
                                 return name;
                             }
                             throw new ParsingException("Could not get uploader name");
@@ -452,7 +480,7 @@ public class YoutubeMusicSearchExtractor extends SearchExtractor {
                             }
                             final String count = getTextFromObject(info.getArray("flexColumns").getObject(2)
                                     .getObject("musicResponsiveListItemFlexColumnRenderer").getObject("text"));
-                            if (!count.isEmpty()) {
+                            if (!isNullOrEmpty(count)) {
                                 if (count.contains("100+")) {
                                     return ITEM_COUNT_MORE_THAN_100;
                                 } else {
@@ -468,7 +496,7 @@ public class YoutubeMusicSearchExtractor extends SearchExtractor {
     }
 
     private String getNextPageUrlFrom(final JsonArray continuations) throws ParsingException, IOException, ReCaptchaException {
-        if (continuations == null || continuations.isEmpty()) {
+        if (isNullOrEmpty(continuations)) {
             return "";
         }
 
