@@ -124,6 +124,24 @@ public class BandcampStreamExtractor extends StreamExtractor {
 
     @Nonnull
     @Override
+    public String getSubChannelUrl() {
+        return "";
+    }
+
+    @Nonnull
+    @Override
+    public String getSubChannelName() {
+        return "";
+    }
+
+    @Nonnull
+    @Override
+    public String getSubChannelAvatarUrl() {
+        return "";
+    }
+
+    @Nonnull
+    @Override
     public Description getDescription() {
         String s = BandcampExtractorHelper.smartConcatenate(
                 new String[]{

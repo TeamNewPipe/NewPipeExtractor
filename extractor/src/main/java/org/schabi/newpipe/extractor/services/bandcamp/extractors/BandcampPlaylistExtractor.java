@@ -103,6 +103,24 @@ public class BandcampPlaylistExtractor extends PlaylistExtractor {
 
     @Nonnull
     @Override
+    public String getSubChannelName() {
+        return "";
+    }
+
+    @Nonnull
+    @Override
+    public String getSubChannelUrl() {
+        return "";
+    }
+
+    @Nonnull
+    @Override
+    public String getSubChannelAvatarUrl() {
+        return "";
+    }
+
+    @Nonnull
+    @Override
     public InfoItemsPage<StreamInfoItem> getInitialPage() throws ExtractionException {
 
         StreamInfoItemsCollector collector = new StreamInfoItemsCollector(getServiceId());

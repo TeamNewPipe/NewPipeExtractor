@@ -31,6 +31,11 @@ public class BandcampSearchExtractor extends SearchExtractor {
     }
 
     @Override
+    public boolean isCorrectedSearch() {
+        return false;
+    }
+
+    @Override
     public InfoItemsPage<InfoItem> getPage(String pageUrl) throws IOException, ExtractionException {
         // okay apparently this is where we DOWNLOAD the page and then COMMIT its ENTRIES to an INFOITEMPAGE
         String html = getDownloader().get(pageUrl).responseBody();
