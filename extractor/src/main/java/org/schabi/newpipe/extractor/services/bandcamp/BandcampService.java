@@ -29,7 +29,7 @@ import static org.schabi.newpipe.extractor.services.bandcamp.extractors.Bandcamp
 public class BandcampService extends StreamingService {
 
     public BandcampService(int id) {
-        super(id, "bandcamp", Collections.singletonList(AUDIO));
+        super(id, "Bandcamp", Collections.singletonList(AUDIO));
     }
 
     @Override
