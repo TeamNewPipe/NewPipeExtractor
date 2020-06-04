@@ -61,6 +61,11 @@ public class BandcampStreamExtractorTest {
     }
 
     @Test
+    public void testUploadDate() {
+        assertEquals("27 Sep 2019", extractor.getTextualUploadDate());
+    }
+
+    @Test
     public void testNoArtistProfilePicture() throws ExtractionException {
         assertEquals("", Bandcamp.getStreamExtractor("https://powertothequeerkids.bandcamp.com/track/human-nature").getUploaderAvatarUrl());
     }

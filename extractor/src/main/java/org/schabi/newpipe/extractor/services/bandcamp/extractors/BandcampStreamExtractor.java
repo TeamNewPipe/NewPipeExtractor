@@ -96,7 +96,7 @@ public class BandcampStreamExtractor extends StreamExtractor {
     @Nullable
     @Override
     public String getTextualUploadDate() {
-        return current.getString("release_date");
+        return current.getString("publish_date").replaceAll(" \\d+:\\d+:\\d+ .+", "");
     }
 
     @Nullable
