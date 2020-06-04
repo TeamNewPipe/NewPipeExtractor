@@ -99,19 +99,4 @@ public class BandcampRadioStreamExtractorTest {
     public void testGetAudioStreams() throws ExtractionException, IOException {
         assertEquals(2, e.getAudioStreams().size());
     }
-
-    @Test
-    public void testGetLicence() throws ParsingException {
-        assertEquals("", e.getLicence());
-    }
-
-    @Test
-    public void testGetCategory() throws ParsingException {
-        assertEquals("", e.getCategory());
-    }
-
-    @Test
-    public void testGetTags() throws ParsingException {
-        assertEquals(0, e.getTags().size());
-    }
 }
