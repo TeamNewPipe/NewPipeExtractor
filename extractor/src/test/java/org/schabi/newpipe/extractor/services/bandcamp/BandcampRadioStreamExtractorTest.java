@@ -13,6 +13,7 @@ import org.schabi.newpipe.extractor.stream.StreamExtractor;
 
 import java.io.IOException;
 import java.util.Calendar;
+import java.util.TimeZone;
 
 import static org.junit.Assert.*;
 import static org.schabi.newpipe.extractor.ServiceList.Bandcamp;
@@ -57,12 +58,19 @@ public class BandcampRadioStreamExtractorTest {
 
     @Test
     public void testGetTextualUploadDate() throws ParsingException {
-        assertEquals("16 May 2017", e.getTextualUploadDate());
+        assertEquals("16 May 2017 00:00:00 GMT", e.getTextualUploadDate());
     }
 
     @Test
     public void testUploadDate() throws ParsingException {
-        assertEquals(136, e.getUploadDate().date().get(Calendar.DAY_OF_YEAR));
+        final Calendar expectedCalendar = Calendar.getInstance();
+
+        // 16 May 2017 00:00:00 GMT
+        expectedCalendar.setTimeZone(TimeZone.getTimeZone("GMT"));
+        expectedCalendar.setTimeInMillis(0);
+        expectedCalendar.set(2017, Calendar.MAY, 16);
+
+        assertEquals(expectedCalendar.getTimeInMillis(), e.getUploadDate().date().getTimeInMillis());
     }
 
     @Test

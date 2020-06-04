@@ -14,6 +14,7 @@ import org.schabi.newpipe.extractor.stream.StreamExtractor;
 
 import java.io.IOException;
 import java.util.Calendar;
+import java.util.TimeZone;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
@@ -63,7 +64,13 @@ public class BandcampStreamExtractorTest {
 
     @Test
     public void testUploadDate() throws ParsingException {
-        assertEquals(270, extractor.getUploadDate().date().get(Calendar.DAY_OF_YEAR));
+        final Calendar expectedCalendar = Calendar.getInstance();
+        // 27 Sep 2019 21:49:14 GMT
+        expectedCalendar.setTimeZone(TimeZone.getTimeZone("GMT"));
+        expectedCalendar.set(2019, Calendar.SEPTEMBER, 27, 21, 49, 14);
+        expectedCalendar.set(Calendar.MILLISECOND, 0);
+
+        assertEquals(expectedCalendar.getTimeInMillis(), extractor.getUploadDate().date().getTimeInMillis());
     }
 
     @Test
