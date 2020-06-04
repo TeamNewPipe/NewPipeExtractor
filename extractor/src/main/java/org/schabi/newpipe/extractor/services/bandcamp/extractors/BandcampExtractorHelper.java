@@ -9,6 +9,7 @@ import com.grack.nanojson.JsonWriter;
 import org.schabi.newpipe.extractor.NewPipe;
 import org.schabi.newpipe.extractor.exceptions.ParsingException;
 import org.schabi.newpipe.extractor.exceptions.ReCaptchaException;
+import org.schabi.newpipe.extractor.utils.Utils;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -87,7 +88,7 @@ public class BandcampExtractorHelper {
         // Remove empty strings
         ArrayList<String> list = new ArrayList<>(Arrays.asList(strings));
         for (int i = list.size() - 1; i >= 0; i--) {
-            if (list.get(i) == null || list.get(i).isEmpty() || list.get(i).equals("null")) {
+            if (Utils.isNullOrEmpty(list) || list.get(i).equals("null")) {
                 list.remove(i);
             }
         }
