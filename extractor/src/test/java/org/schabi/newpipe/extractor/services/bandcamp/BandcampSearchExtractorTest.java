@@ -9,15 +9,19 @@ import org.schabi.newpipe.extractor.Extractor;
 import org.schabi.newpipe.extractor.InfoItem;
 import org.schabi.newpipe.extractor.ListExtractor;
 import org.schabi.newpipe.extractor.NewPipe;
+import org.schabi.newpipe.extractor.StreamingService;
 import org.schabi.newpipe.extractor.exceptions.ExtractionException;
 import org.schabi.newpipe.extractor.playlist.PlaylistInfoItem;
 import org.schabi.newpipe.extractor.search.SearchExtractor;
+import org.schabi.newpipe.extractor.services.DefaultSearchExtractorTest;
 import org.schabi.newpipe.extractor.services.bandcamp.extractors.BandcampChannelInfoItemExtractor;
 import org.schabi.newpipe.extractor.services.bandcamp.extractors.BandcampPlaylistInfoItemExtractor;
 import org.schabi.newpipe.extractor.services.bandcamp.extractors.BandcampSearchExtractor;
 import org.schabi.newpipe.extractor.stream.StreamInfoItem;
 
 import java.io.IOException;
+
+import javax.annotation.Nullable;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
@@ -27,8 +31,6 @@ import static org.schabi.newpipe.extractor.ServiceList.Bandcamp;
  * Test for {@link BandcampSearchExtractor}
  */
 public class BandcampSearchExtractorTest {
-
-    private static BandcampSearchExtractor extractor;
 
     @BeforeClass
     public static void setUp() {
@@ -103,5 +105,26 @@ public class BandcampSearchExtractorTest {
         assertEquals("https://bandcamp.com/search?q=e&page=2", extractor.getInitialPage().getNextPageUrl());
 
         assertEquals("https://bandcamp.com/search?q=e&page=3", extractor.getPage(extractor.getNextPageUrl()).getNextPageUrl());
+    }
+
+    public static class DefaultTest extends DefaultSearchExtractorTest {
+        private static SearchExtractor extractor;
+        private static final String QUERY = "test";
+
+        @BeforeClass
+        public static void setUp() throws Exception {
+            NewPipe.init(DownloaderTestImpl.getInstance());
+            extractor = Bandcamp.getSearchExtractor(QUERY);
+            extractor.fetchPage();
+        }
+
+        @Override public SearchExtractor extractor() { return extractor; }
+        @Override public StreamingService expectedService() { return Bandcamp; }
+        @Override public String expectedName() { return QUERY; }
+        @Override public String expectedId() { return QUERY; }
+        @Override public String expectedUrlContains() { return "bandcamp.com/search?q=" + QUERY; }
+        @Override public String expectedOriginalUrlContains() { return "bandcamp.com/search?q=" + QUERY; }
+        @Override public String expectedSearchString() { return QUERY; }
+        @Nullable @Override public String expectedSearchSuggestion() { return null; }
     }
 }
