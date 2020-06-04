@@ -14,12 +14,14 @@ public class BandcampSearchStreamInfoItemExtractor extends BandcampStreamInfoIte
     }
 
     @Override
-    public String getUploaderName() throws ParsingException {
+    public String getUploaderName() {
         String subhead = resultInfo.getElementsByClass("subhead").text();
-        String[] splitBy = subhead.split(" by");
+        String[] splitBy = subhead.split("by ");
         if (splitBy.length > 1) {
             return splitBy[1];
-        } else throw new ParsingException("Uploader name was not found as expected");
+        } else {
+            return splitBy[0];
+        }
     }
 
     @Override

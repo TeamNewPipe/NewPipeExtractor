@@ -15,6 +15,7 @@ import org.schabi.newpipe.extractor.search.SearchExtractor;
 import org.schabi.newpipe.extractor.services.bandcamp.extractors.BandcampChannelInfoItemExtractor;
 import org.schabi.newpipe.extractor.services.bandcamp.extractors.BandcampPlaylistInfoItemExtractor;
 import org.schabi.newpipe.extractor.services.bandcamp.extractors.BandcampSearchExtractor;
+import org.schabi.newpipe.extractor.stream.StreamInfoItem;
 
 import java.io.IOException;
 
@@ -44,10 +45,11 @@ public class BandcampSearchExtractorTest {
         SearchExtractor extractor = Bandcamp.getSearchExtractor("best friend's basement");
 
         ListExtractor.InfoItemsPage<InfoItem> page = extractor.getInitialPage();
-        InfoItem bestFriendsBasement = page.getItems().get(0);
+        StreamInfoItem bestFriendsBasement = (StreamInfoItem) page.getItems().get(0);
 
         // The track by Zach Benson should be the first result, no?
         assertEquals("Best Friend's Basement", bestFriendsBasement.getName());
+        assertEquals("Zach Benson", bestFriendsBasement.getUploaderName());
         assertTrue(bestFriendsBasement.getThumbnailUrl().endsWith(".jpg"));
         assertTrue(bestFriendsBasement.getThumbnailUrl().contains("f4.bcbits.com/img/"));
         assertEquals(InfoItem.InfoType.STREAM, bestFriendsBasement.getInfoType());
