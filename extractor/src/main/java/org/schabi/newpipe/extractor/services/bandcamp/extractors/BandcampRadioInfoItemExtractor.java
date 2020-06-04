@@ -33,13 +33,13 @@ public class BandcampRadioInfoItemExtractor implements StreamInfoItemExtractor {
     @Nullable
     @Override
     public String getTextualUploadDate() {
-        return show.getString("date").replace(" 00:00:00 GMT", "");
+        return show.getString("date");
     }
 
     @Nullable
     @Override
-    public DateWrapper getUploadDate() {
-        return null;
+    public DateWrapper getUploadDate() throws ParsingException {
+        return BandcampExtractorHelper.parseDate(getTextualUploadDate());
     }
 
     @Override

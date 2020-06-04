@@ -106,14 +106,7 @@ public class BandcampStreamExtractor extends StreamExtractor {
     @Nullable
     @Override
     public DateWrapper getUploadDate() throws ParsingException {
-        try {
-            Date date = new SimpleDateFormat("dd MMM yyyy HH:mm:ss zzz", Locale.ENGLISH).parse(getTextualUploadDate());
-            Calendar calendar = Calendar.getInstance();
-            calendar.setTime(date);
-            return new DateWrapper(calendar, false);
-        } catch (ParseException e) {
-            throw new ParsingException("Could not extract date", e);
-        }
+        return BandcampExtractorHelper.parseDate(getTextualUploadDate());
     }
 
     @Nonnull

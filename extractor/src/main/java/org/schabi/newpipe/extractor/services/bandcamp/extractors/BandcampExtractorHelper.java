@@ -9,11 +9,13 @@ import com.grack.nanojson.JsonWriter;
 import org.schabi.newpipe.extractor.NewPipe;
 import org.schabi.newpipe.extractor.exceptions.ParsingException;
 import org.schabi.newpipe.extractor.exceptions.ReCaptchaException;
+import org.schabi.newpipe.extractor.localization.DateWrapper;
 import org.schabi.newpipe.extractor.utils.Utils;
 
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Arrays;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.*;
 
 public class BandcampExtractorHelper {
 
@@ -141,5 +143,16 @@ public class BandcampExtractorHelper {
      */
     public static String getImageUrl(long id, boolean album) {
         return "https://f4.bcbits.com/img/" + (album ? 'a' : "") + id + "_10.jpg";
+    }
+
+    static DateWrapper parseDate(String textDate) throws ParsingException {
+        try {
+            Date date = new SimpleDateFormat("dd MMM yyyy HH:mm:ss zzz", Locale.ENGLISH).parse(textDate);
+            Calendar calendar = Calendar.getInstance();
+            calendar.setTime(date);
+            return new DateWrapper(calendar, false);
+        } catch (ParseException e) {
+            throw new ParsingException("Could not extract date", e);
+        }
     }
 }
