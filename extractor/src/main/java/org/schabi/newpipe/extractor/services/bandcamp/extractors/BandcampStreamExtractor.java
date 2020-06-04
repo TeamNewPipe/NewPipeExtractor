@@ -298,10 +298,10 @@ public class BandcampStreamExtractor extends StreamExtractor {
                 return "CC BY-NC 3.0";
             case 5:
                 return "CC BY-ND 3.0";
-            case 8:
-                return "CC BY-SA 3.0";
             case 6:
                 return "CC BY 3.0";
+            case 8:
+                return "CC BY-SA 3.0";
             default:
                 return "Unknown";
         }
