@@ -53,7 +53,7 @@ public class BandcampStreamExtractorTest {
 
     @Test
     public void testDescription() {
-        assertEquals(831, extractor.getDescription().getContent().length());
+        assertTrue(extractor.getDescription().getContent().contains("Boy, you've taken up my thoughts"));
     }
 
     @Test
