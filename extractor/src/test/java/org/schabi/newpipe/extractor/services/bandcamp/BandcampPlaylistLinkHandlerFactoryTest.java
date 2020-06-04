@@ -28,7 +28,6 @@ public class BandcampPlaylistLinkHandlerFactoryTest {
 
     @Test
     public void testAcceptUrl() throws ParsingException {
-        // Tests expecting false
         assertFalse(linkHandler.acceptUrl("http://interovgm.com/releases/"));
         assertFalse(linkHandler.acceptUrl("https://interovgm.com/releases"));
         assertFalse(linkHandler.acceptUrl("http://zachbenson.bandcamp.com"));
@@ -37,7 +36,6 @@ public class BandcampPlaylistLinkHandlerFactoryTest {
         assertFalse(linkHandler.acceptUrl("https://zachbenson.bandcamp.com/track/kitchen"));
         assertFalse(linkHandler.acceptUrl("https://interovgm.com/track/title"));
 
-        // Tests expecting true
         assertTrue(linkHandler.acceptUrl("https://powertothequeerkids.bandcamp.com/album/power-to-the-queer-kids"));
         assertTrue(linkHandler.acceptUrl("https://zachbenson.bandcamp.com/album/prom"));
         assertTrue(linkHandler.acceptUrl("https://MACBENSON.BANDCAMP.COM/ALBUM/COMING-OF-AGE"));

@@ -32,7 +32,6 @@ public class BandcampSuggestionExtractorTest {
     public void testSearchExample() throws IOException, ExtractionException {
         List<String> c418 = extractor.suggestionList("c418");
 
-        // When looking for c418, one should find C418
         assertTrue(c418.contains("C418"));
 
         // There should be five results, but we can't be sure of that forever
