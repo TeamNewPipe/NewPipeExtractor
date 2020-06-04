@@ -34,6 +34,7 @@ public class BandcampStreamExtractorTest {
 
     @Test
     public void testServiceId() {
+        assertEquals(4, extractor.getServiceId());
     }
 
     @Test
