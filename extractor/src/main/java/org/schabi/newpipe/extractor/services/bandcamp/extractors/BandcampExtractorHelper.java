@@ -88,7 +88,7 @@ public class BandcampExtractorHelper {
         // Remove empty strings
         ArrayList<String> list = new ArrayList<>(Arrays.asList(strings));
         for (int i = list.size() - 1; i >= 0; i--) {
-            if (Utils.isNullOrEmpty(list) || list.get(i).equals("null")) {
+            if (Utils.isNullOrEmpty(list.get(i)) || list.get(i).equals("null")) {
                 list.remove(i);
             }
         }
