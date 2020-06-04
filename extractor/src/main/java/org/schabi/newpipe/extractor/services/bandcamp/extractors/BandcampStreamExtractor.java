@@ -303,7 +303,7 @@ public class BandcampStreamExtractor extends StreamExtractor {
             case 6:
                 return "CC BY 3.0";
             default:
-                return "Unknown license (internal ID " + license + ")";
+                return "Unknown";
         }
     }
 
