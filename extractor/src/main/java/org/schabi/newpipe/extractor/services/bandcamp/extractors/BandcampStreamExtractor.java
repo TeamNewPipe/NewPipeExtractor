@@ -20,7 +20,11 @@ import org.schabi.newpipe.extractor.stream.*;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.io.IOException;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
 import java.util.List;
 import java.util.Locale;
 
@@ -96,13 +100,21 @@ public class BandcampStreamExtractor extends StreamExtractor {
     @Nullable
     @Override
     public String getTextualUploadDate() {
-        return current.getString("publish_date").replaceAll(" \\d+:\\d+:\\d+ .+", "");
+        return current.getString("publish_date");
     }
 
     @Nullable
     @Override
-    public DateWrapper getUploadDate() {
-        return null;
+    public DateWrapper getUploadDate() throws ParsingException {
+        try {
+            Date date = new SimpleDateFormat("dd MMM yyyy HH:mm:ss zzz", Locale.ENGLISH).parse(getTextualUploadDate());
+            Calendar calendar = Calendar.getInstance();
+            calendar.setTime(date);
+            return new DateWrapper(calendar, false);
+        } catch (ParseException e) {
+            e.printStackTrace();
+            throw new ParsingException("Could not extract date", e);
+        }
     }
 
     @Nonnull

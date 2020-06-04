@@ -77,7 +77,7 @@ public class BandcampRadioStreamExtractor extends BandcampStreamExtractor {
     @Nullable
     @Override
     public String getTextualUploadDate() {
-        return showInfo.getString("published_date").replace(" 00:00:00 GMT", "");
+        return showInfo.getString("published_date");
     }
 
     @Nonnull

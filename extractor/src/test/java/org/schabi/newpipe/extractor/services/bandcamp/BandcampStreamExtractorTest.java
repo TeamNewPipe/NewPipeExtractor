@@ -13,6 +13,7 @@ import org.schabi.newpipe.extractor.services.bandcamp.extractors.BandcampStreamE
 import org.schabi.newpipe.extractor.stream.StreamExtractor;
 
 import java.io.IOException;
+import java.util.Calendar;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
@@ -61,8 +62,8 @@ public class BandcampStreamExtractorTest {
     }
 
     @Test
-    public void testUploadDate() {
-        assertEquals("27 Sep 2019", extractor.getTextualUploadDate());
+    public void testUploadDate() throws ParsingException {
+        assertEquals(270, extractor.getUploadDate().date().get(Calendar.DAY_OF_YEAR));
     }
 
     @Test
