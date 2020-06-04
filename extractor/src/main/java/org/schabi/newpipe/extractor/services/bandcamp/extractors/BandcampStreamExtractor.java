@@ -112,7 +112,6 @@ public class BandcampStreamExtractor extends StreamExtractor {
             calendar.setTime(date);
             return new DateWrapper(calendar, false);
         } catch (ParseException e) {
-            e.printStackTrace();
             throw new ParsingException("Could not extract date", e);
         }
     }
