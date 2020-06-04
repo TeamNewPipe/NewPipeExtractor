@@ -43,7 +43,8 @@ public class BandcampRadioStreamExtractorTest {
     }
 
     @Test
-    public void testGetUploaderUrl() {
+    public void testGetUploaderUrl() throws ParsingException {
+        assertEquals("http://bandcamp.com/andrewjervis", e.getUploaderUrl());
     }
 
     @Test
