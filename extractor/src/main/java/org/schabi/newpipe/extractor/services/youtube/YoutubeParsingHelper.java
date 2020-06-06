@@ -108,7 +108,7 @@ public class YoutubeParsingHelper {
         return host.equalsIgnoreCase("invidio.us") || host.equalsIgnoreCase("dev.invidio.us") || host.equalsIgnoreCase("www.invidio.us") || host.equalsIgnoreCase("invidious.snopyta.org") || host.equalsIgnoreCase("de.invidious.snopyta.org") || host.equalsIgnoreCase("fi.invidious.snopyta.org") || host.equalsIgnoreCase("vid.wxzm.sx") || host.equalsIgnoreCase("invidious.kabi.tk") || host.equalsIgnoreCase("invidiou.sh") || host.equalsIgnoreCase("www.invidiou.sh") || host.equalsIgnoreCase("no.invidiou.sh") || host.equalsIgnoreCase("invidious.enkirton.net") || host.equalsIgnoreCase("tube.poal.co") || host.equalsIgnoreCase("invidious.13ad.de") || host.equalsIgnoreCase("yt.elukerio.org");
     }
 
-    public static long parseDurationString(String input)
+    public static int parseDurationString(String input)
             throws ParsingException, NumberFormatException {
         // If time separator : is not detected, try . instead
         final String[] splitInput = input.contains(":")
@@ -142,10 +142,10 @@ public class YoutubeParsingHelper {
             default:
                 throw new ParsingException("Error duration string with unknown format: " + input);
         }
-        return ((((Long.parseLong(Utils.removeNonDigitCharacters(days)) * 24)
-                + Long.parseLong(Utils.removeNonDigitCharacters(hours)) * 60)
-                + Long.parseLong(Utils.removeNonDigitCharacters(minutes))) * 60)
-                + Long.parseLong(Utils.removeNonDigitCharacters(seconds));
+        return ((((Integer.parseInt(Utils.removeNonDigitCharacters(days)) * 24)
+                + Integer.parseInt(Utils.removeNonDigitCharacters(hours)) * 60)
+                + Integer.parseInt(Utils.removeNonDigitCharacters(minutes))) * 60)
+                + Integer.parseInt(Utils.removeNonDigitCharacters(seconds));
     }
 
     public static String getFeedUrlFrom(final String channelIdOrUser) {
