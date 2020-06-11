@@ -8,4 +8,5 @@ dependencies {
     implementation 'org.nibor.autolink:autolink:0.10.0'
 
     testImplementation 'junit:junit:4.13'
+    testImplementation "com.squareup.okhttp3:okhttp:3.12.11"
 }
