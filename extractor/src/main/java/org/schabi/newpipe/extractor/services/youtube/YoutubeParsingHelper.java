@@ -1,11 +1,6 @@
 package org.schabi.newpipe.extractor.services.youtube;
 
-import com.grack.nanojson.JsonArray;
-import com.grack.nanojson.JsonObject;
-import com.grack.nanojson.JsonParser;
-import com.grack.nanojson.JsonParserException;
-import com.grack.nanojson.JsonWriter;
-
+import com.grack.nanojson.*;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.schabi.newpipe.extractor.downloader.Response;
@@ -90,22 +85,23 @@ public class YoutubeParsingHelper {
     public static boolean isYoutubeURL(URL url) {
         String host = url.getHost();
         return host.equalsIgnoreCase("youtube.com") || host.equalsIgnoreCase("www.youtube.com")
-                || host.equalsIgnoreCase("m.youtube.com") || host.equalsIgnoreCase("music.youtube.com");
-    }
-
-    public static boolean isYoutubeServiceURL(URL url) {
-        String host = url.getHost();
-        return host.equalsIgnoreCase("www.youtube-nocookie.com") || host.equalsIgnoreCase("youtu.be");
+                || host.equalsIgnoreCase("m.youtube.com") || host.equalsIgnoreCase("music.youtube.com")
+                || host.equalsIgnoreCase("youtu.be") || host.equalsIgnoreCase("www.youtube-nocookie.com");
     }
 
     public static boolean isHooktubeURL(URL url) {
-        String host = url.getHost();
-        return host.equalsIgnoreCase("hooktube.com");
+        return url.getHost().equalsIgnoreCase("hooktube.com");
     }
 
-    public static boolean isInvidioURL(URL url) {
-        String host = url.getHost();
-        return host.equalsIgnoreCase("invidio.us") || host.equalsIgnoreCase("dev.invidio.us") || host.equalsIgnoreCase("www.invidio.us") || host.equalsIgnoreCase("invidious.snopyta.org") || host.equalsIgnoreCase("de.invidious.snopyta.org") || host.equalsIgnoreCase("fi.invidious.snopyta.org") || host.equalsIgnoreCase("vid.wxzm.sx") || host.equalsIgnoreCase("invidious.kabi.tk") || host.equalsIgnoreCase("invidiou.sh") || host.equalsIgnoreCase("www.invidiou.sh") || host.equalsIgnoreCase("no.invidiou.sh") || host.equalsIgnoreCase("invidious.enkirton.net") || host.equalsIgnoreCase("tube.poal.co") || host.equalsIgnoreCase("invidious.13ad.de") || host.equalsIgnoreCase("yt.elukerio.org");
+    public static boolean isInvidiousURL(URL url) {
+        if (isBlank(url.getAuthority())) {
+            return false;
+        }
+
+        String baseUrl = Utils.getBaseUrl(url);
+        baseUrl = Utils.replaceHttpWithHttps(baseUrl); // http not supported by DownloaderImpl
+        final InvidiousInstance instance = new InvidiousInstance(baseUrl);
+        return instance.isValid();
     }
 
     public static long parseDurationString(String input)
@@ -195,6 +191,7 @@ public class YoutubeParsingHelper {
 
     /**
      * Get the client version from a page
+     *
      * @return
      * @throws ParsingException
      */
@@ -384,6 +381,7 @@ public class YoutubeParsingHelper {
 
     /**
      * Get the text from a JSON object that has either a simpleText or a runs array.
+     *
      * @param textObject JSON object to get the text from
      * @param html       whether to return HTML, by parsing the navigationEndpoint
      * @return text in the JSON object or {@code null}

@@ -70,7 +70,7 @@ public class YoutubePlaylistLinkHandlerFactoryTest {
     }
 
     @Test
-    public void testAcceptInvidioUrl() throws ParsingException {
+    public void testAcceptInvidiousUrl() throws ParsingException {
         assertTrue(linkHandler.acceptUrl("https://www.invidio.us/playlist?list=PLW5y1tjAOzI3orQNF1yGGVL5x-pR2K1dC"));
         assertTrue(linkHandler.acceptUrl("https://www.invidio.us/playlist?list=PLz8YL4HVC87WJQDzVoY943URKQCsHS9XV"));
         assertTrue(linkHandler.acceptUrl("https://WWW.invidio.us/playlist?list=PLW5y1tjAOzI3orQNF1yGGVL5x-pR2K1dCI"));
@@ -83,7 +83,7 @@ public class YoutubePlaylistLinkHandlerFactoryTest {
     }
 
     @Test
-    public void testDeniesInvalidInvidioUrl() throws ParsingException {
+    public void testDeniesInvalidInvidiousUrl() throws ParsingException {
         assertFalse(linkHandler.acceptUrl("https://invidio.us/feed/trending?list=PLz8YL4HVC87WJQDzVoY943URKQCsHS9XV"));
         assertFalse(linkHandler.acceptUrl("https://invidio.us/feed/subscriptions?list=PLz8YL4HVC87WJQDzVoY943URKQCsHS9XV"));
         assertFalse(linkHandler.acceptUrl("ftp:/invidio.us/feed/trending?list=PLz8YL4HVC87WJQDzVoY943URKQCsHS9XV"));

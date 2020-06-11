@@ -1,6 +1,8 @@
 package org.schabi.newpipe.extractor;
 
+import org.junit.BeforeClass;
 import org.junit.Test;
+import org.schabi.newpipe.DownloaderTestImpl;
 
 import java.util.HashSet;
 
@@ -9,6 +11,12 @@ import static org.schabi.newpipe.extractor.NewPipe.getServiceByUrl;
 import static org.schabi.newpipe.extractor.ServiceList.YouTube;
 
 public class NewPipeTest {
+
+    @BeforeClass
+    public static void setUp() {
+        NewPipe.init(DownloaderTestImpl.getInstance());
+    }
+
     @Test
     public void getAllServicesTest() throws Exception {
         assertEquals(NewPipe.getServices().size(), ServiceList.all().size());

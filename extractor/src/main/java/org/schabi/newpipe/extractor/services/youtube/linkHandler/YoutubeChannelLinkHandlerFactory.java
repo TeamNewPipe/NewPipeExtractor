@@ -56,7 +56,7 @@ public class YoutubeChannelLinkHandlerFactory extends ListLinkHandlerFactory {
             String path = urlObj.getPath();
 
             if (!Utils.isHTTP(urlObj) || !(YoutubeParsingHelper.isYoutubeURL(urlObj) ||
-                    YoutubeParsingHelper.isInvidioURL(urlObj) || YoutubeParsingHelper.isHooktubeURL(urlObj))) {
+                    YoutubeParsingHelper.isInvidiousURL(urlObj) || YoutubeParsingHelper.isHooktubeURL(urlObj))) {
                 throw new ParsingException("the URL given is not a Youtube-URL");
             }
 

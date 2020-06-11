@@ -190,6 +190,10 @@ public class Utils {
         return uri.getProtocol() + "://" + uri.getAuthority();
     }
 
+    public static String getBaseUrl(URL url) {
+        return url.getProtocol() + "://" + url.getAuthority();
+    }
+
     public static boolean isNullOrEmpty(final String str) {
         return str == null || str.isEmpty();
     }

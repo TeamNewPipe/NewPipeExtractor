@@ -126,7 +126,7 @@ public class YoutubeStreamLinkHandlerFactoryTest {
     }
 
     @Test
-    public void testAcceptInvidioUrl() throws ParsingException {
+    public void testAcceptInvidiousUrl() throws ParsingException {
         assertTrue(linkHandler.acceptUrl("https://invidio.us/watch?v=TglNG-yjabU"));
         assertTrue(linkHandler.acceptUrl("http://www.invidio.us/watch?v=TglNG-yjabU"));
         assertTrue(linkHandler.acceptUrl("http://invidio.us/watch?v=TglNG-yjabU"));
