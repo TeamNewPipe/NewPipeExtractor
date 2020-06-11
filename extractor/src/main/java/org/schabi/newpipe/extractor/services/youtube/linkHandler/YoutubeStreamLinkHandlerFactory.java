@@ -4,6 +4,7 @@ import org.schabi.newpipe.extractor.exceptions.FoundAdException;
 import org.schabi.newpipe.extractor.exceptions.ParsingException;
 import org.schabi.newpipe.extractor.linkhandler.LinkHandler;
 import org.schabi.newpipe.extractor.linkhandler.LinkHandlerFactory;
+import org.schabi.newpipe.extractor.services.youtube.InvidiousInstance;
 
 import javax.annotation.Nullable;
 import java.net.MalformedURLException;
@@ -37,11 +38,17 @@ import static org.schabi.newpipe.extractor.utils.Utils.*;
 public class YoutubeStreamLinkHandlerFactory extends LinkHandlerFactory {
 
     private static final YoutubeStreamLinkHandlerFactory instance = new YoutubeStreamLinkHandlerFactory();
+    private static InvidiousInstance invidiousInstance = null;
 
     private YoutubeStreamLinkHandlerFactory() {
     }
 
     public static YoutubeStreamLinkHandlerFactory getInstance() {
+        return instance;
+    }
+
+    public static YoutubeStreamLinkHandlerFactory getInstance(InvidiousInstance invidiousInstance) {
+        YoutubeStreamLinkHandlerFactory.invidiousInstance = invidiousInstance;
         return instance;
     }
 
@@ -68,7 +75,11 @@ public class YoutubeStreamLinkHandlerFactory extends LinkHandlerFactory {
 
     @Override
     public String getUrl(String id) {
-        return "https://www.youtube.com/watch?v=" + id;
+        if (useInvidiousBackend() && invidiousInstance.isValid()) {
+            return invidiousInstance.getUrl();
+        } else {
+            return "https://www.youtube.com/watch?v=" + id;
+        }
     }
 
     @Override
@@ -214,5 +225,9 @@ public class YoutubeStreamLinkHandlerFactory extends LinkHandlerFactory {
         } catch (ParsingException e) {
             return false;
         }
+    }
+
+    private boolean useInvidiousBackend() {
+        return invidiousInstance != null;
     }
 }

@@ -11,11 +11,7 @@ import org.schabi.newpipe.extractor.exceptions.ContentNotAvailableException;
 import org.schabi.newpipe.extractor.exceptions.ExtractionException;
 import org.schabi.newpipe.extractor.exceptions.ParsingException;
 import org.schabi.newpipe.extractor.services.youtube.extractors.YoutubeStreamExtractor;
-import org.schabi.newpipe.extractor.stream.Frameset;
-import org.schabi.newpipe.extractor.stream.StreamExtractor;
-import org.schabi.newpipe.extractor.stream.StreamInfoItemsCollector;
-import org.schabi.newpipe.extractor.stream.StreamType;
-import org.schabi.newpipe.extractor.stream.VideoStream;
+import org.schabi.newpipe.extractor.stream.*;
 import org.schabi.newpipe.extractor.utils.Utils;
 
 import java.text.ParseException;
@@ -24,11 +20,7 @@ import java.util.Calendar;
 import java.util.List;
 
 import static java.util.Objects.requireNonNull;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.fail;
+import static org.junit.Assert.*;
 import static org.schabi.newpipe.extractor.ExtractorAsserts.assertIsSecureUrl;
 import static org.schabi.newpipe.extractor.ServiceList.YouTube;
 
@@ -134,7 +126,7 @@ public class YoutubeStreamExtractorDefaultTest {
 
         @Test
         public void testGetViewCount() throws ParsingException {
-            Long count = extractor.getViewCount();
+            final long count = extractor.getViewCount();
             assertTrue(Long.toString(count), count >= /* specific to that video */ 1220025784);
         }
 
@@ -186,14 +178,13 @@ public class YoutubeStreamExtractorDefaultTest {
 
         @Test
         public void testStreamType() throws ParsingException {
-            assertTrue(extractor.getStreamType() == StreamType.VIDEO_STREAM);
+            assertSame(extractor.getStreamType(), StreamType.VIDEO_STREAM);
         }
 
         @Test
         public void testGetDashMpd() throws ParsingException {
-            // we dont expect this particular video to have a DASH file. For this purpouse we use a different test class.
-            assertTrue(extractor.getDashMpdUrl(),
-                    extractor.getDashMpdUrl() != null && extractor.getDashMpdUrl().isEmpty());
+            // we dont expect this particular video to have a DASH file. For this purpose we use a different test class.
+            assertTrue(extractor.getDashMpdUrl(), extractor.getDashMpdUrl().isEmpty());
         }
 
         @Test

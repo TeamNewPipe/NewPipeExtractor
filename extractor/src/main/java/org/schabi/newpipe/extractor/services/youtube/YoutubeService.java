@@ -4,7 +4,6 @@ import org.schabi.newpipe.extractor.StreamingService;
 import org.schabi.newpipe.extractor.channel.ChannelExtractor;
 import org.schabi.newpipe.extractor.comments.CommentsExtractor;
 import org.schabi.newpipe.extractor.exceptions.ExtractionException;
-import org.schabi.newpipe.extractor.exceptions.InvalidInstanceException;
 import org.schabi.newpipe.extractor.feed.FeedExtractor;
 import org.schabi.newpipe.extractor.kiosk.KioskExtractor;
 import org.schabi.newpipe.extractor.kiosk.KioskList;
@@ -14,6 +13,7 @@ import org.schabi.newpipe.extractor.localization.Localization;
 import org.schabi.newpipe.extractor.playlist.PlaylistExtractor;
 import org.schabi.newpipe.extractor.search.SearchExtractor;
 import org.schabi.newpipe.extractor.services.youtube.extractors.*;
+import org.schabi.newpipe.extractor.services.youtube.invidiousextractors.InvidiousStreamExtractor;
 import org.schabi.newpipe.extractor.services.youtube.linkHandler.*;
 import org.schabi.newpipe.extractor.stream.StreamExtractor;
 import org.schabi.newpipe.extractor.subscription.SubscriptionExtractor;
@@ -47,18 +47,29 @@ import static org.schabi.newpipe.extractor.StreamingService.ServiceInfo.MediaCap
 
 public class YoutubeService extends StreamingService {
 
+    private InvidiousInstance instance;
+
     public YoutubeService(int id) {
-        super(id, "YouTube", asList(AUDIO, VIDEO, LIVE, COMMENTS));
+        this(id, "YouTube", null);
+    }
+
+    public YoutubeService(int id, InvidiousInstance instance) {
+        this(id, instance.getName(), instance);
+    }
+
+    private YoutubeService(int id, String name, InvidiousInstance instance) {
+        super(id, name, asList(AUDIO, VIDEO, LIVE, COMMENTS));
+        this.instance = instance;
     }
 
     @Override
     public String getBaseUrl() {
-        return "https://youtube.com";
+        return useInvidiousBackend() ? instance.getUrl() : "https://youtube.com";
     }
 
     @Override
     public LinkHandlerFactory getStreamLHFactory() {
-        return YoutubeStreamLinkHandlerFactory.getInstance();
+        return YoutubeStreamLinkHandlerFactory.getInstance(instance);
     }
 
     @Override
@@ -78,7 +89,11 @@ public class YoutubeService extends StreamingService {
 
     @Override
     public StreamExtractor getStreamExtractor(LinkHandler linkHandler) {
-        return new YoutubeStreamExtractor(this, linkHandler);
+        if (useInvidiousBackend()) {
+            return new InvidiousStreamExtractor(this, linkHandler);
+        } else {
+            return new YoutubeStreamExtractor(this, linkHandler);
+        }
     }
 
     @Override
@@ -195,5 +210,9 @@ public class YoutubeService extends StreamingService {
 
     public List<ContentCountry> getSupportedCountries() {
         return SUPPORTED_COUNTRIES;
+    }
+
+    private boolean useInvidiousBackend() {
+        return instance != null;
     }
 }

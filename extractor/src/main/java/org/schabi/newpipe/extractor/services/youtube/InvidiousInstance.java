@@ -23,9 +23,9 @@ import static org.schabi.newpipe.extractor.services.youtube.YoutubeParsingHelper
 
 /*
  * Copyright (C) 2020 Team NewPipe <tnp@newpipe.schabi.org>
- * Instance.java is part of NewPipe.
+ * InvidiousInstance.java is part of NewPipe Extractor.
  *
- * NewPipe is free software: you can redistribute it and/or modify
+ * NewPipe Extractor is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
@@ -36,7 +36,7 @@ import static org.schabi.newpipe.extractor.services.youtube.YoutubeParsingHelper
  * GNU General Public License for more details.
  *
  * You should have received a copy of the GNU General Public License
- * along with NewPipe.  If not, see <https://www.gnu.org/licenses/>.
+ * along with NewPipe Extractor.  If not, see <https://www.gnu.org/licenses/>.
  */
 
 public class InvidiousInstance implements Instance {
@@ -44,7 +44,8 @@ public class InvidiousInstance implements Instance {
     private final String url;
     private String name;
 
-    public static final InvidiousInstance defaultInstance = new InvidiousInstance("https://invidio.us", "invidious");
+    public static final InvidiousInstance defaultInstance = new InvidiousInstance("http://192.168.1.11:3000", "invidious");
+    // todo: change this. local instance because invidio.us is semi-blocked (no metadata)
 
     public InvidiousInstance(String url, String name) {
         this.url = url;

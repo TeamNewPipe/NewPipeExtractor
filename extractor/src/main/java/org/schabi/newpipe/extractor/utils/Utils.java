@@ -10,6 +10,24 @@ import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 
+/*
+ * Copyright (C) 2020 Team NewPipe <tnp@newpipe.schabi.org>
+ * Utils.java is part of NewPipe Extractor.
+ *
+ * NewPipe Extractor is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * NewPipe is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with NewPipe Extractor.  If not, see <https://www.gnu.org/licenses/>.
+ */
+
 public class Utils {
 
     public static final String HTTP = "http://";
@@ -208,7 +226,7 @@ public class Utils {
         return map == null || map.isEmpty();
     }
 
-    public static boolean isWhitespace(final int c){
+    public static boolean isWhitespace(final int c) {
         return c == ' ' || c == '\t' || c == '\n' || c == '\f' || c == '\r';
     }
 
@@ -225,5 +243,9 @@ public class Utils {
         }
 
         return true;
+    }
+
+    public static int lastIndexOf(final int size) {
+        return size > 1 ? size - 1 : 0;
     }
 }
