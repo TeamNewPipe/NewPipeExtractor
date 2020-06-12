@@ -9,7 +9,11 @@ import org.schabi.newpipe.extractor.NewPipe;
 import org.schabi.newpipe.extractor.exceptions.ExtractionException;
 import org.schabi.newpipe.extractor.exceptions.ParsingException;
 import org.schabi.newpipe.extractor.services.youtube.invidious.extractors.InvidiousStreamExtractor;
-import org.schabi.newpipe.extractor.stream.*;
+import org.schabi.newpipe.extractor.stream.StreamExtractor;
+import org.schabi.newpipe.extractor.stream.StreamInfoItemsCollector;
+import org.schabi.newpipe.extractor.stream.StreamType;
+import org.schabi.newpipe.extractor.stream.SubtitlesStream;
+import org.schabi.newpipe.extractor.stream.VideoStream;
 import org.schabi.newpipe.extractor.utils.Utils;
 
 import java.text.ParseException;
@@ -18,7 +22,12 @@ import java.util.Calendar;
 import java.util.List;
 
 import static java.util.Objects.requireNonNull;
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertSame;
+import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
 import static org.schabi.newpipe.extractor.ExtractorAsserts.assertIsSecureUrl;
 import static org.schabi.newpipe.extractor.ServiceList.Invidious;
 
@@ -74,35 +83,35 @@ public class InvidiousStreamExtractorTest {
         }
 
         @Test
-        public void testGetDescription() throws ParsingException {
+        public void testGetDescription() {
             assertNotNull(extractor.getDescription());
             assertFalse(extractor.getDescription().getContent().isEmpty());
         }
 
         @Test
-        public void testGetFullLinksInDescription() throws ParsingException {
+        public void testGetFullLinksInDescription() {
             assertTrue(extractor.getDescription().getContent().contains("http://adele.com"));
         }
 
         @Test
-        public void testGetUploaderName() throws ParsingException {
+        public void testGetUploaderName() {
             assertNotNull(extractor.getUploaderName());
             assertFalse(extractor.getUploaderName().isEmpty());
         }
 
         @Test
-        public void testGetLength() throws ParsingException {
+        public void testGetLength() {
             assertEquals(367, extractor.getLength());
         }
 
         @Test
-        public void testGetViewCount() throws ParsingException {
+        public void testGetViewCount() {
             final long count = extractor.getViewCount();
             assertTrue(Long.toString(count), count >= /* specific to that video */ 1220025784);
         }
 
         @Test
-        public void testGetUploadDate() throws ParsingException, ParseException {
+        public void testGetUploadDate() throws ParseException {
             final Calendar instance = Calendar.getInstance();
             instance.setTime(new SimpleDateFormat("yyyy-MM-dd").parse("2015-10-22"));
             assertEquals(instance, requireNonNull(extractor.getUploadDate()).date());
@@ -143,12 +152,12 @@ public class InvidiousStreamExtractorTest {
         }
 
         @Test
-        public void testStreamType() throws ParsingException {
+        public void testStreamType() {
             assertSame(extractor.getStreamType(), StreamType.VIDEO_STREAM);
         }
 
         @Test
-        public void testGetDashMpd() throws ParsingException {
+        public void testGetDashMpd() {
             assertTrue(extractor.getDashMpdUrl().endsWith("api/manifest/dash/id/YQHsXMglC9A"));
         }
 
@@ -179,13 +188,13 @@ public class InvidiousStreamExtractorTest {
         }
 
         @Test
-        public void testGetLikeCount() throws ParsingException {
+        public void testGetLikeCount() {
             long likeCount = extractor.getLikeCount();
             assertTrue("" + likeCount, likeCount >= 15000000);
         }
 
         @Test
-        public void testGetDislikeCount() throws ParsingException {
+        public void testGetDislikeCount() {
             long dislikeCount = extractor.getDislikeCount();
             assertTrue("" + dislikeCount, dislikeCount >= 818000);
         }

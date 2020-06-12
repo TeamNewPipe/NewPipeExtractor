@@ -2,8 +2,6 @@ package org.schabi.newpipe.extractor.services.youtube.invidious.extractors;
 
 import com.grack.nanojson.JsonArray;
 import com.grack.nanojson.JsonObject;
-import com.grack.nanojson.JsonParser;
-import com.grack.nanojson.JsonParserException;
 import org.schabi.newpipe.extractor.MediaFormat;
 import org.schabi.newpipe.extractor.StreamingService;
 import org.schabi.newpipe.extractor.downloader.Downloader;
@@ -13,15 +11,28 @@ import org.schabi.newpipe.extractor.exceptions.ParsingException;
 import org.schabi.newpipe.extractor.linkhandler.LinkHandler;
 import org.schabi.newpipe.extractor.localization.DateWrapper;
 import org.schabi.newpipe.extractor.services.youtube.ItagItem;
-import org.schabi.newpipe.extractor.stream.*;
+import org.schabi.newpipe.extractor.services.youtube.invidious.InvidiousParsingHelper;
+import org.schabi.newpipe.extractor.stream.AudioStream;
+import org.schabi.newpipe.extractor.stream.Description;
+import org.schabi.newpipe.extractor.stream.Stream;
+import org.schabi.newpipe.extractor.stream.StreamExtractor;
+import org.schabi.newpipe.extractor.stream.StreamInfoItem;
+import org.schabi.newpipe.extractor.stream.StreamInfoItemsCollector;
+import org.schabi.newpipe.extractor.stream.StreamType;
+import org.schabi.newpipe.extractor.stream.SubtitlesStream;
+import org.schabi.newpipe.extractor.stream.VideoStream;
 import org.schabi.newpipe.extractor.utils.JsonUtils;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.io.IOException;
-import java.util.*;
-
-import static org.schabi.newpipe.extractor.utils.Utils.lastIndexOf;
+import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Locale;
+import java.util.Map;
 
 /*
  * Copyright (C) 2020 Team NewPipe <tnp@newpipe.schabi.org>
@@ -48,6 +59,7 @@ public class InvidiousStreamExtractor extends StreamExtractor {
 
     public InvidiousStreamExtractor(StreamingService service, LinkHandler linkHandler) {
         super(service, linkHandler);
+        baseUrl = service.getInstance().getUrl();
     }
 
     @Nullable
@@ -71,7 +83,7 @@ public class InvidiousStreamExtractor extends StreamExtractor {
     @Override
     public String getThumbnailUrl() {
         final JsonArray thumbnail = json.getArray("authorThumbnails");
-        return thumbnail.getObject(lastIndexOf(thumbnail.size())).getString("url");
+        return thumbnail.getObject(0).getString("url");
     }
 
     @Nonnull
@@ -128,7 +140,7 @@ public class InvidiousStreamExtractor extends StreamExtractor {
     @Override
     public String getUploaderAvatarUrl() {
         final JsonArray avatars = json.getArray("authorThumbnails");
-        return avatars.getObject(lastIndexOf(avatars.size())).getString("url");
+        return avatars.getObject(0).getString("url");
     }
 
     @Nonnull
@@ -318,22 +330,15 @@ public class InvidiousStreamExtractor extends StreamExtractor {
 
     @Override
     public void onFetchPage(@Nonnull Downloader downloader) throws IOException, ExtractionException {
-        baseUrl = getBaseUrl();
         final String apiUrl = baseUrl + "/api/v1/videos/" + getId() +
                 "?fields=title,descriptionHtml,viewCount,likeCount,dislikeCount,genre,authorUrl,author," +
                 "authorThumbnails,lengthSeconds,authorThumbnails,hlsUrl,captions,isListed,dashUrl," +
                 "publishedText,published,isFamilyFriendly,keywords,adaptiveFormats,formatStreams,recommendedVideos" +
                 "&region=" + getExtractorContentCountry().getCountryCode();
-        Response response = downloader.get(apiUrl);
-        if (response.responseCode() >= 400) {
-            throw new ExtractionException("Could not get page " + apiUrl + " (" + response.responseCode() + " : " + response.responseMessage());
-        }
 
-        try {
-            json = JsonParser.object().from(response.responseBody());
-        } catch (JsonParserException e) {
-            throw new ExtractionException("Could not parse json", e);
-        }
+        final Response response = downloader.get(apiUrl);
+
+        json = InvidiousParsingHelper.getValidJsonObjectFromResponse(response, apiUrl);
 
     }
 

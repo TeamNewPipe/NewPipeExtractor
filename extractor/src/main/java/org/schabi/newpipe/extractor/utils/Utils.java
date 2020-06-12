@@ -245,7 +245,4 @@ public class Utils {
         return true;
     }
 
-    public static int lastIndexOf(final int size) {
-        return size > 1 ? size - 1 : 0;
-    }
 }
