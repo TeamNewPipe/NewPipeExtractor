@@ -72,11 +72,7 @@ public class InvidiousStreamExtractor extends StreamExtractor {
     @Nullable
     @Override
     public DateWrapper getUploadDate() {
-        final long epochTime = json.getNumber("published").longValue() * 1000;
-        // * 1000 because it's second-based, not millisecond based
-        Calendar calendar = Calendar.getInstance();
-        calendar.setTime(new Date(epochTime));
-        return new DateWrapper(calendar);
+        return InvidiousParsingHelper.getUploadDateFromEpochTime(json.getNumber("published").longValue());
     }
 
     @Nonnull
@@ -170,7 +166,8 @@ public class InvidiousStreamExtractor extends StreamExtractor {
     @Nonnull
     @Override
     public String getHlsUrl() {
-        return json.getString("hlsUrl");
+        final String hlsUrl = json.getString("hlsUrl");
+        return hlsUrl != null ? hlsUrl : "";
     }
 
     @Override

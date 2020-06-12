@@ -1,16 +1,17 @@
-package org.schabi.newpipe.extractor.services.soundcloud.extractors;
+package org.schabi.newpipe.extractor.services.youtube.invidious.extractors;
 
+import com.grack.nanojson.JsonArray;
 import com.grack.nanojson.JsonObject;
 import org.schabi.newpipe.extractor.comments.CommentsInfoItemExtractor;
 import org.schabi.newpipe.extractor.exceptions.ParsingException;
 import org.schabi.newpipe.extractor.localization.DateWrapper;
-import org.schabi.newpipe.extractor.services.soundcloud.SoundcloudParsingHelper;
+import org.schabi.newpipe.extractor.services.youtube.invidious.InvidiousParsingHelper;
 
 import javax.annotation.Nullable;
 
 /*
  * Copyright (C) 2020 Team NewPipe <tnp@newpipe.schabi.org>
- * SoundcloudCommentsInfoItemExtractor.java is part of NewPipe Extractor.
+ * InvidiousCommentsInfoItemExtractor.java is part of NewPipe Extractor.
  *
  * NewPipe Extractor is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -26,60 +27,60 @@ import javax.annotation.Nullable;
  * along with NewPipe Extractor.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-public class SoundcloudCommentsInfoItemExtractor implements CommentsInfoItemExtractor {
+public class InvidiousCommentsInfoItemExtractor implements CommentsInfoItemExtractor {
 
-    private JsonObject json;
-    private String url;
+    private final JsonObject json;
+    private final String url;
 
-    public SoundcloudCommentsInfoItemExtractor(JsonObject json, String url) {
+    public InvidiousCommentsInfoItemExtractor(final JsonObject json, final String url) {
         this.json = json;
         this.url = url;
     }
 
     @Override
-    public String getCommentId() {
-        return json.getNumber("id").toString();
+    public int getLikeCount() {
+        return json.getNumber("likeCount").intValue();
     }
 
     @Override
     public String getCommentText() {
-        return json.getString("body");
-    }
-
-    @Override
-    public String getUploaderName() {
-        return json.getObject("user").getString("username");
-    }
-
-    @Override
-    public String getUploaderAvatarUrl() {
-        return json.getObject("user").getString("avatar_url");
-    }
-
-    @Override
-    public String getUploaderUrl() {
-        return json.getObject("user").getString("permalink_url");
+        return json.getString("content");
     }
 
     @Override
     public String getTextualUploadDate() {
-        return json.getString("created_at");
+        return json.getString("publishedText");
     }
 
     @Nullable
     @Override
-    public DateWrapper getUploadDate() throws ParsingException {
-        return new DateWrapper(SoundcloudParsingHelper.parseDateFrom(getTextualUploadDate()));
+    public DateWrapper getUploadDate() {
+        return InvidiousParsingHelper.getUploadDateFromEpochTime(json.getNumber("published").longValue());
     }
 
     @Override
-    public int getLikeCount() {
-        return -1;
+    public String getCommentId() {
+        return null; // unavailable
+    }
+
+    @Override
+    public String getUploaderUrl() {
+        return json.getString("authorUrl");
+    }
+
+    @Override
+    public String getUploaderName() {
+        return json.getString("author");
+    }
+
+    @Override
+    public String getUploaderAvatarUrl() {
+        return json.getArray("authorThumbnails").getObject(0).getString("url");
     }
 
     @Override
     public String getName() throws ParsingException {
-        return json.getObject("user").getString("permalink");
+        return json.getString("author");
     }
 
     @Override
@@ -89,6 +90,7 @@ public class SoundcloudCommentsInfoItemExtractor implements CommentsInfoItemExtr
 
     @Override
     public String getThumbnailUrl() {
-        return json.getObject("user").getString("avatar_url");
+        final JsonArray thumbnail = json.getArray("authorThumbnails");
+        return thumbnail.getObject(0).getString("url");
     }
 }

@@ -1,9 +1,7 @@
-package org.schabi.newpipe.extractor.services.soundcloud.extractors;
+package org.schabi.newpipe.extractor.services.youtube.invidious.extractors;
 
 import com.grack.nanojson.JsonArray;
 import com.grack.nanojson.JsonObject;
-import com.grack.nanojson.JsonParser;
-import com.grack.nanojson.JsonParserException;
 import org.schabi.newpipe.extractor.NewPipe;
 import org.schabi.newpipe.extractor.StreamingService;
 import org.schabi.newpipe.extractor.comments.CommentsExtractor;
@@ -12,15 +10,16 @@ import org.schabi.newpipe.extractor.comments.CommentsInfoItemsCollector;
 import org.schabi.newpipe.extractor.downloader.Downloader;
 import org.schabi.newpipe.extractor.downloader.Response;
 import org.schabi.newpipe.extractor.exceptions.ExtractionException;
-import org.schabi.newpipe.extractor.exceptions.ParsingException;
 import org.schabi.newpipe.extractor.linkhandler.ListLinkHandler;
+import org.schabi.newpipe.extractor.services.soundcloud.extractors.SoundcloudCommentsInfoItemExtractor;
+import org.schabi.newpipe.extractor.services.youtube.invidious.InvidiousParsingHelper;
 
 import javax.annotation.Nonnull;
 import java.io.IOException;
 
 /*
  * Copyright (C) 2020 Team NewPipe <tnp@newpipe.schabi.org>
- * SoundcloudCommentsExtractor.java is part of NewPipe Extractor.
+ * InvidiousCommentsExtractor.java is part of NewPipe Extractor.
  *
  * NewPipe Extractor is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -36,57 +35,53 @@ import java.io.IOException;
  * along with NewPipe Extractor.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-public class SoundcloudCommentsExtractor extends CommentsExtractor {
+public class InvidiousCommentsExtractor extends CommentsExtractor {
 
+    private final String baseUrl;
     private JsonObject json;
 
-    public SoundcloudCommentsExtractor(StreamingService service, ListLinkHandler uiHandler) {
+    public InvidiousCommentsExtractor(StreamingService service, ListLinkHandler uiHandler) {
         super(service, uiHandler);
+        baseUrl = service.getInstance().getUrl();
     }
 
     @Nonnull
     @Override
-    public InfoItemsPage<CommentsInfoItem> getInitialPage() throws IOException, ExtractionException {
+    public InfoItemsPage<CommentsInfoItem> getInitialPage() throws ExtractionException {
         final CommentsInfoItemsCollector collector = new CommentsInfoItemsCollector(getServiceId());
 
-        collectStreamsFrom(collector, json.getArray("collection"));
+        collectStreamsFrom(collector, json.getArray("comments"), getUrl());
 
         return new InfoItemsPage<>(collector, getNextPageUrl());
     }
 
     @Override
-    public String getNextPageUrl() throws IOException, ExtractionException {
-        return json.getString("next_href");
+    public String getNextPageUrl() throws ExtractionException {
+        return baseUrl + "/api/v1/comments/" + getId() + "?continuation=" + json.getString("continuation");
     }
 
     @Override
     public InfoItemsPage<CommentsInfoItem> getPage(String pageUrl) throws IOException, ExtractionException {
-        Downloader dl = NewPipe.getDownloader();
-        Response rp = dl.get(pageUrl);
-        try {
-            json = JsonParser.object().from(rp.responseBody());
-        } catch (JsonParserException e) {
-            throw new ParsingException("Could not parse json", e);
-        }
+        final Downloader dl = NewPipe.getDownloader();
+        final Response response = dl.get(pageUrl);
+
+        json = InvidiousParsingHelper.getValidJsonObjectFromResponse(response, pageUrl);
 
         final CommentsInfoItemsCollector collector = new CommentsInfoItemsCollector(getServiceId());
-        collectStreamsFrom(collector, json.getArray("collection"));
-
+        collectStreamsFrom(collector, json.getArray("comments"), pageUrl);
         return new InfoItemsPage<>(collector, getNextPageUrl());
     }
 
     @Override
     public void onFetchPage(@Nonnull Downloader downloader) throws IOException, ExtractionException {
-        Response response = downloader.get(getUrl());
-        try {
-            json = JsonParser.object().from(response.responseBody());
-        } catch (JsonParserException e) {
-            throw new ParsingException("Could not parse json", e);
-        }
+        final String apiUrl = baseUrl + "/api/v1/comments/" + getId();
+        final Response response = downloader.get(apiUrl);
+
+        json = InvidiousParsingHelper.getValidJsonObjectFromResponse(response, apiUrl);
+
     }
 
-    private void collectStreamsFrom(final CommentsInfoItemsCollector collector, final JsonArray entries) throws ParsingException {
-        final String url = getUrl();
+    private void collectStreamsFrom(final CommentsInfoItemsCollector collector, final JsonArray entries, final String url) {
         for (Object comment : entries) {
             collector.commit(new SoundcloudCommentsInfoItemExtractor((JsonObject) comment, url));
         }

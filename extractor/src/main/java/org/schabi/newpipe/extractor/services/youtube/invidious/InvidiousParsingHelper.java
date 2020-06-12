@@ -23,6 +23,10 @@ import com.grack.nanojson.JsonParser;
 import com.grack.nanojson.JsonParserException;
 import org.schabi.newpipe.extractor.downloader.Response;
 import org.schabi.newpipe.extractor.exceptions.ExtractionException;
+import org.schabi.newpipe.extractor.localization.DateWrapper;
+
+import java.util.Calendar;
+import java.util.Date;
 
 public class InvidiousParsingHelper {
 
@@ -44,5 +48,11 @@ public class InvidiousParsingHelper {
         } catch (JsonParserException e) {
             throw new ExtractionException("Could not parse json", e);
         }
+    }
+
+    public static DateWrapper getUploadDateFromEpochTime(final long epochTime) {
+        Calendar calendar = Calendar.getInstance();
+        calendar.setTime(new Date(epochTime * 1000)); // * 1000 because it's second-based, not millisecond based
+        return new DateWrapper(calendar);
     }
 }

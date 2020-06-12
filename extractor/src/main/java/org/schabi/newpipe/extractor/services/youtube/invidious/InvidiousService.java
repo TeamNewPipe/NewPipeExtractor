@@ -16,6 +16,7 @@ import org.schabi.newpipe.extractor.localization.ContentCountry;
 import org.schabi.newpipe.extractor.localization.Localization;
 import org.schabi.newpipe.extractor.playlist.PlaylistExtractor;
 import org.schabi.newpipe.extractor.search.SearchExtractor;
+import org.schabi.newpipe.extractor.services.youtube.invidious.extractors.InvidiousCommentsExtractor;
 import org.schabi.newpipe.extractor.services.youtube.invidious.extractors.InvidiousStreamExtractor;
 import org.schabi.newpipe.extractor.services.youtube.invidious.extractors.InvidiousSuggestionExtractor;
 import org.schabi.newpipe.extractor.services.youtube.linkHandler.YoutubeChannelLinkHandlerFactory;
@@ -55,6 +56,9 @@ import static org.schabi.newpipe.extractor.StreamingService.ServiceInfo.MediaCap
  * along with NewPipe Extractor.  If not, see <https://www.gnu.org/licenses/>.
  */
 
+/**
+ * InvidiousService, uses documented API: https://github.com/omarroth/invidious/wiki/api
+ */
 public class InvidiousService extends StreamingService {
 
     public InvidiousService(int id) {
@@ -139,7 +143,7 @@ public class InvidiousService extends StreamingService {
 
     @Override
     public CommentsExtractor getCommentsExtractor(ListLinkHandler urlIdHandler) throws ExtractionException {
-        return null;
+        return new InvidiousCommentsExtractor(this, urlIdHandler);
     }
 
     /*//////////////////////////////////////////////////////////////////////////
