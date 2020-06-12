@@ -25,9 +25,10 @@ import org.schabi.newpipe.extractor.exceptions.ExtractionException;
 import org.schabi.newpipe.extractor.localization.ContentCountry;
 import org.schabi.newpipe.extractor.localization.Localization;
 
+import java.util.List;
+
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
-import java.util.List;
 
 /**
  * Provides access to streaming services supported by NewPipe.
@@ -36,6 +37,7 @@ public class NewPipe {
     private static Downloader downloader;
     private static Localization preferredLocalization;
     private static ContentCountry preferredContentCountry;
+    private static boolean useInvidiousForYoutube;
 
     private NewPipe() {
     }
@@ -153,5 +155,13 @@ public class NewPipe {
 
     public static void setPreferredContentCountry(ContentCountry preferredContentCountry) {
         NewPipe.preferredContentCountry = preferredContentCountry;
+    }
+
+    public static boolean getUseInvidiousForYoutube() {
+        return useInvidiousForYoutube;
+    }
+
+    public static void setUseInvidiousForYoutube(final boolean useInvidiousForYoutube) {
+        NewPipe.useInvidiousForYoutube = useInvidiousForYoutube;
     }
 }

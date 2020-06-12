@@ -5,6 +5,7 @@ import org.junit.Test;
 import org.schabi.newpipe.DownloaderTestImpl;
 import org.schabi.newpipe.extractor.NewPipe;
 import org.schabi.newpipe.extractor.exceptions.InvalidInstanceException;
+import org.schabi.newpipe.extractor.services.youtube.invidious.InvidiousInstance;
 
 import static org.junit.Assert.*;
 

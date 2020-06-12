@@ -1,19 +1,25 @@
 package org.schabi.newpipe.extractor.services.youtube.linkHandler;
 
+import org.schabi.newpipe.extractor.Instance;
 import org.schabi.newpipe.extractor.exceptions.FoundAdException;
 import org.schabi.newpipe.extractor.exceptions.ParsingException;
 import org.schabi.newpipe.extractor.linkhandler.LinkHandler;
 import org.schabi.newpipe.extractor.linkhandler.LinkHandlerFactory;
-import org.schabi.newpipe.extractor.services.youtube.InvidiousInstance;
 
-import javax.annotation.Nullable;
 import java.net.MalformedURLException;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.net.URL;
 
-import static org.schabi.newpipe.extractor.services.youtube.YoutubeParsingHelper.*;
-import static org.schabi.newpipe.extractor.utils.Utils.*;
+import javax.annotation.Nullable;
+
+import static org.schabi.newpipe.extractor.services.youtube.YoutubeParsingHelper.BASE_YOUTUBE_INTENT_URL;
+import static org.schabi.newpipe.extractor.services.youtube.YoutubeParsingHelper.isHooktubeURL;
+import static org.schabi.newpipe.extractor.services.youtube.YoutubeParsingHelper.isInvidiousURL;
+import static org.schabi.newpipe.extractor.services.youtube.YoutubeParsingHelper.isYoutubeURL;
+import static org.schabi.newpipe.extractor.utils.Utils.getQueryValue;
+import static org.schabi.newpipe.extractor.utils.Utils.isHTTP;
+import static org.schabi.newpipe.extractor.utils.Utils.stringToURL;
 
 /*
  * Created by Christian Schabesberger on 02.02.16.
@@ -38,7 +44,7 @@ import static org.schabi.newpipe.extractor.utils.Utils.*;
 public class YoutubeStreamLinkHandlerFactory extends LinkHandlerFactory {
 
     private static final YoutubeStreamLinkHandlerFactory instance = new YoutubeStreamLinkHandlerFactory();
-    private static InvidiousInstance invidiousInstance = null;
+    private static Instance invidiousInstance;
 
     private YoutubeStreamLinkHandlerFactory() {
     }
@@ -47,7 +53,7 @@ public class YoutubeStreamLinkHandlerFactory extends LinkHandlerFactory {
         return instance;
     }
 
-    public static YoutubeStreamLinkHandlerFactory getInstance(InvidiousInstance invidiousInstance) {
+    public static YoutubeStreamLinkHandlerFactory getInstance(final Instance invidiousInstance) {
         YoutubeStreamLinkHandlerFactory.invidiousInstance = invidiousInstance;
         return instance;
     }

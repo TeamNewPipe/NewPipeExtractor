@@ -1,4 +1,4 @@
-package org.schabi.newpipe.extractor.services.youtube.invidiousextractors;
+package org.schabi.newpipe.extractor.services.youtube.invidious.extractors;
 
 import com.grack.nanojson.JsonArray;
 import com.grack.nanojson.JsonObject;

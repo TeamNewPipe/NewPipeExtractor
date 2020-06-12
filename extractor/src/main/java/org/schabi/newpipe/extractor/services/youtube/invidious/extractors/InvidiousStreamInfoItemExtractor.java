@@ -1,9 +1,9 @@
-package org.schabi.newpipe.extractor.services.youtube.invidiousextractors;
+package org.schabi.newpipe.extractor.services.youtube.invidious.extractors;
 
 import com.grack.nanojson.JsonObject;
 import org.schabi.newpipe.extractor.exceptions.ParsingException;
 import org.schabi.newpipe.extractor.localization.DateWrapper;
-import org.schabi.newpipe.extractor.services.youtube.InvidiousInstance;
+import org.schabi.newpipe.extractor.services.youtube.invidious.InvidiousInstance;
 import org.schabi.newpipe.extractor.stream.StreamInfoItemExtractor;
 import org.schabi.newpipe.extractor.stream.StreamType;
 

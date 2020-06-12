@@ -8,7 +8,7 @@ import org.schabi.newpipe.extractor.MediaFormat;
 import org.schabi.newpipe.extractor.NewPipe;
 import org.schabi.newpipe.extractor.exceptions.ExtractionException;
 import org.schabi.newpipe.extractor.exceptions.ParsingException;
-import org.schabi.newpipe.extractor.services.youtube.invidiousextractors.InvidiousStreamExtractor;
+import org.schabi.newpipe.extractor.services.youtube.invidious.extractors.InvidiousStreamExtractor;
 import org.schabi.newpipe.extractor.stream.*;
 import org.schabi.newpipe.extractor.utils.Utils;
 

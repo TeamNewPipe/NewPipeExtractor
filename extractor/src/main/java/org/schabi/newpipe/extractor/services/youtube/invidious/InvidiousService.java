@@ -1,11 +1,10 @@
-package org.schabi.newpipe.extractor.services.youtube;
+package org.schabi.newpipe.extractor.services.youtube.invidious;
 
 import org.schabi.newpipe.extractor.StreamingService;
 import org.schabi.newpipe.extractor.channel.ChannelExtractor;
 import org.schabi.newpipe.extractor.comments.CommentsExtractor;
 import org.schabi.newpipe.extractor.exceptions.ExtractionException;
 import org.schabi.newpipe.extractor.feed.FeedExtractor;
-import org.schabi.newpipe.extractor.kiosk.KioskExtractor;
 import org.schabi.newpipe.extractor.kiosk.KioskList;
 import org.schabi.newpipe.extractor.linkhandler.LinkHandler;
 import org.schabi.newpipe.extractor.linkhandler.LinkHandlerFactory;
@@ -17,22 +16,13 @@ import org.schabi.newpipe.extractor.localization.ContentCountry;
 import org.schabi.newpipe.extractor.localization.Localization;
 import org.schabi.newpipe.extractor.playlist.PlaylistExtractor;
 import org.schabi.newpipe.extractor.search.SearchExtractor;
-import org.schabi.newpipe.extractor.services.youtube.extractors.YoutubeChannelExtractor;
-import org.schabi.newpipe.extractor.services.youtube.extractors.YoutubeCommentsExtractor;
-import org.schabi.newpipe.extractor.services.youtube.extractors.YoutubeFeedExtractor;
-import org.schabi.newpipe.extractor.services.youtube.extractors.YoutubeMusicSearchExtractor;
-import org.schabi.newpipe.extractor.services.youtube.extractors.YoutubePlaylistExtractor;
-import org.schabi.newpipe.extractor.services.youtube.extractors.YoutubeSearchExtractor;
-import org.schabi.newpipe.extractor.services.youtube.extractors.YoutubeStreamExtractor;
-import org.schabi.newpipe.extractor.services.youtube.extractors.YoutubeSubscriptionExtractor;
 import org.schabi.newpipe.extractor.services.youtube.extractors.YoutubeSuggestionExtractor;
-import org.schabi.newpipe.extractor.services.youtube.extractors.YoutubeTrendingExtractor;
+import org.schabi.newpipe.extractor.services.youtube.invidious.extractors.InvidiousStreamExtractor;
 import org.schabi.newpipe.extractor.services.youtube.linkHandler.YoutubeChannelLinkHandlerFactory;
 import org.schabi.newpipe.extractor.services.youtube.linkHandler.YoutubeCommentsLinkHandlerFactory;
 import org.schabi.newpipe.extractor.services.youtube.linkHandler.YoutubePlaylistLinkHandlerFactory;
 import org.schabi.newpipe.extractor.services.youtube.linkHandler.YoutubeSearchQueryHandlerFactory;
 import org.schabi.newpipe.extractor.services.youtube.linkHandler.YoutubeStreamLinkHandlerFactory;
-import org.schabi.newpipe.extractor.services.youtube.linkHandler.YoutubeTrendingLinkHandlerFactory;
 import org.schabi.newpipe.extractor.stream.StreamExtractor;
 import org.schabi.newpipe.extractor.subscription.SubscriptionExtractor;
 import org.schabi.newpipe.extractor.suggestion.SuggestionExtractor;
@@ -44,42 +34,28 @@ import javax.annotation.Nonnull;
 import static java.util.Arrays.asList;
 import static org.schabi.newpipe.extractor.StreamingService.ServiceInfo.MediaCapability.AUDIO;
 import static org.schabi.newpipe.extractor.StreamingService.ServiceInfo.MediaCapability.COMMENTS;
+import static org.schabi.newpipe.extractor.StreamingService.ServiceInfo.MediaCapability.INSTANCES;
 import static org.schabi.newpipe.extractor.StreamingService.ServiceInfo.MediaCapability.LIVE;
 import static org.schabi.newpipe.extractor.StreamingService.ServiceInfo.MediaCapability.VIDEO;
 
-/*
- * Created by Christian Schabesberger on 23.08.15.
- *
- * Copyright (C) Christian Schabesberger 2018 <chris.schabesberger@mailbox.org>
- * YoutubeService.java is part of NewPipe.
- *
- * NewPipe is free software: you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation, either version 3 of the License, or
- * (at your option) any later version.
- *
- * NewPipe is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- *
- * You should have received a copy of the GNU General Public License
- * along with NewPipe.  If not, see <http://www.gnu.org/licenses/>.
- */
+public class InvidiousService extends StreamingService {
+    public InvidiousService(int id) {
+        this(id, InvidiousInstance.defaultInstance);
+    }
 
-public class YoutubeService extends StreamingService {
-    public YoutubeService(int id) {
-        super(id, "YouTube", asList(AUDIO, VIDEO, LIVE, COMMENTS));
+    public InvidiousService(final int id, final InvidiousInstance instance) {
+        super(id, "Invidious", asList(AUDIO, VIDEO, LIVE, COMMENTS, INSTANCES));
+        setInstance(instance);
     }
 
     @Override
     public String getBaseUrl() {
-        return "https://youtube.com";
+        return getInstance().getUrl();
     }
 
     @Override
     public LinkHandlerFactory getStreamLHFactory() {
-        return YoutubeStreamLinkHandlerFactory.getInstance();
+        return YoutubeStreamLinkHandlerFactory.getInstance(getInstance());
     }
 
     @Override
@@ -99,28 +75,22 @@ public class YoutubeService extends StreamingService {
 
     @Override
     public StreamExtractor getStreamExtractor(LinkHandler linkHandler) {
-        return new YoutubeStreamExtractor(this, linkHandler);
+        return new InvidiousStreamExtractor(this, linkHandler);
     }
 
     @Override
     public ChannelExtractor getChannelExtractor(ListLinkHandler linkHandler) {
-        return new YoutubeChannelExtractor(this, linkHandler);
+        return null;
     }
 
     @Override
     public PlaylistExtractor getPlaylistExtractor(ListLinkHandler linkHandler) {
-        return new YoutubePlaylistExtractor(this, linkHandler);
+        return null;
     }
 
     @Override
     public SearchExtractor getSearchExtractor(SearchQueryHandler query) {
-        final List<String> contentFilters = query.getContentFilters();
-
-        if (contentFilters.size() > 0 && contentFilters.get(0).startsWith("music_")) {
-            return new YoutubeMusicSearchExtractor(this, query);
-        } else {
-            return new YoutubeSearchExtractor(this, query);
-        }
+        return null;
     }
 
     @Override
@@ -130,37 +100,18 @@ public class YoutubeService extends StreamingService {
 
     @Override
     public KioskList getKioskList() throws ExtractionException {
-        KioskList list = new KioskList(this);
-
-        // add kiosks here e.g.:
-        try {
-            list.addKioskEntry(new KioskList.KioskExtractorFactory() {
-                @Override
-                public KioskExtractor createNewKiosk(StreamingService streamingService,
-                                                     String url,
-                                                     String id)
-                        throws ExtractionException {
-                    return new YoutubeTrendingExtractor(YoutubeService.this,
-                            new YoutubeTrendingLinkHandlerFactory().fromUrl(url), id);
-                }
-            }, new YoutubeTrendingLinkHandlerFactory(), "Trending");
-            list.setDefaultKiosk("Trending");
-        } catch (Exception e) {
-            throw new ExtractionException(e);
-        }
-
-        return list;
+        return null;
     }
 
     @Override
     public SubscriptionExtractor getSubscriptionExtractor() {
-        return new YoutubeSubscriptionExtractor(this);
+        return null;
     }
 
     @Nonnull
     @Override
     public FeedExtractor getFeedExtractor(final String channelUrl) throws ExtractionException {
-        return new YoutubeFeedExtractor(this, getChannelLHFactory().fromUrl(channelUrl));
+        return null;
     }
 
     @Override
@@ -169,9 +120,8 @@ public class YoutubeService extends StreamingService {
     }
 
     @Override
-    public CommentsExtractor getCommentsExtractor(ListLinkHandler urlIdHandler)
-            throws ExtractionException {
-        return new YoutubeCommentsExtractor(this, urlIdHandler);
+    public CommentsExtractor getCommentsExtractor(ListLinkHandler urlIdHandler) throws ExtractionException {
+        return null;
     }
 
     /*//////////////////////////////////////////////////////////////////////////

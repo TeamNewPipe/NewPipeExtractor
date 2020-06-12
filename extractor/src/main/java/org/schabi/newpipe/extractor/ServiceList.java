@@ -3,8 +3,8 @@ package org.schabi.newpipe.extractor;
 import org.schabi.newpipe.extractor.services.media_ccc.MediaCCCService;
 import org.schabi.newpipe.extractor.services.peertube.PeertubeService;
 import org.schabi.newpipe.extractor.services.soundcloud.SoundcloudService;
-import org.schabi.newpipe.extractor.services.youtube.InvidiousInstance;
 import org.schabi.newpipe.extractor.services.youtube.YoutubeService;
+import org.schabi.newpipe.extractor.services.youtube.invidious.InvidiousService;
 
 import java.util.Arrays;
 import java.util.Collections;
@@ -37,10 +37,10 @@ public final class ServiceList {
     }
 
     public static final YoutubeService YouTube;
+    public static final InvidiousService Invidious;
     public static final SoundcloudService SoundCloud;
     public static final MediaCCCService MediaCCC;
     public static final PeertubeService PeerTube;
-    public static final YoutubeService Invidious;
 
     /**
      * When creating a new service, put this service in the end of this list,
@@ -48,11 +48,18 @@ public final class ServiceList {
      */
     private static final List<StreamingService> SERVICES = Collections.unmodifiableList(
             Arrays.asList(
-                    Invidious = new YoutubeService(0, InvidiousInstance.defaultInstance),
                     YouTube = new YoutubeService(0),
                     SoundCloud = new SoundcloudService(1),
                     MediaCCC = new MediaCCCService(2),
                     PeerTube = new PeertubeService(3)
+            ));
+
+    private static final List<StreamingService> SERVICES_WITH_INVIDIOUS = Collections.unmodifiableList(
+            Arrays.asList(
+                    Invidious = new InvidiousService(0),
+                    SoundCloud,
+                    MediaCCC,
+                    PeerTube
             ));
 
     /**
@@ -61,6 +68,10 @@ public final class ServiceList {
      * @return a unmodifiable list of all the supported services
      */
     public static List<StreamingService> all() {
-        return SERVICES;
+        if (NewPipe.getUseInvidiousForYoutube()) {
+            return SERVICES_WITH_INVIDIOUS;
+        } else {
+            return SERVICES;
+        }
     }
 }
