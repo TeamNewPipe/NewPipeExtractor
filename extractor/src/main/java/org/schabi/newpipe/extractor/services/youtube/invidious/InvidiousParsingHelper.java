@@ -18,6 +18,7 @@ package org.schabi.newpipe.extractor.services.youtube.invidious;
  * along with NewPipe Extractor.  If not, see <https://www.gnu.org/licenses/>.
  */
 
+import com.grack.nanojson.JsonArray;
 import com.grack.nanojson.JsonObject;
 import com.grack.nanojson.JsonParser;
 import com.grack.nanojson.JsonParserException;
@@ -45,6 +46,26 @@ public class InvidiousParsingHelper {
 
         try {
             return JsonParser.object().from(response.responseBody());
+        } catch (JsonParserException e) {
+            throw new ExtractionException("Could not parse json", e);
+        }
+    }
+
+    /**
+     * Used to check HTTP code and handle Json parsing.
+     *
+     * @param response the response got from the service
+     * @param apiUrl   the url used to call the service
+     * @return a valid JsonArray
+     * @throws ExtractionException if the HTTP code indicate an error or the json parsing went wrong.
+     */
+    public static JsonArray getValidJsonArrayFromResponse(final Response response, final String apiUrl) throws ExtractionException {
+        if (response.responseCode() >= 400) {
+            throw new ExtractionException("Could not get page " + apiUrl + " (" + response.responseCode() + " : " + response.responseMessage());
+        }
+
+        try {
+            return JsonParser.array().from(response.responseBody());
         } catch (JsonParserException e) {
             throw new ExtractionException("Could not parse json", e);
         }

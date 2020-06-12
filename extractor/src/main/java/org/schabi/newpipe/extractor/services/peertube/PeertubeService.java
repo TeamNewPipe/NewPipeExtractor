@@ -1,5 +1,6 @@
 package org.schabi.newpipe.extractor.services.peertube;
 
+import org.schabi.newpipe.extractor.Instance;
 import org.schabi.newpipe.extractor.StreamingService;
 import org.schabi.newpipe.extractor.channel.ChannelExtractor;
 import org.schabi.newpipe.extractor.comments.CommentsExtractor;
@@ -59,11 +60,12 @@ import static org.schabi.newpipe.extractor.StreamingService.ServiceInfo.MediaCap
  * PeertubeService, uses documented API: https://docs.joinpeertube.org/api-rest-reference.html
  */
 public class PeertubeService extends StreamingService {
+
     public PeertubeService(final int id) {
-        this(id, PeertubeInstance.defaultInstance);
+        this(id, PeertubeInstance.getDefaultInstance());
     }
 
-    public PeertubeService(final int id, final PeertubeInstance instance) {
+    public PeertubeService(final int id, final Instance instance) {
         super(id, "PeerTube", asList(VIDEO, COMMENTS, INSTANCES));
         setInstance(instance);
     }

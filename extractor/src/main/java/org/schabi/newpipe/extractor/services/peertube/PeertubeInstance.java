@@ -13,13 +13,14 @@ import org.schabi.newpipe.extractor.exceptions.ReCaptchaException;
 import org.schabi.newpipe.extractor.utils.JsonUtils;
 import org.schabi.newpipe.extractor.utils.Utils;
 
+import javax.annotation.Nonnull;
 import java.io.IOException;
 
 public class PeertubeInstance implements Instance {
 
     private final String url;
     private String name;
-    public static final PeertubeInstance defaultInstance = new PeertubeInstance("https://framatube.org", "FramaTube");
+    private static final PeertubeInstance defaultInstance = new PeertubeInstance("https://framatube.org", "FramaTube");
 
     public PeertubeInstance(String url) {
         this(url, "PeerTube");
@@ -30,6 +31,7 @@ public class PeertubeInstance implements Instance {
         this.name = name;
     }
 
+    @Nonnull
     public String getUrl() {
         return url;
     }
@@ -64,6 +66,10 @@ public class PeertubeInstance implements Instance {
         } catch (JsonParserException | ParsingException e) {
             throw new InvalidInstanceException("unable to parse instance config", e);
         }
+    }
+
+    public static Instance getDefaultInstance() {
+        return defaultInstance;
     }
 
     public String getName() {

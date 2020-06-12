@@ -1,7 +1,6 @@
 package org.schabi.newpipe.extractor.services.youtube.invidious;
 
 import org.junit.BeforeClass;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.schabi.newpipe.DownloaderTestImpl;
 import org.schabi.newpipe.extractor.MediaFormat;
@@ -161,7 +160,6 @@ public class InvidiousStreamExtractorTest {
             assertTrue(extractor.getDashMpdUrl().endsWith("api/manifest/dash/id/YQHsXMglC9A"));
         }
 
-        @Ignore
         @Test
         public void testGetRelatedVideos() throws ExtractionException {
             final StreamInfoItemsCollector relatedVideos = extractor.getRelatedStreams();

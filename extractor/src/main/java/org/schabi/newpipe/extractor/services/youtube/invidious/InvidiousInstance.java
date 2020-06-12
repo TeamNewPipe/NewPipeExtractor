@@ -3,7 +3,6 @@ package org.schabi.newpipe.extractor.services.youtube.invidious;
 import com.grack.nanojson.JsonObject;
 import com.grack.nanojson.JsonParser;
 import com.grack.nanojson.JsonParserException;
-
 import org.schabi.newpipe.extractor.Instance;
 import org.schabi.newpipe.extractor.NewPipe;
 import org.schabi.newpipe.extractor.downloader.Downloader;
@@ -14,11 +13,11 @@ import org.schabi.newpipe.extractor.exceptions.ReCaptchaException;
 import org.schabi.newpipe.extractor.utils.JsonUtils;
 import org.schabi.newpipe.extractor.utils.Utils;
 
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URL;
-
-import javax.annotation.Nullable;
 
 import static org.schabi.newpipe.extractor.services.youtube.YoutubeParsingHelper.isHooktubeURL;
 import static org.schabi.newpipe.extractor.services.youtube.YoutubeParsingHelper.isYoutubeURL;
@@ -46,8 +45,7 @@ public class InvidiousInstance implements Instance {
     private final String url;
     private String name;
 
-    public static final InvidiousInstance defaultInstance = new InvidiousInstance("http://192.168.1.11:3000", "invidious");
-    // todo: change this. local instance because invidio.us is semi-blocked (no metadata)
+    private static final InvidiousInstance defaultInstance = new InvidiousInstance("https://invidio.us", "invidious");
 
     public InvidiousInstance(String url, String name) {
         this.url = url;
@@ -64,6 +62,7 @@ public class InvidiousInstance implements Instance {
         return name;
     }
 
+    @Nonnull
     @Override
     public String getUrl() {
         return url;
@@ -112,4 +111,9 @@ public class InvidiousInstance implements Instance {
             throw new InvalidInstanceException("unable to parse instance config", e);
         }
     }
+
+    public static Instance getDefaultInstance() {
+        return defaultInstance;
+    }
+
 }

@@ -27,12 +27,12 @@ import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.Date;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
+
+import static org.schabi.newpipe.extractor.utils.Utils.isBlank;
 
 /*
  * Copyright (C) 2020 Team NewPipe <tnp@newpipe.schabi.org>
@@ -85,7 +85,12 @@ public class InvidiousStreamExtractor extends StreamExtractor {
     @Nonnull
     @Override
     public Description getDescription() {
-        return new Description(json.getString("descriptionHtml"), Description.HTML);
+        final String descriptionHtml = json.getString("descriptionHtml");
+        if (!isBlank(descriptionHtml) || descriptionHtml.equals("<p></p>")) {
+            return new Description(descriptionHtml, Description.HTML);
+        }
+
+        return new Description(json.getString("description"), Description.PLAIN_TEXT);
     }
 
     @Override
@@ -263,19 +268,16 @@ public class InvidiousStreamExtractor extends StreamExtractor {
 
     @Override
     public StreamInfoItemsCollector getRelatedStreams() throws ExtractionException {
-        /*
         try {
             final StreamInfoItemsCollector collector = new StreamInfoItemsCollector(getServiceId());
             final JsonArray relatedStreams = json.getArray("recommendedVideos");
             for (Object o : relatedStreams) {
-                collector.commit(new InvidiousStreamInfoItemExtractor((JsonObject) o, new InvidiousInstance(baseUrl)));
+                collector.commit(new InvidiousStreamInfoItemExtractor((JsonObject) o, baseUrl));
             }
             return collector;
         } catch (Exception e) {
             throw new ParsingException("Could not get related videos", e);
         }
-        */
-        return null;
     }
 
     @Override
@@ -304,7 +306,7 @@ public class InvidiousStreamExtractor extends StreamExtractor {
     @Nonnull
     @Override
     public String getLicence() {
-        return null;
+        return "";
     }
 
     @Nullable
@@ -322,21 +324,17 @@ public class InvidiousStreamExtractor extends StreamExtractor {
     @Nonnull
     @Override
     public String getSupportInfo() {
-        return null;
+        return "";
     }
 
     @Override
     public void onFetchPage(@Nonnull Downloader downloader) throws IOException, ExtractionException {
         final String apiUrl = baseUrl + "/api/v1/videos/" + getId() +
-                "?fields=title,descriptionHtml,viewCount,likeCount,dislikeCount,genre,authorUrl,author," +
-                "authorThumbnails,lengthSeconds,authorThumbnails,hlsUrl,captions,isListed,dashUrl," +
-                "publishedText,published,isFamilyFriendly,keywords,adaptiveFormats,formatStreams,recommendedVideos" +
-                "&region=" + getExtractorContentCountry().getCountryCode();
+                "?region=" + getExtractorContentCountry().getCountryCode();
 
         final Response response = downloader.get(apiUrl);
 
         json = InvidiousParsingHelper.getValidJsonObjectFromResponse(response, apiUrl);
-
     }
 
     @Nonnull

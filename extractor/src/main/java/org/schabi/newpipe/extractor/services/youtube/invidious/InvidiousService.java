@@ -1,5 +1,6 @@
 package org.schabi.newpipe.extractor.services.youtube.invidious;
 
+import org.schabi.newpipe.extractor.Instance;
 import org.schabi.newpipe.extractor.StreamingService;
 import org.schabi.newpipe.extractor.channel.ChannelExtractor;
 import org.schabi.newpipe.extractor.comments.CommentsExtractor;
@@ -16,6 +17,7 @@ import org.schabi.newpipe.extractor.localization.ContentCountry;
 import org.schabi.newpipe.extractor.localization.Localization;
 import org.schabi.newpipe.extractor.playlist.PlaylistExtractor;
 import org.schabi.newpipe.extractor.search.SearchExtractor;
+import org.schabi.newpipe.extractor.services.youtube.invidious.extractors.InvidiousChannelExtractor;
 import org.schabi.newpipe.extractor.services.youtube.invidious.extractors.InvidiousCommentsExtractor;
 import org.schabi.newpipe.extractor.services.youtube.invidious.extractors.InvidiousStreamExtractor;
 import org.schabi.newpipe.extractor.services.youtube.invidious.extractors.InvidiousSuggestionExtractor;
@@ -62,10 +64,10 @@ import static org.schabi.newpipe.extractor.StreamingService.ServiceInfo.MediaCap
 public class InvidiousService extends StreamingService {
 
     public InvidiousService(int id) {
-        this(id, InvidiousInstance.defaultInstance);
+        this(id, InvidiousInstance.getDefaultInstance());
     }
 
-    public InvidiousService(final int id, final InvidiousInstance instance) {
+    public InvidiousService(final int id, final Instance instance) {
         super(id, "Invidious", asList(AUDIO, VIDEO, LIVE, COMMENTS, INSTANCES));
         setInstance(instance);
     }
@@ -102,7 +104,7 @@ public class InvidiousService extends StreamingService {
 
     @Override
     public ChannelExtractor getChannelExtractor(ListLinkHandler linkHandler) {
-        return null;
+        return new InvidiousChannelExtractor(this, linkHandler);
     }
 
     @Override
