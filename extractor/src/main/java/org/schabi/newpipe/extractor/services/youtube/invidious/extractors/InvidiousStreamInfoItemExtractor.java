@@ -55,7 +55,8 @@ public class InvidiousStreamInfoItemExtractor implements StreamInfoItemExtractor
 
     @Override
     public long getDuration() {
-        return json.getNumber("lengthSeconds").longValue();
+        final Number number = json.getNumber("lengthSeconds");
+        return number == null ? -1 : number.longValue();
     }
 
     @Override
@@ -117,7 +118,7 @@ public class InvidiousStreamInfoItemExtractor implements StreamInfoItemExtractor
     }
 
     @Override
-    public String getThumbnailUrl() throws ParsingException {
+    public String getThumbnailUrl() {
         return json.getArray("videoThumbnails").getObject(0).getString("url");
     }
 }

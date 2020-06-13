@@ -19,6 +19,7 @@ import org.schabi.newpipe.extractor.playlist.PlaylistExtractor;
 import org.schabi.newpipe.extractor.search.SearchExtractor;
 import org.schabi.newpipe.extractor.services.youtube.invidious.extractors.InvidiousChannelExtractor;
 import org.schabi.newpipe.extractor.services.youtube.invidious.extractors.InvidiousCommentsExtractor;
+import org.schabi.newpipe.extractor.services.youtube.invidious.extractors.InvidiousPlaylistExtractor;
 import org.schabi.newpipe.extractor.services.youtube.invidious.extractors.InvidiousStreamExtractor;
 import org.schabi.newpipe.extractor.services.youtube.invidious.extractors.InvidiousSuggestionExtractor;
 import org.schabi.newpipe.extractor.services.youtube.linkHandler.YoutubeChannelLinkHandlerFactory;
@@ -109,7 +110,7 @@ public class InvidiousService extends StreamingService {
 
     @Override
     public PlaylistExtractor getPlaylistExtractor(ListLinkHandler linkHandler) {
-        return null;
+        return new InvidiousPlaylistExtractor(this, linkHandler);
     }
 
     @Override
