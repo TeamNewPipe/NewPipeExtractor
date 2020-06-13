@@ -42,9 +42,8 @@ public class PeertubeStreamInfoItemExtractor implements StreamInfoItemExtractor 
     }
 
     @Override
-    public long getViewCount() throws ParsingException {
-        final Number value = JsonUtils.getNumber(item, "views");
-        return value.longValue();
+    public long getViewCount() {
+        return item.getLong("views");
     }
 
     @Override
@@ -82,8 +81,7 @@ public class PeertubeStreamInfoItemExtractor implements StreamInfoItemExtractor 
     }
 
     @Override
-    public long getDuration() throws ParsingException {
-        final Number value = JsonUtils.getNumber(item, "duration");
-        return value.longValue();
+    public long getDuration() {
+        return item.getLong("duration");
     }
 }

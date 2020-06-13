@@ -1,10 +1,14 @@
 package org.schabi.newpipe.extractor.services.peertube;
 
+import com.grack.nanojson.JsonArray;
 import com.grack.nanojson.JsonObject;
 
+import org.schabi.newpipe.extractor.InfoItemsCollector;
 import org.schabi.newpipe.extractor.Page;
 import org.schabi.newpipe.extractor.exceptions.ContentNotAvailableException;
 import org.schabi.newpipe.extractor.exceptions.ParsingException;
+import org.schabi.newpipe.extractor.services.peertube.extractors.PeertubeStreamInfoItemExtractor;
+import org.schabi.newpipe.extractor.utils.JsonUtils;
 import org.schabi.newpipe.extractor.utils.Parser;
 import org.schabi.newpipe.extractor.utils.Utils;
 
@@ -64,6 +68,23 @@ public class PeertubeParsingHelper {
             return null;
         } else {
             return new Page(prevPageUrl.replace(START_KEY + "=" + prevStart, START_KEY + "=" + nextStart));
+        }
+    }
+
+    public static void collectStreamsFrom(final InfoItemsCollector collector, final JsonObject json, final String baseUrl) throws ParsingException {
+        final JsonArray contents;
+        try {
+            contents = (JsonArray) JsonUtils.getValue(json, "data");
+        } catch (Exception e) {
+            throw new ParsingException("Unable to extract list info", e);
+        }
+
+        for (final Object c : contents) {
+            if (c instanceof JsonObject) {
+                final JsonObject item = (JsonObject) c;
+                final PeertubeStreamInfoItemExtractor extractor = new PeertubeStreamInfoItemExtractor(item, baseUrl);
+                collector.commit(extractor);
+            }
         }
     }
 }

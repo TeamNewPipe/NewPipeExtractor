@@ -11,6 +11,8 @@ import org.schabi.newpipe.extractor.localization.DateWrapper;
 import org.schabi.newpipe.extractor.services.peertube.PeertubeParsingHelper;
 import org.schabi.newpipe.extractor.utils.JsonUtils;
 
+import java.util.Objects;
+
 public class PeertubeCommentsInfoItemExtractor implements CommentsInfoItemExtractor {
     private final JsonObject item;
     private final String url;
@@ -71,9 +73,8 @@ public class PeertubeCommentsInfoItemExtractor implements CommentsInfoItemExtrac
     }
 
     @Override
-    public String getCommentId() throws ParsingException {
-        final Number value = JsonUtils.getNumber(item, "id");
-        return value.toString();
+    public String getCommentId() {
+        return Objects.toString(item.getLong("id"), null);
     }
 
     @Override

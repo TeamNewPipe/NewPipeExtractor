@@ -1,6 +1,5 @@
 package org.schabi.newpipe.extractor.services.peertube.extractors;
 
-import com.grack.nanojson.JsonArray;
 import com.grack.nanojson.JsonObject;
 import com.grack.nanojson.JsonParser;
 
@@ -15,7 +14,6 @@ import org.schabi.newpipe.extractor.linkhandler.ListLinkHandler;
 import org.schabi.newpipe.extractor.services.peertube.PeertubeParsingHelper;
 import org.schabi.newpipe.extractor.stream.StreamInfoItem;
 import org.schabi.newpipe.extractor.stream.StreamInfoItemsCollector;
-import org.schabi.newpipe.extractor.utils.JsonUtils;
 import org.schabi.newpipe.extractor.utils.Utils;
 
 import java.io.IOException;
@@ -25,6 +23,7 @@ import javax.annotation.Nonnull;
 import static org.schabi.newpipe.extractor.services.peertube.PeertubeParsingHelper.COUNT_KEY;
 import static org.schabi.newpipe.extractor.services.peertube.PeertubeParsingHelper.ITEMS_PER_PAGE;
 import static org.schabi.newpipe.extractor.services.peertube.PeertubeParsingHelper.START_KEY;
+import static org.schabi.newpipe.extractor.services.peertube.PeertubeParsingHelper.collectStreamsFrom;
 import static org.schabi.newpipe.extractor.utils.Utils.isNullOrEmpty;
 
 public class PeertubeTrendingExtractor extends KioskExtractor<StreamInfoItem> {
@@ -41,24 +40,6 @@ public class PeertubeTrendingExtractor extends KioskExtractor<StreamInfoItem> {
     public InfoItemsPage<StreamInfoItem> getInitialPage() throws IOException, ExtractionException {
         final String pageUrl = getUrl() + "&" + START_KEY + "=0&" + COUNT_KEY + "=" + ITEMS_PER_PAGE;
         return getPage(new Page(pageUrl));
-    }
-
-    private void collectStreamsFrom(final StreamInfoItemsCollector collector, final JsonObject json) throws ParsingException {
-        final JsonArray contents;
-        try {
-            contents = (JsonArray) JsonUtils.getValue(json, "data");
-        } catch (Exception e) {
-            throw new ParsingException("Unable to extract kiosk info", e);
-        }
-
-        final String baseUrl = getBaseUrl();
-        for (final Object c : contents) {
-            if (c instanceof JsonObject) {
-                final JsonObject item = (JsonObject) c;
-                final PeertubeStreamInfoItemExtractor extractor = new PeertubeStreamInfoItemExtractor(item, baseUrl);
-                collector.commit(extractor);
-            }
-        }
     }
 
     @Override
@@ -80,10 +61,10 @@ public class PeertubeTrendingExtractor extends KioskExtractor<StreamInfoItem> {
 
         if (json != null) {
             PeertubeParsingHelper.validate(json);
-            final long total = JsonUtils.getNumber(json, "total").longValue();
+            final long total = json.getLong("total");
 
             final StreamInfoItemsCollector collector = new StreamInfoItemsCollector(getServiceId());
-            collectStreamsFrom(collector, json);
+            collectStreamsFrom(collector, json, getBaseUrl());
 
             return new InfoItemsPage<>(collector, PeertubeParsingHelper.getNextPage(page.getUrl(), total));
         } else {

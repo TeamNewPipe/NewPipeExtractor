@@ -4,6 +4,8 @@ import java.io.Serializable;
 import java.util.List;
 import java.util.Map;
 
+import static org.schabi.newpipe.extractor.utils.Utils.isNullOrEmpty;
+
 public class Page implements Serializable {
     private final String url;
     private final List<String> ids;
@@ -41,5 +43,10 @@ public class Page implements Serializable {
 
     public Map<String, String> getCookies() {
         return cookies;
+    }
+
+    public static boolean isValid(final Page page) {
+        return page != null && (!isNullOrEmpty(page.getUrl())
+                || !isNullOrEmpty(page.getIds()));
     }
 }

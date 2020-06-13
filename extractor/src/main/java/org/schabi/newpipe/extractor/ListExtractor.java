@@ -2,14 +2,12 @@ package org.schabi.newpipe.extractor;
 
 import org.schabi.newpipe.extractor.exceptions.ExtractionException;
 import org.schabi.newpipe.extractor.linkhandler.ListLinkHandler;
-import org.schabi.newpipe.extractor.utils.Utils;
 
-import javax.annotation.Nonnull;
 import java.io.IOException;
 import java.util.Collections;
 import java.util.List;
 
-import static org.schabi.newpipe.extractor.utils.Utils.isNullOrEmpty;
+import javax.annotation.Nonnull;
 
 
 /**
@@ -110,8 +108,7 @@ public abstract class ListExtractor<R extends InfoItem> extends Extractor {
         }
 
         public boolean hasNextPage() {
-            return nextPage != null && (!isNullOrEmpty(nextPage.getUrl())
-                    || !isNullOrEmpty(nextPage.getIds()));
+            return Page.isValid(nextPage);
         }
 
         public List<T> getItems() {

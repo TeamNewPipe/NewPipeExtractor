@@ -103,9 +103,8 @@ public class PeertubeStreamExtractor extends StreamExtractor {
     }
 
     @Override
-    public long getLength() throws ParsingException {
-        final Number value = JsonUtils.getNumber(json, "duration");
-        return value.longValue();
+    public long getLength() {
+        return json.getLong("duration");
     }
 
     @Override
@@ -115,21 +114,18 @@ public class PeertubeStreamExtractor extends StreamExtractor {
     }
 
     @Override
-    public long getViewCount() throws ParsingException {
-        final Number value = JsonUtils.getNumber(json, "views");
-        return value.longValue();
+    public long getViewCount() {
+        return json.getLong("views");
     }
 
     @Override
-    public long getLikeCount() throws ParsingException {
-        final Number value = JsonUtils.getNumber(json, "likes");
-        return value.longValue();
+    public long getLikeCount() {
+        return json.getLong("likes");
     }
 
     @Override
-    public long getDislikeCount() throws ParsingException {
-        final Number value = JsonUtils.getNumber(json, "dislikes");
-        return value.longValue();
+    public long getDislikeCount() {
+        return json.getLong("dislikes");
     }
 
     @Override
@@ -222,7 +218,7 @@ public class PeertubeStreamExtractor extends StreamExtractor {
 
     @Override
     public List<VideoStream> getVideoOnlyStreams() {
-        return null;
+        return Collections.emptyList();
     }
 
     @Override

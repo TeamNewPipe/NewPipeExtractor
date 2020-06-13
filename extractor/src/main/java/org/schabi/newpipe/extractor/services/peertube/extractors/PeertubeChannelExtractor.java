@@ -1,6 +1,5 @@
 package org.schabi.newpipe.extractor.services.peertube.extractors;
 
-import com.grack.nanojson.JsonArray;
 import com.grack.nanojson.JsonObject;
 import com.grack.nanojson.JsonParser;
 import com.grack.nanojson.JsonParserException;
@@ -24,6 +23,7 @@ import java.io.IOException;
 import static org.schabi.newpipe.extractor.services.peertube.PeertubeParsingHelper.COUNT_KEY;
 import static org.schabi.newpipe.extractor.services.peertube.PeertubeParsingHelper.ITEMS_PER_PAGE;
 import static org.schabi.newpipe.extractor.services.peertube.PeertubeParsingHelper.START_KEY;
+import static org.schabi.newpipe.extractor.services.peertube.PeertubeParsingHelper.collectStreamsFrom;
 import static org.schabi.newpipe.extractor.utils.Utils.isNullOrEmpty;
 
 
@@ -58,9 +58,8 @@ public class PeertubeChannelExtractor extends ChannelExtractor {
     }
 
     @Override
-    public long getSubscriberCount() throws ParsingException {
-        final Number number = JsonUtils.getNumber(json, "followersCount");
-        return number.longValue();
+    public long getSubscriberCount() {
+        return json.getLong("followersCount");
     }
 
     @Override
@@ -99,23 +98,6 @@ public class PeertubeChannelExtractor extends ChannelExtractor {
         return getPage(new Page(pageUrl));
     }
 
-    private void collectStreamsFrom(final StreamInfoItemsCollector collector, final JsonObject json) throws ParsingException {
-        final JsonArray contents;
-        try {
-            contents = (JsonArray) JsonUtils.getValue(json, "data");
-        } catch (Exception e) {
-            throw new ParsingException("Unable to extract channel streams", e);
-        }
-
-        for (final Object c : contents) {
-            if (c instanceof JsonObject) {
-                final JsonObject item = (JsonObject) c;
-                final PeertubeStreamInfoItemExtractor extractor = new PeertubeStreamInfoItemExtractor(item, baseUrl);
-                collector.commit(extractor);
-            }
-        }
-    }
-
     @Override
     public InfoItemsPage<StreamInfoItem> getPage(final Page page) throws IOException, ExtractionException {
         if (page == null || isNullOrEmpty(page.getUrl())) {
@@ -135,10 +117,10 @@ public class PeertubeChannelExtractor extends ChannelExtractor {
 
         if (json != null) {
             PeertubeParsingHelper.validate(json);
-            final long total = JsonUtils.getNumber(json, "total").longValue();
+            final long total = json.getLong("total");
 
             final StreamInfoItemsCollector collector = new StreamInfoItemsCollector(getServiceId());
-            collectStreamsFrom(collector, json);
+            collectStreamsFrom(collector, json, getBaseUrl());
 
             return new InfoItemsPage<>(collector, PeertubeParsingHelper.getNextPage(page.getUrl(), total));
         } else {

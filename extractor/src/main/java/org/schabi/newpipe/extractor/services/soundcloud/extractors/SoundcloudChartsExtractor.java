@@ -40,8 +40,8 @@ public class SoundcloudChartsExtractor extends KioskExtractor<StreamInfoItem> {
             throw new IllegalArgumentException("Page doesn't contain an URL");
         }
 
-        StreamInfoItemsCollector collector = new StreamInfoItemsCollector(getServiceId());
-        String nextPageUrl = SoundcloudParsingHelper.getStreamsFromApi(collector, page.getUrl(), true);
+        final StreamInfoItemsCollector collector = new StreamInfoItemsCollector(getServiceId());
+        final String nextPageUrl = SoundcloudParsingHelper.getStreamsFromApi(collector, page.getUrl(), true);
 
         return new InfoItemsPage<>(collector, new Page(nextPageUrl));
     }
@@ -49,7 +49,7 @@ public class SoundcloudChartsExtractor extends KioskExtractor<StreamInfoItem> {
     @Nonnull
     @Override
     public InfoItemsPage<StreamInfoItem> getInitialPage() throws IOException, ExtractionException {
-        StreamInfoItemsCollector collector = new StreamInfoItemsCollector(getServiceId());
+        final StreamInfoItemsCollector collector = new StreamInfoItemsCollector(getServiceId());
 
         String apiUrl = "https://api-v2.soundcloud.com/charts" +
                 "?genre=soundcloud:genres:all-music" +
@@ -61,10 +61,10 @@ public class SoundcloudChartsExtractor extends KioskExtractor<StreamInfoItem> {
             apiUrl += "&kind=trending";
         }
 
-        String contentCountry = SoundCloud.getContentCountry().getCountryCode();
+        final String contentCountry = SoundCloud.getContentCountry().getCountryCode();
         apiUrl += "&region=soundcloud:regions:" + contentCountry;
 
-        String nextPageUrl = SoundcloudParsingHelper.getStreamsFromApi(collector, apiUrl, true);
+        final String nextPageUrl = SoundcloudParsingHelper.getStreamsFromApi(collector, apiUrl, true);
 
         return new InfoItemsPage<>(collector, new Page(nextPageUrl));
     }

@@ -73,7 +73,7 @@ public class YoutubeCommentsInfoItemExtractor implements CommentsInfoItemExtract
     @Override
     public int getLikeCount() throws ParsingException {
         try {
-            return JsonUtils.getNumber(json, "likeCount").intValue();
+            return json.getInt("likeCount");
         } catch (Exception e) {
             throw new ParsingException("Could not get like count", e);
         }

@@ -81,6 +81,6 @@ public class SoundcloudPlaylistInfoItemExtractor implements PlaylistInfoItemExtr
 
     @Override
     public long getStreamCount() {
-        return itemObject.getNumber("track_count", 0).longValue();
+        return itemObject.getLong("track_count");
     }
 }

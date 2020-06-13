@@ -69,7 +69,7 @@ public class PeertubeCommentsExtractor extends CommentsExtractor {
 
         if (json != null) {
             PeertubeParsingHelper.validate(json);
-            final long total = JsonUtils.getNumber(json, "total").longValue();
+            final long total = json.getLong("total");
 
             final CommentsInfoItemsCollector collector = new CommentsInfoItemsCollector(getServiceId());
             collectCommentsFrom(collector, json);

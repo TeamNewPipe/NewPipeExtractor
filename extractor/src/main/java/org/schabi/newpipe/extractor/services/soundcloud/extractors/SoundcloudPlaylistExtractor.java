@@ -113,7 +113,7 @@ public class SoundcloudPlaylistExtractor extends PlaylistExtractor {
 
     @Override
     public long getStreamCount() {
-        return playlist.getNumber("track_count", 0).longValue();
+        return playlist.getLong("track_count");
     }
 
     @Nonnull
