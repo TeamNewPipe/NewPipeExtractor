@@ -73,7 +73,7 @@ public abstract class ListLinkHandlerFactory extends LinkHandlerFactory {
      * however it should not be overridden by the actual implementation.
      *
      * @param id
-     * @return the url coresponding to id without any filters applied
+     * @return the url corresponding to id without any filters applied
      */
     public String getUrl(String id) throws ParsingException {
         return getUrl(id, new ArrayList<String>(0), "");
@@ -85,7 +85,7 @@ public abstract class ListLinkHandlerFactory extends LinkHandlerFactory {
     }
 
     /**
-     * Will returns content filter the corresponding extractor can handle like "channels", "videos", "music", etc.
+     * Will return content filter the corresponding extractor can handle like "channels", "videos", "music", etc.
      *
      * @return filter that can be applied when building a query for getting a list
      */
@@ -94,7 +94,7 @@ public abstract class ListLinkHandlerFactory extends LinkHandlerFactory {
     }
 
     /**
-     * Will returns sort filter the corresponding extractor can handle like "A-Z", "oldest first", "size", etc.
+     * Will return sort filter the corresponding extractor can handle like "A-Z", "oldest first", "size", etc.
      *
      * @return filter that can be applied when building a query for getting a list
      */

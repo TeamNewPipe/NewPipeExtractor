@@ -19,13 +19,15 @@ import org.schabi.newpipe.extractor.playlist.PlaylistExtractor;
 import org.schabi.newpipe.extractor.search.SearchExtractor;
 import org.schabi.newpipe.extractor.services.youtube.invidious.extractors.InvidiousChannelExtractor;
 import org.schabi.newpipe.extractor.services.youtube.invidious.extractors.InvidiousCommentsExtractor;
+import org.schabi.newpipe.extractor.services.youtube.invidious.extractors.InvidiousFeedExtractor;
 import org.schabi.newpipe.extractor.services.youtube.invidious.extractors.InvidiousPlaylistExtractor;
+import org.schabi.newpipe.extractor.services.youtube.invidious.extractors.InvidiousSearchExtractor;
 import org.schabi.newpipe.extractor.services.youtube.invidious.extractors.InvidiousStreamExtractor;
 import org.schabi.newpipe.extractor.services.youtube.invidious.extractors.InvidiousSuggestionExtractor;
+import org.schabi.newpipe.extractor.services.youtube.invidious.linkHandler.InvidiousSearchQueryHandlerFactory;
 import org.schabi.newpipe.extractor.services.youtube.linkHandler.YoutubeChannelLinkHandlerFactory;
 import org.schabi.newpipe.extractor.services.youtube.linkHandler.YoutubeCommentsLinkHandlerFactory;
 import org.schabi.newpipe.extractor.services.youtube.linkHandler.YoutubePlaylistLinkHandlerFactory;
-import org.schabi.newpipe.extractor.services.youtube.linkHandler.YoutubeSearchQueryHandlerFactory;
 import org.schabi.newpipe.extractor.services.youtube.linkHandler.YoutubeStreamLinkHandlerFactory;
 import org.schabi.newpipe.extractor.stream.StreamExtractor;
 import org.schabi.newpipe.extractor.subscription.SubscriptionExtractor;
@@ -95,7 +97,7 @@ public class InvidiousService extends StreamingService {
 
     @Override
     public SearchQueryHandlerFactory getSearchQHFactory() {
-        return YoutubeSearchQueryHandlerFactory.getInstance();
+        return InvidiousSearchQueryHandlerFactory.getInstance(getBaseUrl());
     }
 
     @Override
@@ -115,7 +117,13 @@ public class InvidiousService extends StreamingService {
 
     @Override
     public SearchExtractor getSearchExtractor(SearchQueryHandler query) {
-        return null;
+        final List<String> contentFilters = query.getContentFilters();
+
+        if (contentFilters.size() > 0 && contentFilters.get(0).startsWith("music_")) {
+            return null; // ?
+        } else {
+            return new InvidiousSearchExtractor(this, query);
+        }
     }
 
     @Override
@@ -130,13 +138,14 @@ public class InvidiousService extends StreamingService {
 
     @Override
     public SubscriptionExtractor getSubscriptionExtractor() {
+        // see https://github.com/omarroth/invidious/issues/473
         return null;
     }
 
     @Nonnull
     @Override
     public FeedExtractor getFeedExtractor(final String channelUrl) throws ExtractionException {
-        return null;
+        return new InvidiousFeedExtractor(this, getChannelLHFactory().fromUrl(channelUrl));
     }
 
     @Override
