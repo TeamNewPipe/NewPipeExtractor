@@ -95,9 +95,9 @@ public class PeertubeStreamExtractorTest {
     }
 
     public static class AgeRestricted extends DefaultStreamExtractorTest {
-        private static final String ID = "0d501633-f2d9-4476-87c6-71f1c02402a4";
-        private static final String INSTANCE = "https://peertube.co.uk";
-        private static final String URL = INSTANCE + BASE_URL + ID;
+        private static final String ID = "dbd8e5e1-c527-49b6-b70c-89101dbb9c08";
+        private static final String INSTANCE = "https://nocensoring.net";
+        private static final String URL = INSTANCE + "/videos/embed/" + ID;
         private static StreamExtractor extractor;
 
         @BeforeClass
@@ -111,46 +111,35 @@ public class PeertubeStreamExtractorTest {
 
         @Override public StreamExtractor extractor() { return extractor; }
         @Override public StreamingService expectedService() { return PeerTube; }
-        @Override public String expectedName() { return "A DPR Combatant Describes how Orders are Given through Russian Officers"; }
+        @Override public String expectedName() { return "Covid-19 ? [Court-métrage]"; }
         @Override public String expectedId() { return ID; }
-        @Override public String expectedUrlContains() { return URL; }
+        @Override public String expectedUrlContains() { return INSTANCE + BASE_URL + ID; }
         @Override public String expectedOriginalUrlContains() { return URL; }
 
         @Override public StreamType expectedStreamType() { return StreamType.VIDEO_STREAM; }
-        @Override public String expectedUploaderName() { return "Tomas Berezovskiy"; }
-        @Override public String expectedUploaderUrl() { return "https://peertube.co.uk/accounts/tomas_berezovskiy@peertube.iriseden.eu"; }
-        @Override public String expectedSubChannelName() { return "smm.expx3"; }
-        @Override public String expectedSubChannelUrl() { return "https://peertube.iriseden.eu/video-channels/smm.expx3"; }
+        @Override public String expectedUploaderName() { return "Résilience humaine"; }
+        @Override public String expectedUploaderUrl() { return "https://nocensoring.net/accounts/gmt@nocensoring.net"; }
+        @Override public String expectedSubChannelName() { return "SYSTEM FAILURE Quel à-venir ?"; }
+        @Override public String expectedSubChannelUrl() { return "https://nocensoring.net/video-channels/systemfailure_quel"; }
         @Override public List<String> expectedDescriptionContains() { // LF line ending
-            return Arrays.asList("https://en.informnapalm.org/dpr-combatant-describes-orders-given-russian-officers/ "
-                    + " The InformNapalm team received another video of a separatist prisoner of war telling about his "
-                    + "activities in `Dontesk People’s Republic’ (DPR) structures. The video is old, as the interrogation"
-                    + " date is September, but it is the situation described is still relevant and interesting today. In "
-                    + "this recording the combatant re-tells how he came to be recruited into the DPR forces, and how "
-                    + "they are operating under Russian military command. He expresses remorse for his stupidity. Perhaps"
-                    + " he is just saying what he thinks his interrogator wants to hear, perhaps he is speaking from a "
-                    + "new understanding?\n"
-                    + "\n"
-                    + "The video contains a lot of cut and paste (stitching) in places where intelligence data or valuable"
-                    + " information has been deleted because it cannot be shared publically. We trust you will understand "
-                    + "this necessity.");
+            return Arrays.asList("2020, le monde est frappé par une pandémie, beaucoup d'humains sont confinés.",
+                    "System Failure Quel à-venir ? - Covid-19   / 2020");
         }
-        @Override public long expectedLength() { return 512; }
-        @Override public long expectedViewCountAtLeast() { return 7; }
-        @Nullable @Override public String expectedUploadDate() { return "2019-10-22 06:16:48.982"; }
-        @Nullable @Override public String expectedTextualUploadDate() { return "2019-10-22T06:16:48.982Z"; }
-        @Override public long expectedLikeCountAtLeast() { return 3; }
+        @Override public long expectedLength() { return 667; }
+        @Override public long expectedViewCountAtLeast() { return 138; }
+        @Nullable @Override public String expectedUploadDate() { return "2020-05-14 17:24:35.580"; }
+        @Nullable @Override public String expectedTextualUploadDate() { return "2020-05-14T17:24:35.580Z"; }
+        @Override public long expectedLikeCountAtLeast() { return 1; }
         @Override public long expectedDislikeCountAtLeast() { return 0; }
         @Override public int expectedAgeLimit() { return 18; }
         @Override public boolean expectedHasAudioStreams() { return false; }
         @Override public boolean expectedHasSubtitles() { return false; }
         @Override public boolean expectedHasFrames() { return false; }
-        @Override public String expectedHost() { return "peertube.iriseden.eu"; }
+        @Override public String expectedHost() { return "nocensoring.net"; }
         @Override public String expectedPrivacy() { return "Public"; }
-        @Override public String expectedCategory() { return "News & Politics"; }
-        @Override public String expectedLicence() { return "Attribution - Share Alike"; }
-        @Override public Locale expectedLanguageInfo() { return Locale.forLanguageTag("ru"); }
-        @Override public List<String> expectedTags() { return Arrays.asList("ДНР", "ЛНР", "Кремль", "Новороссия", "ФСБ"); }
+        @Override public String expectedCategory() { return "Art"; }
+        @Override public String expectedLicence() { return "Attribution"; }
+        @Override public List<String> expectedTags() { return Arrays.asList("Covid-19", "Gérôme-Mary trebor", "Horreur et beauté", "court-métrage", "nue artistique"); }
     }
 
 
