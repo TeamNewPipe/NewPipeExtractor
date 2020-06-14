@@ -161,7 +161,7 @@ public class PeertubeStreamExtractorDefaultTest {
     @Test
     public void testGetAgeLimit() throws ExtractionException, IOException {
         assertEquals(0, extractor.getAgeLimit());
-        PeertubeStreamExtractor ageLimit = (PeertubeStreamExtractor) PeerTube.getStreamExtractor("https://peertube.co.uk/videos/watch/0d501633-f2d9-4476-87c6-71f1c02402a4");
+        PeertubeStreamExtractor ageLimit = (PeertubeStreamExtractor) PeerTube.getStreamExtractor("https://nocensoring.net/videos/embed/dbd8e5e1-c527-49b6-b70c-89101dbb9c08");
         ageLimit.fetchPage();
         assertEquals(18, ageLimit.getAgeLimit());
     }
