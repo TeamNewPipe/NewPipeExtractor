@@ -50,5 +50,6 @@ public class YoutubeStreamExtractorLivestreamTest extends DefaultStreamExtractor
     @Override public long expectedLikeCountAtLeast() { return 825000; }
     @Override public long expectedDislikeCountAtLeast() { return 15600; }
     @Override public boolean expectedHasSubtitles() { return false; }
+    @Nullable @Override public String expectedDashMpdUrlContains() { return "https://manifest.googlevideo.com/api/manifest/dash/"; }
     @Override public boolean expectedHasFrames() { return false; }
 }

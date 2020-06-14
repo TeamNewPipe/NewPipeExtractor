@@ -22,11 +22,11 @@ import java.util.TimeZone;
 import javax.annotation.Nullable;
 
 import static org.hamcrest.CoreMatchers.containsString;
+import static org.hamcrest.MatcherAssert.assertThat;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertThat;
 import static org.junit.Assert.assertTrue;
 import static org.schabi.newpipe.extractor.ExtractorAsserts.assertAtLeast;
 import static org.schabi.newpipe.extractor.ExtractorAsserts.assertEqualsOrderIndependent;
@@ -59,6 +59,7 @@ public abstract class DefaultStreamExtractorTest extends DefaultExtractorTest<St
     public boolean expectedHasVideoStreams() { return true; } // default: there are video streams
     public boolean expectedHasAudioStreams() { return true; } // default: there are audio streams
     public boolean expectedHasSubtitles() { return true; } // default: there are subtitles streams
+    @Nullable public String expectedDashMpdUrlContains() { return null; } // default: no dash mpd
     public boolean expectedHasFrames() { return true; } // default: there are frames
     public String expectedHost() { return ""; } // default: no host for centralized platforms
     public String expectedPrivacy() { return ""; } // default: no privacy policy available
@@ -303,6 +304,18 @@ public abstract class DefaultStreamExtractorTest extends DefaultExtractorTest<St
                 assertNotNull(formatSubtitles);
                 assertTrue(formatSubtitles.isEmpty());
             }
+        }
+    }
+
+    @Override
+    public void testGetDashMpdUrl() throws Exception {
+        final String dashMpdUrl = extractor().getDashMpdUrl();
+        if (expectedDashMpdUrlContains() == null) {
+            assertNotNull(dashMpdUrl);
+            assertTrue(dashMpdUrl.isEmpty());
+        } else {
+            assertIsSecureUrl(dashMpdUrl);
+            assertThat(extractor().getDashMpdUrl(), containsString(expectedDashMpdUrlContains()));
         }
     }
 
