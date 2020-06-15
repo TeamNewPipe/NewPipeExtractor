@@ -142,9 +142,10 @@ public class YoutubeParsingHelper {
             default:
                 throw new ParsingException("Error duration string with unknown format: " + input);
         }
-        return ((((Long.parseLong(Utils.removeNonDigitCharacters(days)) * 24)
-                + Long.parseLong(Utils.removeNonDigitCharacters(hours)) * 60)
-                + Long.parseLong(Utils.removeNonDigitCharacters(minutes))) * 60)
+
+        return ((Long.parseLong(Utils.removeNonDigitCharacters(days)) * 24
+                + Long.parseLong(Utils.removeNonDigitCharacters(hours))) * 60
+                + Long.parseLong(Utils.removeNonDigitCharacters(minutes))) * 60
                 + Long.parseLong(Utils.removeNonDigitCharacters(seconds));
     }
 
