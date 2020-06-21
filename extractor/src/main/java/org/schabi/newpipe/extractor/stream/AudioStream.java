@@ -27,12 +27,13 @@ public class AudioStream extends Stream {
 
     /**
      * Create a new audio stream
-     * @param url the url
+     *
+     * @param deliveryFormat how this stream is delivered
      * @param format the format
      * @param averageBitrate the average bitrate
      */
-    public AudioStream(String url, MediaFormat format, int averageBitrate) {
-        super(url, format);
+    public AudioStream(DeliveryFormat deliveryFormat, MediaFormat format, int averageBitrate) {
+        super(deliveryFormat, format);
         this.average_bitrate = averageBitrate;
     }
 

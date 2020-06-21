@@ -24,6 +24,7 @@ import org.schabi.newpipe.extractor.services.youtube.ItagItem;
 import org.schabi.newpipe.extractor.services.youtube.linkHandler.YoutubeChannelLinkHandlerFactory;
 import org.schabi.newpipe.extractor.services.youtube.YoutubeParsingHelper;
 import org.schabi.newpipe.extractor.stream.AudioStream;
+import org.schabi.newpipe.extractor.stream.DeliveryFormat;
 import org.schabi.newpipe.extractor.stream.Description;
 import org.schabi.newpipe.extractor.stream.Frameset;
 import org.schabi.newpipe.extractor.stream.Stream;
@@ -422,10 +423,11 @@ public class YoutubeStreamExtractor extends StreamExtractor {
         assertPageFetched();
         List<AudioStream> audioStreams = new ArrayList<>();
         try {
-            for (Map.Entry<String, ItagItem> entry : getItags(ADAPTIVE_FORMATS, ItagItem.ItagType.AUDIO).entrySet()) {
+            for (Map.Entry<DeliveryFormat, ItagItem> entry : getItags(ADAPTIVE_FORMATS, ItagItem.ItagType.AUDIO).entrySet()) {
                 ItagItem itag = entry.getValue();
 
-                AudioStream audioStream = new AudioStream(entry.getKey(), itag.getMediaFormat(), itag.avgBitrate);
+                AudioStream audioStream = new AudioStream(entry.getKey(),
+                        itag.getMediaFormat(), itag.avgBitrate);
                 if (!Stream.containSimilarStream(audioStream, audioStreams)) {
                     audioStreams.add(audioStream);
                 }
@@ -442,10 +444,11 @@ public class YoutubeStreamExtractor extends StreamExtractor {
         assertPageFetched();
         List<VideoStream> videoStreams = new ArrayList<>();
         try {
-            for (Map.Entry<String, ItagItem> entry : getItags(FORMATS, ItagItem.ItagType.VIDEO).entrySet()) {
+            for (Map.Entry<DeliveryFormat, ItagItem> entry : getItags(FORMATS, ItagItem.ItagType.VIDEO).entrySet()) {
                 ItagItem itag = entry.getValue();
 
-                VideoStream videoStream = new VideoStream(entry.getKey(), itag.getMediaFormat(), itag.resolutionString);
+                VideoStream videoStream = new VideoStream(entry.getKey(),
+                        itag.getMediaFormat(), itag.resolutionString);
                 if (!Stream.containSimilarStream(videoStream, videoStreams)) {
                     videoStreams.add(videoStream);
                 }
@@ -462,10 +465,11 @@ public class YoutubeStreamExtractor extends StreamExtractor {
         assertPageFetched();
         List<VideoStream> videoOnlyStreams = new ArrayList<>();
         try {
-            for (Map.Entry<String, ItagItem> entry : getItags(ADAPTIVE_FORMATS, ItagItem.ItagType.VIDEO_ONLY).entrySet()) {
+            for (Map.Entry<DeliveryFormat, ItagItem> entry : getItags(ADAPTIVE_FORMATS, ItagItem.ItagType.VIDEO_ONLY).entrySet()) {
                 ItagItem itag = entry.getValue();
 
-                VideoStream videoStream = new VideoStream(entry.getKey(), itag.getMediaFormat(), itag.resolutionString, true);
+                VideoStream videoStream = new VideoStream(entry.getKey(), itag.getMediaFormat(),
+                        itag.resolutionString, true);
                 if (!Stream.containSimilarStream(videoStream, videoOnlyStreams)) {
                     videoOnlyStreams.add(videoStream);
                 }
@@ -909,8 +913,8 @@ public class YoutubeStreamExtractor extends StreamExtractor {
                 "&sts=" + sts + "&ps=default&gl=US&hl=en";
     }
 
-    private Map<String, ItagItem> getItags(String streamingDataKey, ItagItem.ItagType itagTypeWanted) throws ParsingException {
-        Map<String, ItagItem> urlAndItags = new LinkedHashMap<>();
+    private Map<DeliveryFormat, ItagItem> getItags(String streamingDataKey, ItagItem.ItagType itagTypeWanted) throws ParsingException {
+        Map<DeliveryFormat, ItagItem> urlAndItags = new LinkedHashMap<>();
         JsonObject streamingData = playerResponse.getObject("streamingData");
         if (!streamingData.has(streamingDataKey)) {
             return urlAndItags;
@@ -938,7 +942,7 @@ public class YoutubeStreamExtractor extends StreamExtractor {
                                     + decryptSignature(cipher.get("s"), decryptionCode);
                         }
 
-                        urlAndItags.put(streamUrl, itagItem);
+                        urlAndItags.put(DeliveryFormat.direct(streamUrl), itagItem);
                     }
                 } catch (UnsupportedEncodingException ignored) {}
             }

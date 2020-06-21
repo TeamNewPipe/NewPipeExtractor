@@ -7,6 +7,7 @@ import org.schabi.newpipe.extractor.exceptions.ParsingException;
 import org.schabi.newpipe.extractor.exceptions.ReCaptchaException;
 import org.schabi.newpipe.extractor.services.youtube.ItagItem;
 import org.schabi.newpipe.extractor.stream.AudioStream;
+import org.schabi.newpipe.extractor.stream.DeliveryFormat;
 import org.schabi.newpipe.extractor.stream.Stream;
 import org.schabi.newpipe.extractor.stream.StreamInfo;
 import org.schabi.newpipe.extractor.stream.VideoStream;
@@ -161,19 +162,21 @@ public class DashMpdParser {
 
                         if (itag.itagType.equals(ItagItem.ItagType.AUDIO)) {
                             if (segmentationList == null) {
-                                final AudioStream audioStream = new AudioStream(url, mediaFormat, itag.avgBitrate);
+                                final AudioStream audioStream = new AudioStream(
+                                        DeliveryFormat.direct(url), mediaFormat, itag.avgBitrate);
                                 if (!Stream.containSimilarStream(audioStream, streamInfo.getAudioStreams())) {
                                     audioStreams.add(audioStream);
                                 }
                             } else {
-                                segmentedAudioStreams.add(
-                                        new AudioStream(id, mediaFormat, itag.avgBitrate));
+                                segmentedAudioStreams.add(new AudioStream(DeliveryFormat.direct(id),
+                                        mediaFormat, itag.avgBitrate));
                             }
                         } else {
                             boolean isVideoOnly = itag.itagType.equals(ItagItem.ItagType.VIDEO_ONLY);
 
                             if (segmentationList == null) {
-                                final VideoStream videoStream = new VideoStream(url,
+                                final VideoStream videoStream = new VideoStream(
+                                        DeliveryFormat.direct(url),
                                         mediaFormat,
                                         itag.resolutionString,
                                         isVideoOnly);
@@ -186,7 +189,8 @@ public class DashMpdParser {
                                     videoStreams.add(videoStream);
                                 }
                             } else {
-                                final VideoStream videoStream = new VideoStream(id,
+                                final VideoStream videoStream = new VideoStream(
+                                        DeliveryFormat.direct(id),
                                         mediaFormat,
                                         itag.resolutionString,
                                         isVideoOnly);

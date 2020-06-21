@@ -9,6 +9,7 @@ import org.schabi.newpipe.extractor.exceptions.ExtractionException;
 import org.schabi.newpipe.extractor.exceptions.ParsingException;
 import org.schabi.newpipe.extractor.services.youtube.extractors.YoutubeStreamExtractor;
 import org.schabi.newpipe.extractor.services.youtube.linkHandler.YoutubeStreamLinkHandlerFactory;
+import org.schabi.newpipe.extractor.stream.DeliveryFormat;
 import org.schabi.newpipe.extractor.stream.StreamExtractor;
 import org.schabi.newpipe.extractor.stream.VideoStream;
 
@@ -119,8 +120,9 @@ public class YoutubeStreamExtractorAgeRestrictedTest {
 
         assertTrue(Integer.toString(streams.size()), streams.size() > 0);
         for (VideoStream s : streams) {
-            assertTrue(s.getUrl(),
-                    s.getUrl().contains(HTTPS));
+            if (s.getDeliveryFormat() instanceof DeliveryFormat.Direct) {
+                assertIsSecureUrl(((DeliveryFormat.Direct) s.getDeliveryFormat()).getUrl());
+            }
             assertTrue(s.resolution.length() > 0);
             assertTrue(Integer.toString(s.getFormatId()),
                     0 <= s.getFormatId() && s.getFormatId() <= 0x100);

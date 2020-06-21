@@ -13,6 +13,7 @@ import org.schabi.newpipe.extractor.exceptions.ParsingException;
 import org.schabi.newpipe.extractor.linkhandler.LinkHandler;
 import org.schabi.newpipe.extractor.localization.DateWrapper;
 import org.schabi.newpipe.extractor.stream.AudioStream;
+import org.schabi.newpipe.extractor.stream.DeliveryFormat;
 import org.schabi.newpipe.extractor.stream.Description;
 import org.schabi.newpipe.extractor.stream.StreamExtractor;
 import org.schabi.newpipe.extractor.stream.StreamInfoItem;
@@ -160,7 +161,8 @@ public class MediaCCCStreamExtractor extends StreamExtractor {
                     throw new ExtractionException("Unknown media format: " + mimeType);
                 }
 
-                audioStreams.add(new AudioStream(recording.getString("recording_url"),
+                audioStreams.add(new AudioStream(
+                        DeliveryFormat.direct(recording.getString("recording_url")),
                         mediaFormat, -1));
             }
         }
@@ -186,7 +188,8 @@ public class MediaCCCStreamExtractor extends StreamExtractor {
                     throw new ExtractionException("Unknown media format: " + mimeType);
                 }
 
-                videoStreams.add(new VideoStream(recording.getString("recording_url"),
+                videoStreams.add(new VideoStream(
+                        DeliveryFormat.direct(recording.getString("recording_url")),
                         mediaFormat, recording.getInt("height") + "p"));
             }
         }

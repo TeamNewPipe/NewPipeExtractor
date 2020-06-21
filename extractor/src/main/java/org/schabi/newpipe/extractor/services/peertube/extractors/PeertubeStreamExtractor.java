@@ -18,6 +18,7 @@ import org.schabi.newpipe.extractor.localization.DateWrapper;
 import org.schabi.newpipe.extractor.services.peertube.PeertubeParsingHelper;
 import org.schabi.newpipe.extractor.services.peertube.linkHandler.PeertubeSearchQueryHandlerFactory;
 import org.schabi.newpipe.extractor.stream.AudioStream;
+import org.schabi.newpipe.extractor.stream.DeliveryFormat;
 import org.schabi.newpipe.extractor.stream.Description;
 import org.schabi.newpipe.extractor.stream.Stream;
 import org.schabi.newpipe.extractor.stream.StreamExtractor;
@@ -209,7 +210,8 @@ public class PeertubeStreamExtractor extends StreamExtractor {
                 String resolution = JsonUtils.getString(stream, "resolution.label");
                 String extension = url.substring(url.lastIndexOf(".") + 1);
                 MediaFormat format = MediaFormat.getFromSuffix(extension);
-                VideoStream videoStream = new VideoStream(url, torrentUrl, format, resolution);
+                VideoStream videoStream = new VideoStream(torrentUrl, DeliveryFormat.direct(url),
+                        format, resolution, false);
                 if (!Stream.containSimilarStream(videoStream, videoStreams)) {
                     videoStreams.add(videoStream);
                 }

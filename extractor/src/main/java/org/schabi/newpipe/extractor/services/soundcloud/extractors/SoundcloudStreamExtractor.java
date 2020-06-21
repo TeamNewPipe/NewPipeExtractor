@@ -17,6 +17,7 @@ import org.schabi.newpipe.extractor.linkhandler.LinkHandler;
 import org.schabi.newpipe.extractor.localization.DateWrapper;
 import org.schabi.newpipe.extractor.services.soundcloud.SoundcloudParsingHelper;
 import org.schabi.newpipe.extractor.stream.AudioStream;
+import org.schabi.newpipe.extractor.stream.DeliveryFormat;
 import org.schabi.newpipe.extractor.stream.Description;
 import org.schabi.newpipe.extractor.stream.StreamExtractor;
 import org.schabi.newpipe.extractor.stream.StreamInfoItem;
@@ -206,7 +207,8 @@ public class SoundcloudStreamExtractor extends StreamExtractor {
                         try {
                             JsonObject mp3UrlObject = JsonParser.object().from(res);
                             // Links in this file are also only valid for a short period.
-                            audioStreams.add(new AudioStream(mp3UrlObject.getString("url"),
+                            audioStreams.add(new AudioStream(
+                                    DeliveryFormat.direct(mp3UrlObject.getString("url")),
                                     MediaFormat.MP3, 128));
                         } catch (JsonParserException e) {
                             throw new ParsingException("Could not parse streamable url", e);

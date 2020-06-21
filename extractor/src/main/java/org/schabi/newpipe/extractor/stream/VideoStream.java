@@ -26,23 +26,18 @@ public class VideoStream extends Stream {
     public final String resolution;
     public final boolean isVideoOnly;
 
-
-    public VideoStream(String url, MediaFormat format, String resolution) {
-        this(url, format, resolution, false);
+    public VideoStream(DeliveryFormat deliveryFormat, MediaFormat format, String resolution) {
+        this(null, deliveryFormat, format, resolution, false);
     }
 
-    public VideoStream(String url, MediaFormat format, String resolution, boolean isVideoOnly) {
-        super(url, format);
-        this.resolution = resolution;
-        this.isVideoOnly = isVideoOnly;
+    public VideoStream(DeliveryFormat deliveryFormat, MediaFormat format,
+                       String resolution, boolean isVideoOnly) {
+        this(null, deliveryFormat, format, resolution, isVideoOnly);
     }
 
-    public VideoStream(String url, String torrentUrl, MediaFormat format, String resolution) {
-        this(url, torrentUrl, format, resolution, false);
-    }
-
-    public VideoStream(String url, String torrentUrl, MediaFormat format, String resolution, boolean isVideoOnly) {
-        super(url, torrentUrl, format);
+    public VideoStream(String torrentUrl, DeliveryFormat deliveryFormat,
+                       MediaFormat format, String resolution, boolean isVideoOnly) {
+        super(torrentUrl, deliveryFormat, format);
         this.resolution = resolution;
         this.isVideoOnly = isVideoOnly;
     }

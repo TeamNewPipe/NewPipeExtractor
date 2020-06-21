@@ -13,6 +13,7 @@ import org.schabi.newpipe.extractor.stream.AudioStream;
 import org.schabi.newpipe.extractor.stream.StreamInfoItemsCollector;
 import org.schabi.newpipe.extractor.stream.StreamType;
 import org.schabi.newpipe.extractor.stream.VideoStream;
+import org.schabi.newpipe.extractor.stream.DeliveryFormat;
 import org.schabi.newpipe.extractor.utils.Utils;
 
 import java.text.ParseException;
@@ -108,7 +109,9 @@ public class YoutubeStreamExtractorUnlistedTest {
         List<AudioStream> audioStreams = extractor.getAudioStreams();
         assertFalse(audioStreams.isEmpty());
         for (AudioStream s : audioStreams) {
-            assertIsSecureUrl(s.url);
+            if (s.getDeliveryFormat() instanceof DeliveryFormat.Direct) {
+                assertIsSecureUrl(((DeliveryFormat.Direct) s.getDeliveryFormat()).getUrl());
+            }
             assertTrue(Integer.toString(s.getFormatId()),
                     0x100 <= s.getFormatId() && s.getFormatId() < 0x1000);
         }
@@ -117,7 +120,9 @@ public class YoutubeStreamExtractorUnlistedTest {
     @Test
     public void testGetVideoStreams() throws ExtractionException {
         for (VideoStream s : extractor.getVideoStreams()) {
-            assertIsSecureUrl(s.url);
+            if (s.getDeliveryFormat() instanceof DeliveryFormat.Direct) {
+                assertIsSecureUrl(((DeliveryFormat.Direct) s.getDeliveryFormat()).getUrl());
+            }
             assertTrue(s.resolution.length() > 0);
             assertTrue(Integer.toString(s.getFormatId()),
                     0 <= s.getFormatId() && s.getFormatId() < 0x100);
