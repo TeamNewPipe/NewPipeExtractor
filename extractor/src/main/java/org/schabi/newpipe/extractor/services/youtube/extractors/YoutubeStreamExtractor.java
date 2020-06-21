@@ -930,6 +930,14 @@ public class YoutubeStreamExtractor extends StreamExtractor {
                     ItagItem itagItem = ItagItem.getItag(itag);
                     if (itagItem.itagType == itagTypeWanted) {
                         String streamUrl;
+
+                        // Ignore streams that are delivered using YouTube's OTF format,
+                        // as they will generally be available in when extracting the MPD.
+                        if (formatData.getString("type", EMPTY_STRING)
+                                .equalsIgnoreCase("FORMAT_STREAM_TYPE_OTF")) {
+                            continue;
+                        }
+
                         if (formatData.has("url")) {
                             streamUrl = formatData.getString("url");
                         } else {
