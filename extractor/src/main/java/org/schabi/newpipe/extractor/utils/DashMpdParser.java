@@ -1,5 +1,6 @@
 package org.schabi.newpipe.extractor.utils;
 
+import edu.umd.cs.findbugs.annotations.NonNull;
 import org.schabi.newpipe.extractor.MediaFormat;
 import org.schabi.newpipe.extractor.NewPipe;
 import org.schabi.newpipe.extractor.downloader.Downloader;
@@ -18,9 +19,16 @@ import org.w3c.dom.NodeList;
 
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
+import javax.xml.transform.OutputKeys;
+import javax.xml.transform.Transformer;
+import javax.xml.transform.TransformerException;
+import javax.xml.transform.TransformerFactory;
+import javax.xml.transform.dom.DOMSource;
+import javax.xml.transform.stream.StreamResult;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.StringWriter;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -55,58 +63,38 @@ public class DashMpdParser {
         }
     }
 
-    public static class ParserResult {
+    public static class Result {
         private final List<VideoStream> videoStreams;
-        private final List<AudioStream> audioStreams;
         private final List<VideoStream> videoOnlyStreams;
-
-        private final List<VideoStream> segmentedVideoStreams;
-        private final List<AudioStream> segmentedAudioStreams;
-        private final List<VideoStream> segmentedVideoOnlyStreams;
+        private final List<AudioStream> audioStreams;
 
 
-        public ParserResult(List<VideoStream> videoStreams,
-                            List<AudioStream> audioStreams,
-                            List<VideoStream> videoOnlyStreams,
-                            List<VideoStream> segmentedVideoStreams,
-                            List<AudioStream> segmentedAudioStreams,
-                            List<VideoStream> segmentedVideoOnlyStreams) {
+        public Result(List<VideoStream> videoStreams,
+                      List<VideoStream> videoOnlyStreams,
+                      List<AudioStream> audioStreams) {
             this.videoStreams = videoStreams;
-            this.audioStreams = audioStreams;
             this.videoOnlyStreams = videoOnlyStreams;
-            this.segmentedVideoStreams = segmentedVideoStreams;
-            this.segmentedAudioStreams = segmentedAudioStreams;
-            this.segmentedVideoOnlyStreams = segmentedVideoOnlyStreams;
+            this.audioStreams = audioStreams;
         }
 
         public List<VideoStream> getVideoStreams() {
             return videoStreams;
         }
 
-        public List<AudioStream> getAudioStreams() {
-            return audioStreams;
-        }
-
         public List<VideoStream> getVideoOnlyStreams() {
             return videoOnlyStreams;
         }
 
-        public List<VideoStream> getSegmentedVideoStreams() {
-            return segmentedVideoStreams;
-        }
-
-        public List<AudioStream> getSegmentedAudioStreams() {
-            return segmentedAudioStreams;
-        }
-
-        public List<VideoStream> getSegmentedVideoOnlyStreams() {
-            return segmentedVideoOnlyStreams;
+        public List<AudioStream> getAudioStreams() {
+            return audioStreams;
         }
     }
 
+    // TODO: Make this class generic and decouple from YouTube's ItagItem class.
+
     /**
-     * Will try to download (using {@link StreamInfo#getDashMpdUrl()}) and parse the dash manifest,
-     * then it will search for any stream that the ItagItem has (by the id).
+     * Will try to download and parse the DASH manifest (using {@link StreamInfo#getDashMpdUrl()}),
+     * adding items that are listed in the {@link ItagItem} class.
      * <p>
      * It has video, video only and audio streams and will only add to the list if it don't
      * find a similar stream in the respective lists (calling {@link Stream#equalStats}).
@@ -116,14 +104,15 @@ public class DashMpdParser {
      * @param streamInfo where the parsed streams will be added
      * @see <a href="https://www.brendanlong.com/the-structure-of-an-mpeg-dash-mpd.html">www.brendanlog.com</a>
      */
-    public static ParserResult getStreams(final StreamInfo streamInfo)
+    public static Result getStreams(final StreamInfo streamInfo)
             throws DashMpdParsingException, ReCaptchaException {
-        String dashDoc;
-        Downloader downloader = NewPipe.getDownloader();
+        final String dashDoc;
+        final Downloader downloader = NewPipe.getDownloader();
         try {
             dashDoc = downloader.get(streamInfo.getDashMpdUrl()).responseBody();
-        } catch (IOException ioe) {
-            throw new DashMpdParsingException("Could not get dash mpd: " + streamInfo.getDashMpdUrl(), ioe);
+        } catch (IOException e) {
+            throw new DashMpdParsingException("Could not fetch DASH manifest: "
+                    + streamInfo.getDashMpdUrl(), e);
         }
 
         try {
@@ -138,83 +127,117 @@ public class DashMpdParser {
             final List<AudioStream> audioStreams = new ArrayList<>();
             final List<VideoStream> videoOnlyStreams = new ArrayList<>();
 
-            final List<VideoStream> segmentedVideoStreams = new ArrayList<>();
-            final List<AudioStream> segmentedAudioStreams = new ArrayList<>();
-            final List<VideoStream> segmentedVideoOnlyStreams = new ArrayList<>();
-
             for (int i = 0; i < representationList.getLength(); i++) {
                 final Element representation = (Element) representationList.item(i);
                 try {
-                    final String mimeType = ((Element) representation.getParentNode()).getAttribute("mimeType");
+                    final String mimeType = ((Element) representation.getParentNode())
+                            .getAttribute("mimeType");
                     final String id = representation.getAttribute("id");
-                    final String url = representation.getElementsByTagName("BaseURL").item(0).getTextContent();
+                    final String url = representation.getElementsByTagName("BaseURL")
+                            .item(0).getTextContent();
                     final ItagItem itag = ItagItem.getItag(Integer.parseInt(id));
-                    final Node segmentationList = representation.getElementsByTagName("SegmentList").item(0);
+                    final Element segmentationList = (Element) representation
+                            .getElementsByTagName("SegmentList").item(0);
 
-                    // if SegmentList is not null this means that BaseUrl is not representing the url to the stream.
-                    // instead we need to add the "media=" value from the <SegementURL/> tags inside the <SegmentList/>
-                    // tag in order to get a full working url. However each of these is just pointing to a part of the
-                    // video, so we can not return a URL with a working stream here.
-                    // Instead of putting those streams into the list of regular stream urls wie put them in a
-                    // for example "segmentedVideoStreams" list.
-                    if (itag != null) {
-                        final MediaFormat mediaFormat = MediaFormat.getFromMimeType(mimeType);
+                    if (segmentationList == null) {
+                        continue;
+                    }
 
-                        if (itag.itagType.equals(ItagItem.ItagType.AUDIO)) {
-                            if (segmentationList == null) {
-                                final AudioStream audioStream = new AudioStream(
-                                        DeliveryFormat.direct(url), mediaFormat, itag.avgBitrate);
-                                if (!Stream.containSimilarStream(audioStream, streamInfo.getAudioStreams())) {
-                                    audioStreams.add(audioStream);
-                                }
-                            } else {
-                                segmentedAudioStreams.add(new AudioStream(DeliveryFormat.direct(id),
-                                        mediaFormat, itag.avgBitrate));
+                    boolean isUrlRangeBased = false;
+                    boolean isUrlSegmentsBased = false;
+                    final Element initialization = (Element) segmentationList
+                            .getElementsByTagName("Initialization").item(0);
+
+                    if (initialization != null && initialization.hasAttributes()) {
+                        final Node sourceURLNode = initialization.getAttributes()
+                                .getNamedItem("sourceURL");
+                        if (sourceURLNode != null) {
+                            final String initializationSourceUrl = sourceURLNode.getNodeValue();
+
+                            isUrlRangeBased = initializationSourceUrl != null &&
+                                    initializationSourceUrl.startsWith("range/");
+                            isUrlSegmentsBased = initializationSourceUrl != null &&
+                                    initializationSourceUrl.startsWith("sq/");
+                        }
+                    }
+
+                    final DeliveryFormat deliveryFormat;
+                    if (isUrlRangeBased) {
+                        deliveryFormat = DeliveryFormat.direct(url);
+                    } else if (isUrlSegmentsBased) {
+                        deliveryFormat = DeliveryFormat.manualDASH(url,
+                                manualDashFromRepresentation(doc, representation));
+                    } else {
+                        continue;
+                    }
+
+                    final MediaFormat mediaFormat = MediaFormat.getFromMimeType(mimeType);
+
+                    if (itag.itagType.equals(ItagItem.ItagType.AUDIO)) {
+                        final AudioStream audioStream = new AudioStream(
+                                deliveryFormat, mediaFormat, itag.avgBitrate);
+                        if (!Stream.containSimilarStream(audioStream,
+                                streamInfo.getAudioStreams())) {
+                            audioStreams.add(audioStream);
+                        }
+                    } else {
+                        boolean isVideoOnly = itag.itagType.equals(ItagItem.ItagType.VIDEO_ONLY);
+                        final VideoStream videoStream = new VideoStream(
+                                deliveryFormat, mediaFormat,
+                                itag.resolutionString, isVideoOnly);
+
+                        if (isVideoOnly) {
+                            if (!Stream.containSimilarStream(videoStream,
+                                    streamInfo.getVideoOnlyStreams())) {
+                                videoOnlyStreams.add(videoStream);
                             }
-                        } else {
-                            boolean isVideoOnly = itag.itagType.equals(ItagItem.ItagType.VIDEO_ONLY);
-
-                            if (segmentationList == null) {
-                                final VideoStream videoStream = new VideoStream(
-                                        DeliveryFormat.direct(url),
-                                        mediaFormat,
-                                        itag.resolutionString,
-                                        isVideoOnly);
-
-                                if (isVideoOnly) {
-                                    if (!Stream.containSimilarStream(videoStream, streamInfo.getVideoOnlyStreams())) {
-                                        videoOnlyStreams.add(videoStream);
-                                    }
-                                } else if (!Stream.containSimilarStream(videoStream, streamInfo.getVideoStreams())) {
-                                    videoStreams.add(videoStream);
-                                }
-                            } else {
-                                final VideoStream videoStream = new VideoStream(
-                                        DeliveryFormat.direct(id),
-                                        mediaFormat,
-                                        itag.resolutionString,
-                                        isVideoOnly);
-
-                                if (isVideoOnly) {
-                                    segmentedVideoOnlyStreams.add(videoStream);
-                                } else {
-                                    segmentedVideoStreams.add(videoStream);
-                                }
-                            }
+                        } else if (!Stream.containSimilarStream(videoStream,
+                                streamInfo.getVideoStreams())) {
+                            videoStreams.add(videoStream);
                         }
                     }
                 } catch (Exception ignored) {
                 }
             }
-            return new ParserResult(
-                    videoStreams,
-                    audioStreams,
-                    videoOnlyStreams,
-                    segmentedVideoStreams,
-                    segmentedAudioStreams,
-                    segmentedVideoOnlyStreams);
+            return new Result(videoStreams, videoOnlyStreams, audioStreams);
         } catch (Exception e) {
             throw new DashMpdParsingException("Could not parse Dash mpd", e);
         }
+    }
+
+    @NonNull
+    private static String manualDashFromRepresentation(Document document, Element representation)
+            throws TransformerException {
+
+        final Element mpdElement = (Element) document.getElementsByTagName("MPD").item(0);
+
+        // Clone element so we can freely modify it
+        final Element adaptationSet = (Element) representation.getParentNode();
+        final Element adaptationSetClone = (Element) adaptationSet.cloneNode(true);
+
+        // Remove other representations from the adaptation set
+        final NodeList representations = adaptationSetClone.getElementsByTagName("Representation");
+        for (int i = representations.getLength() - 1; i >= 0; i--) {
+            final Node item = representations.item(i);
+            if (!item.isEqualNode(representation)) {
+                adaptationSetClone.removeChild(item);
+            }
+        }
+
+        final Element newMpdRootElement = (Element) mpdElement.cloneNode(false);
+        final Element periodElement = newMpdRootElement.getOwnerDocument().createElement("Period");
+        periodElement.appendChild(adaptationSetClone);
+        newMpdRootElement.appendChild(periodElement);
+
+        return "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
+                + nodeToString(newMpdRootElement);
+    }
+
+    private static String nodeToString(Node node) throws TransformerException {
+        final StringWriter result = new StringWriter();
+        Transformer transformer = TransformerFactory.newInstance().newTransformer();
+        transformer.setOutputProperty(OutputKeys.OMIT_XML_DECLARATION, "yes");
+        transformer.transform(new DOMSource(node), new StreamResult(result));
+        return result.toString();
     }
 }

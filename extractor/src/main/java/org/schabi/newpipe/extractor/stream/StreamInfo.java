@@ -163,13 +163,21 @@ public class StreamInfo extends Info {
         Exception dashMpdError = null;
         if (!isNullOrEmpty(streamInfo.getDashMpdUrl())) {
             try {
-                DashMpdParser.ParserResult result = DashMpdParser.getStreams(streamInfo);
-                streamInfo.getVideoOnlyStreams().addAll(result.getVideoOnlyStreams());
-                streamInfo.getAudioStreams().addAll(result.getAudioStreams());
-                streamInfo.getVideoStreams().addAll(result.getVideoStreams());
-                streamInfo.segmentedVideoOnlyStreams = result.getSegmentedVideoOnlyStreams();
-                streamInfo.segmentedAudioStreams = result.getSegmentedAudioStreams();
-                streamInfo.segmentedVideoStreams = result.getSegmentedVideoStreams();
+                final List<VideoStream> videoStreams =
+                        new ArrayList<>(streamInfo.getVideoStreams());
+                final List<VideoStream> videoOnlyStreams =
+                        new ArrayList<>(streamInfo.getVideoOnlyStreams());
+                final List<AudioStream> audioStreams =
+                        new ArrayList<>(streamInfo.getAudioStreams());
+
+                final DashMpdParser.Result result = DashMpdParser.getStreams(streamInfo);
+                videoStreams.addAll(result.getVideoStreams());
+                videoOnlyStreams.addAll(result.getVideoOnlyStreams());
+                audioStreams.addAll(result.getAudioStreams());
+
+                streamInfo.setVideoStreams(videoStreams);
+                streamInfo.setVideoOnlyStreams(videoOnlyStreams);
+                streamInfo.setAudioStreams(audioStreams);
             } catch (Exception e) {
                 // Sometimes we receive 403 (forbidden) error when trying to download the
                 // manifest (similar to what happens with youtube-dl),
@@ -563,30 +571,6 @@ public class StreamInfo extends Info {
 
     public void setDashMpdUrl(String dashMpdUrl) {
         this.dashMpdUrl = dashMpdUrl;
-    }
-
-    public List<VideoStream> getSegmentedVideoStreams() {
-        return segmentedVideoStreams;
-    }
-
-    public void setSegmentedVideoStreams(List<VideoStream> segmentedVideoStreams) {
-        this.segmentedVideoStreams = segmentedVideoStreams;
-    }
-
-    public List<AudioStream> getSegmentedAudioStreams() {
-        return segmentedAudioStreams;
-    }
-
-    public void setSegmentedAudioStreams(List<AudioStream> segmentedAudioStreams) {
-        this.segmentedAudioStreams = segmentedAudioStreams;
-    }
-
-    public List<VideoStream> getSegmentedVideoOnlyStreams() {
-        return segmentedVideoOnlyStreams;
-    }
-
-    public void setSegmentedVideoOnlyStreams(List<VideoStream> segmentedVideoOnlyStreams) {
-        this.segmentedVideoOnlyStreams = segmentedVideoOnlyStreams;
     }
 
     public String getHlsUrl() {
