@@ -26,6 +26,7 @@ import org.schabi.newpipe.extractor.downloader.Response;
 import org.schabi.newpipe.extractor.exceptions.ExtractionException;
 import org.schabi.newpipe.extractor.localization.DateWrapper;
 
+import javax.annotation.Nonnull;
 import java.util.Calendar;
 import java.util.Date;
 
@@ -75,5 +76,15 @@ public class InvidiousParsingHelper {
         Calendar calendar = Calendar.getInstance();
         calendar.setTime(new Date(epochTime * 1000)); // * 1000 because it's second-based, not millisecond based
         return new DateWrapper(calendar);
+    }
+
+    public static String getUid(@Nonnull String id) {
+        if (id.startsWith("user/")) {
+            id = id.substring(5);
+        } else if (id.startsWith("channel/")) {
+            id = id.substring(8);
+        }
+
+        return id;
     }
 }

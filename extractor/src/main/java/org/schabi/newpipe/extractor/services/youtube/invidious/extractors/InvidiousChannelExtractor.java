@@ -2,13 +2,13 @@ package org.schabi.newpipe.extractor.services.youtube.invidious.extractors;
 
 import com.grack.nanojson.JsonArray;
 import com.grack.nanojson.JsonObject;
+import com.grack.nanojson.JsonWriter;
 import org.schabi.newpipe.extractor.NewPipe;
 import org.schabi.newpipe.extractor.StreamingService;
 import org.schabi.newpipe.extractor.channel.ChannelExtractor;
 import org.schabi.newpipe.extractor.downloader.Downloader;
 import org.schabi.newpipe.extractor.downloader.Response;
 import org.schabi.newpipe.extractor.exceptions.ExtractionException;
-import org.schabi.newpipe.extractor.exceptions.ParsingException;
 import org.schabi.newpipe.extractor.linkhandler.ListLinkHandler;
 import org.schabi.newpipe.extractor.services.youtube.invidious.InvidiousParsingHelper;
 import org.schabi.newpipe.extractor.stream.StreamInfoItem;
@@ -16,6 +16,8 @@ import org.schabi.newpipe.extractor.stream.StreamInfoItemsCollector;
 
 import javax.annotation.Nonnull;
 import java.io.IOException;
+
+import static org.schabi.newpipe.extractor.services.youtube.invidious.InvidiousParsingHelper.getUid;
 
 /*
  * Copyright (C) 2020 Team NewPipe <tnp@newpipe.schabi.org>
@@ -66,22 +68,22 @@ public class InvidiousChannelExtractor extends ChannelExtractor {
     }
 
     @Override
-    public String getDescription() throws ParsingException {
+    public String getDescription() {
         return json.getString("description");
     }
 
     @Override
-    public String getParentChannelName() throws ParsingException {
+    public String getParentChannelName() {
         return null;
     }
 
     @Override
-    public String getParentChannelUrl() throws ParsingException {
+    public String getParentChannelUrl() {
         return null;
     }
 
     @Override
-    public String getParentChannelAvatarUrl() throws ParsingException {
+    public String getParentChannelAvatarUrl() {
         return null;
     }
 
@@ -110,7 +112,7 @@ public class InvidiousChannelExtractor extends ChannelExtractor {
 
     @Override
     public void onFetchPage(@Nonnull Downloader downloader) throws IOException, ExtractionException {
-        final String apiUrl = baseUrl + "/api/v1/channels/" + getId()
+        final String apiUrl = baseUrl + "/api/v1/channels/" + getUid(getId())
                 + "?fields=author,description,subCount,authorThumbnails,authorBanners,authorId"
                 + "&region=" + getExtractorContentCountry().getCountryCode();
 

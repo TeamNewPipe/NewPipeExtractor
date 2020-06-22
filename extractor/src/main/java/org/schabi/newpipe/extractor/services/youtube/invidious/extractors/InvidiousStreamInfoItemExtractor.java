@@ -5,7 +5,6 @@ import org.schabi.newpipe.extractor.exceptions.ParsingException;
 import org.schabi.newpipe.extractor.localization.DateWrapper;
 import org.schabi.newpipe.extractor.stream.StreamInfoItemExtractor;
 import org.schabi.newpipe.extractor.stream.StreamType;
-import org.schabi.newpipe.extractor.utils.Utils;
 
 import javax.annotation.Nullable;
 
@@ -61,17 +60,7 @@ public class InvidiousStreamInfoItemExtractor implements StreamInfoItemExtractor
 
     @Override
     public long getViewCount() {
-        final Number viewCount = json.getNumber("viewCountText");
-        if (viewCount != null) {
-            return viewCount.longValue();
-        }
-
-        final String viewCountText = json.getString("viewCountText");
-        try {
-            return Utils.mixedNumberWordToLong(viewCountText);
-        } catch (ParsingException e) {
-            return -1;
-        }
+        return json.getLong("viewCount", -1);
     }
 
     @Override
@@ -82,7 +71,7 @@ public class InvidiousStreamInfoItemExtractor implements StreamInfoItemExtractor
     @Override
     public String getUploaderUrl() {
         final String url = json.getString("authorUrl");
-        return url != null ? url : baseUrl + "/channel/" + json.getString("authorId");
+        return url != null ? baseUrl + url : baseUrl + "/channel/" + json.getString("authorId");
     }
 
     @Nullable
@@ -119,6 +108,6 @@ public class InvidiousStreamInfoItemExtractor implements StreamInfoItemExtractor
 
     @Override
     public String getThumbnailUrl() {
-        return json.getArray("videoThumbnails").getObject(0).getString("url");
+        return baseUrl + json.getArray("videoThumbnails").getObject(0).getString("url");
     }
 }
