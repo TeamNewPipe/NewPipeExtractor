@@ -1,5 +1,6 @@
 package org.schabi.newpipe.extractor;
 
+import org.schabi.newpipe.extractor.services.bbc_sounds.BSService;
 import org.schabi.newpipe.extractor.services.media_ccc.MediaCCCService;
 import org.schabi.newpipe.extractor.services.peertube.PeertubeService;
 import org.schabi.newpipe.extractor.services.soundcloud.SoundcloudService;
@@ -39,6 +40,7 @@ public final class ServiceList {
     public static final SoundcloudService SoundCloud;
     public static final MediaCCCService MediaCCC;
     public static final PeertubeService PeerTube;
+    public static final BSService BBC_SOUNDS;
 
     /**
      * When creating a new service, put this service in the end of this list,
@@ -49,7 +51,8 @@ public final class ServiceList {
                     YouTube = new YoutubeService(0),
                     SoundCloud = new SoundcloudService(1),
                     MediaCCC = new MediaCCCService(2),
-                    PeerTube = new PeertubeService(3)
+                    PeerTube = new PeertubeService(3),
+                    BBC_SOUNDS = new BSService(4)
             ));
 
     /**

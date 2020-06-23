@@ -1,21 +1,39 @@
 allprojects {
     apply plugin: 'java-library'
+    apply plugin: 'kotlin'
     apply plugin: 'maven'
 
     sourceCompatibility = 1.7
     targetCompatibility = 1.7
 
-    version 'v0.19.5'
+    //version 'v0.19.5'
+    version 'LOCAL_SNAPSHOT'
     group 'com.github.TeamNewPipe'
 
     repositories {
         jcenter()
+        mavenCentral()
         maven { url "https://jitpack.io" }
+    }
+
+    compileKotlin {
+        kotlinOptions {
+            jvmTarget = "1.6"
+        }
+    }
+    compileTestKotlin {
+        kotlinOptions {
+            jvmTarget = "1.6"
+        }
+    }
+
+    dependencies {
+        implementation "org.jetbrains.kotlin:kotlin-stdlib:$kotlin_version"
     }
 }
 
 dependencies {
-    implementation project(':extractor')
+    api project(':extractor')
     implementation project(':timeago-parser')
 }
 
@@ -55,3 +73,14 @@ task aggregatedJavadocs(type: Javadoc, group: 'Documentation') {
         }
     }
 }
+
+buildscript {
+    ext.kotlin_version = '1.3.72'
+    repositories {
+        mavenCentral()
+    }
+    dependencies {
+        classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlin_version"
+    }
+}
+

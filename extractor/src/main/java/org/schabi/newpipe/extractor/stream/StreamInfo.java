@@ -8,7 +8,6 @@ import org.schabi.newpipe.extractor.exceptions.ContentNotAvailableException;
 import org.schabi.newpipe.extractor.exceptions.ContentNotSupportedException;
 import org.schabi.newpipe.extractor.exceptions.ExtractionException;
 import org.schabi.newpipe.extractor.localization.DateWrapper;
-import org.schabi.newpipe.extractor.utils.DashMpdParser;
 import org.schabi.newpipe.extractor.utils.ExtractorHelper;
 
 import java.io.IOException;
@@ -160,45 +159,9 @@ public class StreamInfo extends Info {
         if (streamInfo.getAudioStreams() == null)
             streamInfo.setAudioStreams(new ArrayList<AudioStream>());
 
-        Exception dashMpdError = null;
-        if (!isNullOrEmpty(streamInfo.getDashMpdUrl())) {
-            try {
-                final List<VideoStream> videoStreams =
-                        new ArrayList<>(streamInfo.getVideoStreams());
-                final List<VideoStream> videoOnlyStreams =
-                        new ArrayList<>(streamInfo.getVideoOnlyStreams());
-                final List<AudioStream> audioStreams =
-                        new ArrayList<>(streamInfo.getAudioStreams());
-
-                final DashMpdParser.Result result = DashMpdParser.getStreams(streamInfo);
-                videoStreams.addAll(result.getVideoStreams());
-                videoOnlyStreams.addAll(result.getVideoOnlyStreams());
-                audioStreams.addAll(result.getAudioStreams());
-
-                streamInfo.setVideoStreams(videoStreams);
-                streamInfo.setVideoOnlyStreams(videoOnlyStreams);
-                streamInfo.setAudioStreams(audioStreams);
-            } catch (Exception e) {
-                // Sometimes we receive 403 (forbidden) error when trying to download the
-                // manifest (similar to what happens with youtube-dl),
-                // just skip the exception (but store it somewhere), as we later check if we
-                // have streams anyway.
-                dashMpdError = e;
-            }
-        }
-
         // Either audio or video has to be available, otherwise we didn't get a stream
         // (since videoOnly are optional, they don't count).
         if ((streamInfo.videoStreams.isEmpty()) && (streamInfo.audioStreams.isEmpty())) {
-
-            if (dashMpdError != null) {
-                // If we don't have any video or audio and the dashMpd 'errored', add it to the
-                // error list
-                // (it's optional and it don't get added automatically, but it's good to have
-                // some additional error context)
-                streamInfo.addError(dashMpdError);
-            }
-
             throw new StreamExtractException("Could not get any stream. See error variable to get further details.");
         }
 

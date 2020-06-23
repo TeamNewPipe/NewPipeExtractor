@@ -21,9 +21,11 @@ import org.schabi.newpipe.extractor.localization.Localization;
 import org.schabi.newpipe.extractor.localization.TimeAgoParser;
 import org.schabi.newpipe.extractor.localization.TimeAgoPatternsManager;
 import org.schabi.newpipe.extractor.services.youtube.ItagItem;
-import org.schabi.newpipe.extractor.services.youtube.linkHandler.YoutubeChannelLinkHandlerFactory;
+import org.schabi.newpipe.extractor.services.youtube.YoutubeDashMpdParser;
 import org.schabi.newpipe.extractor.services.youtube.YoutubeParsingHelper;
+import org.schabi.newpipe.extractor.services.youtube.linkHandler.YoutubeChannelLinkHandlerFactory;
 import org.schabi.newpipe.extractor.stream.AudioStream;
+import org.schabi.newpipe.extractor.stream.DashMpdParser;
 import org.schabi.newpipe.extractor.stream.DeliveryFormat;
 import org.schabi.newpipe.extractor.stream.Description;
 import org.schabi.newpipe.extractor.stream.Frameset;
@@ -53,7 +55,10 @@ import java.util.Map;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
-import static org.schabi.newpipe.extractor.services.youtube.YoutubeParsingHelper.*;
+import static org.schabi.newpipe.extractor.services.youtube.YoutubeParsingHelper.fixThumbnailUrl;
+import static org.schabi.newpipe.extractor.services.youtube.YoutubeParsingHelper.getJsonResponse;
+import static org.schabi.newpipe.extractor.services.youtube.YoutubeParsingHelper.getTextFromObject;
+import static org.schabi.newpipe.extractor.services.youtube.YoutubeParsingHelper.getUrlFromNavigationEndpoint;
 import static org.schabi.newpipe.extractor.utils.JsonUtils.EMPTY_STRING;
 import static org.schabi.newpipe.extractor.utils.Utils.isNullOrEmpty;
 
@@ -100,6 +105,9 @@ public class YoutubeStreamExtractor extends StreamExtractor {
     private JsonObject videoPrimaryInfoRenderer;
     private JsonObject videoSecondaryInfoRenderer;
     private int ageLimit;
+
+    @Nullable
+    private DashMpdParser.Result dashStreams;
 
     @Nonnull
     private List<SubtitlesInfo> subtitlesInfos = new ArrayList<>();
@@ -436,6 +444,10 @@ public class YoutubeStreamExtractor extends StreamExtractor {
             throw new ParsingException("Could not get audio streams", e);
         }
 
+        if(dashStreams != null && dashStreams.getAudioStreams() != null) {
+            appendDashStreams(audioStreams, dashStreams.getAudioStreams());
+        }
+
         return audioStreams;
     }
 
@@ -457,6 +469,9 @@ public class YoutubeStreamExtractor extends StreamExtractor {
             throw new ParsingException("Could not get video streams", e);
         }
 
+        if(dashStreams != null && dashStreams.getVideoStreams() != null) {
+            appendDashStreams(videoStreams, dashStreams.getVideoStreams());
+        }
         return videoStreams;
     }
 
@@ -478,7 +493,19 @@ public class YoutubeStreamExtractor extends StreamExtractor {
             throw new ParsingException("Could not get video only streams", e);
         }
 
+        if(dashStreams != null && dashStreams.getVideoOnlyStreams() != null) {
+            appendDashStreams(videoOnlyStreams, dashStreams.getVideoOnlyStreams());
+        }
+
         return videoOnlyStreams;
+    }
+
+    private <T extends Stream> void appendDashStreams(List<T> streams, List<T> dashStreams) {
+        for (T stream : dashStreams) {
+            if (!Stream.containSimilarStream(stream, streams)) {
+                streams.add(stream);
+            }
+        }
     }
 
     @Override
@@ -640,6 +667,27 @@ public class YoutubeStreamExtractor extends StreamExtractor {
         if (subtitlesInfos.isEmpty()) {
             subtitlesInfos.addAll(getAvailableSubtitlesInfo());
         }
+
+        dashStreams = fetchStreamsFromDash();
+    }
+
+    @Nullable
+    private DashMpdParser.Result fetchStreamsFromDash() {
+        String dashMpdUrl = null;
+        try {
+            dashMpdUrl = getDashMpdUrl();
+        } catch (ParsingException e) {
+            // ignore
+        }
+        if (!isNullOrEmpty(dashMpdUrl)) {
+            try {
+                return YoutubeDashMpdParser.INSTANCE.getStreams(dashMpdUrl);
+            } catch (Exception e) {
+                // Sometimes we receive 403 (forbidden) error when trying to download the
+                // manifest (similar to what happens with youtube-dl),
+            }
+        }
+        return null;
     }
 
     private JsonObject getPlayerArgs(JsonObject playerConfig) throws ParsingException {
