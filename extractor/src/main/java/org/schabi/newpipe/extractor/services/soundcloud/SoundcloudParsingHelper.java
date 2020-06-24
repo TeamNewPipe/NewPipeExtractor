@@ -43,13 +43,15 @@ public class SoundcloudParsingHelper {
     private SoundcloudParsingHelper() {
     }
 
-    public static String clientId() throws ExtractionException, IOException {
+    public synchronized static String clientId() throws ExtractionException, IOException {
         if (!isNullOrEmpty(clientId)) return clientId;
 
         Downloader dl = NewPipe.getDownloader();
         clientId = HARDCODED_CLIENT_ID;
         if (checkIfHardcodedClientIdIsValid()) {
             return clientId;
+        } else {
+            clientId = null;
         }
 
         final Response download = dl.get("https://soundcloud.com");
