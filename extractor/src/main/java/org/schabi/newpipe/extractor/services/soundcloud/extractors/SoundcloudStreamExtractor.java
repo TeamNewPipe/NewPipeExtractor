@@ -4,13 +4,10 @@ import com.grack.nanojson.JsonArray;
 import com.grack.nanojson.JsonObject;
 import com.grack.nanojson.JsonParser;
 import com.grack.nanojson.JsonParserException;
-
 import org.schabi.newpipe.extractor.MediaFormat;
-import org.schabi.newpipe.extractor.NewPipe;
 import org.schabi.newpipe.extractor.StreamingService;
 import org.schabi.newpipe.extractor.downloader.Downloader;
 import org.schabi.newpipe.extractor.exceptions.ContentNotAvailableException;
-import org.schabi.newpipe.extractor.exceptions.ContentNotSupportedException;
 import org.schabi.newpipe.extractor.exceptions.ExtractionException;
 import org.schabi.newpipe.extractor.exceptions.ParsingException;
 import org.schabi.newpipe.extractor.linkhandler.LinkHandler;
@@ -26,6 +23,7 @@ import org.schabi.newpipe.extractor.stream.StreamType;
 import org.schabi.newpipe.extractor.stream.SubtitlesStream;
 import org.schabi.newpipe.extractor.stream.VideoStream;
 
+import javax.annotation.Nonnull;
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
@@ -34,10 +32,7 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Locale;
 
-import javax.annotation.Nonnull;
-
 import static org.schabi.newpipe.extractor.utils.JsonUtils.EMPTY_STRING;
-import static org.schabi.newpipe.extractor.utils.Utils.isNullOrEmpty;
 
 public class SoundcloudStreamExtractor extends StreamExtractor {
     private JsonObject track;
@@ -176,8 +171,7 @@ public class SoundcloudStreamExtractor extends StreamExtractor {
 
     @Override
     public List<AudioStream> getAudioStreams() throws IOException, ExtractionException {
-        List<AudioStream> audioStreams = new ArrayList<>();
-        Downloader dl = NewPipe.getDownloader();
+        final List<AudioStream> audioStreams = new ArrayList<>();
 
         // Streams can be streamable and downloadable - or explicitly not.
         // For playing the track, it is only necessary to have a streamable track.
@@ -185,44 +179,62 @@ public class SoundcloudStreamExtractor extends StreamExtractor {
         if (!track.getBoolean("streamable")) return audioStreams;
 
         try {
-            JsonArray transcodings = track.getObject("media").getArray("transcodings");
+            final JsonArray transcodings = track.getObject("media").getArray("transcodings");
 
-            // get information about what stream formats are available
+            // Get information about what stream formats are available
             for (Object transcoding : transcodings) {
+                final JsonObject transcodingObject = (JsonObject) transcoding;
+                String url = transcodingObject.getString("url");
+                final String preset = transcodingObject.getString("preset");
+                final JsonObject format = transcodingObject.getObject("format");
+                final String protocol = format.getString("protocol");
 
-                JsonObject t = (JsonObject) transcoding;
-                String url = t.getString("url");
+                final MediaFormat mediaFormat;
+                final int mediaQuality;
 
-                if (!isNullOrEmpty(url)) {
-
-                    // We can only play the mp3 format, but not handle m3u playlists / streams.
-                    // what about Opus?
-                    if (t.getString("preset").contains("mp3")
-                            && t.getObject("format").getString("protocol").equals("progressive")) {
-                        // This url points to the endpoint which generates a unique and short living url to the stream.
-                        // TODO: move this to a separate method to generate valid urls when needed (e.g. resuming a paused stream)
-                        url += "?client_id=" + SoundcloudParsingHelper.clientId();
-                        String res = dl.get(url).responseBody();
-
-                        try {
-                            JsonObject mp3UrlObject = JsonParser.object().from(res);
-                            // Links in this file are also only valid for a short period.
-                            audioStreams.add(new AudioStream(
-                                    DeliveryFormat.direct(mp3UrlObject.getString("url")),
-                                    MediaFormat.MP3, 128));
-                        } catch (JsonParserException e) {
-                            throw new ParsingException("Could not parse streamable url", e);
-                        }
-                    }
+                if (preset.startsWith("mp3")) {
+                    mediaFormat = MediaFormat.MP3;
+                } else if (preset.startsWith("opus")) {
+                    mediaFormat = MediaFormat.OPUS;
+                } else {
+                    throw new ParsingException("Unsupported media format: " + preset);
                 }
+
+                if (preset.equals("mp3_0_0") || preset.equals("mp3_0_1")
+                        || preset.equals("mp3_standard")) {
+                    mediaQuality = 128;
+                } else if (preset.equals("opus_0_0")) {
+                    mediaQuality = 64;
+                } else {
+                    throw new ParsingException("Unsupported media quality: " + preset);
+                }
+
+                url += "?client_id=" + SoundcloudParsingHelper.clientId();
+                final String urlResponse = getDownloader().get(url).responseBody();
+
+                final JsonObject urlObject;
+                try {
+                    urlObject = JsonParser.object().from(urlResponse);
+                } catch (JsonParserException e) {
+                    throw new ParsingException("Could not parse url response", e);
+                }
+
+                final DeliveryFormat deliveryFormat;
+                final String mediaUrl = urlObject.getString("url");
+
+                if (protocol.equalsIgnoreCase("progressive")) {
+                    deliveryFormat = DeliveryFormat.direct(mediaUrl);
+                } else if (protocol.equalsIgnoreCase("hls")) {
+                    deliveryFormat = DeliveryFormat.hls(mediaUrl);
+                } else {
+                    throw new ParsingException("Unsupported protocol: " + protocol);
+                }
+
+                audioStreams.add(new AudioStream(deliveryFormat, mediaFormat, mediaQuality));
             }
 
         } catch (NullPointerException e) {
             throw new ExtractionException("Could not get SoundCloud's track audio url", e);
-        }
-
-        if (audioStreams.isEmpty()) {
-            throw new ContentNotSupportedException("HLS audio streams are not yet supported");
         }
 
         return audioStreams;
