@@ -2,7 +2,6 @@ package org.schabi.newpipe.extractor.services.youtube.linkHandler;
 
 import org.schabi.newpipe.extractor.exceptions.FoundAdException;
 import org.schabi.newpipe.extractor.exceptions.ParsingException;
-import org.schabi.newpipe.extractor.linkhandler.LinkHandler;
 import org.schabi.newpipe.extractor.linkhandler.LinkHandlerFactory;
 import org.schabi.newpipe.extractor.services.youtube.YoutubeParsingHelper;
 import org.schabi.newpipe.extractor.utils.Utils;
@@ -14,8 +13,6 @@ import java.net.URISyntaxException;
 import java.net.URL;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-
-import static org.schabi.newpipe.extractor.services.youtube.YoutubeParsingHelper.BASE_YOUTUBE_INTENT_URL;
 
 /*
  * Created by Christian Schabesberger on 02.02.16.
@@ -64,15 +61,6 @@ public class YoutubeStreamLinkHandlerFactory extends LinkHandlerFactory {
             return extractedId;
         } else {
             throw new ParsingException("The given string is not a Youtube-Video-ID");
-        }
-    }
-
-    @Override
-    public LinkHandler fromUrl(String url) throws ParsingException {
-        if (url.startsWith(BASE_YOUTUBE_INTENT_URL)) {
-            return super.fromUrl(url, BASE_YOUTUBE_INTENT_URL);
-        } else {
-            return super.fromUrl(url);
         }
     }
 

@@ -182,13 +182,18 @@ public class Utils {
     }
 
     public static String getBaseUrl(String url) throws ParsingException {
-        URL uri;
         try {
-            uri = stringToURL(url);
+            final URL uri = stringToURL(url);
+            return uri.getProtocol() + "://" + uri.getAuthority();
         } catch (MalformedURLException e) {
+            final String message = e.getMessage();
+            if (message.startsWith("unknown protocol: ")) {
+                System.out.println(message.substring(18));
+                return message.substring(18); // return just the protocol (e.g. vnd.youtube)
+            }
+
             throw new ParsingException("Malformed url: " + url, e);
         }
-        return uri.getProtocol() + "://" + uri.getAuthority();
     }
 
     public static boolean isNullOrEmpty(final String str) {

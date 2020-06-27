@@ -21,4 +21,13 @@ public class UtilsTest {
     public void testJoin() {
         assertEquals("some,random,stuff", Utils.join(",", Arrays.asList("some", "random", "stuff")));
     }
+
+    @Test
+    public void testGetBaseUrl() throws ParsingException {
+        assertEquals("https://www.youtube.com", Utils.getBaseUrl("https://www.youtube.com/watch?v=Hu80uDzh8RY"));
+        assertEquals("vnd.youtube", Utils.getBaseUrl("vnd.youtube://www.youtube.com/watch?v=jZViOEv90dI"));
+        assertEquals("vnd.youtube", Utils.getBaseUrl("vnd.youtube:jZViOEv90dI"));
+        assertEquals("vnd.youtube", Utils.getBaseUrl("vnd.youtube://n8X9_MgEdCg"));
+        assertEquals("https://music.youtube.com", Utils.getBaseUrl("https://music.youtube.com/watch?v=O0EDx9WAelc"));
+    }
 }
