@@ -196,6 +196,26 @@ public class Utils {
         }
     }
 
+    /**
+     * If the provided url is a Google search redirect, then the actual url is extracted from the
+     * {@code url=} query value and returned, otherwise the original url is returned.
+     * @param url the url which can possibly be a Google search redirect
+     * @return an url with no Google search redirects
+     */
+    public static String followGoogleRedirectIfNeeded(final String url) {
+        // if the url is a redirect from a Google search, extract the actual url
+        try {
+            final URL decoded = Utils.stringToURL(url);
+            if (decoded.getHost().contains("google") && decoded.getPath().equals("/url")) {
+                return URLDecoder.decode(Parser.matchGroup1("&url=([^&]+)(?:&|$)", url), "UTF-8");
+            }
+        } catch (final Exception ignored) {
+        }
+
+        // url is not a google search redirect
+        return url;
+    }
+
     public static boolean isNullOrEmpty(final String str) {
         return str == null || str.isEmpty();
     }

@@ -16,6 +16,7 @@ import org.schabi.newpipe.extractor.search.SearchExtractor;
 import org.schabi.newpipe.extractor.stream.StreamExtractor;
 import org.schabi.newpipe.extractor.subscription.SubscriptionExtractor;
 import org.schabi.newpipe.extractor.suggestion.SuggestionExtractor;
+import org.schabi.newpipe.extractor.utils.Utils;
 
 import javax.annotation.Nullable;
 import java.util.Collections;
@@ -277,12 +278,13 @@ public abstract class StreamingService {
      * Figures out where the link is pointing to (a channel, a video, a playlist, etc.)
      * @param url the url on which it should be decided of which link type it is
      * @return the link type of url
-     * @throws ParsingException
      */
     public final LinkType getLinkTypeByUrl(String url) throws ParsingException {
-        LinkHandlerFactory sH = getStreamLHFactory();
-        LinkHandlerFactory cH = getChannelLHFactory();
-        LinkHandlerFactory pH = getPlaylistLHFactory();
+        url = Utils.followGoogleRedirectIfNeeded(url);
+
+        final LinkHandlerFactory sH = getStreamLHFactory();
+        final LinkHandlerFactory cH = getChannelLHFactory();
+        final LinkHandlerFactory pH = getPlaylistLHFactory();
 
         if (sH != null && sH.acceptUrl(url)) {
             return LinkType.STREAM;

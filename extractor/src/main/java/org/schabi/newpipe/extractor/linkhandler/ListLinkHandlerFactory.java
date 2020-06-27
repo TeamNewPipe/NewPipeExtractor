@@ -32,7 +32,8 @@ public abstract class ListLinkHandlerFactory extends LinkHandlerFactory {
 
     @Override
     public ListLinkHandler fromUrl(String url) throws ParsingException {
-        String baseUrl = Utils.getBaseUrl(url);
+        url = Utils.followGoogleRedirectIfNeeded(url);
+        final String baseUrl = Utils.getBaseUrl(url);
         return fromUrl(url, baseUrl);
     }
 

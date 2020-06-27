@@ -30,4 +30,19 @@ public class UtilsTest {
         assertEquals("vnd.youtube", Utils.getBaseUrl("vnd.youtube://n8X9_MgEdCg"));
         assertEquals("https://music.youtube.com", Utils.getBaseUrl("https://music.youtube.com/watch?v=O0EDx9WAelc"));
     }
+
+    @Test
+    public void testFollowGoogleRedirect() {
+        assertEquals("https://www.youtube.com/watch?v=Hu80uDzh8RY",
+                Utils.followGoogleRedirectIfNeeded("https://www.google.it/url?sa=t&rct=j&q=&esrc=s&cd=&cad=rja&uact=8&url=https%3A%2F%2Fwww.youtube.com%2Fwatch%3Fv%3DHu80uDzh8RY&source=video"));
+        assertEquals("https://www.youtube.com/watch?v=0b6cFWG45kA",
+                Utils.followGoogleRedirectIfNeeded("https://www.google.com/url?sa=t&rct=j&q=&esrc=s&source=video&cd=&cad=rja&uact=8&url=https%3A%2F%2Fwww.youtube.com%2Fwatch%3Fv%3D0b6cFWG45kA"));
+        assertEquals("https://soundcloud.com/ciaoproduction",
+                Utils.followGoogleRedirectIfNeeded("https://www.google.com/url?sa=t&url=https%3A%2F%2Fsoundcloud.com%2Fciaoproduction&rct=j&q=&esrc=s&source=web&cd="));
+
+        assertEquals("https://www.youtube.com/watch?v=Hu80uDzh8RY&param=xyz",
+                Utils.followGoogleRedirectIfNeeded("https://www.youtube.com/watch?v=Hu80uDzh8RY&param=xyz"));
+        assertEquals("https://www.youtube.com/watch?v=Hu80uDzh8RY&url=hello",
+                Utils.followGoogleRedirectIfNeeded("https://www.youtube.com/watch?v=Hu80uDzh8RY&url=hello"));
+    }
 }

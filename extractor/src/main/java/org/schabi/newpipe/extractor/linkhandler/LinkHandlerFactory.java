@@ -42,12 +42,30 @@ public abstract class LinkHandlerFactory {
     // Logic
     ///////////////////////////////////
 
+    /**
+     * Builds a {@link LinkHandler} from a url.<br>
+     * Be sure to call {@link Utils#followGoogleRedirectIfNeeded(String)} on the url if overriding
+     * this function.
+     * @param url the url to extract path and id from
+     * @return a {@link LinkHandler} complete with information
+     */
     public LinkHandler fromUrl(String url) throws ParsingException {
         if (url == null) throw new IllegalArgumentException("url can not be null");
+        url = Utils.followGoogleRedirectIfNeeded(url);
         final String baseUrl = Utils.getBaseUrl(url);
         return fromUrl(url, baseUrl);
     }
 
+    /**
+     * Builds a {@link LinkHandler} from a url and a base url. The url is expected to be already
+     * polished from google search redirects (otherwise how could {@code baseUrl} have been
+     * extracted?).<br>
+     * So do not call {@link Utils#followGoogleRedirectIfNeeded(String)} on the url if overriding
+     * this function, since that should be done in {@link #fromUrl(String)}.
+     * @param url the url without google search redirects to extract id from
+     * @param baseUrl the base url
+     * @return a {@link LinkHandler} complete with information
+     */
     public LinkHandler fromUrl(String url, String baseUrl) throws ParsingException {
         if (url == null) throw new IllegalArgumentException("url can not be null");
         if (!acceptUrl(url)) {
