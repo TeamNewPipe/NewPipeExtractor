@@ -113,7 +113,7 @@ public class YoutubeParsingHelper {
      * @return the duration in seconds
      * @throws ParsingException when more than 3 seperators are found
      */
-    public static int parseDurationString(String input)
+    public static int parseDurationString(final String input)
             throws ParsingException, NumberFormatException {
         // If time separator : is not detected, try . instead
         final String[] splitInput = input.contains(":")
