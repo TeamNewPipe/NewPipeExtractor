@@ -279,18 +279,18 @@ public abstract class StreamingService {
      * @param url the url on which it should be decided of which link type it is
      * @return the link type of url
      */
-    public final LinkType getLinkTypeByUrl(String url) throws ParsingException {
-        url = Utils.followGoogleRedirectIfNeeded(url);
+    public final LinkType getLinkTypeByUrl(final String url) throws ParsingException {
+        final String polishedUrl = Utils.followGoogleRedirectIfNeeded(url);
 
         final LinkHandlerFactory sH = getStreamLHFactory();
         final LinkHandlerFactory cH = getChannelLHFactory();
         final LinkHandlerFactory pH = getPlaylistLHFactory();
 
-        if (sH != null && sH.acceptUrl(url)) {
+        if (sH != null && sH.acceptUrl(polishedUrl)) {
             return LinkType.STREAM;
-        } else if (cH != null && cH.acceptUrl(url)) {
+        } else if (cH != null && cH.acceptUrl(polishedUrl)) {
             return LinkType.CHANNEL;
-        } else if (pH != null && pH.acceptUrl(url)) {
+        } else if (pH != null && pH.acceptUrl(polishedUrl)) {
             return LinkType.PLAYLIST;
         } else {
             return LinkType.NONE;

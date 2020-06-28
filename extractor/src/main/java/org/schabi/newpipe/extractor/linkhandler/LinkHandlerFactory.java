@@ -49,11 +49,10 @@ public abstract class LinkHandlerFactory {
      * @param url the url to extract path and id from
      * @return a {@link LinkHandler} complete with information
      */
-    public LinkHandler fromUrl(String url) throws ParsingException {
-        if (url == null) throw new IllegalArgumentException("url can not be null");
-        url = Utils.followGoogleRedirectIfNeeded(url);
-        final String baseUrl = Utils.getBaseUrl(url);
-        return fromUrl(url, baseUrl);
+    public LinkHandler fromUrl(final String url) throws ParsingException {
+        final String polishedUrl = Utils.followGoogleRedirectIfNeeded(url);
+        final String baseUrl = Utils.getBaseUrl(polishedUrl);
+        return fromUrl(polishedUrl, baseUrl);
     }
 
     /**
