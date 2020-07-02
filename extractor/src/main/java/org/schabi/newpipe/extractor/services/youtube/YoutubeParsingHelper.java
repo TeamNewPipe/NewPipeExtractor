@@ -105,13 +105,29 @@ public class YoutubeParsingHelper {
 
     public static boolean isInvidioURL(URL url) {
         String host = url.getHost();
-        return host.equalsIgnoreCase("invidio.us") || host.equalsIgnoreCase("dev.invidio.us") || host.equalsIgnoreCase("www.invidio.us") || host.equalsIgnoreCase("invidious.snopyta.org") || host.equalsIgnoreCase("de.invidious.snopyta.org") || host.equalsIgnoreCase("fi.invidious.snopyta.org") || host.equalsIgnoreCase("vid.wxzm.sx") || host.equalsIgnoreCase("invidious.kabi.tk") || host.equalsIgnoreCase("invidiou.sh") || host.equalsIgnoreCase("www.invidiou.sh") || host.equalsIgnoreCase("no.invidiou.sh") || host.equalsIgnoreCase("invidious.enkirton.net") || host.equalsIgnoreCase("tube.poal.co") || host.equalsIgnoreCase("invidious.13ad.de") || host.equalsIgnoreCase("yt.elukerio.org");
+        return host.equalsIgnoreCase("invidio.us")
+                || host.equalsIgnoreCase("dev.invidio.us")
+                || host.equalsIgnoreCase("www.invidio.us")
+                || host.equalsIgnoreCase("invidious.snopyta.org")
+                || host.equalsIgnoreCase("fi.invidious.snopyta.org")
+                || host.equalsIgnoreCase("yewtu.be")
+                || host.equalsIgnoreCase("invidious.ggc-project.de")
+                || host.equalsIgnoreCase("yt.maisputain.ovh")
+                || host.equalsIgnoreCase("invidious.13ad.de")
+                || host.equalsIgnoreCase("invidious.toot.koeln")
+                || host.equalsIgnoreCase("invidious.fdn.fr")
+                || host.equalsIgnoreCase("watch.nettohikari.com")
+                || host.equalsIgnoreCase("invidious.snwmds.net")
+                || host.equalsIgnoreCase("invidious.snwmds.org")
+                || host.equalsIgnoreCase("invidious.snwmds.com")
+                || host.equalsIgnoreCase("invidious.sunsetravens.com")
+                || host.equalsIgnoreCase("invidious.gachirangers.com");
     }
 
     /**
-     * Parses the duration string of the video expecting ":" or "." as seperators
+     * Parses the duration string of the video expecting ":" or "." as separators
      * @return the duration in seconds
-     * @throws ParsingException when more than 3 seperators are found
+     * @throws ParsingException when more than 3 separators are found
      */
     public static int parseDurationString(final String input)
             throws ParsingException, NumberFormatException {
