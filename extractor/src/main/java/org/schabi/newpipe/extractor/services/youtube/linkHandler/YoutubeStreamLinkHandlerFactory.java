@@ -1,7 +1,5 @@
 package org.schabi.newpipe.extractor.services.youtube.linkHandler;
 
-import static org.schabi.newpipe.extractor.services.youtube.YoutubeParsingHelper.BASE_YOUTUBE_INTENT_URL;
-
 import org.schabi.newpipe.extractor.exceptions.FoundAdException;
 import org.schabi.newpipe.extractor.exceptions.ParsingException;
 import org.schabi.newpipe.extractor.linkhandler.LinkHandler;
@@ -9,12 +7,13 @@ import org.schabi.newpipe.extractor.linkhandler.LinkHandlerFactory;
 import org.schabi.newpipe.extractor.services.youtube.YoutubeParsingHelper;
 import org.schabi.newpipe.extractor.utils.Utils;
 
+import javax.annotation.Nullable;
 import java.net.MalformedURLException;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.net.URL;
 
-import javax.annotation.Nullable;
+import static org.schabi.newpipe.extractor.services.youtube.YoutubeParsingHelper.BASE_YOUTUBE_INTENT_URL;
 
 /*
  * Created by Christian Schabesberger on 02.02.16.
@@ -61,7 +60,7 @@ public class YoutubeStreamLinkHandlerFactory extends LinkHandlerFactory {
 
     @Override
     public LinkHandler fromUrl(String url) throws ParsingException {
-        if (url.startsWith(BASE_YOUTUBE_INTENT_URL)){
+        if (url.startsWith(BASE_YOUTUBE_INTENT_URL)) {
             return super.fromUrl(url, BASE_YOUTUBE_INTENT_URL);
         } else {
             return super.fromUrl(url);
@@ -191,17 +190,19 @@ public class YoutubeStreamLinkHandlerFactory extends LinkHandlerFactory {
             case "DEV.INVIDIO.US":
             case "INVIDIO.US":
             case "INVIDIOUS.SNOPYTA.ORG":
-            case "DE.INVIDIOUS.SNOPYTA.ORG":
             case "FI.INVIDIOUS.SNOPYTA.ORG":
-            case "VID.WXZM.SX":
-            case "INVIDIOUS.KABI.TK":
-            case "INVIDIOU.SH":
-            case "WWW.INVIDIOU.SH":
-            case "NO.INVIDIOU.SH":
-            case "INVIDIOUS.ENKIRTON.NET":
-            case "TUBE.POAL.CO":
+            case "YEWTU.BE":
+            case "INVIDIOUS.GGC-PROJECT.DE":
+            case "YT.MAISPUTAIN.OVH":
             case "INVIDIOUS.13AD.DE":
-            case "YT.ELUKERIO.ORG": { // code-block for hooktube.com and Invidious instances
+            case "INVIDIOUS.TOOT.KOELN":
+            case "INVIDIOUS.FDN.FR":
+            case "WATCH.NETTOHIKARI.COM":
+            case "INVIDIOUS.SNWMDS.NET":
+            case "INVIDIOUS.SNWMDS.ORG":
+            case "INVIDIOUS.SNWMDS.COM":
+            case "INVIDIOUS.SUNSETRAVENS.COM":
+            case "INVIDIOUS.GACHIRANGERS.COM": { // code-block for hooktube.com and Invidious instances
                 if (path.equals("watch")) {
                     String viewQueryValue = Utils.getQueryValue(url, "v");
                     if (viewQueryValue != null) {
