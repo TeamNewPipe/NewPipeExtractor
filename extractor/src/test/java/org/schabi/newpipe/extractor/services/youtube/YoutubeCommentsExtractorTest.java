@@ -25,10 +25,8 @@ public class YoutubeCommentsExtractorTest {
 
     private static final String urlYT = "https://www.youtube.com/watch?v=D00Au7k3i6o";
     private static final String urlInvidious = "https://invidio.us/watch?v=D00Au7k3i6o";
-    private static final String urlInvidioush = "https://invidiou.sh/watch?v=D00Au7k3i6o";
     private static YoutubeCommentsExtractor extractorYT;
     private static YoutubeCommentsExtractor extractorInvidious;
-    private static YoutubeCommentsExtractor extractorInvidioush;
 
     @BeforeClass
     public static void setUp() throws Exception {
@@ -37,15 +35,12 @@ public class YoutubeCommentsExtractorTest {
                 .getCommentsExtractor(urlYT);
         extractorInvidious = (YoutubeCommentsExtractor) YouTube
                 .getCommentsExtractor(urlInvidious);
-        extractorInvidioush = (YoutubeCommentsExtractor) YouTube
-                .getCommentsExtractor(urlInvidioush);
     }
 
     @Test
     public void testGetComments() throws IOException, ExtractionException {
         assertTrue(getCommentsHelper(extractorYT));
         assertTrue(getCommentsHelper(extractorInvidious));
-        assertTrue(getCommentsHelper(extractorInvidioush));
     }
 
     private boolean getCommentsHelper(YoutubeCommentsExtractor extractor) throws IOException, ExtractionException {
@@ -65,7 +60,6 @@ public class YoutubeCommentsExtractorTest {
     public void testGetCommentsFromCommentsInfo() throws IOException, ExtractionException {
         assertTrue(getCommentsFromCommentsInfoHelper(urlYT));
         assertTrue(getCommentsFromCommentsInfoHelper(urlInvidious));
-        assertTrue(getCommentsFromCommentsInfoHelper(urlInvidioush));
     }
 
     private boolean getCommentsFromCommentsInfoHelper(String url) throws IOException, ExtractionException {
