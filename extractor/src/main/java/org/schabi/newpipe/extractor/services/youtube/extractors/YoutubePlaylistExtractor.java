@@ -54,7 +54,7 @@ public class YoutubePlaylistExtractor extends PlaylistExtractor {
     }
 
     private JsonObject getUploaderInfo() throws ParsingException {
-        JsonArray items = initialData.getObject("sidebar").getObject("playlistSidebarRenderer").getArray("items");
+        final JsonArray items = initialData.getObject("sidebar").getObject("playlistSidebarRenderer").getArray("items");
 
         JsonObject videoOwner = items.getObject(1).getObject("playlistSidebarSecondaryInfoRenderer").getObject("videoOwner");
         if (videoOwner.has("videoOwnerRenderer")) {
@@ -81,7 +81,7 @@ public class YoutubePlaylistExtractor extends PlaylistExtractor {
     @Nonnull
     @Override
     public String getName() throws ParsingException {
-        String name = getTextFromObject(playlistInfo.getObject("title"));
+        final String name = getTextFromObject(playlistInfo.getObject("title"));
         if (name != null && !name.isEmpty()) return name;
 
         return initialData.getObject("microformat").getObject("microformatDataRenderer").getString("title");
@@ -130,7 +130,7 @@ public class YoutubePlaylistExtractor extends PlaylistExtractor {
     @Override
     public String getUploaderAvatarUrl() throws ParsingException {
         try {
-            String url = getUploaderInfo().getObject("thumbnail").getArray("thumbnails").getObject(0).getString("url");
+            final String url = getUploaderInfo().getObject("thumbnail").getArray("thumbnails").getObject(0).getString("url");
 
             return fixThumbnailUrl(url);
         } catch (Exception e) {
@@ -141,7 +141,7 @@ public class YoutubePlaylistExtractor extends PlaylistExtractor {
     @Override
     public long getStreamCount() throws ParsingException {
         try {
-            String viewsText = getTextFromObject(getPlaylistInfo().getArray("stats").getObject(0));
+            final String viewsText = getTextFromObject(getPlaylistInfo().getArray("stats").getObject(0));
             return Long.parseLong(Utils.removeNonDigitCharacters(viewsText));
         } catch (Exception e) {
             throw new ParsingException("Could not get video count from playlist", e);
@@ -220,9 +220,9 @@ public class YoutubePlaylistExtractor extends PlaylistExtractor {
             return null;
         }
 
-        JsonObject nextContinuationData = continuations.getObject(0).getObject("nextContinuationData");
-        String continuation = nextContinuationData.getString("continuation");
-        String clickTrackingParams = nextContinuationData.getString("clickTrackingParams");
+        final JsonObject nextContinuationData = continuations.getObject(0).getObject("nextContinuationData");
+        final String continuation = nextContinuationData.getString("continuation");
+        final String clickTrackingParams = nextContinuationData.getString("clickTrackingParams");
         return new Page("https://www.youtube.com/browse_ajax?ctoken=" + continuation + "&continuation=" + continuation
                 + "&itct=" + clickTrackingParams);
     }
@@ -230,7 +230,7 @@ public class YoutubePlaylistExtractor extends PlaylistExtractor {
     private void collectStreamsFrom(final StreamInfoItemsCollector collector, final JsonArray videos) {
         final TimeAgoParser timeAgoParser = getTimeAgoParser();
 
-        for (Object video : videos) {
+        for (final Object video : videos) {
             if (((JsonObject) video).has("playlistVideoRenderer")) {
                 collector.commit(new YoutubeStreamInfoItemExtractor(((JsonObject) video).getObject("playlistVideoRenderer"), timeAgoParser) {
                     @Override

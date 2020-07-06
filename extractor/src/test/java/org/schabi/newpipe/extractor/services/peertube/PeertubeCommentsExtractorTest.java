@@ -35,22 +35,22 @@ public class PeertubeCommentsExtractorTest {
         public void testGetComments() throws IOException, ExtractionException {
             InfoItemsPage<CommentsInfoItem> comments = extractor.getInitialPage();
             boolean result = findInComments(comments, "@root A great documentary on a great guy.");
-    
+
             while (comments.hasNextPage() && !result) {
                 comments = extractor.getPage(comments.getNextPage());
                 result = findInComments(comments, "@root A great documentary on a great guy.");
             }
-    
+
             assertTrue(result);
         }
-    
+
         @Test
         public void testGetCommentsFromCommentsInfo() throws IOException, ExtractionException {
             CommentsInfo commentsInfo = CommentsInfo.getInfo("https://framatube.org/videos/watch/a8ea95b8-0396-49a6-8f30-e25e25fb2828");
             assertEquals("Comments", commentsInfo.getName());
-    
+
             boolean result = findInComments(commentsInfo.getRelatedItems(), "Loved it!!!");
-    
+
             Page nextPage = commentsInfo.getNextPage();
             InfoItemsPage<CommentsInfoItem> moreItems = new InfoItemsPage<>(null, nextPage, null);
             while (moreItems.hasNextPage() && !result) {
@@ -58,10 +58,10 @@ public class PeertubeCommentsExtractorTest {
                 result = findInComments(moreItems.getItems(), "Loved it!!!");
                 nextPage = moreItems.getNextPage();
             }
-    
+
             assertTrue(result);
         }
-    
+
         @Test
         public void testGetCommentsAllData() throws IOException, ExtractionException {
             InfoItemsPage<CommentsInfoItem> comments = extractor.getInitialPage();
@@ -78,11 +78,11 @@ public class PeertubeCommentsExtractorTest {
                 assertFalse(c.getLikeCount() != -1);
             }
         }
-    
+
         private boolean findInComments(InfoItemsPage<CommentsInfoItem> comments, String comment) {
             return findInComments(comments.getItems(), comment);
         }
-    
+
         private boolean findInComments(List<CommentsInfoItem> comments, String comment) {
             for (CommentsInfoItem c : comments) {
                 if (c.getCommentText().contains(comment)) {

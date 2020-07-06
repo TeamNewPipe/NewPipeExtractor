@@ -27,18 +27,18 @@ public class SoundcloudChannelExtractor extends ChannelExtractor {
     private String userId;
     private JsonObject user;
 
-    public SoundcloudChannelExtractor(StreamingService service, ListLinkHandler linkHandler) {
+    public SoundcloudChannelExtractor(final StreamingService service, final ListLinkHandler linkHandler) {
         super(service, linkHandler);
     }
 
     @Override
-    public void onFetchPage(@Nonnull Downloader downloader) throws IOException, ExtractionException {
+    public void onFetchPage(@Nonnull final Downloader downloader) throws IOException, ExtractionException {
 
         userId = getLinkHandler().getId();
-        String apiUrl = "https://api-v2.soundcloud.com/users/" + userId +
+        final String apiUrl = "https://api-v2.soundcloud.com/users/" + userId +
                 "?client_id=" + SoundcloudParsingHelper.clientId();
 
-        String response = downloader.get(apiUrl, getExtractorLocalization()).responseBody();
+        final String response = downloader.get(apiUrl, getExtractorLocalization()).responseBody();
         try {
             user = JsonParser.object().from(response);
         } catch (JsonParserException e) {
@@ -84,17 +84,17 @@ public class SoundcloudChannelExtractor extends ChannelExtractor {
     }
 
     @Override
-    public String getParentChannelName() throws ParsingException {
+    public String getParentChannelName() {
         return "";
     }
 
     @Override
-    public String getParentChannelUrl() throws ParsingException {
+    public String getParentChannelUrl() {
         return "";
     }
 
     @Override
-    public String getParentChannelAvatarUrl() throws ParsingException {
+    public String getParentChannelAvatarUrl() {
         return "";
     }
 
@@ -102,14 +102,14 @@ public class SoundcloudChannelExtractor extends ChannelExtractor {
     @Override
     public InfoItemsPage<StreamInfoItem> getInitialPage() throws ExtractionException {
         try {
-            StreamInfoItemsCollector streamInfoItemsCollector = new StreamInfoItemsCollector(getServiceId());
+            final StreamInfoItemsCollector streamInfoItemsCollector = new StreamInfoItemsCollector(getServiceId());
 
-            String apiUrl = "https://api-v2.soundcloud.com/users/" + getId() + "/tracks"
+            final String apiUrl = "https://api-v2.soundcloud.com/users/" + getId() + "/tracks"
                     + "?client_id=" + SoundcloudParsingHelper.clientId()
                     + "&limit=20"
                     + "&linked_partitioning=1";
 
-            String nextPageUrl = SoundcloudParsingHelper.getStreamsFromApiMinItems(15, streamInfoItemsCollector, apiUrl);
+            final String nextPageUrl = SoundcloudParsingHelper.getStreamsFromApiMinItems(15, streamInfoItemsCollector, apiUrl);
 
             return new InfoItemsPage<>(streamInfoItemsCollector, new Page(nextPageUrl));
         } catch (Exception e) {
@@ -123,8 +123,8 @@ public class SoundcloudChannelExtractor extends ChannelExtractor {
             throw new IllegalArgumentException("Page doesn't contain an URL");
         }
 
-        StreamInfoItemsCollector collector = new StreamInfoItemsCollector(getServiceId());
-        String nextPageUrl = SoundcloudParsingHelper.getStreamsFromApiMinItems(15, collector, page.getUrl());
+        final StreamInfoItemsCollector collector = new StreamInfoItemsCollector(getServiceId());
+        final String nextPageUrl = SoundcloudParsingHelper.getStreamsFromApiMinItems(15, collector, page.getUrl());
 
         return new InfoItemsPage<>(collector, new Page(nextPageUrl));
     }
