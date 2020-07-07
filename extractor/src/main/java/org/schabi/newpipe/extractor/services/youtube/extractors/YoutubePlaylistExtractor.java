@@ -3,6 +3,7 @@ package org.schabi.newpipe.extractor.services.youtube.extractors;
 import com.grack.nanojson.JsonArray;
 import com.grack.nanojson.JsonObject;
 
+import org.schabi.newpipe.extractor.Page;
 import org.schabi.newpipe.extractor.StreamingService;
 import org.schabi.newpipe.extractor.downloader.Downloader;
 import org.schabi.newpipe.extractor.exceptions.ExtractionException;
@@ -53,7 +54,7 @@ public class YoutubePlaylistExtractor extends PlaylistExtractor {
     }
 
     private JsonObject getUploaderInfo() throws ParsingException {
-        JsonArray items = initialData.getObject("sidebar").getObject("playlistSidebarRenderer").getArray("items");
+        final JsonArray items = initialData.getObject("sidebar").getObject("playlistSidebarRenderer").getArray("items");
 
         JsonObject videoOwner = items.getObject(1).getObject("playlistSidebarSecondaryInfoRenderer").getObject("videoOwner");
         if (videoOwner.has("videoOwnerRenderer")) {
@@ -77,19 +78,10 @@ public class YoutubePlaylistExtractor extends PlaylistExtractor {
         }
     }
 
-    @Override
-    public String getNextPageUrl() {
-        return getNextPageUrlFrom(initialData.getObject("contents").getObject("twoColumnBrowseResultsRenderer")
-                .getArray("tabs").getObject(0).getObject("tabRenderer").getObject("content")
-                .getObject("sectionListRenderer").getArray("contents").getObject(0)
-                .getObject("itemSectionRenderer").getArray("contents").getObject(0)
-                .getObject("playlistVideoListRenderer").getArray("continuations"));
-    }
-
     @Nonnull
     @Override
     public String getName() throws ParsingException {
-        String name = getTextFromObject(playlistInfo.getObject("title"));
+        final String name = getTextFromObject(playlistInfo.getObject("title"));
         if (name != null && !name.isEmpty()) return name;
 
         return initialData.getObject("microformat").getObject("microformatDataRenderer").getString("title");
@@ -138,7 +130,7 @@ public class YoutubePlaylistExtractor extends PlaylistExtractor {
     @Override
     public String getUploaderAvatarUrl() throws ParsingException {
         try {
-            String url = getUploaderInfo().getObject("thumbnail").getArray("thumbnails").getObject(0).getString("url");
+            final String url = getUploaderInfo().getObject("thumbnail").getArray("thumbnails").getObject(0).getString("url");
 
             return fixThumbnailUrl(url);
         } catch (Exception e) {
@@ -149,7 +141,7 @@ public class YoutubePlaylistExtractor extends PlaylistExtractor {
     @Override
     public long getStreamCount() throws ParsingException {
         try {
-            String viewsText = getTextFromObject(getPlaylistInfo().getArray("stats").getObject(0));
+            final String viewsText = getTextFromObject(getPlaylistInfo().getArray("stats").getObject(0));
             return Long.parseLong(Utils.removeNonDigitCharacters(viewsText));
         } catch (Exception e) {
             throw new ParsingException("Could not get video count from playlist", e);
@@ -178,6 +170,7 @@ public class YoutubePlaylistExtractor extends PlaylistExtractor {
     @Override
     public InfoItemsPage<StreamInfoItem> getInitialPage() {
         final StreamInfoItemsCollector collector = new StreamInfoItemsCollector(getServiceId());
+        Page nextPage = null;
 
         final JsonArray contents = initialData.getObject("contents").getObject("twoColumnBrowseResultsRenderer")
                 .getArray("tabs").getObject(0).getObject("tabRenderer").getObject("content")
@@ -193,48 +186,51 @@ public class YoutubePlaylistExtractor extends PlaylistExtractor {
                             .getObject("videoList").getObject("playlistVideoListRenderer").getArray("contents"));
                 }
             }
+
+            return new InfoItemsPage<>(collector, null);
         } else if (contents.getObject(0).has("playlistVideoListRenderer")) {
-            final JsonArray videos = contents.getObject(0)
-                    .getObject("playlistVideoListRenderer").getArray("contents");
-            collectStreamsFrom(collector, videos);
+            final JsonObject videos = contents.getObject(0).getObject("playlistVideoListRenderer");
+            collectStreamsFrom(collector, videos.getArray("contents"));
+
+            nextPage = getNextPageFrom(videos.getArray("continuations"));
         }
 
-        return new InfoItemsPage<>(collector, getNextPageUrl());
+        return new InfoItemsPage<>(collector, nextPage);
     }
 
     @Override
-    public InfoItemsPage<StreamInfoItem> getPage(final String pageUrl) throws IOException, ExtractionException {
-        if (isNullOrEmpty(pageUrl)) {
-            throw new ExtractionException(new IllegalArgumentException("Page url is empty or null"));
+    public InfoItemsPage<StreamInfoItem> getPage(final Page page) throws IOException, ExtractionException {
+        if (page == null || isNullOrEmpty(page.getUrl())) {
+            throw new IllegalArgumentException("Page doesn't contain an URL");
         }
 
         final StreamInfoItemsCollector collector = new StreamInfoItemsCollector(getServiceId());
-        final JsonArray ajaxJson = getJsonResponse(pageUrl, getExtractorLocalization());
+        final JsonArray ajaxJson = getJsonResponse(page.getUrl(), getExtractorLocalization());
 
         final JsonObject sectionListContinuation = ajaxJson.getObject(1).getObject("response")
                 .getObject("continuationContents").getObject("playlistVideoListContinuation");
 
         collectStreamsFrom(collector, sectionListContinuation.getArray("contents"));
 
-        return new InfoItemsPage<>(collector, getNextPageUrlFrom(sectionListContinuation.getArray("continuations")));
+        return new InfoItemsPage<>(collector, getNextPageFrom(sectionListContinuation.getArray("continuations")));
     }
 
-    private String getNextPageUrlFrom(final JsonArray continuations) {
+    private Page getNextPageFrom(final JsonArray continuations) {
         if (isNullOrEmpty(continuations)) {
-            return "";
+            return null;
         }
 
-        JsonObject nextContinuationData = continuations.getObject(0).getObject("nextContinuationData");
-        String continuation = nextContinuationData.getString("continuation");
-        String clickTrackingParams = nextContinuationData.getString("clickTrackingParams");
-        return "https://www.youtube.com/browse_ajax?ctoken=" + continuation + "&continuation=" + continuation
-                + "&itct=" + clickTrackingParams;
+        final JsonObject nextContinuationData = continuations.getObject(0).getObject("nextContinuationData");
+        final String continuation = nextContinuationData.getString("continuation");
+        final String clickTrackingParams = nextContinuationData.getString("clickTrackingParams");
+        return new Page("https://www.youtube.com/browse_ajax?ctoken=" + continuation + "&continuation=" + continuation
+                + "&itct=" + clickTrackingParams);
     }
 
     private void collectStreamsFrom(final StreamInfoItemsCollector collector, final JsonArray videos) {
         final TimeAgoParser timeAgoParser = getTimeAgoParser();
 
-        for (Object video : videos) {
+        for (final Object video : videos) {
             if (((JsonObject) video).has("playlistVideoRenderer")) {
                 collector.commit(new YoutubeStreamInfoItemExtractor(((JsonObject) video).getObject("playlistVideoRenderer"), timeAgoParser) {
                     @Override

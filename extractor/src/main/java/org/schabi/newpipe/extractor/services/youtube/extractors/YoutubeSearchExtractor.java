@@ -3,6 +3,7 @@ package org.schabi.newpipe.extractor.services.youtube.extractors;
 import com.grack.nanojson.JsonArray;
 import com.grack.nanojson.JsonObject;
 import org.schabi.newpipe.extractor.InfoItem;
+import org.schabi.newpipe.extractor.Page;
 import org.schabi.newpipe.extractor.StreamingService;
 import org.schabi.newpipe.extractor.downloader.Downloader;
 import org.schabi.newpipe.extractor.exceptions.ExtractionException;
@@ -101,28 +102,27 @@ public class YoutubeSearchExtractor extends SearchExtractor {
         final JsonArray sections = initialData.getObject("contents").getObject("twoColumnSearchResultsRenderer")
                 .getObject("primaryContents").getObject("sectionListRenderer").getArray("contents");
 
+        Page nextPage = null;
+
         for (Object section : sections) {
-            collectStreamsFrom(collector, ((JsonObject) section).getObject("itemSectionRenderer").getArray("contents"));
+            final JsonObject itemSectionRenderer = ((JsonObject) section).getObject("itemSectionRenderer");
+
+            collectStreamsFrom(collector, itemSectionRenderer.getArray("contents"));
+
+            nextPage = getNextPageFrom(itemSectionRenderer.getArray("continuations"));
         }
 
-        return new InfoItemsPage<>(collector, getNextPageUrl());
+        return new InfoItemsPage<>(collector, nextPage);
     }
 
     @Override
-    public String getNextPageUrl() throws ExtractionException {
-        return getNextPageUrlFrom(initialData.getObject("contents").getObject("twoColumnSearchResultsRenderer")
-                .getObject("primaryContents").getObject("sectionListRenderer").getArray("contents")
-                .getObject(0).getObject("itemSectionRenderer").getArray("continuations"));
-    }
-
-    @Override
-    public InfoItemsPage<InfoItem> getPage(final String pageUrl) throws IOException, ExtractionException {
-        if (isNullOrEmpty(pageUrl)) {
-            throw new ExtractionException(new IllegalArgumentException("Page url is empty or null"));
+    public InfoItemsPage<InfoItem> getPage(final Page page) throws IOException, ExtractionException {
+        if (page == null || isNullOrEmpty(page.getUrl())) {
+            throw new IllegalArgumentException("Page doesn't contain an URL");
         }
 
         final InfoItemsSearchCollector collector = new InfoItemsSearchCollector(getServiceId());
-        final JsonArray ajaxJson = getJsonResponse(pageUrl, getExtractorLocalization());
+        final JsonArray ajaxJson = getJsonResponse(page.getUrl(), getExtractorLocalization());
 
         final JsonObject itemSectionRenderer = ajaxJson.getObject(1).getObject("response")
                 .getObject("continuationContents").getObject("itemSectionContinuation");
@@ -130,7 +130,7 @@ public class YoutubeSearchExtractor extends SearchExtractor {
         collectStreamsFrom(collector, itemSectionRenderer.getArray("contents"));
         final JsonArray continuations = itemSectionRenderer.getArray("continuations");
 
-        return new InfoItemsPage<>(collector, getNextPageUrlFrom(continuations));
+        return new InfoItemsPage<>(collector, getNextPageFrom(continuations));
     }
 
     private void collectStreamsFrom(final InfoItemsSearchCollector collector, final JsonArray videos) throws NothingFoundException, ParsingException {
@@ -150,16 +150,16 @@ public class YoutubeSearchExtractor extends SearchExtractor {
         }
     }
 
-    private String getNextPageUrlFrom(final JsonArray continuations) throws ParsingException {
+    private Page getNextPageFrom(final JsonArray continuations) throws ParsingException {
         if (isNullOrEmpty(continuations)) {
-            return "";
+            return null;
         }
 
         final JsonObject nextContinuationData = continuations.getObject(0).getObject("nextContinuationData");
         final String continuation = nextContinuationData.getString("continuation");
         final String clickTrackingParams = nextContinuationData.getString("clickTrackingParams");
 
-        return getUrl() + "&pbj=1&ctoken=" + continuation + "&continuation=" + continuation
-                + "&itct=" + clickTrackingParams;
+        return new Page(getUrl() + "&pbj=1&ctoken=" + continuation + "&continuation=" + continuation
+                + "&itct=" + clickTrackingParams);
     }
 }

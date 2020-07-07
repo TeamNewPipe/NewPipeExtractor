@@ -2,6 +2,7 @@ package org.schabi.newpipe.extractor.services.youtube.extractors;
 
 import com.grack.nanojson.JsonArray;
 import com.grack.nanojson.JsonObject;
+
 import org.schabi.newpipe.extractor.comments.CommentsInfoItemExtractor;
 import org.schabi.newpipe.extractor.exceptions.ParsingException;
 import org.schabi.newpipe.extractor.localization.DateWrapper;
@@ -11,7 +12,7 @@ import org.schabi.newpipe.extractor.utils.Utils;
 
 import javax.annotation.Nullable;
 
-import static org.schabi.newpipe.extractor.utils.Utils.isNullOrEmpty;
+import static org.schabi.newpipe.extractor.services.youtube.YoutubeParsingHelper.getTextFromObject;
 
 public class YoutubeCommentsInfoItemExtractor implements CommentsInfoItemExtractor {
 
@@ -43,7 +44,7 @@ public class YoutubeCommentsInfoItemExtractor implements CommentsInfoItemExtract
     @Override
     public String getName() throws ParsingException {
         try {
-            return YoutubeCommentsExtractor.getYoutubeText(JsonUtils.getObject(json, "authorText"));
+            return getTextFromObject(JsonUtils.getObject(json, "authorText"));
         } catch (Exception e) {
             return "";
         }
@@ -52,7 +53,7 @@ public class YoutubeCommentsInfoItemExtractor implements CommentsInfoItemExtract
     @Override
     public String getTextualUploadDate() throws ParsingException {
         try {
-            return YoutubeCommentsExtractor.getYoutubeText(JsonUtils.getObject(json, "publishedTimeText"));
+            return getTextFromObject(JsonUtils.getObject(json, "publishedTimeText"));
         } catch (Exception e) {
             throw new ParsingException("Could not get publishedTimeText", e);
         }
@@ -72,7 +73,7 @@ public class YoutubeCommentsInfoItemExtractor implements CommentsInfoItemExtract
     @Override
     public int getLikeCount() throws ParsingException {
         try {
-            return JsonUtils.getNumber(json, "likeCount").intValue();
+            return json.getInt("likeCount");
         } catch (Exception e) {
             throw new ParsingException("Could not get like count", e);
         }
@@ -81,7 +82,7 @@ public class YoutubeCommentsInfoItemExtractor implements CommentsInfoItemExtract
     @Override
     public String getCommentText() throws ParsingException {
         try {
-            String commentText = YoutubeCommentsExtractor.getYoutubeText(JsonUtils.getObject(json, "contentText"));
+            String commentText = getTextFromObject(JsonUtils.getObject(json, "contentText"));
             // youtube adds U+FEFF in some comments. eg. https://www.youtube.com/watch?v=Nj4F63E59io<feff>
             return Utils.removeUTF8BOM(commentText);
         } catch (Exception e) {
@@ -111,7 +112,7 @@ public class YoutubeCommentsInfoItemExtractor implements CommentsInfoItemExtract
     @Override
     public String getUploaderName() throws ParsingException {
         try {
-            return YoutubeCommentsExtractor.getYoutubeText(JsonUtils.getObject(json, "authorText"));
+            return getTextFromObject(JsonUtils.getObject(json, "authorText"));
         } catch (Exception e) {
             return "";
         }

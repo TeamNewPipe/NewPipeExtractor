@@ -5,6 +5,7 @@ import org.junit.Test;
 import org.schabi.newpipe.DownloaderTestImpl;
 import org.schabi.newpipe.extractor.ListExtractor.InfoItemsPage;
 import org.schabi.newpipe.extractor.NewPipe;
+import org.schabi.newpipe.extractor.Page;
 import org.schabi.newpipe.extractor.comments.CommentsInfo;
 import org.schabi.newpipe.extractor.comments.CommentsInfoItem;
 import org.schabi.newpipe.extractor.exceptions.ExtractionException;
@@ -22,7 +23,6 @@ import static org.junit.Assert.assertTrue;
 import static org.schabi.newpipe.extractor.ServiceList.YouTube;
 
 public class YoutubeCommentsExtractorTest {
-
     private static final String urlYT = "https://www.youtube.com/watch?v=D00Au7k3i6o";
     private static final String urlInvidious = "https://invidio.us/watch?v=D00Au7k3i6o";
     private static YoutubeCommentsExtractor extractorYT;
@@ -33,6 +33,7 @@ public class YoutubeCommentsExtractorTest {
         NewPipe.init(DownloaderTestImpl.getInstance());
         extractorYT = (YoutubeCommentsExtractor) YouTube
                 .getCommentsExtractor(urlYT);
+        extractorYT.fetchPage();
         extractorInvidious = (YoutubeCommentsExtractor) YouTube
                 .getCommentsExtractor(urlInvidious);
     }
@@ -44,12 +45,11 @@ public class YoutubeCommentsExtractorTest {
     }
 
     private boolean getCommentsHelper(YoutubeCommentsExtractor extractor) throws IOException, ExtractionException {
-        boolean result;
         InfoItemsPage<CommentsInfoItem> comments = extractor.getInitialPage();
-        result = findInComments(comments, "s1ck m3m3");
+        boolean result = findInComments(comments, "s1ck m3m3");
 
         while (comments.hasNextPage() && !result) {
-            comments = extractor.getPage(comments.getNextPageUrl());
+            comments = extractor.getPage(comments.getNextPage());
             result = findInComments(comments, "s1ck m3m3");
         }
 
@@ -63,16 +63,18 @@ public class YoutubeCommentsExtractorTest {
     }
 
     private boolean getCommentsFromCommentsInfoHelper(String url) throws IOException, ExtractionException {
-        boolean result = false;
         CommentsInfo commentsInfo = CommentsInfo.getInfo(url);
-        result = findInComments(commentsInfo.getRelatedItems(), "s1ck m3m3");
 
-   /*     String nextPage = commentsInfo.getNextPageUrl();
-        while (!Utils.isBlank(nextPage) && !result) {
-            InfoItemsPage<CommentsInfoItem> moreItems = CommentsInfo.getMoreItems(YouTube, commentsInfo, nextPage);
+        assertEquals("Comments", commentsInfo.getName());
+        boolean result = findInComments(commentsInfo.getRelatedItems(), "s1ck m3m3");
+
+        Page nextPage = commentsInfo.getNextPage();
+        InfoItemsPage<CommentsInfoItem> moreItems = new InfoItemsPage<>(null, nextPage, null);
+        while (moreItems.hasNextPage() && !result) {
+            moreItems = CommentsInfo.getMoreItems(YouTube, commentsInfo, nextPage);
             result = findInComments(moreItems.getItems(), "s1ck m3m3");
-            nextPage = moreItems.getNextPageUrl();
-        }*/
+            nextPage = moreItems.getNextPage();
+        }
         return result;
     }
 

@@ -7,6 +7,7 @@ import com.grack.nanojson.JsonParserException;
 import com.grack.nanojson.JsonWriter;
 
 import org.schabi.newpipe.extractor.InfoItem;
+import org.schabi.newpipe.extractor.Page;
 import org.schabi.newpipe.extractor.StreamingService;
 import org.schabi.newpipe.extractor.downloader.Downloader;
 import org.schabi.newpipe.extractor.exceptions.ExtractionException;
@@ -169,32 +170,25 @@ public class YoutubeMusicSearchExtractor extends SearchExtractor {
 
         final JsonArray contents = initialData.getObject("contents").getObject("sectionListRenderer").getArray("contents");
 
-        for (Object content : contents) {
-            if (((JsonObject) content).has("musicShelfRenderer")) {
-                collectMusicStreamsFrom(collector, ((JsonObject) content).getObject("musicShelfRenderer").getArray("contents"));
-            }
-        }
-
-        return new InfoItemsPage<>(collector, getNextPageUrl());
-    }
-
-    @Override
-    public String getNextPageUrl() throws ExtractionException, IOException {
-        final JsonArray contents = initialData.getObject("contents").getObject("sectionListRenderer").getArray("contents");
+        Page nextPage = null;
 
         for (Object content : contents) {
             if (((JsonObject) content).has("musicShelfRenderer")) {
-                return getNextPageUrlFrom(((JsonObject) content).getObject("musicShelfRenderer").getArray("continuations"));
+                final JsonObject musicShelfRenderer = ((JsonObject) content).getObject("musicShelfRenderer");
+
+                collectMusicStreamsFrom(collector, musicShelfRenderer.getArray("contents"));
+
+                nextPage = getNextPageFrom(musicShelfRenderer.getArray("continuations"));
             }
         }
 
-        return "";
+        return new InfoItemsPage<>(collector, nextPage);
     }
 
     @Override
-    public InfoItemsPage<InfoItem> getPage(final String pageUrl) throws IOException, ExtractionException {
-        if (isNullOrEmpty(pageUrl)) {
-            throw new ExtractionException(new IllegalArgumentException("Page url is empty or null"));
+    public InfoItemsPage<InfoItem> getPage(final Page page) throws IOException, ExtractionException {
+        if (page == null || isNullOrEmpty(page.getUrl())) {
+            throw new IllegalArgumentException("Page doesn't contain an URL");
         }
 
         final InfoItemsSearchCollector collector = new InfoItemsSearchCollector(getServiceId());
@@ -236,7 +230,7 @@ public class YoutubeMusicSearchExtractor extends SearchExtractor {
         headers.put("Referer", Collections.singletonList("music.youtube.com"));
         headers.put("Content-Type", Collections.singletonList("application/json"));
 
-        final String responseBody = getValidJsonResponseBody(getDownloader().post(pageUrl, headers, json));
+        final String responseBody = getValidJsonResponseBody(getDownloader().post(page.getUrl(), headers, json));
 
         final JsonObject ajaxJson;
         try {
@@ -250,7 +244,7 @@ public class YoutubeMusicSearchExtractor extends SearchExtractor {
         collectMusicStreamsFrom(collector, musicShelfContinuation.getArray("contents"));
         final JsonArray continuations = musicShelfContinuation.getArray("continuations");
 
-        return new InfoItemsPage<>(collector, getNextPageUrlFrom(continuations));
+        return new InfoItemsPage<>(collector, getNextPageFrom(continuations));
     }
 
     private void collectMusicStreamsFrom(final InfoItemsSearchCollector collector, final JsonArray videos) {
@@ -495,16 +489,17 @@ public class YoutubeMusicSearchExtractor extends SearchExtractor {
         }
     }
 
-    private String getNextPageUrlFrom(final JsonArray continuations) throws ParsingException, IOException, ReCaptchaException {
+    private Page getNextPageFrom(final JsonArray continuations) throws ParsingException, IOException, ReCaptchaException {
         if (isNullOrEmpty(continuations)) {
-            return "";
+            return null;
         }
 
         final JsonObject nextContinuationData = continuations.getObject(0).getObject("nextContinuationData");
         final String continuation = nextContinuationData.getString("continuation");
         final String clickTrackingParams = nextContinuationData.getString("clickTrackingParams");
 
-        return "https://music.youtube.com/youtubei/v1/search?ctoken=" + continuation + "&continuation=" + continuation
-                + "&itct=" + clickTrackingParams + "&alt=json&key=" + YoutubeParsingHelper.getYoutubeMusicKeys()[0];
+        return new Page("https://music.youtube.com/youtubei/v1/search?ctoken=" + continuation
+                + "&continuation=" + continuation + "&itct=" + clickTrackingParams + "&alt=json"
+                + "&key=" + YoutubeParsingHelper.getYoutubeMusicKeys()[0]);
     }
 }

@@ -5,6 +5,7 @@ import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 import org.schabi.newpipe.extractor.ListExtractor;
+import org.schabi.newpipe.extractor.Page;
 import org.schabi.newpipe.extractor.StreamingService;
 import org.schabi.newpipe.extractor.downloader.Downloader;
 import org.schabi.newpipe.extractor.downloader.Response;
@@ -15,8 +16,9 @@ import org.schabi.newpipe.extractor.services.youtube.YoutubeParsingHelper;
 import org.schabi.newpipe.extractor.stream.StreamInfoItem;
 import org.schabi.newpipe.extractor.stream.StreamInfoItemsCollector;
 
-import javax.annotation.Nonnull;
 import java.io.IOException;
+
+import javax.annotation.Nonnull;
 
 public class YoutubeFeedExtractor extends FeedExtractor {
     public YoutubeFeedExtractor(StreamingService service, ListLinkHandler linkHandler) {
@@ -66,17 +68,7 @@ public class YoutubeFeedExtractor extends FeedExtractor {
     }
 
     @Override
-    public String getNextPageUrl() {
-        return null;
-    }
-
-    @Override
-    public InfoItemsPage<StreamInfoItem> getPage(String pageUrl) {
-        return null;
-    }
-
-    @Override
-    public boolean hasNextPage() {
-        return false;
+    public InfoItemsPage<StreamInfoItem> getPage(final Page page) {
+        return InfoItemsPage.emptyPage();
     }
 }

@@ -3,6 +3,8 @@ package org.schabi.newpipe.extractor.services.youtube.extractors;
 import com.grack.nanojson.JsonArray;
 import com.grack.nanojson.JsonObject;
 import com.grack.nanojson.JsonParser;
+
+import org.schabi.newpipe.extractor.Page;
 import org.schabi.newpipe.extractor.StreamingService;
 import org.schabi.newpipe.extractor.comments.CommentsExtractor;
 import org.schabi.newpipe.extractor.comments.CommentsInfoItem;
@@ -17,7 +19,6 @@ import org.schabi.newpipe.extractor.linkhandler.ListLinkHandler;
 import org.schabi.newpipe.extractor.utils.JsonUtils;
 import org.schabi.newpipe.extractor.utils.Parser;
 
-import javax.annotation.Nonnull;
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
@@ -26,19 +27,19 @@ import java.util.List;
 import java.util.Map;
 import java.util.regex.Pattern;
 
+import javax.annotation.Nonnull;
+
 import static java.util.Collections.singletonList;
 import static org.schabi.newpipe.extractor.utils.Utils.isNullOrEmpty;
 
-
 public class YoutubeCommentsExtractor extends CommentsExtractor {
-
     // using the mobile site for comments because it loads faster and uses get requests instead of post
     private static final String USER_AGENT = "Mozilla/5.0 (Android 8.1.0; Mobile; rv:62.0) Gecko/62.0 Firefox/62.0";
     private static final Pattern YT_CLIENT_NAME_PATTERN = Pattern.compile("INNERTUBE_CONTEXT_CLIENT_NAME\\\":(.*?)[,}]");
 
     private String ytClientVersion;
     private String ytClientName;
-    private InfoItemsPage<CommentsInfoItem> initPage;
+    private String responseBody;
 
     public YoutubeCommentsExtractor(StreamingService service, ListLinkHandler uiHandler) {
         super(service, uiHandler);
@@ -46,56 +47,49 @@ public class YoutubeCommentsExtractor extends CommentsExtractor {
 
     @Override
     public InfoItemsPage<CommentsInfoItem> getInitialPage() throws IOException, ExtractionException {
-        // initial page does not load any comments but is required to get comments token
-        super.fetchPage();
-        return initPage;
+        String commentsTokenInside = findValue(responseBody, "commentSectionRenderer", "}");
+        String commentsToken = findValue(commentsTokenInside, "continuation\":\"", "\"");
+        return getPage(getNextPage(commentsToken));
     }
 
-    @Override
-    public String getNextPageUrl() throws IOException, ExtractionException {
-        // initial page does not load any comments but is required to get comments token
-        super.fetchPage();
-        return initPage.getNextPageUrl();
-    }
-
-    private String getNextPageUrl(JsonObject ajaxJson) throws IOException, ParsingException {
-
+    private Page getNextPage(JsonObject ajaxJson) throws ParsingException {
         JsonArray arr;
         try {
             arr = JsonUtils.getArray(ajaxJson, "response.continuationContents.commentSectionContinuation.continuations");
         } catch (Exception e) {
-            return "";
+            return null;
         }
         if (arr.isEmpty()) {
-            return "";
+            return null;
         }
         String continuation;
         try {
             continuation = JsonUtils.getString(arr.getObject(0), "nextContinuationData.continuation");
         } catch (Exception e) {
-            return "";
+            return null;
         }
-        return getNextPageUrl(continuation);
+        return getNextPage(continuation);
     }
 
-    private String getNextPageUrl(String continuation) throws ParsingException {
+    private Page getNextPage(String continuation) throws ParsingException {
         Map<String, String> params = new HashMap<>();
         params.put("action_get_comments", "1");
         params.put("pbj", "1");
         params.put("ctoken", continuation);
         try {
-            return "https://m.youtube.com/watch_comment?" + getDataString(params);
+            return new Page("https://m.youtube.com/watch_comment?" + getDataString(params));
         } catch (UnsupportedEncodingException e) {
             throw new ParsingException("Could not get next page url", e);
         }
     }
 
     @Override
-    public InfoItemsPage<CommentsInfoItem> getPage(String pageUrl) throws IOException, ExtractionException {
-        if (isNullOrEmpty(pageUrl)) {
-            throw new ExtractionException(new IllegalArgumentException("Page url is empty or null"));
+    public InfoItemsPage<CommentsInfoItem> getPage(final Page page) throws IOException, ExtractionException {
+        if (page == null || isNullOrEmpty(page.getUrl())) {
+            throw new IllegalArgumentException("Page doesn't contain an URL");
         }
-        String ajaxResponse = makeAjaxRequest(pageUrl);
+
+        String ajaxResponse = makeAjaxRequest(page.getUrl());
         JsonObject ajaxJson;
         try {
             ajaxJson = JsonParser.array().from(ajaxResponse).getObject(1);
@@ -104,11 +98,10 @@ public class YoutubeCommentsExtractor extends CommentsExtractor {
         }
         CommentsInfoItemsCollector collector = new CommentsInfoItemsCollector(getServiceId());
         collectCommentsFrom(collector, ajaxJson);
-        return new InfoItemsPage<>(collector, getNextPageUrl(ajaxJson));
+        return new InfoItemsPage<>(collector, getNextPage(ajaxJson));
     }
 
     private void collectCommentsFrom(CommentsInfoItemsCollector collector, JsonObject ajaxJson) throws ParsingException {
-
         JsonArray contents;
         try {
             contents = JsonUtils.getArray(ajaxJson, "response.continuationContents.commentSectionContinuation.items");
@@ -136,16 +129,13 @@ public class YoutubeCommentsExtractor extends CommentsExtractor {
         final Map<String, List<String>> requestHeaders = new HashMap<>();
         requestHeaders.put("User-Agent", singletonList(USER_AGENT));
         final Response response = downloader.get(getUrl(), requestHeaders, getExtractorLocalization());
-        String responseBody = response.responseBody();
+        responseBody = response.responseBody();
         ytClientVersion = findValue(responseBody, "INNERTUBE_CONTEXT_CLIENT_VERSION\":\"", "\"");
         ytClientName = Parser.matchGroup1(YT_CLIENT_NAME_PATTERN, responseBody);
-        String commentsTokenInside = findValue(responseBody, "commentSectionRenderer", "}");
-        String commentsToken = findValue(commentsTokenInside, "continuation\":\"", "\"");
-        initPage = getPage(getNextPageUrl(commentsToken));
     }
 
-    private String makeAjaxRequest(String siteUrl) throws IOException, ReCaptchaException {
 
+    private String makeAjaxRequest(String siteUrl) throws IOException, ReCaptchaException {
         Map<String, List<String>> requestHeaders = new HashMap<>();
         requestHeaders.put("Accept", singletonList("*/*"));
         requestHeaders.put("User-Agent", singletonList(USER_AGENT));
@@ -174,22 +164,4 @@ public class YoutubeCommentsExtractor extends CommentsExtractor {
         int endIndex = doc.indexOf(end, beginIndex);
         return doc.substring(beginIndex, endIndex);
     }
-
-    public static String getYoutubeText(@Nonnull JsonObject object) throws ParsingException {
-        try {
-            return JsonUtils.getString(object, "simpleText");
-        } catch (Exception e1) {
-            try {
-                JsonArray arr = JsonUtils.getArray(object, "runs");
-                String result = "";
-                for (int i = 0; i < arr.size(); i++) {
-                    result = result + JsonUtils.getString(arr.getObject(i), "text");
-                }
-                return result;
-            } catch (Exception e2) {
-                return "";
-            }
-        }
-    }
-
 }

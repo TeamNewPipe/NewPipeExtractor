@@ -4,6 +4,7 @@ import com.grack.nanojson.JsonArray;
 import com.grack.nanojson.JsonObject;
 import com.grack.nanojson.JsonParser;
 
+import org.schabi.newpipe.extractor.Page;
 import org.schabi.newpipe.extractor.StreamingService;
 import org.schabi.newpipe.extractor.comments.CommentsExtractor;
 import org.schabi.newpipe.extractor.comments.CommentsInfoItem;
@@ -22,19 +23,17 @@ import java.io.IOException;
 import static org.schabi.newpipe.extractor.services.peertube.PeertubeParsingHelper.COUNT_KEY;
 import static org.schabi.newpipe.extractor.services.peertube.PeertubeParsingHelper.ITEMS_PER_PAGE;
 import static org.schabi.newpipe.extractor.services.peertube.PeertubeParsingHelper.START_KEY;
+import static org.schabi.newpipe.extractor.utils.Utils.isNullOrEmpty;
 
 public class PeertubeCommentsExtractor extends CommentsExtractor {
-    private InfoItemsPage<CommentsInfoItem> initPage;
-    private long total;
-
     public PeertubeCommentsExtractor(final StreamingService service, final ListLinkHandler uiHandler) {
         super(service, uiHandler);
     }
 
     @Override
     public InfoItemsPage<CommentsInfoItem> getInitialPage() throws IOException, ExtractionException {
-        super.fetchPage();
-        return initPage;
+        final String pageUrl = getUrl() + "?" + START_KEY + "=0&" + COUNT_KEY + "=" + ITEMS_PER_PAGE;
+        return getPage(new Page(pageUrl));
     }
 
     private void collectCommentsFrom(final CommentsInfoItemsCollector collector, final JsonObject json) throws ParsingException {
@@ -52,14 +51,13 @@ public class PeertubeCommentsExtractor extends CommentsExtractor {
     }
 
     @Override
-    public String getNextPageUrl() throws IOException, ExtractionException {
-        super.fetchPage();
-        return initPage.getNextPageUrl();
-    }
+    public InfoItemsPage<CommentsInfoItem> getPage(final Page page) throws IOException, ExtractionException {
+        if (page == null || isNullOrEmpty(page.getUrl())) {
+            throw new IllegalArgumentException("Page doesn't contain an URL");
+        }
 
-    @Override
-    public InfoItemsPage<CommentsInfoItem> getPage(final String pageUrl) throws IOException, ExtractionException {
-        final Response response = getDownloader().get(pageUrl);
+        final Response response = getDownloader().get(page.getUrl());
+
         JsonObject json = null;
         if (response != null && !Utils.isBlank(response.responseBody())) {
             try {
@@ -69,19 +67,19 @@ public class PeertubeCommentsExtractor extends CommentsExtractor {
             }
         }
 
-        final CommentsInfoItemsCollector collector = new CommentsInfoItemsCollector(getServiceId());
         if (json != null) {
-            final Number number = JsonUtils.getNumber(json, "total");
-            if (number != null) this.total = number.longValue();
+            PeertubeParsingHelper.validate(json);
+            final long total = json.getLong("total");
+
+            final CommentsInfoItemsCollector collector = new CommentsInfoItemsCollector(getServiceId());
             collectCommentsFrom(collector, json);
+
+            return new InfoItemsPage<>(collector, PeertubeParsingHelper.getNextPage(page.getUrl(), total));
         } else {
-            throw new ExtractionException("Unable to get peertube comments info");
+            throw new ExtractionException("Unable to get PeerTube kiosk info");
         }
-        return new InfoItemsPage<>(collector, PeertubeParsingHelper.getNextPageUrl(pageUrl, total));
     }
 
     @Override
-    public void onFetchPage(Downloader downloader) throws IOException, ExtractionException {
-        this.initPage = getPage(getUrl() + "?" + START_KEY + "=0&" + COUNT_KEY + "=" + ITEMS_PER_PAGE);
-    }
+    public void onFetchPage(Downloader downloader) { }
 }
