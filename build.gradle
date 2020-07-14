@@ -5,7 +5,7 @@ allprojects {
     sourceCompatibility = 1.7
     targetCompatibility = 1.7
 
-    version 'v0.19.5'
+    version 'v0.19.6'
     group 'com.github.TeamNewPipe'
 
     repositories {
