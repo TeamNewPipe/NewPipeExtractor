@@ -313,8 +313,9 @@ public abstract class StreamExtractor extends Extractor {
     /**
      * Should return a list of streams related to the current handled. Many services show suggested
      * streams. If you don't like suggested streams you should implement them anyway since they can
-     * be disabled by the user later in the frontend.
-     * If it is not available simply return null
+     * be disabled by the user later in the frontend. The first related stream might be what was
+     * previously known as a next stream.
+     * If related streams aren't available simply return {@code null}.
      *
      * @return a list of InfoItems showing the related videos/streams
      * @throws IOException
@@ -326,11 +327,10 @@ public abstract class StreamExtractor extends Extractor {
      * Should return a list of Frameset object that contains preview of stream frames
      *
      * @return list of preview frames or empty list if frames preview is not supported or not found for specified stream
-     * @throws IOException
      * @throws ExtractionException
      */
     @Nonnull
-    public List<Frameset> getFrames() throws IOException, ExtractionException {
+    public List<Frameset> getFrames() throws ExtractionException {
         return Collections.emptyList();
     }
 
