@@ -1,3 +1,37 @@
+apply plugin: 'checkstyle'
+
+configurations {
+    checkstyle
+}
+
+ext {
+    checkstyleVersion = '8.32'
+}
+
+checkstyle {
+    configFile rootProject.file('checkstyle.xml')
+    ignoreFailures false
+    showViolations true
+    toolVersion = checkstyleVersion
+}
+
+task runCheckstyle(type: Checkstyle) {
+    source 'src'
+    include '**/*.java'
+    exclude '**/gen/**'
+
+    classpath = configurations.checkstyle
+
+    showViolations true
+
+    reports {
+        xml.enabled true
+        html.enabled true
+    }
+}
+
+compileJava.dependsOn runCheckstyle
+
 dependencies {
     implementation project(':timeago-parser')
 
@@ -6,6 +40,8 @@ dependencies {
     implementation 'org.mozilla:rhino:1.7.12'
     implementation 'com.github.spotbugs:spotbugs-annotations:4.0.2'
     implementation 'org.nibor.autolink:autolink:0.10.0'
+
+    checkstyle "com.puppycrawl.tools:checkstyle:${checkstyleVersion}"
 
     testImplementation 'junit:junit:4.13'
     testImplementation "com.squareup.okhttp3:okhttp:3.12.11"
