@@ -23,23 +23,37 @@ package org.schabi.newpipe.extractor.stream;
 import org.schabi.newpipe.extractor.MediaFormat;
 
 public class AudioStream extends Stream {
-    public int average_bitrate = -1;
+    private final int averageBitrate;
 
     /**
      * Create a new audio stream
-     * @param url the url
+     * @param id the ID which uniquely identifies the file, e.g. for YouTube this would be the itag
+     * @param url the URL
      * @param format the format
      * @param averageBitrate the average bitrate
      */
-    public AudioStream(String url, MediaFormat format, int averageBitrate) {
-        super(url, format);
-        this.average_bitrate = averageBitrate;
+    public AudioStream(final String id, final String url, final MediaFormat format, final int averageBitrate) {
+        this(id, url, true, format, DeliveryMethod.PROGRESSIVE_HTTP, averageBitrate);
+    }
+
+    /**
+     * Create a new audio stream
+     * @param id the ID which uniquely identifies the file, e.g. for YouTube this would be the itag
+     * @param content the content or URL, depending on whether isUrl is true
+     * @param isUrl whether content is the URL or the actual content of e.g. a DASH manifest
+     * @param format the format
+     * @param deliveryMethod the delivery method
+     * @param averageBitrate the average bitrate
+     */
+    public AudioStream(final String id, final String content, final boolean isUrl, final MediaFormat format, final DeliveryMethod deliveryMethod, final int averageBitrate) {
+        super(id, content, isUrl, format, deliveryMethod);
+        this.averageBitrate = averageBitrate;
     }
 
     @Override
     public boolean equalStats(Stream cmp) {
         return super.equalStats(cmp) && cmp instanceof AudioStream &&
-                average_bitrate == ((AudioStream) cmp).average_bitrate;
+                averageBitrate == ((AudioStream) cmp).averageBitrate;
     }
 
     /**
@@ -47,6 +61,6 @@ public class AudioStream extends Stream {
      * @return the average bitrate or -1
      */
     public int getAverageBitrate() {
-        return average_bitrate;
+        return averageBitrate;
     }
 }

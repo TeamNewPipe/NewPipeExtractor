@@ -15,13 +15,14 @@ import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
-import javax.xml.parsers.DocumentBuilder;
-import javax.xml.parsers.DocumentBuilderFactory;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
+
+import javax.xml.parsers.DocumentBuilder;
+import javax.xml.parsers.DocumentBuilderFactory;
 
 /*
  * Created by Christian Schabesberger on 02.02.16.
@@ -161,22 +162,22 @@ public class DashMpdParser {
 
                         if (itag.itagType.equals(ItagItem.ItagType.AUDIO)) {
                             if (segmentationList == null) {
-                                final AudioStream audioStream = new AudioStream(url, mediaFormat, itag.avgBitrate);
+                                final AudioStream audioStream = new AudioStream(
+                                        String.valueOf(itag.id), url, mediaFormat, itag.avgBitrate);
                                 if (!Stream.containSimilarStream(audioStream, streamInfo.getAudioStreams())) {
                                     audioStreams.add(audioStream);
                                 }
                             } else {
-                                segmentedAudioStreams.add(
-                                        new AudioStream(id, mediaFormat, itag.avgBitrate));
+                                segmentedAudioStreams.add(new AudioStream(String.valueOf(itag.id),
+                                        id, mediaFormat, itag.avgBitrate));
                             }
                         } else {
                             boolean isVideoOnly = itag.itagType.equals(ItagItem.ItagType.VIDEO_ONLY);
 
                             if (segmentationList == null) {
-                                final VideoStream videoStream = new VideoStream(url,
-                                        mediaFormat,
-                                        itag.resolutionString,
-                                        isVideoOnly);
+                                final VideoStream videoStream = new VideoStream(
+                                        String.valueOf(itag.id), url, mediaFormat,
+                                        itag.resolutionString, isVideoOnly);
 
                                 if (isVideoOnly) {
                                     if (!Stream.containSimilarStream(videoStream, streamInfo.getVideoOnlyStreams())) {
@@ -186,10 +187,9 @@ public class DashMpdParser {
                                     videoStreams.add(videoStream);
                                 }
                             } else {
-                                final VideoStream videoStream = new VideoStream(id,
-                                        mediaFormat,
-                                        itag.resolutionString,
-                                        isVideoOnly);
+                                final VideoStream videoStream = new VideoStream(
+                                        String.valueOf(itag.id), id, mediaFormat,
+                                        itag.resolutionString, isVideoOnly);
 
                                 if (isVideoOnly) {
                                     segmentedVideoOnlyStreams.add(videoStream);

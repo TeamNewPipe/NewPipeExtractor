@@ -23,35 +23,24 @@ package org.schabi.newpipe.extractor.stream;
 import org.schabi.newpipe.extractor.MediaFormat;
 
 public class VideoStream extends Stream {
-    public final String resolution;
-    public final boolean isVideoOnly;
+    private final String resolution;
+    private final boolean isVideoOnly;
 
-
-    public VideoStream(String url, MediaFormat format, String resolution) {
-        this(url, format, resolution, false);
+    public VideoStream(final String id, final String url, final MediaFormat format, final String resolution, final boolean isVideoOnly) {
+        this(id, url, true, format, DeliveryMethod.PROGRESSIVE_HTTP, resolution, isVideoOnly);
     }
 
-    public VideoStream(String url, MediaFormat format, String resolution, boolean isVideoOnly) {
-        super(url, format);
-        this.resolution = resolution;
-        this.isVideoOnly = isVideoOnly;
-    }
-
-    public VideoStream(String url, String torrentUrl, MediaFormat format, String resolution) {
-        this(url, torrentUrl, format, resolution, false);
-    }
-
-    public VideoStream(String url, String torrentUrl, MediaFormat format, String resolution, boolean isVideoOnly) {
-        super(url, torrentUrl, format);
+    public VideoStream(final String id, final String content, final boolean isUrl, final MediaFormat format, final DeliveryMethod deliveryMethod, final String resolution, final boolean isVideoOnly) {
+        super(id, content, isUrl, format, deliveryMethod);
         this.resolution = resolution;
         this.isVideoOnly = isVideoOnly;
     }
 
     @Override
     public boolean equalStats(Stream cmp) {
-        return super.equalStats(cmp) && cmp instanceof VideoStream &&
-                resolution.equals(((VideoStream) cmp).resolution) &&
-                isVideoOnly == ((VideoStream) cmp).isVideoOnly;
+        return super.equalStats(cmp) && cmp instanceof VideoStream
+                && resolution.equals(((VideoStream) cmp).resolution)
+                && isVideoOnly == ((VideoStream) cmp).isVideoOnly;
     }
 
     /**

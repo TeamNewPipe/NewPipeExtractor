@@ -159,8 +159,8 @@ public class MediaCCCStreamExtractor extends StreamExtractor {
                     throw new ExtractionException("Unknown media format: " + mimeType);
                 }
 
-                audioStreams.add(new AudioStream(recording.getString("recording_url"),
-                        mediaFormat, -1));
+                audioStreams.add(new AudioStream(recording.getString("filename"),
+                        recording.getString("recording_url"), mediaFormat, -1));
             }
         }
         return audioStreams;
@@ -185,8 +185,9 @@ public class MediaCCCStreamExtractor extends StreamExtractor {
                     throw new ExtractionException("Unknown media format: " + mimeType);
                 }
 
-                videoStreams.add(new VideoStream(recording.getString("recording_url"),
-                        mediaFormat, recording.getInt("height") + "p"));
+                videoStreams.add(new VideoStream(recording.getString("filename"),
+                        recording.getString("recording_url"), mediaFormat,
+                        recording.getInt("height") + "p", false));
             }
         }
         return videoStreams;

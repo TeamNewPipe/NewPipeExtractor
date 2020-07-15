@@ -39,7 +39,7 @@ import static org.schabi.newpipe.extractor.utils.Utils.isNullOrEmpty;
  */
 
 /**
- * Info object for opened videos, ie the video ready to play.
+ * Info object for opened videos, i.e. the video ready to play.
  */
 public class StreamInfo extends Info {
 

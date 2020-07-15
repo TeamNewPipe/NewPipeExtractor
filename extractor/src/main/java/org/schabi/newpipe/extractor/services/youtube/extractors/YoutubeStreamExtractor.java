@@ -460,12 +460,12 @@ public class YoutubeStreamExtractor extends StreamExtractor {
     @Override
     public List<AudioStream> getAudioStreams() throws ExtractionException {
         assertPageFetched();
-        List<AudioStream> audioStreams = new ArrayList<>();
+        final List<AudioStream> audioStreams = new ArrayList<>();
         try {
-            for (Map.Entry<String, ItagItem> entry : getItags(ADAPTIVE_FORMATS, ItagItem.ItagType.AUDIO).entrySet()) {
-                ItagItem itag = entry.getValue();
+            for (final Map.Entry<String, ItagItem> entry : getItags(ADAPTIVE_FORMATS, ItagItem.ItagType.AUDIO).entrySet()) {
+                final ItagItem itag = entry.getValue();
 
-                AudioStream audioStream = new AudioStream(entry.getKey(), itag.getMediaFormat(), itag.avgBitrate);
+                final AudioStream audioStream = new AudioStream(String.valueOf(itag.id), entry.getKey(), itag.getMediaFormat(), itag.avgBitrate);
                 if (!Stream.containSimilarStream(audioStream, audioStreams)) {
                     audioStreams.add(audioStream);
                 }
@@ -480,12 +480,12 @@ public class YoutubeStreamExtractor extends StreamExtractor {
     @Override
     public List<VideoStream> getVideoStreams() throws ExtractionException {
         assertPageFetched();
-        List<VideoStream> videoStreams = new ArrayList<>();
+        final List<VideoStream> videoStreams = new ArrayList<>();
         try {
-            for (Map.Entry<String, ItagItem> entry : getItags(FORMATS, ItagItem.ItagType.VIDEO).entrySet()) {
-                ItagItem itag = entry.getValue();
+            for (final Map.Entry<String, ItagItem> entry : getItags(FORMATS, ItagItem.ItagType.VIDEO).entrySet()) {
+                final ItagItem itag = entry.getValue();
 
-                VideoStream videoStream = new VideoStream(entry.getKey(), itag.getMediaFormat(), itag.resolutionString);
+                final VideoStream videoStream = new VideoStream(String.valueOf(itag.id), entry.getKey(), itag.getMediaFormat(), itag.resolutionString, false);
                 if (!Stream.containSimilarStream(videoStream, videoStreams)) {
                     videoStreams.add(videoStream);
                 }
@@ -500,12 +500,12 @@ public class YoutubeStreamExtractor extends StreamExtractor {
     @Override
     public List<VideoStream> getVideoOnlyStreams() throws ExtractionException {
         assertPageFetched();
-        List<VideoStream> videoOnlyStreams = new ArrayList<>();
+        final List<VideoStream> videoOnlyStreams = new ArrayList<>();
         try {
-            for (Map.Entry<String, ItagItem> entry : getItags(ADAPTIVE_FORMATS, ItagItem.ItagType.VIDEO_ONLY).entrySet()) {
-                ItagItem itag = entry.getValue();
+            for (final Map.Entry<String, ItagItem> entry : getItags(ADAPTIVE_FORMATS, ItagItem.ItagType.VIDEO_ONLY).entrySet()) {
+                final ItagItem itag = entry.getValue();
 
-                VideoStream videoStream = new VideoStream(entry.getKey(), itag.getMediaFormat(), itag.resolutionString, true);
+                final VideoStream videoStream = new VideoStream(String.valueOf(itag.id), entry.getKey(), itag.getMediaFormat(), itag.resolutionString, true);
                 if (!Stream.containSimilarStream(videoStream, videoOnlyStreams)) {
                     videoOnlyStreams.add(videoStream);
                 }
@@ -527,7 +527,7 @@ public class YoutubeStreamExtractor extends StreamExtractor {
     @Nonnull
     public List<SubtitlesStream> getSubtitles(final MediaFormat format) {
         assertPageFetched();
-        List<SubtitlesStream> subtitles = new ArrayList<>();
+        final List<SubtitlesStream> subtitles = new ArrayList<>();
         for (final SubtitlesInfo subtitlesInfo : subtitlesInfos) {
             subtitles.add(subtitlesInfo.getSubtitle(format));
         }
@@ -882,7 +882,8 @@ public class YoutubeStreamExtractor extends StreamExtractor {
         }
 
         public SubtitlesStream getSubtitle(final MediaFormat format) {
-            return new SubtitlesStream(format, languageCode, cleanUrl + "&fmt=" + format.getSuffix(), isGenerated);
+            final String id = languageCode + "." + format.suffix;
+            return new SubtitlesStream(id, cleanUrl + "&fmt=" + format.getSuffix(), format, languageCode, isGenerated);
         }
     }
 

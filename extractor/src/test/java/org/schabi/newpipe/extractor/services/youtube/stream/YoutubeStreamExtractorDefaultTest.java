@@ -177,10 +177,10 @@ public class YoutubeStreamExtractorDefaultTest {
         @Test
         public void testGetVideoStreams() throws ExtractionException {
             for (VideoStream s : extractor.getVideoStreams()) {
-                assertIsSecureUrl(s.url);
-                assertTrue(s.resolution.length() > 0);
-                assertTrue(Integer.toString(s.getFormatId()),
-                        0 <= s.getFormatId() && s.getFormatId() <= 0x100);
+                assertIsSecureUrl(s.getContent());
+                assertTrue(s.getResolution().length() > 0);
+                assertTrue(Integer.toString(s.getFormat().id),
+                        0 <= s.getFormat().id && s.getFormat().id <= 0x100);
             }
         }
 

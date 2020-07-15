@@ -4,11 +4,13 @@ import org.junit.Assert;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import org.schabi.newpipe.DownloaderTestImpl;
+import org.schabi.newpipe.extractor.MediaFormat;
 import org.schabi.newpipe.extractor.NewPipe;
-import org.schabi.newpipe.extractor.exceptions.ContentNotSupportedException;
 import org.schabi.newpipe.extractor.exceptions.ExtractionException;
 import org.schabi.newpipe.extractor.exceptions.ParsingException;
 import org.schabi.newpipe.extractor.services.soundcloud.extractors.SoundcloudStreamExtractor;
+import org.schabi.newpipe.extractor.stream.AudioStream;
+import org.schabi.newpipe.extractor.stream.DeliveryMethod;
 import org.schabi.newpipe.extractor.stream.StreamExtractor;
 import org.schabi.newpipe.extractor.stream.StreamInfoItemsCollector;
 import org.schabi.newpipe.extractor.stream.StreamType;
@@ -17,10 +19,13 @@ import java.io.IOException;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
+import java.util.List;
 import java.util.TimeZone;
 
 import static java.util.Objects.requireNonNull;
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
 import static org.schabi.newpipe.extractor.ExtractorAsserts.assertIsSecureUrl;
 import static org.schabi.newpipe.extractor.ServiceList.SoundCloud;
 
@@ -137,26 +142,52 @@ public class SoundcloudStreamExtractorDefaultTest {
         }
     }
 
-    public static class ContentNotSupported {
+    public static class OpusHls {
         @BeforeClass
         public static void setUp() {
             NewPipe.init(DownloaderTestImpl.getInstance());
         }
 
-        @Test(expected = ContentNotSupportedException.class)
-        public void hlsAudioStream() throws Exception {
+        @Test
+        public void cool() throws Exception {
             final StreamExtractor extractor =
                     SoundCloud.getStreamExtractor("https://soundcloud.com/dualipa/cool");
             extractor.fetchPage();
-            extractor.getAudioStreams();
+            final List<AudioStream> audioStreams = extractor.getAudioStreams();
+            boolean hasMp3 = false;
+            boolean hasOpus = false;
+            for (final AudioStream audioStream : audioStreams) {
+                if (audioStream.getDeliveryMethod() == DeliveryMethod.HLS) {
+                    if (audioStream.getFormat() == MediaFormat.MP3) {
+                        hasMp3 = true;
+                    } else if (audioStream.getFormat() == MediaFormat.OPUS) {
+                        hasOpus = true;
+                    }
+                }
+            }
+            assertTrue(hasMp3);
+            assertTrue(hasOpus);
         }
 
-        @Test(expected = ContentNotSupportedException.class)
-        public void bothHlsAndOpusAudioStreams() throws Exception {
+        @Test
+        public void noSucker() throws Exception {
             final StreamExtractor extractor =
                     SoundCloud.getStreamExtractor("https://soundcloud.com/lil-baby-4pf/no-sucker");
             extractor.fetchPage();
-            extractor.getAudioStreams();
+            final List<AudioStream> audioStreams = extractor.getAudioStreams();
+            boolean hasMp3 = false;
+            boolean hasOpus = false;
+            for (final AudioStream audioStream : audioStreams) {
+                if (audioStream.getDeliveryMethod() == DeliveryMethod.HLS) {
+                    if (audioStream.getFormat() == MediaFormat.MP3) {
+                        hasMp3 = true;
+                    } else if (audioStream.getFormat() == MediaFormat.OPUS) {
+                        hasOpus = true;
+                    }
+                }
+            }
+            assertTrue(hasMp3);
+            assertTrue(hasOpus);
         }
     }
 }

@@ -18,8 +18,8 @@ import org.schabi.newpipe.extractor.localization.DateWrapper;
 import org.schabi.newpipe.extractor.services.peertube.PeertubeParsingHelper;
 import org.schabi.newpipe.extractor.services.peertube.linkHandler.PeertubeSearchQueryHandlerFactory;
 import org.schabi.newpipe.extractor.stream.AudioStream;
+import org.schabi.newpipe.extractor.stream.DeliveryMethod;
 import org.schabi.newpipe.extractor.stream.Description;
-import org.schabi.newpipe.extractor.stream.Stream;
 import org.schabi.newpipe.extractor.stream.StreamExtractor;
 import org.schabi.newpipe.extractor.stream.StreamInfoItemsCollector;
 import org.schabi.newpipe.extractor.stream.StreamType;
@@ -202,10 +202,9 @@ public class PeertubeStreamExtractor extends StreamExtractor {
                 final String resolution = JsonUtils.getString(stream, "resolution.label");
                 final String extension = url.substring(url.lastIndexOf(".") + 1);
                 final MediaFormat format = MediaFormat.getFromSuffix(extension);
-                final VideoStream videoStream = new VideoStream(url, torrentUrl, format, resolution);
-                if (!Stream.containSimilarStream(videoStream, videoStreams)) {
-                    videoStreams.add(videoStream);
-                }
+                final String id = resolution + "." + extension;
+                videoStreams.add(new VideoStream(id, url, true, format, DeliveryMethod.PROGRESSIVE_HTTP, resolution, false));
+                videoStreams.add(new VideoStream(id, torrentUrl, true, format, DeliveryMethod.TORRENT, resolution, false));
             }
         } catch (Exception e) {
             throw new ParsingException("Could not get video streams", e);
@@ -360,8 +359,10 @@ public class PeertubeStreamExtractor extends StreamExtractor {
                         final String languageCode = JsonUtils.getString(caption, "language.id");
                         final String ext = url.substring(url.lastIndexOf(".") + 1);
                         final MediaFormat fmt = MediaFormat.getFromSuffix(ext);
-                        if (fmt != null && languageCode != null)
-                            subtitles.add(new SubtitlesStream(fmt, languageCode, url, false));
+                        if (fmt != null && languageCode != null) {
+                            final String id = languageCode + "." + fmt.suffix;
+                            subtitles.add(new SubtitlesStream(id, url, fmt, languageCode, false));
+                        }
                     }
                 }
             } catch (Exception e) {

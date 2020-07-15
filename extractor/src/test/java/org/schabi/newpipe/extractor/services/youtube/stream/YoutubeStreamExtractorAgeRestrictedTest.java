@@ -123,9 +123,9 @@ public class YoutubeStreamExtractorAgeRestrictedTest {
         for (VideoStream s : streams) {
             assertTrue(s.getUrl(),
                     s.getUrl().contains(HTTPS));
-            assertTrue(s.resolution.length() > 0);
-            assertTrue(Integer.toString(s.getFormatId()),
-                    0 <= s.getFormatId() && s.getFormatId() <= 0x100);
+            assertTrue(s.getResolution().length() > 0);
+            assertTrue(Integer.toString(s.getFormat().id),
+                    0 <= s.getFormat().id && s.getFormat().id <= 0x100);
         }
     }
 
