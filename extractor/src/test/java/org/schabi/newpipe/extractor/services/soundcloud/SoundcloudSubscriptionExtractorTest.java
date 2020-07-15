@@ -15,7 +15,10 @@ import java.io.IOException;
 import java.util.Arrays;
 import java.util.List;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
 
 /**
  * Test for {@link SoundcloudSubscriptionExtractor}
@@ -27,8 +30,8 @@ public class SoundcloudSubscriptionExtractorTest {
     @BeforeClass
     public static void setupClass() {
         NewPipe.init(DownloaderTestImpl.getInstance());
-        subscriptionExtractor = new SoundcloudSubscriptionExtractor(ServiceList.SoundCloud);
-        urlHandler = ServiceList.SoundCloud.getChannelLHFactory();
+        subscriptionExtractor = new SoundcloudSubscriptionExtractor(ServiceList.SOUNDCLOUD);
+        urlHandler = ServiceList.SOUNDCLOUD.getChannelLHFactory();
     }
 
     @Test

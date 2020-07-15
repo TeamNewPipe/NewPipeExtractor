@@ -3,7 +3,6 @@ package org.schabi.newpipe.extractor.services;
 import org.junit.Test;
 import org.schabi.newpipe.extractor.search.SearchExtractor;
 
-
 import javax.annotation.Nullable;
 
 import static org.junit.Assert.assertEquals;

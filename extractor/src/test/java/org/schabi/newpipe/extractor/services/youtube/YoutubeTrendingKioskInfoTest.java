@@ -30,7 +30,7 @@ import org.schabi.newpipe.extractor.linkhandler.LinkHandlerFactory;
 
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
-import static org.schabi.newpipe.extractor.ServiceList.YouTube;
+import static org.schabi.newpipe.extractor.ServiceList.YOUTUBE;
 
 /**
  * Test for {@link KioskInfo}
@@ -42,10 +42,10 @@ public class YoutubeTrendingKioskInfoTest {
     public static void setUp()
             throws Exception {
         NewPipe.init(DownloaderTestImpl.getInstance());
-        StreamingService service = YouTube;
+        StreamingService service = YOUTUBE;
         LinkHandlerFactory LinkHandlerFactory = service.getKioskList().getListLinkHandlerFactoryByType("Trending");
 
-        kioskInfo = KioskInfo.getInfo(YouTube, LinkHandlerFactory.fromId("Trending").getUrl());
+        kioskInfo = KioskInfo.getInfo(YOUTUBE, LinkHandlerFactory.fromId("Trending").getUrl());
     }
 
     @Test

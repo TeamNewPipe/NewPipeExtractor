@@ -10,7 +10,7 @@ import org.schabi.newpipe.extractor.suggestion.SuggestionExtractor;
 import java.io.IOException;
 
 import static org.junit.Assert.assertFalse;
-import static org.schabi.newpipe.extractor.ServiceList.SoundCloud;
+import static org.schabi.newpipe.extractor.ServiceList.SOUNDCLOUD;
 
 /**
  * Test for {@link SuggestionExtractor}
@@ -21,7 +21,7 @@ public class SoundcloudSuggestionExtractorTest {
     @BeforeClass
     public static void setUp() {
         NewPipe.init(DownloaderTestImpl.getInstance());
-        suggestionExtractor = SoundCloud.getSuggestionExtractor();
+        suggestionExtractor = SOUNDCLOUD.getSuggestionExtractor();
     }
 
     @Test

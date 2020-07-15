@@ -1,10 +1,11 @@
 package org.schabi.newpipe.extractor.downloader;
 
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
+
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 
 /**
  * A Data class used to hold the results from requests made by the Downloader implementation.

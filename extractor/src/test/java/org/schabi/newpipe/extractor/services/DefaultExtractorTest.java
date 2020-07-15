@@ -4,8 +4,9 @@ import org.junit.Test;
 import org.schabi.newpipe.extractor.Extractor;
 import org.schabi.newpipe.extractor.StreamingService;
 
-import static org.hamcrest.CoreMatchers.*;
-import static org.junit.Assert.*;
+import static org.hamcrest.CoreMatchers.containsString;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertThat;
 import static org.schabi.newpipe.extractor.ExtractorAsserts.assertIsSecureUrl;
 
 public abstract class DefaultExtractorTest<T extends Extractor> implements BaseExtractorTest {

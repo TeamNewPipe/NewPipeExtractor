@@ -10,14 +10,18 @@ import org.schabi.newpipe.extractor.StreamingService;
 import org.schabi.newpipe.extractor.search.SearchExtractor;
 import org.schabi.newpipe.extractor.services.DefaultSearchExtractorTest;
 
-import javax.annotation.Nullable;
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
 
+import javax.annotation.Nullable;
+
 import static java.util.Collections.singletonList;
-import static org.schabi.newpipe.extractor.ServiceList.SoundCloud;
+import static org.schabi.newpipe.extractor.ServiceList.SOUNDCLOUD;
 import static org.schabi.newpipe.extractor.services.DefaultTests.assertNoDuplicatedItems;
-import static org.schabi.newpipe.extractor.services.soundcloud.linkHandler.SoundcloudSearchQueryHandlerFactory.*;
+import static org.schabi.newpipe.extractor.services.soundcloud.linkHandler.SoundcloudSearchQueryHandlerFactory.CHARSET_UTF_8;
+import static org.schabi.newpipe.extractor.services.soundcloud.linkHandler.SoundcloudSearchQueryHandlerFactory.PLAYLISTS;
+import static org.schabi.newpipe.extractor.services.soundcloud.linkHandler.SoundcloudSearchQueryHandlerFactory.TRACKS;
+import static org.schabi.newpipe.extractor.services.soundcloud.linkHandler.SoundcloudSearchQueryHandlerFactory.USERS;
 
 public class SoundcloudSearchExtractorTest {
 
@@ -28,12 +32,12 @@ public class SoundcloudSearchExtractorTest {
         @BeforeClass
         public static void setUp() throws Exception {
             NewPipe.init(DownloaderTestImpl.getInstance());
-            extractor = SoundCloud.getSearchExtractor(QUERY);
+            extractor = SOUNDCLOUD.getSearchExtractor(QUERY);
             extractor.fetchPage();
         }
 
         @Override public SearchExtractor extractor() { return extractor; }
-        @Override public StreamingService expectedService() { return SoundCloud; }
+        @Override public StreamingService expectedService() { return SOUNDCLOUD; }
         @Override public String expectedName() { return QUERY; }
         @Override public String expectedId() { return QUERY; }
         @Override public String expectedUrlContains() { return "soundcloud.com/search?q=" + urlEncode(QUERY); }
@@ -49,12 +53,12 @@ public class SoundcloudSearchExtractorTest {
         @BeforeClass
         public static void setUp() throws Exception {
             NewPipe.init(DownloaderTestImpl.getInstance());
-            extractor = SoundCloud.getSearchExtractor(QUERY, singletonList(TRACKS), "");
+            extractor = SOUNDCLOUD.getSearchExtractor(QUERY, singletonList(TRACKS), "");
             extractor.fetchPage();
         }
 
         @Override public SearchExtractor extractor() { return extractor; }
-        @Override public StreamingService expectedService() { return SoundCloud; }
+        @Override public StreamingService expectedService() { return SOUNDCLOUD; }
         @Override public String expectedName() { return QUERY; }
         @Override public String expectedId() { return QUERY; }
         @Override public String expectedUrlContains() { return "soundcloud.com/search/tracks?q=" + urlEncode(QUERY); }
@@ -72,12 +76,12 @@ public class SoundcloudSearchExtractorTest {
         @BeforeClass
         public static void setUp() throws Exception {
             NewPipe.init(DownloaderTestImpl.getInstance());
-            extractor = SoundCloud.getSearchExtractor(QUERY, singletonList(USERS), "");
+            extractor = SOUNDCLOUD.getSearchExtractor(QUERY, singletonList(USERS), "");
             extractor.fetchPage();
         }
 
         @Override public SearchExtractor extractor() { return extractor; }
-        @Override public StreamingService expectedService() { return SoundCloud; }
+        @Override public StreamingService expectedService() { return SOUNDCLOUD; }
         @Override public String expectedName() { return QUERY; }
         @Override public String expectedId() { return QUERY; }
         @Override public String expectedUrlContains() { return "soundcloud.com/search/users?q=" + urlEncode(QUERY); }
@@ -95,12 +99,12 @@ public class SoundcloudSearchExtractorTest {
         @BeforeClass
         public static void setUp() throws Exception {
             NewPipe.init(DownloaderTestImpl.getInstance());
-            extractor = SoundCloud.getSearchExtractor(QUERY, singletonList(PLAYLISTS), "");
+            extractor = SOUNDCLOUD.getSearchExtractor(QUERY, singletonList(PLAYLISTS), "");
             extractor.fetchPage();
         }
 
         @Override public SearchExtractor extractor() { return extractor; }
-        @Override public StreamingService expectedService() { return SoundCloud; }
+        @Override public StreamingService expectedService() { return SOUNDCLOUD; }
         @Override public String expectedName() { return QUERY; }
         @Override public String expectedId() { return QUERY; }
         @Override public String expectedUrlContains() { return "soundcloud.com/search/playlists?q=" + urlEncode(QUERY); }
@@ -115,13 +119,13 @@ public class SoundcloudSearchExtractorTest {
         @Test
         public void duplicatedItemsCheck() throws Exception {
             NewPipe.init(DownloaderTestImpl.getInstance());
-            final SearchExtractor extractor = SoundCloud.getSearchExtractor("cirque du soleil", singletonList(TRACKS), "");
+            final SearchExtractor extractor = SOUNDCLOUD.getSearchExtractor("cirque du soleil", singletonList(TRACKS), "");
             extractor.fetchPage();
 
             final InfoItemsPage<InfoItem> page1 = extractor.getInitialPage();
             final InfoItemsPage<InfoItem> page2 = extractor.getPage(page1.getNextPage());
 
-            assertNoDuplicatedItems(SoundCloud, page1, page2);
+            assertNoDuplicatedItems(SOUNDCLOUD, page1, page2);
         }
     }
 

@@ -30,7 +30,7 @@ public class PeertubeCommentsLinkHandlerFactory extends ListLinkHandlerFactory {
 
     @Override
     public String getUrl(String id, List<String> contentFilter, String sortFilter) throws ParsingException {
-        String baseUrl = ServiceList.PeerTube.getBaseUrl();
+        String baseUrl = ServiceList.PEERTUBE.getBaseUrl();
         return getUrl(id, contentFilter, sortFilter, baseUrl);
     }
 

@@ -9,7 +9,7 @@ import org.schabi.newpipe.extractor.stream.AudioStream;
 import org.schabi.newpipe.extractor.stream.StreamExtractor;
 
 import static junit.framework.TestCase.assertEquals;
-import static org.schabi.newpipe.extractor.ServiceList.MediaCCC;
+import static org.schabi.newpipe.extractor.ServiceList.MEDIA_CCC;
 
 /**
  * Test {@link MediaCCCStreamExtractor}
@@ -22,7 +22,7 @@ public class MediaCCCOggTest {
     public static void setUpClass() throws Exception {
         NewPipe.init(DownloaderTestImpl.getInstance());
 
-        extractor = MediaCCC.getStreamExtractor("https://media.ccc.de/public/events/1317");
+        extractor = MEDIA_CCC.getStreamExtractor("https://media.ccc.de/public/events/1317");
         extractor.fetchPage();
     }
 

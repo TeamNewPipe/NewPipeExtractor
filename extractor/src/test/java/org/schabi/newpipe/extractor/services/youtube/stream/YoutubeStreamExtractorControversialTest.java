@@ -13,7 +13,6 @@ import org.schabi.newpipe.extractor.services.youtube.linkHandler.YoutubeStreamLi
 import org.schabi.newpipe.extractor.stream.StreamExtractor;
 import org.schabi.newpipe.extractor.stream.VideoStream;
 
-import java.io.IOException;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -21,9 +20,12 @@ import java.util.Calendar;
 import java.util.List;
 
 import static java.util.Objects.requireNonNull;
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
 import static org.schabi.newpipe.extractor.ExtractorAsserts.assertIsSecureUrl;
-import static org.schabi.newpipe.extractor.ServiceList.YouTube;
+import static org.schabi.newpipe.extractor.ServiceList.YOUTUBE;
 
 /**
  * Test for {@link YoutubeStreamLinkHandlerFactory}
@@ -34,7 +36,7 @@ public class YoutubeStreamExtractorControversialTest {
     @BeforeClass
     public static void setUp() throws Exception {
         NewPipe.init(DownloaderTestImpl.getInstance());
-        extractor = (YoutubeStreamExtractor) YouTube
+        extractor = (YoutubeStreamExtractor) YOUTUBE
                 .getStreamExtractor("https://www.youtube.com/watch?v=T4XJQO3qol8");
         extractor.fetchPage();
     }
@@ -45,14 +47,15 @@ public class YoutubeStreamExtractorControversialTest {
     }
 
     @Test
-    public void testGetValidTimeStamp() throws IOException, ExtractionException {
-        StreamExtractor extractor = YouTube.getStreamExtractor("https://youtu.be/FmG385_uUys?t=174");
+    public void testGetValidTimeStamp() throws ExtractionException {
+        final StreamExtractor extractor = YOUTUBE
+                .getStreamExtractor("https://youtu.be/FmG385_uUys?t=174");
         assertEquals(extractor.getTimeStamp() + "", "174");
     }
 
     @Test
     @Ignore
-    public void testGetAgeLimit() throws ParsingException {
+    public void testGetAgeLimit() {
         assertEquals(18, extractor.getAgeLimit());
     }
 
@@ -107,13 +110,13 @@ public class YoutubeStreamExtractorControversialTest {
     }
 
     @Test
-    public void testGetAudioStreams() throws IOException, ExtractionException {
+    public void testGetAudioStreams() throws ExtractionException {
         // audio streams are not always necessary
         assertFalse(extractor.getAudioStreams().isEmpty());
     }
 
     @Test
-    public void testGetVideoStreams() throws IOException, ExtractionException {
+    public void testGetVideoStreams() throws ExtractionException {
         List<VideoStream> streams = new ArrayList<>();
         streams.addAll(extractor.getVideoStreams());
         streams.addAll(extractor.getVideoOnlyStreams());
@@ -121,14 +124,15 @@ public class YoutubeStreamExtractorControversialTest {
     }
 
     @Test
-    public void testGetSubtitlesListDefault() throws IOException, ExtractionException {
+    public void testGetSubtitlesListDefault() {
         // Video (/view?v=T4XJQO3qol8) set in the setUp() method has at least auto-generated (English) captions
         assertFalse(extractor.getSubtitlesDefault().isEmpty());
     }
 
     @Test
-    public void testGetSubtitlesList() throws IOException, ExtractionException {
-        // Video (/view?v=T4XJQO3qol8) set in the setUp() method has at least auto-generated (English) captions
+    public void testGetSubtitlesList() {
+        // Video (/view?v=T4XJQO3qol8) set in the setUp() method
+        // has at least auto-generated (English) captions
         assertFalse(extractor.getSubtitles(MediaFormat.TTML).isEmpty());
     }
 }

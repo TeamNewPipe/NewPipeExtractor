@@ -22,7 +22,7 @@ public class PeertubeStreamInfoItemExtractor implements StreamInfoItemExtractor 
     @Override
     public String getUrl() throws ParsingException {
         final String uuid = JsonUtils.getString(item, "uuid");
-        return ServiceList.PeerTube.getStreamLHFactory().fromId(uuid, baseUrl).getUrl();
+        return ServiceList.PEERTUBE.getStreamLHFactory().fromId(uuid, baseUrl).getUrl();
     }
 
     @Override
@@ -51,7 +51,7 @@ public class PeertubeStreamInfoItemExtractor implements StreamInfoItemExtractor 
         final String name = JsonUtils.getString(item, "account.name");
         final String host = JsonUtils.getString(item, "account.host");
 
-        return ServiceList.PeerTube.getChannelLHFactory().fromId("accounts/" + name + "@" + host, baseUrl).getUrl();
+        return ServiceList.PEERTUBE.getChannelLHFactory().fromId("accounts/" + name + "@" + host, baseUrl).getUrl();
     }
 
     @Override

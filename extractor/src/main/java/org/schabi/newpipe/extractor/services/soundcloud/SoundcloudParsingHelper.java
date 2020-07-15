@@ -4,6 +4,7 @@ import com.grack.nanojson.JsonArray;
 import com.grack.nanojson.JsonObject;
 import com.grack.nanojson.JsonParser;
 import com.grack.nanojson.JsonParserException;
+
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
@@ -21,17 +22,22 @@ import org.schabi.newpipe.extractor.services.soundcloud.extractors.SoundcloudStr
 import org.schabi.newpipe.extractor.stream.StreamInfoItemsCollector;
 import org.schabi.newpipe.extractor.utils.Parser;
 import org.schabi.newpipe.extractor.utils.Parser.RegexException;
-import org.schabi.newpipe.extractor.utils.Utils;
 
-import javax.annotation.Nonnull;
 import java.io.IOException;
 import java.net.URLEncoder;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.util.*;
+import java.util.Calendar;
+import java.util.Collections;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.List;
+import java.util.TimeZone;
+
+import javax.annotation.Nonnull;
 
 import static java.util.Collections.singletonList;
-import static org.schabi.newpipe.extractor.ServiceList.SoundCloud;
+import static org.schabi.newpipe.extractor.ServiceList.SOUNDCLOUD;
 import static org.schabi.newpipe.extractor.utils.JsonUtils.EMPTY_STRING;
 import static org.schabi.newpipe.extractor.utils.Utils.isNullOrEmpty;
 import static org.schabi.newpipe.extractor.utils.Utils.replaceHttpWithHttps;
@@ -83,7 +89,7 @@ public class SoundcloudParsingHelper {
 
     static boolean checkIfHardcodedClientIdIsValid() {
         try {
-            SoundcloudStreamExtractor e = (SoundcloudStreamExtractor) SoundCloud
+            SoundcloudStreamExtractor e = (SoundcloudStreamExtractor) SOUNDCLOUD
                     .getStreamExtractor("https://soundcloud.com/liluzivert/do-what-i-want-produced-by-maaly-raw-don-cannon");
             e.fetchPage();
             return e.getAudioStreams().size() >= 1;
@@ -123,7 +129,7 @@ public class SoundcloudParsingHelper {
                 + "&client_id=" + clientId();
 
         try {
-            final String response = downloader.get(apiUrl, SoundCloud.getLocalization()).responseBody();
+            final String response = downloader.get(apiUrl, SOUNDCLOUD.getLocalization()).responseBody();
             return JsonParser.object().from(response);
         } catch (JsonParserException e) {
             throw new ParsingException("Could not parse json response", e);
@@ -138,7 +144,7 @@ public class SoundcloudParsingHelper {
     public static String resolveUrlWithEmbedPlayer(String apiUrl) throws IOException, ReCaptchaException, ParsingException {
 
         String response = NewPipe.getDownloader().get("https://w.soundcloud.com/player/?url="
-                + URLEncoder.encode(apiUrl, "UTF-8"), SoundCloud.getLocalization()).responseBody();
+                + URLEncoder.encode(apiUrl, "UTF-8"), SOUNDCLOUD.getLocalization()).responseBody();
 
         return Jsoup.parse(response).select("link[rel=\"canonical\"]").first().attr("abs:href");
     }
@@ -151,7 +157,7 @@ public class SoundcloudParsingHelper {
     public static String resolveIdWithEmbedPlayer(String url) throws IOException, ReCaptchaException, ParsingException {
 
         String response = NewPipe.getDownloader().get("https://w.soundcloud.com/player/?url="
-                + URLEncoder.encode(url, "UTF-8"), SoundCloud.getLocalization()).responseBody();
+                + URLEncoder.encode(url, "UTF-8"), SOUNDCLOUD.getLocalization()).responseBody();
         // handle playlists / sets different and get playlist id via uir field in JSON
         if (url.contains("sets") && !url.endsWith("sets") && !url.endsWith("sets/"))
             return Parser.matchGroup1("\"uri\":\\s*\"https:\\/\\/api\\.soundcloud\\.com\\/playlists\\/((\\d)*?)\"", response);
@@ -182,7 +188,7 @@ public class SoundcloudParsingHelper {
      * @return the next streams url, empty if don't have
      */
     public static String getUsersFromApi(ChannelInfoItemsCollector collector, String apiUrl) throws IOException, ReCaptchaException, ParsingException {
-        String response = NewPipe.getDownloader().get(apiUrl, SoundCloud.getLocalization()).responseBody();
+        String response = NewPipe.getDownloader().get(apiUrl, SOUNDCLOUD.getLocalization()).responseBody();
         JsonObject responseObject;
         try {
             responseObject = JsonParser.object().from(response);
@@ -233,7 +239,7 @@ public class SoundcloudParsingHelper {
      * @return the next streams url, empty if don't have
      */
     public static String getStreamsFromApi(StreamInfoItemsCollector collector, String apiUrl, boolean charts) throws IOException, ReCaptchaException, ParsingException {
-        String response = NewPipe.getDownloader().get(apiUrl, SoundCloud.getLocalization()).responseBody();
+        String response = NewPipe.getDownloader().get(apiUrl, SOUNDCLOUD.getLocalization()).responseBody();
         JsonObject responseObject;
         try {
             responseObject = JsonParser.object().from(response);

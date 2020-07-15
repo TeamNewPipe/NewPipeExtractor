@@ -23,36 +23,36 @@ package org.schabi.newpipe.extractor;
  */
 
 /**
- * Static data about various media formats support by NewPipe, eg mime type, extension
+ * Static data about various media formats support by NewPipe, e.g. MIME type and extension.
  */
 
 public enum MediaFormat {
     //video and audio combined formats
     //           id      name    suffix  mime type
-    MPEG_4      (0x0,   "MPEG-4", "mp4", "video/mp4"),
-    v3GPP       (0x10,   "3GPP",   "3gp", "video/3gpp"),
-    WEBM        (0x20,   "WebM",  "webm", "video/webm"),
+    MPEG_4(0x0, "MPEG-4", "mp4", "video/mp4"),
+    v3GPP(0x10, "3GPP", "3gp", "video/3gpp"),
+    WEBM(0x20, "WebM", "webm", "video/webm"),
     // audio formats
-    M4A         (0x100,   "m4a",   "m4a",  "audio/mp4"),
-    WEBMA       (0x200,   "WebM",  "webm", "audio/webm"),
-    MP3         (0x300,   "MP3",   "mp3",  "audio/mpeg"),
-    OPUS        (0x400,   "opus",  "opus", "audio/opus"),
-    OGG         (0x500, "ogg", "ogg", "audio/ogg"),
-    WEBMA_OPUS  (0x200,   "WebM Opus",  "webm", "audio/webm"),
+    M4A(0x100, "m4a", "m4a", "audio/mp4"),
+    WEBMA(0x200, "WebM", "webm", "audio/webm"),
+    MP3(0x300, "MP3", "mp3", "audio/mpeg"),
+    OPUS(0x400, "opus", "opus", "audio/opus"),
+    OGG(0x500, "ogg", "ogg", "audio/ogg"),
+    WEBMA_OPUS(0x200, "WebM Opus", "webm", "audio/webm"),
     // subtitles formats
-    VTT         (0x1000,   "WebVTT",                      "vtt",   "text/vtt"),
-    TTML        (0x2000,   "Timed Text Markup Language",  "ttml",  "application/ttml+xml"),
-    TRANSCRIPT1 (0x3000,   "TranScript v1",               "srv1",  "text/xml"),
-    TRANSCRIPT2 (0x4000,   "TranScript v2",               "srv2",  "text/xml"),
-    TRANSCRIPT3 (0x5000,   "TranScript v3",               "srv3",  "text/xml"),
-    SRT         (0x6000,   "SubRip file format",          "srt",   "text/srt");
+    VTT(0x1000, "WebVTT", "vtt", "text/vtt"),
+    TTML(0x2000, "Timed Text Markup Language", "ttml", "application/ttml+xml"),
+    TRANSCRIPT1(0x3000, "TranScript v1", "srv1", "text/xml"),
+    TRANSCRIPT2(0x4000, "TranScript v2", "srv2", "text/xml"),
+    TRANSCRIPT3(0x5000, "TranScript v3", "srv3", "text/xml"),
+    SRT(0x6000, "SubRip file format", "srt", "text/srt");
 
     public final int id;
     public final String name;
     public final String suffix;
     public final String mimeType;
 
-    MediaFormat(int id, String name, String suffix, String mimeType) {
+    MediaFormat(final int id, final String name, final String suffix, final String mimeType) {
         this.id = id;
         this.name = name;
         this.suffix = suffix;
@@ -66,9 +66,11 @@ public enum MediaFormat {
      * @return the friendly name of the MediaFormat associated with this ids,
      * or an empty String if none match it.
      */
-    public static String getNameById(int ident) {
-        for (MediaFormat vf : MediaFormat.values()) {
-            if (vf.id == ident) return vf.name;
+    public static String getNameById(final int ident) {
+        for (final MediaFormat vf : MediaFormat.values()) {
+            if (vf.id == ident) {
+                return vf.name;
+            }
         }
         return "";
     }
@@ -80,9 +82,11 @@ public enum MediaFormat {
      * @return the file extension of the MediaFormat associated with this ids,
      * or an empty String if none match it.
      */
-    public static String getSuffixById(int ident) {
-        for (MediaFormat vf : MediaFormat.values()) {
-            if (vf.id == ident) return vf.suffix;
+    public static String getSuffixById(final int ident) {
+        for (final MediaFormat vf : MediaFormat.values()) {
+            if (vf.id == ident) {
+                return vf.suffix;
+            }
         }
         return "";
     }
@@ -94,9 +98,11 @@ public enum MediaFormat {
      * @return the MIME type of the MediaFormat associated with this ids,
      * or an empty String if none match it.
      */
-    public static String getMimeById(int ident) {
-        for (MediaFormat vf : MediaFormat.values()) {
-            if (vf.id == ident) return vf.mimeType;
+    public static String getMimeById(final int ident) {
+        for (final MediaFormat vf : MediaFormat.values()) {
+            if (vf.id == ident) {
+                return vf.mimeType;
+            }
         }
         return "";
     }
@@ -107,9 +113,11 @@ public enum MediaFormat {
      * @return MediaFormat associated with this mime type,
      * or null if none match it.
      */
-    public static MediaFormat getFromMimeType(String mimeType) {
-        for (MediaFormat vf : MediaFormat.values()) {
-            if (vf.mimeType.equals(mimeType)) return vf;
+    public static MediaFormat getFromMimeType(final String mimeType) {
+        for (final MediaFormat vf : MediaFormat.values()) {
+            if (vf.mimeType.equals(mimeType)) {
+                return vf;
+            }
         }
         return null;
     }
@@ -120,22 +128,26 @@ public enum MediaFormat {
      * @param id the id
      * @return the id of the media format or null.
      */
-    public static MediaFormat getFormatById(int id) {
-        for (MediaFormat vf : values()) {
-            if (vf.id == id) return vf;
+    public static MediaFormat getFormatById(final int id) {
+        for (final MediaFormat vf : values()) {
+            if (vf.id == id) {
+                return vf;
+            }
         }
         return null;
     }
 
-    public static MediaFormat getFromSuffix(String suffix) {
-        for (MediaFormat vf : values()) {
-            if (vf.suffix.equals(suffix)) return vf;
+    public static MediaFormat getFromSuffix(final String suffix) {
+        for (final MediaFormat vf : values()) {
+            if (vf.suffix.equals(suffix)) {
+                return vf;
+            }
         }
         return null;
     }
 
     /**
-     * Get the name of the format
+     * Get the name of the format.
      *
      * @return the name of the format
      */
@@ -144,7 +156,7 @@ public enum MediaFormat {
     }
 
     /**
-     * Get the filename extension
+     * Get the filename extension.
      *
      * @return the filename extension
      */
@@ -153,7 +165,7 @@ public enum MediaFormat {
     }
 
     /**
-     * Get the mime type
+     * Get the mime type.
      *
      * @return the mime type
      */

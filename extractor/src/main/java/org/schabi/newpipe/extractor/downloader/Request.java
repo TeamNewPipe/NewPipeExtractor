@@ -2,9 +2,14 @@ package org.schabi.newpipe.extractor.downloader;
 
 import org.schabi.newpipe.extractor.localization.Localization;
 
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Map;
+
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
-import java.util.*;
 
 /**
  * An object that holds request information used when {@link Downloader#execute(Request) executing} a request.

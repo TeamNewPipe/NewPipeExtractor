@@ -29,19 +29,19 @@ import org.schabi.newpipe.extractor.kiosk.KioskList;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
-import static org.schabi.newpipe.extractor.ServiceList.YouTube;
+import static org.schabi.newpipe.extractor.ServiceList.YOUTUBE;
 
 /**
- * Test for {@link YoutubeService}
+ * Test for {@link YoutubeService}.
  */
 public class YoutubeServiceTest {
-    static StreamingService service;
-    static KioskList kioskList;
+    private static StreamingService service;
+    private static KioskList kioskList;
 
     @BeforeClass
     public static void setUp() throws Exception {
         NewPipe.init(DownloaderTestImpl.getInstance());
-        service = YouTube;
+        service = YOUTUBE;
         kioskList = service.getKioskList();
     }
 

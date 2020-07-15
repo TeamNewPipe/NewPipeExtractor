@@ -10,10 +10,14 @@ import org.schabi.newpipe.extractor.exceptions.ParsingException;
 import org.schabi.newpipe.extractor.services.BaseChannelExtractorTest;
 import org.schabi.newpipe.extractor.services.peertube.extractors.PeertubeAccountExtractor;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
 import static org.schabi.newpipe.extractor.ExtractorAsserts.assertIsSecureUrl;
-import static org.schabi.newpipe.extractor.ServiceList.PeerTube;
-import static org.schabi.newpipe.extractor.services.DefaultTests.*;
+import static org.schabi.newpipe.extractor.ServiceList.PEERTUBE;
+import static org.schabi.newpipe.extractor.services.DefaultTests.defaultTestGetPageInNewExtractor;
+import static org.schabi.newpipe.extractor.services.DefaultTests.defaultTestMoreItems;
+import static org.schabi.newpipe.extractor.services.DefaultTests.defaultTestRelatedItems;
 
 /**
  * Test for {@link PeertubeAccountExtractor}
@@ -26,8 +30,8 @@ public class PeertubeAccountExtractorTest {
         public static void setUp() throws Exception {
             NewPipe.init(DownloaderTestImpl.getInstance());
             // setting instance might break test when running in parallel
-            PeerTube.setInstance(new PeertubeInstance("https://peertube.mastodon.host", "PeerTube on Mastodon.host"));
-            extractor = (PeertubeAccountExtractor) PeerTube
+            PEERTUBE.setInstance(new PeertubeInstance("https://peertube.mastodon.host", "PeerTube on Mastodon.host"));
+            extractor = (PeertubeAccountExtractor) PEERTUBE
                     .getChannelExtractor("https://peertube.mastodon.host/api/v1/accounts/kde");
             extractor.fetchPage();
         }
@@ -38,7 +42,7 @@ public class PeertubeAccountExtractorTest {
 
         @Test
         public void testServiceId() {
-            assertEquals(PeerTube.getServiceId(), extractor.getServiceId());
+            assertEquals(PEERTUBE.getServiceId(), extractor.getServiceId());
         }
 
         @Test
@@ -113,8 +117,8 @@ public class PeertubeAccountExtractorTest {
         public static void setUp() throws Exception {
             NewPipe.init(DownloaderTestImpl.getInstance());
             // setting instance might break test when running in parallel
-            PeerTube.setInstance(new PeertubeInstance("https://peertube.mastodon.host", "PeerTube on Mastodon.host"));
-            extractor = (PeertubeAccountExtractor) PeerTube
+            PEERTUBE.setInstance(new PeertubeInstance("https://peertube.mastodon.host", "PeerTube on Mastodon.host"));
+            extractor = (PeertubeAccountExtractor) PEERTUBE
                     .getChannelExtractor("https://peertube.mastodon.host/accounts/booteille");
             extractor.fetchPage();
         }
@@ -125,7 +129,7 @@ public class PeertubeAccountExtractorTest {
 
         @Test
         public void testGetPageInNewExtractor() throws Exception {
-            final ChannelExtractor newExtractor = PeerTube.getChannelExtractor(extractor.getUrl());
+            final ChannelExtractor newExtractor = PEERTUBE.getChannelExtractor(extractor.getUrl());
             defaultTestGetPageInNewExtractor(extractor, newExtractor);
         }
 
@@ -135,7 +139,7 @@ public class PeertubeAccountExtractorTest {
 
         @Test
         public void testServiceId() {
-            assertEquals(PeerTube.getServiceId(), extractor.getServiceId());
+            assertEquals(PEERTUBE.getServiceId(), extractor.getServiceId());
         }
 
         @Test

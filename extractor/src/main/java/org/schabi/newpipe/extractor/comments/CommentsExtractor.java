@@ -9,7 +9,7 @@ import javax.annotation.Nonnull;
 
 public abstract class CommentsExtractor extends ListExtractor<CommentsInfoItem> {
 
-    public CommentsExtractor(StreamingService service, ListLinkHandler uiHandler) {
+    public CommentsExtractor(final StreamingService service, final ListLinkHandler uiHandler) {
         super(service, uiHandler);
         // TODO Auto-generated constructor stub
     }

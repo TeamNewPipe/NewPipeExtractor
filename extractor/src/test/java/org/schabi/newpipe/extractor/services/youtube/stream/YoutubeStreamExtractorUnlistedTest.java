@@ -20,9 +20,14 @@ import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.List;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertSame;
+import static org.junit.Assert.assertTrue;
 import static org.schabi.newpipe.extractor.ExtractorAsserts.assertIsSecureUrl;
-import static org.schabi.newpipe.extractor.ServiceList.YouTube;
+import static org.schabi.newpipe.extractor.ServiceList.YOUTUBE;
 
 public class YoutubeStreamExtractorUnlistedTest {
     private static YoutubeStreamExtractor extractor;
@@ -30,7 +35,7 @@ public class YoutubeStreamExtractorUnlistedTest {
     @BeforeClass
     public static void setUp() throws Exception {
         NewPipe.init(DownloaderTestImpl.getInstance());
-        extractor = (YoutubeStreamExtractor) YouTube
+        extractor = (YoutubeStreamExtractor) YOUTUBE
                 .getStreamExtractor("https://www.youtube.com/watch?v=udsB8KnIJTg");
         extractor.fetchPage();
     }
@@ -90,7 +95,8 @@ public class YoutubeStreamExtractorUnlistedTest {
 
     @Test
     public void testGetUploaderUrl() throws ParsingException {
-        assertEquals("https://www.youtube.com/channel/UCPysfiuOv4VKBeXFFPhKXyw", extractor.getUploaderUrl());
+        assertEquals("https://www.youtube.com/channel/UCPysfiuOv4VKBeXFFPhKXyw",
+                extractor.getUploaderUrl());
     }
 
     @Test
@@ -105,9 +111,9 @@ public class YoutubeStreamExtractorUnlistedTest {
 
     @Test
     public void testGetAudioStreams() throws ExtractionException {
-        List<AudioStream> audioStreams = extractor.getAudioStreams();
+        final List<AudioStream> audioStreams = extractor.getAudioStreams();
         assertFalse(audioStreams.isEmpty());
-        for (AudioStream s : audioStreams) {
+        for (final AudioStream s : audioStreams) {
             assertIsSecureUrl(s.url);
             assertTrue(Integer.toString(s.getFormatId()),
                     0x100 <= s.getFormatId() && s.getFormatId() < 0x1000);
@@ -116,7 +122,7 @@ public class YoutubeStreamExtractorUnlistedTest {
 
     @Test
     public void testGetVideoStreams() throws ExtractionException {
-        for (VideoStream s : extractor.getVideoStreams()) {
+        for (final VideoStream s : extractor.getVideoStreams()) {
             assertIsSecureUrl(s.url);
             assertTrue(s.resolution.length() > 0);
             assertTrue(Integer.toString(s.getFormatId()),
@@ -131,7 +137,7 @@ public class YoutubeStreamExtractorUnlistedTest {
 
     @Test
     public void testGetRelatedVideos() throws ExtractionException {
-        StreamInfoItemsCollector relatedVideos = extractor.getRelatedStreams();
+        final StreamInfoItemsCollector relatedVideos = extractor.getRelatedStreams();
         Utils.printErrors(relatedVideos.getErrors());
         assertFalse(relatedVideos.getItems().isEmpty());
         assertTrue(relatedVideos.getErrors().isEmpty());
@@ -149,7 +155,7 @@ public class YoutubeStreamExtractorUnlistedTest {
 
     @Test
     public void testGetLikeCount() throws ParsingException {
-        long likeCount = extractor.getLikeCount();
+        final long likeCount = extractor.getLikeCount();
         assertTrue("" + likeCount, likeCount >= 96);
     }
 

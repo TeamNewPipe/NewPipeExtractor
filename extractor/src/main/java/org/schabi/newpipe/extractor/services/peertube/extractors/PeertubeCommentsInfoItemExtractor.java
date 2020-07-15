@@ -97,6 +97,6 @@ public class PeertubeCommentsInfoItemExtractor implements CommentsInfoItemExtrac
     public String getUploaderUrl() throws ParsingException {
         final String name = JsonUtils.getString(item, "account.name");
         final String host = JsonUtils.getString(item, "account.host");
-        return ServiceList.PeerTube.getChannelLHFactory().fromId("accounts/" + name + "@" + host, baseUrl).getUrl();
+        return ServiceList.PEERTUBE.getChannelLHFactory().fromId("accounts/" + name + "@" + host, baseUrl).getUrl();
     }
 }

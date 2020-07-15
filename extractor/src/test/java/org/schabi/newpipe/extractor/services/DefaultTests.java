@@ -16,8 +16,14 @@ import java.util.List;
 import java.util.Set;
 
 import static junit.framework.TestCase.assertFalse;
-import static org.junit.Assert.*;
-import static org.schabi.newpipe.extractor.ExtractorAsserts.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotEquals;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
+import static org.schabi.newpipe.extractor.ExtractorAsserts.assertEmptyErrors;
+import static org.schabi.newpipe.extractor.ExtractorAsserts.assertIsSecureUrl;
+import static org.schabi.newpipe.extractor.ExtractorAsserts.assertNotEmpty;
 import static org.schabi.newpipe.extractor.StreamingService.LinkType;
 import static org.schabi.newpipe.extractor.utils.Utils.isNullOrEmpty;
 

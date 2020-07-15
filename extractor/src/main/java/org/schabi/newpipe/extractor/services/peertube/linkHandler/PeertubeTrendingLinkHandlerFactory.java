@@ -42,7 +42,7 @@ public class PeertubeTrendingLinkHandlerFactory extends ListLinkHandlerFactory {
 
     @Override
     public String getUrl(String id, List<String> contentFilters, String sortFilter) {
-        String baseUrl = ServiceList.PeerTube.getBaseUrl();
+        String baseUrl = ServiceList.PEERTUBE.getBaseUrl();
         return getUrl(id, contentFilters, sortFilter, baseUrl);
     }
 
@@ -53,7 +53,7 @@ public class PeertubeTrendingLinkHandlerFactory extends ListLinkHandlerFactory {
 
     @Override
     public String getId(String url) throws ParsingException {
-        String baseUrl = ServiceList.PeerTube.getBaseUrl();
+        String baseUrl = ServiceList.PEERTUBE.getBaseUrl();
         url = url.replace(baseUrl, "%s");
         if (url.contains("/videos/trending")) {
             return KIOSK_TRENDING;

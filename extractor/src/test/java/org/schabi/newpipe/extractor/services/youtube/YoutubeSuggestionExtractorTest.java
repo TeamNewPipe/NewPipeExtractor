@@ -31,7 +31,7 @@ import org.schabi.newpipe.extractor.suggestion.SuggestionExtractor;
 import java.io.IOException;
 
 import static org.junit.Assert.assertFalse;
-import static org.schabi.newpipe.extractor.ServiceList.YouTube;
+import static org.schabi.newpipe.extractor.ServiceList.YOUTUBE;
 
 /**
  * Test for {@link SuggestionExtractor}
@@ -42,7 +42,7 @@ public class YoutubeSuggestionExtractorTest {
     @BeforeClass
     public static void setUp() throws Exception {
         NewPipe.init(DownloaderTestImpl.getInstance(), new Localization("de", "DE"));
-        suggestionExtractor = YouTube.getSuggestionExtractor();
+        suggestionExtractor = YOUTUBE.getSuggestionExtractor();
     }
 
     @Test

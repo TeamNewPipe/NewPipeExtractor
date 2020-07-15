@@ -9,7 +9,7 @@ import org.schabi.newpipe.extractor.services.peertube.linkHandler.PeertubeChanne
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
-import static org.schabi.newpipe.extractor.ServiceList.PeerTube;
+import static org.schabi.newpipe.extractor.ServiceList.PEERTUBE;
 
 /**
  * Test for {@link PeertubeChannelLinkHandlerFactory}
@@ -20,7 +20,7 @@ public class PeertubeChannelLinkHandlerFactoryTest {
 
     @BeforeClass
     public static void setUp() {
-        PeerTube.setInstance(new PeertubeInstance("https://peertube.mastodon.host", "PeerTube on Mastodon.host"));
+        PEERTUBE.setInstance(new PeertubeInstance("https://peertube.mastodon.host", "PeerTube on Mastodon.host"));
         linkHandler = PeertubeChannelLinkHandlerFactory.getInstance();
         NewPipe.init(DownloaderTestImpl.getInstance());
     }

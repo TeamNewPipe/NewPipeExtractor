@@ -20,9 +20,11 @@ import java.util.Locale;
 import java.util.TimeZone;
 
 import static java.util.Objects.requireNonNull;
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
 import static org.schabi.newpipe.extractor.ExtractorAsserts.assertIsSecureUrl;
-import static org.schabi.newpipe.extractor.ServiceList.PeerTube;
+import static org.schabi.newpipe.extractor.ServiceList.PEERTUBE;
 
 /**
  * Test for {@link StreamExtractor}
@@ -36,8 +38,8 @@ public class PeertubeStreamExtractorDefaultTest {
     public static void setUp() throws Exception {
         NewPipe.init(DownloaderTestImpl.getInstance());
         // setting instance might break test when running in parallel
-        PeerTube.setInstance(new PeertubeInstance("https://framatube.org", "FramaTube"));
-        extractor = (PeertubeStreamExtractor) PeerTube.getStreamExtractor("https://framatube.org/videos/watch/9c9de5e8-0a1e-484a-b099-e80766180a6d");
+        PEERTUBE.setInstance(new PeertubeInstance("https://framatube.org", "FramaTube"));
+        extractor = (PeertubeStreamExtractor) PEERTUBE.getStreamExtractor("https://framatube.org/videos/watch/9c9de5e8-0a1e-484a-b099-e80766180a6d");
         extractor.fetchPage();
     }
 
@@ -69,15 +71,15 @@ public class PeertubeStreamExtractorDefaultTest {
 
     @Test
     public void testGetEmptyDescription() throws Exception {
-        PeertubeStreamExtractor extractorEmpty = (PeertubeStreamExtractor) PeerTube.getStreamExtractor("https://framatube.org/api/v1/videos/d5907aad-2252-4207-89ec-a4b687b9337d");
+        PeertubeStreamExtractor extractorEmpty = (PeertubeStreamExtractor) PEERTUBE.getStreamExtractor("https://framatube.org/api/v1/videos/d5907aad-2252-4207-89ec-a4b687b9337d");
         extractorEmpty.fetchPage();
         assertEquals("", extractorEmpty.getDescription().getContent());
     }
 
     @Test
     public void testGetSmallDescription() throws Exception {
-        PeerTube.setInstance(new PeertubeInstance("https://peertube.cpy.re", "PeerTube test server"));
-        PeertubeStreamExtractor extractorSmall = (PeertubeStreamExtractor) PeerTube.getStreamExtractor("https://peertube.cpy.re/videos/watch/d2a5ec78-5f85-4090-8ec5-dc1102e022ea");
+        PEERTUBE.setInstance(new PeertubeInstance("https://peertube.cpy.re", "PeerTube test server"));
+        PeertubeStreamExtractor extractorSmall = (PeertubeStreamExtractor) PEERTUBE.getStreamExtractor("https://peertube.cpy.re/videos/watch/d2a5ec78-5f85-4090-8ec5-dc1102e022ea");
         extractorSmall.fetchPage();
         assertEquals(expectedSmallDescription, extractorSmall.getDescription().getContent());
     }
@@ -161,14 +163,14 @@ public class PeertubeStreamExtractorDefaultTest {
     @Test
     public void testGetAgeLimit() throws ExtractionException, IOException {
         assertEquals(0, extractor.getAgeLimit());
-        PeertubeStreamExtractor ageLimit = (PeertubeStreamExtractor) PeerTube.getStreamExtractor("https://nocensoring.net/videos/embed/dbd8e5e1-c527-49b6-b70c-89101dbb9c08");
+        PeertubeStreamExtractor ageLimit = (PeertubeStreamExtractor) PEERTUBE.getStreamExtractor("https://nocensoring.net/videos/embed/dbd8e5e1-c527-49b6-b70c-89101dbb9c08");
         ageLimit.fetchPage();
         assertEquals(18, ageLimit.getAgeLimit());
     }
 
     @Test
     public void testGetSupportInformation() throws ExtractionException, IOException {
-        PeertubeStreamExtractor supportInfoExtractor = (PeertubeStreamExtractor) PeerTube.getStreamExtractor("https://framatube.org/videos/watch/ee408ec8-07cd-4e35-b884-fb681a4b9d37");
+        PeertubeStreamExtractor supportInfoExtractor = (PeertubeStreamExtractor) PEERTUBE.getStreamExtractor("https://framatube.org/videos/watch/ee408ec8-07cd-4e35-b884-fb681a4b9d37");
         supportInfoExtractor.fetchPage();
         assertEquals("https://utip.io/chatsceptique", supportInfoExtractor.getSupportInfo());
     }

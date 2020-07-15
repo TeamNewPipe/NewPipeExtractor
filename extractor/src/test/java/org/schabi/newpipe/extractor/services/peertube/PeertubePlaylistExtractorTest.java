@@ -8,7 +8,7 @@ import org.schabi.newpipe.extractor.exceptions.ParsingException;
 import org.schabi.newpipe.extractor.services.peertube.extractors.PeertubePlaylistExtractor;
 
 import static org.junit.Assert.assertEquals;
-import static org.schabi.newpipe.extractor.ServiceList.PeerTube;
+import static org.schabi.newpipe.extractor.ServiceList.PEERTUBE;
 
 public class PeertubePlaylistExtractorTest {
 
@@ -18,7 +18,7 @@ public class PeertubePlaylistExtractorTest {
         @BeforeClass
         public static void setUp() throws Exception {
             NewPipe.init(DownloaderTestImpl.getInstance());
-            extractor = (PeertubePlaylistExtractor) PeerTube
+            extractor = (PeertubePlaylistExtractor) PEERTUBE
                     .getPlaylistExtractor("https://framatube.org/videos/watch/playlist/96b0ee2b-a5a7-4794-8769-58d8ccb79ab7");
             extractor.fetchPage();
         }

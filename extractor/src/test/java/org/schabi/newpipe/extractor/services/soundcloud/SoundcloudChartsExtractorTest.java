@@ -8,9 +8,10 @@ import org.schabi.newpipe.extractor.exceptions.ParsingException;
 import org.schabi.newpipe.extractor.services.BaseListExtractorTest;
 import org.schabi.newpipe.extractor.services.soundcloud.extractors.SoundcloudChartsExtractor;
 
-import static org.junit.Assert.*;
-import static org.schabi.newpipe.extractor.ServiceList.SoundCloud;
-import static org.schabi.newpipe.extractor.services.DefaultTests.*;
+import static org.junit.Assert.assertEquals;
+import static org.schabi.newpipe.extractor.ServiceList.SOUNDCLOUD;
+import static org.schabi.newpipe.extractor.services.DefaultTests.defaultTestMoreItems;
+import static org.schabi.newpipe.extractor.services.DefaultTests.defaultTestRelatedItems;
 
 public class SoundcloudChartsExtractorTest {
     public static class NewAndHot implements BaseListExtractorTest {
@@ -19,7 +20,7 @@ public class SoundcloudChartsExtractorTest {
         @BeforeClass
         public static void setUp() throws Exception {
             NewPipe.init(DownloaderTestImpl.getInstance());
-            extractor = (SoundcloudChartsExtractor) SoundCloud.getKioskList()
+            extractor = (SoundcloudChartsExtractor) SOUNDCLOUD.getKioskList()
                     .getExtractorById("New & hot", null);
             extractor.fetchPage();
         }
@@ -30,7 +31,7 @@ public class SoundcloudChartsExtractorTest {
 
         @Test
         public void testServiceId() {
-            assertEquals(SoundCloud.getServiceId(), extractor.getServiceId());
+            assertEquals(SOUNDCLOUD.getServiceId(), extractor.getServiceId());
         }
 
         @Test
@@ -74,7 +75,7 @@ public class SoundcloudChartsExtractorTest {
         @BeforeClass
         public static void setUp() throws Exception {
             NewPipe.init(DownloaderTestImpl.getInstance());
-            extractor = (SoundcloudChartsExtractor) SoundCloud.getKioskList()
+            extractor = (SoundcloudChartsExtractor) SOUNDCLOUD.getKioskList()
                     .getExtractorById("Top 50", null);
             extractor.fetchPage();
         }
@@ -85,7 +86,7 @@ public class SoundcloudChartsExtractorTest {
 
         @Test
         public void testServiceId() {
-            assertEquals(SoundCloud.getServiceId(), extractor.getServiceId());
+            assertEquals(SOUNDCLOUD.getServiceId(), extractor.getServiceId());
         }
 
         @Test

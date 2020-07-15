@@ -1,9 +1,9 @@
 package org.schabi.newpipe.extractor.localization;
 
-import edu.umd.cs.findbugs.annotations.NonNull;
-
 import java.io.Serializable;
 import java.util.Calendar;
+
+import edu.umd.cs.findbugs.annotations.NonNull;
 
 /**
  * A wrapper class that provides a field to describe if the date is precise or just an approximation.

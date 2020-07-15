@@ -19,7 +19,7 @@ public class PeertubePlaylistLinkHandlerFactory extends ListLinkHandlerFactory {
 
     @Override
     public String getUrl(String id, List<String> contentFilters, String sortFilter) {
-        String baseUrl = ServiceList.PeerTube.getBaseUrl();
+        String baseUrl = ServiceList.PEERTUBE.getBaseUrl();
         return getUrl(id, contentFilters, sortFilter, baseUrl);
     }
 

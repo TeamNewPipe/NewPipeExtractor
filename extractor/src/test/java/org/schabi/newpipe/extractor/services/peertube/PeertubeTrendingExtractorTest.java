@@ -8,9 +8,10 @@ import org.schabi.newpipe.extractor.exceptions.ParsingException;
 import org.schabi.newpipe.extractor.services.BaseListExtractorTest;
 import org.schabi.newpipe.extractor.services.peertube.extractors.PeertubeTrendingExtractor;
 
-import static org.junit.Assert.*;
-import static org.schabi.newpipe.extractor.ServiceList.*;
-import static org.schabi.newpipe.extractor.services.DefaultTests.*;
+import static org.junit.Assert.assertEquals;
+import static org.schabi.newpipe.extractor.ServiceList.PEERTUBE;
+import static org.schabi.newpipe.extractor.services.DefaultTests.defaultTestMoreItems;
+import static org.schabi.newpipe.extractor.services.DefaultTests.defaultTestRelatedItems;
 
 public class PeertubeTrendingExtractorTest {
     public static class Trending implements BaseListExtractorTest {
@@ -20,8 +21,8 @@ public class PeertubeTrendingExtractorTest {
         public static void setUp() throws Exception {
             NewPipe.init(DownloaderTestImpl.getInstance());
             // setting instance might break test when running in parallel
-            PeerTube.setInstance(new PeertubeInstance("https://peertube.mastodon.host", "PeerTube on Mastodon.host"));
-            extractor = (PeertubeTrendingExtractor) PeerTube.getKioskList()
+            PEERTUBE.setInstance(new PeertubeInstance("https://peertube.mastodon.host", "PeerTube on Mastodon.host"));
+            extractor = (PeertubeTrendingExtractor) PEERTUBE.getKioskList()
                     .getExtractorById("Trending", null);
             extractor.fetchPage();
         }
@@ -32,7 +33,7 @@ public class PeertubeTrendingExtractorTest {
 
         @Test
         public void testServiceId() {
-            assertEquals(PeerTube.getServiceId(), extractor.getServiceId());
+            assertEquals(PEERTUBE.getServiceId(), extractor.getServiceId());
         }
 
         @Test

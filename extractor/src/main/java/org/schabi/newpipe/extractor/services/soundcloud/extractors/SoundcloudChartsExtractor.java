@@ -14,7 +14,7 @@ import java.io.IOException;
 
 import javax.annotation.Nonnull;
 
-import static org.schabi.newpipe.extractor.ServiceList.SoundCloud;
+import static org.schabi.newpipe.extractor.ServiceList.SOUNDCLOUD;
 import static org.schabi.newpipe.extractor.utils.Utils.isNullOrEmpty;
 
 public class SoundcloudChartsExtractor extends KioskExtractor<StreamInfoItem> {
@@ -61,7 +61,7 @@ public class SoundcloudChartsExtractor extends KioskExtractor<StreamInfoItem> {
             apiUrl += "&kind=trending";
         }
 
-        final String contentCountry = SoundCloud.getContentCountry().getCountryCode();
+        final String contentCountry = SOUNDCLOUD.getContentCountry().getCountryCode();
         apiUrl += "&region=soundcloud:regions:" + contentCountry;
 
         final String nextPageUrl = SoundcloudParsingHelper.getStreamsFromApi(collector, apiUrl, true);

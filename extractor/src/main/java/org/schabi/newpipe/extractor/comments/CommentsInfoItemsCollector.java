@@ -7,21 +7,21 @@ import org.schabi.newpipe.extractor.exceptions.ParsingException;
 import java.util.List;
 import java.util.Vector;
 
-public class CommentsInfoItemsCollector extends InfoItemsCollector<CommentsInfoItem, CommentsInfoItemExtractor> {
-
-    public CommentsInfoItemsCollector(int serviceId) {
+public class CommentsInfoItemsCollector
+        extends InfoItemsCollector<CommentsInfoItem, CommentsInfoItemExtractor> {
+    public CommentsInfoItemsCollector(final int serviceId) {
         super(serviceId);
     }
 
     @Override
-    public CommentsInfoItem extract(CommentsInfoItemExtractor extractor) throws ParsingException {
-
+    public CommentsInfoItem extract(final CommentsInfoItemExtractor extractor)
+            throws ParsingException {
         // important information
-        int serviceId = getServiceId();
-        String url = extractor.getUrl();
-        String name = extractor.getName();
+        final int serviceId = getServiceId();
+        final String url = extractor.getUrl();
+        final String name = extractor.getName();
 
-        CommentsInfoItem resultItem = new CommentsInfoItem(serviceId, url, name);
+        final CommentsInfoItem resultItem = new CommentsInfoItem(serviceId, url, name);
 
         // optional information
         try {
@@ -74,7 +74,7 @@ public class CommentsInfoItemsCollector extends InfoItemsCollector<CommentsInfoI
     }
 
     @Override
-    public void commit(CommentsInfoItemExtractor extractor) {
+    public void commit(final CommentsInfoItemExtractor extractor) {
         try {
             addItem(extract(extractor));
         } catch (Exception e) {
@@ -83,8 +83,8 @@ public class CommentsInfoItemsCollector extends InfoItemsCollector<CommentsInfoI
     }
 
     public List<CommentsInfoItem> getCommentsInfoItemList() {
-        List<CommentsInfoItem> siiList = new Vector<>();
-        for (InfoItem ii : super.getItems()) {
+        final List<CommentsInfoItem> siiList = new Vector<>();
+        for (final InfoItem ii : super.getItems()) {
             if (ii instanceof CommentsInfoItem) {
                 siiList.add((CommentsInfoItem) ii);
             }

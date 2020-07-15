@@ -18,7 +18,7 @@ import java.util.List;
 import static java.util.Objects.requireNonNull;
 import static junit.framework.TestCase.assertEquals;
 import static org.schabi.newpipe.extractor.ExtractorAsserts.assertIsSecureUrl;
-import static org.schabi.newpipe.extractor.ServiceList.MediaCCC;
+import static org.schabi.newpipe.extractor.ServiceList.MEDIA_CCC;
 
 /**
  * Test {@link MediaCCCStreamExtractor}
@@ -31,7 +31,7 @@ public class MediaCCCStreamExtractorTest {
         public static void setUpClass() throws Exception {
             NewPipe.init(DownloaderTestImpl.getInstance());
 
-            extractor = (MediaCCCStreamExtractor) MediaCCC.getStreamExtractor("https://media.ccc.de/v/gpn18-105-tmux-warum-ein-schwarzes-fenster-am-bildschirm-reicht");
+            extractor = (MediaCCCStreamExtractor) MEDIA_CCC.getStreamExtractor("https://media.ccc.de/v/gpn18-105-tmux-warum-ein-schwarzes-fenster-am-bildschirm-reicht");
             extractor.fetchPage();
         }
 
@@ -122,7 +122,7 @@ public class MediaCCCStreamExtractorTest {
         @BeforeClass
         public static void setUpClass() throws Exception {
             NewPipe.init(DownloaderTestImpl.getInstance());
-            extractor = (MediaCCCStreamExtractor) MediaCCC.getStreamExtractor("https://media.ccc.de/v/36c3-10565-what_s_left_for_private_messaging");
+            extractor = (MediaCCCStreamExtractor) MEDIA_CCC.getStreamExtractor("https://media.ccc.de/v/36c3-10565-what_s_left_for_private_messaging");
             extractor.fetchPage();
         }
 

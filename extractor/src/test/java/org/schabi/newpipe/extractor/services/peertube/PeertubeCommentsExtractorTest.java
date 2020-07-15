@@ -18,7 +18,7 @@ import java.util.List;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
-import static org.schabi.newpipe.extractor.ServiceList.PeerTube;
+import static org.schabi.newpipe.extractor.ServiceList.PEERTUBE;
 
 public class PeertubeCommentsExtractorTest {
     public static class Default {
@@ -27,7 +27,7 @@ public class PeertubeCommentsExtractorTest {
         @BeforeClass
         public static void setUp() throws Exception {
             NewPipe.init(DownloaderTestImpl.getInstance());
-            extractor = (PeertubeCommentsExtractor) PeerTube
+            extractor = (PeertubeCommentsExtractor) PEERTUBE
                     .getCommentsExtractor("https://framatube.org/videos/watch/04af977f-4201-4697-be67-a8d8cae6fa7a");
         }
 
@@ -54,7 +54,7 @@ public class PeertubeCommentsExtractorTest {
             Page nextPage = commentsInfo.getNextPage();
             InfoItemsPage<CommentsInfoItem> moreItems = new InfoItemsPage<>(null, nextPage, null);
             while (moreItems.hasNextPage() && !result) {
-                moreItems = CommentsInfo.getMoreItems(PeerTube, commentsInfo, nextPage);
+                moreItems = CommentsInfo.getMoreItems(PEERTUBE, commentsInfo, nextPage);
                 result = findInComments(moreItems.getItems(), "Loved it!!!");
                 nextPage = moreItems.getNextPage();
             }
@@ -99,7 +99,7 @@ public class PeertubeCommentsExtractorTest {
         @BeforeClass
         public static void setUp() throws Exception {
             NewPipe.init(DownloaderTestImpl.getInstance());
-            extractor = (PeertubeCommentsExtractor) PeerTube
+            extractor = (PeertubeCommentsExtractor) PEERTUBE
                     .getCommentsExtractor("https://framatube.org/videos/watch/217eefeb-883d-45be-b7fc-a788ad8507d3");
         }
 

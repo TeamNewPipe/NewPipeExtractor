@@ -6,15 +6,17 @@ import org.schabi.newpipe.DownloaderTestImpl;
 import org.schabi.newpipe.extractor.ListExtractor;
 import org.schabi.newpipe.extractor.NewPipe;
 import org.schabi.newpipe.extractor.channel.ChannelExtractor;
-import org.schabi.newpipe.extractor.localization.Localization;
 import org.schabi.newpipe.extractor.localization.DateWrapper;
+import org.schabi.newpipe.extractor.localization.Localization;
 import org.schabi.newpipe.extractor.stream.StreamInfoItem;
 
 import java.text.SimpleDateFormat;
-import java.util.*;
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Map;
 
 import static org.junit.Assert.fail;
-import static org.schabi.newpipe.extractor.ServiceList.YouTube;
+import static org.schabi.newpipe.extractor.ServiceList.YOUTUBE;
 import static org.schabi.newpipe.extractor.services.DefaultTests.defaultTestRelatedItems;
 
 /**
@@ -35,9 +37,9 @@ public class YoutubeChannelLocalizationTest {
         testLocalizationsFor("https://www.youtube.com/channel/UCEOXxzW2vU0P-0THehuIIeg");
     }
 
-    private void testLocalizationsFor(String channelUrl) throws Exception {
+    private void testLocalizationsFor(final String channelUrl) throws Exception {
 
-        final List<Localization> supportedLocalizations = YouTube.getSupportedLocalizations();
+        final List<Localization> supportedLocalizations = YOUTUBE.getSupportedLocalizations();
 //        final List<Localization> supportedLocalizations = Arrays.asList(Localization.DEFAULT, new Localization("sr"));
         final Map<Localization, List<StreamInfoItem>> results = new LinkedHashMap<>();
 
@@ -46,7 +48,7 @@ public class YoutubeChannelLocalizationTest {
 
             ListExtractor.InfoItemsPage<StreamInfoItem> itemsPage;
             try {
-                final ChannelExtractor extractor = YouTube.getChannelExtractor(channelUrl);
+                final ChannelExtractor extractor = YOUTUBE.getChannelExtractor(channelUrl);
                 extractor.forceLocalization(currentLocalization);
                 extractor.fetchPage();
                 itemsPage = defaultTestRelatedItems(extractor);
@@ -72,15 +74,17 @@ public class YoutubeChannelLocalizationTest {
             }
             results.put(currentLocalization, itemsPage.getItems());
 
-            if (DEBUG) System.out.println("\n===============================\n");
+            if (DEBUG) {
+                System.out.println("\n===============================\n");
+            }
         }
-
 
         // Check results
         final List<StreamInfoItem> referenceList = results.get(Localization.DEFAULT);
         boolean someFail = false;
 
-        for (Map.Entry<Localization, List<StreamInfoItem>> currentResultEntry : results.entrySet()) {
+        for (final Map.Entry<Localization, List<StreamInfoItem>> currentResultEntry
+                : results.entrySet()) {
             if (currentResultEntry.getKey().equals(Localization.DEFAULT)) {
                 continue;
             }
@@ -126,7 +130,6 @@ public class YoutubeChannelLocalizationTest {
                             "\n          " + currentLocalizationCode + ": " +
                             currentDateString + " → " + currentItem.getTextualUploadDate());
                 }
-
             }
         }
 

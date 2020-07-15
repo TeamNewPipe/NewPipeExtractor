@@ -1,10 +1,11 @@
 package org.schabi.newpipe.extractor.localization;
 
-import javax.annotation.Nonnull;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+
+import javax.annotation.Nonnull;
 
 /**
  * Represents a country that should be used when fetching content.

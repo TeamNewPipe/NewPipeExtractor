@@ -7,18 +7,20 @@ import org.schabi.newpipe.extractor.NewPipe;
 import org.schabi.newpipe.extractor.channel.ChannelExtractor;
 import org.schabi.newpipe.extractor.exceptions.ContentNotAvailableException;
 import org.schabi.newpipe.extractor.exceptions.ContentNotSupportedException;
-import org.schabi.newpipe.extractor.exceptions.ExtractionException;
 import org.schabi.newpipe.extractor.exceptions.ParsingException;
 import org.schabi.newpipe.extractor.services.BaseChannelExtractorTest;
 import org.schabi.newpipe.extractor.services.youtube.extractors.YoutubeChannelExtractor;
 
-import java.io.IOException;
-
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
 import static org.schabi.newpipe.extractor.ExtractorAsserts.assertEmpty;
 import static org.schabi.newpipe.extractor.ExtractorAsserts.assertIsSecureUrl;
-import static org.schabi.newpipe.extractor.ServiceList.YouTube;
-import static org.schabi.newpipe.extractor.services.DefaultTests.*;
+import static org.schabi.newpipe.extractor.ServiceList.YOUTUBE;
+import static org.schabi.newpipe.extractor.services.DefaultTests.assertNoMoreItems;
+import static org.schabi.newpipe.extractor.services.DefaultTests.defaultTestGetPageInNewExtractor;
+import static org.schabi.newpipe.extractor.services.DefaultTests.defaultTestMoreItems;
+import static org.schabi.newpipe.extractor.services.DefaultTests.defaultTestRelatedItems;
 
 /**
  * Test for {@link ChannelExtractor}
@@ -34,14 +36,14 @@ public class YoutubeChannelExtractorTest {
         @Test(expected = ContentNotAvailableException.class)
         public void deletedFetch() throws Exception {
             final ChannelExtractor extractor =
-                    YouTube.getChannelExtractor("https://www.youtube.com/channel/UCAUc4iz6edWerIjlnL8OSSw");
+                    YOUTUBE.getChannelExtractor("https://www.youtube.com/channel/UCAUc4iz6edWerIjlnL8OSSw");
             extractor.fetchPage();
         }
 
         @Test(expected = ContentNotAvailableException.class)
         public void nonExistentFetch() throws Exception {
             final ChannelExtractor extractor =
-                    YouTube.getChannelExtractor("https://www.youtube.com/channel/DOESNT-EXIST");
+                    YOUTUBE.getChannelExtractor("https://www.youtube.com/channel/DOESNT-EXIST");
             extractor.fetchPage();
         }
     }
@@ -54,7 +56,7 @@ public class YoutubeChannelExtractorTest {
 
         @Test(expected = ContentNotSupportedException.class)
         public void noVideoTab() throws Exception {
-            final ChannelExtractor extractor = YouTube.getChannelExtractor("https://invidio.us/channel/UC-9-kyTW8ZkZNDHQJ6FgpwQ");
+            final ChannelExtractor extractor = YOUTUBE.getChannelExtractor("https://invidio.us/channel/UC-9-kyTW8ZkZNDHQJ6FgpwQ");
             extractor.fetchPage();
             extractor.getInitialPage();
         }
@@ -66,7 +68,7 @@ public class YoutubeChannelExtractorTest {
         @BeforeClass
         public static void setUp() throws Exception {
             NewPipe.init(DownloaderTestImpl.getInstance());
-            extractor = (YoutubeChannelExtractor) YouTube
+            extractor = (YoutubeChannelExtractor) YOUTUBE
                     .getChannelExtractor("http://www.youtube.com/user/Gronkh");
             extractor.fetchPage();
         }
@@ -77,7 +79,7 @@ public class YoutubeChannelExtractorTest {
 
         @Test
         public void testServiceId() {
-            assertEquals(YouTube.getServiceId(), extractor.getServiceId());
+            assertEquals(YOUTUBE.getServiceId(), extractor.getServiceId());
         }
 
         @Test
@@ -156,7 +158,7 @@ public class YoutubeChannelExtractorTest {
         @BeforeClass
         public static void setUp() throws Exception {
             NewPipe.init(DownloaderTestImpl.getInstance());
-            extractor = (YoutubeChannelExtractor) YouTube
+            extractor = (YoutubeChannelExtractor) YOUTUBE
                     .getChannelExtractor("https://www.youtube.com/user/Vsauce");
             extractor.fetchPage();
         }
@@ -167,7 +169,7 @@ public class YoutubeChannelExtractorTest {
 
         @Test
         public void testServiceId() {
-            assertEquals(YouTube.getServiceId(), extractor.getServiceId());
+            assertEquals(YOUTUBE.getServiceId(), extractor.getServiceId());
         }
 
         @Test
@@ -247,7 +249,7 @@ public class YoutubeChannelExtractorTest {
         @BeforeClass
         public static void setUp() throws Exception {
             NewPipe.init(DownloaderTestImpl.getInstance());
-            extractor = (YoutubeChannelExtractor) YouTube
+            extractor = (YoutubeChannelExtractor) YOUTUBE
                     .getChannelExtractor("https://www.youtube.com/channel/UCsXVk37bltHxD1rDPwtNM8Q");
             extractor.fetchPage();
         }
@@ -258,7 +260,7 @@ public class YoutubeChannelExtractorTest {
 
         @Test
         public void testGetPageInNewExtractor() throws Exception {
-            final ChannelExtractor newExtractor = YouTube.getChannelExtractor(extractor.getUrl());
+            final ChannelExtractor newExtractor = YOUTUBE.getChannelExtractor(extractor.getUrl());
             defaultTestGetPageInNewExtractor(extractor, newExtractor);
         }
 
@@ -268,7 +270,7 @@ public class YoutubeChannelExtractorTest {
 
         @Test
         public void testServiceId() {
-            assertEquals(YouTube.getServiceId(), extractor.getServiceId());
+            assertEquals(YOUTUBE.getServiceId(), extractor.getServiceId());
         }
 
         @Test
@@ -349,7 +351,7 @@ public class YoutubeChannelExtractorTest {
         @BeforeClass
         public static void setUp() throws Exception {
             NewPipe.init(DownloaderTestImpl.getInstance());
-            extractor = (YoutubeChannelExtractor) YouTube
+            extractor = (YoutubeChannelExtractor) YOUTUBE
                     .getChannelExtractor("https://www.youtube.com/user/CaptainDisillusion/videos");
             extractor.fetchPage();
         }
@@ -360,7 +362,7 @@ public class YoutubeChannelExtractorTest {
 
         @Test
         public void testServiceId() {
-            assertEquals(YouTube.getServiceId(), extractor.getServiceId());
+            assertEquals(YOUTUBE.getServiceId(), extractor.getServiceId());
         }
 
         @Test
@@ -439,7 +441,7 @@ public class YoutubeChannelExtractorTest {
         @BeforeClass
         public static void setUp() throws Exception {
             NewPipe.init(DownloaderTestImpl.getInstance());
-            extractor = (YoutubeChannelExtractor) YouTube
+            extractor = (YoutubeChannelExtractor) YOUTUBE
                     .getChannelExtractor("https://www.youtube.com/user/EminemVEVO/");
             extractor.fetchPage();
         }
@@ -450,7 +452,7 @@ public class YoutubeChannelExtractorTest {
 
         @Test
         public void testServiceId() {
-            assertEquals(YouTube.getServiceId(), extractor.getServiceId());
+            assertEquals(YOUTUBE.getServiceId(), extractor.getServiceId());
         }
 
         @Test
@@ -536,7 +538,7 @@ public class YoutubeChannelExtractorTest {
         @BeforeClass
         public static void setUp() throws Exception {
             NewPipe.init(DownloaderTestImpl.getInstance());
-            extractor = (YoutubeChannelExtractor) YouTube
+            extractor = (YoutubeChannelExtractor) YOUTUBE
                     .getChannelExtractor("https://www.youtube.com/channel/UCITk7Ky4iE5_xISw9IaHqpQ");
             extractor.fetchPage();
         }
@@ -547,7 +549,7 @@ public class YoutubeChannelExtractorTest {
 
         @Test
         public void testServiceId() {
-            assertEquals(YouTube.getServiceId(), extractor.getServiceId());
+            assertEquals(YOUTUBE.getServiceId(), extractor.getServiceId());
         }
 
         @Test
@@ -622,7 +624,7 @@ public class YoutubeChannelExtractorTest {
         @BeforeClass
         public static void setUp() throws Exception {
             NewPipe.init(DownloaderTestImpl.getInstance());
-            extractor = (YoutubeChannelExtractor) YouTube
+            extractor = (YoutubeChannelExtractor) YOUTUBE
                     .getChannelExtractor("https://www.youtube.com/channel/UCUaQMQS9lY5lit3vurpXQ6w");
             extractor.fetchPage();
         }
@@ -633,7 +635,7 @@ public class YoutubeChannelExtractorTest {
 
         @Test
         public void testServiceId() {
-            assertEquals(YouTube.getServiceId(), extractor.getServiceId());
+            assertEquals(YOUTUBE.getServiceId(), extractor.getServiceId());
         }
 
         @Test

@@ -20,9 +20,11 @@ import java.util.Calendar;
 import java.util.TimeZone;
 
 import static java.util.Objects.requireNonNull;
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
 import static org.schabi.newpipe.extractor.ExtractorAsserts.assertIsSecureUrl;
-import static org.schabi.newpipe.extractor.ServiceList.SoundCloud;
+import static org.schabi.newpipe.extractor.ServiceList.SOUNDCLOUD;
 
 /**
  * Test for {@link StreamExtractor}
@@ -35,7 +37,7 @@ public class SoundcloudStreamExtractorDefaultTest {
         @BeforeClass
         public static void setUp() throws Exception {
             NewPipe.init(DownloaderTestImpl.getInstance());
-            extractor = (SoundcloudStreamExtractor) SoundCloud.getStreamExtractor("https://soundcloud.com/liluzivert/do-what-i-want-produced-by-maaly-raw-don-cannon");
+            extractor = (SoundcloudStreamExtractor) SOUNDCLOUD.getStreamExtractor("https://soundcloud.com/liluzivert/do-what-i-want-produced-by-maaly-raw-don-cannon");
             extractor.fetchPage();
         }
 
@@ -47,7 +49,7 @@ public class SoundcloudStreamExtractorDefaultTest {
 
         @Test
         public void testGetValidTimeStamp() throws IOException, ExtractionException {
-            StreamExtractor extractor = SoundCloud.getStreamExtractor("https://soundcloud.com/liluzivert/do-what-i-want-produced-by-maaly-raw-don-cannon#t=69");
+            StreamExtractor extractor = SOUNDCLOUD.getStreamExtractor("https://soundcloud.com/liluzivert/do-what-i-want-produced-by-maaly-raw-don-cannon#t=69");
             assertEquals("69", extractor.getTimeStamp() + "");
         }
 
@@ -146,7 +148,7 @@ public class SoundcloudStreamExtractorDefaultTest {
         @Test(expected = ContentNotSupportedException.class)
         public void hlsAudioStream() throws Exception {
             final StreamExtractor extractor =
-                    SoundCloud.getStreamExtractor("https://soundcloud.com/dualipa/cool");
+                    SOUNDCLOUD.getStreamExtractor("https://soundcloud.com/dualipa/cool");
             extractor.fetchPage();
             extractor.getAudioStreams();
         }
@@ -154,7 +156,7 @@ public class SoundcloudStreamExtractorDefaultTest {
         @Test(expected = ContentNotSupportedException.class)
         public void bothHlsAndOpusAudioStreams() throws Exception {
             final StreamExtractor extractor =
-                    SoundCloud.getStreamExtractor("https://soundcloud.com/lil-baby-4pf/no-sucker");
+                    SOUNDCLOUD.getStreamExtractor("https://soundcloud.com/lil-baby-4pf/no-sucker");
             extractor.fetchPage();
             extractor.getAudioStreams();
         }

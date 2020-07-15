@@ -11,7 +11,7 @@ import org.schabi.newpipe.extractor.services.DefaultSearchExtractorTest;
 import javax.annotation.Nullable;
 
 import static java.util.Collections.singletonList;
-import static org.schabi.newpipe.extractor.ServiceList.MediaCCC;
+import static org.schabi.newpipe.extractor.ServiceList.MEDIA_CCC;
 import static org.schabi.newpipe.extractor.services.media_ccc.linkHandler.MediaCCCSearchQueryHandlerFactory.CONFERENCES;
 import static org.schabi.newpipe.extractor.services.media_ccc.linkHandler.MediaCCCSearchQueryHandlerFactory.EVENTS;
 
@@ -23,12 +23,12 @@ public class MediaCCCSearchExtractorTest {
         @BeforeClass
         public static void setUp() throws Exception {
             NewPipe.init(DownloaderTestImpl.getInstance());
-            extractor = MediaCCC.getSearchExtractor(QUERY);
+            extractor = MEDIA_CCC.getSearchExtractor(QUERY);
             extractor.fetchPage();
         }
 
         @Override public SearchExtractor extractor() { return extractor; }
-        @Override public StreamingService expectedService() { return MediaCCC; }
+        @Override public StreamingService expectedService() { return MEDIA_CCC; }
         @Override public String expectedName() { return QUERY; }
         @Override public String expectedId() { return QUERY; }
         @Override public String expectedUrlContains() { return "media.ccc.de/public/events/search?q=" + QUERY; }
@@ -46,12 +46,12 @@ public class MediaCCCSearchExtractorTest {
         @BeforeClass
         public static void setUp() throws Exception {
             NewPipe.init(DownloaderTestImpl.getInstance());
-            extractor = MediaCCC.getSearchExtractor(QUERY, singletonList(CONFERENCES), "");
+            extractor = MEDIA_CCC.getSearchExtractor(QUERY, singletonList(CONFERENCES), "");
             extractor.fetchPage();
         }
 
         @Override public SearchExtractor extractor() { return extractor; }
-        @Override public StreamingService expectedService() { return MediaCCC; }
+        @Override public StreamingService expectedService() { return MEDIA_CCC; }
         @Override public String expectedName() { return QUERY; }
         @Override public String expectedId() { return QUERY; }
         @Override public String expectedUrlContains() { return "media.ccc.de/public/events/search?q=" + QUERY; }
@@ -70,12 +70,12 @@ public class MediaCCCSearchExtractorTest {
         @BeforeClass
         public static void setUp() throws Exception {
             NewPipe.init(DownloaderTestImpl.getInstance());
-            extractor = MediaCCC.getSearchExtractor(QUERY, singletonList(EVENTS), "");
+            extractor = MEDIA_CCC.getSearchExtractor(QUERY, singletonList(EVENTS), "");
             extractor.fetchPage();
         }
 
         @Override public SearchExtractor extractor() { return extractor; }
-        @Override public StreamingService expectedService() { return MediaCCC; }
+        @Override public StreamingService expectedService() { return MEDIA_CCC; }
         @Override public String expectedName() { return QUERY; }
         @Override public String expectedId() { return QUERY; }
         @Override public String expectedUrlContains() { return "media.ccc.de/public/events/search?q=" + QUERY; }

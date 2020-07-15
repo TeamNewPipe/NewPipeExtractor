@@ -4,9 +4,11 @@ import org.junit.Test;
 
 import java.util.HashSet;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotEquals;
+import static org.junit.Assert.assertTrue;
 import static org.schabi.newpipe.extractor.NewPipe.getServiceByUrl;
-import static org.schabi.newpipe.extractor.ServiceList.YouTube;
+import static org.schabi.newpipe.extractor.ServiceList.YOUTUBE;
 
 public class NewPipeTest {
     @Test
@@ -26,30 +28,30 @@ public class NewPipeTest {
 
     @Test
     public void getServiceWithId() throws Exception {
-        assertEquals(NewPipe.getService(YouTube.getServiceId()), YouTube);
+        assertEquals(NewPipe.getService(YOUTUBE.getServiceId()), YOUTUBE);
     }
 
     @Test
     public void getServiceWithName() throws Exception {
-        assertEquals(NewPipe.getService(YouTube.getServiceInfo().getName()), YouTube);
+        assertEquals(NewPipe.getService(YOUTUBE.getServiceInfo().getName()), YOUTUBE);
     }
 
     @Test
     public void getServiceWithUrl() throws Exception {
-        assertEquals(getServiceByUrl("https://www.youtube.com/watch?v=_r6CgaFNAGg"), YouTube);
-        assertEquals(getServiceByUrl("https://www.youtube.com/channel/UCi2bIyFtz-JdI-ou8kaqsqg"), YouTube);
-        assertEquals(getServiceByUrl("https://www.youtube.com/playlist?list=PLRqwX-V7Uu6ZiZxtDDRCi6uhfTH4FilpH"), YouTube);
+        assertEquals(getServiceByUrl("https://www.youtube.com/watch?v=_r6CgaFNAGg"), YOUTUBE);
+        assertEquals(getServiceByUrl("https://www.youtube.com/channel/UCi2bIyFtz-JdI-ou8kaqsqg"), YOUTUBE);
+        assertEquals(getServiceByUrl("https://www.youtube.com/playlist?list=PLRqwX-V7Uu6ZiZxtDDRCi6uhfTH4FilpH"), YOUTUBE);
 
-        assertNotEquals(getServiceByUrl("https://soundcloud.com/pegboardnerds"), YouTube);
+        assertNotEquals(getServiceByUrl("https://soundcloud.com/pegboardnerds"), YOUTUBE);
     }
 
     @Test
     public void getIdWithServiceName() throws Exception {
-        assertEquals(NewPipe.getIdOfService(YouTube.getServiceInfo().getName()), YouTube.getServiceId());
+        assertEquals(NewPipe.getIdOfService(YOUTUBE.getServiceInfo().getName()), YOUTUBE.getServiceId());
     }
 
     @Test
     public void getServiceNameWithId() throws Exception {
-        assertEquals(NewPipe.getNameOfService(YouTube.getServiceId()), YouTube.getServiceInfo().getName());
+        assertEquals(NewPipe.getNameOfService(YOUTUBE.getServiceId()), YOUTUBE.getServiceInfo().getName());
     }
 }

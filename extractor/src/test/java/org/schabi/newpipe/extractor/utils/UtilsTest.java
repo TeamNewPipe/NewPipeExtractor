@@ -19,6 +19,7 @@ public class UtilsTest {
 
     @Test
     public void testJoin() {
-        assertEquals("some,random,stuff", Utils.join(",", Arrays.asList("some", "random", "stuff")));
+        assertEquals("some,random,stuff", Utils.join(",",
+                Arrays.asList("some", "random", "stuff")));
     }
 }

@@ -11,19 +11,20 @@ public abstract class Info implements Serializable {
 
     private final int serviceId;
     /**
-     * Id of this Info object <br>
-     * e.g. Youtube:  https://www.youtube.com/watch?v=RER5qCTzZ7     &gt;    RER5qCTzZ7
+     * ID of this Info object <br>
+     * e.g. YouTube:  https://www.youtube.com/watch?v=RER5qCTzZ7     &gt;    RER5qCTzZ7
      */
     private final String id;
     /**
-     * Different than the {@link #originalUrl} in the sense that it <i>may</i> be set as a cleaned url.
+     * Different than the {@link #originalUrl} in the sense
+     * that it <i>may</i> be set as a cleaned url.
      *
      * @see LinkHandler#getUrl()
      * @see Extractor#getOriginalUrl()
      */
     private final String url;
     /**
-     * The url used to start the extraction of this {@link Info} object.
+     * The URL used to start the extraction of this {@link Info} object.
      *
      * @see Extractor#getOriginalUrl()
      */
@@ -32,15 +33,15 @@ public abstract class Info implements Serializable {
 
     private final List<Throwable> errors = new ArrayList<>();
 
-    public void addError(Throwable throwable) {
+    public void addError(final Throwable throwable) {
         this.errors.add(throwable);
     }
 
-    public void addAllErrors(Collection<Throwable> errors) {
+    public void addAllErrors(final Collection<Throwable> errors) {
         this.errors.addAll(errors);
     }
 
-    public Info(int serviceId, String id, String url, String originalUrl, String name) {
+    public Info(final int serviceId, final String id, final String url, final String originalUrl, final String name) {
         this.serviceId = serviceId;
         this.id = id;
         this.url = url;
@@ -48,7 +49,7 @@ public abstract class Info implements Serializable {
         this.name = name;
     }
 
-    public Info(int serviceId, LinkHandler linkHandler, String name) {
+    public Info(final int serviceId, final LinkHandler linkHandler, final String name) {
         this(serviceId,
                 linkHandler.getId(),
                 linkHandler.getUrl(),
@@ -64,7 +65,7 @@ public abstract class Info implements Serializable {
 
     // if you use an api and want to handle the website url
     // overriding original url is essential
-    public void setOriginalUrl(String url) {
+    public void setOriginalUrl(final String url) {
         originalUrl = url;
     }
 

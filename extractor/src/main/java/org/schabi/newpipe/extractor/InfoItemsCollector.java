@@ -28,7 +28,6 @@ import java.util.List;
  */
 
 public abstract class InfoItemsCollector<I extends InfoItem, E extends InfoItemExtractor> implements Collector<I, E> {
-
     private final List<I> itemList = new ArrayList<>();
     private final List<Throwable> errors = new ArrayList<>();
     private final int serviceId;
@@ -37,7 +36,7 @@ public abstract class InfoItemsCollector<I extends InfoItem, E extends InfoItemE
      * Create a new collector
      * @param serviceId the service id
      */
-    public InfoItemsCollector(int serviceId) {
+    public InfoItemsCollector(final int serviceId) {
         this.serviceId = serviceId;
     }
 
@@ -61,7 +60,7 @@ public abstract class InfoItemsCollector<I extends InfoItem, E extends InfoItemE
      * Add an error
      * @param error the error
      */
-    protected void addError(Exception error) {
+    protected void addError(final Exception error) {
         errors.add(error);
     }
 
@@ -86,7 +85,7 @@ public abstract class InfoItemsCollector<I extends InfoItem, E extends InfoItemE
         try {
             addItem(extract(extractor));
         } catch (FoundAdException ae) {
-            // found an ad. Maybe a debug line could be placed here
+            // Found an ad. Maybe a debug line could be placed here
         } catch (ParsingException e) {
             addError(e);
         }

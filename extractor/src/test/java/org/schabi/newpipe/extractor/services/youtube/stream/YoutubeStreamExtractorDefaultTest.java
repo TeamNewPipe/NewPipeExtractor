@@ -30,7 +30,7 @@ import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 import static org.schabi.newpipe.extractor.ExtractorAsserts.assertIsSecureUrl;
-import static org.schabi.newpipe.extractor.ServiceList.YouTube;
+import static org.schabi.newpipe.extractor.ServiceList.YOUTUBE;
 
 /*
  * Created by Christian Schabesberger on 30.12.15.
@@ -66,14 +66,14 @@ public class YoutubeStreamExtractorDefaultTest {
         @Test(expected = ContentNotAvailableException.class)
         public void nonExistentFetch() throws Exception {
             final StreamExtractor extractor =
-                    YouTube.getStreamExtractor("https://www.youtube.com/watch?v=don-t-exist");
+                    YOUTUBE.getStreamExtractor("https://www.youtube.com/watch?v=don-t-exist");
             extractor.fetchPage();
         }
 
         @Test(expected = ParsingException.class)
         public void invalidId() throws Exception {
             final StreamExtractor extractor =
-                    YouTube.getStreamExtractor("https://www.youtube.com/watch?v=INVALID_ID_INVALID_ID");
+                    YOUTUBE.getStreamExtractor("https://www.youtube.com/watch?v=INVALID_ID_INVALID_ID");
             extractor.fetchPage();
         }
     }
@@ -87,7 +87,7 @@ public class YoutubeStreamExtractorDefaultTest {
         @BeforeClass
         public static void setUp() throws Exception {
             NewPipe.init(DownloaderTestImpl.getInstance());
-            extractor = (YoutubeStreamExtractor) YouTube
+            extractor = (YoutubeStreamExtractor) YOUTUBE
                     .getStreamExtractor("https://www.youtube.com/watch?v=YQHsXMglC9A");
             extractor.fetchPage();
         }
@@ -100,7 +100,7 @@ public class YoutubeStreamExtractorDefaultTest {
 
         @Test
         public void testGetValidTimeStamp() throws ExtractionException {
-            StreamExtractor extractor = YouTube.getStreamExtractor("https://youtu.be/FmG385_uUys?t=174");
+            final StreamExtractor extractor = YOUTUBE.getStreamExtractor("https://youtu.be/FmG385_uUys?t=174");
             assertEquals(extractor.getTimeStamp() + "", "174");
         }
 
@@ -134,7 +134,7 @@ public class YoutubeStreamExtractorDefaultTest {
 
         @Test
         public void testGetViewCount() throws ParsingException {
-            Long count = extractor.getViewCount();
+            final long count = extractor.getViewCount();
             assertTrue(Long.toString(count), count >= /* specific to that video */ 1220025784);
         }
 
@@ -152,9 +152,9 @@ public class YoutubeStreamExtractorDefaultTest {
 
         @Test
         public void testGetUploaderUrl() throws ParsingException {
-            String url = extractor.getUploaderUrl();
-            if (!url.equals("https://www.youtube.com/channel/UCsRM0YB_dabtEPGPTKo-gcw") &&
-                    !url.equals("https://www.youtube.com/channel/UComP_epzeKzvBX156r6pm1Q")) {
+            final String url = extractor.getUploaderUrl();
+            if (!url.equals("https://www.youtube.com/channel/UCsRM0YB_dabtEPGPTKo-gcw")
+                    && !url.equals("https://www.youtube.com/channel/UComP_epzeKzvBX156r6pm1Q")) {
                 fail("Uploader url is neither the music channel one nor the Vevo one");
             }
         }
@@ -176,7 +176,7 @@ public class YoutubeStreamExtractorDefaultTest {
 
         @Test
         public void testGetVideoStreams() throws ExtractionException {
-            for (VideoStream s : extractor.getVideoStreams()) {
+            for (final VideoStream s : extractor.getVideoStreams()) {
                 assertIsSecureUrl(s.url);
                 assertTrue(s.resolution.length() > 0);
                 assertTrue(Integer.toString(s.getFormatId()),
@@ -191,14 +191,15 @@ public class YoutubeStreamExtractorDefaultTest {
 
         @Test
         public void testGetDashMpd() throws ParsingException {
-            // we dont expect this particular video to have a DASH file. For this purpouse we use a different test class.
+            // We don't expect this particular video to have a DASH file.
+            // For this purpose we use a different test class.
             assertTrue(extractor.getDashMpdUrl(),
                     extractor.getDashMpdUrl() != null && extractor.getDashMpdUrl().isEmpty());
         }
 
         @Test
         public void testGetRelatedVideos() throws ExtractionException {
-            StreamInfoItemsCollector relatedVideos = extractor.getRelatedStreams();
+            final StreamInfoItemsCollector relatedVideos = extractor.getRelatedStreams();
             Utils.printErrors(relatedVideos.getErrors());
             assertFalse(relatedVideos.getItems().isEmpty());
             assertTrue(relatedVideos.getErrors().isEmpty());
@@ -235,7 +236,7 @@ public class YoutubeStreamExtractorDefaultTest {
         @BeforeClass
         public static void setUp() throws Exception {
             NewPipe.init(DownloaderTestImpl.getInstance());
-            extractor = (YoutubeStreamExtractor) YouTube
+            extractor = (YoutubeStreamExtractor) YOUTUBE
                     .getStreamExtractor("https://www.youtube.com/watch?v=fBc4Q_htqPg");
             extractor.fetchPage();
         }
@@ -248,9 +249,13 @@ public class YoutubeStreamExtractorDefaultTest {
 
         @Test
         public void testGetFullLinksInDescription() throws ParsingException {
-            assertTrue(extractor.getDescription().getContent().contains("https://www.reddit.com/r/PewdiepieSubmissions/"));
-            assertTrue(extractor.getDescription().getContent().contains("https://www.youtube.com/channel/UC3e8EMTOn4g6ZSKggHTnNng"));
-            assertTrue(extractor.getDescription().getContent().contains("https://usa.clutchchairz.com/product/pewdiepie-edition-throttle-series/"));
+            assertTrue(extractor.getDescription().getContent()
+                    .contains("https://www.reddit.com/r/PewdiepieSubmissions/"));
+            assertTrue(extractor.getDescription().getContent()
+                    .contains("https://www.youtube.com/channel/UC3e8EMTOn4g6ZSKggHTnNng"));
+            assertTrue(extractor.getDescription().getContent()
+                    .contains("https://usa.clutchchairz.com/product"
+                            + "/pewdiepie-edition-throttle-series/"));
         }
     }
 
@@ -260,7 +265,7 @@ public class YoutubeStreamExtractorDefaultTest {
         @BeforeClass
         public static void setUp() throws Exception {
             NewPipe.init(DownloaderTestImpl.getInstance());
-            extractor = (YoutubeStreamExtractor) YouTube
+            extractor = (YoutubeStreamExtractor) YOUTUBE
                     .getStreamExtractor("https://www.youtube.com/watch?v=cV5TjZCJkuA");
             extractor.fetchPage();
         }
@@ -274,10 +279,14 @@ public class YoutubeStreamExtractorDefaultTest {
         @Test
         public void testGetFullLinksInDescription() throws ParsingException {
             final String description = extractor.getDescription().getContent();
-            assertTrue(description.contains("https://www.youtube.com/watch?v=X7FLCHVXpsA&amp;list=PL7u4lWXQ3wfI_7PgX0C-VTiwLeu0S4v34"));
-            assertTrue(description.contains("https://www.youtube.com/watch?v=Lqv6G0pDNnw&amp;list=PL7u4lWXQ3wfI_7PgX0C-VTiwLeu0S4v34"));
-            assertTrue(description.contains("https://www.youtube.com/watch?v=XxaRBPyrnBU&amp;list=PL7u4lWXQ3wfI_7PgX0C-VTiwLeu0S4v34"));
-            assertTrue(description.contains("https://www.youtube.com/watch?v=U-9tUEOFKNU&amp;list=PL7u4lWXQ3wfI_7PgX0C-VTiwLeu0S4v34"));
+            assertTrue(description.contains("https://www.youtube.com/watch?v=X7FLCHVXpsA"
+                    + "&amp;list=PL7u4lWXQ3wfI_7PgX0C-VTiwLeu0S4v34"));
+            assertTrue(description.contains("https://www.youtube.com/watch?v=Lqv6G0pDNnw"
+                    + "&amp;list=PL7u4lWXQ3wfI_7PgX0C-VTiwLeu0S4v34"));
+            assertTrue(description.contains("https://www.youtube.com/watch?v=XxaRBPyrnBU"
+                    + "&amp;list=PL7u4lWXQ3wfI_7PgX0C-VTiwLeu0S4v34"));
+            assertTrue(description.contains("https://www.youtube.com/watch?v=U-9tUEOFKNU"
+                    + "&amp;list=PL7u4lWXQ3wfI_7PgX0C-VTiwLeu0S4v34"));
         }
     }
 
@@ -287,7 +296,7 @@ public class YoutubeStreamExtractorDefaultTest {
         @BeforeClass
         public static void setUp() throws Exception {
             NewPipe.init(DownloaderTestImpl.getInstance());
-            extractor = (YoutubeStreamExtractor) YouTube
+            extractor = (YoutubeStreamExtractor) YOUTUBE
                     .getStreamExtractor("https://www.youtube.com/watch?v=HRKu0cvrr_o");
             extractor.fetchPage();
         }
@@ -301,7 +310,6 @@ public class YoutubeStreamExtractorDefaultTest {
         public void testGetDislikeCount() throws ParsingException {
             assertEquals(-1, extractor.getDislikeCount());
         }
-
     }
 
     public static class FramesTest {
@@ -310,7 +318,7 @@ public class YoutubeStreamExtractorDefaultTest {
         @BeforeClass
         public static void setUp() throws Exception {
             NewPipe.init(DownloaderTestImpl.getInstance());
-            extractor = (YoutubeStreamExtractor) YouTube
+            extractor = (YoutubeStreamExtractor) YOUTUBE
                     .getStreamExtractor("https://www.youtube.com/watch?v=HoK9shIJ2xQ");
             extractor.fetchPage();
         }

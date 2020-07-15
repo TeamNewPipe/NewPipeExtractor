@@ -33,17 +33,20 @@ import java.io.IOException;
  */
 
 public class ChannelInfo extends ListInfo<StreamInfoItem> {
-
-    public ChannelInfo(int serviceId, String id, String url, String originalUrl, String name, ListLinkHandler listLinkHandler) {
-        super(serviceId, id, url, originalUrl, name, listLinkHandler.getContentFilters(), listLinkHandler.getSortFilter());
+    public ChannelInfo(final int serviceId, final String id, final String url,
+                       final String originalUrl, final String name,
+                       final ListLinkHandler listLinkHandler) {
+        super(serviceId, id, url, originalUrl, name, listLinkHandler.getContentFilters(),
+                listLinkHandler.getSortFilter());
     }
 
-    public static ChannelInfo getInfo(String url) throws IOException, ExtractionException {
+    public static ChannelInfo getInfo(final String url) throws IOException, ExtractionException {
         return getInfo(NewPipe.getServiceByUrl(url), url);
     }
 
-    public static ChannelInfo getInfo(StreamingService service, String url) throws IOException, ExtractionException {
-        ChannelExtractor extractor = service.getChannelExtractor(url);
+    public static ChannelInfo getInfo(final StreamingService service, final String url)
+            throws IOException, ExtractionException {
+        final ChannelExtractor extractor = service.getChannelExtractor(url);
         extractor.fetchPage();
         return getInfo(extractor);
     }
@@ -54,7 +57,7 @@ public class ChannelInfo extends ListInfo<StreamInfoItem> {
         return service.getChannelExtractor(url).getPage(page);
     }
 
-    public static ChannelInfo getInfo(ChannelExtractor extractor) throws IOException, ExtractionException {
+    public static ChannelInfo getInfo(ChannelExtractor extractor) throws ExtractionException {
 
         final int serviceId = extractor.getServiceId();
         final String id = extractor.getId();
@@ -62,7 +65,8 @@ public class ChannelInfo extends ListInfo<StreamInfoItem> {
         final String originalUrl = extractor.getOriginalUrl();
         final String name = extractor.getName();
 
-        final ChannelInfo info = new ChannelInfo(serviceId, id, url, originalUrl, name, extractor.getLinkHandler());
+        final ChannelInfo info = new ChannelInfo(serviceId, id, url, originalUrl, name,
+                extractor.getLinkHandler());
 
         try {
             info.setAvatarUrl(extractor.getAvatarUrl());
@@ -80,7 +84,8 @@ public class ChannelInfo extends ListInfo<StreamInfoItem> {
             info.addError(e);
         }
 
-        final InfoItemsPage<StreamInfoItem> itemsPage = ExtractorHelper.getItemsPageOrLogError(info, extractor);
+        final InfoItemsPage<StreamInfoItem> itemsPage = ExtractorHelper.getItemsPageOrLogError(info,
+                extractor);
         info.setRelatedItems(itemsPage.getItems());
         info.setNextPage(itemsPage.getNextPage());
 
@@ -130,7 +135,7 @@ public class ChannelInfo extends ListInfo<StreamInfoItem> {
         return parentChannelName;
     }
 
-    public void setParentChannelName(String parentChannelName) {
+    public void setParentChannelName(final String parentChannelName) {
         this.parentChannelName = parentChannelName;
     }
 
@@ -138,7 +143,7 @@ public class ChannelInfo extends ListInfo<StreamInfoItem> {
         return parentChannelUrl;
     }
 
-    public void setParentChannelUrl(String parentChannelUrl) {
+    public void setParentChannelUrl(final String parentChannelUrl) {
         this.parentChannelUrl = parentChannelUrl;
     }
 
@@ -146,7 +151,7 @@ public class ChannelInfo extends ListInfo<StreamInfoItem> {
         return parentChannelAvatarUrl;
     }
 
-    public void setParentChannelAvatarUrl(String parentChannelAvatarUrl) {
+    public void setParentChannelAvatarUrl(final String parentChannelAvatarUrl) {
         this.parentChannelAvatarUrl = parentChannelAvatarUrl;
     }
 
@@ -154,7 +159,7 @@ public class ChannelInfo extends ListInfo<StreamInfoItem> {
         return avatarUrl;
     }
 
-    public void setAvatarUrl(String avatarUrl) {
+    public void setAvatarUrl(final String avatarUrl) {
         this.avatarUrl = avatarUrl;
     }
 
@@ -162,7 +167,7 @@ public class ChannelInfo extends ListInfo<StreamInfoItem> {
         return bannerUrl;
     }
 
-    public void setBannerUrl(String bannerUrl) {
+    public void setBannerUrl(final String bannerUrl) {
         this.bannerUrl = bannerUrl;
     }
 
@@ -170,7 +175,7 @@ public class ChannelInfo extends ListInfo<StreamInfoItem> {
         return feedUrl;
     }
 
-    public void setFeedUrl(String feedUrl) {
+    public void setFeedUrl(final String feedUrl) {
         this.feedUrl = feedUrl;
     }
 
@@ -178,7 +183,7 @@ public class ChannelInfo extends ListInfo<StreamInfoItem> {
         return subscriberCount;
     }
 
-    public void setSubscriberCount(long subscriberCount) {
+    public void setSubscriberCount(final long subscriberCount) {
         this.subscriberCount = subscriberCount;
     }
 
@@ -186,7 +191,7 @@ public class ChannelInfo extends ListInfo<StreamInfoItem> {
         return description;
     }
 
-    public void setDescription(String description) {
+    public void setDescription(final String description) {
         this.description = description;
     }
 
@@ -194,7 +199,7 @@ public class ChannelInfo extends ListInfo<StreamInfoItem> {
         return donationLinks;
     }
 
-    public void setDonationLinks(String[] donationLinks) {
+    public void setDonationLinks(final String[] donationLinks) {
         this.donationLinks = donationLinks;
     }
 }

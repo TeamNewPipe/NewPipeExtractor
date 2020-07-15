@@ -12,7 +12,6 @@ import org.schabi.newpipe.extractor.services.youtube.linkHandler.YoutubeStreamLi
 import org.schabi.newpipe.extractor.stream.StreamExtractor;
 import org.schabi.newpipe.extractor.stream.VideoStream;
 
-import java.io.IOException;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -20,21 +19,24 @@ import java.util.Calendar;
 import java.util.List;
 
 import static java.util.Objects.requireNonNull;
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
 import static org.schabi.newpipe.extractor.ExtractorAsserts.assertIsSecureUrl;
-import static org.schabi.newpipe.extractor.ServiceList.YouTube;
+import static org.schabi.newpipe.extractor.ServiceList.YOUTUBE;
 
 /**
  * Test for {@link YoutubeStreamLinkHandlerFactory}
  */
 public class YoutubeStreamExtractorAgeRestrictedTest {
-    public static final String HTTPS = "https://";
+    private static final String HTTPS = "https://";
     private static YoutubeStreamExtractor extractor;
 
     @BeforeClass
     public static void setUp() throws Exception {
         NewPipe.init(DownloaderTestImpl.getInstance());
-        extractor = (YoutubeStreamExtractor) YouTube
+        extractor = (YoutubeStreamExtractor) YOUTUBE
                 .getStreamExtractor("https://www.youtube.com/watch?v=MmBeUZqv1QA");
         extractor.fetchPage();
     }
@@ -45,15 +47,17 @@ public class YoutubeStreamExtractorAgeRestrictedTest {
     }
 
     @Test
-    public void testGetValidTimeStamp() throws IOException, ExtractionException {
-        StreamExtractor extractor = YouTube.getStreamExtractor("https://youtu.be/FmG385_uUys?t=174");
+    public void testGetValidTimeStamp() throws ExtractionException {
+        StreamExtractor extractor = YOUTUBE
+                .getStreamExtractor("https://youtu.be/FmG385_uUys?t=174");
         assertEquals(extractor.getTimeStamp() + "", "174");
-        extractor = YouTube.getStreamExtractor("https://youtube.com/embed/FmG385_uUys?start=174");
+        extractor = YOUTUBE
+                .getStreamExtractor("https://youtube.com/embed/FmG385_uUys?start=174");
         assertEquals(extractor.getTimeStamp() + "", "174");
     }
 
     @Test
-    public void testGetAgeLimit() throws ParsingException {
+    public void testGetAgeLimit() {
         assertEquals(18, extractor.getAgeLimit());
     }
 
@@ -108,19 +112,19 @@ public class YoutubeStreamExtractorAgeRestrictedTest {
     }
 
     @Test
-    public void testGetAudioStreams() throws IOException, ExtractionException {
+    public void testGetAudioStreams() throws ExtractionException {
         // audio streams are not always necessary
         assertFalse(extractor.getAudioStreams().isEmpty());
     }
 
     @Test
-    public void testGetVideoStreams() throws IOException, ExtractionException {
-        List<VideoStream> streams = new ArrayList<>();
+    public void testGetVideoStreams() throws ExtractionException {
+        final List<VideoStream> streams = new ArrayList<>();
         streams.addAll(extractor.getVideoStreams());
         streams.addAll(extractor.getVideoOnlyStreams());
 
         assertTrue(Integer.toString(streams.size()), streams.size() > 0);
-        for (VideoStream s : streams) {
+        for (final VideoStream s : streams) {
             assertTrue(s.getUrl(),
                     s.getUrl().contains(HTTPS));
             assertTrue(s.resolution.length() > 0);
@@ -129,15 +133,14 @@ public class YoutubeStreamExtractorAgeRestrictedTest {
         }
     }
 
-
     @Test
-    public void testGetSubtitlesListDefault() throws IOException, ExtractionException {
+    public void testGetSubtitlesListDefault() {
         // Video (/view?v=YQHsXMglC9A) set in the setUp() method has no captions => null
         assertTrue(extractor.getSubtitlesDefault().isEmpty());
     }
 
     @Test
-    public void testGetSubtitlesList() throws IOException, ExtractionException {
+    public void testGetSubtitlesList() {
         // Video (/view?v=YQHsXMglC9A) set in the setUp() method has no captions => null
         assertTrue(extractor.getSubtitles(MediaFormat.TTML).isEmpty());
     }

@@ -20,7 +20,7 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
-import static org.schabi.newpipe.extractor.ServiceList.YouTube;
+import static org.schabi.newpipe.extractor.ServiceList.YOUTUBE;
 
 public class YoutubeCommentsExtractorTest {
     private static final String urlYT = "https://www.youtube.com/watch?v=D00Au7k3i6o";
@@ -31,10 +31,10 @@ public class YoutubeCommentsExtractorTest {
     @BeforeClass
     public static void setUp() throws Exception {
         NewPipe.init(DownloaderTestImpl.getInstance());
-        extractorYT = (YoutubeCommentsExtractor) YouTube
+        extractorYT = (YoutubeCommentsExtractor) YOUTUBE
                 .getCommentsExtractor(urlYT);
         extractorYT.fetchPage();
-        extractorInvidious = (YoutubeCommentsExtractor) YouTube
+        extractorInvidious = (YoutubeCommentsExtractor) YOUTUBE
                 .getCommentsExtractor(urlInvidious);
     }
 
@@ -44,7 +44,7 @@ public class YoutubeCommentsExtractorTest {
         assertTrue(getCommentsHelper(extractorInvidious));
     }
 
-    private boolean getCommentsHelper(YoutubeCommentsExtractor extractor) throws IOException, ExtractionException {
+    private boolean getCommentsHelper(final YoutubeCommentsExtractor extractor) throws IOException, ExtractionException {
         InfoItemsPage<CommentsInfoItem> comments = extractor.getInitialPage();
         boolean result = findInComments(comments, "s1ck m3m3");
 
@@ -62,8 +62,8 @@ public class YoutubeCommentsExtractorTest {
         assertTrue(getCommentsFromCommentsInfoHelper(urlInvidious));
     }
 
-    private boolean getCommentsFromCommentsInfoHelper(String url) throws IOException, ExtractionException {
-        CommentsInfo commentsInfo = CommentsInfo.getInfo(url);
+    private boolean getCommentsFromCommentsInfoHelper(final String url) throws IOException, ExtractionException {
+        final CommentsInfo commentsInfo = CommentsInfo.getInfo(url);
 
         assertEquals("Comments", commentsInfo.getName());
         boolean result = findInComments(commentsInfo.getRelatedItems(), "s1ck m3m3");
@@ -71,7 +71,7 @@ public class YoutubeCommentsExtractorTest {
         Page nextPage = commentsInfo.getNextPage();
         InfoItemsPage<CommentsInfoItem> moreItems = new InfoItemsPage<>(null, nextPage, null);
         while (moreItems.hasNextPage() && !result) {
-            moreItems = CommentsInfo.getMoreItems(YouTube, commentsInfo, nextPage);
+            moreItems = CommentsInfo.getMoreItems(YOUTUBE, commentsInfo, nextPage);
             result = findInComments(moreItems.getItems(), "s1ck m3m3");
             nextPage = moreItems.getNextPage();
         }
@@ -80,10 +80,10 @@ public class YoutubeCommentsExtractorTest {
 
     @Test
     public void testGetCommentsAllData() throws IOException, ExtractionException {
-        InfoItemsPage<CommentsInfoItem> comments = extractorYT.getInitialPage();
+        final InfoItemsPage<CommentsInfoItem> comments = extractorYT.getInitialPage();
 
-        DefaultTests.defaultTestListOfItems(YouTube, comments.getItems(), comments.getErrors());
-        for (CommentsInfoItem c : comments.getItems()) {
+        DefaultTests.defaultTestListOfItems(YOUTUBE, comments.getItems(), comments.getErrors());
+        for (final CommentsInfoItem c : comments.getItems()) {
             assertFalse(Utils.isBlank(c.getUploaderUrl()));
             assertFalse(Utils.isBlank(c.getUploaderName()));
             assertFalse(Utils.isBlank(c.getUploaderAvatarUrl()));
@@ -98,12 +98,12 @@ public class YoutubeCommentsExtractorTest {
         }
     }
 
-    private boolean findInComments(InfoItemsPage<CommentsInfoItem> comments, String comment) {
+    private boolean findInComments(final InfoItemsPage<CommentsInfoItem> comments, final String comment) {
         return findInComments(comments.getItems(), comment);
     }
 
-    private boolean findInComments(List<CommentsInfoItem> comments, String comment) {
-        for (CommentsInfoItem c : comments) {
+    private boolean findInComments(final List<CommentsInfoItem> comments, final String comment) {
+        for (final CommentsInfoItem c : comments) {
             if (c.getCommentText().contains(comment)) {
                 return true;
             }

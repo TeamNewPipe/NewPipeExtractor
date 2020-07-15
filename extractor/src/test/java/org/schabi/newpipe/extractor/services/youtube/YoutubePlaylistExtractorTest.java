@@ -6,7 +6,6 @@ import org.junit.Test;
 import org.schabi.newpipe.DownloaderTestImpl;
 import org.schabi.newpipe.extractor.ListExtractor;
 import org.schabi.newpipe.extractor.NewPipe;
-
 import org.schabi.newpipe.extractor.exceptions.ContentNotAvailableException;
 import org.schabi.newpipe.extractor.exceptions.ParsingException;
 import org.schabi.newpipe.extractor.playlist.PlaylistExtractor;
@@ -17,8 +16,11 @@ import org.schabi.newpipe.extractor.stream.StreamInfoItem;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 import static org.schabi.newpipe.extractor.ExtractorAsserts.assertIsSecureUrl;
-import static org.schabi.newpipe.extractor.ServiceList.YouTube;
-import static org.schabi.newpipe.extractor.services.DefaultTests.*;
+import static org.schabi.newpipe.extractor.ServiceList.YOUTUBE;
+import static org.schabi.newpipe.extractor.services.DefaultTests.defaultTestGetPageInNewExtractor;
+import static org.schabi.newpipe.extractor.services.DefaultTests.defaultTestListOfItems;
+import static org.schabi.newpipe.extractor.services.DefaultTests.defaultTestMoreItems;
+import static org.schabi.newpipe.extractor.services.DefaultTests.defaultTestRelatedItems;
 
 /**
  * Test for {@link YoutubePlaylistExtractor}
@@ -34,14 +36,14 @@ public class YoutubePlaylistExtractorTest {
         @Test(expected = ContentNotAvailableException.class)
         public void nonExistentFetch() throws Exception {
             final PlaylistExtractor extractor =
-                    YouTube.getPlaylistExtractor("https://www.youtube.com/playlist?list=PL11111111111111111111111111111111");
+                    YOUTUBE.getPlaylistExtractor("https://www.youtube.com/playlist?list=PL11111111111111111111111111111111");
             extractor.fetchPage();
         }
 
         @Test(expected = ContentNotAvailableException.class)
         public void invalidId() throws Exception {
             final PlaylistExtractor extractor =
-                    YouTube.getPlaylistExtractor("https://www.youtube.com/playlist?list=INVALID_ID");
+                    YOUTUBE.getPlaylistExtractor("https://www.youtube.com/playlist?list=INVALID_ID");
             extractor.fetchPage();
         }
     }
@@ -52,7 +54,7 @@ public class YoutubePlaylistExtractorTest {
         @BeforeClass
         public static void setUp() throws Exception {
             NewPipe.init(DownloaderTestImpl.getInstance());
-            extractor = (YoutubePlaylistExtractor) YouTube
+            extractor = (YoutubePlaylistExtractor) YOUTUBE
                     .getPlaylistExtractor("http://www.youtube.com/watch?v=lp-EO5I60KA&list=PLMC9KNkIncKtPzgY-5rmhvj7fax8fdxoj");
             extractor.fetchPage();
         }
@@ -63,7 +65,7 @@ public class YoutubePlaylistExtractorTest {
 
         @Test
         public void testServiceId() {
-            assertEquals(YouTube.getServiceId(), extractor.getServiceId());
+            assertEquals(YOUTUBE.getServiceId(), extractor.getServiceId());
         }
 
         @Test
@@ -149,7 +151,7 @@ public class YoutubePlaylistExtractorTest {
         @BeforeClass
         public static void setUp() throws Exception {
             NewPipe.init(DownloaderTestImpl.getInstance());
-            extractor = (YoutubePlaylistExtractor) YouTube
+            extractor = (YoutubePlaylistExtractor) YOUTUBE
                     .getPlaylistExtractor("https://www.youtube.com/watch?v=8SbUC-UaAxE&list=PLWwAypAcFRgKAIIFqBr9oy-ZYZnixa_Fj");
             extractor.fetchPage();
         }
@@ -160,7 +162,7 @@ public class YoutubePlaylistExtractorTest {
 
         @Test
         public void testGetPageInNewExtractor() throws Exception {
-            final PlaylistExtractor newExtractor = YouTube.getPlaylistExtractor(extractor.getUrl());
+            final PlaylistExtractor newExtractor = YOUTUBE.getPlaylistExtractor(extractor.getUrl());
             defaultTestGetPageInNewExtractor(extractor, newExtractor);
         }
 
@@ -170,7 +172,7 @@ public class YoutubePlaylistExtractorTest {
 
         @Test
         public void testServiceId() {
-            assertEquals(YouTube.getServiceId(), extractor.getServiceId());
+            assertEquals(YOUTUBE.getServiceId(), extractor.getServiceId());
         }
 
         @Test
@@ -210,7 +212,7 @@ public class YoutubePlaylistExtractorTest {
             // test for 2 more levels
             for (int i = 0; i < 2; i++) {
                 currentPage = extractor.getPage(currentPage.getNextPage());
-                defaultTestListOfItems(YouTube, currentPage.getItems(), currentPage.getErrors());
+                defaultTestListOfItems(YOUTUBE, currentPage.getItems(), currentPage.getErrors());
             }
         }
 
@@ -261,7 +263,7 @@ public class YoutubePlaylistExtractorTest {
         @BeforeClass
         public static void setUp() throws Exception {
             NewPipe.init(DownloaderTestImpl.getInstance());
-            extractor = (YoutubePlaylistExtractor) YouTube
+            extractor = (YoutubePlaylistExtractor) YOUTUBE
                     .getPlaylistExtractor("https://www.youtube.com/playlist?list=PL8dPuuaLjXtOAKed_MxxWBNaPno5h3Zs8");
             extractor.fetchPage();
         }
@@ -272,7 +274,7 @@ public class YoutubePlaylistExtractorTest {
 
         @Test
         public void testServiceId() {
-            assertEquals(YouTube.getServiceId(), extractor.getServiceId());
+            assertEquals(YOUTUBE.getServiceId(), extractor.getServiceId());
         }
 
         @Test

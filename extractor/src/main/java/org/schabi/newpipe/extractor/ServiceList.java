@@ -35,10 +35,10 @@ public final class ServiceList {
         //no instance
     }
 
-    public static final YoutubeService YouTube;
-    public static final SoundcloudService SoundCloud;
-    public static final MediaCCCService MediaCCC;
-    public static final PeertubeService PeerTube;
+    public static final YoutubeService YOUTUBE;
+    public static final SoundcloudService SOUNDCLOUD;
+    public static final MediaCCCService MEDIA_CCC;
+    public static final PeertubeService PEERTUBE;
 
     /**
      * When creating a new service, put this service in the end of this list,
@@ -46,10 +46,10 @@ public final class ServiceList {
      */
     private static final List<StreamingService> SERVICES = Collections.unmodifiableList(
             Arrays.asList(
-                    YouTube = new YoutubeService(0),
-                    SoundCloud = new SoundcloudService(1),
-                    MediaCCC = new MediaCCCService(2),
-                    PeerTube = new PeertubeService(3)
+                    YOUTUBE = new YoutubeService(0),
+                    SOUNDCLOUD = new SoundcloudService(1),
+                    MEDIA_CCC = new MediaCCCService(2),
+                    PEERTUBE = new PeertubeService(3)
             ));
 
     /**

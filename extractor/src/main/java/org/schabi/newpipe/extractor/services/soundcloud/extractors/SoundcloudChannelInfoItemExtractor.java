@@ -1,6 +1,7 @@
 package org.schabi.newpipe.extractor.services.soundcloud.extractors;
 
 import com.grack.nanojson.JsonObject;
+
 import org.schabi.newpipe.extractor.channel.ChannelInfoItemExtractor;
 
 import static org.schabi.newpipe.extractor.utils.JsonUtils.EMPTY_STRING;

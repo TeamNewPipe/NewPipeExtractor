@@ -6,7 +6,10 @@ import org.schabi.newpipe.extractor.ListExtractor;
 
 import javax.annotation.Nullable;
 
-import static org.schabi.newpipe.extractor.services.DefaultTests.*;
+import static org.schabi.newpipe.extractor.services.DefaultTests.assertNoMoreItems;
+import static org.schabi.newpipe.extractor.services.DefaultTests.assertOnlyContainsType;
+import static org.schabi.newpipe.extractor.services.DefaultTests.defaultTestMoreItems;
+import static org.schabi.newpipe.extractor.services.DefaultTests.defaultTestRelatedItems;
 
 public abstract class DefaultListExtractorTest<T extends ListExtractor<? extends InfoItem>> extends DefaultExtractorTest<T>
         implements BaseListExtractorTest {

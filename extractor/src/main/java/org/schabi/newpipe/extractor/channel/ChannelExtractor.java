@@ -28,7 +28,7 @@ import org.schabi.newpipe.extractor.stream.StreamInfoItem;
 
 public abstract class ChannelExtractor extends ListExtractor<StreamInfoItem> {
 
-    public ChannelExtractor(StreamingService service, ListLinkHandler linkHandler) {
+    public ChannelExtractor(final StreamingService service, final ListLinkHandler linkHandler) {
         super(service, linkHandler);
     }
 

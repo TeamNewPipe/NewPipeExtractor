@@ -11,7 +11,7 @@ import org.schabi.newpipe.extractor.services.media_ccc.extractors.MediaCCCConfer
 import java.util.List;
 
 import static org.junit.Assert.assertTrue;
-import static org.schabi.newpipe.extractor.ServiceList.MediaCCC;
+import static org.schabi.newpipe.extractor.ServiceList.MEDIA_CCC;
 
 
 /**
@@ -24,7 +24,7 @@ public class MediaCCCConferenceListExtractorTest {
     @BeforeClass
     public static void setUpClass() throws Exception {
         NewPipe.init(DownloaderTestImpl.getInstance());
-        extractor = MediaCCC.getKioskList().getDefaultKioskExtractor();
+        extractor = MEDIA_CCC.getKioskList().getDefaultKioskExtractor();
         extractor.fetchPage();
     }
 

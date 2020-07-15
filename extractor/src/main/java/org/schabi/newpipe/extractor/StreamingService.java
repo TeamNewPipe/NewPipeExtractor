@@ -6,7 +6,12 @@ import org.schabi.newpipe.extractor.exceptions.ExtractionException;
 import org.schabi.newpipe.extractor.exceptions.ParsingException;
 import org.schabi.newpipe.extractor.feed.FeedExtractor;
 import org.schabi.newpipe.extractor.kiosk.KioskList;
-import org.schabi.newpipe.extractor.linkhandler.*;
+import org.schabi.newpipe.extractor.linkhandler.LinkHandler;
+import org.schabi.newpipe.extractor.linkhandler.LinkHandlerFactory;
+import org.schabi.newpipe.extractor.linkhandler.ListLinkHandler;
+import org.schabi.newpipe.extractor.linkhandler.ListLinkHandlerFactory;
+import org.schabi.newpipe.extractor.linkhandler.SearchQueryHandler;
+import org.schabi.newpipe.extractor.linkhandler.SearchQueryHandlerFactory;
 import org.schabi.newpipe.extractor.localization.ContentCountry;
 import org.schabi.newpipe.extractor.localization.Localization;
 import org.schabi.newpipe.extractor.localization.TimeAgoParser;
@@ -17,9 +22,10 @@ import org.schabi.newpipe.extractor.stream.StreamExtractor;
 import org.schabi.newpipe.extractor.subscription.SubscriptionExtractor;
 import org.schabi.newpipe.extractor.suggestion.SuggestionExtractor;
 
-import javax.annotation.Nullable;
 import java.util.Collections;
 import java.util.List;
+
+import javax.annotation.Nullable;
 
 /*
  * Copyright (C) Christian Schabesberger 2018 <chris.schabesberger@mailbox.org>
@@ -50,11 +56,11 @@ public abstract class StreamingService {
         private final List<MediaCapability> mediaCapabilities;
 
         /**
-         * Creates a new instance of a ServiceInfo
+         * Creates a new instance of a ServiceInfo.
          * @param name the name of the service
          * @param mediaCapabilities the type of media this service can handle
          */
-        public ServiceInfo(String name, List<MediaCapability> mediaCapabilities) {
+        public ServiceInfo(final String name, final List<MediaCapability> mediaCapabilities) {
             this.name = name;
             this.mediaCapabilities = Collections.unmodifiableList(mediaCapabilities);
         }
@@ -96,7 +102,8 @@ public abstract class StreamingService {
      * @param name the name of the service
      * @param capabilities the type of media this service can handle
      */
-    public StreamingService(int id, String name, List<ServiceInfo.MediaCapability> capabilities) {
+    public StreamingService(final int id, final String name,
+                            final List<ServiceInfo.MediaCapability> capabilities) {
         this.serviceId = id;
         this.serviceInfo = new ServiceInfo(name, capabilities);
     }
@@ -156,7 +163,7 @@ public abstract class StreamingService {
      * @param queryHandler specifies the keyword lock for, and the filters which should be applied.
      * @return a new SearchExtractor instance
      */
-    public abstract SearchExtractor getSearchExtractor(SearchQueryHandler queryHandler);
+    public abstract SearchExtractor getSearchExtractor(final SearchQueryHandler queryHandler);
 
     /**
      * Must create a new instance of a SuggestionExtractor implementation.
@@ -179,7 +186,7 @@ public abstract class StreamingService {
      * @return a {@link FeedExtractor} instance or null.
      */
     @Nullable
-    public FeedExtractor getFeedExtractor(String url) throws ExtractionException {
+    public FeedExtractor getFeedExtractor(final String url) throws ExtractionException {
         return null;
     }
 
@@ -196,7 +203,7 @@ public abstract class StreamingService {
      * @return a new ChannelExtractor
      * @throws ExtractionException
      */
-    public abstract ChannelExtractor getChannelExtractor(ListLinkHandler linkHandler) throws ExtractionException;
+    public abstract ChannelExtractor getChannelExtractor(final ListLinkHandler linkHandler) throws ExtractionException;
 
     /**
      * Must crete a new instance of a PlaylistExtractor implementation.
@@ -204,7 +211,7 @@ public abstract class StreamingService {
      * @return a new PlaylistExtractor
      * @throws ExtractionException
      */
-    public abstract PlaylistExtractor getPlaylistExtractor(ListLinkHandler linkHandler) throws ExtractionException;
+    public abstract PlaylistExtractor getPlaylistExtractor(final ListLinkHandler linkHandler) throws ExtractionException;
 
     /**
      * Must create a new instance of a StreamExtractor implementation.
@@ -212,7 +219,7 @@ public abstract class StreamingService {
      * @return a new StreamExtractor
      * @throws ExtractionException
      */
-    public abstract StreamExtractor getStreamExtractor(LinkHandler linkHandler) throws ExtractionException;
+    public abstract StreamExtractor getStreamExtractor(final LinkHandler linkHandler) throws ExtractionException;
 
     public abstract CommentsExtractor getCommentsExtractor(ListLinkHandler linkHandler) throws ExtractionException;
 
@@ -220,23 +227,22 @@ public abstract class StreamingService {
     // Extractors without link handler
     //////////////////////////////////////////////////////////////////////////*/
 
-    public SearchExtractor getSearchExtractor(String query,
-                                              List<String> contentFilter,
-                                              String sortFilter) throws ExtractionException {
+    public SearchExtractor getSearchExtractor(final String query, final List<String> contentFilter,
+                                              final String sortFilter) throws ExtractionException {
         return getSearchExtractor(getSearchQHFactory()
                 .fromQuery(query, contentFilter, sortFilter));
     }
 
-    public ChannelExtractor getChannelExtractor(String id,
-                                                List<String> contentFilter,
-                                                String sortFilter) throws ExtractionException {
+    public ChannelExtractor getChannelExtractor(final String id, final List<String> contentFilter,
+                                                final String sortFilter)
+            throws ExtractionException {
         return getChannelExtractor(getChannelLHFactory()
                 .fromQuery(id, contentFilter, sortFilter));
     }
 
-    public PlaylistExtractor getPlaylistExtractor(String id,
-                                                  List<String> contentFilter,
-                                                  String sortFilter) throws ExtractionException {
+    public PlaylistExtractor getPlaylistExtractor(final String id, final List<String> contentFilter,
+                                                  final String sortFilter)
+            throws ExtractionException {
         return getPlaylistExtractor(getPlaylistLHFactory()
                 .fromQuery(id, contentFilter, sortFilter));
     }
@@ -245,23 +251,23 @@ public abstract class StreamingService {
     // Short extractors overloads
     //////////////////////////////////////////////////////////////////////////*/
 
-    public SearchExtractor getSearchExtractor(String query) throws ExtractionException {
+    public SearchExtractor getSearchExtractor(final String query) throws ExtractionException {
         return getSearchExtractor(getSearchQHFactory().fromQuery(query));
     }
 
-    public ChannelExtractor getChannelExtractor(String url) throws ExtractionException {
+    public ChannelExtractor getChannelExtractor(final String url) throws ExtractionException {
         return getChannelExtractor(getChannelLHFactory().fromUrl(url));
     }
 
-    public PlaylistExtractor getPlaylistExtractor(String url) throws ExtractionException {
+    public PlaylistExtractor getPlaylistExtractor(final String url) throws ExtractionException {
         return getPlaylistExtractor(getPlaylistLHFactory().fromUrl(url));
     }
 
-    public StreamExtractor getStreamExtractor(String url) throws ExtractionException {
+    public StreamExtractor getStreamExtractor(final String url) throws ExtractionException {
         return getStreamExtractor(getStreamLHFactory().fromUrl(url));
     }
 
-    public CommentsExtractor getCommentsExtractor(String url) throws ExtractionException {
+    public CommentsExtractor getCommentsExtractor(final String url) throws ExtractionException {
         ListLinkHandlerFactory llhf = getCommentsLHFactory();
         if (llhf == null) {
             return null;
@@ -279,7 +285,7 @@ public abstract class StreamingService {
      * @return the link type of url
      * @throws ParsingException
      */
-    public final LinkType getLinkTypeByUrl(String url) throws ParsingException {
+    public final LinkType getLinkTypeByUrl(final String url) throws ParsingException {
         LinkHandlerFactory sH = getStreamLHFactory();
         LinkHandlerFactory cH = getChannelLHFactory();
         LinkHandlerFactory pH = getPlaylistLHFactory();
@@ -331,7 +337,7 @@ public abstract class StreamingService {
         }
 
         // Fallback to the first supported language that matches the preferred language
-        for (Localization supportedLanguage : getSupportedLocalizations()) {
+        for (final Localization supportedLanguage : getSupportedLocalizations()) {
             if (supportedLanguage.getLanguageCode().equals(preferredLocalization.getLanguageCode())) {
                 return supportedLanguage;
             }
@@ -366,7 +372,7 @@ public abstract class StreamingService {
      *
      * @throws IllegalArgumentException if the localization is not supported (parsing patterns are not present).
      */
-    public TimeAgoParser getTimeAgoParser(Localization localization) {
+    public TimeAgoParser getTimeAgoParser(final Localization localization) {
         final TimeAgoParser targetParser = TimeAgoPatternsManager.getTimeAgoParserFor(localization);
 
         if (targetParser != null) {
@@ -384,5 +390,4 @@ public abstract class StreamingService {
 
         throw new IllegalArgumentException("Localization is not supported (\"" + localization.toString() + "\")");
     }
-
 }

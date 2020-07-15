@@ -20,7 +20,7 @@ import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertSame;
 import static org.junit.Assert.assertTrue;
 import static org.schabi.newpipe.extractor.ExtractorAsserts.assertIsSecureUrl;
-import static org.schabi.newpipe.extractor.ServiceList.YouTube;
+import static org.schabi.newpipe.extractor.ServiceList.YOUTUBE;
 
 public class YoutubeStreamExtractorLivestreamTest {
     private static YoutubeStreamExtractor extractor;
@@ -28,7 +28,7 @@ public class YoutubeStreamExtractorLivestreamTest {
     @BeforeClass
     public static void setUp() throws Exception {
         NewPipe.init(DownloaderTestImpl.getInstance());
-        extractor = (YoutubeStreamExtractor) YouTube
+        extractor = (YoutubeStreamExtractor) YOUTUBE
                 .getStreamExtractor("https://www.youtube.com/watch?v=5qap5aO4i9A");
         extractor.fetchPage();
     }
@@ -52,7 +52,8 @@ public class YoutubeStreamExtractorLivestreamTest {
 
     @Test
     public void testGetFullLinksInDescription() throws ParsingException {
-        assertTrue(extractor.getDescription().getContent().contains("https://bit.ly/chilledcow-playlists"));
+        assertTrue(extractor.getDescription().getContent()
+                .contains("https://bit.ly/chilledcow-playlists"));
     }
 
     @Test
@@ -69,7 +70,7 @@ public class YoutubeStreamExtractorLivestreamTest {
 
     @Test
     public void testGetViewCount() throws ParsingException {
-        long count = extractor.getViewCount();
+        final long count = extractor.getViewCount();
         assertTrue(Long.toString(count), count > -1);
     }
 
@@ -81,7 +82,8 @@ public class YoutubeStreamExtractorLivestreamTest {
 
     @Test
     public void testGetUploaderUrl() throws ParsingException {
-        assertEquals("https://www.youtube.com/channel/UCSJ4gkVC6NrvII8umztf0Ow", extractor.getUploaderUrl());
+        assertEquals("https://www.youtube.com/channel/UCSJ4gkVC6NrvII8umztf0Ow",
+                extractor.getUploaderUrl());
     }
 
     @Test
@@ -101,7 +103,7 @@ public class YoutubeStreamExtractorLivestreamTest {
 
     @Test
     public void testGetVideoStreams() throws ExtractionException {
-        for (VideoStream s : extractor.getVideoStreams()) {
+        for (final VideoStream s : extractor.getVideoStreams()) {
             assertIsSecureUrl(s.url);
             assertTrue(s.resolution.length() > 0);
             assertTrue(Integer.toString(s.getFormatId()),
@@ -116,12 +118,13 @@ public class YoutubeStreamExtractorLivestreamTest {
 
     @Test
     public void testGetDashMpd() throws ParsingException {
-        assertTrue(extractor.getDashMpdUrl().startsWith("https://manifest.googlevideo.com/api/manifest/dash/"));
+        assertTrue(extractor.getDashMpdUrl()
+                .startsWith("https://manifest.googlevideo.com/api/manifest/dash/"));
     }
 
     @Test
     public void testGetRelatedVideos() throws ExtractionException {
-        StreamInfoItemsCollector relatedVideos = extractor.getRelatedStreams();
+        final StreamInfoItemsCollector relatedVideos = extractor.getRelatedStreams();
         Utils.printErrors(relatedVideos.getErrors());
         assertFalse(relatedVideos.getItems().isEmpty());
         assertTrue(relatedVideos.getErrors().isEmpty());

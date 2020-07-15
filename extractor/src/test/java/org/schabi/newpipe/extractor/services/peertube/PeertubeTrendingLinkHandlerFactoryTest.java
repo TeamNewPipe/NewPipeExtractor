@@ -10,7 +10,7 @@ import org.schabi.newpipe.extractor.services.peertube.linkHandler.PeertubeTrendi
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
-import static org.schabi.newpipe.extractor.ServiceList.PeerTube;
+import static org.schabi.newpipe.extractor.ServiceList.PEERTUBE;
 
 /**
  * Test for {@link PeertubeTrendingLinkHandlerFactory}
@@ -21,7 +21,7 @@ public class PeertubeTrendingLinkHandlerFactoryTest {
     @BeforeClass
     public static void setUp() throws Exception {
         // setting instance might break test when running in parallel
-        PeerTube.setInstance(new PeertubeInstance("https://peertube.mastodon.host", "PeerTube on Mastodon.host"));
+        PEERTUBE.setInstance(new PeertubeInstance("https://peertube.mastodon.host", "PeerTube on Mastodon.host"));
         LinkHandlerFactory = new PeertubeTrendingLinkHandlerFactory();
         NewPipe.init(DownloaderTestImpl.getInstance());
     }

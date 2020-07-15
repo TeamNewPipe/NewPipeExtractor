@@ -20,7 +20,7 @@ public class PeertubeSearchQueryHandlerFactory extends SearchQueryHandlerFactory
 
     @Override
     public String getUrl(String searchString, List<String> contentFilters, String sortFilter) throws ParsingException {
-        String baseUrl = ServiceList.PeerTube.getBaseUrl();
+        String baseUrl = ServiceList.PEERTUBE.getBaseUrl();
         return getUrl(searchString, contentFilters, sortFilter, baseUrl);
     }
 

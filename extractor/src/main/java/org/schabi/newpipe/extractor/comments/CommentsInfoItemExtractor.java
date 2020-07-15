@@ -8,26 +8,25 @@ import org.schabi.newpipe.extractor.stream.StreamExtractor;
 import javax.annotation.Nullable;
 
 public interface CommentsInfoItemExtractor extends InfoItemExtractor {
-
     /**
-     * Return the like count of the comment, or -1 if it's unavailable
+     * Return the like count of the comment, or -1 if it's unavailable.
      * @see StreamExtractor#getLikeCount()
      */
     int getLikeCount() throws ParsingException;
 
     /**
-     * The text of the comment
+     * The text of the comment.
      */
     String getCommentText() throws ParsingException;
 
     /**
-     * The upload date given by the service, unmodified
+     * The upload date given by the service, unmodified.
      * @see StreamExtractor#getTextualUploadDate()
      */
     String getTextualUploadDate() throws ParsingException;
 
     /**
-     * The upload date wrapped with DateWrapper class
+     * The upload date wrapped with DateWrapper class.
      * @see StreamExtractor#getUploadDate()
      */
     @Nullable

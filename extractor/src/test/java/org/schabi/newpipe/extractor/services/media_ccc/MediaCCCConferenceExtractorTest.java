@@ -8,7 +8,7 @@ import org.schabi.newpipe.extractor.services.media_ccc.extractors.MediaCCCConfer
 
 import static junit.framework.TestCase.assertEquals;
 import static org.junit.Assert.assertTrue;
-import static org.schabi.newpipe.extractor.ServiceList.MediaCCC;
+import static org.schabi.newpipe.extractor.ServiceList.MEDIA_CCC;
 
 /**
  * Test {@link MediaCCCConferenceExtractor}
@@ -20,7 +20,7 @@ public class MediaCCCConferenceExtractorTest {
         @BeforeClass
         public static void setUpClass() throws Exception {
             NewPipe.init(DownloaderTestImpl.getInstance());
-            extractor = (MediaCCCConferenceExtractor) MediaCCC.getChannelExtractor("https://media.ccc.de/c/froscon2017");
+            extractor = (MediaCCCConferenceExtractor) MEDIA_CCC.getChannelExtractor("https://media.ccc.de/c/froscon2017");
             extractor.fetchPage();
         }
 
@@ -56,7 +56,7 @@ public class MediaCCCConferenceExtractorTest {
         @BeforeClass
         public static void setUpClass() throws Exception {
             NewPipe.init(DownloaderTestImpl.getInstance());
-            extractor = (MediaCCCConferenceExtractor) MediaCCC.getChannelExtractor("https://media.ccc.de/c/oscal19");
+            extractor = (MediaCCCConferenceExtractor) MEDIA_CCC.getChannelExtractor("https://media.ccc.de/c/oscal19");
             extractor.fetchPage();
         }
 

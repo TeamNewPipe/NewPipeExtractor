@@ -10,11 +10,18 @@ import org.schabi.newpipe.extractor.services.BasePlaylistExtractorTest;
 import org.schabi.newpipe.extractor.services.soundcloud.extractors.SoundcloudPlaylistExtractor;
 import org.schabi.newpipe.extractor.stream.StreamInfoItem;
 
-import static org.hamcrest.CoreMatchers.*;
-import static org.junit.Assert.*;
+import static org.hamcrest.CoreMatchers.containsString;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertThat;
+import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
 import static org.schabi.newpipe.extractor.ExtractorAsserts.assertIsSecureUrl;
-import static org.schabi.newpipe.extractor.ServiceList.SoundCloud;
-import static org.schabi.newpipe.extractor.services.DefaultTests.*;
+import static org.schabi.newpipe.extractor.ServiceList.SOUNDCLOUD;
+import static org.schabi.newpipe.extractor.services.DefaultTests.defaultTestGetPageInNewExtractor;
+import static org.schabi.newpipe.extractor.services.DefaultTests.defaultTestListOfItems;
+import static org.schabi.newpipe.extractor.services.DefaultTests.defaultTestMoreItems;
+import static org.schabi.newpipe.extractor.services.DefaultTests.defaultTestRelatedItems;
 
 /**
  * Test for {@link PlaylistExtractor}
@@ -26,7 +33,7 @@ public class SoundcloudPlaylistExtractorTest {
         @BeforeClass
         public static void setUp() throws Exception {
             NewPipe.init(DownloaderTestImpl.getInstance());
-            extractor = (SoundcloudPlaylistExtractor) SoundCloud
+            extractor = (SoundcloudPlaylistExtractor) SOUNDCLOUD
                     .getPlaylistExtractor("https://soundcloud.com/liluzivert/sets/the-perfect-luv-tape-r?test=123");
             extractor.fetchPage();
         }
@@ -37,7 +44,7 @@ public class SoundcloudPlaylistExtractorTest {
 
         @Test
         public void testServiceId() {
-            assertEquals(SoundCloud.getServiceId(), extractor.getServiceId());
+            assertEquals(SOUNDCLOUD.getServiceId(), extractor.getServiceId());
         }
 
         @Test
@@ -118,7 +125,7 @@ public class SoundcloudPlaylistExtractorTest {
         @BeforeClass
         public static void setUp() throws Exception {
             NewPipe.init(DownloaderTestImpl.getInstance());
-            extractor = (SoundcloudPlaylistExtractor) SoundCloud
+            extractor = (SoundcloudPlaylistExtractor) SOUNDCLOUD
                     .getPlaylistExtractor("https://soundcloud.com/micky96/sets/house");
             extractor.fetchPage();
         }
@@ -129,7 +136,7 @@ public class SoundcloudPlaylistExtractorTest {
 
         @Test
         public void testServiceId() {
-            assertEquals(SoundCloud.getServiceId(), extractor.getServiceId());
+            assertEquals(SOUNDCLOUD.getServiceId(), extractor.getServiceId());
         }
 
         @Test
@@ -210,7 +217,7 @@ public class SoundcloudPlaylistExtractorTest {
         @BeforeClass
         public static void setUp() throws Exception {
             NewPipe.init(DownloaderTestImpl.getInstance());
-            extractor = (SoundcloudPlaylistExtractor) SoundCloud
+            extractor = (SoundcloudPlaylistExtractor) SOUNDCLOUD
                     .getPlaylistExtractor("https://soundcloud.com/user350509423/sets/edm-xxx");
             extractor.fetchPage();
         }
@@ -221,7 +228,7 @@ public class SoundcloudPlaylistExtractorTest {
 
         @Test
         public void testGetPageInNewExtractor() throws Exception {
-            PlaylistExtractor newExtractor = SoundCloud.getPlaylistExtractor(extractor.getUrl());
+            PlaylistExtractor newExtractor = SOUNDCLOUD.getPlaylistExtractor(extractor.getUrl());
             defaultTestGetPageInNewExtractor(extractor, newExtractor);
         }
 
@@ -231,7 +238,7 @@ public class SoundcloudPlaylistExtractorTest {
 
         @Test
         public void testServiceId() {
-            assertEquals(SoundCloud.getServiceId(), extractor.getServiceId());
+            assertEquals(SOUNDCLOUD.getServiceId(), extractor.getServiceId());
         }
 
         @Test
@@ -269,7 +276,7 @@ public class SoundcloudPlaylistExtractorTest {
             // Test for 2 more levels
             for (int i = 0; i < 2; i++) {
                 currentPage = extractor.getPage(currentPage.getNextPage());
-                defaultTestListOfItems(SoundCloud, currentPage.getItems(), currentPage.getErrors());
+                defaultTestListOfItems(SOUNDCLOUD, currentPage.getItems(), currentPage.getErrors());
             }
         }
 
@@ -317,7 +324,7 @@ public class SoundcloudPlaylistExtractorTest {
         @BeforeClass
         public static void setUp() throws Exception {
             NewPipe.init(DownloaderTestImpl.getInstance());
-            extractor = (SoundcloudPlaylistExtractor) SoundCloud
+            extractor = (SoundcloudPlaylistExtractor) SOUNDCLOUD
                     .getPlaylistExtractor("https://soundcloud.com/breezy-123/sets/empty-playlist?test=123");
             extractor.fetchPage();
         }
@@ -328,7 +335,7 @@ public class SoundcloudPlaylistExtractorTest {
 
         @Test
         public void testServiceId() {
-            assertEquals(SoundCloud.getServiceId(), extractor.getServiceId());
+            assertEquals(SOUNDCLOUD.getServiceId(), extractor.getServiceId());
         }
 
         @Test

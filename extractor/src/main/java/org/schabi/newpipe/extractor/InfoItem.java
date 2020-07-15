@@ -29,7 +29,7 @@ public abstract class InfoItem implements Serializable {
     private final String name;
     private String thumbnailUrl;
 
-    public InfoItem(InfoType infoType, int serviceId, String url, String name) {
+    public InfoItem(final InfoType infoType, final int serviceId, final String url, final String name) {
         this.infoType = infoType;
         this.serviceId = serviceId;
         this.url = url;

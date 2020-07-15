@@ -62,17 +62,18 @@ public abstract class ListExtractor<R extends InfoItem> extends Extractor {
     //////////////////////////////////////////////////////////////////////////*/
 
     /**
-     * A class that is used to wrap a list of gathered items and eventual errors, it
-     * also contains a field that points to the next available page ({@link #nextPage}).
+     * A class that is used to wrap a list of gathered items and eventual errors,
+     * it also contains a field that points to the next available page ({@link #nextPage}).
      */
     public static class InfoItemsPage<T extends InfoItem> {
-        private static final InfoItemsPage<InfoItem> EMPTY =
-                new InfoItemsPage<>(Collections.<InfoItem>emptyList(), null, Collections.<Throwable>emptyList());
+        private static final InfoItemsPage<InfoItem> EMPTY
+                = new InfoItemsPage<>(Collections.emptyList(), null, Collections.emptyList());
 
         /**
          * A convenient method that returns a representation of an empty page.
          *
-         * @return a type-safe page with the list of items and errors empty and the nextPage set to {@code null}.
+         * @return a type-safe page with the list of items and errors empty
+         * and the nextPage set to {@code null}.
          */
         public static <T extends InfoItem> InfoItemsPage<T> emptyPage() {
             //noinspection unchecked
@@ -97,11 +98,12 @@ public abstract class ListExtractor<R extends InfoItem> extends Extractor {
          */
         private final List<Throwable> errors;
 
-        public InfoItemsPage(InfoItemsCollector<T, ?> collector, Page nextPage) {
+        public InfoItemsPage(final InfoItemsCollector<T, ?> collector, final Page nextPage) {
             this(collector.getItems(), nextPage, collector.getErrors());
         }
 
-        public InfoItemsPage(List<T> itemsList, Page nextPage, List<Throwable> errors) {
+        public InfoItemsPage(final List<T> itemsList, final Page nextPage,
+                             final List<Throwable> errors) {
             this.itemsList = itemsList;
             this.nextPage = nextPage;
             this.errors = errors;
