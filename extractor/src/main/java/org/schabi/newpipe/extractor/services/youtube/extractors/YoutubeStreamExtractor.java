@@ -26,13 +26,13 @@ import org.schabi.newpipe.extractor.services.youtube.linkHandler.YoutubeChannelL
 import org.schabi.newpipe.extractor.stream.AudioStream;
 import org.schabi.newpipe.extractor.stream.Description;
 import org.schabi.newpipe.extractor.stream.Frameset;
-import org.schabi.newpipe.extractor.stream.Stream;
 import org.schabi.newpipe.extractor.stream.StreamExtractor;
 import org.schabi.newpipe.extractor.stream.StreamInfoItemExtractor;
 import org.schabi.newpipe.extractor.stream.StreamInfoItemsCollector;
 import org.schabi.newpipe.extractor.stream.StreamType;
 import org.schabi.newpipe.extractor.stream.SubtitlesStream;
 import org.schabi.newpipe.extractor.stream.VideoStream;
+import org.schabi.newpipe.extractor.utils.DashMpdParser;
 import org.schabi.newpipe.extractor.utils.Parser;
 import org.schabi.newpipe.extractor.utils.Utils;
 
@@ -105,6 +105,8 @@ public class YoutubeStreamExtractor extends StreamExtractor {
 
     @Nonnull
     private List<SubtitlesInfo> subtitlesInfos = new ArrayList<>();
+
+    private DashMpdParser.Result dashResult;
 
     public YoutubeStreamExtractor(StreamingService service, LinkHandler linkHandler) {
         super(service, linkHandler);
@@ -395,26 +397,29 @@ public class YoutubeStreamExtractor extends StreamExtractor {
 
     @Nonnull
     @Override
-    public String getSubChannelUrl() throws ParsingException {
+    public String getSubChannelUrl() {
         return "";
     }
 
     @Nonnull
     @Override
-    public String getSubChannelName() throws ParsingException {
+    public String getSubChannelName() {
         return "";
     }
 
     @Nonnull
     @Override
-    public String getSubChannelAvatarUrl() throws ParsingException {
+    public String getSubChannelAvatarUrl() {
         return "";
     }
 
     @Nonnull
     @Override
     public String getDashMpdUrl() throws ParsingException {
-        assertPageFetched();
+        if (playerResponse == null || (videoInfoPage.isEmpty() && playerArgs == null)) {
+            throw new IllegalStateException("Page is not fetched. Make sure you call fetchPage()");
+        }
+
         try {
             String dashManifestUrl;
             if (playerResponse.getObject("streamingData").isString("dashManifestUrl")) {
@@ -428,16 +433,14 @@ public class YoutubeStreamExtractor extends StreamExtractor {
             }
 
             if (!dashManifestUrl.contains("/signature/")) {
-                String encryptedSig = Parser.matchGroup1("/s/([a-fA-F0-9\\.]+)", dashManifestUrl);
-                String decryptedSig;
-
-                decryptedSig = decryptSignature(encryptedSig, decryptionCode);
+                final String encryptedSig = Parser.matchGroup1("/s/([a-fA-F0-9\\.]+)", dashManifestUrl);
+                final String decryptedSig = decryptSignature(encryptedSig, decryptionCode);
                 dashManifestUrl = dashManifestUrl.replace("/s/" + encryptedSig, "/signature/" + decryptedSig);
             }
 
             return dashManifestUrl;
         } catch (Exception e) {
-            throw new ParsingException("Could not get dash manifest url", e);
+            throw new ParsingException("Could not get DASH manifest url", e);
         }
     }
 
@@ -452,7 +455,7 @@ public class YoutubeStreamExtractor extends StreamExtractor {
             if (playerArgs != null && playerArgs.isString("hlsvp")) {
                 return playerArgs.getString("hlsvp");
             } else {
-                throw new ParsingException("Could not get hls manifest url", e);
+                throw new ParsingException("Could not get HLS manifest url", e);
             }
         }
     }
@@ -466,9 +469,11 @@ public class YoutubeStreamExtractor extends StreamExtractor {
                 final ItagItem itag = entry.getValue();
 
                 final AudioStream audioStream = new AudioStream(String.valueOf(itag.id), entry.getKey(), itag.getMediaFormat(), itag.avgBitrate);
-                if (!Stream.containSimilarStream(audioStream, audioStreams)) {
-                    audioStreams.add(audioStream);
-                }
+                audioStreams.add(audioStream);
+            }
+
+            if (dashResult != null) {
+                audioStreams.addAll(dashResult.getAudioStreams());
             }
         } catch (Exception e) {
             throw new ParsingException("Could not get audio streams", e);
@@ -486,9 +491,11 @@ public class YoutubeStreamExtractor extends StreamExtractor {
                 final ItagItem itag = entry.getValue();
 
                 final VideoStream videoStream = new VideoStream(String.valueOf(itag.id), entry.getKey(), itag.getMediaFormat(), itag.resolutionString, false);
-                if (!Stream.containSimilarStream(videoStream, videoStreams)) {
-                    videoStreams.add(videoStream);
-                }
+                videoStreams.add(videoStream);
+            }
+
+            if (dashResult != null) {
+                videoStreams.addAll(dashResult.getVideoStreams());
             }
         } catch (Exception e) {
             throw new ParsingException("Could not get video streams", e);
@@ -506,9 +513,11 @@ public class YoutubeStreamExtractor extends StreamExtractor {
                 final ItagItem itag = entry.getValue();
 
                 final VideoStream videoStream = new VideoStream(String.valueOf(itag.id), entry.getKey(), itag.getMediaFormat(), itag.resolutionString, true);
-                if (!Stream.containSimilarStream(videoStream, videoOnlyStreams)) {
-                    videoOnlyStreams.add(videoStream);
-                }
+                videoOnlyStreams.add(videoStream);
+            }
+
+            if (dashResult != null) {
+                videoOnlyStreams.addAll(dashResult.getVideoOnlyStreams());
             }
         } catch (Exception e) {
             throw new ParsingException("Could not get video only streams", e);
@@ -672,6 +681,11 @@ public class YoutubeStreamExtractor extends StreamExtractor {
 
         if (subtitlesInfos.isEmpty()) {
             subtitlesInfos.addAll(getAvailableSubtitlesInfo());
+        }
+
+        final String dashMpdUrl = this.getDashMpdUrl();
+        if (!dashMpdUrl.isEmpty()) {
+            dashResult = DashMpdParser.getStreams(dashMpdUrl);
         }
     }
 
@@ -943,27 +957,35 @@ public class YoutubeStreamExtractor extends StreamExtractor {
                 "&sts=" + sts + "&ps=default&gl=US&hl=en";
     }
 
-    private Map<String, ItagItem> getItags(String streamingDataKey, ItagItem.ItagType itagTypeWanted) throws ParsingException {
-        Map<String, ItagItem> urlAndItags = new LinkedHashMap<>();
-        JsonObject streamingData = playerResponse.getObject("streamingData");
+    private Map<String, ItagItem> getItags(final String streamingDataKey, final ItagItem.ItagType itagTypeWanted) throws ParsingException {
+        final Map<String, ItagItem> urlAndItags = new LinkedHashMap<>();
+        final JsonObject streamingData = playerResponse.getObject("streamingData");
         if (!streamingData.has(streamingDataKey)) {
             return urlAndItags;
         }
 
-        JsonArray formats = streamingData.getArray(streamingDataKey);
-        for (int i = 0; i != formats.size(); ++i) {
-            JsonObject formatData = formats.getObject(i);
-            int itag = formatData.getInt("itag");
+        final JsonArray formats = streamingData.getArray(streamingDataKey);
+        for (final Object format : formats) {
+            final JsonObject formatData = (JsonObject) format;
+            final int itag = formatData.getInt("itag");
 
             if (ItagItem.isSupported(itag)) {
                 try {
-                    ItagItem itagItem = ItagItem.getItag(itag);
+                    final ItagItem itagItem = ItagItem.getItag(itag);
                     if (itagItem.itagType == itagTypeWanted) {
+                        // Ignore streams that are delivered using YouTube's OTF format,
+                        // as those only work with DASH and not with progressive HTTP.
+                        // Those should be extracted when parsing the DASH MPD
+                        if (formatData.getString("type", EMPTY_STRING)
+                                .equalsIgnoreCase("FORMAT_STREAM_TYPE_OTF")) {
+                            continue;
+                        }
+
                         String streamUrl;
                         if (formatData.has("url")) {
                             streamUrl = formatData.getString("url");
                         } else {
-                            // this url has an encrypted signature
+                            // this URL has an encrypted signature
                             final String cipherString = formatData.has("cipher")
                                     ? formatData.getString("cipher")
                                     : formatData.getString("signatureCipher");

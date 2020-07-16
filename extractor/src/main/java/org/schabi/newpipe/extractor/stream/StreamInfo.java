@@ -8,7 +8,6 @@ import org.schabi.newpipe.extractor.exceptions.ContentNotAvailableException;
 import org.schabi.newpipe.extractor.exceptions.ContentNotSupportedException;
 import org.schabi.newpipe.extractor.exceptions.ExtractionException;
 import org.schabi.newpipe.extractor.localization.DateWrapper;
-import org.schabi.newpipe.extractor.utils.DashMpdParser;
 import org.schabi.newpipe.extractor.utils.ExtractorHelper;
 
 import java.io.IOException;
@@ -160,37 +159,9 @@ public class StreamInfo extends Info {
         if (streamInfo.getAudioStreams() == null)
             streamInfo.setAudioStreams(new ArrayList<AudioStream>());
 
-        Exception dashMpdError = null;
-        if (!isNullOrEmpty(streamInfo.getDashMpdUrl())) {
-            try {
-                DashMpdParser.ParserResult result = DashMpdParser.getStreams(streamInfo);
-                streamInfo.getVideoOnlyStreams().addAll(result.getVideoOnlyStreams());
-                streamInfo.getAudioStreams().addAll(result.getAudioStreams());
-                streamInfo.getVideoStreams().addAll(result.getVideoStreams());
-                streamInfo.segmentedVideoOnlyStreams = result.getSegmentedVideoOnlyStreams();
-                streamInfo.segmentedAudioStreams = result.getSegmentedAudioStreams();
-                streamInfo.segmentedVideoStreams = result.getSegmentedVideoStreams();
-            } catch (Exception e) {
-                // Sometimes we receive 403 (forbidden) error when trying to download the
-                // manifest (similar to what happens with youtube-dl),
-                // just skip the exception (but store it somewhere), as we later check if we
-                // have streams anyway.
-                dashMpdError = e;
-            }
-        }
-
         // Either audio or video has to be available, otherwise we didn't get a stream
         // (since videoOnly are optional, they don't count).
         if ((streamInfo.videoStreams.isEmpty()) && (streamInfo.audioStreams.isEmpty())) {
-
-            if (dashMpdError != null) {
-                // If we don't have any video or audio and the dashMpd 'errored', add it to the
-                // error list
-                // (it's optional and it don't get added automatically, but it's good to have
-                // some additional error context)
-                streamInfo.addError(dashMpdError);
-            }
-
             throw new StreamExtractException("Could not get any stream. See error variable to get further details.");
         }
 
@@ -355,11 +326,6 @@ public class StreamInfo extends Info {
     private List<VideoStream> videoOnlyStreams = new ArrayList<>();
 
     private String dashMpdUrl = "";
-    private List<VideoStream> segmentedVideoStreams = new ArrayList<>();
-    private List<AudioStream> segmentedAudioStreams = new ArrayList<>();
-    private List<VideoStream> segmentedVideoOnlyStreams = new ArrayList<>();
-
-
     private String hlsUrl = "";
     private List<InfoItem> relatedStreams = new ArrayList<>();
 
@@ -557,30 +523,6 @@ public class StreamInfo extends Info {
 
     public void setDashMpdUrl(String dashMpdUrl) {
         this.dashMpdUrl = dashMpdUrl;
-    }
-
-    public List<VideoStream> getSegmentedVideoStreams() {
-        return segmentedVideoStreams;
-    }
-
-    public void setSegmentedVideoStreams(List<VideoStream> segmentedVideoStreams) {
-        this.segmentedVideoStreams = segmentedVideoStreams;
-    }
-
-    public List<AudioStream> getSegmentedAudioStreams() {
-        return segmentedAudioStreams;
-    }
-
-    public void setSegmentedAudioStreams(List<AudioStream> segmentedAudioStreams) {
-        this.segmentedAudioStreams = segmentedAudioStreams;
-    }
-
-    public List<VideoStream> getSegmentedVideoOnlyStreams() {
-        return segmentedVideoOnlyStreams;
-    }
-
-    public void setSegmentedVideoOnlyStreams(List<VideoStream> segmentedVideoOnlyStreams) {
-        this.segmentedVideoOnlyStreams = segmentedVideoOnlyStreams;
     }
 
     public String getHlsUrl() {
