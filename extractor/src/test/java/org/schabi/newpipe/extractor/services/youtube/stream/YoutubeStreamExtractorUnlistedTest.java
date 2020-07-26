@@ -23,7 +23,6 @@ import java.util.List;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertSame;
 import static org.junit.Assert.assertTrue;
 import static org.schabi.newpipe.extractor.ExtractorAsserts.assertIsSecureUrl;
@@ -59,7 +58,8 @@ public class YoutubeStreamExtractorUnlistedTest {
 
     @Test
     public void testGetFullLinksInDescription() throws ParsingException {
-        assertTrue(extractor.getDescription().getContent().contains("https://www.youtube.com/user/Roccowschiptune"));
+        assertTrue(extractor.getDescription().getContent()
+                .contains("https://www.youtube.com/user/Roccowschiptune"));
     }
 
     @Test

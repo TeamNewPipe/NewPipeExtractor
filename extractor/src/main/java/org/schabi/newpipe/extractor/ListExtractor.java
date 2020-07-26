@@ -30,7 +30,7 @@ public abstract class ListExtractor<R extends InfoItem> extends Extractor {
      */
     public static final long ITEM_COUNT_MORE_THAN_100 = -3;
 
-    public ListExtractor(StreamingService service, ListLinkHandler linkHandler) {
+    public ListExtractor(final StreamingService service, final ListLinkHandler linkHandler) {
         super(service, linkHandler);
     }
 
@@ -50,7 +50,8 @@ public abstract class ListExtractor<R extends InfoItem> extends Extractor {
      * @return a {@link InfoItemsPage} corresponding to the requested page
      * @see InfoItemsPage#getNextPage()
      */
-    public abstract InfoItemsPage<R> getPage(final Page page) throws IOException, ExtractionException;
+    public abstract InfoItemsPage<R> getPage(Page page)
+            throws IOException, ExtractionException;
 
     @Override
     public ListLinkHandler getLinkHandler() {
@@ -81,12 +82,12 @@ public abstract class ListExtractor<R extends InfoItem> extends Extractor {
         }
 
         /**
-         * The current list of items of this page
+         * The current list of items of this page.
          */
         private final List<T> itemsList;
 
         /**
-         * Url pointing to the next page relative to this one
+         * URL pointing to the next page relative to this one.
          *
          * @see ListExtractor#getPage(Page)
          * @see Page
@@ -94,7 +95,7 @@ public abstract class ListExtractor<R extends InfoItem> extends Extractor {
         private final Page nextPage;
 
         /**
-         * Errors that happened during the extraction
+         * Errors that happened during the extraction.
          */
         private final List<Throwable> errors;
 

@@ -48,7 +48,8 @@ public class YoutubeFeedExtractorTest {
 
         @Test
         public void testUrl() {
-            assertEquals("https://www.youtube.com/channel/UCsXVk37bltHxD1rDPwtNM8Q", extractor.getUrl());
+            assertEquals("https://www.youtube.com/channel/UCsXVk37bltHxD1rDPwtNM8Q",
+                    extractor.getUrl());
         }
 
         @Test

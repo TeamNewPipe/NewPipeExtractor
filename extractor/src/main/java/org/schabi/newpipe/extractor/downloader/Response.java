@@ -18,8 +18,9 @@ public class Response {
 
     private final String latestUrl;
 
-    public Response(int responseCode, String responseMessage, Map<String, List<String>> responseHeaders,
-                    @Nullable String responseBody, @Nullable String latestUrl) {
+    public Response(final int responseCode, final String responseMessage,
+                    final Map<String, List<String>> responseHeaders,
+                    @Nullable final String responseBody, @Nullable final String latestUrl) {
         this.responseCode = responseCode;
         this.responseMessage = responseMessage;
         this.responseHeaders = responseHeaders != null ? responseHeaders : Collections.<String, List<String>>emptyMap();
@@ -67,7 +68,7 @@ public class Response {
      * @return the first value assigned to this header
      */
     @Nullable
-    public String getHeader(String name) {
+    public String getHeader(final String name) {
         for (Map.Entry<String, List<String>> headerEntry : responseHeaders.entrySet()) {
             final String key = headerEntry.getKey();
             if (key != null && key.equalsIgnoreCase(name)) {

@@ -6,17 +6,19 @@ import java.util.Calendar;
 import edu.umd.cs.findbugs.annotations.NonNull;
 
 /**
- * A wrapper class that provides a field to describe if the date is precise or just an approximation.
+ * A wrapper class that provides a field to describe
+ * if the date is precise or just an approximation.
  */
 public class DateWrapper implements Serializable {
-    @NonNull private final Calendar date;
+    @NonNull
+    private final Calendar date;
     private final boolean isApproximation;
 
-    public DateWrapper(@NonNull Calendar date) {
+    public DateWrapper(@NonNull final Calendar date) {
         this(date, false);
     }
 
-    public DateWrapper(@NonNull Calendar date, boolean isApproximation) {
+    public DateWrapper(@NonNull final Calendar date, final boolean isApproximation) {
         this.date = date;
         this.isApproximation = isApproximation;
     }

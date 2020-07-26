@@ -21,11 +21,11 @@ package org.schabi.newpipe.extractor.exceptions;
  */
 
 public class FoundAdException extends ParsingException {
-    public FoundAdException(String message) {
+    public FoundAdException(final String message) {
         super(message);
     }
 
-    public FoundAdException(String message, Throwable cause) {
+    public FoundAdException(final String message, final Throwable cause) {
         super(message, cause);
     }
 }

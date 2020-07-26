@@ -20,7 +20,8 @@ public class YoutubeKioskExtractorTest {
         @BeforeClass
         public static void setUp() throws Exception {
             NewPipe.init(DownloaderTestImpl.getInstance());
-            extractor = (YoutubeTrendingExtractor) YOUTUBE.getKioskList().getDefaultKioskExtractor();
+            extractor = (YoutubeTrendingExtractor) YOUTUBE.getKioskList()
+                    .getDefaultKioskExtractor();
             extractor.fetchPage();
         }
 

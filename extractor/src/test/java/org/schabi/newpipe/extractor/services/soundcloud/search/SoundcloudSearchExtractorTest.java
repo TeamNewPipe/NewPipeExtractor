@@ -36,14 +36,46 @@ public class SoundcloudSearchExtractorTest {
             extractor.fetchPage();
         }
 
-        @Override public SearchExtractor extractor() { return extractor; }
-        @Override public StreamingService expectedService() { return SOUNDCLOUD; }
-        @Override public String expectedName() { return QUERY; }
-        @Override public String expectedId() { return QUERY; }
-        @Override public String expectedUrlContains() { return "soundcloud.com/search?q=" + urlEncode(QUERY); }
-        @Override public String expectedOriginalUrlContains() { return "soundcloud.com/search?q=" + urlEncode(QUERY); }
-        @Override public String expectedSearchString() { return QUERY; }
-        @Nullable @Override public String expectedSearchSuggestion() { return null; }
+        @Override
+        public SearchExtractor extractor() {
+            return extractor;
+        }
+
+        @Override
+        public StreamingService expectedService() {
+            return SOUNDCLOUD;
+        }
+
+        @Override
+        public String expectedName() {
+            return QUERY;
+        }
+
+        @Override
+        public String expectedId() {
+            return QUERY;
+        }
+
+        @Override
+        public String expectedUrlContains() {
+            return "soundcloud.com/search?q=" + urlEncode(QUERY);
+        }
+
+        @Override
+        public String expectedOriginalUrlContains() {
+            return "soundcloud.com/search?q=" + urlEncode(QUERY);
+        }
+
+        @Override
+        public String expectedSearchString() {
+            return QUERY;
+        }
+
+        @Nullable
+        @Override
+        public String expectedSearchSuggestion() {
+            return null;
+        }
     }
 
     public static class Tracks extends DefaultSearchExtractorTest {
@@ -57,16 +89,51 @@ public class SoundcloudSearchExtractorTest {
             extractor.fetchPage();
         }
 
-        @Override public SearchExtractor extractor() { return extractor; }
-        @Override public StreamingService expectedService() { return SOUNDCLOUD; }
-        @Override public String expectedName() { return QUERY; }
-        @Override public String expectedId() { return QUERY; }
-        @Override public String expectedUrlContains() { return "soundcloud.com/search/tracks?q=" + urlEncode(QUERY); }
-        @Override public String expectedOriginalUrlContains() { return "soundcloud.com/search/tracks?q=" + urlEncode(QUERY); }
-        @Override public String expectedSearchString() { return QUERY; }
-        @Nullable @Override public String expectedSearchSuggestion() { return null; }
+        @Override
+        public SearchExtractor extractor() {
+            return extractor;
+        }
 
-        @Override public InfoItem.InfoType expectedInfoItemType() { return InfoItem.InfoType.STREAM; }
+        @Override
+        public StreamingService expectedService() {
+            return SOUNDCLOUD;
+        }
+
+        @Override
+        public String expectedName() {
+            return QUERY;
+        }
+
+        @Override
+        public String expectedId() {
+            return QUERY;
+        }
+
+        @Override
+        public String expectedUrlContains() {
+            return "soundcloud.com/search/tracks?q=" + urlEncode(QUERY);
+        }
+
+        @Override
+        public String expectedOriginalUrlContains() {
+            return "soundcloud.com/search/tracks?q=" + urlEncode(QUERY);
+        }
+
+        @Override
+        public String expectedSearchString() {
+            return QUERY;
+        }
+
+        @Nullable
+        @Override
+        public String expectedSearchSuggestion() {
+            return null;
+        }
+
+        @Override
+        public InfoItem.InfoType expectedInfoItemType() {
+            return InfoItem.InfoType.STREAM;
+        }
     }
 
     public static class Users extends DefaultSearchExtractorTest {
@@ -80,16 +147,51 @@ public class SoundcloudSearchExtractorTest {
             extractor.fetchPage();
         }
 
-        @Override public SearchExtractor extractor() { return extractor; }
-        @Override public StreamingService expectedService() { return SOUNDCLOUD; }
-        @Override public String expectedName() { return QUERY; }
-        @Override public String expectedId() { return QUERY; }
-        @Override public String expectedUrlContains() { return "soundcloud.com/search/users?q=" + urlEncode(QUERY); }
-        @Override public String expectedOriginalUrlContains() { return "soundcloud.com/search/users?q=" + urlEncode(QUERY); }
-        @Override public String expectedSearchString() { return QUERY; }
-        @Nullable @Override public String expectedSearchSuggestion() { return null; }
+        @Override
+        public SearchExtractor extractor() {
+            return extractor;
+        }
 
-        @Override public InfoItem.InfoType expectedInfoItemType() { return InfoItem.InfoType.CHANNEL; }
+        @Override
+        public StreamingService expectedService() {
+            return SOUNDCLOUD;
+        }
+
+        @Override
+        public String expectedName() {
+            return QUERY;
+        }
+
+        @Override
+        public String expectedId() {
+            return QUERY;
+        }
+
+        @Override
+        public String expectedUrlContains() {
+            return "soundcloud.com/search/users?q=" + urlEncode(QUERY);
+        }
+
+        @Override
+        public String expectedOriginalUrlContains() {
+            return "soundcloud.com/search/users?q=" + urlEncode(QUERY);
+        }
+
+        @Override
+        public String expectedSearchString() {
+            return QUERY;
+        }
+
+        @Nullable
+        @Override
+        public String expectedSearchSuggestion() {
+            return null;
+        }
+
+        @Override
+        public InfoItem.InfoType expectedInfoItemType() {
+            return InfoItem.InfoType.CHANNEL;
+        }
     }
 
     public static class Playlists extends DefaultSearchExtractorTest {
@@ -103,23 +205,59 @@ public class SoundcloudSearchExtractorTest {
             extractor.fetchPage();
         }
 
-        @Override public SearchExtractor extractor() { return extractor; }
-        @Override public StreamingService expectedService() { return SOUNDCLOUD; }
-        @Override public String expectedName() { return QUERY; }
-        @Override public String expectedId() { return QUERY; }
-        @Override public String expectedUrlContains() { return "soundcloud.com/search/playlists?q=" + urlEncode(QUERY); }
-        @Override public String expectedOriginalUrlContains() { return "soundcloud.com/search/playlists?q=" + urlEncode(QUERY); }
-        @Override public String expectedSearchString() { return QUERY; }
-        @Nullable @Override public String expectedSearchSuggestion() { return null; }
+        @Override
+        public SearchExtractor extractor() {
+            return extractor;
+        }
 
-        @Override public InfoItem.InfoType expectedInfoItemType() { return InfoItem.InfoType.PLAYLIST; }
+        @Override
+        public StreamingService expectedService() {
+            return SOUNDCLOUD;
+        }
+
+        @Override
+        public String expectedName() {
+            return QUERY;
+        }
+
+        @Override
+        public String expectedId() {
+            return QUERY;
+        }
+
+        @Override
+        public String expectedUrlContains() {
+            return "soundcloud.com/search/playlists?q=" + urlEncode(QUERY);
+        }
+
+        @Override
+        public String expectedOriginalUrlContains() {
+            return "soundcloud.com/search/playlists?q=" + urlEncode(QUERY);
+        }
+
+        @Override
+        public String expectedSearchString() {
+            return QUERY;
+        }
+
+        @Nullable
+        @Override
+        public String expectedSearchSuggestion() {
+            return null;
+        }
+
+        @Override
+        public InfoItem.InfoType expectedInfoItemType() {
+            return InfoItem.InfoType.PLAYLIST;
+        }
     }
 
     public static class PagingTest {
         @Test
         public void duplicatedItemsCheck() throws Exception {
             NewPipe.init(DownloaderTestImpl.getInstance());
-            final SearchExtractor extractor = SOUNDCLOUD.getSearchExtractor("cirque du soleil", singletonList(TRACKS), "");
+            final SearchExtractor extractor = SOUNDCLOUD.getSearchExtractor("cirque du soleil",
+                    singletonList(TRACKS), "");
             extractor.fetchPage();
 
             final InfoItemsPage<InfoItem> page1 = extractor.getInitialPage();

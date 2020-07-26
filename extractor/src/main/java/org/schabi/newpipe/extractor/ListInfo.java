@@ -18,7 +18,8 @@ public abstract class ListInfo<T extends InfoItem> extends Info {
         this.sortFilter = sortFilter;
     }
 
-    public ListInfo(final int serviceId, final ListLinkHandler listUrlIdHandler, final String name) {
+    public ListInfo(final int serviceId, final ListLinkHandler listUrlIdHandler,
+                    final String name) {
         super(serviceId, listUrlIdHandler, name);
         this.contentFilters = listUrlIdHandler.getContentFilters();
         this.sortFilter = listUrlIdHandler.getSortFilter();

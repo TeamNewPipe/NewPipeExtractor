@@ -31,9 +31,8 @@ import javax.annotation.Nonnull;
 public abstract class KioskExtractor<T extends InfoItem> extends ListExtractor<T> {
     private final String id;
 
-    public KioskExtractor(StreamingService streamingService,
-                          ListLinkHandler linkHandler,
-                          String kioskId) {
+    public KioskExtractor(final StreamingService streamingService,
+                          final ListLinkHandler linkHandler, final String kioskId) {
         super(streamingService, linkHandler);
         this.id = kioskId;
     }

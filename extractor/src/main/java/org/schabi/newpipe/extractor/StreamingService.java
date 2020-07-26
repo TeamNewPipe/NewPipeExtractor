@@ -79,8 +79,8 @@ public abstract class StreamingService {
     }
 
     /**
-     * LinkType will be used to determine which type of URL you are handling, and therefore which part
-     * of NewPipe should handle a certain URL.
+     * LinkType will be used to determine which type of URL you are handling,
+     * and therefore which part of NewPipe should handle a certain URL.
      */
     public enum LinkType {
         NONE,
@@ -95,8 +95,7 @@ public abstract class StreamingService {
     /**
      * Creates a new Streaming service.
      * If you Implement one do not set id within your implementation of this extractor, instead
-     * set the id when you put the extractor into
-     * <a href="https://teamnewpipe.github.io/NewPipeExtractor/javadoc/org/schabi/newpipe/extractor/ServiceList.html">ServiceList</a>.
+     * set the id when you put the extractor into {@link ServiceList}.
      * All other parameters can be set directly from the overriding constructor.
      * @param id the number of the service to identify him within the NewPipe frontend
      * @param name the name of the service
@@ -163,7 +162,7 @@ public abstract class StreamingService {
      * @param queryHandler specifies the keyword lock for, and the filters which should be applied.
      * @return a new SearchExtractor instance
      */
-    public abstract SearchExtractor getSearchExtractor(final SearchQueryHandler queryHandler);
+    public abstract SearchExtractor getSearchExtractor(SearchQueryHandler queryHandler);
 
     /**
      * Must create a new instance of a SuggestionExtractor implementation.
@@ -178,8 +177,8 @@ public abstract class StreamingService {
     public abstract SubscriptionExtractor getSubscriptionExtractor();
 
     /**
-     * This method decides which strategy will be chosen to fetch the feed. In YouTube, for example, a separate feed
-     * exists which is lightweight and made specifically to be used like this.
+     * This method decides which strategy will be chosen to fetch the feed. In YouTube, for example,
+     * a separate feed exists which is lightweight and made specifically to be used like this.
      * <p>
      * In services which there's no other way to retrieve them, null should be returned.
      *
@@ -203,7 +202,8 @@ public abstract class StreamingService {
      * @return a new ChannelExtractor
      * @throws ExtractionException
      */
-    public abstract ChannelExtractor getChannelExtractor(final ListLinkHandler linkHandler) throws ExtractionException;
+    public abstract ChannelExtractor getChannelExtractor(ListLinkHandler linkHandler)
+            throws ExtractionException;
 
     /**
      * Must crete a new instance of a PlaylistExtractor implementation.
@@ -211,7 +211,8 @@ public abstract class StreamingService {
      * @return a new PlaylistExtractor
      * @throws ExtractionException
      */
-    public abstract PlaylistExtractor getPlaylistExtractor(final ListLinkHandler linkHandler) throws ExtractionException;
+    public abstract PlaylistExtractor getPlaylistExtractor(ListLinkHandler linkHandler)
+            throws ExtractionException;
 
     /**
      * Must create a new instance of a StreamExtractor implementation.
@@ -219,9 +220,11 @@ public abstract class StreamingService {
      * @return a new StreamExtractor
      * @throws ExtractionException
      */
-    public abstract StreamExtractor getStreamExtractor(final LinkHandler linkHandler) throws ExtractionException;
+    public abstract StreamExtractor getStreamExtractor(LinkHandler linkHandler)
+            throws ExtractionException;
 
-    public abstract CommentsExtractor getCommentsExtractor(ListLinkHandler linkHandler) throws ExtractionException;
+    public abstract CommentsExtractor getCommentsExtractor(ListLinkHandler linkHandler)
+            throws ExtractionException;
 
     /*//////////////////////////////////////////////////////////////////////////
     // Extractors without link handler
@@ -380,14 +383,17 @@ public abstract class StreamingService {
         }
 
         if (!localization.getCountryCode().isEmpty()) {
-            final Localization lessSpecificLocalization = new Localization(localization.getLanguageCode());
-            final TimeAgoParser lessSpecificParser = TimeAgoPatternsManager.getTimeAgoParserFor(lessSpecificLocalization);
+            final Localization lessSpecificLocalization
+                    = new Localization(localization.getLanguageCode());
+            final TimeAgoParser lessSpecificParser
+                    = TimeAgoPatternsManager.getTimeAgoParserFor(lessSpecificLocalization);
 
             if (lessSpecificParser != null) {
                 return lessSpecificParser;
             }
         }
 
-        throw new IllegalArgumentException("Localization is not supported (\"" + localization.toString() + "\")");
+        throw new IllegalArgumentException("Localization is not supported "
+                + "(\"" + localization.toString() + "\")");
     }
 }

@@ -10,14 +10,13 @@ import org.schabi.newpipe.extractor.linkhandler.SearchQueryHandler;
 import javax.annotation.Nonnull;
 
 public abstract class SearchExtractor extends ListExtractor<InfoItem> {
-
     public static class NothingFoundException extends ExtractionException {
-        public NothingFoundException(String message) {
+        public NothingFoundException(final String message) {
             super(message);
         }
     }
 
-    public SearchExtractor(StreamingService service, SearchQueryHandler linkHandler) {
+    public SearchExtractor(final StreamingService service, final SearchQueryHandler linkHandler) {
         super(service, linkHandler);
     }
 

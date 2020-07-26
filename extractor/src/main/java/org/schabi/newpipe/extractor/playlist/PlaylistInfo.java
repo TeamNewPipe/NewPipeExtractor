@@ -15,8 +15,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
-public class PlaylistInfo extends ListInfo<StreamInfoItem> {
-
+public final class PlaylistInfo extends ListInfo<StreamInfoItem> {
     private PlaylistInfo(int serviceId, ListLinkHandler linkHandler, String name) throws ParsingException {
         super(serviceId, linkHandler, name);
     }

@@ -21,15 +21,15 @@ package org.schabi.newpipe.extractor.exceptions;
  */
 
 public class ExtractionException extends Exception {
-    public ExtractionException(String message) {
+    public ExtractionException(final String message) {
         super(message);
     }
 
-    public ExtractionException(Throwable cause) {
+    public ExtractionException(final Throwable cause) {
         super(cause);
     }
 
-    public ExtractionException(String message, Throwable cause) {
+    public ExtractionException(final String message, final Throwable cause) {
         super(message, cause);
     }
 }

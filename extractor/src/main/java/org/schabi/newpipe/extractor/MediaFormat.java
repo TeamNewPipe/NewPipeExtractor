@@ -60,11 +60,11 @@ public enum MediaFormat {
     }
 
     /**
-     * Return the friendly name of the media format with the supplied id
+     * Return the friendly name of the media format with the supplied id.
      *
      * @param ident the id of the media format. Currently an arbitrary, NewPipe-specific number.
      * @return the friendly name of the MediaFormat associated with this ids,
-     * or an empty String if none match it.
+     * or an empty {@link String} if none match it.
      */
     public static String getNameById(final int ident) {
         for (final MediaFormat vf : MediaFormat.values()) {
@@ -76,11 +76,11 @@ public enum MediaFormat {
     }
 
     /**
-     * Return the file extension of the media format with the supplied id
+     * Return the file extension of the media format with the supplied id.
      *
      * @param ident the id of the media format. Currently an arbitrary, NewPipe-specific number.
      * @return the file extension of the MediaFormat associated with this ids,
-     * or an empty String if none match it.
+     * or an empty {@link String} if none match it.
      */
     public static String getSuffixById(final int ident) {
         for (final MediaFormat vf : MediaFormat.values()) {
@@ -92,11 +92,11 @@ public enum MediaFormat {
     }
 
     /**
-     * Return the MIME type of the media format with the supplied id
+     * Return the MIME type of the media format with the supplied id.
      *
      * @param ident the id of the media format. Currently an arbitrary, NewPipe-specific number.
      * @return the MIME type of the MediaFormat associated with this ids,
-     * or an empty String if none match it.
+     * or an empty {@link String} if none match it.
      */
     public static String getMimeById(final int ident) {
         for (final MediaFormat vf : MediaFormat.values()) {
@@ -108,10 +108,10 @@ public enum MediaFormat {
     }
 
     /**
-     * Return the MediaFormat with the supplied mime type
+     * Return the MediaFormat with the supplied MIME type.
      *
-     * @return MediaFormat associated with this mime type,
-     * or null if none match it.
+     * @param mimeType MIME type to look for
+     * @return MediaFormat associated with this MIME type, or {@code null} if none match it.
      */
     public static MediaFormat getFromMimeType(final String mimeType) {
         for (final MediaFormat vf : MediaFormat.values()) {
@@ -165,12 +165,11 @@ public enum MediaFormat {
     }
 
     /**
-     * Get the mime type.
+     * Get the MIME type.
      *
-     * @return the mime type
+     * @return the MIME type
      */
     public String getMimeType() {
         return mimeType;
     }
-
 }

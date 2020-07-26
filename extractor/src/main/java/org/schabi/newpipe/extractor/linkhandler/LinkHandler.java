@@ -10,13 +10,13 @@ public class LinkHandler implements Serializable {
     protected final String url;
     protected final String id;
 
-    public LinkHandler(String originalUrl, String url, String id) {
+    public LinkHandler(final String originalUrl, final String url, final String id) {
         this.originalUrl = originalUrl;
         this.url = url;
         this.id = id;
     }
 
-    public LinkHandler(LinkHandler handler) {
+    public LinkHandler(final LinkHandler handler) {
         this(handler.originalUrl, handler.url, handler.id);
     }
 

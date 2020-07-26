@@ -44,7 +44,7 @@ import java.util.List;
  *     <li>{@link ChannelInfoItemExtractor}</li>
  *     <li>{@link PlaylistInfoItemExtractor}</li>
  * </ul>
- * Calling {@link #extract(InfoItemExtractor)} or {@link #commit(Object)} with any
+ * Calling {@link #extract(InfoItemExtractor)} or {@link #commit(InfoItemExtractor)} with any
  * other extractor type will raise an exception.
  */
 public class InfoItemsSearchCollector extends InfoItemsCollector<InfoItem, InfoItemExtractor> {
@@ -52,7 +52,7 @@ public class InfoItemsSearchCollector extends InfoItemsCollector<InfoItem, InfoI
     private final ChannelInfoItemsCollector userCollector;
     private final PlaylistInfoItemsCollector playlistCollector;
 
-    public InfoItemsSearchCollector(int serviceId) {
+    public InfoItemsSearchCollector(final int serviceId) {
         super(serviceId);
         streamCollector = new StreamInfoItemsCollector(serviceId);
         userCollector = new ChannelInfoItemsCollector(serviceId);
@@ -78,7 +78,7 @@ public class InfoItemsSearchCollector extends InfoItemsCollector<InfoItem, InfoI
     }
 
     @Override
-    public InfoItem extract(InfoItemExtractor extractor) throws ParsingException {
+    public InfoItem extract(final InfoItemExtractor extractor) throws ParsingException {
         // Use the corresponding collector for each item extractor type
         if (extractor instanceof StreamInfoItemExtractor) {
             return streamCollector.extract((StreamInfoItemExtractor) extractor);

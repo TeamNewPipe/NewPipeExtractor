@@ -27,13 +27,14 @@ import java.util.List;
  * along with NewPipe.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-public abstract class InfoItemsCollector<I extends InfoItem, E extends InfoItemExtractor> implements Collector<I, E> {
+public abstract class InfoItemsCollector<I extends InfoItem, E extends InfoItemExtractor>
+        implements Collector<I, E> {
     private final List<I> itemList = new ArrayList<>();
     private final List<Throwable> errors = new ArrayList<>();
     private final int serviceId;
 
     /**
-     * Create a new collector
+     * Create a new collector.
      * @param serviceId the service id
      */
     public InfoItemsCollector(final int serviceId) {
@@ -57,7 +58,7 @@ public abstract class InfoItemsCollector<I extends InfoItem, E extends InfoItemE
     }
 
     /**
-     * Add an error
+     * Add an error.
      * @param error the error
      */
     protected void addError(final Exception error) {
@@ -65,15 +66,15 @@ public abstract class InfoItemsCollector<I extends InfoItem, E extends InfoItemE
     }
 
     /**
-     * Add an item
+     * Add an item.
      * @param item the item
      */
-    protected void addItem(I item) {
+    protected void addItem(final I item) {
         itemList.add(item);
     }
 
     /**
-     * Get the service id
+     * Get the service id.
      * @return the service id
      */
     public int getServiceId() {
@@ -81,7 +82,7 @@ public abstract class InfoItemsCollector<I extends InfoItem, E extends InfoItemE
     }
 
     @Override
-    public void commit(E extractor) {
+    public void commit(final E extractor) {
         try {
             addItem(extract(extractor));
         } catch (FoundAdException ae) {

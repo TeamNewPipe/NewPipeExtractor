@@ -51,14 +51,13 @@ public class ChannelInfo extends ListInfo<StreamInfoItem> {
         return getInfo(extractor);
     }
 
-    public static InfoItemsPage<StreamInfoItem> getMoreItems(StreamingService service,
-                                                             String url,
-                                                             Page page) throws IOException, ExtractionException {
+    public static InfoItemsPage<StreamInfoItem> getMoreItems(final StreamingService service,
+                                                             final String url, final Page page)
+            throws IOException, ExtractionException {
         return service.getChannelExtractor(url).getPage(page);
     }
 
-    public static ChannelInfo getInfo(ChannelExtractor extractor) throws ExtractionException {
-
+    public static ChannelInfo getInfo(final ChannelExtractor extractor) throws ExtractionException {
         final int serviceId = extractor.getServiceId();
         final String id = extractor.getId();
         final String url = extractor.getUrl();

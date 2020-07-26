@@ -12,13 +12,16 @@ import javax.annotation.Nullable;
 public class Localization implements Serializable {
     public static final Localization DEFAULT = new Localization("en", "GB");
 
-    @Nonnull private final String languageCode;
-    @Nullable private final String countryCode;
+    @Nonnull
+    private final String languageCode;
+    @Nullable
+    private final String countryCode;
 
     /**
-     * @param localizationCodeList a list of localization code, formatted like {@link #getLocalizationCode()}
+     * @param localizationCodeList a list of localization code,
+     *                             formatted like {@link #getLocalizationCode()}
      */
-    public static List<Localization> listFrom(String... localizationCodeList) {
+    public static List<Localization> listFrom(final String... localizationCodeList) {
         final List<Localization> toReturn = new ArrayList<>();
         for (String localizationCode : localizationCodeList) {
             toReturn.add(fromLocalizationCode(localizationCode));
@@ -29,7 +32,7 @@ public class Localization implements Serializable {
     /**
      * @param localizationCode a localization code, formatted like {@link #getLocalizationCode()}
      */
-    public static Localization fromLocalizationCode(String localizationCode) {
+    public static Localization fromLocalizationCode(final String localizationCode) {
         final int indexSeparator = localizationCode.indexOf("-");
 
         final String languageCode, countryCode;
@@ -44,12 +47,12 @@ public class Localization implements Serializable {
         return new Localization(languageCode, countryCode);
     }
 
-    public Localization(@Nonnull String languageCode, @Nullable String countryCode) {
+    public Localization(@Nonnull final String languageCode, @Nullable final String countryCode) {
         this.languageCode = languageCode;
         this.countryCode = countryCode;
     }
 
-    public Localization(@Nonnull String languageCode) {
+    public Localization(@Nonnull final String languageCode) {
         this(languageCode, null);
     }
 
@@ -66,7 +69,7 @@ public class Localization implements Serializable {
         return new Locale(getLanguageCode(), getCountryCode());
     }
 
-    public static Localization fromLocale(@Nonnull Locale locale) {
+    public static Localization fromLocale(@Nonnull final Locale locale) {
         return new Localization(locale.getLanguage(), locale.getCountry());
     }
 
@@ -84,13 +87,19 @@ public class Localization implements Serializable {
     }
 
     @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (!(o instanceof Localization)) return false;
+    public boolean equals(final Object o) {
+        if (this == o) {
+            return true;
+        }
+        if (!(o instanceof Localization)) {
+            return false;
+        }
 
         Localization that = (Localization) o;
 
-        if (!languageCode.equals(that.languageCode)) return false;
+        if (!languageCode.equals(that.languageCode)) {
+            return false;
+        }
         return countryCode != null ? countryCode.equals(that.countryCode) : that.countryCode == null;
     }
 

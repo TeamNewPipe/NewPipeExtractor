@@ -21,7 +21,7 @@ import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
 /**
- * Test for {@link SoundcloudSubscriptionExtractor}
+ * Test for {@link SoundcloudSubscriptionExtractor}.
  */
 public class SoundcloudSubscriptionExtractorTest {
     private static SoundcloudSubscriptionExtractor subscriptionExtractor;
@@ -63,8 +63,10 @@ public class SoundcloudSubscriptionExtractorTest {
             } catch (IOException e) {
                 // Ignore it, could be an unstable network on the CI server
             } catch (Exception e) {
-                boolean isExpectedException = e instanceof SubscriptionExtractor.InvalidSourceException;
-                assertTrue(e.getClass().getSimpleName() + " is not the expected exception", isExpectedException);
+                final boolean isExpectedException
+                        = e instanceof SubscriptionExtractor.InvalidSourceException;
+                assertTrue(e.getClass().getSimpleName() + " is not the expected exception",
+                        isExpectedException);
             }
         }
     }

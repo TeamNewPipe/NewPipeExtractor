@@ -23,20 +23,21 @@ import org.schabi.newpipe.extractor.exceptions.ParsingException;
  * along with NewPipe.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-public class ChannelInfoItemsCollector extends InfoItemsCollector<ChannelInfoItem, ChannelInfoItemExtractor> {
-    public ChannelInfoItemsCollector(int serviceId) {
+public class ChannelInfoItemsCollector
+        extends InfoItemsCollector<ChannelInfoItem, ChannelInfoItemExtractor> {
+    public ChannelInfoItemsCollector(final int serviceId) {
         super(serviceId);
     }
 
     @Override
-    public ChannelInfoItem extract(ChannelInfoItemExtractor extractor) throws ParsingException {
+    public ChannelInfoItem extract(final ChannelInfoItemExtractor extractor)
+            throws ParsingException {
         // important information
-        int serviceId = getServiceId();
-        String name = extractor.getName();
-        String url = extractor.getUrl();
+        final int serviceId = getServiceId();
+        final String name = extractor.getName();
+        final String url = extractor.getUrl();
 
-        ChannelInfoItem resultItem = new ChannelInfoItem(serviceId, url, name);
-
+        final ChannelInfoItem resultItem = new ChannelInfoItem(serviceId, url, name);
 
         // optional information
         try {
@@ -59,6 +60,7 @@ public class ChannelInfoItemsCollector extends InfoItemsCollector<ChannelInfoIte
         } catch (Exception e) {
             addError(e);
         }
+
         return resultItem;
     }
 }

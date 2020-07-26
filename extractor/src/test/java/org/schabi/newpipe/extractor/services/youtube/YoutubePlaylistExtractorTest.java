@@ -23,7 +23,7 @@ import static org.schabi.newpipe.extractor.services.DefaultTests.defaultTestMore
 import static org.schabi.newpipe.extractor.services.DefaultTests.defaultTestRelatedItems;
 
 /**
- * Test for {@link YoutubePlaylistExtractor}
+ * Tests for {@link YoutubePlaylistExtractor}.
  */
 public class YoutubePlaylistExtractorTest {
 

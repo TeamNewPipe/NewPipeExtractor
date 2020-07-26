@@ -13,7 +13,7 @@ import static org.junit.Assert.assertFalse;
 import static org.schabi.newpipe.extractor.ServiceList.SOUNDCLOUD;
 
 /**
- * Test for {@link SuggestionExtractor}
+ * Test for {@link SuggestionExtractor}.
  */
 public class SoundcloudSuggestionExtractorTest {
     private static SuggestionExtractor suggestionExtractor;

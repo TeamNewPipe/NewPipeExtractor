@@ -45,15 +45,15 @@ public class ChannelInfoItem extends InfoItem {
         return subscriberCount;
     }
 
-    public void setSubscriberCount(final long subscriber_count) {
-        this.subscriberCount = subscriber_count;
+    public void setSubscriberCount(final long subscriberCount) {
+        this.subscriberCount = subscriberCount;
     }
 
     public long getStreamCount() {
         return streamCount;
     }
 
-    public void setStreamCount(final long stream_count) {
-        this.streamCount = stream_count;
+    public void setStreamCount(final long streamCount) {
+        this.streamCount = streamCount;
     }
 }

@@ -40,11 +40,14 @@ public class YoutubeChannelLocalizationTest {
     private void testLocalizationsFor(final String channelUrl) throws Exception {
 
         final List<Localization> supportedLocalizations = YOUTUBE.getSupportedLocalizations();
-//        final List<Localization> supportedLocalizations = Arrays.asList(Localization.DEFAULT, new Localization("sr"));
+//        final List<Localization> supportedLocalizations = Arrays.asList(Localization.DEFAULT,
+//                new Localization("sr"));
         final Map<Localization, List<StreamInfoItem>> results = new LinkedHashMap<>();
 
-        for (Localization currentLocalization : supportedLocalizations) {
-            if (DEBUG) System.out.println("Testing localization = " + currentLocalization);
+        for (final Localization currentLocalization : supportedLocalizations) {
+            if (DEBUG) {
+                System.out.println("Testing localization = " + currentLocalization);
+            }
 
             ListExtractor.InfoItemsPage<StreamInfoItem> itemsPage;
             try {
@@ -70,7 +73,9 @@ public class YoutubeChannelLocalizationTest {
                     debugMessage += "\n:::: " + item.getTextualUploadDate() +
                             "\n:::: " + dateAsText;
                 }
-                if (DEBUG) System.out.println(debugMessage + "\n");
+                if (DEBUG) {
+                    System.out.println(debugMessage + "\n");
+                }
             }
             results.put(currentLocalization, itemsPage.getItems());
 
@@ -98,7 +103,9 @@ public class YoutubeChannelLocalizationTest {
 
             final List<StreamInfoItem> currentList = currentResultEntry.getValue();
             if (referenceList.size() != currentList.size()) {
-                if (DEBUG) System.out.println("[!] " + currentLocalizationCode + " → Lists are not equal");
+                if (DEBUG) {
+                    System.out.println("[!] " + currentLocalizationCode + " → Lists are not equal");
+                }
                 someFail = true;
                 continue;
             }
@@ -123,12 +130,12 @@ public class YoutubeChannelLocalizationTest {
                 final boolean areTimeEquals = difference < 5 * 60 * 1000L;
 
                 if (!areTimeEquals) {
-                    System.out.println("" +
-                            "      [!] " + currentLocalizationCode + " → [" + i + "] dates are not equal\n" +
-                            "          " + referenceLocalizationCode + ": " +
-                            referenceDateString + " → " + referenceItem.getTextualUploadDate() +
-                            "\n          " + currentLocalizationCode + ": " +
-                            currentDateString + " → " + currentItem.getTextualUploadDate());
+                    System.out.println(""
+                            + "      [!] " + currentLocalizationCode + " → [" + i + "] dates are not equal\n"
+                            + "          " + referenceLocalizationCode + ": "
+                            + referenceDateString + " → " + referenceItem.getTextualUploadDate()
+                            + "\n          " + currentLocalizationCode + ": "
+                            + currentDateString + " → " + currentItem.getTextualUploadDate());
                 }
             }
         }
@@ -136,8 +143,10 @@ public class YoutubeChannelLocalizationTest {
         if (someFail) {
             fail("Some localization failed");
         } else {
-            if (DEBUG) System.out.print("All tests passed" +
-                    "\n\n===============================\n\n");
+            if (DEBUG) {
+                System.out.print("All tests passed"
+                        + "\n\n===============================\n\n");
+            }
         }
     }
 }

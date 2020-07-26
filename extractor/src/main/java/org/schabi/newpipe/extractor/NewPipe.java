@@ -49,7 +49,8 @@ public final class NewPipe {
     public static void init(final Downloader d, final Localization l) {
         downloader = d;
         preferredLocalization = l;
-        preferredContentCountry = l.getCountryCode().isEmpty() ? ContentCountry.DEFAULT : new ContentCountry(l.getCountryCode());
+        preferredContentCountry = l.getCountryCode().isEmpty() ? ContentCountry.DEFAULT
+                : new ContentCountry(l.getCountryCode());
     }
 
     public static void init(final Downloader d, final Localization l, final ContentCountry c) {
@@ -121,20 +122,20 @@ public final class NewPipe {
     // Localization
     //////////////////////////////////////////////////////////////////////////*/
 
-    public static void setupLocalization(final Localization preferredLocalization) {
-        setupLocalization(preferredLocalization, null);
+    public static void setupLocalization(final Localization localization) {
+        setupLocalization(localization, null);
     }
 
-    public static void setupLocalization(final Localization preferredLocalization,
-                                         @Nullable final ContentCountry preferredContentCountry) {
-        NewPipe.preferredLocalization = preferredLocalization;
+    public static void setupLocalization(final Localization localization,
+                                         @Nullable final ContentCountry contentCountry) {
+        NewPipe.preferredLocalization = localization;
 
         if (preferredContentCountry != null) {
-            NewPipe.preferredContentCountry = preferredContentCountry;
+            NewPipe.preferredContentCountry = contentCountry;
         } else {
-            NewPipe.preferredContentCountry = preferredLocalization.getCountryCode().isEmpty()
+            NewPipe.preferredContentCountry = localization.getCountryCode().isEmpty()
                     ? ContentCountry.DEFAULT
-                    : new ContentCountry(preferredLocalization.getCountryCode());
+                    : new ContentCountry(localization.getCountryCode());
         }
     }
 

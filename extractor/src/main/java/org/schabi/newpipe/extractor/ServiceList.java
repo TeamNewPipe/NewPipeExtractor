@@ -35,22 +35,17 @@ public final class ServiceList {
         //no instance
     }
 
-    public static final YoutubeService YOUTUBE;
-    public static final SoundcloudService SOUNDCLOUD;
-    public static final MediaCCCService MEDIA_CCC;
-    public static final PeertubeService PEERTUBE;
+    public static final YoutubeService YOUTUBE = new YoutubeService(0);
+    public static final SoundcloudService SOUNDCLOUD = new SoundcloudService(1);
+    public static final MediaCCCService MEDIA_CCC = new MediaCCCService(2);
+    public static final PeertubeService PEERTUBE = new PeertubeService(3);
 
     /**
      * When creating a new service, put this service in the end of this list,
      * and give it the next free id.
      */
     private static final List<StreamingService> SERVICES = Collections.unmodifiableList(
-            Arrays.asList(
-                    YOUTUBE = new YoutubeService(0),
-                    SOUNDCLOUD = new SoundcloudService(1),
-                    MEDIA_CCC = new MediaCCCService(2),
-                    PEERTUBE = new PeertubeService(3)
-            ));
+            Arrays.asList(YOUTUBE, SOUNDCLOUD, MEDIA_CCC, PEERTUBE));
 
     /**
      * Get all the supported services.
