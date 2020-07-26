@@ -216,7 +216,7 @@ public class YoutubeParsingHelper {
         return response.length() > 50; // ensure to have a valid response
     }
 
-    private static void getClientVersionAndKey() throws IOException, ExtractionException {
+    private static void extractClientVersionAndKey() throws IOException, ExtractionException {
         final String url = "https://www.youtube.com/results?search_query=test";
         final String html = getDownloader().get(url).responseBody();
         final JsonObject initialData = getInitialData(html);
@@ -259,11 +259,12 @@ public class YoutubeParsingHelper {
                 contextClientVersion = Parser.matchGroup1(pattern, html);
                 if (!isNullOrEmpty(contextClientVersion)) {
                     clientVersion = contextClientVersion;
+                    break;
                 }
             } catch (Parser.RegexException ignored) { }
         }
 
-        if (shortClientVersion != null) {
+        if (!isNullOrEmpty(clientVersion) && !isNullOrEmpty(shortClientVersion)) {
             clientVersion = shortClientVersion;
         }
 
@@ -283,7 +284,7 @@ public class YoutubeParsingHelper {
         if (!isNullOrEmpty(clientVersion)) return clientVersion;
         if (isHardcodedClientVersionValid()) return clientVersion = HARDCODED_CLIENT_VERSION;
 
-        getClientVersionAndKey();
+        extractClientVersionAndKey();
         if (isNullOrEmpty(key)) throw new ParsingException("Could not extract client version");
         return clientVersion;
     }
@@ -294,7 +295,7 @@ public class YoutubeParsingHelper {
     public static String getKey() throws IOException, ExtractionException {
         if (!isNullOrEmpty(key)) return key;
 
-        getClientVersionAndKey();
+        extractClientVersionAndKey();
         if (isNullOrEmpty(key)) throw new ParsingException("Could not extract key");
         return key;
     }
