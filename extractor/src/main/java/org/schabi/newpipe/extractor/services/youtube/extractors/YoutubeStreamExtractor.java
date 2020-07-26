@@ -118,7 +118,13 @@ public class YoutubeStreamExtractor extends StreamExtractor {
     @Override
     public String getName() throws ParsingException {
         assertPageFetched();
-        String title = getTextFromObject(getVideoPrimaryInfoRenderer().getObject("title"));
+        String title = null;
+
+        try {
+            title = getTextFromObject(getVideoPrimaryInfoRenderer().getObject("title"));
+        } catch (ParsingException ignored) {
+            // age-restricted videos cause a ParsingException here
+        }
 
         if (isNullOrEmpty(title)) {
             title = playerResponse.getObject("videoDetails").getString("title");
@@ -196,11 +202,15 @@ public class YoutubeStreamExtractor extends StreamExtractor {
 
     @Nonnull
     @Override
-    public Description getDescription() throws ParsingException {
+    public Description getDescription() {
         assertPageFetched();
         // description with more info on links
-        String description = getTextFromObject(getVideoSecondaryInfoRenderer().getObject("description"), true);
-        if (description != null && !description.isEmpty()) return new Description(description, Description.HTML);
+        try {
+            String description = getTextFromObject(getVideoSecondaryInfoRenderer().getObject("description"), true);
+            if (description != null && !description.isEmpty()) return new Description(description, Description.HTML);
+        } catch (ParsingException ignored) {
+            // age-restricted videos cause a ParsingException here
+        }
 
         // raw non-html description
         return new Description(playerResponse.getObject("videoDetails").getString("shortDescription"), Description.PLAIN_TEXT);
@@ -249,8 +259,14 @@ public class YoutubeStreamExtractor extends StreamExtractor {
     @Override
     public long getViewCount() throws ParsingException {
         assertPageFetched();
-        String views = getTextFromObject(getVideoPrimaryInfoRenderer().getObject("viewCount")
+        String views = null;
+
+        try {
+            views = getTextFromObject(getVideoPrimaryInfoRenderer().getObject("viewCount")
                     .getObject("videoViewCountRenderer").getObject("viewCount"));
+        } catch (ParsingException ignored) {
+            // age-restricted videos cause a ParsingException here
+        }
 
         if (isNullOrEmpty(views)) {
             views = playerResponse.getObject("videoDetails").getString("viewCount");
@@ -282,6 +298,7 @@ public class YoutubeStreamExtractor extends StreamExtractor {
         } catch (NumberFormatException nfe) {
             throw new ParsingException("Could not parse \"" + likesString + "\" as an Integer", nfe);
         } catch (Exception e) {
+            if (ageLimit == 18) return -1;
             throw new ParsingException("Could not get like count", e);
         }
     }
@@ -305,6 +322,7 @@ public class YoutubeStreamExtractor extends StreamExtractor {
         } catch (NumberFormatException nfe) {
             throw new ParsingException("Could not parse \"" + dislikesString + "\" as an Integer", nfe);
         } catch (Exception e) {
+            if (ageLimit == 18) return -1;
             throw new ParsingException("Could not get dislike count", e);
         }
     }
@@ -314,14 +332,20 @@ public class YoutubeStreamExtractor extends StreamExtractor {
     public String getUploaderUrl() throws ParsingException {
         assertPageFetched();
 
+        try {
             String uploaderUrl = getUrlFromNavigationEndpoint(getVideoSecondaryInfoRenderer()
                     .getObject("owner").getObject("videoOwnerRenderer").getObject("navigationEndpoint"));
-            if (uploaderUrl != null && !uploaderUrl.isEmpty()) return uploaderUrl;
-
+            if (!isNullOrEmpty(uploaderUrl)) {
+                return uploaderUrl;
+            }
+        } catch (ParsingException ignored) {
+            // age-restricted videos cause a ParsingException here
+        }
 
         String uploaderId = playerResponse.getObject("videoDetails").getString("channelId");
-        if (uploaderId != null && !uploaderId.isEmpty())
+        if (!isNullOrEmpty(uploaderId)) {
             return YoutubeChannelLinkHandlerFactory.getInstance().getUrl("channel/" + uploaderId);
+        }
 
         throw new ParsingException("Could not get uploader url");
     }
@@ -330,8 +354,13 @@ public class YoutubeStreamExtractor extends StreamExtractor {
     @Override
     public String getUploaderName() throws ParsingException {
         assertPageFetched();
-        String uploaderName = getTextFromObject(getVideoSecondaryInfoRenderer().getObject("owner")
+
+        String uploaderName = null;
+
+        try {
+            uploaderName = getTextFromObject(getVideoSecondaryInfoRenderer().getObject("owner")
                     .getObject("videoOwnerRenderer").getObject("title"));
+        } catch (ParsingException ignored) { }
 
         if (isNullOrEmpty(uploaderName)) {
             uploaderName = playerResponse.getObject("videoDetails").getString("author");
@@ -346,14 +375,22 @@ public class YoutubeStreamExtractor extends StreamExtractor {
     @Override
     public String getUploaderAvatarUrl() throws ParsingException {
         assertPageFetched();
-        try {
-            String url = getVideoSecondaryInfoRenderer().getObject("owner").getObject("videoOwnerRenderer")
-                    .getObject("thumbnail").getArray("thumbnails").getObject(0).getString("url");
 
-            return fixThumbnailUrl(url);
-        } catch (Exception e) {
-            throw new ParsingException("Could not get uploader avatar url", e);
+        String url = null;
+
+        try {
+            url = getVideoSecondaryInfoRenderer().getObject("owner").getObject("videoOwnerRenderer")
+                    .getObject("thumbnail").getArray("thumbnails").getObject(0).getString("url");
+        } catch (ParsingException ignored) {
+            // age-restricted videos cause a ParsingException here
         }
+
+        if (isNullOrEmpty(url)) {
+            if (ageLimit == 18) return "";
+            throw new ParsingException("Could not get uploader avatar URL");
+        }
+
+        return fixThumbnailUrl(url);
     }
 
     @Nonnull
@@ -872,7 +909,7 @@ public class YoutubeStreamExtractor extends StreamExtractor {
             }
         }
 
-        if (videoPrimaryInfoRenderer == null) {
+        if (isNullOrEmpty(videoPrimaryInfoRenderer)) {
             throw new ParsingException("Could not find videoPrimaryInfoRenderer");
         }
 
@@ -894,7 +931,7 @@ public class YoutubeStreamExtractor extends StreamExtractor {
             }
         }
 
-        if (videoSecondaryInfoRenderer == null) {
+        if (isNullOrEmpty(videoSecondaryInfoRenderer)) {
             throw new ParsingException("Could not find videoSecondaryInfoRenderer");
         }
 
@@ -904,6 +941,7 @@ public class YoutubeStreamExtractor extends StreamExtractor {
 
     @Nonnull
     private static String getVideoInfoUrl(final String id, final String sts) {
+        // TODO: Try parsing embedded_player_response first
         return "https://www.youtube.com/get_video_info?" + "video_id=" + id +
                 "&eurl=https://youtube.googleapis.com/v/" + id +
                 "&sts=" + sts + "&ps=default&gl=US&hl=en";
