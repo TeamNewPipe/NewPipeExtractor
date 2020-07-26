@@ -28,6 +28,7 @@ import javax.annotation.Nonnull;
 
 import static org.schabi.newpipe.extractor.services.youtube.YoutubeParsingHelper.getClientVersion;
 import static org.schabi.newpipe.extractor.services.youtube.YoutubeParsingHelper.getJsonResponse;
+import static org.schabi.newpipe.extractor.services.youtube.YoutubeParsingHelper.getKey;
 import static org.schabi.newpipe.extractor.services.youtube.YoutubeParsingHelper.getTextFromObject;
 import static org.schabi.newpipe.extractor.services.youtube.YoutubeParsingHelper.getValidJsonResponseBody;
 import static org.schabi.newpipe.extractor.utils.Utils.isNullOrEmpty;
@@ -107,7 +108,7 @@ public class YoutubeSearchExtractor extends SearchExtractor {
 
     @Nonnull
     @Override
-    public InfoItemsPage<InfoItem> getInitialPage() throws ExtractionException {
+    public InfoItemsPage<InfoItem> getInitialPage() throws IOException, ExtractionException {
         final InfoItemsSearchCollector collector = new InfoItemsSearchCollector(getServiceId());
 
         final JsonArray sections = initialData.getObject("contents").getObject("twoColumnSearchResultsRenderer")
@@ -221,7 +222,7 @@ public class YoutubeSearchExtractor extends SearchExtractor {
                 + "&itct=" + clickTrackingParams);
     }
 
-    private Page getNewNextPageFrom(final JsonObject continuationItemRenderer) {
+    private Page getNewNextPageFrom(final JsonObject continuationItemRenderer) throws IOException, ExtractionException {
         if (isNullOrEmpty(continuationItemRenderer)) {
             return null;
         }
@@ -229,8 +230,7 @@ public class YoutubeSearchExtractor extends SearchExtractor {
         final String token = continuationItemRenderer.getObject("continuationEndpoint")
                 .getObject("continuationCommand").getString("token");
 
-        // FIXME: Key needs to be extracted
-        final String url = "https://www.youtube.com/youtubei/v1/search?key=AIzaSyAO_FJ2SlqU8Q4STEHLGCilw_Y9_11qcW8";
+        final String url = "https://www.youtube.com/youtubei/v1/search?key=" + getKey();
 
         return new Page(url, token);
     }
