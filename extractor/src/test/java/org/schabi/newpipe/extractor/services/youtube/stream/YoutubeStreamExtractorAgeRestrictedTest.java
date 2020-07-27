@@ -48,6 +48,8 @@ public class YoutubeStreamExtractorAgeRestrictedTest {
     public void testGetValidTimeStamp() throws IOException, ExtractionException {
         StreamExtractor extractor = YouTube.getStreamExtractor("https://youtu.be/FmG385_uUys?t=174");
         assertEquals(extractor.getTimeStamp() + "", "174");
+        extractor = YouTube.getStreamExtractor("https://youtube.com/embed/FmG385_uUys?start=174");
+        assertEquals(extractor.getTimeStamp() + "", "174");
     }
 
     @Test

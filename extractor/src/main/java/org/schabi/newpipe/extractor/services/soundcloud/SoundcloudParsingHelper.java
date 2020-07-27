@@ -37,19 +37,21 @@ import static org.schabi.newpipe.extractor.utils.Utils.isNullOrEmpty;
 import static org.schabi.newpipe.extractor.utils.Utils.replaceHttpWithHttps;
 
 public class SoundcloudParsingHelper {
-    private static final String HARDCODED_CLIENT_ID = "Uz4aPhG7GAl1VYGOnvOPW1wQ0M6xKtA9"; // Updated on 16/03/20
+    private static final String HARDCODED_CLIENT_ID = "H2c34Q0E7hftqnuDHGsk88DbNqhYpgMm"; // Updated on 24/06/20
     private static String clientId;
 
     private SoundcloudParsingHelper() {
     }
 
-    public static String clientId() throws ExtractionException, IOException {
+    public synchronized static String clientId() throws ExtractionException, IOException {
         if (!isNullOrEmpty(clientId)) return clientId;
 
         Downloader dl = NewPipe.getDownloader();
         clientId = HARDCODED_CLIENT_ID;
         if (checkIfHardcodedClientIdIsValid()) {
             return clientId;
+        } else {
+            clientId = null;
         }
 
         final Response download = dl.get("https://soundcloud.com");

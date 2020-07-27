@@ -1,6 +1,7 @@
 package org.schabi.newpipe.extractor.kiosk;
 
 import org.schabi.newpipe.extractor.NewPipe;
+import org.schabi.newpipe.extractor.Page;
 import org.schabi.newpipe.extractor.StreamingService;
 import org.schabi.newpipe.extractor.exceptions.ExtractionException;
 import org.schabi.newpipe.extractor.linkhandler.ListLinkHandlerFactory;
@@ -59,23 +60,23 @@ public class KioskList {
 
     public KioskExtractor getDefaultKioskExtractor()
             throws ExtractionException, IOException {
-        return getDefaultKioskExtractor("");
+        return getDefaultKioskExtractor(null);
     }
 
-    public KioskExtractor getDefaultKioskExtractor(String nextPageUrl)
+    public KioskExtractor getDefaultKioskExtractor(Page nextPage)
             throws ExtractionException, IOException {
-        return getDefaultKioskExtractor(nextPageUrl, NewPipe.getPreferredLocalization());
+        return getDefaultKioskExtractor(nextPage, NewPipe.getPreferredLocalization());
     }
 
-    public KioskExtractor getDefaultKioskExtractor(String nextPageUrl, Localization localization)
+    public KioskExtractor getDefaultKioskExtractor(Page nextPage, Localization localization)
             throws ExtractionException, IOException {
         if (defaultKiosk != null && !defaultKiosk.equals("")) {
-            return getExtractorById(defaultKiosk, nextPageUrl, localization);
+            return getExtractorById(defaultKiosk, nextPage, localization);
         } else {
             if (!kioskList.isEmpty()) {
                 // if not set get any entry
                 Object[] keySet = kioskList.keySet().toArray();
-                return getExtractorById(keySet[0].toString(), nextPageUrl, localization);
+                return getExtractorById(keySet[0].toString(), nextPage, localization);
             } else {
                 return null;
             }
@@ -86,12 +87,12 @@ public class KioskList {
         return defaultKiosk;
     }
 
-    public KioskExtractor getExtractorById(String kioskId, String nextPageUrl)
+    public KioskExtractor getExtractorById(String kioskId, Page nextPage)
             throws ExtractionException, IOException {
-        return getExtractorById(kioskId, nextPageUrl, NewPipe.getPreferredLocalization());
+        return getExtractorById(kioskId, nextPage, NewPipe.getPreferredLocalization());
     }
 
-    public KioskExtractor getExtractorById(String kioskId, String nextPageUrl, Localization localization)
+    public KioskExtractor getExtractorById(String kioskId, Page nextPage, Localization localization)
             throws ExtractionException, IOException {
         KioskEntry ke = kioskList.get(kioskId);
         if (ke == null) {
@@ -111,17 +112,17 @@ public class KioskList {
         return kioskList.keySet();
     }
 
-    public KioskExtractor getExtractorByUrl(String url, String nextPageUrl)
+    public KioskExtractor getExtractorByUrl(String url, Page nextPage)
             throws ExtractionException, IOException {
-        return getExtractorByUrl(url, nextPageUrl, NewPipe.getPreferredLocalization());
+        return getExtractorByUrl(url, nextPage, NewPipe.getPreferredLocalization());
     }
 
-    public KioskExtractor getExtractorByUrl(String url, String nextPageUrl, Localization localization)
+    public KioskExtractor getExtractorByUrl(String url, Page nextPage, Localization localization)
             throws ExtractionException, IOException {
         for (Map.Entry<String, KioskEntry> e : kioskList.entrySet()) {
             KioskEntry ke = e.getValue();
             if (ke.handlerFactory.acceptUrl(url)) {
-                return getExtractorById(ke.handlerFactory.getId(url), nextPageUrl, localization);
+                return getExtractorById(ke.handlerFactory.getId(url), nextPage, localization);
             }
         }
         throw new ExtractionException("Could not find a kiosk that fits to the url: " + url);

@@ -2,6 +2,7 @@ package org.schabi.newpipe.extractor.services;
 
 import org.schabi.newpipe.extractor.InfoItem;
 import org.schabi.newpipe.extractor.ListExtractor;
+import org.schabi.newpipe.extractor.Page;
 import org.schabi.newpipe.extractor.StreamingService;
 import org.schabi.newpipe.extractor.channel.ChannelInfoItem;
 import org.schabi.newpipe.extractor.exceptions.ParsingException;
@@ -84,9 +85,8 @@ public final class DefaultTests {
     }
 
     public static <T extends InfoItem> void assertNoMoreItems(ListExtractor<T> extractor) throws Exception {
-        assertFalse("More items available when it shouldn't", extractor.hasNextPage());
-        final String nextPageUrl = extractor.getNextPageUrl();
-        assertTrue("Next page is not empty or null", isNullOrEmpty(nextPageUrl));
+        final ListExtractor.InfoItemsPage<T> initialPage = extractor.getInitialPage();
+        assertFalse("More items available when it shouldn't", initialPage.hasNextPage());
     }
 
     public static void assertNoDuplicatedItems(StreamingService expectedService,
@@ -118,8 +118,9 @@ public final class DefaultTests {
     }
 
     public static <T extends InfoItem> ListExtractor.InfoItemsPage<T> defaultTestMoreItems(ListExtractor<T> extractor) throws Exception {
-        assertTrue("Doesn't have more items", extractor.hasNextPage());
-        ListExtractor.InfoItemsPage<T> nextPage = extractor.getPage(extractor.getNextPageUrl());
+        final ListExtractor.InfoItemsPage<T> initialPage = extractor.getInitialPage();
+        assertTrue("Doesn't have more items", initialPage.hasNextPage());
+        ListExtractor.InfoItemsPage<T> nextPage = extractor.getPage(initialPage.getNextPage());
         final List<T> items = nextPage.getItems();
         assertFalse("Next page is empty", items.isEmpty());
         assertEmptyErrors("Next page have errors", nextPage.getErrors());
@@ -129,9 +130,9 @@ public final class DefaultTests {
     }
 
     public static void defaultTestGetPageInNewExtractor(ListExtractor<? extends InfoItem> extractor, ListExtractor<? extends InfoItem> newExtractor) throws Exception {
-        final String nextPageUrl = extractor.getNextPageUrl();
+        final Page nextPage = extractor.getInitialPage().getNextPage();
 
-        final ListExtractor.InfoItemsPage<? extends InfoItem> page = newExtractor.getPage(nextPageUrl);
+        final ListExtractor.InfoItemsPage<? extends InfoItem> page = newExtractor.getPage(nextPage);
         defaultTestListOfItems(extractor.getService(), page.getItems(), page.getErrors());
     }
 }

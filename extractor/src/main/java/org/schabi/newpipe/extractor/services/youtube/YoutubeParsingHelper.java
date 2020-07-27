@@ -64,6 +64,8 @@ public class YoutubeParsingHelper {
     private static final String HARDCODED_CLIENT_VERSION = "2.20200214.04.00";
     private static String clientVersion;
 
+    private static String key;
+
     private static final String[] HARDCODED_YOUTUBE_MUSIC_KEYS = {"AIzaSyC9XL3ZjWddXya6X74dJoCTL-WEYFDNX30", "67", "0.1"};
     private static String[] youtubeMusicKeys;
 
@@ -105,10 +107,31 @@ public class YoutubeParsingHelper {
 
     public static boolean isInvidioURL(URL url) {
         String host = url.getHost();
-        return host.equalsIgnoreCase("invidio.us") || host.equalsIgnoreCase("dev.invidio.us") || host.equalsIgnoreCase("www.invidio.us") || host.equalsIgnoreCase("invidious.snopyta.org") || host.equalsIgnoreCase("de.invidious.snopyta.org") || host.equalsIgnoreCase("fi.invidious.snopyta.org") || host.equalsIgnoreCase("vid.wxzm.sx") || host.equalsIgnoreCase("invidious.kabi.tk") || host.equalsIgnoreCase("invidiou.sh") || host.equalsIgnoreCase("www.invidiou.sh") || host.equalsIgnoreCase("no.invidiou.sh") || host.equalsIgnoreCase("invidious.enkirton.net") || host.equalsIgnoreCase("tube.poal.co") || host.equalsIgnoreCase("invidious.13ad.de") || host.equalsIgnoreCase("yt.elukerio.org");
+        return host.equalsIgnoreCase("invidio.us")
+                || host.equalsIgnoreCase("dev.invidio.us")
+                || host.equalsIgnoreCase("www.invidio.us")
+                || host.equalsIgnoreCase("invidious.snopyta.org")
+                || host.equalsIgnoreCase("fi.invidious.snopyta.org")
+                || host.equalsIgnoreCase("yewtu.be")
+                || host.equalsIgnoreCase("invidious.ggc-project.de")
+                || host.equalsIgnoreCase("yt.maisputain.ovh")
+                || host.equalsIgnoreCase("invidious.13ad.de")
+                || host.equalsIgnoreCase("invidious.toot.koeln")
+                || host.equalsIgnoreCase("invidious.fdn.fr")
+                || host.equalsIgnoreCase("watch.nettohikari.com")
+                || host.equalsIgnoreCase("invidious.snwmds.net")
+                || host.equalsIgnoreCase("invidious.snwmds.org")
+                || host.equalsIgnoreCase("invidious.snwmds.com")
+                || host.equalsIgnoreCase("invidious.sunsetravens.com")
+                || host.equalsIgnoreCase("invidious.gachirangers.com");
     }
 
-    public static long parseDurationString(String input)
+    /**
+     * Parses the duration string of the video expecting ":" or "." as separators
+     * @return the duration in seconds
+     * @throws ParsingException when more than 3 separators are found
+     */
+    public static int parseDurationString(final String input)
             throws ParsingException, NumberFormatException {
         // If time separator : is not detected, try . instead
         final String[] splitInput = input.contains(":")
@@ -143,10 +166,10 @@ public class YoutubeParsingHelper {
                 throw new ParsingException("Error duration string with unknown format: " + input);
         }
 
-        return ((Long.parseLong(Utils.removeNonDigitCharacters(days)) * 24
-                + Long.parseLong(Utils.removeNonDigitCharacters(hours))) * 60
-                + Long.parseLong(Utils.removeNonDigitCharacters(minutes))) * 60
-                + Long.parseLong(Utils.removeNonDigitCharacters(seconds));
+        return ((Integer.parseInt(Utils.removeNonDigitCharacters(days)) * 24
+                + Integer.parseInt(Utils.removeNonDigitCharacters(hours))) * 60
+                + Integer.parseInt(Utils.removeNonDigitCharacters(minutes))) * 60
+                + Integer.parseInt(Utils.removeNonDigitCharacters(seconds));
     }
 
     public static String getFeedUrlFrom(final String channelIdOrUser) {
@@ -193,39 +216,31 @@ public class YoutubeParsingHelper {
         return response.length() > 50; // ensure to have a valid response
     }
 
-    /**
-     * Get the client version from a page
-     * @return
-     * @throws ParsingException
-     */
-    public static String getClientVersion() throws IOException, ExtractionException {
-        if (!isNullOrEmpty(clientVersion)) return clientVersion;
-        if (isHardcodedClientVersionValid()) return clientVersion = HARDCODED_CLIENT_VERSION;
-
+    private static void extractClientVersionAndKey() throws IOException, ExtractionException {
         final String url = "https://www.youtube.com/results?search_query=test";
         final String html = getDownloader().get(url).responseBody();
-        JsonObject initialData = getInitialData(html);
-        JsonArray serviceTrackingParams = initialData.getObject("responseContext").getArray("serviceTrackingParams");
+        final JsonObject initialData = getInitialData(html);
+        final JsonArray serviceTrackingParams = initialData.getObject("responseContext").getArray("serviceTrackingParams");
         String shortClientVersion = null;
 
         // try to get version from initial data first
-        for (Object service : serviceTrackingParams) {
-            JsonObject s = (JsonObject) service;
+        for (final Object service : serviceTrackingParams) {
+            final JsonObject s = (JsonObject) service;
             if (s.getString("service").equals("CSI")) {
-                JsonArray params = s.getArray("params");
-                for (Object param : params) {
-                    JsonObject p = (JsonObject) param;
-                    String key = p.getString("key");
+                final JsonArray params = s.getArray("params");
+                for (final Object param : params) {
+                    final JsonObject p = (JsonObject) param;
+                    final String key = p.getString("key");
                     if (key != null && key.equals("cver")) {
-                        return clientVersion = p.getString("value");
+                        clientVersion = p.getString("value");
                     }
                 }
             } else if (s.getString("service").equals("ECATCHER")) {
                 // fallback to get a shortened client version which does not contain the last two digits
-                JsonArray params = s.getArray("params");
-                for (Object param : params) {
-                    JsonObject p = (JsonObject) param;
-                    String key = p.getString("key");
+                final JsonArray params = s.getArray("params");
+                for (final Object param : params) {
+                    final JsonObject p = (JsonObject) param;
+                    final String key = p.getString("key");
                     if (key != null && key.equals("client.version")) {
                         shortClientVersion = p.getString("value");
                     }
@@ -234,26 +249,55 @@ public class YoutubeParsingHelper {
         }
 
         String contextClientVersion;
-        String[] patterns = {
+        final String[] patterns = {
                 "INNERTUBE_CONTEXT_CLIENT_VERSION\":\"([0-9\\.]+?)\"",
                 "innertube_context_client_version\":\"([0-9\\.]+?)\"",
                 "client.version=([0-9\\.]+)"
         };
-        for (String pattern : patterns) {
+        for (final String pattern : patterns) {
             try {
                 contextClientVersion = Parser.matchGroup1(pattern, html);
                 if (!isNullOrEmpty(contextClientVersion)) {
-                    return clientVersion = contextClientVersion;
+                    clientVersion = contextClientVersion;
+                    break;
                 }
-            } catch (Exception ignored) {
-            }
+            } catch (Parser.RegexException ignored) { }
         }
 
-        if (shortClientVersion != null) {
-            return clientVersion = shortClientVersion;
+        if (!isNullOrEmpty(clientVersion) && !isNullOrEmpty(shortClientVersion)) {
+            clientVersion = shortClientVersion;
         }
 
-        throw new ParsingException("Could not get client version");
+        try {
+            key = Parser.matchGroup1("INNERTUBE_API_KEY\":\"([0-9a-zA-Z_-]+?)\"", html);
+        } catch (Parser.RegexException e) {
+            try {
+                key = Parser.matchGroup1("innertubeApiKey\":\"([0-9a-zA-Z_-]+?)\"", html);
+            } catch (Parser.RegexException ignored) { }
+        }
+    }
+
+    /**
+     * Get the client version
+     */
+    public static String getClientVersion() throws IOException, ExtractionException {
+        if (!isNullOrEmpty(clientVersion)) return clientVersion;
+        if (isHardcodedClientVersionValid()) return clientVersion = HARDCODED_CLIENT_VERSION;
+
+        extractClientVersionAndKey();
+        if (isNullOrEmpty(key)) throw new ParsingException("Could not extract client version");
+        return clientVersion;
+    }
+
+    /**
+     * Get the key
+     */
+    public static String getKey() throws IOException, ExtractionException {
+        if (!isNullOrEmpty(key)) return key;
+
+        extractClientVersionAndKey();
+        if (isNullOrEmpty(key)) throw new ParsingException("Could not extract key");
+        return key;
     }
 
     public static boolean areHardcodedYoutubeMusicKeysValid() throws IOException, ReCaptchaException {

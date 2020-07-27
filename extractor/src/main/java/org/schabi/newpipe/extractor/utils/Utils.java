@@ -7,6 +7,7 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLDecoder;
 import java.util.Collection;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
@@ -221,5 +222,17 @@ public class Utils {
         }
 
         return true;
+    }
+
+    public static String join(final CharSequence delimiter, final Iterable<? extends CharSequence> elements) {
+        final StringBuilder stringBuilder = new StringBuilder();
+        final Iterator<? extends CharSequence> iterator = elements.iterator();
+        while (iterator.hasNext()) {
+            stringBuilder.append(iterator.next());
+            if (iterator.hasNext()) {
+                stringBuilder.append(delimiter);
+            }
+        }
+        return stringBuilder.toString();
     }
 }

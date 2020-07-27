@@ -5,7 +5,7 @@ allprojects {
     sourceCompatibility = 1.7
     targetCompatibility = 1.7
 
-    version 'v0.19.5'
+    version 'v0.19.7'
     group 'com.github.TeamNewPipe'
 
     repositories {
@@ -15,7 +15,7 @@ allprojects {
 }
 
 dependencies {
-    implementation project(':extractor')
+    api project(':extractor')
     implementation project(':timeago-parser')
 }
 

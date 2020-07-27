@@ -2,7 +2,12 @@ package org.schabi.newpipe.extractor.services.youtube.extractors;
 
 import com.grack.nanojson.JsonArray;
 import com.grack.nanojson.JsonObject;
+import com.grack.nanojson.JsonParser;
+import com.grack.nanojson.JsonParserException;
+import com.grack.nanojson.JsonWriter;
+
 import org.schabi.newpipe.extractor.InfoItem;
+import org.schabi.newpipe.extractor.Page;
 import org.schabi.newpipe.extractor.StreamingService;
 import org.schabi.newpipe.extractor.downloader.Downloader;
 import org.schabi.newpipe.extractor.exceptions.ExtractionException;
@@ -13,11 +18,19 @@ import org.schabi.newpipe.extractor.search.InfoItemsSearchCollector;
 import org.schabi.newpipe.extractor.search.SearchExtractor;
 import org.schabi.newpipe.extractor.utils.JsonUtils;
 
-import javax.annotation.Nonnull;
 import java.io.IOException;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
+import javax.annotation.Nonnull;
+
+import static org.schabi.newpipe.extractor.services.youtube.YoutubeParsingHelper.getClientVersion;
 import static org.schabi.newpipe.extractor.services.youtube.YoutubeParsingHelper.getJsonResponse;
+import static org.schabi.newpipe.extractor.services.youtube.YoutubeParsingHelper.getKey;
 import static org.schabi.newpipe.extractor.services.youtube.YoutubeParsingHelper.getTextFromObject;
+import static org.schabi.newpipe.extractor.services.youtube.YoutubeParsingHelper.getValidJsonResponseBody;
 import static org.schabi.newpipe.extractor.utils.Utils.isNullOrEmpty;
 
 /*
@@ -95,42 +108,88 @@ public class YoutubeSearchExtractor extends SearchExtractor {
 
     @Nonnull
     @Override
-    public InfoItemsPage<InfoItem> getInitialPage() throws ExtractionException {
+    public InfoItemsPage<InfoItem> getInitialPage() throws IOException, ExtractionException {
         final InfoItemsSearchCollector collector = new InfoItemsSearchCollector(getServiceId());
 
         final JsonArray sections = initialData.getObject("contents").getObject("twoColumnSearchResultsRenderer")
                 .getObject("primaryContents").getObject("sectionListRenderer").getArray("contents");
 
-        for (Object section : sections) {
-            collectStreamsFrom(collector, ((JsonObject) section).getObject("itemSectionRenderer").getArray("contents"));
+        Page nextPage = null;
+
+        for (final Object section : sections) {
+            if (((JsonObject) section).has("itemSectionRenderer")) {
+                final JsonObject itemSectionRenderer = ((JsonObject) section).getObject("itemSectionRenderer");
+
+                collectStreamsFrom(collector, itemSectionRenderer.getArray("contents"));
+
+                nextPage = getNextPageFrom(itemSectionRenderer.getArray("continuations"));
+            } else if (((JsonObject) section).has("continuationItemRenderer")) {
+                nextPage = getNewNextPageFrom(((JsonObject) section).getObject("continuationItemRenderer"));
+            }
         }
 
-        return new InfoItemsPage<>(collector, getNextPageUrl());
+        return new InfoItemsPage<>(collector, nextPage);
     }
 
     @Override
-    public String getNextPageUrl() throws ExtractionException {
-        return getNextPageUrlFrom(initialData.getObject("contents").getObject("twoColumnSearchResultsRenderer")
-                .getObject("primaryContents").getObject("sectionListRenderer").getArray("contents")
-                .getObject(0).getObject("itemSectionRenderer").getArray("continuations"));
-    }
-
-    @Override
-    public InfoItemsPage<InfoItem> getPage(final String pageUrl) throws IOException, ExtractionException {
-        if (isNullOrEmpty(pageUrl)) {
-            throw new ExtractionException(new IllegalArgumentException("Page url is empty or null"));
+    public InfoItemsPage<InfoItem> getPage(final Page page) throws IOException, ExtractionException {
+        if (page == null || isNullOrEmpty(page.getUrl())) {
+            throw new IllegalArgumentException("Page doesn't contain an URL");
         }
 
         final InfoItemsSearchCollector collector = new InfoItemsSearchCollector(getServiceId());
-        final JsonArray ajaxJson = getJsonResponse(pageUrl, getExtractorLocalization());
 
-        final JsonObject itemSectionRenderer = ajaxJson.getObject(1).getObject("response")
-                .getObject("continuationContents").getObject("itemSectionContinuation");
+        if (page.getId() == null) {
+            final JsonArray ajaxJson = getJsonResponse(page.getUrl(), getExtractorLocalization());
 
-        collectStreamsFrom(collector, itemSectionRenderer.getArray("contents"));
-        final JsonArray continuations = itemSectionRenderer.getArray("continuations");
+            final JsonObject itemSectionContinuation = ajaxJson.getObject(1).getObject("response")
+                    .getObject("continuationContents").getObject("itemSectionContinuation");
 
-        return new InfoItemsPage<>(collector, getNextPageUrlFrom(continuations));
+            collectStreamsFrom(collector, itemSectionContinuation.getArray("contents"));
+            final JsonArray continuations = itemSectionContinuation.getArray("continuations");
+
+            return new InfoItemsPage<>(collector, getNextPageFrom(continuations));
+        } else {
+            // @formatter:off
+            final byte[] json = JsonWriter.string()
+                .object()
+                    .object("context")
+                        .object("client")
+                            .value("hl", "en")
+                            .value("gl", getExtractorContentCountry().getCountryCode())
+                            .value("clientName", "WEB")
+                            .value("clientVersion", getClientVersion())
+                            .value("utcOffsetMinutes", 0)
+                        .end()
+                        .object("request").end()
+                        .object("user").end()
+                    .end()
+                    .value("continuation", page.getId())
+                .end().done().getBytes("UTF-8");
+            // @formatter:on
+
+            final Map<String, List<String>> headers = new HashMap<>();
+            headers.put("Origin", Collections.singletonList("https://www.youtube.com"));
+            headers.put("Referer", Collections.singletonList(this.getUrl()));
+            headers.put("Content-Type", Collections.singletonList("application/json"));
+
+            final String responseBody = getValidJsonResponseBody(getDownloader().post(page.getUrl(), headers, json));
+
+            final JsonObject ajaxJson;
+            try {
+                ajaxJson = JsonParser.object().from(responseBody);
+            } catch (JsonParserException e) {
+                throw new ParsingException("Could not parse JSON", e);
+            }
+
+            final JsonArray continuationItems = ajaxJson.getArray("onResponseReceivedCommands")
+                    .getObject(0).getObject("appendContinuationItemsAction").getArray("continuationItems");
+
+            final JsonArray contents = continuationItems.getObject(0).getObject("itemSectionRenderer").getArray("contents");
+            collectStreamsFrom(collector, contents);
+
+            return new InfoItemsPage<>(collector, getNewNextPageFrom(continuationItems.getObject(1).getObject("continuationItemRenderer")));
+        }
     }
 
     private void collectStreamsFrom(final InfoItemsSearchCollector collector, final JsonArray videos) throws NothingFoundException, ParsingException {
@@ -150,16 +209,29 @@ public class YoutubeSearchExtractor extends SearchExtractor {
         }
     }
 
-    private String getNextPageUrlFrom(final JsonArray continuations) throws ParsingException {
+    private Page getNextPageFrom(final JsonArray continuations) throws ParsingException {
         if (isNullOrEmpty(continuations)) {
-            return "";
+            return null;
         }
 
         final JsonObject nextContinuationData = continuations.getObject(0).getObject("nextContinuationData");
         final String continuation = nextContinuationData.getString("continuation");
         final String clickTrackingParams = nextContinuationData.getString("clickTrackingParams");
 
-        return getUrl() + "&pbj=1&ctoken=" + continuation + "&continuation=" + continuation
-                + "&itct=" + clickTrackingParams;
+        return new Page(getUrl() + "&pbj=1&ctoken=" + continuation + "&continuation=" + continuation
+                + "&itct=" + clickTrackingParams);
+    }
+
+    private Page getNewNextPageFrom(final JsonObject continuationItemRenderer) throws IOException, ExtractionException {
+        if (isNullOrEmpty(continuationItemRenderer)) {
+            return null;
+        }
+
+        final String token = continuationItemRenderer.getObject("continuationEndpoint")
+                .getObject("continuationCommand").getString("token");
+
+        final String url = "https://www.youtube.com/youtubei/v1/search?key=" + getKey();
+
+        return new Page(url, token);
     }
 }

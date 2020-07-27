@@ -1,6 +1,7 @@
 package org.schabi.newpipe.extractor.services.peertube.extractors;
 
 import com.grack.nanojson.JsonObject;
+
 import org.schabi.newpipe.extractor.ServiceList;
 import org.schabi.newpipe.extractor.exceptions.ParsingException;
 import org.schabi.newpipe.extractor.localization.DateWrapper;
@@ -10,24 +11,23 @@ import org.schabi.newpipe.extractor.stream.StreamType;
 import org.schabi.newpipe.extractor.utils.JsonUtils;
 
 public class PeertubeStreamInfoItemExtractor implements StreamInfoItemExtractor {
-
     protected final JsonObject item;
     private final String baseUrl;
 
-    public PeertubeStreamInfoItemExtractor(JsonObject item, String baseUrl) {
+    public PeertubeStreamInfoItemExtractor(final JsonObject item, final String baseUrl) {
         this.item = item;
         this.baseUrl = baseUrl;
     }
 
     @Override
     public String getUrl() throws ParsingException {
-        String uuid = JsonUtils.getString(item, "uuid");
+        final String uuid = JsonUtils.getString(item, "uuid");
         return ServiceList.PeerTube.getStreamLHFactory().fromId(uuid, baseUrl).getUrl();
     }
 
     @Override
     public String getThumbnailUrl() throws ParsingException {
-        String value = JsonUtils.getString(item, "thumbnailPath");
+        final String value = JsonUtils.getString(item, "thumbnailPath");
         return baseUrl + value;
     }
 
@@ -37,20 +37,19 @@ public class PeertubeStreamInfoItemExtractor implements StreamInfoItemExtractor 
     }
 
     @Override
-    public boolean isAd() throws ParsingException {
+    public boolean isAd() {
         return false;
     }
 
     @Override
-    public long getViewCount() throws ParsingException {
-        Number value = JsonUtils.getNumber(item, "views");
-        return value.longValue();
+    public long getViewCount() {
+        return item.getLong("views");
     }
 
     @Override
     public String getUploaderUrl() throws ParsingException {
-        String name = JsonUtils.getString(item, "account.name");
-        String host = JsonUtils.getString(item, "account.host");
+        final String name = JsonUtils.getString(item, "account.name");
+        final String host = JsonUtils.getString(item, "account.host");
 
         return ServiceList.PeerTube.getChannelLHFactory().fromId("accounts/" + name + "@" + host, baseUrl).getUrl();
     }
@@ -77,14 +76,12 @@ public class PeertubeStreamInfoItemExtractor implements StreamInfoItemExtractor 
     }
 
     @Override
-    public StreamType getStreamType() throws ParsingException {
+    public StreamType getStreamType() {
         return StreamType.VIDEO_STREAM;
     }
 
     @Override
-    public long getDuration() throws ParsingException {
-        Number value = JsonUtils.getNumber(item, "duration");
-        return value.longValue();
+    public long getDuration() {
+        return item.getLong("duration");
     }
-
 }

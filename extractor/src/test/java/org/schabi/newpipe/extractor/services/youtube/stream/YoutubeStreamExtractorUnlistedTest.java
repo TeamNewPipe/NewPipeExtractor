@@ -130,11 +130,6 @@ public class YoutubeStreamExtractorUnlistedTest {
     }
 
     @Test
-    public void testGetNextVideo() throws ExtractionException {
-        assertNull(extractor.getNextStream());
-    }
-
-    @Test
     public void testGetRelatedVideos() throws ExtractionException {
         StreamInfoItemsCollector relatedVideos = extractor.getRelatedStreams();
         Utils.printErrors(relatedVideos.getErrors());
