@@ -5,6 +5,8 @@ import org.schabi.newpipe.extractor.services.peertube.PeertubeService;
 import org.schabi.newpipe.extractor.services.soundcloud.SoundcloudService;
 import org.schabi.newpipe.extractor.services.youtube.YoutubeService;
 
+import java.lang.reflect.InvocationTargetException;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
@@ -44,7 +46,7 @@ public final class ServiceList {
      * When creating a new service, put this service in the end of this list,
      * and give it the next free id.
      */
-    private static final List<StreamingService> SERVICES = Collections.unmodifiableList(
+    private static List<StreamingService> services = new ArrayList<>(
             Arrays.asList(
                     YouTube = new YoutubeService(0),
                     SoundCloud = new SoundcloudService(1),
@@ -52,12 +54,25 @@ public final class ServiceList {
                     PeerTube = new PeertubeService(3)
             ));
 
+    public static final int builtinServices = 4;
+    private static int nextService = 4;
+
     /**
      * Get all the supported services.
      *
-     * @return a unmodifiable list of all the supported services
+     * @return an unmodifiable list of all the supported services
      */
     public static List<StreamingService> all() {
-        return SERVICES;
+        return Collections.unmodifiableList(services);
+    }
+
+    public static void addService(final Class<StreamingService> service) throws NoSuchMethodException, IllegalAccessException, InvocationTargetException, InstantiationException {
+        services.add(service.getConstructor(new Class[]{int.class}).newInstance(nextService));
+        nextService++;
+    }
+
+    public static void replaceService(final Class<StreamingService> service, final int serviceId) throws NoSuchMethodException, IllegalAccessException, InvocationTargetException, InstantiationException {
+        services.set(serviceId, service.getConstructor(new Class[]{int.class}).newInstance(serviceId));
+        nextService++;
     }
 }
