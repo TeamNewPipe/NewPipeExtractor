@@ -2,18 +2,19 @@
 
 package org.schabi.newpipe.extractor.services.bandcamp.extractors;
 
+import edu.umd.cs.findbugs.annotations.NonNull;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 import org.schabi.newpipe.extractor.InfoItem;
+import org.schabi.newpipe.extractor.Page;
 import org.schabi.newpipe.extractor.StreamingService;
 import org.schabi.newpipe.extractor.downloader.Downloader;
 import org.schabi.newpipe.extractor.exceptions.ExtractionException;
 import org.schabi.newpipe.extractor.linkhandler.SearchQueryHandler;
 import org.schabi.newpipe.extractor.search.InfoItemsSearchCollector;
 import org.schabi.newpipe.extractor.search.SearchExtractor;
-import org.schabi.newpipe.extractor.services.bandcamp.extractors.streaminfoitem.BandcampPlaylistStreamInfoItemExtractor;
 import org.schabi.newpipe.extractor.services.bandcamp.extractors.streaminfoitem.BandcampSearchStreamInfoItemExtractor;
 
 import javax.annotation.Nonnull;
@@ -25,9 +26,10 @@ public class BandcampSearchExtractor extends SearchExtractor {
         super(service, linkHandler);
     }
 
+    @NonNull
     @Override
     public String getSearchSuggestion() {
-        return null;
+        return "";
     }
 
     @Override
@@ -35,10 +37,9 @@ public class BandcampSearchExtractor extends SearchExtractor {
         return false;
     }
 
-    @Override
-    public InfoItemsPage<InfoItem> getPage(String pageUrl) throws IOException, ExtractionException {
+    public InfoItemsPage<InfoItem> getPage(Page page) throws IOException, ExtractionException {
         // okay apparently this is where we DOWNLOAD the page and then COMMIT its ENTRIES to an INFOITEMPAGE
-        String html = getDownloader().get(pageUrl).responseBody();
+        String html = getDownloader().get(page.getUrl()).responseBody();
 
         InfoItemsSearchCollector collector = new InfoItemsSearchCollector(getServiceId());
 
@@ -85,8 +86,8 @@ public class BandcampSearchExtractor extends SearchExtractor {
         // Find current page
         int currentPage = -1;
         for (int i = 0; i < pages.size(); i++) {
-            Element page = pages.get(i);
-            if (page.getElementsByTag("span").size() > 0) {
+            Element pageElement = pages.get(i);
+            if (pageElement.getElementsByTag("span").size() > 0) {
                 currentPage = i + 1;
                 break;
             }
@@ -97,23 +98,17 @@ public class BandcampSearchExtractor extends SearchExtractor {
 
         String nextUrl = null;
         if (currentPage < pages.size()) {
-            nextUrl = pageUrl.substring(0, pageUrl.length() - 1) + (currentPage + 1);
+            nextUrl = page.getUrl().substring(0, page.getUrl().length() - 1) + (currentPage + 1);
         }
 
-        return new InfoItemsPage<>(collector, nextUrl);
+        return new InfoItemsPage<>(collector, new Page(nextUrl));
 
     }
 
     @Nonnull
     @Override
     public InfoItemsPage<InfoItem> getInitialPage() throws IOException, ExtractionException {
-        return getPage(getUrl());
-    }
-
-    @Override
-    public String getNextPageUrl() throws ExtractionException {
-        String url = getUrl();
-        return url.substring(0, url.length() - 1).concat("2");
+        return getPage(new Page(getUrl()));
     }
 
     @Override

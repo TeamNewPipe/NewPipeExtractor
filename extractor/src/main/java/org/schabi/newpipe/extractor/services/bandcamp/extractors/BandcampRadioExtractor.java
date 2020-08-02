@@ -8,6 +8,7 @@ import com.grack.nanojson.JsonParser;
 import com.grack.nanojson.JsonParserException;
 import org.schabi.newpipe.extractor.InfoItem;
 import org.schabi.newpipe.extractor.InfoItemsCollector;
+import org.schabi.newpipe.extractor.Page;
 import org.schabi.newpipe.extractor.StreamingService;
 import org.schabi.newpipe.extractor.downloader.Downloader;
 import org.schabi.newpipe.extractor.exceptions.ExtractionException;
@@ -71,12 +72,7 @@ public class BandcampRadioExtractor extends KioskExtractor<InfoItem> {
     }
 
     @Override
-    public String getNextPageUrl() throws IOException, ExtractionException {
-        return null;
-    }
-
-    @Override
-    public InfoItemsPage<InfoItem> getPage(String pageUrl) {
+    public InfoItemsPage<InfoItem> getPage(Page page) {
         return null;
     }
 }

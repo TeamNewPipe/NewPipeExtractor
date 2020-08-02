@@ -4,11 +4,9 @@ import org.schabi.newpipe.extractor.linkhandler.ListLinkHandler;
 
 import java.util.List;
 
-import static org.schabi.newpipe.extractor.utils.Utils.isNullOrEmpty;
-
 public abstract class ListInfo<T extends InfoItem> extends Info {
     private List<T> relatedItems;
-    private String nextPageUrl = null;
+    private Page nextPage = null;
     private final List<String> contentFilters;
     private final String sortFilter;
 
@@ -39,15 +37,15 @@ public abstract class ListInfo<T extends InfoItem> extends Info {
     }
 
     public boolean hasNextPage() {
-        return !isNullOrEmpty(nextPageUrl);
+        return Page.isValid(nextPage);
     }
 
-    public String getNextPageUrl() {
-        return nextPageUrl;
+    public Page getNextPage() {
+        return nextPage;
     }
 
-    public void setNextPageUrl(String pageUrl) {
-        this.nextPageUrl = pageUrl;
+    public void setNextPage(Page page) {
+        this.nextPage = page;
     }
 
     public List<String> getContentFilters() {

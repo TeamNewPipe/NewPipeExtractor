@@ -4,123 +4,97 @@ import org.schabi.newpipe.extractor.downloader.Downloader;
 import org.schabi.newpipe.extractor.downloader.Request;
 import org.schabi.newpipe.extractor.downloader.Response;
 import org.schabi.newpipe.extractor.exceptions.ReCaptchaException;
-import org.schabi.newpipe.extractor.localization.Localization;
+
+import java.io.IOException;
+import java.util.List;
+import java.util.Map;
+import java.util.concurrent.TimeUnit;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
-import javax.net.ssl.HttpsURLConnection;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.io.OutputStream;
-import java.net.URL;
-import java.net.URLConnection;
-import java.util.List;
-import java.util.Map;
 
-public class DownloaderTestImpl extends Downloader {
+import okhttp3.OkHttpClient;
+import okhttp3.RequestBody;
+import okhttp3.ResponseBody;
 
-    private static final String USER_AGENT = "Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101 Firefox/68.0";
-    private static final String DEFAULT_HTTP_ACCEPT_LANGUAGE = "en";
+public final class DownloaderTestImpl extends Downloader {
+    private static final String USER_AGENT
+            = "Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101 Firefox/68.0";
+    private static DownloaderTestImpl instance;
+    private OkHttpClient client;
 
-    private static DownloaderTestImpl instance = null;
+    private DownloaderTestImpl(final OkHttpClient.Builder builder) {
+        this.client = builder.readTimeout(30, TimeUnit.SECONDS).build();
+    }
 
-    private DownloaderTestImpl() {
+    /**
+     * It's recommended to call exactly once in the entire lifetime of the application.
+     *
+     * @param builder if null, default builder will be used
+     * @return a new instance of {@link DownloaderTestImpl}
+     */
+    public static DownloaderTestImpl init(@Nullable final OkHttpClient.Builder builder) {
+        instance = new DownloaderTestImpl(
+                builder != null ? builder : new OkHttpClient.Builder());
+        return instance;
     }
 
     public static DownloaderTestImpl getInstance() {
         if (instance == null) {
-            synchronized (DownloaderTestImpl.class) {
-                if (instance == null) {
-                    instance = new DownloaderTestImpl();
-                }
-            }
+            init(null);
         }
         return instance;
     }
 
-    private void setDefaultHeaders(URLConnection connection) {
-        connection.setRequestProperty("User-Agent", USER_AGENT);
-        connection.setRequestProperty("Accept-Language", DEFAULT_HTTP_ACCEPT_LANGUAGE);
-    }
-
     @Override
-    public Response execute(@Nonnull Request request) throws IOException, ReCaptchaException {
+    public Response execute(@Nonnull final Request request)
+            throws IOException, ReCaptchaException {
         final String httpMethod = request.httpMethod();
         final String url = request.url();
         final Map<String, List<String>> headers = request.headers();
-        @Nullable final byte[] dataToSend = request.dataToSend();
-        @Nullable final Localization localization = request.localization();
+        final byte[] dataToSend = request.dataToSend();
 
-        final HttpsURLConnection connection = (HttpsURLConnection) new URL(url).openConnection();
+        RequestBody requestBody = null;
+        if (dataToSend != null) {
+            requestBody = RequestBody.create(null, dataToSend);
+        }
 
-        connection.setConnectTimeout(30 * 1000); // 30s
-        connection.setReadTimeout(30 * 1000); // 30s
-        connection.setRequestMethod(httpMethod);
-
-        setDefaultHeaders(connection);
+        final okhttp3.Request.Builder requestBuilder = new okhttp3.Request.Builder()
+                .method(httpMethod, requestBody).url(url)
+                .addHeader("User-Agent", USER_AGENT);
 
         for (Map.Entry<String, List<String>> pair : headers.entrySet()) {
             final String headerName = pair.getKey();
             final List<String> headerValueList = pair.getValue();
 
             if (headerValueList.size() > 1) {
-                connection.setRequestProperty(headerName, null);
+                requestBuilder.removeHeader(headerName);
                 for (String headerValue : headerValueList) {
-                    connection.addRequestProperty(headerName, headerValue);
+                    requestBuilder.addHeader(headerName, headerValue);
                 }
             } else if (headerValueList.size() == 1) {
-                connection.setRequestProperty(headerName, headerValueList.get(0));
+                requestBuilder.header(headerName, headerValueList.get(0));
             }
+
         }
 
-        @Nullable OutputStream outputStream = null;
-        @Nullable InputStreamReader input = null;
-        try {
-            if (dataToSend != null && dataToSend.length > 0) {
-                connection.setDoOutput(true);
-                connection.setRequestProperty("Content-Length", dataToSend.length + "");
-                outputStream = connection.getOutputStream();
-                outputStream.write(dataToSend);
-            }
+        final okhttp3.Response response = client.newCall(requestBuilder.build()).execute();
 
-            final InputStream inputStream = connection.getInputStream();
-            final StringBuilder response = new StringBuilder();
+        if (response.code() == 429) {
+            response.close();
 
-            // Not passing any charset for decoding here... something to keep in mind.
-            input = new InputStreamReader(inputStream);
-
-            int readCount;
-            char[] buffer = new char[32 * 1024];
-            while ((readCount = input.read(buffer)) != -1) {
-                response.append(buffer, 0, readCount);
-            }
-
-            final int responseCode = connection.getResponseCode();
-            final String responseMessage = connection.getResponseMessage();
-            final Map<String, List<String>> responseHeaders = connection.getHeaderFields();
-            final String latestUrl = connection.getURL().toString();
-
-            return new Response(responseCode, responseMessage, responseHeaders, response.toString(), latestUrl);
-        } catch (Exception e) {
-            final int responseCode = connection.getResponseCode();
-
-            /*
-             * HTTP 429 == Too Many Request
-             * Receive from Youtube.com = ReCaptcha challenge request
-             * See : https://github.com/rg3/youtube-dl/issues/5138
-             */
-            if (responseCode == 429) {
-                throw new ReCaptchaException("reCaptcha Challenge requested", url);
-            } else if (responseCode != -1) {
-                final String latestUrl = connection.getURL().toString();
-                return new Response(responseCode, connection.getResponseMessage(), connection.getHeaderFields(), null, latestUrl);
-            }
-
-            throw new IOException("Error occurred while fetching the content", e);
-        } finally {
-            if (outputStream != null) outputStream.close();
-            if (input != null) input.close();
+            throw new ReCaptchaException("reCaptcha Challenge requested", url);
         }
+
+        final ResponseBody body = response.body();
+        String responseBodyToReturn = null;
+
+        if (body != null) {
+            responseBodyToReturn = body.string();
+        }
+
+        final String latestUrl = response.request().url().toString();
+        return new Response(response.code(), response.message(), response.headers().toMultimap(),
+                responseBodyToReturn, latestUrl);
     }
 }

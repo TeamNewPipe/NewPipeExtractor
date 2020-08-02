@@ -51,7 +51,7 @@ public class PeertubeSearchExtractorTest {
             extractor.fetchPage();
 
             final InfoItemsPage<InfoItem> page1 = extractor.getInitialPage();
-            final InfoItemsPage<InfoItem> page2 = extractor.getPage(page1.getNextPageUrl());
+            final InfoItemsPage<InfoItem> page2 = extractor.getPage(page1.getNextPage());
 
             assertNoDuplicatedItems(PeerTube, page1, page2);
         }

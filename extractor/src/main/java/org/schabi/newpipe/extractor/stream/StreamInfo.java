@@ -283,11 +283,6 @@ public class StreamInfo extends Info {
             streamInfo.addError(e);
         }
         try {
-            streamInfo.setNextVideo(extractor.getNextStream());
-        } catch (Exception e) {
-            streamInfo.addError(e);
-        }
-        try {
             streamInfo.setSubtitles(extractor.getSubtitlesDefault());
         } catch (Exception e) {
             streamInfo.addError(e);
@@ -366,7 +361,6 @@ public class StreamInfo extends Info {
 
 
     private String hlsUrl = "";
-    private StreamInfoItem nextVideo;
     private List<InfoItem> relatedStreams = new ArrayList<>();
 
     private long startPosition = 0;
@@ -595,14 +589,6 @@ public class StreamInfo extends Info {
 
     public void setHlsUrl(String hlsUrl) {
         this.hlsUrl = hlsUrl;
-    }
-
-    public StreamInfoItem getNextVideo() {
-        return nextVideo;
-    }
-
-    public void setNextVideo(StreamInfoItem nextVideo) {
-        this.nextVideo = nextVideo;
     }
 
     public List<InfoItem> getRelatedStreams() {

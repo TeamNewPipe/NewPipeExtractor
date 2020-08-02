@@ -23,6 +23,7 @@ package org.schabi.newpipe.extractor.services.youtube.extractors;
 import com.grack.nanojson.JsonArray;
 import com.grack.nanojson.JsonObject;
 
+import org.schabi.newpipe.extractor.Page;
 import org.schabi.newpipe.extractor.StreamingService;
 import org.schabi.newpipe.extractor.downloader.Downloader;
 import org.schabi.newpipe.extractor.exceptions.ExtractionException;
@@ -61,13 +62,8 @@ public class YoutubeTrendingExtractor extends KioskExtractor<StreamInfoItem> {
     }
 
     @Override
-    public String getNextPageUrl() {
-        return "";
-    }
-
-    @Override
-    public InfoItemsPage<StreamInfoItem> getPage(String pageUrl) {
-        return null;
+    public InfoItemsPage<StreamInfoItem> getPage(final Page page) {
+        return InfoItemsPage.emptyPage();
     }
 
     @Nonnull
@@ -98,6 +94,7 @@ public class YoutubeTrendingExtractor extends KioskExtractor<StreamInfoItem> {
                 collector.commit(new YoutubeStreamInfoItemExtractor(videoInfo, timeAgoParser));
             }
         }
-        return new InfoItemsPage<>(collector, getNextPageUrl());
+
+        return new InfoItemsPage<>(collector, null);
     }
 }

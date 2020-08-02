@@ -4,6 +4,7 @@ package org.schabi.newpipe.extractor.services.bandcamp.extractors;
 
 import com.grack.nanojson.*;
 import org.jsoup.Jsoup;
+import org.schabi.newpipe.extractor.Page;
 import org.schabi.newpipe.extractor.StreamingService;
 import org.schabi.newpipe.extractor.channel.ChannelExtractor;
 import org.schabi.newpipe.extractor.downloader.Downloader;
@@ -112,12 +113,7 @@ public class BandcampChannelExtractor extends ChannelExtractor {
     }
 
     @Override
-    public String getNextPageUrl() {
-        return null;
-    }
-
-    @Override
-    public InfoItemsPage<StreamInfoItem> getPage(String pageUrl) {
+    public InfoItemsPage<StreamInfoItem> getPage(Page page) {
         return null;
     }
 

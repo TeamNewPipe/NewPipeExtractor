@@ -58,7 +58,7 @@ public class BandcampRadioStreamExtractor extends BandcampStreamExtractor {
     @Override
     public String getUploaderUrl() {
         return Jsoup.parse(showInfo.getString("image_caption"))
-                .getElementsByTag("a").first().attr("href");
+                .getElementsByTag("a").first().attr("href").trim();
     }
 
     @Nonnull

@@ -3,6 +3,7 @@ package org.schabi.newpipe.extractor.search;
 import org.schabi.newpipe.extractor.InfoItem;
 import org.schabi.newpipe.extractor.ListExtractor;
 import org.schabi.newpipe.extractor.ListInfo;
+import org.schabi.newpipe.extractor.Page;
 import org.schabi.newpipe.extractor.StreamingService;
 import org.schabi.newpipe.extractor.exceptions.ExtractionException;
 import org.schabi.newpipe.extractor.linkhandler.SearchQueryHandler;
@@ -10,9 +11,7 @@ import org.schabi.newpipe.extractor.utils.ExtractorHelper;
 
 import java.io.IOException;
 
-
 public class SearchInfo extends ListInfo<InfoItem> {
-
     private String searchString;
     private String searchSuggestion;
     private boolean isCorrectedSearch;
@@ -55,7 +54,7 @@ public class SearchInfo extends ListInfo<InfoItem> {
 
         ListExtractor.InfoItemsPage<InfoItem> page = ExtractorHelper.getItemsPageOrLogError(info, extractor);
         info.setRelatedItems(page.getItems());
-        info.setNextPageUrl(page.getNextPageUrl());
+        info.setNextPage(page.getNextPage());
 
         return info;
     }
@@ -63,9 +62,9 @@ public class SearchInfo extends ListInfo<InfoItem> {
 
     public static ListExtractor.InfoItemsPage<InfoItem> getMoreItems(StreamingService service,
                                                                      SearchQueryHandler query,
-                                                                     String pageUrl)
+                                                                     Page page)
             throws IOException, ExtractionException {
-        return service.getSearchExtractor(query).getPage(pageUrl);
+        return service.getSearchExtractor(query).getPage(page);
     }
 
     // Getter

@@ -1,12 +1,10 @@
 package org.schabi.newpipe.extractor.services.peertube.extractors;
 
-import com.grack.nanojson.JsonArray;
 import com.grack.nanojson.JsonObject;
 import com.grack.nanojson.JsonParser;
 
 import org.schabi.newpipe.extractor.InfoItem;
-import org.schabi.newpipe.extractor.InfoItemExtractor;
-import org.schabi.newpipe.extractor.InfoItemsCollector;
+import org.schabi.newpipe.extractor.Page;
 import org.schabi.newpipe.extractor.StreamingService;
 import org.schabi.newpipe.extractor.downloader.Downloader;
 import org.schabi.newpipe.extractor.downloader.Response;
@@ -16,28 +14,26 @@ import org.schabi.newpipe.extractor.linkhandler.SearchQueryHandler;
 import org.schabi.newpipe.extractor.search.InfoItemsSearchCollector;
 import org.schabi.newpipe.extractor.search.SearchExtractor;
 import org.schabi.newpipe.extractor.services.peertube.PeertubeParsingHelper;
-import org.schabi.newpipe.extractor.utils.JsonUtils;
-import org.schabi.newpipe.extractor.utils.Parser;
-import org.schabi.newpipe.extractor.utils.Parser.RegexException;
 import org.schabi.newpipe.extractor.utils.Utils;
 
-import javax.annotation.Nonnull;
 import java.io.IOException;
 
-import static org.schabi.newpipe.extractor.services.peertube.PeertubeParsingHelper.*;
+import javax.annotation.Nonnull;
+
+import static org.schabi.newpipe.extractor.services.peertube.PeertubeParsingHelper.COUNT_KEY;
+import static org.schabi.newpipe.extractor.services.peertube.PeertubeParsingHelper.ITEMS_PER_PAGE;
+import static org.schabi.newpipe.extractor.services.peertube.PeertubeParsingHelper.START_KEY;
+import static org.schabi.newpipe.extractor.services.peertube.PeertubeParsingHelper.collectStreamsFrom;
+import static org.schabi.newpipe.extractor.utils.Utils.isNullOrEmpty;
 
 public class PeertubeSearchExtractor extends SearchExtractor {
-
-    private InfoItemsPage<InfoItem> initPage;
-    private long total;
-
     public PeertubeSearchExtractor(StreamingService service, SearchQueryHandler linkHandler) {
         super(service, linkHandler);
     }
 
     @Nonnull
     @Override
-    public String getSearchSuggestion() throws ParsingException {
+    public String getSearchSuggestion() {
         return "";
     }
 
@@ -48,44 +44,20 @@ public class PeertubeSearchExtractor extends SearchExtractor {
 
     @Override
     public InfoItemsPage<InfoItem> getInitialPage() throws IOException, ExtractionException {
-        super.fetchPage();
-        return initPage;
-    }
-
-    private InfoItemsCollector<InfoItem, InfoItemExtractor> collectStreamsFrom(JsonObject json) throws ParsingException {
-        final InfoItemsSearchCollector collector = new InfoItemsSearchCollector(getServiceId());
-
-        JsonArray contents;
-        try {
-            contents = (JsonArray) JsonUtils.getValue(json, "data");
-        } catch (Exception e) {
-            throw new ParsingException("unable to extract search info", e);
-        }
-
-        String baseUrl = getBaseUrl();
-        for (Object c : contents) {
-            if (c instanceof JsonObject) {
-                final JsonObject item = (JsonObject) c;
-                PeertubeStreamInfoItemExtractor extractor = new PeertubeStreamInfoItemExtractor(item, baseUrl);
-                collector.commit(extractor);
-            }
-        }
-
-        return collector;
-
+        final String pageUrl = getUrl() + "&" + START_KEY + "=0&" + COUNT_KEY + "=" + ITEMS_PER_PAGE;
+        return getPage(new Page(pageUrl));
     }
 
     @Override
-    public String getNextPageUrl() throws IOException, ExtractionException {
-        super.fetchPage();
-        return initPage.getNextPageUrl();
-    }
+    public InfoItemsPage<InfoItem> getPage(final Page page) throws IOException, ExtractionException {
+        if (page == null || isNullOrEmpty(page.getUrl())) {
+            throw new IllegalArgumentException("Page doesn't contain an URL");
+        }
 
-    @Override
-    public InfoItemsPage<InfoItem> getPage(String pageUrl) throws IOException, ExtractionException {
-        Response response = getDownloader().get(pageUrl);
+        final Response response = getDownloader().get(page.getUrl());
+
         JsonObject json = null;
-        if (null != response && !Utils.isBlank(response.responseBody())) {
+        if (response != null && !Utils.isBlank(response.responseBody())) {
             try {
                 json = JsonParser.object().from(response.responseBody());
             } catch (Exception e) {
@@ -94,15 +66,18 @@ public class PeertubeSearchExtractor extends SearchExtractor {
         }
 
         if (json != null) {
-            total = JsonUtils.getNumber(json, "total").longValue();
-            return new InfoItemsPage<>(collectStreamsFrom(json), PeertubeParsingHelper.getNextPageUrl(pageUrl, total));
+            PeertubeParsingHelper.validate(json);
+            final long total = json.getLong("total");
+
+            final InfoItemsSearchCollector collector = new InfoItemsSearchCollector(getServiceId());
+            collectStreamsFrom(collector, json, getBaseUrl());
+
+            return new InfoItemsPage<>(collector, PeertubeParsingHelper.getNextPage(page.getUrl(), total));
         } else {
-            throw new ExtractionException("Unable to get peertube search info");
+            throw new ExtractionException("Unable to get PeerTube search info");
         }
     }
 
     @Override
-    public void onFetchPage(Downloader downloader) throws IOException, ExtractionException {
-        initPage = getPage(getUrl() + "&" + START_KEY + "=0&" + COUNT_KEY + "=" + ITEMS_PER_PAGE);
-    }
+    public void onFetchPage(@Nonnull final Downloader downloader) throws IOException, ExtractionException { }
 }

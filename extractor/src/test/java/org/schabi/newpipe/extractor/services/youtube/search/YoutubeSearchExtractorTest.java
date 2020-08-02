@@ -19,8 +19,9 @@ import static org.junit.Assert.assertTrue;
 import static org.schabi.newpipe.extractor.ExtractorAsserts.assertEmptyErrors;
 import static org.schabi.newpipe.extractor.ServiceList.YouTube;
 import static org.schabi.newpipe.extractor.services.DefaultTests.assertNoDuplicatedItems;
-import static org.schabi.newpipe.extractor.services.youtube.linkHandler.YoutubeSearchQueryHandlerFactory.*;
-import static org.schabi.newpipe.extractor.utils.Utils.isNullOrEmpty;
+import static org.schabi.newpipe.extractor.services.youtube.linkHandler.YoutubeSearchQueryHandlerFactory.CHANNELS;
+import static org.schabi.newpipe.extractor.services.youtube.linkHandler.YoutubeSearchQueryHandlerFactory.PLAYLISTS;
+import static org.schabi.newpipe.extractor.services.youtube.linkHandler.YoutubeSearchQueryHandlerFactory.VIDEOS;
 
 public class YoutubeSearchExtractorTest {
     public static class All extends DefaultSearchExtractorTest {
@@ -186,15 +187,14 @@ public class YoutubeSearchExtractorTest {
 
         @Test
         public void testMoreRelatedItems() throws Exception {
+            final ListExtractor.InfoItemsPage<InfoItem> initialPage = extractor().getInitialPage();
             // YouTube actually gives us an empty next page, but after that, no more pages.
-            assertTrue(extractor.hasNextPage());
-            final ListExtractor.InfoItemsPage<InfoItem> nextEmptyPage = extractor.getPage(extractor.getNextPageUrl());
+            assertTrue(initialPage.hasNextPage());
+            final ListExtractor.InfoItemsPage<InfoItem> nextEmptyPage = extractor.getPage(initialPage.getNextPage());
             assertEquals(0, nextEmptyPage.getItems().size());
             assertEmptyErrors("Empty page has errors", nextEmptyPage.getErrors());
 
             assertFalse("More items available when it shouldn't", nextEmptyPage.hasNextPage());
-            final String nextPageUrl = nextEmptyPage.getNextPageUrl();
-            assertTrue("Next page is not empty or null", isNullOrEmpty(nextPageUrl));
         }
     }
 
@@ -206,7 +206,7 @@ public class YoutubeSearchExtractorTest {
             extractor.fetchPage();
 
             final ListExtractor.InfoItemsPage<InfoItem> page1 = extractor.getInitialPage();
-            final ListExtractor.InfoItemsPage<InfoItem> page2 = extractor.getPage(page1.getNextPageUrl());
+            final ListExtractor.InfoItemsPage<InfoItem> page2 = extractor.getPage(page1.getNextPage());
 
             assertNoDuplicatedItems(YouTube, page1, page2);
         }

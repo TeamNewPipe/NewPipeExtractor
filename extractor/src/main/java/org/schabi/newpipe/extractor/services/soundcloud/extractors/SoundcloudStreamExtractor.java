@@ -19,7 +19,6 @@ import org.schabi.newpipe.extractor.services.soundcloud.SoundcloudParsingHelper;
 import org.schabi.newpipe.extractor.stream.AudioStream;
 import org.schabi.newpipe.extractor.stream.Description;
 import org.schabi.newpipe.extractor.stream.StreamExtractor;
-import org.schabi.newpipe.extractor.stream.StreamInfoItem;
 import org.schabi.newpipe.extractor.stream.StreamInfoItemsCollector;
 import org.schabi.newpipe.extractor.stream.StreamType;
 import org.schabi.newpipe.extractor.stream.SubtitlesStream;
@@ -102,7 +101,7 @@ public class SoundcloudStreamExtractor extends StreamExtractor {
 
     @Override
     public long getLength() {
-        return track.getNumber("duration", 0).longValue() / 1000L;
+        return track.getLong("duration") / 1000L;
     }
 
     @Override
@@ -112,12 +111,12 @@ public class SoundcloudStreamExtractor extends StreamExtractor {
 
     @Override
     public long getViewCount() {
-        return track.getNumber("playback_count", 0).longValue();
+        return track.getLong("playback_count");
     }
 
     @Override
     public long getLikeCount() {
-        return track.getNumber("favoritings_count", -1).longValue();
+        return track.getLong("favoritings_count", -1);
     }
 
     @Override
@@ -259,11 +258,6 @@ public class SoundcloudStreamExtractor extends StreamExtractor {
     @Override
     public StreamType getStreamType() {
         return StreamType.AUDIO_STREAM;
-    }
-
-    @Override
-    public StreamInfoItem getNextStream() throws IOException, ExtractionException {
-        return null;
     }
 
     @Override

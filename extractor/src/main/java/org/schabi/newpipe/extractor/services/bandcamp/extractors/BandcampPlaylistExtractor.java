@@ -5,6 +5,7 @@ import com.grack.nanojson.JsonObject;
 import com.grack.nanojson.JsonParserException;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
+import org.schabi.newpipe.extractor.Page;
 import org.schabi.newpipe.extractor.StreamingService;
 import org.schabi.newpipe.extractor.downloader.Downloader;
 import org.schabi.newpipe.extractor.exceptions.ContentNotAvailableException;
@@ -143,19 +144,14 @@ public class BandcampPlaylistExtractor extends PlaylistExtractor {
         return new InfoItemsPage<>(collector, null);
     }
 
+    @Override
+    public InfoItemsPage<StreamInfoItem> getPage(Page page) {
+        return null;
+    }
+
     @Nonnull
     @Override
     public String getName() throws ParsingException {
         return name;
-    }
-
-    @Override
-    public String getNextPageUrl() {
-        return null;
-    }
-
-    @Override
-    public InfoItemsPage<StreamInfoItem> getPage(String pageUrl) {
-        return null;
     }
 }

@@ -30,7 +30,7 @@ public class SoundcloudStreamInfoItemExtractor implements StreamInfoItemExtracto
 
     @Override
     public long getDuration() {
-        return itemObject.getNumber("duration", 0).longValue() / 1000L;
+        return itemObject.getLong("duration") / 1000L;
     }
 
     @Override
@@ -53,13 +53,9 @@ public class SoundcloudStreamInfoItemExtractor implements StreamInfoItemExtracto
         return new DateWrapper(SoundcloudParsingHelper.parseDateFrom(getTextualUploadDate()));
     }
 
-    private String getCreatedAt() {
-        return itemObject.getString("created_at");
-    }
-
     @Override
     public long getViewCount() {
-        return itemObject.getNumber("playback_count", 0).longValue();
+        return itemObject.getLong("playback_count");
     }
 
     @Override

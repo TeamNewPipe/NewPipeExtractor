@@ -45,7 +45,7 @@ public class FeedInfo extends ListInfo<StreamInfoItem> {
 
         final InfoItemsPage<StreamInfoItem> itemsPage = ExtractorHelper.getItemsPageOrLogError(info, extractor);
         info.setRelatedItems(itemsPage.getItems());
-        info.setNextPageUrl(itemsPage.getNextPageUrl());
+        info.setNextPage(itemsPage.getNextPage());
 
         return info;
     }

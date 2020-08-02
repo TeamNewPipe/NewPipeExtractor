@@ -6,6 +6,7 @@ import com.grack.nanojson.JsonParser;
 import com.grack.nanojson.JsonParserException;
 
 import org.schabi.newpipe.extractor.InfoItem;
+import org.schabi.newpipe.extractor.Page;
 import org.schabi.newpipe.extractor.StreamingService;
 import org.schabi.newpipe.extractor.channel.ChannelInfoItem;
 import org.schabi.newpipe.extractor.channel.ChannelInfoItemExtractor;
@@ -80,12 +81,7 @@ public class MediaCCCSearchExtractor extends SearchExtractor {
     }
 
     @Override
-    public String getNextPageUrl() {
-        return "";
-    }
-
-    @Override
-    public InfoItemsPage<InfoItem> getPage(final String pageUrl) {
+    public InfoItemsPage<InfoItem> getPage(final Page page) {
         return InfoItemsPage.emptyPage();
     }
 

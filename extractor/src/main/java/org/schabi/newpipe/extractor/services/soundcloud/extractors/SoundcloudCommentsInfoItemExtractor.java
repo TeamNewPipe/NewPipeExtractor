@@ -6,10 +6,11 @@ import org.schabi.newpipe.extractor.exceptions.ParsingException;
 import org.schabi.newpipe.extractor.localization.DateWrapper;
 import org.schabi.newpipe.extractor.services.soundcloud.SoundcloudParsingHelper;
 
+import java.util.Objects;
+
 import javax.annotation.Nullable;
 
 public class SoundcloudCommentsInfoItemExtractor implements CommentsInfoItemExtractor {
-
     private JsonObject json;
     private String url;
 
@@ -19,32 +20,32 @@ public class SoundcloudCommentsInfoItemExtractor implements CommentsInfoItemExtr
     }
 
     @Override
-    public String getCommentId() throws ParsingException {
-        return json.getNumber("id").toString();
+    public String getCommentId() {
+        return Objects.toString(json.getLong("id"), null);
     }
 
     @Override
-    public String getCommentText() throws ParsingException {
+    public String getCommentText() {
         return json.getString("body");
     }
 
     @Override
-    public String getUploaderName() throws ParsingException {
+    public String getUploaderName() {
         return json.getObject("user").getString("username");
     }
 
     @Override
-    public String getUploaderAvatarUrl() throws ParsingException {
+    public String getUploaderAvatarUrl() {
         return json.getObject("user").getString("avatar_url");
     }
 
     @Override
-    public String getUploaderUrl() throws ParsingException {
+    public String getUploaderUrl() {
         return json.getObject("user").getString("permalink_url");
     }
 
     @Override
-    public String getTextualUploadDate() throws ParsingException {
+    public String getTextualUploadDate() {
         return json.getString("created_at");
     }
 
@@ -55,7 +56,7 @@ public class SoundcloudCommentsInfoItemExtractor implements CommentsInfoItemExtr
     }
 
     @Override
-    public int getLikeCount() throws ParsingException {
+    public int getLikeCount() {
         return -1;
     }
 
@@ -70,7 +71,7 @@ public class SoundcloudCommentsInfoItemExtractor implements CommentsInfoItemExtr
     }
 
     @Override
-    public String getThumbnailUrl() throws ParsingException {
+    public String getThumbnailUrl() {
         return json.getObject("user").getString("avatar_url");
     }
 }

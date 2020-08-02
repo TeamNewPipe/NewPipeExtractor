@@ -143,7 +143,7 @@ public class BandcampPlaylistExtractorTest {
 
         @Test
         public void getNextPageUrl() throws IOException, ExtractionException {
-            assertNull(extractor.getNextPageUrl());
+            assertNull(extractor.getPage(extractor.getInitialPage().getNextPage()));
         }
     }
 }

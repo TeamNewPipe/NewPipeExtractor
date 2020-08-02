@@ -5,11 +5,7 @@ package org.schabi.newpipe.extractor.services.bandcamp;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import org.schabi.newpipe.DownloaderTestImpl;
-import org.schabi.newpipe.extractor.Extractor;
-import org.schabi.newpipe.extractor.InfoItem;
-import org.schabi.newpipe.extractor.ListExtractor;
-import org.schabi.newpipe.extractor.NewPipe;
-import org.schabi.newpipe.extractor.StreamingService;
+import org.schabi.newpipe.extractor.*;
 import org.schabi.newpipe.extractor.exceptions.ExtractionException;
 import org.schabi.newpipe.extractor.playlist.PlaylistInfoItem;
 import org.schabi.newpipe.extractor.search.SearchExtractor;
@@ -102,9 +98,11 @@ public class BandcampSearchExtractorTest {
         // A query practically guaranteed to have the maximum amount of pages
         SearchExtractor extractor = Bandcamp.getSearchExtractor("e");
 
-        assertEquals("https://bandcamp.com/search?q=e&page=2", extractor.getInitialPage().getNextPageUrl());
+        Page page2 = extractor.getInitialPage().getNextPage();
+        assertEquals("https://bandcamp.com/search?q=e&page=2", page2.getUrl());
 
-        assertEquals("https://bandcamp.com/search?q=e&page=3", extractor.getPage(extractor.getNextPageUrl()).getNextPageUrl());
+        Page page3 = extractor.getPage(page2).getNextPage();
+        assertEquals("https://bandcamp.com/search?q=e&page=3", page3.getUrl());
     }
 
     public static class DefaultTest extends DefaultSearchExtractorTest {

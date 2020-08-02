@@ -32,12 +32,12 @@ public class SoundcloudChannelInfoItemExtractor implements ChannelInfoItemExtrac
 
     @Override
     public long getSubscriberCount() {
-        return itemObject.getNumber("followers_count", 0).longValue();
+        return itemObject.getLong("followers_count");
     }
 
     @Override
     public long getStreamCount() {
-        return itemObject.getNumber("track_count", 0).longValue();
+        return itemObject.getLong("track_count");
     }
 
     @Override
