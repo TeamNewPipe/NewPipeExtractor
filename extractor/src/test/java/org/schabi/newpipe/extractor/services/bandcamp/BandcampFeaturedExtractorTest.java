@@ -37,4 +37,10 @@ public class BandcampFeaturedExtractorTest {
         assertTrue(list.size() > 1);
     }
 
+    @Test
+    public void testHttps() throws ExtractionException, IOException {
+        List<PlaylistInfoItem> list = extractor.getInitialPage().getItems();
+        assertTrue(list.get(0).getUrl().contains("https://"));
+    }
+
 }

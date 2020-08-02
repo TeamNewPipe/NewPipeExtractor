@@ -1,7 +1,6 @@
 package org.schabi.newpipe.extractor.services.bandcamp.extractors;
 
 import com.grack.nanojson.JsonObject;
-import org.schabi.newpipe.extractor.exceptions.ParsingException;
 import org.schabi.newpipe.extractor.playlist.PlaylistInfoItemExtractor;
 
 import static org.schabi.newpipe.extractor.services.bandcamp.extractors.BandcampExtractorHelper.getImageUrl;
@@ -31,7 +30,7 @@ public class BandcampPlaylistInfoItemFeaturedExtractor implements PlaylistInfoIt
 
     @Override
     public String getUrl() {
-        return featuredStory.getString("item_url");
+        return featuredStory.getString("item_url").replaceAll("http://", "https://");
     }
 
     @Override
