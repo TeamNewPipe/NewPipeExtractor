@@ -47,13 +47,13 @@ public class YoutubeCommentsExtractor extends CommentsExtractor {
 
     @Override
     public InfoItemsPage<CommentsInfoItem> getInitialPage() throws IOException, ExtractionException {
-        String commentsTokenInside = findValue(responseBody, "commentSectionRenderer", "}");
-        String commentsToken = findValue(commentsTokenInside, "continuation\":\"", "\"");
+        final String commentsTokenInside = findValue(responseBody, "commentSectionRenderer", "}");
+        final String commentsToken = findValue(commentsTokenInside, "continuation\":\"", "\"");
         return getPage(getNextPage(commentsToken));
     }
 
     private Page getNextPage(JsonObject ajaxJson) throws ParsingException {
-        JsonArray arr;
+        final JsonArray arr;
         try {
             arr = JsonUtils.getArray(ajaxJson, "response.continuationContents.commentSectionContinuation.continuations");
         } catch (Exception e) {
@@ -89,14 +89,14 @@ public class YoutubeCommentsExtractor extends CommentsExtractor {
             throw new IllegalArgumentException("Page doesn't contain an URL");
         }
 
-        String ajaxResponse = makeAjaxRequest(page.getUrl());
-        JsonObject ajaxJson;
+        final String ajaxResponse = makeAjaxRequest(page.getUrl());
+        final JsonObject ajaxJson;
         try {
             ajaxJson = JsonParser.array().from(ajaxResponse).getObject(1);
         } catch (Exception e) {
             throw new ParsingException("Could not parse json data for comments", e);
         }
-        CommentsInfoItemsCollector collector = new CommentsInfoItemsCollector(getServiceId());
+        final CommentsInfoItemsCollector collector = new CommentsInfoItemsCollector(getServiceId());
         collectCommentsFrom(collector, ajaxJson);
         return new InfoItemsPage<>(collector, getNextPage(ajaxJson));
     }
@@ -160,8 +160,8 @@ public class YoutubeCommentsExtractor extends CommentsExtractor {
     }
 
     private String findValue(String doc, String start, String end) {
-        int beginIndex = doc.indexOf(start) + start.length();
-        int endIndex = doc.indexOf(end, beginIndex);
+        final int beginIndex = doc.indexOf(start) + start.length();
+        final int endIndex = doc.indexOf(end, beginIndex);
         return doc.substring(beginIndex, endIndex);
     }
 }
