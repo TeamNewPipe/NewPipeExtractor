@@ -1,5 +1,8 @@
 package org.schabi.newpipe.extractor.utils;
 
+import org.mozilla.javascript.Context;
+import org.mozilla.javascript.Function;
+import org.mozilla.javascript.ScriptableObject;
 import org.schabi.newpipe.extractor.exceptions.ParsingException;
 
 import java.io.UnsupportedEncodingException;
@@ -234,5 +237,21 @@ public class Utils {
             }
         }
         return stringBuilder.toString();
+    }
+
+    public static Object executeJavascript(final String source, final String sourceName,
+                                           final int lineno, final String name, final Object[] args) {
+        final Context context = Context.enter();
+        context.setOptimizationLevel(-1);
+        final Object result;
+        try {
+            final ScriptableObject scope = context.initSafeStandardObjects();
+            context.evaluateString(scope, source, sourceName, lineno, null);
+            final Function function = (Function) scope.get(name, scope);
+            result = function.call(context, scope, scope, args);
+        } finally {
+            Context.exit();
+        }
+        return result;
     }
 }

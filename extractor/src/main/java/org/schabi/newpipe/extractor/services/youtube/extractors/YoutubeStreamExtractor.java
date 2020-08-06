@@ -4,9 +4,6 @@ import com.grack.nanojson.JsonArray;
 import com.grack.nanojson.JsonObject;
 import com.grack.nanojson.JsonParser;
 
-import org.mozilla.javascript.Context;
-import org.mozilla.javascript.Function;
-import org.mozilla.javascript.ScriptableObject;
 import org.schabi.newpipe.extractor.MediaFormat;
 import org.schabi.newpipe.extractor.NewPipe;
 import org.schabi.newpipe.extractor.StreamingService;
@@ -787,19 +784,14 @@ public class YoutubeStreamExtractor extends StreamExtractor {
         }
     }
 
-    private String decryptSignature(String encryptedSig, String decryptionCode) throws DecryptException {
-        Context context = Context.enter();
-        context.setOptimizationLevel(-1);
-        Object result;
+    private String decryptSignature(final String encryptedSig, final String decryptionCode)
+            throws DecryptException {
+        final Object result;
         try {
-            ScriptableObject scope = context.initStandardObjects();
-            context.evaluateString(scope, decryptionCode, "decryptionCode", 1, null);
-            Function decryptionFunc = (Function) scope.get("decrypt", scope);
-            result = decryptionFunc.call(context, scope, scope, new Object[]{encryptedSig});
+            result = Utils.executeJavascript(decryptionCode, "decryptionCode", 1, "decrypt",
+                    new Object[]{encryptedSig});
         } catch (Exception e) {
-            throw new DecryptException("could not get decrypt signature", e);
-        } finally {
-            Context.exit();
+            throw new DecryptException("Could not get decrypt signature", e);
         }
         return result == null ? "" : result.toString();
     }
