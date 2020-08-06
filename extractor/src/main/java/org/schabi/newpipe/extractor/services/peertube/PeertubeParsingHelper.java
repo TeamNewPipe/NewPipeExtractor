@@ -3,6 +3,7 @@ package org.schabi.newpipe.extractor.services.peertube;
 import com.grack.nanojson.JsonArray;
 import com.grack.nanojson.JsonObject;
 
+import org.schabi.newpipe.extractor.Extractor;
 import org.schabi.newpipe.extractor.InfoItemsCollector;
 import org.schabi.newpipe.extractor.Page;
 import org.schabi.newpipe.extractor.exceptions.ContentNotAvailableException;
@@ -71,7 +72,7 @@ public class PeertubeParsingHelper {
         }
     }
 
-    public static void collectStreamsFrom(final InfoItemsCollector collector, final JsonObject json, final String baseUrl) throws ParsingException {
+    public static void collectStreamsFrom(final InfoItemsCollector collector, final JsonObject json, final Extractor extractor) throws ParsingException {
         final JsonArray contents;
         try {
             contents = (JsonArray) JsonUtils.getValue(json, "data");
@@ -82,8 +83,8 @@ public class PeertubeParsingHelper {
         for (final Object c : contents) {
             if (c instanceof JsonObject) {
                 final JsonObject item = (JsonObject) c;
-                final PeertubeStreamInfoItemExtractor extractor = new PeertubeStreamInfoItemExtractor(item, baseUrl);
-                collector.commit(extractor);
+                final PeertubeStreamInfoItemExtractor itemExtractor = new PeertubeStreamInfoItemExtractor(item, extractor);
+                collector.commit(itemExtractor);
             }
         }
     }

@@ -4,6 +4,7 @@ import org.junit.BeforeClass;
 import org.junit.Test;
 import org.schabi.newpipe.DownloaderTestImpl;
 import org.schabi.newpipe.extractor.NewPipe;
+import org.schabi.newpipe.extractor.ServiceList;
 import org.schabi.newpipe.extractor.exceptions.ParsingException;
 import org.schabi.newpipe.extractor.services.peertube.linkHandler.PeertubeCommentsLinkHandlerFactory;
 
@@ -19,7 +20,7 @@ public class PeertubeCommentsLinkHandlerFactoryTest {
 
     @BeforeClass
     public static void setUp() {
-        linkHandler = PeertubeCommentsLinkHandlerFactory.getInstance();
+        linkHandler = PeertubeCommentsLinkHandlerFactory.getInstance(ServiceList.PeerTube);
         NewPipe.init(DownloaderTestImpl.getInstance());
     }
 

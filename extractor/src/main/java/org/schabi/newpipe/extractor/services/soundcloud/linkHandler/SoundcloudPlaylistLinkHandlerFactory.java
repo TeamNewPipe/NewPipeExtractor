@@ -1,5 +1,6 @@
 package org.schabi.newpipe.extractor.services.soundcloud.linkHandler;
 
+import org.schabi.newpipe.extractor.StreamingService;
 import org.schabi.newpipe.extractor.exceptions.ParsingException;
 import org.schabi.newpipe.extractor.linkhandler.ListLinkHandlerFactory;
 import org.schabi.newpipe.extractor.services.soundcloud.SoundcloudParsingHelper;
@@ -12,8 +13,10 @@ public class SoundcloudPlaylistLinkHandlerFactory extends ListLinkHandlerFactory
     private static final SoundcloudPlaylistLinkHandlerFactory instance = new SoundcloudPlaylistLinkHandlerFactory();
     private final String URL_PATTERN = "^https?://(www\\.|m\\.)?soundcloud.com/[0-9a-z_-]+" +
             "/sets/[0-9a-z_-]+/?([#?].*)?$";
+    private static StreamingService service;
 
-    public static SoundcloudPlaylistLinkHandlerFactory getInstance() {
+    public static SoundcloudPlaylistLinkHandlerFactory getInstance(StreamingService service) {
+        SoundcloudPlaylistLinkHandlerFactory.service = service;
         return instance;
     }
 
@@ -22,7 +25,7 @@ public class SoundcloudPlaylistLinkHandlerFactory extends ListLinkHandlerFactory
         Utils.checkUrl(URL_PATTERN, url);
 
         try {
-            return SoundcloudParsingHelper.resolveIdWithEmbedPlayer(url);
+            return SoundcloudParsingHelper.resolveIdWithEmbedPlayer(url, service);
         } catch (Exception e) {
             throw new ParsingException("Could not get id of url: " + url + " " + e.getMessage(), e);
         }
@@ -31,7 +34,7 @@ public class SoundcloudPlaylistLinkHandlerFactory extends ListLinkHandlerFactory
     @Override
     public String getUrl(String id, List<String> contentFilter, String sortFilter) throws ParsingException {
         try {
-            return SoundcloudParsingHelper.resolveUrlWithEmbedPlayer("https://api.soundcloud.com/playlists/" + id);
+            return SoundcloudParsingHelper.resolveUrlWithEmbedPlayer("https://api.soundcloud.com/playlists/" + id, service);
         } catch (Exception e) {
             throw new ParsingException(e.getMessage(), e);
         }

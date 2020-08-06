@@ -110,7 +110,7 @@ public class PeertubePlaylistExtractor extends PlaylistExtractor {
             final long total = json.getLong("total");
 
             final StreamInfoItemsCollector collector = new StreamInfoItemsCollector(getServiceId());
-            collectStreamsFrom(collector, json, getBaseUrl());
+            collectStreamsFrom(collector, json, this);
 
             return new InfoItemsPage<>(collector, PeertubeParsingHelper.getNextPage(page.getUrl(), total));
         } else {

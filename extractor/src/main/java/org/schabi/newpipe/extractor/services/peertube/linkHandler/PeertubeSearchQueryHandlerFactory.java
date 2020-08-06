@@ -1,6 +1,6 @@
 package org.schabi.newpipe.extractor.services.peertube.linkHandler;
 
-import org.schabi.newpipe.extractor.ServiceList;
+import org.schabi.newpipe.extractor.StreamingService;
 import org.schabi.newpipe.extractor.exceptions.ParsingException;
 import org.schabi.newpipe.extractor.linkhandler.SearchQueryHandlerFactory;
 
@@ -9,18 +9,19 @@ import java.net.URLEncoder;
 import java.util.List;
 
 public class PeertubeSearchQueryHandlerFactory extends SearchQueryHandlerFactory {
-
     public static final String CHARSET_UTF_8 = "UTF-8";
     public static final String VIDEOS = "videos";
     public static final String SEARCH_ENDPOINT = "/api/v1/search/videos";
+    private static StreamingService service;
 
-    public static PeertubeSearchQueryHandlerFactory getInstance() {
+    public static PeertubeSearchQueryHandlerFactory getInstance(StreamingService service) {
+        PeertubeSearchQueryHandlerFactory.service = service;
         return new PeertubeSearchQueryHandlerFactory();
     }
 
     @Override
     public String getUrl(String searchString, List<String> contentFilters, String sortFilter) throws ParsingException {
-        String baseUrl = ServiceList.PeerTube.getBaseUrl();
+        String baseUrl = service.getBaseUrl();
         return getUrl(searchString, contentFilters, sortFilter, baseUrl);
     }
 

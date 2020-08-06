@@ -33,7 +33,7 @@ public class SoundcloudSuggestionExtractor extends SuggestionExtractor {
 
         String url = "https://api-v2.soundcloud.com/search/queries"
                 + "?q=" + URLEncoder.encode(query, CHARSET_UTF_8)
-                + "&client_id=" + SoundcloudParsingHelper.clientId()
+                + "&client_id=" + SoundcloudParsingHelper.clientId(getService())
                 + "&limit=10";
 
         String response = dl.get(url, getExtractorLocalization()).responseBody();

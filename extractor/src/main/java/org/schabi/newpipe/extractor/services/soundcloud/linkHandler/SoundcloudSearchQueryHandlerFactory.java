@@ -1,5 +1,6 @@
 package org.schabi.newpipe.extractor.services.soundcloud.linkHandler;
 
+import org.schabi.newpipe.extractor.StreamingService;
 import org.schabi.newpipe.extractor.exceptions.ExtractionException;
 import org.schabi.newpipe.extractor.exceptions.ParsingException;
 import org.schabi.newpipe.extractor.exceptions.ReCaptchaException;
@@ -20,6 +21,12 @@ public class SoundcloudSearchQueryHandlerFactory extends SearchQueryHandlerFacto
     public static final String ALL = "all";
 
     public static final int ITEMS_PER_PAGE = 10;
+
+    public final StreamingService service;
+
+    public SoundcloudSearchQueryHandlerFactory(final StreamingService service) {
+        this.service = service;
+    }
 
     @Override
     public String getUrl(String id, List<String> contentFilter, String sortFilter) throws ParsingException {
@@ -44,7 +51,7 @@ public class SoundcloudSearchQueryHandlerFactory extends SearchQueryHandlerFacto
             }
 
             return url + "?q=" + URLEncoder.encode(id, CHARSET_UTF_8)
-                    + "&client_id=" + SoundcloudParsingHelper.clientId()
+                    + "&client_id=" + SoundcloudParsingHelper.clientId(service)
                     + "&limit=" + ITEMS_PER_PAGE
                     + "&offset=0";
 

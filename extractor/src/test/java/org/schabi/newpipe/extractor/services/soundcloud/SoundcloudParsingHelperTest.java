@@ -5,6 +5,7 @@ import org.junit.BeforeClass;
 import org.junit.Test;
 import org.schabi.newpipe.DownloaderTestImpl;
 import org.schabi.newpipe.extractor.NewPipe;
+import org.schabi.newpipe.extractor.ServiceList;
 
 import static org.junit.Assert.assertTrue;
 
@@ -17,21 +18,21 @@ public class SoundcloudParsingHelperTest {
     @Test
     public void assertThatHardcodedClientIdIsValid() throws Exception {
         assertTrue("Hardcoded client id is not valid anymore",
-                SoundcloudParsingHelper.checkIfHardcodedClientIdIsValid());
+                SoundcloudParsingHelper.checkIfHardcodedClientIdIsValid(ServiceList.SoundCloud));
     }
 
     @Test
     public void resolveUrlWithEmbedPlayerTest() throws Exception {
-        Assert.assertEquals("https://soundcloud.com/trapcity", SoundcloudParsingHelper.resolveUrlWithEmbedPlayer("https://api.soundcloud.com/users/26057743"));
-        Assert.assertEquals("https://soundcloud.com/nocopyrightsounds", SoundcloudParsingHelper.resolveUrlWithEmbedPlayer("https://api.soundcloud.com/users/16069159"));
-        Assert.assertEquals("https://soundcloud.com/trapcity", SoundcloudParsingHelper.resolveUrlWithEmbedPlayer("https://api-v2.soundcloud.com/users/26057743"));
-        Assert.assertEquals("https://soundcloud.com/nocopyrightsounds", SoundcloudParsingHelper.resolveUrlWithEmbedPlayer("https://api-v2.soundcloud.com/users/16069159"));
+        Assert.assertEquals("https://soundcloud.com/trapcity", SoundcloudParsingHelper.resolveUrlWithEmbedPlayer("https://api.soundcloud.com/users/26057743", ServiceList.SoundCloud));
+        Assert.assertEquals("https://soundcloud.com/nocopyrightsounds", SoundcloudParsingHelper.resolveUrlWithEmbedPlayer("https://api.soundcloud.com/users/16069159", ServiceList.SoundCloud));
+        Assert.assertEquals("https://soundcloud.com/trapcity", SoundcloudParsingHelper.resolveUrlWithEmbedPlayer("https://api-v2.soundcloud.com/users/26057743", ServiceList.SoundCloud));
+        Assert.assertEquals("https://soundcloud.com/nocopyrightsounds", SoundcloudParsingHelper.resolveUrlWithEmbedPlayer("https://api-v2.soundcloud.com/users/16069159", ServiceList.SoundCloud));
     }
 
     @Test
     public void resolveIdWithEmbedPlayerTest() throws Exception {
-        Assert.assertEquals("26057743", SoundcloudParsingHelper.resolveIdWithEmbedPlayer("https://soundcloud.com/trapcity"));
-        Assert.assertEquals("16069159", SoundcloudParsingHelper.resolveIdWithEmbedPlayer("https://soundcloud.com/nocopyrightsounds"));
+        Assert.assertEquals("26057743", SoundcloudParsingHelper.resolveIdWithEmbedPlayer("https://soundcloud.com/trapcity", ServiceList.SoundCloud));
+        Assert.assertEquals("16069159", SoundcloudParsingHelper.resolveIdWithEmbedPlayer("https://soundcloud.com/nocopyrightsounds", ServiceList.SoundCloud));
 
     }
 

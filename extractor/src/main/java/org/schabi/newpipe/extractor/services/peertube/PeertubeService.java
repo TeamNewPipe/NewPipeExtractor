@@ -34,27 +34,27 @@ public class PeertubeService extends StreamingService {
 
     @Override
     public LinkHandlerFactory getStreamLHFactory() {
-        return PeertubeStreamLinkHandlerFactory.getInstance();
+        return PeertubeStreamLinkHandlerFactory.getInstance(this);
     }
 
     @Override
     public ListLinkHandlerFactory getChannelLHFactory() {
-        return PeertubeChannelLinkHandlerFactory.getInstance();
+        return PeertubeChannelLinkHandlerFactory.getInstance(this);
     }
 
     @Override
     public ListLinkHandlerFactory getPlaylistLHFactory() {
-        return PeertubePlaylistLinkHandlerFactory.getInstance();
+        return PeertubePlaylistLinkHandlerFactory.getInstance(this);
     }
 
     @Override
     public SearchQueryHandlerFactory getSearchQHFactory() {
-        return PeertubeSearchQueryHandlerFactory.getInstance();
+        return PeertubeSearchQueryHandlerFactory.getInstance(this);
     }
 
     @Override
     public ListLinkHandlerFactory getCommentsLHFactory() {
-        return PeertubeCommentsLinkHandlerFactory.getInstance();
+        return PeertubeCommentsLinkHandlerFactory.getInstance(this);
     }
 
     @Override
@@ -123,14 +123,14 @@ public class PeertubeService extends StreamingService {
                                                  String id)
                     throws ExtractionException {
                 return new PeertubeTrendingExtractor(PeertubeService.this,
-                        new PeertubeTrendingLinkHandlerFactory().fromId(id), id);
+                        PeertubeTrendingLinkHandlerFactory.getInstance(PeertubeService.this).fromId(id), id);
             }
         };
 
         KioskList list = new KioskList(this);
 
         // add kiosks here e.g.:
-        final PeertubeTrendingLinkHandlerFactory h = new PeertubeTrendingLinkHandlerFactory();
+        final PeertubeTrendingLinkHandlerFactory h = PeertubeTrendingLinkHandlerFactory.getInstance(this);
         try {
             list.addKioskEntry(kioskFactory, h, PeertubeTrendingLinkHandlerFactory.KIOSK_TRENDING);
             list.addKioskEntry(kioskFactory, h, PeertubeTrendingLinkHandlerFactory.KIOSK_MOST_LIKED);

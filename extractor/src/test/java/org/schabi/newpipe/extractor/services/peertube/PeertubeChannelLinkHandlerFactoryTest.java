@@ -4,6 +4,7 @@ import org.junit.BeforeClass;
 import org.junit.Test;
 import org.schabi.newpipe.DownloaderTestImpl;
 import org.schabi.newpipe.extractor.NewPipe;
+import org.schabi.newpipe.extractor.ServiceList;
 import org.schabi.newpipe.extractor.exceptions.ParsingException;
 import org.schabi.newpipe.extractor.services.peertube.linkHandler.PeertubeChannelLinkHandlerFactory;
 
@@ -21,7 +22,7 @@ public class PeertubeChannelLinkHandlerFactoryTest {
     @BeforeClass
     public static void setUp() {
         PeerTube.setInstance(new PeertubeInstance("https://peertube.mastodon.host", "PeerTube on Mastodon.host"));
-        linkHandler = PeertubeChannelLinkHandlerFactory.getInstance();
+        linkHandler = PeertubeChannelLinkHandlerFactory.getInstance(ServiceList.PeerTube);
         NewPipe.init(DownloaderTestImpl.getInstance());
     }
 

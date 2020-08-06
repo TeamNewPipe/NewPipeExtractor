@@ -1,6 +1,6 @@
 package org.schabi.newpipe.extractor.services.peertube.linkHandler;
 
-import org.schabi.newpipe.extractor.ServiceList;
+import org.schabi.newpipe.extractor.StreamingService;
 import org.schabi.newpipe.extractor.exceptions.FoundAdException;
 import org.schabi.newpipe.extractor.exceptions.ParsingException;
 import org.schabi.newpipe.extractor.linkhandler.ListLinkHandlerFactory;
@@ -9,12 +9,13 @@ import org.schabi.newpipe.extractor.utils.Parser;
 import java.util.List;
 
 public class PeertubeCommentsLinkHandlerFactory extends ListLinkHandlerFactory {
-
     private static final PeertubeCommentsLinkHandlerFactory instance = new PeertubeCommentsLinkHandlerFactory();
     private static final String ID_PATTERN = "/videos/(watch/)?([^/?&#]*)";
     private static final String COMMENTS_ENDPOINT = "/api/v1/videos/%s/comment-threads";
+    private static StreamingService service;
 
-    public static PeertubeCommentsLinkHandlerFactory getInstance() {
+    public static PeertubeCommentsLinkHandlerFactory getInstance(StreamingService service) {
+        PeertubeCommentsLinkHandlerFactory.service = service;
         return instance;
     }
 
@@ -30,7 +31,7 @@ public class PeertubeCommentsLinkHandlerFactory extends ListLinkHandlerFactory {
 
     @Override
     public String getUrl(String id, List<String> contentFilter, String sortFilter) throws ParsingException {
-        String baseUrl = ServiceList.PeerTube.getBaseUrl();
+        String baseUrl = service.getBaseUrl();
         return getUrl(id, contentFilter, sortFilter, baseUrl);
     }
 

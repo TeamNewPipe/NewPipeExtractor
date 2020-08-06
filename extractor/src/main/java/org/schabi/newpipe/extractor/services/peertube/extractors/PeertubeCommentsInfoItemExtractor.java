@@ -4,11 +4,12 @@ import com.grack.nanojson.JsonObject;
 
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
-import org.schabi.newpipe.extractor.ServiceList;
+import org.schabi.newpipe.extractor.StreamingService;
 import org.schabi.newpipe.extractor.comments.CommentsInfoItemExtractor;
 import org.schabi.newpipe.extractor.exceptions.ParsingException;
 import org.schabi.newpipe.extractor.localization.DateWrapper;
 import org.schabi.newpipe.extractor.services.peertube.PeertubeParsingHelper;
+import org.schabi.newpipe.extractor.services.peertube.linkHandler.PeertubeChannelLinkHandlerFactory;
 import org.schabi.newpipe.extractor.utils.JsonUtils;
 
 import java.util.Objects;
@@ -17,11 +18,13 @@ public class PeertubeCommentsInfoItemExtractor implements CommentsInfoItemExtrac
     private final JsonObject item;
     private final String url;
     private final String baseUrl;
+    private final StreamingService service;
 
     public PeertubeCommentsInfoItemExtractor(final JsonObject item, final PeertubeCommentsExtractor extractor) throws ParsingException {
         this.item = item;
         this.url = extractor.getUrl();
         this.baseUrl = extractor.getBaseUrl();
+        this.service = extractor.getService();
     }
 
     @Override
@@ -97,6 +100,6 @@ public class PeertubeCommentsInfoItemExtractor implements CommentsInfoItemExtrac
     public String getUploaderUrl() throws ParsingException {
         final String name = JsonUtils.getString(item, "account.name");
         final String host = JsonUtils.getString(item, "account.host");
-        return ServiceList.PeerTube.getChannelLHFactory().fromId("accounts/" + name + "@" + host, baseUrl).getUrl();
+        return PeertubeChannelLinkHandlerFactory.getInstance(service).fromId("accounts/" + name + "@" + host, baseUrl).getUrl();
     }
 }

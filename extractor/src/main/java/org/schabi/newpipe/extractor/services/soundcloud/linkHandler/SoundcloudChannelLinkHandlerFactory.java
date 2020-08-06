@@ -1,5 +1,6 @@
 package org.schabi.newpipe.extractor.services.soundcloud.linkHandler;
 
+import org.schabi.newpipe.extractor.StreamingService;
 import org.schabi.newpipe.extractor.exceptions.ParsingException;
 import org.schabi.newpipe.extractor.linkhandler.ListLinkHandlerFactory;
 import org.schabi.newpipe.extractor.services.soundcloud.SoundcloudParsingHelper;
@@ -12,18 +13,19 @@ public class SoundcloudChannelLinkHandlerFactory extends ListLinkHandlerFactory 
     private static final SoundcloudChannelLinkHandlerFactory instance = new SoundcloudChannelLinkHandlerFactory();
     private final String URL_PATTERN = "^https?://(www\\.|m\\.)?soundcloud.com/[0-9a-z_-]+" +
             "(/((tracks|albums|sets|reposts|followers|following)/?)?)?([#?].*)?$";
+    private static StreamingService service;
 
-    public static SoundcloudChannelLinkHandlerFactory getInstance() {
+    public static SoundcloudChannelLinkHandlerFactory getInstance(StreamingService service) {
+        SoundcloudChannelLinkHandlerFactory.service = service;
         return instance;
     }
-
 
     @Override
     public String getId(String url) throws ParsingException {
         Utils.checkUrl(URL_PATTERN, url);
 
         try {
-            return SoundcloudParsingHelper.resolveIdWithEmbedPlayer(url);
+            return SoundcloudParsingHelper.resolveIdWithEmbedPlayer(url, service);
         } catch (Exception e) {
             throw new ParsingException(e.getMessage(), e);
         }
@@ -32,7 +34,7 @@ public class SoundcloudChannelLinkHandlerFactory extends ListLinkHandlerFactory 
     @Override
     public String getUrl(String id, List<String> contentFilter, String sortFilter) throws ParsingException {
         try {
-            return SoundcloudParsingHelper.resolveUrlWithEmbedPlayer("https://api.soundcloud.com/users/" + id);
+            return SoundcloudParsingHelper.resolveUrlWithEmbedPlayer("https://api.soundcloud.com/users/" + id, service);
         } catch (Exception e) {
             throw new ParsingException(e.getMessage(), e);
         }

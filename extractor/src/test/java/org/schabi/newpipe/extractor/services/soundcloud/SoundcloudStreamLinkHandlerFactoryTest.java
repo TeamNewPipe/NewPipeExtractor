@@ -4,6 +4,7 @@ import org.junit.BeforeClass;
 import org.junit.Test;
 import org.schabi.newpipe.DownloaderTestImpl;
 import org.schabi.newpipe.extractor.NewPipe;
+import org.schabi.newpipe.extractor.ServiceList;
 import org.schabi.newpipe.extractor.exceptions.ParsingException;
 import org.schabi.newpipe.extractor.services.soundcloud.linkHandler.SoundcloudStreamLinkHandlerFactory;
 
@@ -20,7 +21,7 @@ public class SoundcloudStreamLinkHandlerFactoryTest {
 
     @BeforeClass
     public static void setUp() throws Exception {
-        linkHandler = SoundcloudStreamLinkHandlerFactory.getInstance();
+        linkHandler = SoundcloudStreamLinkHandlerFactory.getInstance(ServiceList.SoundCloud);
         NewPipe.init(DownloaderTestImpl.getInstance());
     }
 

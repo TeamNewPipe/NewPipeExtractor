@@ -1,5 +1,6 @@
 package org.schabi.newpipe.extractor.services.soundcloud.linkHandler;
 
+import org.schabi.newpipe.extractor.StreamingService;
 import org.schabi.newpipe.extractor.exceptions.ParsingException;
 import org.schabi.newpipe.extractor.linkhandler.LinkHandlerFactory;
 import org.schabi.newpipe.extractor.services.soundcloud.SoundcloudParsingHelper;
@@ -10,18 +11,20 @@ public class SoundcloudStreamLinkHandlerFactory extends LinkHandlerFactory {
     private static final SoundcloudStreamLinkHandlerFactory instance = new SoundcloudStreamLinkHandlerFactory();
     private final String URL_PATTERN = "^https?://(www\\.|m\\.)?soundcloud.com/[0-9a-z_-]+" +
             "/(?!(tracks|albums|sets|reposts|followers|following)/?$)[0-9a-z_-]+/?([#?].*)?$";
+    private static StreamingService service;
 
     private SoundcloudStreamLinkHandlerFactory() {
     }
 
-    public static SoundcloudStreamLinkHandlerFactory getInstance() {
+    public static SoundcloudStreamLinkHandlerFactory getInstance(StreamingService service) {
+        SoundcloudStreamLinkHandlerFactory.service = service;
         return instance;
     }
 
     @Override
     public String getUrl(String id) throws ParsingException {
         try {
-            return SoundcloudParsingHelper.resolveUrlWithEmbedPlayer("https://api.soundcloud.com/tracks/" + id);
+            return SoundcloudParsingHelper.resolveUrlWithEmbedPlayer("https://api.soundcloud.com/tracks/" + id, service);
         } catch (Exception e) {
             throw new ParsingException(e.getMessage(), e);
         }
@@ -32,7 +35,7 @@ public class SoundcloudStreamLinkHandlerFactory extends LinkHandlerFactory {
         Utils.checkUrl(URL_PATTERN, url);
 
         try {
-            return SoundcloudParsingHelper.resolveIdWithEmbedPlayer(url);
+            return SoundcloudParsingHelper.resolveIdWithEmbedPlayer(url, service);
         } catch (Exception e) {
             throw new ParsingException(e.getMessage(), e);
         }

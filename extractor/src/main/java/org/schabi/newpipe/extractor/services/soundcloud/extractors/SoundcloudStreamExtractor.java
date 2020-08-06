@@ -46,7 +46,7 @@ public class SoundcloudStreamExtractor extends StreamExtractor {
 
     @Override
     public void onFetchPage(@Nonnull Downloader downloader) throws IOException, ExtractionException {
-        track = SoundcloudParsingHelper.resolveFor(downloader, getOriginalUrl());
+        track = SoundcloudParsingHelper.resolveFor(downloader, getOriginalUrl(), getService());
 
         String policy = track.getString("policy", EMPTY_STRING);
         if (!policy.equals("ALLOW") && !policy.equals("MONETIZE")) {
@@ -199,7 +199,7 @@ public class SoundcloudStreamExtractor extends StreamExtractor {
                             && t.getObject("format").getString("protocol").equals("progressive")) {
                         // This url points to the endpoint which generates a unique and short living url to the stream.
                         // TODO: move this to a separate method to generate valid urls when needed (e.g. resuming a paused stream)
-                        url += "?client_id=" + SoundcloudParsingHelper.clientId();
+                        url += "?client_id=" + SoundcloudParsingHelper.clientId(getService());
                         String res = dl.get(url).responseBody();
 
                         try {
@@ -265,9 +265,9 @@ public class SoundcloudStreamExtractor extends StreamExtractor {
         StreamInfoItemsCollector collector = new StreamInfoItemsCollector(getServiceId());
 
         String apiUrl = "https://api-v2.soundcloud.com/tracks/" + urlEncode(getId()) + "/related"
-                + "?client_id=" + urlEncode(SoundcloudParsingHelper.clientId());
+                + "?client_id=" + urlEncode(SoundcloudParsingHelper.clientId(getService()));
 
-        SoundcloudParsingHelper.getStreamsFromApi(collector, apiUrl);
+        SoundcloudParsingHelper.getStreamsFromApi(collector, apiUrl, getService());
         return collector;
     }
 

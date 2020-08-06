@@ -313,7 +313,7 @@ public class PeertubeStreamExtractor extends StreamExtractor {
         for (final Object c : contents) {
             if (c instanceof JsonObject) {
                 final JsonObject item = (JsonObject) c;
-                final PeertubeStreamInfoItemExtractor extractor = new PeertubeStreamInfoItemExtractor(item, baseUrl);
+                final PeertubeStreamInfoItemExtractor extractor = new PeertubeStreamInfoItemExtractor(item, this);
                 //do not add the same stream in related streams
                 if (!extractor.getUrl().equals(getUrl())) collector.commit(extractor);
             }

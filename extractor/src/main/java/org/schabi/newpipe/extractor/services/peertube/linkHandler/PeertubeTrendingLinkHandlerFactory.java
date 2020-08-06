@@ -1,6 +1,6 @@
 package org.schabi.newpipe.extractor.services.peertube.linkHandler;
 
-import org.schabi.newpipe.extractor.ServiceList;
+import org.schabi.newpipe.extractor.StreamingService;
 import org.schabi.newpipe.extractor.exceptions.ParsingException;
 import org.schabi.newpipe.extractor.linkhandler.ListLinkHandlerFactory;
 
@@ -10,9 +10,8 @@ import java.util.List;
 import java.util.Map;
 
 public class PeertubeTrendingLinkHandlerFactory extends ListLinkHandlerFactory {
-
-
     private static final PeertubeTrendingLinkHandlerFactory instance = new PeertubeTrendingLinkHandlerFactory();
+    private static StreamingService service;
 
     public static final Map<String, String> KIOSK_MAP;
     public static final Map<String, String> REVERSE_KIOSK_MAP;
@@ -36,13 +35,16 @@ public class PeertubeTrendingLinkHandlerFactory extends ListLinkHandlerFactory {
         REVERSE_KIOSK_MAP = Collections.unmodifiableMap(reverseMap);
     }
 
-    public static PeertubeTrendingLinkHandlerFactory getInstance() {
+    private PeertubeTrendingLinkHandlerFactory() {}
+
+    public static PeertubeTrendingLinkHandlerFactory getInstance(StreamingService service) {
+        PeertubeTrendingLinkHandlerFactory.service = service;
         return instance;
     }
 
     @Override
     public String getUrl(String id, List<String> contentFilters, String sortFilter) {
-        String baseUrl = ServiceList.PeerTube.getBaseUrl();
+        String baseUrl = service.getBaseUrl();
         return getUrl(id, contentFilters, sortFilter, baseUrl);
     }
 
@@ -53,7 +55,7 @@ public class PeertubeTrendingLinkHandlerFactory extends ListLinkHandlerFactory {
 
     @Override
     public String getId(String url) throws ParsingException {
-        String baseUrl = ServiceList.PeerTube.getBaseUrl();
+        String baseUrl = service.getBaseUrl();
         url = url.replace(baseUrl, "%s");
         if (url.contains("/videos/trending")) {
             return KIOSK_TRENDING;

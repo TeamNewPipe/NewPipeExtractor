@@ -14,7 +14,6 @@ import java.io.IOException;
 
 import javax.annotation.Nonnull;
 
-import static org.schabi.newpipe.extractor.ServiceList.SoundCloud;
 import static org.schabi.newpipe.extractor.utils.Utils.isNullOrEmpty;
 
 public class SoundcloudChartsExtractor extends KioskExtractor<StreamInfoItem> {
@@ -41,7 +40,7 @@ public class SoundcloudChartsExtractor extends KioskExtractor<StreamInfoItem> {
         }
 
         final StreamInfoItemsCollector collector = new StreamInfoItemsCollector(getServiceId());
-        final String nextPageUrl = SoundcloudParsingHelper.getStreamsFromApi(collector, page.getUrl(), true);
+        final String nextPageUrl = SoundcloudParsingHelper.getStreamsFromApi(collector, page.getUrl(), true, getService());
 
         return new InfoItemsPage<>(collector, new Page(nextPageUrl));
     }
@@ -53,7 +52,7 @@ public class SoundcloudChartsExtractor extends KioskExtractor<StreamInfoItem> {
 
         String apiUrl = "https://api-v2.soundcloud.com/charts" +
                 "?genre=soundcloud:genres:all-music" +
-                "&client_id=" + SoundcloudParsingHelper.clientId();
+                "&client_id=" + SoundcloudParsingHelper.clientId(getService());
 
         if (getId().equals("Top 50")) {
             apiUrl += "&kind=top";
@@ -61,10 +60,10 @@ public class SoundcloudChartsExtractor extends KioskExtractor<StreamInfoItem> {
             apiUrl += "&kind=trending";
         }
 
-        final String contentCountry = SoundCloud.getContentCountry().getCountryCode();
+        final String contentCountry = getExtractorContentCountry().getCountryCode();
         apiUrl += "&region=soundcloud:regions:" + contentCountry;
 
-        final String nextPageUrl = SoundcloudParsingHelper.getStreamsFromApi(collector, apiUrl, true);
+        final String nextPageUrl = SoundcloudParsingHelper.getStreamsFromApi(collector, apiUrl, true, getService());
 
         return new InfoItemsPage<>(collector, new Page(nextPageUrl));
     }

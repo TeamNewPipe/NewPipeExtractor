@@ -2,10 +2,13 @@ package org.schabi.newpipe.extractor.services.peertube.extractors;
 
 import com.grack.nanojson.JsonObject;
 
-import org.schabi.newpipe.extractor.ServiceList;
+import org.schabi.newpipe.extractor.Extractor;
+import org.schabi.newpipe.extractor.StreamingService;
 import org.schabi.newpipe.extractor.exceptions.ParsingException;
 import org.schabi.newpipe.extractor.localization.DateWrapper;
 import org.schabi.newpipe.extractor.services.peertube.PeertubeParsingHelper;
+import org.schabi.newpipe.extractor.services.peertube.linkHandler.PeertubeChannelLinkHandlerFactory;
+import org.schabi.newpipe.extractor.services.peertube.linkHandler.PeertubeStreamLinkHandlerFactory;
 import org.schabi.newpipe.extractor.stream.StreamInfoItemExtractor;
 import org.schabi.newpipe.extractor.stream.StreamType;
 import org.schabi.newpipe.extractor.utils.JsonUtils;
@@ -13,16 +16,18 @@ import org.schabi.newpipe.extractor.utils.JsonUtils;
 public class PeertubeStreamInfoItemExtractor implements StreamInfoItemExtractor {
     protected final JsonObject item;
     private final String baseUrl;
+    private final StreamingService service;
 
-    public PeertubeStreamInfoItemExtractor(final JsonObject item, final String baseUrl) {
-        this.item = item;
-        this.baseUrl = baseUrl;
+    public PeertubeStreamInfoItemExtractor(final JsonObject item, final Extractor extractor) throws ParsingException {
+        this.item = item;;
+        this.baseUrl = extractor.getBaseUrl();
+        this.service = extractor.getService();
     }
 
     @Override
     public String getUrl() throws ParsingException {
         final String uuid = JsonUtils.getString(item, "uuid");
-        return ServiceList.PeerTube.getStreamLHFactory().fromId(uuid, baseUrl).getUrl();
+        return PeertubeStreamLinkHandlerFactory.getInstance(service).fromId(uuid, baseUrl).getUrl();
     }
 
     @Override
@@ -51,7 +56,7 @@ public class PeertubeStreamInfoItemExtractor implements StreamInfoItemExtractor 
         final String name = JsonUtils.getString(item, "account.name");
         final String host = JsonUtils.getString(item, "account.host");
 
-        return ServiceList.PeerTube.getChannelLHFactory().fromId("accounts/" + name + "@" + host, baseUrl).getUrl();
+        return PeertubeChannelLinkHandlerFactory.getInstance(service).fromId("accounts/" + name + "@" + host, baseUrl).getUrl();
     }
 
     @Override

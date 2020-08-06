@@ -42,7 +42,7 @@ public class SoundcloudPlaylistExtractor extends PlaylistExtractor {
 
         playlistId = getLinkHandler().getId();
         String apiUrl = "https://api-v2.soundcloud.com/playlists/" + playlistId +
-                "?client_id=" + SoundcloudParsingHelper.clientId() +
+                "?client_id=" + SoundcloudParsingHelper.clientId(getService()) +
                 "&representation=compact";
 
         String response = downloader.get(apiUrl, getExtractorLocalization()).responseBody();
@@ -172,7 +172,7 @@ public class SoundcloudPlaylistExtractor extends PlaylistExtractor {
         }
 
         final String currentPageUrl = "https://api-v2.soundcloud.com/tracks?client_id="
-                + SoundcloudParsingHelper.clientId()
+                + SoundcloudParsingHelper.clientId(getService())
                 + "&ids=" + Utils.join(",", currentIds);
 
         final StreamInfoItemsCollector collector = new StreamInfoItemsCollector(getServiceId());

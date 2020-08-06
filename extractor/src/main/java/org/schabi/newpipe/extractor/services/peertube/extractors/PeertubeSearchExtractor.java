@@ -70,7 +70,7 @@ public class PeertubeSearchExtractor extends SearchExtractor {
             final long total = json.getLong("total");
 
             final InfoItemsSearchCollector collector = new InfoItemsSearchCollector(getServiceId());
-            collectStreamsFrom(collector, json, getBaseUrl());
+            collectStreamsFrom(collector, json, this);
 
             return new InfoItemsPage<>(collector, PeertubeParsingHelper.getNextPage(page.getUrl(), total));
         } else {

@@ -36,7 +36,7 @@ public class SoundcloudChannelExtractor extends ChannelExtractor {
 
         userId = getLinkHandler().getId();
         final String apiUrl = "https://api-v2.soundcloud.com/users/" + userId +
-                "?client_id=" + SoundcloudParsingHelper.clientId();
+                "?client_id=" + SoundcloudParsingHelper.clientId(getService());
 
         final String response = downloader.get(apiUrl, getExtractorLocalization()).responseBody();
         try {
@@ -105,11 +105,11 @@ public class SoundcloudChannelExtractor extends ChannelExtractor {
             final StreamInfoItemsCollector streamInfoItemsCollector = new StreamInfoItemsCollector(getServiceId());
 
             final String apiUrl = "https://api-v2.soundcloud.com/users/" + getId() + "/tracks"
-                    + "?client_id=" + SoundcloudParsingHelper.clientId()
+                    + "?client_id=" + SoundcloudParsingHelper.clientId(getService())
                     + "&limit=20"
                     + "&linked_partitioning=1";
 
-            final String nextPageUrl = SoundcloudParsingHelper.getStreamsFromApiMinItems(15, streamInfoItemsCollector, apiUrl);
+            final String nextPageUrl = SoundcloudParsingHelper.getStreamsFromApiMinItems(15, streamInfoItemsCollector, apiUrl, getService());
 
             return new InfoItemsPage<>(streamInfoItemsCollector, new Page(nextPageUrl));
         } catch (Exception e) {
@@ -124,7 +124,7 @@ public class SoundcloudChannelExtractor extends ChannelExtractor {
         }
 
         final StreamInfoItemsCollector collector = new StreamInfoItemsCollector(getServiceId());
-        final String nextPageUrl = SoundcloudParsingHelper.getStreamsFromApiMinItems(15, collector, page.getUrl());
+        final String nextPageUrl = SoundcloudParsingHelper.getStreamsFromApiMinItems(15, collector, page.getUrl(), getService());
 
         return new InfoItemsPage<>(collector, new Page(nextPageUrl));
     }
