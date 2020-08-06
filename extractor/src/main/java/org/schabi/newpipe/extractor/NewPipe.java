@@ -25,14 +25,20 @@ import org.schabi.newpipe.extractor.exceptions.ExtractionException;
 import org.schabi.newpipe.extractor.localization.ContentCountry;
 import org.schabi.newpipe.extractor.localization.Localization;
 
+import java.util.List;
+
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
-import java.util.List;
 
 /**
  * Provides access to streaming services supported by NewPipe.
  */
 public class NewPipe {
+    // Should be increased for any change
+    public static final int MAJOR_VERSION = 1;
+    // Should be increased for any addition
+    public static final int MINOR_VERSION = 0;
+
     private static Downloader downloader;
     private static Localization preferredLocalization;
     private static ContentCountry preferredContentCountry;
