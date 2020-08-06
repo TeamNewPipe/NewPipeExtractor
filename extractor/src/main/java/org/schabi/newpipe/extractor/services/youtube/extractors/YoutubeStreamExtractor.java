@@ -462,7 +462,7 @@ public class YoutubeStreamExtractor extends StreamExtractor {
         assertPageFetched();
         List<AudioStream> audioStreams = new ArrayList<>();
         try {
-            for (Map.Entry<String, ItagItem> entry : getItags(ADAPTIVE_FORMATS, ItagItem.ItagType.AUDIO).entrySet()) {
+            for (Map.Entry<String, ItagItem> entry : getItags(ADAPTIVE_FORMATS, ItagItem.TYPE_AUDIO).entrySet()) {
                 ItagItem itag = entry.getValue();
 
                 AudioStream audioStream = new AudioStream(entry.getKey(), itag.getMediaFormat(), itag.avgBitrate);
@@ -482,7 +482,7 @@ public class YoutubeStreamExtractor extends StreamExtractor {
         assertPageFetched();
         List<VideoStream> videoStreams = new ArrayList<>();
         try {
-            for (Map.Entry<String, ItagItem> entry : getItags(FORMATS, ItagItem.ItagType.VIDEO).entrySet()) {
+            for (Map.Entry<String, ItagItem> entry : getItags(FORMATS, ItagItem.TYPE_VIDEO).entrySet()) {
                 ItagItem itag = entry.getValue();
 
                 VideoStream videoStream = new VideoStream(entry.getKey(), itag.getMediaFormat(), itag.resolutionString);
@@ -502,7 +502,7 @@ public class YoutubeStreamExtractor extends StreamExtractor {
         assertPageFetched();
         List<VideoStream> videoOnlyStreams = new ArrayList<>();
         try {
-            for (Map.Entry<String, ItagItem> entry : getItags(ADAPTIVE_FORMATS, ItagItem.ItagType.VIDEO_ONLY).entrySet()) {
+            for (Map.Entry<String, ItagItem> entry : getItags(ADAPTIVE_FORMATS, ItagItem.TYPE_VIDEO_ONLY).entrySet()) {
                 ItagItem itag = entry.getValue();
 
                 VideoStream videoStream = new VideoStream(entry.getKey(), itag.getMediaFormat(), itag.resolutionString, true);
@@ -942,7 +942,7 @@ public class YoutubeStreamExtractor extends StreamExtractor {
                 "&sts=" + sts + "&ps=default&gl=US&hl=en";
     }
 
-    private Map<String, ItagItem> getItags(String streamingDataKey, ItagItem.ItagType itagTypeWanted) throws ParsingException {
+    private Map<String, ItagItem> getItags(String streamingDataKey, int itagTypeWanted) throws ParsingException {
         Map<String, ItagItem> urlAndItags = new LinkedHashMap<>();
         JsonObject streamingData = playerResponse.getObject("streamingData");
         if (!streamingData.has(streamingDataKey)) {

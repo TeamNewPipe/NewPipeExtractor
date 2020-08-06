@@ -15,13 +15,14 @@ import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
-import javax.xml.parsers.DocumentBuilder;
-import javax.xml.parsers.DocumentBuilderFactory;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
+
+import javax.xml.parsers.DocumentBuilder;
+import javax.xml.parsers.DocumentBuilderFactory;
 
 /*
  * Created by Christian Schabesberger on 02.02.16.
@@ -159,7 +160,7 @@ public class DashMpdParser {
                     if (itag != null) {
                         final MediaFormat mediaFormat = MediaFormat.getFromMimeType(mimeType);
 
-                        if (itag.itagType.equals(ItagItem.ItagType.AUDIO)) {
+                        if (itag.itagType == ItagItem.TYPE_AUDIO) {
                             if (segmentationList == null) {
                                 final AudioStream audioStream = new AudioStream(url, mediaFormat, itag.avgBitrate);
                                 if (!Stream.containSimilarStream(audioStream, streamInfo.getAudioStreams())) {
@@ -170,7 +171,7 @@ public class DashMpdParser {
                                         new AudioStream(id, mediaFormat, itag.avgBitrate));
                             }
                         } else {
-                            boolean isVideoOnly = itag.itagType.equals(ItagItem.ItagType.VIDEO_ONLY);
+                            boolean isVideoOnly = itag.itagType == ItagItem.TYPE_VIDEO_ONLY;
 
                             if (segmentationList == null) {
                                 final VideoStream videoStream = new VideoStream(url,
