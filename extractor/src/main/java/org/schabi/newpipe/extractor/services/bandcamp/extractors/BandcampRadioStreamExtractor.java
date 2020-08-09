@@ -8,6 +8,7 @@ import org.schabi.newpipe.extractor.MediaFormat;
 import org.schabi.newpipe.extractor.NewPipe;
 import org.schabi.newpipe.extractor.StreamingService;
 import org.schabi.newpipe.extractor.downloader.Downloader;
+import org.schabi.newpipe.extractor.exceptions.ContentNotSupportedException;
 import org.schabi.newpipe.extractor.exceptions.ExtractionException;
 import org.schabi.newpipe.extractor.exceptions.ParsingException;
 import org.schabi.newpipe.extractor.exceptions.ReCaptchaException;
@@ -56,9 +57,8 @@ public class BandcampRadioStreamExtractor extends BandcampStreamExtractor {
 
     @Nonnull
     @Override
-    public String getUploaderUrl() {
-        return Jsoup.parse(showInfo.getString("image_caption"))
-                .getElementsByTag("a").first().attr("href").trim();
+    public String getUploaderUrl() throws ContentNotSupportedException {
+        throw new ContentNotSupportedException("Fan pages are not supported");
     }
 
     @Nonnull

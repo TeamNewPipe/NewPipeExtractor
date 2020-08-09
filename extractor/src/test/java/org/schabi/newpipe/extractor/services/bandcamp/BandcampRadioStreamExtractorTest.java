@@ -3,12 +3,11 @@ package org.schabi.newpipe.extractor.services.bandcamp;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import org.schabi.newpipe.DownloaderTestImpl;
-import org.schabi.newpipe.extractor.Extractor;
 import org.schabi.newpipe.extractor.NewPipe;
+import org.schabi.newpipe.extractor.exceptions.ContentNotSupportedException;
 import org.schabi.newpipe.extractor.exceptions.ExtractionException;
 import org.schabi.newpipe.extractor.exceptions.ParsingException;
 import org.schabi.newpipe.extractor.services.bandcamp.extractors.BandcampRadioStreamExtractor;
-import org.schabi.newpipe.extractor.services.bandcamp.extractors.BandcampStreamExtractor;
 import org.schabi.newpipe.extractor.stream.StreamExtractor;
 
 import java.io.IOException;
@@ -42,9 +41,9 @@ public class BandcampRadioStreamExtractorTest {
         assertEquals("Sound Movements", e.getName());
     }
 
-    @Test
+    @Test(expected = ContentNotSupportedException.class)
     public void testGetUploaderUrl() throws ParsingException {
-        assertEquals("http://bandcamp.com/andrewjervis", e.getUploaderUrl());
+        e.getUploaderUrl();
     }
 
     @Test
