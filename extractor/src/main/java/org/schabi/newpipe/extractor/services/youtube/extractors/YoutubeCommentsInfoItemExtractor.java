@@ -34,7 +34,7 @@ public class YoutubeCommentsInfoItemExtractor implements CommentsInfoItemExtract
     @Override
     public String getThumbnailUrl() throws ParsingException {
         try {
-            JsonArray arr = JsonUtils.getArray(json, "authorThumbnail.thumbnails");
+            final JsonArray arr = JsonUtils.getArray(json, "authorThumbnail.thumbnails");
             return JsonUtils.getString(arr.getObject(2), "url");
         } catch (Exception e) {
             throw new ParsingException("Could not get thumbnail url", e);
@@ -82,7 +82,13 @@ public class YoutubeCommentsInfoItemExtractor implements CommentsInfoItemExtract
     @Override
     public String getCommentText() throws ParsingException {
         try {
-            String commentText = getTextFromObject(JsonUtils.getObject(json, "contentText"));
+            final JsonObject contentText = JsonUtils.getObject(json, "contentText");
+            if (contentText.isEmpty()) {
+                // completely empty comments as described in
+                // https://github.com/TeamNewPipe/NewPipeExtractor/issues/380#issuecomment-668808584
+                return "";
+            }
+            final String commentText = getTextFromObject(contentText);
             // youtube adds U+FEFF in some comments. eg. https://www.youtube.com/watch?v=Nj4F63E59io<feff>
             return Utils.removeUTF8BOM(commentText);
         } catch (Exception e) {
