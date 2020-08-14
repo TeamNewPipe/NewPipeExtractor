@@ -105,7 +105,7 @@ public class YoutubeStreamExtractorDefaultTest {
     }
 
     public static class DescriptionTestPewdiepie extends DefaultStreamExtractorTest {
-        private static final String ID = "fBc4Q_htqPg";
+        private static final String ID = "7PIMiDcwNvc";
         private static final int TIMESTAMP = 17;
         private static final String URL = BASE_URL + ID + "&t=" + TIMESTAMP;
         private static StreamExtractor extractor;
@@ -119,7 +119,7 @@ public class YoutubeStreamExtractorDefaultTest {
 
         @Override public StreamExtractor extractor() { return extractor; }
         @Override public StreamingService expectedService() { return YouTube; }
-        @Override public String expectedName() { return "Dr. Phil DESTROYS spoiled brat!!!! . -- Dr Phil #7"; }
+        @Override public String expectedName() { return "Marzia & Felix - Wedding 19.08.2019"; }
         @Override public String expectedId() { return ID; }
         @Override public String expectedUrlContains() { return BASE_URL + ID; }
         @Override public String expectedOriginalUrlContains() { return URL; }
@@ -128,17 +128,16 @@ public class YoutubeStreamExtractorDefaultTest {
         @Override public String expectedUploaderName() { return "PewDiePie"; }
         @Override public String expectedUploaderUrl() { return "https://www.youtube.com/channel/UC-lHJZR3Gqxm24_Vd_AJ5Yw"; }
         @Override public List<String> expectedDescriptionContains() {
-            return Arrays.asList("https://www.reddit.com/r/PewdiepieSubmissions/",
-                    "https://www.youtube.com/channel/UC3e8EMTOn4g6ZSKggHTnNng",
-                    "https://usa.clutchchairz.com/product/pewdiepie-edition-throttle-series/");
+            return Arrays.asList("https://www.youtube.com/channel/UC7l23W7gFi4Uho6WSzckZRA",
+                    "https://www.handcraftpictures.com/");
         }
-        @Override public long expectedLength() { return 1165; }
+        @Override public long expectedLength() { return 381; }
         @Override public long expectedTimestamp() { return TIMESTAMP; }
         @Override public long expectedViewCountAtLeast() { return 26682500; }
-        @Nullable @Override public String expectedUploadDate() { return "2018-09-12 00:00:00.000"; }
-        @Nullable @Override public String expectedTextualUploadDate() { return "2018-09-12"; }
-        @Override public long expectedLikeCountAtLeast() { return 1166000; }
-        @Override public long expectedDislikeCountAtLeast() { return 16900; }
+        @Nullable @Override public String expectedUploadDate() { return "2019-08-24 00:00:00.000"; }
+        @Nullable @Override public String expectedTextualUploadDate() { return "2019-08-24"; }
+        @Override public long expectedLikeCountAtLeast() { return 5212900; }
+        @Override public long expectedDislikeCountAtLeast() { return 30600; }
     }
 
     public static class DescriptionTestUnboxing extends DefaultStreamExtractorTest {
