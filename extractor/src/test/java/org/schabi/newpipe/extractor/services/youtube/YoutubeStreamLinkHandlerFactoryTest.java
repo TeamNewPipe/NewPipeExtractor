@@ -81,6 +81,14 @@ public class YoutubeStreamLinkHandlerFactoryTest {
         assertEquals("jZViOEv90dI", linkHandler.fromUrl("vnd.youtube:jZViOEv90dI").getId());
         assertEquals("n8X9_MgEdCg", linkHandler.fromUrl("vnd.youtube://n8X9_MgEdCg").getId());
         assertEquals("O0EDx9WAelc", linkHandler.fromUrl("https://music.youtube.com/watch?v=O0EDx9WAelc").getId());
+        assertEquals("-cdveCh1kQk", linkHandler.fromUrl("https://m.youtube.com/watch?v=-cdveCh1kQk)").getId());
+        assertEquals("-cdveCh1kQk", linkHandler.fromUrl("https://www.youtube.com/watch?v=-cdveCh1kQk-").getId());
+        assertEquals("-cdveCh1kQk", linkHandler.fromUrl("https://WWW.YouTube.com/watch?v=-cdveCh1kQkwhatever").getId());
+        assertEquals("O0EDx9WAelc", linkHandler.fromUrl("HTTPS://www.youtube.com/watch?v=O0EDx9WAelc]").getId());
+        assertEquals("-cdveCh1kQk", linkHandler.fromUrl("https://youtu.be/-cdveCh1kQk)hello").getId());
+        assertEquals("OGS7c0-CmRs", linkHandler.fromUrl("https://YouTu.be/OGS7c0-CmRswhatever)").getId());
+        assertEquals("-cdveCh1kQk", linkHandler.fromUrl("HTTPS://youtu.be/-cdveCh1kQk)").getId());
+        assertEquals("IOS2fqxwYbA", linkHandler.fromUrl("https://www.youtube.com/shorts/IOS2fqxwYbAhi").getId());
         assertEquals("IOS2fqxwYbA", linkHandler.fromUrl("http://www.youtube.com/shorts/IOS2fqxwYbA").getId());
     }
 
