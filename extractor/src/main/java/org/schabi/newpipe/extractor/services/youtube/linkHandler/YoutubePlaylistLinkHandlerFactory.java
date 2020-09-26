@@ -1,5 +1,8 @@
 package org.schabi.newpipe.extractor.services.youtube.linkHandler;
 
+import java.net.MalformedURLException;
+import java.net.URL;
+import java.util.List;
 import org.schabi.newpipe.extractor.exceptions.ContentNotSupportedException;
 import org.schabi.newpipe.extractor.exceptions.ParsingException;
 import org.schabi.newpipe.extractor.linkhandler.LinkHandler;
@@ -7,10 +10,6 @@ import org.schabi.newpipe.extractor.linkhandler.ListLinkHandler;
 import org.schabi.newpipe.extractor.linkhandler.ListLinkHandlerFactory;
 import org.schabi.newpipe.extractor.services.youtube.YoutubeParsingHelper;
 import org.schabi.newpipe.extractor.utils.Utils;
-
-import java.net.MalformedURLException;
-import java.net.URL;
-import java.util.List;
 
 public class YoutubePlaylistLinkHandlerFactory extends ListLinkHandlerFactory {
 
@@ -58,6 +57,12 @@ public class YoutubePlaylistLinkHandlerFactory extends ListLinkHandlerFactory {
                         "YouTube Music Mix playlists are not yet supported");
             }
 
+            if (YoutubeParsingHelper.isYoutubeChannelMixId(listID)
+                    && Utils.getQueryValue(urlObj, "v") == null) {
+                //Video id can't be determined from the channel mix id. See YoutubeParsingHelper#extractVideoIdFromMixId
+                throw new ContentNotSupportedException("Channel Mix without a video id are not supported");
+            }
+
             return listID;
         } catch (final Exception exception) {
             throw new ParsingException("Error could not parse url :" + exception.getMessage(),
@@ -89,7 +94,7 @@ public class YoutubePlaylistLinkHandlerFactory extends ListLinkHandlerFactory {
             if (listID != null && YoutubeParsingHelper.isYoutubeMixId(listID)) {
                 String videoID = Utils.getQueryValue(urlObj, "v");
                 if (videoID == null) {
-                    videoID = listID.substring(2);
+                    videoID = YoutubeParsingHelper.extractVideoIdFromMixId(listID);
                 }
                 final String newUrl = "https://www.youtube.com/watch?v=" + videoID
                     + "&list=" + listID;

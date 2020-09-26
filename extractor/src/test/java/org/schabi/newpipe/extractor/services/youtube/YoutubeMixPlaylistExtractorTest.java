@@ -1,15 +1,8 @@
 package org.schabi.newpipe.extractor.services.youtube;
 
-import static org.hamcrest.CoreMatchers.containsString;
-import static org.hamcrest.CoreMatchers.startsWith;
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
-import static org.schabi.newpipe.extractor.ExtractorAsserts.assertIsSecureUrl;
-import static org.schabi.newpipe.extractor.ServiceList.YouTube;
-
+import java.util.Collections;
 import java.util.HashSet;
+import java.util.Map;
 import java.util.Set;
 import org.hamcrest.MatcherAssert;
 import org.junit.BeforeClass;
@@ -31,6 +24,15 @@ import org.schabi.newpipe.extractor.services.youtube.YoutubeMixPlaylistExtractor
 import org.schabi.newpipe.extractor.services.youtube.extractors.YoutubeMixPlaylistExtractor;
 import org.schabi.newpipe.extractor.stream.StreamInfoItem;
 
+import static org.hamcrest.CoreMatchers.containsString;
+import static org.hamcrest.CoreMatchers.startsWith;
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
+import static org.schabi.newpipe.extractor.ExtractorAsserts.assertIsSecureUrl;
+import static org.schabi.newpipe.extractor.ServiceList.YouTube;
+
 @RunWith(Suite.class)
 @SuiteClasses({Mix.class, MixWithIndex.class, MyMix.class, Invalid.class, ChannelMix.class})
 public class YoutubeMixPlaylistExtractorTest {
@@ -41,6 +43,8 @@ public class YoutubeMixPlaylistExtractorTest {
             "Most Beautiful And Emotional  Piano: Anime Music Shigatsu wa Kimi no Uso OST IMO";
 
     private static YoutubeMixPlaylistExtractor extractor;
+    private static Map<String, String> dummyCookie
+            = Collections.singletonMap(YoutubeMixPlaylistExtractor.COOKIE_NAME, "whatever");
 
     public static class Mix {
 
@@ -83,8 +87,8 @@ public class YoutubeMixPlaylistExtractorTest {
         @Test
         public void getPage() throws Exception {
             final InfoItemsPage<StreamInfoItem> streams = extractor.getPage(
-                new Page("https://www.youtube.com/watch?v=" + VIDEO_ID + "&list=RD" + VIDEO_ID
-                    + PBJ));
+                    new Page("https://www.youtube.com/watch?v=" + VIDEO_ID + "&list=RD" + VIDEO_ID
+                            + PBJ, dummyCookie));
             assertFalse(streams.getItems().isEmpty());
             assertTrue(streams.hasNextPage());
         }
@@ -157,7 +161,7 @@ public class YoutubeMixPlaylistExtractorTest {
         public void getPage() throws Exception {
             final InfoItemsPage<StreamInfoItem> streams = extractor.getPage(
                 new Page("https://www.youtube.com/watch?v=" + VIDEO_ID_NUMBER_13 + "&list=RD"
-                    + VIDEO_ID + INDEX + PBJ));
+                    + VIDEO_ID + INDEX + PBJ, dummyCookie));
             assertFalse(streams.getItems().isEmpty());
             assertTrue(streams.hasNextPage());
         }
@@ -229,7 +233,7 @@ public class YoutubeMixPlaylistExtractorTest {
         public void getPage() throws Exception {
             final InfoItemsPage<StreamInfoItem> streams =
                 extractor.getPage(new Page("https://www.youtube.com/watch?v=" + VIDEO_ID
-                    + "&list=RDMM" + VIDEO_ID + PBJ));
+                    + "&list=RDMM" + VIDEO_ID + PBJ, dummyCookie));
             assertFalse(streams.getItems().isEmpty());
             assertTrue(streams.hasNextPage());
         }
@@ -267,7 +271,7 @@ public class YoutubeMixPlaylistExtractorTest {
             NewPipe.init(DownloaderTestImpl.getInstance());
         }
 
-        @Test(expected = ExtractionException.class)
+        @Test(expected = IllegalArgumentException.class)
         public void getPageEmptyUrl() throws Exception {
             extractor = (YoutubeMixPlaylistExtractor) YouTube
                     .getPlaylistExtractor(
@@ -328,7 +332,7 @@ public class YoutubeMixPlaylistExtractorTest {
         public void getPage() throws Exception {
             final InfoItemsPage<StreamInfoItem> streams = extractor.getPage(
                 new Page("https://www.youtube.com/watch?v=" + VIDEO_ID_OF_CHANNEL
-                    + "&list=RDCM" + CHANNEL_ID + PBJ));
+                    + "&list=RDCM" + CHANNEL_ID + PBJ, dummyCookie));
             assertFalse(streams.getItems().isEmpty());
             assertTrue(streams.hasNextPage());
         }

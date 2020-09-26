@@ -28,6 +28,7 @@ import static org.schabi.newpipe.extractor.services.youtube.YoutubeParsingHelper
 import static org.schabi.newpipe.extractor.services.youtube.YoutubeParsingHelper.getResponse;
 import static org.schabi.newpipe.extractor.services.youtube.YoutubeParsingHelper.getUrlFromNavigationEndpoint;
 import static org.schabi.newpipe.extractor.services.youtube.YoutubeParsingHelper.toJsonArray;
+import static org.schabi.newpipe.extractor.utils.Utils.isNullOrEmpty;
 
 /**
  * A {@link YoutubePlaylistExtractor} for a mix (auto-generated playlist).
@@ -40,7 +41,7 @@ public class YoutubeMixPlaylistExtractor extends PlaylistExtractor {
      * YouTube identifies mixes based on this cookie. With this information it can generate
      * continuations without duplicates.
      */
-    private static final String COOKIE_NAME = "VISITOR_INFO1_LIVE";
+    public static final String COOKIE_NAME = "VISITOR_INFO1_LIVE";
 
     private JsonObject initialData;
     private JsonObject playlistData;
@@ -124,11 +125,7 @@ public class YoutubeMixPlaylistExtractor extends PlaylistExtractor {
         final StreamInfoItemsCollector collector = new StreamInfoItemsCollector(getServiceId());
         collectStreamsFrom(collector, playlistData.getArray("contents"));
         return new InfoItemsPage<>(collector,
-                new Page(getNextPageUrl(), Collections.singletonMap(COOKIE_NAME, cookieValue)));
-    }
-
-    private String getNextPageUrl() throws ExtractionException {
-        return getNextPageUrlFrom(playlistData);
+                new Page(getNextPageUrlFrom(playlistData), Collections.singletonMap(COOKIE_NAME, cookieValue)));
     }
 
     private String getNextPageUrlFrom(final JsonObject playlistJson) throws ExtractionException {
@@ -146,9 +143,11 @@ public class YoutubeMixPlaylistExtractor extends PlaylistExtractor {
     @Override
     public InfoItemsPage<StreamInfoItem> getPage(final Page page)
             throws ExtractionException, IOException {
-        if (page == null || page.getUrl().isEmpty()) {
-            throw new ExtractionException(
-                new IllegalArgumentException("Page url is empty or null"));
+        if (page == null || isNullOrEmpty(page.getUrl())) {
+                throw new IllegalArgumentException("Page url is empty or null");
+        }
+        if (!page.getCookies().containsKey(COOKIE_NAME)) {
+            throw new IllegalArgumentException("Cooke '" + COOKIE_NAME + "' is missing");
         }
 
         final JsonArray ajaxJson = getJsonResponse(page, getExtractorLocalization());

@@ -214,12 +214,43 @@ public class YoutubeParsingHelper {
 
     /**
      * Checks if the given playlist id is a YouTube Music Mix (auto-generated playlist)
-     * Ids from a YouTube Music Mix start with "RD"
+     * Ids from a YouTube Music Mix start with "RDAMVM"
      * @param playlistId
      * @return Whether given id belongs to a YouTube Music Mix
      */
     public static boolean isYoutubeMusicMixId(final String playlistId) {
         return playlistId.startsWith("RDAMVM");
+    }
+    /**
+     * Checks if the given playlist id is a YouTube Channel Mix (auto-generated playlist)
+     * Ids from a YouTube channel Mix start with "RDCM"
+     * @return Whether given id belongs to a YouTube Channel Mix
+     */
+    public static boolean isYoutubeChannelMixId(final String playlistId) {
+        return playlistId.startsWith("RDCM");
+    }
+
+    /**
+     * Extracts the video id from the playlist id for Mixes.
+     * @throws ParsingException If the playlistId is a Channel Mix or not a mix.
+     */
+    public static String extractVideoIdFromMixId(final String playlistId) throws ParsingException {
+        if (playlistId.startsWith("RDMM")) { //My Mix
+            return playlistId.substring(4);
+
+        } else if (playlistId.startsWith("RDAMVM")) { //Music mix
+            return playlistId.substring(6);
+
+        } else if (playlistId.startsWith("RMCM")) { //Channel mix
+            //Channel mix are build with RMCM{channelId}, so videoId can't be determined
+            throw new ParsingException("Video id could not be determined from mix id: " + playlistId);
+
+        } else if (playlistId.startsWith("RD")) { // Normal mix
+            return playlistId.substring(2);
+
+        } else { //not a mix
+            throw new ParsingException("Video id could not be determined from mix id: " + playlistId);
+        }
     }
 
     public static JsonObject getInitialData(String html) throws ParsingException {
@@ -362,7 +393,7 @@ public class YoutubeParsingHelper {
                 .end()
                 .value("query", "test")
                 .value("params", "Eg-KAQwIARAAGAAgACgAMABqChAEEAUQAxAKEAk%3D")
-            .end().done().getBytes(StandardCharsets.UTF_8);
+            .end().done().getBytes("UTF-8");
         // @formatter:on
 
         Map<String, List<String>> headers = new HashMap<>();
