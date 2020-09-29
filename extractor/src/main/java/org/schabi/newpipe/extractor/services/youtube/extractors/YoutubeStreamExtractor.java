@@ -957,6 +957,13 @@ public class YoutubeStreamExtractor extends StreamExtractor {
                 try {
                     ItagItem itagItem = ItagItem.getItag(itag);
                     if (itagItem.itagType == itagTypeWanted) {
+                        // Ignore streams that are delivered using YouTube's OTF format,
+                        // as those only work with DASH and not with progressive HTTP.
+                        if (formatData.getString("type", EMPTY_STRING)
+                                .equalsIgnoreCase("FORMAT_STREAM_TYPE_OTF")) {
+                            continue;
+                        }
+
                         String streamUrl;
                         if (formatData.has("url")) {
                             streamUrl = formatData.getString("url");
