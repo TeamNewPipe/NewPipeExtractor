@@ -633,10 +633,9 @@ public class YoutubeStreamExtractor extends StreamExtractor {
     @Override
     public void onFetchPage(@Nonnull Downloader downloader) throws IOException, ExtractionException {
         final String url = getUrl() + "&pbj=1";
+        final String playerUrl;
 
         initialAjaxJson = getJsonResponse(url, getExtractorLocalization());
-
-        final String playerUrl;
 
         if (initialAjaxJson.getObject(2).has("response")) { // age-restricted videos
             initialData = initialAjaxJson.getObject(2).getObject("response");
@@ -647,12 +646,31 @@ public class YoutubeStreamExtractor extends StreamExtractor {
             final String infoPageResponse = downloader.get(videoInfoUrl, getExtractorLocalization()).responseBody();
             videoInfoPage.putAll(Parser.compatParseMap(infoPageResponse));
             playerUrl = info.url;
-        } else {
-            initialData = initialAjaxJson.getObject(3).getObject("response");
-            ageLimit = NO_AGE_LIMIT;
 
-            playerArgs = getPlayerArgs(initialAjaxJson.getObject(2).getObject("player"));
-            playerUrl = getPlayerUrl(initialAjaxJson.getObject(2).getObject("player"));
+        } else {
+            ageLimit = NO_AGE_LIMIT;
+            JsonObject playerConfig;
+
+            // sometimes at random YouTube does not provide the player config,
+            // so just retry the same request three times
+            int attempts = 2;
+            while (true) {
+                playerConfig = initialAjaxJson.getObject(2).getObject("player", null);
+                if (playerConfig != null) {
+                    break;
+                }
+
+                if (attempts <= 0) {
+                    throw new ParsingException(
+                            "YouTube did not provide player config even after three attempts");
+                }
+                initialAjaxJson = getJsonResponse(url, getExtractorLocalization());
+                --attempts;
+            }
+            initialData = initialAjaxJson.getObject(3).getObject("response");
+
+            playerArgs = getPlayerArgs(playerConfig);
+            playerUrl = getPlayerUrl(playerConfig);
         }
 
         playerResponse = getPlayerResponse();
@@ -674,36 +692,27 @@ public class YoutubeStreamExtractor extends StreamExtractor {
         }
     }
 
-    private JsonObject getPlayerArgs(JsonObject playerConfig) throws ParsingException {
-        JsonObject playerArgs;
-
+    private JsonObject getPlayerArgs(final JsonObject playerConfig) throws ParsingException {
         //attempt to load the youtube js player JSON arguments
-        try {
-            playerArgs = playerConfig.getObject("args");
-        } catch (Exception e) {
-            throw new ParsingException("Could not parse yt player config", e);
+        final JsonObject playerArgs = playerConfig.getObject("args", null);
+        if (playerArgs == null) {
+            throw new ParsingException("Could not extract args from YouTube player config");
         }
-
         return playerArgs;
     }
 
-    private String getPlayerUrl(JsonObject playerConfig) throws ParsingException {
-        try {
-            // The Youtube service needs to be initialized by downloading the
-            // js-Youtube-player. This is done in order to get the algorithm
-            // for decrypting cryptic signatures inside certain stream urls.
-            String playerUrl;
+    private String getPlayerUrl(final JsonObject playerConfig) throws ParsingException {
+        // The Youtube service needs to be initialized by downloading the
+        // js-Youtube-player. This is done in order to get the algorithm
+        // for decrypting cryptic signatures inside certain stream URLs.
+        final String playerUrl = playerConfig.getObject("assets").getString("js");
 
-            JsonObject ytAssets = playerConfig.getObject("assets");
-            playerUrl = ytAssets.getString("js");
-
-            if (playerUrl.startsWith("//")) {
-                playerUrl = HTTPS + playerUrl;
-            }
-            return playerUrl;
-        } catch (Exception e) {
-            throw new ParsingException("Could not load decryption code for the Youtube service.", e);
+        if (playerUrl == null) {
+            throw new ParsingException("Could not extract js URL from YouTube player config");
+        } else if (playerUrl.startsWith("//")) {
+            return HTTPS + playerUrl;
         }
+        return playerUrl;
     }
 
     private JsonObject getPlayerResponse() throws ParsingException {
