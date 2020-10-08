@@ -30,6 +30,8 @@ public class YoutubeChannelLinkHandlerFactoryTest {
 
         assertTrue(linkHandler.acceptUrl("https://www.youtube.com/c/creatoracademy"));
 
+        assertTrue(linkHandler.acceptUrl("https://youtube.com/DIMENSI0N"));
+
         assertTrue(linkHandler.acceptUrl("https://www.youtube.com/channel/UClq42foiSgl7sSpLupnugGA"));
         assertTrue(linkHandler.acceptUrl("https://www.youtube.com/channel/UClq42foiSgl7sSpLupnugGA/videos?disable_polymer=1"));
 

@@ -49,6 +49,17 @@ public class YoutubeChannelLinkHandlerFactory extends ListLinkHandlerFactory {
         return "https://www.youtube.com/" + id;
     }
 
+    /**
+     * Returns true if path conform to
+     * custom short channel urls like youtube.com/yourcustomname
+     *
+     * @param splitPath path segments array
+     * @return true - if value conform to short channel url, false - not
+     */
+    public boolean isCustomShortChannelUrl(String[] splitPath) {
+        return splitPath.length == 1 && !splitPath[0].matches("playlist|watch");
+    }
+
     @Override
     public String getId(String url) throws ParsingException {
         try {
@@ -60,14 +71,20 @@ public class YoutubeChannelLinkHandlerFactory extends ListLinkHandlerFactory {
                 throw new ParsingException("the URL given is not a Youtube-URL");
             }
 
-            if (!path.startsWith("/user/") && !path.startsWith("/channel/") && !path.startsWith("/c/")) {
+            // remove leading "/"
+            path = path.substring(1);
+            String[] splitPath = path.split("/");
+
+            // Handle custom short channel urls like youtube.com/yourcustomname
+            if (isCustomShortChannelUrl(splitPath)) {
+                path = "c/" + path;
+                splitPath = path.split("/");
+            }
+
+            if (!path.startsWith("user/") && !path.startsWith("channel/") && !path.startsWith("c/")) {
                 throw new ParsingException("the URL given is neither a channel nor an user");
             }
 
-            // remove leading "/"
-            path = path.substring(1);
-
-            String[] splitPath = path.split("/");
             String id = splitPath[1];
 
             if (id == null || !id.matches("[A-Za-z0-9_-]+")) {
