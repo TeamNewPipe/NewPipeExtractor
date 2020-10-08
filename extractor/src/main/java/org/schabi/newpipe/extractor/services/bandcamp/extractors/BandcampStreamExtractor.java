@@ -20,11 +20,7 @@ import org.schabi.newpipe.extractor.stream.*;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.io.IOException;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.Date;
 import java.util.List;
 import java.util.Locale;
 
@@ -63,7 +59,7 @@ public class BandcampStreamExtractor extends StreamExtractor {
      */
     public static JsonObject getAlbumInfoJson(String html) throws ParsingException {
         try {
-            return BandcampExtractorHelper.getJSONFromJavaScriptVariables(html, "TralbumData");
+            return BandcampExtractorHelper.getJsonData(html, "data-tralbum");
         } catch (JsonParserException e) {
             throw new ParsingException("Faulty JSON; page likely does not contain album data", e);
         } catch (ArrayIndexOutOfBoundsException e) {
@@ -264,7 +260,9 @@ public class BandcampStreamExtractor extends StreamExtractor {
     @Override
     public String getCategory() {
         // Get first tag from html, which is the artist's Genre
-        return document.getElementsByAttributeValue("itemprop", "keywords").first().text();
+        return document
+                .getElementsByClass("tralbum-tags").first()
+                .getElementsByClass("tag").first().text();
     }
 
     @Nonnull

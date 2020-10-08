@@ -6,6 +6,8 @@ import com.grack.nanojson.JsonObject;
 import com.grack.nanojson.JsonParser;
 import com.grack.nanojson.JsonParserException;
 import com.grack.nanojson.JsonWriter;
+import org.jsoup.Jsoup;
+import org.jsoup.nodes.Document;
 import org.schabi.newpipe.extractor.NewPipe;
 import org.schabi.newpipe.extractor.exceptions.ParsingException;
 import org.schabi.newpipe.extractor.exceptions.ReCaptchaException;
@@ -20,7 +22,7 @@ import java.util.*;
 public class BandcampExtractorHelper {
 
     /**
-     * <p>Get JSON behind <code>var $variable = </code> out of web page</p>
+     * <p>Get an attribute of a web page as JSON
      *
      * <p>Originally a part of bandcampDirect.</p>
      *
@@ -29,35 +31,10 @@ public class BandcampExtractorHelper {
      * @param variable Name of the variable
      * @return The JsonObject stored in the variable with this name
      */
-    public static JsonObject getJSONFromJavaScriptVariables(String html, String variable) throws JsonParserException, ArrayIndexOutOfBoundsException, ParsingException {
-
-        String[] part = html.split("var " + variable + " = ");
-
-        String firstHalfGone = part[1];
-
-        firstHalfGone = firstHalfGone.replaceAll("\" \\+ \"", "");
-
-        int position = -1;
-        int level = 0;
-        for (char character : firstHalfGone.toCharArray()) {
-            position++;
-
-            switch (character) {
-                case '{':
-                    level++;
-                    continue;
-                case '}':
-                    level--;
-                    if (level == 0) {
-                        return JsonParser.object().from(firstHalfGone.substring(0, position + 1)
-                                .replaceAll(" {4}//.+", "") // Remove "for the curious" in JSON
-                                .replaceAll("// xxx: note - don't internationalize this variable", "") // Remove this comment
-                        );
-                    }
-            }
-        }
-
-        throw new ParsingException("Unexpected HTML: JSON never ends");
+    public static JsonObject getJsonData(String html, String variable) throws JsonParserException, ArrayIndexOutOfBoundsException, ParsingException {
+        Document document = Jsoup.parse(html);
+        String json = document.getElementsByAttribute(variable).attr(variable);
+        return JsonParser.object().from(json);
     }
 
     /**

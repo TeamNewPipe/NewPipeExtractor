@@ -21,7 +21,7 @@ import javax.annotation.Nonnull;
 import java.io.IOException;
 
 import static org.schabi.newpipe.extractor.services.bandcamp.extractors.BandcampExtractorHelper.getImageUrl;
-import static org.schabi.newpipe.extractor.services.bandcamp.extractors.BandcampExtractorHelper.getJSONFromJavaScriptVariables;
+import static org.schabi.newpipe.extractor.services.bandcamp.extractors.BandcampExtractorHelper.getJsonData;
 import static org.schabi.newpipe.extractor.services.bandcamp.extractors.BandcampStreamExtractor.getAlbumInfoJson;
 
 public class BandcampPlaylistExtractor extends PlaylistExtractor {
@@ -50,7 +50,7 @@ public class BandcampPlaylistExtractor extends PlaylistExtractor {
         trackInfo = albumJson.getArray("trackinfo");
 
         try {
-            name = getJSONFromJavaScriptVariables(html, "EmbedData").getString("album_title");
+            name = getJsonData(html, "data-embed").getString("album_title");
         } catch (JsonParserException e) {
             throw new ParsingException("Faulty JSON; page likely does not contain album data", e);
         } catch (ArrayIndexOutOfBoundsException e) {

@@ -25,7 +25,7 @@ public class BandcampChannelLinkHandlerFactory extends ListLinkHandlerFactory {
             String response = NewPipe.getDownloader().get(url).responseBody();
 
             // This variable contains band data!
-            JsonObject bandData = BandcampExtractorHelper.getJSONFromJavaScriptVariables(response, "BandData");
+            JsonObject bandData = BandcampExtractorHelper.getJsonData(response, "data-band");
 
             return String.valueOf(bandData.getLong("id"));
 
