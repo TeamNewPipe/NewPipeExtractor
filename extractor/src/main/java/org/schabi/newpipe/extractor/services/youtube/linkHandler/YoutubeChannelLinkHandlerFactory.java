@@ -56,8 +56,9 @@ public class YoutubeChannelLinkHandlerFactory extends ListLinkHandlerFactory {
      * @param splitPath path segments array
      * @return true - if value conform to short channel url, false - not
      */
-    public boolean isCustomShortChannelUrl(String[] splitPath) {
-        return splitPath.length == 1 && !splitPath[0].matches("playlist|watch");
+    private boolean isCustomShortChannelUrl(String[] splitPath) {
+        return splitPath.length == 1 &&
+          !splitPath[0].matches("playlist|watch|attribution_link");
     }
 
     @Override
