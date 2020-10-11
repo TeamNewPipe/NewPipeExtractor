@@ -25,6 +25,8 @@ import org.schabi.newpipe.extractor.utils.Utils;
 
 import javax.annotation.Nonnull;
 import java.io.IOException;
+import java.net.MalformedURLException;
+import java.net.URL;
 import java.net.URLEncoder;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -148,12 +150,21 @@ public class SoundcloudParsingHelper {
      *
      * @return the resolved id
      */
-    public static String resolveIdWithEmbedPlayer(String url) throws IOException, ReCaptchaException, ParsingException {
+    public static String resolveIdWithEmbedPlayer(String urlString) throws IOException, ReCaptchaException, ParsingException {
+        // Remove the tailing slash from URLs due to issues with the SoundCloud API
+        if (urlString.charAt(urlString.length() -1) == '/') urlString = urlString.substring(0, urlString.length()-1);
+
+        URL url;
+        try {
+            url = Utils.stringToURL(urlString);
+        } catch (MalformedURLException e){
+            throw new IllegalArgumentException("The given URL is not valid");
+        }
 
         String response = NewPipe.getDownloader().get("https://w.soundcloud.com/player/?url="
-                + URLEncoder.encode(url, "UTF-8"), SoundCloud.getLocalization()).responseBody();
+                + URLEncoder.encode(url.toString(), "UTF-8"), SoundCloud.getLocalization()).responseBody();
         // handle playlists / sets different and get playlist id via uir field in JSON
-        if (url.contains("sets") && !url.endsWith("sets") && !url.endsWith("sets/"))
+        if (url.getPath().contains("/sets/") && !url.getPath().endsWith("/sets"))
             return Parser.matchGroup1("\"uri\":\\s*\"https:\\/\\/api\\.soundcloud\\.com\\/playlists\\/((\\d)*?)\"", response);
         return Parser.matchGroup1(",\"id\":(([^}\\n])*?),", response);
     }
