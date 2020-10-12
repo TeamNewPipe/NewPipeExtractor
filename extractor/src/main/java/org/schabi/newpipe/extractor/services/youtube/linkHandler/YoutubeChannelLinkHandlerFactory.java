@@ -51,10 +51,10 @@ public class YoutubeChannelLinkHandlerFactory extends ListLinkHandlerFactory {
 
     /**
      * Returns true if path conform to
-     * custom short channel urls like youtube.com/yourcustomname
+     * custom short channel URLs like youtube.com/yourcustomname
      *
      * @param splitPath path segments array
-     * @return true - if value conform to short channel url, false - not
+     * @return true - if value conform to short channel URL, false - not
      */
     private boolean isCustomShortChannelUrl(String[] splitPath) {
         return splitPath.length == 1 &&
