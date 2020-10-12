@@ -58,7 +58,7 @@ public class YoutubeChannelLinkHandlerFactory extends ListLinkHandlerFactory {
      */
     private boolean isCustomShortChannelUrl(String[] splitPath) {
         return splitPath.length == 1 &&
-          !splitPath[0].matches("playlist|watch|attribution_link");
+          !splitPath[0].matches("playlist|watch|attribution_link|watch_popup|embed|feed");
     }
 
     @Override
