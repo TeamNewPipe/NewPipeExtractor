@@ -76,7 +76,7 @@ public class YoutubeChannelLinkHandlerFactory extends ListLinkHandlerFactory {
             path = path.substring(1);
             String[] splitPath = path.split("/");
 
-            // Handle custom short channel urls like youtube.com/yourcustomname
+            // Handle custom short channel URLs like youtube.com/yourcustomname
             if (isCustomShortChannelUrl(splitPath)) {
                 path = "c/" + path;
                 splitPath = path.split("/");
