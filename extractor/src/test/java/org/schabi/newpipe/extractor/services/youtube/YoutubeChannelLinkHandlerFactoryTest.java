@@ -48,7 +48,13 @@ public class YoutubeChannelLinkHandlerFactoryTest {
         assertTrue(linkHandler.acceptUrl("https://invidio.us/channel/UClq42foiSgl7sSpLupnugGA"));
         assertTrue(linkHandler.acceptUrl("https://invidio.us/channel/UClq42foiSgl7sSpLupnugGA/videos?disable_polymer=1"));
 
+        // do not accept URLs which are not channels
+        assertFalse(linkHandler.acceptUrl("https://www.youtube.com/watch?v=jZViOEv90dI&t=100"));
+        assertFalse(linkHandler.acceptUrl("http://www.youtube.com/watch_popup?v=uEJuoEs1UxY"));
         assertFalse(linkHandler.acceptUrl("http://www.youtube.com/attribution_link?a=JdfC0C9V6ZI&u=%2Fwatch%3Fv%3DEhxJLojIE_o%26feature%3Dshare"));
+        assertFalse(linkHandler.acceptUrl("https://www.youtube.com/playlist?list=PLW5y1tjAOzI3orQNF1yGGVL5x-pR2K1d"));
+        assertFalse(linkHandler.acceptUrl("https://www.youtube.com/embed/jZViOEv90dI"));
+        assertFalse(linkHandler.acceptUrl("https://www.youtube.com/feed/subscriptions?list=PLz8YL4HVC87WJQDzVoY943URKQCsHS9XV"));
     }
 
     @Test
