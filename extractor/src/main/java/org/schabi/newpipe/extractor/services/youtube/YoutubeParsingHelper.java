@@ -197,8 +197,13 @@ public class YoutubeParsingHelper {
 
     public static JsonObject getInitialData(String html) throws ParsingException {
         try {
-            String initialData = Parser.matchGroup1("window\\[\"ytInitialData\"\\]\\s*=\\s*(\\{.*?\\});", html);
-            return JsonParser.object().from(initialData);
+            try {
+                final String initialData = Parser.matchGroup1("window\\[\"ytInitialData\"\\]\\s*=\\s*(\\{.*?\\});", html);
+                return JsonParser.object().from(initialData);
+            } catch (Parser.RegexException e) {
+                final String initialData = Parser.matchGroup1("var\\s*ytInitialData\\s*=\\s*(\\{.*?\\});", html);
+                return JsonParser.object().from(initialData);
+            }
         } catch (JsonParserException | Parser.RegexException e) {
             throw new ParsingException("Could not get ytInitialData", e);
         }
