@@ -46,7 +46,7 @@ public class SoundcloudStreamExtractor extends StreamExtractor {
 
     @Override
     public void onFetchPage(@Nonnull Downloader downloader) throws IOException, ExtractionException {
-        track = SoundcloudParsingHelper.resolveFor(downloader, getOriginalUrl());
+        track = SoundcloudParsingHelper.resolveFor(downloader, getUrl());
 
         String policy = track.getString("policy", EMPTY_STRING);
         if (!policy.equals("ALLOW") && !policy.equals("MONETIZE")) {
