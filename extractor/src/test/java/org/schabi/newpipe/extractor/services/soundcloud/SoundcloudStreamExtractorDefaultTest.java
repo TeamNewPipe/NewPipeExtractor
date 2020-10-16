@@ -63,7 +63,7 @@ public class SoundcloudStreamExtractorDefaultTest {
 
         @Test
         public void testGetUploaderName() throws ParsingException {
-            assertEquals("LIL UZI VERT", extractor.getUploaderName());
+            assertEquals("Lil Uzi Vert", extractor.getUploaderName());
         }
 
         @Test
