@@ -21,16 +21,18 @@ import org.schabi.newpipe.extractor.services.soundcloud.extractors.SoundcloudStr
 import org.schabi.newpipe.extractor.stream.StreamInfoItemsCollector;
 import org.schabi.newpipe.extractor.utils.Parser;
 import org.schabi.newpipe.extractor.utils.Parser.RegexException;
-import org.schabi.newpipe.extractor.utils.Utils;
 
 import javax.annotation.Nonnull;
 import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLEncoder;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
-import java.util.*;
+import java.time.OffsetDateTime;
+import java.time.format.DateTimeFormatter;
+import java.time.format.DateTimeParseException;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.List;
 
 import static java.util.Collections.singletonList;
 import static org.schabi.newpipe.extractor.ServiceList.SoundCloud;
@@ -95,23 +97,16 @@ public class SoundcloudParsingHelper {
         }
     }
 
-    public static Calendar parseDateFrom(String textualUploadDate) throws ParsingException {
-        Date date;
+    public static OffsetDateTime parseDateFrom(String textualUploadDate) throws ParsingException {
         try {
-            SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss'Z'");
-            sdf.setTimeZone(TimeZone.getTimeZone("GMT"));
-            date = sdf.parse(textualUploadDate);
-        } catch (ParseException e1) {
+            return OffsetDateTime.parse(textualUploadDate);
+        } catch (DateTimeParseException e1) {
             try {
-                date = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss +0000").parse(textualUploadDate);
-            } catch (ParseException e2) {
+                return OffsetDateTime.parse(textualUploadDate, DateTimeFormatter.ofPattern("yyyy/MM/dd HH:mm:ss +0000"));
+            } catch (DateTimeParseException e2) {
                 throw new ParsingException("Could not parse date: \"" + textualUploadDate + "\"" + ", " + e1.getMessage(), e2);
             }
         }
-
-        final Calendar uploadDate = Calendar.getInstance();
-        uploadDate.setTime(date);
-        return uploadDate;
     }
 
     /**

@@ -12,11 +12,14 @@ import org.schabi.newpipe.extractor.stream.StreamType;
 import org.schabi.newpipe.extractor.utils.Utils;
 
 import javax.annotation.Nullable;
-import java.text.SimpleDateFormat;
-import java.util.Calendar;
-import java.util.Date;
+import java.time.Instant;
+import java.time.OffsetDateTime;
+import java.time.ZoneOffset;
+import java.time.format.DateTimeFormatter;
 
-import static org.schabi.newpipe.extractor.services.youtube.YoutubeParsingHelper.*;
+import static org.schabi.newpipe.extractor.services.youtube.YoutubeParsingHelper.fixThumbnailUrl;
+import static org.schabi.newpipe.extractor.services.youtube.YoutubeParsingHelper.getTextFromObject;
+import static org.schabi.newpipe.extractor.services.youtube.YoutubeParsingHelper.getUrlFromNavigationEndpoint;
 import static org.schabi.newpipe.extractor.utils.JsonUtils.EMPTY_STRING;
 import static org.schabi.newpipe.extractor.utils.Utils.isNullOrEmpty;
 
@@ -165,8 +168,7 @@ public class YoutubeStreamInfoItemExtractor implements StreamInfoItemExtractor {
         }
 
         if (isPremiere()) {
-            final Date date = getDateFromPremiere().getTime();
-            return new SimpleDateFormat("yyyy-MM-dd HH:mm").format(date);
+            return DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm").format(getDateFromPremiere());
         }
 
         final String publishedTimeText = getTextFromObject(videoInfo.getObject("publishedTimeText"));
@@ -250,15 +252,13 @@ public class YoutubeStreamInfoItemExtractor implements StreamInfoItemExtractor {
         return videoInfo.has("upcomingEventData");
     }
 
-    private Calendar getDateFromPremiere() throws ParsingException {
+    private OffsetDateTime getDateFromPremiere() throws ParsingException {
         final JsonObject upcomingEventData = videoInfo.getObject("upcomingEventData");
         final String startTime = upcomingEventData.getString("startTime");
 
         try {
-            final long startTimeTimestamp = Long.parseLong(startTime);
-            final Calendar calendar = Calendar.getInstance();
-            calendar.setTime(new Date(startTimeTimestamp * 1000L));
-            return calendar;
+            return OffsetDateTime.ofInstant(Instant.ofEpochSecond(Long.parseLong(startTime)),
+                    ZoneOffset.UTC);
         } catch (Exception e) {
             throw new ParsingException("Could not parse date from premiere:  \"" + startTime + "\"");
         }

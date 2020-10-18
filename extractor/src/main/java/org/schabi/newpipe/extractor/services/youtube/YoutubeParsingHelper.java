@@ -5,7 +5,6 @@ import com.grack.nanojson.JsonObject;
 import com.grack.nanojson.JsonParser;
 import com.grack.nanojson.JsonParserException;
 import com.grack.nanojson.JsonWriter;
-
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.schabi.newpipe.extractor.downloader.Response;
@@ -22,13 +21,18 @@ import java.io.UnsupportedEncodingException;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLDecoder;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
-import java.util.*;
+import java.time.OffsetDateTime;
+import java.time.format.DateTimeParseException;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 import static org.schabi.newpipe.extractor.NewPipe.getDownloader;
 import static org.schabi.newpipe.extractor.utils.JsonUtils.EMPTY_STRING;
-import static org.schabi.newpipe.extractor.utils.Utils.*;
+import static org.schabi.newpipe.extractor.utils.Utils.HTTP;
+import static org.schabi.newpipe.extractor.utils.Utils.HTTPS;
+import static org.schabi.newpipe.extractor.utils.Utils.isNullOrEmpty;
 
 /*
  * Created by Christian Schabesberger on 02.03.16.
@@ -176,19 +180,12 @@ public class YoutubeParsingHelper {
         }
     }
 
-    public static Calendar parseDateFrom(String textualUploadDate) throws ParsingException {
-        final Date date;
+    public static OffsetDateTime parseDateFrom(String textualUploadDate) throws ParsingException {
         try {
-            final SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
-            sdf.setTimeZone(TimeZone.getTimeZone("GMT"));
-            date = sdf.parse(textualUploadDate);
-        } catch (ParseException e) {
+            return OffsetDateTime.parse(textualUploadDate);
+        } catch (DateTimeParseException e) {
             throw new ParsingException("Could not parse date: \"" + textualUploadDate + "\"", e);
         }
-
-        final Calendar uploadDate = Calendar.getInstance();
-        uploadDate.setTime(date);
-        return uploadDate;
     }
 
     public static JsonObject getInitialData(String html) throws ParsingException {
