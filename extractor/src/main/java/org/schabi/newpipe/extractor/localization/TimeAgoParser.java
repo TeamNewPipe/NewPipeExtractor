@@ -2,9 +2,9 @@ package org.schabi.newpipe.extractor.localization;
 
 import org.schabi.newpipe.extractor.exceptions.ParsingException;
 import org.schabi.newpipe.extractor.timeago.PatternsHolder;
-import org.schabi.newpipe.extractor.timeago.TimeAgoUnit;
 import org.schabi.newpipe.extractor.utils.Parser;
 
+import java.time.temporal.ChronoUnit;
 import java.util.Calendar;
 import java.util.Collection;
 import java.util.Map;
@@ -42,14 +42,14 @@ public class TimeAgoParser {
      * @throws ParsingException if the time unit could not be recognized
      */
     public DateWrapper parse(String textualDate) throws ParsingException {
-        for (Map.Entry<TimeAgoUnit, Map<String, Integer>> caseUnitEntry : patternsHolder.specialCases().entrySet()) {
-            final TimeAgoUnit timeAgoUnit = caseUnitEntry.getKey();
+        for (Map.Entry<ChronoUnit, Map<String, Integer>> caseUnitEntry : patternsHolder.specialCases().entrySet()) {
+            final ChronoUnit chronoUnit = caseUnitEntry.getKey();
             for (Map.Entry<String, Integer> caseMapToAmountEntry : caseUnitEntry.getValue().entrySet()) {
                 final String caseText = caseMapToAmountEntry.getKey();
                 final Integer caseAmount = caseMapToAmountEntry.getValue();
 
                 if (textualDateMatches(textualDate, caseText)) {
-                    return getResultFor(caseAmount, timeAgoUnit);
+                    return getResultFor(caseAmount, chronoUnit);
                 }
             }
         }
@@ -63,8 +63,8 @@ public class TimeAgoParser {
             timeAgoAmount = 1;
         }
 
-        final TimeAgoUnit timeAgoUnit = parseTimeAgoUnit(textualDate);
-        return getResultFor(timeAgoAmount, timeAgoUnit);
+        final ChronoUnit chronoUnit = parseChronoUnit(textualDate);
+        return getResultFor(timeAgoAmount, chronoUnit);
     }
 
     private int parseTimeAgoAmount(String textualDate) throws NumberFormatException {
@@ -72,13 +72,13 @@ public class TimeAgoParser {
         return Integer.parseInt(timeValueStr);
     }
 
-    private TimeAgoUnit parseTimeAgoUnit(String textualDate) throws ParsingException {
-        for (Map.Entry<TimeAgoUnit, Collection<String>> entry : patternsHolder.asMap().entrySet()) {
-            final TimeAgoUnit timeAgoUnit = entry.getKey();
+    private ChronoUnit parseChronoUnit(String textualDate) throws ParsingException {
+        for (Map.Entry<ChronoUnit, Collection<String>> entry : patternsHolder.asMap().entrySet()) {
+            final ChronoUnit chronoUnit = entry.getKey();
 
             for (String agoPhrase : entry.getValue()) {
                 if (textualDateMatches(textualDate, agoPhrase)) {
-                    return timeAgoUnit;
+                    return chronoUnit;
                 }
             }
         }
@@ -112,11 +112,11 @@ public class TimeAgoParser {
         }
     }
 
-    private DateWrapper getResultFor(int timeAgoAmount, TimeAgoUnit timeAgoUnit) {
+    private DateWrapper getResultFor(int timeAgoAmount, ChronoUnit chronoUnit) {
         final Calendar calendarTime = getNow();
         boolean isApproximation = false;
 
-        switch (timeAgoUnit) {
+        switch (chronoUnit) {
             case SECONDS:
                 calendarTime.add(Calendar.SECOND, -timeAgoAmount);
                 break;

@@ -5,7 +5,8 @@
 package org.schabi.newpipe.extractor.timeago.patterns;
 
 import org.schabi.newpipe.extractor.timeago.PatternsHolder;
-import org.schabi.newpipe.extractor.timeago.TimeAgoUnit;
+
+import java.time.temporal.ChronoUnit;
 
 public class iw extends PatternsHolder {
     private static final String WORD_SEPARATOR = " ";
@@ -26,10 +27,10 @@ public class iw extends PatternsHolder {
 
     private iw() {
         super(WORD_SEPARATOR, SECONDS, MINUTES, HOURS, DAYS, WEEKS, MONTHS, YEARS);
-        putSpecialCase(TimeAgoUnit.HOURS, "שעתיים", 2);
-        putSpecialCase(TimeAgoUnit.DAYS, "יומיים", 2);
-        putSpecialCase(TimeAgoUnit.WEEKS, "שבועיים", 2);
-        putSpecialCase(TimeAgoUnit.MONTHS, "חודשיים", 2);
-        putSpecialCase(TimeAgoUnit.YEARS, "שנתיים", 2);
+        putSpecialCase(ChronoUnit.HOURS, "שעתיים", 2);
+        putSpecialCase(ChronoUnit.DAYS, "יומיים", 2);
+        putSpecialCase(ChronoUnit.WEEKS, "שבועיים", 2);
+        putSpecialCase(ChronoUnit.MONTHS, "חודשיים", 2);
+        putSpecialCase(ChronoUnit.YEARS, "שנתיים", 2);
     }
 }
