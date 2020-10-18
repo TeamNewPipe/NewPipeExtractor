@@ -81,6 +81,7 @@ public class YoutubeStreamLinkHandlerFactoryTest {
         assertEquals("jZViOEv90dI", linkHandler.fromUrl("vnd.youtube:jZViOEv90dI").getId());
         assertEquals("n8X9_MgEdCg", linkHandler.fromUrl("vnd.youtube://n8X9_MgEdCg").getId());
         assertEquals("O0EDx9WAelc", linkHandler.fromUrl("https://music.youtube.com/watch?v=O0EDx9WAelc").getId());
+        assertEquals("IOS2fqxwYbA", linkHandler.fromUrl("http://www.youtube.com/shorts/IOS2fqxwYbA").getId());
     }
 
     @Test
@@ -101,6 +102,7 @@ public class YoutubeStreamLinkHandlerFactoryTest {
         assertTrue(linkHandler.acceptUrl("vnd.youtube:jZViOEv90dI"));
         assertTrue(linkHandler.acceptUrl("vnd.youtube.launch:jZViOEv90dI"));
         assertTrue(linkHandler.acceptUrl("https://music.youtube.com/watch?v=O0EDx9WAelc"));
+        assertTrue(linkHandler.acceptUrl("https://www.youtube.com/shorts/IOS2fqxwYbA"));
     }
 
     @Test
