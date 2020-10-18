@@ -153,7 +153,7 @@ public class YoutubeStreamLinkHandlerFactory extends LinkHandlerFactory {
                     return assertIsId(viewQueryValue);
                 }
 
-                if (path.startsWith("embed/")) {
+                if (path.startsWith("embed/") || path.startsWith("shorts/")) {
                     String id = path.split("/")[1];
 
                     return assertIsId(id);
