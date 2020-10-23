@@ -33,6 +33,9 @@ public class YoutubeChannelLinkHandlerFactory extends ListLinkHandlerFactory {
 
     private static final YoutubeChannelLinkHandlerFactory instance = new YoutubeChannelLinkHandlerFactory();
 
+    private static final Pattern excludedSegments =
+      Pattern.compile("playlist|watch|attribution_link|watch_popup|embed|feed|select_site");
+
     public static YoutubeChannelLinkHandlerFactory getInstance() {
         return instance;
     }
@@ -49,8 +52,7 @@ public class YoutubeChannelLinkHandlerFactory extends ListLinkHandlerFactory {
     public String getUrl(String id, List<String> contentFilters, String searchFilter) {
         return "https://www.youtube.com/" + id;
     }
-
-
+    
     /**
      * Returns true if path conform to
      * custom short channel URLs like youtube.com/yourcustomname
@@ -61,9 +63,6 @@ public class YoutubeChannelLinkHandlerFactory extends ListLinkHandlerFactory {
     private boolean isCustomShortChannelUrl(final String[] splitPath) {
         return splitPath.length == 1 && !excludedSegments.matcher(splitPath[0]).matches();
     }
-
-  private static final Pattern excludedSegments =
-    Pattern.compile("playlist|watch|attribution_link|watch_popup|embed|feed|select_site");
 
     @Override
     public String getId(String url) throws ParsingException {
