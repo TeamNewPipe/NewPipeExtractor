@@ -12,9 +12,9 @@ public final class MediaCCCParsingHelper {
     private MediaCCCParsingHelper() { }
 
     public static Calendar parseDateFrom(final String textualUploadDate) throws ParsingException {
-        Date date;
+        final Date date;
         try {
-            SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+            final SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
             sdf.setTimeZone(TimeZone.getTimeZone("GMT"));
             date = sdf.parse(textualUploadDate);
         } catch (ParseException e) {

@@ -38,6 +38,7 @@ import java.util.List;
 import java.util.Locale;
 
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 
 public class PeertubeStreamExtractor extends StreamExtractor {
     private final String baseUrl;
@@ -113,7 +114,7 @@ public class PeertubeStreamExtractor extends StreamExtractor {
 
     @Override
     public long getTimeStamp() throws ParsingException {
-        long timestamp =
+        final long timestamp =
                 getTimestampSeconds("((#|&|\\?)start=\\d{0,3}h?\\d{0,3}m?\\d{1,3}s?)");
 
         if (timestamp == -2) {
@@ -261,19 +262,24 @@ public class PeertubeStreamExtractor extends StreamExtractor {
         return StreamType.VIDEO_STREAM;
     }
 
+    @Nullable
     @Override
     public StreamInfoItemsCollector getRelatedStreams() throws IOException, ExtractionException {
-        final StreamInfoItemsCollector collector = new StreamInfoItemsCollector(getServiceId());
         final List<String> tags = getTags();
         final String apiUrl;
-        if (!tags.isEmpty()) {
-            apiUrl = getRelatedStreamsUrl(tags);
-
-        } else {
+        if (tags.isEmpty()) {
             apiUrl = getUploaderUrl() + "/videos?start=0&count=8";
+        } else {
+            apiUrl = getRelatedStreamsUrl(tags);
         }
-        if (!Utils.isBlank(apiUrl)) getStreamsFromApi(collector, apiUrl);
-        return collector;
+
+        if (Utils.isBlank(apiUrl)) {
+            return null;
+        } else {
+            final StreamInfoItemsCollector collector = new StreamInfoItemsCollector(getServiceId());
+            getStreamsFromApi(collector, apiUrl);
+            return collector;
+        }
     }
 
     @Nonnull

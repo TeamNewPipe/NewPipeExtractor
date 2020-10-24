@@ -96,7 +96,8 @@ public class PeertubeAccountExtractor extends ChannelExtractor {
     }
 
     @Override
-    public InfoItemsPage<StreamInfoItem> getPage(final Page page) throws IOException, ExtractionException {
+    public InfoItemsPage<StreamInfoItem> getPage(final Page page)
+            throws IOException, ExtractionException {
         if (page == null || isNullOrEmpty(page.getUrl())) {
             throw new IllegalArgumentException("Page doesn't contain an URL");
         }
@@ -126,7 +127,8 @@ public class PeertubeAccountExtractor extends ChannelExtractor {
     }
 
     @Override
-    public void onFetchPage(@Nonnull Downloader downloader) throws IOException, ExtractionException {
+    public void onFetchPage(@Nonnull final Downloader downloader)
+            throws IOException, ExtractionException {
         String accountUrl = baseUrl + PeertubeChannelLinkHandlerFactory.API_ENDPOINT;
         if (getId().contains("accounts/")) {
             accountUrl += getId();

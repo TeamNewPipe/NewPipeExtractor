@@ -30,6 +30,7 @@ import java.util.List;
 import java.util.Locale;
 
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 
 public class MediaCCCStreamExtractor extends StreamExtractor {
     private JsonObject data;
@@ -217,6 +218,7 @@ public class MediaCCCStreamExtractor extends StreamExtractor {
         return StreamType.VIDEO_STREAM;
     }
 
+    @Nullable
     @Override
     public StreamInfoItemsCollector getRelatedStreams() {
         return null;

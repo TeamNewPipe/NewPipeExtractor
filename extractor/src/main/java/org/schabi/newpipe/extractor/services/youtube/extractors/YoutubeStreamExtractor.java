@@ -576,11 +576,14 @@ public class YoutubeStreamExtractor extends StreamExtractor {
         }
     }
 
+    @Nullable
     @Override
     public StreamInfoItemsCollector getRelatedStreams() throws ExtractionException {
         assertPageFetched();
 
-        if (getAgeLimit() != NO_AGE_LIMIT) return null;
+        if (getAgeLimit() != NO_AGE_LIMIT) {
+            return null;
+        }
 
         try {
             final StreamInfoItemsCollector collector = new StreamInfoItemsCollector(getServiceId());

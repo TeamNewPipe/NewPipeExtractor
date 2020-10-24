@@ -33,6 +33,7 @@ import java.util.List;
 import java.util.Locale;
 
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 
 import static org.schabi.newpipe.extractor.utils.JsonUtils.EMPTY_STRING;
 import static org.schabi.newpipe.extractor.utils.Utils.isNullOrEmpty;
@@ -262,6 +263,7 @@ public class SoundcloudStreamExtractor extends StreamExtractor {
         return StreamType.AUDIO_STREAM;
     }
 
+    @Nullable
     @Override
     public StreamInfoItemsCollector getRelatedStreams() throws IOException, ExtractionException {
         final StreamInfoItemsCollector collector = new StreamInfoItemsCollector(getServiceId());
