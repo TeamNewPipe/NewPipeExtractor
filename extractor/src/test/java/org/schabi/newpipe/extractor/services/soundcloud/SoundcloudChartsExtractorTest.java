@@ -8,7 +8,7 @@ import org.schabi.newpipe.extractor.exceptions.ParsingException;
 import org.schabi.newpipe.extractor.services.BaseListExtractorTest;
 import org.schabi.newpipe.extractor.services.soundcloud.extractors.SoundcloudChartsExtractor;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
 import static org.schabi.newpipe.extractor.ServiceList.SoundCloud;
 import static org.schabi.newpipe.extractor.services.DefaultTests.*;
 

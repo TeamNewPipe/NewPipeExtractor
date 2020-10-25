@@ -6,14 +6,17 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.TimeZone;
 
 public final class MediaCCCParsingHelper {
     private MediaCCCParsingHelper() { }
 
     public static Calendar parseDateFrom(final String textualUploadDate) throws ParsingException {
-        Date date;
+        final Date date;
         try {
-            date = new SimpleDateFormat("yyyy-MM-dd").parse(textualUploadDate);
+            final SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+            sdf.setTimeZone(TimeZone.getTimeZone("GMT"));
+            date = sdf.parse(textualUploadDate);
         } catch (ParseException e) {
             throw new ParsingException("Could not parse date: \"" + textualUploadDate + "\"", e);
         }

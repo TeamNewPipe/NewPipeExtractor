@@ -253,7 +253,15 @@ public class YoutubeStreamExtractor extends StreamExtractor {
      */
     @Override
     public long getTimeStamp() throws ParsingException {
-        return getTimestampSeconds("((#|&|\\?)(t|start)=\\d{0,3}h?\\d{0,3}m?\\d{1,3}s?)");
+        final long timestamp =
+                getTimestampSeconds("((#|&|\\?)t=\\d{0,3}h?\\d{0,3}m?\\d{1,3}s?)");
+
+        if (timestamp == -2) {
+            // regex for timestamp was not found
+            return 0;
+        } else {
+            return timestamp;
+        }
     }
 
     @Override
@@ -568,11 +576,14 @@ public class YoutubeStreamExtractor extends StreamExtractor {
         }
     }
 
+    @Nullable
     @Override
     public StreamInfoItemsCollector getRelatedStreams() throws ExtractionException {
         assertPageFetched();
 
-        if (getAgeLimit() != NO_AGE_LIMIT) return null;
+        if (getAgeLimit() != NO_AGE_LIMIT) {
+            return null;
+        }
 
         try {
             final StreamInfoItemsCollector collector = new StreamInfoItemsCollector(getServiceId());
@@ -604,10 +615,11 @@ public class YoutubeStreamExtractor extends StreamExtractor {
     @Override
     public String getErrorMessage() {
         try {
-            return getTextFromObject(initialAjaxJson.getObject(2).getObject("playerResponse").getObject("playabilityStatus")
-                    .getObject("errorScreen").getObject("playerErrorMessageRenderer").getObject("reason"));
-        } catch (ParsingException e) {
-            return null;
+            return getTextFromObject(initialAjaxJson.getObject(2).getObject("playerResponse")
+                    .getObject("playabilityStatus").getObject("errorScreen")
+                    .getObject("playerErrorMessageRenderer").getObject("reason"));
+        } catch (ParsingException | NullPointerException e) {
+            return null; // no error message
         }
     }
 
@@ -999,12 +1011,18 @@ public class YoutubeStreamExtractor extends StreamExtractor {
     @Override
     public List<Frameset> getFrames() throws ExtractionException {
         try {
-            JsonObject jo = initialAjaxJson.getObject(2).getObject("player");
-            final String resp = jo.getObject("args").getString("player_response");
-            jo = JsonParser.object().from(resp);
-            final String[] spec = jo.getObject("storyboards").getObject("playerStoryboardSpecRenderer").getString("spec").split("\\|");
+            final JsonObject storyboards = playerResponse.getObject("storyboards");
+            final JsonObject storyboardsRenderer;
+            if (storyboards.has("playerLiveStoryboardSpecRenderer")) {
+                storyboardsRenderer = storyboards.getObject("playerLiveStoryboardSpecRenderer");
+            } else {
+                storyboardsRenderer = storyboards.getObject("playerStoryboardSpecRenderer");
+            }
+
+            final String[] spec = storyboardsRenderer.getString("spec").split("\\|");
             final String url = spec[0];
             final ArrayList<Frameset> result = new ArrayList<>(spec.length - 1);
+
             for (int i = 1; i < spec.length; ++i) {
                 final String[] parts = spec[i].split("#");
                 if (parts.length != 8) {
@@ -1074,7 +1092,7 @@ public class YoutubeStreamExtractor extends StreamExtractor {
     @Nonnull
     @Override
     public List<String> getTags() {
-        return new ArrayList<>();
+        return Collections.emptyList();
     }
 
     @Nonnull

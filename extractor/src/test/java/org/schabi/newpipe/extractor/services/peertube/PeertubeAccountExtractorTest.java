@@ -28,7 +28,7 @@ public class PeertubeAccountExtractorTest {
             // setting instance might break test when running in parallel
             PeerTube.setInstance(new PeertubeInstance("https://peertube.mastodon.host", "PeerTube on Mastodon.host"));
             extractor = (PeertubeAccountExtractor) PeerTube
-                    .getChannelExtractor("https://peertube.mastodon.host/api/v1/accounts/kde");
+                    .getChannelExtractor("https://peertube.mastodon.host/accounts/kde");
             extractor.fetchPage();
         }
 
@@ -53,7 +53,7 @@ public class PeertubeAccountExtractorTest {
 
         @Test
         public void testUrl() throws ParsingException {
-            assertEquals("https://peertube.mastodon.host/api/v1/accounts/kde", extractor.getUrl());
+            assertEquals("https://peertube.mastodon.host/accounts/kde", extractor.getUrl());
         }
 
         @Test
@@ -115,7 +115,7 @@ public class PeertubeAccountExtractorTest {
             // setting instance might break test when running in parallel
             PeerTube.setInstance(new PeertubeInstance("https://peertube.mastodon.host", "PeerTube on Mastodon.host"));
             extractor = (PeertubeAccountExtractor) PeerTube
-                    .getChannelExtractor("https://peertube.mastodon.host/accounts/booteille");
+                    .getChannelExtractor("https://peertube.mastodon.host/api/v1/accounts/booteille");
             extractor.fetchPage();
         }
 
@@ -150,12 +150,12 @@ public class PeertubeAccountExtractorTest {
 
         @Test
         public void testUrl() throws ParsingException {
-            assertEquals("https://peertube.mastodon.host/api/v1/accounts/booteille", extractor.getUrl());
+            assertEquals("https://peertube.mastodon.host/accounts/booteille", extractor.getUrl());
         }
 
         @Test
         public void testOriginalUrl() throws ParsingException {
-            assertEquals("https://peertube.mastodon.host/accounts/booteille", extractor.getOriginalUrl());
+            assertEquals("https://peertube.mastodon.host/api/v1/accounts/booteille", extractor.getOriginalUrl());
         }
 
         /*//////////////////////////////////////////////////////////////////////////

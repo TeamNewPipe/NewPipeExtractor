@@ -28,7 +28,7 @@ public class PeertubeChannelExtractorTest {
             // setting instance might break test when running in parallel
             PeerTube.setInstance(new PeertubeInstance("https://peertube.mastodon.host", "PeerTube on Mastodon.host"));
             extractor = (PeertubeChannelExtractor) PeerTube
-                    .getChannelExtractor("https://peertube.mastodon.host/api/v1/video-channels/7682d9f2-07be-4622-862e-93ec812e2ffa");
+                    .getChannelExtractor("https://peertube.mastodon.host/video-channels/7682d9f2-07be-4622-862e-93ec812e2ffa");
             extractor.fetchPage();
         }
 
@@ -53,7 +53,7 @@ public class PeertubeChannelExtractorTest {
 
         @Test
         public void testUrl() throws ParsingException {
-            assertEquals("https://peertube.mastodon.host/api/v1/video-channels/7682d9f2-07be-4622-862e-93ec812e2ffa", extractor.getUrl());
+            assertEquals("https://peertube.mastodon.host/video-channels/7682d9f2-07be-4622-862e-93ec812e2ffa", extractor.getUrl());
         }
 
         @Test
@@ -130,7 +130,7 @@ public class PeertubeChannelExtractorTest {
             // setting instance might break test when running in parallel
             PeerTube.setInstance(new PeertubeInstance("https://peertube.mastodon.host", "PeerTube on Mastodon.host"));
             extractor = (PeertubeChannelExtractor) PeerTube
-                    .getChannelExtractor("https://peertube.mastodon.host/video-channels/35080089-79b6-45fc-96ac-37e4d46a4457");
+                    .getChannelExtractor("https://peertube.mastodon.host/api/v1/video-channels/35080089-79b6-45fc-96ac-37e4d46a4457");
             extractor.fetchPage();
         }
 
@@ -165,12 +165,12 @@ public class PeertubeChannelExtractorTest {
 
         @Test
         public void testUrl() throws ParsingException {
-            assertEquals("https://peertube.mastodon.host/api/v1/video-channels/35080089-79b6-45fc-96ac-37e4d46a4457", extractor.getUrl());
+            assertEquals("https://peertube.mastodon.host/video-channels/35080089-79b6-45fc-96ac-37e4d46a4457", extractor.getUrl());
         }
 
         @Test
         public void testOriginalUrl() throws ParsingException {
-            assertEquals("https://peertube.mastodon.host/video-channels/35080089-79b6-45fc-96ac-37e4d46a4457", extractor.getOriginalUrl());
+            assertEquals("https://peertube.mastodon.host/api/v1/video-channels/35080089-79b6-45fc-96ac-37e4d46a4457", extractor.getOriginalUrl());
         }
 
         /*//////////////////////////////////////////////////////////////////////////

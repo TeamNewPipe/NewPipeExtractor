@@ -13,12 +13,15 @@ import org.schabi.newpipe.extractor.exceptions.ExtractionException;
 import org.schabi.newpipe.extractor.exceptions.ParsingException;
 import org.schabi.newpipe.extractor.linkhandler.ListLinkHandler;
 import org.schabi.newpipe.extractor.services.peertube.PeertubeParsingHelper;
+import org.schabi.newpipe.extractor.services.peertube.linkHandler.PeertubeChannelLinkHandlerFactory;
 import org.schabi.newpipe.extractor.stream.StreamInfoItem;
 import org.schabi.newpipe.extractor.stream.StreamInfoItemsCollector;
 import org.schabi.newpipe.extractor.utils.JsonUtils;
 import org.schabi.newpipe.extractor.utils.Utils;
 
 import java.io.IOException;
+
+import javax.annotation.Nonnull;
 
 import static org.schabi.newpipe.extractor.services.peertube.PeertubeParsingHelper.COUNT_KEY;
 import static org.schabi.newpipe.extractor.services.peertube.PeertubeParsingHelper.ITEMS_PER_PAGE;
@@ -92,10 +95,11 @@ public class PeertubeChannelExtractor extends ChannelExtractor {
         return baseUrl + value;
     }
 
+    @Nonnull
     @Override
     public InfoItemsPage<StreamInfoItem> getInitialPage() throws IOException, ExtractionException {
-        final String pageUrl = getUrl() + "/videos?" + START_KEY + "=0&" + COUNT_KEY + "=" + ITEMS_PER_PAGE;
-        return getPage(new Page(pageUrl));
+        return getPage(new Page(
+                getUrl() + "/videos?" + START_KEY + "=0&" + COUNT_KEY + "=" + ITEMS_PER_PAGE));
     }
 
     @Override
@@ -130,7 +134,8 @@ public class PeertubeChannelExtractor extends ChannelExtractor {
 
     @Override
     public void onFetchPage(final Downloader downloader) throws IOException, ExtractionException {
-        final Response response = downloader.get(getUrl());
+        final Response response = downloader.get(
+                baseUrl + PeertubeChannelLinkHandlerFactory.API_ENDPOINT + getId());
         if (response != null && response.responseBody() != null) {
             setInitialData(response.responseBody());
         } else {
@@ -147,13 +152,9 @@ public class PeertubeChannelExtractor extends ChannelExtractor {
         if (json == null) throw new ExtractionException("Unable to extract PeerTube channel data");
     }
 
+    @Nonnull
     @Override
     public String getName() throws ParsingException {
         return JsonUtils.getString(json, "displayName");
-    }
-
-    @Override
-    public String getOriginalUrl() throws ParsingException {
-        return baseUrl + "/" + getId();
     }
 }

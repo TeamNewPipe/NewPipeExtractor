@@ -183,9 +183,11 @@ public class YoutubeParsingHelper {
     }
 
     public static Calendar parseDateFrom(String textualUploadDate) throws ParsingException {
-        Date date;
+        final Date date;
         try {
-            date = new SimpleDateFormat("yyyy-MM-dd").parse(textualUploadDate);
+            final SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+            sdf.setTimeZone(TimeZone.getTimeZone("GMT"));
+            date = sdf.parse(textualUploadDate);
         } catch (ParseException e) {
             throw new ParsingException("Could not parse date: \"" + textualUploadDate + "\"", e);
         }
