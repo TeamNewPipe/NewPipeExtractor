@@ -62,48 +62,6 @@ public class YoutubeStreamExtractorDefaultTest {
         }
     }
 
-    public static class AdeleHello extends DefaultStreamExtractorTest {
-        private static final String ID = "YQHsXMglC9A";
-        private static final String URL = BASE_URL + ID;
-        private static StreamExtractor extractor;
-
-        @BeforeClass
-        public static void setUp() throws Exception {
-            NewPipe.init(DownloaderTestImpl.getInstance());
-            extractor = YouTube.getStreamExtractor(URL);
-            extractor.fetchPage();
-        }
-
-        @Test
-        @Override
-        public void testUploaderUrl() throws ParsingException {
-            String url = extractor().getUploaderUrl();
-            if (!url.equals("https://www.youtube.com/channel/UCsRM0YB_dabtEPGPTKo-gcw") &&
-                    !url.equals("https://www.youtube.com/channel/UComP_epzeKzvBX156r6pm1Q")) {
-                fail("Uploader url is neither the music channel one nor the Vevo one");
-            }
-        }
-
-        @Override public StreamExtractor extractor() { return extractor; }
-        @Override public StreamingService expectedService() { return YouTube; }
-        @Override public String expectedName() { return "Adele - Hello"; }
-        @Override public String expectedId() { return ID; }
-        @Override public String expectedUrlContains() { return URL; }
-        @Override public String expectedOriginalUrlContains() { return URL; }
-
-        @Override public StreamType expectedStreamType() { return StreamType.VIDEO_STREAM; }
-        @Override public String expectedUploaderName() { return "Adele"; }
-        @Override public String expectedUploaderUrl() { return null; } // overridden above
-        @Override public List<String> expectedDescriptionContains() { return Arrays.asList("http://adele.com", "https://www.facebook.com/Adele"); }
-        @Override public long expectedLength() { return 367; }
-        @Override public long expectedViewCountAtLeast() { return 1220025784; }
-        @Nullable @Override public String expectedUploadDate() { return "2015-10-22 00:00:00.000"; }
-        @Nullable @Override public String expectedTextualUploadDate() { return "2015-10-22"; }
-        @Override public long expectedLikeCountAtLeast() { return 15289000; }
-        @Override public long expectedDislikeCountAtLeast() { return 826000; }
-        @Override public boolean expectedHasSubtitles() { return false; }
-    }
-
     public static class DescriptionTestPewdiepie extends DefaultStreamExtractorTest {
         private static final String ID = "7PIMiDcwNvc";
         private static final int TIMESTAMP = 17;
