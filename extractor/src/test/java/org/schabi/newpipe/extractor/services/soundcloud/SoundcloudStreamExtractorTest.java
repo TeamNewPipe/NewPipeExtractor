@@ -19,9 +19,9 @@ import static org.schabi.newpipe.extractor.ServiceList.SoundCloud;
 
 public class SoundcloudStreamExtractorTest {
 
-    public static class LilUziVertDoWhatIWant extends DefaultStreamExtractorTest {
-        private static final String ID = "do-what-i-want-produced-by-maaly-raw-don-cannon";
-        private static final String UPLOADER = "https://soundcloud.com/liluzivert";
+    public static class CreativeCommonsPlaysWellWithOthers extends DefaultStreamExtractorTest {
+        private static final String ID = "plays-well-with-others-ep-2-what-do-an-army-of-ants-and-an-online-encyclopedia-have-in-common";
+        private static final String UPLOADER = "https://soundcloud.com/wearecc";
         private static final int TIMESTAMP = 69;
         private static final String URL = UPLOADER + "/" + ID + "#t=" + TIMESTAMP;
         private static StreamExtractor extractor;
@@ -35,20 +35,21 @@ public class SoundcloudStreamExtractorTest {
 
         @Override public StreamExtractor extractor() { return extractor; }
         @Override public StreamingService expectedService() { return SoundCloud; }
-        @Override public String expectedName() { return "Do What I Want [Produced By Maaly Raw + Don Cannon]"; }
-        @Override public String expectedId() { return "276206960"; }
+        @Override public String expectedName() { return "Plays Well with Others, Ep 2: What Do an Army of Ants and an Online Encyclopedia Have in Common?"; }
+        @Override public String expectedId() { return "597253485"; }
         @Override public String expectedUrlContains() { return UPLOADER + "/" + ID; }
         @Override public String expectedOriginalUrlContains() { return URL; }
 
         @Override public StreamType expectedStreamType() { return StreamType.AUDIO_STREAM; }
-        @Override public String expectedUploaderName() { return "Lil Uzi Vert"; }
+        @Override public String expectedUploaderName() { return "Creative Commons"; }
         @Override public String expectedUploaderUrl() { return UPLOADER; }
-        @Override public List<String> expectedDescriptionContains() { return Arrays.asList("The Perfect LUV Tape®"); }
-        @Override public long expectedLength() { return 175; }
+        @Override public List<String> expectedDescriptionContains() { return Arrays.asList("Stigmergy is a mechanism of indirect coordination",
+                "All original content in Plays Well with Others is available under a Creative Commons BY license."); }
+        @Override public long expectedLength() { return 1400; }
         @Override public long expectedTimestamp() { return TIMESTAMP; }
-        @Override public long expectedViewCountAtLeast() { return 75413600; }
-        @Nullable @Override public String expectedUploadDate() { return "2016-07-31 18:18:07.000"; }
-        @Nullable @Override public String expectedTextualUploadDate() { return "2016-07-31 18:18:07"; }
+        @Override public long expectedViewCountAtLeast() { return 27000; }
+        @Nullable @Override public String expectedUploadDate() { return "2019-03-28 13:36:18.000"; }
+        @Nullable @Override public String expectedTextualUploadDate() { return "2019-03-28 13:36:18"; }
         @Override public long expectedLikeCountAtLeast() { return -1; }
         @Override public long expectedDislikeCountAtLeast() { return -1; }
         @Override public boolean expectedHasVideoStreams() { return false; }
@@ -56,26 +57,4 @@ public class SoundcloudStreamExtractorTest {
         @Override public boolean expectedHasFrames() { return false; }
     }
 
-    public static class ContentNotSupported {
-        @BeforeClass
-        public static void setUp() {
-            NewPipe.init(DownloaderTestImpl.getInstance());
-        }
-
-        @Test(expected = ContentNotSupportedException.class)
-        public void hlsAudioStream() throws Exception {
-            final StreamExtractor extractor =
-                    SoundCloud.getStreamExtractor("https://soundcloud.com/dualipa/cool");
-            extractor.fetchPage();
-            extractor.getAudioStreams();
-        }
-
-        @Test(expected = ContentNotSupportedException.class)
-        public void bothHlsAndOpusAudioStreams() throws Exception {
-            final StreamExtractor extractor =
-                    SoundCloud.getStreamExtractor("https://soundcloud.com/lil-baby-4pf/no-sucker");
-            extractor.fetchPage();
-            extractor.getAudioStreams();
-        }
-    }
 }
