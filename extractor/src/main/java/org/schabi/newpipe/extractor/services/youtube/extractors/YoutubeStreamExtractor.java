@@ -3,6 +3,10 @@ package org.schabi.newpipe.extractor.services.youtube.extractors;
 import com.grack.nanojson.JsonArray;
 import com.grack.nanojson.JsonObject;
 import com.grack.nanojson.JsonParser;
+import org.jsoup.Jsoup;
+import org.jsoup.nodes.Document;
+import org.jsoup.nodes.Element;
+import org.jsoup.select.Elements;
 import org.mozilla.javascript.Context;
 import org.mozilla.javascript.Function;
 import org.mozilla.javascript.ScriptableObject;
@@ -740,11 +744,30 @@ public class YoutubeStreamExtractor extends StreamExtractor {
             final String embedPageContent = downloader.get(embedUrl, getExtractorLocalization()).responseBody();
 
             // Get player url
-            final String assetsPattern = "\"assets\":.+?\"js\":\\s*(\"[^\"]+\")";
-            String playerUrl = Parser.matchGroup1(assetsPattern, embedPageContent)
-                    .replace("\\", "").replace("\"", "");
+            String playerUrl = null;
+            try {
+                final String assetsPattern = "\"assets\":.+?\"js\":\\s*(\"[^\"]+\")";
+                playerUrl = Parser.matchGroup1(assetsPattern, embedPageContent)
+                        .replace("\\", "").replace("\"", "");
+            } catch (Parser.RegexException ex) {
+                // playerUrl is still available in the file, just somewhere else
+                final Document doc = Jsoup.parse(embedPageContent);
+                final Elements elems = doc.select("script").attr("name", "player_ias/base");
+                for (Element elem : elems) {
+                    if (elem.attr("src").contains("base.js")) {
+                        playerUrl = elem.attr("src");
+                    }
+                }
+
+                if (playerUrl == null) {
+                    throw new ParsingException("Could not get playerUrl");
+                }
+            }
+
             if (playerUrl.startsWith("//")) {
                 playerUrl = HTTPS + playerUrl;
+            } else if (playerUrl.startsWith("/")) {
+                playerUrl = HTTPS + "//youtube.com" + playerUrl;
             }
 
             try {
