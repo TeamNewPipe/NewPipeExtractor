@@ -100,6 +100,7 @@ public class YoutubeStreamExtractor extends StreamExtractor {
     private JsonObject videoPrimaryInfoRenderer;
     private JsonObject videoSecondaryInfoRenderer;
     private int ageLimit;
+    private boolean newJsonScheme;
 
     @Nonnull
     private List<SubtitlesInfo> subtitlesInfos = new ArrayList<>();
@@ -664,27 +665,23 @@ public class YoutubeStreamExtractor extends StreamExtractor {
         } else {
             ageLimit = NO_AGE_LIMIT;
             JsonObject playerConfig;
-
-            // sometimes at random YouTube does not provide the player config,
-            // so just retry the same request three times
-            int attempts = 2;
-            while (true) {
-                playerConfig = initialAjaxJson.getObject(2).getObject("player", null);
-                if (playerConfig != null) {
-                    break;
-                }
-
-                if (attempts <= 0) {
-                    throw new ParsingException(
-                            "YouTube did not provide player config even after three attempts");
-                }
-                initialAjaxJson = getJsonResponse(url, getExtractorLocalization());
-                --attempts;
-            }
             initialData = initialAjaxJson.getObject(3).getObject("response");
 
-            playerArgs = getPlayerArgs(playerConfig);
-            playerUrl = getPlayerUrl(playerConfig);
+            // sometimes at random YouTube does not provide the player config
+            playerConfig = initialAjaxJson.getObject(2).getObject("player", null);
+
+            if (playerConfig == null) {
+                newJsonScheme = true;
+                final EmbeddedInfo info = getEmbeddedInfo();
+                final String videoInfoUrl = getVideoInfoUrl(getId(), info.sts);
+                final String infoPageResponse = downloader.get(videoInfoUrl, getExtractorLocalization()).responseBody();
+                videoInfoPage.putAll(Parser.compatParseMap(infoPageResponse));
+                playerUrl = info.url;
+            } else {
+                playerArgs = getPlayerArgs(playerConfig);
+                playerUrl = getPlayerUrl(playerConfig);
+            }
+
         }
 
         playerResponse = getPlayerResponse();
@@ -732,6 +729,10 @@ public class YoutubeStreamExtractor extends StreamExtractor {
     private JsonObject getPlayerResponse() throws ParsingException {
         try {
             String playerResponseStr;
+            if (newJsonScheme) {
+                return initialAjaxJson.getObject(2).getObject("playerResponse");
+            }
+
             if (playerArgs != null) {
                 playerResponseStr = playerArgs.getString("player_response");
             } else {
@@ -751,11 +752,30 @@ public class YoutubeStreamExtractor extends StreamExtractor {
             final String embedPageContent = downloader.get(embedUrl, getExtractorLocalization()).responseBody();
 
             // Get player url
-            final String assetsPattern = "\"assets\":.+?\"js\":\\s*(\"[^\"]+\")";
-            String playerUrl = Parser.matchGroup1(assetsPattern, embedPageContent)
-                    .replace("\\", "").replace("\"", "");
+            String playerUrl = null;
+            try {
+                final String assetsPattern = "\"assets\":.+?\"js\":\\s*(\"[^\"]+\")";
+                playerUrl = Parser.matchGroup1(assetsPattern, embedPageContent)
+                        .replace("\\", "").replace("\"", "");
+            } catch (Parser.RegexException ex) {
+                // playerUrl is still available in the file, just somewhere else
+                final Document doc = Jsoup.parse(embedPageContent);
+                final Elements elems = doc.select("script").attr("name", "player_ias/base");
+                for (Element elem : elems) {
+                    if (elem.attr("src").contains("base.js")) {
+                        playerUrl = elem.attr("src");
+                    }
+                }
+
+                if (playerUrl == null) {
+                    throw new ParsingException("Could not get playerUrl");
+                }
+            }
+
             if (playerUrl.startsWith("//")) {
                 playerUrl = HTTPS + playerUrl;
+            } else if (playerUrl.startsWith("/")) {
+                playerUrl = HTTPS + "//youtube.com" + playerUrl;
             }
 
             try {
