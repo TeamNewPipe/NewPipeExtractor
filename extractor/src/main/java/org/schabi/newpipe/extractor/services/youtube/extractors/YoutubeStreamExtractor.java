@@ -637,7 +637,7 @@ public class YoutubeStreamExtractor extends StreamExtractor {
     private static final String FORMATS = "formats";
     private static final String ADAPTIVE_FORMATS = "adaptiveFormats";
     private static final String HTTPS = "https:";
-    private static final String DEOBFUSCATION_FUNC_NAME = "decrypt";
+    private static final String DEOBFUSCATION_FUNC_NAME = "deobfuscate";
 
     private final static String[] REGEXES = {
             "(?:\\b|[^a-zA-Z0-9$])([a-zA-Z0-9$]{2})\\s*=\\s*function\\(\\s*a\\s*\\)\\s*\\{\\s*a\\s*=\\s*a\\.split\\(\\s*\"\"\\s*\\)",
@@ -794,7 +794,7 @@ public class YoutubeStreamExtractor extends StreamExtractor {
 
         } catch (IOException e) {
             throw new ParsingException(
-                    "Could load deobfuscation code form restricted video for the Youtube service.", e);
+                    "Could not load deobfuscation code from YouTube video embed", e);
         }
     }
 
@@ -839,8 +839,8 @@ public class YoutubeStreamExtractor extends StreamExtractor {
         final Object result;
         try {
             final ScriptableObject scope = context.initSafeStandardObjects();
-            context.evaluateString(scope, deobfuscationCode, "decryptionCode", 1, null);
-            final Function deobfuscateFunc = (Function) scope.get("decrypt", scope);
+            context.evaluateString(scope, deobfuscationCode, "deobfuscationCode", 1, null);
+            final Function deobfuscateFunc = (Function) scope.get(DEOBFUSCATION_FUNC_NAME, scope);
             result = deobfuscateFunc.call(context, scope, scope, new Object[]{obfuscatedSig});
         } catch (Exception e) {
             throw new DeobfuscateException("Could not get deobfuscate signature", e);
