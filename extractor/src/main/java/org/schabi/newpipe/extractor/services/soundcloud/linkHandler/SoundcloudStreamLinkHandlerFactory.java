@@ -30,8 +30,6 @@ public class SoundcloudStreamLinkHandlerFactory extends LinkHandlerFactory {
     @Override
     public String getId(String url) throws ParsingException {
         Utils.checkUrl(URL_PATTERN, url);
-        // Remove the tailing slash from URLs due to issues with the SoundCloud API
-        if (url.charAt(url.length() -1) == '/') url = url.substring(0, url.length()-1);
 
         try {
             return SoundcloudParsingHelper.resolveIdWithEmbedPlayer(url);
