@@ -3,7 +3,6 @@ package org.schabi.newpipe.extractor.services.peertube.extractors;
 import com.grack.nanojson.JsonObject;
 import com.grack.nanojson.JsonParser;
 import com.grack.nanojson.JsonParserException;
-
 import org.schabi.newpipe.extractor.Page;
 import org.schabi.newpipe.extractor.StreamingService;
 import org.schabi.newpipe.extractor.channel.ChannelExtractor;
@@ -19,14 +18,10 @@ import org.schabi.newpipe.extractor.stream.StreamInfoItemsCollector;
 import org.schabi.newpipe.extractor.utils.JsonUtils;
 import org.schabi.newpipe.extractor.utils.Utils;
 
+import javax.annotation.Nonnull;
 import java.io.IOException;
 
-import javax.annotation.Nonnull;
-
-import static org.schabi.newpipe.extractor.services.peertube.PeertubeParsingHelper.COUNT_KEY;
-import static org.schabi.newpipe.extractor.services.peertube.PeertubeParsingHelper.ITEMS_PER_PAGE;
-import static org.schabi.newpipe.extractor.services.peertube.PeertubeParsingHelper.START_KEY;
-import static org.schabi.newpipe.extractor.services.peertube.PeertubeParsingHelper.collectStreamsFrom;
+import static org.schabi.newpipe.extractor.services.peertube.PeertubeParsingHelper.*;
 import static org.schabi.newpipe.extractor.utils.Utils.isNullOrEmpty;
 
 
@@ -99,7 +94,7 @@ public class PeertubeChannelExtractor extends ChannelExtractor {
     @Override
     public InfoItemsPage<StreamInfoItem> getInitialPage() throws IOException, ExtractionException {
         return getPage(new Page(
-                getUrl() + "/videos?" + START_KEY + "=0&" + COUNT_KEY + "=" + ITEMS_PER_PAGE));
+                baseUrl + "/api/v1/" + getId() + "/videos?" + START_KEY + "=0&" + COUNT_KEY + "=" + ITEMS_PER_PAGE));
     }
 
     @Override

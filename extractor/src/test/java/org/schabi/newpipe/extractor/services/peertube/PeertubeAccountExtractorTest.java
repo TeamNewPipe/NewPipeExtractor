@@ -89,10 +89,9 @@ public class PeertubeAccountExtractorTest {
             assertIsSecureUrl(extractor.getAvatarUrl());
         }
 
-        @Ignore
         @Test
-        public void testBannerUrl() throws ParsingException {
-            assertIsSecureUrl(extractor.getBannerUrl());
+        public void testBannerUrl() {
+            assertNull(extractor.getBannerUrl());
         }
 
         @Test
