@@ -62,6 +62,21 @@ public class FileUtils {
     }
 
     /**
+     * Resolves the test resource file based on its filename. Looks in
+     * {@code extractor/src/test/resources/} and {@code src/test/resources/}
+     * @param filename the resource filename
+     * @return the resource file
+     */
+    public static File resolveTestResource(final String filename) {
+        final File file = new File("extractor/src/test/resources/" + filename);
+        if (file.exists()) {
+            return file;
+        } else {
+            return new File("src/test/resources/" + filename);
+        }
+    }
+
+    /**
      * Convert a JSON object to String
      * toString() does not produce a valid JSON string
      */
