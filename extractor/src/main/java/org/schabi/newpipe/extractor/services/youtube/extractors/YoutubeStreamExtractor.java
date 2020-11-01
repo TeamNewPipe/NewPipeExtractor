@@ -43,11 +43,11 @@ import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
-import java.text.SimpleDateFormat;
+import java.time.LocalDate;
+import java.time.OffsetDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
-import java.util.Calendar;
 import java.util.Collections;
-import java.util.Date;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -157,23 +157,24 @@ public class YoutubeStreamExtractor extends StreamExtractor {
 
             try { // Premiered 20 hours ago
                 TimeAgoParser timeAgoParser = TimeAgoPatternsManager.getTimeAgoParserFor(Localization.fromLocalizationCode("en"));
-                Calendar parsedTime = timeAgoParser.parse(time).date();
-                return new SimpleDateFormat("yyyy-MM-dd").format(parsedTime.getTime());
+                OffsetDateTime parsedTime = timeAgoParser.parse(time).offsetDateTime();
+                return DateTimeFormatter.ISO_LOCAL_DATE.format(parsedTime);
             } catch (Exception ignored) {
             }
 
             try { // Premiered Feb 21, 2020
-                Date d = new SimpleDateFormat("MMM dd, YYYY", Locale.ENGLISH).parse(time);
-                return new SimpleDateFormat("yyyy-MM-dd").format(d.getTime());
+                LocalDate localDate = LocalDate.parse(time,
+                        DateTimeFormatter.ofPattern("MMM dd, YYYY", Locale.ENGLISH));
+                return DateTimeFormatter.ISO_LOCAL_DATE.format(localDate);
             } catch (Exception ignored) {
             }
         }
 
         try {
             // TODO: this parses English formatted dates only, we need a better approach to parse the textual date
-            Date d = new SimpleDateFormat("dd MMM yyyy", Locale.ENGLISH).parse(
-                    getTextFromObject(getVideoPrimaryInfoRenderer().getObject("dateText")));
-            return new SimpleDateFormat("yyyy-MM-dd").format(d);
+            LocalDate localDate = LocalDate.parse(getTextFromObject(getVideoPrimaryInfoRenderer().getObject("dateText")),
+                    DateTimeFormatter.ofPattern("dd MMM yyyy", Locale.ENGLISH));
+            return DateTimeFormatter.ISO_LOCAL_DATE.format(localDate);
         } catch (Exception ignored) {
         }
         throw new ParsingException("Could not get upload date");

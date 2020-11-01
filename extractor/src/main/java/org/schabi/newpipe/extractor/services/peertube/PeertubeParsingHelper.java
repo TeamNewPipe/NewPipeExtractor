@@ -2,7 +2,6 @@ package org.schabi.newpipe.extractor.services.peertube;
 
 import com.grack.nanojson.JsonArray;
 import com.grack.nanojson.JsonObject;
-
 import org.schabi.newpipe.extractor.InfoItemsCollector;
 import org.schabi.newpipe.extractor.Page;
 import org.schabi.newpipe.extractor.exceptions.ContentNotAvailableException;
@@ -12,11 +11,10 @@ import org.schabi.newpipe.extractor.utils.JsonUtils;
 import org.schabi.newpipe.extractor.utils.Parser;
 import org.schabi.newpipe.extractor.utils.Utils;
 
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
-import java.util.Calendar;
-import java.util.Date;
-import java.util.TimeZone;
+import java.time.Instant;
+import java.time.OffsetDateTime;
+import java.time.ZoneOffset;
+import java.time.format.DateTimeParseException;
 
 public class PeertubeParsingHelper {
     public static final String START_KEY = "start";
@@ -34,19 +32,12 @@ public class PeertubeParsingHelper {
         }
     }
 
-    public static Calendar parseDateFrom(final String textualUploadDate) throws ParsingException {
-        final Date date;
+    public static OffsetDateTime parseDateFrom(final String textualUploadDate) throws ParsingException {
         try {
-            final SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.S'Z'");
-            sdf.setTimeZone(TimeZone.getTimeZone("GMT"));
-            date = sdf.parse(textualUploadDate);
-        } catch (ParseException e) {
+            return OffsetDateTime.ofInstant(Instant.parse(textualUploadDate), ZoneOffset.UTC);
+        } catch (DateTimeParseException e) {
             throw new ParsingException("Could not parse date: \"" + textualUploadDate + "\"", e);
         }
-
-        final Calendar uploadDate = Calendar.getInstance();
-        uploadDate.setTime(date);
-        return uploadDate;
     }
 
     public static Page getNextPage(final String prevPageUrl, final long total) {

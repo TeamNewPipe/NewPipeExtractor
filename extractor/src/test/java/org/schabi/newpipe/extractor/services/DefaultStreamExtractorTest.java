@@ -12,14 +12,12 @@ import org.schabi.newpipe.extractor.stream.StreamType;
 import org.schabi.newpipe.extractor.stream.SubtitlesStream;
 import org.schabi.newpipe.extractor.stream.VideoStream;
 
-import java.text.SimpleDateFormat;
-import java.util.Calendar;
+import javax.annotation.Nullable;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.Collections;
 import java.util.List;
 import java.util.Locale;
-import java.util.TimeZone;
-
-import javax.annotation.Nullable;
 
 import static org.hamcrest.CoreMatchers.containsString;
 import static org.hamcrest.MatcherAssert.assertThat;
@@ -171,13 +169,11 @@ public abstract class DefaultStreamExtractorTest extends DefaultExtractorTest<St
         } else {
             assertNotNull(dateWrapper);
 
-            final Calendar expectedDate = Calendar.getInstance();
-            final Calendar actualDate = dateWrapper.date();
+            final LocalDateTime expectedDateTime = LocalDateTime.parse(expectedUploadDate(),
+                    DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss.SSS"));
+            final LocalDateTime actualDateTime = dateWrapper.offsetDateTime().toLocalDateTime();
 
-            final SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.S");
-            sdf.setTimeZone(TimeZone.getTimeZone("GMT"));
-            expectedDate.setTime(sdf.parse(expectedUploadDate()));
-            assertEquals(expectedDate, actualDate);
+            assertEquals(expectedDateTime, actualDateTime);
         }
     }
 
