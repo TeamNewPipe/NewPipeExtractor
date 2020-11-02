@@ -28,8 +28,7 @@ public class DateWrapper implements Serializable {
      */
     @Deprecated
     public DateWrapper(@NonNull Calendar calendar, boolean isApproximation) {
-        offsetDateTime = OffsetDateTime.ofInstant(calendar.toInstant(), ZoneOffset.UTC);
-        this.isApproximation = isApproximation;
+        this(OffsetDateTime.ofInstant(calendar.toInstant(), ZoneOffset.UTC), isApproximation);
     }
 
     public DateWrapper(@NonNull OffsetDateTime offsetDateTime) {
