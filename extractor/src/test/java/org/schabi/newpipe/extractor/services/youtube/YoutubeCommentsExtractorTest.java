@@ -24,31 +24,25 @@ import static org.schabi.newpipe.extractor.ServiceList.YouTube;
 
 public class YoutubeCommentsExtractorTest {
     /**
-     * Test a "normal" YouTube and Invidious page
+     * Test a "normal" YouTube
      */
     public static class Thomas {
-        private static final String urlYT = "https://www.youtube.com/watch?v=D00Au7k3i6o";
-        private static final String urlInvidious = "https://invidio.us/watch?v=D00Au7k3i6o";
-        private static YoutubeCommentsExtractor extractorYT;
-        private static YoutubeCommentsExtractor extractorInvidious;
+        private static final String url = "https://www.youtube.com/watch?v=D00Au7k3i6o";
+        private static YoutubeCommentsExtractor extractor;
 
         private static final String commentContent = "sub 4 sub";
 
         @BeforeClass
         public static void setUp() throws Exception {
             NewPipe.init(DownloaderTestImpl.getInstance());
-            extractorYT = (YoutubeCommentsExtractor) YouTube
-                    .getCommentsExtractor(urlYT);
-            extractorYT.fetchPage();
-            extractorInvidious = (YoutubeCommentsExtractor) YouTube
-                    .getCommentsExtractor(urlInvidious);
-            extractorInvidious.fetchPage();
+            extractor = (YoutubeCommentsExtractor) YouTube
+                    .getCommentsExtractor(url);
+            extractor.fetchPage();
         }
 
         @Test
         public void testGetComments() throws IOException, ExtractionException {
-            assertTrue(getCommentsHelper(extractorYT));
-            assertTrue(getCommentsHelper(extractorInvidious));
+            assertTrue(getCommentsHelper(extractor));
         }
 
         private boolean getCommentsHelper(YoutubeCommentsExtractor extractor) throws IOException, ExtractionException {
@@ -65,8 +59,7 @@ public class YoutubeCommentsExtractorTest {
 
         @Test
         public void testGetCommentsFromCommentsInfo() throws IOException, ExtractionException {
-            assertTrue(getCommentsFromCommentsInfoHelper(urlYT));
-            assertTrue(getCommentsFromCommentsInfoHelper(urlInvidious));
+            assertTrue(getCommentsFromCommentsInfoHelper(url));
         }
 
         private boolean getCommentsFromCommentsInfoHelper(String url) throws IOException, ExtractionException {
@@ -87,7 +80,7 @@ public class YoutubeCommentsExtractorTest {
 
         @Test
         public void testGetCommentsAllData() throws IOException, ExtractionException {
-            InfoItemsPage<CommentsInfoItem> comments = extractorYT.getInitialPage();
+            InfoItemsPage<CommentsInfoItem> comments = extractor.getInitialPage();
 
             DefaultTests.defaultTestListOfItems(YouTube, comments.getItems(), comments.getErrors());
             for (CommentsInfoItem c : comments.getItems()) {
