@@ -3,9 +3,8 @@ package org.schabi.newpipe.extractor.timeago;
 import java.time.temporal.ChronoUnit;
 import java.util.Collection;
 import java.util.LinkedHashMap;
+import java.util.List;
 import java.util.Map;
-
-import static java.util.Arrays.asList;
 
 public abstract class PatternsHolder {
     private final String wordSeparator;
@@ -34,8 +33,8 @@ public abstract class PatternsHolder {
 
     protected PatternsHolder(String wordSeparator, String[] seconds, String[] minutes, String[] hours, String[] days,
                              String[] weeks, String[] months, String[] years) {
-        this(wordSeparator, asList(seconds), asList(minutes), asList(hours), asList(days),
-                asList(weeks), asList(months), asList(years));
+        this(wordSeparator, List.of(seconds), List.of(minutes), List.of(hours), List.of(days),
+                List.of(weeks), List.of(months), List.of(years));
     }
 
     public String wordSeparator() {
@@ -81,15 +80,14 @@ public abstract class PatternsHolder {
     }
 
     public Map<ChronoUnit, Collection<String>> asMap() {
-        final Map<ChronoUnit, Collection<String>> returnMap = new LinkedHashMap<>();
-        returnMap.put(ChronoUnit.SECONDS, seconds());
-        returnMap.put(ChronoUnit.MINUTES, minutes());
-        returnMap.put(ChronoUnit.HOURS, hours());
-        returnMap.put(ChronoUnit.DAYS, days());
-        returnMap.put(ChronoUnit.WEEKS, weeks());
-        returnMap.put(ChronoUnit.MONTHS, months());
-        returnMap.put(ChronoUnit.YEARS, years());
-
-        return returnMap;
+        return Map.of(
+                ChronoUnit.SECONDS, seconds(),
+                ChronoUnit.MINUTES, minutes(),
+                ChronoUnit.HOURS, hours(),
+                ChronoUnit.DAYS, days(),
+                ChronoUnit.WEEKS, weeks(),
+                ChronoUnit.MONTHS, months(),
+                ChronoUnit.YEARS, years()
+        );
     }
 }
