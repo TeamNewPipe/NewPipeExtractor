@@ -137,18 +137,27 @@ public class YoutubeStreamExtractor extends StreamExtractor {
         return title;
     }
 
+    @Nullable
     @Override
     public String getTextualUploadDate() throws ParsingException {
-        if (getStreamType().equals(StreamType.LIVE_STREAM)) {
-            return null;
-        }
-
-        JsonObject micro = playerResponse.getObject("microformat").getObject("playerMicroformatRenderer");
-        if (micro.isString("uploadDate") && !micro.getString("uploadDate").isEmpty()) {
+        final JsonObject micro =
+                playerResponse.getObject("microformat").getObject("playerMicroformatRenderer");
+        if (!micro.getString("uploadDate", EMPTY_STRING).isEmpty()) {
             return micro.getString("uploadDate");
-        }
-        if (micro.isString("publishDate") && !micro.getString("publishDate").isEmpty()) {
+        } else if (!micro.getString("publishDate", EMPTY_STRING).isEmpty()) {
             return micro.getString("publishDate");
+        } else {
+            final JsonObject liveDetails = micro.getObject("liveBroadcastDetails");
+            if (!liveDetails.getString("endTimestamp", EMPTY_STRING).isEmpty()) {
+                // an ended live stream
+                return liveDetails.getString("endTimestamp");
+            } else if (!liveDetails.getString("startTimestamp", EMPTY_STRING).isEmpty()) {
+                // a running live stream
+                return liveDetails.getString("startTimestamp");
+            } else if (getStreamType() == StreamType.LIVE_STREAM) {
+                // this should never be reached, but a live stream without upload date is valid
+                return null;
+            }
         }
 
         if (getTextFromObject(getVideoPrimaryInfoRenderer().getObject("dateText")).startsWith("Premiered")) {
@@ -176,6 +185,7 @@ public class YoutubeStreamExtractor extends StreamExtractor {
             return DateTimeFormatter.ISO_LOCAL_DATE.format(localDate);
         } catch (Exception ignored) {
         }
+
         throw new ParsingException("Could not get upload date");
     }
 
@@ -597,16 +607,13 @@ public class YoutubeStreamExtractor extends StreamExtractor {
     }
 
     @Override
-    public StreamType getStreamType() throws ParsingException {
+    public StreamType getStreamType() {
         assertPageFetched();
-        try {
-            return playerResponse.getObject("videoDetails").getBoolean("isLiveContent")
-                    ? StreamType.LIVE_STREAM : StreamType.VIDEO_STREAM;
-        } catch (Exception e) {
-            throw new ParsingException("Could not get stream type", e);
-        }
+        return playerResponse.getObject("streamingData").has(FORMATS)
+                ? StreamType.VIDEO_STREAM : StreamType.LIVE_STREAM;
     }
 
+    @Nullable
     private StreamInfoItemExtractor getNextStream() throws ExtractionException {
         try {
             final JsonObject firstWatchNextItem = initialData.getObject("contents")
