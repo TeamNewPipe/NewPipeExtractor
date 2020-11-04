@@ -5,8 +5,6 @@ import org.schabi.newpipe.extractor.services.peertube.PeertubeService;
 import org.schabi.newpipe.extractor.services.soundcloud.SoundcloudService;
 import org.schabi.newpipe.extractor.services.youtube.YoutubeService;
 
-import java.util.Arrays;
-import java.util.Collections;
 import java.util.List;
 
 /*
@@ -35,22 +33,16 @@ public final class ServiceList {
         //no instance
     }
 
-    public static final YoutubeService YouTube;
-    public static final SoundcloudService SoundCloud;
-    public static final MediaCCCService MediaCCC;
-    public static final PeertubeService PeerTube;
+    public static final YoutubeService YouTube = new YoutubeService(0);
+    public static final SoundcloudService SoundCloud = new SoundcloudService(1);
+    public static final MediaCCCService MediaCCC = new MediaCCCService(2);
+    public static final PeertubeService PeerTube = new PeertubeService(3);
 
     /**
      * When creating a new service, put this service in the end of this list,
      * and give it the next free id.
      */
-    private static final List<StreamingService> SERVICES = Collections.unmodifiableList(
-            Arrays.asList(
-                    YouTube = new YoutubeService(0),
-                    SoundCloud = new SoundcloudService(1),
-                    MediaCCC = new MediaCCCService(2),
-                    PeerTube = new PeertubeService(3)
-            ));
+    private static final List<StreamingService> SERVICES = List.of(YouTube, SoundCloud, MediaCCC, PeerTube);
 
     /**
      * Get all the supported services.
