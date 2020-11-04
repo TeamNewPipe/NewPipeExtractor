@@ -17,14 +17,13 @@ import org.schabi.newpipe.extractor.subscription.SubscriptionExtractor;
 
 import java.util.List;
 
-import static java.util.Arrays.asList;
 import static org.schabi.newpipe.extractor.StreamingService.ServiceInfo.MediaCapability.AUDIO;
 import static org.schabi.newpipe.extractor.StreamingService.ServiceInfo.MediaCapability.COMMENTS;
 
 public class SoundcloudService extends StreamingService {
 
     public SoundcloudService(int id) {
-        super(id, "SoundCloud", asList(AUDIO, COMMENTS));
+        super(id, "SoundCloud", List.of(AUDIO, COMMENTS));
     }
 
     @Override

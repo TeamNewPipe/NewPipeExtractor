@@ -19,7 +19,6 @@ import org.schabi.newpipe.extractor.suggestion.SuggestionExtractor;
 import org.schabi.newpipe.extractor.utils.Utils;
 
 import javax.annotation.Nullable;
-import java.util.Collections;
 import java.util.List;
 
 /*
@@ -53,11 +52,11 @@ public abstract class StreamingService {
         /**
          * Creates a new instance of a ServiceInfo
          * @param name the name of the service
-         * @param mediaCapabilities the type of media this service can handle
+         * @param mediaCapabilities the type of media this service can handle, has to be an immutable list
          */
         public ServiceInfo(String name, List<MediaCapability> mediaCapabilities) {
             this.name = name;
-            this.mediaCapabilities = Collections.unmodifiableList(mediaCapabilities);
+            this.mediaCapabilities = mediaCapabilities;
         }
 
         public String getName() {
@@ -95,7 +94,7 @@ public abstract class StreamingService {
      * All other parameters can be set directly from the overriding constructor.
      * @param id the number of the service to identify him within the NewPipe frontend
      * @param name the name of the service
-     * @param capabilities the type of media this service can handle
+     * @param capabilities the type of media this service can handle, has to be an immutable list
      */
     public StreamingService(int id, String name, List<ServiceInfo.MediaCapability> capabilities) {
         this.serviceId = id;
@@ -305,14 +304,14 @@ public abstract class StreamingService {
      * Returns a list of localizations that this service supports.
      */
     public List<Localization> getSupportedLocalizations() {
-        return Collections.singletonList(Localization.DEFAULT);
+        return List.of(Localization.DEFAULT);
     }
 
     /**
      * Returns a list of countries that this service supports.<br>
      */
     public List<ContentCountry> getSupportedCountries() {
-        return Collections.singletonList(ContentCountry.DEFAULT);
+        return List.of(ContentCountry.DEFAULT);
     }
 
     /**
