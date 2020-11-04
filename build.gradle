@@ -2,8 +2,8 @@ allprojects {
     apply plugin: 'java-library'
     apply plugin: 'maven'
 
-    sourceCompatibility = 1.8
-    targetCompatibility = 1.8
+    sourceCompatibility = 1.9
+    targetCompatibility = 1.9
 
     version 'v0.20.2'
     group 'com.github.TeamNewPipe'
