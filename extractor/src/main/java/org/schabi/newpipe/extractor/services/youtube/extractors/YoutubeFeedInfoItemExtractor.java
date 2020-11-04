@@ -8,7 +8,6 @@ import org.schabi.newpipe.extractor.stream.StreamType;
 
 import javax.annotation.Nullable;
 import java.time.OffsetDateTime;
-import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
 
 public class YoutubeFeedInfoItemExtractor implements StreamInfoItemExtractor {
@@ -61,7 +60,7 @@ public class YoutubeFeedInfoItemExtractor implements StreamInfoItemExtractor {
     @Override
     public DateWrapper getUploadDate() throws ParsingException {
         try {
-            return new DateWrapper(OffsetDateTime.parse(getTextualUploadDate(), DateTimeFormatter.ISO_OFFSET_DATE_TIME));
+            return new DateWrapper(OffsetDateTime.parse(getTextualUploadDate()));
         } catch (DateTimeParseException e) {
             throw new ParsingException("Could not parse date (\"" + getTextualUploadDate() + "\")", e);
         }

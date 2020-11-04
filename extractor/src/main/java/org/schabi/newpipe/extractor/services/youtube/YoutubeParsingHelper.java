@@ -21,7 +21,9 @@ import java.io.UnsupportedEncodingException;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLDecoder;
+import java.time.LocalDate;
 import java.time.OffsetDateTime;
+import java.time.ZoneOffset;
 import java.time.format.DateTimeParseException;
 import java.util.Collections;
 import java.util.HashMap;
@@ -184,7 +186,11 @@ public class YoutubeParsingHelper {
         try {
             return OffsetDateTime.parse(textualUploadDate);
         } catch (DateTimeParseException e) {
-            throw new ParsingException("Could not parse date: \"" + textualUploadDate + "\"", e);
+            try {
+                return LocalDate.parse(textualUploadDate).atStartOfDay().atOffset(ZoneOffset.UTC);
+            } catch (DateTimeParseException e1) {
+                throw new ParsingException("Could not parse date: \"" + textualUploadDate + "\"", e1);
+            }
         }
     }
 
