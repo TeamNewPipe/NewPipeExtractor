@@ -3,7 +3,6 @@ package org.schabi.newpipe.extractor.services.youtube.extractors;
 import com.grack.nanojson.JsonArray;
 import com.grack.nanojson.JsonObject;
 import com.grack.nanojson.JsonParser;
-
 import org.schabi.newpipe.extractor.Page;
 import org.schabi.newpipe.extractor.StreamingService;
 import org.schabi.newpipe.extractor.comments.CommentsExtractor;
@@ -19,17 +18,14 @@ import org.schabi.newpipe.extractor.linkhandler.ListLinkHandler;
 import org.schabi.newpipe.extractor.utils.JsonUtils;
 import org.schabi.newpipe.extractor.utils.Parser;
 
+import javax.annotation.Nonnull;
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.regex.Pattern;
 
-import javax.annotation.Nonnull;
-
-import static java.util.Collections.singletonList;
 import static org.schabi.newpipe.extractor.utils.Utils.isNullOrEmpty;
 
 public class YoutubeCommentsExtractor extends CommentsExtractor {
@@ -72,10 +68,11 @@ public class YoutubeCommentsExtractor extends CommentsExtractor {
     }
 
     private Page getNextPage(String continuation) throws ParsingException {
-        Map<String, String> params = new HashMap<>();
-        params.put("action_get_comments", "1");
-        params.put("pbj", "1");
-        params.put("ctoken", continuation);
+        Map<String, String> params = Map.of(
+                "action_get_comments", "1",
+                "pbj", "1",
+                "ctoken", continuation
+        );
         try {
             return new Page("https://m.youtube.com/watch_comment?" + getDataString(params));
         } catch (UnsupportedEncodingException e) {
@@ -126,21 +123,20 @@ public class YoutubeCommentsExtractor extends CommentsExtractor {
 
     @Override
     public void onFetchPage(@Nonnull Downloader downloader) throws IOException, ExtractionException {
-        final Map<String, List<String>> requestHeaders = new HashMap<>();
-        requestHeaders.put("User-Agent", singletonList(USER_AGENT));
+        final Map<String, List<String>> requestHeaders = Map.of("User-Agent", List.of(USER_AGENT));
         final Response response = downloader.get(getUrl(), requestHeaders, getExtractorLocalization());
         responseBody = response.responseBody();
         ytClientVersion = findValue(responseBody, "INNERTUBE_CONTEXT_CLIENT_VERSION\":\"", "\"");
         ytClientName = Parser.matchGroup1(YT_CLIENT_NAME_PATTERN, responseBody);
     }
 
-
     private String makeAjaxRequest(String siteUrl) throws IOException, ReCaptchaException {
-        Map<String, List<String>> requestHeaders = new HashMap<>();
-        requestHeaders.put("Accept", singletonList("*/*"));
-        requestHeaders.put("User-Agent", singletonList(USER_AGENT));
-        requestHeaders.put("X-YouTube-Client-Version", singletonList(ytClientVersion));
-        requestHeaders.put("X-YouTube-Client-Name", singletonList(ytClientName));
+        Map<String, List<String>> requestHeaders = Map.of(
+                "Accept", List.of("*/*"),
+                "User-Agent", List.of(USER_AGENT),
+                "X-YouTube-Client-Version", List.of(ytClientVersion),
+                "X-YouTube-Client-Name", List.of(ytClientName)
+        );
         return getDownloader().get(siteUrl, requestHeaders, getExtractorLocalization()).responseBody();
     }
 
