@@ -12,8 +12,8 @@ import org.schabi.newpipe.extractor.services.DefaultSearchExtractorTest;
 import org.schabi.newpipe.extractor.services.peertube.PeertubeInstance;
 
 import javax.annotation.Nullable;
+import java.util.List;
 
-import static java.util.Collections.singletonList;
 import static org.schabi.newpipe.extractor.ServiceList.PeerTube;
 import static org.schabi.newpipe.extractor.services.DefaultTests.assertNoDuplicatedItems;
 import static org.schabi.newpipe.extractor.services.peertube.linkHandler.PeertubeSearchQueryHandlerFactory.VIDEOS;
@@ -47,7 +47,7 @@ public class PeertubeSearchExtractorTest {
         @Test
         public void duplicatedItemsCheck() throws Exception {
             NewPipe.init(DownloaderTestImpl.getInstance());
-            final SearchExtractor extractor = PeerTube.getSearchExtractor("internet", singletonList(VIDEOS), "");
+            final SearchExtractor extractor = PeerTube.getSearchExtractor("internet", List.of(VIDEOS), "");
             extractor.fetchPage();
 
             final InfoItemsPage<InfoItem> page1 = extractor.getInitialPage();

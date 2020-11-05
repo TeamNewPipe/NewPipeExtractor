@@ -13,8 +13,8 @@ import org.schabi.newpipe.extractor.services.DefaultSearchExtractorTest;
 import javax.annotation.Nullable;
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
+import java.util.List;
 
-import static java.util.Collections.singletonList;
 import static org.schabi.newpipe.extractor.ServiceList.SoundCloud;
 import static org.schabi.newpipe.extractor.services.DefaultTests.assertNoDuplicatedItems;
 import static org.schabi.newpipe.extractor.services.soundcloud.linkHandler.SoundcloudSearchQueryHandlerFactory.*;
@@ -49,7 +49,7 @@ public class SoundcloudSearchExtractorTest {
         @BeforeClass
         public static void setUp() throws Exception {
             NewPipe.init(DownloaderTestImpl.getInstance());
-            extractor = SoundCloud.getSearchExtractor(QUERY, singletonList(TRACKS), "");
+            extractor = SoundCloud.getSearchExtractor(QUERY, List.of(TRACKS), "");
             extractor.fetchPage();
         }
 
@@ -72,7 +72,7 @@ public class SoundcloudSearchExtractorTest {
         @BeforeClass
         public static void setUp() throws Exception {
             NewPipe.init(DownloaderTestImpl.getInstance());
-            extractor = SoundCloud.getSearchExtractor(QUERY, singletonList(USERS), "");
+            extractor = SoundCloud.getSearchExtractor(QUERY, List.of(USERS), "");
             extractor.fetchPage();
         }
 
@@ -95,7 +95,7 @@ public class SoundcloudSearchExtractorTest {
         @BeforeClass
         public static void setUp() throws Exception {
             NewPipe.init(DownloaderTestImpl.getInstance());
-            extractor = SoundCloud.getSearchExtractor(QUERY, singletonList(PLAYLISTS), "");
+            extractor = SoundCloud.getSearchExtractor(QUERY, List.of(PLAYLISTS), "");
             extractor.fetchPage();
         }
 
@@ -115,7 +115,7 @@ public class SoundcloudSearchExtractorTest {
         @Test
         public void duplicatedItemsCheck() throws Exception {
             NewPipe.init(DownloaderTestImpl.getInstance());
-            final SearchExtractor extractor = SoundCloud.getSearchExtractor("cirque du soleil", singletonList(TRACKS), "");
+            final SearchExtractor extractor = SoundCloud.getSearchExtractor("cirque du soleil", List.of(TRACKS), "");
             extractor.fetchPage();
 
             final InfoItemsPage<InfoItem> page1 = extractor.getInitialPage();

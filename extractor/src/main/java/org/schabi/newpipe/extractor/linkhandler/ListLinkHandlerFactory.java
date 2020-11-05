@@ -13,7 +13,7 @@ public abstract class ListLinkHandlerFactory extends LinkHandlerFactory {
     ///////////////////////////////////
 
     public List<String> getContentFilter(String url) throws ParsingException {
-        return new ArrayList<>(0);
+        return List.of();
     }
 
     public String getSortFilter(String url) throws ParsingException {
@@ -46,12 +46,12 @@ public abstract class ListLinkHandlerFactory extends LinkHandlerFactory {
 
     @Override
     public ListLinkHandler fromId(String id) throws ParsingException {
-        return new ListLinkHandler(super.fromId(id), new ArrayList<String>(0), "");
+        return new ListLinkHandler(super.fromId(id), List.of(), "");
     }
 
     @Override
     public ListLinkHandler fromId(String id, String baseUrl) throws ParsingException {
-        return new ListLinkHandler(super.fromId(id, baseUrl), new ArrayList<String>(0), "");
+        return new ListLinkHandler(super.fromId(id, baseUrl), List.of(), "");
     }
 
     public ListLinkHandler fromQuery(String id,

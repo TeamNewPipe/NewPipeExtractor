@@ -11,17 +11,15 @@ import org.schabi.newpipe.extractor.search.SearchExtractor;
 import org.schabi.newpipe.extractor.services.DefaultSearchExtractorTest;
 
 import javax.annotation.Nullable;
+import java.util.List;
 
-import static java.util.Collections.singletonList;
 import static junit.framework.TestCase.assertFalse;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 import static org.schabi.newpipe.extractor.ExtractorAsserts.assertEmptyErrors;
 import static org.schabi.newpipe.extractor.ServiceList.YouTube;
 import static org.schabi.newpipe.extractor.services.DefaultTests.assertNoDuplicatedItems;
-import static org.schabi.newpipe.extractor.services.youtube.linkHandler.YoutubeSearchQueryHandlerFactory.CHANNELS;
-import static org.schabi.newpipe.extractor.services.youtube.linkHandler.YoutubeSearchQueryHandlerFactory.PLAYLISTS;
-import static org.schabi.newpipe.extractor.services.youtube.linkHandler.YoutubeSearchQueryHandlerFactory.VIDEOS;
+import static org.schabi.newpipe.extractor.services.youtube.linkHandler.YoutubeSearchQueryHandlerFactory.*;
 
 public class YoutubeSearchExtractorTest {
     public static class All extends DefaultSearchExtractorTest {
@@ -52,7 +50,7 @@ public class YoutubeSearchExtractorTest {
         @BeforeClass
         public static void setUp() throws Exception {
             NewPipe.init(DownloaderTestImpl.getInstance());
-            extractor = YouTube.getSearchExtractor(QUERY, singletonList(CHANNELS), "");
+            extractor = YouTube.getSearchExtractor(QUERY, List.of(CHANNELS), "");
             extractor.fetchPage();
         }
 
@@ -75,7 +73,7 @@ public class YoutubeSearchExtractorTest {
         @BeforeClass
         public static void setUp() throws Exception {
             NewPipe.init(DownloaderTestImpl.getInstance());
-            extractor = YouTube.getSearchExtractor(QUERY, singletonList(PLAYLISTS), "");
+            extractor = YouTube.getSearchExtractor(QUERY, List.of(PLAYLISTS), "");
             extractor.fetchPage();
         }
 
@@ -98,7 +96,7 @@ public class YoutubeSearchExtractorTest {
         @BeforeClass
         public static void setUp() throws Exception {
             NewPipe.init(DownloaderTestImpl.getInstance());
-            extractor = YouTube.getSearchExtractor(QUERY, singletonList(VIDEOS), "");
+            extractor = YouTube.getSearchExtractor(QUERY, List.of(VIDEOS), "");
             extractor.fetchPage();
         }
 
@@ -122,7 +120,7 @@ public class YoutubeSearchExtractorTest {
         @BeforeClass
         public static void setUp() throws Exception {
             NewPipe.init(DownloaderTestImpl.getInstance());
-            extractor = YouTube.getSearchExtractor(QUERY, singletonList(VIDEOS), "");
+            extractor = YouTube.getSearchExtractor(QUERY, List.of(VIDEOS), "");
             extractor.fetchPage();
         }
 
@@ -145,7 +143,7 @@ public class YoutubeSearchExtractorTest {
         @BeforeClass
         public static void setUp() throws Exception {
             NewPipe.init(DownloaderTestImpl.getInstance());
-            extractor = YouTube.getSearchExtractor(QUERY, singletonList(VIDEOS), "");
+            extractor = YouTube.getSearchExtractor(QUERY, List.of(VIDEOS), "");
             extractor.fetchPage();
         }
 
@@ -202,7 +200,7 @@ public class YoutubeSearchExtractorTest {
         @Test
         public void duplicatedItemsCheck() throws Exception {
             NewPipe.init(DownloaderTestImpl.getInstance());
-            final SearchExtractor extractor = YouTube.getSearchExtractor("cirque du soleil", singletonList(VIDEOS), "");
+            final SearchExtractor extractor = YouTube.getSearchExtractor("cirque du soleil", List.of(VIDEOS), "");
             extractor.fetchPage();
 
             final ListExtractor.InfoItemsPage<InfoItem> page1 = extractor.getInitialPage();

@@ -2,7 +2,6 @@ package org.schabi.newpipe.extractor.linkhandler;
 
 import org.schabi.newpipe.extractor.exceptions.ParsingException;
 
-import java.util.ArrayList;
 import java.util.List;
 
 public abstract class SearchQueryHandlerFactory extends ListLinkHandlerFactory {
@@ -35,7 +34,7 @@ public abstract class SearchQueryHandlerFactory extends ListLinkHandlerFactory {
     }
 
     public SearchQueryHandler fromQuery(String querry) throws ParsingException {
-        return fromQuery(querry, new ArrayList<String>(0), "");
+        return fromQuery(querry, List.of(), "");
     }
 
     /**

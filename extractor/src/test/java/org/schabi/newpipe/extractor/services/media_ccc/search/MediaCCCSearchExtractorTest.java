@@ -9,8 +9,8 @@ import org.schabi.newpipe.extractor.search.SearchExtractor;
 import org.schabi.newpipe.extractor.services.DefaultSearchExtractorTest;
 
 import javax.annotation.Nullable;
+import java.util.List;
 
-import static java.util.Collections.singletonList;
 import static org.schabi.newpipe.extractor.ServiceList.MediaCCC;
 import static org.schabi.newpipe.extractor.services.media_ccc.linkHandler.MediaCCCSearchQueryHandlerFactory.CONFERENCES;
 import static org.schabi.newpipe.extractor.services.media_ccc.linkHandler.MediaCCCSearchQueryHandlerFactory.EVENTS;
@@ -46,7 +46,7 @@ public class MediaCCCSearchExtractorTest {
         @BeforeClass
         public static void setUp() throws Exception {
             NewPipe.init(DownloaderTestImpl.getInstance());
-            extractor = MediaCCC.getSearchExtractor(QUERY, singletonList(CONFERENCES), "");
+            extractor = MediaCCC.getSearchExtractor(QUERY, List.of(CONFERENCES), "");
             extractor.fetchPage();
         }
 
@@ -70,7 +70,7 @@ public class MediaCCCSearchExtractorTest {
         @BeforeClass
         public static void setUp() throws Exception {
             NewPipe.init(DownloaderTestImpl.getInstance());
-            extractor = MediaCCC.getSearchExtractor(QUERY, singletonList(EVENTS), "");
+            extractor = MediaCCC.getSearchExtractor(QUERY, List.of(EVENTS), "");
             extractor.fetchPage();
         }
 

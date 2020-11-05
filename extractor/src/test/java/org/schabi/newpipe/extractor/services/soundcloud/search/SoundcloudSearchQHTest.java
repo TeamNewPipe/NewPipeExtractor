@@ -5,7 +5,8 @@ import org.junit.Test;
 import org.schabi.newpipe.DownloaderTestImpl;
 import org.schabi.newpipe.extractor.NewPipe;
 
-import static java.util.Arrays.asList;
+import java.util.List;
+
 import static org.junit.Assert.assertEquals;
 import static org.schabi.newpipe.extractor.ServiceList.SoundCloud;
 import static org.schabi.newpipe.extractor.services.soundcloud.linkHandler.SoundcloudSearchQueryHandlerFactory.*;
@@ -39,21 +40,21 @@ public class SoundcloudSearchQHTest {
     @Test
     public void testGetContentFilter() throws Exception {
         assertEquals("tracks", SoundCloud.getSearchQHFactory()
-                .fromQuery("", asList(new String[]{"tracks"}), "").getContentFilters().get(0));
+                .fromQuery("", List.of("tracks"), "").getContentFilters().get(0));
         assertEquals("users", SoundCloud.getSearchQHFactory()
-                .fromQuery("asdf", asList(new String[]{"users"}), "").getContentFilters().get(0));
+                .fromQuery("asdf", List.of("users"), "").getContentFilters().get(0));
     }
 
     @Test
     public void testWithContentfilter() throws Exception {
         assertEquals("https://api-v2.soundcloud.com/search/tracks?q=asdf&limit=10&offset=0", removeClientId(SoundCloud.getSearchQHFactory()
-                .fromQuery("asdf", asList(new String[]{TRACKS}), "").getUrl()));
+                .fromQuery("asdf", List.of(TRACKS), "").getUrl()));
         assertEquals("https://api-v2.soundcloud.com/search/users?q=asdf&limit=10&offset=0", removeClientId(SoundCloud.getSearchQHFactory()
-                .fromQuery("asdf", asList(new String[]{USERS}), "").getUrl()));
+                .fromQuery("asdf", List.of(USERS), "").getUrl()));
         assertEquals("https://api-v2.soundcloud.com/search/playlists?q=asdf&limit=10&offset=0", removeClientId(SoundCloud.getSearchQHFactory()
-                .fromQuery("asdf", asList(new String[]{PLAYLISTS}), "").getUrl()));
+                .fromQuery("asdf", List.of(PLAYLISTS), "").getUrl()));
         assertEquals("https://api-v2.soundcloud.com/search?q=asdf&limit=10&offset=0", removeClientId(SoundCloud.getSearchQHFactory()
-                .fromQuery("asdf", asList(new String[]{"fjiijie"}), "").getUrl()));
+                .fromQuery("asdf", List.of("fjiijie"), "").getUrl()));
     }
 
     @Test
