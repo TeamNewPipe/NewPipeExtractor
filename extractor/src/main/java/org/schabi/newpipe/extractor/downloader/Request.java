@@ -213,13 +213,12 @@ public class Request {
         }
 
         public Builder setHeader(String headerName, String headerValue) {
-            return setHeaders(headerName, Collections.singletonList(headerValue));
+            return setHeaders(headerName, List.of(headerValue));
         }
 
         public Builder addHeader(String headerName, String headerValue) {
-            return addHeaders(headerName, Collections.singletonList(headerValue));
+            return addHeaders(headerName, List.of(headerValue));
         }
-
     }
 
     /*//////////////////////////////////////////////////////////////////////////
@@ -231,14 +230,14 @@ public class Request {
     public static Map<String, List<String>> headersFromLocalization(@Nullable Localization localization) {
         if (localization == null) return Collections.emptyMap();
 
-        final Map<String, List<String>> headers = new LinkedHashMap<>();
+        final List<String> acceptLanguage;
         if (!localization.getCountryCode().isEmpty()) {
-            headers.put("Accept-Language", Collections.singletonList(localization.getLocalizationCode() +
-                    ", " + localization.getLanguageCode() + ";q=0.9"));
+            acceptLanguage = List.of(localization.getLocalizationCode() +
+                    ", " + localization.getLanguageCode() + ";q=0.9");
         } else {
-            headers.put("Accept-Language", Collections.singletonList(localization.getLanguageCode()));
+            acceptLanguage = List.of(localization.getLanguageCode());
         }
 
-        return headers;
+        return Map.of("Accept-Language", acceptLanguage);
     }
 }
