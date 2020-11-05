@@ -13,7 +13,7 @@ If you're using Gradle, you could add NewPipe Extractor as a dependency with the
 1. Add `maven { url 'https://jitpack.io' }` to the `repositories` in your `build.gradle`.
 2. Add `implementation 'com.github.TeamNewPipe:NewPipeExtractor:v0.20.1'`the `dependencies` in your `build.gradle`. Replace `v0.20.1` with the latest release.
 
-**Note:** To use NewPipe Extractor in projects with a `minSdkVersion` below 26, [API desugaring](https://developer.android.com/studio/write/java8-support#library-desugaring) is required.
+**Note:** To use NewPipe Extractor in projects with a `minSdkVersion` below 30, [API desugaring](https://developer.android.com/studio/write/java8-support#library-desugaring) is required.
 
 ### Testing changes
 
