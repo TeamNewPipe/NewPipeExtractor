@@ -1,10 +1,6 @@
 package org.schabi.newpipe.extractor.services.youtube;
 
-import com.grack.nanojson.JsonArray;
-import com.grack.nanojson.JsonObject;
-import com.grack.nanojson.JsonParser;
-import com.grack.nanojson.JsonParserException;
-import com.grack.nanojson.JsonWriter;
+import com.grack.nanojson.*;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.schabi.newpipe.extractor.downloader.Response;
@@ -25,16 +21,12 @@ import java.time.LocalDate;
 import java.time.OffsetDateTime;
 import java.time.ZoneOffset;
 import java.time.format.DateTimeParseException;
-import java.util.Collections;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 import static org.schabi.newpipe.extractor.NewPipe.getDownloader;
 import static org.schabi.newpipe.extractor.utils.JsonUtils.EMPTY_STRING;
-import static org.schabi.newpipe.extractor.utils.Utils.HTTP;
-import static org.schabi.newpipe.extractor.utils.Utils.HTTPS;
-import static org.schabi.newpipe.extractor.utils.Utils.isNullOrEmpty;
+import static org.schabi.newpipe.extractor.utils.Utils.*;
 
 /*
  * Created by Christian Schabesberger on 02.03.16.
@@ -211,10 +203,10 @@ public class YoutubeParsingHelper {
     public static boolean isHardcodedClientVersionValid() throws IOException, ExtractionException {
         final String url = "https://www.youtube.com/results?search_query=test&pbj=1";
 
-        Map<String, List<String>> headers = new HashMap<>();
-        headers.put("X-YouTube-Client-Name", Collections.singletonList("1"));
-        headers.put("X-YouTube-Client-Version",
-                Collections.singletonList(HARDCODED_CLIENT_VERSION));
+        Map<String, List<String>> headers = Map.of(
+                "X-YouTube-Client-Name", List.of("1"),
+                "X-YouTube-Client-Version", List.of(HARDCODED_CLIENT_VERSION)
+        );
         final String response = getDownloader().get(url, headers).responseBody();
 
         return response.length() > 50; // ensure to have a valid response
@@ -337,12 +329,13 @@ public class YoutubeParsingHelper {
             .end().done().getBytes("UTF-8");
         // @formatter:on
 
-        Map<String, List<String>> headers = new HashMap<>();
-        headers.put("X-YouTube-Client-Name", Collections.singletonList(HARDCODED_YOUTUBE_MUSIC_KEYS[1]));
-        headers.put("X-YouTube-Client-Version", Collections.singletonList(HARDCODED_YOUTUBE_MUSIC_KEYS[2]));
-        headers.put("Origin", Collections.singletonList("https://music.youtube.com"));
-        headers.put("Referer", Collections.singletonList("music.youtube.com"));
-        headers.put("Content-Type", Collections.singletonList("application/json"));
+        Map<String, List<String>> headers = Map.of(
+                "X-YouTube-Client-Name", List.of(HARDCODED_YOUTUBE_MUSIC_KEYS[1]),
+                "X-YouTube-Client-Version", List.of(HARDCODED_YOUTUBE_MUSIC_KEYS[2]),
+                "Origin", List.of("https://music.youtube.com"),
+                "Referer", List.of("music.youtube.com"),
+                "Content-Type", List.of("application/json")
+        );
 
         String response = getDownloader().post(url, headers, json).responseBody();
 
@@ -517,9 +510,10 @@ public class YoutubeParsingHelper {
 
     public static JsonArray getJsonResponse(final String url, final Localization localization)
             throws IOException, ExtractionException {
-        Map<String, List<String>> headers = new HashMap<>();
-        headers.put("X-YouTube-Client-Name", Collections.singletonList("1"));
-        headers.put("X-YouTube-Client-Version", Collections.singletonList(getClientVersion()));
+        Map<String, List<String>> headers = Map.of(
+                "X-YouTube-Client-Name", List.of("1"),
+                "X-YouTube-Client-Version", List.of(getClientVersion())
+        );
         final Response response = getDownloader().get(url, headers, localization);
 
         final String responseBody = getValidJsonResponseBody(response);
