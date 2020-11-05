@@ -8,7 +8,6 @@ import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.io.IOException;
 import java.io.InputStream;
-import java.util.Collections;
 import java.util.List;
 
 public abstract class SubscriptionExtractor {
@@ -44,7 +43,7 @@ public abstract class SubscriptionExtractor {
 
     public SubscriptionExtractor(StreamingService service, List<ContentSource> supportedSources) {
         this.service = service;
-        this.supportedSources = Collections.unmodifiableList(supportedSources);
+        this.supportedSources = supportedSources;
     }
 
     public List<ContentSource> getSupportedSources() {

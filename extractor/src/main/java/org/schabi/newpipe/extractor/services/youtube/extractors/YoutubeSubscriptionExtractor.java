@@ -4,18 +4,15 @@ import com.grack.nanojson.JsonArray;
 import com.grack.nanojson.JsonObject;
 import com.grack.nanojson.JsonParser;
 import com.grack.nanojson.JsonParserException;
-
 import org.schabi.newpipe.extractor.exceptions.ExtractionException;
 import org.schabi.newpipe.extractor.services.youtube.YoutubeService;
 import org.schabi.newpipe.extractor.subscription.SubscriptionExtractor;
 import org.schabi.newpipe.extractor.subscription.SubscriptionItem;
 
+import javax.annotation.Nonnull;
 import java.io.InputStream;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
-
-import javax.annotation.Nonnull;
 
 import static org.schabi.newpipe.extractor.subscription.SubscriptionExtractor.ContentSource.INPUT_STREAM;
 
@@ -26,7 +23,7 @@ public class YoutubeSubscriptionExtractor extends SubscriptionExtractor {
     private static final String BASE_CHANNEL_URL = "https://www.youtube.com/channel/";
 
     public YoutubeSubscriptionExtractor(final YoutubeService youtubeService) {
-        super(youtubeService, Collections.singletonList(INPUT_STREAM));
+        super(youtubeService, List.of(INPUT_STREAM));
     }
 
     @Override

@@ -10,16 +10,14 @@ import org.schabi.newpipe.extractor.subscription.SubscriptionItem;
 
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 
 /**
  * Extract the "followings" from a user in SoundCloud.
  */
 public class SoundcloudSubscriptionExtractor extends SubscriptionExtractor {
-
     public SoundcloudSubscriptionExtractor(SoundcloudService service) {
-        super(service, Collections.singletonList(ContentSource.CHANNEL_URL));
+        super(service, List.of(ContentSource.CHANNEL_URL));
     }
 
     @Override
