@@ -22,12 +22,12 @@ public class PeertubeTrendingLinkHandlerFactory extends ListLinkHandlerFactory {
     public static final String KIOSK_LOCAL = "Local";
 
     static {
-        Map<String, String> map = new HashMap<>();
-        map.put(KIOSK_TRENDING, "%s/api/v1/videos?sort=-trending");
-        map.put(KIOSK_MOST_LIKED, "%s/api/v1/videos?sort=-likes");
-        map.put(KIOSK_RECENT, "%s/api/v1/videos?sort=-publishedAt");
-        map.put(KIOSK_LOCAL, "%s/api/v1/videos?sort=-publishedAt&filter=local");
-        KIOSK_MAP = Collections.unmodifiableMap(map);
+        KIOSK_MAP = Map.of(
+                KIOSK_TRENDING, "%s/api/v1/videos?sort=-trending",
+                KIOSK_MOST_LIKED, "%s/api/v1/videos?sort=-likes",
+                KIOSK_RECENT, "%s/api/v1/videos?sort=-publishedAt",
+                KIOSK_LOCAL, "%s/api/v1/videos?sort=-publishedAt&filter=local"
+        );
 
         Map<String, String> reverseMap = new HashMap<>();
         for (Map.Entry<String, String> entry : KIOSK_MAP.entrySet()) {
