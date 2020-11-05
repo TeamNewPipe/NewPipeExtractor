@@ -32,10 +32,9 @@ import java.time.OffsetDateTime;
 import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
 import java.util.Collections;
-import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
-import static java.util.Collections.singletonList;
 import static org.schabi.newpipe.extractor.ServiceList.SoundCloud;
 import static org.schabi.newpipe.extractor.utils.JsonUtils.EMPTY_STRING;
 import static org.schabi.newpipe.extractor.utils.Utils.isNullOrEmpty;
@@ -68,8 +67,7 @@ public class SoundcloudParsingHelper {
         // The one containing the client id will likely be the last one
         Collections.reverse(possibleScripts);
 
-        final HashMap<String, List<String>> headers = new HashMap<>();
-        headers.put("Range", singletonList("bytes=0-16384"));
+        final Map<String, List<String>> headers = Map.of("Range", List.of("bytes=0-16384"));
 
         for (Element element : possibleScripts) {
             final String srcUrl = element.attr("src");
