@@ -209,6 +209,7 @@ public abstract class DefaultStreamExtractorTest extends DefaultExtractorTest<St
         final StreamInfoItemsCollector relatedStreams = extractor().getRelatedStreams();
 
         if (expectedHasRelatedStreams()) {
+            assertNotNull(relatedStreams);
             defaultTestListOfItems(extractor().getService(), relatedStreams.getItems(),
                     relatedStreams.getErrors());
         } else {
