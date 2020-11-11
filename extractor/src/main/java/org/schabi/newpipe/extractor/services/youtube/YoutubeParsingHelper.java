@@ -110,20 +110,18 @@ public class YoutubeParsingHelper {
         return host.equalsIgnoreCase("invidio.us")
                 || host.equalsIgnoreCase("dev.invidio.us")
                 || host.equalsIgnoreCase("www.invidio.us")
+                || host.equalsIgnoreCase("vid.encryptionin.space")
                 || host.equalsIgnoreCase("invidious.snopyta.org")
-                || host.equalsIgnoreCase("fi.invidious.snopyta.org")
                 || host.equalsIgnoreCase("yewtu.be")
-                || host.equalsIgnoreCase("invidious.ggc-project.de")
-                || host.equalsIgnoreCase("yt.maisputain.ovh")
-                || host.equalsIgnoreCase("invidious.13ad.de")
-                || host.equalsIgnoreCase("invidious.toot.koeln")
-                || host.equalsIgnoreCase("invidious.fdn.fr")
-                || host.equalsIgnoreCase("watch.nettohikari.com")
-                || host.equalsIgnoreCase("invidious.snwmds.net")
-                || host.equalsIgnoreCase("invidious.snwmds.org")
-                || host.equalsIgnoreCase("invidious.snwmds.com")
-                || host.equalsIgnoreCase("invidious.sunsetravens.com")
-                || host.equalsIgnoreCase("invidious.gachirangers.com");
+                || host.equalsIgnoreCase("tube.connect.cafe")
+                || host.equalsIgnoreCase("invidious.zapashcanon.fr")
+                || host.equalsIgnoreCase("invidious.kavin.rocks")
+                || host.equalsIgnoreCase("invidious.tube")
+                || host.equalsIgnoreCase("invidious.site")
+                || host.equalsIgnoreCase("invidious.xyz")
+                || host.equalsIgnoreCase("vid.mint.lgbt")
+                || host.equalsIgnoreCase("invidiou.site")
+                || host.equalsIgnoreCase("invidious.fdn.fr");
     }
 
     /**
