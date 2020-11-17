@@ -190,9 +190,10 @@ public class YoutubePlaylistExtractor extends PlaylistExtractor {
             return new InfoItemsPage<>(collector, null);
         } else if (contents.getObject(0).has("playlistVideoListRenderer")) {
             final JsonObject videos = contents.getObject(0).getObject("playlistVideoListRenderer");
-            collectStreamsFrom(collector, videos.getArray("contents"));
+            final JsonArray videosArray = videos.getArray("contents");
+            collectStreamsFrom(collector, videosArray);
 
-            nextPage = getNextPageFrom(videos.getArray("continuations"));
+            nextPage = getNextPageFrom(videosArray);
         }
 
         return new InfoItemsPage<>(collector, nextPage);
@@ -207,24 +208,29 @@ public class YoutubePlaylistExtractor extends PlaylistExtractor {
         final StreamInfoItemsCollector collector = new StreamInfoItemsCollector(getServiceId());
         final JsonArray ajaxJson = getJsonResponse(page.getUrl(), getExtractorLocalization());
 
-        final JsonObject sectionListContinuation = ajaxJson.getObject(1).getObject("response")
-                .getObject("continuationContents").getObject("playlistVideoListContinuation");
+        final JsonArray continuation = ajaxJson.getObject(1)
+            .getObject("response")
+            .getArray("onResponseReceivedActions")
+            .getObject(0)
+            .getObject("appendContinuationItemsAction")
+            .getArray("continuationItems");
 
-        collectStreamsFrom(collector, sectionListContinuation.getArray("contents"));
+        collectStreamsFrom(collector, continuation);
 
-        return new InfoItemsPage<>(collector, getNextPageFrom(sectionListContinuation.getArray("continuations")));
+        return new InfoItemsPage<>(collector, getNextPageFrom(continuation));
     }
 
-    private Page getNextPageFrom(final JsonArray continuations) {
-        if (isNullOrEmpty(continuations)) {
+    private Page getNextPageFrom(final JsonArray contents) {
+        if (isNullOrEmpty(contents)) {
             return null;
         }
 
-        final JsonObject nextContinuationData = continuations.getObject(0).getObject("nextContinuationData");
-        final String continuation = nextContinuationData.getString("continuation");
-        final String clickTrackingParams = nextContinuationData.getString("clickTrackingParams");
-        return new Page("https://www.youtube.com/browse_ajax?ctoken=" + continuation + "&continuation=" + continuation
-                + "&itct=" + clickTrackingParams);
+        final String continuation = contents.getObject(contents.size() - 1)
+            .getObject("continuationItemRenderer")
+            .getObject("continuationEndpoint")
+            .getObject("continuationCommand")
+            .getString("token");
+        return new Page("https://www.youtube.com/browse_ajax?continuation=" + continuation);
     }
 
     private void collectStreamsFrom(final StreamInfoItemsCollector collector, final JsonArray videos) {

@@ -3,6 +3,9 @@ package org.schabi.newpipe.extractor.services.youtube;
 import org.junit.BeforeClass;
 import org.junit.Ignore;
 import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.junit.runners.Suite;
+import org.junit.runners.Suite.SuiteClasses;
 import org.schabi.newpipe.DownloaderTestImpl;
 import org.schabi.newpipe.extractor.ListExtractor;
 import org.schabi.newpipe.extractor.NewPipe;
@@ -11,6 +14,10 @@ import org.schabi.newpipe.extractor.exceptions.ContentNotAvailableException;
 import org.schabi.newpipe.extractor.exceptions.ParsingException;
 import org.schabi.newpipe.extractor.playlist.PlaylistExtractor;
 import org.schabi.newpipe.extractor.services.BasePlaylistExtractorTest;
+import org.schabi.newpipe.extractor.services.youtube.YoutubePlaylistExtractorTest.HugePlaylist;
+import org.schabi.newpipe.extractor.services.youtube.YoutubePlaylistExtractorTest.LearningPlaylist;
+import org.schabi.newpipe.extractor.services.youtube.YoutubePlaylistExtractorTest.NotAvailable;
+import org.schabi.newpipe.extractor.services.youtube.YoutubePlaylistExtractorTest.TimelessPopHits;
 import org.schabi.newpipe.extractor.services.youtube.extractors.YoutubePlaylistExtractor;
 import org.schabi.newpipe.extractor.stream.StreamInfoItem;
 
@@ -23,6 +30,8 @@ import static org.schabi.newpipe.extractor.services.DefaultTests.*;
 /**
  * Test for {@link YoutubePlaylistExtractor}
  */
+@RunWith(Suite.class)
+@SuiteClasses({NotAvailable.class, TimelessPopHits.class, HugePlaylist.class, LearningPlaylist.class})
 public class YoutubePlaylistExtractorTest {
 
     public static class NotAvailable {
