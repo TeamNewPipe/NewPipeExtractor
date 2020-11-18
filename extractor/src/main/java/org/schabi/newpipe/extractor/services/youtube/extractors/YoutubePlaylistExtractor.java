@@ -225,12 +225,17 @@ public class YoutubePlaylistExtractor extends PlaylistExtractor {
             return null;
         }
 
-        final String continuation = contents.getObject(contents.size() - 1)
-            .getObject("continuationItemRenderer")
-            .getObject("continuationEndpoint")
-            .getObject("continuationCommand")
-            .getString("token");
-        return new Page("https://www.youtube.com/browse_ajax?continuation=" + continuation);
+        final JsonObject lastElement = contents.getObject(contents.size() - 1);
+        if (lastElement.has("continuationItemRenderer")) {
+            final String continuation = lastElement
+                .getObject("continuationItemRenderer")
+                .getObject("continuationEndpoint")
+                .getObject("continuationCommand")
+                .getString("token");
+            return new Page("https://www.youtube.com/browse_ajax?continuation=" + continuation);
+        } else {
+            return null;
+        }
     }
 
     private void collectStreamsFrom(final StreamInfoItemsCollector collector, final JsonArray videos) {

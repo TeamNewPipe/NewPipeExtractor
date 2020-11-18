@@ -14,6 +14,7 @@ import org.schabi.newpipe.extractor.exceptions.ContentNotAvailableException;
 import org.schabi.newpipe.extractor.exceptions.ParsingException;
 import org.schabi.newpipe.extractor.playlist.PlaylistExtractor;
 import org.schabi.newpipe.extractor.services.BasePlaylistExtractorTest;
+import org.schabi.newpipe.extractor.services.youtube.YoutubePlaylistExtractorTest.ContinuationsTests;
 import org.schabi.newpipe.extractor.services.youtube.YoutubePlaylistExtractorTest.HugePlaylist;
 import org.schabi.newpipe.extractor.services.youtube.YoutubePlaylistExtractorTest.LearningPlaylist;
 import org.schabi.newpipe.extractor.services.youtube.YoutubePlaylistExtractorTest.NotAvailable;
@@ -21,7 +22,9 @@ import org.schabi.newpipe.extractor.services.youtube.YoutubePlaylistExtractorTes
 import org.schabi.newpipe.extractor.services.youtube.extractors.YoutubePlaylistExtractor;
 import org.schabi.newpipe.extractor.stream.StreamInfoItem;
 
+import static junit.framework.TestCase.assertFalse;
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 import static org.schabi.newpipe.extractor.ExtractorAsserts.assertIsSecureUrl;
 import static org.schabi.newpipe.extractor.ServiceList.YouTube;
@@ -31,7 +34,8 @@ import static org.schabi.newpipe.extractor.services.DefaultTests.*;
  * Test for {@link YoutubePlaylistExtractor}
  */
 @RunWith(Suite.class)
-@SuiteClasses({NotAvailable.class, TimelessPopHits.class, HugePlaylist.class, LearningPlaylist.class})
+@SuiteClasses({NotAvailable.class, TimelessPopHits.class, HugePlaylist.class,
+    LearningPlaylist.class, ContinuationsTests.class})
 public class YoutubePlaylistExtractorTest {
 
     public static class NotAvailable {
@@ -123,7 +127,7 @@ public class YoutubePlaylistExtractorTest {
 
         @Ignore
         @Test
-        public void testBannerUrl() throws Exception {
+        public void testBannerUrl() {
             final String bannerUrl = extractor.getBannerUrl();
             assertIsSecureUrl(bannerUrl);
             assertTrue(bannerUrl, bannerUrl.contains("yt"));
@@ -236,7 +240,7 @@ public class YoutubePlaylistExtractorTest {
 
         @Ignore
         @Test
-        public void testBannerUrl() throws Exception {
+        public void testBannerUrl() {
             final String bannerUrl = extractor.getBannerUrl();
             assertIsSecureUrl(bannerUrl);
             assertTrue(bannerUrl, bannerUrl.contains("yt"));
@@ -333,7 +337,7 @@ public class YoutubePlaylistExtractorTest {
 
         @Ignore
         @Test
-        public void testBannerUrl() throws Exception {
+        public void testBannerUrl() {
             final String bannerUrl = extractor.getBannerUrl();
             assertIsSecureUrl(bannerUrl);
             assertTrue(bannerUrl, bannerUrl.contains("yt"));
@@ -359,6 +363,36 @@ public class YoutubePlaylistExtractorTest {
         @Test
         public void testStreamCount() throws Exception {
             assertTrue("Error in the streams count", extractor.getStreamCount() > 40);
+        }
+    }
+
+    public static class ContinuationsTests {
+
+        @BeforeClass
+        public static void setUp() {
+            NewPipe.init(DownloaderTestImpl.getInstance());
+        }
+
+        @Test
+        public void testNoContinuations() throws Exception {
+            final YoutubePlaylistExtractor extractor = (YoutubePlaylistExtractor) YouTube
+                .getPlaylistExtractor(
+                    "https://www.youtube.com/playlist?list=PLXJg25X-OulsVsnvZ7RVtSDW-id9_RzAO");
+            extractor.fetchPage();
+
+            assertNoMoreItems(extractor);
+        }
+
+        @Test
+        public void testOnlySingleContinuation() throws Exception {
+            final YoutubePlaylistExtractor extractor = (YoutubePlaylistExtractor) YouTube
+                .getPlaylistExtractor(
+                    "https://www.youtube.com/playlist?list=PLjgwFL8urN2DFRuRkFTkmtHjyoNWHHdZX");
+            extractor.fetchPage();
+
+            final ListExtractor.InfoItemsPage<StreamInfoItem> page = defaultTestMoreItems(
+                extractor);
+            assertFalse("More items available when it shouldn't", page.hasNextPage());
         }
     }
 }
