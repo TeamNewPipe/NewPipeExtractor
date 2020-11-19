@@ -15,7 +15,7 @@ public class BandcampPlaylistStreamInfoItemExtractor extends BandcampStreamInfoI
 
     private final JsonObject track;
     private String substituteCoverUrl;
-    private StreamingService service;
+    private final StreamingService service;
 
     public BandcampPlaylistStreamInfoItemExtractor(JsonObject track, String uploaderUrl, StreamingService service) {
         super(uploaderUrl);
@@ -45,6 +45,9 @@ public class BandcampPlaylistStreamInfoItemExtractor extends BandcampStreamInfoI
 
     @Override
     public String getUploaderName() {
+        /* Tracks can have an individual artist name, but it is not included in the
+         * given JSON.
+         */
         return "";
     }
 

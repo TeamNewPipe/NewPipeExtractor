@@ -21,6 +21,7 @@ import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Locale;
 
@@ -209,12 +210,12 @@ public class BandcampStreamExtractor extends StreamExtractor {
 
     @Override
     public List<VideoStream> getVideoStreams() {
-        return null;
+        return Collections.EMPTY_LIST;
     }
 
     @Override
     public List<VideoStream> getVideoOnlyStreams() {
-        return null;
+        return Collections.EMPTY_LIST;
     }
 
     @Nonnull

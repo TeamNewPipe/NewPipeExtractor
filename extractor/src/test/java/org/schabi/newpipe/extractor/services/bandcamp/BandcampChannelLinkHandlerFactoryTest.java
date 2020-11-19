@@ -40,6 +40,7 @@ public class BandcampChannelLinkHandlerFactoryTest {
         assertEquals("1196681540", linkHandler.getId("https://macbenson.bandcamp.com/"));
         assertEquals("1581461772", linkHandler.getId("https://interovgm.com/releases"));
         assertEquals("3321800855", linkHandler.getId("https://infiniteammo.bandcamp.com/"));
+        assertEquals("3775652329", linkHandler.getId("https://npet.bandcamp.com/"));
     }
 
     @Test

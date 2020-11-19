@@ -70,8 +70,8 @@ public class BandcampChannelExtractorTest implements BaseChannelExtractorTest {
     }
 
     @Override
-    public void testServiceId() throws Exception {
-        assertEquals(4, extractor.getServiceId());
+    public void testServiceId() {
+        assertEquals(Bandcamp.getServiceId(), extractor.getServiceId());
     }
 
     @Override

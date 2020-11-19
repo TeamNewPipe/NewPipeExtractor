@@ -10,6 +10,8 @@ import org.schabi.newpipe.extractor.exceptions.ContentNotAvailableException;
 import org.schabi.newpipe.extractor.exceptions.ExtractionException;
 import org.schabi.newpipe.extractor.exceptions.ParsingException;
 import org.schabi.newpipe.extractor.playlist.PlaylistExtractor;
+import org.schabi.newpipe.extractor.services.BasePlaylistExtractorTest;
+import org.schabi.newpipe.extractor.services.DefaultTests;
 import org.schabi.newpipe.extractor.services.bandcamp.extractors.BandcampPlaylistExtractor;
 import org.schabi.newpipe.extractor.stream.StreamInfoItem;
 
@@ -90,7 +92,7 @@ public class BandcampPlaylistExtractorTest {
 
     }
 
-    public static class ComingOfAge {
+    public static class ComingOfAge implements BasePlaylistExtractorTest {
 
         private static PlaylistExtractor extractor;
 
@@ -102,48 +104,78 @@ public class BandcampPlaylistExtractorTest {
         }
 
         @Test
-        public void getThumbnailUrl() throws ParsingException {
+        public void testThumbnailUrl() throws ParsingException {
             assertTrue(extractor.getThumbnailUrl().contains("f4.bcbits.com/img"));
         }
 
         @Test
-        public void getBannerUrl() throws ParsingException {
+        public void testBannerUrl() throws ParsingException {
             assertEquals("", extractor.getBannerUrl());
         }
 
         @Test
-        public void getUploaderUrl() throws ParsingException {
+        public void testUploaderUrl() throws ParsingException {
             assertTrue(extractor.getUploaderUrl().contains("macbenson.bandcamp.com"));
         }
 
         @Test
-        public void getUploaderName() throws ParsingException {
+        public void testUploaderName() throws ParsingException {
             assertEquals("mac benson", extractor.getUploaderName());
         }
 
         @Test
-        public void getUploaderAvatarUrl() throws ParsingException {
+        public void testUploaderAvatarUrl() throws ParsingException {
             assertTrue(extractor.getUploaderAvatarUrl().contains("f4.bcbits.com/img"));
         }
 
         @Test
-        public void getStreamCount() throws ParsingException {
+        public void testStreamCount() throws ParsingException {
             assertEquals(5, extractor.getStreamCount());
         }
 
         @Test
-        public void getInitialPage() throws IOException, ExtractionException {
+        public void testInitialPage() throws IOException, ExtractionException {
             assertNotNull(extractor.getInitialPage().getItems().get(0));
         }
 
         @Test
-        public void getName() throws ParsingException {
+        public void testServiceId() {
+            assertEquals(Bandcamp.getServiceId(), extractor.getServiceId());
+        }
+
+        @Test
+        public void testName() throws ParsingException {
             assertEquals("Coming of Age", extractor.getName());
         }
 
         @Test
-        public void getNextPageUrl() throws IOException, ExtractionException {
+        public void testId() throws Exception {
+            assertEquals("https://macbenson.bandcamp.com/album/coming-of-age", extractor.getId());
+        }
+
+        @Test
+        public void testUrl() throws Exception {
+            assertEquals("https://macbenson.bandcamp.com/album/coming-of-age", extractor.getUrl());
+        }
+
+        @Test
+        public void testOriginalUrl() throws Exception {
+            assertEquals("https://macbenson.bandcamp.com/album/coming-of-age", extractor.getOriginalUrl());
+        }
+
+        @Test
+        public void testNextPageUrl() throws IOException, ExtractionException {
             assertNull(extractor.getPage(extractor.getInitialPage().getNextPage()));
+        }
+
+        @Test
+        public void testRelatedItems() throws Exception {
+            //DefaultTests.defaultTestRelatedItems(extractor);
+            // Would fail because BandcampPlaylistStreamInfoItemExtractor.getUploaderName() returns an empty String
+        }
+
+        @Test
+        public void testMoreRelatedItems() throws Exception {
         }
     }
 }

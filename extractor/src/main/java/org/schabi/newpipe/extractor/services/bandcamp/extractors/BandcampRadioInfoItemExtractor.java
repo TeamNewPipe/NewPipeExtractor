@@ -69,6 +69,7 @@ public class BandcampRadioInfoItemExtractor implements StreamInfoItemExtractor {
 
     @Override
     public String getUploaderName() {
+        // JSON does not contain uploader name
         return "";
     }
 

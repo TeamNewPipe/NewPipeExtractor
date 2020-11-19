@@ -6,103 +6,161 @@ import org.junit.BeforeClass;
 import org.junit.Test;
 import org.schabi.newpipe.DownloaderTestImpl;
 import org.schabi.newpipe.extractor.NewPipe;
+import org.schabi.newpipe.extractor.StreamingService;
 import org.schabi.newpipe.extractor.exceptions.ExtractionException;
 import org.schabi.newpipe.extractor.exceptions.ParsingException;
+import org.schabi.newpipe.extractor.services.DefaultStreamExtractorTest;
 import org.schabi.newpipe.extractor.services.bandcamp.extractors.BandcampExtractorHelper;
 import org.schabi.newpipe.extractor.services.bandcamp.extractors.BandcampStreamExtractor;
 import org.schabi.newpipe.extractor.stream.StreamExtractor;
+import org.schabi.newpipe.extractor.stream.StreamType;
 
 import java.io.IOException;
 import java.util.Calendar;
+import java.util.Collections;
+import java.util.List;
 import java.util.TimeZone;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 import static org.schabi.newpipe.extractor.ServiceList.Bandcamp;
 
-public class BandcampStreamExtractorTest {
+/**
+ * Tests for {@link BandcampStreamExtractor}
+ */
+public class BandcampStreamExtractorTest extends DefaultStreamExtractorTest {
 
     private static BandcampStreamExtractor extractor;
 
     @BeforeClass
-    public static void setUp() throws Exception {
+    public static void setUp() throws ExtractionException, IOException {
         NewPipe.init(DownloaderTestImpl.getInstance());
+        // This test track was uploaded specifically for NewPipeExtractor tests
+
         extractor = (BandcampStreamExtractor) Bandcamp
-                .getStreamExtractor("https://zachbenson.bandcamp.com/track/kitchen");
+                .getStreamExtractor("https://npet.bandcamp.com/track/track-1");
         extractor.fetchPage();
     }
 
-    @Test
-    public void testServiceId() {
-        assertEquals(4, extractor.getServiceId());
+    @Override
+    public StreamExtractor extractor() {
+        return extractor;
+    }
+
+    @Override
+    public StreamingService expectedService() {
+        return Bandcamp;
+    }
+
+    @Override
+    public String expectedName() {
+        return "Track #1";
+    }
+
+    @Override
+    public String expectedId() {
+        return "https://npet.bandcamp.com/track/track-1";
+    }
+
+    @Override
+    public String expectedUrlContains() {
+        return "https://npet.bandcamp.com/track/track-1";
+    }
+
+    @Override
+    public String expectedOriginalUrlContains() {
+        return "https://npet.bandcamp.com/track/track-1";
+    }
+
+    @Override
+    public StreamType expectedStreamType() {
+        return StreamType.AUDIO_STREAM;
+    }
+
+    @Override
+    public String expectedUploaderName() {
+        return "NewPipeExtractorTest";
+    }
+
+    @Override
+    public String expectedUploaderUrl() {
+        return "https://npet.bandcamp.com/";
+    }
+
+    @Override
+    public List<String> expectedDescriptionContains() {
+        return Collections.singletonList("This sample track was created using MuseScore.");
+    }
+
+    @Override
+    public long expectedLength() {
+        return 0;
+    }
+
+    @Override
+    public long expectedViewCountAtLeast() {
+        return Long.MIN_VALUE;
+    }
+
+    @Override
+    public String expectedUploadDate() {
+        return "2020-03-17 18:37:44.000";
+    }
+
+    @Override
+    public String expectedTextualUploadDate() {
+        return "17 Mar 2020 18:37:44 GMT";
+    }
+
+    @Override
+    public long expectedLikeCountAtLeast() {
+        return Long.MIN_VALUE;
+    }
+
+    @Override
+    public long expectedDislikeCountAtLeast() {
+        return Long.MIN_VALUE;
+    }
+
+    @Override
+    public boolean expectedHasVideoStreams() {
+        return false;
+    }
+
+    @Override
+    public boolean expectedHasRelatedStreams() {
+        return false;
+    }
+
+    @Override
+    public boolean expectedHasSubtitles() {
+        return false;
+    }
+
+    @Override
+    public boolean expectedHasFrames() {
+        return false;
+    }
+
+    @Override
+    public String expectedLicence() {
+        return "CC BY 3.0";
+    }
+
+    @Override
+    public String expectedCategory() {
+        return "acoustic";
     }
 
     @Test
-    public void testName() throws ParsingException {
-        assertEquals("kitchen", extractor.getName());
-    }
-
-    @Test
-    public void testUrl() throws ParsingException {
-        assertEquals("https://zachbenson.bandcamp.com/track/kitchen", extractor.getUrl());
-    }
-
-    @Test
-    public void testArtistUrl() throws ParsingException {
-        assertEquals("https://zachbenson.bandcamp.com/", extractor.getUploaderUrl());
-    }
-
-    @Test
-    public void testDescription() {
-        assertTrue(extractor.getDescription().getContent().contains("Boy, you've taken up my thoughts"));
-    }
-
-    @Test
-    public void testArtistProfilePicture() {
-        String url = extractor.getUploaderAvatarUrl();
+    public void testArtistProfilePicture() throws Exception {
+        String url = extractor().getUploaderAvatarUrl();
         assertTrue(url.contains("://f4.bcbits.com/img/") && url.endsWith(".jpg"));
     }
 
     @Test
-    public void testUploadDate() throws ParsingException {
-        final Calendar expectedCalendar = Calendar.getInstance();
-        // 27 Sep 2019 21:49:14 GMT
-        expectedCalendar.setTimeZone(TimeZone.getTimeZone("GMT"));
-        expectedCalendar.set(2019, Calendar.SEPTEMBER, 27, 21, 49, 14);
-        expectedCalendar.set(Calendar.MILLISECOND, 0);
-
-        assertEquals(expectedCalendar.getTimeInMillis(), extractor.getUploadDate().date().getTimeInMillis());
-    }
-
-    @Test
-    public void testNoArtistProfilePicture() throws ExtractionException {
-        assertEquals("", Bandcamp.getStreamExtractor("https://powertothequeerkids.bandcamp.com/track/human-nature").getUploaderAvatarUrl());
-    }
-
-    @Test
-    public void testAudioStream() {
-        assertTrue(extractor.getAudioStreams().get(0).getUrl().contains("bcbits.com/stream"));
-        assertEquals(1, extractor.getAudioStreams().size());
-    }
-
-    @Test
-    public void testCategory() throws ExtractionException, IOException {
-        StreamExtractor se = Bandcamp.getStreamExtractor("https://npet.bandcamp.com/track/track-1");
-        se.fetchPage();
-        assertEquals("acoustic", se.getCategory());
-    }
-
-    @Test
-    public void testLicense() throws ExtractionException, IOException {
-        StreamExtractor se = Bandcamp.getStreamExtractor("https://npet.bandcamp.com/track/track-1");
-        se.fetchPage();
-        assertEquals("CC BY 3.0", se.getLicence());
-    }
-
-    @Test
     public void testTranslateIdsToUrl() throws ParsingException {
-        assertEquals("https://zachbenson.bandcamp.com/album/covers", BandcampExtractorHelper.getStreamUrlFromIds(2862267535L, 2063639444L, "album"));
-        // TODO write more test cases
+        assertEquals("https://npet.bandcamp.com/track/track-1", BandcampExtractorHelper.getStreamUrlFromIds(3775652329L, 4207805220L, "track"));
     }
 
 }

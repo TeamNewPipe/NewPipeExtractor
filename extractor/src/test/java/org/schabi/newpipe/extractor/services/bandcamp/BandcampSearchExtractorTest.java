@@ -107,7 +107,7 @@ public class BandcampSearchExtractorTest {
 
     public static class DefaultTest extends DefaultSearchExtractorTest {
         private static SearchExtractor extractor;
-        private static final String QUERY = "test";
+        private static final String QUERY = "noise";
 
         @BeforeClass
         public static void setUp() throws Exception {
