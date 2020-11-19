@@ -153,8 +153,8 @@ public class YoutubeMusicSearchExtractorTest {
 
     public static class CorrectedSearch extends DefaultSearchExtractorTest {
         private static SearchExtractor extractor;
-        private static final String QUERY = "duo lipa";
-        private static final String EXPECTED_SUGGESTION = "dua lipa";
+        private static final String QUERY = "nocopyrigh sounds";
+        private static final String EXPECTED_SUGGESTION = "nocopyrightsounds";
 
         @BeforeClass
         public static void setUp() throws Exception {

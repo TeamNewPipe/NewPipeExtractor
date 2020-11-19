@@ -1,204 +1,152 @@
 package org.schabi.newpipe.extractor.services.media_ccc;
 
-import org.junit.Assert;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import org.schabi.newpipe.DownloaderTestImpl;
 import org.schabi.newpipe.extractor.NewPipe;
-import org.schabi.newpipe.extractor.exceptions.ParsingException;
+import org.schabi.newpipe.extractor.StreamingService;
+import org.schabi.newpipe.extractor.services.DefaultStreamExtractorTest;
 import org.schabi.newpipe.extractor.services.media_ccc.extractors.MediaCCCStreamExtractor;
-import org.schabi.newpipe.extractor.stream.AudioStream;
-import org.schabi.newpipe.extractor.stream.VideoStream;
+import org.schabi.newpipe.extractor.stream.StreamExtractor;
+import org.schabi.newpipe.extractor.stream.StreamType;
 
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
-import java.util.Calendar;
+import java.util.Arrays;
 import java.util.List;
 
-import static java.util.Objects.requireNonNull;
+import javax.annotation.Nullable;
+
 import static junit.framework.TestCase.assertEquals;
-import static org.schabi.newpipe.extractor.ExtractorAsserts.assertIsSecureUrl;
 import static org.schabi.newpipe.extractor.ServiceList.MediaCCC;
 
 /**
  * Test {@link MediaCCCStreamExtractor}
  */
 public class MediaCCCStreamExtractorTest {
-    public static class Gpn18Tmux {
-        private static MediaCCCStreamExtractor extractor;
+    private static final String BASE_URL = "https://media.ccc.de/v/";
+
+    public static class Gpn18Tmux extends DefaultStreamExtractorTest {
+        private static final String ID = "gpn18-105-tmux-warum-ein-schwarzes-fenster-am-bildschirm-reicht";
+        private static final String URL = BASE_URL + ID;
+        private static StreamExtractor extractor;
 
         @BeforeClass
-        public static void setUpClass() throws Exception {
+        public static void setUp() throws Exception {
             NewPipe.init(DownloaderTestImpl.getInstance());
-
-            extractor = (MediaCCCStreamExtractor) MediaCCC.getStreamExtractor("https://media.ccc.de/v/gpn18-105-tmux-warum-ein-schwarzes-fenster-am-bildschirm-reicht");
+            extractor = MediaCCC.getStreamExtractor(URL);
             extractor.fetchPage();
         }
 
-        @Test
-        public void testServiceId() throws Exception {
-            assertEquals(2, extractor.getServiceId());
-        }
+        @Override public StreamExtractor extractor() { return extractor; }
+        @Override public StreamingService expectedService() { return MediaCCC; }
+        @Override public String expectedName() { return "tmux - Warum ein schwarzes Fenster am Bildschirm reicht"; }
+        @Override public String expectedId() { return ID; }
+        @Override public String expectedUrlContains() { return URL; }
+        @Override public String expectedOriginalUrlContains() { return URL; }
 
-        @Test
-        public void testName() throws Exception {
-            assertEquals("tmux - Warum ein schwarzes Fenster am Bildschirm reicht", extractor.getName());
-        }
+        @Override public StreamType expectedStreamType() { return StreamType.VIDEO_STREAM; }
+        @Override public String expectedUploaderName() { return "gpn18"; }
+        @Override public String expectedUploaderUrl() { return "https://media.ccc.de/c/gpn18"; }
+        @Override public List<String> expectedDescriptionContains() { return Arrays.asList("SSH-Sessions", "\"Terminal Multiplexer\""); }
+        @Override public long expectedLength() { return 3097; }
+        @Override public long expectedViewCountAtLeast() { return 2380; }
+        @Nullable @Override public String expectedUploadDate() { return "2018-05-11 00:00:00.000"; }
+        @Nullable @Override public String expectedTextualUploadDate() { return "2018-05-11T02:00:00.000+02:00"; }
+        @Override public long expectedLikeCountAtLeast() { return -1; }
+        @Override public long expectedDislikeCountAtLeast() { return -1; }
+        @Override public boolean expectedHasRelatedStreams() { return false; }
+        @Override public boolean expectedHasSubtitles() { return false; }
+        @Override public boolean expectedHasFrames() { return false; }
+        @Override public List<String> expectedTags() { return Arrays.asList("gpn18", "105"); }
 
+        @Override
         @Test
-        public void testId() throws Exception {
-            assertEquals("gpn18-105-tmux-warum-ein-schwarzes-fenster-am-bildschirm-reicht", extractor.getId());
-        }
-
-        @Test
-        public void testUrl() throws Exception {
-            assertIsSecureUrl(extractor.getUrl());
-            assertEquals("https://media.ccc.de/public/events/gpn18-105-tmux-warum-ein-schwarzes-fenster-am-bildschirm-reicht", extractor.getUrl());
-        }
-
-        @Test
-        public void testOriginalUrl() throws Exception {
-            assertIsSecureUrl(extractor.getOriginalUrl());
-            assertEquals("https://media.ccc.de/v/gpn18-105-tmux-warum-ein-schwarzes-fenster-am-bildschirm-reicht", extractor.getOriginalUrl());
-        }
-
-        @Test
-        public void testThumbnail() throws Exception {
-            assertIsSecureUrl(extractor.getThumbnailUrl());
+        public void testThumbnailUrl() throws Exception {
+            super.testThumbnailUrl();
             assertEquals("https://static.media.ccc.de/media/events/gpn/gpn18/105-hd.jpg", extractor.getThumbnailUrl());
         }
 
-        @Test
-        public void testUploaderName() throws Exception {
-            assertEquals("gpn18", extractor.getUploaderName());
-        }
-
-        @Test
-        public void testUploaderUrl() throws Exception {
-            assertIsSecureUrl(extractor.getUploaderUrl());
-            assertEquals("https://media.ccc.de/public/conferences/gpn18", extractor.getUploaderUrl());
-        }
-
+        @Override
         @Test
         public void testUploaderAvatarUrl() throws Exception {
-            assertIsSecureUrl(extractor.getUploaderAvatarUrl());
+            super.testUploaderAvatarUrl();
             assertEquals("https://static.media.ccc.de/media/events/gpn/gpn18/logo.png", extractor.getUploaderAvatarUrl());
         }
 
+        @Override
         @Test
         public void testVideoStreams() throws Exception {
-            List<VideoStream> videoStreamList = extractor.getVideoStreams();
-            assertEquals(4, videoStreamList.size());
-            for (VideoStream stream : videoStreamList) {
-                assertIsSecureUrl(stream.getUrl());
-            }
+            super.testVideoStreams();
+            assertEquals(4, extractor.getVideoStreams().size());
         }
 
+        @Override
         @Test
         public void testAudioStreams() throws Exception {
-            List<AudioStream> audioStreamList = extractor.getAudioStreams();
-            assertEquals(2, audioStreamList.size());
-            for (AudioStream stream : audioStreamList) {
-                assertIsSecureUrl(stream.getUrl());
-            }
-        }
-
-        @Test
-        public void testGetTextualUploadDate() throws ParsingException {
-            Assert.assertEquals("2018-05-11T02:00:00.000+02:00", extractor.getTextualUploadDate());
-        }
-
-        @Test
-        public void testGetUploadDate() throws ParsingException, ParseException {
-            final Calendar instance = Calendar.getInstance();
-            instance.setTime(new SimpleDateFormat("yyyy-MM-dd").parse("2018-05-11"));
-            assertEquals(instance, requireNonNull(extractor.getUploadDate()).date());
+            super.testAudioStreams();
+            assertEquals(2, extractor.getAudioStreams().size());
         }
     }
 
-    public static class _36c3PrivacyMessaging {
-        private static MediaCCCStreamExtractor extractor;
+    public static class _36c3PrivacyMessaging extends DefaultStreamExtractorTest {
+        private static final String ID = "36c3-10565-what_s_left_for_private_messaging";
+        private static final String URL = BASE_URL + ID;
+        private static StreamExtractor extractor;
 
         @BeforeClass
-        public static void setUpClass() throws Exception {
+        public static void setUp() throws Exception {
             NewPipe.init(DownloaderTestImpl.getInstance());
-            extractor = (MediaCCCStreamExtractor) MediaCCC.getStreamExtractor("https://media.ccc.de/v/36c3-10565-what_s_left_for_private_messaging");
+            extractor = MediaCCC.getStreamExtractor(URL);
             extractor.fetchPage();
         }
 
-        @Test
-        public void testName() throws Exception {
-            assertEquals("What's left for private messaging?", extractor.getName());
-        }
+        @Override public StreamExtractor extractor() { return extractor; }
+        @Override public StreamingService expectedService() { return MediaCCC; }
+        @Override public String expectedName() { return "What's left for private messaging?"; }
+        @Override public String expectedId() { return ID; }
+        @Override public String expectedUrlContains() { return URL; }
+        @Override public String expectedOriginalUrlContains() { return URL; }
 
-        @Test
-        public void testId() throws Exception {
-            assertEquals("36c3-10565-what_s_left_for_private_messaging", extractor.getId());
-        }
+        @Override public StreamType expectedStreamType() { return StreamType.VIDEO_STREAM; }
+        @Override public String expectedUploaderName() { return "36c3"; }
+        @Override public String expectedUploaderUrl() { return "https://media.ccc.de/c/36c3"; }
+        @Override public List<String> expectedDescriptionContains() { return Arrays.asList("WhatsApp", "Signal"); }
+        @Override public long expectedLength() { return 3603; }
+        @Override public long expectedViewCountAtLeast() { return 2380; }
+        @Nullable @Override public String expectedUploadDate() { return "2020-01-11 00:00:00.000"; }
+        @Nullable @Override public String expectedTextualUploadDate() { return "2020-01-11T01:00:00.000+01:00"; }
+        @Override public long expectedLikeCountAtLeast() { return -1; }
+        @Override public long expectedDislikeCountAtLeast() { return -1; }
+        @Override public boolean expectedHasRelatedStreams() { return false; }
+        @Override public boolean expectedHasSubtitles() { return false; }
+        @Override public boolean expectedHasFrames() { return false; }
+        @Override public List<String> expectedTags() { return Arrays.asList("36c3", "10565", "2019", "Security", "Main"); }
 
+        @Override
         @Test
-        public void testUrl() throws Exception {
-            assertIsSecureUrl(extractor.getUrl());
-            assertEquals("https://media.ccc.de/public/events/36c3-10565-what_s_left_for_private_messaging", extractor.getUrl());
-        }
-
-        @Test
-        public void testOriginalUrl() throws Exception {
-            assertIsSecureUrl(extractor.getOriginalUrl());
-            assertEquals("https://media.ccc.de/v/36c3-10565-what_s_left_for_private_messaging", extractor.getOriginalUrl());
-        }
-
-        @Test
-        public void testThumbnail() throws Exception {
-            assertIsSecureUrl(extractor.getThumbnailUrl());
+        public void testThumbnailUrl() throws Exception {
+            super.testThumbnailUrl();
             assertEquals("https://static.media.ccc.de/media/congress/2019/10565-hd.jpg", extractor.getThumbnailUrl());
         }
 
-        @Test
-        public void testUploaderName() throws Exception {
-            assertEquals("36c3", extractor.getUploaderName());
-        }
-
-        @Test
-        public void testUploaderUrl() throws Exception {
-            assertIsSecureUrl(extractor.getUploaderUrl());
-            assertEquals("https://media.ccc.de/public/conferences/36c3", extractor.getUploaderUrl());
-        }
-
+        @Override
         @Test
         public void testUploaderAvatarUrl() throws Exception {
-            assertIsSecureUrl(extractor.getUploaderAvatarUrl());
+            super.testUploaderAvatarUrl();
             assertEquals("https://static.media.ccc.de/media/congress/2019/logo.png", extractor.getUploaderAvatarUrl());
         }
 
+        @Override
         @Test
         public void testVideoStreams() throws Exception {
-            List<VideoStream> videoStreamList = extractor.getVideoStreams();
-            assertEquals(8, videoStreamList.size());
-            for (VideoStream stream : videoStreamList) {
-                assertIsSecureUrl(stream.getUrl());
-            }
+            super.testVideoStreams();
+            assertEquals(8, extractor.getVideoStreams().size());
         }
 
+        @Override
         @Test
         public void testAudioStreams() throws Exception {
-            List<AudioStream> audioStreamList = extractor.getAudioStreams();
-            assertEquals(2, audioStreamList.size());
-            for (AudioStream stream : audioStreamList) {
-                assertIsSecureUrl(stream.getUrl());
-            }
-        }
-
-        @Test
-        public void testGetTextualUploadDate() throws ParsingException {
-            Assert.assertEquals("2020-01-11T01:00:00.000+01:00", extractor.getTextualUploadDate());
-        }
-
-        @Test
-        public void testGetUploadDate() throws ParsingException, ParseException {
-            final Calendar instance = Calendar.getInstance();
-            instance.setTime(new SimpleDateFormat("yyyy-MM-dd").parse("2020-01-11"));
-            assertEquals(instance, requireNonNull(extractor.getUploadDate()).date());
+            super.testAudioStreams();
+            assertEquals(2, extractor.getAudioStreams().size());
         }
     }
 }

@@ -5,7 +5,6 @@ import com.grack.nanojson.JsonObject;
 import com.grack.nanojson.JsonParser;
 import com.grack.nanojson.JsonParserException;
 import com.grack.nanojson.JsonWriter;
-
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.schabi.newpipe.extractor.downloader.Response;
@@ -22,13 +21,20 @@ import java.io.UnsupportedEncodingException;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLDecoder;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
-import java.util.*;
+import java.time.LocalDate;
+import java.time.OffsetDateTime;
+import java.time.ZoneOffset;
+import java.time.format.DateTimeParseException;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 import static org.schabi.newpipe.extractor.NewPipe.getDownloader;
 import static org.schabi.newpipe.extractor.utils.JsonUtils.EMPTY_STRING;
-import static org.schabi.newpipe.extractor.utils.Utils.*;
+import static org.schabi.newpipe.extractor.utils.Utils.HTTP;
+import static org.schabi.newpipe.extractor.utils.Utils.HTTPS;
+import static org.schabi.newpipe.extractor.utils.Utils.isNullOrEmpty;
 
 /*
  * Created by Christian Schabesberger on 02.03.16.
@@ -54,12 +60,6 @@ public class YoutubeParsingHelper {
 
     private YoutubeParsingHelper() {
     }
-
-    /**
-     * The official youtube app supports intents in this format, where after the ':' is the videoId.
-     * Accordingly there are other apps sharing streams in this format.
-     */
-    public final static String BASE_YOUTUBE_INTENT_URL = "vnd.youtube";
 
     private static final String HARDCODED_CLIENT_VERSION = "2.20200214.04.00";
     private static String clientVersion;
@@ -182,23 +182,27 @@ public class YoutubeParsingHelper {
         }
     }
 
-    public static Calendar parseDateFrom(String textualUploadDate) throws ParsingException {
-        Date date;
+    public static OffsetDateTime parseDateFrom(String textualUploadDate) throws ParsingException {
         try {
-            date = new SimpleDateFormat("yyyy-MM-dd").parse(textualUploadDate);
-        } catch (ParseException e) {
-            throw new ParsingException("Could not parse date: \"" + textualUploadDate + "\"", e);
+            return OffsetDateTime.parse(textualUploadDate);
+        } catch (DateTimeParseException e) {
+            try {
+                return LocalDate.parse(textualUploadDate).atStartOfDay().atOffset(ZoneOffset.UTC);
+            } catch (DateTimeParseException e1) {
+                throw new ParsingException("Could not parse date: \"" + textualUploadDate + "\"", e1);
+            }
         }
-
-        final Calendar uploadDate = Calendar.getInstance();
-        uploadDate.setTime(date);
-        return uploadDate;
     }
 
     public static JsonObject getInitialData(String html) throws ParsingException {
         try {
-            String initialData = Parser.matchGroup1("window\\[\"ytInitialData\"\\]\\s*=\\s*(\\{.*?\\});", html);
-            return JsonParser.object().from(initialData);
+            try {
+                final String initialData = Parser.matchGroup1("window\\[\"ytInitialData\"\\]\\s*=\\s*(\\{.*?\\});", html);
+                return JsonParser.object().from(initialData);
+            } catch (Parser.RegexException e) {
+                final String initialData = Parser.matchGroup1("var\\s*ytInitialData\\s*=\\s*(\\{.*?\\});", html);
+                return JsonParser.object().from(initialData);
+            }
         } catch (JsonParserException | Parser.RegexException e) {
             throw new ParsingException("Could not get ytInitialData", e);
         }

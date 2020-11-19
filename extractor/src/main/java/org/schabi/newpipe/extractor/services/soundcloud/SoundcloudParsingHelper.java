@@ -25,10 +25,15 @@ import org.schabi.newpipe.extractor.utils.Utils;
 
 import javax.annotation.Nonnull;
 import java.io.IOException;
+import java.net.MalformedURLException;
+import java.net.URL;
 import java.net.URLEncoder;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
-import java.util.*;
+import java.time.OffsetDateTime;
+import java.time.format.DateTimeFormatter;
+import java.time.format.DateTimeParseException;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.List;
 
 import static java.util.Collections.singletonList;
 import static org.schabi.newpipe.extractor.ServiceList.SoundCloud;
@@ -93,23 +98,16 @@ public class SoundcloudParsingHelper {
         }
     }
 
-    public static Calendar parseDateFrom(String textualUploadDate) throws ParsingException {
-        Date date;
+    public static OffsetDateTime parseDateFrom(String textualUploadDate) throws ParsingException {
         try {
-            SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss'Z'");
-            sdf.setTimeZone(TimeZone.getTimeZone("GMT"));
-            date = sdf.parse(textualUploadDate);
-        } catch (ParseException e1) {
+            return OffsetDateTime.parse(textualUploadDate);
+        } catch (DateTimeParseException e1) {
             try {
-                date = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss +0000").parse(textualUploadDate);
-            } catch (ParseException e2) {
+                return OffsetDateTime.parse(textualUploadDate, DateTimeFormatter.ofPattern("yyyy/MM/dd HH:mm:ss +0000"));
+            } catch (DateTimeParseException e2) {
                 throw new ParsingException("Could not parse date: \"" + textualUploadDate + "\"" + ", " + e1.getMessage(), e2);
             }
         }
-
-        final Calendar uploadDate = Calendar.getInstance();
-        uploadDate.setTime(date);
-        return uploadDate;
     }
 
     /**
@@ -148,12 +146,21 @@ public class SoundcloudParsingHelper {
      *
      * @return the resolved id
      */
-    public static String resolveIdWithEmbedPlayer(String url) throws IOException, ReCaptchaException, ParsingException {
+    public static String resolveIdWithEmbedPlayer(String urlString) throws IOException, ReCaptchaException, ParsingException {
+        // Remove the tailing slash from URLs due to issues with the SoundCloud API
+        if (urlString.charAt(urlString.length() -1) == '/') urlString = urlString.substring(0, urlString.length()-1);
+
+        URL url;
+        try {
+            url = Utils.stringToURL(urlString);
+        } catch (MalformedURLException e){
+            throw new IllegalArgumentException("The given URL is not valid");
+        }
 
         String response = NewPipe.getDownloader().get("https://w.soundcloud.com/player/?url="
-                + URLEncoder.encode(url, "UTF-8"), SoundCloud.getLocalization()).responseBody();
+                + URLEncoder.encode(url.toString(), "UTF-8"), SoundCloud.getLocalization()).responseBody();
         // handle playlists / sets different and get playlist id via uir field in JSON
-        if (url.contains("sets") && !url.endsWith("sets") && !url.endsWith("sets/"))
+        if (url.getPath().contains("/sets/") && !url.getPath().endsWith("/sets"))
             return Parser.matchGroup1("\"uri\":\\s*\"https:\\/\\/api\\.soundcloud\\.com\\/playlists\\/((\\d)*?)\"", response);
         return Parser.matchGroup1(",\"id\":(([^}\\n])*?),", response);
     }

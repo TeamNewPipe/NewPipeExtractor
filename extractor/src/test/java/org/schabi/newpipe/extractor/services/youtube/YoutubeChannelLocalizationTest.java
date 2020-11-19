@@ -6,12 +6,15 @@ import org.schabi.newpipe.DownloaderTestImpl;
 import org.schabi.newpipe.extractor.ListExtractor;
 import org.schabi.newpipe.extractor.NewPipe;
 import org.schabi.newpipe.extractor.channel.ChannelExtractor;
-import org.schabi.newpipe.extractor.localization.Localization;
 import org.schabi.newpipe.extractor.localization.DateWrapper;
+import org.schabi.newpipe.extractor.localization.Localization;
 import org.schabi.newpipe.extractor.stream.StreamInfoItem;
 
-import java.text.SimpleDateFormat;
-import java.util.*;
+import java.time.format.DateTimeFormatter;
+import java.time.temporal.ChronoUnit;
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Map;
 
 import static org.junit.Assert.fail;
 import static org.schabi.newpipe.extractor.ServiceList.YouTube;
@@ -23,7 +26,7 @@ import static org.schabi.newpipe.extractor.services.DefaultTests.defaultTestRela
 @Ignore("Should be ran manually from time to time, as it's too time consuming.")
 public class YoutubeChannelLocalizationTest {
     private static final boolean DEBUG = true;
-    private final SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm");
+    private final DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
 
     @Test
     public void testAllSupportedLocalizations() throws Exception {
@@ -64,7 +67,7 @@ public class YoutubeChannelLocalizationTest {
                         + "\n:::: " + item.getStreamType() + ", views = " + item.getViewCount();
                 final DateWrapper uploadDate = item.getUploadDate();
                 if (uploadDate != null) {
-                    String dateAsText = dateFormat.format(uploadDate.date().getTime());
+                    String dateAsText = dateTimeFormatter.format(uploadDate.offsetDateTime());
                     debugMessage += "\n:::: " + item.getTextualUploadDate() +
                             "\n:::: " + dateAsText;
                 }
@@ -107,13 +110,13 @@ public class YoutubeChannelLocalizationTest {
                 final DateWrapper currentUploadDate = currentItem.getUploadDate();
 
                 final String referenceDateString = referenceUploadDate == null ? "null" :
-                        dateFormat.format(referenceUploadDate.date().getTime());
+                        dateTimeFormatter.format(referenceUploadDate.offsetDateTime());
                 final String currentDateString = currentUploadDate == null ? "null" :
-                        dateFormat.format(currentUploadDate.date().getTime());
+                        dateTimeFormatter.format(currentUploadDate.offsetDateTime());
 
                 long difference = -1;
                 if (referenceUploadDate != null && currentUploadDate != null) {
-                    difference = Math.abs(referenceUploadDate.date().getTimeInMillis() - currentUploadDate.date().getTimeInMillis());
+                    difference = ChronoUnit.MILLIS.between(referenceUploadDate.offsetDateTime(), currentUploadDate.offsetDateTime());
                 }
 
                 final boolean areTimeEquals = difference < 5 * 60 * 1000L;

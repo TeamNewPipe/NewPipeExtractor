@@ -1,12 +1,19 @@
 package org.schabi.newpipe.extractor;
 
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 
-import static org.junit.Assert.*;
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
+
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertTrue;
 
 public class ExtractorAsserts {
     public static void assertEmptyErrors(String message, List<Throwable> errors) {
@@ -55,5 +62,23 @@ public class ExtractorAsserts {
         if (stringToCheck != null) {
             assertTrue(message, stringToCheck.isEmpty());
         }
+    }
+
+    public static void assertAtLeast(long expected, long actual) {
+        assertTrue(actual + " is not at least " + expected, actual >= expected);
+    }
+
+    // this assumes that sorting a and b in-place is not an issue, so it's only intended for tests
+    public static void assertEqualsOrderIndependent(List<String> expected, List<String> actual) {
+        if (expected == null) {
+            assertNull(actual);
+            return;
+        } else {
+            assertNotNull(actual);
+        }
+
+        Collections.sort(expected);
+        Collections.sort(actual);
+        assertEquals(expected, actual);
     }
 }

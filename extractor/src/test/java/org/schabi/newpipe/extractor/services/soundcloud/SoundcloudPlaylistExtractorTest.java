@@ -98,7 +98,7 @@ public class SoundcloudPlaylistExtractorTest {
 
         @Test
         public void testUploaderName() {
-            assertTrue(extractor.getUploaderName().contains("LIL UZI VERT"));
+            assertTrue(extractor.getUploaderName().contains("Lil Uzi Vert"));
         }
 
         @Test

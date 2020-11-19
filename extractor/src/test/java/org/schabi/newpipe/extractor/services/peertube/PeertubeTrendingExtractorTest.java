@@ -8,8 +8,8 @@ import org.schabi.newpipe.extractor.exceptions.ParsingException;
 import org.schabi.newpipe.extractor.services.BaseListExtractorTest;
 import org.schabi.newpipe.extractor.services.peertube.extractors.PeertubeTrendingExtractor;
 
-import static org.junit.Assert.*;
-import static org.schabi.newpipe.extractor.ServiceList.*;
+import static org.junit.Assert.assertEquals;
+import static org.schabi.newpipe.extractor.ServiceList.PeerTube;
 import static org.schabi.newpipe.extractor.services.DefaultTests.*;
 
 public class PeertubeTrendingExtractorTest {

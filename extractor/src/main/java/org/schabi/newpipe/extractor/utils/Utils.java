@@ -181,14 +181,39 @@ public class Utils {
         return s;
     }
 
-    public static String getBaseUrl(String url) throws ParsingException {
-        URL uri;
+    public static String getBaseUrl(final String url) throws ParsingException {
         try {
-            uri = stringToURL(url);
-        } catch (MalformedURLException e) {
+            final URL uri = stringToURL(url);
+            return uri.getProtocol() + "://" + uri.getAuthority();
+        } catch (final MalformedURLException e) {
+            final String message = e.getMessage();
+            if (message.startsWith("unknown protocol: ")) {
+                // return just the protocol (e.g. vnd.youtube)
+                return message.substring("unknown protocol: ".length());
+            }
+
             throw new ParsingException("Malformed url: " + url, e);
         }
-        return uri.getProtocol() + "://" + uri.getAuthority();
+    }
+
+    /**
+     * If the provided url is a Google search redirect, then the actual url is extracted from the
+     * {@code url=} query value and returned, otherwise the original url is returned.
+     * @param url the url which can possibly be a Google search redirect
+     * @return an url with no Google search redirects
+     */
+    public static String followGoogleRedirectIfNeeded(final String url) {
+        // if the url is a redirect from a Google search, extract the actual url
+        try {
+            final URL decoded = Utils.stringToURL(url);
+            if (decoded.getHost().contains("google") && decoded.getPath().equals("/url")) {
+                return URLDecoder.decode(Parser.matchGroup1("&url=([^&]+)(?:&|$)", url), "UTF-8");
+            }
+        } catch (final Exception ignored) {
+        }
+
+        // url is not a google search redirect
+        return url;
     }
 
     public static boolean isNullOrEmpty(final String str) {

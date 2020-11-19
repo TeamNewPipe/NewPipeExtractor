@@ -16,6 +16,7 @@ import org.schabi.newpipe.extractor.search.SearchExtractor;
 import org.schabi.newpipe.extractor.stream.StreamExtractor;
 import org.schabi.newpipe.extractor.subscription.SubscriptionExtractor;
 import org.schabi.newpipe.extractor.suggestion.SuggestionExtractor;
+import org.schabi.newpipe.extractor.utils.Utils;
 
 import javax.annotation.Nullable;
 import java.util.Collections;
@@ -277,18 +278,19 @@ public abstract class StreamingService {
      * Figures out where the link is pointing to (a channel, a video, a playlist, etc.)
      * @param url the url on which it should be decided of which link type it is
      * @return the link type of url
-     * @throws ParsingException
      */
-    public final LinkType getLinkTypeByUrl(String url) throws ParsingException {
-        LinkHandlerFactory sH = getStreamLHFactory();
-        LinkHandlerFactory cH = getChannelLHFactory();
-        LinkHandlerFactory pH = getPlaylistLHFactory();
+    public final LinkType getLinkTypeByUrl(final String url) throws ParsingException {
+        final String polishedUrl = Utils.followGoogleRedirectIfNeeded(url);
 
-        if (sH != null && sH.acceptUrl(url)) {
+        final LinkHandlerFactory sH = getStreamLHFactory();
+        final LinkHandlerFactory cH = getChannelLHFactory();
+        final LinkHandlerFactory pH = getPlaylistLHFactory();
+
+        if (sH != null && sH.acceptUrl(polishedUrl)) {
             return LinkType.STREAM;
-        } else if (cH != null && cH.acceptUrl(url)) {
+        } else if (cH != null && cH.acceptUrl(polishedUrl)) {
             return LinkType.CHANNEL;
-        } else if (pH != null && pH.acceptUrl(url)) {
+        } else if (pH != null && pH.acceptUrl(polishedUrl)) {
             return LinkType.PLAYLIST;
         } else {
             return LinkType.NONE;

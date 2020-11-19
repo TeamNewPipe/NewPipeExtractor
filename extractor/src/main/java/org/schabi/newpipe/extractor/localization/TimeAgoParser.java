@@ -2,10 +2,11 @@ package org.schabi.newpipe.extractor.localization;
 
 import org.schabi.newpipe.extractor.exceptions.ParsingException;
 import org.schabi.newpipe.extractor.timeago.PatternsHolder;
-import org.schabi.newpipe.extractor.timeago.TimeAgoUnit;
 import org.schabi.newpipe.extractor.utils.Parser;
 
-import java.util.Calendar;
+import java.time.OffsetDateTime;
+import java.time.ZoneOffset;
+import java.time.temporal.ChronoUnit;
 import java.util.Collection;
 import java.util.Map;
 import java.util.regex.Pattern;
@@ -16,7 +17,7 @@ import java.util.regex.Pattern;
  */
 public class TimeAgoParser {
     private final PatternsHolder patternsHolder;
-    private final Calendar consistentNow;
+    private final OffsetDateTime now;
 
     /**
      * Creates a helper to parse upload dates in the format '2 days ago'.
@@ -28,7 +29,7 @@ public class TimeAgoParser {
      */
     public TimeAgoParser(PatternsHolder patternsHolder) {
         this.patternsHolder = patternsHolder;
-        consistentNow = Calendar.getInstance();
+        now = OffsetDateTime.now(ZoneOffset.UTC);
     }
 
     /**
@@ -42,14 +43,14 @@ public class TimeAgoParser {
      * @throws ParsingException if the time unit could not be recognized
      */
     public DateWrapper parse(String textualDate) throws ParsingException {
-        for (Map.Entry<TimeAgoUnit, Map<String, Integer>> caseUnitEntry : patternsHolder.specialCases().entrySet()) {
-            final TimeAgoUnit timeAgoUnit = caseUnitEntry.getKey();
+        for (Map.Entry<ChronoUnit, Map<String, Integer>> caseUnitEntry : patternsHolder.specialCases().entrySet()) {
+            final ChronoUnit chronoUnit = caseUnitEntry.getKey();
             for (Map.Entry<String, Integer> caseMapToAmountEntry : caseUnitEntry.getValue().entrySet()) {
                 final String caseText = caseMapToAmountEntry.getKey();
                 final Integer caseAmount = caseMapToAmountEntry.getValue();
 
                 if (textualDateMatches(textualDate, caseText)) {
-                    return getResultFor(caseAmount, timeAgoUnit);
+                    return getResultFor(caseAmount, chronoUnit);
                 }
             }
         }
@@ -63,8 +64,8 @@ public class TimeAgoParser {
             timeAgoAmount = 1;
         }
 
-        final TimeAgoUnit timeAgoUnit = parseTimeAgoUnit(textualDate);
-        return getResultFor(timeAgoAmount, timeAgoUnit);
+        final ChronoUnit chronoUnit = parseChronoUnit(textualDate);
+        return getResultFor(timeAgoAmount, chronoUnit);
     }
 
     private int parseTimeAgoAmount(String textualDate) throws NumberFormatException {
@@ -72,13 +73,13 @@ public class TimeAgoParser {
         return Integer.parseInt(timeValueStr);
     }
 
-    private TimeAgoUnit parseTimeAgoUnit(String textualDate) throws ParsingException {
-        for (Map.Entry<TimeAgoUnit, Collection<String>> entry : patternsHolder.asMap().entrySet()) {
-            final TimeAgoUnit timeAgoUnit = entry.getKey();
+    private ChronoUnit parseChronoUnit(String textualDate) throws ParsingException {
+        for (Map.Entry<ChronoUnit, Collection<String>> entry : patternsHolder.asMap().entrySet()) {
+            final ChronoUnit chronoUnit = entry.getKey();
 
             for (String agoPhrase : entry.getValue()) {
                 if (textualDateMatches(textualDate, agoPhrase)) {
-                    return timeAgoUnit;
+                    return chronoUnit;
                 }
             }
         }
@@ -112,65 +113,35 @@ public class TimeAgoParser {
         }
     }
 
-    private DateWrapper getResultFor(int timeAgoAmount, TimeAgoUnit timeAgoUnit) {
-        final Calendar calendarTime = getNow();
+    private DateWrapper getResultFor(int timeAgoAmount, ChronoUnit chronoUnit) {
+        OffsetDateTime offsetDateTime = now;
         boolean isApproximation = false;
 
-        switch (timeAgoUnit) {
+        switch (chronoUnit) {
             case SECONDS:
-                calendarTime.add(Calendar.SECOND, -timeAgoAmount);
-                break;
-
             case MINUTES:
-                calendarTime.add(Calendar.MINUTE, -timeAgoAmount);
-                break;
-
             case HOURS:
-                calendarTime.add(Calendar.HOUR_OF_DAY, -timeAgoAmount);
+                offsetDateTime = offsetDateTime.minus(timeAgoAmount, chronoUnit);
                 break;
 
             case DAYS:
-                calendarTime.add(Calendar.DAY_OF_MONTH, -timeAgoAmount);
-                isApproximation = true;
-                break;
-
             case WEEKS:
-                calendarTime.add(Calendar.WEEK_OF_YEAR, -timeAgoAmount);
-                isApproximation = true;
-                break;
-
             case MONTHS:
-                calendarTime.add(Calendar.MONTH, -timeAgoAmount);
+                offsetDateTime = offsetDateTime.minus(timeAgoAmount, chronoUnit);
                 isApproximation = true;
                 break;
 
             case YEARS:
-                calendarTime.add(Calendar.YEAR, -timeAgoAmount);
-                // Prevent `PrettyTime` from showing '12 months ago'.
-                calendarTime.add(Calendar.DAY_OF_MONTH, -1);
+                // minusDays is needed to prevent `PrettyTime` from showing '12 months ago'.
+                offsetDateTime = offsetDateTime.minusYears(timeAgoAmount).minusDays(1);
                 isApproximation = true;
                 break;
         }
 
         if (isApproximation) {
-            markApproximatedTime(calendarTime);
+            offsetDateTime = offsetDateTime.truncatedTo(ChronoUnit.HOURS);
         }
 
-        return new DateWrapper(calendarTime, isApproximation);
-    }
-
-    private Calendar getNow() {
-        return (Calendar) consistentNow.clone();
-    }
-
-    /**
-     * Marks the time as approximated by setting minutes, seconds and milliseconds to 0.
-     *
-     * @param calendarTime Time to be marked as approximated
-     */
-    private void markApproximatedTime(Calendar calendarTime) {
-        calendarTime.set(Calendar.MINUTE, 0);
-        calendarTime.set(Calendar.SECOND, 0);
-        calendarTime.set(Calendar.MILLISECOND, 0);
+        return new DateWrapper(offsetDateTime, isApproximation);
     }
 }

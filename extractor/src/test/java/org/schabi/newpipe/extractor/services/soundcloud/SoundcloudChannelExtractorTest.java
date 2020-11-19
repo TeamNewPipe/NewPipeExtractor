@@ -41,7 +41,7 @@ public class SoundcloudChannelExtractorTest {
 
         @Test
         public void testName() {
-            assertEquals("LIL UZI VERT", extractor.getName());
+            assertEquals("Lil Uzi Vert", extractor.getName());
         }
 
         @Test

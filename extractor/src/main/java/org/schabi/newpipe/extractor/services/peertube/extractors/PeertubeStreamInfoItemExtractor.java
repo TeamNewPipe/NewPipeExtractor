@@ -27,8 +27,7 @@ public class PeertubeStreamInfoItemExtractor implements StreamInfoItemExtractor 
 
     @Override
     public String getThumbnailUrl() throws ParsingException {
-        final String value = JsonUtils.getString(item, "thumbnailPath");
-        return baseUrl + value;
+        return baseUrl + JsonUtils.getString(item, "thumbnailPath");
     }
 
     @Override
@@ -51,7 +50,8 @@ public class PeertubeStreamInfoItemExtractor implements StreamInfoItemExtractor 
         final String name = JsonUtils.getString(item, "account.name");
         final String host = JsonUtils.getString(item, "account.host");
 
-        return ServiceList.PeerTube.getChannelLHFactory().fromId("accounts/" + name + "@" + host, baseUrl).getUrl();
+        return ServiceList.PeerTube.getChannelLHFactory()
+                .fromId("accounts/" + name + "@" + host, baseUrl).getUrl();
     }
 
     @Override

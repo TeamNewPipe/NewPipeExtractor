@@ -2,7 +2,6 @@ package org.schabi.newpipe.extractor.services.youtube.linkHandler;
 
 import org.schabi.newpipe.extractor.exceptions.FoundAdException;
 import org.schabi.newpipe.extractor.exceptions.ParsingException;
-import org.schabi.newpipe.extractor.linkhandler.LinkHandler;
 import org.schabi.newpipe.extractor.linkhandler.LinkHandlerFactory;
 import org.schabi.newpipe.extractor.services.youtube.YoutubeParsingHelper;
 import org.schabi.newpipe.extractor.utils.Utils;
@@ -12,8 +11,8 @@ import java.net.MalformedURLException;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.net.URL;
-
-import static org.schabi.newpipe.extractor.services.youtube.YoutubeParsingHelper.BASE_YOUTUBE_INTENT_URL;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 /*
  * Created by Christian Schabesberger on 02.02.16.
@@ -37,6 +36,7 @@ import static org.schabi.newpipe.extractor.services.youtube.YoutubeParsingHelper
 
 public class YoutubeStreamLinkHandlerFactory extends LinkHandlerFactory {
 
+    private static final Pattern YOUTUBE_VIDEO_ID_REGEX_PATTERN = Pattern.compile("([a-zA-Z0-9_-]{11})");
     private static final YoutubeStreamLinkHandlerFactory instance = new YoutubeStreamLinkHandlerFactory();
 
     private YoutubeStreamLinkHandlerFactory() {
@@ -46,24 +46,21 @@ public class YoutubeStreamLinkHandlerFactory extends LinkHandlerFactory {
         return instance;
     }
 
-    private static boolean isId(@Nullable String id) {
-        return id != null && id.matches("[a-zA-Z0-9_-]{11}");
+    @Nullable
+    private static String extractId(@Nullable final String id) {
+        if (id != null) {
+            final Matcher m = YOUTUBE_VIDEO_ID_REGEX_PATTERN.matcher(id);
+            return m.find() ? m.group(1) : null;
+        }
+        return null;
     }
 
-    private static String assertIsId(@Nullable String id) throws ParsingException {
-        if (isId(id)) {
-            return id;
+    private static String assertIsId(@Nullable final String id) throws ParsingException {
+        final String extractedId = extractId(id);
+        if (extractedId != null) {
+            return extractedId;
         } else {
             throw new ParsingException("The given string is not a Youtube-Video-ID");
-        }
-    }
-
-    @Override
-    public LinkHandler fromUrl(String url) throws ParsingException {
-        if (url.startsWith(BASE_YOUTUBE_INTENT_URL)) {
-            return super.fromUrl(url, BASE_YOUTUBE_INTENT_URL);
-        } else {
-            return super.fromUrl(url);
         }
     }
 
@@ -81,9 +78,9 @@ public class YoutubeStreamLinkHandlerFactory extends LinkHandlerFactory {
             if (scheme != null && (scheme.equals("vnd.youtube") || scheme.equals("vnd.youtube.launch"))) {
                 String schemeSpecificPart = uri.getSchemeSpecificPart();
                 if (schemeSpecificPart.startsWith("//")) {
-                    final String possiblyId = schemeSpecificPart.substring(2);
-                    if (isId(possiblyId)) {
-                        return possiblyId;
+                    final String extractedId = extractId(schemeSpecificPart.substring(2));
+                    if (extractedId != null) {
+                        return extractedId;
                     }
 
                     urlString = "https:" + schemeSpecificPart;
@@ -153,7 +150,7 @@ public class YoutubeStreamLinkHandlerFactory extends LinkHandlerFactory {
                     return assertIsId(viewQueryValue);
                 }
 
-                if (path.startsWith("embed/")) {
+                if (path.startsWith("embed/") || path.startsWith("shorts/")) {
                     String id = path.split("/")[1];
 
                     return assertIsId(id);

@@ -321,6 +321,7 @@ public abstract class StreamExtractor extends Extractor {
      * @throws IOException
      * @throws ExtractionException
      */
+    @Nullable
     public abstract StreamInfoItemsCollector getRelatedStreams() throws IOException, ExtractionException;
 
     /**
