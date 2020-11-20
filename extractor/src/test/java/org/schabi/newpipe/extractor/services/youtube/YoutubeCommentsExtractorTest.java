@@ -30,7 +30,7 @@ public class YoutubeCommentsExtractorTest {
         private static final String url = "https://www.youtube.com/watch?v=D00Au7k3i6o";
         private static YoutubeCommentsExtractor extractor;
 
-        private static final String commentContent = "sub 4 sub";
+        private static final String commentContent = "Category: Education";
 
         @BeforeClass
         public static void setUp() throws Exception {
