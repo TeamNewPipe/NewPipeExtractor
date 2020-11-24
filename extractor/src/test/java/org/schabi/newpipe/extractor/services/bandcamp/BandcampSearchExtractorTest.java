@@ -40,10 +40,10 @@ public class BandcampSearchExtractorTest {
      */
     @Test
     public void testStreamSearch() throws ExtractionException, IOException {
-        SearchExtractor extractor = Bandcamp.getSearchExtractor("best friend's basement");
+        final SearchExtractor extractor = Bandcamp.getSearchExtractor("best friend's basement");
 
-        ListExtractor.InfoItemsPage<InfoItem> page = extractor.getInitialPage();
-        StreamInfoItem bestFriendsBasement = (StreamInfoItem) page.getItems().get(0);
+        final ListExtractor.InfoItemsPage<InfoItem> page = extractor.getInitialPage();
+        final StreamInfoItem bestFriendsBasement = (StreamInfoItem) page.getItems().get(0);
 
         // The track by Zach Benson should be the first result, no?
         assertEquals("Best Friend's Basement", bestFriendsBasement.getName());
@@ -58,8 +58,8 @@ public class BandcampSearchExtractorTest {
      */
     @Test
     public void testChannelSearch() throws ExtractionException, IOException {
-        SearchExtractor extractor = Bandcamp.getSearchExtractor("C418");
-        InfoItem c418 = extractor.getInitialPage()
+        final SearchExtractor extractor = Bandcamp.getSearchExtractor("C418");
+        final InfoItem c418 = extractor.getInitialPage()
                 .getItems().get(0);
 
         // C418's artist profile should be the first result, no?
@@ -75,7 +75,7 @@ public class BandcampSearchExtractorTest {
      */
     @Test
     public void testAlbumSearch() throws ExtractionException, IOException {
-        SearchExtractor extractor = Bandcamp.getSearchExtractor("minecraft volume alpha");
+        final SearchExtractor extractor = Bandcamp.getSearchExtractor("minecraft volume alpha");
         InfoItem minecraft = extractor.getInitialPage()
                 .getItems().get(0);
 
@@ -96,12 +96,12 @@ public class BandcampSearchExtractorTest {
     @Test
     public void testMultiplePages() throws ExtractionException, IOException {
         // A query practically guaranteed to have the maximum amount of pages
-        SearchExtractor extractor = Bandcamp.getSearchExtractor("e");
+        final SearchExtractor extractor = Bandcamp.getSearchExtractor("e");
 
-        Page page2 = extractor.getInitialPage().getNextPage();
+        final Page page2 = extractor.getInitialPage().getNextPage();
         assertEquals("https://bandcamp.com/search?q=e&page=2", page2.getUrl());
 
-        Page page3 = extractor.getPage(page2).getNextPage();
+        final Page page3 = extractor.getPage(page2).getNextPage();
         assertEquals("https://bandcamp.com/search?q=e&page=3", page3.getUrl());
     }
 

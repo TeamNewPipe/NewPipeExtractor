@@ -36,13 +36,13 @@ public class BandcampRadioExtractorTest implements BaseListExtractorTest {
 
     @Test
     public void testRadioCount() throws ExtractionException, IOException {
-        List<InfoItem> list = Bandcamp.getKioskList().getExtractorById("Radio", null).getInitialPage().getItems();
+        final List<InfoItem> list = Bandcamp.getKioskList().getExtractorById("Radio", null).getInitialPage().getItems();
         assertTrue(list.size() > 300);
     }
 
     @Test
     public void testRelatedItems() throws Exception {
-        //DefaultTests.defaultTestRelatedItems(extractor);
+        // DefaultTests.defaultTestRelatedItems(extractor);
         // Would fail because BandcampRadioInfoItemExtractor.getUploaderName() returns an empty String
     }
 

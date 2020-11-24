@@ -33,7 +33,8 @@ public class BandcampRadioStreamExtractorTest {
     @Test
     public void testGettingCorrectStreamExtractor() throws ExtractionException {
         assertTrue(Bandcamp.getStreamExtractor("https://bandcamp.com/?show=3") instanceof BandcampRadioStreamExtractor);
-        assertFalse(Bandcamp.getStreamExtractor("https://zachbenson.bandcamp.com/track/deflated") instanceof BandcampRadioStreamExtractor);
+        assertFalse(Bandcamp.getStreamExtractor("https://zachbenson.bandcamp.com/track/deflated")
+                instanceof BandcampRadioStreamExtractor);
     }
 
     @Test
@@ -86,7 +87,8 @@ public class BandcampRadioStreamExtractorTest {
 
     @Test
     public void testGetDescription() throws ParsingException {
-        assertEquals("Featuring special guests Nick Hakim and Elbows, plus fresh cuts from Eddie Palmieri, KRS One, Ladi6, and Moonchild.", e.getDescription().getContent());
+        assertEquals("Featuring special guests Nick Hakim and Elbows, plus fresh cuts from Eddie Palmieri, KRS One, Ladi6, and Moonchild.",
+                e.getDescription().getContent());
 
     }
 

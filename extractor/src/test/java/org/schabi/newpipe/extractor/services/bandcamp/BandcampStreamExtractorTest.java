@@ -154,7 +154,7 @@ public class BandcampStreamExtractorTest extends DefaultStreamExtractorTest {
 
     @Test
     public void testArtistProfilePicture() throws Exception {
-        String url = extractor().getUploaderAvatarUrl();
+        final String url = extractor().getUploaderAvatarUrl();
         assertTrue(url.contains("://f4.bcbits.com/img/") && url.endsWith(".jpg"));
     }
 

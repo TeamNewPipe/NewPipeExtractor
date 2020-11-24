@@ -36,7 +36,7 @@ public class BandcampPlaylistExtractorTest {
      */
     @Test
     public void testCount() throws ExtractionException, IOException {
-        PlaylistExtractor extractor = Bandcamp.getPlaylistExtractor("https://macbenson.bandcamp.com/album/coming-of-age");
+        final PlaylistExtractor extractor = Bandcamp.getPlaylistExtractor("https://macbenson.bandcamp.com/album/coming-of-age");
         extractor.fetchPage();
 
         assertEquals(5, extractor.getStreamCount());
@@ -47,10 +47,10 @@ public class BandcampPlaylistExtractorTest {
      */
     @Test
     public void testDifferentTrackCovers() throws ExtractionException, IOException {
-        PlaylistExtractor extractor = Bandcamp.getPlaylistExtractor("https://zachbensonarchive.bandcamp.com/album/results-of-boredom");
+        final PlaylistExtractor extractor = Bandcamp.getPlaylistExtractor("https://zachbensonarchive.bandcamp.com/album/results-of-boredom");
         extractor.fetchPage();
 
-        List<StreamInfoItem> l = extractor.getInitialPage().getItems();
+        final List<StreamInfoItem> l = extractor.getInitialPage().getItems();
         assertEquals(extractor.getThumbnailUrl(), l.get(0).getThumbnailUrl());
         assertNotEquals(extractor.getThumbnailUrl(), l.get(5).getThumbnailUrl());
     }
@@ -60,13 +60,13 @@ public class BandcampPlaylistExtractorTest {
      */
     @Test(timeout = 10000L)
     public void testDifferentTrackCoversDuration() throws ExtractionException, IOException {
-        PlaylistExtractor extractor = Bandcamp.getPlaylistExtractor("https://infiniteammo.bandcamp.com/album/night-in-the-woods-vol-1-at-the-end-of-everything");
+        final PlaylistExtractor extractor = Bandcamp.getPlaylistExtractor("https://infiniteammo.bandcamp.com/album/night-in-the-woods-vol-1-at-the-end-of-everything");
         extractor.fetchPage();
 
         /* All tracks in this album have the same cover art, but I don't know any albums with more than 10 tracks
          * that has at least one track with a cover art different from the rest.
          */
-        List<StreamInfoItem> l = extractor.getInitialPage().getItems();
+        final List<StreamInfoItem> l = extractor.getInitialPage().getItems();
         assertEquals(extractor.getThumbnailUrl(), l.get(0).getThumbnailUrl());
         assertEquals(extractor.getThumbnailUrl(), l.get(5).getThumbnailUrl());
     }
@@ -76,7 +76,7 @@ public class BandcampPlaylistExtractorTest {
      */
     @Test(expected = ContentNotAvailableException.class)
     public void testLockedContent() throws ExtractionException, IOException {
-        PlaylistExtractor extractor = Bandcamp.getPlaylistExtractor("https://billwurtz.bandcamp.com/album/high-enough");
+        final PlaylistExtractor extractor = Bandcamp.getPlaylistExtractor("https://billwurtz.bandcamp.com/album/high-enough");
         extractor.fetchPage();
     }
 
@@ -85,7 +85,7 @@ public class BandcampPlaylistExtractorTest {
      */
     @Test
     public void testSingleStreamPlaylist() throws ExtractionException, IOException {
-        PlaylistExtractor extractor = Bandcamp.getPlaylistExtractor("https://zachjohnson1.bandcamp.com/album/endless");
+        final PlaylistExtractor extractor = Bandcamp.getPlaylistExtractor("https://zachjohnson1.bandcamp.com/album/endless");
         extractor.fetchPage();
 
         assertEquals(1, extractor.getStreamCount());
@@ -170,7 +170,7 @@ public class BandcampPlaylistExtractorTest {
 
         @Test
         public void testRelatedItems() throws Exception {
-            //DefaultTests.defaultTestRelatedItems(extractor);
+            // DefaultTests.defaultTestRelatedItems(extractor);
             // Would fail because BandcampPlaylistStreamInfoItemExtractor.getUploaderName() returns an empty String
         }
 

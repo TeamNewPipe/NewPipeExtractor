@@ -36,13 +36,13 @@ public class BandcampFeaturedExtractorTest implements BaseListExtractorTest {
 
     @Test
     public void testFeaturedCount() throws ExtractionException, IOException {
-        List<PlaylistInfoItem> list = extractor.getInitialPage().getItems();
+        final List<PlaylistInfoItem> list = extractor.getInitialPage().getItems();
         assertTrue(list.size() > 1);
     }
 
     @Test
     public void testHttps() throws ExtractionException, IOException {
-        List<PlaylistInfoItem> list = extractor.getInitialPage().getItems();
+        final List<PlaylistInfoItem> list = extractor.getInitialPage().getItems();
         assertTrue(list.get(0).getUrl().contains("https://"));
     }
 

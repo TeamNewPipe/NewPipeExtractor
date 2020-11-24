@@ -30,7 +30,7 @@ public class BandcampSuggestionExtractorTest {
 
     @Test
     public void testSearchExample() throws IOException, ExtractionException {
-        List<String> c418 = extractor.suggestionList("c418");
+        final List<String> c418 = extractor.suggestionList("c418");
 
         assertTrue(c418.contains("C418"));
 
