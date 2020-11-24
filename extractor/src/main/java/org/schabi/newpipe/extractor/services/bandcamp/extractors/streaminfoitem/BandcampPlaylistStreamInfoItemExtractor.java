@@ -17,13 +17,15 @@ public class BandcampPlaylistStreamInfoItemExtractor extends BandcampStreamInfoI
     private String substituteCoverUrl;
     private final StreamingService service;
 
-    public BandcampPlaylistStreamInfoItemExtractor(JsonObject track, String uploaderUrl, StreamingService service) {
+    public BandcampPlaylistStreamInfoItemExtractor(final JsonObject track, final String uploaderUrl,
+                                                   final StreamingService service) {
         super(uploaderUrl);
         this.track = track;
         this.service = service;
     }
 
-    public BandcampPlaylistStreamInfoItemExtractor(JsonObject track, String uploaderUrl, String substituteCoverUrl) {
+    public BandcampPlaylistStreamInfoItemExtractor(final JsonObject track, final String uploaderUrl,
+                                                   final String substituteCoverUrl) {
         this(track, uploaderUrl, (StreamingService) null);
         this.substituteCoverUrl = substituteCoverUrl;
     }
@@ -61,10 +63,10 @@ public class BandcampPlaylistStreamInfoItemExtractor extends BandcampStreamInfoI
             return substituteCoverUrl;
         } else {
             try {
-                StreamExtractor extractor = service.getStreamExtractor(getUrl());
+                final StreamExtractor extractor = service.getStreamExtractor(getUrl());
                 extractor.fetchPage();
                 return extractor.getThumbnailUrl();
-            } catch (ExtractionException | IOException e) {
+            } catch (final ExtractionException | IOException e) {
                 throw new ParsingException("could not download cover art location", e);
             }
         }

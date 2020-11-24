@@ -14,23 +14,30 @@ import static org.schabi.newpipe.extractor.services.bandcamp.extractors.Bandcamp
 public class BandcampFeaturedLinkHandlerFactory extends ListLinkHandlerFactory {
 
     @Override
-    public String getUrl(String id, List<String> contentFilter, String sortFilter) {
-        if (id.equals(KIOSK_FEATURED)) return FEATURED_API_URL; // doesn't have a website
-        else if (id.equals(KIOSK_RADIO)) return RADIO_API_URL; // doesn't have its own website
-        else return null;
+    public String getUrl(final String id, final List<String> contentFilter, final String sortFilter) {
+        if (id.equals(KIOSK_FEATURED)) {
+            return FEATURED_API_URL; // doesn't have a website
+        } else if (id.equals(KIOSK_RADIO)) {
+            return RADIO_API_URL; // doesn't have its own website
+        } else {
+            return null;
+        }
     }
 
     @Override
-    public String getId(String url) {
-        if (url.matches("https?://bandcamp\\.com/\\?show=\\d+") || url.equals(RADIO_API_URL))
+    public String getId(final String url) {
+        if (url.matches("https?://bandcamp\\.com/\\?show=\\d+") || url.equals(RADIO_API_URL)) {
             return KIOSK_RADIO;
-        else if (url.equals(FEATURED_API_URL))
+        } else if (url.equals(FEATURED_API_URL)) {
             return KIOSK_FEATURED;
-        else return null;
+        } else {
+            return null;
+        }
     }
 
     @Override
-    public boolean onAcceptUrl(String url) {
-        return url.equals(FEATURED_API_URL) || (url.equals(RADIO_API_URL) || url.matches("https?://bandcamp\\.com/\\?show=\\d+"));
+    public boolean onAcceptUrl(final String url) {
+        return url.equals(FEATURED_API_URL) || (url.equals(RADIO_API_URL)
+                || url.matches("https?://bandcamp\\.com/\\?show=\\d+"));
     }
 }

@@ -16,7 +16,7 @@ public class BandcampRadioInfoItemExtractor implements StreamInfoItemExtractor {
 
     private JsonObject show;
 
-    public BandcampRadioInfoItemExtractor(JsonObject radioShow) {
+    public BandcampRadioInfoItemExtractor(final JsonObject radioShow) {
         show = radioShow;
     }
 

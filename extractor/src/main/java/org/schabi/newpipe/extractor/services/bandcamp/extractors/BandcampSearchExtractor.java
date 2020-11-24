@@ -37,21 +37,20 @@ public class BandcampSearchExtractor extends SearchExtractor {
         return false;
     }
 
-    public InfoItemsPage<InfoItem> getPage(Page page) throws IOException, ExtractionException {
+    public InfoItemsPage<InfoItem> getPage(final Page page) throws IOException, ExtractionException {
         // okay apparently this is where we DOWNLOAD the page and then COMMIT its ENTRIES to an INFOITEMPAGE
-        String html = getDownloader().get(page.getUrl()).responseBody();
+        final String html = getDownloader().get(page.getUrl()).responseBody();
 
-        InfoItemsSearchCollector collector = new InfoItemsSearchCollector(getServiceId());
+        final InfoItemsSearchCollector collector = new InfoItemsSearchCollector(getServiceId());
 
 
-        Document d = Jsoup.parse(html);
+        final Document d = Jsoup.parse(html);
 
-        Elements searchResultsElements = d.getElementsByClass("searchresult");
+        final Elements searchResultsElements = d.getElementsByClass("searchresult");
 
-        for (Element searchResult :
-                searchResultsElements) {
+        for (final Element searchResult : searchResultsElements) {
 
-            String type = searchResult.getElementsByClass("result-info").first()
+            final String type = searchResult.getElementsByClass("result-info").first()
                     .getElementsByClass("itemtype").first().text();
 
             switch (type) {
@@ -77,16 +76,16 @@ public class BandcampSearchExtractor extends SearchExtractor {
         }
 
         // Count pages
-        Elements pageLists = d.getElementsByClass("pagelist");
+        final Elements pageLists = d.getElementsByClass("pagelist");
         if (pageLists.size() == 0)
             return new InfoItemsPage<>(collector, null);
 
-        Elements pages = pageLists.first().getElementsByTag("li");
+        final Elements pages = pageLists.first().getElementsByTag("li");
 
         // Find current page
         int currentPage = -1;
         for (int i = 0; i < pages.size(); i++) {
-            Element pageElement = pages.get(i);
+            final Element pageElement = pages.get(i);
             if (pageElement.getElementsByTag("span").size() > 0) {
                 currentPage = i + 1;
                 break;
@@ -112,7 +111,7 @@ public class BandcampSearchExtractor extends SearchExtractor {
     }
 
     @Override
-    public void onFetchPage(@Nonnull Downloader downloader) throws IOException, ExtractionException {
+    public void onFetchPage(@Nonnull final Downloader downloader) throws IOException, ExtractionException {
 
     }
 }

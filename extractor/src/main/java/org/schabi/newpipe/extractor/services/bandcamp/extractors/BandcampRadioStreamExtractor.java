@@ -29,23 +29,23 @@ public class BandcampRadioStreamExtractor extends BandcampStreamExtractor {
     private JsonObject showInfo;
     private LinkHandler linkHandler;
 
-    public BandcampRadioStreamExtractor(StreamingService service, LinkHandler linkHandler) {
+    public BandcampRadioStreamExtractor(final StreamingService service, final LinkHandler linkHandler) {
         super(service, linkHandler);
         this.linkHandler = linkHandler;
     }
 
-    static JsonObject query(int id) throws ParsingException {
+    static JsonObject query(final int id) throws ParsingException {
         try {
             return JsonParser.object().from(
                     NewPipe.getDownloader().get("https://bandcamp.com/api/bcweekly/1/get?id=" + id).responseBody()
             );
-        } catch (IOException | ReCaptchaException | JsonParserException e) {
+        } catch (final IOException | ReCaptchaException | JsonParserException e) {
             throw new ParsingException("could not get show data", e);
         }
     }
 
     @Override
-    public void onFetchPage(@Nonnull Downloader downloader) throws IOException, ExtractionException {
+    public void onFetchPage(@Nonnull final Downloader downloader) throws IOException, ExtractionException {
         showInfo = query(Integer.parseInt(getId()));
     }
 
@@ -105,8 +105,8 @@ public class BandcampRadioStreamExtractor extends BandcampStreamExtractor {
 
     @Override
     public List<AudioStream> getAudioStreams() {
-        ArrayList<AudioStream> list = new ArrayList<>();
-        JsonObject streams = showInfo.getObject("audio_stream");
+        final ArrayList<AudioStream> list = new ArrayList<>();
+        final JsonObject streams = showInfo.getObject("audio_stream");
 
         if (streams.has("opus-lo")) {
             list.add(new AudioStream(

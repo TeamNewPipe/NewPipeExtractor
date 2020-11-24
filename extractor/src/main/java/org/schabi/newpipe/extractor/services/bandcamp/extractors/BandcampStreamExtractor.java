@@ -33,14 +33,14 @@ public class BandcampStreamExtractor extends StreamExtractor {
     private JsonObject current;
     private Document document;
 
-    public BandcampStreamExtractor(StreamingService service, LinkHandler linkHandler) {
+    public BandcampStreamExtractor(final StreamingService service, final LinkHandler linkHandler) {
         super(service, linkHandler);
     }
 
 
     @Override
-    public void onFetchPage(@Nonnull Downloader downloader) throws IOException, ExtractionException {
-        String html = downloader.get(getLinkHandler().getUrl()).responseBody();
+    public void onFetchPage(@Nonnull final Downloader downloader) throws IOException, ExtractionException {
+        final String html = downloader.get(getLinkHandler().getUrl()).responseBody();
         document = Jsoup.parse(html);
         albumJson = getAlbumInfoJson(html);
         current = albumJson.getObject("current");
@@ -58,12 +58,12 @@ public class BandcampStreamExtractor extends StreamExtractor {
      * @return Album metadata JSON
      * @throws ParsingException In case of a faulty website
      */
-    public static JsonObject getAlbumInfoJson(String html) throws ParsingException {
+    public static JsonObject getAlbumInfoJson(final String html) throws ParsingException {
         try {
             return BandcampExtractorHelper.getJsonData(html, "data-tralbum");
-        } catch (JsonParserException e) {
+        } catch (final JsonParserException e) {
             throw new ParsingException("Faulty JSON; page likely does not contain album data", e);
-        } catch (ArrayIndexOutOfBoundsException e) {
+        } catch (final ArrayIndexOutOfBoundsException e) {
             throw new ParsingException("JSON does not exist", e);
         }
     }
@@ -77,7 +77,7 @@ public class BandcampStreamExtractor extends StreamExtractor {
     @Nonnull
     @Override
     public String getUploaderUrl() throws ParsingException {
-        String[] parts = getUrl().split("/");
+        final String[] parts = getUrl().split("/");
         // https: (/) (/) * .bandcamp.com (/) and leave out the rest
         return "https://" + parts[2] + "/";
     }
@@ -118,7 +118,7 @@ public class BandcampStreamExtractor extends StreamExtractor {
     public String getUploaderAvatarUrl() {
         try {
             return document.getElementsByClass("band-photo").first().attr("src");
-        } catch (NullPointerException e) {
+        } catch (final NullPointerException e) {
             return "";
         }
     }
@@ -144,7 +144,7 @@ public class BandcampStreamExtractor extends StreamExtractor {
     @Nonnull
     @Override
     public Description getDescription() {
-        String s = BandcampExtractorHelper.smartConcatenate(
+        final String s = BandcampExtractorHelper.smartConcatenate(
                 new String[]{
                         current.getString("about"),
                         current.getString("lyrics"),
@@ -198,7 +198,7 @@ public class BandcampStreamExtractor extends StreamExtractor {
 
     @Override
     public List<AudioStream> getAudioStreams() {
-        List<AudioStream> audioStreams = new ArrayList<>();
+        final List<AudioStream> audioStreams = new ArrayList<>();
 
         audioStreams.add(new AudioStream(
                 albumJson.getArray("trackinfo").getObject(0)
@@ -303,11 +303,11 @@ public class BandcampStreamExtractor extends StreamExtractor {
     @Nonnull
     @Override
     public List<String> getTags() {
-        Elements tagElements = document.getElementsByAttributeValue("itemprop", "keywords");
+        final Elements tagElements = document.getElementsByAttributeValue("itemprop", "keywords");
 
-        ArrayList<String> tags = new ArrayList<>();
+        final ArrayList<String> tags = new ArrayList<>();
 
-        for (Element e : tagElements) {
+        for (final Element e : tagElements) {
             tags.add(e.text());
         }
 

@@ -7,7 +7,7 @@ public class BandcampSearchStreamInfoItemExtractor extends BandcampStreamInfoIte
 
     private final Element resultInfo, searchResult;
 
-    public BandcampSearchStreamInfoItemExtractor(Element searchResult, String uploaderUrl) {
+    public BandcampSearchStreamInfoItemExtractor(final Element searchResult, final String uploaderUrl) {
         super(uploaderUrl);
         this.searchResult = searchResult;
         resultInfo = searchResult.getElementsByClass("result-info").first();
@@ -15,8 +15,8 @@ public class BandcampSearchStreamInfoItemExtractor extends BandcampStreamInfoIte
 
     @Override
     public String getUploaderName() {
-        String subhead = resultInfo.getElementsByClass("subhead").text();
-        String[] splitBy = subhead.split("by ");
+        final String subhead = resultInfo.getElementsByClass("subhead").text();
+        final String[] splitBy = subhead.split("by ");
         if (splitBy.length > 1) {
             return splitBy[1];
         } else {
@@ -36,11 +36,13 @@ public class BandcampSearchStreamInfoItemExtractor extends BandcampStreamInfoIte
 
     @Override
     public String getThumbnailUrl() throws ParsingException {
-        Element img = searchResult.getElementsByClass("art").first()
+        final Element img = searchResult.getElementsByClass("art").first()
                 .getElementsByTag("img").first();
         if (img != null) {
             return img.attr("src");
-        } else return null;
+        } else {
+            return null;
+        }
     }
 
     @Override

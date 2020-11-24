@@ -2,7 +2,8 @@
 
 package org.schabi.newpipe.extractor.services.bandcamp.extractors;
 
-import com.grack.nanojson.*;
+import com.grack.nanojson.JsonArray;
+import com.grack.nanojson.JsonObject;
 import org.jsoup.Jsoup;
 import org.schabi.newpipe.extractor.Page;
 import org.schabi.newpipe.extractor.StreamingService;
@@ -23,7 +24,7 @@ public class BandcampChannelExtractor extends ChannelExtractor {
 
     private JsonObject channelInfo;
 
-    public BandcampChannelExtractor(StreamingService service, ListLinkHandler linkHandler) {
+    public BandcampChannelExtractor(final StreamingService service, final ListLinkHandler linkHandler) {
         super(service, linkHandler);
     }
 
@@ -34,15 +35,16 @@ public class BandcampChannelExtractor extends ChannelExtractor {
         return BandcampExtractorHelper.getImageUrl(channelInfo.getLong("bio_image_id"), false);
     }
 
-    /**
-     * Why does the mobile endpoint not contain the header?? Or at least not the same one?
-     * Anyway we're back to querying websites
-     */
     @Override
     public String getBannerUrl() throws ParsingException {
+        /*
+         * Why does the mobile endpoint not contain the header?? Or at least not the same one?
+         * Anyway we're back to querying websites
+         */
         try {
-            String html = getDownloader().get(channelInfo.getString("bandcamp_url").replace("http://", "https://"))
-                    .responseBody();
+            final String html = getDownloader()
+                            .get(channelInfo.getString("bandcamp_url").replace("http://", "https://"))
+                            .responseBody();
 
             return Jsoup.parse(html)
                     .getElementById("customHeader")
@@ -50,17 +52,17 @@ public class BandcampChannelExtractor extends ChannelExtractor {
                     .first()
                     .attr("src");
 
-        } catch (IOException | ReCaptchaException e) {
+        } catch (final IOException | ReCaptchaException e) {
             throw new ParsingException("Could not download artist web site", e);
-        } catch (NullPointerException e) {
+        } catch (final NullPointerException e) {
             // No banner available
             return "";
         }
     }
 
     /**
-     * I had to learn bandcamp stopped providing RSS feeds when appending /feed to any URL
-     * because too few people used it. Bummer!
+     * bandcamp stopped providing RSS feeds when appending /feed to any URL
+     * because too few people used it.
      */
     @Override
     public String getFeedUrl() {
@@ -96,13 +98,13 @@ public class BandcampChannelExtractor extends ChannelExtractor {
     @Override
     public InfoItemsPage<StreamInfoItem> getInitialPage() throws ParsingException {
 
-        StreamInfoItemsCollector collector = new StreamInfoItemsCollector(getServiceId());
+        final StreamInfoItemsCollector collector = new StreamInfoItemsCollector(getServiceId());
 
-        JsonArray discography = channelInfo.getArray("discography");
+        final JsonArray discography = channelInfo.getArray("discography");
 
         for (int i = 0; i < discography.size(); i++) {
             // I define discograph as an item that can appear in a discography
-            JsonObject discograph = discography.getObject(i);
+            final JsonObject discograph = discography.getObject(i);
 
             if (!discograph.getString("item_type").equals("track")) continue;
 

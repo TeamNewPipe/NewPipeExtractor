@@ -13,7 +13,7 @@ import javax.annotation.Nullable;
 public abstract class BandcampStreamInfoItemExtractor implements StreamInfoItemExtractor {
     private final String uploaderUrl;
 
-    public BandcampStreamInfoItemExtractor(String uploaderUrl) {
+    public BandcampStreamInfoItemExtractor(final String uploaderUrl) {
         this.uploaderUrl = uploaderUrl;
     }
 

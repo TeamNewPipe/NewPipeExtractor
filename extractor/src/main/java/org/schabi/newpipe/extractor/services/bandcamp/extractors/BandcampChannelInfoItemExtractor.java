@@ -10,7 +10,7 @@ public class BandcampChannelInfoItemExtractor implements ChannelInfoItemExtracto
 
     private final Element resultInfo, searchResult;
 
-    public BandcampChannelInfoItemExtractor(Element searchResult) {
+    public BandcampChannelInfoItemExtractor(final Element searchResult) {
         this.searchResult = searchResult;
         resultInfo = searchResult.getElementsByClass("result-info").first();
     }
@@ -27,11 +27,13 @@ public class BandcampChannelInfoItemExtractor implements ChannelInfoItemExtracto
 
     @Override
     public String getThumbnailUrl() throws ParsingException {
-        Element img = searchResult.getElementsByClass("art").first()
+        final Element img = searchResult.getElementsByClass("art").first()
                 .getElementsByTag("img").first();
         if (img != null) {
             return img.attr("src");
-        } else return null;
+        } else {
+            return null;
+        }
     }
 
     @Override

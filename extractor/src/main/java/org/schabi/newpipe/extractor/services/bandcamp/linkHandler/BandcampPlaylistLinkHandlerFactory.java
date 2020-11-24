@@ -12,17 +12,18 @@ import java.util.List;
  */
 public class BandcampPlaylistLinkHandlerFactory extends ListLinkHandlerFactory {
     @Override
-    public String getId(String url) throws ParsingException {
+    public String getId(final String url) throws ParsingException {
         return getUrl(url);
     }
 
     @Override
-    public String getUrl(String url, List<String> contentFilter, String sortFilter) throws ParsingException {
+    public String getUrl(final String url, final List<String> contentFilter, final String sortFilter)
+            throws ParsingException {
         return url;
     }
 
     @Override
-    public boolean onAcceptUrl(String url) {
+    public boolean onAcceptUrl(final String url) {
         return url.toLowerCase().matches("https?://.+\\..+/album/.+");
     }
 }

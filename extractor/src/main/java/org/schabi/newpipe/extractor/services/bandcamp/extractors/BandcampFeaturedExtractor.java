@@ -24,7 +24,8 @@ public class BandcampFeaturedExtractor extends KioskExtractor<PlaylistInfoItem> 
     public static final String KIOSK_FEATURED = "Featured";
     public static final String FEATURED_API_URL = "https://bandcamp.com/api/mobile/24/bootstrap_data";
 
-    public BandcampFeaturedExtractor(StreamingService streamingService, ListLinkHandler listLinkHandler, String kioskId) {
+    public BandcampFeaturedExtractor(final StreamingService streamingService, final ListLinkHandler listLinkHandler,
+                                     final String kioskId) {
         super(streamingService, listLinkHandler, kioskId);
     }
 
@@ -43,23 +44,23 @@ public class BandcampFeaturedExtractor extends KioskExtractor<PlaylistInfoItem> 
     @Override
     public InfoItemsPage<PlaylistInfoItem> getInitialPage() throws IOException, ExtractionException {
 
-        PlaylistInfoItemsCollector c = new PlaylistInfoItemsCollector(getServiceId());
+        final PlaylistInfoItemsCollector c = new PlaylistInfoItemsCollector(getServiceId());
 
         try {
 
 
-            JsonObject json = JsonParser.object().from(
+            final JsonObject json = JsonParser.object().from(
                     getDownloader().post(
                             FEATURED_API_URL, null, "{\"platform\":\"\",\"version\":0}".getBytes()
                     ).responseBody()
             );
 
-            JsonArray featuredStories = json.getObject("feed_content")
+            final JsonArray featuredStories = json.getObject("feed_content")
                     .getObject("stories")
                     .getArray("featured");
 
             for (int i = 0; i < featuredStories.size(); i++) {
-                JsonObject featuredStory = featuredStories.getObject(i);
+                final JsonObject featuredStory = featuredStories.getObject(i);
 
                 if (featuredStory.isNull("album_title")) {
                     // Is not an album, ignore
@@ -70,7 +71,7 @@ public class BandcampFeaturedExtractor extends KioskExtractor<PlaylistInfoItem> 
             }
 
             return new InfoItemsPage<>(c, null);
-        } catch (JsonParserException e) {
+        } catch (final JsonParserException e) {
             e.printStackTrace();
             throw new ParsingException("JSON error", e);
         }

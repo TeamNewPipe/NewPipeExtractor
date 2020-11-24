@@ -20,32 +20,32 @@ import java.util.List;
 public class BandcampSuggestionExtractor extends SuggestionExtractor {
 
     private static final String AUTOCOMPLETE_URL = "https://bandcamp.com/api/fuzzysearch/1/autocomplete?q=";
-    public BandcampSuggestionExtractor(StreamingService service) {
+    public BandcampSuggestionExtractor(final StreamingService service) {
         super(service);
     }
 
     @Override
-    public List<String> suggestionList(String query) throws IOException, ExtractionException {
-        Downloader downloader = NewPipe.getDownloader();
+    public List<String> suggestionList(final String query) throws IOException, ExtractionException {
+        final Downloader downloader = NewPipe.getDownloader();
 
         try {
-            JsonObject fuzzyResults = JsonParser.object().from(
+            final JsonObject fuzzyResults = JsonParser.object().from(
                     downloader.get(AUTOCOMPLETE_URL + URLEncoder.encode(query, "UTF-8")).responseBody()
             );
 
-            JsonArray jsonArray = fuzzyResults.getObject("auto")
+            final JsonArray jsonArray = fuzzyResults.getObject("auto")
                     .getArray("results");
 
-            ArrayList<String> suggestions = new ArrayList<>();
+            final ArrayList<String> suggestions = new ArrayList<>();
 
-            for (Object fuzzyResult : jsonArray) {
-                String res = ((JsonObject) fuzzyResult).getString("name");
+            for (final Object fuzzyResult : jsonArray) {
+                final String res = ((JsonObject) fuzzyResult).getString("name");
 
                 if (!suggestions.contains(res)) suggestions.add(res);
             }
 
             return suggestions;
-        } catch (JsonParserException e) {
+        } catch (final JsonParserException e) {
             e.printStackTrace();
 
             return new ArrayList<>();

@@ -9,7 +9,7 @@ public class BandcampPlaylistInfoItemFeaturedExtractor implements PlaylistInfoIt
 
     private final JsonObject featuredStory;
 
-    public BandcampPlaylistInfoItemFeaturedExtractor(JsonObject featuredStory) {
+    public BandcampPlaylistInfoItemFeaturedExtractor(final JsonObject featuredStory) {
         this.featuredStory = featuredStory;
     }
 

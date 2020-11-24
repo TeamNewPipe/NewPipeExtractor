@@ -18,11 +18,12 @@ public class BandcampStreamLinkHandlerFactory extends LinkHandlerFactory {
      * @see BandcampStreamLinkHandlerFactory
      */
     @Override
-    public String getId(String url) throws ParsingException {
+    public String getId(final String url) throws ParsingException {
         if (url.matches("https?://bandcamp\\.com/\\?show=\\d+")) {
             return url.split("bandcamp.com/\\?show=")[1];
-        } else
+        } else {
             return getUrl(url);
+        }
     }
 
     /**
@@ -30,10 +31,12 @@ public class BandcampStreamLinkHandlerFactory extends LinkHandlerFactory {
      * @see BandcampStreamLinkHandlerFactory
      */
     @Override
-    public String getUrl(String input) {
-        if (input.matches("\\d+"))
+    public String getUrl(final String input) {
+        if (input.matches("\\d+")) {
             return "https://bandcamp.com/?show=" + input;
-        else return input;
+        } else {
+            return input;
+        }
     }
 
     /**
@@ -45,7 +48,8 @@ public class BandcampStreamLinkHandlerFactory extends LinkHandlerFactory {
      * <code>https:// * . * /track/ *</code>
      */
     @Override
-    public boolean onAcceptUrl(String url) {
-        return url.toLowerCase().matches("https?://.+\\..+/track/.+") || url.toLowerCase().matches("https?://bandcamp\\.com/\\?show=\\d+");
+    public boolean onAcceptUrl(final String url) {
+        return url.toLowerCase().matches("https?://.+\\..+/track/.+")
+                || url.toLowerCase().matches("https?://bandcamp\\.com/\\?show=\\d+");
     }
 }

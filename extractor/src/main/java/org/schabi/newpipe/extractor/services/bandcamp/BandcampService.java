@@ -6,7 +6,6 @@ import org.schabi.newpipe.extractor.StreamingService;
 import org.schabi.newpipe.extractor.channel.ChannelExtractor;
 import org.schabi.newpipe.extractor.comments.CommentsExtractor;
 import org.schabi.newpipe.extractor.exceptions.ExtractionException;
-import org.schabi.newpipe.extractor.kiosk.KioskExtractor;
 import org.schabi.newpipe.extractor.kiosk.KioskList;
 import org.schabi.newpipe.extractor.linkhandler.*;
 import org.schabi.newpipe.extractor.playlist.PlaylistExtractor;
@@ -17,7 +16,6 @@ import org.schabi.newpipe.extractor.stream.StreamExtractor;
 import org.schabi.newpipe.extractor.subscription.SubscriptionExtractor;
 import org.schabi.newpipe.extractor.suggestion.SuggestionExtractor;
 
-import java.io.IOException;
 import java.util.Collections;
 
 import static org.schabi.newpipe.extractor.StreamingService.ServiceInfo.MediaCapability.AUDIO;
@@ -28,7 +26,7 @@ import static org.schabi.newpipe.extractor.services.bandcamp.extractors.Bandcamp
 
 public class BandcampService extends StreamingService {
 
-    public BandcampService(int id) {
+    public BandcampService(final int id) {
         super(id, "Bandcamp", Collections.singletonList(AUDIO));
     }
 
@@ -63,7 +61,7 @@ public class BandcampService extends StreamingService {
     }
 
     @Override
-    public SearchExtractor getSearchExtractor(SearchQueryHandler queryHandler) {
+    public SearchExtractor getSearchExtractor(final SearchQueryHandler queryHandler) {
         return new BandcampSearchExtractor(this, queryHandler);
     }
 
@@ -83,24 +81,20 @@ public class BandcampService extends StreamingService {
         KioskList kioskList = new KioskList(this);
 
         try {
-            kioskList.addKioskEntry(new KioskList.KioskExtractorFactory() {
-                @Override
-                public KioskExtractor createNewKiosk(StreamingService streamingService, String url, String kioskId) throws ExtractionException {
-                    return new BandcampFeaturedExtractor(BandcampService.this, new BandcampFeaturedLinkHandlerFactory().fromUrl(FEATURED_API_URL), kioskId);
-                }
-            }, new BandcampFeaturedLinkHandlerFactory(), KIOSK_FEATURED);
+            kioskList.addKioskEntry((streamingService, url, kioskId) ->
+                    new BandcampFeaturedExtractor(
+                    BandcampService.this,
+                        new BandcampFeaturedLinkHandlerFactory().fromUrl(FEATURED_API_URL), kioskId),
+                    new BandcampFeaturedLinkHandlerFactory(), KIOSK_FEATURED);
 
-
-            kioskList.addKioskEntry(new KioskList.KioskExtractorFactory() {
-                @Override
-                public KioskExtractor createNewKiosk(StreamingService streamingService, String url, String kioskId) throws ExtractionException {
-                    return new BandcampRadioExtractor(BandcampService.this, new BandcampFeaturedLinkHandlerFactory().fromUrl(RADIO_API_URL), kioskId);
-                }
-            }, new BandcampFeaturedLinkHandlerFactory(), KIOSK_RADIO);
+            kioskList.addKioskEntry((streamingService, url, kioskId) ->
+                    new BandcampRadioExtractor(BandcampService.this,
+                            new BandcampFeaturedLinkHandlerFactory().fromUrl(RADIO_API_URL), kioskId),
+                    new BandcampFeaturedLinkHandlerFactory(), KIOSK_RADIO);
 
             kioskList.setDefaultKiosk(KIOSK_FEATURED);
 
-        } catch (Exception e) {
+        } catch (final Exception e) {
             throw new ExtractionException(e);
         }
 
@@ -108,17 +102,17 @@ public class BandcampService extends StreamingService {
     }
 
     @Override
-    public ChannelExtractor getChannelExtractor(ListLinkHandler linkHandler) throws ExtractionException {
+    public ChannelExtractor getChannelExtractor(final ListLinkHandler linkHandler) {
         return new BandcampChannelExtractor(this, linkHandler);
     }
 
     @Override
-    public PlaylistExtractor getPlaylistExtractor(ListLinkHandler linkHandler) {
+    public PlaylistExtractor getPlaylistExtractor(final ListLinkHandler linkHandler) {
         return new BandcampPlaylistExtractor(this, linkHandler);
     }
 
     @Override
-    public StreamExtractor getStreamExtractor(LinkHandler linkHandler) {
+    public StreamExtractor getStreamExtractor(final LinkHandler linkHandler) {
         if (linkHandler.getUrl().matches("https?://bandcamp\\.com/\\?show=\\d+"))
             return new BandcampRadioStreamExtractor(this, linkHandler);
         else

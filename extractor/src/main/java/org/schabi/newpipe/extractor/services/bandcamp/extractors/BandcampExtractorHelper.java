@@ -31,9 +31,10 @@ public class BandcampExtractorHelper {
      * @param variable Name of the variable
      * @return The JsonObject stored in the variable with this name
      */
-    public static JsonObject getJsonData(String html, String variable) throws JsonParserException, ArrayIndexOutOfBoundsException, ParsingException {
-        Document document = Jsoup.parse(html);
-        String json = document.getElementsByAttribute(variable).attr(variable);
+    public static JsonObject getJsonData(final String html, final String variable)
+            throws JsonParserException, ArrayIndexOutOfBoundsException {
+        final Document document = Jsoup.parse(html);
+        final String json = document.getElementsByAttribute(variable).attr(variable);
         return JsonParser.object().from(json);
     }
 
@@ -41,17 +42,18 @@ public class BandcampExtractorHelper {
      * Translate all these parameters together to the URL of the corresponding album or track
      * using the mobile api
      */
-    public static String getStreamUrlFromIds(long bandId, long itemId, String itemType) throws ParsingException {
+    public static String getStreamUrlFromIds(final long bandId, final long itemId, final String itemType)
+            throws ParsingException {
 
         try {
-            String jsonString = NewPipe.getDownloader().get(
+            final String jsonString = NewPipe.getDownloader().get(
                     "https://bandcamp.com/api/mobile/22/tralbum_details?band_id=" + bandId
                             + "&tralbum_id=" + itemId + "&tralbum_type=" + itemType.substring(0, 1))
                     .responseBody();
 
             return JsonParser.object().from(jsonString).getString("bandcamp_url").replace("http://", "https://");
 
-        } catch (JsonParserException | ReCaptchaException | IOException e) {
+        } catch (final JsonParserException | ReCaptchaException | IOException e) {
             throw new ParsingException("Ids could not be translated to URL", e);
         }
 
@@ -61,11 +63,11 @@ public class BandcampExtractorHelper {
      * Concatenate all non-null and non-empty strings together while separating them using
      * the comma parameter
      */
-    public static String smartConcatenate(String[] strings, String comma) {
-        StringBuilder result = new StringBuilder();
+    public static String smartConcatenate(final String[] strings, final String comma) {
+        final StringBuilder result = new StringBuilder();
 
         // Remove empty strings
-        ArrayList<String> list = new ArrayList<>(Arrays.asList(strings));
+        final ArrayList<String> list = new ArrayList<>(Arrays.asList(strings));
         for (int i = list.size() - 1; i >= 0; i--) {
             if (Utils.isNullOrEmpty(list.get(i)) || list.get(i).equals("null")) {
                 list.remove(i);
@@ -74,8 +76,7 @@ public class BandcampExtractorHelper {
 
         // Append remaining strings to result
         for (int i = 0; i < list.size(); i++) {
-            String string = list.get(i);
-            result.append(string);
+            result.append(list.get(i));
 
             if (i != list.size() - 1) {
                 // This is not the last iteration yet
@@ -107,7 +108,7 @@ public class BandcampExtractorHelper {
                                             .getBytes()
                             ).responseBody()
                     );
-        } catch (IOException | ReCaptchaException | JsonParserException e) {
+        } catch (final IOException | ReCaptchaException | JsonParserException e) {
             throw new ParsingException("Could not download band details", e);
         }
     }
@@ -118,17 +119,17 @@ public class BandcampExtractorHelper {
      * @return Url of image with this ID in size 10 which is 1200x1200 (we could also choose size 0
      * but we don't want something as large as 3460x3460 here, do we?)
      */
-    public static String getImageUrl(long id, boolean album) {
+    public static String getImageUrl(final long id, final boolean album) {
         return "https://f4.bcbits.com/img/" + (album ? 'a' : "") + id + "_10.jpg";
     }
 
-    static DateWrapper parseDate(String textDate) throws ParsingException {
+    static DateWrapper parseDate(final String textDate) throws ParsingException {
         try {
-            Date date = new SimpleDateFormat("dd MMM yyyy HH:mm:ss zzz", Locale.ENGLISH).parse(textDate);
-            Calendar calendar = Calendar.getInstance();
+            final Date date = new SimpleDateFormat("dd MMM yyyy HH:mm:ss zzz", Locale.ENGLISH).parse(textDate);
+            final Calendar calendar = Calendar.getInstance();
             calendar.setTime(date);
             return new DateWrapper(calendar, false);
-        } catch (ParseException e) {
+        } catch (final ParseException e) {
             throw new ParsingException("Could not extract date", e);
         }
     }

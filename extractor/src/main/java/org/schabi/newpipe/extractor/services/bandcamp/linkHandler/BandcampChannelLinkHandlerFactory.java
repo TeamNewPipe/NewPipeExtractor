@@ -20,16 +20,16 @@ public class BandcampChannelLinkHandlerFactory extends ListLinkHandlerFactory {
 
 
     @Override
-    public String getId(String url) throws ParsingException {
+    public String getId(final String url) throws ParsingException {
         try {
-            String response = NewPipe.getDownloader().get(url).responseBody();
+            final String response = NewPipe.getDownloader().get(url).responseBody();
 
             // This variable contains band data!
-            JsonObject bandData = BandcampExtractorHelper.getJsonData(response, "data-band");
+            final JsonObject bandData = BandcampExtractorHelper.getJsonData(response, "data-band");
 
             return String.valueOf(bandData.getLong("id"));
 
-        } catch (IOException | ReCaptchaException | ArrayIndexOutOfBoundsException | JsonParserException e) {
+        } catch (final IOException | ReCaptchaException | ArrayIndexOutOfBoundsException | JsonParserException e) {
             throw new ParsingException("Download failed", e);
         }
     }
@@ -38,12 +38,13 @@ public class BandcampChannelLinkHandlerFactory extends ListLinkHandlerFactory {
      * Uses the mobile endpoint as a "translator" from id to url
      */
     @Override
-    public String getUrl(String id, List<String> contentFilter, String sortFilter) throws ParsingException {
+    public String getUrl(final String id, final List<String> contentFilter, final String sortFilter)
+            throws ParsingException {
         try {
             return BandcampExtractorHelper.getArtistDetails(id)
                     .getString("bandcamp_url")
                     .replace("http://", "https://");
-        } catch (NullPointerException e) {
+        } catch (final NullPointerException e) {
             throw new ParsingException("JSON does not contain URL (invalid id?) or is otherwise invalid", e);
         }
 
@@ -54,7 +55,7 @@ public class BandcampChannelLinkHandlerFactory extends ListLinkHandlerFactory {
      * where the profile is at <code>* . * /releases</code>
      */
     @Override
-    public boolean onAcceptUrl(String url) {
+    public boolean onAcceptUrl(final String url) {
 
         // Is a subdomain of bandcamp.com?
         boolean isBandcampComArtistPage = url.matches("https?://.+\\.bandcamp\\.com/?");

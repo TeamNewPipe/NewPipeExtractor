@@ -13,14 +13,15 @@ public class BandcampSearchQueryHandlerFactory extends SearchQueryHandlerFactory
 
 
     @Override
-    public String getUrl(String query, List<String> contentFilter, String sortFilter) throws ParsingException {
+    public String getUrl(final String query, final List<String> contentFilter, final String sortFilter)
+            throws ParsingException {
         try {
 
             return "https://bandcamp.com/search?q=" +
                     URLEncoder.encode(query, "UTF-8")
                     + "&page=1";
 
-        } catch (UnsupportedEncodingException e) {
+        } catch (final UnsupportedEncodingException e) {
             throw new ParsingException("query \"" + query + "\" could not be encoded", e);
         }
     }

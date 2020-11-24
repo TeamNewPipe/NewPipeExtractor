@@ -7,7 +7,7 @@ import org.schabi.newpipe.extractor.services.bandcamp.extractors.BandcampExtract
 public class BandcampDiscographStreamInfoItemExtractor extends BandcampStreamInfoItemExtractor {
 
     private final JsonObject discograph;
-    public BandcampDiscographStreamInfoItemExtractor(JsonObject discograph, String uploaderUrl) {
+    public BandcampDiscographStreamInfoItemExtractor(final JsonObject discograph, final String uploaderUrl) {
         super(uploaderUrl);
 
         this.discograph = discograph;

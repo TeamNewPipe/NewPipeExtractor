@@ -38,22 +38,22 @@ public class BandcampPlaylistExtractor extends PlaylistExtractor {
     private JsonArray trackInfo;
     private String name;
 
-    public BandcampPlaylistExtractor(StreamingService service, ListLinkHandler linkHandler) {
+    public BandcampPlaylistExtractor(final StreamingService service, final ListLinkHandler linkHandler) {
         super(service, linkHandler);
     }
 
     @Override
-    public void onFetchPage(@Nonnull Downloader downloader) throws IOException, ExtractionException {
-        String html = downloader.get(getLinkHandler().getUrl()).responseBody();
+    public void onFetchPage(@Nonnull final Downloader downloader) throws IOException, ExtractionException {
+        final String html = downloader.get(getLinkHandler().getUrl()).responseBody();
         document = Jsoup.parse(html);
         albumJson = getAlbumInfoJson(html);
         trackInfo = albumJson.getArray("trackinfo");
 
         try {
             name = getJsonData(html, "data-embed").getString("album_title");
-        } catch (JsonParserException e) {
+        } catch (final JsonParserException e) {
             throw new ParsingException("Faulty JSON; page likely does not contain album data", e);
-        } catch (ArrayIndexOutOfBoundsException e) {
+        } catch (final ArrayIndexOutOfBoundsException e) {
             throw new ParsingException("JSON does not exist", e);
         }
 
@@ -67,8 +67,11 @@ public class BandcampPlaylistExtractor extends PlaylistExtractor {
 
     @Override
     public String getThumbnailUrl() throws ParsingException {
-        if (albumJson.isNull("art_id")) return "";
-        else return getImageUrl(albumJson.getLong("art_id"), true);
+        if (albumJson.isNull("art_id")) {
+            return "";
+        } else {
+            return getImageUrl(albumJson.getLong("art_id"), true);
+        }
     }
 
     @Override
@@ -78,7 +81,7 @@ public class BandcampPlaylistExtractor extends PlaylistExtractor {
 
     @Override
     public String getUploaderUrl() throws ParsingException {
-        String[] parts = getUrl().split("/");
+        final String[] parts = getUrl().split("/");
         // https: (/) (/) * .bandcamp.com (/) and leave out the rest
         return "https://" + parts[2] + "/";
     }
@@ -124,7 +127,7 @@ public class BandcampPlaylistExtractor extends PlaylistExtractor {
     @Override
     public InfoItemsPage<StreamInfoItem> getInitialPage() throws ExtractionException {
 
-        StreamInfoItemsCollector collector = new StreamInfoItemsCollector(getServiceId());
+        final StreamInfoItemsCollector collector = new StreamInfoItemsCollector(getServiceId());
 
         for (int i = 0; i < trackInfo.size(); i++) {
             JsonObject track = trackInfo.getObject(i);

@@ -15,7 +15,6 @@ import org.schabi.newpipe.extractor.exceptions.ExtractionException;
 import org.schabi.newpipe.extractor.exceptions.ParsingException;
 import org.schabi.newpipe.extractor.kiosk.KioskExtractor;
 import org.schabi.newpipe.extractor.linkhandler.ListLinkHandler;
-import org.schabi.newpipe.extractor.stream.StreamInfoItem;
 import org.schabi.newpipe.extractor.stream.StreamInfoItemsCollector;
 
 import javax.annotation.Nonnull;
@@ -26,12 +25,13 @@ public class BandcampRadioExtractor extends KioskExtractor<InfoItem> {
     public static final String KIOSK_RADIO = "Radio";
     public static final String RADIO_API_URL = "https://bandcamp.com/api/bcweekly/1/list";
 
-    public BandcampRadioExtractor(StreamingService streamingService, ListLinkHandler linkHandler, String kioskId) {
+    public BandcampRadioExtractor(final StreamingService streamingService, final ListLinkHandler linkHandler,
+                                  final String kioskId) {
         super(streamingService, linkHandler, kioskId);
     }
 
     @Override
-    public void onFetchPage(@Nonnull Downloader downloader) throws IOException, ExtractionException {
+    public void onFetchPage(@Nonnull final Downloader downloader) throws IOException, ExtractionException {
 
     }
 
@@ -44,27 +44,27 @@ public class BandcampRadioExtractor extends KioskExtractor<InfoItem> {
     @Nonnull
     @Override
     public InfoItemsPage<InfoItem> getInitialPage() throws IOException, ExtractionException {
-        InfoItemsCollector c = new StreamInfoItemsCollector(getServiceId());
+        final InfoItemsCollector c = new StreamInfoItemsCollector(getServiceId());
 
         try {
 
-            JsonObject json = JsonParser.object().from(
+            final JsonObject json = JsonParser.object().from(
                     getDownloader().get(
                             RADIO_API_URL
                     ).responseBody()
             );
 
-            JsonArray radioShows = json.getArray("results");
+            final JsonArray radioShows = json.getArray("results");
 
             for (int i = 0; i < radioShows.size(); i++) {
-                JsonObject radioShow = radioShows.getObject(i);
+                final JsonObject radioShow = radioShows.getObject(i);
 
                 c.commit(
                         new BandcampRadioInfoItemExtractor(radioShow)
                 );
             }
 
-        } catch (JsonParserException e) {
+        } catch (final JsonParserException e) {
             e.printStackTrace();
         }
 
@@ -72,7 +72,7 @@ public class BandcampRadioExtractor extends KioskExtractor<InfoItem> {
     }
 
     @Override
-    public InfoItemsPage<InfoItem> getPage(Page page) {
+    public InfoItemsPage<InfoItem> getPage(final Page page) {
         return null;
     }
 }
