@@ -35,10 +35,9 @@ public class BandcampStreamExtractorTest extends DefaultStreamExtractorTest {
     @BeforeClass
     public static void setUp() throws ExtractionException, IOException {
         NewPipe.init(DownloaderTestImpl.getInstance());
-        // This test track was uploaded specifically for NewPipeExtractor tests
 
         extractor = (BandcampStreamExtractor) Bandcamp
-                .getStreamExtractor("https://npet.bandcamp.com/track/track-1");
+                .getStreamExtractor("https://teaganbear.bandcamp.com/track/just-for-the-halibut-creative-commons-attribution");
         extractor.fetchPage();
     }
 
@@ -54,22 +53,22 @@ public class BandcampStreamExtractorTest extends DefaultStreamExtractorTest {
 
     @Override
     public String expectedName() {
-        return "Track #1";
+        return "Just for the Halibut [Creative Commons: Attribution]";
     }
 
     @Override
     public String expectedId() {
-        return "https://npet.bandcamp.com/track/track-1";
+        return "https://teaganbear.bandcamp.com/track/just-for-the-halibut-creative-commons-attribution";
     }
 
     @Override
     public String expectedUrlContains() {
-        return "https://npet.bandcamp.com/track/track-1";
+        return "https://teaganbear.bandcamp.com/track/just-for-the-halibut-creative-commons-attribution";
     }
 
     @Override
     public String expectedOriginalUrlContains() {
-        return "https://npet.bandcamp.com/track/track-1";
+        return "https://teaganbear.bandcamp.com/track/just-for-the-halibut-creative-commons-attribution";
     }
 
     @Override
@@ -79,17 +78,17 @@ public class BandcampStreamExtractorTest extends DefaultStreamExtractorTest {
 
     @Override
     public String expectedUploaderName() {
-        return "NewPipeExtractorTest";
+        return "Teaganbear";
     }
 
     @Override
     public String expectedUploaderUrl() {
-        return "https://npet.bandcamp.com/";
+        return "https://teaganbear.bandcamp.com/";
     }
 
     @Override
     public List<String> expectedDescriptionContains() {
-        return Collections.singletonList("This sample track was created using MuseScore.");
+        return Collections.singletonList("it's Creative Commons so feel free to use it in whatever");
     }
 
     @Override
@@ -104,12 +103,12 @@ public class BandcampStreamExtractorTest extends DefaultStreamExtractorTest {
 
     @Override
     public String expectedUploadDate() {
-        return "2020-03-17 18:37:44.000";
+        return "2019-03-10 23:00:42.000";
     }
 
     @Override
     public String expectedTextualUploadDate() {
-        return "17 Mar 2020 18:37:44 GMT";
+        return "10 Mar 2019 23:00:42 GMT";
     }
 
     @Override
@@ -149,7 +148,7 @@ public class BandcampStreamExtractorTest extends DefaultStreamExtractorTest {
 
     @Override
     public String expectedCategory() {
-        return "acoustic";
+        return "dance";
     }
 
     @Test
@@ -160,7 +159,11 @@ public class BandcampStreamExtractorTest extends DefaultStreamExtractorTest {
 
     @Test
     public void testTranslateIdsToUrl() throws ParsingException {
-        assertEquals("https://npet.bandcamp.com/track/track-1", BandcampExtractorHelper.getStreamUrlFromIds(3775652329L, 4207805220L, "track"));
+        // To add tests: look at website's source, search for `band_id` and `item_id`
+        assertEquals(
+                "https://teaganbear.bandcamp.com/track/just-for-the-halibut-creative-commons-attribution",
+                BandcampExtractorHelper.getStreamUrlFromIds(3877364987L, 3486455278L, "track")
+        );
     }
 
 }

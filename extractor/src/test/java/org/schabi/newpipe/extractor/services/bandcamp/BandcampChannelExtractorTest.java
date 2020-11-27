@@ -22,31 +22,29 @@ public class BandcampChannelExtractorTest implements BaseChannelExtractorTest {
     @BeforeClass
     public static void setUp() throws Exception {
         NewPipe.init(DownloaderTestImpl.getInstance());
-        extractor = Bandcamp.getChannelExtractor("https://npet.bandcamp.com/releases");
+        extractor = Bandcamp.getChannelExtractor("https://toupie.bandcamp.com/releases");
         extractor.fetchPage();
     }
 
     @Test
     public void testLength() throws ExtractionException, IOException {
-        assertTrue(extractor.getInitialPage().getItems().size() >= 1);
+        assertTrue(extractor.getInitialPage().getItems().size() >= 0);
     }
 
     @Override
     @Test
     public void testDescription() throws Exception {
-        assertEquals("This string will be tested for in NewPipeExtractor tests.", extractor.getDescription());
+        assertEquals("making music:)", extractor.getDescription());
     }
 
     @Override
     public void testAvatarUrl() throws Exception {
-        // Has no avatar
-        assertEquals("", extractor.getAvatarUrl());
+        assertTrue("unexpected avatar URL", extractor.getAvatarUrl().contains("://f4.bcbits.com/"));
     }
 
     @Override
     public void testBannerUrl() throws Exception {
-        // Has no banner
-        assertEquals("", extractor.getBannerUrl());
+        assertTrue("unexpected banner URL", extractor.getBannerUrl().contains("://f4.bcbits.com/"));
     }
 
     @Override
@@ -76,21 +74,21 @@ public class BandcampChannelExtractorTest implements BaseChannelExtractorTest {
 
     @Override
     public void testName() throws Exception {
-        assertEquals("NewPipeExtractorTest", extractor.getName());
+        assertEquals("toupie", extractor.getName());
     }
 
     @Override
     public void testId() throws Exception {
-        assertEquals("https://npet.bandcamp.com/", extractor.getId());
+        assertEquals("https://toupie.bandcamp.com/", extractor.getId());
     }
 
     @Override
     public void testUrl() throws Exception {
-        assertEquals("https://npet.bandcamp.com/releases", extractor.getUrl());
+        assertEquals("https://toupie.bandcamp.com", extractor.getUrl());
     }
 
     @Override
     public void testOriginalUrl() throws Exception {
-        assertEquals("https://npet.bandcamp.com/releases", extractor.getUrl());
+        assertEquals("https://toupie.bandcamp.com", extractor.getUrl());
     }
 }
