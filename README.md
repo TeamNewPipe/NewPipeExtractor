@@ -42,7 +42,7 @@ The following sites are currently supported:
 
 - YouTube
 - SoundCloud
-- MediaCCC
+- media.ccc.de
 - PeerTube (no P2P)
 
 ## License
