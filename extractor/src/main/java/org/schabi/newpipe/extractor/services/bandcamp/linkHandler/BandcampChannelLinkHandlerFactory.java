@@ -24,7 +24,7 @@ public class BandcampChannelLinkHandlerFactory extends ListLinkHandlerFactory {
         try {
             final String response = NewPipe.getDownloader().get(url).responseBody();
 
-            // This variable contains band data!
+            // Use band data embedded in website to extract ID
             final JsonObject bandData = BandcampExtractorHelper.getJsonData(response, "data-band");
 
             return String.valueOf(bandData.getLong("id"));
@@ -51,17 +51,15 @@ public class BandcampChannelLinkHandlerFactory extends ListLinkHandlerFactory {
     }
 
     /**
-     * Matches <code>* .bandcamp.com</code> as well as custom domains
-     * where the profile is at <code>* . * /releases</code>
+     * Accepts only pages that do not lead to an album or track. Supports external pages.
      */
     @Override
-    public boolean onAcceptUrl(final String url) {
+    public boolean onAcceptUrl(final String url) throws ParsingException {
 
-        // Is a subdomain of bandcamp.com?
-        boolean isBandcampComArtistPage = url.matches("https?://.+\\.bandcamp\\.com/?");
+        // Exclude URLs that lead to a track or album
+        if (url.matches(".*/(album|track)/.*")) return false;
 
-        boolean isCustomDomainReleases = url.matches("https?://.+\\..+/releases/?(?!.)");
-
-        return isBandcampComArtistPage || isCustomDomainReleases;
+        // Test whether domain is supported
+        return BandcampExtractorHelper.isSupportedDomain(url);
     }
 }

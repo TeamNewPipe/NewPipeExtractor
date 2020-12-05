@@ -4,6 +4,7 @@ package org.schabi.newpipe.extractor.services.bandcamp.linkHandler;
 
 import org.schabi.newpipe.extractor.exceptions.ParsingException;
 import org.schabi.newpipe.extractor.linkhandler.ListLinkHandlerFactory;
+import org.schabi.newpipe.extractor.services.bandcamp.extractors.BandcampExtractorHelper;
 
 import java.util.List;
 
@@ -22,8 +23,16 @@ public class BandcampPlaylistLinkHandlerFactory extends ListLinkHandlerFactory {
         return url;
     }
 
+    /**
+     * Accepts all bandcamp URLs that contain /album/ behind their domain name.
+     */
     @Override
-    public boolean onAcceptUrl(final String url) {
-        return url.toLowerCase().matches("https?://.+\\..+/album/.+");
+    public boolean onAcceptUrl(final String url) throws ParsingException {
+
+        // Exclude URLs which do not lead to an album
+        if (!url.toLowerCase().matches("https?://.+\\..+/album/.+")) return false;
+
+        // Test whether domain is supported
+        return BandcampExtractorHelper.isSupportedDomain(url);
     }
 }

@@ -4,6 +4,7 @@ package org.schabi.newpipe.extractor.services.bandcamp.linkHandler;
 
 import org.schabi.newpipe.extractor.exceptions.ParsingException;
 import org.schabi.newpipe.extractor.linkhandler.LinkHandlerFactory;
+import org.schabi.newpipe.extractor.services.bandcamp.extractors.BandcampExtractorHelper;
 
 /**
  * <p>Tracks don't have standalone ids, they are always in combination with the band id.
@@ -40,16 +41,19 @@ public class BandcampStreamLinkHandlerFactory extends LinkHandlerFactory {
     }
 
     /**
-     * Sometimes, the root page of an artist is also an album or track
-     * page. In that case, it is assumed that one actually wants to open
-     * the profile and not the track it has set as the default one.
-     * <p>Urls are expected to be in this format to account for
-     * custom domains:</p>
-     * <code>https:// * . * /track/ *</code>
+     * Accepts URLs that point to a bandcamp radio show or that are a bandcamp
+     * domain and point to a track.
      */
     @Override
-    public boolean onAcceptUrl(final String url) {
-        return url.toLowerCase().matches("https?://.+\\..+/track/.+")
-                || url.toLowerCase().matches("https?://bandcamp\\.com/\\?show=\\d+");
+    public boolean onAcceptUrl(final String url) throws ParsingException {
+
+        // Accept Bandcamp radio
+        if (url.toLowerCase().matches("https?://bandcamp\\.com/\\?show=\\d+")) return true;
+
+        // Don't accept URLs that don't point to a track
+        if (!url.toLowerCase().matches("https?://.+\\..+/track/.+")) return false;
+
+        // Test whether domain is supported
+        return BandcampExtractorHelper.isSupportedDomain(url);
     }
 }

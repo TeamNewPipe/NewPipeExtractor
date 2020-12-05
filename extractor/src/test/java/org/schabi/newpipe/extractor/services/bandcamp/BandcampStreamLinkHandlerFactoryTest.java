@@ -43,6 +43,7 @@ public class BandcampStreamLinkHandlerFactoryTest {
         assertFalse(linkHandler.acceptUrl("https://bandcamp.com"));
         assertFalse(linkHandler.acceptUrl("https://zachbenson.bandcamp.com/"));
         assertFalse(linkHandler.acceptUrl("https://powertothequeerkids.bandcamp.com/album/power-to-the-queer-kids"));
+        assertFalse(linkHandler.acceptUrl("https://example.com/track/sampletrack"));
 
         assertTrue(linkHandler.acceptUrl("https://zachbenson.bandcamp.com/track/kitchen"));
         assertTrue(linkHandler.acceptUrl("http://ZachBenson.Bandcamp.COM/Track/U-I-Tonite/"));

@@ -26,13 +26,19 @@ public class BandcampChannelLinkHandlerFactoryTest {
 
     @Test
     public void testAcceptUrl() throws ParsingException {
-        assertTrue(linkHandler.acceptUrl("http://interovgm.com/releases/"));
-        assertTrue(linkHandler.acceptUrl("https://interovgm.com/releases"));
+        // Bandcamp URLs
         assertTrue(linkHandler.acceptUrl("http://zachbenson.bandcamp.com"));
         assertTrue(linkHandler.acceptUrl("https://zachbenson.bandcamp.com/"));
+        assertTrue(linkHandler.acceptUrl("https://billwurtz.bandcamp.com/releases"));
 
         assertFalse(linkHandler.acceptUrl("https://bandcamp.com"));
         assertFalse(linkHandler.acceptUrl("https://zachbenson.bandcamp.com/track/kitchen"));
+
+        // External URLs
+        assertTrue(linkHandler.acceptUrl("http://interovgm.com/releases/"));
+        assertTrue(linkHandler.acceptUrl("https://interovgm.com/releases"));
+
+        assertFalse(linkHandler.acceptUrl("https://example.com/releases"));
     }
 
     @Test
