@@ -35,6 +35,7 @@ import org.schabi.newpipe.extractor.stream.Stream;
 import org.schabi.newpipe.extractor.stream.StreamExtractor;
 import org.schabi.newpipe.extractor.stream.StreamInfoItemExtractor;
 import org.schabi.newpipe.extractor.stream.StreamInfoItemsCollector;
+import org.schabi.newpipe.extractor.stream.StreamSegment;
 import org.schabi.newpipe.extractor.stream.StreamType;
 import org.schabi.newpipe.extractor.stream.SubtitlesStream;
 import org.schabi.newpipe.extractor.stream.VideoStream;
@@ -1060,5 +1061,59 @@ public class YoutubeStreamExtractor extends StreamExtractor {
     @Override
     public String getSupportInfo() {
         return "";
+    }
+
+    @Nonnull
+    @Override
+    public List<StreamSegment> getStreamSegments() throws ParsingException {
+        final ArrayList<StreamSegment> segments = new ArrayList<>();
+        if (initialData.has("engagementPanels")) {
+            final JsonArray panels = initialData.getArray("engagementPanels");
+            JsonArray segmentsArray = null;
+
+            // Search for correct panel containing the data
+            for (int i = 0; i < panels.size(); i++) {
+                if (panels.getObject(i).getObject("engagementPanelSectionListRenderer")
+                        .getString("panelIdentifier").equals("engagement-panel-macro-markers")) {
+                    segmentsArray = panels.getObject(i).getObject("engagementPanelSectionListRenderer")
+                            .getObject("content").getObject("macroMarkersListRenderer").getArray("contents");
+                    break;
+                }
+            }
+
+            if (segmentsArray != null) {
+                final long duration = getLength();
+                for (final Object object : segmentsArray) {
+                    final JsonObject segmentJson = ((JsonObject) object).getObject("macroMarkersListItemRenderer");
+
+                    final int startTimeSeconds = segmentJson.getObject("onTap").getObject("watchEndpoint")
+                            .getInt("startTimeSeconds", -1);
+
+                    if (startTimeSeconds == -1) {
+                        throw new ParsingException("Could not get stream segment start time.");
+                    }
+                    if (startTimeSeconds > duration) {
+                        break;
+                    }
+
+                    final String title = getTextFromObject(segmentJson.getObject("title"));
+                    if (isNullOrEmpty(title)) {
+                        throw new ParsingException("Could not get stream segment title.");
+                    }
+
+                    final StreamSegment segment = new StreamSegment(title, startTimeSeconds);
+                    segment.setUrl(getUrl() + "?t=" + startTimeSeconds);
+                    if (segmentJson.has("thumbnail")) {
+                        final JsonArray previewsArray = segmentJson.getObject("thumbnail").getArray("thumbnails");
+                        if (!previewsArray.isEmpty()) {
+                            // Assume that the thumbnail with the highest resolution is at the last position
+                            segment.setPreviewUrl(previewsArray.getObject(previewsArray.size() - 1).getString("url"));
+                        }
+                    }
+                    segments.add(segment);
+                }
+            }
+        }
+        return segments;
     }
 }

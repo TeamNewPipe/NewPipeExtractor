@@ -476,4 +476,14 @@ public abstract class StreamExtractor extends Extractor {
      */
     @Nonnull
     public abstract String getSupportInfo() throws ParsingException;
+
+    /**
+     *  The list of stream segments by timestamps for the stream.
+     *  If the segment list is not available you can simply return an empty list.
+     *
+     * @return The list of segments of the stream or an empty list.
+     * @throws ParsingException
+     */
+    @Nonnull
+    public abstract List<StreamSegment> getStreamSegments() throws ParsingException;
 }
