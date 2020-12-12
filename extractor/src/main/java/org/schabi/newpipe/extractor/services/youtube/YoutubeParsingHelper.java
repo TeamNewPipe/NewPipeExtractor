@@ -478,7 +478,7 @@ public class YoutubeParsingHelper {
             StringBuilder url = new StringBuilder();
             url.append("https://www.youtube.com/watch?v=").append(navigationEndpoint.getObject("watchEndpoint").getString("videoId"));
             if (navigationEndpoint.getObject("watchEndpoint").has("playlistId")) {
-                url.append("&amp;list=").append(navigationEndpoint.getObject("watchEndpoint")
+                url.append("&list=").append(navigationEndpoint.getObject("watchEndpoint")
                         .getString("playlistId"));
             }
             if (navigationEndpoint.getObject("watchEndpoint").has("startTimeSeconds")) {
