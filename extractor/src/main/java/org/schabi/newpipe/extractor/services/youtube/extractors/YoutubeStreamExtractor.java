@@ -1107,7 +1107,8 @@ public class YoutubeStreamExtractor extends StreamExtractor {
                         final JsonArray previewsArray = segmentJson.getObject("thumbnail").getArray("thumbnails");
                         if (!previewsArray.isEmpty()) {
                             // Assume that the thumbnail with the highest resolution is at the last position
-                            segment.setPreviewUrl(previewsArray.getObject(previewsArray.size() - 1).getString("url"));
+                            final String url = previewsArray.getObject(previewsArray.size() - 1).getString("url");
+                            segment.setPreviewUrl(fixThumbnailUrl(url));
                         }
                     }
                     segments.add(segment);

@@ -64,6 +64,6 @@ public class StreamSegment implements Serializable {
     }
 
     public void setPreviewUrl(@Nullable final String previewUrl) {
-        this.previewUrl = previewUrl.replaceAll("\\u0026", "&");
+        this.previewUrl = previewUrl;
     }
 }
