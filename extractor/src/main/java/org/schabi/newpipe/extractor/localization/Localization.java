@@ -7,6 +7,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Locale;
+import java.util.Objects;
 
 public class Localization implements Serializable {
     public static final Localization DEFAULT = new Localization("en", "GB");
@@ -89,14 +90,14 @@ public class Localization implements Serializable {
 
         Localization that = (Localization) o;
 
-        if (!languageCode.equals(that.languageCode)) return false;
-        return countryCode != null ? countryCode.equals(that.countryCode) : that.countryCode == null;
+        return languageCode.equals(that.languageCode) &&
+                Objects.equals(countryCode, that.countryCode);
     }
 
     @Override
     public int hashCode() {
         int result = languageCode.hashCode();
-        result = 31 * result + (countryCode != null ? countryCode.hashCode() : 0);
+        result = 31 * result + Objects.hashCode(countryCode);
         return result;
     }
 }

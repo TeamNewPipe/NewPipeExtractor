@@ -11,6 +11,7 @@ import org.schabi.newpipe.extractor.localization.TimeAgoParser;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.io.IOException;
+import java.util.Objects;
 
 public abstract class Extractor {
     /**
@@ -29,12 +30,9 @@ public abstract class Extractor {
     private final Downloader downloader;
 
     public Extractor(final StreamingService service, final LinkHandler linkHandler) {
-        if (service == null) throw new NullPointerException("service is null");
-        if (linkHandler == null) throw new NullPointerException("LinkHandler is null");
-        this.service = service;
-        this.linkHandler = linkHandler;
-        this.downloader = NewPipe.getDownloader();
-        if (downloader == null) throw new NullPointerException("downloader is null");
+        this.service = Objects.requireNonNull(service, "service is null");
+        this.linkHandler = Objects.requireNonNull(linkHandler, "LinkHandler is null");
+        this.downloader = Objects.requireNonNull(NewPipe.getDownloader(), "downloader is null");
     }
 
     /**
