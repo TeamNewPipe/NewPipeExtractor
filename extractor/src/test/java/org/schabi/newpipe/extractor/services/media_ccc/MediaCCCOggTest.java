@@ -2,7 +2,7 @@ package org.schabi.newpipe.extractor.services.media_ccc;
 
 import org.junit.BeforeClass;
 import org.junit.Test;
-import org.schabi.newpipe.DownloaderTestImpl;
+import org.schabi.newpipe.downloader.DownloaderTestImpl;
 import org.schabi.newpipe.extractor.NewPipe;
 import org.schabi.newpipe.extractor.services.media_ccc.extractors.MediaCCCStreamExtractor;
 import org.schabi.newpipe.extractor.stream.AudioStream;
