@@ -241,4 +241,27 @@ public class Request {
 
         return headers;
     }
+
+    /*//////////////////////////////////////////////////////////////////////////
+    // Generated
+    //////////////////////////////////////////////////////////////////////////*/
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Request request = (Request) o;
+        return httpMethod.equals(request.httpMethod) &&
+                url.equals(request.url) &&
+                headers.equals(request.headers) &&
+                Arrays.equals(dataToSend, request.dataToSend) &&
+                Objects.equals(localization, request.localization);
+    }
+
+    @Override
+    public int hashCode() {
+        int result = Objects.hash(httpMethod, url, headers, localization);
+        result = 31 * result + Arrays.hashCode(dataToSend);
+        return result;
+    }
 }
