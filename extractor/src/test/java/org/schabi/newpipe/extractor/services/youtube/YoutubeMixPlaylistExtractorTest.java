@@ -41,10 +41,10 @@ public class YoutubeMixPlaylistExtractorTest {
     private static final String VIDEO_ID = "_AzeUSL9lZc";
     private static final String VIDEO_TITLE =
             "Most Beautiful And Emotional  Piano: Anime Music Shigatsu wa Kimi no Uso OST IMO";
+    private static final Map<String, String> dummyCookie
+            = Collections.singletonMap(YoutubeMixPlaylistExtractor.COOKIE_NAME, "whatever");
 
     private static YoutubeMixPlaylistExtractor extractor;
-    private static Map<String, String> dummyCookie
-            = Collections.singletonMap(YoutubeMixPlaylistExtractor.COOKIE_NAME, "whatever");
 
     public static class Mix {
 
