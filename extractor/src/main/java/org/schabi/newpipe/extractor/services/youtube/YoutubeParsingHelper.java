@@ -591,7 +591,7 @@ public class YoutubeParsingHelper {
     }
 
     public static String extractCookieValue(final String cookieName, final Response response) {
-        final List<String> cookies = response.responseHeaders().get("Set-Cookie");
+        final List<String> cookies = response.responseHeaders().get("set-cookie");
         int startIndex;
         String result = "";
         for (final String cookie : cookies) {
