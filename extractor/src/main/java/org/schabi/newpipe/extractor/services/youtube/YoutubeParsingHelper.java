@@ -65,12 +65,6 @@ public class YoutubeParsingHelper {
     private YoutubeParsingHelper() {
     }
 
-    /**
-     * The official youtube app supports intents in this format, where after the ':' is the videoId.
-     * Accordingly there are other apps sharing streams in this format.
-     */
-    public final static String BASE_YOUTUBE_INTENT_URL = "vnd.youtube";
-
     private static final String HARDCODED_CLIENT_VERSION = "2.20200214.04.00";
     private static String clientVersion;
 
@@ -591,7 +585,7 @@ public class YoutubeParsingHelper {
     }
 
     public static String extractCookieValue(final String cookieName, final Response response) {
-        final List<String> cookies = response.responseHeaders().get("Set-Cookie");
+        final List<String> cookies = response.responseHeaders().get("set-cookie");
         int startIndex;
         String result = "";
         for (final String cookie : cookies) {
