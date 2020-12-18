@@ -4,30 +4,32 @@ import org.junit.BeforeClass;
 import org.junit.Test;
 import org.schabi.newpipe.DownloaderTestImpl;
 import org.schabi.newpipe.extractor.NewPipe;
+import org.schabi.newpipe.extractor.StreamingService;
 import org.schabi.newpipe.extractor.exceptions.ContentNotSupportedException;
 import org.schabi.newpipe.extractor.exceptions.ExtractionException;
 import org.schabi.newpipe.extractor.exceptions.ParsingException;
+import org.schabi.newpipe.extractor.services.DefaultStreamExtractorTest;
 import org.schabi.newpipe.extractor.services.bandcamp.extractors.BandcampRadioStreamExtractor;
 import org.schabi.newpipe.extractor.stream.StreamExtractor;
+import org.schabi.newpipe.extractor.stream.StreamType;
 
 import java.io.IOException;
-import java.util.Calendar;
-import java.util.TimeZone;
+import java.util.*;
 
 import static org.junit.Assert.*;
 import static org.schabi.newpipe.extractor.ServiceList.Bandcamp;
 
-public class BandcampRadioStreamExtractorTest {
+public class BandcampRadioStreamExtractorTest extends DefaultStreamExtractorTest {
 
-    private static StreamExtractor e;
+    private static StreamExtractor extractor;
 
-    private static final String SHOW_URL = "https://bandcamp.com/?show=230";
+    private static final String URL = "https://bandcamp.com/?show=230";
 
     @BeforeClass
     public static void setUp() throws IOException, ExtractionException {
         NewPipe.init(DownloaderTestImpl.getInstance());
-        e = Bandcamp.getStreamExtractor(SHOW_URL);
-        e.fetchPage();
+        extractor = Bandcamp.getStreamExtractor(URL);
+        extractor.fetchPage();
     }
 
     @Test
@@ -37,31 +39,43 @@ public class BandcampRadioStreamExtractorTest {
                 instanceof BandcampRadioStreamExtractor);
     }
 
-    @Test
-    public void testGetName() throws ParsingException {
-        assertEquals("Sound Movements", e.getName());
-    }
+    @Override public StreamExtractor extractor() { return extractor; }
+    @Override public String expectedName() throws Exception { return "Sound Movements"; }
+    @Override public String expectedId() throws Exception { return "230"; }
+    @Override public String expectedUrlContains() throws Exception { return URL; }
+    @Override public String expectedOriginalUrlContains() throws Exception { return URL; }
+    @Override public boolean expectedHasVideoStreams() { return false; }
+    @Override public boolean expectedHasSubtitles() { return false; }
+    @Override public boolean expectedHasFrames() { return false; }
+    @Override public boolean expectedHasRelatedStreams() { return false; }
+    @Override public StreamType expectedStreamType() { return StreamType.AUDIO_STREAM; }
+    @Override public StreamingService expectedService() { return Bandcamp; }
+    @Override public String expectedUploaderName() { return "Andrew Jervis"; }
 
     @Test(expected = ContentNotSupportedException.class)
     public void testGetUploaderUrl() throws ParsingException {
-        e.getUploaderUrl();
+        extractor.getUploaderUrl();
     }
 
-    @Test
-    public void testGetUrl() throws ParsingException {
-        assertEquals(SHOW_URL, e.getUrl());
+    @Test(expected = ContentNotSupportedException.class)
+    @Override
+    public void testUploaderUrl() throws Exception {
+        super.testUploaderUrl();
+    }
+    @Override public String expectedUploaderUrl() { return null; }
+
+    @Override
+    public List<String> expectedDescriptionContains() {
+        return Collections.singletonList("Featuring special guests Nick Hakim and Elbows, plus fresh cuts from Eddie Palmieri, KRS One, Ladi6, and Moonchild.");
     }
 
-    @Test
-    public void testGetUploaderName() throws ParsingException {
-        assertEquals("Andrew Jervis", e.getUploaderName());
-    }
+    @Override public long expectedLength() { return 5619; }
+    @Override public long expectedViewCountAtLeast() { return -1; }
+    @Override public long expectedLikeCountAtLeast() { return -1; }
+    @Override public long expectedDislikeCountAtLeast() { return -1; }
 
-    @Test
-    public void testGetTextualUploadDate() throws ParsingException {
-        assertEquals("16 May 2017 00:00:00 GMT", e.getTextualUploadDate());
-    }
-
+    @Override public String expectedUploadDate() { return "16 May 2017 00:00:00 GMT"; }
+    @Override public String expectedTextualUploadDate() { return "16 May 2017 00:00:00 GMT"; }
     @Test
     public void testUploadDate() throws ParsingException {
         final Calendar expectedCalendar = Calendar.getInstance();
@@ -71,34 +85,20 @@ public class BandcampRadioStreamExtractorTest {
         expectedCalendar.setTimeInMillis(0);
         expectedCalendar.set(2017, Calendar.MAY, 16);
 
-        assertEquals(expectedCalendar.getTimeInMillis(), e.getUploadDate().date().getTimeInMillis());
+        assertEquals(expectedCalendar.getTimeInMillis(), extractor.getUploadDate().offsetDateTime().toInstant().toEpochMilli());
     }
 
     @Test
     public void testGetThumbnailUrl() throws ParsingException {
-        assertTrue(e.getThumbnailUrl().contains("bcbits.com/img"));
+        assertTrue(extractor.getThumbnailUrl().contains("bcbits.com/img"));
     }
 
     @Test
     public void testGetUploaderAvatarUrl() throws ParsingException {
-        assertTrue(e.getUploaderAvatarUrl().contains("bandcamp-button"));
-
+        assertTrue(extractor.getUploaderAvatarUrl().contains("bandcamp-button"));
     }
 
-    @Test
-    public void testGetDescription() throws ParsingException {
-        assertEquals("Featuring special guests Nick Hakim and Elbows, plus fresh cuts from Eddie Palmieri, KRS One, Ladi6, and Moonchild.",
-                e.getDescription().getContent());
-
-    }
-
-    @Test
-    public void testGetLength() throws ParsingException {
-        assertEquals(5619, e.getLength());
-    }
-
-    @Test
-    public void testGetAudioStreams() throws ExtractionException, IOException {
-        assertEquals(2, e.getAudioStreams().size());
+    @Test public void testGetAudioStreams() throws ExtractionException, IOException {
+        assertEquals(2, extractor.getAudioStreams().size());
     }
 }
