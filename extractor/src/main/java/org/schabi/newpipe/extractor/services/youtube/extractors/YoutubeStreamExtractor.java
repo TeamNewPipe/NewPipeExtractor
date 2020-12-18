@@ -55,6 +55,7 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
+import java.util.Objects;
 
 import static org.schabi.newpipe.extractor.services.youtube.YoutubeParsingHelper.fixThumbnailUrl;
 import static org.schabi.newpipe.extractor.services.youtube.YoutubeParsingHelper.getJsonResponse;
@@ -861,7 +862,7 @@ public class YoutubeStreamExtractor extends StreamExtractor {
         } finally {
             Context.exit();
         }
-        return result == null ? "" : result.toString();
+        return Objects.toString(result, "");
     }
 
     /*//////////////////////////////////////////////////////////////////////////

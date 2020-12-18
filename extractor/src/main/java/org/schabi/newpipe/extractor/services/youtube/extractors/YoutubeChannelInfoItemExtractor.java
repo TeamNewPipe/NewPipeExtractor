@@ -2,6 +2,7 @@ package org.schabi.newpipe.extractor.services.youtube.extractors;
 
 import com.grack.nanojson.JsonObject;
 
+import org.schabi.newpipe.extractor.ListExtractor;
 import org.schabi.newpipe.extractor.channel.ChannelInfoItemExtractor;
 import org.schabi.newpipe.extractor.exceptions.ParsingException;
 import org.schabi.newpipe.extractor.services.youtube.linkHandler.YoutubeChannelLinkHandlerFactory;
@@ -86,7 +87,7 @@ public class YoutubeChannelInfoItemExtractor implements ChannelInfoItemExtractor
         try {
             if (!channelInfoItem.has("videoCountText")) {
                 // Video count is not available, channel probably has no public uploads.
-                return -1;
+                return ListExtractor.ITEM_COUNT_UNKNOWN;
             }
 
             return Long.parseLong(Utils.removeNonDigitCharacters(getTextFromObject(

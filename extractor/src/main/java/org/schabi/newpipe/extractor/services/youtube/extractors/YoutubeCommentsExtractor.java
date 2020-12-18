@@ -160,8 +160,15 @@ public class YoutubeCommentsExtractor extends CommentsExtractor {
     }
 
     private String findValue(String doc, String start, String end) {
-        final int beginIndex = doc.indexOf(start) + start.length();
-        final int endIndex = doc.indexOf(end, beginIndex);
-        return doc.substring(beginIndex, endIndex);
+        final String unescaped = doc
+                .replaceAll("\\\\x22", "\"")
+                .replaceAll("\\\\x7b", "{")
+                .replaceAll("\\\\x7d", "}")
+                .replaceAll("\\\\x5b", "[")
+                .replaceAll("\\\\x5d", "]");
+
+        final int beginIndex = unescaped.indexOf(start) + start.length();
+        final int endIndex = unescaped.indexOf(end, beginIndex);
+        return unescaped.substring(beginIndex, endIndex);
     }
 }

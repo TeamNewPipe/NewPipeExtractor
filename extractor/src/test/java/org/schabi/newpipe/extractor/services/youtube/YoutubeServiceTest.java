@@ -26,9 +26,13 @@ import org.schabi.newpipe.DownloaderTestImpl;
 import org.schabi.newpipe.extractor.NewPipe;
 import org.schabi.newpipe.extractor.StreamingService;
 import org.schabi.newpipe.extractor.kiosk.KioskList;
+import org.schabi.newpipe.extractor.playlist.PlaylistExtractor;
+import org.schabi.newpipe.extractor.services.youtube.extractors.YoutubeMixPlaylistExtractor;
+import org.schabi.newpipe.extractor.services.youtube.extractors.YoutubePlaylistExtractor;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
 import static org.schabi.newpipe.extractor.ServiceList.YouTube;
 
 /**
@@ -53,5 +57,31 @@ public class YoutubeServiceTest {
     @Test
     public void testGetDefaultKiosk() throws Exception {
         assertEquals(kioskList.getDefaultKioskExtractor(null).getId(), "Trending");
+    }
+
+
+    @Test
+    public void getPlayListExtractorIsNormalPlaylist() throws Exception {
+        final PlaylistExtractor extractor = service.getPlaylistExtractor(
+            "https://www.youtube.com/watch?v=JhqtYOnNrTs&list=PL-EkZZikQIQVqk9rBWzEo5b-2GeozElS");
+        assertTrue(extractor instanceof YoutubePlaylistExtractor);
+    }
+
+    @Test
+    public void getPlaylistExtractorIsMix() throws Exception {
+        final String videoId = "_AzeUSL9lZc";
+        PlaylistExtractor extractor = YouTube.getPlaylistExtractor(
+            "https://www.youtube.com/watch?v=" + videoId + "&list=RD" + videoId);
+        assertTrue(extractor instanceof YoutubeMixPlaylistExtractor);
+
+        extractor = YouTube.getPlaylistExtractor(
+            "https://www.youtube.com/watch?v=" + videoId + "&list=RDMM" + videoId);
+        assertTrue(extractor instanceof YoutubeMixPlaylistExtractor);
+
+        final String mixVideoId = "qHtzO49SDmk";
+
+        extractor = YouTube.getPlaylistExtractor(
+            "https://www.youtube.com/watch?v=" + mixVideoId + "&list=RD" + videoId);
+        assertTrue(extractor instanceof YoutubeMixPlaylistExtractor);
     }
 }
