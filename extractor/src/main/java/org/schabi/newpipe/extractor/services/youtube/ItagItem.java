@@ -56,6 +56,9 @@ public class ItagItem {
             new ItagItem(137, VIDEO_ONLY, MPEG_4, "1080p"),
             new ItagItem(299, VIDEO_ONLY, MPEG_4, "1080p60", 60),
             new ItagItem(266, VIDEO_ONLY, MPEG_4, "2160p"),
+            new ItagItem(402, VIDEO_ONLY, MPEG_4, "4320p"), // can be 4320p60 as well
+            new ItagItem(571, VIDEO_ONLY, MPEG_4, "4320p"), // can be 4320p60 HDR as well (1La4QzGeaaQ)
+            new ItagItem(402, VIDEO_ONLY, MPEG_4, "4320p60"),
 
             new ItagItem(278, VIDEO_ONLY, WEBM, "144p"),
             new ItagItem(242, VIDEO_ONLY, WEBM, "240p"),
@@ -66,28 +69,19 @@ public class ItagItem {
             new ItagItem(247, VIDEO_ONLY, WEBM, "720p"),
             new ItagItem(248, VIDEO_ONLY, WEBM, "1080p"),
             new ItagItem(271, VIDEO_ONLY, WEBM, "1440p"),
-            // #272 is either 3840x2160 (e.g. RtoitU2A-3E) or 7680x4320 (sLprVF6d7Ug)
-            new ItagItem(272, VIDEO_ONLY, WEBM, "2160p"),
             new ItagItem(302, VIDEO_ONLY, WEBM, "720p60", 60),
             new ItagItem(303, VIDEO_ONLY, WEBM, "1080p60", 60),
             new ItagItem(308, VIDEO_ONLY, WEBM, "1440p60", 60),
             new ItagItem(313, VIDEO_ONLY, WEBM, "2160p"),
-            new ItagItem(315, VIDEO_ONLY, WEBM, "2160p60", 60)
+            new ItagItem(315, VIDEO_ONLY, WEBM, "2160p60", 60),
+            new ItagItem(272, VIDEO_ONLY, WEBM, "4320p60", 60)
     };
 
     /*//////////////////////////////////////////////////////////////////////////
     // Utils
     //////////////////////////////////////////////////////////////////////////*/
 
-    public static boolean isSupported(int itag) {
-        for (ItagItem item : ITAG_LIST) {
-            if (itag == item.id) {
-                return true;
-            }
-        }
-        return false;
-    }
-
+    @Deprecated
     public static ItagItem getItag(int itagId) throws ParsingException {
         for (ItagItem item : ITAG_LIST) {
             if (itagId == item.id) {
@@ -95,6 +89,52 @@ public class ItagItem {
             }
         }
         throw new ParsingException("itag=" + itagId + " not supported");
+    }
+
+    public static ItagItem getItag(int itagId, int averageBitrate, int fps, String qualityLabel, String mimeType) throws ParsingException {
+
+        String[] split = mimeType.split(";")[0].split("/");
+        String streamType = split[0];
+        String fileType = split[1];
+        String codec = mimeType.split("\"")[1];
+
+        MediaFormat format = null;
+        ItagType itagType = null;
+
+        if (codec.contains(",")) // muxed streams have both an audio and video codec
+            itagType = VIDEO;
+        else {
+            if (streamType.equals("video"))
+                itagType = VIDEO_ONLY;
+            if (streamType.equals("audio"))
+                itagType = AUDIO;
+        }
+
+        if (itagType == AUDIO) {
+            if (fileType.equals("mp4") && (codec.startsWith("m4a") || codec.startsWith("mp4a") ))
+                format = M4A;
+            if (fileType.startsWith("webm") && codec.equals("opus"))
+                format = WEBMA_OPUS;
+        }
+
+        if (itagType == VIDEO) {
+            if (fileType.equals("mp4"))
+                format = MPEG_4;
+            if(fileType.equals("3gpp"))
+                format = v3GPP;
+        }
+
+        if (itagType == VIDEO_ONLY) {
+            if (fileType.equals("mp4"))
+                format = MPEG_4;
+            if (fileType.equals("webm"))
+                format = WEBM;
+        }
+
+        if (itagType == null || format == null)
+            throw new ParsingException("Unknown mimeType: " + mimeType);
+
+        return itagType == AUDIO ? new ItagItem(itagId, itagType, format, Math.round(averageBitrate / 1024f)) : new ItagItem(itagId, itagType, format, qualityLabel, fps);
     }
 
     /*//////////////////////////////////////////////////////////////////////////
