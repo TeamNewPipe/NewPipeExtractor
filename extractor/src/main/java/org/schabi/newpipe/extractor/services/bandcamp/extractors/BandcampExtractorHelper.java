@@ -15,9 +15,12 @@ import org.schabi.newpipe.extractor.localization.DateWrapper;
 import org.schabi.newpipe.extractor.utils.Utils;
 
 import java.io.IOException;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
-import java.util.*;
+import java.time.DateTimeException;
+import java.time.ZonedDateTime;
+import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Locale;
 
 public class BandcampExtractorHelper {
 
@@ -147,12 +150,12 @@ public class BandcampExtractorHelper {
 
     static DateWrapper parseDate(final String textDate) throws ParsingException {
         try {
-            final Date date = new SimpleDateFormat("dd MMM yyyy HH:mm:ss zzz", Locale.ENGLISH).parse(textDate);
-            final Calendar calendar = Calendar.getInstance();
-            calendar.setTime(date);
-            return new DateWrapper(calendar, false);
-        } catch (final ParseException e) {
-            throw new ParsingException("Could not extract date", e);
+            final ZonedDateTime zonedDateTime = ZonedDateTime.parse(
+                    textDate, DateTimeFormatter.ofPattern("dd MMM yyyy HH:mm:ss zzz", Locale.ENGLISH));
+            return new DateWrapper(zonedDateTime.toOffsetDateTime(), false);
+        } catch (final DateTimeException e) {
+            throw new ParsingException("Could not parse date '" + textDate + "'", e);
         }
+
     }
 }

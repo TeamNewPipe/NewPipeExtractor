@@ -14,7 +14,10 @@ import org.schabi.newpipe.extractor.stream.StreamExtractor;
 import org.schabi.newpipe.extractor.stream.StreamType;
 
 import java.io.IOException;
-import java.util.*;
+import java.util.Calendar;
+import java.util.Collections;
+import java.util.List;
+import java.util.TimeZone;
 
 import static org.junit.Assert.*;
 import static org.schabi.newpipe.extractor.ServiceList.Bandcamp;
