@@ -92,6 +92,7 @@ public class PeertubeStreamExtractorTest {
         @Override public String expectedLicence() { return "Attribution - Share Alike"; }
         @Override public Locale expectedLanguageInfo() { return Locale.forLanguageTag("en"); }
         @Override public List<String> expectedTags() { return Arrays.asList("framasoft", "peertube"); }
+        @Override public int expectedStreamSegmentsCount() { return 0; }
     }
 
     public static class AgeRestricted extends DefaultStreamExtractorTest {

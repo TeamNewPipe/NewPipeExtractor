@@ -57,6 +57,7 @@ public class MediaCCCStreamExtractorTest {
         @Override public boolean expectedHasSubtitles() { return false; }
         @Override public boolean expectedHasFrames() { return false; }
         @Override public List<String> expectedTags() { return Arrays.asList("gpn18", "105"); }
+        @Override public int expectedStreamSegmentsCount() { return 0; }
 
         @Override
         @Test

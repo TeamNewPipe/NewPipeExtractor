@@ -55,6 +55,7 @@ public class SoundcloudStreamExtractorTest {
         @Override public boolean expectedHasVideoStreams() { return false; }
         @Override public boolean expectedHasSubtitles() { return false; }
         @Override public boolean expectedHasFrames() { return false; }
+        @Override public int expectedStreamSegmentsCount() { return 0; }
     }
 
 }

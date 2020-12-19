@@ -66,6 +66,7 @@ public abstract class DefaultStreamExtractorTest extends DefaultExtractorTest<St
     public Locale expectedLanguageInfo() { return null; } // default: no language info available
     public List<String> expectedTags() { return Collections.emptyList(); } // default: no tags
     public String expectedSupportInfo() { return ""; } // default: no support info available
+    public int expectedStreamSegmentsCount() { return -1; } // return 0 or greater to test (default is -1 to ignore)
 
     @Test
     @Override
@@ -378,5 +379,12 @@ public abstract class DefaultStreamExtractorTest extends DefaultExtractorTest<St
     @Override
     public void testSupportInfo() throws Exception {
         assertEquals(expectedSupportInfo(), extractor().getSupportInfo());
+    }
+
+    @Test
+    public void testStreamSegmentsCount() throws Exception {
+        if (expectedStreamSegmentsCount() >= 0) {
+            assertEquals(expectedStreamSegmentsCount(), extractor().getStreamSegments().size());
+        }
     }
 }

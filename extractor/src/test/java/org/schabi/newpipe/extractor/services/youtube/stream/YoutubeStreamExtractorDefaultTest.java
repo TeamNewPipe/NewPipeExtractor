@@ -9,6 +9,7 @@ import org.schabi.newpipe.extractor.exceptions.ContentNotAvailableException;
 import org.schabi.newpipe.extractor.exceptions.ParsingException;
 import org.schabi.newpipe.extractor.services.DefaultStreamExtractorTest;
 import org.schabi.newpipe.extractor.stream.StreamExtractor;
+import org.schabi.newpipe.extractor.stream.StreamSegment;
 import org.schabi.newpipe.extractor.stream.StreamType;
 
 import java.util.Arrays;
@@ -16,7 +17,7 @@ import java.util.List;
 
 import javax.annotation.Nullable;
 
-import static org.junit.Assert.fail;
+import static org.junit.Assert.*;
 import static org.schabi.newpipe.extractor.ServiceList.YouTube;
 
 /*
@@ -96,6 +97,7 @@ public class YoutubeStreamExtractorDefaultTest {
         @Nullable @Override public String expectedTextualUploadDate() { return "2019-08-24"; }
         @Override public long expectedLikeCountAtLeast() { return 5212900; }
         @Override public long expectedDislikeCountAtLeast() { return 30600; }
+        @Override public int expectedStreamSegmentsCount() { return 0; }
     }
 
     public static class DescriptionTestUnboxing extends DefaultStreamExtractorTest {
@@ -165,5 +167,95 @@ public class YoutubeStreamExtractorDefaultTest {
         @Nullable @Override public String expectedTextualUploadDate() { return "2019-01-02"; }
         @Override public long expectedLikeCountAtLeast() { return -1; }
         @Override public long expectedDislikeCountAtLeast() { return -1; }
+    }
+
+    public static class StreamSegmentsTestOstCollection extends DefaultStreamExtractorTest {
+        // StreamSegment example with single macro-makers panel
+        private static final String ID = "2RYrHwnLHw0";
+        private static final String URL = BASE_URL + ID;
+        private static StreamExtractor extractor;
+
+        @BeforeClass
+        public static void setUp() throws Exception {
+            NewPipe.init(DownloaderTestImpl.getInstance());
+            extractor = YouTube.getStreamExtractor(URL);
+            extractor.fetchPage();
+        }
+
+        @Override public StreamExtractor extractor() { return extractor; }
+        @Override public StreamingService expectedService() { return YouTube; }
+        @Override public String expectedName() { return "1 Hour - Most Epic Anime Mix - Battle Anime OST"; }
+        @Override public String expectedId() { return ID; }
+        @Override public String expectedUrlContains() { return BASE_URL + ID; }
+        @Override public String expectedOriginalUrlContains() { return URL; }
+
+        @Override public StreamType expectedStreamType() { return StreamType.VIDEO_STREAM; }
+        @Override public String expectedUploaderName() { return "MathCaires"; }
+        @Override public String expectedUploaderUrl() { return "https://www.youtube.com/channel/UChFoHg6IT18SCqiwCp_KY7Q"; }
+        @Override public List<String> expectedDescriptionContains() {
+            return Arrays.asList("soundtracks", "9:49", "YouSeeBIGGIRLTT");
+        }
+        @Override public long expectedLength() { return 3889; }
+        @Override public long expectedViewCountAtLeast() { return 2463261; }
+        @Nullable @Override public String expectedUploadDate() { return "2019-06-26 00:00:00.000"; }
+        @Nullable @Override public String expectedTextualUploadDate() { return "2019-06-26"; }
+        @Override public long expectedLikeCountAtLeast() { return 32100; }
+        @Override public long expectedDislikeCountAtLeast() { return 750; }
+        @Override public boolean expectedHasSubtitles() { return false; }
+
+        @Override public int expectedStreamSegmentsCount() { return 17; }
+        @Test
+        public void testStreamSegment() throws Exception {
+            final StreamSegment segment = extractor.getStreamSegments().get(3);
+            assertEquals(589, segment.getStartTimeSeconds());
+            assertEquals("Attack on Titan S2 - YouSeeBIGGIRLTT", segment.getTitle());
+            assertEquals(BASE_URL + ID + "?t=589", segment.getUrl());
+            assertNotNull(segment.getPreviewUrl());
+        }
+    }
+
+    public static class StreamSegmentsTestMaiLab extends DefaultStreamExtractorTest {
+        // StreamSegment example with macro-makers panel and transcription panel
+        private static final String ID = "ud9d5cMDP_0";
+        private static final String URL = BASE_URL + ID;
+        private static StreamExtractor extractor;
+
+        @BeforeClass
+        public static void setUp() throws Exception {
+            NewPipe.init(DownloaderTestImpl.getInstance());
+            extractor = YouTube.getStreamExtractor(URL);
+            extractor.fetchPage();
+        }
+
+        @Override public StreamExtractor extractor() { return extractor; }
+        @Override public StreamingService expectedService() { return YouTube; }
+        @Override public String expectedName() { return "Vitamin D wissenschaftlich gepr\u00fcft"; }
+        @Override public String expectedId() { return ID; }
+        @Override public String expectedUrlContains() { return BASE_URL + ID; }
+        @Override public String expectedOriginalUrlContains() { return URL; }
+
+        @Override public StreamType expectedStreamType() { return StreamType.VIDEO_STREAM; }
+        @Override public String expectedUploaderName() { return "maiLab"; }
+        @Override public String expectedUploaderUrl() { return "https://www.youtube.com/channel/UCyHDQ5C6z1NDmJ4g6SerW8g"; }
+        @Override public List<String> expectedDescriptionContains() {
+            return Arrays.asList("Vitamin", "2:44", "Was ist Vitamin D?");
+        }
+        @Override public long expectedLength() { return 1010; }
+        @Override public long expectedViewCountAtLeast() { return 815500; }
+        @Nullable @Override public String expectedUploadDate() { return "2020-11-18 00:00:00.000"; }
+        @Nullable @Override public String expectedTextualUploadDate() { return "2020-11-18"; }
+        @Override public long expectedLikeCountAtLeast() { return 48500; }
+        @Override public long expectedDislikeCountAtLeast() { return 20000; }
+        @Override public boolean expectedHasSubtitles() { return true; }
+
+        @Override public int expectedStreamSegmentsCount() { return 7; }
+        @Test
+        public void testStreamSegment() throws Exception {
+            final StreamSegment segment = extractor.getStreamSegments().get(1);
+            assertEquals(164, segment.getStartTimeSeconds());
+            assertEquals("Was ist Vitamin D?", segment.getTitle());
+            assertEquals(BASE_URL + ID + "?t=164", segment.getUrl());
+            assertNotNull(segment.getPreviewUrl());
+        }
     }
 }
