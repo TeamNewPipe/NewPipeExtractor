@@ -1,9 +1,6 @@
 package org.schabi.newpipe.extractor.stream;
 
-import org.schabi.newpipe.extractor.Info;
-import org.schabi.newpipe.extractor.InfoItem;
-import org.schabi.newpipe.extractor.NewPipe;
-import org.schabi.newpipe.extractor.StreamingService;
+import org.schabi.newpipe.extractor.*;
 import org.schabi.newpipe.extractor.exceptions.ContentNotAvailableException;
 import org.schabi.newpipe.extractor.exceptions.ContentNotSupportedException;
 import org.schabi.newpipe.extractor.exceptions.ExtractionException;
@@ -13,8 +10,11 @@ import org.schabi.newpipe.extractor.utils.ExtractorHelper;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Locale;
+
+import javax.annotation.Nonnull;
 
 import static org.schabi.newpipe.extractor.utils.Utils.isNullOrEmpty;
 
@@ -329,6 +329,11 @@ public class StreamInfo extends Info {
         } catch (Exception e) {
             streamInfo.addError(e);
         }
+        try {
+            streamInfo.setMetaInfo(extractor.getMetaInfo());
+        } catch (Exception e) {
+            streamInfo.addError(e);
+        }
 
         streamInfo.setRelatedStreams(ExtractorHelper.getRelatedVideosOrLogError(streamInfo, extractor));
 
@@ -379,6 +384,7 @@ public class StreamInfo extends Info {
     private Locale language = null;
     private List<String> tags = new ArrayList<>();
     private List<StreamSegment> streamSegments = new ArrayList<>();
+    private List<MetaInfo> metaInfo = new ArrayList<>();
 
     /**
      * Get the stream type
@@ -683,5 +689,14 @@ public class StreamInfo extends Info {
 
     public void setStreamSegments(List<StreamSegment> streamSegments) {
         this.streamSegments = streamSegments;
+    }
+
+    public void setMetaInfo(final List<MetaInfo> metaInfo) {
+        this.metaInfo = metaInfo;
+    }
+
+    @Nonnull
+    public List<MetaInfo> getMetaInfo() {
+        return this.metaInfo;
     }
 }

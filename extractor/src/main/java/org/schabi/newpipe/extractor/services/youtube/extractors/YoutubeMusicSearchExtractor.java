@@ -7,6 +7,7 @@ import com.grack.nanojson.JsonParserException;
 import com.grack.nanojson.JsonWriter;
 
 import org.schabi.newpipe.extractor.InfoItem;
+import org.schabi.newpipe.extractor.MetaInfo;
 import org.schabi.newpipe.extractor.Page;
 import org.schabi.newpipe.extractor.StreamingService;
 import org.schabi.newpipe.extractor.downloader.Downloader;
@@ -161,6 +162,12 @@ public class YoutubeMusicSearchExtractor extends SearchExtractor {
         final JsonObject showingResultsForRenderer = itemSectionRenderer.getArray("contents").getObject(0)
                 .getObject("showingResultsForRenderer");
         return !showingResultsForRenderer.isEmpty();
+    }
+
+    @Nonnull
+    @Override
+    public List<MetaInfo> getMetaInfo() {
+        return Collections.emptyList();
     }
 
     @Nonnull

@@ -3,16 +3,22 @@ package org.schabi.newpipe.extractor.services.youtube.stream;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import org.schabi.newpipe.DownloaderTestImpl;
+import org.schabi.newpipe.extractor.MetaInfo;
 import org.schabi.newpipe.extractor.NewPipe;
 import org.schabi.newpipe.extractor.StreamingService;
 import org.schabi.newpipe.extractor.exceptions.ContentNotAvailableException;
 import org.schabi.newpipe.extractor.exceptions.ParsingException;
 import org.schabi.newpipe.extractor.services.DefaultStreamExtractorTest;
+import org.schabi.newpipe.extractor.stream.Description;
 import org.schabi.newpipe.extractor.stream.StreamExtractor;
 import org.schabi.newpipe.extractor.stream.StreamSegment;
 import org.schabi.newpipe.extractor.stream.StreamType;
 
+import javax.annotation.Nullable;
+import java.net.MalformedURLException;
+import java.net.URL;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 
 import javax.annotation.Nullable;
@@ -258,4 +264,46 @@ public class YoutubeStreamExtractorDefaultTest {
             assertNotNull(segment.getPreviewUrl());
         }
     }
+
+    public static class PublicBroadcasterTest extends DefaultStreamExtractorTest {
+        private static final String ID = "q6fgbYWsMgw";
+        private static final int TIMESTAMP = 0;
+        private static final String URL = BASE_URL + ID;
+        private static StreamExtractor extractor;
+
+        @BeforeClass
+        public static void setUp() throws Exception {
+            NewPipe.init(DownloaderTestImpl.getInstance());
+            extractor = YouTube.getStreamExtractor(URL);
+            extractor.fetchPage();
+        }
+
+        @Override public StreamExtractor extractor() { return extractor; }
+        @Override public StreamingService expectedService() { return YouTube; }
+        @Override public String expectedName() { return "Was verbirgt sich am tiefsten Punkt des Ozeans?"; }
+        @Override public String expectedId() { return ID; }
+        @Override public String expectedUrlContains() { return BASE_URL + ID; }
+        @Override public String expectedOriginalUrlContains() { return URL; }
+
+        @Override public StreamType expectedStreamType() { return StreamType.VIDEO_STREAM; }
+        @Override public String expectedUploaderName() { return "Dinge Erklärt – Kurzgesagt"; }
+        @Override public String expectedUploaderUrl() { return "https://www.youtube.com/channel/UCwRH985XgMYXQ6NxXDo8npw"; }
+        @Override public List<String> expectedDescriptionContains() { return Arrays.asList("Lasst uns abtauchen!", "Angebot von funk", "Dinge"); }
+        @Override public long expectedLength() { return 631; }
+        @Override public long expectedTimestamp() { return TIMESTAMP; }
+        @Override public long expectedViewCountAtLeast() { return 1_600_000; }
+        @Nullable @Override public String expectedUploadDate() { return "2019-06-12 00:00:00.000"; }
+        @Nullable @Override public String expectedTextualUploadDate() { return "2019-06-12"; }
+        @Override public long expectedLikeCountAtLeast() { return 70000; }
+        @Override public long expectedDislikeCountAtLeast() { return 500; }
+        @Override public List<MetaInfo> expectedMetaInfo() throws MalformedURLException {
+            return Collections.singletonList(new MetaInfo(
+                    "",
+                    new Description("Funk is a German public broadcast service.", Description.PLAIN_TEXT),
+                    Collections.singletonList(new URL("https://de.wikipedia.org/wiki/Funk_(Medienangebot)?wprov=yicw1")),
+                    Collections.singletonList("Wikipedia (German)")
+            ));
+        }
+    }
+
 }
