@@ -51,15 +51,31 @@ public class BandcampChannelLinkHandlerFactory extends ListLinkHandlerFactory {
     }
 
     /**
-     * Accepts only pages that do not lead to an album or track. Supports external pages.
+     * Accepts only pages that lead to the root of an artist profile. Supports external pages.
      */
     @Override
     public boolean onAcceptUrl(final String url) throws ParsingException {
 
-        // Exclude URLs that lead to a track or album
-        if (url.matches(".*/(album|track)/.*")) return false;
+        // https: | | artist.bandcamp.com | releases
+        //  0      1           2               3
+        String[] splitUrl = url.split("/");
 
-        // Test whether domain is supported
-        return BandcampExtractorHelper.isSupportedDomain(url);
+        // URL is too short
+        if (splitUrl.length < 3) return false;
+
+        // Must have "releases" as segment after url or none at all
+        if (splitUrl.length > 3 && !splitUrl[3].equals("releases")) {
+
+            return false;
+
+        } else {
+            if (splitUrl[2].equals("daily.bandcamp.com")) {
+                // Refuse links to daily.bandcamp.com as that is not an artist
+                return false;
+            }
+
+            // Test whether domain is supported
+            return BandcampExtractorHelper.isSupportedDomain(url);
+        }
     }
 }

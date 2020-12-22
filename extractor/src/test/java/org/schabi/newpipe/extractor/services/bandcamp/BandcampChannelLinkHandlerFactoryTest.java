@@ -35,6 +35,8 @@ public class BandcampChannelLinkHandlerFactoryTest {
 
         assertFalse(linkHandler.acceptUrl("https://bandcamp.com"));
         assertFalse(linkHandler.acceptUrl("https://zachbenson.bandcamp.com/track/kitchen"));
+        assertFalse(linkHandler.acceptUrl("https://daily.bandcamp.com/"));
+        assertFalse(linkHandler.acceptUrl("https://daily.bandcamp.com/best-of-2020/bandcamp-daily-staffers-on-their-favorite-albums-of-2020"));
 
         // External URLs
         assertTrue(linkHandler.acceptUrl("http://interovgm.com/releases/"));
