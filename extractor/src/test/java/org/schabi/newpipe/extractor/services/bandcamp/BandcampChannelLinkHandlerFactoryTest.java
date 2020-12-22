@@ -31,6 +31,8 @@ public class BandcampChannelLinkHandlerFactoryTest {
         assertTrue(linkHandler.acceptUrl("https://zachbenson.bandcamp.com/"));
         assertTrue(linkHandler.acceptUrl("https://billwurtz.bandcamp.com/releases"));
 
+        assertTrue(linkHandler.acceptUrl("http://zachbenson.bandcamp.com/"));
+
         assertFalse(linkHandler.acceptUrl("https://bandcamp.com"));
         assertFalse(linkHandler.acceptUrl("https://zachbenson.bandcamp.com/track/kitchen"));
 
@@ -44,6 +46,7 @@ public class BandcampChannelLinkHandlerFactoryTest {
     @Test
     public void testGetId() throws ParsingException {
         assertEquals("1196681540", linkHandler.getId("https://macbenson.bandcamp.com/"));
+        assertEquals("1196681540", linkHandler.getId("http://macbenson.bandcamp.com/"));
         assertEquals("1581461772", linkHandler.getId("https://interovgm.com/releases"));
         assertEquals("3321800855", linkHandler.getId("https://infiniteammo.bandcamp.com/"));
         assertEquals("3775652329", linkHandler.getId("https://npet.bandcamp.com/"));

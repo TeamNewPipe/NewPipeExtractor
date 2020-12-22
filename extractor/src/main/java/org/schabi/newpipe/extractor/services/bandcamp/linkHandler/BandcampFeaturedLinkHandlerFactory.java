@@ -3,6 +3,7 @@
 package org.schabi.newpipe.extractor.services.bandcamp.linkHandler;
 
 import org.schabi.newpipe.extractor.linkhandler.ListLinkHandlerFactory;
+import org.schabi.newpipe.extractor.utils.Utils;
 
 import java.util.List;
 
@@ -25,8 +26,9 @@ public class BandcampFeaturedLinkHandlerFactory extends ListLinkHandlerFactory {
     }
 
     @Override
-    public String getId(final String url) {
-        if (url.matches("https?://bandcamp\\.com/\\?show=\\d+") || url.equals(RADIO_API_URL)) {
+    public String getId(String url) {
+        url = Utils.replaceHttpWithHttps(url);
+        if (url.matches("https://bandcamp\\.com/\\?show=\\d+") || url.equals(RADIO_API_URL)) {
             return KIOSK_RADIO;
         } else if (url.equals(FEATURED_API_URL)) {
             return KIOSK_FEATURED;
@@ -36,8 +38,9 @@ public class BandcampFeaturedLinkHandlerFactory extends ListLinkHandlerFactory {
     }
 
     @Override
-    public boolean onAcceptUrl(final String url) {
+    public boolean onAcceptUrl(String url) {
+        url = Utils.replaceHttpWithHttps(url);
         return url.equals(FEATURED_API_URL) || (url.equals(RADIO_API_URL)
-                || url.matches("https?://bandcamp\\.com/\\?show=\\d+"));
+                || url.matches("https://bandcamp\\.com/\\?show=\\d+"));
     }
 }
