@@ -1,5 +1,6 @@
 package org.schabi.newpipe.extractor.services.youtube;
 
+import com.grack.nanojson.*;
 import com.grack.nanojson.JsonArray;
 import com.grack.nanojson.JsonObject;
 import com.grack.nanojson.JsonParser;
@@ -8,6 +9,7 @@ import com.grack.nanojson.JsonWriter;
 
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
+import org.schabi.newpipe.extractor.MetaInfo;
 import org.schabi.newpipe.extractor.Page;
 import org.schabi.newpipe.extractor.downloader.Response;
 import org.schabi.newpipe.extractor.exceptions.ContentNotAvailableException;
@@ -15,9 +17,12 @@ import org.schabi.newpipe.extractor.exceptions.ExtractionException;
 import org.schabi.newpipe.extractor.exceptions.ParsingException;
 import org.schabi.newpipe.extractor.exceptions.ReCaptchaException;
 import org.schabi.newpipe.extractor.localization.Localization;
+import org.schabi.newpipe.extractor.stream.Description;
 import org.schabi.newpipe.extractor.utils.Parser;
 import org.schabi.newpipe.extractor.utils.Utils;
 
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.net.MalformedURLException;
@@ -28,13 +33,11 @@ import java.time.LocalDate;
 import java.time.OffsetDateTime;
 import java.time.ZoneOffset;
 import java.time.format.DateTimeParseException;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 import static org.schabi.newpipe.extractor.NewPipe.getDownloader;
 import static org.schabi.newpipe.extractor.utils.JsonUtils.EMPTY_STRING;
+import static org.schabi.newpipe.extractor.utils.Utils.*;
 import static org.schabi.newpipe.extractor.utils.Utils.HTTP;
 import static org.schabi.newpipe.extractor.utils.Utils.HTTPS;
 import static org.schabi.newpipe.extractor.utils.Utils.isNullOrEmpty;
@@ -76,41 +79,35 @@ public class YoutubeParsingHelper {
     private static final String FEED_BASE_CHANNEL_ID = "https://www.youtube.com/feeds/videos.xml?channel_id=";
     private static final String FEED_BASE_USER = "https://www.youtube.com/feeds/videos.xml?user=";
 
-    private static final String[] RECAPTCHA_DETECTION_SELECTORS = {
-            "form[action*=\"/das_captcha\"]",
-            "input[name*=\"action_recaptcha_verify\"]"
-    };
-
-    public static Document parseAndCheckPage(final String url, final Response response) throws ReCaptchaException {
-        final Document document = Jsoup.parse(response.responseBody(), url);
-
-        for (String detectionSelector : RECAPTCHA_DETECTION_SELECTORS) {
-            if (!document.select(detectionSelector).isEmpty()) {
-                throw new ReCaptchaException("reCAPTCHA challenge requested (detected with selector: \"" + detectionSelector + "\")", url);
-            }
+    private static boolean isGoogleURL(String url) {
+        url = extractCachedUrlIfNeeded(url);
+        try {
+            final URL u = new URL(url);
+            final String host = u.getHost();
+            return host.startsWith("google.") || host.startsWith("m.google.");
+        } catch (MalformedURLException e) {
+            return false;
         }
-
-        return document;
     }
 
-    public static boolean isYoutubeURL(URL url) {
-        String host = url.getHost();
+    public static boolean isYoutubeURL(final URL url) {
+        final String host = url.getHost();
         return host.equalsIgnoreCase("youtube.com") || host.equalsIgnoreCase("www.youtube.com")
                 || host.equalsIgnoreCase("m.youtube.com") || host.equalsIgnoreCase("music.youtube.com");
     }
 
-    public static boolean isYoutubeServiceURL(URL url) {
-        String host = url.getHost();
+    public static boolean isYoutubeServiceURL(final URL url) {
+        final String host = url.getHost();
         return host.equalsIgnoreCase("www.youtube-nocookie.com") || host.equalsIgnoreCase("youtu.be");
     }
 
-    public static boolean isHooktubeURL(URL url) {
-        String host = url.getHost();
+    public static boolean isHooktubeURL(final URL url) {
+        final String host = url.getHost();
         return host.equalsIgnoreCase("hooktube.com");
     }
 
-    public static boolean isInvidioURL(URL url) {
-        String host = url.getHost();
+    public static boolean isInvidioURL(final URL url) {
+        final String host = url.getHost();
         return host.equalsIgnoreCase("invidio.us")
                 || host.equalsIgnoreCase("dev.invidio.us")
                 || host.equalsIgnoreCase("www.invidio.us")
@@ -184,7 +181,7 @@ public class YoutubeParsingHelper {
         }
     }
 
-    public static OffsetDateTime parseDateFrom(String textualUploadDate) throws ParsingException {
+    public static OffsetDateTime parseDateFrom(final String textualUploadDate) throws ParsingException {
         try {
             return OffsetDateTime.parse(textualUploadDate);
         } catch (DateTimeParseException e) {
@@ -247,7 +244,7 @@ public class YoutubeParsingHelper {
         }
     }
 
-    public static JsonObject getInitialData(String html) throws ParsingException {
+    public static JsonObject getInitialData(final String html) throws ParsingException {
         try {
             try {
                 final String initialData = Parser.matchGroup1("window\\[\"ytInitialData\"\\]\\s*=\\s*(\\{.*?\\});", html);
@@ -264,10 +261,9 @@ public class YoutubeParsingHelper {
     public static boolean isHardcodedClientVersionValid() throws IOException, ExtractionException {
         final String url = "https://www.youtube.com/results?search_query=test&pbj=1";
 
-        Map<String, List<String>> headers = new HashMap<>();
+        final Map<String, List<String>> headers = new HashMap<>();
         headers.put("X-YouTube-Client-Name", Collections.singletonList("1"));
-        headers.put("X-YouTube-Client-Version",
-                Collections.singletonList(HARDCODED_CLIENT_VERSION));
+        headers.put("X-YouTube-Client-Version", Collections.singletonList(HARDCODED_CLIENT_VERSION));
         final String response = getDownloader().get(url, headers).responseBody();
 
         return response.length() > 50; // ensure to have a valid response
@@ -390,14 +386,14 @@ public class YoutubeParsingHelper {
             .end().done().getBytes("UTF-8");
         // @formatter:on
 
-        Map<String, List<String>> headers = new HashMap<>();
+        final Map<String, List<String>> headers = new HashMap<>();
         headers.put("X-YouTube-Client-Name", Collections.singletonList(HARDCODED_YOUTUBE_MUSIC_KEYS[1]));
         headers.put("X-YouTube-Client-Version", Collections.singletonList(HARDCODED_YOUTUBE_MUSIC_KEYS[2]));
         headers.put("Origin", Collections.singletonList("https://music.youtube.com"));
         headers.put("Referer", Collections.singletonList("music.youtube.com"));
         headers.put("Content-Type", Collections.singletonList("application/json"));
 
-        String response = getDownloader().post(url, headers, json).responseBody();
+        final String response = getDownloader().post(url, headers, json).responseBody();
 
         return response.length() > 50; // ensure to have a valid response
     }
@@ -432,6 +428,7 @@ public class YoutubeParsingHelper {
         return youtubeMusicKeys = new String[]{key, clientName, clientVersion};
     }
 
+    @Nullable
     public static String getUrlFromNavigationEndpoint(JsonObject navigationEndpoint) throws ParsingException {
         if (navigationEndpoint.has("urlEndpoint")) {
             String internUrl = navigationEndpoint.getObject("urlEndpoint").getString("url");
@@ -493,6 +490,7 @@ public class YoutubeParsingHelper {
      * @param html       whether to return HTML, by parsing the navigationEndpoint
      * @return text in the JSON object or {@code null}
      */
+    @Nullable
     public static String getTextFromObject(JsonObject textObject, boolean html) throws ParsingException {
         if (isNullOrEmpty(textObject)) return null;
 
@@ -500,8 +498,8 @@ public class YoutubeParsingHelper {
 
         if (textObject.getArray("runs").isEmpty()) return null;
 
-        StringBuilder textBuilder = new StringBuilder();
-        for (Object textPart : textObject.getArray("runs")) {
+        final StringBuilder textBuilder = new StringBuilder();
+        for (final Object textPart : textObject.getArray("runs")) {
             String text = ((JsonObject) textPart).getString("text");
             if (html && ((JsonObject) textPart).has("navigationEndpoint")) {
                 String url = getUrlFromNavigationEndpoint(((JsonObject) textPart).getObject("navigationEndpoint"));
@@ -523,6 +521,7 @@ public class YoutubeParsingHelper {
         return text;
     }
 
+    @Nullable
     public static String getTextFromObject(JsonObject textObject) throws ParsingException {
         return getTextFromObject(textObject, false);
     }
@@ -649,5 +648,125 @@ public class YoutubeParsingHelper {
                 throw new ContentNotAvailableException("Got error: \"" + alertText + "\"");
             }
         }
+    }
+
+    @Nonnull
+    public static List<MetaInfo> getMetaInfo(final JsonArray contents) throws ParsingException {
+        final List<MetaInfo> metaInfo = new ArrayList<>();
+        for (final Object content : contents) {
+            final JsonObject resultObject = (JsonObject) content;
+            if (resultObject.has("itemSectionRenderer")) {
+                for (final Object sectionContentObject :
+                        resultObject.getObject("itemSectionRenderer").getArray("contents")) {
+
+                    final JsonObject sectionContent = (JsonObject) sectionContentObject;
+                    if (sectionContent.has("infoPanelContentRenderer")) {
+                        metaInfo.add(getInfoPanelContent(sectionContent.getObject("infoPanelContentRenderer")));
+                    }
+                    if (sectionContent.has("clarificationRenderer")) {
+                        metaInfo.add(getClarificationRendererContent(sectionContent.getObject("clarificationRenderer")
+                        ));
+                    }
+
+                }
+            }
+        }
+        return metaInfo;
+    }
+
+    @Nonnull
+    private static MetaInfo getInfoPanelContent(final JsonObject infoPanelContentRenderer)
+            throws ParsingException {
+        final MetaInfo metaInfo = new MetaInfo();
+        final StringBuilder sb = new StringBuilder();
+        for (final Object paragraph : infoPanelContentRenderer.getArray("paragraphs")) {
+            if (sb.length() != 0) {
+                sb.append("<br>");
+            }
+            sb.append(YoutubeParsingHelper.getTextFromObject((JsonObject) paragraph));
+        }
+        metaInfo.setContent(new Description(sb.toString(), Description.HTML));
+        if (infoPanelContentRenderer.has("sourceEndpoint")) {
+            final String metaInfoLinkUrl = YoutubeParsingHelper.getUrlFromNavigationEndpoint(
+                    infoPanelContentRenderer.getObject("sourceEndpoint"));
+            try {
+                metaInfo.addUrl(new URL(Objects.requireNonNull(extractCachedUrlIfNeeded(metaInfoLinkUrl))));
+            } catch (final NullPointerException | MalformedURLException e) {
+                throw new ParsingException("Could not get metadata info URL", e);
+            }
+
+            final String metaInfoLinkText = YoutubeParsingHelper.getTextFromObject(
+                    infoPanelContentRenderer.getObject("inlineSource"));
+            if (isNullOrEmpty(metaInfoLinkText)) {
+                throw new ParsingException("Could not get metadata info link text.");
+            }
+            metaInfo.addUrlText(metaInfoLinkText);
+        }
+
+        return metaInfo;
+    }
+
+    @Nonnull
+    private static MetaInfo getClarificationRendererContent(final JsonObject clarificationRenderer)
+            throws ParsingException {
+        final MetaInfo metaInfo = new MetaInfo();
+
+        final String title = YoutubeParsingHelper.getTextFromObject(clarificationRenderer.getObject("contentTitle"));
+        final String text = YoutubeParsingHelper.getTextFromObject(clarificationRenderer.getObject("text"));
+        if (title == null || text ==  null) {
+            throw new ParsingException("Could not extract clarification renderer content");
+        }
+        metaInfo.setTitle(title);
+        metaInfo.setContent(new Description(text, Description.PLAIN_TEXT));
+
+        if (clarificationRenderer.has("actionButton")) {
+            final JsonObject actionButton = clarificationRenderer.getObject("actionButton")
+                    .getObject("buttonRenderer");
+            try {
+                final String url = YoutubeParsingHelper.getUrlFromNavigationEndpoint(actionButton.getObject("command"));
+                metaInfo.addUrl(new URL(Objects.requireNonNull(extractCachedUrlIfNeeded(url))));
+            } catch (final NullPointerException | MalformedURLException e) {
+                throw new ParsingException("Could not get metadata info URL", e);
+            }
+
+            final String metaInfoLinkText = YoutubeParsingHelper.getTextFromObject(
+                    actionButton.getObject("text"));
+            if (isNullOrEmpty(metaInfoLinkText)) {
+                throw new ParsingException("Could not get metadata info link text.");
+            }
+            metaInfo.addUrlText(metaInfoLinkText);
+        }
+
+        if (clarificationRenderer.has("secondaryEndpoint") && clarificationRenderer.has("secondarySource")) {
+            final String url = getUrlFromNavigationEndpoint(clarificationRenderer.getObject("secondaryEndpoint"));
+            // ignore Google URLs, because those point to a Google search about "Covid-19"
+            if (url != null && !isGoogleURL(url)) {
+                try {
+                    metaInfo.addUrl(new URL(url));
+                    final String description = getTextFromObject(clarificationRenderer.getObject("secondarySource"));
+                    metaInfo.addUrlText(description == null ? url : description);
+                } catch (MalformedURLException e) {
+                    throw new ParsingException("Could not get metadata info secondary URL", e);
+                }
+            }
+        }
+
+        return metaInfo;
+    }
+
+    /**
+     * Sometimes, YouTube provides URLs which use Google's cache. They look like
+     * {@code https://webcache.googleusercontent.com/search?q=cache:CACHED_URL}
+     * @param url the URL which might refer to the Google's webcache
+     * @return the URL which is referring to the original site
+     */
+    public static String extractCachedUrlIfNeeded(final String url) {
+        if (url == null) {
+            return null;
+        }
+        if (url.contains("webcache.googleusercontent.com")) {
+            return url.split("cache:")[1];
+        }
+        return url;
     }
 }

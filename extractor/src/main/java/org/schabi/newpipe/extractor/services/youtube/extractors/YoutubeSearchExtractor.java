@@ -7,6 +7,7 @@ import com.grack.nanojson.JsonParserException;
 import com.grack.nanojson.JsonWriter;
 
 import org.schabi.newpipe.extractor.InfoItem;
+import org.schabi.newpipe.extractor.MetaInfo;
 import org.schabi.newpipe.extractor.Page;
 import org.schabi.newpipe.extractor.StreamingService;
 import org.schabi.newpipe.extractor.downloader.Downloader;
@@ -16,13 +17,11 @@ import org.schabi.newpipe.extractor.linkhandler.SearchQueryHandler;
 import org.schabi.newpipe.extractor.localization.TimeAgoParser;
 import org.schabi.newpipe.extractor.search.InfoItemsSearchCollector;
 import org.schabi.newpipe.extractor.search.SearchExtractor;
+import org.schabi.newpipe.extractor.services.youtube.YoutubeParsingHelper;
 import org.schabi.newpipe.extractor.utils.JsonUtils;
 
 import java.io.IOException;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 import javax.annotation.Nonnull;
 
@@ -104,6 +103,13 @@ public class YoutubeSearchExtractor extends SearchExtractor {
                 .getObject("itemSectionRenderer").getArray("contents").getObject(0)
                 .getObject("showingResultsForRenderer");
         return !showingResultsForRenderer.isEmpty();
+    }
+
+    @Override
+    public List<MetaInfo> getMetaInfo() throws ParsingException {
+        return YoutubeParsingHelper.getMetaInfo(
+                initialData.getObject("contents").getObject("twoColumnSearchResultsRenderer")
+                        .getObject("primaryContents").getObject("sectionListRenderer").getArray("contents"));
     }
 
     @Nonnull

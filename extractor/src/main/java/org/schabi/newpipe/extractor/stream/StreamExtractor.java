@@ -22,6 +22,7 @@ package org.schabi.newpipe.extractor.stream;
 
 import org.schabi.newpipe.extractor.Extractor;
 import org.schabi.newpipe.extractor.MediaFormat;
+import org.schabi.newpipe.extractor.MetaInfo;
 import org.schabi.newpipe.extractor.StreamingService;
 import org.schabi.newpipe.extractor.channel.ChannelExtractor;
 import org.schabi.newpipe.extractor.exceptions.ExtractionException;
@@ -486,4 +487,18 @@ public abstract class StreamExtractor extends Extractor {
      */
     @Nonnull
     public abstract List<StreamSegment> getStreamSegments() throws ParsingException;
+
+    /**
+     * Meta information about the stream.
+     * <p>
+     * This can be information about the stream creator (e.g. if the creator is a public broadcaster)
+     * or further information on the topic (e.g. hints that the video might contain conspiracy theories
+     * or contains information about a current health situation like the Covid-19 pandemic).
+     * </p>
+ *     The meta information often contains links to external sources like Wikipedia or the WHO.
+     * @return The meta info of the stream or an empty List if not provided.
+     * @throws ParsingException
+     */
+    @Nonnull
+    public abstract List<MetaInfo> getMetaInfo() throws ParsingException;
 }

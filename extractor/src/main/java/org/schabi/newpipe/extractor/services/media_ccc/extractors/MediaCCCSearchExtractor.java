@@ -6,6 +6,7 @@ import com.grack.nanojson.JsonParser;
 import com.grack.nanojson.JsonParserException;
 
 import org.schabi.newpipe.extractor.InfoItem;
+import org.schabi.newpipe.extractor.MetaInfo;
 import org.schabi.newpipe.extractor.Page;
 import org.schabi.newpipe.extractor.StreamingService;
 import org.schabi.newpipe.extractor.channel.ChannelInfoItem;
@@ -20,6 +21,7 @@ import org.schabi.newpipe.extractor.services.media_ccc.extractors.infoItems.Medi
 import org.schabi.newpipe.extractor.services.media_ccc.linkHandler.MediaCCCConferencesListLinkHandlerFactory;
 
 import java.io.IOException;
+import java.util.Collections;
 import java.util.List;
 
 import javax.annotation.Nonnull;
@@ -53,6 +55,12 @@ public class MediaCCCSearchExtractor extends SearchExtractor {
     @Override
     public boolean isCorrectedSearch() {
         return false;
+    }
+
+    @Nonnull
+    @Override
+    public List<MetaInfo> getMetaInfo() {
+        return Collections.emptyList();
     }
 
     @Nonnull

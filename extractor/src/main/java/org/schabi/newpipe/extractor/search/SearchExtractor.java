@@ -2,12 +2,14 @@ package org.schabi.newpipe.extractor.search;
 
 import org.schabi.newpipe.extractor.InfoItem;
 import org.schabi.newpipe.extractor.ListExtractor;
+import org.schabi.newpipe.extractor.MetaInfo;
 import org.schabi.newpipe.extractor.StreamingService;
 import org.schabi.newpipe.extractor.exceptions.ExtractionException;
 import org.schabi.newpipe.extractor.exceptions.ParsingException;
 import org.schabi.newpipe.extractor.linkhandler.SearchQueryHandler;
 
 import javax.annotation.Nonnull;
+import java.util.List;
 
 public abstract class SearchExtractor extends ListExtractor<InfoItem> {
 
@@ -57,4 +59,15 @@ public abstract class SearchExtractor extends ListExtractor<InfoItem> {
      * @return whether the results comes from a corrected query or not.
      */
     public abstract boolean isCorrectedSearch() throws ParsingException;
+
+    /**
+     * Meta information about the search query.
+     * <p>
+     * Example: on YouTube, if you search for "Covid-19",
+     * there is a box with information from the WHO about Covid-19 and a link to the WHO's website.
+     * @return additional meta information about the search query
+     * @throws ParsingException
+     */
+    @Nonnull 
+    public abstract List<MetaInfo> getMetaInfo() throws ParsingException;
 }

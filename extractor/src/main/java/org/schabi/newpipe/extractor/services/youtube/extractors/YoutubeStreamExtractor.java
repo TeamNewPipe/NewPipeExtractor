@@ -13,6 +13,7 @@ import org.mozilla.javascript.Context;
 import org.mozilla.javascript.Function;
 import org.mozilla.javascript.ScriptableObject;
 import org.schabi.newpipe.extractor.MediaFormat;
+import org.schabi.newpipe.extractor.MetaInfo;
 import org.schabi.newpipe.extractor.NewPipe;
 import org.schabi.newpipe.extractor.StreamingService;
 import org.schabi.newpipe.extractor.downloader.Downloader;
@@ -45,6 +46,9 @@ import org.schabi.newpipe.extractor.utils.Utils;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.io.IOException;
+import java.io.UnsupportedEncodingException;
+import java.net.MalformedURLException;
+import java.net.URL;
 import java.time.LocalDate;
 import java.time.OffsetDateTime;
 import java.time.format.DateTimeFormatter;
@@ -1117,5 +1121,13 @@ public class YoutubeStreamExtractor extends StreamExtractor {
             }
         }
         return segments;
+    }
+
+    @Nonnull
+    @Override
+    public List<MetaInfo> getMetaInfo() throws ParsingException {
+        return YoutubeParsingHelper.getMetaInfo(
+                initialData.getObject("contents").getObject("twoColumnWatchNextResults")
+                .getObject("results").getObject("results").getArray("contents"));
     }
 }
