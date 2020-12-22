@@ -14,17 +14,13 @@ import org.schabi.newpipe.extractor.linkhandler.SearchQueryHandler;
 import org.schabi.newpipe.extractor.linkhandler.SearchQueryHandlerFactory;
 import org.schabi.newpipe.extractor.playlist.PlaylistExtractor;
 import org.schabi.newpipe.extractor.search.SearchExtractor;
-import org.schabi.newpipe.extractor.services.media_ccc.extractors.MediaCCCConferenceExtractor;
-import org.schabi.newpipe.extractor.services.media_ccc.extractors.MediaCCCConferenceKiosk;
-import org.schabi.newpipe.extractor.services.media_ccc.extractors.MediaCCCSearchExtractor;
-import org.schabi.newpipe.extractor.services.media_ccc.extractors.MediaCCCStreamExtractor;
-import org.schabi.newpipe.extractor.services.media_ccc.linkHandler.MediaCCCConferenceLinkHandlerFactory;
-import org.schabi.newpipe.extractor.services.media_ccc.linkHandler.MediaCCCConferencesListLinkHandlerFactory;
-import org.schabi.newpipe.extractor.services.media_ccc.linkHandler.MediaCCCSearchQueryHandlerFactory;
-import org.schabi.newpipe.extractor.services.media_ccc.linkHandler.MediaCCCStreamLinkHandlerFactory;
+import org.schabi.newpipe.extractor.services.media_ccc.extractors.*;
+import org.schabi.newpipe.extractor.services.media_ccc.linkHandler.*;
 import org.schabi.newpipe.extractor.stream.StreamExtractor;
 import org.schabi.newpipe.extractor.subscription.SubscriptionExtractor;
 import org.schabi.newpipe.extractor.suggestion.SuggestionExtractor;
+
+import java.io.IOException;
 
 import static java.util.Arrays.asList;
 import static org.schabi.newpipe.extractor.StreamingService.ServiceInfo.MediaCapability.AUDIO;
@@ -95,7 +91,18 @@ public class MediaCCCService extends StreamingService {
                             new MediaCCCConferencesListLinkHandlerFactory().fromUrl(url), kioskId);
                 }
             }, new MediaCCCConferencesListLinkHandlerFactory(), "conferences");
-            list.setDefaultKiosk("conferences");
+
+            list.addKioskEntry(new KioskList.KioskExtractorFactory() {
+                @Override
+                public KioskExtractor createNewKiosk(final StreamingService streamingService,
+                                                     final String url, final String kioskId)
+                        throws ExtractionException {
+                    return new MediaCCCRecentKiosk(MediaCCCService.this,
+                            new MediaCCCRecentListLinkHandlerFactory().fromUrl(url), kioskId);
+                }
+            }, new MediaCCCRecentListLinkHandlerFactory(), "recent");
+
+            list.setDefaultKiosk("recent");
         } catch (Exception e) {
             throw new ExtractionException(e);
         }
