@@ -52,11 +52,6 @@ public class YoutubePlaylistLinkHandlerFactory extends ListLinkHandlerFactory {
                         "the list-ID given in the URL does not match the list pattern");
             }
 
-            if (YoutubeParsingHelper.isYoutubeMusicMixId(listID)) {
-                throw new ContentNotSupportedException(
-                        "YouTube Music Mix playlists are not yet supported");
-            }
-
             if (YoutubeParsingHelper.isYoutubeChannelMixId(listID)
                     && Utils.getQueryValue(urlObj, "v") == null) {
                 //Video id can't be determined from the channel mix id. See YoutubeParsingHelper#extractVideoIdFromMixId

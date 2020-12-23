@@ -205,12 +205,12 @@ public class YoutubeParsingHelper {
 
     /**
      * Checks if the given playlist id is a YouTube Music Mix (auto-generated playlist)
-     * Ids from a YouTube Music Mix start with "RDAMVM"
+     * Ids from a YouTube Music Mix start with "RDAMVM" or "RDCLAK"
      * @param playlistId
      * @return Whether given id belongs to a YouTube Music Mix
      */
     public static boolean isYoutubeMusicMixId(final String playlistId) {
-        return playlistId.startsWith("RDAMVM");
+        return playlistId.startsWith("RDAMVM") || playlistId.startsWith("RDCLAK");
     }
     /**
      * Checks if the given playlist id is a YouTube Channel Mix (auto-generated playlist)
@@ -229,7 +229,7 @@ public class YoutubeParsingHelper {
         if (playlistId.startsWith("RDMM")) { //My Mix
             return playlistId.substring(4);
 
-        } else if (playlistId.startsWith("RDAMVM")) { //Music mix
+        } else if (playlistId.startsWith("RDAMVM") || playlistId.startsWith("RDCLAK")) { //Music mix
             return playlistId.substring(6);
 
         } else if (playlistId.startsWith("RMCM")) { //Channel mix
