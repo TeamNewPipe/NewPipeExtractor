@@ -1,7 +1,6 @@
 package org.schabi.newpipe.extractor.services.peertube.extractors;
 
 import com.grack.nanojson.JsonObject;
-
 import org.schabi.newpipe.extractor.ServiceList;
 import org.schabi.newpipe.extractor.exceptions.ParsingException;
 import org.schabi.newpipe.extractor.localization.DateWrapper;
@@ -11,8 +10,9 @@ import org.schabi.newpipe.extractor.stream.StreamType;
 import org.schabi.newpipe.extractor.utils.JsonUtils;
 
 public class PeertubeStreamInfoItemExtractor implements StreamInfoItemExtractor {
+
     protected final JsonObject item;
-    private final String baseUrl;
+    private String baseUrl;
 
     public PeertubeStreamInfoItemExtractor(final JsonObject item, final String baseUrl) {
         this.item = item;
@@ -83,5 +83,9 @@ public class PeertubeStreamInfoItemExtractor implements StreamInfoItemExtractor 
     @Override
     public long getDuration() {
         return item.getLong("duration");
+    }
+
+    public void setBaseUrl(final String baseUrl) {
+        this.baseUrl = baseUrl;
     }
 }

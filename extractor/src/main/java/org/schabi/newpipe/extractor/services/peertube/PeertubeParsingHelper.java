@@ -6,6 +6,7 @@ import org.schabi.newpipe.extractor.InfoItemsCollector;
 import org.schabi.newpipe.extractor.Page;
 import org.schabi.newpipe.extractor.exceptions.ContentNotAvailableException;
 import org.schabi.newpipe.extractor.exceptions.ParsingException;
+import org.schabi.newpipe.extractor.services.peertube.extractors.PeertubeSepiaStreamInfoItemExtractor;
 import org.schabi.newpipe.extractor.services.peertube.extractors.PeertubeStreamInfoItemExtractor;
 import org.schabi.newpipe.extractor.utils.JsonUtils;
 import org.schabi.newpipe.extractor.utils.Parser;
@@ -63,6 +64,11 @@ public class PeertubeParsingHelper {
     }
 
     public static void collectStreamsFrom(final InfoItemsCollector collector, final JsonObject json, final String baseUrl) throws ParsingException {
+        collectStreamsFrom(collector, json, baseUrl, false);
+    }
+
+    // sepia: if we should use PeertubeSepiaStreamInfoItemExtractor
+    public static void collectStreamsFrom(final InfoItemsCollector collector, final JsonObject json, final String baseUrl, boolean sepia) throws ParsingException {
         final JsonArray contents;
         try {
             contents = (JsonArray) JsonUtils.getValue(json, "data");
@@ -73,9 +79,15 @@ public class PeertubeParsingHelper {
         for (final Object c : contents) {
             if (c instanceof JsonObject) {
                 final JsonObject item = (JsonObject) c;
-                final PeertubeStreamInfoItemExtractor extractor = new PeertubeStreamInfoItemExtractor(item, baseUrl);
+                PeertubeStreamInfoItemExtractor extractor;
+                if (sepia) {
+                    extractor = new PeertubeSepiaStreamInfoItemExtractor(item, baseUrl);
+                } else {
+                    extractor = new PeertubeStreamInfoItemExtractor(item, baseUrl);
+                }
                 collector.commit(extractor);
             }
         }
     }
+
 }
