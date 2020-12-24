@@ -33,7 +33,7 @@ public class YoutubePlaylistLinkHandlerFactory extends ListLinkHandlerFactory {
 
             if (!Utils.isHTTP(urlObj) || !(YoutubeParsingHelper.isYoutubeURL(urlObj)
                     || YoutubeParsingHelper.isInvidioURL(urlObj))) {
-                throw new ParsingException("the url given is not a Youtube-URL");
+                throw new ParsingException("the url given is not a YouTube-URL");
             }
 
             final String path = urlObj.getPath();
@@ -44,7 +44,7 @@ public class YoutubePlaylistLinkHandlerFactory extends ListLinkHandlerFactory {
             final String listID = Utils.getQueryValue(urlObj, "list");
 
             if (listID == null) {
-                throw new ParsingException("the url given does not include a playlist");
+                throw new ParsingException("the URL given does not include a playlist");
             }
 
             if (!listID.matches("[a-zA-Z0-9_-]{10,}")) {
@@ -65,7 +65,7 @@ public class YoutubePlaylistLinkHandlerFactory extends ListLinkHandlerFactory {
 
             return listID;
         } catch (final Exception exception) {
-            throw new ParsingException("Error could not parse url :" + exception.getMessage(),
+            throw new ParsingException("Error could not parse URL: " + exception.getMessage(),
                     exception);
         }
     }
@@ -103,7 +103,7 @@ public class YoutubePlaylistLinkHandlerFactory extends ListLinkHandlerFactory {
                         getSortFilter(url));
             }
         } catch (MalformedURLException exception) {
-            throw new ParsingException("Error could not parse url :" + exception.getMessage(),
+            throw new ParsingException("Error could not parse URL: " + exception.getMessage(),
                 exception);
         }
         return super.fromUrl(url);
