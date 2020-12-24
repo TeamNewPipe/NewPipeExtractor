@@ -842,8 +842,8 @@ public class YoutubeStreamExtractor extends StreamExtractor {
             if (playerJsUrl.startsWith("//")) {
                 playerJsUrl = HTTPS + playerJsUrl;
             } else if (playerJsUrl.startsWith("/")) {
-                // sometimes https://youtube.com part has to be added manually
-                playerJsUrl = HTTPS + "//youtube.com" + playerJsUrl;
+                // sometimes https://www.youtube.com part has to be added manually
+                playerJsUrl = HTTPS + "//www.youtube.com" + playerJsUrl;
             }
 
             cachedDeobfuscationCode = loadDeobfuscationCode(playerJsUrl);
