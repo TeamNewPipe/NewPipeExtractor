@@ -3,6 +3,7 @@ package org.schabi.newpipe.extractor.services.media_ccc.extractors;
 import com.grack.nanojson.JsonObject;
 import org.schabi.newpipe.extractor.exceptions.ParsingException;
 import org.schabi.newpipe.extractor.localization.DateWrapper;
+import org.schabi.newpipe.extractor.services.media_ccc.linkHandler.MediaCCCConferenceLinkHandlerFactory;
 import org.schabi.newpipe.extractor.stream.StreamInfoItemExtractor;
 import org.schabi.newpipe.extractor.stream.StreamType;
 
@@ -39,7 +40,7 @@ public class MediaCCCRecentKioskExtractor implements StreamInfoItemExtractor {
     }
 
     @Override
-    public boolean isAd() throws ParsingException {
+    public boolean isAd() {
         return false;
     }
 
@@ -60,7 +61,9 @@ public class MediaCCCRecentKioskExtractor implements StreamInfoItemExtractor {
 
     @Override
     public String getUploaderUrl() throws ParsingException {
-        return event.getString("conference_url");
+        return new MediaCCCConferenceLinkHandlerFactory()
+                .fromUrl(event.getString("conference_url")) // API URL
+                .getUrl(); // web URL
     }
 
     @Nullable
