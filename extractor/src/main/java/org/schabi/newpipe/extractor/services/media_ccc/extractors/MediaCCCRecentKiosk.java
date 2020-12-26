@@ -4,7 +4,6 @@ import com.grack.nanojson.JsonArray;
 import com.grack.nanojson.JsonObject;
 import com.grack.nanojson.JsonParser;
 import com.grack.nanojson.JsonParserException;
-
 import org.schabi.newpipe.extractor.Page;
 import org.schabi.newpipe.extractor.StreamingService;
 import org.schabi.newpipe.extractor.downloader.Downloader;
@@ -15,16 +14,12 @@ import org.schabi.newpipe.extractor.linkhandler.ListLinkHandler;
 import org.schabi.newpipe.extractor.stream.StreamInfoItem;
 import org.schabi.newpipe.extractor.stream.StreamInfoItemsCollector;
 
-import java.io.IOException;
-import java.util.HashMap;
-import java.util.Map;
-
 import javax.annotation.Nonnull;
+import java.io.IOException;
 
 public class MediaCCCRecentKiosk extends KioskExtractor<StreamInfoItem> {
 
     private JsonObject doc;
-    private final Map<String, String> conferenceNames = new HashMap<>();
 
     public MediaCCCRecentKiosk(StreamingService streamingService, ListLinkHandler linkHandler, String kioskId) {
         super(streamingService, linkHandler, kioskId);
@@ -46,9 +41,8 @@ public class MediaCCCRecentKiosk extends KioskExtractor<StreamInfoItem> {
     public InfoItemsPage<StreamInfoItem> getInitialPage() throws IOException, ExtractionException {
         final JsonArray events = doc.getArray("events");
         StreamInfoItemsCollector collector = new StreamInfoItemsCollector(getServiceId());
-
         for (int i = 0; i < events.size(); i++) {
-            collector.commit(new MediaCCCRecentKioskExtractor(events.getObject(i), conferenceNames));
+            collector.commit(new MediaCCCRecentKioskExtractor(events.getObject(i)));
         }
         return new InfoItemsPage<>(collector, null);
     }

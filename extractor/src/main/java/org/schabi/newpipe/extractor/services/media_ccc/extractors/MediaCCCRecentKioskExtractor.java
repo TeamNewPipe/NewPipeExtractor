@@ -1,34 +1,22 @@
 package org.schabi.newpipe.extractor.services.media_ccc.extractors;
 
 import com.grack.nanojson.JsonObject;
-
-import org.schabi.newpipe.extractor.ServiceList;
-import org.schabi.newpipe.extractor.channel.ChannelExtractor;
-import org.schabi.newpipe.extractor.exceptions.ExtractionException;
 import org.schabi.newpipe.extractor.exceptions.ParsingException;
 import org.schabi.newpipe.extractor.localization.DateWrapper;
 import org.schabi.newpipe.extractor.services.media_ccc.linkHandler.MediaCCCConferenceLinkHandlerFactory;
 import org.schabi.newpipe.extractor.stream.StreamInfoItemExtractor;
 import org.schabi.newpipe.extractor.stream.StreamType;
 
-import java.io.IOException;
+import javax.annotation.Nullable;
 import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
-import java.util.Map;
-
-import javax.annotation.Nullable;
-
-import static org.schabi.newpipe.extractor.utils.Utils.isNullOrEmpty;
 
 public class MediaCCCRecentKioskExtractor implements StreamInfoItemExtractor {
 
     private final JsonObject event;
-    private final Map<String, String> conferenceNames;
 
-    public MediaCCCRecentKioskExtractor(final JsonObject event,
-                                        final Map<String, String> conferenceNames) {
+    public MediaCCCRecentKioskExtractor(final JsonObject event) {
         this.event = event;
-        this.conferenceNames = conferenceNames;
     }
 
     @Override
@@ -68,25 +56,7 @@ public class MediaCCCRecentKioskExtractor implements StreamInfoItemExtractor {
 
     @Override
     public String getUploaderName() throws ParsingException {
-        final String conferenceApiUrl = event.getString("conference_url");
-        if (isNullOrEmpty(conferenceApiUrl)) {
-            throw new ParsingException("conference url is empty");
-        }
-
-        if (conferenceNames.containsKey(conferenceApiUrl)) {
-            return conferenceNames.get(conferenceApiUrl);
-        }
-
-        // get conference name from API.
-        try {
-            ChannelExtractor extractor = ServiceList.MediaCCC.getChannelExtractor(
-                    new MediaCCCConferenceLinkHandlerFactory().fromUrl(conferenceApiUrl));
-            extractor.fetchPage();
-            conferenceNames.put(conferenceApiUrl, extractor.getName());
-            return extractor.getName();
-        } catch (IOException | ExtractionException e) {
-            throw new ParsingException("Could not get conference name from conference API URL", e);
-        }
+        return "";
     }
 
     @Override
