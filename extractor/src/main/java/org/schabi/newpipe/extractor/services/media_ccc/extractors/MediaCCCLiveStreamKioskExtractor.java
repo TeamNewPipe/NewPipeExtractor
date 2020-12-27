@@ -23,7 +23,7 @@ public class MediaCCCLiveStreamKioskExtractor implements StreamInfoItemExtractor
 
     @Override
     public String getName() throws ParsingException {
-        return roomInfo.getString("schedulename");
+        return roomInfo.getObject("talks").getObject("current").getString("title");
     }
 
     @Override
@@ -65,7 +65,7 @@ public class MediaCCCLiveStreamKioskExtractor implements StreamInfoItemExtractor
 
     @Override
     public String getUploaderName() throws ParsingException {
-        return conferenceInfo.getString("conference");
+        return conferenceInfo.getString("conference") + " - " + group + " - " + roomInfo.getString("display");
     }
 
     @Override
