@@ -45,11 +45,11 @@ public abstract class KioskExtractor<T extends InfoItem> extends ListExtractor<T
     }
 
     /**
-     * Id should be the name of the kiosk, tho Id is used for identifing it in the frontend,
+     * Id should be the name of the kiosk, tho Id is used for identifying it in the frontend,
      * so id should be kept in english.
      * In order to get the name of the kiosk in the desired language we have to
      * crawl if from the website.
-     * @return the tranlsated version of id
+     * @return the translated version of id
      * @throws ParsingException
      */
     @Nonnull

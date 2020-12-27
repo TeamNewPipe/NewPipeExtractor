@@ -6,6 +6,8 @@ import java.util.List;
 import java.util.regex.Pattern;
 
 public class MediaCCCRecentListLinkHandlerFactory extends ListLinkHandlerFactory {
+    private static final String pattern = "^(https?://)?media.ccc.de/recent/?$";
+
     @Override
     public String getId(String url) {
         return "recent";
@@ -13,7 +15,6 @@ public class MediaCCCRecentListLinkHandlerFactory extends ListLinkHandlerFactory
 
     @Override
     public boolean onAcceptUrl(String url) {
-        final String pattern = "^(https?://)?media.ccc.de/recent/?$";
         return Pattern.matches(pattern, url);
     }
 
