@@ -102,6 +102,16 @@ public class MediaCCCService extends StreamingService {
                 }
             }, new MediaCCCRecentListLinkHandlerFactory(), "recent");
 
+            list.addKioskEntry(new KioskList.KioskExtractorFactory() {
+                @Override
+                public KioskExtractor createNewKiosk(final StreamingService streamingService,
+                                                     final String url, final String kioskId)
+                        throws ExtractionException {
+                    return new MediaCCCLiveStreamKiosk(MediaCCCService.this,
+                            new MediaCCCLiveStreamListLinkHandlerFactory().fromUrl(url), kioskId);
+                }
+            }, new MediaCCCLiveStreamListLinkHandlerFactory(), "live");
+
             list.setDefaultKiosk("recent");
         } catch (Exception e) {
             throw new ExtractionException(e);
