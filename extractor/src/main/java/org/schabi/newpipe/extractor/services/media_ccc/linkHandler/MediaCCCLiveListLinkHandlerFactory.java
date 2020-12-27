@@ -6,8 +6,8 @@ import org.schabi.newpipe.extractor.linkhandler.ListLinkHandlerFactory;
 import java.util.List;
 import java.util.regex.Pattern;
 
-public class MediaCCCLiveStreamListLinkHandlerFactory extends ListLinkHandlerFactory {
-    private static final String streamPattern = "^(https?://)?streaming.media.ccc.de$";
+public class MediaCCCLiveListLinkHandlerFactory extends ListLinkHandlerFactory {
+    private static final String streamPattern = "^(?:https?://)?media\\.ccc\\.de/live$";
 
     @Override
     public String getId(String url) throws ParsingException {
@@ -22,6 +22,6 @@ public class MediaCCCLiveStreamListLinkHandlerFactory extends ListLinkHandlerFac
     @Override
     public String getUrl(String id, List<String> contentFilter, String sortFilter) throws ParsingException {
         // FIXME: wrong URL; should be https://streaming.media.ccc.de/{conference_slug}/{room_slug}
-        return "https://streaming.media.ccc.de/" + id;
+        return "https://media.ccc.de/live";
     }
 }

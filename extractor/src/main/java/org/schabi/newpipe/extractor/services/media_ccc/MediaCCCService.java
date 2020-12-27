@@ -20,8 +20,6 @@ import org.schabi.newpipe.extractor.stream.StreamExtractor;
 import org.schabi.newpipe.extractor.subscription.SubscriptionExtractor;
 import org.schabi.newpipe.extractor.suggestion.SuggestionExtractor;
 
-import java.io.IOException;
-
 import static java.util.Arrays.asList;
 import static org.schabi.newpipe.extractor.StreamingService.ServiceInfo.MediaCapability.AUDIO;
 import static org.schabi.newpipe.extractor.StreamingService.ServiceInfo.MediaCapability.VIDEO;
@@ -58,6 +56,9 @@ public class MediaCCCService extends StreamingService {
 
     @Override
     public StreamExtractor getStreamExtractor(final LinkHandler linkHandler) {
+        if (MediaCCCParsingHelper.isLiveStreamId(linkHandler.getId())) {
+            return new MediaCCCLiveStreamExtractor(this, linkHandler);
+        }
         return new MediaCCCStreamExtractor(this, linkHandler);
     }
 
@@ -108,9 +109,9 @@ public class MediaCCCService extends StreamingService {
                                                      final String url, final String kioskId)
                         throws ExtractionException {
                     return new MediaCCCLiveStreamKiosk(MediaCCCService.this,
-                            new MediaCCCLiveStreamListLinkHandlerFactory().fromUrl(url), kioskId);
+                            new MediaCCCLiveListLinkHandlerFactory().fromUrl(url), kioskId);
                 }
-            }, new MediaCCCLiveStreamListLinkHandlerFactory(), "live");
+            }, new MediaCCCLiveListLinkHandlerFactory(), "live");
 
             list.setDefaultKiosk("recent");
         } catch (Exception e) {
