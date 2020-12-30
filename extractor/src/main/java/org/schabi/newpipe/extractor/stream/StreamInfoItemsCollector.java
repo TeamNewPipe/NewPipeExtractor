@@ -5,6 +5,7 @@ import org.schabi.newpipe.extractor.InfoItemsCollector;
 import org.schabi.newpipe.extractor.exceptions.FoundAdException;
 import org.schabi.newpipe.extractor.exceptions.ParsingException;
 
+import java.util.Comparator;
 import java.util.List;
 import java.util.Vector;
 
@@ -32,6 +33,10 @@ public class StreamInfoItemsCollector extends InfoItemsCollector<StreamInfoItem,
 
     public StreamInfoItemsCollector(int serviceId) {
         super(serviceId);
+    }
+
+    public StreamInfoItemsCollector(int serviceId, Comparator<StreamInfoItem> comparator) {
+        super(serviceId, comparator);
     }
 
     @Override
