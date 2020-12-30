@@ -28,9 +28,9 @@ public final class MediaCCCParsingHelper {
         }
     }
 
-    public static boolean isLiveStreamId(final String url) {
+    public static boolean isLiveStreamId(final String id) {
         final String pattern = "\\w+/\\w+";
-        return Pattern.matches(pattern, url); // {conference_slug}/{room_slug}
+        return Pattern.matches(pattern, id); // {conference_slug}/{room_slug}
     }
 
     public static JsonArray getLiveStreams(final Downloader downloader, final Localization localization) throws ExtractionException {

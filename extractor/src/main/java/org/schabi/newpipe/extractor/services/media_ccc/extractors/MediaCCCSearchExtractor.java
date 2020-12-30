@@ -81,8 +81,13 @@ public class MediaCCCSearchExtractor extends SearchExtractor {
                 || getLinkHandler().getContentFilters().isEmpty()) {
             JsonArray events = doc.getArray("events");
             for (int i = 0; i < events.size(); i++) {
-                searchItems.commit(new MediaCCCStreamInfoItemExtractor(
-                        events.getObject(i)));
+                // Ensure only uploaded talks are shown in the search results.
+                // If the release date is null, the talk has not been held or uploaded yet
+                // and no streams are going to be available anyway.
+                if (events.getObject(i).getString("release_date") != null) {
+                    searchItems.commit(new MediaCCCStreamInfoItemExtractor(
+                            events.getObject(i)));
+                }
             }
         }
         return new InfoItemsPage<>(searchItems, null);
@@ -105,7 +110,7 @@ public class MediaCCCSearchExtractor extends SearchExtractor {
             try {
                 doc = JsonParser.object().from(site);
             } catch (JsonParserException jpe) {
-                throw new ExtractionException("Could not parse json.", jpe);
+                throw new ExtractionException("Could not parse JSON.", jpe);
             }
         }
         if (getLinkHandler().getContentFilters().contains(CONFERENCES)
