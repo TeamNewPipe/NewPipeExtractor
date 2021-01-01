@@ -17,6 +17,8 @@ org.schabi.newpipe.extractor.services.peertube
 org.schabi.newpipe.extractor.services.peertube.extractors
 org.schabi.newpipe.extractor.services.peertube.linkHandler
 org.schabi.newpipe.extractor.services.soundcloud
+org.schabi.newpipe.extractor.services.soundcloud.extractors
+org.schabi.newpipe.extractor.services.soundcloud.linkHandler
 org.schabi.newpipe.extractor.services.youtube
 org.schabi.newpipe.extractor.services.youtube.extractors
 org.schabi.newpipe.extractor.services.youtube.linkHandler
