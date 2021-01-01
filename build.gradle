@@ -43,7 +43,7 @@ task aggregatedJavadocs(type: Javadoc, group: 'Documentation') {
     destinationDir = file("$buildDir/docs/javadoc")
     title = "$project.name $version"
     // options.memberLevel = JavadocMemberLevel.PRIVATE
-    options.links 'https://docs.oracle.com/javase/7/docs/api/'
+    options.links 'https://docs.oracle.com/javase/8/docs/api/'
     options.encoding 'UTF-8'
 
     subprojects.each { project ->
