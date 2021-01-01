@@ -67,7 +67,15 @@ public class PeertubeParsingHelper {
         collectStreamsFrom(collector, json, baseUrl, false);
     }
 
-    // sepia: if we should use PeertubeSepiaStreamInfoItemExtractor
+    /**
+     * Collect stream from json with collector
+     *
+     * @param collector the collector used to collect information
+     * @param json      the file to retrieve data from
+     * @param baseUrl   the base Url of the instance
+     * @param sepia     if we should use PeertubeSepiaStreamInfoItemExtractor
+     * @throws ParsingException
+     */
     public static void collectStreamsFrom(final InfoItemsCollector collector, final JsonObject json, final String baseUrl, boolean sepia) throws ParsingException {
         final JsonArray contents;
         try {
