@@ -42,7 +42,6 @@ public abstract class SearchQueryHandlerFactory extends ListLinkHandlerFactory {
      * It's not mandatory for NewPipe to handle the Url
      *
      * @param url
-     * @return
      */
     @Override
     public boolean onAcceptUrl(String url) {

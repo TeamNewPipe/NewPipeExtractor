@@ -76,9 +76,8 @@ public class YoutubePlaylistLinkHandlerFactory extends ListLinkHandlerFactory {
     }
 
     /**
-     * * If it is a mix (auto-generated playlist) URL, return a {@link LinkHandler} where the URL is
-     * like
-     * <code>https://youtube.com/watch?v=videoId&list=playlistId</code>.
+     * If it is a mix (auto-generated playlist) URL, return a {@link LinkHandler} where the URL is like
+     * {@code https://youtube.com/watch?v=videoId&list=playlistId}
      * <p>Otherwise use super</p>
      */
     @Override
