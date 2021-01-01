@@ -85,7 +85,7 @@ public class PeertubeStreamInfoItemExtractor implements StreamInfoItemExtractor 
         return item.getLong("duration");
     }
 
-    public void setBaseUrl(final String baseUrl) {
+    protected void setBaseUrl(final String baseUrl) {
         this.baseUrl = baseUrl;
     }
 }
