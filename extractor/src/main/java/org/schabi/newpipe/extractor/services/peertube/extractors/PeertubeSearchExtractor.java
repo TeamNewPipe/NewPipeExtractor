@@ -30,8 +30,17 @@ import static org.schabi.newpipe.extractor.services.peertube.PeertubeParsingHelp
 import static org.schabi.newpipe.extractor.utils.Utils.isNullOrEmpty;
 
 public class PeertubeSearchExtractor extends SearchExtractor {
+
+    // if we should use PeertubeSepiaStreamInfoItemExtractor
+    private boolean sepia;
+
     public PeertubeSearchExtractor(StreamingService service, SearchQueryHandler linkHandler) {
+        this(service, linkHandler, false);
+    }
+
+    public PeertubeSearchExtractor(StreamingService service, SearchQueryHandler linkHandler, boolean sepia) {
         super(service, linkHandler);
+        this.sepia = sepia;
     }
 
     @Nonnull
@@ -79,7 +88,7 @@ public class PeertubeSearchExtractor extends SearchExtractor {
             final long total = json.getLong("total");
 
             final InfoItemsSearchCollector collector = new InfoItemsSearchCollector(getServiceId());
-            collectStreamsFrom(collector, json, getBaseUrl());
+            collectStreamsFrom(collector, json, getBaseUrl(), sepia);
 
             return new InfoItemsPage<>(collector, PeertubeParsingHelper.getNextPage(page.getUrl(), total));
         } else {

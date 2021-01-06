@@ -15,6 +15,8 @@ import org.schabi.newpipe.extractor.stream.StreamExtractor;
 import org.schabi.newpipe.extractor.subscription.SubscriptionExtractor;
 import org.schabi.newpipe.extractor.suggestion.SuggestionExtractor;
 
+import java.util.List;
+
 import static java.util.Arrays.asList;
 import static org.schabi.newpipe.extractor.StreamingService.ServiceInfo.MediaCapability.COMMENTS;
 import static org.schabi.newpipe.extractor.StreamingService.ServiceInfo.MediaCapability.VIDEO;
@@ -59,7 +61,12 @@ public class PeertubeService extends StreamingService {
 
     @Override
     public SearchExtractor getSearchExtractor(SearchQueryHandler queryHandler) {
-        return new PeertubeSearchExtractor(this, queryHandler);
+        final List<String> contentFilters = queryHandler.getContentFilters();
+        boolean external = false;
+        if (contentFilters.size() > 0 && contentFilters.get(0).startsWith("sepia_")) {
+            external = true;
+        }
+        return new PeertubeSearchExtractor(this, queryHandler, external);
     }
 
     @Override
