@@ -56,7 +56,7 @@ public class MediaCCCRecentKioskExtractor implements StreamInfoItemExtractor {
 
     @Override
     public String getUploaderName() throws ParsingException {
-        return "";
+        return event.getString("conference_title");
     }
 
     @Override
