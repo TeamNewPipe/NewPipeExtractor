@@ -10,6 +10,10 @@ public class DownloaderFactory {
 
     private final static DownloaderType DEFAULT_DOWNLOADER = DownloaderType.REAL;
 
+    /**
+     * @param path The path to the folder where mocks are saved/retrieved.
+     *             Preferably starting with {@link DownloaderFactory#RESOURCE_PATH}
+     */
     public Downloader getDownloader(String path) throws IOException {
         DownloaderType type;
         try {

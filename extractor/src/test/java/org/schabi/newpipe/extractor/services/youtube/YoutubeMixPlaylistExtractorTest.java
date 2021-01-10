@@ -54,8 +54,7 @@ public class YoutubeMixPlaylistExtractorTest {
         @BeforeClass
         public static void setUp() throws Exception {
             YoutubeParsingHelper.resetClientVersionAndKey();
-            final File file = new File(RESOURCE_PATH + "mix");
-            NewPipe.init(new DownloaderFactory().getDownloader(file.getAbsolutePath()));
+            NewPipe.init(new DownloaderFactory().getDownloader(RESOURCE_PATH + "mix"));
             extractor = (YoutubeMixPlaylistExtractor) YouTube
                     .getPlaylistExtractor(
                             "https://www.youtube.com/watch?v=" + VIDEO_ID + "&list=RD" + VIDEO_ID);
@@ -133,8 +132,7 @@ public class YoutubeMixPlaylistExtractorTest {
         @BeforeClass
         public static void setUp() throws Exception {
             YoutubeParsingHelper.resetClientVersionAndKey();
-            final File file = new File(RESOURCE_PATH + "mixWithIndex");
-            NewPipe.init(new DownloaderFactory().getDownloader(file.getAbsolutePath()));
+            NewPipe.init(new DownloaderFactory().getDownloader(RESOURCE_PATH + "mixWithIndex"));
             extractor = (YoutubeMixPlaylistExtractor) YouTube
                 .getPlaylistExtractor(
                     "https://www.youtube.com/watch?v=" + VIDEO_ID_NUMBER_13 + "&list=RD"
@@ -204,8 +202,7 @@ public class YoutubeMixPlaylistExtractorTest {
         @BeforeClass
         public static void setUp() throws Exception {
             YoutubeParsingHelper.resetClientVersionAndKey();
-            final File file = new File(RESOURCE_PATH + "myMix");
-            NewPipe.init(new DownloaderFactory().getDownloader(file.getAbsolutePath()));
+            NewPipe.init(new DownloaderFactory().getDownloader(RESOURCE_PATH + "myMix"));
             extractor = (YoutubeMixPlaylistExtractor) YouTube
                 .getPlaylistExtractor(
                     "https://www.youtube.com/watch?v=" + VIDEO_ID + "&list=RDMM"
@@ -278,8 +275,7 @@ public class YoutubeMixPlaylistExtractorTest {
         @BeforeClass
         public static void setUp() throws IOException {
             YoutubeParsingHelper.resetClientVersionAndKey();
-            final File file = new File(RESOURCE_PATH + "invalid");
-            NewPipe.init(new DownloaderFactory().getDownloader(file.getAbsolutePath()));
+            NewPipe.init(new DownloaderFactory().getDownloader(RESOURCE_PATH + "invalid"));
         }
 
         @Test(expected = IllegalArgumentException.class)
@@ -311,8 +307,7 @@ public class YoutubeMixPlaylistExtractorTest {
         @BeforeClass
         public static void setUp() throws Exception {
             YoutubeParsingHelper.resetClientVersionAndKey();
-            final File file = new File(RESOURCE_PATH + "channelMix");
-            NewPipe.init(new DownloaderFactory().getDownloader(file.getAbsolutePath()));
+            NewPipe.init(new DownloaderFactory().getDownloader(RESOURCE_PATH + "channelMix"));
             extractor = (YoutubeMixPlaylistExtractor) YouTube
                 .getPlaylistExtractor(
                     "https://www.youtube.com/watch?v=" + VIDEO_ID_OF_CHANNEL
