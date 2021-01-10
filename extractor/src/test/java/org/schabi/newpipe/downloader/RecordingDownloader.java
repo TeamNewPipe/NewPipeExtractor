@@ -19,6 +19,8 @@ import javax.annotation.Nonnull;
 
 class RecordingDownloader extends Downloader {
 
+    public final static String FILE_NAME_PREFIX = "generated_mock_";
+
     private int index = 0;
     private final String path;
 
@@ -37,7 +39,7 @@ class RecordingDownloader extends Downloader {
         Downloader downloader = DownloaderTestImpl.getInstance();
         Response response = downloader.execute(request);
 
-        File outputFile = new File(path + File.separator + index + ".json");
+        File outputFile = new File(path + File.separator + FILE_NAME_PREFIX + index + ".json");
         index++;
         outputFile.createNewFile();
         FileWriter writer = new FileWriter(outputFile);

@@ -24,12 +24,14 @@ class MockDownloader extends Downloader {
         this.mocks = new HashMap<>();
         File folder = new File(path);
         for (File file : folder.listFiles()) {
-            final FileReader reader = new FileReader(file);
-            final TestRequestResponse response = new GsonBuilder()
-                    .create()
-                    .fromJson(reader, TestRequestResponse.class);
-            reader.close();
-            mocks.put(response.getRequest(), response.getResponse());
+            if (file.getName().startsWith(RecordingDownloader.FILE_NAME_PREFIX)) {
+                final FileReader reader = new FileReader(file);
+                final TestRequestResponse response = new GsonBuilder()
+                        .create()
+                        .fromJson(reader, TestRequestResponse.class);
+                reader.close();
+                mocks.put(response.getRequest(), response.getResponse());
+            }
         }
     }
 
