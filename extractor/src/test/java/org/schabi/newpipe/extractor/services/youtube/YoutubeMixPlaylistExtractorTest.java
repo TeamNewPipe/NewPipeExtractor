@@ -43,7 +43,7 @@ public class YoutubeMixPlaylistExtractorTest {
     private static final String VIDEO_ID = "_AzeUSL9lZc";
     private static final String VIDEO_TITLE =
             "Most Beautiful And Emotional  Piano: Anime Music Shigatsu wa Kimi no Uso OST IMO";
-    private static final String RESOURCE_PATH = "src/test/resources/org/schabi/newpipe/extractor/services/youtube/mix/";
+    private static final String RESOURCE_PATH = DownloaderFactory.RESOURCE_PATH + "services/youtube/mix/";
     private static final Map<String, String> dummyCookie
             = Collections.singletonMap(YoutubeMixPlaylistExtractor.COOKIE_NAME, "whatever");
 

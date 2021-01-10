@@ -6,6 +6,8 @@ import java.io.IOException;
 
 public class DownloaderFactory {
 
+    public final static String RESOURCE_PATH = "src/test/resources/org/schabi/newpipe/extractor/";
+
     private final static DownloaderType DEFAULT_DOWNLOADER = DownloaderType.REAL;
 
     public Downloader getDownloader(String path) throws IOException {
