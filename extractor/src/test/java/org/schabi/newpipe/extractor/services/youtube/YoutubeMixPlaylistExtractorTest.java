@@ -53,6 +53,7 @@ public class YoutubeMixPlaylistExtractorTest {
 
         @BeforeClass
         public static void setUp() throws Exception {
+            YoutubeParsingHelper.resetClientVersionAndKey();
             final File file = new File(RESOURCE_PATH + "mix");
             NewPipe.init(new DownloaderFactory().getDownloader(file.getAbsolutePath()));
             extractor = (YoutubeMixPlaylistExtractor) YouTube
@@ -131,6 +132,7 @@ public class YoutubeMixPlaylistExtractorTest {
 
         @BeforeClass
         public static void setUp() throws Exception {
+            YoutubeParsingHelper.resetClientVersionAndKey();
             final File file = new File(RESOURCE_PATH + "mixWithIndex");
             NewPipe.init(new DownloaderFactory().getDownloader(file.getAbsolutePath()));
             extractor = (YoutubeMixPlaylistExtractor) YouTube
@@ -201,6 +203,7 @@ public class YoutubeMixPlaylistExtractorTest {
 
         @BeforeClass
         public static void setUp() throws Exception {
+            YoutubeParsingHelper.resetClientVersionAndKey();
             final File file = new File(RESOURCE_PATH + "myMix");
             NewPipe.init(new DownloaderFactory().getDownloader(file.getAbsolutePath()));
             extractor = (YoutubeMixPlaylistExtractor) YouTube
@@ -274,6 +277,7 @@ public class YoutubeMixPlaylistExtractorTest {
 
         @BeforeClass
         public static void setUp() throws IOException {
+            YoutubeParsingHelper.resetClientVersionAndKey();
             final File file = new File(RESOURCE_PATH + "invalid");
             NewPipe.init(new DownloaderFactory().getDownloader(file.getAbsolutePath()));
         }
@@ -306,6 +310,7 @@ public class YoutubeMixPlaylistExtractorTest {
 
         @BeforeClass
         public static void setUp() throws Exception {
+            YoutubeParsingHelper.resetClientVersionAndKey();
             final File file = new File(RESOURCE_PATH + "channelMix");
             NewPipe.init(new DownloaderFactory().getDownloader(file.getAbsolutePath()));
             extractor = (YoutubeMixPlaylistExtractor) YouTube

@@ -353,6 +353,11 @@ public class YoutubeParsingHelper {
         return key;
     }
 
+    static void resetClientVersionAndKey() {
+        clientVersion = null;
+        key = null;
+    }
+
     public static boolean areHardcodedYoutubeMusicKeysValid() throws IOException, ReCaptchaException {
         final String url = "https://music.youtube.com/youtubei/v1/search?alt=json&key=" + HARDCODED_YOUTUBE_MUSIC_KEYS[0];
 

@@ -31,15 +31,6 @@ class MockDownloader extends Downloader {
             reader.close();
             mocks.put(response.getRequest(), response.getResponse());
         }
-
-        //shared find proper solution
-        File clientVersion = new File("src/test/resources/org/schabi/newpipe/extractor/services/youtube/client_version.json");
-        final FileReader reader = new FileReader(clientVersion);
-        final TestRequestResponse response = new GsonBuilder()
-                .create()
-                .fromJson(reader, TestRequestResponse.class);
-        reader.close();
-        mocks.put(response.getRequest(), response.getResponse());
     }
 
     @Override
