@@ -2,7 +2,6 @@ package org.schabi.newpipe.downloader;
 
 import com.google.gson.GsonBuilder;
 
-import org.apache.commons.io.FileUtils;
 import org.schabi.newpipe.extractor.downloader.Downloader;
 import org.schabi.newpipe.extractor.downloader.Request;
 import org.schabi.newpipe.extractor.downloader.Response;
@@ -27,9 +26,13 @@ class RecordingDownloader extends Downloader {
     public RecordingDownloader(String stringPath) throws IOException {
         this.path = stringPath;
         Path path = Paths.get(stringPath);
-        File directory = path.toFile();
-        if (directory.exists()) {
-            FileUtils.cleanDirectory(directory);
+        File folder = path.toFile();
+        if (folder.exists()) {
+            for (File file : folder.listFiles()) {
+                if (file.getName().startsWith(RecordingDownloader.FILE_NAME_PREFIX)) {
+                    file.delete();
+                }
+            }
         }
         Files.createDirectories(path);
     }
