@@ -70,6 +70,12 @@ public class CommentsInfoItemsCollector extends InfoItemsCollector<CommentsInfoI
             addError(e);
         }
 
+        try {
+            resultItem.setHeartedByUploader(extractor.getHeartedByUploader());
+        } catch (Exception e) {
+            addError(e);
+        }
+
         return resultItem;
     }
 
