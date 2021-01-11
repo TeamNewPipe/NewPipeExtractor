@@ -33,8 +33,9 @@ class RecordingDownloader extends Downloader {
                     file.delete();
                 }
             }
+        } else {
+            Files.createDirectories(path);
         }
-        Files.createDirectories(path);
     }
 
     @Override
