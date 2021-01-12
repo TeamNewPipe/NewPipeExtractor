@@ -16,6 +16,7 @@ public class CommentsInfoItem extends InfoItem {
     @Nullable
     private DateWrapper uploadDate;
     private int likeCount;
+    private boolean heartedByUploader;
 
     public CommentsInfoItem(int serviceId, String url, String name) {
         super(InfoType.COMMENT, serviceId, url, name);
@@ -84,5 +85,13 @@ public class CommentsInfoItem extends InfoItem {
 
     public void setLikeCount(int likeCount) {
         this.likeCount = likeCount;
+    }
+
+    public void setHeartedByUploader(boolean isHeartedByUploader) {
+        this.heartedByUploader = isHeartedByUploader;
+    }
+
+    public boolean getHeartedByUploader() {
+        return this.heartedByUploader;
     }
 }

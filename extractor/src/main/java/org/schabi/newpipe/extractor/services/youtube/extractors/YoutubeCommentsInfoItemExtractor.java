@@ -116,6 +116,11 @@ public class YoutubeCommentsInfoItemExtractor implements CommentsInfoItemExtract
     }
 
     @Override
+    public boolean getHeartedByUploader() throws ParsingException {
+        return json.has("creatorHeart");
+    }
+
+    @Override
     public String getUploaderName() throws ParsingException {
         try {
             return getTextFromObject(JsonUtils.getObject(json, "authorText"));

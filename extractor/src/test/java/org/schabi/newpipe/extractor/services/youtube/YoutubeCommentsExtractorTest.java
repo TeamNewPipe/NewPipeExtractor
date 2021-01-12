@@ -16,10 +16,7 @@ import org.schabi.newpipe.extractor.utils.Utils;
 import java.io.IOException;
 import java.util.List;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.*;
 import static org.schabi.newpipe.extractor.ServiceList.YouTube;
 
 public class YoutubeCommentsExtractorTest {
@@ -28,9 +25,8 @@ public class YoutubeCommentsExtractorTest {
      */
     public static class Thomas {
         private static final String url = "https://www.youtube.com/watch?v=D00Au7k3i6o";
-        private static YoutubeCommentsExtractor extractor;
-
         private static final String commentContent = "Category: Education";
+        private static YoutubeCommentsExtractor extractor;
 
         @BeforeClass
         public static void setUp() throws Exception {
@@ -116,8 +112,8 @@ public class YoutubeCommentsExtractorTest {
      * Test a video with an empty comment
      */
     public static class EmptyComment {
-        private static YoutubeCommentsExtractor extractor;
         private final static String url = "https://www.youtube.com/watch?v=VM_6n762j6M";
+        private static YoutubeCommentsExtractor extractor;
 
         @BeforeClass
         public static void setUp() throws Exception {
@@ -151,5 +147,46 @@ public class YoutubeCommentsExtractorTest {
             }
         }
 
+    }
+
+    public static class HeartedByCreator {
+        private final static String url = "https://www.youtube.com/watch?v=tR11b7uh17Y";
+        private static YoutubeCommentsExtractor extractor;
+
+        @BeforeClass
+        public static void setUp() throws Exception {
+            NewPipe.init(DownloaderTestImpl.getInstance());
+            extractor = (YoutubeCommentsExtractor) YouTube
+                    .getCommentsExtractor(url);
+            extractor.fetchPage();
+        }
+
+        @Test
+        public void testGetCommentsAllData() throws IOException, ExtractionException {
+            final InfoItemsPage<CommentsInfoItem> comments = extractor.getInitialPage();
+
+            DefaultTests.defaultTestListOfItems(YouTube, comments.getItems(), comments.getErrors());
+
+            boolean heartedByUploader = false;
+
+            for (CommentsInfoItem c : comments.getItems()) {
+                assertFalse(Utils.isBlank(c.getUploaderUrl()));
+                assertFalse(Utils.isBlank(c.getUploaderName()));
+                assertFalse(Utils.isBlank(c.getUploaderAvatarUrl()));
+                assertFalse(Utils.isBlank(c.getCommentId()));
+                assertFalse(Utils.isBlank(c.getName()));
+                assertFalse(Utils.isBlank(c.getTextualUploadDate()));
+                assertNotNull(c.getUploadDate());
+                assertFalse(Utils.isBlank(c.getThumbnailUrl()));
+                assertFalse(Utils.isBlank(c.getUrl()));
+                assertFalse(c.getLikeCount() < 0);
+                assertFalse(Utils.isBlank(c.getCommentText()));
+                if (c.getHeartedByUploader()) {
+                    heartedByUploader = true;
+                }
+            }
+            assertTrue("No comments was hearted by uploader", heartedByUploader);
+
+        }
     }
 }
