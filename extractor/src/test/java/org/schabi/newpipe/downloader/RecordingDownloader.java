@@ -16,6 +16,18 @@ import java.nio.file.Paths;
 
 import javax.annotation.Nonnull;
 
+/**
+ * <p>
+ * Relays requests to {@link DownloaderTestImpl} and saves the request/response pair into a json file.
+ * </p>
+ * <p>
+ * Those files are used by {@link MockDownloader}.
+ * </p>
+ * <p>
+ * The files <b>must</b> be created on the local dev environment
+ * and recreated when the requests made by a test class change.
+ * </p>
+ */
 class RecordingDownloader extends Downloader {
 
     public final static String FILE_NAME_PREFIX = "generated_mock_";
@@ -23,6 +35,11 @@ class RecordingDownloader extends Downloader {
     private int index = 0;
     private final String path;
 
+    /**
+     * Creates the folder described by {@code stringPath} if it does not exists.
+     * Deletes existing files starting with {@link RecordingDownloader#FILE_NAME_PREFIX}.
+     * @param stringPath Path to the folder where the json files will be saved to.
+     */
     public RecordingDownloader(String stringPath) throws IOException {
         this.path = stringPath;
         Path path = Paths.get(stringPath);

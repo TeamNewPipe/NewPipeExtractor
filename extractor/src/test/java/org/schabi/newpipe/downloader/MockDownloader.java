@@ -14,6 +14,11 @@ import java.util.Map;
 
 import javax.annotation.Nonnull;
 
+/**
+ * <p>
+ * Mocks requests by using json files created by {@link RecordingDownloader}
+ * </p>
+ */
 class MockDownloader extends Downloader {
 
     private final String path;
