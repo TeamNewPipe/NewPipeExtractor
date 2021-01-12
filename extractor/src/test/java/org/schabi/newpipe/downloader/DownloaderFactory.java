@@ -12,7 +12,7 @@ public class DownloaderFactory {
 
     /**
      * <p>
-     * Returns a implementation of a downloader.
+     * Returns a implementation of a {@link Downloader}.
      * </p>
      * <p>
      * If the system property "downloader" is set and is one of {@link DownloaderType},
