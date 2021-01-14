@@ -992,7 +992,7 @@ public class YoutubeStreamExtractor extends StreamExtractor {
 
             for (int i = 1; i < spec.length; ++i) {
                 final String[] parts = spec[i].split("#");
-                if (parts.length != 8) {
+                if (parts.length != 8 || Integer.parseInt(parts[5]) == 0) {
                     continue;
                 }
                 final int frameWidth = Integer.parseInt(parts[0]);
@@ -1016,6 +1016,7 @@ public class YoutubeStreamExtractor extends StreamExtractor {
                         frameWidth,
                         frameHeight,
                         totalCount,
+                        Integer.parseInt(parts[5]),
                         framesPerPageX,
                         framesPerPageY
                 ));

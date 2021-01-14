@@ -338,6 +338,8 @@ public abstract class DefaultStreamExtractorTest extends DefaultExtractorTest<St
                     assertIsValidUrl(url);
                     assertIsSecureUrl(url);
                 }
+                assertTrue(f.getDurationPerFrame() > 0);
+                assertEquals(f.getFrameBoundsAt(0)[3], f.getFrameWidth());
             }
         } else {
             assertTrue(frames.isEmpty());
