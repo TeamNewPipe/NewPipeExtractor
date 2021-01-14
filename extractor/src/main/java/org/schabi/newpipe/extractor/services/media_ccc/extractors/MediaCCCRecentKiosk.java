@@ -16,6 +16,7 @@ import org.schabi.newpipe.extractor.stream.StreamInfoItemsCollector;
 
 import javax.annotation.Nonnull;
 import java.io.IOException;
+import java.util.Comparator;
 
 public class MediaCCCRecentKiosk extends KioskExtractor<StreamInfoItem> {
 
@@ -40,7 +41,14 @@ public class MediaCCCRecentKiosk extends KioskExtractor<StreamInfoItem> {
     @Override
     public InfoItemsPage<StreamInfoItem> getInitialPage() throws IOException, ExtractionException {
         final JsonArray events = doc.getArray("events");
-        StreamInfoItemsCollector collector = new StreamInfoItemsCollector(getServiceId());
+
+        // Streams in the recent kiosk are not ordered by the release date.
+        // Sort them to have the latest stream at the beginning of the list.
+        Comparator<StreamInfoItem> comparator = Comparator.comparing(
+                streamInfoItem -> streamInfoItem.getUploadDate().offsetDateTime());
+        comparator = comparator.reversed();
+
+        StreamInfoItemsCollector collector = new StreamInfoItemsCollector(getServiceId(), comparator);
         for (int i = 0; i < events.size(); i++) {
             collector.commit(new MediaCCCRecentKioskExtractor(events.getObject(i)));
         }
