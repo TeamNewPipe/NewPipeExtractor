@@ -23,13 +23,13 @@ public class PeertubeSearchExtractorTest {
 
     public static class All extends DefaultSearchExtractorTest {
         private static SearchExtractor extractor;
-        private static final String QUERY = "kde";
+        private static final String QUERY = "fsf";
 
         @BeforeClass
         public static void setUp() throws Exception {
             NewPipe.init(DownloaderTestImpl.getInstance());
             // setting instance might break test when running in parallel
-            PeerTube.setInstance(new PeertubeInstance("https://peertube.mastodon.host", "PeerTube on Mastodon.host"));
+            PeerTube.setInstance(new PeertubeInstance("https://framatube.org", "Framatube"));
             extractor = PeerTube.getSearchExtractor(QUERY);
             extractor.fetchPage();
         }
@@ -52,7 +52,7 @@ public class PeertubeSearchExtractorTest {
         public static void setUp() throws Exception {
             NewPipe.init(DownloaderTestImpl.getInstance());
             // setting instance might break test when running in parallel
-            PeerTube.setInstance(new PeertubeInstance("https://peertube.mastodon.host", "PeerTube on Mastodon.host"));
+            PeerTube.setInstance(new PeertubeInstance("https://framatube.org", "Framatube"));
             extractor = PeerTube.getSearchExtractor(QUERY, singletonList(PeertubeSearchQueryHandlerFactory.SEPIA_VIDEOS), "");
             extractor.fetchPage();
         }
