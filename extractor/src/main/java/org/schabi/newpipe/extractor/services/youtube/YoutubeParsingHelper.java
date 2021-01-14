@@ -353,6 +353,11 @@ public class YoutubeParsingHelper {
         return key;
     }
 
+    /**
+     * Only use in tests.
+     *
+     * Quick-and-dirty solution to reset global state in between test classes.
+     */
     static void resetClientVersionAndKey() {
         clientVersion = null;
         key = null;
