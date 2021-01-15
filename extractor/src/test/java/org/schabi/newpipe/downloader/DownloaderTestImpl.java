@@ -1,4 +1,4 @@
-package org.schabi.newpipe;
+package org.schabi.newpipe.downloader;
 
 import org.schabi.newpipe.extractor.downloader.Downloader;
 import org.schabi.newpipe.extractor.downloader.Request;

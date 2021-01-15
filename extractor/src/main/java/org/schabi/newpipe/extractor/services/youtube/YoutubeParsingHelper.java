@@ -353,6 +353,16 @@ public class YoutubeParsingHelper {
         return key;
     }
 
+    /**
+     * Only use in tests.
+     *
+     * Quick-and-dirty solution to reset global state in between test classes.
+     */
+    static void resetClientVersionAndKey() {
+        clientVersion = null;
+        key = null;
+    }
+
     public static boolean areHardcodedYoutubeMusicKeysValid() throws IOException, ReCaptchaException {
         final String url = "https://music.youtube.com/youtubei/v1/search?alt=json&key=" + HARDCODED_YOUTUBE_MUSIC_KEYS[0];
 
