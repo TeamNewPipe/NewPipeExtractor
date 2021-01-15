@@ -1,6 +1,8 @@
 name: CI
 
 on:
+  schedule:
+    - cron: 0 0 * * *
   push:
     branches:
       - dev
@@ -11,19 +13,12 @@ jobs:
   build-and-test:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v2
-
-      - name: set up JDK 1.8
-        uses: actions/setup-java@v1.4.3
-        with:
-          java-version: 1.8
-
-      - name: Cache Gradle dependencies
-        uses: actions/cache@v2
-        with:
-          path: ~/.gradle/caches
-          key: ${{ runner.os }}-gradle-${{ hashFiles('**/*.gradle') }}
-          restore-keys: ${{ runner.os }}-gradle
 
       - name: Build and run Tests
-        run: ./gradlew check --stacktrace -Ddownloader=MOCK
+        run: |
+          if [[ $github.event_name == 'schedule' ]]; then
+            echo real
+          else
+            echo mock
+            ./gradlew check --stacktrace -Ddownloader=MOCK
+          fi
