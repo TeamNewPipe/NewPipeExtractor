@@ -33,7 +33,7 @@ public class MediaCCCSearchQueryHandlerFactory extends SearchQueryHandlerFactory
             return "https://media.ccc.de/public/events/search?q="
                     + URLEncoder.encode(query, "UTF-8");
         } catch (UnsupportedEncodingException e) {
-            throw new ParsingException("Could not create search string with querry: " + query, e);
+            throw new ParsingException("Could not create search string with query: " + query, e);
         }
     }
 }
