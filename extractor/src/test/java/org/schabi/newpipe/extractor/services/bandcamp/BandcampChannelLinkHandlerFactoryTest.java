@@ -4,7 +4,7 @@ package org.schabi.newpipe.extractor.services.bandcamp;
 
 import org.junit.BeforeClass;
 import org.junit.Test;
-import org.schabi.newpipe.DownloaderTestImpl;
+import org.schabi.newpipe.downloader.DownloaderTestImpl;
 import org.schabi.newpipe.extractor.NewPipe;
 import org.schabi.newpipe.extractor.exceptions.ParsingException;
 import org.schabi.newpipe.extractor.services.bandcamp.linkHandler.BandcampChannelLinkHandlerFactory;

@@ -9,6 +9,7 @@ import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 import org.schabi.newpipe.extractor.MediaFormat;
+import org.schabi.newpipe.extractor.MetaInfo;
 import org.schabi.newpipe.extractor.StreamingService;
 import org.schabi.newpipe.extractor.downloader.Downloader;
 import org.schabi.newpipe.extractor.exceptions.ExtractionException;
@@ -318,5 +319,17 @@ public class BandcampStreamExtractor extends StreamExtractor {
     @Override
     public String getSupportInfo() {
         return "";
+    }
+
+    @Nonnull
+    @Override
+    public List<StreamSegment> getStreamSegments() throws ParsingException {
+        return Collections.emptyList();
+    }
+
+    @Nonnull
+    @Override
+    public List<MetaInfo> getMetaInfo() throws ParsingException {
+        return Collections.emptyList();
     }
 }

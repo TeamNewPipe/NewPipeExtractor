@@ -4,14 +4,13 @@ package org.schabi.newpipe.extractor.services.bandcamp;
 
 import org.junit.BeforeClass;
 import org.junit.Test;
-import org.schabi.newpipe.DownloaderTestImpl;
+import org.schabi.newpipe.downloader.DownloaderTestImpl;
 import org.schabi.newpipe.extractor.NewPipe;
 import org.schabi.newpipe.extractor.exceptions.ContentNotAvailableException;
 import org.schabi.newpipe.extractor.exceptions.ExtractionException;
 import org.schabi.newpipe.extractor.exceptions.ParsingException;
 import org.schabi.newpipe.extractor.playlist.PlaylistExtractor;
 import org.schabi.newpipe.extractor.services.BasePlaylistExtractorTest;
-import org.schabi.newpipe.extractor.services.DefaultTests;
 import org.schabi.newpipe.extractor.services.bandcamp.extractors.BandcampPlaylistExtractor;
 import org.schabi.newpipe.extractor.stream.StreamInfoItem;
 

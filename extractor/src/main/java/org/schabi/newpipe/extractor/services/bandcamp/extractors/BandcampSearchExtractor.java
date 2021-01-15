@@ -8,10 +8,12 @@ import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 import org.schabi.newpipe.extractor.InfoItem;
+import org.schabi.newpipe.extractor.MetaInfo;
 import org.schabi.newpipe.extractor.Page;
 import org.schabi.newpipe.extractor.StreamingService;
 import org.schabi.newpipe.extractor.downloader.Downloader;
 import org.schabi.newpipe.extractor.exceptions.ExtractionException;
+import org.schabi.newpipe.extractor.exceptions.ParsingException;
 import org.schabi.newpipe.extractor.linkhandler.SearchQueryHandler;
 import org.schabi.newpipe.extractor.search.InfoItemsSearchCollector;
 import org.schabi.newpipe.extractor.search.SearchExtractor;
@@ -19,6 +21,8 @@ import org.schabi.newpipe.extractor.services.bandcamp.extractors.streaminfoitem.
 
 import javax.annotation.Nonnull;
 import java.io.IOException;
+import java.util.Collections;
+import java.util.List;
 
 public class BandcampSearchExtractor extends SearchExtractor {
 
@@ -35,6 +39,12 @@ public class BandcampSearchExtractor extends SearchExtractor {
     @Override
     public boolean isCorrectedSearch() {
         return false;
+    }
+
+    @Nonnull
+    @Override
+    public List<MetaInfo> getMetaInfo() throws ParsingException {
+        return Collections.emptyList();
     }
 
     public InfoItemsPage<InfoItem> getPage(final Page page) throws IOException, ExtractionException {

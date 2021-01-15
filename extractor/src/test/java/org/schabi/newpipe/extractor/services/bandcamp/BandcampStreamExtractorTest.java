@@ -4,7 +4,7 @@ package org.schabi.newpipe.extractor.services.bandcamp;
 
 import org.junit.BeforeClass;
 import org.junit.Test;
-import org.schabi.newpipe.DownloaderTestImpl;
+import org.schabi.newpipe.downloader.DownloaderTestImpl;
 import org.schabi.newpipe.extractor.NewPipe;
 import org.schabi.newpipe.extractor.StreamingService;
 import org.schabi.newpipe.extractor.exceptions.ExtractionException;
@@ -16,10 +16,8 @@ import org.schabi.newpipe.extractor.stream.StreamExtractor;
 import org.schabi.newpipe.extractor.stream.StreamType;
 
 import java.io.IOException;
-import java.util.Calendar;
 import java.util.Collections;
 import java.util.List;
-import java.util.TimeZone;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;

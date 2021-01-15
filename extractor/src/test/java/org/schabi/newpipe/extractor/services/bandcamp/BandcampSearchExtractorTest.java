@@ -4,20 +4,17 @@ package org.schabi.newpipe.extractor.services.bandcamp;
 
 import org.junit.BeforeClass;
 import org.junit.Test;
-import org.schabi.newpipe.DownloaderTestImpl;
+import org.schabi.newpipe.downloader.DownloaderTestImpl;
 import org.schabi.newpipe.extractor.*;
 import org.schabi.newpipe.extractor.exceptions.ExtractionException;
 import org.schabi.newpipe.extractor.playlist.PlaylistInfoItem;
 import org.schabi.newpipe.extractor.search.SearchExtractor;
 import org.schabi.newpipe.extractor.services.DefaultSearchExtractorTest;
-import org.schabi.newpipe.extractor.services.bandcamp.extractors.BandcampChannelInfoItemExtractor;
-import org.schabi.newpipe.extractor.services.bandcamp.extractors.BandcampPlaylistInfoItemExtractor;
 import org.schabi.newpipe.extractor.services.bandcamp.extractors.BandcampSearchExtractor;
 import org.schabi.newpipe.extractor.stream.StreamInfoItem;
 
-import java.io.IOException;
-
 import javax.annotation.Nullable;
+import java.io.IOException;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
