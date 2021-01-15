@@ -1,7 +1,7 @@
 package org.schabi.newpipe.extractor.services.media_ccc.search;
 
 import org.junit.BeforeClass;
-import org.schabi.newpipe.DownloaderTestImpl;
+import org.schabi.newpipe.downloader.DownloaderTestImpl;
 import org.schabi.newpipe.extractor.InfoItem;
 import org.schabi.newpipe.extractor.NewPipe;
 import org.schabi.newpipe.extractor.StreamingService;

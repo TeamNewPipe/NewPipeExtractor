@@ -2,7 +2,7 @@ package org.schabi.newpipe.extractor.services.peertube;
 
 import org.junit.BeforeClass;
 import org.junit.Test;
-import org.schabi.newpipe.DownloaderTestImpl;
+import org.schabi.newpipe.downloader.DownloaderTestImpl;
 import org.schabi.newpipe.extractor.NewPipe;
 import org.schabi.newpipe.extractor.exceptions.ParsingException;
 import org.schabi.newpipe.extractor.services.BaseListExtractorTest;
@@ -13,6 +13,7 @@ import static org.schabi.newpipe.extractor.ServiceList.PeerTube;
 import static org.schabi.newpipe.extractor.services.DefaultTests.*;
 
 public class PeertubeTrendingExtractorTest {
+
     public static class Trending implements BaseListExtractorTest {
         private static PeertubeTrendingExtractor extractor;
 
@@ -20,7 +21,7 @@ public class PeertubeTrendingExtractorTest {
         public static void setUp() throws Exception {
             NewPipe.init(DownloaderTestImpl.getInstance());
             // setting instance might break test when running in parallel
-            PeerTube.setInstance(new PeertubeInstance("https://peertube.mastodon.host", "PeerTube on Mastodon.host"));
+            PeerTube.setInstance(new PeertubeInstance("https://framatube.org", "Framatube"));
             extractor = (PeertubeTrendingExtractor) PeerTube.getKioskList()
                     .getExtractorById("Trending", null);
             extractor.fetchPage();
@@ -47,12 +48,12 @@ public class PeertubeTrendingExtractorTest {
 
         @Test
         public void testUrl() throws ParsingException {
-            assertEquals("https://peertube.mastodon.host/api/v1/videos?sort=-trending", extractor.getUrl());
+            assertEquals("https://framatube.org/api/v1/videos?sort=-trending", extractor.getUrl());
         }
 
         @Test
         public void testOriginalUrl() throws ParsingException {
-            assertEquals("https://peertube.mastodon.host/api/v1/videos?sort=-trending", extractor.getOriginalUrl());
+            assertEquals("https://framatube.org/api/v1/videos?sort=-trending", extractor.getOriginalUrl());
         }
 
         /*//////////////////////////////////////////////////////////////////////////

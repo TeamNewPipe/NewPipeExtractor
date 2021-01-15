@@ -33,7 +33,7 @@ public class YoutubePlaylistLinkHandlerFactory extends ListLinkHandlerFactory {
 
             if (!Utils.isHTTP(urlObj) || !(YoutubeParsingHelper.isYoutubeURL(urlObj)
                     || YoutubeParsingHelper.isInvidioURL(urlObj))) {
-                throw new ParsingException("the url given is not a Youtube-URL");
+                throw new ParsingException("the url given is not a YouTube-URL");
             }
 
             final String path = urlObj.getPath();
@@ -44,17 +44,12 @@ public class YoutubePlaylistLinkHandlerFactory extends ListLinkHandlerFactory {
             final String listID = Utils.getQueryValue(urlObj, "list");
 
             if (listID == null) {
-                throw new ParsingException("the url given does not include a playlist");
+                throw new ParsingException("the URL given does not include a playlist");
             }
 
             if (!listID.matches("[a-zA-Z0-9_-]{10,}")) {
                 throw new ParsingException(
                         "the list-ID given in the URL does not match the list pattern");
-            }
-
-            if (YoutubeParsingHelper.isYoutubeMusicMixId(listID)) {
-                throw new ContentNotSupportedException(
-                        "YouTube Music Mix playlists are not yet supported");
             }
 
             if (YoutubeParsingHelper.isYoutubeChannelMixId(listID)
@@ -65,7 +60,7 @@ public class YoutubePlaylistLinkHandlerFactory extends ListLinkHandlerFactory {
 
             return listID;
         } catch (final Exception exception) {
-            throw new ParsingException("Error could not parse url :" + exception.getMessage(),
+            throw new ParsingException("Error could not parse URL: " + exception.getMessage(),
                     exception);
         }
     }
@@ -81,9 +76,8 @@ public class YoutubePlaylistLinkHandlerFactory extends ListLinkHandlerFactory {
     }
 
     /**
-     * * If it is a mix (auto-generated playlist) URL, return a {@link LinkHandler} where the URL is
-     * like
-     * <code>https://youtube.com/watch?v=videoId&list=playlistId</code>.
+     * If it is a mix (auto-generated playlist) URL, return a {@link LinkHandler} where the URL is like
+     * {@code https://youtube.com/watch?v=videoId&list=playlistId}
      * <p>Otherwise use super</p>
      */
     @Override
@@ -103,7 +97,7 @@ public class YoutubePlaylistLinkHandlerFactory extends ListLinkHandlerFactory {
                         getSortFilter(url));
             }
         } catch (MalformedURLException exception) {
-            throw new ParsingException("Error could not parse url :" + exception.getMessage(),
+            throw new ParsingException("Error could not parse URL: " + exception.getMessage(),
                 exception);
         }
         return super.fromUrl(url);

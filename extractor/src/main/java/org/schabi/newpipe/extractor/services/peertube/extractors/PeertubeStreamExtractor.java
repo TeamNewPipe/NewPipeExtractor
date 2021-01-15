@@ -4,8 +4,8 @@ import com.grack.nanojson.JsonArray;
 import com.grack.nanojson.JsonObject;
 import com.grack.nanojson.JsonParser;
 import com.grack.nanojson.JsonParserException;
-
 import org.schabi.newpipe.extractor.MediaFormat;
+import org.schabi.newpipe.extractor.MetaInfo;
 import org.schabi.newpipe.extractor.NewPipe;
 import org.schabi.newpipe.extractor.StreamingService;
 import org.schabi.newpipe.extractor.downloader.Downloader;
@@ -23,12 +23,15 @@ import org.schabi.newpipe.extractor.stream.Description;
 import org.schabi.newpipe.extractor.stream.Stream;
 import org.schabi.newpipe.extractor.stream.StreamExtractor;
 import org.schabi.newpipe.extractor.stream.StreamInfoItemsCollector;
+import org.schabi.newpipe.extractor.stream.StreamSegment;
 import org.schabi.newpipe.extractor.stream.StreamType;
 import org.schabi.newpipe.extractor.stream.SubtitlesStream;
 import org.schabi.newpipe.extractor.stream.VideoStream;
 import org.schabi.newpipe.extractor.utils.JsonUtils;
 import org.schabi.newpipe.extractor.utils.Utils;
 
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
@@ -36,9 +39,6 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Locale;
-
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
 
 public class PeertubeStreamExtractor extends StreamExtractor {
     private final String baseUrl;
@@ -268,7 +268,9 @@ public class PeertubeStreamExtractor extends StreamExtractor {
         final List<String> tags = getTags();
         final String apiUrl;
         if (tags.isEmpty()) {
-            apiUrl = getUploaderUrl() + "/videos?start=0&count=8";
+            apiUrl = baseUrl + "/api/v1/accounts/" + JsonUtils.getString(json, "account.name")
+                    + "@" + JsonUtils.getString(json, "account.host") +
+                    "/videos?start=0&count=8";
         } else {
             apiUrl = getRelatedStreamsUrl(tags);
         }
@@ -300,6 +302,18 @@ public class PeertubeStreamExtractor extends StreamExtractor {
         } catch (ParsingException e) {
             return "";
         }
+    }
+
+    @Nonnull
+    @Override
+    public List<StreamSegment> getStreamSegments() {
+        return Collections.emptyList();
+    }
+
+    @Nonnull
+    @Override
+    public List<MetaInfo> getMetaInfo() {
+        return Collections.emptyList();
     }
 
     private String getRelatedStreamsUrl(final List<String> tags) throws UnsupportedEncodingException {

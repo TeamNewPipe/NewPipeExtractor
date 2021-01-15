@@ -1,16 +1,23 @@
 package org.schabi.newpipe.extractor.services.youtube.search;
 
 import org.junit.BeforeClass;
+import org.junit.Ignore;
 import org.junit.Test;
-import org.schabi.newpipe.DownloaderTestImpl;
-import org.schabi.newpipe.extractor.InfoItem;
-import org.schabi.newpipe.extractor.ListExtractor;
-import org.schabi.newpipe.extractor.NewPipe;
-import org.schabi.newpipe.extractor.StreamingService;
+import org.schabi.newpipe.downloader.DownloaderTestImpl;
+import org.schabi.newpipe.extractor.*;
 import org.schabi.newpipe.extractor.search.SearchExtractor;
 import org.schabi.newpipe.extractor.services.DefaultSearchExtractorTest;
+import org.schabi.newpipe.extractor.services.youtube.YoutubeService;
+import org.schabi.newpipe.extractor.stream.Description;
 
 import javax.annotation.Nullable;
+
+import java.net.MalformedURLException;
+import java.net.URL;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.List;
 
 import static java.util.Collections.singletonList;
 import static junit.framework.TestCase.assertFalse;
@@ -210,5 +217,42 @@ public class YoutubeSearchExtractorTest {
 
             assertNoDuplicatedItems(YouTube, page1, page2);
         }
+    }
+
+    @Ignore("TODO fix")
+    public static class MetaInfoTest extends DefaultSearchExtractorTest {
+        private static SearchExtractor extractor;
+        private static final String QUERY = "Covid";
+
+        @Test
+        public void clarificationTest() throws Exception {
+            NewPipe.init(DownloaderTestImpl.getInstance());
+            extractor = YouTube.getSearchExtractor(QUERY, singletonList(VIDEOS), "");
+            extractor.fetchPage();
+        }
+
+        @Override public String expectedSearchString() { return QUERY; }
+        @Override public String expectedSearchSuggestion() { return null; }
+        @Override public List<MetaInfo> expectedMetaInfo() throws MalformedURLException {
+            final List<URL> urls = new ArrayList<>();
+            urls.add(new URL("https://www.who.int/emergencies/diseases/novel-coronavirus-2019"));
+            urls.add(new URL("https://www.who.int/emergencies/diseases/novel-coronavirus-2019/covid-19-vaccines"));
+            final List<String> urlTexts = new ArrayList<>();
+            urlTexts.add("LEARN MORE");
+            urlTexts.add("Learn about vaccine progress from the WHO");
+            return Collections.singletonList(new MetaInfo(
+                    "COVID-19",
+                    new Description("Get the latest information from the WHO about coronavirus.", Description.PLAIN_TEXT),
+                    urls,
+                    urlTexts
+            ));
+        }
+        @Override public SearchExtractor extractor() { return extractor; }
+        @Override public StreamingService expectedService() { return YouTube; }
+        @Override public String expectedName() { return QUERY; }
+        @Override public String expectedId() { return QUERY; }
+        @Override public String expectedUrlContains() { return "youtube.com/results?search_query=" + QUERY; }
+        @Override public String expectedOriginalUrlContains() throws Exception { return "youtube.com/results?search_query=" + QUERY; }
+
     }
 }

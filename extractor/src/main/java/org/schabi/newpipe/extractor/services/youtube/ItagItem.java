@@ -60,7 +60,7 @@ public class ItagItem {
 
             new ItagItem(278, VIDEO_ONLY, WEBM, "144p"),
             new ItagItem(242, VIDEO_ONLY, WEBM, "240p"),
-//          new ItagItem(243, VIDEO_ONLY, WEBM, "360p"),
+            new ItagItem(243, VIDEO_ONLY, WEBM, "360p"),
             new ItagItem(244, VIDEO_ONLY, WEBM, "480p"),
             new ItagItem(245, VIDEO_ONLY, WEBM, "480p"),
             new ItagItem(246, VIDEO_ONLY, WEBM, "480p"),

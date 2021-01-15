@@ -14,14 +14,8 @@ import org.schabi.newpipe.extractor.linkhandler.SearchQueryHandler;
 import org.schabi.newpipe.extractor.linkhandler.SearchQueryHandlerFactory;
 import org.schabi.newpipe.extractor.playlist.PlaylistExtractor;
 import org.schabi.newpipe.extractor.search.SearchExtractor;
-import org.schabi.newpipe.extractor.services.media_ccc.extractors.MediaCCCConferenceExtractor;
-import org.schabi.newpipe.extractor.services.media_ccc.extractors.MediaCCCConferenceKiosk;
-import org.schabi.newpipe.extractor.services.media_ccc.extractors.MediaCCCSearchExtractor;
-import org.schabi.newpipe.extractor.services.media_ccc.extractors.MediaCCCStreamExtractor;
-import org.schabi.newpipe.extractor.services.media_ccc.linkHandler.MediaCCCConferenceLinkHandlerFactory;
-import org.schabi.newpipe.extractor.services.media_ccc.linkHandler.MediaCCCConferencesListLinkHandlerFactory;
-import org.schabi.newpipe.extractor.services.media_ccc.linkHandler.MediaCCCSearchQueryHandlerFactory;
-import org.schabi.newpipe.extractor.services.media_ccc.linkHandler.MediaCCCStreamLinkHandlerFactory;
+import org.schabi.newpipe.extractor.services.media_ccc.extractors.*;
+import org.schabi.newpipe.extractor.services.media_ccc.linkHandler.*;
 import org.schabi.newpipe.extractor.stream.StreamExtractor;
 import org.schabi.newpipe.extractor.subscription.SubscriptionExtractor;
 import org.schabi.newpipe.extractor.suggestion.SuggestionExtractor;
@@ -62,6 +56,9 @@ public class MediaCCCService extends StreamingService {
 
     @Override
     public StreamExtractor getStreamExtractor(final LinkHandler linkHandler) {
+        if (MediaCCCParsingHelper.isLiveStreamId(linkHandler.getId())) {
+            return new MediaCCCLiveStreamExtractor(this, linkHandler);
+        }
         return new MediaCCCStreamExtractor(this, linkHandler);
     }
 
@@ -95,7 +92,28 @@ public class MediaCCCService extends StreamingService {
                             new MediaCCCConferencesListLinkHandlerFactory().fromUrl(url), kioskId);
                 }
             }, new MediaCCCConferencesListLinkHandlerFactory(), "conferences");
-            list.setDefaultKiosk("conferences");
+
+            list.addKioskEntry(new KioskList.KioskExtractorFactory() {
+                @Override
+                public KioskExtractor createNewKiosk(final StreamingService streamingService,
+                                                     final String url, final String kioskId)
+                        throws ExtractionException {
+                    return new MediaCCCRecentKiosk(MediaCCCService.this,
+                            new MediaCCCRecentListLinkHandlerFactory().fromUrl(url), kioskId);
+                }
+            }, new MediaCCCRecentListLinkHandlerFactory(), "recent");
+
+            list.addKioskEntry(new KioskList.KioskExtractorFactory() {
+                @Override
+                public KioskExtractor createNewKiosk(final StreamingService streamingService,
+                                                     final String url, final String kioskId)
+                        throws ExtractionException {
+                    return new MediaCCCLiveStreamKiosk(MediaCCCService.this,
+                            new MediaCCCLiveListLinkHandlerFactory().fromUrl(url), kioskId);
+                }
+            }, new MediaCCCLiveListLinkHandlerFactory(), "live");
+
+            list.setDefaultKiosk("recent");
         } catch (Exception e) {
             throw new ExtractionException(e);
         }

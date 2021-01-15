@@ -1,20 +1,20 @@
 package org.schabi.newpipe.extractor.search;
 
-import org.schabi.newpipe.extractor.InfoItem;
-import org.schabi.newpipe.extractor.ListExtractor;
-import org.schabi.newpipe.extractor.ListInfo;
-import org.schabi.newpipe.extractor.Page;
-import org.schabi.newpipe.extractor.StreamingService;
+import org.schabi.newpipe.extractor.*;
 import org.schabi.newpipe.extractor.exceptions.ExtractionException;
 import org.schabi.newpipe.extractor.linkhandler.SearchQueryHandler;
 import org.schabi.newpipe.extractor.utils.ExtractorHelper;
 
 import java.io.IOException;
+import java.util.List;
+
+import javax.annotation.Nonnull;
 
 public class SearchInfo extends ListInfo<InfoItem> {
     private String searchString;
     private String searchSuggestion;
     private boolean isCorrectedSearch;
+    private List<MetaInfo> metaInfo;
 
     public SearchInfo(int serviceId,
                       SearchQueryHandler qIHandler,
@@ -48,6 +48,11 @@ public class SearchInfo extends ListInfo<InfoItem> {
         }
         try {
             info.setIsCorrectedSearch(extractor.isCorrectedSearch());
+        } catch (Exception e) {
+            info.addError(e);
+        }
+        try {
+            info.setMetaInfo(extractor.getMetaInfo());
         } catch (Exception e) {
             info.addError(e);
         }
@@ -86,5 +91,14 @@ public class SearchInfo extends ListInfo<InfoItem> {
 
     public void setSearchSuggestion(String searchSuggestion) {
         this.searchSuggestion = searchSuggestion;
+    }
+
+    @Nonnull
+    public List<MetaInfo> getMetaInfo() {
+        return metaInfo;
+    }
+
+    public void setMetaInfo(@Nonnull List<MetaInfo> metaInfo) {
+        this.metaInfo = metaInfo;
     }
 }

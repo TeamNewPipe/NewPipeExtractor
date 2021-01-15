@@ -2,7 +2,7 @@ package org.schabi.newpipe.extractor.services.media_ccc;
 
 import org.junit.BeforeClass;
 import org.junit.Test;
-import org.schabi.newpipe.DownloaderTestImpl;
+import org.schabi.newpipe.downloader.DownloaderTestImpl;
 import org.schabi.newpipe.extractor.InfoItem;
 import org.schabi.newpipe.extractor.NewPipe;
 import org.schabi.newpipe.extractor.kiosk.KioskExtractor;
@@ -24,7 +24,7 @@ public class MediaCCCConferenceListExtractorTest {
     @BeforeClass
     public static void setUpClass() throws Exception {
         NewPipe.init(DownloaderTestImpl.getInstance());
-        extractor = MediaCCC.getKioskList().getDefaultKioskExtractor();
+        extractor = MediaCCC.getKioskList().getExtractorById("conferences", null);
         extractor.fetchPage();
     }
 

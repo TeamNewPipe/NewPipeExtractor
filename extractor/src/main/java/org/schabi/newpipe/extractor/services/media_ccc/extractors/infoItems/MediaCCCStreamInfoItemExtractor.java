@@ -38,8 +38,7 @@ public class MediaCCCStreamInfoItemExtractor implements StreamInfoItemExtractor 
 
     @Override
     public String getUploaderName() {
-        return event.getString("conference_url")
-                .replaceFirst("https://(api\\.)?media\\.ccc\\.de/public/conferences/", "");
+        return event.getString("conference_title");
     }
 
     @Override
@@ -56,7 +55,11 @@ public class MediaCCCStreamInfoItemExtractor implements StreamInfoItemExtractor 
     @Nullable
     @Override
     public DateWrapper getUploadDate() throws ParsingException {
-        return new DateWrapper(MediaCCCParsingHelper.parseDateFrom(getTextualUploadDate()));
+        final String date = getTextualUploadDate();
+        if (date == null) {
+            return null; // event is in the future...
+        }
+        return new DateWrapper(MediaCCCParsingHelper.parseDateFrom(date));
     }
 
     @Override

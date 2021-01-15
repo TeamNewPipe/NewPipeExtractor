@@ -40,4 +40,9 @@ public interface CommentsInfoItemExtractor extends InfoItemExtractor {
     String getUploaderName() throws ParsingException;
 
     String getUploaderAvatarUrl() throws ParsingException;
+
+    /**
+     * Whether the comment has been hearted by the uploader
+     */
+    boolean getHeartedByUploader() throws ParsingException;
 }

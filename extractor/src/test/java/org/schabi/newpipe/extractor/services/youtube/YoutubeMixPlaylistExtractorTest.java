@@ -1,5 +1,7 @@
 package org.schabi.newpipe.extractor.services.youtube;
 
+import java.io.File;
+import java.io.IOException;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.Map;
@@ -10,7 +12,7 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
 import org.junit.runners.Suite.SuiteClasses;
-import org.schabi.newpipe.DownloaderTestImpl;
+import org.schabi.newpipe.downloader.DownloaderFactory;
 import org.schabi.newpipe.extractor.ListExtractor;
 import org.schabi.newpipe.extractor.ListExtractor.InfoItemsPage;
 import org.schabi.newpipe.extractor.NewPipe;
@@ -41,6 +43,7 @@ public class YoutubeMixPlaylistExtractorTest {
     private static final String VIDEO_ID = "_AzeUSL9lZc";
     private static final String VIDEO_TITLE =
             "Most Beautiful And Emotional  Piano: Anime Music Shigatsu wa Kimi no Uso OST IMO";
+    private static final String RESOURCE_PATH = DownloaderFactory.RESOURCE_PATH + "services/youtube/mix/";
     private static final Map<String, String> dummyCookie
             = Collections.singletonMap(YoutubeMixPlaylistExtractor.COOKIE_NAME, "whatever");
 
@@ -50,7 +53,8 @@ public class YoutubeMixPlaylistExtractorTest {
 
         @BeforeClass
         public static void setUp() throws Exception {
-            NewPipe.init(DownloaderTestImpl.getInstance());
+            YoutubeParsingHelper.resetClientVersionAndKey();
+            NewPipe.init(new DownloaderFactory().getDownloader(RESOURCE_PATH + "mix"));
             extractor = (YoutubeMixPlaylistExtractor) YouTube
                     .getPlaylistExtractor(
                             "https://www.youtube.com/watch?v=" + VIDEO_ID + "&list=RD" + VIDEO_ID);
@@ -127,7 +131,8 @@ public class YoutubeMixPlaylistExtractorTest {
 
         @BeforeClass
         public static void setUp() throws Exception {
-            NewPipe.init(DownloaderTestImpl.getInstance());
+            YoutubeParsingHelper.resetClientVersionAndKey();
+            NewPipe.init(new DownloaderFactory().getDownloader(RESOURCE_PATH + "mixWithIndex"));
             extractor = (YoutubeMixPlaylistExtractor) YouTube
                 .getPlaylistExtractor(
                     "https://www.youtube.com/watch?v=" + VIDEO_ID_NUMBER_13 + "&list=RD"
@@ -196,7 +201,8 @@ public class YoutubeMixPlaylistExtractorTest {
 
         @BeforeClass
         public static void setUp() throws Exception {
-            NewPipe.init(DownloaderTestImpl.getInstance());
+            YoutubeParsingHelper.resetClientVersionAndKey();
+            NewPipe.init(new DownloaderFactory().getDownloader(RESOURCE_PATH + "myMix"));
             extractor = (YoutubeMixPlaylistExtractor) YouTube
                 .getPlaylistExtractor(
                     "https://www.youtube.com/watch?v=" + VIDEO_ID + "&list=RDMM"
@@ -267,8 +273,9 @@ public class YoutubeMixPlaylistExtractorTest {
     public static class Invalid {
 
         @BeforeClass
-        public static void setUp() {
-            NewPipe.init(DownloaderTestImpl.getInstance());
+        public static void setUp() throws IOException {
+            YoutubeParsingHelper.resetClientVersionAndKey();
+            NewPipe.init(new DownloaderFactory().getDownloader(RESOURCE_PATH + "invalid"));
         }
 
         @Test(expected = IllegalArgumentException.class)
@@ -299,7 +306,8 @@ public class YoutubeMixPlaylistExtractorTest {
 
         @BeforeClass
         public static void setUp() throws Exception {
-            NewPipe.init(DownloaderTestImpl.getInstance());
+            YoutubeParsingHelper.resetClientVersionAndKey();
+            NewPipe.init(new DownloaderFactory().getDownloader(RESOURCE_PATH + "channelMix"));
             extractor = (YoutubeMixPlaylistExtractor) YouTube
                 .getPlaylistExtractor(
                     "https://www.youtube.com/watch?v=" + VIDEO_ID_OF_CHANNEL

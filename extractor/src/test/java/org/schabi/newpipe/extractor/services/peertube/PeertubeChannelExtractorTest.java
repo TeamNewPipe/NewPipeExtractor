@@ -3,7 +3,7 @@ package org.schabi.newpipe.extractor.services.peertube;
 import org.junit.BeforeClass;
 import org.junit.Ignore;
 import org.junit.Test;
-import org.schabi.newpipe.DownloaderTestImpl;
+import org.schabi.newpipe.downloader.DownloaderTestImpl;
 import org.schabi.newpipe.extractor.NewPipe;
 import org.schabi.newpipe.extractor.channel.ChannelExtractor;
 import org.schabi.newpipe.extractor.exceptions.ParsingException;
@@ -19,16 +19,17 @@ import static org.schabi.newpipe.extractor.services.DefaultTests.*;
  * Test for {@link PeertubeChannelExtractor}
  */
 public class PeertubeChannelExtractorTest {
-    public static class DanDAugeTutoriels implements BaseChannelExtractorTest {
+
+    public static class LaQuadratureDuNet implements BaseChannelExtractorTest {
         private static PeertubeChannelExtractor extractor;
 
         @BeforeClass
         public static void setUp() throws Exception {
             NewPipe.init(DownloaderTestImpl.getInstance());
             // setting instance might break test when running in parallel
-            PeerTube.setInstance(new PeertubeInstance("https://peertube.mastodon.host", "PeerTube on Mastodon.host"));
+            PeerTube.setInstance(new PeertubeInstance("https://framatube.org", "Framatube"));
             extractor = (PeertubeChannelExtractor) PeerTube
-                    .getChannelExtractor("https://peertube.mastodon.host/video-channels/7682d9f2-07be-4622-862e-93ec812e2ffa");
+                    .getChannelExtractor("https://framatube.org/video-channels/lqdn_channel@video.lqdn.fr/videos");
             extractor.fetchPage();
         }
 
@@ -43,22 +44,22 @@ public class PeertubeChannelExtractorTest {
 
         @Test
         public void testName() throws ParsingException {
-            assertEquals("Dan d'Auge tutoriels", extractor.getName());
+            assertEquals("La Quadrature du Net", extractor.getName());
         }
 
         @Test
         public void testId() throws ParsingException {
-            assertEquals("video-channels/7682d9f2-07be-4622-862e-93ec812e2ffa", extractor.getId());
+            assertEquals("video-channels/lqdn_channel@video.lqdn.fr", extractor.getId());
         }
 
         @Test
         public void testUrl() throws ParsingException {
-            assertEquals("https://peertube.mastodon.host/video-channels/7682d9f2-07be-4622-862e-93ec812e2ffa", extractor.getUrl());
+            assertEquals("https://framatube.org/video-channels/lqdn_channel@video.lqdn.fr", extractor.getUrl());
         }
 
         @Test
         public void testOriginalUrl() throws ParsingException {
-            assertEquals("https://peertube.mastodon.host/video-channels/7682d9f2-07be-4622-862e-93ec812e2ffa", extractor.getOriginalUrl());
+            assertEquals("https://framatube.org/video-channels/lqdn_channel@video.lqdn.fr/videos", extractor.getOriginalUrl());
         }
 
         /*//////////////////////////////////////////////////////////////////////////
@@ -86,12 +87,12 @@ public class PeertubeChannelExtractorTest {
 
         @Test
         public void testParentChannelName() throws ParsingException {
-            assertEquals("libux", extractor.getParentChannelName());
+            assertEquals("lqdn", extractor.getParentChannelName());
         }
 
         @Test
         public void testParentChannelUrl() throws ParsingException {
-            assertEquals("https://peertube.mastodon.host/accounts/libux", extractor.getParentChannelUrl());
+            assertEquals("https://video.lqdn.fr/accounts/lqdn", extractor.getParentChannelUrl());
         }
 
         @Test
@@ -111,25 +112,26 @@ public class PeertubeChannelExtractorTest {
 
         @Test
         public void testFeedUrl() throws ParsingException {
-            assertEquals("https://peertube.mastodon.host/feeds/videos.xml?videoChannelId=1361", extractor.getFeedUrl());
+            assertEquals("https://framatube.org/feeds/videos.xml?videoChannelId=1126", extractor.getFeedUrl());
         }
 
         @Test
         public void testSubscriberCount() throws ParsingException {
-            assertTrue("Wrong subscriber count", extractor.getSubscriberCount() >= 4);
+            assertTrue("Wrong subscriber count", extractor.getSubscriberCount() >= 230);
         }
     }
 
-    public static class Divers implements BaseChannelExtractorTest {
+    public static class ChatSceptique implements BaseChannelExtractorTest {
+
         private static PeertubeChannelExtractor extractor;
 
         @BeforeClass
         public static void setUp() throws Exception {
             NewPipe.init(DownloaderTestImpl.getInstance());
             // setting instance might break test when running in parallel
-            PeerTube.setInstance(new PeertubeInstance("https://peertube.mastodon.host", "PeerTube on Mastodon.host"));
+            PeerTube.setInstance(new PeertubeInstance("https://framatube.org", "Framatube"));
             extractor = (PeertubeChannelExtractor) PeerTube
-                    .getChannelExtractor("https://peertube.mastodon.host/api/v1/video-channels/35080089-79b6-45fc-96ac-37e4d46a4457");
+                    .getChannelExtractor("https://framatube.org/api/v1/video-channels/chatsceptique@skeptikon.fr");
             extractor.fetchPage();
         }
 
@@ -154,22 +156,22 @@ public class PeertubeChannelExtractorTest {
 
         @Test
         public void testName() throws ParsingException {
-            assertEquals("Divers", extractor.getName());
+            assertEquals("Chat Sceptique", extractor.getName());
         }
 
         @Test
         public void testId() throws ParsingException {
-            assertEquals("video-channels/35080089-79b6-45fc-96ac-37e4d46a4457", extractor.getId());
+            assertEquals("video-channels/chatsceptique@skeptikon.fr", extractor.getId());
         }
 
         @Test
         public void testUrl() throws ParsingException {
-            assertEquals("https://peertube.mastodon.host/video-channels/35080089-79b6-45fc-96ac-37e4d46a4457", extractor.getUrl());
+            assertEquals("https://framatube.org/video-channels/chatsceptique@skeptikon.fr", extractor.getUrl());
         }
 
         @Test
         public void testOriginalUrl() throws ParsingException {
-            assertEquals("https://peertube.mastodon.host/api/v1/video-channels/35080089-79b6-45fc-96ac-37e4d46a4457", extractor.getOriginalUrl());
+            assertEquals("https://framatube.org/api/v1/video-channels/chatsceptique@skeptikon.fr", extractor.getOriginalUrl());
         }
 
         /*//////////////////////////////////////////////////////////////////////////
@@ -197,12 +199,12 @@ public class PeertubeChannelExtractorTest {
 
         @Test
         public void testParentChannelName() throws ParsingException {
-            assertEquals("booteille", extractor.getParentChannelName());
+            assertEquals("nathan", extractor.getParentChannelName());
         }
 
         @Test
         public void testParentChannelUrl() throws ParsingException {
-            assertEquals("https://peertube.mastodon.host/accounts/booteille", extractor.getParentChannelUrl());
+            assertEquals("https://skeptikon.fr/accounts/nathan", extractor.getParentChannelUrl());
         }
 
         @Test
@@ -215,20 +217,19 @@ public class PeertubeChannelExtractorTest {
             assertIsSecureUrl(extractor.getAvatarUrl());
         }
 
-        @Ignore
         @Test
         public void testBannerUrl() throws ParsingException {
-            assertIsSecureUrl(extractor.getBannerUrl());
+            assertNull(extractor.getBannerUrl());
         }
 
         @Test
         public void testFeedUrl() throws ParsingException {
-            assertEquals("https://peertube.mastodon.host/feeds/videos.xml?videoChannelId=1227", extractor.getFeedUrl());
+            assertEquals("https://framatube.org/feeds/videos.xml?videoChannelId=137", extractor.getFeedUrl());
         }
 
         @Test
         public void testSubscriberCount() throws ParsingException {
-            assertTrue("Wrong subscriber count", extractor.getSubscriberCount() >= 2);
+            assertTrue("Wrong subscriber count", extractor.getSubscriberCount() >= 700);
         }
     }
 }

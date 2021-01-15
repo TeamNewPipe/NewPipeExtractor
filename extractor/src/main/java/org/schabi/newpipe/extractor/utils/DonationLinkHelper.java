@@ -11,7 +11,7 @@ public class DonationLinkHelper {
     }
 
     public enum AffiliateService {
-        NO_AFILIATE,
+        NO_AFFILIATE,
         AMAZON,
     }
 
@@ -33,7 +33,7 @@ public class DonationLinkHelper {
         URL url = new URL(fixLink(link));
         switch (url.getHost()) {
             case "amzn.to": return AffiliateService.AMAZON;
-            default: return AffiliateService.NO_AFILIATE;
+            default: return AffiliateService.NO_AFFILIATE;
         }
     }
 

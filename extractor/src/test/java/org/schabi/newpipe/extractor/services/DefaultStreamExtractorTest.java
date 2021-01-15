@@ -2,6 +2,7 @@ package org.schabi.newpipe.extractor.services;
 
 import org.junit.Test;
 import org.schabi.newpipe.extractor.MediaFormat;
+import org.schabi.newpipe.extractor.MetaInfo;
 import org.schabi.newpipe.extractor.localization.DateWrapper;
 import org.schabi.newpipe.extractor.stream.AudioStream;
 import org.schabi.newpipe.extractor.stream.Description;
@@ -15,9 +16,12 @@ import org.schabi.newpipe.extractor.stream.VideoStream;
 import javax.annotation.Nullable;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
+import java.net.MalformedURLException;
+import java.net.URL;
 import java.util.Collections;
 import java.util.List;
 import java.util.Locale;
+import java.util.stream.Collectors;
 
 import static org.hamcrest.CoreMatchers.containsString;
 import static org.hamcrest.MatcherAssert.assertThat;
@@ -66,6 +70,8 @@ public abstract class DefaultStreamExtractorTest extends DefaultExtractorTest<St
     public Locale expectedLanguageInfo() { return null; } // default: no language info available
     public List<String> expectedTags() { return Collections.emptyList(); } // default: no tags
     public String expectedSupportInfo() { return ""; } // default: no support info available
+    public int expectedStreamSegmentsCount() { return -1; } // return 0 or greater to test (default is -1 to ignore)
+    public List<MetaInfo> expectedMetaInfo() throws MalformedURLException { return Collections.emptyList(); } // default: no metadata info available
 
     @Test
     @Override
@@ -332,6 +338,8 @@ public abstract class DefaultStreamExtractorTest extends DefaultExtractorTest<St
                     assertIsValidUrl(url);
                     assertIsSecureUrl(url);
                 }
+                assertTrue(f.getDurationPerFrame() > 0);
+                assertEquals(f.getFrameBoundsAt(0)[3], f.getFrameWidth());
             }
         } else {
             assertTrue(frames.isEmpty());
@@ -378,5 +386,43 @@ public abstract class DefaultStreamExtractorTest extends DefaultExtractorTest<St
     @Override
     public void testSupportInfo() throws Exception {
         assertEquals(expectedSupportInfo(), extractor().getSupportInfo());
+    }
+
+    @Test
+    public void testStreamSegmentsCount() throws Exception {
+        if (expectedStreamSegmentsCount() >= 0) {
+            assertEquals(expectedStreamSegmentsCount(), extractor().getStreamSegments().size());
+        }
+    }
+
+    /**
+     * @see DefaultSearchExtractorTest#testMetaInfo()
+     */
+    @Test
+    public void testMetaInfo() throws Exception {
+        final List<MetaInfo> metaInfoList = extractor().getMetaInfo();
+        final List<MetaInfo> expectedMetaInfoList = expectedMetaInfo();
+
+        for (final MetaInfo expectedMetaInfo : expectedMetaInfoList) {
+            final List<String> texts = metaInfoList.stream()
+                    .map((metaInfo) -> metaInfo.getContent().getContent())
+                    .collect(Collectors.toList());
+            final List<String> titles = metaInfoList.stream().map(MetaInfo::getTitle).collect(Collectors.toList());
+            final List<URL> urls = metaInfoList.stream().flatMap(info -> info.getUrls().stream())
+                    .collect(Collectors.toList());
+            final List<String> urlTexts = metaInfoList.stream().flatMap(info -> info.getUrlTexts().stream())
+                    .collect(Collectors.toList());
+
+            assertTrue(texts.contains(expectedMetaInfo.getContent().getContent()));
+            assertTrue(titles.contains(expectedMetaInfo.getTitle()));
+
+            for (final String expectedUrlText : expectedMetaInfo.getUrlTexts()) {
+                assertTrue(urlTexts.contains(expectedUrlText));
+            }
+            for (final URL expectedUrl : expectedMetaInfo.getUrls()) {
+                assertTrue(urls.contains(expectedUrl));
+            }
+        }
+
     }
 }

@@ -7,7 +7,7 @@ import org.schabi.newpipe.extractor.channel.ChannelInfoItemExtractor;
 import org.schabi.newpipe.extractor.exceptions.ParsingException;
 
 public class MediaCCCConferenceInfoItemExtractor implements ChannelInfoItemExtractor {
-    private JsonObject conference;
+    private final JsonObject conference;
 
     public MediaCCCConferenceInfoItemExtractor(final JsonObject conference) {
         this.conference = conference;

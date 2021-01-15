@@ -4,6 +4,7 @@ import com.grack.nanojson.JsonObject;
 import com.grack.nanojson.JsonParser;
 
 import org.schabi.newpipe.extractor.InfoItem;
+import org.schabi.newpipe.extractor.MetaInfo;
 import org.schabi.newpipe.extractor.Page;
 import org.schabi.newpipe.extractor.StreamingService;
 import org.schabi.newpipe.extractor.downloader.Downloader;
@@ -17,6 +18,8 @@ import org.schabi.newpipe.extractor.services.peertube.PeertubeParsingHelper;
 import org.schabi.newpipe.extractor.utils.Utils;
 
 import java.io.IOException;
+import java.util.Collections;
+import java.util.List;
 
 import javax.annotation.Nonnull;
 
@@ -27,8 +30,17 @@ import static org.schabi.newpipe.extractor.services.peertube.PeertubeParsingHelp
 import static org.schabi.newpipe.extractor.utils.Utils.isNullOrEmpty;
 
 public class PeertubeSearchExtractor extends SearchExtractor {
+
+    // if we should use PeertubeSepiaStreamInfoItemExtractor
+    private boolean sepia;
+
     public PeertubeSearchExtractor(StreamingService service, SearchQueryHandler linkHandler) {
+        this(service, linkHandler, false);
+    }
+
+    public PeertubeSearchExtractor(StreamingService service, SearchQueryHandler linkHandler, boolean sepia) {
         super(service, linkHandler);
+        this.sepia = sepia;
     }
 
     @Nonnull
@@ -40,6 +52,12 @@ public class PeertubeSearchExtractor extends SearchExtractor {
     @Override
     public boolean isCorrectedSearch() {
         return false;
+    }
+
+    @Nonnull
+    @Override
+    public List<MetaInfo> getMetaInfo() {
+        return Collections.emptyList();
     }
 
     @Override
@@ -70,7 +88,7 @@ public class PeertubeSearchExtractor extends SearchExtractor {
             final long total = json.getLong("total");
 
             final InfoItemsSearchCollector collector = new InfoItemsSearchCollector(getServiceId());
-            collectStreamsFrom(collector, json, getBaseUrl());
+            collectStreamsFrom(collector, json, getBaseUrl(), sepia);
 
             return new InfoItemsPage<>(collector, PeertubeParsingHelper.getNextPage(page.getUrl(), total));
         } else {

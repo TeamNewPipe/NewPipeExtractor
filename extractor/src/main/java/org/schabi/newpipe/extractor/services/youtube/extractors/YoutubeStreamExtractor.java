@@ -13,6 +13,7 @@ import org.mozilla.javascript.Context;
 import org.mozilla.javascript.Function;
 import org.mozilla.javascript.ScriptableObject;
 import org.schabi.newpipe.extractor.MediaFormat;
+import org.schabi.newpipe.extractor.MetaInfo;
 import org.schabi.newpipe.extractor.NewPipe;
 import org.schabi.newpipe.extractor.StreamingService;
 import org.schabi.newpipe.extractor.downloader.Downloader;
@@ -35,6 +36,7 @@ import org.schabi.newpipe.extractor.stream.Stream;
 import org.schabi.newpipe.extractor.stream.StreamExtractor;
 import org.schabi.newpipe.extractor.stream.StreamInfoItemExtractor;
 import org.schabi.newpipe.extractor.stream.StreamInfoItemsCollector;
+import org.schabi.newpipe.extractor.stream.StreamSegment;
 import org.schabi.newpipe.extractor.stream.StreamType;
 import org.schabi.newpipe.extractor.stream.SubtitlesStream;
 import org.schabi.newpipe.extractor.stream.VideoStream;
@@ -44,6 +46,9 @@ import org.schabi.newpipe.extractor.utils.Utils;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.io.IOException;
+import java.io.UnsupportedEncodingException;
+import java.net.MalformedURLException;
+import java.net.URL;
 import java.time.LocalDate;
 import java.time.OffsetDateTime;
 import java.time.format.DateTimeFormatter;
@@ -837,8 +842,8 @@ public class YoutubeStreamExtractor extends StreamExtractor {
             if (playerJsUrl.startsWith("//")) {
                 playerJsUrl = HTTPS + playerJsUrl;
             } else if (playerJsUrl.startsWith("/")) {
-                // sometimes https://youtube.com part has to be added manually
-                playerJsUrl = HTTPS + "//youtube.com" + playerJsUrl;
+                // sometimes https://www.youtube.com part has to be added manually
+                playerJsUrl = HTTPS + "//www.youtube.com" + playerJsUrl;
             }
 
             cachedDeobfuscationCode = loadDeobfuscationCode(playerJsUrl);
@@ -987,7 +992,7 @@ public class YoutubeStreamExtractor extends StreamExtractor {
 
             for (int i = 1; i < spec.length; ++i) {
                 final String[] parts = spec[i].split("#");
-                if (parts.length != 8) {
+                if (parts.length != 8 || Integer.parseInt(parts[5]) == 0) {
                     continue;
                 }
                 final int frameWidth = Integer.parseInt(parts[0]);
@@ -1011,6 +1016,7 @@ public class YoutubeStreamExtractor extends StreamExtractor {
                         frameWidth,
                         frameHeight,
                         totalCount,
+                        Integer.parseInt(parts[5]),
                         framesPerPageX,
                         framesPerPageY
                 ));
@@ -1061,5 +1067,68 @@ public class YoutubeStreamExtractor extends StreamExtractor {
     @Override
     public String getSupportInfo() {
         return "";
+    }
+
+    @Nonnull
+    @Override
+    public List<StreamSegment> getStreamSegments() throws ParsingException {
+        final ArrayList<StreamSegment> segments = new ArrayList<>();
+        if (initialData.has("engagementPanels")) {
+            final JsonArray panels = initialData.getArray("engagementPanels");
+            JsonArray segmentsArray = null;
+
+            // Search for correct panel containing the data
+            for (int i = 0; i < panels.size(); i++) {
+                if (panels.getObject(i).getObject("engagementPanelSectionListRenderer")
+                        .getString("panelIdentifier").equals("engagement-panel-macro-markers")) {
+                    segmentsArray = panels.getObject(i).getObject("engagementPanelSectionListRenderer")
+                            .getObject("content").getObject("macroMarkersListRenderer").getArray("contents");
+                    break;
+                }
+            }
+
+            if (segmentsArray != null) {
+                final long duration = getLength();
+                for (final Object object : segmentsArray) {
+                    final JsonObject segmentJson = ((JsonObject) object).getObject("macroMarkersListItemRenderer");
+
+                    final int startTimeSeconds = segmentJson.getObject("onTap").getObject("watchEndpoint")
+                            .getInt("startTimeSeconds", -1);
+
+                    if (startTimeSeconds == -1) {
+                        throw new ParsingException("Could not get stream segment start time.");
+                    }
+                    if (startTimeSeconds > duration) {
+                        break;
+                    }
+
+                    final String title = getTextFromObject(segmentJson.getObject("title"));
+                    if (isNullOrEmpty(title)) {
+                        throw new ParsingException("Could not get stream segment title.");
+                    }
+
+                    final StreamSegment segment = new StreamSegment(title, startTimeSeconds);
+                    segment.setUrl(getUrl() + "?t=" + startTimeSeconds);
+                    if (segmentJson.has("thumbnail")) {
+                        final JsonArray previewsArray = segmentJson.getObject("thumbnail").getArray("thumbnails");
+                        if (!previewsArray.isEmpty()) {
+                            // Assume that the thumbnail with the highest resolution is at the last position
+                            final String url = previewsArray.getObject(previewsArray.size() - 1).getString("url");
+                            segment.setPreviewUrl(fixThumbnailUrl(url));
+                        }
+                    }
+                    segments.add(segment);
+                }
+            }
+        }
+        return segments;
+    }
+
+    @Nonnull
+    @Override
+    public List<MetaInfo> getMetaInfo() throws ParsingException {
+        return YoutubeParsingHelper.getMetaInfo(
+                initialData.getObject("contents").getObject("twoColumnWatchNextResults")
+                .getObject("results").getObject("results").getArray("contents"));
     }
 }

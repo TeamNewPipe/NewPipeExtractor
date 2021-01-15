@@ -2,7 +2,7 @@ package org.schabi.newpipe.extractor.services.media_ccc;
 
 import org.junit.BeforeClass;
 import org.junit.Test;
-import org.schabi.newpipe.DownloaderTestImpl;
+import org.schabi.newpipe.downloader.DownloaderTestImpl;
 import org.schabi.newpipe.extractor.NewPipe;
 import org.schabi.newpipe.extractor.StreamingService;
 import org.schabi.newpipe.extractor.services.DefaultStreamExtractorTest;
@@ -57,6 +57,7 @@ public class MediaCCCStreamExtractorTest {
         @Override public boolean expectedHasSubtitles() { return false; }
         @Override public boolean expectedHasFrames() { return false; }
         @Override public List<String> expectedTags() { return Arrays.asList("gpn18", "105"); }
+        @Override public int expectedStreamSegmentsCount() { return 0; }
 
         @Override
         @Test
