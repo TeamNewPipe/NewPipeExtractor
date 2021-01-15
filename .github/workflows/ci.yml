@@ -26,4 +26,4 @@ jobs:
           restore-keys: ${{ runner.os }}-gradle
 
       - name: Build and run Tests
-        run: ./gradlew check --stacktrace
+        run: ./gradlew check --stacktrace -Ddownloader=MOCK
