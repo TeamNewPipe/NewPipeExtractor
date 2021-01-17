@@ -27,6 +27,10 @@ import javax.annotation.Nonnull;
  * The files <b>must</b> be created on the local dev environment
  * and recreated when the requests made by a test class change.
  * </p>
+ * <p>
+ * Run the test class as a whole and not each test separately.
+ * Make sure the requests made by a class are unique.
+ * </p>
  */
 class RecordingDownloader extends Downloader {
 
