@@ -13,8 +13,6 @@ import org.schabi.newpipe.extractor.stream.Description;
 import org.schabi.newpipe.extractor.utils.Parser;
 import org.schabi.newpipe.extractor.utils.Utils;
 
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.net.MalformedURLException;
@@ -24,7 +22,15 @@ import java.time.LocalDate;
 import java.time.OffsetDateTime;
 import java.time.ZoneOffset;
 import java.time.format.DateTimeParseException;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Objects;
+
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 
 import static org.schabi.newpipe.extractor.NewPipe.getDownloader;
 import static org.schabi.newpipe.extractor.utils.JsonUtils.EMPTY_STRING;
@@ -349,7 +355,7 @@ public class YoutubeParsingHelper {
      *
      * Quick-and-dirty solution to reset global state in between test classes.
      */
-    static void resetClientVersionAndKey() {
+    public static void resetClientVersionAndKey() {
         clientVersion = null;
         key = null;
     }
