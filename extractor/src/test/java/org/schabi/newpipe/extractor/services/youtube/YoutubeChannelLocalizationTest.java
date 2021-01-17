@@ -1,8 +1,7 @@
 package org.schabi.newpipe.extractor.services.youtube;
 
-import org.junit.Ignore;
 import org.junit.Test;
-import org.schabi.newpipe.downloader.DownloaderTestImpl;
+import org.schabi.newpipe.downloader.DownloaderFactory;
 import org.schabi.newpipe.extractor.ListExtractor;
 import org.schabi.newpipe.extractor.NewPipe;
 import org.schabi.newpipe.extractor.channel.ChannelExtractor;
@@ -23,14 +22,15 @@ import static org.schabi.newpipe.extractor.services.DefaultTests.defaultTestRela
 /**
  * A class that tests multiple channels and ranges of "time ago".
  */
-@Ignore("Should be ran manually from time to time, as it's too time consuming.")
 public class YoutubeChannelLocalizationTest {
-    private static final boolean DEBUG = true;
+    private static final String RESOURCE_PATH = DownloaderFactory.RESOURCE_PATH + "services/youtube/extractor/channel/";
+    private static final boolean DEBUG = false;
     private final DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
 
     @Test
     public void testAllSupportedLocalizations() throws Exception {
-        NewPipe.init(DownloaderTestImpl.getInstance());
+        YoutubeParsingHelper.resetClientVersionAndKey();
+        NewPipe.init(new DownloaderFactory().getDownloader(RESOURCE_PATH + "localization"));
 
         testLocalizationsFor("https://www.youtube.com/user/NBCNews");
         testLocalizationsFor("https://www.youtube.com/channel/UCcmpeVbSSQlZRvHfdC-CRwg/videos");
