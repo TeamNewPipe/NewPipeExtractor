@@ -2,7 +2,7 @@ package org.schabi.newpipe.extractor.services.youtube;
 
 import org.junit.BeforeClass;
 import org.junit.Test;
-import org.schabi.newpipe.downloader.DownloaderFactory;
+import org.schabi.newpipe.downloader.DownloaderTestImpl;
 import org.schabi.newpipe.extractor.NewPipe;
 import org.schabi.newpipe.extractor.ServiceList;
 import org.schabi.newpipe.extractor.linkhandler.LinkHandlerFactory;
@@ -12,7 +12,6 @@ import org.schabi.newpipe.extractor.subscription.SubscriptionItem;
 
 import java.io.ByteArrayInputStream;
 import java.io.FileInputStream;
-import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.util.Arrays;
 import java.util.List;
@@ -28,15 +27,14 @@ import static org.schabi.newpipe.FileUtils.resolveTestResource;
  */
 public class YoutubeSubscriptionExtractorTest {
 
-    private static final String RESOURCE_PATH = DownloaderFactory.RESOURCE_PATH + "services/youtube/extractor/subscription/";
 
     private static YoutubeSubscriptionExtractor subscriptionExtractor;
     private static LinkHandlerFactory urlHandler;
 
     @BeforeClass
-    public static void setupClass() throws IOException {
-        YoutubeParsingHelper.resetClientVersionAndKey();
-        NewPipe.init(new DownloaderFactory().getDownloader(RESOURCE_PATH));
+    public static void setupClass() {
+        //Doesn't make network requests
+        NewPipe.init(DownloaderTestImpl.getInstance());
         subscriptionExtractor = new YoutubeSubscriptionExtractor(ServiceList.YouTube);
         urlHandler = ServiceList.YouTube.getChannelLHFactory();
     }
