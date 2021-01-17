@@ -17,6 +17,7 @@ import javax.annotation.Nullable;
 import static java.util.Collections.singletonList;
 import static org.schabi.newpipe.extractor.ServiceList.YouTube;
 
+// Doesn't work with mocks. Makes request with different `dataToSend` i think
 public class YoutubeMusicSearchExtractorTest {
     public static class MusicSongs extends DefaultSearchExtractorTest {
         private static SearchExtractor extractor;
