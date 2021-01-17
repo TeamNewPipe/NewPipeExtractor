@@ -1,23 +1,25 @@
 package org.schabi.newpipe.extractor.services.youtube.search;
 
 import org.junit.BeforeClass;
-import org.junit.Ignore;
 import org.junit.Test;
-import org.schabi.newpipe.downloader.DownloaderTestImpl;
-import org.schabi.newpipe.extractor.*;
+import org.schabi.newpipe.downloader.DownloaderFactory;
+import org.schabi.newpipe.extractor.InfoItem;
+import org.schabi.newpipe.extractor.ListExtractor;
+import org.schabi.newpipe.extractor.MetaInfo;
+import org.schabi.newpipe.extractor.NewPipe;
+import org.schabi.newpipe.extractor.StreamingService;
 import org.schabi.newpipe.extractor.search.SearchExtractor;
 import org.schabi.newpipe.extractor.services.DefaultSearchExtractorTest;
-import org.schabi.newpipe.extractor.services.youtube.YoutubeService;
+import org.schabi.newpipe.extractor.services.youtube.YoutubeParsingHelper;
 import org.schabi.newpipe.extractor.stream.Description;
-
-import javax.annotation.Nullable;
 
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
+
+import javax.annotation.Nullable;
 
 import static java.util.Collections.singletonList;
 import static junit.framework.TestCase.assertFalse;
@@ -31,13 +33,17 @@ import static org.schabi.newpipe.extractor.services.youtube.linkHandler.YoutubeS
 import static org.schabi.newpipe.extractor.services.youtube.linkHandler.YoutubeSearchQueryHandlerFactory.VIDEOS;
 
 public class YoutubeSearchExtractorTest {
+
+    private static final String RESOURCE_PATH = DownloaderFactory.RESOURCE_PATH + "services/youtube/extractor/search/";
+
     public static class All extends DefaultSearchExtractorTest {
         private static SearchExtractor extractor;
         private static final String QUERY = "test";
 
         @BeforeClass
         public static void setUp() throws Exception {
-            NewPipe.init(DownloaderTestImpl.getInstance());
+            YoutubeParsingHelper.resetClientVersionAndKey();
+            NewPipe.init(new DownloaderFactory().getDownloader(RESOURCE_PATH + "all"));
             extractor = YouTube.getSearchExtractor(QUERY);
             extractor.fetchPage();
         }
@@ -58,7 +64,8 @@ public class YoutubeSearchExtractorTest {
 
         @BeforeClass
         public static void setUp() throws Exception {
-            NewPipe.init(DownloaderTestImpl.getInstance());
+            YoutubeParsingHelper.resetClientVersionAndKey();
+            NewPipe.init(new DownloaderFactory().getDownloader(RESOURCE_PATH + "channel"));
             extractor = YouTube.getSearchExtractor(QUERY, singletonList(CHANNELS), "");
             extractor.fetchPage();
         }
@@ -81,7 +88,8 @@ public class YoutubeSearchExtractorTest {
 
         @BeforeClass
         public static void setUp() throws Exception {
-            NewPipe.init(DownloaderTestImpl.getInstance());
+            YoutubeParsingHelper.resetClientVersionAndKey();
+            NewPipe.init(new DownloaderFactory().getDownloader(RESOURCE_PATH + "playlist"));
             extractor = YouTube.getSearchExtractor(QUERY, singletonList(PLAYLISTS), "");
             extractor.fetchPage();
         }
@@ -104,7 +112,8 @@ public class YoutubeSearchExtractorTest {
 
         @BeforeClass
         public static void setUp() throws Exception {
-            NewPipe.init(DownloaderTestImpl.getInstance());
+            YoutubeParsingHelper.resetClientVersionAndKey();
+            NewPipe.init(new DownloaderFactory().getDownloader(RESOURCE_PATH + "videos"));
             extractor = YouTube.getSearchExtractor(QUERY, singletonList(VIDEOS), "");
             extractor.fetchPage();
         }
@@ -128,7 +137,8 @@ public class YoutubeSearchExtractorTest {
 
         @BeforeClass
         public static void setUp() throws Exception {
-            NewPipe.init(DownloaderTestImpl.getInstance());
+            YoutubeParsingHelper.resetClientVersionAndKey();
+            NewPipe.init(new DownloaderFactory().getDownloader(RESOURCE_PATH + "suggestions"));
             extractor = YouTube.getSearchExtractor(QUERY, singletonList(VIDEOS), "");
             extractor.fetchPage();
         }
@@ -151,7 +161,8 @@ public class YoutubeSearchExtractorTest {
 
         @BeforeClass
         public static void setUp() throws Exception {
-            NewPipe.init(DownloaderTestImpl.getInstance());
+            YoutubeParsingHelper.resetClientVersionAndKey();
+            NewPipe.init(new DownloaderFactory().getDownloader(RESOURCE_PATH + "corrected"));
             extractor = YouTube.getSearchExtractor(QUERY, singletonList(VIDEOS), "");
             extractor.fetchPage();
         }
@@ -174,7 +185,8 @@ public class YoutubeSearchExtractorTest {
 
         @BeforeClass
         public static void setUp() throws Exception {
-            NewPipe.init(DownloaderTestImpl.getInstance());
+            YoutubeParsingHelper.resetClientVersionAndKey();
+            NewPipe.init(new DownloaderFactory().getDownloader(RESOURCE_PATH + "random"));
             extractor = YouTube.getSearchExtractor(QUERY);
             extractor.fetchPage();
         }
@@ -208,7 +220,8 @@ public class YoutubeSearchExtractorTest {
     public static class PagingTest {
         @Test
         public void duplicatedItemsCheck() throws Exception {
-            NewPipe.init(DownloaderTestImpl.getInstance());
+            YoutubeParsingHelper.resetClientVersionAndKey();
+            NewPipe.init(new DownloaderFactory().getDownloader(RESOURCE_PATH + "paging"));
             final SearchExtractor extractor = YouTube.getSearchExtractor("cirque du soleil", singletonList(VIDEOS), "");
             extractor.fetchPage();
 
@@ -219,14 +232,14 @@ public class YoutubeSearchExtractorTest {
         }
     }
 
-    @Ignore("TODO fix")
     public static class MetaInfoTest extends DefaultSearchExtractorTest {
         private static SearchExtractor extractor;
         private static final String QUERY = "Covid";
 
         @Test
         public void clarificationTest() throws Exception {
-            NewPipe.init(DownloaderTestImpl.getInstance());
+            YoutubeParsingHelper.resetClientVersionAndKey();
+            NewPipe.init(new DownloaderFactory().getDownloader(RESOURCE_PATH + "metaInfo"));
             extractor = YouTube.getSearchExtractor(QUERY, singletonList(VIDEOS), "");
             extractor.fetchPage();
         }

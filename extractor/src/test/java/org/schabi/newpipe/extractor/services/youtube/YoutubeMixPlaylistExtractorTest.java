@@ -1,11 +1,5 @@
 package org.schabi.newpipe.extractor.services.youtube;
 
-import java.io.File;
-import java.io.IOException;
-import java.util.Collections;
-import java.util.HashSet;
-import java.util.Map;
-import java.util.Set;
 import org.hamcrest.MatcherAssert;
 import org.junit.BeforeClass;
 import org.junit.Test;
@@ -26,6 +20,12 @@ import org.schabi.newpipe.extractor.services.youtube.YoutubeMixPlaylistExtractor
 import org.schabi.newpipe.extractor.services.youtube.extractors.YoutubeMixPlaylistExtractor;
 import org.schabi.newpipe.extractor.stream.StreamInfoItem;
 
+import java.io.IOException;
+import java.util.Collections;
+import java.util.HashSet;
+import java.util.Map;
+import java.util.Set;
+
 import static org.hamcrest.CoreMatchers.containsString;
 import static org.hamcrest.CoreMatchers.startsWith;
 import static org.hamcrest.MatcherAssert.assertThat;
@@ -43,7 +43,7 @@ public class YoutubeMixPlaylistExtractorTest {
     private static final String VIDEO_ID = "_AzeUSL9lZc";
     private static final String VIDEO_TITLE =
             "Most Beautiful And Emotional  Piano: Anime Music Shigatsu wa Kimi no Uso OST IMO";
-    private static final String RESOURCE_PATH = DownloaderFactory.RESOURCE_PATH + "services/youtube/mix/";
+    private static final String RESOURCE_PATH = DownloaderFactory.RESOURCE_PATH + "services/youtube/extractor/mix/";
     private static final Map<String, String> dummyCookie
             = Collections.singletonMap(YoutubeMixPlaylistExtractor.COOKIE_NAME, "whatever");
 
@@ -134,9 +134,9 @@ public class YoutubeMixPlaylistExtractorTest {
             YoutubeParsingHelper.resetClientVersionAndKey();
             NewPipe.init(new DownloaderFactory().getDownloader(RESOURCE_PATH + "mixWithIndex"));
             extractor = (YoutubeMixPlaylistExtractor) YouTube
-                .getPlaylistExtractor(
-                    "https://www.youtube.com/watch?v=" + VIDEO_ID_NUMBER_13 + "&list=RD"
-                        + VIDEO_ID + INDEX);
+                    .getPlaylistExtractor(
+                            "https://www.youtube.com/watch?v=" + VIDEO_ID_NUMBER_13 + "&list=RD"
+                                    + VIDEO_ID + INDEX);
             extractor.fetchPage();
         }
 
@@ -165,8 +165,8 @@ public class YoutubeMixPlaylistExtractorTest {
         @Test
         public void getPage() throws Exception {
             final InfoItemsPage<StreamInfoItem> streams = extractor.getPage(
-                new Page("https://www.youtube.com/watch?v=" + VIDEO_ID_NUMBER_13 + "&list=RD"
-                    + VIDEO_ID + INDEX + PBJ, dummyCookie));
+                    new Page("https://www.youtube.com/watch?v=" + VIDEO_ID_NUMBER_13 + "&list=RD"
+                            + VIDEO_ID + INDEX + PBJ, dummyCookie));
             assertFalse(streams.getItems().isEmpty());
             assertTrue(streams.hasNextPage());
         }
@@ -204,9 +204,9 @@ public class YoutubeMixPlaylistExtractorTest {
             YoutubeParsingHelper.resetClientVersionAndKey();
             NewPipe.init(new DownloaderFactory().getDownloader(RESOURCE_PATH + "myMix"));
             extractor = (YoutubeMixPlaylistExtractor) YouTube
-                .getPlaylistExtractor(
-                    "https://www.youtube.com/watch?v=" + VIDEO_ID + "&list=RDMM"
-                        + VIDEO_ID);
+                    .getPlaylistExtractor(
+                            "https://www.youtube.com/watch?v=" + VIDEO_ID + "&list=RDMM"
+                                    + VIDEO_ID);
             extractor.fetchPage();
         }
 
@@ -238,11 +238,12 @@ public class YoutubeMixPlaylistExtractorTest {
         @Test
         public void getPage() throws Exception {
             final InfoItemsPage<StreamInfoItem> streams =
-                extractor.getPage(new Page("https://www.youtube.com/watch?v=" + VIDEO_ID
-                    + "&list=RDMM" + VIDEO_ID + PBJ, dummyCookie));
+                    extractor.getPage(new Page("https://www.youtube.com/watch?v=" + VIDEO_ID
+                            + "&list=RDMM" + VIDEO_ID + PBJ, dummyCookie));
             assertFalse(streams.getItems().isEmpty());
             assertTrue(streams.hasNextPage());
         }
+
         @Test
         public void getContinuations() throws Exception {
             InfoItemsPage<StreamInfoItem> streams = extractor.getInitialPage();
@@ -290,8 +291,8 @@ public class YoutubeMixPlaylistExtractorTest {
         @Test(expected = ExtractionException.class)
         public void invalidVideoId() throws Exception {
             extractor = (YoutubeMixPlaylistExtractor) YouTube
-                .getPlaylistExtractor(
-                    "https://www.youtube.com/watch?v=" + "abcde" + "&list=RD" + "abcde");
+                    .getPlaylistExtractor(
+                            "https://www.youtube.com/watch?v=" + "abcde" + "&list=RD" + "abcde");
             extractor.fetchPage();
             extractor.getName();
         }
@@ -309,9 +310,9 @@ public class YoutubeMixPlaylistExtractorTest {
             YoutubeParsingHelper.resetClientVersionAndKey();
             NewPipe.init(new DownloaderFactory().getDownloader(RESOURCE_PATH + "channelMix"));
             extractor = (YoutubeMixPlaylistExtractor) YouTube
-                .getPlaylistExtractor(
-                    "https://www.youtube.com/watch?v=" + VIDEO_ID_OF_CHANNEL
-                        + "&list=RDCM" + CHANNEL_ID);
+                    .getPlaylistExtractor(
+                            "https://www.youtube.com/watch?v=" + VIDEO_ID_OF_CHANNEL
+                                    + "&list=RDCM" + CHANNEL_ID);
             extractor.fetchPage();
         }
 
@@ -339,8 +340,8 @@ public class YoutubeMixPlaylistExtractorTest {
         @Test
         public void getPage() throws Exception {
             final InfoItemsPage<StreamInfoItem> streams = extractor.getPage(
-                new Page("https://www.youtube.com/watch?v=" + VIDEO_ID_OF_CHANNEL
-                    + "&list=RDCM" + CHANNEL_ID + PBJ, dummyCookie));
+                    new Page("https://www.youtube.com/watch?v=" + VIDEO_ID_OF_CHANNEL
+                            + "&list=RDCM" + CHANNEL_ID + PBJ, dummyCookie));
             assertFalse(streams.getItems().isEmpty());
             assertTrue(streams.hasNextPage());
         }

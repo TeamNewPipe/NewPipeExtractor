@@ -1,10 +1,11 @@
 package org.schabi.newpipe.extractor.services.youtube.stream;
 
 import org.junit.BeforeClass;
-import org.schabi.newpipe.downloader.DownloaderTestImpl;
+import org.schabi.newpipe.downloader.DownloaderFactory;
 import org.schabi.newpipe.extractor.NewPipe;
 import org.schabi.newpipe.extractor.StreamingService;
 import org.schabi.newpipe.extractor.services.DefaultStreamExtractorTest;
+import org.schabi.newpipe.extractor.services.youtube.YoutubeParsingHelper;
 import org.schabi.newpipe.extractor.stream.StreamExtractor;
 import org.schabi.newpipe.extractor.stream.StreamType;
 
@@ -16,6 +17,7 @@ import javax.annotation.Nullable;
 import static org.schabi.newpipe.extractor.ServiceList.YouTube;
 
 public class YoutubeStreamExtractorLivestreamTest extends DefaultStreamExtractorTest {
+    private static final String RESOURCE_PATH = DownloaderFactory.RESOURCE_PATH + "services/youtube/extractor/stream/";
     private static final String ID = "5qap5aO4i9A";
     private static final int TIMESTAMP = 1737;
     private static final String URL = YoutubeStreamExtractorDefaultTest.BASE_URL + ID + "&t=" + TIMESTAMP;
@@ -23,7 +25,8 @@ public class YoutubeStreamExtractorLivestreamTest extends DefaultStreamExtractor
 
     @BeforeClass
     public static void setUp() throws Exception {
-        NewPipe.init(DownloaderTestImpl.getInstance());
+        YoutubeParsingHelper.resetClientVersionAndKey();
+        NewPipe.init(new DownloaderFactory().getDownloader(RESOURCE_PATH + "live"));
         extractor = YouTube.getStreamExtractor(URL);
         extractor.fetchPage();
     }

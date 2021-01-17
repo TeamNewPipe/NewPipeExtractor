@@ -2,7 +2,7 @@ package org.schabi.newpipe.extractor.services.youtube;
 
 import org.junit.BeforeClass;
 import org.junit.Test;
-import org.schabi.newpipe.downloader.DownloaderTestImpl;
+import org.schabi.newpipe.downloader.DownloaderFactory;
 import org.schabi.newpipe.extractor.NewPipe;
 import org.schabi.newpipe.extractor.exceptions.ExtractionException;
 import org.schabi.newpipe.extractor.exceptions.ParsingException;
@@ -13,9 +13,13 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
 public class YoutubeParsingHelperTest {
+
+    private static final String RESOURCE_PATH = DownloaderFactory.RESOURCE_PATH + "services/youtube/";
+
     @BeforeClass
-    public static void setUp() {
-        NewPipe.init(DownloaderTestImpl.getInstance());
+    public static void setUp() throws IOException {
+        YoutubeParsingHelper.resetClientVersionAndKey();
+        NewPipe.init(new DownloaderFactory().getDownloader(RESOURCE_PATH + "youtubeParsingHelper"));
     }
 
     @Test
