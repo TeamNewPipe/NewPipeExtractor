@@ -13,11 +13,7 @@ import org.schabi.newpipe.extractor.exceptions.ContentNotAvailableException;
 import org.schabi.newpipe.extractor.exceptions.ParsingException;
 import org.schabi.newpipe.extractor.playlist.PlaylistExtractor;
 import org.schabi.newpipe.extractor.services.BasePlaylistExtractorTest;
-import org.schabi.newpipe.extractor.services.youtube.YoutubePlaylistExtractorTest.ContinuationsTests;
-import org.schabi.newpipe.extractor.services.youtube.YoutubePlaylistExtractorTest.HugePlaylist;
-import org.schabi.newpipe.extractor.services.youtube.YoutubePlaylistExtractorTest.LearningPlaylist;
-import org.schabi.newpipe.extractor.services.youtube.YoutubePlaylistExtractorTest.NotAvailable;
-import org.schabi.newpipe.extractor.services.youtube.YoutubePlaylistExtractorTest.TimelessPopHits;
+import org.schabi.newpipe.extractor.services.youtube.YoutubePlaylistExtractorTest.*;
 import org.schabi.newpipe.extractor.services.youtube.extractors.YoutubePlaylistExtractor;
 import org.schabi.newpipe.extractor.stream.StreamInfoItem;
 
@@ -39,7 +35,7 @@ import static org.schabi.newpipe.extractor.services.DefaultTests.defaultTestRela
  */
 @RunWith(Suite.class)
 @SuiteClasses({NotAvailable.class, TimelessPopHits.class, HugePlaylist.class,
-    LearningPlaylist.class, ContinuationsTests.class})
+        LearningPlaylist.class, ContinuationsTests.class})
 public class YoutubePlaylistExtractorTest {
 
     private static final String RESOURCE_PATH = DownloaderFactory.RESOURCE_PATH + "services/youtube/extractor/playlist/";
@@ -163,6 +159,11 @@ public class YoutubePlaylistExtractorTest {
         public void testStreamCount() throws Exception {
             assertTrue("Error in the streams count", extractor.getStreamCount() > 100);
         }
+
+        @Override
+        public void testUploaderVerified() throws Exception {
+            assertFalse(extractor.isUploaderVerified());
+        }
     }
 
     public static class HugePlaylist implements BasePlaylistExtractorTest {
@@ -276,6 +277,11 @@ public class YoutubePlaylistExtractorTest {
         public void testStreamCount() throws Exception {
             assertTrue("Error in the streams count", extractor.getStreamCount() > 100);
         }
+
+        @Override
+        public void testUploaderVerified() throws Exception {
+            assertTrue(extractor.isUploaderVerified());
+        }
     }
 
     public static class LearningPlaylist implements BasePlaylistExtractorTest {
@@ -375,6 +381,11 @@ public class YoutubePlaylistExtractorTest {
         public void testStreamCount() throws Exception {
             assertTrue("Error in the streams count", extractor.getStreamCount() > 40);
         }
+
+        @Override
+        public void testUploaderVerified() throws Exception {
+            assertTrue(extractor.isUploaderVerified());
+        }
     }
 
     public static class ContinuationsTests {
@@ -388,8 +399,8 @@ public class YoutubePlaylistExtractorTest {
         @Test
         public void testNoContinuations() throws Exception {
             final YoutubePlaylistExtractor extractor = (YoutubePlaylistExtractor) YouTube
-                .getPlaylistExtractor(
-                    "https://www.youtube.com/playlist?list=PLXJg25X-OulsVsnvZ7RVtSDW-id9_RzAO");
+                    .getPlaylistExtractor(
+                            "https://www.youtube.com/playlist?list=PLXJg25X-OulsVsnvZ7RVtSDW-id9_RzAO");
             extractor.fetchPage();
 
             assertNoMoreItems(extractor);
@@ -398,12 +409,12 @@ public class YoutubePlaylistExtractorTest {
         @Test
         public void testOnlySingleContinuation() throws Exception {
             final YoutubePlaylistExtractor extractor = (YoutubePlaylistExtractor) YouTube
-                .getPlaylistExtractor(
-                    "https://www.youtube.com/playlist?list=PLjgwFL8urN2DFRuRkFTkmtHjyoNWHHdZX");
+                    .getPlaylistExtractor(
+                            "https://www.youtube.com/playlist?list=PLjgwFL8urN2DFRuRkFTkmtHjyoNWHHdZX");
             extractor.fetchPage();
 
             final ListExtractor.InfoItemsPage<StreamInfoItem> page = defaultTestMoreItems(
-                extractor);
+                    extractor);
             assertFalse("More items available when it shouldn't", page.hasNextPage());
         }
     }

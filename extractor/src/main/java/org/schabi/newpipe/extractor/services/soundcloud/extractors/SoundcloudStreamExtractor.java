@@ -131,6 +131,11 @@ public class SoundcloudStreamExtractor extends StreamExtractor {
         return SoundcloudParsingHelper.getUploaderName(track);
     }
 
+    @Override
+    public boolean isUploaderVerified() throws ParsingException {
+        return track.getObject("user").getBoolean("verified");
+    }
+
     @Nonnull
     @Override
     public String getUploaderAvatarUrl() {

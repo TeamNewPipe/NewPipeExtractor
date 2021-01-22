@@ -50,6 +50,11 @@ public class YoutubeFeedInfoItemExtractor implements StreamInfoItemExtractor {
         return entryElement.select("author > uri").first().text();
     }
 
+    @Override
+    public boolean isUploaderVerified() throws ParsingException {
+        return false;
+    }
+
     @Nullable
     @Override
     public String getTextualUploadDate() {

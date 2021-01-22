@@ -143,6 +143,11 @@ public class MediaCCCSearchExtractor extends SearchExtractor {
                     }
 
                     @Override
+                    public boolean isVerified() throws ParsingException {
+                        return false;
+                    }
+
+                    @Override
                     public String getName() {
                         return item.getName();
                     }

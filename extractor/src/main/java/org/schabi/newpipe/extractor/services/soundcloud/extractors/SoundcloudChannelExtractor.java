@@ -96,6 +96,11 @@ public class SoundcloudChannelExtractor extends ChannelExtractor {
         return "";
     }
 
+    @Override
+    public boolean isVerified() throws ParsingException {
+        return user.getBoolean("verified");
+    }
+
     @Nonnull
     @Override
     public InfoItemsPage<StreamInfoItem> getInitialPage() throws ExtractionException {

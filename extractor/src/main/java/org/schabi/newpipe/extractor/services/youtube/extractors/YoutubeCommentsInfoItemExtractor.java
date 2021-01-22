@@ -125,6 +125,11 @@ public class YoutubeCommentsInfoItemExtractor implements CommentsInfoItemExtract
         return json.has("pinnedCommentBadge");
     }
 
+    public boolean isUploaderVerified() throws ParsingException {
+        // impossible to get this information from the mobile layout
+        return false;
+    }
+
     @Override
     public String getUploaderName() throws ParsingException {
         try {

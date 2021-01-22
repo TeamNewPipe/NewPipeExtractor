@@ -6,9 +6,8 @@ import org.schabi.newpipe.extractor.exceptions.ParsingException;
 import org.schabi.newpipe.extractor.localization.DateWrapper;
 import org.schabi.newpipe.extractor.services.soundcloud.SoundcloudParsingHelper;
 
-import java.util.Objects;
-
 import javax.annotation.Nullable;
+import java.util.Objects;
 
 public class SoundcloudCommentsInfoItemExtractor implements CommentsInfoItemExtractor {
     private JsonObject json;
@@ -47,6 +46,11 @@ public class SoundcloudCommentsInfoItemExtractor implements CommentsInfoItemExtr
     @Override
     public boolean isPinned() throws ParsingException {
         return false;
+    }
+
+    @Override
+    public boolean isUploaderVerified() throws ParsingException {
+        return json.getObject("user").getBoolean("verified");
     }
 
     @Override

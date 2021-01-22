@@ -90,6 +90,12 @@ public class StreamInfoItemsCollector extends InfoItemsCollector<StreamInfoItem,
         } catch (Exception e) {
             addError(e);
         }
+        try {
+            resultItem.setUploaderVerified(extractor.isUploaderVerified());
+        } catch (Exception e) {
+            addError(e);
+        }
+
         return resultItem;
     }
 

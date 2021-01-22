@@ -158,6 +158,11 @@ public class YoutubeStreamInfoItemExtractor implements StreamInfoItemExtractor {
         return url;
     }
 
+    @Override
+    public boolean isUploaderVerified() throws ParsingException {
+        return YoutubeParsingHelper.isVerified(videoInfo.getArray("ownerBadges"));
+    }
+
     @Nullable
     @Override
     public String getTextualUploadDate() throws ParsingException {

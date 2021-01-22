@@ -804,4 +804,21 @@ public class YoutubeParsingHelper {
         }
         return url;
     }
+
+    public static boolean isVerified(final JsonArray badges) {
+        if (Utils.isNullOrEmpty(badges)) {
+            return false;
+        }
+
+        for (Object badge : badges) {
+            final String style = ((JsonObject) badge).getObject("metadataBadgeRenderer")
+                    .getString("style");
+            if (style != null && (style.equals("BADGE_STYLE_TYPE_VERIFIED")
+                    || style.equals("BADGE_STYLE_TYPE_VERIFIED_ARTIST"))) {
+                return true;
+            }
+        }
+
+        return false;
+    }
 }

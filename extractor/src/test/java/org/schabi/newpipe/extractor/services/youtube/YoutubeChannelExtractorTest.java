@@ -16,14 +16,10 @@ import java.io.IOException;
 
 import static org.hamcrest.CoreMatchers.containsString;
 import static org.hamcrest.MatcherAssert.assertThat;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.fail;
+import static org.junit.Assert.*;
 import static org.schabi.newpipe.extractor.ExtractorAsserts.assertIsSecureUrl;
 import static org.schabi.newpipe.extractor.ServiceList.YouTube;
-import static org.schabi.newpipe.extractor.services.DefaultTests.defaultTestGetPageInNewExtractor;
-import static org.schabi.newpipe.extractor.services.DefaultTests.defaultTestMoreItems;
-import static org.schabi.newpipe.extractor.services.DefaultTests.defaultTestRelatedItems;
+import static org.schabi.newpipe.extractor.services.DefaultTests.*;
 
 /**
  * Test for {@link ChannelExtractor}
@@ -157,6 +153,12 @@ public class YoutubeChannelExtractorTest {
             assertTrue("Wrong subscriber count", extractor.getSubscriberCount() >= 0);
             assertTrue("Subscriber count too small", extractor.getSubscriberCount() >= 4e6);
         }
+
+        @Override
+        public void testVerified() throws Exception {
+            assertTrue(extractor.isVerified());
+        }
+
     }
 
     // Youtube RED/Premium ad blocking test
@@ -248,6 +250,11 @@ public class YoutubeChannelExtractorTest {
         public void testSubscriberCount() throws Exception {
             assertTrue("Wrong subscriber count", extractor.getSubscriberCount() >= 0);
             assertTrue("Subscriber count too small", extractor.getSubscriberCount() >= 10e6);
+        }
+
+        @Override
+        public void testVerified() throws Exception {
+            assertTrue(extractor.isVerified());
         }
 
     }
@@ -342,6 +349,11 @@ public class YoutubeChannelExtractorTest {
         @Test
         public void testSubscriberCount() throws Exception {
             assertTrue("Wrong subscriber count", extractor.getSubscriberCount() >= 5e6);
+        }
+
+        @Override
+        public void testVerified() throws Exception {
+            assertTrue(extractor.isVerified());
         }
     }
 
@@ -453,6 +465,11 @@ public class YoutubeChannelExtractorTest {
         public void testSubscriberCount() throws Exception {
             assertTrue("Wrong subscriber count", extractor.getSubscriberCount() >= 5e5);
         }
+
+        @Override
+        public void testVerified() throws Exception {
+            assertTrue(extractor.isVerified());
+        }
     }
 
     public static class RandomChannel implements BaseChannelExtractorTest {
@@ -549,6 +566,11 @@ public class YoutubeChannelExtractorTest {
         public void testSubscriberCount() throws Exception {
             long subscribers = extractor.getSubscriberCount();
             assertTrue("Wrong subscriber count: " + subscribers, subscribers >= 50);
+        }
+
+        @Override
+        public void testVerified() throws Exception {
+            assertFalse(extractor.isVerified());
         }
     }
 }

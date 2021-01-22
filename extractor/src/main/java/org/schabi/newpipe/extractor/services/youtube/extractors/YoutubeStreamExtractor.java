@@ -412,6 +412,14 @@ public class YoutubeStreamExtractor extends StreamExtractor {
         return uploaderName;
     }
 
+    @Override
+    public boolean isUploaderVerified() throws ParsingException {
+        final JsonArray badges = getVideoSecondaryInfoRenderer().getObject("owner")
+                .getObject("videoOwnerRenderer").getArray("badges");
+
+        return YoutubeParsingHelper.isVerified(badges);
+    }
+
     @Nonnull
     @Override
     public String getUploaderAvatarUrl() throws ParsingException {

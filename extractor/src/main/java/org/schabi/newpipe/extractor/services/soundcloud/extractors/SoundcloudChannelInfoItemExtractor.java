@@ -41,6 +41,11 @@ public class SoundcloudChannelInfoItemExtractor implements ChannelInfoItemExtrac
     }
 
     @Override
+    public boolean isVerified() {
+        return itemObject.getBoolean("verified");
+    }
+
+    @Override
     public String getDescription() {
         return itemObject.getString("description", EMPTY_STRING);
     }

@@ -83,6 +83,11 @@ public class PeertubeAccountExtractor extends ChannelExtractor {
         return "";
     }
 
+    @Override
+    public boolean isVerified() throws ParsingException {
+        return false;
+    }
+
     @Nonnull
     @Override
     public InfoItemsPage<StreamInfoItem> getInitialPage() throws IOException, ExtractionException {
