@@ -11,6 +11,7 @@ public interface CommentsInfoItemExtractor extends InfoItemExtractor {
 
     /**
      * Return the like count of the comment, or -1 if it's unavailable
+     *
      * @see StreamExtractor#getLikeCount()
      */
     int getLikeCount() throws ParsingException;
@@ -22,12 +23,14 @@ public interface CommentsInfoItemExtractor extends InfoItemExtractor {
 
     /**
      * The upload date given by the service, unmodified
+     *
      * @see StreamExtractor#getTextualUploadDate()
      */
     String getTextualUploadDate() throws ParsingException;
 
     /**
      * The upload date wrapped with DateWrapper class
+     *
      * @see StreamExtractor#getUploadDate()
      */
     @Nullable
@@ -45,4 +48,9 @@ public interface CommentsInfoItemExtractor extends InfoItemExtractor {
      * Whether the comment has been hearted by the uploader
      */
     boolean getHeartedByUploader() throws ParsingException;
+
+    /**
+     * Whether the comment is pinned
+     */
+    boolean getPinned() throws ParsingException;
 }

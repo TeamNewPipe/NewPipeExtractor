@@ -45,6 +45,11 @@ public class SoundcloudCommentsInfoItemExtractor implements CommentsInfoItemExtr
     }
 
     @Override
+    public boolean getPinned() throws ParsingException {
+        return false;
+    }
+
+    @Override
     public String getUploaderUrl() {
         return json.getObject("user").getString("permalink_url");
     }

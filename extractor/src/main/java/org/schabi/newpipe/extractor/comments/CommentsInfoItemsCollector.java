@@ -76,6 +76,12 @@ public class CommentsInfoItemsCollector extends InfoItemsCollector<CommentsInfoI
             addError(e);
         }
 
+        try {
+            resultItem.setPinned(extractor.getPinned());
+        } catch (Exception e) {
+            addError(e);
+        }
+
         return resultItem;
     }
 
