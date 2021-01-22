@@ -111,7 +111,7 @@ public class YoutubeParsingHelper {
         return host.equalsIgnoreCase("invidio.us")
                 || host.equalsIgnoreCase("dev.invidio.us")
                 || host.equalsIgnoreCase("www.invidio.us")
-                || host.equalsIgnoreCase("vid.encryptionin.space")
+                || host.equalsIgnoreCase("redirect.invidious.io")
                 || host.equalsIgnoreCase("invidious.snopyta.org")
                 || host.equalsIgnoreCase("yewtu.be")
                 || host.equalsIgnoreCase("tube.connect.cafe")
@@ -122,7 +122,11 @@ public class YoutubeParsingHelper {
                 || host.equalsIgnoreCase("invidious.xyz")
                 || host.equalsIgnoreCase("vid.mint.lgbt")
                 || host.equalsIgnoreCase("invidiou.site")
-                || host.equalsIgnoreCase("invidious.fdn.fr");
+                || host.equalsIgnoreCase("invidious.fdn.fr")
+                || host.equalsIgnoreCase("invidious.048596.xyz")
+                || host.equalsIgnoreCase("invidious.zee.li")
+                || host.equalsIgnoreCase("vid.puffyan.us")
+                || host.equalsIgnoreCase("ytprivate.com");
     }
 
     /**
