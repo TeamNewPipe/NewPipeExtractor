@@ -186,7 +186,6 @@ public class YoutubeStreamLinkHandlerFactory extends LinkHandlerFactory {
             case "WWW.INVIDIO.US":
             case "DEV.INVIDIO.US":
             case "INVIDIO.US":
-            case "VID.ENCRYPTIONIN.SPACE":
             case "INVIDIOUS.SNOPYTA.ORG":
             case "YEWTU.BE":
             case "TUBE.CONNECT.CAFE":
@@ -197,7 +196,12 @@ public class YoutubeStreamLinkHandlerFactory extends LinkHandlerFactory {
             case "INVIDIOUS.XYZ":
             case "VID.MINT.LGBT":
             case "INVIDIOU.SITE":
-            case "INVIDIOUS.FDN.FR": { // code-block for hooktube.com and Invidious instances
+            case "INVIDIOUS.FDN.FR":
+            case "INVIDIOUS.048596.XYZ":
+            case "INVIDIOUS.ZEE.LI":
+            case "VID.PUFFYAN.US":
+            case "YTPRIVATE.COM":
+            case "REDIRECT.INVIDIOUS.IO": { // code-block for hooktube.com and Invidious instances
                 if (path.equals("watch")) {
                     String viewQueryValue = Utils.getQueryValue(url, "v");
                     if (viewQueryValue != null) {
