@@ -11,16 +11,11 @@ import org.schabi.newpipe.extractor.exceptions.ParsingException;
 import org.schabi.newpipe.extractor.services.BaseChannelExtractorTest;
 import org.schabi.newpipe.extractor.services.youtube.invidious.extractors.InvidiousChannelExtractor;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.fail;
+import static org.junit.Assert.*;
 import static org.schabi.newpipe.extractor.ExtractorAsserts.assertEmpty;
 import static org.schabi.newpipe.extractor.ExtractorAsserts.assertIsSecureUrl;
 import static org.schabi.newpipe.extractor.ServiceList.Invidious;
-import static org.schabi.newpipe.extractor.services.DefaultTests.assertNoMoreItems;
-import static org.schabi.newpipe.extractor.services.DefaultTests.defaultTestGetPageInNewExtractor;
-import static org.schabi.newpipe.extractor.services.DefaultTests.defaultTestMoreItems;
-import static org.schabi.newpipe.extractor.services.DefaultTests.defaultTestRelatedItems;
+import static org.schabi.newpipe.extractor.services.DefaultTests.*;
 
 /*
  * Copyright (C) 2020 Team NewPipe <tnp@newpipe.schabi.org>
@@ -44,7 +39,6 @@ import static org.schabi.newpipe.extractor.services.DefaultTests.defaultTestRela
  * Test for {@link ChannelExtractor}
  */
 public class InvidiousChannelExtractorTest {
-
 
     public static class NotAvailable {
         @BeforeClass
@@ -108,7 +102,7 @@ public class InvidiousChannelExtractorTest {
 
         @Test
         public void testId() throws Exception {
-            assertEquals("UCYJ61XIK64sp6ZFFS8sctxw", extractor.getId());
+            assertEquals("user/Gronkh", extractor.getId());
         }
 
         @Test
@@ -198,7 +192,7 @@ public class InvidiousChannelExtractorTest {
 
         @Test
         public void testId() throws Exception {
-            assertEquals("UC6nSFpj9HTCZ5t-N3Rm3-HA", extractor.getId());
+            assertEquals("user/Vsauce", extractor.getId());
         }
 
         @Test
@@ -300,7 +294,7 @@ public class InvidiousChannelExtractorTest {
 
         @Test
         public void testId() throws Exception {
-            assertEquals("UCsXVk37bltHxD1rDPwtNM8Q", extractor.getId());
+            assertEquals("channel/UCsXVk37bltHxD1rDPwtNM8Q", extractor.getId());
         }
 
         @Test
@@ -348,14 +342,13 @@ public class InvidiousChannelExtractorTest {
 
         @Test
         public void testBannerUrl() throws Exception {
-            String bannerUrl = extractor.getBannerUrl();
-            assertIsSecureUrl(bannerUrl);
-            assertTrue(bannerUrl, bannerUrl.contains("yt3"));
+            assertIsSecureUrl(extractor.getBannerUrl());
         }
 
         @Test
         public void testFeedUrl() throws Exception {
-            assertEquals("https://www.youtube.com/feeds/videos.xml?channel_id=UCsXVk37bltHxD1rDPwtNM8Q", extractor.getFeedUrl());
+            assertEquals(InvidiousInstance.getDefaultInstance().getUrl() +
+                    "/feed/channel/UCsXVk37bltHxD1rDPwtNM8Q", extractor.getFeedUrl());
         }
 
         @Test
@@ -391,12 +384,12 @@ public class InvidiousChannelExtractorTest {
 
         @Test
         public void testId() throws Exception {
-            assertEquals("UCEOXxzW2vU0P-0THehuIIeg", extractor.getId());
+            assertEquals("user/CaptainDisillusion", extractor.getId());
         }
 
         @Test
         public void testUrl() throws ParsingException {
-            assertEquals("https://www.youtube.com/channel/UCEOXxzW2vU0P-0THehuIIeg", extractor.getUrl());
+            assertEquals("https://www.youtube.com/user/CaptainDisillusion", extractor.getUrl());
         }
 
         @Test
@@ -444,7 +437,8 @@ public class InvidiousChannelExtractorTest {
 
         @Test
         public void testFeedUrl() throws Exception {
-            assertEquals("https://www.youtube.com/feeds/videos.xml?channel_id=UCEOXxzW2vU0P-0THehuIIeg", extractor.getFeedUrl());
+            assertEquals(InvidiousInstance.getDefaultInstance().getUrl()
+                    + "/feed/channel/UCEOXxzW2vU0P-0THehuIIeg", extractor.getFeedUrl());
         }
 
         @Test
@@ -481,12 +475,12 @@ public class InvidiousChannelExtractorTest {
 
         @Test
         public void testId() throws Exception {
-            assertEquals("UC20vb-R_px4CguHzzBPhoyQ", extractor.getId());
+            assertEquals("user/EminemVEVO", extractor.getId());
         }
 
         @Test
         public void testUrl() throws ParsingException {
-            assertEquals("https://www.youtube.com/channel/UC20vb-R_px4CguHzzBPhoyQ", extractor.getUrl());
+            assertEquals("https://www.youtube.com/user/EminemVEVO", extractor.getUrl());
         }
 
         @Test
@@ -534,14 +528,15 @@ public class InvidiousChannelExtractorTest {
 
         @Test
         public void testFeedUrl() throws Exception {
-            assertEquals("https://www.youtube.com/feeds/videos.xml?channel_id=UC20vb-R_px4CguHzzBPhoyQ", extractor.getFeedUrl());
+            assertEquals(InvidiousInstance.getDefaultInstance().getUrl()
+                    + "/feed/channel/UC20vb-R_px4CguHzzBPhoyQ", extractor.getFeedUrl());
         }
 
         @Test
         public void testSubscriberCount() throws Exception {
             // there is no "Subscribe" button
             long subscribers = extractor.getSubscriberCount();
-            assertEquals("Wrong subscriber count", -1, subscribers);
+            assertEquals("Wrong subscriber count", 0, subscribers);
         }
     }
 
@@ -578,7 +573,7 @@ public class InvidiousChannelExtractorTest {
 
         @Test
         public void testId() throws Exception {
-            assertEquals("UCrxkwepj7-4Wz1wHyfzw-sQ", extractor.getId());
+            assertEquals("channel/UCITk7Ky4iE5_xISw9IaHqpQ", extractor.getId());
         }
 
         @Test
@@ -628,12 +623,13 @@ public class InvidiousChannelExtractorTest {
 
         @Test
         public void testFeedUrl() throws Exception {
-            assertEquals("https://www.youtube.com/feeds/videos.xml?channel_id=UCrxkwepj7-4Wz1wHyfzw-sQ", extractor.getFeedUrl());
+            assertEquals(InvidiousInstance.getDefaultInstance().getUrl() +
+                    "/feed/channel/UCrxkwepj7-4Wz1wHyfzw-sQ", extractor.getFeedUrl());
         }
 
         @Test
         public void testSubscriberCount() throws Exception {
-            assertEquals(-1, extractor.getSubscriberCount());
+            assertEquals(0, extractor.getSubscriberCount());
         }
     }
 
@@ -664,7 +660,7 @@ public class InvidiousChannelExtractorTest {
 
         @Test
         public void testId() throws Exception {
-            assertEquals("UCUaQMQS9lY5lit3vurpXQ6w", extractor.getId());
+            assertEquals("channel/UCUaQMQS9lY5lit3vurpXQ6w", extractor.getId());
         }
 
         @Test
@@ -723,7 +719,8 @@ public class InvidiousChannelExtractorTest {
 
         @Test
         public void testFeedUrl() throws Exception {
-            assertEquals("https://www.youtube.com/feeds/videos.xml?channel_id=UCUaQMQS9lY5lit3vurpXQ6w", extractor.getFeedUrl());
+            assertEquals(InvidiousInstance.getDefaultInstance().getUrl()
+                    + "/feed/channel/UCUaQMQS9lY5lit3vurpXQ6w", extractor.getFeedUrl());
         }
 
         @Test

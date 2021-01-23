@@ -23,6 +23,7 @@ import com.grack.nanojson.JsonObject;
 import com.grack.nanojson.JsonParser;
 import com.grack.nanojson.JsonParserException;
 import org.schabi.newpipe.extractor.downloader.Response;
+import org.schabi.newpipe.extractor.exceptions.ContentNotAvailableException;
 import org.schabi.newpipe.extractor.exceptions.ExtractionException;
 import org.schabi.newpipe.extractor.localization.DateWrapper;
 
@@ -41,7 +42,9 @@ public class InvidiousParsingHelper {
      * @throws ExtractionException if the HTTP code indicate an error or the json parsing went wrong.
      */
     public static JsonObject getValidJsonObjectFromResponse(final Response response, final String apiUrl) throws ExtractionException {
-        if (response.responseCode() >= 400) {
+        if (response.responseCode() == 404) {
+            throw new ContentNotAvailableException("Could not get page " + apiUrl + " (" + response.responseCode() + " : " + response.responseMessage());
+        } else if (response.responseCode() >= 400) {
             throw new ExtractionException("Could not get page " + apiUrl + " (" + response.responseCode() + " : " + response.responseMessage());
         }
 

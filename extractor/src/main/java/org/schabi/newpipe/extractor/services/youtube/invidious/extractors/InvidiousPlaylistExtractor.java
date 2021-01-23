@@ -68,7 +68,8 @@ public class InvidiousPlaylistExtractor extends PlaylistExtractor {
 
     @Override
     public String getUploaderAvatarUrl() {
-        return null; // ""?
+        // TODO : better resolution / use standard way to get avatar url
+        return json.getArray("authorThumbnails").getObject(0).getString("url");
     }
 
     @Override

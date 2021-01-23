@@ -45,7 +45,7 @@ public class InvidiousInstance implements Instance {
     private final String url;
     private String name;
 
-    private static final InvidiousInstance defaultInstance = new InvidiousInstance("https://invidio.us", "invidious");
+    private static final InvidiousInstance defaultInstance = new InvidiousInstance("https://invidious.kavin.rocks", "invidious");
 
     public InvidiousInstance(String url, String name) {
         this.url = url;

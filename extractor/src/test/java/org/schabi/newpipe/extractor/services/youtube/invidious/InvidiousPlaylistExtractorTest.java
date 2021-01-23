@@ -17,10 +17,7 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 import static org.schabi.newpipe.extractor.ExtractorAsserts.assertIsSecureUrl;
 import static org.schabi.newpipe.extractor.ServiceList.Invidious;
-import static org.schabi.newpipe.extractor.services.DefaultTests.defaultTestGetPageInNewExtractor;
-import static org.schabi.newpipe.extractor.services.DefaultTests.defaultTestListOfItems;
-import static org.schabi.newpipe.extractor.services.DefaultTests.defaultTestMoreItems;
-import static org.schabi.newpipe.extractor.services.DefaultTests.defaultTestRelatedItems;
+import static org.schabi.newpipe.extractor.services.DefaultTests.*;
 
 /**
  * Test for {@link InvidiousPlaylistExtractor}
@@ -117,14 +114,13 @@ public class InvidiousPlaylistExtractorTest {
         @Ignore
         @Test
         public void testBannerUrl() throws Exception {
-            final String bannerUrl = extractor.getBannerUrl();
-            assertIsSecureUrl(bannerUrl);
-            assertTrue(bannerUrl, bannerUrl.contains("yt"));
+            assertIsSecureUrl(extractor.getBannerUrl());
         }
 
         @Test
         public void testUploaderUrl() throws Exception {
-            assertEquals(InvidiousInstance.getDefaultInstance().getUrl() + "/channel/andre0y0you", extractor.getUploaderUrl());
+            assertEquals(InvidiousInstance.getDefaultInstance().getUrl() + "/channel/UCs72iRpTEuwV3y6pdWYLgiw",
+                    extractor.getUploaderUrl());
         }
 
         @Test
@@ -135,9 +131,7 @@ public class InvidiousPlaylistExtractorTest {
 
         @Test
         public void testUploaderAvatarUrl() throws Exception {
-            final String uploaderAvatarUrl = extractor.getUploaderAvatarUrl();
-//            assertTrue(uploaderAvatarUrl, uploaderAvatarUrl.contains("yt"));
-            System.out.println(extractor.getUploaderAvatarUrl());
+            assertIsSecureUrl(extractor.getUploaderAvatarUrl());
         }
 
         @Test
@@ -237,8 +231,9 @@ public class InvidiousPlaylistExtractorTest {
         }
 
         @Test
-        public void testUploaderUrl() throws Exception {
-            assertEquals("https://www.youtube.com/channel/UCHSPWoY1J5fbDVbcnyeqwdw", extractor.getUploaderUrl());
+        public void testUploaderUrl() {
+            assertEquals(InvidiousInstance.getDefaultInstance().getUrl() + "/channel/UCHSPWoY1J5fbDVbcnyeqwdw",
+                    extractor.getUploaderUrl());
         }
 
         @Test
@@ -247,9 +242,8 @@ public class InvidiousPlaylistExtractorTest {
         }
 
         @Test
-        public void testUploaderAvatarUrl() throws Exception {
-            final String uploaderAvatarUrl = extractor.getUploaderAvatarUrl();
-            assertTrue(uploaderAvatarUrl, uploaderAvatarUrl.contains("yt"));
+        public void testUploaderAvatarUrl() {
+            assertIsSecureUrl(extractor.getUploaderAvatarUrl());
         }
 
         @Test
@@ -334,8 +328,9 @@ public class InvidiousPlaylistExtractorTest {
         }
 
         @Test
-        public void testUploaderUrl() throws Exception {
-            assertEquals("https://www.youtube.com/channel/UCX6b17PVsYBQ0ip5gyeme-Q", extractor.getUploaderUrl());
+        public void testUploaderUrl() {
+            assertEquals(InvidiousInstance.getDefaultInstance().getUrl() + "/channel/UCX6b17PVsYBQ0ip5gyeme-Q",
+                    extractor.getUploaderUrl());
         }
 
         @Test
@@ -345,11 +340,11 @@ public class InvidiousPlaylistExtractorTest {
         }
 
         @Test
-        public void testUploaderAvatarUrl() throws Exception {
-            final String uploaderAvatarUrl = extractor.getUploaderAvatarUrl();
-            assertTrue(uploaderAvatarUrl, uploaderAvatarUrl.contains("yt"));
+        public void testUploaderAvatarUrl() {
+            assertIsSecureUrl(extractor.getUploaderAvatarUrl());
         }
 
+        @Ignore("broken on invidious side")
         @Test
         public void testStreamCount() throws Exception {
             assertTrue("Error in the streams count", extractor.getStreamCount() > 40);

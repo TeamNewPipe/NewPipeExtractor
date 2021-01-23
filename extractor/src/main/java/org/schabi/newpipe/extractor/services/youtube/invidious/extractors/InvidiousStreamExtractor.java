@@ -19,12 +19,9 @@ import org.schabi.newpipe.extractor.utils.JsonUtils;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.Locale;
-import java.util.Map;
+import java.util.*;
 
+import static org.schabi.newpipe.extractor.services.youtube.YoutubeParsingHelper.fixThumbnailUrl;
 import static org.schabi.newpipe.extractor.utils.Utils.isBlank;
 
 /*
@@ -72,7 +69,8 @@ public class InvidiousStreamExtractor extends StreamExtractor {
     @Override
     public String getThumbnailUrl() {
         final JsonArray thumbnail = json.getArray("authorThumbnails");
-        return thumbnail.getObject(0).getString("url");
+        final String url = thumbnail.getObject(0).getString("url");
+        return fixThumbnailUrl(url);
     }
 
     @Nonnull
@@ -134,7 +132,8 @@ public class InvidiousStreamExtractor extends StreamExtractor {
     @Override
     public String getUploaderAvatarUrl() {
         final JsonArray avatars = json.getArray("authorThumbnails");
-        return avatars.getObject(0).getString("url");
+        final String url = avatars.getObject(0).getString("url");
+        return fixThumbnailUrl(url);
     }
 
     @Nonnull
