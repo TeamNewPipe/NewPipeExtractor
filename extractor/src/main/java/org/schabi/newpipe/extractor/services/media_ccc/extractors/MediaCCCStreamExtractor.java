@@ -6,6 +6,7 @@ import com.grack.nanojson.JsonParser;
 import com.grack.nanojson.JsonParserException;
 
 import org.schabi.newpipe.extractor.MediaFormat;
+import org.schabi.newpipe.extractor.MetaInfo;
 import org.schabi.newpipe.extractor.StreamingService;
 import org.schabi.newpipe.extractor.downloader.Downloader;
 import org.schabi.newpipe.extractor.exceptions.ExtractionException;
@@ -15,19 +16,23 @@ import org.schabi.newpipe.extractor.localization.DateWrapper;
 import org.schabi.newpipe.extractor.stream.AudioStream;
 import org.schabi.newpipe.extractor.stream.Description;
 import org.schabi.newpipe.extractor.stream.StreamExtractor;
-import org.schabi.newpipe.extractor.stream.StreamInfoItem;
 import org.schabi.newpipe.extractor.stream.StreamInfoItemsCollector;
+import org.schabi.newpipe.extractor.stream.StreamSegment;
 import org.schabi.newpipe.extractor.stream.StreamType;
 import org.schabi.newpipe.extractor.stream.SubtitlesStream;
 import org.schabi.newpipe.extractor.stream.VideoStream;
+import org.schabi.newpipe.extractor.services.media_ccc.linkHandler.MediaCCCConferenceLinkHandlerFactory;
+import org.schabi.newpipe.extractor.services.media_ccc.linkHandler.MediaCCCStreamLinkHandlerFactory;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.Locale;
 
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 
 public class MediaCCCStreamExtractor extends StreamExtractor {
     private JsonObject data;
@@ -94,7 +99,7 @@ public class MediaCCCStreamExtractor extends StreamExtractor {
     @Nonnull
     @Override
     public String getUploaderUrl() {
-        return data.getString("conference_url");
+        return MediaCCCConferenceLinkHandlerFactory.CONFERENCE_PATH + getUploaderName();
     }
 
     @Nonnull
@@ -112,25 +117,25 @@ public class MediaCCCStreamExtractor extends StreamExtractor {
 
     @Nonnull
     @Override
-    public String getSubChannelUrl() throws ParsingException {
+    public String getSubChannelUrl() {
         return "";
     }
 
     @Nonnull
     @Override
-    public String getSubChannelName() throws ParsingException {
+    public String getSubChannelName() {
         return "";
     }
 
     @Nonnull
     @Override
-    public String getSubChannelAvatarUrl() throws ParsingException {
+    public String getSubChannelAvatarUrl() {
         return "";
     }
 
     @Nonnull
     @Override
-    public String getDashMpdUrl() throws ParsingException {
+    public String getDashMpdUrl() {
         return "";
     }
 
@@ -195,7 +200,7 @@ public class MediaCCCStreamExtractor extends StreamExtractor {
 
     @Override
     public List<VideoStream> getVideoOnlyStreams() {
-        return null;
+        return Collections.emptyList();
     }
 
     @Nonnull
@@ -215,14 +220,10 @@ public class MediaCCCStreamExtractor extends StreamExtractor {
         return StreamType.VIDEO_STREAM;
     }
 
-    @Override
-    public StreamInfoItem getNextStream() {
-        return null;
-    }
-
+    @Nullable
     @Override
     public StreamInfoItemsCollector getRelatedStreams() {
-        return new StreamInfoItemsCollector(getServiceId());
+        return null;
     }
 
     @Override
@@ -233,14 +234,13 @@ public class MediaCCCStreamExtractor extends StreamExtractor {
     @Override
     public void onFetchPage(@Nonnull final Downloader downloader)
             throws IOException, ExtractionException {
+        final String videoUrl = MediaCCCStreamLinkHandlerFactory.VIDEO_API_ENDPOINT + getId();
         try {
-            data = JsonParser.object().from(
-                    downloader.get(getLinkHandler().getUrl()).responseBody());
+            data = JsonParser.object().from(downloader.get(videoUrl).responseBody());
             conferenceData = JsonParser.object()
-                    .from(downloader.get(getUploaderUrl()).responseBody());
+                    .from(downloader.get(data.getString("conference_url")).responseBody());
         } catch (JsonParserException jpe) {
-            throw new ExtractionException("Could not parse json returned by url: "
-                    + getLinkHandler().getUrl(), jpe);
+            throw new ExtractionException("Could not parse json returned by url: " + videoUrl, jpe);
         }
     }
 
@@ -256,21 +256,25 @@ public class MediaCCCStreamExtractor extends StreamExtractor {
         return data.getString("frontend_link");
     }
 
+    @Nonnull
     @Override
     public String getHost() {
         return "";
     }
 
+    @Nonnull
     @Override
     public String getPrivacy() {
         return "";
     }
 
+    @Nonnull
     @Override
     public String getCategory() {
         return "";
     }
 
+    @Nonnull
     @Override
     public String getLicence() {
         return "";
@@ -284,12 +288,24 @@ public class MediaCCCStreamExtractor extends StreamExtractor {
     @Nonnull
     @Override
     public List<String> getTags() {
-        return new ArrayList<>();
+        return Arrays.asList(data.getArray("tags").toArray(new String[0]));
     }
 
     @Nonnull
     @Override
     public String getSupportInfo() {
         return "";
+    }
+
+    @Nonnull
+    @Override
+    public List<StreamSegment> getStreamSegments() {
+        return Collections.emptyList();
+    }
+
+    @Nonnull
+    @Override
+    public List<MetaInfo> getMetaInfo() {
+        return Collections.emptyList();
     }
 }

@@ -5,6 +5,7 @@ import com.grack.nanojson.JsonObject;
 import com.grack.nanojson.JsonParser;
 import com.grack.nanojson.JsonParserException;
 
+import org.schabi.newpipe.extractor.Page;
 import org.schabi.newpipe.extractor.StreamingService;
 import org.schabi.newpipe.extractor.channel.ChannelInfoItem;
 import org.schabi.newpipe.extractor.channel.ChannelInfoItemsCollector;
@@ -37,16 +38,12 @@ public class MediaCCCConferenceKiosk extends KioskExtractor<ChannelInfoItem> {
             collector.commit(new MediaCCCConferenceInfoItemExtractor(conferences.getObject(i)));
         }
 
-        return new InfoItemsPage<>(collector, "");
+        return new InfoItemsPage<>(collector, null);
     }
 
     @Override
-    public String getNextPageUrl() {
-        return "";
-    }
 
-    @Override
-    public InfoItemsPage<ChannelInfoItem> getPage(final String pageUrl) {
+    public InfoItemsPage<ChannelInfoItem> getPage(final Page page) {
         return InfoItemsPage.emptyPage();
     }
 

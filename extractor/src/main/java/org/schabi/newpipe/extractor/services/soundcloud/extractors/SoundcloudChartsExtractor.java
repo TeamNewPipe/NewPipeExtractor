@@ -1,5 +1,6 @@
 package org.schabi.newpipe.extractor.services.soundcloud.extractors;
 
+import org.schabi.newpipe.extractor.Page;
 import org.schabi.newpipe.extractor.StreamingService;
 import org.schabi.newpipe.extractor.downloader.Downloader;
 import org.schabi.newpipe.extractor.exceptions.ExtractionException;
@@ -9,16 +10,14 @@ import org.schabi.newpipe.extractor.services.soundcloud.SoundcloudParsingHelper;
 import org.schabi.newpipe.extractor.stream.StreamInfoItem;
 import org.schabi.newpipe.extractor.stream.StreamInfoItemsCollector;
 
-import javax.annotation.Nonnull;
 import java.io.IOException;
+
+import javax.annotation.Nonnull;
 
 import static org.schabi.newpipe.extractor.ServiceList.SoundCloud;
 import static org.schabi.newpipe.extractor.utils.Utils.isNullOrEmpty;
 
 public class SoundcloudChartsExtractor extends KioskExtractor<StreamInfoItem> {
-    private StreamInfoItemsCollector collector = null;
-    private String nextPageUrl = null;
-
     public SoundcloudChartsExtractor(StreamingService service,
                                      ListLinkHandler linkHandler,
                                      String kioskId) {
@@ -36,20 +35,21 @@ public class SoundcloudChartsExtractor extends KioskExtractor<StreamInfoItem> {
     }
 
     @Override
-    public InfoItemsPage<StreamInfoItem> getPage(String pageUrl) throws IOException, ExtractionException {
-        if (isNullOrEmpty(pageUrl)) {
-            throw new ExtractionException(new IllegalArgumentException("Page url is empty or null"));
+    public InfoItemsPage<StreamInfoItem> getPage(final Page page) throws IOException, ExtractionException {
+        if (page == null || isNullOrEmpty(page.getUrl())) {
+            throw new IllegalArgumentException("Page doesn't contain an URL");
         }
 
-        StreamInfoItemsCollector collector = new StreamInfoItemsCollector(getServiceId());
-        String nextPageUrl = SoundcloudParsingHelper.getStreamsFromApi(collector, pageUrl, true);
+        final StreamInfoItemsCollector collector = new StreamInfoItemsCollector(getServiceId());
+        final String nextPageUrl = SoundcloudParsingHelper.getStreamsFromApi(collector, page.getUrl(), true);
 
-        return new InfoItemsPage<>(collector, nextPageUrl);
+        return new InfoItemsPage<>(collector, new Page(nextPageUrl));
     }
 
-
-    private void computeNextPageAndStreams() throws IOException, ExtractionException {
-        collector = new StreamInfoItemsCollector(getServiceId());
+    @Nonnull
+    @Override
+    public InfoItemsPage<StreamInfoItem> getInitialPage() throws IOException, ExtractionException {
+        final StreamInfoItemsCollector collector = new StreamInfoItemsCollector(getServiceId());
 
         String apiUrl = "https://api-v2.soundcloud.com/charts" +
                 "?genre=soundcloud:genres:all-music" +
@@ -61,27 +61,11 @@ public class SoundcloudChartsExtractor extends KioskExtractor<StreamInfoItem> {
             apiUrl += "&kind=trending";
         }
 
-
-        String contentCountry = SoundCloud.getContentCountry().getCountryCode();
+        final String contentCountry = SoundCloud.getContentCountry().getCountryCode();
         apiUrl += "&region=soundcloud:regions:" + contentCountry;
 
-        nextPageUrl = SoundcloudParsingHelper.getStreamsFromApi(collector, apiUrl, true);
-    }
+        final String nextPageUrl = SoundcloudParsingHelper.getStreamsFromApi(collector, apiUrl, true);
 
-    @Override
-    public String getNextPageUrl() throws IOException, ExtractionException {
-        if (nextPageUrl == null) {
-            computeNextPageAndStreams();
-        }
-        return nextPageUrl;
-    }
-
-    @Nonnull
-    @Override
-    public InfoItemsPage<StreamInfoItem> getInitialPage() throws IOException, ExtractionException {
-        if (collector == null) {
-            computeNextPageAndStreams();
-        }
-        return new InfoItemsPage<>(collector, getNextPageUrl());
+        return new InfoItemsPage<>(collector, new Page(nextPageUrl));
     }
 }

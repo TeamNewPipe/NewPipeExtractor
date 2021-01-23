@@ -3,6 +3,8 @@ package org.schabi.newpipe.extractor.services.youtube.invidious.extractors;
 import com.grack.nanojson.JsonArray;
 import com.grack.nanojson.JsonObject;
 import org.schabi.newpipe.extractor.InfoItem;
+import org.schabi.newpipe.extractor.MetaInfo;
+import org.schabi.newpipe.extractor.Page;
 import org.schabi.newpipe.extractor.StreamingService;
 import org.schabi.newpipe.extractor.downloader.Downloader;
 import org.schabi.newpipe.extractor.downloader.Response;
@@ -15,6 +17,7 @@ import org.schabi.newpipe.extractor.services.youtube.invidious.InvidiousParsingH
 
 import javax.annotation.Nonnull;
 import java.io.IOException;
+import java.util.List;
 
 /*
  * Copyright (C) 2020 Team NewPipe <tnp@newpipe.schabi.org>
@@ -57,24 +60,28 @@ public class InvidiousSearchExtractor extends SearchExtractor {
 
     @Nonnull
     @Override
+    public List<MetaInfo> getMetaInfo() throws ParsingException {
+        return null;
+    }
+
+    @Nonnull
+    @Override
     public InfoItemsPage<InfoItem> getInitialPage() throws IOException, ExtractionException {
         final InfoItemsSearchCollector collector = new InfoItemsSearchCollector(getServiceId());
         for (Object o : results) {
             collectStreamsFrom(collector, (JsonObject) o);
         }
 
-        return new InfoItemsPage<>(collector, getNextPageUrl());
+        final Page nextPage = new Page(getUrl() + "&page=" + 2);
+
+        return new InfoItemsPage<>(collector, nextPage);
     }
 
     @Override
-    public String getNextPageUrl() throws IOException, ExtractionException {
-        return getPageUrl(2);
-    }
-
-    @Override
-    public InfoItemsPage<InfoItem> getPage(String pageUrl) throws IOException, ExtractionException {
+    public InfoItemsPage<InfoItem> getPage(Page page) throws IOException, ExtractionException {
         return null;
     }
+
 
     @Override
     public void onFetchPage(@Nonnull Downloader downloader) throws IOException, ExtractionException {
@@ -98,7 +105,4 @@ public class InvidiousSearchExtractor extends SearchExtractor {
         }
     }
 
-    private String getPageUrl(int page) throws ParsingException {
-        return getUrl() + "&page=" + page;
-    }
 }

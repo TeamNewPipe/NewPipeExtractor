@@ -4,6 +4,7 @@ import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
+import org.schabi.newpipe.extractor.Page;
 import org.schabi.newpipe.extractor.StreamingService;
 import org.schabi.newpipe.extractor.downloader.Downloader;
 import org.schabi.newpipe.extractor.downloader.Response;
@@ -62,12 +63,7 @@ public class InvidiousFeedExtractor extends FeedExtractor {
     }
 
     @Override
-    public String getNextPageUrl() throws IOException, ExtractionException {
-        return null;
-    }
-
-    @Override
-    public InfoItemsPage<StreamInfoItem> getPage(String pageUrl) throws IOException, ExtractionException {
+    public InfoItemsPage<StreamInfoItem> getPage(Page page) throws IOException, ExtractionException {
         return null;
     }
 
@@ -99,10 +95,5 @@ public class InvidiousFeedExtractor extends FeedExtractor {
     @Override
     public String getId() throws ParsingException {
         return document.getElementsByTag("yt:channelId").first().text();
-    }
-
-    @Override
-    public boolean hasNextPage() throws IOException, ExtractionException {
-        return false;
     }
 }

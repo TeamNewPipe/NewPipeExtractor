@@ -12,6 +12,8 @@ public class PeertubeSearchQueryHandlerFactory extends SearchQueryHandlerFactory
 
     public static final String CHARSET_UTF_8 = "UTF-8";
     public static final String VIDEOS = "videos";
+    public static final String SEPIA_VIDEOS = "sepia_videos"; // sepia is the global index
+    public static final String SEPIA_BASE_URL = "https://sepiasearch.org";
     public static final String SEARCH_ENDPOINT = "/api/v1/search/videos";
 
     public static PeertubeSearchQueryHandlerFactory getInstance() {
@@ -20,7 +22,12 @@ public class PeertubeSearchQueryHandlerFactory extends SearchQueryHandlerFactory
 
     @Override
     public String getUrl(String searchString, List<String> contentFilters, String sortFilter) throws ParsingException {
-        String baseUrl = ServiceList.PeerTube.getBaseUrl();
+        String baseUrl;
+        if (contentFilters.size() > 0 && contentFilters.get(0).startsWith("sepia_")) {
+            baseUrl = SEPIA_BASE_URL;
+        } else {
+            baseUrl = ServiceList.PeerTube.getBaseUrl();
+        }
         return getUrl(searchString, contentFilters, sortFilter, baseUrl);
     }
 
@@ -38,6 +45,9 @@ public class PeertubeSearchQueryHandlerFactory extends SearchQueryHandlerFactory
 
     @Override
     public String[] getAvailableContentFilter() {
-        return new String[]{VIDEOS};
+        return new String[]{
+                VIDEOS,
+                SEPIA_VIDEOS
+        };
     }
 }

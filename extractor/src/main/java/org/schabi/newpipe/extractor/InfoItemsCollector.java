@@ -3,8 +3,10 @@ package org.schabi.newpipe.extractor;
 import org.schabi.newpipe.extractor.exceptions.FoundAdException;
 import org.schabi.newpipe.extractor.exceptions.ParsingException;
 
+import javax.annotation.Nullable;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 
 /*
@@ -32,17 +34,31 @@ public abstract class InfoItemsCollector<I extends InfoItem, E extends InfoItemE
     private final List<I> itemList = new ArrayList<>();
     private final List<Throwable> errors = new ArrayList<>();
     private final int serviceId;
+    @Nullable
+    private final Comparator<I> comparator;
+
+    /**
+     * Create a new collector with no comparator / sorting function
+     * @param serviceId the service id
+     */
+    public InfoItemsCollector(final int serviceId) {
+        this(serviceId, null);
+    }
 
     /**
      * Create a new collector
      * @param serviceId the service id
      */
-    public InfoItemsCollector(int serviceId) {
+    public InfoItemsCollector(final int serviceId, @Nullable final Comparator<I> comparator) {
         this.serviceId = serviceId;
+        this.comparator = comparator;
     }
 
     @Override
     public List<I> getItems() {
+        if (comparator != null) {
+            itemList.sort(comparator);
+        }
         return Collections.unmodifiableList(itemList);
     }
 

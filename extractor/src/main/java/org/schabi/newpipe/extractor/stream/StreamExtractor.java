@@ -22,6 +22,7 @@ package org.schabi.newpipe.extractor.stream;
 
 import org.schabi.newpipe.extractor.Extractor;
 import org.schabi.newpipe.extractor.MediaFormat;
+import org.schabi.newpipe.extractor.MetaInfo;
 import org.schabi.newpipe.extractor.StreamingService;
 import org.schabi.newpipe.extractor.channel.ChannelExtractor;
 import org.schabi.newpipe.extractor.exceptions.ExtractionException;
@@ -30,12 +31,13 @@ import org.schabi.newpipe.extractor.linkhandler.LinkHandler;
 import org.schabi.newpipe.extractor.localization.DateWrapper;
 import org.schabi.newpipe.extractor.utils.Parser;
 
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
 import java.io.IOException;
 import java.util.Collections;
 import java.util.List;
 import java.util.Locale;
+
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 
 /**
  * Scrapes information from a video/audio streaming service (eg, YouTube).
@@ -310,38 +312,27 @@ public abstract class StreamExtractor extends Extractor {
     public abstract StreamType getStreamType() throws ParsingException;
 
     /**
-     * Should return the url of the next stream. NewPipe will automatically play
-     * the next stream if the user wants that.
-     * If the next stream is is not available simply return null
-     *
-     * @return the InfoItem of the next stream
-     * @throws IOException
-     * @throws ExtractionException
-     */
-    public abstract StreamInfoItem getNextStream() throws IOException, ExtractionException;
-
-    /**
      * Should return a list of streams related to the current handled. Many services show suggested
      * streams. If you don't like suggested streams you should implement them anyway since they can
-     * be disabled by the user later in the frontend.
-     * This list MUST NOT contain the next available video as this should be return through getNextStream()
-     * If it is not available simply return null
+     * be disabled by the user later in the frontend. The first related stream might be what was
+     * previously known as a next stream.
+     * If related streams aren't available simply return {@code null}.
      *
      * @return a list of InfoItems showing the related videos/streams
      * @throws IOException
      * @throws ExtractionException
      */
+    @Nullable
     public abstract StreamInfoItemsCollector getRelatedStreams() throws IOException, ExtractionException;
 
     /**
      * Should return a list of Frameset object that contains preview of stream frames
      *
      * @return list of preview frames or empty list if frames preview is not supported or not found for specified stream
-     * @throws IOException
      * @throws ExtractionException
      */
     @Nonnull
-    public List<Frameset> getFrames() throws IOException, ExtractionException {
+    public List<Frameset> getFrames() throws ExtractionException {
         return Collections.emptyList();
     }
 
@@ -486,4 +477,28 @@ public abstract class StreamExtractor extends Extractor {
      */
     @Nonnull
     public abstract String getSupportInfo() throws ParsingException;
+
+    /**
+     *  The list of stream segments by timestamps for the stream.
+     *  If the segment list is not available you can simply return an empty list.
+     *
+     * @return The list of segments of the stream or an empty list.
+     * @throws ParsingException
+     */
+    @Nonnull
+    public abstract List<StreamSegment> getStreamSegments() throws ParsingException;
+
+    /**
+     * Meta information about the stream.
+     * <p>
+     * This can be information about the stream creator (e.g. if the creator is a public broadcaster)
+     * or further information on the topic (e.g. hints that the video might contain conspiracy theories
+     * or contains information about a current health situation like the Covid-19 pandemic).
+     * </p>
+ *     The meta information often contains links to external sources like Wikipedia or the WHO.
+     * @return The meta info of the stream or an empty List if not provided.
+     * @throws ParsingException
+     */
+    @Nonnull
+    public abstract List<MetaInfo> getMetaInfo() throws ParsingException;
 }

@@ -6,6 +6,8 @@ import org.schabi.newpipe.extractor.exceptions.ParsingException;
 import org.schabi.newpipe.extractor.localization.DateWrapper;
 import org.schabi.newpipe.extractor.services.soundcloud.SoundcloudParsingHelper;
 
+import java.util.Objects;
+
 import javax.annotation.Nullable;
 
 /*
@@ -27,7 +29,6 @@ import javax.annotation.Nullable;
  */
 
 public class SoundcloudCommentsInfoItemExtractor implements CommentsInfoItemExtractor {
-
     private JsonObject json;
     private String url;
 
@@ -38,7 +39,7 @@ public class SoundcloudCommentsInfoItemExtractor implements CommentsInfoItemExtr
 
     @Override
     public String getCommentId() {
-        return json.getNumber("id").toString();
+        return Objects.toString(json.getLong("id"), null);
     }
 
     @Override
@@ -54,6 +55,11 @@ public class SoundcloudCommentsInfoItemExtractor implements CommentsInfoItemExtr
     @Override
     public String getUploaderAvatarUrl() {
         return json.getObject("user").getString("avatar_url");
+    }
+
+    @Override
+    public boolean getHeartedByUploader() throws ParsingException {
+        return false;
     }
 
     @Override

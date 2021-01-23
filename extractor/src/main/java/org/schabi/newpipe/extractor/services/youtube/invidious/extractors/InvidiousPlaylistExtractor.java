@@ -2,6 +2,7 @@ package org.schabi.newpipe.extractor.services.youtube.invidious.extractors;
 
 import com.grack.nanojson.JsonArray;
 import com.grack.nanojson.JsonObject;
+import org.schabi.newpipe.extractor.Page;
 import org.schabi.newpipe.extractor.StreamingService;
 import org.schabi.newpipe.extractor.downloader.Downloader;
 import org.schabi.newpipe.extractor.downloader.Response;
@@ -35,7 +36,6 @@ import java.io.IOException;
  */
 
 public class InvidiousPlaylistExtractor extends PlaylistExtractor {
-
 
     private JsonObject json;
     private final String baseUrl;
@@ -102,16 +102,11 @@ public class InvidiousPlaylistExtractor extends PlaylistExtractor {
 
         final StreamInfoItemsCollector collector = new StreamInfoItemsCollector(getServiceId());
         collectStreamsFrom(collector, videos);
-        return new InfoItemsPage<>(collector, getNextPageUrl());
+        return new InfoItemsPage<>(collector, null);
     }
 
     @Override
-    public String getNextPageUrl() throws IOException, ExtractionException {
-        return null;
-    }
-
-    @Override
-    public InfoItemsPage<StreamInfoItem> getPage(String pageUrl) throws IOException, ExtractionException {
+    public InfoItemsPage<StreamInfoItem> getPage(Page page) throws IOException, ExtractionException {
         return null;
     }
 

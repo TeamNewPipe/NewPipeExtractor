@@ -1,5 +1,6 @@
 package org.schabi.newpipe.extractor.services.youtube.linkHandler;
 
+import java.util.regex.Pattern;
 import org.schabi.newpipe.extractor.exceptions.ParsingException;
 import org.schabi.newpipe.extractor.linkhandler.ListLinkHandlerFactory;
 import org.schabi.newpipe.extractor.services.youtube.YoutubeParsingHelper;
@@ -32,6 +33,9 @@ public class YoutubeChannelLinkHandlerFactory extends ListLinkHandlerFactory {
 
     private static final YoutubeChannelLinkHandlerFactory instance = new YoutubeChannelLinkHandlerFactory();
 
+    private static final Pattern excludedSegments =
+      Pattern.compile("playlist|watch|attribution_link|watch_popup|embed|feed|select_site");
+
     public static YoutubeChannelLinkHandlerFactory getInstance() {
         return instance;
     }
@@ -48,11 +52,22 @@ public class YoutubeChannelLinkHandlerFactory extends ListLinkHandlerFactory {
     public String getUrl(String id, List<String> contentFilters, String searchFilter) {
         return "https://www.youtube.com/" + id;
     }
+    
+    /**
+     * Returns true if path conform to
+     * custom short channel URLs like youtube.com/yourcustomname
+     *
+     * @param splitPath path segments array
+     * @return true - if value conform to short channel URL, false - not
+     */
+    private boolean isCustomShortChannelUrl(final String[] splitPath) {
+        return splitPath.length == 1 && !excludedSegments.matcher(splitPath[0]).matches();
+    }
 
     @Override
     public String getId(String url) throws ParsingException {
         try {
-            URL urlObj = Utils.stringToURL(url);
+            final URL urlObj = Utils.stringToURL(url);
             String path = urlObj.getPath();
 
             if (!Utils.isHTTP(urlObj) || !(YoutubeParsingHelper.isYoutubeURL(urlObj) ||
@@ -60,15 +75,21 @@ public class YoutubeChannelLinkHandlerFactory extends ListLinkHandlerFactory {
                 throw new ParsingException("the URL given is not a Youtube-URL");
             }
 
-            if (!path.startsWith("/user/") && !path.startsWith("/channel/") && !path.startsWith("/c/")) {
+            // remove leading "/"
+            path = path.substring(1);
+            String[] splitPath = path.split("/");
+
+            // Handle custom short channel URLs like youtube.com/yourcustomname
+            if (isCustomShortChannelUrl(splitPath)) {
+                path = "c/" + path;
+                splitPath = path.split("/");
+            }
+
+            if (!path.startsWith("user/") && !path.startsWith("channel/") && !path.startsWith("c/")) {
                 throw new ParsingException("the URL given is neither a channel nor an user");
             }
 
-            // remove leading "/"
-            path = path.substring(1);
-
-            String[] splitPath = path.split("/");
-            String id = splitPath[1];
+            final String id = splitPath[1];
 
             if (id == null || !id.matches("[A-Za-z0-9_-]+")) {
                 throw new ParsingException("The given id is not a Youtube-Video-ID");

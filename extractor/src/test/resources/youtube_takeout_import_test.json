@@ -1,0 +1,211 @@
+[ {
+  "contentDetails" : {
+    "activityType" : "all",
+    "newItemCount" : 0,
+    "totalItemCount" : 229
+  },
+  "etag" : "WRftgrOZw2rsNjNYhHG3s-VObgs",
+  "id" : "qUAzBV8xkoLYOP-1gwzy6yVWWYc7mBJxLNUEVlkNk8Y",
+  "kind" : "youtube#subscription",
+  "snippet" : {
+    "channelId" : "UC-lHJZR3Gqxm24_Vd_AJ5Yw",
+    "description" : "The official YouTube home of Gorillaz.",
+    "publishedAt" : "2020-11-01T17:24:34.498Z",
+    "resourceId" : {
+      "channelId" : "UCfIXdjDQH9Fau7y99_Orpjw",
+      "kind" : "youtube#channel"
+    },
+    "thumbnails" : {
+      "default" : {
+        "url" : "https://yt3.ggpht.com/-UXcxdSDLo08/AAAAAAAAAAI/AAAAAAAAAAA/FP5NbxM7TzU/s88-c-k-no-mo-rj-c0xffffff/photo.jpg"
+      },
+      "high" : {
+        "url" : "https://yt3.ggpht.com/-UXcxdSDLo08/AAAAAAAAAAI/AAAAAAAAAAA/FP5NbxM7TzU/s800-c-k-no-mo-rj-c0xffffff/photo.jpg"
+      },
+      "medium" : {
+        "url" : "https://yt3.ggpht.com/-UXcxdSDLo08/AAAAAAAAAAI/AAAAAAAAAAA/FP5NbxM7TzU/s240-c-k-no-mo-rj-c0xffffff/photo.jpg"
+      }
+    },
+    "title" : "Gorillaz"
+  }
+}, {
+  "contentDetails" : {
+    "activityType" : "all",
+    "newItemCount" : 0,
+    "totalItemCount" : 3502
+  },
+  "etag" : "wUgip-X0qBlnjj0frSTwP6B8XoY",
+  "id" : "qUAzBV8xkoLYOP-1gwzy63zpjj8SMTtDReGwIa2sHp8",
+  "kind" : "youtube#subscription",
+  "snippet" : {
+    "channelId" : "UC-lHJZR3Gqxm24_Vd_AJ5Yw",
+    "description" : "The TED Talks channel features the best talks and performances from the TED Conference, where the world's leading thinkers and doers give the talk of their lives in 18 minutes (or less). Look for talks on Technology, Entertainment and Design -- plus science, business, global issues, the arts and more. You're welcome to link to or embed these videos, forward them to others and share these ideas with people you know.\n\nTED's videos may be used for non-commercial purposes under a Creative Commons License, Attribution–Non Commercial–No Derivatives (or the CC BY – NC – ND 4.0 International) and in accordance with our TED Talks Usage Policy (https://www.ted.com/about/our-organization/our-policies-terms/ted-talks-usage-policy). For more information on using TED for commercial purposes (e.g. employee learning, in a film or online course), please submit a Media Request at https://media-requests.ted.com",
+    "publishedAt" : "2020-11-01T17:24:11.769Z",
+    "resourceId" : {
+      "channelId" : "UCAuUUnT6oDeKwE6v1NGQxug",
+      "kind" : "youtube#channel"
+    },
+    "thumbnails" : {
+      "default" : {
+        "url" : "https://yt3.ggpht.com/-bonZt347bMc/AAAAAAAAAAI/AAAAAAAAAAA/lR8QEKnqqHk/s88-c-k-no-mo-rj-c0xffffff/photo.jpg"
+      },
+      "high" : {
+        "url" : "https://yt3.ggpht.com/-bonZt347bMc/AAAAAAAAAAI/AAAAAAAAAAA/lR8QEKnqqHk/s800-c-k-no-mo-rj-c0xffffff/photo.jpg"
+      },
+      "medium" : {
+        "url" : "https://yt3.ggpht.com/-bonZt347bMc/AAAAAAAAAAI/AAAAAAAAAAA/lR8QEKnqqHk/s240-c-k-no-mo-rj-c0xffffff/photo.jpg"
+      }
+    },
+    "title" : "TED"
+  }
+}, {
+  "contentDetails" : {
+    "activityType" : "all",
+    "newItemCount" : 0,
+    "totalItemCount" : 98
+  },
+  "etag" : "M3Hl6FQUAD3e-fH9pcvcE9aPSWQ",
+  "id" : "qUAzBV8xkoLYOP-1gwzy64Vo-PpWMPDyIYBM1JUfepk",
+  "kind" : "youtube#subscription",
+  "snippet" : {
+    "channelId" : "UC-lHJZR3Gqxm24_Vd_AJ5Yw",
+    "description" : "In a world where the content of digital images and videos can no longer be taken at face value, an unlikely hero fights for the acceptance of truth.\r\n\r\nCaptain Disillusion guides children of all ages through the maze of visual fakery to the open spaces of reality and peace of mind.\r\n\r\nSubscribe to get fun and detailed explanations of current \"unbelievable\" viral videos that fool the masses!",
+    "publishedAt" : "2020-11-01T17:23:52.909Z",
+    "resourceId" : {
+      "channelId" : "UCEOXxzW2vU0P-0THehuIIeg",
+      "kind" : "youtube#channel"
+    },
+    "thumbnails" : {
+      "default" : {
+        "url" : "https://yt3.ggpht.com/-7f3hUYZP5Sc/AAAAAAAAAAI/AAAAAAAAAAA/4cpBHKDlbYQ/s88-c-k-no-mo-rj-c0xffffff/photo.jpg"
+      },
+      "high" : {
+        "url" : "https://yt3.ggpht.com/-7f3hUYZP5Sc/AAAAAAAAAAI/AAAAAAAAAAA/4cpBHKDlbYQ/s800-c-k-no-mo-rj-c0xffffff/photo.jpg"
+      },
+      "medium" : {
+        "url" : "https://yt3.ggpht.com/-7f3hUYZP5Sc/AAAAAAAAAAI/AAAAAAAAAAA/4cpBHKDlbYQ/s240-c-k-no-mo-rj-c0xffffff/photo.jpg"
+      }
+    },
+    "title" : "Captain Disillusion"
+  }
+}, {
+  "contentDetails" : {
+    "activityType" : "all",
+    "newItemCount" : 0,
+    "totalItemCount" : 130
+  },
+  "etag" : "crkTVZbDHS3arRZErMaLMnNqtac",
+  "id" : "qUAzBV8xkoLYOP-1gwzy66EVopYHE34m06PVw8Pvheg",
+  "kind" : "youtube#subscription",
+  "snippet" : {
+    "channelId" : "UC-lHJZR3Gqxm24_Vd_AJ5Yw",
+    "description" : "Videos explaining things with optimistic nihilism. \n\nWe are a small team who want to make science look beautiful. Because it is beautiful. \n\nCurrently we make one animation video per month. Follow us on Twitter, Facebook to get notified when a new one comes out.\n\nFAQ:\n \n- We do the videos with After Effects and Illustrator.",
+    "publishedAt" : "2020-11-01T17:23:39.659Z",
+    "resourceId" : {
+      "channelId" : "UCsXVk37bltHxD1rDPwtNM8Q",
+      "kind" : "youtube#channel"
+    },
+    "thumbnails" : {
+      "default" : {
+        "url" : "https://yt3.ggpht.com/-UwENvFjc4vI/AAAAAAAAAAI/AAAAAAAAAAA/04dXvZ_jl0I/s88-c-k-no-mo-rj-c0xffffff/photo.jpg"
+      },
+      "high" : {
+        "url" : "https://yt3.ggpht.com/-UwENvFjc4vI/AAAAAAAAAAI/AAAAAAAAAAA/04dXvZ_jl0I/s800-c-k-no-mo-rj-c0xffffff/photo.jpg"
+      },
+      "medium" : {
+        "url" : "https://yt3.ggpht.com/-UwENvFjc4vI/AAAAAAAAAAI/AAAAAAAAAAA/04dXvZ_jl0I/s240-c-k-no-mo-rj-c0xffffff/photo.jpg"
+      }
+    },
+    "title" : "Kurzgesagt – In a Nutshell"
+  }
+}, {
+  "contentDetails" : {
+    "activityType" : "all",
+    "newItemCount" : 0,
+    "totalItemCount" : 229
+  },
+  "etag" : "WRftgrOZw2rsNjNYhHG3s-VObgs",
+  "id" : "qUAzBV8xkoLYOP-1gwzy6yVWWYc7mBJxLNUEVlkNk8Y",
+  "kind" : "youtube#subscription",
+  "snippet" : {
+    "channelId" : "UC-lHJZR3Gqxm24_Vd_AJ5Yw",
+    "description" : "ⓤⓝⓘⓒⓞⓓⓔ",
+    "publishedAt" : "2020-11-01T17:24:34.498Z",
+    "resourceId" : {
+      "channelId" : "UCfIXdjDQH9Fau7y99_Orpjw",
+      "kind" : "youtube#channel"
+    },
+    "thumbnails" : {
+      "default" : {
+        "url" : "https://yt3.ggpht.com/-UXcxdSDLo08/AAAAAAAAAAI/AAAAAAAAAAA/FP5NbxM7TzU/s88-c-k-no-mo-rj-c0xffffff/photo.jpg"
+      },
+      "high" : {
+        "url" : "https://yt3.ggpht.com/-UXcxdSDLo08/AAAAAAAAAAI/AAAAAAAAAAA/FP5NbxM7TzU/s800-c-k-no-mo-rj-c0xffffff/photo.jpg"
+      },
+      "medium" : {
+        "url" : "https://yt3.ggpht.com/-UXcxdSDLo08/AAAAAAAAAAI/AAAAAAAAAAA/FP5NbxM7TzU/s240-c-k-no-mo-rj-c0xffffff/photo.jpg"
+      }
+    },
+    "title" : "ⓤⓝⓘⓒⓞⓓⓔ"
+  }
+}, {
+  "contentDetails" : {
+    "activityType" : "all",
+    "newItemCount" : 0,
+    "totalItemCount" : 229
+  },
+  "etag" : "WRftgrOZw2rsNjNYhHG3s-VObgs",
+  "id" : "qUAzBV8xkoLYOP-1gwzy6yVWWYc7mBJxLNUEVlkNk8Y",
+  "kind" : "youtube#subscription",
+  "snippet" : {
+    "channelId" : "UC-lHJZR3Gqxm24_Vd_AJ5Yw",
+    "description" : "中文",
+    "publishedAt" : "2020-11-01T17:24:34.498Z",
+    "resourceId" : {
+      "channelId" : "UCfIXdjDQH9Fau7y99_Orpjw",
+      "kind" : "youtube#channel"
+    },
+    "thumbnails" : {
+      "default" : {
+        "url" : "https://yt3.ggpht.com/-UXcxdSDLo08/AAAAAAAAAAI/AAAAAAAAAAA/FP5NbxM7TzU/s88-c-k-no-mo-rj-c0xffffff/photo.jpg"
+      },
+      "high" : {
+        "url" : "https://yt3.ggpht.com/-UXcxdSDLo08/AAAAAAAAAAI/AAAAAAAAAAA/FP5NbxM7TzU/s800-c-k-no-mo-rj-c0xffffff/photo.jpg"
+      },
+      "medium" : {
+        "url" : "https://yt3.ggpht.com/-UXcxdSDLo08/AAAAAAAAAAI/AAAAAAAAAAA/FP5NbxM7TzU/s240-c-k-no-mo-rj-c0xffffff/photo.jpg"
+      }
+    },
+    "title" : "中文"
+  }
+}, {
+  "contentDetails" : {
+    "activityType" : "all",
+    "newItemCount" : 0,
+    "totalItemCount" : 229
+  },
+  "etag" : "WRftgrOZw2rsNjNYhHG3s-VObgs",
+  "id" : "qUAzBV8xkoLYOP-1gwzy6yVWWYc7mBJxLNUEVlkNk8Y",
+  "kind" : "youtube#subscription",
+  "snippet" : {
+    "channelId" : "UC-lHJZR3Gqxm24_Vd_AJ5Yw",
+    "description" : "हिंदी",
+    "publishedAt" : "2020-11-01T17:24:34.498Z",
+    "resourceId" : {
+      "channelId" : "UCfIXdjDQH9Fau7y99_Orpjw",
+      "kind" : "youtube#channel"
+    },
+    "thumbnails" : {
+      "default" : {
+        "url" : "https://yt3.ggpht.com/-UXcxdSDLo08/AAAAAAAAAAI/AAAAAAAAAAA/FP5NbxM7TzU/s88-c-k-no-mo-rj-c0xffffff/photo.jpg"
+      },
+      "high" : {
+        "url" : "https://yt3.ggpht.com/-UXcxdSDLo08/AAAAAAAAAAI/AAAAAAAAAAA/FP5NbxM7TzU/s800-c-k-no-mo-rj-c0xffffff/photo.jpg"
+      },
+      "medium" : {
+        "url" : "https://yt3.ggpht.com/-UXcxdSDLo08/AAAAAAAAAAI/AAAAAAAAAAA/FP5NbxM7TzU/s240-c-k-no-mo-rj-c0xffffff/photo.jpg"
+      }
+    },
+    "title" : "हिंदी"
+  }
+} ]

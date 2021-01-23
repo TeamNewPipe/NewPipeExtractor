@@ -2,7 +2,7 @@ package org.schabi.newpipe.extractor.services.soundcloud;
 
 import org.junit.BeforeClass;
 import org.junit.Test;
-import org.schabi.newpipe.DownloaderTestImpl;
+import org.schabi.newpipe.downloader.DownloaderTestImpl;
 import org.schabi.newpipe.extractor.NewPipe;
 import org.schabi.newpipe.extractor.channel.ChannelExtractor;
 import org.schabi.newpipe.extractor.exceptions.ParsingException;
@@ -41,7 +41,7 @@ public class SoundcloudChannelExtractorTest {
 
         @Test
         public void testName() {
-            assertEquals("LIL UZI VERT", extractor.getName());
+            assertEquals("Lil Uzi Vert", extractor.getName());
         }
 
         @Test

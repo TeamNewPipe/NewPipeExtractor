@@ -11,7 +11,7 @@ public class PeertubeChannelLinkHandlerFactory extends ListLinkHandlerFactory {
 
     private static final PeertubeChannelLinkHandlerFactory instance = new PeertubeChannelLinkHandlerFactory();
     private static final String ID_PATTERN = "(accounts|video-channels)/([^/?&#]*)";
-    private static final String API_ENDPOINT = "/api/v1/";
+    public static final String API_ENDPOINT = "/api/v1/";
 
     public static PeertubeChannelLinkHandlerFactory getInstance() {
         return instance;
@@ -24,19 +24,17 @@ public class PeertubeChannelLinkHandlerFactory extends ListLinkHandlerFactory {
 
     @Override
     public String getUrl(String id, List<String> contentFilters, String searchFilter) throws ParsingException {
-        String baseUrl = ServiceList.PeerTube.getBaseUrl();
-        return getUrl(id, contentFilters, searchFilter, baseUrl);
+        return getUrl(id, contentFilters, searchFilter, ServiceList.PeerTube.getBaseUrl());
     }
 
     @Override
     public String getUrl(String id, List<String> contentFilter, String sortFilter, String baseUrl)
             throws ParsingException {
-
         if (id.matches(ID_PATTERN)) {
-            return baseUrl + API_ENDPOINT + id;
+            return baseUrl + "/" + id;
         } else {
             // This is needed for compatibility with older versions were we didn't support video channels yet
-            return baseUrl + API_ENDPOINT + "accounts/" + id;
+            return baseUrl + "/accounts/" + id;
         }
     }
 

@@ -2,54 +2,43 @@ package org.schabi.newpipe.extractor.services.media_ccc.linkHandler;
 
 import org.schabi.newpipe.extractor.exceptions.ParsingException;
 import org.schabi.newpipe.extractor.linkhandler.LinkHandlerFactory;
-import org.schabi.newpipe.extractor.utils.Utils;
-
-import java.net.MalformedURLException;
-import java.net.URL;
+import org.schabi.newpipe.extractor.services.media_ccc.extractors.MediaCCCParsingHelper;
+import org.schabi.newpipe.extractor.utils.Parser;
 
 public class MediaCCCStreamLinkHandlerFactory extends LinkHandlerFactory {
+    public static final String VIDEO_API_ENDPOINT = "https://api.media.ccc.de/public/events/";
+    private static final String VIDEO_PATH = "https://media.ccc.de/v/";
+    private static final String RECORDING_ID_PATTERN = "(?:(?:(?:api\\.)?media\\.ccc\\.de/public/events/)|(?:media\\.ccc\\.de/v/))([^/?&#]*)";
+    private static final String LIVE_STREAM_API_ENDPOINT = "https://streaming.media.ccc.de/streams/v2.json";
+    private static final String LIVE_STREAM_PATH = "https://streaming.media.ccc.de/";
+    private static final String LIVE_STREAM_ID_PATTERN = "streaming\\.media\\.ccc\\.de\\/(\\w+\\/\\w+)";
+
     @Override
-    public String getId(final String urlString) throws ParsingException {
-        if (urlString.startsWith("https://media.ccc.de/public/events/")
-                && !urlString.contains("?q=")) {
-            return urlString.substring(35); //remove …/public/events part
-        }
-
-        if (urlString.startsWith("https://api.media.ccc.de/public/events/")
-                && !urlString.contains("?q=")) {
-            return urlString.substring(39); //remove api…/public/events part
-        }
-
-        URL url;
+    public String getId(final String url) throws ParsingException {
+        String streamId = null;
         try {
-            url = Utils.stringToURL(urlString);
-        } catch (MalformedURLException e) {
-            throw new IllegalArgumentException("The given URL is not valid");
-        }
+            streamId = Parser.matchGroup1(LIVE_STREAM_ID_PATTERN, url);
+        } catch (Parser.RegexException ignored) {
 
-        String path = url.getPath();
-        // remove leading "/" of URL-path if URL-path is given
-        if (!path.isEmpty()) {
-            path = path.substring(1);
         }
-
-        if (path.startsWith("v/")) {
-            return path.substring(2);
+        if (streamId == null) {
+            return Parser.matchGroup1(RECORDING_ID_PATTERN, url);
         }
-
-        throw new ParsingException("Could not get id from url: " + url);
+        return streamId;
     }
 
     @Override
     public String getUrl(final String id) throws ParsingException {
-        return "https://media.ccc.de/public/events/" + id;
+        if (MediaCCCParsingHelper.isLiveStreamId(id)) {
+            return LIVE_STREAM_PATH + id;
+        }
+        return VIDEO_PATH + id;
     }
 
     @Override
     public boolean onAcceptUrl(final String url) {
         try {
-            getId(url);
-            return true;
+            return getId(url) != null;
         } catch (ParsingException e) {
             return false;
         }

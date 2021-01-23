@@ -2,8 +2,8 @@ package org.schabi.newpipe.extractor.services.youtube.invidious.extractors;
 
 import com.grack.nanojson.JsonArray;
 import com.grack.nanojson.JsonObject;
-import com.grack.nanojson.JsonWriter;
 import org.schabi.newpipe.extractor.NewPipe;
+import org.schabi.newpipe.extractor.Page;
 import org.schabi.newpipe.extractor.StreamingService;
 import org.schabi.newpipe.extractor.channel.ChannelExtractor;
 import org.schabi.newpipe.extractor.downloader.Downloader;
@@ -91,22 +91,23 @@ public class InvidiousChannelExtractor extends ChannelExtractor {
     @Override
     public InfoItemsPage<StreamInfoItem> getInitialPage() throws IOException, ExtractionException {
         final Downloader dl = NewPipe.getDownloader();
-        final String apiUrl = getPageUrl(1);
+        final String apiUrl = getPage(1).getUrl();
         final Response rp = dl.get(apiUrl);
         final JsonArray array = InvidiousParsingHelper.getValidJsonArrayFromResponse(rp, apiUrl);
 
         final StreamInfoItemsCollector collector = new StreamInfoItemsCollector(getServiceId());
         collectStreamsFrom(collector, array);
-        return new InfoItemsPage<>(collector, getNextPageUrl());
+
+        return new InfoItemsPage<>(collector, getPage(2));
+    }
+
+    public Page getPage(int page) {
+        return new Page(baseUrl + "/api/v1/channels/videos/" +
+                json.getString("authorId") + "?page=" + 2);
     }
 
     @Override
-    public String getNextPageUrl() {
-        return getPageUrl(2);
-    }
-
-    @Override
-    public InfoItemsPage<StreamInfoItem> getPage(String pageUrl) throws IOException, ExtractionException {
+    public InfoItemsPage<StreamInfoItem> getPage(Page page) throws IOException, ExtractionException {
         return null;
     }
 
@@ -125,10 +126,6 @@ public class InvidiousChannelExtractor extends ChannelExtractor {
     @Override
     public String getName() {
         return json.getString("author");
-    }
-
-    private String getPageUrl(int page) {
-        return baseUrl + "/api/v1/channels/videos/" + json.getString("authorId") + "?page=" + page;
     }
 
     private void collectStreamsFrom(final StreamInfoItemsCollector collector, final JsonArray videos) {

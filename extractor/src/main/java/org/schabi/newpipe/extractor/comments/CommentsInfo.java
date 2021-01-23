@@ -3,6 +3,7 @@ package org.schabi.newpipe.extractor.comments;
 import org.schabi.newpipe.extractor.ListExtractor.InfoItemsPage;
 import org.schabi.newpipe.extractor.ListInfo;
 import org.schabi.newpipe.extractor.NewPipe;
+import org.schabi.newpipe.extractor.Page;
 import org.schabi.newpipe.extractor.StreamingService;
 import org.schabi.newpipe.extractor.exceptions.ExtractionException;
 import org.schabi.newpipe.extractor.linkhandler.ListLinkHandler;
@@ -39,23 +40,23 @@ public class CommentsInfo extends ListInfo<CommentsInfoItem> {
         InfoItemsPage<CommentsInfoItem> initialCommentsPage = ExtractorHelper.getItemsPageOrLogError(commentsInfo,
                 commentsExtractor);
         commentsInfo.setRelatedItems(initialCommentsPage.getItems());
-        commentsInfo.setNextPageUrl(initialCommentsPage.getNextPageUrl());
+        commentsInfo.setNextPage(initialCommentsPage.getNextPage());
 
         return commentsInfo;
     }
 
-    public static InfoItemsPage<CommentsInfoItem> getMoreItems(CommentsInfo commentsInfo, String pageUrl)
+    public static InfoItemsPage<CommentsInfoItem> getMoreItems(CommentsInfo commentsInfo, Page page)
             throws ExtractionException, IOException {
-        return getMoreItems(NewPipe.getService(commentsInfo.getServiceId()), commentsInfo, pageUrl);
+        return getMoreItems(NewPipe.getService(commentsInfo.getServiceId()), commentsInfo, page);
     }
 
     public static InfoItemsPage<CommentsInfoItem> getMoreItems(StreamingService service, CommentsInfo commentsInfo,
-                                                               String pageUrl) throws IOException, ExtractionException {
+                                                               Page page) throws IOException, ExtractionException {
         if (null == commentsInfo.getCommentsExtractor()) {
             commentsInfo.setCommentsExtractor(service.getCommentsExtractor(commentsInfo.getUrl()));
             commentsInfo.getCommentsExtractor().fetchPage();
         }
-        return commentsInfo.getCommentsExtractor().getPage(pageUrl);
+        return commentsInfo.getCommentsExtractor().getPage(page);
     }
 
     private transient CommentsExtractor commentsExtractor;

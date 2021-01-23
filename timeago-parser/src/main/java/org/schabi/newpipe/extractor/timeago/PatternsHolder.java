@@ -1,5 +1,6 @@
 package org.schabi.newpipe.extractor.timeago;
 
+import java.time.temporal.ChronoUnit;
 import java.util.Collection;
 import java.util.LinkedHashMap;
 import java.util.Map;
@@ -16,7 +17,7 @@ public abstract class PatternsHolder {
     private final Collection<String> months;
     private final Collection<String> years;
 
-    private final Map<TimeAgoUnit, Map<String, Integer>> specialCases = new LinkedHashMap<>();
+    private final Map<ChronoUnit, Map<String, Integer>> specialCases = new LinkedHashMap<>();
 
     protected PatternsHolder(String wordSeparator, Collection<String> seconds, Collection<String> minutes,
                              Collection<String> hours, Collection<String> days,
@@ -69,30 +70,25 @@ public abstract class PatternsHolder {
         return years;
     }
 
-    public Map<TimeAgoUnit, Map<String, Integer>> specialCases() {
+    public Map<ChronoUnit, Map<String, Integer>> specialCases() {
         return specialCases;
     }
 
-    protected void putSpecialCase(TimeAgoUnit unit, String caseText, int caseAmount) {
-        Map<String, Integer> item = specialCases.get(unit);
-
-        if (item == null) {
-            item = new LinkedHashMap<>();
-            specialCases.put(unit, item);
-        }
+    protected void putSpecialCase(ChronoUnit unit, String caseText, int caseAmount) {
+        Map<String, Integer> item = specialCases.computeIfAbsent(unit, k -> new LinkedHashMap<>());
 
         item.put(caseText, caseAmount);
     }
 
-    public Map<TimeAgoUnit, Collection<String>> asMap() {
-        final Map<TimeAgoUnit, Collection<String>> returnMap = new LinkedHashMap<>();
-        returnMap.put(TimeAgoUnit.SECONDS, seconds());
-        returnMap.put(TimeAgoUnit.MINUTES, minutes());
-        returnMap.put(TimeAgoUnit.HOURS, hours());
-        returnMap.put(TimeAgoUnit.DAYS, days());
-        returnMap.put(TimeAgoUnit.WEEKS, weeks());
-        returnMap.put(TimeAgoUnit.MONTHS, months());
-        returnMap.put(TimeAgoUnit.YEARS, years());
+    public Map<ChronoUnit, Collection<String>> asMap() {
+        final Map<ChronoUnit, Collection<String>> returnMap = new LinkedHashMap<>();
+        returnMap.put(ChronoUnit.SECONDS, seconds());
+        returnMap.put(ChronoUnit.MINUTES, minutes());
+        returnMap.put(ChronoUnit.HOURS, hours());
+        returnMap.put(ChronoUnit.DAYS, days());
+        returnMap.put(ChronoUnit.WEEKS, weeks());
+        returnMap.put(ChronoUnit.MONTHS, months());
+        returnMap.put(ChronoUnit.YEARS, years());
 
         return returnMap;
     }

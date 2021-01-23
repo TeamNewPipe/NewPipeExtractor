@@ -79,6 +79,11 @@ public class InvidiousCommentsInfoItemExtractor implements CommentsInfoItemExtra
     }
 
     @Override
+    public boolean getHeartedByUploader() throws ParsingException {
+        return false;
+    }
+
+    @Override
     public String getName() throws ParsingException {
         return json.getString("author");
     }

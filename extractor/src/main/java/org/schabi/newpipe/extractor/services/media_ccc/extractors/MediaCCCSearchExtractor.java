@@ -6,6 +6,8 @@ import com.grack.nanojson.JsonParser;
 import com.grack.nanojson.JsonParserException;
 
 import org.schabi.newpipe.extractor.InfoItem;
+import org.schabi.newpipe.extractor.MetaInfo;
+import org.schabi.newpipe.extractor.Page;
 import org.schabi.newpipe.extractor.StreamingService;
 import org.schabi.newpipe.extractor.channel.ChannelInfoItem;
 import org.schabi.newpipe.extractor.channel.ChannelInfoItemExtractor;
@@ -19,6 +21,7 @@ import org.schabi.newpipe.extractor.services.media_ccc.extractors.infoItems.Medi
 import org.schabi.newpipe.extractor.services.media_ccc.linkHandler.MediaCCCConferencesListLinkHandlerFactory;
 
 import java.io.IOException;
+import java.util.Collections;
 import java.util.List;
 
 import javax.annotation.Nonnull;
@@ -56,6 +59,12 @@ public class MediaCCCSearchExtractor extends SearchExtractor {
 
     @Nonnull
     @Override
+    public List<MetaInfo> getMetaInfo() {
+        return Collections.emptyList();
+    }
+
+    @Nonnull
+    @Override
     public InfoItemsPage<InfoItem> getInitialPage() {
         final InfoItemsSearchCollector searchItems = new InfoItemsSearchCollector(getServiceId());
 
@@ -72,20 +81,20 @@ public class MediaCCCSearchExtractor extends SearchExtractor {
                 || getLinkHandler().getContentFilters().isEmpty()) {
             JsonArray events = doc.getArray("events");
             for (int i = 0; i < events.size(); i++) {
-                searchItems.commit(new MediaCCCStreamInfoItemExtractor(
-                        events.getObject(i)));
+                // Ensure only uploaded talks are shown in the search results.
+                // If the release date is null, the talk has not been held or uploaded yet
+                // and no streams are going to be available anyway.
+                if (events.getObject(i).getString("release_date") != null) {
+                    searchItems.commit(new MediaCCCStreamInfoItemExtractor(
+                            events.getObject(i)));
+                }
             }
         }
         return new InfoItemsPage<>(searchItems, null);
     }
 
     @Override
-    public String getNextPageUrl() {
-        return "";
-    }
-
-    @Override
-    public InfoItemsPage<InfoItem> getPage(final String pageUrl) {
+    public InfoItemsPage<InfoItem> getPage(final Page page) {
         return InfoItemsPage.emptyPage();
     }
 
@@ -101,7 +110,7 @@ public class MediaCCCSearchExtractor extends SearchExtractor {
             try {
                 doc = JsonParser.object().from(site);
             } catch (JsonParserException jpe) {
-                throw new ExtractionException("Could not parse json.", jpe);
+                throw new ExtractionException("Could not parse JSON.", jpe);
             }
         }
         if (getLinkHandler().getContentFilters().contains(CONFERENCES)

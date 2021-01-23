@@ -2,10 +2,10 @@ allprojects {
     apply plugin: 'java-library'
     apply plugin: 'maven'
 
-    sourceCompatibility = 1.7
-    targetCompatibility = 1.7
+    sourceCompatibility = 1.8
+    targetCompatibility = 1.8
 
-    version 'v0.19.5'
+    version 'v0.20.8'
     group 'com.github.TeamNewPipe'
 
     repositories {
@@ -15,7 +15,7 @@ allprojects {
 }
 
 dependencies {
-    implementation project(':extractor')
+    api project(':extractor')
     implementation project(':timeago-parser')
 }
 
@@ -43,7 +43,7 @@ task aggregatedJavadocs(type: Javadoc, group: 'Documentation') {
     destinationDir = file("$buildDir/docs/javadoc")
     title = "$project.name $version"
     // options.memberLevel = JavadocMemberLevel.PRIVATE
-    options.links 'https://docs.oracle.com/javase/7/docs/api/'
+    options.links 'https://docs.oracle.com/javase/8/docs/api/'
     options.encoding 'UTF-8'
 
     subprojects.each { project ->

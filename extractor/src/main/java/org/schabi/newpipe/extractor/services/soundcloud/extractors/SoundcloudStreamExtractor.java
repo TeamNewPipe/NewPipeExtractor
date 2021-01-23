@@ -6,6 +6,7 @@ import com.grack.nanojson.JsonParser;
 import com.grack.nanojson.JsonParserException;
 
 import org.schabi.newpipe.extractor.MediaFormat;
+import org.schabi.newpipe.extractor.MetaInfo;
 import org.schabi.newpipe.extractor.NewPipe;
 import org.schabi.newpipe.extractor.StreamingService;
 import org.schabi.newpipe.extractor.downloader.Downloader;
@@ -19,8 +20,8 @@ import org.schabi.newpipe.extractor.services.soundcloud.SoundcloudParsingHelper;
 import org.schabi.newpipe.extractor.stream.AudioStream;
 import org.schabi.newpipe.extractor.stream.Description;
 import org.schabi.newpipe.extractor.stream.StreamExtractor;
-import org.schabi.newpipe.extractor.stream.StreamInfoItem;
 import org.schabi.newpipe.extractor.stream.StreamInfoItemsCollector;
+import org.schabi.newpipe.extractor.stream.StreamSegment;
 import org.schabi.newpipe.extractor.stream.StreamType;
 import org.schabi.newpipe.extractor.stream.SubtitlesStream;
 import org.schabi.newpipe.extractor.stream.VideoStream;
@@ -34,6 +35,7 @@ import java.util.List;
 import java.util.Locale;
 
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 
 import static org.schabi.newpipe.extractor.utils.JsonUtils.EMPTY_STRING;
 import static org.schabi.newpipe.extractor.utils.Utils.isNullOrEmpty;
@@ -47,7 +49,7 @@ public class SoundcloudStreamExtractor extends StreamExtractor {
 
     @Override
     public void onFetchPage(@Nonnull Downloader downloader) throws IOException, ExtractionException {
-        track = SoundcloudParsingHelper.resolveFor(downloader, getOriginalUrl());
+        track = SoundcloudParsingHelper.resolveFor(downloader, getUrl());
 
         String policy = track.getString("policy", EMPTY_STRING);
         if (!policy.equals("ALLOW") && !policy.equals("MONETIZE")) {
@@ -69,8 +71,10 @@ public class SoundcloudStreamExtractor extends StreamExtractor {
 
     @Nonnull
     @Override
-    public String getTextualUploadDate() throws ParsingException {
-        return track.getString("created_at").replace("T"," ").replace("Z", "");
+    public String getTextualUploadDate() {
+        return track.getString("created_at")
+                .replace("T"," ")
+                .replace("Z", "");
     }
 
     @Nonnull
@@ -86,10 +90,10 @@ public class SoundcloudStreamExtractor extends StreamExtractor {
         if (artworkUrl.isEmpty()) {
             artworkUrl = track.getObject("user").getString("avatar_url", EMPTY_STRING);
         }
-        String artworkUrlBetterResolution = artworkUrl.replace("large.jpg", "crop.jpg");
-        return artworkUrlBetterResolution;
+        return artworkUrl.replace("large.jpg", "crop.jpg");
     }
 
+    @Nonnull
     @Override
     public Description getDescription() {
         return new Description(track.getString("description"), Description.PLAIN_TEXT);
@@ -102,7 +106,7 @@ public class SoundcloudStreamExtractor extends StreamExtractor {
 
     @Override
     public long getLength() {
-        return track.getNumber("duration", 0).longValue() / 1000L;
+        return track.getLong("duration") / 1000L;
     }
 
     @Override
@@ -112,12 +116,12 @@ public class SoundcloudStreamExtractor extends StreamExtractor {
 
     @Override
     public long getViewCount() {
-        return track.getNumber("playback_count", 0).longValue();
+        return track.getLong("playback_count");
     }
 
     @Override
     public long getLikeCount() {
-        return track.getNumber("favoritings_count", -1).longValue();
+        return track.getLong("favoritings_count", -1);
     }
 
     @Override
@@ -145,19 +149,19 @@ public class SoundcloudStreamExtractor extends StreamExtractor {
 
     @Nonnull
     @Override
-    public String getSubChannelUrl() throws ParsingException {
+    public String getSubChannelUrl() {
         return "";
     }
 
     @Nonnull
     @Override
-    public String getSubChannelName() throws ParsingException {
+    public String getSubChannelName() {
         return "";
     }
 
     @Nonnull
     @Override
-    public String getSubChannelAvatarUrl() throws ParsingException {
+    public String getSubChannelAvatarUrl() {
         return "";
     }
 
@@ -169,14 +173,14 @@ public class SoundcloudStreamExtractor extends StreamExtractor {
 
     @Nonnull
     @Override
-    public String getHlsUrl() throws ParsingException {
+    public String getHlsUrl() {
         return "";
     }
 
     @Override
     public List<AudioStream> getAudioStreams() throws IOException, ExtractionException {
         List<AudioStream> audioStreams = new ArrayList<>();
-        Downloader dl = NewPipe.getDownloader();
+        final Downloader dl = NewPipe.getDownloader();
 
         // Streams can be streamable and downloadable - or explicitly not.
         // For playing the track, it is only necessary to have a streamable track.
@@ -184,12 +188,12 @@ public class SoundcloudStreamExtractor extends StreamExtractor {
         if (!track.getBoolean("streamable")) return audioStreams;
 
         try {
-            JsonArray transcodings = track.getObject("media").getArray("transcodings");
+            final JsonArray transcodings = track.getObject("media").getArray("transcodings");
 
             // get information about what stream formats are available
             for (Object transcoding : transcodings) {
 
-                JsonObject t = (JsonObject) transcoding;
+                final JsonObject t = (JsonObject) transcoding;
                 String url = t.getString("url");
 
                 if (!isNullOrEmpty(url)) {
@@ -201,7 +205,7 @@ public class SoundcloudStreamExtractor extends StreamExtractor {
                         // This url points to the endpoint which generates a unique and short living url to the stream.
                         // TODO: move this to a separate method to generate valid urls when needed (e.g. resuming a paused stream)
                         url += "?client_id=" + SoundcloudParsingHelper.clientId();
-                        String res = dl.get(url).responseBody();
+                        final String res = dl.get(url).responseBody();
 
                         try {
                             JsonObject mp3UrlObject = JsonParser.object().from(res);
@@ -235,24 +239,24 @@ public class SoundcloudStreamExtractor extends StreamExtractor {
     }
 
     @Override
-    public List<VideoStream> getVideoStreams() throws IOException, ExtractionException {
-        return null;
+    public List<VideoStream> getVideoStreams() {
+        return Collections.emptyList();
     }
 
     @Override
-    public List<VideoStream> getVideoOnlyStreams() throws IOException, ExtractionException {
-        return null;
-    }
-
-    @Override
-    @Nonnull
-    public List<SubtitlesStream> getSubtitlesDefault() throws IOException, ExtractionException {
+    public List<VideoStream> getVideoOnlyStreams() {
         return Collections.emptyList();
     }
 
     @Override
     @Nonnull
-    public List<SubtitlesStream> getSubtitles(MediaFormat format) throws IOException, ExtractionException {
+    public List<SubtitlesStream> getSubtitlesDefault() {
+        return Collections.emptyList();
+    }
+
+    @Override
+    @Nonnull
+    public List<SubtitlesStream> getSubtitles(MediaFormat format) {
         return Collections.emptyList();
     }
 
@@ -261,17 +265,13 @@ public class SoundcloudStreamExtractor extends StreamExtractor {
         return StreamType.AUDIO_STREAM;
     }
 
-    @Override
-    public StreamInfoItem getNextStream() throws IOException, ExtractionException {
-        return null;
-    }
-
+    @Nullable
     @Override
     public StreamInfoItemsCollector getRelatedStreams() throws IOException, ExtractionException {
-        StreamInfoItemsCollector collector = new StreamInfoItemsCollector(getServiceId());
+        final StreamInfoItemsCollector collector = new StreamInfoItemsCollector(getServiceId());
 
-        String apiUrl = "https://api-v2.soundcloud.com/tracks/" + urlEncode(getId()) + "/related"
-                + "?client_id=" + urlEncode(SoundcloudParsingHelper.clientId());
+        final String apiUrl = "https://api-v2.soundcloud.com/tracks/" + urlEncode(getId())
+                + "/related?client_id=" + urlEncode(SoundcloudParsingHelper.clientId());
 
         SoundcloudParsingHelper.getStreamsFromApi(collector, apiUrl);
         return collector;
@@ -282,40 +282,56 @@ public class SoundcloudStreamExtractor extends StreamExtractor {
         return null;
     }
 
+    @Nonnull
     @Override
-    public String getHost() throws ParsingException {
+    public String getHost() {
+        return "";
+    }
+
+    @Nonnull
+    @Override
+    public String getPrivacy() {
+        return "";
+    }
+
+    @Nonnull
+    @Override
+    public String getCategory() {
+        return "";
+    }
+
+    @Nonnull
+    @Override
+    public String getLicence() {
         return "";
     }
 
     @Override
-    public String getPrivacy() throws ParsingException {
-        return "";
-    }
-
-    @Override
-    public String getCategory() throws ParsingException {
-        return "";
-    }
-
-    @Override
-    public String getLicence() throws ParsingException {
-        return "";
-    }
-
-    @Override
-    public Locale getLanguageInfo() throws ParsingException {
+    public Locale getLanguageInfo() {
         return null;
     }
 
     @Nonnull
     @Override
-    public List<String> getTags() throws ParsingException {
-        return new ArrayList<>();
+    public List<String> getTags() {
+        return Collections.emptyList();
     }
 
     @Nonnull
     @Override
-    public String getSupportInfo() throws ParsingException {
+    public String getSupportInfo() {
         return "";
+    }
+
+    @Nonnull
+    @Override
+    public List<StreamSegment> getStreamSegments() {
+        return Collections.emptyList();
+    }
+
+    @Nonnull
+    @Override
+    public List<MetaInfo> getMetaInfo() {
+        return Collections.emptyList();
     }
 }

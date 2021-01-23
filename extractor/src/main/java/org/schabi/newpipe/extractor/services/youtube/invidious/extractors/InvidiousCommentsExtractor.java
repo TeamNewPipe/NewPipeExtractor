@@ -3,6 +3,7 @@ package org.schabi.newpipe.extractor.services.youtube.invidious.extractors;
 import com.grack.nanojson.JsonArray;
 import com.grack.nanojson.JsonObject;
 import org.schabi.newpipe.extractor.NewPipe;
+import org.schabi.newpipe.extractor.Page;
 import org.schabi.newpipe.extractor.StreamingService;
 import org.schabi.newpipe.extractor.comments.CommentsExtractor;
 import org.schabi.newpipe.extractor.comments.CommentsInfoItem;
@@ -10,6 +11,7 @@ import org.schabi.newpipe.extractor.comments.CommentsInfoItemsCollector;
 import org.schabi.newpipe.extractor.downloader.Downloader;
 import org.schabi.newpipe.extractor.downloader.Response;
 import org.schabi.newpipe.extractor.exceptions.ExtractionException;
+import org.schabi.newpipe.extractor.exceptions.ParsingException;
 import org.schabi.newpipe.extractor.linkhandler.ListLinkHandler;
 import org.schabi.newpipe.extractor.services.soundcloud.extractors.SoundcloudCommentsInfoItemExtractor;
 import org.schabi.newpipe.extractor.services.youtube.invidious.InvidiousParsingHelper;
@@ -52,24 +54,25 @@ public class InvidiousCommentsExtractor extends CommentsExtractor {
 
         collectStreamsFrom(collector, json.getArray("comments"), getUrl());
 
-        return new InfoItemsPage<>(collector, getNextPageUrl());
+        return new InfoItemsPage<>(collector, getNextPage());
     }
 
     @Override
-    public String getNextPageUrl() throws ExtractionException {
-        return baseUrl + "/api/v1/comments/" + getId() + "?continuation=" + json.getString("continuation");
-    }
-
-    @Override
-    public InfoItemsPage<CommentsInfoItem> getPage(String pageUrl) throws IOException, ExtractionException {
+    public InfoItemsPage<CommentsInfoItem> getPage(Page page) throws IOException, ExtractionException {
         final Downloader dl = NewPipe.getDownloader();
-        final Response response = dl.get(pageUrl);
+        final Response response = dl.get(page.getUrl());
 
-        json = InvidiousParsingHelper.getValidJsonObjectFromResponse(response, pageUrl);
+        json = InvidiousParsingHelper.getValidJsonObjectFromResponse(response, page.getUrl());
 
         final CommentsInfoItemsCollector collector = new CommentsInfoItemsCollector(getServiceId());
-        collectStreamsFrom(collector, json.getArray("comments"), pageUrl);
-        return new InfoItemsPage<>(collector, getNextPageUrl());
+        collectStreamsFrom(collector, json.getArray("comments"), page.getUrl());
+        return new InfoItemsPage<>(collector, getNextPage());
+    }
+
+
+    public Page getNextPage() throws ParsingException {
+        return new Page(baseUrl + "/api/v1/comments/" + getId()
+                + "?continuation=" + json.getString("continuation"));
     }
 
     @Override

@@ -212,7 +212,7 @@ public class InvidiousPlaylistExtractorTest {
 
             // test for 2 more levels
             for (int i = 0; i < 2; i++) {
-                currentPage = extractor.getPage(currentPage.getNextPageUrl());
+                currentPage = extractor.getPage(currentPage.getNextPage());
                 defaultTestListOfItems(Invidious, currentPage.getItems(), currentPage.getErrors());
             }
         }

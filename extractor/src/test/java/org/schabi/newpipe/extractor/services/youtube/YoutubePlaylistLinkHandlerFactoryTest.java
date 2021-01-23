@@ -2,7 +2,7 @@ package org.schabi.newpipe.extractor.services.youtube;
 
 import org.junit.BeforeClass;
 import org.junit.Test;
-import org.schabi.newpipe.DownloaderTestImpl;
+import org.schabi.newpipe.downloader.DownloaderTestImpl;
 import org.schabi.newpipe.extractor.NewPipe;
 import org.schabi.newpipe.extractor.exceptions.ParsingException;
 import org.schabi.newpipe.extractor.services.youtube.linkHandler.YoutubePlaylistLinkHandlerFactory;
@@ -56,7 +56,7 @@ public class YoutubePlaylistLinkHandlerFactoryTest {
         assertTrue(linkHandler.acceptUrl("www.youtube.com/playlist?list=PLz8YL4HVC87WJQDzVoY943URKQCsHS9XV"));
         assertTrue(linkHandler.acceptUrl("https://music.youtube.com/playlist?list=OLAK5uy_lEBUW9iTwqf0IlYPxZ8LrzpgqjAHZgZpM"));
         assertTrue(linkHandler.acceptUrl("https://www.youtube.com/playlist?list=RDCLAK5uy_ly6s4irLuZAcjEDwJmqcA_UtSipMyGgbQ")); // YouTube Music playlist
-        assertFalse(linkHandler.acceptUrl("https://www.youtube.com/watch?v=2kZVEUGLgy4&list=RDdoEcQv1wlsI&index=2, ")); // YouTube Mix
+        assertTrue(linkHandler.acceptUrl("https://www.youtube.com/watch?v=2kZVEUGLgy4&list=RDdoEcQv1wlsI&index=2, ")); // YouTube Mix
     }
 
     @Test
@@ -104,5 +104,24 @@ public class YoutubePlaylistLinkHandlerFactoryTest {
         assertEquals("PLW5y1tjAOzI3orQNF1yGGVL5x-pR2K1dC", linkHandler.fromUrl("https://invidio.us/playlist?list=PLW5y1tjAOzI3orQNF1yGGVL5x-pR2K1dC").getId());
         assertEquals("PLW5y1tjAOzI3orQNF1yGGVL5x-pR2K1dC", linkHandler.fromUrl("www.invidio.us/playlist?list=PLW5y1tjAOzI3orQNF1yGGVL5x-pR2K1dC").getId());
         assertEquals("PLz8YL4HVC87WJQDzVoY943URKQCsHS9XV", linkHandler.fromUrl("www.invidio.us/playlist?list=PLz8YL4HVC87WJQDzVoY943URKQCsHS9XV").getId());
+    }
+
+    @Test
+    public void fromUrlIsMixVideo() throws Exception {
+        final String videoId = "_AzeUSL9lZc";
+        String url = "https://www.youtube.com/watch?v=" + videoId + "&list=RD" + videoId;
+        assertEquals(url, linkHandler.fromUrl(url).getUrl());
+
+        final String mixVideoId = "qHtzO49SDmk";
+        url = "https://www.youtube.com/watch?v=" + mixVideoId + "&list=RD" + videoId;
+        assertEquals(url, linkHandler.fromUrl(url).getUrl());
+    }
+
+    @Test
+    public void fromUrlIsMixPlaylist() throws Exception {
+        final String videoId = "_AzeUSL9lZc";
+        final String url = "https://www.youtube.com/watch?v=" + videoId + "&list=RD" + videoId;
+        assertEquals(url,
+            linkHandler.fromUrl("https://www.youtube.com/watch?list=RD" + videoId).getUrl());
     }
 }

@@ -1,8 +1,8 @@
 package org.schabi.newpipe.extractor.services.youtube;
 
 import com.grack.nanojson.*;
-import org.jsoup.Jsoup;
-import org.jsoup.nodes.Document;
+import org.schabi.newpipe.extractor.MetaInfo;
+import org.schabi.newpipe.extractor.Page;
 import org.schabi.newpipe.extractor.downloader.Response;
 import org.schabi.newpipe.extractor.exceptions.ContentNotAvailableException;
 import org.schabi.newpipe.extractor.exceptions.ExtractionException;
@@ -10,16 +10,21 @@ import org.schabi.newpipe.extractor.exceptions.ParsingException;
 import org.schabi.newpipe.extractor.exceptions.ReCaptchaException;
 import org.schabi.newpipe.extractor.localization.Localization;
 import org.schabi.newpipe.extractor.services.youtube.invidious.InvidiousInstance;
+import org.schabi.newpipe.extractor.stream.Description;
 import org.schabi.newpipe.extractor.utils.Parser;
 import org.schabi.newpipe.extractor.utils.Utils;
 
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLDecoder;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
+import java.time.LocalDate;
+import java.time.OffsetDateTime;
+import java.time.ZoneOffset;
+import java.time.format.DateTimeParseException;
 import java.util.*;
 
 import static org.schabi.newpipe.extractor.NewPipe.getDownloader;
@@ -51,14 +56,10 @@ public class YoutubeParsingHelper {
     private YoutubeParsingHelper() {
     }
 
-    /**
-     * The official youtube app supports intents in this format, where after the ':' is the videoId.
-     * Accordingly there are other apps sharing streams in this format.
-     */
-    public final static String BASE_YOUTUBE_INTENT_URL = "vnd.youtube";
-
     private static final String HARDCODED_CLIENT_VERSION = "2.20200214.04.00";
     private static String clientVersion;
+
+    private static String key;
 
     private static final String[] HARDCODED_YOUTUBE_MUSIC_KEYS = {"AIzaSyC9XL3ZjWddXya6X74dJoCTL-WEYFDNX30", "67", "0.1"};
     private static String[] youtubeMusicKeys;
@@ -66,25 +67,19 @@ public class YoutubeParsingHelper {
     private static final String FEED_BASE_CHANNEL_ID = "https://www.youtube.com/feeds/videos.xml?channel_id=";
     private static final String FEED_BASE_USER = "https://www.youtube.com/feeds/videos.xml?user=";
 
-    private static final String[] RECAPTCHA_DETECTION_SELECTORS = {
-            "form[action*=\"/das_captcha\"]",
-            "input[name*=\"action_recaptcha_verify\"]"
-    };
-
-    public static Document parseAndCheckPage(final String url, final Response response) throws ReCaptchaException {
-        final Document document = Jsoup.parse(response.responseBody(), url);
-
-        for (String detectionSelector : RECAPTCHA_DETECTION_SELECTORS) {
-            if (!document.select(detectionSelector).isEmpty()) {
-                throw new ReCaptchaException("reCAPTCHA challenge requested (detected with selector: \"" + detectionSelector + "\")", url);
-            }
+    private static boolean isGoogleURL(String url) {
+        url = extractCachedUrlIfNeeded(url);
+        try {
+            final URL u = new URL(url);
+            final String host = u.getHost();
+            return host.startsWith("google.") || host.startsWith("m.google.");
+        } catch (MalformedURLException e) {
+            return false;
         }
-
-        return document;
     }
 
-    public static boolean isYoutubeURL(URL url) {
-        String host = url.getHost();
+    public static boolean isYoutubeURL(final URL url) {
+        final String host = url.getHost();
         return host.equalsIgnoreCase("youtube.com") || host.equalsIgnoreCase("www.youtube.com")
                 || host.equalsIgnoreCase("m.youtube.com") || host.equalsIgnoreCase("music.youtube.com")
                 || host.equalsIgnoreCase("youtu.be") || host.equalsIgnoreCase("www.youtube-nocookie.com");
@@ -105,7 +100,13 @@ public class YoutubeParsingHelper {
         return instance.isValid();
     }
 
-    public static long parseDurationString(String input)
+    /**
+     * Parses the duration string of the video expecting ":" or "." as separators
+     *
+     * @return the duration in seconds
+     * @throws ParsingException when more than 3 separators are found
+     */
+    public static int parseDurationString(final String input)
             throws ParsingException, NumberFormatException {
         // If time separator : is not detected, try . instead
         final String[] splitInput = input.contains(":")
@@ -140,10 +141,10 @@ public class YoutubeParsingHelper {
                 throw new ParsingException("Error duration string with unknown format: " + input);
         }
 
-        return ((Long.parseLong(Utils.removeNonDigitCharacters(days)) * 24
-                + Long.parseLong(Utils.removeNonDigitCharacters(hours))) * 60
-                + Long.parseLong(Utils.removeNonDigitCharacters(minutes))) * 60
-                + Long.parseLong(Utils.removeNonDigitCharacters(seconds));
+        return ((Integer.parseInt(Utils.removeNonDigitCharacters(days)) * 24
+                + Integer.parseInt(Utils.removeNonDigitCharacters(hours))) * 60
+                + Integer.parseInt(Utils.removeNonDigitCharacters(minutes))) * 60
+                + Integer.parseInt(Utils.removeNonDigitCharacters(seconds));
     }
 
     public static String getFeedUrlFrom(final String channelIdOrUser) {
@@ -156,23 +157,83 @@ public class YoutubeParsingHelper {
         }
     }
 
-    public static Calendar parseDateFrom(String textualUploadDate) throws ParsingException {
-        Date date;
+    public static OffsetDateTime parseDateFrom(final String textualUploadDate) throws ParsingException {
         try {
-            date = new SimpleDateFormat("yyyy-MM-dd").parse(textualUploadDate);
-        } catch (ParseException e) {
-            throw new ParsingException("Could not parse date: \"" + textualUploadDate + "\"", e);
+            return OffsetDateTime.parse(textualUploadDate);
+        } catch (DateTimeParseException e) {
+            try {
+                return LocalDate.parse(textualUploadDate).atStartOfDay().atOffset(ZoneOffset.UTC);
+            } catch (DateTimeParseException e1) {
+                throw new ParsingException("Could not parse date: \"" + textualUploadDate + "\"", e1);
+            }
         }
-
-        final Calendar uploadDate = Calendar.getInstance();
-        uploadDate.setTime(date);
-        return uploadDate;
     }
 
-    public static JsonObject getInitialData(String html) throws ParsingException {
+    /**
+     * Checks if the given playlist id is a YouTube Mix (auto-generated playlist)
+     * Ids from a YouTube Mix start with "RD"
+     *
+     * @param playlistId
+     * @return Whether given id belongs to a YouTube Mix
+     */
+    public static boolean isYoutubeMixId(final String playlistId) {
+        return playlistId.startsWith("RD") && !isYoutubeMusicMixId(playlistId);
+    }
+
+    /**
+     * Checks if the given playlist id is a YouTube Music Mix (auto-generated playlist)
+     * Ids from a YouTube Music Mix start with "RDAMVM" or "RDCLAK"
+     *
+     * @param playlistId
+     * @return Whether given id belongs to a YouTube Music Mix
+     */
+    public static boolean isYoutubeMusicMixId(final String playlistId) {
+        return playlistId.startsWith("RDAMVM") || playlistId.startsWith("RDCLAK");
+    }
+
+    /**
+     * Checks if the given playlist id is a YouTube Channel Mix (auto-generated playlist)
+     * Ids from a YouTube channel Mix start with "RDCM"
+     *
+     * @return Whether given id belongs to a YouTube Channel Mix
+     */
+    public static boolean isYoutubeChannelMixId(final String playlistId) {
+        return playlistId.startsWith("RDCM");
+    }
+
+    /**
+     * Extracts the video id from the playlist id for Mixes.
+     *
+     * @throws ParsingException If the playlistId is a Channel Mix or not a mix.
+     */
+    public static String extractVideoIdFromMixId(final String playlistId) throws ParsingException {
+        if (playlistId.startsWith("RDMM")) { // My Mix
+            return playlistId.substring(4);
+
+        } else if (isYoutubeMusicMixId(playlistId)) { // starts with "RDAMVM" or "RDCLAK"
+            return playlistId.substring(6);
+
+        } else if (isYoutubeChannelMixId(playlistId)) { // starts with "RMCM"
+            // Channel mix are build with RMCM{channelId}, so videoId can't be determined
+            throw new ParsingException("Video id could not be determined from mix id: " + playlistId);
+
+        } else if (isYoutubeMixId(playlistId)) { // normal mix, starts with "RD"
+            return playlistId.substring(2);
+
+        } else { // not a mix
+            throw new ParsingException("Video id could not be determined from mix id: " + playlistId);
+        }
+    }
+
+    public static JsonObject getInitialData(final String html) throws ParsingException {
         try {
-            String initialData = Parser.matchGroup1("window\\[\"ytInitialData\"\\]\\s*=\\s*(\\{.*?\\});", html);
-            return JsonParser.object().from(initialData);
+            try {
+                final String initialData = Parser.matchGroup1("window\\[\"ytInitialData\"\\]\\s*=\\s*(\\{.*?\\});", html);
+                return JsonParser.object().from(initialData);
+            } catch (Parser.RegexException e) {
+                final String initialData = Parser.matchGroup1("var\\s*ytInitialData\\s*=\\s*(\\{.*?\\});", html);
+                return JsonParser.object().from(initialData);
+            }
         } catch (JsonParserException | Parser.RegexException e) {
             throw new ParsingException("Could not get ytInitialData", e);
         }
@@ -181,49 +242,39 @@ public class YoutubeParsingHelper {
     public static boolean isHardcodedClientVersionValid() throws IOException, ExtractionException {
         final String url = "https://www.youtube.com/results?search_query=test&pbj=1";
 
-        Map<String, List<String>> headers = new HashMap<>();
+        final Map<String, List<String>> headers = new HashMap<>();
         headers.put("X-YouTube-Client-Name", Collections.singletonList("1"));
-        headers.put("X-YouTube-Client-Version",
-                Collections.singletonList(HARDCODED_CLIENT_VERSION));
+        headers.put("X-YouTube-Client-Version", Collections.singletonList(HARDCODED_CLIENT_VERSION));
         final String response = getDownloader().get(url, headers).responseBody();
 
         return response.length() > 50; // ensure to have a valid response
     }
 
-    /**
-     * Get the client version from a page
-     *
-     * @return
-     * @throws ParsingException
-     */
-    public static String getClientVersion() throws IOException, ExtractionException {
-        if (!isNullOrEmpty(clientVersion)) return clientVersion;
-        if (isHardcodedClientVersionValid()) return clientVersion = HARDCODED_CLIENT_VERSION;
-
+    private static void extractClientVersionAndKey() throws IOException, ExtractionException {
         final String url = "https://www.youtube.com/results?search_query=test";
         final String html = getDownloader().get(url).responseBody();
-        JsonObject initialData = getInitialData(html);
-        JsonArray serviceTrackingParams = initialData.getObject("responseContext").getArray("serviceTrackingParams");
+        final JsonObject initialData = getInitialData(html);
+        final JsonArray serviceTrackingParams = initialData.getObject("responseContext").getArray("serviceTrackingParams");
         String shortClientVersion = null;
 
         // try to get version from initial data first
-        for (Object service : serviceTrackingParams) {
-            JsonObject s = (JsonObject) service;
+        for (final Object service : serviceTrackingParams) {
+            final JsonObject s = (JsonObject) service;
             if (s.getString("service").equals("CSI")) {
-                JsonArray params = s.getArray("params");
-                for (Object param : params) {
-                    JsonObject p = (JsonObject) param;
-                    String key = p.getString("key");
+                final JsonArray params = s.getArray("params");
+                for (final Object param : params) {
+                    final JsonObject p = (JsonObject) param;
+                    final String key = p.getString("key");
                     if (key != null && key.equals("cver")) {
-                        return clientVersion = p.getString("value");
+                        clientVersion = p.getString("value");
                     }
                 }
             } else if (s.getString("service").equals("ECATCHER")) {
                 // fallback to get a shortened client version which does not contain the last two digits
-                JsonArray params = s.getArray("params");
-                for (Object param : params) {
-                    JsonObject p = (JsonObject) param;
-                    String key = p.getString("key");
+                final JsonArray params = s.getArray("params");
+                for (final Object param : params) {
+                    final JsonObject p = (JsonObject) param;
+                    final String key = p.getString("key");
                     if (key != null && key.equals("client.version")) {
                         shortClientVersion = p.getString("value");
                     }
@@ -232,26 +283,67 @@ public class YoutubeParsingHelper {
         }
 
         String contextClientVersion;
-        String[] patterns = {
+        final String[] patterns = {
                 "INNERTUBE_CONTEXT_CLIENT_VERSION\":\"([0-9\\.]+?)\"",
                 "innertube_context_client_version\":\"([0-9\\.]+?)\"",
                 "client.version=([0-9\\.]+)"
         };
-        for (String pattern : patterns) {
+        for (final String pattern : patterns) {
             try {
                 contextClientVersion = Parser.matchGroup1(pattern, html);
                 if (!isNullOrEmpty(contextClientVersion)) {
-                    return clientVersion = contextClientVersion;
+                    clientVersion = contextClientVersion;
+                    break;
                 }
-            } catch (Exception ignored) {
+            } catch (Parser.RegexException ignored) {
             }
         }
 
-        if (shortClientVersion != null) {
-            return clientVersion = shortClientVersion;
+        if (!isNullOrEmpty(clientVersion) && !isNullOrEmpty(shortClientVersion)) {
+            clientVersion = shortClientVersion;
         }
 
-        throw new ParsingException("Could not get client version");
+        try {
+            key = Parser.matchGroup1("INNERTUBE_API_KEY\":\"([0-9a-zA-Z_-]+?)\"", html);
+        } catch (Parser.RegexException e) {
+            try {
+                key = Parser.matchGroup1("innertubeApiKey\":\"([0-9a-zA-Z_-]+?)\"", html);
+            } catch (Parser.RegexException ignored) {
+            }
+        }
+    }
+
+    /**
+     * Get the client version
+     */
+    public static String getClientVersion() throws IOException, ExtractionException {
+        if (!isNullOrEmpty(clientVersion)) return clientVersion;
+        if (isHardcodedClientVersionValid()) return clientVersion = HARDCODED_CLIENT_VERSION;
+
+        extractClientVersionAndKey();
+        if (isNullOrEmpty(key)) throw new ParsingException("Could not extract client version");
+        return clientVersion;
+    }
+
+    /**
+     * Get the key
+     */
+    public static String getKey() throws IOException, ExtractionException {
+        if (!isNullOrEmpty(key)) return key;
+
+        extractClientVersionAndKey();
+        if (isNullOrEmpty(key)) throw new ParsingException("Could not extract key");
+        return key;
+    }
+
+    /**
+     * Only use in tests.
+     * <p>
+     * Quick-and-dirty solution to reset global state in between test classes.
+     */
+    static void resetClientVersionAndKey() {
+        clientVersion = null;
+        key = null;
     }
 
     public static boolean areHardcodedYoutubeMusicKeysValid() throws IOException, ReCaptchaException {
@@ -287,14 +379,14 @@ public class YoutubeParsingHelper {
             .end().done().getBytes("UTF-8");
         // @formatter:on
 
-        Map<String, List<String>> headers = new HashMap<>();
+        final Map<String, List<String>> headers = new HashMap<>();
         headers.put("X-YouTube-Client-Name", Collections.singletonList(HARDCODED_YOUTUBE_MUSIC_KEYS[1]));
         headers.put("X-YouTube-Client-Version", Collections.singletonList(HARDCODED_YOUTUBE_MUSIC_KEYS[2]));
         headers.put("Origin", Collections.singletonList("https://music.youtube.com"));
         headers.put("Referer", Collections.singletonList("music.youtube.com"));
         headers.put("Content-Type", Collections.singletonList("application/json"));
 
-        String response = getDownloader().post(url, headers, json).responseBody();
+        final String response = getDownloader().post(url, headers, json).responseBody();
 
         return response.length() > 50; // ensure to have a valid response
     }
@@ -329,6 +421,7 @@ public class YoutubeParsingHelper {
         return youtubeMusicKeys = new String[]{key, clientName, clientVersion};
     }
 
+    @Nullable
     public static String getUrlFromNavigationEndpoint(JsonObject navigationEndpoint) throws ParsingException {
         if (navigationEndpoint.has("urlEndpoint")) {
             String internUrl = navigationEndpoint.getObject("urlEndpoint").getString("url");
@@ -368,10 +461,14 @@ public class YoutubeParsingHelper {
         } else if (navigationEndpoint.has("watchEndpoint")) {
             StringBuilder url = new StringBuilder();
             url.append("https://www.youtube.com/watch?v=").append(navigationEndpoint.getObject("watchEndpoint").getString("videoId"));
-            if (navigationEndpoint.getObject("watchEndpoint").has("playlistId"))
-                url.append("&amp;list=").append(navigationEndpoint.getObject("watchEndpoint").getString("playlistId"));
-            if (navigationEndpoint.getObject("watchEndpoint").has("startTimeSeconds"))
-                url.append("&amp;t=").append(navigationEndpoint.getObject("watchEndpoint").getInt("startTimeSeconds"));
+            if (navigationEndpoint.getObject("watchEndpoint").has("playlistId")) {
+                url.append("&list=").append(navigationEndpoint.getObject("watchEndpoint")
+                        .getString("playlistId"));
+            }
+            if (navigationEndpoint.getObject("watchEndpoint").has("startTimeSeconds")) {
+                url.append("&amp;t=").append(navigationEndpoint.getObject("watchEndpoint")
+                        .getInt("startTimeSeconds"));
+            }
             return url.toString();
         } else if (navigationEndpoint.has("watchPlaylistEndpoint")) {
             return "https://www.youtube.com/playlist?list=" +
@@ -387,6 +484,7 @@ public class YoutubeParsingHelper {
      * @param html       whether to return HTML, by parsing the navigationEndpoint
      * @return text in the JSON object or {@code null}
      */
+    @Nullable
     public static String getTextFromObject(JsonObject textObject, boolean html) throws ParsingException {
         if (isNullOrEmpty(textObject)) return null;
 
@@ -394,8 +492,8 @@ public class YoutubeParsingHelper {
 
         if (textObject.getArray("runs").isEmpty()) return null;
 
-        StringBuilder textBuilder = new StringBuilder();
-        for (Object textPart : textObject.getArray("runs")) {
+        final StringBuilder textBuilder = new StringBuilder();
+        for (final Object textPart : textObject.getArray("runs")) {
             String text = ((JsonObject) textPart).getString("text");
             if (html && ((JsonObject) textPart).has("navigationEndpoint")) {
                 String url = getUrlFromNavigationEndpoint(((JsonObject) textPart).getObject("navigationEndpoint"));
@@ -417,6 +515,7 @@ public class YoutubeParsingHelper {
         return text;
     }
 
+    @Nullable
     public static String getTextFromObject(JsonObject textObject) throws ParsingException {
         return getTextFromObject(textObject, false);
     }
@@ -438,8 +537,8 @@ public class YoutubeParsingHelper {
     public static String getValidJsonResponseBody(final Response response)
             throws ParsingException, MalformedURLException {
         if (response.responseCode() == 404) {
-            throw new ContentNotAvailableException("Not found" +
-                    " (\"" + response.responseCode() + " " + response.responseMessage() + "\")");
+            throw new ContentNotAvailableException("Not found"
+                    + " (\"" + response.responseCode() + " " + response.responseMessage() + "\")");
         }
 
         final String responseBody = response.responseBody();
@@ -459,11 +558,37 @@ public class YoutubeParsingHelper {
         final String responseContentType = response.getHeader("Content-Type");
         if (responseContentType != null
                 && responseContentType.toLowerCase().contains("text/html")) {
-            throw new ParsingException("Got HTML document, expected JSON response" +
-                    " (latest url was: \"" + response.latestUrl() + "\")");
+            throw new ParsingException("Got HTML document, expected JSON response"
+                    + " (latest url was: \"" + response.latestUrl() + "\")");
         }
 
         return responseBody;
+    }
+
+    public static Response getResponse(final String url, final Localization localization)
+            throws IOException, ExtractionException {
+        final Map<String, List<String>> headers = new HashMap<>();
+        headers.put("X-YouTube-Client-Name", Collections.singletonList("1"));
+        headers.put("X-YouTube-Client-Version", Collections.singletonList(getClientVersion()));
+
+        final Response response = getDownloader().get(url, headers, localization);
+        getValidJsonResponseBody(response);
+
+        return response;
+    }
+
+    public static String extractCookieValue(final String cookieName, final Response response) {
+        final List<String> cookies = response.responseHeaders().get("set-cookie");
+        int startIndex;
+        String result = "";
+        for (final String cookie : cookies) {
+            startIndex = cookie.indexOf(cookieName);
+            if (startIndex != -1) {
+                result = cookie.substring(startIndex + cookieName.length() + "=".length(),
+                        cookie.indexOf(";", startIndex));
+            }
+        }
+        return result;
     }
 
     public static JsonArray getJsonResponse(final String url, final Localization localization)
@@ -473,8 +598,24 @@ public class YoutubeParsingHelper {
         headers.put("X-YouTube-Client-Version", Collections.singletonList(getClientVersion()));
         final Response response = getDownloader().get(url, headers, localization);
 
-        final String responseBody = getValidJsonResponseBody(response);
+        return toJsonArray(getValidJsonResponseBody(response));
+    }
 
+    public static JsonArray getJsonResponse(final Page page, final Localization localization)
+            throws IOException, ExtractionException {
+        final Map<String, List<String>> headers = new HashMap<>();
+        if (!isNullOrEmpty(page.getCookies())) {
+            headers.put("Cookie", Collections.singletonList(join(";", "=", page.getCookies())));
+        }
+        headers.put("X-YouTube-Client-Name", Collections.singletonList("1"));
+        headers.put("X-YouTube-Client-Version", Collections.singletonList(getClientVersion()));
+
+        final Response response = getDownloader().get(page.getUrl(), headers, localization);
+
+        return toJsonArray(getValidJsonResponseBody(response));
+    }
+
+    public static JsonArray toJsonArray(final String responseBody) throws ParsingException {
         try {
             return JsonParser.array().from(responseBody);
         } catch (JsonParserException e) {
@@ -501,5 +642,126 @@ public class YoutubeParsingHelper {
                 throw new ContentNotAvailableException("Got error: \"" + alertText + "\"");
             }
         }
+    }
+
+    @Nonnull
+    public static List<MetaInfo> getMetaInfo(final JsonArray contents) throws ParsingException {
+        final List<MetaInfo> metaInfo = new ArrayList<>();
+        for (final Object content : contents) {
+            final JsonObject resultObject = (JsonObject) content;
+            if (resultObject.has("itemSectionRenderer")) {
+                for (final Object sectionContentObject :
+                        resultObject.getObject("itemSectionRenderer").getArray("contents")) {
+
+                    final JsonObject sectionContent = (JsonObject) sectionContentObject;
+                    if (sectionContent.has("infoPanelContentRenderer")) {
+                        metaInfo.add(getInfoPanelContent(sectionContent.getObject("infoPanelContentRenderer")));
+                    }
+                    if (sectionContent.has("clarificationRenderer")) {
+                        metaInfo.add(getClarificationRendererContent(sectionContent.getObject("clarificationRenderer")
+                        ));
+                    }
+
+                }
+            }
+        }
+        return metaInfo;
+    }
+
+    @Nonnull
+    private static MetaInfo getInfoPanelContent(final JsonObject infoPanelContentRenderer)
+            throws ParsingException {
+        final MetaInfo metaInfo = new MetaInfo();
+        final StringBuilder sb = new StringBuilder();
+        for (final Object paragraph : infoPanelContentRenderer.getArray("paragraphs")) {
+            if (sb.length() != 0) {
+                sb.append("<br>");
+            }
+            sb.append(YoutubeParsingHelper.getTextFromObject((JsonObject) paragraph));
+        }
+        metaInfo.setContent(new Description(sb.toString(), Description.HTML));
+        if (infoPanelContentRenderer.has("sourceEndpoint")) {
+            final String metaInfoLinkUrl = YoutubeParsingHelper.getUrlFromNavigationEndpoint(
+                    infoPanelContentRenderer.getObject("sourceEndpoint"));
+            try {
+                metaInfo.addUrl(new URL(Objects.requireNonNull(extractCachedUrlIfNeeded(metaInfoLinkUrl))));
+            } catch (final NullPointerException | MalformedURLException e) {
+                throw new ParsingException("Could not get metadata info URL", e);
+            }
+
+            final String metaInfoLinkText = YoutubeParsingHelper.getTextFromObject(
+                    infoPanelContentRenderer.getObject("inlineSource"));
+            if (isNullOrEmpty(metaInfoLinkText)) {
+                throw new ParsingException("Could not get metadata info link text.");
+            }
+            metaInfo.addUrlText(metaInfoLinkText);
+        }
+
+        return metaInfo;
+    }
+
+    @Nonnull
+    private static MetaInfo getClarificationRendererContent(final JsonObject clarificationRenderer)
+            throws ParsingException {
+        final MetaInfo metaInfo = new MetaInfo();
+
+        final String title = YoutubeParsingHelper.getTextFromObject(clarificationRenderer.getObject("contentTitle"));
+        final String text = YoutubeParsingHelper.getTextFromObject(clarificationRenderer.getObject("text"));
+        if (title == null || text == null) {
+            throw new ParsingException("Could not extract clarification renderer content");
+        }
+        metaInfo.setTitle(title);
+        metaInfo.setContent(new Description(text, Description.PLAIN_TEXT));
+
+        if (clarificationRenderer.has("actionButton")) {
+            final JsonObject actionButton = clarificationRenderer.getObject("actionButton")
+                    .getObject("buttonRenderer");
+            try {
+                final String url = YoutubeParsingHelper.getUrlFromNavigationEndpoint(actionButton.getObject("command"));
+                metaInfo.addUrl(new URL(Objects.requireNonNull(extractCachedUrlIfNeeded(url))));
+            } catch (final NullPointerException | MalformedURLException e) {
+                throw new ParsingException("Could not get metadata info URL", e);
+            }
+
+            final String metaInfoLinkText = YoutubeParsingHelper.getTextFromObject(
+                    actionButton.getObject("text"));
+            if (isNullOrEmpty(metaInfoLinkText)) {
+                throw new ParsingException("Could not get metadata info link text.");
+            }
+            metaInfo.addUrlText(metaInfoLinkText);
+        }
+
+        if (clarificationRenderer.has("secondaryEndpoint") && clarificationRenderer.has("secondarySource")) {
+            final String url = getUrlFromNavigationEndpoint(clarificationRenderer.getObject("secondaryEndpoint"));
+            // ignore Google URLs, because those point to a Google search about "Covid-19"
+            if (url != null && !isGoogleURL(url)) {
+                try {
+                    metaInfo.addUrl(new URL(url));
+                    final String description = getTextFromObject(clarificationRenderer.getObject("secondarySource"));
+                    metaInfo.addUrlText(description == null ? url : description);
+                } catch (MalformedURLException e) {
+                    throw new ParsingException("Could not get metadata info secondary URL", e);
+                }
+            }
+        }
+
+        return metaInfo;
+    }
+
+    /**
+     * Sometimes, YouTube provides URLs which use Google's cache. They look like
+     * {@code https://webcache.googleusercontent.com/search?q=cache:CACHED_URL}
+     *
+     * @param url the URL which might refer to the Google's webcache
+     * @return the URL which is referring to the original site
+     */
+    public static String extractCachedUrlIfNeeded(final String url) {
+        if (url == null) {
+            return null;
+        }
+        if (url.contains("webcache.googleusercontent.com")) {
+            return url.split("cache:")[1];
+        }
+        return url;
     }
 }

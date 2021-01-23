@@ -2,7 +2,7 @@ package org.schabi.newpipe.extractor.services.media_ccc;
 
 import org.junit.BeforeClass;
 import org.junit.Test;
-import org.schabi.newpipe.DownloaderTestImpl;
+import org.schabi.newpipe.downloader.DownloaderTestImpl;
 import org.schabi.newpipe.extractor.NewPipe;
 import org.schabi.newpipe.extractor.services.media_ccc.extractors.MediaCCCConferenceExtractor;
 
@@ -31,7 +31,7 @@ public class MediaCCCConferenceExtractorTest {
 
         @Test
         public void testGetUrl() throws Exception {
-            assertEquals("https://media.ccc.de/public/conferences/froscon2017", extractor.getUrl());
+            assertEquals("https://media.ccc.de/c/froscon2017", extractor.getUrl());
         }
 
         @Test
@@ -67,7 +67,7 @@ public class MediaCCCConferenceExtractorTest {
 
         @Test
         public void testGetUrl() throws Exception {
-            assertEquals("https://media.ccc.de/public/conferences/oscal19", extractor.getUrl());
+            assertEquals("https://media.ccc.de/c/oscal19", extractor.getUrl());
         }
 
         @Test
