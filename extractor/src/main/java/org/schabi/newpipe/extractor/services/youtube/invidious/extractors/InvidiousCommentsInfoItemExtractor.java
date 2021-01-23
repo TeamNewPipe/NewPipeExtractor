@@ -60,7 +60,7 @@ public class InvidiousCommentsInfoItemExtractor implements CommentsInfoItemExtra
 
     @Override
     public String getCommentId() {
-        return null; // unavailable
+        return json.getString("commentId");
     }
 
     @Override
@@ -80,7 +80,7 @@ public class InvidiousCommentsInfoItemExtractor implements CommentsInfoItemExtra
 
     @Override
     public boolean getHeartedByUploader() throws ParsingException {
-        return false;
+        return json.has("creatorHeart");
     }
 
     @Override

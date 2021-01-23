@@ -13,7 +13,6 @@ import org.schabi.newpipe.extractor.downloader.Response;
 import org.schabi.newpipe.extractor.exceptions.ExtractionException;
 import org.schabi.newpipe.extractor.exceptions.ParsingException;
 import org.schabi.newpipe.extractor.linkhandler.ListLinkHandler;
-import org.schabi.newpipe.extractor.services.soundcloud.extractors.SoundcloudCommentsInfoItemExtractor;
 import org.schabi.newpipe.extractor.services.youtube.invidious.InvidiousParsingHelper;
 
 import javax.annotation.Nonnull;
@@ -86,7 +85,7 @@ public class InvidiousCommentsExtractor extends CommentsExtractor {
 
     private void collectStreamsFrom(final CommentsInfoItemsCollector collector, final JsonArray entries, final String url) {
         for (Object comment : entries) {
-            collector.commit(new SoundcloudCommentsInfoItemExtractor((JsonObject) comment, url));
+            collector.commit(new InvidiousCommentsInfoItemExtractor((JsonObject) comment, url));
         }
     }
 }
