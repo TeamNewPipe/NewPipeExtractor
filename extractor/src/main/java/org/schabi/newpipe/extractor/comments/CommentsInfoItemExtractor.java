@@ -47,10 +47,10 @@ public interface CommentsInfoItemExtractor extends InfoItemExtractor {
     /**
      * Whether the comment has been hearted by the uploader
      */
-    boolean getHeartedByUploader() throws ParsingException;
+    boolean isHeartedByUploader() throws ParsingException;
 
     /**
      * Whether the comment is pinned
      */
-    boolean getPinned() throws ParsingException;
+    boolean isPinned() throws ParsingException;
 }

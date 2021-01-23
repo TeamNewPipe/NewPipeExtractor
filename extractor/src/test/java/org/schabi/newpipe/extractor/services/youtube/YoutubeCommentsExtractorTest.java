@@ -181,7 +181,7 @@ public class YoutubeCommentsExtractorTest {
                 assertFalse(Utils.isBlank(c.getUrl()));
                 assertFalse(c.getLikeCount() < 0);
                 assertFalse(Utils.isBlank(c.getCommentText()));
-                if (c.getHeartedByUploader()) {
+                if (c.isHeartedByUploader()) {
                     heartedByUploader = true;
                 }
             }
@@ -222,7 +222,7 @@ public class YoutubeCommentsExtractorTest {
                 assertFalse(Utils.isBlank(c.getCommentText()));
             }
 
-            assertTrue("First comment isn't pinned", comments.getItems().get(0).getPinned());
+            assertTrue("First comment isn't pinned", comments.getItems().get(0).isPinned());
         }
     }
 }
