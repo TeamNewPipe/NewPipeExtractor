@@ -42,6 +42,8 @@ public class YoutubeStreamLinkHandlerFactoryTest {
         invalidUrls.add("https://www.youtube.com/watch?v=jZViOEv90d");
         invalidUrls.add("https://www.youtube.com/watchjZViOEv90d");
         invalidUrls.add("https://www.youtube.com/");
+        invalidUrls.add("https://www.youtube.com/channel/UCBR8-60-B28hp2BmDPdntcQ");
+        invalidUrls.add("https://invidio.us/channel/UCBR8-60-B28hp2BmDPdntcQ");
         for (String invalidUrl : invalidUrls) {
             Throwable exception = null;
             try {
