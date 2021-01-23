@@ -17,6 +17,7 @@ public class CommentsInfoItem extends InfoItem {
     private DateWrapper uploadDate;
     private int likeCount;
     private boolean heartedByUploader;
+    private boolean pinned;
 
     public CommentsInfoItem(int serviceId, String url, String name) {
         super(InfoType.COMMENT, serviceId, url, name);
@@ -93,5 +94,13 @@ public class CommentsInfoItem extends InfoItem {
 
     public boolean getHeartedByUploader() {
         return this.heartedByUploader;
+    }
+
+    public boolean getPinned() {
+        return pinned;
+    }
+
+    public void setPinned(boolean pinned) {
+        this.pinned = pinned;
     }
 }

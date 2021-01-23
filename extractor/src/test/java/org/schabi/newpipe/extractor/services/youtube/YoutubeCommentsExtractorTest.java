@@ -189,4 +189,40 @@ public class YoutubeCommentsExtractorTest {
 
         }
     }
+
+    public static class Pinned {
+        private final static String url = "https://www.youtube.com/watch?v=bjFtFMilb34";
+        private static YoutubeCommentsExtractor extractor;
+
+        @BeforeClass
+        public static void setUp() throws Exception {
+            NewPipe.init(DownloaderTestImpl.getInstance());
+            extractor = (YoutubeCommentsExtractor) YouTube
+                    .getCommentsExtractor(url);
+            extractor.fetchPage();
+        }
+
+        @Test
+        public void testGetCommentsAllData() throws IOException, ExtractionException {
+            final InfoItemsPage<CommentsInfoItem> comments = extractor.getInitialPage();
+
+            DefaultTests.defaultTestListOfItems(YouTube, comments.getItems(), comments.getErrors());
+
+            for (CommentsInfoItem c : comments.getItems()) {
+                assertFalse(Utils.isBlank(c.getUploaderUrl()));
+                assertFalse(Utils.isBlank(c.getUploaderName()));
+                assertFalse(Utils.isBlank(c.getUploaderAvatarUrl()));
+                assertFalse(Utils.isBlank(c.getCommentId()));
+                assertFalse(Utils.isBlank(c.getName()));
+                assertFalse(Utils.isBlank(c.getTextualUploadDate()));
+                assertNotNull(c.getUploadDate());
+                assertFalse(Utils.isBlank(c.getThumbnailUrl()));
+                assertFalse(Utils.isBlank(c.getUrl()));
+                assertFalse(c.getLikeCount() < 0);
+                assertFalse(Utils.isBlank(c.getCommentText()));
+            }
+
+            assertTrue("First comment isn't pinned", comments.getItems().get(0).getPinned());
+        }
+    }
 }

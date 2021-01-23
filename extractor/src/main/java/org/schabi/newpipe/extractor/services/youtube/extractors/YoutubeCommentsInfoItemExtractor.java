@@ -121,6 +121,11 @@ public class YoutubeCommentsInfoItemExtractor implements CommentsInfoItemExtract
     }
 
     @Override
+    public boolean getPinned() {
+        return json.has("pinnedCommentBadge");
+    }
+
+    @Override
     public String getUploaderName() throws ParsingException {
         try {
             return getTextFromObject(JsonUtils.getObject(json, "authorText"));

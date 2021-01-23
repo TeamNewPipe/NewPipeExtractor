@@ -94,6 +94,11 @@ public class PeertubeCommentsInfoItemExtractor implements CommentsInfoItemExtrac
     }
 
     @Override
+    public boolean getPinned() throws ParsingException {
+        return false;
+    }
+
+    @Override
     public String getUploaderName() throws ParsingException {
         return JsonUtils.getString(item, "account.name") + "@" + JsonUtils.getString(item, "account.host");
     }
