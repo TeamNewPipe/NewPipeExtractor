@@ -22,6 +22,8 @@ public class PeertubeInstance implements Instance {
     private String name;
     private static final PeertubeInstance defaultInstance = new PeertubeInstance("https://framatube.org", "FramaTube");
 
+    private Boolean isValid = null;
+
     public PeertubeInstance(String url) {
         this(url, "PeerTube");
     }
@@ -38,11 +40,15 @@ public class PeertubeInstance implements Instance {
 
     @Override
     public boolean isValid() {
+        if (isValid != null) {
+            return isValid;
+        }
+
         try {
             fetchInstanceMetaData();
-            return true;
+            return isValid = true;
         } catch (InvalidInstanceException e) {
-            return false;
+            return isValid = false;
         }
     }
 

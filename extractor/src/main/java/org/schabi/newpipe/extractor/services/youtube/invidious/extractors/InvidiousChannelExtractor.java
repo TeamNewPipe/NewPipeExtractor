@@ -90,6 +90,16 @@ public class InvidiousChannelExtractor extends ChannelExtractor {
     @Nonnull
     @Override
     public InfoItemsPage<StreamInfoItem> getInitialPage() throws IOException, ExtractionException {
+        return getPage(getPage(1));
+    }
+
+    public Page getPage(int page) {
+        return new Page(baseUrl + "/api/v1/channels/videos/" +
+                json.getString("authorId") + "?page=" + page, String.valueOf(page));
+    }
+
+    @Override
+    public InfoItemsPage<StreamInfoItem> getPage(Page page) throws IOException, ExtractionException {
         final Downloader dl = NewPipe.getDownloader();
         final String apiUrl = getPage(1).getUrl();
         final Response rp = dl.get(apiUrl);
@@ -98,17 +108,17 @@ public class InvidiousChannelExtractor extends ChannelExtractor {
         final StreamInfoItemsCollector collector = new StreamInfoItemsCollector(getServiceId());
         collectStreamsFrom(collector, array);
 
-        return new InfoItemsPage<>(collector, getPage(2));
-    }
+        Page nextPage;
+        if (array.size() < 59) {
+            // max number of items per page
+            // with Second it is 29 but next Page logic is not implemented
 
-    public Page getPage(int page) {
-        return new Page(baseUrl + "/api/v1/channels/videos/" +
-                json.getString("authorId") + "?page=" + 2);
-    }
+            nextPage = null;
+        } else {
+            nextPage = getPage(Integer.parseInt(page.getId()) + 1);
+        }
 
-    @Override
-    public InfoItemsPage<StreamInfoItem> getPage(Page page) throws IOException, ExtractionException {
-        return null;
+        return new InfoItemsPage<>(collector, nextPage);
     }
 
     @Override

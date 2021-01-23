@@ -7,23 +7,12 @@ import org.schabi.newpipe.extractor.comments.CommentsExtractor;
 import org.schabi.newpipe.extractor.exceptions.ExtractionException;
 import org.schabi.newpipe.extractor.feed.FeedExtractor;
 import org.schabi.newpipe.extractor.kiosk.KioskList;
-import org.schabi.newpipe.extractor.linkhandler.LinkHandler;
-import org.schabi.newpipe.extractor.linkhandler.LinkHandlerFactory;
-import org.schabi.newpipe.extractor.linkhandler.ListLinkHandler;
-import org.schabi.newpipe.extractor.linkhandler.ListLinkHandlerFactory;
-import org.schabi.newpipe.extractor.linkhandler.SearchQueryHandler;
-import org.schabi.newpipe.extractor.linkhandler.SearchQueryHandlerFactory;
+import org.schabi.newpipe.extractor.linkhandler.*;
 import org.schabi.newpipe.extractor.localization.ContentCountry;
 import org.schabi.newpipe.extractor.localization.Localization;
 import org.schabi.newpipe.extractor.playlist.PlaylistExtractor;
 import org.schabi.newpipe.extractor.search.SearchExtractor;
-import org.schabi.newpipe.extractor.services.youtube.invidious.extractors.InvidiousChannelExtractor;
-import org.schabi.newpipe.extractor.services.youtube.invidious.extractors.InvidiousCommentsExtractor;
-import org.schabi.newpipe.extractor.services.youtube.invidious.extractors.InvidiousFeedExtractor;
-import org.schabi.newpipe.extractor.services.youtube.invidious.extractors.InvidiousPlaylistExtractor;
-import org.schabi.newpipe.extractor.services.youtube.invidious.extractors.InvidiousSearchExtractor;
-import org.schabi.newpipe.extractor.services.youtube.invidious.extractors.InvidiousStreamExtractor;
-import org.schabi.newpipe.extractor.services.youtube.invidious.extractors.InvidiousSuggestionExtractor;
+import org.schabi.newpipe.extractor.services.youtube.invidious.extractors.*;
 import org.schabi.newpipe.extractor.services.youtube.invidious.linkHandler.InvidiousSearchQueryHandlerFactory;
 import org.schabi.newpipe.extractor.services.youtube.linkHandler.YoutubeChannelLinkHandlerFactory;
 import org.schabi.newpipe.extractor.services.youtube.linkHandler.YoutubeCommentsLinkHandlerFactory;
@@ -37,11 +26,7 @@ import javax.annotation.Nonnull;
 import java.util.List;
 
 import static java.util.Arrays.asList;
-import static org.schabi.newpipe.extractor.StreamingService.ServiceInfo.MediaCapability.AUDIO;
-import static org.schabi.newpipe.extractor.StreamingService.ServiceInfo.MediaCapability.COMMENTS;
-import static org.schabi.newpipe.extractor.StreamingService.ServiceInfo.MediaCapability.INSTANCES;
-import static org.schabi.newpipe.extractor.StreamingService.ServiceInfo.MediaCapability.LIVE;
-import static org.schabi.newpipe.extractor.StreamingService.ServiceInfo.MediaCapability.VIDEO;
+import static org.schabi.newpipe.extractor.StreamingService.ServiceInfo.MediaCapability.*;
 
 /*
  * Copyright (C) 2020 Team NewPipe <tnp@newpipe.schabi.org>
@@ -62,7 +47,7 @@ import static org.schabi.newpipe.extractor.StreamingService.ServiceInfo.MediaCap
  */
 
 /**
- * InvidiousService, uses documented API: https://github.com/omarroth/invidious/wiki/api
+ * InvidiousService, uses documented API: https://github.com/iv-org/documentation/blob/master/API.md
  */
 public class InvidiousService extends StreamingService {
 

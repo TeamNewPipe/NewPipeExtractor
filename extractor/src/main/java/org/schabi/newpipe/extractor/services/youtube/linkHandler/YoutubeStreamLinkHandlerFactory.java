@@ -74,8 +74,8 @@ public class YoutubeStreamLinkHandlerFactory extends LinkHandlerFactory {
 
     @Override
     public String getUrl(String id) {
-        if (useInvidiousBackend() && invidiousInstance.isValid()) {
-            return invidiousInstance.getUrl();
+        if (useInvidiousBackend()) {
+            return invidiousInstance.getUrl() + "/watch?v=" + id;
         } else {
             return "https://www.youtube.com/watch?v=" + id;
         }

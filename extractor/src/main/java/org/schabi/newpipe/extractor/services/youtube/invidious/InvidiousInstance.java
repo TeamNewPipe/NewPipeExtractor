@@ -46,6 +46,7 @@ public class InvidiousInstance implements Instance {
     private String name;
 
     private static final InvidiousInstance defaultInstance = new InvidiousInstance("https://invidious.kavin.rocks", "invidious");
+    private Boolean isValid = null;
 
     public InvidiousInstance(String url, String name) {
         this.url = url;
@@ -70,6 +71,10 @@ public class InvidiousInstance implements Instance {
 
     @Override
     public boolean isValid() {
+        if (isValid != null) {
+            return isValid;
+        }
+
         URL url = null;
         try {
             url = Utils.stringToURL(this.url);
@@ -78,14 +83,14 @@ public class InvidiousInstance implements Instance {
         }
 
         if (isYoutubeURL(url) || isHooktubeURL(url)) {
-            return false;
+            return isValid = false;
         }
 
         try {
             fetchInstanceMetaData();
-            return true;
+            return isValid = true;
         } catch (InvalidInstanceException e) {
-            return false;
+            return isValid = false;
         }
     }
 
