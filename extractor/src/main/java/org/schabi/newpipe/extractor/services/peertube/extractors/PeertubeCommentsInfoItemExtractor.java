@@ -89,12 +89,12 @@ public class PeertubeCommentsInfoItemExtractor implements CommentsInfoItemExtrac
     }
 
     @Override
-    public boolean getHeartedByUploader() throws ParsingException {
+    public boolean isHeartedByUploader() throws ParsingException {
         return false;
     }
 
     @Override
-    public boolean getPinned() throws ParsingException {
+    public boolean isPinned() throws ParsingException {
         return false;
     }
 

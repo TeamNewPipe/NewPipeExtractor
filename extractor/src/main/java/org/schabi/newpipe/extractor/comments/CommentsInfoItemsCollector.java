@@ -71,13 +71,13 @@ public class CommentsInfoItemsCollector extends InfoItemsCollector<CommentsInfoI
         }
 
         try {
-            resultItem.setHeartedByUploader(extractor.getHeartedByUploader());
+            resultItem.setHeartedByUploader(extractor.isHeartedByUploader());
         } catch (Exception e) {
             addError(e);
         }
 
         try {
-            resultItem.setPinned(extractor.getPinned());
+            resultItem.setPinned(extractor.isPinned());
         } catch (Exception e) {
             addError(e);
         }

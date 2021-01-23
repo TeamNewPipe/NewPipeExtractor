@@ -92,11 +92,11 @@ public class CommentsInfoItem extends InfoItem {
         this.heartedByUploader = isHeartedByUploader;
     }
 
-    public boolean getHeartedByUploader() {
+    public boolean isHeartedByUploader() {
         return this.heartedByUploader;
     }
 
-    public boolean getPinned() {
+    public boolean isPinned() {
         return pinned;
     }
 

@@ -116,12 +116,12 @@ public class YoutubeCommentsInfoItemExtractor implements CommentsInfoItemExtract
     }
 
     @Override
-    public boolean getHeartedByUploader() throws ParsingException {
+    public boolean isHeartedByUploader() throws ParsingException {
         return json.has("creatorHeart");
     }
 
     @Override
-    public boolean getPinned() {
+    public boolean isPinned() {
         return json.has("pinnedCommentBadge");
     }
 
