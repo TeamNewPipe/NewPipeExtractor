@@ -1,4 +1,4 @@
-package org.schabi.newpipe.extractor.services.youtube;
+package org.schabi.newpipe.extractor.services.youtube.invidious;
 
 import org.junit.BeforeClass;
 import org.junit.Test;
@@ -35,14 +35,14 @@ public class InvidiousInstanceTest {
     }
 
     @Test
-    public void testInvidio_usIsValid() {
-        InvidiousInstance invidio_us = new InvidiousInstance("https://invidio.us");
-        assertTrue(invidio_us.isValid());
+    public void testInvidious_snopyta_IsValid() {
+        InvidiousInstance invidious = new InvidiousInstance("https://invidious.snopyta.org");
+        assertTrue(invidious.isValid());
     }
 
     @Test
-    public void testInvidio_usGetName() throws InvalidInstanceException {
-        InvidiousInstance invidious = new InvidiousInstance("https://invidio.us");
+    public void testInvidious_snopyta_GetName() throws InvalidInstanceException {
+        InvidiousInstance invidious = new InvidiousInstance("https://invidious.snopyta.org");
         invidious.fetchInstanceMetaData();
         assertEquals("invidious", invidious.getName());
     }
