@@ -350,4 +350,5 @@ public class InvidiousPlaylistExtractorTest {
             assertTrue("Error in the streams count", extractor.getStreamCount() > 40);
         }
     }
+
 }

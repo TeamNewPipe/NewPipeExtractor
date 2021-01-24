@@ -2,6 +2,7 @@ package org.schabi.newpipe.extractor.services.youtube.invidious.extractors;
 
 import com.grack.nanojson.JsonArray;
 import com.grack.nanojson.JsonObject;
+import org.schabi.newpipe.extractor.NewPipe;
 import org.schabi.newpipe.extractor.Page;
 import org.schabi.newpipe.extractor.StreamingService;
 import org.schabi.newpipe.extractor.downloader.Downloader;
@@ -99,16 +100,37 @@ public class InvidiousPlaylistExtractor extends PlaylistExtractor {
     @Nonnull
     @Override
     public InfoItemsPage<StreamInfoItem> getInitialPage() throws IOException, ExtractionException {
-        final JsonArray videos = json.getArray("videos");
-
-        final StreamInfoItemsCollector collector = new StreamInfoItemsCollector(getServiceId());
-        collectStreamsFrom(collector, videos);
-        return new InfoItemsPage<>(collector, null);
+        return getPage(getPage(1));
     }
 
     @Override
     public InfoItemsPage<StreamInfoItem> getPage(Page page) throws IOException, ExtractionException {
-        return null;
+        if (Integer.parseInt(page.getId()) != 1) {
+            final Downloader dl = NewPipe.getDownloader();
+            final String apiUrl = page.getUrl();
+            final Response rp = dl.get(apiUrl);
+            json = InvidiousParsingHelper.getValidJsonObjectFromResponse(rp, apiUrl);
+        }
+        
+        final JsonArray videos = json.getArray("videos");
+
+        final StreamInfoItemsCollector collector = new StreamInfoItemsCollector(getServiceId());
+        collectStreamsFrom(collector, videos);
+
+        Page nextPage;
+        if (videos.size() < 99) {
+            // max number of items per page
+            nextPage = null;
+        } else {
+            nextPage = getPage(Integer.parseInt(page.getId()) + 1);
+        }
+
+        return new InfoItemsPage<>(collector, nextPage);
+    }
+
+    public Page getPage(int page) throws ParsingException {
+        return InvidiousParsingHelper.getPage(baseUrl + "/api/v1/playlists/" +
+                getId(), page);
     }
 
     @Override

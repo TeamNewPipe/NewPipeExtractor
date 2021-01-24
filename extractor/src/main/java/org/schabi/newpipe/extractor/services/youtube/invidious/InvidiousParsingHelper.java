@@ -22,6 +22,7 @@ import com.grack.nanojson.JsonArray;
 import com.grack.nanojson.JsonObject;
 import com.grack.nanojson.JsonParser;
 import com.grack.nanojson.JsonParserException;
+import org.schabi.newpipe.extractor.Page;
 import org.schabi.newpipe.extractor.downloader.Response;
 import org.schabi.newpipe.extractor.exceptions.ContentNotAvailableException;
 import org.schabi.newpipe.extractor.exceptions.ExtractionException;
@@ -89,5 +90,9 @@ public class InvidiousParsingHelper {
         }
 
         return id;
+    }
+
+    public static Page getPage(final String url, final int page) {
+        return new Page(url + "?page=" + page, String.valueOf(page));
     }
 }

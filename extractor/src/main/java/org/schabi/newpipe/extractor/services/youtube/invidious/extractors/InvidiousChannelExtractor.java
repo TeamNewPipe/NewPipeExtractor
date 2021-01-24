@@ -94,14 +94,14 @@ public class InvidiousChannelExtractor extends ChannelExtractor {
     }
 
     public Page getPage(int page) {
-        return new Page(baseUrl + "/api/v1/channels/videos/" +
-                json.getString("authorId") + "?page=" + page, String.valueOf(page));
+        return InvidiousParsingHelper.getPage(baseUrl + "/api/v1/channels/videos/" +
+                json.getString("authorId"), page);
     }
 
     @Override
     public InfoItemsPage<StreamInfoItem> getPage(Page page) throws IOException, ExtractionException {
         final Downloader dl = NewPipe.getDownloader();
-        final String apiUrl = getPage(1).getUrl();
+        final String apiUrl = page.getUrl();
         final Response rp = dl.get(apiUrl);
         final JsonArray array = InvidiousParsingHelper.getValidJsonArrayFromResponse(rp, apiUrl);
 

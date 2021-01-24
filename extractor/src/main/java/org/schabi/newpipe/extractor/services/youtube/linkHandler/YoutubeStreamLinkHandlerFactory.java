@@ -38,7 +38,7 @@ import static org.schabi.newpipe.extractor.utils.Utils.*;
 
 public class YoutubeStreamLinkHandlerFactory extends LinkHandlerFactory {
 
-    private static final Pattern YOUTUBE_VIDEO_ID_REGEX_PATTERN = Pattern.compile("([a-zA-Z0-9_-]{11})");
+    private static final Pattern YOUTUBE_VIDEO_ID_REGEX_PATTERN = Pattern.compile("^([a-zA-Z0-9_-]{11})");
     private static final YoutubeStreamLinkHandlerFactory instance = new YoutubeStreamLinkHandlerFactory();
     private static Instance invidiousInstance;
 
