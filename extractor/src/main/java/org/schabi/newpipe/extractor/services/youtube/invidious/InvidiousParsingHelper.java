@@ -72,7 +72,7 @@ public class InvidiousParsingHelper {
         try {
             return JsonParser.array().from(response.responseBody());
         } catch (JsonParserException e) {
-            throw new ExtractionException("Could not parse json", e);
+            throw new ExtractionException("Could not parse json from page \"" + apiUrl + "\"", e);
         }
     }
 

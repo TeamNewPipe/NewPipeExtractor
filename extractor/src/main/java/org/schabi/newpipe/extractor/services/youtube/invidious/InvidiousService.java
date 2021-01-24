@@ -14,10 +14,7 @@ import org.schabi.newpipe.extractor.playlist.PlaylistExtractor;
 import org.schabi.newpipe.extractor.search.SearchExtractor;
 import org.schabi.newpipe.extractor.services.youtube.invidious.extractors.*;
 import org.schabi.newpipe.extractor.services.youtube.invidious.linkHandler.InvidiousSearchQueryHandlerFactory;
-import org.schabi.newpipe.extractor.services.youtube.linkHandler.YoutubeChannelLinkHandlerFactory;
-import org.schabi.newpipe.extractor.services.youtube.linkHandler.YoutubeCommentsLinkHandlerFactory;
-import org.schabi.newpipe.extractor.services.youtube.linkHandler.YoutubePlaylistLinkHandlerFactory;
-import org.schabi.newpipe.extractor.services.youtube.linkHandler.YoutubeStreamLinkHandlerFactory;
+import org.schabi.newpipe.extractor.services.youtube.linkHandler.*;
 import org.schabi.newpipe.extractor.stream.StreamExtractor;
 import org.schabi.newpipe.extractor.subscription.SubscriptionExtractor;
 import org.schabi.newpipe.extractor.suggestion.SuggestionExtractor;
@@ -118,7 +115,17 @@ public class InvidiousService extends StreamingService {
 
     @Override
     public KioskList getKioskList() throws ExtractionException {
-        return null;
+        KioskList list = new KioskList(this);
+
+        try {
+            list.addKioskEntry((streamingService, url, id) -> new InvidiousTrendingExtractor(InvidiousService.this,
+                    new YoutubeTrendingLinkHandlerFactory().fromUrl(url), id), new YoutubeTrendingLinkHandlerFactory(), "Trending");
+            list.setDefaultKiosk("Trending");
+        } catch (Exception e) {
+            throw new ExtractionException(e);
+        }
+
+        return list;
     }
 
     @Override
