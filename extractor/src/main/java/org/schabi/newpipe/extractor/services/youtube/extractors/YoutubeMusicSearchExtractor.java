@@ -20,9 +20,8 @@ import org.schabi.newpipe.extractor.localization.TimeAgoParser;
 import org.schabi.newpipe.extractor.search.InfoItemsSearchCollector;
 import org.schabi.newpipe.extractor.search.SearchExtractor;
 import org.schabi.newpipe.extractor.services.youtube.YoutubeParsingHelper;
-import org.schabi.newpipe.extractor.services.youtube.linkHandler.YoutubePlaylistLinkHandlerFactory;
-import org.schabi.newpipe.extractor.services.youtube.linkHandler.YoutubeStreamLinkHandlerFactory;
 import org.schabi.newpipe.extractor.utils.JsonUtils;
+import org.schabi.newpipe.extractor.utils.Parser;
 import org.schabi.newpipe.extractor.utils.Utils;
 
 import java.io.IOException;
@@ -33,7 +32,10 @@ import java.util.Map;
 
 import javax.annotation.Nonnull;
 
-import static org.schabi.newpipe.extractor.services.youtube.YoutubeParsingHelper.*;
+import static org.schabi.newpipe.extractor.services.youtube.YoutubeParsingHelper.fixThumbnailUrl;
+import static org.schabi.newpipe.extractor.services.youtube.YoutubeParsingHelper.getTextFromObject;
+import static org.schabi.newpipe.extractor.services.youtube.YoutubeParsingHelper.getUrlFromNavigationEndpoint;
+import static org.schabi.newpipe.extractor.services.youtube.YoutubeParsingHelper.getValidJsonResponseBody;
 import static org.schabi.newpipe.extractor.services.youtube.linkHandler.YoutubeSearchQueryHandlerFactory.MUSIC_ALBUMS;
 import static org.schabi.newpipe.extractor.services.youtube.linkHandler.YoutubeSearchQueryHandlerFactory.MUSIC_ARTISTS;
 import static org.schabi.newpipe.extractor.services.youtube.linkHandler.YoutubeSearchQueryHandlerFactory.MUSIC_PLAYLISTS;
@@ -365,7 +367,12 @@ public class YoutubeMusicSearchExtractor extends SearchExtractor {
                                     .getObject(descriptionElements.size() - 3)
                                     .getString("text");
                             if (!isNullOrEmpty(viewCount)) {
-                                return Utils.mixedNumberWordToLong(viewCount);
+                                try {
+                                    return Utils.mixedNumberWordToLong(viewCount);
+                                } catch (final Parser.RegexException e) {
+                                    // probably viewCount == "No views" or similar
+                                    return 0;
+                                }
                             }
                             throw new ParsingException("Could not get view count");
                         }
@@ -421,10 +428,15 @@ public class YoutubeMusicSearchExtractor extends SearchExtractor {
 
                         @Override
                         public long getSubscriberCount() throws ParsingException {
-                            final String viewCount = getTextFromObject(info.getArray("flexColumns").getObject(2)
+                            final String subscriberCount = getTextFromObject(info.getArray("flexColumns").getObject(2)
                                     .getObject("musicResponsiveListItemFlexColumnRenderer").getObject("text"));
-                            if (!isNullOrEmpty(viewCount)) {
-                                return Utils.mixedNumberWordToLong(viewCount);
+                            if (!isNullOrEmpty(subscriberCount)) {
+                                try {
+                                    return Utils.mixedNumberWordToLong(subscriberCount);
+                                } catch (final Parser.RegexException ignored) {
+                                    // probably subscriberCount == "No subscribers" or similar
+                                    return 0;
+                                }
                             }
                             throw new ParsingException("Could not get subscriber count");
                         }
