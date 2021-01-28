@@ -4,13 +4,11 @@ import com.grack.nanojson.JsonArray;
 import com.grack.nanojson.JsonObject;
 import com.grack.nanojson.JsonParser;
 import com.grack.nanojson.JsonParserException;
+
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
-import org.mozilla.javascript.Context;
-import org.mozilla.javascript.Function;
-import org.mozilla.javascript.ScriptableObject;
 import org.schabi.newpipe.extractor.MediaFormat;
 import org.schabi.newpipe.extractor.MetaInfo;
 import org.schabi.newpipe.extractor.NewPipe;
@@ -28,20 +26,41 @@ import org.schabi.newpipe.extractor.localization.TimeAgoPatternsManager;
 import org.schabi.newpipe.extractor.services.youtube.ItagItem;
 import org.schabi.newpipe.extractor.services.youtube.YoutubeParsingHelper;
 import org.schabi.newpipe.extractor.services.youtube.linkHandler.YoutubeChannelLinkHandlerFactory;
-import org.schabi.newpipe.extractor.stream.*;
+import org.schabi.newpipe.extractor.stream.AudioStream;
+import org.schabi.newpipe.extractor.stream.Description;
+import org.schabi.newpipe.extractor.stream.Frameset;
+import org.schabi.newpipe.extractor.stream.Stream;
+import org.schabi.newpipe.extractor.stream.StreamExtractor;
+import org.schabi.newpipe.extractor.stream.StreamInfoItemExtractor;
+import org.schabi.newpipe.extractor.stream.StreamInfoItemsCollector;
+import org.schabi.newpipe.extractor.stream.StreamSegment;
+import org.schabi.newpipe.extractor.stream.StreamType;
+import org.schabi.newpipe.extractor.stream.SubtitlesStream;
+import org.schabi.newpipe.extractor.stream.VideoStream;
 import org.schabi.newpipe.extractor.utils.Parser;
 import org.schabi.newpipe.extractor.utils.Utils;
 
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.time.LocalDate;
 import java.time.OffsetDateTime;
 import java.time.format.DateTimeFormatter;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Locale;
+import java.util.Map;
+import java.util.regex.Pattern;
 
-import static org.schabi.newpipe.extractor.services.youtube.YoutubeParsingHelper.*;
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
+
+import static org.schabi.newpipe.extractor.services.youtube.YoutubeParsingHelper.fixThumbnailUrl;
+import static org.schabi.newpipe.extractor.services.youtube.YoutubeParsingHelper.getJsonResponse;
+import static org.schabi.newpipe.extractor.services.youtube.YoutubeParsingHelper.getTextFromObject;
+import static org.schabi.newpipe.extractor.services.youtube.YoutubeParsingHelper.getUrlFromNavigationEndpoint;
 import static org.schabi.newpipe.extractor.utils.Utils.EMPTY_STRING;
 import static org.schabi.newpipe.extractor.utils.Utils.isNullOrEmpty;
 
@@ -78,10 +97,9 @@ public class YoutubeStreamExtractor extends StreamExtractor {
 
     /*//////////////////////////////////////////////////////////////////////////*/
 
-    @Nullable
-    private static String cachedDeobfuscationCode = null;
-    @Nullable
-    private String playerJsUrl = null;
+
+    @Nullable private static List<DeobfuscationFunction> cachedDeobfuscationFunctions = null;
+    @Nullable private String playerJsUrl = null;
 
     private JsonArray initialAjaxJson;
     private JsonObject initialData;
@@ -681,7 +699,6 @@ public class YoutubeStreamExtractor extends StreamExtractor {
     private static final String FORMATS = "formats";
     private static final String ADAPTIVE_FORMATS = "adaptiveFormats";
     private static final String HTTPS = "https:";
-    private static final String DEOBFUSCATION_FUNC_NAME = "deobfuscate";
 
     private final static String[] REGEXES = {
             "(?:\\b|[^a-zA-Z0-9$])([a-zA-Z0-9$]{2})\\s*=\\s*function\\(\\s*a\\s*\\)\\s*\\{\\s*a\\s*=\\s*a\\.split\\(\\s*\"\"\\s*\\)",
@@ -747,7 +764,7 @@ public class YoutubeStreamExtractor extends StreamExtractor {
                         .replace("\\", "").replace("\"", "");
             } catch (Parser.RegexException ex) {
                 // playerJsUrl is still available in the file, just somewhere else TODO
-                // it is ok not to find it, see how that's handled in getDeobfuscationCode()
+                // it is ok not to find it, see how that's handled in getDeobfuscationFunctions()
                 final Document doc = Jsoup.parse(embedPageContent);
                 final Elements elems = doc.select("script").attr("name", "player_ias/base");
                 for (Element elem : elems) {
@@ -766,6 +783,60 @@ public class YoutubeStreamExtractor extends StreamExtractor {
         }
     }
 
+
+    ///////////////////////////////////////////////////////////////
+    // Deobfuscation functions
+    ///////////////////////////////////////////////////////////////
+
+    public static final Pattern SWAP_FIRST_AND_INDEX_REGEX = Pattern.compile("([a-zA-Z0-9$]+):function\\(a,b\\)\\{v");
+    public static final Pattern SLICE_AT_REGEX = Pattern.compile("([a-zA-Z0-9$]+):function\\(a,b\\)\\{a");
+    public static final Pattern REVERSE_REGEX = Pattern.compile("([a-zA-Z0-9$]+):function\\(a\\)");
+    public static final Pattern CONTAINER_REGEX = Pattern.compile("var ([a-zA-Z0-9$]+)=\\{");
+    public static final Pattern STEP_INDEX_REGEX = Pattern.compile("[a-zA-Z0-9$]+\\(a,([0-9]+)\\)");
+    public static final Pattern STEP_NAME_REGEX = Pattern.compile("([a-zA-Z0-9$]+)\\(");
+
+    private interface DeobfuscationFunction {
+        String transform(String cipher);
+    }
+
+    private static class SwapFirstAndIndexFunction implements DeobfuscationFunction {
+
+        final int index;
+        SwapFirstAndIndexFunction(final int index) {
+            this.index = index;
+        }
+
+        @Override
+        public String transform(final String cipher) {
+            return cipher.charAt(index) + cipher.substring(1, index) + cipher.charAt(0)
+                    + cipher.substring(index + 1);
+        }
+    }
+
+    private static class SliceAtFunction implements DeobfuscationFunction {
+
+        final int index;
+        SliceAtFunction(final int index) {
+            this.index = index;
+        }
+
+        @Override
+        public String transform(final String cipher) {
+            return cipher.substring(index);
+        }
+    }
+
+    private static class ReverseFunction implements DeobfuscationFunction {
+        @Override
+        public String transform(final String cipher) {
+            return new StringBuilder(cipher).reverse().toString();
+        }
+    }
+
+
+    ///////////////////////////////////////////////////////////////
+    // Deobfuscation
+    ///////////////////////////////////////////////////////////////
 
     private String getDeobfuscationFuncName(final String playerCode) throws DeobfuscateException {
         Parser.RegexException exception = null;
@@ -800,10 +871,7 @@ public class YoutubeStreamExtractor extends StreamExtractor {
             final String helperObject =
                     Parser.matchGroup1(helperPattern, playerCode.replace("\n", ""));
 
-            final String callerFunction =
-                    "function " + DEOBFUSCATION_FUNC_NAME + "(a){return " + deobfuscationFunctionName + "(a);}";
-
-            return helperObject + deobfuscateFunction + callerFunction;
+            return helperObject + deobfuscateFunction;
         } catch (IOException ioe) {
             throw new DeobfuscateException("Could not load deobfuscate function", ioe);
         } catch (Exception e) {
@@ -812,8 +880,9 @@ public class YoutubeStreamExtractor extends StreamExtractor {
     }
 
     @Nonnull
-    private String getDeobfuscationCode() throws ParsingException {
-        if (cachedDeobfuscationCode == null) {
+    private List<DeobfuscationFunction> getDeobfuscationFunctions() throws ParsingException {
+        if (cachedDeobfuscationFunctions == null) {
+            // extract deobfuscation code
             if (playerJsUrl == null) {
                 // the currentPlayerJsUrl was not found in any page fetched so far and there is
                 // nothing cached, so try fetching embedded info
@@ -831,28 +900,44 @@ public class YoutubeStreamExtractor extends StreamExtractor {
                 playerJsUrl = HTTPS + "//www.youtube.com" + playerJsUrl;
             }
 
-            cachedDeobfuscationCode = loadDeobfuscationCode(playerJsUrl);
+            final String deobfuscationCode = loadDeobfuscationCode(playerJsUrl);
+            final String swapFirstAndIndexName = Parser.matchGroup1(SWAP_FIRST_AND_INDEX_REGEX, deobfuscationCode);
+            final String sliceAtName = Parser.matchGroup1(SLICE_AT_REGEX, deobfuscationCode);
+            final String reverseName = Parser.matchGroup1(REVERSE_REGEX, deobfuscationCode);
+            final String containerName = Parser.matchGroup1(CONTAINER_REGEX, deobfuscationCode);
+
+            final String[] stringSteps = deobfuscationCode.split(containerName + "\\.");
+            boolean first = true;
+            cachedDeobfuscationFunctions = new ArrayList<>();
+            for (final String step : stringSteps) {
+                if (first) {
+                    first = false;
+                    continue;
+                }
+
+                final int index = Integer.parseInt(Parser.matchGroup1(STEP_INDEX_REGEX, step));
+                final String name = Parser.matchGroup1(STEP_NAME_REGEX, step);
+
+                if (name.equals(swapFirstAndIndexName)) {
+                    cachedDeobfuscationFunctions.add(new SwapFirstAndIndexFunction(index));
+                } else if (name.equals(sliceAtName)) {
+                    cachedDeobfuscationFunctions.add(new SliceAtFunction(index));
+                } else if (name.equals(reverseName)) {
+                    cachedDeobfuscationFunctions.add(new ReverseFunction());
+                } else {
+                    throw new ParsingException("Unexpected function name: " + name);
+                }
+            }
         }
-        return cachedDeobfuscationCode;
+        return cachedDeobfuscationFunctions;
     }
 
-    private String deobfuscateSignature(final String obfuscatedSig) throws ParsingException {
-        final String deobfuscationCode = getDeobfuscationCode();
-
-        final Context context = Context.enter();
-        context.setOptimizationLevel(-1);
-        final Object result;
-        try {
-            final ScriptableObject scope = context.initSafeStandardObjects();
-            context.evaluateString(scope, deobfuscationCode, "deobfuscationCode", 1, null);
-            final Function deobfuscateFunc = (Function) scope.get(DEOBFUSCATION_FUNC_NAME, scope);
-            result = deobfuscateFunc.call(context, scope, scope, new Object[]{obfuscatedSig});
-        } catch (Exception e) {
-            throw new DeobfuscateException("Could not get deobfuscate signature", e);
-        } finally {
-            Context.exit();
+    private String deobfuscateSignature(String obfuscatedSig) throws ParsingException {
+        final List<DeobfuscationFunction> deobfuscationFunctions = getDeobfuscationFunctions();
+        for (final DeobfuscationFunction deobfuscationFunction : deobfuscationFunctions) {
+            obfuscatedSig = deobfuscationFunction.transform(obfuscatedSig);
         }
-        return Objects.toString(result, "");
+        return obfuscatedSig;
     }
 
     /*//////////////////////////////////////////////////////////////////////////
