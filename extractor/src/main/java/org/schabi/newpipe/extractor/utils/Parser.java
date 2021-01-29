@@ -69,9 +69,9 @@ public class Parser {
         } else {
             // only pass input to exception message when it is not too long
             if (input.length() > 1024) {
-                throw new RegexException("failed to find pattern \"" + pat.pattern());
+                throw new RegexException("failed to find pattern \"" + pat.pattern() + "\"");
             } else {
-                throw new RegexException("failed to find pattern \"" + pat.pattern() + " inside of " + input + "\"");
+                throw new RegexException("failed to find pattern \"" + pat.pattern() + "\" inside of \"" + input + "\"");
             }
         }
     }
