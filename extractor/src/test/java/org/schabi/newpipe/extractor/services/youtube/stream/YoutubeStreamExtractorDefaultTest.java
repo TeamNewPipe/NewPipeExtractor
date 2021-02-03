@@ -259,7 +259,6 @@ public class YoutubeStreamExtractorDefaultTest {
 
         @Override public int expectedStreamSegmentsCount() { return 7; }
         @Test
-        @Ignore("TODO fix")
         public void testStreamSegment() throws Exception {
             final StreamSegment segment = extractor.getStreamSegments().get(1);
             assertEquals(164, segment.getStartTimeSeconds());
