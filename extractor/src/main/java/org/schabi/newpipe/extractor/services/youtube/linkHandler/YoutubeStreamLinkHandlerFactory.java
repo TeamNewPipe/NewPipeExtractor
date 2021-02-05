@@ -36,7 +36,7 @@ import java.util.regex.Pattern;
 
 public class YoutubeStreamLinkHandlerFactory extends LinkHandlerFactory {
 
-    private static final Pattern YOUTUBE_VIDEO_ID_REGEX_PATTERN = Pattern.compile("([a-zA-Z0-9_-]{11})");
+    private static final Pattern YOUTUBE_VIDEO_ID_REGEX_PATTERN = Pattern.compile("^([a-zA-Z0-9_-]{11})");
     private static final YoutubeStreamLinkHandlerFactory instance = new YoutubeStreamLinkHandlerFactory();
 
     private YoutubeStreamLinkHandlerFactory() {
