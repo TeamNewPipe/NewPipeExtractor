@@ -14,7 +14,7 @@ public abstract class SearchQueryHandlerFactory extends ListLinkHandlerFactory {
     ///////////////////////////////////
 
     @Override
-    public abstract String getUrl(String querry, List<String> contentFilter, String sortFilter) throws ParsingException;
+    public abstract String getUrl(String query, List<String> contentFilter, String sortFilter) throws ParsingException;
 
     public String getSearchString(String url) {
         return "";

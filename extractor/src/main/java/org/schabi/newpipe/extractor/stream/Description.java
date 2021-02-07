@@ -1,6 +1,7 @@
 package org.schabi.newpipe.extractor.stream;
 
 import java.io.Serializable;
+import java.util.Objects;
 
 import static org.schabi.newpipe.extractor.utils.Utils.EMPTY_STRING;
 
@@ -29,5 +30,18 @@ public class Description implements Serializable {
 
     public int getType() {
         return type;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Description that = (Description) o;
+        return type == that.type && Objects.equals(content, that.content);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(content, type);
     }
 }
