@@ -7,7 +7,7 @@ import org.schabi.newpipe.extractor.services.soundcloud.SoundcloudParsingHelper;
 import org.schabi.newpipe.extractor.stream.StreamInfoItemExtractor;
 import org.schabi.newpipe.extractor.stream.StreamType;
 
-import static org.schabi.newpipe.extractor.utils.JsonUtils.EMPTY_STRING;
+import static org.schabi.newpipe.extractor.utils.Utils.EMPTY_STRING;
 import static org.schabi.newpipe.extractor.utils.Utils.replaceHttpWithHttps;
 
 public class SoundcloudStreamInfoItemExtractor implements StreamInfoItemExtractor {

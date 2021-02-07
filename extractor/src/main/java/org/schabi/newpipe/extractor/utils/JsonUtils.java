@@ -13,7 +13,6 @@ import java.util.List;
 public class JsonUtils {
     public static final JsonObject EMPTY_OBJECT = new JsonObject();
     public static final JsonArray EMPTY_ARRAY = new JsonArray();
-    public static final String EMPTY_STRING = "";
 
     private JsonUtils() {
     }

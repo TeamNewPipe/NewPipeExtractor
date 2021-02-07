@@ -21,7 +21,7 @@ import javax.annotation.Nonnull;
 import java.io.IOException;
 
 import static org.schabi.newpipe.extractor.services.youtube.YoutubeParsingHelper.*;
-import static org.schabi.newpipe.extractor.utils.JsonUtils.EMPTY_STRING;
+import static org.schabi.newpipe.extractor.utils.Utils.EMPTY_STRING;
 import static org.schabi.newpipe.extractor.utils.Utils.isNullOrEmpty;
 
 /*

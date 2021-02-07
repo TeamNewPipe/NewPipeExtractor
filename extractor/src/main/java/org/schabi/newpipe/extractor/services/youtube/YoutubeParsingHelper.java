@@ -33,7 +33,6 @@ import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
 import static org.schabi.newpipe.extractor.NewPipe.getDownloader;
-import static org.schabi.newpipe.extractor.utils.JsonUtils.EMPTY_STRING;
 import static org.schabi.newpipe.extractor.utils.Utils.*;
 
 /*

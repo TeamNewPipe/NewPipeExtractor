@@ -37,7 +37,6 @@ import java.util.List;
 
 import static java.util.Collections.singletonList;
 import static org.schabi.newpipe.extractor.ServiceList.SoundCloud;
-import static org.schabi.newpipe.extractor.utils.JsonUtils.EMPTY_STRING;
 import static org.schabi.newpipe.extractor.utils.Utils.*;
 
 public class SoundcloudParsingHelper {

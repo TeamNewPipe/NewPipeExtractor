@@ -28,9 +28,7 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Locale;
 
-import static org.schabi.newpipe.extractor.utils.JsonUtils.EMPTY_STRING;
-import static org.schabi.newpipe.extractor.utils.Utils.UTF_8;
-import static org.schabi.newpipe.extractor.utils.Utils.isNullOrEmpty;
+import static org.schabi.newpipe.extractor.utils.Utils.*;
 
 public class SoundcloudStreamExtractor extends StreamExtractor {
     private JsonObject track;
@@ -52,7 +50,7 @@ public class SoundcloudStreamExtractor extends StreamExtractor {
     @Nonnull
     @Override
     public String getId() {
-        return track.getInt("id") + "";
+        return track.getInt("id") + EMPTY_STRING;
     }
 
     @Nonnull
@@ -66,7 +64,7 @@ public class SoundcloudStreamExtractor extends StreamExtractor {
     public String getTextualUploadDate() {
         return track.getString("created_at")
                 .replace("T", " ")
-                .replace("Z", "");
+                .replace("Z", EMPTY_STRING);
     }
 
     @Nonnull

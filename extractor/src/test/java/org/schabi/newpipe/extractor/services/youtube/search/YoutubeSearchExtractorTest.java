@@ -31,6 +31,7 @@ import static org.schabi.newpipe.extractor.services.DefaultTests.assertNoDuplica
 import static org.schabi.newpipe.extractor.services.youtube.linkHandler.YoutubeSearchQueryHandlerFactory.CHANNELS;
 import static org.schabi.newpipe.extractor.services.youtube.linkHandler.YoutubeSearchQueryHandlerFactory.PLAYLISTS;
 import static org.schabi.newpipe.extractor.services.youtube.linkHandler.YoutubeSearchQueryHandlerFactory.VIDEOS;
+import static org.schabi.newpipe.extractor.utils.Utils.EMPTY_STRING;
 
 public class YoutubeSearchExtractorTest {
 

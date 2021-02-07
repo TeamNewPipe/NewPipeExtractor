@@ -13,6 +13,7 @@ public class Utils {
     public static final String HTTP = "http://";
     public static final String HTTPS = "https://";
     public static final String UTF_8 = "UTF-8";
+    public static final String EMPTY_STRING = "";
 
     private Utils() {
         //no instance
@@ -234,7 +235,7 @@ public class Utils {
     }
 
     public static boolean isBlank(final String string) {
-        if (string == null || string.isEmpty()) {
+        if (isNullOrEmpty(string)) {
             return true;
         }
 

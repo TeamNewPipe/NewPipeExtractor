@@ -4,7 +4,6 @@ import com.grack.nanojson.JsonArray;
 import com.grack.nanojson.JsonObject;
 import com.grack.nanojson.JsonParser;
 import com.grack.nanojson.JsonParserException;
-
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
@@ -29,17 +28,7 @@ import org.schabi.newpipe.extractor.localization.TimeAgoPatternsManager;
 import org.schabi.newpipe.extractor.services.youtube.ItagItem;
 import org.schabi.newpipe.extractor.services.youtube.YoutubeParsingHelper;
 import org.schabi.newpipe.extractor.services.youtube.linkHandler.YoutubeChannelLinkHandlerFactory;
-import org.schabi.newpipe.extractor.stream.AudioStream;
-import org.schabi.newpipe.extractor.stream.Description;
-import org.schabi.newpipe.extractor.stream.Frameset;
-import org.schabi.newpipe.extractor.stream.Stream;
-import org.schabi.newpipe.extractor.stream.StreamExtractor;
-import org.schabi.newpipe.extractor.stream.StreamInfoItemExtractor;
-import org.schabi.newpipe.extractor.stream.StreamInfoItemsCollector;
-import org.schabi.newpipe.extractor.stream.StreamSegment;
-import org.schabi.newpipe.extractor.stream.StreamType;
-import org.schabi.newpipe.extractor.stream.SubtitlesStream;
-import org.schabi.newpipe.extractor.stream.VideoStream;
+import org.schabi.newpipe.extractor.stream.*;
 import org.schabi.newpipe.extractor.utils.Parser;
 import org.schabi.newpipe.extractor.utils.Utils;
 
@@ -47,26 +36,13 @@ import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
-import java.net.MalformedURLException;
-import java.net.URL;
 import java.time.LocalDate;
 import java.time.OffsetDateTime;
 import java.time.format.DateTimeFormatter;
-import java.io.UnsupportedEncodingException;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.Locale;
-import java.util.Map;
-import java.util.Objects;
+import java.util.*;
 
-import static org.schabi.newpipe.extractor.services.youtube.YoutubeParsingHelper.fixThumbnailUrl;
-import static org.schabi.newpipe.extractor.services.youtube.YoutubeParsingHelper.getJsonResponse;
-import static org.schabi.newpipe.extractor.services.youtube.YoutubeParsingHelper.getTextFromObject;
-import static org.schabi.newpipe.extractor.services.youtube.YoutubeParsingHelper.getUrlFromNavigationEndpoint;
-import static org.schabi.newpipe.extractor.utils.JsonUtils.EMPTY_STRING;
+import static org.schabi.newpipe.extractor.services.youtube.YoutubeParsingHelper.*;
+import static org.schabi.newpipe.extractor.utils.Utils.EMPTY_STRING;
 import static org.schabi.newpipe.extractor.utils.Utils.isNullOrEmpty;
 
 /*
@@ -102,17 +78,21 @@ public class YoutubeStreamExtractor extends StreamExtractor {
 
     /*//////////////////////////////////////////////////////////////////////////*/
 
-    @Nullable private static String cachedDeobfuscationCode = null;
-    @Nullable private String playerJsUrl = null;
+    @Nullable
+    private static String cachedDeobfuscationCode = null;
+    @Nullable
+    private String playerJsUrl = null;
 
     private JsonArray initialAjaxJson;
     private JsonObject initialData;
-    @Nonnull private final Map<String, String> videoInfoPage = new HashMap<>();
+    @Nonnull
+    private final Map<String, String> videoInfoPage = new HashMap<>();
     private JsonObject playerResponse;
     private JsonObject videoPrimaryInfoRenderer;
     private JsonObject videoSecondaryInfoRenderer;
     private int ageLimit = -1;
-    @Nullable private List<SubtitlesStream> subtitles = null;
+    @Nullable
+    private List<SubtitlesStream> subtitles = null;
 
     public YoutubeStreamExtractor(StreamingService service, LinkHandler linkHandler) {
         super(service, linkHandler);
@@ -787,8 +767,6 @@ public class YoutubeStreamExtractor extends StreamExtractor {
     }
 
 
-
-
     private String getDeobfuscationFuncName(final String playerCode) throws DeobfuscateException {
         Parser.RegexException exception = null;
         for (final String regex : REGEXES) {
@@ -1138,6 +1116,6 @@ public class YoutubeStreamExtractor extends StreamExtractor {
     public List<MetaInfo> getMetaInfo() throws ParsingException {
         return YoutubeParsingHelper.getMetaInfo(
                 initialData.getObject("contents").getObject("twoColumnWatchNextResults")
-                .getObject("results").getObject("results").getArray("contents"));
+                        .getObject("results").getObject("results").getArray("contents"));
     }
 }

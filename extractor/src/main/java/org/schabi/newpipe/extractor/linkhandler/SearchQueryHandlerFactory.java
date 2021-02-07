@@ -5,6 +5,8 @@ import org.schabi.newpipe.extractor.exceptions.ParsingException;
 import java.util.ArrayList;
 import java.util.List;
 
+import static org.schabi.newpipe.extractor.utils.Utils.EMPTY_STRING;
+
 public abstract class SearchQueryHandlerFactory extends ListLinkHandlerFactory {
 
     ///////////////////////////////////
@@ -28,14 +30,14 @@ public abstract class SearchQueryHandlerFactory extends ListLinkHandlerFactory {
     }
 
     @Override
-    public SearchQueryHandler fromQuery(String querry,
+    public SearchQueryHandler fromQuery(String query,
                                         List<String> contentFilter,
                                         String sortFilter) throws ParsingException {
-        return new SearchQueryHandler(super.fromQuery(querry, contentFilter, sortFilter));
+        return new SearchQueryHandler(super.fromQuery(query, contentFilter, sortFilter));
     }
 
-    public SearchQueryHandler fromQuery(String querry) throws ParsingException {
-        return fromQuery(querry, new ArrayList<String>(0), "");
+    public SearchQueryHandler fromQuery(String query) throws ParsingException {
+        return fromQuery(query, new ArrayList<String>(0), EMPTY_STRING);
     }
 
     /**

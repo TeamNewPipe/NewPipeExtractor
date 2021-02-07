@@ -28,9 +28,7 @@ import java.util.Map;
 
 import static org.schabi.newpipe.extractor.services.youtube.YoutubeParsingHelper.*;
 import static org.schabi.newpipe.extractor.services.youtube.linkHandler.YoutubeSearchQueryHandlerFactory.*;
-import static org.schabi.newpipe.extractor.utils.JsonUtils.EMPTY_STRING;
-import static org.schabi.newpipe.extractor.utils.Utils.UTF_8;
-import static org.schabi.newpipe.extractor.utils.Utils.isNullOrEmpty;
+import static org.schabi.newpipe.extractor.utils.Utils.*;
 
 public class YoutubeMusicSearchExtractor extends SearchExtractor {
     private JsonObject initialData;
