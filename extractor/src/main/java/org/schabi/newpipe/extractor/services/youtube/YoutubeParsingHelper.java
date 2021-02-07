@@ -124,6 +124,7 @@ public class YoutubeParsingHelper {
 
     /**
      * Parses the duration string of the video expecting ":" or "." as separators
+     *
      * @return the duration in seconds
      * @throws ParsingException when more than 3 separators are found
      */
@@ -193,6 +194,7 @@ public class YoutubeParsingHelper {
     /**
      * Checks if the given playlist id is a YouTube Mix (auto-generated playlist)
      * Ids from a YouTube Mix start with "RD"
+     *
      * @param playlistId
      * @return Whether given id belongs to a YouTube Mix
      */
@@ -203,15 +205,18 @@ public class YoutubeParsingHelper {
     /**
      * Checks if the given playlist id is a YouTube Music Mix (auto-generated playlist)
      * Ids from a YouTube Music Mix start with "RDAMVM" or "RDCLAK"
+     *
      * @param playlistId
      * @return Whether given id belongs to a YouTube Music Mix
      */
     public static boolean isYoutubeMusicMixId(final String playlistId) {
         return playlistId.startsWith("RDAMVM") || playlistId.startsWith("RDCLAK");
     }
+
     /**
      * Checks if the given playlist id is a YouTube Channel Mix (auto-generated playlist)
      * Ids from a YouTube channel Mix start with "RDCM"
+     *
      * @return Whether given id belongs to a YouTube Channel Mix
      */
     public static boolean isYoutubeChannelMixId(final String playlistId) {
@@ -220,6 +225,7 @@ public class YoutubeParsingHelper {
 
     /**
      * Extracts the video id from the playlist id for Mixes.
+     *
      * @throws ParsingException If the playlistId is a Channel Mix or not a mix.
      */
     public static String extractVideoIdFromMixId(final String playlistId) throws ParsingException {
@@ -311,7 +317,8 @@ public class YoutubeParsingHelper {
                     clientVersion = contextClientVersion;
                     break;
                 }
-            } catch (Parser.RegexException ignored) { }
+            } catch (Parser.RegexException ignored) {
+            }
         }
 
         if (!isNullOrEmpty(clientVersion) && !isNullOrEmpty(shortClientVersion)) {
@@ -323,7 +330,8 @@ public class YoutubeParsingHelper {
         } catch (Parser.RegexException e) {
             try {
                 key = Parser.matchGroup1("innertubeApiKey\":\"([0-9a-zA-Z_-]+?)\"", html);
-            } catch (Parser.RegexException ignored) { }
+            } catch (Parser.RegexException ignored) {
+            }
         }
     }
 
@@ -390,7 +398,7 @@ public class YoutubeParsingHelper {
                 .end()
                 .value("query", "test")
                 .value("params", "Eg-KAQwIARAAGAAgACgAMABqChAEEAUQAxAKEAk%3D")
-            .end().done().getBytes("UTF-8");
+            .end().done().getBytes(UTF_8);
         // @formatter:on
 
         final Map<String, List<String>> headers = new HashMap<>();
@@ -454,7 +462,7 @@ public class YoutubeParsingHelper {
                     if (param.split("=")[0].equals("q")) {
                         String url;
                         try {
-                            url = URLDecoder.decode(param.split("=")[1], "UTF-8");
+                            url = URLDecoder.decode(param.split("=")[1], UTF_8);
                         } catch (UnsupportedEncodingException e) {
                             return null;
                         }
@@ -502,6 +510,7 @@ public class YoutubeParsingHelper {
 
     /**
      * Get the text from a JSON object that has either a simpleText or a runs array.
+     *
      * @param textObject JSON object to get the text from
      * @param html       whether to return HTML, by parsing the navigationEndpoint
      * @return text in the JSON object or {@code null}
@@ -729,7 +738,7 @@ public class YoutubeParsingHelper {
 
         final String title = YoutubeParsingHelper.getTextFromObject(clarificationRenderer.getObject("contentTitle"));
         final String text = YoutubeParsingHelper.getTextFromObject(clarificationRenderer.getObject("text"));
-        if (title == null || text ==  null) {
+        if (title == null || text == null) {
             throw new ParsingException("Could not extract clarification renderer content");
         }
         metaInfo.setTitle(title);
@@ -773,6 +782,7 @@ public class YoutubeParsingHelper {
     /**
      * Sometimes, YouTube provides URLs which use Google's cache. They look like
      * {@code https://webcache.googleusercontent.com/search?q=cache:CACHED_URL}
+     *
      * @param url the URL which might refer to the Google's webcache
      * @return the URL which is referring to the original site
      */

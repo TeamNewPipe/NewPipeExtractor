@@ -38,8 +38,7 @@ import java.util.List;
 import static java.util.Collections.singletonList;
 import static org.schabi.newpipe.extractor.ServiceList.SoundCloud;
 import static org.schabi.newpipe.extractor.utils.JsonUtils.EMPTY_STRING;
-import static org.schabi.newpipe.extractor.utils.Utils.isNullOrEmpty;
-import static org.schabi.newpipe.extractor.utils.Utils.replaceHttpWithHttps;
+import static org.schabi.newpipe.extractor.utils.Utils.*;
 
 public class SoundcloudParsingHelper {
     private static final String HARDCODED_CLIENT_ID = "H2c34Q0E7hftqnuDHGsk88DbNqhYpgMm"; // Updated on 24/06/20
@@ -117,7 +116,7 @@ public class SoundcloudParsingHelper {
      */
     public static JsonObject resolveFor(Downloader downloader, String url) throws IOException, ExtractionException {
         String apiUrl = "https://api-v2.soundcloud.com/resolve"
-                + "?url=" + URLEncoder.encode(url, "UTF-8")
+                + "?url=" + URLEncoder.encode(url, UTF_8)
                 + "&client_id=" + clientId();
 
         try {
@@ -136,7 +135,7 @@ public class SoundcloudParsingHelper {
     public static String resolveUrlWithEmbedPlayer(String apiUrl) throws IOException, ReCaptchaException, ParsingException {
 
         String response = NewPipe.getDownloader().get("https://w.soundcloud.com/player/?url="
-                + URLEncoder.encode(apiUrl, "UTF-8"), SoundCloud.getLocalization()).responseBody();
+                + URLEncoder.encode(apiUrl, UTF_8), SoundCloud.getLocalization()).responseBody();
 
         return Jsoup.parse(response).select("link[rel=\"canonical\"]").first().attr("abs:href");
     }
@@ -158,7 +157,7 @@ public class SoundcloudParsingHelper {
         }
 
         String response = NewPipe.getDownloader().get("https://w.soundcloud.com/player/?url="
-                + URLEncoder.encode(url.toString(), "UTF-8"), SoundCloud.getLocalization()).responseBody();
+                + URLEncoder.encode(url.toString(), UTF_8), SoundCloud.getLocalization()).responseBody();
         // handle playlists / sets different and get playlist id via uir field in JSON
         if (url.getPath().contains("/sets/") && !url.getPath().endsWith("/sets"))
             return Parser.matchGroup1("\"uri\":\\s*\"https:\\/\\/api\\.soundcloud\\.com\\/playlists\\/((\\d)*?)\"", response);

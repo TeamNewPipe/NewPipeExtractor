@@ -11,8 +11,9 @@ import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
 import java.util.List;
 
+import static org.schabi.newpipe.extractor.utils.Utils.UTF_8;
+
 public class SoundcloudSearchQueryHandlerFactory extends SearchQueryHandlerFactory {
-    public static final String CHARSET_UTF_8 = "UTF-8";
 
     public static final String TRACKS = "tracks";
     public static final String USERS = "users";
@@ -43,7 +44,7 @@ public class SoundcloudSearchQueryHandlerFactory extends SearchQueryHandlerFacto
                 }
             }
 
-            return url + "?q=" + URLEncoder.encode(id, CHARSET_UTF_8)
+            return url + "?q=" + URLEncoder.encode(id, UTF_8)
                     + "&client_id=" + SoundcloudParsingHelper.clientId()
                     + "&limit=" + ITEMS_PER_PAGE
                     + "&offset=0";
