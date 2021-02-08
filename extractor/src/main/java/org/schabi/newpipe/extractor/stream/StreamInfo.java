@@ -64,7 +64,7 @@ public class StreamInfo extends Info {
         return getInfo(service.getStreamExtractor(url));
     }
 
-    private static StreamInfo getInfo(StreamExtractor extractor) throws ExtractionException, IOException {
+    public static StreamInfo getInfo(StreamExtractor extractor) throws ExtractionException, IOException {
         extractor.fetchPage();
         StreamInfo streamInfo;
         try {
