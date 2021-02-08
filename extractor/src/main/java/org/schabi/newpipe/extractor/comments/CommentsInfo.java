@@ -25,7 +25,7 @@ public class CommentsInfo extends ListInfo<CommentsInfoItem> {
         return getInfo(serviceByUrl.getCommentsExtractor(url));
     }
 
-    private static CommentsInfo getInfo(CommentsExtractor commentsExtractor) throws IOException, ExtractionException {
+    public static CommentsInfo getInfo(CommentsExtractor commentsExtractor) throws IOException, ExtractionException {
         // for services which do not have a comments extractor
         if (null == commentsExtractor) {
             return null;
