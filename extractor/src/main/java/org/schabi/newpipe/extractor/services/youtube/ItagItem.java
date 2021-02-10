@@ -155,4 +155,15 @@ public class ItagItem {
     public String resolutionString;
     public int fps = -1;
 
+    // Fields for Dash
+    public int bitrate;
+    public int width;
+    public int height;
+    public int initStart;
+    public int initEnd;
+    public int indexStart;
+    public int indexEnd;
+    public int height;
+    public String codec;
+
 }

@@ -949,6 +949,29 @@ public class YoutubeStreamExtractor extends StreamExtractor {
                                     + deobfuscateSignature(cipher.get("s"));
                         }
 
+                        int bitrate = formatData.getInt("bitrate");
+                        int averageBitrate = formatData.getInt("averageBitrate");
+                        int width = formatData.getInt("width");
+                        int height = formatData.getInt("height");
+                        int initStart = formatData.getInt("initRange.start");
+                        int initEnd = formatData.getInt("initRange.end");
+                        int indexStart = formatData.getInt("indexRange.start");
+                        int indexEnd = formatData.getInt("indexRange.end");
+                        int fps = formatData.getInt("fps");
+                        String mimeType = formatData.getString("mimeType", EMPTY_STRING);
+                        String codec = mimeType.contains("codecs") ? mimeType.split("\"")[1] : EMPTY_STRING;
+
+                        itagItem.bitrate = bitrate;
+                        itagItem.avgBitrate =averageBitrate;
+                        itagItem.width = width;
+                        itagItem.height = height;
+                        itagItem.initStart = initStart;
+                        itagItem.initEnd = initEnd;
+                        itagItem.indexStart = indexStart;
+                        itagItem.indexEnd = indexEnd;
+                        itagItem.fps = fps;
+                        itagItem.codec = codec;
+
                         urlAndItags.put(streamUrl, itagItem);
                     }
                 } catch (UnsupportedEncodingException ignored) {
