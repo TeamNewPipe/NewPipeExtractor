@@ -11,6 +11,8 @@ import java.net.MalformedURLException;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.net.URL;
+import java.util.Arrays;
+import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -38,6 +40,7 @@ public class YoutubeStreamLinkHandlerFactory extends LinkHandlerFactory {
 
     private static final Pattern YOUTUBE_VIDEO_ID_REGEX_PATTERN = Pattern.compile("^([a-zA-Z0-9_-]{11})");
     private static final YoutubeStreamLinkHandlerFactory instance = new YoutubeStreamLinkHandlerFactory();
+    private static final List<String> folders = Arrays.asList("embed/", "shorts/", "watch/", "v/");
 
     private YoutubeStreamLinkHandlerFactory() {
     }
@@ -150,11 +153,8 @@ public class YoutubeStreamLinkHandlerFactory extends LinkHandlerFactory {
                     return assertIsId(viewQueryValue);
                 }
 
-                if (path.startsWith("embed/") || path.startsWith("shorts/")) {
-                    String id = path.split("/")[1];
-
-                    return assertIsId(id);
-                }
+                String maybeId = getIdFromFoldersInPath(path);
+                if (maybeId != null) return maybeId;
 
                 String viewQueryValue = Utils.getQueryValue(url, "v");
                 return assertIsId(viewQueryValue);
@@ -169,20 +169,7 @@ public class YoutubeStreamLinkHandlerFactory extends LinkHandlerFactory {
                 return assertIsId(path);
             }
 
-            case "HOOKTUBE.COM": {
-                if (path.startsWith("v/")) {
-                    String id = path.substring("v/".length());
-
-                    return assertIsId(id);
-                }
-                if (path.startsWith("watch/")) {
-                    String id = path.substring("watch/".length());
-
-                    return assertIsId(id);
-                }
-                // there is no break-statement here on purpose so the next code-block gets also run for hooktube
-            }
-
+            case "HOOKTUBE.COM":
             case "INVIDIO.US":
             case "DEV.INVIDIO.US":
             case "WWW.INVIDIO.US":
@@ -208,11 +195,8 @@ public class YoutubeStreamLinkHandlerFactory extends LinkHandlerFactory {
                         return assertIsId(viewQueryValue);
                     }
                 }
-                if (path.startsWith("embed/")) {
-                    String id = path.substring("embed/".length());
-
-                    return assertIsId(id);
-                }
+                String maybeId = getIdFromFoldersInPath(path);
+                if (maybeId != null) return maybeId;
 
                 String viewQueryValue = Utils.getQueryValue(url, "v");
                 if (viewQueryValue != null) {
@@ -236,5 +220,15 @@ public class YoutubeStreamLinkHandlerFactory extends LinkHandlerFactory {
         } catch (ParsingException e) {
             return false;
         }
+    }
+
+    private String getIdFromFoldersInPath(String path) throws ParsingException {
+        for (final String folder : folders) {
+            if (path.startsWith(folder)) {
+                String id = path.split("/")[1];
+                return assertIsId(id);
+            }
+        }
+        return null;
     }
 }

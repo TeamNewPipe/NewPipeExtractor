@@ -92,6 +92,8 @@ public class YoutubeStreamLinkHandlerFactoryTest {
         assertEquals("-cdveCh1kQk", linkHandler.fromUrl("HTTPS://youtu.be/-cdveCh1kQk)").getId());
         assertEquals("IOS2fqxwYbA", linkHandler.fromUrl("https://www.youtube.com/shorts/IOS2fqxwYbAhi").getId());
         assertEquals("IOS2fqxwYbA", linkHandler.fromUrl("http://www.youtube.com/shorts/IOS2fqxwYbA").getId());
+        assertEquals("IOS2fqxwYbA", linkHandler.fromUrl("http://www.youtube.com/v/IOS2fqxwYbA").getId());
+        assertEquals("IOS2fqxwYbA", linkHandler.fromUrl("http://www.youtube.com/watch/IOS2fqxwYbA").getId());
     }
 
     @Test
@@ -113,6 +115,8 @@ public class YoutubeStreamLinkHandlerFactoryTest {
         assertTrue(linkHandler.acceptUrl("vnd.youtube.launch:jZViOEv90dI"));
         assertTrue(linkHandler.acceptUrl("https://music.youtube.com/watch?v=O0EDx9WAelc"));
         assertTrue(linkHandler.acceptUrl("https://www.youtube.com/shorts/IOS2fqxwYbA"));
+        assertTrue(linkHandler.acceptUrl("https://www.youtube.com/v/IOS2fqxwYbA"));
+        assertTrue(linkHandler.acceptUrl("https://www.youtube.com/watch/IOS2fqxwYbA"));
     }
 
     @Test
@@ -138,22 +142,26 @@ public class YoutubeStreamLinkHandlerFactoryTest {
     }
 
     @Test
-    public void testAcceptInvidioUrl() throws ParsingException {
+    public void testAcceptInvidiousUrl() throws ParsingException {
         assertTrue(linkHandler.acceptUrl("https://invidio.us/watch?v=TglNG-yjabU"));
         assertTrue(linkHandler.acceptUrl("http://www.invidio.us/watch?v=TglNG-yjabU"));
         assertTrue(linkHandler.acceptUrl("http://invidio.us/watch?v=TglNG-yjabU"));
         assertTrue(linkHandler.acceptUrl("invidio.us/watch?v=3msbfr6pBNE"));
         assertTrue(linkHandler.acceptUrl("https://invidio.us/watch?v=ocH3oSnZG3c&test=PLS2VU1j4vzuZwooPjV26XM9UEBY2CPNn2"));
         assertTrue(linkHandler.acceptUrl("invidio.us/embed/3msbfr6pBNE"));
+        assertTrue(linkHandler.acceptUrl("invidio.us/watch/3msbfr6pBNE"));
+        assertTrue(linkHandler.acceptUrl("invidio.us/v/3msbfr6pBNE"));
     }
 
     @Test
-    public void testGetInvidioIdfromUrl() throws ParsingException {
+    public void testGetInvidiousIdfromUrl() throws ParsingException {
         assertEquals("TglNG-yjabU", linkHandler.fromUrl("https://invidio.us/watch?v=TglNG-yjabU").getId());
         assertEquals("TglNG-yjabU", linkHandler.fromUrl("http://www.invidio.us/watch?v=TglNG-yjabU").getId());
         assertEquals("TglNG-yjabU", linkHandler.fromUrl("http://invidio.us/watch?v=TglNG-yjabU").getId());
         assertEquals("3msbfr6pBNE", linkHandler.fromUrl("invidio.us/watch?v=3msbfr6pBNE").getId());
         assertEquals("ocH3oSnZG3c", linkHandler.fromUrl("https://invidio.us/watch?v=ocH3oSnZG3c&test=PLS2VU1j4vzuZwooPjV26XM9UEBY2CPNn2").getId());
         assertEquals("3msbfr6pBNE", linkHandler.fromUrl("invidio.us/embed/3msbfr6pBNE").getId());
+        assertEquals("3msbfr6pBNE", linkHandler.fromUrl("invidio.us/v/3msbfr6pBNE").getId());
+        assertEquals("3msbfr6pBNE", linkHandler.fromUrl("invidio.us/watch/3msbfr6pBNE").getId());
     }
 }
