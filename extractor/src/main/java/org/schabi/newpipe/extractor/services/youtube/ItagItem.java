@@ -163,7 +163,6 @@ public class ItagItem {
     public int initEnd;
     public int indexStart;
     public int indexEnd;
-    public int height;
     public String codec;
 
 }
