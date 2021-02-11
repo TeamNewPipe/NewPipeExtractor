@@ -52,12 +52,12 @@ public class AudioStream extends Stream {
      */
     public AudioStream(String url, ItagItem itag) {
         this(url, itag.getMediaFormat(), itag.avgBitrate);
-        this.bitrate = itag.bitrate;
-        this.initStart = itag.initStart;
-        this.initEnd = itag.initEnd;
-        this.indexStart = itag.indexStart;
-        this.indexEnd = itag.indexEnd;
-        this.codec = itag.codec;
+        this.bitrate = itag.getBitrate();
+        this.initStart = itag.getInitStart();
+        this.initEnd = itag.getInitEnd();
+        this.indexStart = itag.getIndexStart();
+        this.indexEnd = itag.getIndexEnd();
+        this.codec = itag.getCodec();
     }
 
     @Override

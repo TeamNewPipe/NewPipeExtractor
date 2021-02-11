@@ -42,21 +42,19 @@ public class VideoStream extends Stream {
     }
 
     public VideoStream(String url, MediaFormat format, String resolution, boolean isVideoOnly) {
-        super(url, format);
-        this.resolution = resolution;
-        this.isVideoOnly = isVideoOnly;
+        this(url, null, format, resolution, isVideoOnly);
     }
 
     public VideoStream(String url, boolean isVideoOnly, ItagItem itag) {
         this(url, itag.getMediaFormat(), itag.resolutionString, isVideoOnly);
-        this.bitrate = itag.bitrate;
-        this.initStart = itag.initStart;
-        this.initEnd = itag.initEnd;
-        this.indexStart = itag.indexStart;
-        this.indexEnd = itag.indexEnd;
-        this.codec = itag.codec;
-        this.height = itag.height;
-        this.width = itag.width;
+        this.bitrate = itag.getBitrate();
+        this.initStart = itag.getInitStart();
+        this.initEnd = itag.getInitEnd();
+        this.indexStart = itag.getIndexStart();
+        this.indexEnd = itag.getIndexEnd();
+        this.codec = itag.getCodec();
+        this.height = itag.getHeight();
+        this.width = itag.getWidth();
     }
 
     public VideoStream(String url, String torrentUrl, MediaFormat format, String resolution) {

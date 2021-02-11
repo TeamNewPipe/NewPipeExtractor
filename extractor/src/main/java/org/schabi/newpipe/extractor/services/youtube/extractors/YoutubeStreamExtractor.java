@@ -954,15 +954,15 @@ public class YoutubeStreamExtractor extends StreamExtractor {
                         String mimeType = formatData.getString("mimeType", EMPTY_STRING);
                         String codec = mimeType.contains("codecs") ? mimeType.split("\"")[1] : EMPTY_STRING;
 
-                        itagItem.bitrate = formatData.getInt("bitrate");
-                        itagItem.width = formatData.getInt("width");
-                        itagItem.height = formatData.getInt("height");
-                        itagItem.initStart = Integer.parseInt(initRange.getString("start", "-1"));
-                        itagItem.initEnd = Integer.parseInt(initRange.getString("end", "-1"));
-                        itagItem.indexStart = Integer.parseInt(indexRange.getString("start", "-1"));
-                        itagItem.indexEnd = Integer.parseInt(indexRange.getString("end", "-1"));
+                        itagItem.setBitrate(formatData.getInt("bitrate"));
+                        itagItem.setWidth(formatData.getInt("width"));
+                        itagItem.setHeight(formatData.getInt("height"));
+                        itagItem.setInitStart(Integer.parseInt(initRange.getString("start", "-1")));
+                        itagItem.setInitEnd(Integer.parseInt(initRange.getString("end", "-1")));
+                        itagItem.setIndexStart(Integer.parseInt(indexRange.getString("start", "-1")));
+                        itagItem.setIndexEnd(Integer.parseInt(indexRange.getString("end", "-1")));
                         itagItem.fps = formatData.getInt("fps");
-                        itagItem.codec = codec;
+                        itagItem.setCodec(codec);
 
                         urlAndItags.put(streamUrl, itagItem);
                     }
