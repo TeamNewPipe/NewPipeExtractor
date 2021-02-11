@@ -25,6 +25,14 @@ import org.schabi.newpipe.extractor.MediaFormat;
 public class AudioStream extends Stream {
     public int average_bitrate = -1;
 
+    // Fields for Dash
+    public int bitrate;
+    public int initStart;
+    public int initEnd;
+    public int indexStart;
+    public int indexEnd;
+    public String codec;
+
     /**
      * Create a new audio stream
      * @param url the url
@@ -34,6 +42,23 @@ public class AudioStream extends Stream {
     public AudioStream(String url, MediaFormat format, int averageBitrate) {
         super(url, format);
         this.average_bitrate = averageBitrate;
+    }
+
+    /**
+     * Create a new audio stream
+     * @param url the url
+     * @param format the format
+     * @param averageBitrate the average bitrate
+     */
+    public AudioStream(String url, MediaFormat format, int averageBitrate, int bitrate, int initStart, int initEnd, int indexStart, int indexEnd, String codec) {
+        super(url, format);
+        this.average_bitrate = averageBitrate;
+        this.bitrate = bitrate;
+        this.initStart = initStart;
+        this.initEnd = initEnd;
+        this.indexStart = indexStart;
+        this.indexEnd = indexEnd;
+        this.codec = codec;
     }
 
     @Override
@@ -48,5 +73,29 @@ public class AudioStream extends Stream {
      */
     public int getAverageBitrate() {
         return average_bitrate;
+    }
+
+    public int getBitrate() {
+        return bitrate;
+    }
+
+    public int getInitStart() {
+        return initStart;
+    }
+
+    public int getInitEnd() {
+        return initEnd;
+    }
+
+    public int getIndexStart() {
+        return indexStart;
+    }
+
+    public int getIndexEnd() {
+        return indexEnd;
+    }
+
+    public String getCodec() {
+        return codec;
     }
 }

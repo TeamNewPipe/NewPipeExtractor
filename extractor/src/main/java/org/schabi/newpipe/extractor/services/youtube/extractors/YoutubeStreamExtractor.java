@@ -502,7 +502,7 @@ public class YoutubeStreamExtractor extends StreamExtractor {
             for (Map.Entry<String, ItagItem> entry : getItags(ADAPTIVE_FORMATS, ItagItem.ItagType.AUDIO).entrySet()) {
                 ItagItem itag = entry.getValue();
 
-                AudioStream audioStream = new AudioStream(entry.getKey(), itag.getMediaFormat(), itag.avgBitrate);
+                AudioStream audioStream = new AudioStream(entry.getKey(), itag.getMediaFormat(), itag.avgBitrate, itag.bitrate, itag.initStart, itag.initEnd, itag.indexStart, itag.indexEnd, itag.codec);
                 if (!Stream.containSimilarStream(audioStream, audioStreams)) {
                     audioStreams.add(audioStream);
                 }
@@ -542,7 +542,7 @@ public class YoutubeStreamExtractor extends StreamExtractor {
             for (Map.Entry<String, ItagItem> entry : getItags(ADAPTIVE_FORMATS, ItagItem.ItagType.VIDEO_ONLY).entrySet()) {
                 ItagItem itag = entry.getValue();
 
-                VideoStream videoStream = new VideoStream(entry.getKey(), itag.getMediaFormat(), itag.resolutionString, true);
+                VideoStream videoStream = new VideoStream(entry.getKey(), itag.getMediaFormat(), itag.resolutionString, true, itag.bitrate, itag.initStart, itag.initEnd, itag.indexStart, itag.indexEnd, itag.codec, itag.width, itag.height);
                 if (!Stream.containSimilarStream(videoStream, videoOnlyStreams)) {
                     videoOnlyStreams.add(videoStream);
                 }
@@ -950,19 +950,19 @@ public class YoutubeStreamExtractor extends StreamExtractor {
                         }
 
                         int bitrate = formatData.getInt("bitrate");
-                        int averageBitrate = formatData.getInt("averageBitrate");
                         int width = formatData.getInt("width");
                         int height = formatData.getInt("height");
-                        int initStart = formatData.getInt("initRange.start");
-                        int initEnd = formatData.getInt("initRange.end");
-                        int indexStart = formatData.getInt("indexRange.start");
-                        int indexEnd = formatData.getInt("indexRange.end");
+                        JsonObject initRange = formatData.getObject("initRange");
+                        JsonObject indexRange = formatData.getObject("indexRange");
+                        int initStart = Integer.parseInt(initRange.getString("start"));
+                        int initEnd = Integer.parseInt(initRange.getString("end"));
+                        int indexStart = Integer.parseInt(indexRange.getString("start"));
+                        int indexEnd = Integer.parseInt(indexRange.getString("end"));
                         int fps = formatData.getInt("fps");
                         String mimeType = formatData.getString("mimeType", EMPTY_STRING);
                         String codec = mimeType.contains("codecs") ? mimeType.split("\"")[1] : EMPTY_STRING;
 
                         itagItem.bitrate = bitrate;
-                        itagItem.avgBitrate =averageBitrate;
                         itagItem.width = width;
                         itagItem.height = height;
                         itagItem.initStart = initStart;
