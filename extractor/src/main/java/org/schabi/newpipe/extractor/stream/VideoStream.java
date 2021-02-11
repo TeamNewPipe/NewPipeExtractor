@@ -21,20 +21,21 @@ package org.schabi.newpipe.extractor.stream;
  */
 
 import org.schabi.newpipe.extractor.MediaFormat;
+import org.schabi.newpipe.extractor.services.youtube.ItagItem;
 
 public class VideoStream extends Stream {
     public final String resolution;
     public final boolean isVideoOnly;
 
     // Fields for Dash
-    public int bitrate;
-    public int initStart;
-    public int initEnd;
-    public int indexStart;
-    public int indexEnd;
-    public int width;
-    public int height;
-    public String codec;
+    private int bitrate;
+    private int initStart;
+    private int initEnd;
+    private int indexStart;
+    private int indexEnd;
+    private int width;
+    private int height;
+    private String codec;
 
     public VideoStream(String url, MediaFormat format, String resolution) {
         this(url, format, resolution, false);
@@ -46,18 +47,18 @@ public class VideoStream extends Stream {
         this.isVideoOnly = isVideoOnly;
     }
 
-    public VideoStream(String url, MediaFormat format, String resolution, boolean isVideoOnly, int bitrate, int initStart, int initEnd, int indexStart, int indexEnd, String codec, int width, int height) {
-        super(url, format);
-        this.resolution = resolution;
+    public VideoStream(String url, boolean isVideoOnly, ItagItem itag) {
+        super(url, itag.getMediaFormat());
+        this.resolution = itag.resolutionString;
         this.isVideoOnly = isVideoOnly;
-        this.bitrate = bitrate;
-        this.initStart = initStart;
-        this.initEnd = initEnd;
-        this.indexStart = indexStart;
-        this.indexEnd = indexEnd;
-        this.codec = codec;
-        this.height = height;
-        this.width = width;
+        this.bitrate = itag.bitrate;
+        this.initStart = itag.initStart;
+        this.initEnd = itag.initEnd;
+        this.indexStart = itag.indexStart;
+        this.indexEnd = itag.indexEnd;
+        this.codec = itag.codec;
+        this.height = itag.height;
+        this.width = itag.width;
     }
 
     public VideoStream(String url, String torrentUrl, MediaFormat format, String resolution) {

@@ -21,6 +21,7 @@ package org.schabi.newpipe.extractor.stream;
  */
 
 import org.schabi.newpipe.extractor.MediaFormat;
+import org.schabi.newpipe.extractor.services.youtube.ItagItem;
 
 public class AudioStream extends Stream {
     public int average_bitrate = -1;
@@ -50,15 +51,15 @@ public class AudioStream extends Stream {
      * @param format the format
      * @param averageBitrate the average bitrate
      */
-    public AudioStream(String url, MediaFormat format, int averageBitrate, int bitrate, int initStart, int initEnd, int indexStart, int indexEnd, String codec) {
-        super(url, format);
-        this.average_bitrate = averageBitrate;
-        this.bitrate = bitrate;
-        this.initStart = initStart;
-        this.initEnd = initEnd;
-        this.indexStart = indexStart;
-        this.indexEnd = indexEnd;
-        this.codec = codec;
+    public AudioStream(String url, ItagItem itag) {
+        super(url, itag.getMediaFormat());
+        this.average_bitrate = itag.avgBitrate;
+        this.bitrate = itag.bitrate;
+        this.initStart = itag.initStart;
+        this.initEnd = itag.initEnd;
+        this.indexStart = itag.indexStart;
+        this.indexEnd = itag.indexEnd;
+        this.codec = itag.codec;
     }
 
     @Override
