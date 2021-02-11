@@ -148,12 +148,12 @@ public class SoundcloudParsingHelper {
      */
     public static String resolveIdWithEmbedPlayer(String urlString) throws IOException, ReCaptchaException, ParsingException {
         // Remove the tailing slash from URLs due to issues with the SoundCloud API
-        if (urlString.charAt(urlString.length() -1) == '/') urlString = urlString.substring(0, urlString.length()-1);
+        if (urlString.charAt(urlString.length() - 1) == '/') urlString = urlString.substring(0, urlString.length() - 1);
 
         URL url;
         try {
             url = Utils.stringToURL(urlString);
-        } catch (MalformedURLException e){
+        } catch (MalformedURLException e) {
             throw new IllegalArgumentException("The given URL is not valid");
         }
 
@@ -240,10 +240,14 @@ public class SoundcloudParsingHelper {
      * @return the next streams url, empty if don't have
      */
     public static String getStreamsFromApi(StreamInfoItemsCollector collector, String apiUrl, boolean charts) throws IOException, ReCaptchaException, ParsingException {
-        String response = NewPipe.getDownloader().get(apiUrl, SoundCloud.getLocalization()).responseBody();
+        final Response response = NewPipe.getDownloader().get(apiUrl, SoundCloud.getLocalization());
+        if (response.responseCode() >= 400) {
+            throw new IOException("Could not get streams from API, HTTP " + response.responseCode());
+        }
+
         JsonObject responseObject;
         try {
-            responseObject = JsonParser.object().from(response);
+            responseObject = JsonParser.object().from(response.responseBody());
         } catch (JsonParserException e) {
             throw new ParsingException("Could not parse json response", e);
         }
