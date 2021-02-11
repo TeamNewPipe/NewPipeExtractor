@@ -954,10 +954,10 @@ public class YoutubeStreamExtractor extends StreamExtractor {
                         int height = formatData.getInt("height");
                         JsonObject initRange = formatData.getObject("initRange");
                         JsonObject indexRange = formatData.getObject("indexRange");
-                        int initStart = Integer.parseInt(initRange.getString("start"));
-                        int initEnd = Integer.parseInt(initRange.getString("end"));
-                        int indexStart = Integer.parseInt(indexRange.getString("start"));
-                        int indexEnd = Integer.parseInt(indexRange.getString("end"));
+                        int initStart = Integer.parseInt(initRange.getString("start", "-1"));
+                        int initEnd = Integer.parseInt(initRange.getString("end", "-1"));
+                        int indexStart = Integer.parseInt(indexRange.getString("start", "-1"));
+                        int indexEnd = Integer.parseInt(indexRange.getString("end", "-1"));
                         int fps = formatData.getInt("fps");
                         String mimeType = formatData.getString("mimeType", EMPTY_STRING);
                         String codec = mimeType.contains("codecs") ? mimeType.split("\"")[1] : EMPTY_STRING;
