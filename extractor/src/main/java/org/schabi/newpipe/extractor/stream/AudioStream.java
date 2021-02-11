@@ -51,8 +51,7 @@ public class AudioStream extends Stream {
      * @param itag the ItagItem to use
      */
     public AudioStream(String url, ItagItem itag) {
-        super(url, itag.getMediaFormat());
-        this.average_bitrate = itag.avgBitrate;
+        this(url, itag.getMediaFormat(), itag.avgBitrate);
         this.bitrate = itag.bitrate;
         this.initStart = itag.initStart;
         this.initEnd = itag.initEnd;

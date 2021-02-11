@@ -48,9 +48,7 @@ public class VideoStream extends Stream {
     }
 
     public VideoStream(String url, boolean isVideoOnly, ItagItem itag) {
-        super(url, itag.getMediaFormat());
-        this.resolution = itag.resolutionString;
-        this.isVideoOnly = isVideoOnly;
+        this(url, itag.getMediaFormat(), itag.resolutionString, isVideoOnly);
         this.bitrate = itag.bitrate;
         this.initStart = itag.initStart;
         this.initEnd = itag.initEnd;
