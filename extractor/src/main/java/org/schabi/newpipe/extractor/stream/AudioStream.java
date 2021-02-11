@@ -48,8 +48,7 @@ public class AudioStream extends Stream {
     /**
      * Create a new audio stream
      * @param url the url
-     * @param format the format
-     * @param averageBitrate the average bitrate
+     * @param itag the ItagItem to use
      */
     public AudioStream(String url, ItagItem itag) {
         super(url, itag.getMediaFormat());
