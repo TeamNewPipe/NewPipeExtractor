@@ -26,12 +26,12 @@ public class AudioStream extends Stream {
     public int average_bitrate = -1;
 
     // Fields for Dash
-    public int bitrate;
-    public int initStart;
-    public int initEnd;
-    public int indexStart;
-    public int indexEnd;
-    public String codec;
+    private int bitrate;
+    private int initStart;
+    private int initEnd;
+    private int indexStart;
+    private int indexEnd;
+    private String codec;
 
     /**
      * Create a new audio stream
