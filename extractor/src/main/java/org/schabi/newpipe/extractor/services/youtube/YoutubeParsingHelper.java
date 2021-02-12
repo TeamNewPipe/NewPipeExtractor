@@ -429,10 +429,16 @@ public class YoutubeParsingHelper {
         return youtubeMusicKeys = new String[]{key, clientName, clientVersion};
     }
 
+
+
     @Nullable
     public static String getUrlFromNavigationEndpoint(JsonObject navigationEndpoint) throws ParsingException {
         if (navigationEndpoint.has("urlEndpoint")) {
             String internUrl = navigationEndpoint.getObject("urlEndpoint").getString("url");
+            if (internUrl.startsWith("https://www.youtube.com/redirect?")) {
+                internUrl = internUrl.substring(23);
+            }
+
             if (internUrl.startsWith("/redirect?")) {
                 // q parameter can be the first parameter
                 internUrl = internUrl.substring(10);
@@ -450,6 +456,8 @@ public class YoutubeParsingHelper {
                 }
             } else if (internUrl.startsWith("http")) {
                 return internUrl;
+            } else if (internUrl.startsWith("/channel") || internUrl.startsWith("/user") || internUrl.startsWith("/watch")) {
+                return "https://www.youtube.com" + internUrl;
             }
         } else if (navigationEndpoint.has("browseEndpoint")) {
             final JsonObject browseEndpoint = navigationEndpoint.getObject("browseEndpoint");
