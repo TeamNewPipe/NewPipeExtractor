@@ -35,6 +35,7 @@ public class VideoStream extends Stream {
     private int indexEnd;
     private int width;
     private int height;
+    private int fps;
     private String codec;
 
     public VideoStream(String url, MediaFormat format, String resolution) {
@@ -55,6 +56,7 @@ public class VideoStream extends Stream {
         this.codec = itag.getCodec();
         this.height = itag.getHeight();
         this.width = itag.getWidth();
+        this.fps = itag.fps;
     }
 
     public VideoStream(String url, String torrentUrl, MediaFormat format, String resolution) {
@@ -120,6 +122,10 @@ public class VideoStream extends Stream {
 
     public int getHeight() {
         return height;
+    }
+
+    public int getFps() {
+        return fps;
     }
 
     public String getCodec() {
