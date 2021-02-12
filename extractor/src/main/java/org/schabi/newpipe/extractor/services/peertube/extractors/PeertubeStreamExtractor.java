@@ -435,7 +435,7 @@ public class PeertubeStreamExtractor extends StreamExtractor {
             case 4:
                 return Privacy.INTERNAL;
             default:
-                return null;
+                return Privacy.OTHER;
         }
     }
 

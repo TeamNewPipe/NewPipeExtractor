@@ -513,6 +513,7 @@ public abstract class StreamExtractor extends Extractor {
         PUBLIC,
         UNLISTED,
         PRIVATE,
-        INTERNAL
+        INTERNAL,
+        OTHER
     }
 }

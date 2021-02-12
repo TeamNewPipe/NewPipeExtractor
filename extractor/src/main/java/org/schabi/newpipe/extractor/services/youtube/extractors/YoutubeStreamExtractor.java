@@ -1109,7 +1109,7 @@ public class YoutubeStreamExtractor extends StreamExtractor {
     @Nonnull
     @Override
     public Privacy getPrivacy() {
-        boolean isUnlisted = playerResponse
+        final boolean isUnlisted = playerResponse
                 .getObject("microformat")
                 .getObject("playerMicroformatRenderer")
                 .getBoolean("isUnlisted");

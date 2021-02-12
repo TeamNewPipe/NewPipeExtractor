@@ -432,7 +432,6 @@ public class YoutubeStreamExtractorDefaultTest {
     }
 
     public static class CCLicensed {
-        // StreamSegment example with macro-makers panel and transcription panel
         private static final String ID = "M4gD1WSo5mA";
         private static final String URL = BASE_URL + ID;
         private static StreamExtractor extractor;

@@ -103,14 +103,14 @@ public class Localization implements Serializable {
 
     /**
      * Converts a three letter language code (ISO 639-2/T) to a Locale
-     * in the limit of Java Locale class.
+     * because limits of Java Locale class.
      *
      * @param code a three letter language code
      * @return the Locale corresponding
      */
     public static Locale getLocaleFromThreeLetterCode(@Nonnull String code) throws ParsingException {
-        String[] languages = Locale.getISOLanguages();
-        Map<String, Locale> localeMap = new HashMap<>(languages.length);
+        final String[] languages = Locale.getISOLanguages();
+        final Map<String, Locale> localeMap = new HashMap<>(languages.length);
         for (String language : languages) {
             final Locale locale = new Locale(language);
             localeMap.put(locale.getISO3Language(), locale);
