@@ -24,7 +24,6 @@ public class SoundcloudSearchQHTest {
     }
 
     @Test
-    @Ignore("TODO fix")
     public void testRegularValues() throws Exception {
         assertEquals("https://api-v2.soundcloud.com/search?q=asdf&limit=10&offset=0",
                 removeClientId(SoundCloud.getSearchQHFactory().fromQuery("asdf").getUrl()));

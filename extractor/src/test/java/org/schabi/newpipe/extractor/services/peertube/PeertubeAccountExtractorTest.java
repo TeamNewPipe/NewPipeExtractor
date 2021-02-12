@@ -101,7 +101,6 @@ public class PeertubeAccountExtractorTest {
         }
 
         @Test
-        @Ignore("TODO fix")
         public void testSubscriberCount() throws ParsingException {
             assertTrue("Wrong subscriber count", extractor.getSubscriberCount() >= 500);
         }

@@ -42,7 +42,6 @@ public class SoundcloudPlaylistExtractorTest {
         }
 
         @Test
-        @Ignore("TODO fix")
         public void testName() {
             assertEquals("THE PERFECT LUV TAPE®️", extractor.getName());
         }

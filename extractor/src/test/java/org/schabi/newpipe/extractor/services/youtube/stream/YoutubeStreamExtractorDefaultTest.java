@@ -268,7 +268,6 @@ public class YoutubeStreamExtractorDefaultTest {
         }
     }
 
-    @Ignore("TODO fix")
     public static class PublicBroadcasterTest extends DefaultStreamExtractorTest {
         private static final String ID = "q6fgbYWsMgw";
         private static final int TIMESTAMP = 0;
