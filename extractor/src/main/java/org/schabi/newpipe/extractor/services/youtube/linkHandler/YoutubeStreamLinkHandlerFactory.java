@@ -40,7 +40,7 @@ public class YoutubeStreamLinkHandlerFactory extends LinkHandlerFactory {
 
     private static final Pattern YOUTUBE_VIDEO_ID_REGEX_PATTERN = Pattern.compile("^([a-zA-Z0-9_-]{11})");
     private static final YoutubeStreamLinkHandlerFactory instance = new YoutubeStreamLinkHandlerFactory();
-    private static final List<String> folders = Arrays.asList("embed/", "shorts/", "watch/", "v/", "w/");
+    private static final List<String> subpaths = Arrays.asList("embed/", "shorts/", "watch/", "v/", "w/");
 
     private YoutubeStreamLinkHandlerFactory() {
     }
@@ -153,7 +153,7 @@ public class YoutubeStreamLinkHandlerFactory extends LinkHandlerFactory {
                     return assertIsId(viewQueryValue);
                 }
 
-                String maybeId = getIdFromFoldersInPath(path);
+                String maybeId = getIdFromSubpathsInPath(path);
                 if (maybeId != null) return maybeId;
 
                 String viewQueryValue = Utils.getQueryValue(url, "v");
@@ -195,7 +195,7 @@ public class YoutubeStreamLinkHandlerFactory extends LinkHandlerFactory {
                         return assertIsId(viewQueryValue);
                     }
                 }
-                String maybeId = getIdFromFoldersInPath(path);
+                String maybeId = getIdFromSubpathsInPath(path);
                 if (maybeId != null) return maybeId;
 
                 String viewQueryValue = Utils.getQueryValue(url, "v");
@@ -222,10 +222,10 @@ public class YoutubeStreamLinkHandlerFactory extends LinkHandlerFactory {
         }
     }
 
-    private String getIdFromFoldersInPath(String path) throws ParsingException {
-        for (final String folder : folders) {
-            if (path.startsWith(folder)) {
-                String id = path.substring(folder.length());
+    private String getIdFromSubpathsInPath(String path) throws ParsingException {
+        for (final String subpath : subpaths) {
+            if (path.startsWith(subpath)) {
+                String id = path.substring(subpath.length());
                 return assertIsId(id);
             }
         }
