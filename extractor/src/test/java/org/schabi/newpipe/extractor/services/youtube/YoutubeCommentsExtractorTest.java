@@ -206,7 +206,8 @@ public class YoutubeCommentsExtractorTest {
 
         @BeforeClass
         public static void setUp() throws Exception {
-            NewPipe.init(DownloaderTestImpl.getInstance());
+            YoutubeParsingHelper.resetClientVersionAndKey();
+            NewPipe.init(new DownloaderFactory().getDownloader(RESOURCE_PATH + "pinned"));
             extractor = (YoutubeCommentsExtractor) YouTube
                     .getCommentsExtractor(url);
             extractor.fetchPage();
