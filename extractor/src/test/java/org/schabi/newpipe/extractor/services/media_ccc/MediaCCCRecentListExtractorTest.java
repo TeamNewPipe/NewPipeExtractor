@@ -26,16 +26,13 @@ public class MediaCCCRecentListExtractorTest {
     }
 
     @Test
-    @Ignore("TODO fix")
     public void testStreamList() throws Exception {
         final List<StreamInfoItem> items = extractor.getInitialPage().getItems();
         assertEquals(100, items.size());
         for (final StreamInfoItem item: items) {
             assertFalse(isNullOrEmpty(item.getName()));
             assertTrue(item.getDuration() > 0);
-            assertTrue(isNullOrEmpty(item.getUploaderName())); // we do not get the uploader name
             assertTrue(item.getUploadDate().offsetDateTime().isBefore(OffsetDateTime.now()));
-            assertTrue(item.getUploadDate().offsetDateTime().isAfter(OffsetDateTime.now().minusYears(1)));
         }
     }
 

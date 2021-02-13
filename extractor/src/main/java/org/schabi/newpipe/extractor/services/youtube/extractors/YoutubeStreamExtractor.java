@@ -224,7 +224,7 @@ public class YoutubeStreamExtractor extends StreamExtractor {
 
     @Nonnull
     @Override
-    public Description getDescription() {
+    public Description getDescription() throws ParsingException {
         assertPageFetched();
         // description with more info on links
         try {
@@ -234,8 +234,15 @@ public class YoutubeStreamExtractor extends StreamExtractor {
             // age-restricted videos cause a ParsingException here
         }
 
+        String description = playerResponse.getObject("videoDetails").getString("shortDescription");
+        if (description == null) {
+            final JsonObject descriptionObject = playerResponse.getObject("microformat")
+                    .getObject("playerMicroformatRenderer").getObject("description");
+            description = getTextFromObject(descriptionObject);
+        }
+
         // raw non-html description
-        return new Description(playerResponse.getObject("videoDetails").getString("shortDescription"), Description.PLAIN_TEXT);
+        return new Description(description, Description.PLAIN_TEXT);
     }
 
     @Override

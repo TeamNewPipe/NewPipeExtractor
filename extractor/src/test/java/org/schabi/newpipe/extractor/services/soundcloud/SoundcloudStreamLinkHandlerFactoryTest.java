@@ -26,7 +26,6 @@ public class SoundcloudStreamLinkHandlerFactoryTest {
     }
 
     @Test(expected = IllegalArgumentException.class)
-    @Ignore("TODO fix")
     public void getIdWithNullAsUrl() throws ParsingException {
         linkHandler.fromUrl(null).getId();
     }

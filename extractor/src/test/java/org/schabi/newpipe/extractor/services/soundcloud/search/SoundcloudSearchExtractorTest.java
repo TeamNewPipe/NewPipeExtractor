@@ -114,7 +114,6 @@ public class SoundcloudSearchExtractorTest {
 
     public static class PagingTest {
         @Test
-        @Ignore("TODO fix")
         public void duplicatedItemsCheck() throws Exception {
             NewPipe.init(DownloaderTestImpl.getInstance());
             final SearchExtractor extractor = SoundCloud.getSearchExtractor("cirque du soleil", singletonList(TRACKS), "");

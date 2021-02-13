@@ -53,11 +53,4 @@ public class YoutubeStreamExtractorControversialTest extends DefaultStreamExtrac
     @Nullable @Override public String expectedTextualUploadDate() { return "2010-09-09"; }
     @Override public long expectedLikeCountAtLeast() { return 13300; }
     @Override public long expectedDislikeCountAtLeast() { return 2600; }
-
-    @Override
-    @Test
-    @Ignore("TODO fix")
-    public void testErrorMessage() throws Exception {
-        super.testErrorMessage();
-    }
 }
