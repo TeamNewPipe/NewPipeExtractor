@@ -436,6 +436,7 @@ public class YoutubeParsingHelper {
         if (navigationEndpoint.has("urlEndpoint")) {
             String internUrl = navigationEndpoint.getObject("urlEndpoint").getString("url");
             if (internUrl.startsWith("https://www.youtube.com/redirect?")) {
+                // remove https://www.youtube.com part to fall in the next if block
                 internUrl = internUrl.substring(23);
             }
 
