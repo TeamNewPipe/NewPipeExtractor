@@ -127,7 +127,7 @@ public class YoutubeStreamLinkHandlerFactory extends LinkHandlerFactory {
         switch (host.toUpperCase()) {
             case "WWW.YOUTUBE-NOCOOKIE.COM": {
                 if (path.startsWith("embed/")) {
-                    String id = path.split("/")[1];
+                    String id = path.substring(6); // embed/
 
                     return assertIsId(id);
                 }
@@ -225,7 +225,7 @@ public class YoutubeStreamLinkHandlerFactory extends LinkHandlerFactory {
     private String getIdFromFoldersInPath(String path) throws ParsingException {
         for (final String folder : folders) {
             if (path.startsWith(folder)) {
-                String id = path.split("/")[1];
+                String id = path.substring(folder.length());
                 return assertIsId(id);
             }
         }
