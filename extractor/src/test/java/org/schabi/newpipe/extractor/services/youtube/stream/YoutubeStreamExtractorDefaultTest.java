@@ -251,6 +251,7 @@ public class YoutubeStreamExtractorDefaultTest {
             extractor.fetchPage();
         }
 
+        // @formatter:off
         @Override public StreamExtractor extractor() { return extractor; }
         @Override public StreamingService expectedService() { return YouTube; }
         @Override public String expectedName() { return "Vitamin D wissenschaftlich gepr\u00fcft"; }
@@ -261,51 +262,16 @@ public class YoutubeStreamExtractorDefaultTest {
         @Override public StreamType expectedStreamType() { return StreamType.VIDEO_STREAM; }
         @Override public String expectedUploaderName() { return "maiLab"; }
         @Override public String expectedUploaderUrl() { return "https://www.youtube.com/channel/UCyHDQ5C6z1NDmJ4g6SerW8g"; }
-        @Override public List<String> expectedDescriptionContains() {
-            return Arrays.asList("Vitamin", "2:44", "Was ist Vitamin D?");
-        }
-
-        @Override
-        public long expectedLength() {
-            return 1010;
-        }
-
-        @Override
-        public long expectedViewCountAtLeast() {
-            return 815500;
-        }
-
-        @Nullable
-        @Override
-        public String expectedUploadDate() {
-            return "2020-11-18 00:00:00.000";
-        }
-
-        @Nullable
-        @Override
-        public String expectedTextualUploadDate() {
-            return "2020-11-18";
-        }
-
-        @Override
-        public long expectedLikeCountAtLeast() {
-            return 48500;
-        }
-
-        @Override
-        public long expectedDislikeCountAtLeast() {
-            return 20000;
-        }
-
-        @Override
-        public boolean expectedHasSubtitles() {
-            return true;
-        }
-
-        @Override
-        public int expectedStreamSegmentsCount() {
-            return 7;
-        }
+        @Override public List<String> expectedDescriptionContains()  {return Arrays.asList("Vitamin", "2:44", "Was ist Vitamin D?");}
+        @Override public long expectedLength() { return 1010; }
+        @Override public long expectedViewCountAtLeast() { return 815500; }
+        @Nullable @Override public String expectedUploadDate() { return "2020-11-18 00:00:00.000"; }
+        @Nullable @Override public String expectedTextualUploadDate() { return "2020-11-18"; }
+        @Override public long expectedLikeCountAtLeast() { return 48500; }
+        @Override public long expectedDislikeCountAtLeast() { return 20000; }
+        @Override public boolean expectedHasSubtitles() { return true; }
+        @Override public int expectedStreamSegmentsCount() { return 7; }
+        // @formatter:on
 
         @Test
         public void testStreamSegment() throws Exception {
