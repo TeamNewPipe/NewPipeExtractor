@@ -18,8 +18,12 @@ import org.schabi.newpipe.extractor.StreamingService;
 import org.schabi.newpipe.extractor.downloader.Downloader;
 import org.schabi.newpipe.extractor.exceptions.ContentNotAvailableException;
 import org.schabi.newpipe.extractor.exceptions.ExtractionException;
+import org.schabi.newpipe.extractor.exceptions.GeographicRestrictionException;
+import org.schabi.newpipe.extractor.exceptions.PaidContentException;
 import org.schabi.newpipe.extractor.exceptions.ParsingException;
+import org.schabi.newpipe.extractor.exceptions.PrivateContentException;
 import org.schabi.newpipe.extractor.exceptions.ReCaptchaException;
+import org.schabi.newpipe.extractor.exceptions.YoutubeMusicPremiumContentException;
 import org.schabi.newpipe.extractor.linkhandler.LinkHandler;
 import org.schabi.newpipe.extractor.localization.DateWrapper;
 import org.schabi.newpipe.extractor.localization.Localization;
@@ -720,10 +724,46 @@ public class YoutubeStreamExtractor extends StreamExtractor {
 
         final JsonObject playabilityStatus = playerResponse.getObject("playabilityStatus");
         final String status = playabilityStatus.getString("status");
-        // If status exist, and is not "OK", throw a ContentNotAvailableException with the reason.
+        // If status exist, and is not "OK", throw the specific exception based on error message
+        // or a ContentNotAvailableException with the reason text if it's an unknown reason.
         if (status != null && !status.toLowerCase().equals("ok")) {
             final String reason = playabilityStatus.getString("reason");
-            throw new ContentNotAvailableException("Got error: \"" + reason + "\"");
+
+            if (status.toLowerCase().equals("login_required")) {
+                if (reason == null) {
+                    final String message = playabilityStatus.getArray("messages").getString(0);
+                    if (message != null && message.equals("This is a private video. Please sign in to verify that you may see it.")) {
+                        throw new PrivateContentException("This video is private.");
+                    }
+                }
+            }
+            if (status.toLowerCase().equals("unplayable")) {
+                if (reason != null) {
+                    if (reason.equals("This video is only available to Music Premium members")) {
+                        throw new YoutubeMusicPremiumContentException();
+                    }
+                    if (reason.equals("This video requires payment to watch.")) {
+                        throw new PaidContentException("This video is a paid video");
+                    }
+                    if (reason.equals("Join this channel to get access to members-only content like this video, and other exclusive perks.")) {
+                        throw new PaidContentException("This video is only available for members of the channel of this video");
+                    }
+                    if (reason.equals("Video unavailable")) {
+                        final String detailedErrorMessage = playabilityStatus.getObject("errorScreen")
+                                .getObject("playerErrorMessageRenderer")
+                                .getObject("subreason")
+                                .getArray("runs")
+                                .getObject(0)
+                                .getString("text");
+                        if (detailedErrorMessage != null) {
+                            if (detailedErrorMessage.equals("The uploader has not made this video available in your country.")) {
+                                throw new GeographicRestrictionException("This video is not available in user's country.");
+                            }
+                        }
+                    }
+                }
+                throw new ContentNotAvailableException("Got error: \"" + reason + "\"");
+            }
         }
     }
 
@@ -773,7 +813,6 @@ public class YoutubeStreamExtractor extends StreamExtractor {
             return "";
         }
     }
-
 
     private String getDeobfuscationFuncName(final String playerCode) throws DeobfuscateException {
         Parser.RegexException exception = null;
