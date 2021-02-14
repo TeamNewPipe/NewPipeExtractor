@@ -6,13 +6,13 @@ import org.schabi.newpipe.extractor.downloader.Downloader;
 import org.schabi.newpipe.extractor.exceptions.ExtractionException;
 import org.schabi.newpipe.extractor.kiosk.KioskExtractor;
 import org.schabi.newpipe.extractor.linkhandler.ListLinkHandler;
+import org.schabi.newpipe.extractor.localization.ContentCountry;
 import org.schabi.newpipe.extractor.services.soundcloud.SoundcloudParsingHelper;
 import org.schabi.newpipe.extractor.stream.StreamInfoItem;
 import org.schabi.newpipe.extractor.stream.StreamInfoItemsCollector;
 
-import java.io.IOException;
-
 import javax.annotation.Nonnull;
+import java.io.IOException;
 
 import static org.schabi.newpipe.extractor.ServiceList.SoundCloud;
 import static org.schabi.newpipe.extractor.utils.Utils.isNullOrEmpty;
@@ -61,10 +61,20 @@ public class SoundcloudChartsExtractor extends KioskExtractor<StreamInfoItem> {
             apiUrl += "&kind=trending";
         }
 
-        final String contentCountry = SoundCloud.getContentCountry().getCountryCode();
-        apiUrl += "&region=soundcloud:regions:" + contentCountry;
+        final ContentCountry contentCountry = SoundCloud.getContentCountry();
+        String apiUrlWithRegion = null;
+        if (getService().getSupportedCountries().contains(contentCountry)) {
+            apiUrlWithRegion = apiUrl + "&region=soundcloud:regions:" + contentCountry.getCountryCode();
+        }
 
-        final String nextPageUrl = SoundcloudParsingHelper.getStreamsFromApi(collector, apiUrl, true);
+        String nextPageUrl;
+        try {
+            nextPageUrl = SoundcloudParsingHelper.getStreamsFromApi(collector, apiUrlWithRegion == null ? apiUrl : apiUrlWithRegion, true);
+        } catch (IOException e) {
+            // Request to other region may be geo-restricted. See https://github.com/TeamNewPipe/NewPipeExtractor/issues/537
+            // we retry without the specified region.
+            nextPageUrl = SoundcloudParsingHelper.getStreamsFromApi(collector, apiUrl, true);
+        }
 
         return new InfoItemsPage<>(collector, new Page(nextPageUrl));
     }
