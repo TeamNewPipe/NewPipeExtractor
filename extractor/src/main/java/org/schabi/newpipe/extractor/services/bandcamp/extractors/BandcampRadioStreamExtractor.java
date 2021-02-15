@@ -27,11 +27,9 @@ import static org.schabi.newpipe.extractor.services.bandcamp.extractors.Bandcamp
 public class BandcampRadioStreamExtractor extends BandcampStreamExtractor {
 
     private JsonObject showInfo;
-    private LinkHandler linkHandler;
 
     public BandcampRadioStreamExtractor(final StreamingService service, final LinkHandler linkHandler) {
         super(service, linkHandler);
-        this.linkHandler = linkHandler;
     }
 
     static JsonObject query(final int id) throws ParsingException {
@@ -64,7 +62,7 @@ public class BandcampRadioStreamExtractor extends BandcampStreamExtractor {
     @Nonnull
     @Override
     public String getUrl() throws ParsingException {
-        return linkHandler.getUrl();
+        return getLinkHandler().getUrl();
     }
 
     @Nonnull
