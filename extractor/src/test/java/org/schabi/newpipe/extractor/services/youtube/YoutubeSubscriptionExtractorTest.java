@@ -26,11 +26,14 @@ import static org.schabi.newpipe.FileUtils.resolveTestResource;
  * Test for {@link YoutubeSubscriptionExtractor}
  */
 public class YoutubeSubscriptionExtractorTest {
+
+
     private static YoutubeSubscriptionExtractor subscriptionExtractor;
     private static LinkHandlerFactory urlHandler;
 
     @BeforeClass
     public static void setupClass() {
+        //Doesn't make network requests
         NewPipe.init(DownloaderTestImpl.getInstance());
         subscriptionExtractor = new YoutubeSubscriptionExtractor(ServiceList.YouTube);
         urlHandler = ServiceList.YouTube.getChannelLHFactory();
