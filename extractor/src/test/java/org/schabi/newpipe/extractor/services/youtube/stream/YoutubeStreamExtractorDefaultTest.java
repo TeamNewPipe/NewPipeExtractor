@@ -285,6 +285,7 @@ public class YoutubeStreamExtractorDefaultTest {
                     "motivational anime soundtracks", "shingeki no kyojin");
         }
         // @formatter:on
+
         @Test
         public void testStreamSegment() throws Exception {
             final StreamSegment segment = extractor.getStreamSegments().get(3);
@@ -354,9 +355,12 @@ public class YoutubeStreamExtractorDefaultTest {
         @Override
         @Test
         @Ignore("encoding problem")
-        public void testName() throws Exception {
-            super.testName();
-        }
+        public void testName() {}
+
+        @Override
+        @Test
+        @Ignore("encoding problem")
+        public void testTags() {}
     }
 
     public static class PublicBroadcasterTest extends DefaultStreamExtractorTest {
@@ -447,7 +451,5 @@ public class YoutubeStreamExtractorDefaultTest {
         public void testGetLicence() throws ParsingException {
             assertEquals("Creative Commons Attribution licence (reuse allowed)", extractor.getLicence());
         }
-
     }
-
 }
