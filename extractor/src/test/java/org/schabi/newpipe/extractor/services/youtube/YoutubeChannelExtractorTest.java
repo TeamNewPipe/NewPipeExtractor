@@ -1,7 +1,6 @@
 package org.schabi.newpipe.extractor.services.youtube;
 
 import org.junit.BeforeClass;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.schabi.newpipe.downloader.DownloaderFactory;
 import org.schabi.newpipe.downloader.DownloaderTestImpl;
@@ -15,6 +14,8 @@ import org.schabi.newpipe.extractor.services.youtube.extractors.YoutubeChannelEx
 
 import java.io.IOException;
 
+import static org.hamcrest.CoreMatchers.containsString;
+import static org.hamcrest.MatcherAssert.assertThat;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
@@ -127,10 +128,9 @@ public class YoutubeChannelExtractorTest {
          // ChannelExtractor
          //////////////////////////////////////////////////////////////////////////*/
 
-        @Ignore("TODO fix, character ü makes problems")
         @Test
         public void testDescription() throws Exception {
-            assertTrue(extractor.getDescription().contains("Zart im Schmelz und süffig im Abgang. Ungebremster Spieltrieb"));
+            assertThat(extractor.getDescription(), containsString("Ungebremster Spieltrieb seit 1896."));
         }
 
         @Test
