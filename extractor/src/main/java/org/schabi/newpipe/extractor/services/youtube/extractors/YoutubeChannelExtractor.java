@@ -20,10 +20,8 @@ import org.schabi.newpipe.extractor.utils.Utils;
 import javax.annotation.Nonnull;
 import java.io.IOException;
 
-import static org.schabi.newpipe.extractor.services.youtube.YoutubeParsingHelper.fixThumbnailUrl;
-import static org.schabi.newpipe.extractor.services.youtube.YoutubeParsingHelper.getJsonResponse;
-import static org.schabi.newpipe.extractor.services.youtube.YoutubeParsingHelper.getTextFromObject;
-import static org.schabi.newpipe.extractor.utils.JsonUtils.EMPTY_STRING;
+import static org.schabi.newpipe.extractor.services.youtube.YoutubeParsingHelper.*;
+import static org.schabi.newpipe.extractor.utils.Utils.EMPTY_STRING;
 import static org.schabi.newpipe.extractor.utils.Utils.isNullOrEmpty;
 
 /*
@@ -230,9 +228,9 @@ public class YoutubeChannelExtractor extends ChannelExtractor {
                     .getArray("contents").getObject(0).getObject("itemSectionRenderer")
                     .getArray("contents").getObject(0).getObject("gridRenderer");
 
-            collectStreamsFrom(collector, gridRenderer.getArray("items"));
+            final JsonObject continuation = collectStreamsFrom(collector, gridRenderer.getArray("items"));
 
-            nextPage = getNextPageFrom(gridRenderer.getArray("continuations"));
+            nextPage = getNextPageFrom(continuation);
         }
 
         return new InfoItemsPage<>(collector, nextPage);
@@ -252,36 +250,47 @@ public class YoutubeChannelExtractor extends ChannelExtractor {
         final JsonArray ajaxJson = getJsonResponse(page.getUrl(), getExtractorLocalization());
 
         JsonObject sectionListContinuation = ajaxJson.getObject(1).getObject("response")
-                .getObject("continuationContents").getObject("gridContinuation");
+                .getArray("onResponseReceivedActions").getObject(0).getObject("appendContinuationItemsAction");
 
-        collectStreamsFrom(collector, sectionListContinuation.getArray("items"));
+        final JsonObject continuation = collectStreamsFrom(collector, sectionListContinuation.getArray("continuationItems"));
 
-        return new InfoItemsPage<>(collector, getNextPageFrom(sectionListContinuation.getArray("continuations")));
+        return new InfoItemsPage<>(collector, getNextPageFrom(continuation));
     }
 
-    private Page getNextPageFrom(final JsonArray continuations) {
+    private Page getNextPageFrom(final JsonObject continuations) {
         if (isNullOrEmpty(continuations)) {
             return null;
         }
 
-        final JsonObject nextContinuationData = continuations.getObject(0).getObject("nextContinuationData");
-        final String continuation = nextContinuationData.getString("continuation");
-        final String clickTrackingParams = nextContinuationData.getString("clickTrackingParams");
+        final JsonObject continuationEndpoint = continuations.getObject("continuationEndpoint");
+        final String continuation = continuationEndpoint.getObject("continuationCommand").getString("token");
+        final String clickTrackingParams = continuationEndpoint.getString("clickTrackingParams");
         return new Page("https://www.youtube.com/browse_ajax?ctoken=" + continuation
                 + "&continuation=" + continuation + "&itct=" + clickTrackingParams);
     }
 
-    private void collectStreamsFrom(StreamInfoItemsCollector collector, JsonArray videos) throws ParsingException {
+    /**
+     * Collect streams from an array of items
+     *
+     * @param collector the collector where videos will be commited
+     * @param videos    the array to get videos from
+     * @return the continuation object
+     * @throws ParsingException if an error happened while extracting
+     */
+    private JsonObject collectStreamsFrom(StreamInfoItemsCollector collector, JsonArray videos) throws ParsingException {
         collector.reset();
 
         final String uploaderName = getName();
         final String uploaderUrl = getUrl();
         final TimeAgoParser timeAgoParser = getTimeAgoParser();
 
-        for (Object video : videos) {
-            if (((JsonObject) video).has("gridVideoRenderer")) {
+        JsonObject continuation = null;
+
+        for (Object object : videos) {
+            final JsonObject video = (JsonObject) object;
+            if (video.has("gridVideoRenderer")) {
                 collector.commit(new YoutubeStreamInfoItemExtractor(
-                        ((JsonObject) video).getObject("gridVideoRenderer"), timeAgoParser) {
+                        video.getObject("gridVideoRenderer"), timeAgoParser) {
                     @Override
                     public String getUploaderName() {
                         return uploaderName;
@@ -292,8 +301,12 @@ public class YoutubeChannelExtractor extends ChannelExtractor {
                         return uploaderUrl;
                     }
                 });
+            } else if (video.has("continuationItemRenderer")) {
+                continuation = video.getObject("continuationItemRenderer");
             }
         }
+
+        return continuation;
     }
 
     private JsonObject getVideoTab() throws ParsingException {

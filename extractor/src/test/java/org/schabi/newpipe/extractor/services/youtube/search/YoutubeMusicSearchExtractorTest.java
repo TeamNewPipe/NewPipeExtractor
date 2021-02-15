@@ -10,12 +10,14 @@ import org.schabi.newpipe.extractor.search.SearchExtractor;
 import org.schabi.newpipe.extractor.services.DefaultSearchExtractorTest;
 import org.schabi.newpipe.extractor.services.youtube.linkHandler.YoutubeSearchQueryHandlerFactory;
 
-import javax.annotation.Nullable;
 import java.net.URLEncoder;
+
+import javax.annotation.Nullable;
 
 import static java.util.Collections.singletonList;
 import static org.schabi.newpipe.extractor.ServiceList.YouTube;
 
+// Doesn't work with mocks. Makes request with different `dataToSend` i think
 public class YoutubeMusicSearchExtractorTest {
     public static class MusicSongs extends DefaultSearchExtractorTest {
         private static SearchExtractor extractor;

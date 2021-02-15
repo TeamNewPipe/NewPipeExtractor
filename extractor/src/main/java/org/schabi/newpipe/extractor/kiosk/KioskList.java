@@ -14,6 +14,8 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
 
+import static org.schabi.newpipe.extractor.utils.Utils.isNullOrEmpty;
+
 public class KioskList {
 
     public interface KioskExtractorFactory {
@@ -70,7 +72,7 @@ public class KioskList {
 
     public KioskExtractor getDefaultKioskExtractor(Page nextPage, Localization localization)
             throws ExtractionException, IOException {
-        if (defaultKiosk != null && !defaultKiosk.equals("")) {
+        if (!isNullOrEmpty(defaultKiosk)) {
             return getExtractorById(defaultKiosk, nextPage, localization);
         } else {
             if (!kioskList.isEmpty()) {

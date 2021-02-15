@@ -1,6 +1,9 @@
 name: CI
 
 on:
+  schedule:
+      # once per day
+    - cron: 0 0 * * *
   push:
     branches:
       - dev
@@ -25,5 +28,11 @@ jobs:
           key: ${{ runner.os }}-gradle-${{ hashFiles('**/*.gradle') }}
           restore-keys: ${{ runner.os }}-gradle
 
+        # See gradle file for difference between downloaders
       - name: Build and run Tests
-        run: ./gradlew check --stacktrace -Ddownloader=MOCK
+        run: |
+          if [[ $GITHUB_EVENT_NAME == 'schedule' ]]; then
+            ./gradlew check --stacktrace -Ddownloader=REAL
+          else
+            ./gradlew check --stacktrace -Ddownloader=MOCK
+          fi

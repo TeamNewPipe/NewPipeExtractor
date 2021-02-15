@@ -6,16 +6,14 @@ import java.io.UnsupportedEncodingException;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLDecoder;
-import java.util.Collection;
-import java.util.Iterator;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 public class Utils {
 
     public static final String HTTP = "http://";
     public static final String HTTPS = "https://";
+    public static final String UTF_8 = "UTF-8";
+    public static final String EMPTY_STRING = "";
 
     private Utils() {
         //no instance
@@ -117,7 +115,7 @@ public class Utils {
 
                 String query;
                 try {
-                    query = URLDecoder.decode(params[0], "UTF-8");
+                    query = URLDecoder.decode(params[0], UTF_8);
                 } catch (UnsupportedEncodingException e) {
                     System.err.println("Cannot decode string with UTF-8. using the string without decoding");
                     e.printStackTrace();
@@ -126,7 +124,7 @@ public class Utils {
 
                 if (query.equals(parameterName)) {
                     try {
-                        return URLDecoder.decode(params[1], "UTF-8");
+                        return URLDecoder.decode(params[1], UTF_8);
                     } catch (UnsupportedEncodingException e) {
                         System.err.println("Cannot decode string with UTF-8. using the string without decoding");
                         e.printStackTrace();
@@ -200,6 +198,7 @@ public class Utils {
     /**
      * If the provided url is a Google search redirect, then the actual url is extracted from the
      * {@code url=} query value and returned, otherwise the original url is returned.
+     *
      * @param url the url which can possibly be a Google search redirect
      * @return an url with no Google search redirects
      */
@@ -208,7 +207,7 @@ public class Utils {
         try {
             final URL decoded = Utils.stringToURL(url);
             if (decoded.getHost().contains("google") && decoded.getPath().equals("/url")) {
-                return URLDecoder.decode(Parser.matchGroup1("&url=([^&]+)(?:&|$)", url), "UTF-8");
+                return URLDecoder.decode(Parser.matchGroup1("&url=([^&]+)(?:&|$)", url), UTF_8);
             }
         } catch (final Exception ignored) {
         }
@@ -231,12 +230,12 @@ public class Utils {
         return map == null || map.isEmpty();
     }
 
-    public static boolean isWhitespace(final int c){
+    public static boolean isWhitespace(final int c) {
         return c == ' ' || c == '\t' || c == '\n' || c == '\f' || c == '\r';
     }
 
     public static boolean isBlank(final String string) {
-        if (string == null || string.isEmpty()) {
+        if (isNullOrEmpty(string)) {
             return true;
         }
 
@@ -263,10 +262,10 @@ public class Utils {
     }
 
     public static String join(final String delimiter, final String mapJoin,
-        final Map<? extends CharSequence, ? extends CharSequence> elements) {
+                              final Map<? extends CharSequence, ? extends CharSequence> elements) {
         final List<String> list = new LinkedList<>();
         for (final Map.Entry<? extends CharSequence, ? extends CharSequence> entry : elements
-            .entrySet()) {
+                .entrySet()) {
             list.add(entry.getKey() + mapJoin + entry.getValue());
         }
         return join(delimiter, list);

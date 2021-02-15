@@ -50,6 +50,9 @@ public abstract class LinkHandlerFactory {
      * @return a {@link LinkHandler} complete with information
      */
     public LinkHandler fromUrl(final String url) throws ParsingException {
+        if (Utils.isNullOrEmpty(url)) {
+            throw new IllegalArgumentException("The url is null or empty");
+        }
         final String polishedUrl = Utils.followGoogleRedirectIfNeeded(url);
         final String baseUrl = Utils.getBaseUrl(polishedUrl);
         return fromUrl(polishedUrl, baseUrl);

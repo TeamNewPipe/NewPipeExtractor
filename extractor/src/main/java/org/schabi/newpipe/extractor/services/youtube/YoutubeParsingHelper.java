@@ -1,14 +1,6 @@
 package org.schabi.newpipe.extractor.services.youtube;
 
 import com.grack.nanojson.*;
-import com.grack.nanojson.JsonArray;
-import com.grack.nanojson.JsonObject;
-import com.grack.nanojson.JsonParser;
-import com.grack.nanojson.JsonParserException;
-import com.grack.nanojson.JsonWriter;
-
-import org.jsoup.Jsoup;
-import org.jsoup.nodes.Document;
 import org.schabi.newpipe.extractor.MetaInfo;
 import org.schabi.newpipe.extractor.Page;
 import org.schabi.newpipe.extractor.downloader.Response;
@@ -21,27 +13,27 @@ import org.schabi.newpipe.extractor.stream.Description;
 import org.schabi.newpipe.extractor.utils.Parser;
 import org.schabi.newpipe.extractor.utils.Utils;
 
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLDecoder;
-import java.nio.charset.StandardCharsets;
 import java.time.LocalDate;
 import java.time.OffsetDateTime;
 import java.time.ZoneOffset;
 import java.time.format.DateTimeParseException;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Objects;
+
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 
 import static org.schabi.newpipe.extractor.NewPipe.getDownloader;
-import static org.schabi.newpipe.extractor.utils.JsonUtils.EMPTY_STRING;
 import static org.schabi.newpipe.extractor.utils.Utils.*;
-import static org.schabi.newpipe.extractor.utils.Utils.HTTP;
-import static org.schabi.newpipe.extractor.utils.Utils.HTTPS;
-import static org.schabi.newpipe.extractor.utils.Utils.isNullOrEmpty;
-import static org.schabi.newpipe.extractor.utils.Utils.join;
 
 /*
  * Created by Christian Schabesberger on 02.03.16.
@@ -111,7 +103,7 @@ public class YoutubeParsingHelper {
         return host.equalsIgnoreCase("invidio.us")
                 || host.equalsIgnoreCase("dev.invidio.us")
                 || host.equalsIgnoreCase("www.invidio.us")
-                || host.equalsIgnoreCase("vid.encryptionin.space")
+                || host.equalsIgnoreCase("redirect.invidious.io")
                 || host.equalsIgnoreCase("invidious.snopyta.org")
                 || host.equalsIgnoreCase("yewtu.be")
                 || host.equalsIgnoreCase("tube.connect.cafe")
@@ -122,11 +114,16 @@ public class YoutubeParsingHelper {
                 || host.equalsIgnoreCase("invidious.xyz")
                 || host.equalsIgnoreCase("vid.mint.lgbt")
                 || host.equalsIgnoreCase("invidiou.site")
-                || host.equalsIgnoreCase("invidious.fdn.fr");
+                || host.equalsIgnoreCase("invidious.fdn.fr")
+                || host.equalsIgnoreCase("invidious.048596.xyz")
+                || host.equalsIgnoreCase("invidious.zee.li")
+                || host.equalsIgnoreCase("vid.puffyan.us")
+                || host.equalsIgnoreCase("ytprivate.com");
     }
 
     /**
      * Parses the duration string of the video expecting ":" or "." as separators
+     *
      * @return the duration in seconds
      * @throws ParsingException when more than 3 separators are found
      */
@@ -196,6 +193,7 @@ public class YoutubeParsingHelper {
     /**
      * Checks if the given playlist id is a YouTube Mix (auto-generated playlist)
      * Ids from a YouTube Mix start with "RD"
+     *
      * @param playlistId
      * @return Whether given id belongs to a YouTube Mix
      */
@@ -206,15 +204,18 @@ public class YoutubeParsingHelper {
     /**
      * Checks if the given playlist id is a YouTube Music Mix (auto-generated playlist)
      * Ids from a YouTube Music Mix start with "RDAMVM" or "RDCLAK"
+     *
      * @param playlistId
      * @return Whether given id belongs to a YouTube Music Mix
      */
     public static boolean isYoutubeMusicMixId(final String playlistId) {
         return playlistId.startsWith("RDAMVM") || playlistId.startsWith("RDCLAK");
     }
+
     /**
      * Checks if the given playlist id is a YouTube Channel Mix (auto-generated playlist)
      * Ids from a YouTube channel Mix start with "RDCM"
+     *
      * @return Whether given id belongs to a YouTube Channel Mix
      */
     public static boolean isYoutubeChannelMixId(final String playlistId) {
@@ -223,6 +224,7 @@ public class YoutubeParsingHelper {
 
     /**
      * Extracts the video id from the playlist id for Mixes.
+     *
      * @throws ParsingException If the playlistId is a Channel Mix or not a mix.
      */
     public static String extractVideoIdFromMixId(final String playlistId) throws ParsingException {
@@ -314,7 +316,8 @@ public class YoutubeParsingHelper {
                     clientVersion = contextClientVersion;
                     break;
                 }
-            } catch (Parser.RegexException ignored) { }
+            } catch (Parser.RegexException ignored) {
+            }
         }
 
         if (!isNullOrEmpty(clientVersion) && !isNullOrEmpty(shortClientVersion)) {
@@ -326,7 +329,8 @@ public class YoutubeParsingHelper {
         } catch (Parser.RegexException e) {
             try {
                 key = Parser.matchGroup1("innertubeApiKey\":\"([0-9a-zA-Z_-]+?)\"", html);
-            } catch (Parser.RegexException ignored) { }
+            } catch (Parser.RegexException ignored) {
+            }
         }
     }
 
@@ -358,7 +362,7 @@ public class YoutubeParsingHelper {
      *
      * Quick-and-dirty solution to reset global state in between test classes.
      */
-    static void resetClientVersionAndKey() {
+    public static void resetClientVersionAndKey() {
         clientVersion = null;
         key = null;
     }
@@ -393,7 +397,7 @@ public class YoutubeParsingHelper {
                 .end()
                 .value("query", "test")
                 .value("params", "Eg-KAQwIARAAGAAgACgAMABqChAEEAUQAxAKEAk%3D")
-            .end().done().getBytes("UTF-8");
+            .end().done().getBytes(UTF_8);
         // @formatter:on
 
         final Map<String, List<String>> headers = new HashMap<>();
@@ -438,10 +442,17 @@ public class YoutubeParsingHelper {
         return youtubeMusicKeys = new String[]{key, clientName, clientVersion};
     }
 
+
+
     @Nullable
     public static String getUrlFromNavigationEndpoint(JsonObject navigationEndpoint) throws ParsingException {
         if (navigationEndpoint.has("urlEndpoint")) {
             String internUrl = navigationEndpoint.getObject("urlEndpoint").getString("url");
+            if (internUrl.startsWith("https://www.youtube.com/redirect?")) {
+                // remove https://www.youtube.com part to fall in the next if block
+                internUrl = internUrl.substring(23);
+            }
+
             if (internUrl.startsWith("/redirect?")) {
                 // q parameter can be the first parameter
                 internUrl = internUrl.substring(10);
@@ -450,7 +461,7 @@ public class YoutubeParsingHelper {
                     if (param.split("=")[0].equals("q")) {
                         String url;
                         try {
-                            url = URLDecoder.decode(param.split("=")[1], "UTF-8");
+                            url = URLDecoder.decode(param.split("=")[1], UTF_8);
                         } catch (UnsupportedEncodingException e) {
                             return null;
                         }
@@ -459,6 +470,8 @@ public class YoutubeParsingHelper {
                 }
             } else if (internUrl.startsWith("http")) {
                 return internUrl;
+            } else if (internUrl.startsWith("/channel") || internUrl.startsWith("/user") || internUrl.startsWith("/watch")) {
+                return "https://www.youtube.com" + internUrl;
             }
         } else if (navigationEndpoint.has("browseEndpoint")) {
             final JsonObject browseEndpoint = navigationEndpoint.getObject("browseEndpoint");
@@ -496,6 +509,7 @@ public class YoutubeParsingHelper {
 
     /**
      * Get the text from a JSON object that has either a simpleText or a runs array.
+     *
      * @param textObject JSON object to get the text from
      * @param html       whether to return HTML, by parsing the navigationEndpoint
      * @return text in the JSON object or {@code null}
@@ -723,7 +737,7 @@ public class YoutubeParsingHelper {
 
         final String title = YoutubeParsingHelper.getTextFromObject(clarificationRenderer.getObject("contentTitle"));
         final String text = YoutubeParsingHelper.getTextFromObject(clarificationRenderer.getObject("text"));
-        if (title == null || text ==  null) {
+        if (title == null || text == null) {
             throw new ParsingException("Could not extract clarification renderer content");
         }
         metaInfo.setTitle(title);
@@ -767,6 +781,7 @@ public class YoutubeParsingHelper {
     /**
      * Sometimes, YouTube provides URLs which use Google's cache. They look like
      * {@code https://webcache.googleusercontent.com/search?q=cache:CACHED_URL}
+     *
      * @param url the URL which might refer to the Google's webcache
      * @return the URL which is referring to the original site
      */

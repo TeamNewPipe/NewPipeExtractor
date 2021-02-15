@@ -14,6 +14,8 @@ import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import static org.schabi.newpipe.extractor.utils.Utils.UTF_8;
+
 /*
  * Created by Christian Schabesberger on 02.02.16.
  *
@@ -69,9 +71,9 @@ public class Parser {
         } else {
             // only pass input to exception message when it is not too long
             if (input.length() > 1024) {
-                throw new RegexException("failed to find pattern \"" + pat.pattern());
+                throw new RegexException("failed to find pattern \"" + pat.pattern() + "\"");
             } else {
-                throw new RegexException("failed to find pattern \"" + pat.pattern() + " inside of " + input + "\"");
+                throw new RegexException("failed to find pattern \"" + pat.pattern() + "\" inside of \"" + input + "\"");
             }
         }
     }
@@ -87,7 +89,7 @@ public class Parser {
         for (String arg : input.split("&")) {
             String[] splitArg = arg.split("=");
             if (splitArg.length > 1) {
-                map.put(splitArg[0], URLDecoder.decode(splitArg[1], "UTF-8"));
+                map.put(splitArg[0], URLDecoder.decode(splitArg[1], UTF_8));
             } else {
                 map.put(splitArg[0], "");
             }

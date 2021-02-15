@@ -2,7 +2,6 @@ package org.schabi.newpipe.extractor.services.youtube.extractors;
 
 import com.grack.nanojson.JsonArray;
 import com.grack.nanojson.JsonObject;
-
 import org.schabi.newpipe.extractor.comments.CommentsInfoItemExtractor;
 import org.schabi.newpipe.extractor.exceptions.ParsingException;
 import org.schabi.newpipe.extractor.localization.DateWrapper;
@@ -13,6 +12,7 @@ import org.schabi.newpipe.extractor.utils.Utils;
 import javax.annotation.Nullable;
 
 import static org.schabi.newpipe.extractor.services.youtube.YoutubeParsingHelper.getTextFromObject;
+import static org.schabi.newpipe.extractor.utils.Utils.EMPTY_STRING;
 
 public class YoutubeCommentsInfoItemExtractor implements CommentsInfoItemExtractor {
 
@@ -46,7 +46,7 @@ public class YoutubeCommentsInfoItemExtractor implements CommentsInfoItemExtract
         try {
             return getTextFromObject(JsonUtils.getObject(json, "authorText"));
         } catch (Exception e) {
-            return "";
+            return EMPTY_STRING;
         }
     }
 
@@ -86,7 +86,7 @@ public class YoutubeCommentsInfoItemExtractor implements CommentsInfoItemExtract
             if (contentText.isEmpty()) {
                 // completely empty comments as described in
                 // https://github.com/TeamNewPipe/NewPipeExtractor/issues/380#issuecomment-668808584
-                return "";
+                return EMPTY_STRING;
             }
             final String commentText = getTextFromObject(contentText);
             // youtube adds U+FEFF in some comments. eg. https://www.youtube.com/watch?v=Nj4F63E59io<feff>
@@ -116,8 +116,13 @@ public class YoutubeCommentsInfoItemExtractor implements CommentsInfoItemExtract
     }
 
     @Override
-    public boolean getHeartedByUploader() throws ParsingException {
+    public boolean isHeartedByUploader() throws ParsingException {
         return json.has("creatorHeart");
+    }
+
+    @Override
+    public boolean isPinned() {
+        return json.has("pinnedCommentBadge");
     }
 
     @Override
@@ -125,7 +130,7 @@ public class YoutubeCommentsInfoItemExtractor implements CommentsInfoItemExtract
         try {
             return getTextFromObject(JsonUtils.getObject(json, "authorText"));
         } catch (Exception e) {
-            return "";
+            return EMPTY_STRING;
         }
     }
 
@@ -134,7 +139,7 @@ public class YoutubeCommentsInfoItemExtractor implements CommentsInfoItemExtract
         try {
             return "https://youtube.com/channel/" + JsonUtils.getString(json, "authorEndpoint.browseEndpoint.browseId");
         } catch (Exception e) {
-            return "";
+            return EMPTY_STRING;
         }
     }
 

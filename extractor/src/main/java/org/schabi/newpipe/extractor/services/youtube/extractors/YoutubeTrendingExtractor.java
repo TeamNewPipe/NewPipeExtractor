@@ -69,7 +69,15 @@ public class YoutubeTrendingExtractor extends KioskExtractor<StreamInfoItem> {
     @Nonnull
     @Override
     public String getName() throws ParsingException {
-        String name = getTextFromObject(initialData.getObject("header").getObject("feedTabbedHeaderRenderer").getObject("title"));
+        final JsonObject header = initialData.getObject("header");
+        JsonObject title = null;
+        if (header.has("feedTabbedHeaderRenderer")) {
+            title = header.getObject("feedTabbedHeaderRenderer").getObject("title");
+        } else if (header.has("c4TabbedHeaderRenderer")) {
+            title = header.getObject("c4TabbedHeaderRenderer").getObject("title");
+        }
+
+        String name = getTextFromObject(title);
         if (!isNullOrEmpty(name)) {
             return name;
         }

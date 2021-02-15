@@ -4,6 +4,7 @@ import org.junit.BeforeClass;
 import org.junit.Ignore;
 import org.junit.Test;
 import org.schabi.newpipe.downloader.DownloaderTestImpl;
+import org.schabi.newpipe.extractor.ExtractorAsserts;
 import org.schabi.newpipe.extractor.NewPipe;
 import org.schabi.newpipe.extractor.exceptions.ParsingException;
 import org.schabi.newpipe.extractor.services.peertube.extractors.PeertubePlaylistExtractor;
@@ -51,9 +52,8 @@ public class PeertubePlaylistExtractorTest {
         }
 
         @Test
-        @Ignore("TODO fix")
         public void testGetStreamCount() throws ParsingException {
-            assertEquals(35, extractor.getStreamCount());
+            ExtractorAsserts.assertAtLeast(39, extractor.getStreamCount());
         }
 
         @Test
@@ -62,7 +62,6 @@ public class PeertubePlaylistExtractorTest {
         }
 
         @Test
-        @Ignore("TODO fix")
         public void testGetSubChannelName() throws ParsingException {
             assertEquals("SHOCKING !", extractor.getSubChannelName());
         }

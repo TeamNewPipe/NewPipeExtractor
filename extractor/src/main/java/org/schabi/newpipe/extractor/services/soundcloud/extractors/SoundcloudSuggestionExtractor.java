@@ -17,9 +17,9 @@ import java.net.URLEncoder;
 import java.util.ArrayList;
 import java.util.List;
 
-public class SoundcloudSuggestionExtractor extends SuggestionExtractor {
+import static org.schabi.newpipe.extractor.utils.Utils.UTF_8;
 
-    public static final String CHARSET_UTF_8 = "UTF-8";
+public class SoundcloudSuggestionExtractor extends SuggestionExtractor {
 
     public SoundcloudSuggestionExtractor(StreamingService service) {
         super(service);
@@ -32,7 +32,7 @@ public class SoundcloudSuggestionExtractor extends SuggestionExtractor {
         Downloader dl = NewPipe.getDownloader();
 
         String url = "https://api-v2.soundcloud.com/search/queries"
-                + "?q=" + URLEncoder.encode(query, CHARSET_UTF_8)
+                + "?q=" + URLEncoder.encode(query, UTF_8)
                 + "&client_id=" + SoundcloudParsingHelper.clientId()
                 + "&limit=10";
 

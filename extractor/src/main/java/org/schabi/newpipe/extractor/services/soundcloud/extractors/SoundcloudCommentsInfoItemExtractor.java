@@ -40,7 +40,12 @@ public class SoundcloudCommentsInfoItemExtractor implements CommentsInfoItemExtr
     }
 
     @Override
-    public boolean getHeartedByUploader() throws ParsingException {
+    public boolean isHeartedByUploader() throws ParsingException {
+        return false;
+    }
+
+    @Override
+    public boolean isPinned() throws ParsingException {
         return false;
     }
 

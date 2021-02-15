@@ -2,7 +2,7 @@ package org.schabi.newpipe.extractor.services.youtube;
 
 import org.junit.BeforeClass;
 import org.junit.Test;
-import org.schabi.newpipe.downloader.DownloaderTestImpl;
+import org.schabi.newpipe.downloader.DownloaderFactory;
 import org.schabi.newpipe.extractor.NewPipe;
 import org.schabi.newpipe.extractor.exceptions.ParsingException;
 import org.schabi.newpipe.extractor.services.BaseListExtractorTest;
@@ -14,12 +14,16 @@ import static org.schabi.newpipe.extractor.services.DefaultTests.assertNoMoreIte
 import static org.schabi.newpipe.extractor.services.DefaultTests.defaultTestRelatedItems;
 
 public class YoutubeKioskExtractorTest {
+
+    private static final String RESOURCE_PATH = DownloaderFactory.RESOURCE_PATH + "services/youtube/extractor/kiosk/";
+    
     public static class Trending implements BaseListExtractorTest {
         private static YoutubeTrendingExtractor extractor;
 
         @BeforeClass
         public static void setUp() throws Exception {
-            NewPipe.init(DownloaderTestImpl.getInstance());
+            YoutubeParsingHelper.resetClientVersionAndKey();
+            NewPipe.init(new DownloaderFactory().getDownloader(RESOURCE_PATH + "trending"));
             extractor = (YoutubeTrendingExtractor) YouTube.getKioskList().getDefaultKioskExtractor();
             extractor.fetchPage();
         }
