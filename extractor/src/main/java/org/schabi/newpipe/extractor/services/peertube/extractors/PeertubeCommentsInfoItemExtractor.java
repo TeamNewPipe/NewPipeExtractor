@@ -1,7 +1,6 @@
 package org.schabi.newpipe.extractor.services.peertube.extractors;
 
 import com.grack.nanojson.JsonObject;
-
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.schabi.newpipe.extractor.ServiceList;
@@ -12,6 +11,8 @@ import org.schabi.newpipe.extractor.services.peertube.PeertubeParsingHelper;
 import org.schabi.newpipe.extractor.utils.JsonUtils;
 
 import java.util.Objects;
+
+import static org.schabi.newpipe.extractor.utils.Utils.EMPTY_STRING;
 
 public class PeertubeCommentsInfoItemExtractor implements CommentsInfoItemExtractor {
     private final JsonObject item;
@@ -68,7 +69,7 @@ public class PeertubeCommentsInfoItemExtractor implements CommentsInfoItemExtrac
             final Document doc = Jsoup.parse(htmlText);
             return doc.body().text();
         } catch (Exception e) {
-            return htmlText.replaceAll("(?s)<[^>]*>(\\s*<[^>]*>)*", "");
+            return htmlText.replaceAll("(?s)<[^>]*>(\\s*<[^>]*>)*", EMPTY_STRING);
         }
     }
 

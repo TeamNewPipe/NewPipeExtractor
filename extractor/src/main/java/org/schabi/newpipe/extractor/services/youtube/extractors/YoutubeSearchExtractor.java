@@ -1,11 +1,6 @@
 package org.schabi.newpipe.extractor.services.youtube.extractors;
 
-import com.grack.nanojson.JsonArray;
-import com.grack.nanojson.JsonObject;
-import com.grack.nanojson.JsonParser;
-import com.grack.nanojson.JsonParserException;
-import com.grack.nanojson.JsonWriter;
-
+import com.grack.nanojson.*;
 import org.schabi.newpipe.extractor.InfoItem;
 import org.schabi.newpipe.extractor.MetaInfo;
 import org.schabi.newpipe.extractor.Page;
@@ -20,16 +15,15 @@ import org.schabi.newpipe.extractor.search.SearchExtractor;
 import org.schabi.newpipe.extractor.services.youtube.YoutubeParsingHelper;
 import org.schabi.newpipe.extractor.utils.JsonUtils;
 
-import java.io.IOException;
-import java.util.*;
-
 import javax.annotation.Nonnull;
+import java.io.IOException;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
-import static org.schabi.newpipe.extractor.services.youtube.YoutubeParsingHelper.getClientVersion;
-import static org.schabi.newpipe.extractor.services.youtube.YoutubeParsingHelper.getJsonResponse;
-import static org.schabi.newpipe.extractor.services.youtube.YoutubeParsingHelper.getKey;
-import static org.schabi.newpipe.extractor.services.youtube.YoutubeParsingHelper.getTextFromObject;
-import static org.schabi.newpipe.extractor.services.youtube.YoutubeParsingHelper.getValidJsonResponseBody;
+import static org.schabi.newpipe.extractor.services.youtube.YoutubeParsingHelper.*;
+import static org.schabi.newpipe.extractor.utils.Utils.UTF_8;
 import static org.schabi.newpipe.extractor.utils.Utils.isNullOrEmpty;
 
 /*
@@ -171,7 +165,7 @@ public class YoutubeSearchExtractor extends SearchExtractor {
                         .object("user").end()
                     .end()
                     .value("continuation", page.getId())
-                .end().done().getBytes("UTF-8");
+                .end().done().getBytes(UTF_8);
             // @formatter:on
 
             final Map<String, List<String>> headers = new HashMap<>();

@@ -82,7 +82,7 @@ public class YoutubePlaylistExtractor extends PlaylistExtractor {
     @Override
     public String getName() throws ParsingException {
         final String name = getTextFromObject(playlistInfo.getObject("title"));
-        if (name != null && !name.isEmpty()) return name;
+        if (!isNullOrEmpty(name)) return name;
 
         return initialData.getObject("microformat").getObject("microformatDataRenderer").getString("title");
     }

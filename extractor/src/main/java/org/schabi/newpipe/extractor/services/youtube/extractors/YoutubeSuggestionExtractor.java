@@ -15,6 +15,8 @@ import java.net.URLEncoder;
 import java.util.ArrayList;
 import java.util.List;
 
+import static org.schabi.newpipe.extractor.utils.Utils.UTF_8;
+
 /*
  * Created by Christian Schabesberger on 28.09.16.
  *
@@ -37,8 +39,6 @@ import java.util.List;
 
 public class YoutubeSuggestionExtractor extends SuggestionExtractor {
 
-    public static final String CHARSET_UTF_8 = "UTF-8";
-
     public YoutubeSuggestionExtractor(StreamingService service) {
         super(service);
     }
@@ -52,8 +52,8 @@ public class YoutubeSuggestionExtractor extends SuggestionExtractor {
                 + "?client=" + "youtube" //"firefox" for JSON, 'toolbar' for xml
                 + "&jsonp=" + "JP"
                 + "&ds=" + "yt"
-                + "&gl=" + URLEncoder.encode(getExtractorContentCountry().getCountryCode(), CHARSET_UTF_8)
-                + "&q=" + URLEncoder.encode(query, CHARSET_UTF_8);
+                + "&gl=" + URLEncoder.encode(getExtractorContentCountry().getCountryCode(), UTF_8)
+                + "&q=" + URLEncoder.encode(query, UTF_8);
 
         String response = dl.get(url, getExtractorLocalization()).responseBody();
         // trim JSONP part "JP(...)"

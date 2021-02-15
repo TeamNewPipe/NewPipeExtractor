@@ -18,15 +18,7 @@ import org.schabi.newpipe.extractor.localization.DateWrapper;
 import org.schabi.newpipe.extractor.services.peertube.PeertubeParsingHelper;
 import org.schabi.newpipe.extractor.services.peertube.linkHandler.PeertubeSearchQueryHandlerFactory;
 import org.schabi.newpipe.extractor.services.peertube.linkHandler.PeertubeStreamLinkHandlerFactory;
-import org.schabi.newpipe.extractor.stream.AudioStream;
-import org.schabi.newpipe.extractor.stream.Description;
-import org.schabi.newpipe.extractor.stream.Stream;
-import org.schabi.newpipe.extractor.stream.StreamExtractor;
-import org.schabi.newpipe.extractor.stream.StreamInfoItemsCollector;
-import org.schabi.newpipe.extractor.stream.StreamSegment;
-import org.schabi.newpipe.extractor.stream.StreamType;
-import org.schabi.newpipe.extractor.stream.SubtitlesStream;
-import org.schabi.newpipe.extractor.stream.VideoStream;
+import org.schabi.newpipe.extractor.stream.*;
 import org.schabi.newpipe.extractor.utils.JsonUtils;
 import org.schabi.newpipe.extractor.utils.Utils;
 
@@ -39,6 +31,8 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Locale;
+
+import static org.schabi.newpipe.extractor.utils.Utils.UTF_8;
 
 public class PeertubeStreamExtractor extends StreamExtractor {
     private final String baseUrl;
@@ -322,7 +316,7 @@ public class PeertubeStreamExtractor extends StreamExtractor {
         params.append("start=0&count=8&sort=-createdAt");
         for (final String tag : tags) {
             params.append("&tagsOneOf=");
-            params.append(URLEncoder.encode(tag, "UTF-8"));
+            params.append(URLEncoder.encode(tag, UTF_8));
         }
         return url + "?" + params.toString();
     }

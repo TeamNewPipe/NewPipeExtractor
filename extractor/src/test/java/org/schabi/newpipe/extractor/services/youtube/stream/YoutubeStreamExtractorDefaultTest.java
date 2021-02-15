@@ -16,6 +16,7 @@ import org.schabi.newpipe.extractor.stream.StreamExtractor;
 import org.schabi.newpipe.extractor.stream.StreamSegment;
 import org.schabi.newpipe.extractor.stream.StreamType;
 
+import javax.annotation.Nullable;
 import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URL;
@@ -23,11 +24,10 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
-import javax.annotation.Nullable;
-
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.schabi.newpipe.extractor.ServiceList.YouTube;
+import static org.schabi.newpipe.extractor.utils.Utils.EMPTY_STRING;
 
 /*
  * Created by Christian Schabesberger on 30.12.15.
@@ -88,6 +88,7 @@ public class YoutubeStreamExtractorDefaultTest {
             extractor.fetchPage();
         }
 
+        // @formatter:off
         @Override public StreamExtractor extractor() { return extractor; }
         @Override public StreamingService expectedService() { return YouTube; }
         @Override public String expectedName() { return "Marzia & Felix - Wedding 19.08.2019"; }
@@ -110,6 +111,7 @@ public class YoutubeStreamExtractorDefaultTest {
         @Override public long expectedLikeCountAtLeast() { return 5212900; }
         @Override public long expectedDislikeCountAtLeast() { return 30600; }
         @Override public int expectedStreamSegmentsCount() { return 0; }
+        // @formatter:on
     }
 
     public static class DescriptionTestUnboxing extends DefaultStreamExtractorTest {
@@ -125,6 +127,7 @@ public class YoutubeStreamExtractorDefaultTest {
             extractor.fetchPage();
         }
 
+        // @formatter:off
         @Override public StreamExtractor extractor() { return extractor; }
         @Override public StreamingService expectedService() { return YouTube; }
         @Override public String expectedName() { return "This Smartphone Changes Everything..."; }
@@ -147,13 +150,14 @@ public class YoutubeStreamExtractorDefaultTest {
         @Nullable @Override public String expectedTextualUploadDate() { return "2018-06-19"; }
         @Override public long expectedLikeCountAtLeast() { return 340100; }
         @Override public long expectedDislikeCountAtLeast() { return 18700; }
-
+        // @formatter:on
         @Override
         @Test
         @Ignore("TODO fix")
         public void testDescription() throws Exception {
             super.testDescription();
         }
+
     }
 
     @Ignore("TODO fix")
@@ -171,6 +175,7 @@ public class YoutubeStreamExtractorDefaultTest {
             extractor.fetchPage();
         }
 
+        // @formatter:off
         @Override public StreamExtractor extractor() { return extractor; }
         @Override public StreamingService expectedService() { return YouTube; }
         @Override public String expectedName() { return "AlphaOmegaSin Fanboy Logic: Likes/Dislikes Disabled = Point Invalid Lol wtf?"; }
@@ -189,6 +194,7 @@ public class YoutubeStreamExtractorDefaultTest {
         @Nullable @Override public String expectedTextualUploadDate() { return "2019-01-02"; }
         @Override public long expectedLikeCountAtLeast() { return -1; }
         @Override public long expectedDislikeCountAtLeast() { return -1; }
+        // @formatter:on
     }
 
     public static class StreamSegmentsTestOstCollection extends DefaultStreamExtractorTest {
@@ -205,6 +211,7 @@ public class YoutubeStreamExtractorDefaultTest {
             extractor.fetchPage();
         }
 
+        // @formatter:off
         @Override public StreamExtractor extractor() { return extractor; }
         @Override public StreamingService expectedService() { return YouTube; }
         @Override public String expectedName() { return "1 Hour - Most Epic Anime Mix - Battle Anime OST"; }
@@ -235,6 +242,7 @@ public class YoutubeStreamExtractorDefaultTest {
             assertEquals(BASE_URL + ID + "?t=589", segment.getUrl());
             assertNotNull(segment.getPreviewUrl());
         }
+        // @formatter:on
     }
 
     public static class StreamSegmentsTestMaiLab extends DefaultStreamExtractorTest {
@@ -304,6 +312,7 @@ public class YoutubeStreamExtractorDefaultTest {
             extractor.fetchPage();
         }
 
+        // @formatter:off
         @Override public StreamExtractor extractor() { return extractor; }
         @Override public StreamingService expectedService() { return YouTube; }
         @Override public String expectedName() { return "Was verbirgt sich am tiefsten Punkt des Ozeans?"; }
@@ -324,13 +333,13 @@ public class YoutubeStreamExtractorDefaultTest {
         @Override public long expectedDislikeCountAtLeast() { return 500; }
         @Override public List<MetaInfo> expectedMetaInfo() throws MalformedURLException {
             return Collections.singletonList(new MetaInfo(
-                    "",
+                    EMPTY_STRING,
                     new Description("Funk is a German public broadcast service.", Description.PLAIN_TEXT),
                     Collections.singletonList(new URL("https://de.wikipedia.org/wiki/Funk_(Medienangebot)?wprov=yicw1")),
                     Collections.singletonList("Wikipedia (German)")
             ));
         }
-
+        // @formatter:on
         @Override
         @Ignore("TODO fix")
         @Test
@@ -344,6 +353,7 @@ public class YoutubeStreamExtractorDefaultTest {
         public void testMetaInfo() throws Exception {
             super.testMetaInfo();
         }
+
     }
 
 }
