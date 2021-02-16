@@ -1,7 +1,6 @@
 package org.schabi.newpipe.extractor.services.youtube;
 
 import org.junit.BeforeClass;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.schabi.newpipe.downloader.DownloaderFactory;
 import org.schabi.newpipe.extractor.ListExtractor.InfoItemsPage;
@@ -132,7 +131,6 @@ public class YoutubeCommentsExtractorTest {
         }
 
         @Test
-        @Ignore("TODO fix")
         public void testGetCommentsAllData() throws IOException, ExtractionException {
             final InfoItemsPage<CommentsInfoItem> comments = extractor.getInitialPage();
 
