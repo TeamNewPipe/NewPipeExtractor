@@ -211,24 +211,24 @@ public class BandcampStreamExtractor extends StreamExtractor {
 
     @Override
     public List<VideoStream> getVideoStreams() {
-        return Collections.EMPTY_LIST;
+        return Collections.emptyList();
     }
 
     @Override
     public List<VideoStream> getVideoOnlyStreams() {
-        return Collections.EMPTY_LIST;
+        return Collections.emptyList();
     }
 
     @Nonnull
     @Override
     public List<SubtitlesStream> getSubtitlesDefault() {
-        return new ArrayList<>();
+        return Collections.emptyList();
     }
 
     @Nonnull
     @Override
     public List<SubtitlesStream> getSubtitles(MediaFormat format) {
-        return new ArrayList<>();
+        return Collections.emptyList();
     }
 
     @Override

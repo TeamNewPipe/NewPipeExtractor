@@ -20,6 +20,7 @@ import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 import static org.schabi.newpipe.extractor.services.bandcamp.extractors.BandcampExtractorHelper.getImageUrl;
@@ -137,6 +138,6 @@ public class BandcampRadioStreamExtractor extends BandcampStreamExtractor {
     @Nonnull
     @Override
     public List<String> getTags() {
-        return new ArrayList<>();
+        return Collections.emptyList();
     }
 }

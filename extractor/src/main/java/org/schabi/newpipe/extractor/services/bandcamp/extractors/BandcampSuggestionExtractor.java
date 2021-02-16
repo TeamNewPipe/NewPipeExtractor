@@ -15,6 +15,7 @@ import org.schabi.newpipe.extractor.suggestion.SuggestionExtractor;
 import java.io.IOException;
 import java.net.URLEncoder;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 public class BandcampSuggestionExtractor extends SuggestionExtractor {
@@ -48,7 +49,7 @@ public class BandcampSuggestionExtractor extends SuggestionExtractor {
         } catch (final JsonParserException e) {
             e.printStackTrace();
 
-            return new ArrayList<>();
+            return Collections.emptyList();
         }
 
 
