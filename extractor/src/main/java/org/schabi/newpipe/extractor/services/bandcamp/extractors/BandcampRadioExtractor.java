@@ -6,8 +6,6 @@ import com.grack.nanojson.JsonArray;
 import com.grack.nanojson.JsonObject;
 import com.grack.nanojson.JsonParser;
 import com.grack.nanojson.JsonParserException;
-import org.schabi.newpipe.extractor.InfoItem;
-import org.schabi.newpipe.extractor.InfoItemsCollector;
 import org.schabi.newpipe.extractor.Page;
 import org.schabi.newpipe.extractor.StreamingService;
 import org.schabi.newpipe.extractor.downloader.Downloader;
@@ -15,15 +13,18 @@ import org.schabi.newpipe.extractor.exceptions.ExtractionException;
 import org.schabi.newpipe.extractor.exceptions.ParsingException;
 import org.schabi.newpipe.extractor.kiosk.KioskExtractor;
 import org.schabi.newpipe.extractor.linkhandler.ListLinkHandler;
+import org.schabi.newpipe.extractor.stream.StreamInfoItem;
 import org.schabi.newpipe.extractor.stream.StreamInfoItemsCollector;
 
 import javax.annotation.Nonnull;
 import java.io.IOException;
 
-public class BandcampRadioExtractor extends KioskExtractor<InfoItem> {
+public class BandcampRadioExtractor extends KioskExtractor<StreamInfoItem> {
 
     public static final String KIOSK_RADIO = "Radio";
     public static final String RADIO_API_URL = "https://bandcamp.com/api/bcweekly/1/list";
+
+    private JsonObject json = null;
 
     public BandcampRadioExtractor(final StreamingService streamingService, final ListLinkHandler linkHandler,
                                   final String kioskId) {
@@ -32,7 +33,12 @@ public class BandcampRadioExtractor extends KioskExtractor<InfoItem> {
 
     @Override
     public void onFetchPage(@Nonnull final Downloader downloader) throws IOException, ExtractionException {
-
+        try {
+            json = JsonParser.object().from(
+                    getDownloader().get(RADIO_API_URL).responseBody());
+        } catch (final JsonParserException e) {
+            throw new ExtractionException("Could not parse Bandcamp Radio API response", e);
+        }
     }
 
     @Nonnull
@@ -43,36 +49,21 @@ public class BandcampRadioExtractor extends KioskExtractor<InfoItem> {
 
     @Nonnull
     @Override
-    public InfoItemsPage<InfoItem> getInitialPage() throws IOException, ExtractionException {
-        final InfoItemsCollector c = new StreamInfoItemsCollector(getServiceId());
+    public InfoItemsPage<StreamInfoItem> getInitialPage() {
+        final StreamInfoItemsCollector collector = new StreamInfoItemsCollector(getServiceId());
 
-        try {
+        final JsonArray radioShows = json.getArray("results");
 
-            final JsonObject json = JsonParser.object().from(
-                    getDownloader().get(
-                            RADIO_API_URL
-                    ).responseBody()
-            );
-
-            final JsonArray radioShows = json.getArray("results");
-
-            for (int i = 0; i < radioShows.size(); i++) {
-                final JsonObject radioShow = radioShows.getObject(i);
-
-                c.commit(
-                        new BandcampRadioInfoItemExtractor(radioShow)
-                );
-            }
-
-        } catch (final JsonParserException e) {
-            e.printStackTrace();
+        for (int i = 0; i < radioShows.size(); i++) {
+            final JsonObject radioShow = radioShows.getObject(i);
+            collector.commit(new BandcampRadioInfoItemExtractor(radioShow));
         }
 
-        return new InfoItemsPage<InfoItem>(c, null);
+        return new InfoItemsPage<>(collector, null);
     }
 
     @Override
-    public InfoItemsPage<InfoItem> getPage(final Page page) {
+    public InfoItemsPage<StreamInfoItem> getPage(final Page page) {
         return null;
     }
 }

@@ -24,6 +24,8 @@ public class BandcampFeaturedExtractor extends KioskExtractor<PlaylistInfoItem> 
     public static final String KIOSK_FEATURED = "Featured";
     public static final String FEATURED_API_URL = "https://bandcamp.com/api/mobile/24/bootstrap_data";
 
+    private JsonObject json;
+
     public BandcampFeaturedExtractor(final StreamingService streamingService, final ListLinkHandler listLinkHandler,
                                      final String kioskId) {
         super(streamingService, listLinkHandler, kioskId);
@@ -31,7 +33,15 @@ public class BandcampFeaturedExtractor extends KioskExtractor<PlaylistInfoItem> 
 
     @Override
     public void onFetchPage(@Nonnull Downloader downloader) throws IOException, ExtractionException {
-
+        try {
+            json = JsonParser.object().from(
+                    getDownloader().post(
+                            FEATURED_API_URL, null, "{\"platform\":\"\",\"version\":0}".getBytes()
+                    ).responseBody()
+            );
+        } catch (final JsonParserException e) {
+            throw new ParsingException("Could not parse Bandcamp featured API response", e);
+        }
     }
 
     @Nonnull
@@ -46,35 +56,23 @@ public class BandcampFeaturedExtractor extends KioskExtractor<PlaylistInfoItem> 
 
         final PlaylistInfoItemsCollector c = new PlaylistInfoItemsCollector(getServiceId());
 
-        try {
+        final JsonArray featuredStories = json.getObject("feed_content")
+                .getObject("stories")
+                .getArray("featured");
 
+        for (int i = 0; i < featuredStories.size(); i++) {
+            final JsonObject featuredStory = featuredStories.getObject(i);
 
-            final JsonObject json = JsonParser.object().from(
-                    getDownloader().post(
-                            FEATURED_API_URL, null, "{\"platform\":\"\",\"version\":0}".getBytes()
-                    ).responseBody()
-            );
-
-            final JsonArray featuredStories = json.getObject("feed_content")
-                    .getObject("stories")
-                    .getArray("featured");
-
-            for (int i = 0; i < featuredStories.size(); i++) {
-                final JsonObject featuredStory = featuredStories.getObject(i);
-
-                if (featuredStory.isNull("album_title")) {
-                    // Is not an album, ignore
-                    continue;
-                }
-
-                c.commit(new BandcampPlaylistInfoItemFeaturedExtractor(featuredStory));
+            if (featuredStory.isNull("album_title")) {
+                // Is not an album, ignore
+                continue;
             }
 
-            return new InfoItemsPage<>(c, null);
-        } catch (final JsonParserException e) {
-            e.printStackTrace();
-            throw new ParsingException("JSON error", e);
+            c.commit(new BandcampPlaylistInfoItemFeaturedExtractor(featuredStory));
         }
+
+        return new InfoItemsPage<>(c, null);
+
     }
 
     @Override

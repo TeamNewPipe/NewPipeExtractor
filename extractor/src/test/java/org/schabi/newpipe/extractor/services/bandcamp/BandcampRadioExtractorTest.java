@@ -5,11 +5,11 @@ package org.schabi.newpipe.extractor.services.bandcamp;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import org.schabi.newpipe.downloader.DownloaderTestImpl;
-import org.schabi.newpipe.extractor.InfoItem;
 import org.schabi.newpipe.extractor.NewPipe;
 import org.schabi.newpipe.extractor.exceptions.ExtractionException;
 import org.schabi.newpipe.extractor.services.BaseListExtractorTest;
 import org.schabi.newpipe.extractor.services.bandcamp.extractors.BandcampRadioExtractor;
+import org.schabi.newpipe.extractor.stream.StreamInfoItem;
 
 import java.io.IOException;
 import java.util.List;
@@ -31,11 +31,12 @@ public class BandcampRadioExtractorTest implements BaseListExtractorTest {
         extractor = (BandcampRadioExtractor) Bandcamp
                 .getKioskList()
                 .getExtractorById("Radio", null);
+        extractor.fetchPage();
     }
 
     @Test
     public void testRadioCount() throws ExtractionException, IOException {
-        final List<InfoItem> list = Bandcamp.getKioskList().getExtractorById("Radio", null).getInitialPage().getItems();
+        final List<StreamInfoItem> list = extractor.getInitialPage().getItems();
         assertTrue(list.size() > 300);
     }
 

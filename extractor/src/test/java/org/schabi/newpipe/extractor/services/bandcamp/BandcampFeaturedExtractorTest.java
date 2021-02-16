@@ -31,6 +31,7 @@ public class BandcampFeaturedExtractorTest implements BaseListExtractorTest {
         NewPipe.init(DownloaderTestImpl.getInstance());
         extractor = (BandcampFeaturedExtractor) Bandcamp
                 .getKioskList().getDefaultKioskExtractor();
+        extractor.fetchPage();
     }
 
     @Test
