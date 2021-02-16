@@ -40,7 +40,7 @@ public class YoutubeStreamLinkHandlerFactory extends LinkHandlerFactory {
 
     private static final Pattern YOUTUBE_VIDEO_ID_REGEX_PATTERN = Pattern.compile("^([a-zA-Z0-9_-]{11})");
     private static final YoutubeStreamLinkHandlerFactory instance = new YoutubeStreamLinkHandlerFactory();
-    private static final List<String> subpaths = Arrays.asList("embed/", "shorts/", "watch/", "v/", "w/");
+    private static final List<String> SUBPATHS = Arrays.asList("embed/", "shorts/", "watch/", "v/", "w/");
 
     private YoutubeStreamLinkHandlerFactory() {
     }
@@ -223,7 +223,7 @@ public class YoutubeStreamLinkHandlerFactory extends LinkHandlerFactory {
     }
 
     private String getIdFromSubpathsInPath(String path) throws ParsingException {
-        for (final String subpath : subpaths) {
+        for (final String subpath : SUBPATHS) {
             if (path.startsWith(subpath)) {
                 String id = path.substring(subpath.length());
                 return assertIsId(id);
