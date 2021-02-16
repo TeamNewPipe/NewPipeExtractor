@@ -194,7 +194,7 @@ public class BandcampStreamExtractor extends StreamExtractor {
     @Nonnull
     @Override
     public String getHlsUrl() {
-        return null;
+        return "";
     }
 
     @Override
