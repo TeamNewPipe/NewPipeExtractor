@@ -16,13 +16,14 @@ import org.schabi.newpipe.extractor.stream.StreamExtractor;
 import org.schabi.newpipe.extractor.stream.StreamSegment;
 import org.schabi.newpipe.extractor.stream.StreamType;
 
-import javax.annotation.Nullable;
 import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
+
+import javax.annotation.Nullable;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
@@ -333,20 +334,6 @@ public class YoutubeStreamExtractorDefaultTest {
             ));
         }
         // @formatter:on
-        @Override
-        @Ignore("TODO fix")
-        @Test
-        public void testUploaderName() throws Exception {
-            super.testUploaderName();
-        }
-
-        @Override
-        @Ignore("TODO fix")
-        @Test
-        public void testMetaInfo() throws Exception {
-            super.testMetaInfo();
-        }
-
     }
 
 }
