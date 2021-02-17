@@ -358,9 +358,19 @@ public class YoutubeParsingHelper {
     }
 
     /**
-     * Only use in tests.
+     * <p>
+     * <b>Only use in tests.</b>
+     * </p>
      *
+     * <p>
      * Quick-and-dirty solution to reset global state in between test classes.
+     * </p>
+     * <p>
+     * This is needed for the mocks because in order to reach that state a network request has to
+     * be made. If the global state is not reset and the RecordingDownloader is used,
+     * then only the first test class has that request recorded. Meaning running the other
+     * tests with mocks will fail, because the mock is missing.
+     * </p>
      */
     public static void resetClientVersionAndKey() {
         clientVersion = null;
