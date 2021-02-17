@@ -59,7 +59,7 @@ public class YoutubePlaylistExtractorTest {
         }
 
         @Test(expected = ContentNotAvailableException.class)
-        @Ignore("TODO fix")
+        @Ignore("Broken, now invalid playlists redirect to youtube homepage")
         public void invalidId() throws Exception {
             final PlaylistExtractor extractor =
                     YouTube.getPlaylistExtractor("https://www.youtube.com/playlist?list=INVALID_ID");

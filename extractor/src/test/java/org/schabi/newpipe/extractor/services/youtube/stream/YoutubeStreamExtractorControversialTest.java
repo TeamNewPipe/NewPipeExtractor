@@ -21,7 +21,7 @@ import static org.schabi.newpipe.extractor.ServiceList.YouTube;
 /**
  * Test for {@link YoutubeStreamLinkHandlerFactory}
  */
-@Ignore("Video is not available anymore")
+@Ignore("Video is not available in specific countries. Someone else has to generate mocks")
 public class YoutubeStreamExtractorControversialTest extends DefaultStreamExtractorTest {
     private static final String RESOURCE_PATH = DownloaderFactory.RESOURCE_PATH + "services/youtube/extractor/stream/";
     private static final String ID = "T4XJQO3qol8";

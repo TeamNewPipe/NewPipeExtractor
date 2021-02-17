@@ -160,7 +160,7 @@ public class YoutubeStreamExtractorDefaultTest {
 
     }
 
-    @Ignore("TODO fix")
+    @Ignore("Test broken, video was made private")
     public static class RatingsDisabledTest extends DefaultStreamExtractorTest {
         private static final String ID = "HRKu0cvrr_o";
         private static final int TIMESTAMP = 17;
