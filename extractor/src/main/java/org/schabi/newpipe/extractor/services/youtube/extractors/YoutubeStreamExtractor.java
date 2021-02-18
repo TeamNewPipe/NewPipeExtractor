@@ -502,7 +502,7 @@ public class YoutubeStreamExtractor extends StreamExtractor {
             for (Map.Entry<String, ItagItem> entry : getItags(ADAPTIVE_FORMATS, ItagItem.ItagType.AUDIO).entrySet()) {
                 ItagItem itag = entry.getValue();
 
-                AudioStream audioStream = new AudioStream(entry.getKey(), itag.getMediaFormat(), itag.avgBitrate);
+                AudioStream audioStream = new AudioStream(entry.getKey(), itag);
                 if (!Stream.containSimilarStream(audioStream, audioStreams)) {
                     audioStreams.add(audioStream);
                 }
@@ -522,7 +522,7 @@ public class YoutubeStreamExtractor extends StreamExtractor {
             for (Map.Entry<String, ItagItem> entry : getItags(FORMATS, ItagItem.ItagType.VIDEO).entrySet()) {
                 ItagItem itag = entry.getValue();
 
-                VideoStream videoStream = new VideoStream(entry.getKey(), itag.getMediaFormat(), itag.resolutionString);
+                VideoStream videoStream = new VideoStream(entry.getKey(), false, itag);
                 if (!Stream.containSimilarStream(videoStream, videoStreams)) {
                     videoStreams.add(videoStream);
                 }
@@ -542,7 +542,7 @@ public class YoutubeStreamExtractor extends StreamExtractor {
             for (Map.Entry<String, ItagItem> entry : getItags(ADAPTIVE_FORMATS, ItagItem.ItagType.VIDEO_ONLY).entrySet()) {
                 ItagItem itag = entry.getValue();
 
-                VideoStream videoStream = new VideoStream(entry.getKey(), itag.getMediaFormat(), itag.resolutionString, true);
+                VideoStream videoStream = new VideoStream(entry.getKey(), true, itag);
                 if (!Stream.containSimilarStream(videoStream, videoOnlyStreams)) {
                     videoOnlyStreams.add(videoStream);
                 }
@@ -948,6 +948,21 @@ public class YoutubeStreamExtractor extends StreamExtractor {
                             streamUrl = cipher.get("url") + "&" + cipher.get("sp") + "="
                                     + deobfuscateSignature(cipher.get("s"));
                         }
+
+                        JsonObject initRange = formatData.getObject("initRange");
+                        JsonObject indexRange = formatData.getObject("indexRange");
+                        String mimeType = formatData.getString("mimeType", EMPTY_STRING);
+                        String codec = mimeType.contains("codecs") ? mimeType.split("\"")[1] : EMPTY_STRING;
+
+                        itagItem.setBitrate(formatData.getInt("bitrate"));
+                        itagItem.setWidth(formatData.getInt("width"));
+                        itagItem.setHeight(formatData.getInt("height"));
+                        itagItem.setInitStart(Integer.parseInt(initRange.getString("start", "-1")));
+                        itagItem.setInitEnd(Integer.parseInt(initRange.getString("end", "-1")));
+                        itagItem.setIndexStart(Integer.parseInt(indexRange.getString("start", "-1")));
+                        itagItem.setIndexEnd(Integer.parseInt(indexRange.getString("end", "-1")));
+                        itagItem.fps = formatData.getInt("fps");
+                        itagItem.setCodec(codec);
 
                         urlAndItags.put(streamUrl, itagItem);
                     }
