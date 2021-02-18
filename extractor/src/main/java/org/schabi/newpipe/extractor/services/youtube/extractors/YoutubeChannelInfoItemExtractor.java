@@ -5,6 +5,7 @@ import com.grack.nanojson.JsonObject;
 import org.schabi.newpipe.extractor.ListExtractor;
 import org.schabi.newpipe.extractor.channel.ChannelInfoItemExtractor;
 import org.schabi.newpipe.extractor.exceptions.ParsingException;
+import org.schabi.newpipe.extractor.services.youtube.YoutubeParsingHelper;
 import org.schabi.newpipe.extractor.services.youtube.linkHandler.YoutubeChannelLinkHandlerFactory;
 import org.schabi.newpipe.extractor.utils.Utils;
 
@@ -95,6 +96,11 @@ public class YoutubeChannelInfoItemExtractor implements ChannelInfoItemExtractor
         } catch (Exception e) {
             throw new ParsingException("Could not get stream count", e);
         }
+    }
+
+    @Override
+    public boolean isVerified() throws ParsingException {
+        return YoutubeParsingHelper.isVerified(channelInfoItem.getArray("ownerBadges"));
     }
 
     @Override

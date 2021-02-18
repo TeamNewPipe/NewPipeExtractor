@@ -20,6 +20,7 @@ public abstract class PlaylistExtractor extends ListExtractor<StreamInfoItem> {
     public abstract String getUploaderUrl() throws ParsingException;
     public abstract String getUploaderName() throws ParsingException;
     public abstract String getUploaderAvatarUrl() throws ParsingException;
+    public abstract boolean isUploaderVerified() throws ParsingException;
 
     public abstract long getStreamCount() throws ParsingException;
 

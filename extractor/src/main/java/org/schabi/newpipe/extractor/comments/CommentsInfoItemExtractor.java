@@ -53,4 +53,9 @@ public interface CommentsInfoItemExtractor extends InfoItemExtractor {
      * Whether the comment is pinned
      */
     boolean isPinned() throws ParsingException;
+
+    /**
+     * Whether the uploader is verified by the service
+     */
+    boolean isUploaderVerified() throws ParsingException;
 }

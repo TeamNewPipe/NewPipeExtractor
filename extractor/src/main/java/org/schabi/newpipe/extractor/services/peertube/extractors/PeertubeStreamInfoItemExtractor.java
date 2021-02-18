@@ -55,6 +55,11 @@ public class PeertubeStreamInfoItemExtractor implements StreamInfoItemExtractor 
     }
 
     @Override
+    public boolean isUploaderVerified() throws ParsingException {
+        return false;
+    }
+
+    @Override
     public String getUploaderName() throws ParsingException {
         return JsonUtils.getString(item, "account.displayName");
     }

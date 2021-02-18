@@ -27,5 +27,8 @@ public interface ChannelInfoItemExtractor extends InfoItemExtractor {
     String getDescription() throws ParsingException;
 
     long getSubscriberCount() throws ParsingException;
+
     long getStreamCount() throws ParsingException;
+
+    boolean isVerified() throws ParsingException;
 }

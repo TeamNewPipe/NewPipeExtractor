@@ -216,6 +216,14 @@ public class YoutubeChannelExtractor extends ChannelExtractor {
         return "";
     }
 
+    @Override
+    public boolean isVerified() throws ParsingException {
+        final JsonArray badges = initialData.getObject("header").getObject("c4TabbedHeaderRenderer")
+                .getArray("badges");
+
+        return YoutubeParsingHelper.isVerified(badges);
+    }
+
     @Nonnull
     @Override
     public InfoItemsPage<StreamInfoItem> getInitialPage() throws ExtractionException {

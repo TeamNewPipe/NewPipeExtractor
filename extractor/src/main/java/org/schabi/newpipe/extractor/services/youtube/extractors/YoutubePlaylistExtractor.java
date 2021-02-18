@@ -2,7 +2,6 @@ package org.schabi.newpipe.extractor.services.youtube.extractors;
 
 import com.grack.nanojson.JsonArray;
 import com.grack.nanojson.JsonObject;
-
 import org.schabi.newpipe.extractor.Page;
 import org.schabi.newpipe.extractor.StreamingService;
 import org.schabi.newpipe.extractor.downloader.Downloader;
@@ -20,15 +19,11 @@ import org.schabi.newpipe.extractor.stream.StreamInfoItemsCollector;
 import org.schabi.newpipe.extractor.stream.StreamType;
 import org.schabi.newpipe.extractor.utils.Utils;
 
-import java.io.IOException;
-
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
+import java.io.IOException;
 
-import static org.schabi.newpipe.extractor.services.youtube.YoutubeParsingHelper.fixThumbnailUrl;
-import static org.schabi.newpipe.extractor.services.youtube.YoutubeParsingHelper.getJsonResponse;
-import static org.schabi.newpipe.extractor.services.youtube.YoutubeParsingHelper.getTextFromObject;
-import static org.schabi.newpipe.extractor.services.youtube.YoutubeParsingHelper.getUrlFromNavigationEndpoint;
+import static org.schabi.newpipe.extractor.services.youtube.YoutubeParsingHelper.*;
 import static org.schabi.newpipe.extractor.utils.Utils.isNullOrEmpty;
 
 @SuppressWarnings("WeakerAccess")
@@ -139,6 +134,11 @@ public class YoutubePlaylistExtractor extends PlaylistExtractor {
     }
 
     @Override
+    public boolean isUploaderVerified() throws ParsingException {
+        return false;
+    }
+
+    @Override
     public long getStreamCount() throws ParsingException {
         try {
             final String viewsText = getTextFromObject(getPlaylistInfo().getArray("stats").getObject(0));
@@ -209,11 +209,11 @@ public class YoutubePlaylistExtractor extends PlaylistExtractor {
         final JsonArray ajaxJson = getJsonResponse(page.getUrl(), getExtractorLocalization());
 
         final JsonArray continuation = ajaxJson.getObject(1)
-            .getObject("response")
-            .getArray("onResponseReceivedActions")
-            .getObject(0)
-            .getObject("appendContinuationItemsAction")
-            .getArray("continuationItems");
+                .getObject("response")
+                .getArray("onResponseReceivedActions")
+                .getObject(0)
+                .getObject("appendContinuationItemsAction")
+                .getArray("continuationItems");
 
         collectStreamsFrom(collector, continuation);
 
@@ -228,10 +228,10 @@ public class YoutubePlaylistExtractor extends PlaylistExtractor {
         final JsonObject lastElement = contents.getObject(contents.size() - 1);
         if (lastElement.has("continuationItemRenderer")) {
             final String continuation = lastElement
-                .getObject("continuationItemRenderer")
-                .getObject("continuationEndpoint")
-                .getObject("continuationCommand")
-                .getString("token");
+                    .getObject("continuationItemRenderer")
+                    .getObject("continuationEndpoint")
+                    .getObject("continuationCommand")
+                    .getString("token");
             return new Page("https://www.youtube.com/browse_ajax?continuation=" + continuation);
         } else {
             return null;
@@ -309,6 +309,11 @@ public class YoutubePlaylistExtractor extends PlaylistExtractor {
             @Override
             public String getUploaderUrl() throws ParsingException {
                 return YoutubePlaylistExtractor.this.getUploaderUrl();
+            }
+
+            @Override
+            public boolean isUploaderVerified() {
+                return false;
             }
 
             @Nullable

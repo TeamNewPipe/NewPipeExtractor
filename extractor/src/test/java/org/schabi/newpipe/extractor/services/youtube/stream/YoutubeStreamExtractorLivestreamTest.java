@@ -45,6 +45,7 @@ public class YoutubeStreamExtractorLivestreamTest extends DefaultStreamExtractor
         return Arrays.asList("https://bit.ly/chilledcow-playlists",
                 "https://bit.ly/chilledcow-submissions");
     }
+    @Override public boolean expectedUploaderVerified() { return true; }
     @Override public long expectedLength() { return 0; }
     @Override public long expectedTimestamp() { return TIMESTAMP; }
     @Override public long expectedViewCountAtLeast() { return 0; }

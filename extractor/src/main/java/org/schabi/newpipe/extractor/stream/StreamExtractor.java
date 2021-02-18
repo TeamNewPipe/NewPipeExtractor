@@ -31,13 +31,12 @@ import org.schabi.newpipe.extractor.linkhandler.LinkHandler;
 import org.schabi.newpipe.extractor.localization.DateWrapper;
 import org.schabi.newpipe.extractor.utils.Parser;
 
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import java.io.IOException;
 import java.util.Collections;
 import java.util.List;
 import java.util.Locale;
-
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
 
 /**
  * Scrapes information from a video/audio streaming service (eg, YouTube).
@@ -170,6 +169,15 @@ public abstract class StreamExtractor extends Extractor {
      */
     @Nonnull
     public abstract String getUploaderName() throws ParsingException;
+
+    /**
+     * Whether the uploader has been verified by the service's provider.
+     * If there is no verification implemented, return <code>false</code>.
+     *
+     * @return whether the uploader has been verified by the service's provider
+     * @throws ParsingException
+     */
+    public abstract boolean isUploaderVerified() throws ParsingException;
 
     /**
      * The url to the image file/profile picture/avatar of the creator/uploader of the stream.
@@ -479,8 +487,8 @@ public abstract class StreamExtractor extends Extractor {
     public abstract String getSupportInfo() throws ParsingException;
 
     /**
-     *  The list of stream segments by timestamps for the stream.
-     *  If the segment list is not available you can simply return an empty list.
+     * The list of stream segments by timestamps for the stream.
+     * If the segment list is not available you can simply return an empty list.
      *
      * @return The list of segments of the stream or an empty list.
      * @throws ParsingException
@@ -495,7 +503,8 @@ public abstract class StreamExtractor extends Extractor {
      * or further information on the topic (e.g. hints that the video might contain conspiracy theories
      * or contains information about a current health situation like the Covid-19 pandemic).
      * </p>
- *     The meta information often contains links to external sources like Wikipedia or the WHO.
+     * The meta information often contains links to external sources like Wikipedia or the WHO.
+     *
      * @return The meta info of the stream or an empty List if not provided.
      * @throws ParsingException
      */

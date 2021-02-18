@@ -12,6 +12,7 @@ public class CommentsInfoItem extends InfoItem {
     private String uploaderName;
     private String uploaderAvatarUrl;
     private String uploaderUrl;
+    private boolean uploaderVerified;
     private String textualUploadDate;
     @Nullable
     private DateWrapper uploadDate;
@@ -102,5 +103,13 @@ public class CommentsInfoItem extends InfoItem {
 
     public void setPinned(boolean pinned) {
         this.pinned = pinned;
+    }
+
+    public void setUploaderVerified(boolean uploaderVerified) {
+        this.uploaderVerified = uploaderVerified;
+    }
+
+    public boolean isUploaderVerified() {
+        return uploaderVerified;
     }
 }

@@ -4,7 +4,6 @@ import com.grack.nanojson.JsonArray;
 import com.grack.nanojson.JsonObject;
 import com.grack.nanojson.JsonParser;
 import com.grack.nanojson.JsonParserException;
-
 import org.schabi.newpipe.extractor.Page;
 import org.schabi.newpipe.extractor.StreamingService;
 import org.schabi.newpipe.extractor.channel.ChannelExtractor;
@@ -17,9 +16,8 @@ import org.schabi.newpipe.extractor.services.media_ccc.linkHandler.MediaCCCConfe
 import org.schabi.newpipe.extractor.stream.StreamInfoItem;
 import org.schabi.newpipe.extractor.stream.StreamInfoItemsCollector;
 
-import java.io.IOException;
-
 import javax.annotation.Nonnull;
+import java.io.IOException;
 
 public class MediaCCCConferenceExtractor extends ChannelExtractor {
     private JsonObject conferenceData;
@@ -67,6 +65,11 @@ public class MediaCCCConferenceExtractor extends ChannelExtractor {
     @Override
     public String getParentChannelAvatarUrl() throws ParsingException {
         return "";
+    }
+
+    @Override
+    public boolean isVerified() throws ParsingException {
+        return false;
     }
 
     @Nonnull

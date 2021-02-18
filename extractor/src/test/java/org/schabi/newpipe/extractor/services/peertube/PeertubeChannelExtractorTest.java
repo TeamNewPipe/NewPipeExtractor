@@ -1,7 +1,6 @@
 package org.schabi.newpipe.extractor.services.peertube;
 
 import org.junit.BeforeClass;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.schabi.newpipe.downloader.DownloaderTestImpl;
 import org.schabi.newpipe.extractor.NewPipe;
@@ -119,6 +118,11 @@ public class PeertubeChannelExtractorTest {
         public void testSubscriberCount() throws ParsingException {
             assertTrue("Wrong subscriber count", extractor.getSubscriberCount() >= 230);
         }
+
+        @Override
+        public void testVerified() throws Exception {
+            assertFalse(extractor.isVerified());
+        }
     }
 
     public static class ChatSceptique implements BaseChannelExtractorTest {
@@ -230,6 +234,11 @@ public class PeertubeChannelExtractorTest {
         @Test
         public void testSubscriberCount() throws ParsingException {
             assertTrue("Wrong subscriber count", extractor.getSubscriberCount() >= 700);
+        }
+
+        @Override
+        public void testVerified() throws Exception {
+            assertFalse(extractor.isVerified());
         }
     }
 }

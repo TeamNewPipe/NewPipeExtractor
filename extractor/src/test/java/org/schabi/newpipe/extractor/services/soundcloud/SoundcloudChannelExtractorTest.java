@@ -101,6 +101,11 @@ public class SoundcloudChannelExtractorTest {
         public void testSubscriberCount() {
             assertTrue("Wrong subscriber count", extractor.getSubscriberCount() >= 1e6);
         }
+
+        @Override
+        public void testVerified() throws Exception {
+            assertTrue(extractor.isVerified());
+        }
     }
 
     public static class DubMatix implements BaseChannelExtractorTest {
@@ -194,6 +199,11 @@ public class SoundcloudChannelExtractorTest {
         @Test
         public void testSubscriberCount() {
             assertTrue("Wrong subscriber count", extractor.getSubscriberCount() >= 2e6);
+        }
+
+        @Override
+        public void testVerified() throws Exception {
+            assertTrue(extractor.isVerified());
         }
     }
 }
