@@ -28,6 +28,7 @@ public class VideoStream extends Stream {
     public final boolean isVideoOnly;
 
     // Fields for Dash
+    private int itag;
     private int bitrate;
     private int initStart;
     private int initEnd;
@@ -36,6 +37,7 @@ public class VideoStream extends Stream {
     private int width;
     private int height;
     private int fps;
+    private String quality;
     private String codec;
 
     public VideoStream(String url, MediaFormat format, String resolution) {
@@ -48,6 +50,7 @@ public class VideoStream extends Stream {
 
     public VideoStream(String url, boolean isVideoOnly, ItagItem itag) {
         this(url, itag.getMediaFormat(), itag.resolutionString, isVideoOnly);
+        this.itag = itag.id;
         this.bitrate = itag.getBitrate();
         this.initStart = itag.getInitStart();
         this.initEnd = itag.getInitEnd();
@@ -56,6 +59,7 @@ public class VideoStream extends Stream {
         this.codec = itag.getCodec();
         this.height = itag.getHeight();
         this.width = itag.getWidth();
+        this.quality = itag.getQuality();
         this.fps = itag.fps;
     }
 
@@ -96,6 +100,10 @@ public class VideoStream extends Stream {
         return isVideoOnly;
     }
 
+    public int getItag() {
+        return itag;
+    }
+
     public int getBitrate() {
         return bitrate;
     }
@@ -126,6 +134,10 @@ public class VideoStream extends Stream {
 
     public int getFps() {
         return fps;
+    }
+
+    public String getQuality() {
+        return quality;
     }
 
     public String getCodec() {

@@ -970,6 +970,7 @@ public class YoutubeStreamExtractor extends StreamExtractor {
                         itagItem.setIndexStart(Integer.parseInt(indexRange.getString("start", "-1")));
                         itagItem.setIndexEnd(Integer.parseInt(indexRange.getString("end", "-1")));
                         itagItem.fps = formatData.getInt("fps");
+                        itagItem.setQuality(formatData.getString("quality"));
                         itagItem.setCodec(codec);
 
                         urlAndItags.put(streamUrl, itagItem);

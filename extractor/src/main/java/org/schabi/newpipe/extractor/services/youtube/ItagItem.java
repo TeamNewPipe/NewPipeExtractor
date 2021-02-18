@@ -163,6 +163,7 @@ public class ItagItem {
     private int initEnd;
     private int indexStart;
     private int indexEnd;
+    private String quality;
     private String codec;
 
     public int getBitrate() {
@@ -219,6 +220,14 @@ public class ItagItem {
 
     public void setIndexEnd(int indexEnd) {
         this.indexEnd = indexEnd;
+    }
+
+    public String getQuality() {
+        return quality;
+    }
+
+    public void setQuality(String quality) {
+        this.quality = quality;
     }
 
     public String getCodec() {
