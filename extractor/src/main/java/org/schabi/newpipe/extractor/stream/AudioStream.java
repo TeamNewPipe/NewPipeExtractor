@@ -27,11 +27,13 @@ public class AudioStream extends Stream {
     public int average_bitrate = -1;
 
     // Fields for Dash
+    private int itag;
     private int bitrate;
     private int initStart;
     private int initEnd;
     private int indexStart;
     private int indexEnd;
+    private String quality;
     private String codec;
 
     /**
@@ -52,6 +54,8 @@ public class AudioStream extends Stream {
      */
     public AudioStream(String url, ItagItem itag) {
         this(url, itag.getMediaFormat(), itag.avgBitrate);
+        this.itag = itag.id;
+        this.quality = itag.getQuality();
         this.bitrate = itag.getBitrate();
         this.initStart = itag.getInitStart();
         this.initEnd = itag.getInitEnd();
@@ -74,6 +78,10 @@ public class AudioStream extends Stream {
         return average_bitrate;
     }
 
+    public int getItag() {
+        return itag;
+    }
+
     public int getBitrate() {
         return bitrate;
     }
@@ -92,6 +100,10 @@ public class AudioStream extends Stream {
 
     public int getIndexEnd() {
         return indexEnd;
+    }
+
+    public String getQuality() {
+        return quality;
     }
 
     public String getCodec() {
