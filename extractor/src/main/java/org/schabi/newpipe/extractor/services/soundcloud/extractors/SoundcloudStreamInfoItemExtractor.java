@@ -44,6 +44,11 @@ public class SoundcloudStreamInfoItemExtractor implements StreamInfoItemExtracto
     }
 
     @Override
+    public boolean isUploaderVerified() throws ParsingException {
+        return itemObject.getObject("user").getBoolean("verified");
+    }
+
+    @Override
     public String getTextualUploadDate() {
         return itemObject.getString("created_at");
     }
@@ -64,8 +69,7 @@ public class SoundcloudStreamInfoItemExtractor implements StreamInfoItemExtracto
         if (artworkUrl.isEmpty()) {
             artworkUrl = itemObject.getObject("user").getString("avatar_url");
         }
-        String artworkUrlBetterResolution = artworkUrl.replace("large.jpg", "crop.jpg");
-        return artworkUrlBetterResolution;
+        return artworkUrl.replace("large.jpg", "crop.jpg");
     }
 
     @Override

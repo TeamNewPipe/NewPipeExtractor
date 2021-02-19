@@ -27,15 +27,17 @@ class MockDownloader extends Downloader {
     public MockDownloader(@Nonnull String path) throws IOException {
         this.path = path;
         this.mocks = new HashMap<>();
-        File folder = new File(path);
-        for (File file : folder.listFiles()) {
-            if (file.getName().startsWith(RecordingDownloader.FILE_NAME_PREFIX)) {
-                final FileReader reader = new FileReader(file);
-                final TestRequestResponse response = new GsonBuilder()
-                        .create()
-                        .fromJson(reader, TestRequestResponse.class);
-                reader.close();
-                mocks.put(response.getRequest(), response.getResponse());
+        final File[] files = new File(path).listFiles();
+        if (files != null) {
+            for (File file : files) {
+                if (file.getName().startsWith(RecordingDownloader.FILE_NAME_PREFIX)) {
+                    final FileReader reader = new FileReader(file);
+                    final TestRequestResponse response = new GsonBuilder()
+                            .create()
+                            .fromJson(reader, TestRequestResponse.class);
+                    reader.close();
+                    mocks.put(response.getRequest(), response.getResponse());
+                }
             }
         }
     }

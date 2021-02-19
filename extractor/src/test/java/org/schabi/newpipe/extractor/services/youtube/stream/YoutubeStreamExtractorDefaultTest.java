@@ -103,6 +103,7 @@ public class YoutubeStreamExtractorDefaultTest {
             return Arrays.asList("https://www.youtube.com/channel/UC7l23W7gFi4Uho6WSzckZRA",
                     "https://www.handcraftpictures.com/");
         }
+        @Override public boolean expectedUploaderVerified() { return true; }
         @Override public long expectedLength() { return 381; }
         @Override public long expectedTimestamp() { return TIMESTAMP; }
         @Override public long expectedViewCountAtLeast() { return 26682500; }
@@ -150,6 +151,7 @@ public class YoutubeStreamExtractorDefaultTest {
         @Nullable @Override public String expectedTextualUploadDate() { return "2018-06-19"; }
         @Override public long expectedLikeCountAtLeast() { return 340100; }
         @Override public long expectedDislikeCountAtLeast() { return 18700; }
+        @Override public boolean expectedUploaderVerified() { return true; }
         // @formatter:on
         @Override
         @Test
@@ -271,6 +273,7 @@ public class YoutubeStreamExtractorDefaultTest {
         @Override public String expectedUploaderName() { return "maiLab"; }
         @Override public String expectedUploaderUrl() { return "https://www.youtube.com/channel/UCyHDQ5C6z1NDmJ4g6SerW8g"; }
         @Override public List<String> expectedDescriptionContains()  {return Arrays.asList("Vitamin", "2:44", "Was ist Vitamin D?");}
+        @Override public boolean expectedUploaderVerified() { return true; }
         @Override public long expectedLength() { return 1010; }
         @Override public long expectedViewCountAtLeast() { return 815500; }
         @Nullable @Override public String expectedUploadDate() { return "2020-11-18 00:00:00.000"; }
@@ -339,6 +342,7 @@ public class YoutubeStreamExtractorDefaultTest {
                     Collections.singletonList("Wikipedia (German)")
             ));
         }
+        @Override public boolean expectedUploaderVerified() { return true; }
         // @formatter:on
         @Override
         @Ignore("TODO fix")

@@ -59,6 +59,12 @@ public class ChannelInfoItemsCollector extends InfoItemsCollector<ChannelInfoIte
         } catch (Exception e) {
             addError(e);
         }
+        try {
+            resultItem.setVerified(extractor.isVerified());
+        } catch (Exception e) {
+            addError(e);
+        }
+
         return resultItem;
     }
 }

@@ -126,6 +126,11 @@ public class MediaCCCLiveStreamExtractor extends StreamExtractor {
         return conference.getString("conference");
     }
 
+    @Override
+    public boolean isUploaderVerified() throws ParsingException {
+        return false;
+    }
+
     @Nonnull
     @Override
     public String getUploaderAvatarUrl() {
@@ -180,7 +185,7 @@ public class MediaCCCLiveStreamExtractor extends StreamExtractor {
         for (int s = 0; s < room.getArray("streams").size(); s++) {
             final JsonObject stream = room.getArray("streams").getObject(s);
             if (stream.getString("type").equals("audio")) {
-                for (final String type :stream.getObject("urls").keySet()) {
+                for (final String type : stream.getObject("urls").keySet()) {
                     final JsonObject url = stream.getObject("urls").getObject(type);
                     audioStreams.add(new AudioStream(url.getString("url"), MediaFormat.getFromSuffix(type), -1));
                 }
@@ -197,7 +202,7 @@ public class MediaCCCLiveStreamExtractor extends StreamExtractor {
             if (stream.getString("type").equals("video")) {
                 final String resolution = stream.getArray("videoSize").getInt(0) + "x"
                         + stream.getArray("videoSize").getInt(1);
-                for (final String type :stream.getObject("urls").keySet()) {
+                for (final String type : stream.getObject("urls").keySet()) {
                     if (!type.equals("hls")) {
                         final JsonObject url = stream.getObject("urls").getObject(type);
                         videoStreams.add(new VideoStream(
@@ -218,7 +223,7 @@ public class MediaCCCLiveStreamExtractor extends StreamExtractor {
 
     @Nonnull
     @Override
-    public List<SubtitlesStream> getSubtitlesDefault(){
+    public List<SubtitlesStream> getSubtitlesDefault() {
         return Collections.emptyList();
     }
 

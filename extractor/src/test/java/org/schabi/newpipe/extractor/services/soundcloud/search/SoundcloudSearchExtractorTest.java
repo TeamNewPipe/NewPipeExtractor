@@ -8,14 +8,19 @@ import org.schabi.newpipe.extractor.InfoItem;
 import org.schabi.newpipe.extractor.ListExtractor.InfoItemsPage;
 import org.schabi.newpipe.extractor.NewPipe;
 import org.schabi.newpipe.extractor.StreamingService;
+import org.schabi.newpipe.extractor.channel.ChannelInfoItem;
+import org.schabi.newpipe.extractor.exceptions.ExtractionException;
 import org.schabi.newpipe.extractor.search.SearchExtractor;
 import org.schabi.newpipe.extractor.services.DefaultSearchExtractorTest;
 
 import javax.annotation.Nullable;
+import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
+import java.util.List;
 
 import static java.util.Collections.singletonList;
+import static org.junit.Assert.assertTrue;
 import static org.schabi.newpipe.extractor.ServiceList.SoundCloud;
 import static org.schabi.newpipe.extractor.services.DefaultTests.assertNoDuplicatedItems;
 import static org.schabi.newpipe.extractor.services.soundcloud.linkHandler.SoundcloudSearchQueryHandlerFactory.*;
@@ -137,6 +142,42 @@ public class SoundcloudSearchExtractorTest {
             return URLEncoder.encode(value, UTF_8);
         } catch (UnsupportedEncodingException e) {
             throw new RuntimeException(e);
+        }
+    }
+
+    public static class UserVerified extends DefaultSearchExtractorTest {
+        private static SearchExtractor extractor;
+        private static final String QUERY = "David Guetta";
+
+        @BeforeClass
+        public static void setUp() throws Exception {
+            NewPipe.init(DownloaderTestImpl.getInstance());
+            extractor = SoundCloud.getSearchExtractor(QUERY, singletonList(USERS), "");
+            extractor.fetchPage();
+        }
+
+        @Override public SearchExtractor extractor() { return extractor; }
+        @Override public StreamingService expectedService() { return SoundCloud; }
+        @Override public String expectedName() { return QUERY; }
+        @Override public String expectedId() { return QUERY; }
+        @Override public String expectedUrlContains() { return "soundcloud.com/search/users?q=" + urlEncode(QUERY); }
+        @Override public String expectedOriginalUrlContains() { return "soundcloud.com/search/users?q=" + urlEncode(QUERY); }
+        @Override public String expectedSearchString() { return QUERY; }
+        @Nullable @Override public String expectedSearchSuggestion() { return null; }
+
+        @Override public InfoItem.InfoType expectedInfoItemType() { return InfoItem.InfoType.CHANNEL; }
+
+        @Test
+        public void testIsVerified() throws IOException, ExtractionException {
+            final List<InfoItem> items = extractor.getInitialPage().getItems();
+            boolean verified = false;
+            for (InfoItem item : items) {
+                if (item.getUrl().equals("https://soundcloud.com/davidguetta")) {
+                    verified = ((ChannelInfoItem) item).isVerified();
+                    break;
+                }
+            }
+            assertTrue(verified);
         }
     }
 }

@@ -21,20 +21,46 @@ package org.schabi.newpipe.extractor.stream;
  */
 
 import org.schabi.newpipe.extractor.MediaFormat;
+import org.schabi.newpipe.extractor.services.youtube.ItagItem;
 
 public class VideoStream extends Stream {
     public final String resolution;
     public final boolean isVideoOnly;
 
+    // Fields for Dash
+    private int itag;
+    private int bitrate;
+    private int initStart;
+    private int initEnd;
+    private int indexStart;
+    private int indexEnd;
+    private int width;
+    private int height;
+    private int fps;
+    private String quality;
+    private String codec;
 
     public VideoStream(String url, MediaFormat format, String resolution) {
         this(url, format, resolution, false);
     }
 
     public VideoStream(String url, MediaFormat format, String resolution, boolean isVideoOnly) {
-        super(url, format);
-        this.resolution = resolution;
-        this.isVideoOnly = isVideoOnly;
+        this(url, null, format, resolution, isVideoOnly);
+    }
+
+    public VideoStream(String url, boolean isVideoOnly, ItagItem itag) {
+        this(url, itag.getMediaFormat(), itag.resolutionString, isVideoOnly);
+        this.itag = itag.id;
+        this.bitrate = itag.getBitrate();
+        this.initStart = itag.getInitStart();
+        this.initEnd = itag.getInitEnd();
+        this.indexStart = itag.getIndexStart();
+        this.indexEnd = itag.getIndexEnd();
+        this.codec = itag.getCodec();
+        this.height = itag.getHeight();
+        this.width = itag.getWidth();
+        this.quality = itag.getQuality();
+        this.fps = itag.fps;
     }
 
     public VideoStream(String url, String torrentUrl, MediaFormat format, String resolution) {
@@ -72,5 +98,49 @@ public class VideoStream extends Stream {
      */
     public boolean isVideoOnly() {
         return isVideoOnly;
+    }
+
+    public int getItag() {
+        return itag;
+    }
+
+    public int getBitrate() {
+        return bitrate;
+    }
+
+    public int getInitStart() {
+        return initStart;
+    }
+
+    public int getInitEnd() {
+        return initEnd;
+    }
+
+    public int getIndexStart() {
+        return indexStart;
+    }
+
+    public int getIndexEnd() {
+        return indexEnd;
+    }
+
+    public int getWidth() {
+        return width;
+    }
+
+    public int getHeight() {
+        return height;
+    }
+
+    public int getFps() {
+        return fps;
+    }
+
+    public String getQuality() {
+        return quality;
+    }
+
+    public String getCodec() {
+        return codec;
     }
 }

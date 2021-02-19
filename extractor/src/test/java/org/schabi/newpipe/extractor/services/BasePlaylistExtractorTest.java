@@ -7,4 +7,5 @@ public interface BasePlaylistExtractorTest extends BaseListExtractorTest {
     void testUploaderName() throws Exception;
     void testUploaderAvatarUrl() throws Exception;
     void testStreamCount() throws Exception;
+    void testUploaderVerified() throws Exception;
 }

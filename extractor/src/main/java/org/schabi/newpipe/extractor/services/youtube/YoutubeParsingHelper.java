@@ -358,9 +358,19 @@ public class YoutubeParsingHelper {
     }
 
     /**
-     * Only use in tests.
+     * <p>
+     * <b>Only use in tests.</b>
+     * </p>
      *
+     * <p>
      * Quick-and-dirty solution to reset global state in between test classes.
+     * </p>
+     * <p>
+     * This is needed for the mocks because in order to reach that state a network request has to
+     * be made. If the global state is not reset and the RecordingDownloader is used,
+     * then only the first test class has that request recorded. Meaning running the other
+     * tests with mocks will fail, because the mock is missing.
+     * </p>
      */
     public static void resetClientVersionAndKey() {
         clientVersion = null;
@@ -793,5 +803,22 @@ public class YoutubeParsingHelper {
             return url.split("cache:")[1];
         }
         return url;
+    }
+
+    public static boolean isVerified(final JsonArray badges) {
+        if (Utils.isNullOrEmpty(badges)) {
+            return false;
+        }
+
+        for (Object badge : badges) {
+            final String style = ((JsonObject) badge).getObject("metadataBadgeRenderer")
+                    .getString("style");
+            if (style != null && (style.equals("BADGE_STYLE_TYPE_VERIFIED")
+                    || style.equals("BADGE_STYLE_TYPE_VERIFIED_ARTIST"))) {
+                return true;
+            }
+        }
+
+        return false;
     }
 }

@@ -41,6 +41,7 @@ public class YoutubeStreamExtractorAgeRestrictedTest extends DefaultStreamExtrac
     @Override public StreamType expectedStreamType() { return StreamType.VIDEO_STREAM; }
     @Override public String expectedUploaderName() { return "EpicFiveTV"; }
     @Override public String expectedUploaderUrl() { return "https://www.youtube.com/channel/UCuPUHlLP5POZphOIrjrNxiw"; }
+    @Override public boolean expectedUploaderVerified() { return true; }
     @Override public List<String> expectedDescriptionContains() { return Arrays.asList("http://instagram.com/Ruben_Sole", "AVN"); }
     @Override public long expectedLength() { return 1790; }
     @Override public long expectedTimestamp() { return TIMESTAMP; }

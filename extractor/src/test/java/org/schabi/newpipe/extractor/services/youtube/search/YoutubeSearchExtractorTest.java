@@ -13,13 +13,18 @@ import org.schabi.newpipe.extractor.services.DefaultSearchExtractorTest;
 import org.schabi.newpipe.extractor.services.youtube.YoutubeParsingHelper;
 import org.schabi.newpipe.extractor.stream.Description;
 
+import org.schabi.newpipe.downloader.DownloaderTestImpl;
+import org.schabi.newpipe.extractor.channel.ChannelInfoItem;
+import org.schabi.newpipe.extractor.exceptions.ExtractionException;
+
+import javax.annotation.Nullable;
+
+import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
-
-import javax.annotation.Nullable;
 
 import static java.util.Collections.singletonList;
 import static junit.framework.TestCase.assertFalse;
@@ -31,7 +36,6 @@ import static org.schabi.newpipe.extractor.services.DefaultTests.assertNoDuplica
 import static org.schabi.newpipe.extractor.services.youtube.linkHandler.YoutubeSearchQueryHandlerFactory.CHANNELS;
 import static org.schabi.newpipe.extractor.services.youtube.linkHandler.YoutubeSearchQueryHandlerFactory.PLAYLISTS;
 import static org.schabi.newpipe.extractor.services.youtube.linkHandler.YoutubeSearchQueryHandlerFactory.VIDEOS;
-import static org.schabi.newpipe.extractor.utils.Utils.EMPTY_STRING;
 
 public class YoutubeSearchExtractorTest {
 
@@ -269,4 +273,41 @@ public class YoutubeSearchExtractorTest {
         @Override public String expectedOriginalUrlContains() throws Exception { return "youtube.com/results?search_query=" + QUERY; }
 
     }
+
+    public static class ChannelVerified extends DefaultSearchExtractorTest {
+        private static SearchExtractor extractor;
+        private static final String QUERY = "bbc";
+
+        @BeforeClass
+        public static void setUp() throws Exception {
+            NewPipe.init(DownloaderTestImpl.getInstance());
+            extractor = YouTube.getSearchExtractor(QUERY, singletonList(CHANNELS), "");
+            extractor.fetchPage();
+        }
+
+        @Override public SearchExtractor extractor() { return extractor; }
+        @Override public StreamingService expectedService() { return YouTube; }
+        @Override public String expectedName() { return QUERY; }
+        @Override public String expectedId() { return QUERY; }
+        @Override public String expectedUrlContains() { return "youtube.com/results?search_query=" + QUERY; }
+        @Override public String expectedOriginalUrlContains() { return "youtube.com/results?search_query=" + QUERY; }
+        @Override public String expectedSearchString() { return QUERY; }
+        @Nullable @Override public String expectedSearchSuggestion() { return null; }
+        @Override public InfoItem.InfoType expectedInfoItemType() { return InfoItem.InfoType.CHANNEL; }
+
+        @Test
+        public void testAtLeastOneVerified() throws IOException, ExtractionException {
+            final List<InfoItem> items = extractor.getInitialPage().getItems();
+            boolean verified = false;
+            for (InfoItem item : items) {
+                if (((ChannelInfoItem) item).isVerified()) {
+                    verified = true;
+                    break;
+                }
+            }
+
+            assertTrue(verified);
+        }
+    }
+
 }

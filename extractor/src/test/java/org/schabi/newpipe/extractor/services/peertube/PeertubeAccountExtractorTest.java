@@ -104,6 +104,11 @@ public class PeertubeAccountExtractorTest {
         public void testSubscriberCount() throws ParsingException {
             assertTrue("Wrong subscriber count", extractor.getSubscriberCount() >= 500);
         }
+
+        @Override
+        public void testVerified() throws Exception {
+            assertFalse(extractor.isVerified());
+        }
     }
 
     public static class FreeSoftwareFoundation implements BaseChannelExtractorTest {
@@ -199,6 +204,11 @@ public class PeertubeAccountExtractorTest {
         @Test
         public void testSubscriberCount() throws ParsingException {
             assertTrue("Wrong subscriber count", extractor.getSubscriberCount() >= 100);
+        }
+
+        @Override
+        public void testVerified() throws Exception {
+            assertFalse(extractor.isVerified());
         }
     }
 }
