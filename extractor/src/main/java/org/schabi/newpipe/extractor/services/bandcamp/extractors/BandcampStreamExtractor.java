@@ -311,7 +311,7 @@ public class BandcampStreamExtractor extends StreamExtractor {
     public List<String> getTags() {
         final Elements tagElements = document.getElementsByAttributeValue("itemprop", "keywords");
 
-        final ArrayList<String> tags = new ArrayList<>();
+        final List<String> tags = new ArrayList<>();
 
         for (final Element e : tagElements) {
             tags.add(e.text());

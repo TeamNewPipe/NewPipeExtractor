@@ -47,8 +47,6 @@ public class BandcampSuggestionExtractor extends SuggestionExtractor {
 
             return suggestions;
         } catch (final JsonParserException e) {
-            e.printStackTrace();
-
             return Collections.emptyList();
         }
 
