@@ -94,6 +94,11 @@ public class BandcampChannelExtractor extends ChannelExtractor {
         return null;
     }
 
+    @Override
+    public boolean isVerified() throws ParsingException {
+        return false;
+    }
+
     @Nonnull
     @Override
     public InfoItemsPage<StreamInfoItem> getInitialPage() throws ParsingException {

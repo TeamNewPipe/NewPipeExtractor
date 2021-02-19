@@ -79,6 +79,11 @@ public class BandcampRadioInfoItemExtractor implements StreamInfoItemExtractor {
     }
 
     @Override
+    public boolean isUploaderVerified() throws ParsingException {
+        return false;
+    }
+
+    @Override
     public boolean isAd() {
         return false;
     }

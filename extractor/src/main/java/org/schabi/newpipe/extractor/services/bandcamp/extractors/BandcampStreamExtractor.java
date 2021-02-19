@@ -95,6 +95,11 @@ public class BandcampStreamExtractor extends StreamExtractor {
         return albumJson.getString("artist");
     }
 
+    @Override
+    public boolean isUploaderVerified() throws ParsingException {
+        return false;
+    }
+
     @Nullable
     @Override
     public String getTextualUploadDate() {

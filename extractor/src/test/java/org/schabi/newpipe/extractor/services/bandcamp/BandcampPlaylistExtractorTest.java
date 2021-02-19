@@ -132,6 +132,11 @@ public class BandcampPlaylistExtractorTest {
             assertEquals(5, extractor.getStreamCount());
         }
 
+        @Override
+        public void testUploaderVerified() throws Exception {
+            assertFalse(extractor.isUploaderVerified());
+        }
+
         @Test
         public void testInitialPage() throws IOException, ExtractionException {
             assertNotNull(extractor.getInitialPage().getItems().get(0));

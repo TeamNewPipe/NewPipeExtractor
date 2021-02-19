@@ -50,4 +50,9 @@ public class BandcampChannelInfoItemExtractor implements ChannelInfoItemExtracto
     public long getStreamCount() {
         return -1;
     }
+
+    @Override
+    public boolean isVerified() throws ParsingException {
+        return false;
+    }
 }

@@ -58,6 +58,11 @@ public class BandcampChannelExtractorTest implements BaseChannelExtractorTest {
     }
 
     @Override
+    public void testVerified() throws Exception {
+        assertFalse(extractor.isVerified());
+    }
+
+    @Override
     public void testRelatedItems() throws Exception {
         // not implemented
     }
