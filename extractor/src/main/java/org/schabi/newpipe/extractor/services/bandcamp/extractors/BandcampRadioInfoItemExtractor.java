@@ -14,7 +14,7 @@ import static org.schabi.newpipe.extractor.services.bandcamp.extractors.Bandcamp
 
 public class BandcampRadioInfoItemExtractor implements StreamInfoItemExtractor {
 
-    private JsonObject show;
+    private final JsonObject show;
 
     public BandcampRadioInfoItemExtractor(final JsonObject radioShow) {
         show = radioShow;

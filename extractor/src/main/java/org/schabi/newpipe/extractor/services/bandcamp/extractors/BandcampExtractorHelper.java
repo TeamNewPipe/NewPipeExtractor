@@ -43,7 +43,7 @@ public class BandcampExtractorHelper {
 
     /**
      * Translate all these parameters together to the URL of the corresponding album or track
-     * using the mobile api
+     * using the mobile API
      */
     public static String getStreamUrlFromIds(final long bandId, final long itemId, final String itemType)
             throws ParsingException {
@@ -51,7 +51,7 @@ public class BandcampExtractorHelper {
         try {
             final String jsonString = NewPipe.getDownloader().get(
                     "https://bandcamp.com/api/mobile/22/tralbum_details?band_id=" + bandId
-                            + "&tralbum_id=" + itemId + "&tralbum_type=" + itemType.substring(0, 1))
+                            + "&tralbum_id=" + itemId + "&tralbum_type=" + itemType.charAt(0))
                     .responseBody();
 
             return JsonParser.object().from(jsonString).getString("bandcamp_url").replace("http://", "https://");
@@ -88,7 +88,7 @@ public class BandcampExtractorHelper {
 
         }
 
-        return String.valueOf(result);
+        return result.toString();
     }
 
     /**

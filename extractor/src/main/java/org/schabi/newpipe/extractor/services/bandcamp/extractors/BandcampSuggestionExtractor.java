@@ -37,7 +37,7 @@ public class BandcampSuggestionExtractor extends SuggestionExtractor {
             final JsonArray jsonArray = fuzzyResults.getObject("auto")
                     .getArray("results");
 
-            final ArrayList<String> suggestions = new ArrayList<>();
+            final List<String> suggestions = new ArrayList<>();
 
             for (final Object fuzzyResult : jsonArray) {
                 final String res = ((JsonObject) fuzzyResult).getString("name");
@@ -51,7 +51,6 @@ public class BandcampSuggestionExtractor extends SuggestionExtractor {
 
             return Collections.emptyList();
         }
-
 
     }
 }
