@@ -148,6 +148,15 @@ public class BandcampExtractorHelper {
         }
     }
 
+    /**
+     * Whether the URL points to a radio kiosk.
+     * @param url the URL to check
+     * @return true if the URL is <code>https://bandcamp.com/?show=SHOW_ID</code>
+     */
+    public static boolean isRadioUrl(final String url) {
+        return url.toLowerCase().matches("https?://bandcamp\\.com/\\?show=\\d+");
+    }
+
     static DateWrapper parseDate(final String textDate) throws ParsingException {
         try {
             final ZonedDateTime zonedDateTime = ZonedDateTime.parse(

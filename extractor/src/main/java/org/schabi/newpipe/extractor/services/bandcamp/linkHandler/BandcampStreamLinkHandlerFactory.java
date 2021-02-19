@@ -20,7 +20,7 @@ public class BandcampStreamLinkHandlerFactory extends LinkHandlerFactory {
      */
     @Override
     public String getId(final String url) throws ParsingException {
-        if (url.matches("https?://bandcamp\\.com/\\?show=\\d+")) {
+        if (BandcampExtractorHelper.isRadioUrl(url)) {
             return url.split("bandcamp.com/\\?show=")[1];
         } else {
             return getUrl(url);
@@ -48,7 +48,7 @@ public class BandcampStreamLinkHandlerFactory extends LinkHandlerFactory {
     public boolean onAcceptUrl(final String url) throws ParsingException {
 
         // Accept Bandcamp radio
-        if (url.toLowerCase().matches("https?://bandcamp\\.com/\\?show=\\d+")) return true;
+        if (BandcampExtractorHelper.isRadioUrl(url)) return true;
 
         // Don't accept URLs that don't point to a track
         if (!url.toLowerCase().matches("https?://.+\\..+/track/.+")) return false;
