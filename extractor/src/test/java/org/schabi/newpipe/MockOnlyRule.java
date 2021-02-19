@@ -33,13 +33,15 @@ public class MockOnlyRule implements TestRule {
         return new Statement() {
             @Override
             public void evaluate() throws Throwable {
-                final boolean hasAnnotation = description.getAnnotation(MockOnly.class) == null;
-                final boolean isMockDownloader = downloader == null ||
-                        !downloader.equalsIgnoreCase(DownloaderType.REAL.toString());
-                Assume.assumeTrue(
-                        "The test is not reliable against a website and thus skipped",
-                        hasAnnotation && isMockDownloader
-                );
+                final MockOnly annotation = description.getAnnotation(MockOnly.class);
+                if (annotation != null) {
+                    final boolean isMockDownloader = downloader == null ||
+                            !downloader.equalsIgnoreCase(DownloaderType.REAL.toString());
+
+                    Assume.assumeTrue("The test is not reliable against real website. Reason: "
+                            + annotation.reason(), isMockDownloader);
+                }
+
 
                 base.evaluate();
             }
