@@ -99,4 +99,14 @@ public class JsonUtils {
         return result;
     }
 
+    public static List<String> getListStringFromJsonArray(@Nonnull JsonArray array) {
+        List<String> strings = new ArrayList<>(array.size());
+        for (Object obj : array) {
+            if (obj instanceof String) {
+                strings.add((String) obj);
+            }
+        }
+        return strings;
+    }
+
 }

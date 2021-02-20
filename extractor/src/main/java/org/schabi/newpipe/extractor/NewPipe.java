@@ -36,6 +36,7 @@ public class NewPipe {
     private static Downloader downloader;
     private static Localization preferredLocalization;
     private static ContentCountry preferredContentCountry;
+    private static boolean useInvidiousForYouTube;
 
     private NewPipe() {
     }
@@ -154,4 +155,13 @@ public class NewPipe {
     public static void setPreferredContentCountry(ContentCountry preferredContentCountry) {
         NewPipe.preferredContentCountry = preferredContentCountry;
     }
+
+    public static boolean getUseInvidiousForYoutube() {
+        return useInvidiousForYouTube;
+    }
+
+    public static void setUseInvidiousForYoutube(final boolean useInvidiousForYoutube) {
+        NewPipe.useInvidiousForYouTube = useInvidiousForYoutube;
+    }
+
 }

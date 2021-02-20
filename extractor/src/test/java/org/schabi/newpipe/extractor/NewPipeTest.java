@@ -1,15 +1,23 @@
 package org.schabi.newpipe.extractor;
 
+import org.junit.BeforeClass;
 import org.junit.Test;
+import org.schabi.newpipe.downloader.DownloaderTestImpl;
 
 import java.util.HashSet;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 import static org.schabi.newpipe.extractor.NewPipe.getServiceByUrl;
-import static org.schabi.newpipe.extractor.ServiceList.SoundCloud;
-import static org.schabi.newpipe.extractor.ServiceList.YouTube;
+import static org.schabi.newpipe.extractor.ServiceList.*;
 
 public class NewPipeTest {
+
+    @BeforeClass
+    public static void setUp() {
+        NewPipe.init(DownloaderTestImpl.getInstance());
+    }
+
     @Test
     public void getAllServicesTest() throws Exception {
         assertEquals(NewPipe.getServices().size(), ServiceList.all().size());

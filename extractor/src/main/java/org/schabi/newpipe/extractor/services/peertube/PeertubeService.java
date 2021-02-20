@@ -18,9 +18,11 @@ import org.schabi.newpipe.extractor.suggestion.SuggestionExtractor;
 import java.util.List;
 
 import static java.util.Arrays.asList;
-import static org.schabi.newpipe.extractor.StreamingService.ServiceInfo.MediaCapability.COMMENTS;
-import static org.schabi.newpipe.extractor.StreamingService.ServiceInfo.MediaCapability.VIDEO;
+import static org.schabi.newpipe.extractor.StreamingService.ServiceInfo.MediaCapability.*;
 
+/**
+ * PeertubeService, uses documented API: https://docs.joinpeertube.org/api-rest-reference.html
+ */
 public class PeertubeService extends StreamingService {
 
     private PeertubeInstance instance;
@@ -29,9 +31,9 @@ public class PeertubeService extends StreamingService {
         this(id, PeertubeInstance.defaultInstance);
     }
 
-    public PeertubeService(int id, PeertubeInstance instance) {
-        super(id, "PeerTube", asList(VIDEO, COMMENTS));
-        this.instance = instance;
+    public PeertubeService(int id, final PeertubeInstance instance) {
+        super(id, "PeerTube", asList(VIDEO, COMMENTS, INSTANCES));
+        setInstance(instance);
     }
 
     @Override
@@ -110,15 +112,7 @@ public class PeertubeService extends StreamingService {
 
     @Override
     public String getBaseUrl() {
-        return instance.getUrl();
-    }
-
-    public PeertubeInstance getInstance() {
-        return this.instance;
-    }
-
-    public void setInstance(PeertubeInstance instance) {
-        this.instance = instance;
+        return getInstance().getUrl();
     }
 
     @Override

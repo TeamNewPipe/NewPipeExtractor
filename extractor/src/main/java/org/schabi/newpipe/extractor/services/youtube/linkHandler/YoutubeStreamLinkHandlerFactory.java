@@ -1,5 +1,6 @@
 package org.schabi.newpipe.extractor.services.youtube.linkHandler;
 
+import org.schabi.newpipe.extractor.NewPipe;
 import org.schabi.newpipe.extractor.exceptions.FoundAdException;
 import org.schabi.newpipe.extractor.exceptions.ParsingException;
 import org.schabi.newpipe.extractor.linkhandler.LinkHandlerFactory;
@@ -15,6 +16,10 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+
+import static org.schabi.newpipe.extractor.ServiceList.Invidious;
+import static org.schabi.newpipe.extractor.ServiceList.YouTube;
+import static org.schabi.newpipe.extractor.services.youtube.YoutubeParsingHelper.*;
 
 /*
  * Created by Christian Schabesberger on 02.02.16.
@@ -69,7 +74,13 @@ public class YoutubeStreamLinkHandlerFactory extends LinkHandlerFactory {
 
     @Override
     public String getUrl(String id) {
-        return "https://www.youtube.com/watch?v=" + id;
+        final String baseUrl;
+        if (NewPipe.getUseInvidiousForYoutube()) {
+            baseUrl = Invidious.getBaseUrl();
+        } else {
+            baseUrl = YouTube.getBaseUrl();
+        }
+        return baseUrl + "/watch?v=" + id;
     }
 
     @Override
@@ -108,9 +119,10 @@ public class YoutubeStreamLinkHandlerFactory extends LinkHandlerFactory {
             path = path.substring(1);
         }
 
-        if (!Utils.isHTTP(url) || !(YoutubeParsingHelper.isYoutubeURL(url) ||
-                YoutubeParsingHelper.isYoutubeServiceURL(url) || YoutubeParsingHelper.isHooktubeURL(url) ||
-                YoutubeParsingHelper.isInvidioURL(url))) {
+        final boolean isInvidiousUrl = YoutubeParsingHelper.isInvidiousURL(url); // save it to call it only once
+
+        if (!Utils.isHTTP(url) || !(isInvidiousUrl || isYoutubeURL(url) || isYoutubeServiceUrl(url)
+                || isInvidiousRedirectUrl(url) || isHooktubeURL(url))) {
             if (host.equalsIgnoreCase("googleads.g.doubleclick.net")) {
                 throw new FoundAdException("Error found ad: " + urlString);
             }
@@ -124,87 +136,56 @@ public class YoutubeStreamLinkHandlerFactory extends LinkHandlerFactory {
 
         // using uppercase instead of lowercase, because toLowercase replaces some unicode characters
         // with their lowercase ASCII equivalent. Using toLowercase could result in faultily matching unicode urls.
-        switch (host.toUpperCase()) {
-            case "WWW.YOUTUBE-NOCOOKIE.COM": {
-                if (path.startsWith("embed/")) {
-                    String id = path.substring(6); // embed/
+        final String hostUpperCase = host.toUpperCase();
 
-                    return assertIsId(id);
+        if (hostUpperCase.equals("WWW.YOUTUBE-NOCOOKIE.COM") && path.startsWith("embed/")) {
+            String id = path.substring(6); // embed/
+            return assertIsId(id);
+        } else if (hostUpperCase.equals("YOUTUBE.COM") || hostUpperCase.equals("WWW.YOUTUBE.COM")
+                || hostUpperCase.equals("M.YOUTUBE.COM") || hostUpperCase.equals("MUSIC.YOUTUBE.COM")) {
+            if (path.equals("attribution_link")) {
+                String uQueryValue = Utils.getQueryValue(url, "u");
+
+                URL decodedURL;
+                try {
+                    decodedURL = Utils.stringToURL("http://www.youtube.com" + uQueryValue);
+                } catch (MalformedURLException e) {
+                    throw new ParsingException("Error no suitable url: " + urlString);
                 }
 
-                break;
-            }
-
-            case "YOUTUBE.COM":
-            case "WWW.YOUTUBE.COM":
-            case "M.YOUTUBE.COM":
-            case "MUSIC.YOUTUBE.COM": {
-                if (path.equals("attribution_link")) {
-                    String uQueryValue = Utils.getQueryValue(url, "u");
-
-                    URL decodedURL;
-                    try {
-                        decodedURL = Utils.stringToURL("http://www.youtube.com" + uQueryValue);
-                    } catch (MalformedURLException e) {
-                        throw new ParsingException("Error no suitable url: " + urlString);
-                    }
-
-                    String viewQueryValue = Utils.getQueryValue(decodedURL, "v");
-                    return assertIsId(viewQueryValue);
-                }
-
-                String maybeId = getIdFromSubpathsInPath(path);
-                if (maybeId != null) return maybeId;
-
-                String viewQueryValue = Utils.getQueryValue(url, "v");
+                String viewQueryValue = Utils.getQueryValue(decodedURL, "v");
                 return assertIsId(viewQueryValue);
             }
 
-            case "YOUTU.BE": {
+            String maybeId = getIdFromSubpathsInPath(path);
+            if (maybeId != null) return maybeId;
+
+            String viewQueryValue = Utils.getQueryValue(url, "v");
+            return assertIsId(viewQueryValue);
+        } else if (hostUpperCase.equals("YOUTU.BE")) {
+            String viewQueryValue = Utils.getQueryValue(url, "v");
+            if (viewQueryValue != null) {
+                return assertIsId(viewQueryValue);
+            }
+
+            return assertIsId(path);
+        } else if (isInvidiousUrl || hostUpperCase.equals("HOOKTUBE.COM") || isInvidiousRedirectUrl(url)) {
+            if (path.equals("watch")) {
                 String viewQueryValue = Utils.getQueryValue(url, "v");
                 if (viewQueryValue != null) {
                     return assertIsId(viewQueryValue);
                 }
-
-                return assertIsId(path);
             }
 
-            case "HOOKTUBE.COM":
-            case "INVIDIO.US":
-            case "DEV.INVIDIO.US":
-            case "WWW.INVIDIO.US":
-            case "REDIRECT.INVIDIOUS.IO":
-            case "INVIDIOUS.SNOPYTA.ORG":
-            case "YEWTU.BE":
-            case "TUBE.CONNECT.CAFE":
-            case "INVIDIOUS.ZAPASHCANON.FR":
-            case "INVIDIOUS.KAVIN.ROCKS":
-            case "INVIDIOUS.TUBE":
-            case "INVIDIOUS.SITE":
-            case "INVIDIOUS.XYZ":
-            case "VID.MINT.LGBT":
-            case "INVIDIOU.SITE":
-            case "INVIDIOUS.FDN.FR":
-            case "INVIDIOUS.048596.XYZ":
-            case "INVIDIOUS.ZEE.LI":
-            case "VID.PUFFYAN.US":
-            case "YTPRIVATE.COM": { // code-block for hooktube.com and Invidious instances
-                if (path.equals("watch")) {
-                    String viewQueryValue = Utils.getQueryValue(url, "v");
-                    if (viewQueryValue != null) {
-                        return assertIsId(viewQueryValue);
-                    }
-                }
-                String maybeId = getIdFromSubpathsInPath(path);
-                if (maybeId != null) return maybeId;
+            String maybeId = getIdFromSubpathsInPath(path);
+            if (maybeId != null) return maybeId;
 
-                String viewQueryValue = Utils.getQueryValue(url, "v");
-                if (viewQueryValue != null) {
-                    return assertIsId(viewQueryValue);
-                }
-
-                return assertIsId(path);
+            String viewQueryValue = Utils.getQueryValue(url, "v");
+            if (viewQueryValue != null) {
+                return assertIsId(viewQueryValue);
             }
+
+            return assertIsId(path);
         }
 
         throw new ParsingException("Error no suitable url: " + urlString);
@@ -231,4 +212,5 @@ public class YoutubeStreamLinkHandlerFactory extends LinkHandlerFactory {
         }
         return null;
     }
+
 }

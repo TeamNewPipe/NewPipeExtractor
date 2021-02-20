@@ -1,4 +1,4 @@
-package org.schabi.newpipe.extractor.services.peertube;
+package org.schabi.newpipe.extractor.services.youtube.invidious;
 
 import com.grack.nanojson.JsonObject;
 import com.grack.nanojson.JsonParser;
@@ -13,25 +13,41 @@ import org.schabi.newpipe.extractor.exceptions.ReCaptchaException;
 import org.schabi.newpipe.extractor.utils.JsonUtils;
 import org.schabi.newpipe.extractor.utils.Utils;
 
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import java.io.IOException;
+import java.net.MalformedURLException;
+import java.net.URL;
 
-public class PeertubeInstance implements Instance {
+import static org.schabi.newpipe.extractor.services.youtube.YoutubeParsingHelper.*;
+
+public class InvidiousInstance implements Instance {
 
     private final String url;
     private String name;
     private Boolean isValid = null;
 
-    public static final PeertubeInstance defaultInstance = new PeertubeInstance("https://framatube.org", "FramaTube");
+    private static final String STATISTICS_DISABLED = "Statistics are not enabled.";
 
-    public PeertubeInstance(String url) {
-        this(url, "PeerTube");
-    }
+    private static InvidiousInstance defaultInstance = new InvidiousInstance("https://invidious.fdn.fr");
 
-    public PeertubeInstance(String url, String name) {
+    public InvidiousInstance(String url, String name) {
         this.url = url;
         this.name = name;
     }
 
+    public InvidiousInstance(String url) {
+        this(url, "invidious");
+    }
+
+    @Nullable
+    @Override
+    public String getName() {
+        return name;
+    }
+
+    @Nonnull
+    @Override
     public String getUrl() {
         return url;
     }
@@ -42,6 +58,17 @@ public class PeertubeInstance implements Instance {
             return isValid;
         }
 
+        URL url;
+        try {
+            url = Utils.stringToURL(this.url);
+        } catch (MalformedURLException e) {
+            return false;
+        }
+
+        if (isYoutubeURL(url) || isHooktubeURL(url) || isInvidiousRedirectUrl(url)) {
+            return isValid = false;
+        }
+
         try {
             fetchInstanceMetaData();
             return isValid = true;
@@ -50,13 +77,14 @@ public class PeertubeInstance implements Instance {
         }
     }
 
+    @Override
     public void fetchInstanceMetaData() throws InvalidInstanceException {
-        Downloader downloader = NewPipe.getDownloader();
+        final Downloader downloader = NewPipe.getDownloader();
         Response response;
 
         try {
-            response = downloader.get(url + "/api/v1/config");
-        } catch (ReCaptchaException | IOException e) {
+            response = downloader.get(url + "/api/v1/stats?fields=software,error");
+        } catch (ReCaptchaException | IOException | IllegalArgumentException e) {
             throw new InvalidInstanceException("unable to configure instance " + url, e);
         }
 
@@ -66,14 +94,20 @@ public class PeertubeInstance implements Instance {
 
         try {
             JsonObject json = JsonParser.object().from(response.responseBody());
-            this.name = JsonUtils.getString(json, "instance.name");
+            if (json.has("software")) {
+                this.name = JsonUtils.getString(json, "software.name");
+            } else if (json.has("error")) {
+                if (!STATISTICS_DISABLED.equals(json.getString("error"))) {
+                    throw new ParsingException("Could not get stats from instance " + url);
+                }
+            }
         } catch (JsonParserException | ParsingException e) {
             throw new InvalidInstanceException("unable to parse instance config", e);
         }
     }
 
-    public String getName() {
-        return name;
+    public static InvidiousInstance getDefaultInstance() {
+        return defaultInstance;
     }
 
 }

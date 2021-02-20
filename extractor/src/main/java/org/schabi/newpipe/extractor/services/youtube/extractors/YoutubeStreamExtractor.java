@@ -929,8 +929,8 @@ public class YoutubeStreamExtractor extends StreamExtractor {
         }
 
         final JsonArray formats = streamingData.getArray(streamingDataKey);
-        for (int i = 0; i != formats.size(); ++i) {
-            JsonObject formatData = formats.getObject(i);
+        for (Object o : formats) {
+            JsonObject formatData = (JsonObject) o;
             int itag = formatData.getInt("itag");
 
             if (ItagItem.isSupported(itag)) {

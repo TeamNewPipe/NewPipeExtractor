@@ -9,10 +9,13 @@ import org.schabi.newpipe.extractor.exceptions.ExtractionException;
 import org.schabi.newpipe.extractor.exceptions.ParsingException;
 import org.schabi.newpipe.extractor.exceptions.ReCaptchaException;
 import org.schabi.newpipe.extractor.localization.Localization;
+import org.schabi.newpipe.extractor.services.youtube.invidious.InvidiousInstance;
 import org.schabi.newpipe.extractor.stream.Description;
 import org.schabi.newpipe.extractor.utils.Parser;
 import org.schabi.newpipe.extractor.utils.Utils;
 
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.net.MalformedURLException;
@@ -22,15 +25,7 @@ import java.time.LocalDate;
 import java.time.OffsetDateTime;
 import java.time.ZoneOffset;
 import java.time.format.DateTimeParseException;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Objects;
-
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
+import java.util.*;
 
 import static org.schabi.newpipe.extractor.NewPipe.getDownloader;
 import static org.schabi.newpipe.extractor.utils.Utils.*;
@@ -84,41 +79,43 @@ public class YoutubeParsingHelper {
 
     public static boolean isYoutubeURL(final URL url) {
         final String host = url.getHost();
-        return host.equalsIgnoreCase("youtube.com") || host.equalsIgnoreCase("www.youtube.com")
-                || host.equalsIgnoreCase("m.youtube.com") || host.equalsIgnoreCase("music.youtube.com");
+        return host.equalsIgnoreCase("youtube.com")
+                || host.equalsIgnoreCase("www.youtube.com")
+                || host.equalsIgnoreCase("m.youtube.com")
+                || host.equalsIgnoreCase("music.youtube.com");
     }
 
-    public static boolean isYoutubeServiceURL(final URL url) {
+    public static boolean isYoutubeServiceUrl(final URL url) {
         final String host = url.getHost();
         return host.equalsIgnoreCase("www.youtube-nocookie.com") || host.equalsIgnoreCase("youtu.be");
     }
 
     public static boolean isHooktubeURL(final URL url) {
-        final String host = url.getHost();
-        return host.equalsIgnoreCase("hooktube.com");
+        return url.getHost().equalsIgnoreCase("hooktube.com");
     }
 
-    public static boolean isInvidioURL(final URL url) {
+    public static boolean isInvidiousURL(final URL url) {
+        if (isBlank(url.getAuthority())) {
+            return false;
+        }
+
+        final InvidiousInstance instance = new InvidiousInstance(Utils.getBaseUrl(url));
+        return instance.isValid();
+    }
+
+    /**
+     * Test if URL is an Invidious-redirect URL
+     *
+     * @param url the URL to test
+     * @return if the URL is an Invidious-redirect URL
+     * @see <a href="https://github.com/iv-org/invidious-redirect">Invidious-redirect</a>
+     */
+    public static boolean isInvidiousRedirectUrl(final URL url) {
         final String host = url.getHost();
-        return host.equalsIgnoreCase("invidio.us")
-                || host.equalsIgnoreCase("dev.invidio.us")
+        return host.equalsIgnoreCase("redirect.invidious.io")
+                || host.equalsIgnoreCase("invidio.us")
                 || host.equalsIgnoreCase("www.invidio.us")
-                || host.equalsIgnoreCase("redirect.invidious.io")
-                || host.equalsIgnoreCase("invidious.snopyta.org")
-                || host.equalsIgnoreCase("yewtu.be")
-                || host.equalsIgnoreCase("tube.connect.cafe")
-                || host.equalsIgnoreCase("invidious.zapashcanon.fr")
-                || host.equalsIgnoreCase("invidious.kavin.rocks")
-                || host.equalsIgnoreCase("invidious.tube")
-                || host.equalsIgnoreCase("invidious.site")
-                || host.equalsIgnoreCase("invidious.xyz")
-                || host.equalsIgnoreCase("vid.mint.lgbt")
-                || host.equalsIgnoreCase("invidiou.site")
-                || host.equalsIgnoreCase("invidious.fdn.fr")
-                || host.equalsIgnoreCase("invidious.048596.xyz")
-                || host.equalsIgnoreCase("invidious.zee.li")
-                || host.equalsIgnoreCase("vid.puffyan.us")
-                || host.equalsIgnoreCase("ytprivate.com");
+                || host.equalsIgnoreCase("dev.invidio.us");
     }
 
     /**
@@ -451,7 +448,6 @@ public class YoutubeParsingHelper {
 
         return youtubeMusicKeys = new String[]{key, clientName, clientVersion};
     }
-
 
 
     @Nullable

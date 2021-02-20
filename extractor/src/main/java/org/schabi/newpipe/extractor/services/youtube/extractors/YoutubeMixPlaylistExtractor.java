@@ -187,7 +187,7 @@ public class YoutubeMixPlaylistExtractor extends PlaylistExtractor {
         }
     }
 
-    private String getThumbnailUrlFromPlaylistId(final String playlistId) throws ParsingException {
+    public static String getThumbnailUrlFromPlaylistId(final String playlistId) throws ParsingException {
         final String videoId;
         if (playlistId.startsWith("RDMM")) {
             videoId = playlistId.substring(4);
@@ -202,7 +202,7 @@ public class YoutubeMixPlaylistExtractor extends PlaylistExtractor {
         return getThumbnailUrlFromVideoId(videoId);
     }
 
-    private String getThumbnailUrlFromVideoId(final String videoId) {
+    private static String getThumbnailUrlFromVideoId(final String videoId) {
         return "https://i.ytimg.com/vi/" + videoId + "/hqdefault.jpg";
     }
 

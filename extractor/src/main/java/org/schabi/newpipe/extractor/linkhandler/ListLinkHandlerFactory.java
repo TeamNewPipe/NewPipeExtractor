@@ -86,7 +86,7 @@ public abstract class ListLinkHandlerFactory extends LinkHandlerFactory {
     }
 
     /**
-     * Will returns content filter the corresponding extractor can handle like "channels", "videos", "music", etc.
+     * Will return content filter the corresponding extractor can handle like "channels", "videos", "music", etc.
      *
      * @return filter that can be applied when building a query for getting a list
      */
@@ -95,7 +95,7 @@ public abstract class ListLinkHandlerFactory extends LinkHandlerFactory {
     }
 
     /**
-     * Will returns sort filter the corresponding extractor can handle like "A-Z", "oldest first", "size", etc.
+     * Will return sort filter the corresponding extractor can handle like "A-Z", "oldest first", "size", etc.
      *
      * @return filter that can be applied when building a query for getting a list
      */

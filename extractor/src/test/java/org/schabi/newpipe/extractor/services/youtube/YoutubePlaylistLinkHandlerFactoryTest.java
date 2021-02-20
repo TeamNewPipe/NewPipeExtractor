@@ -70,7 +70,7 @@ public class YoutubePlaylistLinkHandlerFactoryTest {
     }
 
     @Test
-    public void testAcceptInvidioUrl() throws ParsingException {
+    public void testAcceptInvidiousUrl() throws ParsingException {
         assertTrue(linkHandler.acceptUrl("https://www.invidio.us/playlist?list=PLW5y1tjAOzI3orQNF1yGGVL5x-pR2K1dC"));
         assertTrue(linkHandler.acceptUrl("https://www.invidio.us/playlist?list=PLz8YL4HVC87WJQDzVoY943URKQCsHS9XV"));
         assertTrue(linkHandler.acceptUrl("https://WWW.invidio.us/playlist?list=PLW5y1tjAOzI3orQNF1yGGVL5x-pR2K1dCI"));
@@ -83,7 +83,7 @@ public class YoutubePlaylistLinkHandlerFactoryTest {
     }
 
     @Test
-    public void testDeniesInvalidInvidioUrl() throws ParsingException {
+    public void testDeniesInvalidInvidiousUrl() throws ParsingException {
         assertFalse(linkHandler.acceptUrl("https://invidio.us/feed/trending?list=PLz8YL4HVC87WJQDzVoY943URKQCsHS9XV"));
         assertFalse(linkHandler.acceptUrl("https://invidio.us/feed/subscriptions?list=PLz8YL4HVC87WJQDzVoY943URKQCsHS9XV"));
         assertFalse(linkHandler.acceptUrl("ftp:/invidio.us/feed/trending?list=PLz8YL4HVC87WJQDzVoY943URKQCsHS9XV"));
@@ -93,7 +93,7 @@ public class YoutubePlaylistLinkHandlerFactoryTest {
     }
 
     @Test
-    public void testGetInvidioIdfromUrl() throws ParsingException {
+    public void testGetInvidiousIdfromUrl() throws ParsingException {
         assertEquals("PLW5y1tjAOzI3orQNF1yGGVL5x-pR2K1dC", linkHandler.fromUrl("https://www.invidio.us/playlist?list=PLW5y1tjAOzI3orQNF1yGGVL5x-pR2K1dC").getId());
         assertEquals("PLz8YL4HVC87WJQDzVoY943URKQCsHS9XV", linkHandler.fromUrl("https://www.invidio.us/playlist?list=PLz8YL4HVC87WJQDzVoY943URKQCsHS9XV").getId());
         assertEquals("PLW5y1tjAOzI3orQNF1yGGVL5x-pR2K1dC", linkHandler.fromUrl("https://www.invidio.us/playlist?list=PLW5y1tjAOzI3orQNF1yGGVL5x-pR2K1dC&t=100").getId());
@@ -122,6 +122,6 @@ public class YoutubePlaylistLinkHandlerFactoryTest {
         final String videoId = "_AzeUSL9lZc";
         final String url = "https://www.youtube.com/watch?v=" + videoId + "&list=RD" + videoId;
         assertEquals(url,
-            linkHandler.fromUrl("https://www.youtube.com/watch?list=RD" + videoId).getUrl());
+                linkHandler.fromUrl("https://www.youtube.com/watch?list=RD" + videoId).getUrl());
     }
 }

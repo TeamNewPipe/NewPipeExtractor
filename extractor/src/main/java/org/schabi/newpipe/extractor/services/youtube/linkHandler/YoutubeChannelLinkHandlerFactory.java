@@ -1,6 +1,5 @@
 package org.schabi.newpipe.extractor.services.youtube.linkHandler;
 
-import java.util.regex.Pattern;
 import org.schabi.newpipe.extractor.exceptions.ParsingException;
 import org.schabi.newpipe.extractor.linkhandler.ListLinkHandlerFactory;
 import org.schabi.newpipe.extractor.services.youtube.YoutubeParsingHelper;
@@ -8,6 +7,7 @@ import org.schabi.newpipe.extractor.utils.Utils;
 
 import java.net.URL;
 import java.util.List;
+import java.util.regex.Pattern;
 
 /*
  * Created by Christian Schabesberger on 25.07.16.
@@ -34,7 +34,7 @@ public class YoutubeChannelLinkHandlerFactory extends ListLinkHandlerFactory {
     private static final YoutubeChannelLinkHandlerFactory instance = new YoutubeChannelLinkHandlerFactory();
 
     private static final Pattern excludedSegments =
-      Pattern.compile("playlist|watch|attribution_link|watch_popup|embed|feed|select_site");
+            Pattern.compile("playlist|watch|attribution_link|watch_popup|embed|feed|select_site");
 
     public static YoutubeChannelLinkHandlerFactory getInstance() {
         return instance;
@@ -43,7 +43,7 @@ public class YoutubeChannelLinkHandlerFactory extends ListLinkHandlerFactory {
     /**
      * Returns URL to channel from an ID
      *
-     * @param id Channel ID including e.g. 'channel/'
+     * @param id             Channel ID including e.g. 'channel/'
      * @param contentFilters
      * @param searchFilter
      * @return URL to channel
@@ -52,7 +52,7 @@ public class YoutubeChannelLinkHandlerFactory extends ListLinkHandlerFactory {
     public String getUrl(String id, List<String> contentFilters, String searchFilter) {
         return "https://www.youtube.com/" + id;
     }
-    
+
     /**
      * Returns true if path conform to
      * custom short channel URLs like youtube.com/yourcustomname
@@ -71,7 +71,8 @@ public class YoutubeChannelLinkHandlerFactory extends ListLinkHandlerFactory {
             String path = urlObj.getPath();
 
             if (!Utils.isHTTP(urlObj) || !(YoutubeParsingHelper.isYoutubeURL(urlObj) ||
-                    YoutubeParsingHelper.isInvidioURL(urlObj) || YoutubeParsingHelper.isHooktubeURL(urlObj))) {
+                    YoutubeParsingHelper.isInvidiousRedirectUrl(urlObj) || YoutubeParsingHelper.isHooktubeURL(urlObj)
+                    || YoutubeParsingHelper.isInvidiousURL(urlObj))) {
                 throw new ParsingException("the URL given is not a Youtube-URL");
             }
 

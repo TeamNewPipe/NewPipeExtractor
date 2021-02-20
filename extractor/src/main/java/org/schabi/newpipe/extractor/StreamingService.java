@@ -52,7 +52,8 @@ public abstract class StreamingService {
 
         /**
          * Creates a new instance of a ServiceInfo
-         * @param name the name of the service
+         *
+         * @param name              the name of the service
          * @param mediaCapabilities the type of media this service can handle
          */
         public ServiceInfo(String name, List<MediaCapability> mediaCapabilities) {
@@ -69,7 +70,7 @@ public abstract class StreamingService {
         }
 
         public enum MediaCapability {
-            AUDIO, VIDEO, LIVE, COMMENTS
+            AUDIO, VIDEO, LIVE, COMMENTS, INSTANCES
         }
     }
 
@@ -86,15 +87,16 @@ public abstract class StreamingService {
 
     private final int serviceId;
     private final ServiceInfo serviceInfo;
+    private Instance instance;
 
     /**
      * Creates a new Streaming service.
      * If you Implement one do not set id within your implementation of this extractor, instead
-     * set the id when you put the extractor into
-     * <a href="https://teamnewpipe.github.io/NewPipeExtractor/javadoc/org/schabi/newpipe/extractor/ServiceList.html">ServiceList</a>.
+     * set the id when you put the extractor into {@link ServiceList}.
      * All other parameters can be set directly from the overriding constructor.
-     * @param id the number of the service to identify him within the NewPipe frontend
-     * @param name the name of the service
+     *
+     * @param id           the number of the service to identify him within the NewPipe frontend
+     * @param name         the name of the service
      * @param capabilities the type of media this service can handle
      */
     public StreamingService(int id, String name, List<ServiceInfo.MediaCapability> capabilities) {
@@ -123,6 +125,7 @@ public abstract class StreamingService {
 
     /**
      * Must return a new instance of an implementation of LinkHandlerFactory for streams.
+     *
      * @return an instance of a LinkHandlerFactory for streams
      */
     public abstract LinkHandlerFactory getStreamLHFactory();
@@ -130,6 +133,7 @@ public abstract class StreamingService {
     /**
      * Must return a new instance of an implementation of ListLinkHandlerFactory for channels.
      * If support for channels is not given null must be returned.
+     *
      * @return an instance of a ListLinkHandlerFactory for channels or null
      */
     public abstract ListLinkHandlerFactory getChannelLHFactory();
@@ -137,15 +141,18 @@ public abstract class StreamingService {
     /**
      * Must return a new instance of an implementation of ListLinkHandlerFactory for playlists.
      * If support for playlists is not given null must be returned.
+     *
      * @return an instance of a ListLinkHandlerFactory for playlists or null
      */
     public abstract ListLinkHandlerFactory getPlaylistLHFactory();
 
     /**
      * Must return an instance of an implementation of SearchQueryHandlerFactory.
+     *
      * @return an instance of a SearchQueryHandlerFactory
      */
     public abstract SearchQueryHandlerFactory getSearchQHFactory();
+
     public abstract ListLinkHandlerFactory getCommentsLHFactory();
 
     /*//////////////////////////////////////////////////////////////////////////
@@ -154,6 +161,7 @@ public abstract class StreamingService {
 
     /**
      * Must create a new instance of a SearchExtractor implementation.
+     *
      * @param queryHandler specifies the keyword lock for, and the filters which should be applied.
      * @return a new SearchExtractor instance
      */
@@ -161,12 +169,14 @@ public abstract class StreamingService {
 
     /**
      * Must create a new instance of a SuggestionExtractor implementation.
+     *
      * @return a new SuggestionExtractor instance
      */
     public abstract SuggestionExtractor getSuggestionExtractor();
 
     /**
      * Outdated or obsolete. null can be returned.
+     *
      * @return just null
      */
     public abstract SubscriptionExtractor getSubscriptionExtractor();
@@ -186,6 +196,7 @@ public abstract class StreamingService {
 
     /**
      * Must create a new instance of a KioskList implementation.
+     *
      * @return a new KioskList instance
      * @throws ExtractionException
      */
@@ -193,6 +204,7 @@ public abstract class StreamingService {
 
     /**
      * Must create a new instance of a ChannelExtractor implementation.
+     *
      * @param linkHandler is pointing to the channel which should be handled by this new instance.
      * @return a new ChannelExtractor
      * @throws ExtractionException
@@ -201,6 +213,7 @@ public abstract class StreamingService {
 
     /**
      * Must crete a new instance of a PlaylistExtractor implementation.
+     *
      * @param linkHandler is pointing to the playlist which should be handled by this new instance.
      * @return a new PlaylistExtractor
      * @throws ExtractionException
@@ -209,6 +222,7 @@ public abstract class StreamingService {
 
     /**
      * Must create a new instance of a StreamExtractor implementation.
+     *
      * @param linkHandler is pointing to the stream which should be handled by this new instance.
      * @return a new StreamExtractor
      * @throws ExtractionException
@@ -276,6 +290,7 @@ public abstract class StreamingService {
 
     /**
      * Figures out where the link is pointing to (a channel, a video, a playlist, etc.)
+     *
      * @param url the url on which it should be decided of which link type it is
      * @return the link type of url
      */
@@ -385,6 +400,14 @@ public abstract class StreamingService {
         }
 
         throw new IllegalArgumentException("Localization is not supported (\"" + localization.toString() + "\")");
+    }
+
+    public Instance getInstance() {
+        return this.instance;
+    }
+
+    public void setInstance(final Instance instance) {
+        this.instance = instance;
     }
 
 }

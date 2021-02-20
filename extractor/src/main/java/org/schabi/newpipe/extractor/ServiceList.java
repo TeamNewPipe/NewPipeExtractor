@@ -4,6 +4,7 @@ import org.schabi.newpipe.extractor.services.media_ccc.MediaCCCService;
 import org.schabi.newpipe.extractor.services.peertube.PeertubeService;
 import org.schabi.newpipe.extractor.services.soundcloud.SoundcloudService;
 import org.schabi.newpipe.extractor.services.youtube.YoutubeService;
+import org.schabi.newpipe.extractor.services.youtube.invidious.InvidiousService;
 
 import java.util.Arrays;
 import java.util.Collections;
@@ -39,6 +40,7 @@ public final class ServiceList {
     public static final SoundcloudService SoundCloud;
     public static final MediaCCCService MediaCCC;
     public static final PeertubeService PeerTube;
+    public static final InvidiousService Invidious;
 
     /**
      * When creating a new service, put this service in the end of this list,
@@ -52,12 +54,20 @@ public final class ServiceList {
                     PeerTube = new PeertubeService(3)
             ));
 
+    private static final List<StreamingService> SERVICES_WITH_INVIDIOUS = Collections.unmodifiableList(
+            Arrays.asList(
+                    Invidious = new InvidiousService(0),
+                    SoundCloud,
+                    MediaCCC,
+                    PeerTube
+            ));
+
     /**
      * Get all the supported services.
      *
      * @return a unmodifiable list of all the supported services
      */
     public static List<StreamingService> all() {
-        return SERVICES;
+        return NewPipe.getUseInvidiousForYoutube() ? SERVICES_WITH_INVIDIOUS : SERVICES;
     }
 }

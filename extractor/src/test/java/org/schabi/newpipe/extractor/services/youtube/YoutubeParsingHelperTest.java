@@ -6,11 +6,13 @@ import org.schabi.newpipe.downloader.DownloaderFactory;
 import org.schabi.newpipe.extractor.NewPipe;
 import org.schabi.newpipe.extractor.exceptions.ExtractionException;
 import org.schabi.newpipe.extractor.exceptions.ParsingException;
+import org.schabi.newpipe.extractor.utils.Utils;
 
 import java.io.IOException;
+import java.net.MalformedURLException;
+import java.net.URL;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.*;
 
 public class YoutubeParsingHelperTest {
 
@@ -48,4 +50,14 @@ public class YoutubeParsingHelperTest {
         assertEquals("https://www.infektionsschutz.de/coronavirus-sars-cov-2.html",
                 YoutubeParsingHelper.extractCachedUrlIfNeeded("https://www.infektionsschutz.de/coronavirus-sars-cov-2.html"));
     }
+
+    @Test
+    public void testIsYoutubeUrl() throws MalformedURLException {
+        final URL url = Utils.stringToURL("https://youtube.com");
+        assertTrue(YoutubeParsingHelper.isYoutubeURL(url));
+        assertFalse(YoutubeParsingHelper.isInvidiousRedirectUrl(url));
+        assertFalse(YoutubeParsingHelper.isInvidiousURL(url));
+        assertFalse(YoutubeParsingHelper.isHooktubeURL(url));
+    }
+
 }

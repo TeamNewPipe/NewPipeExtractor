@@ -28,6 +28,8 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.List;
 
+import static org.schabi.newpipe.extractor.services.youtube.YoutubeParsingHelper.*;
+
 public class YoutubeTrendingLinkHandlerFactory extends ListLinkHandlerFactory {
 
     public String getUrl(String id, List<String> contentFilters, String sortFilter) {
@@ -49,6 +51,8 @@ public class YoutubeTrendingLinkHandlerFactory extends ListLinkHandlerFactory {
         }
 
         String urlPath = urlObj.getPath();
-        return Utils.isHTTP(urlObj) && (YoutubeParsingHelper.isYoutubeURL(urlObj) || YoutubeParsingHelper.isInvidioURL(urlObj)) && urlPath.equals("/feed/trending");
+        return Utils.isHTTP(urlObj)
+                && (isYoutubeURL(urlObj) || isInvidiousRedirectUrl(urlObj) || isInvidiousURL(urlObj))
+                && urlPath.equals("/feed/trending");
     }
 }

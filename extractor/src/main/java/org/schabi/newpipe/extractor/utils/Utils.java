@@ -183,7 +183,7 @@ public class Utils {
     public static String getBaseUrl(final String url) throws ParsingException {
         try {
             final URL uri = stringToURL(url);
-            return uri.getProtocol() + "://" + uri.getAuthority();
+            return getBaseUrl(uri);
         } catch (final MalformedURLException e) {
             final String message = e.getMessage();
             if (message.startsWith("unknown protocol: ")) {
@@ -193,6 +193,10 @@ public class Utils {
 
             throw new ParsingException("Malformed url: " + url, e);
         }
+    }
+
+    public static String getBaseUrl(final URL url) {
+        return url.getProtocol() + "://" + url.getAuthority();
     }
 
     /**
