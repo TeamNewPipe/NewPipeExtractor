@@ -119,16 +119,16 @@ public class BandcampExtractorHelper {
     /**
      * @param id    The image ID
      * @param album Whether this is the cover of an album
-     * @return Url of image with this ID in size 10 which is 1200x1200 (we could also choose size 0
-     * but we don't want something as large as 3460x3460 here, do we?)
+     * @return URL of image with this ID in size 10 which is 1200x1200 (we could also choose size 0
+     * but we don't want something as large as 3460x3460 here)
      */
     public static String getImageUrl(final long id, final boolean album) {
         return "https://f4.bcbits.com/img/" + (album ? 'a' : "") + id + "_10.jpg";
     }
 
     /**
-     * @return <code>true</code> if the given url looks like it comes from a bandcamp custom domain
-     * or if it comes from bandcamp.com itself
+     * @return <code>true</code> if the given URL looks like it comes from a bandcamp custom domain
+     * or if it comes from <code>bandcamp.com</code> itself
      */
     public static boolean isSupportedDomain(final String url) throws ParsingException {
 
@@ -151,7 +151,7 @@ public class BandcampExtractorHelper {
     /**
      * Whether the URL points to a radio kiosk.
      * @param url the URL to check
-     * @return true if the URL is <code>https://bandcamp.com/?show=SHOW_ID</code>
+     * @return true if the URL matches <code>https://bandcamp.com/?show=SHOW_ID</code>
      */
     public static boolean isRadioUrl(final String url) {
         return url.toLowerCase().matches("https?://bandcamp\\.com/\\?show=\\d+");

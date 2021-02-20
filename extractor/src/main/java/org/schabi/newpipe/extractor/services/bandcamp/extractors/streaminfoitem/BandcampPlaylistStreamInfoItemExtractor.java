@@ -53,11 +53,6 @@ public class BandcampPlaylistStreamInfoItemExtractor extends BandcampStreamInfoI
         return "";
     }
 
-    @Override
-    public boolean isUploaderVerified() throws ParsingException {
-        return false;
-    }
-
     /**
      * Each track can have its own cover art. Therefore, unless a substitute is provided,
      * the thumbnail is extracted using a stream extractor.

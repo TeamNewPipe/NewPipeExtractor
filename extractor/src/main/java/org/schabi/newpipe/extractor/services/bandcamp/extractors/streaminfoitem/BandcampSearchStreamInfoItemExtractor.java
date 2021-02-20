@@ -25,11 +25,6 @@ public class BandcampSearchStreamInfoItemExtractor extends BandcampStreamInfoIte
     }
 
     @Override
-    public boolean isUploaderVerified() throws ParsingException {
-        return false;
-    }
-
-    @Override
     public String getName() throws ParsingException {
         return resultInfo.getElementsByClass("heading").text();
     }

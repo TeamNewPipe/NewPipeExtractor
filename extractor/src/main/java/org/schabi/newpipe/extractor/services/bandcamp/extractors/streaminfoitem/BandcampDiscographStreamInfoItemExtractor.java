@@ -19,11 +19,6 @@ public class BandcampDiscographStreamInfoItemExtractor extends BandcampStreamInf
     }
 
     @Override
-    public boolean isUploaderVerified() throws ParsingException {
-        return false;
-    }
-
-    @Override
     public String getName() {
         return discograph.getString("title");
     }
