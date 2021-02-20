@@ -1,9 +1,12 @@
 package org.schabi.newpipe.extractor.services.soundcloud;
 
 import org.junit.BeforeClass;
+import org.junit.Test;
 import org.schabi.newpipe.downloader.DownloaderTestImpl;
 import org.schabi.newpipe.extractor.NewPipe;
 import org.schabi.newpipe.extractor.StreamingService;
+import org.schabi.newpipe.extractor.exceptions.GeographicRestrictionException;
+import org.schabi.newpipe.extractor.exceptions.SoundCloudGoPlusContentException;
 import org.schabi.newpipe.extractor.services.DefaultStreamExtractorTest;
 import org.schabi.newpipe.extractor.stream.StreamExtractor;
 import org.schabi.newpipe.extractor.stream.StreamType;
@@ -16,12 +19,33 @@ import javax.annotation.Nullable;
 import static org.schabi.newpipe.extractor.ServiceList.SoundCloud;
 
 public class SoundcloudStreamExtractorTest {
+    private static final String SOUNDCLOUD = "https://soundcloud.com/";
+
+    public static class SoundcloudNotAvailable {
+        @Test(expected = GeographicRestrictionException.class)
+        public void geoRestrictedContent() throws Exception {
+            final String id = "one-touch";
+            final String uploader = "jessglynne";
+            final String url = SOUNDCLOUD + uploader + "/" + id;
+            final StreamExtractor extractor = SoundCloud.getStreamExtractor(url);
+            extractor.fetchPage();
+        }
+
+        @Test(expected = SoundCloudGoPlusContentException.class)
+        public void goPlusContent() throws Exception {
+            final String id = "places";
+            final String uploader = "martinsolveig";
+            final String url = SOUNDCLOUD + uploader + "/" + id;
+            final StreamExtractor extractor = SoundCloud.getStreamExtractor(url);
+            extractor.fetchPage();
+        }
+    }
 
     public static class CreativeCommonsPlaysWellWithOthers extends DefaultStreamExtractorTest {
         private static final String ID = "plays-well-with-others-ep-2-what-do-an-army-of-ants-and-an-online-encyclopedia-have-in-common";
-        private static final String UPLOADER = "https://soundcloud.com/wearecc";
+        private static final String UPLOADER = "wearecc";
         private static final int TIMESTAMP = 69;
-        private static final String URL = UPLOADER + "/" + ID + "#t=" + TIMESTAMP;
+        private static final String URL = SOUNDCLOUD + UPLOADER + "/" + ID + "#t=" + TIMESTAMP;
         private static StreamExtractor extractor;
 
         @BeforeClass

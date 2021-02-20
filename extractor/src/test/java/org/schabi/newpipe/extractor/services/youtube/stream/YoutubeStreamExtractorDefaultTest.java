@@ -8,7 +8,11 @@ import org.schabi.newpipe.extractor.MetaInfo;
 import org.schabi.newpipe.extractor.NewPipe;
 import org.schabi.newpipe.extractor.StreamingService;
 import org.schabi.newpipe.extractor.exceptions.ContentNotAvailableException;
+import org.schabi.newpipe.extractor.exceptions.GeographicRestrictionException;
+import org.schabi.newpipe.extractor.exceptions.PaidContentException;
 import org.schabi.newpipe.extractor.exceptions.ParsingException;
+import org.schabi.newpipe.extractor.exceptions.PrivateContentException;
+import org.schabi.newpipe.extractor.exceptions.YoutubeMusicPremiumContentException;
 import org.schabi.newpipe.extractor.services.DefaultStreamExtractorTest;
 import org.schabi.newpipe.extractor.services.youtube.YoutubeParsingHelper;
 import org.schabi.newpipe.extractor.stream.Description;
@@ -59,6 +63,13 @@ public class YoutubeStreamExtractorDefaultTest {
             NewPipe.init(new DownloaderFactory().getDownloader(RESOURCE_PATH + "notAvailable"));
         }
 
+        @Test(expected = GeographicRestrictionException.class)
+        public void geoRestrictedContent() throws Exception {
+            final StreamExtractor extractor =
+                    YouTube.getStreamExtractor(BASE_URL + "_PL2HJKxnOM");
+            extractor.fetchPage();
+        }
+
         @Test(expected = ContentNotAvailableException.class)
         public void nonExistentFetch() throws Exception {
             final StreamExtractor extractor =
@@ -70,6 +81,27 @@ public class YoutubeStreamExtractorDefaultTest {
         public void invalidId() throws Exception {
             final StreamExtractor extractor =
                     YouTube.getStreamExtractor(BASE_URL + "INVALID_ID_INVALID_ID");
+            extractor.fetchPage();
+        }
+
+        @Test(expected = PaidContentException.class)
+        public void paidContent() throws Exception {
+            final StreamExtractor extractor =
+                    YouTube.getStreamExtractor(BASE_URL + "ayI2iBwGdxw");
+            extractor.fetchPage();
+        }
+
+        @Test(expected = PrivateContentException.class)
+        public void privateContent() throws Exception {
+            final StreamExtractor extractor =
+                    YouTube.getStreamExtractor(BASE_URL + "8VajtrESJzA");
+            extractor.fetchPage();
+        }
+
+        @Test(expected = YoutubeMusicPremiumContentException.class)
+        public void youtubeMusicPremiumContent() throws Exception {
+            final StreamExtractor extractor =
+                    YouTube.getStreamExtractor(BASE_URL + "sMJ8bRN2dak");
             extractor.fetchPage();
         }
     }

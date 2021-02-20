@@ -14,7 +14,7 @@ import org.schabi.newpipe.extractor.exceptions.ContentNotSupportedException;
 import org.schabi.newpipe.extractor.exceptions.ExtractionException;
 import org.schabi.newpipe.extractor.exceptions.GeographicRestrictionException;
 import org.schabi.newpipe.extractor.exceptions.ParsingException;
-import org.schabi.newpipe.extractor.exceptions.SoundCloudGoPlusException;
+import org.schabi.newpipe.extractor.exceptions.SoundCloudGoPlusContentException;
 import org.schabi.newpipe.extractor.linkhandler.LinkHandler;
 import org.schabi.newpipe.extractor.localization.DateWrapper;
 import org.schabi.newpipe.extractor.services.soundcloud.SoundcloudParsingHelper;
@@ -46,7 +46,7 @@ public class SoundcloudStreamExtractor extends StreamExtractor {
         String policy = track.getString("policy", EMPTY_STRING);
         if (!policy.equals("ALLOW") && !policy.equals("MONETIZE")) {
             if (policy.equals("SNIP")) {
-                throw new SoundCloudGoPlusException();
+                throw new SoundCloudGoPlusContentException();
             }
             if (policy.equals("BLOCK")) {
                 throw new GeographicRestrictionException("This track is not available in user's country");
