@@ -280,7 +280,8 @@ public class YoutubeSearchExtractorTest {
 
         @BeforeClass
         public static void setUp() throws Exception {
-            NewPipe.init(DownloaderTestImpl.getInstance());
+            YoutubeParsingHelper.resetClientVersionAndKey();
+            NewPipe.init(new DownloaderFactory().getDownloader(RESOURCE_PATH + "verified"));
             extractor = YouTube.getSearchExtractor(QUERY, singletonList(CHANNELS), "");
             extractor.fetchPage();
         }
