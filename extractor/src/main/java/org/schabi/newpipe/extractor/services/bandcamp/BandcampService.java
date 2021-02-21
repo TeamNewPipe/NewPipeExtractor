@@ -19,6 +19,7 @@ import org.schabi.newpipe.extractor.suggestion.SuggestionExtractor;
 import java.util.Collections;
 
 import static org.schabi.newpipe.extractor.StreamingService.ServiceInfo.MediaCapability.AUDIO;
+import static org.schabi.newpipe.extractor.services.bandcamp.extractors.BandcampExtractorHelper.BASE_URL;
 import static org.schabi.newpipe.extractor.services.bandcamp.extractors.BandcampFeaturedExtractor.FEATURED_API_URL;
 import static org.schabi.newpipe.extractor.services.bandcamp.extractors.BandcampFeaturedExtractor.KIOSK_FEATURED;
 import static org.schabi.newpipe.extractor.services.bandcamp.extractors.BandcampRadioExtractor.KIOSK_RADIO;
@@ -32,7 +33,7 @@ public class BandcampService extends StreamingService {
 
     @Override
     public String getBaseUrl() {
-        return "https://bandcamp.com";
+        return BASE_URL;
     }
 
     @Override
@@ -113,7 +114,7 @@ public class BandcampService extends StreamingService {
 
     @Override
     public StreamExtractor getStreamExtractor(final LinkHandler linkHandler) {
-        if (linkHandler.getUrl().matches("https?://bandcamp\\.com/\\?show=\\d+"))
+        if (BandcampExtractorHelper.isRadioUrl(linkHandler.getUrl()))
             return new BandcampRadioStreamExtractor(this, linkHandler);
         else
             return new BandcampStreamExtractor(this, linkHandler);

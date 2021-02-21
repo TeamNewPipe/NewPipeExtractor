@@ -19,10 +19,12 @@ import org.schabi.newpipe.extractor.playlist.PlaylistInfoItemsCollector;
 import javax.annotation.Nonnull;
 import java.io.IOException;
 
+import static org.schabi.newpipe.extractor.services.bandcamp.extractors.BandcampExtractorHelper.BASE_API_URL;
+
 public class BandcampFeaturedExtractor extends KioskExtractor<PlaylistInfoItem> {
 
     public static final String KIOSK_FEATURED = "Featured";
-    public static final String FEATURED_API_URL = "https://bandcamp.com/api/mobile/24/bootstrap_data";
+    public static final String FEATURED_API_URL = BASE_API_URL + "/mobile/24/bootstrap_data";
 
     private JsonObject json;
 

@@ -9,6 +9,8 @@ import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
 import java.util.List;
 
+import static org.schabi.newpipe.extractor.services.bandcamp.extractors.BandcampExtractorHelper.BASE_URL;
+
 public class BandcampSearchQueryHandlerFactory extends SearchQueryHandlerFactory {
 
 
@@ -17,7 +19,7 @@ public class BandcampSearchQueryHandlerFactory extends SearchQueryHandlerFactory
             throws ParsingException {
         try {
 
-            return "https://bandcamp.com/search?q=" +
+            return BASE_URL + "/search?q=" +
                     URLEncoder.encode(query, "UTF-8")
                     + "&page=1";
 

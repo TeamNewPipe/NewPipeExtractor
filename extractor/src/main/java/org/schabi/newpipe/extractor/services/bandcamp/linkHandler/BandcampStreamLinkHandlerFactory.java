@@ -6,6 +6,8 @@ import org.schabi.newpipe.extractor.exceptions.ParsingException;
 import org.schabi.newpipe.extractor.linkhandler.LinkHandlerFactory;
 import org.schabi.newpipe.extractor.services.bandcamp.extractors.BandcampExtractorHelper;
 
+import static org.schabi.newpipe.extractor.services.bandcamp.extractors.BandcampExtractorHelper.BASE_URL;
+
 /**
  * <p>Tracks don't have standalone ids, they are always in combination with the band id.
  * That's why id = url.</p>
@@ -34,7 +36,7 @@ public class BandcampStreamLinkHandlerFactory extends LinkHandlerFactory {
     @Override
     public String getUrl(final String input) {
         if (input.matches("\\d+")) {
-            return "https://bandcamp.com/?show=" + input;
+            return BASE_URL + "/?show=" + input;
         } else {
             return input;
         }

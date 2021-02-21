@@ -23,7 +23,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-import static org.schabi.newpipe.extractor.services.bandcamp.extractors.BandcampExtractorHelper.getImageUrl;
+import static org.schabi.newpipe.extractor.services.bandcamp.extractors.BandcampExtractorHelper.*;
 
 public class BandcampRadioStreamExtractor extends BandcampStreamExtractor {
 
@@ -36,7 +36,7 @@ public class BandcampRadioStreamExtractor extends BandcampStreamExtractor {
     static JsonObject query(final int id) throws ParsingException {
         try {
             return JsonParser.object().from(
-                    NewPipe.getDownloader().get("https://bandcamp.com/api/bcweekly/1/get?id=" + id).responseBody()
+                    NewPipe.getDownloader().get(BASE_API_URL + "/bcweekly/1/get?id=" + id).responseBody()
             );
         } catch (final IOException | ReCaptchaException | JsonParserException e) {
             throw new ParsingException("could not get show data", e);
@@ -88,7 +88,7 @@ public class BandcampRadioStreamExtractor extends BandcampStreamExtractor {
     @Nonnull
     @Override
     public String getUploaderAvatarUrl() {
-        return "https://bandcamp.com/img/buttons/bandcamp-button-circle-whitecolor-512.png";
+        return BASE_URL + "/img/buttons/bandcamp-button-circle-whitecolor-512.png";
     }
 
     @Nonnull

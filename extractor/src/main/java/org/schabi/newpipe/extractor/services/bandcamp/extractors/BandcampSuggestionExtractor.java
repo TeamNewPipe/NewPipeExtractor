@@ -18,9 +18,11 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
+import static org.schabi.newpipe.extractor.services.bandcamp.extractors.BandcampExtractorHelper.BASE_API_URL;
+
 public class BandcampSuggestionExtractor extends SuggestionExtractor {
 
-    private static final String AUTOCOMPLETE_URL = "https://bandcamp.com/api/fuzzysearch/1/autocomplete?q=";
+    private static final String AUTOCOMPLETE_URL = BASE_API_URL + "/fuzzysearch/1/autocomplete?q=";
     public BandcampSuggestionExtractor(final StreamingService service) {
         super(service);
     }

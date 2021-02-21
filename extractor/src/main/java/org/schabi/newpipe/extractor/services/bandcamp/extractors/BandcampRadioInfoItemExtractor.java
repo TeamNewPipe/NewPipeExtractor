@@ -10,6 +10,7 @@ import org.schabi.newpipe.extractor.stream.StreamType;
 
 import javax.annotation.Nullable;
 
+import static org.schabi.newpipe.extractor.services.bandcamp.extractors.BandcampExtractorHelper.BASE_URL;
 import static org.schabi.newpipe.extractor.services.bandcamp.extractors.BandcampExtractorHelper.getImageUrl;
 
 public class BandcampRadioInfoItemExtractor implements StreamInfoItemExtractor {
@@ -49,7 +50,7 @@ public class BandcampRadioInfoItemExtractor implements StreamInfoItemExtractor {
 
     @Override
     public String getUrl() {
-        return "https://bandcamp.com/?show=" + show.getInt("id");
+        return BASE_URL + "/?show=" + show.getInt("id");
     }
 
     @Override

@@ -19,10 +19,12 @@ import org.schabi.newpipe.extractor.stream.StreamInfoItemsCollector;
 import javax.annotation.Nonnull;
 import java.io.IOException;
 
+import static org.schabi.newpipe.extractor.services.bandcamp.extractors.BandcampExtractorHelper.BASE_API_URL;
+
 public class BandcampRadioExtractor extends KioskExtractor<StreamInfoItem> {
 
     public static final String KIOSK_RADIO = "Radio";
-    public static final String RADIO_API_URL = "https://bandcamp.com/api/bcweekly/1/list";
+    public static final String RADIO_API_URL = BASE_API_URL + "/bcweekly/1/list";
 
     private JsonObject json = null;
 

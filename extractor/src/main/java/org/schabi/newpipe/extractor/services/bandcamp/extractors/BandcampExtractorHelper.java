@@ -20,9 +20,13 @@ import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
 import java.util.Locale;
 
 public class BandcampExtractorHelper {
+
+    public static final String BASE_URL = "https://bandcamp.com";
+    public static final String BASE_API_URL = BASE_URL + "/api";
 
     /**
      * <p>Get an attribute of a web page as JSON
@@ -50,11 +54,12 @@ public class BandcampExtractorHelper {
 
         try {
             final String jsonString = NewPipe.getDownloader().get(
-                    "https://bandcamp.com/api/mobile/22/tralbum_details?band_id=" + bandId
+                    BASE_API_URL + "/mobile/22/tralbum_details?band_id=" + bandId
                             + "&tralbum_id=" + itemId + "&tralbum_type=" + itemType.charAt(0))
                     .responseBody();
 
-            return JsonParser.object().from(jsonString).getString("bandcamp_url").replace("http://", "https://");
+            return JsonParser.object().from(jsonString)
+                    .getString("bandcamp_url").replace("http://", "https://");
 
         } catch (final JsonParserException | ReCaptchaException | IOException e) {
             throw new ParsingException("Ids could not be translated to URL", e);
@@ -70,7 +75,7 @@ public class BandcampExtractorHelper {
         final StringBuilder result = new StringBuilder();
 
         // Remove empty strings
-        final ArrayList<String> list = new ArrayList<>(Arrays.asList(strings));
+        final List<String> list = new ArrayList<>(Arrays.asList(strings));
         for (int i = list.size() - 1; i >= 0; i--) {
             if (Utils.isNullOrEmpty(list.get(i)) || list.get(i).equals("null")) {
                 list.remove(i);
@@ -101,7 +106,7 @@ public class BandcampExtractorHelper {
             return
                     JsonParser.object().from(
                             NewPipe.getDownloader().post(
-                                    "https://bandcamp.com/api/mobile/22/band_details",
+                                    BASE_API_URL + "/mobile/22/band_details",
                                     null,
                                     JsonWriter.string()
                                             .object()
@@ -165,6 +170,5 @@ public class BandcampExtractorHelper {
         } catch (final DateTimeException e) {
             throw new ParsingException("Could not parse date '" + textDate + "'", e);
         }
-
     }
 }
