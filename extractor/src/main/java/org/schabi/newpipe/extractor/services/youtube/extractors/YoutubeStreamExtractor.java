@@ -762,8 +762,9 @@ public class YoutubeStreamExtractor extends StreamExtractor {
                         }
                     }
                 }
-                throw new ContentNotAvailableException("Got error: \"" + reason + "\"");
             }
+
+            throw new ContentNotAvailableException("Got error: \"" + reason + "\"");
         }
     }
 

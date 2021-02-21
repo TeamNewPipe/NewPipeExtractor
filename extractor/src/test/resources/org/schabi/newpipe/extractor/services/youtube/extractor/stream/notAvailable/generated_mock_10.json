@@ -1,0 +1,80 @@
+{
+  "request": {
+    "httpMethod": "GET",
+    "url": "https://www.youtube.com/watch?v\u003d8VajtrESJzA\u0026pbj\u003d1",
+    "headers": {
+      "Accept-Language": [
+        "en-GB, en;q\u003d0.9"
+      ],
+      "X-YouTube-Client-Name": [
+        "1"
+      ],
+      "X-YouTube-Client-Version": [
+        "2.20200214.04.00"
+      ]
+    },
+    "localization": {
+      "languageCode": "en",
+      "countryCode": "GB"
+    }
+  },
+  "response": {
+    "responseCode": 200,
+    "responseMessage": "OK",
+    "responseHeaders": {
+      "alt-svc": [
+        "h3-29\u003d\":443\"; ma\u003d2592000,h3-T051\u003d\":443\"; ma\u003d2592000,h3-Q050\u003d\":443\"; ma\u003d2592000,h3-Q046\u003d\":443\"; ma\u003d2592000,h3-Q043\u003d\":443\"; ma\u003d2592000,quic\u003d\":443\"; ma\u003d2592000; v\u003d\"46,43\""
+      ],
+      "cache-control": [
+        "no-cache, no-store, max-age\u003d0, must-revalidate"
+      ],
+      "content-disposition": [
+        "attachment"
+      ],
+      "content-type": [
+        "application/json; charset\u003dutf-8"
+      ],
+      "date": [
+        "Sun, 21 Feb 2021 16:32:24 GMT"
+      ],
+      "expires": [
+        "Mon, 01 Jan 1990 00:00:00 GMT"
+      ],
+      "p3p": [
+        "CP\u003d\"This is not a P3P policy! See http://support.google.com/accounts/answer/151657?hl\u003den-GB for more info.\""
+      ],
+      "pragma": [
+        "no-cache"
+      ],
+      "server": [
+        "ESF"
+      ],
+      "set-cookie": [
+        "GPS\u003d1; Domain\u003d.youtube.com; Expires\u003dSun, 21-Feb-2021 17:02:24 GMT; Path\u003d/; Secure; HttpOnly",
+        "YSC\u003d19P0gGWXP2o; Domain\u003d.youtube.com; Path\u003d/; Secure; HttpOnly; SameSite\u003dnone",
+        "VISITOR_INFO1_LIVE\u003da-2fj78bANo; Domain\u003d.youtube.com; Expires\u003dFri, 20-Aug-2021 16:32:24 GMT; Path\u003d/; Secure; HttpOnly; SameSite\u003dnone",
+        "CONSENT\u003dPENDING+569; expires\u003dFri, 01-Jan-2038 00:00:00 GMT; path\u003d/; domain\u003d.youtube.com"
+      ],
+      "strict-transport-security": [
+        "max-age\u003d31536000"
+      ],
+      "transfer-encoding": [
+        "chunked"
+      ],
+      "x-content-type-options": [
+        "nosniff"
+      ],
+      "x-frame-options": [
+        "SAMEORIGIN"
+      ],
+      "x-spf-response-type": [
+        "multipart"
+      ],
+      "x-xss-protection": [
+        "0"
+      ]
+    },
+    "responseBody": "[\r\n{\"page\": \"watch\",\"rootVe\": \"3832\"},\r\n{\"page\": \"watch\",\"preconnect\": [\"https:\\/\\/r3---sn-25ge7nsl.googlevideo.com\\/generate_204\",\"https:\\/\\/r3---sn-25ge7nsl.googlevideo.com\\/generate_204?conn2\"]},\r\n{\"page\": \"watch\",\"playerResponse\": {\"responseContext\":{\"serviceTrackingParams\":[{\"service\":\"GFEEDBACK\",\"params\":[{\"key\":\"is_viewed_live\",\"value\":\"False\"},{\"key\":\"logged_in\",\"value\":\"0\"},{\"key\":\"e\",\"value\":\"24002342,23918597,23986023,23983514,23999478,23744176,23880830,9466593,23934970,23931562,23978419,23891347,23940248,23996625,23974595,23890959,23995022,23991736,23966208,23992809,23970529,23946420,23891344,23804281,23882502,23996751,23884386,23971936,24000882,23944779,23885487,23974884,23994984,23994373,23976578,23998150,23994475,23969934,23880836,23839597,23857949,23968386,23983297,23993730,23987676,1714259\"}]},{\"service\":\"CSI\",\"params\":[{\"key\":\"c\",\"value\":\"WEB\"},{\"key\":\"cver\",\"value\":\"2.20200214.04.00\"},{\"key\":\"yt_li\",\"value\":\"0\"},{\"key\":\"GetPlayer_rid\",\"value\":\"0xbf3eb825a2665b63\"}]},{\"service\":\"GUIDED_HELP\",\"params\":[{\"key\":\"logged_in\",\"value\":\"0\"}]},{\"service\":\"ECATCHER\",\"params\":[{\"key\":\"client.version\",\"value\":\"2.20210114\"},{\"key\":\"client.name\",\"value\":\"WEB\"}]}],\"mainAppWebResponseContext\":{\"loggedOut\":true},\"webResponseContextExtensionData\":{\"hasDecorated\":true}},\"playabilityStatus\":{\"status\":\"LOGIN_REQUIRED\",\"messages\":[\"This is a private video. Please sign in to verify that you may see it.\"],\"errorScreen\":{\"playerErrorMessageRenderer\":{\"subreason\":{\"simpleText\":\"Sign in if you\u0027ve been granted access to this video\"},\"reason\":{\"simpleText\":\"Private video\"},\"proceedButton\":{\"buttonRenderer\":{\"style\":\"STYLE_OVERLAY\",\"size\":\"SIZE_DEFAULT\",\"isDisabled\":false,\"text\":{\"simpleText\":\"Sign in\"},\"navigationEndpoint\":{\"clickTrackingParams\":\"CAEQ8FsiEwjlysbXs_vuAhUVGPEFHZMpD64\u003d\",\"commandMetadata\":{\"webCommandMetadata\":{\"url\":\"https://accounts.google.com/ServiceLogin?service\u003dyoutube\\u0026uilel\u003d3\\u0026passive\u003dtrue\\u0026continue\u003dhttps%3A%2F%2Fwww.youtube.com%2Fsignin%3Faction_handle_signin%3Dtrue%26app%3Ddesktop%26hl%3Den-GB%26next%3D%252Fwatch%253Fv%253D8VajtrESJzA\\u0026hl\u003den-GB\",\"webPageType\":\"WEB_PAGE_TYPE_UNKNOWN\",\"rootVe\":83769}},\"signInEndpoint\":{\"nextEndpoint\":{\"clickTrackingParams\":\"CAEQ8FsiEwjlysbXs_vuAhUVGPEFHZMpD64\u003d\",\"commandMetadata\":{\"webCommandMetadata\":{\"url\":\"/watch?v\u003d8VajtrESJzA\",\"webPageType\":\"WEB_PAGE_TYPE_UNKNOWN\",\"rootVe\":83769}},\"urlEndpoint\":{\"url\":\"/watch?v\u003d8VajtrESJzA\"}}}},\"trackingParams\":\"CAEQ8FsiEwjlysbXs_vuAhUVGPEFHZMpD64\u003d\"}},\"thumbnail\":{\"thumbnails\":[{\"url\":\"//s.ytimg.com/yts/img/meh7-vflGevej7.png\",\"width\":140,\"height\":100}]},\"icon\":{\"iconType\":\"ERROR_OUTLINE\"}}},\"contextParams\":\"Q0FBU0FnZ0E\u003d\"},\"trackingParams\":\"CAAQu2kiEwjlysbXs_vuAhUVGPEFHZMpD64\u003d\"}},\r\n{\"page\": \"watch\",\"response\": {\"responseContext\":{\"webResponseContextExtensionData\":{\"ytConfigData\":{\"visitorData\":\"CgthLTJmajc4YkFObyiYlsqBBg%3D%3D\",\"rootVisualElementType\":3832}}}},\"xsrf_token\": \"QUFFLUhqbXBCdnJkelFzdnNHaEpnUEZObGNvbk5JSTNJd3xBQ3Jtc0tuSDlkZHJYcExYTkt6TVplTDU1cUQwUUgzUThPOVhPYXVPM2N1bDJmYV9weVNpdDdNVUd4cnNCX1VTU0NXcFRQTGdCWk1aNW5FM25nWVJORGs3S0hUSVdDV3NFcHRpNF91THJpN1N2QWp6VkNqSTdLOA\\u003d\\u003d\",\"url\": \"/watch?v\\u003d8VajtrESJzA\",\"endpoint\": {\"clickTrackingParams\":\"IhMI_6bF17P77gIV1h_xBR134Ae2MghleHRlcm5hbA\u003d\u003d\",\"commandMetadata\":{\"webCommandMetadata\":{\"url\":\"/watch?v\u003d8VajtrESJzA\",\"webPageType\":\"WEB_PAGE_TYPE_WATCH\",\"rootVe\":3832}},\"watchEndpoint\":{\"videoId\":\"8VajtrESJzA\"}}},\r\n{\"page\": \"watch\",\"timing\": {\"info\": {\"st\":  0.0 }}}]\r\n",
+    "latestUrl": "https://www.youtube.com/watch?v\u003d8VajtrESJzA\u0026pbj\u003d1"
+  }
+}
