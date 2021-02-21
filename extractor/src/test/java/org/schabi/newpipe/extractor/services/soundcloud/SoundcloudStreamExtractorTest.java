@@ -25,8 +25,8 @@ public class SoundcloudStreamExtractorTest {
         @Test(expected = GeographicRestrictionException.class)
         public void geoRestrictedContent() throws Exception {
             final String id = "one-touch";
-            final String uploader = "jessglynne";
-            final String url = SOUNDCLOUD + uploader + "/" + id;
+            final String uploader = SOUNDCLOUD + "jessglynne";
+            final String url = uploader + "/" + id;
             final StreamExtractor extractor = SoundCloud.getStreamExtractor(url);
             extractor.fetchPage();
         }
@@ -34,8 +34,8 @@ public class SoundcloudStreamExtractorTest {
         @Test(expected = SoundCloudGoPlusContentException.class)
         public void goPlusContent() throws Exception {
             final String id = "places";
-            final String uploader = "martinsolveig";
-            final String url = SOUNDCLOUD + uploader + "/" + id;
+            final String uploader = SOUNDCLOUD + "martinsolveig";
+            final String url = uploader + "/" + id;
             final StreamExtractor extractor = SoundCloud.getStreamExtractor(url);
             extractor.fetchPage();
         }
@@ -43,9 +43,9 @@ public class SoundcloudStreamExtractorTest {
 
     public static class CreativeCommonsPlaysWellWithOthers extends DefaultStreamExtractorTest {
         private static final String ID = "plays-well-with-others-ep-2-what-do-an-army-of-ants-and-an-online-encyclopedia-have-in-common";
-        private static final String UPLOADER = "wearecc";
+        private static final String UPLOADER = SOUNDCLOUD + "wearecc";
         private static final int TIMESTAMP = 69;
-        private static final String URL = SOUNDCLOUD + UPLOADER + "/" + ID + "#t=" + TIMESTAMP;
+        private static final String URL = UPLOADER + "/" + ID + "#t=" + TIMESTAMP;
         private static StreamExtractor extractor;
 
         @BeforeClass
