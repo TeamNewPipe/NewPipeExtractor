@@ -5,6 +5,7 @@ import org.junit.Test;
 import org.schabi.newpipe.downloader.DownloaderTestImpl;
 import org.schabi.newpipe.extractor.NewPipe;
 import org.schabi.newpipe.extractor.StreamingService;
+import org.schabi.newpipe.extractor.exceptions.ContentNotSupportedException;
 import org.schabi.newpipe.extractor.exceptions.GeographicRestrictionException;
 import org.schabi.newpipe.extractor.exceptions.SoundCloudGoPlusContentException;
 import org.schabi.newpipe.extractor.services.DefaultStreamExtractorTest;
@@ -12,6 +13,7 @@ import org.schabi.newpipe.extractor.stream.StreamExtractor;
 import org.schabi.newpipe.extractor.stream.StreamType;
 
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 
 import javax.annotation.Nullable;
@@ -21,24 +23,82 @@ import static org.schabi.newpipe.extractor.ServiceList.SoundCloud;
 public class SoundcloudStreamExtractorTest {
     private static final String SOUNDCLOUD = "https://soundcloud.com/";
 
-    public static class SoundcloudNotAvailable {
+    public static class SoundcloudGeoRestrictedTrack extends DefaultStreamExtractorTest {
+        private static final String ID = "one-touch";
+        private static final String UPLOADER = SOUNDCLOUD + "jessglynne";
+        private static final int TIMESTAMP = 0;
+        private static final String URL = UPLOADER + "/" + ID + "#t=" + TIMESTAMP;
+        private static StreamExtractor extractor;
+
         @Test(expected = GeographicRestrictionException.class)
         public void geoRestrictedContent() throws Exception {
-            final String id = "one-touch";
-            final String uploader = SOUNDCLOUD + "jessglynne";
-            final String url = uploader + "/" + id;
-            final StreamExtractor extractor = SoundCloud.getStreamExtractor(url);
+            NewPipe.init(DownloaderTestImpl.getInstance());
+            extractor = SoundCloud.getStreamExtractor(URL);
             extractor.fetchPage();
         }
 
+        @Override public StreamExtractor extractor() { return extractor; }
+        @Override public StreamingService expectedService() { return SoundCloud; }
+        @Override public String expectedName() { return "Jess Glynne & Jax Jones - One Touch"; }
+        @Override public String expectedId() { return "621612588"; }
+        @Override public String expectedUrlContains() { return UPLOADER + "/" + ID; }
+        @Override public String expectedOriginalUrlContains() { return URL; }
+
+        @Override public StreamType expectedStreamType() { return StreamType.AUDIO_STREAM; }
+        @Override public String expectedUploaderName() { return "Jess Glynne"; }
+        @Override public String expectedUploaderUrl() { return UPLOADER; }
+        @Override public boolean expectedUploaderVerified() { return true; }
+        @Override public List<String> expectedDescriptionContains() { return Collections.emptyList(); }
+        @Override public long expectedLength() { return 197; }
+        @Override public long expectedTimestamp() { return TIMESTAMP; }
+        @Override public long expectedViewCountAtLeast() { return 43000; }
+        @Nullable @Override public String expectedUploadDate() { return "2019-05-16 16:28:45.000"; }
+        @Nullable @Override public String expectedTextualUploadDate() { return "2019-05-16 16:28:45"; }
+        @Override public long expectedLikeCountAtLeast() { return -1; }
+        @Override public long expectedDislikeCountAtLeast() { return -1; }
+        @Override public boolean expectedHasVideoStreams() { return false; }
+        @Override public boolean expectedHasSubtitles() { return false; }
+        @Override public boolean expectedHasFrames() { return false; }
+        @Override public int expectedStreamSegmentsCount() { return 0; }
+    }
+
+    public static class SoundcloudGoPlusTrack extends DefaultStreamExtractorTest {
+        private static final String ID = "places";
+        private static final String UPLOADER = SOUNDCLOUD + "martinsolveig";
+        private static final int TIMESTAMP = 0;
+        private static final String URL = UPLOADER + "/" + ID + "#t=" + TIMESTAMP;
+        private static StreamExtractor extractor;
+
         @Test(expected = SoundCloudGoPlusContentException.class)
         public void goPlusContent() throws Exception {
-            final String id = "places";
-            final String uploader = SOUNDCLOUD + "martinsolveig";
-            final String url = uploader + "/" + id;
-            final StreamExtractor extractor = SoundCloud.getStreamExtractor(url);
+            NewPipe.init(DownloaderTestImpl.getInstance());
+            extractor = SoundCloud.getStreamExtractor(URL);
             extractor.fetchPage();
         }
+
+        @Override public StreamExtractor extractor() { return extractor; }
+        @Override public StreamingService expectedService() { return SoundCloud; }
+        @Override public String expectedName() { return "Places (feat. Ina Wroldsen)"; }
+        @Override public String expectedId() { return "292479564"; }
+        @Override public String expectedUrlContains() { return UPLOADER + "/" + ID; }
+        @Override public String expectedOriginalUrlContains() { return URL; }
+
+        @Override public StreamType expectedStreamType() { return StreamType.AUDIO_STREAM; }
+        @Override public String expectedUploaderName() { return "martinsolveig"; }
+        @Override public String expectedUploaderUrl() { return UPLOADER; }
+        @Override public boolean expectedUploaderVerified() { return true; }
+        @Override public List<String> expectedDescriptionContains() { return Collections.singletonList(""); }
+        @Override public long expectedLength() { return 30; }
+        @Override public long expectedTimestamp() { return TIMESTAMP; }
+        @Override public long expectedViewCountAtLeast() { return 386000; }
+        @Nullable @Override public String expectedUploadDate() { return "2016-11-11 01:16:37.000"; }
+        @Nullable @Override public String expectedTextualUploadDate() { return "2016-11-11 01:16:37"; }
+        @Override public long expectedLikeCountAtLeast() { return -1; }
+        @Override public long expectedDislikeCountAtLeast() { return -1; }
+        @Override public boolean expectedHasVideoStreams() { return false; }
+        @Override public boolean expectedHasSubtitles() { return false; }
+        @Override public boolean expectedHasFrames() { return false; }
+        @Override public int expectedStreamSegmentsCount() { return 0; }
     }
 
     public static class CreativeCommonsPlaysWellWithOthers extends DefaultStreamExtractorTest {
