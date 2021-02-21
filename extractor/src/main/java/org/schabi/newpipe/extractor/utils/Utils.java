@@ -271,4 +271,17 @@ public class Utils {
         return join(delimiter, list);
     }
 
+    /**
+     * Concatenate all non-null, non-empty and strings which are not equal to <code>"null"</code>.
+     */
+    public static String nonEmptyAndNullJoin(final String delimiter, final String[] elements) {
+        final List<String> list = Arrays.asList(elements);
+        for (int i = list.size() - 1; i >= 0; i--) {
+            if (isNullOrEmpty(list.get(i)) || list.get(i).equals("null")) {
+                list.remove(i);
+            }
+        }
+
+        return join(delimiter, list);
+    }
 }

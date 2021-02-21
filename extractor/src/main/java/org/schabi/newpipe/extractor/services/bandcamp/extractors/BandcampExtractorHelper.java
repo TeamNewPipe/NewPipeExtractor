@@ -68,35 +68,6 @@ public class BandcampExtractorHelper {
     }
 
     /**
-     * Concatenate all non-null and non-empty strings together while separating them using
-     * the comma parameter
-     */
-    public static String smartConcatenate(final String[] strings, final String comma) {
-        final StringBuilder result = new StringBuilder();
-
-        // Remove empty strings
-        final List<String> list = new ArrayList<>(Arrays.asList(strings));
-        for (int i = list.size() - 1; i >= 0; i--) {
-            if (Utils.isNullOrEmpty(list.get(i)) || list.get(i).equals("null")) {
-                list.remove(i);
-            }
-        }
-
-        // Append remaining strings to result
-        for (int i = 0; i < list.size(); i++) {
-            result.append(list.get(i));
-
-            if (i != list.size() - 1) {
-                // This is not the last iteration yet
-                result.append(comma);
-            }
-
-        }
-
-        return result.toString();
-    }
-
-    /**
      * Fetch artist details from mobile endpoint.
      * <a href=https://notabug.org/fynngodau/bandcampDirect/wiki/rewindBandcamp+%E2%80%93+Fetching+artist+details>
      * More technical info.</a>

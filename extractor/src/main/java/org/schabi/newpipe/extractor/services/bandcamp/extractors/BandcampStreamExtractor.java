@@ -17,6 +17,7 @@ import org.schabi.newpipe.extractor.exceptions.ParsingException;
 import org.schabi.newpipe.extractor.linkhandler.LinkHandler;
 import org.schabi.newpipe.extractor.localization.DateWrapper;
 import org.schabi.newpipe.extractor.stream.*;
+import org.schabi.newpipe.extractor.utils.Utils;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -150,12 +151,13 @@ public class BandcampStreamExtractor extends StreamExtractor {
     @Nonnull
     @Override
     public Description getDescription() {
-        final String s = BandcampExtractorHelper.smartConcatenate(
+        final String s = Utils.nonEmptyAndNullJoin(
+                "\n\n",
                 new String[]{
                         current.getString("about"),
                         current.getString("lyrics"),
                         current.getString("credits")
-                }, "\n\n"
+                }
         );
         return new Description(s, Description.PLAIN_TEXT);
     }
