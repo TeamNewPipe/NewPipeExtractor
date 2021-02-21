@@ -48,6 +48,7 @@ public abstract class DefaultStreamExtractorTest extends DefaultExtractorTest<St
     public boolean expectedUploaderVerified() { return false; }
     public String expectedSubChannelName() { return ""; } // default: there is no subchannel
     public String expectedSubChannelUrl() { return ""; } // default: there is no subchannel
+    public boolean expectedDescriptionIsEmpty() { return false; } // default: description is not empty
     public abstract List<String> expectedDescriptionContains(); // e.g. for full links
     public abstract long expectedLength();
     public long expectedTimestamp() { return 0; } // default: there is no timestamp
@@ -146,7 +147,12 @@ public abstract class DefaultStreamExtractorTest extends DefaultExtractorTest<St
     public void testDescription() throws Exception {
         final Description description = extractor().getDescription();
         assertNotNull(description);
-        assertFalse("description is empty", description.getContent().isEmpty());
+
+        if (expectedDescriptionIsEmpty()) {
+            assertTrue("description is not empty", description.getContent().isEmpty());
+        } else {
+            assertFalse("description is empty", description.getContent().isEmpty());
+        }
 
         for (final String s : expectedDescriptionContains()) {
             assertThat(description.getContent(), containsString(s));
@@ -225,7 +231,7 @@ public abstract class DefaultStreamExtractorTest extends DefaultExtractorTest<St
             defaultTestListOfItems(extractor().getService(), relatedStreams.getItems(),
                     relatedStreams.getErrors());
         } else {
-            assertNull(relatedStreams);
+            assertTrue(relatedStreams == null || relatedStreams.getItems().isEmpty());
         }
     }
 

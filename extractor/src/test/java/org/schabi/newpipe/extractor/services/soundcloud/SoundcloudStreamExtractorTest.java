@@ -48,6 +48,7 @@ public class SoundcloudStreamExtractorTest {
         @Override public String expectedUploaderName() { return "Jess Glynne"; }
         @Override public String expectedUploaderUrl() { return UPLOADER; }
         @Override public boolean expectedUploaderVerified() { return true; }
+        @Override public boolean expectedDescriptionIsEmpty() { return true; }
         @Override public List<String> expectedDescriptionContains() { return Collections.emptyList(); }
         @Override public long expectedLength() { return 197; }
         @Override public long expectedTimestamp() { return TIMESTAMP; }
@@ -60,6 +61,7 @@ public class SoundcloudStreamExtractorTest {
         @Override public boolean expectedHasSubtitles() { return false; }
         @Override public boolean expectedHasFrames() { return false; }
         @Override public int expectedStreamSegmentsCount() { return 0; }
+        @Override public boolean expectedHasRelatedStreams() { return false; }
     }
 
     public static class SoundcloudGoPlusTrack extends DefaultStreamExtractorTest {
@@ -87,7 +89,8 @@ public class SoundcloudStreamExtractorTest {
         @Override public String expectedUploaderName() { return "martinsolveig"; }
         @Override public String expectedUploaderUrl() { return UPLOADER; }
         @Override public boolean expectedUploaderVerified() { return true; }
-        @Override public List<String> expectedDescriptionContains() { return Collections.singletonList(""); }
+        @Override public boolean expectedDescriptionIsEmpty() { return true; }
+        @Override public List<String> expectedDescriptionContains() { return Collections.emptyList(); }
         @Override public long expectedLength() { return 30; }
         @Override public long expectedTimestamp() { return TIMESTAMP; }
         @Override public long expectedViewCountAtLeast() { return 386000; }
