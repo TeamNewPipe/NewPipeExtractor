@@ -29,23 +29,6 @@ public class BandcampExtractorHelper {
     public static final String BASE_API_URL = BASE_URL + "/api";
 
     /**
-     * <p>Get an attribute of a web page as JSON
-     *
-     * <p>Originally a part of bandcampDirect.</p>
-     *
-     * @param html     The HTML where the JSON we're looking for is stored inside a
-     *                 variable inside some JavaScript block
-     * @param variable Name of the variable
-     * @return The JsonObject stored in the variable with this name
-     */
-    public static JsonObject getJsonData(final String html, final String variable)
-            throws JsonParserException, ArrayIndexOutOfBoundsException {
-        final Document document = Jsoup.parse(html);
-        final String json = document.getElementsByAttribute(variable).attr(variable);
-        return JsonParser.object().from(json);
-    }
-
-    /**
      * Translate all these parameters together to the URL of the corresponding album or track
      * using the mobile API
      */

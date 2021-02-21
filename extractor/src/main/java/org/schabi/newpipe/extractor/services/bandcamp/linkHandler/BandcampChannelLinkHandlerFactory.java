@@ -9,6 +9,7 @@ import org.schabi.newpipe.extractor.exceptions.ParsingException;
 import org.schabi.newpipe.extractor.exceptions.ReCaptchaException;
 import org.schabi.newpipe.extractor.linkhandler.ListLinkHandlerFactory;
 import org.schabi.newpipe.extractor.services.bandcamp.extractors.BandcampExtractorHelper;
+import org.schabi.newpipe.extractor.utils.JsonUtils;
 
 import java.io.IOException;
 import java.util.List;
@@ -25,7 +26,7 @@ public class BandcampChannelLinkHandlerFactory extends ListLinkHandlerFactory {
             final String response = NewPipe.getDownloader().get(url).responseBody();
 
             // Use band data embedded in website to extract ID
-            final JsonObject bandData = BandcampExtractorHelper.getJsonData(response, "data-band");
+            final JsonObject bandData = JsonUtils.getJsonData(response, "data-band");
 
             return String.valueOf(bandData.getLong("id"));
 

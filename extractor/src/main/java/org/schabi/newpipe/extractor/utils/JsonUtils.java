@@ -2,6 +2,10 @@ package org.schabi.newpipe.extractor.utils;
 
 import com.grack.nanojson.JsonArray;
 import com.grack.nanojson.JsonObject;
+import com.grack.nanojson.JsonParser;
+import com.grack.nanojson.JsonParserException;
+import org.jsoup.Jsoup;
+import org.jsoup.nodes.Document;
 import org.schabi.newpipe.extractor.exceptions.ParsingException;
 
 import javax.annotation.Nonnull;
@@ -99,4 +103,34 @@ public class JsonUtils {
         return result;
     }
 
+    /**
+     * <p>Get an attribute of a web page as JSON
+     *
+     * <p>Originally a part of bandcampDirect.</p>
+     * <p>Example HTML:</p>
+     * <pre>
+     * {@code
+     * <p data-town="{&quot;name&quot;:&quot;Mycenae&quot;,&quot;country&quot;:&quot;Greece&quot;}">This is Sparta!</p>
+     * }
+     * </pre>
+     * <p>Calling this function to get the attribute <code>data-town</code> returns the JsonObject for</p>
+     * <pre>
+     * {@code
+     *   {
+     *     "name": "Mycenae",
+     *     "country": "Greece"
+     *   }
+     * }
+     * </pre>
+     * @param html     The HTML where the JSON we're looking for is stored inside a
+     *                 variable inside some JavaScript block
+     * @param variable Name of the variable
+     * @return The JsonObject stored in the variable with this name
+     */
+    public static JsonObject getJsonData(final String html, final String variable)
+            throws JsonParserException, ArrayIndexOutOfBoundsException {
+        final Document document = Jsoup.parse(html);
+        final String json = document.getElementsByAttribute(variable).attr(variable);
+        return JsonParser.object().from(json);
+    }
 }

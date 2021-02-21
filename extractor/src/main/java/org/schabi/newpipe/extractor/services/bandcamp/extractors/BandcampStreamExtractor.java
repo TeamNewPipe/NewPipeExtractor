@@ -17,6 +17,7 @@ import org.schabi.newpipe.extractor.exceptions.ParsingException;
 import org.schabi.newpipe.extractor.linkhandler.LinkHandler;
 import org.schabi.newpipe.extractor.localization.DateWrapper;
 import org.schabi.newpipe.extractor.stream.*;
+import org.schabi.newpipe.extractor.utils.JsonUtils;
 import org.schabi.newpipe.extractor.utils.Utils;
 
 import javax.annotation.Nonnull;
@@ -62,7 +63,7 @@ public class BandcampStreamExtractor extends StreamExtractor {
      */
     public static JsonObject getAlbumInfoJson(final String html) throws ParsingException {
         try {
-            return BandcampExtractorHelper.getJsonData(html, "data-tralbum");
+            return JsonUtils.getJsonData(html, "data-tralbum");
         } catch (final JsonParserException e) {
             throw new ParsingException("Faulty JSON; page likely does not contain album data", e);
         } catch (final ArrayIndexOutOfBoundsException e) {

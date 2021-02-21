@@ -21,7 +21,7 @@ import javax.annotation.Nonnull;
 import java.io.IOException;
 
 import static org.schabi.newpipe.extractor.services.bandcamp.extractors.BandcampExtractorHelper.getImageUrl;
-import static org.schabi.newpipe.extractor.services.bandcamp.extractors.BandcampExtractorHelper.getJsonData;
+import static org.schabi.newpipe.extractor.utils.JsonUtils.getJsonData;
 import static org.schabi.newpipe.extractor.services.bandcamp.extractors.BandcampStreamExtractor.getAlbumInfoJson;
 
 public class BandcampPlaylistExtractor extends PlaylistExtractor {
