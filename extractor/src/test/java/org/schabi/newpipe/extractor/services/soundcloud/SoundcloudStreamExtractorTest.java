@@ -1,6 +1,7 @@
 package org.schabi.newpipe.extractor.services.soundcloud;
 
 import org.junit.BeforeClass;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.schabi.newpipe.downloader.DownloaderTestImpl;
 import org.schabi.newpipe.extractor.NewPipe;
@@ -23,6 +24,7 @@ import static org.schabi.newpipe.extractor.ServiceList.SoundCloud;
 public class SoundcloudStreamExtractorTest {
     private static final String SOUNDCLOUD = "https://soundcloud.com/";
 
+    @Ignore("Ignore until #526 is merged. Throwing the ContentNotSupportedException is wrong and going to be fixed by that PR.")
     public static class SoundcloudGeoRestrictedTrack extends DefaultStreamExtractorTest {
         private static final String ID = "one-touch";
         private static final String UPLOADER = SOUNDCLOUD + "jessglynne";
