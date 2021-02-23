@@ -1,11 +1,11 @@
 package org.schabi.newpipe.extractor.exceptions;
 
 public class GeographicRestrictionException extends ContentNotAvailableException {
-    public GeographicRestrictionException(String message) {
+    public GeographicRestrictionException(final String message) {
         super(message);
     }
 
-    public GeographicRestrictionException(String message, Throwable cause) {
+    public GeographicRestrictionException(final String message, final Throwable cause) {
         super(message, cause);
     }
 }

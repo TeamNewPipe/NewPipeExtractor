@@ -16,6 +16,7 @@ import org.schabi.newpipe.extractor.MetaInfo;
 import org.schabi.newpipe.extractor.NewPipe;
 import org.schabi.newpipe.extractor.StreamingService;
 import org.schabi.newpipe.extractor.downloader.Downloader;
+import org.schabi.newpipe.extractor.exceptions.AgeRestrictedContentException;
 import org.schabi.newpipe.extractor.exceptions.ContentNotAvailableException;
 import org.schabi.newpipe.extractor.exceptions.ExtractionException;
 import org.schabi.newpipe.extractor.exceptions.GeographicRestrictionException;
@@ -735,6 +736,8 @@ public class YoutubeStreamExtractor extends StreamExtractor {
                     if (message != null && message.equals("This is a private video. Please sign in to verify that you may see it.")) {
                         throw new PrivateContentException("This video is private.");
                     }
+                } else if (reason.equals("Sign in to confirm your age") && getAgeLimit() == 18) {
+                    throw new AgeRestrictedContentException("This age-restricted video cannot be watched.");
                 }
             }
             if (status.toLowerCase().equals("unplayable")) {

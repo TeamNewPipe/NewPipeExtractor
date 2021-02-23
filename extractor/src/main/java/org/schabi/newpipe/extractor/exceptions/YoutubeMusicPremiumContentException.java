@@ -5,7 +5,7 @@ public class YoutubeMusicPremiumContentException extends ContentNotAvailableExce
         super("This video is a YouTube Music Premium video");
     }
 
-    public YoutubeMusicPremiumContentException(Throwable cause) {
+    public YoutubeMusicPremiumContentException(final Throwable cause) {
         super("This video is a YouTube Music Premium video", cause);
     }
 }

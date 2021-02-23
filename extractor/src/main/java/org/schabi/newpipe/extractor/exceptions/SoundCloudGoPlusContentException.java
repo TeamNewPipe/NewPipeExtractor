@@ -5,7 +5,7 @@ public class SoundCloudGoPlusContentException extends ContentNotAvailableExcepti
         super("This track is a SoundCloud Go+ track");
     }
 
-    public SoundCloudGoPlusContentException(Throwable cause) {
+    public SoundCloudGoPlusContentException(final Throwable cause) {
         super("This track is a SoundCloud Go+ track", cause);
     }
 }
