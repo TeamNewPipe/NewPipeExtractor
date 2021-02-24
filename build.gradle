@@ -2,6 +2,9 @@ allprojects {
     apply plugin: 'java-library'
     apply plugin: 'maven'
 
+    compileJava.options.encoding = 'UTF-8'
+    compileTestJava.options.encoding = 'UTF-8'
+
     sourceCompatibility = 1.8
     targetCompatibility = 1.8
 
