@@ -723,24 +723,31 @@ public class YoutubeStreamExtractor extends StreamExtractor {
         // E.g. if a video is age-restricted, the embedded player's playabilityStatus says,
         // that the video cannot be played outside of YouTube,
         // but does not show the original message.
-        final JsonObject youtubePlayerResponse = playerResponse;
+        JsonObject youtubePlayerResponse = playerResponse;
 
         if (playerResponse == null || !playerResponse.has("streamingData")) {
             // try to get player response by fetching video info page
             fetchVideoInfoPage();
         }
 
-        JsonObject playabilityStatus = playerResponse.getObject("playabilityStatus");
+        if (playerResponse == null && youtubePlayerResponse == null) {
+            throw new ExtractionException("Could not get playerResponse");
+        } else if (youtubePlayerResponse == null) {
+            youtubePlayerResponse = playerResponse;
+        }
+
+        JsonObject playabilityStatus = (playerResponse == null ? youtubePlayerResponse : playerResponse)
+                .getObject("playabilityStatus");
         String status = playabilityStatus.getString("status");
         // If status exist, and is not "OK", throw the specific exception based on error message
         // or a ContentNotAvailableException with the reason text if it's an unknown reason.
-        if (status != null && !status.toLowerCase().equals("ok")) {
+        if (status != null && !status.equalsIgnoreCase("ok")) {
             playabilityStatus = youtubePlayerResponse.getObject("playabilityStatus");
             status = playabilityStatus.getString("status");
 
             final String reason = playabilityStatus.getString("reason");
 
-            if (status.toLowerCase().equals("login_required")) {
+            if (status.equalsIgnoreCase("login_required")) {
                 if (reason == null) {
                     final String message = playabilityStatus.getArray("messages").getString(0);
                     if (message != null && message.equals("This is a private video. Please sign in to verify that you may see it.")) {
@@ -751,7 +758,7 @@ public class YoutubeStreamExtractor extends StreamExtractor {
                     throw new AgeRestrictedContentException("This age-restricted video cannot be watched.");
                 }
             }
-            if (status.toLowerCase().equals("unplayable")) {
+            if (status.equalsIgnoreCase("unplayable")) {
                 if (reason != null) {
                     if (reason.equals("This video is only available to Music Premium members")) {
                         throw new YoutubeMusicPremiumContentException();
