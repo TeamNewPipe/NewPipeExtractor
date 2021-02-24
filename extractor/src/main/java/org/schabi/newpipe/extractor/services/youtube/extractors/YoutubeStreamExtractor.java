@@ -718,16 +718,26 @@ public class YoutubeStreamExtractor extends StreamExtractor {
         }
 
         playerResponse = initialAjaxJson.getObject(2).getObject("playerResponse", null);
+        // Save the playerResponse from the youtube.com website,
+        // because there can be restrictions on the embedded player.
+        // E.g. if a video is age-restricted, the embedded player's playabilityStatus says,
+        // that the video cannot be played outside of YouTube,
+        // but does not show the original message.
+        final JsonObject youtubePlayerResponse = playerResponse;
+
         if (playerResponse == null || !playerResponse.has("streamingData")) {
             // try to get player response by fetching video info page
             fetchVideoInfoPage();
         }
 
-        final JsonObject playabilityStatus = playerResponse.getObject("playabilityStatus");
-        final String status = playabilityStatus.getString("status");
+        JsonObject playabilityStatus = playerResponse.getObject("playabilityStatus");
+        String status = playabilityStatus.getString("status");
         // If status exist, and is not "OK", throw the specific exception based on error message
         // or a ContentNotAvailableException with the reason text if it's an unknown reason.
         if (status != null && !status.toLowerCase().equals("ok")) {
+            playabilityStatus = youtubePlayerResponse.getObject("playabilityStatus");
+            status = playabilityStatus.getString("status");
+
             final String reason = playabilityStatus.getString("reason");
 
             if (status.toLowerCase().equals("login_required")) {
@@ -736,7 +746,8 @@ public class YoutubeStreamExtractor extends StreamExtractor {
                     if (message != null && message.equals("This is a private video. Please sign in to verify that you may see it.")) {
                         throw new PrivateContentException("This video is private.");
                     }
-                } else if (reason.equals("Sign in to confirm your age") && getAgeLimit() == 18) {
+                } else if (reason.equals("Sign in to confirm your age")) {
+                    // No streams can be fetched, therefore thrown an AgeRestrictedContentException explicitly.
                     throw new AgeRestrictedContentException("This age-restricted video cannot be watched.");
                 }
             }
