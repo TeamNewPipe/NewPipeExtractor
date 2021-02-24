@@ -759,7 +759,8 @@ public class YoutubeStreamExtractor extends StreamExtractor {
                     if (reason.equals("This video requires payment to watch.")) {
                         throw new PaidContentException("This video is a paid video");
                     }
-                    if (reason.equals("Join this channel to get access to members-only content like this video, and other exclusive perks.")) {
+                    if (reason.equals("Join this channel to get access to members-only content like this video, and other exclusive perks.") ||
+                        reason.equals("Join this channel to get access to members-only content like this video and other exclusive perks.")) {
                         throw new PaidContentException("This video is only available for members of the channel of this video");
                     }
                     if (reason.equals("Video unavailable")) {
