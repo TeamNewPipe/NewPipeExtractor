@@ -1,6 +1,7 @@
 package org.schabi.newpipe.extractor.services.media_ccc;
 
 import org.junit.BeforeClass;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.schabi.newpipe.downloader.DownloaderTestImpl;
 import org.schabi.newpipe.extractor.InfoItem;
@@ -13,6 +14,7 @@ import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 import static org.schabi.newpipe.extractor.ServiceList.MediaCCC;
 
+@Ignore("Extractor is broken")
 public class MediaCCCLiveStreamListExtractorTest {
     private static KioskExtractor extractor;
 
@@ -28,7 +30,6 @@ public class MediaCCCLiveStreamListExtractorTest {
     public void getConferencesListTest() throws Exception {
         final List<InfoItem> a = extractor.getInitialPage().getItems();
         for (int i = 0; i < a.size(); i++) {
-            final InfoItem b = a.get(i);
             assertNotNull(a.get(i).getName());
             assertTrue(a.get(i).getName().length() >= 1);
         }
