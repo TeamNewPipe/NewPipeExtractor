@@ -9,19 +9,21 @@ import org.schabi.newpipe.downloader.DownloaderType;
 import javax.annotation.Nonnull;
 
 /**
- * <p>
- * Checks if the system variable "downloader" is set to "REAL" and skips the tests if it is.
- * Otherwise execute the test.
- * </p>
- *
- * <p>
- * Use it by creating a public variable of this inside the test class and annotate it with
- * {@link org.junit.Rule}. Then annotate the tests to be skipped with {@link MockOnly}
- * </p>
  *
  * <p>
  * Allows skipping unreliable or time sensitive tests in CI pipeline.
  * </p>
+ *
+ * <p>
+ * Use it by creating a public variable of this inside the test class and annotate it with
+ * {@link org.junit.Rule}. Then annotate the specific tests to be skipped with {@link MockOnly}
+ * </p>
+ *
+ * <p>
+ * It works by checking if the system variable "downloader" is set to "REAL" and skips the tests if it is.
+ * Otherwise it executes the test.
+ * </p>
+
  */
 public class MockOnlyRule implements TestRule {
 
@@ -41,7 +43,6 @@ public class MockOnlyRule implements TestRule {
                     Assume.assumeTrue("The test is not reliable against real website. Reason: "
                             + annotation.reason(), isMockDownloader);
                 }
-
 
                 base.evaluate();
             }

@@ -9,7 +9,7 @@ import java.lang.annotation.Target;
 import javax.annotation.Nonnull;
 
 /**
- * Marker annotation to skip test if it not run with mocks.
+ * Marker annotation to skip test in certain cases.
  *
  * {@link MockOnlyRule}
  */
@@ -19,7 +19,7 @@ import javax.annotation.Nonnull;
 public @interface MockOnly {
 
     /**
-     * Explanation why this test shold only be run with mocks and not against real websites
+     * Explanation why this test should be skipped
      */
     @Nonnull String reason();
 }
