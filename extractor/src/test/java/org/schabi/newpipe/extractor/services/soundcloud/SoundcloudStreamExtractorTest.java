@@ -1,15 +1,16 @@
 package org.schabi.newpipe.extractor.services.soundcloud;
 
 import org.junit.BeforeClass;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.schabi.newpipe.downloader.DownloaderTestImpl;
+import org.schabi.newpipe.extractor.MediaFormat;
 import org.schabi.newpipe.extractor.NewPipe;
 import org.schabi.newpipe.extractor.StreamingService;
 import org.schabi.newpipe.extractor.exceptions.ContentNotSupportedException;
 import org.schabi.newpipe.extractor.exceptions.GeographicRestrictionException;
 import org.schabi.newpipe.extractor.exceptions.SoundCloudGoPlusContentException;
 import org.schabi.newpipe.extractor.services.DefaultStreamExtractorTest;
+import org.schabi.newpipe.extractor.stream.AudioStream;
 import org.schabi.newpipe.extractor.stream.StreamExtractor;
 import org.schabi.newpipe.extractor.stream.StreamType;
 
@@ -19,12 +20,14 @@ import java.util.List;
 
 import javax.annotation.Nullable;
 
+import static junit.framework.TestCase.assertEquals;
+import static org.hamcrest.CoreMatchers.containsString;
+import static org.hamcrest.MatcherAssert.assertThat;
 import static org.schabi.newpipe.extractor.ServiceList.SoundCloud;
 
 public class SoundcloudStreamExtractorTest {
     private static final String SOUNDCLOUD = "https://soundcloud.com/";
 
-    @Ignore("Ignore until #526 is merged. Throwing the ContentNotSupportedException is wrong and going to be fixed by that PR.")
     public static class SoundcloudGeoRestrictedTrack extends DefaultStreamExtractorTest {
         private static final String ID = "one-touch";
         private static final String UPLOADER = SOUNDCLOUD + "jessglynne";
@@ -143,6 +146,25 @@ public class SoundcloudStreamExtractorTest {
         @Override public boolean expectedHasSubtitles() { return false; }
         @Override public boolean expectedHasFrames() { return false; }
         @Override public int expectedStreamSegmentsCount() { return 0; }
-    }
 
+        @Override
+        @Test
+        public void testAudioStreams() throws Exception {
+            super.testAudioStreams();
+            final List<AudioStream> audioStreams = extractor.getAudioStreams();
+            assertEquals(2, audioStreams.size());
+            for (final AudioStream audioStream : audioStreams) {
+                final String mediaUrl = audioStream.getUrl();
+                if (audioStream.getFormat() == MediaFormat.OPUS) {
+                    // assert that it's an OPUS 64 kbps media URL with a single range which comes from an HLS SoundCloud CDN
+                    assertThat(mediaUrl, containsString("-hls-opus-media.sndcdn.com"));
+                    assertThat(mediaUrl, containsString(".64.opus"));
+                }
+                if (audioStream.getFormat() == MediaFormat.MP3) {
+                    // assert that it's a MP3 128 kbps media URL which comes from a progressive SoundCloud CDN
+                    assertThat(mediaUrl, containsString("-media.sndcdn.com/bKOA7Pwbut93.128.mp3"));
+                }
+            }
+        }
+    }
 }
