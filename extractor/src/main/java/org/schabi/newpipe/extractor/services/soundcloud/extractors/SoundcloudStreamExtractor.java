@@ -200,9 +200,9 @@ public class SoundcloudStreamExtractor extends StreamExtractor {
             boolean mp3ProgressiveStreamInTranscodings = false;
 
             for (final Object transcoding : transcodings) {
-                final JsonObject t = (JsonObject) transcoding;
-                if (t.getString("preset").contains("mp3") &&
-                    t.getObject("format").getString("protocol").equals("progressive")) {
+                final JsonObject transcodingJsonObject = (JsonObject) transcoding;
+                if (transcodingJsonObject.getString("preset").contains("mp3") &&
+                    transcodingJsonObject.getObject("format").getString("protocol").equals("progressive")) {
                     mp3ProgressiveStreamInTranscodings = true;
                     break;
                 }
@@ -210,11 +210,11 @@ public class SoundcloudStreamExtractor extends StreamExtractor {
 
             // Get information about what stream formats are available
             for (final Object transcoding : transcodings) {
-                final JsonObject t = (JsonObject) transcoding;
+                final JsonObject transcodingJsonObject = (JsonObject) transcoding;
                 final String mediaUrl;
-                final String preset = t.getString("preset");
-                final String protocol = t.getObject("format").getString("protocol");
-                String url = t.getString("url");
+                final String preset = transcodingJsonObject.getString("preset");
+                final String protocol = transcodingJsonObject.getObject("format").getString("protocol");
+                String url = transcodingJsonObject.getString("url");
                 final MediaFormat mediaFormat;
                 final int bitrate;
 
