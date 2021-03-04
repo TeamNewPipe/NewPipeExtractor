@@ -40,7 +40,7 @@ import static org.schabi.newpipe.extractor.ServiceList.SoundCloud;
 import static org.schabi.newpipe.extractor.utils.Utils.*;
 
 public class SoundcloudParsingHelper {
-    private static final String HARDCODED_CLIENT_ID = "H2c34Q0E7hftqnuDHGsk88DbNqhYpgMm"; // Updated on 24/06/20
+    private static final String HARDCODED_CLIENT_ID = "Kl9G8jQT22DxqatQk09IjWRujGlut5Vd"; // Updated on 04/03/21
     private static String clientId;
 
     private SoundcloudParsingHelper() {
