@@ -67,7 +67,7 @@ public class SoundcloudParsingHelper {
         Collections.reverse(possibleScripts);
 
         final HashMap<String, List<String>> headers = new HashMap<>();
-        headers.put("Range", singletonList("bytes=0-16384"));
+        headers.put("Range", singletonList("bytes=0-50000"));
 
         for (Element element : possibleScripts) {
             final String srcUrl = element.attr("src");
