@@ -15,6 +15,7 @@ import org.schabi.newpipe.extractor.exceptions.ParsingException;
 import org.schabi.newpipe.extractor.exceptions.ReCaptchaException;
 import org.schabi.newpipe.extractor.localization.Localization;
 import org.schabi.newpipe.extractor.stream.Description;
+import org.schabi.newpipe.extractor.utils.JsonUtils;
 import org.schabi.newpipe.extractor.utils.Parser;
 import org.schabi.newpipe.extractor.utils.Utils;
 
@@ -648,7 +649,7 @@ public class YoutubeParsingHelper {
         headers.put("X-YouTube-Client-Version", Collections.singletonList(getClientVersion()));
         final Response response = getDownloader().get(url, headers, localization);
 
-        return toJsonArray(getValidJsonResponseBody(response));
+        return JsonUtils.toJsonArray(getValidJsonResponseBody(response));
     }
 
     public static JsonArray getJsonResponse(final Page page, final Localization localization)
@@ -662,23 +663,7 @@ public class YoutubeParsingHelper {
 
         final Response response = getDownloader().get(page.getUrl(), headers, localization);
 
-        return toJsonArray(getValidJsonResponseBody(response));
-    }
-
-    public static JsonArray toJsonArray(final String responseBody) throws ParsingException {
-        try {
-            return JsonParser.array().from(responseBody);
-        } catch (JsonParserException e) {
-            throw new ParsingException("Could not parse JSON", e);
-        }
-    }
-
-    public static JsonObject toJsonObject(final String responseBody) throws ParsingException {
-        try {
-            return JsonParser.object().from(responseBody);
-        } catch (JsonParserException e) {
-            throw new ParsingException("Could not parse JSON", e);
-        }
+        return JsonUtils.toJsonArray(getValidJsonResponseBody(response));
     }
 
     /**
