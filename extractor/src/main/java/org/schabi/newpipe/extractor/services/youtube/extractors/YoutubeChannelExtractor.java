@@ -300,7 +300,6 @@ public class YoutubeChannelExtractor extends ChannelExtractor {
 
         final JsonObject continuationEndpoint = continuations.getObject("continuationEndpoint");
         final String continuation = continuationEndpoint.getObject("continuationCommand").getString("token");
-        final String clickTrackingParams = continuationEndpoint.getString("clickTrackingParams");
         return new Page("https://www.youtube.com/youtubei/v1/browse?key=" + getKey(),
                 continuation);
     }
