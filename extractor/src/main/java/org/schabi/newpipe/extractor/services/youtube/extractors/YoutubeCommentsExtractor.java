@@ -48,7 +48,7 @@ public class YoutubeCommentsExtractor extends CommentsExtractor {
     @Override
     public InfoItemsPage<CommentsInfoItem> getInitialPage() throws IOException, ExtractionException {
         String commentsTokenInside = findValue(responseBody, "sectionListRenderer", "}");
-        if (!commentsTokenInside.contains("continuation")) {
+        if (!commentsTokenInside.contains("continuation\":\"")) {
             commentsTokenInside = findValue(responseBody, "commentSectionRenderer", "}");
         }
         final String commentsToken = findValue(commentsTokenInside, "continuation\":\"", "\"");
