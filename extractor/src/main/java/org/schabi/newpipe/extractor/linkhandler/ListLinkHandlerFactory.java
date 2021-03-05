@@ -4,6 +4,7 @@ import org.schabi.newpipe.extractor.exceptions.ParsingException;
 import org.schabi.newpipe.extractor.utils.Utils;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 public abstract class ListLinkHandlerFactory extends LinkHandlerFactory {
@@ -13,7 +14,7 @@ public abstract class ListLinkHandlerFactory extends LinkHandlerFactory {
     ///////////////////////////////////
 
     public List<String> getContentFilter(String url) throws ParsingException {
-        return new ArrayList<>(0);
+        return Collections.emptyList();
     }
 
     public String getSortFilter(String url) throws ParsingException {

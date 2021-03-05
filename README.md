@@ -44,6 +44,7 @@ The following sites are currently supported:
 - SoundCloud
 - media.ccc.de
 - PeerTube (no P2P)
+- Bandcamp
 
 ## License
 

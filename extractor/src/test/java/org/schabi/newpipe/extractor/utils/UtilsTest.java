@@ -20,6 +20,7 @@ public class UtilsTest {
     @Test
     public void testJoin() {
         assertEquals("some,random,stuff", Utils.join(",", Arrays.asList("some", "random", "stuff")));
+        assertEquals("some,random,not-null,stuff", Utils.nonEmptyAndNullJoin(",", new String[]{"some", "null", "random", "", "not-null", null, "stuff"}));
     }
 
     @Test
