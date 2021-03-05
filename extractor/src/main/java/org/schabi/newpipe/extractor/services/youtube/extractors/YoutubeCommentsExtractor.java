@@ -15,6 +15,7 @@ import org.schabi.newpipe.extractor.exceptions.ExtractionException;
 import org.schabi.newpipe.extractor.exceptions.ParsingException;
 import org.schabi.newpipe.extractor.exceptions.ReCaptchaException;
 import org.schabi.newpipe.extractor.linkhandler.ListLinkHandler;
+import org.schabi.newpipe.extractor.services.youtube.YoutubeParsingHelper;
 import org.schabi.newpipe.extractor.utils.JsonUtils;
 import org.schabi.newpipe.extractor.utils.Parser;
 
@@ -46,11 +47,9 @@ public class YoutubeCommentsExtractor extends CommentsExtractor {
 
     @Override
     public InfoItemsPage<CommentsInfoItem> getInitialPage() throws IOException, ExtractionException {
-        final String commentsTokenInside;
-        if (responseBody.contains("commentSectionRenderer")) {
+        String commentsTokenInside = findValue(responseBody, "sectionListRenderer", "}");
+        if (!commentsTokenInside.contains("continuation")) {
             commentsTokenInside = findValue(responseBody, "commentSectionRenderer", "}");
-        } else {
-            commentsTokenInside = findValue(responseBody, "sectionListRenderer", "}");
         }
         final String commentsToken = findValue(commentsTokenInside, "continuation\":\"", "\"");
         return getPage(getNextPage(commentsToken));
@@ -133,7 +132,7 @@ public class YoutubeCommentsExtractor extends CommentsExtractor {
         final Map<String, List<String>> requestHeaders = new HashMap<>();
         requestHeaders.put("User-Agent", singletonList(USER_AGENT));
         final Response response = downloader.get(getUrl(), requestHeaders, getExtractorLocalization());
-        responseBody = response.responseBody();
+        responseBody = YoutubeParsingHelper.unescapeDocument(response.responseBody());
         ytClientVersion = findValue(responseBody, "INNERTUBE_CONTEXT_CLIENT_VERSION\":\"", "\"");
         ytClientName = Parser.matchGroup1(YT_CLIENT_NAME_PATTERN, responseBody);
     }
@@ -163,16 +162,9 @@ public class YoutubeCommentsExtractor extends CommentsExtractor {
         return result.toString();
     }
 
-    private String findValue(String doc, String start, String end) {
-        final String unescaped = doc
-                .replaceAll("\\\\x22", "\"")
-                .replaceAll("\\\\x7b", "{")
-                .replaceAll("\\\\x7d", "}")
-                .replaceAll("\\\\x5b", "[")
-                .replaceAll("\\\\x5d", "]");
-
-        final int beginIndex = unescaped.indexOf(start) + start.length();
-        final int endIndex = unescaped.indexOf(end, beginIndex);
-        return unescaped.substring(beginIndex, endIndex);
+    private String findValue(final String doc, final String start, final String end) {
+        final int beginIndex = doc.indexOf(start) + start.length();
+        final int endIndex = doc.indexOf(end, beginIndex);
+        return doc.substring(beginIndex, endIndex);
     }
 }

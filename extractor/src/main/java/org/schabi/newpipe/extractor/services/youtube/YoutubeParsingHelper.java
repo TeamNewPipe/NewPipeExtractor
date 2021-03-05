@@ -824,4 +824,14 @@ public class YoutubeParsingHelper {
 
         return false;
     }
+
+    public static String unescapeDocument(final String doc) {
+        return doc
+                .replaceAll("\\\\x22", "\"")
+                .replaceAll("\\\\x7b", "{")
+                .replaceAll("\\\\x7d", "}")
+                .replaceAll("\\\\x5b", "[")
+                .replaceAll("\\\\x5d", "]");
+    }
+
 }
