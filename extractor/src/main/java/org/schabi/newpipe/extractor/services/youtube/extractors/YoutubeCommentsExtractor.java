@@ -49,7 +49,7 @@ public class YoutubeCommentsExtractor extends CommentsExtractor {
         String commentsTokenInside;
         if (responseBody.contains("commentSectionRenderer")) {
             commentsTokenInside = findValue(responseBody, "commentSectionRenderer", "}");
-        } else{
+        } else {
             commentsTokenInside = findValue(responseBody, "sectionListRenderer", "}");
         }
         final String commentsToken = findValue(commentsTokenInside, "continuation\":\"", "\"");
