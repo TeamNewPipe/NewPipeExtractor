@@ -1,6 +1,11 @@
 package org.schabi.newpipe.extractor.services.youtube;
 
-import com.grack.nanojson.*;
+import com.grack.nanojson.JsonArray;
+import com.grack.nanojson.JsonObject;
+import com.grack.nanojson.JsonParser;
+import com.grack.nanojson.JsonParserException;
+import com.grack.nanojson.JsonWriter;
+
 import org.schabi.newpipe.extractor.MetaInfo;
 import org.schabi.newpipe.extractor.Page;
 import org.schabi.newpipe.extractor.downloader.Response;
@@ -10,6 +15,7 @@ import org.schabi.newpipe.extractor.exceptions.ParsingException;
 import org.schabi.newpipe.extractor.exceptions.ReCaptchaException;
 import org.schabi.newpipe.extractor.localization.Localization;
 import org.schabi.newpipe.extractor.stream.Description;
+import org.schabi.newpipe.extractor.utils.JsonUtils;
 import org.schabi.newpipe.extractor.utils.Parser;
 import org.schabi.newpipe.extractor.utils.Utils;
 
@@ -33,7 +39,12 @@ import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
 import static org.schabi.newpipe.extractor.NewPipe.getDownloader;
-import static org.schabi.newpipe.extractor.utils.Utils.*;
+import static org.schabi.newpipe.extractor.utils.Utils.EMPTY_STRING;
+import static org.schabi.newpipe.extractor.utils.Utils.HTTP;
+import static org.schabi.newpipe.extractor.utils.Utils.HTTPS;
+import static org.schabi.newpipe.extractor.utils.Utils.UTF_8;
+import static org.schabi.newpipe.extractor.utils.Utils.isNullOrEmpty;
+import static org.schabi.newpipe.extractor.utils.Utils.join;
 
 /*
  * Created by Christian Schabesberger on 02.03.16.
@@ -638,7 +649,7 @@ public class YoutubeParsingHelper {
         headers.put("X-YouTube-Client-Version", Collections.singletonList(getClientVersion()));
         final Response response = getDownloader().get(url, headers, localization);
 
-        return toJsonArray(getValidJsonResponseBody(response));
+        return JsonUtils.toJsonArray(getValidJsonResponseBody(response));
     }
 
     public static JsonArray getJsonResponse(final Page page, final Localization localization)
@@ -652,15 +663,7 @@ public class YoutubeParsingHelper {
 
         final Response response = getDownloader().get(page.getUrl(), headers, localization);
 
-        return toJsonArray(getValidJsonResponseBody(response));
-    }
-
-    public static JsonArray toJsonArray(final String responseBody) throws ParsingException {
-        try {
-            return JsonParser.array().from(responseBody);
-        } catch (JsonParserException e) {
-            throw new ParsingException("Could not parse JSON", e);
-        }
+        return JsonUtils.toJsonArray(getValidJsonResponseBody(response));
     }
 
     /**
@@ -821,4 +824,14 @@ public class YoutubeParsingHelper {
 
         return false;
     }
+
+    public static String unescapeDocument(final String doc) {
+        return doc
+                .replaceAll("\\\\x22", "\"")
+                .replaceAll("\\\\x7b", "{")
+                .replaceAll("\\\\x7d", "}")
+                .replaceAll("\\\\x5b", "[")
+                .replaceAll("\\\\x5d", "]");
+    }
+
 }

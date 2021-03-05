@@ -2,10 +2,13 @@ allprojects {
     apply plugin: 'java-library'
     apply plugin: 'maven'
 
+    compileJava.options.encoding = 'UTF-8'
+    compileTestJava.options.encoding = 'UTF-8'
+
     sourceCompatibility = 1.8
     targetCompatibility = 1.8
 
-    version 'v0.20.10'
+    version 'v0.20.11'
     group 'com.github.TeamNewPipe'
 
     repositories {

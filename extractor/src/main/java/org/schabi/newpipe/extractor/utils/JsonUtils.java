@@ -4,15 +4,17 @@ import com.grack.nanojson.JsonArray;
 import com.grack.nanojson.JsonObject;
 import com.grack.nanojson.JsonParser;
 import com.grack.nanojson.JsonParserException;
+
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.schabi.newpipe.extractor.exceptions.ParsingException;
 
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 
 public class JsonUtils {
     public static final JsonObject EMPTY_OBJECT = new JsonObject();
@@ -101,6 +103,22 @@ public class JsonUtils {
             if (null == result) break;
         }
         return result;
+    }
+
+    public static JsonArray toJsonArray(final String responseBody) throws ParsingException {
+        try {
+            return JsonParser.array().from(responseBody);
+        } catch (JsonParserException e) {
+            throw new ParsingException("Could not parse JSON", e);
+        }
+    }
+
+    public static JsonObject toJsonObject(final String responseBody) throws ParsingException {
+        try {
+            return JsonParser.object().from(responseBody);
+        } catch (JsonParserException e) {
+            throw new ParsingException("Could not parse JSON", e);
+        }
     }
 
     /**
