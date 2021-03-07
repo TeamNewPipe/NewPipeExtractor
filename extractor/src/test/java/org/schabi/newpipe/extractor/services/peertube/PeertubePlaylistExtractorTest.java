@@ -1,7 +1,6 @@
 package org.schabi.newpipe.extractor.services.peertube;
 
 import org.junit.BeforeClass;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.schabi.newpipe.downloader.DownloaderTestImpl;
 import org.schabi.newpipe.extractor.ExtractorAsserts;
@@ -46,7 +45,6 @@ public class PeertubePlaylistExtractorTest {
         }
 
         @Test
-        @Ignore("TODO fix")
         public void testGetUploaderName() throws ParsingException {
             assertEquals("Méta de Choc", extractor.getUploaderName());
         }

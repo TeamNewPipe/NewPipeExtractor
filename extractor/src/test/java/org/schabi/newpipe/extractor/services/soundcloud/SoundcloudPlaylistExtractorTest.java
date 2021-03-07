@@ -377,7 +377,7 @@ public class SoundcloudPlaylistExtractorTest {
         }
 
         @Test
-        @Ignore("TODO fix")
+        @Ignore("Test broken? Playlist has 2 entries, each page has 1 entry meaning it has 2 pages.")
         public void testMoreRelatedItems() throws Exception {
             try {
                 defaultTestMoreItems(extractor);

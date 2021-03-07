@@ -96,7 +96,7 @@ public class PeertubeStreamExtractorTest {
         @Override public int expectedStreamSegmentsCount() { return 0; }
     }
 
-    @Ignore("TODO fix")
+    @Ignore("Test broken, SSL problem")
     public static class AgeRestricted extends DefaultStreamExtractorTest {
         private static final String ID = "dbd8e5e1-c527-49b6-b70c-89101dbb9c08";
         private static final String INSTANCE = "https://nocensoring.net";
