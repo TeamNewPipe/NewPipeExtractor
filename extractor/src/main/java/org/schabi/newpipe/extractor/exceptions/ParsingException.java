@@ -22,11 +22,11 @@ package org.schabi.newpipe.extractor.exceptions;
 
 
 public class ParsingException extends ExtractionException {
-    public ParsingException(String message) {
+    public ParsingException(final String message) {
         super(message);
     }
 
-    public ParsingException(String message, Throwable cause) {
+    public ParsingException(final String message, final Throwable cause) {
         super(message, cause);
     }
 }
