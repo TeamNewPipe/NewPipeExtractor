@@ -15,9 +15,9 @@ import javax.annotation.Nullable;
 
 import org.schabi.newpipe.extractor.Page;
 import org.schabi.newpipe.extractor.StreamingService;
+import org.schabi.newpipe.extractor.comments.CommentReplyExtractor;
 import org.schabi.newpipe.extractor.comments.CommentsExtractor;
 import org.schabi.newpipe.extractor.comments.CommentsInfoItem;
-import org.schabi.newpipe.extractor.comments.CommentsInfoItemExtractor;
 import org.schabi.newpipe.extractor.comments.CommentsInfoItemsCollector;
 import org.schabi.newpipe.extractor.downloader.Downloader;
 import org.schabi.newpipe.extractor.exceptions.ExtractionException;
@@ -226,6 +226,37 @@ public class YoutubeCommentsExtractor extends CommentsExtractor {
                         (JsonObject) c, getUrl(), getTimeAgoParser());
                 collector.commit(extractor);
             }
+            CommentReplyExtractor replyExtractor;
+
+            if ((c instanceof JsonObject) && (c.has("replies"))) {
+                try {
+                    JsonArray replyContinuations = JsonUtils.getArray(c,
+                            "replies.commentRepliesRenderer.continuations");
+
+                    String replyContinuation = JsonUtils.getString(replyContinuations
+                            .getObject(0), "nextContinuationData.continuation");
+
+                    String replyUrl = YoutubeParsingHelper.getRepliesUrl(replyContinuation);
+                    ListLinkHandler replyHandler = new ListLinkHandler(replyUrl, replyUrl,
+                            replyContinuation, Collections.EMPTY_LIST, "");
+
+                    YoutubeCommentReplyExtractor ytReply
+                            = new YoutubeCommentReplyExtractor(getService(), replyHandler);
+
+                    ytReply.setRequestHeaders(getRequestHeaders());
+                    replyExtractor = ytReply;
+                } catch (Exception e) {
+                    throw new ParsingException("unable to get parse youtube reply", e);
+                }
+            } else {
+                //No Replies
+                replyExtractor = null;
+            }
+
+            YoutubeCommentsInfoItemExtractor extractor = new YoutubeCommentsInfoItemExtractor(comment, getUrl(), getTimeAgoParser());
+            extractor.setReplyExtractor(replyExtractor);
+            extractor.setReplyState(false);
+            collector.commit(extractor);
         }
     }
 

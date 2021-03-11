@@ -1,6 +1,7 @@
 package org.schabi.newpipe.extractor.services.bandcamp.extractors;
 
 import org.jsoup.nodes.Element;
+import org.schabi.newpipe.extractor.comments.CommentReplyExtractor;
 import org.schabi.newpipe.extractor.comments.CommentsInfoItemExtractor;
 import org.schabi.newpipe.extractor.exceptions.ParsingException;
 
@@ -42,5 +43,17 @@ public class BandcampCommentsInfoItemExtractor implements CommentsInfoItemExtrac
     @Override
     public String getUploaderAvatarUrl() {
         return writing.getElementsByClass("thumb").attr("src");
+    }
+
+    //Unimplemented
+    @Override
+    public CommentReplyExtractor getReplies() throws ParsingException {
+        return null;
+    }
+
+    //Unimplemented
+    @Override
+    public boolean isReply() throws ParsingException {
+        return false;
     }
 }

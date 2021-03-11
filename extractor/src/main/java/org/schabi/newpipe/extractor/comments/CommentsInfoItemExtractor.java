@@ -107,4 +107,15 @@ public interface CommentsInfoItemExtractor extends InfoItemExtractor {
     default int getStreamPosition() throws ParsingException {
         return CommentsInfoItem.NO_STREAM_POSITION;
     }
+
+    /**
+     * Get the reply extractor
+     */
+    @Nullable
+    CommentReplyExtractor getReplies() throws ParsingException;
+
+    /**
+     * Whether comment is a reply to another comment
+     */
+    boolean isReply() throws ParsingException;
 }

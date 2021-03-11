@@ -3,6 +3,7 @@ package org.schabi.newpipe.extractor.services.youtube.extractors;
 import com.grack.nanojson.JsonArray;
 import com.grack.nanojson.JsonObject;
 
+import org.schabi.newpipe.extractor.comments.CommentReplyExtractor;
 import org.schabi.newpipe.extractor.comments.CommentsInfoItemExtractor;
 import org.schabi.newpipe.extractor.exceptions.ParsingException;
 import org.schabi.newpipe.extractor.localization.DateWrapper;
@@ -20,6 +21,9 @@ public class YoutubeCommentsInfoItemExtractor implements CommentsInfoItemExtract
     private final JsonObject json;
     private final String url;
     private final TimeAgoParser timeAgoParser;
+    private boolean isReply;
+
+    private CommentReplyExtractor replyExtractor;
 
     public YoutubeCommentsInfoItemExtractor(final JsonObject json,
                                             final String url,
@@ -27,6 +31,10 @@ public class YoutubeCommentsInfoItemExtractor implements CommentsInfoItemExtract
         this.json = json;
         this.url = url;
         this.timeAgoParser = timeAgoParser;
+    }
+
+    public void setReplyState(boolean replyState) {
+        this.isReply = replyState;
     }
 
     @Override
@@ -210,6 +218,20 @@ public class YoutubeCommentsInfoItemExtractor implements CommentsInfoItemExtract
 
     public boolean isUploaderVerified() {
         return json.has("authorCommentBadge");
+    }
+
+    public void setReplyExtractor(CommentReplyExtractor replyExtractor) {
+        this.replyExtractor = replyExtractor;
+    }
+
+    @Override
+    public CommentReplyExtractor getReplies() throws ParsingException {
+        return replyExtractor;
+    }
+
+    @Override
+    public boolean isReply() throws ParsingException {
+        return this.isReply;
     }
 
     @Override

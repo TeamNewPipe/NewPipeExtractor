@@ -24,6 +24,8 @@ public class CommentsInfoItem extends InfoItem {
 
     public static final int NO_LIKE_COUNT = -1;
     public static final int NO_STREAM_POSITION = -1;
+    private CommentReplyExtractor replies;
+    private boolean isReply = false;
 
     public CommentsInfoItem(int serviceId, String url, String name) {
         super(InfoType.COMMENT, serviceId, url, name);
@@ -129,11 +131,11 @@ public class CommentsInfoItem extends InfoItem {
     public boolean isUploaderVerified() {
         return uploaderVerified;
     }
-
+	
     public void setStreamPosition(final int streamPosition) {
         this.streamPosition = streamPosition;
     }
-
+	
     /**
      * Get the playback position of the stream to which this comment belongs.
      * This is not supported by all services.
@@ -141,5 +143,21 @@ public class CommentsInfoItem extends InfoItem {
      */
     public int getStreamPosition() {
         return streamPosition;
+    }
+	
+    public CommentReplyExtractor getReplies() {
+        return this.replies;
+    }
+
+    public void setReplies(CommentReplyExtractor replies) {
+        this.replies = replies;
+    }
+
+    public boolean isReply() {
+        return this.isReply;
+    }
+
+    public void setIsReply(boolean reply) {
+        this.isReply = reply;
     }
 }

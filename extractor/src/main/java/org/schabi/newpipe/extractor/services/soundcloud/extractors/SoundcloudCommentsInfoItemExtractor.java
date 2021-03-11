@@ -1,6 +1,8 @@
 package org.schabi.newpipe.extractor.services.soundcloud.extractors;
 
 import com.grack.nanojson.JsonObject;
+
+import org.schabi.newpipe.extractor.comments.CommentReplyExtractor;
 import org.schabi.newpipe.extractor.comments.CommentsInfoItemExtractor;
 import org.schabi.newpipe.extractor.exceptions.ParsingException;
 import org.schabi.newpipe.extractor.localization.DateWrapper;
@@ -8,6 +10,7 @@ import org.schabi.newpipe.extractor.services.soundcloud.SoundcloudParsingHelper;
 
 import javax.annotation.Nullable;
 import java.util.Objects;
+
 
 public class SoundcloudCommentsInfoItemExtractor implements CommentsInfoItemExtractor {
     private final JsonObject json;
@@ -46,6 +49,18 @@ public class SoundcloudCommentsInfoItemExtractor implements CommentsInfoItemExtr
     @Override
     public int getStreamPosition() throws ParsingException {
         return json.getInt("timestamp") / 1000; // convert milliseconds to seconds
+    }
+
+    //Unimplemented
+    @Override
+    public CommentReplyExtractor getReplies() throws ParsingException {
+        return null;
+    }
+
+    //Unimplemented
+    @Override
+    public boolean isReply() throws ParsingException {
+        return false;
     }
 
     @Override

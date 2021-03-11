@@ -1,9 +1,11 @@
 package org.schabi.newpipe.extractor.services.peertube.extractors;
 
 import com.grack.nanojson.JsonObject;
+
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.schabi.newpipe.extractor.ServiceList;
+import org.schabi.newpipe.extractor.comments.CommentReplyExtractor;
 import org.schabi.newpipe.extractor.comments.CommentsInfoItemExtractor;
 import org.schabi.newpipe.extractor.exceptions.ParsingException;
 import org.schabi.newpipe.extractor.localization.DateWrapper;
@@ -82,6 +84,33 @@ public class PeertubeCommentsInfoItemExtractor implements CommentsInfoItemExtrac
             value = "/client/assets/images/default-avatar.png";
         }
         return baseUrl + value;
+    }
+
+    @Override
+    public boolean isHeartedByUploader() throws ParsingException {
+        return false;
+    }
+
+    @Override
+    public boolean isPinned() throws ParsingException {
+        return false;
+    }
+
+    @Override
+    public boolean isUploaderVerified() throws ParsingException {
+        return false;
+    }
+
+    //Unimplemented
+    @Override
+    public CommentReplyExtractor getReplies() throws ParsingException {
+        return null;
+    }
+
+    //Unimplemented
+    @Override
+    public boolean isReply() throws ParsingException {
+        return false;
     }
 
     @Override
