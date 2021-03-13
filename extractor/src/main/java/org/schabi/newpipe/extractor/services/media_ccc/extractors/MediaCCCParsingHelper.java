@@ -12,7 +12,6 @@ import org.schabi.newpipe.extractor.localization.Localization;
 import java.io.IOException;
 import java.time.OffsetDateTime;
 import java.time.format.DateTimeParseException;
-import java.util.Locale;
 import java.util.regex.Pattern;
 
 public final class MediaCCCParsingHelper {
