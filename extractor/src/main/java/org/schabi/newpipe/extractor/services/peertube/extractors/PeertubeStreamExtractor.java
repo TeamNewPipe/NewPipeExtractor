@@ -33,6 +33,7 @@ import java.util.List;
 import java.util.Locale;
 
 import static org.schabi.newpipe.extractor.utils.Utils.UTF_8;
+import static org.schabi.newpipe.extractor.utils.Utils.isNullOrEmpty;
 
 public class PeertubeStreamExtractor extends StreamExtractor {
     private final String baseUrl;
@@ -400,7 +401,7 @@ public class PeertubeStreamExtractor extends StreamExtractor {
                         final String languageCode = JsonUtils.getString(caption, "language.id");
                         final String ext = url.substring(url.lastIndexOf(".") + 1);
                         final MediaFormat fmt = MediaFormat.getFromSuffix(ext);
-                        if (fmt != null && languageCode != null)
+                        if (fmt != null && !isNullOrEmpty(languageCode))
                             subtitles.add(new SubtitlesStream(fmt, languageCode, url, false));
                     }
                 }
