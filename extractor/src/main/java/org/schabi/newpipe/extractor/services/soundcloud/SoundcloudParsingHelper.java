@@ -46,7 +46,7 @@ public class SoundcloudParsingHelper {
     private SoundcloudParsingHelper() {
     }
 
-    public synchronized static String clientId() throws ExtractionException, IOException {
+    public static synchronized String clientId() throws ExtractionException, IOException {
         if (!isNullOrEmpty(clientId)) return clientId;
 
         Downloader dl = NewPipe.getDownloader();

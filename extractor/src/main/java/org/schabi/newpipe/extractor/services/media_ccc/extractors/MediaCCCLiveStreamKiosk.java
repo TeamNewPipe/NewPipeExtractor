@@ -16,7 +16,7 @@ import javax.annotation.Nonnull;
 import java.io.IOException;
 
 public class MediaCCCLiveStreamKiosk extends KioskExtractor<StreamInfoItem> {
-    public JsonArray doc;
+    private JsonArray doc;
 
     public MediaCCCLiveStreamKiosk(StreamingService streamingService, ListLinkHandler linkHandler, String kioskId) {
         super(streamingService, linkHandler, kioskId);

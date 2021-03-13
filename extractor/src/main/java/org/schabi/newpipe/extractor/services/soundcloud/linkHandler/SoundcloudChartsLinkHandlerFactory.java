@@ -6,8 +6,8 @@ import org.schabi.newpipe.extractor.utils.Parser;
 import java.util.List;
 
 public class SoundcloudChartsLinkHandlerFactory extends ListLinkHandlerFactory {
-    private final String TOP_URL_PATTERN = "^https?://(www\\.|m\\.)?soundcloud.com/charts(/top)?/?([#?].*)?$";
-    private final String URL_PATTERN = "^https?://(www\\.|m\\.)?soundcloud.com/charts(/top|/new)?/?([#?].*)?$";
+    private static final String TOP_URL_PATTERN = "^https?://(www\\.|m\\.)?soundcloud.com/charts(/top)?/?([#?].*)?$";
+    private static final String URL_PATTERN = "^https?://(www\\.|m\\.)?soundcloud.com/charts(/top|/new)?/?([#?].*)?$";
 
 
     @Override
