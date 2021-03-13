@@ -87,7 +87,7 @@ public class BandcampSearchExtractor extends SearchExtractor {
 
         // Count pages
         final Elements pageLists = d.getElementsByClass("pagelist");
-        if (pageLists.size() == 0)
+        if (pageLists.isEmpty())
             return new InfoItemsPage<>(collector, null);
 
         final Elements pages = pageLists.first().getElementsByTag("li");
@@ -96,7 +96,7 @@ public class BandcampSearchExtractor extends SearchExtractor {
         int currentPage = -1;
         for (int i = 0; i < pages.size(); i++) {
             final Element pageElement = pages.get(i);
-            if (pageElement.getElementsByTag("span").size() > 0) {
+            if (!pageElement.getElementsByTag("span").isEmpty()) {
                 currentPage = i + 1;
                 break;
             }

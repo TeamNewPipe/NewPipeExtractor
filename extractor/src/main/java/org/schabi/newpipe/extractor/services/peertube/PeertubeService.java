@@ -63,7 +63,7 @@ public class PeertubeService extends StreamingService {
     public SearchExtractor getSearchExtractor(SearchQueryHandler queryHandler) {
         final List<String> contentFilters = queryHandler.getContentFilters();
         boolean external = false;
-        if (contentFilters.size() > 0 && contentFilters.get(0).startsWith("sepia_")) {
+        if (!contentFilters.isEmpty() && contentFilters.get(0).startsWith("sepia_")) {
             external = true;
         }
         return new PeertubeSearchExtractor(this, queryHandler, external);

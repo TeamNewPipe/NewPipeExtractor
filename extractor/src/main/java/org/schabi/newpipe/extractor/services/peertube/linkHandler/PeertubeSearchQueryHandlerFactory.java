@@ -24,7 +24,7 @@ public class PeertubeSearchQueryHandlerFactory extends SearchQueryHandlerFactory
     @Override
     public String getUrl(String searchString, List<String> contentFilters, String sortFilter) throws ParsingException {
         String baseUrl;
-        if (contentFilters.size() > 0 && contentFilters.get(0).startsWith("sepia_")) {
+        if (!contentFilters.isEmpty() && contentFilters.get(0).startsWith("sepia_")) {
             baseUrl = SEPIA_BASE_URL;
         } else {
             baseUrl = ServiceList.PeerTube.getBaseUrl();

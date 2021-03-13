@@ -32,7 +32,7 @@ public class YoutubeSearchQueryHandlerFactory extends SearchQueryHandlerFactory 
     @Override
     public String getUrl(String searchString, List<String> contentFilters, String sortFilter) throws ParsingException {
         try {
-            if (contentFilters.size() > 0) {
+            if (!contentFilters.isEmpty()) {
                 switch (contentFilters.get(0)) {
                     case ALL:
                     default:
