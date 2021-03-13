@@ -37,6 +37,7 @@ import static org.schabi.newpipe.extractor.utils.Utils.*;
 
 public class SoundcloudStreamExtractor extends StreamExtractor {
     private JsonObject track;
+    private boolean isAvailable = true;
 
     public SoundcloudStreamExtractor(StreamingService service, LinkHandler linkHandler) {
         super(service, linkHandler);
@@ -48,6 +49,7 @@ public class SoundcloudStreamExtractor extends StreamExtractor {
 
         final String policy = track.getString("policy", EMPTY_STRING);
         if (!policy.equals("ALLOW") && !policy.equals("MONETIZE")) {
+            isAvailable = false;
             if (policy.equals("SNIP")) {
                 throw new SoundCloudGoPlusContentException();
             }
@@ -190,7 +192,7 @@ public class SoundcloudStreamExtractor extends StreamExtractor {
         // Streams can be streamable and downloadable - or explicitly not.
         // For playing the track, it is only necessary to have a streamable track.
         // If this is not the case, this track might not be published yet.
-        if (!track.getBoolean("streamable")) return audioStreams;
+        if (!track.getBoolean("streamable") || !isAvailable) return audioStreams;
 
         try {
             final JsonArray transcodings = track.getObject("media").getArray("transcodings");
