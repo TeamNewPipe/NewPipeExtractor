@@ -37,12 +37,16 @@ public class BandcampChannelLinkHandlerFactoryTest {
         assertFalse(linkHandler.acceptUrl("https://bandcamp.com"));
         assertFalse(linkHandler.acceptUrl("https://zachbenson.bandcamp.com/track/kitchen"));
         assertFalse(linkHandler.acceptUrl("https://daily.bandcamp.com/"));
+        assertFalse(linkHandler.acceptUrl("https://DAILY.BANDCAMP.COM"));
         assertFalse(linkHandler.acceptUrl("https://daily.bandcamp.com/best-of-2020/bandcamp-daily-staffers-on-their-favorite-albums-of-2020"));
 
         // External URLs
         assertTrue(linkHandler.acceptUrl("https://lobstertheremin.com"));
         assertTrue(linkHandler.acceptUrl("https://lobstertheremin.com/music"));
         assertTrue(linkHandler.acceptUrl("https://lobstertheremin.com/music/"));
+        assertTrue(linkHandler.acceptUrl("https://diskak.usopop.com/"));
+        assertTrue(linkHandler.acceptUrl("https://diskak.usopop.com/releases"));
+        assertTrue(linkHandler.acceptUrl("https://diskak.usopop.com/RELEASES"));
 
         assertFalse(linkHandler.acceptUrl("https://example.com/releases"));
     }
@@ -57,6 +61,7 @@ public class BandcampChannelLinkHandlerFactoryTest {
 
         assertEquals("2735462545", linkHandler.getId("http://lobstertheremin.com/"));
         assertEquals("2735462545", linkHandler.getId("https://lobstertheremin.com/music/"));
+        assertEquals("3826445168", linkHandler.getId("https://diskak.usopop.com/releases"));
     }
 
     @Test

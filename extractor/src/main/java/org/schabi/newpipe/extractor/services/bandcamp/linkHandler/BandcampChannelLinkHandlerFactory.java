@@ -55,7 +55,9 @@ public class BandcampChannelLinkHandlerFactory extends ListLinkHandlerFactory {
      * Accepts only pages that lead to the root of an artist profile. Supports external pages.
      */
     @Override
-    public boolean onAcceptUrl(final String url) throws ParsingException {
+    public boolean onAcceptUrl(String url) throws ParsingException {
+
+        url = url.toLowerCase();
 
         // https: | | artist.bandcamp.com | releases
         //  0      1           2               3
@@ -64,8 +66,10 @@ public class BandcampChannelLinkHandlerFactory extends ListLinkHandlerFactory {
         // URL is too short
         if (splitUrl.length < 3) return false;
 
-        // Must have "releases" as segment after url or none at all
-        if (splitUrl.length > 3 && !splitUrl[3].equals("releases")) {
+        // Must have "releases" or "music" as segment after url or none at all
+        if (splitUrl.length > 3 && !(
+                splitUrl[3].equals("releases") || splitUrl[3].equals("music")
+        )) {
 
             return false;
 
