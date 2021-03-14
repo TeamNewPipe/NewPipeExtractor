@@ -252,7 +252,7 @@ public class MediaCCCLiveStreamExtractor extends StreamExtractor {
     @Nonnull
     @Override
     public String getHost() {
-        return null;
+        return "";
     }
 
     @Nonnull
