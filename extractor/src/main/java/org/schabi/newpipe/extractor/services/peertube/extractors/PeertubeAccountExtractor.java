@@ -79,7 +79,6 @@ public class PeertubeAccountExtractor extends ChannelExtractor {
         } catch (final IOException | JsonParserException | ReCaptchaException ignored) {
             // something went wrong during video channels extraction, only return subscribers of ownerAccount
         }
-        System.out.println(subscribersCount);
         return subscribersCount;
     }
 
