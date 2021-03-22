@@ -6,6 +6,7 @@ import org.schabi.newpipe.downloader.DownloaderFactory;
 import org.schabi.newpipe.downloader.DownloaderTestImpl;
 import org.schabi.newpipe.extractor.NewPipe;
 import org.schabi.newpipe.extractor.channel.ChannelExtractor;
+import org.schabi.newpipe.extractor.exceptions.AccountTerminatedException;
 import org.schabi.newpipe.extractor.exceptions.ContentNotAvailableException;
 import org.schabi.newpipe.extractor.exceptions.ContentNotSupportedException;
 import org.schabi.newpipe.extractor.exceptions.ParsingException;
@@ -48,6 +49,13 @@ public class YoutubeChannelExtractorTest {
         public void nonExistentFetch() throws Exception {
             final ChannelExtractor extractor =
                     YouTube.getChannelExtractor("https://www.youtube.com/channel/DOESNT-EXIST");
+            extractor.fetchPage();
+        }
+
+        @Test(expected = AccountTerminatedException.class)
+        public void accountTerminatedFetch() throws Exception {
+            final ChannelExtractor extractor =
+                    YouTube.getChannelExtractor("https://www.youtube.com/channel/UC0AuOxCr9TZ0TtEgL1zpIgA");
             extractor.fetchPage();
         }
     }

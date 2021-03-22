@@ -10,10 +10,7 @@ import com.grack.nanojson.JsonWriter;
 import org.schabi.newpipe.extractor.MetaInfo;
 import org.schabi.newpipe.extractor.Page;
 import org.schabi.newpipe.extractor.downloader.Response;
-import org.schabi.newpipe.extractor.exceptions.ContentNotAvailableException;
-import org.schabi.newpipe.extractor.exceptions.ExtractionException;
-import org.schabi.newpipe.extractor.exceptions.ParsingException;
-import org.schabi.newpipe.extractor.exceptions.ReCaptchaException;
+import org.schabi.newpipe.extractor.exceptions.*;
 import org.schabi.newpipe.extractor.localization.Localization;
 import org.schabi.newpipe.extractor.stream.Description;
 import org.schabi.newpipe.extractor.utils.JsonUtils;
@@ -762,6 +759,16 @@ public class YoutubeParsingHelper {
             final String alertText = getTextFromObject(alertRenderer.getObject("text"));
             final String alertType = alertRenderer.getString("type", EMPTY_STRING);
             if (alertType.equalsIgnoreCase("ERROR")) {
+                if (alertText != null && alertText.contains("This account has been terminated")) {
+                    if (alertText.contains("violation") || alertText.contains("violating")) {
+                        // possible error messages:
+                        // "This account has been terminated for violating YouTube's Community Guidelines."
+                        // "This account has been terminated for a violation of YouTube's Terms of Service."
+                        throw new AccountTerminatedException(alertText, AccountTerminatedException.Reason.VIOLATION);
+                    } else {
+                        throw new AccountTerminatedException(alertText);
+                    }
+                }
                 throw new ContentNotAvailableException("Got error: \"" + alertText + "\"");
             }
         }

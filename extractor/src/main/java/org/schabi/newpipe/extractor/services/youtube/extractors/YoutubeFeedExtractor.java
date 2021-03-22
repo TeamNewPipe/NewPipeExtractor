@@ -9,6 +9,7 @@ import org.schabi.newpipe.extractor.Page;
 import org.schabi.newpipe.extractor.StreamingService;
 import org.schabi.newpipe.extractor.downloader.Downloader;
 import org.schabi.newpipe.extractor.downloader.Response;
+import org.schabi.newpipe.extractor.exceptions.ContentNotAvailableException;
 import org.schabi.newpipe.extractor.exceptions.ExtractionException;
 import org.schabi.newpipe.extractor.feed.FeedExtractor;
 import org.schabi.newpipe.extractor.linkhandler.ListLinkHandler;
@@ -33,6 +34,9 @@ public class YoutubeFeedExtractor extends FeedExtractor {
         final String feedUrl = YoutubeParsingHelper.getFeedUrlFrom(channelIdOrUser);
 
         final Response response = downloader.get(feedUrl);
+        if (response.responseCode() == 404) {
+            throw new ContentNotAvailableException("Could not get feed: 404 - not found");
+        }
         document = Jsoup.parse(response.responseBody());
     }
 
