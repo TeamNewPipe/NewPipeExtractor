@@ -760,10 +760,12 @@ public class YoutubeParsingHelper {
             final String alertType = alertRenderer.getString("type", EMPTY_STRING);
             if (alertType.equalsIgnoreCase("ERROR")) {
                 if (alertText != null && alertText.contains("This account has been terminated")) {
-                    if (alertText.contains("violation") || alertText.contains("violating")) {
+                    if (alertText.contains("violation") || alertText.contains("violating")
+                            || alertText.contains("infringement")) {
                         // possible error messages:
-                        // "This account has been terminated for violating YouTube's Community Guidelines."
                         // "This account has been terminated for a violation of YouTube's Terms of Service."
+                        // "This account has been terminated for violating YouTube's Community Guidelines."
+                        // "This account has been terminated because we received multiple third-party claims of copyright infringement regarding material that the user posted."
                         throw new AccountTerminatedException(alertText, AccountTerminatedException.Reason.VIOLATION);
                     } else {
                         throw new AccountTerminatedException(alertText);

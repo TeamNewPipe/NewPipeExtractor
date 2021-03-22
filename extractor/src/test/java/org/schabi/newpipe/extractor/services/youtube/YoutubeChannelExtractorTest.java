@@ -53,11 +53,47 @@ public class YoutubeChannelExtractorTest {
         }
 
         @Test(expected = AccountTerminatedException.class)
-        public void accountTerminatedFetch() throws Exception {
+        public void accountTerminatedTOSFetch() throws Exception {
+            final ChannelExtractor extractor =
+                    YouTube.getChannelExtractor("https://www.youtube.com/channel/UCTGjY2I-ZUGnwVoWAGRd7XQ");
+            try {
+                extractor.fetchPage();
+            } catch (AccountTerminatedException e) {
+                assertEquals(e.getMessage(),
+                        "This account has been terminated for a violation of YouTube's Terms of Service.");
+                assertEquals(e.getReason(), AccountTerminatedException.Reason.VIOLATION);
+                throw e;
+            }
+        }
+
+        @Test(expected = AccountTerminatedException.class)
+        public void accountTerminatedCommunityFetch() throws Exception {
             final ChannelExtractor extractor =
                     YouTube.getChannelExtractor("https://www.youtube.com/channel/UC0AuOxCr9TZ0TtEgL1zpIgA");
-            extractor.fetchPage();
+            try {
+                extractor.fetchPage();
+            } catch (AccountTerminatedException e) {
+                assertEquals(e.getMessage(),
+                        "This account has been terminated for violating YouTube's Community Guidelines.");
+                assertEquals(e.getReason(), AccountTerminatedException.Reason.VIOLATION);
+                throw e;
+            }
         }
+
+        @Test(expected = AccountTerminatedException.class)
+        public void accountTerminatedCopyrightFetch() throws Exception {
+            final ChannelExtractor extractor =
+                    YouTube.getChannelExtractor("https://www.youtube.com/channel/UCpExuV8qJMfCaSQNL1YG6bQ");
+            try {
+                extractor.fetchPage();
+            } catch (AccountTerminatedException e) {
+                assertEquals(e.getMessage(),
+                        "This account has been terminated because we received multiple third-party claims of copyright infringement regarding material that the user posted.");
+                assertEquals(e.getReason(), AccountTerminatedException.Reason.VIOLATION);
+                throw e;
+            }
+        }
+
     }
 
     public static class NotSupported {
