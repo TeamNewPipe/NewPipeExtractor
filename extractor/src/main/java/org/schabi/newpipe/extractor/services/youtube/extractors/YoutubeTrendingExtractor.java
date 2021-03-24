@@ -39,6 +39,7 @@ import java.io.IOException;
 import javax.annotation.Nonnull;
 
 import static org.schabi.newpipe.extractor.services.youtube.YoutubeParsingHelper.getJsonResponse;
+import static org.schabi.newpipe.extractor.services.youtube.YoutubeParsingHelper.getTextAtKey;
 import static org.schabi.newpipe.extractor.services.youtube.YoutubeParsingHelper.getTextFromObject;
 import static org.schabi.newpipe.extractor.utils.Utils.isNullOrEmpty;
 
@@ -70,18 +71,17 @@ public class YoutubeTrendingExtractor extends KioskExtractor<StreamInfoItem> {
     @Override
     public String getName() throws ParsingException {
         final JsonObject header = initialData.getObject("header");
-        JsonObject title = null;
+        String name = null;
         if (header.has("feedTabbedHeaderRenderer")) {
-            title = header.getObject("feedTabbedHeaderRenderer").getObject("title");
+            name = getTextAtKey(header.getObject("feedTabbedHeaderRenderer"), "title");
         } else if (header.has("c4TabbedHeaderRenderer")) {
-            title = header.getObject("c4TabbedHeaderRenderer").getObject("title");
+            name = getTextAtKey(header.getObject("c4TabbedHeaderRenderer"), "title");
         }
 
-        String name = getTextFromObject(title);
-        if (!isNullOrEmpty(name)) {
-            return name;
+        if (isNullOrEmpty(name)) {
+            throw new ParsingException("Could not get Trending name");
         }
-        throw new ParsingException("Could not get Trending name");
+        return name;
     }
 
     @Nonnull
