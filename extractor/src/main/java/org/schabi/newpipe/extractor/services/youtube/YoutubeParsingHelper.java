@@ -571,6 +571,16 @@ public class YoutubeParsingHelper {
         return getTextFromObject(textObject, false);
     }
 
+    @Nullable
+    public static String getTextAtKey(final JsonObject jsonObject, final String key)
+            throws ParsingException {
+        if (jsonObject.isString(key)) {
+            return jsonObject.getString(key);
+        } else {
+            return getTextFromObject(jsonObject.getObject(key));
+        }
+    }
+
     public static String fixThumbnailUrl(String thumbnailUrl) {
         if (thumbnailUrl.startsWith("//")) {
             thumbnailUrl = thumbnailUrl.substring(2);
