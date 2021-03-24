@@ -19,9 +19,9 @@ import okhttp3.ResponseBody;
 
 public final class DownloaderTestImpl extends Downloader {
     private static final String USER_AGENT
-            = "Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101 Firefox/68.0";
+            = "Mozilla/5.0 (Windows NT 10.0; rv:78.0) Gecko/20100101 Firefox/78.0";
     private static DownloaderTestImpl instance;
-    private OkHttpClient client;
+    private final OkHttpClient client;
 
     private DownloaderTestImpl(final OkHttpClient.Builder builder) {
         this.client = builder.readTimeout(30, TimeUnit.SECONDS).build();
