@@ -13,6 +13,7 @@ import org.schabi.newpipe.extractor.exceptions.ParsingException;
 import org.schabi.newpipe.extractor.linkhandler.ListLinkHandler;
 import org.schabi.newpipe.extractor.localization.TimeAgoParser;
 import org.schabi.newpipe.extractor.playlist.PlaylistExtractor;
+import org.schabi.newpipe.extractor.services.youtube.YoutubeParsingHelper;
 import org.schabi.newpipe.extractor.stream.StreamInfoItem;
 import org.schabi.newpipe.extractor.stream.StreamInfoItemsCollector;
 import org.schabi.newpipe.extractor.utils.JsonUtils;
@@ -67,8 +68,8 @@ public class YoutubeMixPlaylistExtractor extends PlaylistExtractor {
     @Nonnull
     @Override
     public String getName() throws ParsingException {
-        final String name = playlistData.getString("title");
-        if (name == null) {
+        final String name = YoutubeParsingHelper.getTextAtKey(playlistData, "title");
+        if (isNullOrEmpty(name)) {
             throw new ParsingException("Could not get playlist name");
         }
         return name;
