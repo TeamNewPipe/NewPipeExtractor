@@ -1,5 +1,6 @@
 package org.schabi.newpipe.extractor.services.peertube.extractors;
 
+import com.grack.nanojson.JsonArray;
 import com.grack.nanojson.JsonObject;
 import com.grack.nanojson.JsonParser;
 import com.grack.nanojson.JsonParserException;
@@ -10,6 +11,7 @@ import org.schabi.newpipe.extractor.downloader.Downloader;
 import org.schabi.newpipe.extractor.downloader.Response;
 import org.schabi.newpipe.extractor.exceptions.ExtractionException;
 import org.schabi.newpipe.extractor.exceptions.ParsingException;
+import org.schabi.newpipe.extractor.exceptions.ReCaptchaException;
 import org.schabi.newpipe.extractor.linkhandler.ListLinkHandler;
 import org.schabi.newpipe.extractor.services.peertube.PeertubeParsingHelper;
 import org.schabi.newpipe.extractor.services.peertube.linkHandler.PeertubeChannelLinkHandlerFactory;
@@ -27,6 +29,7 @@ import static org.schabi.newpipe.extractor.utils.Utils.isNullOrEmpty;
 public class PeertubeAccountExtractor extends ChannelExtractor {
     private JsonObject json;
     private final String baseUrl;
+    private static final String ACCOUNTS = "accounts/";
 
     public PeertubeAccountExtractor(final StreamingService service, final ListLinkHandler linkHandler) throws ParsingException {
         super(service, linkHandler);
@@ -55,8 +58,31 @@ public class PeertubeAccountExtractor extends ChannelExtractor {
     }
 
     @Override
-    public long getSubscriberCount() {
-        return json.getLong("followersCount");
+    public long getSubscriberCount() throws ParsingException {
+        // The subscriber count cannot be retrieved directly. It needs to be calculated.
+        // An accounts subscriber count is the number of the channel owner's subscriptions
+        // plus the sum of all sub channels subscriptions.
+        long subscribersCount = json.getLong("followersCount");
+        String accountVideoChannelUrl = baseUrl + PeertubeChannelLinkHandlerFactory.API_ENDPOINT;
+        if (getId().contains(ACCOUNTS)) {
+            accountVideoChannelUrl += getId();
+        } else {
+            accountVideoChannelUrl += ACCOUNTS + getId();
+        }
+        accountVideoChannelUrl += "/video-channels";
+
+        try {
+            final String responseBody = getDownloader().get(accountVideoChannelUrl).responseBody();
+            final JsonObject jsonResponse = JsonParser.object().from(responseBody);
+            final JsonArray videoChannels = jsonResponse.getArray("data");
+            for (final Object videoChannel : videoChannels) {
+                final JsonObject videoChannelJsonObject = (JsonObject) videoChannel;
+                subscribersCount += videoChannelJsonObject.getInt("followersCount");
+            }
+        } catch (final IOException | JsonParserException | ReCaptchaException ignored) {
+            // something went wrong during video channels extraction, only return subscribers of ownerAccount
+        }
+        return subscribersCount;
     }
 
     @Override
@@ -130,10 +156,10 @@ public class PeertubeAccountExtractor extends ChannelExtractor {
     public void onFetchPage(@Nonnull final Downloader downloader)
             throws IOException, ExtractionException {
         String accountUrl = baseUrl + PeertubeChannelLinkHandlerFactory.API_ENDPOINT;
-        if (getId().contains("accounts/")) {
+        if (getId().contains(ACCOUNTS)) {
             accountUrl += getId();
         } else {
-            accountUrl += "accounts/" + getId();
+            accountUrl += ACCOUNTS + getId();
         }
 
         final Response response = downloader.get(accountUrl);
