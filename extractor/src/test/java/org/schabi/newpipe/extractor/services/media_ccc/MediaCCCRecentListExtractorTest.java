@@ -32,7 +32,8 @@ public class MediaCCCRecentListExtractorTest {
         for (final StreamInfoItem item: items) {
             assertFalse(isNullOrEmpty(item.getName()));
             assertTrue(item.getDuration() > 0);
-            assertTrue(item.getUploadDate().offsetDateTime().isBefore(OffsetDateTime.now()));
+            // Disabled for now, because sometimes videos are uploaded, but their release date is in the future
+            // assertTrue(item.getUploadDate().offsetDateTime().isBefore(OffsetDateTime.now()));
         }
     }
 
