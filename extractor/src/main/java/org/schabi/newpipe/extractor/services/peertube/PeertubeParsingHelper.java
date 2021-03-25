@@ -86,7 +86,13 @@ public class PeertubeParsingHelper {
 
         for (final Object c : contents) {
             if (c instanceof JsonObject) {
-                final JsonObject item = (JsonObject) c;
+                JsonObject item = (JsonObject) c;
+
+                // PeerTube playlists have the stream info encapsulated in an "video" object
+                if (item.has("video")) {
+                    item = item.getObject("video");
+                }
+
                 PeertubeStreamInfoItemExtractor extractor;
                 if (sepia) {
                     extractor = new PeertubeSepiaStreamInfoItemExtractor(item, baseUrl);
