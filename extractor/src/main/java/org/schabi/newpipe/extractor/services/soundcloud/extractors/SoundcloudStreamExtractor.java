@@ -374,22 +374,21 @@ public class SoundcloudStreamExtractor extends StreamExtractor {
         return "";
     }
 
-    @Nonnull
     @Override
-    public String getPrivacy() {
-        return "";
+    public Privacy getPrivacy() {
+        return track.getString("sharing").equals("public") ? Privacy.PUBLIC : Privacy.PRIVATE;
     }
 
     @Nonnull
     @Override
     public String getCategory() {
-        return "";
+        return track.getString("genre");
     }
 
     @Nonnull
     @Override
     public String getLicence() {
-        return "";
+        return track.getString("license");
     }
 
     @Override
@@ -400,7 +399,29 @@ public class SoundcloudStreamExtractor extends StreamExtractor {
     @Nonnull
     @Override
     public List<String> getTags() {
-        return Collections.emptyList();
+        // tags are separated by spaces, but they can be multiple words  escaped by quotes "
+        final String[] tag_list = track.getString("tag_list").split(" ");
+        final List<String> tags = new ArrayList<>();
+        String escapedTag = "";
+        boolean isEscaped = false;
+        for (int i = 0; i < tag_list.length; i++) {
+            String tag = tag_list[i];
+            if (tag.startsWith("\"")) {
+                escapedTag += tag_list[i].replace("\"", "");
+                isEscaped = true;
+            } else if (isEscaped) {
+                if (tag.endsWith("\"")) {
+                    escapedTag += " " + tag.replace("\"", "");
+                    isEscaped = false;
+                    tags.add(escapedTag);
+                } else {
+                    escapedTag += " " + tag;
+                }
+            } else if (!tag.isEmpty()){
+                tags.add(tag);
+            }
+        }
+        return tags;
     }
 
     @Nonnull

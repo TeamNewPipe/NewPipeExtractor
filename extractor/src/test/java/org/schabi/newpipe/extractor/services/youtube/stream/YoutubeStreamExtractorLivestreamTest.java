@@ -39,13 +39,13 @@ public class YoutubeStreamExtractorLivestreamTest extends DefaultStreamExtractor
     @Override public String expectedOriginalUrlContains() { return URL; }
 
     @Override public StreamType expectedStreamType() { return StreamType.LIVE_STREAM; }
-    @Override public String expectedUploaderName() { return "ChilledCow"; }
+    @Override public String expectedUploaderName() { return "Lofi Girl"; }
     @Override public String expectedUploaderUrl() { return "https://www.youtube.com/channel/UCSJ4gkVC6NrvII8umztf0Ow"; }
     @Override public List<String> expectedDescriptionContains() {
         return Arrays.asList("https://bit.ly/chilledcow-playlists",
                 "https://bit.ly/chilledcow-submissions");
     }
-    @Override public boolean expectedUploaderVerified() { return true; }
+    @Override public boolean expectedUploaderVerified() { return false; }
     @Override public long expectedLength() { return 0; }
     @Override public long expectedTimestamp() { return TIMESTAMP; }
     @Override public long expectedViewCountAtLeast() { return 0; }
@@ -56,4 +56,14 @@ public class YoutubeStreamExtractorLivestreamTest extends DefaultStreamExtractor
     @Override public boolean expectedHasSubtitles() { return false; }
     @Nullable @Override public String expectedDashMpdUrlContains() { return "https://manifest.googlevideo.com/api/manifest/dash/"; }
     @Override public boolean expectedHasFrames() { return false; }
+    @Override public String expectedLicence() { return "YouTube licence"; }
+    @Override public String expectedCategory() { return "Music"; }
+    @Override public List<String> expectedTags() {
+        return Arrays.asList("beats to relax", "chilled cow", "chilled cow radio", "chilledcow", "chilledcow radio",
+                "chilledcow station", "chillhop", "hip hop", "hiphop", "lo fi", "lo fi hip hop", "lo fi hip hop radio",
+                "lo fi hiphop", "lo fi radio", "lo-fi", "lo-fi hip hop", "lo-fi hip hop radio", "lo-fi hiphop",
+                "lo-fi radio", "lofi", "lofi hip hop", "lofi hip hop radio", "lofi hiphop", "lofi radio", "music",
+                "lofi radio chilledcow", "music to study", "playlist", "radio", "relaxing music", "study music",
+                "lofi hip hop radio - beats to relax\\/study to");
+    }
 }

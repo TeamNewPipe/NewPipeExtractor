@@ -286,11 +286,7 @@ public class PeertubeStreamExtractor extends StreamExtractor {
     @Nonnull
     @Override
     public List<String> getTags() {
-        try {
-            return (List) JsonUtils.getArray(json, "tags");
-        } catch (Exception e) {
-            return Collections.emptyList();
-        }
+        return JsonUtils.getStringListFromJsonArray(json.getArray("tags"));
     }
 
     @Nonnull
@@ -428,8 +424,19 @@ public class PeertubeStreamExtractor extends StreamExtractor {
 
     @Nonnull
     @Override
-    public String getPrivacy() throws ParsingException {
-        return JsonUtils.getString(json, "privacy.label");
+    public Privacy getPrivacy() {
+        switch (json.getObject("privacy").getInt("id")) {
+            case 1:
+                return Privacy.PUBLIC;
+            case 2:
+                return Privacy.UNLISTED;
+            case 3:
+                return Privacy.PRIVATE;
+            case 4:
+                return Privacy.INTERNAL;
+            default:
+                return Privacy.OTHER;
+        }
     }
 
     @Nonnull

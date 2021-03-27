@@ -140,4 +140,10 @@ public class BandcampRadioStreamExtractor extends BandcampStreamExtractor {
     public List<String> getTags() {
         return Collections.emptyList();
     }
+
+    @Nonnull
+    @Override
+    public Privacy getPrivacy() {
+        return Privacy.PUBLIC;
+    }
 }

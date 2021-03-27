@@ -151,4 +151,14 @@ public class JsonUtils {
         final String json = document.getElementsByAttribute(variable).attr(variable);
         return JsonParser.object().from(json);
     }
+
+    public static List<String> getStringListFromJsonArray(@Nonnull final JsonArray array) {
+        final List<String> stringList = new ArrayList<>(array.size());
+        for (Object o : array) {
+            if (o instanceof String) {
+                stringList.add((String) o);
+            }
+        }
+        return stringList;
+    }
 }

@@ -5,15 +5,17 @@ import org.junit.Test;
 import org.schabi.newpipe.downloader.DownloaderTestImpl;
 import org.schabi.newpipe.extractor.NewPipe;
 import org.schabi.newpipe.extractor.StreamingService;
+import org.schabi.newpipe.extractor.exceptions.ParsingException;
 import org.schabi.newpipe.extractor.services.DefaultStreamExtractorTest;
 import org.schabi.newpipe.extractor.services.media_ccc.extractors.MediaCCCStreamExtractor;
 import org.schabi.newpipe.extractor.stream.StreamExtractor;
 import org.schabi.newpipe.extractor.stream.StreamType;
 
+import javax.annotation.Nullable;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-
-import javax.annotation.Nullable;
+import java.util.Locale;
 
 import static junit.framework.TestCase.assertEquals;
 import static org.schabi.newpipe.extractor.ServiceList.MediaCCC;
@@ -42,7 +44,6 @@ public class MediaCCCStreamExtractorTest {
         @Override public String expectedId() { return ID; }
         @Override public String expectedUrlContains() { return URL; }
         @Override public String expectedOriginalUrlContains() { return URL; }
-
         @Override public StreamType expectedStreamType() { return StreamType.VIDEO_STREAM; }
         @Override public String expectedUploaderName() { return "gpn18"; }
         @Override public String expectedUploaderUrl() { return "https://media.ccc.de/c/gpn18"; }
@@ -58,10 +59,10 @@ public class MediaCCCStreamExtractorTest {
         @Override public boolean expectedHasFrames() { return false; }
         @Override public List<String> expectedTags() { return Arrays.asList("gpn18", "105"); }
         @Override public int expectedStreamSegmentsCount() { return 0; }
+        @Override public Locale expectedLanguageInfo() { return new Locale("de"); }
 
         @Override
-        @Test
-        public void testThumbnailUrl() throws Exception {
+        @Test public void testThumbnailUrl() throws Exception {
             super.testThumbnailUrl();
             assertEquals("https://static.media.ccc.de/media/events/gpn/gpn18/105-hd.jpg", extractor.getThumbnailUrl());
         }
@@ -100,13 +101,20 @@ public class MediaCCCStreamExtractorTest {
             extractor.fetchPage();
         }
 
-        @Override public StreamExtractor extractor() { return extractor; }
-        @Override public StreamingService expectedService() { return MediaCCC; }
-        @Override public String expectedName() { return "What's left for private messaging?"; }
-        @Override public String expectedId() { return ID; }
+        @Override public StreamExtractor extractor() {
+            return extractor;
+        }
+        @Override public StreamingService expectedService() {
+            return MediaCCC;
+        }
+        @Override public String expectedName() {
+            return "What's left for private messaging?";
+        }
+        @Override public String expectedId() {
+            return ID;
+        }
         @Override public String expectedUrlContains() { return URL; }
         @Override public String expectedOriginalUrlContains() { return URL; }
-
         @Override public StreamType expectedStreamType() { return StreamType.VIDEO_STREAM; }
         @Override public String expectedUploaderName() { return "36c3"; }
         @Override public String expectedUploaderUrl() { return "https://media.ccc.de/c/36c3"; }
@@ -123,8 +131,7 @@ public class MediaCCCStreamExtractorTest {
         @Override public List<String> expectedTags() { return Arrays.asList("36c3", "10565", "2019", "Security", "Main"); }
 
         @Override
-        @Test
-        public void testThumbnailUrl() throws Exception {
+        @Test public void testThumbnailUrl() throws Exception {
             super.testThumbnailUrl();
             assertEquals("https://static.media.ccc.de/media/congress/2019/10565-hd.jpg", extractor.getThumbnailUrl());
         }
@@ -148,6 +155,11 @@ public class MediaCCCStreamExtractorTest {
         public void testAudioStreams() throws Exception {
             super.testAudioStreams();
             assertEquals(2, extractor.getAudioStreams().size());
+        }
+
+        @Override
+        public Locale expectedLanguageInfo() {
+            return new Locale("en");
         }
     }
 }

@@ -34,11 +34,15 @@ public class SoundcloudStreamExtractorTest {
         private static final String URL = UPLOADER + "/" + ID + "#t=" + TIMESTAMP;
         private static StreamExtractor extractor;
 
-        @Test(expected = GeographicRestrictionException.class)
-        public void geoRestrictedContent() throws Exception {
+        @BeforeClass
+        public static void setUp() throws Exception {
             NewPipe.init(DownloaderTestImpl.getInstance());
             extractor = SoundCloud.getStreamExtractor(URL);
-            extractor.fetchPage();
+            try {
+                extractor.fetchPage();
+            } catch (final GeographicRestrictionException e) {
+                // expected
+            }
         }
 
         @Override public StreamExtractor extractor() { return extractor; }
@@ -67,6 +71,8 @@ public class SoundcloudStreamExtractorTest {
         @Override public boolean expectedHasFrames() { return false; }
         @Override public int expectedStreamSegmentsCount() { return 0; }
         @Override public boolean expectedHasRelatedStreams() { return false; }
+        @Override public String expectedLicence() { return "all-rights-reserved"; }
+        @Override public String expectedCategory() { return "Pop"; }
     }
 
     public static class SoundcloudGoPlusTrack extends DefaultStreamExtractorTest {
@@ -76,11 +82,15 @@ public class SoundcloudStreamExtractorTest {
         private static final String URL = UPLOADER + "/" + ID + "#t=" + TIMESTAMP;
         private static StreamExtractor extractor;
 
-        @Test(expected = SoundCloudGoPlusContentException.class)
-        public void goPlusContent() throws Exception {
+        @BeforeClass
+        public static void setUp() throws Exception {
             NewPipe.init(DownloaderTestImpl.getInstance());
             extractor = SoundCloud.getStreamExtractor(URL);
-            extractor.fetchPage();
+            try {
+                extractor.fetchPage();
+            } catch (final SoundCloudGoPlusContentException e) {
+                // expected
+            }
         }
 
         @Override public StreamExtractor extractor() { return extractor; }
@@ -109,6 +119,8 @@ public class SoundcloudStreamExtractorTest {
         @Override public boolean expectedHasSubtitles() { return false; }
         @Override public boolean expectedHasFrames() { return false; }
         @Override public int expectedStreamSegmentsCount() { return 0; }
+        @Override public String expectedLicence() { return "all-rights-reserved"; }
+        @Override public String expectedCategory() { return "Dance"; }
     }
 
     public static class CreativeCommonsPlaysWellWithOthers extends DefaultStreamExtractorTest {
@@ -148,6 +160,11 @@ public class SoundcloudStreamExtractorTest {
         @Override public boolean expectedHasSubtitles() { return false; }
         @Override public boolean expectedHasFrames() { return false; }
         @Override public int expectedStreamSegmentsCount() { return 0; }
+        @Override public String expectedLicence() { return "cc-by"; }
+        @Override public String expectedCategory() { return "Podcast"; }
+        @Override public List<String> expectedTags() {
+            return Arrays.asList("ants", "collaboration", "creative commons", "stigmergy", "storytelling", "wikipedia");
+        }
 
         @Override
         @Test

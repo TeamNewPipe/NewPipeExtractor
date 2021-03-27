@@ -12,14 +12,19 @@ import org.schabi.newpipe.extractor.exceptions.ExtractionException;
 import org.schabi.newpipe.extractor.exceptions.ParsingException;
 import org.schabi.newpipe.extractor.linkhandler.LinkHandler;
 import org.schabi.newpipe.extractor.localization.DateWrapper;
+import org.schabi.newpipe.extractor.localization.Localization;
 import org.schabi.newpipe.extractor.services.media_ccc.linkHandler.MediaCCCConferenceLinkHandlerFactory;
 import org.schabi.newpipe.extractor.services.media_ccc.linkHandler.MediaCCCStreamLinkHandlerFactory;
 import org.schabi.newpipe.extractor.stream.*;
+import org.schabi.newpipe.extractor.utils.JsonUtils;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.io.IOException;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+import java.util.Locale;
 
 public class MediaCCCStreamExtractor extends StreamExtractor {
     private JsonObject data;
@@ -256,8 +261,8 @@ public class MediaCCCStreamExtractor extends StreamExtractor {
 
     @Nonnull
     @Override
-    public String getPrivacy() {
-        return "";
+    public Privacy getPrivacy() {
+        return Privacy.PUBLIC;
     }
 
     @Nonnull
@@ -273,14 +278,14 @@ public class MediaCCCStreamExtractor extends StreamExtractor {
     }
 
     @Override
-    public Locale getLanguageInfo() {
-        return null;
+    public Locale getLanguageInfo() throws ParsingException {
+        return Localization.getLocaleFromThreeLetterCode(data.getString("original_language"));
     }
 
     @Nonnull
     @Override
     public List<String> getTags() {
-        return Arrays.asList(data.getArray("tags").toArray(new String[0]));
+        return JsonUtils.getStringListFromJsonArray(data.getArray("tags"));
     }
 
     @Nonnull

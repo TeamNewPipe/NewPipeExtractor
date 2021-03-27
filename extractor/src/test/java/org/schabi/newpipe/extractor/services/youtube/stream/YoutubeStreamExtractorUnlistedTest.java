@@ -15,6 +15,7 @@ import java.util.List;
 import javax.annotation.Nullable;
 
 import static org.schabi.newpipe.extractor.ServiceList.YouTube;
+import static org.schabi.newpipe.extractor.stream.StreamExtractor.Privacy.UNLISTED;
 
 public class YoutubeStreamExtractorUnlistedTest extends DefaultStreamExtractorTest {
     private static final String RESOURCE_PATH = DownloaderFactory.RESOURCE_PATH + "services/youtube/extractor/stream/";
@@ -50,4 +51,8 @@ public class YoutubeStreamExtractorUnlistedTest extends DefaultStreamExtractorTe
     @Nullable @Override public String expectedTextualUploadDate() { return "2017-09-22"; }
     @Override public long expectedLikeCountAtLeast() { return 110; }
     @Override public long expectedDislikeCountAtLeast() { return 0; }
+    @Override public StreamExtractor.Privacy expectedPrivacy() { return UNLISTED; }
+    @Override public String expectedLicence() { return "YouTube licence"; }
+    @Override public String expectedCategory() { return "Gaming"; }
+    @Override public List<String> expectedTags() { return Arrays.asList("dark souls", "hooked", "praise the casual"); }
 }

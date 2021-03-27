@@ -1,7 +1,7 @@
 package org.schabi.newpipe.extractor.localization;
 
-import edu.umd.cs.findbugs.annotations.NonNull;
 
+import javax.annotation.Nonnull;
 import java.io.Serializable;
 import java.time.OffsetDateTime;
 import java.time.ZoneOffset;
@@ -12,14 +12,15 @@ import java.util.GregorianCalendar;
  * A wrapper class that provides a field to describe if the date/time is precise or just an approximation.
  */
 public class DateWrapper implements Serializable {
-    @NonNull private final OffsetDateTime offsetDateTime;
+    @Nonnull
+    private final OffsetDateTime offsetDateTime;
     private final boolean isApproximation;
 
     /**
      * @deprecated Use {@link #DateWrapper(OffsetDateTime)} instead.
      */
     @Deprecated
-    public DateWrapper(@NonNull Calendar calendar) {
+    public DateWrapper(@Nonnull Calendar calendar) {
         this(calendar, false);
     }
 
@@ -27,26 +28,25 @@ public class DateWrapper implements Serializable {
      * @deprecated Use {@link #DateWrapper(OffsetDateTime, boolean)} instead.
      */
     @Deprecated
-    public DateWrapper(@NonNull Calendar calendar, boolean isApproximation) {
+    public DateWrapper(@Nonnull Calendar calendar, boolean isApproximation) {
         this(OffsetDateTime.ofInstant(calendar.toInstant(), ZoneOffset.UTC), isApproximation);
     }
 
-    public DateWrapper(@NonNull OffsetDateTime offsetDateTime) {
+    public DateWrapper(@Nonnull OffsetDateTime offsetDateTime) {
         this(offsetDateTime, false);
     }
 
-    public DateWrapper(@NonNull OffsetDateTime offsetDateTime, boolean isApproximation) {
+    public DateWrapper(@Nonnull OffsetDateTime offsetDateTime, boolean isApproximation) {
         this.offsetDateTime = offsetDateTime.withOffsetSameInstant(ZoneOffset.UTC);
         this.isApproximation = isApproximation;
     }
 
     /**
      * @return the wrapped date/time as a {@link Calendar}.
-     *
      * @deprecated use {@link #offsetDateTime()} instead.
      */
     @Deprecated
-    @NonNull
+    @Nonnull
     public Calendar date() {
         return GregorianCalendar.from(offsetDateTime.toZonedDateTime());
     }
@@ -54,7 +54,7 @@ public class DateWrapper implements Serializable {
     /**
      * @return the wrapped date/time.
      */
-    @NonNull
+    @Nonnull
     public OffsetDateTime offsetDateTime() {
         return offsetDateTime;
     }
