@@ -35,6 +35,7 @@ public class BandcampPlaylistInfoItemFeaturedExtractor implements PlaylistInfoIt
 
     @Override
     public String getThumbnailUrl() {
-        return featuredStory.has("art_id") ? getImageUrl(featuredStory.getLong("art_id"), true) : "";
+        return featuredStory.has("art_id") ? getImageUrl(featuredStory.getLong("art_id"), true)
+                : getImageUrl(featuredStory.getLong("item_art_id"), true);
     }
 }
