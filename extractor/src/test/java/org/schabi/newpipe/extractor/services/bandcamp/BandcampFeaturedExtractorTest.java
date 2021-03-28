@@ -6,6 +6,7 @@ import org.junit.BeforeClass;
 import org.junit.Test;
 import org.schabi.newpipe.downloader.DownloaderTestImpl;
 import org.schabi.newpipe.extractor.NewPipe;
+import org.schabi.newpipe.extractor.Page;
 import org.schabi.newpipe.extractor.exceptions.ExtractionException;
 import org.schabi.newpipe.extractor.playlist.PlaylistInfoItem;
 import org.schabi.newpipe.extractor.services.BaseListExtractorTest;
@@ -16,6 +17,7 @@ import java.io.IOException;
 import java.util.List;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotEquals;
 import static org.junit.Assert.assertTrue;
 import static org.schabi.newpipe.extractor.ServiceList.Bandcamp;
 
@@ -37,13 +39,28 @@ public class BandcampFeaturedExtractorTest implements BaseListExtractorTest {
     @Test
     public void testFeaturedCount() throws ExtractionException, IOException {
         final List<PlaylistInfoItem> list = extractor.getInitialPage().getItems();
-        assertTrue(list.size() > 1);
+        assertTrue(list.size() > 5);
     }
 
     @Test
     public void testHttps() throws ExtractionException, IOException {
         final List<PlaylistInfoItem> list = extractor.getInitialPage().getItems();
         assertTrue(list.get(0).getUrl().contains("https://"));
+    }
+
+    @Test
+    public void testMorePages() throws ExtractionException, IOException {
+
+        final Page page2 = extractor.getInitialPage().getNextPage();
+        final Page page3 = extractor.getPage(page2).getNextPage();
+
+        assertTrue(extractor.getPage(page2).getItems().size() > 5);
+
+        // Compare first item of second page with first item of third page
+        assertNotEquals(
+                extractor.getPage(page2).getItems().get(0),
+                extractor.getPage(page3).getItems().get(0)
+        );
     }
 
     @Override
