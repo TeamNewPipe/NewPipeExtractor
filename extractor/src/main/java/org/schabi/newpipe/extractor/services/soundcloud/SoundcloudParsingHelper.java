@@ -46,7 +46,7 @@ public class SoundcloudParsingHelper {
     private SoundcloudParsingHelper() {
     }
 
-    public synchronized static String clientId() throws ExtractionException, IOException {
+    public static synchronized String clientId() throws ExtractionException, IOException {
         if (!isNullOrEmpty(clientId)) return clientId;
 
         Downloader dl = NewPipe.getDownloader();
@@ -89,7 +89,7 @@ public class SoundcloudParsingHelper {
             SoundcloudStreamExtractor e = (SoundcloudStreamExtractor) SoundCloud
                     .getStreamExtractor("https://soundcloud.com/liluzivert/do-what-i-want-produced-by-maaly-raw-don-cannon");
             e.fetchPage();
-            return e.getAudioStreams().size() >= 1;
+            return !e.getAudioStreams().isEmpty();
         } catch (Exception ignored) {
             // No need to throw an exception here. If something went wrong, the client_id is wrong
             return false;
@@ -131,7 +131,7 @@ public class SoundcloudParsingHelper {
      *
      * @return the url resolved
      */
-    public static String resolveUrlWithEmbedPlayer(String apiUrl) throws IOException, ReCaptchaException, ParsingException {
+    public static String resolveUrlWithEmbedPlayer(String apiUrl) throws IOException, ReCaptchaException {
 
         String response = NewPipe.getDownloader().get("https://w.soundcloud.com/player/?url="
                 + URLEncoder.encode(apiUrl, UTF_8), SoundCloud.getLocalization()).responseBody();

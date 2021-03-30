@@ -5,6 +5,7 @@ import org.schabi.newpipe.extractor.InfoItemsCollector;
 import org.schabi.newpipe.extractor.exceptions.FoundAdException;
 import org.schabi.newpipe.extractor.exceptions.ParsingException;
 
+import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Vector;
@@ -111,7 +112,7 @@ public class StreamInfoItemsCollector extends InfoItemsCollector<StreamInfoItem,
     }
 
     public List<StreamInfoItem> getStreamInfoItemList() {
-        List<StreamInfoItem> siiList = new Vector<>();
+        List<StreamInfoItem> siiList = new ArrayList<>();
         for (InfoItem ii : super.getItems()) {
             if (ii instanceof StreamInfoItem) {
                 siiList.add((StreamInfoItem) ii);

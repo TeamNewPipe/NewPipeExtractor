@@ -106,7 +106,7 @@ public class PlaylistInfo extends ListInfo<StreamInfoItem> {
             info.addError(e);
         }
         // do not fail if everything but the uploader infos could be collected
-        if (uploaderParsingErrors.size() > 0 &&
+        if (!uploaderParsingErrors.isEmpty() &&
                 (!info.getErrors().isEmpty() || uploaderParsingErrors.size() < 3)) {
             info.addAllErrors(uploaderParsingErrors);
         }

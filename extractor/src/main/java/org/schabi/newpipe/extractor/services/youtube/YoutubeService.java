@@ -123,7 +123,7 @@ public class YoutubeService extends StreamingService {
     public SearchExtractor getSearchExtractor(SearchQueryHandler query) {
         final List<String> contentFilters = query.getContentFilters();
 
-        if (contentFilters.size() > 0 && contentFilters.get(0).startsWith("music_")) {
+        if (!contentFilters.isEmpty() && contentFilters.get(0).startsWith("music_")) {
             return new YoutubeMusicSearchExtractor(this, query);
         } else {
             return new YoutubeSearchExtractor(this, query);
@@ -221,6 +221,7 @@ public class YoutubeService extends StreamingService {
         return SUPPORTED_LANGUAGES;
     }
 
+    @Override
     public List<ContentCountry> getSupportedCountries() {
         return SUPPORTED_COUNTRIES;
     }

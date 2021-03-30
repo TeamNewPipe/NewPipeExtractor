@@ -163,7 +163,7 @@ public class PeertubeAccountExtractor extends ChannelExtractor {
         }
 
         final Response response = downloader.get(accountUrl);
-        if (response != null && response.responseBody() != null) {
+        if (response != null) {
             setInitialData(response.responseBody());
         } else {
             throw new ExtractionException("Unable to extract PeerTube account data");

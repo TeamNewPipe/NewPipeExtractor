@@ -83,7 +83,7 @@ public class SoundcloudSearchExtractor extends SearchExtractor {
             throw new ParsingException("Could not parse json response", e);
         }
 
-        if (searchCollection.size() == 0) {
+        if (searchCollection.isEmpty()) {
             throw new SearchExtractor.NothingFoundException("Nothing found");
         }
     }

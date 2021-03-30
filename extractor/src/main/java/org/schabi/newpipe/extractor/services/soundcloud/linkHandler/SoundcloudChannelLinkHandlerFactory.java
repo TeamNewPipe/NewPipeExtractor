@@ -10,7 +10,7 @@ import java.util.List;
 
 public class SoundcloudChannelLinkHandlerFactory extends ListLinkHandlerFactory {
     private static final SoundcloudChannelLinkHandlerFactory instance = new SoundcloudChannelLinkHandlerFactory();
-    private final String URL_PATTERN = "^https?://(www\\.|m\\.)?soundcloud.com/[0-9a-z_-]+" +
+    private static final String URL_PATTERN = "^https?://(www\\.|m\\.)?soundcloud.com/[0-9a-z_-]+" +
             "(/((tracks|albums|sets|reposts|followers|following)/?)?)?([#?].*)?$";
 
     public static SoundcloudChannelLinkHandlerFactory getInstance() {

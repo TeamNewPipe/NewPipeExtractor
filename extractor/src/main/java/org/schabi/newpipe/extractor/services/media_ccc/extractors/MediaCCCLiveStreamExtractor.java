@@ -217,7 +217,7 @@ public class MediaCCCLiveStreamExtractor extends StreamExtractor {
     }
 
     @Override
-    public List<VideoStream> getVideoOnlyStreams() throws IOException, ExtractionException {
+    public List<VideoStream> getVideoOnlyStreams() {
         return null;
     }
 
@@ -251,8 +251,8 @@ public class MediaCCCLiveStreamExtractor extends StreamExtractor {
 
     @Nonnull
     @Override
-    public String getHost() throws ParsingException {
-        return null;
+    public String getHost() {
+        return "";
     }
 
     @Nonnull

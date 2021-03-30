@@ -37,7 +37,7 @@ public abstract class SearchQueryHandlerFactory extends ListLinkHandlerFactory {
     }
 
     public SearchQueryHandler fromQuery(String query) throws ParsingException {
-        return fromQuery(query, new ArrayList<String>(0), EMPTY_STRING);
+        return fromQuery(query, new ArrayList<>(0), EMPTY_STRING);
     }
 
     /**

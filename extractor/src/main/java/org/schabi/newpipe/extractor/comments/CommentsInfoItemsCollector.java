@@ -4,6 +4,7 @@ import org.schabi.newpipe.extractor.InfoItem;
 import org.schabi.newpipe.extractor.InfoItemsCollector;
 import org.schabi.newpipe.extractor.exceptions.ParsingException;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Vector;
 
@@ -95,7 +96,7 @@ public class CommentsInfoItemsCollector extends InfoItemsCollector<CommentsInfoI
     }
 
     public List<CommentsInfoItem> getCommentsInfoItemList() {
-        List<CommentsInfoItem> siiList = new Vector<>();
+        List<CommentsInfoItem> siiList = new ArrayList<>();
         for (InfoItem ii : super.getItems()) {
             if (ii instanceof CommentsInfoItem) {
                 siiList.add((CommentsInfoItem) ii);

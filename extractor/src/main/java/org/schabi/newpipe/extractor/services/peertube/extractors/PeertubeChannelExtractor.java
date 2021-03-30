@@ -136,7 +136,7 @@ public class PeertubeChannelExtractor extends ChannelExtractor {
     public void onFetchPage(final Downloader downloader) throws IOException, ExtractionException {
         final Response response = downloader.get(
                 baseUrl + PeertubeChannelLinkHandlerFactory.API_ENDPOINT + getId());
-        if (response != null && response.responseBody() != null) {
+        if (response != null ) {
             setInitialData(response.responseBody());
         } else {
             throw new ExtractionException("Unable to extract PeerTube channel data");

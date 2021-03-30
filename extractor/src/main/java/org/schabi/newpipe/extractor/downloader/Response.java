@@ -69,10 +69,8 @@ public class Response {
     public String getHeader(String name) {
         for (Map.Entry<String, List<String>> headerEntry : responseHeaders.entrySet()) {
             final String key = headerEntry.getKey();
-            if (key != null && key.equalsIgnoreCase(name)) {
-                if (headerEntry.getValue().size() > 0) {
-                    return headerEntry.getValue().get(0);
-                }
+            if (key != null && key.equalsIgnoreCase(name) && !headerEntry.getValue().isEmpty()) {
+                return headerEntry.getValue().get(0);
             }
         }
 

@@ -8,7 +8,7 @@ import org.schabi.newpipe.extractor.utils.Utils;
 
 public class SoundcloudStreamLinkHandlerFactory extends LinkHandlerFactory {
     private static final SoundcloudStreamLinkHandlerFactory instance = new SoundcloudStreamLinkHandlerFactory();
-    private final String URL_PATTERN = "^https?://(www\\.|m\\.)?soundcloud.com/[0-9a-z_-]+" +
+    private static final String URL_PATTERN = "^https?://(www\\.|m\\.)?soundcloud.com/[0-9a-z_-]+" +
             "/(?!(tracks|albums|sets|reposts|followers|following)/?$)[0-9a-z_-]+/?([#?].*)?$";
 
     private SoundcloudStreamLinkHandlerFactory() {
