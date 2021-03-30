@@ -1,9 +1,13 @@
 package org.schabi.newpipe.extractor.services.youtube;
 
+import com.grack.nanojson.JsonArray;
+import com.grack.nanojson.JsonObject;
+import com.grack.nanojson.JsonParser;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import org.schabi.newpipe.downloader.DownloaderFactory;
 import org.schabi.newpipe.downloader.DownloaderTestImpl;
+import org.schabi.newpipe.extractor.Extractor;
 import org.schabi.newpipe.extractor.NewPipe;
 import org.schabi.newpipe.extractor.channel.ChannelExtractor;
 import org.schabi.newpipe.extractor.exceptions.AccountTerminatedException;
@@ -12,6 +16,7 @@ import org.schabi.newpipe.extractor.exceptions.ContentNotSupportedException;
 import org.schabi.newpipe.extractor.exceptions.ParsingException;
 import org.schabi.newpipe.extractor.services.BaseChannelExtractorTest;
 import org.schabi.newpipe.extractor.services.youtube.extractors.YoutubeChannelExtractor;
+import org.schabi.newpipe.extractor.services.youtube.linkHandler.YoutubeChannelLinkHandlerFactory;
 
 import java.io.IOException;
 import java.util.Random;
@@ -75,6 +80,48 @@ public class YoutubeChannelExtractorTest {
             } catch (AccountTerminatedException e) {
                 assertEquals(e.getMessage(),
                         "This account has been terminated for violating YouTube's Community Guidelines.");
+                assertEquals(e.getReason(), AccountTerminatedException.Reason.VIOLATION);
+                throw e;
+            }
+        }
+
+        @Test(expected = AccountTerminatedException.class)
+        public void accountTerminatedHateFetch() throws Exception {
+            final ChannelExtractor extractor =
+                    YouTube.getChannelExtractor("https://www.youtube.com/channel/UCPWXIOPK-9myzek6jHR5yrg");
+            try {
+                extractor.fetchPage();
+            } catch (AccountTerminatedException e) {
+                assertTrue(e.getMessage().contains(
+                        "This account has been terminated due to multiple or severe violations of YouTube's policy prohibiting hate speech."));
+                assertEquals(e.getReason(), AccountTerminatedException.Reason.VIOLATION);
+                throw e;
+            }
+        }
+
+        @Test(expected = AccountTerminatedException.class)
+        public void accountTerminatedBullyFetch() throws Exception {
+            final ChannelExtractor extractor =
+                    YouTube.getChannelExtractor("https://youtube.com/channel/UCB1o7_gbFp2PLsamWxFenBg");
+            try {
+                extractor.fetchPage();
+            } catch (AccountTerminatedException e) {
+                assertEquals(e.getMessage(),
+                        "This account has been terminated due to multiple or severe violations of YouTube's policy prohibiting content designed to harass, bully or threaten.");
+                assertEquals(e.getReason(), AccountTerminatedException.Reason.VIOLATION);
+                throw e;
+            }
+        }
+
+        @Test(expected = AccountTerminatedException.class)
+        public void accountTerminatedSpamFetch() throws Exception {
+            final ChannelExtractor extractor =
+                    YouTube.getChannelExtractor("https://www.youtube.com/channel/UCoaO4U_p7G7AwalqSbGCZOA");
+            try {
+                extractor.fetchPage();
+            } catch (AccountTerminatedException e) {
+                assertEquals(e.getMessage(),
+                        "This account has been terminated due to multiple or severe violations of YouTube's policy against spam, deceptive practices and misleading content or other Terms of Service violations.");
                 assertEquals(e.getReason(), AccountTerminatedException.Reason.VIOLATION);
                 throw e;
             }

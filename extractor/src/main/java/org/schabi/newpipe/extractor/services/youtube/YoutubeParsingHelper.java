@@ -764,8 +764,13 @@ public class YoutubeParsingHelper {
                             || alertText.contains("infringement")) {
                         // possible error messages:
                         // "This account has been terminated for a violation of YouTube's Terms of Service."
+                        // "This account has been terminated due to multiple or severe violations of YouTube's policy prohibiting hate speech."
+                        // "This account has been terminated due to multiple or severe violations of YouTube's policy prohibiting content designed to harass, bully or threaten."
+                        // "This account has been terminated due to multiple or severe violations of YouTube's policy against spam, deceptive practices and misleading content or other Terms of Service violations."
+                        // "This account has been terminated due to multiple or severe violations of YouTube's policy on nudity or sexual content."
                         // "This account has been terminated for violating YouTube's Community Guidelines."
                         // "This account has been terminated because we received multiple third-party claims of copyright infringement regarding material that the user posted."
+                        // "This account has been terminated because it is linked to an account that received multiple third-party claims of copyright infringement."
                         throw new AccountTerminatedException(alertText, AccountTerminatedException.Reason.VIOLATION);
                     } else {
                         throw new AccountTerminatedException(alertText);
