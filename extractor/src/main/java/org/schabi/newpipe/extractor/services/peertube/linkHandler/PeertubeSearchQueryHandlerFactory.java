@@ -35,10 +35,7 @@ public class PeertubeSearchQueryHandlerFactory extends SearchQueryHandlerFactory
     @Override
     public String getUrl(String searchString, List<String> contentFilters, String sortFilter, String baseUrl) throws ParsingException {
         try {
-            final String url = baseUrl + SEARCH_ENDPOINT
-                    + "?search=" + URLEncoder.encode(searchString, UTF_8);
-
-            return url;
+            return baseUrl + SEARCH_ENDPOINT + "?search=" + URLEncoder.encode(searchString, UTF_8);
         } catch (UnsupportedEncodingException e) {
             throw new ParsingException("Could not encode query", e);
         }
