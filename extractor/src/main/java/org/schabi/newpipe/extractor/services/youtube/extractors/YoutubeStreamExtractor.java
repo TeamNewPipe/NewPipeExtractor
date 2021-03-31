@@ -1,9 +1,6 @@
 package org.schabi.newpipe.extractor.services.youtube.extractors;
 
-import com.grack.nanojson.JsonArray;
-import com.grack.nanojson.JsonObject;
-import com.grack.nanojson.JsonParser;
-import com.grack.nanojson.JsonParserException;
+import com.grack.nanojson.*;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
@@ -48,8 +45,7 @@ import java.time.format.DateTimeFormatter;
 import java.util.*;
 
 import static org.schabi.newpipe.extractor.services.youtube.YoutubeParsingHelper.*;
-import static org.schabi.newpipe.extractor.utils.Utils.EMPTY_STRING;
-import static org.schabi.newpipe.extractor.utils.Utils.isNullOrEmpty;
+import static org.schabi.newpipe.extractor.utils.Utils.*;
 
 /*
  * Created by Christian Schabesberger on 06.08.15.
@@ -708,6 +704,7 @@ public class YoutubeStreamExtractor extends StreamExtractor {
     @Override
     public void onFetchPage(@Nonnull final Downloader downloader)
             throws IOException, ExtractionException {
+
         initialAjaxJson = getJsonResponse(getUrl() + "&pbj=1", getExtractorLocalization());
 
         initialData = initialAjaxJson.getObject(3).getObject("response", null);
@@ -718,32 +715,41 @@ public class YoutubeStreamExtractor extends StreamExtractor {
             }
         }
 
-        playerResponse = initialAjaxJson.getObject(2).getObject("playerResponse", null);
-        // Save the playerResponse from the youtube.com website,
-        // because there can be restrictions on the embedded player.
-        // E.g. if a video is age-restricted, the embedded player's playabilityStatus says,
-        // that the video cannot be played outside of YouTube,
-        // but does not show the original message.
-        JsonObject youtubePlayerResponse = playerResponse;
+        final String url = "https://youtubei.googleapis.com/youtubei/v1/player?key=" + getKey();
 
-        if (playerResponse == null || !playerResponse.has("streamingData")) {
-            // try to get player response by fetching video info page
-            fetchVideoInfoPage();
-        }
+        // @formatter:off
+        byte[] json = JsonWriter.string()
+                .object()
+                .object("context")
+                    .object("client")
+                        .value("clientName", "Android")
+                        .value("clientVersion", "16.02.35")
+                    .end()
+                .end()
+                .value("videoId", getId())
+                .end()
+                .done()
+                .getBytes(UTF_8);
+        // @formatter:on
 
-        if (playerResponse == null && youtubePlayerResponse == null) {
+        Map<String, List<String>> headers = new HashMap<>();
+
+        headers.put("User-Agent", Collections.singletonList("com.google.android.youtube/16.02.35(Linux; U; Android 10; en_US; Pixel 4 XL Build/QQ3A.200805.001) gzip"));
+        headers.put("Content-Type", Collections.singletonList("application/json"));
+        headers.put("x-goog-api-format-version", Collections.singletonList("2"));
+
+        playerResponse = JsonUtils.toJsonObject(getDownloader().post(url, headers, json).responseBody());
+
+        if (playerResponse == null) {
             throw new ExtractionException("Could not get playerResponse");
-        } else if (youtubePlayerResponse == null) {
-            youtubePlayerResponse = playerResponse;
         }
 
-        JsonObject playabilityStatus = (playerResponse == null ? youtubePlayerResponse : playerResponse)
-                .getObject("playabilityStatus");
+        JsonObject playabilityStatus = playerResponse.getObject("playabilityStatus");
         String status = playabilityStatus.getString("status");
         // If status exist, and is not "OK", throw the specific exception based on error message
         // or a ContentNotAvailableException with the reason text if it's an unknown reason.
         if (status != null && !status.equalsIgnoreCase("ok")) {
-            playabilityStatus = youtubePlayerResponse.getObject("playabilityStatus");
+            playabilityStatus = playerResponse.getObject("playabilityStatus");
             status = playabilityStatus.getString("status");
 
             final String reason = playabilityStatus.getString("reason");
