@@ -82,14 +82,13 @@ public class BandcampFeaturedExtractor extends KioskExtractor<PlaylistInfoItem> 
 
         final JsonObject lastFeaturedStory = featuredStories.getObject(featuredStories.size() - 1);
 
-        return new InfoItemsPage<>(c, makeNextPage(lastFeaturedStory));
+        return new InfoItemsPage<>(c, getNextPageFrom(lastFeaturedStory));
     }
 
     /**
-     * The query for more featured stories needs parameters from the last featured
-     * story.
+     * Next Page can be generated from metadata of last featured story
      */
-    private Page makeNextPage(JsonObject lastFeaturedStory) {
+    private Page getNextPageFrom(JsonObject lastFeaturedStory) {
         final long lastStoryDate = lastFeaturedStory.getLong("story_date");
         final long lastStoryId = lastFeaturedStory.getLong("ntid");
         final String lastStoryType = lastFeaturedStory.getString("story_type");
