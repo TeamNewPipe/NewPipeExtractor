@@ -25,6 +25,7 @@ public class BandcampFeaturedExtractor extends KioskExtractor<PlaylistInfoItem> 
 
     public static final String KIOSK_FEATURED = "Featured";
     public static final String FEATURED_API_URL = BASE_API_URL + "/mobile/24/bootstrap_data";
+    public static final String MORE_FEATURED_API_URL = BASE_API_URL + "/mobile/24/feed_older_logged_out";
 
     private JsonObject json;
 
@@ -56,11 +57,17 @@ public class BandcampFeaturedExtractor extends KioskExtractor<PlaylistInfoItem> 
     @Override
     public InfoItemsPage<PlaylistInfoItem> getInitialPage() throws IOException, ExtractionException {
 
-        final PlaylistInfoItemsCollector c = new PlaylistInfoItemsCollector(getServiceId());
 
         final JsonArray featuredStories = json.getObject("feed_content")
                 .getObject("stories")
                 .getArray("featured");
+
+        return extractItems(featuredStories);
+    }
+
+    private InfoItemsPage<PlaylistInfoItem> extractItems(JsonArray featuredStories) {
+
+        final PlaylistInfoItemsCollector c = new PlaylistInfoItemsCollector(getServiceId());
 
         for (int i = 0; i < featuredStories.size(); i++) {
             final JsonObject featuredStory = featuredStories.getObject(i);
@@ -73,12 +80,36 @@ public class BandcampFeaturedExtractor extends KioskExtractor<PlaylistInfoItem> 
             c.commit(new BandcampPlaylistInfoItemFeaturedExtractor(featuredStory));
         }
 
-        return new InfoItemsPage<>(c, null);
+        final JsonObject lastFeaturedStory = featuredStories.getObject(featuredStories.size() - 1);
 
+        return new InfoItemsPage<>(c, getNextPageFrom(lastFeaturedStory));
+    }
+
+    /**
+     * Next Page can be generated from metadata of last featured story
+     */
+    private Page getNextPageFrom(JsonObject lastFeaturedStory) {
+        final long lastStoryDate = lastFeaturedStory.getLong("story_date");
+        final long lastStoryId = lastFeaturedStory.getLong("ntid");
+        final String lastStoryType = lastFeaturedStory.getString("story_type");
+        return new Page(
+                MORE_FEATURED_API_URL + "?story_groups=featured"
+                        + ':' + lastStoryDate + ':' + lastStoryType + ':' + lastStoryId
+        );
     }
 
     @Override
-    public InfoItemsPage<PlaylistInfoItem> getPage(Page page) {
-        return null;
+    public InfoItemsPage<PlaylistInfoItem> getPage(Page page) throws IOException, ExtractionException {
+
+        JsonObject response;
+        try {
+            response = JsonParser.object().from(
+                    getDownloader().get(page.getUrl()).responseBody()
+            );
+        } catch (final JsonParserException e) {
+            throw new ParsingException("Could not parse Bandcamp featured API response", e);
+        }
+
+        return extractItems(response.getObject("stories").getArray("featured"));
     }
 }
