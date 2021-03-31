@@ -192,19 +192,20 @@ public class YoutubeSearchExtractor extends SearchExtractor {
         }
     }
 
-    private void collectStreamsFrom(final InfoItemsSearchCollector collector, final JsonArray videos) throws NothingFoundException, ParsingException {
+    private void collectStreamsFrom(final InfoItemsSearchCollector collector, final JsonArray contents) throws NothingFoundException, ParsingException {
         final TimeAgoParser timeAgoParser = getTimeAgoParser();
 
-        for (Object item : videos) {
-            if (((JsonObject) item).has("backgroundPromoRenderer")) {
-                throw new NothingFoundException(getTextFromObject(((JsonObject) item)
-                        .getObject("backgroundPromoRenderer").getObject("bodyText")));
-            } else if (((JsonObject) item).has("videoRenderer")) {
-                collector.commit(new YoutubeStreamInfoItemExtractor(((JsonObject) item).getObject("videoRenderer"), timeAgoParser));
-            } else if (((JsonObject) item).has("channelRenderer")) {
-                collector.commit(new YoutubeChannelInfoItemExtractor(((JsonObject) item).getObject("channelRenderer")));
-            } else if (((JsonObject) item).has("playlistRenderer")) {
-                collector.commit(new YoutubePlaylistInfoItemExtractor(((JsonObject) item).getObject("playlistRenderer")));
+        for (Object content : contents) {
+            final JsonObject item = (JsonObject) content;
+            if (item.has("backgroundPromoRenderer")) {
+                throw new NothingFoundException(getTextFromObject(
+                        item.getObject("backgroundPromoRenderer").getObject("bodyText")));
+            } else if (item.has("videoRenderer")) {
+                collector.commit(new YoutubeStreamInfoItemExtractor(item.getObject("videoRenderer"), timeAgoParser));
+            } else if (item.has("channelRenderer")) {
+                collector.commit(new YoutubeChannelInfoItemExtractor(item.getObject("channelRenderer")));
+            } else if (item.has("playlistRenderer")) {
+                collector.commit(new YoutubePlaylistInfoItemExtractor(item.getObject("playlistRenderer")));
             }
         }
     }
