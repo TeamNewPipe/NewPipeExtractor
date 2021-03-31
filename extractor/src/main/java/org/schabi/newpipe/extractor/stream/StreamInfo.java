@@ -334,7 +334,7 @@ public class StreamInfo extends Info {
             streamInfo.addError(e);
         }
 
-        streamInfo.setRelatedStreams(ExtractorHelper.getRelatedVideosOrLogError(streamInfo, extractor));
+        streamInfo.setRelatedItems(ExtractorHelper.getRelatedItemsOrLogError(streamInfo, extractor));
 
         return streamInfo;
     }
@@ -370,7 +370,7 @@ public class StreamInfo extends Info {
 
 
     private String hlsUrl = "";
-    private List<InfoItem> relatedStreams = new ArrayList<>();
+    private List<InfoItem> relatedItems = new ArrayList<>();
 
     private long startPosition = 0;
     private List<SubtitlesStream> subtitles = new ArrayList<>();
@@ -602,12 +602,12 @@ public class StreamInfo extends Info {
         this.hlsUrl = hlsUrl;
     }
 
-    public List<InfoItem> getRelatedStreams() {
-        return relatedStreams;
+    public List<InfoItem> getRelatedItems() {
+        return relatedItems;
     }
 
-    public void setRelatedStreams(List<InfoItem> relatedStreams) {
-        this.relatedStreams = relatedStreams;
+    public void setRelatedItems(List<InfoItem> relatedItems) {
+        this.relatedItems = relatedItems;
     }
 
     public long getStartPosition() {

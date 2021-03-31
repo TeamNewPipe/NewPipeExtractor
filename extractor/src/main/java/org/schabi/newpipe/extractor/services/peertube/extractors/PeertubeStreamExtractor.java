@@ -263,7 +263,7 @@ public class PeertubeStreamExtractor extends StreamExtractor {
 
     @Nullable
     @Override
-    public StreamInfoItemsCollector getRelatedStreams() throws IOException, ExtractionException {
+    public StreamInfoItemsCollector getRelatedItems() throws IOException, ExtractionException {
         final List<String> tags = getTags();
         final String apiUrl;
         if (tags.isEmpty()) {
@@ -271,7 +271,7 @@ public class PeertubeStreamExtractor extends StreamExtractor {
                     + "@" + JsonUtils.getString(json, "account.host") +
                     "/videos?start=0&count=8";
         } else {
-            apiUrl = getRelatedStreamsUrl(tags);
+            apiUrl = getRelatedItemsUrl(tags);
         }
 
         if (Utils.isBlank(apiUrl)) {
@@ -311,7 +311,7 @@ public class PeertubeStreamExtractor extends StreamExtractor {
         return Collections.emptyList();
     }
 
-    private String getRelatedStreamsUrl(final List<String> tags) throws UnsupportedEncodingException {
+    private String getRelatedItemsUrl(final List<String> tags) throws UnsupportedEncodingException {
         final String url = baseUrl + PeertubeSearchQueryHandlerFactory.SEARCH_ENDPOINT;
         final StringBuilder params = new StringBuilder();
         params.append("start=0&count=8&sort=-createdAt");

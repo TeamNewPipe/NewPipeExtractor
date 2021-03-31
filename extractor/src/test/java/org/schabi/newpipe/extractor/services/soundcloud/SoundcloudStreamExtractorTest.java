@@ -70,7 +70,7 @@ public class SoundcloudStreamExtractorTest {
         @Override public boolean expectedHasSubtitles() { return false; }
         @Override public boolean expectedHasFrames() { return false; }
         @Override public int expectedStreamSegmentsCount() { return 0; }
-        @Override public boolean expectedHasRelatedStreams() { return false; }
+        @Override public boolean expectedHasRelatedItems() { return false; }
         @Override public String expectedLicence() { return "all-rights-reserved"; }
         @Override public String expectedCategory() { return "Pop"; }
     }
@@ -115,7 +115,7 @@ public class SoundcloudStreamExtractorTest {
         @Override public long expectedDislikeCountAtLeast() { return -1; }
         @Override public boolean expectedHasAudioStreams() { return false; }
         @Override public boolean expectedHasVideoStreams() { return false; }
-        @Override public boolean expectedHasRelatedStreams() { return false; }
+        @Override public boolean expectedHasRelatedItems() { return false; }
         @Override public boolean expectedHasSubtitles() { return false; }
         @Override public boolean expectedHasFrames() { return false; }
         @Override public int expectedStreamSegmentsCount() { return 0; }

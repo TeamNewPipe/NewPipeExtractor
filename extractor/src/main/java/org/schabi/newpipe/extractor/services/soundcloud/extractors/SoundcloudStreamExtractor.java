@@ -353,7 +353,7 @@ public class SoundcloudStreamExtractor extends StreamExtractor {
 
     @Nullable
     @Override
-    public StreamInfoItemsCollector getRelatedStreams() throws IOException, ExtractionException {
+    public StreamInfoItemsCollector getRelatedItems() throws IOException, ExtractionException {
         final StreamInfoItemsCollector collector = new StreamInfoItemsCollector(getServiceId());
 
         final String apiUrl = "https://api-v2.soundcloud.com/tracks/" + urlEncode(getId())

@@ -20,6 +20,9 @@ package org.schabi.newpipe.extractor.stream;
  * along with NewPipe.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+import org.schabi.newpipe.extractor.InfoItem;
+import org.schabi.newpipe.extractor.InfoItemsCollector;
+import org.schabi.newpipe.extractor.InfoItemExtractor;
 import org.schabi.newpipe.extractor.Extractor;
 import org.schabi.newpipe.extractor.MediaFormat;
 import org.schabi.newpipe.extractor.MetaInfo;
@@ -331,7 +334,8 @@ public abstract class StreamExtractor extends Extractor {
      * @throws ExtractionException
      */
     @Nullable
-    public abstract StreamInfoItemsCollector getRelatedStreams() throws IOException, ExtractionException;
+    public abstract InfoItemsCollector<? extends InfoItem, ? extends InfoItemExtractor>
+    getRelatedItems() throws IOException, ExtractionException;
 
     /**
      * Should return a list of Frameset object that contains preview of stream frames

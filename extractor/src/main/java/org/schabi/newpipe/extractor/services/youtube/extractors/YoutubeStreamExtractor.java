@@ -643,7 +643,7 @@ public class YoutubeStreamExtractor extends StreamExtractor {
 
     @Nullable
     @Override
-    public StreamInfoItemsCollector getRelatedStreams() throws ExtractionException {
+    public StreamInfoItemsCollector getRelatedItems() throws ExtractionException {
         assertPageFetched();
 
         if (getAgeLimit() != NO_AGE_LIMIT) {
