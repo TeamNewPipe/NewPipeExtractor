@@ -338,6 +338,22 @@ public abstract class StreamExtractor extends Extractor {
     getRelatedItems() throws IOException, ExtractionException;
 
     /**
+     * @deprecated Use {@link #getRelatedItems()}. May be removed in a future version.
+     * @return The result of {@link #getRelatedItems()} if it is a
+     *         StreamInfoItemsCollector, null otherwise
+     * @throws IOException
+     * @throws ExtractionException
+     */
+    @Deprecated
+    @Nullable
+    public StreamInfoItemsCollector getRelatedStreams() throws IOException, ExtractionException {
+        InfoItemsCollector<?, ?> collector = getRelatedItems();
+        if (collector instanceof StreamInfoItemsCollector) {
+            return (StreamInfoItemsCollector) collector;
+        } else return null;
+    }
+
+    /**
      * Should return a list of Frameset object that contains preview of stream frames
      *
      * @return list of preview frames or empty list if frames preview is not supported or not found for specified stream

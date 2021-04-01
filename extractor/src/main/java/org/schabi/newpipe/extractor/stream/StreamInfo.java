@@ -606,8 +606,24 @@ public class StreamInfo extends Info {
         return relatedItems;
     }
 
+    /**
+     * @deprecated Use {@link #getRelatedItems()}
+     */
+    @Deprecated
+    public List<InfoItem> getRelatedStreams() {
+        return getRelatedItems();
+    }
+
     public void setRelatedItems(List<InfoItem> relatedItems) {
         this.relatedItems = relatedItems;
+    }
+
+    /**
+     * @deprecated Use {@link #setRelatedItems(List)}
+     */
+    @Deprecated
+    public void setRelatedStreams(List<InfoItem> relatedItems) {
+        setRelatedItems(relatedItems);
     }
 
     public long getStartPosition() {
