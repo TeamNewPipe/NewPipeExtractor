@@ -21,15 +21,16 @@ import org.schabi.newpipe.extractor.stream.StreamInfoItemsCollector;
 import org.schabi.newpipe.extractor.utils.JsonUtils;
 import org.schabi.newpipe.extractor.utils.Utils;
 
-import javax.annotation.Nonnull;
 import java.io.IOException;
 
+import javax.annotation.Nonnull;
+
 import static org.schabi.newpipe.extractor.services.youtube.YoutubeParsingHelper.fixThumbnailUrl;
-import static org.schabi.newpipe.extractor.services.youtube.YoutubeParsingHelper.getClientVersion;
 import static org.schabi.newpipe.extractor.services.youtube.YoutubeParsingHelper.getJsonResponse;
-import static org.schabi.newpipe.extractor.services.youtube.YoutubeParsingHelper.getTextFromObject;
 import static org.schabi.newpipe.extractor.services.youtube.YoutubeParsingHelper.getKey;
+import static org.schabi.newpipe.extractor.services.youtube.YoutubeParsingHelper.getTextFromObject;
 import static org.schabi.newpipe.extractor.services.youtube.YoutubeParsingHelper.getValidJsonResponseBody;
+import static org.schabi.newpipe.extractor.services.youtube.YoutubeParsingHelper.prepareJsonBuilder;
 import static org.schabi.newpipe.extractor.utils.Utils.EMPTY_STRING;
 import static org.schabi.newpipe.extractor.utils.Utils.UTF_8;
 import static org.schabi.newpipe.extractor.utils.Utils.isNullOrEmpty;
@@ -264,23 +265,9 @@ public class YoutubeChannelExtractor extends ChannelExtractor {
         // as they don't deliver enough information on their own (the channel name, for example).
         fetchPage();
 
-        // @formatter:off
-        byte[] json = JsonWriter.string()
-                .object()
-                .object("context")
-                .object("client")
-                .value("clientName", "1")
-                .value("clientVersion", getClientVersion())
-                .end()
-                .end()
-                .value("continuation", page.getId())
-                .end()
-                .done()
-                .getBytes(UTF_8);
-        // @formatter:on
-
         StreamInfoItemsCollector collector = new StreamInfoItemsCollector(getServiceId());
-        final Response response = getDownloader().post(page.getUrl(), null, json, getExtractorLocalization());
+        final Response response = getDownloader().post(page.getUrl(), null, page.getBody(),
+                getExtractorLocalization());
 
         final JsonObject ajaxJson = JsonUtils.toJsonObject(getValidJsonResponseBody(response));
 
@@ -300,8 +287,14 @@ public class YoutubeChannelExtractor extends ChannelExtractor {
 
         final JsonObject continuationEndpoint = continuations.getObject("continuationEndpoint");
         final String continuation = continuationEndpoint.getObject("continuationCommand").getString("token");
+
+        final byte[] body = JsonWriter.string(prepareJsonBuilder()
+                .value("continuation", continuation)
+                .done())
+                .getBytes(UTF_8);
+
         return new Page("https://www.youtube.com/youtubei/v1/browse?key=" + getKey(),
-                continuation);
+                body);
     }
 
     /**
