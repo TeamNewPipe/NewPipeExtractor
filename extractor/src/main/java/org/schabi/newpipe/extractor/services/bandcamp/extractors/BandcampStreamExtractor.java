@@ -245,7 +245,7 @@ public class BandcampStreamExtractor extends StreamExtractor {
     }
 
     @Override
-    public StreamInfoItemsCollector getRelatedStreams() {
+    public StreamInfoItemsCollector getRelatedItems() {
         return null;
     }
 

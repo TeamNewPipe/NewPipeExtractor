@@ -1,6 +1,7 @@
 package org.schabi.newpipe.extractor.services;
 
 import org.junit.Test;
+import org.schabi.newpipe.extractor.InfoItemsCollector;
 import org.schabi.newpipe.extractor.MediaFormat;
 import org.schabi.newpipe.extractor.MetaInfo;
 import org.schabi.newpipe.extractor.localization.DateWrapper;
@@ -8,7 +9,6 @@ import org.schabi.newpipe.extractor.stream.AudioStream;
 import org.schabi.newpipe.extractor.stream.Description;
 import org.schabi.newpipe.extractor.stream.Frameset;
 import org.schabi.newpipe.extractor.stream.StreamExtractor;
-import org.schabi.newpipe.extractor.stream.StreamInfoItemsCollector;
 import org.schabi.newpipe.extractor.stream.StreamType;
 import org.schabi.newpipe.extractor.stream.SubtitlesStream;
 import org.schabi.newpipe.extractor.stream.VideoStream;
@@ -57,7 +57,7 @@ public abstract class DefaultStreamExtractorTest extends DefaultExtractorTest<St
     @Nullable public abstract String expectedTextualUploadDate();
     public abstract long expectedLikeCountAtLeast(); // return -1 if ratings are disabled
     public abstract long expectedDislikeCountAtLeast(); // return -1 if ratings are disabled
-    public boolean expectedHasRelatedStreams() { return true; } // default: there are related videos
+    public boolean expectedHasRelatedItems() { return true; } // default: there are related videos
     public int expectedAgeLimit() { return StreamExtractor.NO_AGE_LIMIT; } // default: no limit
     @Nullable public String expectedErrorMessage() { return null; } // default: no error message
     public boolean expectedHasVideoStreams() { return true; } // default: there are video streams
@@ -223,10 +223,10 @@ public abstract class DefaultStreamExtractorTest extends DefaultExtractorTest<St
 
     @Test
     @Override
-    public void testRelatedStreams() throws Exception {
-        final StreamInfoItemsCollector relatedStreams = extractor().getRelatedStreams();
+    public void testRelatedItems() throws Exception {
+        final InfoItemsCollector<?, ?> relatedStreams = extractor().getRelatedItems();
 
-        if (expectedHasRelatedStreams()) {
+        if (expectedHasRelatedItems()) {
             assertNotNull(relatedStreams);
             defaultTestListOfItems(extractor().getService(), relatedStreams.getItems(),
                     relatedStreams.getErrors());

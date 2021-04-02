@@ -50,7 +50,7 @@ public class BandcampRadioStreamExtractorTest extends DefaultStreamExtractorTest
     @Override public boolean expectedHasVideoStreams() { return false; }
     @Override public boolean expectedHasSubtitles() { return false; }
     @Override public boolean expectedHasFrames() { return false; }
-    @Override public boolean expectedHasRelatedStreams() { return false; }
+    @Override public boolean expectedHasRelatedItems() { return false; }
     @Override public StreamType expectedStreamType() { return StreamType.AUDIO_STREAM; }
     @Override public StreamingService expectedService() { return Bandcamp; }
     @Override public String expectedUploaderName() { return "Andrew Jervis"; }

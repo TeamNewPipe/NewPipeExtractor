@@ -27,9 +27,9 @@ public class ExtractorHelper {
     }
 
 
-    public static List<InfoItem> getRelatedVideosOrLogError(StreamInfo info, StreamExtractor extractor) {
+    public static List<InfoItem> getRelatedItemsOrLogError(StreamInfo info, StreamExtractor extractor) {
         try {
-            InfoItemsCollector<? extends InfoItem, ?> collector = extractor.getRelatedStreams();
+            InfoItemsCollector<? extends InfoItem, ?> collector = extractor.getRelatedItems();
             if (collector == null) return Collections.emptyList();
             info.addAllErrors(collector.getErrors());
 
@@ -39,6 +39,14 @@ public class ExtractorHelper {
             info.addError(e);
             return Collections.emptyList();
         }
+    }
+
+    /**
+     * @deprecated Use {@link #getRelatedItemsOrLogError(StreamInfo, StreamExtractor)}
+     */
+    @Deprecated
+    public static List<InfoItem> getRelatedVideosOrLogError(StreamInfo info, StreamExtractor extractor) {
+        return getRelatedItemsOrLogError(info, extractor);
     }
 
 }

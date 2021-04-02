@@ -240,7 +240,7 @@ public class MediaCCCLiveStreamExtractor extends StreamExtractor {
 
     @Nullable
     @Override
-    public StreamInfoItemsCollector getRelatedStreams() {
+    public StreamInfoItemsCollector getRelatedItems() {
         return null;
     }
 
