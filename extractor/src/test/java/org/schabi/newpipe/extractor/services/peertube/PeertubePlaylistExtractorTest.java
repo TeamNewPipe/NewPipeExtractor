@@ -1,6 +1,7 @@
 package org.schabi.newpipe.extractor.services.peertube;
 
 import org.junit.BeforeClass;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.schabi.newpipe.downloader.DownloaderTestImpl;
 import org.schabi.newpipe.extractor.ExtractorAsserts;
@@ -30,6 +31,7 @@ public class PeertubePlaylistExtractorTest {
         }
 
         @Test
+        @Ignore("URL changes with every request")
         public void testGetThumbnailUrl() throws ParsingException {
             assertEquals("https://framatube.org/static/thumbnails/playlist-96b0ee2b-a5a7-4794-8769-58d8ccb79ab7.jpg", extractor.getThumbnailUrl());
         }
