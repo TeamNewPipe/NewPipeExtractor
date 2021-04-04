@@ -42,8 +42,8 @@ public class YoutubeStreamExtractorLivestreamTest extends DefaultStreamExtractor
     @Override public String expectedUploaderName() { return "ChilledCow"; }
     @Override public String expectedUploaderUrl() { return "https://www.youtube.com/channel/UCSJ4gkVC6NrvII8umztf0Ow"; }
     @Override public List<String> expectedDescriptionContains() {
-        return Arrays.asList("https://bit.ly/chilledcow-playlists",
-                "https://bit.ly/chilledcow-submissions");
+        return Arrays.asList("https://bit.ly/lofigirl-merch",
+                "Thank you for listening, I hope you will have a good time here");
     }
     @Override public boolean expectedUploaderVerified() { return true; }
     @Override public long expectedLength() { return 0; }
