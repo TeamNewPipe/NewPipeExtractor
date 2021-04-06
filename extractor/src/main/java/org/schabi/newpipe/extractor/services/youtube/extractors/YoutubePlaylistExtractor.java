@@ -20,6 +20,7 @@ import org.schabi.newpipe.extractor.stream.StreamInfoItem;
 import org.schabi.newpipe.extractor.stream.StreamInfoItemExtractor;
 import org.schabi.newpipe.extractor.stream.StreamInfoItemsCollector;
 import org.schabi.newpipe.extractor.stream.StreamType;
+import org.schabi.newpipe.extractor.utils.JsonUtils;
 import org.schabi.newpipe.extractor.utils.Utils;
 
 import java.io.IOException;
@@ -28,13 +29,12 @@ import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
 import static org.schabi.newpipe.extractor.services.youtube.YoutubeParsingHelper.fixThumbnailUrl;
-import static org.schabi.newpipe.extractor.services.youtube.YoutubeParsingHelper.getClientVersion;
 import static org.schabi.newpipe.extractor.services.youtube.YoutubeParsingHelper.getJsonResponse;
 import static org.schabi.newpipe.extractor.services.youtube.YoutubeParsingHelper.getKey;
 import static org.schabi.newpipe.extractor.services.youtube.YoutubeParsingHelper.getTextFromObject;
 import static org.schabi.newpipe.extractor.services.youtube.YoutubeParsingHelper.getUrlFromNavigationEndpoint;
 import static org.schabi.newpipe.extractor.services.youtube.YoutubeParsingHelper.getValidJsonResponseBody;
-import static org.schabi.newpipe.extractor.utils.JsonUtils.toJsonObject;
+import static org.schabi.newpipe.extractor.services.youtube.YoutubeParsingHelper.prepareJsonBuilder;
 import static org.schabi.newpipe.extractor.utils.Utils.UTF_8;
 import static org.schabi.newpipe.extractor.utils.Utils.isNullOrEmpty;
 
@@ -217,25 +217,11 @@ public class YoutubePlaylistExtractor extends PlaylistExtractor {
             throw new IllegalArgumentException("Page doesn't contain an URL");
         }
 
-        // @formatter:off
-        byte[] json = JsonWriter.string()
-                .object()
-                    .object("context")
-                        .object("client")
-                            .value("clientName", "1")
-                            .value("clientVersion", getClientVersion())
-                        .end()
-                    .end()
-                    .value("continuation", page.getId())
-                .end()
-                .done()
-                .getBytes(UTF_8);
-        // @formatter:on
-
         final StreamInfoItemsCollector collector = new StreamInfoItemsCollector(getServiceId());
-        final Response response = getDownloader().post(page.getUrl(), null, json, getExtractorLocalization());
 
-        final JsonObject ajaxJson = toJsonObject(getValidJsonResponseBody(response));
+        final Response response = getDownloader().post(page.getUrl(), null, page.getBody(),
+                getExtractorLocalization());
+        final JsonObject ajaxJson = JsonUtils.toJsonObject(getValidJsonResponseBody(response));
 
         final JsonArray continuation = ajaxJson.getArray("onResponseReceivedActions")
                 .getObject(0)
@@ -259,9 +245,15 @@ public class YoutubePlaylistExtractor extends PlaylistExtractor {
                     .getObject("continuationEndpoint")
                     .getObject("continuationCommand")
                     .getString("token");
+
+            final byte[] body = JsonWriter.string(prepareJsonBuilder()
+                    .value("continuation", continuation)
+                    .done())
+                    .getBytes(UTF_8);
+
             return new Page(
                     "https://www.youtube.com/youtubei/v1/browse?key=" + getKey(),
-                    continuation);
+                    body);
         } else {
             return null;
         }

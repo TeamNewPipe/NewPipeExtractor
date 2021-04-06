@@ -1,6 +1,7 @@
 package org.schabi.newpipe.extractor.services.youtube;
 
 import com.grack.nanojson.JsonArray;
+import com.grack.nanojson.JsonBuilder;
 import com.grack.nanojson.JsonObject;
 import com.grack.nanojson.JsonParser;
 import com.grack.nanojson.JsonParserException;
@@ -674,6 +675,19 @@ public class YoutubeParsingHelper {
         final Response response = getDownloader().get(page.getUrl(), headers, localization);
 
         return JsonUtils.toJsonArray(getValidJsonResponseBody(response));
+    }
+
+    public static JsonBuilder<JsonObject> prepareJsonBuilder()
+            throws IOException, ExtractionException {
+        // @formatter:off
+        return JsonObject.builder()
+                .object("context")
+                    .object("client")
+                        .value("clientName", "1")
+                        .value("clientVersion", getClientVersion())
+                    .end()
+                .end();
+        // @formatter:on
     }
 
     /**
