@@ -20,7 +20,9 @@ import org.schabi.newpipe.extractor.utils.JsonUtils;
 
 import java.io.IOException;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -130,8 +132,11 @@ public class YoutubeMixPlaylistExtractor extends PlaylistExtractor {
     public InfoItemsPage<StreamInfoItem> getInitialPage() throws ExtractionException {
         final StreamInfoItemsCollector collector = new StreamInfoItemsCollector(getServiceId());
         collectStreamsFrom(collector, playlistData.getArray("contents"));
-        return new InfoItemsPage<>(collector,
-                new Page(getNextPageUrlFrom(playlistData), Collections.singletonMap(COOKIE_NAME, cookieValue)));
+
+        final Map<String, String> cookies = new HashMap<>();
+        cookies.put(COOKIE_NAME, cookieValue);
+
+        return new InfoItemsPage<>(collector, new Page(getNextPageUrlFrom(playlistData), cookies));
     }
 
     private String getNextPageUrlFrom(final JsonObject playlistJson) throws ExtractionException {

@@ -28,12 +28,7 @@ import java.time.LocalDate;
 import java.time.OffsetDateTime;
 import java.time.ZoneOffset;
 import java.time.format.DateTimeParseException;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Objects;
+import java.util.*;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -78,6 +73,17 @@ public class YoutubeParsingHelper {
 
     private static final String[] HARDCODED_YOUTUBE_MUSIC_KEYS = {"AIzaSyC9XL3ZjWddXya6X74dJoCTL-WEYFDNX30", "67", "0.1"};
     private static String[] youtubeMusicKeys;
+
+    /**
+     * <code>PENDING+</code> means that the user did not yet submit their choices.
+     * Therefore, YouTube & Google should not track the user, because they did not give consent.
+     * The three digits at the end can be random, but are required.
+     */
+    public static final String CONSENT_COOKIE_VALUE = "PENDING+" + (100 + new Random().nextInt(900));
+    /**
+     * Youtube <code>CONSENT</code> cookie. Should prevent redirect to consent.youtube.com
+     */
+    public static final String CONSENT_COOKIE = "CONSENT=" + CONSENT_COOKIE_VALUE;
 
     private static final String FEED_BASE_CHANNEL_ID = "https://www.youtube.com/feeds/videos.xml?channel_id=";
     private static final String FEED_BASE_USER = "https://www.youtube.com/feeds/videos.xml?user=";
@@ -427,6 +433,7 @@ public class YoutubeParsingHelper {
         headers.put("Origin", Collections.singletonList("https://music.youtube.com"));
         headers.put("Referer", Collections.singletonList("music.youtube.com"));
         headers.put("Content-Type", Collections.singletonList("application/json"));
+        addCookieHeader(headers);
 
         final String response = getDownloader().post(url, headers, json).responseBody();
 
@@ -629,13 +636,70 @@ public class YoutubeParsingHelper {
     public static Response getResponse(final String url, final Localization localization)
             throws IOException, ExtractionException {
         final Map<String, List<String>> headers = new HashMap<>();
-        headers.put("X-YouTube-Client-Name", Collections.singletonList("1"));
-        headers.put("X-YouTube-Client-Version", Collections.singletonList(getClientVersion()));
+        addYouTubeHeaders(headers);
 
         final Response response = getDownloader().get(url, headers, localization);
         getValidJsonResponseBody(response);
 
         return response;
+    }
+
+    public static JsonArray getJsonResponse(final String url, final Localization localization)
+            throws IOException, ExtractionException {
+        Map<String, List<String>> headers = new HashMap<>();
+        addYouTubeHeaders(headers);
+
+        final Response response = getDownloader().get(url, headers, localization);
+
+        return JsonUtils.toJsonArray(getValidJsonResponseBody(response));
+    }
+
+    public static JsonArray getJsonResponse(final Page page, final Localization localization)
+            throws IOException, ExtractionException {
+        final Map<String, List<String>> headers = new HashMap<>();
+        addYouTubeHeaders(headers);
+
+        final Response response = getDownloader().get(page.getUrl(), headers, localization);
+
+        return JsonUtils.toJsonArray(getValidJsonResponseBody(response));
+    }
+
+    /**
+     * Add required headers and cookies to an existing headers Map.
+     * @see #addClientInfoHeaders(Map)
+     * @see #addCookieHeader(Map)
+     */
+    public static void addYouTubeHeaders(final Map<String, List<String>> headers)
+            throws IOException, ExtractionException {
+        addClientInfoHeaders(headers);
+        addCookieHeader(headers);
+    }
+
+    /**
+     * Add the <code>X-YouTube-Client-Name</code> and <code>X-YouTube-Client-Version</code> headers.
+     * @param headers The headers which should be completed
+     */
+    public static void addClientInfoHeaders(final Map<String, List<String>> headers)
+            throws IOException, ExtractionException {
+        if (headers.get("X-YouTube-Client-Name") == null) {
+            headers.put("X-YouTube-Client-Name", Collections.singletonList("1"));
+        }
+        if (headers.get("X-YouTube-Client-Version") == null) {
+            headers.put("X-YouTube-Client-Version", Collections.singletonList(getClientVersion()));
+        }
+    }
+
+    /**
+     * Add the <code>CONSENT</code> cookie to prevent redirect to <code>consent.youtube.com</code>
+     * @see #CONSENT_COOKIE
+     * @param headers the headers which should be completed
+     */
+    public static void addCookieHeader(final Map<String, List<String>> headers) {
+        if (headers.get("Cookie") == null) {
+            headers.put("Cookie", Arrays.asList(CONSENT_COOKIE));
+        } else {
+            headers.get("Cookie").add(CONSENT_COOKIE);
+        }
     }
 
     public static String extractCookieValue(final String cookieName, final Response response) {
@@ -650,30 +714,6 @@ public class YoutubeParsingHelper {
             }
         }
         return result;
-    }
-
-    public static JsonArray getJsonResponse(final String url, final Localization localization)
-            throws IOException, ExtractionException {
-        Map<String, List<String>> headers = new HashMap<>();
-        headers.put("X-YouTube-Client-Name", Collections.singletonList("1"));
-        headers.put("X-YouTube-Client-Version", Collections.singletonList(getClientVersion()));
-        final Response response = getDownloader().get(url, headers, localization);
-
-        return JsonUtils.toJsonArray(getValidJsonResponseBody(response));
-    }
-
-    public static JsonArray getJsonResponse(final Page page, final Localization localization)
-            throws IOException, ExtractionException {
-        final Map<String, List<String>> headers = new HashMap<>();
-        if (!isNullOrEmpty(page.getCookies())) {
-            headers.put("Cookie", Collections.singletonList(join(";", "=", page.getCookies())));
-        }
-        headers.put("X-YouTube-Client-Name", Collections.singletonList("1"));
-        headers.put("X-YouTube-Client-Version", Collections.singletonList(getClientVersion()));
-
-        final Response response = getDownloader().get(page.getUrl(), headers, localization);
-
-        return JsonUtils.toJsonArray(getValidJsonResponseBody(response));
     }
 
     /**
