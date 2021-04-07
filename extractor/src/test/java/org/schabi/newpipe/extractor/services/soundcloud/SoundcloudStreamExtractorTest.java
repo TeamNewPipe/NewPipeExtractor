@@ -1,6 +1,7 @@
 package org.schabi.newpipe.extractor.services.soundcloud;
 
 import org.junit.BeforeClass;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.schabi.newpipe.downloader.DownloaderTestImpl;
 import org.schabi.newpipe.extractor.MediaFormat;
@@ -91,6 +92,15 @@ public class SoundcloudStreamExtractorTest {
             } catch (final SoundCloudGoPlusContentException e) {
                 // expected
             }
+        }
+
+        @Override
+        @Test
+        @Ignore("Unreliable, sometimes it has related items, sometimes it does not. See " +
+                "https://github.com/TeamNewPipe/NewPipeExtractor/runs/2280013723#step:5:263 " +
+                "https://github.com/TeamNewPipe/NewPipeExtractor/pull/601")
+        public void testRelatedItems() throws Exception {
+            super.testRelatedItems();
         }
 
         @Override public StreamExtractor extractor() { return extractor; }
