@@ -95,7 +95,7 @@ public class YoutubeParsingHelper {
             final String host = u.getHost();
             return host.startsWith("google.") || host.startsWith("m.google.")
                     || host.startsWith("www.google.");
-        } catch (MalformedURLException e) {
+        } catch (final MalformedURLException e) {
             return false;
         }
     }
@@ -207,10 +207,10 @@ public class YoutubeParsingHelper {
     public static OffsetDateTime parseDateFrom(final String textualUploadDate) throws ParsingException {
         try {
             return OffsetDateTime.parse(textualUploadDate);
-        } catch (DateTimeParseException e) {
+        } catch (final DateTimeParseException e) {
             try {
                 return LocalDate.parse(textualUploadDate).atStartOfDay().atOffset(ZoneOffset.UTC);
-            } catch (DateTimeParseException e1) {
+            } catch (final DateTimeParseException e1) {
                 throw new ParsingException("Could not parse date: \"" + textualUploadDate + "\"", e1);
             }
         }
@@ -277,11 +277,11 @@ public class YoutubeParsingHelper {
             try {
                 final String initialData = Parser.matchGroup1("window\\[\"ytInitialData\"\\]\\s*=\\s*(\\{.*?\\});", html);
                 return JsonParser.object().from(initialData);
-            } catch (Parser.RegexException e) {
+            } catch (final Parser.RegexException e) {
                 final String initialData = Parser.matchGroup1("var\\s*ytInitialData\\s*=\\s*(\\{.*?\\});", html);
                 return JsonParser.object().from(initialData);
             }
-        } catch (JsonParserException | Parser.RegexException e) {
+        } catch (final JsonParserException | Parser.RegexException e) {
             throw new ParsingException("Could not get ytInitialData", e);
         }
     }
@@ -342,7 +342,7 @@ public class YoutubeParsingHelper {
                     clientVersion = contextClientVersion;
                     break;
                 }
-            } catch (Parser.RegexException ignored) {
+            } catch (final Parser.RegexException ignored) {
             }
         }
 
@@ -352,10 +352,10 @@ public class YoutubeParsingHelper {
 
         try {
             key = Parser.matchGroup1("INNERTUBE_API_KEY\":\"([0-9a-zA-Z_-]+?)\"", html);
-        } catch (Parser.RegexException e) {
+        } catch (final Parser.RegexException e) {
             try {
                 key = Parser.matchGroup1("innertubeApiKey\":\"([0-9a-zA-Z_-]+?)\"", html);
-            } catch (Parser.RegexException ignored) {
+            } catch (final Parser.RegexException ignored) {
             }
         }
     }
@@ -468,7 +468,7 @@ public class YoutubeParsingHelper {
         String key;
         try {
             key = Parser.matchGroup1("INNERTUBE_API_KEY\":\"([0-9a-zA-Z_-]+?)\"", html);
-        } catch (Parser.RegexException e) {
+        } catch (final Parser.RegexException e) {
             key = Parser.matchGroup1("innertube_api_key\":\"([0-9a-zA-Z_-]+?)\"", html);
         }
 
@@ -477,10 +477,10 @@ public class YoutubeParsingHelper {
         String clientVersion;
         try {
             clientVersion = Parser.matchGroup1("INNERTUBE_CONTEXT_CLIENT_VERSION\":\"([0-9\\.]+?)\"", html);
-        } catch (Parser.RegexException e) {
+        } catch (final Parser.RegexException e) {
             try {
                 clientVersion = Parser.matchGroup1("INNERTUBE_CLIENT_VERSION\":\"([0-9\\.]+?)\"", html);
-            } catch (Parser.RegexException ee) {
+            } catch (final Parser.RegexException ee) {
                 clientVersion = Parser.matchGroup1("innertube_context_client_version\":\"([0-9\\.]+?)\"", html);
             }
         }
@@ -491,7 +491,7 @@ public class YoutubeParsingHelper {
 
 
     @Nullable
-    public static String getUrlFromNavigationEndpoint(JsonObject navigationEndpoint) throws ParsingException {
+    public static String getUrlFromNavigationEndpoint(final JsonObject navigationEndpoint) throws ParsingException {
         if (navigationEndpoint.has("urlEndpoint")) {
             String internUrl = navigationEndpoint.getObject("urlEndpoint").getString("url");
             if (internUrl.startsWith("https://www.youtube.com/redirect?")) {
@@ -508,7 +508,7 @@ public class YoutubeParsingHelper {
                         String url;
                         try {
                             url = URLDecoder.decode(param.split("=")[1], UTF_8);
-                        } catch (UnsupportedEncodingException e) {
+                        } catch (final UnsupportedEncodingException e) {
                             return null;
                         }
                         return url;
@@ -660,6 +660,31 @@ public class YoutubeParsingHelper {
         getValidJsonResponseBody(response);
 
         return response;
+    }
+
+    public static String extractCookieValue(final String cookieName, final Response response) {
+        final List<String> cookies = response.responseHeaders().get("set-cookie");
+        int startIndex;
+        String result = "";
+        for (final String cookie : cookies) {
+            startIndex = cookie.indexOf(cookieName);
+            if (startIndex != -1) {
+                result = cookie.substring(startIndex + cookieName.length() + "=".length(),
+                        cookie.indexOf(";", startIndex));
+            }
+        }
+        return result;
+    }
+
+    public static JsonObject getJsonPostResponse(final String endpoint,
+                                                final byte[] body,
+                                                final Localization localization)
+            throws IOException, ExtractionException {
+
+        final Response response = getDownloader().post("https://youtubei.googleapis.com/youtubei/v1/"
+                + endpoint + "?key=" + getKey(), new HashMap<>(), body, localization);
+
+        return JsonUtils.toJsonObject(getValidJsonResponseBody(response));
     }
 
     public static JsonArray getJsonResponse(final String url, final Localization localization)
@@ -885,7 +910,7 @@ public class YoutubeParsingHelper {
                     metaInfo.addUrl(new URL(url));
                     final String description = getTextFromObject(clarificationRenderer.getObject("secondarySource"));
                     metaInfo.addUrlText(description == null ? url : description);
-                } catch (MalformedURLException e) {
+                } catch (final MalformedURLException e) {
                     throw new ParsingException("Could not get metadata info secondary URL", e);
                 }
             }

@@ -29,7 +29,7 @@ import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
 import static org.schabi.newpipe.extractor.services.youtube.YoutubeParsingHelper.fixThumbnailUrl;
-import static org.schabi.newpipe.extractor.services.youtube.YoutubeParsingHelper.getJsonResponse;
+import static org.schabi.newpipe.extractor.services.youtube.YoutubeParsingHelper.getJsonPostResponse;
 import static org.schabi.newpipe.extractor.services.youtube.YoutubeParsingHelper.getKey;
 import static org.schabi.newpipe.extractor.services.youtube.YoutubeParsingHelper.getTextFromObject;
 import static org.schabi.newpipe.extractor.services.youtube.YoutubeParsingHelper.getUrlFromNavigationEndpoint;
@@ -50,11 +50,13 @@ public class YoutubePlaylistExtractor extends PlaylistExtractor {
 
     @Override
     public void onFetchPage(@Nonnull Downloader downloader) throws IOException, ExtractionException {
-        final String url = getUrl() + "&pbj=1";
+        final byte[] body = JsonWriter.string(prepareJsonBuilder()
+                .value("browseId", "VL" + getId())
+                .value("params", "wgYCCAA%3D") // show unavailable videos
+                .done())
+                .getBytes(UTF_8);
 
-        initialAjaxJson = getJsonResponse(url, getExtractorLocalization());
-
-        initialData = initialAjaxJson.getObject(1).getObject("response");
+        initialData = getJsonPostResponse("browse", body, getExtractorLocalization());
         YoutubeParsingHelper.defaultAlertsCheck(initialData);
 
         playlistInfo = getPlaylistInfo();
@@ -251,9 +253,8 @@ public class YoutubePlaylistExtractor extends PlaylistExtractor {
                     .done())
                     .getBytes(UTF_8);
 
-            return new Page(
-                    "https://www.youtube.com/youtubei/v1/browse?key=" + getKey(),
-                    body);
+            return new Page("https://youtubei.googleapis.com/youtubei/v1/browse?key="
+                    + getKey(), body);
         } else {
             return null;
         }

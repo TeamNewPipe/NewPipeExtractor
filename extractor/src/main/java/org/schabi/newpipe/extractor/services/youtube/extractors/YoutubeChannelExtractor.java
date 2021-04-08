@@ -147,7 +147,7 @@ public class YoutubeChannelExtractor extends ChannelExtractor {
     public String getName() throws ParsingException {
         try {
             return initialData.getObject("header").getObject("c4TabbedHeaderRenderer").getString("title");
-        } catch (Exception e) {
+        } catch (final Exception e) {
             throw new ParsingException("Could not get channel name", e);
         }
     }
@@ -159,7 +159,7 @@ public class YoutubeChannelExtractor extends ChannelExtractor {
                     .getArray("thumbnails").getObject(0).getString("url");
 
             return fixThumbnailUrl(url);
-        } catch (Exception e) {
+        } catch (final Exception e) {
             throw new ParsingException("Could not get avatar", e);
         }
     }
@@ -175,7 +175,7 @@ public class YoutubeChannelExtractor extends ChannelExtractor {
             }
 
             return fixThumbnailUrl(url);
-        } catch (Exception e) {
+        } catch (final Exception e) {
             throw new ParsingException("Could not get banner", e);
         }
     }
@@ -184,7 +184,7 @@ public class YoutubeChannelExtractor extends ChannelExtractor {
     public String getFeedUrl() throws ParsingException {
         try {
             return YoutubeParsingHelper.getFeedUrlFrom(getId());
-        } catch (Exception e) {
+        } catch (final Exception e) {
             throw new ParsingException("Could not get feed url", e);
         }
     }
@@ -207,7 +207,7 @@ public class YoutubeChannelExtractor extends ChannelExtractor {
     public String getDescription() throws ParsingException {
         try {
             return initialData.getObject("metadata").getObject("channelMetadataRenderer").getString("description");
-        } catch (Exception e) {
+        } catch (final Exception e) {
             throw new ParsingException("Could not get channel description", e);
         }
     }
@@ -293,7 +293,7 @@ public class YoutubeChannelExtractor extends ChannelExtractor {
                 .done())
                 .getBytes(UTF_8);
 
-        return new Page("https://www.youtube.com/youtubei/v1/browse?key=" + getKey(),
+        return new Page("https://youtubei.googleapis.com/youtubei/v1/browse?key=" + getKey(),
                 body);
     }
 
@@ -314,7 +314,7 @@ public class YoutubeChannelExtractor extends ChannelExtractor {
 
         JsonObject continuation = null;
 
-        for (Object object : videos) {
+        for (final Object object : videos) {
             final JsonObject video = (JsonObject) object;
             if (video.has("gridVideoRenderer")) {
                 collector.commit(new YoutubeStreamInfoItemExtractor(
@@ -344,7 +344,7 @@ public class YoutubeChannelExtractor extends ChannelExtractor {
                 .getArray("tabs");
         JsonObject videoTab = null;
 
-        for (Object tab : tabs) {
+        for (final Object tab : tabs) {
             if (((JsonObject) tab).has("tabRenderer")) {
                 if (((JsonObject) tab).getObject("tabRenderer").getString("title", EMPTY_STRING).equals("Videos")) {
                     videoTab = ((JsonObject) tab).getObject("tabRenderer");
