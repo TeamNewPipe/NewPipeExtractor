@@ -9,6 +9,7 @@ import org.schabi.newpipe.extractor.StreamingService;
 import org.schabi.newpipe.extractor.channel.ChannelExtractor;
 import org.schabi.newpipe.extractor.downloader.Downloader;
 import org.schabi.newpipe.extractor.downloader.Response;
+import org.schabi.newpipe.extractor.exceptions.ContentNotAvailableException;
 import org.schabi.newpipe.extractor.exceptions.ContentNotSupportedException;
 import org.schabi.newpipe.extractor.exceptions.ExtractionException;
 import org.schabi.newpipe.extractor.exceptions.ParsingException;
@@ -26,7 +27,7 @@ import java.io.IOException;
 import javax.annotation.Nonnull;
 
 import static org.schabi.newpipe.extractor.services.youtube.YoutubeParsingHelper.fixThumbnailUrl;
-import static org.schabi.newpipe.extractor.services.youtube.YoutubeParsingHelper.getJsonResponse;
+import static org.schabi.newpipe.extractor.services.youtube.YoutubeParsingHelper.getJsonPostResponse;
 import static org.schabi.newpipe.extractor.services.youtube.YoutubeParsingHelper.getKey;
 import static org.schabi.newpipe.extractor.services.youtube.YoutubeParsingHelper.getTextFromObject;
 import static org.schabi.newpipe.extractor.services.youtube.YoutubeParsingHelper.getValidJsonResponseBody;
@@ -72,35 +73,106 @@ public class YoutubeChannelExtractor extends ChannelExtractor {
      */
     private String redirectedChannelId;
 
-    public YoutubeChannelExtractor(StreamingService service, ListLinkHandler linkHandler) {
+    public YoutubeChannelExtractor(final StreamingService service, final ListLinkHandler linkHandler) {
         super(service, linkHandler);
     }
 
     @Override
-    public void onFetchPage(@Nonnull Downloader downloader) throws IOException, ExtractionException {
-        String url = super.getUrl() + "/videos?pbj=1&view=0&flow=grid";
-        JsonArray ajaxJson = null;
+    public void onFetchPage(@Nonnull final Downloader downloader) throws IOException, ExtractionException {
+        final String channel_path = super.getId();
+        final String[] channelInfo = channel_path.split("/");
+        String id = "";
+        // If the url is an URL with /user, we need to use navigation/resolve_url endpoint of the
+        // youtubei API to get the channel id. Otherwise, we couldn't get information about the
+        // channel associated with this username, if there is one.
+        if (channelInfo[0].equals("user")) {
+            final byte[] body = JsonWriter.string(prepareJsonBuilder()
+                    .value("url", "https://www.youtube.com/" + channel_path)
+                    .done())
+                    .getBytes(UTF_8);
 
-        int level = 0;
-        while (level < 3) {
-            final JsonArray jsonResponse = getJsonResponse(url, getExtractorLocalization());
+            final JsonObject jsonResponse = getJsonPostResponse("navigation/resolve_url",
+                    body, getExtractorLocalization());
 
-            final JsonObject endpoint = jsonResponse.getObject(1).getObject("response")
-                    .getArray("onResponseReceivedActions").getObject(0).getObject("navigateAction")
-                    .getObject("endpoint");
+            System.out.println(jsonResponse.toString());
 
-            final String webPageType = endpoint.getObject("commandMetadata").getObject("webCommandMetadata")
+            if (jsonResponse.has("error")) {
+                if (jsonResponse.getInt("code") == 404) {
+                    throw new ContentNotAvailableException("No channel associated with this user"
+                            + "exists");
+                } else {
+                    throw new ContentNotAvailableException("Got error:\""
+                            + jsonResponse.getString("status") + "\""
+                            + jsonResponse.getString("message"));
+                }
+            }
+
+            final JsonObject endpoint = jsonResponse.getObject("endpoint");
+
+            final String webPageType = endpoint.getObject("commandMetadata")
+                    .getObject("webCommandMetadata")
                     .getString("webPageType", EMPTY_STRING);
 
-            final String browseId = endpoint.getObject("browseEndpoint").getString("browseId", EMPTY_STRING);
+            final JsonObject browseEndpoint = endpoint.getObject("browseEndpoint");
+            final String browseId = browseEndpoint.getString("browseId", EMPTY_STRING);
 
             if (webPageType.equalsIgnoreCase("WEB_PAGE_TYPE_BROWSE")
-                    || webPageType.equalsIgnoreCase("WEB_PAGE_TYPE_CHANNEL") && !browseId.isEmpty()) {
+                    || webPageType.equalsIgnoreCase("WEB_PAGE_TYPE_CHANNEL")
+                    && !browseId.isEmpty()) {
                 if (!browseId.startsWith("UC")) {
                     throw new ExtractionException("Redirected id is not pointing to a channel");
                 }
 
-                url = "https://www.youtube.com/channel/" + browseId + "/videos?pbj=1&view=0&flow=grid";
+                id = browseId;
+                redirectedChannelId = browseId;
+            }
+        } else {
+            id = channelInfo[1];
+        }
+        JsonObject ajaxJson = null;
+
+        int level = 0;
+        while (level < 3) {
+            final byte[] body = JsonWriter.string(prepareJsonBuilder()
+                    .value("browseId", id)
+                    .value("params", "EgZ2aWRlb3M%3D") // equals to videos
+                    .done())
+                    .getBytes(UTF_8);
+
+            final JsonObject jsonResponse = getJsonPostResponse("browse", body,
+                    getExtractorLocalization());
+
+            if (!isNullOrEmpty(jsonResponse.getObject("error"))) {
+                final int errorCode = jsonResponse.getObject("error").getInt("code");
+                if (errorCode == 400) {
+                    throw new ContentNotAvailableException("This channel doesn't exists");
+                } else {
+                    throw new ContentNotAvailableException("Got error:\""
+                            + jsonResponse.getString("status") + "\""
+                            + jsonResponse.getString("message"));
+                }
+            }
+
+            final JsonObject endpoint = jsonResponse.getArray("onResponseReceivedActions")
+                    .getObject(0)
+                    .getObject("navigateAction")
+                    .getObject("endpoint");
+
+            final String webPageType = endpoint.getObject("commandMetadata")
+                    .getObject("webCommandMetadata")
+                    .getString("webPageType", EMPTY_STRING);
+
+            final String browseId = endpoint.getObject("browseEndpoint").getString("browseId",
+                    EMPTY_STRING);
+
+            if (webPageType.equalsIgnoreCase("WEB_PAGE_TYPE_BROWSE")
+                    || webPageType.equalsIgnoreCase("WEB_PAGE_TYPE_CHANNEL")
+                    && !browseId.isEmpty()) {
+                if (!browseId.startsWith("UC")) {
+                    throw new ExtractionException("Redirected id is not pointing to a channel");
+                }
+
+                id = browseId;
                 redirectedChannelId = browseId;
                 level++;
             } else {
@@ -113,7 +185,7 @@ public class YoutubeChannelExtractor extends ChannelExtractor {
             throw new ExtractionException("Could not fetch initial JSON data");
         }
 
-        initialData = ajaxJson.getObject(1).getObject("response");
+        initialData = ajaxJson;
         YoutubeParsingHelper.defaultAlertsCheck(initialData);
     }
 
@@ -122,7 +194,7 @@ public class YoutubeChannelExtractor extends ChannelExtractor {
     public String getUrl() throws ParsingException {
         try {
             return YoutubeChannelLinkHandlerFactory.getInstance().getUrl("channel/" + getId());
-        } catch (ParsingException e) {
+        } catch (final ParsingException e) {
             return super.getUrl();
         }
     }
@@ -130,7 +202,8 @@ public class YoutubeChannelExtractor extends ChannelExtractor {
     @Nonnull
     @Override
     public String getId() throws ParsingException {
-        final String channelId = initialData.getObject("header").getObject("c4TabbedHeaderRenderer")
+        final String channelId = initialData.getObject("header")
+                .getObject("c4TabbedHeaderRenderer")
                 .getString("channelId", EMPTY_STRING);
 
         if (!channelId.isEmpty()) {
@@ -146,7 +219,8 @@ public class YoutubeChannelExtractor extends ChannelExtractor {
     @Override
     public String getName() throws ParsingException {
         try {
-            return initialData.getObject("header").getObject("c4TabbedHeaderRenderer").getString("title");
+            return initialData.getObject("header").getObject("c4TabbedHeaderRenderer")
+                    .getString("title");
         } catch (final Exception e) {
             throw new ParsingException("Could not get channel name", e);
         }
@@ -155,8 +229,9 @@ public class YoutubeChannelExtractor extends ChannelExtractor {
     @Override
     public String getAvatarUrl() throws ParsingException {
         try {
-            String url = initialData.getObject("header").getObject("c4TabbedHeaderRenderer").getObject("avatar")
-                    .getArray("thumbnails").getObject(0).getString("url");
+            String url = initialData.getObject("header")
+                    .getObject("c4TabbedHeaderRenderer").getObject("avatar").getArray("thumbnails")
+                    .getObject(0).getString("url");
 
             return fixThumbnailUrl(url);
         } catch (final Exception e) {
@@ -167,8 +242,9 @@ public class YoutubeChannelExtractor extends ChannelExtractor {
     @Override
     public String getBannerUrl() throws ParsingException {
         try {
-            String url = initialData.getObject("header").getObject("c4TabbedHeaderRenderer").getObject("banner")
-                    .getArray("thumbnails").getObject(0).getString("url");
+            String url = initialData.getObject("header")
+                    .getObject("c4TabbedHeaderRenderer").getObject("banner").getArray("thumbnails")
+                    .getObject(0).getString("url");
 
             if (url == null || url.contains("s.ytimg.com") || url.contains("default_banner")) {
                 return null;
@@ -191,11 +267,13 @@ public class YoutubeChannelExtractor extends ChannelExtractor {
 
     @Override
     public long getSubscriberCount() throws ParsingException {
-        final JsonObject c4TabbedHeaderRenderer = initialData.getObject("header").getObject("c4TabbedHeaderRenderer");
+        final JsonObject c4TabbedHeaderRenderer = initialData.getObject("header")
+                .getObject("c4TabbedHeaderRenderer");
         if (c4TabbedHeaderRenderer.has("subscriberCountText")) {
             try {
-                return Utils.mixedNumberWordToLong(getTextFromObject(c4TabbedHeaderRenderer.getObject("subscriberCountText")));
-            } catch (NumberFormatException e) {
+                return Utils.mixedNumberWordToLong(getTextFromObject(c4TabbedHeaderRenderer
+                        .getObject("subscriberCountText")));
+            } catch (final NumberFormatException e) {
                 throw new ParsingException("Could not get subscriber count", e);
             }
         } else {
@@ -206,7 +284,8 @@ public class YoutubeChannelExtractor extends ChannelExtractor {
     @Override
     public String getDescription() throws ParsingException {
         try {
-            return initialData.getObject("metadata").getObject("channelMetadataRenderer").getString("description");
+            return initialData.getObject("metadata").getObject("channelMetadataRenderer")
+                    .getString("description");
         } catch (final Exception e) {
             throw new ParsingException("Could not get channel description", e);
         }
@@ -229,7 +308,8 @@ public class YoutubeChannelExtractor extends ChannelExtractor {
 
     @Override
     public boolean isVerified() throws ParsingException {
-        final JsonArray badges = initialData.getObject("header").getObject("c4TabbedHeaderRenderer")
+        final JsonArray badges = initialData.getObject("header")
+                .getObject("c4TabbedHeaderRenderer")
                 .getArray("badges");
 
         return YoutubeParsingHelper.isVerified(badges);
@@ -243,11 +323,13 @@ public class YoutubeChannelExtractor extends ChannelExtractor {
         Page nextPage = null;
 
         if (getVideoTab() != null) {
-            final JsonObject gridRenderer = getVideoTab().getObject("content").getObject("sectionListRenderer")
+            final JsonObject gridRenderer = getVideoTab().getObject("content")
+                    .getObject("sectionListRenderer")
                     .getArray("contents").getObject(0).getObject("itemSectionRenderer")
                     .getArray("contents").getObject(0).getObject("gridRenderer");
 
-            final JsonObject continuation = collectStreamsFrom(collector, gridRenderer.getArray("items"));
+            final JsonObject continuation = collectStreamsFrom(collector, gridRenderer
+                    .getArray("items"));
 
             nextPage = getNextPageFrom(continuation);
         }
@@ -275,7 +357,8 @@ public class YoutubeChannelExtractor extends ChannelExtractor {
                 .getObject(0)
                 .getObject("appendContinuationItemsAction");
 
-        final JsonObject continuation = collectStreamsFrom(collector, sectionListContinuation.getArray("continuationItems"));
+        final JsonObject continuation = collectStreamsFrom(collector, sectionListContinuation
+                .getArray("continuationItems"));
 
         return new InfoItemsPage<>(collector, getNextPageFrom(continuation));
     }
@@ -286,7 +369,8 @@ public class YoutubeChannelExtractor extends ChannelExtractor {
         }
 
         final JsonObject continuationEndpoint = continuations.getObject("continuationEndpoint");
-        final String continuation = continuationEndpoint.getObject("continuationCommand").getString("token");
+        final String continuation = continuationEndpoint.getObject("continuationCommand")
+                .getString("token");
 
         final byte[] body = JsonWriter.string(prepareJsonBuilder()
                 .value("continuation", continuation)
@@ -305,7 +389,8 @@ public class YoutubeChannelExtractor extends ChannelExtractor {
      * @return the continuation object
      * @throws ParsingException if an error happened while extracting
      */
-    private JsonObject collectStreamsFrom(StreamInfoItemsCollector collector, JsonArray videos) throws ParsingException {
+    private JsonObject collectStreamsFrom(final StreamInfoItemsCollector collector,
+                                          final JsonArray videos) throws ParsingException {
         collector.reset();
 
         final String uploaderName = getName();
@@ -340,13 +425,15 @@ public class YoutubeChannelExtractor extends ChannelExtractor {
     private JsonObject getVideoTab() throws ParsingException {
         if (this.videoTab != null) return this.videoTab;
 
-        JsonArray tabs = initialData.getObject("contents").getObject("twoColumnBrowseResultsRenderer")
+        JsonArray tabs = initialData.getObject("contents")
+                .getObject("twoColumnBrowseResultsRenderer")
                 .getArray("tabs");
         JsonObject videoTab = null;
 
         for (final Object tab : tabs) {
             if (((JsonObject) tab).has("tabRenderer")) {
-                if (((JsonObject) tab).getObject("tabRenderer").getString("title", EMPTY_STRING).equals("Videos")) {
+                if (((JsonObject) tab).getObject("tabRenderer").getString("title",
+                        EMPTY_STRING).equals("Videos")) {
                     videoTab = ((JsonObject) tab).getObject("tabRenderer");
                     break;
                 }

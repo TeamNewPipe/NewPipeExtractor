@@ -619,7 +619,7 @@ public class YoutubeChannelExtractorTest {
         public void testMoreRelatedItems() {
             try {
                 defaultTestMoreItems(extractor);
-            } catch (Throwable ignored) {
+            } catch (final Throwable ignored) {
                 return;
             }
 
