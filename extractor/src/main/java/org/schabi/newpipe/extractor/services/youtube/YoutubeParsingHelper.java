@@ -74,12 +74,14 @@ public class YoutubeParsingHelper {
     private static final String[] HARDCODED_YOUTUBE_MUSIC_KEYS = {"AIzaSyC9XL3ZjWddXya6X74dJoCTL-WEYFDNX30", "67", "0.1"};
     private static String[] youtubeMusicKeys;
 
+    private static Random numberGenerator = new Random();
+
     /**
      * <code>PENDING+</code> means that the user did not yet submit their choices.
      * Therefore, YouTube & Google should not track the user, because they did not give consent.
      * The three digits at the end can be random, but are required.
      */
-    public static final String CONSENT_COOKIE_VALUE = "PENDING+" + (100 + new Random().nextInt(900));
+    public static final String CONSENT_COOKIE_VALUE = "PENDING+";
     /**
      * Youtube <code>CONSENT</code> cookie. Should prevent redirect to consent.youtube.com
      */
@@ -394,6 +396,15 @@ public class YoutubeParsingHelper {
         key = null;
     }
 
+    /**
+     * <p>
+     * <b>Only use in tests.</b>
+     * </p>
+     */
+    public static void setNumberGenerator(Random random) {
+        numberGenerator = random;
+    }
+
     public static boolean areHardcodedYoutubeMusicKeysValid() throws IOException, ReCaptchaException {
         final String url = "https://music.youtube.com/youtubei/v1/search?alt=json&key=" + HARDCODED_YOUTUBE_MUSIC_KEYS[0];
 
@@ -696,10 +707,14 @@ public class YoutubeParsingHelper {
      */
     public static void addCookieHeader(final Map<String, List<String>> headers) {
         if (headers.get("Cookie") == null) {
-            headers.put("Cookie", Arrays.asList(CONSENT_COOKIE));
+            headers.put("Cookie", Arrays.asList(generateConsentCookie()));
         } else {
-            headers.get("Cookie").add(CONSENT_COOKIE);
+            headers.get("Cookie").add(generateConsentCookie());
         }
+    }
+
+    public static String generateConsentCookie() {
+        return CONSENT_COOKIE + 100 + numberGenerator.nextInt(900);
     }
 
     public static String extractCookieValue(final String cookieName, final Response response) {

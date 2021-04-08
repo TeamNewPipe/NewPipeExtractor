@@ -15,6 +15,7 @@ import org.schabi.newpipe.extractor.utils.Utils;
 
 import java.io.IOException;
 import java.util.List;
+import java.util.Random;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
@@ -36,6 +37,7 @@ public class YoutubeCommentsExtractorTest {
         @BeforeClass
         public static void setUp() throws Exception {
             YoutubeParsingHelper.resetClientVersionAndKey();
+            YoutubeParsingHelper.setNumberGenerator(new Random(1));
             NewPipe.init(new DownloaderFactory().getDownloader(RESOURCE_PATH + "thomas"));
             extractor = (YoutubeCommentsExtractor) YouTube
                     .getCommentsExtractor(url);
@@ -124,6 +126,7 @@ public class YoutubeCommentsExtractorTest {
         @BeforeClass
         public static void setUp() throws Exception {
             YoutubeParsingHelper.resetClientVersionAndKey();
+            YoutubeParsingHelper.setNumberGenerator(new Random(1));
             NewPipe.init(new DownloaderFactory().getDownloader(RESOURCE_PATH + "empty"));
             extractor = (YoutubeCommentsExtractor) YouTube
                     .getCommentsExtractor(url);
@@ -163,6 +166,7 @@ public class YoutubeCommentsExtractorTest {
         @BeforeClass
         public static void setUp() throws Exception {
             YoutubeParsingHelper.resetClientVersionAndKey();
+            YoutubeParsingHelper.setNumberGenerator(new Random(1));
             NewPipe.init(new DownloaderFactory().getDownloader(RESOURCE_PATH + "hearted"));
             extractor = (YoutubeCommentsExtractor) YouTube
                     .getCommentsExtractor(url);
@@ -205,6 +209,7 @@ public class YoutubeCommentsExtractorTest {
         @BeforeClass
         public static void setUp() throws Exception {
             YoutubeParsingHelper.resetClientVersionAndKey();
+            YoutubeParsingHelper.setNumberGenerator(new Random(1));
             NewPipe.init(new DownloaderFactory().getDownloader(RESOURCE_PATH + "pinned"));
             extractor = (YoutubeCommentsExtractor) YouTube
                     .getCommentsExtractor(url);
