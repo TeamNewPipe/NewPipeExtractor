@@ -5,6 +5,9 @@
     "headers": {
       "Accept-Language": [
         "en-GB, en;q\u003d0.9"
+      ],
+      "Cookie": [
+        "CONSENT\u003dPENDING+856"
       ]
     },
     "localization": {
@@ -29,19 +32,13 @@
         "text/javascript; charset\u003dUTF-8"
       ],
       "date": [
-        "Sat, 13 Feb 2021 19:14:39 GMT"
+        "Thu, 08 Apr 2021 12:21:15 GMT"
       ],
       "expires": [
-        "Sat, 13 Feb 2021 19:14:39 GMT"
-      ],
-      "p3p": [
-        "CP\u003d\"This is not a P3P policy! See g.co/p3phelp for more info.\""
+        "Thu, 08 Apr 2021 12:21:15 GMT"
       ],
       "server": [
         "gws"
-      ],
-      "set-cookie": [
-        "CONSENT\u003dPENDING+248; expires\u003dFri, 01-Jan-2038 00:00:00 GMT; path\u003d/; domain\u003d.google.com"
       ],
       "x-frame-options": [
         "SAMEORIGIN"
@@ -50,7 +47,7 @@
         "0"
       ]
     },
-    "responseBody": "JP([\"hello\",[[\"hello\",0,[131]],[\"hello darkness my old friend\",0,[131]],[\"hello im under the water\",0,[131]],[\"hello fresh\",0,[131]],[\"hello kitty\",0,[131]],[\"hello stranger the movie\",0,[131]],[\"hello there\",0,[131]],[\"hello future me\",0,[131]],[\"hello pop smoke\",0],[\"hello neighbor\",0,[131]],[\"hello your computer has virus\",0,[131]],[\"hello lionel richie\",0],[\"hello82\",0,[131]],[\"hello is it me you\\u0027re looking for\",0,[131]]],{\"k\":1,\"q\":\"KcHV-OGp-bs-q5aPAbR5RoG8KDU\"}])",
+    "responseBody": "JP([\"hello\",[[\"hello\",0],[\"hello darkness my old friend\",0,[131]],[\"hello mr gu\",0,[131]],[\"hello mr gu ep 1 eng sub\",0,[131]],[\"hello mr gu ep 7 eng sub\",0,[131]],[\"hello neighbor\",0,[131]],[\"hello there\",0,[131]],[\"hello dictator\",0,[131]],[\"hello kitty\",0],[\"hello origami\",0,[131]],[\"hello there general kenobi\",0,[131]],[\"hello pop smoke\",0,[131]],[\"hello i am under the water\",0,[131]],[\"hello charlie\",0,[131]]],{\"k\":1,\"q\":\"NmsxXUziGo_71g8b_jvu__lhANY\"}])",
     "latestUrl": "https://suggestqueries.google.com/complete/search?client\u003dyoutube\u0026jsonp\u003dJP\u0026ds\u003dyt\u0026gl\u003dDE\u0026q\u003dhello"
   }
 }
