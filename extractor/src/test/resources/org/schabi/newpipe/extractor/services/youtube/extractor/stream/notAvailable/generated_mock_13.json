@@ -7,7 +7,7 @@
         "en-GB, en;q\u003d0.9"
       ],
       "Cookie": [
-        "CONSENT\u003dPENDING+856"
+        "CONSENT\u003dPENDING+100854"
       ],
       "X-YouTube-Client-Name": [
         "1"
@@ -38,7 +38,7 @@
         "application/json; charset\u003dutf-8"
       ],
       "date": [
-        "Thu, 08 Apr 2021 12:22:06 GMT"
+        "Thu, 08 Apr 2021 14:29:54 GMT"
       ],
       "expires": [
         "Mon, 01 Jan 1990 00:00:00 GMT"
@@ -53,7 +53,8 @@
         "ESF"
       ],
       "set-cookie": [
-        "YSC\u003dZKsafb_Jwis; Domain\u003d.youtube.com; Path\u003d/; Secure; HttpOnly; SameSite\u003dnone"
+        "YSC\u003dK0PqNSZ1On4; Domain\u003d.youtube.com; Path\u003d/; Secure; HttpOnly; SameSite\u003dnone",
+        "CONSENT\u003dPENDING+443; expires\u003dFri, 01-Jan-2038 00:00:00 GMT; path\u003d/; domain\u003d.youtube.com"
       ],
       "strict-transport-security": [
         "max-age\u003d31536000"
@@ -71,7 +72,7 @@
         "0"
       ]
     },
-    "responseBody": "[\r\n{\"page\": \"watch\",\"rootVe\": \"3832\"},\r\n{\"page\": \"watch\",\"preconnect\": [\"https:\\/\\/r3---sn-4g5e6nlk.googlevideo.com\\/generate_204\",\"https:\\/\\/r3---sn-4g5e6nlk.googlevideo.com\\/generate_204?conn2\"]},\r\n{\"page\": \"watch\",\"playerResponse\": {\"responseContext\":{\"serviceTrackingParams\":[{\"service\":\"GFEEDBACK\",\"params\":[{\"key\":\"is_viewed_live\",\"value\":\"False\"},{\"key\":\"logged_in\",\"value\":\"0\"},{\"key\":\"e\",\"value\":\"24022875,23968386,23969934,24014268,24023969,24023962,23944779,23983296,23946420,23918597,23976696,24007246,24020069,24012117,23891346,23882502,23804281,23884386,24006795,24017848,23990875,24001373,24011119,23857950,24022616,23966208,23948546,24307303,23999152,24005646,24016678,23934970,23891344,23974595,24016478,23940237,23744176,24022914,1714240,24023966,24010697,23970529,23975059,24021968,23890959,23987676,24023964,24008564\"}]},{\"service\":\"CSI\",\"params\":[{\"key\":\"c\",\"value\":\"WEB\"},{\"key\":\"cver\",\"value\":\"2.20200214.04.00\"},{\"key\":\"yt_li\",\"value\":\"0\"},{\"key\":\"GetPlayer_rid\",\"value\":\"0xcee6cbf0f30ff8a2\"}]},{\"service\":\"GUIDED_HELP\",\"params\":[{\"key\":\"logged_in\",\"value\":\"0\"}]},{\"service\":\"ECATCHER\",\"params\":[{\"key\":\"client.version\",\"value\":\"2.20210114\"},{\"key\":\"client.name\",\"value\":\"WEB\"}]}],\"mainAppWebResponseContext\":{\"loggedOut\":true},\"webResponseContextExtensionData\":{\"hasDecorated\":true}},\"playabilityStatus\":{\"status\":\"ERROR\",\"reason\":\"Video unavailable\",\"errorScreen\":{\"playerErrorMessageRenderer\":{\"reason\":{\"simpleText\":\"Video unavailable\"},\"thumbnail\":{\"thumbnails\":[{\"url\":\"//s.ytimg.com/yts/img/meh7-vflGevej7.png\",\"width\":140,\"height\":100}]},\"icon\":{\"iconType\":\"ERROR_OUTLINE\"}}},\"contextParams\":\"Q0FBU0FnZ0E\u003d\"},\"trackingParams\":\"CAAQu2kiEwiWx4rE0e7vAhVIlHwKHT2FA4Y\u003d\"}},\r\n{\"page\": \"watch\",\"response\": {\"responseContext\":{\"webResponseContextExtensionData\":{\"ytConfigData\":{\"visitorData\":\"CgswZXdYQ05PSVJzbyju6ruDBg%3D%3D\",\"rootVisualElementType\":3832}}}},\"xsrf_token\": \"QUFFLUhqbmFtcVVuMDRpTjJuZjR4cHpfMXhKeC0wUWJlQXxBQ3Jtc0trcEtoYkNWOHZjc1ZFRXg3YXFfMmpBV3kzXy1sMmVXU3lrT294THFZWmRDVzBZVU9rYUZoRFZHdk5hRk92cmJQX09JSW42aFZYNW16WjVSUVlkd3lLUXlELUEtcHJJcFFBaHZQbGRQXzVmU2t1MW95OA\\u003d\\u003d\",\"url\": \"/watch?v\\u003ddon-t-exist\",\"endpoint\": {\"clickTrackingParams\":\"IhMIraaJxNHu7wIVxrhVCh1TsQobMghleHRlcm5hbA\u003d\u003d\",\"commandMetadata\":{\"webCommandMetadata\":{\"url\":\"/watch?v\u003ddon-t-exist\",\"webPageType\":\"WEB_PAGE_TYPE_WATCH\",\"rootVe\":3832}},\"watchEndpoint\":{\"videoId\":\"don-t-exist\"}}},\r\n{\"page\": \"watch\",\"timing\": {\"info\": {\"st\":  0.0 }}}]\r\n",
+    "responseBody": "[\r\n{\"page\": \"watch\",\"rootVe\": \"3832\"},\r\n{\"page\": \"watch\",\"preconnect\": [\"https:\\/\\/r3---sn-4g5e6nlk.googlevideo.com\\/generate_204\",\"https:\\/\\/r3---sn-4g5e6nlk.googlevideo.com\\/generate_204?conn2\"]},\r\n{\"page\": \"watch\",\"playerResponse\": {\"responseContext\":{\"serviceTrackingParams\":[{\"service\":\"GFEEDBACK\",\"params\":[{\"key\":\"is_viewed_live\",\"value\":\"False\"},{\"key\":\"logged_in\",\"value\":\"0\"},{\"key\":\"e\",\"value\":\"23940237,23891346,23884386,23990877,23804281,24014263,23987676,23944779,23984490,23983296,23969934,24014268,23857949,24014700,24000090,24008565,23995927,1714241,24012117,24005206,24017660,24022617,24023962,23815352,24006795,23900577,23968386,24001373,23976696,23946420,24007246,23882503,23974595,24022914,24023964,23890959,23934970,24016478,24011119,23744176,24023966,24005646,23858057,23918597,23986032,24009946,24023276,23970529,24002011,23891344,24023968,23966208,23848212\"}]},{\"service\":\"CSI\",\"params\":[{\"key\":\"c\",\"value\":\"WEB\"},{\"key\":\"cver\",\"value\":\"2.20200214.04.00\"},{\"key\":\"yt_li\",\"value\":\"0\"},{\"key\":\"GetPlayer_rid\",\"value\":\"0xef1b4b92b7cf70c8\"}]},{\"service\":\"GUIDED_HELP\",\"params\":[{\"key\":\"logged_in\",\"value\":\"0\"}]},{\"service\":\"ECATCHER\",\"params\":[{\"key\":\"client.version\",\"value\":\"2.20210114\"},{\"key\":\"client.name\",\"value\":\"WEB\"}]}],\"mainAppWebResponseContext\":{\"loggedOut\":true},\"webResponseContextExtensionData\":{\"hasDecorated\":true}},\"playabilityStatus\":{\"status\":\"ERROR\",\"reason\":\"Video unavailable\",\"errorScreen\":{\"playerErrorMessageRenderer\":{\"reason\":{\"simpleText\":\"Video unavailable\"},\"thumbnail\":{\"thumbnails\":[{\"url\":\"//s.ytimg.com/yts/img/meh7-vflGevej7.png\",\"width\":140,\"height\":100}]},\"icon\":{\"iconType\":\"ERROR_OUTLINE\"}}},\"contextParams\":\"Q0FBU0FnZ0E\u003d\"},\"trackingParams\":\"CAAQu2kiEwi7nJuM7u7vAhWImlUKHdCOBO0\u003d\"}},\r\n{\"page\": \"watch\",\"response\": {\"responseContext\":{\"webResponseContextExtensionData\":{\"ytConfigData\":{\"visitorData\":\"CgtTMmd4VjdVQ0Y0cyjipryDBg%3D%3D\",\"rootVisualElementType\":3832}}}},\"xsrf_token\": \"QUFFLUhqbno1bWctWXZ3QTN2NDRfbWdoVkg1b2dFUUE0d3xBQ3Jtc0ttQlljT2ZLUkFCMTRDYmEtVFNaZ21UU1p6VHdXaE5ielkzajA1blZKQ1dwWi1sempvQmpQWjRGSmRpZTN5QjRDZVlwOFpoWkJQaUdOWEJkQjEwTkE5akw0bUdzdlhZYk9oMWtRZGVNYzNqSG5mUzY4QQ\\u003d\\u003d\",\"url\": \"/watch?v\\u003ddon-t-exist\",\"endpoint\": {\"clickTrackingParams\":\"IhMIko2ajO7u7wIVC6RVCh2GHAQVMghleHRlcm5hbA\u003d\u003d\",\"commandMetadata\":{\"webCommandMetadata\":{\"url\":\"/watch?v\u003ddon-t-exist\",\"webPageType\":\"WEB_PAGE_TYPE_WATCH\",\"rootVe\":3832}},\"watchEndpoint\":{\"videoId\":\"don-t-exist\"}}},\r\n{\"page\": \"watch\",\"timing\": {\"info\": {\"st\":  0.0 }}}]\r\n",
     "latestUrl": "https://www.youtube.com/watch?v\u003ddon-t-exist\u0026pbj\u003d1"
   }
 }
