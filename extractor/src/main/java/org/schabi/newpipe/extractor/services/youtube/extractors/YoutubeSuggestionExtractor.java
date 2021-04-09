@@ -14,7 +14,6 @@ import java.io.IOException;
 import java.net.URLEncoder;
 import java.util.*;
 
-import static org.schabi.newpipe.extractor.services.youtube.YoutubeParsingHelper.CONSENT_COOKIE_VALUE;
 import static org.schabi.newpipe.extractor.services.youtube.YoutubeParsingHelper.addCookieHeader;
 import static org.schabi.newpipe.extractor.utils.Utils.UTF_8;
 
