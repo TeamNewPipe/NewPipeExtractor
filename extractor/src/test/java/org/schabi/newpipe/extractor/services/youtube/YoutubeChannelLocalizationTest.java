@@ -14,6 +14,7 @@ import java.time.temporal.ChronoUnit;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Random;
 
 import static org.junit.Assert.fail;
 import static org.schabi.newpipe.extractor.ServiceList.YouTube;
@@ -30,6 +31,7 @@ public class YoutubeChannelLocalizationTest {
     @Test
     public void testAllSupportedLocalizations() throws Exception {
         YoutubeParsingHelper.resetClientVersionAndKey();
+        YoutubeParsingHelper.setNumberGenerator(new Random(1));
         NewPipe.init(new DownloaderFactory().getDownloader(RESOURCE_PATH + "localization"));
 
         testLocalizationsFor("https://www.youtube.com/user/NBCNews");

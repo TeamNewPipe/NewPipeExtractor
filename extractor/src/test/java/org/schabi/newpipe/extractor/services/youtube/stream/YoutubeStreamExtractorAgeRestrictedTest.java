@@ -11,6 +11,7 @@ import org.schabi.newpipe.extractor.stream.StreamType;
 
 import java.util.Arrays;
 import java.util.List;
+import java.util.Random;
 
 import javax.annotation.Nullable;
 
@@ -26,7 +27,8 @@ public class YoutubeStreamExtractorAgeRestrictedTest extends DefaultStreamExtrac
     @BeforeClass
     public static void setUp() throws Exception {
         YoutubeParsingHelper.resetClientVersionAndKey();
-            NewPipe.init(new DownloaderFactory().getDownloader(RESOURCE_PATH + "ageRestricted"));
+        YoutubeParsingHelper.setNumberGenerator(new Random(1));
+        NewPipe.init(new DownloaderFactory().getDownloader(RESOURCE_PATH + "ageRestricted"));
         extractor = YouTube.getStreamExtractor(URL);
         extractor.fetchPage();
     }
