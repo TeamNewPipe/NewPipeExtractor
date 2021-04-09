@@ -12,9 +12,9 @@ import org.schabi.newpipe.extractor.suggestion.SuggestionExtractor;
 
 import java.io.IOException;
 import java.net.URLEncoder;
-import java.util.ArrayList;
-import java.util.List;
+import java.util.*;
 
+import static org.schabi.newpipe.extractor.services.youtube.YoutubeParsingHelper.addCookieHeader;
 import static org.schabi.newpipe.extractor.utils.Utils.UTF_8;
 
 /*
@@ -45,17 +45,20 @@ public class YoutubeSuggestionExtractor extends SuggestionExtractor {
 
     @Override
     public List<String> suggestionList(String query) throws IOException, ExtractionException {
-        Downloader dl = NewPipe.getDownloader();
-        List<String> suggestions = new ArrayList<>();
+        final Downloader dl = NewPipe.getDownloader();
+        final List<String> suggestions = new ArrayList<>();
 
-        String url = "https://suggestqueries.google.com/complete/search"
+        final String url = "https://suggestqueries.google.com/complete/search"
                 + "?client=" + "youtube" //"firefox" for JSON, 'toolbar' for xml
                 + "&jsonp=" + "JP"
                 + "&ds=" + "yt"
                 + "&gl=" + URLEncoder.encode(getExtractorContentCountry().getCountryCode(), UTF_8)
                 + "&q=" + URLEncoder.encode(query, UTF_8);
 
-        String response = dl.get(url, getExtractorLocalization()).responseBody();
+        final Map<String, List<String>> headers = new HashMap<>();
+        addCookieHeader(headers);
+
+        String response = dl.get(url, headers, getExtractorLocalization()).responseBody();
         // trim JSONP part "JP(...)"
         response = response.substring(3, response.length() - 1);
         try {

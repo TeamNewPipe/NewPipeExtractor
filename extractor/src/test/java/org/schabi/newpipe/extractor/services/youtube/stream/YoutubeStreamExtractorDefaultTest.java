@@ -26,6 +26,7 @@ import java.net.URL;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
+import java.util.Random;
 
 import javax.annotation.Nullable;
 
@@ -61,6 +62,7 @@ public class YoutubeStreamExtractorDefaultTest {
         @BeforeClass
         public static void setUp() throws IOException {
             YoutubeParsingHelper.resetClientVersionAndKey();
+            YoutubeParsingHelper.setNumberGenerator(new Random(1));
             NewPipe.init(new DownloaderFactory().getDownloader(RESOURCE_PATH + "notAvailable"));
         }
 
@@ -116,6 +118,7 @@ public class YoutubeStreamExtractorDefaultTest {
         @BeforeClass
         public static void setUp() throws Exception {
             YoutubeParsingHelper.resetClientVersionAndKey();
+            YoutubeParsingHelper.setNumberGenerator(new Random(1));
             NewPipe.init(new DownloaderFactory().getDownloader(RESOURCE_PATH + "pewdiwpie"));
             extractor = YouTube.getStreamExtractor(URL);
             extractor.fetchPage();
@@ -156,6 +159,7 @@ public class YoutubeStreamExtractorDefaultTest {
         @BeforeClass
         public static void setUp() throws Exception {
             YoutubeParsingHelper.resetClientVersionAndKey();
+            YoutubeParsingHelper.setNumberGenerator(new Random(1));
             NewPipe.init(new DownloaderFactory().getDownloader(RESOURCE_PATH + "unboxing"));
             extractor = YouTube.getStreamExtractor(URL);
             extractor.fetchPage();
@@ -198,6 +202,7 @@ public class YoutubeStreamExtractorDefaultTest {
         @BeforeClass
         public static void setUp() throws Exception {
             YoutubeParsingHelper.resetClientVersionAndKey();
+            YoutubeParsingHelper.setNumberGenerator(new Random(1));
             NewPipe.init(new DownloaderFactory().getDownloader(RESOURCE_PATH + "ratingsDisabled"));
             extractor = YouTube.getStreamExtractor(URL);
             extractor.fetchPage();
@@ -234,6 +239,7 @@ public class YoutubeStreamExtractorDefaultTest {
         @BeforeClass
         public static void setUp() throws Exception {
             YoutubeParsingHelper.resetClientVersionAndKey();
+            YoutubeParsingHelper.setNumberGenerator(new Random(1));
             NewPipe.init(new DownloaderFactory().getDownloader(RESOURCE_PATH + "streamSegmentsOstCollection"));
             extractor = YouTube.getStreamExtractor(URL);
             extractor.fetchPage();
@@ -282,6 +288,7 @@ public class YoutubeStreamExtractorDefaultTest {
         @BeforeClass
         public static void setUp() throws Exception {
             YoutubeParsingHelper.resetClientVersionAndKey();
+            YoutubeParsingHelper.setNumberGenerator(new Random(1));
             NewPipe.init(new DownloaderFactory().getDownloader(RESOURCE_PATH + "streamSegmentsMaiLab"));
             extractor = YouTube.getStreamExtractor(URL);
             extractor.fetchPage();
@@ -336,6 +343,7 @@ public class YoutubeStreamExtractorDefaultTest {
         @BeforeClass
         public static void setUp() throws Exception {
             YoutubeParsingHelper.resetClientVersionAndKey();
+            YoutubeParsingHelper.setNumberGenerator(new Random(1));
             NewPipe.init(new DownloaderFactory().getDownloader(RESOURCE_PATH + "publicBroadcast"));
             extractor = YouTube.getStreamExtractor(URL);
             extractor.fetchPage();

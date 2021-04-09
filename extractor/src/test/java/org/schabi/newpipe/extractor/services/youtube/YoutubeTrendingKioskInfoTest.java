@@ -28,6 +28,8 @@ import org.schabi.newpipe.extractor.StreamingService;
 import org.schabi.newpipe.extractor.kiosk.KioskInfo;
 import org.schabi.newpipe.extractor.linkhandler.LinkHandlerFactory;
 
+import java.util.Random;
+
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 import static org.schabi.newpipe.extractor.ServiceList.YouTube;
@@ -45,6 +47,7 @@ public class YoutubeTrendingKioskInfoTest {
     public static void setUp()
             throws Exception {
         YoutubeParsingHelper.resetClientVersionAndKey();
+        YoutubeParsingHelper.setNumberGenerator(new Random(1));
         NewPipe.init(new DownloaderFactory().getDownloader(RESOURCE_PATH));
         LinkHandlerFactory LinkHandlerFactory = ((StreamingService) YouTube).getKioskList().getListLinkHandlerFactoryByType("Trending");
 

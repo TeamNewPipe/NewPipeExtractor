@@ -8,6 +8,8 @@ import org.schabi.newpipe.extractor.exceptions.ParsingException;
 import org.schabi.newpipe.extractor.services.BaseListExtractorTest;
 import org.schabi.newpipe.extractor.services.youtube.extractors.YoutubeFeedExtractor;
 
+import java.util.Random;
+
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 import static org.schabi.newpipe.extractor.ServiceList.YouTube;
@@ -24,6 +26,7 @@ public class YoutubeFeedExtractorTest {
         @BeforeClass
         public static void setUp() throws Exception {
             YoutubeParsingHelper.resetClientVersionAndKey();
+            YoutubeParsingHelper.setNumberGenerator(new Random(1));
             NewPipe.init(new DownloaderFactory().getDownloader(RESOURCE_PATH));
             extractor = (YoutubeFeedExtractor) YouTube
                     .getFeedExtractor("https://www.youtube.com/user/Kurzgesagt");

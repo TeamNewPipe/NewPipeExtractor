@@ -123,12 +123,10 @@ public class Request {
          * Any default headers that the implementation may have, <b>should</b> be overridden by these.
          */
         public Builder headers(@Nullable Map<String, List<String>> headers) {
-            if (headers == null) {
-                this.headers.clear();
-                return this;
-            }
             this.headers.clear();
-            this.headers.putAll(headers);
+            if (headers != null) {
+                this.headers.putAll(headers);
+            }
             return this;
         }
 

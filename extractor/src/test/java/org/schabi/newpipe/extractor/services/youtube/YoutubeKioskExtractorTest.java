@@ -8,6 +8,8 @@ import org.schabi.newpipe.extractor.exceptions.ParsingException;
 import org.schabi.newpipe.extractor.services.BaseListExtractorTest;
 import org.schabi.newpipe.extractor.services.youtube.extractors.YoutubeTrendingExtractor;
 
+import java.util.Random;
+
 import static org.junit.Assert.assertEquals;
 import static org.schabi.newpipe.extractor.ServiceList.YouTube;
 import static org.schabi.newpipe.extractor.services.DefaultTests.assertNoMoreItems;
@@ -23,6 +25,7 @@ public class YoutubeKioskExtractorTest {
         @BeforeClass
         public static void setUp() throws Exception {
             YoutubeParsingHelper.resetClientVersionAndKey();
+            YoutubeParsingHelper.setNumberGenerator(new Random(1));
             NewPipe.init(new DownloaderFactory().getDownloader(RESOURCE_PATH + "trending"));
             extractor = (YoutubeTrendingExtractor) YouTube.getKioskList().getDefaultKioskExtractor();
             extractor.fetchPage();

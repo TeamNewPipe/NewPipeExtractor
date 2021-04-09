@@ -29,6 +29,7 @@ import org.schabi.newpipe.extractor.localization.Localization;
 import org.schabi.newpipe.extractor.suggestion.SuggestionExtractor;
 
 import java.io.IOException;
+import java.util.Random;
 
 import static org.junit.Assert.assertFalse;
 import static org.schabi.newpipe.extractor.ServiceList.YouTube;
@@ -45,6 +46,7 @@ public class YoutubeSuggestionExtractorTest {
     @BeforeClass
     public static void setUp() throws Exception {
         YoutubeParsingHelper.resetClientVersionAndKey();
+        YoutubeParsingHelper.setNumberGenerator(new Random(1));
         NewPipe.init(new DownloaderFactory().getDownloader(RESOURCE_PATH + ""), new Localization("de", "DE"));
         suggestionExtractor = YouTube.getSuggestionExtractor();
     }
