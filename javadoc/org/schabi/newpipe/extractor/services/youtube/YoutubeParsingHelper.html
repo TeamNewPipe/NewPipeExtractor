@@ -17,7 +17,7 @@
     catch(err) {
     }
 //-->
-var methods = {"i0":9,"i1":9,"i2":9,"i3":9,"i4":9,"i5":9,"i6":9,"i7":9,"i8":9,"i9":9,"i10":9,"i11":9,"i12":9,"i13":9,"i14":9,"i15":9,"i16":9,"i17":9,"i18":9,"i19":9,"i20":9,"i21":9,"i22":9,"i23":9,"i24":9,"i25":9,"i26":9,"i27":9,"i28":9,"i29":9,"i30":9,"i31":9,"i32":9};
+var methods = {"i0":9,"i1":9,"i2":9,"i3":9,"i4":9,"i5":9,"i6":9,"i7":9,"i8":9,"i9":9,"i10":9,"i11":9,"i12":9,"i13":9,"i14":9,"i15":9,"i16":9,"i17":9,"i18":9,"i19":9,"i20":9,"i21":9,"i22":9,"i23":9,"i24":9,"i25":9,"i26":9,"i27":9,"i28":9,"i29":9,"i30":9,"i31":9,"i32":9,"i33":9,"i34":9,"i35":9,"i36":9,"i37":9};
 var tabs = {65535:["t0","All Methods"],1:["t1","Static Methods"],8:["t4","Concrete Methods"]};
 var altColor = "altColor";
 var rowColor = "rowColor";
@@ -128,166 +128,195 @@ extends <a href="https://docs.oracle.com/javase/8/docs/api/java/lang/Object.html
 <th class="colLast" scope="col">Method and Description</th>
 </tr>
 <tr id="i0" class="altColor">
+<td class="colFirst"><code>static void</code></td>
+<td class="colLast"><code><span class="memberNameLink"><a href="../../../../../../org/schabi/newpipe/extractor/services/youtube/YoutubeParsingHelper.html#addClientInfoHeaders-java.util.Map-">addClientInfoHeaders</a></span>(<a href="https://docs.oracle.com/javase/8/docs/api/java/util/Map.html?is-external=true" title="class or interface in java.util">Map</a>&lt;<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>,<a href="https://docs.oracle.com/javase/8/docs/api/java/util/List.html?is-external=true" title="class or interface in java.util">List</a>&lt;<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>&gt;&gt;&nbsp;headers)</code>
+<div class="block">Add the <code>X-YouTube-Client-Name</code> and <code>X-YouTube-Client-Version</code> headers.</div>
+</td>
+</tr>
+<tr id="i1" class="rowColor">
+<td class="colFirst"><code>static void</code></td>
+<td class="colLast"><code><span class="memberNameLink"><a href="../../../../../../org/schabi/newpipe/extractor/services/youtube/YoutubeParsingHelper.html#addCookieHeader-java.util.Map-">addCookieHeader</a></span>(<a href="https://docs.oracle.com/javase/8/docs/api/java/util/Map.html?is-external=true" title="class or interface in java.util">Map</a>&lt;<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>,<a href="https://docs.oracle.com/javase/8/docs/api/java/util/List.html?is-external=true" title="class or interface in java.util">List</a>&lt;<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>&gt;&gt;&nbsp;headers)</code>
+<div class="block">Add the <code>CONSENT</code> cookie to prevent redirect to <code>consent.youtube.com</code></div>
+</td>
+</tr>
+<tr id="i2" class="altColor">
+<td class="colFirst"><code>static void</code></td>
+<td class="colLast"><code><span class="memberNameLink"><a href="../../../../../../org/schabi/newpipe/extractor/services/youtube/YoutubeParsingHelper.html#addYouTubeHeaders-java.util.Map-">addYouTubeHeaders</a></span>(<a href="https://docs.oracle.com/javase/8/docs/api/java/util/Map.html?is-external=true" title="class or interface in java.util">Map</a>&lt;<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>,<a href="https://docs.oracle.com/javase/8/docs/api/java/util/List.html?is-external=true" title="class or interface in java.util">List</a>&lt;<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>&gt;&gt;&nbsp;headers)</code>
+<div class="block">Add required headers and cookies to an existing headers Map.</div>
+</td>
+</tr>
+<tr id="i3" class="rowColor">
 <td class="colFirst"><code>static boolean</code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../../../../org/schabi/newpipe/extractor/services/youtube/YoutubeParsingHelper.html#areHardcodedYoutubeMusicKeysValid--">areHardcodedYoutubeMusicKeysValid</a></span>()</code>&nbsp;</td>
 </tr>
-<tr id="i1" class="rowColor">
+<tr id="i4" class="altColor">
 <td class="colFirst"><code>static void</code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../../../../org/schabi/newpipe/extractor/services/youtube/YoutubeParsingHelper.html#defaultAlertsCheck-com.grack.nanojson.JsonObject-">defaultAlertsCheck</a></span>(com.grack.nanojson.JsonObject&nbsp;initialData)</code>
 <div class="block">Shared alert detection function, multiple endpoints return the error similarly structured.</div>
 </td>
 </tr>
-<tr id="i2" class="altColor">
+<tr id="i5" class="rowColor">
 <td class="colFirst"><code>static <a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a></code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../../../../org/schabi/newpipe/extractor/services/youtube/YoutubeParsingHelper.html#extractCachedUrlIfNeeded-java.lang.String-">extractCachedUrlIfNeeded</a></span>(<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>&nbsp;url)</code>
 <div class="block">Sometimes, YouTube provides URLs which use Google's cache.</div>
 </td>
 </tr>
-<tr id="i3" class="rowColor">
+<tr id="i6" class="altColor">
 <td class="colFirst"><code>static <a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a></code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../../../../org/schabi/newpipe/extractor/services/youtube/YoutubeParsingHelper.html#extractCookieValue-java.lang.String-org.schabi.newpipe.extractor.downloader.Response-">extractCookieValue</a></span>(<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>&nbsp;cookieName,
                   <a href="../../../../../../org/schabi/newpipe/extractor/downloader/Response.html" title="class in org.schabi.newpipe.extractor.downloader">Response</a>&nbsp;response)</code>&nbsp;</td>
 </tr>
-<tr id="i4" class="altColor">
+<tr id="i7" class="rowColor">
 <td class="colFirst"><code>static <a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a></code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../../../../org/schabi/newpipe/extractor/services/youtube/YoutubeParsingHelper.html#extractVideoIdFromMixId-java.lang.String-">extractVideoIdFromMixId</a></span>(<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>&nbsp;playlistId)</code>
 <div class="block">Extracts the video id from the playlist id for Mixes.</div>
 </td>
 </tr>
-<tr id="i5" class="rowColor">
+<tr id="i8" class="altColor">
 <td class="colFirst"><code>static <a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a></code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../../../../org/schabi/newpipe/extractor/services/youtube/YoutubeParsingHelper.html#fixThumbnailUrl-java.lang.String-">fixThumbnailUrl</a></span>(<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>&nbsp;thumbnailUrl)</code>&nbsp;</td>
 </tr>
-<tr id="i6" class="altColor">
+<tr id="i9" class="rowColor">
+<td class="colFirst"><code>static <a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a></code></td>
+<td class="colLast"><code><span class="memberNameLink"><a href="../../../../../../org/schabi/newpipe/extractor/services/youtube/YoutubeParsingHelper.html#generateConsentCookie--">generateConsentCookie</a></span>()</code>&nbsp;</td>
+</tr>
+<tr id="i10" class="altColor">
 <td class="colFirst"><code>static <a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a></code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../../../../org/schabi/newpipe/extractor/services/youtube/YoutubeParsingHelper.html#getClientVersion--">getClientVersion</a></span>()</code>
 <div class="block">Get the client version</div>
 </td>
 </tr>
-<tr id="i7" class="rowColor">
+<tr id="i11" class="rowColor">
 <td class="colFirst"><code>static <a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a></code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../../../../org/schabi/newpipe/extractor/services/youtube/YoutubeParsingHelper.html#getFeedUrlFrom-java.lang.String-">getFeedUrlFrom</a></span>(<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>&nbsp;channelIdOrUser)</code>&nbsp;</td>
 </tr>
-<tr id="i8" class="altColor">
+<tr id="i12" class="altColor">
 <td class="colFirst"><code>static com.grack.nanojson.JsonObject</code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../../../../org/schabi/newpipe/extractor/services/youtube/YoutubeParsingHelper.html#getInitialData-java.lang.String-">getInitialData</a></span>(<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>&nbsp;html)</code>&nbsp;</td>
 </tr>
-<tr id="i9" class="rowColor">
+<tr id="i13" class="rowColor">
 <td class="colFirst"><code>static com.grack.nanojson.JsonArray</code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../../../../org/schabi/newpipe/extractor/services/youtube/YoutubeParsingHelper.html#getJsonResponse-org.schabi.newpipe.extractor.Page-org.schabi.newpipe.extractor.localization.Localization-">getJsonResponse</a></span>(<a href="../../../../../../org/schabi/newpipe/extractor/Page.html" title="class in org.schabi.newpipe.extractor">Page</a>&nbsp;page,
                <a href="../../../../../../org/schabi/newpipe/extractor/localization/Localization.html" title="class in org.schabi.newpipe.extractor.localization">Localization</a>&nbsp;localization)</code>&nbsp;</td>
 </tr>
-<tr id="i10" class="altColor">
+<tr id="i14" class="altColor">
 <td class="colFirst"><code>static com.grack.nanojson.JsonArray</code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../../../../org/schabi/newpipe/extractor/services/youtube/YoutubeParsingHelper.html#getJsonResponse-java.lang.String-org.schabi.newpipe.extractor.localization.Localization-">getJsonResponse</a></span>(<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>&nbsp;url,
                <a href="../../../../../../org/schabi/newpipe/extractor/localization/Localization.html" title="class in org.schabi.newpipe.extractor.localization">Localization</a>&nbsp;localization)</code>&nbsp;</td>
 </tr>
-<tr id="i11" class="rowColor">
+<tr id="i15" class="rowColor">
 <td class="colFirst"><code>static <a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a></code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../../../../org/schabi/newpipe/extractor/services/youtube/YoutubeParsingHelper.html#getKey--">getKey</a></span>()</code>
 <div class="block">Get the key</div>
 </td>
 </tr>
-<tr id="i12" class="altColor">
+<tr id="i16" class="altColor">
 <td class="colFirst"><code>static <a href="https://docs.oracle.com/javase/8/docs/api/java/util/List.html?is-external=true" title="class or interface in java.util">List</a>&lt;<a href="../../../../../../org/schabi/newpipe/extractor/MetaInfo.html" title="class in org.schabi.newpipe.extractor">MetaInfo</a>&gt;</code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../../../../org/schabi/newpipe/extractor/services/youtube/YoutubeParsingHelper.html#getMetaInfo-com.grack.nanojson.JsonArray-">getMetaInfo</a></span>(com.grack.nanojson.JsonArray&nbsp;contents)</code>&nbsp;</td>
 </tr>
-<tr id="i13" class="rowColor">
+<tr id="i17" class="rowColor">
 <td class="colFirst"><code>static <a href="../../../../../../org/schabi/newpipe/extractor/downloader/Response.html" title="class in org.schabi.newpipe.extractor.downloader">Response</a></code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../../../../org/schabi/newpipe/extractor/services/youtube/YoutubeParsingHelper.html#getResponse-java.lang.String-org.schabi.newpipe.extractor.localization.Localization-">getResponse</a></span>(<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>&nbsp;url,
            <a href="../../../../../../org/schabi/newpipe/extractor/localization/Localization.html" title="class in org.schabi.newpipe.extractor.localization">Localization</a>&nbsp;localization)</code>&nbsp;</td>
 </tr>
-<tr id="i14" class="altColor">
+<tr id="i18" class="altColor">
 <td class="colFirst"><code>static <a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a></code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../../../../org/schabi/newpipe/extractor/services/youtube/YoutubeParsingHelper.html#getTextAtKey-com.grack.nanojson.JsonObject-java.lang.String-">getTextAtKey</a></span>(com.grack.nanojson.JsonObject&nbsp;jsonObject,
             <a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>&nbsp;key)</code>&nbsp;</td>
 </tr>
-<tr id="i15" class="rowColor">
+<tr id="i19" class="rowColor">
 <td class="colFirst"><code>static <a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a></code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../../../../org/schabi/newpipe/extractor/services/youtube/YoutubeParsingHelper.html#getTextFromObject-com.grack.nanojson.JsonObject-">getTextFromObject</a></span>(com.grack.nanojson.JsonObject&nbsp;textObject)</code>&nbsp;</td>
 </tr>
-<tr id="i16" class="altColor">
+<tr id="i20" class="altColor">
 <td class="colFirst"><code>static <a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a></code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../../../../org/schabi/newpipe/extractor/services/youtube/YoutubeParsingHelper.html#getTextFromObject-com.grack.nanojson.JsonObject-boolean-">getTextFromObject</a></span>(com.grack.nanojson.JsonObject&nbsp;textObject,
                  boolean&nbsp;html)</code>
 <div class="block">Get the text from a JSON object that has either a simpleText or a runs array.</div>
 </td>
 </tr>
-<tr id="i17" class="rowColor">
+<tr id="i21" class="rowColor">
 <td class="colFirst"><code>static <a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a></code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../../../../org/schabi/newpipe/extractor/services/youtube/YoutubeParsingHelper.html#getUrlFromNavigationEndpoint-com.grack.nanojson.JsonObject-">getUrlFromNavigationEndpoint</a></span>(com.grack.nanojson.JsonObject&nbsp;navigationEndpoint)</code>&nbsp;</td>
 </tr>
-<tr id="i18" class="altColor">
+<tr id="i22" class="altColor">
 <td class="colFirst"><code>static <a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a></code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../../../../org/schabi/newpipe/extractor/services/youtube/YoutubeParsingHelper.html#getValidJsonResponseBody-org.schabi.newpipe.extractor.downloader.Response-">getValidJsonResponseBody</a></span>(<a href="../../../../../../org/schabi/newpipe/extractor/downloader/Response.html" title="class in org.schabi.newpipe.extractor.downloader">Response</a>&nbsp;response)</code>&nbsp;</td>
 </tr>
-<tr id="i19" class="rowColor">
+<tr id="i23" class="rowColor">
 <td class="colFirst"><code>static <a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>[]</code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../../../../org/schabi/newpipe/extractor/services/youtube/YoutubeParsingHelper.html#getYoutubeMusicKeys--">getYoutubeMusicKeys</a></span>()</code>&nbsp;</td>
 </tr>
-<tr id="i20" class="altColor">
+<tr id="i24" class="altColor">
 <td class="colFirst"><code>static boolean</code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../../../../org/schabi/newpipe/extractor/services/youtube/YoutubeParsingHelper.html#isHardcodedClientVersionValid--">isHardcodedClientVersionValid</a></span>()</code>&nbsp;</td>
 </tr>
-<tr id="i21" class="rowColor">
+<tr id="i25" class="rowColor">
 <td class="colFirst"><code>static boolean</code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../../../../org/schabi/newpipe/extractor/services/youtube/YoutubeParsingHelper.html#isHooktubeURL-java.net.URL-">isHooktubeURL</a></span>(<a href="https://docs.oracle.com/javase/8/docs/api/java/net/URL.html?is-external=true" title="class or interface in java.net">URL</a>&nbsp;url)</code>&nbsp;</td>
 </tr>
-<tr id="i22" class="altColor">
+<tr id="i26" class="altColor">
 <td class="colFirst"><code>static boolean</code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../../../../org/schabi/newpipe/extractor/services/youtube/YoutubeParsingHelper.html#isInvidioURL-java.net.URL-">isInvidioURL</a></span>(<a href="https://docs.oracle.com/javase/8/docs/api/java/net/URL.html?is-external=true" title="class or interface in java.net">URL</a>&nbsp;url)</code>&nbsp;</td>
 </tr>
-<tr id="i23" class="rowColor">
+<tr id="i27" class="rowColor">
 <td class="colFirst"><code>static boolean</code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../../../../org/schabi/newpipe/extractor/services/youtube/YoutubeParsingHelper.html#isVerified-com.grack.nanojson.JsonArray-">isVerified</a></span>(com.grack.nanojson.JsonArray&nbsp;badges)</code>&nbsp;</td>
 </tr>
-<tr id="i24" class="altColor">
+<tr id="i28" class="altColor">
 <td class="colFirst"><code>static boolean</code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../../../../org/schabi/newpipe/extractor/services/youtube/YoutubeParsingHelper.html#isYoutubeChannelMixId-java.lang.String-">isYoutubeChannelMixId</a></span>(<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>&nbsp;playlistId)</code>
 <div class="block">Checks if the given playlist id is a YouTube Channel Mix (auto-generated playlist)
  Ids from a YouTube channel Mix start with "RDCM"</div>
 </td>
 </tr>
-<tr id="i25" class="rowColor">
+<tr id="i29" class="rowColor">
 <td class="colFirst"><code>static boolean</code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../../../../org/schabi/newpipe/extractor/services/youtube/YoutubeParsingHelper.html#isYoutubeMixId-java.lang.String-">isYoutubeMixId</a></span>(<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>&nbsp;playlistId)</code>
 <div class="block">Checks if the given playlist id is a YouTube Mix (auto-generated playlist)
  Ids from a YouTube Mix start with "RD"</div>
 </td>
 </tr>
-<tr id="i26" class="altColor">
+<tr id="i30" class="altColor">
 <td class="colFirst"><code>static boolean</code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../../../../org/schabi/newpipe/extractor/services/youtube/YoutubeParsingHelper.html#isYoutubeMusicMixId-java.lang.String-">isYoutubeMusicMixId</a></span>(<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>&nbsp;playlistId)</code>
 <div class="block">Checks if the given playlist id is a YouTube Music Mix (auto-generated playlist)
  Ids from a YouTube Music Mix start with "RDAMVM" or "RDCLAK"</div>
 </td>
 </tr>
-<tr id="i27" class="rowColor">
+<tr id="i31" class="rowColor">
 <td class="colFirst"><code>static boolean</code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../../../../org/schabi/newpipe/extractor/services/youtube/YoutubeParsingHelper.html#isYoutubeServiceURL-java.net.URL-">isYoutubeServiceURL</a></span>(<a href="https://docs.oracle.com/javase/8/docs/api/java/net/URL.html?is-external=true" title="class or interface in java.net">URL</a>&nbsp;url)</code>&nbsp;</td>
 </tr>
-<tr id="i28" class="altColor">
+<tr id="i32" class="altColor">
 <td class="colFirst"><code>static boolean</code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../../../../org/schabi/newpipe/extractor/services/youtube/YoutubeParsingHelper.html#isYoutubeURL-java.net.URL-">isYoutubeURL</a></span>(<a href="https://docs.oracle.com/javase/8/docs/api/java/net/URL.html?is-external=true" title="class or interface in java.net">URL</a>&nbsp;url)</code>&nbsp;</td>
 </tr>
-<tr id="i29" class="rowColor">
+<tr id="i33" class="rowColor">
 <td class="colFirst"><code>static <a href="https://docs.oracle.com/javase/8/docs/api/java/time/OffsetDateTime.html?is-external=true" title="class or interface in java.time">OffsetDateTime</a></code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../../../../org/schabi/newpipe/extractor/services/youtube/YoutubeParsingHelper.html#parseDateFrom-java.lang.String-">parseDateFrom</a></span>(<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>&nbsp;textualUploadDate)</code>&nbsp;</td>
 </tr>
-<tr id="i30" class="altColor">
+<tr id="i34" class="altColor">
 <td class="colFirst"><code>static int</code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../../../../org/schabi/newpipe/extractor/services/youtube/YoutubeParsingHelper.html#parseDurationString-java.lang.String-">parseDurationString</a></span>(<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>&nbsp;input)</code>
 <div class="block">Parses the duration string of the video expecting ":" or "." as separators</div>
 </td>
 </tr>
-<tr id="i31" class="rowColor">
+<tr id="i35" class="rowColor">
 <td class="colFirst"><code>static void</code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../../../../org/schabi/newpipe/extractor/services/youtube/YoutubeParsingHelper.html#resetClientVersionAndKey--">resetClientVersionAndKey</a></span>()</code>
 <div class="block">
  <b>Only use in tests.</b></div>
 </td>
 </tr>
-<tr id="i32" class="altColor">
+<tr id="i36" class="altColor">
+<td class="colFirst"><code>static void</code></td>
+<td class="colLast"><code><span class="memberNameLink"><a href="../../../../../../org/schabi/newpipe/extractor/services/youtube/YoutubeParsingHelper.html#setNumberGenerator-java.util.Random-">setNumberGenerator</a></span>(<a href="https://docs.oracle.com/javase/8/docs/api/java/util/Random.html?is-external=true" title="class or interface in java.util">Random</a>&nbsp;random)</code>
+<div class="block">
+ <b>Only use in tests.</b></div>
+</td>
+</tr>
+<tr id="i37" class="rowColor">
 <td class="colFirst"><code>static <a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a></code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../../../../org/schabi/newpipe/extractor/services/youtube/YoutubeParsingHelper.html#unescapeDocument-java.lang.String-">unescapeDocument</a></span>(<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>&nbsp;doc)</code>&nbsp;</td>
 </tr>
@@ -541,6 +570,18 @@ extends <a href="https://docs.oracle.com/javase/8/docs/api/java/lang/Object.html
  </p></div>
 </li>
 </ul>
+<a name="setNumberGenerator-java.util.Random-">
+<!--   -->
+</a>
+<ul class="blockList">
+<li class="blockList">
+<h4>setNumberGenerator</h4>
+<pre>public static&nbsp;void&nbsp;setNumberGenerator(<a href="https://docs.oracle.com/javase/8/docs/api/java/util/Random.html?is-external=true" title="class or interface in java.util">Random</a>&nbsp;random)</pre>
+<div class="block"><p>
+ <b>Only use in tests.</b>
+ </p></div>
+</li>
+</ul>
 <a name="areHardcodedYoutubeMusicKeysValid--">
 <!--   -->
 </a>
@@ -685,16 +726,6 @@ public static&nbsp;<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/
 </dl>
 </li>
 </ul>
-<a name="extractCookieValue-java.lang.String-org.schabi.newpipe.extractor.downloader.Response-">
-<!--   -->
-</a>
-<ul class="blockList">
-<li class="blockList">
-<h4>extractCookieValue</h4>
-<pre>public static&nbsp;<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>&nbsp;extractCookieValue(<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>&nbsp;cookieName,
-                                        <a href="../../../../../../org/schabi/newpipe/extractor/downloader/Response.html" title="class in org.schabi.newpipe.extractor.downloader">Response</a>&nbsp;response)</pre>
-</li>
-</ul>
 <a name="getJsonResponse-java.lang.String-org.schabi.newpipe.extractor.localization.Localization-">
 <!--   -->
 </a>
@@ -727,6 +758,80 @@ public static&nbsp;<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/
 <dd><code><a href="https://docs.oracle.com/javase/8/docs/api/java/io/IOException.html?is-external=true" title="class or interface in java.io">IOException</a></code></dd>
 <dd><code><a href="../../../../../../org/schabi/newpipe/extractor/exceptions/ExtractionException.html" title="class in org.schabi.newpipe.extractor.exceptions">ExtractionException</a></code></dd>
 </dl>
+</li>
+</ul>
+<a name="addYouTubeHeaders-java.util.Map-">
+<!--   -->
+</a>
+<ul class="blockList">
+<li class="blockList">
+<h4>addYouTubeHeaders</h4>
+<pre>public static&nbsp;void&nbsp;addYouTubeHeaders(<a href="https://docs.oracle.com/javase/8/docs/api/java/util/Map.html?is-external=true" title="class or interface in java.util">Map</a>&lt;<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>,<a href="https://docs.oracle.com/javase/8/docs/api/java/util/List.html?is-external=true" title="class or interface in java.util">List</a>&lt;<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>&gt;&gt;&nbsp;headers)
+                              throws <a href="https://docs.oracle.com/javase/8/docs/api/java/io/IOException.html?is-external=true" title="class or interface in java.io">IOException</a>,
+                                     <a href="../../../../../../org/schabi/newpipe/extractor/exceptions/ExtractionException.html" title="class in org.schabi.newpipe.extractor.exceptions">ExtractionException</a></pre>
+<div class="block">Add required headers and cookies to an existing headers Map.</div>
+<dl>
+<dt><span class="throwsLabel">Throws:</span></dt>
+<dd><code><a href="https://docs.oracle.com/javase/8/docs/api/java/io/IOException.html?is-external=true" title="class or interface in java.io">IOException</a></code></dd>
+<dd><code><a href="../../../../../../org/schabi/newpipe/extractor/exceptions/ExtractionException.html" title="class in org.schabi.newpipe.extractor.exceptions">ExtractionException</a></code></dd>
+<dt><span class="seeLabel">See Also:</span></dt>
+<dd><a href="../../../../../../org/schabi/newpipe/extractor/services/youtube/YoutubeParsingHelper.html#addClientInfoHeaders-java.util.Map-"><code>addClientInfoHeaders(Map)</code></a>, 
+<a href="../../../../../../org/schabi/newpipe/extractor/services/youtube/YoutubeParsingHelper.html#addCookieHeader-java.util.Map-"><code>addCookieHeader(Map)</code></a></dd>
+</dl>
+</li>
+</ul>
+<a name="addClientInfoHeaders-java.util.Map-">
+<!--   -->
+</a>
+<ul class="blockList">
+<li class="blockList">
+<h4>addClientInfoHeaders</h4>
+<pre>public static&nbsp;void&nbsp;addClientInfoHeaders(<a href="https://docs.oracle.com/javase/8/docs/api/java/util/Map.html?is-external=true" title="class or interface in java.util">Map</a>&lt;<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>,<a href="https://docs.oracle.com/javase/8/docs/api/java/util/List.html?is-external=true" title="class or interface in java.util">List</a>&lt;<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>&gt;&gt;&nbsp;headers)
+                                 throws <a href="https://docs.oracle.com/javase/8/docs/api/java/io/IOException.html?is-external=true" title="class or interface in java.io">IOException</a>,
+                                        <a href="../../../../../../org/schabi/newpipe/extractor/exceptions/ExtractionException.html" title="class in org.schabi.newpipe.extractor.exceptions">ExtractionException</a></pre>
+<div class="block">Add the <code>X-YouTube-Client-Name</code> and <code>X-YouTube-Client-Version</code> headers.</div>
+<dl>
+<dt><span class="paramLabel">Parameters:</span></dt>
+<dd><code>headers</code> - The headers which should be completed</dd>
+<dt><span class="throwsLabel">Throws:</span></dt>
+<dd><code><a href="https://docs.oracle.com/javase/8/docs/api/java/io/IOException.html?is-external=true" title="class or interface in java.io">IOException</a></code></dd>
+<dd><code><a href="../../../../../../org/schabi/newpipe/extractor/exceptions/ExtractionException.html" title="class in org.schabi.newpipe.extractor.exceptions">ExtractionException</a></code></dd>
+</dl>
+</li>
+</ul>
+<a name="addCookieHeader-java.util.Map-">
+<!--   -->
+</a>
+<ul class="blockList">
+<li class="blockList">
+<h4>addCookieHeader</h4>
+<pre>public static&nbsp;void&nbsp;addCookieHeader(<a href="https://docs.oracle.com/javase/8/docs/api/java/util/Map.html?is-external=true" title="class or interface in java.util">Map</a>&lt;<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>,<a href="https://docs.oracle.com/javase/8/docs/api/java/util/List.html?is-external=true" title="class or interface in java.util">List</a>&lt;<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>&gt;&gt;&nbsp;headers)</pre>
+<div class="block">Add the <code>CONSENT</code> cookie to prevent redirect to <code>consent.youtube.com</code></div>
+<dl>
+<dt><span class="paramLabel">Parameters:</span></dt>
+<dd><code>headers</code> - the headers which should be completed</dd>
+<dt><span class="seeLabel">See Also:</span></dt>
+<dd><a href="../../../../../../org/schabi/newpipe/extractor/services/youtube/YoutubeParsingHelper.html#CONSENT_COOKIE"><code>CONSENT_COOKIE</code></a></dd>
+</dl>
+</li>
+</ul>
+<a name="generateConsentCookie--">
+<!--   -->
+</a>
+<ul class="blockList">
+<li class="blockList">
+<h4>generateConsentCookie</h4>
+<pre>public static&nbsp;<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>&nbsp;generateConsentCookie()</pre>
+</li>
+</ul>
+<a name="extractCookieValue-java.lang.String-org.schabi.newpipe.extractor.downloader.Response-">
+<!--   -->
+</a>
+<ul class="blockList">
+<li class="blockList">
+<h4>extractCookieValue</h4>
+<pre>public static&nbsp;<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>&nbsp;extractCookieValue(<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>&nbsp;cookieName,
+                                        <a href="../../../../../../org/schabi/newpipe/extractor/downloader/Response.html" title="class in org.schabi.newpipe.extractor.downloader">Response</a>&nbsp;response)</pre>
 </li>
 </ul>
 <a name="defaultAlertsCheck-com.grack.nanojson.JsonObject-">
