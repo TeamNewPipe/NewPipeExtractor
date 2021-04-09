@@ -662,20 +662,6 @@ public class YoutubeParsingHelper {
         return response;
     }
 
-    public static String extractCookieValue(final String cookieName, final Response response) {
-        final List<String> cookies = response.responseHeaders().get("set-cookie");
-        int startIndex;
-        String result = "";
-        for (final String cookie : cookies) {
-            startIndex = cookie.indexOf(cookieName);
-            if (startIndex != -1) {
-                result = cookie.substring(startIndex + cookieName.length() + "=".length(),
-                        cookie.indexOf(";", startIndex));
-            }
-        }
-        return result;
-    }
-
     public static JsonObject getJsonPostResponse(final String endpoint,
                                                 final byte[] body,
                                                 final Localization localization)

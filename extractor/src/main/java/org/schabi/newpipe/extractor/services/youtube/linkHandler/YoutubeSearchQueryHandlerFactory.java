@@ -8,6 +8,7 @@ import java.net.URLEncoder;
 import java.util.List;
 
 import static org.schabi.newpipe.extractor.utils.Utils.UTF_8;
+import static org.schabi.newpipe.extractor.utils.Utils.isNullOrEmpty;
 
 public class YoutubeSearchQueryHandlerFactory extends SearchQueryHandlerFactory {
 
@@ -71,5 +72,28 @@ public class YoutubeSearchQueryHandlerFactory extends SearchQueryHandlerFactory 
                 MUSIC_PLAYLISTS
 //                MUSIC_ARTISTS
         };
+    }
+
+    public static String getSearchParameter(final String contentFilter) {
+        if (!isNullOrEmpty(contentFilter)) {
+            switch (contentFilter) {
+                case VIDEOS:
+                    return "EgIQAQ%3D%3D";
+                case CHANNELS:
+                    return "EgIQAg%3D%3D";
+                case PLAYLISTS:
+                    return "EgIQAw%3D%3D";
+                case ALL:
+                case MUSIC_SONGS:
+                case MUSIC_VIDEOS:
+                case MUSIC_ALBUMS:
+                case MUSIC_PLAYLISTS:
+                case MUSIC_ARTISTS:
+                default:
+                    return "";
+            }
+        } else {
+            return "";
+        }
     }
 }

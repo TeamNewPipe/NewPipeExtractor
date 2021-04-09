@@ -94,8 +94,6 @@ public class YoutubeChannelExtractor extends ChannelExtractor {
             final JsonObject jsonResponse = getJsonPostResponse("navigation/resolve_url",
                     body, getExtractorLocalization());
 
-            System.out.println(jsonResponse.toString());
-
             if (jsonResponse.has("error")) {
                 if (jsonResponse.getInt("code") == 404) {
                     throw new ContentNotAvailableException("No channel associated with this user"

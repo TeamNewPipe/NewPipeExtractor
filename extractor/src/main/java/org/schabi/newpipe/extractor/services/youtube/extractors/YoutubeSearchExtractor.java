@@ -22,6 +22,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import static org.schabi.newpipe.extractor.services.youtube.linkHandler.YoutubeSearchQueryHandlerFactory.getSearchParameter;
 import static org.schabi.newpipe.extractor.services.youtube.YoutubeParsingHelper.*;
 import static org.schabi.newpipe.extractor.utils.Utils.UTF_8;
 import static org.schabi.newpipe.extractor.utils.Utils.isNullOrEmpty;
@@ -55,11 +56,33 @@ public class YoutubeSearchExtractor extends SearchExtractor {
 
     @Override
     public void onFetchPage(@Nonnull final Downloader downloader) throws IOException, ExtractionException {
-        final String url = getUrl() + "&pbj=1";
+        final String query = super.getSearchString();
 
-        final JsonArray ajaxJson = getJsonResponse(url, getExtractorLocalization());
+        // Get the search parameter of the request
+        final List<String> contentFilters = super.getLinkHandler().getContentFilters();
+        final String params;
+        if (!isNullOrEmpty(contentFilters)) {
+            final String searchType = contentFilters.get(0);
+            params = getSearchParameter(searchType);
+        } else {
+            params = "";
+        }
 
-        initialData = ajaxJson.getObject(1).getObject("response");
+        final byte[] body;
+        if (!isNullOrEmpty(params)) {
+            body = JsonWriter.string(prepareJsonBuilder()
+                    .value("query", query)
+                    .value("params", params)
+                    .done())
+                    .getBytes(UTF_8);
+        } else {
+            body = JsonWriter.string(prepareJsonBuilder()
+                    .value("query", query)
+                    .done())
+                    .getBytes(UTF_8);
+        }
+
+        initialData = getJsonPostResponse("search", body, getExtractorLocalization());
     }
 
     @Nonnull
