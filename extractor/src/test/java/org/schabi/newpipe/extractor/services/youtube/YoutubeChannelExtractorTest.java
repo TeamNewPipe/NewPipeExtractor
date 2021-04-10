@@ -13,6 +13,7 @@ import org.schabi.newpipe.extractor.services.BaseChannelExtractorTest;
 import org.schabi.newpipe.extractor.services.youtube.extractors.YoutubeChannelExtractor;
 
 import java.io.IOException;
+import java.util.Random;
 
 import static org.hamcrest.CoreMatchers.containsString;
 import static org.hamcrest.MatcherAssert.assertThat;
@@ -32,6 +33,7 @@ public class YoutubeChannelExtractorTest {
         @BeforeClass
         public static void setUp() throws IOException {
             YoutubeParsingHelper.resetClientVersionAndKey();
+            YoutubeParsingHelper.setNumberGenerator(new Random(1));
             NewPipe.init(new DownloaderFactory().getDownloader(RESOURCE_PATH + "notAvailable"));
         }
 
@@ -54,6 +56,7 @@ public class YoutubeChannelExtractorTest {
         @BeforeClass
         public static void setUp() throws IOException {
             YoutubeParsingHelper.resetClientVersionAndKey();
+            YoutubeParsingHelper.setNumberGenerator(new Random(1));
             NewPipe.init(new DownloaderFactory().getDownloader(RESOURCE_PATH + "notSupported"));
         }
 
@@ -71,6 +74,7 @@ public class YoutubeChannelExtractorTest {
         @BeforeClass
         public static void setUp() throws Exception {
             YoutubeParsingHelper.resetClientVersionAndKey();
+            YoutubeParsingHelper.setNumberGenerator(new Random(1));
             NewPipe.init(new DownloaderFactory().getDownloader(RESOURCE_PATH + "gronkh"));
             extractor = (YoutubeChannelExtractor) YouTube
                     .getChannelExtractor("http://www.youtube.com/user/Gronkh");
@@ -168,6 +172,7 @@ public class YoutubeChannelExtractorTest {
         @BeforeClass
         public static void setUp() throws Exception {
             YoutubeParsingHelper.resetClientVersionAndKey();
+            YoutubeParsingHelper.setNumberGenerator(new Random(1));
             NewPipe.init(new DownloaderFactory().getDownloader(RESOURCE_PATH + "VSauce"));
             extractor = (YoutubeChannelExtractor) YouTube
                     .getChannelExtractor("https://www.youtube.com/user/Vsauce");
@@ -265,6 +270,7 @@ public class YoutubeChannelExtractorTest {
         @BeforeClass
         public static void setUp() throws Exception {
             YoutubeParsingHelper.resetClientVersionAndKey();
+            YoutubeParsingHelper.setNumberGenerator(new Random(1));
             NewPipe.init(new DownloaderFactory().getDownloader(RESOURCE_PATH + "kurzgesagt"));
             extractor = (YoutubeChannelExtractor) YouTube
                     .getChannelExtractor("https://www.youtube.com/channel/UCsXVk37bltHxD1rDPwtNM8Q");
@@ -383,6 +389,7 @@ public class YoutubeChannelExtractorTest {
         @BeforeClass
         public static void setUp() throws Exception {
             YoutubeParsingHelper.resetClientVersionAndKey();
+            YoutubeParsingHelper.setNumberGenerator(new Random(1));
             NewPipe.init(new DownloaderFactory().getDownloader(RESOURCE_PATH + "captainDisillusion"));
             extractor = (YoutubeChannelExtractor) YouTube
                     .getChannelExtractor("https://www.youtube.com/user/CaptainDisillusion/videos");
@@ -478,6 +485,7 @@ public class YoutubeChannelExtractorTest {
         @BeforeClass
         public static void setUp() throws Exception {
             YoutubeParsingHelper.resetClientVersionAndKey();
+            YoutubeParsingHelper.setNumberGenerator(new Random(1));
             NewPipe.init(new DownloaderFactory().getDownloader(RESOURCE_PATH + "random"));
             extractor = (YoutubeChannelExtractor) YouTube
                     .getChannelExtractor("https://www.youtube.com/channel/UCUaQMQS9lY5lit3vurpXQ6w");

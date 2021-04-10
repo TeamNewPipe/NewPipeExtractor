@@ -11,6 +11,7 @@ import org.schabi.newpipe.extractor.stream.StreamType;
 
 import java.util.Arrays;
 import java.util.List;
+import java.util.Random;
 
 import javax.annotation.Nullable;
 
@@ -26,6 +27,7 @@ public class YoutubeStreamExtractorUnlistedTest extends DefaultStreamExtractorTe
     @BeforeClass
     public static void setUp() throws Exception {
         YoutubeParsingHelper.resetClientVersionAndKey();
+        YoutubeParsingHelper.setNumberGenerator(new Random(1));
         NewPipe.init(new DownloaderFactory().getDownloader(RESOURCE_PATH + "unlisted"));
         extractor = YouTube.getStreamExtractor(URL);
         extractor.fetchPage();

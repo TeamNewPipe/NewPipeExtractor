@@ -13,6 +13,7 @@ import org.schabi.newpipe.extractor.stream.StreamType;
 
 import java.util.Arrays;
 import java.util.List;
+import java.util.Random;
 
 import javax.annotation.Nullable;
 
@@ -28,6 +29,7 @@ public class YoutubeStreamExtractorLivestreamTest extends DefaultStreamExtractor
     @BeforeClass
     public static void setUp() throws Exception {
         YoutubeParsingHelper.resetClientVersionAndKey();
+        YoutubeParsingHelper.setNumberGenerator(new Random(1));
         NewPipe.init(new DownloaderFactory().getDownloader(RESOURCE_PATH + "live"));
         extractor = YouTube.getStreamExtractor(URL);
         extractor.fetchPage();
@@ -51,8 +53,8 @@ public class YoutubeStreamExtractorLivestreamTest extends DefaultStreamExtractor
     @Override public String expectedUploaderName() { return "Lofi Girl"; }
     @Override public String expectedUploaderUrl() { return "https://www.youtube.com/channel/UCSJ4gkVC6NrvII8umztf0Ow"; }
     @Override public List<String> expectedDescriptionContains() {
-        return Arrays.asList("https://bit.ly/chilledcow-playlists",
-                "https://bit.ly/chilledcow-submissions");
+        return Arrays.asList("https://bit.ly/lofigirl-merch",
+                "Thank you for listening, I hope you will have a good time here");
     }
     @Override public boolean expectedUploaderVerified() { return true; }
     @Override public long expectedLength() { return 0; }
