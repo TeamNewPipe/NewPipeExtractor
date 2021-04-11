@@ -21,6 +21,7 @@ import static org.schabi.newpipe.extractor.ServiceList.YouTube;
 /**
  * Test for {@link YoutubeStreamLinkHandlerFactory}
  */
+
 @Ignore("Video is not available in specific countries. Someone else has to generate mocks")
 public class YoutubeStreamExtractorControversialTest extends DefaultStreamExtractorTest {
     private static final String RESOURCE_PATH = DownloaderFactory.RESOURCE_PATH + "services/youtube/extractor/stream/";
@@ -59,5 +60,4 @@ public class YoutubeStreamExtractorControversialTest extends DefaultStreamExtrac
     @Override public List<String> expectedTags() { return Arrays.asList("Books", "Burning", "Jones", "Koran", "Qur'an", "Terry", "the amazing atheist"); }
     @Override public String expectedCategory() { return "Entertainment"; }
     @Override public String expectedLicence() { return "YouTube licence"; }
-
 }

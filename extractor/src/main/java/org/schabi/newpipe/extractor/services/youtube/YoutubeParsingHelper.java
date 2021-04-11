@@ -64,7 +64,7 @@ public class YoutubeParsingHelper {
     private YoutubeParsingHelper() {
     }
 
-    private static final String HARDCODED_CLIENT_VERSION = "2.20200214.04.00";
+    private static final String HARDCODED_CLIENT_VERSION = "2.20210408.08.00";
     private static String clientVersion;
 
     private static String key;
@@ -413,7 +413,8 @@ public class YoutubeParsingHelper {
     }
 
     public static boolean areHardcodedYoutubeMusicKeysValid() throws IOException, ReCaptchaException {
-        final String url = "https://music.youtube.com/youtubei/v1/search?alt=json&key=" + HARDCODED_YOUTUBE_MUSIC_KEYS[0];
+        final String url = "https://youtubei.googleapis.com/youtubei/v1/music/get_search_suggestions?alt=json&key="
+                + HARDCODED_YOUTUBE_MUSIC_KEYS[0];
 
         // @formatter:off
         byte[] json = JsonWriter.string()
@@ -440,8 +441,7 @@ public class YoutubeParsingHelper {
                         .value("enableSafetyMode", false)
                     .end()
                 .end()
-                .value("query", "test")
-                .value("params", "Eg-KAQwIARAAGAAgACgAMABqChAEEAUQAxAKEAk%3D")
+                .value("input", "")
             .end().done().getBytes(UTF_8);
         // @formatter:on
 
@@ -455,7 +455,7 @@ public class YoutubeParsingHelper {
 
         final String response = getDownloader().post(url, headers, json).responseBody();
 
-        return response.length() > 50; // ensure to have a valid response
+        return response.length() > 500; // ensure to have a valid response
     }
 
     public static String[] getYoutubeMusicKeys() throws IOException, ReCaptchaException, Parser.RegexException {

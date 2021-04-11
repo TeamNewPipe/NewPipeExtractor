@@ -278,7 +278,6 @@ public class YoutubeSearchExtractorTest {
         @Override public String expectedId() { return QUERY; }
         @Override public String expectedUrlContains() { return "youtube.com/results?search_query=" + QUERY; }
         @Override public String expectedOriginalUrlContains() throws Exception { return "youtube.com/results?search_query=" + QUERY; }
-
     }
 
     public static class ChannelVerified extends DefaultSearchExtractorTest {
@@ -318,5 +317,4 @@ public class YoutubeSearchExtractorTest {
             assertTrue(verified);
         }
     }
-
 }
