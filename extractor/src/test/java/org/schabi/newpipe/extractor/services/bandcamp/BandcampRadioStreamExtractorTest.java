@@ -54,6 +54,7 @@ public class BandcampRadioStreamExtractorTest extends DefaultStreamExtractorTest
     @Override public StreamType expectedStreamType() { return StreamType.AUDIO_STREAM; }
     @Override public StreamingService expectedService() { return Bandcamp; }
     @Override public String expectedUploaderName() { return "Andrew Jervis"; }
+    @Override public int expectedStreamSegmentsCount() { return 30; }
 
     @Test(expected = ContentNotSupportedException.class)
     public void testGetUploaderUrl() throws ParsingException {

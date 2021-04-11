@@ -11,6 +11,11 @@ public class StreamSegment implements Serializable {
     private String title;
 
     /**
+     * The channel or creator linked to this segment
+     */
+    private String channelName;
+
+    /**
      * Timestamp of the starting point in seconds
      */
     private int startTimeSeconds;
@@ -47,6 +52,15 @@ public class StreamSegment implements Serializable {
 
     public void setStartTimeSeconds(final int startTimeSeconds) {
         this.startTimeSeconds = startTimeSeconds;
+    }
+
+    @Nullable
+    public String getChannelName() {
+        return channelName;
+    }
+
+    public void setChannelName(@Nullable final String channelName) {
+        this.channelName = channelName;
     }
 
     @Nullable
