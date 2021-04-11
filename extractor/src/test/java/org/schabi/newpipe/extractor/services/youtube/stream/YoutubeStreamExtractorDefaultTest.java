@@ -245,9 +245,9 @@ public class YoutubeStreamExtractorDefaultTest {
         // @formatter:on
     }
 
-    public static class StreamSegmentsTestOstCollection extends DefaultStreamExtractorTest {
+    public static class StreamSegmentsTestTagesschau extends DefaultStreamExtractorTest {
         // StreamSegment example with single macro-makers panel
-        private static final String ID = "2RYrHwnLHw0";
+        private static final String ID = "KI7fMGRg0Wk";
         private static final String URL = BASE_URL + ID;
         private static StreamExtractor extractor;
 
@@ -255,7 +255,7 @@ public class YoutubeStreamExtractorDefaultTest {
         public static void setUp() throws Exception {
             YoutubeParsingHelper.resetClientVersionAndKey();
             YoutubeParsingHelper.setNumberGenerator(new Random(1));
-            NewPipe.init(new DownloaderFactory().getDownloader(RESOURCE_PATH + "streamSegmentsOstCollection"));
+            NewPipe.init(new DownloaderFactory().getDownloader(RESOURCE_PATH + "streamSegmentsTagesschau"));
             extractor = YouTube.getStreamExtractor(URL);
             extractor.fetchPage();
         }
@@ -263,41 +263,45 @@ public class YoutubeStreamExtractorDefaultTest {
         // @formatter:off
         @Override public StreamExtractor extractor() { return extractor; }
         @Override public StreamingService expectedService() { return YouTube; }
-        @Override public String expectedName() { return "1 Hour - Most Epic Anime Mix - Battle Anime OST"; }
+        @Override public String expectedName() { return "tagesschau 20:00 Uhr, 17.03.2021"; }
         @Override public String expectedId() { return ID; }
         @Override public String expectedUrlContains() { return BASE_URL + ID; }
         @Override public String expectedOriginalUrlContains() { return URL; }
 
         @Override public StreamType expectedStreamType() { return StreamType.VIDEO_STREAM; }
-        @Override public String expectedUploaderName() { return "MathCaires"; }
-        @Override public String expectedUploaderUrl() { return "https://www.youtube.com/channel/UChFoHg6IT18SCqiwCp_KY7Q"; }
+        @Override public String expectedUploaderName() { return "tagesschau"; }
+        @Override public String expectedUploaderUrl() { return "https://www.youtube.com/channel/UC5NOEUbkLheQcaaRldYW5GA"; }
+        @Override public boolean expectedUploaderVerified() { return true; }
         @Override public List<String> expectedDescriptionContains() {
-            return Arrays.asList("soundtracks", "9:49", "YouSeeBIGGIRLTT");
+            return Arrays.asList("Themen der Sendung", "07:15", "Wetter", "Sendung nachträglich bearbeitet");
         }
-        @Override public long expectedLength() { return 3889; }
-        @Override public long expectedViewCountAtLeast() { return 2463261; }
-        @Nullable @Override public String expectedUploadDate() { return "2019-06-26 00:00:00.000"; }
-        @Nullable @Override public String expectedTextualUploadDate() { return "2019-06-26"; }
-        @Override public long expectedLikeCountAtLeast() { return 32100; }
-        @Override public long expectedDislikeCountAtLeast() { return 750; }
+        @Override public long expectedLength() { return 953; }
+        @Override public long expectedViewCountAtLeast() { return 270000; }
+        @Nullable @Override public String expectedUploadDate() { return "2021-03-17 00:00:00.000"; }
+        @Nullable @Override public String expectedTextualUploadDate() { return "2021-03-17"; }
+        @Override public long expectedLikeCountAtLeast() { return 2300; }
+        @Override public long expectedDislikeCountAtLeast() { return 450; }
         @Override public boolean expectedHasSubtitles() { return false; }
-        @Override public int expectedStreamSegmentsCount() { return 17; }
+        @Override public int expectedStreamSegmentsCount() { return 13; }
         @Override public String expectedLicence() { return YOUTUBE_LICENCE; }
-        @Override public String expectedCategory() { return "Music"; }
-        @Override public List<String> expectedTags() {
-            return Arrays.asList("2019", "2019 anime", "Anime OST", "Epic anime ost", "OST Anime",
-                    "anime epic soundtrack", "armin", "attack on titan", "battle anime ost", "battle anime soundtracks",
-                    "combat anime ost", "epic soundtrack", "eren", "mikasa", "motivational anime ost",
-                    "motivational anime soundtracks", "shingeki no kyojin");
-        }
+        @Override public String expectedCategory() { return "News & Politics"; }
         // @formatter:on
 
         @Test
-        public void testStreamSegment() throws Exception {
+        public void testStreamSegment0() throws Exception {
+            final StreamSegment segment = extractor.getStreamSegments().get(0);
+            assertEquals(0, segment.getStartTimeSeconds());
+            assertEquals("Guten Abend", segment.getTitle());
+            assertEquals(BASE_URL + ID + "?t=0", segment.getUrl());
+            assertNotNull(segment.getPreviewUrl());
+        }
+
+        @Test
+        public void testStreamSegment3() throws Exception {
             final StreamSegment segment = extractor.getStreamSegments().get(3);
-            assertEquals(589, segment.getStartTimeSeconds());
-            assertEquals("Attack on Titan S2 - YouSeeBIGGIRLTT", segment.getTitle());
-            assertEquals(BASE_URL + ID + "?t=589", segment.getUrl());
+            assertEquals(224, segment.getStartTimeSeconds());
+            assertEquals("Pandemie dämpft Konjunkturprognose für 2021", segment.getTitle());
+            assertEquals(BASE_URL + ID + "?t=224", segment.getUrl());
             assertNotNull(segment.getPreviewUrl());
         }
     }
