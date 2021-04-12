@@ -37,7 +37,6 @@ import static org.schabi.newpipe.extractor.utils.Utils.HTTP;
 import static org.schabi.newpipe.extractor.utils.Utils.HTTPS;
 import static org.schabi.newpipe.extractor.utils.Utils.UTF_8;
 import static org.schabi.newpipe.extractor.utils.Utils.isNullOrEmpty;
-import static org.schabi.newpipe.extractor.utils.Utils.join;
 
 /*
  * Created by Christian Schabesberger on 02.03.16.
@@ -65,12 +64,16 @@ public class YoutubeParsingHelper {
     }
 
     private static final String HARDCODED_CLIENT_VERSION = "2.20210408.08.00";
+    private static final String HARDCODED_KEY = "AIzaSyAO_FJ2SlqU8Q4STEHLGCilw_Y9_11qcW8";
     private static String clientVersion;
-
     private static String key;
 
     private static final String[] HARDCODED_YOUTUBE_MUSIC_KEYS = {"AIzaSyC9XL3ZjWddXya6X74dJoCTL-WEYFDNX30", "67", "0.1"};
     private static String[] youtubeMusicKeys;
+
+    private static boolean keyAndVersionExtracted = false;
+    private static boolean areHardcodedClientVersionAndKeyValidRan = false;
+    private static boolean areHardcodedClientVersionAndKeyValidValue;
 
     private static Random numberGenerator = new Random();
 
@@ -220,7 +223,7 @@ public class YoutubeParsingHelper {
      * Checks if the given playlist id is a YouTube Mix (auto-generated playlist)
      * Ids from a YouTube Mix start with "RD"
      *
-     * @param playlistId
+     * @param playlistId the id of the playlist
      * @return Whether given id belongs to a YouTube Mix
      */
     public static boolean isYoutubeMixId(final String playlistId) {
@@ -231,7 +234,7 @@ public class YoutubeParsingHelper {
      * Checks if the given playlist id is a YouTube Music Mix (auto-generated playlist)
      * Ids from a YouTube Music Mix start with "RDAMVM" or "RDCLAK"
      *
-     * @param playlistId
+     * @param playlistId the playlist id
      * @return Whether given id belongs to a YouTube Music Mix
      */
     public static boolean isYoutubeMusicMixId(final String playlistId) {
@@ -286,25 +289,52 @@ public class YoutubeParsingHelper {
         }
     }
 
-    public static boolean isHardcodedClientVersionValid() throws IOException, ExtractionException {
-        final String url = "https://www.youtube.com/results?search_query=test&pbj=1";
+    public static boolean areHardcodedClientVersionAndKeyValid() throws IOException, ExtractionException {
+        if (areHardcodedClientVersionAndKeyValidRan) return areHardcodedClientVersionAndKeyValidValue;
+        // @formatter:off
+        final byte[] body = JsonWriter.string()
+            .object()
+                .object("context")
+                    .object("client")
+                        .value("hl", "en")
+                        .value("gl", "GB")
+                        .value("clientName", "1")
+                        .value("clientVersion", HARDCODED_CLIENT_VERSION)
+                    .end()
+                .end()
+            .end().done().getBytes(UTF_8);
+        // @formatter:on
 
         final Map<String, List<String>> headers = new HashMap<>();
         headers.put("X-YouTube-Client-Name", Collections.singletonList("1"));
         headers.put("X-YouTube-Client-Version", Collections.singletonList(HARDCODED_CLIENT_VERSION));
-        final String response = getDownloader().get(url, headers).responseBody();
+        addCookieHeader(headers);
 
-        return response.length() > 50; // ensure to have a valid response
+        // This endpoint is fetched by the YouTube website to get the items of its main menu and is
+        // pretty lightweight (around 30kB)
+        final Response response = getDownloader().post("https://youtubei.googleapis.com/youtubei/v1/guide?key="
+                        + HARDCODED_KEY, headers, body);
+        final String responseBody = response.responseBody();
+        final int responseCode = response.responseCode();
+
+        areHardcodedClientVersionAndKeyValidValue = responseBody.length() > 5000
+                && responseCode == 200; // Ensure to have a valid response
+        areHardcodedClientVersionAndKeyValidRan = true;
+        return areHardcodedClientVersionAndKeyValidValue;
     }
 
     private static void extractClientVersionAndKey() throws IOException, ExtractionException {
-        final String url = "https://www.youtube.com/results?search_query=test";
+        // Don't extract the client version and the innertube API key if it has been already extracted
+        if (!keyAndVersionExtracted) return;
+        // Don't provide a search term in order to have a smaller response
+        final String url = "https://www.youtube.com/results?search_query=";
         final String html = getDownloader().get(url).responseBody();
         final JsonObject initialData = getInitialData(html);
-        final JsonArray serviceTrackingParams = initialData.getObject("responseContext").getArray("serviceTrackingParams");
+        final JsonArray serviceTrackingParams = initialData.getObject("responseContext")
+                .getArray("serviceTrackingParams");
         String shortClientVersion = null;
 
-        // try to get version from initial data first
+        // Try to get version from initial data first
         for (final Object service : serviceTrackingParams) {
             final JsonObject s = (JsonObject) service;
             if (s.getString("service").equals("CSI")) {
@@ -317,7 +347,7 @@ public class YoutubeParsingHelper {
                     }
                 }
             } else if (s.getString("service").equals("ECATCHER")) {
-                // fallback to get a shortened client version which does not contain the last two digits
+                // Fallback to get a shortened client version which does not contain the last two digits
                 final JsonArray params = s.getArray("params");
                 for (final Object param : params) {
                     final JsonObject p = (JsonObject) param;
@@ -358,6 +388,7 @@ public class YoutubeParsingHelper {
             } catch (final Parser.RegexException ignored) {
             }
         }
+        keyAndVersionExtracted = true;
     }
 
     /**
@@ -365,9 +396,9 @@ public class YoutubeParsingHelper {
      */
     public static String getClientVersion() throws IOException, ExtractionException {
         if (!isNullOrEmpty(clientVersion)) return clientVersion;
-        if (isHardcodedClientVersionValid()) return clientVersion = HARDCODED_CLIENT_VERSION;
+        if (areHardcodedClientVersionAndKeyValid()) return clientVersion = HARDCODED_CLIENT_VERSION;
 
-        extractClientVersionAndKey();
+        if (!keyAndVersionExtracted) extractClientVersionAndKey();
         if (isNullOrEmpty(key)) throw new ParsingException("Could not extract client version");
         return clientVersion;
     }
@@ -377,8 +408,9 @@ public class YoutubeParsingHelper {
      */
     public static String getKey() throws IOException, ExtractionException {
         if (!isNullOrEmpty(key)) return key;
+        if (areHardcodedClientVersionAndKeyValid()) return key = HARDCODED_KEY;
 
-        extractClientVersionAndKey();
+        if (!keyAndVersionExtracted) extractClientVersionAndKey();
         if (isNullOrEmpty(key)) throw new ParsingException("Could not extract key");
         return key;
     }
@@ -453,9 +485,11 @@ public class YoutubeParsingHelper {
         headers.put("Content-Type", Collections.singletonList("application/json"));
         addCookieHeader(headers);
 
-        final String response = getDownloader().post(url, headers, json).responseBody();
+        final Response response = getDownloader().post(url, headers, json);
+        final String responseBody = response.responseBody();
+        final int responseCode = response.responseCode();
 
-        return response.length() > 500; // ensure to have a valid response
+        return responseBody.length() > 500 && responseCode == 200; // Ensure to have a valid response
     }
 
     public static String[] getYoutubeMusicKeys() throws IOException, ReCaptchaException, Parser.RegexException {
@@ -628,7 +662,7 @@ public class YoutubeParsingHelper {
         }
 
         final String responseBody = response.responseBody();
-        if (responseBody.length() < 50) { // ensure to have a valid response
+        if (responseBody.length() < 50) { // Ensure to have a valid response
             throw new ParsingException("JSON response is too short");
         }
 
@@ -666,9 +700,11 @@ public class YoutubeParsingHelper {
                                                  final byte[] body,
                                                  final Localization localization)
             throws IOException, ExtractionException {
+        final Map<String, List<String>> headers = new HashMap<>();
+        addYouTubeHeaders(headers);
 
         final Response response = getDownloader().post("https://youtubei.googleapis.com/youtubei/v1/"
-                + endpoint + "?key=" + getKey(), new HashMap<>(), body, localization);
+                + endpoint + "?key=" + getKey(), headers, body, localization);
 
         return JsonUtils.toJsonObject(getValidJsonResponseBody(response));
     }
