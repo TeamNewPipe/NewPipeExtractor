@@ -71,10 +71,14 @@ public class BandcampExtractorHelper {
     }
 
     /**
+     * Generate image url from image ID.
+     * <p>
+     * The appendix "_10" was chosen because it provides images sized 1200x1200. Other integer
+     * values are possible as well (e.g. 0 is a very large resolution, possibly the original).
+     *
      * @param id    The image ID
-     * @param album Whether this is the cover of an album
-     * @return URL of image with this ID in size 10 which is 1200x1200 (we could also choose size 0
-     * but we don't want something as large as 3460x3460 here)
+     * @param album True if this is the cover of an album or track
+     * @return URL of image with this ID sized 1200x1200
      */
     public static String getImageUrl(final long id, final boolean album) {
         return "https://f4.bcbits.com/img/" + (album ? 'a' : "") + id + "_10.jpg";

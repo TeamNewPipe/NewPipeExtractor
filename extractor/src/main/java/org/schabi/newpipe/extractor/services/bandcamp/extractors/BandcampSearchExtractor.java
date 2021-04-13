@@ -48,7 +48,6 @@ public class BandcampSearchExtractor extends SearchExtractor {
     }
 
     public InfoItemsPage<InfoItem> getPage(final Page page) throws IOException, ExtractionException {
-        // okay apparently this is where we DOWNLOAD the page and then COMMIT its ENTRIES to an INFOITEMPAGE
         final String html = getDownloader().get(page.getUrl()).responseBody();
 
         final InfoItemsSearchCollector collector = new InfoItemsSearchCollector(getServiceId());

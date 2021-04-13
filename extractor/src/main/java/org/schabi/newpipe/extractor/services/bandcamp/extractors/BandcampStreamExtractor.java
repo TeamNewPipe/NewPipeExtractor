@@ -291,7 +291,9 @@ public class BandcampStreamExtractor extends StreamExtractor {
 
         int license = current.getInt("license_type");
 
-        // Tests resulted in this mapping of ints to licence: https://cloud.disroot.org/s/ZTWBxbQ9fKRmRWJ/preview
+        /* Tests resulted in this mapping of ints to licence: https://cloud.disroot.org/s/ZTWBxbQ9fKRmRWJ/preview
+         * (screenshot from a Bandcamp artist's account)
+         */
 
         switch (license) {
             case 1:
