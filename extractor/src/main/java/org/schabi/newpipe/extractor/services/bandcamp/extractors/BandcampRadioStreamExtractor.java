@@ -53,7 +53,10 @@ public class BandcampRadioStreamExtractor extends BandcampStreamExtractor {
     @Nonnull
     @Override
     public String getName() throws ParsingException {
-        return showInfo.getString("subtitle"); // "audio_title" is a boring title
+        /* Select "subtitle" and not "audio_title", as the latter would cause a lot of
+         * items to show the same title, e.g. "Bandcamp Weekly".
+         */
+        return showInfo.getString("subtitle");
     }
 
     @Nonnull

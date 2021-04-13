@@ -24,8 +24,8 @@ public class BandcampRadioInfoItemExtractor implements StreamInfoItemExtractor {
     @Override
     public long getDuration() {
         /* Duration is only present in the more detailed information that has to be queried separately.
-         * Because the servers would probably not like over 300 queries every time someone opens the kiosk,
-         * we're just providing 0 here.
+         * Therefore, over 300 queries would be needed every time the kiosk is opened if we were to
+         * display the real value.
          */
         //return query(show.getInt("id")).getLong("audio_duration");
         return 0;

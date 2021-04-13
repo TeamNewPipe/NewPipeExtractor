@@ -38,8 +38,8 @@ public class BandcampChannelExtractor extends ChannelExtractor {
     @Override
     public String getBannerUrl() throws ParsingException {
         /*
-         * Why does the mobile endpoint not contain the header?? Or at least not the same one?
-         * Anyway we're back to querying websites
+         * Mobile API does not return the header or not the correct header.
+         * Therefore, we need to query the website
          */
         try {
             final String html = getDownloader()
@@ -61,8 +61,7 @@ public class BandcampChannelExtractor extends ChannelExtractor {
     }
 
     /**
-     * bandcamp stopped providing RSS feeds when appending /feed to any URL
-     * because too few people used it.
+     * Bandcamp discontinued their RSS feeds because it hadn't been used enough.
      */
     @Override
     public String getFeedUrl() {
@@ -108,7 +107,7 @@ public class BandcampChannelExtractor extends ChannelExtractor {
         final JsonArray discography = channelInfo.getArray("discography");
 
         for (int i = 0; i < discography.size(); i++) {
-            // I define discograph as an item that can appear in a discography
+            // A discograph is as an item appears in a discography
             final JsonObject discograph = discography.getObject(i);
 
             if (!discograph.getString("item_type").equals("track")) continue;
