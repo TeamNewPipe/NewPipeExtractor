@@ -8,8 +8,7 @@ import org.schabi.newpipe.extractor.stream.StreamType;
 import javax.annotation.Nullable;
 
 /**
- * Implements methods that return a constant value for better readability in
- * subclasses.
+ * Implements methods that return a constant value in subclasses for better readability.
  */
 public abstract class BandcampStreamInfoItemExtractor implements StreamInfoItemExtractor {
     private final String uploaderUrl;
