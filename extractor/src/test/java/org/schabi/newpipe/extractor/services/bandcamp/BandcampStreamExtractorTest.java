@@ -126,7 +126,7 @@ public class BandcampStreamExtractorTest extends DefaultStreamExtractorTest {
 
     @Override
     public boolean expectedHasRelatedItems() {
-        return false;
+        return true;
     }
 
     @Override

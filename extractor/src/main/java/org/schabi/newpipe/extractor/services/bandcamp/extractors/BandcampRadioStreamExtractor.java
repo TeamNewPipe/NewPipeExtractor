@@ -14,6 +14,7 @@ import org.schabi.newpipe.extractor.exceptions.ExtractionException;
 import org.schabi.newpipe.extractor.exceptions.ParsingException;
 import org.schabi.newpipe.extractor.exceptions.ReCaptchaException;
 import org.schabi.newpipe.extractor.linkhandler.LinkHandler;
+import org.schabi.newpipe.extractor.playlist.PlaylistInfoItemsCollector;
 import org.schabi.newpipe.extractor.stream.AudioStream;
 import org.schabi.newpipe.extractor.stream.Description;
 import org.schabi.newpipe.extractor.stream.StreamSegment;
@@ -164,5 +165,11 @@ public class BandcampRadioStreamExtractor extends BandcampStreamExtractor {
     @Override
     public Privacy getPrivacy() {
         return Privacy.PUBLIC;
+    }
+
+    @Override
+    public PlaylistInfoItemsCollector getRelatedItems() {
+        // Contrary to other Bandcamp streams, radio streams don't have related items
+        return null;
     }
 }
