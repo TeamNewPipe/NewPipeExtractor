@@ -16,6 +16,7 @@ import org.schabi.newpipe.extractor.exceptions.ExtractionException;
 import org.schabi.newpipe.extractor.exceptions.ParsingException;
 import org.schabi.newpipe.extractor.linkhandler.LinkHandler;
 import org.schabi.newpipe.extractor.localization.DateWrapper;
+import org.schabi.newpipe.extractor.playlist.PlaylistInfoItemsCollector;
 import org.schabi.newpipe.extractor.stream.*;
 import org.schabi.newpipe.extractor.utils.JsonUtils;
 import org.schabi.newpipe.extractor.utils.Utils;
@@ -245,8 +246,17 @@ public class BandcampStreamExtractor extends StreamExtractor {
     }
 
     @Override
-    public StreamInfoItemsCollector getRelatedItems() {
-        return null;
+    public PlaylistInfoItemsCollector getRelatedItems() {
+
+        PlaylistInfoItemsCollector collector = new PlaylistInfoItemsCollector(getServiceId());
+
+        Elements recommendedAlbums = document.getElementsByClass("recommended-album");
+
+        for (Element album : recommendedAlbums) {
+            collector.commit(new BandcampRelatedPlaylistInfoItemExtractor(album));
+        }
+
+        return collector;
     }
 
     @Override
