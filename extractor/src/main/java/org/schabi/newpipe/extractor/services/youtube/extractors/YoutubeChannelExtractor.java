@@ -73,20 +73,23 @@ public class YoutubeChannelExtractor extends ChannelExtractor {
      */
     private String redirectedChannelId;
 
-    public YoutubeChannelExtractor(final StreamingService service, final ListLinkHandler linkHandler) {
+    public YoutubeChannelExtractor(final StreamingService service,
+                                   final ListLinkHandler linkHandler) {
         super(service, linkHandler);
     }
 
     @Override
-    public void onFetchPage(@Nonnull final Downloader downloader) throws IOException, ExtractionException {
+    public void onFetchPage(@Nonnull final Downloader downloader) throws IOException,
+            ExtractionException {
         final String channel_path = super.getId();
         final String[] channelInfo = channel_path.split("/");
+        final String contentCountry = getExtractorContentCountry().getCountryCode();
         String id = "";
         // If the url is an URL which is not a /channel URL, we need to use the
         // navigation/resolve_url endpoint of the youtubei API to get the channel id. Otherwise, we
         // couldn't get information about the channel associated with this URL, if there is one.
         if (!channelInfo[0].equals("channel")) {
-            final byte[] body = JsonWriter.string(prepareJsonBuilder()
+            final byte[] body = JsonWriter.string(prepareJsonBuilder(contentCountry)
                     .value("url", "https://www.youtube.com/" + channel_path)
                     .done())
                     .getBytes(UTF_8);
@@ -131,7 +134,7 @@ public class YoutubeChannelExtractor extends ChannelExtractor {
 
         int level = 0;
         while (level < 3) {
-            final byte[] body = JsonWriter.string(prepareJsonBuilder()
+            final byte[] body = JsonWriter.string(prepareJsonBuilder(contentCountry)
                     .value("browseId", id)
                     .value("params", "EgZ2aWRlb3M%3D") // equals to videos
                     .done())
@@ -336,7 +339,8 @@ public class YoutubeChannelExtractor extends ChannelExtractor {
     }
 
     @Override
-    public InfoItemsPage<StreamInfoItem> getPage(final Page page) throws IOException, ExtractionException {
+    public InfoItemsPage<StreamInfoItem> getPage(final Page page) throws IOException,
+            ExtractionException {
         if (page == null || isNullOrEmpty(page.getUrl())) {
             throw new IllegalArgumentException("Page doesn't contain an URL");
         }
@@ -361,7 +365,8 @@ public class YoutubeChannelExtractor extends ChannelExtractor {
         return new InfoItemsPage<>(collector, getNextPageFrom(continuation));
     }
 
-    private Page getNextPageFrom(final JsonObject continuations) throws IOException, ExtractionException {
+    private Page getNextPageFrom(final JsonObject continuations) throws IOException,
+            ExtractionException {
         if (isNullOrEmpty(continuations)) {
             return null;
         }
@@ -370,7 +375,8 @@ public class YoutubeChannelExtractor extends ChannelExtractor {
         final String continuation = continuationEndpoint.getObject("continuationCommand")
                 .getString("token");
 
-        final byte[] body = JsonWriter.string(prepareJsonBuilder()
+        final byte[] body = JsonWriter.string(prepareJsonBuilder(getExtractorContentCountry()
+                .getCountryCode())
                 .value("continuation", continuation)
                 .done())
                 .getBytes(UTF_8);

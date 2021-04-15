@@ -42,6 +42,7 @@ import javax.annotation.Nonnull;
 import static org.schabi.newpipe.extractor.services.youtube.YoutubeParsingHelper.getClientVersion;
 import static org.schabi.newpipe.extractor.services.youtube.YoutubeParsingHelper.getJsonPostResponse;
 import static org.schabi.newpipe.extractor.services.youtube.YoutubeParsingHelper.getTextAtKey;
+import static org.schabi.newpipe.extractor.services.youtube.YoutubeParsingHelper.prepareJsonBuilder;
 import static org.schabi.newpipe.extractor.utils.Utils.UTF_8;
 import static org.schabi.newpipe.extractor.utils.Utils.isNullOrEmpty;
 
@@ -57,18 +58,11 @@ public class YoutubeTrendingExtractor extends KioskExtractor<StreamInfoItem> {
     @Override
     public void onFetchPage(@Nonnull final Downloader downloader) throws IOException, ExtractionException {
         // @formatter:off
-        final byte[] body = JsonWriter.string()
-            .object()
-                .object("context")
-                    .object("client")
-                        .value("hl", "en")
-                        .value("gl", getExtractorContentCountry().getCountryCode())
-                        .value("clientName", "1")
-                        .value("clientVersion", getClientVersion())
-                    .end()
-                .end()
+        final byte[] body = JsonWriter.string(prepareJsonBuilder(getExtractorContentCountry()
+                .getCountryCode())
                 .value("browseId", "FEtrending")
-            .end().done().getBytes(UTF_8);
+                .done())
+                .getBytes(UTF_8);
         // @formatter:on
 
         initialData = getJsonPostResponse("browse", body, getExtractorLocalization());

@@ -63,7 +63,7 @@ public class YoutubeParsingHelper {
     private YoutubeParsingHelper() {
     }
 
-    private static final String HARDCODED_CLIENT_VERSION = "2.20210408.08.00";
+    private static final String HARDCODED_CLIENT_VERSION = "2.20210413.07.00";
     private static final String HARDCODED_KEY = "AIzaSyAO_FJ2SlqU8Q4STEHLGCilw_Y9_11qcW8";
     private static String clientVersion;
     private static String key;
@@ -729,7 +729,7 @@ public class YoutubeParsingHelper {
         return JsonUtils.toJsonArray(getValidJsonResponseBody(response));
     }
 
-    public static JsonBuilder<JsonObject> prepareJsonBuilder()
+    public static JsonBuilder<JsonObject> prepareJsonBuilder(final String contentCountry)
             throws IOException, ExtractionException {
         // @formatter:off
         return JsonObject.builder()
@@ -737,6 +737,8 @@ public class YoutubeParsingHelper {
                     .object("client")
                         .value("clientName", "1")
                         .value("clientVersion", getClientVersion())
+                        .value("hl", "en-GB")
+                        .value("gl", contentCountry)
                     .end()
                 .end();
         // @formatter:on
