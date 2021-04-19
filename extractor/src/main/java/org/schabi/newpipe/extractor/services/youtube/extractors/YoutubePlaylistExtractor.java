@@ -199,9 +199,7 @@ public class YoutubePlaylistExtractor extends PlaylistExtractor {
 
         if (contents.getObject(0).has("playlistSegmentRenderer")) {
             for (final Object segment : contents) {
-                if (((JsonObject) segment).getObject("playlistSegmentRenderer").has("trailer")) {
-                    collectTrailerFrom(collector, ((JsonObject) segment));
-                } else if (((JsonObject) segment).getObject("playlistSegmentRenderer")
+                if (((JsonObject) segment).getObject("playlistSegmentRenderer")
                         .has("videoList")) {
                     collectStreamsFrom(collector, ((JsonObject) segment)
                             .getObject("playlistSegmentRenderer").getObject("videoList")
@@ -286,84 +284,5 @@ public class YoutubePlaylistExtractor extends PlaylistExtractor {
                 });
             }
         }
-    }
-
-    private void collectTrailerFrom(final StreamInfoItemsCollector collector,
-                                    final JsonObject segment) {
-        collector.commit(new StreamInfoItemExtractor() {
-            @Override
-            public String getName() throws ParsingException {
-                return getTextFromObject(segment.getObject("playlistSegmentRenderer")
-                        .getObject("title"));
-            }
-
-            @Override
-            public String getUrl() throws ParsingException {
-                return YoutubeStreamLinkHandlerFactory.getInstance()
-                        .fromId(segment.getObject("playlistSegmentRenderer").getObject("trailer")
-                                .getObject("playlistVideoPlayerRenderer").getString("videoId"))
-                        .getUrl();
-            }
-
-            @Override
-            public String getThumbnailUrl() {
-                return "";
-                /*final JsonArray thumbnails = initialAjaxJson.getObject(1)
-                        .getObject("playerResponse")
-                        .getObject("videoDetails").getObject("thumbnail").getArray("thumbnails");
-                // the last thumbnail is the one with the highest resolution
-                final String url = thumbnails.getObject(thumbnails.size() - 1).getString("url");
-                return fixThumbnailUrl(url);*/
-            }
-
-            @Override
-            public StreamType getStreamType() {
-                return StreamType.VIDEO_STREAM;
-            }
-
-            @Override
-            public boolean isAd() {
-                return false;
-            }
-
-            @Override
-            public long getDuration() throws ParsingException {
-                return YoutubeParsingHelper.parseDurationString(
-                        getTextFromObject(segment.getObject("playlistSegmentRenderer")
-                                .getObject("segmentAnnotation")).split("•")[0]);
-            }
-
-            @Override
-            public long getViewCount() {
-                return -1;
-            }
-
-            @Override
-            public String getUploaderName() throws ParsingException {
-                return YoutubePlaylistExtractor.this.getUploaderName();
-            }
-
-            @Override
-            public String getUploaderUrl() throws ParsingException {
-                return YoutubePlaylistExtractor.this.getUploaderUrl();
-            }
-
-            @Override
-            public boolean isUploaderVerified() {
-                return false;
-            }
-
-            @Nullable
-            @Override
-            public String getTextualUploadDate() {
-                return null;
-            }
-
-            @Nullable
-            @Override
-            public DateWrapper getUploadDate() {
-                return null;
-            }
-        });
     }
 }

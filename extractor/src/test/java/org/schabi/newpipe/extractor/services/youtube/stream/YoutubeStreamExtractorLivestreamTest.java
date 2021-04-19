@@ -37,7 +37,6 @@ public class YoutubeStreamExtractorLivestreamTest extends DefaultStreamExtractor
 
     @Override
     @Test
-    @Ignore("When visiting website it shows 'Lofi Girl', unknown why it's different in tests")
     public void testUploaderName() throws Exception {
         super.testUploaderName();
     }

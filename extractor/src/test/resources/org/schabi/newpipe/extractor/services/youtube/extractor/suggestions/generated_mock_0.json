@@ -32,10 +32,10 @@
         "text/javascript; charset\u003dUTF-8"
       ],
       "date": [
-        "Sun, 11 Apr 2021 15:59:11 GMT"
+        "Wed, 21 Apr 2021 17:20:06 GMT"
       ],
       "expires": [
-        "Sun, 11 Apr 2021 15:59:11 GMT"
+        "Wed, 21 Apr 2021 17:20:06 GMT"
       ],
       "p3p": [
         "CP\u003d\"This is not a P3P policy! See g.co/p3phelp for more info.\""
@@ -44,13 +44,10 @@
         "gws"
       ],
       "set-cookie": [
-        "CONSENT\u003dPENDING+283; expires\u003dFri, 01-Jan-2038 00:00:00 GMT; path\u003d/; domain\u003d.google.com"
+        "CONSENT\u003dPENDING+764; expires\u003dFri, 01-Jan-2038 00:00:00 GMT; path\u003d/; domain\u003d.google.com"
       ],
       "transfer-encoding": [
         "chunked"
-      ],
-      "x-content-security-policy-report-only": [
-        "default-src https: data:; options eval-script inline-script; report-uri /csp_report; referrer origin"
       ],
       "x-frame-options": [
         "SAMEORIGIN"
@@ -59,7 +56,7 @@
         "0"
       ]
     },
-    "responseBody": "JP([\"hello\",[[\"hello\",0,[131]],[\"hello charlie\",0,[131]],[\"hello darkness my old friend\",0],[\"hello kitty\",0,[131]],[\"hello adele\",0,[131]],[\"hello im under the water\",0,[131]],[\"hello mr gu\",0,[131]],[\"hello everyone it is i the great papyrus\",0,[131]],[\"hello neighbor trailer\",0,[131]],[\"hello mr gu ep 1 eng sub\",0,[131]],[\"hello there\",0],[\"hello lionel richie\",0,[131]],[\"hello is it me you\\u0027re looking for\",0,[131]],[\"hello neighbor\",0]],{\"k\":1,\"q\":\"Kq8fiavPkIebzYwysTDAl0Ox06k\"}])",
+    "responseBody": "JP([\"hello\",[[\"hello\",0],[\"hello darkness my old friend\",0],[\"hello kitty\",0,[131]],[\"hello mr gu ep 1 eng sub\",0,[131]],[\"hello adele\",0],[\"hello your computer has virus\",0,[131]],[\"hello mr gu ep 27 eng sub\",0,[3]],[\"hello i am under the water\",0,[131]],[\"hello mr gu\",0,[131]],[\"hello neighbor\",0,[131]],[\"hello fresh\",0,[131]],[\"hello there\",0],[\"hello lionel richie\",0,[131]],[\"hello there woo woo\",0,[131]]],{\"k\":1,\"q\":\"hyZ8vrBzsyx8VHAny_BkBN5uJUU\"}])",
     "latestUrl": "https://suggestqueries.google.com/complete/search?client\u003dyoutube\u0026jsonp\u003dJP\u0026ds\u003dyt\u0026gl\u003dDE\u0026q\u003dhello"
   }
 }

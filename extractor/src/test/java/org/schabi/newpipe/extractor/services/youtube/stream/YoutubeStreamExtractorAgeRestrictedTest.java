@@ -54,7 +54,8 @@ public class YoutubeStreamExtractorAgeRestrictedTest extends DefaultStreamExtrac
     @Override public long expectedDislikeCountAtLeast() { return 38000; }
     @Override public boolean expectedHasRelatedItems() { return false; } // no related videos (!)
     @Override public int expectedAgeLimit() { return 18; }
-    @Nullable @Override public String expectedErrorMessage() { return "Sign in to confirm your age"; }
+    // Broken, video is available with the embedded player
+    // @Nullable @Override public String expectedErrorMessage() { return "Sign in to confirm your age"; }
     @Override public boolean expectedHasSubtitles() { return false; }
 
     @Override public String expectedCategory() { return ""; } // Unavailable on age restricted videos

@@ -101,14 +101,14 @@ public class YoutubeMixPlaylistExtractorTest {
             InfoItemsPage<StreamInfoItem> streams = extractor.getInitialPage();
             final Set<String> urls = new HashSet<>();
 
-            //Should work infinitely, but for testing purposes only 3 times
+            // Should work infinitely, but for testing purposes only 3 times
             for (int i = 0; i < 3; i++) {
                 assertTrue(streams.hasNextPage());
                 assertFalse(streams.getItems().isEmpty());
 
                 for (final StreamInfoItem item : streams.getItems()) {
-//                    TODO Duplicates are appearing
-//                    assertFalse(urls.contains(item.getUrl()));
+                    // TODO Duplicates are appearing
+                    // assertFalse(urls.contains(item.getUrl()));
                     urls.add(item.getUrl());
                 }
 
@@ -179,13 +179,13 @@ public class YoutubeMixPlaylistExtractorTest {
             InfoItemsPage<StreamInfoItem> streams = extractor.getInitialPage();
             final Set<String> urls = new HashSet<>();
 
-            //Should work infinitely, but for testing purposes only 3 times
+            // Should work infinitely, but for testing purposes only 3 times
             for (int i = 0; i < 3; i++) {
                 assertTrue(streams.hasNextPage());
                 assertFalse(streams.getItems().isEmpty());
                 for (final StreamInfoItem item : streams.getItems()) {
-//                    TODO Duplicates are appearing
-//                    assertFalse(urls.contains(item.getUrl()));
+                    // TODO Duplicates are appearing
+                    // assertFalse(urls.contains(item.getUrl()));
                     urls.add(item.getUrl());
                 }
 
@@ -255,14 +255,14 @@ public class YoutubeMixPlaylistExtractorTest {
             InfoItemsPage<StreamInfoItem> streams = extractor.getInitialPage();
             final Set<String> urls = new HashSet<>();
 
-            //Should work infinitely, but for testing purposes only 3 times
+            // Should work infinitely, but for testing purposes only 3 times
             for (int i = 0; i < 3; i++) {
                 assertTrue(streams.hasNextPage());
                 assertFalse(streams.getItems().isEmpty());
 
                 for (final StreamInfoItem item : streams.getItems()) {
                     // TODO Duplicates are appearing
-//                    assertFalse(urls.contains(item.getUrl()));
+                    // assertFalse(urls.contains(item.getUrl()));
                     urls.add(item.getUrl());
                 }
 

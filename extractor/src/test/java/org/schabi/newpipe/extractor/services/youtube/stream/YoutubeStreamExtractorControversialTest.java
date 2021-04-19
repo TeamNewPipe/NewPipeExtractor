@@ -13,6 +13,7 @@ import org.schabi.newpipe.extractor.stream.StreamType;
 
 import java.util.Arrays;
 import java.util.List;
+import java.util.Random;
 
 import javax.annotation.Nullable;
 
@@ -22,7 +23,6 @@ import static org.schabi.newpipe.extractor.ServiceList.YouTube;
  * Test for {@link YoutubeStreamLinkHandlerFactory}
  */
 
-@Ignore("Video is not available in specific countries. Someone else has to generate mocks")
 public class YoutubeStreamExtractorControversialTest extends DefaultStreamExtractorTest {
     private static final String RESOURCE_PATH = DownloaderFactory.RESOURCE_PATH + "services/youtube/extractor/stream/";
     private static final String ID = "T4XJQO3qol8";
@@ -32,6 +32,7 @@ public class YoutubeStreamExtractorControversialTest extends DefaultStreamExtrac
     @BeforeClass
     public static void setUp() throws Exception {
         YoutubeParsingHelper.resetClientVersionAndKey();
+        YoutubeParsingHelper.setNumberGenerator(new Random(1));
         NewPipe.init(new DownloaderFactory().getDownloader(RESOURCE_PATH + "controversial"));
         extractor = YouTube.getStreamExtractor(URL);
         extractor.fetchPage();

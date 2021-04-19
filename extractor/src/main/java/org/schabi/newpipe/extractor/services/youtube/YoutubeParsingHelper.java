@@ -63,7 +63,7 @@ public class YoutubeParsingHelper {
     private YoutubeParsingHelper() {
     }
 
-    private static final String HARDCODED_CLIENT_VERSION = "2.20210413.07.00";
+    private static final String HARDCODED_CLIENT_VERSION = "2.20210420.07.00";
     private static final String HARDCODED_KEY = "AIzaSyAO_FJ2SlqU8Q4STEHLGCilw_Y9_11qcW8";
     private static String clientVersion;
     private static String key;
@@ -308,7 +308,6 @@ public class YoutubeParsingHelper {
         final Map<String, List<String>> headers = new HashMap<>();
         headers.put("X-YouTube-Client-Name", Collections.singletonList("1"));
         headers.put("X-YouTube-Client-Version", Collections.singletonList(HARDCODED_CLIENT_VERSION));
-        addCookieHeader(headers);
 
         // This endpoint is fetched by the YouTube website to get the items of its main menu and is
         // pretty lightweight (around 30kB)
@@ -328,7 +327,9 @@ public class YoutubeParsingHelper {
         if (!keyAndVersionExtracted) return;
         // Don't provide a search term in order to have a smaller response
         final String url = "https://www.youtube.com/results?search_query=";
-        final String html = getDownloader().get(url).responseBody();
+        final Map<String, List<String>> headers = new HashMap<>();
+        addCookieHeader(headers);
+        final String html = getDownloader().get(url, headers).responseBody();
         final JsonObject initialData = getInitialData(html);
         final JsonArray serviceTrackingParams = initialData.getObject("responseContext")
                 .getArray("serviceTrackingParams");
@@ -483,7 +484,6 @@ public class YoutubeParsingHelper {
         headers.put("Origin", Collections.singletonList("https://music.youtube.com"));
         headers.put("Referer", Collections.singletonList("music.youtube.com"));
         headers.put("Content-Type", Collections.singletonList("application/json"));
-        addCookieHeader(headers);
 
         final Response response = getDownloader().post(url, headers, json);
         final String responseBody = response.responseBody();
@@ -497,7 +497,9 @@ public class YoutubeParsingHelper {
         if (areHardcodedYoutubeMusicKeysValid()) return youtubeMusicKeys = HARDCODED_YOUTUBE_MUSIC_KEYS;
 
         final String url = "https://music.youtube.com/";
-        final String html = getDownloader().get(url).responseBody();
+        final Map<String, List<String>> headers = new HashMap<>();
+        addCookieHeader(headers);
+        final String html = getDownloader().get(url, headers).responseBody();
 
         String key;
         try {
@@ -701,7 +703,7 @@ public class YoutubeParsingHelper {
                                                  final Localization localization)
             throws IOException, ExtractionException {
         final Map<String, List<String>> headers = new HashMap<>();
-        addYouTubeHeaders(headers);
+        addClientInfoHeaders(headers);
 
         final Response response = getDownloader().post("https://youtubei.googleapis.com/youtubei/v1/"
                 + endpoint + "?key=" + getKey(), headers, body, localization);
@@ -756,11 +758,18 @@ public class YoutubeParsingHelper {
     }
 
     /**
-     * Add the <code>X-YouTube-Client-Name</code> and <code>X-YouTube-Client-Version</code> headers.
+     * Add the <code>X-YouTube-Client-Name</code>, <code>X-YouTube-Client-Version</code>,
+     * <code>Origin</code>, and <code>Referer</code> headers.
      * @param headers The headers which should be completed
      */
     public static void addClientInfoHeaders(final Map<String, List<String>> headers)
             throws IOException, ExtractionException {
+        if (headers.get("Origin") == null) {
+            headers.put("Origin", Collections.singletonList("https://www.youtube.com"));
+        }
+        if (headers.get("Referer") == null) {
+            headers.put("Referer", Collections.singletonList("https://www.youtube.com"));
+        }
         if (headers.get("X-YouTube-Client-Name") == null) {
             headers.put("X-YouTube-Client-Name", Collections.singletonList("1"));
         }
