@@ -39,7 +39,6 @@ import java.io.IOException;
 
 import javax.annotation.Nonnull;
 
-import static org.schabi.newpipe.extractor.services.youtube.YoutubeParsingHelper.getClientVersion;
 import static org.schabi.newpipe.extractor.services.youtube.YoutubeParsingHelper.getJsonPostResponse;
 import static org.schabi.newpipe.extractor.services.youtube.YoutubeParsingHelper.getTextAtKey;
 import static org.schabi.newpipe.extractor.services.youtube.YoutubeParsingHelper.prepareJsonBuilder;

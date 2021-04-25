@@ -17,10 +17,8 @@ import org.schabi.newpipe.extractor.utils.JsonUtils;
 
 import javax.annotation.Nonnull;
 import java.io.IOException;
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 import static org.schabi.newpipe.extractor.services.youtube.linkHandler.YoutubeSearchQueryHandlerFactory.getSearchParameter;
 import static org.schabi.newpipe.extractor.services.youtube.YoutubeParsingHelper.*;
