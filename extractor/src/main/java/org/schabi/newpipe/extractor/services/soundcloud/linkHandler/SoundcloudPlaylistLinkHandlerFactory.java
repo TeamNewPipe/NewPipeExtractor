@@ -22,7 +22,7 @@ public class SoundcloudPlaylistLinkHandlerFactory extends ListLinkHandlerFactory
         Utils.checkUrl(URL_PATTERN, url);
 
         try {
-            return SoundcloudParsingHelper.resolveIdWithEmbedPlayer(url);
+            return SoundcloudParsingHelper.resolveIdWithWidgetApi(url);
         } catch (Exception e) {
             throw new ParsingException("Could not get id of url: " + url + " " + e.getMessage(), e);
         }

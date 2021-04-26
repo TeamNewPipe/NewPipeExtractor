@@ -32,7 +32,7 @@ public class SoundcloudStreamLinkHandlerFactory extends LinkHandlerFactory {
         Utils.checkUrl(URL_PATTERN, url);
 
         try {
-            return SoundcloudParsingHelper.resolveIdWithEmbedPlayer(url);
+            return SoundcloudParsingHelper.resolveIdWithWidgetApi(url);
         } catch (Exception e) {
             throw new ParsingException(e.getMessage(), e);
         }
