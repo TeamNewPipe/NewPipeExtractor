@@ -29,9 +29,9 @@ public class SoundcloudParsingHelperTest {
     }
 
     @Test
-    public void resolveIdWithEmbedPlayerTest() throws Exception {
-        Assert.assertEquals("26057743", SoundcloudParsingHelper.resolveIdWithEmbedPlayer("https://soundcloud.com/trapcity"));
-        Assert.assertEquals("16069159", SoundcloudParsingHelper.resolveIdWithEmbedPlayer("https://soundcloud.com/nocopyrightsounds"));
+    public void resolveIdWithWidgetApiTest() throws Exception {
+        Assert.assertEquals("26057743", SoundcloudParsingHelper.resolveIdWithWidgetApi("https://soundcloud.com/trapcity"));
+        Assert.assertEquals("16069159", SoundcloudParsingHelper.resolveIdWithWidgetApi("https://soundcloud.com/nocopyrightsounds"));
 
     }
 

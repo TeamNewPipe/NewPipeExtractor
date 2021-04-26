@@ -7,6 +7,7 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLDecoder;
 import java.util.*;
+import java.util.regex.Pattern;
 
 public class Utils {
 
@@ -14,6 +15,7 @@ public class Utils {
     public static final String HTTPS = "https://";
     public static final String UTF_8 = "UTF-8";
     public static final String EMPTY_STRING = "";
+    private static final Pattern WWW_PATTERN = Pattern.compile("(https?)?:\\/\\/www\\.");
 
     private Utils() {
         //no instance
@@ -168,6 +170,13 @@ public class Utils {
         boolean setsNoPort = url.getPort() == -1;
 
         return setsNoPort || usesDefaultPort;
+    }
+
+    public static String removeWWWFromUrl(String url) {
+        if (WWW_PATTERN.matcher(url).find()) {
+            return url.replace("www.", "");
+        }
+        return url;
     }
 
     public static String removeUTF8BOM(String s) {

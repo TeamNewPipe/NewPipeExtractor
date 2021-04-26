@@ -19,6 +19,7 @@ import org.schabi.newpipe.extractor.services.soundcloud.extractors.SoundcloudCha
 import org.schabi.newpipe.extractor.services.soundcloud.extractors.SoundcloudStreamExtractor;
 import org.schabi.newpipe.extractor.services.soundcloud.extractors.SoundcloudStreamInfoItemExtractor;
 import org.schabi.newpipe.extractor.stream.StreamInfoItemsCollector;
+import org.schabi.newpipe.extractor.utils.JsonUtils;
 import org.schabi.newpipe.extractor.utils.Parser;
 import org.schabi.newpipe.extractor.utils.Parser.RegexException;
 import org.schabi.newpipe.extractor.utils.Utils;
@@ -140,27 +141,37 @@ public class SoundcloudParsingHelper {
     }
 
     /**
-     * Fetch the embed player with the url and return the id (like the id from the json api).
+     * Fetch the widget API with the url and return the id (like the id from the json api).
      *
      * @return the resolved id
      */
-    public static String resolveIdWithEmbedPlayer(String urlString) throws IOException, ReCaptchaException, ParsingException {
+    public static String resolveIdWithWidgetApi(String urlString) throws IOException, ReCaptchaException, ParsingException {
         // Remove the tailing slash from URLs due to issues with the SoundCloud API
         if (urlString.charAt(urlString.length() - 1) == '/') urlString = urlString.substring(0, urlString.length() - 1);
+        // Make URL lower case and remove www. if it exists.
+        // Without doing this, the widget API does not recognize the URL.
+        urlString = Utils.removeWWWFromUrl(urlString.toLowerCase());
 
-        URL url;
+        final URL url;
         try {
             url = Utils.stringToURL(urlString);
         } catch (MalformedURLException e) {
             throw new IllegalArgumentException("The given URL is not valid");
         }
 
-        String response = NewPipe.getDownloader().get("https://w.soundcloud.com/player/?url="
-                + URLEncoder.encode(url.toString(), UTF_8), SoundCloud.getLocalization()).responseBody();
-        // handle playlists / sets different and get playlist id via uir field in JSON
-        if (url.getPath().contains("/sets/") && !url.getPath().endsWith("/sets"))
-            return Parser.matchGroup1("\"uri\":\\s*\"https:\\/\\/api\\.soundcloud\\.com\\/playlists\\/((\\d)*?)\"", response);
-        return Parser.matchGroup1(",\"id\":(([^}\\n])*?),", response);
+        try {
+            final String widgetUrl = "https://api-widget.soundcloud.com/resolve?url="
+                    + URLEncoder.encode(url.toString(), UTF_8)
+                    + "&format=json&client_id=" + SoundcloudParsingHelper.clientId();
+            final String response = NewPipe.getDownloader().get(widgetUrl,
+                    SoundCloud.getLocalization()).responseBody();
+            final JsonObject o = JsonParser.object().from(response);
+            return String.valueOf(JsonUtils.getValue(o, "id"));
+        } catch (JsonParserException e) {
+            throw new ParsingException("Could not parse JSON response", e);
+        } catch (ExtractionException e) {
+            throw new ParsingException("Could not resolve id with embedded player. ClientId not extracted", e);
+        }
     }
 
     /**
