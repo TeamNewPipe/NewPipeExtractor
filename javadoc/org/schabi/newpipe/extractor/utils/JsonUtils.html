@@ -17,7 +17,7 @@
     catch(err) {
     }
 //-->
-var methods = {"i0":9,"i1":9,"i2":9,"i3":9,"i4":9,"i5":9,"i6":9,"i7":9,"i8":9,"i9":9};
+var methods = {"i0":9,"i1":9,"i2":9,"i3":9,"i4":9,"i5":9,"i6":9,"i7":9,"i8":9,"i9":9,"i10":9};
 var tabs = {65535:["t0","All Methods"],1:["t1","Static Methods"],8:["t4","Concrete Methods"]};
 var altColor = "altColor";
 var rowColor = "rowColor";
@@ -183,20 +183,24 @@ extends <a href="https://docs.oracle.com/javase/8/docs/api/java/lang/Object.html
          <a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>&nbsp;path)</code>&nbsp;</td>
 </tr>
 <tr id="i6" class="altColor">
+<td class="colFirst"><code>static <a href="https://docs.oracle.com/javase/8/docs/api/java/util/List.html?is-external=true" title="class or interface in java.util">List</a>&lt;<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>&gt;</code></td>
+<td class="colLast"><code><span class="memberNameLink"><a href="../../../../../org/schabi/newpipe/extractor/utils/JsonUtils.html#getStringListFromJsonArray-com.grack.nanojson.JsonArray-">getStringListFromJsonArray</a></span>(com.grack.nanojson.JsonArray&nbsp;array)</code>&nbsp;</td>
+</tr>
+<tr id="i7" class="rowColor">
 <td class="colFirst"><code>static <a href="https://docs.oracle.com/javase/8/docs/api/java/lang/Object.html?is-external=true" title="class or interface in java.lang">Object</a></code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../../../org/schabi/newpipe/extractor/utils/JsonUtils.html#getValue-com.grack.nanojson.JsonObject-java.lang.String-">getValue</a></span>(com.grack.nanojson.JsonObject&nbsp;object,
         <a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>&nbsp;path)</code>&nbsp;</td>
 </tr>
-<tr id="i7" class="rowColor">
+<tr id="i8" class="altColor">
 <td class="colFirst"><code>static <a href="https://docs.oracle.com/javase/8/docs/api/java/util/List.html?is-external=true" title="class or interface in java.util">List</a>&lt;<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/Object.html?is-external=true" title="class or interface in java.lang">Object</a>&gt;</code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../../../org/schabi/newpipe/extractor/utils/JsonUtils.html#getValues-com.grack.nanojson.JsonArray-java.lang.String-">getValues</a></span>(com.grack.nanojson.JsonArray&nbsp;array,
          <a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>&nbsp;path)</code>&nbsp;</td>
 </tr>
-<tr id="i8" class="altColor">
+<tr id="i9" class="rowColor">
 <td class="colFirst"><code>static com.grack.nanojson.JsonArray</code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../../../org/schabi/newpipe/extractor/utils/JsonUtils.html#toJsonArray-java.lang.String-">toJsonArray</a></span>(<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>&nbsp;responseBody)</code>&nbsp;</td>
 </tr>
-<tr id="i9" class="rowColor">
+<tr id="i10" class="altColor">
 <td class="colFirst"><code>static com.grack.nanojson.JsonObject</code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../../../org/schabi/newpipe/extractor/utils/JsonUtils.html#toJsonObject-java.lang.String-">toJsonObject</a></span>(<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>&nbsp;responseBody)</code>&nbsp;</td>
 </tr>
@@ -405,7 +409,7 @@ public static&nbsp;<a href="https://docs.oracle.com/javase/8/docs/api/java/util/
 <a name="getJsonData-java.lang.String-java.lang.String-">
 <!--   -->
 </a>
-<ul class="blockListLast">
+<ul class="blockList">
 <li class="blockList">
 <h4>getJsonData</h4>
 <pre>public static&nbsp;com.grack.nanojson.JsonObject&nbsp;getJsonData(<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>&nbsp;html,
@@ -441,6 +445,16 @@ public static&nbsp;<a href="https://docs.oracle.com/javase/8/docs/api/java/util/
 <dd><code>com.grack.nanojson.JsonParserException</code></dd>
 <dd><code><a href="https://docs.oracle.com/javase/8/docs/api/java/lang/ArrayIndexOutOfBoundsException.html?is-external=true" title="class or interface in java.lang">ArrayIndexOutOfBoundsException</a></code></dd>
 </dl>
+</li>
+</ul>
+<a name="getStringListFromJsonArray-com.grack.nanojson.JsonArray-">
+<!--   -->
+</a>
+<ul class="blockListLast">
+<li class="blockList">
+<h4>getStringListFromJsonArray</h4>
+<pre>public static&nbsp;<a href="https://docs.oracle.com/javase/8/docs/api/java/util/List.html?is-external=true" title="class or interface in java.util">List</a>&lt;<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>&gt;&nbsp;getStringListFromJsonArray(<a href="https://docs.oracle.com/javase/8/docs/api/javax/annotation/Nonnull.html?is-external=true" title="class or interface in javax.annotation">@Nonnull</a>
+                                                      com.grack.nanojson.JsonArray&nbsp;array)</pre>
 </li>
 </ul>
 </li>

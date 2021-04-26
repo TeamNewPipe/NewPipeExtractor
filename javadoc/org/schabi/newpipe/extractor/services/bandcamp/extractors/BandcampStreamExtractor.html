@@ -72,7 +72,7 @@ var activeTableTab = "activeTableTab";
 <div>
 <ul class="subNavList">
 <li>Summary:&nbsp;</li>
-<li>Nested&nbsp;|&nbsp;</li>
+<li><a href="#nested.classes.inherited.from.class.org.schabi.newpipe.extractor.stream.StreamExtractor">Nested</a>&nbsp;|&nbsp;</li>
 <li><a href="#fields.inherited.from.class.org.schabi.newpipe.extractor.stream.StreamExtractor">Field</a>&nbsp;|&nbsp;</li>
 <li><a href="#constructor.summary">Constr</a>&nbsp;|&nbsp;</li>
 <li><a href="#method.summary">Method</a></li>
@@ -129,6 +129,21 @@ extends <a href="../../../../../../../org/schabi/newpipe/extractor/stream/Stream
 <div class="summary">
 <ul class="blockList">
 <li class="blockList">
+<!-- ======== NESTED CLASS SUMMARY ======== -->
+<ul class="blockList">
+<li class="blockList"><a name="nested.class.summary">
+<!--   -->
+</a>
+<h3>Nested Class Summary</h3>
+<ul class="blockList">
+<li class="blockList"><a name="nested.classes.inherited.from.class.org.schabi.newpipe.extractor.stream.StreamExtractor">
+<!--   -->
+</a>
+<h3>Nested classes/interfaces inherited from class&nbsp;org.schabi.newpipe.extractor.stream.<a href="../../../../../../../org/schabi/newpipe/extractor/stream/StreamExtractor.html" title="class in org.schabi.newpipe.extractor.stream">StreamExtractor</a></h3>
+<code><a href="../../../../../../../org/schabi/newpipe/extractor/stream/StreamExtractor.Privacy.html" title="enum in org.schabi.newpipe.extractor.stream">StreamExtractor.Privacy</a></code></li>
+</ul>
+</li>
+</ul>
 <!-- =========== FIELD SUMMARY =========== -->
 <ul class="blockList">
 <li class="blockList"><a name="field.summary">
@@ -275,14 +290,14 @@ extends <a href="../../../../../../../org/schabi/newpipe/extractor/stream/Stream
 </td>
 </tr>
 <tr id="i16" class="altColor">
-<td class="colFirst"><code><a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a></code></td>
+<td class="colFirst"><code><a href="../../../../../../../org/schabi/newpipe/extractor/stream/StreamExtractor.Privacy.html" title="enum in org.schabi.newpipe.extractor.stream">StreamExtractor.Privacy</a></code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../../../../../org/schabi/newpipe/extractor/services/bandcamp/extractors/BandcampStreamExtractor.html#getPrivacy--">getPrivacy</a></span>()</code>
 <div class="block">The privacy of the stream (Eg.</div>
 </td>
 </tr>
 <tr id="i17" class="rowColor">
-<td class="colFirst"><code><a href="../../../../../../../org/schabi/newpipe/extractor/stream/StreamInfoItemsCollector.html" title="class in org.schabi.newpipe.extractor.stream">StreamInfoItemsCollector</a></code></td>
-<td class="colLast"><code><span class="memberNameLink"><a href="../../../../../../../org/schabi/newpipe/extractor/services/bandcamp/extractors/BandcampStreamExtractor.html#getRelatedStreams--">getRelatedStreams</a></span>()</code>
+<td class="colFirst"><code><a href="../../../../../../../org/schabi/newpipe/extractor/playlist/PlaylistInfoItemsCollector.html" title="class in org.schabi.newpipe.extractor.playlist">PlaylistInfoItemsCollector</a></code></td>
+<td class="colLast"><code><span class="memberNameLink"><a href="../../../../../../../org/schabi/newpipe/extractor/services/bandcamp/extractors/BandcampStreamExtractor.html#getRelatedItems--">getRelatedItems</a></span>()</code>
 <div class="block">Should return a list of streams related to the current handled.</div>
 </td>
 </tr>
@@ -429,7 +444,7 @@ extends <a href="../../../../../../../org/schabi/newpipe/extractor/stream/Stream
 <!--   -->
 </a>
 <h3>Methods inherited from class&nbsp;org.schabi.newpipe.extractor.stream.<a href="../../../../../../../org/schabi/newpipe/extractor/stream/StreamExtractor.html" title="class in org.schabi.newpipe.extractor.stream">StreamExtractor</a></h3>
-<code><a href="../../../../../../../org/schabi/newpipe/extractor/stream/StreamExtractor.html#getFrames--">getFrames</a>, <a href="../../../../../../../org/schabi/newpipe/extractor/stream/StreamExtractor.html#getTimestampSeconds-java.lang.String-">getTimestampSeconds</a></code></li>
+<code><a href="../../../../../../../org/schabi/newpipe/extractor/stream/StreamExtractor.html#getFrames--">getFrames</a>, <a href="../../../../../../../org/schabi/newpipe/extractor/stream/StreamExtractor.html#getRelatedStreams--">getRelatedStreams</a>, <a href="../../../../../../../org/schabi/newpipe/extractor/stream/StreamExtractor.html#getTimestampSeconds-java.lang.String-">getTimestampSeconds</a></code></li>
 </ul>
 <ul class="blockList">
 <li class="blockList"><a name="methods.inherited.from.class.org.schabi.newpipe.extractor.Extractor">
@@ -1062,14 +1077,14 @@ public&nbsp;<a href="https://docs.oracle.com/javase/8/docs/api/java/util/List.ht
 </dl>
 </li>
 </ul>
-<a name="getRelatedStreams--">
+<a name="getRelatedItems--">
 <!--   -->
 </a>
 <ul class="blockList">
 <li class="blockList">
-<h4>getRelatedStreams</h4>
-<pre>public&nbsp;<a href="../../../../../../../org/schabi/newpipe/extractor/stream/StreamInfoItemsCollector.html" title="class in org.schabi.newpipe.extractor.stream">StreamInfoItemsCollector</a>&nbsp;getRelatedStreams()</pre>
-<div class="block"><span class="descfrmTypeLabel">Description copied from class:&nbsp;<code><a href="../../../../../../../org/schabi/newpipe/extractor/stream/StreamExtractor.html#getRelatedStreams--">StreamExtractor</a></code></span></div>
+<h4>getRelatedItems</h4>
+<pre>public&nbsp;<a href="../../../../../../../org/schabi/newpipe/extractor/playlist/PlaylistInfoItemsCollector.html" title="class in org.schabi.newpipe.extractor.playlist">PlaylistInfoItemsCollector</a>&nbsp;getRelatedItems()</pre>
+<div class="block"><span class="descfrmTypeLabel">Description copied from class:&nbsp;<code><a href="../../../../../../../org/schabi/newpipe/extractor/stream/StreamExtractor.html#getRelatedItems--">StreamExtractor</a></code></span></div>
 <div class="block">Should return a list of streams related to the current handled. Many services show suggested
  streams. If you don't like suggested streams you should implement them anyway since they can
  be disabled by the user later in the frontend. The first related stream might be what was
@@ -1077,7 +1092,7 @@ public&nbsp;<a href="https://docs.oracle.com/javase/8/docs/api/java/util/List.ht
  If related streams aren't available simply return <code>null</code>.</div>
 <dl>
 <dt><span class="overrideSpecifyLabel">Specified by:</span></dt>
-<dd><code><a href="../../../../../../../org/schabi/newpipe/extractor/stream/StreamExtractor.html#getRelatedStreams--">getRelatedStreams</a></code>&nbsp;in class&nbsp;<code><a href="../../../../../../../org/schabi/newpipe/extractor/stream/StreamExtractor.html" title="class in org.schabi.newpipe.extractor.stream">StreamExtractor</a></code></dd>
+<dd><code><a href="../../../../../../../org/schabi/newpipe/extractor/stream/StreamExtractor.html#getRelatedItems--">getRelatedItems</a></code>&nbsp;in class&nbsp;<code><a href="../../../../../../../org/schabi/newpipe/extractor/stream/StreamExtractor.html" title="class in org.schabi.newpipe.extractor.stream">StreamExtractor</a></code></dd>
 <dt><span class="returnLabel">Returns:</span></dt>
 <dd>a list of InfoItems showing the related videos/streams</dd>
 </dl>
@@ -1128,7 +1143,7 @@ public&nbsp;<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.
 <li class="blockList">
 <h4>getPrivacy</h4>
 <pre><a href="https://docs.oracle.com/javase/8/docs/api/javax/annotation/Nonnull.html?is-external=true" title="class or interface in javax.annotation">@Nonnull</a>
-public&nbsp;<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>&nbsp;getPrivacy()</pre>
+public&nbsp;<a href="../../../../../../../org/schabi/newpipe/extractor/stream/StreamExtractor.Privacy.html" title="enum in org.schabi.newpipe.extractor.stream">StreamExtractor.Privacy</a>&nbsp;getPrivacy()</pre>
 <div class="block"><span class="descfrmTypeLabel">Description copied from class:&nbsp;<code><a href="../../../../../../../org/schabi/newpipe/extractor/stream/StreamExtractor.html#getPrivacy--">StreamExtractor</a></code></span></div>
 <div class="block">The privacy of the stream (Eg. Public, Private, Unlisted…).
  If the privacy is not available you can simply return an empty string.</div>
@@ -1214,7 +1229,7 @@ public&nbsp;<a href="https://docs.oracle.com/javase/8/docs/api/java/util/List.ht
 <dt><span class="overrideSpecifyLabel">Specified by:</span></dt>
 <dd><code><a href="../../../../../../../org/schabi/newpipe/extractor/stream/StreamExtractor.html#getTags--">getTags</a></code>&nbsp;in class&nbsp;<code><a href="../../../../../../../org/schabi/newpipe/extractor/stream/StreamExtractor.html" title="class in org.schabi.newpipe.extractor.stream">StreamExtractor</a></code></dd>
 <dt><span class="returnLabel">Returns:</span></dt>
-<dd>the list of tags of the stream or an empty list.</dd>
+<dd>the list of tags of the stream or Collections.emptyList().</dd>
 </dl>
 </li>
 </ul>
@@ -1341,7 +1356,7 @@ public&nbsp;<a href="https://docs.oracle.com/javase/8/docs/api/java/util/List.ht
 <div>
 <ul class="subNavList">
 <li>Summary:&nbsp;</li>
-<li>Nested&nbsp;|&nbsp;</li>
+<li><a href="#nested.classes.inherited.from.class.org.schabi.newpipe.extractor.stream.StreamExtractor">Nested</a>&nbsp;|&nbsp;</li>
 <li><a href="#fields.inherited.from.class.org.schabi.newpipe.extractor.stream.StreamExtractor">Field</a>&nbsp;|&nbsp;</li>
 <li><a href="#constructor.summary">Constr</a>&nbsp;|&nbsp;</li>
 <li><a href="#method.summary">Method</a></li>

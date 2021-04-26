@@ -232,9 +232,13 @@
 <h4>ids</h4>
 <pre><a href="https://docs.oracle.com/javase/8/docs/api/java/util/List.html?is-external=true" title="class or interface in java.util">List</a>&lt;<a href="https://docs.oracle.com/javase/8/docs/api/java/util/List.html?is-external=true" title="class or interface in java.util">E</a>&gt; ids</pre>
 </li>
-<li class="blockListLast">
+<li class="blockList">
 <h4>cookies</h4>
 <pre><a href="https://docs.oracle.com/javase/8/docs/api/java/util/Map.html?is-external=true" title="class or interface in java.util">Map</a>&lt;<a href="https://docs.oracle.com/javase/8/docs/api/java/util/Map.html?is-external=true" title="class or interface in java.util">K</a>,<a href="https://docs.oracle.com/javase/8/docs/api/java/util/Map.html?is-external=true" title="class or interface in java.util">V</a>&gt; cookies</pre>
+</li>
+<li class="blockListLast">
+<h4>body</h4>
+<pre>byte[] body</pre>
 </li>
 </ul>
 </li>
@@ -927,8 +931,8 @@
 <pre><a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a> hlsUrl</pre>
 </li>
 <li class="blockList">
-<h4>relatedStreams</h4>
-<pre><a href="https://docs.oracle.com/javase/8/docs/api/java/util/List.html?is-external=true" title="class or interface in java.util">List</a>&lt;<a href="https://docs.oracle.com/javase/8/docs/api/java/util/List.html?is-external=true" title="class or interface in java.util">E</a>&gt; relatedStreams</pre>
+<h4>relatedItems</h4>
+<pre><a href="https://docs.oracle.com/javase/8/docs/api/java/util/List.html?is-external=true" title="class or interface in java.util">List</a>&lt;<a href="https://docs.oracle.com/javase/8/docs/api/java/util/List.html?is-external=true" title="class or interface in java.util">E</a>&gt; relatedItems</pre>
 </li>
 <li class="blockList">
 <h4>startPosition</h4>
@@ -944,7 +948,7 @@
 </li>
 <li class="blockList">
 <h4>privacy</h4>
-<pre><a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a> privacy</pre>
+<pre><a href="org/schabi/newpipe/extractor/stream/StreamExtractor.Privacy.html" title="enum in org.schabi.newpipe.extractor.stream">StreamExtractor.Privacy</a> privacy</pre>
 </li>
 <li class="blockList">
 <h4>category</h4>
@@ -1039,6 +1043,11 @@
 <h4>title</h4>
 <pre><a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a> title</pre>
 <div class="block">Title of this segment</div>
+</li>
+<li class="blockList">
+<h4>channelName</h4>
+<pre><a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a> channelName</pre>
+<div class="block">The channel or creator linked to this segment</div>
 </li>
 <li class="blockList">
 <h4>startTimeSeconds</h4>
