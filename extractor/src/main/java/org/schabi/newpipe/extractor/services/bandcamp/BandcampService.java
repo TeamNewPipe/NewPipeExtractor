@@ -16,9 +16,11 @@ import org.schabi.newpipe.extractor.stream.StreamExtractor;
 import org.schabi.newpipe.extractor.subscription.SubscriptionExtractor;
 import org.schabi.newpipe.extractor.suggestion.SuggestionExtractor;
 
+import java.util.Arrays;
 import java.util.Collections;
 
 import static org.schabi.newpipe.extractor.StreamingService.ServiceInfo.MediaCapability.AUDIO;
+import static org.schabi.newpipe.extractor.StreamingService.ServiceInfo.MediaCapability.COMMENTS;
 import static org.schabi.newpipe.extractor.services.bandcamp.extractors.BandcampExtractorHelper.BASE_URL;
 import static org.schabi.newpipe.extractor.services.bandcamp.extractors.BandcampFeaturedExtractor.FEATURED_API_URL;
 import static org.schabi.newpipe.extractor.services.bandcamp.extractors.BandcampFeaturedExtractor.KIOSK_FEATURED;
@@ -28,7 +30,7 @@ import static org.schabi.newpipe.extractor.services.bandcamp.extractors.Bandcamp
 public class BandcampService extends StreamingService {
 
     public BandcampService(final int id) {
-        super(id, "Bandcamp", Collections.singletonList(AUDIO));
+        super(id, "Bandcamp", Arrays.asList(AUDIO, COMMENTS));
     }
 
     @Override
@@ -58,7 +60,7 @@ public class BandcampService extends StreamingService {
 
     @Override
     public ListLinkHandlerFactory getCommentsLHFactory() {
-        return null;
+        return new BandcampCommentsLinkHandlerFactory();
     }
 
     @Override
@@ -122,6 +124,6 @@ public class BandcampService extends StreamingService {
 
     @Override
     public CommentsExtractor getCommentsExtractor(ListLinkHandler linkHandler) {
-        return null;
+        return new BandcampCommentsExtractor(this, linkHandler);
     }
 }
