@@ -96,7 +96,8 @@ public class YoutubeParsingHelper {
         try {
             final URL u = new URL(url);
             final String host = u.getHost();
-            return host.startsWith("google.") || host.startsWith("m.google.");
+            return host.startsWith("google.") || host.startsWith("m.google.")
+                    || host.startsWith("www.google.");
         } catch (MalformedURLException e) {
             return false;
         }
