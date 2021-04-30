@@ -8,10 +8,10 @@ import com.grack.nanojson.JsonParserException;
 import com.grack.nanojson.JsonWriter;
 
 import org.schabi.newpipe.extractor.MetaInfo;
-import org.schabi.newpipe.extractor.NewPipe;
 import org.schabi.newpipe.extractor.Page;
 import org.schabi.newpipe.extractor.downloader.Response;
 import org.schabi.newpipe.extractor.exceptions.*;
+import org.schabi.newpipe.extractor.localization.ContentCountry;
 import org.schabi.newpipe.extractor.localization.Localization;
 import org.schabi.newpipe.extractor.stream.Description;
 import org.schabi.newpipe.extractor.utils.JsonUtils;
@@ -64,7 +64,7 @@ public class YoutubeParsingHelper {
     private YoutubeParsingHelper() {
     }
 
-    private static final String HARDCODED_CLIENT_VERSION = "2.20210420.07.00";
+    private static final String HARDCODED_CLIENT_VERSION = "2.20210429.07.00";
     private static final String HARDCODED_KEY = "AIzaSyAO_FJ2SlqU8Q4STEHLGCilw_Y9_11qcW8";
     private static final String YOUTUBEI_V1_URL = "https://youtubei.googleapis.com/youtubei/v1/";
     private static String clientVersion;
@@ -763,7 +763,8 @@ public class YoutubeParsingHelper {
         return JsonUtils.toJsonArray(getValidJsonResponseBody(response));
     }
 
-    public static JsonBuilder<JsonObject> prepareJsonBuilder(final String contentCountry)
+    public static JsonBuilder<JsonObject> prepareJsonBuilder(final Localization localization,
+                                                             final ContentCountry contentCountry)
             throws IOException, ExtractionException {
         // @formatter:off
         return JsonObject.builder()
@@ -771,8 +772,8 @@ public class YoutubeParsingHelper {
                     .object("client")
                         .value("clientName", "1")
                         .value("clientVersion", getClientVersion())
-                        .value("hl", NewPipe.getPreferredLocalization().getLocalizationCode())
-                        .value("gl", contentCountry)
+                        .value("hl", localization.getLocalizationCode())
+                        .value("gl", contentCountry.getCountryCode())
                     .end()
                 .end();
         // @formatter:on

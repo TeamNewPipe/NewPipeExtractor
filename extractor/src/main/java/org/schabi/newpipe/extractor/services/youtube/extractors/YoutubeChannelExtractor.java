@@ -14,6 +14,7 @@ import org.schabi.newpipe.extractor.exceptions.ContentNotSupportedException;
 import org.schabi.newpipe.extractor.exceptions.ExtractionException;
 import org.schabi.newpipe.extractor.exceptions.ParsingException;
 import org.schabi.newpipe.extractor.linkhandler.ListLinkHandler;
+import org.schabi.newpipe.extractor.localization.Localization;
 import org.schabi.newpipe.extractor.localization.TimeAgoParser;
 import org.schabi.newpipe.extractor.services.youtube.YoutubeParsingHelper;
 import org.schabi.newpipe.extractor.services.youtube.linkHandler.YoutubeChannelLinkHandlerFactory;
@@ -83,13 +84,13 @@ public class YoutubeChannelExtractor extends ChannelExtractor {
             ExtractionException {
         final String channel_path = super.getId();
         final String[] channelInfo = channel_path.split("/");
-        final String contentCountry = getExtractorContentCountry().getCountryCode();
         String id = "";
         // If the url is an URL which is not a /channel URL, we need to use the
         // navigation/resolve_url endpoint of the youtubei API to get the channel id. Otherwise, we
         // couldn't get information about the channel associated with this URL, if there is one.
         if (!channelInfo[0].equals("channel")) {
-            final byte[] body = JsonWriter.string(prepareJsonBuilder(contentCountry)
+            final byte[] body = JsonWriter.string(prepareJsonBuilder(getExtractorLocalization(),
+                    getExtractorContentCountry())
                     .value("url", "https://www.youtube.com/" + channel_path)
                     .done())
                     .getBytes(UTF_8);
@@ -134,7 +135,8 @@ public class YoutubeChannelExtractor extends ChannelExtractor {
 
         int level = 0;
         while (level < 3) {
-            final byte[] body = JsonWriter.string(prepareJsonBuilder(contentCountry)
+            final byte[] body = JsonWriter.string(prepareJsonBuilder(getExtractorLocalization(),
+                    getExtractorContentCountry())
                     .value("browseId", id)
                     .value("params", "EgZ2aWRlb3M%3D") // equals to videos
                     .done())
@@ -375,8 +377,8 @@ public class YoutubeChannelExtractor extends ChannelExtractor {
         final String continuation = continuationEndpoint.getObject("continuationCommand")
                 .getString("token");
 
-        final byte[] body = JsonWriter.string(prepareJsonBuilder(getExtractorContentCountry()
-                .getCountryCode())
+        final byte[] body = JsonWriter.string(prepareJsonBuilder(getExtractorLocalization(),
+                getExtractorContentCountry())
                 .value("continuation", continuation)
                 .done())
                 .getBytes(UTF_8);

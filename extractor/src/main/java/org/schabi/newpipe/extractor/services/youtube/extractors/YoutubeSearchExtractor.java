@@ -9,6 +9,8 @@ import org.schabi.newpipe.extractor.downloader.Downloader;
 import org.schabi.newpipe.extractor.exceptions.ExtractionException;
 import org.schabi.newpipe.extractor.exceptions.ParsingException;
 import org.schabi.newpipe.extractor.linkhandler.SearchQueryHandler;
+import org.schabi.newpipe.extractor.localization.ContentCountry;
+import org.schabi.newpipe.extractor.localization.Localization;
 import org.schabi.newpipe.extractor.localization.TimeAgoParser;
 import org.schabi.newpipe.extractor.search.InfoItemsSearchCollector;
 import org.schabi.newpipe.extractor.search.SearchExtractor;
@@ -57,7 +59,8 @@ public class YoutubeSearchExtractor extends SearchExtractor {
     public void onFetchPage(@Nonnull final Downloader downloader) throws IOException,
             ExtractionException {
         final String query = super.getSearchString();
-        final String contentCountry = getExtractorContentCountry().getCountryCode();
+        final Localization localization = getExtractorLocalization();
+        final ContentCountry contentCountry = getExtractorContentCountry();
 
         // Get the search parameter of the request
         final List<String> contentFilters = super.getLinkHandler().getContentFilters();
@@ -71,19 +74,19 @@ public class YoutubeSearchExtractor extends SearchExtractor {
 
         final byte[] body;
         if (!isNullOrEmpty(params)) {
-            body = JsonWriter.string(prepareJsonBuilder(contentCountry)
+            body = JsonWriter.string(prepareJsonBuilder(localization, contentCountry)
                     .value("query", query)
                     .value("params", params)
                     .done())
                     .getBytes(UTF_8);
         } else {
-            body = JsonWriter.string(prepareJsonBuilder(contentCountry)
+            body = JsonWriter.string(prepareJsonBuilder(localization, contentCountry)
                     .value("query", query)
                     .done())
                     .getBytes(UTF_8);
         }
 
-        initialData = getJsonPostResponse("search", body, getExtractorLocalization());
+        initialData = getJsonPostResponse("search", body, localization);
     }
 
     @Nonnull
@@ -168,10 +171,11 @@ public class YoutubeSearchExtractor extends SearchExtractor {
             throw new IllegalArgumentException("Page doesn't contain an URL");
         }
 
+        final Localization localization = getExtractorLocalization();
         final InfoItemsSearchCollector collector = new InfoItemsSearchCollector(getServiceId());
 
         if (page.getId() == null) {
-            final JsonArray ajaxJson = getJsonResponse(page.getUrl(), getExtractorLocalization());
+            final JsonArray ajaxJson = getJsonResponse(page.getUrl(), localization);
 
             final JsonObject itemSectionContinuation = ajaxJson.getObject(1).getObject("response")
                     .getObject("continuationContents").getObject("itemSectionContinuation");
@@ -182,8 +186,8 @@ public class YoutubeSearchExtractor extends SearchExtractor {
             return new InfoItemsPage<>(collector, getNextPageFrom(continuations));
         } else {
             // @formatter:off
-            final byte[] json = JsonWriter.string(prepareJsonBuilder(getExtractorContentCountry()
-                    .getCountryCode())
+            final byte[] json = JsonWriter.string(prepareJsonBuilder(localization,
+                    getExtractorContentCountry())
                     .value("continuation", page.getId())
                     .done())
                     .getBytes(UTF_8);

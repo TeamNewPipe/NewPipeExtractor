@@ -11,6 +11,7 @@ import org.schabi.newpipe.extractor.downloader.Response;
 import org.schabi.newpipe.extractor.exceptions.ExtractionException;
 import org.schabi.newpipe.extractor.exceptions.ParsingException;
 import org.schabi.newpipe.extractor.linkhandler.ListLinkHandler;
+import org.schabi.newpipe.extractor.localization.Localization;
 import org.schabi.newpipe.extractor.localization.TimeAgoParser;
 import org.schabi.newpipe.extractor.playlist.PlaylistExtractor;
 import org.schabi.newpipe.extractor.services.youtube.YoutubeParsingHelper;
@@ -45,14 +46,15 @@ public class YoutubePlaylistExtractor extends PlaylistExtractor {
     @Override
     public void onFetchPage(@Nonnull final Downloader downloader) throws IOException,
             ExtractionException {
-        final byte[] body = JsonWriter.string(prepareJsonBuilder(getExtractorContentCountry()
-                .getCountryCode())
+        final Localization localization = getExtractorLocalization();
+        final byte[] body = JsonWriter.string(prepareJsonBuilder(localization,
+                getExtractorContentCountry())
                 .value("browseId", "VL" + getId())
                 .value("params", "wgYCCAA%3D") // show unavailable videos
                 .done())
                 .getBytes(UTF_8);
 
-        initialData = getJsonPostResponse("browse", body, getExtractorLocalization());
+        initialData = getJsonPostResponse("browse", body, localization);
         YoutubeParsingHelper.defaultAlertsCheck(initialData);
 
         playlistInfo = getPlaylistInfo();
@@ -251,8 +253,8 @@ public class YoutubePlaylistExtractor extends PlaylistExtractor {
                     .getObject("continuationCommand")
                     .getString("token");
 
-            final byte[] body = JsonWriter.string(prepareJsonBuilder(getExtractorContentCountry()
-                    .getCountryCode())
+            final byte[] body = JsonWriter.string(prepareJsonBuilder(getExtractorLocalization(),
+                    getExtractorContentCountry())
                     .value("continuation", continuation)
                     .done())
                     .getBytes(UTF_8);
