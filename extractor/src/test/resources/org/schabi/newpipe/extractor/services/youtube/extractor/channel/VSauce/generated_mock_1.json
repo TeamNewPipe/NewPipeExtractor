@@ -16,7 +16,7 @@
         "https://www.youtube.com"
       ],
       "X-YouTube-Client-Version": [
-        "2.20210420.07.00"
+        "2.20210429.07.00"
       ]
     },
     "dataToSend": [
@@ -108,7 +108,7 @@
       48,
       52,
       50,
-      48,
+      57,
       46,
       48,
       55,
@@ -192,10 +192,10 @@
         "application/json; charset\u003dUTF-8"
       ],
       "date": [
-        "Sun, 30 May 2021 16:28:08 GMT"
+        "Sun, 30 May 2021 16:31:45 GMT"
       ],
       "expires": [
-        "Sun, 30 May 2021 16:28:08 GMT"
+        "Sun, 30 May 2021 16:31:45 GMT"
       ],
       "p3p": [
         "CP\u003d\"This is not a P3P policy! See g.co/p3phelp for more info.\""
@@ -204,7 +204,7 @@
         "ESF"
       ],
       "set-cookie": [
-        "CONSENT\u003dPENDING+016; expires\u003dFri, 01-Jan-2038 00:00:00 GMT; path\u003d/; domain\u003d.googleapis.com; Secure"
+        "CONSENT\u003dPENDING+407; expires\u003dFri, 01-Jan-2038 00:00:00 GMT; path\u003d/; domain\u003d.googleapis.com; Secure"
       ],
       "vary": [
         "Origin",
@@ -221,7 +221,7 @@
         "0"
       ]
     },
-    "responseBody": "{\n  \"responseContext\": {\n    \"visitorData\": \"Cgtka3FMcVZtNjY3OCiY-s6FBg%3D%3D\",\n    \"serviceTrackingParams\": [\n      {\n        \"service\": \"CSI\",\n        \"params\": [\n          {\n            \"key\": \"c\",\n            \"value\": \"WEB\"\n          },\n          {\n            \"key\": \"cver\",\n            \"value\": \"2.20210420.07.00\"\n          },\n          {\n            \"key\": \"yt_li\",\n            \"value\": \"0\"\n          },\n          {\n            \"key\": \"ResolveUrl_rid\",\n            \"value\": \"0x7640f08d52755aab\"\n          }\n        ]\n      },\n      {\n        \"service\": \"GFEEDBACK\",\n        \"params\": [\n          {\n            \"key\": \"logged_in\",\n            \"value\": \"0\"\n          },\n          {\n            \"key\": \"e\",\n            \"value\": \"24003104,24007246,23974595,23748146,23946420,23744176,23918597,23890959,23934970,23804281,23857950,24035275,23999405,24001373,23968386,24027649,24004644,24050722,23983296,23882685,24027133,23944779,24040786,24037794,24044575,24042870,24030992,23986017,24030040,23858057,24005646,23973491,24042868,24043242,23884386,24037806,23891346,23966208,23968099,23996830,23970529,24005802,1714258,24003105,23891344\"\n          }\n        ]\n      },\n      {\n        \"service\": \"GUIDED_HELP\",\n        \"params\": [\n          {\n            \"key\": \"logged_in\",\n            \"value\": \"0\"\n          }\n        ]\n      },\n      {\n        \"service\": \"ECATCHER\",\n        \"params\": [\n          {\n            \"key\": \"client.version\",\n            \"value\": \"2.20210504\"\n          },\n          {\n            \"key\": \"client.name\",\n            \"value\": \"WEB\"\n          }\n        ]\n      }\n    ],\n    \"mainAppWebResponseContext\": {\n      \"loggedOut\": true\n    },\n    \"webResponseContextExtensionData\": {\n      \"hasDecorated\": true\n    }\n  },\n  \"endpoint\": {\n    \"clickTrackingParams\": \"IhMI0sXtwOnx8AIVMzzxBR3MbgCTMghleHRlcm5hbA\u003d\u003d\",\n    \"commandMetadata\": {\n      \"webCommandMetadata\": {\n        \"url\": \"/youtubei/v1/navigation/resolve_url\",\n        \"webPageType\": \"WEB_PAGE_TYPE_CHANNEL\",\n        \"rootVe\": 3611,\n        \"apiUrl\": \"/youtubei/v1/browse\"\n      },\n      \"resolveUrlCommandMetadata\": {\n        \"isVanityUrl\": true\n      }\n    },\n    \"browseEndpoint\": {\n      \"browseId\": \"UC6nSFpj9HTCZ5t-N3Rm3-HA\",\n      \"params\": \"EgC4AQA%3D\"\n    }\n  }\n}\n",
+    "responseBody": "{\n  \"responseContext\": {\n    \"visitorData\": \"Cgt0SlMxcFU1TlZsSSjx-86FBg%3D%3D\",\n    \"serviceTrackingParams\": [\n      {\n        \"service\": \"CSI\",\n        \"params\": [\n          {\n            \"key\": \"c\",\n            \"value\": \"WEB\"\n          },\n          {\n            \"key\": \"cver\",\n            \"value\": \"2.20210429.07.00\"\n          },\n          {\n            \"key\": \"yt_li\",\n            \"value\": \"0\"\n          },\n          {\n            \"key\": \"ResolveUrl_rid\",\n            \"value\": \"0xc118f0a1c97aa2ba\"\n          }\n        ]\n      },\n      {\n        \"service\": \"GFEEDBACK\",\n        \"params\": [\n          {\n            \"key\": \"logged_in\",\n            \"value\": \"0\"\n          },\n          {\n            \"key\": \"e\",\n            \"value\": \"24003105,24030993,23973490,24005802,23968386,23918597,24004603,1714253,23999406,24005646,23882503,23890959,23944779,23974595,24050414,23886234,24035275,23744176,23986027,24027133,24016853,23991737,23998202,24001373,23982721,24027649,24004644,23940238,23970529,23968099,24042868,24037794,23966208,23857949,23885487,24050569,23996830,23804281,23990876,23983296,23934970,23884386,24042870,24050722,24044575,24037806,23891346,24030040,24044136,24047602,24040786,24045748,23946420,23891344,24003104,24007246\"\n          }\n        ]\n      },\n      {\n        \"service\": \"GUIDED_HELP\",\n        \"params\": [\n          {\n            \"key\": \"logged_in\",\n            \"value\": \"0\"\n          }\n        ]\n      },\n      {\n        \"service\": \"ECATCHER\",\n        \"params\": [\n          {\n            \"key\": \"client.version\",\n            \"value\": \"2.20210504\"\n          },\n          {\n            \"key\": \"client.name\",\n            \"value\": \"WEB\"\n          }\n        ]\n      }\n    ],\n    \"mainAppWebResponseContext\": {\n      \"loggedOut\": true\n    },\n    \"webResponseContextExtensionData\": {\n      \"hasDecorated\": true\n    }\n  },\n  \"endpoint\": {\n    \"clickTrackingParams\": \"IhMI1dqfqOrx8AIV4ivxBR24Iw0qMghleHRlcm5hbA\u003d\u003d\",\n    \"commandMetadata\": {\n      \"webCommandMetadata\": {\n        \"url\": \"/youtubei/v1/navigation/resolve_url\",\n        \"webPageType\": \"WEB_PAGE_TYPE_CHANNEL\",\n        \"rootVe\": 3611,\n        \"apiUrl\": \"/youtubei/v1/browse\"\n      },\n      \"resolveUrlCommandMetadata\": {\n        \"isVanityUrl\": true\n      }\n    },\n    \"browseEndpoint\": {\n      \"browseId\": \"UC6nSFpj9HTCZ5t-N3Rm3-HA\",\n      \"params\": \"EgC4AQA%3D\"\n    }\n  }\n}\n",
     "latestUrl": "https://youtubei.googleapis.com/youtubei/v1/navigation/resolve_url?key\u003dAIzaSyAO_FJ2SlqU8Q4STEHLGCilw_Y9_11qcW8"
   }
 }
