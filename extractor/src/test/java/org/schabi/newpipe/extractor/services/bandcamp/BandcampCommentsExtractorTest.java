@@ -40,7 +40,6 @@ public class BandcampCommentsExtractorTest {
 
         DefaultTests.defaultTestListOfItems(Bandcamp, comments.getItems(), comments.getErrors());
         for (CommentsInfoItem c : comments.getItems()) {
-            assertFalse(Utils.isBlank(c.getUploaderUrl()));
             assertFalse(Utils.isBlank(c.getUploaderName()));
             assertFalse(Utils.isBlank(c.getUploaderAvatarUrl()));
             assertFalse(Utils.isBlank(c.getCommentText()));
