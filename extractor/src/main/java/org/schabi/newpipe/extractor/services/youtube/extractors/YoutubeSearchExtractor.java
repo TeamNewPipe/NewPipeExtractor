@@ -263,7 +263,7 @@ public class YoutubeSearchExtractor extends SearchExtractor {
         final String token = continuationItemRenderer.getObject("continuationEndpoint")
                 .getObject("continuationCommand").getString("token");
 
-        final String url = "https://youtubei.googleapis.com/youtubei/v1/search?key=" + getKey();
+        final String url = "https://www.youtube.com/youtubei/v1/search?key=" + getKey();
 
         return new Page(url, token);
     }

@@ -64,9 +64,9 @@ public class YoutubeParsingHelper {
     private YoutubeParsingHelper() {
     }
 
-    private static final String HARDCODED_CLIENT_VERSION = "2.20210429.07.00";
+    private static final String HARDCODED_CLIENT_VERSION = "2.20210506.07.00";
     private static final String HARDCODED_KEY = "AIzaSyAO_FJ2SlqU8Q4STEHLGCilw_Y9_11qcW8";
-    private static final String YOUTUBEI_V1_URL = "https://youtubei.googleapis.com/youtubei/v1/";
+    private static final String YOUTUBEI_V1_URL = "https://www.youtube.com/youtubei/v1/";
     private static String clientVersion;
     private static String key;
 
@@ -464,7 +464,8 @@ public class YoutubeParsingHelper {
 
     public static boolean areHardcodedYoutubeMusicKeysValid() throws IOException,
             ReCaptchaException {
-        final String url = YOUTUBEI_V1_URL + "music/get_search_suggestions?alt=json&key="
+        final String url =
+                "https://music.youtube.com/youtubei/v1/music/get_search_suggestions?alt=json&key="
                 + HARDCODED_YOUTUBE_MUSIC_KEYS[0];
 
         // @formatter:off
@@ -474,7 +475,7 @@ public class YoutubeParsingHelper {
                     .object("client")
                         .value("clientName", "WEB_REMIX")
                         .value("clientVersion", HARDCODED_YOUTUBE_MUSIC_KEYS[2])
-                        .value("hl", "en")
+                        .value("hl", "en-GB")
                         .value("gl", "GB")
                         .array("experimentIds").end()
                         .value("experimentsToken", "")

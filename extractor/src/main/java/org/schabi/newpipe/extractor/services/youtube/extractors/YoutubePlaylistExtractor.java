@@ -259,8 +259,7 @@ public class YoutubePlaylistExtractor extends PlaylistExtractor {
                     .done())
                     .getBytes(UTF_8);
 
-            return new Page("https://youtubei.googleapis.com/youtubei/v1/browse?key="
-                    + getKey(), body);
+            return new Page("https://www.youtube.com/youtubei/v1/browse?key=" + getKey(), body);
         } else {
             return null;
         }
