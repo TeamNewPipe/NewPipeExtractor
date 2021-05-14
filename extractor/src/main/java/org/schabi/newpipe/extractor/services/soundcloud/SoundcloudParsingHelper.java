@@ -145,12 +145,15 @@ public class SoundcloudParsingHelper {
      *
      * @return the resolved id
      */
-    public static String resolveIdWithWidgetApi(String urlString) throws IOException, ReCaptchaException, ParsingException {
+    public static String resolveIdWithWidgetApi(String urlString) throws IOException, ParsingException {
         // Remove the tailing slash from URLs due to issues with the SoundCloud API
-        if (urlString.charAt(urlString.length() - 1) == '/') urlString = urlString.substring(0, urlString.length() - 1);
-        // Make URL lower case and remove www. if it exists.
+        if (urlString.charAt(urlString.length() - 1) == '/') {
+            urlString = urlString.substring(0, urlString.length() - 1);
+        }
+        // Ensure the host of the URL equals "soundcloud.com" and the URL is lowercase.
         // Without doing this, the widget API does not recognize the URL.
-        urlString = Utils.removeWWWFromUrl(urlString.toLowerCase());
+        urlString = Utils.replaceHttpWithHttps(Utils.removeWWWFromUrl(urlString.toLowerCase()))
+                .replaceFirst("m\\.soundcloud\\.com", "soundcloud.com");
 
         final URL url;
         try {
@@ -170,7 +173,7 @@ public class SoundcloudParsingHelper {
         } catch (JsonParserException e) {
             throw new ParsingException("Could not parse JSON response", e);
         } catch (ExtractionException e) {
-            throw new ParsingException("Could not resolve id with embedded player. ClientId not extracted", e);
+            throw new ParsingException("Could not resolve id with widget API", e);
         }
     }
 

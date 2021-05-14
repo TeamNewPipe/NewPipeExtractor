@@ -24,7 +24,7 @@ public class SoundcloudPlaylistLinkHandlerFactory extends ListLinkHandlerFactory
         try {
             return SoundcloudParsingHelper.resolveIdWithWidgetApi(url);
         } catch (Exception e) {
-            throw new ParsingException("Could not get id of url: " + url + " " + e.getMessage(), e);
+            throw new ParsingException("Could not get id of URL: " + url + " " + e.getMessage(), e);
         }
     }
 

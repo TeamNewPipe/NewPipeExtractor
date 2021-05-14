@@ -63,6 +63,7 @@ public class SoundcloudStreamLinkHandlerFactoryTest {
         assertEquals("294487428", linkHandler.fromUrl("https://soundcloud.com/liluzivert/today-produced-by-c-note#t=1m9s").getId());
         assertEquals("294487157", linkHandler.fromUrl("https://soundcloud.com/liluzivert/changed-my-phone-produced-by-c-note#t=1m09s").getId());
         assertEquals("44556776", linkHandler.fromUrl("https://soundcloud.com/kechuspider-sets-1/last-days").getId());
+        assertEquals("232480855", linkHandler.fromUrl("https://m.soundcloud.com/papercutgr/better-skies-ft-efi-theologou").getId());
     }
 
 
