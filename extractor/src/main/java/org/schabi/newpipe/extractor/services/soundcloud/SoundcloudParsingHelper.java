@@ -16,7 +16,6 @@ import org.schabi.newpipe.extractor.exceptions.ExtractionException;
 import org.schabi.newpipe.extractor.exceptions.ParsingException;
 import org.schabi.newpipe.extractor.exceptions.ReCaptchaException;
 import org.schabi.newpipe.extractor.services.soundcloud.extractors.SoundcloudChannelInfoItemExtractor;
-import org.schabi.newpipe.extractor.services.soundcloud.extractors.SoundcloudStreamExtractor;
 import org.schabi.newpipe.extractor.services.soundcloud.extractors.SoundcloudStreamInfoItemExtractor;
 import org.schabi.newpipe.extractor.stream.StreamInfoItemsCollector;
 import org.schabi.newpipe.extractor.utils.JsonUtils;
@@ -44,7 +43,7 @@ public class SoundcloudParsingHelper {
     private static final String HARDCODED_CLIENT_ID =
             "NcIaRZItQCNQp3Vq9Plvzf7tvjmVJnF6"; // Updated on 26/04/21
     private static String clientId;
-    public static final String SOUNDCLOUD_API_V2 = "https://api-v2.soundcloud.com/";
+    public static final String SOUNDCLOUD_API_V2_URL = "https://api-v2.soundcloud.com/";
 
     private SoundcloudParsingHelper() {
     }
@@ -77,8 +76,9 @@ public class SoundcloudParsingHelper {
             final String srcUrl = element.attr("src");
             if (!isNullOrEmpty(srcUrl)) {
                 try {
-                    return clientId = Parser.matchGroup1(clientIdPattern, dl.get(srcUrl, headers)
+                    clientId = Parser.matchGroup1(clientIdPattern, dl.get(srcUrl, headers)
                             .responseBody());
+                    return clientId;
                 } catch (final RegexException ignored) {
                     // Ignore it and proceed to try searching other script
                 }
@@ -90,7 +90,7 @@ public class SoundcloudParsingHelper {
     }
 
     static boolean checkIfHardcodedClientIdIsValid() throws IOException, ReCaptchaException {
-        final int responseCode = NewPipe.getDownloader().get(SOUNDCLOUD_API_V2 + "?client_id="
+        final int responseCode = NewPipe.getDownloader().get(SOUNDCLOUD_API_V2_URL + "?client_id="
                 + HARDCODED_CLIENT_ID).responseCode();
         // If the response code is 404, it means that the client_id is valid; otherwise,
         // it should be not valid
@@ -119,7 +119,7 @@ public class SoundcloudParsingHelper {
      */
     public static JsonObject resolveFor(@Nonnull final Downloader downloader, final String url)
             throws IOException, ExtractionException {
-        final String apiUrl = SOUNDCLOUD_API_V2 + "resolve" + "?url="
+        final String apiUrl = SOUNDCLOUD_API_V2_URL + "resolve" + "?url="
                 + URLEncoder.encode(url, UTF_8) + "&client_id=" + clientId();
 
         try {

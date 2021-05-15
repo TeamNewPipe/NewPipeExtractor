@@ -11,6 +11,7 @@ import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
 import java.util.List;
 
+import static org.schabi.newpipe.extractor.services.soundcloud.SoundcloudParsingHelper.SOUNDCLOUD_API_V2_URL;
 import static org.schabi.newpipe.extractor.utils.Utils.UTF_8;
 
 public class SoundcloudSearchQueryHandlerFactory extends SearchQueryHandlerFactory {
@@ -28,7 +29,7 @@ public class SoundcloudSearchQueryHandlerFactory extends SearchQueryHandlerFacto
                          final String sortFilter)
             throws ParsingException {
         try {
-            String url = "https://api-v2.soundcloud.com/search";
+            String url = SOUNDCLOUD_API_V2_URL + "search";
 
             if (!contentFilter.isEmpty()) {
                 switch (contentFilter.get(0)) {

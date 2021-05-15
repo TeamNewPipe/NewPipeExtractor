@@ -17,6 +17,7 @@ import org.schabi.newpipe.extractor.stream.StreamInfoItemsCollector;
 import javax.annotation.Nonnull;
 import java.io.IOException;
 
+import static org.schabi.newpipe.extractor.services.soundcloud.SoundcloudParsingHelper.SOUNDCLOUD_API_V2_URL;
 import static org.schabi.newpipe.extractor.utils.Utils.EMPTY_STRING;
 import static org.schabi.newpipe.extractor.utils.Utils.isNullOrEmpty;
 
@@ -24,6 +25,7 @@ import static org.schabi.newpipe.extractor.utils.Utils.isNullOrEmpty;
 public class SoundcloudChannelExtractor extends ChannelExtractor {
     private String userId;
     private JsonObject user;
+    private static final String USERS_ENDPOINT = SOUNDCLOUD_API_V2_URL + "users/";
 
     public SoundcloudChannelExtractor(final StreamingService service,
                                       final ListLinkHandler linkHandler) {
@@ -35,8 +37,8 @@ public class SoundcloudChannelExtractor extends ChannelExtractor {
             ExtractionException {
 
         userId = getLinkHandler().getId();
-        final String apiUrl = "https://api-v2.soundcloud.com/users/" + userId +
-                "?client_id=" + SoundcloudParsingHelper.clientId();
+        final String apiUrl = USERS_ENDPOINT + userId + "?client_id="
+                + SoundcloudParsingHelper.clientId();
 
         final String response = downloader.get(apiUrl, getExtractorLocalization()).responseBody();
         try {
@@ -111,9 +113,8 @@ public class SoundcloudChannelExtractor extends ChannelExtractor {
             final StreamInfoItemsCollector streamInfoItemsCollector =
                     new StreamInfoItemsCollector(getServiceId());
 
-            final String apiUrl = "https://api-v2.soundcloud.com/users/" + getId() + "/tracks"
-                    + "?client_id=" + SoundcloudParsingHelper.clientId() + "&limit=20"
-                    + "&linked_partitioning=1";
+            final String apiUrl = USERS_ENDPOINT + getId() + "/tracks" + "?client_id="
+                    + SoundcloudParsingHelper.clientId() + "&limit=20" + "&linked_partitioning=1";
 
             final String nextPageUrl = SoundcloudParsingHelper.getStreamsFromApiMinItems(15,
                     streamInfoItemsCollector, apiUrl);

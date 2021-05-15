@@ -17,6 +17,7 @@ import java.net.URLEncoder;
 import java.util.ArrayList;
 import java.util.List;
 
+import static org.schabi.newpipe.extractor.services.soundcloud.SoundcloudParsingHelper.SOUNDCLOUD_API_V2_URL;
 import static org.schabi.newpipe.extractor.utils.Utils.UTF_8;
 
 public class SoundcloudSuggestionExtractor extends SuggestionExtractor {
@@ -30,7 +31,7 @@ public class SoundcloudSuggestionExtractor extends SuggestionExtractor {
             ExtractionException {
         final List<String> suggestions = new ArrayList<>();
         final Downloader dl = NewPipe.getDownloader();
-        final String url = "https://api-v2.soundcloud.com/search/queries" + "?q="
+        final String url = SOUNDCLOUD_API_V2_URL + "search/queries" + "?q="
                 + URLEncoder.encode(query, UTF_8) + "&client_id="
                 + SoundcloudParsingHelper.clientId() + "&limit=10";
         final String response = dl.get(url, getExtractorLocalization()).responseBody();

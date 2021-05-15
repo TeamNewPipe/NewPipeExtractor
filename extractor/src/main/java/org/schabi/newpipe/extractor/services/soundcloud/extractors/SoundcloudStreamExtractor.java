@@ -30,6 +30,7 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Locale;
 
+import static org.schabi.newpipe.extractor.services.soundcloud.SoundcloudParsingHelper.SOUNDCLOUD_API_V2_URL;
 import static org.schabi.newpipe.extractor.utils.Utils.*;
 
 public class SoundcloudStreamExtractor extends StreamExtractor {
@@ -364,7 +365,7 @@ public class SoundcloudStreamExtractor extends StreamExtractor {
     public StreamInfoItemsCollector getRelatedItems() throws IOException, ExtractionException {
         final StreamInfoItemsCollector collector = new StreamInfoItemsCollector(getServiceId());
 
-        final String apiUrl = "https://api-v2.soundcloud.com/tracks/" + urlEncode(getId())
+        final String apiUrl = SOUNDCLOUD_API_V2_URL + "tracks/" + urlEncode(getId())
                 + "/related?client_id=" + urlEncode(SoundcloudParsingHelper.clientId());
 
         SoundcloudParsingHelper.getStreamsFromApi(collector, apiUrl);

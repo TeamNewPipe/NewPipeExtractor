@@ -13,6 +13,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
+import static org.schabi.newpipe.extractor.services.soundcloud.SoundcloudParsingHelper.SOUNDCLOUD_API_V2_URL;
 import static org.schabi.newpipe.extractor.utils.Utils.HTTPS;
 import static org.schabi.newpipe.extractor.utils.Utils.replaceHttpWithHttps;
 
@@ -42,9 +43,8 @@ public class SoundcloudSubscriptionExtractor extends SubscriptionExtractor {
             throw new InvalidSourceException(e);
         }
 
-        final String apiUrl = "https://api-v2.soundcloud.com/users/" + id + "/followings"
-                + "?client_id=" + SoundcloudParsingHelper.clientId()
-                + "&limit=200";
+        final String apiUrl = SOUNDCLOUD_API_V2_URL + "users/" + id + "/followings" + "?client_id="
+                + SoundcloudParsingHelper.clientId() + "&limit=200";
         final ChannelInfoItemsCollector collector = new ChannelInfoItemsCollector(service
                 .getServiceId());
         // ± 2000 is the limit of followings on SoundCloud, so this minimum should be enough

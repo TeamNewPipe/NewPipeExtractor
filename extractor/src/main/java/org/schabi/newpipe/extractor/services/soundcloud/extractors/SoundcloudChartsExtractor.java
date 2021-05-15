@@ -15,6 +15,7 @@ import javax.annotation.Nonnull;
 import java.io.IOException;
 
 import static org.schabi.newpipe.extractor.ServiceList.SoundCloud;
+import static org.schabi.newpipe.extractor.services.soundcloud.SoundcloudParsingHelper.SOUNDCLOUD_API_V2_URL;
 import static org.schabi.newpipe.extractor.utils.Utils.isNullOrEmpty;
 
 public class SoundcloudChartsExtractor extends KioskExtractor<StreamInfoItem> {
@@ -53,9 +54,8 @@ public class SoundcloudChartsExtractor extends KioskExtractor<StreamInfoItem> {
     public InfoItemsPage<StreamInfoItem> getInitialPage() throws IOException, ExtractionException {
         final StreamInfoItemsCollector collector = new StreamInfoItemsCollector(getServiceId());
 
-        String apiUrl = "https://api-v2.soundcloud.com/charts" +
-                "?genre=soundcloud:genres:all-music" + "&client_id="
-                + SoundcloudParsingHelper.clientId();
+        String apiUrl = SOUNDCLOUD_API_V2_URL + "charts" + "?genre=soundcloud:genres:all-music"
+                + "&client_id=" + SoundcloudParsingHelper.clientId();
 
         if (getId().equals("Top 50")) {
             apiUrl += "&kind=top";

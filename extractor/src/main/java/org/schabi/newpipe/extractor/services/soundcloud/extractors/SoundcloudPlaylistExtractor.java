@@ -25,6 +25,7 @@ import java.util.List;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
+import static org.schabi.newpipe.extractor.services.soundcloud.SoundcloudParsingHelper.SOUNDCLOUD_API_V2_URL;
 import static org.schabi.newpipe.extractor.utils.Utils.isNullOrEmpty;
 
 public class SoundcloudPlaylistExtractor extends PlaylistExtractor {
@@ -43,8 +44,8 @@ public class SoundcloudPlaylistExtractor extends PlaylistExtractor {
             ExtractionException {
 
         playlistId = getLinkHandler().getId();
-        final String apiUrl = "https://api-v2.soundcloud.com/playlists/" + playlistId +
-                "?client_id=" + SoundcloudParsingHelper.clientId() + "&representation=compact";
+        final String apiUrl = SOUNDCLOUD_API_V2_URL + "playlists/" + playlistId + "?client_id="
+                + SoundcloudParsingHelper.clientId() + "&representation=compact";
 
         final String response = downloader.get(apiUrl, getExtractorLocalization()).responseBody();
         try {
@@ -182,7 +183,7 @@ public class SoundcloudPlaylistExtractor extends PlaylistExtractor {
             nextIds = page.getIds().subList(STREAMS_PER_REQUESTED_PAGE, page.getIds().size());
         }
 
-        final String currentPageUrl = "https://api-v2.soundcloud.com/tracks?client_id="
+        final String currentPageUrl = SOUNDCLOUD_API_V2_URL + "tracks?client_id="
                 + SoundcloudParsingHelper.clientId() + "&ids=" + Utils.join(",", currentIds);
 
         final StreamInfoItemsCollector collector = new StreamInfoItemsCollector(getServiceId());
