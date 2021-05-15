@@ -44,6 +44,7 @@ public class SoundcloudParsingHelper {
     private static final String HARDCODED_CLIENT_ID =
             "NcIaRZItQCNQp3Vq9Plvzf7tvjmVJnF6"; // Updated on 26/04/21
     private static String clientId;
+    public static final String SOUNDCLOUD_API_V2 = "https://api-v2.soundcloud.com/";
 
     private SoundcloudParsingHelper() {
     }
@@ -88,17 +89,12 @@ public class SoundcloudParsingHelper {
         throw new ExtractionException("Couldn't extract client id");
     }
 
-    static boolean checkIfHardcodedClientIdIsValid() {
-        try {
-            SoundcloudStreamExtractor e = (SoundcloudStreamExtractor) SoundCloud
-                    .getStreamExtractor(
-            "https://soundcloud.com/liluzivert/do-what-i-want-produced-by-maaly-raw-don-cannon");
-            e.fetchPage();
-            return !e.getAudioStreams().isEmpty();
-        } catch (final Exception ignored) {
-            // No need to throw an exception here. If something went wrong, the client_id is wrong
-            return false;
-        }
+    static boolean checkIfHardcodedClientIdIsValid() throws IOException, ReCaptchaException {
+        final int responseCode = NewPipe.getDownloader().get(SOUNDCLOUD_API_V2 + "?client_id="
+                + HARDCODED_CLIENT_ID).responseCode();
+        // If the response code is 404, it means that the client_id is valid; otherwise,
+        // it should be not valid
+        return responseCode == 404;
     }
 
     public static OffsetDateTime parseDateFrom(final String textualUploadDate)
@@ -123,7 +119,7 @@ public class SoundcloudParsingHelper {
      */
     public static JsonObject resolveFor(@Nonnull final Downloader downloader, final String url)
             throws IOException, ExtractionException {
-        final String apiUrl = "https://api-v2.soundcloud.com/resolve" + "?url="
+        final String apiUrl = SOUNDCLOUD_API_V2 + "resolve" + "?url="
                 + URLEncoder.encode(url, UTF_8) + "&client_id=" + clientId();
 
         try {
