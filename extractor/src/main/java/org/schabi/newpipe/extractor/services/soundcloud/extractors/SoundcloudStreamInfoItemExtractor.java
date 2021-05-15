@@ -14,7 +14,7 @@ public class SoundcloudStreamInfoItemExtractor implements StreamInfoItemExtracto
 
     protected final JsonObject itemObject;
 
-    public SoundcloudStreamInfoItemExtractor(JsonObject itemObject) {
+    public SoundcloudStreamInfoItemExtractor(final JsonObject itemObject) {
         this.itemObject = itemObject;
     }
 

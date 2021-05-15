@@ -9,30 +9,36 @@ import org.schabi.newpipe.extractor.utils.Utils;
 import java.util.List;
 
 public class SoundcloudPlaylistLinkHandlerFactory extends ListLinkHandlerFactory {
-    private static final SoundcloudPlaylistLinkHandlerFactory instance = new SoundcloudPlaylistLinkHandlerFactory();
-    private static final String URL_PATTERN = "^https?://(www\\.|m\\.)?soundcloud.com/[0-9a-z_-]+" +
-            "/sets/[0-9a-z_-]+/?([#?].*)?$";
+    private static final SoundcloudPlaylistLinkHandlerFactory instance =
+            new SoundcloudPlaylistLinkHandlerFactory();
+    private static final String URL_PATTERN = "^https?://(www\\.|m\\.)?soundcloud.com/[0-9a-z_-]+"
+            + "/sets/[0-9a-z_-]+/?([#?].*)?$";
 
     public static SoundcloudPlaylistLinkHandlerFactory getInstance() {
         return instance;
     }
 
     @Override
-    public String getId(String url) throws ParsingException {
+    public String getId(final String url) throws ParsingException {
         Utils.checkUrl(URL_PATTERN, url);
 
         try {
             return SoundcloudParsingHelper.resolveIdWithWidgetApi(url);
-        } catch (Exception e) {
-            throw new ParsingException("Could not get id of url: " + url + " " + e.getMessage(), e);
+        } catch (final Exception e) {
+            throw new ParsingException("Could not get id of url: " + url + " " + e.getMessage(),
+                    e);
         }
     }
 
     @Override
-    public String getUrl(String id, List<String> contentFilter, String sortFilter) throws ParsingException {
+    public String getUrl(final String id,
+                         final List<String> contentFilter,
+                         final String sortFilter)
+            throws ParsingException {
         try {
-            return SoundcloudParsingHelper.resolveUrlWithEmbedPlayer("https://api.soundcloud.com/playlists/" + id);
-        } catch (Exception e) {
+            return SoundcloudParsingHelper.resolveUrlWithEmbedPlayer(
+                    "https://api.soundcloud.com/playlists/" + id);
+        } catch (final Exception e) {
             throw new ParsingException(e.getMessage(), e);
         }
     }

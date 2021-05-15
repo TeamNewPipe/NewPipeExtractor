@@ -10,10 +10,10 @@ import javax.annotation.Nullable;
 import java.util.Objects;
 
 public class SoundcloudCommentsInfoItemExtractor implements CommentsInfoItemExtractor {
-    private JsonObject json;
-    private String url;
+    private final JsonObject json;
+    private final String url;
 
-    public SoundcloudCommentsInfoItemExtractor(JsonObject json, String url) {
+    public SoundcloudCommentsInfoItemExtractor(final JsonObject json, final String url) {
         this.json = json;
         this.url = url;
     }

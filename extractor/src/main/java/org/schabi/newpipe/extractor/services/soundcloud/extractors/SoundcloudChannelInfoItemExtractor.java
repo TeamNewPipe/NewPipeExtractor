@@ -9,7 +9,7 @@ import static org.schabi.newpipe.extractor.utils.Utils.replaceHttpWithHttps;
 public class SoundcloudChannelInfoItemExtractor implements ChannelInfoItemExtractor {
     private final JsonObject itemObject;
 
-    public SoundcloudChannelInfoItemExtractor(JsonObject itemObject) {
+    public SoundcloudChannelInfoItemExtractor(final JsonObject itemObject) {
         this.itemObject = itemObject;
     }
 
@@ -26,8 +26,8 @@ public class SoundcloudChannelInfoItemExtractor implements ChannelInfoItemExtrac
     @Override
     public String getThumbnailUrl() {
         String avatarUrl = itemObject.getString("avatar_url", EMPTY_STRING);
-        String avatarUrlBetterResolution = avatarUrl.replace("large.jpg", "crop.jpg");
-        return avatarUrlBetterResolution;
+        // An avatar URL with a better resolution
+        return avatarUrl.replace("large.jpg", "crop.jpg");
     }
 
     @Override
