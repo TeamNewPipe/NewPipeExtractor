@@ -72,8 +72,8 @@ public class YoutubeCommentsInfoItemExtractor implements CommentsInfoItemExtract
 
     @Override
     public String getTextualVoteCount() throws ParsingException {
-        /**
-         * Example results are as of 2021-05-20:
+        /*
+         * Example results as of 2021-05-20:
          * Language = English
          * 3.3M
          * 48K
