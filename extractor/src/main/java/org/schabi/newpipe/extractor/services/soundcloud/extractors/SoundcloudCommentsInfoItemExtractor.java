@@ -70,11 +70,6 @@ public class SoundcloudCommentsInfoItemExtractor implements CommentsInfoItemExtr
     }
 
     @Override
-    public int getLikeCount() {
-        return -1;
-    }
-
-    @Override
     public String getName() throws ParsingException {
         return json.getObject("user").getString("permalink");
     }

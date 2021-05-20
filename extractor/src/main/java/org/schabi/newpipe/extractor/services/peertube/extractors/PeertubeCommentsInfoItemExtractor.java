@@ -58,11 +58,6 @@ public class PeertubeCommentsInfoItemExtractor implements CommentsInfoItemExtrac
     }
 
     @Override
-    public int getLikeCount() {
-        return -1;
-    }
-
-    @Override
     public String getCommentText() throws ParsingException {
         final String htmlText = JsonUtils.getString(item, "text");
         try {

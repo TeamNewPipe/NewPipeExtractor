@@ -4,17 +4,19 @@ import org.schabi.newpipe.extractor.InfoItemExtractor;
 import org.schabi.newpipe.extractor.exceptions.ParsingException;
 import org.schabi.newpipe.extractor.localization.DateWrapper;
 import org.schabi.newpipe.extractor.stream.StreamExtractor;
+import org.schabi.newpipe.extractor.utils.Utils;
 
 import javax.annotation.Nullable;
 
 public interface CommentsInfoItemExtractor extends InfoItemExtractor {
-
     /**
-     * Return the like count of the comment, or -1 if it's unavailable
+     * The formatted text (e.g. 420, 4K, 4.2M) of the votes
      *
-     * @see StreamExtractor#getLikeCount()
+     * May be language dependent
      */
-    int getLikeCount() throws ParsingException;
+    default String getTextualVoteCount() throws ParsingException {
+        return Utils.EMPTY_STRING;
+    }
 
     /**
      * The text of the comment

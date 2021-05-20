@@ -71,11 +71,33 @@ public class YoutubeCommentsInfoItemExtractor implements CommentsInfoItemExtract
     }
 
     @Override
-    public int getLikeCount() throws ParsingException {
+    public String getTextualVoteCount() throws ParsingException {
+        /**
+         * Example results are as of 2021-05-20:
+         * Language = English
+         * 3.3M
+         * 48K
+         * 1.4K
+         * 270K
+         * 19
+         * 6
+         *
+         * Language = German
+         * 3,3 Mio
+         * 48.189
+         * 1419
+         * 270.984
+         * 19
+         * 6
+         */
         try {
-            return json.getInt("likeCount");
+            final JsonObject voteCountObj = JsonUtils.getObject(json, "voteCount");
+            if(voteCountObj.isEmpty()) {
+                return EMPTY_STRING;
+            }
+            return getTextFromObject(voteCountObj);
         } catch (Exception e) {
-            throw new ParsingException("Could not get like count", e);
+            throw new ParsingException("Could not get vote count", e);
         }
     }
 

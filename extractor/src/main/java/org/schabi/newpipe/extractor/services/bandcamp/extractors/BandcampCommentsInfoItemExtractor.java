@@ -4,6 +4,7 @@ import org.jsoup.nodes.Element;
 import org.schabi.newpipe.extractor.comments.CommentsInfoItemExtractor;
 import org.schabi.newpipe.extractor.exceptions.ParsingException;
 import org.schabi.newpipe.extractor.localization.DateWrapper;
+import org.schabi.newpipe.extractor.utils.Utils;
 
 import javax.annotation.Nullable;
 
@@ -30,11 +31,6 @@ public class BandcampCommentsInfoItemExtractor implements CommentsInfoItemExtrac
     @Override
     public String getThumbnailUrl() throws ParsingException {
         return writing.getElementsByClass("thumb").attr("src");
-    }
-
-    @Override
-    public int getLikeCount() {
-        return -1;
     }
 
     @Override
