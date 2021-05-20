@@ -9,6 +9,7 @@ import org.schabi.newpipe.extractor.utils.Utils;
 import javax.annotation.Nullable;
 
 public interface CommentsInfoItemExtractor extends InfoItemExtractor {
+
     /**
      * The formatted text (e.g. 420, 4K, 4.2M) of the votes
      *
@@ -21,14 +22,18 @@ public interface CommentsInfoItemExtractor extends InfoItemExtractor {
     /**
      * The text of the comment
      */
-    String getCommentText() throws ParsingException;
+    default String getCommentText() throws ParsingException {
+        return Utils.EMPTY_STRING;
+    }
 
     /**
      * The upload date given by the service, unmodified
      *
      * @see StreamExtractor#getTextualUploadDate()
      */
-    String getTextualUploadDate() throws ParsingException;
+    default String getTextualUploadDate() throws ParsingException {
+        return Utils.EMPTY_STRING;
+    }
 
     /**
      * The upload date wrapped with DateWrapper class
@@ -36,28 +41,44 @@ public interface CommentsInfoItemExtractor extends InfoItemExtractor {
      * @see StreamExtractor#getUploadDate()
      */
     @Nullable
-    DateWrapper getUploadDate() throws ParsingException;
+    default DateWrapper getUploadDate() throws ParsingException {
+        return null;
+    }
 
-    String getCommentId() throws ParsingException;
+    default String getCommentId() throws ParsingException {
+        return Utils.EMPTY_STRING;
+    }
 
-    String getUploaderUrl() throws ParsingException;
+    default String getUploaderUrl() throws ParsingException {
+        return Utils.EMPTY_STRING;
+    }
 
-    String getUploaderName() throws ParsingException;
+    default String getUploaderName() throws ParsingException {
+        return Utils.EMPTY_STRING;
+    }
 
-    String getUploaderAvatarUrl() throws ParsingException;
+    default String getUploaderAvatarUrl() throws ParsingException {
+        return Utils.EMPTY_STRING;
+    }
 
     /**
      * Whether the comment has been hearted by the uploader
      */
-    boolean isHeartedByUploader() throws ParsingException;
+    default boolean isHeartedByUploader() throws ParsingException {
+        return false;
+    }
 
     /**
      * Whether the comment is pinned
      */
-    boolean isPinned() throws ParsingException;
+    default boolean isPinned() throws ParsingException {
+        return false;
+    }
 
     /**
      * Whether the uploader is verified by the service
      */
-    boolean isUploaderVerified() throws ParsingException;
+    default boolean isUploaderVerified() throws ParsingException {
+        return false;
+    }
 }

@@ -85,21 +85,6 @@ public class PeertubeCommentsInfoItemExtractor implements CommentsInfoItemExtrac
     }
 
     @Override
-    public boolean isHeartedByUploader() throws ParsingException {
-        return false;
-    }
-
-    @Override
-    public boolean isPinned() throws ParsingException {
-        return false;
-    }
-
-    @Override
-    public boolean isUploaderVerified() throws ParsingException {
-        return false;
-    }
-
-    @Override
     public String getUploaderName() throws ParsingException {
         return JsonUtils.getString(item, "account.name") + "@" + JsonUtils.getString(item, "account.host");
     }
