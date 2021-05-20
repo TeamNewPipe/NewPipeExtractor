@@ -91,7 +91,7 @@ public class YoutubeCommentsInfoItemExtractor implements CommentsInfoItemExtract
          * 6
          */
         try {
-            // Sometimes the voteCount is missing
+            // If a comment has no likes voteCount is not set
             if(!json.has("voteCount")) {
                 return EMPTY_STRING;
             }
