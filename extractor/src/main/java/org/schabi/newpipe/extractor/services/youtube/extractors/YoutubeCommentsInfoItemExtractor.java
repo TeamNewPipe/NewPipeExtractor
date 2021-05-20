@@ -91,6 +91,11 @@ public class YoutubeCommentsInfoItemExtractor implements CommentsInfoItemExtract
          * 6
          */
         try {
+            // Sometimes the voteCount is missing
+            if(!json.has("voteCount")) {
+                return EMPTY_STRING;
+            }
+
             final JsonObject voteCountObj = JsonUtils.getObject(json, "voteCount");
             if(voteCountObj.isEmpty()) {
                 return EMPTY_STRING;
