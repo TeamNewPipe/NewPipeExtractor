@@ -73,10 +73,18 @@ public class YoutubeCommentsInfoItemExtractor implements CommentsInfoItemExtract
 
     /**
      * @implNote The method is parsing internally a localized string.<br/>
-     * This will fail for other languages than English.
-     * However as long as the Extractor only uses "en-GB"
-     * (as seen in {@link org.schabi.newpipe.extractor.services.youtube.YoutubeService#SUPPORTED_LANGUAGES})
-     * everything will work fine.<br/>
+     * <ul>
+     *     <li>
+     *         More than >1k likes will result in an inaccurate number
+     *     </li>
+     *     <li>
+     *         This will fail for other languages than English.
+     *         However as long as the Extractor only uses "en-GB"
+     *         (as seen in {@link org.schabi.newpipe.extractor.services.youtube.YoutubeService#SUPPORTED_LANGUAGES})
+     *         everything will work fine.
+     *      </li>
+     * </ul>
+     * <br/>
      * Consider using {@link #getTextualVoteCount()}
      */
     @Override
