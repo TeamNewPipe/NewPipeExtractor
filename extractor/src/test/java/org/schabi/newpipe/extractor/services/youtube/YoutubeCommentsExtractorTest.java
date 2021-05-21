@@ -98,6 +98,7 @@ public class YoutubeCommentsExtractorTest {
                 assertNotNull(c.getUploadDate());
                 assertFalse(Utils.isBlank(c.getThumbnailUrl()));
                 assertFalse(Utils.isBlank(c.getUrl()));
+                assertTrue(c.getLikeCount() >= 0);
                 assertFalse(Utils.isBlank(c.getTextualVoteCount()));
             }
         }
@@ -148,6 +149,7 @@ public class YoutubeCommentsExtractorTest {
                 assertNotNull(c.getUploadDate());
                 assertFalse(Utils.isBlank(c.getThumbnailUrl()));
                 assertFalse(Utils.isBlank(c.getUrl()));
+                assertTrue(c.getLikeCount() >= 0);
                 assertFalse(Utils.isBlank(c.getTextualVoteCount()));
                 if (c.getCommentId().equals("Ugga_h1-EXdHB3gCoAEC")) { // comment without text
                     assertTrue(Utils.isBlank(c.getCommentText()));
@@ -191,6 +193,7 @@ public class YoutubeCommentsExtractorTest {
                 assertNotNull(c.getUploadDate());
                 assertFalse(Utils.isBlank(c.getThumbnailUrl()));
                 assertFalse(Utils.isBlank(c.getUrl()));
+                assertTrue(c.getLikeCount() >= 0);
                 assertFalse(Utils.isBlank(c.getTextualVoteCount()));
                 assertFalse(Utils.isBlank(c.getCommentText()));
                 if (c.isHeartedByUploader()) {
@@ -233,6 +236,7 @@ public class YoutubeCommentsExtractorTest {
                 assertFalse(Utils.isBlank(c.getThumbnailUrl()));
                 assertFalse(Utils.isBlank(c.getUrl()));
                 assertFalse(Utils.isBlank(c.getTextualVoteCount()));
+                assertTrue(c.getLikeCount() >= 0);
                 assertFalse(Utils.isBlank(c.getCommentText()));
             }
 
