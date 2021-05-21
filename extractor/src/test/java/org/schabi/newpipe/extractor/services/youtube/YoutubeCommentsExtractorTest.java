@@ -9,12 +9,14 @@ import org.schabi.newpipe.extractor.Page;
 import org.schabi.newpipe.extractor.comments.CommentsInfo;
 import org.schabi.newpipe.extractor.comments.CommentsInfoItem;
 import org.schabi.newpipe.extractor.exceptions.ExtractionException;
+import org.schabi.newpipe.extractor.localization.Localization;
 import org.schabi.newpipe.extractor.services.DefaultTests;
 import org.schabi.newpipe.extractor.services.youtube.extractors.YoutubeCommentsExtractor;
 import org.schabi.newpipe.extractor.utils.Utils;
 
 import java.io.IOException;
 import java.util.List;
+import java.util.Locale;
 import java.util.Random;
 
 import static org.junit.Assert.assertEquals;
@@ -99,7 +101,6 @@ public class YoutubeCommentsExtractorTest {
                 assertFalse(Utils.isBlank(c.getThumbnailUrl()));
                 assertFalse(Utils.isBlank(c.getUrl()));
                 assertTrue(c.getLikeCount() >= 0);
-                assertFalse(Utils.isBlank(c.getTextualVoteCount()));
             }
         }
 
@@ -150,7 +151,6 @@ public class YoutubeCommentsExtractorTest {
                 assertFalse(Utils.isBlank(c.getThumbnailUrl()));
                 assertFalse(Utils.isBlank(c.getUrl()));
                 assertTrue(c.getLikeCount() >= 0);
-                assertFalse(Utils.isBlank(c.getTextualVoteCount()));
                 if (c.getCommentId().equals("Ugga_h1-EXdHB3gCoAEC")) { // comment without text
                     assertTrue(Utils.isBlank(c.getCommentText()));
                 } else {
@@ -194,7 +194,6 @@ public class YoutubeCommentsExtractorTest {
                 assertFalse(Utils.isBlank(c.getThumbnailUrl()));
                 assertFalse(Utils.isBlank(c.getUrl()));
                 assertTrue(c.getLikeCount() >= 0);
-                assertFalse(Utils.isBlank(c.getTextualVoteCount()));
                 assertFalse(Utils.isBlank(c.getCommentText()));
                 if (c.isHeartedByUploader()) {
                     heartedByUploader = true;
@@ -235,12 +234,76 @@ public class YoutubeCommentsExtractorTest {
                 assertNotNull(c.getUploadDate());
                 assertFalse(Utils.isBlank(c.getThumbnailUrl()));
                 assertFalse(Utils.isBlank(c.getUrl()));
-                assertFalse(Utils.isBlank(c.getTextualVoteCount()));
                 assertTrue(c.getLikeCount() >= 0);
                 assertFalse(Utils.isBlank(c.getCommentText()));
             }
 
             assertTrue("First comment isn't pinned", comments.getItems().get(0).isPinned());
+        }
+    }
+
+    /**
+     * Checks if the likes/votes are handled correctly<br/>
+     * A pinned comment with >15K likes is used for the test
+     */
+    public static class LikesVotes {
+        private final static String url = "https://www.youtube.com/watch?v=QqsLTNkzvaY";
+        private static YoutubeCommentsExtractor extractor;
+
+        @BeforeClass
+        public static void setUp() throws Exception {
+            YoutubeParsingHelper.resetClientVersionAndKey();
+            YoutubeParsingHelper.setNumberGenerator(new Random(1));
+            NewPipe.init(new DownloaderFactory().getDownloader(RESOURCE_PATH + "likes"));
+            extractor = (YoutubeCommentsExtractor) YouTube
+                    .getCommentsExtractor(url);
+            extractor.fetchPage();
+        }
+
+        @Test
+        public void testGetCommentsFirst() throws IOException, ExtractionException {
+            final InfoItemsPage<CommentsInfoItem> comments = extractor.getInitialPage();
+
+            DefaultTests.defaultTestListOfItems(YouTube, comments.getItems(), comments.getErrors());
+
+            CommentsInfoItem pinnedComment = comments.getItems().get(0);
+
+            assertTrue("First comment isn't pinned", pinnedComment.isPinned());
+            assertTrue("The first pinned comment has no likes", pinnedComment.getLikeCount() > 0);
+            assertTrue("The first pinned comment has no vote count", !Utils.isBlank(pinnedComment.getTextualVoteCount()));
+        }
+    }
+
+    /**
+     * Checks if the vote count works localized<br/>
+     * A pinned comment with >15K likes is used for the test
+     */
+    public static class LocalizedVoteCount {
+        private final static String url = "https://www.youtube.com/watch?v=QqsLTNkzvaY";
+        private static YoutubeCommentsExtractor extractor;
+
+        @BeforeClass
+        public static void setUp() throws Exception {
+            YoutubeParsingHelper.resetClientVersionAndKey();
+            YoutubeParsingHelper.setNumberGenerator(new Random(1));
+            NewPipe.init(new DownloaderFactory().getDownloader(RESOURCE_PATH + "localized_vote_count"));
+            extractor = (YoutubeCommentsExtractor) YouTube
+                    .getCommentsExtractor(url);
+            // Force non english local here
+            extractor.forceLocalization(Localization.fromLocale(Locale.GERMANY));
+            extractor.fetchPage();
+        }
+
+        @Test
+        public void testGetCommentsFirst() throws IOException, ExtractionException {
+            final InfoItemsPage<CommentsInfoItem> comments = extractor.getInitialPage();
+
+            DefaultTests.defaultTestListOfItems(YouTube, comments.getItems(), comments.getErrors());
+
+            CommentsInfoItem pinnedComment = comments.getItems().get(0);
+
+            assertTrue("First comment isn't pinned", pinnedComment.isPinned());
+            assertTrue("The first pinned comment has no vote count", !Utils.isBlank(pinnedComment.getTextualVoteCount()));
         }
     }
 }
