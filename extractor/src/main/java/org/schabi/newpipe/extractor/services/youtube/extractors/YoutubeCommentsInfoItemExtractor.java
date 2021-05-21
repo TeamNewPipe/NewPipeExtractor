@@ -2,6 +2,7 @@ package org.schabi.newpipe.extractor.services.youtube.extractors;
 
 import com.grack.nanojson.JsonArray;
 import com.grack.nanojson.JsonObject;
+
 import org.schabi.newpipe.extractor.comments.CommentsInfoItemExtractor;
 import org.schabi.newpipe.extractor.exceptions.ParsingException;
 import org.schabi.newpipe.extractor.localization.DateWrapper;
@@ -115,12 +116,12 @@ public class YoutubeCommentsInfoItemExtractor implements CommentsInfoItemExtract
          */
         try {
             // If a comment has no likes voteCount is not set
-            if(!json.has("voteCount")) {
+            if (!json.has("voteCount")) {
                 return EMPTY_STRING;
             }
 
             final JsonObject voteCountObj = JsonUtils.getObject(json, "voteCount");
-            if(voteCountObj.isEmpty()) {
+            if (voteCountObj.isEmpty()) {
                 return EMPTY_STRING;
             }
             return getTextFromObject(voteCountObj);
