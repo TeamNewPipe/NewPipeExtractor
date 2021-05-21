@@ -90,7 +90,7 @@ public class YoutubeCommentsInfoItemExtractor implements CommentsInfoItemExtract
 
             return (int) Utils.mixedNumberWordToLong(voteCount);
         } catch (Exception e) {
-            throw new ParsingException("Unexpected error while converting vote count", e);
+            throw new ParsingException("Unexpected error while converting vote count to like count", e);
         }
     }
 
