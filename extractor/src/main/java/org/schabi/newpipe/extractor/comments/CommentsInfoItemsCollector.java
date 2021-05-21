@@ -60,6 +60,11 @@ public class CommentsInfoItemsCollector extends InfoItemsCollector<CommentsInfoI
             addError(e);
         }
         try {
+            resultItem.setLikeCount(extractor.getLikeCount());
+        } catch (Exception e) {
+            addError(e);
+        }
+        try {
             resultItem.setTextualVoteCount(extractor.getTextualVoteCount());
         } catch (Exception e) {
             addError(e);

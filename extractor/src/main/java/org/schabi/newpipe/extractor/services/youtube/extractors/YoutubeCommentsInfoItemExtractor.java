@@ -70,6 +70,29 @@ public class YoutubeCommentsInfoItemExtractor implements CommentsInfoItemExtract
         }
     }
 
+    /**
+     * @implNote The method is parsing internally a localized string.<br/>
+     * This will fail for other languages than English.
+     * However as long as the Extractor only uses "en-GB"
+     * (as seen in {@link org.schabi.newpipe.extractor.services.youtube.YoutubeService#SUPPORTED_LANGUAGES})
+     * everything will work fine.<br/>
+     * Consider using {@link #getTextualVoteCount()}
+     */
+    @Override
+    public int getLikeCount() throws ParsingException {
+        // This may return a language dependent version, e.g. in German: 3,3 Mio
+        String voteCount = getTextualVoteCount();
+        try {
+            if (Utils.isBlank(voteCount)) {
+                return 0;
+            }
+
+            return (int) Utils.mixedNumberWordToLong(voteCount);
+        } catch (Exception e) {
+            throw new ParsingException("Unexpected error while converting vote count", e);
+        }
+    }
+
     @Override
     public String getTextualVoteCount() throws ParsingException {
         /*
