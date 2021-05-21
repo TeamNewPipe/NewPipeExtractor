@@ -263,10 +263,8 @@ public class YoutubeSearchExtractorTest {
         @Override public List<MetaInfo> expectedMetaInfo() throws MalformedURLException {
             final List<URL> urls = new ArrayList<>();
             urls.add(new URL("https://www.who.int/emergencies/diseases/novel-coronavirus-2019"));
-            urls.add(new URL("https://www.who.int/emergencies/diseases/novel-coronavirus-2019/covid-19-vaccines"));
             final List<String> urlTexts = new ArrayList<>();
             urlTexts.add("LEARN MORE");
-            urlTexts.add("Learn about vaccine progress from the WHO");
             return Collections.singletonList(new MetaInfo(
                     "COVID-19",
                     new Description("Get the latest information from the WHO about coronavirus.", Description.PLAIN_TEXT),
