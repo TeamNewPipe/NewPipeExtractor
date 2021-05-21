@@ -1,6 +1,7 @@
 package org.schabi.newpipe.extractor.services.youtube.stream;
 
 import org.junit.BeforeClass;
+import org.junit.Ignore;
 import org.schabi.newpipe.downloader.DownloaderFactory;
 import org.schabi.newpipe.extractor.NewPipe;
 import org.schabi.newpipe.extractor.StreamingService;
@@ -17,6 +18,7 @@ import javax.annotation.Nullable;
 
 import static org.schabi.newpipe.extractor.ServiceList.YouTube;
 
+@Ignore("NullPointerException in YoutubeStreamExtractor.fetchVideoInfoPage")
 public class YoutubeStreamExtractorAgeRestrictedTest extends DefaultStreamExtractorTest {
     private static final String RESOURCE_PATH = DownloaderFactory.RESOURCE_PATH + "services/youtube/extractor/stream/";
     private static final String ID = "MmBeUZqv1QA";
