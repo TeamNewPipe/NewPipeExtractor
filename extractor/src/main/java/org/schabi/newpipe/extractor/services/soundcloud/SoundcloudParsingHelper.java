@@ -119,8 +119,9 @@ public class SoundcloudParsingHelper {
      */
     public static JsonObject resolveFor(@Nonnull final Downloader downloader, final String url)
             throws IOException, ExtractionException {
-        final String apiUrl = SOUNDCLOUD_API_V2_URL + "resolve" + "?url="
-                + URLEncoder.encode(url, UTF_8) + "&client_id=" + clientId();
+        final String apiUrl = SOUNDCLOUD_API_V2_URL + "resolve"
+                + "?url=" + URLEncoder.encode(url, UTF_8) 
+                + "&client_id=" + clientId();
 
         try {
             final String response = downloader.get(apiUrl, SoundCloud.getLocalization())
