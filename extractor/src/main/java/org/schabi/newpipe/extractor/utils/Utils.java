@@ -15,10 +15,11 @@ public class Utils {
     public static final String HTTPS = "https://";
     public static final String UTF_8 = "UTF-8";
     public static final String EMPTY_STRING = "";
+    private static final Pattern M_PATTERN = Pattern.compile("(https?)?:\\/\\/m\\.");
     private static final Pattern WWW_PATTERN = Pattern.compile("(https?)?:\\/\\/www\\.");
 
     private Utils() {
-        //no instance
+        // no instance
     }
 
     /**
@@ -30,7 +31,7 @@ public class Utils {
      * @param toRemove string to remove non-digit chars
      * @return a string that contains only digits
      */
-    public static String removeNonDigitCharacters(String toRemove) {
+    public static String removeNonDigitCharacters(final String toRemove) {
         return toRemove.replaceAll("\\D+", "");
     }
 
@@ -48,7 +49,8 @@ public class Utils {
      * @throws NumberFormatException
      * @throws ParsingException
      */
-    public static long mixedNumberWordToLong(String numberWord) throws NumberFormatException, ParsingException {
+    public static long mixedNumberWordToLong(final String numberWord) throws NumberFormatException,
+            ParsingException {
         String multiplier = "";
         try {
             multiplier = Parser.matchGroup("[\\d]+([\\.,][\\d]+)?([KMBkmb])+", numberWord, 2);
@@ -74,7 +76,7 @@ public class Utils {
      * @param pattern the pattern that will be used to check the url
      * @param url     the url to be tested
      */
-    public static void checkUrl(String pattern, String url) throws ParsingException {
+    public static void checkUrl(final String pattern, final String url) throws ParsingException {
         if (isNullOrEmpty(url)) {
             throw new IllegalArgumentException("Url can't be null or empty");
         }
@@ -101,14 +103,14 @@ public class Utils {
     }
 
     /**
-     * get the value of a URL-query by name.
-     * if a url-query is give multiple times, only the value of the first query is returned
+     * Get the value of a URL-query by name.
+     * If a url-query is give multiple times, only the value of the first query is returned
      *
      * @param url           the url to be used
      * @param parameterName the pattern that will be used to check the url
      * @return a string that contains the value of the query parameter or null if nothing was found
      */
-    public static String getQueryValue(URL url, String parameterName) {
+    public static String getQueryValue(final URL url, final String parameterName) {
         String urlQuery = url.getQuery();
 
         if (urlQuery != null) {
@@ -118,8 +120,9 @@ public class Utils {
                 String query;
                 try {
                     query = URLDecoder.decode(params[0], UTF_8);
-                } catch (UnsupportedEncodingException e) {
-                    System.err.println("Cannot decode string with UTF-8. using the string without decoding");
+                } catch (final UnsupportedEncodingException e) {
+                    System.err.println(
+                            "Cannot decode string with UTF-8. using the string without decoding");
                     e.printStackTrace();
                     query = params[0];
                 }
@@ -127,8 +130,9 @@ public class Utils {
                 if (query.equals(parameterName)) {
                     try {
                         return URLDecoder.decode(params[1], UTF_8);
-                    } catch (UnsupportedEncodingException e) {
-                        System.err.println("Cannot decode string with UTF-8. using the string without decoding");
+                    } catch (final UnsupportedEncodingException e) {
+                        System.err.println(
+                                "Cannot decode string with UTF-8. using the string without decoding");
                         e.printStackTrace();
                         return params[1];
                     }
@@ -146,7 +150,7 @@ public class Utils {
      * @param url the string to be converted to a URL-Object
      * @return a URL-Object containing the url
      */
-    public static URL stringToURL(String url) throws MalformedURLException {
+    public static URL stringToURL(final String url) throws MalformedURLException {
         try {
             return new URL(url);
         } catch (MalformedURLException e) {
@@ -159,7 +163,7 @@ public class Utils {
         }
     }
 
-    public static boolean isHTTP(URL url) {
+    public static boolean isHTTP(final URL url) {
         // make sure its http or https
         String protocol = url.getProtocol();
         if (!protocol.equals("http") && !protocol.equals("https")) {
@@ -172,7 +176,10 @@ public class Utils {
         return setsNoPort || usesDefaultPort;
     }
 
-    public static String removeWWWFromUrl(String url) {
+    public static String removeMAndWWWFromUrl(final String url) {
+        if (M_PATTERN.matcher(url).find()) {
+            return url.replace("m.", "");
+        }
         if (WWW_PATTERN.matcher(url).find()) {
             return url.replace("www.", "");
         }
@@ -216,7 +223,8 @@ public class Utils {
         try {
             final URL decoded = Utils.stringToURL(url);
             if (decoded.getHost().contains("google") && decoded.getPath().equals("/url")) {
-                return URLDecoder.decode(Parser.matchGroup1("&url=([^&]+)(?:&|$)", url), UTF_8);
+                return URLDecoder.decode(Parser.matchGroup1("&url=([^&]+)(?:&|$)", url),
+                        UTF_8);
             }
         } catch (final Exception ignored) {
         }
@@ -258,7 +266,8 @@ public class Utils {
         return true;
     }
 
-    public static String join(final CharSequence delimiter, final Iterable<? extends CharSequence> elements) {
+    public static String join(final CharSequence delimiter,
+                              final Iterable<? extends CharSequence> elements) {
         final StringBuilder stringBuilder = new StringBuilder();
         final Iterator<? extends CharSequence> iterator = elements.iterator();
         while (iterator.hasNext()) {
@@ -283,7 +292,8 @@ public class Utils {
     /**
      * Concatenate all non-null, non-empty and strings which are not equal to <code>"null"</code>.
      */
-    public static String nonEmptyAndNullJoin(final CharSequence delimiter, final String[] elements) {
+    public static String nonEmptyAndNullJoin(final CharSequence delimiter,
+                                             final String[] elements) {
         final List<String> list = new java.util.ArrayList<>(Arrays.asList(elements));
         list.removeIf(s -> isNullOrEmpty(s) || s.equals("null"));
         return join(delimiter, list);
