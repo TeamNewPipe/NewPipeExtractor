@@ -17,6 +17,7 @@ import org.schabi.newpipe.extractor.stream.StreamInfoItemsCollector;
 import javax.annotation.Nonnull;
 import java.io.IOException;
 
+import static org.schabi.newpipe.extractor.services.soundcloud.SoundcloudParsingHelper.SOUNDCLOUD_API_V2_URL;
 import static org.schabi.newpipe.extractor.utils.Utils.EMPTY_STRING;
 import static org.schabi.newpipe.extractor.utils.Utils.isNullOrEmpty;
 
@@ -24,22 +25,25 @@ import static org.schabi.newpipe.extractor.utils.Utils.isNullOrEmpty;
 public class SoundcloudChannelExtractor extends ChannelExtractor {
     private String userId;
     private JsonObject user;
+    private static final String USERS_ENDPOINT = SOUNDCLOUD_API_V2_URL + "users/";
 
-    public SoundcloudChannelExtractor(final StreamingService service, final ListLinkHandler linkHandler) {
+    public SoundcloudChannelExtractor(final StreamingService service,
+                                      final ListLinkHandler linkHandler) {
         super(service, linkHandler);
     }
 
     @Override
-    public void onFetchPage(@Nonnull final Downloader downloader) throws IOException, ExtractionException {
+    public void onFetchPage(@Nonnull final Downloader downloader) throws IOException,
+            ExtractionException {
 
         userId = getLinkHandler().getId();
-        final String apiUrl = "https://api-v2.soundcloud.com/users/" + userId +
-                "?client_id=" + SoundcloudParsingHelper.clientId();
+        final String apiUrl = USERS_ENDPOINT + userId + "?client_id="
+                + SoundcloudParsingHelper.clientId();
 
         final String response = downloader.get(apiUrl, getExtractorLocalization()).responseBody();
         try {
             user = JsonParser.object().from(response);
-        } catch (JsonParserException e) {
+        } catch (final JsonParserException e) {
             throw new ParsingException("Could not parse json response", e);
         }
     }
@@ -63,7 +67,8 @@ public class SoundcloudChannelExtractor extends ChannelExtractor {
 
     @Override
     public String getBannerUrl() {
-        return user.getObject("visuals").getArray("visuals").getObject(0).getString("visual_url");
+        return user.getObject("visuals").getArray("visuals").getObject(0)
+                .getString("visual_url");
     }
 
     @Override
@@ -105,29 +110,31 @@ public class SoundcloudChannelExtractor extends ChannelExtractor {
     @Override
     public InfoItemsPage<StreamInfoItem> getInitialPage() throws ExtractionException {
         try {
-            final StreamInfoItemsCollector streamInfoItemsCollector = new StreamInfoItemsCollector(getServiceId());
+            final StreamInfoItemsCollector streamInfoItemsCollector =
+                    new StreamInfoItemsCollector(getServiceId());
 
-            final String apiUrl = "https://api-v2.soundcloud.com/users/" + getId() + "/tracks"
-                    + "?client_id=" + SoundcloudParsingHelper.clientId()
-                    + "&limit=20"
-                    + "&linked_partitioning=1";
+            final String apiUrl = USERS_ENDPOINT + getId() + "/tracks" + "?client_id="
+                    + SoundcloudParsingHelper.clientId() + "&limit=20" + "&linked_partitioning=1";
 
-            final String nextPageUrl = SoundcloudParsingHelper.getStreamsFromApiMinItems(15, streamInfoItemsCollector, apiUrl);
+            final String nextPageUrl = SoundcloudParsingHelper.getStreamsFromApiMinItems(15,
+                    streamInfoItemsCollector, apiUrl);
 
             return new InfoItemsPage<>(streamInfoItemsCollector, new Page(nextPageUrl));
-        } catch (Exception e) {
+        } catch (final Exception e) {
             throw new ExtractionException("Could not get next page", e);
         }
     }
 
     @Override
-    public InfoItemsPage<StreamInfoItem> getPage(final Page page) throws IOException, ExtractionException {
+    public InfoItemsPage<StreamInfoItem> getPage(final Page page) throws IOException,
+            ExtractionException {
         if (page == null || isNullOrEmpty(page.getUrl())) {
             throw new IllegalArgumentException("Page doesn't contain an URL");
         }
 
         final StreamInfoItemsCollector collector = new StreamInfoItemsCollector(getServiceId());
-        final String nextPageUrl = SoundcloudParsingHelper.getStreamsFromApiMinItems(15, collector, page.getUrl());
+        final String nextPageUrl = SoundcloudParsingHelper.getStreamsFromApiMinItems(15, collector,
+                page.getUrl());
 
         return new InfoItemsPage<>(collector, new Page(nextPageUrl));
     }

@@ -30,18 +30,21 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Locale;
 
+import static org.schabi.newpipe.extractor.services.soundcloud.SoundcloudParsingHelper.SOUNDCLOUD_API_V2_URL;
 import static org.schabi.newpipe.extractor.utils.Utils.*;
 
 public class SoundcloudStreamExtractor extends StreamExtractor {
     private JsonObject track;
     private boolean isAvailable = true;
 
-    public SoundcloudStreamExtractor(StreamingService service, LinkHandler linkHandler) {
+    public SoundcloudStreamExtractor(final StreamingService service,
+                                     final LinkHandler linkHandler) {
         super(service, linkHandler);
     }
 
     @Override
-    public void onFetchPage(@Nonnull Downloader downloader) throws IOException, ExtractionException {
+    public void onFetchPage(@Nonnull final Downloader downloader) throws IOException,
+            ExtractionException {
         track = SoundcloudParsingHelper.resolveFor(downloader, getUrl());
 
         final String policy = track.getString("policy", EMPTY_STRING);
@@ -50,9 +53,8 @@ public class SoundcloudStreamExtractor extends StreamExtractor {
             if (policy.equals("SNIP")) {
                 throw new SoundCloudGoPlusContentException();
             }
-            if (policy.equals("BLOCK")) {
-                throw new GeographicRestrictionException("This track is not available in user's country");
-            }
+            if (policy.equals("BLOCK")) throw new GeographicRestrictionException(
+                        "This track is not available in user's country");
             throw new ContentNotAvailableException("Content not available: policy " + policy);
         }
     }
@@ -80,7 +82,8 @@ public class SoundcloudStreamExtractor extends StreamExtractor {
     @Nonnull
     @Override
     public DateWrapper getUploadDate() throws ParsingException {
-        return new DateWrapper(SoundcloudParsingHelper.parseDateFrom(track.getString("created_at")));
+        return new DateWrapper(SoundcloudParsingHelper.parseDateFrom(track.getString(
+                "created_at")));
     }
 
     @Nonnull
@@ -220,9 +223,12 @@ public class SoundcloudStreamExtractor extends StreamExtractor {
     }
 
     @Nonnull
-    private static String getTranscodingUrl(final String endpointUrl, final String protocol) throws IOException, ExtractionException {
+    private static String getTranscodingUrl(final String endpointUrl,
+                                            final String protocol)
+            throws IOException, ExtractionException {
         final Downloader downloader = NewPipe.getDownloader();
-        final String apiStreamUrl = endpointUrl + "?client_id=" + SoundcloudParsingHelper.clientId();
+        final String apiStreamUrl = endpointUrl + "?client_id="
+                + SoundcloudParsingHelper.clientId();
         final String response = downloader.get(apiStreamUrl).responseBody();
         final JsonObject urlObject;
         try {
@@ -255,7 +261,8 @@ public class SoundcloudStreamExtractor extends StreamExtractor {
             }
             final String mediaUrl;
             final String preset = transcodingJsonObject.getString("preset");
-            final String protocol = transcodingJsonObject.getObject("format").getString("protocol");
+            final String protocol = transcodingJsonObject.getObject("format")
+                    .getString("protocol");
             MediaFormat mediaFormat = null;
             int bitrate = 0;
             if (preset.contains("mp3")) {
@@ -285,7 +292,8 @@ public class SoundcloudStreamExtractor extends StreamExtractor {
         }
     }
 
-    /** Parses a SoundCloud HLS manifest to get a single URL of HLS streams.
+    /**
+     * Parses a SoundCloud HLS manifest to get a single URL of HLS streams.
      * <p>
      * This method downloads the provided manifest URL, find all web occurrences in the manifest,
      * get the last segment URL, changes its segment range to {@code 0/track-length} and return
@@ -293,7 +301,8 @@ public class SoundcloudStreamExtractor extends StreamExtractor {
      * @param  hlsManifestUrl the URL of the manifest to be parsed
      * @return a single URL that contains a range equal to the length of the track
      */
-    private static String getSingleUrlFromHlsManifest(final String hlsManifestUrl) throws ParsingException {
+    private static String getSingleUrlFromHlsManifest(final String hlsManifestUrl)
+            throws ParsingException {
         final Downloader dl = NewPipe.getDownloader();
         final String hlsManifestResponse;
 
@@ -306,11 +315,11 @@ public class SoundcloudStreamExtractor extends StreamExtractor {
         final String[] lines = hlsManifestResponse.split("\\r?\\n");
         for (int l = lines.length - 1; l >= 0; l--) {
             final String line = lines[l];
-            // get the last URL from manifest, because it contains the range of the stream
+            // Get the last URL from manifest, because it contains the range of the stream
             if (line.trim().length() != 0 && !line.startsWith("#") && line.startsWith("https")) {
                 final String[] hlsLastRangeUrlArray = line.split("/");
-                return HTTPS + hlsLastRangeUrlArray[2] + "/media/0/" + hlsLastRangeUrlArray[5] + "/"
-                        + hlsLastRangeUrlArray[6];
+                return HTTPS + hlsLastRangeUrlArray[2] + "/media/0/" + hlsLastRangeUrlArray[5]
+                        + "/" + hlsLastRangeUrlArray[6];
             }
         }
         throw new ParsingException("Could not get any URL from HLS manifest");
@@ -356,7 +365,7 @@ public class SoundcloudStreamExtractor extends StreamExtractor {
     public StreamInfoItemsCollector getRelatedItems() throws IOException, ExtractionException {
         final StreamInfoItemsCollector collector = new StreamInfoItemsCollector(getServiceId());
 
-        final String apiUrl = "https://api-v2.soundcloud.com/tracks/" + urlEncode(getId())
+        final String apiUrl = SOUNDCLOUD_API_V2_URL + "tracks/" + urlEncode(getId())
                 + "/related?client_id=" + urlEncode(SoundcloudParsingHelper.clientId());
 
         SoundcloudParsingHelper.getStreamsFromApi(collector, apiUrl);
@@ -399,15 +408,15 @@ public class SoundcloudStreamExtractor extends StreamExtractor {
     @Nonnull
     @Override
     public List<String> getTags() {
-        // tags are separated by spaces, but they can be multiple words  escaped by quotes "
-        final String[] tag_list = track.getString("tag_list").split(" ");
+        // Tags are separated by spaces, but they can be multiple words escaped by quotes "
+        final String[] tagList = track.getString("tag_list").split(" ");
         final List<String> tags = new ArrayList<>();
         String escapedTag = "";
         boolean isEscaped = false;
-        for (int i = 0; i < tag_list.length; i++) {
-            String tag = tag_list[i];
+        for (int i = 0; i < tagList.length; i++) {
+            String tag = tagList[i];
             if (tag.startsWith("\"")) {
-                escapedTag += tag_list[i].replace("\"", "");
+                escapedTag += tagList[i].replace("\"", "");
                 isEscaped = true;
             } else if (isEscaped) {
                 if (tag.endsWith("\"")) {

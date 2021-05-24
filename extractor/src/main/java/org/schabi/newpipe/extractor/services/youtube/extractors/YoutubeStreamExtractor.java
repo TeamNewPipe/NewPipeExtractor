@@ -978,7 +978,7 @@ public class YoutubeStreamExtractor extends StreamExtractor {
     private static String getVideoInfoUrl(final String id, final String sts) {
         // TODO: Try parsing embedded_player_response first
         return "https://www.youtube.com/get_video_info?" + "video_id=" + id +
-                "&eurl=https://youtube.googleapis.com/v/" + id +
+                "&html5=1&eurl=https://youtube.googleapis.com/v/" + id +
                 "&sts=" + sts + "&ps=default&gl=US&hl=en";
     }
 

@@ -11,6 +11,7 @@ import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
 import java.util.List;
 
+import static org.schabi.newpipe.extractor.services.soundcloud.SoundcloudParsingHelper.SOUNDCLOUD_API_V2_URL;
 import static org.schabi.newpipe.extractor.utils.Utils.UTF_8;
 
 public class SoundcloudSearchQueryHandlerFactory extends SearchQueryHandlerFactory {
@@ -23,11 +24,14 @@ public class SoundcloudSearchQueryHandlerFactory extends SearchQueryHandlerFacto
     public static final int ITEMS_PER_PAGE = 10;
 
     @Override
-    public String getUrl(String id, List<String> contentFilter, String sortFilter) throws ParsingException {
+    public String getUrl(final String id,
+                         final List<String> contentFilter,
+                         final String sortFilter)
+            throws ParsingException {
         try {
-            String url = "https://api-v2.soundcloud.com/search";
+            String url = SOUNDCLOUD_API_V2_URL + "search";
 
-            if (contentFilter.size() > 0) {
+            if (!contentFilter.isEmpty()) {
                 switch (contentFilter.get(0)) {
                     case TRACKS:
                         url += "/tracks";
@@ -44,16 +48,15 @@ public class SoundcloudSearchQueryHandlerFactory extends SearchQueryHandlerFacto
                 }
             }
 
-            return url + "?q=" + URLEncoder.encode(id, UTF_8)
-                    + "&client_id=" + SoundcloudParsingHelper.clientId()
-                    + "&limit=" + ITEMS_PER_PAGE
+            return url + "?q=" + URLEncoder.encode(id, UTF_8) + "&client_id="
+                    + SoundcloudParsingHelper.clientId() + "&limit=" + ITEMS_PER_PAGE
                     + "&offset=0";
 
-        } catch (UnsupportedEncodingException e) {
+        } catch (final UnsupportedEncodingException e) {
             throw new ParsingException("Could not encode query", e);
-        } catch (ReCaptchaException e) {
+        } catch (final ReCaptchaException e) {
             throw new ParsingException("ReCaptcha required", e);
-        } catch (IOException | ExtractionException e) {
+        } catch (final IOException | ExtractionException e) {
             throw new ParsingException("Could not get client id", e);
         }
     }

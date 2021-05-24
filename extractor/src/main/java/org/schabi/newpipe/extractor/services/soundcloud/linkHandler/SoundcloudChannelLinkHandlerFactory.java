@@ -9,9 +9,10 @@ import org.schabi.newpipe.extractor.utils.Utils;
 import java.util.List;
 
 public class SoundcloudChannelLinkHandlerFactory extends ListLinkHandlerFactory {
-    private static final SoundcloudChannelLinkHandlerFactory instance = new SoundcloudChannelLinkHandlerFactory();
-    private static final String URL_PATTERN = "^https?://(www\\.|m\\.)?soundcloud.com/[0-9a-z_-]+" +
-            "(/((tracks|albums|sets|reposts|followers|following)/?)?)?([#?].*)?$";
+    private static final SoundcloudChannelLinkHandlerFactory instance =
+            new SoundcloudChannelLinkHandlerFactory();
+    private static final String URL_PATTERN ="^https?://(www\\.|m\\.)?soundcloud.com/[0-9a-z_-]+"
+            + "(/((tracks|albums|sets|reposts|followers|following)/?)?)?([#?].*)?$";
 
     public static SoundcloudChannelLinkHandlerFactory getInstance() {
         return instance;
@@ -19,21 +20,24 @@ public class SoundcloudChannelLinkHandlerFactory extends ListLinkHandlerFactory 
 
 
     @Override
-    public String getId(String url) throws ParsingException {
+    public String getId(final String url) throws ParsingException {
         Utils.checkUrl(URL_PATTERN, url);
 
         try {
             return SoundcloudParsingHelper.resolveIdWithWidgetApi(url);
-        } catch (Exception e) {
+        } catch (final Exception e) {
             throw new ParsingException(e.getMessage(), e);
         }
     }
 
     @Override
-    public String getUrl(String id, List<String> contentFilter, String sortFilter) throws ParsingException {
+    public String getUrl(final String id,
+                         final List<String> contentFilter,
+                         final String sortFilter) throws ParsingException {
         try {
-            return SoundcloudParsingHelper.resolveUrlWithEmbedPlayer("https://api.soundcloud.com/users/" + id);
-        } catch (Exception e) {
+            return SoundcloudParsingHelper.resolveUrlWithEmbedPlayer(
+                    "https://api.soundcloud.com/users/" + id);
+        } catch (final Exception e) {
             throw new ParsingException(e.getMessage(), e);
         }
     }
