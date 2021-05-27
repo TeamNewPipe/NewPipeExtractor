@@ -89,7 +89,6 @@ public class YoutubeCommentsInfoItemExtractor implements CommentsInfoItemExtract
      */
     @Override
     public int getLikeCount() throws ParsingException {
-        json.getInt("");
         // This may return a language dependent version, e.g. in German: 3,3 Mio
         final String textualLikeCount = getTextualLikeCount();
         try {
