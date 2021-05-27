@@ -17,7 +17,7 @@ public class CommentsInfoItem extends InfoItem {
     @Nullable
     private DateWrapper uploadDate;
     private int likeCount;
-    private String textualVoteCount;
+    private String textualLikeCount;
     private boolean heartedByUploader;
     private boolean pinned;
 
@@ -90,12 +90,12 @@ public class CommentsInfoItem extends InfoItem {
         this.likeCount = likeCount;
     }
 
-    public String getTextualVoteCount() {
-        return textualVoteCount;
+    public String getTextualLikeCount() {
+        return textualLikeCount;
     }
 
-    public void setTextualVoteCount(String textualVoteCount) {
-        this.textualVoteCount = textualVoteCount;
+    public void setTextualLikeCount(String textualLikeCount) {
+        this.textualLikeCount = textualLikeCount;
     }
 
     public void setHeartedByUploader(boolean isHeartedByUploader) {

@@ -12,9 +12,10 @@ import javax.annotation.Nullable;
 public interface CommentsInfoItemExtractor extends InfoItemExtractor {
 
     /**
-     * Return the (approximate) like count of the comment, or -1 if it's unavailable<br/>
+     * Return the like count of the comment, or -1 if it's unavailable<br/>
+     *
      * NOTE: Currently only implemented for YT {@link YoutubeCommentsInfoItemExtractor#getLikeCount()}
-     * with limitations
+     * with limitations (only approximate like count is returned)
      *
      * @see StreamExtractor#getLikeCount()
      */
@@ -23,10 +24,11 @@ public interface CommentsInfoItemExtractor extends InfoItemExtractor {
     }
 
     /**
-     * The formatted text (e.g. 420, 4K, 4.2M) of the votes<br/>
-     * May be language dependent
+     * The unmodified like count given by the service<br/>
+     *
+     * It may be language dependent
      */
-    default String getTextualVoteCount() throws ParsingException {
+    default String getTextualLikeCount() throws ParsingException {
         return Utils.EMPTY_STRING;
     }
 

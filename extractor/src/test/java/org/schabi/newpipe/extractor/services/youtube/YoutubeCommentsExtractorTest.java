@@ -270,7 +270,7 @@ public class YoutubeCommentsExtractorTest {
 
             assertTrue("First comment isn't pinned", pinnedComment.isPinned());
             assertTrue("The first pinned comment has no likes", pinnedComment.getLikeCount() > 0);
-            assertTrue("The first pinned comment has no vote count", !Utils.isBlank(pinnedComment.getTextualVoteCount()));
+            assertTrue("The first pinned comment has no vote count", !Utils.isBlank(pinnedComment.getTextualLikeCount()));
         }
     }
 
@@ -303,7 +303,7 @@ public class YoutubeCommentsExtractorTest {
             CommentsInfoItem pinnedComment = comments.getItems().get(0);
 
             assertTrue("First comment isn't pinned", pinnedComment.isPinned());
-            assertTrue("The first pinned comment has no vote count", !Utils.isBlank(pinnedComment.getTextualVoteCount()));
+            assertTrue("The first pinned comment has no vote count", !Utils.isBlank(pinnedComment.getTextualLikeCount()));
         }
     }
 }

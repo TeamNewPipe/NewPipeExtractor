@@ -85,25 +85,26 @@ public class YoutubeCommentsInfoItemExtractor implements CommentsInfoItemExtract
      *      </li>
      * </ul>
      * <br/>
-     * Consider using {@link #getTextualVoteCount()}
+     * Consider using {@link #getTextualLikeCount()}
      */
     @Override
     public int getLikeCount() throws ParsingException {
+        json.getInt("");
         // This may return a language dependent version, e.g. in German: 3,3 Mio
-        String voteCount = getTextualVoteCount();
+        final String textualLikeCount = getTextualLikeCount();
         try {
-            if (Utils.isBlank(voteCount)) {
+            if (Utils.isBlank(textualLikeCount)) {
                 return 0;
             }
 
-            return (int) Utils.mixedNumberWordToLong(voteCount);
+            return (int) Utils.mixedNumberWordToLong(textualLikeCount);
         } catch (Exception e) {
-            throw new ParsingException("Unexpected error while converting vote count to like count", e);
+            throw new ParsingException("Unexpected error while converting textual like count to like count", e);
         }
     }
 
     @Override
-    public String getTextualVoteCount() throws ParsingException {
+    public String getTextualLikeCount() throws ParsingException {
         /*
          * Example results as of 2021-05-20:
          * Language = English

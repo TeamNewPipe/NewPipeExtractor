@@ -65,7 +65,7 @@ public class CommentsInfoItemsCollector extends InfoItemsCollector<CommentsInfoI
             addError(e);
         }
         try {
-            resultItem.setTextualVoteCount(extractor.getTextualVoteCount());
+            resultItem.setTextualLikeCount(extractor.getTextualLikeCount());
         } catch (Exception e) {
             addError(e);
         }

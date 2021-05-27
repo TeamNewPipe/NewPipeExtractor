@@ -47,7 +47,7 @@ public class BandcampCommentsExtractorTest {
             assertFalse(Utils.isBlank(c.getThumbnailUrl()));
             assertFalse(Utils.isBlank(c.getUrl()));
             assertEquals(-1, c.getLikeCount());
-            assertTrue(Utils.isBlank(c.getTextualVoteCount()));
+            assertTrue(Utils.isBlank(c.getTextualLikeCount()));
         }
     }
 }
