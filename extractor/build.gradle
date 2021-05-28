@@ -14,7 +14,7 @@ dependencies {
     implementation 'com.github.spotbugs:spotbugs-annotations:4.0.2'
     implementation 'org.nibor.autolink:autolink:0.10.0'
 
-    testImplementation 'junit:junit:4.13.1'
+    testImplementation 'junit:junit:4.13.2'
     testImplementation "com.squareup.okhttp3:okhttp:3.12.13"
     testImplementation 'com.google.code.gson:gson:2.8.6'
 }
