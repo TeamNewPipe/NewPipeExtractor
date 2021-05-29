@@ -138,7 +138,7 @@ public class YoutubeChannelExtractor extends ChannelExtractor {
             final byte[] body = JsonWriter.string(prepareJsonBuilder(getExtractorLocalization(),
                     getExtractorContentCountry())
                     .value("browseId", id)
-                    .value("params", "EgZ2aWRlb3M%3D") // equals to videos
+                    .value("params", "EgZ2aWRlb3M%3D") // Equal to videos
                     .done())
                     .getBytes(UTF_8);
 

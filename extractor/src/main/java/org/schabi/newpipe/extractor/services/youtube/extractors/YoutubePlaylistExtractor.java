@@ -50,7 +50,7 @@ public class YoutubePlaylistExtractor extends PlaylistExtractor {
         final byte[] body = JsonWriter.string(prepareJsonBuilder(localization,
                 getExtractorContentCountry())
                 .value("browseId", "VL" + getId())
-                .value("params", "wgYCCAA%3D") // show unavailable videos
+                .value("params", "wgYCCAA%3D") // Show unavailable videos
                 .done())
                 .getBytes(UTF_8);
 

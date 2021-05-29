@@ -221,7 +221,7 @@ public class YoutubeSearchExtractor extends SearchExtractor {
             ParsingException {
         final TimeAgoParser timeAgoParser = getTimeAgoParser();
 
-        for (Object content : contents) {
+        for (final Object content : contents) {
             final JsonObject item = (JsonObject) content;
             if (item.has("backgroundPromoRenderer")) {
                 throw new NothingFoundException(getTextFromObject(
