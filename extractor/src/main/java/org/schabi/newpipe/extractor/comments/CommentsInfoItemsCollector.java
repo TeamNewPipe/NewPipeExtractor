@@ -6,7 +6,6 @@ import org.schabi.newpipe.extractor.exceptions.ParsingException;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Vector;
 
 public class CommentsInfoItemsCollector extends InfoItemsCollector<CommentsInfoItem, CommentsInfoItemExtractor> {
 
@@ -62,6 +61,11 @@ public class CommentsInfoItemsCollector extends InfoItemsCollector<CommentsInfoI
         }
         try {
             resultItem.setLikeCount(extractor.getLikeCount());
+        } catch (Exception e) {
+            addError(e);
+        }
+        try {
+            resultItem.setTextualLikeCount(extractor.getTextualLikeCount());
         } catch (Exception e) {
             addError(e);
         }

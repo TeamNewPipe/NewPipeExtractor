@@ -58,11 +58,6 @@ public class PeertubeCommentsInfoItemExtractor implements CommentsInfoItemExtrac
     }
 
     @Override
-    public int getLikeCount() {
-        return -1;
-    }
-
-    @Override
     public String getCommentText() throws ParsingException {
         final String htmlText = JsonUtils.getString(item, "text");
         try {
@@ -87,21 +82,6 @@ public class PeertubeCommentsInfoItemExtractor implements CommentsInfoItemExtrac
             value = "/client/assets/images/default-avatar.png";
         }
         return baseUrl + value;
-    }
-
-    @Override
-    public boolean isHeartedByUploader() throws ParsingException {
-        return false;
-    }
-
-    @Override
-    public boolean isPinned() throws ParsingException {
-        return false;
-    }
-
-    @Override
-    public boolean isUploaderVerified() throws ParsingException {
-        return false;
     }
 
     @Override

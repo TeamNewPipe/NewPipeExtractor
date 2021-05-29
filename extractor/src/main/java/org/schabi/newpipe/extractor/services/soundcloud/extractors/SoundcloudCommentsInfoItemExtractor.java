@@ -39,16 +39,6 @@ public class SoundcloudCommentsInfoItemExtractor implements CommentsInfoItemExtr
     }
 
     @Override
-    public boolean isHeartedByUploader() throws ParsingException {
-        return false;
-    }
-
-    @Override
-    public boolean isPinned() throws ParsingException {
-        return false;
-    }
-
-    @Override
     public boolean isUploaderVerified() throws ParsingException {
         return json.getObject("user").getBoolean("verified");
     }
@@ -67,11 +57,6 @@ public class SoundcloudCommentsInfoItemExtractor implements CommentsInfoItemExtr
     @Override
     public DateWrapper getUploadDate() throws ParsingException {
         return new DateWrapper(SoundcloudParsingHelper.parseDateFrom(getTextualUploadDate()));
-    }
-
-    @Override
-    public int getLikeCount() {
-        return -1;
     }
 
     @Override

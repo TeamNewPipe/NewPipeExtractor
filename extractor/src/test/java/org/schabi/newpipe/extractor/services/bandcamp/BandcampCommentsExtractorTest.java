@@ -13,10 +13,10 @@ import org.schabi.newpipe.extractor.utils.Utils;
 
 import java.io.IOException;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
 import static org.schabi.newpipe.extractor.ServiceList.Bandcamp;
-import static org.schabi.newpipe.extractor.ServiceList.YouTube;
 
 public class BandcampCommentsExtractorTest {
 
@@ -47,6 +47,7 @@ public class BandcampCommentsExtractorTest {
             assertFalse(Utils.isBlank(c.getThumbnailUrl()));
             assertFalse(Utils.isBlank(c.getUrl()));
             assertEquals(-1, c.getLikeCount());
+            assertTrue(Utils.isBlank(c.getTextualLikeCount()));
         }
     }
 }

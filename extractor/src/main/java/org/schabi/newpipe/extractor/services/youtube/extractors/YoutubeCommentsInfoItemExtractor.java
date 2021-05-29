@@ -2,6 +2,7 @@ package org.schabi.newpipe.extractor.services.youtube.extractors;
 
 import com.grack.nanojson.JsonArray;
 import com.grack.nanojson.JsonObject;
+
 import org.schabi.newpipe.extractor.comments.CommentsInfoItemExtractor;
 import org.schabi.newpipe.extractor.exceptions.ParsingException;
 import org.schabi.newpipe.extractor.localization.DateWrapper;
@@ -70,12 +71,70 @@ public class YoutubeCommentsInfoItemExtractor implements CommentsInfoItemExtract
         }
     }
 
+    /**
+     * @implNote The method is parsing internally a localized string.<br/>
+     * <ul>
+     *     <li>
+     *         More than >1k likes will result in an inaccurate number
+     *     </li>
+     *     <li>
+     *         This will fail for other languages than English.
+     *         However as long as the Extractor only uses "en-GB"
+     *         (as seen in {@link org.schabi.newpipe.extractor.services.youtube.YoutubeService#SUPPORTED_LANGUAGES})
+     *         everything will work fine.
+     *      </li>
+     * </ul>
+     * <br/>
+     * Consider using {@link #getTextualLikeCount()}
+     */
     @Override
     public int getLikeCount() throws ParsingException {
+        // This may return a language dependent version, e.g. in German: 3,3 Mio
+        final String textualLikeCount = getTextualLikeCount();
         try {
-            return json.getInt("likeCount");
+            if (Utils.isBlank(textualLikeCount)) {
+                return 0;
+            }
+
+            return (int) Utils.mixedNumberWordToLong(textualLikeCount);
         } catch (Exception e) {
-            throw new ParsingException("Could not get like count", e);
+            throw new ParsingException("Unexpected error while converting textual like count to like count", e);
+        }
+    }
+
+    @Override
+    public String getTextualLikeCount() throws ParsingException {
+        /*
+         * Example results as of 2021-05-20:
+         * Language = English
+         * 3.3M
+         * 48K
+         * 1.4K
+         * 270K
+         * 19
+         * 6
+         *
+         * Language = German
+         * 3,3 Mio
+         * 48.189
+         * 1419
+         * 270.984
+         * 19
+         * 6
+         */
+        try {
+            // If a comment has no likes voteCount is not set
+            if (!json.has("voteCount")) {
+                return EMPTY_STRING;
+            }
+
+            final JsonObject voteCountObj = JsonUtils.getObject(json, "voteCount");
+            if (voteCountObj.isEmpty()) {
+                return EMPTY_STRING;
+            }
+            return getTextFromObject(voteCountObj);
+        } catch (Exception e) {
+            throw new ParsingException("Could not get vote count", e);
         }
     }
 
