@@ -64,8 +64,10 @@ public class YoutubeParsingHelper {
     private YoutubeParsingHelper() {
     }
 
-    private static final String HARDCODED_CLIENT_VERSION = "2.20210520.09.00";
+    private static final String HARDCODED_CLIENT_VERSION = "2.20210526.07.00";
     private static final String HARDCODED_KEY = "AIzaSyAO_FJ2SlqU8Q4STEHLGCilw_Y9_11qcW8";
+    private static final String[] MOBILE_YOUTUBE_KEYS = {"AIzaSyA8eiZmM1FaDVjRy-df2KTyQ_vz_yYM39w",
+            "16.20.35"};
     private static final String YOUTUBEI_V1_URL = "https://www.youtube.com/youtubei/v1/";
     private static String clientVersion;
     private static String key;
@@ -661,7 +663,7 @@ public class YoutubeParsingHelper {
     }
 
     @Nullable
-    public static String getTextFromObject(JsonObject textObject) throws ParsingException {
+    public static String getTextFromObject(final JsonObject textObject) throws ParsingException {
         return getTextFromObject(textObject, false);
     }
 
@@ -744,6 +746,26 @@ public class YoutubeParsingHelper {
         return JsonUtils.toJsonObject(getValidJsonResponseBody(response));
     }
 
+    public static JsonObject getJsonMobilePostResponse(final String endpoint,
+                                                       final byte[] body,
+                                                       final ContentCountry contentCountry,
+                                                       final Localization localization)
+            throws IOException, ExtractionException {
+        final Map<String, List<String>> headers = new HashMap<>();
+        headers.put("Content-Type", Collections.singletonList("application/json"));
+        // Spoofing an Android 11 device with the hardcoded version of the Android app
+        headers.put("User-Agent", Collections.singletonList("com.google.android.youtube/"
+                + MOBILE_YOUTUBE_KEYS[1] + "Linux; U; Android 11; "
+                + contentCountry.getCountryCode() + ") gzip"));
+        headers.put("x-goog-api-format-version", Collections.singletonList("2"));
+
+        final Response response = getDownloader().post(
+                "https://youtubei.googleapis.com/youtubei/v1/" + endpoint + "?key="
+                        + MOBILE_YOUTUBE_KEYS[0], headers, body, localization);
+
+        return JsonUtils.toJsonObject(getValidJsonResponseBody(response));
+    }
+
     public static JsonArray getJsonResponse(final String url, final Localization localization)
             throws IOException, ExtractionException {
         Map<String, List<String>> headers = new HashMap<>();
@@ -771,8 +793,25 @@ public class YoutubeParsingHelper {
         return JsonObject.builder()
                 .object("context")
                     .object("client")
-                        .value("clientName", "1")
+                        .value("clientName", "WEB")
                         .value("clientVersion", getClientVersion())
+                        .value("hl", localization.getLocalizationCode())
+                        .value("gl", contentCountry.getCountryCode())
+                    .end()
+                .end();
+        // @formatter:on
+    }
+
+    public static JsonBuilder<JsonObject> prepareMobileJsonBuilder(final Localization localization,
+                                                                   final ContentCountry
+                                                                           contentCountry)
+            throws IOException, ExtractionException {
+        // @formatter:off
+        return JsonObject.builder()
+                .object("context")
+                    .object("client")
+                        .value("clientName", "ANDROID")
+                        .value("clientVersion", MOBILE_YOUTUBE_KEYS[1])
                         .value("hl", localization.getLocalizationCode())
                         .value("gl", contentCountry.getCountryCode())
                     .end()
