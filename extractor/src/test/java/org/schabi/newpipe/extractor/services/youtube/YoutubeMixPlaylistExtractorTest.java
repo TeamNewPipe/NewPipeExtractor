@@ -1,8 +1,8 @@
 package org.schabi.newpipe.extractor.services.youtube;
 
+import com.grack.nanojson.JsonWriter;
 import org.hamcrest.MatcherAssert;
 import org.junit.BeforeClass;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
@@ -32,12 +32,13 @@ import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 import static org.schabi.newpipe.extractor.ExtractorAsserts.assertIsSecureUrl;
 import static org.schabi.newpipe.extractor.ServiceList.YouTube;
+import static org.schabi.newpipe.extractor.services.youtube.YoutubeParsingHelper.*;
+import static org.schabi.newpipe.extractor.utils.Utils.UTF_8;
 
 @RunWith(Suite.class)
 @SuiteClasses({Mix.class, MixWithIndex.class, MyMix.class, Invalid.class, ChannelMix.class})
 public class YoutubeMixPlaylistExtractorTest {
 
-    public static final String PBJ = "&pbj=1";
     private static final String VIDEO_ID = "_AzeUSL9lZc";
     private static final String VIDEO_TITLE =
             "Most Beautiful And Emotional  Piano: Anime Music Shigatsu wa Kimi no Uso OST IMO";
@@ -55,8 +56,8 @@ public class YoutubeMixPlaylistExtractorTest {
             NewPipe.init(new DownloaderFactory().getDownloader(RESOURCE_PATH + "mix"));
             dummyCookie.put(YoutubeMixPlaylistExtractor.COOKIE_NAME, "whatever");
             extractor = (YoutubeMixPlaylistExtractor) YouTube
-                    .getPlaylistExtractor(
-                            "https://www.youtube.com/watch?v=" + VIDEO_ID + "&list=RD" + VIDEO_ID);
+                    .getPlaylistExtractor("https://www.youtube.com/watch?v=" + VIDEO_ID
+                            + "&list=RD" + VIDEO_ID);
             extractor.fetchPage();
         }
 
@@ -89,9 +90,16 @@ public class YoutubeMixPlaylistExtractorTest {
 
         @Test
         public void getPage() throws Exception {
-            final InfoItemsPage<StreamInfoItem> streams = extractor.getPage(
-                    new Page("https://www.youtube.com/watch?v=" + VIDEO_ID + "&list=RD" + VIDEO_ID
-                            + PBJ, dummyCookie));
+            final byte[] body = JsonWriter.string(prepareJsonBuilder(
+                    NewPipe.getPreferredLocalization(), NewPipe.getPreferredContentCountry())
+                    .value("videoId", VIDEO_ID)
+                    .value("playlistId", "RD" + VIDEO_ID)
+                    .value("params", "OAE%3D")
+                    .done())
+                    .getBytes(UTF_8);
+
+            final InfoItemsPage<StreamInfoItem> streams = extractor.getPage(new Page(
+                    YOUTUBEI_V1_URL + "next?key=" + getKey(), null, null, dummyCookie, body));
             assertFalse(streams.getItems().isEmpty());
             assertTrue(streams.hasNextPage());
         }
@@ -127,7 +135,7 @@ public class YoutubeMixPlaylistExtractorTest {
     @Ignore
     public static class MixWithIndex {
 
-        private static final String INDEX = "&index=13";
+        private static final int INDEX = 13;
         private static final String VIDEO_ID_NUMBER_13 = "qHtzO49SDmk";
 
         @BeforeClass
@@ -137,9 +145,8 @@ public class YoutubeMixPlaylistExtractorTest {
             NewPipe.init(new DownloaderFactory().getDownloader(RESOURCE_PATH + "mixWithIndex"));
             dummyCookie.put(YoutubeMixPlaylistExtractor.COOKIE_NAME, "whatever");
             extractor = (YoutubeMixPlaylistExtractor) YouTube
-                    .getPlaylistExtractor(
-                            "https://www.youtube.com/watch?v=" + VIDEO_ID_NUMBER_13 + "&list=RD"
-                                    + VIDEO_ID + INDEX);
+                    .getPlaylistExtractor("https://www.youtube.com/watch?v=" + VIDEO_ID_NUMBER_13
+                            + "&list=RD" + VIDEO_ID + "&index=" + INDEX);
             extractor.fetchPage();
         }
 
@@ -167,9 +174,17 @@ public class YoutubeMixPlaylistExtractorTest {
 
         @Test
         public void getPage() throws Exception {
-            final InfoItemsPage<StreamInfoItem> streams = extractor.getPage(
-                    new Page("https://www.youtube.com/watch?v=" + VIDEO_ID_NUMBER_13 + "&list=RD"
-                            + VIDEO_ID + INDEX + PBJ, dummyCookie));
+            final byte[] body = JsonWriter.string(prepareJsonBuilder(
+                    NewPipe.getPreferredLocalization(), NewPipe.getPreferredContentCountry())
+                    .value("videoId", VIDEO_ID)
+                    .value("playlistId", "RD" + VIDEO_ID)
+                    .value("playlistIndex", INDEX)
+                    .value("params", "OAE%3D")
+                    .done())
+                    .getBytes(UTF_8);
+
+            final InfoItemsPage<StreamInfoItem> streams = extractor.getPage(new Page(
+                    YOUTUBEI_V1_URL + "next?key=" + getKey(), null, null, dummyCookie, body));
             assertFalse(streams.getItems().isEmpty());
             assertTrue(streams.hasNextPage());
         }
@@ -210,9 +225,8 @@ public class YoutubeMixPlaylistExtractorTest {
             NewPipe.init(new DownloaderFactory().getDownloader(RESOURCE_PATH + "myMix"));
             dummyCookie.put(YoutubeMixPlaylistExtractor.COOKIE_NAME, "whatever");
             extractor = (YoutubeMixPlaylistExtractor) YouTube
-                    .getPlaylistExtractor(
-                            "https://www.youtube.com/watch?v=" + VIDEO_ID + "&list=RDMM"
-                                    + VIDEO_ID);
+                    .getPlaylistExtractor("https://www.youtube.com/watch?v=" + VIDEO_ID
+                            + "&list=RDMM" + VIDEO_ID);
             extractor.fetchPage();
         }
 
@@ -243,9 +257,16 @@ public class YoutubeMixPlaylistExtractorTest {
 
         @Test
         public void getPage() throws Exception {
-            final InfoItemsPage<StreamInfoItem> streams =
-                    extractor.getPage(new Page("https://www.youtube.com/watch?v=" + VIDEO_ID
-                            + "&list=RDMM" + VIDEO_ID + PBJ, dummyCookie));
+            final byte[] body = JsonWriter.string(prepareJsonBuilder(
+                    NewPipe.getPreferredLocalization(), NewPipe.getPreferredContentCountry())
+                    .value("videoId", VIDEO_ID)
+                    .value("playlistId", "RDMM" + VIDEO_ID)
+                    .value("params", "OAE%3D")
+                    .done())
+                    .getBytes(UTF_8);
+
+            final InfoItemsPage<StreamInfoItem> streams = extractor.getPage(new Page(
+                    YOUTUBEI_V1_URL + "next?key=" + getKey(), null, null, dummyCookie, body));
             assertFalse(streams.getItems().isEmpty());
             assertTrue(streams.hasNextPage());
         }
@@ -291,8 +312,8 @@ public class YoutubeMixPlaylistExtractorTest {
         @Test(expected = IllegalArgumentException.class)
         public void getPageEmptyUrl() throws Exception {
             extractor = (YoutubeMixPlaylistExtractor) YouTube
-                    .getPlaylistExtractor(
-                            "https://www.youtube.com/watch?v=" + VIDEO_ID + "&list=RD" + VIDEO_ID);
+                    .getPlaylistExtractor("https://www.youtube.com/watch?v=" + VIDEO_ID
+                            + "&list=RD" + VIDEO_ID);
             extractor.fetchPage();
             extractor.getPage(new Page(""));
         }
@@ -300,8 +321,8 @@ public class YoutubeMixPlaylistExtractorTest {
         @Test(expected = ExtractionException.class)
         public void invalidVideoId() throws Exception {
             extractor = (YoutubeMixPlaylistExtractor) YouTube
-                    .getPlaylistExtractor(
-                            "https://www.youtube.com/watch?v=" + "abcde" + "&list=RD" + "abcde");
+                    .getPlaylistExtractor("https://www.youtube.com/watch?v=" + "abcde"
+                            + "&list=RD" + "abcde");
             extractor.fetchPage();
             extractor.getName();
         }
@@ -321,9 +342,8 @@ public class YoutubeMixPlaylistExtractorTest {
             NewPipe.init(new DownloaderFactory().getDownloader(RESOURCE_PATH + "channelMix"));
             dummyCookie.put(YoutubeMixPlaylistExtractor.COOKIE_NAME, "whatever");
             extractor = (YoutubeMixPlaylistExtractor) YouTube
-                    .getPlaylistExtractor(
-                            "https://www.youtube.com/watch?v=" + VIDEO_ID_OF_CHANNEL
-                                    + "&list=RDCM" + CHANNEL_ID);
+                    .getPlaylistExtractor("https://www.youtube.com/watch?v=" + VIDEO_ID_OF_CHANNEL
+                            + "&list=RDCM" + CHANNEL_ID);
             extractor.fetchPage();
         }
 
@@ -350,9 +370,16 @@ public class YoutubeMixPlaylistExtractorTest {
 
         @Test
         public void getPage() throws Exception {
-            final InfoItemsPage<StreamInfoItem> streams = extractor.getPage(
-                    new Page("https://www.youtube.com/watch?v=" + VIDEO_ID_OF_CHANNEL
-                            + "&list=RDCM" + CHANNEL_ID + PBJ, dummyCookie));
+            final byte[] body = JsonWriter.string(prepareJsonBuilder(
+                    NewPipe.getPreferredLocalization(), NewPipe.getPreferredContentCountry())
+                    .value("videoId", VIDEO_ID_OF_CHANNEL)
+                    .value("playlistId", "RDCM" + CHANNEL_ID)
+                    .value("params", "OAE%3D")
+                    .done())
+                    .getBytes(UTF_8);
+
+            final InfoItemsPage<StreamInfoItem> streams = extractor.getPage(new Page(
+                    YOUTUBEI_V1_URL + "next?key=" + getKey(), null, null, dummyCookie, body));
             assertFalse(streams.getItems().isEmpty());
             assertTrue(streams.hasNextPage());
         }

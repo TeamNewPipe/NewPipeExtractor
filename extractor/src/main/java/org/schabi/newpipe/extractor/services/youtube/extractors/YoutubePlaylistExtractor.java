@@ -21,16 +21,13 @@ import org.schabi.newpipe.extractor.utils.JsonUtils;
 import org.schabi.newpipe.extractor.utils.Utils;
 
 import java.io.IOException;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 import javax.annotation.Nonnull;
 
-import static org.schabi.newpipe.extractor.services.youtube.YoutubeParsingHelper.fixThumbnailUrl;
-import static org.schabi.newpipe.extractor.services.youtube.YoutubeParsingHelper.getJsonPostResponse;
-import static org.schabi.newpipe.extractor.services.youtube.YoutubeParsingHelper.getKey;
-import static org.schabi.newpipe.extractor.services.youtube.YoutubeParsingHelper.getTextFromObject;
-import static org.schabi.newpipe.extractor.services.youtube.YoutubeParsingHelper.getUrlFromNavigationEndpoint;
-import static org.schabi.newpipe.extractor.services.youtube.YoutubeParsingHelper.getValidJsonResponseBody;
-import static org.schabi.newpipe.extractor.services.youtube.YoutubeParsingHelper.prepareJsonBuilder;
+import static org.schabi.newpipe.extractor.services.youtube.YoutubeParsingHelper.*;
 import static org.schabi.newpipe.extractor.utils.Utils.UTF_8;
 import static org.schabi.newpipe.extractor.utils.Utils.isNullOrEmpty;
 
@@ -224,14 +221,15 @@ public class YoutubePlaylistExtractor extends PlaylistExtractor {
         }
 
         final StreamInfoItemsCollector collector = new StreamInfoItemsCollector(getServiceId());
+        final Map<String, List<String>> headers = new HashMap<>();
+        addClientInfoHeaders(headers);
 
-        final Response response = getDownloader().post(page.getUrl(), null, page.getBody(),
+        final Response response = getDownloader().post(page.getUrl(), headers, page.getBody(),
                 getExtractorLocalization());
         final JsonObject ajaxJson = JsonUtils.toJsonObject(getValidJsonResponseBody(response));
 
         final JsonArray continuation = ajaxJson.getArray("onResponseReceivedActions")
-                .getObject(0)
-                .getObject("appendContinuationItemsAction")
+                .getObject(0).getObject("appendContinuationItemsAction")
                 .getArray("continuationItems");
 
         collectStreamsFrom(collector, continuation);
@@ -259,7 +257,7 @@ public class YoutubePlaylistExtractor extends PlaylistExtractor {
                     .done())
                     .getBytes(UTF_8);
 
-            return new Page("https://www.youtube.com/youtubei/v1/browse?key=" + getKey(), body);
+            return new Page(YOUTUBEI_V1_URL + "browse?key=" + getKey(), body);
         } else {
             return null;
         }

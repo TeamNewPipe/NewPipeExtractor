@@ -24,15 +24,13 @@ import org.schabi.newpipe.extractor.utils.JsonUtils;
 import org.schabi.newpipe.extractor.utils.Utils;
 
 import java.io.IOException;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 import javax.annotation.Nonnull;
 
-import static org.schabi.newpipe.extractor.services.youtube.YoutubeParsingHelper.fixThumbnailUrl;
-import static org.schabi.newpipe.extractor.services.youtube.YoutubeParsingHelper.getJsonPostResponse;
-import static org.schabi.newpipe.extractor.services.youtube.YoutubeParsingHelper.getKey;
-import static org.schabi.newpipe.extractor.services.youtube.YoutubeParsingHelper.getTextFromObject;
-import static org.schabi.newpipe.extractor.services.youtube.YoutubeParsingHelper.getValidJsonResponseBody;
-import static org.schabi.newpipe.extractor.services.youtube.YoutubeParsingHelper.prepareJsonBuilder;
+import static org.schabi.newpipe.extractor.services.youtube.YoutubeParsingHelper.*;
 import static org.schabi.newpipe.extractor.utils.Utils.EMPTY_STRING;
 import static org.schabi.newpipe.extractor.utils.Utils.UTF_8;
 import static org.schabi.newpipe.extractor.utils.Utils.isNullOrEmpty;
@@ -349,9 +347,13 @@ public class YoutubeChannelExtractor extends ChannelExtractor {
 
         // Unfortunately, we have to fetch the page even if we are only getting next streams,
         // as they don't deliver enough information on their own (the channel name, for example).
-        fetchPage();
 
-        StreamInfoItemsCollector collector = new StreamInfoItemsCollector(getServiceId());
+        if (!isPageFetched()) fetchPage();
+
+        final StreamInfoItemsCollector collector = new StreamInfoItemsCollector(getServiceId());
+        final Map<String, List<String>> headers = new HashMap<>();
+        addClientInfoHeaders(headers);
+
         final Response response = getDownloader().post(page.getUrl(), null, page.getBody(),
                 getExtractorLocalization());
 
@@ -383,7 +385,7 @@ public class YoutubeChannelExtractor extends ChannelExtractor {
                 .done())
                 .getBytes(UTF_8);
 
-        return new Page("https://www.youtube.com/youtubei/v1/browse?key=" + getKey(), body);
+        return new Page(YOUTUBEI_V1_URL + "browse?key=" + getKey(), body);
     }
 
     /**
