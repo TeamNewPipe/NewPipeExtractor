@@ -829,14 +829,11 @@ public class YoutubeStreamExtractor extends StreamExtractor {
         } else {
             // Fallback to the desktop JSON player endpoint
 
-            if (sts == null) {
-                sts = getStsFromPlayerJs();
-            }
-
             // The cipher signatures from the player endpoint without a timestamp are invalid so
             // download it again only if we didn't have a signatureTimestamp before fetching the
             // data of this video (the sts string).
             if (!stsKnown) {
+                sts = getStsFromPlayerJs();
                 final JsonObject playerResponseWithSignatureTimestamp = getJsonPostResponse(
                         "player", createPlayerBodyWithSts(localization, contentCountry, videoId),
                         localization);
@@ -1027,6 +1024,7 @@ public class YoutubeStreamExtractor extends StreamExtractor {
     }
 
     private String getStsFromPlayerJs() throws ParsingException {
+        if (!isNullOrEmpty(sts)) return sts;
         if (playerCode == null) {
             storePlayerJs();
             if (playerCode == null) throw new ParsingException("playerCode is null");
