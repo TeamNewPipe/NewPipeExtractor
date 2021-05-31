@@ -832,7 +832,7 @@ public class YoutubeStreamExtractor extends StreamExtractor {
             // The cipher signatures from the player endpoint without a timestamp are invalid so
             // download it again only if we didn't have a signatureTimestamp before fetching the
             // data of this video (the sts string).
-            if (!stsKnown) {
+            if (!stsKnown && isCipherProtectedContent()) {
                 sts = getStsFromPlayerJs();
                 final JsonObject playerResponseWithSignatureTimestamp = getJsonPostResponse(
                         "player", createPlayerBodyWithSts(localization, contentCountry, videoId),
