@@ -14,7 +14,6 @@ import org.schabi.newpipe.extractor.exceptions.ContentNotSupportedException;
 import org.schabi.newpipe.extractor.exceptions.ExtractionException;
 import org.schabi.newpipe.extractor.exceptions.ParsingException;
 import org.schabi.newpipe.extractor.linkhandler.ListLinkHandler;
-import org.schabi.newpipe.extractor.localization.Localization;
 import org.schabi.newpipe.extractor.localization.TimeAgoParser;
 import org.schabi.newpipe.extractor.services.youtube.YoutubeParsingHelper;
 import org.schabi.newpipe.extractor.services.youtube.linkHandler.YoutubeChannelLinkHandlerFactory;
@@ -24,6 +23,7 @@ import org.schabi.newpipe.extractor.utils.JsonUtils;
 import org.schabi.newpipe.extractor.utils.Utils;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -329,10 +329,13 @@ public class YoutubeChannelExtractor extends ChannelExtractor {
                     .getArray("contents").getObject(0).getObject("itemSectionRenderer")
                     .getArray("contents").getObject(0).getObject("gridRenderer");
 
+            final List<String> channelInformations = new ArrayList<>();
+            channelInformations.add(getName());
+            channelInformations.add(getUrl());
             final JsonObject continuation = collectStreamsFrom(collector, gridRenderer
-                    .getArray("items"));
+                    .getArray("items"), channelInformations);
 
-            nextPage = getNextPageFrom(continuation);
+            nextPage = getNextPageFrom(continuation, channelInformations);
         }
 
         return new InfoItemsPage<>(collector, nextPage);
@@ -345,10 +348,7 @@ public class YoutubeChannelExtractor extends ChannelExtractor {
             throw new IllegalArgumentException("Page doesn't contain an URL");
         }
 
-        // Unfortunately, we have to fetch the page even if we are only getting next streams,
-        // as they don't deliver enough information on their own (the channel name, for example).
-
-        if (!isPageFetched()) fetchPage();
+        final List<String> channelInformations = page.getIds();
 
         final StreamInfoItemsCollector collector = new StreamInfoItemsCollector(getServiceId());
         final Map<String, List<String>> headers = new HashMap<>();
@@ -364,12 +364,13 @@ public class YoutubeChannelExtractor extends ChannelExtractor {
                 .getObject("appendContinuationItemsAction");
 
         final JsonObject continuation = collectStreamsFrom(collector, sectionListContinuation
-                .getArray("continuationItems"));
+                .getArray("continuationItems"), channelInformations);
 
-        return new InfoItemsPage<>(collector, getNextPageFrom(continuation));
+        return new InfoItemsPage<>(collector, getNextPageFrom(continuation, channelInformations));
     }
 
-    private Page getNextPageFrom(final JsonObject continuations) throws IOException,
+    private Page getNextPageFrom(final JsonObject continuations,
+                                 final List<String> channelInformations) throws IOException,
             ExtractionException {
         if (isNullOrEmpty(continuations)) {
             return null;
@@ -385,7 +386,8 @@ public class YoutubeChannelExtractor extends ChannelExtractor {
                 .done())
                 .getBytes(UTF_8);
 
-        return new Page(YOUTUBEI_V1_URL + "browse?key=" + getKey(), body);
+        return new Page(YOUTUBEI_V1_URL + "browse?key=" + getKey(), null, channelInformations,
+                null, body);
     }
 
     /**
@@ -394,14 +396,14 @@ public class YoutubeChannelExtractor extends ChannelExtractor {
      * @param collector the collector where videos will be commited
      * @param videos    the array to get videos from
      * @return the continuation object
-     * @throws ParsingException if an error happened while extracting
      */
     private JsonObject collectStreamsFrom(final StreamInfoItemsCollector collector,
-                                          final JsonArray videos) throws ParsingException {
+                                          final JsonArray videos,
+                                          final List<String> channelInformations) {
         collector.reset();
 
-        final String uploaderName = getName();
-        final String uploaderUrl = getUrl();
+        final String uploaderName = channelInformations.get(0);
+        final String uploaderUrl = channelInformations.get(1);
         final TimeAgoParser timeAgoParser = getTimeAgoParser();
 
         JsonObject continuation = null;
