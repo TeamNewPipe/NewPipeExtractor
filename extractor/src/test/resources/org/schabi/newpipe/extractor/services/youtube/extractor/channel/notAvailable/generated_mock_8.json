@@ -1,7 +1,7 @@
 {
   "request": {
     "httpMethod": "POST",
-    "url": "https://youtubei.googleapis.com/youtubei/v1/browse?key\u003dAIzaSyAO_FJ2SlqU8Q4STEHLGCilw_Y9_11qcW8",
+    "url": "https://www.youtube.com/youtubei/v1/browse?key\u003dAIzaSyAO_FJ2SlqU8Q4STEHLGCilw_Y9_11qcW8",
     "headers": {
       "Accept-Language": [
         "en-GB, en;q\u003d0.9"
@@ -16,7 +16,7 @@
         "https://www.youtube.com"
       ],
       "X-YouTube-Client-Version": [
-        "2.20210429.07.00"
+        "2.20210526.07.00"
       ]
     },
     "dataToSend": [
@@ -95,7 +95,9 @@
       34,
       58,
       34,
-      49,
+      87,
+      69,
+      66,
       34,
       44,
       34,
@@ -132,9 +134,9 @@
       50,
       49,
       48,
-      52,
+      53,
       50,
-      57,
+      54,
       46,
       48,
       55,
@@ -181,15 +183,6 @@
     "responseCode": 400,
     "responseMessage": "",
     "responseHeaders": {
-      "access-control-allow-credentials": [
-        "true"
-      ],
-      "access-control-allow-origin": [
-        "https://www.youtube.com"
-      ],
-      "access-control-expose-headers": [
-        "vary,vary,vary,content-encoding,date,server,content-length"
-      ],
       "alt-svc": [
         "h3-29\u003d\":443\"; ma\u003d2592000,h3-T051\u003d\":443\"; ma\u003d2592000,h3-Q050\u003d\":443\"; ma\u003d2592000,h3-Q046\u003d\":443\"; ma\u003d2592000,h3-Q043\u003d\":443\"; ma\u003d2592000,quic\u003d\":443\"; ma\u003d2592000; v\u003d\"46,43\""
       ],
@@ -200,7 +193,7 @@
         "application/json; charset\u003dUTF-8"
       ],
       "date": [
-        "Tue, 08 Jun 2021 13:30:25 GMT"
+        "Tue, 08 Jun 2021 13:35:12 GMT"
       ],
       "server": [
         "ESF"
@@ -221,6 +214,6 @@
       ]
     },
     "responseBody": "{\n  \"error\": {\n    \"code\": 400,\n    \"message\": \"Request contains an invalid argument.\",\n    \"errors\": [\n      {\n        \"message\": \"Request contains an invalid argument.\",\n        \"domain\": \"global\",\n        \"reason\": \"badRequest\"\n      }\n    ],\n    \"status\": \"INVALID_ARGUMENT\"\n  }\n}\n",
-    "latestUrl": "https://youtubei.googleapis.com/youtubei/v1/browse?key\u003dAIzaSyAO_FJ2SlqU8Q4STEHLGCilw_Y9_11qcW8"
+    "latestUrl": "https://www.youtube.com/youtubei/v1/browse?key\u003dAIzaSyAO_FJ2SlqU8Q4STEHLGCilw_Y9_11qcW8"
   }
 }

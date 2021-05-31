@@ -1,16 +1,22 @@
 {
   "request": {
     "httpMethod": "POST",
-    "url": "https://youtubei.googleapis.com/youtubei/v1/guide?key\u003dAIzaSyAO_FJ2SlqU8Q4STEHLGCilw_Y9_11qcW8",
+    "url": "https://www.youtube.com/youtubei/v1/player?key\u003dAIzaSyAO_FJ2SlqU8Q4STEHLGCilw_Y9_11qcW8",
     "headers": {
       "Accept-Language": [
         "en-GB, en;q\u003d0.9"
       ],
+      "Origin": [
+        "https://www.youtube.com"
+      ],
       "X-YouTube-Client-Name": [
         "1"
       ],
+      "Referer": [
+        "https://www.youtube.com"
+      ],
       "X-YouTube-Client-Version": [
-        "2.20210429.07.00"
+        "2.20210526.07.00"
       ]
     },
     "dataToSend": [
@@ -44,14 +50,7 @@
       34,
       101,
       110,
-      34,
-      44,
-      34,
-      103,
-      108,
-      34,
-      58,
-      34,
+      45,
       71,
       66,
       34,
@@ -70,7 +69,19 @@
       34,
       58,
       34,
-      49,
+      87,
+      69,
+      66,
+      34,
+      44,
+      34,
+      103,
+      108,
+      34,
+      58,
+      34,
+      71,
+      66,
       34,
       44,
       34,
@@ -97,9 +108,9 @@
       50,
       49,
       48,
-      52,
+      53,
       50,
-      57,
+      54,
       46,
       48,
       55,
@@ -109,6 +120,30 @@
       34,
       125,
       125,
+      44,
+      34,
+      118,
+      105,
+      100,
+      101,
+      111,
+      73,
+      100,
+      34,
+      58,
+      34,
+      77,
+      109,
+      66,
+      101,
+      85,
+      90,
+      113,
+      118,
+      49,
+      81,
+      65,
+      34,
       125
     ],
     "localization": {
@@ -133,6 +168,7 @@
 <<<<<<< HEAD
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
         "Wed, 23 Jun 2021 09:36:51 GMT"
 =======
         "Sun, 30 May 2021 16:15:36 GMT"
@@ -151,27 +187,21 @@
         "Fri, 30 Apr 2021 18:01:24 GMT"
 >>>>>>> 55bb1291 (Update mocks, reenable a test and fix a test)
 >>>>>>> d0dc7d69 (Update mocks, reenable a test and fix a test)
+=======
+        "Mon, 31 May 2021 15:54:11 GMT"
+>>>>>>> 43ce1dc4 (Update mocks)
       ],
       "expires": [
-        "Fri, 30 Apr 2021 18:01:24 GMT"
+        "Mon, 31 May 2021 15:54:11 GMT"
       ],
       "p3p": [
-<<<<<<< HEAD
-        "CP\u003d\"This is not a P3P policy! See http://support.google.com/accounts/answer/151657?hl\u003den-GB for more info.\""
-      ],
-      "permissions-policy": [
-        "ch-ua-full-version\u003d*, ch-ua-platform\u003d*, ch-ua-platform-version\u003d*, ch-ua-arch\u003d*, ch-ua-model\u003d*"
-      ],
-      "pragma": [
-        "no-cache"
-=======
         "CP\u003d\"This is not a P3P policy! See g.co/p3phelp for more info.\""
->>>>>>> c43345ad (Update client version, fix some tests, update mocks and do some improvements)
       ],
       "server": [
         "ESF"
       ],
       "set-cookie": [
+<<<<<<< HEAD
 <<<<<<< HEAD
 <<<<<<< HEAD
 <<<<<<< HEAD
@@ -197,13 +227,15 @@
       ],
       "transfer-encoding": [
         "chunked"
+=======
+        "CONSENT\u003dPENDING+963; expires\u003dFri, 01-Jan-2038 00:00:00 GMT; path\u003d/; domain\u003d.youtube.com; Secure"
+>>>>>>> 43ce1dc4 (Update mocks)
       ],
       "vary": [
         "Origin",
         "X-Origin",
         "Referer"
       ],
->>>>>>> c43345ad (Update client version, fix some tests, update mocks and do some improvements)
       "x-content-type-options": [
         "nosniff"
       ],
@@ -214,6 +246,7 @@
         "0"
       ]
     },
+<<<<<<< HEAD
 <<<<<<< HEAD
 <<<<<<< HEAD
 <<<<<<< HEAD
@@ -233,5 +266,9 @@
 >>>>>>> 55bb1291 (Update mocks, reenable a test and fix a test)
     "latestUrl": "https://youtubei.googleapis.com/youtubei/v1/guide?key\u003dAIzaSyAO_FJ2SlqU8Q4STEHLGCilw_Y9_11qcW8"
 >>>>>>> c43345ad (Update client version, fix some tests, update mocks and do some improvements)
+=======
+    "responseBody": "{\n  \"responseContext\": {\n    \"visitorData\": \"CgtNTS1BYzF3OF9jVSijjdSFBg%3D%3D\",\n    \"serviceTrackingParams\": [\n      {\n        \"service\": \"GFEEDBACK\",\n        \"params\": [\n          {\n            \"key\": \"is_viewed_live\",\n            \"value\": \"False\"\n          },\n          {\n            \"key\": \"logged_in\",\n            \"value\": \"0\"\n          },\n          {\n            \"key\": \"e\",\n            \"value\": \"24042870,24027649,24037794,24012874,24590381,23882685,24047688,24044575,23986019,24022817,23884386,23891346,24042868,23968099,24037806,24027133,23970529,23944779,23983296,24050938,24011269,24050722,23966208,23857949,24004644,23946420,24036086,24011648,24001373,24030040,23968386,24046103,23804281,24003104,24031626,24007246,24040786,23918597,23744176,23999406,23934970,24030993,23890959,23974595,24035275,23996830,24005646,1714251,23958571,24005802,23973491,23891344,24049782,23987908\"\n          }\n        ]\n      },\n      {\n        \"service\": \"CSI\",\n        \"params\": [\n          {\n            \"key\": \"c\",\n            \"value\": \"WEB\"\n          },\n          {\n            \"key\": \"cver\",\n            \"value\": \"2.20210526.07.00\"\n          },\n          {\n            \"key\": \"yt_li\",\n            \"value\": \"0\"\n          },\n          {\n            \"key\": \"GetPlayer_rid\",\n            \"value\": \"0xb82614e6575cfac4\"\n          }\n        ]\n      },\n      {\n        \"service\": \"GUIDED_HELP\",\n        \"params\": [\n          {\n            \"key\": \"logged_in\",\n            \"value\": \"0\"\n          }\n        ]\n      },\n      {\n        \"service\": \"ECATCHER\",\n        \"params\": [\n          {\n            \"key\": \"client.version\",\n            \"value\": \"2.20210526\"\n          },\n          {\n            \"key\": \"client.name\",\n            \"value\": \"WEB\"\n          }\n        ]\n      }\n    ],\n    \"mainAppWebResponseContext\": {\n      \"loggedOut\": true\n    },\n    \"webResponseContextExtensionData\": {\n      \"hasDecorated\": true\n    }\n  },\n  \"trackingParams\": \"CAAQu2kiEwjjisXko_TwAhXvLPEFHXQqAHY\u003d\",\n  \"playabilityStatus\": {\n    \"status\": \"LOGIN_REQUIRED\",\n    \"reason\": \"Sign in to confirm your age\",\n    \"errorScreen\": {\n      \"playerErrorMessageRenderer\": {\n        \"subreason\": {\n          \"runs\": [\n            {\n              \"text\": \"This video may be inappropriate for some users.\"\n            }\n          ]\n        },\n        \"reason\": {\n          \"simpleText\": \"Sign in to confirm your age\"\n        },\n        \"proceedButton\": {\n          \"buttonRenderer\": {\n            \"style\": \"STYLE_OVERLAY\",\n            \"size\": \"SIZE_DEFAULT\",\n            \"isDisabled\": false,\n            \"text\": {\n              \"simpleText\": \"Sign in\"\n            },\n            \"navigationEndpoint\": {\n              \"clickTrackingParams\": \"CAQQ8FsiEwjjisXko_TwAhXvLPEFHXQqAHY\u003d\",\n              \"commandMetadata\": {\n                \"webCommandMetadata\": {\n                  \"url\": \"https://accounts.google.com/ServiceLogin?service\u003dyoutube\u0026uilel\u003d3\u0026passive\u003dtrue\u0026continue\u003dhttps%3A%2F%2Fwww.youtube.com%2Fsignin%3Faction_handle_signin%3Dtrue%26app%3Ddesktop%26hl%3Den-GB\u0026hl\u003den-GB\",\n                  \"webPageType\": \"WEB_PAGE_TYPE_UNKNOWN\",\n                  \"rootVe\": 83769\n                }\n              },\n              \"signInEndpoint\": {\n                \"nextEndpoint\": {\n                  \"clickTrackingParams\": \"CAQQ8FsiEwjjisXko_TwAhXvLPEFHXQqAHY\u003d\",\n                  \"urlEndpoint\": {\n                    \"url\": \"\"\n                  }\n                }\n              }\n            },\n            \"trackingParams\": \"CAQQ8FsiEwjjisXko_TwAhXvLPEFHXQqAHY\u003d\"\n          }\n        },\n        \"thumbnail\": {\n          \"thumbnails\": [\n            {\n              \"url\": \"//s.ytimg.com/yts/img/meh7-vflGevej7.png\",\n              \"width\": 140,\n              \"height\": 100\n            }\n          ]\n        },\n        \"icon\": {\n          \"iconType\": \"ERROR_OUTLINE\"\n        }\n      }\n    },\n    \"desktopLegacyAgeGateReason\": 1,\n    \"contextParams\": \"Q0FFU0FnZ0M\u003d\"\n  },\n  \"videoDetails\": {\n    \"videoId\": \"MmBeUZqv1QA\",\n    \"title\": \"FINGERING PORNSTARS @ AVN Expo 2017 In Las Vegas!\",\n    \"lengthSeconds\": \"1790\",\n    \"keywords\": [\n      \"AVN Expo\",\n      \"AVN\",\n      \"AVN 2017\",\n      \"AVN 2017 Expo In Las Vegas\",\n      \"AEE\",\n      \"AEE 2017\",\n      \"AVN Las Vegas\",\n      \"AVN Vlog\",\n      \"AVN 2016\",\n      \"Las Vegas\",\n      \"AVN Awards Show\",\n      \"AVN Magazine\",\n      \"Riley Reid\",\n      \"Ariana Marie\",\n      \"August Ames\",\n      \"Vicki Chase\",\n      \"Samantha Saint\",\n      \"Cindy Starfall\",\n      \"Kaho Shibuya\",\n      \"Keisha Grey\",\n      \"Kimberly Chi\",\n      \"CeCe Capella\",\n      \"Brenna Sparks\",\n      \"Emma Hix\",\n      \"Elsa Jean\",\n      \"Mia Martinez\",\n      \"Vegas\",\n      \"FINGERING P0RNSTARS\",\n      \"FINGERING\",\n      \"FINGERING PORNSTARS\",\n      \"Pornstars\",\n      \"Pornstar\"\n    ],\n    \"channelId\": \"UCuPUHlLP5POZphOIrjrNxiw\",\n    \"isOwnerViewing\": false,\n    \"shortDescription\": \"FINGERING PORNSTARS AVN Expo 2017 In Las Vegas! / Biggest Pornstar Convention Ever! AVN is convention \u0026 trade show held each January in Las Vegas! Featuring Riley Reid, Ariana Marie, Keisha Grey, August Ames, Vicki Chase, Cindy Starfall, Samantha Saint, Elsa Jean, Kaho Shibuya, Kimberly Chi, Tia Kai, CeCe Capella, Cristi Ann, Emma Hix, Jae Lee, Brenna Sparks, Natalia Starr, Mia Martinez, Carmen Valentina, Cameron Canela, Shyla Jennings \u0026 much more!\\n\\n★ Social Media ★\\nInstagram: http://instagram.com/Ruben_Sole\\nTwitter: http://twitter.com/EpicFiveTV\\nFacebook: http://fb.me/EpicFiveTV\",\n    \"isCrawlable\": true,\n    \"thumbnail\": {\n      \"thumbnails\": [\n        {\n          \"url\": \"https://i.ytimg.com/vi/MmBeUZqv1QA/hqdefault.jpg?sqp\u003d-oaymwEbCKgBEF5IVfKriqkDDggBFQAAiEIYAXABwAEG\u0026rs\u003dAOn4CLByu2xxx6wxt4mmaFpOx8oCbOK94g\",\n          \"width\": 168,\n          \"height\": 94\n        },\n        {\n          \"url\": \"https://i.ytimg.com/vi/MmBeUZqv1QA/hqdefault.jpg?sqp\u003d-oaymwEbCMQBEG5IVfKriqkDDggBFQAAiEIYAXABwAEG\u0026rs\u003dAOn4CLCWkpPppObIkCjvWsAAcz_L0uA2Og\",\n          \"width\": 196,\n          \"height\": 110\n        },\n        {\n          \"url\": \"https://i.ytimg.com/vi/MmBeUZqv1QA/hqdefault.jpg?sqp\u003d-oaymwEcCPYBEIoBSFXyq4qpAw4IARUAAIhCGAFwAcABBg\u003d\u003d\u0026rs\u003dAOn4CLDAPm7p45fmrm_M3d6N-adC_GNPYg\",\n          \"width\": 246,\n          \"height\": 138\n        },\n        {\n          \"url\": \"https://i.ytimg.com/vi/MmBeUZqv1QA/hqdefault.jpg?sqp\u003d-oaymwEcCNACELwBSFXyq4qpAw4IARUAAIhCGAFwAcABBg\u003d\u003d\u0026rs\u003dAOn4CLAMd4Y6mL732jsJo7Uy-o7Gk0hhAw\",\n          \"width\": 336,\n          \"height\": 188\n        },\n        {\n          \"url\": \"https://i.ytimg.com/vi_webp/MmBeUZqv1QA/maxresdefault.webp\",\n          \"width\": 1920,\n          \"height\": 1080\n        }\n      ]\n    },\n    \"averageRating\": 4.210759,\n    \"allowRatings\": true,\n    \"viewCount\": \"42214846\",\n    \"author\": \"EpicFiveTV\",\n    \"isPrivate\": false,\n    \"isUnpluggedCorpus\": false,\n    \"isLiveContent\": false\n  },\n  \"microformat\": {\n    \"playerMicroformatRenderer\": {\n      \"thumbnail\": {\n        \"thumbnails\": [\n          {\n            \"url\": \"https://i.ytimg.com/vi/MmBeUZqv1QA/maxresdefault.jpg\",\n            \"width\": 1280,\n            \"height\": 720\n          }\n        ]\n      },\n      \"embed\": {\n        \"iframeUrl\": \"https://www.youtube.com/embed/MmBeUZqv1QA\",\n        \"flashUrl\": \"http://www.youtube.com/v/MmBeUZqv1QA?version\u003d3\u0026autohide\u003d1\",\n        \"width\": 1280,\n        \"height\": 720,\n        \"flashSecureUrl\": \"https://www.youtube.com/v/MmBeUZqv1QA?version\u003d3\u0026autohide\u003d1\"\n      },\n      \"title\": {\n        \"simpleText\": \"FINGERING PORNSTARS @ AVN Expo 2017 In Las Vegas!\"\n      },\n      \"description\": {\n        \"simpleText\": \"FINGERING PORNSTARS AVN Expo 2017 In Las Vegas! / Biggest Pornstar Convention Ever! AVN is convention \u0026 trade show held each January in Las Vegas! Featuring Riley Reid, Ariana Marie, Keisha Grey, August Ames, Vicki Chase, Cindy Starfall, Samantha Saint, Elsa Jean, Kaho Shibuya, Kimberly Chi, Tia Kai, CeCe Capella, Cristi Ann, Emma Hix, Jae Lee, Brenna Sparks, Natalia Starr, Mia Martinez, Carmen Valentina, Cameron Canela, Shyla Jennings \u0026 much more!\\n\\n★ Social Media ★\\nInstagram: http://instagram.com/Ruben_Sole\\nTwitter: http://twitter.com/EpicFiveTV\\nFacebook: http://fb.me/EpicFiveTV\"\n      },\n      \"lengthSeconds\": \"1790\",\n      \"ownerProfileUrl\": \"http://www.youtube.com/user/EpicFiveTV\",\n      \"externalChannelId\": \"UCuPUHlLP5POZphOIrjrNxiw\",\n      \"isFamilySafe\": false,\n      \"isUnlisted\": false,\n      \"hasYpcMetadata\": false,\n      \"viewCount\": \"42214846\",\n      \"category\": \"Entertainment\",\n      \"publishDate\": \"2017-01-25\",\n      \"ownerChannelName\": \"EpicFiveTV\",\n      \"uploadDate\": \"2017-01-25\"\n    }\n  },\n  \"messages\": [\n    {\n      \"mealbarPromoRenderer\": {\n        \"icon\": {\n          \"thumbnails\": [\n            {\n              \"url\": \"https://www.gstatic.com/youtube/img/promos/growth/6ad5a99c727579634bc3e2fb67562a2621170bdd11578967392667be5a05c5e4_384x384.png\",\n              \"width\": 384,\n              \"height\": 384\n            }\n          ]\n        },\n        \"messageTexts\": [\n          {\n            \"runs\": [\n              {\n                \"text\": \"Get YouTube without the ads\"\n              }\n            ]\n          }\n        ],\n        \"actionButton\": {\n          \"buttonRenderer\": {\n            \"style\": \"STYLE_BLUE_TEXT\",\n            \"size\": \"SIZE_DEFAULT\",\n            \"text\": {\n              \"runs\": [\n                {\n                  \"text\": \"1 month free\"\n                }\n              ]\n            },\n            \"serviceEndpoint\": {\n              \"clickTrackingParams\": \"CAMQ7G8iEwjjisXko_TwAhXvLPEFHXQqAHY\u003d\",\n              \"commandMetadata\": {\n                \"webCommandMetadata\": {\n                  \"sendPost\": true,\n                  \"apiUrl\": \"/youtubei/v1/feedback\"\n                }\n              },\n              \"feedbackEndpoint\": {\n                \"feedbackToken\": \"AB9zfpJ2HHshRp-10-HQpBISUJSuecn84paa_cbhdsF7e0iQ7W7SI46B7VZ5wsseIR705Gq8g7EYxFCdtAcffRZvhTOX74O1umLPN53NTQQ2bizD0L_FikzrH34SmNxFfAs3OISLb9po9SzkS4NkCv61_QEbRtUlcw\",\n                \"uiActions\": {\n                  \"hideEnclosingContainer\": true\n                }\n              }\n            },\n            \"navigationEndpoint\": {\n              \"clickTrackingParams\": \"CAMQ7G8iEwjjisXko_TwAhXvLPEFHXQqAHY\u003d\",\n              \"commandMetadata\": {\n                \"webCommandMetadata\": {\n                  \"url\": \"/premium?ybp\u003dEg9GRXdoYXRfdG9fd2F0Y2gqEmRtZWEtYWNxLWMtZWdzb1ZEZDoaCAYYASoUChJkbWVhLWFjcS1jLWVnc29WRGQ%253D\",\n                  \"webPageType\": \"WEB_PAGE_TYPE_BROWSE\",\n                  \"rootVe\": 11487,\n                  \"apiUrl\": \"/youtubei/v1/browse\"\n                }\n              },\n              \"browseEndpoint\": {\n                \"browseId\": \"SPunlimited\",\n                \"params\": \"kgNBEg9GRXdoYXRfdG9fd2F0Y2gqEmRtZWEtYWNxLWMtZWdzb1ZEZDoaCAYYASoUChJkbWVhLWFjcS1jLWVnc29WRGQ%3D\"\n              }\n            },\n            \"trackingParams\": \"CAMQ7G8iEwjjisXko_TwAhXvLPEFHXQqAHY\u003d\"\n          }\n        },\n        \"dismissButton\": {\n          \"buttonRenderer\": {\n            \"style\": \"STYLE_TEXT\",\n            \"size\": \"SIZE_DEFAULT\",\n            \"text\": {\n              \"runs\": [\n                {\n                  \"text\": \"Skip trial\"\n                }\n              ]\n            },\n            \"serviceEndpoint\": {\n              \"clickTrackingParams\": \"CAIQ7W8iEwjjisXko_TwAhXvLPEFHXQqAHY\u003d\",\n              \"commandMetadata\": {\n                \"webCommandMetadata\": {\n                  \"sendPost\": true,\n                  \"apiUrl\": \"/youtubei/v1/feedback\"\n                }\n              },\n              \"feedbackEndpoint\": {\n                \"feedbackToken\": \"AB9zfpIakS65f4QR8kk25FrZG-rFhj10CKQauYCYN3e5e436CzypaEdYLzckDpdZqirp5oxnB_hFQXoZzld0wFnyXp2yii9yehEa-Wn0sidLgzRzLAfjIjZc9fys8V20FU-66BF72KvMKMe0YwFIAo2omdcqRzIKwQ\",\n                \"uiActions\": {\n                  \"hideEnclosingContainer\": true\n                }\n              }\n            },\n            \"trackingParams\": \"CAIQ7W8iEwjjisXko_TwAhXvLPEFHXQqAHY\u003d\"\n          }\n        },\n        \"triggerCondition\": \"TRIGGER_CONDITION_POST_AD\",\n        \"style\": \"STYLE_MESSAGE\",\n        \"trackingParams\": \"CAEQ42kYACITCOOKxeSj9PACFe8s8QUddCoAdg\u003d\u003d\",\n        \"impressionEndpoints\": [\n          {\n            \"clickTrackingParams\": \"CAEQ42kYACITCOOKxeSj9PACFe8s8QUddCoAdg\u003d\u003d\",\n            \"commandMetadata\": {\n              \"webCommandMetadata\": {\n                \"sendPost\": true,\n                \"apiUrl\": \"/youtubei/v1/feedback\"\n              }\n            },\n            \"feedbackEndpoint\": {\n              \"feedbackToken\": \"AB9zfpJ-wXS3r1om6ZBbsgQNwb38eNp1dsKssjD3ZKE9RMvLMZH3o1pfrfN38zOE46XjsXpOaXoMGhurPqI6rp3_vuRLgmKYivY2ZX_RLBBoAG2QjmNnGaRRXzEtZJ76TBfLDNKkA1QcYnngJ-TuIYceT1zk2aMuqQ\",\n              \"uiActions\": {\n                \"hideEnclosingContainer\": false\n              }\n            }\n          }\n        ],\n        \"isVisible\": true,\n        \"messageTitle\": {\n          \"runs\": [\n            {\n              \"text\": \"Youtube Premium\"\n            }\n          ]\n        }\n      }\n    }\n  ]\n}\n",
+    "latestUrl": "https://www.youtube.com/youtubei/v1/player?key\u003dAIzaSyAO_FJ2SlqU8Q4STEHLGCilw_Y9_11qcW8"
+>>>>>>> 43ce1dc4 (Update mocks)
   }
 }

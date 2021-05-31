@@ -1,12 +1,156 @@
 {
   "request": {
+<<<<<<< HEAD
     "httpMethod": "GET",
     "url": "https://www.youtube.com/get_video_info?video_id\u003d_PL2HJKxnOM\u0026eurl\u003dhttps://youtube.googleapis.com/v/_PL2HJKxnOM\u0026html5\u003d1\u0026c\u003dTVHTML5\u0026cver\u003d6.20180913\u0026gl\u003dUS\u0026hl\u003den",
+=======
+    "httpMethod": "POST",
+    "url": "https://www.youtube.com/youtubei/v1/player?key\u003dAIzaSyAO_FJ2SlqU8Q4STEHLGCilw_Y9_11qcW8",
+>>>>>>> 43ce1dc4 (Update mocks)
     "headers": {
       "Accept-Language": [
         "en-GB, en;q\u003d0.9"
+      ],
+      "Origin": [
+        "https://www.youtube.com"
+      ],
+      "X-YouTube-Client-Name": [
+        "1"
+      ],
+      "Referer": [
+        "https://www.youtube.com"
+      ],
+      "X-YouTube-Client-Version": [
+        "2.20210526.07.00"
       ]
     },
+    "dataToSend": [
+      123,
+      34,
+      99,
+      111,
+      110,
+      116,
+      101,
+      120,
+      116,
+      34,
+      58,
+      123,
+      34,
+      99,
+      108,
+      105,
+      101,
+      110,
+      116,
+      34,
+      58,
+      123,
+      34,
+      104,
+      108,
+      34,
+      58,
+      34,
+      101,
+      110,
+      45,
+      71,
+      66,
+      34,
+      44,
+      34,
+      99,
+      108,
+      105,
+      101,
+      110,
+      116,
+      78,
+      97,
+      109,
+      101,
+      34,
+      58,
+      34,
+      87,
+      69,
+      66,
+      34,
+      44,
+      34,
+      103,
+      108,
+      34,
+      58,
+      34,
+      71,
+      66,
+      34,
+      44,
+      34,
+      99,
+      108,
+      105,
+      101,
+      110,
+      116,
+      86,
+      101,
+      114,
+      115,
+      105,
+      111,
+      110,
+      34,
+      58,
+      34,
+      50,
+      46,
+      50,
+      48,
+      50,
+      49,
+      48,
+      53,
+      50,
+      54,
+      46,
+      48,
+      55,
+      46,
+      48,
+      48,
+      34,
+      125,
+      125,
+      44,
+      34,
+      118,
+      105,
+      100,
+      101,
+      111,
+      73,
+      100,
+      34,
+      58,
+      34,
+      56,
+      86,
+      97,
+      106,
+      116,
+      114,
+      69,
+      83,
+      74,
+      122,
+      65,
+      34,
+      125
+    ],
     "localization": {
       "languageCode": "en",
       "countryCode": "GB"
@@ -20,12 +164,13 @@
         "h3\u003d\":443\"; ma\u003d2592000,h3-29\u003d\":443\"; ma\u003d2592000,h3-T051\u003d\":443\"; ma\u003d2592000,h3-Q050\u003d\":443\"; ma\u003d2592000,h3-Q046\u003d\":443\"; ma\u003d2592000,h3-Q043\u003d\":443\"; ma\u003d2592000,quic\u003d\":443\"; ma\u003d2592000; v\u003d\"46,43\""
       ],
       "cache-control": [
-        "no-store"
+        "private"
       ],
       "content-type": [
-        "application/x-www-form-urlencoded"
+        "application/json; charset\u003dUTF-8"
       ],
       "date": [
+<<<<<<< HEAD
 <<<<<<< HEAD
 <<<<<<< HEAD
 <<<<<<< HEAD
@@ -47,17 +192,21 @@
         "Fri, 30 Apr 2021 18:02:19 GMT"
 >>>>>>> 55bb1291 (Update mocks, reenable a test and fix a test)
 >>>>>>> d0dc7d69 (Update mocks, reenable a test and fix a test)
+=======
+        "Mon, 31 May 2021 15:54:23 GMT"
+>>>>>>> 43ce1dc4 (Update mocks)
       ],
       "expires": [
-        "Tue, 27 Apr 1971 19:44:06 GMT"
+        "Mon, 31 May 2021 15:54:23 GMT"
       ],
       "p3p": [
-        "CP\u003d\"This is not a P3P policy! See http://support.google.com/accounts/answer/151657?hl\u003den for more info.\""
+        "CP\u003d\"This is not a P3P policy! See g.co/p3phelp for more info.\""
       ],
       "server": [
-        "YouTube Frontend Proxy"
+        "ESF"
       ],
       "set-cookie": [
+<<<<<<< HEAD
 <<<<<<< HEAD
 <<<<<<< HEAD
 <<<<<<< HEAD
@@ -79,9 +228,14 @@
         "CONSENT\u003dPENDING+307; expires\u003dFri, 01-Jan-2038 00:00:00 GMT; path\u003d/; domain\u003d.youtube.com"
 >>>>>>> 55bb1291 (Update mocks, reenable a test and fix a test)
 >>>>>>> d0dc7d69 (Update mocks, reenable a test and fix a test)
+=======
+        "CONSENT\u003dPENDING+874; expires\u003dFri, 01-Jan-2038 00:00:00 GMT; path\u003d/; domain\u003d.youtube.com; Secure"
+>>>>>>> 43ce1dc4 (Update mocks)
       ],
-      "strict-transport-security": [
-        "max-age\u003d31536000"
+      "vary": [
+        "Origin",
+        "X-Origin",
+        "Referer"
       ],
       "x-content-type-options": [
         "nosniff"
@@ -93,6 +247,7 @@
         "0"
       ]
     },
+<<<<<<< HEAD
 <<<<<<< HEAD
 <<<<<<< HEAD
 <<<<<<< HEAD
@@ -115,5 +270,9 @@
     "latestUrl": "https://www.youtube.com/get_video_info?video_id\u003d8VajtrESJzA\u0026eurl\u003dhttps://youtube.googleapis.com/v/8VajtrESJzA\u0026sts\u003d\u0026ps\u003ddefault\u0026gl\u003dUS\u0026hl\u003den"
 >>>>>>> c43345ad (Update client version, fix some tests, update mocks and do some improvements)
 >>>>>>> f91072a8 (Update client version, fix some tests, update mocks and do some improvements)
+=======
+    "responseBody": "{\n  \"responseContext\": {\n    \"visitorData\": \"Cgsza0EwTUJLZUFRVSivjdSFBg%3D%3D\",\n    \"serviceTrackingParams\": [\n      {\n        \"service\": \"GFEEDBACK\",\n        \"params\": [\n          {\n            \"key\": \"is_viewed_live\",\n            \"value\": \"False\"\n          },\n          {\n            \"key\": \"logged_in\",\n            \"value\": \"0\"\n          },\n          {\n            \"key\": \"e\",\n            \"value\": \"23968386,24005802,23973490,1714249,24030992,24027649,24027133,24040786,24044575,24050722,23804281,23966208,24037806,23884386,23891346,24042870,23983296,24030040,23996830,23934970,23918597,24005646,24042868,23968099,24037794,23986016,23970529,24003104,24004644,24036085,24007246,23891344,24001373,23748146,23946420,24003106,23974595,24035275,23944779,23999405,23890959,23857949,23744176,23882503,24044658\"\n          }\n        ]\n      },\n      {\n        \"service\": \"CSI\",\n        \"params\": [\n          {\n            \"key\": \"c\",\n            \"value\": \"WEB\"\n          },\n          {\n            \"key\": \"cver\",\n            \"value\": \"2.20210526.07.00\"\n          },\n          {\n            \"key\": \"yt_li\",\n            \"value\": \"0\"\n          },\n          {\n            \"key\": \"GetPlayer_rid\",\n            \"value\": \"0x2559822bcfba81f4\"\n          }\n        ]\n      },\n      {\n        \"service\": \"GUIDED_HELP\",\n        \"params\": [\n          {\n            \"key\": \"logged_in\",\n            \"value\": \"0\"\n          }\n        ]\n      },\n      {\n        \"service\": \"ECATCHER\",\n        \"params\": [\n          {\n            \"key\": \"client.version\",\n            \"value\": \"2.20210526\"\n          },\n          {\n            \"key\": \"client.name\",\n            \"value\": \"WEB\"\n          }\n        ]\n      }\n    ],\n    \"mainAppWebResponseContext\": {\n      \"loggedOut\": true\n    },\n    \"webResponseContextExtensionData\": {\n      \"hasDecorated\": true\n    }\n  },\n  \"trackingParams\": \"CAAQu2kiEwj0mfrpo_TwAhUUiRYKHcD_AhI\u003d\",\n  \"playabilityStatus\": {\n    \"status\": \"LOGIN_REQUIRED\",\n    \"messages\": [\n      \"This is a private video. Please sign in to verify that you may see it.\"\n    ],\n    \"errorScreen\": {\n      \"playerErrorMessageRenderer\": {\n        \"subreason\": {\n          \"simpleText\": \"Sign in if you\u0027ve been granted access to this video\"\n        },\n        \"reason\": {\n          \"simpleText\": \"Private video\"\n        },\n        \"proceedButton\": {\n          \"buttonRenderer\": {\n            \"style\": \"STYLE_OVERLAY\",\n            \"size\": \"SIZE_DEFAULT\",\n            \"isDisabled\": false,\n            \"text\": {\n              \"simpleText\": \"Sign in\"\n            },\n            \"navigationEndpoint\": {\n              \"clickTrackingParams\": \"CAEQ8FsiEwj0mfrpo_TwAhUUiRYKHcD_AhI\u003d\",\n              \"commandMetadata\": {\n                \"webCommandMetadata\": {\n                  \"url\": \"https://accounts.google.com/ServiceLogin?service\u003dyoutube\u0026uilel\u003d3\u0026passive\u003dtrue\u0026continue\u003dhttps%3A%2F%2Fwww.youtube.com%2Fsignin%3Faction_handle_signin%3Dtrue%26app%3Ddesktop%26hl%3Den-GB\u0026hl\u003den-GB\",\n                  \"webPageType\": \"WEB_PAGE_TYPE_UNKNOWN\",\n                  \"rootVe\": 83769\n                }\n              },\n              \"signInEndpoint\": {\n                \"nextEndpoint\": {\n                  \"clickTrackingParams\": \"CAEQ8FsiEwj0mfrpo_TwAhUUiRYKHcD_AhI\u003d\",\n                  \"urlEndpoint\": {\n                    \"url\": \"\"\n                  }\n                }\n              }\n            },\n            \"trackingParams\": \"CAEQ8FsiEwj0mfrpo_TwAhUUiRYKHcD_AhI\u003d\"\n          }\n        },\n        \"thumbnail\": {\n          \"thumbnails\": [\n            {\n              \"url\": \"//s.ytimg.com/yts/img/meh7-vflGevej7.png\",\n              \"width\": 140,\n              \"height\": 100\n            }\n          ]\n        },\n        \"icon\": {\n          \"iconType\": \"ERROR_OUTLINE\"\n        }\n      }\n    },\n    \"contextParams\": \"Q0FBU0FnZ0E\u003d\"\n  }\n}\n",
+    "latestUrl": "https://www.youtube.com/youtubei/v1/player?key\u003dAIzaSyAO_FJ2SlqU8Q4STEHLGCilw_Y9_11qcW8"
+>>>>>>> 43ce1dc4 (Update mocks)
   }
 }

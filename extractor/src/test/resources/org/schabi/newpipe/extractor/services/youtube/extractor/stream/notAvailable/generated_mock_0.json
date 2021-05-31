@@ -1,16 +1,22 @@
 {
   "request": {
     "httpMethod": "POST",
-    "url": "https://youtubei.googleapis.com/youtubei/v1/guide?key\u003dAIzaSyAO_FJ2SlqU8Q4STEHLGCilw_Y9_11qcW8",
+    "url": "https://www.youtube.com/youtubei/v1/player?key\u003dAIzaSyAO_FJ2SlqU8Q4STEHLGCilw_Y9_11qcW8",
     "headers": {
       "Accept-Language": [
         "en-GB, en;q\u003d0.9"
       ],
+      "Origin": [
+        "https://www.youtube.com"
+      ],
       "X-YouTube-Client-Name": [
         "1"
       ],
+      "Referer": [
+        "https://www.youtube.com"
+      ],
       "X-YouTube-Client-Version": [
-        "2.20210429.07.00"
+        "2.20210526.07.00"
       ]
     },
     "dataToSend": [
@@ -44,14 +50,7 @@
       34,
       101,
       110,
-      34,
-      44,
-      34,
-      103,
-      108,
-      34,
-      58,
-      34,
+      45,
       71,
       66,
       34,
@@ -70,7 +69,19 @@
       34,
       58,
       34,
-      49,
+      87,
+      69,
+      66,
+      34,
+      44,
+      34,
+      103,
+      108,
+      34,
+      58,
+      34,
+      71,
+      66,
       34,
       44,
       34,
@@ -97,9 +108,9 @@
       50,
       49,
       48,
-      52,
+      53,
       50,
-      57,
+      54,
       46,
       48,
       55,
@@ -109,6 +120,30 @@
       34,
       125,
       125,
+      44,
+      34,
+      118,
+      105,
+      100,
+      101,
+      111,
+      73,
+      100,
+      34,
+      58,
+      34,
+      73,
+      78,
+      86,
+      65,
+      76,
+      73,
+      68,
+      95,
+      73,
+      68,
+      95,
+      34,
       125
     ],
     "localization": {
@@ -133,6 +168,7 @@
 <<<<<<< HEAD
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
         "Wed, 23 Jun 2021 10:12:05 GMT"
 =======
         "Sun, 30 May 2021 16:16:20 GMT"
@@ -151,27 +187,21 @@
         "Fri, 30 Apr 2021 18:02:16 GMT"
 >>>>>>> 55bb1291 (Update mocks, reenable a test and fix a test)
 >>>>>>> d0dc7d69 (Update mocks, reenable a test and fix a test)
+=======
+        "Mon, 31 May 2021 15:54:17 GMT"
+>>>>>>> 43ce1dc4 (Update mocks)
       ],
       "expires": [
-        "Fri, 30 Apr 2021 18:02:16 GMT"
+        "Mon, 31 May 2021 15:54:17 GMT"
       ],
       "p3p": [
-<<<<<<< HEAD
-        "CP\u003d\"This is not a P3P policy! See http://support.google.com/accounts/answer/151657?hl\u003den-GB for more info.\""
-      ],
-      "permissions-policy": [
-        "ch-ua-full-version\u003d*, ch-ua-platform\u003d*, ch-ua-platform-version\u003d*, ch-ua-arch\u003d*, ch-ua-model\u003d*"
-      ],
-      "pragma": [
-        "no-cache"
-=======
         "CP\u003d\"This is not a P3P policy! See g.co/p3phelp for more info.\""
->>>>>>> c43345ad (Update client version, fix some tests, update mocks and do some improvements)
       ],
       "server": [
         "ESF"
       ],
       "set-cookie": [
+<<<<<<< HEAD
 <<<<<<< HEAD
 <<<<<<< HEAD
 <<<<<<< HEAD
@@ -197,13 +227,15 @@
       ],
       "transfer-encoding": [
         "chunked"
+=======
+        "CONSENT\u003dPENDING+459; expires\u003dFri, 01-Jan-2038 00:00:00 GMT; path\u003d/; domain\u003d.youtube.com; Secure"
+>>>>>>> 43ce1dc4 (Update mocks)
       ],
       "vary": [
         "Origin",
         "X-Origin",
         "Referer"
       ],
->>>>>>> c43345ad (Update client version, fix some tests, update mocks and do some improvements)
       "x-content-type-options": [
         "nosniff"
       ],
@@ -214,6 +246,7 @@
         "0"
       ]
     },
+<<<<<<< HEAD
 <<<<<<< HEAD
 <<<<<<< HEAD
 <<<<<<< HEAD
@@ -233,5 +266,9 @@
 >>>>>>> 55bb1291 (Update mocks, reenable a test and fix a test)
     "latestUrl": "https://youtubei.googleapis.com/youtubei/v1/guide?key\u003dAIzaSyAO_FJ2SlqU8Q4STEHLGCilw_Y9_11qcW8"
 >>>>>>> c43345ad (Update client version, fix some tests, update mocks and do some improvements)
+=======
+    "responseBody": "{\n  \"responseContext\": {\n    \"visitorData\": \"CgthUW4za2xGSG1iQSipjdSFBg%3D%3D\",\n    \"serviceTrackingParams\": [\n      {\n        \"service\": \"GFEEDBACK\",\n        \"params\": [\n          {\n            \"key\": \"is_viewed_live\",\n            \"value\": \"False\"\n          },\n          {\n            \"key\": \"logged_in\",\n            \"value\": \"0\"\n          },\n          {\n            \"key\": \"e\",\n            \"value\": \"23748147,24007246,24003104,23999406,23918597,24040786,24030040,24001373,23804281,23946420,23973490,23968386,24004644,23882502,23884386,23996830,9405987,23857949,23983296,23986021,24044659,24037806,23891346,23970529,23966208,23968099,24027133,24050722,24042868,24037794,24030992,24044575,24042870,23944779,24027649,1714254,23891344,24035275,24005802,24005646,24043529,23744176,23974595,23890959,23934970\"\n          }\n        ]\n      },\n      {\n        \"service\": \"CSI\",\n        \"params\": [\n          {\n            \"key\": \"c\",\n            \"value\": \"WEB\"\n          },\n          {\n            \"key\": \"cver\",\n            \"value\": \"2.20210526.07.00\"\n          },\n          {\n            \"key\": \"yt_li\",\n            \"value\": \"0\"\n          },\n          {\n            \"key\": \"GetPlayer_rid\",\n            \"value\": \"0xe7a7ed0680360232\"\n          }\n        ]\n      },\n      {\n        \"service\": \"GUIDED_HELP\",\n        \"params\": [\n          {\n            \"key\": \"logged_in\",\n            \"value\": \"0\"\n          }\n        ]\n      },\n      {\n        \"service\": \"ECATCHER\",\n        \"params\": [\n          {\n            \"key\": \"client.version\",\n            \"value\": \"2.20210526\"\n          },\n          {\n            \"key\": \"client.name\",\n            \"value\": \"WEB\"\n          }\n        ]\n      }\n    ],\n    \"mainAppWebResponseContext\": {\n      \"loggedOut\": true\n    },\n    \"webResponseContextExtensionData\": {\n      \"hasDecorated\": true\n    }\n  },\n  \"trackingParams\": \"CAAQu2kiEwjQwJzno_TwAhVMCPEFHRRwBmw\u003d\",\n  \"playabilityStatus\": {\n    \"status\": \"ERROR\",\n    \"reason\": \"Video unavailable\",\n    \"errorScreen\": {\n      \"playerErrorMessageRenderer\": {\n        \"reason\": {\n          \"simpleText\": \"Video unavailable\"\n        },\n        \"thumbnail\": {\n          \"thumbnails\": [\n            {\n              \"url\": \"//s.ytimg.com/yts/img/meh7-vflGevej7.png\",\n              \"width\": 140,\n              \"height\": 100\n            }\n          ]\n        },\n        \"icon\": {\n          \"iconType\": \"ERROR_OUTLINE\"\n        }\n      }\n    },\n    \"contextParams\": \"Q0FBU0FnZ0E\u003d\"\n  }\n}\n",
+    "latestUrl": "https://www.youtube.com/youtubei/v1/player?key\u003dAIzaSyAO_FJ2SlqU8Q4STEHLGCilw_Y9_11qcW8"
+>>>>>>> 43ce1dc4 (Update mocks)
   }
 }
