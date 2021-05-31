@@ -146,7 +146,7 @@ public class YoutubeChannelExtractor extends ChannelExtractor {
             if (!isNullOrEmpty(jsonResponse.getObject("error"))) {
                 final int errorCode = jsonResponse.getObject("error").getInt("code");
                 if (errorCode == 400) {
-                    throw new ContentNotAvailableException("This channel doesn't exists");
+                    throw new ContentNotAvailableException("This channel doesn't exist.");
                 } else {
                     throw new ContentNotAvailableException("Got error:\""
                             + jsonResponse.getString("status") + "\""
