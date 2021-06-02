@@ -376,10 +376,10 @@
         "application/json; charset\u003dUTF-8"
       ],
       "date": [
-        "Mon, 31 May 2021 15:55:09 GMT"
+        "Wed, 02 Jun 2021 17:44:42 GMT"
       ],
       "expires": [
-        "Mon, 31 May 2021 15:55:09 GMT"
+        "Wed, 02 Jun 2021 17:44:42 GMT"
       ],
       "p3p": [
         "CP\u003d\"This is not a P3P policy! See g.co/p3phelp for more info.\""
@@ -388,7 +388,7 @@
         "ESF"
       ],
       "set-cookie": [
-        "CONSENT\u003dPENDING+330; expires\u003dFri, 01-Jan-2038 00:00:00 GMT; path\u003d/; domain\u003d.youtube.com; Secure"
+        "CONSENT\u003dPENDING+944; expires\u003dFri, 01-Jan-2038 00:00:00 GMT; path\u003d/; domain\u003d.youtube.com; Secure"
       ],
       "vary": [
         "Origin",
@@ -405,7 +405,7 @@
         "0"
       ]
     },
-    "responseBody": "{\n  \"responseContext\": {\n    \"visitorData\": \"Cgs3M1ZhX3c1LVY2SSjdjdSFBg%3D%3D\",\n    \"serviceTrackingParams\": [\n      {\n        \"service\": \"CSI\",\n        \"params\": [\n          {\n            \"key\": \"c\",\n            \"value\": \"WEB_REMIX\"\n          },\n          {\n            \"key\": \"cver\",\n            \"value\": \"0.1\"\n          },\n          {\n            \"key\": \"yt_li\",\n            \"value\": \"0\"\n          },\n          {\n            \"key\": \"GetMusicSearchSuggestions_rid\",\n            \"value\": \"0xfa1631907cbb4a95\"\n          }\n        ]\n      },\n      {\n        \"service\": \"GFEEDBACK\",\n        \"params\": [\n          {\n            \"key\": \"logged_in\",\n            \"value\": \"0\"\n          },\n          {\n            \"key\": \"e\",\n            \"value\": \"24037794,24027649,23735347,23975650,23998581,24044135,23744530,24030992,24003104,24027133,23857949,23940238,24001803,24043529,24036948,23968386,24005802,24036086,24048461,24050631,24035275,9466591,23996830,24021255,23973490,23882503,23983296,23944779,23918597,24040786,23886487,23744176,24044575,24042870,23934970,24050722,24032482,24590455,24042868,23968099,23891344,23946420,24001373,23804281,24003106,24004644,24011648,24030040,24590263,24038431,1714245,23966208,24007246,23891346,24037806,24013932,24050414,24022729,23884386,23999405,24044007,23974595,24049789\"\n          }\n        ]\n      },\n      {\n        \"service\": \"ECATCHER\",\n        \"params\": [\n          {\n            \"key\": \"client.version\",\n            \"value\": \"0.1\"\n          },\n          {\n            \"key\": \"client.name\",\n            \"value\": \"WEB_REMIX\"\n          }\n        ]\n      }\n    ]\n  },\n  \"trackingParams\": \"CAAQi24iEwjyoPz_o_TwAhUV4tUKHWXABG0\u003d\"\n}\n",
+    "responseBody": "{\n  \"responseContext\": {\n    \"visitorData\": \"CgtpQU8xVFN6bXF5cyiKh9-FBg%3D%3D\",\n    \"serviceTrackingParams\": [\n      {\n        \"service\": \"CSI\",\n        \"params\": [\n          {\n            \"key\": \"c\",\n            \"value\": \"WEB_REMIX\"\n          },\n          {\n            \"key\": \"cver\",\n            \"value\": \"0.1\"\n          },\n          {\n            \"key\": \"yt_li\",\n            \"value\": \"0\"\n          },\n          {\n            \"key\": \"GetMusicSearchSuggestions_rid\",\n            \"value\": \"0xbb6704269a0a3963\"\n          }\n        ]\n      },\n      {\n        \"service\": \"GFEEDBACK\",\n        \"params\": [\n          {\n            \"key\": \"logged_in\",\n            \"value\": \"0\"\n          },\n          {\n            \"key\": \"e\",\n            \"value\": \"24003104,24021255,24007246,23882503,23918597,23821391,23885790,23744176,23934970,24010466,23974595,23998056,24012512,23944779,24027133,23968386,24001373,24011648,24004644,24050633,23940238,24035275,24029394,24040786,24044575,24037794,24027649,24042870,1714242,24044006,23991736,23891346,24044134,23983296,24036085,24042868,23968099,23966208,24037806,24048460,23946420,23958154,24030040,23804281,23884386,23990876,24038875,24005205,24005802,24052121,23996830,23891344\"\n          }\n        ]\n      },\n      {\n        \"service\": \"ECATCHER\",\n        \"params\": [\n          {\n            \"key\": \"client.version\",\n            \"value\": \"0.1\"\n          },\n          {\n            \"key\": \"client.name\",\n            \"value\": \"WEB_REMIX\"\n          }\n        ]\n      }\n    ]\n  },\n  \"trackingParams\": \"CAAQi24iEwjamPqbwPnwAhXbEQYAHdPMCJ0\u003d\"\n}\n",
     "latestUrl": "https://music.youtube.com/youtubei/v1/music/get_search_suggestions?alt\u003djson\u0026key\u003dAIzaSyC9XL3ZjWddXya6X74dJoCTL-WEYFDNX30"
   }
 }

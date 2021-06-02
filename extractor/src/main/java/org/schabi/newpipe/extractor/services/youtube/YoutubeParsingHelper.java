@@ -66,7 +66,7 @@ public class YoutubeParsingHelper {
 
     public static final String YOUTUBEI_V1_URL = "https://www.youtube.com/youtubei/v1/";
 
-    private static final String HARDCODED_CLIENT_VERSION = "2.20210526.07.00";
+    private static final String HARDCODED_CLIENT_VERSION = "2.20210601.07.00";
     private static final String HARDCODED_KEY = "AIzaSyAO_FJ2SlqU8Q4STEHLGCilw_Y9_11qcW8";
     private static final String[] MOBILE_YOUTUBE_KEYS = {"AIzaSyA8eiZmM1FaDVjRy-df2KTyQ_vz_yYM39w",
             "16.20.35"};
