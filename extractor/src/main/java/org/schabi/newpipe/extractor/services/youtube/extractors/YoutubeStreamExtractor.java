@@ -320,9 +320,22 @@ public class YoutubeStreamExtractor extends StreamExtractor {
 
     @Override
     public long getViewCount() throws ParsingException {
-        assertPageFetched();
-        final String views = playerResponse.getObject("videoDetails").getString("viewCount");
-        if (isNullOrEmpty(views)) throw new ParsingException("Could not get view count");
+        String views = null;
+
+        try {
+            views = getTextFromObject(getVideoPrimaryInfoRenderer().getObject("viewCount")
+                    .getObject("videoViewCountRenderer").getObject("viewCount"));
+        } catch (final ParsingException ignored) {
+            // Age-restricted videos cause a ParsingException here
+        }
+
+        if (isNullOrEmpty(views)) {
+            views = playerResponse.getObject("videoDetails").getString("viewCount");
+
+            if (isNullOrEmpty(views)) throw new ParsingException("Could not get view count");
+        }
+
+        if (views.toLowerCase().contains("no views")) return 0;
 
         return Long.parseLong(Utils.removeNonDigitCharacters(views));
     }
