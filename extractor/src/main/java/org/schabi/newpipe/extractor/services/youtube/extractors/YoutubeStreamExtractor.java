@@ -131,7 +131,7 @@ public class YoutubeStreamExtractor extends StreamExtractor {
         try {
             title = getTextFromObject(getVideoPrimaryInfoRenderer().getObject("title"));
         } catch (final ParsingException ignored) {
-            // age-restricted videos cause a ParsingException here
+            // Age-restricted videos cause a ParsingException here
         }
 
         if (isNullOrEmpty(title)) {
@@ -605,7 +605,7 @@ public class YoutubeStreamExtractor extends StreamExtractor {
     @Nonnull
     public List<SubtitlesStream> getSubtitles(final MediaFormat format) throws ParsingException {
         assertPageFetched();
-        // If the video is age restricted getSubtitles will fail
+        // If the video is age-restricted getSubtitles will fail
         if (getAgeLimit() != NO_AGE_LIMIT) {
             return Collections.emptyList();
         }
@@ -846,7 +846,7 @@ public class YoutubeStreamExtractor extends StreamExtractor {
             // download it again only if we didn't have a signatureTimestamp before fetching the
             // data of this video (the sts string).
             if (!stsKnown && isCipherProtectedContent()) {
-                sts = getStsFromPlayerJs();
+                getStsFromPlayerJs();
                 final JsonObject playerResponseWithSignatureTimestamp = getJsonPostResponse(
                         "player", createPlayerBodyWithSts(localization, contentCountry, videoId),
                         localization);
@@ -860,7 +860,7 @@ public class YoutubeStreamExtractor extends StreamExtractor {
 
     private void fetchVideoInfoPage() throws ParsingException, ReCaptchaException, IOException {
         if (sts == null) {
-            sts = getStsFromPlayerJs();
+            getStsFromPlayerJs();
         }
         final String videoInfoUrl = getVideoInfoUrl(getId(), sts);
         final String infoPageResponse = NewPipe.getDownloader()
@@ -1024,26 +1024,20 @@ public class YoutubeStreamExtractor extends StreamExtractor {
     @Nonnull
     private String getDeobfuscationCode() throws ParsingException {
         if (cachedDeobfuscationCode == null) {
-            if (playerCode == null) {
-                storePlayerJs();
-                if (playerCode == null) {
-                    throw new ParsingException("Could not get YouTube's JavaScript player");
-                }
-            }
+            if (isNullOrEmpty(playerCode)) throw new ParsingException("playerCode is null");
 
             cachedDeobfuscationCode = loadDeobfuscationCode();
         }
         return cachedDeobfuscationCode;
     }
 
-    private String getStsFromPlayerJs() throws ParsingException {
-        if (!isNullOrEmpty(sts)) return sts;
+    private void getStsFromPlayerJs() throws ParsingException {
+        if (!isNullOrEmpty(sts)) return;
         if (playerCode == null) {
             storePlayerJs();
             if (playerCode == null) throw new ParsingException("playerCode is null");
         }
         sts = Parser.matchGroup1(STS_REGEX, playerCode);
-        return sts;
     }
 
     private String deobfuscateSignature(final String obfuscatedSig) throws ParsingException {
