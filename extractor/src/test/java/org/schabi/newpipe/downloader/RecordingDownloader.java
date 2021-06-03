@@ -8,8 +8,10 @@ import org.schabi.newpipe.extractor.downloader.Response;
 import org.schabi.newpipe.extractor.exceptions.ReCaptchaException;
 
 import java.io.File;
-import java.io.FileWriter;
+import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.OutputStreamWriter;
+import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -18,7 +20,8 @@ import javax.annotation.Nonnull;
 
 /**
  * <p>
- * Relays requests to {@link DownloaderTestImpl} and saves the request/response pair into a json file.
+ * Relays requests to {@link DownloaderTestImpl} and saves the request/response pair into a json
+ * file.
  * </p>
  * <p>
  * Those files are used by {@link MockDownloader}.
@@ -44,12 +47,12 @@ class RecordingDownloader extends Downloader {
      * Deletes existing files starting with {@link RecordingDownloader#FILE_NAME_PREFIX}.
      * @param stringPath Path to the folder where the json files will be saved to.
      */
-    public RecordingDownloader(String stringPath) throws IOException {
+    public RecordingDownloader(final String stringPath) throws IOException {
         this.path = stringPath;
-        Path path = Paths.get(stringPath);
-        File folder = path.toFile();
+        final Path path = Paths.get(stringPath);
+        final File folder = path.toFile();
         if (folder.exists()) {
-            for (File file : folder.listFiles()) {
+            for (final File file : folder.listFiles()) {
                 if (file.getName().startsWith(RecordingDownloader.FILE_NAME_PREFIX)) {
                     file.delete();
                 }
@@ -60,14 +63,17 @@ class RecordingDownloader extends Downloader {
     }
 
     @Override
-    public Response execute(@Nonnull Request request) throws IOException, ReCaptchaException {
-        Downloader downloader = DownloaderTestImpl.getInstance();
-        Response response = downloader.execute(request);
+    public Response execute(@Nonnull final Request request) throws IOException,
+            ReCaptchaException {
+        final Downloader downloader = DownloaderTestImpl.getInstance();
+        final Response response = downloader.execute(request);
 
-        File outputFile = new File(path + File.separator + FILE_NAME_PREFIX + index + ".json");
+        final File outputFile = new File(path + File.separator + FILE_NAME_PREFIX + index
+                + ".json");
         index++;
         outputFile.createNewFile();
-        FileWriter writer = new FileWriter(outputFile);
+        final OutputStreamWriter writer = new OutputStreamWriter(new FileOutputStream(outputFile),
+                StandardCharsets.UTF_8);
         new GsonBuilder()
                 .setPrettyPrinting()
                 .create()
