@@ -7,8 +7,10 @@ import org.schabi.newpipe.extractor.downloader.Request;
 import org.schabi.newpipe.extractor.downloader.Response;
 
 import java.io.File;
-import java.io.FileReader;
+import java.io.FileInputStream;
+import java.io.InputStreamReader;
 import java.io.IOException;
+import java.nio.charset.StandardCharsets;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -24,14 +26,15 @@ class MockDownloader extends Downloader {
     private final String path;
     private final Map<Request, Response> mocks;
 
-    public MockDownloader(@Nonnull String path) throws IOException {
+    public MockDownloader(@Nonnull final String path) throws IOException {
         this.path = path;
         this.mocks = new HashMap<>();
         final File[] files = new File(path).listFiles();
         if (files != null) {
-            for (File file : files) {
+            for (final File file : files) {
                 if (file.getName().startsWith(RecordingDownloader.FILE_NAME_PREFIX)) {
-                    final FileReader reader = new FileReader(file);
+                    final InputStreamReader reader = new InputStreamReader(new FileInputStream(
+                            file), StandardCharsets.UTF_8);
                     final TestRequestResponse response = new GsonBuilder()
                             .create()
                             .fromJson(reader, TestRequestResponse.class);
@@ -43,12 +46,12 @@ class MockDownloader extends Downloader {
     }
 
     @Override
-    public Response execute(@Nonnull Request request) {
-        Response result = mocks.get(request);
+    public Response execute(@Nonnull final Request request) {
+        final Response result = mocks.get(request);
         if (result == null) {
-            throw new NullPointerException("No mock response for request with url '" + request.url()
-                    + "' exists in path '" + path + "'.\nPlease make sure to run the tests with " +
-                    "the RecordingDownloader first after changes.");
+            throw new NullPointerException("No mock response for request with url '" + request
+                    .url() + "' exists in path '" + path + "'.\nPlease make sure to run the tests "
+                    + "with the RecordingDownloader first after changes.");
         }
         return result;
     }
