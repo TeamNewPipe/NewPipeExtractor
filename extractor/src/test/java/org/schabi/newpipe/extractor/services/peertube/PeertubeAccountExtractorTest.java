@@ -102,7 +102,7 @@ public class PeertubeAccountExtractorTest {
 
         @Test
         public void testSubscriberCount() throws ParsingException {
-            assertTrue("Wrong subscriber count", extractor.getSubscriberCount() >= 750);
+            assertTrue("Wrong subscriber count", extractor.getSubscriberCount() >= 700);
         }
 
         @Override
