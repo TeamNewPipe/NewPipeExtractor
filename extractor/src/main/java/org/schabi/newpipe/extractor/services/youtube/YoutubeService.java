@@ -176,6 +176,11 @@ public class YoutubeService extends StreamingService {
     }
 
     @Override
+    public StreamExtractor getStreamExtractor(String url) throws ExtractionException {
+        return super.getStreamExtractor(url);
+    }
+
+    @Override
     public CommentsExtractor getCommentsExtractor(ListLinkHandler urlIdHandler)
             throws ExtractionException {
         return new YoutubeCommentsExtractor(this, urlIdHandler);

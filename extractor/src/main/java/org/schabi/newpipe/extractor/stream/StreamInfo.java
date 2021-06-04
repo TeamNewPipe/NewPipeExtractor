@@ -335,6 +335,12 @@ public class StreamInfo extends Info {
             streamInfo.addError(e);
         }
 
+        try {
+            streamInfo.setFrames(extractor.getFrames());
+        } catch (Exception e) {
+            streamInfo.addError(e);
+        }
+
         streamInfo.setRelatedItems(ExtractorHelper.getRelatedItemsOrLogError(streamInfo, extractor));
 
         return streamInfo;
@@ -385,6 +391,11 @@ public class StreamInfo extends Info {
     private List<String> tags = new ArrayList<>();
     private List<StreamSegment> streamSegments = new ArrayList<>();
     private List<MetaInfo> metaInfo = new ArrayList<>();
+
+    /**
+     * Frames, e.g. for the storyboard / seekbar thumbnail preview
+     */
+    private List<Frameset> frames = new ArrayList<>();
 
     /**
      * Get the stream type
@@ -709,6 +720,14 @@ public class StreamInfo extends Info {
 
     public void setMetaInfo(final List<MetaInfo> metaInfo) {
         this.metaInfo = metaInfo;
+    }
+
+    public List<Frameset> getFrames() {
+        return frames;
+    }
+
+    public void setFrames(List<Frameset> frames) {
+        this.frames = frames;
     }
 
     @Nonnull
