@@ -401,15 +401,15 @@ public class YoutubeParsingHelper {
 
         try {
             key = Parser.matchGroup1("INNERTUBE_API_KEY\":\"([0-9a-zA-Z_-]+?)\"", html);
-            keyAndVersionExtracted = true;
-        } catch (final Parser.RegexException e) {
+        } catch (final Parser.RegexException e1) {
             try {
                 key = Parser.matchGroup1("innertubeApiKey\":\"([0-9a-zA-Z_-]+?)\"", html);
-                keyAndVersionExtracted = true;
-            } catch (final Parser.RegexException ignored) {
+            } catch (final Parser.RegexException e2) {
+                keyAndVersionExtracted = false;
+                throw new ParsingException("Could not extract client version and key");
             }
         }
-        keyAndVersionExtracted = false;
+        keyAndVersionExtracted = true;
     }
 
     /**
@@ -422,7 +422,6 @@ public class YoutubeParsingHelper {
         }
 
         if (!keyAndVersionExtracted) extractClientVersionAndKey();
-        if (isNullOrEmpty(key)) throw new ParsingException("Could not extract client version");
         return clientVersion;
     }
 
@@ -434,7 +433,6 @@ public class YoutubeParsingHelper {
         if (areHardcodedClientVersionAndKeyValid()) return key = HARDCODED_KEY;
 
         if (!keyAndVersionExtracted) extractClientVersionAndKey();
-        if (isNullOrEmpty(key)) throw new ParsingException("Could not extract key");
         return key;
     }
 
