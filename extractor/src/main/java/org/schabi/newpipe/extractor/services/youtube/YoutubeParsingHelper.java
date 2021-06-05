@@ -68,12 +68,12 @@ public class YoutubeParsingHelper {
 
     private static final String HARDCODED_CLIENT_VERSION = "2.20210601.07.00";
     private static final String HARDCODED_KEY = "AIzaSyAO_FJ2SlqU8Q4STEHLGCilw_Y9_11qcW8";
-    private static final String[] MOBILE_YOUTUBE_KEYS = {"AIzaSyA8eiZmM1FaDVjRy-df2KTyQ_vz_yYM39w",
-            "16.20.35"};
+    private static final String MOBILE_YOUTUBE_KEY = "AIzaSyA8eiZmM1FaDVjRy-df2KTyQ_vz_yYM39w";
+    private static final String MOBILE_YOUTUBE_CLIENT_VERSION = "16.20.36";
     private static String clientVersion;
     private static String key;
 
-    private static final String[] HARDCODED_YOUTUBE_MUSIC_KEYS =
+    private static final String[] HARDCODED_YOUTUBE_MUSIC_KEY =
             {"AIzaSyC9XL3ZjWddXya6X74dJoCTL-WEYFDNX30", "67", "0.1"};
     private static String[] youtubeMusicKeys;
 
@@ -401,13 +401,15 @@ public class YoutubeParsingHelper {
 
         try {
             key = Parser.matchGroup1("INNERTUBE_API_KEY\":\"([0-9a-zA-Z_-]+?)\"", html);
+            keyAndVersionExtracted = true;
         } catch (final Parser.RegexException e) {
             try {
                 key = Parser.matchGroup1("innertubeApiKey\":\"([0-9a-zA-Z_-]+?)\"", html);
+                keyAndVersionExtracted = true;
             } catch (final Parser.RegexException ignored) {
             }
         }
-        keyAndVersionExtracted = true;
+        keyAndVersionExtracted = false;
     }
 
     /**
@@ -469,7 +471,7 @@ public class YoutubeParsingHelper {
             ReCaptchaException {
         final String url =
                 "https://music.youtube.com/youtubei/v1/music/get_search_suggestions?alt=json&key="
-                + HARDCODED_YOUTUBE_MUSIC_KEYS[0];
+                + HARDCODED_YOUTUBE_MUSIC_KEY[0];
 
         // @formatter:off
         byte[] json = JsonWriter.string()
@@ -477,7 +479,7 @@ public class YoutubeParsingHelper {
                 .object("context")
                     .object("client")
                         .value("clientName", "WEB_REMIX")
-                        .value("clientVersion", HARDCODED_YOUTUBE_MUSIC_KEYS[2])
+                        .value("clientVersion", HARDCODED_YOUTUBE_MUSIC_KEY[2])
                         .value("hl", "en-GB")
                         .value("gl", "GB")
                         .array("experimentIds").end()
@@ -502,9 +504,9 @@ public class YoutubeParsingHelper {
 
         final Map<String, List<String>> headers = new HashMap<>();
         headers.put("X-YouTube-Client-Name", Collections.singletonList(
-                HARDCODED_YOUTUBE_MUSIC_KEYS[1]));
+                HARDCODED_YOUTUBE_MUSIC_KEY[1]));
         headers.put("X-YouTube-Client-Version", Collections.singletonList(
-                HARDCODED_YOUTUBE_MUSIC_KEYS[2]));
+                HARDCODED_YOUTUBE_MUSIC_KEY[2]));
         headers.put("Origin", Collections.singletonList("https://music.youtube.com"));
         headers.put("Referer", Collections.singletonList("music.youtube.com"));
         headers.put("Content-Type", Collections.singletonList("application/json"));
@@ -520,7 +522,7 @@ public class YoutubeParsingHelper {
             Parser.RegexException {
         if (youtubeMusicKeys != null && youtubeMusicKeys.length == 3) return youtubeMusicKeys;
         if (areHardcodedYoutubeMusicKeysValid()) {
-            return youtubeMusicKeys = HARDCODED_YOUTUBE_MUSIC_KEYS;
+            return youtubeMusicKeys = HARDCODED_YOUTUBE_MUSIC_KEY;
         }
 
         final String url = "https://music.youtube.com/";
@@ -756,13 +758,13 @@ public class YoutubeParsingHelper {
         headers.put("Content-Type", Collections.singletonList("application/json"));
         // Spoofing an Android 11 device with the hardcoded version of the Android app
         headers.put("User-Agent", Collections.singletonList("com.google.android.youtube/"
-                + MOBILE_YOUTUBE_KEYS[1] + "Linux; U; Android 11; "
+                + MOBILE_YOUTUBE_CLIENT_VERSION + "Linux; U; Android 11; "
                 + contentCountry.getCountryCode() + ") gzip"));
         headers.put("x-goog-api-format-version", Collections.singletonList("2"));
 
         final Response response = getDownloader().post(
                 "https://youtubei.googleapis.com/youtubei/v1/" + endpoint + "?key="
-                        + MOBILE_YOUTUBE_KEYS[0], headers, body, localization);
+                        + MOBILE_YOUTUBE_KEY, headers, body, localization);
 
         return JsonUtils.toJsonObject(getValidJsonResponseBody(response));
     }
@@ -812,7 +814,7 @@ public class YoutubeParsingHelper {
                 .object("context")
                     .object("client")
                         .value("clientName", "ANDROID")
-                        .value("clientVersion", MOBILE_YOUTUBE_KEYS[1])
+                        .value("clientVersion", MOBILE_YOUTUBE_CLIENT_VERSION)
                         .value("hl", localization.getLocalizationCode())
                         .value("gl", contentCountry.getCountryCode())
                     .end()
