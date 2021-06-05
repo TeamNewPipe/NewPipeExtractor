@@ -99,7 +99,6 @@ public class NewPipe {
 
     public static int getIdOfService(String serviceName) {
         try {
-            //noinspection ConstantConditions
             return getService(serviceName).getServiceId();
         } catch (ExtractionException ignored) {
             return -1;
@@ -108,7 +107,6 @@ public class NewPipe {
 
     public static String getNameOfService(int id) {
         try {
-            //noinspection ConstantConditions
             return getService(id).getServiceInfo().getName();
         } catch (Exception e) {
             System.err.println("Service id not known");
