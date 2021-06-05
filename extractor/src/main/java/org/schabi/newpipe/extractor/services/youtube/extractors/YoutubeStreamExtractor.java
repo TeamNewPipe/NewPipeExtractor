@@ -93,11 +93,11 @@ public class YoutubeStreamExtractor extends StreamExtractor {
     @Nullable
     private static String cachedDeobfuscationCode = null;
     @Nullable
-    private String playerJsUrl = null;
+    private static String playerJsUrl = null;
     @Nullable
-    private String sts = null;
+    private static String sts = null;
     @Nullable
-    private String playerCode = null;
+    private static String playerCode = null;
 
     @Nonnull
     private final Map<String, String> videoInfoPage = new HashMap<>();
