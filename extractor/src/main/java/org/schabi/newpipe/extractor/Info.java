@@ -1,5 +1,6 @@
 package org.schabi.newpipe.extractor;
 
+import org.schabi.newpipe.extractor.exceptions.ExtractionException;
 import org.schabi.newpipe.extractor.linkhandler.LinkHandler;
 
 import java.io.Serializable;
@@ -70,6 +71,15 @@ public abstract class Info implements Serializable {
 
     public int getServiceId() {
         return serviceId;
+    }
+
+    public StreamingService getService() {
+        try {
+            return NewPipe.getService(serviceId);
+        } catch (final ExtractionException e) {
+            // this should be unreachable, as serviceId certainly refers to a valid service
+            throw new RuntimeException("Info object has invalid service id", e);
+        }
     }
 
     public String getId() {
