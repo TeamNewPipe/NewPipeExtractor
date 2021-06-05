@@ -34,12 +34,92 @@
         "https://www.youtube.com"
       ],
       "X-YouTube-Client-Version": [
+<<<<<<< HEAD
         "2.20210601.07.00"
 >>>>>>> c1d526e7 (Update client version and mocks)
+=======
+        "2.20210603.07.00"
+>>>>>>> 8b2382cf (Update client version and mocks)
       ]
     },
     "dataToSend": [
       123,
+      34,
+      112,
+      108,
+      97,
+      121,
+      98,
+      97,
+      99,
+      107,
+      67,
+      111,
+      110,
+      116,
+      101,
+      120,
+      116,
+      34,
+      58,
+      123,
+      34,
+      99,
+      111,
+      110,
+      116,
+      101,
+      110,
+      116,
+      80,
+      108,
+      97,
+      121,
+      98,
+      97,
+      99,
+      107,
+      67,
+      111,
+      110,
+      116,
+      101,
+      120,
+      116,
+      34,
+      58,
+      123,
+      34,
+      115,
+      105,
+      103,
+      110,
+      97,
+      116,
+      117,
+      114,
+      101,
+      84,
+      105,
+      109,
+      101,
+      115,
+      116,
+      97,
+      109,
+      112,
+      34,
+      58,
+      34,
+      49,
+      56,
+      55,
+      56,
+      49,
+      34,
+      125,
+      125,
+      44,
       34,
       99,
       111,
@@ -129,7 +209,7 @@
       48,
       54,
       48,
-      49,
+      51,
       46,
       48,
       55,
@@ -151,17 +231,17 @@
       34,
       58,
       34,
-      115,
-      77,
-      74,
       56,
-      98,
-      82,
-      78,
-      50,
-      100,
+      86,
       97,
-      107,
+      106,
+      116,
+      114,
+      69,
+      83,
+      74,
+      122,
+      65,
       34,
       125
     ],
@@ -221,6 +301,7 @@
       "date": [
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
         "Mon, 31 May 2021 15:54:21 GMT"
 >>>>>>> 43ce1dc4 (Update mocks)
 =======
@@ -229,9 +310,12 @@
 =======
         "Wed, 02 Jun 2021 18:19:22 GMT"
 >>>>>>> 70fc468f (Try again to don't fetch at each time the JavaScript player)
+=======
+        "Sat, 05 Jun 2021 16:22:13 GMT"
+>>>>>>> 8b2382cf (Update client version and mocks)
       ],
       "expires": [
-        "Wed, 02 Jun 2021 18:19:22 GMT"
+        "Sat, 05 Jun 2021 16:22:13 GMT"
       ],
       "p3p": [
         "CP\u003d\"This is not a P3P policy! See g.co/p3phelp for more info.\""
@@ -240,6 +324,7 @@
         "ESF"
       ],
       "set-cookie": [
+<<<<<<< HEAD
 <<<<<<< HEAD
 <<<<<<< HEAD
 <<<<<<< HEAD
@@ -276,6 +361,9 @@
 =======
         "CONSENT\u003dPENDING+029; expires\u003dFri, 01-Jan-2038 00:00:00 GMT; path\u003d/; domain\u003d.youtube.com; Secure"
 >>>>>>> 70fc468f (Try again to don't fetch at each time the JavaScript player)
+=======
+        "CONSENT\u003dPENDING+537; expires\u003dFri, 01-Jan-2038 00:00:00 GMT; path\u003d/; domain\u003d.youtube.com; Secure"
+>>>>>>> 8b2382cf (Update client version and mocks)
       ],
       "vary": [
         "Origin",
@@ -310,6 +398,7 @@
 <<<<<<< HEAD
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
     "responseBody": "[\r\n{\"page\": \"watch\",\"rootVe\": \"3832\"},\r\n{\"page\": \"watch\",\"preconnect\": [\"https:\\/\\/r3---sn-hgn7rn7r.googlevideo.com\\/generate_204\",\"https:\\/\\/r3---sn-hgn7rn7r.googlevideo.com\\/generate_204?conn2\"]},\r\n{\"page\": \"watch\",\"playerResponse\": {\"responseContext\":{\"serviceTrackingParams\":[{\"service\":\"GFEEDBACK\",\"params\":[{\"key\":\"is_viewed_live\",\"value\":\"False\"},{\"key\":\"logged_in\",\"value\":\"0\"},{\"key\":\"e\",\"value\":\"23891344,24003586,23983296,24049781,24041177,24030040,24012513,23966208,23970529,24042868,23986017,23885487,24049577,24027649,23891346,23884386,24037806,24037792,24042870,24051496,24027682,24049575,23804281,24003103,24037794,23946420,24010337,23983813,24007246,24058812,24053866,24049573,24036948,23944779,23882685,23998056,23973490,23974595,24044124,24004644,24045729,23857947,23968386,24003106,1714259,24001373,24058380,23890959,23918597,24049820,23934970,24038425,23996830,24049569,23744176,23963744,23999406,24049567\"}]},{\"service\":\"CSI\",\"params\":[{\"key\":\"c\",\"value\":\"WEB\"},{\"key\":\"cver\",\"value\":\"2.20200214.04.00\"},{\"key\":\"yt_li\",\"value\":\"0\"},{\"key\":\"GetPlayer_rid\",\"value\":\"0x060ef7a409e2c355\"}]},{\"service\":\"GUIDED_HELP\",\"params\":[{\"key\":\"logged_in\",\"value\":\"0\"}]},{\"service\":\"ECATCHER\",\"params\":[{\"key\":\"client.version\",\"value\":\"2.20210526\"},{\"key\":\"client.name\",\"value\":\"WEB\"}]}],\"mainAppWebResponseContext\":{\"loggedOut\":true},\"webResponseContextExtensionData\":{\"hasDecorated\":true}},\"playabilityStatus\":{\"status\":\"ERROR\",\"reason\":\"Video unavailable\",\"errorScreen\":{\"playerErrorMessageRenderer\":{\"reason\":{\"simpleText\":\"Video unavailable\"},\"thumbnail\":{\"thumbnails\":[{\"url\":\"//s.ytimg.com/yts/img/meh7-vflGevej7.png\",\"width\":140,\"height\":100}]},\"icon\":{\"iconType\":\"ERROR_OUTLINE\"}}},\"contextParams\":\"Q0FBU0FnZ0E\u003d\"},\"trackingParams\":\"CAAQu2kiEwiphvGcwq3xAhVIEPEFHSMhBfI\u003d\",\"frameworkUpdates\":{\"entityBatchUpdate\":{\"mutations\":[{\"entityKey\":\"Eg0KC2Rvbi10LWV4aXN0IPYBKAE%3D\",\"type\":\"ENTITY_MUTATION_TYPE_REPLACE\",\"payload\":{\"offlineabilityEntity\":{\"key\":\"Eg0KC2Rvbi10LWV4aXN0IPYBKAE%3D\",\"accessState\":\"OFFLINEABILITY_FEATURE_ACCESS_STATE_UNKNOWN\"}}}],\"timestamp\":{\"seconds\":\"1624443128\",\"nanos\":143619897}}}}},\r\n{\"page\": \"watch\",\"response\": {\"responseContext\":{\"webResponseContextExtensionData\":{\"ytConfigData\":{\"visitorData\":\"CgstaXR2OWw2UkFFMCj4kcyGBg%3D%3D\",\"rootVisualElementType\":3832}}}},\"xsrf_token\": \"QUFFLUhqa2tZUXZkbElLSjAzVlVyNjRSZlZ0dmluT2Q5d3xBQ3Jtc0tuU0d1RWZmU25Ja3J3NGZwU3NfZ0s2a2JyNEJaMFU2T2JTRjM4TFhtMlBpSDhJalNRZzZQcnhjUDhyLWRpTXdZV2xzYjFnOTVKLXI5WWlHUDVKRVBSS1hsLWhNVE1QcWoteFZ2Um1QV0FUa3BLZmhvWQ\\u003d\\u003d\",\"url\": \"/watch?v\\u003ddon-t-exist\",\"endpoint\": {\"clickTrackingParams\":\"IhMImp_wnMKt8QIVTSrxBR3F7wqXMghleHRlcm5hbA\u003d\u003d\",\"commandMetadata\":{\"webCommandMetadata\":{\"url\":\"/watch?v\u003ddon-t-exist\",\"webPageType\":\"WEB_PAGE_TYPE_WATCH\",\"rootVe\":3832}},\"watchEndpoint\":{\"videoId\":\"don-t-exist\"}}},\r\n{\"page\": \"watch\",\"timing\": {\"info\": {\"st\":  0.0 }}}]\r\n",
     "latestUrl": "https://www.youtube.com/watch?v\u003ddon-t-exist\u0026pbj\u003d1"
 =======
@@ -338,6 +427,9 @@
 =======
     "responseBody": "{\n  \"responseContext\": {\n    \"visitorData\": \"Cgs3bm9kSk5kcEdQQSiql9-FBg%3D%3D\",\n    \"serviceTrackingParams\": [\n      {\n        \"service\": \"GFEEDBACK\",\n        \"params\": [\n          {\n            \"key\": \"is_viewed_live\",\n            \"value\": \"False\"\n          },\n          {\n            \"key\": \"logged_in\",\n            \"value\": \"0\"\n          },\n          {\n            \"key\": \"e\",\n            \"value\": \"24044575,24049821,23999405,24044136,24042870,24037794,1714240,24051749,24027649,23857949,23891346,23983296,24030040,24042868,23944779,24037806,24027133,23968099,23970529,23884386,23966208,23968386,23804281,23946420,24001373,24004644,24007246,24030992,23744530,24022729,24050517,24040786,23744176,23882503,23986025,23934970,23918597,23890959,24052117,24005646,24010466,23996830,24035275,23974595,24047689,24036085,24005802,23891344,24010497,23940237,23990877,23975059\"\n          }\n        ]\n      },\n      {\n        \"service\": \"CSI\",\n        \"params\": [\n          {\n            \"key\": \"c\",\n            \"value\": \"WEB\"\n          },\n          {\n            \"key\": \"cver\",\n            \"value\": \"2.20210601.07.00\"\n          },\n          {\n            \"key\": \"yt_li\",\n            \"value\": \"0\"\n          },\n          {\n            \"key\": \"GetPlayer_rid\",\n            \"value\": \"0x50e946bc3c6b437a\"\n          }\n        ]\n      },\n      {\n        \"service\": \"GUIDED_HELP\",\n        \"params\": [\n          {\n            \"key\": \"logged_in\",\n            \"value\": \"0\"\n          }\n        ]\n      },\n      {\n        \"service\": \"ECATCHER\",\n        \"params\": [\n          {\n            \"key\": \"client.version\",\n            \"value\": \"2.20210601\"\n          },\n          {\n            \"key\": \"client.name\",\n            \"value\": \"WEB\"\n          }\n        ]\n      }\n    ],\n    \"mainAppWebResponseContext\": {\n      \"loggedOut\": true\n    },\n    \"webResponseContextExtensionData\": {\n      \"hasDecorated\": true\n    }\n  },\n  \"trackingParams\": \"CAAQu2kiEwiTxL77x_nwAhUnO_EFHRK1BoA\u003d\",\n  \"playabilityStatus\": {\n    \"status\": \"UNPLAYABLE\",\n    \"reason\": \"This video is only available to Music Premium members\",\n    \"errorScreen\": {\n      \"playerErrorMessageRenderer\": {\n        \"reason\": {\n          \"simpleText\": \"This video is only available to Music Premium members\"\n        },\n        \"thumbnail\": {\n          \"thumbnails\": [\n            {\n              \"url\": \"//s.ytimg.com/yts/img/meh7-vflGevej7.png\",\n              \"width\": 140,\n              \"height\": 100\n            }\n          ]\n        },\n        \"icon\": {\n          \"iconType\": \"ERROR_OUTLINE\"\n        }\n      }\n    },\n    \"playableInEmbed\": true,\n    \"contextParams\": \"Q0FFU0FnZ0I\u003d\"\n  },\n  \"videoDetails\": {\n    \"videoId\": \"sMJ8bRN2dak\",\n    \"title\": \"Acquainted / Might Not (Live From The JUNOs 2016)\",\n    \"lengthSeconds\": \"296\",\n    \"keywords\": [\n      \"The Weeknd\",\n      \"ザウィークエンド\",\n      \"ザ・ウィークエンド\",\n      \"Belly\",\n      \"ベリー\",\n      \"Acquainted / Might Not\"\n    ],\n    \"channelId\": \"UClYV6hHlupm_S_ObS1W-DYw\",\n    \"isOwnerViewing\": false,\n    \"shortDescription\": \"Provided to YouTube by Universal Music Group\\n\\nAcquainted / Might Not (Live From The JUNOs 2016) · The Weeknd · Belly\\n\\nAcquainted / Might Not\\n\\n℗ 2015 The Weeknd XO, Inc., Manufactured and Marketed by Republic Records, a Division of UMG Recordings, Inc.\\n\\nReleased on: 2016-05-06\\n\\nStudio  Personnel, Engineer: Doug McClement\\nStudio  Personnel, Mixer: Ker Friesen\\nComposer  Lyricist: Abel Tesfaye\\nComposer  Lyricist: Jason Quenneville\\nComposer  Lyricist: Carlo Montagnese\\nComposer  Lyricist: Ben Diehl\\nComposer  Lyricist: Danny Schofield\\nComposer  Lyricist: Ahmad Balshe\\n\\nAuto-generated by YouTube.\",\n    \"isCrawlable\": true,\n    \"thumbnail\": {\n      \"thumbnails\": [\n        {\n          \"url\": \"https://i.ytimg.com/vi/sMJ8bRN2dak/hqdefault.jpg?sqp\u003d-oaymwEbCKgBEF5IVfKriqkDDggBFQAAiEIYAXABwAEG\u0026rs\u003dAOn4CLD870atQHDu7rwUiIKY0eA7tBQm_A\",\n          \"width\": 168,\n          \"height\": 94\n        },\n        {\n          \"url\": \"https://i.ytimg.com/vi/sMJ8bRN2dak/hqdefault.jpg?sqp\u003d-oaymwEbCMQBEG5IVfKriqkDDggBFQAAiEIYAXABwAEG\u0026rs\u003dAOn4CLCL6O53UQCLzXbW1IdY-lI4I0AbwQ\",\n          \"width\": 196,\n          \"height\": 110\n        },\n        {\n          \"url\": \"https://i.ytimg.com/vi/sMJ8bRN2dak/hqdefault.jpg?sqp\u003d-oaymwEcCPYBEIoBSFXyq4qpAw4IARUAAIhCGAFwAcABBg\u003d\u003d\u0026rs\u003dAOn4CLDLnU_QgaagfCxZAX2X-b5xi-r6yA\",\n          \"width\": 246,\n          \"height\": 138\n        },\n        {\n          \"url\": \"https://i.ytimg.com/vi/sMJ8bRN2dak/hqdefault.jpg?sqp\u003d-oaymwEcCNACELwBSFXyq4qpAw4IARUAAIhCGAFwAcABBg\u003d\u003d\u0026rs\u003dAOn4CLB_VqczmWUrKjyMNr9M3Oeitb1o4A\",\n          \"width\": 336,\n          \"height\": 188\n        },\n        {\n          \"url\": \"https://i.ytimg.com/vi_webp/sMJ8bRN2dak/maxresdefault.webp\",\n          \"width\": 1920,\n          \"height\": 1080\n        }\n      ]\n    },\n    \"averageRating\": 4.1236444,\n    \"allowRatings\": true,\n    \"viewCount\": \"25093\",\n    \"author\": \"The Weeknd - Topic\",\n    \"isPrivate\": false,\n    \"isUnpluggedCorpus\": false,\n    \"isLiveContent\": false\n  },\n  \"microformat\": {\n    \"playerMicroformatRenderer\": {\n      \"thumbnail\": {\n        \"thumbnails\": [\n          {\n            \"url\": \"https://i.ytimg.com/vi/sMJ8bRN2dak/maxresdefault.jpg\",\n            \"width\": 1280,\n            \"height\": 720\n          }\n        ]\n      },\n      \"embed\": {\n        \"iframeUrl\": \"https://www.youtube.com/embed/sMJ8bRN2dak\",\n        \"flashUrl\": \"http://www.youtube.com/v/sMJ8bRN2dak?version\u003d3\u0026autohide\u003d1\",\n        \"width\": 960,\n        \"height\": 720,\n        \"flashSecureUrl\": \"https://www.youtube.com/v/sMJ8bRN2dak?version\u003d3\u0026autohide\u003d1\"\n      },\n      \"title\": {\n        \"simpleText\": \"Acquainted / Might Not (Live From The JUNOs 2016)\"\n      },\n      \"description\": {\n        \"simpleText\": \"Provided to YouTube by Universal Music Group\\n\\nAcquainted / Might Not (Live From The JUNOs 2016) · The Weeknd · Belly\\n\\nAcquainted / Might Not\\n\\n℗ 2015 The Weeknd XO, Inc., Manufactured and Marketed by Republic Records, a Division of UMG Recordings, Inc.\\n\\nReleased on: 2016-05-06\\n\\nStudio  Personnel, Engineer: Doug McClement\\nStudio  Personnel, Mixer: Ker Friesen\\nComposer  Lyricist: Abel Tesfaye\\nComposer  Lyricist: Jason Quenneville\\nComposer  Lyricist: Carlo Montagnese\\nComposer  Lyricist: Ben Diehl\\nComposer  Lyricist: Danny Schofield\\nComposer  Lyricist: Ahmad Balshe\\n\\nAuto-generated by YouTube.\"\n      },\n      \"lengthSeconds\": \"297\",\n      \"ownerProfileUrl\": \"http://www.youtube.com/channel/UClYV6hHlupm_S_ObS1W-DYw\",\n      \"externalChannelId\": \"UClYV6hHlupm_S_ObS1W-DYw\",\n      \"isFamilySafe\": true,\n      \"availableCountries\": [\n        \"AE\",\n        \"AR\",\n        \"AS\",\n        \"AT\",\n        \"AU\",\n        \"AW\",\n        \"BA\",\n        \"BE\",\n        \"BG\",\n        \"BH\",\n        \"BM\",\n        \"BO\",\n        \"BR\",\n        \"BY\",\n        \"CA\",\n        \"CH\",\n        \"CL\",\n        \"CO\",\n        \"CR\",\n        \"CY\",\n        \"CZ\",\n        \"DE\",\n        \"DK\",\n        \"DO\",\n        \"DZ\",\n        \"EC\",\n        \"EE\",\n        \"EG\",\n        \"ES\",\n        \"FI\",\n        \"FR\",\n        \"GB\",\n        \"GF\",\n        \"GR\",\n        \"GT\",\n        \"GU\",\n        \"HK\",\n        \"HN\",\n        \"HR\",\n        \"HU\",\n        \"ID\",\n        \"IE\",\n        \"IL\",\n        \"IN\",\n        \"IS\",\n        \"IT\",\n        \"JO\",\n        \"JP\",\n        \"KE\",\n        \"KR\",\n        \"KW\",\n        \"KY\",\n        \"LB\",\n        \"LI\",\n        \"LT\",\n        \"LU\",\n        \"LV\",\n        \"MA\",\n        \"MK\",\n        \"MP\",\n        \"MQ\",\n        \"MT\",\n        \"MX\",\n        \"MY\",\n        \"NC\",\n        \"NG\",\n        \"NI\",\n        \"NL\",\n        \"NO\",\n        \"NZ\",\n        \"OM\",\n        \"PA\",\n        \"PE\",\n        \"PF\",\n        \"PG\",\n        \"PH\",\n        \"PL\",\n        \"PT\",\n        \"PY\",\n        \"QA\",\n        \"RO\",\n        \"RS\",\n        \"RU\",\n        \"SA\",\n        \"SE\",\n        \"SG\",\n        \"SI\",\n        \"SK\",\n        \"SV\",\n        \"TC\",\n        \"TH\",\n        \"TR\",\n        \"TW\",\n        \"UA\",\n        \"US\",\n        \"UY\",\n        \"VE\",\n        \"VI\",\n        \"VN\",\n        \"YT\",\n        \"ZA\"\n      ],\n      \"isUnlisted\": false,\n      \"hasYpcMetadata\": false,\n      \"viewCount\": \"25093\",\n      \"category\": \"Music\",\n      \"publishDate\": \"2018-06-04\",\n      \"ownerChannelName\": \"The Weeknd - Topic\",\n      \"uploadDate\": \"2018-06-04\"\n    }\n  },\n  \"messages\": [\n    {\n      \"mealbarPromoRenderer\": {\n        \"icon\": {\n          \"thumbnails\": [\n            {\n              \"url\": \"https://www.gstatic.com/youtube/img/promos/growth/32565a681f5420b051f863e20a723490d94d07306de7b379862f0ec4a0d6676c_384x384.png\",\n              \"width\": 384,\n              \"height\": 384\n            }\n          ]\n        },\n        \"messageTexts\": [\n          {\n            \"runs\": [\n              {\n                \"text\": \"With the YouTube Music web player, you get new releases, covers and hard-to-find songs\"\n              }\n            ]\n          }\n        ],\n        \"actionButton\": {\n          \"buttonRenderer\": {\n            \"style\": \"STYLE_BLUE_TEXT\",\n            \"size\": \"SIZE_DEFAULT\",\n            \"text\": {\n              \"runs\": [\n                {\n                  \"text\": \"Check it out\"\n                }\n              ]\n            },\n            \"serviceEndpoint\": {\n              \"clickTrackingParams\": \"CAMQ7G8iEwiTxL77x_nwAhUnO_EFHRK1BoA\u003d\",\n              \"commandMetadata\": {\n                \"webCommandMetadata\": {\n                  \"sendPost\": true,\n                  \"apiUrl\": \"/youtubei/v1/feedback\"\n                }\n              },\n              \"feedbackEndpoint\": {\n                \"feedbackToken\": \"AB9zfpJneSWcKahdlaD8qgpNh2gBlMcvMZrBIxYjF-vqRjvAoDxwJENyms4kbDVY0f4u3rjlo4Bo5uENl3r36E5bdn3mAXg5W9Gz8ZhLyLairavJtv7BIwIaX-bZNXIu2kpMtbKu6jdAtJNIWXPIrYm-IUaVddFl_Q\",\n                \"uiActions\": {\n                  \"hideEnclosingContainer\": true\n                }\n              }\n            },\n            \"navigationEndpoint\": {\n              \"clickTrackingParams\": \"CAMQ7G8iEwiTxL77x_nwAhUnO_EFHRK1BoA\u003d\",\n              \"commandMetadata\": {\n                \"webCommandMetadata\": {\n                  \"url\": \"https://music.youtube.com/\",\n                  \"webPageType\": \"WEB_PAGE_TYPE_UNKNOWN\",\n                  \"rootVe\": 83769\n                }\n              },\n              \"urlEndpoint\": {\n                \"url\": \"https://music.youtube.com\",\n                \"target\": \"TARGET_NEW_WINDOW\"\n              }\n            },\n            \"trackingParams\": \"CAMQ7G8iEwiTxL77x_nwAhUnO_EFHRK1BoA\u003d\"\n          }\n        },\n        \"dismissButton\": {\n          \"buttonRenderer\": {\n            \"style\": \"STYLE_TEXT\",\n            \"size\": \"SIZE_DEFAULT\",\n            \"text\": {\n              \"runs\": [\n                {\n                  \"text\": \"No, thanks\"\n                }\n              ]\n            },\n            \"serviceEndpoint\": {\n              \"clickTrackingParams\": \"CAIQ7W8iEwiTxL77x_nwAhUnO_EFHRK1BoA\u003d\",\n              \"commandMetadata\": {\n                \"webCommandMetadata\": {\n                  \"sendPost\": true,\n                  \"apiUrl\": \"/youtubei/v1/feedback\"\n                }\n              },\n              \"feedbackEndpoint\": {\n                \"feedbackToken\": \"AB9zfpLde2zSNw1pxqaL4yty6drmEtXjD--xktdFulP7JhONUvxgDaFeB_y54n5zYVluBVFSICv-mnRxDTC2LULcUygzEqvKwWDik9GjSR88uroCySBq_pRI-rYhu1N7vyLSYfcUIQOXwqwHDDtc3jgK-oIB6yJPCw\",\n                \"uiActions\": {\n                  \"hideEnclosingContainer\": true\n                }\n              }\n            },\n            \"trackingParams\": \"CAIQ7W8iEwiTxL77x_nwAhUnO_EFHRK1BoA\u003d\"\n          }\n        },\n        \"triggerCondition\": \"TRIGGER_CONDITION_POST_AD\",\n        \"style\": \"STYLE_MESSAGE\",\n        \"trackingParams\": \"CAEQ42kYACITCJPEvvvH-fACFSc78QUdErUGgA\u003d\u003d\",\n        \"impressionEndpoints\": [\n          {\n            \"clickTrackingParams\": \"CAEQ42kYACITCJPEvvvH-fACFSc78QUdErUGgA\u003d\u003d\",\n            \"commandMetadata\": {\n              \"webCommandMetadata\": {\n                \"sendPost\": true,\n                \"apiUrl\": \"/youtubei/v1/feedback\"\n              }\n            },\n            \"feedbackEndpoint\": {\n              \"feedbackToken\": \"AB9zfpLjMScgpd43RUq6S7PMS376Ldx8K0o8K80vAmHTz7Ktho3OQjzmtJ0vSVAeS6jkTvCN75VG6lyhLFruDXBhU6wKNMsiOYj1ZSewdH9ljoqZUURdDH-fji_bcTBpNn6O3SK8VopWb7QLC9YDrnKVBgUqHdA79g\",\n              \"uiActions\": {\n                \"hideEnclosingContainer\": false\n              }\n            }\n          }\n        ],\n        \"isVisible\": true,\n        \"messageTitle\": {\n          \"runs\": [\n            {\n              \"text\": \"Music discovery made easy\"\n            }\n          ]\n        }\n      }\n    }\n  ]\n}\n",
 >>>>>>> 70fc468f (Try again to don't fetch at each time the JavaScript player)
+=======
+    "responseBody": "{\n  \"responseContext\": {\n    \"visitorData\": \"Cgt6NXgyVUNmTmlOQSi1ye6FBg%3D%3D\",\n    \"serviceTrackingParams\": [\n      {\n        \"service\": \"GFEEDBACK\",\n        \"params\": [\n          {\n            \"key\": \"is_viewed_live\",\n            \"value\": \"False\"\n          },\n          {\n            \"key\": \"logged_in\",\n            \"value\": \"0\"\n          },\n          {\n            \"key\": \"e\",\n            \"value\": \"23997970,24036947,24050105,24051457,24036085,23974595,24004644,23886489,24043240,23934970,23946420,23744176,24007246,24050516,23918597,23884386,24005646,23970529,23891346,24037806,24030040,23996830,23882502,23804281,24005802,24046371,23891344,23986019,24049124,23966208,24044134,23968099,24042868,24044575,23998057,23944779,24010465,23983296,24027649,1714256,24042870,24037794,24018284,24038425,23857949,23890959,24011648,23975058,24048461,24001373,24044365,24052117,23968386,24027133\"\n          }\n        ]\n      },\n      {\n        \"service\": \"CSI\",\n        \"params\": [\n          {\n            \"key\": \"c\",\n            \"value\": \"WEB\"\n          },\n          {\n            \"key\": \"cver\",\n            \"value\": \"2.20210603.07.00\"\n          },\n          {\n            \"key\": \"yt_li\",\n            \"value\": \"0\"\n          },\n          {\n            \"key\": \"GetPlayer_rid\",\n            \"value\": \"0x5a529a9fe852dd57\"\n          }\n        ]\n      },\n      {\n        \"service\": \"GUIDED_HELP\",\n        \"params\": [\n          {\n            \"key\": \"logged_in\",\n            \"value\": \"0\"\n          }\n        ]\n      },\n      {\n        \"service\": \"ECATCHER\",\n        \"params\": [\n          {\n            \"key\": \"client.version\",\n            \"value\": \"2.20210603\"\n          },\n          {\n            \"key\": \"client.name\",\n            \"value\": \"WEB\"\n          }\n        ]\n      }\n    ],\n    \"mainAppWebResponseContext\": {\n      \"loggedOut\": true\n    },\n    \"webResponseContextExtensionData\": {\n      \"hasDecorated\": true\n    }\n  },\n  \"trackingParams\": \"CAAQu2kiEwie5qSw84DxAhWHGPEFHdfIBsc\u003d\",\n  \"playabilityStatus\": {\n    \"status\": \"LOGIN_REQUIRED\",\n    \"messages\": [\n      \"This is a private video. Please sign in to verify that you may see it.\"\n    ],\n    \"errorScreen\": {\n      \"playerErrorMessageRenderer\": {\n        \"subreason\": {\n          \"simpleText\": \"Sign in if you\u0027ve been granted access to this video\"\n        },\n        \"reason\": {\n          \"simpleText\": \"Private video\"\n        },\n        \"proceedButton\": {\n          \"buttonRenderer\": {\n            \"style\": \"STYLE_OVERLAY\",\n            \"size\": \"SIZE_DEFAULT\",\n            \"isDisabled\": false,\n            \"text\": {\n              \"simpleText\": \"Sign in\"\n            },\n            \"navigationEndpoint\": {\n              \"clickTrackingParams\": \"CAEQ8FsiEwie5qSw84DxAhWHGPEFHdfIBsc\u003d\",\n              \"commandMetadata\": {\n                \"webCommandMetadata\": {\n                  \"url\": \"https://accounts.google.com/ServiceLogin?service\u003dyoutube\u0026uilel\u003d3\u0026passive\u003dtrue\u0026continue\u003dhttps%3A%2F%2Fwww.youtube.com%2Fsignin%3Faction_handle_signin%3Dtrue%26app%3Ddesktop%26hl%3Den-GB\u0026hl\u003den-GB\",\n                  \"webPageType\": \"WEB_PAGE_TYPE_UNKNOWN\",\n                  \"rootVe\": 83769\n                }\n              },\n              \"signInEndpoint\": {\n                \"nextEndpoint\": {\n                  \"clickTrackingParams\": \"CAEQ8FsiEwie5qSw84DxAhWHGPEFHdfIBsc\u003d\",\n                  \"urlEndpoint\": {\n                    \"url\": \"\"\n                  }\n                }\n              }\n            },\n            \"trackingParams\": \"CAEQ8FsiEwie5qSw84DxAhWHGPEFHdfIBsc\u003d\"\n          }\n        },\n        \"thumbnail\": {\n          \"thumbnails\": [\n            {\n              \"url\": \"//s.ytimg.com/yts/img/meh7-vflGevej7.png\",\n              \"width\": 140,\n              \"height\": 100\n            }\n          ]\n        },\n        \"icon\": {\n          \"iconType\": \"ERROR_OUTLINE\"\n        }\n      }\n    },\n    \"contextParams\": \"Q0FBU0FnZ0E\u003d\"\n  }\n}\n",
+>>>>>>> 8b2382cf (Update client version and mocks)
     "latestUrl": "https://www.youtube.com/youtubei/v1/player?key\u003dAIzaSyAO_FJ2SlqU8Q4STEHLGCilw_Y9_11qcW8"
 >>>>>>> c1d526e7 (Update client version and mocks)
   }

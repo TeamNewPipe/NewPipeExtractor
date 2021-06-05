@@ -16,7 +16,7 @@
         "https://www.youtube.com"
       ],
       "X-YouTube-Client-Version": [
-        "2.20210601.07.00"
+        "2.20210603.07.00"
       ]
     },
     "dataToSend": [
@@ -110,7 +110,7 @@
       48,
       54,
       48,
-      49,
+      51,
       46,
       48,
       55,
@@ -171,6 +171,7 @@
 <<<<<<< HEAD
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
         "Wed, 23 Jun 2021 10:12:06 GMT"
 =======
         "Sun, 30 May 2021 16:16:21 GMT"
@@ -198,9 +199,12 @@
 =======
         "Wed, 02 Jun 2021 18:19:18 GMT"
 >>>>>>> 70fc468f (Try again to don't fetch at each time the JavaScript player)
+=======
+        "Sat, 05 Jun 2021 16:22:09 GMT"
+>>>>>>> 8b2382cf (Update client version and mocks)
       ],
       "expires": [
-        "Wed, 02 Jun 2021 18:19:18 GMT"
+        "Sat, 05 Jun 2021 16:22:09 GMT"
       ],
       "p3p": [
         "CP\u003d\"This is not a P3P policy! See g.co/p3phelp for more info.\""
@@ -209,6 +213,7 @@
         "ESF"
       ],
       "set-cookie": [
+<<<<<<< HEAD
 <<<<<<< HEAD
 <<<<<<< HEAD
 <<<<<<< HEAD
@@ -249,6 +254,9 @@
 =======
         "CONSENT\u003dPENDING+773; expires\u003dFri, 01-Jan-2038 00:00:00 GMT; path\u003d/; domain\u003d.youtube.com; Secure"
 >>>>>>> 70fc468f (Try again to don't fetch at each time the JavaScript player)
+=======
+        "CONSENT\u003dPENDING+269; expires\u003dFri, 01-Jan-2038 00:00:00 GMT; path\u003d/; domain\u003d.youtube.com; Secure"
+>>>>>>> 8b2382cf (Update client version and mocks)
       ],
       "vary": [
         "Origin",
@@ -265,6 +273,7 @@
         "0"
       ]
     },
+<<<<<<< HEAD
 <<<<<<< HEAD
 <<<<<<< HEAD
 <<<<<<< HEAD
@@ -299,6 +308,9 @@
 =======
     "responseBody": "{\n  \"responseContext\": {\n    \"visitorData\": \"CgtQaXp3Vl9la3RDMCiml9-FBg%3D%3D\",\n    \"serviceTrackingParams\": [\n      {\n        \"service\": \"GFEEDBACK\",\n        \"params\": [\n          {\n            \"key\": \"is_viewed_live\",\n            \"value\": \"False\"\n          },\n          {\n            \"key\": \"logged_in\",\n            \"value\": \"0\"\n          },\n          {\n            \"key\": \"e\",\n            \"value\": \"24037806,23891344,24005802,24036085,24040343,23983296,23986028,24010466,23890959,23974595,23996830,24051485,24030148,23934970,23744176,24047687,24026152,23918597,24005646,24035275,24004644,23882685,23940238,24032653,24001373,24027649,23968386,24050517,24040786,23748147,23944779,24027133,24007246,24044575,23999405,24042870,24042654,23884386,24030040,24044136,23804281,23946420,24037794,1714259,24024590,23970529,23966208,23968099,24042868,23857949,23891346\"\n          }\n        ]\n      },\n      {\n        \"service\": \"CSI\",\n        \"params\": [\n          {\n            \"key\": \"c\",\n            \"value\": \"WEB\"\n          },\n          {\n            \"key\": \"cver\",\n            \"value\": \"2.20210601.07.00\"\n          },\n          {\n            \"key\": \"yt_li\",\n            \"value\": \"0\"\n          },\n          {\n            \"key\": \"GetPlayer_rid\",\n            \"value\": \"0x63da5aceeaf2a6ca\"\n          }\n        ]\n      },\n      {\n        \"service\": \"GUIDED_HELP\",\n        \"params\": [\n          {\n            \"key\": \"logged_in\",\n            \"value\": \"0\"\n          }\n        ]\n      },\n      {\n        \"service\": \"ECATCHER\",\n        \"params\": [\n          {\n            \"key\": \"client.version\",\n            \"value\": \"2.20210601\"\n          },\n          {\n            \"key\": \"client.name\",\n            \"value\": \"WEB\"\n          }\n        ]\n      }\n    ],\n    \"mainAppWebResponseContext\": {\n      \"loggedOut\": true\n    },\n    \"webResponseContextExtensionData\": {\n      \"hasDecorated\": true\n    }\n  },\n  \"trackingParams\": \"CAAQu2kiEwjK3rr5x_nwAhWcFPEFHXpbBms\u003d\",\n  \"playabilityStatus\": {\n    \"status\": \"ERROR\",\n    \"reason\": \"Video unavailable\",\n    \"errorScreen\": {\n      \"playerErrorMessageRenderer\": {\n        \"reason\": {\n          \"simpleText\": \"Video unavailable\"\n        },\n        \"thumbnail\": {\n          \"thumbnails\": [\n            {\n              \"url\": \"//s.ytimg.com/yts/img/meh7-vflGevej7.png\",\n              \"width\": 140,\n              \"height\": 100\n            }\n          ]\n        },\n        \"icon\": {\n          \"iconType\": \"ERROR_OUTLINE\"\n        }\n      }\n    },\n    \"contextParams\": \"Q0FBU0FnZ0E\u003d\"\n  }\n}\n",
 >>>>>>> 70fc468f (Try again to don't fetch at each time the JavaScript player)
+=======
+    "responseBody": "{\n  \"responseContext\": {\n    \"visitorData\": \"CgtlVGdaeUplODRfWSixye6FBg%3D%3D\",\n    \"serviceTrackingParams\": [\n      {\n        \"service\": \"GFEEDBACK\",\n        \"params\": [\n          {\n            \"key\": \"is_viewed_live\",\n            \"value\": \"False\"\n          },\n          {\n            \"key\": \"logged_in\",\n            \"value\": \"0\"\n          },\n          {\n            \"key\": \"e\",\n            \"value\": \"24020396,24036085,23974595,23998057,24051457,23944779,24010465,23744176,24051487,24038928,23970529,24042868,23968099,24037806,23891346,23804281,23884386,23882502,24030040,24001373,23891344,23966208,24044134,24044575,24042870,24036948,23983296,9407156,24027649,23934970,24037794,23946420,24004644,1714248,24050517,24007246,23918597,23986023,23968386,23996830,24024949,23890959,24005802,23857950,24052814,24005646,24027133\"\n          }\n        ]\n      },\n      {\n        \"service\": \"CSI\",\n        \"params\": [\n          {\n            \"key\": \"c\",\n            \"value\": \"WEB\"\n          },\n          {\n            \"key\": \"cver\",\n            \"value\": \"2.20210603.07.00\"\n          },\n          {\n            \"key\": \"yt_li\",\n            \"value\": \"0\"\n          },\n          {\n            \"key\": \"GetPlayer_rid\",\n            \"value\": \"0x4b42e43f517ed598\"\n          }\n        ]\n      },\n      {\n        \"service\": \"GUIDED_HELP\",\n        \"params\": [\n          {\n            \"key\": \"logged_in\",\n            \"value\": \"0\"\n          }\n        ]\n      },\n      {\n        \"service\": \"ECATCHER\",\n        \"params\": [\n          {\n            \"key\": \"client.version\",\n            \"value\": \"2.20210603\"\n          },\n          {\n            \"key\": \"client.name\",\n            \"value\": \"WEB\"\n          }\n        ]\n      }\n    ],\n    \"mainAppWebResponseContext\": {\n      \"loggedOut\": true\n    },\n    \"webResponseContextExtensionData\": {\n      \"hasDecorated\": true\n    }\n  },\n  \"trackingParams\": \"CAAQu2kiEwjuh6Ku84DxAhU5D_EFHZCWDpo\u003d\",\n  \"playabilityStatus\": {\n    \"status\": \"ERROR\",\n    \"reason\": \"Video unavailable\",\n    \"errorScreen\": {\n      \"playerErrorMessageRenderer\": {\n        \"reason\": {\n          \"simpleText\": \"Video unavailable\"\n        },\n        \"thumbnail\": {\n          \"thumbnails\": [\n            {\n              \"url\": \"//s.ytimg.com/yts/img/meh7-vflGevej7.png\",\n              \"width\": 140,\n              \"height\": 100\n            }\n          ]\n        },\n        \"icon\": {\n          \"iconType\": \"ERROR_OUTLINE\"\n        }\n      }\n    },\n    \"contextParams\": \"Q0FBU0FnZ0E\u003d\"\n  }\n}\n",
+>>>>>>> 8b2382cf (Update client version and mocks)
     "latestUrl": "https://www.youtube.com/youtubei/v1/player?key\u003dAIzaSyAO_FJ2SlqU8Q4STEHLGCilw_Y9_11qcW8"
 >>>>>>> c1d526e7 (Update client version and mocks)
   }

@@ -59,7 +59,7 @@ public class YoutubeChannelExtractorTest {
                     YouTube.getChannelExtractor("https://www.youtube.com/channel/UCTGjY2I-ZUGnwVoWAGRd7XQ");
             try {
                 extractor.fetchPage();
-            } catch (AccountTerminatedException e) {
+            } catch (final AccountTerminatedException e) {
                 assertEquals(e.getReason(), AccountTerminatedException.Reason.VIOLATION);
                 throw e;
             }
@@ -72,7 +72,7 @@ public class YoutubeChannelExtractorTest {
                     YouTube.getChannelExtractor("https://www.youtube.com/channel/UC0AuOxCr9TZ0TtEgL1zpIgA");
             try {
                 extractor.fetchPage();
-            } catch (AccountTerminatedException e) {
+            } catch (final AccountTerminatedException e) {
                 assertEquals(e.getReason(), AccountTerminatedException.Reason.VIOLATION);
                 throw e;
             }
@@ -86,7 +86,7 @@ public class YoutubeChannelExtractorTest {
                     YouTube.getChannelExtractor("https://www.youtube.com/channel/UCPWXIOPK-9myzek6jHR5yrg");
             try {
                 extractor.fetchPage();
-            } catch (AccountTerminatedException e) {
+            } catch (final AccountTerminatedException e) {
                 assertEquals(e.getReason(), AccountTerminatedException.Reason.VIOLATION);
                 throw e;
             }
@@ -100,7 +100,7 @@ public class YoutubeChannelExtractorTest {
                     YouTube.getChannelExtractor("https://youtube.com/channel/UCB1o7_gbFp2PLsamWxFenBg");
             try {
                 extractor.fetchPage();
-            } catch (AccountTerminatedException e) {
+            } catch (final AccountTerminatedException e) {
                 assertEquals(e.getReason(), AccountTerminatedException.Reason.VIOLATION);
                 throw e;
             }
@@ -115,7 +115,7 @@ public class YoutubeChannelExtractorTest {
                     YouTube.getChannelExtractor("https://www.youtube.com/channel/UCoaO4U_p7G7AwalqSbGCZOA");
             try {
                 extractor.fetchPage();
-            } catch (AccountTerminatedException e) {
+            } catch (final AccountTerminatedException e) {
                 assertEquals(e.getReason(), AccountTerminatedException.Reason.VIOLATION);
                 throw e;
             }
@@ -129,7 +129,7 @@ public class YoutubeChannelExtractorTest {
                     YouTube.getChannelExtractor("https://www.youtube.com/channel/UCpExuV8qJMfCaSQNL1YG6bQ");
             try {
                 extractor.fetchPage();
-            } catch (AccountTerminatedException e) {
+            } catch (final AccountTerminatedException e) {
                 assertEquals(e.getReason(), AccountTerminatedException.Reason.VIOLATION);
                 throw e;
             }
