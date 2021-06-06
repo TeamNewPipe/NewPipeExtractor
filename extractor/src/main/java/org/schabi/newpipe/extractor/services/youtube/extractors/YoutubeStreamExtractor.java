@@ -760,7 +760,8 @@ public class YoutubeStreamExtractor extends StreamExtractor {
     }
 
     private void checkPlayabilityStatus(final JsonObject youtubePlayerResponse,
-                                        JsonObject playabilityStatus) throws ParsingException {
+                                        @Nonnull JsonObject playabilityStatus)
+            throws ParsingException {
         String status = playabilityStatus.getString("status");
         // If status exist, and is not "OK", throw the specific exception based on error message
         // or a ContentNotAvailableException with the reason text if it's an unknown reason.
@@ -871,6 +872,7 @@ public class YoutubeStreamExtractor extends StreamExtractor {
         }
     }
 
+    @Nonnull
     private byte[] createPlayerBodyWithSts(final Localization localization,
                                            final ContentCountry contentCountry,
                                            final String videoId) throws ExtractionException,
@@ -988,6 +990,7 @@ public class YoutubeStreamExtractor extends StreamExtractor {
                 "Could not find deobfuscate function with any of the given patterns.", exception);
     }
 
+    @Nonnull
     private String loadDeobfuscationCode() throws DeobfuscateException {
         try {
             final String deobfuscationFunctionName = getDeobfuscationFuncName(playerCode);
@@ -1115,6 +1118,7 @@ public class YoutubeStreamExtractor extends StreamExtractor {
                 "&sts=" + sts + "&ps=default&gl=US&hl=en";
     }
 
+    @Nonnull
     private Map<String, ItagItem> getItags(final String streamingDataKey,
                                            final ItagItem.ItagType itagTypeWanted)
             throws ParsingException {
@@ -1370,5 +1374,22 @@ public class YoutubeStreamExtractor extends StreamExtractor {
         return YoutubeParsingHelper.getMetaInfo(
                 nextResponse.getObject("contents").getObject("twoColumnWatchNextResults")
                         .getObject("results").getObject("results").getArray("contents"));
+    }
+
+    /**
+     * Reset YouTube deobfuscation code.
+     * <p>
+     * This is needed for mocks in YouTube stream tests, because when they are ran, the
+     * {@code signatureTimestamp} is known (the {@code sts} string) so a different body than the
+     * body present in the mocks is send by the extractor instance. As a result, running all
+     * YouTube stream tests with the MockDownloader (like the CI does) will fail if this method is
+     * not called before fetching the page of a test.
+     * </p>
+     */
+    public static void resetDeobfuscationCode() {
+        cachedDeobfuscationCode = null;
+        playerCode = null;
+        playerJsUrl = null;
+        sts = null;
     }
 }

@@ -63,6 +63,7 @@ public class YoutubeStreamExtractorDefaultTest {
         public static void setUp() throws IOException {
             YoutubeParsingHelper.resetClientVersionAndKey();
             YoutubeParsingHelper.setNumberGenerator(new Random(1));
+            YoutubeStreamExtractor.resetDeobfuscationCode();
             NewPipe.init(new DownloaderFactory().getDownloader(RESOURCE_PATH + "notAvailable"));
         }
 
@@ -119,6 +120,7 @@ public class YoutubeStreamExtractorDefaultTest {
         public static void setUp() throws Exception {
             YoutubeParsingHelper.resetClientVersionAndKey();
             YoutubeParsingHelper.setNumberGenerator(new Random(1));
+            YoutubeStreamExtractor.resetDeobfuscationCode();
             NewPipe.init(new DownloaderFactory().getDownloader(RESOURCE_PATH + "pewdiwpie"));
             extractor = YouTube.getStreamExtractor(URL);
             extractor.fetchPage();
@@ -162,6 +164,7 @@ public class YoutubeStreamExtractorDefaultTest {
         public static void setUp() throws Exception {
             YoutubeParsingHelper.resetClientVersionAndKey();
             YoutubeParsingHelper.setNumberGenerator(new Random(1));
+            YoutubeStreamExtractor.resetDeobfuscationCode();
             NewPipe.init(new DownloaderFactory().getDownloader(RESOURCE_PATH + "unboxing"));
             extractor = YouTube.getStreamExtractor(URL);
             extractor.fetchPage();
@@ -215,6 +218,7 @@ public class YoutubeStreamExtractorDefaultTest {
         public static void setUp() throws Exception {
             YoutubeParsingHelper.resetClientVersionAndKey();
             YoutubeParsingHelper.setNumberGenerator(new Random(1));
+            YoutubeStreamExtractor.resetDeobfuscationCode();
             NewPipe.init(new DownloaderFactory().getDownloader(RESOURCE_PATH + "ratingsDisabled"));
             extractor = YouTube.getStreamExtractor(URL);
             extractor.fetchPage();
@@ -252,6 +256,7 @@ public class YoutubeStreamExtractorDefaultTest {
         public static void setUp() throws Exception {
             YoutubeParsingHelper.resetClientVersionAndKey();
             YoutubeParsingHelper.setNumberGenerator(new Random(1));
+            YoutubeStreamExtractor.resetDeobfuscationCode();
             NewPipe.init(new DownloaderFactory().getDownloader(RESOURCE_PATH + "streamSegmentsTagesschau"));
             extractor = YouTube.getStreamExtractor(URL);
             extractor.fetchPage();
@@ -313,6 +318,7 @@ public class YoutubeStreamExtractorDefaultTest {
         public static void setUp() throws Exception {
             YoutubeParsingHelper.resetClientVersionAndKey();
             YoutubeParsingHelper.setNumberGenerator(new Random(1));
+            YoutubeStreamExtractor.resetDeobfuscationCode();
             NewPipe.init(new DownloaderFactory().getDownloader(RESOURCE_PATH + "streamSegmentsMaiLab"));
             extractor = YouTube.getStreamExtractor(URL);
             extractor.fetchPage();
@@ -383,6 +389,7 @@ public class YoutubeStreamExtractorDefaultTest {
             YoutubeParsingHelper.setNumberGenerator(new Random(1));
             NewPipe.init(new DownloaderFactory().getDownloader(RESOURCE_PATH + "publicBroadcast"));
             extractor = YouTube.getStreamExtractor(URL);
+            YoutubeStreamExtractor.resetDeobfuscationCode();
             extractor.fetchPage();
         }
 
@@ -432,6 +439,7 @@ public class YoutubeStreamExtractorDefaultTest {
 
         @BeforeClass
         public static void setUp() throws Exception {
+            YoutubeStreamExtractor.resetDeobfuscationCode();
             NewPipe.init(DownloaderTestImpl.getInstance());
             extractor = (YoutubeStreamExtractor) YouTube
                     .getStreamExtractor("https://www.youtube.com/watch?v=tjz2u2DiveM");
@@ -451,6 +459,7 @@ public class YoutubeStreamExtractorDefaultTest {
 
         @BeforeClass
         public static void setUp() throws Exception {
+            YoutubeStreamExtractor.resetDeobfuscationCode();
             NewPipe.init(DownloaderTestImpl.getInstance());
             extractor = YouTube.getStreamExtractor(URL);
             extractor.fetchPage();
