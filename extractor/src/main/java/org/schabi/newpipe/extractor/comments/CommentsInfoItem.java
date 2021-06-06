@@ -20,6 +20,9 @@ public class CommentsInfoItem extends InfoItem {
     private String textualLikeCount;
     private boolean heartedByUploader;
     private boolean pinned;
+    private int streamPosition;
+
+    public static final int NO_STREAM_POSITION = -1;
 
     public CommentsInfoItem(int serviceId, String url, String name) {
         super(InfoType.COMMENT, serviceId, url, name);
@@ -120,5 +123,18 @@ public class CommentsInfoItem extends InfoItem {
 
     public boolean isUploaderVerified() {
         return uploaderVerified;
+    }
+
+    public void setStreamPosition(final int streamPosition) {
+        this.streamPosition = streamPosition;
+    }
+
+    /**
+     * Get the playback position of the stream to which this comment belongs.
+     * This is not supported by all services.
+     * @return the playback position in seconds or {@link #NO_STREAM_POSITION} if not available
+     */
+    public int getStreamPosition() {
+        return streamPosition;
     }
 }

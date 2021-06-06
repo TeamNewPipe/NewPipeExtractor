@@ -94,4 +94,12 @@ public interface CommentsInfoItemExtractor extends InfoItemExtractor {
     default boolean isUploaderVerified() throws ParsingException {
         return false;
     }
+
+    /**
+     * The playback position of the stream to which this comment belongs.
+     * @see CommentsInfoItem#getStreamPosition()
+     */
+    default int getStreamPosition() throws ParsingException {
+        return CommentsInfoItem.NO_STREAM_POSITION;
+    }
 }

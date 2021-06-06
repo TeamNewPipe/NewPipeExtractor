@@ -87,6 +87,12 @@ public class CommentsInfoItemsCollector extends InfoItemsCollector<CommentsInfoI
             addError(e);
         }
 
+        try {
+            resultItem.setStreamPosition(extractor.getStreamPosition());
+        } catch (Exception e) {
+            addError(e);
+        }
+
         return resultItem;
     }
 
