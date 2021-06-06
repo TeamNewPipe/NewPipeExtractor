@@ -98,11 +98,11 @@ public class YoutubeChannelExtractor extends ChannelExtractor {
 
             if (jsonResponse.has("error")) {
                 if (jsonResponse.getInt("code") == 404) {
-                    throw new ContentNotAvailableException("No channel associated with this user"
-                            + "exists");
+                    throw new ContentNotAvailableException(
+                            "No channel associated with this user exists");
                 } else {
                     throw new ContentNotAvailableException("Got error:\""
-                            + jsonResponse.getString("status") + "\""
+                            + jsonResponse.getString("status") + "\": "
                             + jsonResponse.getString("message"));
                 }
             }
@@ -149,7 +149,7 @@ public class YoutubeChannelExtractor extends ChannelExtractor {
                     throw new ContentNotAvailableException("This channel doesn't exist.");
                 } else {
                     throw new ContentNotAvailableException("Got error:\""
-                            + jsonResponse.getString("status") + "\""
+                            + jsonResponse.getString("status") + "\": "
                             + jsonResponse.getString("message"));
                 }
             }

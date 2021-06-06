@@ -75,8 +75,8 @@ public class YoutubeSearchQueryHandlerFactory extends SearchQueryHandlerFactory 
     }
 
     public static String getSearchParameter(final String contentFilter) {
-        if (!isNullOrEmpty(contentFilter)) {
-            switch (contentFilter) {
+        if (isNullOrEmpty(contentFilter)) return "";
+        switch (contentFilter) {
                 case VIDEOS:
                     return "EgIQAQ%3D%3D";
                 case CHANNELS:
@@ -91,9 +91,6 @@ public class YoutubeSearchQueryHandlerFactory extends SearchQueryHandlerFactory 
                 case MUSIC_ARTISTS:
                 default:
                     return "";
-            }
-        } else {
-            return "";
         }
     }
 }
