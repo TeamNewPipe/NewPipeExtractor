@@ -4,15 +4,23 @@ import java.util.List;
 
 public final class Frameset {
 
-    private List<String> urls;
-    private int frameWidth;
-    private int frameHeight;
-    private int totalCount;
-    private int durationPerFrame;
-    private int framesPerPageX;
-    private int framesPerPageY;
+    private final List<String> urls;
+    private final int frameWidth;
+    private final int frameHeight;
+    private final int totalCount;
+    private final int durationPerFrame;
+    private final int framesPerPageX;
+    private final int framesPerPageY;
 
-    public Frameset(List<String> urls, int frameWidth, int frameHeight, int totalCount, int durationPerFrame, int framesPerPageX, int framesPerPageY) {
+    public Frameset(
+            final List<String> urls,
+            final int frameWidth,
+            final int frameHeight,
+            final int totalCount,
+            final int durationPerFrame,
+            final int framesPerPageX,
+            final int framesPerPageY) {
+        
         this.urls = urls;
         this.totalCount = totalCount;
         this.durationPerFrame = durationPerFrame;
@@ -86,7 +94,7 @@ public final class Frameset {
      *     <li><code>4</code>: Bottom bound</li>
      * </ul>
      */
-    public int[] getFrameBoundsAt(long position) {
+    public int[] getFrameBoundsAt(final long position) {
         if (position < 0 || position > ((totalCount + 1) * durationPerFrame)) {
             // Return the first frame as fallback
             return new int[] { 0, 0, 0, frameWidth, frameHeight };
