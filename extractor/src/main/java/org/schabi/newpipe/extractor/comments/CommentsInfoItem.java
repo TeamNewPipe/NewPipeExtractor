@@ -22,6 +22,7 @@ public class CommentsInfoItem extends InfoItem {
     private boolean pinned;
     private int streamPosition;
 
+    public static final int NO_LIKE_COUNT = -1;
     public static final int NO_STREAM_POSITION = -1;
 
     public CommentsInfoItem(int serviceId, String url, String name) {
@@ -85,6 +86,10 @@ public class CommentsInfoItem extends InfoItem {
         this.uploadDate = uploadDate;
     }
 
+    /**
+     * @return the comment's like count
+     *         or {@link CommentsInfoItem#NO_LIKE_COUNT} if it is unavailable
+     */
     public int getLikeCount() {
         return likeCount;
     }
