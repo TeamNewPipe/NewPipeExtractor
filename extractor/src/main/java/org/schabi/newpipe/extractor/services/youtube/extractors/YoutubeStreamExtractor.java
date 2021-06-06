@@ -719,17 +719,12 @@ public class YoutubeStreamExtractor extends StreamExtractor {
                 .done())
                 .getBytes(UTF_8);
 
-        // This boolean is needed if we don't want to fetch again the JSON player if the sts string
-        // is not null.
-        boolean stsKnown = false;
-
         // Put the sts string if we already know it so we don't have to fetch again the player
         // endpoint of the desktop internal API if something went wrong when parsing the Android
         // API.
         if (sts != null) {
             playerResponse = getJsonPostResponse("player", createPlayerBodyWithSts(localization,
                     contentCountry, videoId), localization);
-            stsKnown = true;
         } else {
             playerResponse = getJsonPostResponse("player", body, localization);
         }
@@ -760,7 +755,7 @@ public class YoutubeStreamExtractor extends StreamExtractor {
 
         streamingData = playerResponse.getObject("streamingData");
         if (hasOtfStreams() || isCipherProtectedContent()) {
-            fetchAndroidMobileJsonPlayer(contentCountry, localization, videoId, stsKnown);
+            fetchAndroidMobileJsonPlayer(contentCountry, localization, videoId);
         }
     }
 
@@ -777,11 +772,10 @@ public class YoutubeStreamExtractor extends StreamExtractor {
             if (status.equalsIgnoreCase("login_required")) {
                 if (reason == null) {
                     final String message = playabilityStatus.getArray("messages").getString(0);
-                    if (message != null && message.equals(
-                            "This is a private video. Please sign in to verify that you may see it.")) {
+                    if (message != null && message.contains("private")) {
                         throw new PrivateContentException("This video is private.");
                     }
-                } else if (reason.equals("Sign in to confirm your age")) {
+                } else if (reason.contains("age")) {
                     // No streams can be fetched, therefore throw an AgeRestrictedContentException
                     // explicitly.
                     throw new AgeRestrictedContentException(
@@ -790,23 +784,22 @@ public class YoutubeStreamExtractor extends StreamExtractor {
             }
             if (status.equalsIgnoreCase("unplayable")) {
                 if (reason != null) {
-                    if (reason.equals("This video is only available to Music Premium members")) {
+                    if (reason.contains("Music Premium")) {
                         throw new YoutubeMusicPremiumContentException();
                     }
-                    if (reason.equals("This video requires payment to watch.")) {
+                    if (reason.contains("payment")) {
                         throw new PaidContentException("This video is a paid video");
                     }
-                    if (reason.equals("Join this channel to get access to members-only content like this video, and other exclusive perks.")
-                            || reason.equals("Join this channel to get access to members-only content like this video and other exclusive perks.")) {
-                        throw new PaidContentException("This video is only available for members of the channel of this video");
+                    if (reason.contains("members-only")) {
+                        throw new PaidContentException(
+                                "This video is only available for members of the channel of this video");
                     }
-                    if (reason.equals("Video unavailable")) {
+                    if (reason.contains("unavailable")) {
                         final String detailedErrorMessage = getTextFromObject(playabilityStatus
                                 .getObject("errorScreen").getObject("playerErrorMessageRenderer")
                                 .getObject("subreason"));
                         if (detailedErrorMessage != null) {
-                            if (detailedErrorMessage.equals(
-                                    "The uploader has not made this video available in your country.")) {
+                            if (detailedErrorMessage.contains("country")) {
                                 throw new GeographicRestrictionException(
                                         "This video is not available in user's country.");
                             }
@@ -827,8 +820,7 @@ public class YoutubeStreamExtractor extends StreamExtractor {
      */
     private void fetchAndroidMobileJsonPlayer(final ContentCountry contentCountry,
                                               final Localization localization,
-                                              final String videoId,
-                                              final boolean stsKnown) throws ExtractionException,
+                                              final String videoId) throws ExtractionException,
             IOException {
         JsonObject mobilePlayerResponse = null;
         final byte[] mobileBody = JsonWriter.string(prepareMobileJsonBuilder(localization,
@@ -851,7 +843,7 @@ public class YoutubeStreamExtractor extends StreamExtractor {
             // The cipher signatures from the player endpoint without a timestamp are invalid so
             // download it again only if we didn't have a signatureTimestamp before fetching the
             // data of this video (the sts string).
-            if (!stsKnown && isCipherProtectedContent()) {
+            if (sts == null && isCipherProtectedContent()) {
                 getStsFromPlayerJs();
                 final JsonObject playerResponseWithSignatureTimestamp = getJsonPostResponse(
                         "player", createPlayerBodyWithSts(localization, contentCountry, videoId),
@@ -865,9 +857,7 @@ public class YoutubeStreamExtractor extends StreamExtractor {
     }
 
     private void fetchVideoInfoPage() throws ParsingException, ReCaptchaException, IOException {
-        if (sts == null) {
-            getStsFromPlayerJs();
-        }
+        getStsFromPlayerJs();
         final String videoInfoUrl = getVideoInfoUrl(getId(), sts);
         final String infoPageResponse = NewPipe.getDownloader()
                 .get(videoInfoUrl, getExtractorLocalization()).responseBody();
