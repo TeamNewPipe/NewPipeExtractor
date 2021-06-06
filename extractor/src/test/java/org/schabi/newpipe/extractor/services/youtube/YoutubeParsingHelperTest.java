@@ -33,7 +33,7 @@ public class YoutubeParsingHelperTest {
     @Test
     public void testAreHardcodedYoutubeMusicKeysValid() throws IOException, ExtractionException {
         assertTrue("Hardcoded YouTube Music keys are not valid anymore",
-                YoutubeParsingHelper.areHardcodedYoutubeMusicKeysValid());
+                YoutubeParsingHelper.isHardcodedYoutubeMusicKeyValid());
     }
 
     @Test

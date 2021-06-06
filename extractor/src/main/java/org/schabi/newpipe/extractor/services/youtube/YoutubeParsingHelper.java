@@ -75,7 +75,7 @@ public class YoutubeParsingHelper {
 
     private static final String[] HARDCODED_YOUTUBE_MUSIC_KEY =
             {"AIzaSyC9XL3ZjWddXya6X74dJoCTL-WEYFDNX30", "67", "0.1"};
-    private static String[] youtubeMusicKeys;
+    private static String[] youtubeMusicKey;
 
     private static boolean keyAndVersionExtracted = false;
     private static Boolean areHardcodedClientVersionAndKeyValidValue = null;
@@ -341,7 +341,7 @@ public class YoutubeParsingHelper {
 
     private static void extractClientVersionAndKey() throws IOException, ExtractionException {
         // Don't extract the client version and the innertube key if it has been already extracted
-        if (!keyAndVersionExtracted) return;
+        if (keyAndVersionExtracted) return;
         // Don't provide a search term in order to have a smaller response
         final String url = "https://www.youtube.com/results?search_query=";
         final Map<String, List<String>> headers = new HashMap<>();
@@ -405,7 +405,6 @@ public class YoutubeParsingHelper {
             try {
                 key = Parser.matchGroup1("innertubeApiKey\":\"([0-9a-zA-Z_-]+?)\"", html);
             } catch (final Parser.RegexException e2) {
-                keyAndVersionExtracted = false;
                 throw new ParsingException("Could not extract client version and key");
             }
         }
@@ -421,7 +420,7 @@ public class YoutubeParsingHelper {
             return clientVersion = HARDCODED_CLIENT_VERSION;
         }
 
-        if (!keyAndVersionExtracted) extractClientVersionAndKey();
+        extractClientVersionAndKey();
         return clientVersion;
     }
 
@@ -430,9 +429,11 @@ public class YoutubeParsingHelper {
      */
     public static String getKey() throws IOException, ExtractionException {
         if (!isNullOrEmpty(key)) return key;
-        if (areHardcodedClientVersionAndKeyValid()) return key = HARDCODED_KEY;
+        if (areHardcodedClientVersionAndKeyValid()) {
+            return key = HARDCODED_KEY;
+        }
 
-        if (!keyAndVersionExtracted) extractClientVersionAndKey();
+        extractClientVersionAndKey();
         return key;
     }
 
@@ -465,7 +466,7 @@ public class YoutubeParsingHelper {
         numberGenerator = random;
     }
 
-    public static boolean areHardcodedYoutubeMusicKeysValid() throws IOException,
+    public static boolean isHardcodedYoutubeMusicKeyValid() throws IOException,
             ReCaptchaException {
         final String url =
                 "https://music.youtube.com/youtubei/v1/music/get_search_suggestions?alt=json&key="
@@ -510,17 +511,15 @@ public class YoutubeParsingHelper {
         headers.put("Content-Type", Collections.singletonList("application/json"));
 
         final Response response = getDownloader().post(url, headers, json);
-        final String responseBody = response.responseBody();
-        final int responseCode = response.responseCode();
         // Ensure to have a valid response
-        return responseBody.length() > 500 && responseCode == 200;
+        return response.responseBody().length() > 500 && response.responseCode() == 200;
     }
 
-    public static String[] getYoutubeMusicKeys() throws IOException, ReCaptchaException,
+    public static String[] getYoutubeMusicKey() throws IOException, ReCaptchaException,
             Parser.RegexException {
-        if (youtubeMusicKeys != null && youtubeMusicKeys.length == 3) return youtubeMusicKeys;
-        if (areHardcodedYoutubeMusicKeysValid()) {
-            return youtubeMusicKeys = HARDCODED_YOUTUBE_MUSIC_KEY;
+        if (youtubeMusicKey != null && youtubeMusicKey.length == 3) return youtubeMusicKey;
+        if (isHardcodedYoutubeMusicKeyValid()) {
+            return youtubeMusicKey = HARDCODED_YOUTUBE_MUSIC_KEY;
         }
 
         final String url = "https://music.youtube.com/";
@@ -552,7 +551,7 @@ public class YoutubeParsingHelper {
             }
         }
 
-        return youtubeMusicKeys = new String[]{key, clientName, clientVersion};
+        return youtubeMusicKey = new String[]{key, clientName, clientVersion};
     }
 
     @Nullable

@@ -40,7 +40,7 @@ public class YoutubeMusicSearchExtractor extends SearchExtractor {
     @Override
     public void onFetchPage(@Nonnull final Downloader downloader) throws IOException,
             ExtractionException {
-        final String[] youtubeMusicKeys = YoutubeParsingHelper.getYoutubeMusicKeys();
+        final String[] youtubeMusicKeys = YoutubeParsingHelper.getYoutubeMusicKey();
 
         final String url = "https://music.youtube.com/youtubei/v1/search?alt=json&key=" + youtubeMusicKeys[0];
 
@@ -184,15 +184,15 @@ public class YoutubeMusicSearchExtractor extends SearchExtractor {
     }
 
     @Override
-    public InfoItemsPage<InfoItem> getPage(final Page page) throws IOException,
-            ExtractionException {
+    public InfoItemsPage<InfoItem> getPage(final Page page)
+            throws IOException, ExtractionException {
         if (page == null || isNullOrEmpty(page.getUrl())) {
             throw new IllegalArgumentException("Page doesn't contain an URL");
         }
 
         final InfoItemsSearchCollector collector = new InfoItemsSearchCollector(getServiceId());
 
-        final String[] youtubeMusicKeys = YoutubeParsingHelper.getYoutubeMusicKeys();
+        final String[] youtubeMusicKeys = YoutubeParsingHelper.getYoutubeMusicKey();
 
         // @formatter:off
         byte[] json = JsonWriter.string()
@@ -540,6 +540,6 @@ public class YoutubeMusicSearchExtractor extends SearchExtractor {
 
         return new Page("https://music.youtube.com/youtubei/v1/search?ctoken=" + continuation
                 + "&continuation=" + continuation + "&itct=" + clickTrackingParams + "&alt=json"
-                + "&key=" + YoutubeParsingHelper.getYoutubeMusicKeys()[0]);
+                + "&key=" + YoutubeParsingHelper.getYoutubeMusicKey()[0]);
     }
 }
