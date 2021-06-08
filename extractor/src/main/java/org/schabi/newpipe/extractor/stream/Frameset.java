@@ -1,8 +1,9 @@
 package org.schabi.newpipe.extractor.stream;
 
+import java.io.Serializable;
 import java.util.List;
 
-public final class Frameset {
+public final class Frameset implements Serializable {
 
     private final List<String> urls;
     private final int frameWidth;
