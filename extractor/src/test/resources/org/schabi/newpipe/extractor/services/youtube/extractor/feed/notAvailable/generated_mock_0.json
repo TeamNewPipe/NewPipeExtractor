@@ -1,0 +1,44 @@
+{
+  "request": {
+    "httpMethod": "GET",
+    "url": "https://www.youtube.com/feeds/videos.xml?channel_id\u003dUCTGjY2I-ZUGnwVoWAGRd7XQ",
+    "headers": {
+      "Accept-Language": [
+        "en-GB, en;q\u003d0.9"
+      ]
+    },
+    "localization": {
+      "languageCode": "en",
+      "countryCode": "GB"
+    }
+  },
+  "response": {
+    "responseCode": 404,
+    "responseMessage": "",
+    "responseHeaders": {
+      "alt-svc": [
+        "h3-29\u003d\":443\"; ma\u003d2592000,h3-T051\u003d\":443\"; ma\u003d2592000,h3-Q050\u003d\":443\"; ma\u003d2592000,h3-Q046\u003d\":443\"; ma\u003d2592000,h3-Q043\u003d\":443\"; ma\u003d2592000,quic\u003d\":443\"; ma\u003d2592000; v\u003d\"46,43\""
+      ],
+      "content-length": [
+        "1613"
+      ],
+      "content-type": [
+        "text/html; charset\u003dUTF-8"
+      ],
+      "date": [
+        "Tue, 30 Mar 2021 08:33:07 GMT"
+      ],
+      "server": [
+        "YouTube RSS Feeds server"
+      ],
+      "x-frame-options": [
+        "SAMEORIGIN"
+      ],
+      "x-xss-protection": [
+        "0"
+      ]
+    },
+    "responseBody": "\u003c!DOCTYPE html\u003e\n\u003chtml lang\u003den\u003e\n  \u003cmeta charset\u003dutf-8\u003e\n  \u003cmeta name\u003dviewport content\u003d\"initial-scale\u003d1, minimum-scale\u003d1, width\u003ddevice-width\"\u003e\n  \u003ctitle\u003eError 404 (Not Found)!!1\u003c/title\u003e\n  \u003cstyle\u003e\n    *{margin:0;padding:0}html,code{font:15px/22px arial,sans-serif}html{background:#fff;color:#222;padding:15px}body{margin:7% auto 0;max-width:390px;min-height:180px;padding:30px 0 15px}* \u003e body{background:url(//www.google.com/images/errors/robot.png) 100% 5px no-repeat;padding-right:205px}p{margin:11px 0 22px;overflow:hidden}ins{color:#777;text-decoration:none}a img{border:0}@media screen and (max-width:772px){body{background:none;margin-top:0;max-width:none;padding-right:0}}#logo{background:url(//www.google.com/images/branding/googlelogo/1x/googlelogo_color_150x54dp.png) no-repeat;margin-left:-5px}@media only screen and (min-resolution:192dpi){#logo{background:url(//www.google.com/images/branding/googlelogo/2x/googlelogo_color_150x54dp.png) no-repeat 0% 0%/100% 100%;-moz-border-image:url(//www.google.com/images/branding/googlelogo/2x/googlelogo_color_150x54dp.png) 0}}@media only screen and (-webkit-min-device-pixel-ratio:2){#logo{background:url(//www.google.com/images/branding/googlelogo/2x/googlelogo_color_150x54dp.png) no-repeat;-webkit-background-size:100% 100%}}#logo{display:inline-block;height:54px;width:150px}\n  \u003c/style\u003e\n  \u003ca href\u003d//www.google.com/\u003e\u003cspan id\u003dlogo aria-label\u003dGoogle\u003e\u003c/span\u003e\u003c/a\u003e\n  \u003cp\u003e\u003cb\u003e404.\u003c/b\u003e \u003cins\u003eThat’s an error.\u003c/ins\u003e\n  \u003cp\u003eThe requested URL \u003ccode\u003e/feeds/videos.xml?channel_id\u003dUCTGjY2I-ZUGnwVoWAGRd7XQ\u003c/code\u003e was not found on this server.  \u003cins\u003eThat’s all we know.\u003c/ins\u003e\n",
+    "latestUrl": "https://www.youtube.com/feeds/videos.xml?channel_id\u003dUCTGjY2I-ZUGnwVoWAGRd7XQ"
+  }
+}
