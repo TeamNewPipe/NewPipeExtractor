@@ -12,8 +12,8 @@ import javax.annotation.Nullable;
 public interface CommentsInfoItemExtractor extends InfoItemExtractor {
 
     /**
-     * Return the like count of the comment, or -1 if it's unavailable<br/>
-     *
+     * Return the like count of the comment, or -1 if it's unavailable<
+     * <br>
      * NOTE: Currently only implemented for YT {@link YoutubeCommentsInfoItemExtractor#getLikeCount()}
      * with limitations (only approximate like count is returned)
      *
@@ -24,8 +24,8 @@ public interface CommentsInfoItemExtractor extends InfoItemExtractor {
     }
 
     /**
-     * The unmodified like count given by the service<br/>
-     *
+     * The unmodified like count given by the service
+     * <br>
      * It may be language dependent
      */
     default String getTextualLikeCount() throws ParsingException {

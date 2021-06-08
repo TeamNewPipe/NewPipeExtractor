@@ -72,10 +72,10 @@ public class YoutubeCommentsInfoItemExtractor implements CommentsInfoItemExtract
     }
 
     /**
-     * @implNote The method is parsing internally a localized string.<br/>
+     * @implNote The method is parsing internally a localized string.<br>
      * <ul>
      *     <li>
-     *         More than >1k likes will result in an inaccurate number
+     *         More than 1k likes will result in an inaccurate number
      *     </li>
      *     <li>
      *         This will fail for other languages than English.
@@ -84,7 +84,7 @@ public class YoutubeCommentsInfoItemExtractor implements CommentsInfoItemExtract
      *         everything will work fine.
      *      </li>
      * </ul>
-     * <br/>
+     * <br>
      * Consider using {@link #getTextualLikeCount()}
      */
     @Override
