@@ -12,15 +12,20 @@ import javax.annotation.Nullable;
 public interface CommentsInfoItemExtractor extends InfoItemExtractor {
 
     /**
-     * Return the like count of the comment, or -1 if it's unavailable
+     * Return the like count of the comment,
+     * or {@link CommentsInfoItem#NO_LIKE_COUNT} if it is unavailable.
+     *
      * <br>
+     *
      * NOTE: Currently only implemented for YT {@link YoutubeCommentsInfoItemExtractor#getLikeCount()}
      * with limitations (only approximate like count is returned)
      *
      * @see StreamExtractor#getLikeCount()
+     * @return the comment's like count
+     * or {@link CommentsInfoItem#NO_LIKE_COUNT} if it is unavailable
      */
     default int getLikeCount() throws ParsingException {
-        return -1;
+        return CommentsInfoItem.NO_LIKE_COUNT;
     }
 
     /**
@@ -93,5 +98,13 @@ public interface CommentsInfoItemExtractor extends InfoItemExtractor {
      */
     default boolean isUploaderVerified() throws ParsingException {
         return false;
+    }
+
+    /**
+     * The playback position of the stream to which this comment belongs.
+     * @see CommentsInfoItem#getStreamPosition()
+     */
+    default int getStreamPosition() throws ParsingException {
+        return CommentsInfoItem.NO_STREAM_POSITION;
     }
 }

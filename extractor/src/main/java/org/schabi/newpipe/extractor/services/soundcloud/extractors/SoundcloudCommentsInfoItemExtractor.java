@@ -44,6 +44,11 @@ public class SoundcloudCommentsInfoItemExtractor implements CommentsInfoItemExtr
     }
 
     @Override
+    public int getStreamPosition() throws ParsingException {
+        return json.getInt("timestamp") / 1000; // convert milliseconds to seconds
+    }
+
+    @Override
     public String getUploaderUrl() {
         return json.getObject("user").getString("permalink_url");
     }
@@ -65,7 +70,7 @@ public class SoundcloudCommentsInfoItemExtractor implements CommentsInfoItemExtr
     }
 
     @Override
-    public String getUrl() throws ParsingException {
+    public String getUrl() {
         return url;
     }
 
