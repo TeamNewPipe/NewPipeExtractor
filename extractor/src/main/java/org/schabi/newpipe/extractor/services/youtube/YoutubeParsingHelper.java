@@ -858,7 +858,7 @@ public class YoutubeParsingHelper {
      */
     public static void addCookieHeader(final Map<String, List<String>> headers) {
         if (headers.get("Cookie") == null) {
-            headers.put("Cookie", Collections.singletonList(generateConsentCookie()));
+            headers.put("Cookie", Arrays.asList(generateConsentCookie()));
         } else {
             headers.get("Cookie").add(generateConsentCookie());
         }
