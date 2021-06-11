@@ -290,8 +290,8 @@ public class YoutubeStreamExtractor extends StreamExtractor {
             return Long.parseLong(duration);
         } catch (final Exception e) {
             try {
-                final JsonArray formats = streamingData.getArray("formats");
-                final String durationMs = formats.getObject(formats.size() - 1)
+                final JsonArray adaptiveFormats = streamingData.getArray("adaptiveFormats");
+                final String durationMs = adaptiveFormats.getObject(0)
                         .getString("approxDurationMs");
                 return Math.round(Long.parseLong(durationMs) / 1000f);
             } catch (final Exception ignored) {
@@ -504,7 +504,7 @@ public class YoutubeStreamExtractor extends StreamExtractor {
 
             return dashManifestUrl;
         } catch (final Exception e) {
-            throw new ParsingException("Could not get dash manifest url", e);
+            throw new ParsingException("Could not get DASH manifest url", e);
         }
     }
 
@@ -516,7 +516,7 @@ public class YoutubeStreamExtractor extends StreamExtractor {
         try {
             return streamingData.getString("hlsManifestUrl");
         } catch (final Exception e) {
-            throw new ParsingException("Could not get hls manifest url", e);
+            throw new ParsingException("Could not get HLS manifest url", e);
         }
     }
 
@@ -961,14 +961,24 @@ public class YoutubeStreamExtractor extends StreamExtractor {
             if (streamingData.has("adaptiveFormats")) {
                 final JsonArray adaptiveFormats = streamingData.getArray("adaptiveFormats");
                 if (!isNullOrEmpty(adaptiveFormats)) {
-                    final JsonObject firstAdaptiveFormat = adaptiveFormats.getObject(0);
-                    return firstAdaptiveFormat.has("cipher") || firstAdaptiveFormat.has("signatureCipher");
+                    for (final Object adaptiveFormat : adaptiveFormats) {
+                        final JsonObject adaptiveFormatJsonObject = ((JsonObject) adaptiveFormat);
+                        if (adaptiveFormatJsonObject.has("signatureCipher")
+                                || adaptiveFormatJsonObject.has("cipher")) {
+                            return true;
+                        }
+                    }
                 }
             } else if (streamingData.has("formats")) {
                 final JsonArray formats = streamingData.getArray("formats");
                 if (!isNullOrEmpty(formats)) {
-                    final JsonObject firstFormat = formats.getObject(0);
-                    return firstFormat.has("cipher") || firstFormat.has("signatureCipher");
+                    for (final Object format : formats) {
+                        final JsonObject formatJsonObject = ((JsonObject) format);
+                        if (formatJsonObject.has("signatureCipher")
+                                || formatJsonObject.has("cipher")) {
+                            return true;
+                        }
+                    }
                 }
             }
         }
@@ -1134,7 +1144,7 @@ public class YoutubeStreamExtractor extends StreamExtractor {
 
             if (ItagItem.isSupported(itag)) {
                 try {
-                    ItagItem itagItem = ItagItem.getItag(itag);
+                    final ItagItem itagItem = ItagItem.getItag(itag);
                     if (itagItem.itagType == itagTypeWanted) {
                         // Ignore streams that are delivered using YouTube's OTF format,
                         // as those only work with DASH and not with progressive HTTP.
