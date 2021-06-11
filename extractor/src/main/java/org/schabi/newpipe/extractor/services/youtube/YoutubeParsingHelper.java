@@ -109,25 +109,25 @@ public class YoutubeParsingHelper {
         }
     }
 
-    public static boolean isYoutubeURL(final URL url) {
+    public static boolean isYoutubeURL(@Nonnull final URL url) {
         final String host = url.getHost();
         return host.equalsIgnoreCase("youtube.com") || host.equalsIgnoreCase("www.youtube.com")
                 || host.equalsIgnoreCase("m.youtube.com")
                 || host.equalsIgnoreCase("music.youtube.com");
     }
 
-    public static boolean isYoutubeServiceURL(final URL url) {
+    public static boolean isYoutubeServiceURL(@Nonnull final URL url) {
         final String host = url.getHost();
         return host.equalsIgnoreCase("www.youtube-nocookie.com")
                 || host.equalsIgnoreCase("youtu.be");
     }
 
-    public static boolean isHooktubeURL(final URL url) {
+    public static boolean isHooktubeURL(@Nonnull final URL url) {
         final String host = url.getHost();
         return host.equalsIgnoreCase("hooktube.com");
     }
 
-    public static boolean isInvidioURL(final URL url) {
+    public static boolean isInvidioURL(@Nonnull final URL url) {
         final String host = url.getHost();
         return host.equalsIgnoreCase("invidio.us")
                 || host.equalsIgnoreCase("dev.invidio.us")
@@ -164,7 +164,7 @@ public class YoutubeParsingHelper {
      * @return the duration in seconds
      * @throws ParsingException when more than 3 separators are found
      */
-    public static int parseDurationString(final String input)
+    public static int parseDurationString(@Nonnull final String input)
             throws ParsingException, NumberFormatException {
         // If time separator : is not detected, try . instead
         final String[] splitInput = input.contains(":")
@@ -205,7 +205,8 @@ public class YoutubeParsingHelper {
                 + Integer.parseInt(Utils.removeNonDigitCharacters(seconds));
     }
 
-    public static String getFeedUrlFrom(final String channelIdOrUser) {
+    @Nonnull
+    public static String getFeedUrlFrom(@Nonnull final String channelIdOrUser) {
         if (channelIdOrUser.startsWith("user/")) {
             return FEED_BASE_USER + channelIdOrUser.replace("user/", "");
         } else if (channelIdOrUser.startsWith("channel/")) {
@@ -236,7 +237,7 @@ public class YoutubeParsingHelper {
      * @param playlistId the id of the playlist
      * @return Whether given id belongs to a YouTube Mix
      */
-    public static boolean isYoutubeMixId(final String playlistId) {
+    public static boolean isYoutubeMixId(@Nonnull final String playlistId) {
         return playlistId.startsWith("RD") && !isYoutubeMusicMixId(playlistId);
     }
 
@@ -247,7 +248,7 @@ public class YoutubeParsingHelper {
      * @param playlistId the playlist id
      * @return Whether given id belongs to a YouTube Music Mix
      */
-    public static boolean isYoutubeMusicMixId(final String playlistId) {
+    public static boolean isYoutubeMusicMixId(@Nonnull final String playlistId) {
         return playlistId.startsWith("RDAMVM") || playlistId.startsWith("RDCLAK");
     }
 
@@ -257,7 +258,7 @@ public class YoutubeParsingHelper {
      *
      * @return Whether given id belongs to a YouTube Channel Mix
      */
-    public static boolean isYoutubeChannelMixId(final String playlistId) {
+    public static boolean isYoutubeChannelMixId(@Nonnull final String playlistId) {
         return playlistId.startsWith("RDCM");
     }
 
@@ -266,7 +267,9 @@ public class YoutubeParsingHelper {
      *
      * @throws ParsingException If the playlistId is a Channel Mix or not a mix.
      */
-    public static String extractVideoIdFromMixId(final String playlistId) throws ParsingException {
+    @Nonnull
+    public static String extractVideoIdFromMixId(@Nonnull final String playlistId)
+            throws ParsingException {
         if (playlistId.startsWith("RDMM")) { // My Mix
             return playlistId.substring(4);
 
@@ -555,7 +558,7 @@ public class YoutubeParsingHelper {
     }
 
     @Nullable
-    public static String getUrlFromNavigationEndpoint(final JsonObject navigationEndpoint)
+    public static String getUrlFromNavigationEndpoint(@Nonnull final JsonObject navigationEndpoint)
             throws ParsingException {
         if (navigationEndpoint.has("urlEndpoint")) {
             String internUrl = navigationEndpoint.getObject("urlEndpoint").getString("url");
@@ -668,7 +671,7 @@ public class YoutubeParsingHelper {
     }
 
     @Nullable
-    public static String getTextAtKey(final JsonObject jsonObject, final String key)
+    public static String getTextAtKey(@Nonnull final JsonObject jsonObject, final String key)
             throws ParsingException {
         if (jsonObject.isString(key)) {
             return jsonObject.getString(key);
@@ -677,7 +680,7 @@ public class YoutubeParsingHelper {
         }
     }
 
-    public static String fixThumbnailUrl(String thumbnailUrl) {
+    public static String fixThumbnailUrl(@Nonnull String thumbnailUrl) {
         if (thumbnailUrl.startsWith("//")) {
             thumbnailUrl = thumbnailUrl.substring(2);
         }
@@ -691,7 +694,8 @@ public class YoutubeParsingHelper {
         return thumbnailUrl;
     }
 
-    public static String getValidJsonResponseBody(final Response response)
+    @Nonnull
+    public static String getValidJsonResponseBody(@Nonnull final Response response)
             throws ParsingException, MalformedURLException {
         if (response.responseCode() == 404) {
             throw new ContentNotAvailableException("Not found"
@@ -748,7 +752,8 @@ public class YoutubeParsingHelper {
 
     public static JsonObject getJsonMobilePostResponse(final String endpoint,
                                                        final byte[] body,
-                                                       final ContentCountry contentCountry,
+                                                       @Nonnull final ContentCountry
+                                                               contentCountry,
                                                        final Localization localization)
             throws IOException, ExtractionException {
         final Map<String, List<String>> headers = new HashMap<>();
@@ -776,7 +781,8 @@ public class YoutubeParsingHelper {
         return JsonUtils.toJsonArray(getValidJsonResponseBody(response));
     }
 
-    public static JsonArray getJsonResponse(final Page page, final Localization localization)
+    public static JsonArray getJsonResponse(@Nonnull final Page page,
+                                            final Localization localization)
             throws IOException, ExtractionException {
         final Map<String, List<String>> headers = new HashMap<>();
         addYouTubeHeaders(headers);
@@ -786,8 +792,11 @@ public class YoutubeParsingHelper {
         return JsonUtils.toJsonArray(getValidJsonResponseBody(response));
     }
 
-    public static JsonBuilder<JsonObject> prepareJsonBuilder(final Localization localization,
-                                                             final ContentCountry contentCountry)
+    @Nonnull
+    public static JsonBuilder<JsonObject> prepareJsonBuilder(@Nonnull final Localization
+                                                                         localization,
+                                                             @Nonnull final ContentCountry
+                                                                     contentCountry)
             throws IOException, ExtractionException {
         // @formatter:off
         return JsonObject.builder()
@@ -802,8 +811,10 @@ public class YoutubeParsingHelper {
         // @formatter:on
     }
 
-    public static JsonBuilder<JsonObject> prepareMobileJsonBuilder(final Localization localization,
-                                                                   final ContentCountry
+    @Nonnull
+    public static JsonBuilder<JsonObject> prepareMobileJsonBuilder(@Nonnull final Localization
+                                                                               localization,
+                                                                   @Nonnull final ContentCountry
                                                                            contentCountry)
             throws IOException, ExtractionException {
         // @formatter:off
@@ -835,7 +846,7 @@ public class YoutubeParsingHelper {
      * <code>Origin</code>, and <code>Referer</code> headers.
      * @param headers The headers which should be completed
      */
-    public static void addClientInfoHeaders(final Map<String, List<String>> headers)
+    public static void addClientInfoHeaders(@Nonnull final Map<String, List<String>> headers)
             throws IOException, ExtractionException {
         if (headers.get("Origin") == null) {
             headers.put("Origin", Collections.singletonList("https://www.youtube.com"));
@@ -856,7 +867,7 @@ public class YoutubeParsingHelper {
      * @see #CONSENT_COOKIE
      * @param headers the headers which should be completed
      */
-    public static void addCookieHeader(final Map<String, List<String>> headers) {
+    public static void addCookieHeader(@Nonnull final Map<String, List<String>> headers) {
         if (headers.get("Cookie") == null) {
             headers.put("Cookie", Arrays.asList(generateConsentCookie()));
         } else {
@@ -864,12 +875,14 @@ public class YoutubeParsingHelper {
         }
     }
 
+    @Nonnull
     public static String generateConsentCookie() {
         final int statusCode = 100 + numberGenerator.nextInt(900);
         return CONSENT_COOKIE + statusCode;
     }
 
-    public static String extractCookieValue(final String cookieName, final Response response) {
+    public static String extractCookieValue(final String cookieName,
+                                            @Nonnull final Response response) {
         final List<String> cookies = response.responseHeaders().get("set-cookie");
         int startIndex;
         String result = "";
@@ -892,7 +905,8 @@ public class YoutubeParsingHelper {
      * @param initialData the object which will be checked if an alert is present
      * @throws ContentNotAvailableException if an alert is detected
      */
-    public static void defaultAlertsCheck(final JsonObject initialData) throws ParsingException {
+    public static void defaultAlertsCheck(@Nonnull final JsonObject initialData)
+            throws ParsingException {
         final JsonArray alerts = initialData.getArray("alerts");
         if (!isNullOrEmpty(alerts)) {
             final JsonObject alertRenderer = alerts.getObject(0).getObject("alertRenderer");
@@ -902,7 +916,7 @@ public class YoutubeParsingHelper {
                 if (alertText != null && alertText.contains("This account has been terminated")) {
                     if (alertText.contains("violation") || alertText.contains("violating")
                             || alertText.contains("infringement")) {
-                        // possible error messages:
+                        // Possible error messages:
                         // "This account has been terminated for a violation of YouTube's Terms of Service."
                         // "This account has been terminated due to multiple or severe violations of YouTube's policy prohibiting hate speech."
                         // "This account has been terminated due to multiple or severe violations of YouTube's policy prohibiting content designed to harass, bully or threaten."
@@ -922,7 +936,8 @@ public class YoutubeParsingHelper {
     }
 
     @Nonnull
-    public static List<MetaInfo> getMetaInfo(final JsonArray contents) throws ParsingException {
+    public static List<MetaInfo> getMetaInfo(@Nonnull final JsonArray contents)
+            throws ParsingException {
         final List<MetaInfo> metaInfo = new ArrayList<>();
         for (final Object content : contents) {
             final JsonObject resultObject = (JsonObject) content;
@@ -948,7 +963,7 @@ public class YoutubeParsingHelper {
     }
 
     @Nonnull
-    private static MetaInfo getInfoPanelContent(final JsonObject infoPanelContentRenderer)
+    private static MetaInfo getInfoPanelContent(@Nonnull final JsonObject infoPanelContentRenderer)
             throws ParsingException {
         final MetaInfo metaInfo = new MetaInfo();
         final StringBuilder sb = new StringBuilder();
@@ -981,7 +996,7 @@ public class YoutubeParsingHelper {
     }
 
     @Nonnull
-    private static MetaInfo getClarificationRendererContent(final JsonObject clarificationRenderer)
+    private static MetaInfo getClarificationRendererContent(@Nonnull final JsonObject clarificationRenderer)
             throws ParsingException {
         final MetaInfo metaInfo = new MetaInfo();
 
@@ -1018,7 +1033,7 @@ public class YoutubeParsingHelper {
                 .has("secondarySource")) {
             final String url = getUrlFromNavigationEndpoint(clarificationRenderer
                     .getObject("secondaryEndpoint"));
-            // ignore Google URLs, because those point to a Google search about "Covid-19"
+            // Ignore Google URLs, because those point to a Google search about "Covid-19"
             if (url != null && !isGoogleURL(url)) {
                 try {
                     metaInfo.addUrl(new URL(url));
@@ -1068,7 +1083,8 @@ public class YoutubeParsingHelper {
         return false;
     }
 
-    public static String unescapeDocument(final String doc) {
+    @Nonnull
+    public static String unescapeDocument(@Nonnull final String doc) {
         return doc
                 .replaceAll("\\\\x22", "\"")
                 .replaceAll("\\\\x7b", "{")
