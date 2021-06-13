@@ -72,10 +72,14 @@ public class YoutubeStreamInfoItemExtractor implements StreamInfoItemExtractor {
         final JsonArray thumbnailOverlays = videoInfo.getArray("thumbnailOverlays");
         for (final Object object : thumbnailOverlays) {
             final JsonObject thumbnailOverlay = (JsonObject) object;
-            if (thumbnailOverlay.has("thumbnailOverlayNowPlayingRenderer")
-                    && thumbnailOverlay.getObject("thumbnailOverlayTimeStatusRenderer")
-                    .getString("style", EMPTY_STRING).equalsIgnoreCase("LIVE")) {
-                return cachedStreamType = StreamType.LIVE_STREAM;
+            if (thumbnailOverlay.has("thumbnailOverlayNowPlayingRenderer")) {
+                final String overlayText = thumbnailOverlay
+                        .getObject("thumbnailOverlayTimeStatusRenderer")
+                        .getString("style", EMPTY_STRING);
+                if (overlayText.equalsIgnoreCase("LIVE")
+                        || overlayText.equalsIgnoreCase("NOW PLAYING")) {
+                    return cachedStreamType = StreamType.LIVE_STREAM;
+                }
             }
         }
 
