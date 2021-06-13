@@ -55,7 +55,7 @@ public class YoutubeCommentsExtractor extends CommentsExtractor {
     public InfoItemsPage<CommentsInfoItem> getInitialPage()
             throws IOException, ExtractionException {
 
-        // Check if the the findInitialCommentsToken was already called and initialized
+        // Check if findInitialCommentsToken was already called and optCommentsDisabled initialized
         if (optCommentsDisabled.orElse(false)) {
             return getInfoItemsPageForDisabledComments();
         }
@@ -72,7 +72,7 @@ public class YoutubeCommentsExtractor extends CommentsExtractor {
 
     /**
      * Finds the initial comments token and initializes commentsDisabled.
-     * @return
+     * @return the continuation token or null if none was found
      */
     private String findInitialCommentsToken() {
         final String continuationStartPattern = "continuation\":\"";
