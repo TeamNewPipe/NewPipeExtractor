@@ -259,7 +259,7 @@ public abstract class DefaultStreamExtractorTest extends DefaultExtractorTest<St
             assertFalse(videoStreams.isEmpty());
 
             for (final VideoStream stream : videoStreams) {
-                assertIsSecureUrl(stream.getUrl());
+                if (stream.isUrl()) assertIsSecureUrl(stream.getContent());
                 assertFalse(stream.getResolution().isEmpty());
 
                 final int formatId = stream.getFormatId();
@@ -282,9 +282,9 @@ public abstract class DefaultStreamExtractorTest extends DefaultExtractorTest<St
             assertFalse(audioStreams.isEmpty());
 
             for (final AudioStream stream : audioStreams) {
-                assertIsSecureUrl(stream.getUrl());
+                if (stream.isUrl()) assertIsSecureUrl(stream.getContent());
 
-                final int formatId = stream.getFormatId();
+                final int formatId = stream.getFormat().id;
                 // see MediaFormat: video stream formats range from 0x100 to 0x1000
                 assertTrue(0x100 <= formatId && formatId < 0x1000,
                         "format id does not fit an audio stream: " + formatId);
@@ -304,7 +304,7 @@ public abstract class DefaultStreamExtractorTest extends DefaultExtractorTest<St
             assertFalse(subtitles.isEmpty());
 
             for (final SubtitlesStream stream : subtitles) {
-                assertIsSecureUrl(stream.getUrl());
+                if (stream.isUrl()) assertIsSecureUrl(stream.getContent());
 
                 final int formatId = stream.getFormatId();
                 // see MediaFormat: video stream formats range from 0x1000 to 0x10000
