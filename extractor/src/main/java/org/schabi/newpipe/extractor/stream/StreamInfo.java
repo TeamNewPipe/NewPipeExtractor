@@ -5,7 +5,6 @@ import org.schabi.newpipe.extractor.exceptions.ContentNotAvailableException;
 import org.schabi.newpipe.extractor.exceptions.ContentNotSupportedException;
 import org.schabi.newpipe.extractor.exceptions.ExtractionException;
 import org.schabi.newpipe.extractor.localization.DateWrapper;
-import org.schabi.newpipe.extractor.utils.DashMpdParser;
 import org.schabi.newpipe.extractor.utils.ExtractorHelper;
 
 import java.io.IOException;
@@ -22,62 +21,67 @@ import static org.schabi.newpipe.extractor.utils.Utils.isNullOrEmpty;
  * Created by Christian Schabesberger on 26.08.15.
  *
  * Copyright (C) Christian Schabesberger 2016 <chris.schabesberger@mailbox.org>
- * StreamInfo.java is part of NewPipe.
+ * StreamInfo.java is part of NewPipe Extractor.
  *
- * NewPipe is free software: you can redistribute it and/or modify
+ * NewPipe Extractor is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
  *
- * NewPipe is distributed in the hope that it will be useful,
+ * NewPipe Extractor is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Public License for more details.
  *
  * You should have received a copy of the GNU General Public License
- * along with NewPipe.  If not, see <http://www.gnu.org/licenses/>.
+ * along with NewPipe Extractor. If not, see <https://www.gnu.org/licenses/>.
  */
 
 /**
- * Info object for opened videos, ie the video ready to play.
+ * Info object for opened videos, i.e. the video ready to play.
  */
 public class StreamInfo extends Info {
 
     public static class StreamExtractException extends ExtractionException {
-        StreamExtractException(String message) {
+        StreamExtractException(final String message) {
             super(message);
         }
     }
 
-    public StreamInfo(int serviceId, String url, String originalUrl, StreamType streamType, String id, String name,
-                      int ageLimit) {
+    public StreamInfo(final int serviceId,
+                      final String url,
+                      final String originalUrl,
+                      final StreamType streamType,
+                      final String id,
+                      final String name,
+                      final int ageLimit) {
         super(serviceId, id, url, originalUrl, name);
         this.streamType = streamType;
         this.ageLimit = ageLimit;
     }
 
-    public static StreamInfo getInfo(String url) throws IOException, ExtractionException {
+    public static StreamInfo getInfo(final String url) throws IOException, ExtractionException {
         return getInfo(NewPipe.getServiceByUrl(url), url);
     }
 
-    public static StreamInfo getInfo(StreamingService service, String url) throws IOException, ExtractionException {
+    public static StreamInfo getInfo(@Nonnull final StreamingService service,
+                                     final String url) throws IOException, ExtractionException {
         return getInfo(service.getStreamExtractor(url));
     }
 
-    public static StreamInfo getInfo(StreamExtractor extractor) throws ExtractionException, IOException {
+    public static StreamInfo getInfo(@Nonnull final StreamExtractor extractor)
+            throws ExtractionException, IOException {
         extractor.fetchPage();
         StreamInfo streamInfo;
         try {
             streamInfo = extractImportantData(extractor);
-            streamInfo = extractStreams(streamInfo, extractor);
-            streamInfo = extractOptionalData(streamInfo, extractor);
-        } catch (ExtractionException e) {
-            // Currently YouTube does not distinguish between age restricted videos and
-            // videos blocked
-            // by country. This means that during the initialisation of the extractor, the
-            // extractor
-            // will assume that a video is age restricted while in reality it it blocked by
-            // country.
+            extractStreams(streamInfo, extractor);
+            extractOptionalData(streamInfo, extractor);
+        } catch (final ExtractionException e) {
+            // Currently YouTube does not distinguish between age restricted videos and videos
+            // blocked by country. This means that during the initialisation of the extractor, the
+            // extractor will assume that a video is age restricted while in reality it it blocked
+            // by country.
             //
             // We will now detect whether the video is blocked by country or not.
 
@@ -92,18 +96,20 @@ public class StreamInfo extends Info {
         return streamInfo;
     }
 
-    private static StreamInfo extractImportantData(StreamExtractor extractor) throws ExtractionException {
-        /* ---- important data, without the video can't be displayed goes here: ---- */
-        // if one of these is not available an exception is meant to be thrown directly
-        // into the frontend.
+    @Nonnull
+    private static StreamInfo extractImportantData(@Nonnull final StreamExtractor extractor)
+            throws ExtractionException {
+        /* ---- Important data, without the video can't be displayed goes here: ---- */
+        // If one of these is not available an exception is meant to be thrown directly
+        // into NewPipe.
 
-        int serviceId = extractor.getServiceId();
-        String url = extractor.getUrl();
-        String originalUrl = extractor.getOriginalUrl();
-        StreamType streamType = extractor.getStreamType();
-        String id = extractor.getId();
-        String name = extractor.getName();
-        int ageLimit = extractor.getAgeLimit();
+        final int serviceId = extractor.getServiceId();
+        final String url = extractor.getUrl();
+        final String originalUrl = extractor.getOriginalUrl();
+        final StreamType streamType = extractor.getStreamType();
+        final String id = extractor.getId();
+        final String name = extractor.getName();
+        final int ageLimit = extractor.getAgeLimit();
 
         if ((streamType == StreamType.NONE) || isNullOrEmpty(url) || (isNullOrEmpty(id))
                 || (name == null /* streamInfo.title can be empty of course */) || (ageLimit == -1)) {
@@ -113,7 +119,9 @@ public class StreamInfo extends Info {
         return new StreamInfo(serviceId, url, originalUrl, streamType, id, name, ageLimit);
     }
 
-    private static StreamInfo extractStreams(StreamInfo streamInfo, StreamExtractor extractor)
+    @Nonnull
+    private static StreamInfo extractStreams(final StreamInfo streamInfo,
+                                             final StreamExtractor extractor)
             throws ExtractionException {
         /* ---- stream extraction goes here ---- */
         // At least one type of stream has to be available,
@@ -121,34 +129,34 @@ public class StreamInfo extends Info {
 
         try {
             streamInfo.setDashMpdUrl(extractor.getDashMpdUrl());
-        } catch (Exception e) {
-            streamInfo.addError(new ExtractionException("Couldn't get Dash manifest", e));
+        } catch (final Exception e) {
+            streamInfo.addError(new ExtractionException("Couldn't get DASH manifest", e));
         }
 
         try {
             streamInfo.setHlsUrl(extractor.getHlsUrl());
-        } catch (Exception e) {
+        } catch (final Exception e) {
             streamInfo.addError(new ExtractionException("Couldn't get HLS manifest", e));
         }
 
         /* Load and extract audio */
         try {
             streamInfo.setAudioStreams(extractor.getAudioStreams());
-        } catch (ContentNotSupportedException e) {
+        } catch (final ContentNotSupportedException e) {
             throw e;
-        } catch (Exception e) {
+        } catch (final Exception e) {
             streamInfo.addError(new ExtractionException("Couldn't get audio streams", e));
         }
         /* Extract video stream url */
         try {
             streamInfo.setVideoStreams(extractor.getVideoStreams());
-        } catch (Exception e) {
+        } catch (final Exception e) {
             streamInfo.addError(new ExtractionException("Couldn't get video streams", e));
         }
         /* Extract video only stream url */
         try {
             streamInfo.setVideoOnlyStreams(extractor.getVideoOnlyStreams());
-        } catch (Exception e) {
+        } catch (final Exception e) {
             streamInfo.addError(new ExtractionException("Couldn't get video only streams", e));
         }
 
@@ -160,44 +168,19 @@ public class StreamInfo extends Info {
         if (streamInfo.getAudioStreams() == null)
             streamInfo.setAudioStreams(Collections.emptyList());
 
-        Exception dashMpdError = null;
-        if (!isNullOrEmpty(streamInfo.getDashMpdUrl())) {
-            try {
-                DashMpdParser.ParserResult result = DashMpdParser.getStreams(streamInfo);
-                streamInfo.getVideoOnlyStreams().addAll(result.getVideoOnlyStreams());
-                streamInfo.getAudioStreams().addAll(result.getAudioStreams());
-                streamInfo.getVideoStreams().addAll(result.getVideoStreams());
-                streamInfo.segmentedVideoOnlyStreams = result.getSegmentedVideoOnlyStreams();
-                streamInfo.segmentedAudioStreams = result.getSegmentedAudioStreams();
-                streamInfo.segmentedVideoStreams = result.getSegmentedVideoStreams();
-            } catch (Exception e) {
-                // Sometimes we receive 403 (forbidden) error when trying to download the
-                // manifest (similar to what happens with youtube-dl),
-                // just skip the exception (but store it somewhere), as we later check if we
-                // have streams anyway.
-                dashMpdError = e;
-            }
-        }
-
-        // Either audio or video has to be available, otherwise we didn't get a stream
-        // (since videoOnly are optional, they don't count).
+        // Either audio or video has to be available, otherwise we didn't get a stream (since
+        // videoOnly are optional, they don't count).
         if ((streamInfo.videoStreams.isEmpty()) && (streamInfo.audioStreams.isEmpty())) {
-
-            if (dashMpdError != null) {
-                // If we don't have any video or audio and the dashMpd 'errored', add it to the
-                // error list
-                // (it's optional and it don't get added automatically, but it's good to have
-                // some additional error context)
-                streamInfo.addError(dashMpdError);
-            }
-
-            throw new StreamExtractException("Could not get any stream. See error variable to get further details.");
+            throw new StreamExtractException(
+                    "Could not get any stream. See error variable to get further details.");
         }
 
         return streamInfo;
     }
 
-    private static StreamInfo extractOptionalData(StreamInfo streamInfo, StreamExtractor extractor) {
+    @Nonnull
+    private static StreamInfo extractOptionalData(final StreamInfo streamInfo,
+                                                  final StreamExtractor extractor) {
         /* ---- optional data goes here: ---- */
         // If one of these fails, the frontend needs to handle that they are not
         // available.
@@ -207,27 +190,27 @@ public class StreamInfo extends Info {
 
         try {
             streamInfo.setThumbnailUrl(extractor.getThumbnailUrl());
-        } catch (Exception e) {
+        } catch (final Exception e) {
             streamInfo.addError(e);
         }
         try {
             streamInfo.setDuration(extractor.getLength());
-        } catch (Exception e) {
+        } catch (final Exception e) {
             streamInfo.addError(e);
         }
         try {
             streamInfo.setUploaderName(extractor.getUploaderName());
-        } catch (Exception e) {
+        } catch (final Exception e) {
             streamInfo.addError(e);
         }
         try {
             streamInfo.setUploaderUrl(extractor.getUploaderUrl());
-        } catch (Exception e) {
+        } catch (final Exception e) {
             streamInfo.addError(e);
         }
         try {
             streamInfo.setUploaderAvatarUrl(extractor.getUploaderAvatarUrl());
-        } catch (Exception e) {
+        } catch (final Exception e) {
             streamInfo.addError(e);
         }
         try {
@@ -238,115 +221,115 @@ public class StreamInfo extends Info {
 
         try {
             streamInfo.setSubChannelName(extractor.getSubChannelName());
-        } catch (Exception e) {
+        } catch (final Exception e) {
             streamInfo.addError(e);
         }
         try {
             streamInfo.setSubChannelUrl(extractor.getSubChannelUrl());
-        } catch (Exception e) {
+        } catch (final Exception e) {
             streamInfo.addError(e);
         }
         try {
             streamInfo.setSubChannelAvatarUrl(extractor.getSubChannelAvatarUrl());
-        } catch (Exception e) {
+        } catch (final Exception e) {
             streamInfo.addError(e);
         }
 
         try {
             streamInfo.setDescription(extractor.getDescription());
-        } catch (Exception e) {
+        } catch (final Exception e) {
             streamInfo.addError(e);
         }
         try {
             streamInfo.setViewCount(extractor.getViewCount());
-        } catch (Exception e) {
+        } catch (final Exception e) {
             streamInfo.addError(e);
         }
         try {
             streamInfo.setTextualUploadDate(extractor.getTextualUploadDate());
-        } catch (Exception e) {
+        } catch (final Exception e) {
             streamInfo.addError(e);
         }
         try {
             streamInfo.setUploadDate(extractor.getUploadDate());
-        } catch (Exception e) {
+        } catch (final Exception e) {
             streamInfo.addError(e);
         }
         try {
             streamInfo.setStartPosition(extractor.getTimeStamp());
-        } catch (Exception e) {
+        } catch (final Exception e) {
             streamInfo.addError(e);
         }
         try {
             streamInfo.setLikeCount(extractor.getLikeCount());
-        } catch (Exception e) {
+        } catch (final Exception e) {
             streamInfo.addError(e);
         }
         try {
             streamInfo.setDislikeCount(extractor.getDislikeCount());
-        } catch (Exception e) {
+        } catch (final Exception e) {
             streamInfo.addError(e);
         }
         try {
             streamInfo.setSubtitles(extractor.getSubtitlesDefault());
-        } catch (Exception e) {
+        } catch (final Exception e) {
             streamInfo.addError(e);
         }
 
-        //additional info
+        // Additional info
         try {
             streamInfo.setHost(extractor.getHost());
-        } catch (Exception e) {
+        } catch (final Exception e) {
             streamInfo.addError(e);
         }
         try {
             streamInfo.setPrivacy(extractor.getPrivacy());
-        } catch (Exception e) {
+        } catch (final Exception e) {
             streamInfo.addError(e);
         }
         try {
             streamInfo.setCategory(extractor.getCategory());
-        } catch (Exception e) {
+        } catch (final Exception e) {
             streamInfo.addError(e);
         }
         try {
             streamInfo.setLicence(extractor.getLicence());
-        } catch (Exception e) {
+        } catch (final Exception e) {
             streamInfo.addError(e);
         }
         try {
             streamInfo.setLanguageInfo(extractor.getLanguageInfo());
-        } catch (Exception e) {
+        } catch (final Exception e) {
             streamInfo.addError(e);
         }
         try {
             streamInfo.setTags(extractor.getTags());
-        } catch (Exception e) {
+        } catch (final Exception e) {
             streamInfo.addError(e);
         }
         try {
             streamInfo.setSupportInfo(extractor.getSupportInfo());
-        } catch (Exception e) {
+        } catch (final Exception e) {
             streamInfo.addError(e);
         }
         try {
             streamInfo.setStreamSegments(extractor.getStreamSegments());
-        } catch (Exception e) {
+        } catch (final Exception e) {
             streamInfo.addError(e);
         }
         try {
             streamInfo.setMetaInfo(extractor.getMetaInfo());
-        } catch (Exception e) {
+        } catch (final Exception e) {
             streamInfo.addError(e);
         }
-
         try {
             streamInfo.setPreviewFrames(extractor.getFrames());
-        } catch (Exception e) {
+        } catch (final Exception e) {
             streamInfo.addError(e);
         }
 
-        streamInfo.setRelatedItems(ExtractorHelper.getRelatedItemsOrLogError(streamInfo, extractor));
+        streamInfo.setRelatedItems(ExtractorHelper.getRelatedItemsOrLogError(streamInfo,
+                extractor));
 
         return streamInfo;
     }
@@ -377,11 +360,6 @@ public class StreamInfo extends Info {
     private List<VideoStream> videoOnlyStreams = new ArrayList<>();
 
     private String dashMpdUrl = "";
-    private List<VideoStream> segmentedVideoStreams = new ArrayList<>();
-    private List<AudioStream> segmentedAudioStreams = new ArrayList<>();
-    private List<VideoStream> segmentedVideoOnlyStreams = new ArrayList<>();
-
-
     private String hlsUrl = "";
     private List<InfoItem> relatedItems = new ArrayList<>();
 
@@ -552,7 +530,7 @@ public class StreamInfo extends Info {
         return subChannelUrl;
     }
 
-    public void setSubChannelUrl(String subChannelUrl) {
+    public void setSubChannelUrl(final String subChannelUrl) {
         this.subChannelUrl = subChannelUrl;
     }
 
@@ -560,7 +538,7 @@ public class StreamInfo extends Info {
         return subChannelAvatarUrl;
     }
 
-    public void setSubChannelAvatarUrl(String subChannelAvatarUrl) {
+    public void setSubChannelAvatarUrl(final String subChannelAvatarUrl) {
         this.subChannelAvatarUrl = subChannelAvatarUrl;
     }
 
@@ -592,39 +570,15 @@ public class StreamInfo extends Info {
         return dashMpdUrl;
     }
 
-    public void setDashMpdUrl(String dashMpdUrl) {
+    public void setDashMpdUrl(final String dashMpdUrl) {
         this.dashMpdUrl = dashMpdUrl;
-    }
-
-    public List<VideoStream> getSegmentedVideoStreams() {
-        return segmentedVideoStreams;
-    }
-
-    public void setSegmentedVideoStreams(List<VideoStream> segmentedVideoStreams) {
-        this.segmentedVideoStreams = segmentedVideoStreams;
-    }
-
-    public List<AudioStream> getSegmentedAudioStreams() {
-        return segmentedAudioStreams;
-    }
-
-    public void setSegmentedAudioStreams(List<AudioStream> segmentedAudioStreams) {
-        this.segmentedAudioStreams = segmentedAudioStreams;
-    }
-
-    public List<VideoStream> getSegmentedVideoOnlyStreams() {
-        return segmentedVideoOnlyStreams;
-    }
-
-    public void setSegmentedVideoOnlyStreams(List<VideoStream> segmentedVideoOnlyStreams) {
-        this.segmentedVideoOnlyStreams = segmentedVideoOnlyStreams;
     }
 
     public String getHlsUrl() {
         return hlsUrl;
     }
 
-    public void setHlsUrl(String hlsUrl) {
+    public void setHlsUrl(final String hlsUrl) {
         this.hlsUrl = hlsUrl;
     }
 
@@ -640,7 +594,7 @@ public class StreamInfo extends Info {
         return getRelatedItems();
     }
 
-    public void setRelatedItems(List<InfoItem> relatedItems) {
+    public void setRelatedItems(final List<InfoItem> relatedItems) {
         this.relatedItems = relatedItems;
     }
 
@@ -648,7 +602,7 @@ public class StreamInfo extends Info {
      * @deprecated Use {@link #setRelatedItems(List)}
      */
     @Deprecated
-    public void setRelatedStreams(List<InfoItem> relatedItems) {
+    public void setRelatedStreams(final List<InfoItem> relatedItems) {
         setRelatedItems(relatedItems);
     }
 
@@ -664,7 +618,7 @@ public class StreamInfo extends Info {
         return subtitles;
     }
 
-    public void setSubtitles(List<SubtitlesStream> subtitles) {
+    public void setSubtitles(final List<SubtitlesStream> subtitles) {
         this.subtitles = subtitles;
     }
 
@@ -672,7 +626,7 @@ public class StreamInfo extends Info {
         return this.host;
     }
 
-    public void setHost(String str) {
+    public void setHost(final String str) {
         this.host = str;
     }
 
@@ -680,7 +634,7 @@ public class StreamInfo extends Info {
         return this.privacy;
     }
 
-    public void setPrivacy(StreamExtractor.Privacy str) {
+    public void setPrivacy(final StreamExtractor.Privacy str) {
         this.privacy = str;
     }
 
@@ -688,7 +642,7 @@ public class StreamInfo extends Info {
         return this.category;
     }
 
-    public void setCategory(String cat) {
+    public void setCategory(final String cat) {
         this.category = cat;
     }
 
@@ -696,7 +650,7 @@ public class StreamInfo extends Info {
         return this.licence;
     }
 
-    public void setLicence(String str) {
+    public void setLicence(final String str) {
         this.licence = str;
     }
 
@@ -704,7 +658,7 @@ public class StreamInfo extends Info {
         return this.language;
     }
 
-    public void setLanguageInfo(Locale lang) {
+    public void setLanguageInfo(final Locale lang) {
         this.language = lang;
     }
 
@@ -712,11 +666,11 @@ public class StreamInfo extends Info {
         return this.tags;
     }
 
-    public void setTags(List<String> tags) {
+    public void setTags(final List<String> tags) {
         this.tags = tags;
     }
 
-    public void setSupportInfo(String support) {
+    public void setSupportInfo(final String support) {
         this.support = support;
     }
 
@@ -728,7 +682,7 @@ public class StreamInfo extends Info {
         return streamSegments;
     }
 
-    public void setStreamSegments(List<StreamSegment> streamSegments) {
+    public void setStreamSegments(final List<StreamSegment> streamSegments) {
         this.streamSegments = streamSegments;
     }
 

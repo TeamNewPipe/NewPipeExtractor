@@ -4,28 +4,30 @@ package org.schabi.newpipe.extractor.stream;
  * Created by Christian Schabesberger on 04.03.16.
  *
  * Copyright (C) Christian Schabesberger 2016 <chris.schabesberger@mailbox.org>
- * VideoStream.java is part of NewPipe.
+ * VideoStream.java is part of NewPipe Extractor.
  *
- * NewPipe is free software: you can redistribute it and/or modify
+ * NewPipe Extractor is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
  *
- * NewPipe is distributed in the hope that it will be useful,
+ * NewPipe Extractor is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
  * GNU General Public License for more details.
  *
  * You should have received a copy of the GNU General Public License
- * along with NewPipe.  If not, see <http://www.gnu.org/licenses/>.
+ * along with NewPipe Extractor. If not, see <https://www.gnu.org/licenses/>.
  */
 
 import org.schabi.newpipe.extractor.MediaFormat;
 import org.schabi.newpipe.extractor.services.youtube.ItagItem;
 
+import javax.annotation.Nonnull;
+
 public class VideoStream extends Stream {
-    public final String resolution;
-    public final boolean isVideoOnly;
+    private final String resolution;
+    private final boolean isVideoOnly;
 
     // Fields for Dash
     private int itag;
@@ -40,16 +42,55 @@ public class VideoStream extends Stream {
     private String quality;
     private String codec;
 
-    public VideoStream(String url, MediaFormat format, String resolution) {
-        this(url, format, resolution, false);
+    public VideoStream(final String id,
+                       final String url,
+                       final MediaFormat format,
+                       final String resolution,
+                       final boolean isVideoOnly) {
+        this(id, url, true, format, DeliveryMethod.PROGRESSIVE_HTTP, resolution, isVideoOnly);
     }
 
-    public VideoStream(String url, MediaFormat format, String resolution, boolean isVideoOnly) {
-        this(url, null, format, resolution, isVideoOnly);
+    public VideoStream(final String id,
+                       final String content,
+                       final boolean isUrl,
+                       final MediaFormat format,
+                       final DeliveryMethod deliveryMethod,
+                       final String resolution,
+                       final boolean isVideoOnly) {
+        super(id, content, isUrl, format, deliveryMethod);
+        this.resolution = resolution;
+        this.isVideoOnly = isVideoOnly;
     }
 
-    public VideoStream(String url, boolean isVideoOnly, ItagItem itag) {
-        this(url, itag.getMediaFormat(), itag.resolutionString, isVideoOnly);
+    public VideoStream(final String id,
+                       final String content,
+                       final boolean isUrl,
+                       final MediaFormat format,
+                       final DeliveryMethod deliveryMethod,
+                       final String resolution,
+                       final boolean isVideoOnly,
+                       @Nonnull final ItagItem itag) {
+        super(id, content, isUrl, format, deliveryMethod);
+        this.itag = itag.id;
+        this.bitrate = itag.getBitrate();
+        this.initStart = itag.getInitStart();
+        this.initEnd = itag.getInitEnd();
+        this.indexStart = itag.getIndexStart();
+        this.indexEnd = itag.getIndexEnd();
+        this.codec = itag.getCodec();
+        this.height = itag.getHeight();
+        this.width = itag.getWidth();
+        this.quality = itag.getQuality();
+        this.fps = itag.fps;
+        this.resolution = resolution;
+        this.isVideoOnly = isVideoOnly;
+    }
+
+    public VideoStream(final String id,
+                       final String url,
+                       final boolean isVideoOnly,
+                       @Nonnull final ItagItem itag) {
+        this(id, url, itag.getMediaFormat(), itag.resolutionString, isVideoOnly);
         this.itag = itag.id;
         this.bitrate = itag.getBitrate();
         this.initStart = itag.getInitStart();
@@ -63,21 +104,11 @@ public class VideoStream extends Stream {
         this.fps = itag.fps;
     }
 
-    public VideoStream(String url, String torrentUrl, MediaFormat format, String resolution) {
-        this(url, torrentUrl, format, resolution, false);
-    }
-
-    public VideoStream(String url, String torrentUrl, MediaFormat format, String resolution, boolean isVideoOnly) {
-        super(url, torrentUrl, format);
-        this.resolution = resolution;
-        this.isVideoOnly = isVideoOnly;
-    }
-
     @Override
-    public boolean equalStats(Stream cmp) {
-        return super.equalStats(cmp) && cmp instanceof VideoStream &&
-                resolution.equals(((VideoStream) cmp).resolution) &&
-                isVideoOnly == ((VideoStream) cmp).isVideoOnly;
+    public boolean equalStats(final Stream cmp) {
+        return super.equalStats(cmp) && cmp instanceof VideoStream
+                && resolution.equals(((VideoStream) cmp).resolution)
+                && isVideoOnly == ((VideoStream) cmp).isVideoOnly;
     }
 
     /**
@@ -94,7 +125,7 @@ public class VideoStream extends Stream {
      * <p>
      * Video only streams have no audio
      *
-     * @return {@code true} if this stream is vid
+     * @return {@code true} if this stream is video only
      */
     public boolean isVideoOnly() {
         return isVideoOnly;
