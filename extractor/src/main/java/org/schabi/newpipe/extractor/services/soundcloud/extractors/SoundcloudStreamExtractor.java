@@ -208,7 +208,7 @@ public class SoundcloudStreamExtractor extends StreamExtractor {
         return audioStreams;
     }
 
-    private static boolean checkMp3ProgressivePresence(final JsonArray transcodings) {
+    private static boolean checkMp3ProgressivePresence(@Nonnull final JsonArray transcodings) {
         boolean presence = false;
         for (final Object transcoding : transcodings) {
             final JsonObject transcodingJsonObject = (JsonObject) transcoding;
@@ -250,7 +250,7 @@ public class SoundcloudStreamExtractor extends StreamExtractor {
         return "";
     }
 
-    private static void extractAudioStreams(final JsonArray transcodings,
+    private static void extractAudioStreams(@Nonnull final JsonArray transcodings,
                                             final boolean mp3ProgressiveInStreams,
                                             final List<AudioStream> audioStreams) {
         for (final Object transcoding : transcodings) {
@@ -282,10 +282,10 @@ public class SoundcloudStreamExtractor extends StreamExtractor {
                 try {
                     mediaUrl = getTranscodingUrl(url, protocol);
                     if (!mediaUrl.isEmpty()) {
-                        audioStreams.add(new AudioStream(mediaUrl, mediaFormat, bitrate));
+                        audioStreams.add(new AudioStream(preset, mediaUrl,  mediaFormat, bitrate));
                     }
                 } catch (final Exception ignored) {
-                    // something went wrong when parsing this transcoding, don't add it to
+                    // Something went wrong when parsing this transcoding, don't add it to the
                     // audioStreams
                 }
             }
@@ -301,6 +301,7 @@ public class SoundcloudStreamExtractor extends StreamExtractor {
      * @param  hlsManifestUrl the URL of the manifest to be parsed
      * @return a single URL that contains a range equal to the length of the track
      */
+    @Nonnull
     private static String getSingleUrlFromHlsManifest(final String hlsManifestUrl)
             throws ParsingException {
         final Downloader dl = NewPipe.getDownloader();
@@ -413,10 +414,9 @@ public class SoundcloudStreamExtractor extends StreamExtractor {
         final List<String> tags = new ArrayList<>();
         String escapedTag = "";
         boolean isEscaped = false;
-        for (int i = 0; i < tagList.length; i++) {
-            String tag = tagList[i];
+        for (final String tag : tagList) {
             if (tag.startsWith("\"")) {
-                escapedTag += tagList[i].replace("\"", "");
+                escapedTag += tag.replace("\"", "");
                 isEscaped = true;
             } else if (isEscaped) {
                 if (tag.endsWith("\"")) {
@@ -426,7 +426,7 @@ public class SoundcloudStreamExtractor extends StreamExtractor {
                 } else {
                     escapedTag += " " + tag;
                 }
-            } else if (!tag.isEmpty()){
+            } else if (!tag.isEmpty()) {
                 tags.add(tag);
             }
         }

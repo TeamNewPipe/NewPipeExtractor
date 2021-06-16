@@ -150,7 +150,7 @@ public class MediaCCCStreamExtractor extends StreamExtractor {
             final JsonObject recording = recordings.getObject(i);
             final String mimeType = recording.getString("mime_type");
             if (mimeType.startsWith("audio")) {
-                //first we need to resolve the actual video data from CDN
+                // First we need to resolve the actual video data from CDN
                 final MediaFormat mediaFormat;
                 if (mimeType.endsWith("opus")) {
                     mediaFormat = MediaFormat.OPUS;
@@ -162,8 +162,8 @@ public class MediaCCCStreamExtractor extends StreamExtractor {
                     throw new ExtractionException("Unknown media format: " + mimeType);
                 }
 
-                audioStreams.add(new AudioStream(recording.getString("recording_url"),
-                        mediaFormat, -1));
+                audioStreams.add(new AudioStream(recording.getString("filename"),
+                        recording.getString("recording_url"), mediaFormat, -1));
             }
         }
         return audioStreams;
@@ -177,7 +177,7 @@ public class MediaCCCStreamExtractor extends StreamExtractor {
             final JsonObject recording = recordings.getObject(i);
             final String mimeType = recording.getString("mime_type");
             if (mimeType.startsWith("video")) {
-                //first we need to resolve the actual video data from CDN
+                // First we need to resolve the actual video data from CDN
 
                 final MediaFormat mediaFormat;
                 if (mimeType.endsWith("webm")) {
@@ -188,8 +188,9 @@ public class MediaCCCStreamExtractor extends StreamExtractor {
                     throw new ExtractionException("Unknown media format: " + mimeType);
                 }
 
-                videoStreams.add(new VideoStream(recording.getString("recording_url"),
-                        mediaFormat, recording.getInt("height") + "p"));
+                videoStreams.add(new VideoStream(recording.getString("filename"),
+                        recording.getString("recording_url"), mediaFormat,
+                        recording.getInt("height") + "p", false));
             }
         }
         return videoStreams;
@@ -236,8 +237,9 @@ public class MediaCCCStreamExtractor extends StreamExtractor {
             data = JsonParser.object().from(downloader.get(videoUrl).responseBody());
             conferenceData = JsonParser.object()
                     .from(downloader.get(data.getString("conference_url")).responseBody());
-        } catch (JsonParserException jpe) {
-            throw new ExtractionException("Could not parse json returned by url: " + videoUrl, jpe);
+        } catch (final JsonParserException jpe) {
+            throw new ExtractionException("Could not parse json returned by url: " + videoUrl,
+                    jpe);
         }
     }
 
