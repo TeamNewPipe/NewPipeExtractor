@@ -114,16 +114,12 @@ public class BandcampRadioStreamExtractor extends BandcampStreamExtractor {
         final JsonObject streams = showInfo.getObject("audio_stream");
 
         if (streams.has("opus-lo")) {
-            list.add(new AudioStream(
-                    streams.getString("opus-lo"),
-                    MediaFormat.OPUS, 100
-            ));
+            list.add(new AudioStream("opus-lo", streams.getString("opus-lo"), MediaFormat.OPUS,
+                    100));
         }
         if (streams.has("mp3-128")) {
-            list.add(new AudioStream(
-                    streams.getString("mp3-128"),
-                    MediaFormat.MP3, 128
-            ));
+            list.add(new AudioStream("mp3-128", streams.getString("mp3-128"), MediaFormat.MP3,
+                    128));
         }
 
         return list;

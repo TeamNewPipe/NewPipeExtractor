@@ -97,8 +97,8 @@ public class MediaCCCLiveStreamExtractor extends StreamExtractor {
         for (int s = 0; s < room.getArray("streams").size(); s++) {
             final JsonObject stream = room.getArray("streams").getObject(s);
             if (stream.getString("type").equals("video")) {
-                final String resolution = stream.getArray("videoSize").getInt(0) + "x"
-                        + stream.getArray("videoSize").getInt(1);
+                //final String resolution = stream.getArray("videoSize").getInt(0) + "x"
+                //        + stream.getArray("videoSize").getInt(1);
                 if (stream.has("hls")) {
                     return stream.getObject("urls").getObject("hls").getString("url");
                 }
@@ -115,7 +115,8 @@ public class MediaCCCLiveStreamExtractor extends StreamExtractor {
             if (stream.getString("type").equals("audio")) {
                 for (final String type : stream.getObject("urls").keySet()) {
                     final JsonObject url = stream.getObject("urls").getObject(type);
-                    audioStreams.add(new AudioStream(url.getString("url"), MediaFormat.getFromSuffix(type), -1));
+                    audioStreams.add(new AudioStream(url.getString("tech"), url.getString("url"),
+                            MediaFormat.getFromSuffix(type), -1));
                 }
             }
         }
@@ -133,10 +134,10 @@ public class MediaCCCLiveStreamExtractor extends StreamExtractor {
                 for (final String type : stream.getObject("urls").keySet()) {
                     if (!type.equals("hls")) {
                         final JsonObject url = stream.getObject("urls").getObject(type);
-                        videoStreams.add(new VideoStream(
+                        videoStreams.add(new VideoStream(url.getString("tech"),
                                 url.getString("url"),
                                 MediaFormat.getFromSuffix(type),
-                                resolution));
+                                resolution, false));
                     }
                 }
             }
