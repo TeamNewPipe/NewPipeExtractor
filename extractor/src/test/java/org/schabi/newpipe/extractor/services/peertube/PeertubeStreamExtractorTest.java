@@ -149,7 +149,7 @@ public abstract class PeertubeStreamExtractorTest extends DefaultStreamExtractor
 
         @BeforeClass
         public static void setUp() throws Exception {
-            NewPipe.init(DownloaderTestImpl.getInstance());;
+            NewPipe.init(DownloaderTestImpl.getInstance());
             // setting instance might break test when running in parallel (!)
             PeerTube.setInstance(new PeertubeInstance(INSTANCE));
             extractor = PeerTube.getStreamExtractor(URL);
