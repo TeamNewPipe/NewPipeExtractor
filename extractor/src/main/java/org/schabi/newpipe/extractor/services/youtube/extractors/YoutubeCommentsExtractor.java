@@ -43,6 +43,15 @@ public class YoutubeCommentsExtractor extends CommentsExtractor {
     private String ytClientName;
     private String responseBody;
 
+    /**
+     * Caching mechanism and holder of the commentsDisabled value.
+     * <br/>
+     * Initial value = empty -> unknown if comments are disabled or not<br/>
+     * Some method calls {@link YoutubeCommentsExtractor#findInitialCommentsToken()}
+     * -> value is set<br/>
+     * If the method or another one that is depending on disabled comments
+     * is now called again, the method execution can avoid unnecessary calls
+     */
     private Optional<Boolean> optCommentsDisabled = Optional.empty();
 
     public YoutubeCommentsExtractor(
