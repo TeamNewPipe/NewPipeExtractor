@@ -3,12 +3,15 @@ package org.schabi.newpipe.extractor.services.youtube;
 import org.schabi.newpipe.extractor.MediaFormat;
 import org.schabi.newpipe.extractor.exceptions.ParsingException;
 
+import javax.annotation.Nonnull;
+
 import static org.schabi.newpipe.extractor.MediaFormat.*;
 import static org.schabi.newpipe.extractor.services.youtube.ItagItem.ItagType.*;
 
 public class ItagItem {
     /**
-     * List can be found here https://github.com/ytdl-org/youtube-dl/blob/9fc5eafb8e384453a49f7cfe73147be491f0b19d/youtube_dl/extractor/youtube.py#L1071
+     * List can be found here:
+     * https://github.com/ytdl-org/youtube-dl/blob/c2350cac/youtube_dl/extractor/youtube.py#L1109
      */
     private static final ItagItem[] ITAG_LIST = {
             /////////////////////////////////////////////////////
@@ -79,7 +82,7 @@ public class ItagItem {
     // Utils
     //////////////////////////////////////////////////////////////////////////*/
 
-    public static boolean isSupported(int itag) {
+    public static boolean isSupported(final int itag) {
         for (ItagItem item : ITAG_LIST) {
             if (itag == item.id) {
                 return true;
@@ -88,7 +91,8 @@ public class ItagItem {
         return false;
     }
 
-    public static ItagItem getItag(int itagId) throws ParsingException {
+    @Nonnull
+    public static ItagItem getItag(final int itagId) throws ParsingException {
         for (ItagItem item : ITAG_LIST) {
             if (itagId == item.id) {
                 return item;
@@ -110,7 +114,10 @@ public class ItagItem {
     /**
      * Call {@link #ItagItem(int, ItagType, MediaFormat, String, int)} with the fps set to 30.
      */
-    public ItagItem(int id, ItagType type, MediaFormat format, String resolution) {
+    public ItagItem(final int id,
+                    final ItagType type,
+                    final MediaFormat format,
+                    final String resolution) {
         this.id = id;
         this.itagType = type;
         this.mediaFormat = format;
@@ -120,10 +127,12 @@ public class ItagItem {
 
     /**
      * Constructor for videos.
-     *
-     * @param resolution string that will be used in the frontend
      */
-    public ItagItem(int id, ItagType type, MediaFormat format, String resolution, int fps) {
+    public ItagItem(final int id,
+                    final ItagType type,
+                    final MediaFormat format,
+                    final String resolution,
+                    final int fps) {
         this.id = id;
         this.itagType = type;
         this.mediaFormat = format;
@@ -131,7 +140,10 @@ public class ItagItem {
         this.fps = fps;
     }
 
-    public ItagItem(int id, ItagType type, MediaFormat format, int avgBitrate) {
+    public ItagItem(final int id,
+                    final ItagType type,
+                    final MediaFormat format,
+                    final int avgBitrate) {
         this.id = id;
         this.itagType = type;
         this.mediaFormat = format;
