@@ -16,5 +16,5 @@ dependencies {
 
     testImplementation 'junit:junit:4.13.2'
     testImplementation "com.squareup.okhttp3:okhttp:3.12.13"
-    testImplementation 'com.google.code.gson:gson:2.8.6'
+    testImplementation 'com.google.code.gson:gson:2.8.7'
 }
