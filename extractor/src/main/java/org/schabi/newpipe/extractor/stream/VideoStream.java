@@ -24,6 +24,7 @@ import org.schabi.newpipe.extractor.MediaFormat;
 import org.schabi.newpipe.extractor.services.youtube.ItagItem;
 
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 
 public class VideoStream extends Stream {
     private final String resolution;
@@ -47,7 +48,8 @@ public class VideoStream extends Stream {
                        final MediaFormat format,
                        final String resolution,
                        final boolean isVideoOnly) {
-        this(id, url, true, format, DeliveryMethod.PROGRESSIVE_HTTP, resolution, isVideoOnly);
+        this(id, url, true, format, DeliveryMethod.PROGRESSIVE_HTTP, resolution, isVideoOnly,
+                null);
     }
 
     public VideoStream(final String id,
@@ -56,8 +58,9 @@ public class VideoStream extends Stream {
                        final MediaFormat format,
                        final DeliveryMethod deliveryMethod,
                        final String resolution,
-                       final boolean isVideoOnly) {
-        super(id, content, isUrl, format, deliveryMethod);
+                       final boolean isVideoOnly,
+                       @Nullable final String baseUrl) {
+        super(id, content, isUrl, format, deliveryMethod, baseUrl);
         this.resolution = resolution;
         this.isVideoOnly = isVideoOnly;
     }
@@ -69,8 +72,9 @@ public class VideoStream extends Stream {
                        final DeliveryMethod deliveryMethod,
                        final String resolution,
                        final boolean isVideoOnly,
-                       @Nonnull final ItagItem itag) {
-        super(id, content, isUrl, format, deliveryMethod);
+                       @Nonnull final ItagItem itag,
+                       @Nullable final String baseUrl) {
+        super(id, content, isUrl, format, deliveryMethod, baseUrl);
         this.itag = itag.id;
         this.bitrate = itag.getBitrate();
         this.initStart = itag.getInitStart();

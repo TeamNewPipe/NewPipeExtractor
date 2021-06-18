@@ -247,9 +247,9 @@ public class PeertubeStreamExtractor extends StreamExtractor {
                 final MediaFormat format = MediaFormat.getFromSuffix(extension);
                 final String id = resolution + "." + extension;
                 videoStreams.add(new VideoStream(id, url, true, format,
-                        DeliveryMethod.PROGRESSIVE_HTTP, resolution, false));
+                        DeliveryMethod.PROGRESSIVE_HTTP, resolution, false, null));
                 videoStreams.add(new VideoStream(id, torrentUrl, true, format,
-                        DeliveryMethod.TORRENT, resolution, false));
+                        DeliveryMethod.TORRENT, resolution, false, null));
             }
             return videoStreams;
         } catch (final Exception e) {

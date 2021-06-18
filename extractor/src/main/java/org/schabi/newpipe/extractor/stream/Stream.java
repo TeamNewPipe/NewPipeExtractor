@@ -2,6 +2,7 @@ package org.schabi.newpipe.extractor.stream;
 
 import org.schabi.newpipe.extractor.MediaFormat;
 
+import javax.annotation.Nullable;
 import java.io.Serializable;
 import java.util.List;
 
@@ -16,6 +17,7 @@ public abstract class Stream implements Serializable {
     private final String content;
     private final boolean isUrl;
     private final DeliveryMethod deliveryMethod;
+    private final String baseUrl;
 
     /**
      * Instantiates a new stream object.
@@ -27,17 +29,20 @@ public abstract class Stream implements Serializable {
      *                       manifest
      * @param format         the format
      * @param deliveryMethod the delivery method
+     * @param baseUrl        the base URL of the content if the stream is a DASH or an HLS manifest
      */
     public Stream(final String id,
                   final String content,
                   final boolean isUrl,
                   final MediaFormat format,
-                  final DeliveryMethod deliveryMethod) {
+                  final DeliveryMethod deliveryMethod,
+                  @Nullable final String baseUrl) {
         this.id = id;
         this.content = content;
         this.isUrl = isUrl;
         this.mediaFormat = format;
         this.deliveryMethod = deliveryMethod;
+        this.baseUrl = baseUrl;
     }
 
     /**
@@ -121,5 +126,18 @@ public abstract class Stream implements Serializable {
      */
     public DeliveryMethod getDeliveryMethod() {
         return deliveryMethod;
+    }
+
+    /**
+     * Gets the base URL of a stream.
+     * <p>
+     * If the stream is not a DASH stream or an HLS stream, this value will be null.
+     * </p>
+     *
+     * @return the base URL of the stream or null
+     */
+    @Nullable
+    public String getBaseUrl() {
+        return baseUrl;
     }
 }

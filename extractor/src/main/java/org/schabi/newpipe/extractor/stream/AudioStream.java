@@ -24,6 +24,7 @@ import org.schabi.newpipe.extractor.MediaFormat;
 import org.schabi.newpipe.extractor.services.youtube.ItagItem;
 
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 
 public class AudioStream extends Stream {
     public final int averageBitrate;
@@ -66,7 +67,7 @@ public class AudioStream extends Stream {
                        final MediaFormat format,
                        final DeliveryMethod deliveryMethod,
                        final int averageBitrate) {
-        super(id, content, isUrl, format, deliveryMethod);
+        super(id, content, isUrl, format, deliveryMethod, null);
         this.averageBitrate = averageBitrate;
     }
 
@@ -76,8 +77,9 @@ public class AudioStream extends Stream {
                        final MediaFormat format,
                        final DeliveryMethod deliveryMethod,
                        final int averageBitrate,
-                       @Nonnull final ItagItem itag) {
-        super(id, content, isUrl, format, deliveryMethod);
+                       @Nonnull final ItagItem itag,
+                       @Nullable final String baseUrl) {
+        super(id, content, isUrl, format, deliveryMethod, baseUrl);
         this.itag = itag.id;
         this.quality = itag.getQuality();
         this.bitrate = itag.getBitrate();
