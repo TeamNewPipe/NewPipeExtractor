@@ -82,7 +82,7 @@ public class PeertubeStreamInfoItemExtractor implements StreamInfoItemExtractor 
 
     @Override
     public StreamType getStreamType() {
-        return StreamType.VIDEO_STREAM;
+        return item.getBoolean("isLive") ? StreamType.LIVE_STREAM : StreamType.VIDEO_STREAM;
     }
 
     @Override

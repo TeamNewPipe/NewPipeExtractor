@@ -199,7 +199,7 @@ public class PeertubeStreamExtractor extends StreamExtractor {
     @Nonnull
     @Override
     public String getHlsUrl() {
-        return "";
+        return json.getArray("streamingPlaylists").getObject(0).getString("playlistUrl");
     }
 
     @Override
@@ -225,6 +225,11 @@ public class PeertubeStreamExtractor extends StreamExtractor {
             }
         } catch (Exception e) {
             throw new ParsingException("Could not get video streams", e);
+        }
+
+        if (getStreamType() == StreamType.LIVE_STREAM) {
+            final String url = getHlsUrl();
+            videoStreams.add(new VideoStream(url, MediaFormat.MPEG_4, "720p"));
         }
 
         return videoStreams;
@@ -283,7 +288,7 @@ public class PeertubeStreamExtractor extends StreamExtractor {
 
     @Override
     public StreamType getStreamType() {
-        return StreamType.VIDEO_STREAM;
+        return json.getBoolean("isLive") ? StreamType.LIVE_STREAM : StreamType.VIDEO_STREAM;
     }
 
     @Nullable
