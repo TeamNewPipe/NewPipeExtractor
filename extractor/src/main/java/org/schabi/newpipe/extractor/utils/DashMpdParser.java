@@ -145,14 +145,15 @@ public class DashMpdParser {
                     if (itag.itagType.equals(ItagItem.ItagType.AUDIO)) {
                         final AudioStream audioStream = new AudioStream(String.valueOf(itag.id),
                                 manualDashFromRepresentation(doc, representation), false,
-                                mediaFormat, DeliveryMethod.DASH, itag.avgBitrate, itag);
+                                mediaFormat, DeliveryMethod.DASH, itag.avgBitrate, itag,
+                                dashMpdUrl);
                         audioStreams.add((audioStream));
                     } else {
                         final boolean isVideoOnly = itag.itagType == ItagItem.ItagType.VIDEO_ONLY;
                         final VideoStream videoStream = new VideoStream(String.valueOf(itag.id),
                                 manualDashFromRepresentation(doc, representation), false,
                                 mediaFormat, DeliveryMethod.DASH, itag.resolutionString,
-                                isVideoOnly, itag);
+                                isVideoOnly, itag, dashMpdUrl);
 
                         if (isVideoOnly) {
                             videoOnlyStreams.add(videoStream);
