@@ -2,7 +2,6 @@
 
 package org.schabi.newpipe.extractor.services.bandcamp.extractors;
 
-import edu.umd.cs.findbugs.annotations.NonNull;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
@@ -30,7 +29,7 @@ public class BandcampSearchExtractor extends SearchExtractor {
         super(service, linkHandler);
     }
 
-    @NonNull
+    @Nonnull
     @Override
     public String getSearchSuggestion() {
         return "";
