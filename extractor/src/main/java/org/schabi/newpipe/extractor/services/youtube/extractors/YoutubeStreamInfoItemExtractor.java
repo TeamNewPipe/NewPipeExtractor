@@ -63,18 +63,17 @@ public class YoutubeStreamInfoItemExtractor implements StreamInfoItemExtractor {
 
         final JsonArray badges = videoInfo.getArray("badges");
         for (final Object badge : badges) {
-            if (((JsonObject) badge).getObject("metadataBadgeRenderer")
-                    .getString("label", EMPTY_STRING).equals("LIVE NOW")) {
+            final JsonObject badgeRenderer = ((JsonObject) badge).getObject("metadataBadgeRenderer");
+            if (badgeRenderer.getString("style", EMPTY_STRING).equals("BADGE_STYLE_TYPE_LIVE_NOW") ||
+                    badgeRenderer.getString("label", EMPTY_STRING).equals("LIVE NOW")) {
                 return cachedStreamType = StreamType.LIVE_STREAM;
             }
         }
 
-        final JsonArray thumbnailOverlays = videoInfo.getArray("thumbnailOverlays");
-        for (final Object object : thumbnailOverlays) {
-            final JsonObject thumbnailOverlay = (JsonObject) object;
-            if (thumbnailOverlay.has("thumbnailOverlayNowPlayingRenderer")
-                    || thumbnailOverlay.getObject("thumbnailOverlayTimeStatusRenderer")
-                    .getString("style", EMPTY_STRING).equalsIgnoreCase("LIVE")) {
+        for (final Object overlay : videoInfo.getArray("thumbnailOverlays")) {
+            final String style = ((JsonObject) overlay)
+                    .getObject("thumbnailOverlayTimeStatusRenderer").getString("style", EMPTY_STRING);
+            if (style.equalsIgnoreCase("LIVE")) {
                 return cachedStreamType = StreamType.LIVE_STREAM;
             }
         }
