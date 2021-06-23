@@ -16,15 +16,8 @@ import org.schabi.newpipe.extractor.MetaInfo;
 import org.schabi.newpipe.extractor.NewPipe;
 import org.schabi.newpipe.extractor.StreamingService;
 import org.schabi.newpipe.extractor.downloader.Downloader;
-import org.schabi.newpipe.extractor.exceptions.AgeRestrictedContentException;
-import org.schabi.newpipe.extractor.exceptions.ContentNotAvailableException;
-import org.schabi.newpipe.extractor.exceptions.ExtractionException;
-import org.schabi.newpipe.extractor.exceptions.GeographicRestrictionException;
-import org.schabi.newpipe.extractor.exceptions.PaidContentException;
-import org.schabi.newpipe.extractor.exceptions.ParsingException;
-import org.schabi.newpipe.extractor.exceptions.PrivateContentException;
-import org.schabi.newpipe.extractor.exceptions.ReCaptchaException;
-import org.schabi.newpipe.extractor.exceptions.YoutubeMusicPremiumContentException;
+import org.schabi.newpipe.extractor.downloader.Response;
+import org.schabi.newpipe.extractor.exceptions.*;
 import org.schabi.newpipe.extractor.linkhandler.LinkHandler;
 import org.schabi.newpipe.extractor.localization.DateWrapper;
 import org.schabi.newpipe.extractor.localization.Localization;
@@ -792,11 +785,9 @@ public class YoutubeStreamExtractor extends StreamExtractor {
     }
 
     private void fetchVideoInfoPage() throws ParsingException, ReCaptchaException, IOException {
-        final String sts = getEmbeddedInfoStsAndStorePlayerJsUrl();
-        final String videoInfoUrl = getVideoInfoUrl(getId(), sts);
-        final String infoPageResponse = NewPipe.getDownloader()
-                .get(videoInfoUrl, getExtractorLocalization()).responseBody();
-        videoInfoPage.putAll(Parser.compatParseMap(infoPageResponse));
+        final String videoInfoUrl = getVideoInfoUrl(getId());
+        final Response videoInfoResponse = NewPipe.getDownloader().get(videoInfoUrl, getExtractorLocalization());
+        videoInfoPage.putAll(Parser.compatParseMap(videoInfoResponse.responseBody()));
 
         try {
             playerResponse = JsonParser.object().from(videoInfoPage.get("player_response"));
@@ -975,11 +966,11 @@ public class YoutubeStreamExtractor extends StreamExtractor {
     }
 
     @Nonnull
-    private static String getVideoInfoUrl(final String id, final String sts) {
+    private static String getVideoInfoUrl(final String id) {
         // TODO: Try parsing embedded_player_response first
         return "https://www.youtube.com/get_video_info?" + "video_id=" + id +
-                "&html5=1&eurl=https://youtube.googleapis.com/v/" + id +
-                "&sts=" + sts + "&ps=default&gl=US&hl=en";
+                "&eurl=https://youtube.googleapis.com/v/" + id +
+                "&html5=1&c=TVHTML5&cver=6.20180913&gl=US&hl=en";
     }
 
     private Map<String, ItagItem> getItags(final String streamingDataKey,
@@ -1121,7 +1112,7 @@ public class YoutubeStreamExtractor extends StreamExtractor {
     public String getCategory() {
         return playerResponse.getObject("microformat")
                 .getObject("playerMicroformatRenderer")
-                .getString("category");
+                .getString("category", EMPTY_STRING);
     }
 
     @Nonnull
