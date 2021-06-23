@@ -125,18 +125,26 @@ public class YoutubeParsingHelper {
                 || host.equalsIgnoreCase("invidious.snopyta.org")
                 || host.equalsIgnoreCase("yewtu.be")
                 || host.equalsIgnoreCase("tube.connect.cafe")
-                || host.equalsIgnoreCase("invidious.zapashcanon.fr")
                 || host.equalsIgnoreCase("invidious.kavin.rocks")
-                || host.equalsIgnoreCase("invidious.tube")
+                || host.equalsIgnoreCase("invidious-us.kavin.rocks")
+                || host.equalsIgnoreCase("piped.kavin.rocks")
                 || host.equalsIgnoreCase("invidious.site")
-                || host.equalsIgnoreCase("invidious.xyz")
                 || host.equalsIgnoreCase("vid.mint.lgbt")
                 || host.equalsIgnoreCase("invidiou.site")
                 || host.equalsIgnoreCase("invidious.fdn.fr")
                 || host.equalsIgnoreCase("invidious.048596.xyz")
                 || host.equalsIgnoreCase("invidious.zee.li")
                 || host.equalsIgnoreCase("vid.puffyan.us")
-                || host.equalsIgnoreCase("ytprivate.com");
+                || host.equalsIgnoreCase("ytprivate.com")
+                || host.equalsIgnoreCase("invidious.namazso.eu")
+                || host.equalsIgnoreCase("invidious.silkky.cloud")
+                || host.equalsIgnoreCase("invidious.exonip.de")
+                || host.equalsIgnoreCase("inv.riverside.rocks")
+                || host.equalsIgnoreCase("invidious.blamefran.net")
+                || host.equalsIgnoreCase("invidious.moomoo.me")
+                || host.equalsIgnoreCase("ytb.trom.tf")
+                || host.equalsIgnoreCase("yt.cyberhost.uk")
+                || host.equalsIgnoreCase("y.com.cm");
     }
 
     /**
