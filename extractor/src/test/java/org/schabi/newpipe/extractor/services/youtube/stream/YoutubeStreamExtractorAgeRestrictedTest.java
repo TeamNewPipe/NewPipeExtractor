@@ -57,7 +57,7 @@ public class YoutubeStreamExtractorAgeRestrictedTest extends DefaultStreamExtrac
     @Nullable @Override public String expectedErrorMessage() { return "Sign in to confirm your age"; }
     @Override public boolean expectedHasSubtitles() { return false; }
 
-    @Override public String expectedCategory() {return "Entertainment"; }
+    @Override public String expectedCategory() { return ""; } // Unavailable on age restricted videos
     @Override public String expectedLicence() { return "YouTube licence"; }
     @Override
     public List<String> expectedTags() {
