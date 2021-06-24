@@ -66,15 +66,15 @@ public class YoutubeParsingHelper {
 
     public static final String YOUTUBEI_V1_URL = "https://www.youtube.com/youtubei/v1/";
 
-    private static final String HARDCODED_CLIENT_VERSION = "2.20210603.07.00";
+    private static final String HARDCODED_CLIENT_VERSION = "2.20210622.10.00";
     private static final String HARDCODED_KEY = "AIzaSyAO_FJ2SlqU8Q4STEHLGCilw_Y9_11qcW8";
     private static final String MOBILE_YOUTUBE_KEY = "AIzaSyA8eiZmM1FaDVjRy-df2KTyQ_vz_yYM39w";
-    private static final String MOBILE_YOUTUBE_CLIENT_VERSION = "16.20.36";
+    private static final String MOBILE_YOUTUBE_CLIENT_VERSION = "16.23.36";
     private static String clientVersion;
     private static String key;
 
     private static final String[] HARDCODED_YOUTUBE_MUSIC_KEY =
-            {"AIzaSyC9XL3ZjWddXya6X74dJoCTL-WEYFDNX30", "67", "0.1"};
+            {"AIzaSyC9XL3ZjWddXya6X74dJoCTL-WEYFDNX30", "67", "1.20210621.00.00"};
     private static String[] youtubeMusicKey;
 
     private static boolean keyAndVersionExtracted = false;
@@ -102,7 +102,8 @@ public class YoutubeParsingHelper {
         try {
             final URL u = new URL(url);
             final String host = u.getHost();
-            return host.startsWith("google.") || host.startsWith("m.google.")
+            return host.startsWith("google.")
+                    || host.startsWith("m.google.")
                     || host.startsWith("www.google.");
         } catch (final MalformedURLException e) {
             return false;
@@ -111,7 +112,8 @@ public class YoutubeParsingHelper {
 
     public static boolean isYoutubeURL(@Nonnull final URL url) {
         final String host = url.getHost();
-        return host.equalsIgnoreCase("youtube.com") || host.equalsIgnoreCase("www.youtube.com")
+        return host.equalsIgnoreCase("youtube.com")
+                || host.equalsIgnoreCase("www.youtube.com")
                 || host.equalsIgnoreCase("m.youtube.com")
                 || host.equalsIgnoreCase("music.youtube.com");
     }
@@ -234,7 +236,7 @@ public class YoutubeParsingHelper {
      * Checks if the given playlist id is a YouTube Mix (auto-generated playlist)
      * Ids from a YouTube Mix start with "RD"
      *
-     * @param playlistId the id of the playlist
+     * @param playlistId the playlist id
      * @return Whether given id belongs to a YouTube Mix
      */
     public static boolean isYoutubeMixId(@Nonnull final String playlistId) {
@@ -306,8 +308,8 @@ public class YoutubeParsingHelper {
         }
     }
 
-    public static boolean areHardcodedClientVersionAndKeyValid() throws IOException,
-            ExtractionException {
+    public static boolean areHardcodedClientVersionAndKeyValid()
+            throws IOException, ExtractionException {
         if (areHardcodedClientVersionAndKeyValidValue != null) {
             return areHardcodedClientVersionAndKeyValidValue;
         }
@@ -316,11 +318,17 @@ public class YoutubeParsingHelper {
             .object()
                 .object("context")
                     .object("client")
-                        .value("hl", "en")
+                        .value("hl", "en-GB")
                         .value("gl", "GB")
-                        .value("clientName", "1")
+                        .value("clientName", "WEB")
                         .value("clientVersion", HARDCODED_CLIENT_VERSION)
                     .end()
+                .object("user")
+                    // TO DO: provide a way to enable restricted mode with:
+                    // .value("enableSafetyMode", boolean)
+                    .value("lockedSafetyMode", false)
+                .end()
+                .value("fetchLiveState", true)
                 .end()
             .end().done().getBytes(UTF_8);
         // @formatter:on
@@ -337,9 +345,8 @@ public class YoutubeParsingHelper {
         final String responseBody = response.responseBody();
         final int responseCode = response.responseCode();
 
-        areHardcodedClientVersionAndKeyValidValue = responseBody.length() > 5000
+        return areHardcodedClientVersionAndKeyValidValue = responseBody.length() > 5000
                 && responseCode == 200; // Ensure to have a valid response
-        return areHardcodedClientVersionAndKeyValidValue;
     }
 
     private static void extractClientVersionAndKey() throws IOException, ExtractionException {
@@ -485,8 +492,7 @@ public class YoutubeParsingHelper {
                         .value("hl", "en-GB")
                         .value("gl", "GB")
                         .array("experimentIds").end()
-                        .value("experimentsToken", "")
-                        .value("utcOffsetMinutes", 0)
+                        .value("experimentsToken", EMPTY_STRING)
                         .object("locationInfo").end()
                         .object("musicAppInfo").end()
                     .end()
@@ -802,10 +808,13 @@ public class YoutubeParsingHelper {
         return JsonObject.builder()
                 .object("context")
                     .object("client")
-                        .value("clientName", "WEB")
-                        .value("clientVersion", getClientVersion())
                         .value("hl", localization.getLocalizationCode())
                         .value("gl", contentCountry.getCountryCode())
+                        .value("clientName", "WEB")
+                        .value("clientVersion", getClientVersion())
+                    .end()
+                    .object("user")
+                        .value("lockedSafetyMode", false)
                     .end()
                 .end();
         // @formatter:on
@@ -825,6 +834,11 @@ public class YoutubeParsingHelper {
                         .value("clientVersion", MOBILE_YOUTUBE_CLIENT_VERSION)
                         .value("hl", localization.getLocalizationCode())
                         .value("gl", contentCountry.getCountryCode())
+                    .end()
+                    .object("user")
+                        // TO DO: provide a way to enable restricted mode with:
+                        // .value("enableSafetyMode", boolean)
+                        .value("lockedSafetyMode", false)
                     .end()
                 .end();
         // @formatter:on
@@ -848,15 +862,11 @@ public class YoutubeParsingHelper {
      */
     public static void addClientInfoHeaders(@Nonnull final Map<String, List<String>> headers)
             throws IOException, ExtractionException {
-        if (headers.get("Origin") == null) {
-            headers.put("Origin", Collections.singletonList("https://www.youtube.com"));
-        }
-        if (headers.get("Referer") == null) {
-            headers.put("Referer", Collections.singletonList("https://www.youtube.com"));
-        }
-        if (headers.get("X-YouTube-Client-Name") == null) {
-            headers.put("X-YouTube-Client-Name", Collections.singletonList("1"));
-        }
+        headers.computeIfAbsent("Origin", k -> Collections.singletonList(
+                "https://www.youtube.com"));
+        headers.computeIfAbsent("Referer", k -> Collections.singletonList(
+                "https://www.youtube.com"));
+        headers.computeIfAbsent("X-YouTube-Client-Name", k -> Collections.singletonList("1"));
         if (headers.get("X-YouTube-Client-Version") == null) {
             headers.put("X-YouTube-Client-Version", Collections.singletonList(getClientVersion()));
         }
@@ -867,7 +877,7 @@ public class YoutubeParsingHelper {
      * @see #CONSENT_COOKIE
      * @param headers the headers which should be completed
      */
-    public static void addCookieHeader(@Nonnull final Map<String, List<String>> headers) {
+    public static void addCookieHeader(final Map<String, List<String>> headers) {
         if (headers.get("Cookie") == null) {
             headers.put("Cookie", Arrays.asList(generateConsentCookie()));
         } else {
@@ -1092,5 +1102,4 @@ public class YoutubeParsingHelper {
                 .replaceAll("\\\\x5b", "[")
                 .replaceAll("\\\\x5d", "]");
     }
-
 }

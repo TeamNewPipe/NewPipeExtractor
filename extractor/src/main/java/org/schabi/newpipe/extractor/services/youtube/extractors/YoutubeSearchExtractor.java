@@ -9,7 +9,6 @@ import org.schabi.newpipe.extractor.downloader.Downloader;
 import org.schabi.newpipe.extractor.exceptions.ExtractionException;
 import org.schabi.newpipe.extractor.exceptions.ParsingException;
 import org.schabi.newpipe.extractor.linkhandler.SearchQueryHandler;
-import org.schabi.newpipe.extractor.localization.ContentCountry;
 import org.schabi.newpipe.extractor.localization.Localization;
 import org.schabi.newpipe.extractor.localization.TimeAgoParser;
 import org.schabi.newpipe.extractor.search.InfoItemsSearchCollector;
@@ -60,7 +59,6 @@ public class YoutubeSearchExtractor extends SearchExtractor {
             ExtractionException {
         final String query = super.getSearchString();
         final Localization localization = getExtractorLocalization();
-        final ContentCountry contentCountry = getExtractorContentCountry();
 
         // Get the search parameter of the request
         final List<String> contentFilters = super.getLinkHandler().getContentFilters();
@@ -72,19 +70,14 @@ public class YoutubeSearchExtractor extends SearchExtractor {
             params = "";
         }
 
-        final byte[] body;
+        final JsonBuilder<JsonObject> jsonBody = prepareJsonBuilder(localization,
+                getExtractorContentCountry())
+                .value("query", query);
         if (!isNullOrEmpty(params)) {
-            body = JsonWriter.string(prepareJsonBuilder(localization, contentCountry)
-                    .value("query", query)
-                    .value("params", params)
-                    .done())
-                    .getBytes(UTF_8);
-        } else {
-            body = JsonWriter.string(prepareJsonBuilder(localization, contentCountry)
-                    .value("query", query)
-                    .done())
-                    .getBytes(UTF_8);
+            jsonBody.value("params", params);
         }
+
+        final byte[] body = JsonWriter.string(jsonBody.done()).getBytes(UTF_8);
 
         initialData = getJsonPostResponse("search", body, localization);
     }

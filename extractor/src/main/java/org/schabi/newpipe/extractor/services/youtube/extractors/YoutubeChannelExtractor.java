@@ -29,6 +29,7 @@ import java.util.List;
 import java.util.Map;
 
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 
 import static org.schabi.newpipe.extractor.services.youtube.YoutubeParsingHelper.*;
 import static org.schabi.newpipe.extractor.utils.Utils.EMPTY_STRING;
@@ -84,7 +85,7 @@ public class YoutubeChannelExtractor extends ChannelExtractor {
         final String[] channelInfo = channel_path.split("/");
         String id = "";
         // If the url is an URL which is not a /channel URL, we need to use the
-        // navigation/resolve_url endpoint of the youtubei API to get the channel id. Otherwise, we
+        // navigation/resolve_url endpoint of the internal API to get the channel id. Otherwise, we
         // couldn't get information about the channel associated with this URL, if there is one.
         if (!channelInfo[0].equals("channel")) {
             final byte[] body = JsonWriter.string(prepareJsonBuilder(getExtractorLocalization(),
@@ -293,17 +294,17 @@ public class YoutubeChannelExtractor extends ChannelExtractor {
     }
 
     @Override
-    public String getParentChannelName() throws ParsingException {
+    public String getParentChannelName() {
         return "";
     }
 
     @Override
-    public String getParentChannelUrl() throws ParsingException {
+    public String getParentChannelUrl() {
         return "";
     }
 
     @Override
-    public String getParentChannelAvatarUrl() throws ParsingException {
+    public String getParentChannelAvatarUrl() {
         return "";
     }
 
@@ -329,13 +330,13 @@ public class YoutubeChannelExtractor extends ChannelExtractor {
                     .getArray("contents").getObject(0).getObject("itemSectionRenderer")
                     .getArray("contents").getObject(0).getObject("gridRenderer");
 
-            final List<String> channelInformations = new ArrayList<>();
-            channelInformations.add(getName());
-            channelInformations.add(getUrl());
+            final List<String> channelInfo = new ArrayList<>();
+            channelInfo.add(getName());
+            channelInfo.add(getUrl());
             final JsonObject continuation = collectStreamsFrom(collector, gridRenderer
-                    .getArray("items"), channelInformations);
+                    .getArray("items"), channelInfo);
 
-            nextPage = getNextPageFrom(continuation, channelInformations);
+            nextPage = getNextPageFrom(continuation, channelInfo);
         }
 
         return new InfoItemsPage<>(collector, nextPage);
@@ -348,7 +349,7 @@ public class YoutubeChannelExtractor extends ChannelExtractor {
             throw new IllegalArgumentException("Page doesn't contain an URL");
         }
 
-        final List<String> channelInformations = page.getIds();
+        final List<String> channelInfos = page.getIds();
 
         final StreamInfoItemsCollector collector = new StreamInfoItemsCollector(getServiceId());
         final Map<String, List<String>> headers = new HashMap<>();
@@ -364,13 +365,14 @@ public class YoutubeChannelExtractor extends ChannelExtractor {
                 .getObject("appendContinuationItemsAction");
 
         final JsonObject continuation = collectStreamsFrom(collector, sectionListContinuation
-                .getArray("continuationItems"), channelInformations);
+                .getArray("continuationItems"), channelInfos);
 
-        return new InfoItemsPage<>(collector, getNextPageFrom(continuation, channelInformations));
+        return new InfoItemsPage<>(collector, getNextPageFrom(continuation, channelInfos));
     }
 
+    @Nullable
     private Page getNextPageFrom(final JsonObject continuations,
-                                 final List<String> channelInformations) throws IOException,
+                                 final List<String> channelInfo) throws IOException,
             ExtractionException {
         if (isNullOrEmpty(continuations)) {
             return null;
@@ -386,8 +388,7 @@ public class YoutubeChannelExtractor extends ChannelExtractor {
                 .done())
                 .getBytes(UTF_8);
 
-        return new Page(YOUTUBEI_V1_URL + "browse?key=" + getKey(), null, channelInformations,
-                null, body);
+        return new Page(YOUTUBEI_V1_URL + "browse?key=" + getKey(), null, channelInfo, null, body);
     }
 
     /**
@@ -397,13 +398,13 @@ public class YoutubeChannelExtractor extends ChannelExtractor {
      * @param videos    the array to get videos from
      * @return the continuation object
      */
-    private JsonObject collectStreamsFrom(final StreamInfoItemsCollector collector,
-                                          final JsonArray videos,
-                                          final List<String> channelInformations) {
+    private JsonObject collectStreamsFrom(@Nonnull final StreamInfoItemsCollector collector,
+                                          @Nonnull final JsonArray videos,
+                                          @Nonnull final List<String> channelInfo) {
         collector.reset();
 
-        final String uploaderName = channelInformations.get(0);
-        final String uploaderUrl = channelInformations.get(1);
+        final String uploaderName = channelInfo.get(0);
+        final String uploaderUrl = channelInfo.get(1);
         final TimeAgoParser timeAgoParser = getTimeAgoParser();
 
         JsonObject continuation = null;
@@ -431,6 +432,7 @@ public class YoutubeChannelExtractor extends ChannelExtractor {
         return continuation;
     }
 
+    @Nullable
     private JsonObject getVideoTab() throws ParsingException {
         if (this.videoTab != null) return this.videoTab;
 

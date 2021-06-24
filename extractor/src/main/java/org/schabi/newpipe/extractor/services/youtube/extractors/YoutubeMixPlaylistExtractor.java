@@ -1,6 +1,7 @@
 package org.schabi.newpipe.extractor.services.youtube.extractors;
 
 import com.grack.nanojson.JsonArray;
+import com.grack.nanojson.JsonBuilder;
 import com.grack.nanojson.JsonObject;
 
 import com.grack.nanojson.JsonWriter;
@@ -61,31 +62,16 @@ public class YoutubeMixPlaylistExtractor extends PlaylistExtractor {
         final String videoId = getQueryValue(url, "v");
         final String playlistIndexString = getQueryValue(url, "index");
 
-        final byte[] body;
+        final JsonBuilder<JsonObject> jsonBody = prepareJsonBuilder(localization,
+                getExtractorContentCountry()).value("playlistId", mixPlaylistId);
         if (videoId != null) {
-            if (playlistIndexString != null) {
-                body = JsonWriter.string(prepareJsonBuilder(localization,
-                        getExtractorContentCountry())
-                        .value("videoId", videoId)
-                        .value("playlistId", mixPlaylistId)
-                        .value("playlistIndex", Integer.parseInt(playlistIndexString))
-                        .done())
-                        .getBytes(UTF_8);
-            } else {
-                body = JsonWriter.string(prepareJsonBuilder(localization,
-                        getExtractorContentCountry())
-                        .value("videoId", videoId)
-                        .value("playlistId", mixPlaylistId)
-                        .done())
-                        .getBytes(UTF_8);
-            }
-        } else {
-            body = JsonWriter.string(prepareJsonBuilder(localization,
-                    getExtractorContentCountry())
-                    .value("playlistId", mixPlaylistId)
-                    .done())
-                    .getBytes(UTF_8);
+            jsonBody.value("videoId", videoId);
         }
+        if (playlistIndexString != null) {
+            jsonBody.value("playlistIndex", Integer.parseInt(playlistIndexString));
+        }
+
+        final byte[] body = JsonWriter.string(jsonBody.done()).getBytes(UTF_8);
 
         final Map<String, List<String>> headers = new HashMap<>();
         addClientInfoHeaders(headers);

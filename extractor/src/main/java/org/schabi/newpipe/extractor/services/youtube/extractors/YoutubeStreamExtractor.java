@@ -482,6 +482,7 @@ public class YoutubeStreamExtractor extends StreamExtractor {
     @Override
     public String getDashMpdUrl() throws ParsingException {
         assertPageFetched();
+
         try {
             String dashManifestUrl;
             if (streamingData.isString("dashManifestUrl")) {
@@ -643,7 +644,11 @@ public class YoutubeStreamExtractor extends StreamExtractor {
     @Override
     public StreamType getStreamType() {
         assertPageFetched();
-        return streamingData.has(FORMATS) ? StreamType.VIDEO_STREAM : StreamType.LIVE_STREAM;
+
+        if (playerResponse.getObject("videoDetails").getBoolean("isLiveContent", false)) {
+            return StreamType.LIVE_STREAM;
+        }
+        return StreamType.VIDEO_STREAM;
     }
 
     @Nullable
@@ -895,7 +900,7 @@ public class YoutubeStreamExtractor extends StreamExtractor {
         try {
             // The JavaScript player was not found in any page fetched so far and there is
             // nothing cached, so try fetching embedded info.
-            // Don't provide a video id to get a smaller response (around 9kb instead of 21 kb
+            // Don't provide a video id to get a smaller response (around 9Kb instead of 21 Kb
             // with a video)
             final String embedUrl = "https://www.youtube.com/embed/";
             final String embedPageContent = NewPipe.getDownloader()
@@ -936,23 +941,16 @@ public class YoutubeStreamExtractor extends StreamExtractor {
 
     private boolean hasOtfStreams() {
         if (streamingData != null) {
-            boolean hasOtfStreamsValue = false;
-            if (streamingData.has("adaptiveFormats")) {
-                final JsonArray adaptiveFormats = streamingData.getArray("adaptiveFormats");
-                for (final Object adaptiveFormat : adaptiveFormats) {
-                    final JsonObject jsonAdaptiveFormat = (JsonObject) adaptiveFormat;
-                    if (jsonAdaptiveFormat.has("type")) {
-                        final String streamTypeFormat = jsonAdaptiveFormat.getString("type",
-                                EMPTY_STRING);
-                        if (streamTypeFormat.equalsIgnoreCase("FORMAT_STREAM_TYPE_OTF")) {
-                            hasOtfStreamsValue = true;
-                            break;
-                        }
-                    }
+            final JsonArray adaptiveFormats = streamingData.getArray("adaptiveFormats");
+            for (final Object adaptiveFormat : adaptiveFormats) {
+                final JsonObject jsonAdaptiveFormat = (JsonObject) adaptiveFormat;
+                final String streamTypeFormat = jsonAdaptiveFormat.getString("type", EMPTY_STRING);
+                if (streamTypeFormat.equalsIgnoreCase("FORMAT_STREAM_TYPE_OTF")) {
+                    return true;
                 }
             }
-            return hasOtfStreamsValue;
         }
+
         return false;
     }
 
@@ -1123,9 +1121,9 @@ public class YoutubeStreamExtractor extends StreamExtractor {
     @Nonnull
     private static String getVideoInfoUrl(final String id, final String sts) {
         // TODO: Try parsing embedded_player_response first
-        return "https://www.youtube.com/get_video_info?" + "video_id=" + id +
-                "&html5=1&eurl=https://youtube.googleapis.com/v/" + id +
-                "&sts=" + sts + "&ps=default&gl=US&hl=en";
+        return "https://www.youtube.com/get_video_info?" + "video_id=" + id
+                + "&eurl=https://youtube.googleapis.com/v/" + id + "&sts=" + sts
+                + "&html5=1&c=TVHTML5&cver=6.20180913&hl=en&gl=US";
     }
 
     @Nonnull
@@ -1280,7 +1278,7 @@ public class YoutubeStreamExtractor extends StreamExtractor {
     @Override
     public String getCategory() {
         return playerResponse.getObject("microformat").getObject("playerMicroformatRenderer")
-                .getString("category");
+                .getString("category", EMPTY_STRING);
     }
 
     @Nonnull
