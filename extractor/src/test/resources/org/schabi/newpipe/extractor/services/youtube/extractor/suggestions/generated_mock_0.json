@@ -7,7 +7,7 @@
         "en-GB, en;q\u003d0.9"
       ],
       "Cookie": [
-        "CONSENT\u003dPENDING+100285"
+        "CONSENT\u003dPENDING+285"
       ]
     },
     "localization": {
@@ -20,7 +20,7 @@
     "responseMessage": "",
     "responseHeaders": {
       "alt-svc": [
-        "h3-29\u003d\":443\"; ma\u003d2592000,h3-T051\u003d\":443\"; ma\u003d2592000,h3-Q050\u003d\":443\"; ma\u003d2592000,h3-Q046\u003d\":443\"; ma\u003d2592000,h3-Q043\u003d\":443\"; ma\u003d2592000,quic\u003d\":443\"; ma\u003d2592000; v\u003d\"46,43\""
+        "h3\u003d\":443\"; ma\u003d2592000,h3-29\u003d\":443\"; ma\u003d2592000,h3-T051\u003d\":443\"; ma\u003d2592000,h3-Q050\u003d\":443\"; ma\u003d2592000,h3-Q046\u003d\":443\"; ma\u003d2592000,h3-Q043\u003d\":443\"; ma\u003d2592000,quic\u003d\":443\"; ma\u003d2592000; v\u003d\"46,43\""
       ],
       "cache-control": [
         "private, max-age\u003d3600"
@@ -32,19 +32,13 @@
         "text/javascript; charset\u003dUTF-8"
       ],
       "date": [
-        "Sat, 05 Jun 2021 17:05:54 GMT"
+        "Sat, 26 Jun 2021 17:04:27 GMT"
       ],
       "expires": [
-        "Sat, 05 Jun 2021 17:05:54 GMT"
-      ],
-      "p3p": [
-        "CP\u003d\"This is not a P3P policy! See g.co/p3phelp for more info.\""
+        "Sat, 26 Jun 2021 17:04:27 GMT"
       ],
       "server": [
         "gws"
-      ],
-      "set-cookie": [
-        "CONSENT\u003dPENDING+829; expires\u003dFri, 01-Jan-2038 00:00:00 GMT; path\u003d/; domain\u003d.google.com; Secure"
       ],
       "x-frame-options": [
         "SAMEORIGIN"
@@ -53,7 +47,7 @@
         "0"
       ]
     },
-    "responseBody": "JP([\"hello\",[[\"hello\",0,[433,131]],[\"hello joy\",0,[433,131]],[\"hello kitty\",0,[433,131]],[\"hello my name is susie\",0,[433,131]],[\"hello darkness my old friend\",0,[433,131]],[\"hello neighbor\",0,[433]],[\"hello adele\",0,[433]],[\"hello baby\",0,[433,131]],[\"hello hello\",0,[433,131]],[\"hello goodbye\",0,[433,131]],[\"hello world\",0,[433,131]],[\"hello baby young ma\",0,[433,131]],[\"hello pop smoke\",0],[\"hello there\",0,[433,131]]],{\"k\":1,\"q\":\"M2ZfvrjCUtpnhIWZkdsHXn_FIGs\"}])",
+    "responseBody": "JP([\"hello\",[[\"hello my name is zuzie\",0,[433,131]],[\"hello\",0,[433]],[\"hello future nct dream\",0,[3]],[\"hello kitty\",0,[433,131]],[\"hello baby\",0,[433,131]],[\"hello joy\",0,[433,131]],[\"hello darkness my old friend\",0,[433,131]],[\"hello adele\",0,[433,131]],[\"hello my name is zuzie song\",0,[433,131]],[\"hello neighbor\",0,[433]],[\"hello baby young ma\",0,[433,131]],[\"hello song\",0,[433,131]],[\"hello stranger the movie\",0,[433,131]],[\"hello mr gu ep 1 eng sub\",0]],{\"k\":1,\"q\":\"h5bZ3qg73LN1LZdW8sQvbkFT3Mw\"}])",
     "latestUrl": "https://suggestqueries.google.com/complete/search?client\u003dyoutube\u0026jsonp\u003dJP\u0026ds\u003dyt\u0026gl\u003dDE\u0026q\u003dhello"
   }
 }
