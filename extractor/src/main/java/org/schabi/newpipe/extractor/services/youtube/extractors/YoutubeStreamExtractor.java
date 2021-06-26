@@ -645,7 +645,8 @@ public class YoutubeStreamExtractor extends StreamExtractor {
     public StreamType getStreamType() {
         assertPageFetched();
 
-        if (playerResponse.getObject("videoDetails").getBoolean("isLiveContent", false)) {
+        if (playerResponse.getObject("playabilityStatus").has("liveStreamability")
+                || playerResponse.getObject("videoDetails").getBoolean("isPostLiveDvr", false)) {
             return StreamType.LIVE_STREAM;
         }
         return StreamType.VIDEO_STREAM;

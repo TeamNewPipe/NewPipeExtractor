@@ -85,7 +85,7 @@ public class YoutubeChannelExtractor extends ChannelExtractor {
         final String[] channelInfo = channel_path.split("/");
         String id = "";
         // If the url is an URL which is not a /channel URL, we need to use the
-        // navigation/resolve_url endpoint of the internal API to get the channel id. Otherwise, we
+        // navigation/resolve_url endpoint of the youtubei API to get the channel id. Otherwise, we
         // couldn't get information about the channel associated with this URL, if there is one.
         if (!channelInfo[0].equals("channel")) {
             final byte[] body = JsonWriter.string(prepareJsonBuilder(getExtractorLocalization(),

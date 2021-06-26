@@ -189,7 +189,7 @@ public class YoutubeCommentsExtractor extends CommentsExtractor {
     public void onFetchPage(@Nonnull final Downloader downloader) throws IOException, ExtractionException {
         final Map<String, List<String>> requestHeaders = new HashMap<>();
         requestHeaders.put("User-Agent", singletonList(USER_AGENT));
-        final Response response = downloader.get(getUrl(), requestHeaders, getExtractorLocalization());
+        final Response response = downloader.get(getUrl() + "&ucbcb=1", requestHeaders, getExtractorLocalization());
         responseBody = YoutubeParsingHelper.unescapeDocument(response.responseBody());
         ytClientVersion = findValue(responseBody, "INNERTUBE_CONTEXT_CLIENT_VERSION\":\"", "\"");
         ytClientName = Parser.matchGroup1(YT_CLIENT_NAME_PATTERN, responseBody);

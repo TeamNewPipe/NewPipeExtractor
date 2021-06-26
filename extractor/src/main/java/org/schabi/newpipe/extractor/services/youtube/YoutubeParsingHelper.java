@@ -66,7 +66,7 @@ public class YoutubeParsingHelper {
 
     public static final String YOUTUBEI_V1_URL = "https://www.youtube.com/youtubei/v1/";
 
-    private static final String HARDCODED_CLIENT_VERSION = "2.20210622.10.00";
+    private static final String HARDCODED_CLIENT_VERSION = "2.20210623.00.00";
     private static final String HARDCODED_KEY = "AIzaSyAO_FJ2SlqU8Q4STEHLGCilw_Y9_11qcW8";
     private static final String MOBILE_YOUTUBE_KEY = "AIzaSyA8eiZmM1FaDVjRy-df2KTyQ_vz_yYM39w";
     private static final String MOBILE_YOUTUBE_CLIENT_VERSION = "16.23.36";
@@ -324,8 +324,6 @@ public class YoutubeParsingHelper {
                         .value("clientVersion", HARDCODED_CLIENT_VERSION)
                     .end()
                 .object("user")
-                    // TO DO: provide a way to enable restricted mode with:
-                    // .value("enableSafetyMode", boolean)
                     .value("lockedSafetyMode", false)
                 .end()
                 .value("fetchLiveState", true)
@@ -353,7 +351,7 @@ public class YoutubeParsingHelper {
         // Don't extract the client version and the innertube key if it has been already extracted
         if (keyAndVersionExtracted) return;
         // Don't provide a search term in order to have a smaller response
-        final String url = "https://www.youtube.com/results?search_query=";
+        final String url = "https://www.youtube.com/results?search_query=&ucbcb=1";
         final Map<String, List<String>> headers = new HashMap<>();
         addCookieHeader(headers);
         final String html = getDownloader().get(url, headers).responseBody();
@@ -472,7 +470,7 @@ public class YoutubeParsingHelper {
      * <b>Only use in tests.</b>
      * </p>
      */
-    public static void setNumberGenerator(Random random) {
+    public static void setNumberGenerator(final Random random) {
         numberGenerator = random;
     }
 
@@ -749,6 +747,7 @@ public class YoutubeParsingHelper {
             throws IOException, ExtractionException {
         final Map<String, List<String>> headers = new HashMap<>();
         addClientInfoHeaders(headers);
+        headers.put("Content-Type", Collections.singletonList("application/json"));
 
         final Response response = getDownloader().post(YOUTUBEI_V1_URL + endpoint + "?key="
                 + getKey(), headers, body, localization);
@@ -814,6 +813,8 @@ public class YoutubeParsingHelper {
                         .value("clientVersion", getClientVersion())
                     .end()
                     .object("user")
+                        // TO DO: provide a way to enable restricted mode with:
+                        // .value("enableSafetyMode", boolean)
                         .value("lockedSafetyMode", false)
                     .end()
                 .end();
@@ -877,7 +878,7 @@ public class YoutubeParsingHelper {
      * @see #CONSENT_COOKIE
      * @param headers the headers which should be completed
      */
-    public static void addCookieHeader(final Map<String, List<String>> headers) {
+    public static void addCookieHeader(@Nonnull final Map<String, List<String>> headers) {
         if (headers.get("Cookie") == null) {
             headers.put("Cookie", Arrays.asList(generateConsentCookie()));
         } else {

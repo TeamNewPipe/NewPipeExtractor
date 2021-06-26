@@ -3,6 +3,7 @@ package org.schabi.newpipe.extractor.services.youtube;
 import com.grack.nanojson.JsonWriter;
 import org.hamcrest.MatcherAssert;
 import org.junit.BeforeClass;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
@@ -132,7 +133,7 @@ public class YoutubeMixPlaylistExtractorTest {
         }
     }
 
-    @Ignore
+    @Ignore("Test broken, video was removed by the uploader")
     public static class MixWithIndex {
 
         private static final int INDEX = 13;
