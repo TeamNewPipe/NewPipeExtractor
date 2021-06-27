@@ -395,7 +395,7 @@ public class StreamInfo extends Info {
     /**
      * Preview frames, e.g. for the storyboard / seekbar thumbnail preview
      */
-    private List<Frameset> previewFrames = new ArrayList<>();
+    private List<Frameset> previewFrames = Collections.emptyList();
 
     /**
      * Get the stream type
