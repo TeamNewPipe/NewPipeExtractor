@@ -53,7 +53,7 @@ public class YoutubeStreamExtractorLivestreamTest extends DefaultStreamExtractor
     @Override public String expectedUploaderName() { return "Lofi Girl"; }
     @Override public String expectedUploaderUrl() { return "https://www.youtube.com/channel/UCSJ4gkVC6NrvII8umztf0Ow"; }
     @Override public List<String> expectedDescriptionContains() {
-        return Arrays.asList("https://bit.ly/lofigirl-merch",
+        return Arrays.asList("https://bit.ly/lofigirI-merch",
                 "Thank you for listening, I hope you will have a good time here");
     }
     @Override public boolean expectedUploaderVerified() { return true; }
