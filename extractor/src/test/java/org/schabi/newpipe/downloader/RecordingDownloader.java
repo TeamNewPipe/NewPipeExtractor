@@ -39,6 +39,10 @@ class RecordingDownloader extends Downloader {
 
     public final static String FILE_NAME_PREFIX = "generated_mock_";
 
+    // From https://stackoverflow.com/a/15875500/13516981
+    private final static String IP_V4_PATTERN =
+            "(?:(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\\.){3}(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)";
+
     private int index = 0;
     private final String path;
 
@@ -66,7 +70,15 @@ class RecordingDownloader extends Downloader {
     public Response execute(@Nonnull final Request request) throws IOException,
             ReCaptchaException {
         final Downloader downloader = DownloaderTestImpl.getInstance();
-        final Response response = downloader.execute(request);
+        Response response = downloader.execute(request);
+        String cleanedResponseBody = response.responseBody().replaceAll(IP_V4_PATTERN, "127.0.0.1");
+        response = new Response(
+                response.responseCode(),
+                response.responseMessage(),
+                response.responseHeaders(),
+                cleanedResponseBody,
+                response.latestUrl()
+        );
 
         final File outputFile = new File(path + File.separator + FILE_NAME_PREFIX + index
                 + ".json");

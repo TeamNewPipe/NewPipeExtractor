@@ -124,6 +124,7 @@ public class YoutubeMixPlaylistExtractorTest {
         }
     }
 
+    @Ignore
     public static class MixWithIndex {
 
         private static final String INDEX = "&index=13";
