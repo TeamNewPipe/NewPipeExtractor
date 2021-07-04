@@ -734,7 +734,8 @@ public class YoutubeParsingHelper {
     }
 
     public static String generateConsentCookie() {
-        return CONSENT_COOKIE + 100 + numberGenerator.nextInt(900);
+        final int statusCode = 100 + numberGenerator.nextInt(900);
+        return CONSENT_COOKIE + statusCode;
     }
 
     public static String extractCookieValue(final String cookieName, final Response response) {

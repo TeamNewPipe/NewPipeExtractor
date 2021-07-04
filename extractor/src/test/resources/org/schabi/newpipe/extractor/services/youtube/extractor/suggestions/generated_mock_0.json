@@ -7,7 +7,7 @@
         "en-GB, en;q\u003d0.9"
       ],
       "Cookie": [
-        "CONSENT\u003dPENDING+100285"
+        "CONSENT\u003dPENDING+385"
       ]
     },
     "localization": {
@@ -32,19 +32,13 @@
         "text/javascript; charset\u003dUTF-8"
       ],
       "date": [
-        "Tue, 29 Jun 2021 19:01:31 GMT"
+        "Sat, 03 Jul 2021 11:28:43 GMT"
       ],
       "expires": [
-        "Tue, 29 Jun 2021 19:01:31 GMT"
-      ],
-      "p3p": [
-        "CP\u003d\"This is not a P3P policy! See g.co/p3phelp for more info.\""
+        "Sat, 03 Jul 2021 11:28:43 GMT"
       ],
       "server": [
         "gws"
-      ],
-      "set-cookie": [
-        "CONSENT\u003dPENDING+908; expires\u003dFri, 01-Jan-2038 00:00:00 GMT; path\u003d/; domain\u003d.google.com; Secure"
       ],
       "x-frame-options": [
         "SAMEORIGIN"
@@ -53,7 +47,7 @@
         "0"
       ]
     },
-    "responseBody": "JP([\"hello\",[[\"hello my name is zuzie\",0,[433,131]],[\"hello\",0,[433,131]],[\"hello darkness my old friend\",0,[433,131]],[\"hello kitty\",0,[433]],[\"hello future nct\",0,[433,131]],[\"hello joy\",0,[433,131]],[\"hello my name is zuzie lyrics\",0,[433,131]],[\"hello neighbor\",0,[433]],[\"hello adele\",0,[433]],[\"hello song\",0,[433,131]],[\"hello future line distribution\",0,[3]],[\"hello there\",0,[433,131]],[\"hello future reaction\",0,[3]],[\"hello pop smoke\",0,[433,131]]],{\"k\":1,\"q\":\"eK23r6B6OpoGGrOUrtIgTDJsK4E\"}])",
+    "responseBody": "JP([\"hello\",[[\"hello my name is zuzie\",0,[433,131]],[\"hello\",0,[433]],[\"hello baby\",0,[433,131]],[\"hello kitty\",0,[433]],[\"hello darkness my old friend\",0,[433]],[\"hello neighbor\",0],[\"hello joy\",0,[433,131]],[\"hello lionel richie\",0,[433,131]],[\"hello song\",0,[433,131]],[\"hello i love you\",0,[433,131]],[\"hello my name is zuzie song\",0,[433,131]],[\"hello meme sound effect\",0,[433,131]],[\"hello mr gu ep 1 eng sub\",0],[\"hello sunshine\",0,[433,131]]],{\"k\":1,\"q\":\"jdFpk15mP0DhpW8nAFfDD7hy-tU\"}])",
     "latestUrl": "https://suggestqueries.google.com/complete/search?client\u003dyoutube\u0026jsonp\u003dJP\u0026ds\u003dyt\u0026gl\u003dDE\u0026q\u003dhello"
   }
 }
