@@ -16,7 +16,7 @@
         "https://www.youtube.com"
       ],
       "X-YouTube-Client-Version": [
-        "2.20210623.00.00"
+        "2.20210701.00.00"
       ]
     },
     "dataToSend": [
@@ -131,9 +131,9 @@
       50,
       49,
       48,
-      54,
-      50,
-      51,
+      55,
+      48,
+      49,
       46,
       48,
       48,
@@ -216,7 +216,7 @@
         "application/json; charset\u003dUTF-8"
       ],
       "date": [
-        "Sat, 26 Jun 2021 17:00:10 GMT"
+        "Mon, 05 Jul 2021 15:57:24 GMT"
       ],
       "server": [
         "ESF"

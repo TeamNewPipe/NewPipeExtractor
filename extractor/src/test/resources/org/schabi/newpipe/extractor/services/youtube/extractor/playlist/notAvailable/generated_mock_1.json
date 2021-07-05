@@ -16,7 +16,7 @@
         "https://www.youtube.com"
       ],
       "X-YouTube-Client-Version": [
-        "2.20210623.00.00"
+        "2.20210701.00.00"
       ],
       "Content-Type": [
         "application/json"
@@ -137,9 +137,9 @@
       50,
       49,
       48,
-      54,
-      50,
-      51,
+      55,
+      48,
+      49,
       46,
       48,
       48,
@@ -226,10 +226,10 @@
         "application/json; charset\u003dUTF-8"
       ],
       "date": [
-        "Sat, 26 Jun 2021 17:02:17 GMT"
+        "Mon, 05 Jul 2021 15:59:06 GMT"
       ],
       "expires": [
-        "Sat, 26 Jun 2021 17:02:17 GMT"
+        "Mon, 05 Jul 2021 15:59:06 GMT"
       ],
       "p3p": [
         "CP\u003d\"This is not a P3P policy! See g.co/p3phelp for more info.\""
@@ -238,7 +238,7 @@
         "ESF"
       ],
       "set-cookie": [
-        "CONSENT\u003dPENDING+006; expires\u003dFri, 01-Jan-2038 00:00:00 GMT; path\u003d/; domain\u003d.youtube.com; Secure"
+        "CONSENT\u003dPENDING+498; expires\u003dFri, 01-Jan-2038 00:00:00 GMT; path\u003d/; domain\u003d.youtube.com; Secure"
       ],
       "vary": [
         "Origin",
@@ -255,7 +255,7 @@
         "0"
       ]
     },
-    "responseBody": "{\n  \"responseContext\": {\n    \"visitorData\": \"CgtsYlNiLW1ua2k1QSiZu92GBg%3D%3D\",\n    \"serviceTrackingParams\": [\n      {\n        \"service\": \"GFEEDBACK\",\n        \"params\": [\n          {\n            \"key\": \"browse_id\",\n            \"value\": \"VLINVALID_ID\"\n          },\n          {\n            \"key\": \"logged_in\",\n            \"value\": \"0\"\n          },\n          {\n            \"key\": \"e\",\n            \"value\": \"23963744,24062129,23999405,23890959,23744176,23974595,24049573,24061913,23975059,24038971,23986024,24058240,24038425,23882503,24049575,24001373,24004644,24049894,24023961,23891344,24036947,23998056,24058380,24007246,24054461,24055216,24045324,24049567,24042870,23946420,24037794,24058813,23934970,24053867,23857950,24030040,23804281,23891346,24049569,24042868,23966208,23884386,23996830,23918597,24036907,23877024,24037583,1714258,23973490,24027649,24003105,24044124,24056839,24049577,23968386,24049821,24059522,24012512,23991736,24003103,23944779,23983296,24052246\"\n          }\n        ]\n      },\n      {\n        \"service\": \"GOOGLE_HELP\",\n        \"params\": [\n          {\n            \"key\": \"browse_id\",\n            \"value\": \"VLINVALID_ID\"\n          }\n        ]\n      },\n      {\n        \"service\": \"CSI\",\n        \"params\": [\n          {\n            \"key\": \"c\",\n            \"value\": \"WEB\"\n          },\n          {\n            \"key\": \"cver\",\n            \"value\": \"2.20210623.00.00\"\n          },\n          {\n            \"key\": \"yt_li\",\n            \"value\": \"0\"\n          },\n          {\n            \"key\": \"GetPlaylist_rid\",\n            \"value\": \"0x1d8bd9470e2d4a5f\"\n          }\n        ]\n      },\n      {\n        \"service\": \"GUIDED_HELP\",\n        \"params\": [\n          {\n            \"key\": \"logged_in\",\n            \"value\": \"0\"\n          }\n        ]\n      },\n      {\n        \"service\": \"ECATCHER\",\n        \"params\": [\n          {\n            \"key\": \"client.version\",\n            \"value\": \"2.20210623\"\n          },\n          {\n            \"key\": \"client.name\",\n            \"value\": \"WEB\"\n          }\n        ]\n      }\n    ],\n    \"mainAppWebResponseContext\": {\n      \"loggedOut\": true\n    },\n    \"webResponseContextExtensionData\": {\n      \"hasDecorated\": true\n    }\n  },\n  \"trackingParams\": \"CAAQhGciEwiZ5-e_47XxAhWFFQYAHdrsA4A\u003d\",\n  \"alerts\": [\n    {\n      \"alertRenderer\": {\n        \"type\": \"ERROR\",\n        \"text\": {\n          \"runs\": [\n            {\n              \"text\": \"This playlist type is unviewable.\"\n            }\n          ]\n        }\n      }\n    }\n  ],\n  \"microformat\": {\n    \"microformatDataRenderer\": {\n      \"noindex\": true\n    }\n  }\n}\n",
+    "responseBody": "{\n  \"responseContext\": {\n    \"visitorData\": \"CgtBOGYwQXE2emI2USjK2IyHBg%3D%3D\",\n    \"serviceTrackingParams\": [\n      {\n        \"service\": \"GFEEDBACK\",\n        \"params\": [\n          {\n            \"key\": \"browse_id\",\n            \"value\": \"VLINVALID_ID\"\n          },\n          {\n            \"key\": \"logged_in\",\n            \"value\": \"0\"\n          },\n          {\n            \"key\": \"e\",\n            \"value\": \"23884386,24056264,24059521,23918597,24053546,24007246,24049575,24057881,23998056,24014919,24059897,23934970,23986027,24058380,23744176,24049573,23974595,23944779,24038425,23999405,24052245,23890959,24066822,24053866,24063702,24027695,23983813,24058812,23857949,24049820,23968386,24052818,24012512,24001373,23940238,24049569,24004644,24056242,24003105,1714254,24036948,24056839,24044124,24049567,24058240,23744530,23973490,24003103,24058128,24037794,24027649,24058293,24064096,23991736,24042870,24023960,23983296,24049577,23966208,23891346,23990876,23996830,23804281,24022218,24045412,23987907,24030040,23891344,23946420,23882502\"\n          }\n        ]\n      },\n      {\n        \"service\": \"GOOGLE_HELP\",\n        \"params\": [\n          {\n            \"key\": \"browse_id\",\n            \"value\": \"VLINVALID_ID\"\n          }\n        ]\n      },\n      {\n        \"service\": \"CSI\",\n        \"params\": [\n          {\n            \"key\": \"c\",\n            \"value\": \"WEB\"\n          },\n          {\n            \"key\": \"cver\",\n            \"value\": \"2.20210701.00.00\"\n          },\n          {\n            \"key\": \"yt_li\",\n            \"value\": \"0\"\n          },\n          {\n            \"key\": \"GetPlaylist_rid\",\n            \"value\": \"0x49e7a31c388ecca8\"\n          }\n        ]\n      },\n      {\n        \"service\": \"GUIDED_HELP\",\n        \"params\": [\n          {\n            \"key\": \"logged_in\",\n            \"value\": \"0\"\n          }\n        ]\n      },\n      {\n        \"service\": \"ECATCHER\",\n        \"params\": [\n          {\n            \"key\": \"client.version\",\n            \"value\": \"2.20210701\"\n          },\n          {\n            \"key\": \"client.name\",\n            \"value\": \"WEB\"\n          }\n        ]\n      }\n    ],\n    \"mainAppWebResponseContext\": {\n      \"loggedOut\": true\n    },\n    \"webResponseContextExtensionData\": {\n      \"hasDecorated\": true\n    }\n  },\n  \"trackingParams\": \"CAAQhGciEwiHydeUpszxAhUW4tUKHWW9DcE\u003d\",\n  \"alerts\": [\n    {\n      \"alertRenderer\": {\n        \"type\": \"ERROR\",\n        \"text\": {\n          \"runs\": [\n            {\n              \"text\": \"This playlist type is unviewable.\"\n            }\n          ]\n        }\n      }\n    }\n  ],\n  \"microformat\": {\n    \"microformatDataRenderer\": {\n      \"noindex\": true\n    }\n  }\n}\n",
     "latestUrl": "https://www.youtube.com/youtubei/v1/browse?key\u003dAIzaSyAO_FJ2SlqU8Q4STEHLGCilw_Y9_11qcW8"
   }
 }
