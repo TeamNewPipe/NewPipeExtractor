@@ -48,6 +48,7 @@ public class YoutubeMixPlaylistExtractorTest {
 
     private static YoutubeMixPlaylistExtractor extractor;
 
+    @Ignore("Test broken, video was blocked by SME and is only available in Japan")
     public static class Mix {
 
         @BeforeClass
@@ -310,6 +311,7 @@ public class YoutubeMixPlaylistExtractorTest {
             dummyCookie.put(YoutubeMixPlaylistExtractor.COOKIE_NAME, "whatever");
         }
 
+        @Ignore
         @Test(expected = IllegalArgumentException.class)
         public void getPageEmptyUrl() throws Exception {
             extractor = (YoutubeMixPlaylistExtractor) YouTube
