@@ -111,6 +111,7 @@ public class YoutubeStreamExtractor extends StreamExtractor {
     private JsonObject videoPrimaryInfoRenderer;
     private JsonObject videoSecondaryInfoRenderer;
     private int ageLimit = -1;
+    private boolean isGetVideoInfoPlayerResponse = false;
     @Nullable
     private List<SubtitlesStream> subtitles = null;
 
@@ -759,9 +760,14 @@ public class YoutubeStreamExtractor extends StreamExtractor {
 
         nextResponse = getJsonPostResponse("next", body, localization);
 
-        streamingData = playerResponse.getObject("streamingData");
-        if (hasOtfStreams() || isCipherProtectedContent()) {
+        // Workaround for rate limits on web streaming URLs.
+        // TODO: add ability to deobfuscate the n param of these URLs
+
+        // It's not needed to request the mobile API for age-restricted videos
+        if (!isGetVideoInfoPlayerResponse) {
             fetchAndroidMobileJsonPlayer(contentCountry, localization, videoId);
+        } else {
+            streamingData = playerResponse.getObject("streamingData");
         }
     }
 
@@ -859,6 +865,8 @@ public class YoutubeStreamExtractor extends StreamExtractor {
                     streamingData = playerResponseWithSignatureTimestamp.getObject(
                             "streamingData");
                 }
+            } else {
+                streamingData = playerResponse.getObject("streamingData");
             }
         }
     }
@@ -876,6 +884,7 @@ public class YoutubeStreamExtractor extends StreamExtractor {
             throw new ParsingException(
                     "Could not parse YouTube player response from video info page", e);
         }
+        isGetVideoInfoPlayerResponse = true;
     }
 
     @Nonnull
@@ -938,21 +947,6 @@ public class YoutubeStreamExtractor extends StreamExtractor {
         } catch (final Exception e) {
             throw new ParsingException("Could not store JavaScript player", e);
         }
-    }
-
-    private boolean hasOtfStreams() {
-        if (streamingData != null) {
-            final JsonArray adaptiveFormats = streamingData.getArray("adaptiveFormats");
-            for (final Object adaptiveFormat : adaptiveFormats) {
-                final JsonObject jsonAdaptiveFormat = (JsonObject) adaptiveFormat;
-                final String streamTypeFormat = jsonAdaptiveFormat.getString("type", EMPTY_STRING);
-                if (streamTypeFormat.equalsIgnoreCase("FORMAT_STREAM_TYPE_OTF")) {
-                    return true;
-                }
-            }
-        }
-
-        return false;
     }
 
     private boolean isCipherProtectedContent() {
