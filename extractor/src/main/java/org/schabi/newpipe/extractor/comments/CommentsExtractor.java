@@ -13,6 +13,10 @@ public abstract class CommentsExtractor extends ListExtractor<CommentsInfoItem> 
         super(service, uiHandler);
     }
 
+    /**
+     * @apiNote Warning: This method is experimental and may get removed in a future release.
+     * @return <code>true</code> if the comments are disabled otherwise <code>false</code> (default)
+     */
     public boolean isCommentsDisabled() {
         return false;
     }

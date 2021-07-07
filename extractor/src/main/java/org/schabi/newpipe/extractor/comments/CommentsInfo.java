@@ -81,10 +81,19 @@ public class CommentsInfo extends ListInfo<CommentsInfoItem> {
         this.commentsExtractor = commentsExtractor;
     }
 
+    /**
+     * @apiNote Warning: This method is experimental and may get removed in a future release.
+     * @return <code>true</code> if the comments are disabled otherwise <code>false</code> (default)
+     * @see CommentsExtractor#isCommentsDisabled()
+     */
     public boolean isCommentsDisabled() {
         return commentsDisabled;
     }
 
+    /**
+     * @apiNote Warning: This method is experimental and may get removed in a future release.
+     * @param commentsDisabled <code>true</code> if the comments are disabled otherwise <code>false</code>
+     */
     public void setCommentsDisabled(final boolean commentsDisabled) {
         this.commentsDisabled = commentsDisabled;
     }
