@@ -76,6 +76,8 @@ class RecordingDownloader extends Downloader {
                 response.responseCode(),
                 response.responseMessage(),
                 response.responseHeaders(),
+                // Uncomment this when running with the RecordingDownloader YoutubeLiveStreamExtractorTest
+                // response.responseBody(),
                 cleanedResponseBody,
                 response.latestUrl()
         );
