@@ -6,5 +6,7 @@ public enum StreamType {
     AUDIO_STREAM,
     LIVE_STREAM,
     AUDIO_LIVE_STREAM,
+    POST_LIVE_STREAM,
+    POST_LIVE_AUDIO_STREAM,
     FILE
 }
