@@ -78,7 +78,8 @@ public class YoutubeParsingHelper {
     private static String[] youtubeMusicKey;
 
     private static boolean keyAndVersionExtracted = false;
-    private static Boolean areHardcodedClientVersionAndKeyValidValue = null;
+    @SuppressWarnings("OptionalUsedAsFieldOrParameterType")
+    private static Optional<Boolean> hardcodedClientVersionAndKeyValid = Optional.empty();
 
     private static Random numberGenerator = new Random();
 
@@ -308,10 +309,10 @@ public class YoutubeParsingHelper {
         }
     }
 
-    public static boolean areHardcodedClientVersionAndKeyValid()
+    public static Optional<Boolean> areHardcodedClientVersionAndKeyValid()
             throws IOException, ExtractionException {
-        if (areHardcodedClientVersionAndKeyValidValue != null) {
-            return areHardcodedClientVersionAndKeyValidValue;
+        if (hardcodedClientVersionAndKeyValid.isPresent()) {
+            return hardcodedClientVersionAndKeyValid;
         }
         // @formatter:off
         final byte[] body = JsonWriter.string()
@@ -343,12 +344,12 @@ public class YoutubeParsingHelper {
         final String responseBody = response.responseBody();
         final int responseCode = response.responseCode();
 
-        return areHardcodedClientVersionAndKeyValidValue = responseBody.length() > 5000
-                && responseCode == 200; // Ensure to have a valid response
+        return hardcodedClientVersionAndKeyValid = Optional.of(responseBody.length() > 5000
+                && responseCode == 200); // Ensure to have a valid response
     }
 
     private static void extractClientVersionAndKey() throws IOException, ExtractionException {
-        // Don't extract the client version and the innertube key if it has been already extracted
+        // Don't extract the client version and the InnerTube key if it has been already extracted
         if (keyAndVersionExtracted) return;
         // Don't provide a search term in order to have a smaller response
         final String url = "https://www.youtube.com/results?search_query=&ucbcb=1";
@@ -424,7 +425,7 @@ public class YoutubeParsingHelper {
      */
     public static String getClientVersion() throws IOException, ExtractionException {
         if (!isNullOrEmpty(clientVersion)) return clientVersion;
-        if (areHardcodedClientVersionAndKeyValid()) {
+        if (areHardcodedClientVersionAndKeyValid().orElse(false)) {
             return clientVersion = HARDCODED_CLIENT_VERSION;
         }
 
@@ -437,7 +438,7 @@ public class YoutubeParsingHelper {
      */
     public static String getKey() throws IOException, ExtractionException {
         if (!isNullOrEmpty(key)) return key;
-        if (areHardcodedClientVersionAndKeyValid()) {
+        if (areHardcodedClientVersionAndKeyValid().orElse(false)) {
             return key = HARDCODED_KEY;
         }
 

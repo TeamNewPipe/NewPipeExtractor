@@ -85,7 +85,6 @@ public class YoutubeMixPlaylistExtractor extends PlaylistExtractor {
         if (isNullOrEmpty(playlistData)) throw new ExtractionException(
                 "Could not get playlistData");
         cookieValue = extractCookieValue(COOKIE_NAME, response);
-
     }
 
     @Nonnull

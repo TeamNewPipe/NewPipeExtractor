@@ -962,7 +962,8 @@ public class YoutubeStreamExtractor extends StreamExtractor {
                         }
                     }
                 }
-            } else if (streamingData.has("formats")) {
+            }
+            if (streamingData.has("formats")) {
                 final JsonArray formats = streamingData.getArray("formats");
                 if (!isNullOrEmpty(formats)) {
                     for (final Object format : formats) {

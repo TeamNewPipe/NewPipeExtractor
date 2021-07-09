@@ -3,6 +3,7 @@ package org.schabi.newpipe.extractor.services.youtube.linkHandler;
 import org.schabi.newpipe.extractor.exceptions.ParsingException;
 import org.schabi.newpipe.extractor.linkhandler.SearchQueryHandlerFactory;
 
+import javax.annotation.Nonnull;
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
 import java.util.List;
@@ -26,24 +27,31 @@ public class YoutubeSearchQueryHandlerFactory extends SearchQueryHandlerFactory 
     private static final String SEARCH_URL = "https://www.youtube.com/results?search_query=";
     private static final String MUSIC_SEARCH_URL = "https://music.youtube.com/search?q=";
 
+    @Nonnull
     public static YoutubeSearchQueryHandlerFactory getInstance() {
         return new YoutubeSearchQueryHandlerFactory();
     }
 
     @Override
-    public String getUrl(String searchString, List<String> contentFilters, String sortFilter) throws ParsingException {
+    public String getUrl(final String searchString,
+                         @Nonnull final List<String> contentFilters,
+                         final String sortFilter) throws ParsingException {
         try {
             if (!contentFilters.isEmpty()) {
-                switch (contentFilters.get(0)) {
+                final String contentFilter = contentFilters.get(0);
+                switch (contentFilter) {
                     case ALL:
                     default:
                         break;
                     case VIDEOS:
-                        return SEARCH_URL + URLEncoder.encode(searchString, UTF_8) + "&sp=EgIQAQ%253D%253D";
+                        return SEARCH_URL + URLEncoder.encode(searchString, UTF_8)
+                                + "&sp=EgIQAQ%253D%253D";
                     case CHANNELS:
-                        return SEARCH_URL + URLEncoder.encode(searchString, UTF_8) + "&sp=EgIQAg%253D%253D";
+                        return SEARCH_URL + URLEncoder.encode(searchString, UTF_8)
+                                + "&sp=EgIQAg%253D%253D";
                     case PLAYLISTS:
-                        return SEARCH_URL + URLEncoder.encode(searchString, UTF_8) + "&sp=EgIQAw%253D%253D";
+                        return SEARCH_URL + URLEncoder.encode(searchString, UTF_8)
+                                + "&sp=EgIQAw%253D%253D";
                     case MUSIC_SONGS:
                     case MUSIC_VIDEOS:
                     case MUSIC_ALBUMS:
@@ -54,7 +62,7 @@ public class YoutubeSearchQueryHandlerFactory extends SearchQueryHandlerFactory 
             }
 
             return SEARCH_URL + URLEncoder.encode(searchString, UTF_8);
-        } catch (UnsupportedEncodingException e) {
+        } catch (final UnsupportedEncodingException e) {
             throw new ParsingException("Could not encode query", e);
         }
     }
@@ -70,10 +78,11 @@ public class YoutubeSearchQueryHandlerFactory extends SearchQueryHandlerFactory 
                 MUSIC_VIDEOS,
                 MUSIC_ALBUMS,
                 MUSIC_PLAYLISTS
-//                MUSIC_ARTISTS
+                // MUSIC_ARTISTS
         };
     }
 
+    @Nonnull
     public static String getSearchParameter(final String contentFilter) {
         if (isNullOrEmpty(contentFilter)) return "";
         switch (contentFilter) {
