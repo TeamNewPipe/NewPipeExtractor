@@ -39,6 +39,7 @@ import java.time.LocalDate;
 import java.time.OffsetDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.*;
+import java.util.regex.Pattern;
 
 import static org.schabi.newpipe.extractor.services.youtube.YoutubeParsingHelper.*;
 import static org.schabi.newpipe.extractor.utils.Utils.EMPTY_STRING;
@@ -527,9 +528,31 @@ public class YoutubeStreamExtractor extends StreamExtractor {
         final List<VideoStream> videoStreams = new ArrayList<>();
 
         try {
+            getDeobfuscationCode();
+            final String playerCode = NewPipe.getDownloader()
+                    .get(playerJsUrl, getExtractorLocalization()).responseBody();
+            Pattern pattern = Pattern.compile("b=a\\.get\\(\"n\"\\)\\)&&\\(b=(\\w+)\\(b\\),a\\.set\\(\"n\",b\\)");
+            String functionName = Parser.matchGroup1(pattern, playerCode);
+            Pattern functionPattern = Pattern.compile(functionName + "=function(.*?;)\n", Pattern.DOTALL);
+            String function = "function " + functionName + Parser.matchGroup1(functionPattern, playerCode);
+
+            Context context = Context.enter();
+            context.setOptimizationLevel(-1);
+            ScriptableObject scope = context.initSafeStandardObjects();
+
             for (final Map.Entry<String, ItagItem> entry : getItags(FORMATS, ItagItem.ItagType.VIDEO).entrySet()) {
                 final ItagItem itag = entry.getValue();
-                final VideoStream videoStream = new VideoStream(entry.getKey(), false, itag);
+                final String url = entry.getKey();
+                Pattern nValuePattern = Pattern.compile("[&?]n=([^&]+)");
+                String nValue = Parser.matchGroup1(nValuePattern, url);
+
+                context.evaluateString(scope, function, functionName, 1, null);
+                final Function jsFunction = (Function) scope.get(functionName, scope);
+                Object result = jsFunction.call(context, scope, scope, new Object[]{nValue});
+                String newNValue = Objects.toString(result, nValue);
+                String newUrl = nValuePattern.matcher(url).replaceFirst(newNValue);
+                System.out.println("aaaaaa  " + nValue + " - " + newNValue);
+                final VideoStream videoStream = new VideoStream(newUrl, false, itag);
                 if (!Stream.containSimilarStream(videoStream, videoStreams)) {
                     videoStreams.add(videoStream);
                 }
