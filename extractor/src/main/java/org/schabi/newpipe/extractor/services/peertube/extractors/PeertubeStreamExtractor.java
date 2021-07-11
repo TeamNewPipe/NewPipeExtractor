@@ -212,7 +212,7 @@ public class PeertubeStreamExtractor extends StreamExtractor {
         final List<VideoStream> videoStreams = new ArrayList<>();
         // mp4
         try {
-            videoStreams.addAll(getVideoStreamsFromArray(json.getArray("files")));
+            videoStreams.addAll(getVideoStreamsFromArray(json.getArray("files"), ""));
         } catch (Exception ignored) { }
         // HLS
         try {
@@ -220,7 +220,9 @@ public class PeertubeStreamExtractor extends StreamExtractor {
             for (final Object p : streamingPlaylists) {
                 if (!(p instanceof JsonObject)) continue;
                 final JsonObject playlist = (JsonObject) p;
-                videoStreams.addAll(getVideoStreamsFromArray(playlist.getArray("files")));
+                final String playlistUrl = playlist.getString("playlistUrl");
+                videoStreams.addAll(getVideoStreamsFromArray(playlist.getArray("files"),
+                        playlistUrl));
             }
         } catch (Exception e) {
             throw new ParsingException("Could not get video streams", e);
@@ -229,33 +231,66 @@ public class PeertubeStreamExtractor extends StreamExtractor {
         return videoStreams;
     }
 
-    private List<VideoStream> getVideoStreamsFromArray(final JsonArray streams) throws ParsingException {
+    @Nonnull
+    private List<VideoStream> getVideoStreamsFromArray(final JsonArray streams,
+                                                       final String playlistUrl)
+            throws ParsingException {
         try {
             final List<VideoStream> videoStreams = new ArrayList<>();
+            final boolean playlistUrlNullOrEmpty = isNullOrEmpty(playlistUrl);
             for (final Object s : streams) {
                 if (!(s instanceof JsonObject)) continue;
                 final JsonObject stream = (JsonObject) s;
                 final String url;
+                final String idSuffix;
                 if (stream.has("fileDownloadUrl")) {
                     url = JsonUtils.getString(stream, "fileDownloadUrl");
+                    idSuffix = "fileDownloadUrl";
                 } else {
                     url = JsonUtils.getString(stream, "fileUrl");
+                    idSuffix = "fileUrl";
                 }
                 final String torrentUrl = JsonUtils.getString(stream, "torrentUrl");
                 final String resolution = JsonUtils.getString(stream, "resolution.label");
                 final String extension = url.substring(url.lastIndexOf(".") + 1);
                 final MediaFormat format = MediaFormat.getFromSuffix(extension);
-                final String id = resolution + "." + extension;
-                videoStreams.add(new VideoStream(id, url, true, format,
-                        DeliveryMethod.PROGRESSIVE_HTTP, resolution, false, null));
-                videoStreams.add(new VideoStream(id, torrentUrl, true, format,
-                        DeliveryMethod.TORRENT, resolution, false, null));
+                final String id = resolution + "-" + extension;
+                videoStreams.add(new VideoStream(
+                        id + "-" + idSuffix + "-" + DeliveryMethod.PROGRESSIVE_HTTP,
+                        url,
+                        true,
+                        format,
+                        DeliveryMethod.PROGRESSIVE_HTTP,
+                        resolution,
+                        false,
+                        null));
+                videoStreams.add(new VideoStream(
+                        id + "-" + idSuffix + "-" + DeliveryMethod.TORRENT,
+                        torrentUrl,
+                        true,
+                        format,
+                        DeliveryMethod.TORRENT,
+                        resolution,
+                        false,
+                        null));
+                if (!playlistUrlNullOrEmpty) {
+                    final String hlsStreamUrl = playlistUrl.replace("master",
+                            JsonUtils.getNumber(stream, "resolution.id").toString());
+                    videoStreams.add(new VideoStream(
+                            id + "-" + DeliveryMethod.HLS,
+                            hlsStreamUrl,
+                            true,
+                            format,
+                            DeliveryMethod.HLS,
+                            resolution,
+                            false,
+                            playlistUrl));
+                }
             }
             return videoStreams;
         } catch (final Exception e) {
-            throw new ParsingException("Could not get video streams from array");
+            throw new ParsingException("Could not get video streams from array", e);
         }
-
     }
 
     @Override
