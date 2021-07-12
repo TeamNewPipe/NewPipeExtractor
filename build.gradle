@@ -1,6 +1,5 @@
 allprojects {
     apply plugin: 'java-library'
-    apply plugin: 'maven'
 
     compileJava.options.encoding = 'UTF-8'
     compileTestJava.options.encoding = 'UTF-8'
@@ -12,7 +11,7 @@ allprojects {
     group 'com.github.TeamNewPipe'
 
     repositories {
-        jcenter()
+        mavenCentral()
         maven { url "https://jitpack.io" }
     }
 }
