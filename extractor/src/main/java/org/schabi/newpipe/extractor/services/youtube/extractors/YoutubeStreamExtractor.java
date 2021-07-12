@@ -25,6 +25,7 @@ import org.schabi.newpipe.extractor.localization.TimeAgoParser;
 import org.schabi.newpipe.extractor.localization.TimeAgoPatternsManager;
 import org.schabi.newpipe.extractor.services.youtube.ItagItem;
 import org.schabi.newpipe.extractor.services.youtube.YoutubeParsingHelper;
+import org.schabi.newpipe.extractor.services.youtube.YoutubeThrottlingDecoder;
 import org.schabi.newpipe.extractor.services.youtube.linkHandler.YoutubeChannelLinkHandlerFactory;
 import org.schabi.newpipe.extractor.stream.*;
 import org.schabi.newpipe.extractor.utils.JsonUtils;
@@ -39,7 +40,6 @@ import java.time.LocalDate;
 import java.time.OffsetDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.*;
-import java.util.regex.Pattern;
 
 import static org.schabi.newpipe.extractor.services.youtube.YoutubeParsingHelper.*;
 import static org.schabi.newpipe.extractor.utils.Utils.EMPTY_STRING;
@@ -80,13 +80,10 @@ public class YoutubeStreamExtractor extends StreamExtractor {
 
     @Nullable
     private static String cachedDeobfuscationCode = null;
-    @Nullable
-    private String playerJsUrl = null;
-
-    private JsonArray initialAjaxJson;
-    private JsonObject initialData;
     @Nonnull
     private final Map<String, String> videoInfoPage = new HashMap<>();
+    private JsonArray initialAjaxJson;
+    private JsonObject initialData;
     private JsonObject playerResponse;
     private JsonObject videoPrimaryInfoRenderer;
     private JsonObject videoSecondaryInfoRenderer;
@@ -526,32 +523,18 @@ public class YoutubeStreamExtractor extends StreamExtractor {
     public List<VideoStream> getVideoStreams() throws ExtractionException {
         assertPageFetched();
         final List<VideoStream> videoStreams = new ArrayList<>();
+        YoutubeThrottlingDecoder throttlingDecoder = new YoutubeThrottlingDecoder(getId(), getExtractorLocalization());
 
         try {
-            getDeobfuscationCode();
-            final String playerCode = NewPipe.getDownloader()
-                    .get(playerJsUrl, getExtractorLocalization()).responseBody();
-            Pattern pattern = Pattern.compile("b=a\\.get\\(\"n\"\\)\\)&&\\(b=(\\w+)\\(b\\),a\\.set\\(\"n\",b\\)");
-            String functionName = Parser.matchGroup1(pattern, playerCode);
-            Pattern functionPattern = Pattern.compile(functionName + "=function(.*?;)\n", Pattern.DOTALL);
-            String function = "function " + functionName + Parser.matchGroup1(functionPattern, playerCode);
-
-            Context context = Context.enter();
-            context.setOptimizationLevel(-1);
-            ScriptableObject scope = context.initSafeStandardObjects();
-
             for (final Map.Entry<String, ItagItem> entry : getItags(FORMATS, ItagItem.ItagType.VIDEO).entrySet()) {
                 final ItagItem itag = entry.getValue();
                 final String url = entry.getKey();
-                Pattern nValuePattern = Pattern.compile("[&?]n=([^&]+)");
-                String nValue = Parser.matchGroup1(nValuePattern, url);
 
-                context.evaluateString(scope, function, functionName, 1, null);
-                final Function jsFunction = (Function) scope.get(functionName, scope);
-                Object result = jsFunction.call(context, scope, scope, new Object[]{nValue});
-                String newNValue = Objects.toString(result, nValue);
-                String newUrl = nValuePattern.matcher(url).replaceFirst(newNValue);
-                System.out.println("aaaaaa  " + nValue + " - " + newNValue);
+                String oldNParam = throttlingDecoder.parseNParam(url);
+                String newNParam = throttlingDecoder.decodeNParam(oldNParam);
+                String newUrl = throttlingDecoder.replaceNParam(url, newNParam);
+
+                System.out.println("aaaaaa  " + oldNParam + " - " + newNParam);
                 final VideoStream videoStream = new VideoStream(newUrl, false, itag);
                 if (!Stream.containSimilarStream(videoStream, videoStreams)) {
                     videoStreams.add(videoStream);
@@ -820,8 +803,7 @@ public class YoutubeStreamExtractor extends StreamExtractor {
         }
     }
 
-    @Nonnull
-    private String getEmbeddedInfoStsAndStorePlayerJsUrl() {
+    private String extractPlayerJsUrl() throws ParsingException {
         try {
             final String embedUrl = "https://www.youtube.com/embed/" + getId();
             final String embedPageContent = NewPipe.getDownloader()
@@ -829,7 +811,7 @@ public class YoutubeStreamExtractor extends StreamExtractor {
 
             try {
                 final String assetsPattern = "\"assets\":.+?\"js\":\\s*(\"[^\"]+\")";
-                playerJsUrl = Parser.matchGroup1(assetsPattern, embedPageContent)
+                return Parser.matchGroup1(assetsPattern, embedPageContent)
                         .replace("\\", "").replace("\"", "");
             } catch (final Parser.RegexException ex) {
                 // playerJsUrl is still available in the file, just somewhere else TODO
@@ -838,17 +820,25 @@ public class YoutubeStreamExtractor extends StreamExtractor {
                 final Elements elems = doc.select("script").attr("name", "player_ias/base");
                 for (final Element elem : elems) {
                     if (elem.attr("src").contains("base.js")) {
-                        playerJsUrl = elem.attr("src");
-                        break;
+                        return elem.attr("src");
                     }
                 }
             }
 
-            // Get embed sts
-            return Parser.matchGroup1("\"sts\"\\s*:\\s*(\\d+)", embedPageContent);
         } catch (final Exception i) {
-            // if it fails we simply reply with no sts as then it does not seem to be necessary
-            return "";
+            throw new ParsingException("Embedded info did not provide YouTube player js url");
+        }
+        throw new ParsingException("Embedded info did not provide YouTube player js url");
+    }
+
+    private String cleanPlayerJsUrl(String playerJsUrl) {
+        if (playerJsUrl.startsWith("//")) {
+            return HTTPS + playerJsUrl;
+        } else if (playerJsUrl.startsWith("/")) {
+            // sometimes https://www.youtube.com part has to be added manually
+            return HTTPS + "//www.youtube.com" + playerJsUrl;
+        } else {
+            return playerJsUrl;
         }
     }
 
@@ -899,22 +889,7 @@ public class YoutubeStreamExtractor extends StreamExtractor {
     @Nonnull
     private String getDeobfuscationCode() throws ParsingException {
         if (cachedDeobfuscationCode == null) {
-            if (playerJsUrl == null) {
-                // the currentPlayerJsUrl was not found in any page fetched so far and there is
-                // nothing cached, so try fetching embedded info
-                getEmbeddedInfoStsAndStorePlayerJsUrl();
-                if (playerJsUrl == null) {
-                    throw new ParsingException(
-                            "Embedded info did not provide YouTube player js url");
-                }
-            }
-
-            if (playerJsUrl.startsWith("//")) {
-                playerJsUrl = HTTPS + playerJsUrl;
-            } else if (playerJsUrl.startsWith("/")) {
-                // sometimes https://www.youtube.com part has to be added manually
-                playerJsUrl = HTTPS + "//www.youtube.com" + playerJsUrl;
-            }
+            String playerJsUrl = cleanPlayerJsUrl(extractPlayerJsUrl());
 
             cachedDeobfuscationCode = loadDeobfuscationCode(playerJsUrl);
         }
