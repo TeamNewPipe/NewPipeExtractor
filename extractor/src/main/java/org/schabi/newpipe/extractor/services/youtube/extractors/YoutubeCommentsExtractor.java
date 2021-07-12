@@ -23,9 +23,11 @@ import javax.annotation.Nonnull;
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.regex.Pattern;
 
 import static java.util.Collections.singletonList;
@@ -41,53 +43,108 @@ public class YoutubeCommentsExtractor extends CommentsExtractor {
     private String ytClientName;
     private String responseBody;
 
-    public YoutubeCommentsExtractor(StreamingService service, ListLinkHandler uiHandler) {
+    /**
+     * Caching mechanism and holder of the commentsDisabled value.
+     * <br/>
+     * Initial value = empty -> unknown if comments are disabled or not<br/>
+     * Some method calls {@link YoutubeCommentsExtractor#findInitialCommentsToken()}
+     * -> value is set<br/>
+     * If the method or another one that is depending on disabled comments
+     * is now called again, the method execution can avoid unnecessary calls
+     */
+    private Optional<Boolean> optCommentsDisabled = Optional.empty();
+
+    public YoutubeCommentsExtractor(
+            final StreamingService service,
+            final ListLinkHandler uiHandler) {
         super(service, uiHandler);
     }
 
     @Override
-    public InfoItemsPage<CommentsInfoItem> getInitialPage() throws IOException, ExtractionException {
-        String commentsTokenInside = findValue(responseBody, "sectionListRenderer", "}");
-        if (!commentsTokenInside.contains("continuation\":\"")) {
-            commentsTokenInside = findValue(responseBody, "commentSectionRenderer", "}");
+    public InfoItemsPage<CommentsInfoItem> getInitialPage()
+            throws IOException, ExtractionException {
+
+        // Check if findInitialCommentsToken was already called and optCommentsDisabled initialized
+        if (optCommentsDisabled.orElse(false)) {
+            return getInfoItemsPageForDisabledComments();
         }
-        final String commentsToken = findValue(commentsTokenInside, "continuation\":\"", "\"");
+
+        // Get the token
+        final String commentsToken = findInitialCommentsToken();
+        // Check if the comments have been disabled
+        if (optCommentsDisabled.get()) {
+            return getInfoItemsPageForDisabledComments();
+        }
+
         return getPage(getNextPage(commentsToken));
     }
 
-    private Page getNextPage(JsonObject ajaxJson) throws ParsingException {
+    /**
+     * Finds the initial comments token and initializes commentsDisabled.
+     * @return the continuation token or null if none was found
+     */
+    private String findInitialCommentsToken() {
+        final String continuationStartPattern = "continuation\":\"";
+
+        String commentsTokenInside = findValue(responseBody, "sectionListRenderer", "}");
+        if (commentsTokenInside == null || !commentsTokenInside.contains(continuationStartPattern)) {
+            commentsTokenInside = findValue(responseBody, "commentSectionRenderer", "}");
+        }
+
+        // If no continuation token is found the comments are disabled
+        if (commentsTokenInside == null || !commentsTokenInside.contains(continuationStartPattern)) {
+            optCommentsDisabled = Optional.of(true);
+            return null;
+        }
+
+        // If a continuation token is found there are >= 0 comments
+        final String commentsToken = findValue(commentsTokenInside, continuationStartPattern, "\"");
+
+        optCommentsDisabled = Optional.of(false);
+
+        return commentsToken;
+    }
+
+    private InfoItemsPage<CommentsInfoItem> getInfoItemsPageForDisabledComments() {
+        return new InfoItemsPage<>(Collections.emptyList(), null, Collections.emptyList());
+    }
+
+    private Page getNextPage(final JsonObject ajaxJson) throws ParsingException {
         final JsonArray arr;
         try {
             arr = JsonUtils.getArray(ajaxJson, "response.continuationContents.commentSectionContinuation.continuations");
-        } catch (Exception e) {
+        } catch (final Exception e) {
             return null;
         }
         if (arr.isEmpty()) {
             return null;
         }
-        String continuation;
+        final String continuation;
         try {
             continuation = JsonUtils.getString(arr.getObject(0), "nextContinuationData.continuation");
-        } catch (Exception e) {
+        } catch (final Exception e) {
             return null;
         }
         return getNextPage(continuation);
     }
 
-    private Page getNextPage(String continuation) throws ParsingException {
-        Map<String, String> params = new HashMap<>();
+    private Page getNextPage(final String continuation) throws ParsingException {
+        final Map<String, String> params = new HashMap<>();
         params.put("action_get_comments", "1");
         params.put("pbj", "1");
         params.put("ctoken", continuation);
         try {
             return new Page("https://m.youtube.com/watch_comment?" + getDataString(params));
-        } catch (UnsupportedEncodingException e) {
+        } catch (final UnsupportedEncodingException e) {
             throw new ParsingException("Could not get next page url", e);
         }
     }
 
     @Override
     public InfoItemsPage<CommentsInfoItem> getPage(final Page page) throws IOException, ExtractionException {
+        if (optCommentsDisabled.orElse(false)) {
+            return getInfoItemsPageForDisabledComments();
+        }
         if (page == null || isNullOrEmpty(page.getUrl())) {
             throw new IllegalArgumentException("Page doesn't contain an URL");
         }
@@ -96,7 +153,7 @@ public class YoutubeCommentsExtractor extends CommentsExtractor {
         final JsonObject ajaxJson;
         try {
             ajaxJson = JsonParser.array().from(ajaxResponse).getObject(1);
-        } catch (Exception e) {
+        } catch (final Exception e) {
             throw new ParsingException("Could not parse json data for comments", e);
         }
         final CommentsInfoItemsCollector collector = new CommentsInfoItemsCollector(getServiceId());
@@ -104,31 +161,32 @@ public class YoutubeCommentsExtractor extends CommentsExtractor {
         return new InfoItemsPage<>(collector, getNextPage(ajaxJson));
     }
 
-    private void collectCommentsFrom(CommentsInfoItemsCollector collector, JsonObject ajaxJson) throws ParsingException {
-        JsonArray contents;
+    private void collectCommentsFrom(final CommentsInfoItemsCollector collector, final JsonObject ajaxJson) throws ParsingException {
+        final JsonArray contents;
         try {
             contents = JsonUtils.getArray(ajaxJson, "response.continuationContents.commentSectionContinuation.items");
-        } catch (Exception e) {
+        } catch (final Exception e) {
             //no comments
             return;
         }
-        List<Object> comments;
+        final List<Object> comments;
         try {
             comments = JsonUtils.getValues(contents, "commentThreadRenderer.comment.commentRenderer");
-        } catch (Exception e) {
+        } catch (final Exception e) {
             throw new ParsingException("unable to get parse youtube comments", e);
         }
 
-        for (Object c : comments) {
+        for (final Object c : comments) {
             if (c instanceof JsonObject) {
-                CommentsInfoItemExtractor extractor = new YoutubeCommentsInfoItemExtractor((JsonObject) c, getUrl(), getTimeAgoParser());
+                final CommentsInfoItemExtractor extractor =
+                        new YoutubeCommentsInfoItemExtractor((JsonObject) c, getUrl(), getTimeAgoParser());
                 collector.commit(extractor);
             }
         }
     }
 
     @Override
-    public void onFetchPage(@Nonnull Downloader downloader) throws IOException, ExtractionException {
+    public void onFetchPage(@Nonnull final Downloader downloader) throws IOException, ExtractionException {
         final Map<String, List<String>> requestHeaders = new HashMap<>();
         requestHeaders.put("User-Agent", singletonList(USER_AGENT));
         final Response response = downloader.get(getUrl(), requestHeaders, getExtractorLocalization());
@@ -138,8 +196,8 @@ public class YoutubeCommentsExtractor extends CommentsExtractor {
     }
 
 
-    private String makeAjaxRequest(String siteUrl) throws IOException, ReCaptchaException {
-        Map<String, List<String>> requestHeaders = new HashMap<>();
+    private String makeAjaxRequest(final String siteUrl) throws IOException, ReCaptchaException {
+        final Map<String, List<String>> requestHeaders = new HashMap<>();
         requestHeaders.put("Accept", singletonList("*/*"));
         requestHeaders.put("User-Agent", singletonList(USER_AGENT));
         requestHeaders.put("X-YouTube-Client-Version", singletonList(ytClientVersion));
@@ -147,14 +205,15 @@ public class YoutubeCommentsExtractor extends CommentsExtractor {
         return getDownloader().get(siteUrl, requestHeaders, getExtractorLocalization()).responseBody();
     }
 
-    private String getDataString(Map<String, String> params) throws UnsupportedEncodingException {
-        StringBuilder result = new StringBuilder();
+    private String getDataString(final Map<String, String> params) throws UnsupportedEncodingException {
+        final StringBuilder result = new StringBuilder();
         boolean first = true;
-        for (Map.Entry<String, String> entry : params.entrySet()) {
-            if (first)
+        for (final Map.Entry<String, String> entry : params.entrySet()) {
+            if (first) {
                 first = false;
-            else
+            } else {
                 result.append("&");
+            }
             result.append(URLEncoder.encode(entry.getKey(), UTF_8));
             result.append("=");
             result.append(URLEncoder.encode(entry.getValue(), UTF_8));
@@ -163,8 +222,28 @@ public class YoutubeCommentsExtractor extends CommentsExtractor {
     }
 
     private String findValue(final String doc, final String start, final String end) {
-        final int beginIndex = doc.indexOf(start) + start.length();
+        int beginIndex = doc.indexOf(start);
+        // Start string was not found
+        if (beginIndex == -1) {
+            return null;
+        }
+        beginIndex = beginIndex + start.length();
         final int endIndex = doc.indexOf(end, beginIndex);
+        // End string was not found
+        if (endIndex == -1) {
+            return null;
+        }
         return doc.substring(beginIndex, endIndex);
+    }
+
+    @Override
+    public boolean isCommentsDisabled() {
+        // Check if commentsDisabled has to be initialized
+        if (!optCommentsDisabled.isPresent()) {
+            // Initialize commentsDisabled
+            this.findInitialCommentsToken();
+        }
+
+        return optCommentsDisabled.get();
     }
 }

@@ -9,9 +9,16 @@ import javax.annotation.Nonnull;
 
 public abstract class CommentsExtractor extends ListExtractor<CommentsInfoItem> {
 
-    public CommentsExtractor(StreamingService service, ListLinkHandler uiHandler) {
+    public CommentsExtractor(final StreamingService service, final ListLinkHandler uiHandler) {
         super(service, uiHandler);
-        // TODO Auto-generated constructor stub
+    }
+
+    /**
+     * @apiNote Warning: This method is experimental and may get removed in a future release.
+     * @return <code>true</code> if the comments are disabled otherwise <code>false</code> (default)
+     */
+    public boolean isCommentsDisabled() {
+        return false;
     }
 
     @Nonnull
