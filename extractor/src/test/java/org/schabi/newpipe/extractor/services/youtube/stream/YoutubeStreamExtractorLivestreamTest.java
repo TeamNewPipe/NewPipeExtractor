@@ -26,9 +26,6 @@ public class YoutubeStreamExtractorLivestreamTest extends DefaultStreamExtractor
     private static final String URL = YoutubeStreamExtractorDefaultTest.BASE_URL + ID + "&t=" + TIMESTAMP;
     private static StreamExtractor extractor;
 
-    // When you run this test with the RecordingDownloader, please uncomment line 80 and comment
-    // line 81. Otherwise, the test will fail because parsing the DASH manifest requires your IP
-    // address. You will have to remove it manually in the mocks.
     @BeforeClass
     public static void setUp() throws Exception {
         YoutubeParsingHelper.resetClientVersionAndKey();
