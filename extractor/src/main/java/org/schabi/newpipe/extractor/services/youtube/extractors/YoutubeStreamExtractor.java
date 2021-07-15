@@ -534,7 +534,7 @@ public class YoutubeStreamExtractor extends StreamExtractor {
                 String newNParam = throttlingDecoder.decodeNParam(oldNParam);
                 String newUrl = throttlingDecoder.replaceNParam(url, newNParam);
 
-                System.out.println("aaaaaa  " + oldNParam + " - " + newNParam);
+                System.out.println("aaaaaa  " + url + " - " + oldNParam + " - " + newNParam);
                 final VideoStream videoStream = new VideoStream(newUrl, false, itag);
                 if (!Stream.containSimilarStream(videoStream, videoStreams)) {
                     videoStreams.add(videoStream);

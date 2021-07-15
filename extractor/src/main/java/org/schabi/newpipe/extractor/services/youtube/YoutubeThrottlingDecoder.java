@@ -15,6 +15,7 @@ import java.util.regex.Pattern;
 public class YoutubeThrottlingDecoder {
 
     private static final String HTTPS = "https:";
+    private static final String N_PARAM_REGEX = "[&?]n=([^&]+)";
 
     private final String functionName;
     private final String function;
@@ -85,7 +86,7 @@ public class YoutubeThrottlingDecoder {
     }
 
     public String parseNParam(String url) throws Parser.RegexException {
-        Pattern nValuePattern = Pattern.compile("[&?]n=([^&]+)");
+        Pattern nValuePattern = Pattern.compile(N_PARAM_REGEX);
         return Parser.matchGroup1(nValuePattern, url);
     }
 
@@ -95,7 +96,7 @@ public class YoutubeThrottlingDecoder {
     }
 
     public String replaceNParam(String url, String newValue) {
-        Pattern nValuePattern = Pattern.compile("[&?]n=([^&]+)");
+        Pattern nValuePattern = Pattern.compile(N_PARAM_REGEX);
         return nValuePattern.matcher(url).replaceFirst(newValue);
     }
 }
