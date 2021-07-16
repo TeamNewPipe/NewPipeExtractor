@@ -16,13 +16,16 @@ public class YoutubeThrottlingDecoder {
 
     private static final String HTTPS = "https:";
     private static final String N_PARAM_REGEX = "[&?]n=([^&]+)";
+    private static String playerJsCode;
 
     private final String functionName;
     private final String function;
 
     public YoutubeThrottlingDecoder(String videoId, Localization localization) throws ParsingException {
-        String playerJsUrl = cleanPlayerJsUrl(extractPlayerJsUrl(videoId, localization));
-        String playerJsCode = downloadPlayerJsCode(localization, playerJsUrl);
+        if (playerJsCode == null) {
+            String playerJsUrl = cleanPlayerJsUrl(extractPlayerJsUrl(videoId, localization));
+            playerJsCode = downloadPlayerJsCode(localization, playerJsUrl);
+        }
 
         functionName = parseDecodeFunctionName(playerJsCode);
         function = parseDecodeFunction(playerJsCode, functionName);
