@@ -1049,7 +1049,16 @@ public class YoutubeStreamExtractor extends StreamExtractor {
                 storyboardsRenderer = storyboards.getObject("playerStoryboardSpecRenderer");
             }
 
-            final String[] spec = storyboardsRenderer.getString("spec").split("\\|");
+            if (storyboardsRenderer == null) {
+                return Collections.emptyList();
+            }
+
+            final String storyboardsRendererSpec = storyboardsRenderer.getString("spec");
+            if (storyboardsRendererSpec == null) {
+                return Collections.emptyList();
+            }
+
+            final String[] spec = storyboardsRendererSpec.split("\\|");
             final String url = spec[0];
             final ArrayList<Frameset> result = new ArrayList<>(spec.length - 1);
 
