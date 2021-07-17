@@ -98,8 +98,7 @@ public class YoutubeThrottlingDecoder {
         return javascript.run(function, functionName, nParam);
     }
 
-    public String replaceNParam(String url, String newValue) {
-        Pattern nValuePattern = Pattern.compile(N_PARAM_REGEX);
-        return nValuePattern.matcher(url).replaceFirst(newValue);
+    public String replaceNParam(String url, String oldValue, String newValue) {
+        return url.replace(oldValue, newValue);
     }
 }
