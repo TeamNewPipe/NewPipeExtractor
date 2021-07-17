@@ -24,6 +24,7 @@ import org.schabi.newpipe.extractor.localization.Localization;
 import org.schabi.newpipe.extractor.localization.TimeAgoParser;
 import org.schabi.newpipe.extractor.localization.TimeAgoPatternsManager;
 import org.schabi.newpipe.extractor.services.youtube.ItagItem;
+import org.schabi.newpipe.extractor.services.youtube.YoutubeJavascriptExtractor;
 import org.schabi.newpipe.extractor.services.youtube.YoutubeParsingHelper;
 import org.schabi.newpipe.extractor.services.youtube.YoutubeThrottlingDecrypter;
 import org.schabi.newpipe.extractor.services.youtube.linkHandler.YoutubeChannelLinkHandlerFactory;
@@ -799,45 +800,6 @@ public class YoutubeStreamExtractor extends StreamExtractor {
         }
     }
 
-    private String extractPlayerJsUrl() throws ParsingException {
-        try {
-            final String embedUrl = "https://www.youtube.com/embed/" + getId();
-            final String embedPageContent = NewPipe.getDownloader()
-                    .get(embedUrl, getExtractorLocalization()).responseBody();
-
-            try {
-                final String assetsPattern = "\"assets\":.+?\"js\":\\s*(\"[^\"]+\")";
-                return Parser.matchGroup1(assetsPattern, embedPageContent)
-                        .replace("\\", "").replace("\"", "");
-            } catch (final Parser.RegexException ex) {
-                // playerJsUrl is still available in the file, just somewhere else TODO
-                // it is ok not to find it, see how that's handled in getDeobfuscationCode()
-                final Document doc = Jsoup.parse(embedPageContent);
-                final Elements elems = doc.select("script").attr("name", "player_ias/base");
-                for (final Element elem : elems) {
-                    if (elem.attr("src").contains("base.js")) {
-                        return elem.attr("src");
-                    }
-                }
-            }
-
-        } catch (final Exception i) {
-            throw new ParsingException("Embedded info did not provide YouTube player js url");
-        }
-        throw new ParsingException("Embedded info did not provide YouTube player js url");
-    }
-
-    private String cleanPlayerJsUrl(String playerJsUrl) {
-        if (playerJsUrl.startsWith("//")) {
-            return HTTPS + playerJsUrl;
-        } else if (playerJsUrl.startsWith("/")) {
-            // sometimes https://www.youtube.com part has to be added manually
-            return HTTPS + "//www.youtube.com" + playerJsUrl;
-        } else {
-            return playerJsUrl;
-        }
-    }
-
     private String getDeobfuscationFuncName(final String playerCode) throws DeobfuscateException {
         Parser.RegexException exception = null;
         for (final String regex : REGEXES) {
@@ -852,11 +814,10 @@ public class YoutubeStreamExtractor extends StreamExtractor {
         throw new DeobfuscateException("Could not find deobfuscate function with any of the given patterns.", exception);
     }
 
-    private String loadDeobfuscationCode(@Nonnull final String playerJsUrl)
+    private String loadDeobfuscationCode()
             throws DeobfuscateException {
         try {
-            final String playerCode = NewPipe.getDownloader()
-                    .get(playerJsUrl, getExtractorLocalization()).responseBody();
+            final String playerCode = YoutubeJavascriptExtractor.extractJavascriptCode(getId());
             final String deobfuscationFunctionName = getDeobfuscationFuncName(playerCode);
 
             final String functionPattern = "("
@@ -875,8 +836,6 @@ public class YoutubeStreamExtractor extends StreamExtractor {
                     "function " + DEOBFUSCATION_FUNC_NAME + "(a){return " + deobfuscationFunctionName + "(a);}";
 
             return helperObject + deobfuscateFunction + callerFunction;
-        } catch (final IOException ioe) {
-            throw new DeobfuscateException("Could not load deobfuscate function", ioe);
         } catch (final Exception e) {
             throw new DeobfuscateException("Could not parse deobfuscate function ", e);
         }
@@ -885,9 +844,7 @@ public class YoutubeStreamExtractor extends StreamExtractor {
     @Nonnull
     private String getDeobfuscationCode() throws ParsingException {
         if (cachedDeobfuscationCode == null) {
-            String playerJsUrl = cleanPlayerJsUrl(extractPlayerJsUrl());
-
-            cachedDeobfuscationCode = loadDeobfuscationCode(playerJsUrl);
+            cachedDeobfuscationCode = loadDeobfuscationCode();
         }
         return cachedDeobfuscationCode;
     }
