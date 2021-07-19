@@ -1217,4 +1217,25 @@ public class YoutubeStreamExtractor extends StreamExtractor {
                 initialData.getObject("contents").getObject("twoColumnWatchNextResults")
                         .getObject("results").getObject("results").getArray("contents"));
     }
+
+    @Nullable
+    @Override
+    public String getMixUrl(final MixType mixType) throws ParsingException {
+        switch (mixType) {
+            case VIDEO:
+                return getUrl() + "&list=RD" + getId();
+            case MUSIC:
+                return "https://music.youtube.com/watch?v=" + getId() + "&list=RDAMVM" + getId();
+            case CHANNEL:
+                final String channelId;
+                try {
+                    channelId = YoutubeChannelLinkHandlerFactory.getInstance()
+                            .getId(getUploaderUrl());
+                } catch (final ParsingException e) {
+                    return null; // apparently the uploader could not be parsed
+                }
+                return getUrl() + "&list=RDCM" + channelId;
+        }
+        return null;
+    }
 }

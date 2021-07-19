@@ -489,4 +489,10 @@ public class PeertubeStreamExtractor extends StreamExtractor {
             return null;
         }
     }
+
+    @Nullable
+    @Override
+    public String getMixUrl(final MixType mixType) {
+        return null;
+    }
 }

@@ -349,7 +349,22 @@ public class BandcampStreamExtractor extends StreamExtractor {
 
     @Nonnull
     @Override
-    public List<MetaInfo> getMetaInfo() throws ParsingException {
+    public List<MetaInfo> getMetaInfo() {
         return Collections.emptyList();
+    }
+
+    @Nullable
+    @Override
+    public String getMixUrl(final MixType mixType) throws ParsingException {
+        if (mixType == MixType.ALBUM) {
+            final Element albumHref = document.getElementsByClass("fromAlbum").first();
+            if (albumHref == null) {
+                return null;
+            }
+
+            return getUrl().split("bandcamp\\.com/")[0] + "bandcamp.com"
+                    + albumHref.parent().attr("href");
+        }
+        return null;
     }
 }

@@ -302,4 +302,10 @@ public class MediaCCCLiveStreamExtractor extends StreamExtractor {
     public List<MetaInfo> getMetaInfo() {
         return Collections.emptyList();
     }
+
+    @Nullable
+    @Override
+    public String getMixUrl(MixType mixType) {
+        return null;
+    }
 }
