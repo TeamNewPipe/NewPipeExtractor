@@ -1,7 +1,7 @@
 package org.schabi.newpipe.extractor.services.youtube;
 
 import org.schabi.newpipe.extractor.exceptions.ParsingException;
-import org.schabi.newpipe.extractor.utils.Javascript;
+import org.schabi.newpipe.extractor.utils.JavaScript;
 import org.schabi.newpipe.extractor.utils.Parser;
 
 import java.util.regex.Pattern;
@@ -35,14 +35,14 @@ public class YoutubeThrottlingDecrypter {
      * Otherwise use the no-arg constructor which uses a constant value.
      */
     public YoutubeThrottlingDecrypter(String videoId) throws ParsingException {
-        final String playerJsCode = YoutubeJavascriptExtractor.extractJavascriptCode(videoId);
+        final String playerJsCode = YoutubeJavaScriptExtractor.extractJavaScriptCode(videoId);
 
         functionName = parseDecodeFunctionName(playerJsCode);
         function = parseDecodeFunction(playerJsCode, functionName);
     }
 
     public YoutubeThrottlingDecrypter() throws ParsingException {
-        final String playerJsCode = YoutubeJavascriptExtractor.extractJavascriptCode();
+        final String playerJsCode = YoutubeJavaScriptExtractor.extractJavaScriptCode();
 
         functionName = parseDecodeFunctionName(playerJsCode);
         function = parseDecodeFunction(playerJsCode, functionName);
@@ -78,8 +78,7 @@ public class YoutubeThrottlingDecrypter {
     }
 
     private String decryptNParam(String nParam) {
-        Javascript javascript = new Javascript();
-        return javascript.run(function, functionName, nParam);
+        return JavaScript.run(function, functionName, nParam);
     }
 
     private String replaceNParam(String url, String oldValue, String newValue) {

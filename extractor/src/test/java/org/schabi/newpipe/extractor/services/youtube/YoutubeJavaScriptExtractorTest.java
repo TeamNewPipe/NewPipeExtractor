@@ -12,7 +12,7 @@ import static org.hamcrest.CoreMatchers.allOf;
 import static org.hamcrest.CoreMatchers.containsString;
 import static org.hamcrest.MatcherAssert.assertThat;
 
-public class YoutubeJavascriptExtractorTest {
+public class YoutubeJavaScriptExtractorTest {
 
     @Before
     public void setup() throws IOException {
@@ -20,20 +20,20 @@ public class YoutubeJavascriptExtractorTest {
     }
 
     @Test
-    public void testExtractJavascript__success() throws ParsingException {
-        String playerJsCode = YoutubeJavascriptExtractor.extractJavascriptCode("d4IGg5dqeO8");
+    public void testExtractJavaScript__success() throws ParsingException {
+        String playerJsCode = YoutubeJavaScriptExtractor.extractJavaScriptCode("d4IGg5dqeO8");
         assertPlayerJsCode(playerJsCode);
 
-        playerJsCode = YoutubeJavascriptExtractor.extractJavascriptCode();
+        playerJsCode = YoutubeJavaScriptExtractor.extractJavaScriptCode();
         assertPlayerJsCode(playerJsCode);
     }
 
     @Test
-    public void testExtractJavascript__invalidVideoId__success() throws ParsingException {
-        String playerJsCode = YoutubeJavascriptExtractor.extractJavascriptCode("not_a_video_id");
+    public void testExtractJavaScript__invalidVideoId__success() throws ParsingException {
+        String playerJsCode = YoutubeJavaScriptExtractor.extractJavaScriptCode("not_a_video_id");
         assertPlayerJsCode(playerJsCode);
 
-        playerJsCode = YoutubeJavascriptExtractor.extractJavascriptCode("11-chars123");
+        playerJsCode = YoutubeJavaScriptExtractor.extractJavaScriptCode("11-chars123");
         assertPlayerJsCode(playerJsCode);
 
     }

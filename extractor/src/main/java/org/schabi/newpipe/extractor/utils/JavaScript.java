@@ -4,9 +4,12 @@ import org.mozilla.javascript.Context;
 import org.mozilla.javascript.Function;
 import org.mozilla.javascript.ScriptableObject;
 
-public class Javascript {
+public class JavaScript {
 
-    public String run(String function, String functionName, String... parameters) {
+    private JavaScript() {
+    }
+
+    public static String run(String function, String functionName, String... parameters) {
         try {
             Context context = Context.enter();
             context.setOptimizationLevel(-1);
