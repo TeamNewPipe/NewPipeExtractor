@@ -4,6 +4,8 @@ import org.schabi.newpipe.extractor.exceptions.ParsingException;
 import org.schabi.newpipe.extractor.utils.JavaScript;
 import org.schabi.newpipe.extractor.utils.Parser;
 
+import java.util.HashMap;
+import java.util.Map;
 import java.util.regex.Pattern;
 
 /**
@@ -24,6 +26,7 @@ import java.util.regex.Pattern;
 public class YoutubeThrottlingDecrypter {
 
     private static final String N_PARAM_REGEX = "[&?]n=([^&]+)";
+    private static final Map<String, String> nParams = new HashMap<>();
 
     private final String functionName;
     private final String function;
@@ -78,7 +81,12 @@ public class YoutubeThrottlingDecrypter {
     }
 
     private String decryptNParam(String nParam) {
-        return JavaScript.run(function, functionName, nParam);
+        if (nParams.containsKey(nParam)) {
+            return nParams.get(nParam);
+        }
+        final String decryptedNParam = JavaScript.run(function, functionName, nParam);
+        nParams.put(nParam, decryptedNParam);
+        return decryptedNParam;
     }
 
     private String replaceNParam(String url, String oldValue, String newValue) {
