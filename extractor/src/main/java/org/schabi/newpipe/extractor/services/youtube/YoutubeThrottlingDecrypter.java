@@ -11,9 +11,10 @@ import java.util.regex.Pattern;
 
 /**
  * <p>
- * YouTube's media is protected with a cipher, which modifies the "n" query parameter of it's video playback urls.
- * This class handles extracting that "n" query parameter, applying the cipher on it and returning the resulting url
- * which is not throttled.
+ * YouTube's media is protected with a cipher,
+ * which modifies the "n" query parameter of it's video playback urls.
+ * This class handles extracting that "n" query parameter,
+ * applying the cipher on it and returning the resulting url which is not throttled.
  * </p>
  *
  * <p>
@@ -23,6 +24,12 @@ import java.util.regex.Pattern;
  * <p>
  * https://r5---sn-4g5ednsz.googlevideo.com/videoplayback?n=iHywZkMipkszqA&other=other
  * </p>
+ * <br>
+ * <p>
+ * Decoding the "n" parameter is time intensive. For this reason, the results are cached.
+ * The cache can be cleared using {@link #clearCache()}
+ * </p>
+ *
  */
 public class YoutubeThrottlingDecrypter {
 
@@ -101,5 +108,19 @@ public class YoutubeThrottlingDecrypter {
                                  final String oldValue,
                                  final String newValue) {
         return url.replace(oldValue, newValue);
+    }
+
+    /**
+     * @return the number of the cached "n" query parameters.
+     */
+    public static int getCacheSize() {
+        return nParams.size();
+    }
+
+    /**
+     * Clears all stored "n" query parameters.
+     */
+    public static void clearCache() {
+        nParams.clear();
     }
 }
