@@ -500,11 +500,15 @@ public class YoutubeStreamExtractor extends StreamExtractor {
     public List<AudioStream> getAudioStreams() throws ExtractionException {
         assertPageFetched();
         final List<AudioStream> audioStreams = new ArrayList<>();
+        final YoutubeThrottlingDecrypter throttlingDecrypter = new YoutubeThrottlingDecrypter(getId());
 
         try {
             for (final Map.Entry<String, ItagItem> entry : getItags(ADAPTIVE_FORMATS, ItagItem.ItagType.AUDIO).entrySet()) {
                 final ItagItem itag = entry.getValue();
-                final AudioStream audioStream = new AudioStream(entry.getKey(), itag);
+                String url = entry.getKey();
+                url = throttlingDecrypter.apply(url);
+
+                final AudioStream audioStream = new AudioStream(url, itag);
                 if (!Stream.containSimilarStream(audioStream, audioStreams)) {
                     audioStreams.add(audioStream);
                 }
@@ -544,11 +548,15 @@ public class YoutubeStreamExtractor extends StreamExtractor {
     public List<VideoStream> getVideoOnlyStreams() throws ExtractionException {
         assertPageFetched();
         final List<VideoStream> videoOnlyStreams = new ArrayList<>();
+        final YoutubeThrottlingDecrypter throttlingDecrypter = new YoutubeThrottlingDecrypter(getId());
+
         try {
             for (final Map.Entry<String, ItagItem> entry : getItags(ADAPTIVE_FORMATS, ItagItem.ItagType.VIDEO_ONLY).entrySet()) {
                 final ItagItem itag = entry.getValue();
+                String url = entry.getKey();
+                url = throttlingDecrypter.apply(url);
 
-                final VideoStream videoStream = new VideoStream(entry.getKey(), true, itag);
+                final VideoStream videoStream = new VideoStream(url, true, itag);
                 if (!Stream.containSimilarStream(videoStream, videoOnlyStreams)) {
                     videoOnlyStreams.add(videoStream);
                 }
