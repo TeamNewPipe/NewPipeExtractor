@@ -4,6 +4,7 @@ import org.schabi.newpipe.extractor.exceptions.ParsingException;
 import org.schabi.newpipe.extractor.utils.JavaScript;
 import org.schabi.newpipe.extractor.utils.Parser;
 
+import javax.annotation.Nonnull;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.regex.Pattern;
@@ -33,11 +34,12 @@ public class YoutubeThrottlingDecrypter {
 
     /**
      * <p>
-     * Use this if you care about the off chance that YouTube tracks with which videoId the cipher is requested.
+     * Use this if you care about the off chance that YouTube tracks with which videoId the cipher
+     * is requested.
      * </p>
      * Otherwise use the no-arg constructor which uses a constant value.
      */
-    public YoutubeThrottlingDecrypter(String videoId) throws ParsingException {
+    public YoutubeThrottlingDecrypter(final String videoId) throws ParsingException {
         final String playerJsCode = YoutubeJavaScriptExtractor.extractJavaScriptCode(videoId);
 
         functionName = parseDecodeFunctionName(playerJsCode);
@@ -51,17 +53,22 @@ public class YoutubeThrottlingDecrypter {
         function = parseDecodeFunction(playerJsCode, functionName);
     }
 
-    private String parseDecodeFunctionName(String playerJsCode) throws Parser.RegexException {
-        Pattern pattern = Pattern.compile("b=a\\.get\\(\"n\"\\)\\)&&\\(b=(\\w+)\\(b\\),a\\.set\\(\"n\",b\\)");
+    private String parseDecodeFunctionName(final String playerJsCode)
+            throws Parser.RegexException {
+        Pattern pattern = Pattern.compile(
+                "b=a\\.get\\(\"n\"\\)\\)&&\\(b=(\\w+)\\(b\\),a\\.set\\(\"n\",b\\)");
         return Parser.matchGroup1(pattern, playerJsCode);
     }
 
-    private String parseDecodeFunction(String playerJsCode, String functionName) throws Parser.RegexException {
-        Pattern functionPattern = Pattern.compile(functionName + "=function(.*?;)\n", Pattern.DOTALL);
-        return  "function " + functionName + Parser.matchGroup1(functionPattern, playerJsCode);
+    @Nonnull
+    private String parseDecodeFunction(final String playerJsCode, final String functionName)
+            throws Parser.RegexException {
+        Pattern functionPattern = Pattern.compile(functionName + "=function(.*?;)\n",
+                Pattern.DOTALL);
+        return "function " + functionName + Parser.matchGroup1(functionPattern, playerJsCode);
     }
 
-    public String apply(String url) throws Parser.RegexException {
+    public String apply(final String url) throws Parser.RegexException {
         if (containsNParam(url)) {
             String oldNParam = parseNParam(url);
             String newNParam = decryptNParam(oldNParam);
@@ -71,16 +78,16 @@ public class YoutubeThrottlingDecrypter {
         }
     }
 
-    private boolean containsNParam(String url) {
+    private boolean containsNParam(final String url) {
         return Parser.isMatch(N_PARAM_REGEX, url);
     }
 
-    private String parseNParam(String url) throws Parser.RegexException {
+    private String parseNParam(final String url) throws Parser.RegexException {
         Pattern nValuePattern = Pattern.compile(N_PARAM_REGEX);
         return Parser.matchGroup1(nValuePattern, url);
     }
 
-    private String decryptNParam(String nParam) {
+    private String decryptNParam(final String nParam) {
         if (nParams.containsKey(nParam)) {
             return nParams.get(nParam);
         }
@@ -89,7 +96,10 @@ public class YoutubeThrottlingDecrypter {
         return decryptedNParam;
     }
 
-    private String replaceNParam(String url, String oldValue, String newValue) {
+    @Nonnull
+    private String replaceNParam(@Nonnull final String url,
+                                 final String oldValue,
+                                 final String newValue) {
         return url.replace(oldValue, newValue);
     }
 }

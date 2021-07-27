@@ -38,7 +38,7 @@ public class YoutubeJavaScriptExtractorTest {
 
     }
 
-    private void assertPlayerJsCode(String playerJsCode) {
+    private void assertPlayerJsCode(final String playerJsCode) {
         assertThat(playerJsCode, allOf(
                 containsString(" Copyright The Closure Library Authors.\n"
                         + " SPDX-License-Identifier: Apache-2.0"),

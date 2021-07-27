@@ -12,11 +12,12 @@ import org.schabi.newpipe.extractor.utils.Parser;
 import javax.annotation.Nonnull;
 
 /**
- * YouTube restricts streaming their media in multiple ways by requiring clients to apply a cipher function
- * on parameters of requests.
+ * YouTube restricts streaming their media in multiple ways by requiring clients to apply a cipher
+ * function on parameters of requests.
  * The cipher function is sent alongside as a JavaScript function.
  * <p>
- * This class handling fetching the JavaScript file in order to allow other classes to extract the needed functions.
+ * This class handling fetching the JavaScript file in order to allow other classes to extract the
+ * needed functions.
  */
 public class YoutubeJavaScriptExtractor {
 
@@ -27,14 +28,16 @@ public class YoutubeJavaScriptExtractor {
     }
 
     /**
-     * Extracts the JavaScript file. The result is cached, so subsequent calls use the result of previous calls.
+     * Extracts the JavaScript file. The result is cached, so subsequent calls use the result of
+     * previous calls.
      *
-     * @param videoId Does not influence the result, but a valid video id may help in the chance that YouTube tracks it.
-     * @return The whole javascript file as a string.
+     * @param videoId Does not influence the result, but a valid video id may help in the chance
+     *                that YouTube tracks it.
+     * @return The whole JavaScript file as a string.
      * @throws ParsingException If the extraction failed.
      */
     @Nonnull
-    public static String extractJavaScriptCode(String videoId) throws ParsingException {
+    public static String extractJavaScriptCode(final String videoId) throws ParsingException {
         if (cachedJavaScriptCode == null) {
             final String playerJsUrl = YoutubeJavaScriptExtractor.cleanJavaScriptUrl(
                     YoutubeJavaScriptExtractor.extractJavaScriptUrl(videoId));
@@ -45,18 +48,19 @@ public class YoutubeJavaScriptExtractor {
     }
 
     /**
-     * Same as {@link YoutubeJavaScriptExtractor#extractJavaScriptCode(String)} but with a constant value for videoId.
+     * Same as {@link YoutubeJavaScriptExtractor#extractJavaScriptCode(String)} but with a constant
+     * value for videoId.
      * Possible because the videoId has no influence on the result.
      * <p>
-     * In the off chance that YouTube tracks with which video id the request is made, it may make sense to pass in
-     * video ids.
+     * In the off chance that YouTube tracks with which video id the request is made, it may make
+     * sense to pass in video ids.
      */
     @Nonnull
     public static String extractJavaScriptCode() throws ParsingException {
         return extractJavaScriptCode("d4IGg5dqeO8");
     }
 
-    private static String extractJavaScriptUrl(String videoId) throws ParsingException {
+    private static String extractJavaScriptUrl(final String videoId) throws ParsingException {
         try {
             final String embedUrl = "https://www.youtube.com/embed/" + videoId;
             final String embedPageContent = NewPipe.getDownloader()
@@ -84,7 +88,8 @@ public class YoutubeJavaScriptExtractor {
         throw new ParsingException("Embedded info did not provide YouTube player js url");
     }
 
-    private static String cleanJavaScriptUrl(String playerJsUrl) {
+    @Nonnull
+    private static String cleanJavaScriptUrl(@Nonnull final String playerJsUrl) {
         if (playerJsUrl.startsWith("//")) {
             return HTTPS + playerJsUrl;
         } else if (playerJsUrl.startsWith("/")) {
@@ -95,10 +100,12 @@ public class YoutubeJavaScriptExtractor {
         }
     }
 
-    private static String downloadJavaScriptCode(String playerJsUrl) throws ParsingException {
+    @Nonnull
+    private static String downloadJavaScriptCode(final String playerJsUrl)
+            throws ParsingException {
         try {
             return NewPipe.getDownloader().get(playerJsUrl, Localization.DEFAULT).responseBody();
-        } catch (Exception e) {
+        } catch (final Exception e) {
             throw new ParsingException("Could not get player js code from url: " + playerJsUrl);
         }
     }

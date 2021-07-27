@@ -9,15 +9,17 @@ public class JavaScript {
     private JavaScript() {
     }
 
-    public static String run(String function, String functionName, String... parameters) {
+    public static String run(final String function,
+                             final String functionName,
+                             final String... parameters) {
         try {
-            Context context = Context.enter();
+            final Context context = Context.enter();
             context.setOptimizationLevel(-1);
-            ScriptableObject scope = context.initSafeStandardObjects();
+            final ScriptableObject scope = context.initSafeStandardObjects();
 
             context.evaluateString(scope, function, functionName, 1, null);
-            Function jsFunction = (Function) scope.get(functionName, scope);
-            Object result = jsFunction.call(context, scope, scope, parameters);
+            final Function jsFunction = (Function) scope.get(functionName, scope);
+            final Object result = jsFunction.call(context, scope, scope, parameters);
             return result.toString();
         } finally {
             Context.exit();
