@@ -70,7 +70,7 @@ public class YoutubeSearchExtractor extends SearchExtractor {
             params = "";
         }
 
-        final JsonBuilder<JsonObject> jsonBody = prepareJsonBuilder(localization,
+        final JsonBuilder<JsonObject> jsonBody = prepareDesktopJsonBuilder(localization,
                 getExtractorContentCountry())
                 .value("query", query);
         if (!isNullOrEmpty(params)) {
@@ -166,7 +166,7 @@ public class YoutubeSearchExtractor extends SearchExtractor {
         final InfoItemsSearchCollector collector = new InfoItemsSearchCollector(getServiceId());
 
         // @formatter:off
-        final byte[] json = JsonWriter.string(prepareJsonBuilder(localization,
+        final byte[] json = JsonWriter.string(prepareDesktopJsonBuilder(localization,
                 getExtractorContentCountry())
                 .value("continuation", page.getId())
                 .done())

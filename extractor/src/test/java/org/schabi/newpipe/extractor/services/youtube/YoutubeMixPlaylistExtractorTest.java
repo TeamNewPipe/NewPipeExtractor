@@ -92,7 +92,7 @@ public class YoutubeMixPlaylistExtractorTest {
 
         @Test
         public void getPage() throws Exception {
-            final byte[] body = JsonWriter.string(prepareJsonBuilder(
+            final byte[] body = JsonWriter.string(prepareDesktopJsonBuilder(
                     NewPipe.getPreferredLocalization(), NewPipe.getPreferredContentCountry())
                     .value("videoId", VIDEO_ID)
                     .value("playlistId", "RD" + VIDEO_ID)
@@ -176,7 +176,7 @@ public class YoutubeMixPlaylistExtractorTest {
 
         @Test
         public void getPage() throws Exception {
-            final byte[] body = JsonWriter.string(prepareJsonBuilder(
+            final byte[] body = JsonWriter.string(prepareDesktopJsonBuilder(
                     NewPipe.getPreferredLocalization(), NewPipe.getPreferredContentCountry())
                     .value("videoId", VIDEO_ID)
                     .value("playlistId", "RD" + VIDEO_ID)
@@ -259,7 +259,7 @@ public class YoutubeMixPlaylistExtractorTest {
 
         @Test
         public void getPage() throws Exception {
-            final byte[] body = JsonWriter.string(prepareJsonBuilder(
+            final byte[] body = JsonWriter.string(prepareDesktopJsonBuilder(
                     NewPipe.getPreferredLocalization(), NewPipe.getPreferredContentCountry())
                     .value("videoId", VIDEO_ID)
                     .value("playlistId", "RDMM" + VIDEO_ID)
@@ -373,7 +373,7 @@ public class YoutubeMixPlaylistExtractorTest {
 
         @Test
         public void getPage() throws Exception {
-            final byte[] body = JsonWriter.string(prepareJsonBuilder(
+            final byte[] body = JsonWriter.string(prepareDesktopJsonBuilder(
                     NewPipe.getPreferredLocalization(), NewPipe.getPreferredContentCountry())
                     .value("videoId", VIDEO_ID_OF_CHANNEL)
                     .value("playlistId", "RDCM" + CHANNEL_ID)

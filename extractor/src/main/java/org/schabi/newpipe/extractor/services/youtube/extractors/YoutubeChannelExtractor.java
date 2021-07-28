@@ -88,8 +88,8 @@ public class YoutubeChannelExtractor extends ChannelExtractor {
         // navigation/resolve_url endpoint of the InnerTube API to get the channel id. Otherwise,
         // we couldn't get information about the channel associated with this URL, if there is one.
         if (!channelId[0].equals("channel")) {
-            final byte[] body = JsonWriter.string(prepareJsonBuilder(getExtractorLocalization(),
-                    getExtractorContentCountry())
+            final byte[] body = JsonWriter.string(prepareDesktopJsonBuilder(
+                    getExtractorLocalization(), getExtractorContentCountry())
                     .value("url", "https://www.youtube.com/" + channelPath)
                     .done())
                     .getBytes(UTF_8);
@@ -135,8 +135,8 @@ public class YoutubeChannelExtractor extends ChannelExtractor {
 
         int level = 0;
         while (level < 3) {
-            final byte[] body = JsonWriter.string(prepareJsonBuilder(getExtractorLocalization(),
-                    getExtractorContentCountry())
+            final byte[] body = JsonWriter.string(prepareDesktopJsonBuilder(
+                    getExtractorLocalization(), getExtractorContentCountry())
                     .value("browseId", id)
                     .value("params", "EgZ2aWRlb3M%3D") // Equal to videos
                     .done())
@@ -384,7 +384,7 @@ public class YoutubeChannelExtractor extends ChannelExtractor {
         final String continuation = continuationEndpoint.getObject("continuationCommand")
                 .getString("token");
 
-        final byte[] body = JsonWriter.string(prepareJsonBuilder(getExtractorLocalization(),
+        final byte[] body = JsonWriter.string(prepareDesktopJsonBuilder(getExtractorLocalization(),
                 getExtractorContentCountry())
                 .value("continuation", continuation)
                 .done())

@@ -62,7 +62,7 @@ public class YoutubeMixPlaylistExtractor extends PlaylistExtractor {
         final String videoId = getQueryValue(url, "v");
         final String playlistIndexString = getQueryValue(url, "index");
 
-        final JsonBuilder<JsonObject> jsonBody = prepareJsonBuilder(localization,
+        final JsonBuilder<JsonObject> jsonBody = prepareDesktopJsonBuilder(localization,
                 getExtractorContentCountry()).value("playlistId", mixPlaylistId);
         if (videoId != null) {
             jsonBody.value("videoId", videoId);
@@ -174,7 +174,7 @@ public class YoutubeMixPlaylistExtractor extends PlaylistExtractor {
         final String videoId = watchEndpoint.getString("videoId");
         final int index = watchEndpoint.getInt("index");
         final String params = watchEndpoint.getString("params");
-        final byte[] body = JsonWriter.string(prepareJsonBuilder(getExtractorLocalization(),
+        final byte[] body = JsonWriter.string(prepareDesktopJsonBuilder(getExtractorLocalization(),
                 getExtractorContentCountry())
                 .value("videoId", videoId)
                 .value("playlistId", playlistId)

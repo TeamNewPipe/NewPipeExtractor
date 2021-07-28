@@ -66,15 +66,15 @@ public class YoutubeParsingHelper {
 
     public static final String YOUTUBEI_V1_URL = "https://www.youtube.com/youtubei/v1/";
 
-    private static final String HARDCODED_CLIENT_VERSION = "2.20210701.00.00";
+    private static final String HARDCODED_CLIENT_VERSION = "2.20210728.00.00";
     private static final String HARDCODED_KEY = "AIzaSyAO_FJ2SlqU8Q4STEHLGCilw_Y9_11qcW8";
     private static final String MOBILE_YOUTUBE_KEY = "AIzaSyA8eiZmM1FaDVjRy-df2KTyQ_vz_yYM39w";
-    private static final String MOBILE_YOUTUBE_CLIENT_VERSION = "16.25.37";
+    private static final String MOBILE_YOUTUBE_CLIENT_VERSION = "16.29.38";
     private static String clientVersion;
     private static String key;
 
     private static final String[] HARDCODED_YOUTUBE_MUSIC_KEY =
-            {"AIzaSyC9XL3ZjWddXya6X74dJoCTL-WEYFDNX30", "67", "1.20210628.00.00"};
+            {"AIzaSyC9XL3ZjWddXya6X74dJoCTL-WEYFDNX30", "67", "1.20210726.00.01"};
     private static String[] youtubeMusicKey;
 
     private static boolean keyAndVersionExtracted = false;
@@ -309,10 +309,10 @@ public class YoutubeParsingHelper {
         }
     }
 
-    public static Optional<Boolean> areHardcodedClientVersionAndKeyValid()
+    public static boolean areHardcodedClientVersionAndKeyValid()
             throws IOException, ExtractionException {
         if (hardcodedClientVersionAndKeyValid.isPresent()) {
-            return hardcodedClientVersionAndKeyValid;
+            return hardcodedClientVersionAndKeyValid.get();
         }
         // @formatter:off
         final byte[] body = JsonWriter.string()
@@ -344,8 +344,9 @@ public class YoutubeParsingHelper {
         final String responseBody = response.responseBody();
         final int responseCode = response.responseCode();
 
-        return hardcodedClientVersionAndKeyValid = Optional.of(responseBody.length() > 5000
+        hardcodedClientVersionAndKeyValid = Optional.of(responseBody.length() > 5000
                 && responseCode == 200); // Ensure to have a valid response
+        return hardcodedClientVersionAndKeyValid.get();
     }
 
     private static void extractClientVersionAndKey() throws IOException, ExtractionException {
@@ -425,7 +426,7 @@ public class YoutubeParsingHelper {
      */
     public static String getClientVersion() throws IOException, ExtractionException {
         if (!isNullOrEmpty(clientVersion)) return clientVersion;
-        if (areHardcodedClientVersionAndKeyValid().orElse(false)) {
+        if (areHardcodedClientVersionAndKeyValid()) {
             return clientVersion = HARDCODED_CLIENT_VERSION;
         }
 
@@ -438,7 +439,7 @@ public class YoutubeParsingHelper {
      */
     public static String getKey() throws IOException, ExtractionException {
         if (!isNullOrEmpty(key)) return key;
-        if (areHardcodedClientVersionAndKeyValid().orElse(false)) {
+        if (areHardcodedClientVersionAndKeyValid()) {
             return key = HARDCODED_KEY;
         }
 
@@ -799,10 +800,9 @@ public class YoutubeParsingHelper {
     }
 
     @Nonnull
-    public static JsonBuilder<JsonObject> prepareJsonBuilder(@Nonnull final Localization
-                                                                         localization,
-                                                             @Nonnull final ContentCountry
-                                                                     contentCountry)
+    public static JsonBuilder<JsonObject> prepareDesktopJsonBuilder(
+            @Nonnull final Localization localization,
+            @Nonnull final ContentCountry contentCountry)
             throws IOException, ExtractionException {
         // @formatter:off
         return JsonObject.builder()
@@ -823,10 +823,9 @@ public class YoutubeParsingHelper {
     }
 
     @Nonnull
-    public static JsonBuilder<JsonObject> prepareMobileJsonBuilder(@Nonnull final Localization
-                                                                               localization,
-                                                                   @Nonnull final ContentCountry
-                                                                           contentCountry) {
+    public static JsonBuilder<JsonObject> prepareAndroidMobileJsonBuilder(
+            @Nonnull final Localization localization,
+            @Nonnull final ContentCountry contentCountry) {
         // @formatter:off
         return JsonObject.builder()
                 .object("context")
@@ -843,6 +842,95 @@ public class YoutubeParsingHelper {
                     .end()
                 .end();
         // @formatter:on
+    }
+
+    @Nonnull
+    public static JsonBuilder<JsonObject> prepareDesktopEmbedVideoJsonBuilder(
+            @Nonnull final Localization localization,
+            @Nonnull final ContentCountry contentCountry,
+            @Nonnull final String videoId) throws IOException, ExtractionException {
+        // @formatter:off
+        return JsonObject.builder()
+                .object("context")
+                    .object("client")
+                        .value("hl", localization.getLocalizationCode())
+                        .value("gl", contentCountry.getCountryCode())
+                        .value("clientName", "WEB")
+                        .value("clientVersion", getClientVersion())
+                        .value("clientScreen", "EMBED")
+                    .end()
+                    .object("thirdParty")
+                        .value("embedUrl", "https://www.youtube.com/watch?v=" + videoId)
+                    .end()
+                    .object("user")
+                        // TO DO: provide a way to enable restricted mode with:
+                        // .value("enableSafetyMode", boolean)
+                        .value("lockedSafetyMode", false)
+                    .end()
+                .end()
+                .value("videoId", videoId);
+        // @formatter:on
+    }
+
+    @Nonnull
+    public static JsonBuilder<JsonObject> prepareAndroidMobileEmbedVideoJsonBuilder(
+            @Nonnull final Localization localization,
+            @Nonnull final ContentCountry contentCountry,
+            @Nonnull final String videoId) {
+        // @formatter:off
+        return JsonObject.builder()
+                .object("context")
+                    .object("client")
+                        .value("clientName", "ANDROID")
+                        .value("clientVersion", MOBILE_YOUTUBE_CLIENT_VERSION)
+                        .value("clientScreen", "EMBED")
+                        .value("hl", localization.getLocalizationCode())
+                        .value("gl", contentCountry.getCountryCode())
+                    .end()
+                    .object("thirdParty")
+                        .value("embedUrl", "https://www.youtube.com/watch?v=" + videoId)
+                    .end()
+                    .object("user")
+                        // TO DO: provide a way to enable restricted mode with:
+                        // .value("enableSafetyMode", boolean)
+                        .value("lockedSafetyMode", false)
+                    .end()
+                .end()
+                .value("videoId", videoId);
+        // @formatter:on
+    }
+
+    @Nonnull
+    public static byte[] createPlayerBodyWithSts(final Localization localization,
+                                                 final ContentCountry contentCountry,
+                                                 final String videoId,
+                                                 final boolean withThirdParty,
+                                                 @Nullable final String sts)
+            throws IOException, ExtractionException {
+        if (withThirdParty) {
+            // @formatter:off
+            return JsonWriter.string(prepareDesktopEmbedVideoJsonBuilder(localization, contentCountry, videoId)
+                    .object("playbackContext")
+                        .object("contentPlaybackContext")
+                            .value("signatureTimestamp", sts)
+                        .end()
+                    .end()
+                    .done())
+                    .getBytes(UTF_8);
+            // @formatter:on
+        } else {
+            // @formatter:off
+            return JsonWriter.string(prepareDesktopJsonBuilder(localization, contentCountry)
+                    .value("videoId", videoId)
+                    .object("playbackContext")
+                        .object("contentPlaybackContext")
+                            .value("signatureTimestamp", sts)
+                        .end()
+                    .end()
+                    .done())
+                    .getBytes(UTF_8);
+            // @formatter:on
+        }
     }
 
     /**

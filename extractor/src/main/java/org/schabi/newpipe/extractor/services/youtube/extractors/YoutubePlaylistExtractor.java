@@ -44,7 +44,7 @@ public class YoutubePlaylistExtractor extends PlaylistExtractor {
     public void onFetchPage(@Nonnull final Downloader downloader) throws IOException,
             ExtractionException {
         final Localization localization = getExtractorLocalization();
-        final byte[] body = JsonWriter.string(prepareJsonBuilder(localization,
+        final byte[] body = JsonWriter.string(prepareDesktopJsonBuilder(localization,
                 getExtractorContentCountry())
                 .value("browseId", "VL" + getId())
                 .value("params", "wgYCCAA%3D") // Show unavailable videos
@@ -251,8 +251,8 @@ public class YoutubePlaylistExtractor extends PlaylistExtractor {
                     .getObject("continuationCommand")
                     .getString("token");
 
-            final byte[] body = JsonWriter.string(prepareJsonBuilder(getExtractorLocalization(),
-                    getExtractorContentCountry())
+            final byte[] body = JsonWriter.string(prepareDesktopJsonBuilder(
+                    getExtractorLocalization(), getExtractorContentCountry())
                     .value("continuation", continuation)
                     .done())
                     .getBytes(UTF_8);

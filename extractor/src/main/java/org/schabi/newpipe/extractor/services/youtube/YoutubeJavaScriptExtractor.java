@@ -60,6 +60,14 @@ public class YoutubeJavaScriptExtractor {
         return extractJavaScriptCode("d4IGg5dqeO8");
     }
 
+    /**
+     * Reset the JavaScript code. It will be fetched again the next time
+     * {@link #extractJavaScriptCode()} or {@link #extractJavaScriptCode(String)} is called.
+     */
+    public static void resetJavaScriptCode() {
+        cachedJavaScriptCode = null;
+    }
+
     private static String extractJavaScriptUrl(final String videoId) throws ParsingException {
         try {
             final String embedUrl = "https://www.youtube.com/embed/" + videoId;
