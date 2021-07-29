@@ -79,13 +79,13 @@ public class Parser {
     }
 
     public static boolean isMatch(String pattern, String input) {
-        Pattern pat = Pattern.compile(pattern);
-        Matcher mat = pat.matcher(input);
+        final Pattern pat = Pattern.compile(pattern);
+        final Matcher mat = pat.matcher(input);
         return mat.find();
     }
 
     public static boolean isMatch(Pattern pattern, String input) {
-        Matcher mat = pattern.matcher(input);
+        final Matcher mat = pattern.matcher(input);
         return mat.find();
     }
 

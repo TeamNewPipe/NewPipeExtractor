@@ -1,20 +1,21 @@
 package org.schabi.newpipe.extractor.utils;
 
-import edu.umd.cs.findbugs.annotations.NonNull;
 
-public class StringUtil {
+import javax.annotation.Nonnull;
 
-    private StringUtil() {
+public class StringUtils {
+
+    private StringUtils() {
     }
 
     /**
      * @param string The string to search in
      * @param start A string from which to start searching.
      * @return A substring where each '{' matches a '}'
-     * @throws IndexOutOfBoundsException If {@ string} does not contain {@code start}
+     * @throws IndexOutOfBoundsException If {@code string} does not contain {@code start}
      */
-    @NonNull
-    public static String matchToClosingParenthesis(@NonNull final String string, @NonNull final String start) {
+    @Nonnull
+    public static String matchToClosingParenthesis(@Nonnull final String string, @Nonnull final String start) {
         int startIndex = string.indexOf(start);
         if (startIndex < 0) {
             throw new IndexOutOfBoundsException();
