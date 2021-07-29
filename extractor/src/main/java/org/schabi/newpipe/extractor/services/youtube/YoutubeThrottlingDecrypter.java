@@ -3,6 +3,7 @@ package org.schabi.newpipe.extractor.services.youtube;
 import org.schabi.newpipe.extractor.exceptions.ParsingException;
 import org.schabi.newpipe.extractor.utils.JavaScript;
 import org.schabi.newpipe.extractor.utils.Parser;
+import org.schabi.newpipe.extractor.utils.StringUtil;
 
 import javax.annotation.Nonnull;
 import java.util.HashMap;
@@ -71,7 +72,20 @@ public class YoutubeThrottlingDecrypter {
     @Nonnull
     private String parseDecodeFunction(final String playerJsCode, final String functionName)
             throws Parser.RegexException {
-        Pattern functionPattern = Pattern.compile(functionName + "=function(.*?};)\n",
+        try {
+            return parseWithParenthesisMatching(playerJsCode, functionName);
+        } catch (Exception e) {
+            return parseWithRegex(playerJsCode, functionName);
+        }
+    }
+
+    private String parseWithParenthesisMatching(final String playerJsCode, final String functionName) {
+        final String functionBase = functionName + "=function";
+        return functionBase + StringUtil.matchToClosingParenthesis(playerJsCode, functionBase) + ";";
+    }
+
+    private String parseWithRegex(final String playerJsCode, final String functionName) throws Parser.RegexException {
+        Pattern functionPattern = Pattern.compile(functionName + "=function(.*?}};)\n",
                 Pattern.DOTALL);
         return "function " + functionName + Parser.matchGroup1(functionPattern, playerJsCode);
     }
