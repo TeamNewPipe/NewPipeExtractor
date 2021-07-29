@@ -162,6 +162,7 @@ public class ItagItem {
 
     // Audio fields
     public int avgBitrate = -1;
+    public int sampleRate = -1;
 
     // Video fields
     public String resolutionString;
