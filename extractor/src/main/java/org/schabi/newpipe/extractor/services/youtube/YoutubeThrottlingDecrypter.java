@@ -33,7 +33,10 @@ import java.util.regex.Pattern;
  */
 public class YoutubeThrottlingDecrypter {
 
-    private static final String N_PARAM_REGEX = "[&?]n=([^&]+)";
+    private static final Pattern N_PARAM_PATTERN = Pattern.compile("[&?]n=([^&]+)");
+    private static final Pattern FUNCTION_NAME_PATTERN = Pattern.compile(
+            "b=a\\.get\\(\"n\"\\)\\)&&\\(b=(\\w+)\\(b\\),a\\.set\\(\"n\",b\\)");
+
     private static final Map<String, String> nParams = new HashMap<>();
 
     private final String functionName;
@@ -62,9 +65,7 @@ public class YoutubeThrottlingDecrypter {
 
     private String parseDecodeFunctionName(final String playerJsCode)
             throws Parser.RegexException {
-        Pattern pattern = Pattern.compile(
-                "b=a\\.get\\(\"n\"\\)\\)&&\\(b=(\\w+)\\(b\\),a\\.set\\(\"n\",b\\)");
-        return Parser.matchGroup1(pattern, playerJsCode);
+        return Parser.matchGroup1(FUNCTION_NAME_PATTERN, playerJsCode);
     }
 
     @Nonnull
@@ -86,12 +87,11 @@ public class YoutubeThrottlingDecrypter {
     }
 
     private boolean containsNParam(final String url) {
-        return Parser.isMatch(N_PARAM_REGEX, url);
+        return Parser.isMatch(N_PARAM_PATTERN, url);
     }
 
     private String parseNParam(final String url) throws Parser.RegexException {
-        Pattern nValuePattern = Pattern.compile(N_PARAM_REGEX);
-        return Parser.matchGroup1(nValuePattern, url);
+        return Parser.matchGroup1(N_PARAM_PATTERN, url);
     }
 
     private String decryptNParam(final String nParam) {

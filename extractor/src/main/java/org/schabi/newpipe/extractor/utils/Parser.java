@@ -84,6 +84,11 @@ public class Parser {
         return mat.find();
     }
 
+    public static boolean isMatch(Pattern pattern, String input) {
+        Matcher mat = pattern.matcher(input);
+        return mat.find();
+    }
+
     public static Map<String, String> compatParseMap(final String input) throws UnsupportedEncodingException {
         Map<String, String> map = new HashMap<>();
         for (String arg : input.split("&")) {
