@@ -18,11 +18,11 @@ import java.util.regex.Pattern;
  * </p>
  *
  * <pre>
- * https://r5---sn-4g5ednsz.googlevideo.com/videoplayback?n=VVF2xyZLVRZZxHXZ&other=other
+ * https://r5---sn-4g5ednsz.googlevideo.com/videoplayback?n=VVF2xyZLVRZZxHXZ&amp;other=other
  * </pre>
  * becomes
  * <pre>
- * https://r5---sn-4g5ednsz.googlevideo.com/videoplayback?n=iHywZkMipkszqA&other=other
+ * https://r5---sn-4g5ednsz.googlevideo.com/videoplayback?n=iHywZkMipkszqA&amp;other=other
  * </pre>
  * <br>
  * <p>
