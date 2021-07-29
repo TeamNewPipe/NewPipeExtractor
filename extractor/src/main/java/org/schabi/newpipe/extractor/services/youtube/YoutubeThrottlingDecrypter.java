@@ -70,7 +70,7 @@ public class YoutubeThrottlingDecrypter {
     @Nonnull
     private String parseDecodeFunction(final String playerJsCode, final String functionName)
             throws Parser.RegexException {
-        Pattern functionPattern = Pattern.compile(functionName + "=function(.*?;)\n",
+        Pattern functionPattern = Pattern.compile(functionName + "=function(.*?};)\n",
                 Pattern.DOTALL);
         return "function " + functionName + Parser.matchGroup1(functionPattern, playerJsCode);
     }
