@@ -450,4 +450,14 @@ public class SoundcloudStreamExtractor extends StreamExtractor {
     public List<MetaInfo> getMetaInfo() {
         return Collections.emptyList();
     }
+
+    @Nullable
+    @Override
+    public String getMixUrl(final MixType mixType) {
+        /* SoundCloud stations are not yet supported
+        if (mixType == MixType.MUSIC) {
+            return getUrl().replace("soundcloud.com/", "soundcloud.com/stations/track/");
+        }*/
+        return null;
+    }
 }

@@ -529,11 +529,31 @@ public abstract class StreamExtractor extends Extractor {
      */
     @Nonnull
     public abstract List<MetaInfo> getMetaInfo() throws ParsingException;
+
+    /**
+     * Generate a mix (i.e. auto-generated playlist) url of the provided type based on the stream
+     * info.
+     *
+     * @param mixType the type of mix url to obtain
+     * @return a mix url, or {@code null} if mixes of the provided type are not supported
+     * @throws ParsingException
+     */
+    @Nullable
+    public abstract String getMixUrl(MixType mixType) throws ParsingException;
+
+
     public enum Privacy {
         PUBLIC,
         UNLISTED,
         PRIVATE,
         INTERNAL,
         OTHER
+    }
+
+    public enum MixType {
+        VIDEO,
+        MUSIC,
+        CHANNEL,
+        ALBUM
     }
 }
