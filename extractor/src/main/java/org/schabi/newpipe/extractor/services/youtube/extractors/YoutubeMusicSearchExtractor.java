@@ -121,8 +121,7 @@ public class YoutubeMusicSearchExtractor extends SearchExtractor {
     @Nonnull
     @Override
     public String getSearchSuggestion() throws ParsingException {
-        final JsonObject itemSectionRenderer = initialData.getObject("contents").getObject("sectionListRenderer")
-                .getArray("contents").getObject(0).getObject("itemSectionRenderer");
+        final JsonObject itemSectionRenderer = JsonUtils.getArray(JsonUtils.getArray(initialData, "contents.tabbedSearchResultsRenderer.tabs").getObject(0), "tabRenderer.content.sectionListRenderer.contents").getObject(0).getObject("itemSectionRenderer");
         if (itemSectionRenderer.isEmpty()) {
             return "";
         }
