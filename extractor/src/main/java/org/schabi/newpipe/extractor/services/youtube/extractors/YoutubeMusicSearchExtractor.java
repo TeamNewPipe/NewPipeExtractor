@@ -165,7 +165,7 @@ public class YoutubeMusicSearchExtractor extends SearchExtractor {
     public InfoItemsPage<InfoItem> getInitialPage() throws ExtractionException, IOException {
         final InfoItemsSearchCollector collector = new InfoItemsSearchCollector(getServiceId());
 
-        final JsonArray contents = initialData.getObject("contents").getObject("sectionListRenderer").getArray("contents");
+        final JsonArray contents = JsonUtils.getArray(JsonUtils.getArray(initialData, "contents.tabbedSearchResultsRenderer.tabs").getObject(0), "tabRenderer.content.sectionListRenderer.contents");
 
         Page nextPage = null;
 
