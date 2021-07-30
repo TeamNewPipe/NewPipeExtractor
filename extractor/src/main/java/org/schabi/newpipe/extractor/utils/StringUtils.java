@@ -29,7 +29,8 @@ public class StringUtils {
         ++endIndex;
 
         int openParenthesis = 1;
-        while (openParenthesis > 0) {
+        int length = string.length();
+        while (openParenthesis > 0 && endIndex < length) {
             switch (string.charAt(endIndex)) {
                 case '{':
                     ++openParenthesis;
