@@ -147,8 +147,10 @@ public class YoutubeMusicSearchExtractor extends SearchExtractor {
             return false;
         }
 
-        final boolean corrected = itemSectionRenderer.getArray("contents").getObject(0)
-                .has("didYouMeanRenderer");
+        JsonObject firstContent = itemSectionRenderer.getArray("contents").getObject(0);
+
+        final boolean corrected = firstContent
+                .has("didYouMeanRenderer") || firstContent.has("showingResultsForRenderer");
         return corrected;
     }
 
