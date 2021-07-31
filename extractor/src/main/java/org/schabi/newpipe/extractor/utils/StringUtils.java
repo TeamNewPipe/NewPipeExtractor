@@ -9,10 +9,11 @@ public class StringUtils {
     }
 
     /**
-     * @param string The string to search in
+     * @param string The string to search in.
      * @param start A string from which to start searching.
-     * @return A substring where each '{' matches a '}'
+     * @return A substring where each '{' matches a '}'.
      * @throws IndexOutOfBoundsException If {@code string} does not contain {@code start}
+     * or parenthesis could not be matched .
      */
     @Nonnull
     public static String matchToClosingParenthesis(@Nonnull final String string, @Nonnull final String start) {
@@ -29,8 +30,7 @@ public class StringUtils {
         ++endIndex;
 
         int openParenthesis = 1;
-        int length = string.length();
-        while (openParenthesis > 0 && endIndex < length) {
+        while (openParenthesis > 0) {
             switch (string.charAt(endIndex)) {
                 case '{':
                     ++openParenthesis;
