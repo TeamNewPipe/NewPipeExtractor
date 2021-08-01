@@ -5,20 +5,12 @@ import org.hamcrest.MatcherAssert;
 import org.junit.BeforeClass;
 import org.junit.Ignore;
 import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.junit.runners.Suite;
-import org.junit.runners.Suite.SuiteClasses;
 import org.schabi.newpipe.downloader.DownloaderFactory;
 import org.schabi.newpipe.extractor.ListExtractor;
 import org.schabi.newpipe.extractor.ListExtractor.InfoItemsPage;
 import org.schabi.newpipe.extractor.NewPipe;
 import org.schabi.newpipe.extractor.Page;
 import org.schabi.newpipe.extractor.exceptions.ExtractionException;
-import org.schabi.newpipe.extractor.services.youtube.YoutubeMixPlaylistExtractorTest.ChannelMix;
-import org.schabi.newpipe.extractor.services.youtube.YoutubeMixPlaylistExtractorTest.Invalid;
-import org.schabi.newpipe.extractor.services.youtube.YoutubeMixPlaylistExtractorTest.Mix;
-import org.schabi.newpipe.extractor.services.youtube.YoutubeMixPlaylistExtractorTest.MixWithIndex;
-import org.schabi.newpipe.extractor.services.youtube.YoutubeMixPlaylistExtractorTest.MyMix;
 import org.schabi.newpipe.extractor.services.youtube.extractors.YoutubeMixPlaylistExtractor;
 import org.schabi.newpipe.extractor.stream.StreamInfoItem;
 
@@ -36,8 +28,6 @@ import static org.schabi.newpipe.extractor.ServiceList.YouTube;
 import static org.schabi.newpipe.extractor.services.youtube.YoutubeParsingHelper.*;
 import static org.schabi.newpipe.extractor.utils.Utils.UTF_8;
 
-@RunWith(Suite.class)
-@SuiteClasses({Mix.class, MixWithIndex.class, MyMix.class, Invalid.class, ChannelMix.class})
 public class YoutubeMixPlaylistExtractorTest {
 
     private static final String VIDEO_ID = "_AzeUSL9lZc";
