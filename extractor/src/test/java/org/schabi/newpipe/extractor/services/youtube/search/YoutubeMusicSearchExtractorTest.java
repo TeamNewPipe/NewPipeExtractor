@@ -133,6 +133,7 @@ public class YoutubeMusicSearchExtractorTest {
     public static class Suggestion extends DefaultSearchExtractorTest {
         private static SearchExtractor extractor;
         private static final String QUERY = "megaman x3";
+        private static final boolean CORRECTED = true;
 
         @BeforeClass
         public static void setUp() throws Exception {
@@ -150,6 +151,7 @@ public class YoutubeMusicSearchExtractorTest {
         @Override public String expectedSearchString() { return QUERY; }
         @Nullable @Override public String expectedSearchSuggestion() { return "mega man x3"; }
         @Override public InfoItem.InfoType expectedInfoItemType() { return InfoItem.InfoType.STREAM; }
+        @Override public boolean isCorrectedSearch() { return CORRECTED; }
     }
 
     public static class CorrectedSearch extends DefaultSearchExtractorTest {

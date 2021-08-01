@@ -121,8 +121,7 @@ public class YoutubeMusicSearchExtractor extends SearchExtractor {
     @Nonnull
     @Override
     public String getSearchSuggestion() throws ParsingException {
-        final JsonObject itemSectionRenderer = initialData.getObject("contents").getObject("sectionListRenderer")
-                .getArray("contents").getObject(0).getObject("itemSectionRenderer");
+        final JsonObject itemSectionRenderer = JsonUtils.getArray(JsonUtils.getArray(initialData, "contents.tabbedSearchResultsRenderer.tabs").getObject(0), "tabRenderer.content.sectionListRenderer.contents").getObject(0).getObject("itemSectionRenderer");
         if (itemSectionRenderer.isEmpty()) {
             return "";
         }
@@ -142,16 +141,17 @@ public class YoutubeMusicSearchExtractor extends SearchExtractor {
     }
 
     @Override
-    public boolean isCorrectedSearch() {
-        final JsonObject itemSectionRenderer = initialData.getObject("contents").getObject("sectionListRenderer")
-                .getArray("contents").getObject(0).getObject("itemSectionRenderer");
+    public boolean isCorrectedSearch() throws ParsingException {
+        final JsonObject itemSectionRenderer = JsonUtils.getArray(JsonUtils.getArray(initialData, "contents.tabbedSearchResultsRenderer.tabs").getObject(0), "tabRenderer.content.sectionListRenderer.contents").getObject(0).getObject("itemSectionRenderer");
         if (itemSectionRenderer.isEmpty()) {
             return false;
         }
 
-        final JsonObject showingResultsForRenderer = itemSectionRenderer.getArray("contents").getObject(0)
-                .getObject("showingResultsForRenderer");
-        return !showingResultsForRenderer.isEmpty();
+        JsonObject firstContent = itemSectionRenderer.getArray("contents").getObject(0);
+
+        final boolean corrected = firstContent
+                .has("didYouMeanRenderer") || firstContent.has("showingResultsForRenderer");
+        return corrected;
     }
 
     @Nonnull
@@ -165,7 +165,7 @@ public class YoutubeMusicSearchExtractor extends SearchExtractor {
     public InfoItemsPage<InfoItem> getInitialPage() throws ExtractionException, IOException {
         final InfoItemsSearchCollector collector = new InfoItemsSearchCollector(getServiceId());
 
-        final JsonArray contents = initialData.getObject("contents").getObject("sectionListRenderer").getArray("contents");
+        final JsonArray contents = JsonUtils.getArray(JsonUtils.getArray(initialData, "contents.tabbedSearchResultsRenderer.tabs").getObject(0), "tabRenderer.content.sectionListRenderer.contents");
 
         Page nextPage = null;
 
