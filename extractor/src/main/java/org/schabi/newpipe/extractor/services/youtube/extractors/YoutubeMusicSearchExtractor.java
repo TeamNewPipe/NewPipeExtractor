@@ -20,6 +20,7 @@ import org.schabi.newpipe.extractor.utils.Parser;
 import org.schabi.newpipe.extractor.utils.Utils;
 
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import java.io.IOException;
 import java.util.Collections;
 import java.util.HashMap;
@@ -33,16 +34,18 @@ import static org.schabi.newpipe.extractor.utils.Utils.*;
 public class YoutubeMusicSearchExtractor extends SearchExtractor {
     private JsonObject initialData;
 
-    public YoutubeMusicSearchExtractor(final StreamingService service, final SearchQueryHandler linkHandler) {
+    public YoutubeMusicSearchExtractor(final StreamingService service,
+                                       final SearchQueryHandler linkHandler) {
         super(service, linkHandler);
     }
 
     @Override
-    public void onFetchPage(@Nonnull final Downloader downloader) throws IOException,
-            ExtractionException {
+    public void onFetchPage(@Nonnull final Downloader downloader)
+            throws IOException, ExtractionException {
         final String[] youtubeMusicKeys = YoutubeParsingHelper.getYoutubeMusicKey();
 
-        final String url = "https://music.youtube.com/youtubei/v1/search?alt=json&key=" + youtubeMusicKeys[0];
+        final String url = "https://music.youtube.com/youtubei/v1/search?alt=json&key="
+                + youtubeMusicKeys[0];
 
         final String params;
 
@@ -68,7 +71,7 @@ public class YoutubeMusicSearchExtractor extends SearchExtractor {
         }
 
         // @formatter:off
-        byte[] json = JsonWriter.string()
+        final byte[] json = JsonWriter.string()
             .object()
                 .object("context")
                     .object("client")
@@ -104,11 +107,12 @@ public class YoutubeMusicSearchExtractor extends SearchExtractor {
         headers.put("Referer", Collections.singletonList("music.youtube.com"));
         headers.put("Content-Type", Collections.singletonList("application/json"));
 
-        final String responseBody = getValidJsonResponseBody(getDownloader().post(url, headers, json));
+        final String responseBody = getValidJsonResponseBody(getDownloader().post(url, headers,
+                json));
 
         try {
             initialData = JsonParser.object().from(responseBody);
-        } catch (JsonParserException e) {
+        } catch (final JsonParserException e) {
             throw new ParsingException("Could not parse JSON", e);
         }
     }
@@ -122,20 +126,26 @@ public class YoutubeMusicSearchExtractor extends SearchExtractor {
     @Nonnull
     @Override
     public String getSearchSuggestion() throws ParsingException {
-        final JsonObject itemSectionRenderer = JsonUtils.getArray(JsonUtils.getArray(initialData, "contents.tabbedSearchResultsRenderer.tabs").getObject(0), "tabRenderer.content.sectionListRenderer.contents").getObject(0).getObject("itemSectionRenderer");
+        final JsonObject itemSectionRenderer = JsonUtils.getArray(JsonUtils.getArray(initialData,
+                "contents.tabbedSearchResultsRenderer.tabs").getObject(0),
+                "tabRenderer.content.sectionListRenderer.contents")
+                .getObject(0)
+                .getObject("itemSectionRenderer");
         if (itemSectionRenderer.isEmpty()) {
             return "";
         }
 
         final JsonObject didYouMeanRenderer = itemSectionRenderer.getArray("contents")
                 .getObject(0).getObject("didYouMeanRenderer");
-        final JsonObject showingResultsForRenderer = itemSectionRenderer.getArray("contents").getObject(0)
+        final JsonObject showingResultsForRenderer = itemSectionRenderer.getArray("contents")
+                .getObject(0)
                 .getObject("showingResultsForRenderer");
 
         if (!didYouMeanRenderer.isEmpty()) {
             return getTextFromObject(didYouMeanRenderer.getObject("correctedQuery"));
         } else if (!showingResultsForRenderer.isEmpty()) {
-            return JsonUtils.getString(showingResultsForRenderer, "correctedQueryEndpoint.searchEndpoint.query");
+            return JsonUtils.getString(showingResultsForRenderer,
+                    "correctedQueryEndpoint.searchEndpoint.query");
         } else {
             return "";
         }
@@ -143,16 +153,19 @@ public class YoutubeMusicSearchExtractor extends SearchExtractor {
 
     @Override
     public boolean isCorrectedSearch() throws ParsingException {
-        final JsonObject itemSectionRenderer = JsonUtils.getArray(JsonUtils.getArray(initialData, "contents.tabbedSearchResultsRenderer.tabs").getObject(0), "tabRenderer.content.sectionListRenderer.contents").getObject(0).getObject("itemSectionRenderer");
+        final JsonObject itemSectionRenderer = JsonUtils.getArray(JsonUtils.getArray(initialData,
+                "contents.tabbedSearchResultsRenderer.tabs").getObject(0),
+                "tabRenderer.content.sectionListRenderer.contents")
+                .getObject(0)
+                .getObject("itemSectionRenderer");
         if (itemSectionRenderer.isEmpty()) {
             return false;
         }
 
         JsonObject firstContent = itemSectionRenderer.getArray("contents").getObject(0);
 
-        final boolean corrected = firstContent
-                .has("didYouMeanRenderer") || firstContent.has("showingResultsForRenderer");
-        return corrected;
+        return firstContent.has("didYouMeanRenderer")
+                || firstContent.has("showingResultsForRenderer");
     }
 
     @Nonnull
@@ -163,16 +176,19 @@ public class YoutubeMusicSearchExtractor extends SearchExtractor {
 
     @Nonnull
     @Override
-    public InfoItemsPage<InfoItem> getInitialPage() throws ExtractionException, IOException {
+    public InfoItemsPage<InfoItem> getInitialPage() throws IOException, ExtractionException {
         final InfoItemsSearchCollector collector = new InfoItemsSearchCollector(getServiceId());
 
-        final JsonArray contents = JsonUtils.getArray(JsonUtils.getArray(initialData, "contents.tabbedSearchResultsRenderer.tabs").getObject(0), "tabRenderer.content.sectionListRenderer.contents");
+        final JsonArray contents = JsonUtils.getArray(JsonUtils.getArray(initialData,
+                "contents.tabbedSearchResultsRenderer.tabs").getObject(0),
+                "tabRenderer.content.sectionListRenderer.contents");
 
         Page nextPage = null;
 
-        for (Object content : contents) {
+        for (final Object content : contents) {
             if (((JsonObject) content).has("musicShelfRenderer")) {
-                final JsonObject musicShelfRenderer = ((JsonObject) content).getObject("musicShelfRenderer");
+                final JsonObject musicShelfRenderer = ((JsonObject) content)
+                        .getObject("musicShelfRenderer");
 
                 collectMusicStreamsFrom(collector, musicShelfRenderer.getArray("contents"));
 
@@ -229,16 +245,18 @@ public class YoutubeMusicSearchExtractor extends SearchExtractor {
         headers.put("Referer", Collections.singletonList("music.youtube.com"));
         headers.put("Content-Type", Collections.singletonList("application/json"));
 
-        final String responseBody = getValidJsonResponseBody(getDownloader().post(page.getUrl(), headers, json));
+        final String responseBody = getValidJsonResponseBody(getDownloader().post(page.getUrl(),
+                headers, json));
 
         final JsonObject ajaxJson;
         try {
             ajaxJson = JsonParser.object().from(responseBody);
-        } catch (JsonParserException e) {
+        } catch (final JsonParserException e) {
             throw new ParsingException("Could not parse JSON", e);
         }
 
-        final JsonObject musicShelfContinuation = ajaxJson.getObject("continuationContents").getObject("musicShelfContinuation");
+        final JsonObject musicShelfContinuation = ajaxJson.getObject("continuationContents")
+                .getObject("musicShelfContinuation");
 
         collectMusicStreamsFrom(collector, musicShelfContinuation.getArray("contents"));
         final JsonArray continuations = musicShelfContinuation.getArray("continuations");
@@ -246,31 +264,32 @@ public class YoutubeMusicSearchExtractor extends SearchExtractor {
         return new InfoItemsPage<>(collector, getNextPageFrom(continuations));
     }
 
-    private void collectMusicStreamsFrom(final InfoItemsSearchCollector collector, final JsonArray videos) {
+    private void collectMusicStreamsFrom(final InfoItemsSearchCollector collector,
+                                         @Nonnull final JsonArray videos) {
         final TimeAgoParser timeAgoParser = getTimeAgoParser();
 
-        for (Object item : videos) {
+        for (final Object item : videos) {
             final JsonObject info = ((JsonObject) item)
                     .getObject("musicResponsiveListItemRenderer", null);
             if (info != null) {
-                final String displayPolicy = info.getString("musicItemRendererDisplayPolicy", EMPTY_STRING);
+                final String displayPolicy = info.getString("musicItemRendererDisplayPolicy",
+                        EMPTY_STRING);
                 if (displayPolicy.equals("MUSIC_ITEM_RENDERER_DISPLAY_POLICY_GREY_OUT")) {
-                    continue; // no info about video URL available
+                    continue; // No info about video URL available
                 }
 
-                final JsonObject flexColumnRenderer = info
-                        .getArray("flexColumns")
+                final JsonObject flexColumnRenderer = info.getArray("flexColumns")
                         .getObject(1)
                         .getObject("musicResponsiveListItemFlexColumnRenderer");
-                final JsonArray descriptionElements = flexColumnRenderer
-                        .getObject("text")
+                final JsonArray descriptionElements = flexColumnRenderer.getObject("text")
                         .getArray("runs");
                 final String searchType = getLinkHandler().getContentFilters().get(0);
                 if (searchType.equals(MUSIC_SONGS) || searchType.equals(MUSIC_VIDEOS)) {
                     collector.commit(new YoutubeStreamInfoItemExtractor(info, timeAgoParser) {
                         @Override
                         public String getUrl() throws ParsingException {
-                            final String id = info.getObject("playlistItemData").getString("videoId");
+                            final String id = info.getObject("playlistItemData")
+                                    .getString("videoId");
                             if (!isNullOrEmpty(id)) {
                                 return "https://music.youtube.com/watch?v=" + id;
                             }
@@ -279,8 +298,10 @@ public class YoutubeMusicSearchExtractor extends SearchExtractor {
 
                         @Override
                         public String getName() throws ParsingException {
-                            final String name = getTextFromObject(info.getArray("flexColumns").getObject(0)
-                                    .getObject("musicResponsiveListItemFlexColumnRenderer").getObject("text"));
+                            final String name = getTextFromObject(info.getArray("flexColumns")
+                                    .getObject(0)
+                                    .getObject("musicResponsiveListItemFlexColumnRenderer")
+                                    .getObject("text"));
                             if (!isNullOrEmpty(name)) {
                                 return name;
                             }
@@ -310,24 +331,34 @@ public class YoutubeMusicSearchExtractor extends SearchExtractor {
                         @Override
                         public String getUploaderUrl() throws ParsingException {
                             if (searchType.equals(MUSIC_VIDEOS)) {
-                                JsonArray items = info.getObject("menu").getObject("menuRenderer").getArray("items");
-                                for (Object item : items) {
-                                    final JsonObject menuNavigationItemRenderer = ((JsonObject) item).getObject("menuNavigationItemRenderer");
-                                    if (menuNavigationItemRenderer.getObject("icon").getString("iconType", EMPTY_STRING).equals("ARTIST")) {
-                                        return getUrlFromNavigationEndpoint(menuNavigationItemRenderer.getObject("navigationEndpoint"));
+                                JsonArray items = info.getObject("menu").getObject("menuRenderer")
+                                        .getArray("items");
+                                for (final Object item : items) {
+                                    final JsonObject menuNavigationItemRenderer =
+                                            ((JsonObject) item).getObject(
+                                                    "menuNavigationItemRenderer");
+                                    if (menuNavigationItemRenderer.getObject("icon")
+                                            .getString("iconType", EMPTY_STRING)
+                                            .equals("ARTIST")) {
+                                        return getUrlFromNavigationEndpoint(
+                                                menuNavigationItemRenderer
+                                                        .getObject("navigationEndpoint"));
                                     }
                                 }
 
                                 return null;
                             } else {
-                                final JsonObject navigationEndpointHolder = info.getArray("flexColumns")
-                                        .getObject(1).getObject("musicResponsiveListItemFlexColumnRenderer")
+                                final JsonObject navigationEndpointHolder = info
+                                        .getArray("flexColumns")
+                                        .getObject(1)
+                                        .getObject("musicResponsiveListItemFlexColumnRenderer")
                                         .getObject("text").getArray("runs").getObject(0);
 
                                 if (!navigationEndpointHolder.has("navigationEndpoint"))
                                     return null;
 
-                                final String url = getUrlFromNavigationEndpoint(navigationEndpointHolder.getObject("navigationEndpoint"));
+                                final String url = getUrlFromNavigationEndpoint(
+                                        navigationEndpointHolder.getObject("navigationEndpoint"));
 
                                 if (!isNullOrEmpty(url)) {
                                     return url;
@@ -369,13 +400,15 @@ public class YoutubeMusicSearchExtractor extends SearchExtractor {
                         @Override
                         public String getThumbnailUrl() throws ParsingException {
                             try {
-                                final JsonArray thumbnails = info.getObject("thumbnail").getObject("musicThumbnailRenderer")
+                                final JsonArray thumbnails = info.getObject("thumbnail")
+                                        .getObject("musicThumbnailRenderer")
                                         .getObject("thumbnail").getArray("thumbnails");
                                 // the last thumbnail is the one with the highest resolution
-                                final String url = thumbnails.getObject(thumbnails.size() - 1).getString("url");
+                                final String url = thumbnails.getObject(thumbnails.size() - 1)
+                                        .getString("url");
 
                                 return fixThumbnailUrl(url);
-                            } catch (Exception e) {
+                            } catch (final Exception e) {
                                 throw new ParsingException("Could not get thumbnail url", e);
                             }
                         }
@@ -385,21 +418,25 @@ public class YoutubeMusicSearchExtractor extends SearchExtractor {
                         @Override
                         public String getThumbnailUrl() throws ParsingException {
                             try {
-                                final JsonArray thumbnails = info.getObject("thumbnail").getObject("musicThumbnailRenderer")
+                                final JsonArray thumbnails = info.getObject("thumbnail")
+                                        .getObject("musicThumbnailRenderer")
                                         .getObject("thumbnail").getArray("thumbnails");
                                 // the last thumbnail is the one with the highest resolution
-                                final String url = thumbnails.getObject(thumbnails.size() - 1).getString("url");
+                                final String url = thumbnails.getObject(thumbnails.size() - 1)
+                                        .getString("url");
 
                                 return fixThumbnailUrl(url);
-                            } catch (Exception e) {
+                            } catch (final Exception e) {
                                 throw new ParsingException("Could not get thumbnail url", e);
                             }
                         }
 
                         @Override
                         public String getName() throws ParsingException {
-                            final String name = getTextFromObject(info.getArray("flexColumns").getObject(0)
-                                    .getObject("musicResponsiveListItemFlexColumnRenderer").getObject("text"));
+                            final String name = getTextFromObject(info.getArray("flexColumns")
+                                    .getObject(0)
+                                    .getObject("musicResponsiveListItemFlexColumnRenderer")
+                                    .getObject("text"));
                             if (!isNullOrEmpty(name)) {
                                 return name;
                             }
@@ -408,7 +445,8 @@ public class YoutubeMusicSearchExtractor extends SearchExtractor {
 
                         @Override
                         public String getUrl() throws ParsingException {
-                            final String url = getUrlFromNavigationEndpoint(info.getObject("navigationEndpoint"));
+                            final String url = getUrlFromNavigationEndpoint(info
+                                    .getObject("navigationEndpoint"));
                             if (!isNullOrEmpty(url)) {
                                 return url;
                             }
@@ -417,8 +455,10 @@ public class YoutubeMusicSearchExtractor extends SearchExtractor {
 
                         @Override
                         public long getSubscriberCount() throws ParsingException {
-                            final String subscriberCount = getTextFromObject(info.getArray("flexColumns").getObject(2)
-                                    .getObject("musicResponsiveListItemFlexColumnRenderer").getObject("text"));
+                            final String subscriberCount = getTextFromObject(info
+                                    .getArray("flexColumns").getObject(2)
+                                    .getObject("musicResponsiveListItemFlexColumnRenderer")
+                                    .getObject("text"));
                             if (!isNullOrEmpty(subscriberCount)) {
                                 try {
                                     return Utils.mixedNumberWordToLong(subscriberCount);
@@ -445,21 +485,25 @@ public class YoutubeMusicSearchExtractor extends SearchExtractor {
                         @Override
                         public String getThumbnailUrl() throws ParsingException {
                             try {
-                                final JsonArray thumbnails = info.getObject("thumbnail").getObject("musicThumbnailRenderer")
+                                final JsonArray thumbnails = info.getObject("thumbnail")
+                                        .getObject("musicThumbnailRenderer")
                                         .getObject("thumbnail").getArray("thumbnails");
                                 // the last thumbnail is the one with the highest resolution
-                                final String url = thumbnails.getObject(thumbnails.size() - 1).getString("url");
+                                final String url = thumbnails.getObject(thumbnails.size() - 1)
+                                        .getString("url");
 
                                 return fixThumbnailUrl(url);
-                            } catch (Exception e) {
+                            } catch (final Exception e) {
                                 throw new ParsingException("Could not get thumbnail url", e);
                             }
                         }
 
                         @Override
                         public String getName() throws ParsingException {
-                            final String name = getTextFromObject(info.getArray("flexColumns").getObject(0)
-                                    .getObject("musicResponsiveListItemFlexColumnRenderer").getObject("text"));
+                            final String name = getTextFromObject(info.getArray("flexColumns")
+                                    .getObject(0)
+                                    .getObject("musicResponsiveListItemFlexColumnRenderer")
+                                    .getObject("text"));
                             if (!isNullOrEmpty(name)) {
                                 return name;
                             }
@@ -512,7 +556,8 @@ public class YoutubeMusicSearchExtractor extends SearchExtractor {
                             if (searchType.equals(MUSIC_ALBUMS)) {
                                 return ITEM_COUNT_UNKNOWN;
                             }
-                            final String count = descriptionElements.getObject(2).getString("text");
+                            final String count = descriptionElements.getObject(2)
+                                    .getString("text");
                             if (!isNullOrEmpty(count)) {
                                 if (count.contains("100+")) {
                                     return ITEM_COUNT_MORE_THAN_100;
@@ -528,18 +573,19 @@ public class YoutubeMusicSearchExtractor extends SearchExtractor {
         }
     }
 
-    private Page getNextPageFrom(final JsonArray continuations) throws ParsingException,
-            IOException, ReCaptchaException {
+    @Nullable
+    private Page getNextPageFrom(final JsonArray continuations)
+            throws IOException, ParsingException, ReCaptchaException {
         if (isNullOrEmpty(continuations)) {
             return null;
         }
 
-        final JsonObject nextContinuationData = continuations.getObject(0).getObject("nextContinuationData");
+        final JsonObject nextContinuationData = continuations.getObject(0)
+                .getObject("nextContinuationData");
         final String continuation = nextContinuationData.getString("continuation");
-        final String clickTrackingParams = nextContinuationData.getString("clickTrackingParams");
 
         return new Page("https://music.youtube.com/youtubei/v1/search?ctoken=" + continuation
-                + "&continuation=" + continuation + "&itct=" + clickTrackingParams + "&alt=json"
-                + "&key=" + YoutubeParsingHelper.getYoutubeMusicKey()[0]);
+                + "&continuation=" + continuation + "&alt=json" + "&key="
+                + YoutubeParsingHelper.getYoutubeMusicKey()[0]);
     }
 }

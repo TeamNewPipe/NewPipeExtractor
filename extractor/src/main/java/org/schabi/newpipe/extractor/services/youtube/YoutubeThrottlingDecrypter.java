@@ -79,11 +79,13 @@ public class YoutubeThrottlingDecrypter {
         }
     }
 
+    @Nonnull
     private String parseWithParenthesisMatching(final String playerJsCode, final String functionName) {
         final String functionBase = functionName + "=function";
         return functionBase + StringUtils.matchToClosingParenthesis(playerJsCode, functionBase) + ";";
     }
 
+    @Nonnull
     private String parseWithRegex(final String playerJsCode, final String functionName) throws Parser.RegexException {
         Pattern functionPattern = Pattern.compile(functionName + "=function(.*?}};)\n",
                 Pattern.DOTALL);
