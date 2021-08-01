@@ -3,6 +3,7 @@ package org.schabi.newpipe.extractor.services.youtube;
 import org.schabi.newpipe.extractor.exceptions.ParsingException;
 import org.schabi.newpipe.extractor.utils.JavaScript;
 import org.schabi.newpipe.extractor.utils.Parser;
+import org.schabi.newpipe.extractor.utils.StringUtils;
 
 import javax.annotation.Nonnull;
 import java.util.HashMap;
@@ -33,7 +34,10 @@ import java.util.regex.Pattern;
  */
 public class YoutubeThrottlingDecrypter {
 
-    private static final String N_PARAM_REGEX = "[&?]n=([^&]+)";
+    private static final Pattern N_PARAM_PATTERN = Pattern.compile("[&?]n=([^&]+)");
+    private static final Pattern FUNCTION_NAME_PATTERN = Pattern.compile(
+            "b=a\\.get\\(\"n\"\\)\\)&&\\(b=(\\w+)\\(b\\),a\\.set\\(\"n\",b\\)");
+
     private static final Map<String, String> nParams = new HashMap<>();
 
     private final String functionName;
@@ -62,15 +66,26 @@ public class YoutubeThrottlingDecrypter {
 
     private String parseDecodeFunctionName(final String playerJsCode)
             throws Parser.RegexException {
-        Pattern pattern = Pattern.compile(
-                "b=a\\.get\\(\"n\"\\)\\)&&\\(b=(\\w+)\\(b\\),a\\.set\\(\"n\",b\\)");
-        return Parser.matchGroup1(pattern, playerJsCode);
+        return Parser.matchGroup1(FUNCTION_NAME_PATTERN, playerJsCode);
     }
 
     @Nonnull
     private String parseDecodeFunction(final String playerJsCode, final String functionName)
             throws Parser.RegexException {
-        Pattern functionPattern = Pattern.compile(functionName + "=function(.*?;)\n",
+        try {
+            return parseWithParenthesisMatching(playerJsCode, functionName);
+        } catch (Exception e) {
+            return parseWithRegex(playerJsCode, functionName);
+        }
+    }
+
+    private String parseWithParenthesisMatching(final String playerJsCode, final String functionName) {
+        final String functionBase = functionName + "=function";
+        return functionBase + StringUtils.matchToClosingParenthesis(playerJsCode, functionBase) + ";";
+    }
+
+    private String parseWithRegex(final String playerJsCode, final String functionName) throws Parser.RegexException {
+        Pattern functionPattern = Pattern.compile(functionName + "=function(.*?}};)\n",
                 Pattern.DOTALL);
         return "function " + functionName + Parser.matchGroup1(functionPattern, playerJsCode);
     }
@@ -86,12 +101,11 @@ public class YoutubeThrottlingDecrypter {
     }
 
     private boolean containsNParam(final String url) {
-        return Parser.isMatch(N_PARAM_REGEX, url);
+        return Parser.isMatch(N_PARAM_PATTERN, url);
     }
 
     private String parseNParam(final String url) throws Parser.RegexException {
-        Pattern nValuePattern = Pattern.compile(N_PARAM_REGEX);
-        return Parser.matchGroup1(nValuePattern, url);
+        return Parser.matchGroup1(N_PARAM_PATTERN, url);
     }
 
     private String decryptNParam(final String nParam) {
