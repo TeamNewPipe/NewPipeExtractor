@@ -79,7 +79,6 @@ public class YoutubeJavaScriptExtractor {
             return String.format("https://www.youtube.com/s/player/%s/player_ias.vflset/en_US/base.js", hash);
 
         } catch (Exception i) {
-            i.printStackTrace();
             try {
                 final String embedUrl = "https://www.youtube.com/embed/" + videoId;
                 final String embedPageContent = NewPipe.getDownloader()
