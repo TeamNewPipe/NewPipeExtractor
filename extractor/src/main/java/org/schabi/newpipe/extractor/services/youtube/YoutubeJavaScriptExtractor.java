@@ -39,8 +39,13 @@ public class YoutubeJavaScriptExtractor {
     @Nonnull
     public static String extractJavaScriptCode(final String videoId) throws ParsingException {
         if (cachedJavaScriptCode == null) {
-            final String playerJsUrl = YoutubeJavaScriptExtractor.cleanJavaScriptUrl(
-                    YoutubeJavaScriptExtractor.extractJavaScriptUrl(videoId));
+            String url;
+            try {
+                url = YoutubeJavaScriptExtractor.extractJavaScriptUrl();
+            } catch (final Exception i) {
+                url = YoutubeJavaScriptExtractor.extractJavaScriptUrl(videoId);
+            }
+            final String playerJsUrl = YoutubeJavaScriptExtractor.cleanJavaScriptUrl(url);
             cachedJavaScriptCode = YoutubeJavaScriptExtractor.downloadJavaScriptCode(playerJsUrl);
         }
 
@@ -68,7 +73,7 @@ public class YoutubeJavaScriptExtractor {
         cachedJavaScriptCode = null;
     }
 
-    private static String extractJavaScriptUrl(final String videoId) throws ParsingException {
+    private static String extractJavaScriptUrl() throws ParsingException {
         try {
             final String iframeUrl = "https://www.youtube.com/iframe_api";
             final String iframeContent = NewPipe.getDownloader()
@@ -78,32 +83,34 @@ public class YoutubeJavaScriptExtractor {
 
             return String.format("https://www.youtube.com/s/player/%s/player_ias.vflset/en_US/base.js", hash);
 
-        } catch (Exception i) {
-            try {
-                final String embedUrl = "https://www.youtube.com/embed/" + videoId;
-                final String embedPageContent = NewPipe.getDownloader()
-                        .get(embedUrl, Localization.DEFAULT).responseBody();
+        } catch (final Exception i) { }
 
-                try {
-                    final String assetsPattern = "\"assets\":.+?\"js\":\\s*(\"[^\"]+\")";
-                    return Parser.matchGroup1(assetsPattern, embedPageContent)
-                            .replace("\\", "").replace("\"", "");
-                } catch (final Parser.RegexException ex) {
-                    // playerJsUrl is still available in the file, just somewhere else TODO
-                    // it is ok not to find it, see how that's handled in getDeobfuscationCode()
-                    final Document doc = Jsoup.parse(embedPageContent);
-                    final Elements elems = doc.select("script").attr("name", "player_ias/base");
-                    for (final Element elem : elems) {
-                        if (elem.attr("src").contains("base.js")) {
-                            return elem.attr("src");
-                        }
+        throw new ParsingException("Iframe API did not provide YouTube player js url");
+    }
+
+    private static String extractJavaScriptUrl(final String videoId) throws ParsingException {
+        try {
+            final String embedUrl = "https://www.youtube.com/embed/" + videoId;
+            final String embedPageContent = NewPipe.getDownloader()
+                    .get(embedUrl, Localization.DEFAULT).responseBody();
+
+            try {
+                final String assetsPattern = "\"assets\":.+?\"js\":\\s*(\"[^\"]+\")";
+                return Parser.matchGroup1(assetsPattern, embedPageContent)
+                        .replace("\\", "").replace("\"", "");
+            } catch (final Parser.RegexException ex) {
+                // playerJsUrl is still available in the file, just somewhere else TODO
+                // it is ok not to find it, see how that's handled in getDeobfuscationCode()
+                final Document doc = Jsoup.parse(embedPageContent);
+                final Elements elems = doc.select("script").attr("name", "player_ias/base");
+                for (final Element elem : elems) {
+                    if (elem.attr("src").contains("base.js")) {
+                        return elem.attr("src");
                     }
                 }
-
-            } catch (final Exception i1) {
-                throw new ParsingException("Embedded info did not provide YouTube player js url");
             }
-        }
+
+        } catch (final Exception i) { }
 
         throw new ParsingException("Embedded info did not provide YouTube player js url");
     }
