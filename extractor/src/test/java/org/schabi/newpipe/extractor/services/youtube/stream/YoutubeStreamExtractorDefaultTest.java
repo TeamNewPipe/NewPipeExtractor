@@ -17,10 +17,7 @@ import org.schabi.newpipe.extractor.exceptions.YoutubeMusicPremiumContentExcepti
 import org.schabi.newpipe.extractor.services.DefaultStreamExtractorTest;
 import org.schabi.newpipe.extractor.services.youtube.YoutubeParsingHelper;
 import org.schabi.newpipe.extractor.services.youtube.extractors.YoutubeStreamExtractor;
-import org.schabi.newpipe.extractor.stream.Description;
-import org.schabi.newpipe.extractor.stream.StreamExtractor;
-import org.schabi.newpipe.extractor.stream.StreamSegment;
-import org.schabi.newpipe.extractor.stream.StreamType;
+import org.schabi.newpipe.extractor.stream.*;
 
 import java.io.IOException;
 import java.net.MalformedURLException;
@@ -66,6 +63,7 @@ public class YoutubeStreamExtractorDefaultTest {
         public static void setUp() throws IOException {
             YoutubeParsingHelper.resetClientVersionAndKey();
             YoutubeParsingHelper.setNumberGenerator(new Random(1));
+            YoutubeStreamExtractor.resetDeobfuscationCode();
             NewPipe.init(new DownloaderFactory().getDownloader(RESOURCE_PATH + "notAvailable"));
         }
 
@@ -122,6 +120,7 @@ public class YoutubeStreamExtractorDefaultTest {
         public static void setUp() throws Exception {
             YoutubeParsingHelper.resetClientVersionAndKey();
             YoutubeParsingHelper.setNumberGenerator(new Random(1));
+            YoutubeStreamExtractor.resetDeobfuscationCode();
             NewPipe.init(new DownloaderFactory().getDownloader(RESOURCE_PATH + "pewdiwpie"));
             extractor = YouTube.getStreamExtractor(URL);
             extractor.fetchPage();
@@ -165,6 +164,7 @@ public class YoutubeStreamExtractorDefaultTest {
         public static void setUp() throws Exception {
             YoutubeParsingHelper.resetClientVersionAndKey();
             YoutubeParsingHelper.setNumberGenerator(new Random(1));
+            YoutubeStreamExtractor.resetDeobfuscationCode();
             NewPipe.init(new DownloaderFactory().getDownloader(RESOURCE_PATH + "unboxing"));
             extractor = YouTube.getStreamExtractor(URL);
             extractor.fetchPage();
@@ -218,6 +218,7 @@ public class YoutubeStreamExtractorDefaultTest {
         public static void setUp() throws Exception {
             YoutubeParsingHelper.resetClientVersionAndKey();
             YoutubeParsingHelper.setNumberGenerator(new Random(1));
+            YoutubeStreamExtractor.resetDeobfuscationCode();
             NewPipe.init(new DownloaderFactory().getDownloader(RESOURCE_PATH + "ratingsDisabled"));
             extractor = YouTube.getStreamExtractor(URL);
             extractor.fetchPage();
@@ -255,6 +256,7 @@ public class YoutubeStreamExtractorDefaultTest {
         public static void setUp() throws Exception {
             YoutubeParsingHelper.resetClientVersionAndKey();
             YoutubeParsingHelper.setNumberGenerator(new Random(1));
+            YoutubeStreamExtractor.resetDeobfuscationCode();
             NewPipe.init(new DownloaderFactory().getDownloader(RESOURCE_PATH + "streamSegmentsTagesschau"));
             extractor = YouTube.getStreamExtractor(URL);
             extractor.fetchPage();
@@ -316,6 +318,7 @@ public class YoutubeStreamExtractorDefaultTest {
         public static void setUp() throws Exception {
             YoutubeParsingHelper.resetClientVersionAndKey();
             YoutubeParsingHelper.setNumberGenerator(new Random(1));
+            YoutubeStreamExtractor.resetDeobfuscationCode();
             NewPipe.init(new DownloaderFactory().getDownloader(RESOURCE_PATH + "streamSegmentsMaiLab"));
             extractor = YouTube.getStreamExtractor(URL);
             extractor.fetchPage();
@@ -386,6 +389,7 @@ public class YoutubeStreamExtractorDefaultTest {
             YoutubeParsingHelper.setNumberGenerator(new Random(1));
             NewPipe.init(new DownloaderFactory().getDownloader(RESOURCE_PATH + "publicBroadcast"));
             extractor = YouTube.getStreamExtractor(URL);
+            YoutubeStreamExtractor.resetDeobfuscationCode();
             extractor.fetchPage();
         }
 
@@ -435,6 +439,7 @@ public class YoutubeStreamExtractorDefaultTest {
 
         @BeforeClass
         public static void setUp() throws Exception {
+            YoutubeStreamExtractor.resetDeobfuscationCode();
             NewPipe.init(DownloaderTestImpl.getInstance());
             extractor = (YoutubeStreamExtractor) YouTube
                     .getStreamExtractor("https://www.youtube.com/watch?v=tjz2u2DiveM");
@@ -454,6 +459,7 @@ public class YoutubeStreamExtractorDefaultTest {
 
         @BeforeClass
         public static void setUp() throws Exception {
+            YoutubeStreamExtractor.resetDeobfuscationCode();
             NewPipe.init(DownloaderTestImpl.getInstance());
             extractor = YouTube.getStreamExtractor(URL);
             extractor.fetchPage();

@@ -93,6 +93,5 @@ public class YoutubeFeedExtractorTest {
                     .getFeedExtractor("https://www.youtube.com/channel/UCTGjY2I-ZUGnwVoWAGRd7XQ");
             extractor.fetchPage();
         }
-
     }
 }

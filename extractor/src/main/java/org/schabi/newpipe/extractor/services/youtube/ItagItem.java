@@ -46,13 +46,12 @@ public class ItagItem {
             /// VIDEO ONLY ////////////////////////////////////////////
             //           ID      Type     Format  Resolution  FPS  ///
             /////////////////////////////////////////////////////////
-            // Don't add VideoOnly streams that have normal variants
             new ItagItem(160, VIDEO_ONLY, MPEG_4, "144p"),
             new ItagItem(133, VIDEO_ONLY, MPEG_4, "240p"),
-//          new ItagItem(134, VIDEO_ONLY, MPEG_4, "360p"),
+            new ItagItem(134, VIDEO_ONLY, MPEG_4, "360p"),
             new ItagItem(135, VIDEO_ONLY, MPEG_4, "480p"),
             new ItagItem(212, VIDEO_ONLY, MPEG_4, "480p"),
-//          new ItagItem(136, VIDEO_ONLY, MPEG_4, "720p"),
+            new ItagItem(136, VIDEO_ONLY, MPEG_4, "720p"),
             new ItagItem(298, VIDEO_ONLY, MPEG_4, "720p60", 60),
             new ItagItem(137, VIDEO_ONLY, MPEG_4, "1080p"),
             new ItagItem(299, VIDEO_ONLY, MPEG_4, "1080p60", 60),
@@ -75,6 +74,7 @@ public class ItagItem {
             new ItagItem(313, VIDEO_ONLY, WEBM, "2160p"),
             new ItagItem(315, VIDEO_ONLY, WEBM, "2160p60", 60)
     };
+
     /*//////////////////////////////////////////////////////////////////////////
     // Utils
     //////////////////////////////////////////////////////////////////////////*/

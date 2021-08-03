@@ -16,7 +16,7 @@ public class YoutubeCommentsLinkHandlerFactory extends ListLinkHandlerFactory {
 
     @Override
     public String getUrl(String id) {
-        return "https://m.youtube.com/watch?v=" + id;
+        return "https://www.youtube.com/watch?v=" + id;
     }
 
     @Override

@@ -13,45 +13,56 @@ import java.io.IOException;
 
 public class CommentsInfo extends ListInfo<CommentsInfoItem> {
 
-    private CommentsInfo(int serviceId, ListLinkHandler listUrlIdHandler, String name) {
+    private CommentsInfo(
+            final int serviceId,
+            final ListLinkHandler listUrlIdHandler,
+            final String name) {
         super(serviceId, listUrlIdHandler, name);
     }
 
-    public static CommentsInfo getInfo(String url) throws IOException, ExtractionException {
+    public static CommentsInfo getInfo(final String url) throws IOException, ExtractionException {
         return getInfo(NewPipe.getServiceByUrl(url), url);
     }
 
-    public static CommentsInfo getInfo(StreamingService serviceByUrl, String url) throws ExtractionException, IOException {
+    public static CommentsInfo getInfo(final StreamingService serviceByUrl, final String url)
+            throws ExtractionException, IOException {
         return getInfo(serviceByUrl.getCommentsExtractor(url));
     }
 
-    public static CommentsInfo getInfo(CommentsExtractor commentsExtractor) throws IOException, ExtractionException {
+    public static CommentsInfo getInfo(final CommentsExtractor commentsExtractor)
+            throws IOException, ExtractionException {
         // for services which do not have a comments extractor
-        if (null == commentsExtractor) {
+        if (commentsExtractor == null) {
             return null;
         }
 
         commentsExtractor.fetchPage();
-        String name = commentsExtractor.getName();
-        int serviceId = commentsExtractor.getServiceId();
-        ListLinkHandler listUrlIdHandler = commentsExtractor.getLinkHandler();
-        CommentsInfo commentsInfo = new CommentsInfo(serviceId, listUrlIdHandler, name);
+
+        final String name = commentsExtractor.getName();
+        final int serviceId = commentsExtractor.getServiceId();
+        final ListLinkHandler listUrlIdHandler = commentsExtractor.getLinkHandler();
+
+        final CommentsInfo commentsInfo = new CommentsInfo(serviceId, listUrlIdHandler, name);
         commentsInfo.setCommentsExtractor(commentsExtractor);
-        InfoItemsPage<CommentsInfoItem> initialCommentsPage = ExtractorHelper.getItemsPageOrLogError(commentsInfo,
-                commentsExtractor);
+        final InfoItemsPage<CommentsInfoItem> initialCommentsPage =
+                ExtractorHelper.getItemsPageOrLogError(commentsInfo, commentsExtractor);
+        commentsInfo.setCommentsDisabled(commentsExtractor.isCommentsDisabled());
         commentsInfo.setRelatedItems(initialCommentsPage.getItems());
         commentsInfo.setNextPage(initialCommentsPage.getNextPage());
 
         return commentsInfo;
     }
 
-    public static InfoItemsPage<CommentsInfoItem> getMoreItems(CommentsInfo commentsInfo, Page page)
-            throws ExtractionException, IOException {
+    public static InfoItemsPage<CommentsInfoItem> getMoreItems(
+            final CommentsInfo commentsInfo,
+            final Page page) throws ExtractionException, IOException {
         return getMoreItems(NewPipe.getService(commentsInfo.getServiceId()), commentsInfo, page);
     }
 
-    public static InfoItemsPage<CommentsInfoItem> getMoreItems(StreamingService service, CommentsInfo commentsInfo,
-                                                               Page page) throws IOException, ExtractionException {
+    public static InfoItemsPage<CommentsInfoItem> getMoreItems(
+            final StreamingService service,
+            final CommentsInfo commentsInfo,
+            final Page page) throws IOException, ExtractionException {
         if (null == commentsInfo.getCommentsExtractor()) {
             commentsInfo.setCommentsExtractor(service.getCommentsExtractor(commentsInfo.getUrl()));
             commentsInfo.getCommentsExtractor().fetchPage();
@@ -60,13 +71,30 @@ public class CommentsInfo extends ListInfo<CommentsInfoItem> {
     }
 
     private transient CommentsExtractor commentsExtractor;
+    private boolean commentsDisabled = false;
 
     public CommentsExtractor getCommentsExtractor() {
         return commentsExtractor;
     }
 
-    public void setCommentsExtractor(CommentsExtractor commentsExtractor) {
+    public void setCommentsExtractor(final CommentsExtractor commentsExtractor) {
         this.commentsExtractor = commentsExtractor;
     }
 
+    /**
+     * @apiNote Warning: This method is experimental and may get removed in a future release.
+     * @return <code>true</code> if the comments are disabled otherwise <code>false</code> (default)
+     * @see CommentsExtractor#isCommentsDisabled()
+     */
+    public boolean isCommentsDisabled() {
+        return commentsDisabled;
+    }
+
+    /**
+     * @apiNote Warning: This method is experimental and may get removed in a future release.
+     * @param commentsDisabled <code>true</code> if the comments are disabled otherwise <code>false</code>
+     */
+    public void setCommentsDisabled(final boolean commentsDisabled) {
+        this.commentsDisabled = commentsDisabled;
+    }
 }
