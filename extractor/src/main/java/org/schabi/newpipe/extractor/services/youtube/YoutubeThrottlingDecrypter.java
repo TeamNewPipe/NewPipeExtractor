@@ -18,13 +18,13 @@ import java.util.regex.Pattern;
  * applying the cipher on it and returning the resulting url which is not throttled.
  * </p>
  *
- * <p>
- * https://r5---sn-4g5ednsz.googlevideo.com/videoplayback?n=VVF2xyZLVRZZxHXZ&other=other
- * </p>
+ * <pre>
+ * https://r5---sn-4g5ednsz.googlevideo.com/videoplayback?n=VVF2xyZLVRZZxHXZ&amp;other=other
+ * </pre>
  * becomes
- * <p>
- * https://r5---sn-4g5ednsz.googlevideo.com/videoplayback?n=iHywZkMipkszqA&other=other
- * </p>
+ * <pre>
+ * https://r5---sn-4g5ednsz.googlevideo.com/videoplayback?n=iHywZkMipkszqA&amp;other=other
+ * </pre>
  * <br>
  * <p>
  * Decoding the "n" parameter is time intensive. For this reason, the results are cached.
