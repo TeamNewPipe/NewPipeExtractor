@@ -1,65 +1,230 @@
 {
   "request": {
-    "httpMethod": "GET",
-    "url": "https://www.youtube.com/watch?v\u003dabcde\u0026list\u003dRDabcde\u0026pbj\u003d1",
+    "httpMethod": "POST",
+    "url": "https://www.youtube.com/youtubei/v1/next?key\u003dAIzaSyAO_FJ2SlqU8Q4STEHLGCilw_Y9_11qcW8",
     "headers": {
       "Accept-Language": [
         "en-GB, en;q\u003d0.9"
       ],
-      "Cookie": [
-        "CONSENT\u003dPENDING+385"
+      "Origin": [
+        "https://www.youtube.com"
       ],
       "X-YouTube-Client-Name": [
         "1"
       ],
+      "Referer": [
+        "https://www.youtube.com"
+      ],
       "X-YouTube-Client-Version": [
-        "2.20200214.04.00"
+        "2.20210728.00.00"
       ]
     },
+    "dataToSend": [
+      123,
+      34,
+      112,
+      108,
+      97,
+      121,
+      108,
+      105,
+      115,
+      116,
+      73,
+      100,
+      34,
+      58,
+      34,
+      82,
+      68,
+      97,
+      98,
+      99,
+      100,
+      101,
+      34,
+      44,
+      34,
+      99,
+      111,
+      110,
+      116,
+      101,
+      120,
+      116,
+      34,
+      58,
+      123,
+      34,
+      99,
+      108,
+      105,
+      101,
+      110,
+      116,
+      34,
+      58,
+      123,
+      34,
+      104,
+      108,
+      34,
+      58,
+      34,
+      101,
+      110,
+      45,
+      71,
+      66,
+      34,
+      44,
+      34,
+      103,
+      108,
+      34,
+      58,
+      34,
+      71,
+      66,
+      34,
+      44,
+      34,
+      99,
+      108,
+      105,
+      101,
+      110,
+      116,
+      78,
+      97,
+      109,
+      101,
+      34,
+      58,
+      34,
+      87,
+      69,
+      66,
+      34,
+      44,
+      34,
+      99,
+      108,
+      105,
+      101,
+      110,
+      116,
+      86,
+      101,
+      114,
+      115,
+      105,
+      111,
+      110,
+      34,
+      58,
+      34,
+      50,
+      46,
+      50,
+      48,
+      50,
+      49,
+      48,
+      55,
+      50,
+      56,
+      46,
+      48,
+      48,
+      46,
+      48,
+      48,
+      34,
+      125,
+      44,
+      34,
+      117,
+      115,
+      101,
+      114,
+      34,
+      58,
+      123,
+      34,
+      108,
+      111,
+      99,
+      107,
+      101,
+      100,
+      83,
+      97,
+      102,
+      101,
+      116,
+      121,
+      77,
+      111,
+      100,
+      101,
+      34,
+      58,
+      102,
+      97,
+      108,
+      115,
+      101,
+      125,
+      125,
+      44,
+      34,
+      118,
+      105,
+      100,
+      101,
+      111,
+      73,
+      100,
+      34,
+      58,
+      34,
+      97,
+      98,
+      99,
+      100,
+      101,
+      34,
+      125
+    ],
     "localization": {
       "languageCode": "en",
       "countryCode": "GB"
     }
   },
   "response": {
-    "responseCode": 200,
+    "responseCode": 500,
     "responseMessage": "",
     "responseHeaders": {
       "alt-svc": [
         "h3\u003d\":443\"; ma\u003d2592000,h3-29\u003d\":443\"; ma\u003d2592000,h3-T051\u003d\":443\"; ma\u003d2592000,h3-Q050\u003d\":443\"; ma\u003d2592000,h3-Q046\u003d\":443\"; ma\u003d2592000,h3-Q043\u003d\":443\"; ma\u003d2592000,quic\u003d\":443\"; ma\u003d2592000; v\u003d\"46,43\""
       ],
       "cache-control": [
-        "no-cache, no-store, max-age\u003d0, must-revalidate"
-      ],
-      "content-disposition": [
-        "attachment"
+        "private"
       ],
       "content-type": [
-        "application/json; charset\u003dutf-8"
+        "application/json; charset\u003dUTF-8"
       ],
       "date": [
-        "Sat, 03 Jul 2021 11:29:31 GMT"
-      ],
-      "expires": [
-        "Mon, 01 Jan 1990 00:00:00 GMT"
-      ],
-      "p3p": [
-        "CP\u003d\"This is not a P3P policy! See http://support.google.com/accounts/answer/151657?hl\u003den-GB for more info.\""
-      ],
-      "permissions-policy": [
-        "ch-ua-full-version\u003d*, ch-ua-platform\u003d*, ch-ua-platform-version\u003d*, ch-ua-arch\u003d*, ch-ua-model\u003d*"
-      ],
-      "pragma": [
-        "no-cache"
+        "Sun, 01 Aug 2021 15:15:10 GMT"
       ],
       "server": [
         "ESF"
       ],
-      "set-cookie": [
-        "YSC\u003d6I04qC_jDQY; Domain\u003d.youtube.com; Path\u003d/; Secure; HttpOnly; SameSite\u003dnone"
-      ],
-      "strict-transport-security": [
-        "max-age\u003d31536000"
+      "vary": [
+        "Origin",
+        "X-Origin",
+        "Referer"
       ],
       "x-content-type-options": [
         "nosniff"
@@ -67,14 +232,11 @@
       "x-frame-options": [
         "SAMEORIGIN"
       ],
-      "x-spf-response-type": [
-        "multipart"
-      ],
       "x-xss-protection": [
         "0"
       ]
     },
-    "responseBody": "[\r\n{\"page\": \"watch\",\"rootVe\": \"3832\"},\r\n{\"page\": \"watch\",\"preconnect\": [\"https:\\/\\/r4---sn-4g5ednld.googlevideo.com\\/generate_204\",\"https:\\/\\/r4---sn-4g5ednld.googlevideo.com\\/generate_204?conn2\"]},\r\n{\"page\": \"watch\",\"playerResponse\": {\"responseContext\":{\"serviceTrackingParams\":[{\"service\":\"GFEEDBACK\",\"params\":[{\"key\":\"is_viewed_live\",\"value\":\"False\"},{\"key\":\"logged_in\",\"value\":\"0\"},{\"key\":\"e\",\"value\":\"23968386,23891346,23885487,23966208,24058240,23975059,23884386,24012512,24056839,24023960,23804281,24030040,24045412,23999405,24045470,23821390,24049575,24060173,23946420,24037794,24042870,24003103,24059009,1714254,24007246,23986021,23991736,24034977,24057008,23934970,23983296,24003105,23983814,24043960,23891344,24011363,24056265,24059522,24062574,24058128,24058293,24049577,24058780,24038425,24049569,23857950,23996830,23940237,23890959,24049820,24044124,23973490,23744176,24045469,23918597,24049567,23877023,24049573,23998056,24058812,23882685,24027649,23944779,24004644,23974595,24036948,24053866,24001373,24059897,24058380,24052245,24058861,24063702\"}]},{\"service\":\"CSI\",\"params\":[{\"key\":\"c\",\"value\":\"WEB\"},{\"key\":\"cver\",\"value\":\"2.20200214.04.00\"},{\"key\":\"yt_li\",\"value\":\"0\"},{\"key\":\"GetPlayer_rid\",\"value\":\"0x860a6041dbed4108\"}]},{\"service\":\"GUIDED_HELP\",\"params\":[{\"key\":\"logged_in\",\"value\":\"0\"}]},{\"service\":\"ECATCHER\",\"params\":[{\"key\":\"client.version\",\"value\":\"2.20210526\"},{\"key\":\"client.name\",\"value\":\"WEB\"}]}],\"mainAppWebResponseContext\":{\"loggedOut\":true},\"webResponseContextExtensionData\":{\"hasDecorated\":true}},\"playabilityStatus\":{\"status\":\"ERROR\",\"reason\":\"Video unavailable\",\"errorScreen\":{\"playerErrorMessageRenderer\":{\"reason\":{\"simpleText\":\"Video unavailable\"},\"thumbnail\":{\"thumbnails\":[{\"url\":\"//s.ytimg.com/yts/img/meh7-vflGevej7.png\",\"width\":140,\"height\":100}]},\"icon\":{\"iconType\":\"ERROR_OUTLINE\"}}},\"contextParams\":\"Q0FBU0FnZ0E\u003d\"},\"trackingParams\":\"CAAQu2kiEwjH_46W5sbxAhUVD-AKHU6hBdo\u003d\",\"frameworkUpdates\":{\"entityBatchUpdate\":{\"mutations\":[{\"entityKey\":\"EgcKBWFiY2RlIPYBKAE%3D\",\"type\":\"ENTITY_MUTATION_TYPE_REPLACE\",\"payload\":{\"offlineabilityEntity\":{\"key\":\"EgcKBWFiY2RlIPYBKAE%3D\",\"accessState\":\"OFFLINEABILITY_FEATURE_ACCESS_STATE_UNKNOWN\"}}}],\"timestamp\":{\"seconds\":\"1625311771\",\"nanos\":92746917}}}}},\r\n{\"page\": \"watch\",\"response\": {\"responseContext\":{\"webResponseContextExtensionData\":{\"ytConfigData\":{\"visitorData\":\"CgtEZDdTSEszdmlXSSiblIGHBg%3D%3D\",\"rootVisualElementType\":3832}}}},\"xsrf_token\": \"QUFFLUhqbXk3WU5od2t4OV9Gc0V6TXdFQ0FTQ1U2c2Z2Z3xBQ3Jtc0trRm9jNTQ3UXUydGFVdUJsYTVqQVptaUVsUHk5NmZTaTVRYjlQam5BVG1iaVVZLUs1aGlJQWpPdUtCSmdxVWg3VUVfQWdYR3Y0eTZ0SjFHUHF0YkI5OEhrbkRhU0tIWFUwUTh1Vm0ta09iVVVIeGVpbw\\u003d\\u003d\",\"url\": \"/watch?v\\u003dabcde\\u0026list\\u003dRDabcde\",\"endpoint\": {\"clickTrackingParams\":\"IhMImKCOlubG8QIVjofeCh0Zow5zMghleHRlcm5hbA\u003d\u003d\",\"commandMetadata\":{\"webCommandMetadata\":{\"url\":\"/watch?v\u003dabcde\",\"webPageType\":\"WEB_PAGE_TYPE_WATCH\",\"rootVe\":3832}},\"watchEndpoint\":{\"videoId\":\"abcde\"}}},\r\n{\"page\": \"watch\",\"timing\": {\"info\": {\"st\":  0.0 }}}]\r\n",
-    "latestUrl": "https://www.youtube.com/watch?v\u003dabcde\u0026list\u003dRDabcde\u0026pbj\u003d1"
+    "responseBody": "{\n  \"error\": {\n    \"code\": 500,\n    \"message\": \"Internal error encountered.\",\n    \"errors\": [\n      {\n        \"message\": \"Internal error encountered.\",\n        \"domain\": \"global\",\n        \"reason\": \"backendError\"\n      }\n    ],\n    \"status\": \"INTERNAL\"\n  }\n}\n",
+    "latestUrl": "https://www.youtube.com/youtubei/v1/next?key\u003dAIzaSyAO_FJ2SlqU8Q4STEHLGCilw_Y9_11qcW8"
   }
 }

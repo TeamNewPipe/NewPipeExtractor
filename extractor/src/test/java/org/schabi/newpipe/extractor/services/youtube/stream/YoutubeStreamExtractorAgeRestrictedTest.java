@@ -6,6 +6,7 @@ import org.schabi.newpipe.extractor.NewPipe;
 import org.schabi.newpipe.extractor.StreamingService;
 import org.schabi.newpipe.extractor.services.DefaultStreamExtractorTest;
 import org.schabi.newpipe.extractor.services.youtube.YoutubeParsingHelper;
+import org.schabi.newpipe.extractor.services.youtube.extractors.YoutubeStreamExtractor;
 import org.schabi.newpipe.extractor.stream.StreamExtractor;
 import org.schabi.newpipe.extractor.stream.StreamType;
 
@@ -28,6 +29,7 @@ public class YoutubeStreamExtractorAgeRestrictedTest extends DefaultStreamExtrac
     public static void setUp() throws Exception {
         YoutubeParsingHelper.resetClientVersionAndKey();
         YoutubeParsingHelper.setNumberGenerator(new Random(1));
+        YoutubeStreamExtractor.resetDeobfuscationCode();
         NewPipe.init(new DownloaderFactory().getDownloader(RESOURCE_PATH + "ageRestricted"));
         extractor = YouTube.getStreamExtractor(URL);
         extractor.fetchPage();
@@ -54,10 +56,10 @@ public class YoutubeStreamExtractorAgeRestrictedTest extends DefaultStreamExtrac
     @Override public long expectedDislikeCountAtLeast() { return 38000; }
     @Override public boolean expectedHasRelatedItems() { return false; } // no related videos (!)
     @Override public int expectedAgeLimit() { return 18; }
-    @Nullable @Override public String expectedErrorMessage() { return "Sign in to confirm your age"; }
     @Override public boolean expectedHasSubtitles() { return false; }
 
-    @Override public String expectedCategory() { return ""; } // Unavailable on age restricted videos
+    @Override public String expectedCategory() { return "Entertainment"; }
+
     @Override public String expectedLicence() { return "YouTube licence"; }
     @Override
     public List<String> expectedTags() {

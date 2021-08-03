@@ -9,6 +9,7 @@ import org.schabi.newpipe.extractor.downloader.Downloader;
 import org.schabi.newpipe.extractor.exceptions.ExtractionException;
 import org.schabi.newpipe.extractor.exceptions.ParsingException;
 import org.schabi.newpipe.extractor.linkhandler.SearchQueryHandler;
+import org.schabi.newpipe.extractor.localization.Localization;
 import org.schabi.newpipe.extractor.localization.TimeAgoParser;
 import org.schabi.newpipe.extractor.search.InfoItemsSearchCollector;
 import org.schabi.newpipe.extractor.search.SearchExtractor;
@@ -17,11 +18,10 @@ import org.schabi.newpipe.extractor.utils.JsonUtils;
 
 import javax.annotation.Nonnull;
 import java.io.IOException;
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
+import static org.schabi.newpipe.extractor.services.youtube.linkHandler.YoutubeSearchQueryHandlerFactory.getSearchParameter;
 import static org.schabi.newpipe.extractor.services.youtube.YoutubeParsingHelper.*;
 import static org.schabi.newpipe.extractor.utils.Utils.UTF_8;
 import static org.schabi.newpipe.extractor.utils.Utils.isNullOrEmpty;
@@ -49,17 +49,37 @@ import static org.schabi.newpipe.extractor.utils.Utils.isNullOrEmpty;
 public class YoutubeSearchExtractor extends SearchExtractor {
     private JsonObject initialData;
 
-    public YoutubeSearchExtractor(final StreamingService service, final SearchQueryHandler linkHandler) {
+    public YoutubeSearchExtractor(final StreamingService service,
+                                  final SearchQueryHandler linkHandler) {
         super(service, linkHandler);
     }
 
     @Override
-    public void onFetchPage(@Nonnull final Downloader downloader) throws IOException, ExtractionException {
-        final String url = getUrl() + "&pbj=1";
+    public void onFetchPage(@Nonnull final Downloader downloader) throws IOException,
+            ExtractionException {
+        final String query = super.getSearchString();
+        final Localization localization = getExtractorLocalization();
 
-        final JsonArray ajaxJson = getJsonResponse(url, getExtractorLocalization());
+        // Get the search parameter of the request
+        final List<String> contentFilters = super.getLinkHandler().getContentFilters();
+        final String params;
+        if (!isNullOrEmpty(contentFilters)) {
+            final String searchType = contentFilters.get(0);
+            params = getSearchParameter(searchType);
+        } else {
+            params = "";
+        }
 
-        initialData = ajaxJson.getObject(1).getObject("response");
+        final JsonBuilder<JsonObject> jsonBody = prepareDesktopJsonBuilder(localization,
+                getExtractorContentCountry())
+                .value("query", query);
+        if (!isNullOrEmpty(params)) {
+            jsonBody.value("params", params);
+        }
+
+        final byte[] body = JsonWriter.string(jsonBody.done()).getBytes(UTF_8);
+
+        initialData = getJsonPostResponse("search", body, localization);
     }
 
     @Nonnull
@@ -77,11 +97,13 @@ public class YoutubeSearchExtractor extends SearchExtractor {
                 .getObject("itemSectionRenderer");
         final JsonObject didYouMeanRenderer = itemSectionRenderer.getArray("contents").getObject(0)
                 .getObject("didYouMeanRenderer");
-        final JsonObject showingResultsForRenderer = itemSectionRenderer.getArray("contents").getObject(0)
+        final JsonObject showingResultsForRenderer = itemSectionRenderer.getArray("contents")
+                .getObject(0)
                 .getObject("showingResultsForRenderer");
 
         if (!didYouMeanRenderer.isEmpty()) {
-            return JsonUtils.getString(didYouMeanRenderer, "correctedQueryEndpoint.searchEndpoint.query");
+            return JsonUtils.getString(didYouMeanRenderer,
+                    "correctedQueryEndpoint.searchEndpoint.query");
         } else if (showingResultsForRenderer != null) {
             return getTextFromObject(showingResultsForRenderer.getObject("correctedQuery"));
         } else {
@@ -103,7 +125,8 @@ public class YoutubeSearchExtractor extends SearchExtractor {
     public List<MetaInfo> getMetaInfo() throws ParsingException {
         return YoutubeParsingHelper.getMetaInfo(
                 initialData.getObject("contents").getObject("twoColumnSearchResultsRenderer")
-                        .getObject("primaryContents").getObject("sectionListRenderer").getArray("contents"));
+                        .getObject("primaryContents").getObject("sectionListRenderer")
+                        .getArray("contents"));
     }
 
     @Nonnull
@@ -111,20 +134,21 @@ public class YoutubeSearchExtractor extends SearchExtractor {
     public InfoItemsPage<InfoItem> getInitialPage() throws IOException, ExtractionException {
         final InfoItemsSearchCollector collector = new InfoItemsSearchCollector(getServiceId());
 
-        final JsonArray sections = initialData.getObject("contents").getObject("twoColumnSearchResultsRenderer")
-                .getObject("primaryContents").getObject("sectionListRenderer").getArray("contents");
+        final JsonArray sections = initialData.getObject("contents")
+                .getObject("twoColumnSearchResultsRenderer").getObject("primaryContents")
+                .getObject("sectionListRenderer").getArray("contents");
 
         Page nextPage = null;
 
         for (final Object section : sections) {
             if (((JsonObject) section).has("itemSectionRenderer")) {
-                final JsonObject itemSectionRenderer = ((JsonObject) section).getObject("itemSectionRenderer");
+                final JsonObject itemSectionRenderer = ((JsonObject) section)
+                        .getObject("itemSectionRenderer");
 
                 collectStreamsFrom(collector, itemSectionRenderer.getArray("contents"));
-
-                nextPage = getNextPageFrom(itemSectionRenderer.getArray("continuations"));
             } else if (((JsonObject) section).has("continuationItemRenderer")) {
-                nextPage = getNewNextPageFrom(((JsonObject) section).getObject("continuationItemRenderer"));
+                nextPage = getNextPageFrom(((JsonObject) section)
+                        .getObject("continuationItemRenderer"));
             }
         }
 
@@ -132,98 +156,70 @@ public class YoutubeSearchExtractor extends SearchExtractor {
     }
 
     @Override
-    public InfoItemsPage<InfoItem> getPage(final Page page) throws IOException, ExtractionException {
+    public InfoItemsPage<InfoItem> getPage(final Page page) throws IOException,
+            ExtractionException {
         if (page == null || isNullOrEmpty(page.getUrl())) {
             throw new IllegalArgumentException("Page doesn't contain an URL");
         }
 
+        final Localization localization = getExtractorLocalization();
         final InfoItemsSearchCollector collector = new InfoItemsSearchCollector(getServiceId());
 
-        if (page.getId() == null) {
-            final JsonArray ajaxJson = getJsonResponse(page.getUrl(), getExtractorLocalization());
+        // @formatter:off
+        final byte[] json = JsonWriter.string(prepareDesktopJsonBuilder(localization,
+                getExtractorContentCountry())
+                .value("continuation", page.getId())
+                .done())
+                .getBytes(UTF_8);
+        // @formatter:on
 
-            final JsonObject itemSectionContinuation = ajaxJson.getObject(1).getObject("response")
-                    .getObject("continuationContents").getObject("itemSectionContinuation");
+        final String responseBody = getValidJsonResponseBody(getDownloader().post(
+                page.getUrl(), new HashMap<>(), json));
 
-            collectStreamsFrom(collector, itemSectionContinuation.getArray("contents"));
-            final JsonArray continuations = itemSectionContinuation.getArray("continuations");
-
-            return new InfoItemsPage<>(collector, getNextPageFrom(continuations));
-        } else {
-            // @formatter:off
-            final byte[] json = JsonWriter.string()
-                .object()
-                    .object("context")
-                        .object("client")
-                            .value("hl", "en")
-                            .value("gl", getExtractorContentCountry().getCountryCode())
-                            .value("clientName", "WEB")
-                            .value("clientVersion", getClientVersion())
-                            .value("utcOffsetMinutes", 0)
-                        .end()
-                        .object("request").end()
-                        .object("user").end()
-                    .end()
-                    .value("continuation", page.getId())
-                .end().done().getBytes(UTF_8);
-            // @formatter:on
-
-            final Map<String, List<String>> headers = new HashMap<>();
-            headers.put("Origin", Collections.singletonList("https://www.youtube.com"));
-            headers.put("Referer", Collections.singletonList(this.getUrl()));
-            headers.put("Content-Type", Collections.singletonList("application/json"));
-
-            final String responseBody = getValidJsonResponseBody(getDownloader().post(page.getUrl(), headers, json));
-
-            final JsonObject ajaxJson;
-            try {
-                ajaxJson = JsonParser.object().from(responseBody);
-            } catch (JsonParserException e) {
-                throw new ParsingException("Could not parse JSON", e);
-            }
-
-            final JsonArray continuationItems = ajaxJson.getArray("onResponseReceivedCommands")
-                    .getObject(0).getObject("appendContinuationItemsAction").getArray("continuationItems");
-
-            final JsonArray contents = continuationItems.getObject(0).getObject("itemSectionRenderer").getArray("contents");
-            collectStreamsFrom(collector, contents);
-
-            return new InfoItemsPage<>(collector, getNewNextPageFrom(continuationItems.getObject(1).getObject("continuationItemRenderer")));
+        final JsonObject ajaxJson;
+        try {
+            ajaxJson = JsonParser.object().from(responseBody);
+        } catch (JsonParserException e) {
+            throw new ParsingException("Could not parse JSON", e);
         }
+
+        final JsonArray continuationItems = ajaxJson.getArray("onResponseReceivedCommands")
+                .getObject(0).getObject("appendContinuationItemsAction")
+                .getArray("continuationItems");
+
+        final JsonArray contents = continuationItems.getObject(0)
+                .getObject("itemSectionRenderer").getArray("contents");
+        collectStreamsFrom(collector, contents);
+
+        return new InfoItemsPage<>(collector, getNextPageFrom(continuationItems.getObject(1)
+                .getObject("continuationItemRenderer")));
     }
 
-    private void collectStreamsFrom(final InfoItemsSearchCollector collector, final JsonArray contents) throws NothingFoundException, ParsingException {
+    private void collectStreamsFrom(final InfoItemsSearchCollector collector,
+                                    final JsonArray contents) throws NothingFoundException,
+            ParsingException {
         final TimeAgoParser timeAgoParser = getTimeAgoParser();
 
-        for (Object content : contents) {
+        for (final Object content : contents) {
             final JsonObject item = (JsonObject) content;
             if (item.has("backgroundPromoRenderer")) {
                 throw new NothingFoundException(getTextFromObject(
                         item.getObject("backgroundPromoRenderer").getObject("bodyText")));
             } else if (item.has("videoRenderer")) {
-                collector.commit(new YoutubeStreamInfoItemExtractor(item.getObject("videoRenderer"), timeAgoParser));
+                collector.commit(new YoutubeStreamInfoItemExtractor(item
+                        .getObject("videoRenderer"), timeAgoParser));
             } else if (item.has("channelRenderer")) {
-                collector.commit(new YoutubeChannelInfoItemExtractor(item.getObject("channelRenderer")));
+                collector.commit(new YoutubeChannelInfoItemExtractor(item
+                        .getObject("channelRenderer")));
             } else if (item.has("playlistRenderer")) {
-                collector.commit(new YoutubePlaylistInfoItemExtractor(item.getObject("playlistRenderer")));
+                collector.commit(new YoutubePlaylistInfoItemExtractor(item
+                        .getObject("playlistRenderer")));
             }
         }
     }
 
-    private Page getNextPageFrom(final JsonArray continuations) throws ParsingException {
-        if (isNullOrEmpty(continuations)) {
-            return null;
-        }
-
-        final JsonObject nextContinuationData = continuations.getObject(0).getObject("nextContinuationData");
-        final String continuation = nextContinuationData.getString("continuation");
-        final String clickTrackingParams = nextContinuationData.getString("clickTrackingParams");
-
-        return new Page(getUrl() + "&pbj=1&ctoken=" + continuation + "&continuation=" + continuation
-                + "&itct=" + clickTrackingParams);
-    }
-
-    private Page getNewNextPageFrom(final JsonObject continuationItemRenderer) throws IOException, ExtractionException {
+    private Page getNextPageFrom(final JsonObject continuationItemRenderer) throws IOException,
+            ExtractionException {
         if (isNullOrEmpty(continuationItemRenderer)) {
             return null;
         }
@@ -231,7 +227,7 @@ public class YoutubeSearchExtractor extends SearchExtractor {
         final String token = continuationItemRenderer.getObject("continuationEndpoint")
                 .getObject("continuationCommand").getString("token");
 
-        final String url = "https://www.youtube.com/youtubei/v1/search?key=" + getKey();
+        final String url = YOUTUBEI_V1_URL + "search?key=" + getKey();
 
         return new Page(url, token);
     }

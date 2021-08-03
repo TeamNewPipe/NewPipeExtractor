@@ -40,10 +40,10 @@ public class YoutubeChannelLocalizationTest {
         testLocalizationsFor("https://www.youtube.com/channel/UCEOXxzW2vU0P-0THehuIIeg");
     }
 
-    private void testLocalizationsFor(String channelUrl) throws Exception {
+    private void testLocalizationsFor(final String channelUrl) throws Exception {
 
         final List<Localization> supportedLocalizations = YouTube.getSupportedLocalizations();
-//        final List<Localization> supportedLocalizations = Arrays.asList(Localization.DEFAULT, new Localization("sr"));
+        // final List<Localization> supportedLocalizations = Arrays.asList(Localization.DEFAULT, new Localization("sr"));
         final Map<Localization, List<StreamInfoItem>> results = new LinkedHashMap<>();
 
         for (Localization currentLocalization : supportedLocalizations) {
@@ -55,7 +55,7 @@ public class YoutubeChannelLocalizationTest {
                 extractor.forceLocalization(currentLocalization);
                 extractor.fetchPage();
                 itemsPage = defaultTestRelatedItems(extractor);
-            } catch (Throwable e) {
+            } catch (final Throwable e) {
                 System.out.println("[!] " + currentLocalization + " → failed");
                 throw e;
             }

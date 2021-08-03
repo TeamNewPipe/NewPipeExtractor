@@ -1,6 +1,5 @@
 package org.schabi.newpipe.extractor.utils;
 
-
 import javax.annotation.Nonnull;
 
 public class StringUtils {

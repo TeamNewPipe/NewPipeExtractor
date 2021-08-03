@@ -1,62 +1,244 @@
 {
   "request": {
-    "httpMethod": "GET",
-    "url": "https://www.youtube.com/channel/DOESNT-EXIST/videos?pbj\u003d1\u0026view\u003d0\u0026flow\u003dgrid",
+    "httpMethod": "POST",
+    "url": "https://www.youtube.com/youtubei/v1/browse?key\u003dAIzaSyAO_FJ2SlqU8Q4STEHLGCilw_Y9_11qcW8",
     "headers": {
       "Accept-Language": [
         "en-GB, en;q\u003d0.9"
       ],
-      "Cookie": [
-        "CONSENT\u003dPENDING+506"
+      "Origin": [
+        "https://www.youtube.com"
       ],
       "X-YouTube-Client-Name": [
         "1"
       ],
+      "Referer": [
+        "https://www.youtube.com"
+      ],
       "X-YouTube-Client-Version": [
-        "2.20200214.04.00"
+        "2.20210728.00.00"
+      ],
+      "Content-Type": [
+        "application/json"
       ]
     },
+    "dataToSend": [
+      123,
+      34,
+      98,
+      114,
+      111,
+      119,
+      115,
+      101,
+      73,
+      100,
+      34,
+      58,
+      34,
+      68,
+      79,
+      69,
+      83,
+      78,
+      84,
+      45,
+      69,
+      88,
+      73,
+      83,
+      84,
+      34,
+      44,
+      34,
+      99,
+      111,
+      110,
+      116,
+      101,
+      120,
+      116,
+      34,
+      58,
+      123,
+      34,
+      99,
+      108,
+      105,
+      101,
+      110,
+      116,
+      34,
+      58,
+      123,
+      34,
+      104,
+      108,
+      34,
+      58,
+      34,
+      101,
+      110,
+      45,
+      71,
+      66,
+      34,
+      44,
+      34,
+      103,
+      108,
+      34,
+      58,
+      34,
+      71,
+      66,
+      34,
+      44,
+      34,
+      99,
+      108,
+      105,
+      101,
+      110,
+      116,
+      78,
+      97,
+      109,
+      101,
+      34,
+      58,
+      34,
+      87,
+      69,
+      66,
+      34,
+      44,
+      34,
+      99,
+      108,
+      105,
+      101,
+      110,
+      116,
+      86,
+      101,
+      114,
+      115,
+      105,
+      111,
+      110,
+      34,
+      58,
+      34,
+      50,
+      46,
+      50,
+      48,
+      50,
+      49,
+      48,
+      55,
+      50,
+      56,
+      46,
+      48,
+      48,
+      46,
+      48,
+      48,
+      34,
+      125,
+      44,
+      34,
+      117,
+      115,
+      101,
+      114,
+      34,
+      58,
+      123,
+      34,
+      108,
+      111,
+      99,
+      107,
+      101,
+      100,
+      83,
+      97,
+      102,
+      101,
+      116,
+      121,
+      77,
+      111,
+      100,
+      101,
+      34,
+      58,
+      102,
+      97,
+      108,
+      115,
+      101,
+      125,
+      125,
+      44,
+      34,
+      112,
+      97,
+      114,
+      97,
+      109,
+      115,
+      34,
+      58,
+      34,
+      69,
+      103,
+      90,
+      50,
+      97,
+      87,
+      82,
+      108,
+      98,
+      51,
+      77,
+      37,
+      51,
+      68,
+      34,
+      125
+    ],
     "localization": {
       "languageCode": "en",
       "countryCode": "GB"
     }
   },
   "response": {
-    "responseCode": 404,
+    "responseCode": 400,
     "responseMessage": "",
     "responseHeaders": {
       "alt-svc": [
         "h3\u003d\":443\"; ma\u003d2592000,h3-29\u003d\":443\"; ma\u003d2592000,h3-T051\u003d\":443\"; ma\u003d2592000,h3-Q050\u003d\":443\"; ma\u003d2592000,h3-Q046\u003d\":443\"; ma\u003d2592000,h3-Q043\u003d\":443\"; ma\u003d2592000,quic\u003d\":443\"; ma\u003d2592000; v\u003d\"46,43\""
       ],
       "cache-control": [
-        "no-cache, no-store, max-age\u003d0, must-revalidate"
+        "private"
       ],
       "content-type": [
-        "text/html; charset\u003dutf-8"
+        "application/json; charset\u003dUTF-8"
       ],
       "date": [
-        "Sat, 03 Jul 2021 11:29:58 GMT"
-      ],
-      "expires": [
-        "Mon, 01 Jan 1990 00:00:00 GMT"
-      ],
-      "p3p": [
-        "CP\u003d\"This is not a P3P policy! See http://support.google.com/accounts/answer/151657?hl\u003den-GB for more info.\""
-      ],
-      "permissions-policy": [
-        "ch-ua-full-version\u003d*, ch-ua-platform\u003d*, ch-ua-platform-version\u003d*, ch-ua-arch\u003d*, ch-ua-model\u003d*"
-      ],
-      "pragma": [
-        "no-cache"
+        "Fri, 30 Jul 2021 17:13:39 GMT"
       ],
       "server": [
         "ESF"
       ],
-      "set-cookie": [
-        "YSC\u003dotZ2jZ94DRk; Domain\u003d.youtube.com; Path\u003d/; Secure; HttpOnly; SameSite\u003dnone"
-      ],
-      "strict-transport-security": [
-        "max-age\u003d31536000"
+      "vary": [
+        "Origin",
+        "X-Origin",
+        "Referer"
       ],
       "x-content-type-options": [
         "nosniff"
@@ -68,7 +250,7 @@
         "0"
       ]
     },
-    "responseBody": "\u003chtml lang\u003d\"en-GB\" dir\u003d\"ltr\"\u003e\u003chead\u003e\u003ctitle\u003e404 Not Found\u003c/title\u003e\u003cstyle nonce\u003d\"n/vBxRiZa1jxbE1/ttyVwQ\"\u003e*{margin:0;padding:0;border:0}html,body{height:100%;}\u003c/style\u003e\u003clink rel\u003d\"shortcut icon\" href\u003d\"https://www.youtube.com/img/favicon.ico\" type\u003d\"image/x-icon\"\u003e\u003clink rel\u003d\"icon\" href\u003d\"https://www.youtube.com/img/favicon_32.png\" sizes\u003d\"32x32\"\u003e\u003clink rel\u003d\"icon\" href\u003d\"https://www.youtube.com/img/favicon_48.png\" sizes\u003d\"48x48\"\u003e\u003clink rel\u003d\"icon\" href\u003d\"https://www.youtube.com/img/favicon_96.png\" sizes\u003d\"96x96\"\u003e\u003clink rel\u003d\"icon\" href\u003d\"https://www.youtube.com/img/favicon_144.png\" sizes\u003d\"144x144\"\u003e\u003c/head\u003e\u003cbody\u003e\u003ciframe style\u003d\"display:block;border:0;\" src\u003d\"/error?src\u003d404\u0026amp;ifr\u003d1\u0026amp;error\u003d\" width\u003d\"100%\" height\u003d\"100%\" frameborder\u003d\"\\\" scrolling\u003d\"no\"\u003e\u003c/iframe\u003e\u003c/body\u003e\u003c/html\u003e",
-    "latestUrl": "https://www.youtube.com/channel/DOESNT-EXIST/videos?pbj\u003d1\u0026view\u003d0\u0026flow\u003dgrid"
+    "responseBody": "{\n  \"error\": {\n    \"code\": 400,\n    \"message\": \"Request contains an invalid argument.\",\n    \"errors\": [\n      {\n        \"message\": \"Request contains an invalid argument.\",\n        \"domain\": \"global\",\n        \"reason\": \"badRequest\"\n      }\n    ],\n    \"status\": \"INVALID_ARGUMENT\"\n  }\n}\n",
+    "latestUrl": "https://www.youtube.com/youtubei/v1/browse?key\u003dAIzaSyAO_FJ2SlqU8Q4STEHLGCilw_Y9_11qcW8"
   }
 }

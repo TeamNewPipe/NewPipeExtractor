@@ -1,13 +1,13 @@
 package org.schabi.newpipe.extractor.services.youtube.stream;
 
 import org.junit.BeforeClass;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.schabi.newpipe.downloader.DownloaderFactory;
 import org.schabi.newpipe.extractor.NewPipe;
 import org.schabi.newpipe.extractor.StreamingService;
 import org.schabi.newpipe.extractor.services.DefaultStreamExtractorTest;
 import org.schabi.newpipe.extractor.services.youtube.YoutubeParsingHelper;
+import org.schabi.newpipe.extractor.services.youtube.extractors.YoutubeStreamExtractor;
 import org.schabi.newpipe.extractor.stream.StreamExtractor;
 import org.schabi.newpipe.extractor.stream.StreamType;
 
@@ -30,6 +30,7 @@ public class YoutubeStreamExtractorLivestreamTest extends DefaultStreamExtractor
     public static void setUp() throws Exception {
         YoutubeParsingHelper.resetClientVersionAndKey();
         YoutubeParsingHelper.setNumberGenerator(new Random(1));
+        YoutubeStreamExtractor.resetDeobfuscationCode();
         NewPipe.init(new DownloaderFactory().getDownloader(RESOURCE_PATH + "live"));
         extractor = YouTube.getStreamExtractor(URL);
         extractor.fetchPage();
@@ -37,7 +38,6 @@ public class YoutubeStreamExtractorLivestreamTest extends DefaultStreamExtractor
 
     @Override
     @Test
-    @Ignore("When visiting website it shows 'Lofi Girl', unknown why it's different in tests")
     public void testUploaderName() throws Exception {
         super.testUploaderName();
     }
