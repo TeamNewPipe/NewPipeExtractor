@@ -212,10 +212,12 @@ public class YoutubeCommentsExtractor extends CommentsExtractor {
             contents.remove(index);
         }
 
+        String jsonKey = contents.getObject(0).has("commentThreadRenderer") ? "commentThreadRenderer" : "commentRenderer";
+
         final List<Object> comments;
         try {
             comments = JsonUtils.getValues(contents,
-                    "commentThreadRenderer.comment.commentRenderer");
+                    jsonKey);
         } catch (final Exception e) {
             throw new ParsingException("Unable to get parse youtube comments", e);
         }
