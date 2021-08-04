@@ -315,7 +315,7 @@ public class YoutubeCommentsExtractorTest {
         public static void setUp() throws Exception {
             YoutubeParsingHelper.resetClientVersionAndKey();
             YoutubeParsingHelper.setNumberGenerator(new Random(1));
-            NewPipe.init(new DownloaderFactory().getDownloader(RESOURCE_PATH + "likes"));
+            NewPipe.init(new DownloaderFactory().getDownloader(RESOURCE_PATH + "replies"));
             extractor = (YoutubeCommentsExtractor) YouTube
                     .getCommentsExtractor(url);
             extractor.fetchPage();
@@ -327,9 +327,9 @@ public class YoutubeCommentsExtractorTest {
 
             DefaultTests.defaultTestListOfItems(YouTube, comments.getItems(), comments.getErrors());
 
-            CommentsInfoItem pinnedComment = comments.getItems().get(0);
+            CommentsInfoItem firstComment = comments.getItems().get(0);
 
-            InfoItemsPage<CommentsInfoItem> replies = extractor.getPage(pinnedComment.getReplies());
+            InfoItemsPage<CommentsInfoItem> replies = extractor.getPage(firstComment.getReplies());
 
             assertEquals("First reply comment did not match", "Lol", replies.getItems().get(0).getCommentText());
         }
