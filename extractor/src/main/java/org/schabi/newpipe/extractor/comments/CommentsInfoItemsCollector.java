@@ -112,12 +112,6 @@ public class CommentsInfoItemsCollector extends InfoItemsCollector<CommentsInfoI
     }
 
     public List<CommentsInfoItem> getCommentsInfoItemList() {
-        List<CommentsInfoItem> siiList = new ArrayList<>();
-        for (InfoItem ii : super.getItems()) {
-            if (ii instanceof CommentsInfoItem) {
-                siiList.add((CommentsInfoItem) ii);
-            }
-        }
-        return siiList;
+        return new ArrayList<>(super.getItems());
     }
 }

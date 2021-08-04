@@ -101,7 +101,7 @@ public class YoutubeCommentsExtractor extends CommentsExtractor {
 
         if (itemSectionRenderer.isPresent()) {
             token = JsonUtils.getString(((JsonObject) itemSectionRenderer.get())
-                    .getObject("itemSectionRenderer").getArray("contents").getObject(0),
+                            .getObject("itemSectionRenderer").getArray("contents").getObject(0),
                     "continuationItemRenderer.continuationEndpoint.continuationCommand.token");
         } else {
             token = null;
@@ -140,10 +140,13 @@ public class YoutubeCommentsExtractor extends CommentsExtractor {
             return null;
         }
 
+        final JsonObject continuationItemRenderer = jsonArray.getObject(jsonArray.size() - 1).getObject("continuationItemRenderer");
+
+        final String jsonPath = continuationItemRenderer.has("button") ? "button.buttonRenderer.command.continuationCommand.token" : "continuationEndpoint.continuationCommand.token";
+
         final String continuation;
         try {
-            continuation = JsonUtils.getString(jsonArray.getObject(jsonArray.size() - 1),
-                    "continuationItemRenderer.continuationEndpoint.continuationCommand.token");
+            continuation = JsonUtils.getString(continuationItemRenderer, jsonPath);
         } catch (final Exception e) {
             return null;
         }
@@ -167,7 +170,7 @@ public class YoutubeCommentsExtractor extends CommentsExtractor {
 
         final Localization localization = getExtractorLocalization();
         final byte[] body = JsonWriter.string(prepareDesktopJsonBuilder(localization,
-                        getExtractorContentCountry())
+                getExtractorContentCountry())
                 .value("continuation", page.getId())
                 .done())
                 .getBytes(UTF_8);
@@ -236,7 +239,7 @@ public class YoutubeCommentsExtractor extends CommentsExtractor {
             throws IOException, ExtractionException {
         final Localization localization = getExtractorLocalization();
         final byte[] body = JsonWriter.string(prepareDesktopJsonBuilder(localization,
-                        getExtractorContentCountry())
+                getExtractorContentCountry())
                 .value("videoId", getId())
                 .done())
                 .getBytes(UTF_8);
