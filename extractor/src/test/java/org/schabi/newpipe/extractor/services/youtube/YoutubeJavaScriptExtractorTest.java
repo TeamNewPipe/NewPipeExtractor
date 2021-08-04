@@ -20,6 +20,16 @@ public class YoutubeJavaScriptExtractorTest {
     }
 
     @Test
+    public void testExtractJavaScriptUrlIframe() throws ParsingException {
+        YoutubeJavaScriptExtractor.extractJavaScriptUrl();
+    }
+
+    @Test
+    public void testExtractJavaScriptUrlEmbed() throws ParsingException {
+        YoutubeJavaScriptExtractor.extractJavaScriptUrl("d4IGg5dqeO8");
+    }
+
+    @Test
     public void testExtractJavaScript__success() throws ParsingException {
         String playerJsCode = YoutubeJavaScriptExtractor.extractJavaScriptCode("d4IGg5dqeO8");
         assertPlayerJsCode(playerJsCode);

@@ -73,7 +73,7 @@ public class YoutubeJavaScriptExtractor {
         cachedJavaScriptCode = null;
     }
 
-    private static String extractJavaScriptUrl() throws ParsingException {
+    public static String extractJavaScriptUrl() throws ParsingException {
         try {
             final String iframeUrl = "https://www.youtube.com/iframe_api";
             final String iframeContent = NewPipe.getDownloader()
@@ -88,7 +88,7 @@ public class YoutubeJavaScriptExtractor {
         throw new ParsingException("Iframe API did not provide YouTube player js url");
     }
 
-    private static String extractJavaScriptUrl(final String videoId) throws ParsingException {
+    public static String extractJavaScriptUrl(final String videoId) throws ParsingException {
         try {
             final String embedUrl = "https://www.youtube.com/embed/" + videoId;
             final String embedPageContent = NewPipe.getDownloader()
