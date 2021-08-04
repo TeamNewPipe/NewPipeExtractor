@@ -306,4 +306,32 @@ public class YoutubeCommentsExtractorTest {
             assertTrue("The first pinned comment has no vote count", !Utils.isBlank(pinnedComment.getTextualLikeCount()));
         }
     }
+
+    public static class RepliesTest {
+        private final static String url = "https://www.youtube.com/watch?v=--yeOvJGZQk";
+        private static YoutubeCommentsExtractor extractor;
+
+        @BeforeClass
+        public static void setUp() throws Exception {
+            YoutubeParsingHelper.resetClientVersionAndKey();
+            YoutubeParsingHelper.setNumberGenerator(new Random(1));
+            NewPipe.init(new DownloaderFactory().getDownloader(RESOURCE_PATH + "likes"));
+            extractor = (YoutubeCommentsExtractor) YouTube
+                    .getCommentsExtractor(url);
+            extractor.fetchPage();
+        }
+
+        @Test
+        public void testGetCommentsFirstReplies() throws IOException, ExtractionException {
+            final InfoItemsPage<CommentsInfoItem> comments = extractor.getInitialPage();
+
+            DefaultTests.defaultTestListOfItems(YouTube, comments.getItems(), comments.getErrors());
+
+            CommentsInfoItem pinnedComment = comments.getItems().get(0);
+
+            InfoItemsPage<CommentsInfoItem> replies = extractor.getPage(pinnedComment.getReplies());
+
+            assertEquals("First reply comment did not match", "Lol", replies.getItems().get(0).getCommentText());
+        }
+    }
 }
