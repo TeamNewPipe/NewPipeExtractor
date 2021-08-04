@@ -93,6 +93,12 @@ public class CommentsInfoItemsCollector extends InfoItemsCollector<CommentsInfoI
             addError(e);
         }
 
+        try {
+            resultItem.setReplies(extractor.getReplies());
+        } catch (Exception e) {
+            addError(e);
+        }
+
         return resultItem;
     }
 

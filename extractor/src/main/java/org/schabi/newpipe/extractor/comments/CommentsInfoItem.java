@@ -1,6 +1,7 @@
 package org.schabi.newpipe.extractor.comments;
 
 import org.schabi.newpipe.extractor.InfoItem;
+import org.schabi.newpipe.extractor.Page;
 import org.schabi.newpipe.extractor.localization.DateWrapper;
 
 import javax.annotation.Nullable;
@@ -21,6 +22,8 @@ public class CommentsInfoItem extends InfoItem {
     private boolean heartedByUploader;
     private boolean pinned;
     private int streamPosition;
+    @Nullable
+    private Page replies;
 
     public static final int NO_LIKE_COUNT = -1;
     public static final int NO_STREAM_POSITION = -1;
@@ -142,4 +145,8 @@ public class CommentsInfoItem extends InfoItem {
     public int getStreamPosition() {
         return streamPosition;
     }
+
+    public void setReplies(@Nullable Page replies) { this.replies = replies; }
+
+    public Page getReplies() { return this.replies; }
 }
