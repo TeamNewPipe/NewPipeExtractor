@@ -3,6 +3,7 @@ package org.schabi.newpipe.extractor.services.youtube.extractors;
 import com.grack.nanojson.JsonArray;
 import com.grack.nanojson.JsonObject;
 
+import org.schabi.newpipe.extractor.Page;
 import org.schabi.newpipe.extractor.comments.CommentsInfoItemExtractor;
 import org.schabi.newpipe.extractor.exceptions.ParsingException;
 import org.schabi.newpipe.extractor.localization.DateWrapper;
@@ -228,6 +229,16 @@ public class YoutubeCommentsInfoItemExtractor implements CommentsInfoItemExtract
                     "authorEndpoint.browseEndpoint.browseId");
         } catch (final Exception e) {
             return EMPTY_STRING;
+        }
+    }
+
+    @Override
+    public Page getReplies() throws ParsingException {
+        try {
+            final String id = JsonUtils.getString(JsonUtils.getArray(json, "replies.commentRepliesRenderer.contents").getObject(0), "continuationItemRenderer.continuationEndpoint.continuationCommand.token");
+            return new Page(url, id);
+        } catch (final Exception e) {
+            return null;
         }
     }
 }

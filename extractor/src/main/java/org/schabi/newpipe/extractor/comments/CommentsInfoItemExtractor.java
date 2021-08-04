@@ -1,6 +1,7 @@
 package org.schabi.newpipe.extractor.comments;
 
 import org.schabi.newpipe.extractor.InfoItemExtractor;
+import org.schabi.newpipe.extractor.Page;
 import org.schabi.newpipe.extractor.exceptions.ParsingException;
 import org.schabi.newpipe.extractor.localization.DateWrapper;
 import org.schabi.newpipe.extractor.services.youtube.extractors.YoutubeCommentsInfoItemExtractor;
@@ -106,5 +107,14 @@ public interface CommentsInfoItemExtractor extends InfoItemExtractor {
      */
     default int getStreamPosition() throws ParsingException {
         return CommentsInfoItem.NO_STREAM_POSITION;
+    }
+
+    /**
+     * The continuation page which is used to get comment replies from.
+     * @return the continuation Page for the replies
+     */
+    @Nullable
+    default Page getReplies() throws ParsingException {
+        return null;
     }
 }
