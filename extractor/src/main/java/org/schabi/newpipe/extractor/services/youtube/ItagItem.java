@@ -62,15 +62,23 @@ public class ItagItem implements Serializable {
             //           ID      Type     Format  Resolution  FPS  ////
             ///////////////////////////////////////////////////////////
             new ItagItem(160, VIDEO_ONLY, MPEG_4, "144p"),
+            new ItagItem(394, VIDEO_ONLY, MPEG_4, "144p"),
             new ItagItem(133, VIDEO_ONLY, MPEG_4, "240p"),
+            new ItagItem(395, VIDEO_ONLY, MPEG_4, "240p"),
             new ItagItem(134, VIDEO_ONLY, MPEG_4, "360p"),
+            new ItagItem(396, VIDEO_ONLY, MPEG_4, "360p"),
             new ItagItem(135, VIDEO_ONLY, MPEG_4, "480p"),
             new ItagItem(212, VIDEO_ONLY, MPEG_4, "480p"),
+            new ItagItem(397, VIDEO_ONLY, MPEG_4, "480p"),
             new ItagItem(136, VIDEO_ONLY, MPEG_4, "720p"),
+            new ItagItem(398, VIDEO_ONLY, MPEG_4, "720p"),
             new ItagItem(298, VIDEO_ONLY, MPEG_4, "720p60", 60),
             new ItagItem(137, VIDEO_ONLY, MPEG_4, "1080p"),
+            new ItagItem(399, VIDEO_ONLY, MPEG_4, "1080p"),
             new ItagItem(299, VIDEO_ONLY, MPEG_4, "1080p60", 60),
+            new ItagItem(400, VIDEO_ONLY, MPEG_4, "1440p"),
             new ItagItem(266, VIDEO_ONLY, MPEG_4, "2160p"),
+            new ItagItem(401, VIDEO_ONLY, MPEG_4, "2160p"),
 
             new ItagItem(278, VIDEO_ONLY, WEBM, "144p"),
             new ItagItem(242, VIDEO_ONLY, WEBM, "240p"),
