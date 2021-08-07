@@ -140,7 +140,7 @@ public abstract class PeertubeStreamExtractorTest extends DefaultStreamExtractor
         @Override public List<String> expectedTags() { return Arrays.asList("Marinauts", "adobe flash", "adobe flash player", "flash games", "the marinauts"); }
     }
 
-    @Ignore("Test broken, SSL problem")
+    @Ignore("Test broken, instance doesn't exist anymore")
     public static class AgeRestricted extends PeertubeStreamExtractorTest {
         private static final String ID = "dbd8e5e1-c527-49b6-b70c-89101dbb9c08";
         private static final String INSTANCE = "https://nocensoring.net";
