@@ -1191,4 +1191,12 @@ public class YoutubeParsingHelper {
                 .replaceAll("\\\\x5b", "[")
                 .replaceAll("\\\\x5d", "]");
     }
+
+    public static String getBestThumbnail(JsonArray thumbnails) {
+        return ((JsonObject) thumbnails.stream().min((o1, o2) -> {
+            JsonObject jObj1 = (JsonObject) o1;
+            JsonObject jObj2 = (JsonObject) o2;
+            return jObj2.getInt("width") - jObj1.getInt("width");
+        }).get()).getString("url");
+    }
 }

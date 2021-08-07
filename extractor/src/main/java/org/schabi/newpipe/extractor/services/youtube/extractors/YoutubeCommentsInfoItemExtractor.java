@@ -12,6 +12,7 @@ import org.schabi.newpipe.extractor.utils.Utils;
 
 import javax.annotation.Nullable;
 
+import static org.schabi.newpipe.extractor.services.youtube.YoutubeParsingHelper.getBestThumbnail;
 import static org.schabi.newpipe.extractor.services.youtube.YoutubeParsingHelper.getTextFromObject;
 import static org.schabi.newpipe.extractor.utils.Utils.EMPTY_STRING;
 
@@ -37,8 +38,7 @@ public class YoutubeCommentsInfoItemExtractor implements CommentsInfoItemExtract
     @Override
     public String getThumbnailUrl() throws ParsingException {
         try {
-            final JsonArray arr = JsonUtils.getArray(json, "authorThumbnail.thumbnails");
-            return JsonUtils.getString(arr.getObject(2), "url");
+            return getBestThumbnail(JsonUtils.getArray(json, "authorThumbnail.thumbnails"));
         } catch (final Exception e) {
             throw new ParsingException("Could not get thumbnail url", e);
         }
@@ -189,8 +189,7 @@ public class YoutubeCommentsInfoItemExtractor implements CommentsInfoItemExtract
     @Override
     public String getUploaderAvatarUrl() throws ParsingException {
         try {
-            JsonArray arr = JsonUtils.getArray(json, "authorThumbnail.thumbnails");
-            return JsonUtils.getString(arr.getObject(2), "url");
+            return getBestThumbnail(JsonUtils.getArray(json, "authorThumbnail.thumbnails"));
         } catch (final Exception e) {
             throw new ParsingException("Could not get author thumbnail", e);
         }

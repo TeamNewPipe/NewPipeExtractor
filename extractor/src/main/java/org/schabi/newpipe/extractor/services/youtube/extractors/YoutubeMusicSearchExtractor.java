@@ -400,12 +400,7 @@ public class YoutubeMusicSearchExtractor extends SearchExtractor {
                         @Override
                         public String getThumbnailUrl() throws ParsingException {
                             try {
-                                final JsonArray thumbnails = info.getObject("thumbnail")
-                                        .getObject("musicThumbnailRenderer")
-                                        .getObject("thumbnail").getArray("thumbnails");
-                                // the last thumbnail is the one with the highest resolution
-                                final String url = thumbnails.getObject(thumbnails.size() - 1)
-                                        .getString("url");
+                                final String url = getBestThumbnail(JsonUtils.getArray(info,"thumbnail.musicThumbnailRenderer.thumbnail.thumbnails"));
 
                                 return fixThumbnailUrl(url);
                             } catch (final Exception e) {
@@ -418,12 +413,7 @@ public class YoutubeMusicSearchExtractor extends SearchExtractor {
                         @Override
                         public String getThumbnailUrl() throws ParsingException {
                             try {
-                                final JsonArray thumbnails = info.getObject("thumbnail")
-                                        .getObject("musicThumbnailRenderer")
-                                        .getObject("thumbnail").getArray("thumbnails");
-                                // the last thumbnail is the one with the highest resolution
-                                final String url = thumbnails.getObject(thumbnails.size() - 1)
-                                        .getString("url");
+                                final String url = getBestThumbnail(JsonUtils.getArray(info,"thumbnail.musicThumbnailRenderer.thumbnail.thumbnails"));
 
                                 return fixThumbnailUrl(url);
                             } catch (final Exception e) {
@@ -485,12 +475,7 @@ public class YoutubeMusicSearchExtractor extends SearchExtractor {
                         @Override
                         public String getThumbnailUrl() throws ParsingException {
                             try {
-                                final JsonArray thumbnails = info.getObject("thumbnail")
-                                        .getObject("musicThumbnailRenderer")
-                                        .getObject("thumbnail").getArray("thumbnails");
-                                // the last thumbnail is the one with the highest resolution
-                                final String url = thumbnails.getObject(thumbnails.size() - 1)
-                                        .getString("url");
+                                final String url = getBestThumbnail(JsonUtils.getArray(info,"thumbnail.musicThumbnailRenderer.thumbnail.thumbnails"));
 
                                 return fixThumbnailUrl(url);
                             } catch (final Exception e) {

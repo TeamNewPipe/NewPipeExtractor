@@ -104,8 +104,8 @@ public class YoutubeChannelExtractor extends ChannelExtractor {
                     throw new ContentNotAvailableException("This channel doesn't exist.");
                 } else {
                     throw new ContentNotAvailableException("Got error:\""
-                        + errorJsonObject.getString("status") + "\": "
-                        + errorJsonObject.getString("message"));
+                            + errorJsonObject.getString("status") + "\": "
+                            + errorJsonObject.getString("message"));
                 }
             }
 
@@ -233,9 +233,7 @@ public class YoutubeChannelExtractor extends ChannelExtractor {
     @Override
     public String getAvatarUrl() throws ParsingException {
         try {
-            String url = initialData.getObject("header")
-                    .getObject("c4TabbedHeaderRenderer").getObject("avatar").getArray("thumbnails")
-                    .getObject(0).getString("url");
+            String url = getBestThumbnail(JsonUtils.getArray(initialData, "header.c4TabbedHeaderRenderer.avatar.thumbnails"));
 
             return fixThumbnailUrl(url);
         } catch (final Exception e) {
@@ -246,9 +244,7 @@ public class YoutubeChannelExtractor extends ChannelExtractor {
     @Override
     public String getBannerUrl() throws ParsingException {
         try {
-            String url = initialData.getObject("header")
-                    .getObject("c4TabbedHeaderRenderer").getObject("banner").getArray("thumbnails")
-                    .getObject(0).getString("url");
+            String url = getBestThumbnail(JsonUtils.getArray(initialData, "header.c4TabbedHeaderRenderer.banner.thumbnails"));
 
             if (url == null || url.contains("s.ytimg.com") || url.contains("default_banner")) {
                 return null;

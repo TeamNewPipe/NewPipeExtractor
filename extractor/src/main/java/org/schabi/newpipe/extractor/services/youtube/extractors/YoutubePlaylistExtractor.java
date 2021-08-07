@@ -97,12 +97,10 @@ public class YoutubePlaylistExtractor extends PlaylistExtractor {
 
     @Override
     public String getThumbnailUrl() throws ParsingException {
-        String url = playlistInfo.getObject("thumbnailRenderer").getObject("playlistVideoThumbnailRenderer")
-                .getObject("thumbnail").getArray("thumbnails").getObject(0).getString("url");
+        String url = getBestThumbnail(JsonUtils.getArray(playlistInfo, "thumbnailRenderer.playlistVideoThumbnailRenderer.thumbnail.thumbnails"));
 
         if (isNullOrEmpty(url)) {
-            url = initialData.getObject("microformat").getObject("microformatDataRenderer").getObject("thumbnail")
-                    .getArray("thumbnails").getObject(0).getString("url");
+            url = getBestThumbnail(JsonUtils.getArray(initialData, "microformat.microformatDataRenderer.thumbnail.thumbnails"));
 
             if (isNullOrEmpty(url)) throw new ParsingException("Could not get playlist thumbnail");
         }
@@ -138,7 +136,7 @@ public class YoutubePlaylistExtractor extends PlaylistExtractor {
     @Override
     public String getUploaderAvatarUrl() throws ParsingException {
         try {
-            final String url = getUploaderInfo().getObject("thumbnail").getArray("thumbnails").getObject(0).getString("url");
+            final String url = getBestThumbnail(JsonUtils.getArray(getUploaderInfo(), "thumbnail.thumbnails"));
 
             return fixThumbnailUrl(url);
         } catch (final Exception e) {

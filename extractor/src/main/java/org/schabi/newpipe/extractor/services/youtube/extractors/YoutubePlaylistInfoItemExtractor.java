@@ -5,10 +5,10 @@ import com.grack.nanojson.JsonObject;
 import org.schabi.newpipe.extractor.exceptions.ParsingException;
 import org.schabi.newpipe.extractor.playlist.PlaylistInfoItemExtractor;
 import org.schabi.newpipe.extractor.services.youtube.linkHandler.YoutubePlaylistLinkHandlerFactory;
+import org.schabi.newpipe.extractor.utils.JsonUtils;
 import org.schabi.newpipe.extractor.utils.Utils;
 
-import static org.schabi.newpipe.extractor.services.youtube.YoutubeParsingHelper.fixThumbnailUrl;
-import static org.schabi.newpipe.extractor.services.youtube.YoutubeParsingHelper.getTextFromObject;
+import static org.schabi.newpipe.extractor.services.youtube.YoutubeParsingHelper.*;
 
 public class YoutubePlaylistInfoItemExtractor implements PlaylistInfoItemExtractor {
     private JsonObject playlistInfoItem;
@@ -20,8 +20,7 @@ public class YoutubePlaylistInfoItemExtractor implements PlaylistInfoItemExtract
     @Override
     public String getThumbnailUrl() throws ParsingException {
         try {
-            String url = playlistInfoItem.getArray("thumbnails").getObject(0)
-                    .getArray("thumbnails").getObject(0).getString("url");
+            final String url = getBestThumbnail(playlistInfoItem.getArray("thumbnails").getObject(0).getArray("thumbnails"));
 
             return fixThumbnailUrl(url);
         } catch (Exception e) {

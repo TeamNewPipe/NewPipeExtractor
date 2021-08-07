@@ -205,10 +205,7 @@ public class YoutubeStreamExtractor extends StreamExtractor {
     public String getThumbnailUrl() throws ParsingException {
         assertPageFetched();
         try {
-            JsonArray thumbnails = playerResponse.getObject("videoDetails").getObject("thumbnail")
-                    .getArray("thumbnails");
-            // the last thumbnail is the one with the highest resolution
-            String url = thumbnails.getObject(thumbnails.size() - 1).getString("url");
+            String url = getBestThumbnail(JsonUtils.getArray(playerResponse, "videoDetails.thumbnail.thumbnails"));
 
             return fixThumbnailUrl(url);
         } catch (final Exception e) {
@@ -437,9 +434,7 @@ public class YoutubeStreamExtractor extends StreamExtractor {
         String url = null;
 
         try {
-            url = getVideoSecondaryInfoRenderer().getObject("owner")
-                    .getObject("videoOwnerRenderer").getObject("thumbnail")
-                    .getArray("thumbnails").getObject(0).getString("url");
+            url = getBestThumbnail(JsonUtils.getArray(getVideoSecondaryInfoRenderer(), "owner.videoOwnerRenderer.thumbnail.thumbnails"));
         } catch (final ParsingException ignored) {
             // Age-restricted videos cause a ParsingException here
         }
@@ -1350,13 +1345,9 @@ public class YoutubeStreamExtractor extends StreamExtractor {
                     final StreamSegment segment = new StreamSegment(title, startTimeSeconds);
                     segment.setUrl(getUrl() + "?t=" + startTimeSeconds);
                     if (segmentJson.has("thumbnail")) {
-                        final JsonArray previewsArray = segmentJson.getObject("thumbnail")
-                                .getArray("thumbnails");
+                        final JsonArray previewsArray = JsonUtils.getArray(segmentJson, "thumbnail.thumbnails");
                         if (!previewsArray.isEmpty()) {
-                            // Assume that the thumbnail with the highest resolution is at the
-                            // last position
-                            final String url = previewsArray
-                                    .getObject(previewsArray.size() - 1).getString("url");
+                            final String url = getBestThumbnail(previewsArray);
                             segment.setPreviewUrl(fixThumbnailUrl(url));
                         }
                     }

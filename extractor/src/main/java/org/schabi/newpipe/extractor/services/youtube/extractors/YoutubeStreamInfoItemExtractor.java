@@ -9,6 +9,7 @@ import org.schabi.newpipe.extractor.services.youtube.YoutubeParsingHelper;
 import org.schabi.newpipe.extractor.services.youtube.linkHandler.YoutubeStreamLinkHandlerFactory;
 import org.schabi.newpipe.extractor.stream.StreamInfoItemExtractor;
 import org.schabi.newpipe.extractor.stream.StreamType;
+import org.schabi.newpipe.extractor.utils.JsonUtils;
 import org.schabi.newpipe.extractor.utils.Utils;
 
 import javax.annotation.Nullable;
@@ -235,9 +236,7 @@ public class YoutubeStreamInfoItemExtractor implements StreamInfoItemExtractor {
     @Override
     public String getThumbnailUrl() throws ParsingException {
         try {
-            // TODO: Don't simply get the first item, but look at all thumbnails and their resolution
-            String url = videoInfo.getObject("thumbnail").getArray("thumbnails")
-                    .getObject(0).getString("url");
+            final String url = getBestThumbnail(JsonUtils.getArray(videoInfo, "thumbnail.thumbnails"));
 
             return fixThumbnailUrl(url);
         } catch (Exception e) {

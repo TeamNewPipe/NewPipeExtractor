@@ -7,10 +7,10 @@ import org.schabi.newpipe.extractor.channel.ChannelInfoItemExtractor;
 import org.schabi.newpipe.extractor.exceptions.ParsingException;
 import org.schabi.newpipe.extractor.services.youtube.YoutubeParsingHelper;
 import org.schabi.newpipe.extractor.services.youtube.linkHandler.YoutubeChannelLinkHandlerFactory;
+import org.schabi.newpipe.extractor.utils.JsonUtils;
 import org.schabi.newpipe.extractor.utils.Utils;
 
-import static org.schabi.newpipe.extractor.services.youtube.YoutubeParsingHelper.fixThumbnailUrl;
-import static org.schabi.newpipe.extractor.services.youtube.YoutubeParsingHelper.getTextFromObject;
+import static org.schabi.newpipe.extractor.services.youtube.YoutubeParsingHelper.*;
 
 /*
  * Created by Christian Schabesberger on 12.02.17.
@@ -42,7 +42,7 @@ public class YoutubeChannelInfoItemExtractor implements ChannelInfoItemExtractor
     @Override
     public String getThumbnailUrl() throws ParsingException {
         try {
-            String url = channelInfoItem.getObject("thumbnail").getArray("thumbnails").getObject(0).getString("url");
+            String url = getBestThumbnail(JsonUtils.getArray(channelInfoItem, "thumbnail.thumbnails"));
 
             return fixThumbnailUrl(url);
         } catch (Exception e) {
