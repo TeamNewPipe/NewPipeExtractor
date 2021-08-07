@@ -1,6 +1,6 @@
 allprojects {
     apply plugin: 'java-library'
-    apply plugin: 'maven'
+    apply plugin: 'maven-publish'
 
     compileJava.options.encoding = 'UTF-8'
     compileTestJava.options.encoding = 'UTF-8'
@@ -14,6 +14,16 @@ allprojects {
     repositories {
         mavenCentral()
         maven { url "https://jitpack.io" }
+    }
+
+    afterEvaluate {
+        publishing {
+            publications {
+                mavenJava(MavenPublication) {
+                    from components.java
+                }
+            }
+        }
     }
 
     ext {
@@ -59,7 +69,7 @@ task aggregatedJavadocs(type: Javadoc, group: 'Documentation') {
             "apiNote:a:API Note:",
             "implSpec:a:Implementation Requirements:",
             "implNote:a:Implementation Note:"
-            ]
+    ]
 
     subprojects.each { project ->
         project.tasks.withType(Javadoc).each { javadocTask ->
