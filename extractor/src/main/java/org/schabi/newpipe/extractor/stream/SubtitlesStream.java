@@ -38,7 +38,7 @@ public class SubtitlesStream extends Stream implements Serializable {
                 this.locale = new Locale(splits[0]);
                 break;
             case 3:
-                // Complex variants doesn't work!
+                // Complex variants don't work!
                 this.locale = new Locale(splits[0], splits[1], splits[2]);
                 break;
             case 2:
