@@ -491,11 +491,15 @@ public class YoutubeStreamExtractor extends StreamExtractor {
                                     true, itag.getMediaFormat(), DeliveryMethod.PROGRESSIVE_HTTP,
                                     itag.avgBitrate, itag, null);
                         } else {
+                            // YouTube only provides DASH streams for videos
                             audioStream = new AudioStream(String.valueOf(itag.id), content,
                                     false, itag.getMediaFormat(), DeliveryMethod.DASH,
                                     itag.avgBitrate, itag, null);
                         }
                     } else {
+                        // We are currently not able to generate DASH manifests for livestreams
+                        // which have just ended and also for running livestreams, so because of
+                        // the requirements of StreamInfo, returning these streams as DASH streams.
                         audioStream = new AudioStream(String.valueOf(itag.id), content,
                                 isUrl, itag.getMediaFormat(), DeliveryMethod.DASH,
                                 itag.avgBitrate, itag, null);
@@ -535,11 +539,15 @@ public class YoutubeStreamExtractor extends StreamExtractor {
                                     true, itag.getMediaFormat(), DeliveryMethod.PROGRESSIVE_HTTP,
                                     itag.resolutionString, false, itag, null);
                         } else {
+                            // YouTube only provides DASH streams for videos
                             videoStream = new VideoStream(String.valueOf(itag.id), content,
                                     false, itag.getMediaFormat(), DeliveryMethod.DASH,
                                     itag.resolutionString, false, itag, null);
                         }
                     } else {
+                        // We are currently not able to generate DASH manifests for livestreams
+                        // which have just ended and also for running livestreams, so because of
+                        // the requirements of StreamInfo, returning these streams as DASH streams.
                         videoStream = new VideoStream(String.valueOf(itag.id), content,
                                 isUrl, itag.getMediaFormat(), DeliveryMethod.DASH,
                                 itag.resolutionString, false, itag, null);
@@ -578,11 +586,15 @@ public class YoutubeStreamExtractor extends StreamExtractor {
                                     true, itag.getMediaFormat(), DeliveryMethod.PROGRESSIVE_HTTP,
                                     itag.resolutionString, true, itag, null);
                         } else {
+                            // YouTube only provides DASH streams for videos
                             videoOnlyStream = new VideoStream(String.valueOf(itag.id), content,
                                     false, itag.getMediaFormat(), DeliveryMethod.DASH,
                                     itag.resolutionString, true, itag, null);
                         }
                     } else {
+                        // We are currently not able to generate DASH manifests for livestreams
+                        // which have just ended and also for running livestreams, so because of
+                        // the requirements of StreamInfo, returning these streams as DASH streams.
                         videoOnlyStream = new VideoStream(String.valueOf(itag.id), content,
                                 isUrl, itag.getMediaFormat(), DeliveryMethod.DASH,
                                 itag.resolutionString, true, itag, null);
