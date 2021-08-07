@@ -8,8 +8,7 @@ import org.schabi.newpipe.extractor.exceptions.ParsingException;
 
 import java.io.IOException;
 
-import static org.hamcrest.CoreMatchers.allOf;
-import static org.hamcrest.CoreMatchers.containsString;
+import static org.hamcrest.CoreMatchers.*;
 import static org.hamcrest.MatcherAssert.assertThat;
 
 public class YoutubeJavaScriptExtractorTest {
@@ -17,6 +16,16 @@ public class YoutubeJavaScriptExtractorTest {
     @Before
     public void setup() throws IOException {
         NewPipe.init(DownloaderTestImpl.getInstance());
+    }
+
+    @Test
+    public void testExtractJavaScriptUrlIframe() throws ParsingException {
+        assertThat(YoutubeJavaScriptExtractor.extractJavaScriptUrl(), endsWith("base.js"));
+    }
+
+    @Test
+    public void testExtractJavaScriptUrlEmbed() throws ParsingException {
+        assertThat(YoutubeJavaScriptExtractor.extractJavaScriptUrl("d4IGg5dqeO8"), endsWith("base.js"));
     }
 
     @Test

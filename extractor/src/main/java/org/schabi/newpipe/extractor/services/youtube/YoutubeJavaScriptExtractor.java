@@ -39,8 +39,13 @@ public class YoutubeJavaScriptExtractor {
     @Nonnull
     public static String extractJavaScriptCode(final String videoId) throws ParsingException {
         if (cachedJavaScriptCode == null) {
-            final String playerJsUrl = YoutubeJavaScriptExtractor.cleanJavaScriptUrl(
-                    YoutubeJavaScriptExtractor.extractJavaScriptUrl(videoId));
+            String url;
+            try {
+                url = YoutubeJavaScriptExtractor.extractJavaScriptUrl();
+            } catch (final Exception i) {
+                url = YoutubeJavaScriptExtractor.extractJavaScriptUrl(videoId);
+            }
+            final String playerJsUrl = YoutubeJavaScriptExtractor.cleanJavaScriptUrl(url);
             cachedJavaScriptCode = YoutubeJavaScriptExtractor.downloadJavaScriptCode(playerJsUrl);
         }
 
@@ -68,7 +73,22 @@ public class YoutubeJavaScriptExtractor {
         cachedJavaScriptCode = null;
     }
 
-    private static String extractJavaScriptUrl(final String videoId) throws ParsingException {
+    public static String extractJavaScriptUrl() throws ParsingException {
+        try {
+            final String iframeUrl = "https://www.youtube.com/iframe_api";
+            final String iframeContent = NewPipe.getDownloader()
+                    .get(iframeUrl, Localization.DEFAULT).responseBody();
+            final String hashPattern = "player\\\\\\/([a-z0-9]{8})\\\\\\/";
+            final String hash = Parser.matchGroup1(hashPattern, iframeContent);
+
+            return String.format("https://www.youtube.com/s/player/%s/player_ias.vflset/en_US/base.js", hash);
+
+        } catch (final Exception i) { }
+
+        throw new ParsingException("Iframe API did not provide YouTube player js url");
+    }
+
+    public static String extractJavaScriptUrl(final String videoId) throws ParsingException {
         try {
             final String embedUrl = "https://www.youtube.com/embed/" + videoId;
             final String embedPageContent = NewPipe.getDownloader()
@@ -90,9 +110,8 @@ public class YoutubeJavaScriptExtractor {
                 }
             }
 
-        } catch (final Exception i) {
-            throw new ParsingException("Embedded info did not provide YouTube player js url");
-        }
+        } catch (final Exception i) { }
+
         throw new ParsingException("Embedded info did not provide YouTube player js url");
     }
 
