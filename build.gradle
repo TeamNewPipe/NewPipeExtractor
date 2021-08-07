@@ -12,7 +12,7 @@ allprojects {
     group 'com.github.TeamNewPipe'
 
     repositories {
-        jcenter()
+        mavenCentral()
         maven { url "https://jitpack.io" }
     }
 
@@ -30,7 +30,7 @@ dependencies {
 
 subprojects {
     task sourcesJar(type: Jar, dependsOn: classes) {
-        classifier = 'sources'
+        archiveClassifier.set('sources')
         from sourceSets.main.allSource
     }
 
