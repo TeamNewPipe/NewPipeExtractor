@@ -8,13 +8,13 @@ test {
 dependencies {
     implementation project(':timeago-parser')
 
-    implementation 'com.github.TeamNewPipe:nanojson:1d9e1aea9049fc9f85e68b43ba39fe7be1c1f751'
+    implementation "com.github.TeamNewPipe:nanojson:$nanojsonVersion"
     implementation 'org.jsoup:jsoup:1.13.1'
     implementation 'org.mozilla:rhino:1.7.13'
-    implementation 'com.github.spotbugs:spotbugs-annotations:4.2.3'
+    implementation "com.github.spotbugs:spotbugs-annotations:$spotbugsVersion"
     implementation 'org.nibor.autolink:autolink:0.10.0'
 
-    testImplementation 'junit:junit:4.13.2'
+    testImplementation "junit:junit:$junitVersion"
     testImplementation "com.squareup.okhttp3:okhttp:3.12.13"
     testImplementation 'com.google.code.gson:gson:2.8.7'
 }
