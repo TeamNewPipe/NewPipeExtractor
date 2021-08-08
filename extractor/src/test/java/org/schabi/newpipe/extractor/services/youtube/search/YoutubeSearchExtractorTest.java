@@ -16,6 +16,7 @@ import org.schabi.newpipe.extractor.stream.Description;
 
 import org.schabi.newpipe.extractor.channel.ChannelInfoItem;
 import org.schabi.newpipe.extractor.exceptions.ExtractionException;
+import org.schabi.newpipe.extractor.stream.StreamInfoItem;
 
 import javax.annotation.Nullable;
 
@@ -136,6 +137,36 @@ public class YoutubeSearchExtractorTest {
         @Override public String expectedOriginalUrlContains() { return "youtube.com/results?search_query=" + QUERY; }
         @Override public String expectedSearchString() { return QUERY; }
         @Nullable @Override public String expectedSearchSuggestion() { return null; }
+
+        @Override public InfoItem.InfoType expectedInfoItemType() { return InfoItem.InfoType.STREAM; }
+    }
+
+    public static class OriginalsVideo extends DefaultSearchExtractorTest {
+        private static SearchExtractor extractor;
+        private static final String QUERY = "yndlC7LQCi8";
+
+        @BeforeClass
+        public static void setUp() throws Exception {
+            YoutubeParsingHelper.resetClientVersionAndKey();
+            YoutubeParsingHelper.setNumberGenerator(new Random(1));
+            NewPipe.init(new DownloaderFactory().getDownloader(RESOURCE_PATH + "originals"));
+            extractor = YouTube.getSearchExtractor(QUERY, singletonList(VIDEOS), "");
+            extractor.fetchPage();
+        }
+
+        @Override public SearchExtractor extractor() { return extractor; }
+        @Override public StreamingService expectedService() { return YouTube; }
+        @Override public String expectedName() { return QUERY; }
+        @Override public String expectedId() { return QUERY; }
+        @Override public String expectedUrlContains() { return "youtube.com/results?search_query=" + QUERY; }
+        @Override public String expectedOriginalUrlContains() { return "youtube.com/results?search_query=" + QUERY; }
+        @Override public String expectedSearchString() { return QUERY; }
+        @Nullable @Override public String expectedSearchSuggestion() { return null; }
+
+        @Override
+        public void testMoreRelatedItems() throws Exception {
+            assertTrue("View Count was less zero or lesser.", ((StreamInfoItem) extractor.getInitialPage().getItems().get(0)).getViewCount() > 0);
+        }
 
         @Override public InfoItem.InfoType expectedInfoItemType() { return InfoItem.InfoType.STREAM; }
     }
