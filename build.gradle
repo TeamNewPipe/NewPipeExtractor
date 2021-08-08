@@ -1,6 +1,6 @@
 allprojects {
     apply plugin: 'java-library'
-    apply plugin: 'maven'
+    apply plugin: 'maven-publish'
 
     compileJava.options.encoding = 'UTF-8'
     compileTestJava.options.encoding = 'UTF-8'
@@ -12,8 +12,24 @@ allprojects {
     group 'com.github.TeamNewPipe'
 
     repositories {
-        jcenter()
+        mavenCentral()
         maven { url "https://jitpack.io" }
+    }
+
+    afterEvaluate {
+        publishing {
+            publications {
+                mavenJava(MavenPublication) {
+                    from components.java
+                }
+            }
+        }
+    }
+
+    ext {
+        nanojsonVersion = "1d9e1aea9049fc9f85e68b43ba39fe7be1c1f751"
+        spotbugsVersion = "4.2.3"
+        junitVersion = "4.13.2"
     }
 }
 
@@ -24,7 +40,7 @@ dependencies {
 
 subprojects {
     task sourcesJar(type: Jar, dependsOn: classes) {
-        classifier = 'sources'
+        archiveClassifier.set('sources')
         from sourceSets.main.allSource
     }
 
@@ -53,7 +69,7 @@ task aggregatedJavadocs(type: Javadoc, group: 'Documentation') {
             "apiNote:a:API Note:",
             "implSpec:a:Implementation Requirements:",
             "implNote:a:Implementation Note:"
-            ]
+    ]
 
     subprojects.each { project ->
         project.tasks.withType(Javadoc).each { javadocTask ->
