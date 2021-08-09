@@ -27,8 +27,9 @@ import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
 public class AudioStream extends Stream {
-    public final int averageBitrate;
+    public static final int UNKNOWN_BITRATE = -1;
 
+    private final int averageBitrate;
     // Fields for Dash
     private int itag;
     private int bitrate;
@@ -111,7 +112,7 @@ public class AudioStream extends Stream {
 
     /**
      * Get the average bitrate.
-     * @return the average bitrate
+     * @return the average bitrate or {@link #UNKNOWN_BITRATE} if it is unknown
      */
     public int getAverageBitrate() {
         return averageBitrate;

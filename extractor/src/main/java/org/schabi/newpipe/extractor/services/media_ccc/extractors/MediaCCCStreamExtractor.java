@@ -26,6 +26,8 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Locale;
 
+import static org.schabi.newpipe.extractor.stream.AudioStream.UNKNOWN_BITRATE;
+
 public class MediaCCCStreamExtractor extends StreamExtractor {
     private JsonObject data;
     private JsonObject conferenceData;
@@ -163,7 +165,7 @@ public class MediaCCCStreamExtractor extends StreamExtractor {
                 }
 
                 audioStreams.add(new AudioStream(recording.getString("filename"),
-                        recording.getString("recording_url"), mediaFormat, -1));
+                        recording.getString("recording_url"), mediaFormat, UNKNOWN_BITRATE));
             }
         }
         return audioStreams;

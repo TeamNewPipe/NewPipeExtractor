@@ -20,6 +20,8 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Locale;
 
+import static org.schabi.newpipe.extractor.stream.AudioStream.UNKNOWN_BITRATE;
+
 public class MediaCCCLiveStreamExtractor extends StreamExtractor {
     private JsonArray doc = null;
     private JsonObject conference = null;
@@ -188,7 +190,7 @@ public class MediaCCCLiveStreamExtractor extends StreamExtractor {
                 for (final String type : stream.getObject("urls").keySet()) {
                     final JsonObject url = stream.getObject("urls").getObject(type);
                     audioStreams.add(new AudioStream(url.getString("tech"), url.getString("url"),
-                            MediaFormat.getFromSuffix(type), -1));
+                            MediaFormat.getFromSuffix(type), UNKNOWN_BITRATE));
                 }
             }
         }
