@@ -72,15 +72,15 @@ public class StreamInfo extends Info {
     public static StreamInfo getInfo(@Nonnull final StreamExtractor extractor)
             throws ExtractionException, IOException {
         extractor.fetchPage();
-        StreamInfo streamInfo;
+        final StreamInfo streamInfo;
         try {
             streamInfo = extractImportantData(extractor);
             extractStreams(streamInfo, extractor);
             extractOptionalData(streamInfo, extractor);
         } catch (final ExtractionException e) {
-            // Currently YouTube does not distinguish between age restricted videos and videos
+            // Currently, YouTube does not distinguish between age restricted videos and videos
             // blocked by country. This means that during the initialisation of the extractor, the
-            // extractor will assume that a video is age restricted while in reality it it blocked
+            // extractor will assume that a video is age restricted while in reality it is blocked
             // by country.
             //
             // We will now detect whether the video is blocked by country or not.
@@ -99,9 +99,9 @@ public class StreamInfo extends Info {
     @Nonnull
     private static StreamInfo extractImportantData(@Nonnull final StreamExtractor extractor)
             throws ExtractionException {
-        /* ---- Important data, without the video can't be displayed goes here: ---- */
-        // If one of these is not available an exception is meant to be thrown directly
-        // into NewPipe.
+        /* ---- Important data, without it the stream can't be displayed: ---- */
+        // If one of these is not available an exception is meant to be thrown directly into
+        // NewPipe.
 
         final int serviceId = extractor.getServiceId();
         final String url = extractor.getUrl();
@@ -123,9 +123,9 @@ public class StreamInfo extends Info {
     private static StreamInfo extractStreams(final StreamInfo streamInfo,
                                              final StreamExtractor extractor)
             throws ExtractionException {
-        /* ---- stream extraction goes here ---- */
-        // At least one type of stream has to be available,
-        // otherwise an exception will be thrown directly into the frontend.
+        /* ---- Stream extraction goes here ---- */
+        // At least one type of stream has to be available, otherwise an exception will be thrown
+        // directly into the frontend.
 
         try {
             streamInfo.setDashMpdUrl(extractor.getDashMpdUrl());
@@ -160,7 +160,7 @@ public class StreamInfo extends Info {
             streamInfo.addError(new ExtractionException("Couldn't get video only streams", e));
         }
 
-        // Lists can be null if a exception was thrown during extraction
+        // Lists can be null if an exception was thrown during extraction
         if (streamInfo.getVideoStreams() == null)
             streamInfo.setVideoStreams(Collections.emptyList());
         if (streamInfo.getVideoOnlyStreams() == null)
@@ -181,11 +181,9 @@ public class StreamInfo extends Info {
     @Nonnull
     private static StreamInfo extractOptionalData(final StreamInfo streamInfo,
                                                   final StreamExtractor extractor) {
-        /* ---- optional data goes here: ---- */
-        // If one of these fails, the frontend needs to handle that they are not
-        // available.
-        // Exceptions are therefore not thrown into the frontend, but stored into the
-        // error List,
+        /* ---- Optional data goes here: ---- */
+        // If one of these fails, the frontend needs to handle that they are not available.
+        // Exceptions are therefore not thrown into the frontend, but stored into the error list,
         // so the frontend can afterwards check where errors happened.
 
         try {

@@ -375,7 +375,7 @@ public class PeertubeStreamExtractor extends StreamExtractor {
             }
             return videoStreams;
         } catch (final Exception e) {
-            throw new ParsingException("Could not get video streams from array", e);
+            throw new ParsingException("Could not get audio streams from array", e);
         }
     }
 
