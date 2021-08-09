@@ -29,8 +29,7 @@ import javax.annotation.Nullable;
 public class VideoStream extends Stream {
     private final String resolution;
     private final boolean isVideoOnly;
-
-    // Fields for Dash
+    // Fields for DASH
     private int itag;
     private int bitrate;
     private int initStart;
@@ -43,6 +42,16 @@ public class VideoStream extends Stream {
     private String quality;
     private String codec;
 
+    /**
+     * Create a new video stream.
+     *
+     * @param id          the ID which uniquely identifies the stream, e.g. for YouTube this would
+     *                    be the itag
+     * @param url         the URL of the stream
+     * @param format      the {@link MediaFormat} used by the stream
+     * @param resolution  the resolution of the stream
+     * @param isVideoOnly whether the stream is video-only
+     */
     public VideoStream(final String id,
                        final String url,
                        final MediaFormat format,
@@ -52,6 +61,22 @@ public class VideoStream extends Stream {
                 null);
     }
 
+    /**
+     * Create a new video stream.
+     *
+     * @param id             the ID which uniquely identifies the stream, e.g. for YouTube this
+     *                       would be the itag
+     * @param content        the content or the URL of the stream, depending on whether isUrl is
+     *                       true
+     * @param isUrl          whether content is the URL or the actual content of e.g. a DASH
+     *                       manifest
+     * @param format         the {@link MediaFormat} used by the stream
+     * @param deliveryMethod the {@link DeliveryMethod} of the stream
+     * @param resolution     the resolution of the stream
+     * @param isVideoOnly    whether the stream is video-only
+     * @param baseUrl        the base URL of the stream (see {@link Stream#getBaseUrl()} for more
+     *                       information)
+     */
     public VideoStream(final String id,
                        final String content,
                        final boolean isUrl,
@@ -65,6 +90,23 @@ public class VideoStream extends Stream {
         this.isVideoOnly = isVideoOnly;
     }
 
+    /**
+     * Create a new video stream.
+     *
+     * @param id             the ID which uniquely identifies the stream, e.g. for YouTube this
+     *                       would be the itag
+     * @param content        the content or the URL of the stream, depending on whether isUrl is
+     *                       true
+     * @param isUrl          whether content is the URL or the actual content of e.g. a DASH
+     *                       manifest
+     * @param format         the {@link MediaFormat} used by the stream
+     * @param deliveryMethod the {@link DeliveryMethod} of the stream
+     * @param resolution     the resolution of the stream
+     * @param isVideoOnly    whether the stream is video-only
+     * @param itag           the {@link ItagItem} corresponding to the stream, which cannot be null
+     * @param baseUrl        the base URL of the stream (see {@link Stream#getBaseUrl()} for more
+     *                       information)
+     */
     public VideoStream(final String id,
                        final String content,
                        final boolean isUrl,
@@ -90,6 +132,19 @@ public class VideoStream extends Stream {
         this.isVideoOnly = isVideoOnly;
     }
 
+    /**
+     * Create a new video stream.
+     * <p>
+     * The media format and the resolution will be set by using respectively
+     * {@link ItagItem#getMediaFormat()} and {@link ItagItem#resolutionString}.
+     * </p>
+     *
+     * @param id          the ID which uniquely identifies the stream, e.g. for YouTube this would
+     *                    be the itag
+     * @param url         the URL of the stream
+     * @param isVideoOnly whether the stream is video-only
+     * @param itag        the {@link ItagItem} corresponding to the stream, which cannot be null
+     */
     public VideoStream(final String id,
                        final String url,
                        final boolean isVideoOnly,
@@ -108,6 +163,9 @@ public class VideoStream extends Stream {
         this.fps = itag.fps;
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public boolean equalStats(final Stream cmp) {
         return super.equalStats(cmp) && cmp instanceof VideoStream
@@ -116,7 +174,7 @@ public class VideoStream extends Stream {
     }
 
     /**
-     * Get the video resolution
+     * Get the video resolution.
      *
      * @return the video resolution
      */
@@ -125,56 +183,121 @@ public class VideoStream extends Stream {
     }
 
     /**
-     * Check if the video is video only.
+     * Return if the stream is video-only.
      * <p>
-     * Video only streams have no audio
+     * Video-only streams have no audio.
+     * </p>
      *
-     * @return {@code true} if this stream is video only
+     * @return {@code true} if this stream is video-only, {@code false} otherwise
      */
     public boolean isVideoOnly() {
         return isVideoOnly;
     }
 
+    /**
+     * Get the itag of the stream.
+     *
+     * @return the number of the {@link ItagItem} passed in the constructor of the stream.
+     */
     public int getItag() {
         return itag;
     }
 
+    /**
+     * Get the bitrate of the stream.
+     *
+     * @return the bitrate set from the {@link ItagItem} passed in the constructor of the stream.
+     */
     public int getBitrate() {
         return bitrate;
     }
 
+    /**
+     * Get the initialization start of the stream.
+     *
+     * @return the initialization start value set from the {@link ItagItem} passed in the
+     * constructor of the
+     * stream.
+     */
     public int getInitStart() {
         return initStart;
     }
 
+    /**
+     * Get the initialization end of the stream.
+     *
+     * @return the initialization end value set from the {@link ItagItem} passed in the constructor
+     * of the stream.
+     */
     public int getInitEnd() {
         return initEnd;
     }
 
+    /**
+     * Get the index start of the stream.
+     *
+     * @return the index start value set from the {@link ItagItem} passed in the constructor of the
+     * stream.
+     */
     public int getIndexStart() {
         return indexStart;
     }
 
+    /**
+     * Get the index end of the stream.
+     *
+     * @return the index end value set from the {@link ItagItem} passed in the constructor of the
+     * stream.
+     */
     public int getIndexEnd() {
         return indexEnd;
     }
 
+    /**
+     * Get the width of the video stream.
+     *
+     * @return the width set from the {@link ItagItem} passed in the constructor of the
+     * stream.
+     */
     public int getWidth() {
         return width;
     }
 
+    /**
+     * Get the height of the video stream.
+     *
+     * @return the height set from the {@link ItagItem} passed in the constructor of the
+     * stream.
+     */
     public int getHeight() {
         return height;
     }
 
+    /**
+     * Get the frames per second of the video stream.
+     *
+     * @return the frames per second set from the {@link ItagItem} passed in the constructor of the
+     * stream.
+     */
     public int getFps() {
         return fps;
     }
 
+    /**
+     * Get the quality of the stream.
+     *
+     * @return the quality label set from the {@link ItagItem} passed in the constructor of the
+     * stream.
+     */
     public String getQuality() {
         return quality;
     }
 
+    /**
+     * Get the codec of the stream.
+     *
+     * @return the codec set from the {@link ItagItem} passed in the constructor of the stream.
+     */
     public String getCodec() {
         return codec;
     }
