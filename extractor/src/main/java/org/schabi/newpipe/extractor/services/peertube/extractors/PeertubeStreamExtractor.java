@@ -31,6 +31,7 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Locale;
 
+import static org.schabi.newpipe.extractor.stream.AudioStream.UNKNOWN_BITRATE;
 import static org.schabi.newpipe.extractor.utils.Utils.*;
 
 public class PeertubeStreamExtractor extends StreamExtractor {
@@ -250,14 +251,14 @@ public class PeertubeStreamExtractor extends StreamExtractor {
                         true,
                         format,
                         DeliveryMethod.PROGRESSIVE_HTTP,
-                        -1));
+                        UNKNOWN_BITRATE));
                 audioStreams.add(new AudioStream(
                         id + "-" + idSuffix + "-" + DeliveryMethod.TORRENT,
                         torrentUrl,
                         true,
                         format,
                         DeliveryMethod.TORRENT,
-                        -1));
+                        UNKNOWN_BITRATE));
                 if (!isNullOrEmpty(playlistUrl)) {
                     final String hlsStreamUrl = playlistUrl.replace("master",
                             JsonUtils.getNumber(stream, "resolution.id").toString());
@@ -267,7 +268,7 @@ public class PeertubeStreamExtractor extends StreamExtractor {
                             true,
                             format,
                             DeliveryMethod.HLS,
-                            -1));
+                            UNKNOWN_BITRATE));
                 }
             }
             return audioStreams;
