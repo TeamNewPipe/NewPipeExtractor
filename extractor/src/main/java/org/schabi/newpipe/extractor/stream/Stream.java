@@ -46,21 +46,10 @@ public abstract class Stream implements Serializable {
     }
 
     /**
-     * Reveals whether two streams have the same stats (format and bitrate, for example).
-     */
-    public boolean equalStats(final Stream cmp) {
-        return cmp != null && getFormat().id == cmp.getFormat().id;
-    }
-
-    /**
-     * Reveals whether two streams are equal.
-     */
-    public boolean equals(final Stream cmp) {
-        return equalStats(cmp) && content.equals(cmp.content);
-    }
-
-    /**
      * Check if the list already contains one stream with equals stats.
+     *
+     * @param stream the stream which will be compared to the streams in the stream list
+     * @param streamList the list of {@link Stream Streams} which will be compared
      */
     public static boolean containSimilarStream(final Stream stream,
                                                final List<? extends Stream> streamList) {
@@ -69,6 +58,22 @@ public abstract class Stream implements Serializable {
             if (stream.equalStats(cmpStream)) return true;
         }
         return false;
+    }
+
+    /**
+     * Reveals whether two streams have the same stats (format and bitrate, for example).
+     * @param cmp the stream object to be compared to this stream object
+     */
+    public boolean equalStats(final Stream cmp) {
+        return cmp != null && getFormat().id == cmp.getFormat().id;
+    }
+
+    /**
+     * Reveals whether two streams are equal.
+     * @param cmp the stream object to be compared to this stream object
+     */
+    public boolean equals(final Stream cmp) {
+        return equalStats(cmp) && content.equals(cmp.content);
     }
 
     /**
@@ -98,6 +103,12 @@ public abstract class Stream implements Serializable {
         return content;
     }
 
+    /**
+     * Return if the content is a URL or not.
+     *
+     * @return {@code true} if the content of this stream content is a URL, {@code false}
+     * if it is the actual content
+     */
     public boolean isUrl() {
         return isUrl;
     }
@@ -131,10 +142,11 @@ public abstract class Stream implements Serializable {
     /**
      * Gets the base URL of a stream.
      * <p>
-     * If the stream is not a DASH stream or an HLS stream, this value will be null.
+     * If the stream is not a DASH stream or an HLS stream, this value will always be null.
+     * It may be also null for these streams too.
      * </p>
      *
-     * @return the base URL of the stream or null
+     * @return the base URL of the stream or {@code null}
      */
     @Nullable
     public String getBaseUrl() {
