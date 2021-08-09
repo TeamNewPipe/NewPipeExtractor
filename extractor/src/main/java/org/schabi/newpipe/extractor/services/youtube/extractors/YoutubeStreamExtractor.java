@@ -43,6 +43,7 @@ import java.time.format.DateTimeFormatter;
 import java.util.*;
 
 import static org.schabi.newpipe.extractor.services.youtube.YoutubeDashManifestCreator.createDashManifestFromOtfStreamingUrl;
+import static org.schabi.newpipe.extractor.services.youtube.YoutubeDashManifestCreator.createDashManifestFromPostLiveStreamDvrStreamingUrl;
 import static org.schabi.newpipe.extractor.services.youtube.YoutubeParsingHelper.*;
 import static org.schabi.newpipe.extractor.utils.Utils.EMPTY_STRING;
 import static org.schabi.newpipe.extractor.utils.Utils.UTF_8;
@@ -491,15 +492,14 @@ public class YoutubeStreamExtractor extends StreamExtractor {
                                     true, itag.getMediaFormat(), DeliveryMethod.PROGRESSIVE_HTTP,
                                     itag.avgBitrate, itag, null);
                         } else {
-                            // YouTube only provides DASH streams for videos
+                            // YouTube only provides DASH streams for videos with OTF streams
                             audioStream = new AudioStream(String.valueOf(itag.id), content,
                                     false, itag.getMediaFormat(), DeliveryMethod.DASH,
                                     itag.avgBitrate, itag, null);
                         }
                     } else {
-                        // We are currently not able to generate DASH manifests for livestreams
-                        // which have just ended and also for running livestreams, so because of
-                        // the requirements of StreamInfo, returning these streams as DASH streams.
+                        // Post live streams and live streams use only sequences, so they are
+                        // always using DASH
                         audioStream = new AudioStream(String.valueOf(itag.id), content,
                                 isUrl, itag.getMediaFormat(), DeliveryMethod.DASH,
                                 itag.avgBitrate, itag, null);
@@ -539,15 +539,14 @@ public class YoutubeStreamExtractor extends StreamExtractor {
                                     true, itag.getMediaFormat(), DeliveryMethod.PROGRESSIVE_HTTP,
                                     itag.resolutionString, false, itag, null);
                         } else {
-                            // YouTube only provides DASH streams for videos
+                            // YouTube only provides DASH streams for videos with OTF streams
                             videoStream = new VideoStream(String.valueOf(itag.id), content,
                                     false, itag.getMediaFormat(), DeliveryMethod.DASH,
                                     itag.resolutionString, false, itag, null);
                         }
                     } else {
-                        // We are currently not able to generate DASH manifests for livestreams
-                        // which have just ended and also for running livestreams, so because of
-                        // the requirements of StreamInfo, returning these streams as DASH streams.
+                        // Post live streams and live streams use only sequences, so they are
+                        // always using DASH
                         videoStream = new VideoStream(String.valueOf(itag.id), content,
                                 isUrl, itag.getMediaFormat(), DeliveryMethod.DASH,
                                 itag.resolutionString, false, itag, null);
@@ -586,15 +585,14 @@ public class YoutubeStreamExtractor extends StreamExtractor {
                                     true, itag.getMediaFormat(), DeliveryMethod.PROGRESSIVE_HTTP,
                                     itag.resolutionString, true, itag, null);
                         } else {
-                            // YouTube only provides DASH streams for videos
+                            // YouTube only provides DASH streams for videos with OTF streams
                             videoOnlyStream = new VideoStream(String.valueOf(itag.id), content,
                                     false, itag.getMediaFormat(), DeliveryMethod.DASH,
                                     itag.resolutionString, true, itag, null);
                         }
                     } else {
-                        // We are currently not able to generate DASH manifests for livestreams
-                        // which have just ended and also for running livestreams, so because of
-                        // the requirements of StreamInfo, returning these streams as DASH streams.
+                        // Post live streams and live streams use only sequences, so they are
+                        // always using DASH
                         videoOnlyStream = new VideoStream(String.valueOf(itag.id), content,
                                 isUrl, itag.getMediaFormat(), DeliveryMethod.DASH,
                                 itag.resolutionString, true, itag, null);
@@ -1231,7 +1229,25 @@ public class YoutubeStreamExtractor extends StreamExtractor {
                                             new ContentAndItagItemAndIsUrl(streamUrl, itagItem,
                                                     true));
                                 }
+                            } else if (streamType == StreamType.POST_LIVE_STREAM) {
+                                try {
+                                    final String content =
+                                            createDashManifestFromPostLiveStreamDvrStreamingUrl(
+                                                    streamUrl, itagItem, formatData
+                                                            .getInt("targetDurationSec"));
+                                    contentsAndItagItemsAndAreUrls.add(
+                                            new ContentAndItagItemAndIsUrl(content, itagItem,
+                                                    false));
+                                } catch (final YoutubeDashManifestCreator
+                                        .YoutubeDashManifestCreationException ignored) {
+                                    // Something went wrong when generating the DASH manifest
+                                    // of the stream, don't add this stream to the stream list
+                                }
                             } else {
+                                // We are currently not able to generate DASH manifests for running
+                                // livestreams, so because of the requirements of StreamInfo
+                                // objects, return these streams as DASH streams
+                                // (even if they are not playable).
                                 contentsAndItagItemsAndAreUrls.add(
                                         new ContentAndItagItemAndIsUrl(streamUrl, itagItem,
                                                 true));
