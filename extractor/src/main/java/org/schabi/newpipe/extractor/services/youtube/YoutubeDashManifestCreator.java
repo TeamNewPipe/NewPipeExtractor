@@ -67,7 +67,7 @@ public class YoutubeDashManifestCreator {
             final int responseCode = response.responseCode();
             if (responseCode != 200) {
                 throw new YoutubeDashManifestCreationException(
-                        "Could not get the initialization URL of the OTF stream: response code "
+                        "Unable to create the DASH manifest: could not get the initialization URL of the OTF stream: response code "
                                 + responseCode);
             }
             responseBody = response.responseBody();
@@ -84,25 +84,99 @@ public class YoutubeDashManifestCreator {
             segmentDuration = segmentDurationMs.split(",");
         } catch (final Parser.RegexException e) {
             throw new YoutubeDashManifestCreationException(
-                    "Unable to create the DASH manifest: could not get the duration of segments", e);
+                    "Unable to generate the DASH manifest: could not get the duration of segments", e);
         }
 
-        final Document document = generateMpdElement(segmentDuration);
+        final Document document = generateMpdElement(segmentDuration, false);
         generatePeriodElement(document);
         generateAdaptationSetElement(document, itagItem.getMediaFormat().mimeType);
         generateRoleElement(document);
         generateRepresentationElement(document, itagItem);
-        generateSegmentTemplateElement(document, otfBaseStreamingUrl);
+        generateSegmentTemplateElement(document, otfBaseStreamingUrl, false);
         generateSegmentTimelineElement(document);
         collectSegmentsData(segmentDuration);
-        generateSegmentElements(document);
+        generateSegmentElementsForOtfStreams(document);
 
-        // Output test
         try {
             final StringWriter result = new StringWriter();
             final Transformer transformer = TransformerFactory.newInstance().newTransformer();
             transformer.setOutputProperty(OutputKeys.VERSION, "1.0");
             transformer.setOutputProperty(OutputKeys.ENCODING, "UTF-8");
+            transformer.setOutputProperty(OutputKeys.STANDALONE, "no");
+            transformer.transform(new DOMSource(document), new StreamResult(result));
+            return result.toString();
+        } catch (final TransformerException e) {
+            throw new YoutubeDashManifestCreationException(
+                    "Could not convert the DASH manifest generated to a string", e);
+        }
+    }
+
+    @Nonnull
+    public static String createDashManifestFromPostLiveStreamDvrStreamingUrl(
+            @Nonnull String postLiveStreamDvrStreamingUrl,
+            @Nonnull final ItagItem itagItem,
+            final int targetDurationSec)
+            throws YoutubeDashManifestCreationException {
+        final Downloader downloader = NewPipe.getDownloader();
+        final String streamDuration;
+        final String segmentCount;
+
+        if (targetDurationSec <= 0) {
+            throw new YoutubeDashManifestCreationException(
+                    "Could not generate the DASH manifest: the targetDurationSec value is less than or equal to 0 (" + targetDurationSec + ")");
+        }
+
+        try {
+            // First try to avoid redirects when streaming the content by fetching the base URL,
+            // which is the last segment of the media.
+            // Use a head request in order to reduce the download size.
+            final Response headRequestResponse = downloader.head(postLiveStreamDvrStreamingUrl
+                    + "&sq=0");
+            final int responseCode = headRequestResponse.responseCode();
+            if (responseCode != 200) {
+                if (responseCode == 302) {
+                    postLiveStreamDvrStreamingUrl = headRequestResponse.latestUrl()
+                            .replace("&sq=0", "");
+                } else {
+                    throw new YoutubeDashManifestCreationException(
+                            "Unable to generate the DASH manifest: could not get the initialization URL of the post live DVR stream: response code "
+                                    + responseCode);
+                }
+            }
+
+            final Map<String, List<String>> responseHeaders = headRequestResponse
+                    .responseHeaders();
+            streamDuration = responseHeaders.get("X-Head-Time-Millis").get(0);
+            segmentCount = responseHeaders.get("X-Head-Seqnum").get(0);
+        } catch (final IOException | ReCaptchaException | IndexOutOfBoundsException e) {
+            throw new YoutubeDashManifestCreationException(
+                    "Unable to generate the DASH manifest: could not fetch the initialization URL of the OTF stream", e);
+        }
+        if (isNullOrEmpty(streamDuration)) {
+            throw new YoutubeDashManifestCreationException(
+                    "Unable to generate the DASH manifest: could not get the duration of the stream");
+        }
+        if (isNullOrEmpty(segmentCount)) {
+            throw new YoutubeDashManifestCreationException(
+                    "Unable to generate the DASH manifest: could not get the number of segments");
+        }
+
+
+        final Document document = generateMpdElement(new String[] {streamDuration}, true);
+        generatePeriodElement(document);
+        generateAdaptationSetElement(document, itagItem.getMediaFormat().mimeType);
+        generateRoleElement(document);
+        generateRepresentationElement(document, itagItem);
+        generateSegmentTemplateElement(document, postLiveStreamDvrStreamingUrl, true);
+        generateSegmentTimelineElement(document);
+        generateSegmentElementsForPostLiveDvrStreams(document, targetDurationSec, segmentCount);
+
+        try {
+            final StringWriter result = new StringWriter();
+            final Transformer transformer = TransformerFactory.newInstance().newTransformer();
+            transformer.setOutputProperty(OutputKeys.VERSION, "1.0");
+            transformer.setOutputProperty(OutputKeys.ENCODING, "UTF-8");
+            transformer.setOutputProperty(OutputKeys.STANDALONE, "no");
             transformer.transform(new DOMSource(document), new StreamResult(result));
             return result.toString();
         } catch (final TransformerException e) {
@@ -113,6 +187,8 @@ public class YoutubeDashManifestCreator {
 
     private static void collectSegmentsData(@Nonnull final String[] segmentDuration)
             throws YoutubeDashManifestCreationException {
+        segmentsDuration.clear();
+        durationRepetitions.clear();
         try {
             for (final String segDuration : segmentDuration) {
                 final String[] segmentLengthRepeat = segDuration.split("\\(r=");
@@ -132,7 +208,7 @@ public class YoutubeDashManifestCreator {
         }
     }
 
-    private static int getStreamLength(@Nonnull final String[] segmentDuration)
+    private static int getStreamDuration(@Nonnull final String[] segmentDuration)
             throws YoutubeDashManifestCreationException {
         try {
             int streamLengthMs = 0;
@@ -154,7 +230,8 @@ public class YoutubeDashManifestCreator {
         }
     }
 
-    private static Document generateMpdElement(@Nonnull final String[] segmentDuration)
+    private static Document generateMpdElement(@Nonnull final String[] segmentDuration,
+                                               final boolean isPostLiveDvrStream)
             throws YoutubeDashManifestCreationException {
         final DocumentBuilderFactory dbFactory;
         final DocumentBuilder documentBuilder;
@@ -197,7 +274,13 @@ public class YoutubeDashManifestCreator {
 
             final Attr mediaPresentationDurationAttribute = document.createAttribute(
                     "mediaPresentationDuration");
-            final double duration = getStreamLength(segmentDuration) / 1000.0;
+            final int streamDuration;
+            if (isPostLiveDvrStream) {
+                streamDuration = Integer.parseInt(segmentDuration[0]);
+            } else {
+                streamDuration = getStreamDuration(segmentDuration);
+            }
+            final double duration = streamDuration / 1000.0;
             final String durationSeconds = String.format(Locale.ENGLISH, "%.3f", duration);
             mediaPresentationDurationAttribute.setValue("PT" + durationSeconds + "S");
             mpdElement.setAttributeNode(mediaPresentationDurationAttribute);
@@ -331,7 +414,8 @@ public class YoutubeDashManifestCreator {
     }
 
     private static void generateSegmentTemplateElement(@Nonnull final Document document,
-                                                       @Nonnull final String baseUrl)
+                                                       @Nonnull final String baseUrl,
+                                                       final boolean isPostLiveDvr)
             throws YoutubeDashManifestCreationException {
         try {
             final Element representationElement = (Element) document.getElementsByTagName(
@@ -347,7 +431,8 @@ public class YoutubeDashManifestCreator {
             segmentTemplateElement.setAttributeNode(mediaAttribute);
 
             final Attr startNumberAttribute = document.createAttribute("startNumber");
-            startNumberAttribute.setValue("1");
+            final String startNumberValue = isPostLiveDvr ? "0" : "1";
+            startNumberAttribute.setValue(startNumberValue);
             segmentTemplateElement.setAttributeNode(startNumberAttribute);
 
             final Attr initializationAttribute = document.createAttribute("initialization");
@@ -375,7 +460,7 @@ public class YoutubeDashManifestCreator {
         }
     }
 
-    private static void generateSegmentElements(@Nonnull final Document document)
+    private static void generateSegmentElementsForOtfStreams(@Nonnull final Document document)
             throws YoutubeDashManifestCreationException {
         try {
             if (isNullOrEmpty(segmentsDuration) || isNullOrEmpty(durationRepetitions)) {
@@ -403,6 +488,30 @@ public class YoutubeDashManifestCreator {
             }
 
         } catch (final DOMException | IllegalStateException | IndexOutOfBoundsException e) {
+            throw new YoutubeDashManifestCreationException(
+                    "Could not generate or append to the document the Segment elements of the DASH manifest", e);
+        }
+    }
+
+    private static void generateSegmentElementsForPostLiveDvrStreams(
+            @Nonnull final Document document,
+            final int targetDurationSeconds,
+            final String segmentCount) throws YoutubeDashManifestCreationException {
+        try {
+            final Element segmentTimelineElement = (Element) document.getElementsByTagName(
+                    "SegmentTimeline").item(0);
+            final Element sElement = document.createElement("S");
+
+            final Attr dAttribute = document.createAttribute("d");
+            dAttribute.setValue(String.valueOf(targetDurationSeconds * 1000));
+            sElement.setAttributeNode(dAttribute);
+
+            final Attr rAttribute = document.createAttribute("r");
+            rAttribute.setValue(String.valueOf(segmentCount));
+            sElement.setAttributeNode(rAttribute);
+
+            segmentTimelineElement.appendChild(sElement);
+        } catch (final DOMException e) {
             throw new YoutubeDashManifestCreationException(
                     "Could not generate or append to the document the Segment elements of the DASH manifest", e);
         }
