@@ -132,16 +132,13 @@ public class YoutubeDashManifestCreator {
             // Use a head request in order to reduce the download size.
             final Response headRequestResponse = downloader.head(postLiveStreamDvrStreamingUrl
                     + "&sq=0");
+            postLiveStreamDvrStreamingUrl = headRequestResponse.latestUrl()
+                    .replace("&sq=0", "");
             final int responseCode = headRequestResponse.responseCode();
             if (responseCode != 200) {
-                if (responseCode == 302) {
-                    postLiveStreamDvrStreamingUrl = headRequestResponse.latestUrl()
-                            .replace("&sq=0", "");
-                } else {
-                    throw new YoutubeDashManifestCreationException(
-                            "Unable to generate the DASH manifest: could not get the initialization URL of the post live DVR stream: response code "
-                                    + responseCode);
-                }
+                throw new YoutubeDashManifestCreationException(
+                        "Unable to create the DASH manifest: could not fetch the initialization URL of the post live DVR stream: response code "
+                                + responseCode);
             }
 
             final Map<String, List<String>> responseHeaders = headRequestResponse
@@ -150,7 +147,7 @@ public class YoutubeDashManifestCreator {
             segmentCount = responseHeaders.get("X-Head-Seqnum").get(0);
         } catch (final IOException | ReCaptchaException | IndexOutOfBoundsException e) {
             throw new YoutubeDashManifestCreationException(
-                    "Unable to generate the DASH manifest: could not fetch the initialization URL of the OTF stream", e);
+                    "Unable to generate the DASH manifest: could not fetch the initialization URL of the post live DVR stream", e);
         }
         if (isNullOrEmpty(streamDuration)) {
             throw new YoutubeDashManifestCreationException(
@@ -390,20 +387,17 @@ public class YoutubeDashManifestCreator {
 
             final ItagItem.ItagType itagType = itagItem.itagType;
 
-            if (itagType == ItagItem.ItagType.VIDEO || itagType == ItagItem.ItagType.VIDEO_ONLY) {
-                if (itagItem.fps > 0) {
-                    final Attr frameRateAttribute = document.createAttribute("frameRate");
-                    frameRateAttribute.setValue(String.valueOf(itagItem.fps));
-                    representationElement.setAttributeNode(frameRateAttribute);
-                }
+            if ((itagType == ItagItem.ItagType.VIDEO || itagType == ItagItem.ItagType.VIDEO_ONLY)
+                    && itagItem.fps > 0) {
+                final Attr frameRateAttribute = document.createAttribute("frameRate");
+                frameRateAttribute.setValue(String.valueOf(itagItem.fps));
+                representationElement.setAttributeNode(frameRateAttribute);
             }
 
-            if (itagType == ItagItem.ItagType.AUDIO) {
-                if (itagItem.sampleRate > 0) {
-                    final Attr audioSamplingRateAttribute = document.createAttribute(
-                            "audioSamplingRate");
-                    audioSamplingRateAttribute.setValue(String.valueOf(itagItem.sampleRate));
-                }
+            if (itagType == ItagItem.ItagType.AUDIO && itagItem.sampleRate > 0) {
+                final Attr audioSamplingRateAttribute = document.createAttribute(
+                        "audioSamplingRate");
+                audioSamplingRateAttribute.setValue(String.valueOf(itagItem.sampleRate));
             }
 
             adaptationSetElement.appendChild(representationElement);
