@@ -654,11 +654,13 @@ public class YoutubeStreamExtractor extends StreamExtractor {
     public StreamType getStreamType() {
         assertPageFetched();
 
-        if (playerResponse.getObject("playabilityStatus").has("liveStreamability")
-                || playerResponse.getObject("videoDetails").getBoolean("isPostLiveDvr", false)) {
+        if (playerResponse.getObject("playabilityStatus").has("liveStreamability")) {
             return StreamType.LIVE_STREAM;
+        } else if (playerResponse.getObject("videoDetails").getBoolean("isPostLiveDvr", false)) {
+            return StreamType.POST_LIVE_STREAM;
+        } else {
+            return StreamType.VIDEO_STREAM;
         }
-        return StreamType.VIDEO_STREAM;
     }
 
     @Nullable
@@ -1134,12 +1136,22 @@ public class YoutubeStreamExtractor extends StreamExtractor {
             throws ParsingException {
         final List<ContentAndItagItemAndIsUrl> contentsAndItagItems = new ArrayList<>();
         if (mobileStreamingData != null || desktopStreamingData != null) {
-            // Use the mobileStreamingData object first because there is no n param and no
-            // signatureCiphers in streaming URLs of the Android client
-            contentsAndItagItems.addAll(getStreamsFromStreamingDataKey(mobileStreamingData,
-                    streamingDataKey, itagTypeWanted));
-            contentsAndItagItems.addAll(getStreamsFromStreamingDataKey(desktopStreamingData,
-                    streamingDataKey, itagTypeWanted));
+            final StreamType streamType = getStreamType();
+            if (streamType == StreamType.VIDEO_STREAM) {
+                // Use the mobileStreamingData JSON object first because there is no n param and no
+                // signatureCiphers in streaming URLs of the Android client
+                contentsAndItagItems.addAll(getStreamsFromStreamingDataKey(mobileStreamingData,
+                        streamingDataKey, itagTypeWanted, streamType));
+                contentsAndItagItems.addAll(getStreamsFromStreamingDataKey(desktopStreamingData,
+                        streamingDataKey, itagTypeWanted, streamType));
+            } else {
+                // Use the desktopStreamingData JSON object first because there are less redirects
+                // from the desktop endpoint
+                contentsAndItagItems.addAll(getStreamsFromStreamingDataKey(desktopStreamingData,
+                        streamingDataKey, itagTypeWanted, streamType));
+                contentsAndItagItems.addAll(getStreamsFromStreamingDataKey(mobileStreamingData,
+                        streamingDataKey, itagTypeWanted, streamType));
+            }
         }
 
         return contentsAndItagItems;
@@ -1149,13 +1161,13 @@ public class YoutubeStreamExtractor extends StreamExtractor {
     private List<ContentAndItagItemAndIsUrl> getStreamsFromStreamingDataKey(
             final JsonObject streamingData,
             final String streamingDataKey,
-            final ItagItem.ItagType itagTypeWanted) throws ParsingException {
+            final ItagItem.ItagType itagTypeWanted,
+            final StreamType streamType) throws ParsingException {
 
         final List<ContentAndItagItemAndIsUrl> contentsAndItagItemsAndAreUrls = new ArrayList<>();
         if (streamingData != null && streamingData.has(streamingDataKey)) {
             final YoutubeThrottlingDecrypter throttlingDecrypter = new YoutubeThrottlingDecrypter(
                     getId());
-            final StreamType streamType = getStreamType();
             final JsonArray formats = streamingData.getArray(streamingDataKey);
             for (int i = 0; i != formats.size(); ++i) {
                 final JsonObject formatData = formats.getObject(i);
