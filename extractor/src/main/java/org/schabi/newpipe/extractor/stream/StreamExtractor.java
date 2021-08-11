@@ -291,7 +291,7 @@ public abstract class StreamExtractor extends Extractor {
     /**
      * This will return a list of available
      * <a href="https://teamnewpipe.github.io/NewPipeExtractor/javadoc/org/schabi/newpipe/extractor/stream/Subtitles.html">Subtitles</a>s.
-     * If no subtitles are available an empty list can returned.
+     * If no subtitles are available an empty list can be returned.
      *
      * @return a list of available subtitles or an empty list
      * @throws IOException
@@ -304,7 +304,7 @@ public abstract class StreamExtractor extends Extractor {
      * This will return a list of available
      * <a href="https://teamnewpipe.github.io/NewPipeExtractor/javadoc/org/schabi/newpipe/extractor/stream/Subtitles.html">Subtitles</a>s.
      * given by a specific type.
-     * If no subtitles in that specific format are available an empty list can returned.
+     * If no subtitles in that specific format are available an empty list can be returned.
      *
      * @param format the media format by which the subtitles should be filtered
      * @return a list of available subtitles or an empty list
