@@ -177,6 +177,7 @@ public class YoutubeStreamLinkHandlerFactory extends LinkHandlerFactory {
             case "INVIDIOUS.SNOPYTA.ORG":
             case "YEWTU.BE":
             case "TUBE.CONNECT.CAFE":
+            case "TUBUS.EDUVID.ORG":
             case "INVIDIOUS.KAVIN.ROCKS":
             case "INVIDIOUS-US.KAVIN.ROCKS":
             case "PIPED.KAVIN.ROCKS":
