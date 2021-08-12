@@ -279,12 +279,12 @@ public class YoutubeStreamExtractor extends StreamExtractor {
             return Long.parseLong(duration);
         } catch (final Exception e) {
             if (desktopStreamingData != null) {
-                final JsonArray adaptiveFormats = desktopStreamingData.getArray("adaptiveFormats");
+                final JsonArray adaptiveFormats = desktopStreamingData.getArray(ADAPTIVE_FORMATS);
                 final String durationMs = adaptiveFormats.getObject(0)
                         .getString("approxDurationMs");
                 return Math.round(Long.parseLong(durationMs) / 1000f);
             } else if (mobileStreamingData != null) {
-                final JsonArray adaptiveFormats = mobileStreamingData.getArray("adaptiveFormats");
+                final JsonArray adaptiveFormats = mobileStreamingData.getArray(ADAPTIVE_FORMATS);
                 final String durationMs = adaptiveFormats.getObject(0)
                         .getString("approxDurationMs");
                 return Math.round(Long.parseLong(durationMs) / 1000f);
@@ -685,9 +685,11 @@ public class YoutubeStreamExtractor extends StreamExtractor {
     private static final String DEOBFUSCATION_FUNC_NAME = "deobfuscate";
 
     private static final String[] REGEXES = {
-            "(?:\\b|[^a-zA-Z0-9$])([a-zA-Z0-9$]{2})\\s*=\\s*function\\(\\s*a\\s*\\)\\s*\\{\\s*a\\s*=\\s*a\\.split\\(\\s*\"\"\\s*\\)",
+            "(?:\\b|[^a-zA-Z0-9$])([a-zA-Z0-9$]{2,})\\s*=\\s*function\\(\\s*a\\s*\\)\\s*\\{\\s*a\\s*=\\s*a\\.split\\(\\s*\"\"\\s*\\)",
+            "\\bm=([a-zA-Z0-9$]{2,})\\(decodeURIComponent\\(h\\.s\\)\\)",
+            "\\bc&&\\(c=([a-zA-Z0-9$]{2,})\\(decodeURIComponent\\(c\\)\\)",
             "([\\w$]+)\\s*=\\s*function\\((\\w+)\\)\\{\\s*\\2=\\s*\\2\\.split\\(\"\"\\)\\s*;",
-            "\\b([\\w$]{2})\\s*=\\s*function\\((\\w+)\\)\\{\\s*\\2=\\s*\\2\\.split\\(\"\"\\)\\s*;",
+            "\\b([\\w$]{2,})\\s*=\\s*function\\((\\w+)\\)\\{\\s*\\2=\\s*\\2\\.split\\(\"\"\\)\\s*;",
             "\\bc\\s*&&\\s*d\\.set\\([^,]+\\s*,\\s*(:encodeURIComponent\\s*\\()([a-zA-Z0-9$]+)\\("
     };
     private static final String STS_REGEX = "signatureTimestamp[=:](\\d+)";
@@ -931,8 +933,8 @@ public class YoutubeStreamExtractor extends StreamExtractor {
 
     private boolean isCipherProtectedContent() {
         if (desktopStreamingData != null) {
-            if (desktopStreamingData.has("adaptiveFormats")) {
-                final JsonArray adaptiveFormats = desktopStreamingData.getArray("adaptiveFormats");
+            if (desktopStreamingData.has(ADAPTIVE_FORMATS)) {
+                final JsonArray adaptiveFormats = desktopStreamingData.getArray(ADAPTIVE_FORMATS);
                 if (!isNullOrEmpty(adaptiveFormats)) {
                     for (final Object adaptiveFormat : adaptiveFormats) {
                         final JsonObject adaptiveFormatJsonObject = ((JsonObject) adaptiveFormat);
@@ -943,8 +945,8 @@ public class YoutubeStreamExtractor extends StreamExtractor {
                     }
                 }
             }
-            if (desktopStreamingData.has("formats")) {
-                final JsonArray formats = desktopStreamingData.getArray("formats");
+            if (desktopStreamingData.has(FORMATS)) {
+                final JsonArray formats = desktopStreamingData.getArray(FORMATS);
                 if (!isNullOrEmpty(formats)) {
                     for (final Object format : formats) {
                         final JsonObject formatJsonObject = ((JsonObject) format);
