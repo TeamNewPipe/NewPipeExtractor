@@ -80,12 +80,12 @@ public class StreamInfo extends Info {
             // country.
             //
             // We will now detect whether the video is blocked by country or not.
-            String errorMsg = extractor.getErrorMessage();
 
-            if (errorMsg != null) {
-                throw new ContentNotAvailableException(errorMsg);
-            } else {
+            final String errorMessage = extractor.getErrorMessage();
+            if (isNullOrEmpty(errorMessage)) {
                 throw e;
+            } else {
+                throw new ContentNotAvailableException(errorMessage, e);
             }
         }
 
