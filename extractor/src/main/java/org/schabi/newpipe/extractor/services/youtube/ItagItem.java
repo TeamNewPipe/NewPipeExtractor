@@ -91,12 +91,12 @@ public class ItagItem {
         throw new ParsingException("itag=" + itagId + " not supported");
     }
 
-    public static ItagItem getItag(int itagId, int averageBitrate, int fps, String qualityLabel, String mimeType) throws ParsingException {
+    public static final ItagItem getItag(final int itagId, final int averageBitrate, final int fps, final String qualityLabel, final String mimeType) throws ParsingException {
 
-        String[] split = mimeType.split(";")[0].split("/");
-        String streamType = split[0];
-        String fileType = split[1];
-        String codec = mimeType.split("\"")[1];
+        final String[] split = mimeType.split(";")[0].split("/");
+        final String streamType = split[0];
+        final String fileType = split[1];
+        final String codec = mimeType.split("\"")[1];
 
         MediaFormat format = null;
         ItagType itagType = null;
@@ -110,17 +110,10 @@ public class ItagItem {
                 itagType = AUDIO;
         }
 
-        if (itagType == AUDIO) {
-            if (fileType.equals("mp4") && (codec.startsWith("m4a") || codec.startsWith("mp4a") ))
-                format = M4A;
-            if (fileType.startsWith("webm") && codec.equals("opus"))
-                format = WEBMA_OPUS;
-        }
-
         if (itagType == VIDEO) {
             if (fileType.equals("mp4"))
                 format = MPEG_4;
-            if(fileType.equals("3gpp"))
+            if (fileType.equals("3gpp"))
                 format = v3GPP;
         }
 
@@ -129,6 +122,13 @@ public class ItagItem {
                 format = MPEG_4;
             if (fileType.equals("webm"))
                 format = WEBM;
+        }
+
+        if (itagType == AUDIO) {
+            if (fileType.equals("mp4") && (codec.startsWith("m4a") || codec.startsWith("mp4a")))
+                format = M4A;
+            if (fileType.startsWith("webm") && codec.equals("opus"))
+                format = WEBMA_OPUS;
         }
 
         if (itagType == null || format == null)
