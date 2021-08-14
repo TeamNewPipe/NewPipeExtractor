@@ -8,7 +8,9 @@ import javax.annotation.Nonnull;
 import static org.schabi.newpipe.extractor.MediaFormat.*;
 import static org.schabi.newpipe.extractor.services.youtube.ItagItem.ItagType.*;
 
-public class ItagItem {
+import java.io.Serializable;
+
+public class ItagItem implements Serializable {
     /**
      * List can be found here:
      * https://github.com/ytdl-org/youtube-dl/blob/c2350cac/youtube_dl/extractor/youtube.py#L1109
