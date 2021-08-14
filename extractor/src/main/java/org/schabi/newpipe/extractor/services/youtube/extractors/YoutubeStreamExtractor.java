@@ -1137,21 +1137,12 @@ public class YoutubeStreamExtractor extends StreamExtractor {
         final List<ContentAndItagItemAndIsUrl> contentsAndItagItems = new ArrayList<>();
         if (mobileStreamingData != null || desktopStreamingData != null) {
             final StreamType streamType = getStreamType();
-            if (streamType == StreamType.VIDEO_STREAM) {
-                // Use the mobileStreamingData JSON object first because there is no n param and no
-                // signatureCiphers in streaming URLs of the Android client
-                contentsAndItagItems.addAll(getStreamsFromStreamingDataKey(mobileStreamingData,
-                        streamingDataKey, itagTypeWanted, streamType));
-                contentsAndItagItems.addAll(getStreamsFromStreamingDataKey(desktopStreamingData,
-                        streamingDataKey, itagTypeWanted, streamType));
-            } else {
-                // Use the desktopStreamingData JSON object first because there are less redirects
-                // from the desktop endpoint
-                contentsAndItagItems.addAll(getStreamsFromStreamingDataKey(desktopStreamingData,
-                        streamingDataKey, itagTypeWanted, streamType));
-                contentsAndItagItems.addAll(getStreamsFromStreamingDataKey(mobileStreamingData,
-                        streamingDataKey, itagTypeWanted, streamType));
-            }
+            // Use the desktopStreamingData JSON object first because there are fewer redirects
+            // from the desktop endpoint for OTF and post live streams
+            contentsAndItagItems.addAll(getStreamsFromStreamingDataKey(desktopStreamingData,
+                    streamingDataKey, itagTypeWanted, streamType));
+            contentsAndItagItems.addAll(getStreamsFromStreamingDataKey(mobileStreamingData,
+                    streamingDataKey, itagTypeWanted, streamType));
         }
 
         return contentsAndItagItems;
@@ -1223,25 +1214,18 @@ public class YoutubeStreamExtractor extends StreamExtractor {
                             if (streamType == StreamType.VIDEO_STREAM) {
                                 if (formatData.getString("type", EMPTY_STRING)
                                         .equalsIgnoreCase("FORMAT_STREAM_TYPE_OTF")) {
-                                    try {
-                                        final String content =
-                                                createDashManifestFromOtfStreamingUrl(streamUrl,
-                                                        itagItem);
-                                        contentsAndItagItemsAndAreUrls.add(
-                                                new ContentAndItagItemAndIsUrl(content, itagItem,
-                                                        false));
-                                    } catch (final YoutubeDashManifestCreator
-                                            .YoutubeDashManifestCreationException ignored) {
-                                        // Something went wrong when generating the DASH manifest
-                                        // of the OTF stream, don't add this stream to the stream
-                                        // list
-                                    }
+                                    contentsAndItagItemsAndAreUrls.add(
+                                            new ContentAndItagItemAndIsUrl(streamUrl, itagItem,
+                                                    false));
                                 } else {
                                     contentsAndItagItemsAndAreUrls.add(
                                             new ContentAndItagItemAndIsUrl(streamUrl, itagItem,
                                                     true));
                                 }
                             } else if (streamType == StreamType.POST_LIVE_STREAM) {
+                                // Even if it increases the content loading, we need to generate
+                                // manifests of post live streams now because the
+                                // targetDurationSec value is required to create these manifests
                                 try {
                                     final String content =
                                             createDashManifestFromPostLiveStreamDvrStreamingUrl(
