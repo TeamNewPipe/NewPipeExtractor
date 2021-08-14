@@ -41,6 +41,7 @@ public class VideoStream extends Stream {
     private int fps;
     private String quality;
     private String codec;
+    @Nullable private ItagItem itagItem;
 
     /**
      * Create a new video stream.
@@ -117,6 +118,7 @@ public class VideoStream extends Stream {
                        @Nonnull final ItagItem itag,
                        @Nullable final String baseUrl) {
         super(id, content, isUrl, format, deliveryMethod, baseUrl);
+        this.itagItem = itag;
         this.itag = itag.id;
         this.bitrate = itag.getBitrate();
         this.initStart = itag.getInitStart();
@@ -150,6 +152,7 @@ public class VideoStream extends Stream {
                        final boolean isVideoOnly,
                        @Nonnull final ItagItem itag) {
         this(id, url, itag.getMediaFormat(), itag.resolutionString, isVideoOnly);
+        this.itagItem = itag;
         this.itag = itag.id;
         this.bitrate = itag.getBitrate();
         this.initStart = itag.getInitStart();
@@ -300,5 +303,14 @@ public class VideoStream extends Stream {
      */
     public String getCodec() {
         return codec;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    @Nullable
+    public ItagItem getItagItem() {
+        return itagItem;
     }
 }
