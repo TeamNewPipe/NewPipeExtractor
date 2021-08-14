@@ -39,6 +39,7 @@ public class AudioStream extends Stream {
     private int indexEnd;
     private String quality;
     private String codec;
+    @Nullable private ItagItem itagItem;
 
     /**
      * Create a new audio stream.
@@ -107,6 +108,7 @@ public class AudioStream extends Stream {
                        @Nonnull final ItagItem itag,
                        @Nullable final String baseUrl) {
         super(id, content, isUrl, format, deliveryMethod, baseUrl);
+        this.itagItem = itag;
         this.itag = itag.id;
         this.quality = itag.getQuality();
         this.bitrate = itag.getBitrate();
@@ -133,6 +135,7 @@ public class AudioStream extends Stream {
                        final String url,
                        @Nonnull final ItagItem itag) {
         this(id, url, itag.getMediaFormat(), itag.avgBitrate);
+        this.itagItem = itag;
         this.itag = itag.id;
         this.quality = itag.getQuality();
         this.bitrate = itag.getBitrate();
@@ -183,8 +186,7 @@ public class AudioStream extends Stream {
      * Get the initialization start of the stream.
      *
      * @return the initialization start value set from the {@link ItagItem} passed in the
-     * constructor of the
-     * stream.
+     * constructor of the stream.
      */
     public int getInitStart() {
         return initStart;
@@ -237,5 +239,14 @@ public class AudioStream extends Stream {
      */
     public String getCodec() {
         return codec;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    @Nullable
+    public ItagItem getItagItem() {
+        return itagItem;
     }
 }

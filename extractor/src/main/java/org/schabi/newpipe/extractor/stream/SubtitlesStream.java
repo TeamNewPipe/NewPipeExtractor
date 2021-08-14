@@ -1,8 +1,11 @@
 package org.schabi.newpipe.extractor.stream;
 
 import org.schabi.newpipe.extractor.MediaFormat;
+import org.schabi.newpipe.extractor.services.youtube.ItagItem;
 
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
+
 import java.io.Serializable;
 import java.util.Locale;
 
@@ -128,5 +131,16 @@ public class SubtitlesStream extends Stream implements Serializable {
      */
     public Locale getLocale() {
         return locale;
+    }
+
+    @Nullable
+    @Override
+    /**
+     * No subtitles which are currently extracted use an ItagItem.
+     *
+     * @return {@code null}
+     */
+    public ItagItem getItagItem() {
+        return null;
     }
 }

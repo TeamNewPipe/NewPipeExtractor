@@ -1,6 +1,7 @@
 package org.schabi.newpipe.extractor.stream;
 
 import org.schabi.newpipe.extractor.MediaFormat;
+import org.schabi.newpipe.extractor.services.youtube.ItagItem;
 
 import javax.annotation.Nullable;
 import java.io.Serializable;
@@ -17,7 +18,7 @@ public abstract class Stream implements Serializable {
     private final String content;
     private final boolean isUrl;
     private final DeliveryMethod deliveryMethod;
-    private final String baseUrl;
+    @Nullable private final String baseUrl;
 
     /**
      * Instantiates a new stream object.
@@ -152,4 +153,15 @@ public abstract class Stream implements Serializable {
     public String getBaseUrl() {
         return baseUrl;
     }
+
+    /**
+     * Gets the {@link ItagItem} of a stream.
+     * <p>
+     * If the stream is not a YouTube stream, this value will always be null.
+     * </p>
+     *
+     * @return the {@link ItagItem} of the stream or {@code null}
+     */
+    @Nullable
+    public abstract ItagItem getItagItem();
 }
