@@ -56,14 +56,11 @@ public class YoutubeDashManifestCreator {
         final Downloader downloader = NewPipe.getDownloader();
         final String responseBody;
         try {
-            // First try to avoid redirects when streaming the content by fetching the base URL,
-            // which returns 404
-            // Use a head request in order to reduce the download size.
-            final Response headRequestResponse = downloader.head(otfBaseStreamingUrl,
-                    null);
-            otfBaseStreamingUrl = headRequestResponse.latestUrl();
+            // Try to avoid redirects when streaming the content by saving the last URL we get
+            // from video servers.
 
             final Response response = downloader.get(otfBaseStreamingUrl + "&sq=0");
+            otfBaseStreamingUrl = response.latestUrl().replace("&sq=0", "");
             final int responseCode = response.responseCode();
             if (responseCode != 200) {
                 throw new YoutubeDashManifestCreationException(
@@ -127,22 +124,20 @@ public class YoutubeDashManifestCreator {
         }
 
         try {
-            // First try to avoid redirects when streaming the content by fetching the base URL,
-            // which is the last segment of the media.
-            // Use a head request in order to reduce the download size.
-            final Response headRequestResponse = downloader.head(postLiveStreamDvrStreamingUrl
-                    + "&sq=0");
-            postLiveStreamDvrStreamingUrl = headRequestResponse.latestUrl()
-                    .replace("&sq=0", "");
-            final int responseCode = headRequestResponse.responseCode();
+            // Try to avoid redirects when streaming the content by saving the latest URL we get
+            // from video servers.
+            // Use a HEAD request in order to reduce the download size.
+
+            final Response response = downloader.head(postLiveStreamDvrStreamingUrl + "&sq=0");
+            postLiveStreamDvrStreamingUrl = response.latestUrl().replace("&sq=0", "");
+            final int responseCode = response.responseCode();
             if (responseCode != 200) {
                 throw new YoutubeDashManifestCreationException(
                         "Unable to create the DASH manifest: could not fetch the initialization URL of the post live DVR stream: response code "
                                 + responseCode);
             }
 
-            final Map<String, List<String>> responseHeaders = headRequestResponse
-                    .responseHeaders();
+            final Map<String, List<String>> responseHeaders = response.responseHeaders();
             streamDuration = responseHeaders.get("X-Head-Time-Millis").get(0);
             segmentCount = responseHeaders.get("X-Head-Seqnum").get(0);
         } catch (final IOException | ReCaptchaException | IndexOutOfBoundsException e) {
