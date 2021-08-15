@@ -113,6 +113,12 @@ public class ChannelInfo extends ListInfo<StreamInfoItem> {
             info.addError(e);
         }
 
+        try {
+            info.setVerified(extractor.isVerified());
+        } catch (Exception e) {
+            info.addError(e);
+        }
+
         return info;
     }
 
@@ -125,6 +131,7 @@ public class ChannelInfo extends ListInfo<StreamInfoItem> {
     private long subscriberCount = -1;
     private String description;
     private String[] donationLinks;
+    private boolean verified;
 
     public String getParentChannelName() {
         return parentChannelName;
@@ -196,5 +203,13 @@ public class ChannelInfo extends ListInfo<StreamInfoItem> {
 
     public void setDonationLinks(String[] donationLinks) {
         this.donationLinks = donationLinks;
+    }
+
+    public boolean isVerified() {
+        return verified;
+    }
+
+    public void setVerified(boolean verified) {
+        this.verified = verified;
     }
 }
