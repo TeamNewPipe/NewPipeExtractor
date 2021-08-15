@@ -34,6 +34,8 @@ public class YoutubeDashManifestCreator {
 
     private static final List<Integer> segmentsDuration = new ArrayList<>();
     private static final List<Integer> durationRepetitions = new ArrayList<>();
+    private static final Map<String, String> otfManifestsGenerated = new HashMap<>();
+    private static final Map<String, String> postLiveStreamsManifestsGenerated = new HashMap<>();
 
     private YoutubeDashManifestCreator() {
     }
@@ -53,6 +55,10 @@ public class YoutubeDashManifestCreator {
             @Nonnull String otfBaseStreamingUrl,
             @Nonnull final ItagItem itagItem)
             throws YoutubeDashManifestCreationException {
+        if (otfManifestsGenerated.get(otfBaseStreamingUrl) != null) {
+            return otfManifestsGenerated.get(otfBaseStreamingUrl);
+        }
+        final String originalOtfBaseStreamingUrl = otfBaseStreamingUrl;
         final Downloader downloader = NewPipe.getDownloader();
         final String responseBody;
         try {
@@ -84,7 +90,7 @@ public class YoutubeDashManifestCreator {
                     "Unable to generate the DASH manifest: could not get the duration of segments", e);
         }
 
-        final Document document = generateMpdElement(segmentDuration, false);
+        final Document document = generateDocumentAndMpdElement(segmentDuration, false);
         generatePeriodElement(document);
         generateAdaptationSetElement(document, itagItem.getMediaFormat().mimeType);
         generateRoleElement(document);
@@ -101,7 +107,9 @@ public class YoutubeDashManifestCreator {
             transformer.setOutputProperty(OutputKeys.ENCODING, "UTF-8");
             transformer.setOutputProperty(OutputKeys.STANDALONE, "no");
             transformer.transform(new DOMSource(document), new StreamResult(result));
-            return result.toString();
+            final String stringResult = result.toString();
+            otfManifestsGenerated.put(originalOtfBaseStreamingUrl, stringResult);
+            return stringResult;
         } catch (final TransformerException e) {
             throw new YoutubeDashManifestCreationException(
                     "Could not convert the DASH manifest generated to a string", e);
@@ -114,6 +122,10 @@ public class YoutubeDashManifestCreator {
             @Nonnull final ItagItem itagItem,
             final int targetDurationSec)
             throws YoutubeDashManifestCreationException {
+        if (postLiveStreamsManifestsGenerated.get(postLiveStreamDvrStreamingUrl) != null) {
+            return postLiveStreamsManifestsGenerated.get(postLiveStreamDvrStreamingUrl);
+        }
+        final String originalPostLiveStreamDvrStreamingUrl = postLiveStreamDvrStreamingUrl;
         final Downloader downloader = NewPipe.getDownloader();
         final String streamDuration;
         final String segmentCount;
@@ -153,8 +165,7 @@ public class YoutubeDashManifestCreator {
                     "Unable to generate the DASH manifest: could not get the number of segments");
         }
 
-
-        final Document document = generateMpdElement(new String[] {streamDuration}, true);
+        final Document document = generateDocumentAndMpdElement(new String[] {streamDuration}, true);
         generatePeriodElement(document);
         generateAdaptationSetElement(document, itagItem.getMediaFormat().mimeType);
         generateRoleElement(document);
@@ -170,7 +181,10 @@ public class YoutubeDashManifestCreator {
             transformer.setOutputProperty(OutputKeys.ENCODING, "UTF-8");
             transformer.setOutputProperty(OutputKeys.STANDALONE, "no");
             transformer.transform(new DOMSource(document), new StreamResult(result));
-            return result.toString();
+            final String stringResult = result.toString();
+            postLiveStreamsManifestsGenerated.put(originalPostLiveStreamDvrStreamingUrl,
+                    stringResult);
+            return stringResult;
         } catch (final TransformerException e) {
             throw new YoutubeDashManifestCreationException(
                     "Could not convert the DASH manifest generated to a string", e);
@@ -200,6 +214,18 @@ public class YoutubeDashManifestCreator {
         }
     }
 
+    /**
+     * Get the duration of an OTF stream.
+     *
+     * The duration of OTF streams is not returned into the player response and needs to be
+     * calculated by adding the duration of each segment.
+     *
+     * @param segmentDuration the segment duration object extracted from the initialization
+     *                        sequence of the stream
+     * @return the duration of the OTF stream
+     * @throws YoutubeDashManifestCreationException if something went wrong when parsing the
+     * {@code segmentDuration} object
+     */
     private static int getStreamDuration(@Nonnull final String[] segmentDuration)
             throws YoutubeDashManifestCreationException {
         try {
@@ -222,8 +248,38 @@ public class YoutubeDashManifestCreator {
         }
     }
 
-    private static Document generateMpdElement(@Nonnull final String[] segmentDuration,
-                                               final boolean isPostLiveDvrStream)
+    /**
+     * Create a {@link Document} object and generate the {@code <MPD>} element of the manifest.
+     * <p>
+     * The generated {@code <MPD>} element looks like the manifest returned into the player
+     * response of videos with OTF streams:
+     * <br>
+     * <br>
+     * {@code <MPD xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+     * xmlns="urn:mpeg:DASH:schema:MPD:2011" xmlns:yt="http://youtube.com/yt/2012/10/10"
+     * xsi:schemaLocation="urn:mpeg:DASH:schema:MPD:2011 DASH-MPD.xsd" minBufferTime="PT1.500S"
+     * profiles="urn:mpeg:dash:profile:isoff-main:2011" type="static"
+     * mediaPresentationDuration="PT$duration$S">}
+     * <br>
+     * <br>
+     * (where {@code $duration$} represents the duration in seconds (a number with 3 digits after
+     * the decimal point)
+     * <br>
+     * <br>
+     * If the duration is an integer or a double with less than 3 digits after the decimal point,
+     * it will be converted into a double with 3 digits after the decimal point.
+     * </p>
+     *
+     * @param segmentDuration     the segment duration object extracted from the initialization
+     *                            sequence of the stream
+     * @param isPostLiveDvrStream if the stream is a post live stream ({@code true}) or an OTF
+     *                            stream ({@code false})
+     * @return a {@link Document} object which contains a {@code <MPD>} element
+     * @throws YoutubeDashManifestCreationException if something went wrong when
+     * generating/appending the {@link Document object} or the {@code <MPD>} element
+     */
+    private static Document generateDocumentAndMpdElement(@Nonnull final String[] segmentDuration,
+                                                          final boolean isPostLiveDvrStream)
             throws YoutubeDashManifestCreationException {
         final DocumentBuilderFactory dbFactory;
         final DocumentBuilder documentBuilder;
@@ -284,6 +340,18 @@ public class YoutubeDashManifestCreator {
         return document;
     }
 
+    /**
+     * Generate the {@code <Period>} element, appended as a child of the {@code <MPD>} element.
+     * <p>
+     * The {@code <MPD>} element needs to be generated before this element with
+     * {@link #generateDocumentAndMpdElement(String[], boolean)}).
+     * </p>
+     *
+     * @param document the {@link Document} on which the the {@code <Period>} element will be
+     *                 appended
+     * @throws YoutubeDashManifestCreationException if something went wrong when generating or
+     * appending the {@code <Period>} element to the document
+     */
     private static void generatePeriodElement(@Nonnull final Document document)
             throws YoutubeDashManifestCreationException {
         try {
@@ -322,6 +390,27 @@ public class YoutubeDashManifestCreator {
         }
     }
 
+    /**
+     * Generate the {@code <Role>} element, appended as a child of the {@code <AdaptationSet>}
+     * element.
+     * <br>
+     * <p>
+     * This element, with its attributes and values, is:
+     * <br>
+     * <br>
+     * {@code <Role schemeIdUri="urn:mpeg:DASH:role:2011" value="main"/>}
+     * </p>
+     * <br>
+     * <p>
+     * The {@code <AdaptationSet>} element needs to be generated before this element with
+     * {@link #generateAdaptationSetElement(Document, String)}).
+     * </p>
+     *
+     * @param document the {@link Document} on which the the {@code <Role>} element will be
+     *                 appended
+     * @throws YoutubeDashManifestCreationException if something went wrong when generating or
+     * appending the {@code <Role>} element to the document
+     */
     private static void generateRoleElement(@Nonnull final Document document)
             throws YoutubeDashManifestCreationException {
         try {
@@ -504,5 +593,45 @@ public class YoutubeDashManifestCreator {
             throw new YoutubeDashManifestCreationException(
                     "Could not generate or append to the document the Segment elements of the DASH manifest", e);
         }
+    }
+
+    /**
+     * Get the number of cached OTF streams manifests.
+     *
+     * @return the number of cached OTF streams manifests
+     */
+    public static int getOtfCachedManifestsSize() {
+        return otfManifestsGenerated.size();
+    }
+
+    /**
+     * Get the number of cached post live streams manifests.
+     *
+     * @return the number of cached post live streams manifests
+     */
+    public static int getPostLiveStreamsCachedManifestsSize() {
+        return postLiveStreamsManifestsGenerated.size();
+    }
+
+    /**
+     * Clear the cached OTF manifests.
+     */
+    public static void clearOtfCachedManifests() {
+        otfManifestsGenerated.clear();
+    }
+
+    /**
+     * Clear the cached post live streams manifests.
+     */
+    public static void clearPostLiveStreamsCachedManifests() {
+        postLiveStreamsManifestsGenerated.clear();
+    }
+
+    /**
+     * Clear the cached OTF manifests and the cached post live streams manifests.
+     */
+    public static void clearManifestsInCache() {
+        otfManifestsGenerated.clear();
+        postLiveStreamsManifestsGenerated.clear();
     }
 }
