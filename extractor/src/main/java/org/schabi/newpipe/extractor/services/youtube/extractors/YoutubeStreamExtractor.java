@@ -42,7 +42,6 @@ import java.time.OffsetDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.*;
 
-import static org.schabi.newpipe.extractor.services.youtube.YoutubeDashManifestCreator.createDashManifestFromOtfStreamingUrl;
 import static org.schabi.newpipe.extractor.services.youtube.YoutubeDashManifestCreator.createDashManifestFromPostLiveStreamDvrStreamingUrl;
 import static org.schabi.newpipe.extractor.services.youtube.YoutubeParsingHelper.*;
 import static org.schabi.newpipe.extractor.utils.Utils.EMPTY_STRING;
@@ -80,7 +79,7 @@ public class YoutubeStreamExtractor extends StreamExtractor {
         }
     }
 
-    /*//////////////////////////////////////////////////////////////////////////*/
+    /*////////////////////////////////////////////////////////////////////////*/
 
     @Nullable
     private static String cachedDeobfuscationCode = null;
@@ -91,6 +90,7 @@ public class YoutubeStreamExtractor extends StreamExtractor {
 
     private JsonObject playerResponse;
     private JsonObject nextResponse;
+    private StreamType streamType;
 
     @Nullable
     private JsonObject desktopStreamingData;
@@ -654,13 +654,7 @@ public class YoutubeStreamExtractor extends StreamExtractor {
     public StreamType getStreamType() {
         assertPageFetched();
 
-        if (playerResponse.getObject("playabilityStatus").has("liveStreamability")) {
-            return StreamType.LIVE_STREAM;
-        } else if (playerResponse.getObject("videoDetails").getBoolean("isPostLiveDvr", false)) {
-            return StreamType.POST_LIVE_STREAM;
-        } else {
-            return StreamType.VIDEO_STREAM;
-        }
+        return streamType;
     }
 
     @Nullable
@@ -759,7 +753,7 @@ public class YoutubeStreamExtractor extends StreamExtractor {
 
         final JsonObject playabilityStatus = playerResponse.getObject("playabilityStatus");
 
-        boolean ageRestricted = playabilityStatus.getString("reason", EMPTY_STRING)
+        final boolean isAgeRestricted = playabilityStatus.getString("reason", EMPTY_STRING)
                 .contains("age");
 
         if (!playerResponse.has("streamingData")) {
@@ -767,9 +761,30 @@ public class YoutubeStreamExtractor extends StreamExtractor {
                 fetchDesktopEmbedJsonPlayer(contentCountry, localization, videoId);
             } catch (final Exception ignored) {
             }
+
+            if (playerResponse.getObject("playabilityStatus").has("liveStreamability")) {
+                streamType = StreamType.LIVE_STREAM;
+            } else if (playerResponse.getObject("videoDetails").getBoolean("isPostLiveDvr",
+                    false)) {
+                streamType = StreamType.POST_LIVE_STREAM;
+            } else {
+                streamType = StreamType.VIDEO_STREAM;
+            }
+
             try {
-                fetchAndroidEmbedJsonPlayer(contentCountry, localization, videoId);
+                if (streamType == StreamType.VIDEO_STREAM || desktopStreamingData == null) {
+                    fetchAndroidEmbedJsonPlayer(contentCountry, localization, videoId);
+                }
             } catch (final Exception ignored) {
+            }
+        } else {
+            if (playerResponse.getObject("playabilityStatus").has("liveStreamability")) {
+                streamType = StreamType.LIVE_STREAM;
+            } else if (playerResponse.getObject("videoDetails").getBoolean("isPostLiveDvr",
+                    false)) {
+                streamType = StreamType.POST_LIVE_STREAM;
+            } else {
+                streamType = StreamType.VIDEO_STREAM;
             }
         }
 
@@ -781,7 +796,7 @@ public class YoutubeStreamExtractor extends StreamExtractor {
             checkPlayabilityStatus(youtubePlayerResponse, playabilityStatus);
         }
 
-        if (ageRestricted) {
+        if (isAgeRestricted) {
             final byte[] ageRestrictedBody = JsonWriter.string(prepareDesktopEmbedVideoJsonBuilder(
                     localization, contentCountry, videoId)
                     .done())
@@ -791,14 +806,15 @@ public class YoutubeStreamExtractor extends StreamExtractor {
             nextResponse = getJsonPostResponse("next", body, localization);
         }
 
-        if (!ageRestricted) {
+        if (!isAgeRestricted && (streamType == StreamType.VIDEO_STREAM
+                || desktopStreamingData == null)) {
             try {
                 fetchAndroidMobileJsonPlayer(contentCountry, localization, videoId);
             } catch (final Exception ignored) {
             }
         }
 
-        if (isCipherProtectedContent()) {
+        if (!isAgeRestricted && isCipherProtectedContent() && sts == null) {
             fetchDesktopJsonPlayerWithSts(contentCountry, localization, videoId);
         }
     }
@@ -827,28 +843,24 @@ public class YoutubeStreamExtractor extends StreamExtractor {
                             "This age-restricted video cannot be watched.");
                 }
             }
-            if (status.equalsIgnoreCase("unplayable")) {
-                if (reason != null) {
-                    if (reason.contains("Music Premium")) {
-                        throw new YoutubeMusicPremiumContentException();
-                    }
-                    if (reason.contains("payment")) {
-                        throw new PaidContentException("This video is a paid video");
-                    }
-                    if (reason.contains("members-only")) {
-                        throw new PaidContentException(
-                                "This video is only available for members of the channel of this video");
-                    }
-                    if (reason.contains("unavailable")) {
-                        final String detailedErrorMessage = getTextFromObject(playabilityStatus
-                                .getObject("errorScreen").getObject("playerErrorMessageRenderer")
-                                .getObject("subreason"));
-                        if (detailedErrorMessage != null) {
-                            if (detailedErrorMessage.contains("country")) {
-                                throw new GeographicRestrictionException(
-                                        "This video is not available in user's country.");
-                            }
-                        }
+            if (status.equalsIgnoreCase("unplayable") && reason != null) {
+                if (reason.contains("Music Premium")) {
+                    throw new YoutubeMusicPremiumContentException();
+                }
+                if (reason.contains("payment")) {
+                    throw new PaidContentException("This video is a paid video");
+                }
+                if (reason.contains("members-only")) {
+                    throw new PaidContentException(
+                            "This video is only available for members of the channel of this video");
+                }
+                if (reason.contains("unavailable")) {
+                    final String detailedErrorMessage = getTextFromObject(playabilityStatus
+                            .getObject("errorScreen").getObject("playerErrorMessageRenderer")
+                            .getObject("subreason"));
+                    if (detailedErrorMessage != null && detailedErrorMessage.contains("country")) {
+                        throw new GeographicRestrictionException(
+                                "This video is not available in user's country.");
                     }
                 }
             }
