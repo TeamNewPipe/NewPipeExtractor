@@ -90,7 +90,8 @@ public abstract class Stream implements Serializable {
      *
      * @return the URL
      * @deprecated Use {@link #getContent()} instead
-     * */
+     */
+    @Deprecated
     public String getUrl() {
         return isUrl ? content : null;
     }
