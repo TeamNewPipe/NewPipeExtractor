@@ -478,10 +478,10 @@ public class YoutubeDashManifestCreator {
                 representationElement.setAttributeNode(frameRateAttribute);
             }
 
-            if (itagType == ItagItem.ItagType.AUDIO && itagItem.sampleRate > 0) {
+            if (itagType == ItagItem.ItagType.AUDIO && itagItem.getSampleRate() > 0) {
                 final Attr audioSamplingRateAttribute = document.createAttribute(
                         "audioSamplingRate");
-                audioSamplingRateAttribute.setValue(String.valueOf(itagItem.sampleRate));
+                audioSamplingRateAttribute.setValue(String.valueOf(itagItem.getSampleRate()));
             }
 
             adaptationSetElement.appendChild(representationElement);

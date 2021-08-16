@@ -480,9 +480,9 @@ public class YoutubeStreamExtractor extends StreamExtractor {
             try {
                 for (final ItagInfo itagInfo : getItags(ADAPTIVE_FORMATS,
                         ItagItem.ItagType.AUDIO)) {
-                    final ItagItem itag = itagInfo.itagItem;
-                    final String content = itagInfo.content;
-                    final boolean isUrl = itagInfo.isUrl;
+                    final ItagItem itag = itagInfo.getItagItem();
+                    final String content = itagInfo.getContent();
+                    final boolean isUrl = itagInfo.getIsUrl();
                     final AudioStream audioStream;
 
                     if (streamType == StreamType.VIDEO_STREAM) {
@@ -525,9 +525,9 @@ public class YoutubeStreamExtractor extends StreamExtractor {
 
             try {
                 for (final ItagInfo itagInfo : getItags(FORMATS, ItagItem.ItagType.VIDEO)) {
-                    final ItagItem itag = itagInfo.itagItem;
-                    final String content = itagInfo.content;
-                    final boolean isUrl = itagInfo.isUrl;
+                    final ItagItem itag = itagInfo.getItagItem();
+                    final String content = itagInfo.getContent();
+                    final boolean isUrl = itagInfo.getIsUrl();
                     final VideoStream videoStream;
 
                     if (streamType == StreamType.VIDEO_STREAM) {
@@ -570,9 +570,9 @@ public class YoutubeStreamExtractor extends StreamExtractor {
             try {
                 for (final ItagInfo itagInfo : getItags(ADAPTIVE_FORMATS,
                         ItagItem.ItagType.VIDEO_ONLY)) {
-                    final ItagItem itag = itagInfo.itagItem;
-                    final String content = itagInfo.content;
-                    final boolean isUrl = itagInfo.isUrl;
+                    final ItagItem itag = itagInfo.getItagItem();
+                    final String content = itagInfo.getContent();
+                    final boolean isUrl = itagInfo.getIsUrl();
                     final VideoStream videoOnlyStream;
 
                     if (streamType == StreamType.VIDEO_STREAM) {
@@ -1210,45 +1210,31 @@ public class YoutubeStreamExtractor extends StreamExtractor {
                                     "-1")));
                             itagItem.setQuality(formatData.getString("quality"));
                             itagItem.setCodec(codec);
+                            itagItem.setTargetDurationSec(formatData.getInt("targetDurationSec"));
 
                             if (itagType == ItagItem.ItagType.VIDEO
                                     || itagType == ItagItem.ItagType.VIDEO_ONLY) {
                                 itagItem.fps = formatData.getInt("fps");
                             }
                             if (itagType == ItagItem.ItagType.AUDIO) {
-                                itagItem.sampleRate = Integer.parseInt(formatData.getString(
-                                        "audioSampleRate"));
+                                itagItem.setSampleRate(Integer.parseInt(formatData.getString(
+                                        "audioSampleRate")));
                             }
+                            final ItagInfo itagInfo = new ItagInfo(streamUrl, itagItem);
 
                             if (streamType == StreamType.VIDEO_STREAM) {
-                                if (formatData.getString("type", EMPTY_STRING)
-                                        .equalsIgnoreCase("FORMAT_STREAM_TYPE_OTF")) {
-                                    itagInfos.add(new ItagInfo(streamUrl, itagItem, false));
-                                } else {
-                                    itagInfos.add(new ItagInfo(streamUrl, itagItem, true));
-                                }
-                            } else if (streamType == StreamType.POST_LIVE_STREAM) {
-                                // Even if it increases the content loading, we need to generate
-                                // manifests of post live streams now because the
-                                // targetDurationSec value is required to create these manifests
-                                try {
-                                    final String content =
-                                            createDashManifestFromPostLiveStreamDvrStreamingUrl(
-                                                    streamUrl, itagItem, formatData
-                                                            .getInt("targetDurationSec"));
-                                    itagInfos.add(new ItagInfo(content, itagItem, false));
-                                } catch (final YoutubeDashManifestCreator
-                                        .YoutubeDashManifestCreationException ignored) {
-                                    // Something went wrong when generating the DASH manifest
-                                    // of the stream, don't add this stream to the stream list
-                                }
+                                itagInfo.setIsUrl(!formatData.getString("type", EMPTY_STRING)
+                                        .equalsIgnoreCase("FORMAT_STREAM_TYPE_OTF"));
                             } else {
                                 // We are currently not able to generate DASH manifests for running
                                 // livestreams, so because of the requirements of StreamInfo
-                                // objects, return these streams as DASH streams
-                                // (even if they are not playable).
-                                itagInfos.add(new ItagInfo(streamUrl, itagItem, true));
+                                // objects, return these streams as DASH URL streams (even if they
+                                // are not playable).
+                                // Ended livestreams are returned as non URL streams
+                                itagInfo.setIsUrl(streamType != StreamType.POST_LIVE_STREAM);
                             }
+
+                            itagInfos.add(itagInfo);
                         }
                     } catch (final UnsupportedEncodingException | ParsingException ignored) {
                     }
