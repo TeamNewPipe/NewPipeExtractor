@@ -476,14 +476,13 @@ public class YoutubeStreamExtractor extends StreamExtractor {
 
         if (audioStreams == null) {
             audioStreams = new ArrayList<>();
-            final StreamType streamType = getStreamType();
 
             try {
-                for (final ContentAndItagItemAndIsUrl entry
-                        : getItags(ADAPTIVE_FORMATS, ItagItem.ItagType.AUDIO)) {
-                    final ItagItem itag = entry.itagItem;
-                    final String content = entry.content;
-                    final boolean isUrl = entry.isUrl;
+                for (final ItagInfo itagInfo : getItags(ADAPTIVE_FORMATS,
+                        ItagItem.ItagType.AUDIO)) {
+                    final ItagItem itag = itagInfo.itagItem;
+                    final String content = itagInfo.content;
+                    final boolean isUrl = itagInfo.isUrl;
                     final AudioStream audioStream;
 
                     if (streamType == StreamType.VIDEO_STREAM) {
@@ -523,14 +522,12 @@ public class YoutubeStreamExtractor extends StreamExtractor {
 
         if (videoStreams == null) {
             videoStreams = new ArrayList<>();
-            final StreamType streamType = getStreamType();
 
             try {
-                for (final ContentAndItagItemAndIsUrl entry
-                        : getItags(FORMATS, ItagItem.ItagType.VIDEO)) {
-                    final ItagItem itag = entry.itagItem;
-                    final String content = entry.content;
-                    final boolean isUrl = entry.isUrl;
+                for (final ItagInfo itagInfo : getItags(FORMATS, ItagItem.ItagType.VIDEO)) {
+                    final ItagItem itag = itagInfo.itagItem;
+                    final String content = itagInfo.content;
+                    final boolean isUrl = itagInfo.isUrl;
                     final VideoStream videoStream;
 
                     if (streamType == StreamType.VIDEO_STREAM) {
@@ -569,14 +566,13 @@ public class YoutubeStreamExtractor extends StreamExtractor {
 
         if (videoOnlyStreams == null) {
             videoOnlyStreams = new ArrayList<>();
-            final StreamType streamType = getStreamType();
 
             try {
-                for (final ContentAndItagItemAndIsUrl entry
-                        : getItags(ADAPTIVE_FORMATS, ItagItem.ItagType.VIDEO_ONLY)) {
-                    final ItagItem itag = entry.itagItem;
-                    final String content = entry.content;
-                    final boolean isUrl = entry.isUrl;
+                for (final ItagInfo itagInfo : getItags(ADAPTIVE_FORMATS,
+                        ItagItem.ItagType.VIDEO_ONLY)) {
+                    final ItagItem itag = itagInfo.itagItem;
+                    final String content = itagInfo.content;
+                    final boolean isUrl = itagInfo.isUrl;
                     final VideoStream videoOnlyStream;
 
                     if (streamType == StreamType.VIDEO_STREAM) {
@@ -1143,31 +1139,30 @@ public class YoutubeStreamExtractor extends StreamExtractor {
     }
 
     @Nonnull
-    private List<ContentAndItagItemAndIsUrl> getItags(final String streamingDataKey,
-                                                      final ItagItem.ItagType itagTypeWanted)
+    private List<ItagInfo> getItags(final String streamingDataKey,
+                                    final ItagItem.ItagType itagTypeWanted)
             throws ParsingException {
-        final List<ContentAndItagItemAndIsUrl> contentsAndItagItems = new ArrayList<>();
+        final List<ItagInfo> itagInfos = new ArrayList<>();
         if (mobileStreamingData != null || desktopStreamingData != null) {
-            final StreamType streamType = getStreamType();
             // Use the desktopStreamingData JSON object first because there are fewer redirects
             // from the desktop endpoint for OTF and post live streams
-            contentsAndItagItems.addAll(getStreamsFromStreamingDataKey(desktopStreamingData,
-                    streamingDataKey, itagTypeWanted, streamType));
-            contentsAndItagItems.addAll(getStreamsFromStreamingDataKey(mobileStreamingData,
-                    streamingDataKey, itagTypeWanted, streamType));
+            itagInfos.addAll(getStreamsFromStreamingDataKey(desktopStreamingData, streamingDataKey,
+                    itagTypeWanted, streamType));
+            itagInfos.addAll(getStreamsFromStreamingDataKey(mobileStreamingData, streamingDataKey,
+                    itagTypeWanted, streamType));
         }
 
-        return contentsAndItagItems;
+        return itagInfos;
     }
 
     @Nonnull
-    private List<ContentAndItagItemAndIsUrl> getStreamsFromStreamingDataKey(
+    private List<ItagInfo> getStreamsFromStreamingDataKey(
             final JsonObject streamingData,
             final String streamingDataKey,
             final ItagItem.ItagType itagTypeWanted,
             final StreamType streamType) throws ParsingException {
 
-        final List<ContentAndItagItemAndIsUrl> contentsAndItagItemsAndAreUrls = new ArrayList<>();
+        final List<ItagInfo> itagInfos = new ArrayList<>();
         if (streamingData != null && streamingData.has(streamingDataKey)) {
             final YoutubeThrottlingDecrypter throttlingDecrypter = new YoutubeThrottlingDecrypter(
                     getId());
@@ -1216,23 +1211,21 @@ public class YoutubeStreamExtractor extends StreamExtractor {
                             itagItem.setQuality(formatData.getString("quality"));
                             itagItem.setCodec(codec);
 
-                            if (itagType == ItagItem.ItagType.VIDEO || itagType == ItagItem.ItagType.VIDEO_ONLY) {
+                            if (itagType == ItagItem.ItagType.VIDEO
+                                    || itagType == ItagItem.ItagType.VIDEO_ONLY) {
                                 itagItem.fps = formatData.getInt("fps");
                             }
                             if (itagType == ItagItem.ItagType.AUDIO) {
-                                itagItem.sampleRate = Integer.parseInt(formatData.getString("audioSampleRate"));
+                                itagItem.sampleRate = Integer.parseInt(formatData.getString(
+                                        "audioSampleRate"));
                             }
 
                             if (streamType == StreamType.VIDEO_STREAM) {
                                 if (formatData.getString("type", EMPTY_STRING)
                                         .equalsIgnoreCase("FORMAT_STREAM_TYPE_OTF")) {
-                                    contentsAndItagItemsAndAreUrls.add(
-                                            new ContentAndItagItemAndIsUrl(streamUrl, itagItem,
-                                                    false));
+                                    itagInfos.add(new ItagInfo(streamUrl, itagItem, false));
                                 } else {
-                                    contentsAndItagItemsAndAreUrls.add(
-                                            new ContentAndItagItemAndIsUrl(streamUrl, itagItem,
-                                                    true));
+                                    itagInfos.add(new ItagInfo(streamUrl, itagItem, true));
                                 }
                             } else if (streamType == StreamType.POST_LIVE_STREAM) {
                                 // Even if it increases the content loading, we need to generate
@@ -1243,9 +1236,7 @@ public class YoutubeStreamExtractor extends StreamExtractor {
                                             createDashManifestFromPostLiveStreamDvrStreamingUrl(
                                                     streamUrl, itagItem, formatData
                                                             .getInt("targetDurationSec"));
-                                    contentsAndItagItemsAndAreUrls.add(
-                                            new ContentAndItagItemAndIsUrl(content, itagItem,
-                                                    false));
+                                    itagInfos.add(new ItagInfo(content, itagItem, false));
                                 } catch (final YoutubeDashManifestCreator
                                         .YoutubeDashManifestCreationException ignored) {
                                     // Something went wrong when generating the DASH manifest
@@ -1256,9 +1247,7 @@ public class YoutubeStreamExtractor extends StreamExtractor {
                                 // livestreams, so because of the requirements of StreamInfo
                                 // objects, return these streams as DASH streams
                                 // (even if they are not playable).
-                                contentsAndItagItemsAndAreUrls.add(
-                                        new ContentAndItagItemAndIsUrl(streamUrl, itagItem,
-                                                true));
+                                itagInfos.add(new ItagInfo(streamUrl, itagItem, true));
                             }
                         }
                     } catch (final UnsupportedEncodingException | ParsingException ignored) {
@@ -1267,7 +1256,7 @@ public class YoutubeStreamExtractor extends StreamExtractor {
             }
         }
 
-        return contentsAndItagItemsAndAreUrls;
+        return itagInfos;
     }
 
     @Nonnull
