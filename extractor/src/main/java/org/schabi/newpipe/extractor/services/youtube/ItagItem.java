@@ -17,8 +17,8 @@ public class ItagItem implements Serializable {
      */
     private static final ItagItem[] ITAG_LIST = {
             /////////////////////////////////////////////////////
-            // VIDEO     ID  Type   Format  Resolution  FPS  ///
-            ///////////////////////////////////////////////////
+            // VIDEO     ID  Type   Format  Resolution  FPS  ////
+            /////////////////////////////////////////////////////
             new ItagItem(17, VIDEO, v3GPP, "144p"),
             new ItagItem(36, VIDEO, v3GPP, "240p"),
 
@@ -36,8 +36,8 @@ public class ItagItem implements Serializable {
             new ItagItem(45, VIDEO, WEBM, "720p"),
             new ItagItem(46, VIDEO, WEBM, "1080p"),
 
-            ////////////////////////////////////////////////////////////////////
-            // AUDIO     ID      ItagType          Format        Bitrate    ///
+            //////////////////////////////////////////////////////////////////
+            // AUDIO     ID      ItagType          Format        Bitrate    //
             //////////////////////////////////////////////////////////////////
             new ItagItem(171, AUDIO, WEBMA, 128),
             new ItagItem(172, AUDIO, WEBMA, 256),
@@ -49,8 +49,8 @@ public class ItagItem implements Serializable {
             new ItagItem(251, AUDIO, WEBMA_OPUS, 160),
 
             /// VIDEO ONLY ////////////////////////////////////////////
-            //           ID      Type     Format  Resolution  FPS  ///
-            /////////////////////////////////////////////////////////
+            //           ID      Type     Format  Resolution  FPS  ////
+            ///////////////////////////////////////////////////////////
             new ItagItem(160, VIDEO_ONLY, MPEG_4, "144p"),
             new ItagItem(133, VIDEO_ONLY, MPEG_4, "240p"),
             new ItagItem(134, VIDEO_ONLY, MPEG_4, "360p"),
@@ -100,11 +100,20 @@ public class ItagItem implements Serializable {
                 return item;
             }
         }
-        throw new ParsingException("itag=" + itagId + " not supported");
+        throw new ParsingException("itag " + itagId + " is not supported");
     }
 
     /*//////////////////////////////////////////////////////////////////////////
-    // Contructors and misc
+    // Static constants
+    //////////////////////////////////////////////////////////////////////////*/
+
+    public static final int AVERAGE_BITRATE_UNKNOWN = -1;
+    public static final int SAMPLE_RATE_UNKNOWN = -1;
+    public static final int FPS_UNKNOWN = -1;
+    public static final int TARGET_DURATION_SEC_UNKNOWN = -1;
+
+    /*//////////////////////////////////////////////////////////////////////////
+    // Constructors and misc
     //////////////////////////////////////////////////////////////////////////*/
 
     public enum ItagType {
@@ -163,12 +172,12 @@ public class ItagItem implements Serializable {
     public final ItagType itagType;
 
     // Audio fields
-    public int avgBitrate = -1;
-    public int sampleRate = -1;
+    public int avgBitrate = AVERAGE_BITRATE_UNKNOWN;
+    private int sampleRate = SAMPLE_RATE_UNKNOWN;
 
     // Video fields
     public String resolutionString;
-    public int fps = -1;
+    public int fps = FPS_UNKNOWN;
 
     // Fields for Dash
     private int bitrate;
@@ -180,12 +189,13 @@ public class ItagItem implements Serializable {
     private int indexEnd;
     private String quality;
     private String codec;
+    private int targetDurationSec = TARGET_DURATION_SEC_UNKNOWN;
 
     public int getBitrate() {
         return bitrate;
     }
 
-    public void setBitrate(int bitrate) {
+    public void setBitrate(final int bitrate) {
         this.bitrate = bitrate;
     }
 
@@ -193,7 +203,7 @@ public class ItagItem implements Serializable {
         return width;
     }
 
-    public void setWidth(int width) {
+    public void setWidth(final int width) {
         this.width = width;
     }
 
@@ -201,7 +211,7 @@ public class ItagItem implements Serializable {
         return height;
     }
 
-    public void setHeight(int height) {
+    public void setHeight(final int height) {
         this.height = height;
     }
 
@@ -209,7 +219,7 @@ public class ItagItem implements Serializable {
         return initStart;
     }
 
-    public void setInitStart(int initStart) {
+    public void setInitStart(final int initStart) {
         this.initStart = initStart;
     }
 
@@ -217,7 +227,7 @@ public class ItagItem implements Serializable {
         return initEnd;
     }
 
-    public void setInitEnd(int initEnd) {
+    public void setInitEnd(final int initEnd) {
         this.initEnd = initEnd;
     }
 
@@ -225,7 +235,7 @@ public class ItagItem implements Serializable {
         return indexStart;
     }
 
-    public void setIndexStart(int indexStart) {
+    public void setIndexStart(final int indexStart) {
         this.indexStart = indexStart;
     }
 
@@ -233,7 +243,7 @@ public class ItagItem implements Serializable {
         return indexEnd;
     }
 
-    public void setIndexEnd(int indexEnd) {
+    public void setIndexEnd(final int indexEnd) {
         this.indexEnd = indexEnd;
     }
 
@@ -241,7 +251,7 @@ public class ItagItem implements Serializable {
         return quality;
     }
 
-    public void setQuality(String quality) {
+    public void setQuality(final String quality) {
         this.quality = quality;
     }
 
@@ -249,7 +259,63 @@ public class ItagItem implements Serializable {
         return codec;
     }
 
-    public void setCodec(String codec) {
+    public void setCodec(final String codec) {
         this.codec = codec;
+    }
+
+    /**
+     * Get the {@code targetDurationSec} value.
+     * <p>
+     * This value is an average time in seconds of sequences duration of livestreams and ended
+     * livestreams. It is only returned for these stream types by YouTube and makes no sense for
+     * videos, so {@link #TARGET_DURATION_SEC_UNKNOWN} is returned for video streams.
+     * </p>
+     *
+     * @return the targetDurationSec value or {@link #TARGET_DURATION_SEC_UNKNOWN}
+     */
+    public int getTargetDurationSec() {
+        return targetDurationSec;
+    }
+
+    /**
+     * Set the {@code targetDurationSec} value.
+     * <p>
+     * This value is an average time in seconds of sequences duration of livestreams and ended
+     * livestreams. It is only returned for these stream types by YouTube and makes no sense for
+     * videos, so {@link #TARGET_DURATION_SEC_UNKNOWN} will be set for video streams or if this
+     * value is less than or equal to 0.
+     * </p>
+     *
+     */
+    public void setTargetDurationSec(final int targetDurationSec) {
+        if (targetDurationSec > 0) {
+            this.targetDurationSec = targetDurationSec;
+        }
+    }
+
+    /**
+     * Get the sample rate.
+     * <p>
+     * It is only known for audio streams, so {@link #SAMPLE_RATE_UNKNOWN} is returned for video
+     * streams or if the sample rate is unknown.
+     * </p>
+     *
+     * @return the sample rate or {@link #SAMPLE_RATE_UNKNOWN}
+     */
+    public int getSampleRate() {
+        return sampleRate;
+    }
+
+    /**
+     * Set the sample rate.
+     * <p>
+     * It is only known for audio streams, so {@link #SAMPLE_RATE_UNKNOWN} is set for video
+     * streams or if the sample rate value is less than or equal to 0.
+     * </p>
+     */
+    public void setSampleRate(final int sampleRate) {
+        if (sampleRate > 0) {
+            this.sampleRate = sampleRate;
+        }
     }
 }
