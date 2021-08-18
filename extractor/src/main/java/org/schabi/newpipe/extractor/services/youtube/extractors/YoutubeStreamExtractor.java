@@ -739,6 +739,9 @@ public class YoutubeStreamExtractor extends StreamExtractor {
 
     private static final String FORMATS = "formats";
     private static final String ADAPTIVE_FORMATS = "adaptiveFormats";
+    private static final String STREAMING_DATA = "streamingData";
+    private static final String SIGNATURE_CIPHER = "signatureCipher";
+    private static final String CIPHER = "cipher";
     private static final String DEOBFUSCATION_FUNC_NAME = "deobfuscate";
 
     private static final String[] REGEXES = {
@@ -787,7 +790,7 @@ public class YoutubeStreamExtractor extends StreamExtractor {
         final boolean isAgeRestricted = playabilityStatus.getString("reason", EMPTY_STRING)
                 .contains("age");
 
-        if (!playerResponse.has("streamingData")) {
+        if (!playerResponse.has(STREAMING_DATA)) {
             try {
                 fetchDesktopEmbedJsonPlayer(contentCountry, localization, videoId);
             } catch (final Exception ignored) {
@@ -819,8 +822,8 @@ public class YoutubeStreamExtractor extends StreamExtractor {
             }
         }
 
-        if (desktopStreamingData == null && playerResponse.has("streamingData")) {
-            desktopStreamingData = playerResponse.getObject("streamingData");
+        if (desktopStreamingData == null && playerResponse.has(STREAMING_DATA)) {
+            desktopStreamingData = playerResponse.getObject(STREAMING_DATA);
         }
 
         if (desktopStreamingData == null) {
@@ -916,7 +919,7 @@ public class YoutubeStreamExtractor extends StreamExtractor {
         final JsonObject mobilePlayerResponse = getJsonMobilePostResponse("player",
                 mobileBody, contentCountry, localization);
 
-        final JsonObject streamingData = mobilePlayerResponse.getObject("streamingData");
+        final JsonObject streamingData = mobilePlayerResponse.getObject(STREAMING_DATA);
         if (!isNullOrEmpty(streamingData)) {
             mobileStreamingData = streamingData;
             if (desktopStreamingData == null) {
@@ -943,8 +946,8 @@ public class YoutubeStreamExtractor extends StreamExtractor {
                 "player", createPlayerBodyWithSts(
                         localization, contentCountry, videoId, false, sts),
                 localization);
-        if (playerResponseWithSignatureTimestamp.has("streamingData")) {
-            desktopStreamingData = playerResponseWithSignatureTimestamp.getObject("streamingData");
+        if (playerResponseWithSignatureTimestamp.has(STREAMING_DATA)) {
+            desktopStreamingData = playerResponseWithSignatureTimestamp.getObject(STREAMING_DATA);
         }
     }
 
@@ -967,7 +970,7 @@ public class YoutubeStreamExtractor extends StreamExtractor {
                         localization, contentCountry, videoId, true, sts),
                 localization);
         final JsonObject streamingData = desktopWebEmbedPlayerResponse.getObject(
-                "streamingData");
+                STREAMING_DATA);
         if (!isNullOrEmpty(streamingData)) {
             playerResponse = desktopWebEmbedPlayerResponse;
             desktopStreamingData = streamingData;
@@ -988,12 +991,12 @@ public class YoutubeStreamExtractor extends StreamExtractor {
         final JsonObject androidMobileEmbedPlayerResponse = getJsonMobilePostResponse("player",
                 androidMobileEmbedBody, contentCountry, localization);
         final JsonObject streamingData = androidMobileEmbedPlayerResponse.getObject(
-                "streamingData");
+                STREAMING_DATA);
         if (!isNullOrEmpty(streamingData)) {
             if (desktopStreamingData == null) {
                 playerResponse = androidMobileEmbedPlayerResponse;
             }
-            mobileStreamingData = androidMobileEmbedPlayerResponse.getObject("streamingData");
+            mobileStreamingData = androidMobileEmbedPlayerResponse.getObject(STREAMING_DATA);
         }
     }
 
@@ -1012,8 +1015,8 @@ public class YoutubeStreamExtractor extends StreamExtractor {
                 if (!isNullOrEmpty(adaptiveFormats)) {
                     for (final Object adaptiveFormat : adaptiveFormats) {
                         final JsonObject adaptiveFormatJsonObject = ((JsonObject) adaptiveFormat);
-                        if (adaptiveFormatJsonObject.has("signatureCipher")
-                                || adaptiveFormatJsonObject.has("cipher")) {
+                        if (adaptiveFormatJsonObject.has(SIGNATURE_CIPHER)
+                                || adaptiveFormatJsonObject.has(CIPHER)) {
                             return true;
                         }
                     }
@@ -1024,8 +1027,8 @@ public class YoutubeStreamExtractor extends StreamExtractor {
                 if (!isNullOrEmpty(formats)) {
                     for (final Object format : formats) {
                         final JsonObject formatJsonObject = ((JsonObject) format);
-                        if (formatJsonObject.has("signatureCipher")
-                                || formatJsonObject.has("cipher")) {
+                        if (formatJsonObject.has(SIGNATURE_CIPHER)
+                                || formatJsonObject.has(CIPHER)) {
                             return true;
                         }
                     }
@@ -1216,9 +1219,9 @@ public class YoutubeStreamExtractor extends StreamExtractor {
                                 streamUrl = formatData.getString("url");
                             } else {
                                 // This url has an obfuscated signature
-                                final String cipherString = formatData.has("cipher")
-                                        ? formatData.getString("cipher")
-                                        : formatData.getString("signatureCipher");
+                                final String cipherString = formatData.has(CIPHER)
+                                        ? formatData.getString(CIPHER)
+                                        : formatData.getString(SIGNATURE_CIPHER);
                                 final Map<String, String> cipher = Parser.compatParseMap(
                                         cipherString);
                                 streamUrl = cipher.get("url") + "&" + cipher.get("sp") + "="
