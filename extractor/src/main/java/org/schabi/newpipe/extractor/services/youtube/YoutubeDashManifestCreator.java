@@ -29,8 +29,8 @@ import static org.schabi.newpipe.extractor.utils.Utils.isNullOrEmpty;
 
 public class YoutubeDashManifestCreator {
 
-    private static final Pattern SEGMENT_DURATION_MS_PATTERN =
-            Pattern.compile("Segment-Durations-Ms: ((?:\\d+,\\d+,)?(?:\\d+\\(r=\\d+\\),\\d+,)+)");
+    private static final Pattern SEGMENT_DURATION_MS_PATTERN = Pattern.compile(
+            "Segment-Durations-Ms: ((?:\\d+,\\d+,)?(?:\\d+\\(r=\\d+\\)(,\\d+)+,)+)");
 
     private static final List<Integer> segmentsDuration = new ArrayList<>();
     private static final List<Integer> durationRepetitions = new ArrayList<>();
