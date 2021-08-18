@@ -55,7 +55,7 @@ public class YoutubeDashManifestCreator {
             @Nonnull String otfBaseStreamingUrl,
             @Nonnull final ItagItem itagItem)
             throws YoutubeDashManifestCreationException {
-        if (otfManifestsGenerated.get(otfBaseStreamingUrl) != null) {
+        if (otfManifestsGenerated.containsKey(otfBaseStreamingUrl)) {
             return otfManifestsGenerated.get(otfBaseStreamingUrl);
         }
         final String originalOtfBaseStreamingUrl = otfBaseStreamingUrl;
@@ -122,7 +122,7 @@ public class YoutubeDashManifestCreator {
             @Nonnull final ItagItem itagItem,
             final int targetDurationSec)
             throws YoutubeDashManifestCreationException {
-        if (postLiveStreamsManifestsGenerated.get(postLiveStreamDvrStreamingUrl) != null) {
+        if (postLiveStreamsManifestsGenerated.containsKey(postLiveStreamDvrStreamingUrl)) {
             return postLiveStreamsManifestsGenerated.get(postLiveStreamDvrStreamingUrl);
         }
         final String originalPostLiveStreamDvrStreamingUrl = postLiveStreamDvrStreamingUrl;
