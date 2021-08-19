@@ -95,6 +95,9 @@ public class YoutubeDashManifestCreator {
         generateAdaptationSetElement(document, itagItem.getMediaFormat().mimeType);
         generateRoleElement(document);
         generateRepresentationElement(document, itagItem);
+        if (itagItem.itagType == ItagItem.ItagType.AUDIO) {
+            generateAudioChannelConfigurationElement(document, itagItem);
+        }
         generateSegmentTemplateElement(document, otfBaseStreamingUrl, false);
         generateSegmentTimelineElement(document);
         collectSegmentsData(segmentDuration);
@@ -165,11 +168,15 @@ public class YoutubeDashManifestCreator {
                     "Unable to generate the DASH manifest: could not get the number of segments");
         }
 
-        final Document document = generateDocumentAndMpdElement(new String[] {streamDuration}, true);
+        final Document document = generateDocumentAndMpdElement(new String[] {streamDuration},
+                true);
         generatePeriodElement(document);
         generateAdaptationSetElement(document, itagItem.getMediaFormat().mimeType);
         generateRoleElement(document);
         generateRepresentationElement(document, itagItem);
+        if (itagItem.itagType == ItagItem.ItagType.AUDIO) {
+            generateAudioChannelConfigurationElement(document, itagItem);
+        }
         generateSegmentTemplateElement(document, postLiveStreamDvrStreamingUrl, true);
         generateSegmentTimelineElement(document);
         generateSegmentElementsForPostLiveDvrStreams(document, targetDurationSec, segmentCount);
@@ -488,6 +495,36 @@ public class YoutubeDashManifestCreator {
         } catch (final DOMException e) {
             throw new YoutubeDashManifestCreationException(
                     "Could not generate or append to the document the Representation element of the DASH manifest", e);
+        }
+    }
+
+    private static void generateAudioChannelConfigurationElement(
+            @Nonnull final Document document,
+            @Nonnull final ItagItem itagItem) throws YoutubeDashManifestCreationException {
+        try {
+            final Element representationElement = (Element) document.getElementsByTagName(
+                    "Representation").item(0);
+            final Element audioChannelConfigurationElement = document.createElement(
+                    "AudioChannelConfiguration");
+
+            final Attr schemeIdUriAttribute = document.createAttribute("schemeIdUri");
+            schemeIdUriAttribute.setValue(
+                    "urn:mpeg:dash:23003:3:audio_channel_configuration:2011");
+            audioChannelConfigurationElement.setAttributeNode(schemeIdUriAttribute);
+
+            final Attr valueAttribute = document.createAttribute("value");
+            final int audioChannels = itagItem.getAudioChannels();
+            if (audioChannels <= 0) {
+                throw new YoutubeDashManifestCreationException(
+                        "Could not generate the DASH manifest: the audioChannels value is less than or equal to 0 (" + audioChannels + ")");
+            }
+            valueAttribute.setValue(String.valueOf(itagItem.getAudioChannels()));
+            audioChannelConfigurationElement.setAttributeNode(valueAttribute);
+
+            representationElement.appendChild(audioChannelConfigurationElement);
+        } catch (final DOMException e) {
+            throw new YoutubeDashManifestCreationException(
+                    "Could not generate or append to the document the AudioChannelConfiguration element of the DASH manifest", e);
         }
     }
 

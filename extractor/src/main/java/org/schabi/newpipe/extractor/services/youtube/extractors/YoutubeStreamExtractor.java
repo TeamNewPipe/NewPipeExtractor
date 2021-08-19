@@ -1222,6 +1222,7 @@ public class YoutubeStreamExtractor extends StreamExtractor {
                             if (itagType == ItagItem.ItagType.AUDIO) {
                                 itagItem.setSampleRate(Integer.parseInt(formatData.getString(
                                         "audioSampleRate")));
+                                itagItem.setAudioChannels(formatData.getInt("audioChannels"));
                             }
                             final ItagInfo itagInfo = new ItagInfo(streamUrl, itagItem);
 
