@@ -111,6 +111,8 @@ public class ItagItem implements Serializable {
     public static final int SAMPLE_RATE_UNKNOWN = -1;
     public static final int FPS_UNKNOWN = -1;
     public static final int TARGET_DURATION_SEC_UNKNOWN = -1;
+    public static final int APPROX_DURATION_MS_UNKNOWN = -1;
+    public static final int AUDIO_CHANNELS_NOT_APPLICABLE_OR_UNKNOWN = -1;
 
     /*//////////////////////////////////////////////////////////////////////////
     // Constructors and misc
@@ -174,6 +176,7 @@ public class ItagItem implements Serializable {
     // Audio fields
     public int avgBitrate = AVERAGE_BITRATE_UNKNOWN;
     private int sampleRate = SAMPLE_RATE_UNKNOWN;
+    private int audioChannels = AUDIO_CHANNELS_NOT_APPLICABLE_OR_UNKNOWN;
 
     // Video fields
     public String resolutionString;
@@ -190,6 +193,7 @@ public class ItagItem implements Serializable {
     private String quality;
     private String codec;
     private int targetDurationSec = TARGET_DURATION_SEC_UNKNOWN;
+    private int approxDurationMs = APPROX_DURATION_MS_UNKNOWN;
 
     public int getBitrate() {
         return bitrate;
@@ -264,36 +268,6 @@ public class ItagItem implements Serializable {
     }
 
     /**
-     * Get the {@code targetDurationSec} value.
-     * <p>
-     * This value is an average time in seconds of sequences duration of livestreams and ended
-     * livestreams. It is only returned for these stream types by YouTube and makes no sense for
-     * videos, so {@link #TARGET_DURATION_SEC_UNKNOWN} is returned for video streams.
-     * </p>
-     *
-     * @return the targetDurationSec value or {@link #TARGET_DURATION_SEC_UNKNOWN}
-     */
-    public int getTargetDurationSec() {
-        return targetDurationSec;
-    }
-
-    /**
-     * Set the {@code targetDurationSec} value.
-     * <p>
-     * This value is an average time in seconds of sequences duration of livestreams and ended
-     * livestreams. It is only returned for these stream types by YouTube and makes no sense for
-     * videos, so {@link #TARGET_DURATION_SEC_UNKNOWN} will be set for video streams or if this
-     * value is less than or equal to 0.
-     * </p>
-     *
-     */
-    public void setTargetDurationSec(final int targetDurationSec) {
-        if (targetDurationSec > 0) {
-            this.targetDurationSec = targetDurationSec;
-        }
-    }
-
-    /**
      * Get the sample rate.
      * <p>
      * It is only known for audio streams, so {@link #SAMPLE_RATE_UNKNOWN} is returned for video
@@ -316,6 +290,88 @@ public class ItagItem implements Serializable {
     public void setSampleRate(final int sampleRate) {
         if (sampleRate > 0) {
             this.sampleRate = sampleRate;
+        }
+    }
+
+    /**
+     * Get the number of audio channels.
+     * <p>
+     * It is only known for audio streams, so {@link #AUDIO_CHANNELS_NOT_APPLICABLE_OR_UNKNOWN} is
+     * returned for video streams or if it is unknown.
+     * </p>
+     *
+     * @return the number of audio channels or {@link #AUDIO_CHANNELS_NOT_APPLICABLE_OR_UNKNOWN}
+     */
+    public int getAudioChannels() {
+        return audioChannels;
+    }
+
+    /**
+     * Set the number of audio channels.
+     * <p>
+     * It is only known for audio streams, so {@link #AUDIO_CHANNELS_NOT_APPLICABLE_OR_UNKNOWN} is
+     * set for video streams or if the {@code audioChannels} value is less than or equal to 0.
+     * </p>
+     * @param audioChannels the number of audio channels
+     */
+    public void setAudioChannels(final int audioChannels) {
+        if (audioChannels > 0) {
+            this.audioChannels = audioChannels;
+        }
+    }
+
+    /**
+     * Get the {@code targetDurationSec} value.
+     * <p>
+     * This value is an average time in seconds of sequences duration of livestreams and ended
+     * livestreams. It is only returned for these stream types by YouTube and makes no sense for
+     * videos, so {@link #TARGET_DURATION_SEC_UNKNOWN} is returned for video streams.
+     * </p>
+     *
+     * @return the {@code targetDurationSec} value or {@link #TARGET_DURATION_SEC_UNKNOWN}
+     */
+    public int getTargetDurationSec() {
+        return targetDurationSec;
+    }
+
+    /**
+     * Set the {@code targetDurationSec} value.
+     * <p>
+     * This value is an average time in seconds of sequences duration of livestreams and ended
+     * livestreams. It is only returned for these stream types by YouTube and makes no sense for
+     * videos, so {@link #TARGET_DURATION_SEC_UNKNOWN} will be set for video streams or if this
+     * value is less than or equal to 0.
+     * </p>
+     */
+    public void setTargetDurationSec(final int targetDurationSec) {
+        if (targetDurationSec > 0) {
+            this.targetDurationSec = targetDurationSec;
+        }
+    }
+
+    /**
+     * Get the {@code approxDurationMs} value.
+     * <p>
+     * It is only known for DASH progressive streams, so {@link #APPROX_DURATION_MS_UNKNOWN} is
+     * returned for other stream types or if this value is less than or equal to 0.
+     * </p>
+     *
+     * @return the {@code approxDurationMs} value or {@link #APPROX_DURATION_MS_UNKNOWN}
+     */
+    public int getApproxDurationMs() {
+        return approxDurationMs;
+    }
+
+    /**
+     * Set the {@code approxDurationMs} value.
+     * <p>
+     * It is only known for DASH progressive streams, so {@link #APPROX_DURATION_MS_UNKNOWN} is set
+     * for other stream types or if this value is less than or equal to 0.
+     * </p>
+     */
+    public void setApproxDurationMs(final int approxDurationMs) {
+        if (approxDurationMs > 0) {
+            this.approxDurationMs = approxDurationMs;
         }
     }
 }
