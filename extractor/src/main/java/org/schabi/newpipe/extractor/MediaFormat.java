@@ -6,28 +6,29 @@ package org.schabi.newpipe.extractor;
  * Copyright (c) Christian Schabesberger <chris.schabesberger@mailbox.org>
  *     and Adam Howard <achdisposable1@gmail.com> 2015
  *
- * MediaFormat.java is part of NewPipe.
+ * MediaFormat.java is part of NewPipe Extractor.
  *
- * NewPipe is free software: you can redistribute it and/or modify
+ * NewPipe Extractor is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
  *
- * NewPipe is distributed in the hope that it will be useful,
+ * NewPipe Extractor is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
  * GNU General Public License for more details.
  *
  * You should have received a copy of the GNU General Public License
- * along with NewPipe.  If not, see <http://www.gnu.org/licenses/>.
+ * along with NewPipe Extractor. If not, see <https://www.gnu.org/licenses/>.
  */
+
+import javax.annotation.Nullable;
 
 /**
- * Static data about various media formats support by NewPipe, eg mime type, extension
+ * Static data about various media formats support by NewPipe, e.g. mime type, extension.
  */
-
 public enum MediaFormat {
-    //video and audio combined formats
+    // Video and audio combined formats
     //           id      name    suffix  mime type
     MPEG_4      (0x0,   "MPEG-4", "mp4", "video/mp4"),
     v3GPP       (0x10,   "3GPP",   "3gp", "video/3gpp"),
@@ -52,7 +53,7 @@ public enum MediaFormat {
     public final String suffix;
     public final String mimeType;
 
-    MediaFormat(int id, String name, String suffix, String mimeType) {
+    MediaFormat(final int id, final String name, final String suffix, final String mimeType) {
         this.id = id;
         this.name = name;
         this.suffix = suffix;
@@ -66,9 +67,11 @@ public enum MediaFormat {
      * @return the friendly name of the MediaFormat associated with this ids,
      * or an empty String if none match it.
      */
-    public static String getNameById(int ident) {
-        for (MediaFormat vf : MediaFormat.values()) {
-            if (vf.id == ident) return vf.name;
+    public static String getNameById(final int ident) {
+        for (final MediaFormat vf : MediaFormat.values()) {
+            if (vf.id == ident) {
+                return vf.name;
+            }
         }
         return "";
     }
@@ -80,9 +83,11 @@ public enum MediaFormat {
      * @return the file extension of the MediaFormat associated with this ids,
      * or an empty String if none match it.
      */
-    public static String getSuffixById(int ident) {
-        for (MediaFormat vf : MediaFormat.values()) {
-            if (vf.id == ident) return vf.suffix;
+    public static String getSuffixById(final int ident) {
+        for (final MediaFormat vf : MediaFormat.values()) {
+            if (vf.id == ident) {
+                return vf.suffix;
+            }
         }
         return "";
     }
@@ -94,9 +99,11 @@ public enum MediaFormat {
      * @return the MIME type of the MediaFormat associated with this ids,
      * or an empty String if none match it.
      */
-    public static String getMimeById(int ident) {
+    public static String getMimeById(final int ident) {
         for (MediaFormat vf : MediaFormat.values()) {
-            if (vf.id == ident) return vf.mimeType;
+            if (vf.id == ident) {
+                return vf.mimeType;
+            }
         }
         return "";
     }
@@ -107,9 +114,12 @@ public enum MediaFormat {
      * @return MediaFormat associated with this mime type,
      * or null if none match it.
      */
-    public static MediaFormat getFromMimeType(String mimeType) {
-        for (MediaFormat vf : MediaFormat.values()) {
-            if (vf.mimeType.equals(mimeType)) return vf;
+    @Nullable
+    public static MediaFormat getFromMimeType(final String mimeType) {
+        for (final MediaFormat vf : MediaFormat.values()) {
+            if (vf.mimeType.equals(mimeType)) {
+                return vf;
+            }
         }
         return null;
     }
@@ -120,16 +130,22 @@ public enum MediaFormat {
      * @param id the id
      * @return the id of the media format or null.
      */
-    public static MediaFormat getFormatById(int id) {
+    @Nullable
+    public static MediaFormat getFormatById(final int id) {
         for (MediaFormat vf : values()) {
-            if (vf.id == id) return vf;
+            if (vf.id == id) {
+                return vf;
+            }
         }
         return null;
     }
 
-    public static MediaFormat getFromSuffix(String suffix) {
-        for (MediaFormat vf : values()) {
-            if (vf.suffix.equals(suffix)) return vf;
+    @Nullable
+    public static MediaFormat getFromSuffix(final String suffix) {
+        for (final MediaFormat vf : values()) {
+            if (vf.suffix.equals(suffix)) {
+                return vf;
+            }
         }
         return null;
     }
@@ -160,5 +176,4 @@ public enum MediaFormat {
     public String getMimeType() {
         return mimeType;
     }
-
 }

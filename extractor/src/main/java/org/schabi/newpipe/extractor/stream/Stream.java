@@ -3,6 +3,7 @@ package org.schabi.newpipe.extractor.stream;
 import org.schabi.newpipe.extractor.MediaFormat;
 import org.schabi.newpipe.extractor.services.youtube.ItagItem;
 
+import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.io.Serializable;
 import java.util.List;
@@ -14,11 +15,13 @@ import static org.schabi.newpipe.extractor.utils.Utils.isNullOrEmpty;
  */
 public abstract class Stream implements Serializable {
     private final String id;
-    private final MediaFormat mediaFormat;
+    @Nullable private final MediaFormat mediaFormat;
     private final String content;
     private final boolean isUrl;
     private final DeliveryMethod deliveryMethod;
     @Nullable private final String baseUrl;
+
+    public static final int FORMAT_ID_UNKNOWN = -1;
 
     /**
      * Instantiates a new stream object.
@@ -28,16 +31,17 @@ public abstract class Stream implements Serializable {
      * @param content        the content or URL, depending on whether isUrl is true
      * @param isUrl          whether content is the URL or the actual content of e.g. a DASH
      *                       manifest
-     * @param format         the format
+     * @param format         the {@link MediaFormat}, which can be null
      * @param deliveryMethod the delivery method
-     * @param baseUrl        the base URL of the content if the stream is a DASH or an HLS manifest
+     * @param baseUrl        the base URL of the content if the stream is a DASH or an HLS
+     *                       manifest, which can be null
      */
-    public Stream(final String id,
-                  final String content,
-                  final boolean isUrl,
-                  final MediaFormat format,
-                  final DeliveryMethod deliveryMethod,
-                  @Nullable final String baseUrl) {
+    protected Stream(final String id,
+                     final String content,
+                     final boolean isUrl,
+                     @Nullable final MediaFormat format,
+                     final DeliveryMethod deliveryMethod,
+                     @Nullable final String baseUrl) {
         this.id = id;
         this.content = content;
         this.isUrl = isUrl;
@@ -63,14 +67,23 @@ public abstract class Stream implements Serializable {
 
     /**
      * Reveals whether two streams have the same stats (format and bitrate, for example).
+     *
+     * <p>
+     * It returns always false if the id of the stream passed is unknown (or also if the stream
+     * passed is null) or if the format of the stream compared is not known.
+     * </p>
      * @param cmp the stream object to be compared to this stream object
      */
     public boolean equalStats(final Stream cmp) {
-        return cmp != null && getFormat().id == cmp.getFormat().id;
+        if (getFormat() != null && cmp != null && cmp.getFormat() != null) {
+            return getFormat().id == cmp.getFormat().id;
+        }
+        return false;
     }
 
     /**
      * Reveals whether two streams are equal.
+     *
      * @param cmp the stream object to be compared to this stream object
      */
     public boolean equals(final Stream cmp) {
@@ -79,6 +92,7 @@ public abstract class Stream implements Serializable {
 
     /**
      * Gets the ID for this stream, e.g. itag for YouTube.
+     *
      * @return the id
      */
     public String getId() {
@@ -92,6 +106,7 @@ public abstract class Stream implements Serializable {
      * @deprecated Use {@link #getContent()} instead
      */
     @Deprecated
+    @Nullable
     public String getUrl() {
         return isUrl ? content : null;
     }
@@ -116,20 +131,25 @@ public abstract class Stream implements Serializable {
     }
 
     /**
-     * Gets the format.
+     * Gets the {@link MediaFormat}, which can be null.
      *
      * @return the format
      */
+    @Nullable
     public MediaFormat getFormat() {
         return mediaFormat;
     }
 
     /**
-     * Gets the format id.
-     * @return the format id
+     * Gets the format id, which can be unknown.
+     *
+     * @return the format id or {@link #FORMAT_ID_UNKNOWN}
      */
     public int getFormatId() {
-        return mediaFormat.id;
+        if (mediaFormat != null) {
+            return mediaFormat.id;
+        }
+        return FORMAT_ID_UNKNOWN;
     }
 
     /**
@@ -137,6 +157,7 @@ public abstract class Stream implements Serializable {
      *
      * @return the delivery method
      */
+    @Nonnull
     public DeliveryMethod getDeliveryMethod() {
         return deliveryMethod;
     }

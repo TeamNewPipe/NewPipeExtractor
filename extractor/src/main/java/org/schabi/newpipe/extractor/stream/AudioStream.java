@@ -47,13 +47,13 @@ public class AudioStream extends Stream {
      * @param id             the ID which uniquely identifies the stream, e.g. for YouTube this
      *                       would be the itag
      * @param url            the URL of the stream
-     * @param format         the {@link MediaFormat} used by the stream
+     * @param format         the {@link MediaFormat} used by the stream, which can be null
      * @param averageBitrate the average bitrate of the stream (which can be unknown, see
      *                       {@link #UNKNOWN_BITRATE})
      */
     public AudioStream(final String id,
                        final String url,
-                       final MediaFormat format,
+                       @Nullable final MediaFormat format,
                        final int averageBitrate) {
         this(id, url, true, format, DeliveryMethod.PROGRESSIVE_HTTP, averageBitrate);
     }
@@ -67,7 +67,7 @@ public class AudioStream extends Stream {
      *                       true
      * @param isUrl          whether content is the URL or the actual content of e.g. a DASH
      *                       manifest
-     * @param format         the {@link MediaFormat} used by the stream
+     * @param format         the {@link MediaFormat} used by the stream, which can be null
      * @param deliveryMethod the {@link DeliveryMethod} of the stream
      * @param averageBitrate the average bitrate of the stream (which can be unknown, see
      *                       {@link #UNKNOWN_BITRATE})
@@ -75,7 +75,7 @@ public class AudioStream extends Stream {
     public AudioStream(final String id,
                        final String content,
                        final boolean isUrl,
-                       final MediaFormat format,
+                       @Nullable final MediaFormat format,
                        final DeliveryMethod deliveryMethod,
                        final int averageBitrate) {
         super(id, content, isUrl, format, deliveryMethod, null);
@@ -91,7 +91,7 @@ public class AudioStream extends Stream {
      *                       true
      * @param isUrl          whether content is the URL or the actual content of e.g. a DASH
      *                       manifest
-     * @param format         the {@link MediaFormat} used by the stream
+     * @param format         the {@link MediaFormat} used by the stream, which can be null
      * @param deliveryMethod the {@link DeliveryMethod} of the stream
      * @param averageBitrate the average bitrate of the stream (which can be unknown, see
      *                       {@link #UNKNOWN_BITRATE})
@@ -102,7 +102,7 @@ public class AudioStream extends Stream {
     public AudioStream(final String id,
                        final String content,
                        final boolean isUrl,
-                       final MediaFormat format,
+                       @Nullable final MediaFormat format,
                        final DeliveryMethod deliveryMethod,
                        final int averageBitrate,
                        @Nonnull final ItagItem itag,
