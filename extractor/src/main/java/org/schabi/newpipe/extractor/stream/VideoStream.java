@@ -49,13 +49,13 @@ public class VideoStream extends Stream {
      * @param id          the ID which uniquely identifies the stream, e.g. for YouTube this would
      *                    be the itag
      * @param url         the URL of the stream
-     * @param format      the {@link MediaFormat} used by the stream
+     * @param format      the {@link MediaFormat} used by the stream, which can be null
      * @param resolution  the resolution of the stream
      * @param isVideoOnly whether the stream is video-only
      */
     public VideoStream(final String id,
                        final String url,
-                       final MediaFormat format,
+                       @Nullable final MediaFormat format,
                        final String resolution,
                        final boolean isVideoOnly) {
         this(id, url, true, format, DeliveryMethod.PROGRESSIVE_HTTP, resolution, isVideoOnly,
@@ -71,7 +71,7 @@ public class VideoStream extends Stream {
      *                       true
      * @param isUrl          whether content is the URL or the actual content of e.g. a DASH
      *                       manifest
-     * @param format         the {@link MediaFormat} used by the stream
+     * @param format         the {@link MediaFormat} used by the stream, which can be null
      * @param deliveryMethod the {@link DeliveryMethod} of the stream
      * @param resolution     the resolution of the stream
      * @param isVideoOnly    whether the stream is video-only
@@ -81,7 +81,7 @@ public class VideoStream extends Stream {
     public VideoStream(final String id,
                        final String content,
                        final boolean isUrl,
-                       final MediaFormat format,
+                       @Nullable final MediaFormat format,
                        final DeliveryMethod deliveryMethod,
                        final String resolution,
                        final boolean isVideoOnly,
@@ -100,7 +100,7 @@ public class VideoStream extends Stream {
      *                       true
      * @param isUrl          whether content is the URL or the actual content of e.g. a DASH
      *                       manifest
-     * @param format         the {@link MediaFormat} used by the stream
+     * @param format         the {@link MediaFormat} used by the stream, which can be null
      * @param deliveryMethod the {@link DeliveryMethod} of the stream
      * @param resolution     the resolution of the stream
      * @param isVideoOnly    whether the stream is video-only
@@ -111,7 +111,7 @@ public class VideoStream extends Stream {
     public VideoStream(final String id,
                        final String content,
                        final boolean isUrl,
-                       final MediaFormat format,
+                       @Nullable final MediaFormat format,
                        final DeliveryMethod deliveryMethod,
                        final String resolution,
                        final boolean isVideoOnly,
