@@ -119,9 +119,8 @@ public class StreamInfo extends Info {
         return new StreamInfo(serviceId, url, originalUrl, streamType, id, name, ageLimit);
     }
 
-    @Nonnull
-    private static StreamInfo extractStreams(final StreamInfo streamInfo,
-                                             final StreamExtractor extractor)
+    private static void extractStreams(final StreamInfo streamInfo,
+                                       final StreamExtractor extractor)
             throws ExtractionException {
         /* ---- Stream extraction goes here ---- */
         // At least one type of stream has to be available, otherwise an exception will be thrown
@@ -174,13 +173,10 @@ public class StreamInfo extends Info {
             throw new StreamExtractException(
                     "Could not get any stream. See error variable to get further details.");
         }
-
-        return streamInfo;
     }
 
-    @Nonnull
-    private static StreamInfo extractOptionalData(final StreamInfo streamInfo,
-                                                  final StreamExtractor extractor) {
+    private static void extractOptionalData(final StreamInfo streamInfo,
+                                            final StreamExtractor extractor) {
         /* ---- Optional data goes here: ---- */
         // If one of these fails, the frontend needs to handle that they are not available.
         // Exceptions are therefore not thrown into the frontend, but stored into the error list,
@@ -328,8 +324,6 @@ public class StreamInfo extends Info {
 
         streamInfo.setRelatedItems(ExtractorHelper.getRelatedItemsOrLogError(streamInfo,
                 extractor));
-
-        return streamInfo;
     }
 
     private StreamType streamType;
