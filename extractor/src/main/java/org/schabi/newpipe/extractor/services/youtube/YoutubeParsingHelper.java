@@ -139,6 +139,7 @@ public class YoutubeParsingHelper {
                 || host.equalsIgnoreCase("invidious.snopyta.org")
                 || host.equalsIgnoreCase("yewtu.be")
                 || host.equalsIgnoreCase("tube.connect.cafe")
+                || host.equalsIgnoreCase("tubus.eduvid.org")
                 || host.equalsIgnoreCase("invidious.kavin.rocks")
                 || host.equalsIgnoreCase("invidious-us.kavin.rocks")
                 || host.equalsIgnoreCase("piped.kavin.rocks")
