@@ -77,4 +77,15 @@ public abstract class SubscriptionExtractor {
         throw new UnsupportedOperationException("Service " + service.getServiceInfo().getName()
                 + " doesn't support extracting from an InputStream");
     }
+
+    /**
+     * Reads and parse a list of {@link SubscriptionItem} from the given InputStream.
+     *
+     * @throws InvalidSourceException when the content read from the InputStream is invalid and can not be parsed
+     */
+    public List<SubscriptionItem> fromInputStream(@Nonnull final InputStream contentInputStream, String contentType)
+            throws ExtractionException {
+        throw new UnsupportedOperationException("Service " + service.getServiceInfo().getName()
+                + " doesn't support extracting from an InputStream");
+    }
 }
