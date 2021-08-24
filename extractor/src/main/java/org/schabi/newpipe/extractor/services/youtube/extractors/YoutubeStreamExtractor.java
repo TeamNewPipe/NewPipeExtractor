@@ -482,26 +482,40 @@ public class YoutubeStreamExtractor extends StreamExtractor {
                         ItagItem.ItagType.AUDIO)) {
                     final ItagItem itag = itagInfo.getItagItem();
                     final String content = itagInfo.getContent();
-                    final boolean isUrl = itagInfo.getIsUrl();
                     final AudioStream audioStream;
 
                     if (streamType == StreamType.VIDEO_STREAM) {
-                        if (isUrl) {
-                            audioStream = new AudioStream(String.valueOf(itag.id), content,
-                                    true, itag.getMediaFormat(), DeliveryMethod.PROGRESSIVE_HTTP,
-                                    itag.avgBitrate, itag, null);
+                        if (itagInfo.getIsUrl()) {
+                            audioStream = new AudioStream(String.valueOf(itag.id),
+                                    content,
+                                    true,
+                                    itag.getMediaFormat(),
+                                    DeliveryMethod.PROGRESSIVE_HTTP,
+                                    itag.avgBitrate,
+                                    itag,
+                                    null);
                         } else {
                             // YouTube only provides DASH streams for videos with OTF streams
-                            audioStream = new AudioStream(String.valueOf(itag.id), content,
-                                    false, itag.getMediaFormat(), DeliveryMethod.DASH,
-                                    itag.avgBitrate, itag, null);
+                            audioStream = new AudioStream(String.valueOf(itag.id),
+                                    content,
+                                    false,
+                                    itag.getMediaFormat(),
+                                    DeliveryMethod.DASH,
+                                    itag.avgBitrate,
+                                    itag,
+                                    null);
                         }
                     } else {
                         // Post live streams and live streams use only sequences, so they are
                         // always using DASH
-                        audioStream = new AudioStream(String.valueOf(itag.id), content,
-                                isUrl, itag.getMediaFormat(), DeliveryMethod.DASH,
-                                itag.avgBitrate, itag, null);
+                        audioStream = new AudioStream(String.valueOf(itag.id),
+                                content,
+                                itagInfo.getIsUrl(),
+                                itag.getMediaFormat(),
+                                DeliveryMethod.DASH,
+                                itag.avgBitrate,
+                                itag,
+                                null);
                     }
 
                     if (!Stream.containSimilarStream(audioStream, audioStreams)) {
@@ -527,26 +541,43 @@ public class YoutubeStreamExtractor extends StreamExtractor {
                 for (final ItagInfo itagInfo : getItags(FORMATS, ItagItem.ItagType.VIDEO)) {
                     final ItagItem itag = itagInfo.getItagItem();
                     final String content = itagInfo.getContent();
-                    final boolean isUrl = itagInfo.getIsUrl();
                     final VideoStream videoStream;
 
                     if (streamType == StreamType.VIDEO_STREAM) {
-                        if (isUrl) {
-                            videoStream = new VideoStream(String.valueOf(itag.id), content,
-                                    true, itag.getMediaFormat(), DeliveryMethod.PROGRESSIVE_HTTP,
-                                    itag.resolutionString, false, itag, null);
+                        if (itagInfo.getIsUrl()) {
+                            videoStream = new VideoStream(String.valueOf(itag.id),
+                                    content,
+                                    true,
+                                    itag.getMediaFormat(),
+                                    DeliveryMethod.PROGRESSIVE_HTTP,
+                                    itag.resolutionString,
+                                    false,
+                                    itag,
+                                    null);
                         } else {
                             // YouTube only provides DASH streams for videos with OTF streams
-                            videoStream = new VideoStream(String.valueOf(itag.id), content,
-                                    false, itag.getMediaFormat(), DeliveryMethod.DASH,
-                                    itag.resolutionString, false, itag, null);
+                            videoStream = new VideoStream(String.valueOf(itag.id),
+                                    content,
+                                    false,
+                                    itag.getMediaFormat(),
+                                    DeliveryMethod.DASH,
+                                    itag.resolutionString,
+                                    false,
+                                    itag,
+                                    null);
                         }
                     } else {
                         // Post live streams and live streams use only sequences, so they are
                         // always using DASH
-                        videoStream = new VideoStream(String.valueOf(itag.id), content,
-                                isUrl, itag.getMediaFormat(), DeliveryMethod.DASH,
-                                itag.resolutionString, false, itag, null);
+                        videoStream = new VideoStream(String.valueOf(itag.id),
+                                content,
+                                itagInfo.getIsUrl(),
+                                itag.getMediaFormat(),
+                                DeliveryMethod.DASH,
+                                itag.resolutionString,
+                                false,
+                                itag,
+                                null);
                     }
                     if (!Stream.containSimilarStream(videoStream, videoStreams)) {
                         videoStreams.add(videoStream);
@@ -572,26 +603,43 @@ public class YoutubeStreamExtractor extends StreamExtractor {
                         ItagItem.ItagType.VIDEO_ONLY)) {
                     final ItagItem itag = itagInfo.getItagItem();
                     final String content = itagInfo.getContent();
-                    final boolean isUrl = itagInfo.getIsUrl();
                     final VideoStream videoOnlyStream;
 
                     if (streamType == StreamType.VIDEO_STREAM) {
-                        if (isUrl) {
-                            videoOnlyStream = new VideoStream(String.valueOf(itag.id), content,
-                                    true, itag.getMediaFormat(), DeliveryMethod.PROGRESSIVE_HTTP,
-                                    itag.resolutionString, true, itag, null);
+                        if (itagInfo.getIsUrl()) {
+                            videoOnlyStream = new VideoStream(String.valueOf(itag.id),
+                                    content,
+                                    true,
+                                    itag.getMediaFormat(),
+                                    DeliveryMethod.PROGRESSIVE_HTTP,
+                                    itag.resolutionString,
+                                    true,
+                                    itag,
+                                    null);
                         } else {
                             // YouTube only provides DASH streams for videos with OTF streams
-                            videoOnlyStream = new VideoStream(String.valueOf(itag.id), content,
-                                    false, itag.getMediaFormat(), DeliveryMethod.DASH,
-                                    itag.resolutionString, true, itag, null);
+                            videoOnlyStream = new VideoStream(String.valueOf(itag.id),
+                                    content,
+                                    false,
+                                    itag.getMediaFormat(),
+                                    DeliveryMethod.DASH,
+                                    itag.resolutionString,
+                                    true,
+                                    itag,
+                                    null);
                         }
                     } else {
                         // Post live streams and live streams use only sequences, so they are
                         // always using DASH
-                        videoOnlyStream = new VideoStream(String.valueOf(itag.id), content,
-                                isUrl, itag.getMediaFormat(), DeliveryMethod.DASH,
-                                itag.resolutionString, true, itag, null);
+                        videoOnlyStream = new VideoStream(String.valueOf(itag.id),
+                                content,
+                                itagInfo.getIsUrl(),
+                                itag.getMediaFormat(),
+                                DeliveryMethod.DASH,
+                                itag.resolutionString,
+                                true,
+                                itag,
+                                null);
                     }
                     if (!Stream.containSimilarStream(videoOnlyStream, videoOnlyStreams)) {
                         videoOnlyStreams.add(videoOnlyStream);
