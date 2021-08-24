@@ -836,8 +836,8 @@ public class YoutubeStreamExtractor extends StreamExtractor {
             throws IOException, ExtractionException {
         final byte[] mobileBody = JsonWriter.string(prepareAndroidMobileJsonBuilder(
                 localization, contentCountry)
-                        .value("videoId", videoId)
-                        .done())
+                .value("videoId", videoId)
+                .done())
                 .getBytes(UTF_8);
         final JsonObject mobilePlayerResponse = getJsonMobilePostResponse("player",
                 mobileBody, contentCountry, localization);
@@ -1128,59 +1128,60 @@ public class YoutubeStreamExtractor extends StreamExtractor {
         if (streamingData != null && streamingData.has(streamingDataKey)) {
             final JsonArray formats = streamingData.getArray(streamingDataKey);
             for (int i = 0; i != formats.size(); ++i) {
-                JsonObject formatData = formats.getObject(i);
-                int itag = formatData.getInt("itag");
+                final JsonObject formatData = formats.getObject(i);
+                final int itag = formatData.getInt("itag");
+                final int averageBitrate = formatData.getInt("averageBitrate");
+                final int fps = formatData.getInt("fps");
+                final String qualityLabel = formatData.getString("qualityLabel");
+                final String mimeType = formatData.getString("mimeType", EMPTY_STRING);
 
-                if (ItagItem.isSupported(itag)) {
-                    try {
-                        final ItagItem itagItem = ItagItem.getItag(itag);
-                        if (itagItem.itagType == itagTypeWanted) {
-                            // Ignore streams that are delivered using YouTube's OTF format,
-                            // as those only work with DASH and not with progressive HTTP.
-                            if (formatData.getString("type", EMPTY_STRING)
-                                    .equalsIgnoreCase("FORMAT_STREAM_TYPE_OTF")) {
-                                continue;
-                            }
-
-                            final String streamUrl;
-                            if (formatData.has("url")) {
-                                streamUrl = formatData.getString("url");
-                            } else {
-                                // This url has an obfuscated signature
-                                final String cipherString = formatData.has("cipher")
-                                        ? formatData.getString("cipher")
-                                        : formatData.getString("signatureCipher");
-                                final Map<String, String> cipher = Parser.compatParseMap(
-                                        cipherString);
-                                streamUrl = cipher.get("url") + "&" + cipher.get("sp") + "="
-                                        + deobfuscateSignature(cipher.get("s"));
-                            }
-
-                            final JsonObject initRange = formatData.getObject("initRange");
-                            final JsonObject indexRange = formatData.getObject("indexRange");
-                            final String mimeType = formatData.getString("mimeType", EMPTY_STRING);
-                            final String codec = mimeType.contains("codecs")
-                                    ? mimeType.split("\"")[1] : EMPTY_STRING;
-
-                            itagItem.setBitrate(formatData.getInt("bitrate"));
-                            itagItem.setWidth(formatData.getInt("width"));
-                            itagItem.setHeight(formatData.getInt("height"));
-                            itagItem.setInitStart(Integer.parseInt(initRange.getString("start",
-                                    "-1")));
-                            itagItem.setInitEnd(Integer.parseInt(initRange.getString("end",
-                                    "-1")));
-                            itagItem.setIndexStart(Integer.parseInt(indexRange.getString("start",
-                                    "-1")));
-                            itagItem.setIndexEnd(Integer.parseInt(indexRange.getString("end",
-                                    "-1")));
-                            itagItem.fps = formatData.getInt("fps");
-                            itagItem.setQuality(formatData.getString("quality"));
-                            itagItem.setCodec(codec);
-
-                            urlAndItagsFromStreamingDataObject.put(streamUrl, itagItem);
+                try {
+                    final ItagItem itagItem = ItagItem.getItag(itag, averageBitrate, fps, qualityLabel, mimeType);
+                    if (itagItem.itagType == itagTypeWanted) {
+                        // Ignore streams that are delivered using YouTube's OTF format,
+                        // as those only work with DASH and not with progressive HTTP.
+                        if (formatData.getString("type", EMPTY_STRING)
+                                .equalsIgnoreCase("FORMAT_STREAM_TYPE_OTF")) {
+                            continue;
                         }
-                    } catch (final UnsupportedEncodingException | ParsingException ignored) {
+
+                        final String streamUrl;
+                        if (formatData.has("url")) {
+                            streamUrl = formatData.getString("url");
+                        } else {
+                            // This url has an obfuscated signature
+                            final String cipherString = formatData.has("cipher")
+                                    ? formatData.getString("cipher")
+                                    : formatData.getString("signatureCipher");
+                            final Map<String, String> cipher = Parser.compatParseMap(
+                                    cipherString);
+                            streamUrl = cipher.get("url") + "&" + cipher.get("sp") + "="
+                                    + deobfuscateSignature(cipher.get("s"));
+                        }
+
+                        final JsonObject initRange = formatData.getObject("initRange");
+                        final JsonObject indexRange = formatData.getObject("indexRange");
+                        final String codec = mimeType.contains("codecs")
+                                ? mimeType.split("\"")[1] : EMPTY_STRING;
+
+                        itagItem.setBitrate(formatData.getInt("bitrate"));
+                        itagItem.setWidth(formatData.getInt("width"));
+                        itagItem.setHeight(formatData.getInt("height"));
+                        itagItem.setInitStart(Integer.parseInt(initRange.getString("start",
+                                "-1")));
+                        itagItem.setInitEnd(Integer.parseInt(initRange.getString("end",
+                                "-1")));
+                        itagItem.setIndexStart(Integer.parseInt(indexRange.getString("start",
+                                "-1")));
+                        itagItem.setIndexEnd(Integer.parseInt(indexRange.getString("end",
+                                "-1")));
+                        itagItem.fps = formatData.getInt("fps");
+                        itagItem.setQuality(formatData.getString("quality"));
+                        itagItem.setCodec(codec);
+
+                        urlAndItagsFromStreamingDataObject.put(streamUrl, itagItem);
                     }
+                } catch (final UnsupportedEncodingException | ParsingException ignored) {
                 }
             }
         }
