@@ -3,17 +3,22 @@ package org.schabi.newpipe.extractor.services.youtube;
 import org.schabi.newpipe.extractor.MediaFormat;
 import org.schabi.newpipe.extractor.exceptions.ParsingException;
 
+import javax.annotation.Nonnull;
+
 import static org.schabi.newpipe.extractor.MediaFormat.*;
 import static org.schabi.newpipe.extractor.services.youtube.ItagItem.ItagType.*;
 
-public class ItagItem {
+import java.io.Serializable;
+
+public class ItagItem implements Serializable {
     /**
-     * List can be found here https://github.com/ytdl-org/youtube-dl/blob/9fc5eafb8e384453a49f7cfe73147be491f0b19d/youtube_dl/extractor/youtube.py#L1071
+     * List can be found here:
+     * https://github.com/ytdl-org/youtube-dl/blob/c2350cac/youtube_dl/extractor/youtube.py#L1109
      */
     private static final ItagItem[] ITAG_LIST = {
             /////////////////////////////////////////////////////
-            // VIDEO     ID  Type   Format  Resolution  FPS  ///
-            ///////////////////////////////////////////////////
+            // VIDEO     ID  Type   Format  Resolution  FPS  ////
+            /////////////////////////////////////////////////////
             new ItagItem(17, VIDEO, v3GPP, "144p"),
             new ItagItem(36, VIDEO, v3GPP, "240p"),
 
@@ -31,8 +36,8 @@ public class ItagItem {
             new ItagItem(45, VIDEO, WEBM, "720p"),
             new ItagItem(46, VIDEO, WEBM, "1080p"),
 
-            ////////////////////////////////////////////////////////////////////
-            // AUDIO     ID      ItagType          Format        Bitrate    ///
+            //////////////////////////////////////////////////////////////////
+            // AUDIO     ID      ItagType          Format        Bitrate    //
             //////////////////////////////////////////////////////////////////
             new ItagItem(171, AUDIO, WEBMA, 128),
             new ItagItem(172, AUDIO, WEBMA, 256),
@@ -44,8 +49,8 @@ public class ItagItem {
             new ItagItem(251, AUDIO, WEBMA_OPUS, 160),
 
             /// VIDEO ONLY ////////////////////////////////////////////
-            //           ID      Type     Format  Resolution  FPS  ///
-            /////////////////////////////////////////////////////////
+            //           ID      Type     Format  Resolution  FPS  ////
+            ///////////////////////////////////////////////////////////
             new ItagItem(160, VIDEO_ONLY, MPEG_4, "144p"),
             new ItagItem(133, VIDEO_ONLY, MPEG_4, "240p"),
             new ItagItem(134, VIDEO_ONLY, MPEG_4, "360p"),
@@ -79,7 +84,7 @@ public class ItagItem {
     // Utils
     //////////////////////////////////////////////////////////////////////////*/
 
-    public static boolean isSupported(int itag) {
+    public static boolean isSupported(final int itag) {
         for (ItagItem item : ITAG_LIST) {
             if (itag == item.id) {
                 return true;
@@ -88,17 +93,29 @@ public class ItagItem {
         return false;
     }
 
-    public static ItagItem getItag(int itagId) throws ParsingException {
+    @Nonnull
+    public static ItagItem getItag(final int itagId) throws ParsingException {
         for (ItagItem item : ITAG_LIST) {
             if (itagId == item.id) {
                 return item;
             }
         }
-        throw new ParsingException("itag=" + itagId + " not supported");
+        throw new ParsingException("itag " + itagId + " is not supported");
     }
 
     /*//////////////////////////////////////////////////////////////////////////
-    // Contructors and misc
+    // Static constants
+    //////////////////////////////////////////////////////////////////////////*/
+
+    public static final int AVERAGE_BITRATE_UNKNOWN = -1;
+    public static final int SAMPLE_RATE_UNKNOWN = -1;
+    public static final int FPS_UNKNOWN = -1;
+    public static final int TARGET_DURATION_SEC_UNKNOWN = -1;
+    public static final int APPROX_DURATION_MS_UNKNOWN = -1;
+    public static final int AUDIO_CHANNELS_NOT_APPLICABLE_OR_UNKNOWN = -1;
+
+    /*//////////////////////////////////////////////////////////////////////////
+    // Constructors and misc
     //////////////////////////////////////////////////////////////////////////*/
 
     public enum ItagType {
@@ -110,7 +127,10 @@ public class ItagItem {
     /**
      * Call {@link #ItagItem(int, ItagType, MediaFormat, String, int)} with the fps set to 30.
      */
-    public ItagItem(int id, ItagType type, MediaFormat format, String resolution) {
+    public ItagItem(final int id,
+                    final ItagType type,
+                    final MediaFormat format,
+                    final String resolution) {
         this.id = id;
         this.itagType = type;
         this.mediaFormat = format;
@@ -120,10 +140,12 @@ public class ItagItem {
 
     /**
      * Constructor for videos.
-     *
-     * @param resolution string that will be used in the frontend
      */
-    public ItagItem(int id, ItagType type, MediaFormat format, String resolution, int fps) {
+    public ItagItem(final int id,
+                    final ItagType type,
+                    final MediaFormat format,
+                    final String resolution,
+                    final int fps) {
         this.id = id;
         this.itagType = type;
         this.mediaFormat = format;
@@ -131,7 +153,10 @@ public class ItagItem {
         this.fps = fps;
     }
 
-    public ItagItem(int id, ItagType type, MediaFormat format, int avgBitrate) {
+    public ItagItem(final int id,
+                    final ItagType type,
+                    final MediaFormat format,
+                    final int avgBitrate) {
         this.id = id;
         this.itagType = type;
         this.mediaFormat = format;
@@ -149,11 +174,13 @@ public class ItagItem {
     public final ItagType itagType;
 
     // Audio fields
-    public int avgBitrate = -1;
+    public int avgBitrate = AVERAGE_BITRATE_UNKNOWN;
+    private int sampleRate = SAMPLE_RATE_UNKNOWN;
+    private int audioChannels = AUDIO_CHANNELS_NOT_APPLICABLE_OR_UNKNOWN;
 
     // Video fields
     public String resolutionString;
-    public int fps = -1;
+    public int fps = FPS_UNKNOWN;
 
     // Fields for Dash
     private int bitrate;
@@ -165,12 +192,14 @@ public class ItagItem {
     private int indexEnd;
     private String quality;
     private String codec;
+    private int targetDurationSec = TARGET_DURATION_SEC_UNKNOWN;
+    private int approxDurationMs = APPROX_DURATION_MS_UNKNOWN;
 
     public int getBitrate() {
         return bitrate;
     }
 
-    public void setBitrate(int bitrate) {
+    public void setBitrate(final int bitrate) {
         this.bitrate = bitrate;
     }
 
@@ -178,7 +207,7 @@ public class ItagItem {
         return width;
     }
 
-    public void setWidth(int width) {
+    public void setWidth(final int width) {
         this.width = width;
     }
 
@@ -186,7 +215,7 @@ public class ItagItem {
         return height;
     }
 
-    public void setHeight(int height) {
+    public void setHeight(final int height) {
         this.height = height;
     }
 
@@ -194,7 +223,7 @@ public class ItagItem {
         return initStart;
     }
 
-    public void setInitStart(int initStart) {
+    public void setInitStart(final int initStart) {
         this.initStart = initStart;
     }
 
@@ -202,7 +231,7 @@ public class ItagItem {
         return initEnd;
     }
 
-    public void setInitEnd(int initEnd) {
+    public void setInitEnd(final int initEnd) {
         this.initEnd = initEnd;
     }
 
@@ -210,7 +239,7 @@ public class ItagItem {
         return indexStart;
     }
 
-    public void setIndexStart(int indexStart) {
+    public void setIndexStart(final int indexStart) {
         this.indexStart = indexStart;
     }
 
@@ -218,7 +247,7 @@ public class ItagItem {
         return indexEnd;
     }
 
-    public void setIndexEnd(int indexEnd) {
+    public void setIndexEnd(final int indexEnd) {
         this.indexEnd = indexEnd;
     }
 
@@ -226,7 +255,7 @@ public class ItagItem {
         return quality;
     }
 
-    public void setQuality(String quality) {
+    public void setQuality(final String quality) {
         this.quality = quality;
     }
 
@@ -234,7 +263,115 @@ public class ItagItem {
         return codec;
     }
 
-    public void setCodec(String codec) {
+    public void setCodec(final String codec) {
         this.codec = codec;
+    }
+
+    /**
+     * Get the sample rate.
+     * <p>
+     * It is only known for audio streams, so {@link #SAMPLE_RATE_UNKNOWN} is returned for video
+     * streams or if the sample rate is unknown.
+     * </p>
+     *
+     * @return the sample rate or {@link #SAMPLE_RATE_UNKNOWN}
+     */
+    public int getSampleRate() {
+        return sampleRate;
+    }
+
+    /**
+     * Set the sample rate.
+     * <p>
+     * It is only known for audio streams, so {@link #SAMPLE_RATE_UNKNOWN} is set for video
+     * streams or if the sample rate value is less than or equal to 0.
+     * </p>
+     */
+    public void setSampleRate(final int sampleRate) {
+        if (sampleRate > 0) {
+            this.sampleRate = sampleRate;
+        }
+    }
+
+    /**
+     * Get the number of audio channels.
+     * <p>
+     * It is only known for audio streams, so {@link #AUDIO_CHANNELS_NOT_APPLICABLE_OR_UNKNOWN} is
+     * returned for video streams or if it is unknown.
+     * </p>
+     *
+     * @return the number of audio channels or {@link #AUDIO_CHANNELS_NOT_APPLICABLE_OR_UNKNOWN}
+     */
+    public int getAudioChannels() {
+        return audioChannels;
+    }
+
+    /**
+     * Set the number of audio channels.
+     * <p>
+     * It is only known for audio streams, so {@link #AUDIO_CHANNELS_NOT_APPLICABLE_OR_UNKNOWN} is
+     * set for video streams or if the {@code audioChannels} value is less than or equal to 0.
+     * </p>
+     * @param audioChannels the number of audio channels
+     */
+    public void setAudioChannels(final int audioChannels) {
+        if (audioChannels > 0) {
+            this.audioChannels = audioChannels;
+        }
+    }
+
+    /**
+     * Get the {@code targetDurationSec} value.
+     * <p>
+     * This value is an average time in seconds of sequences duration of livestreams and ended
+     * livestreams. It is only returned for these stream types by YouTube and makes no sense for
+     * videos, so {@link #TARGET_DURATION_SEC_UNKNOWN} is returned for video streams.
+     * </p>
+     *
+     * @return the {@code targetDurationSec} value or {@link #TARGET_DURATION_SEC_UNKNOWN}
+     */
+    public int getTargetDurationSec() {
+        return targetDurationSec;
+    }
+
+    /**
+     * Set the {@code targetDurationSec} value.
+     * <p>
+     * This value is an average time in seconds of sequences duration of livestreams and ended
+     * livestreams. It is only returned for these stream types by YouTube and makes no sense for
+     * videos, so {@link #TARGET_DURATION_SEC_UNKNOWN} will be set for video streams or if this
+     * value is less than or equal to 0.
+     * </p>
+     */
+    public void setTargetDurationSec(final int targetDurationSec) {
+        if (targetDurationSec > 0) {
+            this.targetDurationSec = targetDurationSec;
+        }
+    }
+
+    /**
+     * Get the {@code approxDurationMs} value.
+     * <p>
+     * It is only known for DASH progressive streams, so {@link #APPROX_DURATION_MS_UNKNOWN} is
+     * returned for other stream types or if this value is less than or equal to 0.
+     * </p>
+     *
+     * @return the {@code approxDurationMs} value or {@link #APPROX_DURATION_MS_UNKNOWN}
+     */
+    public int getApproxDurationMs() {
+        return approxDurationMs;
+    }
+
+    /**
+     * Set the {@code approxDurationMs} value.
+     * <p>
+     * It is only known for DASH progressive streams, so {@link #APPROX_DURATION_MS_UNKNOWN} is set
+     * for other stream types or if this value is less than or equal to 0.
+     * </p>
+     */
+    public void setApproxDurationMs(final int approxDurationMs) {
+        if (approxDurationMs > 0) {
+            this.approxDurationMs = approxDurationMs;
+        }
     }
 }

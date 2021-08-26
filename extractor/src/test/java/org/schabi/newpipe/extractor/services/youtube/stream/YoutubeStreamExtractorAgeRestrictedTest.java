@@ -56,7 +56,7 @@ public class YoutubeStreamExtractorAgeRestrictedTest extends DefaultStreamExtrac
     @Override public long expectedDislikeCountAtLeast() { return 38000; }
     @Override public boolean expectedHasRelatedItems() { return false; } // no related videos (!)
     @Override public int expectedAgeLimit() { return 18; }
-    @Override public boolean expectedHasSubtitles() { return false; }
+    @Override public boolean expectedHasSubtitles() { return true; }
 
     @Override public String expectedCategory() { return "Entertainment"; }
 

@@ -210,11 +210,8 @@ public class BandcampStreamExtractor extends StreamExtractor {
     public List<AudioStream> getAudioStreams() {
         final List<AudioStream> audioStreams = new ArrayList<>();
 
-        audioStreams.add(new AudioStream(
-                albumJson.getArray("trackinfo").getObject(0)
-                        .getObject("file").getString("mp3-128"),
-                MediaFormat.MP3, 128
-        ));
+        audioStreams.add(new AudioStream("mp3-128", albumJson.getArray("trackinfo")
+                .getObject(0).getObject("file").getString("mp3-128"), MediaFormat.MP3, 128));
         return audioStreams;
     }
 

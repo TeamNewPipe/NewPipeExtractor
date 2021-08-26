@@ -11,6 +11,7 @@ import org.schabi.newpipe.extractor.exceptions.GeographicRestrictionException;
 import org.schabi.newpipe.extractor.exceptions.SoundCloudGoPlusContentException;
 import org.schabi.newpipe.extractor.services.DefaultStreamExtractorTest;
 import org.schabi.newpipe.extractor.stream.AudioStream;
+import org.schabi.newpipe.extractor.stream.DeliveryMethod;
 import org.schabi.newpipe.extractor.stream.StreamExtractor;
 import org.schabi.newpipe.extractor.stream.StreamType;
 
@@ -183,14 +184,17 @@ public class SoundcloudStreamExtractorTest {
             final List<AudioStream> audioStreams = extractor.getAudioStreams();
             assertEquals(2, audioStreams.size());
             for (final AudioStream audioStream : audioStreams) {
-                final String mediaUrl = audioStream.getUrl();
+                final DeliveryMethod deliveryMethod = audioStream.getDeliveryMethod();
+                assertThat("Wrong delivery method: " + deliveryMethod,
+                        deliveryMethod == DeliveryMethod.PROGRESSIVE_HTTP);
+                final String mediaUrl = audioStream.getContent();
                 if (audioStream.getFormat() == MediaFormat.OPUS) {
-                    // assert that it's an OPUS 64 kbps media URL with a single range which comes from an HLS SoundCloud CDN
+                    // Assert that it's an OPUS 64 kbps media URL with a single range which comes from an HLS SoundCloud CDN
                     assertThat(mediaUrl, containsString("-hls-opus-media.sndcdn.com"));
                     assertThat(mediaUrl, containsString(".64.opus"));
                 }
                 if (audioStream.getFormat() == MediaFormat.MP3) {
-                    // assert that it's a MP3 128 kbps media URL which comes from a progressive SoundCloud CDN
+                    // Assert that it's a MP3 128 kbps media URL which comes from a progressive SoundCloud CDN
                     assertThat(mediaUrl, containsString("-media.sndcdn.com/bKOA7Pwbut93.128.mp3"));
                 }
             }
