@@ -25,12 +25,14 @@ import java.io.StringWriter;
 import java.util.*;
 import java.util.regex.Pattern;
 
+import static org.schabi.newpipe.extractor.utils.Utils.EMPTY_STRING;
 import static org.schabi.newpipe.extractor.utils.Utils.isNullOrEmpty;
 
 public class YoutubeDashManifestCreator {
 
     private static final Pattern SEGMENT_DURATION_MS_PATTERN = Pattern.compile(
             "Segment-Durations-Ms: ((?:\\d+,\\d+,)?(?:\\d+\\(r=\\d+\\)(,\\d+)+,)+)");
+    private static final String SQ_0 = "&sq=0";
 
     private static final List<Integer> segmentsDuration = new ArrayList<>();
     private static final List<Integer> durationRepetitions = new ArrayList<>();
@@ -65,8 +67,8 @@ public class YoutubeDashManifestCreator {
             // Try to avoid redirects when streaming the content by saving the last URL we get
             // from video servers.
 
-            final Response response = downloader.get(otfBaseStreamingUrl + "&sq=0");
-            otfBaseStreamingUrl = response.latestUrl().replace("&sq=0", "");
+            final Response response = downloader.get(otfBaseStreamingUrl + SQ_0);
+            otfBaseStreamingUrl = response.latestUrl().replace(SQ_0, EMPTY_STRING);
             final int responseCode = response.responseCode();
             if (responseCode != 200) {
                 throw new YoutubeDashManifestCreationException(
@@ -143,8 +145,8 @@ public class YoutubeDashManifestCreator {
             // from video servers.
             // Use a HEAD request in order to reduce the download size.
 
-            final Response response = downloader.head(postLiveStreamDvrStreamingUrl + "&sq=0");
-            postLiveStreamDvrStreamingUrl = response.latestUrl().replace("&sq=0", "");
+            final Response response = downloader.head(postLiveStreamDvrStreamingUrl + SQ_0);
+            postLiveStreamDvrStreamingUrl = response.latestUrl().replace(SQ_0, EMPTY_STRING);
             final int responseCode = response.responseCode();
             if (responseCode != 200) {
                 throw new YoutubeDashManifestCreationException(
@@ -551,7 +553,7 @@ public class YoutubeDashManifestCreator {
             segmentTemplateElement.setAttributeNode(startNumberAttribute);
 
             final Attr initializationAttribute = document.createAttribute("initialization");
-            initializationAttribute.setValue(baseUrl + "&sq=0");
+            initializationAttribute.setValue(baseUrl + SQ_0);
             segmentTemplateElement.setAttributeNode(initializationAttribute);
 
             representationElement.appendChild(segmentTemplateElement);
