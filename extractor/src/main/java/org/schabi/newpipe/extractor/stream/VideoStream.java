@@ -27,7 +27,9 @@ import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
 public class VideoStream extends Stream {
-    private final String resolution;
+    public static final String RESOLUTION_UNKNOWN = "";
+
+    private String resolution = RESOLUTION_UNKNOWN;
     private final boolean isVideoOnly;
     // Fields for DASH
     private int itag;
@@ -56,7 +58,7 @@ public class VideoStream extends Stream {
     public VideoStream(final String id,
                        final String url,
                        @Nullable final MediaFormat format,
-                       final String resolution,
+                       @Nonnull final String resolution,
                        final boolean isVideoOnly) {
         this(id, url, true, format, DeliveryMethod.PROGRESSIVE_HTTP, resolution, isVideoOnly,
                 null);
@@ -83,11 +85,13 @@ public class VideoStream extends Stream {
                        final boolean isUrl,
                        @Nullable final MediaFormat format,
                        final DeliveryMethod deliveryMethod,
-                       final String resolution,
+                       @Nonnull final String resolution,
                        final boolean isVideoOnly,
                        @Nullable final String baseUrl) {
         super(id, content, isUrl, format, deliveryMethod, baseUrl);
-        this.resolution = resolution;
+        if (!resolution.equals(RESOLUTION_UNKNOWN)) {
+            this.resolution = resolution;
+        }
         this.isVideoOnly = isVideoOnly;
     }
 
@@ -113,7 +117,7 @@ public class VideoStream extends Stream {
                        final boolean isUrl,
                        @Nullable final MediaFormat format,
                        final DeliveryMethod deliveryMethod,
-                       final String resolution,
+                       @Nonnull final String resolution,
                        final boolean isVideoOnly,
                        @Nonnull final ItagItem itag,
                        @Nullable final String baseUrl) {
@@ -130,7 +134,9 @@ public class VideoStream extends Stream {
         this.width = itag.getWidth();
         this.quality = itag.getQuality();
         this.fps = itag.fps;
-        this.resolution = resolution;
+        if (!resolution.equals(RESOLUTION_UNKNOWN)) {
+            this.resolution = resolution;
+        }
         this.isVideoOnly = isVideoOnly;
     }
 
@@ -178,8 +184,12 @@ public class VideoStream extends Stream {
 
     /**
      * Get the video resolution.
+     * <p>
+     * It can be unknown for some streams, like for HLS master playlists. In this case,
+     * {@link #RESOLUTION_UNKNOWN} is returned by this method.
+     * </p>
      *
-     * @return the video resolution
+     * @return the video resolution or {@link #RESOLUTION_UNKNOWN}
      */
     public String getResolution() {
         return resolution;

@@ -259,13 +259,26 @@ public abstract class DefaultStreamExtractorTest extends DefaultExtractorTest<St
             assertFalse(videoStreams.isEmpty());
 
             for (final VideoStream stream : videoStreams) {
-                if (stream.isUrl()) assertIsSecureUrl(stream.getContent());
-                assertFalse(stream.getResolution().isEmpty());
+                if (stream.isUrl()) {
+                    assertIsSecureUrl(stream.getContent());
+                }
+                final StreamType streamType = extractor().getStreamType();
+                // The resolution can be empty on some streams, especially livestreams
+                // (like streams with HLS master playlists)
+                if (streamType != StreamType.LIVE_STREAM
+                        && streamType != StreamType.AUDIO_LIVE_STREAM) {
+                    assertFalse(stream.getResolution().isEmpty());
+                }
 
-                final int formatId = stream.getFormatId();
-                // see MediaFormat: video stream formats range from 0 to 0x100
-                assertTrue(0 <= formatId && formatId < 0x100,
-                        "format id does not fit a video stream: " + formatId);
+                // Like the resolution, the format can be unknown on some streams, especially
+                // livestreams
+                if (streamType != StreamType.LIVE_STREAM
+                        && streamType != StreamType.AUDIO_LIVE_STREAM) {
+                    final int formatId = stream.getFormatId();
+                    // see MediaFormat: video stream formats range from 0 to 0x100
+                    assertTrue(0 <= formatId && formatId < 0x100,
+                        "Format id does not fit a video stream: " + formatId);
+                }
             }
         } else {
             assertTrue(videoStreams.isEmpty());
@@ -282,12 +295,17 @@ public abstract class DefaultStreamExtractorTest extends DefaultExtractorTest<St
             assertFalse(audioStreams.isEmpty());
 
             for (final AudioStream stream : audioStreams) {
-                if (stream.isUrl()) assertIsSecureUrl(stream.getContent());
+                if (stream.isUrl()) {
+                    assertIsSecureUrl(stream.getContent());
+                }
 
-                final int formatId = stream.getFormat().id;
-                // see MediaFormat: video stream formats range from 0x100 to 0x1000
-                assertTrue(0x100 <= formatId && formatId < 0x1000,
-                        "format id does not fit an audio stream: " + formatId);
+                // The media format can be unknown on some audio streams
+                if (stream.getFormat() != null) {
+                    final int formatId = stream.getFormat().id;
+                    // see MediaFormat: audio stream formats range from 0x100 to 0x1000
+                    assertTrue(0x100 <= formatId && formatId < 0x1000,
+                        "Format id does not fit an audio stream: " + formatId);
+                }
             }
         } else {
             assertTrue(audioStreams.isEmpty());
@@ -304,12 +322,14 @@ public abstract class DefaultStreamExtractorTest extends DefaultExtractorTest<St
             assertFalse(subtitles.isEmpty());
 
             for (final SubtitlesStream stream : subtitles) {
-                if (stream.isUrl()) assertIsSecureUrl(stream.getContent());
+                if (stream.isUrl()) {
+                    assertIsSecureUrl(stream.getContent());
+                }
 
                 final int formatId = stream.getFormatId();
                 // see MediaFormat: video stream formats range from 0x1000 to 0x10000
                 assertTrue(0x1000 <= formatId && formatId < 0x10000,
-                        "format id does not fit a subtitles stream: " + formatId);
+                        "Format id does not fit a subtitles stream: " + formatId);
             }
         } else {
             assertTrue(subtitles.isEmpty());
@@ -332,7 +352,8 @@ public abstract class DefaultStreamExtractorTest extends DefaultExtractorTest<St
             assertTrue(dashMpdUrl.isEmpty());
         } else {
             assertIsSecureUrl(dashMpdUrl);
-            ExtractorAsserts.assertContains(expectedDashMpdUrlContains(), extractor().getDashMpdUrl());
+            ExtractorAsserts.assertContains(expectedDashMpdUrlContains(),
+                    extractor().getDashMpdUrl());
         }
     }
 
