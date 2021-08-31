@@ -63,8 +63,10 @@ public abstract class SubscriptionExtractor {
      *
      * @throws InvalidSourceException when the channelUrl doesn't exist or is invalid
      */
-    public List<SubscriptionItem> fromChannelUrl(String channelUrl) throws IOException, ExtractionException {
-        throw new UnsupportedOperationException("Service " + service.getServiceInfo().getName() + " doesn't support extracting from a channel url");
+    public List<SubscriptionItem> fromChannelUrl(final String channelUrl)
+            throws IOException, ExtractionException {
+        throw new UnsupportedOperationException("Service " + service.getServiceInfo().getName()
+                + " doesn't support extracting from a channel url");
     }
 
     /**
@@ -83,7 +85,8 @@ public abstract class SubscriptionExtractor {
      *
      * @throws InvalidSourceException when the content read from the InputStream is invalid and can not be parsed
      */
-    public List<SubscriptionItem> fromInputStream(@Nonnull final InputStream contentInputStream, String contentType)
+    public List<SubscriptionItem> fromInputStream(@Nonnull final InputStream contentInputStream,
+                                                  @Nonnull final String contentType)
             throws ExtractionException {
         throw new UnsupportedOperationException("Service " + service.getServiceInfo().getName()
                 + " doesn't support extracting from an InputStream");
