@@ -60,7 +60,9 @@ public abstract class Stream implements Serializable {
                                                final List<? extends Stream> streamList) {
         if (isNullOrEmpty(streamList)) return false;
         for (final Stream cmpStream : streamList) {
-            if (stream.equalStats(cmpStream)) return true;
+            if (stream.equalStats(cmpStream)) {
+                return true;
+            }
         }
         return false;
     }
