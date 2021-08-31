@@ -34,7 +34,7 @@ public class MediaCCCLiveStreamExtractor extends StreamExtractor {
             throws IOException, ExtractionException {
         final JsonArray doc = MediaCCCParsingHelper.getLiveStreams(downloader,
                 getExtractorLocalization());
-        // Find correct room
+        // Find the correct room
         for (int c = 0; c < doc.size(); c++) {
             final JsonObject conferenceObject = doc.getObject(c);
             final JsonArray groups = conferenceObject.getArray("groups");
@@ -96,7 +96,7 @@ public class MediaCCCLiveStreamExtractor extends StreamExtractor {
      * <p>
      * There can be several HLS streams, so the URL of the first found is returned by this method.
      * <br>
-     * You can find the other video HLS streams
+     * You can find the other video HLS streams by using {@link #getVideoStreams()}
      * </p>
      */
     @Nonnull
