@@ -338,7 +338,7 @@ public class YoutubeSearchExtractorTest {
         @Test
         public void testUploaderAvatar() throws IOException, ExtractionException {
             final List<InfoItem> items = extractor.getInitialPage().getItems();
-            for (InfoItem item : items) {
+            for (final InfoItem item : items) {
                 assertNotNull(((StreamInfoItem) item).getUploaderAvatarUrl());
             }
         }

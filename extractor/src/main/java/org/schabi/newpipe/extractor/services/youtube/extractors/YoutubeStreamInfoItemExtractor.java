@@ -168,7 +168,8 @@ public class YoutubeStreamInfoItemExtractor implements StreamInfoItemExtractor {
     public String getUploaderAvatarUrl() throws ParsingException {
 
         if(videoInfo.has("channelThumbnailSupportedRenderers")) {
-            return JsonUtils.getArray(videoInfo, "channelThumbnailSupportedRenderers.channelThumbnailWithLinkRenderer.thumbnail.thumbnails").getObject(0).getString("url");
+            return JsonUtils.getArray(videoInfo, "channelThumbnailSupportedRenderers.channelThumbnailWithLinkRenderer.thumbnail.thumbnails")
+                    .getObject(0).getString("url");
         }
 
         return null;

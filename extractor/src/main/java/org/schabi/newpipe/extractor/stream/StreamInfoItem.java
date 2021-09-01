@@ -88,7 +88,7 @@ public class StreamInfoItem extends InfoItem {
         return uploaderAvatarUrl;
     }
 
-    public void setUploaderAvatarUrl(String uploaderAvatarUrl) {
+    public void setUploaderAvatarUrl(final String uploaderAvatarUrl) {
         this.uploaderAvatarUrl = uploaderAvatarUrl;
     }
 
