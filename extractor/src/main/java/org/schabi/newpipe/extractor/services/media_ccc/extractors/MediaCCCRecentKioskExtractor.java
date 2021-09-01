@@ -68,6 +68,12 @@ public class MediaCCCRecentKioskExtractor implements StreamInfoItemExtractor {
                 .getUrl(); // web URL
     }
 
+    @Nullable
+    @Override
+    public String getUploaderAvatarUrl() throws ParsingException {
+        return null;
+    }
+
     @Override
     public boolean isUploaderVerified() throws ParsingException {
         return false;

@@ -7,6 +7,8 @@ import org.schabi.newpipe.extractor.services.soundcloud.SoundcloudParsingHelper;
 import org.schabi.newpipe.extractor.stream.StreamInfoItemExtractor;
 import org.schabi.newpipe.extractor.stream.StreamType;
 
+import javax.annotation.Nullable;
+
 import static org.schabi.newpipe.extractor.utils.Utils.EMPTY_STRING;
 import static org.schabi.newpipe.extractor.utils.Utils.replaceHttpWithHttps;
 
@@ -41,6 +43,12 @@ public class SoundcloudStreamInfoItemExtractor implements StreamInfoItemExtracto
     @Override
     public String getUploaderUrl() {
         return replaceHttpWithHttps(itemObject.getObject("user").getString("permalink_url"));
+    }
+
+    @Nullable
+    @Override
+    public String getUploaderAvatarUrl() throws ParsingException {
+        return null;
     }
 
     @Override
