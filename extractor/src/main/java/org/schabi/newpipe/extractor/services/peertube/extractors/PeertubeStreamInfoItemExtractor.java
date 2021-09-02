@@ -59,6 +59,10 @@ public class PeertubeStreamInfoItemExtractor implements StreamInfoItemExtractor 
     @Nullable
     @Override
     public String getUploaderAvatarUrl() {
+        final JsonObject account = item.getObject("account");
+        if (account.has("avatar") && !account.isNull("avatar")) {
+            return baseUrl + account.getObject("avatar").getString("path");
+        }
         return null;
     }
 
