@@ -48,7 +48,7 @@ public class MediaCCCStreamInfoItemExtractor implements StreamInfoItemExtractor 
 
     @Nullable
     @Override
-    public String getUploaderAvatarUrl() throws ParsingException {
+    public String getUploaderAvatarUrl() {
         return null;
     }
 

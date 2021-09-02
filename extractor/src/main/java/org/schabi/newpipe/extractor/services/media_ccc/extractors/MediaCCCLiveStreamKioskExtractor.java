@@ -75,7 +75,7 @@ public class MediaCCCLiveStreamKioskExtractor implements StreamInfoItemExtractor
 
     @Nullable
     @Override
-    public String getUploaderAvatarUrl() throws ParsingException {
+    public String getUploaderAvatarUrl() {
         return null;
     }
 

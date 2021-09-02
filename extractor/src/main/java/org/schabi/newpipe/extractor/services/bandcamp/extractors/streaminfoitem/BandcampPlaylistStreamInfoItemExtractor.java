@@ -56,7 +56,7 @@ public class BandcampPlaylistStreamInfoItemExtractor extends BandcampStreamInfoI
 
     @Nullable
     @Override
-    public String getUploaderAvatarUrl() throws ParsingException {
+    public String getUploaderAvatarUrl() {
         return null;
     }
 

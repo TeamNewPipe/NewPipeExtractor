@@ -58,7 +58,7 @@ public class PeertubeStreamInfoItemExtractor implements StreamInfoItemExtractor 
 
     @Nullable
     @Override
-    public String getUploaderAvatarUrl() throws ParsingException {
+    public String getUploaderAvatarUrl() {
         return null;
     }
 
