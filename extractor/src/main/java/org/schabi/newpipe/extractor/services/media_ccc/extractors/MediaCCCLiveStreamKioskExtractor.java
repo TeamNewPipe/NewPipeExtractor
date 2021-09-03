@@ -73,6 +73,12 @@ public class MediaCCCLiveStreamKioskExtractor implements StreamInfoItemExtractor
         return "https://media.ccc.de/c/" + conferenceInfo.getString("slug");
     }
 
+    @Nullable
+    @Override
+    public String getUploaderAvatarUrl() {
+        return null;
+    }
+
     @Override
     public boolean isUploaderVerified() throws ParsingException {
         return false;

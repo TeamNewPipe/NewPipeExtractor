@@ -8,6 +8,7 @@ import org.schabi.newpipe.extractor.exceptions.ExtractionException;
 import org.schabi.newpipe.extractor.exceptions.ParsingException;
 import org.schabi.newpipe.extractor.stream.StreamExtractor;
 
+import javax.annotation.Nullable;
 import java.io.IOException;
 
 
@@ -51,6 +52,12 @@ public class BandcampPlaylistStreamInfoItemExtractor extends BandcampStreamInfoI
          * given JSON.
          */
         return "";
+    }
+
+    @Nullable
+    @Override
+    public String getUploaderAvatarUrl() {
+        return null;
     }
 
     /**

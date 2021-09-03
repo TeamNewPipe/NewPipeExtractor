@@ -48,6 +48,11 @@ public final class DefaultTests {
                     assertExpectedLinkType(expectedService, uploaderUrl, LinkType.CHANNEL);
                 }
 
+                final String uploaderAvatarUrl = streamInfoItem.getUploaderAvatarUrl();
+                if (!isNullOrEmpty(uploaderAvatarUrl)) {
+                    assertIsSecureUrl(uploaderAvatarUrl);
+                }
+
                 assertExpectedLinkType(expectedService, streamInfoItem.getUrl(), LinkType.STREAM);
 
                 if (!isNullOrEmpty(streamInfoItem.getTextualUploadDate())) {

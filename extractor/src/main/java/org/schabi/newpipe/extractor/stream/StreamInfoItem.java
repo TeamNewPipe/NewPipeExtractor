@@ -39,6 +39,7 @@ public class StreamInfoItem extends InfoItem {
     private long duration = -1;
 
     private String uploaderUrl = null;
+    private String uploaderAvatarUrl = null;
     private boolean uploaderVerified = false;
 
     public StreamInfoItem(int serviceId, String url, String name, StreamType streamType) {
@@ -80,6 +81,15 @@ public class StreamInfoItem extends InfoItem {
 
     public void setUploaderUrl(String uploaderUrl) {
         this.uploaderUrl = uploaderUrl;
+    }
+
+    @Nullable
+    public String getUploaderAvatarUrl() {
+        return uploaderAvatarUrl;
+    }
+
+    public void setUploaderAvatarUrl(final String uploaderAvatarUrl) {
+        this.uploaderAvatarUrl = uploaderAvatarUrl;
     }
 
     @Nullable

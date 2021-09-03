@@ -9,6 +9,7 @@ import org.schabi.newpipe.extractor.services.youtube.YoutubeParsingHelper;
 import org.schabi.newpipe.extractor.services.youtube.linkHandler.YoutubeStreamLinkHandlerFactory;
 import org.schabi.newpipe.extractor.stream.StreamInfoItemExtractor;
 import org.schabi.newpipe.extractor.stream.StreamType;
+import org.schabi.newpipe.extractor.utils.JsonUtils;
 import org.schabi.newpipe.extractor.utils.Utils;
 
 import javax.annotation.Nullable;
@@ -40,7 +41,7 @@ import static org.schabi.newpipe.extractor.utils.Utils.isNullOrEmpty;
  */
 
 public class YoutubeStreamInfoItemExtractor implements StreamInfoItemExtractor {
-    private JsonObject videoInfo;
+    private final JsonObject videoInfo;
     private final TimeAgoParser timeAgoParser;
     private StreamType cachedStreamType;
 
@@ -160,6 +161,18 @@ public class YoutubeStreamInfoItemExtractor implements StreamInfoItemExtractor {
         }
 
         return url;
+    }
+
+    @Nullable
+    @Override
+    public String getUploaderAvatarUrl() throws ParsingException {
+
+        if(videoInfo.has("channelThumbnailSupportedRenderers")) {
+            return JsonUtils.getArray(videoInfo, "channelThumbnailSupportedRenderers.channelThumbnailWithLinkRenderer.thumbnail.thumbnails")
+                    .getObject(0).getString("url");
+        }
+
+        return null;
     }
 
     @Override

@@ -9,6 +9,8 @@ import org.schabi.newpipe.extractor.stream.StreamInfoItemExtractor;
 import org.schabi.newpipe.extractor.stream.StreamType;
 import org.schabi.newpipe.extractor.utils.JsonUtils;
 
+import javax.annotation.Nullable;
+
 public class PeertubeStreamInfoItemExtractor implements StreamInfoItemExtractor {
 
     protected final JsonObject item;
@@ -52,6 +54,16 @@ public class PeertubeStreamInfoItemExtractor implements StreamInfoItemExtractor 
 
         return ServiceList.PeerTube.getChannelLHFactory()
                 .fromId("accounts/" + name + "@" + host, baseUrl).getUrl();
+    }
+
+    @Nullable
+    @Override
+    public String getUploaderAvatarUrl() {
+        final JsonObject account = item.getObject("account");
+        if (account.has("avatar") && !account.isNull("avatar")) {
+            return baseUrl + account.getObject("avatar").getString("path");
+        }
+        return null;
     }
 
     @Override
