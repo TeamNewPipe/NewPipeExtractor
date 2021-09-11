@@ -37,7 +37,10 @@ import static org.schabi.newpipe.extractor.utils.Utils.*;
 public class PeertubeStreamExtractor extends StreamExtractor {
     private final String baseUrl;
     private JsonObject json;
+
     private final List<SubtitlesStream> subtitles = new ArrayList<>();
+    private final List<AudioStream> audioStreams = new ArrayList<>();
+    private final List<VideoStream> videoStreams = new ArrayList<>();
 
     public PeertubeStreamExtractor(final StreamingService service, final LinkHandler linkHandler)
             throws ParsingException {
@@ -200,8 +203,7 @@ public class PeertubeStreamExtractor extends StreamExtractor {
     public List<AudioStream> getAudioStreams() throws ParsingException {
         assertPageFetched();
 
-        final List<AudioStream> audioStreams = new ArrayList<>();
-        if (getStreamType() == StreamType.VIDEO_STREAM) {
+        if (isNullOrEmpty(audioStreams) && getStreamType() == StreamType.VIDEO_STREAM) {
             // Non-HLS streams
             try {
                 audioStreams.addAll(getAudioStreamsFromArray(json.getArray("files"), ""));
@@ -231,7 +233,7 @@ public class PeertubeStreamExtractor extends StreamExtractor {
                                                        final String playlistUrl)
             throws ParsingException {
         try {
-            final List<AudioStream> audioStreams = new ArrayList<>();
+            final List<AudioStream> audioStreamsList = new ArrayList<>();
             for (final Object s : streams) {
                 if (!(s instanceof JsonObject)) {
                     continue;
@@ -255,14 +257,14 @@ public class PeertubeStreamExtractor extends StreamExtractor {
                 final String extension = url.substring(url.lastIndexOf(".") + 1);
                 final MediaFormat format = MediaFormat.getFromSuffix(extension);
                 final String id = resolution + "-" + extension;
-                audioStreams.add(new AudioStream(
+                audioStreamsList.add(new AudioStream(
                         id + "-" + idSuffix + "-" + DeliveryMethod.PROGRESSIVE_HTTP,
                         url,
                         true,
                         format,
                         DeliveryMethod.PROGRESSIVE_HTTP,
                         UNKNOWN_BITRATE));
-                audioStreams.add(new AudioStream(
+                audioStreamsList.add(new AudioStream(
                         id + "-" + idSuffix + "-" + DeliveryMethod.TORRENT,
                         torrentUrl,
                         true,
@@ -272,7 +274,7 @@ public class PeertubeStreamExtractor extends StreamExtractor {
                 if (!isNullOrEmpty(playlistUrl)) {
                     final String hlsStreamUrl = playlistUrl.replace("master",
                             JsonUtils.getNumber(stream, "resolution.id").toString());
-                    audioStreams.add(new AudioStream(
+                    audioStreamsList.add(new AudioStream(
                             id + "-" + DeliveryMethod.HLS,
                             hlsStreamUrl,
                             true,
@@ -281,7 +283,7 @@ public class PeertubeStreamExtractor extends StreamExtractor {
                             UNKNOWN_BITRATE));
                 }
             }
-            return audioStreams;
+            return audioStreamsList;
         } catch (final Exception e) {
             throw new ParsingException("Could not get audio streams from array", e);
         }
@@ -291,48 +293,49 @@ public class PeertubeStreamExtractor extends StreamExtractor {
     public List<VideoStream> getVideoStreams() throws ExtractionException {
         assertPageFetched();
 
-        final List<VideoStream> videoStreams = new ArrayList<>();
-        if (getStreamType() == StreamType.VIDEO_STREAM) {
-            // Non-HLS streams
-            try {
-                videoStreams.addAll(getVideoStreamsFromArray(json.getArray("files"), ""));
-            } catch (final Exception ignored) {
-            }
-            // HLS streams
-            try {
-                final JsonArray streamingPlaylists = json.getArray("streamingPlaylists");
-                for (final Object p : streamingPlaylists) {
-                    if (!(p instanceof JsonObject)) {
-                        continue;
-                    }
-                    final JsonObject playlist = (JsonObject) p;
-                    final String playlistUrl = playlist.getString("playlistUrl");
-                    videoStreams.addAll(getVideoStreamsFromArray(playlist.getArray("files"),
-                            playlistUrl));
+        if (isNullOrEmpty(videoStreams)) {
+            if (getStreamType() == StreamType.VIDEO_STREAM) {
+                // Non-HLS streams
+                try {
+                    videoStreams.addAll(getVideoStreamsFromArray(json.getArray("files"), ""));
+                } catch (final Exception ignored) {
                 }
-            } catch (final Exception e) {
-                throw new ParsingException("Could not get video streams", e);
-            }
-        } else {
-            try {
-                final JsonArray streamingPlaylists = json.getArray("streamingPlaylists");
-                for (final Object p : streamingPlaylists) {
-                    if (!(p instanceof JsonObject)) {
-                        continue;
+                // HLS streams
+                try {
+                    final JsonArray streamingPlaylists = json.getArray("streamingPlaylists");
+                    for (final Object p : streamingPlaylists) {
+                        if (!(p instanceof JsonObject)) {
+                            continue;
+                        }
+                        final JsonObject playlist = (JsonObject) p;
+                        final String playlistUrl = playlist.getString("playlistUrl");
+                        videoStreams.addAll(getVideoStreamsFromArray(playlist.getArray("files"),
+                                playlistUrl));
                     }
-                    final JsonObject playlist = (JsonObject) p;
-                    videoStreams.add(new VideoStream(
-                            String.valueOf(playlist.getInt("id", 0)),
-                            playlist.getString("playlistUrl", EMPTY_STRING),
-                            true,
-                            MediaFormat.MPEG_4,
-                            DeliveryMethod.HLS,
-                            "",
-                            false,
-                            null));
+                } catch (final Exception e) {
+                    throw new ParsingException("Could not get video streams", e);
                 }
-            } catch (final Exception e) {
-                throw new ParsingException("Could not get video streams", e);
+            } else {
+                try {
+                    final JsonArray streamingPlaylists = json.getArray("streamingPlaylists");
+                    for (final Object p : streamingPlaylists) {
+                        if (!(p instanceof JsonObject)) {
+                            continue;
+                        }
+                        final JsonObject playlist = (JsonObject) p;
+                        videoStreams.add(new VideoStream(
+                                String.valueOf(playlist.getInt("id", 0)),
+                                playlist.getString("playlistUrl", EMPTY_STRING),
+                                true,
+                                MediaFormat.MPEG_4,
+                                DeliveryMethod.HLS,
+                                "",
+                                false,
+                                null));
+                    }
+                } catch (final Exception e) {
+                    throw new ParsingException("Could not get video streams", e);
+                }
             }
         }
 
@@ -344,7 +347,7 @@ public class PeertubeStreamExtractor extends StreamExtractor {
                                                        final String playlistUrl)
             throws ParsingException {
         try {
-            final List<VideoStream> videoStreams = new ArrayList<>();
+            final List<VideoStream> videoStreamsList = new ArrayList<>();
             for (final Object s : streams) {
                 if (!(s instanceof JsonObject)) {
                     continue;
@@ -368,7 +371,7 @@ public class PeertubeStreamExtractor extends StreamExtractor {
                 final String extension = url.substring(url.lastIndexOf(".") + 1);
                 final MediaFormat format = MediaFormat.getFromSuffix(extension);
                 final String id = resolution + "-" + extension;
-                videoStreams.add(new VideoStream(
+                videoStreamsList.add(new VideoStream(
                         id + "-" + idSuffix + "-" + DeliveryMethod.PROGRESSIVE_HTTP,
                         url,
                         true,
@@ -377,7 +380,7 @@ public class PeertubeStreamExtractor extends StreamExtractor {
                         resolution,
                         false,
                         null));
-                videoStreams.add(new VideoStream(
+                videoStreamsList.add(new VideoStream(
                         id + "-" + idSuffix + "-" + DeliveryMethod.TORRENT,
                         torrentUrl,
                         true,
@@ -389,7 +392,7 @@ public class PeertubeStreamExtractor extends StreamExtractor {
                 if (!isNullOrEmpty(playlistUrl)) {
                     final String hlsStreamUrl = playlistUrl.replace("master",
                             JsonUtils.getNumber(stream, "resolution.id").toString());
-                    videoStreams.add(new VideoStream(
+                    videoStreamsList.add(new VideoStream(
                             id + "-" + DeliveryMethod.HLS,
                             hlsStreamUrl,
                             true,
@@ -400,7 +403,7 @@ public class PeertubeStreamExtractor extends StreamExtractor {
                             playlistUrl));
                 }
             }
-            return videoStreams;
+            return videoStreamsList;
         } catch (final Exception e) {
             throw new ParsingException("Could not get audio streams from array", e);
         }
@@ -550,7 +553,7 @@ public class PeertubeStreamExtractor extends StreamExtractor {
     }
 
     private void loadSubtitles() {
-        if (subtitles.isEmpty()) {
+        if (isNullOrEmpty(subtitles)) {
             try {
                 final Response response = getDownloader().get(baseUrl
                         + PeertubeStreamLinkHandlerFactory.VIDEO_API_ENDPOINT

@@ -106,7 +106,7 @@ public class MediaCCCStreamExtractor extends StreamExtractor {
                 } else if (mimeType.endsWith("ogg")) {
                     mediaFormat = MediaFormat.OGG;
                 } else {
-                    throw new ExtractionException("Unknown media format: " + mimeType);
+                    mediaFormat = null;
                 }
 
                 audioStreams.add(new AudioStream(recording.getString("filename"),
@@ -132,7 +132,7 @@ public class MediaCCCStreamExtractor extends StreamExtractor {
                 } else if (mimeType.endsWith("mp4")) {
                     mediaFormat = MediaFormat.MPEG_4;
                 } else {
-                    throw new ExtractionException("Unknown media format: " + mimeType);
+                    mediaFormat = null;
                 }
 
                 videoStreams.add(new VideoStream(recording.getString("filename"),

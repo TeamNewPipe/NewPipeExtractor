@@ -98,14 +98,11 @@ public class YoutubeStreamExtractor extends StreamExtractor {
     private JsonObject videoPrimaryInfoRenderer;
     private JsonObject videoSecondaryInfoRenderer;
     private int ageLimit = -1;
-    @Nullable
-    private List<SubtitlesStream> subtitles = null;
-    @Nullable
-    private List<AudioStream> audioStreams = null;
-    @Nullable
-    private List<VideoStream> videoStreams = null;
-    @Nullable
-    private List<VideoStream> videoOnlyStreams = null;
+
+    private final List<SubtitlesStream> subtitles = new ArrayList<>();
+    private final List<AudioStream> audioStreams = new ArrayList<>();
+    private final List<VideoStream> videoStreams = new ArrayList<>();
+    private final List<VideoStream> videoOnlyStreams = new ArrayList<>();
 
     public YoutubeStreamExtractor(final StreamingService service, final LinkHandler linkHandler) {
         super(service, linkHandler);
@@ -473,9 +470,7 @@ public class YoutubeStreamExtractor extends StreamExtractor {
     public List<AudioStream> getAudioStreams() throws ExtractionException {
         assertPageFetched();
 
-        if (audioStreams == null) {
-            audioStreams = new ArrayList<>();
-
+        if (isNullOrEmpty(audioStreams)) {
             try {
                 for (final ItagInfo itagInfo : getItags(ADAPTIVE_FORMATS,
                         ItagItem.ItagType.AUDIO)) {
@@ -533,9 +528,7 @@ public class YoutubeStreamExtractor extends StreamExtractor {
     public List<VideoStream> getVideoStreams() throws ExtractionException {
         assertPageFetched();
 
-        if (videoStreams == null) {
-            videoStreams = new ArrayList<>();
-
+        if (isNullOrEmpty(videoStreams)) {
             try {
                 for (final ItagInfo itagInfo : getItags(FORMATS, ItagItem.ItagType.VIDEO)) {
                     final ItagItem itag = itagInfo.getItagItem();
@@ -594,9 +587,7 @@ public class YoutubeStreamExtractor extends StreamExtractor {
     public List<VideoStream> getVideoOnlyStreams() throws ExtractionException {
         assertPageFetched();
 
-        if (videoOnlyStreams == null) {
-            videoOnlyStreams = new ArrayList<>();
-
+        if (isNullOrEmpty(videoOnlyStreams)) {
             try {
                 for (final ItagInfo itagInfo : getItags(ADAPTIVE_FORMATS,
                         ItagItem.ItagType.VIDEO_ONLY)) {
@@ -663,8 +654,7 @@ public class YoutubeStreamExtractor extends StreamExtractor {
     public List<SubtitlesStream> getSubtitles(final MediaFormat format) throws ParsingException {
         assertPageFetched();
 
-        if (subtitles == null) {
-            subtitles = new ArrayList<>();
+        if (isNullOrEmpty(subtitles)) {
             final JsonObject renderer = playerResponse.getObject("captions")
                     .getObject("playerCaptionsTracklistRenderer");
             final JsonArray captionsArray = renderer.getArray("captionTracks");

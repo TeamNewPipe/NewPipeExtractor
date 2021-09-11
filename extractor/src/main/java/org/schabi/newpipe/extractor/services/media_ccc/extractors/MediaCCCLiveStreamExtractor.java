@@ -192,7 +192,7 @@ public class MediaCCCLiveStreamExtractor extends StreamExtractor {
 
     @Override
     public StreamType getStreamType() throws ParsingException {
-        return StreamType.LIVE_STREAM; // TODO: video and audio only streams are both available
+        return StreamType.LIVE_STREAM;
     }
 
     @Nonnull

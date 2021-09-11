@@ -31,7 +31,8 @@ import static org.schabi.newpipe.extractor.utils.Utils.*;
 public class SoundcloudStreamExtractor extends StreamExtractor {
     private JsonObject track;
     private boolean isAvailable = true;
-    private List<AudioStream> audioStreams = null;
+
+    private final List<AudioStream> audioStreams = new ArrayList<>();
 
     public SoundcloudStreamExtractor(final StreamingService service,
                                      final LinkHandler linkHandler) {
@@ -147,11 +148,9 @@ public class SoundcloudStreamExtractor extends StreamExtractor {
         // For playing the track, it is only necessary to have a streamable track.
         // If this is not the case, this track might not be published yet.
         // If audio streams were calculated, return the calculated result
-        if (!track.getBoolean("streamable") || !isAvailable || audioStreams != null) {
+        if (!track.getBoolean("streamable") || !isAvailable || !isNullOrEmpty(audioStreams)) {
             return audioStreams;
         }
-
-        audioStreams = new ArrayList<>();
 
         try {
             final JsonArray transcodings = track.getObject("media").getArray("transcodings");

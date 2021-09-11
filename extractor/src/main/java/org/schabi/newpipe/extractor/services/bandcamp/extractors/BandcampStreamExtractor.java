@@ -30,12 +30,14 @@ import java.util.List;
 import java.util.Locale;
 
 import static org.schabi.newpipe.extractor.services.bandcamp.extractors.BandcampExtractorHelper.getImageUrl;
+import static org.schabi.newpipe.extractor.utils.Utils.isNullOrEmpty;
 
 public class BandcampStreamExtractor extends StreamExtractor {
-
     private JsonObject albumJson;
     private JsonObject current;
     private Document document;
+
+    private final List<AudioStream> audioStreams = new ArrayList<>();
 
     public BandcampStreamExtractor(final StreamingService service, final LinkHandler linkHandler) {
         super(service, linkHandler);
@@ -143,10 +145,10 @@ public class BandcampStreamExtractor extends StreamExtractor {
 
     @Override
     public List<AudioStream> getAudioStreams() {
-        final List<AudioStream> audioStreams = new ArrayList<>();
-
-        audioStreams.add(new AudioStream("mp3-128", albumJson.getArray("trackinfo")
-                .getObject(0).getObject("file").getString("mp3-128"), MediaFormat.MP3, 128));
+        if (isNullOrEmpty(audioStreams)) {
+            audioStreams.add(new AudioStream("mp3-128", albumJson.getArray("trackinfo")
+                    .getObject(0).getObject("file").getString("mp3-128"), MediaFormat.MP3, 128));
+        }
         return audioStreams;
     }
 
