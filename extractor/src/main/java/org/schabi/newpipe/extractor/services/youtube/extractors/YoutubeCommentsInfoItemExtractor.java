@@ -250,7 +250,7 @@ public class YoutubeCommentsInfoItemExtractor implements CommentsInfoItemExtract
             final String id = JsonUtils.getString(JsonUtils.getArray(json, "replies.commentRepliesRenderer.contents").getObject(0), "continuationItemRenderer.continuationEndpoint.continuationCommand.token");
             return new Page(url, id);
         } catch (final Exception e) {
-            return null;
+            return null; // Would return null for Comment Replies, since YouTube does not support nested replies.
         }
     }
 }
