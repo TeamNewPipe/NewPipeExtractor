@@ -111,7 +111,7 @@ public interface CommentsInfoItemExtractor extends InfoItemExtractor {
 
     /**
      * The continuation page which is used to get comment replies from.
-     * @return the continuation Page for the replies
+     * @return the continuation Page for the replies, or null if replies are not supported
      */
     @Nullable
     default Page getReplies() throws ParsingException {
