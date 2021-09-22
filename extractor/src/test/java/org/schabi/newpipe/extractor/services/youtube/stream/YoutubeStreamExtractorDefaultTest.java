@@ -470,4 +470,24 @@ public class YoutubeStreamExtractorDefaultTest {
             assertEquals("Creative Commons Attribution licence (reuse allowed)", extractor.getLicence());
         }
     }
+
+    public static class IosHlsManifest {
+        private static final String ID = "M4gD1WSo5mA";
+        private static final String URL = BASE_URL + ID;
+        private static StreamExtractor extractor;
+
+        @BeforeClass
+        public static void setUp() throws Exception {
+            YoutubeStreamExtractor.resetDeobfuscationCode();
+            YoutubeParsingHelper.setNumberGenerator(new Random(1));
+            NewPipe.init(new DownloaderFactory().getDownloader(RESOURCE_PATH + "ios_hls"));
+            extractor = YouTube.getStreamExtractor(URL);
+            extractor.fetchPage();
+        }
+
+        @Test
+        public void testGetHlsManifest() throws ParsingException {
+            assertNotNull(extractor.getHlsUrl());
+        }
+    }
 }

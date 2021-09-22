@@ -850,6 +850,28 @@ public class YoutubeParsingHelper {
     }
 
     @Nonnull
+    public static JsonBuilder<JsonObject> prepareIosMobileJsonBuilder(
+            @Nonnull final Localization localization,
+            @Nonnull final ContentCountry contentCountry) {
+        // @formatter:off
+        return JsonObject.builder()
+                .object("context")
+                .object("client")
+                .value("clientName", "IOS")
+                .value("clientVersion", MOBILE_YOUTUBE_CLIENT_VERSION)
+                .value("hl", localization.getLocalizationCode())
+                .value("gl", contentCountry.getCountryCode())
+                .end()
+                .object("user")
+                // TO DO: provide a way to enable restricted mode with:
+                // .value("enableSafetyMode", boolean)
+                .value("lockedSafetyMode", false)
+                .end()
+                .end();
+        // @formatter:on
+    }
+
+    @Nonnull
     public static JsonBuilder<JsonObject> prepareDesktopEmbedVideoJsonBuilder(
             @Nonnull final Localization localization,
             @Nonnull final ContentCountry contentCountry,

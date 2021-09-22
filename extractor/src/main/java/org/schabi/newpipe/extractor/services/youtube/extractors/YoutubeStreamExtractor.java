@@ -3,29 +3,16 @@ package org.schabi.newpipe.extractor.services.youtube.extractors;
 import com.grack.nanojson.JsonArray;
 import com.grack.nanojson.JsonObject;
 import com.grack.nanojson.JsonWriter;
-
 import org.mozilla.javascript.Context;
 import org.mozilla.javascript.Function;
 import org.mozilla.javascript.ScriptableObject;
-
 import org.schabi.newpipe.extractor.MediaFormat;
 import org.schabi.newpipe.extractor.MetaInfo;
 import org.schabi.newpipe.extractor.StreamingService;
 import org.schabi.newpipe.extractor.downloader.Downloader;
-import org.schabi.newpipe.extractor.exceptions.AgeRestrictedContentException;
-import org.schabi.newpipe.extractor.exceptions.ContentNotAvailableException;
-import org.schabi.newpipe.extractor.exceptions.ExtractionException;
-import org.schabi.newpipe.extractor.exceptions.GeographicRestrictionException;
-import org.schabi.newpipe.extractor.exceptions.PaidContentException;
-import org.schabi.newpipe.extractor.exceptions.ParsingException;
-import org.schabi.newpipe.extractor.exceptions.PrivateContentException;
-import org.schabi.newpipe.extractor.exceptions.YoutubeMusicPremiumContentException;
+import org.schabi.newpipe.extractor.exceptions.*;
 import org.schabi.newpipe.extractor.linkhandler.LinkHandler;
-import org.schabi.newpipe.extractor.localization.ContentCountry;
-import org.schabi.newpipe.extractor.localization.DateWrapper;
-import org.schabi.newpipe.extractor.localization.Localization;
-import org.schabi.newpipe.extractor.localization.TimeAgoParser;
-import org.schabi.newpipe.extractor.localization.TimeAgoPatternsManager;
+import org.schabi.newpipe.extractor.localization.*;
 import org.schabi.newpipe.extractor.services.youtube.ItagItem;
 import org.schabi.newpipe.extractor.services.youtube.YoutubeJavaScriptExtractor;
 import org.schabi.newpipe.extractor.services.youtube.YoutubeParsingHelper;
@@ -44,11 +31,11 @@ import java.time.LocalDate;
 import java.time.OffsetDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.*;
+import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.ExecutionException;
 
 import static org.schabi.newpipe.extractor.services.youtube.YoutubeParsingHelper.*;
-import static org.schabi.newpipe.extractor.utils.Utils.EMPTY_STRING;
-import static org.schabi.newpipe.extractor.utils.Utils.UTF_8;
-import static org.schabi.newpipe.extractor.utils.Utils.isNullOrEmpty;
+import static org.schabi.newpipe.extractor.utils.Utils.*;
 
 /*
  * Created by Christian Schabesberger on 06.08.15.
@@ -97,6 +84,7 @@ public class YoutubeStreamExtractor extends StreamExtractor {
     private JsonObject desktopStreamingData;
     @Nullable
     private JsonObject mobileStreamingData;
+    private JsonObject mobileIosStreamingData;
     private JsonObject videoPrimaryInfoRenderer;
     private JsonObject videoSecondaryInfoRenderer;
     private int ageLimit = -1;
@@ -504,13 +492,19 @@ public class YoutubeStreamExtractor extends StreamExtractor {
     public String getHlsUrl() throws ParsingException {
         assertPageFetched();
 
+        String hlsManifestUrl = EMPTY_STRING;
+
         if (desktopStreamingData != null) {
-            return desktopStreamingData.getString("hlsManifestUrl");
-        } else if (mobileStreamingData != null) {
-            return mobileStreamingData.getString("hlsManifestUrl");
-        } else {
-            return EMPTY_STRING;
+            hlsManifestUrl = desktopStreamingData.getString("hlsManifestUrl", EMPTY_STRING);
         }
+        if (mobileStreamingData != null && hlsManifestUrl.isEmpty()) {
+            hlsManifestUrl = mobileStreamingData.getString("hlsManifestUrl", EMPTY_STRING);
+        }
+        if (mobileIosStreamingData != null && hlsManifestUrl.isEmpty()) {
+            hlsManifestUrl = mobileIosStreamingData.getString("hlsManifestUrl", EMPTY_STRING);
+        }
+
+        return hlsManifestUrl;
     }
 
     @Override
@@ -719,6 +713,13 @@ public class YoutubeStreamExtractor extends StreamExtractor {
                 .done())
                 .getBytes(UTF_8);
 
+        CompletableFuture iosTask = CompletableFuture.supplyAsync(() -> {
+            try {
+                fetchIosMobileJsonPlayer(contentCountry, localization, videoId);
+            } catch (final Exception ignored) { }
+            return null;
+        });
+
         // Put the sts string if we already know it so we don't have to fetch again the player
         // endpoint of the desktop internal API if something went wrong when parsing the Android
         // API.
@@ -783,6 +784,10 @@ public class YoutubeStreamExtractor extends StreamExtractor {
         if (isCipherProtectedContent()) {
             fetchDesktopJsonPlayerWithSts(contentCountry, localization, videoId);
         }
+
+        try {
+            iosTask.get();
+        } catch (InterruptedException | ExecutionException ignored) { }
     }
 
     private void checkPlayabilityStatus(final JsonObject youtubePlayerResponse,
@@ -861,6 +866,28 @@ public class YoutubeStreamExtractor extends StreamExtractor {
             if (desktopStreamingData == null) {
                 playerResponse = mobilePlayerResponse;
             }
+        }
+    }
+
+    /**
+     * Fetch the IOS Mobile API and assign the streaming data to the mobileStreamingData JSON
+     * object.
+     */
+    private void fetchIosMobileJsonPlayer(final ContentCountry contentCountry,
+                                              final Localization localization,
+                                              final String videoId)
+            throws IOException, ExtractionException {
+        final byte[] mobileBody = JsonWriter.string(prepareIosMobileJsonBuilder(
+                        localization, contentCountry)
+                        .value("videoId", videoId)
+                        .done())
+                .getBytes(UTF_8);
+        final JsonObject mobilePlayerResponse = getJsonMobilePostResponse("player",
+                mobileBody, contentCountry, localization);
+
+        final JsonObject streamingData = mobilePlayerResponse.getObject("streamingData");
+        if (!isNullOrEmpty(streamingData)) {
+            mobileIosStreamingData = streamingData;
         }
     }
 
