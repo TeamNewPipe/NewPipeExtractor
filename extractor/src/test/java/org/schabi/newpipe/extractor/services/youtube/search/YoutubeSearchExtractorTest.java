@@ -343,4 +343,34 @@ public class YoutubeSearchExtractorTest {
             }
         }
     }
+
+    public static class VideoDescription extends DefaultSearchExtractorTest {
+        private static SearchExtractor extractor;
+        private static final String QUERY = "44wLAzydRFU";
+
+        @BeforeClass
+        public static void setUp() throws Exception {
+            YoutubeParsingHelper.resetClientVersionAndKey();
+            YoutubeParsingHelper.setNumberGenerator(new Random(1));
+            NewPipe.init(new DownloaderFactory().getDownloader(RESOURCE_PATH + "video_description"));
+            extractor = YouTube.getSearchExtractor(QUERY, singletonList(VIDEOS), "");
+            extractor.fetchPage();
+        }
+
+        @Override public SearchExtractor extractor() { return extractor; }
+        @Override public StreamingService expectedService() { return YouTube; }
+        @Override public String expectedName() { return QUERY; }
+        @Override public String expectedId() { return QUERY; }
+        @Override public String expectedUrlContains() { return "youtube.com/results?search_query=" + QUERY; }
+        @Override public String expectedOriginalUrlContains() { return "youtube.com/results?search_query=" + QUERY; }
+        @Override public String expectedSearchString() { return QUERY; }
+        @Nullable @Override public String expectedSearchSuggestion() { return null; }
+        @Override public InfoItem.InfoType expectedInfoItemType() { return InfoItem.InfoType.STREAM; }
+
+        @Test
+        public void testVideoDescription() throws IOException, ExtractionException {
+            final List<InfoItem> items = extractor.getInitialPage().getItems();
+            assertNotNull(((StreamInfoItem) items.get(0)).getShortDescription());
+        }
+    }
 }

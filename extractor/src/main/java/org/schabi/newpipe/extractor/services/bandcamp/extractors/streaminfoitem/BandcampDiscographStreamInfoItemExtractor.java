@@ -26,6 +26,12 @@ public class BandcampDiscographStreamInfoItemExtractor extends BandcampStreamInf
         return null;
     }
 
+    @Nullable
+    @Override
+    public String getShortDescription() {
+        return null;
+    }
+
     @Override
     public String getName() {
         return discograph.getString("title");

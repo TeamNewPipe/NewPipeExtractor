@@ -60,6 +60,12 @@ public class BandcampPlaylistStreamInfoItemExtractor extends BandcampStreamInfoI
         return null;
     }
 
+    @Nullable
+    @Override
+    public String getShortDescription() {
+        return null;
+    }
+
     /**
      * Each track can have its own cover art. Therefore, unless a substitute is provided,
      * the thumbnail is extracted using a stream extractor.

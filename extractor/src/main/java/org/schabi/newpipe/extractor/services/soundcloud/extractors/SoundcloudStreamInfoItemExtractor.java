@@ -66,6 +66,12 @@ public class SoundcloudStreamInfoItemExtractor implements StreamInfoItemExtracto
         return new DateWrapper(SoundcloudParsingHelper.parseDateFrom(getTextualUploadDate()));
     }
 
+    @Nullable
+    @Override
+    public String getShortDescription() {
+        return null;
+    }
+
     @Override
     public long getViewCount() {
         return itemObject.getLong("playback_count");

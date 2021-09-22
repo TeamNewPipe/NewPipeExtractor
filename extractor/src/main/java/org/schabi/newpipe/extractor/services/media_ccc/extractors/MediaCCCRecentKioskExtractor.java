@@ -92,4 +92,10 @@ public class MediaCCCRecentKioskExtractor implements StreamInfoItemExtractor {
                 DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss.SSSzzzz"));
         return new DateWrapper(zonedDateTime.toOffsetDateTime(), false);
     }
+
+    @Nullable
+    @Override
+    public String getShortDescription() {
+        return null;
+    }
 }

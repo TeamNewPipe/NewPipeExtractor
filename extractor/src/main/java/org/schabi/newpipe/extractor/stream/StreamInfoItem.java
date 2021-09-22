@@ -32,6 +32,7 @@ public class StreamInfoItem extends InfoItem {
     private final StreamType streamType;
 
     private String uploaderName;
+    private String shortDescription;
     private String textualUploadDate;
     @Nullable
     private DateWrapper uploadDate;
@@ -90,6 +91,14 @@ public class StreamInfoItem extends InfoItem {
 
     public void setUploaderAvatarUrl(final String uploaderAvatarUrl) {
         this.uploaderAvatarUrl = uploaderAvatarUrl;
+    }
+
+    public String getShortDescription() {
+        return shortDescription;
+    }
+
+    public void setShortDescription(String shortDescription) {
+        this.shortDescription = shortDescription;
     }
 
     @Nullable

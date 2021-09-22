@@ -92,6 +92,12 @@ public class PeertubeStreamInfoItemExtractor implements StreamInfoItemExtractor 
         return new DateWrapper(PeertubeParsingHelper.parseDateFrom(textualUploadDate));
     }
 
+    @Nullable
+    @Override
+    public String getShortDescription() {
+        return null;
+    }
+
     @Override
     public StreamType getStreamType() {
         return item.getBoolean("isLive") ? StreamType.LIVE_STREAM : StreamType.VIDEO_STREAM;

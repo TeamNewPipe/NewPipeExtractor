@@ -101,6 +101,11 @@ public class StreamInfoItemsCollector extends InfoItemsCollector<StreamInfoItem,
         } catch (Exception e) {
             addError(e);
         }
+        try {
+            resultItem.setShortDescription(extractor.getShortDescription());
+        } catch (Exception e) {
+            addError(e);
+        }
 
         return resultItem;
     }

@@ -77,6 +77,12 @@ public class YoutubeFeedInfoItemExtractor implements StreamInfoItemExtractor {
         }
     }
 
+    @Nullable
+    @Override
+    public String getShortDescription() {
+        return null;
+    }
+
     @Override
     public String getName() {
         return entryElement.getElementsByTag("title").first().text();

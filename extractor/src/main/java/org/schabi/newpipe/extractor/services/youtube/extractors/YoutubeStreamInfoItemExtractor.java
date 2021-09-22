@@ -288,4 +288,17 @@ public class YoutubeStreamInfoItemExtractor implements StreamInfoItemExtractor {
             throw new ParsingException("Could not parse date from premiere:  \"" + startTime + "\"");
         }
     }
+
+    @Nullable
+    @Override
+    public String getShortDescription() throws ParsingException {
+
+        if(videoInfo.has("detailedMetadataSnippets"))
+            return getTextFromObject(videoInfo.getArray("detailedMetadataSnippets").getObject(0).getObject("snippetText"));
+
+        if(videoInfo.has("descriptionSnippet"))
+            return  getTextFromObject(videoInfo.getObject("descriptionSnippet"));
+
+        return null;
+    }
 }

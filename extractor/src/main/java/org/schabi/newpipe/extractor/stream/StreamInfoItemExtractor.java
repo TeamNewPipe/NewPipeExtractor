@@ -116,4 +116,14 @@ public interface StreamInfoItemExtractor extends InfoItemExtractor {
     @Nullable
     DateWrapper getUploadDate() throws ParsingException;
 
+
+    /**
+     * Get the video's short description.
+     *
+     * @return The video's short description or {@code null} if not provided by the service.
+     * @throws ParsingException if there is an error in the extraction
+     */
+    @Nullable
+    String getShortDescription() throws ParsingException;
+
 }
