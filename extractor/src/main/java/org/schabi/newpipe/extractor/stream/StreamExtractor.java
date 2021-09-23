@@ -529,6 +529,15 @@ public abstract class StreamExtractor extends Extractor {
      */
     @Nonnull
     public abstract List<MetaInfo> getMetaInfo() throws ParsingException;
+
+    /**
+     * Whether a particular stream is live or not. Should return false if not provided by service.
+     *
+     * @return Whether or not the stream is a live event of some sort, or {@code false} if not provided by service.
+     * @throws ParsingException if there is an error in the extraction
+     */
+    public abstract boolean isLive() throws ParsingException;
+
     public enum Privacy {
         PUBLIC,
         UNLISTED,

@@ -74,6 +74,7 @@ public abstract class DefaultStreamExtractorTest extends DefaultExtractorTest<St
     public String expectedSupportInfo() { return ""; } // default: no support info available
     public int expectedStreamSegmentsCount() { return -1; } // return 0 or greater to test (default is -1 to ignore)
     public List<MetaInfo> expectedMetaInfo() throws MalformedURLException { return Collections.emptyList(); } // default: no metadata info available
+    public boolean expectedLive() { return false; } // default: Not a livestream
 
     @Test
     @Override
@@ -436,5 +437,11 @@ public abstract class DefaultStreamExtractorTest extends DefaultExtractorTest<St
             }
         }
 
+    }
+
+    @Test
+    @Override
+    public void testLive() throws Exception {
+        assertEquals(expectedLive(), extractor().isLive());
     }
 }

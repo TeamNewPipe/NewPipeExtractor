@@ -339,9 +339,13 @@ public class StreamInfo extends Info {
         } catch (Exception e) {
             streamInfo.addError(e);
         }
-
         try {
             streamInfo.setPreviewFrames(extractor.getFrames());
+        } catch (Exception e) {
+            streamInfo.addError(e);
+        }
+        try {
+            streamInfo.setLive(extractor.isLive());
         } catch (Exception e) {
             streamInfo.addError(e);
         }
@@ -383,6 +387,7 @@ public class StreamInfo extends Info {
 
 
     private String hlsUrl = "";
+    private boolean live = false;
     private List<InfoItem> relatedItems = new ArrayList<>();
 
     private long startPosition = 0;
@@ -626,6 +631,14 @@ public class StreamInfo extends Info {
 
     public void setHlsUrl(String hlsUrl) {
         this.hlsUrl = hlsUrl;
+    }
+
+    public boolean isLive() {
+        return live;
+    }
+
+    public void setLive(boolean live) {
+        this.live = live;
     }
 
     public List<InfoItem> getRelatedItems() {

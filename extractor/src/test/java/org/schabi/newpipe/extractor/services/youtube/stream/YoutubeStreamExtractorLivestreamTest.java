@@ -77,4 +77,5 @@ public class YoutubeStreamExtractorLivestreamTest extends DefaultStreamExtractor
                 "lofi radio chilledcow", "music to study", "playlist", "radio", "relaxing music", "study music",
                 "lofi hip hop radio - beats to relax\\/study to");
     }
+    @Override public boolean expectedLive() { return true; }
 }

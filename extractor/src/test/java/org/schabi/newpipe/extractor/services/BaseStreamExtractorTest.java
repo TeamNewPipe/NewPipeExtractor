@@ -32,4 +32,5 @@ public interface BaseStreamExtractorTest extends BaseExtractorTest {
     void testLanguageInfo() throws Exception;
     void testTags() throws Exception;
     void testSupportInfo() throws Exception;
+    void testLive() throws Exception;
 }

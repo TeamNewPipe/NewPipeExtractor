@@ -341,6 +341,11 @@ public class PeertubeStreamExtractor extends StreamExtractor {
         return Collections.emptyList();
     }
 
+    @Override
+    public boolean isLive() {
+        return false;
+    }
+
     private String getRelatedItemsUrl(final List<String> tags) throws UnsupportedEncodingException {
         final String url = baseUrl + PeertubeSearchQueryHandlerFactory.SEARCH_ENDPOINT;
         final StringBuilder params = new StringBuilder();

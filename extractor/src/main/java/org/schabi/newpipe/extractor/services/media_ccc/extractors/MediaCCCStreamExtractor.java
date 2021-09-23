@@ -305,4 +305,9 @@ public class MediaCCCStreamExtractor extends StreamExtractor {
     public List<MetaInfo> getMetaInfo() {
         return Collections.emptyList();
     }
+
+    @Override
+    public boolean isLive() {
+        return false;
+    }
 }

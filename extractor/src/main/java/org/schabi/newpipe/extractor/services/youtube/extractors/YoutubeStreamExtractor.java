@@ -1377,6 +1377,14 @@ public class YoutubeStreamExtractor extends StreamExtractor {
                         .getObject("results").getObject("results").getArray("contents"));
     }
 
+    @Override
+    public boolean isLive() {
+
+        final JsonObject videoDetails = playerResponse.getObject("videoDetails");
+
+        return videoDetails.has("isLive") && videoDetails.getBoolean("isLive");
+    }
+
     /**
      * Reset YouTube's deobfuscation code.
      * <p>

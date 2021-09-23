@@ -352,4 +352,9 @@ public class BandcampStreamExtractor extends StreamExtractor {
     public List<MetaInfo> getMetaInfo() throws ParsingException {
         return Collections.emptyList();
     }
+
+    @Override
+    public boolean isLive() {
+        return false;
+    }
 }
