@@ -97,7 +97,7 @@ public class StreamInfoItem extends InfoItem {
         return shortDescription;
     }
 
-    public void setShortDescription(String shortDescription) {
+    public void setShortDescription(final String shortDescription) {
         this.shortDescription = shortDescription;
     }
 

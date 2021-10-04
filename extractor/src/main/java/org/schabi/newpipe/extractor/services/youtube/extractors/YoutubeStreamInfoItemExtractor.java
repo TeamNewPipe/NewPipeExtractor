@@ -293,11 +293,13 @@ public class YoutubeStreamInfoItemExtractor implements StreamInfoItemExtractor {
     @Override
     public String getShortDescription() throws ParsingException {
 
-        if(videoInfo.has("detailedMetadataSnippets"))
+        if (videoInfo.has("detailedMetadataSnippets")) {
             return getTextFromObject(videoInfo.getArray("detailedMetadataSnippets").getObject(0).getObject("snippetText"));
+        }
 
-        if(videoInfo.has("descriptionSnippet"))
-            return  getTextFromObject(videoInfo.getObject("descriptionSnippet"));
+        if (videoInfo.has("descriptionSnippet")) {
+            return getTextFromObject(videoInfo.getObject("descriptionSnippet"));
+        }
 
         return null;
     }
