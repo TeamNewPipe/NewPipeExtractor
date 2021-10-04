@@ -124,6 +124,6 @@ public interface StreamInfoItemExtractor extends InfoItemExtractor {
      * @throws ParsingException if there is an error in the extraction
      */
     @Nullable
-    String getShortDescription() throws ParsingException;
+    default String getShortDescription() throws ParsingException { return null; }
 
 }

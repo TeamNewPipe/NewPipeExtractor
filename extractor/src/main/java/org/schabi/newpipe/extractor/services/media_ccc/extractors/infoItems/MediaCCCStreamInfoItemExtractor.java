@@ -73,12 +73,6 @@ public class MediaCCCStreamInfoItemExtractor implements StreamInfoItemExtractor 
         return new DateWrapper(MediaCCCParsingHelper.parseDateFrom(date));
     }
 
-    @Nullable
-    @Override
-    public String getShortDescription() {
-        return null;
-    }
-
     @Override
     public String getName() throws ParsingException {
         return event.getString("title");

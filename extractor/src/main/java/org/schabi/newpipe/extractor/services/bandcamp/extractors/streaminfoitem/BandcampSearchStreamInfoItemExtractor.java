@@ -32,12 +32,6 @@ public class BandcampSearchStreamInfoItemExtractor extends BandcampStreamInfoIte
         return null;
     }
 
-    @Nullable
-    @Override
-    public String getShortDescription() {
-        return null;
-    }
-
     @Override
     public String getName() throws ParsingException {
         return resultInfo.getElementsByClass("heading").text();

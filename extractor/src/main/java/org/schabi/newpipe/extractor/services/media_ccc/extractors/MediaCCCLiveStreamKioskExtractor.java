@@ -95,10 +95,4 @@ public class MediaCCCLiveStreamKioskExtractor implements StreamInfoItemExtractor
     public DateWrapper getUploadDate() throws ParsingException {
         return null;
     }
-
-    @Nullable
-    @Override
-    public String getShortDescription() {
-        return null;
-    }
 }

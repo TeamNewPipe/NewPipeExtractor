@@ -43,12 +43,6 @@ public class BandcampRadioInfoItemExtractor implements StreamInfoItemExtractor {
         return BandcampExtractorHelper.parseDate(getTextualUploadDate());
     }
 
-    @Nullable
-    @Override
-    public String getShortDescription() {
-        return null;
-    }
-
     @Override
     public String getName() throws ParsingException {
         return show.getString("subtitle");
