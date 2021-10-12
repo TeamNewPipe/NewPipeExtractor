@@ -28,7 +28,7 @@ allprojects {
 
     ext {
         nanojsonVersion = "1d9e1aea9049fc9f85e68b43ba39fe7be1c1f751"
-        spotbugsVersion = "4.4.1"
+        spotbugsVersion = "4.4.2"
         junitVersion = "4.13.2"
     }
 }
