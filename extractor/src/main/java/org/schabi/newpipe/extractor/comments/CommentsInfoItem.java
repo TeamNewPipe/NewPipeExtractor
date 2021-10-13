@@ -4,6 +4,8 @@ import org.schabi.newpipe.extractor.InfoItem;
 import org.schabi.newpipe.extractor.Page;
 import org.schabi.newpipe.extractor.localization.DateWrapper;
 
+import java.util.List;
+
 import javax.annotation.Nullable;
 
 public class CommentsInfoItem extends InfoItem {
@@ -24,6 +26,8 @@ public class CommentsInfoItem extends InfoItem {
     private int streamPosition;
     @Nullable
     private Page replies;
+    @Nullable
+    private List<CommentsInfoItem> repliesInfoList;
 
     public static final int NO_LIKE_COUNT = -1;
     public static final int NO_STREAM_POSITION = -1;
@@ -149,4 +153,11 @@ public class CommentsInfoItem extends InfoItem {
     public void setReplies(@Nullable Page replies) { this.replies = replies; }
 
     public Page getReplies() { return this.replies; }
+
+    public void setRepliesInfoList(@Nullable List<CommentsInfoItem> repliesInfoList) {
+        this.repliesInfoList = repliesInfoList;
+    }
+
+    @Nullable
+    public List<CommentsInfoItem> getRepliesInfoList() {return this.repliesInfoList; }
 }

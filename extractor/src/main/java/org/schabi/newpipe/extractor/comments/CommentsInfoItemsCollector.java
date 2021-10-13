@@ -1,8 +1,11 @@
 package org.schabi.newpipe.extractor.comments;
 
+import static org.schabi.newpipe.extractor.ServiceList.YouTube;
+
 import org.schabi.newpipe.extractor.InfoItem;
 import org.schabi.newpipe.extractor.InfoItemsCollector;
 import org.schabi.newpipe.extractor.exceptions.ParsingException;
+import org.schabi.newpipe.extractor.services.youtube.extractors.YoutubeCommentsExtractor;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -95,6 +98,19 @@ public class CommentsInfoItemsCollector extends InfoItemsCollector<CommentsInfoI
 
         try {
             resultItem.setReplies(extractor.getReplies());
+        } catch (Exception e) {
+            addError(e);
+        }
+
+        try {
+            if (resultItem.getReplies() != null && serviceId == YouTube.getServiceId()) {
+                    final YoutubeCommentsExtractor youtubeCommentsExtractor =
+                            (YoutubeCommentsExtractor) YouTube.getCommentsExtractor(
+                                    resultItem.getReplies().getUrl());
+
+                    resultItem.setRepliesInfoList(
+                            youtubeCommentsExtractor.getPage(extractor.getReplies()).getItems());
+            }
         } catch (Exception e) {
             addError(e);
         }
