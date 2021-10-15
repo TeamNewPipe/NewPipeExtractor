@@ -28,6 +28,7 @@ public class CommentsInfoItem extends InfoItem {
     private Page replies;
     @Nullable
     private List<CommentsInfoItem> repliesInfoList;
+    private boolean repliesOpen = false;
 
     public static final int NO_LIKE_COUNT = -1;
     public static final int NO_STREAM_POSITION = -1;
@@ -160,4 +161,10 @@ public class CommentsInfoItem extends InfoItem {
 
     @Nullable
     public List<CommentsInfoItem> getRepliesInfoList() {return this.repliesInfoList; }
+
+    public void setRepliesOpen(boolean repliesOpen) {
+        this.repliesOpen = repliesOpen;
+    }
+
+    public boolean getRepliesOpen() {return this.repliesOpen; }
 }
