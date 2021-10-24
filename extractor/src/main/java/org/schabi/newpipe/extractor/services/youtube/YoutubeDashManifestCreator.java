@@ -309,10 +309,6 @@ public class YoutubeDashManifestCreator {
             xmlns.setValue("urn:mpeg:DASH:schema:MPD:2011");
             mpdElement.setAttributeNode(xmlns);
 
-            final Attr xmlnsYt = document.createAttribute("xmlns:yt");
-            xmlnsYt.setValue("http://youtube.com/yt/2012/10/10");
-            mpdElement.setAttributeNode(xmlnsYt);
-
             final Attr xsiSchemaLocationAttribute = document.createAttribute("xsi:schemaLocation");
             xsiSchemaLocationAttribute.setValue("urn:mpeg:DASH:schema:MPD:2011 DASH-MPD.xsd");
             mpdElement.setAttributeNode(xsiSchemaLocationAttribute);
