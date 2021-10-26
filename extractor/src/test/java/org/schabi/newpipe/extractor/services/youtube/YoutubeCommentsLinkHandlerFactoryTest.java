@@ -61,4 +61,10 @@ public class YoutubeCommentsLinkHandlerFactoryTest {
         assertEquals("VM_6n762j6M", linkHandler.fromUrl("https://invidio.us/VM_6n762j6M&t=20").getId());
     }
 
+    @Test
+    public void getIdFromY2ube() throws ParsingException {
+        assertEquals("VM_6n762j6M", linkHandler.fromUrl("https://y2u.be/VM_6n762j6M").getId());
+        assertEquals("VM_6n762j6M", linkHandler.fromUrl("https://Y2U.Be/VM_6n762j6M").getId());
+    }
+
 }

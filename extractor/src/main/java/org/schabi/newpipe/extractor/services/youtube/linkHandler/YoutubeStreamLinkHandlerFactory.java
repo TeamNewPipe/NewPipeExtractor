@@ -110,7 +110,7 @@ public class YoutubeStreamLinkHandlerFactory extends LinkHandlerFactory {
 
         if (!Utils.isHTTP(url) || !(YoutubeParsingHelper.isYoutubeURL(url) ||
                 YoutubeParsingHelper.isYoutubeServiceURL(url) || YoutubeParsingHelper.isHooktubeURL(url) ||
-                YoutubeParsingHelper.isInvidioURL(url))) {
+                YoutubeParsingHelper.isInvidioURL(url) || YoutubeParsingHelper.isY2ubeURL(url))) {
             if (host.equalsIgnoreCase("googleads.g.doubleclick.net")) {
                 throw new FoundAdException("Error found ad: " + urlString);
             }
@@ -160,6 +160,7 @@ public class YoutubeStreamLinkHandlerFactory extends LinkHandlerFactory {
                 return assertIsId(viewQueryValue);
             }
 
+            case "Y2U.BE":
             case "YOUTU.BE": {
                 String viewQueryValue = Utils.getQueryValue(url, "v");
                 if (viewQueryValue != null) {

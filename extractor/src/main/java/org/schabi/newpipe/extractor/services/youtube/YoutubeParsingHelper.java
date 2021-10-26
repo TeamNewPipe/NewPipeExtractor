@@ -162,6 +162,10 @@ public class YoutubeParsingHelper {
                 || host.equalsIgnoreCase("y.com.cm");
     }
 
+    public static boolean isY2ubeURL(@Nonnull final URL url) {
+        return url.getHost().equalsIgnoreCase("y2u.be");
+    }
+
     /**
      * Parses the duration string of the video expecting ":" or "." as separators
      *
