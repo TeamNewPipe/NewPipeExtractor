@@ -23,9 +23,7 @@ import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.io.IOException;
 import java.util.Collections;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 import static org.schabi.newpipe.extractor.services.youtube.YoutubeParsingHelper.*;
 import static org.schabi.newpipe.extractor.services.youtube.linkHandler.YoutubeSearchQueryHandlerFactory.*;
@@ -100,15 +98,8 @@ public class YoutubeMusicSearchExtractor extends SearchExtractor {
             .end().done().getBytes(UTF_8);
         // @formatter:on
 
-        final Map<String, List<String>> headers = new HashMap<>();
-        headers.put("X-YouTube-Client-Name", Collections.singletonList(youtubeMusicKeys[1]));
-        headers.put("X-YouTube-Client-Version", Collections.singletonList(youtubeMusicKeys[2]));
-        headers.put("Origin", Collections.singletonList("https://music.youtube.com"));
-        headers.put("Referer", Collections.singletonList("music.youtube.com"));
-        headers.put("Content-Type", Collections.singletonList("application/json"));
-
-        final String responseBody = getValidJsonResponseBody(getDownloader().post(url, headers,
-                json));
+        final String responseBody = getValidJsonResponseBody(getDownloader().post(url,
+                getYoutubeMusicHeaders(youtubeMusicKeys), json));
 
         try {
             initialData = JsonParser.object().from(responseBody);
@@ -238,15 +229,8 @@ public class YoutubeMusicSearchExtractor extends SearchExtractor {
             .end().done().getBytes(UTF_8);
         // @formatter:on
 
-        final Map<String, List<String>> headers = new HashMap<>();
-        headers.put("X-YouTube-Client-Name", Collections.singletonList(youtubeMusicKeys[1]));
-        headers.put("X-YouTube-Client-Version", Collections.singletonList(youtubeMusicKeys[2]));
-        headers.put("Origin", Collections.singletonList("https://music.youtube.com"));
-        headers.put("Referer", Collections.singletonList("music.youtube.com"));
-        headers.put("Content-Type", Collections.singletonList("application/json"));
-
         final String responseBody = getValidJsonResponseBody(getDownloader().post(page.getUrl(),
-                headers, json));
+                getYoutubeMusicHeaders(youtubeMusicKeys), json));
 
         final JsonObject ajaxJson;
         try {

@@ -3,29 +3,16 @@ package org.schabi.newpipe.extractor.services.youtube.extractors;
 import com.grack.nanojson.JsonArray;
 import com.grack.nanojson.JsonObject;
 import com.grack.nanojson.JsonWriter;
-
 import org.mozilla.javascript.Context;
 import org.mozilla.javascript.Function;
 import org.mozilla.javascript.ScriptableObject;
-
 import org.schabi.newpipe.extractor.MediaFormat;
 import org.schabi.newpipe.extractor.MetaInfo;
 import org.schabi.newpipe.extractor.StreamingService;
 import org.schabi.newpipe.extractor.downloader.Downloader;
-import org.schabi.newpipe.extractor.exceptions.AgeRestrictedContentException;
-import org.schabi.newpipe.extractor.exceptions.ContentNotAvailableException;
-import org.schabi.newpipe.extractor.exceptions.ExtractionException;
-import org.schabi.newpipe.extractor.exceptions.GeographicRestrictionException;
-import org.schabi.newpipe.extractor.exceptions.PaidContentException;
-import org.schabi.newpipe.extractor.exceptions.ParsingException;
-import org.schabi.newpipe.extractor.exceptions.PrivateContentException;
-import org.schabi.newpipe.extractor.exceptions.YoutubeMusicPremiumContentException;
+import org.schabi.newpipe.extractor.exceptions.*;
 import org.schabi.newpipe.extractor.linkhandler.LinkHandler;
-import org.schabi.newpipe.extractor.localization.ContentCountry;
-import org.schabi.newpipe.extractor.localization.DateWrapper;
-import org.schabi.newpipe.extractor.localization.Localization;
-import org.schabi.newpipe.extractor.localization.TimeAgoParser;
-import org.schabi.newpipe.extractor.localization.TimeAgoPatternsManager;
+import org.schabi.newpipe.extractor.localization.*;
 import org.schabi.newpipe.extractor.services.youtube.*;
 import org.schabi.newpipe.extractor.services.youtube.linkHandler.YoutubeChannelLinkHandlerFactory;
 import org.schabi.newpipe.extractor.stream.*;
@@ -36,16 +23,14 @@ import org.schabi.newpipe.extractor.utils.Utils;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.io.IOException;
-import java.io.UnsupportedEncodingException;
 import java.time.LocalDate;
 import java.time.OffsetDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.*;
+import java.util.regex.Pattern;
 
 import static org.schabi.newpipe.extractor.services.youtube.YoutubeParsingHelper.*;
-import static org.schabi.newpipe.extractor.utils.Utils.EMPTY_STRING;
-import static org.schabi.newpipe.extractor.utils.Utils.UTF_8;
-import static org.schabi.newpipe.extractor.utils.Utils.isNullOrEmpty;
+import static org.schabi.newpipe.extractor.utils.Utils.*;
 
 /*
  * Created by Christian Schabesberger on 06.08.15.
@@ -1229,7 +1214,11 @@ public class YoutubeStreamExtractor extends StreamExtractor {
                                 streamUrl = cipher.get("url") + "&" + cipher.get("sp") + "="
                                         + deobfuscateSignature(cipher.get("s"));
                             }
-                            streamUrl = throttlingDecrypter.apply(streamUrl);
+
+                            if (isWebStreamingUrl(streamUrl)) {
+                                streamUrl = throttlingDecrypter.apply(streamUrl) + "&cver="
+                                        + getClientVersion();
+                            }
 
                             final JsonObject initRange = formatData.getObject("initRange");
                             final JsonObject indexRange = formatData.getObject("indexRange");
@@ -1277,7 +1266,7 @@ public class YoutubeStreamExtractor extends StreamExtractor {
 
                             itagInfos.add(itagInfo);
                         }
-                    } catch (final UnsupportedEncodingException | ParsingException ignored) {
+                    } catch (final IOException | ExtractionException ignored) {
                     }
                 }
             }
