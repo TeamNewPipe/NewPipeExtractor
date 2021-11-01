@@ -3,7 +3,7 @@ package org.schabi.newpipe.extractor.services.youtube;
 import org.schabi.newpipe.extractor.NewPipe;
 import org.schabi.newpipe.extractor.downloader.Downloader;
 import org.schabi.newpipe.extractor.downloader.Response;
-import org.schabi.newpipe.extractor.exceptions.ReCaptchaException;
+import org.schabi.newpipe.extractor.exceptions.ExtractionException;
 import org.schabi.newpipe.extractor.utils.Parser;
 import org.schabi.newpipe.extractor.utils.Utils;
 import org.w3c.dom.Attr;
@@ -22,9 +22,11 @@ import javax.xml.transform.dom.DOMSource;
 import javax.xml.transform.stream.StreamResult;
 import java.io.IOException;
 import java.io.StringWriter;
+import java.nio.charset.StandardCharsets;
 import java.util.*;
 import java.util.regex.Pattern;
 
+import static org.schabi.newpipe.extractor.services.youtube.YoutubeParsingHelper.*;
 import static org.schabi.newpipe.extractor.utils.Utils.EMPTY_STRING;
 import static org.schabi.newpipe.extractor.utils.Utils.isNullOrEmpty;
 
@@ -33,6 +35,9 @@ public class YoutubeDashManifestCreator {
     private static final Pattern SEGMENT_DURATION_MS_PATTERN = Pattern.compile(
             "Segment-Durations-Ms: ((?:\\d+,\\d+,)?(?:\\d+\\(r=\\d+\\)(,\\d+)+,)+)");
     private static final String SQ_0 = "&sq=0";
+    private static final String RN_0 = "&rn=0";
+    private static final String ALR_YES = "&alr=yes";
+    private static final String HEADM_1 = "&headm=1";
 
     private static final List<Integer> segmentsDuration = new ArrayList<>();
     private static final List<Integer> durationRepetitions = new ArrayList<>();
@@ -60,15 +65,17 @@ public class YoutubeDashManifestCreator {
         if (otfManifestsGenerated.containsKey(otfBaseStreamingUrl)) {
             return otfManifestsGenerated.get(otfBaseStreamingUrl);
         }
+
         final String originalOtfBaseStreamingUrl = otfBaseStreamingUrl;
-        final Downloader downloader = NewPipe.getDownloader();
         final String responseBody;
         try {
             // Try to avoid redirects when streaming the content by saving the last URL we get
             // from video servers.
+            final Response response = getInitializationResponse(otfBaseStreamingUrl,
+                    itagItem, false);
+            otfBaseStreamingUrl = response.latestUrl().replace(SQ_0, EMPTY_STRING)
+                    .replace(RN_0, EMPTY_STRING).replace(ALR_YES, EMPTY_STRING);
 
-            final Response response = downloader.get(otfBaseStreamingUrl + SQ_0);
-            otfBaseStreamingUrl = response.latestUrl().replace(SQ_0, EMPTY_STRING);
             final int responseCode = response.responseCode();
             if (responseCode != 200) {
                 throw new YoutubeDashManifestCreationException(
@@ -76,7 +83,7 @@ public class YoutubeDashManifestCreator {
                                 + responseCode);
             }
             responseBody = response.responseBody();
-        } catch (final IOException | ReCaptchaException e) {
+        } catch (final IOException | ExtractionException e) {
             throw new YoutubeDashManifestCreationException(
                     "Unable to create the DASH manifest: could not fetch the initialization URL of the OTF stream", e);
         }
@@ -105,20 +112,7 @@ public class YoutubeDashManifestCreator {
         collectSegmentsData(segmentDuration);
         generateSegmentElementsForOtfStreams(document);
 
-        try {
-            final StringWriter result = new StringWriter();
-            final Transformer transformer = TransformerFactory.newInstance().newTransformer();
-            transformer.setOutputProperty(OutputKeys.VERSION, "1.0");
-            transformer.setOutputProperty(OutputKeys.ENCODING, "UTF-8");
-            transformer.setOutputProperty(OutputKeys.STANDALONE, "no");
-            transformer.transform(new DOMSource(document), new StreamResult(result));
-            final String stringResult = result.toString();
-            otfManifestsGenerated.put(originalOtfBaseStreamingUrl, stringResult);
-            return stringResult;
-        } catch (final TransformerException e) {
-            throw new YoutubeDashManifestCreationException(
-                    "Could not convert the DASH manifest generated to a string", e);
-        }
+        return buildResult(originalOtfBaseStreamingUrl, document, otfManifestsGenerated);
     }
 
     @Nonnull
@@ -131,7 +125,6 @@ public class YoutubeDashManifestCreator {
             return postLiveStreamsManifestsGenerated.get(postLiveStreamDvrStreamingUrl);
         }
         final String originalPostLiveStreamDvrStreamingUrl = postLiveStreamDvrStreamingUrl;
-        final Downloader downloader = NewPipe.getDownloader();
         final String streamDuration;
         final String segmentCount;
 
@@ -143,34 +136,36 @@ public class YoutubeDashManifestCreator {
         try {
             // Try to avoid redirects when streaming the content by saving the latest URL we get
             // from video servers.
-            // Use a HEAD request in order to reduce the download size.
+            final Response response = getInitializationResponse(postLiveStreamDvrStreamingUrl,
+                    itagItem, true);
+            postLiveStreamDvrStreamingUrl = response.latestUrl().replace(SQ_0, EMPTY_STRING)
+                    .replace(RN_0, EMPTY_STRING).replace(ALR_YES, EMPTY_STRING);
 
-            final Response response = downloader.head(postLiveStreamDvrStreamingUrl + SQ_0);
-            postLiveStreamDvrStreamingUrl = response.latestUrl().replace(SQ_0, EMPTY_STRING);
             final int responseCode = response.responseCode();
             if (responseCode != 200) {
                 throw new YoutubeDashManifestCreationException(
-                        "Unable to create the DASH manifest: could not fetch the initialization URL of the post live DVR stream: response code "
+                        "Unable to create the DASH manifest: could not get the initialization URL of the post live DVR stream: response code "
                                 + responseCode);
             }
 
             final Map<String, List<String>> responseHeaders = response.responseHeaders();
             streamDuration = responseHeaders.get("X-Head-Time-Millis").get(0);
             segmentCount = responseHeaders.get("X-Head-Seqnum").get(0);
-        } catch (final IOException | ReCaptchaException | IndexOutOfBoundsException e) {
+        } catch (final IOException | IndexOutOfBoundsException | ExtractionException e) {
             throw new YoutubeDashManifestCreationException(
-                    "Unable to generate the DASH manifest: could not fetch the initialization URL of the post live DVR stream", e);
+                    "Unable to generate the DASH manifest: could not get the initialization URL of the post live DVR stream", e);
         }
+
         if (isNullOrEmpty(streamDuration)) {
             throw new YoutubeDashManifestCreationException(
-                    "Unable to generate the DASH manifest: could not get the duration of the stream");
+                    "Unable to generate the DASH manifest: could not get the duration of the stream of the post live DVR stream");
         }
         if (isNullOrEmpty(segmentCount)) {
             throw new YoutubeDashManifestCreationException(
-                    "Unable to generate the DASH manifest: could not get the number of segments");
+                    "Unable to generate the DASH manifest: could not get the number of segments of the post live DVR stream");
         }
 
-        final Document document = generateDocumentAndMpdElement(new String[] {streamDuration},
+        final Document document = generateDocumentAndMpdElement(new String[] { streamDuration },
                 true);
         generatePeriodElement(document);
         generateAdaptationSetElement(document, itagItem.getMediaFormat().mimeType);
@@ -181,29 +176,89 @@ public class YoutubeDashManifestCreator {
         }
         generateSegmentTemplateElement(document, postLiveStreamDvrStreamingUrl, true);
         generateSegmentTimelineElement(document);
-        generateSegmentElementsForPostLiveDvrStreams(document, targetDurationSec, segmentCount);
+        generateSegmentElementForPostLiveDvrStreams(document, targetDurationSec, segmentCount);
 
-        try {
-            final StringWriter result = new StringWriter();
-            final Transformer transformer = TransformerFactory.newInstance().newTransformer();
-            transformer.setOutputProperty(OutputKeys.VERSION, "1.0");
-            transformer.setOutputProperty(OutputKeys.ENCODING, "UTF-8");
-            transformer.setOutputProperty(OutputKeys.STANDALONE, "no");
-            transformer.transform(new DOMSource(document), new StreamResult(result));
-            final String stringResult = result.toString();
-            postLiveStreamsManifestsGenerated.put(originalPostLiveStreamDvrStreamingUrl,
-                    stringResult);
-            return stringResult;
-        } catch (final TransformerException e) {
-            throw new YoutubeDashManifestCreationException(
-                    "Could not convert the DASH manifest generated to a string", e);
-        }
+        return buildResult(originalPostLiveStreamDvrStreamingUrl, document, postLiveStreamsManifestsGenerated);
     }
 
+    @Nonnull
+    private static Response getInitializationResponse(@Nonnull String initializationUrl,
+                                                      @Nonnull final ItagItem itagItem,
+                                                      final boolean isAPostLiveDvrStreamingUrl)
+            throws IOException, ExtractionException, YoutubeDashManifestCreationException {
+        final boolean isAWebStreamingUrl = isWebStreamingUrl(initializationUrl);
+        final boolean isAnAndroidStreamingUrl = isAndroidStreamingUrl(initializationUrl);
+        if (isAWebStreamingUrl) {
+            initializationUrl += ALR_YES + SQ_0 + RN_0;
+        } else if (isAnAndroidStreamingUrl && isAPostLiveDvrStreamingUrl) {
+            initializationUrl += SQ_0 + RN_0 + HEADM_1;
+        } else {
+            initializationUrl += SQ_0 + RN_0;
+        }
+
+        final Downloader downloader = NewPipe.getDownloader();
+        if (isAWebStreamingUrl) {
+            final String mimeTypeExpected = itagItem.getMediaFormat().getMimeType();
+            final Map<String, List<String>> headers = new HashMap<>();
+            addClientInfoHeaders(headers);
+            if (!isNullOrEmpty(mimeTypeExpected)) {
+                String responseMimeType = "";
+                while (!responseMimeType.equals(mimeTypeExpected)) {
+                    final Response response = downloader.get(initializationUrl, headers);
+                    final int responseCode = response.responseCode();
+                    if (responseCode != 200) {
+                        throw new YoutubeDashManifestCreationException(
+                                "Unable to create the DASH manifest: could not get the initialization URL of the post live DVR stream: response code "
+                                        + responseCode);
+                    }
+
+                    // A valid response must include a Content-Type header, so we can require that
+                    // the response from video servers has this header.
+                    try {
+                        responseMimeType = Objects.requireNonNull(response.getHeader(
+                                "Content-Type"));
+                    } catch (final NullPointerException e) {
+                        throw new YoutubeDashManifestCreationException(
+                                "Unable to create the DASH manifest: could not get the Content-Type header from the initialization URL", e);
+                    }
+
+                    // The response body is the redirect URL
+                    if (responseMimeType.equals("text/plain")) {
+                        initializationUrl = response.responseBody();
+                    } else {
+                        return response;
+                    }
+                }
+            }
+        } else if (isAnAndroidStreamingUrl && isAPostLiveDvrStreamingUrl) {
+            final Map<String, List<String>> headers = new HashMap<>();
+            headers.put("User-Agent", Collections.singletonList(
+                    getYoutubeAndroidAppUserAgent(null)));
+            final byte[] emptyBody = "".getBytes(StandardCharsets.UTF_8);
+            return downloader.post(initializationUrl, headers, emptyBody);
+        }
+        final Map<String, List<String>> headers = new HashMap<>();
+        if (isAnAndroidStreamingUrl) {
+            headers.put("User-Agent", Collections.singletonList(
+                    getYoutubeAndroidAppUserAgent(null)));
+        }
+
+        return downloader.get(initializationUrl, headers);
+    }
+
+    /**
+     * Collect all the segments from an OTF stream.
+     *
+     * @param segmentDuration the string array which contains all the sequences extracted with the
+     *                        regular expression ({@link #SEGMENT_DURATION_MS_PATTERN})
+     * @throws YoutubeDashManifestCreationException if something went wrong when trying to collect
+     * the segments of the OTF stream
+     */
     private static void collectSegmentsData(@Nonnull final String[] segmentDuration)
             throws YoutubeDashManifestCreationException {
         segmentsDuration.clear();
         durationRepetitions.clear();
+
         try {
             for (final String segDuration : segmentDuration) {
                 final String[] segmentLengthRepeat = segDuration.split("\\(r=");
@@ -259,22 +314,21 @@ public class YoutubeDashManifestCreator {
 
     /**
      * Create a {@link Document} object and generate the {@code <MPD>} element of the manifest.
+     *
      * <p>
      * The generated {@code <MPD>} element looks like the manifest returned into the player
      * response of videos with OTF streams:
-     * <br>
-     * <br>
+     * </p>
+     * <p>
      * {@code <MPD xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-     * xmlns="urn:mpeg:DASH:schema:MPD:2011" xmlns:yt="http://youtube.com/yt/2012/10/10"
+     * xmlns="urn:mpeg:DASH:schema:MPD:2011"
      * xsi:schemaLocation="urn:mpeg:DASH:schema:MPD:2011 DASH-MPD.xsd" minBufferTime="PT1.500S"
      * profiles="urn:mpeg:dash:profile:isoff-main:2011" type="static"
      * mediaPresentationDuration="PT$duration$S">}
-     * <br>
-     * <br>
      * (where {@code $duration$} represents the duration in seconds (a number with 3 digits after
      * the decimal point)
-     * <br>
-     * <br>
+     * </p>
+     * <p>
      * If the duration is an integer or a double with less than 3 digits after the decimal point,
      * it will be converted into a double with 3 digits after the decimal point.
      * </p>
@@ -347,6 +401,7 @@ public class YoutubeDashManifestCreator {
 
     /**
      * Generate the {@code <Period>} element, appended as a child of the {@code <MPD>} element.
+     *
      * <p>
      * The {@code <MPD>} element needs to be generated before this element with
      * {@link #generateDocumentAndMpdElement(String[], boolean)}).
@@ -369,6 +424,23 @@ public class YoutubeDashManifestCreator {
         }
     }
 
+    /**
+     * Generate the {@code <Period>} element, appended as a child of the {@code <MPD>} element.
+     *
+     * <p>
+     * The {@code <MPD>} element needs to be generated before this element with
+     * {@link #generateDocumentAndMpdElement(String[], boolean)}).
+     * </p>
+     *
+     * @param document the {@link Document} on which the the {@code <Period>} element will be
+     *                 appended
+     * @param mimeType the mime type of the stream (which needs to be got with
+     *                 {@link ItagItem#getMediaFormat} and
+     *                 {@link org.schabi.newpipe.extractor.MediaFormat#getMimeType
+     *                 MediaFormat.getMimeType})
+     * @throws YoutubeDashManifestCreationException if something went wrong when generating or
+     * appending the {@code <Period>} element to the document
+     */
     private static void generateAdaptationSetElement(@Nonnull final Document document,
                                                      @Nonnull final String mimeType)
             throws YoutubeDashManifestCreationException {
@@ -398,14 +470,13 @@ public class YoutubeDashManifestCreator {
     /**
      * Generate the {@code <Role>} element, appended as a child of the {@code <AdaptationSet>}
      * element.
-     * <br>
+     *
      * <p>
      * This element, with its attributes and values, is:
-     * <br>
-     * <br>
+     * </p>
+     * <p>
      * {@code <Role schemeIdUri="urn:mpeg:DASH:role:2011" value="main"/>}
      * </p>
-     * <br>
      * <p>
      * The {@code <AdaptationSet>} element needs to be generated before this element with
      * {@link #generateAdaptationSetElement(Document, String)}).
@@ -535,22 +606,22 @@ public class YoutubeDashManifestCreator {
                     "Representation").item(0);
             final Element segmentTemplateElement = document.createElement("SegmentTemplate");
 
-            final Attr timescaleAttribute = document.createAttribute("timescale");
-            timescaleAttribute.setValue("1000");
-            segmentTemplateElement.setAttributeNode(timescaleAttribute);
-
-            final Attr mediaAttribute = document.createAttribute("media");
-            mediaAttribute.setValue(baseUrl + "&sq=$Number$");
-            segmentTemplateElement.setAttributeNode(mediaAttribute);
-
             final Attr startNumberAttribute = document.createAttribute("startNumber");
             final String startNumberValue = isPostLiveDvr ? "0" : "1";
             startNumberAttribute.setValue(startNumberValue);
             segmentTemplateElement.setAttributeNode(startNumberAttribute);
 
+            final Attr timescaleAttribute = document.createAttribute("timescale");
+            timescaleAttribute.setValue("1000");
+            segmentTemplateElement.setAttributeNode(timescaleAttribute);
+
             final Attr initializationAttribute = document.createAttribute("initialization");
-            initializationAttribute.setValue(baseUrl + SQ_0);
+            initializationAttribute.setValue(baseUrl + SQ_0 + RN_0);
             segmentTemplateElement.setAttributeNode(initializationAttribute);
+
+            final Attr mediaAttribute = document.createAttribute("media");
+            mediaAttribute.setValue(baseUrl + "&sq=$Number$&rn=$Number$");
+            segmentTemplateElement.setAttributeNode(mediaAttribute);
 
             representationElement.appendChild(segmentTemplateElement);
         } catch (final DOMException e) {
@@ -559,6 +630,20 @@ public class YoutubeDashManifestCreator {
         }
     }
 
+    /**
+     * Generate the {@code <SegmentTimeline>} element, appended as a child of the
+     * {@code <SegmentTemplate>} element.
+     *
+     * <p>
+     * The {@code <SegmentTemplate>} element needs to be generated before this element with
+     * {@link #generateSegmentTemplateElement(Document, String, boolean)}).
+     * </p>
+     *
+     * @param document the {@link Document} on which the the {@code <SegmentTimeline>} element will
+     *                 be appended
+     * @throws YoutubeDashManifestCreationException if something went wrong when generating or
+     * appending the {@code <SegmentTimeline>} element to the document
+     */
     private static void generateSegmentTimelineElement(@Nonnull final Document document)
             throws YoutubeDashManifestCreationException {
         try {
@@ -606,7 +691,7 @@ public class YoutubeDashManifestCreator {
         }
     }
 
-    private static void generateSegmentElementsForPostLiveDvrStreams(
+    private static void generateSegmentElementForPostLiveDvrStreams(
             @Nonnull final Document document,
             final int targetDurationSeconds,
             final String segmentCount) throws YoutubeDashManifestCreationException {
@@ -627,6 +712,39 @@ public class YoutubeDashManifestCreator {
         } catch (final DOMException e) {
             throw new YoutubeDashManifestCreationException(
                     "Could not generate or append to the document the Segment elements of the DASH manifest", e);
+        }
+    }
+
+    /**
+     * Convert a DASH manifest {@link Document document} to a string.
+     *
+     * @param originalBaseStreamingUrl    the original base URL of the stream
+     * @param document                    the document to be converted
+     * @param mapOfGeneratedManifestsType the {@link Map} on which store the string generated
+     *                                    (which is either {@link #otfManifestsGenerated} or
+     *                                    {@link #postLiveStreamsManifestsGenerated})
+     * @return the DASH manifest {@link Document document} converted to a string
+     * @throws YoutubeDashManifestCreationException if something went wrong when converting the
+     * {@link Document document}
+     */
+    private static String buildResult(
+            @Nonnull final String originalBaseStreamingUrl,
+            @Nonnull final Document document,
+            @Nonnull final Map<String, String> mapOfGeneratedManifestsType)
+            throws YoutubeDashManifestCreationException {
+        try {
+            final StringWriter result = new StringWriter();
+            final Transformer transformer = TransformerFactory.newInstance().newTransformer();
+            transformer.setOutputProperty(OutputKeys.VERSION, "1.0");
+            transformer.setOutputProperty(OutputKeys.ENCODING, "UTF-8");
+            transformer.setOutputProperty(OutputKeys.STANDALONE, "no");
+            transformer.transform(new DOMSource(document), new StreamResult(result));
+            final String stringResult = result.toString();
+            mapOfGeneratedManifestsType.put(originalBaseStreamingUrl, stringResult);
+            return stringResult;
+        } catch (final TransformerException e) {
+            throw new YoutubeDashManifestCreationException(
+                    "Could not convert the DASH manifest generated to a string", e);
         }
     }
 

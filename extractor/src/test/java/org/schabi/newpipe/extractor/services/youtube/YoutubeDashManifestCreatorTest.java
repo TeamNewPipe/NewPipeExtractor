@@ -26,20 +26,22 @@ import static org.schabi.newpipe.extractor.utils.Utils.isBlank;
 
 /**
  * Test for {@link YoutubeDashManifestCreator}.
+ *
  * <p>
  * We cannot test the generation of DASH manifests for ended livestreams because these videos will
  * be re-encoded as normal videos later, so we can't use a specific video.
- * <br>
- * <br>
+ * </p>
+ * <p>
  * The generation of DASH manifests for OTF streams, which can be tested, uses a video licenced
  * under the Creative Commons Attribution licence (reuse allowed):
  * {@code https://www.youtube.com/watch?v=DJ8GQUNUXGM}
- * <br>
- * <br>
+ * </p>
+ * <p>
  * We couldn't use mocks for these tests because the streaming URLs needs to fetched and the IP
  * address used to get these URLs is required (used as a param in the URLs; without it, video
  * servers return 403 Forbidden).
- * <br>
+ * </p>
+ * <p>
  * So the real downloader will be used everytime on this test class.
  * </p>
  */
@@ -359,8 +361,8 @@ public class YoutubeDashManifestCreatorTest {
                 throw new AssertionError("The value of the initialization attribute is not an URL",
                         e);
             }
-            assertTrue("The value of the initialization attribute doesn't end with &sq=0",
-                    initializationValue.endsWith("&sq=0"));
+            assertTrue("The value of the initialization attribute doesn't end with &sq=0&rn=0",
+                    initializationValue.endsWith("&sq=0&rn=0"));
 
             final String mediaValue = segmentTemplateElement.getAttribute("media");
             assertFalse("The value of the media attribute is empty or the corresponding attribute doesn't exist",
@@ -371,8 +373,8 @@ public class YoutubeDashManifestCreatorTest {
                 throw new AssertionError("The value of the media attribute is not an URL",
                         e);
             }
-            assertTrue("The value of the media attribute doesn't end with &sq=$Number$",
-                    mediaValue.endsWith("&sq=$Number$"));
+            assertTrue("The value of the media attribute doesn't end with &sq=$Number$&rn=$Number$",
+                    mediaValue.endsWith("&sq=$Number$&rn=$Number$"));
 
             final String startNumberValue = segmentTemplateElement.getAttribute("startNumber");
             assertFalse("The value of the startNumber attribute is empty or the corresponding attribute doesn't exist",
