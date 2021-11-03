@@ -9,7 +9,8 @@ import org.schabi.newpipe.extractor.utils.Parser;
 public class PeertubeStreamLinkHandlerFactory extends LinkHandlerFactory {
 
     private static final PeertubeStreamLinkHandlerFactory instance = new PeertubeStreamLinkHandlerFactory();
-    private static final String ID_PATTERN = "(/w/|(/videos/(watch/|embed/)?))([^/?&#]*)";
+    private static final String ID_PATTERN = "(/w/|(/videos/(watch/|embed/)?))(?!p/)([^/?&#]*)";
+    // we exclude p/ because /w/p/ is playlist, not video
     public static final String VIDEO_API_ENDPOINT = "/api/v1/videos/";
 
     // From PeerTube 3.3.0, the default path is /w/.

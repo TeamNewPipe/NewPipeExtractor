@@ -7,14 +7,14 @@ import org.schabi.newpipe.extractor.NewPipe;
 import org.schabi.newpipe.extractor.exceptions.ParsingException;
 import org.schabi.newpipe.extractor.services.peertube.linkHandler.PeertubeStreamLinkHandlerFactory;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.*;
 import static org.schabi.newpipe.extractor.ServiceList.PeerTube;
 
 /**
  * Test for {@link PeertubeStreamLinkHandlerFactory}
  */
 public class PeertubeStreamLinkHandlerFactoryTest {
+
     private static PeertubeStreamLinkHandlerFactory linkHandler;
 
     @BeforeClass
@@ -67,5 +67,9 @@ public class PeertubeStreamLinkHandlerFactoryTest {
         assertTrue(linkHandler.acceptUrl("https://framatube.org/videos/embed/9c9de5e8-0a1e-484a-b099-e80766180a6d"));
         assertTrue(linkHandler.acceptUrl("https://framatube.org/videos/watch/9c9de5e8-0a1e-484a-b099-e80766180a6d"));
         assertTrue(linkHandler.acceptUrl("https://framatube.org/w/9c9de5e8-0a1e-484a-b099-e80766180a6d"));
+
+        // make sure playlists aren't accepted
+        assertFalse(linkHandler.acceptUrl("https://framatube.org/w/p/dacdc4ef-5160-4846-9b70-a655880da667"));
+        assertFalse(linkHandler.acceptUrl("https://framatube.org/videos/watch/playlist/dacdc4ef-5160-4846-9b70-a655880da667"));
     }
 }

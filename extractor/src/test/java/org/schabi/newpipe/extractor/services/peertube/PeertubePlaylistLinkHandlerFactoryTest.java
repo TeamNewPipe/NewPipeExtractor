@@ -45,4 +45,11 @@ public class PeertubePlaylistLinkHandlerFactoryTest {
         assertEquals("96b0ee2b-a5a7-4794-8769-58d8ccb79ab7", linkHandler.getId("https://framatube.org/videos/watch/playlist/96b0ee2b-a5a7-4794-8769-58d8ccb79ab7"));
         assertEquals("96b0ee2b-a5a7-4794-8769-58d8ccb79ab7", linkHandler.getId("https://framatube.org/w/p/96b0ee2b-a5a7-4794-8769-58d8ccb79ab7"));
     }
+
+    @Test
+    public void getUrl() throws ParsingException {
+        System.out.println(linkHandler.fromUrl("https://framatube.org/videos/watch/playlist/d8ca79f9-e4c7-4269-8183-d78ed269c909").getUrl());;
+        System.out.println(linkHandler.fromUrl("https://framatube.org/w/p/d8ca79f9-e4c7-4269-8183-d78ed269c909").getUrl());;
+        System.out.println(linkHandler.fromUrl("https://framatube.org/w/p/sLFbqXsw7sPR3AfvqQSBZB").getUrl());;
+    }
 }
