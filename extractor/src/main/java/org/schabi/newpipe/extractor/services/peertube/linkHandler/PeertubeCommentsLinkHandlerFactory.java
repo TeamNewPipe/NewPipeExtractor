@@ -11,7 +11,6 @@ import java.util.List;
 public class PeertubeCommentsLinkHandlerFactory extends ListLinkHandlerFactory {
 
     private static final PeertubeCommentsLinkHandlerFactory instance = new PeertubeCommentsLinkHandlerFactory();
-    private static final String ID_PATTERN = "/videos/(watch/)?([^/?&#]*)";
     private static final String COMMENTS_ENDPOINT = "/api/v1/videos/%s/comment-threads";
 
     public static PeertubeCommentsLinkHandlerFactory getInstance() {
@@ -20,12 +19,12 @@ public class PeertubeCommentsLinkHandlerFactory extends ListLinkHandlerFactory {
 
     @Override
     public String getId(String url) throws ParsingException, IllegalArgumentException {
-        return Parser.matchGroup(ID_PATTERN, url, 2);
+        return PeertubeStreamLinkHandlerFactory.getInstance().getId(url); // the same id is needed
     }
 
     @Override
     public boolean onAcceptUrl(final String url) throws FoundAdException {
-        return url.contains("/videos/");
+        return url.contains("/videos/") || url.contains("/w/");
     }
 
     @Override
