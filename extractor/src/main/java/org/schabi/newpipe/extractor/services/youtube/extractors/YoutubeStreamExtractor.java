@@ -793,9 +793,7 @@ public class YoutubeStreamExtractor extends StreamExtractor {
             }
 
             try {
-                if (streamType == StreamType.VIDEO_STREAM || desktopStreamingData == null) {
-                    fetchAndroidEmbedJsonPlayer(contentCountry, localization, videoId);
-                }
+                fetchAndroidEmbedJsonPlayer(contentCountry, localization, videoId);
             } catch (final Exception ignored) {
             }
         } else {
@@ -827,8 +825,7 @@ public class YoutubeStreamExtractor extends StreamExtractor {
             nextResponse = getJsonPostResponse("next", body, localization);
         }
 
-        if (!isAgeRestricted && (streamType == StreamType.VIDEO_STREAM
-                || desktopStreamingData == null)) {
+        if (!isAgeRestricted) {
             try {
                 fetchAndroidMobileJsonPlayer(contentCountry, localization, videoId);
             } catch (final Exception ignored) {
@@ -1169,11 +1166,9 @@ public class YoutubeStreamExtractor extends StreamExtractor {
             throws ParsingException {
         final List<ItagInfo> itagInfos = new ArrayList<>();
         if (mobileStreamingData != null || desktopStreamingData != null) {
-            // Use the desktopStreamingData JSON object first because there are fewer redirects
-            // from the desktop endpoint for OTF and post live streams
-            itagInfos.addAll(getStreamsFromStreamingDataKey(desktopStreamingData, streamingDataKey,
-                    itagTypeWanted, streamType));
             itagInfos.addAll(getStreamsFromStreamingDataKey(mobileStreamingData, streamingDataKey,
+                    itagTypeWanted, streamType));
+            itagInfos.addAll(getStreamsFromStreamingDataKey(desktopStreamingData, streamingDataKey,
                     itagTypeWanted, streamType));
         }
 
