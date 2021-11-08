@@ -24,9 +24,9 @@ public class CommentsInfo extends ListInfo<CommentsInfoItem> {
         return getInfo(NewPipe.getServiceByUrl(url), url);
     }
 
-    public static CommentsInfo getInfo(final StreamingService serviceByUrl, final String url)
+    public static CommentsInfo getInfo(final StreamingService service, final String url)
             throws ExtractionException, IOException {
-        return getInfo(serviceByUrl.getCommentsExtractor(url));
+        return getInfo(service.getCommentsExtractor(url));
     }
 
     public static CommentsInfo getInfo(final CommentsExtractor commentsExtractor)
@@ -63,7 +63,7 @@ public class CommentsInfo extends ListInfo<CommentsInfoItem> {
             final StreamingService service,
             final CommentsInfo commentsInfo,
             final Page page) throws IOException, ExtractionException {
-        if (null == commentsInfo.getCommentsExtractor()) {
+        if (commentsInfo.getCommentsExtractor() == null) {
             commentsInfo.setCommentsExtractor(service.getCommentsExtractor(commentsInfo.getUrl()));
             commentsInfo.getCommentsExtractor().fetchPage();
         }
