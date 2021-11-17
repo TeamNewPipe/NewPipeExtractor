@@ -339,17 +339,26 @@ public class YoutubeStreamExtractor extends StreamExtractor {
         assertPageFetched();
         String likesString = "";
         try {
-            try {
-                likesString = getVideoPrimaryInfoRenderer().getObject("sentimentBar")
-                        .getObject("sentimentBarRenderer").getString("tooltip").split("/")[0];
-            } catch (final NullPointerException e) {
+            likesString = getVideoPrimaryInfoRenderer()
+                    .getObject("videoActions")
+                    .getObject("menuRenderer")
+                    .getArray("topLevelButtons")
+                    .getObject(0)
+                    .getObject("toggleButtonRenderer")
+                    .getObject("defaultText")
+                    .getObject("accessibility")
+                    .getObject("accessibilityData")
+                    .getString("label");
+
+            if (likesString == null) {
                 // If this kicks in our button has no content and therefore ratings must be disabled
                 if (playerResponse.getObject("videoDetails").getBoolean("allowRatings")) {
                     throw new ParsingException(
-                            "Ratings are enabled even though the like button is missing", e);
+                            "Ratings are enabled even though the like button is missing");
                 }
                 return -1;
             }
+
             return Integer.parseInt(Utils.removeNonDigitCharacters(likesString));
         } catch (final NumberFormatException nfe) {
             throw new ParsingException("Could not parse \"" + likesString + "\" as an Integer",
@@ -364,31 +373,8 @@ public class YoutubeStreamExtractor extends StreamExtractor {
 
     @Override
     public long getDislikeCount() throws ParsingException {
-        assertPageFetched();
-
-        String dislikesString = "";
-        try {
-            try {
-                dislikesString = getVideoPrimaryInfoRenderer().getObject("sentimentBar")
-                        .getObject("sentimentBarRenderer").getString("tooltip").split("/")[1];
-            } catch (final NullPointerException e) {
-                // If this kicks in our button has no content and therefore ratings must be disabled
-                if (playerResponse.getObject("videoDetails").getBoolean("allowRatings")) {
-                    throw new ParsingException(
-                            "Ratings are enabled even though the dislike button is missing", e);
-                }
-                return -1;
-            }
-            return Integer.parseInt(Utils.removeNonDigitCharacters(dislikesString));
-        } catch (final NumberFormatException nfe) {
-            throw new ParsingException("Could not parse \"" + dislikesString + "\" as an Integer",
-                    nfe);
-        } catch (final Exception e) {
-            if (getAgeLimit() == NO_AGE_LIMIT) {
-                throw new ParsingException("Could not get dislike count", e);
-            }
-            return -1;
-        }
+        // YT removed support for this: https://github.com/TeamNewPipe/NewPipe/issues/7405
+        return -1;
     }
 
     @Nonnull
