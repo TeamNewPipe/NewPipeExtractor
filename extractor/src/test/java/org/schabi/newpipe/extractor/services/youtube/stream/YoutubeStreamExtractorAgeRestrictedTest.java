@@ -53,7 +53,7 @@ public class YoutubeStreamExtractorAgeRestrictedTest extends DefaultStreamExtrac
     @Nullable @Override public String expectedUploadDate() { return "2017-01-25 00:00:00.000"; }
     @Nullable @Override public String expectedTextualUploadDate() { return "2017-01-25"; }
     @Override public long expectedLikeCountAtLeast() { return 149000; }
-    @Override public long expectedDislikeCountAtLeast() { return 38000; }
+    @Override public long expectedDislikeCountAtLeast() { return -1; }
     @Override public boolean expectedHasRelatedItems() { return false; } // no related videos (!)
     @Override public int expectedAgeLimit() { return 18; }
     @Override public boolean expectedHasSubtitles() { return false; }
