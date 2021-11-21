@@ -380,12 +380,12 @@ public class YoutubeStreamExtractor extends StreamExtractor {
     public long getDislikeCount() throws ParsingException {
         assertPageFetched();
 
-        String dislikesString = null;
         try {
-            dislikesString = getVideoPrimaryInfoRenderer().getObject("sentimentBar")
+            String dislikesString = getVideoPrimaryInfoRenderer().getObject("sentimentBar")
                     .getObject("sentimentBarRenderer").getString("tooltip");
             if (dislikesString != null && dislikesString.contains("/")) {
                 dislikesString = dislikesString.split("/")[1];
+                return Integer.parseInt(Utils.removeNonDigitCharacters(dislikesString));
             } else {
                 // Calculate dislike with average rating and like count
                 long likes = getLikeCount();
@@ -397,11 +397,6 @@ public class YoutubeStreamExtractor extends StreamExtractor {
                     return Math.round(likes * ((5 - averageRating) / (averageRating - 1)));
                 }
             }
-
-            if (dislikesString != null) {
-                return Integer.parseInt(Utils.removeNonDigitCharacters(dislikesString));
-            }
-
         } catch (final Exception e) {
         }
         // Silently fail as YouTube is "gradually rolling out" removing dislike count
