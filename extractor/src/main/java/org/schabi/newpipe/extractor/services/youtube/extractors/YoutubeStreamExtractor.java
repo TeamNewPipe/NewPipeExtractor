@@ -337,19 +337,33 @@ public class YoutubeStreamExtractor extends StreamExtractor {
     @Override
     public long getLikeCount() throws ParsingException {
         assertPageFetched();
-        String likesString = "";
+        String likesString = null;
         try {
-            try {
-                likesString = getVideoPrimaryInfoRenderer().getObject("sentimentBar")
-                        .getObject("sentimentBarRenderer").getString("tooltip").split("/")[0];
-            } catch (final NullPointerException e) {
+            likesString = getVideoPrimaryInfoRenderer().getObject("sentimentBar")
+                    .getObject("sentimentBarRenderer").getString("tooltip");
+            if (likesString != null && likesString.contains("/")) {
+                likesString = likesString.split("/")[0];
+            } else {
+                likesString = getVideoPrimaryInfoRenderer()
+                        .getObject("videoActions")
+                        .getObject("menuRenderer")
+                        .getArray("topLevelButtons")
+                        .getObject(0)
+                        .getObject("toggleButtonRenderer")
+                        .getObject("defaultText")
+                        .getObject("accessibility")
+                        .getObject("accessibilityData")
+                        .getString("label");
+            }
+
+            if (likesString == null) {
                 // If this kicks in our button has no content and therefore ratings must be disabled
                 if (playerResponse.getObject("videoDetails").getBoolean("allowRatings")) {
-                    throw new ParsingException(
-                            "Ratings are enabled even though the like button is missing", e);
+                    throw new ParsingException("Ratings are enabled even though the like button is missing");
                 }
                 return -1;
             }
+
             return Integer.parseInt(Utils.removeNonDigitCharacters(likesString));
         } catch (final NumberFormatException nfe) {
             throw new ParsingException("Could not parse \"" + likesString + "\" as an Integer",
@@ -366,29 +380,28 @@ public class YoutubeStreamExtractor extends StreamExtractor {
     public long getDislikeCount() throws ParsingException {
         assertPageFetched();
 
-        String dislikesString = "";
         try {
-            try {
-                dislikesString = getVideoPrimaryInfoRenderer().getObject("sentimentBar")
-                        .getObject("sentimentBarRenderer").getString("tooltip").split("/")[1];
-            } catch (final NullPointerException e) {
-                // If this kicks in our button has no content and therefore ratings must be disabled
-                if (playerResponse.getObject("videoDetails").getBoolean("allowRatings")) {
-                    throw new ParsingException(
-                            "Ratings are enabled even though the dislike button is missing", e);
+            String dislikesString = getVideoPrimaryInfoRenderer().getObject("sentimentBar")
+                    .getObject("sentimentBarRenderer").getString("tooltip");
+            if (dislikesString != null && dislikesString.contains("/")) {
+                dislikesString = dislikesString.split("/")[1];
+                return Integer.parseInt(Utils.removeNonDigitCharacters(dislikesString));
+            } else {
+                // Calculate dislike with average rating and like count
+                long likes = getLikeCount();
+                double averageRating = playerResponse.getObject("videoDetails").getDouble("averageRating");
+
+                if (likes != -1 && averageRating > 1) {
+                    // If averageRating can't be gathered, it will be 0,
+                    // but we also can't divide by 0 so we need > 1
+                    return Math.round(likes * ((5 - averageRating) / (averageRating - 1)));
                 }
-                return -1;
             }
-            return Integer.parseInt(Utils.removeNonDigitCharacters(dislikesString));
-        } catch (final NumberFormatException nfe) {
-            throw new ParsingException("Could not parse \"" + dislikesString + "\" as an Integer",
-                    nfe);
         } catch (final Exception e) {
-            if (getAgeLimit() == NO_AGE_LIMIT) {
-                throw new ParsingException("Could not get dislike count", e);
-            }
-            return -1;
         }
+        // Silently fail as YouTube is "gradually rolling out" removing dislike count
+        // https://blog.youtube/news-and-events/update-to-youtube/
+        return -1;
     }
 
     @Nonnull
