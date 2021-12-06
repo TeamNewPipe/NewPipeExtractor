@@ -113,6 +113,7 @@ public class ItagItem implements Serializable {
     public static final int TARGET_DURATION_SEC_UNKNOWN = -1;
     public static final int APPROX_DURATION_MS_UNKNOWN = -1;
     public static final int AUDIO_CHANNELS_NOT_APPLICABLE_OR_UNKNOWN = -1;
+    public static final int CONTENT_LENGTH_UNKNOWN = -1;
 
     /*//////////////////////////////////////////////////////////////////////////
     // Constructors and misc
@@ -194,6 +195,7 @@ public class ItagItem implements Serializable {
     private String codec;
     private int targetDurationSec = TARGET_DURATION_SEC_UNKNOWN;
     private int approxDurationMs = APPROX_DURATION_MS_UNKNOWN;
+    private long contentLength = CONTENT_LENGTH_UNKNOWN;
 
     public int getBitrate() {
         return bitrate;
@@ -372,6 +374,16 @@ public class ItagItem implements Serializable {
     public void setApproxDurationMs(final int approxDurationMs) {
         if (approxDurationMs > 0) {
             this.approxDurationMs = approxDurationMs;
+        }
+    }
+
+    public long getContentLength() {
+        return contentLength;
+    }
+
+    public void setContentLength(final long contentLength) {
+        if (contentLength > 0) {
+            this.contentLength = contentLength;
         }
     }
 }
