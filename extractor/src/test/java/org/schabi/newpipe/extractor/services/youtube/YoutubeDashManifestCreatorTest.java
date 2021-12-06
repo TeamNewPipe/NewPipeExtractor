@@ -6,7 +6,7 @@ import org.schabi.newpipe.downloader.DownloaderTestImpl;
 import org.schabi.newpipe.extractor.NewPipe;
 import org.schabi.newpipe.extractor.services.youtube.extractors.YoutubeStreamExtractor;
 import org.schabi.newpipe.extractor.stream.DeliveryMethod;
-import org.schabi.newpipe.extractor.stream.VideoStream;
+import org.schabi.newpipe.extractor.stream.Stream;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
@@ -18,6 +18,7 @@ import javax.xml.parsers.DocumentBuilderFactory;
 import java.io.StringReader;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.util.List;
 import java.util.Random;
 
 import static org.junit.Assert.*;
@@ -46,8 +47,10 @@ import static org.schabi.newpipe.extractor.utils.Utils.isBlank;
  * </p>
  */
 public class YoutubeDashManifestCreatorTest {
+    // Setting a higher number may let Google video servers return a lot of 403s
+    private static final int MAXIMUM_NUMBER_OF_STREAMS_TO_TEST = 3;
 
-    public static class testGenerationOfOtfManifests {
+    public static class testGenerationOfOtfAndProgressiveManifests {
         private static final String url = "https://www.youtube.com/watch?v=DJ8GQUNUXGM";
         private static YoutubeStreamExtractor extractor;
 
@@ -62,30 +65,88 @@ public class YoutubeDashManifestCreatorTest {
 
         @Test
         public void testOtfStreamsANewEraOfOpen() throws Exception {
-            // Test only the first five OTF streams we found
-            int otfStreamsTested = 0;
-            for (final VideoStream videoStream : extractor.getVideoOnlyStreams()) {
-                if (otfStreamsTested < 5) {
-                    if (videoStream.getDeliveryMethod() == DeliveryMethod.DASH) {
-                        final String otfBaseUrl = videoStream.getContent();
-                        assertFalse("The OTF base URL is empty", isBlank(otfBaseUrl));
-                        final ItagItem itagItem = videoStream.getItagItem();
-                        assertNotNull("The itagItem is null", itagItem);
-                        final String dashManifest = YoutubeDashManifestCreator
-                                .createDashManifestFromOtfStreamingUrl(otfBaseUrl, itagItem);
-                        assertFalse("The DASH manifest is null or empty" + dashManifest,
-                                isBlank(dashManifest));
-                        testManifestGenerated(dashManifest, itagItem);
-                        otfStreamsTested += 1;
+            testStreams(DeliveryMethod.DASH,
+                    extractor.getVideoOnlyStreams());
+            testStreams(DeliveryMethod.DASH,
+                    extractor.getAudioStreams());
+            // This should not happen because there are no video stream with audio which use the
+            // DASH delivery method (YouTube OTF stream type)
+            try {
+                testStreams(DeliveryMethod.DASH,
+                        extractor.getVideoStreams());
+            } catch (final Exception e) {
+                assertEquals("The exception thrown was not the one excepted: "
+                                + e.getClass().getName()
+                                + "was thrown instead of YoutubeDashManifestCreationException",
+                        YoutubeDashManifestCreator.YoutubeDashManifestCreationException.class,
+                        e.getClass());
+            }
+        }
+
+        @Test
+        public void testProgressiveStreamsANewEraOfOpen() throws Exception {
+            testStreams(DeliveryMethod.PROGRESSIVE_HTTP,
+                    extractor.getVideoOnlyStreams());
+            testStreams(DeliveryMethod.PROGRESSIVE_HTTP,
+                    extractor.getAudioStreams());
+            try {
+                testStreams(DeliveryMethod.PROGRESSIVE_HTTP,
+                        extractor.getVideoStreams());
+            } catch (final Exception e) {
+                assertEquals("The exception thrown was not the one excepted: "
+                                + e.getClass().getName()
+                                + "was thrown instead of YoutubeDashManifestCreationException",
+                        YoutubeDashManifestCreator.YoutubeDashManifestCreationException.class,
+                        e.getClass());
+            }
+        }
+
+        private void testStreams(@Nonnull final DeliveryMethod deliveryMethodToTest,
+                                 @Nonnull final List<? extends Stream> streamList)
+                throws Exception {
+            int i = 0;
+            final int streamListSize = streamList.size();
+            final boolean isDeliveryMethodToTestProgressiveHttpDeliveryMethod =
+                    deliveryMethodToTest == DeliveryMethod.PROGRESSIVE_HTTP;
+            final long videoLength = extractor.getLength();
+
+            // Test at most the first five streams we found
+            while (i <= YoutubeDashManifestCreatorTest.MAXIMUM_NUMBER_OF_STREAMS_TO_TEST
+                    && i < streamListSize) {
+                final Stream stream = streamList.get(i);
+                if (stream.getDeliveryMethod() == deliveryMethodToTest) {
+                    final String baseUrl = stream.getContent();
+                    assertFalse("The base URL of the stream is empty", isBlank(baseUrl));
+
+                    final ItagItem itagItem = stream.getItagItem();
+                    assertNotNull("The itagItem is null", itagItem);
+
+                    final String dashManifest;
+                    if (isDeliveryMethodToTestProgressiveHttpDeliveryMethod) {
+                        dashManifest = YoutubeDashManifestCreator
+                                .createDashManifestFromProgressiveStreamingUrl(baseUrl, itagItem,
+                                        videoLength);
+                    } else if (deliveryMethodToTest == DeliveryMethod.DASH) {
+                        dashManifest = YoutubeDashManifestCreator
+                                .createDashManifestFromOtfStreamingUrl(baseUrl, itagItem,
+                                        videoLength);
+                    } else {
+                        throw new IllegalArgumentException(
+                                "The delivery method provided is not the progressive HTTP or the DASH delivery method");
                     }
-                } else {
-                    break;
+                    testManifestGenerated(dashManifest, itagItem,
+                            isDeliveryMethodToTestProgressiveHttpDeliveryMethod);
+                    assertFalse("The DASH manifest is null or empty" + dashManifest,
+                            isBlank(dashManifest));
                 }
+                i++;
             }
         }
 
         private void testManifestGenerated(final String dashManifest,
-                                           @Nonnull final ItagItem itagItem) throws Exception {
+                                           @Nonnull final ItagItem itagItem,
+                                           final boolean isAProgressiveStreamingUrl)
+                throws Exception {
             final DocumentBuilderFactory documentBuilderFactory = DocumentBuilderFactory
                     .newInstance();
             final DocumentBuilder documentBuilder = documentBuilderFactory.newDocumentBuilder();
@@ -100,8 +161,14 @@ public class YoutubeDashManifestCreatorTest {
             if (itagItem.itagType.equals(ItagItem.ItagType.AUDIO)) {
                 testAudioChannelConfigurationElement(document, itagItem);
             }
-            testSegmentTemplateElement(document);
-            testSegmentTimelineAndSElements(document);
+            if (isAProgressiveStreamingUrl) {
+                testBaseUrlElement(document);
+                testSegmentBaseElement(document, itagItem);
+                testInitializationElement(document, itagItem);
+            } else {
+                testSegmentTemplateElement(document);
+                testSegmentTimelineAndSElements(document);
+            }
         }
 
         private void testMpdElement(@Nonnull final Document document) {
@@ -212,6 +279,37 @@ public class YoutubeDashManifestCreatorTest {
                     + codecsItagItemValue
                     + ")", codecsDashManifestValue, codecsItagItemValue);
 
+            if (itagItem.itagType == ItagItem.ItagType.VIDEO_ONLY
+                    || itagItem.itagType == ItagItem.ItagType.VIDEO) {
+                testVideoItagItemAttributes(representationElement, itagItem);
+            }
+
+            final String idDashManifestValue = representationElement.getAttribute("id");
+            assertFalse("The value of the id attribute is empty or the corresponding attribute doesn't exist",
+                    isBlank(idDashManifestValue));
+
+            final int idDashManifest;
+            try {
+                idDashManifest = Integer.parseInt(idDashManifestValue);
+            } catch (final NumberFormatException e) {
+                throw new AssertionError("The value of the id attribute is not an integer",
+                        e);
+            }
+            assertTrue("The value of the id attribute is less than or equal to 0",
+                    idDashManifest > 0);
+
+            final int idItagItem = itagItem.id;
+            assertTrue("The id of the ItagItem is less than or equal to 0",
+                    idItagItem > 0);
+            assertEquals("The value of the id attribute of the DASH manifest ("
+                    + idDashManifestValue
+                    + ") is not equal to the id of the ItagItem object ("
+                    + idItagItem
+                    + ")", idDashManifest, idItagItem);
+        }
+
+        private void testVideoItagItemAttributes(@Nonnull final Element representationElement,
+                                                 @Nonnull final ItagItem itagItem) {
             final String frameRateDashManifestValue = representationElement
                     .getAttribute("frameRate");
             assertFalse("The value of the frameRate attribute is empty or the corresponding attribute doesn't exist",
@@ -283,29 +381,6 @@ public class YoutubeDashManifestCreatorTest {
                     + ") is not equal to the width value set in the ItagItem object ("
                     + widthItagItem
                     + ")", widthDashManifest, widthItagItem);
-
-            final String idDashManifestValue = representationElement.getAttribute("id");
-            assertFalse("The value of the id attribute is empty or the corresponding attribute doesn't exist",
-                    isBlank(idDashManifestValue));
-
-            final int idDashManifest;
-            try {
-                idDashManifest = Integer.parseInt(idDashManifestValue);
-            } catch (final NumberFormatException e) {
-                throw new AssertionError("The value of the id attribute is not an integer",
-                        e);
-            }
-            assertTrue("The value of the id attribute is less than or equal to 0",
-                    idDashManifest > 0);
-
-            final int idItagItem = itagItem.id;
-            assertTrue("The id of the ItagItem is less than or equal to 0",
-                    idItagItem > 0);
-            assertEquals("The value of the id attribute of the DASH manifest ("
-                    + idDashManifestValue
-                    + ") is not equal to the id of the ItagItem object ("
-                    + idItagItem
-                    + ")", idDashManifest, idItagItem);
         }
 
         private void testAudioChannelConfigurationElement(@Nonnull final Document document,
@@ -350,6 +425,9 @@ public class YoutubeDashManifestCreatorTest {
                     .getElementsByTagName("SegmentTemplate").item(0);
             assertNotNull("The SegmentTemplate element doesn't exist",
                     segmentTemplateElement);
+            assertTrue("The Representation element doesn't contain a SegmentTemplate element",
+                    segmentTemplateElement.getParentNode().isEqualNode(
+                            document.getElementsByTagName("Representation").item(0)));
 
             final String initializationValue = segmentTemplateElement
                     .getAttribute("initialization");
@@ -388,14 +466,13 @@ public class YoutubeDashManifestCreatorTest {
                     .getElementsByTagName("SegmentTimeline").item(0);
             assertNotNull("The SegmentTimeline element doesn't exist",
                     segmentTimelineElement);
-            assertTrue("The SegmentTemplate element doesn't contain an SegmentTimeline element",
+            assertTrue("The SegmentTemplate element doesn't contain a SegmentTimeline element",
                     segmentTimelineElement.getParentNode().isEqualNode(
                             document.getElementsByTagName("SegmentTemplate").item(0)));
             testSElements(segmentTimelineElement);
         }
 
         private void testSElements(@Nonnull final Element segmentTimelineElement) {
-
             final NodeList segmentTimelineElementChildren = segmentTimelineElement.getChildNodes();
             final int segmentTimelineElementChildrenLength = segmentTimelineElementChildren
                     .getLength();
@@ -434,6 +511,125 @@ public class YoutubeDashManifestCreatorTest {
                     assertTrue("The value of the r attribute is less than or equal to 0", r > 0);
                 }
             }
+        }
+
+        private void testBaseUrlElement(@Nonnull final Document document) {
+            final Element baseURLElement = (Element) document
+                    .getElementsByTagName("BaseURL").item(0);
+            assertNotNull("The BaseURL element doesn't exist", baseURLElement);
+            assertTrue("The Representation element doesn't contain a BaseURL element",
+                    baseURLElement.getParentNode().isEqualNode(
+                            document.getElementsByTagName("Representation").item(0)));
+
+            final String baseURLElementContentValue = baseURLElement
+                    .getTextContent();
+            assertFalse("The content of the BaseURL element is empty or the corresponding element has no content",
+                    isBlank(baseURLElementContentValue));
+
+            try {
+                new URL(baseURLElementContentValue);
+            } catch (final MalformedURLException e) {
+                throw new AssertionError("The content of the BaseURL element is not an URL", e);
+            }
+        }
+
+        private void testSegmentBaseElement(@Nonnull final Document document,
+                                            @Nonnull final ItagItem itagItem) {
+            final Element segmentBaseElement = (Element) document
+                    .getElementsByTagName("SegmentBase").item(0);
+            assertNotNull("The SegmentBase element doesn't exist", segmentBaseElement);
+            assertTrue("The Representation element doesn't contain a SegmentBase element",
+                    segmentBaseElement.getParentNode().isEqualNode(
+                            document.getElementsByTagName("Representation").item(0)));
+
+            final String indexRangeValue = segmentBaseElement
+                    .getAttribute("indexRange");
+            assertFalse("The value of the indexRange attribute is empty or the corresponding attribute doesn't exist",
+                    isBlank(indexRangeValue));
+            final String[] indexRangeParts = indexRangeValue.split("-");
+            assertEquals("The value of the indexRange attribute is not valid", 2,
+                    indexRangeParts.length);
+
+            final int dashManifestIndexStart;
+            try {
+                dashManifestIndexStart = Integer.parseInt(indexRangeParts[0]);
+            } catch (final NumberFormatException e) {
+                throw new AssertionError("The value of the indexRange attribute is not valid", e);
+            }
+
+            final int itagItemIndexStart = itagItem.getIndexStart();
+            assertTrue("The indexStart of the ItagItem is less than or equal to 0",
+                    itagItemIndexStart > 0);
+            assertEquals("The indexStart value of the indexRange attribute of the DASH manifest ("
+                    + dashManifestIndexStart
+                    + ") is not equal to the indexStart of the ItagItem object ("
+                    + itagItemIndexStart
+                    + ")", dashManifestIndexStart, itagItemIndexStart);
+
+            final int dashManifestIndexEnd;
+            try {
+                dashManifestIndexEnd = Integer.parseInt(indexRangeParts[1]);
+            } catch (final NumberFormatException e) {
+                throw new AssertionError("The value of the indexRange attribute is not valid", e);
+            }
+
+            final int itagItemIndexEnd = itagItem.getIndexEnd();
+            assertTrue("The indexEnd of the ItagItem is less than or equal to 0",
+                    itagItemIndexEnd > 0);
+            assertEquals("The indexEnd value of the indexRange attribute of the DASH manifest ("
+                    + dashManifestIndexEnd
+                    + ") is not equal to the indexEnd of the ItagItem object ("
+                    + itagItemIndexEnd
+                    + ")", dashManifestIndexEnd, itagItemIndexEnd);
+        }
+
+        private void testInitializationElement(@Nonnull final Document document,
+                                               @Nonnull final ItagItem itagItem) {
+            final Element initializationElement = (Element) document
+                    .getElementsByTagName("Initialization").item(0);
+            assertNotNull("The Initialization element doesn't exist", initializationElement);
+            assertTrue("The SegmentBase element doesn't contain an Initialization element",
+                    initializationElement.getParentNode().isEqualNode(
+                            document.getElementsByTagName("SegmentBase").item(0)));
+
+            final String rangeValue = initializationElement
+                    .getAttribute("range");
+            assertFalse("The value of the range attribute is empty or the corresponding attribute doesn't exist",
+                    isBlank(rangeValue));
+            final String[] rangeParts = rangeValue.split("-");
+            assertEquals("The value of the range attribute is not valid", 2,
+                    rangeParts.length);
+
+            final int dashManifestInitStart;
+            try {
+                dashManifestInitStart = Integer.parseInt(rangeParts[0]);
+            } catch (final NumberFormatException e) {
+                throw new AssertionError("The value of the range attribute is not valid", e);
+            }
+
+            final int itagItemInitStart = itagItem.getInitStart();
+            assertTrue("The initStart of the ItagItem is less than 0", itagItemInitStart >= 0);
+            assertEquals("The initStart value of the range attribute of the DASH manifest ("
+                    + dashManifestInitStart
+                    + ") is not equal to the initStart of the ItagItem object ("
+                    + itagItemInitStart
+                    + ")", dashManifestInitStart, itagItemInitStart);
+
+            final int dashManifestInitEnd;
+            try {
+                dashManifestInitEnd = Integer.parseInt(rangeParts[1]);
+            } catch (final NumberFormatException e) {
+                throw new AssertionError("The value of the indexRange attribute is not valid", e);
+            }
+
+            final int itagItemInitEnd = itagItem.getInitEnd();
+            assertTrue("The indexEnd of the ItagItem is less than or equal to 0",
+                    itagItemInitEnd > 0);
+            assertEquals("The initEnd value of the range attribute of the DASH manifest ("
+                    + dashManifestInitEnd
+                    + ") is not equal to the initEnd of the ItagItem object ("
+                    + itagItemInitEnd
+                    + ")", dashManifestInitEnd, itagItemInitEnd);
         }
     }
 }
