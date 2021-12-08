@@ -126,7 +126,7 @@ public class YoutubeChannelExtractorTest {
             // "This account has been terminated because we received multiple third-party claims
             // of copyright infringement regarding material that the user posted."
             final ChannelExtractor extractor =
-                    YouTube.getChannelExtractor("https://www.youtube.com/channel/UCpExuV8qJMfCaSQNL1YG6bQ");
+                    YouTube.getChannelExtractor("https://www.youtube.com/channel/UCI4i4RgFT5ilfMpna4Z_Y8w");
             try {
                 extractor.fetchPage();
             } catch (final AccountTerminatedException e) {
