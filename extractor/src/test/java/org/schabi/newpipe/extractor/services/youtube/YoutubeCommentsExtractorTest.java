@@ -308,7 +308,7 @@ public class YoutubeCommentsExtractorTest {
     }
 
     public static class RepliesTest {
-        private final static String url = "https://www.youtube.com/watch?v=--yeOvJGZQk";
+        private final static String url = "https://www.youtube.com/watch?v=xaQJbozY_Is";
         private static YoutubeCommentsExtractor extractor;
 
         @BeforeClass
@@ -329,9 +329,11 @@ public class YoutubeCommentsExtractorTest {
 
             CommentsInfoItem firstComment = comments.getItems().get(0);
 
+            assertTrue("First comment isn't pinned", firstComment.isPinned());
+
             InfoItemsPage<CommentsInfoItem> replies = extractor.getPage(firstComment.getReplies());
 
-            assertEquals("First reply comment did not match", "Lol", replies.getItems().get(0).getCommentText());
+            assertEquals("First reply comment did not match", "First", replies.getItems().get(0).getCommentText());
         }
     }
 }

@@ -20,44 +20,55 @@ public class PeertubeChannelLinkHandlerFactoryTest {
 
     @BeforeClass
     public static void setUp() {
-        PeerTube.setInstance(new PeertubeInstance("https://peertube.mastodon.host", "PeerTube on Mastodon.host"));
+        PeerTube.setInstance(new PeertubeInstance("https://peertube.stream", "PeerTube on peertube.stream"));
         linkHandler = PeertubeChannelLinkHandlerFactory.getInstance();
         NewPipe.init(DownloaderTestImpl.getInstance());
     }
 
     @Test
     public void acceptUrlTest() throws ParsingException {
-        assertTrue(linkHandler.acceptUrl("https://peertube.mastodon.host/accounts/kranti@videos.squat.net"));
-        assertTrue(linkHandler.acceptUrl("https://peertube.mastodon.host/video-channels/7682d9f2-07be-4622-862e-93ec812e2ffa/videos"));
-        assertTrue(linkHandler.acceptUrl("https://peertube.mastodon.host/api/v1/accounts/kranti@videos.squat.net/videos"));
-        assertTrue(linkHandler.acceptUrl("https://peertube.mastodon.host/api/v1/video-channels/7682d9f2-07be-4622-862e-93ec812e2ffa"));
+        assertTrue(linkHandler.acceptUrl("https://peertube.stream/accounts/kranti@videos.squat.net"));
+        assertTrue(linkHandler.acceptUrl("https://peertube.stream/a/kranti@videos.squat.net"));
+        assertTrue(linkHandler.acceptUrl("https://peertube.stream/api/v1/accounts/kranti@videos.squat.net/videos"));
+        assertTrue(linkHandler.acceptUrl("https://peertube.stream/video-channels/kranti_channel@videos.squat.net/videos"));
+        assertTrue(linkHandler.acceptUrl("https://peertube.stream/c/kranti_channel@videos.squat.net/videos"));
+        assertTrue(linkHandler.acceptUrl("https://peertube.stream/api/v1/video-channels/7682d9f2-07be-4622-862e-93ec812e2ffa"));
     }
 
     @Test
     public void getId() throws ParsingException {
         assertEquals("accounts/kranti@videos.squat.net",
-                linkHandler.fromUrl("https://peertube.mastodon.host/accounts/kranti@videos.squat.net").getId());
+                linkHandler.fromUrl("https://peertube.stream/accounts/kranti@videos.squat.net").getId());
         assertEquals("accounts/kranti@videos.squat.net",
-                linkHandler.fromUrl("https://peertube.mastodon.host/accounts/kranti@videos.squat.net/videos").getId());
-        assertEquals("video-channels/7682d9f2-07be-4622-862e-93ec812e2ffa",
-                linkHandler.fromUrl("https://peertube.mastodon.host/video-channels/7682d9f2-07be-4622-862e-93ec812e2ffa/videos").getId());
+                linkHandler.fromUrl("https://peertube.stream/a/kranti@videos.squat.net").getId());
         assertEquals("accounts/kranti@videos.squat.net",
-                linkHandler.fromUrl("https://peertube.mastodon.host/api/v1/accounts/kranti@videos.squat.net").getId());
+                linkHandler.fromUrl("https://peertube.stream/accounts/kranti@videos.squat.net/videos").getId());
         assertEquals("accounts/kranti@videos.squat.net",
-                linkHandler.fromUrl("https://peertube.mastodon.host/api/v1/accounts/kranti@videos.squat.net/videos").getId());
-        assertEquals("video-channels/7682d9f2-07be-4622-862e-93ec812e2ffa",
-                linkHandler.fromUrl("https://peertube.mastodon.host/api/v1/video-channels/7682d9f2-07be-4622-862e-93ec812e2ffa").getId());
+                linkHandler.fromUrl("https://peertube.stream/a/kranti@videos.squat.net/videos").getId());
+        assertEquals("accounts/kranti@videos.squat.net",
+                linkHandler.fromUrl("https://peertube.stream/api/v1/accounts/kranti@videos.squat.net").getId());
+        assertEquals("accounts/kranti@videos.squat.net",
+                linkHandler.fromUrl("https://peertube.stream/api/v1/accounts/kranti@videos.squat.net/videos").getId());
+
+        assertEquals("video-channels/kranti_channel@videos.squat.net",
+                linkHandler.fromUrl("https://peertube.stream/video-channels/kranti_channel@videos.squat.net/videos").getId());
+        assertEquals("video-channels/kranti_channel@videos.squat.net",
+                linkHandler.fromUrl("https://peertube.stream/c/kranti_channel@videos.squat.net/videos").getId());
+        assertEquals("video-channels/kranti_channel@videos.squat.net",
+                linkHandler.fromUrl("https://peertube.stream/c/kranti_channel@videos.squat.net/video-playlists").getId());
+        assertEquals("video-channels/kranti_channel@videos.squat.net",
+                linkHandler.fromUrl("https://peertube.stream/api/v1/video-channels/kranti_channel@videos.squat.net").getId());
     }
 
     @Test
     public void getUrl() throws ParsingException {
-        assertEquals("https://peertube.mastodon.host/video-channels/7682d9f2-07be-4622-862e-93ec812e2ffa",
-                linkHandler.fromId("video-channels/7682d9f2-07be-4622-862e-93ec812e2ffa").getUrl());
-        assertEquals("https://peertube.mastodon.host/accounts/kranti@videos.squat.net",
+        assertEquals("https://peertube.stream/video-channels/kranti_channel@videos.squat.net",
+                linkHandler.fromId("video-channels/kranti_channel@videos.squat.net").getUrl());
+        assertEquals("https://peertube.stream/accounts/kranti@videos.squat.net",
                 linkHandler.fromId("accounts/kranti@videos.squat.net").getUrl());
-        assertEquals("https://peertube.mastodon.host/accounts/kranti@videos.squat.net",
+        assertEquals("https://peertube.stream/accounts/kranti@videos.squat.net",
                 linkHandler.fromId("kranti@videos.squat.net").getUrl());
-        assertEquals("https://peertube.mastodon.host/video-channels/7682d9f2-07be-4622-862e-93ec812e2ffa",
-                linkHandler.fromUrl("https://peertube.mastodon.host/api/v1/video-channels/7682d9f2-07be-4622-862e-93ec812e2ffa").getUrl());
+        assertEquals("https://peertube.stream/video-channels/kranti_channel@videos.squat.net",
+                linkHandler.fromUrl("https://peertube.stream/api/v1/video-channels/kranti_channel@videos.squat.net").getUrl());
     }
 }
