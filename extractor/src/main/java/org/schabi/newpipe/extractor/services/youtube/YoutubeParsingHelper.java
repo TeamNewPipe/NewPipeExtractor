@@ -40,6 +40,7 @@ import java.time.OffsetDateTime;
 import java.time.ZoneOffset;
 import java.time.format.DateTimeParseException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
@@ -78,15 +79,15 @@ public final class YoutubeParsingHelper {
 
     public static final String YOUTUBEI_V1_URL = "https://www.youtube.com/youtubei/v1/";
 
-    private static final String HARDCODED_CLIENT_VERSION = "2.20210728.00.00";
+    private static final String HARDCODED_CLIENT_VERSION = "2.20220107.00.00";
     private static final String HARDCODED_KEY = "AIzaSyAO_FJ2SlqU8Q4STEHLGCilw_Y9_11qcW8";
     private static final String MOBILE_YOUTUBE_KEY = "AIzaSyA8eiZmM1FaDVjRy-df2KTyQ_vz_yYM39w";
-    private static final String MOBILE_YOUTUBE_CLIENT_VERSION = "16.29.38";
+    private static final String MOBILE_YOUTUBE_CLIENT_VERSION = "16.49.37";
     private static String clientVersion;
     private static String key;
 
     private static final String[] HARDCODED_YOUTUBE_MUSIC_KEY =
-            {"AIzaSyC9XL3ZjWddXya6X74dJoCTL-WEYFDNX30", "67", "1.20210726.00.01"};
+            {"AIzaSyC9XL3ZjWddXya6X74dJoCTL-WEYFDNX30", "67", "1.20220103.00.00"};
     private static String[] youtubeMusicKey;
 
     private static boolean keyAndVersionExtracted = false;
@@ -551,40 +552,53 @@ public final class YoutubeParsingHelper {
     }
 
     /**
-     * Get the client version
+     * Get the client version used by YouTube website on InnerTube requests.
      */
     public static String getClientVersion() throws IOException, ExtractionException {
         if (!isNullOrEmpty(clientVersion)) {
             return clientVersion;
         }
-        if (areHardcodedClientVersionAndKeyValid()) {
-            clientVersion = HARDCODED_CLIENT_VERSION;
-            return clientVersion;
-        }
 
         extractClientVersionAndKey();
-        return clientVersion;
+
+        if (keyAndVersionExtracted) {
+            return clientVersion;
+        } else {
+            if (areHardcodedClientVersionAndKeyValid()) {
+                clientVersion = HARDCODED_CLIENT_VERSION;
+                return clientVersion;
+            }
+        }
+        throw new ExtractionException("Could not get YouTube WEB client version");
     }
 
     /**
-     * Get the key
+     * Get the internal API key used by YouTube website on InnerTube requests.
      */
     public static String getKey() throws IOException, ExtractionException {
         if (!isNullOrEmpty(key)) {
             return key;
         }
-        if (areHardcodedClientVersionAndKeyValid()) {
-            key = HARDCODED_KEY;
-            return key;
-        }
 
         extractClientVersionAndKey();
-        return key;
+
+        if (keyAndVersionExtracted) {
+            return key;
+        } else {
+            if (areHardcodedClientVersionAndKeyValid()) {
+                key = HARDCODED_KEY;
+                return key;
+            }
+        }
+
+        // The ANDROID API key is also valid with the WEB client so return it if we couldn't
+        // extract the WEB API key.
+        return MOBILE_YOUTUBE_KEY;
     }
 
     /**
      * <p>
-     * <b>Only use in tests.</b>
+     * <b>Only used in tests.</b>
      * </p>
      *
      * <p>
@@ -600,11 +614,12 @@ public final class YoutubeParsingHelper {
     public static void resetClientVersionAndKey() {
         clientVersion = null;
         key = null;
+        keyAndVersionExtracted = false;
     }
 
     /**
      * <p>
-     * <b>Only use in tests.</b>
+     * <b>Only used in tests.</b>
      * </p>
      */
     public static void setNumberGenerator(final Random random) {
@@ -1128,7 +1143,7 @@ public final class YoutubeParsingHelper {
      */
     public static void addCookieHeader(@Nonnull final Map<String, List<String>> headers) {
         if (headers.get("Cookie") == null) {
-            headers.put("Cookie", Collections.singletonList(generateConsentCookie()));
+            headers.put("Cookie", Arrays.asList(generateConsentCookie()));
         } else {
             headers.get("Cookie").add(generateConsentCookie());
         }
