@@ -13,7 +13,7 @@
         "67"
       ],
       "Referer": [
-        "music.youtube.com"
+        "https://music.youtube.com"
       ],
       "X-YouTube-Client-Version": [
         "1.20210726.00.01"
@@ -359,7 +359,7 @@
     "responseMessage": "",
     "responseHeaders": {
       "alt-svc": [
-        "h3\u003d\":443\"; ma\u003d2592000,h3-29\u003d\":443\"; ma\u003d2592000,h3-T051\u003d\":443\"; ma\u003d2592000,h3-Q050\u003d\":443\"; ma\u003d2592000,h3-Q046\u003d\":443\"; ma\u003d2592000,h3-Q043\u003d\":443\"; ma\u003d2592000,quic\u003d\":443\"; ma\u003d2592000; v\u003d\"46,43\""
+        "h3\u003d\":443\"; ma\u003d2592000,h3-29\u003d\":443\"; ma\u003d2592000,h3-Q050\u003d\":443\"; ma\u003d2592000,h3-Q046\u003d\":443\"; ma\u003d2592000,h3-Q043\u003d\":443\"; ma\u003d2592000,quic\u003d\":443\"; ma\u003d2592000; v\u003d\"46,43\""
       ],
       "cache-control": [
         "private"
@@ -368,10 +368,10 @@
         "application/json; charset\u003dUTF-8"
       ],
       "date": [
-        "Fri, 30 Jul 2021 17:21:18 GMT"
+        "Sat, 25 Dec 2021 13:47:24 GMT"
       ],
       "expires": [
-        "Fri, 30 Jul 2021 17:21:18 GMT"
+        "Sat, 25 Dec 2021 13:47:24 GMT"
       ],
       "p3p": [
         "CP\u003d\"This is not a P3P policy! See g.co/p3phelp for more info.\""
@@ -380,7 +380,7 @@
         "ESF"
       ],
       "set-cookie": [
-        "CONSENT\u003dPENDING+782; expires\u003dFri, 01-Jan-2038 00:00:00 GMT; path\u003d/; domain\u003d.youtube.com; Secure"
+        "CONSENT\u003dPENDING+548; expires\u003dMon, 25-Dec-2023 13:47:24 GMT; path\u003d/; domain\u003d.youtube.com; Secure"
       ],
       "vary": [
         "Origin",
@@ -397,7 +397,7 @@
         "0"
       ]
     },
-    "responseBody": "{\n  \"responseContext\": {\n    \"visitorData\": \"Cgt2MlhyR1BEMFN3SSiO6pCIBg%3D%3D\",\n    \"serviceTrackingParams\": [\n      {\n        \"service\": \"CSI\",\n        \"params\": [\n          {\n            \"key\": \"c\",\n            \"value\": \"WEB_REMIX\"\n          },\n          {\n            \"key\": \"cver\",\n            \"value\": \"1.20210726.00.01\"\n          },\n          {\n            \"key\": \"yt_li\",\n            \"value\": \"0\"\n          },\n          {\n            \"key\": \"GetMusicSearchSuggestions_rid\",\n            \"value\": \"0xde2f9388831fd8d0\"\n          }\n        ]\n      },\n      {\n        \"service\": \"GFEEDBACK\",\n        \"params\": [\n          {\n            \"key\": \"logged_in\",\n            \"value\": \"0\"\n          },\n          {\n            \"key\": \"e\",\n            \"value\": \"24002025,24068842,24070036,24016284,24053866,24049573,24056274,24036947,23996512,24058128,23891344,24043240,1714256,24077047,23891346,23884386,23857949,24076151,24013016,23966208,24002922,24060921,9405982,23946420,24037794,23804281,24042870,24030040,24047098,24068011,24007246,23983813,24058812,24036237,24035575,24001373,24077255,24004644,24049820,24075673,24059521,24050503,24045411,23882685,23998056,24056264,23858057,24076877,24002022,24028143,23918597,24044723,23968386,24065726,24078738,24049571,23744176,23934970,24053418,24057238,23983296,24080466,23944779,23996830,23974595\"\n          }\n        ]\n      },\n      {\n        \"service\": \"ECATCHER\",\n        \"params\": [\n          {\n            \"key\": \"client.version\",\n            \"value\": \"1.20000101\"\n          },\n          {\n            \"key\": \"client.name\",\n            \"value\": \"WEB_REMIX\"\n          }\n        ]\n      }\n    ]\n  },\n  \"trackingParams\": \"CAAQi24iEwjz3LyUp4vyAhXsh1EKHQlBC_s\u003d\"\n}\n",
+    "responseBody": "{\n  \"responseContext\": {\n    \"visitorData\": \"Cgt0TzRuNGZLVUNWbyjswZyOBg%3D%3D\",\n    \"serviceTrackingParams\": [\n      {\n        \"service\": \"CSI\",\n        \"params\": [\n          {\n            \"key\": \"c\",\n            \"value\": \"WEB_REMIX\"\n          },\n          {\n            \"key\": \"cver\",\n            \"value\": \"1.20210726.00.01\"\n          },\n          {\n            \"key\": \"yt_li\",\n            \"value\": \"0\"\n          },\n          {\n            \"key\": \"GetMusicSearchSuggestions_rid\",\n            \"value\": \"0x30a51b0dea2c640a\"\n          }\n        ]\n      },\n      {\n        \"service\": \"GFEEDBACK\",\n        \"params\": [\n          {\n            \"key\": \"logged_in\",\n            \"value\": \"0\"\n          },\n          {\n            \"key\": \"e\",\n            \"value\": \"24115641,39321475,24142470,24002923,24002022,23884386,24142960,23804281,23934970,24007790,24034168,23983296,24135236,24146886,23918597,24129192,24116717,23966208,24080738,24110902,24106839,1714241,24142941,24143789,23998056,24036947,24004644,24077241,24007246,24145064,24085811,23946420,24132617,24001373,24104858,24117475,24080604,23744176,24136747,23944779,24077266,24131026,24126812,24143428,24028143,24129402,24115875,24134152,23968386,24002025,24141079,23882685,24109689,24082662,24138442,24140247,24116735,24120991,24120819\"\n          }\n        ]\n      },\n      {\n        \"service\": \"ECATCHER\",\n        \"params\": [\n          {\n            \"key\": \"client.version\",\n            \"value\": \"1.20000101\"\n          },\n          {\n            \"key\": \"client.name\",\n            \"value\": \"WEB_REMIX\"\n          },\n          {\n            \"key\": \"client.fexp\",\n            \"value\": \"24115641,39321475,24142470,24002923,24002022,23884386,24142960,23804281,23934970,24007790,24034168,23983296,24135236,24146886,23918597,24129192,24116717,23966208,24080738,24110902,24106839,1714241,24142941,24143789,23998056,24036947,24004644,24077241,24007246,24145064,24085811,23946420,24132617,24001373,24104858,24117475,24080604,23744176,24136747,23944779,24077266,24131026,24126812,24143428,24028143,24129402,24115875,24134152,23968386,24002025,24141079,23882685,24109689,24082662,24138442,24140247,24116735,24120991,24120819\"\n          }\n        ]\n      }\n    ]\n  },\n  \"trackingParams\": \"CAAQi24iEwii7umwi__0AhWoGwYAHfevBPU\u003d\"\n}\n",
     "latestUrl": "https://music.youtube.com/youtubei/v1/music/get_search_suggestions?alt\u003djson\u0026key\u003dAIzaSyC9XL3ZjWddXya6X74dJoCTL-WEYFDNX30"
   }
 }

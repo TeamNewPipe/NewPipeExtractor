@@ -67,15 +67,15 @@ public class YoutubeParsingHelper {
 
     public static final String YOUTUBEI_V1_URL = "https://www.youtube.com/youtubei/v1/";
 
-    private static final String HARDCODED_CLIENT_VERSION = "2.20211101.01.00";
+    private static final String HARDCODED_CLIENT_VERSION = "2.20210728.00.00";
     private static final String HARDCODED_KEY = "AIzaSyAO_FJ2SlqU8Q4STEHLGCilw_Y9_11qcW8";
     private static final String MOBILE_YOUTUBE_KEY = "AIzaSyA8eiZmM1FaDVjRy-df2KTyQ_vz_yYM39w";
-    private static final String MOBILE_YOUTUBE_CLIENT_VERSION = "16.41.36";
+    private static final String MOBILE_YOUTUBE_CLIENT_VERSION = "16.29.38";
     private static String clientVersion;
     private static String key;
 
     private static final String[] HARDCODED_YOUTUBE_MUSIC_KEY =
-            {"AIzaSyC9XL3ZjWddXya6X74dJoCTL-WEYFDNX30", "67", "1.20211025.00.00"};
+            {"AIzaSyC9XL3ZjWddXya6X74dJoCTL-WEYFDNX30", "67", "1.20210726.00.01"};
     private static String[] youtubeMusicKey;
 
     private static boolean keyAndVersionExtracted = false;
@@ -457,18 +457,13 @@ public class YoutubeParsingHelper {
             return clientVersion;
         }
 
-        extractClientVersionAndKey();
-
-        if (keyAndVersionExtracted) {
+        if (areHardcodedClientVersionAndKeyValid()) {
+            clientVersion = HARDCODED_CLIENT_VERSION;
             return clientVersion;
-        } else {
-            if (areHardcodedClientVersionAndKeyValid()) {
-                clientVersion = HARDCODED_CLIENT_VERSION;
-                return clientVersion;
-            }
         }
 
-        throw new ExtractionException("Could not get YouTube WEB client version");
+        extractClientVersionAndKey();
+        return clientVersion;
     }
 
     /**
@@ -479,20 +474,13 @@ public class YoutubeParsingHelper {
             return key;
         }
 
-        extractClientVersionAndKey();
-
-        if (keyAndVersionExtracted) {
+        if (areHardcodedClientVersionAndKeyValid()) {
+            key = HARDCODED_KEY;
             return key;
-        } else {
-            if (areHardcodedClientVersionAndKeyValid()) {
-                key = HARDCODED_KEY;
-                return key;
-            }
         }
 
-        // The ANDROID API key is also valid with the WEB client so return it if we couldn't
-        // extract the WEB API key.
-        return MOBILE_YOUTUBE_KEY;
+        extractClientVersionAndKey();
+        return key;
     }
 
     /**
@@ -513,6 +501,7 @@ public class YoutubeParsingHelper {
     public static void resetClientVersionAndKey() {
         clientVersion = null;
         key = null;
+        keyAndVersionExtracted = false;
     }
 
     /**
@@ -580,7 +569,10 @@ public class YoutubeParsingHelper {
 
     public static String[] getYoutubeMusicKey() throws IOException, ReCaptchaException,
             Parser.RegexException {
-        if (youtubeMusicKey != null && youtubeMusicKey.length == 3) return youtubeMusicKey;
+        if (youtubeMusicKey != null && youtubeMusicKey.length == 3) {
+            return youtubeMusicKey;
+        }
+
         if (isHardcodedYoutubeMusicKeyValid()) {
             youtubeMusicKey = HARDCODED_YOUTUBE_MUSIC_KEY;
             return youtubeMusicKey;
@@ -615,7 +607,7 @@ public class YoutubeParsingHelper {
             }
         }
 
-        youtubeMusicKey = new String[]{key, clientName, clientVersion};
+        youtubeMusicKey = new String[] {key, clientName, clientVersion};
         return youtubeMusicKey;
     }
 
