@@ -29,7 +29,7 @@ import javax.annotation.Nullable;
 public class VideoStream extends Stream {
     public static final String RESOLUTION_UNKNOWN = "";
 
-    private String resolution = RESOLUTION_UNKNOWN;
+    private final String resolution;
     private final boolean isVideoOnly;
     // Fields for DASH
     private int itag;
@@ -89,9 +89,7 @@ public class VideoStream extends Stream {
                        final boolean isVideoOnly,
                        @Nullable final String baseUrl) {
         super(id, content, isUrl, format, deliveryMethod, baseUrl);
-        if (!resolution.equals(RESOLUTION_UNKNOWN)) {
-            this.resolution = resolution;
-        }
+        this.resolution = resolution;
         this.isVideoOnly = isVideoOnly;
     }
 
@@ -134,9 +132,7 @@ public class VideoStream extends Stream {
         this.width = itag.getWidth();
         this.quality = itag.getQuality();
         this.fps = itag.fps;
-        if (!resolution.equals(RESOLUTION_UNKNOWN)) {
-            this.resolution = resolution;
-        }
+        this.resolution = resolution;
         this.isVideoOnly = isVideoOnly;
     }
 

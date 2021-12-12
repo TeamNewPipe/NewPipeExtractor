@@ -263,17 +263,11 @@ public abstract class DefaultStreamExtractorTest extends DefaultExtractorTest<St
                     assertIsSecureUrl(stream.getContent());
                 }
                 final StreamType streamType = extractor().getStreamType();
-                // The resolution can be empty on some streams, especially livestreams
-                // (like streams with HLS master playlists)
+                // On some streams, the resolution can be empty and the format be unknown,
+                // especially on livestreams (like streams with HLS master playlists)
                 if (streamType != StreamType.LIVE_STREAM
                         && streamType != StreamType.AUDIO_LIVE_STREAM) {
                     assertFalse(stream.getResolution().isEmpty());
-                }
-
-                // Like the resolution, the format can be unknown on some streams, especially
-                // livestreams
-                if (streamType != StreamType.LIVE_STREAM
-                        && streamType != StreamType.AUDIO_LIVE_STREAM) {
                     final int formatId = stream.getFormatId();
                     // see MediaFormat: video stream formats range from 0 to 0x100
                     assertTrue(0 <= formatId && formatId < 0x100,

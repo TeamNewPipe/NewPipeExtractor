@@ -83,7 +83,6 @@ public abstract class Extractor {
      * @return the name
      * @throws ParsingException if the name cannot be extracted
      */
-    @Nonnull
     public abstract String getName() throws ParsingException;
 
     @Nonnull

@@ -77,8 +77,8 @@ public abstract class Stream implements Serializable {
      * @param cmp the stream object to be compared to this stream object
      */
     public boolean equalStats(final Stream cmp) {
-        if (getFormat() != null && cmp != null && cmp.getFormat() != null) {
-            return getFormat().id == cmp.getFormat().id;
+        if (mediaFormat != null && cmp != null && cmp.getFormat() != null) {
+            return mediaFormat.id == cmp.getFormat().id;
         }
         return false;
     }

@@ -27,7 +27,6 @@ import java.time.LocalDate;
 import java.time.OffsetDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.*;
-import java.util.regex.Pattern;
 
 import static org.schabi.newpipe.extractor.services.youtube.YoutubeParsingHelper.*;
 import static org.schabi.newpipe.extractor.utils.Utils.*;
@@ -88,6 +87,8 @@ public class YoutubeStreamExtractor extends StreamExtractor {
     private final List<AudioStream> audioStreams = new ArrayList<>();
     private final List<VideoStream> videoStreams = new ArrayList<>();
     private final List<VideoStream> videoOnlyStreams = new ArrayList<>();
+    private String dashUrl = null;
+    private String hlsUrl = null;
 
     public YoutubeStreamExtractor(final StreamingService service, final LinkHandler linkHandler) {
         super(service, linkHandler);
@@ -428,13 +429,16 @@ public class YoutubeStreamExtractor extends StreamExtractor {
     public String getDashMpdUrl() throws ParsingException {
         assertPageFetched();
 
-        if (desktopStreamingData != null) {
-            return desktopStreamingData.getString("dashManifestUrl");
-        } else if (mobileStreamingData != null) {
-            return mobileStreamingData.getString("dashManifestUrl");
-        } else {
-            return EMPTY_STRING;
+        if (dashUrl == null) {
+            if (desktopStreamingData != null) {
+                dashUrl = desktopStreamingData.getString("dashManifestUrl", EMPTY_STRING);
+            } else if (mobileStreamingData != null) {
+                dashUrl = mobileStreamingData.getString("dashManifestUrl", EMPTY_STRING);
+            } else {
+                dashUrl = EMPTY_STRING;
+            }
         }
+        return dashUrl;
     }
 
     @Nonnull
@@ -442,20 +446,23 @@ public class YoutubeStreamExtractor extends StreamExtractor {
     public String getHlsUrl() throws ParsingException {
         assertPageFetched();
 
-        if (desktopStreamingData != null) {
-            return desktopStreamingData.getString("hlsManifestUrl");
-        } else if (mobileStreamingData != null) {
-            return mobileStreamingData.getString("hlsManifestUrl");
-        } else {
-            return EMPTY_STRING;
+        if (hlsUrl == null) {
+            if (desktopStreamingData != null) {
+                hlsUrl = desktopStreamingData.getString("hlsManifestUrl", EMPTY_STRING);
+            } else if (mobileStreamingData != null) {
+                hlsUrl = mobileStreamingData.getString("hlsManifestUrl", EMPTY_STRING);
+            } else {
+                hlsUrl = EMPTY_STRING;
+            }
         }
+        return hlsUrl;
     }
 
     @Override
     public List<AudioStream> getAudioStreams() throws ExtractionException {
         assertPageFetched();
 
-        if (isNullOrEmpty(audioStreams)) {
+        if (audioStreams.isEmpty()) {
             try {
                 for (final ItagInfo itagInfo : getItags(ADAPTIVE_FORMATS,
                         ItagItem.ItagType.AUDIO)) {
@@ -513,7 +520,7 @@ public class YoutubeStreamExtractor extends StreamExtractor {
     public List<VideoStream> getVideoStreams() throws ExtractionException {
         assertPageFetched();
 
-        if (isNullOrEmpty(videoStreams)) {
+        if (videoStreams.isEmpty()) {
             try {
                 for (final ItagInfo itagInfo : getItags(FORMATS, ItagItem.ItagType.VIDEO)) {
                     final ItagItem itag = itagInfo.getItagItem();
@@ -572,7 +579,7 @@ public class YoutubeStreamExtractor extends StreamExtractor {
     public List<VideoStream> getVideoOnlyStreams() throws ExtractionException {
         assertPageFetched();
 
-        if (isNullOrEmpty(videoOnlyStreams)) {
+        if (videoOnlyStreams.isEmpty()) {
             try {
                 for (final ItagInfo itagInfo : getItags(ADAPTIVE_FORMATS,
                         ItagItem.ItagType.VIDEO_ONLY)) {

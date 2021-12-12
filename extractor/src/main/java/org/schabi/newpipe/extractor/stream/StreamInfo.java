@@ -100,8 +100,7 @@ public class StreamInfo extends Info {
     private static StreamInfo extractImportantData(@Nonnull final StreamExtractor extractor)
             throws ExtractionException {
         /* ---- Important data, without it the stream can't be displayed: ---- */
-        // If one of these is not available an exception is meant to be thrown directly into
-        // NewPipe.
+        // If one of these is not available, the frontend will receive an exception directly.
 
         final int serviceId = extractor.getServiceId();
         final String url = extractor.getUrl();
@@ -111,8 +110,11 @@ public class StreamInfo extends Info {
         final String name = extractor.getName();
         final int ageLimit = extractor.getAgeLimit();
 
-        if ((streamType == StreamType.NONE) || isNullOrEmpty(url) || (isNullOrEmpty(id))
-                || (name == null /* streamInfo.title can be empty of course */) || (ageLimit == -1)) {
+        if ((streamType == StreamType.NONE)
+                || isNullOrEmpty(url)
+                || (isNullOrEmpty(id))
+                || (name == null) /* streamInfo.title can be empty of course */
+                || (ageLimit == -1)) {
             throw new ExtractionException("Some important stream information was not given.");
         }
 
@@ -146,12 +148,14 @@ public class StreamInfo extends Info {
         } catch (final Exception e) {
             streamInfo.addError(new ExtractionException("Couldn't get audio streams", e));
         }
+
         /* Extract video stream url */
         try {
             streamInfo.setVideoStreams(extractor.getVideoStreams());
         } catch (final Exception e) {
             streamInfo.addError(new ExtractionException("Couldn't get video streams", e));
         }
+
         /* Extract video only stream url */
         try {
             streamInfo.setVideoOnlyStreams(extractor.getVideoOnlyStreams());
@@ -160,12 +164,15 @@ public class StreamInfo extends Info {
         }
 
         // Lists can be null if an exception was thrown during extraction
-        if (streamInfo.getVideoStreams() == null)
+        if (streamInfo.getVideoStreams() == null) {
             streamInfo.setVideoStreams(Collections.emptyList());
-        if (streamInfo.getVideoOnlyStreams() == null)
+        }
+        if (streamInfo.getVideoOnlyStreams() == null) {
             streamInfo.setVideoOnlyStreams(Collections.emptyList());
-        if (streamInfo.getAudioStreams() == null)
+        }
+        if (streamInfo.getAudioStreams() == null) {
             streamInfo.setAudioStreams(Collections.emptyList());
+        }
 
         // Either audio or video has to be available, otherwise we didn't get a stream (since
         // videoOnly are optional, they don't count).
@@ -331,7 +338,7 @@ public class StreamInfo extends Info {
     private String textualUploadDate;
     private DateWrapper uploadDate;
     private long duration = -1;
-    private int ageLimit = -1;
+    private int ageLimit;
     private Description description;
 
     private long viewCount = -1;

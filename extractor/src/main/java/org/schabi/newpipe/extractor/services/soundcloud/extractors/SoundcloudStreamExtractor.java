@@ -148,7 +148,7 @@ public class SoundcloudStreamExtractor extends StreamExtractor {
         // For playing the track, it is only necessary to have a streamable track.
         // If this is not the case, this track might not be published yet.
         // If audio streams were calculated, return the calculated result
-        if (!track.getBoolean("streamable") || !isAvailable || !isNullOrEmpty(audioStreams)) {
+        if (!track.getBoolean("streamable") || !isAvailable || !audioStreams.isEmpty()) {
             return audioStreams;
         }
 
