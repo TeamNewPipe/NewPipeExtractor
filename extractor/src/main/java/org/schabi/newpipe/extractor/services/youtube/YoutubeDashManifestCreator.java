@@ -31,10 +31,10 @@ import static org.schabi.newpipe.extractor.utils.Utils.EMPTY_STRING;
 import static org.schabi.newpipe.extractor.utils.Utils.isNullOrEmpty;
 
 /**
- * Class to generate DASH manifests from YouTube OTF, progressive and ended/post live DVR streams.
+ * Class to generate DASH manifests from YouTube OTF, progressive and ended/post-live-DVR streams.
  *
  * <p>
- * It relies on external classes from {@link org.w3c.dom} and {@link javax.xml} packages.
+ * It relies on external classes from the {@link org.w3c.dom} and {@link javax.xml} packages.
  * </p>
  */
 public final class YoutubeDashManifestCreator {
@@ -47,7 +47,7 @@ public final class YoutubeDashManifestCreator {
             "Segment-Durations-Ms: ((?:\\d+,\\d+,)?(?:\\d+\\(r=\\d+\\)(,\\d+)+,)+)");
 
     /**
-     * URL parameter of the first sequence for live, post live DVR and OTF streams.
+     * URL parameter of the first sequence for live, post-live-DVR and OTF streams.
      */
     private static final String SQ_0 = "&sq=0";
 
@@ -58,22 +58,22 @@ public final class YoutubeDashManifestCreator {
 
     /**
      * URL parameter specific to web clients. When this param is added, if a redirection occurs,
-     * the server will not redirect clients to the redirect URL but will provide this URL as the
-     * response body.
+     * the server will not redirect clients to the redirect URL. Instead, it will provide this URL
+     * as the response body.
      */
     private static final String ALR_YES = "&alr=yes";
 
     /**
      * URL parameter specific to Android clients, only used as a "header" parameter for the first
-     * sequence for post live DVR streams.
+     * sequence for post-live-DVR streams.
      *
      *
      * <p>
-     * Android clients use POST request with a protobuf body in streaming URL requests.
+     * Android clients use a POST request with a protobuf body in streaming URL requests.
      * </p>
      * <p>
      * The same behavior happens without this param when using a POST request, but it's better to
-     * use it in order to spoof better official clients. Otherwise it has no effect.
+     * use it in order to better spoof official clients. Otherwise it has no effect.
      * </p>
      */
     private static final String HEADM_1 = "&headm=1";
@@ -84,7 +84,7 @@ public final class YoutubeDashManifestCreator {
     private static final int MAXIMUM_REDIRECT_COUNT = 20;
 
     /**
-     * A list of segments duration of an OTF stream.
+     * A list of durations of segments of an OTF stream.
      *
      * <p>
      * This list is automatically cleared in the execution of
@@ -95,7 +95,7 @@ public final class YoutubeDashManifestCreator {
     private static final List<Integer> SEGMENTS_DURATION = new ArrayList<>();
 
     /**
-     * A list of duration repetitions of an OTF stream.
+     * A list of contiguous repetitions of durations of an OTF stream.
      *
      * <p>
      * This list is automatically cleared in the execution of
@@ -111,7 +111,7 @@ public final class YoutubeDashManifestCreator {
     private static final Map<String, String> OTF_MANIFESTS_GENERATED = new HashMap<>();
 
     /**
-     * Cache of DASH manifests generated for post live DVR streams.
+     * Cache of DASH manifests generated for post-live-DVR streams.
      */
     private static final Map<String, String> POST_LIVE_STREAMS_MANIFESTS_GENERATED =
             new HashMap<>();
@@ -126,9 +126,10 @@ public final class YoutubeDashManifestCreator {
      * Enum of streaming format types used by YouTube in their streams.
      */
     private enum DeliveryType {
+
         /**
-         * YouTube's progressive delivery method, which work with HTTP range headers (but the
-         * corresponding parameter is used instead by official clients).
+         * YouTube's progressive delivery method, which works with HTTP range headers.
+         * (Note that official clients use the corresponding parameter instead.)
          *
          * <p>
          * Initialization and index ranges are available to get metadata (the corresponding values
@@ -141,13 +142,13 @@ public final class YoutubeDashManifestCreator {
          * streams.
          *
          * <p>
-         * The first sequence (which can be get with the {@link #SQ_0} param) contains all the
-         * metadata needed to build the stream source (sidx
-         * boxes, segments length, segment count, duration, ...)
+         * The first sequence (which can be fetched with the {@link #SQ_0} param) contains all the
+         * metadata needed to build the stream source (sidx boxes, segment length, segment count,
+         * duration, ...)
          * </p>
          * <p>
-         * Only used for videos (mostly ones with a small amount of views or ended livestreams
-         * which have been just re-encoded as normal videos).
+         * Only used for videos; mostly those with a small amount of views, or ended livestreams
+         * which have just been re-encoded as normal videos.
          * </p>
          */
         OTF,
@@ -156,7 +157,7 @@ public final class YoutubeDashManifestCreator {
          * segments of streams.
          *
          * <p>
-         * Each sequence (which can be get with the {@link #SQ_0} param) contains its own
+         * Each sequence (which can be fetched with the {@link #SQ_0} param) contains its own
          * metadata (sidx boxes, segment length, ...), which make no need of an initialization
          * segment.
          * </p>
@@ -187,25 +188,27 @@ public final class YoutubeDashManifestCreator {
      * Create DASH manifests from a YouTube OTF stream.
      *
      * <p>
-     * OTF streams is one of the YouTube DASH specific streams which works with sequences and
-     * without the need to get a manifest (even if one is provided but not used by main clients).
-     * They can be found only on videos (mostly ones with a small amount of views or ended
-     * livestreams which have been just re-encoded as normal videos).
+     * OTF streams are YouTube-DASH specific streams which work with sequences and without the need
+     * to get a manifest (even if one is provided, it is not used by official clients).
+     * </p>
+     * <p>
+     * They can be found only on videos; mostly those with a small amount of views, or ended
+     * livestreams which have just been re-encoded as normal videos.
      * </p>
      *
      * <p>This method needs:
      *     <ul>
-     *         <li>the base URL of the stream (which returns HTTP code 404, after redirects and if
-     *         the URL is valid, if you try to access to it);</li>
-     *         <li>an {@link ItagItem} which needs to contain the following information:
+     *         <li>the base URL of the stream (which, if you try to access to it, returns HTTP
+     *         status code 404 after redirects, and if the URL is valid);</li>
+     *         <li>an {@link ItagItem}, which needs to contain the following information:
      *              <ul>
      *                  <li>its type (see {@link ItagItem.ItagType}), to identify if the content is
-     *                  an audio or a video stream</li>
+     *                  an audio or a video stream;</li>
      *                  <li>its bitrate;</li>
      *                  <li>its mime type;</li>
      *                  <li>its codec(s);</li>
-     *                  <li>for audio streams: its audio channels;</li>
-     *                  <li>for video streams: its width and height.</li>
+     *                  <li>for an audio stream: its audio channels;</li>
+     *                  <li>for a video stream: its width and height.</li>
      *              </ul>
      *         </li>
      *         <li>the duration of the video, which will be used if the duration could not be
@@ -219,23 +222,25 @@ public final class YoutubeDashManifestCreator {
      *          sequence parameters are appended (see {@link #RN_0} and {@link #SQ_0})) with a POST
      *          or GET request (depending of the client on which the streaming URL comes from);
      *          </li>
-     *          <li>follow its redirection(s), if there is one or more;</li>
+     *          <li>follow its redirection(s), if any;</li>
      *          <li>save the last URL, remove the first sequence parameters;</li>
      *          <li>use the information provided in the {@link ItagItem} to generate all
      *          elements of the DASH manifest.</li>
      *      </ul>
      * </p>
      *
-     * <p>If the duration could not be extracted, the {@code durationSecondsFallback} value will be
-     * used as the stream duration.</p>
+     * <p>
+     * If the duration cannot be extracted, the {@code durationSecondsFallback} value will be used
+     * as the stream duration.
+     * </p>
      *
      * @param otfBaseStreamingUrl     the base URL of the OTF stream, which cannot be null
      * @param itagItem                the {@link ItagItem} corresponding to the stream, which
      *                                cannot be null
-     * @param durationSecondsFallback the duration of the video which will be used if the duration
+     * @param durationSecondsFallback the duration of the video, which will be used if the duration
      *                                could not be extracted from the first sequence
      * @return the manifest generated into a string
-     * @throws YoutubeDashManifestCreationException if something went wrong when trying to generate
+     * @throws YoutubeDashManifestCreationException if something goes wrong when trying to generate
      *                                              the DASH manifest
      */
     @Nonnull
@@ -297,33 +302,33 @@ public final class YoutubeDashManifestCreator {
     }
 
     /**
-     * Create DASH manifests from a YouTube post live DVR stream/ended livestream.
+     * Create DASH manifests from a YouTube post-live-DVR stream/ended livestream.
      *
      * <p>
-     * Post live DVR streams/ended livestreams is one of the YouTube DASH specific streams which
+     * Post-live-DVR streams/ended livestreams are one of the YouTube DASH specific streams which
      * works with sequences and without the need to get a manifest (even if one is provided but not
      * used by main clients (and is complete for big ended livestreams because it doesn't return
      * the full stream)).
      * </p>
      *
      * <p>
-     * They can be found only on livestreams which have ended for a short amount of time (most of
-     * times a few hours).
+     * They can be found only on livestreams which have ended very recently (a few hours, most of
+     * the time)
      * </p>
      *
      * <p>This method needs:
      *     <ul>
-     *         <li>the base URL of the stream (which returns HTTP code 404, after redirects and if
-     *         the URL is valid, if you try to access to it);</li>
-     *         <li>an {@link ItagItem} which needs to contain the following information:
+     *         <li>the base URL of the stream (which, if you try to access to it, returns HTTP
+     *         status code 404 after redirects, and if the URL is valid);</li>
+     *         <li>an {@link ItagItem}, which needs to contain the following information:
      *              <ul>
      *                  <li>its type (see {@link ItagItem.ItagType}), to identify if the content is
-     *                  an audio or a video stream</li>
+     *                  an audio or a video stream;</li>
      *                  <li>its bitrate;</li>
      *                  <li>its mime type;</li>
      *                  <li>its codec(s);</li>
-     *                  <li>for audio streams: its audio channels;</li>
-     *                  <li>for video streams: its width and height.</li>
+     *                  <li>for an audio stream: its audio channels;</li>
+     *                  <li>for a video stream: its width and height.</li>
      *              </ul>
      *         </li>
      *         <li>the duration of the video, which will be used if the duration could not be
@@ -337,17 +342,19 @@ public final class YoutubeDashManifestCreator {
      *          sequence parameters are appended (see {@link #RN_0} and {@link #SQ_0})) with a POST
      *          or GET request (depending of the client on which the streaming URL comes from);
      *          </li>
-     *          <li>follow its redirection(s), if there is one or more;</li>
+     *          <li>follow its redirection(s), if any;</li>
      *          <li>save the last URL, remove the first sequence parameters;</li>
      *          <li>use the information provided in the {@link ItagItem} to generate all
      *          elements of the DASH manifest.</li>
      *      </ul>
      * </p>
      *
-     * <p>If the duration could not be extracted, the {@code durationSecondsFallback} value will be
-     * used as the stream duration.</p>
+     * <p>
+     * If the duration cannot be extracted, the {@code durationSecondsFallback} value will be used
+     * as the stream duration.
+     * </p>
      *
-     * @param postLiveStreamDvrStreamingUrl the base URL of the post live DVR stream/ended
+     * @param postLiveStreamDvrStreamingUrl the base URL of the post-live-DVR stream/ended
      *                                      livestream, which cannot be null
      * @param itagItem                      the {@link ItagItem} corresponding to the stream, which
      *                                      cannot be null
@@ -358,7 +365,7 @@ public final class YoutubeDashManifestCreator {
      *                                      if the duration could not be extracted from the first
      *                                      sequence
      * @return the manifest generated into a string
-     * @throws YoutubeDashManifestCreationException if something went wrong when trying to generate
+     * @throws YoutubeDashManifestCreationException if something goes wrong when trying to generate
      *                                              the DASH manifest
      */
     @Nonnull
@@ -391,7 +398,7 @@ public final class YoutubeDashManifestCreator {
             final int responseCode = response.responseCode();
             if (responseCode != 200) {
                 throw new YoutubeDashManifestCreationException(
-                        "Could not generate the DASH manifest: could not get the initialization URL of the post live DVR stream: response code "
+                        "Could not generate the DASH manifest: could not get the initialization URL of the post-live-DVR stream: response code "
                                 + responseCode);
             }
 
@@ -400,12 +407,12 @@ public final class YoutubeDashManifestCreator {
             segmentCount = responseHeaders.get("X-Head-Seqnum").get(0);
         } catch (final IndexOutOfBoundsException e) {
             throw new YoutubeDashManifestCreationException(
-                    "Could not generate the DASH manifest: could not get the value of the X-Head-Time-Millis or the X-Head-Seqnum header of the post live DVR streaming URL", e);
+                    "Could not generate the DASH manifest: could not get the value of the X-Head-Time-Millis or the X-Head-Seqnum header of the post-live-DVR streaming URL", e);
         }
 
         if (isNullOrEmpty(segmentCount)) {
             throw new YoutubeDashManifestCreationException(
-                    "Could not generate the DASH manifest: could not get the number of segments of the post live DVR stream");
+                    "Could not generate the DASH manifest: could not get the number of segments of the post-live-DVR stream");
         }
 
         final Document document = generateDocumentAndMpdElement(new String[]{streamDuration},
@@ -429,47 +436,49 @@ public final class YoutubeDashManifestCreator {
      * Create DASH manifests from a YouTube progressive stream.
      *
      * <p>
-     * Progressive is one of the YouTube DASH streams which works with range requests and without
-     * the need to get a manifest.
+     * Progressive streams are YouTube DASH streams which work with range requests and without the
+     * need to get a manifest.
      * </p>
      *
      * <p>
-     * They can be found on all videos, and for all streams on videos which comes from a YouTube
-     * partner or for videos with a big amount of views.
+     * They can be found on all videos, and for all streams for most of videos which come from a
+     * YouTube partner, and on videos with a large number of views.
      * </p>
      *
      * <p>This method needs:
      *     <ul>
-     *         <li>the base URL of the stream (which returns the whole stream, after redirects and
-     *         if the URL is valid, if you try to access to it);</li>
-     *         <li>an {@link ItagItem} which needs to contain the following information:
+     *         <li>the base URL of the stream (which, if you try to access to it, returns the whole
+     *         stream, after redirects, and if the URL is valid);</li>
+     *         <li>an {@link ItagItem}, which needs to contain the following information:
      *              <ul>
      *                  <li>its type (see {@link ItagItem.ItagType}), to identify if the content is
-     *                  an audio or a video stream</li>
+     *                  an audio or a video stream;</li>
      *                  <li>its bitrate;</li>
      *                  <li>its mime type;</li>
      *                  <li>its codec(s);</li>
-     *                  <li>for audio streams: its audio channels;</li>
-     *                  <li>for video streams: its width and height.</li>
+     *                  <li>for an audio stream: its audio channels;</li>
+     *                  <li>for a video stream: its width and height.</li>
      *              </ul>
      *         </li>
      *         <li>the duration of the video, which will be used if the duration could not be
-     *         get from the {@link ItagItem}.</li>
+     *         parsed from the {@link ItagItem}.</li>
      *     </ul>
      * </p>
      *
      * <p>In order to generate the DASH manifest, this method will:
      *      <ul>
      *          <li>request the base URL of the stream with a HEAD request;</li>
-     *          <li>follow its redirection(s), if there is one or more;</li>
+     *          <li>follow its redirection(s), if any;</li>
      *          <li>save the last URL;</li>
      *          <li>use the information provided in the {@link ItagItem} to generate all
      *          elements of the DASH manifest.</li>
      *      </ul>
      * </p>
      *
-     * <p>If the duration could not be extracted, the {@code durationSecondsFallback} value will be
-     * used as the stream duration.</p>
+     * <p>
+     * If the duration cannot be extracted, the {@code durationSecondsFallback} value will be used
+     * as the stream duration.
+     * </p>
      *
      * @param progressiveStreamingBaseUrl the base URL of the progressive stream, which cannot be
      *                                    null
@@ -479,7 +488,7 @@ public final class YoutubeDashManifestCreator {
      *                                    if the duration could not be extracted from the first
      *                                    sequence
      * @return the manifest generated into a string
-     * @throws YoutubeDashManifestCreationException if something went wrong when trying to generate
+     * @throws YoutubeDashManifestCreationException if something goes wrong when trying to generate
      *                                              the DASH manifest
      */
     @Nonnull
@@ -519,10 +528,10 @@ public final class YoutubeDashManifestCreator {
      * This method fetches:
      * <ul>
      *     <li>for progressive streams, the base URL of the stream with a HEAD request;</li>
-     *     <li>for OTF streams and for post live DVR streams, the base URL of the stream on which
+     *     <li>for OTF streams and for post-live-DVR streams, the base URL of the stream, to which
      *     are appended {@link #SQ_0} and {@link #RN_0} params, with a GET request for streaming
      *     URLs from the WEB client and a POST request for the ones from the Android client;</li>
-     *     <li>for post live DVR streams from the Android client, the {@link #HEADM_1} param is
+     *     <li>for post-live-DVR streams from the Android client, the {@link #HEADM_1} param is
      *     also added;</li>
      *     <li>for streaming URLs from the WEB client, the {@link #ALR_YES} param is also added.
      *     </li>
@@ -533,8 +542,8 @@ public final class YoutubeDashManifestCreator {
      * @param itagItem         the {@link ItagItem} of stream, which cannot be null
      * @param deliveryType     the {@link DeliveryType} of the stream
      * @return the "initialization" response, without redirections on the network on which the
-     * request/s is/are made
-     * @throws YoutubeDashManifestCreationException if something went wrong when fetching the
+     * request(s) is/are made
+     * @throws YoutubeDashManifestCreationException if something goes wrong when fetching the
      *                                              "initialization" response and/or its redirects
      */
     @Nonnull
@@ -571,7 +580,7 @@ public final class YoutubeDashManifestCreator {
                 return downloader.post(baseStreamingUrl, headers, emptyBody);
             } catch (final IOException | ExtractionException e) {
                 throw new YoutubeDashManifestCreationException(
-                        "Could not generate the DASH manifest: error when trying to get the ANDROID streaming post live DVR URL response", e);
+                        "Could not generate the DASH manifest: error when trying to get the ANDROID streaming post-live-DVR URL response", e);
             }
         }
 
@@ -595,11 +604,11 @@ public final class YoutubeDashManifestCreator {
     }
 
     /**
-     * Append {@link #SQ_0} for post live DVR and OTF streams and {@link #RN_0} to all streams.
+     * Append {@link #SQ_0} for post-live-DVR and OTF streams and {@link #RN_0} to all streams.
      *
-     * @param baseStreamingUrl the base streaming URL on which appending the param(s)
+     * @param baseStreamingUrl the base streaming URL to which the param(s) are being appended
      * @param deliveryType     the {@link DeliveryType} of the stream
-     * @return the base streaming URL on which the param(s) are appended, depending on the
+     * @return the base streaming URL to which the param(s) are appended, depending on the
      * {@link DeliveryType} of the stream
      */
     @Nonnull
@@ -619,22 +628,22 @@ public final class YoutubeDashManifestCreator {
      * <p>
      * This method will follow redirects for web clients, which works in the following way:
      * <ol>
-     *     <li>the {@link #ALR_YES} param is appended on all streaming URLs</li>
-     *     <li>if no redirection occur, the video server will return the streaming data;</li>
-     *     <li>if a redirection occur, the server will respond with a 200 HTTP code and a
+     *     <li>the {@link #ALR_YES} param is appended to all streaming URLs</li>
+     *     <li>if no redirection occurs, the video server will return the streaming data;</li>
+     *     <li>if a redirection occurs, the server will respond with HTTP status code 200 and a
      *     text/plain mime type. The redirection URL is the response body;</li>
      *     <li>the redirection URL is requested and the steps above from step 2 are repeated (until
-     *     too many redirects are reached of course).</li>
+     *     too many redirects are reached, of course).</li>
      * </ol>
      * </p>
      *
      * @param downloader               the {@link Downloader} instance to be used
-     * @param streamingUrl             the streaming URL on which trying to get a streaming URL
+     * @param streamingUrl             the streaming URL which we are trying to get a streaming URL
      *                                 without any redirection on the network and/or IP used
      * @param responseMimeTypeExpected the response mime type expected from Google video servers
      * @param deliveryType             the {@link DeliveryType} of the stream
      * @return the response of the stream which should have no redirections
-     * @throws YoutubeDashManifestCreationException if something went wrong when trying to get the
+     * @throws YoutubeDashManifestCreationException if something goes wrong when trying to get the
      *                                              response without any redirection
      */
     @Nonnull
@@ -665,7 +674,7 @@ public final class YoutubeDashManifestCreator {
                 if (responseCode != 200) {
                     if (deliveryType == DeliveryType.LIVE) {
                         throw new YoutubeDashManifestCreationException(
-                                "Could not generate the DASH manifest: could not get the initialization URL of the post live DVR stream: response code "
+                                "Could not generate the DASH manifest: could not get the initialization URL of the post-live-DVR stream: response code "
                                         + responseCode);
                     } else if (deliveryType == DeliveryType.OTF) {
                         throw new YoutubeDashManifestCreationException(
@@ -702,7 +711,7 @@ public final class YoutubeDashManifestCreator {
                         "Could not generate the DASH manifest: too many redirects when trying to get the WEB streaming URL response");
             }
 
-            // This should be never reached but is required because we don't want to return null
+            // This should never be reached, but is required because we don't want to return null
             // here
             throw new YoutubeDashManifestCreationException(
                     "Could not generate the DASH manifest: error when trying to get the WEB streaming URL response");
@@ -718,7 +727,7 @@ public final class YoutubeDashManifestCreator {
      *
      * @param segmentDuration the string array which contains all the sequences extracted with the
      *                        regular expression
-     * @throws YoutubeDashManifestCreationException if something went wrong when trying to collect
+     * @throws YoutubeDashManifestCreationException if something goes wrong when trying to collect
      *                                              the segments of the OTF stream
      */
     private static void collectSegmentsData(@Nonnull final String[] segmentDuration)
@@ -753,7 +762,7 @@ public final class YoutubeDashManifestCreator {
      * @param segmentDuration the segment duration object extracted from the initialization
      *                        sequence of the stream
      * @return the duration of the OTF stream
-     * @throws YoutubeDashManifestCreationException if something went wrong when parsing the
+     * @throws YoutubeDashManifestCreationException if something goes wrong when parsing the
      *                                              {@code segmentDuration} object
      */
     private static int getStreamDuration(@Nonnull final String[] segmentDuration)
@@ -806,7 +815,7 @@ public final class YoutubeDashManifestCreator {
      * @param durationSecondsFallback the duration in seconds, extracted from player response, used
      *                                as a fallback
      * @return a {@link Document} object which contains a {@code <MPD>} element
-     * @throws YoutubeDashManifestCreationException if something went wrong when generating/
+     * @throws YoutubeDashManifestCreationException if something goes wrong when generating/
      *                                              appending the {@link Document object} or the
      *                                              {@code <MPD>} element
      */
@@ -893,7 +902,7 @@ public final class YoutubeDashManifestCreator {
      *
      * @param document the {@link Document} on which the the {@code <Period>} element will be
      *                 appended
-     * @throws YoutubeDashManifestCreationException if something went wrong when generating or
+     * @throws YoutubeDashManifestCreationException if something goes wrong when generating or
      *                                              appending the {@code <Period>} element to the
      *                                              document
      */
@@ -920,7 +929,7 @@ public final class YoutubeDashManifestCreator {
      * @param document the {@link Document} on which the the {@code <Period>} element will be
      *                 appended
      * @param itagItem the {@link ItagItem} corresponding to the stream, which cannot be null
-     * @throws YoutubeDashManifestCreationException if something went wrong when generating or
+     * @throws YoutubeDashManifestCreationException if something goes wrong when generating or
      *                                              appending the {@code <Period>} element to the
      *                                              document
      */
@@ -973,7 +982,7 @@ public final class YoutubeDashManifestCreator {
      *
      * @param document the {@link Document} on which the the {@code <Role>} element will be
      *                 appended
-     * @throws YoutubeDashManifestCreationException if something went wrong when generating or
+     * @throws YoutubeDashManifestCreationException if something goes wrong when generating or
      *                                              appending the {@code <Role>} element to the document
      */
     private static void generateRoleElement(@Nonnull final Document document)
@@ -1010,7 +1019,7 @@ public final class YoutubeDashManifestCreator {
      * @param document the {@link Document} on which the the {@code <SegmentTimeline>} element will
      *                 be appended
      * @param itagItem the {@link ItagItem} to use, which cannot be null
-     * @throws YoutubeDashManifestCreationException if something went wrong when generating or
+     * @throws YoutubeDashManifestCreationException if something goes wrong when generating or
      *                                              appending the {@code <Representation>} element
      *                                              to the document
      */
@@ -1123,7 +1132,7 @@ public final class YoutubeDashManifestCreator {
      * @param document the {@link Document} on which the {@code <AudioChannelConfiguration>}
      *                 element will be appended
      * @param itagItem the {@link ItagItem} to use, which cannot be null
-     * @throws YoutubeDashManifestCreationException if something went wrong when generating or
+     * @throws YoutubeDashManifestCreationException if something goes wrong when generating or
      *                                              appending the
      *                                              {@code <AudioChannelConfiguration>} element
      *                                              to the document
@@ -1174,7 +1183,7 @@ public final class YoutubeDashManifestCreator {
      *                 be appended
      * @param baseUrl  the base URL of the stream, which cannot be null and will be set as the
      *                 content of the {@code <BaseURL>} element
-     * @throws YoutubeDashManifestCreationException if something went wrong when generating or
+     * @throws YoutubeDashManifestCreationException if something goes wrong when generating or
      *                                              appending the {@code <BaseURL>} element
      *                                              to the document
      */
@@ -1216,7 +1225,7 @@ public final class YoutubeDashManifestCreator {
      * @param document the {@link Document} on which the {@code <SegmentBase>} element will
      *                 be appended
      * @param itagItem the {@link ItagItem} to use, which cannot be null
-     * @throws YoutubeDashManifestCreationException if something went wrong when generating or
+     * @throws YoutubeDashManifestCreationException if something goes wrong when generating or
      *                                              appending the {@code <SegmentBase>} element
      *                                              to the document
      */
@@ -1275,7 +1284,7 @@ public final class YoutubeDashManifestCreator {
      * @param document the {@link Document} on which the {@code <Initialization>} element will
      *                 be appended
      * @param itagItem the {@link ItagItem} to use, which cannot be null
-     * @throws YoutubeDashManifestCreationException if something went wrong when generating or
+     * @throws YoutubeDashManifestCreationException if something goes wrong when generating or
      *                                              appending the {@code <Initialization>} element
      *                                              to the document
      */
@@ -1316,12 +1325,12 @@ public final class YoutubeDashManifestCreator {
      * {@code <Representation>} element.
      *
      * <p>
-     * This method is only used when generating DASH manifests from OTF and post live DVR streams.
+     * This method is only used when generating DASH manifests from OTF and post-live-DVR streams.
      * </p>
      * <p>
      * It will produce a {@code <SegmentTemplate>} element with the following attributes:
      * <ul>
-     *     <li>{@code startNumber}, which takes the value {@code 0} for post live DVR streams and
+     *     <li>{@code startNumber}, which takes the value {@code 0} for post-live-DVR streams and
      *     {@code 1} for OTF streams;</li>
      *     <li>{@code timescale}, which is always {@code 1000};</li>
      *     <li>{@code media}, which is the base URL of the stream on which is appended
@@ -1338,9 +1347,9 @@ public final class YoutubeDashManifestCreator {
      *
      * @param document     the {@link Document} on which the {@code <SegmentTemplate>} element will
      *                     be appended
-     * @param baseUrl      the base URL of the OTF/post live DVR stream
+     * @param baseUrl      the base URL of the OTF/post-live-DVR stream
      * @param deliveryType the stream {@link DeliveryType delivery type}
-     * @throws YoutubeDashManifestCreationException if something went wrong when generating or
+     * @throws YoutubeDashManifestCreationException if something goes wrong when generating or
      *                                              appending the {@code <SegmentTemplate>} element
      *                                              to the document
      */
@@ -1365,7 +1374,7 @@ public final class YoutubeDashManifestCreator {
             timescaleAttribute.setValue("1000");
             segmentTemplateElement.setAttributeNode(timescaleAttribute);
 
-            // Post live DVR/ended livestreams streams doesn't require an initialization sequence
+            // Post-live-DVR/ended livestreams streams doesn't require an initialization sequence
             if (!isDeliveryTypeLive) {
                 final Attr initializationAttribute = document.createAttribute("initialization");
                 initializationAttribute.setValue(baseUrl + SQ_0 + RN_0);
@@ -1394,7 +1403,7 @@ public final class YoutubeDashManifestCreator {
      *
      * @param document the {@link Document} on which the the {@code <SegmentTimeline>} element will
      *                 be appended
-     * @throws YoutubeDashManifestCreationException if something went wrong when generating or
+     * @throws YoutubeDashManifestCreationException if something goes wrong when generating or
      *                                              appending the {@code <SegmentTimeline>} element
      *                                              to the document
      */
@@ -1430,7 +1439,7 @@ public final class YoutubeDashManifestCreator {
      * </p>
      *
      * @param document the {@link Document} on which the the {@code <S>} elements will be appended
-     * @throws YoutubeDashManifestCreationException if something went wrong when generating or
+     * @throws YoutubeDashManifestCreationException if something goes wrong when generating or
      *                                              appending the {@code <S>} elements to the
      *                                              document
      */
@@ -1468,10 +1477,10 @@ public final class YoutubeDashManifestCreator {
     }
 
     /**
-     * Generate the segment element for post live DVR streams.
+     * Generate the segment element for post-live-DVR streams.
      *
      * <p>
-     * We don't know the exact duration of segments for post live DVR streams but an
+     * We don't know the exact duration of segments for post-live-DVR streams but an
      * average instead (which is the {@code targetDurationSec} value), so we can use the following
      * structure to generate the segment timeline for DASH manifests of ended livestreams:
      * <br>
@@ -1484,7 +1493,7 @@ public final class YoutubeDashManifestCreator {
      *                              stream
      * @param segmentCount          the number of segments, extracted by the main method which
      *                              generates manifests of post DVR livestreams
-     * @throws YoutubeDashManifestCreationException if something went wrong when generating or
+     * @throws YoutubeDashManifestCreationException if something goes wrong when generating or
      *                                              appending the {@code <S>} element to the
      *                                              document
      */
@@ -1521,7 +1530,7 @@ public final class YoutubeDashManifestCreator {
      *                                    (which is either {@link #OTF_MANIFESTS_GENERATED} or
      *                                    {@link #POST_LIVE_STREAMS_MANIFESTS_GENERATED})
      * @return the DASH manifest {@link Document document} converted to a string
-     * @throws YoutubeDashManifestCreationException if something went wrong when converting the
+     * @throws YoutubeDashManifestCreationException if something goes wrong when converting the
      *                                              {@link Document document}
      */
     private static String buildResult(
