@@ -1254,7 +1254,7 @@ public class YoutubeStreamExtractor extends StreamExtractor {
                                         "audioSampleRate")));
                                 itagItem.setAudioChannels(formatData.getInt("audioChannels"));
                             }
-                            itagItem.setContentLength(Integer.parseInt(formatData.getString(
+                            itagItem.setContentLength(Long.parseLong(formatData.getString(
                                     "contentLength", "-1")));
 
                             final ItagInfo itagInfo = new ItagInfo(streamUrl, itagItem);
