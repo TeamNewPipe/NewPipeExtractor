@@ -15,7 +15,6 @@ import com.grack.nanojson.JsonParserException;
 import com.grack.nanojson.JsonWriter;
 
 import org.schabi.newpipe.extractor.MetaInfo;
-import org.schabi.newpipe.extractor.Page;
 import org.schabi.newpipe.extractor.downloader.Response;
 import org.schabi.newpipe.extractor.exceptions.AccountTerminatedException;
 import org.schabi.newpipe.extractor.exceptions.ContentNotAvailableException;
@@ -35,6 +34,8 @@ import java.io.UnsupportedEncodingException;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLDecoder;
+import java.nio.charset.StandardCharsets;
+import java.security.SecureRandom;
 import java.time.LocalDate;
 import java.time.OffsetDateTime;
 import java.time.ZoneOffset;
@@ -78,11 +79,15 @@ public final class YoutubeParsingHelper {
     }
 
     public static final String YOUTUBEI_V1_URL = "https://www.youtube.com/youtubei/v1/";
+    public static final String CPN = "cpn";
+    public static final String VIDEO_ID = "videoId";
 
     private static final String HARDCODED_CLIENT_VERSION = "2.20220107.00.00";
     private static final String HARDCODED_KEY = "AIzaSyAO_FJ2SlqU8Q4STEHLGCilw_Y9_11qcW8";
-    private static final String MOBILE_YOUTUBE_KEY = "AIzaSyA8eiZmM1FaDVjRy-df2KTyQ_vz_yYM39w";
+
+    private static final String ANDROID_YOUTUBE_KEY = "AIzaSyA8eiZmM1FaDVjRy-df2KTyQ_vz_yYM39w";
     private static final String MOBILE_YOUTUBE_CLIENT_VERSION = "16.49.37";
+
     private static String clientVersion;
     private static String key;
 
@@ -93,6 +98,9 @@ public final class YoutubeParsingHelper {
     private static boolean keyAndVersionExtracted = false;
     @SuppressWarnings("OptionalUsedAsFieldOrParameterType")
     private static Optional<Boolean> hardcodedClientVersionAndKeyValid = Optional.empty();
+
+    private static final String CONTENT_PLAYBACK_NONCE_ALPHABET =
+            "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789-_";
 
     private static Random numberGenerator = new Random();
 
@@ -593,7 +601,7 @@ public final class YoutubeParsingHelper {
 
         // The ANDROID API key is also valid with the WEB client so return it if we couldn't
         // extract the WEB API key.
-        return MOBILE_YOUTUBE_KEY;
+        return ANDROID_YOUTUBE_KEY;
     }
 
     /**
@@ -769,7 +777,7 @@ public final class YoutubeParsingHelper {
         } else if (navigationEndpoint.has("watchEndpoint")) {
             final StringBuilder url = new StringBuilder();
             url.append("https://www.youtube.com/watch?v=").append(navigationEndpoint
-                    .getObject("watchEndpoint").getString("videoId"));
+                    .getObject("watchEndpoint").getString(VIDEO_ID));
             if (navigationEndpoint.getObject("watchEndpoint").has("playlistId")) {
                 url.append("&list=").append(navigationEndpoint.getObject("watchEndpoint")
                         .getString("playlistId"));
@@ -906,17 +914,6 @@ public final class YoutubeParsingHelper {
         return responseBody;
     }
 
-    public static Response getResponse(final String url, final Localization localization)
-            throws IOException, ExtractionException {
-        final Map<String, List<String>> headers = new HashMap<>();
-        addYouTubeHeaders(headers);
-
-        final Response response = getDownloader().get(url, headers, localization);
-        getValidJsonResponseBody(response);
-
-        return response;
-    }
-
     public static JsonObject getJsonPostResponse(final String endpoint,
                                                  final byte[] body,
                                                  final Localization localization)
@@ -931,46 +928,28 @@ public final class YoutubeParsingHelper {
         return JsonUtils.toJsonObject(getValidJsonResponseBody(response));
     }
 
-    public static JsonObject getJsonMobilePostResponse(final String endpoint,
-                                                       final byte[] body,
-                                                       @Nonnull final ContentCountry
-                                                               contentCountry,
-                                                       final Localization localization)
-            throws IOException, ExtractionException {
+    public static JsonObject getJsonAndroidPostResponse(
+            final String endpoint,
+            final byte[] body,
+            @Nonnull final ContentCountry contentCountry,
+            final Localization localization,
+            @Nullable final String endPartOfUrlRequest) throws IOException, ExtractionException {
         final Map<String, List<String>> headers = new HashMap<>();
         headers.put("Content-Type", Collections.singletonList("application/json"));
         // Spoofing an Android 11 device with the hardcoded version of the Android app
         headers.put("User-Agent", Collections.singletonList("com.google.android.youtube/"
-                + MOBILE_YOUTUBE_CLIENT_VERSION + "Linux; U; Android 11; "
+                + MOBILE_YOUTUBE_CLIENT_VERSION + " (Linux; U; Android 11; "
                 + contentCountry.getCountryCode() + ") gzip"));
         headers.put("x-goog-api-format-version", Collections.singletonList("2"));
 
-        final Response response = getDownloader().post(
-                "https://youtubei.googleapis.com/youtubei/v1/" + endpoint + "?key="
-                        + MOBILE_YOUTUBE_KEY, headers, body, localization);
+        final String baseEndpointUrl = "https://youtubei.googleapis.com/youtubei/v1/" + endpoint
+                + "?key=" + ANDROID_YOUTUBE_KEY;
+
+        final Response response = getDownloader().post(isNullOrEmpty(endPartOfUrlRequest)
+                        ? baseEndpointUrl : baseEndpointUrl + endPartOfUrlRequest,
+                headers, body, localization);
 
         return JsonUtils.toJsonObject(getValidJsonResponseBody(response));
-    }
-
-    public static JsonArray getJsonResponse(final String url, final Localization localization)
-            throws IOException, ExtractionException {
-        final Map<String, List<String>> headers = new HashMap<>();
-        addYouTubeHeaders(headers);
-
-        final Response response = getDownloader().get(url, headers, localization);
-
-        return JsonUtils.toJsonArray(getValidJsonResponseBody(response));
-    }
-
-    public static JsonArray getJsonResponse(@Nonnull final Page page,
-                                            final Localization localization)
-            throws IOException, ExtractionException {
-        final Map<String, List<String>> headers = new HashMap<>();
-        addYouTubeHeaders(headers);
-
-        final Response response = getDownloader().get(page.getUrl(), headers, localization);
-
-        return JsonUtils.toJsonArray(getValidJsonResponseBody(response));
     }
 
     @Nonnull
@@ -986,6 +965,13 @@ public final class YoutubeParsingHelper {
                         .value("gl", contentCountry.getCountryCode())
                         .value("clientName", "WEB")
                         .value("clientVersion", getClientVersion())
+                        .value("originalUrl", "https://www.youtube.com")
+                        .value("platform", "DESKTOP")
+                    .end()
+                    .object("request")
+                        .array("internalExperimentFlags")
+                        .end()
+                        .value("useSsl", true)
                     .end()
                     .object("user")
                         // TO DO: provide a way to enable restricted mode with:
@@ -1032,17 +1018,23 @@ public final class YoutubeParsingHelper {
                         .value("clientName", "WEB")
                         .value("clientVersion", getClientVersion())
                         .value("clientScreen", "EMBED")
+                        .value("originalUrl", "https://www.youtube.com")
+                        .value("platform", "DESKTOP")
                     .end()
                     .object("thirdParty")
                         .value("embedUrl", "https://www.youtube.com/watch?v=" + videoId)
+                    .end()
+                    .object("request")
+                        .array("internalExperimentFlags")
+                        .end()
+                        .value("useSsl", true)
                     .end()
                     .object("user")
                         // TO DO: provide a way to enable restricted mode with:
                         // .value("enableSafetyMode", boolean)
                         .value("lockedSafetyMode", false)
                     .end()
-                .end()
-                .value("videoId", videoId);
+                .end();
         // @formatter:on
     }
 
@@ -1050,7 +1042,8 @@ public final class YoutubeParsingHelper {
     public static JsonBuilder<JsonObject> prepareAndroidMobileEmbedVideoJsonBuilder(
             @Nonnull final Localization localization,
             @Nonnull final ContentCountry contentCountry,
-            @Nonnull final String videoId) {
+            @Nonnull final String videoId,
+            @Nonnull final String contentPlaybackNonce) {
         // @formatter:off
         return JsonObject.builder()
                 .object("context")
@@ -1064,48 +1057,53 @@ public final class YoutubeParsingHelper {
                     .object("thirdParty")
                         .value("embedUrl", "https://www.youtube.com/watch?v=" + videoId)
                     .end()
+                    .object("request")
+                        .array("internalExperimentFlags")
+                        .end()
+                        .value("useSsl", true)
+                    .end()
                     .object("user")
                         // TO DO: provide a way to enable restricted mode with:
                         // .value("enableSafetyMode", boolean)
                         .value("lockedSafetyMode", false)
                     .end()
                 .end()
-                .value("videoId", videoId);
+                .value(CPN, contentPlaybackNonce)
+                .value(VIDEO_ID, videoId);
         // @formatter:on
     }
 
     @Nonnull
-    public static byte[] createPlayerBodyWithSts(final Localization localization,
-                                                 final ContentCountry contentCountry,
-                                                 final String videoId,
-                                                 final boolean withThirdParty,
-                                                 @Nullable final String sts)
-            throws IOException, ExtractionException {
-        if (withThirdParty) {
-            // @formatter:off
-            return JsonWriter.string(prepareDesktopEmbedVideoJsonBuilder(
-                    localization, contentCountry, videoId)
-                    .object("playbackContext")
-                        .object("contentPlaybackContext")
-                            .value("signatureTimestamp", sts)
-                        .end()
+    public static byte[] createDesktopPlayerBody(
+            @Nonnull final Localization localization,
+            @Nonnull final ContentCountry contentCountry,
+            @Nonnull final String videoId,
+            @Nonnull final String sts,
+            final boolean isEmbedClientScreen,
+            @Nonnull final String contentPlaybackNonce) throws IOException, ExtractionException {
+        // @formatter:off
+        return JsonWriter.string((isEmbedClientScreen
+                        ? prepareDesktopEmbedVideoJsonBuilder(localization, contentCountry,
+                            videoId)
+                        : prepareDesktopJsonBuilder(localization, contentCountry))
+                .object("playbackContext")
+                    .object("contentPlaybackContext")
+                        .value("currentUrl", "/watch?v=" + videoId)
+                        .value("vis", 0)
+                        .value("splay", false)
+                        .value("autoCaptionsDefaultOn", false)
+                        .value("autonavState", "STATE_NONE")
+                        .value("html5Preference", "HTML5_PREF_WANTS")
+                        .value("signatureTimestamp", sts)
+                        .value("referer", "https://www.youtube.com/watch?v=" + videoId)
+                        .value("lactMilliseconds", "-1")
                     .end()
-                    .done())
-                    .getBytes(UTF_8);
-            // @formatter:on
-        } else {
-            // @formatter:off
-            return JsonWriter.string(prepareDesktopJsonBuilder(localization, contentCountry)
-                    .value("videoId", videoId)
-                    .object("playbackContext")
-                        .object("contentPlaybackContext")
-                            .value("signatureTimestamp", sts)
-                        .end()
-                    .end()
-                    .done())
-                    .getBytes(UTF_8);
-            // @formatter:on
-        }
+                .end()
+                .value(CPN, contentPlaybackNonce)
+                .value(VIDEO_ID, videoId)
+                .done())
+                .getBytes(StandardCharsets.UTF_8);
+        // @formatter:on
     }
 
     /**
@@ -1380,5 +1378,48 @@ public final class YoutubeParsingHelper {
                 .replaceAll("\\\\x7d", "}")
                 .replaceAll("\\\\x5b", "[")
                 .replaceAll("\\\\x5d", "]");
+    }
+
+    /**
+     * Generate a content playback nonce (also called {@code cpn}), sent by YouTube clients in
+     * playback requests (and also for some clients, in the player request body).
+     *
+     * @return a content playback nonce string
+     */
+    @Nonnull
+    public static String generateContentPlaybackNonce() {
+        final SecureRandom random = new SecureRandom();
+        final StringBuilder stringBuilder = new StringBuilder();
+
+        for (int i = 0; i < 16; i++) {
+            stringBuilder.append(CONTENT_PLAYBACK_NONCE_ALPHABET.charAt(
+                    (random.nextInt(128) + 1) & 63));
+        }
+
+        return stringBuilder.toString();
+    }
+
+    /**
+     * Try to generate a {@code t} parameter, sent by mobile clients as a query of the player
+     * request.
+     *
+     * <p>
+     * Some researches needs to be done to know how this parameter, unique at each request, is
+     * generated.
+     * </p>
+     *
+     * @return a 12 characters string to try to reproduce the {@code} parameter
+     */
+    @Nonnull
+    public static String generateTParameter() {
+        final SecureRandom random = new SecureRandom();
+        final StringBuilder stringBuilder = new StringBuilder();
+
+        for (int i = 0; i < 12; i++) {
+            stringBuilder.append(CONTENT_PLAYBACK_NONCE_ALPHABET.charAt(
+                    (random.nextInt(128) + 1) & 63));
+        }
+
+        return stringBuilder.toString();
     }
 }
