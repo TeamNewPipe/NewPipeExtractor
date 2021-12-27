@@ -358,6 +358,10 @@ public class YoutubeStreamExtractor extends StreamExtractor {
                 return -1;
             }
 
+            if (likesString.toLowerCase().contains("no likes")) {
+                return 0;
+            }
+
             return Integer.parseInt(Utils.removeNonDigitCharacters(likesString));
         } catch (final NumberFormatException nfe) {
             throw new ParsingException("Could not parse \"" + likesString + "\" as an Integer",
