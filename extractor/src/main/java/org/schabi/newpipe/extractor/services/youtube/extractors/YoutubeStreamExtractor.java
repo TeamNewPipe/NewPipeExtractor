@@ -337,24 +337,18 @@ public class YoutubeStreamExtractor extends StreamExtractor {
     @Override
     public long getLikeCount() throws ParsingException {
         assertPageFetched();
-        String likesString = null;
+        String likesString = "";
         try {
-            likesString = getVideoPrimaryInfoRenderer().getObject("sentimentBar")
-                    .getObject("sentimentBarRenderer").getString("tooltip");
-            if (likesString != null && likesString.contains("/")) {
-                likesString = likesString.split("/")[0];
-            } else {
-                likesString = getVideoPrimaryInfoRenderer()
-                        .getObject("videoActions")
-                        .getObject("menuRenderer")
-                        .getArray("topLevelButtons")
-                        .getObject(0)
-                        .getObject("toggleButtonRenderer")
-                        .getObject("defaultText")
-                        .getObject("accessibility")
-                        .getObject("accessibilityData")
-                        .getString("label");
-            }
+            likesString = getVideoPrimaryInfoRenderer()
+                    .getObject("videoActions")
+                    .getObject("menuRenderer")
+                    .getArray("topLevelButtons")
+                    .getObject(0)
+                    .getObject("toggleButtonRenderer")
+                    .getObject("defaultText")
+                    .getObject("accessibility")
+                    .getObject("accessibilityData")
+                    .getString("label");
 
             if (likesString == null) {
                 // If this kicks in our button has no content and therefore ratings must be disabled
@@ -362,6 +356,10 @@ public class YoutubeStreamExtractor extends StreamExtractor {
                     throw new ParsingException("Ratings are enabled even though the like button is missing");
                 }
                 return -1;
+            }
+
+            if (likesString.toLowerCase().contains("no likes")) {
+                return 0;
             }
 
             return Integer.parseInt(Utils.removeNonDigitCharacters(likesString));
@@ -374,34 +372,6 @@ public class YoutubeStreamExtractor extends StreamExtractor {
             }
             return -1;
         }
-    }
-
-    @Override
-    public long getDislikeCount() throws ParsingException {
-        assertPageFetched();
-
-        try {
-            String dislikesString = getVideoPrimaryInfoRenderer().getObject("sentimentBar")
-                    .getObject("sentimentBarRenderer").getString("tooltip");
-            if (dislikesString != null && dislikesString.contains("/")) {
-                dislikesString = dislikesString.split("/")[1];
-                return Integer.parseInt(Utils.removeNonDigitCharacters(dislikesString));
-            } else {
-                // Calculate dislike with average rating and like count
-                long likes = getLikeCount();
-                double averageRating = playerResponse.getObject("videoDetails").getDouble("averageRating");
-
-                if (likes != -1 && averageRating > 1) {
-                    // If averageRating can't be gathered, it will be 0,
-                    // but we also can't divide by 0 so we need > 1
-                    return Math.round(likes * ((5 - averageRating) / (averageRating - 1)));
-                }
-            }
-        } catch (final Exception e) {
-        }
-        // Silently fail as YouTube is "gradually rolling out" removing dislike count
-        // https://blog.youtube/news-and-events/update-to-youtube/
-        return -1;
     }
 
     @Nonnull
@@ -465,24 +435,6 @@ public class YoutubeStreamExtractor extends StreamExtractor {
         }
 
         return fixThumbnailUrl(url);
-    }
-
-    @Nonnull
-    @Override
-    public String getSubChannelUrl() {
-        return "";
-    }
-
-    @Nonnull
-    @Override
-    public String getSubChannelName() {
-        return "";
-    }
-
-    @Nonnull
-    @Override
-    public String getSubChannelAvatarUrl() {
-        return "";
     }
 
     @Nonnull
@@ -1268,12 +1220,6 @@ public class YoutubeStreamExtractor extends StreamExtractor {
 
     @Nonnull
     @Override
-    public String getHost() {
-        return "";
-    }
-
-    @Nonnull
-    @Override
     public Privacy getPrivacy() {
         final boolean isUnlisted = playerResponse.getObject("microformat")
                 .getObject("playerMicroformatRenderer").getBoolean("isUnlisted");
@@ -1311,12 +1257,6 @@ public class YoutubeStreamExtractor extends StreamExtractor {
     public List<String> getTags() {
         return JsonUtils.getStringListFromJsonArray(playerResponse.getObject("videoDetails")
                 .getArray("keywords"));
-    }
-
-    @Nonnull
-    @Override
-    public String getSupportInfo() {
-        return "";
     }
 
     @Nonnull

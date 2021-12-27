@@ -103,11 +103,6 @@ public class SoundcloudStreamExtractor extends StreamExtractor {
     }
 
     @Override
-    public int getAgeLimit() {
-        return NO_AGE_LIMIT;
-    }
-
-    @Override
     public long getLength() {
         return track.getLong("duration") / 1000L;
     }
@@ -125,11 +120,6 @@ public class SoundcloudStreamExtractor extends StreamExtractor {
     @Override
     public long getLikeCount() {
         return track.getLong("favoritings_count", -1);
-    }
-
-    @Override
-    public long getDislikeCount() {
-        return -1;
     }
 
     @Nonnull
@@ -153,36 +143,6 @@ public class SoundcloudStreamExtractor extends StreamExtractor {
     @Override
     public String getUploaderAvatarUrl() {
         return SoundcloudParsingHelper.getAvatarUrl(track);
-    }
-
-    @Nonnull
-    @Override
-    public String getSubChannelUrl() {
-        return "";
-    }
-
-    @Nonnull
-    @Override
-    public String getSubChannelName() {
-        return "";
-    }
-
-    @Nonnull
-    @Override
-    public String getSubChannelAvatarUrl() {
-        return "";
-    }
-
-    @Nonnull
-    @Override
-    public String getDashMpdUrl() {
-        return "";
-    }
-
-    @Nonnull
-    @Override
-    public String getHlsUrl() {
-        return "";
     }
 
     @Override
@@ -344,18 +304,6 @@ public class SoundcloudStreamExtractor extends StreamExtractor {
     }
 
     @Override
-    @Nonnull
-    public List<SubtitlesStream> getSubtitlesDefault() {
-        return Collections.emptyList();
-    }
-
-    @Override
-    @Nonnull
-    public List<SubtitlesStream> getSubtitles(MediaFormat format) {
-        return Collections.emptyList();
-    }
-
-    @Override
     public StreamType getStreamType() {
         return StreamType.AUDIO_STREAM;
     }
@@ -373,17 +321,6 @@ public class SoundcloudStreamExtractor extends StreamExtractor {
     }
 
     @Override
-    public String getErrorMessage() {
-        return null;
-    }
-
-    @Nonnull
-    @Override
-    public String getHost() {
-        return "";
-    }
-
-    @Override
     public Privacy getPrivacy() {
         return track.getString("sharing").equals("public") ? Privacy.PUBLIC : Privacy.PRIVATE;
     }
@@ -398,11 +335,6 @@ public class SoundcloudStreamExtractor extends StreamExtractor {
     @Override
     public String getLicence() {
         return track.getString("license");
-    }
-
-    @Override
-    public Locale getLanguageInfo() {
-        return null;
     }
 
     @Nonnull
@@ -431,23 +363,5 @@ public class SoundcloudStreamExtractor extends StreamExtractor {
             }
         }
         return tags;
-    }
-
-    @Nonnull
-    @Override
-    public String getSupportInfo() {
-        return "";
-    }
-
-    @Nonnull
-    @Override
-    public List<StreamSegment> getStreamSegments() {
-        return Collections.emptyList();
-    }
-
-    @Nonnull
-    @Override
-    public List<MetaInfo> getMetaInfo() {
-        return Collections.emptyList();
     }
 }

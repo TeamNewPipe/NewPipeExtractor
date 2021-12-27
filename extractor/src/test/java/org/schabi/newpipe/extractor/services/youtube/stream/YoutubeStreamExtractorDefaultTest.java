@@ -148,7 +148,7 @@ public class YoutubeStreamExtractorDefaultTest {
         @Nullable @Override public String expectedUploadDate() { return "2019-08-24 00:00:00.000"; }
         @Nullable @Override public String expectedTextualUploadDate() { return "2019-08-24"; }
         @Override public long expectedLikeCountAtLeast() { return 5212900; }
-        @Override public long expectedDislikeCountAtLeast() { return 30600; }
+        @Override public long expectedDislikeCountAtLeast() { return -1; }
         @Override public int expectedStreamSegmentsCount() { return 0; }
         @Override public String expectedLicence() { return YOUTUBE_LICENCE; }
         @Override public String expectedCategory() { return "Entertainment"; }
@@ -192,7 +192,7 @@ public class YoutubeStreamExtractorDefaultTest {
         @Nullable @Override public String expectedUploadDate() { return "2018-06-19 00:00:00.000"; }
         @Nullable @Override public String expectedTextualUploadDate() { return "2018-06-19"; }
         @Override public long expectedLikeCountAtLeast() { return 340100; }
-        @Override public long expectedDislikeCountAtLeast() { return 18700; }
+        @Override public long expectedDislikeCountAtLeast() { return -1; }
         @Override public boolean expectedUploaderVerified() { return true; }
         @Override public String expectedLicence() { return YOUTUBE_LICENCE; }
         @Override public String expectedCategory() { return "Science & Technology"; }
@@ -282,7 +282,7 @@ public class YoutubeStreamExtractorDefaultTest {
         @Nullable @Override public String expectedUploadDate() { return "2021-03-17 00:00:00.000"; }
         @Nullable @Override public String expectedTextualUploadDate() { return "2021-03-17"; }
         @Override public long expectedLikeCountAtLeast() { return 2300; }
-        @Override public long expectedDislikeCountAtLeast() { return 450; }
+        @Override public long expectedDislikeCountAtLeast() { return -1; }
         @Override public boolean expectedHasSubtitles() { return false; }
         @Override public int expectedStreamSegmentsCount() { return 13; }
         @Override public String expectedLicence() { return YOUTUBE_LICENCE; }
@@ -342,7 +342,7 @@ public class YoutubeStreamExtractorDefaultTest {
         @Nullable @Override public String expectedUploadDate() { return "2020-11-18 00:00:00.000"; }
         @Nullable @Override public String expectedTextualUploadDate() { return "2020-11-18"; }
         @Override public long expectedLikeCountAtLeast() { return 48500; }
-        @Override public long expectedDislikeCountAtLeast() { return 20000; }
+        @Override public long expectedDislikeCountAtLeast() { return -1; }
         @Override public boolean expectedHasSubtitles() { return true; }
         @Override public int expectedStreamSegmentsCount() { return 7; }
         @Override public String expectedLicence() { return YOUTUBE_LICENCE; }
@@ -411,7 +411,7 @@ public class YoutubeStreamExtractorDefaultTest {
         @Nullable @Override public String expectedUploadDate() { return "2019-06-12 00:00:00.000"; }
         @Nullable @Override public String expectedTextualUploadDate() { return "2019-06-12"; }
         @Override public long expectedLikeCountAtLeast() { return 70000; }
-        @Override public long expectedDislikeCountAtLeast() { return 500; }
+        @Override public long expectedDislikeCountAtLeast() { return -1; }
         @Override public List<MetaInfo> expectedMetaInfo() throws MalformedURLException {
             return Collections.singletonList(new MetaInfo(
                     EMPTY_STRING,

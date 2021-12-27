@@ -149,11 +149,6 @@ public class PeertubeStreamExtractor extends StreamExtractor {
         return JsonUtils.getString(json, "account.displayName");
     }
 
-    @Override
-    public boolean isUploaderVerified() throws ParsingException {
-        return false;
-    }
-
     @Nonnull
     @Override
     public String getUploaderAvatarUrl() {
@@ -188,12 +183,6 @@ public class PeertubeStreamExtractor extends StreamExtractor {
             value = "/client/assets/images/default-avatar.png";
         }
         return baseUrl + value;
-    }
-
-    @Nonnull
-    @Override
-    public String getDashMpdUrl() {
-        return "";
     }
 
     @Nonnull
@@ -329,18 +318,6 @@ public class PeertubeStreamExtractor extends StreamExtractor {
         }
     }
 
-    @Nonnull
-    @Override
-    public List<StreamSegment> getStreamSegments() {
-        return Collections.emptyList();
-    }
-
-    @Nonnull
-    @Override
-    public List<MetaInfo> getMetaInfo() {
-        return Collections.emptyList();
-    }
-
     private String getRelatedItemsUrl(final List<String> tags) throws UnsupportedEncodingException {
         final String url = baseUrl + PeertubeSearchQueryHandlerFactory.SEARCH_ENDPOINT;
         final StringBuilder params = new StringBuilder();
@@ -384,11 +361,6 @@ public class PeertubeStreamExtractor extends StreamExtractor {
                 if (!extractor.getUrl().equals(getUrl())) collector.commit(extractor);
             }
         }
-    }
-
-    @Override
-    public String getErrorMessage() {
-        return null;
     }
 
     @Override
