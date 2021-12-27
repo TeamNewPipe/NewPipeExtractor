@@ -20,6 +20,8 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.Collections;
 import java.util.List;
+import java.util.function.Function;
+import java.util.function.IntUnaryOperator;
 
 import static org.schabi.newpipe.extractor.services.soundcloud.linkHandler.SoundcloudSearchQueryHandlerFactory.ITEMS_PER_PAGE;
 import static org.schabi.newpipe.extractor.utils.Utils.EMPTY_STRING;
@@ -53,8 +55,9 @@ public class SoundcloudSearchExtractor extends SearchExtractor {
     @Nonnull
     @Override
     public InfoItemsPage<InfoItem> getInitialPage() throws IOException, ExtractionException {
-        return new InfoItemsPage<>(collectItems(searchCollection), getNextPageFromCurrentUrl(
-                getUrl()));
+        return new InfoItemsPage<>(
+                collectItems(searchCollection),
+                getNextPageFromCurrentUrl(getUrl(), currentOffset -> 0));
     }
 
     @Override
@@ -73,8 +76,9 @@ public class SoundcloudSearchExtractor extends SearchExtractor {
             throw new ParsingException("Could not parse json response", e);
         }
 
-        return new InfoItemsPage<>(collectItems(searchCollection), getNextPageFromCurrentUrl(page
-                .getUrl()));
+        return new InfoItemsPage<>(
+                collectItems(searchCollection),
+                getNextPageFromCurrentUrl(page.getUrl(), currentOffset -> currentOffset + ITEMS_PER_PAGE));
     }
 
     @Override
@@ -118,12 +122,19 @@ public class SoundcloudSearchExtractor extends SearchExtractor {
         return collector;
     }
 
-    private Page getNextPageFromCurrentUrl(final String currentUrl)
+    private Page getNextPageFromCurrentUrl(final String currentUrl, final IntUnaryOperator pageOffsetHandler)
             throws MalformedURLException, UnsupportedEncodingException {
-        final int pageOffset = Integer.parseInt(
-                Parser.compatParseMap(new URL(currentUrl).getQuery()).get("offset"));
+        int currentPageOffset;
+        try {
+            currentPageOffset = Integer.parseInt(
+                    Parser.compatParseMap(new URL(currentUrl).getQuery()).getOrDefault("offset", "0"));
+        } catch (final NumberFormatException ex) {
+            currentPageOffset = 0;
+        }
 
-        return new Page(currentUrl.replace("&offset=" + pageOffset, "&offset="
-                + (pageOffset + ITEMS_PER_PAGE)));
+        return new Page(
+                currentUrl.replace(
+                        "&offset=" + currentPageOffset,
+                        "&offset=" + pageOffsetHandler.applyAsInt(currentPageOffset)));
     }
 }
