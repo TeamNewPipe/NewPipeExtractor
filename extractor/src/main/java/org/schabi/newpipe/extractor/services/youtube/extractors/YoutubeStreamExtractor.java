@@ -460,24 +460,6 @@ public class YoutubeStreamExtractor extends StreamExtractor {
 
     @Nonnull
     @Override
-    public String getSubChannelUrl() {
-        return "";
-    }
-
-    @Nonnull
-    @Override
-    public String getSubChannelName() {
-        return "";
-    }
-
-    @Nonnull
-    @Override
-    public String getSubChannelAvatarUrl() {
-        return "";
-    }
-
-    @Nonnull
-    @Override
     public String getDashMpdUrl() throws ParsingException {
         assertPageFetched();
 
@@ -1259,12 +1241,6 @@ public class YoutubeStreamExtractor extends StreamExtractor {
 
     @Nonnull
     @Override
-    public String getHost() {
-        return "";
-    }
-
-    @Nonnull
-    @Override
     public Privacy getPrivacy() {
         final boolean isUnlisted = playerResponse.getObject("microformat")
                 .getObject("playerMicroformatRenderer").getBoolean("isUnlisted");
@@ -1302,12 +1278,6 @@ public class YoutubeStreamExtractor extends StreamExtractor {
     public List<String> getTags() {
         return JsonUtils.getStringListFromJsonArray(playerResponse.getObject("videoDetails")
                 .getArray("keywords"));
-    }
-
-    @Nonnull
-    @Override
-    public String getSupportInfo() {
-        return "";
     }
 
     @Nonnull
