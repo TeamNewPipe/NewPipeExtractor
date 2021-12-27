@@ -20,8 +20,8 @@ package org.schabi.newpipe.extractor.services.youtube;
  * along with NewPipe.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-import org.junit.BeforeClass;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.Test;
 import org.schabi.newpipe.downloader.DownloaderTestImpl;
 import org.schabi.newpipe.extractor.NewPipe;
 import org.schabi.newpipe.extractor.StreamingService;
@@ -30,9 +30,9 @@ import org.schabi.newpipe.extractor.playlist.PlaylistExtractor;
 import org.schabi.newpipe.extractor.services.youtube.extractors.YoutubeMixPlaylistExtractor;
 import org.schabi.newpipe.extractor.services.youtube.extractors.YoutubePlaylistExtractor;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.schabi.newpipe.extractor.ServiceList.YouTube;
 
 /**
@@ -42,7 +42,7 @@ public class YoutubeServiceTest {
     static StreamingService service;
     static KioskList kioskList;
 
-    @BeforeClass
+    @BeforeAll
     public static void setUp() throws Exception {
         NewPipe.init(DownloaderTestImpl.getInstance());
         service = YouTube;
@@ -50,25 +50,25 @@ public class YoutubeServiceTest {
     }
 
     @Test
-    public void testGetKioskAvailableKiosks() throws Exception {
-        assertFalse("No kiosk got returned", kioskList.getAvailableKiosks().isEmpty());
+    void testGetKioskAvailableKiosks() {
+        assertFalse(kioskList.getAvailableKiosks().isEmpty(), "No kiosk got returned");
     }
 
     @Test
-    public void testGetDefaultKiosk() throws Exception {
+    void testGetDefaultKiosk() throws Exception {
         assertEquals(kioskList.getDefaultKioskExtractor(null).getId(), "Trending");
     }
 
 
     @Test
-    public void getPlayListExtractorIsNormalPlaylist() throws Exception {
+    void getPlayListExtractorIsNormalPlaylist() throws Exception {
         final PlaylistExtractor extractor = service.getPlaylistExtractor(
             "https://www.youtube.com/watch?v=JhqtYOnNrTs&list=PL-EkZZikQIQVqk9rBWzEo5b-2GeozElS");
         assertTrue(extractor instanceof YoutubePlaylistExtractor);
     }
 
     @Test
-    public void getPlaylistExtractorIsMix() throws Exception {
+    void getPlaylistExtractorIsMix() throws Exception {
         final String videoId = "_AzeUSL9lZc";
         PlaylistExtractor extractor = YouTube.getPlaylistExtractor(
             "https://www.youtube.com/watch?v=" + videoId + "&list=RD" + videoId);

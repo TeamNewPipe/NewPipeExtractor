@@ -1,14 +1,14 @@
 package org.schabi.newpipe.extractor.services.media_ccc;
 
-import org.junit.BeforeClass;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.Test;
 import org.schabi.newpipe.downloader.DownloaderTestImpl;
 import org.schabi.newpipe.extractor.NewPipe;
 import org.schabi.newpipe.extractor.services.media_ccc.extractors.MediaCCCStreamExtractor;
 import org.schabi.newpipe.extractor.stream.AudioStream;
 import org.schabi.newpipe.extractor.stream.StreamExtractor;
 
-import static junit.framework.TestCase.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.schabi.newpipe.extractor.ServiceList.MediaCCC;
 
 /**
@@ -18,7 +18,7 @@ public class MediaCCCOggTest {
     // test against https://media.ccc.de/public/events/1317
     private static StreamExtractor extractor;
 
-    @BeforeClass
+    @BeforeAll
     public static void setUpClass() throws Exception {
         NewPipe.init(DownloaderTestImpl.getInstance());
 

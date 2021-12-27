@@ -3,6 +3,7 @@ test {
     if (System.properties.containsKey('downloader')) {
         systemProperty('downloader', System.getProperty('downloader'))
     }
+    useJUnitPlatform()
 }
 
 dependencies {
@@ -14,7 +15,11 @@ dependencies {
     implementation "com.github.spotbugs:spotbugs-annotations:$spotbugsVersion"
     implementation 'org.nibor.autolink:autolink:0.10.0'
 
-    testImplementation "junit:junit:$junitVersion"
+    testImplementation platform("org.junit:junit-bom:$junitVersion")
+    testImplementation 'org.junit.jupiter:junit-jupiter-api'
+    testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine'
+    testImplementation 'org.junit.jupiter:junit-jupiter-params'
+
     testImplementation "com.squareup.okhttp3:okhttp:3.12.13"
     testImplementation 'com.google.code.gson:gson:2.8.9'
 }

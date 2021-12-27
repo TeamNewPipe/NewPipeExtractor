@@ -1,6 +1,8 @@
 package org.schabi.newpipe.extractor.services;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
+import org.schabi.newpipe.extractor.ExtractorAsserts;
 import org.schabi.newpipe.extractor.InfoItemsCollector;
 import org.schabi.newpipe.extractor.MediaFormat;
 import org.schabi.newpipe.extractor.MetaInfo;
@@ -23,13 +25,11 @@ import java.util.List;
 import java.util.Locale;
 import java.util.stream.Collectors;
 
-import static org.hamcrest.CoreMatchers.containsString;
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.schabi.newpipe.extractor.ExtractorAsserts.assertAtLeast;
 import static org.schabi.newpipe.extractor.ExtractorAsserts.assertEqualsOrderIndependent;
 import static org.schabi.newpipe.extractor.ExtractorAsserts.assertIsSecureUrl;
@@ -149,13 +149,13 @@ public abstract class DefaultStreamExtractorTest extends DefaultExtractorTest<St
         assertNotNull(description);
 
         if (expectedDescriptionIsEmpty()) {
-            assertTrue("description is not empty", description.getContent().isEmpty());
+            assertTrue(description.getContent().isEmpty(), "description is not empty");
         } else {
-            assertFalse("description is empty", description.getContent().isEmpty());
+            assertFalse(description.getContent().isEmpty(), "description is empty");
         }
 
         for (final String s : expectedDescriptionContains()) {
-            assertThat(description.getContent(), containsString(s));
+            ExtractorAsserts.assertContains(s, description.getContent());
         }
     }
 
@@ -265,8 +265,8 @@ public abstract class DefaultStreamExtractorTest extends DefaultExtractorTest<St
 
                 final int formatId = stream.getFormatId();
                 // see MediaFormat: video stream formats range from 0 to 0x100
-                assertTrue("format id does not fit a video stream: " + formatId,
-                        0 <= formatId && formatId < 0x100);
+                assertTrue(0 <= formatId && formatId < 0x100,
+                        "format id does not fit a video stream: " + formatId);
             }
         } else {
             assertTrue(videoStreams.isEmpty());
@@ -287,8 +287,8 @@ public abstract class DefaultStreamExtractorTest extends DefaultExtractorTest<St
 
                 final int formatId = stream.getFormatId();
                 // see MediaFormat: video stream formats range from 0x100 to 0x1000
-                assertTrue("format id does not fit an audio stream: " + formatId,
-                        0x100 <= formatId && formatId < 0x1000);
+                assertTrue(0x100 <= formatId && formatId < 0x1000,
+                        "format id does not fit an audio stream: " + formatId);
             }
         } else {
             assertTrue(audioStreams.isEmpty());
@@ -309,8 +309,8 @@ public abstract class DefaultStreamExtractorTest extends DefaultExtractorTest<St
 
                 final int formatId = stream.getFormatId();
                 // see MediaFormat: video stream formats range from 0x1000 to 0x10000
-                assertTrue("format id does not fit a subtitles stream: " + formatId,
-                        0x1000 <= formatId && formatId < 0x10000);
+                assertTrue(0x1000 <= formatId && formatId < 0x10000,
+                        "format id does not fit a subtitles stream: " + formatId);
             }
         } else {
             assertTrue(subtitles.isEmpty());
@@ -333,7 +333,7 @@ public abstract class DefaultStreamExtractorTest extends DefaultExtractorTest<St
             assertTrue(dashMpdUrl.isEmpty());
         } else {
             assertIsSecureUrl(dashMpdUrl);
-            assertThat(extractor().getDashMpdUrl(), containsString(expectedDashMpdUrlContains()));
+            ExtractorAsserts.assertContains(expectedDashMpdUrlContains(), extractor().getDashMpdUrl());
         }
     }
 

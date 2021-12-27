@@ -1,6 +1,6 @@
 package org.schabi.newpipe.extractor.services.media_ccc.search;
 
-import org.junit.BeforeClass;
+import org.junit.jupiter.api.BeforeAll;
 import org.schabi.newpipe.downloader.DownloaderTestImpl;
 import org.schabi.newpipe.extractor.InfoItem;
 import org.schabi.newpipe.extractor.NewPipe;
@@ -20,7 +20,7 @@ public class MediaCCCSearchExtractorTest {
         private static SearchExtractor extractor;
         private static final String QUERY = "kde";
 
-        @BeforeClass
+        @BeforeAll
         public static void setUp() throws Exception {
             NewPipe.init(DownloaderTestImpl.getInstance());
             extractor = MediaCCC.getSearchExtractor(QUERY);
@@ -43,7 +43,7 @@ public class MediaCCCSearchExtractorTest {
         private static SearchExtractor extractor;
         private static final String QUERY = "c3";
 
-        @BeforeClass
+        @BeforeAll
         public static void setUp() throws Exception {
             NewPipe.init(DownloaderTestImpl.getInstance());
             extractor = MediaCCC.getSearchExtractor(QUERY, singletonList(CONFERENCES), "");
@@ -67,7 +67,7 @@ public class MediaCCCSearchExtractorTest {
         private static SearchExtractor extractor;
         private static final String QUERY = "linux";
 
-        @BeforeClass
+        @BeforeAll
         public static void setUp() throws Exception {
             NewPipe.init(DownloaderTestImpl.getInstance());
             extractor = MediaCCC.getSearchExtractor(QUERY, singletonList(EVENTS), "");

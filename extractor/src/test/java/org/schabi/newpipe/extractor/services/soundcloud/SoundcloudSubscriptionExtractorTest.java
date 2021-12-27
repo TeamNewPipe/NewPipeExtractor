@@ -1,7 +1,7 @@
 package org.schabi.newpipe.extractor.services.soundcloud;
 
-import org.junit.BeforeClass;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.Test;
 import org.schabi.newpipe.downloader.DownloaderTestImpl;
 import org.schabi.newpipe.extractor.NewPipe;
 import org.schabi.newpipe.extractor.ServiceList;
@@ -15,7 +15,7 @@ import java.io.IOException;
 import java.util.Arrays;
 import java.util.List;
 
-import static org.junit.Assert.*;
+import static org.junit.jupiter.api.Assertions.*;
 
 /**
  * Test for {@link SoundcloudSubscriptionExtractor}
@@ -24,7 +24,7 @@ public class SoundcloudSubscriptionExtractorTest {
     private static SoundcloudSubscriptionExtractor subscriptionExtractor;
     private static LinkHandlerFactory urlHandler;
 
-    @BeforeClass
+    @BeforeAll
     public static void setupClass() {
         NewPipe.init(DownloaderTestImpl.getInstance());
         subscriptionExtractor = new SoundcloudSubscriptionExtractor(ServiceList.SoundCloud);
@@ -61,7 +61,7 @@ public class SoundcloudSubscriptionExtractorTest {
                 // Ignore it, could be an unstable network on the CI server
             } catch (Exception e) {
                 boolean isExpectedException = e instanceof SubscriptionExtractor.InvalidSourceException;
-                assertTrue(e.getClass().getSimpleName() + " is not the expected exception", isExpectedException);
+                assertTrue(isExpectedException, e.getClass().getSimpleName() + " is not the expected exception");
             }
         }
     }

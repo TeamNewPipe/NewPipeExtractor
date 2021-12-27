@@ -1,10 +1,10 @@
 package org.schabi.newpipe.extractor;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import java.util.HashSet;
 
-import static org.junit.Assert.*;
+import static org.junit.jupiter.api.Assertions.*;
 import static org.schabi.newpipe.extractor.NewPipe.getServiceByUrl;
 import static org.schabi.newpipe.extractor.ServiceList.SoundCloud;
 import static org.schabi.newpipe.extractor.ServiceList.YouTube;
@@ -19,9 +19,11 @@ public class NewPipeTest {
     public void testAllServicesHaveDifferentId() throws Exception {
         HashSet<Integer> servicesId = new HashSet<>();
         for (StreamingService streamingService : NewPipe.getServices()) {
-            String errorMsg = "There are services with the same id = " + streamingService.getServiceId() + " (current service > " + streamingService.getServiceInfo().getName() + ")";
+            final String errorMsg =
+                    "There are services with the same id = " + streamingService.getServiceId()
+                            + " (current service > " + streamingService.getServiceInfo().getName() + ")";
 
-            assertTrue(errorMsg, servicesId.add(streamingService.getServiceId()));
+            assertTrue(servicesId.add(streamingService.getServiceId()), errorMsg);
         }
     }
 

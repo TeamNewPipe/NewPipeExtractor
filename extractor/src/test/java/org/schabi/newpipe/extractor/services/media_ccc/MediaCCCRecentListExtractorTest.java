@@ -1,24 +1,22 @@
 package org.schabi.newpipe.extractor.services.media_ccc;
 
-import org.junit.BeforeClass;
-import org.junit.Ignore;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.Test;
 import org.schabi.newpipe.downloader.DownloaderTestImpl;
 import org.schabi.newpipe.extractor.NewPipe;
 import org.schabi.newpipe.extractor.kiosk.KioskExtractor;
 import org.schabi.newpipe.extractor.stream.StreamInfoItem;
 
-import java.time.OffsetDateTime;
 import java.util.List;
 
-import static org.junit.Assert.*;
+import static org.junit.jupiter.api.Assertions.*;
 import static org.schabi.newpipe.extractor.ServiceList.MediaCCC;
 import static org.schabi.newpipe.extractor.utils.Utils.isNullOrEmpty;
 
 public class MediaCCCRecentListExtractorTest {
     private static KioskExtractor extractor;
 
-    @BeforeClass
+    @BeforeAll
     public static void setUpClass() throws Exception {
         NewPipe.init(DownloaderTestImpl.getInstance());
         extractor = MediaCCC.getKioskList().getExtractorById("recent", null);

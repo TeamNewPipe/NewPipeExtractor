@@ -1,7 +1,7 @@
 package org.schabi.newpipe.extractor.services.peertube;
 
-import org.junit.BeforeClass;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.Test;
 import org.schabi.newpipe.downloader.DownloaderTestImpl;
 import org.schabi.newpipe.extractor.NewPipe;
 import org.schabi.newpipe.extractor.channel.ChannelExtractor;
@@ -9,7 +9,7 @@ import org.schabi.newpipe.extractor.exceptions.ParsingException;
 import org.schabi.newpipe.extractor.services.BaseChannelExtractorTest;
 import org.schabi.newpipe.extractor.services.peertube.extractors.PeertubeChannelExtractor;
 
-import static org.junit.Assert.*;
+import static org.junit.jupiter.api.Assertions.*;
 import static org.schabi.newpipe.extractor.ExtractorAsserts.assertIsSecureUrl;
 import static org.schabi.newpipe.extractor.ServiceList.PeerTube;
 import static org.schabi.newpipe.extractor.services.DefaultTests.*;
@@ -22,7 +22,7 @@ public class PeertubeChannelExtractorTest {
     public static class LaQuadratureDuNet implements BaseChannelExtractorTest {
         private static PeertubeChannelExtractor extractor;
 
-        @BeforeClass
+        @BeforeAll
         public static void setUp() throws Exception {
             NewPipe.init(DownloaderTestImpl.getInstance());
             // setting instance might break test when running in parallel
@@ -116,7 +116,7 @@ public class PeertubeChannelExtractorTest {
 
         @Test
         public void testSubscriberCount() throws ParsingException {
-            assertTrue("Wrong subscriber count", extractor.getSubscriberCount() >= 230);
+            assertTrue(extractor.getSubscriberCount() >= 230, "Wrong subscriber count");
         }
 
         @Override
@@ -129,7 +129,7 @@ public class PeertubeChannelExtractorTest {
 
         private static PeertubeChannelExtractor extractor;
 
-        @BeforeClass
+        @BeforeAll
         public static void setUp() throws Exception {
             NewPipe.init(DownloaderTestImpl.getInstance());
             // setting instance might break test when running in parallel
@@ -233,7 +233,7 @@ public class PeertubeChannelExtractorTest {
 
         @Test
         public void testSubscriberCount() throws ParsingException {
-            assertTrue("Wrong subscriber count", extractor.getSubscriberCount() >= 700);
+            assertTrue(extractor.getSubscriberCount() >= 700, "Wrong subscriber count");
         }
 
         @Override

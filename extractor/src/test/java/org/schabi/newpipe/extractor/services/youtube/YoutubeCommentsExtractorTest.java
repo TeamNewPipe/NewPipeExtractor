@@ -1,7 +1,7 @@
 package org.schabi.newpipe.extractor.services.youtube;
 
-import org.junit.BeforeClass;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.Test;
 import org.schabi.newpipe.downloader.DownloaderFactory;
 import org.schabi.newpipe.extractor.ListExtractor.InfoItemsPage;
 import org.schabi.newpipe.extractor.NewPipe;
@@ -19,10 +19,10 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Random;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.schabi.newpipe.extractor.ServiceList.YouTube;
 
 public class YoutubeCommentsExtractorTest {
@@ -36,7 +36,7 @@ public class YoutubeCommentsExtractorTest {
         private static final String commentContent = "Category: Education";
         private static YoutubeCommentsExtractor extractor;
 
-        @BeforeClass
+        @BeforeAll
         public static void setUp() throws Exception {
             YoutubeParsingHelper.resetClientVersionAndKey();
             YoutubeParsingHelper.setNumberGenerator(new Random(1));
@@ -125,7 +125,7 @@ public class YoutubeCommentsExtractorTest {
         private final static String url = "https://www.youtube.com/watch?v=VM_6n762j6M";
         private static YoutubeCommentsExtractor extractor;
 
-        @BeforeClass
+        @BeforeAll
         public static void setUp() throws Exception {
             YoutubeParsingHelper.resetClientVersionAndKey();
             YoutubeParsingHelper.setNumberGenerator(new Random(1));
@@ -165,7 +165,7 @@ public class YoutubeCommentsExtractorTest {
         private final static String url = "https://www.youtube.com/watch?v=tR11b7uh17Y";
         private static YoutubeCommentsExtractor extractor;
 
-        @BeforeClass
+        @BeforeAll
         public static void setUp() throws Exception {
             YoutubeParsingHelper.resetClientVersionAndKey();
             YoutubeParsingHelper.setNumberGenerator(new Random(1));
@@ -199,7 +199,7 @@ public class YoutubeCommentsExtractorTest {
                     heartedByUploader = true;
                 }
             }
-            assertTrue("No comments was hearted by uploader", heartedByUploader);
+            assertTrue(heartedByUploader, "No comments was hearted by uploader");
 
         }
     }
@@ -208,7 +208,7 @@ public class YoutubeCommentsExtractorTest {
         private final static String url = "https://www.youtube.com/watch?v=bjFtFMilb34";
         private static YoutubeCommentsExtractor extractor;
 
-        @BeforeClass
+        @BeforeAll
         public static void setUp() throws Exception {
             YoutubeParsingHelper.resetClientVersionAndKey();
             YoutubeParsingHelper.setNumberGenerator(new Random(1));
@@ -238,7 +238,7 @@ public class YoutubeCommentsExtractorTest {
                 assertFalse(Utils.isBlank(c.getCommentText()));
             }
 
-            assertTrue("First comment isn't pinned", comments.getItems().get(0).isPinned());
+            assertTrue(comments.getItems().get(0).isPinned(), "First comment isn't pinned");
         }
     }
 
@@ -250,7 +250,7 @@ public class YoutubeCommentsExtractorTest {
         private final static String url = "https://www.youtube.com/watch?v=QqsLTNkzvaY";
         private static YoutubeCommentsExtractor extractor;
 
-        @BeforeClass
+        @BeforeAll
         public static void setUp() throws Exception {
             YoutubeParsingHelper.resetClientVersionAndKey();
             YoutubeParsingHelper.setNumberGenerator(new Random(1));
@@ -268,9 +268,9 @@ public class YoutubeCommentsExtractorTest {
 
             CommentsInfoItem pinnedComment = comments.getItems().get(0);
 
-            assertTrue("First comment isn't pinned", pinnedComment.isPinned());
-            assertTrue("The first pinned comment has no likes", pinnedComment.getLikeCount() > 0);
-            assertTrue("The first pinned comment has no vote count", !Utils.isBlank(pinnedComment.getTextualLikeCount()));
+            assertTrue(pinnedComment.isPinned(), "First comment isn't pinned");
+            assertTrue(pinnedComment.getLikeCount() > 0, "The first pinned comment has no likes");
+            assertFalse(Utils.isBlank(pinnedComment.getTextualLikeCount()), "The first pinned comment has no vote count");
         }
     }
 
@@ -282,7 +282,7 @@ public class YoutubeCommentsExtractorTest {
         private final static String url = "https://www.youtube.com/watch?v=QqsLTNkzvaY";
         private static YoutubeCommentsExtractor extractor;
 
-        @BeforeClass
+        @BeforeAll
         public static void setUp() throws Exception {
             YoutubeParsingHelper.resetClientVersionAndKey();
             YoutubeParsingHelper.setNumberGenerator(new Random(1));
@@ -302,8 +302,8 @@ public class YoutubeCommentsExtractorTest {
 
             CommentsInfoItem pinnedComment = comments.getItems().get(0);
 
-            assertTrue("First comment isn't pinned", pinnedComment.isPinned());
-            assertTrue("The first pinned comment has no vote count", !Utils.isBlank(pinnedComment.getTextualLikeCount()));
+            assertTrue(pinnedComment.isPinned(), "First comment isn't pinned");
+            assertFalse(Utils.isBlank(pinnedComment.getTextualLikeCount()), "The first pinned comment has no vote count");
         }
     }
 
@@ -311,7 +311,7 @@ public class YoutubeCommentsExtractorTest {
         private final static String url = "https://www.youtube.com/watch?v=xaQJbozY_Is";
         private static YoutubeCommentsExtractor extractor;
 
-        @BeforeClass
+        @BeforeAll
         public static void setUp() throws Exception {
             YoutubeParsingHelper.resetClientVersionAndKey();
             YoutubeParsingHelper.setNumberGenerator(new Random(1));
@@ -329,11 +329,12 @@ public class YoutubeCommentsExtractorTest {
 
             CommentsInfoItem firstComment = comments.getItems().get(0);
 
-            assertTrue("First comment isn't pinned", firstComment.isPinned());
+            assertTrue(firstComment.isPinned(), "First comment isn't pinned");
 
             InfoItemsPage<CommentsInfoItem> replies = extractor.getPage(firstComment.getReplies());
 
-            assertEquals("First reply comment did not match", "First", replies.getItems().get(0).getCommentText());
+            assertEquals("First", replies.getItems().get(0).getCommentText(),
+                    "First reply comment did not match");
         }
     }
 }

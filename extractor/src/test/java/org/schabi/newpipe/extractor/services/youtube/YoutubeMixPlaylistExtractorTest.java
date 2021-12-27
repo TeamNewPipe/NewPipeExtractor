@@ -1,11 +1,11 @@
 package org.schabi.newpipe.extractor.services.youtube;
 
 import com.grack.nanojson.JsonWriter;
-import org.hamcrest.MatcherAssert;
-import org.junit.BeforeClass;
-import org.junit.Ignore;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.Disabled;
+import org.junit.jupiter.api.Test;
 import org.schabi.newpipe.downloader.DownloaderFactory;
+import org.schabi.newpipe.extractor.ExtractorAsserts;
 import org.schabi.newpipe.extractor.ListExtractor;
 import org.schabi.newpipe.extractor.ListExtractor.InfoItemsPage;
 import org.schabi.newpipe.extractor.NewPipe;
@@ -17,12 +17,10 @@ import org.schabi.newpipe.extractor.stream.StreamInfoItem;
 import java.io.IOException;
 import java.util.*;
 
-import static org.hamcrest.CoreMatchers.containsString;
-import static org.hamcrest.CoreMatchers.startsWith;
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.schabi.newpipe.extractor.ExtractorAsserts.assertIsSecureUrl;
 import static org.schabi.newpipe.extractor.ServiceList.YouTube;
 import static org.schabi.newpipe.extractor.services.youtube.YoutubeParsingHelper.*;
@@ -38,10 +36,10 @@ public class YoutubeMixPlaylistExtractorTest {
 
     private static YoutubeMixPlaylistExtractor extractor;
 
-    @Ignore("Test broken, video was blocked by SME and is only available in Japan")
+    @Disabled("Test broken, video was blocked by SME and is only available in Japan")
     public static class Mix {
 
-        @BeforeClass
+        @BeforeAll
         public static void setUp() throws Exception {
             YoutubeParsingHelper.resetClientVersionAndKey();
             YoutubeParsingHelper.setNumberGenerator(new Random(1));
@@ -61,16 +59,16 @@ public class YoutubeMixPlaylistExtractorTest {
         @Test
         public void getName() throws Exception {
             final String name = extractor.getName();
-            assertThat(name, startsWith("Mix"));
-            assertThat(name, containsString(VIDEO_TITLE));
+            ExtractorAsserts.assertContains("Mix", name);
+            ExtractorAsserts.assertContains(VIDEO_TITLE, name);
         }
 
         @Test
         public void getThumbnailUrl() throws Exception {
             final String thumbnailUrl = extractor.getThumbnailUrl();
             assertIsSecureUrl(thumbnailUrl);
-            MatcherAssert.assertThat(thumbnailUrl, containsString("yt"));
-            assertThat(thumbnailUrl, containsString(VIDEO_ID));
+            ExtractorAsserts.assertContains("yt", thumbnailUrl);
+            ExtractorAsserts.assertContains(VIDEO_ID, thumbnailUrl);
         }
 
         @Test
@@ -124,13 +122,13 @@ public class YoutubeMixPlaylistExtractorTest {
         }
     }
 
-    @Ignore("Test broken, video was removed by the uploader")
+    @Disabled("Test broken, video was removed by the uploader")
     public static class MixWithIndex {
 
         private static final int INDEX = 13;
         private static final String VIDEO_ID_NUMBER_13 = "qHtzO49SDmk";
 
-        @BeforeClass
+        @BeforeAll
         public static void setUp() throws Exception {
             YoutubeParsingHelper.resetClientVersionAndKey();
             YoutubeParsingHelper.setNumberGenerator(new Random(1));
@@ -145,16 +143,16 @@ public class YoutubeMixPlaylistExtractorTest {
         @Test
         public void getName() throws Exception {
             final String name = extractor.getName();
-            assertThat(name, startsWith("Mix"));
-            assertThat(name, containsString(VIDEO_TITLE));
+            ExtractorAsserts.assertContains("Mix", name);
+            ExtractorAsserts.assertContains(VIDEO_TITLE, name);
         }
 
         @Test
         public void getThumbnailUrl() throws Exception {
             final String thumbnailUrl = extractor.getThumbnailUrl();
             assertIsSecureUrl(thumbnailUrl);
-            assertThat(thumbnailUrl, containsString("yt"));
-            assertThat(thumbnailUrl, containsString(VIDEO_ID));
+            ExtractorAsserts.assertContains("yt", thumbnailUrl);
+            ExtractorAsserts.assertContains(VIDEO_ID, thumbnailUrl);
         }
 
         @Test
@@ -208,10 +206,10 @@ public class YoutubeMixPlaylistExtractorTest {
         }
     }
 
-    @Ignore("Test broken")
+    @Disabled("Test broken")
     public static class MyMix {
 
-        @BeforeClass
+        @BeforeAll
         public static void setUp() throws Exception {
             YoutubeParsingHelper.resetClientVersionAndKey();
             YoutubeParsingHelper.setNumberGenerator(new Random(1));
@@ -238,7 +236,7 @@ public class YoutubeMixPlaylistExtractorTest {
         public void getThumbnailUrl() throws Exception {
             final String thumbnailUrl = extractor.getThumbnailUrl();
             assertIsSecureUrl(thumbnailUrl);
-            assertThat(thumbnailUrl, startsWith("https://i.ytimg.com/vi/_AzeUSL9lZc"));
+            assertTrue(thumbnailUrl.startsWith("https://i.ytimg.com/vi/_AzeUSL9lZc"));
         }
 
         @Test
@@ -294,7 +292,7 @@ public class YoutubeMixPlaylistExtractorTest {
 
     public static class Invalid {
 
-        @BeforeClass
+        @BeforeAll
         public static void setUp() throws IOException {
             YoutubeParsingHelper.resetClientVersionAndKey();
             YoutubeParsingHelper.setNumberGenerator(new Random(1));
@@ -302,23 +300,29 @@ public class YoutubeMixPlaylistExtractorTest {
             dummyCookie.put(YoutubeMixPlaylistExtractor.COOKIE_NAME, "whatever");
         }
 
-        @Ignore
-        @Test(expected = IllegalArgumentException.class)
+        @Disabled
+        @Test
         public void getPageEmptyUrl() throws Exception {
             extractor = (YoutubeMixPlaylistExtractor) YouTube
                     .getPlaylistExtractor("https://www.youtube.com/watch?v=" + VIDEO_ID
                             + "&list=RD" + VIDEO_ID);
-            extractor.fetchPage();
-            extractor.getPage(new Page(""));
+
+            assertThrows(IllegalArgumentException.class, () -> {
+                extractor.fetchPage();
+                extractor.getPage(new Page(""));
+            });
         }
 
-        @Test(expected = ExtractionException.class)
+        @Test
         public void invalidVideoId() throws Exception {
             extractor = (YoutubeMixPlaylistExtractor) YouTube
                     .getPlaylistExtractor("https://www.youtube.com/watch?v=" + "abcde"
                             + "&list=RD" + "abcde");
-            extractor.fetchPage();
-            extractor.getName();
+
+            assertThrows(ExtractionException.class, () -> {
+                extractor.fetchPage();
+                extractor.getName();
+            });
         }
     }
 
@@ -329,7 +333,7 @@ public class YoutubeMixPlaylistExtractorTest {
         private static final String CHANNEL_TITLE = "Linus Tech Tips";
 
 
-        @BeforeClass
+        @BeforeAll
         public static void setUp() throws Exception {
             YoutubeParsingHelper.resetClientVersionAndKey();
             YoutubeParsingHelper.setNumberGenerator(new Random(1));
@@ -344,15 +348,15 @@ public class YoutubeMixPlaylistExtractorTest {
         @Test
         public void getName() throws Exception {
             final String name = extractor.getName();
-            assertThat(name, startsWith("Mix"));
-            assertThat(name, containsString(CHANNEL_TITLE));
+            ExtractorAsserts.assertContains("Mix", name);
+            ExtractorAsserts.assertContains(CHANNEL_TITLE, name);
         }
 
         @Test
         public void getThumbnailUrl() throws Exception {
             final String thumbnailUrl = extractor.getThumbnailUrl();
             assertIsSecureUrl(thumbnailUrl);
-            assertThat(thumbnailUrl, containsString("yt"));
+            ExtractorAsserts.assertContains("yt", thumbnailUrl);
         }
 
         @Test

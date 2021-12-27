@@ -1,7 +1,7 @@
 package org.schabi.newpipe.extractor.services.media_ccc;
 
-import org.junit.BeforeClass;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.Test;
 import org.schabi.newpipe.downloader.DownloaderTestImpl;
 import org.schabi.newpipe.extractor.InfoItem;
 import org.schabi.newpipe.extractor.NewPipe;
@@ -10,7 +10,7 @@ import org.schabi.newpipe.extractor.services.media_ccc.extractors.MediaCCCConfer
 
 import java.util.List;
 
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.schabi.newpipe.extractor.ServiceList.MediaCCC;
 
 
@@ -21,7 +21,7 @@ public class MediaCCCConferenceListExtractorTest {
 
     private static KioskExtractor extractor;
 
-    @BeforeClass
+    @BeforeAll
     public static void setUpClass() throws Exception {
         NewPipe.init(DownloaderTestImpl.getInstance());
         extractor = MediaCCC.getKioskList().getExtractorById("conferences", null);
@@ -30,8 +30,8 @@ public class MediaCCCConferenceListExtractorTest {
 
     @Test
     public void getConferencesListTest() throws Exception {
-        assertTrue("returned list was to small",
-                extractor.getInitialPage().getItems().size() >= 174);
+        assertTrue(extractor.getInitialPage().getItems().size() >= 174,
+                "returned list was to small");
     }
 
     @Test

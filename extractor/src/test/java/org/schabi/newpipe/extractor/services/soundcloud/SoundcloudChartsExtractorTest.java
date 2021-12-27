@@ -1,14 +1,14 @@
 package org.schabi.newpipe.extractor.services.soundcloud;
 
-import org.junit.BeforeClass;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.Test;
 import org.schabi.newpipe.downloader.DownloaderTestImpl;
 import org.schabi.newpipe.extractor.NewPipe;
 import org.schabi.newpipe.extractor.exceptions.ParsingException;
 import org.schabi.newpipe.extractor.services.BaseListExtractorTest;
 import org.schabi.newpipe.extractor.services.soundcloud.extractors.SoundcloudChartsExtractor;
 
-import static org.junit.Assert.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.schabi.newpipe.extractor.ServiceList.SoundCloud;
 import static org.schabi.newpipe.extractor.services.DefaultTests.*;
 
@@ -16,7 +16,7 @@ public class SoundcloudChartsExtractorTest {
     public static class NewAndHot implements BaseListExtractorTest {
         private static SoundcloudChartsExtractor extractor;
 
-        @BeforeClass
+        @BeforeAll
         public static void setUp() throws Exception {
             NewPipe.init(DownloaderTestImpl.getInstance());
             extractor = (SoundcloudChartsExtractor) SoundCloud.getKioskList()
@@ -71,7 +71,7 @@ public class SoundcloudChartsExtractorTest {
     public static class Top50Charts implements BaseListExtractorTest {
         private static SoundcloudChartsExtractor extractor;
 
-        @BeforeClass
+        @BeforeAll
         public static void setUp() throws Exception {
             NewPipe.init(DownloaderTestImpl.getInstance());
             extractor = (SoundcloudChartsExtractor) SoundCloud.getKioskList()

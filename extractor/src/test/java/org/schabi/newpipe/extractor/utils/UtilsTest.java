@@ -1,11 +1,11 @@
 package org.schabi.newpipe.extractor.utils;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import org.schabi.newpipe.extractor.exceptions.ParsingException;
 
 import java.util.Arrays;
 
-import static org.junit.Assert.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 public class UtilsTest {
     @Test

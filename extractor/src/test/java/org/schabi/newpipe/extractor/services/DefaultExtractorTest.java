@@ -1,11 +1,11 @@
 package org.schabi.newpipe.extractor.services;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import org.schabi.newpipe.extractor.Extractor;
+import org.schabi.newpipe.extractor.ExtractorAsserts;
 import org.schabi.newpipe.extractor.StreamingService;
 
-import static org.hamcrest.CoreMatchers.*;
-import static org.junit.Assert.*;
+import static org.junit.jupiter.api.Assertions.*;
 import static org.schabi.newpipe.extractor.ExtractorAsserts.assertIsSecureUrl;
 
 public abstract class DefaultExtractorTest<T extends Extractor> implements BaseExtractorTest {
@@ -40,7 +40,7 @@ public abstract class DefaultExtractorTest<T extends Extractor> implements BaseE
     public void testUrl() throws Exception {
         final String url = extractor().getUrl();
         assertIsSecureUrl(url);
-        assertThat(url, containsString(expectedUrlContains()));
+        ExtractorAsserts.assertContains(expectedUrlContains(), url);
     }
 
     @Test
@@ -48,6 +48,6 @@ public abstract class DefaultExtractorTest<T extends Extractor> implements BaseE
     public void testOriginalUrl() throws Exception {
         final String originalUrl = extractor().getOriginalUrl();
         assertIsSecureUrl(originalUrl);
-        assertThat(originalUrl, containsString(expectedOriginalUrlContains()));
+        ExtractorAsserts.assertContains(expectedOriginalUrlContains(), originalUrl);
     }
 }
