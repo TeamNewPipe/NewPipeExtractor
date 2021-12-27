@@ -370,31 +370,6 @@ public class YoutubeStreamExtractor extends StreamExtractor {
         }
     }
 
-    @Override
-    public long getDislikeCount() throws ParsingException {
-        assertPageFetched();
-
-        // YouTube is "gradually rolling out" removing dislike count
-        // https://blog.youtube/news-and-events/update-to-youtube/
-        // Getting dislikes might not work forever
-
-        // Calculate dislike with average rating and like count
-        try {
-            long likes = getLikeCount();
-            double averageRating = playerResponse.getObject("videoDetails").getDouble("averageRating");
-
-            if (likes != -1 && averageRating > 1 && averageRating <= 5) {
-                // If averageRating can't be gathered, it will be 0,
-                // but we also can't divide by 0 so we need > 1
-                return Math.round(likes * ((5 - averageRating) / (averageRating - 1)));
-            }
-        } catch (final Exception ex) {
-            throw new ParsingException("Could not get dislike count", ex);
-        }
-
-        return -1;
-    }
-
     @Nonnull
     @Override
     public String getUploaderUrl() throws ParsingException {
