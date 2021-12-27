@@ -1,22 +1,16 @@
 {
   "request": {
     "httpMethod": "POST",
-    "url": "https://www.youtube.com/youtubei/v1/player?key\u003dAIzaSyAO_FJ2SlqU8Q4STEHLGCilw_Y9_11qcW8",
+    "url": "https://youtubei.googleapis.com/youtubei/v1/player?key\u003dAIzaSyA8eiZmM1FaDVjRy-df2KTyQ_vz_yYM39w",
     "headers": {
       "Accept-Language": [
         "en-GB, en;q\u003d0.9"
       ],
-      "Origin": [
-        "https://www.youtube.com"
+      "User-Agent": [
+        "com.google.android.youtube/16.29.38Linux; U; Android 11; GB) gzip"
       ],
-      "X-YouTube-Client-Name": [
-        "1"
-      ],
-      "Referer": [
-        "https://www.youtube.com"
-      ],
-      "X-YouTube-Client-Version": [
-        "2.20210728.00.00"
+      "x-goog-api-format-version": [
+        "2"
       ],
       "Content-Type": [
         "application/json"
@@ -24,82 +18,6 @@
     },
     "dataToSend": [
       123,
-      34,
-      112,
-      108,
-      97,
-      121,
-      98,
-      97,
-      99,
-      107,
-      67,
-      111,
-      110,
-      116,
-      101,
-      120,
-      116,
-      34,
-      58,
-      123,
-      34,
-      99,
-      111,
-      110,
-      116,
-      101,
-      110,
-      116,
-      80,
-      108,
-      97,
-      121,
-      98,
-      97,
-      99,
-      107,
-      67,
-      111,
-      110,
-      116,
-      101,
-      120,
-      116,
-      34,
-      58,
-      123,
-      34,
-      115,
-      105,
-      103,
-      110,
-      97,
-      116,
-      117,
-      114,
-      101,
-      84,
-      105,
-      109,
-      101,
-      115,
-      116,
-      97,
-      109,
-      112,
-      34,
-      58,
-      34,
-      49,
-      56,
-      56,
-      51,
-      55,
-      34,
-      125,
-      125,
-      44,
       34,
       99,
       111,
@@ -207,16 +125,6 @@
       34,
       44,
       34,
-      103,
-      108,
-      34,
-      58,
-      34,
-      71,
-      66,
-      34,
-      44,
-      34,
       99,
       108,
       105,
@@ -230,8 +138,22 @@
       34,
       58,
       34,
-      87,
-      69,
+      65,
+      78,
+      68,
+      82,
+      79,
+      73,
+      68,
+      34,
+      44,
+      34,
+      103,
+      108,
+      34,
+      58,
+      34,
+      71,
       66,
       34,
       44,
@@ -275,22 +197,14 @@
       34,
       58,
       34,
-      50,
-      46,
-      50,
-      48,
-      50,
       49,
-      48,
-      55,
+      54,
+      46,
       50,
+      57,
+      46,
+      51,
       56,
-      46,
-      48,
-      48,
-      46,
-      48,
-      48,
       34,
       125,
       44,
@@ -364,7 +278,7 @@
     "responseMessage": "",
     "responseHeaders": {
       "alt-svc": [
-        "h3\u003d\":443\"; ma\u003d2592000,h3-29\u003d\":443\"; ma\u003d2592000,h3-T051\u003d\":443\"; ma\u003d2592000,h3-Q050\u003d\":443\"; ma\u003d2592000,h3-Q046\u003d\":443\"; ma\u003d2592000,h3-Q043\u003d\":443\"; ma\u003d2592000,quic\u003d\":443\"; ma\u003d2592000; v\u003d\"46,43\""
+        "h3\u003d\":443\"; ma\u003d2592000,h3-29\u003d\":443\"; ma\u003d2592000,h3-Q050\u003d\":443\"; ma\u003d2592000,h3-Q046\u003d\":443\"; ma\u003d2592000,h3-Q043\u003d\":443\"; ma\u003d2592000,quic\u003d\":443\"; ma\u003d2592000; v\u003d\"46,43\""
       ],
       "cache-control": [
         "private"
@@ -373,10 +287,10 @@
         "application/json; charset\u003dUTF-8"
       ],
       "date": [
-        "Fri, 30 Jul 2021 17:07:06 GMT"
+        "Mon, 27 Dec 2021 16:06:47 GMT"
       ],
       "expires": [
-        "Fri, 30 Jul 2021 17:07:06 GMT"
+        "Mon, 27 Dec 2021 16:06:47 GMT"
       ],
       "p3p": [
         "CP\u003d\"This is not a P3P policy! See g.co/p3phelp for more info.\""
@@ -385,7 +299,7 @@
         "ESF"
       ],
       "set-cookie": [
-        "CONSENT\u003dPENDING+034; expires\u003dFri, 01-Jan-2038 00:00:00 GMT; path\u003d/; domain\u003d.youtube.com; Secure"
+        "CONSENT\u003dPENDING+911; expires\u003dWed, 27-Dec-2023 16:06:47 GMT; path\u003d/; domain\u003d.googleapis.com; Secure"
       ],
       "vary": [
         "Origin",
@@ -402,7 +316,7 @@
         "0"
       ]
     },
-    "responseBody": "{\n  \"responseContext\": {\n    \"visitorData\": \"CgtLdno3ZkRFdjU0Zyi645CIBg%3D%3D\",\n    \"serviceTrackingParams\": [\n      {\n        \"service\": \"GFEEDBACK\",\n        \"params\": [\n          {\n            \"key\": \"is_viewed_live\",\n            \"value\": \"False\"\n          },\n          {\n            \"key\": \"logged_in\",\n            \"value\": \"0\"\n          },\n          {\n            \"key\": \"e\",\n            \"value\": \"23983813,24058812,24049571,23944779,23813628,24036237,24016284,24014918,24053866,23744176,24049573,24078367,23986027,23882685,23998056,23974595,24002025,24058380,23748146,24045411,24036948,24056264,24059521,23984882,23918597,23968386,24028143,24070198,24066623,24050503,24049820,23990876,23996830,23891346,23858057,23983296,24030040,24002022,24056274,1714258,24042870,24057238,24078050,23934970,23857950,23996512,24068842,24070036,24002923,24037794,24058128,24007246,24004644,24043240,23891344,24058781,24060921,23804281,24001373,23946420,24075143,24079271,23966208,23884386\"\n          }\n        ]\n      },\n      {\n        \"service\": \"CSI\",\n        \"params\": [\n          {\n            \"key\": \"c\",\n            \"value\": \"WEB\"\n          },\n          {\n            \"key\": \"cver\",\n            \"value\": \"2.20210728.00.00\"\n          },\n          {\n            \"key\": \"yt_li\",\n            \"value\": \"0\"\n          },\n          {\n            \"key\": \"GetPlayer_rid\",\n            \"value\": \"0xcec6c2e497130047\"\n          }\n        ]\n      },\n      {\n        \"service\": \"GUIDED_HELP\",\n        \"params\": [\n          {\n            \"key\": \"logged_in\",\n            \"value\": \"0\"\n          }\n        ]\n      },\n      {\n        \"service\": \"ECATCHER\",\n        \"params\": [\n          {\n            \"key\": \"client.version\",\n            \"value\": \"2.20210728\"\n          },\n          {\n            \"key\": \"client.name\",\n            \"value\": \"WEB\"\n          }\n        ]\n      }\n    ],\n    \"mainAppWebResponseContext\": {\n      \"loggedOut\": true\n    },\n    \"webResponseContextExtensionData\": {\n      \"hasDecorated\": true\n    }\n  },\n  \"trackingParams\": \"CAAQu2kiEwiS2Lv-o4vyAhVmBvEFHVG6Daw\u003d\",\n  \"playabilityStatus\": {\n    \"status\": \"ERROR\",\n    \"reason\": \"Video unavailable\",\n    \"errorScreen\": {\n      \"playerErrorMessageRenderer\": {\n        \"subreason\": {\n          \"simpleText\": \"This video is unavailable.\"\n        },\n        \"reason\": {\n          \"simpleText\": \"Video unavailable\"\n        },\n        \"thumbnail\": {\n          \"thumbnails\": [\n            {\n              \"url\": \"//s.ytimg.com/yts/img/meh7-vflGevej7.png\",\n              \"width\": 140,\n              \"height\": 100\n            }\n          ]\n        },\n        \"icon\": {\n          \"iconType\": \"ERROR_OUTLINE\"\n        }\n      }\n    },\n    \"contextParams\": \"Q0FBU0FnZ0E\u003d\"\n  },\n  \"frameworkUpdates\": {\n    \"entityBatchUpdate\": {\n      \"mutations\": [\n        {\n          \"entityKey\": \"Eg0KC2Rvbi10LWV4aXN0IPYBKAE%3D\",\n          \"type\": \"ENTITY_MUTATION_TYPE_REPLACE\",\n          \"payload\": {\n            \"offlineabilityEntity\": {\n              \"key\": \"Eg0KC2Rvbi10LWV4aXN0IPYBKAE%3D\",\n              \"accessState\": \"OFFLINEABILITY_FEATURE_ACCESS_STATE_UNKNOWN\"\n            }\n          }\n        }\n      ],\n      \"timestamp\": {\n        \"seconds\": \"1627664826\",\n        \"nanos\": 697096393\n      }\n    }\n  }\n}\n",
-    "latestUrl": "https://www.youtube.com/youtubei/v1/player?key\u003dAIzaSyAO_FJ2SlqU8Q4STEHLGCilw_Y9_11qcW8"
+    "responseBody": "{\n  \"responseContext\": {\n    \"visitorData\": \"CgtHdDVsdnVZajVFUSiXyaeOBg%3D%3D\",\n    \"serviceTrackingParams\": [\n      {\n        \"service\": \"GFEEDBACK\",\n        \"params\": [\n          {\n            \"key\": \"is_viewed_live\",\n            \"value\": \"False\"\n          },\n          {\n            \"key\": \"logged_in\",\n            \"value\": \"0\"\n          },\n          {\n            \"key\": \"e\",\n            \"value\": \"24141079,24138442,23968386,24135236,23971174,24078457,24140247,24054937,24077266,24028143,24123943,24143428,1714254,24002922,24131399,24134152,24141461,24085811,24117475,24001373,24104858,24109690,24123617,24144944,23934970,23882502,24142960,24120991,24146461,24034168,24082661,24116717,24082169,24110902,24060091,24106839,24143789,24128155,24116735,39321475,24102120,23944779,24058380,24141867,24150713,24091230,24132615,24054345,23744176,24074379,24142941,24063124,24077241,23998056,24078649,24036947,24145515,24148251,24131822,23946420,24120820,24004644,24007246,24021124,24142470,23983296,24007790,23966208,24109109,23884386,23918597,24115641,24080738\"\n          }\n        ]\n      },\n      {\n        \"service\": \"CSI\",\n        \"params\": [\n          {\n            \"key\": \"c\",\n            \"value\": \"ANDROID\"\n          },\n          {\n            \"key\": \"cver\",\n            \"value\": \"16.29.38\"\n          },\n          {\n            \"key\": \"yt_li\",\n            \"value\": \"0\"\n          },\n          {\n            \"key\": \"GetPlayer_rid\",\n            \"value\": \"0x83d170fdfdb9218d\"\n          }\n        ]\n      },\n      {\n        \"service\": \"GUIDED_HELP\",\n        \"params\": [\n          {\n            \"key\": \"logged_in\",\n            \"value\": \"0\"\n          }\n        ]\n      },\n      {\n        \"service\": \"ECATCHER\",\n        \"params\": [\n          {\n            \"key\": \"client.version\",\n            \"value\": \"16.29\"\n          },\n          {\n            \"key\": \"client.name\",\n            \"value\": \"ANDROID\"\n          },\n          {\n            \"key\": \"client.fexp\",\n            \"value\": \"24141079,24138442,23968386,24135236,23971174,24078457,24140247,24054937,24077266,24028143,24123943,24143428,1714254,24002922,24131399,24134152,24141461,24085811,24117475,24001373,24104858,24109690,24123617,24144944,23934970,23882502,24142960,24120991,24146461,24034168,24082661,24116717,24082169,24110902,24060091,24106839,24143789,24128155,24116735,39321475,24102120,23944779,24058380,24141867,24150713,24091230,24132615,24054345,23744176,24074379,24142941,24063124,24077241,23998056,24078649,24036947,24145515,24148251,24131822,23946420,24120820,24004644,24007246,24021124,24142470,23983296,24007790,23966208,24109109,23884386,23918597,24115641,24080738\"\n          }\n        ]\n      },\n      {\n        \"service\": \"LISTNR\",\n        \"params\": [\n          {\n            \"key\": \"e\",\n            \"value\": \"24106839,24024517,24109931,24110902,24085324,24117475,24115641,39321475,24141079,24082169,24142941,24037284,24074379,24143428,24142470,24030282,24116717,24033252,24116735,24145515,24140247,24141461,24146461,24036947,24132615,24104858,24058380,24134152,24054345,24109690,24123617\"\n          }\n        ]\n      },\n      {\n        \"service\": \"SUGGEST\",\n        \"params\": [\n          {\n            \"key\": \"sugexp\",\n            \"value\": \"ytse2bc4,cfro\u003d1,rankembed.ruyteb\u003d1,rankembed.oydiw\u003d0,rankembed.rodt\u003d0.83\"\n          }\n        ]\n      }\n    ]\n  },\n  \"trackingParams\": \"CAAQu2kiEwjp5Z2iroT1AhUt4REIHQDMDgA\u003d\",\n  \"playabilityStatus\": {\n    \"status\": \"ERROR\",\n    \"reason\": \"This video is unavailable\",\n    \"errorScreen\": {\n      \"playerErrorMessageRenderer\": {\n        \"reason\": {\n          \"runs\": [\n            {\n              \"text\": \"This video is unavailable\"\n            }\n          ]\n        },\n        \"thumbnail\": {\n          \"thumbnails\": [\n            {\n              \"url\": \"//s.ytimg.com/yts/img/meh7-vflGevej7.png\",\n              \"width\": 140,\n              \"height\": 100\n            }\n          ]\n        }\n      }\n    },\n    \"contextParams\": \"Q0FBU0FnZ0E\u003d\"\n  },\n  \"playerSettingsMenuData\": {\n    \"loggingDirectives\": {\n      \"trackingParams\": \"CAEQtc4GIhMI6eWdoq6E9QIVLeERCB0AzA4A\",\n      \"visibility\": {\n        \"types\": \"12\"\n      }\n    }\n  },\n  \"frameworkUpdates\": {\n    \"entityBatchUpdate\": {\n      \"mutations\": [\n        {\n          \"entityKey\": \"Eg0KC2Rvbi10LWV4aXN0IPYBKAE%3D\",\n          \"type\": \"ENTITY_MUTATION_TYPE_REPLACE\",\n          \"payload\": {\n            \"offlineabilityEntity\": {\n              \"key\": \"Eg0KC2Rvbi10LWV4aXN0IPYBKAE%3D\",\n              \"accessState\": \"OFFLINEABILITY_FEATURE_ACCESS_STATE_UNKNOWN\",\n              \"addToOfflineButtonState\": \"ADD_TO_OFFLINE_BUTTON_STATE_UNKNOWN\"\n            }\n          }\n        }\n      ],\n      \"timestamp\": {\n        \"seconds\": \"1640621207\",\n        \"nanos\": 419110227\n      }\n    }\n  }\n}\n",
+    "latestUrl": "https://youtubei.googleapis.com/youtubei/v1/player?key\u003dAIzaSyA8eiZmM1FaDVjRy-df2KTyQ_vz_yYM39w"
   }
 }

@@ -1,22 +1,16 @@
 {
   "request": {
     "httpMethod": "POST",
-    "url": "https://www.youtube.com/youtubei/v1/player?key\u003dAIzaSyAO_FJ2SlqU8Q4STEHLGCilw_Y9_11qcW8",
+    "url": "https://youtubei.googleapis.com/youtubei/v1/player?key\u003dAIzaSyA8eiZmM1FaDVjRy-df2KTyQ_vz_yYM39w",
     "headers": {
       "Accept-Language": [
         "en-GB, en;q\u003d0.9"
       ],
-      "Origin": [
-        "https://www.youtube.com"
+      "User-Agent": [
+        "com.google.android.youtube/16.29.38Linux; U; Android 11; GB) gzip"
       ],
-      "X-YouTube-Client-Name": [
-        "1"
-      ],
-      "Referer": [
-        "https://www.youtube.com"
-      ],
-      "X-YouTube-Client-Version": [
-        "2.20210728.00.00"
+      "x-goog-api-format-version": [
+        "2"
       ],
       "Content-Type": [
         "application/json"
@@ -24,82 +18,6 @@
     },
     "dataToSend": [
       123,
-      34,
-      112,
-      108,
-      97,
-      121,
-      98,
-      97,
-      99,
-      107,
-      67,
-      111,
-      110,
-      116,
-      101,
-      120,
-      116,
-      34,
-      58,
-      123,
-      34,
-      99,
-      111,
-      110,
-      116,
-      101,
-      110,
-      116,
-      80,
-      108,
-      97,
-      121,
-      98,
-      97,
-      99,
-      107,
-      67,
-      111,
-      110,
-      116,
-      101,
-      120,
-      116,
-      34,
-      58,
-      123,
-      34,
-      115,
-      105,
-      103,
-      110,
-      97,
-      116,
-      117,
-      114,
-      101,
-      84,
-      105,
-      109,
-      101,
-      115,
-      116,
-      97,
-      109,
-      112,
-      34,
-      58,
-      34,
-      49,
-      56,
-      56,
-      51,
-      55,
-      34,
-      125,
-      125,
-      44,
       34,
       99,
       111,
@@ -207,16 +125,6 @@
       34,
       44,
       34,
-      103,
-      108,
-      34,
-      58,
-      34,
-      71,
-      66,
-      34,
-      44,
-      34,
       99,
       108,
       105,
@@ -230,8 +138,22 @@
       34,
       58,
       34,
-      87,
-      69,
+      65,
+      78,
+      68,
+      82,
+      79,
+      73,
+      68,
+      34,
+      44,
+      34,
+      103,
+      108,
+      34,
+      58,
+      34,
+      71,
       66,
       34,
       44,
@@ -275,22 +197,14 @@
       34,
       58,
       34,
-      50,
-      46,
-      50,
-      48,
-      50,
       49,
-      48,
-      55,
+      54,
+      46,
       50,
+      57,
+      46,
+      51,
       56,
-      46,
-      48,
-      48,
-      46,
-      48,
-      48,
       34,
       125,
       44,
@@ -364,7 +278,7 @@
     "responseMessage": "",
     "responseHeaders": {
       "alt-svc": [
-        "h3\u003d\":443\"; ma\u003d2592000,h3-29\u003d\":443\"; ma\u003d2592000,h3-T051\u003d\":443\"; ma\u003d2592000,h3-Q050\u003d\":443\"; ma\u003d2592000,h3-Q046\u003d\":443\"; ma\u003d2592000,h3-Q043\u003d\":443\"; ma\u003d2592000,quic\u003d\":443\"; ma\u003d2592000; v\u003d\"46,43\""
+        "h3\u003d\":443\"; ma\u003d2592000,h3-29\u003d\":443\"; ma\u003d2592000,h3-Q050\u003d\":443\"; ma\u003d2592000,h3-Q046\u003d\":443\"; ma\u003d2592000,h3-Q043\u003d\":443\"; ma\u003d2592000,quic\u003d\":443\"; ma\u003d2592000; v\u003d\"46,43\""
       ],
       "cache-control": [
         "private"
@@ -373,10 +287,10 @@
         "application/json; charset\u003dUTF-8"
       ],
       "date": [
-        "Fri, 30 Jul 2021 17:07:05 GMT"
+        "Mon, 27 Dec 2021 16:06:46 GMT"
       ],
       "expires": [
-        "Fri, 30 Jul 2021 17:07:05 GMT"
+        "Mon, 27 Dec 2021 16:06:46 GMT"
       ],
       "p3p": [
         "CP\u003d\"This is not a P3P policy! See g.co/p3phelp for more info.\""
@@ -385,7 +299,7 @@
         "ESF"
       ],
       "set-cookie": [
-        "CONSENT\u003dPENDING+272; expires\u003dFri, 01-Jan-2038 00:00:00 GMT; path\u003d/; domain\u003d.youtube.com; Secure"
+        "CONSENT\u003dPENDING+602; expires\u003dWed, 27-Dec-2023 16:06:46 GMT; path\u003d/; domain\u003d.googleapis.com; Secure"
       ],
       "vary": [
         "Origin",
@@ -402,7 +316,7 @@
         "0"
       ]
     },
-    "responseBody": "{\n  \"responseContext\": {\n    \"visitorData\": \"CgtZWHVSUUhzR1pVMCi545CIBg%3D%3D\",\n    \"serviceTrackingParams\": [\n      {\n        \"service\": \"GFEEDBACK\",\n        \"params\": [\n          {\n            \"key\": \"is_viewed_live\",\n            \"value\": \"False\"\n          },\n          {\n            \"key\": \"logged_in\",\n            \"value\": \"0\"\n          },\n          {\n            \"key\": \"e\",\n            \"value\": \"24002022,24050503,24077372,24058128,24049820,24068842,24070208,24036237,23968386,23983814,24045411,24016284,24057238,23996512,24070942,24056274,23944779,23744530,23983296,23940237,23975058,24070977,24002025,23974595,24049573,23744176,24078741,24047617,24060921,24067969,24028143,39321256,23986017,23857949,24049571,24068582,24076876,24070035,24058380,23966208,24001373,24077629,24007246,24053866,9407156,23891344,23991737,24004644,24066622,24043240,24058812,24030040,23998056,24036947,23882502,23804281,23884386,24037794,1714246,24002923,23946420,24059521,23918597,24042870,24056264,24070679,23934970,24068653,23858057,23891346,23735347,23996830\"\n          }\n        ]\n      },\n      {\n        \"service\": \"CSI\",\n        \"params\": [\n          {\n            \"key\": \"c\",\n            \"value\": \"WEB\"\n          },\n          {\n            \"key\": \"cver\",\n            \"value\": \"2.20210728.00.00\"\n          },\n          {\n            \"key\": \"yt_li\",\n            \"value\": \"0\"\n          },\n          {\n            \"key\": \"GetPlayer_rid\",\n            \"value\": \"0xc6444346127f2361\"\n          }\n        ]\n      },\n      {\n        \"service\": \"GUIDED_HELP\",\n        \"params\": [\n          {\n            \"key\": \"logged_in\",\n            \"value\": \"0\"\n          }\n        ]\n      },\n      {\n        \"service\": \"ECATCHER\",\n        \"params\": [\n          {\n            \"key\": \"client.version\",\n            \"value\": \"2.20210728\"\n          },\n          {\n            \"key\": \"client.name\",\n            \"value\": \"WEB\"\n          }\n        ]\n      }\n    ],\n    \"mainAppWebResponseContext\": {\n      \"loggedOut\": true\n    },\n    \"webResponseContextExtensionData\": {\n      \"hasDecorated\": true\n    }\n  },\n  \"trackingParams\": \"CAAQu2kiEwiVsIf-o4vyAhXiPPEFHes3CYU\u003d\",\n  \"playabilityStatus\": {\n    \"status\": \"UNPLAYABLE\",\n    \"reason\": \"Join this channel to get access to members-only content like this video and other exclusive perks.\",\n    \"errorScreen\": {\n      \"playerLegacyDesktopYpcOfferRenderer\": {\n        \"itemTitle\": \"Members-only content\",\n        \"itemThumbnail\": \"https://yt3.ggpht.com/ytc/AKedOLQR9livww_r2hHkX5eAY0b1f6rK_Y2BhYsI-Xr_\u003ds176-c-k-c0x00ffffff-no-rj\",\n        \"offerDescription\": \"Join this channel to get access to members-only content like this video and other exclusive perks.\",\n        \"offerId\": \"sponsors_only_video\"\n      }\n    },\n    \"playableInEmbed\": true,\n    \"skip\": {\n      \"playabilityErrorSkipConfig\": {\n        \"skipOnPlayabilityError\": false\n      }\n    },\n    \"contextParams\": \"Q0FFU0FnZ0M\u003d\"\n  },\n  \"videoDetails\": {\n    \"videoId\": \"ayI2iBwGdxw\",\n    \"title\": \"Behind the Scenes at EGX 2019 - Exclusive Members Video!\",\n    \"lengthSeconds\": \"751\",\n    \"keywords\": [\n      \"eurogamer\",\n      \"EGX 2019\",\n      \"members video\",\n      \"behind the scenes\",\n      \"vlog\",\n      \"IAn Higton\",\n      \"Aoife Wilson\",\n      \"Zoe Delahunty-light\"\n    ],\n    \"channelId\": \"UCciKycgzURdymx-GRSY2_dA\",\n    \"isOwnerViewing\": false,\n    \"shortDescription\": \"Join Aoife, Zoe and Ian for an exclusive, members only behind the scenes look at an average day in a not so average setting - EGX 2019! Can you spot yourself or people you know in this little vlog? We think we recognised a few familiar faces!\\n\\nSubscribe to Eurogamer - http://www.youtube.com/subscription_center?add_user\u003deurogamer\\n\\nFor the latest video game reviews, news and analysis, check out http://www.eurogamer.net and don\u0027t forget to follow us on Twitter: http://twitter.com/eurogamer\",\n    \"isCrawlable\": false,\n    \"thumbnail\": {\n      \"thumbnails\": [\n        {\n          \"url\": \"https://i.ytimg.com/vi/ayI2iBwGdxw/hqdefault.jpg?sqp\u003d-oaymwEbCKgBEF5IVfKriqkDDggBFQAAiEIYAXABwAEG\u0026rs\u003dAOn4CLCD8kMu3-kFyAG5R0-43FrC53GOOw\",\n          \"width\": 168,\n          \"height\": 94\n        },\n        {\n          \"url\": \"https://i.ytimg.com/vi/ayI2iBwGdxw/hqdefault.jpg?sqp\u003d-oaymwEbCMQBEG5IVfKriqkDDggBFQAAiEIYAXABwAEG\u0026rs\u003dAOn4CLB5_56Aqijy_HLmo3C5PY52aQ4dFw\",\n          \"width\": 196,\n          \"height\": 110\n        },\n        {\n          \"url\": \"https://i.ytimg.com/vi/ayI2iBwGdxw/hqdefault.jpg?sqp\u003d-oaymwEcCPYBEIoBSFXyq4qpAw4IARUAAIhCGAFwAcABBg\u003d\u003d\u0026rs\u003dAOn4CLC0-sP6373rnMCj04tQlo2cH-_s5Q\",\n          \"width\": 246,\n          \"height\": 138\n        },\n        {\n          \"url\": \"https://i.ytimg.com/vi/ayI2iBwGdxw/hqdefault.jpg?sqp\u003d-oaymwEcCNACELwBSFXyq4qpAw4IARUAAIhCGAFwAcABBg\u003d\u003d\u0026rs\u003dAOn4CLBazI0sD37wM3qNkgF4qMqJh9RpGQ\",\n          \"width\": 336,\n          \"height\": 188\n        },\n        {\n          \"url\": \"https://i.ytimg.com/vi_webp/ayI2iBwGdxw/maxresdefault.webp\",\n          \"width\": 1920,\n          \"height\": 1080\n        }\n      ]\n    },\n    \"averageRating\": 4.9344263,\n    \"allowRatings\": true,\n    \"viewCount\": \"449\",\n    \"author\": \"Eurogamer\",\n    \"isPrivate\": false,\n    \"isUnpluggedCorpus\": false,\n    \"isLiveContent\": false\n  },\n  \"microformat\": {\n    \"playerMicroformatRenderer\": {\n      \"thumbnail\": {\n        \"thumbnails\": [\n          {\n            \"url\": \"https://i.ytimg.com/vi/ayI2iBwGdxw/maxresdefault.jpg\",\n            \"width\": 1280,\n            \"height\": 720\n          }\n        ]\n      },\n      \"embed\": {\n        \"iframeUrl\": \"https://www.youtube.com/embed/ayI2iBwGdxw\",\n        \"flashUrl\": \"http://www.youtube.com/v/ayI2iBwGdxw?version\u003d3\u0026autohide\u003d1\",\n        \"width\": 1280,\n        \"height\": 720,\n        \"flashSecureUrl\": \"https://www.youtube.com/v/ayI2iBwGdxw?version\u003d3\u0026autohide\u003d1\"\n      },\n      \"title\": {\n        \"simpleText\": \"Behind the Scenes at EGX 2019 - Exclusive Members Video!\"\n      },\n      \"description\": {\n        \"simpleText\": \"Join Aoife, Zoe and Ian for an exclusive, members only behind the scenes look at an average day in a not so average setting - EGX 2019! Can you spot yourself or people you know in this little vlog? We think we recognised a few familiar faces!\\n\\nSubscribe to Eurogamer - http://www.youtube.com/subscription_center?add_user\u003deurogamer\\n\\nFor the latest video game reviews, news and analysis, check out http://www.eurogamer.net and don\u0027t forget to follow us on Twitter: http://twitter.com/eurogamer\"\n      },\n      \"lengthSeconds\": \"751\",\n      \"ownerProfileUrl\": \"http://www.youtube.com/user/Eurogamer\",\n      \"externalChannelId\": \"UCciKycgzURdymx-GRSY2_dA\",\n      \"availableCountries\": [\n        \"AD\",\n        \"AE\",\n        \"AF\",\n        \"AG\",\n        \"AI\",\n        \"AL\",\n        \"AM\",\n        \"AO\",\n        \"AQ\",\n        \"AR\",\n        \"AS\",\n        \"AT\",\n        \"AU\",\n        \"AW\",\n        \"AX\",\n        \"AZ\",\n        \"BA\",\n        \"BB\",\n        \"BD\",\n        \"BE\",\n        \"BF\",\n        \"BG\",\n        \"BH\",\n        \"BI\",\n        \"BJ\",\n        \"BL\",\n        \"BM\",\n        \"BN\",\n        \"BO\",\n        \"BQ\",\n        \"BR\",\n        \"BS\",\n        \"BT\",\n        \"BV\",\n        \"BW\",\n        \"BY\",\n        \"BZ\",\n        \"CA\",\n        \"CC\",\n        \"CD\",\n        \"CF\",\n        \"CG\",\n        \"CH\",\n        \"CI\",\n        \"CK\",\n        \"CL\",\n        \"CM\",\n        \"CN\",\n        \"CO\",\n        \"CR\",\n        \"CU\",\n        \"CV\",\n        \"CW\",\n        \"CX\",\n        \"CY\",\n        \"CZ\",\n        \"DE\",\n        \"DJ\",\n        \"DK\",\n        \"DM\",\n        \"DO\",\n        \"DZ\",\n        \"EC\",\n        \"EE\",\n        \"EG\",\n        \"EH\",\n        \"ER\",\n        \"ES\",\n        \"ET\",\n        \"FI\",\n        \"FJ\",\n        \"FK\",\n        \"FM\",\n        \"FO\",\n        \"FR\",\n        \"GA\",\n        \"GB\",\n        \"GD\",\n        \"GE\",\n        \"GF\",\n        \"GG\",\n        \"GH\",\n        \"GI\",\n        \"GL\",\n        \"GM\",\n        \"GN\",\n        \"GP\",\n        \"GQ\",\n        \"GR\",\n        \"GS\",\n        \"GT\",\n        \"GU\",\n        \"GW\",\n        \"GY\",\n        \"HK\",\n        \"HM\",\n        \"HN\",\n        \"HR\",\n        \"HT\",\n        \"HU\",\n        \"ID\",\n        \"IE\",\n        \"IL\",\n        \"IM\",\n        \"IN\",\n        \"IO\",\n        \"IQ\",\n        \"IR\",\n        \"IS\",\n        \"IT\",\n        \"JE\",\n        \"JM\",\n        \"JO\",\n        \"JP\",\n        \"KE\",\n        \"KG\",\n        \"KH\",\n        \"KI\",\n        \"KM\",\n        \"KN\",\n        \"KP\",\n        \"KR\",\n        \"KW\",\n        \"KY\",\n        \"KZ\",\n        \"LA\",\n        \"LB\",\n        \"LC\",\n        \"LI\",\n        \"LK\",\n        \"LR\",\n        \"LS\",\n        \"LT\",\n        \"LU\",\n        \"LV\",\n        \"LY\",\n        \"MA\",\n        \"MC\",\n        \"MD\",\n        \"ME\",\n        \"MF\",\n        \"MG\",\n        \"MH\",\n        \"MK\",\n        \"ML\",\n        \"MM\",\n        \"MN\",\n        \"MO\",\n        \"MP\",\n        \"MQ\",\n        \"MR\",\n        \"MS\",\n        \"MT\",\n        \"MU\",\n        \"MV\",\n        \"MW\",\n        \"MX\",\n        \"MY\",\n        \"MZ\",\n        \"NA\",\n        \"NC\",\n        \"NE\",\n        \"NF\",\n        \"NG\",\n        \"NI\",\n        \"NL\",\n        \"NO\",\n        \"NP\",\n        \"NR\",\n        \"NU\",\n        \"NZ\",\n        \"OM\",\n        \"PA\",\n        \"PE\",\n        \"PF\",\n        \"PG\",\n        \"PH\",\n        \"PK\",\n        \"PL\",\n        \"PM\",\n        \"PN\",\n        \"PR\",\n        \"PS\",\n        \"PT\",\n        \"PW\",\n        \"PY\",\n        \"QA\",\n        \"RE\",\n        \"RO\",\n        \"RS\",\n        \"RU\",\n        \"RW\",\n        \"SA\",\n        \"SB\",\n        \"SC\",\n        \"SD\",\n        \"SE\",\n        \"SG\",\n        \"SH\",\n        \"SI\",\n        \"SJ\",\n        \"SK\",\n        \"SL\",\n        \"SM\",\n        \"SN\",\n        \"SO\",\n        \"SR\",\n        \"SS\",\n        \"ST\",\n        \"SV\",\n        \"SX\",\n        \"SY\",\n        \"SZ\",\n        \"TC\",\n        \"TD\",\n        \"TF\",\n        \"TG\",\n        \"TH\",\n        \"TJ\",\n        \"TK\",\n        \"TL\",\n        \"TM\",\n        \"TN\",\n        \"TO\",\n        \"TR\",\n        \"TT\",\n        \"TV\",\n        \"TW\",\n        \"TZ\",\n        \"UA\",\n        \"UG\",\n        \"UM\",\n        \"US\",\n        \"UY\",\n        \"UZ\",\n        \"VA\",\n        \"VC\",\n        \"VE\",\n        \"VG\",\n        \"VI\",\n        \"VN\",\n        \"VU\",\n        \"WF\",\n        \"WS\",\n        \"YE\",\n        \"YT\",\n        \"ZA\",\n        \"ZM\",\n        \"ZW\"\n      ],\n      \"isUnlisted\": true,\n      \"hasYpcMetadata\": false,\n      \"viewCount\": \"449\",\n      \"category\": \"Gaming\",\n      \"publishDate\": \"2019-10-24\",\n      \"ownerChannelName\": \"Eurogamer\",\n      \"uploadDate\": \"2019-10-24\"\n    }\n  },\n  \"messages\": [\n    {\n      \"mealbarPromoRenderer\": {\n        \"icon\": {\n          \"thumbnails\": [\n            {\n              \"url\": \"https://www.gstatic.com/youtube/img/promos/growth/6ad5a99c727579634bc3e2fb67562a2621170bdd11578967392667be5a05c5e4_384x384.png\",\n              \"width\": 384,\n              \"height\": 384\n            }\n          ]\n        },\n        \"messageTexts\": [\n          {\n            \"runs\": [\n              {\n                \"text\": \"Get YouTube without the ads\"\n              }\n            ]\n          }\n        ],\n        \"actionButton\": {\n          \"buttonRenderer\": {\n            \"style\": \"STYLE_BLUE_TEXT\",\n            \"size\": \"SIZE_DEFAULT\",\n            \"text\": {\n              \"runs\": [\n                {\n                  \"text\": \"1 month free\"\n                }\n              ]\n            },\n            \"serviceEndpoint\": {\n              \"clickTrackingParams\": \"CAMQ7G8iEwiVsIf-o4vyAhXiPPEFHes3CYU\u003d\",\n              \"commandMetadata\": {\n                \"webCommandMetadata\": {\n                  \"sendPost\": true,\n                  \"apiUrl\": \"/youtubei/v1/feedback\"\n                }\n              },\n              \"feedbackEndpoint\": {\n                \"feedbackToken\": \"AB9zfpIghlLpisxzj4W_2Fw8XsSwnG5hIE4eNx3mZccj9HEEqJsKJwOUqeC_ro7bHBZmfgLxyH5RZx_eVyCCcCFEP34SAoSv16mgB1nwr5M8B7kL1jZdV0Nkg4H5ydWeHjFk5GpWmZDOROPU65ELSi-KV2HPMu-YDw\",\n                \"uiActions\": {\n                  \"hideEnclosingContainer\": true\n                }\n              }\n            },\n            \"navigationEndpoint\": {\n              \"clickTrackingParams\": \"CAMQ7G8iEwiVsIf-o4vyAhXiPPEFHes3CYU\u003d\",\n              \"commandMetadata\": {\n                \"webCommandMetadata\": {\n                  \"url\": \"/premium?ybp\u003dEg9GRXdoYXRfdG9fd2F0Y2gqEmRtZWEtYWNxLWMtZWdzb1ZEZDoaCAYYASoUChJkbWVhLWFjcS1jLWVnc29WRGQ%253D\",\n                  \"webPageType\": \"WEB_PAGE_TYPE_BROWSE\",\n                  \"rootVe\": 11487,\n                  \"apiUrl\": \"/youtubei/v1/browse\"\n                }\n              },\n              \"browseEndpoint\": {\n                \"browseId\": \"SPunlimited\",\n                \"params\": \"kgNBEg9GRXdoYXRfdG9fd2F0Y2gqEmRtZWEtYWNxLWMtZWdzb1ZEZDoaCAYYASoUChJkbWVhLWFjcS1jLWVnc29WRGQ%3D\"\n              }\n            },\n            \"trackingParams\": \"CAMQ7G8iEwiVsIf-o4vyAhXiPPEFHes3CYU\u003d\"\n          }\n        },\n        \"dismissButton\": {\n          \"buttonRenderer\": {\n            \"style\": \"STYLE_TEXT\",\n            \"size\": \"SIZE_DEFAULT\",\n            \"text\": {\n              \"runs\": [\n                {\n                  \"text\": \"Skip trial\"\n                }\n              ]\n            },\n            \"serviceEndpoint\": {\n              \"clickTrackingParams\": \"CAIQ7W8iEwiVsIf-o4vyAhXiPPEFHes3CYU\u003d\",\n              \"commandMetadata\": {\n                \"webCommandMetadata\": {\n                  \"sendPost\": true,\n                  \"apiUrl\": \"/youtubei/v1/feedback\"\n                }\n              },\n              \"feedbackEndpoint\": {\n                \"feedbackToken\": \"AB9zfpJs6Y1EfbY_osfiO8U_YriSzea2r2DwwMxHvlhDsysi8_micqlrQa_nb0wCmzQhlKuTi4wz1H7W0aOMKNTD7uD9_hOcZ8OlfkdGLLhtvJqHvCDEJcHCuOK_BD7y33lIUoSb6s5HJIVsVLr-azSfmpnkS6ybbg\",\n                \"uiActions\": {\n                  \"hideEnclosingContainer\": true\n                }\n              }\n            },\n            \"trackingParams\": \"CAIQ7W8iEwiVsIf-o4vyAhXiPPEFHes3CYU\u003d\"\n          }\n        },\n        \"triggerCondition\": \"TRIGGER_CONDITION_POST_AD\",\n        \"style\": \"STYLE_MESSAGE\",\n        \"trackingParams\": \"CAEQ42kYACITCJWwh_6ji_ICFeI88QUd6zcJhQ\u003d\u003d\",\n        \"impressionEndpoints\": [\n          {\n            \"clickTrackingParams\": \"CAEQ42kYACITCJWwh_6ji_ICFeI88QUd6zcJhQ\u003d\u003d\",\n            \"commandMetadata\": {\n              \"webCommandMetadata\": {\n                \"sendPost\": true,\n                \"apiUrl\": \"/youtubei/v1/feedback\"\n              }\n            },\n            \"feedbackEndpoint\": {\n              \"feedbackToken\": \"AB9zfpKGPS0FZfPCzPnhjIn6nIHF_B4vugKqK1qe8fBpakldYM9bRSq2X7PEWrCw_OrheGz9vxMOhiBZRBoA94rr4AxEbI5RE4SpvHrU9HM-wl1TCne2yLybfrUoGjgSkvkuIwth5YXDkd0kdoLrQotpL_-SJQC2bQ\",\n              \"uiActions\": {\n                \"hideEnclosingContainer\": false\n              }\n            }\n          }\n        ],\n        \"isVisible\": true,\n        \"messageTitle\": {\n          \"runs\": [\n            {\n              \"text\": \"Youtube Premium\"\n            }\n          ]\n        }\n      }\n    }\n  ],\n  \"frameworkUpdates\": {\n    \"entityBatchUpdate\": {\n      \"mutations\": [\n        {\n          \"entityKey\": \"Eg0KC2F5STJpQndHZHh3IPYBKAE%3D\",\n          \"type\": \"ENTITY_MUTATION_TYPE_REPLACE\",\n          \"payload\": {\n            \"offlineabilityEntity\": {\n              \"key\": \"Eg0KC2F5STJpQndHZHh3IPYBKAE%3D\",\n              \"accessState\": \"OFFLINEABILITY_FEATURE_ACCESS_STATE_UNKNOWN\"\n            }\n          }\n        }\n      ],\n      \"timestamp\": {\n        \"seconds\": \"1627664825\",\n        \"nanos\": 880647119\n      }\n    }\n  }\n}\n",
-    "latestUrl": "https://www.youtube.com/youtubei/v1/player?key\u003dAIzaSyAO_FJ2SlqU8Q4STEHLGCilw_Y9_11qcW8"
+    "responseBody": "{\n  \"responseContext\": {\n    \"visitorData\": \"CgtqeGRZeXpabER0QSiWyaeOBg%3D%3D\",\n    \"serviceTrackingParams\": [\n      {\n        \"service\": \"GFEEDBACK\",\n        \"params\": [\n          {\n            \"key\": \"is_viewed_live\",\n            \"value\": \"False\"\n          },\n          {\n            \"key\": \"logged_in\",\n            \"value\": \"0\"\n          },\n          {\n            \"key\": \"e\",\n            \"value\": \"24131297,24110902,24134152,1714245,24106839,24116717,24077266,24034168,24078457,24060091,24104858,24053419,24065011,24028143,23748146,24142470,24007790,23934970,24135236,24082169,23882503,24123943,24004644,23968386,24142941,23998056,24007246,24145062,24145364,24085811,24054937,24109689,24109113,24002922,23884386,24021124,9406013,24143291,24115065,23946420,24115641,23966208,24143428,24134340,24135288,24141079,24120992,24036947,24140247,24082662,23983296,24138442,23744176,24131821,24146461,24128155,24143789,24080738,23918597,24054345,24001373,24091230,24063124,24141865,24058380,24078649,24117476,24131028,24116735,24120819,24074379,23944779,24077241,39321475\"\n          }\n        ]\n      },\n      {\n        \"service\": \"CSI\",\n        \"params\": [\n          {\n            \"key\": \"c\",\n            \"value\": \"ANDROID\"\n          },\n          {\n            \"key\": \"cver\",\n            \"value\": \"16.29.38\"\n          },\n          {\n            \"key\": \"yt_li\",\n            \"value\": \"0\"\n          },\n          {\n            \"key\": \"GetPlayer_rid\",\n            \"value\": \"0x4fcfa725a3363d36\"\n          }\n        ]\n      },\n      {\n        \"service\": \"GUIDED_HELP\",\n        \"params\": [\n          {\n            \"key\": \"logged_in\",\n            \"value\": \"0\"\n          }\n        ]\n      },\n      {\n        \"service\": \"ECATCHER\",\n        \"params\": [\n          {\n            \"key\": \"client.version\",\n            \"value\": \"16.29\"\n          },\n          {\n            \"key\": \"client.name\",\n            \"value\": \"ANDROID\"\n          },\n          {\n            \"key\": \"client.fexp\",\n            \"value\": \"24131297,24110902,24134152,1714245,24106839,24116717,24077266,24034168,24078457,24060091,24104858,24053419,24065011,24028143,23748146,24142470,24007790,23934970,24135236,24082169,23882503,24123943,24004644,23968386,24142941,23998056,24007246,24145062,24145364,24085811,24054937,24109689,24109113,24002922,23884386,24021124,9406013,24143291,24115065,23946420,24115641,23966208,24143428,24134340,24135288,24141079,24120992,24036947,24140247,24082662,23983296,24138442,23744176,24131821,24146461,24128155,24143789,24080738,23918597,24054345,24001373,24091230,24063124,24141865,24058380,24078649,24117476,24131028,24116735,24120819,24074379,23944779,24077241,39321475\"\n          }\n        ]\n      },\n      {\n        \"service\": \"LISTNR\",\n        \"params\": [\n          {\n            \"key\": \"e\",\n            \"value\": \"24142941,24117476,24033252,24030282,24065011,24146461,24134152,24024517,24104858,24106839,24058380,24036947,24054345,24140247,24109931,24131297,24141079,24110902,24115641,39321475,24085324,24082169,24116717,24143428,24116735,24142470,24109689,24037284,24074379\"\n          }\n        ]\n      },\n      {\n        \"service\": \"SUGGEST\",\n        \"params\": [\n          {\n            \"key\": \"sugexp\",\n            \"value\": \"ytpdb_p,ytpo.bo.me\u003d0,ytposo.bo.me\u003d0,cfro\u003d1,ytpo.bo.me\u003d1,ytposo.bo.me\u003d1,ytpo.bo.bf\u003d3.13,ytposo.bo.bf\u003d3.13\"\n          }\n        ]\n      }\n    ]\n  },\n  \"trackingParams\": \"CAAQu2kiEwiEteihroT1AhUU0xEIHYXxCzQ\u003d\",\n  \"playabilityStatus\": {\n    \"status\": \"UNPLAYABLE\",\n    \"reason\": \"Join this channel to get access to members-only content like this video and other exclusive perks.\",\n    \"playableInEmbed\": true,\n    \"skip\": {\n      \"playabilityErrorSkipConfig\": {\n        \"skipOnPlayabilityError\": false\n      }\n    },\n    \"contextParams\": \"Q0FFU0FnZ0M\u003d\"\n  },\n  \"videoDetails\": {\n    \"videoId\": \"ayI2iBwGdxw\",\n    \"title\": \"Behind the Scenes at EGX 2019 - Exclusive Members Video!\",\n    \"lengthSeconds\": \"751\",\n    \"keywords\": [\n      \"eurogamer\",\n      \"EGX 2019\",\n      \"members video\",\n      \"behind the scenes\",\n      \"vlog\",\n      \"IAn Higton\",\n      \"Aoife Wilson\",\n      \"Zoe Delahunty-light\"\n    ],\n    \"channelId\": \"UCciKycgzURdymx-GRSY2_dA\",\n    \"isOwnerViewing\": false,\n    \"shortDescription\": \"Join Aoife, Zoe and Ian for an exclusive, members only behind the scenes look at an average day in a not so average setting - EGX 2019! Can you spot yourself or people you know in this little vlog? We think we recognised a few familiar faces!\\n\\nSubscribe to Eurogamer - http://www.youtube.com/subscription_center?add_user\u003deurogamer\\n\\nFor the latest video game reviews, news and analysis, check out http://www.eurogamer.net and don\u0027t forget to follow us on Twitter: http://twitter.com/eurogamer\",\n    \"isCrawlable\": false,\n    \"thumbnail\": {\n      \"thumbnails\": [\n        {\n          \"url\": \"https://i.ytimg.com/vi_webp/ayI2iBwGdxw/default.webp\",\n          \"width\": 120,\n          \"height\": 90\n        },\n        {\n          \"url\": \"https://i.ytimg.com/vi_webp/ayI2iBwGdxw/mqdefault.webp\",\n          \"width\": 320,\n          \"height\": 180\n        },\n        {\n          \"url\": \"https://i.ytimg.com/vi_webp/ayI2iBwGdxw/hqdefault.webp\",\n          \"width\": 480,\n          \"height\": 360\n        },\n        {\n          \"url\": \"https://i.ytimg.com/vi_webp/ayI2iBwGdxw/sddefault.webp\",\n          \"width\": 640,\n          \"height\": 480\n        }\n      ]\n    },\n    \"allowRatings\": true,\n    \"viewCount\": \"482\",\n    \"author\": \"Eurogamer\",\n    \"isPrivate\": false,\n    \"isUnpluggedCorpus\": false,\n    \"isLiveContent\": false\n  },\n  \"playerSettingsMenuData\": {\n    \"loggingDirectives\": {\n      \"trackingParams\": \"CAEQtc4GIhMIhLXooa6E9QIVFNMRCB2F8Qs0\",\n      \"visibility\": {\n        \"types\": \"12\"\n      }\n    }\n  },\n  \"frameworkUpdates\": {\n    \"entityBatchUpdate\": {\n      \"mutations\": [\n        {\n          \"entityKey\": \"Eg0KC2F5STJpQndHZHh3IPYBKAE%3D\",\n          \"type\": \"ENTITY_MUTATION_TYPE_REPLACE\",\n          \"payload\": {\n            \"offlineabilityEntity\": {\n              \"key\": \"Eg0KC2F5STJpQndHZHh3IPYBKAE%3D\",\n              \"accessState\": \"OFFLINEABILITY_FEATURE_ACCESS_STATE_UNKNOWN\",\n              \"addToOfflineButtonState\": \"ADD_TO_OFFLINE_BUTTON_STATE_UNKNOWN\"\n            }\n          }\n        }\n      ],\n      \"timestamp\": {\n        \"seconds\": \"1640621206\",\n        \"nanos\": 584727859\n      }\n    }\n  }\n}\n",
+    "latestUrl": "https://youtubei.googleapis.com/youtubei/v1/player?key\u003dAIzaSyA8eiZmM1FaDVjRy-df2KTyQ_vz_yYM39w"
   }
 }
