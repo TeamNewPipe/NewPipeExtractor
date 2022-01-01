@@ -110,11 +110,11 @@ public class StreamInfo extends Info {
         final String name = extractor.getName();
         final int ageLimit = extractor.getAgeLimit();
 
-        if ((streamType == StreamType.NONE)
+        if (streamType == StreamType.NONE
                 || isNullOrEmpty(url)
-                || (isNullOrEmpty(id))
-                || (name == null) /* streamInfo.title can be empty of course */
-                || (ageLimit == -1)) {
+                || isNullOrEmpty(id)
+                || name == null /* streamInfo.title can be empty of course */
+                || ageLimit == -1) {
             throw new ExtractionException("Some important stream information was not given.");
         }
 
@@ -389,7 +389,7 @@ public class StreamInfo extends Info {
         return streamType;
     }
 
-    public void setStreamType(StreamType streamType) {
+    public void setStreamType(final StreamType streamType) {
         this.streamType = streamType;
     }
 
@@ -402,7 +402,7 @@ public class StreamInfo extends Info {
         return thumbnailUrl;
     }
 
-    public void setThumbnailUrl(String thumbnailUrl) {
+    public void setThumbnailUrl(final String thumbnailUrl) {
         this.thumbnailUrl = thumbnailUrl;
     }
 
@@ -410,7 +410,7 @@ public class StreamInfo extends Info {
         return textualUploadDate;
     }
 
-    public void setTextualUploadDate(String textualUploadDate) {
+    public void setTextualUploadDate(final String textualUploadDate) {
         this.textualUploadDate = textualUploadDate;
     }
 
@@ -418,7 +418,7 @@ public class StreamInfo extends Info {
         return uploadDate;
     }
 
-    public void setUploadDate(DateWrapper uploadDate) {
+    public void setUploadDate(final DateWrapper uploadDate) {
         this.uploadDate = uploadDate;
     }
 
@@ -431,7 +431,7 @@ public class StreamInfo extends Info {
         return duration;
     }
 
-    public void setDuration(long duration) {
+    public void setDuration(final long duration) {
         this.duration = duration;
     }
 
@@ -439,7 +439,7 @@ public class StreamInfo extends Info {
         return ageLimit;
     }
 
-    public void setAgeLimit(int ageLimit) {
+    public void setAgeLimit(final int ageLimit) {
         this.ageLimit = ageLimit;
     }
 
@@ -447,7 +447,7 @@ public class StreamInfo extends Info {
         return description;
     }
 
-    public void setDescription(Description description) {
+    public void setDescription(final Description description) {
         this.description = description;
     }
 
@@ -455,7 +455,7 @@ public class StreamInfo extends Info {
         return viewCount;
     }
 
-    public void setViewCount(long viewCount) {
+    public void setViewCount(final long viewCount) {
         this.viewCount = viewCount;
     }
 
@@ -468,7 +468,7 @@ public class StreamInfo extends Info {
         return likeCount;
     }
 
-    public void setLikeCount(long likeCount) {
+    public void setLikeCount(final long likeCount) {
         this.likeCount = likeCount;
     }
 
@@ -481,7 +481,7 @@ public class StreamInfo extends Info {
         return dislikeCount;
     }
 
-    public void setDislikeCount(long dislikeCount) {
+    public void setDislikeCount(final long dislikeCount) {
         this.dislikeCount = dislikeCount;
     }
 
@@ -489,7 +489,7 @@ public class StreamInfo extends Info {
         return uploaderName;
     }
 
-    public void setUploaderName(String uploaderName) {
+    public void setUploaderName(final String uploaderName) {
         this.uploaderName = uploaderName;
     }
 
@@ -497,7 +497,7 @@ public class StreamInfo extends Info {
         return uploaderUrl;
     }
 
-    public void setUploaderUrl(String uploaderUrl) {
+    public void setUploaderUrl(final String uploaderUrl) {
         this.uploaderUrl = uploaderUrl;
     }
 
@@ -505,7 +505,7 @@ public class StreamInfo extends Info {
         return uploaderAvatarUrl;
     }
 
-    public void setUploaderAvatarUrl(String uploaderAvatarUrl) {
+    public void setUploaderAvatarUrl(final String uploaderAvatarUrl) {
         this.uploaderAvatarUrl = uploaderAvatarUrl;
     }
 
@@ -521,7 +521,7 @@ public class StreamInfo extends Info {
         return subChannelName;
     }
 
-    public void setSubChannelName(String subChannelName) {
+    public void setSubChannelName(final String subChannelName) {
         this.subChannelName = subChannelName;
     }
 
@@ -545,7 +545,7 @@ public class StreamInfo extends Info {
         return videoStreams;
     }
 
-    public void setVideoStreams(List<VideoStream> videoStreams) {
+    public void setVideoStreams(final List<VideoStream> videoStreams) {
         this.videoStreams = videoStreams;
     }
 
@@ -553,7 +553,7 @@ public class StreamInfo extends Info {
         return audioStreams;
     }
 
-    public void setAudioStreams(List<AudioStream> audioStreams) {
+    public void setAudioStreams(final List<AudioStream> audioStreams) {
         this.audioStreams = audioStreams;
     }
 
@@ -561,7 +561,7 @@ public class StreamInfo extends Info {
         return videoOnlyStreams;
     }
 
-    public void setVideoOnlyStreams(List<VideoStream> videoOnlyStreams) {
+    public void setVideoOnlyStreams(final List<VideoStream> videoOnlyStreams) {
         this.videoOnlyStreams = videoOnlyStreams;
     }
 
@@ -609,7 +609,7 @@ public class StreamInfo extends Info {
         return startPosition;
     }
 
-    public void setStartPosition(long startPosition) {
+    public void setStartPosition(final long startPosition) {
         this.startPosition = startPosition;
     }
 
