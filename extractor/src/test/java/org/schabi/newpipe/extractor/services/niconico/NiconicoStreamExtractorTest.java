@@ -93,6 +93,11 @@ public class NiconicoStreamExtractorTest {
         }
 
         @Override
+        public boolean expectedHasRelatedItems() {
+            return  false;
+        }
+
+        @Override
         public boolean expectedHasAudioStreams() {
             return false;
         }
