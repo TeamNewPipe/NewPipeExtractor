@@ -82,7 +82,7 @@ public class NiconicoStreamExtractorTest {
 
         @Override
         public long expectedLength() {
-            return 0;
+            return 320;
         }
 
         @Override
@@ -104,8 +104,7 @@ public class NiconicoStreamExtractorTest {
 
         @Override
         public long expectedLikeCountAtLeast() {
-            // Niconico does not have Like button
-            return -1;
+            return 11097;
         }
 
         @Override

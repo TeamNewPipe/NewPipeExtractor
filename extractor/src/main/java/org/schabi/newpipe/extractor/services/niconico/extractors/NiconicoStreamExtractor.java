@@ -51,6 +51,16 @@ public class NiconicoStreamExtractor extends StreamExtractor {
         return watch.getObject("video").getObject("count").getLong("view");
     }
 
+    @Override
+    public long getLength() throws ParsingException {
+        return watch.getObject("video").getLong("duration");
+    }
+
+    @Override
+    public long getLikeCount() throws ParsingException {
+        return  watch.getObject("video").getObject("count").getLong("like");
+    }
+
     @Nonnull
     @Override
     public Description getDescription() throws ParsingException {
