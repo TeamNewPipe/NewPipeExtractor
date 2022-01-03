@@ -98,11 +98,6 @@ public class NiconicoStreamExtractor extends StreamExtractor {
 
     @Override
     public List<VideoStream> getVideoStreams() throws IOException, ExtractionException {
-        return Collections.emptyList();
-    }
-
-    @Override
-    public List<VideoStream> getVideoOnlyStreams() throws IOException, ExtractionException {
         final List<VideoStream> videoStreams = new ArrayList<>();
 
         final JsonObject session = watch.getObject("media").getObject("delivery").getObject("movie");
@@ -125,6 +120,11 @@ public class NiconicoStreamExtractor extends StreamExtractor {
         }
 
         return  videoStreams;
+    }
+
+    @Override
+    public List<VideoStream> getVideoOnlyStreams() throws IOException, ExtractionException {
+        return Collections.emptyList();
     }
 
     @Override
