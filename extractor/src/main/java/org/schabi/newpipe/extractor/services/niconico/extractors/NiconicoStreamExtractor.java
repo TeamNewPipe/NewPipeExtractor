@@ -17,6 +17,7 @@ import org.schabi.newpipe.extractor.exceptions.ExtractionException;
 import org.schabi.newpipe.extractor.exceptions.ParsingException;
 import org.schabi.newpipe.extractor.linkhandler.LinkHandler;
 import org.schabi.newpipe.extractor.localization.Localization;
+import org.schabi.newpipe.extractor.services.niconico.NiconicoService;
 import org.schabi.newpipe.extractor.stream.AudioStream;
 import org.schabi.newpipe.extractor.stream.Description;
 import org.schabi.newpipe.extractor.stream.StreamExtractor;
@@ -35,8 +36,6 @@ import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
 public class NiconicoStreamExtractor extends StreamExtractor {
-    private static final String THUMB_INFO_URL = "https://ext.nicovideo.jp/api/getthumbinfo/";
-    private static final String UPLOADER_URL = "https://www.nicovideo.jp/user/";
     // generally, Niconico uses Japanese, but some videos have multiple language texts.
     // Use ja-JP locale to get original information of video.
     private final Localization LOCALE = Localization.fromLocalizationCode("ja-JP");
@@ -76,7 +75,7 @@ public class NiconicoStreamExtractor extends StreamExtractor {
     @Nonnull
     @Override
     public String getUploaderUrl() throws ParsingException {
-        return UPLOADER_URL + watch.getObject("owner").getLong("id");
+        return NiconicoService.UPLOADER_URL + watch.getObject("owner").getLong("id");
     }
 
     @Nonnull

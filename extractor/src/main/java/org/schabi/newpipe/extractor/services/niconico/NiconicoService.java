@@ -28,11 +28,13 @@ public class NiconicoService extends StreamingService {
     {
         super(id, "Niconico", Arrays.asList(VIDEO));
     }
+    public static final String BASE_URL = "https://www.nicovideo.jp";
+    public static final String UPLOADER_URL = "https://www.nicovideo.jp/user/";
 
     @Override
     public String getBaseUrl()
     {
-        return "https://www.nicovideo.jp";
+        return BASE_URL;
     }
 
     @Override
