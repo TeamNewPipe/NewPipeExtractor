@@ -110,7 +110,7 @@ public class YoutubeStreamLinkHandlerFactory extends LinkHandlerFactory {
 
         if (!Utils.isHTTP(url) || !(YoutubeParsingHelper.isYoutubeURL(url) ||
                 YoutubeParsingHelper.isYoutubeServiceURL(url) || YoutubeParsingHelper.isHooktubeURL(url) ||
-                YoutubeParsingHelper.isInvidioURL(url))) {
+                YoutubeParsingHelper.isInvidioURL(url) || YoutubeParsingHelper.isY2ubeURL(url))) {
             if (host.equalsIgnoreCase("googleads.g.doubleclick.net")) {
                 throw new FoundAdException("Error found ad: " + urlString);
             }
@@ -160,6 +160,7 @@ public class YoutubeStreamLinkHandlerFactory extends LinkHandlerFactory {
                 return assertIsId(viewQueryValue);
             }
 
+            case "Y2U.BE":
             case "YOUTU.BE": {
                 String viewQueryValue = Utils.getQueryValue(url, "v");
                 if (viewQueryValue != null) {
@@ -177,18 +178,27 @@ public class YoutubeStreamLinkHandlerFactory extends LinkHandlerFactory {
             case "INVIDIOUS.SNOPYTA.ORG":
             case "YEWTU.BE":
             case "TUBE.CONNECT.CAFE":
-            case "INVIDIOUS.ZAPASHCANON.FR":
+            case "TUBUS.EDUVID.ORG":
             case "INVIDIOUS.KAVIN.ROCKS":
-            case "INVIDIOUS.TUBE":
+            case "INVIDIOUS-US.KAVIN.ROCKS":
+            case "PIPED.KAVIN.ROCKS":
             case "INVIDIOUS.SITE":
-            case "INVIDIOUS.XYZ":
             case "VID.MINT.LGBT":
             case "INVIDIOU.SITE":
             case "INVIDIOUS.FDN.FR":
             case "INVIDIOUS.048596.XYZ":
             case "INVIDIOUS.ZEE.LI":
             case "VID.PUFFYAN.US":
-            case "YTPRIVATE.COM": { // code-block for hooktube.com and Invidious instances
+            case "YTPRIVATE.COM":
+            case "INVIDIOUS.NAMAZSO.EU":
+            case "INVIDIOUS.SILKKY.CLOUD":
+            case "INVIDIOUS.EXONIP.DE":
+            case "INV.RIVERSIDE.ROCKS":
+            case "INVIDIOUS.BLAMEFRAN.NET":
+            case "INVIDIOUS.MOOMOO.ME":
+            case "YTB.TROM.TF":
+            case "YT.CYBERHOST.UK":
+            case "Y.COM.CM": { // code-block for hooktube.com and Invidious instances
                 if (path.equals("watch")) {
                     String viewQueryValue = Utils.getQueryValue(url, "v");
                     if (viewQueryValue != null) {

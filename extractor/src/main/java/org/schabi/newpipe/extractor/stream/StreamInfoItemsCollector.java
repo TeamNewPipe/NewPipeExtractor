@@ -92,7 +92,17 @@ public class StreamInfoItemsCollector extends InfoItemsCollector<StreamInfoItem,
             addError(e);
         }
         try {
+            resultItem.setUploaderAvatarUrl(extractor.getUploaderAvatarUrl());
+        } catch (Exception e) {
+            addError(e);
+        }
+        try {
             resultItem.setUploaderVerified(extractor.isUploaderVerified());
+        } catch (Exception e) {
+            addError(e);
+        }
+        try {
+            resultItem.setShortDescription(extractor.getShortDescription());
         } catch (Exception e) {
             addError(e);
         }

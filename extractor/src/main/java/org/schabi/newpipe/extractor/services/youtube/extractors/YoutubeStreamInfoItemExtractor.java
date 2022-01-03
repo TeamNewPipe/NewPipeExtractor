@@ -9,6 +9,7 @@ import org.schabi.newpipe.extractor.services.youtube.YoutubeParsingHelper;
 import org.schabi.newpipe.extractor.services.youtube.linkHandler.YoutubeStreamLinkHandlerFactory;
 import org.schabi.newpipe.extractor.stream.StreamInfoItemExtractor;
 import org.schabi.newpipe.extractor.stream.StreamType;
+import org.schabi.newpipe.extractor.utils.JsonUtils;
 import org.schabi.newpipe.extractor.utils.Utils;
 
 import javax.annotation.Nullable;
@@ -40,7 +41,7 @@ import static org.schabi.newpipe.extractor.utils.Utils.isNullOrEmpty;
  */
 
 public class YoutubeStreamInfoItemExtractor implements StreamInfoItemExtractor {
-    private JsonObject videoInfo;
+    private final JsonObject videoInfo;
     private final TimeAgoParser timeAgoParser;
     private StreamType cachedStreamType;
 
@@ -62,16 +63,20 @@ public class YoutubeStreamInfoItemExtractor implements StreamInfoItemExtractor {
         }
 
         final JsonArray badges = videoInfo.getArray("badges");
-        for (Object badge : badges) {
-            if (((JsonObject) badge).getObject("metadataBadgeRenderer").getString("label", EMPTY_STRING).equals("LIVE NOW")) {
+        for (final Object badge : badges) {
+            final JsonObject badgeRenderer = ((JsonObject) badge).getObject("metadataBadgeRenderer");
+            if (badgeRenderer.getString("style", EMPTY_STRING).equals("BADGE_STYLE_TYPE_LIVE_NOW") ||
+                    badgeRenderer.getString("label", EMPTY_STRING).equals("LIVE NOW")) {
                 return cachedStreamType = StreamType.LIVE_STREAM;
             }
         }
 
-        final String style = videoInfo.getArray("thumbnailOverlays").getObject(0)
-                .getObject("thumbnailOverlayTimeStatusRenderer").getString("style", EMPTY_STRING);
-        if (style.equalsIgnoreCase("LIVE")) {
-            return cachedStreamType = StreamType.LIVE_STREAM;
+        for (final Object overlay : videoInfo.getArray("thumbnailOverlays")) {
+            final String style = ((JsonObject) overlay)
+                    .getObject("thumbnailOverlayTimeStatusRenderer").getString("style", EMPTY_STRING);
+            if (style.equalsIgnoreCase("LIVE")) {
+                return cachedStreamType = StreamType.LIVE_STREAM;
+            }
         }
 
         return cachedStreamType = StreamType.VIDEO_STREAM;
@@ -156,6 +161,23 @@ public class YoutubeStreamInfoItemExtractor implements StreamInfoItemExtractor {
         }
 
         return url;
+    }
+
+    @Nullable
+    @Override
+    public String getUploaderAvatarUrl() throws ParsingException {
+
+        if (videoInfo.has("channelThumbnailSupportedRenderers")) {
+            return JsonUtils.getArray(videoInfo, "channelThumbnailSupportedRenderers.channelThumbnailWithLinkRenderer.thumbnail.thumbnails")
+                    .getObject(0).getString("url");
+        }
+
+        if (videoInfo.has("channelThumbnail")) {
+            return JsonUtils.getArray(videoInfo, "channelThumbnail.thumbnails")
+                    .getObject(0).getString("url");
+        }
+
+        return null;
     }
 
     @Override
@@ -265,5 +287,20 @@ public class YoutubeStreamInfoItemExtractor implements StreamInfoItemExtractor {
         } catch (Exception e) {
             throw new ParsingException("Could not parse date from premiere:  \"" + startTime + "\"");
         }
+    }
+
+    @Nullable
+    @Override
+    public String getShortDescription() throws ParsingException {
+
+        if (videoInfo.has("detailedMetadataSnippets")) {
+            return getTextFromObject(videoInfo.getArray("detailedMetadataSnippets").getObject(0).getObject("snippetText"));
+        }
+
+        if (videoInfo.has("descriptionSnippet")) {
+            return getTextFromObject(videoInfo.getObject("descriptionSnippet"));
+        }
+
+        return null;
     }
 }

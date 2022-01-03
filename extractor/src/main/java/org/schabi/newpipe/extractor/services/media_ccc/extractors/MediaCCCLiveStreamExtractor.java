@@ -60,18 +60,6 @@ public class MediaCCCLiveStreamExtractor extends StreamExtractor {
         return room.getString("display");
     }
 
-    @Nullable
-    @Override
-    public String getTextualUploadDate() throws ParsingException {
-        return null;
-    }
-
-    @Nullable
-    @Override
-    public DateWrapper getUploadDate() throws ParsingException {
-        return null;
-    }
-
     @Nonnull
     @Override
     public String getThumbnailUrl() throws ParsingException {
@@ -85,32 +73,7 @@ public class MediaCCCLiveStreamExtractor extends StreamExtractor {
     }
 
     @Override
-    public int getAgeLimit() {
-        return 0;
-    }
-
-    @Override
-    public long getLength() {
-        return 0;
-    }
-
-    @Override
-    public long getTimeStamp() throws ParsingException {
-        return 0;
-    }
-
-    @Override
     public long getViewCount() {
-        return -1;
-    }
-
-    @Override
-    public long getLikeCount() {
-        return -1;
-    }
-
-    @Override
-    public long getDislikeCount() {
         return -1;
     }
 
@@ -124,41 +87,6 @@ public class MediaCCCLiveStreamExtractor extends StreamExtractor {
     @Override
     public String getUploaderName() throws ParsingException {
         return conference.getString("conference");
-    }
-
-    @Override
-    public boolean isUploaderVerified() throws ParsingException {
-        return false;
-    }
-
-    @Nonnull
-    @Override
-    public String getUploaderAvatarUrl() {
-        return "";
-    }
-
-    @Nonnull
-    @Override
-    public String getSubChannelUrl() {
-        return "";
-    }
-
-    @Nonnull
-    @Override
-    public String getSubChannelName() {
-        return "";
-    }
-
-    @Nonnull
-    @Override
-    public String getSubChannelAvatarUrl() {
-        return "";
-    }
-
-    @Nonnull
-    @Override
-    public String getDashMpdUrl() throws ParsingException {
-        return "";
     }
 
     @Nonnull
@@ -221,85 +149,14 @@ public class MediaCCCLiveStreamExtractor extends StreamExtractor {
         return null;
     }
 
-    @Nonnull
-    @Override
-    public List<SubtitlesStream> getSubtitlesDefault() {
-        return Collections.emptyList();
-    }
-
-    @Nonnull
-    @Override
-    public List<SubtitlesStream> getSubtitles(MediaFormat format) {
-        return Collections.emptyList();
-    }
-
     @Override
     public StreamType getStreamType() throws ParsingException {
         return StreamType.LIVE_STREAM; // TODO: video and audio only streams are both available
-    }
-
-    @Nullable
-    @Override
-    public StreamInfoItemsCollector getRelatedItems() {
-        return null;
-    }
-
-    @Override
-    public String getErrorMessage() {
-        return null;
-    }
-
-    @Nonnull
-    @Override
-    public String getHost() {
-        return "";
-    }
-
-    @Nonnull
-    @Override
-    public Privacy getPrivacy() {
-        return Privacy.PUBLIC;
     }
 
     @Nonnull
     @Override
     public String getCategory() {
         return group;
-    }
-
-    @Nonnull
-    @Override
-    public String getLicence() {
-        return "";
-    }
-
-    @Nullable
-    @Override
-    public Locale getLanguageInfo() {
-        return null;
-    }
-
-    @Nonnull
-    @Override
-    public List<String> getTags() {
-        return Collections.emptyList();
-    }
-
-    @Nonnull
-    @Override
-    public String getSupportInfo() {
-        return "";
-    }
-
-    @Nonnull
-    @Override
-    public List<StreamSegment> getStreamSegments() {
-        return Collections.emptyList();
-    }
-
-    @Nonnull
-    @Override
-    public List<MetaInfo> getMetaInfo() {
-        return Collections.emptyList();
     }
 }

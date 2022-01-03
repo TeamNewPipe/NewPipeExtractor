@@ -25,15 +25,15 @@ public class YoutubeParsingHelperTest {
     }
 
     @Test
-    public void testIsHardcodedClientVersionValid() throws IOException, ExtractionException {
-        assertTrue("Hardcoded client version is not valid anymore",
-                YoutubeParsingHelper.isHardcodedClientVersionValid());
+    public void testAreHardcodedClientVersionAndKeyValid() throws IOException, ExtractionException {
+        assertTrue("Hardcoded client version and key are not valid anymore",
+                YoutubeParsingHelper.areHardcodedClientVersionAndKeyValid());
     }
 
     @Test
     public void testAreHardcodedYoutubeMusicKeysValid() throws IOException, ExtractionException {
         assertTrue("Hardcoded YouTube Music keys are not valid anymore",
-                YoutubeParsingHelper.areHardcodedYoutubeMusicKeysValid());
+                YoutubeParsingHelper.isHardcodedYoutubeMusicKeyValid());
     }
 
     @Test
@@ -44,7 +44,7 @@ public class YoutubeParsingHelperTest {
     }
 
     @Test
-    public void testConvertFromGoogleCacheUrl() throws ParsingException {
+    public void testConvertFromGoogleCacheUrl() {
         assertEquals("https://mohfw.gov.in/",
                 YoutubeParsingHelper.extractCachedUrlIfNeeded("https://webcache.googleusercontent.com/search?q=cache:https://mohfw.gov.in/"));
         assertEquals("https://www.infektionsschutz.de/coronavirus-sars-cov-2.html",

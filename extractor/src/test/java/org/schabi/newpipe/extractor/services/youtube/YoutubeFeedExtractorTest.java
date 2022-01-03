@@ -4,10 +4,12 @@ import org.junit.BeforeClass;
 import org.junit.Test;
 import org.schabi.newpipe.downloader.DownloaderFactory;
 import org.schabi.newpipe.extractor.NewPipe;
+import org.schabi.newpipe.extractor.exceptions.ContentNotAvailableException;
 import org.schabi.newpipe.extractor.exceptions.ParsingException;
 import org.schabi.newpipe.extractor.services.BaseListExtractorTest;
 import org.schabi.newpipe.extractor.services.youtube.extractors.YoutubeFeedExtractor;
 
+import java.io.IOException;
 import java.util.Random;
 
 import static org.junit.Assert.assertEquals;
@@ -75,6 +77,21 @@ public class YoutubeFeedExtractorTest {
         @Test
         public void testMoreRelatedItems() throws Exception {
             assertNoMoreItems(extractor);
+        }
+    }
+
+    public static class NotAvailable {
+
+        @BeforeClass
+        public static void setUp() throws IOException {
+            NewPipe.init(new DownloaderFactory().getDownloader(RESOURCE_PATH + "notAvailable/"));
+        }
+
+        @Test(expected = ContentNotAvailableException.class)
+        public void AccountTerminatedFetch() throws Exception {
+            YoutubeFeedExtractor extractor = (YoutubeFeedExtractor) YouTube
+                    .getFeedExtractor("https://www.youtube.com/channel/UCTGjY2I-ZUGnwVoWAGRd7XQ");
+            extractor.fetchPage();
         }
     }
 }

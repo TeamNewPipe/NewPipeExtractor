@@ -11,7 +11,7 @@ import java.util.List;
 public class PeertubePlaylistLinkHandlerFactory extends ListLinkHandlerFactory {
 
     private static final PeertubePlaylistLinkHandlerFactory instance = new PeertubePlaylistLinkHandlerFactory();
-    private static final String ID_PATTERN = "/videos/watch/playlist/([^/?&#]*)";
+    private static final String ID_PATTERN = "(/videos/watch/playlist/|/w/p/)([^/?&#]*)";
 
     public static PeertubePlaylistLinkHandlerFactory getInstance() {
         return instance;
@@ -30,7 +30,7 @@ public class PeertubePlaylistLinkHandlerFactory extends ListLinkHandlerFactory {
 
     @Override
     public String getId(String url) throws ParsingException {
-        return Parser.matchGroup1(ID_PATTERN, url);
+        return Parser.matchGroup(ID_PATTERN, url, 2);
     }
 
     @Override

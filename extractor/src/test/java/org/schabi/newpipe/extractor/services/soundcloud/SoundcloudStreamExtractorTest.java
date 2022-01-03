@@ -71,9 +71,15 @@ public class SoundcloudStreamExtractorTest {
         @Override public boolean expectedHasSubtitles() { return false; }
         @Override public boolean expectedHasFrames() { return false; }
         @Override public int expectedStreamSegmentsCount() { return 0; }
-        @Override public boolean expectedHasRelatedItems() { return false; }
         @Override public String expectedLicence() { return "all-rights-reserved"; }
         @Override public String expectedCategory() { return "Pop"; }
+
+        @Test
+        @Override
+        @Ignore("Unreliable, sometimes it has related items, sometimes it does not")
+        public void testRelatedItems() throws Exception {
+            super.testRelatedItems();
+        }
     }
 
     public static class SoundcloudGoPlusTrack extends DefaultStreamExtractorTest {

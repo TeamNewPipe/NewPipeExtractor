@@ -5,8 +5,12 @@ import org.junit.BeforeClass;
 import org.junit.Test;
 import org.schabi.newpipe.downloader.DownloaderTestImpl;
 import org.schabi.newpipe.extractor.NewPipe;
+import org.schabi.newpipe.extractor.exceptions.ExtractionException;
 
+import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
+
+import java.io.IOException;
 
 public class SoundcloudParsingHelperTest {
     @BeforeClass
@@ -18,6 +22,14 @@ public class SoundcloudParsingHelperTest {
     public void assertThatHardcodedClientIdIsValid() throws Exception {
         assertTrue("Hardcoded client id is not valid anymore",
                 SoundcloudParsingHelper.checkIfHardcodedClientIdIsValid());
+    }
+
+    @Test
+    public void assertHardCodedClientIdMatchesCurrentClientId() throws IOException, ExtractionException {
+        assertEquals(
+                "Hardcoded client doesn't match extracted clientId",
+                SoundcloudParsingHelper.HARDCODED_CLIENT_ID,
+                SoundcloudParsingHelper.clientId());
     }
 
     @Test

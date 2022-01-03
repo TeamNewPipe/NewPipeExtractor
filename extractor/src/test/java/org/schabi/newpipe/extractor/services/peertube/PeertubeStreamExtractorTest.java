@@ -60,8 +60,8 @@ public abstract class PeertubeStreamExtractorTest extends DefaultStreamExtractor
         @Override public StreamType expectedStreamType() { return StreamType.VIDEO_STREAM; }
         @Override public String expectedUploaderName() { return "Framasoft"; }
         @Override public String expectedUploaderUrl() { return "https://framatube.org/accounts/framasoft@framatube.org"; }
-        @Override public String expectedSubChannelName() { return "Les vidéos de Framasoft"; }
-        @Override public String expectedSubChannelUrl() { return "https://framatube.org/video-channels/bf54d359-cfad-4935-9d45-9d6be93f63e8"; }
+        @Override public String expectedSubChannelName() { return "A propos de PeerTube"; }
+        @Override public String expectedSubChannelUrl() { return "https://framatube.org/video-channels/joinpeertube"; }
         @Override public List<String> expectedDescriptionContains() { // CRLF line ending
             return Arrays.asList("**[Want to help to translate this video?](https://weblate.framasoft.org/projects/what-is-peertube-video/)**\r\n"
                     + "\r\n"

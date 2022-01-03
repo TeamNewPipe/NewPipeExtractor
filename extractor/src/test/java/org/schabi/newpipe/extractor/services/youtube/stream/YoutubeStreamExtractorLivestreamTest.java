@@ -1,13 +1,13 @@
 package org.schabi.newpipe.extractor.services.youtube.stream;
 
 import org.junit.BeforeClass;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.schabi.newpipe.downloader.DownloaderFactory;
 import org.schabi.newpipe.extractor.NewPipe;
 import org.schabi.newpipe.extractor.StreamingService;
 import org.schabi.newpipe.extractor.services.DefaultStreamExtractorTest;
 import org.schabi.newpipe.extractor.services.youtube.YoutubeParsingHelper;
+import org.schabi.newpipe.extractor.services.youtube.extractors.YoutubeStreamExtractor;
 import org.schabi.newpipe.extractor.stream.StreamExtractor;
 import org.schabi.newpipe.extractor.stream.StreamType;
 
@@ -30,6 +30,7 @@ public class YoutubeStreamExtractorLivestreamTest extends DefaultStreamExtractor
     public static void setUp() throws Exception {
         YoutubeParsingHelper.resetClientVersionAndKey();
         YoutubeParsingHelper.setNumberGenerator(new Random(1));
+        YoutubeStreamExtractor.resetDeobfuscationCode();
         NewPipe.init(new DownloaderFactory().getDownloader(RESOURCE_PATH + "live"));
         extractor = YouTube.getStreamExtractor(URL);
         extractor.fetchPage();
@@ -37,7 +38,6 @@ public class YoutubeStreamExtractorLivestreamTest extends DefaultStreamExtractor
 
     @Override
     @Test
-    @Ignore("When visiting website it shows 'Lofi Girl', unknown why it's different in tests")
     public void testUploaderName() throws Exception {
         super.testUploaderName();
     }
@@ -53,7 +53,7 @@ public class YoutubeStreamExtractorLivestreamTest extends DefaultStreamExtractor
     @Override public String expectedUploaderName() { return "Lofi Girl"; }
     @Override public String expectedUploaderUrl() { return "https://www.youtube.com/channel/UCSJ4gkVC6NrvII8umztf0Ow"; }
     @Override public List<String> expectedDescriptionContains() {
-        return Arrays.asList("https://bit.ly/lofigirl-merch",
+        return Arrays.asList("Lofi Girl merch",
                 "Thank you for listening, I hope you will have a good time here");
     }
     @Override public boolean expectedUploaderVerified() { return true; }
@@ -63,7 +63,7 @@ public class YoutubeStreamExtractorLivestreamTest extends DefaultStreamExtractor
     @Nullable @Override public String expectedUploadDate() { return "2020-02-22 00:00:00.000"; }
     @Nullable @Override public String expectedTextualUploadDate() { return "2020-02-22"; }
     @Override public long expectedLikeCountAtLeast() { return 825000; }
-    @Override public long expectedDislikeCountAtLeast() { return 15600; }
+    @Override public long expectedDislikeCountAtLeast() { return -1; }
     @Override public boolean expectedHasSubtitles() { return false; }
     @Nullable @Override public String expectedDashMpdUrlContains() { return "https://manifest.googlevideo.com/api/manifest/dash/"; }
     @Override public boolean expectedHasFrames() { return false; }
