@@ -74,6 +74,18 @@ public class NiconicoStreamExtractorTest {
         }
 
         @Override
+        public boolean expectedHasFrames() {
+            // Niconico does not support video preview with free account.
+            return false;
+        }
+
+        @Override
+        public boolean expectedHasSubtitles() {
+            // Niconico does not support subtitles, but there are uploader's comments.
+            return false;
+        }
+
+        @Override
         public List<String> expectedDescriptionContains() {
             final List<String> descs = new ArrayList<>();
             descs.add("レッツゴー！陰陽師（フルコーラスバージョン）");
