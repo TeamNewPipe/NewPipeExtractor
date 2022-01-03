@@ -34,6 +34,7 @@ public class NiconicoStreamExtractor extends StreamExtractor {
     private static final String THUMB_INFO_URL = "http://ext.nicovideo.jp/api/getthumbinfo/";
     private static final String UPLOADER_URL = "https://www.nicovideo.jp/user/";
     private Document thumbInfo;
+    private Document watch;
 
     public NiconicoStreamExtractor(StreamingService service, LinkHandler linkHandler) {
         super(service, linkHandler);
@@ -78,6 +79,7 @@ public class NiconicoStreamExtractor extends StreamExtractor {
     @Override
     public List<VideoStream> getVideoOnlyStreams() throws IOException, ExtractionException {
         final List<VideoStream> videoStreams = new ArrayList<>();
+
         return videoStreams;
     }
 
@@ -96,6 +98,7 @@ public class NiconicoStreamExtractor extends StreamExtractor {
     public void onFetchPage(@Nonnull Downloader downloader) throws IOException, ExtractionException {
         final String info = downloader.get(THUMB_INFO_URL + getLinkHandler().getId()).responseBody();
         thumbInfo = Jsoup.parse(info);
+        watch = Jsoup.parse(downloader.get(getLinkHandler().getUrl()).responseBody());
     }
 
     @Nonnull
