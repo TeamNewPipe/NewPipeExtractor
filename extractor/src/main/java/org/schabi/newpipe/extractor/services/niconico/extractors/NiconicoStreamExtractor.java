@@ -31,7 +31,7 @@ import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
 public class NiconicoStreamExtractor extends StreamExtractor {
-    private static final String THUMB_INFO_URL = "http://ext.nicovideo.jp/api/getthumbinfo/";
+    private static final String THUMB_INFO_URL = "https://ext.nicovideo.jp/api/getthumbinfo/";
     private static final String UPLOADER_URL = "https://www.nicovideo.jp/user/";
     private Document thumbInfo;
     private Document watch;
