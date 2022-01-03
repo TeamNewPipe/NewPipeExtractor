@@ -10,6 +10,7 @@ import org.schabi.newpipe.extractor.services.DefaultStreamExtractorTest;
 import org.schabi.newpipe.extractor.stream.StreamExtractor;
 import org.schabi.newpipe.extractor.stream.StreamType;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.annotation.Nullable;
@@ -74,7 +75,9 @@ public class NiconicoStreamExtractorTest {
 
         @Override
         public List<String> expectedDescriptionContains() {
-            return null;
+            final List<String> descs = new ArrayList<>();
+            descs.add("レッツゴー！陰陽師（フルコーラスバージョン）");
+            return descs;
         }
 
         @Override
@@ -84,7 +87,7 @@ public class NiconicoStreamExtractorTest {
 
         @Override
         public long expectedViewCountAtLeast() {
-            return 0;
+            return 20631137;
         }
 
         @Nullable
@@ -101,12 +104,14 @@ public class NiconicoStreamExtractorTest {
 
         @Override
         public long expectedLikeCountAtLeast() {
-            return 0;
+            // Niconico does not have Like button
+            return -1;
         }
 
         @Override
         public long expectedDislikeCountAtLeast() {
-            return 0;
+            // Niconico does not have Dislike button
+            return -1;
         }
     }
 }

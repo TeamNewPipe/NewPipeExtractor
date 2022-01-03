@@ -40,6 +40,17 @@ public class NiconicoStreamExtractor extends StreamExtractor {
         super(service, linkHandler);
     }
 
+    @Override
+    public long getViewCount() throws ParsingException {
+        return Long.parseLong(thumbInfo.select("view_counter").text());
+    }
+
+    @Nonnull
+    @Override
+    public Description getDescription() throws ParsingException {
+        return new Description(thumbInfo.select("description").text(), 3);
+    }
+
     @Nonnull
     @Override
     public String getThumbnailUrl() throws ParsingException {
