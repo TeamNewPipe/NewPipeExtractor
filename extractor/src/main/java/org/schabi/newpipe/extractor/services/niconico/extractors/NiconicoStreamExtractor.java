@@ -24,6 +24,7 @@ import org.schabi.newpipe.extractor.utils.Parser;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Locale;
 
@@ -77,21 +78,17 @@ public class NiconicoStreamExtractor extends StreamExtractor {
 
     @Override
     public List<AudioStream> getAudioStreams() throws IOException, ExtractionException {
-        final List<AudioStream> audioStreams = new ArrayList<>();
-        return audioStreams;
+        return Collections.emptyList();
     }
 
     @Override
     public List<VideoStream> getVideoStreams() throws IOException, ExtractionException {
-        final List<VideoStream> videoStreams = new ArrayList<>();
-        return videoStreams;
+        return Collections.emptyList();
     }
 
     @Override
     public List<VideoStream> getVideoOnlyStreams() throws IOException, ExtractionException {
-        final List<VideoStream> videoStreams = new ArrayList<>();
-
-        return videoStreams;
+        return Collections.emptyList();
     }
 
     @Override
