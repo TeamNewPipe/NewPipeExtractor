@@ -93,6 +93,11 @@ public class NiconicoStreamExtractorTest {
         }
 
         @Override
+        public boolean expectedHasAudioStreams() {
+            return false;
+        }
+
+        @Override
         public long expectedLength() {
             return 320;
         }
