@@ -13,6 +13,7 @@ import org.schabi.newpipe.extractor.linkhandler.SearchQueryHandler;
 import org.schabi.newpipe.extractor.linkhandler.SearchQueryHandlerFactory;
 import org.schabi.newpipe.extractor.playlist.PlaylistExtractor;
 import org.schabi.newpipe.extractor.search.SearchExtractor;
+import org.schabi.newpipe.extractor.services.niconico.extractors.NiconicoStreamExtractor;
 import org.schabi.newpipe.extractor.services.niconico.linkHandler.NiconicoStreamLinkHandlerFactory;
 import org.schabi.newpipe.extractor.stream.StreamExtractor;
 import org.schabi.newpipe.extractor.subscription.SubscriptionExtractor;
@@ -91,7 +92,7 @@ public class NiconicoService extends StreamingService {
 
     @Override
     public StreamExtractor getStreamExtractor(LinkHandler linkHandler) throws ExtractionException {
-        return null;
+        return new NiconicoStreamExtractor(this, linkHandler);
     }
 
     @Override
