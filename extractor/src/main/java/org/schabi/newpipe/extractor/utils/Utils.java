@@ -13,6 +13,10 @@ public class Utils {
 
     public static final String HTTP = "http://";
     public static final String HTTPS = "https://";
+    /**
+     * @deprecated Use {@link java.nio.charset.StandardCharsets#UTF_8} instead
+     */
+    @Deprecated
     public static final String UTF_8 = "UTF-8";
     public static final String EMPTY_STRING = "";
     private static final Pattern M_PATTERN = Pattern.compile("(https?)?:\\/\\/m\\.");

@@ -64,8 +64,52 @@ public class ExtractorAsserts {
         }
     }
 
-    public static void assertAtLeast(long expected, long actual) {
-        assertTrue(actual >= expected, actual + " is not at least " + expected);
+    public static void assertGreater(final long expected, final long actual) {
+        assertGreater(expected, actual, actual + " is not > " + expected);
+    }
+
+    public static void assertGreater(
+            final long expected,
+            final long actual,
+            final String message
+    ) {
+        assertTrue(actual > expected, message);
+    }
+
+    public static void assertGreaterOrEqual(final long expected, final long actual) {
+        assertGreaterOrEqual(expected, actual, actual + " is not >= " + expected);
+    }
+
+    public static void assertGreaterOrEqual(
+            final long expected,
+            final long actual,
+            final String message
+    ) {
+        assertTrue(actual >= expected, message);
+    }
+
+    public static void assertLess(final long expected, final long actual) {
+        assertLess(expected, actual, actual + " is not < " + expected);
+    }
+
+    public static void assertLess(
+            final long expected,
+            final long actual,
+            final String message
+    ) {
+        assertTrue(actual < expected, message);
+    }
+
+    public static void assertLessOrEqual(final long expected, final long actual) {
+        assertLessOrEqual(expected, actual, actual + " is not <= " + expected);
+    }
+
+    public static void assertLessOrEqual(
+            final long expected,
+            final long actual,
+            final String message
+    ) {
+        assertTrue(actual <= expected, message);
     }
 
     // this assumes that sorting a and b in-place is not an issue, so it's only intended for tests

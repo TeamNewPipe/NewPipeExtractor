@@ -2,6 +2,8 @@ package org.schabi.newpipe.extractor.services.soundcloud;
 
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.ValueSource;
 import org.schabi.newpipe.downloader.DownloaderTestImpl;
 import org.schabi.newpipe.extractor.NewPipe;
 import org.schabi.newpipe.extractor.ServiceList;
@@ -31,47 +33,42 @@ public class SoundcloudSubscriptionExtractorTest {
         urlHandler = ServiceList.SoundCloud.getChannelLHFactory();
     }
 
-    @Test
-    public void testFromChannelUrl() throws Exception {
-        testList(subscriptionExtractor.fromChannelUrl("https://soundcloud.com/monstercat"));
-        testList(subscriptionExtractor.fromChannelUrl("http://soundcloud.com/monstercat"));
-        testList(subscriptionExtractor.fromChannelUrl("soundcloud.com/monstercat"));
-        testList(subscriptionExtractor.fromChannelUrl("monstercat"));
-
-        //Empty followings user
-        testList(subscriptionExtractor.fromChannelUrl("some-random-user-184047028"));
-    }
-
-    @Test
-    public void testInvalidSourceException() {
-        List<String> invalidList = Arrays.asList(
-                "httttps://invalid.com/user",
-                ".com/monstercat",
-                "ithinkthatthisuserdontexist",
-                "",
-                null
-        );
-
-        for (String invalidUser : invalidList) {
-            try {
-                subscriptionExtractor.fromChannelUrl(invalidUser);
-
-                fail("didn't throw exception");
-            } catch (IOException e) {
-                // Ignore it, could be an unstable network on the CI server
-            } catch (Exception e) {
-                boolean isExpectedException = e instanceof SubscriptionExtractor.InvalidSourceException;
-                assertTrue(isExpectedException, e.getClass().getSimpleName() + " is not the expected exception");
-            }
-        }
-    }
-
-    private void testList(List<SubscriptionItem> subscriptionItems) throws ParsingException {
-        for (SubscriptionItem item : subscriptionItems) {
+    @ParameterizedTest
+    @ValueSource(strings = {
+            "https://soundcloud.com/monstercat",
+            "http://soundcloud.com/monstercat",
+            "soundcloud.com/monstercat",
+            "monstercat",
+            // Empty followings user
+            "some-random-user-184047028"
+    })
+    void testFromChannelUrl(final String channelUrl) throws Exception {
+        for (SubscriptionItem item : subscriptionExtractor.fromChannelUrl(channelUrl)) {
             assertNotNull(item.getName());
             assertNotNull(item.getUrl());
             assertTrue(urlHandler.acceptUrl(item.getUrl()));
-            assertFalse(item.getServiceId() == -1);
+            assertNotEquals(-1, item.getServiceId());
         }
+    }
+
+    @ParameterizedTest
+    @ValueSource(strings = {
+            "httttps://invalid.com/user",
+            ".com/monstercat",
+            "ithinkthatthisuserdontexist",
+            ""
+    })
+    void testInvalidSourceException(final String invalidUser) {
+        assertThrows(
+                SubscriptionExtractor.InvalidSourceException.class,
+                () -> subscriptionExtractor.fromChannelUrl(invalidUser));
+    }
+
+    // null can't be added to the above value source because it's not a constant
+    @Test
+    void testInvalidSourceExceptionWhenUrlIsNull() {
+        assertThrows(
+                SubscriptionExtractor.InvalidSourceException.class,
+                () -> subscriptionExtractor.fromChannelUrl(null));
     }
 }

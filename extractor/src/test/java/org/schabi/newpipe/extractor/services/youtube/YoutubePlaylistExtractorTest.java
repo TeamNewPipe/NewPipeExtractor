@@ -154,7 +154,7 @@ public class YoutubePlaylistExtractorTest {
 
         @Test
         public void testStreamCount() throws Exception {
-            assertTrue(extractor.getStreamCount() > 100, "Error in the streams count");
+            ExtractorAsserts.assertGreater(100, extractor.getStreamCount());
         }
 
         @Override
@@ -273,7 +273,7 @@ public class YoutubePlaylistExtractorTest {
 
         @Test
         public void testStreamCount() throws Exception {
-            assertTrue(extractor.getStreamCount() > 100, "Error in the streams count");
+            ExtractorAsserts.assertGreater(100, extractor.getStreamCount());
         }
 
         @Override
@@ -377,7 +377,7 @@ public class YoutubePlaylistExtractorTest {
 
         @Test
         public void testStreamCount() throws Exception {
-            assertTrue(extractor.getStreamCount() > 40, "Error in the streams count");
+            ExtractorAsserts.assertGreater(40, extractor.getStreamCount());
         }
 
         @Override

@@ -1,6 +1,5 @@
 package org.schabi.newpipe.extractor.services;
 
-import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.schabi.newpipe.extractor.ExtractorAsserts;
 import org.schabi.newpipe.extractor.InfoItemsCollector;
@@ -30,7 +29,7 @@ import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
-import static org.schabi.newpipe.extractor.ExtractorAsserts.assertAtLeast;
+import static org.schabi.newpipe.extractor.ExtractorAsserts.assertGreaterOrEqual;
 import static org.schabi.newpipe.extractor.ExtractorAsserts.assertEqualsOrderIndependent;
 import static org.schabi.newpipe.extractor.ExtractorAsserts.assertIsSecureUrl;
 import static org.schabi.newpipe.extractor.ExtractorAsserts.assertIsValidUrl;
@@ -174,7 +173,7 @@ public abstract class DefaultStreamExtractorTest extends DefaultExtractorTest<St
     @Test
     @Override
     public void testViewCount() throws Exception {
-        assertAtLeast(expectedViewCountAtLeast(), extractor().getViewCount());
+        assertGreaterOrEqual(expectedViewCountAtLeast(), extractor().getViewCount());
     }
 
     @Test
@@ -207,7 +206,7 @@ public abstract class DefaultStreamExtractorTest extends DefaultExtractorTest<St
         if (expectedLikeCountAtLeast() == -1) {
             assertEquals(-1, extractor().getLikeCount());
         } else {
-            assertAtLeast(expectedLikeCountAtLeast(), extractor().getLikeCount());
+            assertGreaterOrEqual(expectedLikeCountAtLeast(), extractor().getLikeCount());
         }
     }
 
@@ -217,7 +216,7 @@ public abstract class DefaultStreamExtractorTest extends DefaultExtractorTest<St
         if (expectedDislikeCountAtLeast() == -1) {
             assertEquals(-1, extractor().getDislikeCount());
         } else {
-            assertAtLeast(expectedDislikeCountAtLeast(), extractor().getDislikeCount());
+            assertGreaterOrEqual(expectedDislikeCountAtLeast(), extractor().getDislikeCount());
         }
     }
 

@@ -136,13 +136,11 @@ public class YoutubeChannelExtractorTest {
         }
 
         @Test
-        public void noVideoTab() throws Exception {
+        void noVideoTab() throws Exception {
             final ChannelExtractor extractor = YouTube.getChannelExtractor("https://invidio.us/channel/UC-9-kyTW8ZkZNDHQJ6FgpwQ");
 
-            assertThrows(ContentNotSupportedException.class, () -> {
-                extractor.fetchPage();
-                extractor.getInitialPage();
-            });
+            extractor.fetchPage();
+            assertThrows(ContentNotSupportedException.class, extractor::getInitialPage);
         }
     }
 
@@ -215,14 +213,14 @@ public class YoutubeChannelExtractorTest {
         public void testAvatarUrl() throws Exception {
             String avatarUrl = extractor.getAvatarUrl();
             assertIsSecureUrl(avatarUrl);
-            assertTrue(avatarUrl.contains("yt3"), avatarUrl);
+            ExtractorAsserts.assertContains("yt3", avatarUrl);
         }
 
         @Test
         public void testBannerUrl() throws Exception {
             String bannerUrl = extractor.getBannerUrl();
             assertIsSecureUrl(bannerUrl);
-            assertTrue(bannerUrl.contains("yt3"), bannerUrl);
+            ExtractorAsserts.assertContains("yt3", bannerUrl);
         }
 
         @Test
@@ -232,8 +230,7 @@ public class YoutubeChannelExtractorTest {
 
         @Test
         public void testSubscriberCount() throws Exception {
-            assertTrue(extractor.getSubscriberCount() >= 0, "Wrong subscriber count");
-            assertTrue(extractor.getSubscriberCount() >= 4e6, "Subscriber count too small");
+            ExtractorAsserts.assertGreaterOrEqual(4_900_000, extractor.getSubscriberCount());
         }
 
         @Override
@@ -313,14 +310,14 @@ public class YoutubeChannelExtractorTest {
         public void testAvatarUrl() throws Exception {
             String avatarUrl = extractor.getAvatarUrl();
             assertIsSecureUrl(avatarUrl);
-            assertTrue(avatarUrl.contains("yt3"), avatarUrl);
+            ExtractorAsserts.assertContains("yt3", avatarUrl);
         }
 
         @Test
         public void testBannerUrl() throws Exception {
             String bannerUrl = extractor.getBannerUrl();
             assertIsSecureUrl(bannerUrl);
-            assertTrue(bannerUrl.contains("yt3"), bannerUrl);
+            ExtractorAsserts.assertContains("yt3", bannerUrl);
         }
 
         @Test
@@ -330,11 +327,10 @@ public class YoutubeChannelExtractorTest {
 
         @Test
         public void testSubscriberCount() throws Exception {
-            assertTrue(extractor.getSubscriberCount() >= 0, "Wrong subscriber count");
-            assertTrue(extractor.getSubscriberCount() >= 10e6, "Subscriber count too small");
+            ExtractorAsserts.assertGreaterOrEqual(17_000_000, extractor.getSubscriberCount());
         }
 
-        @Override
+        @Test
         public void testVerified() throws Exception {
             assertTrue(extractor.isVerified());
         }
@@ -412,14 +408,14 @@ public class YoutubeChannelExtractorTest {
         public void testAvatarUrl() throws Exception {
             String avatarUrl = extractor.getAvatarUrl();
             assertIsSecureUrl(avatarUrl);
-            assertTrue(avatarUrl.contains("yt3"), avatarUrl);
+            ExtractorAsserts.assertContains("yt3", avatarUrl);
         }
 
         @Test
         public void testBannerUrl() throws Exception {
             String bannerUrl = extractor.getBannerUrl();
             assertIsSecureUrl(bannerUrl);
-            assertTrue(bannerUrl.contains("yt3"), bannerUrl);
+            ExtractorAsserts.assertContains("yt3", bannerUrl);
         }
 
         @Test
@@ -429,10 +425,10 @@ public class YoutubeChannelExtractorTest {
 
         @Test
         public void testSubscriberCount() throws Exception {
-            assertTrue(extractor.getSubscriberCount() >= 5e6, "Wrong subscriber count");
+            ExtractorAsserts.assertGreaterOrEqual(17_000_000, extractor.getSubscriberCount());
         }
 
-        @Override
+        @Test
         public void testVerified() throws Exception {
             assertTrue(extractor.isVerified());
         }
@@ -527,14 +523,14 @@ public class YoutubeChannelExtractorTest {
         public void testAvatarUrl() throws Exception {
             String avatarUrl = extractor.getAvatarUrl();
             assertIsSecureUrl(avatarUrl);
-            assertTrue(avatarUrl.contains("yt3"), avatarUrl);
+            ExtractorAsserts.assertContains("yt3", avatarUrl);
         }
 
         @Test
         public void testBannerUrl() throws Exception {
             String bannerUrl = extractor.getBannerUrl();
             assertIsSecureUrl(bannerUrl);
-            assertTrue(bannerUrl.contains("yt3"), bannerUrl);
+            ExtractorAsserts.assertContains("yt3", bannerUrl);
         }
 
         @Test
@@ -544,10 +540,10 @@ public class YoutubeChannelExtractorTest {
 
         @Test
         public void testSubscriberCount() throws Exception {
-            assertTrue(extractor.getSubscriberCount() >= 5e5, "Wrong subscriber count");
+            ExtractorAsserts.assertGreaterOrEqual(2_000_000, extractor.getSubscriberCount());
         }
 
-        @Override
+        @Test
         public void testVerified() throws Exception {
             assertTrue(extractor.isVerified());
         }
@@ -628,14 +624,14 @@ public class YoutubeChannelExtractorTest {
         public void testAvatarUrl() throws Exception {
             String avatarUrl = extractor.getAvatarUrl();
             assertIsSecureUrl(avatarUrl);
-            assertTrue(avatarUrl.contains("yt3"), avatarUrl);
+            ExtractorAsserts.assertContains("yt3", avatarUrl);
         }
 
         @Test
         public void testBannerUrl() throws Exception {
             String bannerUrl = extractor.getBannerUrl();
             assertIsSecureUrl(bannerUrl);
-            assertTrue(bannerUrl.contains("yt3"), bannerUrl);
+            ExtractorAsserts.assertContains("yt3", bannerUrl);
         }
 
         @Test
@@ -645,10 +641,10 @@ public class YoutubeChannelExtractorTest {
 
         @Test
         public void testSubscriberCount() throws Exception {
-            assertTrue(extractor.getSubscriberCount() >= 50, "Wrong subscriber count");
+            ExtractorAsserts.assertGreaterOrEqual(50, extractor.getSubscriberCount());
         }
 
-        @Override
+        @Test
         public void testVerified() throws Exception {
             assertFalse(extractor.isVerified());
         }

@@ -53,7 +53,7 @@ public class PeertubePlaylistExtractorTest {
 
         @Test
         public void testGetStreamCount() throws ParsingException {
-            ExtractorAsserts.assertAtLeast(39, extractor.getStreamCount());
+            ExtractorAsserts.assertGreaterOrEqual(39, extractor.getStreamCount());
         }
 
         @Test

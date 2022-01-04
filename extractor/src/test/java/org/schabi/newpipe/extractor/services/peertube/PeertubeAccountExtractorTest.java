@@ -3,6 +3,7 @@ package org.schabi.newpipe.extractor.services.peertube;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import org.schabi.newpipe.downloader.DownloaderTestImpl;
+import org.schabi.newpipe.extractor.ExtractorAsserts;
 import org.schabi.newpipe.extractor.NewPipe;
 import org.schabi.newpipe.extractor.channel.ChannelExtractor;
 import org.schabi.newpipe.extractor.exceptions.ParsingException;
@@ -101,7 +102,7 @@ public class PeertubeAccountExtractorTest {
 
         @Test
         public void testSubscriberCount() throws ParsingException {
-            assertTrue(extractor.getSubscriberCount() >= 700, "Wrong subscriber count");
+            ExtractorAsserts.assertGreaterOrEqual(700, extractor.getSubscriberCount());
         }
 
         @Override
@@ -202,7 +203,7 @@ public class PeertubeAccountExtractorTest {
 
         @Test
         public void testSubscriberCount() throws ParsingException {
-            assertTrue(extractor.getSubscriberCount() >= 100, "Wrong subscriber count");
+            ExtractorAsserts.assertGreaterOrEqual(100, extractor.getSubscriberCount());
         }
 
         @Override
