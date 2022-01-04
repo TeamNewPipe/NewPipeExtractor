@@ -37,9 +37,6 @@ import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
 public class NiconicoStreamExtractor extends StreamExtractor {
-    // generally, Niconico uses Japanese, but some videos have multiple language texts.
-    // Use ja-JP locale to get original information of video.
-    private final Localization LOCALE = Localization.fromLocalizationCode("ja-JP");
     private JsonObject watch;
 
     public NiconicoStreamExtractor(StreamingService service, LinkHandler linkHandler) {
@@ -119,7 +116,7 @@ public class NiconicoStreamExtractor extends StreamExtractor {
         final Map<String, List<String>> headers = new HashMap<>();
         headers.put("Content-Type", Collections.singletonList("application/json"));
 
-        final Response response = getDownloader().post(dmc, headers, s.getBytes(StandardCharsets.UTF_8), LOCALE);
+        final Response response = getDownloader().post(dmc, headers, s.getBytes(StandardCharsets.UTF_8), NiconicoService.LOCALE);
 
         try {
             final JsonObject content = JsonParser.object().from(response.responseBody());
@@ -165,7 +162,7 @@ public class NiconicoStreamExtractor extends StreamExtractor {
     @Override
     public void onFetchPage(@Nonnull Downloader downloader) throws IOException, ExtractionException {
         final String url = getLinkHandler().getUrl();
-        final Response response = downloader.get(url, null, LOCALE);
+        final Response response = downloader.get(url, null, NiconicoService.LOCALE);
         final Document page = Jsoup.parse(response.responseBody());
         try {
             watch = JsonParser.object().from(

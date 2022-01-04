@@ -11,6 +11,7 @@ import org.schabi.newpipe.extractor.linkhandler.ListLinkHandler;
 import org.schabi.newpipe.extractor.linkhandler.ListLinkHandlerFactory;
 import org.schabi.newpipe.extractor.linkhandler.SearchQueryHandler;
 import org.schabi.newpipe.extractor.linkhandler.SearchQueryHandlerFactory;
+import org.schabi.newpipe.extractor.localization.Localization;
 import org.schabi.newpipe.extractor.playlist.PlaylistExtractor;
 import org.schabi.newpipe.extractor.search.SearchExtractor;
 import org.schabi.newpipe.extractor.services.niconico.extractors.NiconicoSearchExtractor;
@@ -40,6 +41,9 @@ public class NiconicoService extends StreamingService {
     public static final String DAILY_TREND_URL = "https://www.nicovideo.jp/ranking/genre/all?term=24h&rss=2.0";
     public static final String SMILEVIDEO = "(nicovideo\\.jp\\/watch|nico\\.ms)\\/((?:sm|so)\\d+)(.+)?";
     public static final String APP_NAME = "NewPipe";
+    // generally, Niconico uses Japanese, but some videos have multiple language texts.
+    // Use ja-JP locale to get original information of video.
+    public static final Localization LOCALE = Localization.fromLocalizationCode("ja-JP");
 
     @Override
     public String getBaseUrl()

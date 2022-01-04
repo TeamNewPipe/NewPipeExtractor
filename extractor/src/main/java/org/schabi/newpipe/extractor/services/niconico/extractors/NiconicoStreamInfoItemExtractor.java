@@ -54,7 +54,7 @@ public class NiconicoStreamInfoItemExtractor implements StreamInfoItemExtractor 
     @Override
     public String getUploaderName() throws ParsingException {
         // Snapshot search API could not get uploader name.
-        return null;
+        return String.valueOf(item.getLong("userId"));
     }
 
     @Override

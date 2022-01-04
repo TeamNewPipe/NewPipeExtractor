@@ -20,11 +20,12 @@ public class NiconicoSearchQueryHandlerFactory extends SearchQueryHandlerFactory
                          final String sortFilter) throws ParsingException {
         try {
             return SEARCH_URL + "?q=" + URLEncoder.encode(id, UTF_8)
-                    + "&targets=title"
+                    + "&targets=title,description,tags"
+                    + "&fields=contentId,title,userId,channelId,viewCounter,lengthSeconds,thumbnailUrl,startTime"
                     + "&_sort=-viewCounter"
                     + "&_offset=0"
                     + "&_limit=" + ITEMS_PER_PAGE
-                    + "&_context=" + NiconicoService.APP_NAME;
+                    + "&_context=" + URLEncoder.encode(NiconicoService.APP_NAME, UTF_8);
         } catch (UnsupportedEncodingException e) {
             throw new ParsingException("could not encode query.");
         }
