@@ -297,6 +297,16 @@ public class YoutubeMixPlaylistExtractorTest {
         }
 
         @Test
+        void getPageEmptyUrl() throws Exception {
+            extractor = (YoutubeMixPlaylistExtractor) YouTube
+                    .getPlaylistExtractor("https://www.youtube.com/watch?v=" + VIDEO_ID
+                            + "&list=RD" + VIDEO_ID);
+
+            extractor.fetchPage();
+            assertThrows(IllegalArgumentException.class, () -> extractor.getPage(new Page("")));
+        }
+
+        @Test
         void invalidVideoId() throws Exception {
             extractor = (YoutubeMixPlaylistExtractor) YouTube
                     .getPlaylistExtractor("https://www.youtube.com/watch?v=" + "abcde"
