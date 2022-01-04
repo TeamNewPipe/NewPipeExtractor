@@ -22,6 +22,7 @@ import org.schabi.newpipe.extractor.services.niconico.extractors.NiconicoTrendRS
 import org.schabi.newpipe.extractor.services.niconico.linkHandler.NiconicoSearchQueryHandlerFactory;
 import org.schabi.newpipe.extractor.services.niconico.linkHandler.NiconicoStreamLinkHandlerFactory;
 import org.schabi.newpipe.extractor.services.niconico.linkHandler.NiconicoTrendLinkHandlerFactory;
+import org.schabi.newpipe.extractor.services.niconico.linkHandler.NiconicoUserLinkHandlerFactory;
 import org.schabi.newpipe.extractor.stream.StreamExtractor;
 import org.schabi.newpipe.extractor.subscription.SubscriptionExtractor;
 import org.schabi.newpipe.extractor.suggestion.SuggestionExtractor;
@@ -42,6 +43,7 @@ public class NiconicoService extends StreamingService {
     public static final String DAILY_TREND_URL = "https://www.nicovideo.jp/ranking/genre/all?term=24h&rss=2.0";
     public static final String SUGGESTION_URL = "https://sug.search.nicovideo.jp/suggestion/expand/";
     public static final String SMILEVIDEO = "(nicovideo\\.jp\\/watch|nico\\.ms)\\/((?:sm|so)\\d+)(.+)?";
+    public static final String USER_UPLOAD_LIST = "(?:www|sp).nicovideo.jp/user/(\\d+)(?:/video)?";
     public static final String APP_NAME = "NewPipe";
     // generally, Niconico uses Japanese, but some videos have multiple language texts.
     // Use ja-JP locale to get original information of video.
@@ -60,7 +62,7 @@ public class NiconicoService extends StreamingService {
 
     @Override
     public ListLinkHandlerFactory getChannelLHFactory() {
-        return null;
+        return new NiconicoUserLinkHandlerFactory();
     }
 
     @Override
