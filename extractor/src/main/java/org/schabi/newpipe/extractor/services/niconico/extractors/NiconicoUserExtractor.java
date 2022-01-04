@@ -1,11 +1,15 @@
 package org.schabi.newpipe.extractor.services.niconico.extractors;
 
+import static org.schabi.newpipe.extractor.utils.Utils.isNullOrEmpty;
+
 import com.grack.nanojson.JsonObject;
 import com.grack.nanojson.JsonParser;
 import com.grack.nanojson.JsonParserException;
 
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
+import org.jsoup.nodes.Element;
+import org.jsoup.select.Elements;
 import org.schabi.newpipe.extractor.Page;
 import org.schabi.newpipe.extractor.StreamingService;
 import org.schabi.newpipe.extractor.channel.ChannelExtractor;
@@ -13,7 +17,10 @@ import org.schabi.newpipe.extractor.downloader.Downloader;
 import org.schabi.newpipe.extractor.exceptions.ExtractionException;
 import org.schabi.newpipe.extractor.exceptions.ParsingException;
 import org.schabi.newpipe.extractor.linkhandler.ListLinkHandler;
+import org.schabi.newpipe.extractor.services.niconico.NiconicoService;
 import org.schabi.newpipe.extractor.stream.StreamInfoItem;
+import org.schabi.newpipe.extractor.stream.StreamInfoItemsCollector;
+import org.schabi.newpipe.extractor.utils.Parser;
 
 import java.io.IOException;
 
@@ -30,7 +37,7 @@ public class NiconicoUserExtractor extends ChannelExtractor {
 
     @Override
     public void onFetchPage(@Nonnull Downloader downloader) throws IOException, ExtractionException {
-        final String url = getLinkHandler().getUrl() + "?rss=2.0";
+        final String url = getLinkHandler().getUrl() + "/video?rss=2.0&page=1";
         rss = Jsoup.parse(getDownloader().get(url).responseBody());
 
         user = Jsoup.parse(getDownloader().get(getLinkHandler().getUrl()).responseBody());
@@ -53,12 +60,40 @@ public class NiconicoUserExtractor extends ChannelExtractor {
     @Nonnull
     @Override
     public InfoItemsPage<StreamInfoItem> getInitialPage() throws IOException, ExtractionException {
-        return null;
+        final StreamInfoItemsCollector streamInfoItemsCollector =
+                new StreamInfoItemsCollector(getServiceId());
+
+        final Elements arrays = rss.select("item");
+
+        for (Element e : arrays) {
+            streamInfoItemsCollector.commit(new NiconicoTrendRSSExtractor(e));
+        }
+
+        final String currentPageUrl = getLinkHandler().getUrl() + "/video?rss=2.0&page=1";
+
+        return new InfoItemsPage<>(streamInfoItemsCollector,
+                getNextPageFromCurrentUrl(currentPageUrl));
     }
 
     @Override
     public InfoItemsPage<StreamInfoItem> getPage(Page page) throws IOException, ExtractionException {
-        return null;
+        if (page == null || isNullOrEmpty(page.getUrl()))
+        {
+            throw  new IllegalArgumentException("page does not contain an URL.");
+        }
+
+        final StreamInfoItemsCollector streamInfoItemsCollector =
+                new StreamInfoItemsCollector(getServiceId());
+
+        final Document response = Jsoup.parse(getDownloader().get(page.getUrl(),
+                NiconicoService.LOCALE).responseBody());
+        final Elements arrays = response.getElementsByTag("item");
+
+        for (Element e : arrays) {
+            streamInfoItemsCollector.commit(new NiconicoTrendRSSExtractor(e));
+        }
+
+        return new InfoItemsPage<>(streamInfoItemsCollector, getNextPageFromCurrentUrl(page.getUrl()));
     }
 
     @Override
@@ -108,5 +143,17 @@ public class NiconicoUserExtractor extends ChannelExtractor {
     @Override
     public boolean isVerified() throws ParsingException {
         return false;
+    }
+
+    private Page getNextPageFromCurrentUrl(final String currentUrl)
+            throws ParsingException {
+        final String page = "&page=(\\d+?)";
+        try {
+            final int nowPage = Integer.parseInt(Parser.matchGroup1(page, currentUrl));
+            return new Page(currentUrl.replace("&page=" + nowPage, "&page="
+                    + (nowPage + 1)));
+        } catch (Parser.RegexException e) {
+            throw new ParsingException("could not parse pager.");
+        }
     }
 }
