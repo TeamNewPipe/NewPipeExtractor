@@ -6,10 +6,10 @@ import org.schabi.newpipe.extractor.linkhandler.LinkHandlerFactory;
 import org.schabi.newpipe.extractor.utils.Parser;
 
 public class NiconicoStreamLinkHandlerFactory extends LinkHandlerFactory {
-    private static final String SMILEVIDEO = "(nicovideo\\.jp|nico\\.ms)\\/(.*?)\\?(.*)";
+    private static final String SMILEVIDEO = "(nicovideo\\.jp\\/watch|nico\\.ms)\\/(sm\\d+)(.+)?";
     @Override
     public String getId(String url) throws ParsingException {
-        return Parser.matchGroup(SMILEVIDEO, url, 1);
+        return Parser.matchGroup(SMILEVIDEO, url, 2);
     }
 
     @Override
@@ -20,11 +20,12 @@ public class NiconicoStreamLinkHandlerFactory extends LinkHandlerFactory {
     @Override
     public boolean onAcceptUrl(String url) throws ParsingException {
         try {
-            return getId(url) != null;
+            getId(url);
+            return true;
         }
         catch (ParsingException e)
         {
-            return false;
+            throw new ParsingException(e.getMessage());
         }
     }
 }

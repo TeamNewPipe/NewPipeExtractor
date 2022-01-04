@@ -139,7 +139,8 @@ public class NiconicoStreamExtractor extends StreamExtractor {
 
     @Override
     public void onFetchPage(@Nonnull Downloader downloader) throws IOException, ExtractionException {
-        final Response response = downloader.get(getLinkHandler().getUrl(), null, LOCALE);
+        final String url = getLinkHandler().getUrl();
+        final Response response = downloader.get(url, null, LOCALE);
         final Document page = Jsoup.parse(response.responseBody());
         try {
             watch = JsonParser.object().from(

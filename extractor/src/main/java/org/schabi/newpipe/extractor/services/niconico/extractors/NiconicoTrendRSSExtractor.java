@@ -27,7 +27,7 @@ public class NiconicoTrendRSSExtractor implements StreamInfoItemExtractor {
 
     @Override
     public String getUrl() throws ParsingException {
-        return item.select("link").text();
+        return "https://www.nicovideo.jp/watch/sm39848591?ref=rss_specified_ranking_rss2";
     }
 
     @Override
