@@ -258,6 +258,126 @@ public class NiconicoStreamExtractorTest {
         }
     }
 
+    public static class SO15013657 extends DefaultStreamExtractorTest {
+        // Official channel video (starts with "so")
+        private static StreamExtractor extractor;
+        private final static String URL = "https://www.nicovideo.jp/watch/so15013657";
+
+        @BeforeClass
+        public static void setUp() throws Exception {
+            NewPipe.init(DownloaderTestImpl.getInstance());
+            extractor = Niconico.getStreamExtractor(URL);
+            extractor.fetchPage();
+        }
+
+        @Override
+        public StreamExtractor extractor() throws Exception {
+            return extractor;
+        }
+
+        @Override
+        public StreamingService expectedService() throws Exception {
+            return Niconico;
+        }
+
+        @Override
+        public String expectedName() throws Exception {
+            return "うたの☆プリンスさまっ♪ マジLOVE1000％　メインテーマ／マジLOVE1000％（Op.1バージョン）";
+        }
+
+        @Override
+        public String expectedId() throws Exception {
+            return "so15013657";
+        }
+
+        @Override
+        public String expectedUrlContains() throws Exception {
+            return URL;
+        }
+
+        @Override
+        public String expectedOriginalUrlContains() throws Exception {
+            return URL;
+        }
+
+        @Override
+        public StreamType expectedStreamType() {
+            return StreamType.VIDEO_STREAM;
+        }
+
+        @Override
+        public String expectedUploaderName() {
+            return "うたの☆プリンスさまっ♪マジLOVE1000％";
+        }
+
+        @Override
+        public String expectedUploaderUrl() {
+            return "https://ch.nicovideo.jp/ch60034";
+        }
+
+        @Override
+        public boolean expectedHasFrames() {
+            // Niconico does not support video preview with free account.
+            return false;
+        }
+
+        @Override
+        public boolean expectedHasSubtitles() {
+            // Niconico does not support subtitles, but there are uploader's comments.
+            return false;
+        }
+
+        @Override
+        public List<String> expectedDescriptionContains() {
+            final List<String> descs = new ArrayList<>();
+            descs.add("メインテーマ");
+            return descs;
+        }
+
+        @Override
+        public boolean expectedHasRelatedItems() {
+            return false;
+        }
+
+        @Override
+        public boolean expectedHasAudioStreams() {
+            return false;
+        }
+
+        @Override
+        public long expectedLength() {
+            return 138;
+        }
+
+        @Override
+        public long expectedViewCountAtLeast() {
+            return 7784307;
+        }
+
+        @Nullable
+        @Override
+        public String expectedUploadDate() {
+            return null;
+        }
+
+        @Nullable
+        @Override
+        public String expectedTextualUploadDate() {
+            return null;
+        }
+
+        @Override
+        public long expectedLikeCountAtLeast() {
+            return 2155;
+        }
+
+        @Override
+        public long expectedDislikeCountAtLeast() {
+            // Niconico does not have Dislike button
+            return -1;
+        }
+    }
+
     public static class SM1715919 extends DefaultStreamExtractorTest {
         // Smartphone page (sp.nicovideo.jp)
         private static StreamExtractor extractor;
