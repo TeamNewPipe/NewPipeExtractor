@@ -3,13 +3,13 @@ package org.schabi.newpipe.extractor.services.niconico.linkHandler;
 import org.schabi.newpipe.extractor.exceptions.ParsingException;
 import org.schabi.newpipe.extractor.linkhandler.LinkHandler;
 import org.schabi.newpipe.extractor.linkhandler.LinkHandlerFactory;
+import org.schabi.newpipe.extractor.services.niconico.NiconicoService;
 import org.schabi.newpipe.extractor.utils.Parser;
 
 public class NiconicoStreamLinkHandlerFactory extends LinkHandlerFactory {
-    private static final String SMILEVIDEO = "(nicovideo\\.jp\\/watch|nico\\.ms)\\/(sm\\d+)(.+)?";
     @Override
     public String getId(String url) throws ParsingException {
-        return Parser.matchGroup(SMILEVIDEO, url, 2);
+        return Parser.matchGroup(NiconicoService.SMILEVIDEO, url, 2);
     }
 
     @Override

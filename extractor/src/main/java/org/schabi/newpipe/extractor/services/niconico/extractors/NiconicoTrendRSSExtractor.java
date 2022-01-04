@@ -3,11 +3,16 @@ package org.schabi.newpipe.extractor.services.niconico.extractors;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
+import org.jsoup.nodes.TextNode;
 import org.jsoup.select.Elements;
 import org.schabi.newpipe.extractor.exceptions.ParsingException;
 import org.schabi.newpipe.extractor.localization.DateWrapper;
+import org.schabi.newpipe.extractor.services.niconico.NiconicoService;
 import org.schabi.newpipe.extractor.stream.StreamInfoItemExtractor;
 import org.schabi.newpipe.extractor.stream.StreamType;
+import org.schabi.newpipe.extractor.utils.Parser;
+
+import java.util.List;
 
 import javax.annotation.Nullable;
 
@@ -27,7 +32,12 @@ public class NiconicoTrendRSSExtractor implements StreamInfoItemExtractor {
 
     @Override
     public String getUrl() throws ParsingException {
-        return "https://www.nicovideo.jp/watch/sm39848591?ref=rss_specified_ranking_rss2";
+        // idk why cannot use select("link").text()
+        final List<TextNode> textNodes = item.textNodes();
+        final String url = textNodes.stream().filter(
+                str -> Parser.isMatch(NiconicoService.SMILEVIDEO, str.text()))
+                .findFirst().get().text();
+        return url;
     }
 
     @Override
