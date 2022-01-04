@@ -4,7 +4,6 @@ import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.nodes.TextNode;
-import org.jsoup.select.Elements;
 import org.schabi.newpipe.extractor.exceptions.ParsingException;
 import org.schabi.newpipe.extractor.localization.DateWrapper;
 import org.schabi.newpipe.extractor.services.niconico.NiconicoService;
@@ -13,6 +12,7 @@ import org.schabi.newpipe.extractor.stream.StreamType;
 import org.schabi.newpipe.extractor.utils.Parser;
 
 import java.util.List;
+import java.util.Optional;
 
 import javax.annotation.Nullable;
 
@@ -34,10 +34,14 @@ public class NiconicoTrendRSSExtractor implements StreamInfoItemExtractor {
     public String getUrl() throws ParsingException {
         // idk why cannot use select("link").text()
         final List<TextNode> textNodes = item.textNodes();
-        final String url = textNodes.stream().filter(
+        final Optional<TextNode> url = textNodes.stream().filter(
                 str -> Parser.isMatch(NiconicoService.SMILEVIDEO, str.text()))
-                .findFirst().get().text();
-        return url;
+                .findFirst();
+        if (url.isPresent())
+        {
+            return url.get().text();
+        }
+        throw new ParsingException("could not get video's url.");
     }
 
     @Override

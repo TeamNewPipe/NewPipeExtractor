@@ -1,5 +1,7 @@
 package org.schabi.newpipe.extractor.services.niconico;
 
+import static org.schabi.newpipe.extractor.StreamingService.ServiceInfo.MediaCapability.VIDEO;
+
 import org.schabi.newpipe.extractor.StreamingService;
 import org.schabi.newpipe.extractor.channel.ChannelExtractor;
 import org.schabi.newpipe.extractor.comments.CommentsExtractor;
@@ -18,7 +20,6 @@ import org.schabi.newpipe.extractor.services.niconico.extractors.NiconicoSearchE
 import org.schabi.newpipe.extractor.services.niconico.extractors.NiconicoStreamExtractor;
 import org.schabi.newpipe.extractor.services.niconico.extractors.NiconicoSuggestionExtractor;
 import org.schabi.newpipe.extractor.services.niconico.extractors.NiconicoTrendExtractor;
-import org.schabi.newpipe.extractor.services.niconico.extractors.NiconicoTrendRSSExtractor;
 import org.schabi.newpipe.extractor.services.niconico.extractors.NiconicoUserExtractor;
 import org.schabi.newpipe.extractor.services.niconico.linkHandler.NiconicoSearchQueryHandlerFactory;
 import org.schabi.newpipe.extractor.services.niconico.linkHandler.NiconicoStreamLinkHandlerFactory;
@@ -28,15 +29,12 @@ import org.schabi.newpipe.extractor.stream.StreamExtractor;
 import org.schabi.newpipe.extractor.subscription.SubscriptionExtractor;
 import org.schabi.newpipe.extractor.suggestion.SuggestionExtractor;
 
-import java.util.Arrays;
 import java.util.Collections;
-
-import static org.schabi.newpipe.extractor.StreamingService.ServiceInfo.MediaCapability.VIDEO;
 
 public class NiconicoService extends StreamingService {
     public NiconicoService(final int id)
     {
-        super(id, "Niconico", Arrays.asList(VIDEO));
+        super(id, "Niconico", Collections.singletonList(VIDEO));
     }
     public static final String BASE_URL = "https://www.nicovideo.jp";
     public static final String USER_URL = "https://www.nicovideo.jp/user/";

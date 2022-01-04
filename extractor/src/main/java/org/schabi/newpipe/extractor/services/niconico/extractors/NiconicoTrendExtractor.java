@@ -16,7 +16,6 @@ import org.schabi.newpipe.extractor.stream.StreamInfoItem;
 import org.schabi.newpipe.extractor.stream.StreamInfoItemsCollector;
 
 import java.io.IOException;
-import java.util.Collections;
 
 import javax.annotation.Nonnull;
 

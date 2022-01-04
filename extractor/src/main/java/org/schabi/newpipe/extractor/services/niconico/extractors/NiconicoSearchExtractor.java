@@ -1,10 +1,8 @@
 package org.schabi.newpipe.extractor.services.niconico.extractors;
 
 import static org.schabi.newpipe.extractor.services.niconico.linkHandler.NiconicoSearchQueryHandlerFactory.ITEMS_PER_PAGE;
-import static org.schabi.newpipe.extractor.utils.Utils.EMPTY_STRING;
 import static org.schabi.newpipe.extractor.utils.Utils.isNullOrEmpty;
 
-import com.grack.nanojson.JsonArray;
 import com.grack.nanojson.JsonObject;
 import com.grack.nanojson.JsonParser;
 import com.grack.nanojson.JsonParserException;
@@ -22,15 +20,9 @@ import org.schabi.newpipe.extractor.linkhandler.SearchQueryHandler;
 import org.schabi.newpipe.extractor.search.InfoItemsSearchCollector;
 import org.schabi.newpipe.extractor.search.SearchExtractor;
 import org.schabi.newpipe.extractor.services.niconico.NiconicoService;
-import org.schabi.newpipe.extractor.services.soundcloud.extractors.SoundcloudChannelInfoItemExtractor;
-import org.schabi.newpipe.extractor.services.soundcloud.extractors.SoundcloudPlaylistInfoItemExtractor;
-import org.schabi.newpipe.extractor.services.soundcloud.extractors.SoundcloudStreamInfoItemExtractor;
 import org.schabi.newpipe.extractor.utils.Parser;
 
 import java.io.IOException;
-import java.io.UnsupportedEncodingException;
-import java.net.MalformedURLException;
-import java.net.URL;
 import java.util.Collections;
 import java.util.List;
 
@@ -95,7 +87,7 @@ public class NiconicoSearchExtractor extends SearchExtractor {
     }
 
     private InfoItemsCollector<InfoItem, InfoItemExtractor> collectItems(
-            final JsonObject searchCollection) throws ParsingException {
+            final JsonObject searchCollection) {
         final InfoItemsSearchCollector collector = new InfoItemsSearchCollector(getServiceId());
 
         for (int i = 0; i < searchCollection.getArray("data").size(); i++) {

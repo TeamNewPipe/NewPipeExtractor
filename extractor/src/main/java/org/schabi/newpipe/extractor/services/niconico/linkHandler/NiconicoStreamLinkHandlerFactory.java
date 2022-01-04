@@ -1,7 +1,6 @@
 package org.schabi.newpipe.extractor.services.niconico.linkHandler;
 
 import org.schabi.newpipe.extractor.exceptions.ParsingException;
-import org.schabi.newpipe.extractor.linkhandler.LinkHandler;
 import org.schabi.newpipe.extractor.linkhandler.LinkHandlerFactory;
 import org.schabi.newpipe.extractor.services.niconico.NiconicoService;
 import org.schabi.newpipe.extractor.utils.Parser;

@@ -28,7 +28,6 @@ import javax.annotation.Nonnull;
 
 public class NiconicoUserExtractor extends ChannelExtractor {
     private Document rss;
-    private Document user;
     private JsonObject info;
 
     public NiconicoUserExtractor(StreamingService service, ListLinkHandler linkHandler) {
@@ -40,7 +39,7 @@ public class NiconicoUserExtractor extends ChannelExtractor {
         final String url = getLinkHandler().getUrl() + "/video?rss=2.0&page=1";
         rss = Jsoup.parse(getDownloader().get(url).responseBody());
 
-        user = Jsoup.parse(getDownloader().get(getLinkHandler().getUrl()).responseBody());
+        Document user = Jsoup.parse(getDownloader().get(getLinkHandler().getUrl()).responseBody());
         try {
             info = JsonParser.object()
                     .from(user.getElementById("js-initial-userpage-data")
