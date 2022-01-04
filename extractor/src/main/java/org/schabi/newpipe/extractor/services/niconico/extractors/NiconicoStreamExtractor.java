@@ -7,6 +7,8 @@ import com.grack.nanojson.JsonParserException;
 
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
+import org.jsoup.nodes.Element;
+import org.jsoup.select.Elements;
 import org.schabi.newpipe.extractor.InfoItem;
 import org.schabi.newpipe.extractor.InfoItemExtractor;
 import org.schabi.newpipe.extractor.InfoItemsCollector;
@@ -21,6 +23,7 @@ import org.schabi.newpipe.extractor.services.niconico.NiconicoService;
 import org.schabi.newpipe.extractor.stream.AudioStream;
 import org.schabi.newpipe.extractor.stream.Description;
 import org.schabi.newpipe.extractor.stream.StreamExtractor;
+import org.schabi.newpipe.extractor.stream.StreamInfoItemsCollector;
 import org.schabi.newpipe.extractor.stream.StreamType;
 import org.schabi.newpipe.extractor.stream.VideoStream;
 
@@ -155,7 +158,20 @@ public class NiconicoStreamExtractor extends StreamExtractor {
     @Nullable
     @Override
     public InfoItemsCollector<? extends InfoItem, ? extends InfoItemExtractor> getRelatedItems() throws IOException, ExtractionException {
-        return null;
+        final StreamInfoItemsCollector collector = new StreamInfoItemsCollector(
+                getServiceId());
+
+        final String url = NiconicoService.RELATION_URL + getId();
+        final Document response = Jsoup.parse(
+                getDownloader().get(url, NiconicoService.LOCALE).responseBody());
+
+        final Elements videos = response.getElementsByTag("video");
+
+        for (Element e: videos) {
+            collector.commit(new NiconicoReleationVideoExtractor(e));
+        }
+
+        return collector;
     }
 
     @Override
