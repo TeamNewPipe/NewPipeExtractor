@@ -17,6 +17,7 @@ public class NiconicoTrendRSSExtractor implements StreamInfoItemExtractor {
 
     public NiconicoTrendRSSExtractor(Element e) {
         item = e;
+        cdata = Jsoup.parse(e.select("description").text());
     }
 
     @Override
