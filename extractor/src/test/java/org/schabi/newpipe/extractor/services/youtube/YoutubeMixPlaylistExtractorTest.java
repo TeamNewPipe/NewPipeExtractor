@@ -28,14 +28,14 @@ import static org.schabi.newpipe.extractor.services.youtube.YoutubeParsingHelper
 
 public class YoutubeMixPlaylistExtractorTest {
 
-    private static final String VIDEO_ID = "QMVCAPd5cwBcg";
-    private static final String VIDEO_TITLE = "Mix – ";
     private static final String RESOURCE_PATH = DownloaderFactory.RESOURCE_PATH + "services/youtube/extractor/mix/";
     private static final Map<String, String> dummyCookie = new HashMap<>();
 
     private static YoutubeMixPlaylistExtractor extractor;
 
     public static class Mix {
+        private static final String VIDEO_ID = "QMVCAPd5cwBcg";
+        private static final String VIDEO_TITLE = "Mix – ";
 
         @BeforeAll
         public static void setUp() throws Exception {
@@ -122,6 +122,8 @@ public class YoutubeMixPlaylistExtractorTest {
 
     public static class MixWithIndex {
 
+        private static final String VIDEO_ID = "QMVCAPd5cwBcg";
+        private static final String VIDEO_TITLE = "Mix – ";
         private static final int INDEX = 4;
         private static final String VIDEO_ID_NUMBER_4 = "lWA2pjMjpBs";
 
@@ -204,6 +206,7 @@ public class YoutubeMixPlaylistExtractorTest {
     }
 
     public static class MyMix {
+        private static final String VIDEO_ID = "_AzeUSL9lZc";
 
         @BeforeAll
         public static void setUp() throws Exception {
@@ -287,6 +290,8 @@ public class YoutubeMixPlaylistExtractorTest {
     }
 
     public static class Invalid {
+
+        private static final String VIDEO_ID = "QMVCAPd5cwBcg";
 
         @BeforeAll
         public static void setUp() throws IOException {
