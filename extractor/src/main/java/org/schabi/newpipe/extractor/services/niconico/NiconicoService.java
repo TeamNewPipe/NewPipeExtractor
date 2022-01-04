@@ -16,6 +16,7 @@ import org.schabi.newpipe.extractor.playlist.PlaylistExtractor;
 import org.schabi.newpipe.extractor.search.SearchExtractor;
 import org.schabi.newpipe.extractor.services.niconico.extractors.NiconicoSearchExtractor;
 import org.schabi.newpipe.extractor.services.niconico.extractors.NiconicoStreamExtractor;
+import org.schabi.newpipe.extractor.services.niconico.extractors.NiconicoSuggestionExtractor;
 import org.schabi.newpipe.extractor.services.niconico.extractors.NiconicoTrendExtractor;
 import org.schabi.newpipe.extractor.services.niconico.extractors.NiconicoTrendRSSExtractor;
 import org.schabi.newpipe.extractor.services.niconico.linkHandler.NiconicoSearchQueryHandlerFactory;
@@ -39,6 +40,7 @@ public class NiconicoService extends StreamingService {
     public static final String USER_URL = "https://www.nicovideo.jp/user/";
     public static final String CHANNEL_URL = "https://ch.nicovideo.jp/";
     public static final String DAILY_TREND_URL = "https://www.nicovideo.jp/ranking/genre/all?term=24h&rss=2.0";
+    public static final String SUGGESTION_URL = "https://sug.search.nicovideo.jp/suggestion/expand/";
     public static final String SMILEVIDEO = "(nicovideo\\.jp\\/watch|nico\\.ms)\\/((?:sm|so)\\d+)(.+)?";
     public static final String APP_NAME = "NewPipe";
     // generally, Niconico uses Japanese, but some videos have multiple language texts.
@@ -83,7 +85,7 @@ public class NiconicoService extends StreamingService {
 
     @Override
     public SuggestionExtractor getSuggestionExtractor() {
-        return null;
+        return new NiconicoSuggestionExtractor(this);
     }
 
     @Override
