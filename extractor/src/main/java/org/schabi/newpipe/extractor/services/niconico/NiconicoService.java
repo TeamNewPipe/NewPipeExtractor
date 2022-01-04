@@ -14,6 +14,7 @@ import org.schabi.newpipe.extractor.linkhandler.SearchQueryHandlerFactory;
 import org.schabi.newpipe.extractor.playlist.PlaylistExtractor;
 import org.schabi.newpipe.extractor.search.SearchExtractor;
 import org.schabi.newpipe.extractor.services.niconico.extractors.NiconicoStreamExtractor;
+import org.schabi.newpipe.extractor.services.niconico.linkHandler.NiconicoSearchQueryHandlerFactory;
 import org.schabi.newpipe.extractor.services.niconico.linkHandler.NiconicoStreamLinkHandlerFactory;
 import org.schabi.newpipe.extractor.stream.StreamExtractor;
 import org.schabi.newpipe.extractor.subscription.SubscriptionExtractor;
@@ -30,6 +31,7 @@ public class NiconicoService extends StreamingService {
     }
     public static final String BASE_URL = "https://www.nicovideo.jp";
     public static final String UPLOADER_URL = "https://www.nicovideo.jp/user/";
+    public static final String APP_NAME = "NewPipe";
 
     @Override
     public String getBaseUrl()
@@ -54,7 +56,7 @@ public class NiconicoService extends StreamingService {
 
     @Override
     public SearchQueryHandlerFactory getSearchQHFactory() {
-        return null;
+        return new NiconicoSearchQueryHandlerFactory();
     }
 
     @Override
