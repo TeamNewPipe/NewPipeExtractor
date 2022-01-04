@@ -13,14 +13,19 @@ import org.schabi.newpipe.extractor.linkhandler.SearchQueryHandler;
 import org.schabi.newpipe.extractor.linkhandler.SearchQueryHandlerFactory;
 import org.schabi.newpipe.extractor.playlist.PlaylistExtractor;
 import org.schabi.newpipe.extractor.search.SearchExtractor;
+import org.schabi.newpipe.extractor.services.niconico.extractors.NiconicoSearchExtractor;
 import org.schabi.newpipe.extractor.services.niconico.extractors.NiconicoStreamExtractor;
+import org.schabi.newpipe.extractor.services.niconico.extractors.NiconicoTrendExtractor;
+import org.schabi.newpipe.extractor.services.niconico.extractors.NiconicoTrendRSSExtractor;
 import org.schabi.newpipe.extractor.services.niconico.linkHandler.NiconicoSearchQueryHandlerFactory;
 import org.schabi.newpipe.extractor.services.niconico.linkHandler.NiconicoStreamLinkHandlerFactory;
+import org.schabi.newpipe.extractor.services.niconico.linkHandler.NiconicoTrendLinkHandlerFactory;
 import org.schabi.newpipe.extractor.stream.StreamExtractor;
 import org.schabi.newpipe.extractor.subscription.SubscriptionExtractor;
 import org.schabi.newpipe.extractor.suggestion.SuggestionExtractor;
 
 import java.util.Arrays;
+import java.util.Collections;
 
 import static org.schabi.newpipe.extractor.StreamingService.ServiceInfo.MediaCapability.VIDEO;
 
@@ -31,6 +36,7 @@ public class NiconicoService extends StreamingService {
     }
     public static final String BASE_URL = "https://www.nicovideo.jp";
     public static final String UPLOADER_URL = "https://www.nicovideo.jp/user/";
+    public static final String DAILY_TREND_URL = "https://www.nicovideo.jp/ranking/genre/all?term=24h&rss=2.0";
     public static final String APP_NAME = "NewPipe";
 
     @Override
@@ -66,7 +72,7 @@ public class NiconicoService extends StreamingService {
 
     @Override
     public SearchExtractor getSearchExtractor(SearchQueryHandler queryHandler) {
-        return null;
+        return new NiconicoSearchExtractor(this, queryHandler);
     }
 
     @Override
@@ -81,7 +87,22 @@ public class NiconicoService extends StreamingService {
 
     @Override
     public KioskList getKioskList() throws ExtractionException {
-        return null;
+        final KioskList.KioskExtractorFactory kioskFactory = (streamingService, url, id) ->
+                new NiconicoTrendExtractor(this,
+                        new NiconicoTrendLinkHandlerFactory().fromUrl(url), id);
+
+        KioskList kioskList = new KioskList(this);
+
+        final NiconicoTrendLinkHandlerFactory h = new NiconicoTrendLinkHandlerFactory();
+
+        try {
+            kioskList.addKioskEntry(kioskFactory, h, "Trending");
+            kioskList.setDefaultKiosk("Trending");
+        } catch (Exception e) {
+            throw new ExtractionException(e);
+        }
+
+        return kioskList;
     }
 
     @Override
