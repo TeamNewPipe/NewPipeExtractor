@@ -35,9 +35,10 @@ public class NiconicoService extends StreamingService {
         super(id, "Niconico", Arrays.asList(VIDEO));
     }
     public static final String BASE_URL = "https://www.nicovideo.jp";
-    public static final String UPLOADER_URL = "https://www.nicovideo.jp/user/";
+    public static final String USER_URL = "https://www.nicovideo.jp/user/";
+    public static final String CHANNEL_URL = "https://ch.nicovideo.jp/";
     public static final String DAILY_TREND_URL = "https://www.nicovideo.jp/ranking/genre/all?term=24h&rss=2.0";
-    public static final String SMILEVIDEO = "(nicovideo\\.jp\\/watch|nico\\.ms)\\/(sm\\d+)(.+)?";
+    public static final String SMILEVIDEO = "(nicovideo\\.jp\\/watch|nico\\.ms)\\/((?:sm|so)\\d+)(.+)?";
     public static final String APP_NAME = "NewPipe";
 
     @Override

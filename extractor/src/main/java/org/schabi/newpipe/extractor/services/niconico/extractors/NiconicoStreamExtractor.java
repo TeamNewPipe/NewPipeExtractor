@@ -75,18 +75,30 @@ public class NiconicoStreamExtractor extends StreamExtractor {
     @Nonnull
     @Override
     public String getUploaderUrl() throws ParsingException {
-        return NiconicoService.UPLOADER_URL + watch.getObject("owner").getLong("id");
+        if (isChannel())
+        {
+            return NiconicoService.CHANNEL_URL + watch.getObject("channel").getString("id");
+        }
+        return NiconicoService.USER_URL + watch.getObject("owner").getLong("id");
     }
 
     @Nonnull
     @Override
     public String getUploaderName() throws ParsingException {
+        if (isChannel())
+        {
+            return watch.getObject("channel").getString("name");
+        }
         return watch.getObject("owner").getString("nickname");
     }
 
     @Nonnull
     @Override
     public String getUploaderAvatarUrl() throws ParsingException {
+        if (isChannel())
+        {
+            return  watch.getObject("channel").getObject("thumbnail").getString("url");
+        }
         return watch.getObject("owner").getString("iconUrl");
     }
 
@@ -106,7 +118,7 @@ public class NiconicoStreamExtractor extends StreamExtractor {
         final Map<String, List<String>> headers = new HashMap<>();
         headers.put("Content-Type", Collections.singletonList("application/json"));
 
-        final Response response = getDownloader().post(dmc, null, s.getBytes(StandardCharsets.UTF_8), LOCALE);
+        final Response response = getDownloader().post(dmc, headers, s.getBytes(StandardCharsets.UTF_8), LOCALE);
 
         try {
             final JsonObject content = JsonParser.object().from(response.responseBody());
@@ -154,5 +166,9 @@ public class NiconicoStreamExtractor extends StreamExtractor {
     @Override
     public String getName() throws ParsingException {
         return watch.getObject("video").getString("title");
+    }
+
+    private Boolean isChannel() {
+        return watch.isNull("owner");
     }
 }

@@ -2,7 +2,6 @@ package org.schabi.newpipe.extractor.services.niconico.extractors;
 
 import com.grack.nanojson.JsonObject;
 
-import org.schabi.newpipe.extractor.StreamingService;
 import org.schabi.newpipe.extractor.exceptions.ParsingException;
 import org.schabi.newpipe.extractor.localization.DateWrapper;
 import org.schabi.newpipe.extractor.services.niconico.NiconicoService;
@@ -60,7 +59,7 @@ public class NiconicoStreamInfoItemExtractor implements StreamInfoItemExtractor 
 
     @Override
     public String getUploaderUrl() throws ParsingException {
-        return NiconicoService.UPLOADER_URL + item.getLong("userId");
+        return NiconicoService.USER_URL + item.getLong("userId");
     }
 
     @Nullable
