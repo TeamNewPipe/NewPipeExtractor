@@ -42,7 +42,9 @@ public class NiconicoTrendRSSExtractor implements StreamInfoItemExtractor {
 
     @Override
     public String getThumbnailUrl() throws ParsingException {
-        return cdata.select("p").select("img").attr("src");
+        return cdata.getElementsByClass("nico-thumbnail")
+                .select("img")
+                .attr("src");
     }
 
     @Override
@@ -62,7 +64,9 @@ public class NiconicoTrendRSSExtractor implements StreamInfoItemExtractor {
 
     @Override
     public long getViewCount() throws ParsingException {
-        return 0;
+        return Long.parseLong(
+                cdata.getElementsByClass("nico-info-total-view")
+                        .text().replaceAll(",", ""));
     }
 
     @Override
