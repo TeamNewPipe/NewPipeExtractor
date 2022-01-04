@@ -1,5 +1,6 @@
 package org.schabi.newpipe.extractor.services.niconico.extractors;
 
+import com.grack.nanojson.JsonArray;
 import com.grack.nanojson.JsonObject;
 import com.grack.nanojson.JsonParser;
 import com.grack.nanojson.JsonParserException;
@@ -141,6 +142,18 @@ public class NiconicoStreamExtractor extends StreamExtractor {
     @Override
     public StreamType getStreamType() throws ParsingException {
         return StreamType.VIDEO_STREAM;
+    }
+
+    @Nonnull
+    @Override
+    public List<String> getTags() throws ParsingException {
+        final List<String> tags = new ArrayList<>();
+        final JsonArray items = watch.getObject("tag").getArray("items");
+        for (int i = 0; i < items.size(); i++) {
+            tags.add(items.getObject(i).getString("name"));
+        }
+
+        return tags;
     }
 
     @Nullable
