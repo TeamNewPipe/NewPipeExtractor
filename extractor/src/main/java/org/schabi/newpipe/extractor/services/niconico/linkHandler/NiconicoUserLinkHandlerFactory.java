@@ -20,6 +20,6 @@ public class NiconicoUserLinkHandlerFactory extends ListLinkHandlerFactory {
 
     @Override
     public String getUrl(String id, List<String> contentFilter, String sortFilter) throws ParsingException {
-        return NiconicoService.USER_URL + id + "/video";
+        return NiconicoService.USER_URL + id;
     }
 }
