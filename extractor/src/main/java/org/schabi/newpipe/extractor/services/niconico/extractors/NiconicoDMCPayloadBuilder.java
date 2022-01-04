@@ -60,7 +60,7 @@ public class NiconicoDMCPayloadBuilder {
                         .object("client_info")
                             .value("player_id", obj.getString("playerId"))
                         .end()
-                        .value("priority", obj.getLong("priority"))
+                        .value("priority", obj.getDouble("priority"))
                     .end()
                 .end()
                 .done();
