@@ -42,6 +42,7 @@ public class NiconicoService extends StreamingService {
     public static final String DAILY_TREND_URL = "https://www.nicovideo.jp/ranking/genre/all?term=24h&rss=2.0";
     public static final String SUGGESTION_URL = "https://sug.search.nicovideo.jp/suggestion/expand/";
     public static final String RELATION_URL = "https://flapi.nicovideo.jp/api/getrelation?video=";
+    public static final String TRENDING_RSS_STR = "^第\\d+位：(.*)$";
     public static final String SMILEVIDEO = "(nicovideo\\.jp\\/watch|nico\\.ms)\\/((?:sm|so)\\d+)(.+)?";
     public static final String USER_UPLOAD_LIST = "(?:www|sp).nicovideo.jp/user/(\\d+)(?:/video)?";
     public static final String APP_NAME = "NewPipe";
