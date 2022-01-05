@@ -17,7 +17,47 @@ import javax.annotation.Nullable;
 
 public class NiconicoStreamExtractorTest {
 
-    public static class SM9 extends DefaultStreamExtractorTest {
+    public static abstract class SmileVideoTest extends DefaultStreamExtractorTest {
+        @Override
+        public StreamingService expectedService() throws Exception {
+            return Niconico;
+        }
+
+        @Override
+        public void testTags() throws Exception {
+            // do nothing because tags of Niconico are editable for users.
+        }
+
+        @Override
+        public StreamType expectedStreamType() {
+            return StreamType.VIDEO_STREAM;
+        }
+
+        @Override
+        public boolean expectedHasFrames() {
+            // Niconico does not support video preview with free account.
+            return false;
+        }
+
+        @Override
+        public boolean expectedHasSubtitles() {
+            // Niconico does not support subtitles, but there are uploader's comments.
+            return false;
+        }
+
+        @Override
+        public boolean expectedHasAudioStreams() {
+            return false;
+        }
+
+        @Override
+        public long expectedDislikeCountAtLeast() {
+            // Niconico does not have Dislike button
+            return -1;
+        }
+    }
+
+    public static class SM9 extends SmileVideoTest {
         // the first Niconico video
         private static StreamExtractor extractor;
         private final static String URL = "https://www.nicovideo.jp/watch/sm9";
@@ -35,18 +75,8 @@ public class NiconicoStreamExtractorTest {
         }
 
         @Override
-        public StreamingService expectedService() throws Exception {
-            return Niconico;
-        }
-
-        @Override
         public String expectedName() throws Exception {
             return "新・豪血寺一族 -煩悩解放 - レッツゴー！陰陽師";
-        }
-
-        @Override
-        public String expectedId() throws Exception {
-            return "sm9";
         }
 
         @Override
@@ -60,8 +90,8 @@ public class NiconicoStreamExtractorTest {
         }
 
         @Override
-        public StreamType expectedStreamType() {
-            return StreamType.VIDEO_STREAM;
+        public String expectedId() throws Exception {
+            return "sm9";
         }
 
         @Override
@@ -75,32 +105,10 @@ public class NiconicoStreamExtractorTest {
         }
 
         @Override
-        public boolean expectedHasFrames() {
-            // Niconico does not support video preview with free account.
-            return false;
-        }
-
-        @Override
-        public boolean expectedHasSubtitles() {
-            // Niconico does not support subtitles, but there are uploader's comments.
-            return false;
-        }
-
-        @Override
         public List<String> expectedDescriptionContains() {
             final List<String> descs = new ArrayList<>();
             descs.add("レッツゴー！陰陽師（フルコーラスバージョン）");
             return descs;
-        }
-
-        @Override
-        public boolean expectedHasRelatedItems() {
-            return false;
-        }
-
-        @Override
-        public boolean expectedHasAudioStreams() {
-            return false;
         }
 
         @Override
@@ -129,15 +137,9 @@ public class NiconicoStreamExtractorTest {
         public long expectedLikeCountAtLeast() {
             return 11097;
         }
-
-        @Override
-        public long expectedDislikeCountAtLeast() {
-            // Niconico does not have Dislike button
-            return -1;
-        }
     }
 
-    public static class SM70 extends DefaultStreamExtractorTest {
+    public static class SM70 extends SmileVideoTest {
         // Shorted link (nico.ms)
         private static StreamExtractor extractor;
         private final static String SHORTED_URL = "https://nico.ms/sm70";
@@ -153,11 +155,6 @@ public class NiconicoStreamExtractorTest {
         @Override
         public StreamExtractor extractor() throws Exception {
             return extractor;
-        }
-
-        @Override
-        public StreamingService expectedService() throws Exception {
-            return Niconico;
         }
 
         @Override
@@ -181,11 +178,6 @@ public class NiconicoStreamExtractorTest {
         }
 
         @Override
-        public StreamType expectedStreamType() {
-            return StreamType.VIDEO_STREAM;
-        }
-
-        @Override
         public String expectedUploaderName() {
             return "一般会員";
         }
@@ -196,32 +188,10 @@ public class NiconicoStreamExtractorTest {
         }
 
         @Override
-        public boolean expectedHasFrames() {
-            // Niconico does not support video preview with free account.
-            return false;
-        }
-
-        @Override
-        public boolean expectedHasSubtitles() {
-            // Niconico does not support subtitles, but there are uploader's comments.
-            return false;
-        }
-
-        @Override
         public List<String> expectedDescriptionContains() {
             final List<String> descs = new ArrayList<>();
             descs.add("とかちつくちて");
             return descs;
-        }
-
-        @Override
-        public boolean expectedHasRelatedItems() {
-            return false;
-        }
-
-        @Override
-        public boolean expectedHasAudioStreams() {
-            return false;
         }
 
         @Override
@@ -250,15 +220,9 @@ public class NiconicoStreamExtractorTest {
         public long expectedLikeCountAtLeast() {
             return 3446;
         }
-
-        @Override
-        public long expectedDislikeCountAtLeast() {
-            // Niconico does not have Dislike button
-            return -1;
-        }
     }
 
-    public static class SO15013657 extends DefaultStreamExtractorTest {
+    public static class SO15013657 extends SmileVideoTest {
         // Official channel video (starts with "so")
         private static StreamExtractor extractor;
         private final static String URL = "https://www.nicovideo.jp/watch/so15013657";
@@ -273,11 +237,6 @@ public class NiconicoStreamExtractorTest {
         @Override
         public StreamExtractor extractor() throws Exception {
             return extractor;
-        }
-
-        @Override
-        public StreamingService expectedService() throws Exception {
-            return Niconico;
         }
 
         @Override
@@ -301,11 +260,6 @@ public class NiconicoStreamExtractorTest {
         }
 
         @Override
-        public StreamType expectedStreamType() {
-            return StreamType.VIDEO_STREAM;
-        }
-
-        @Override
         public String expectedUploaderName() {
             return "うたの☆プリンスさまっ♪マジLOVE1000％";
         }
@@ -316,32 +270,10 @@ public class NiconicoStreamExtractorTest {
         }
 
         @Override
-        public boolean expectedHasFrames() {
-            // Niconico does not support video preview with free account.
-            return false;
-        }
-
-        @Override
-        public boolean expectedHasSubtitles() {
-            // Niconico does not support subtitles, but there are uploader's comments.
-            return false;
-        }
-
-        @Override
         public List<String> expectedDescriptionContains() {
             final List<String> descs = new ArrayList<>();
             descs.add("メインテーマ");
             return descs;
-        }
-
-        @Override
-        public boolean expectedHasRelatedItems() {
-            return false;
-        }
-
-        @Override
-        public boolean expectedHasAudioStreams() {
-            return false;
         }
 
         @Override
@@ -370,15 +302,9 @@ public class NiconicoStreamExtractorTest {
         public long expectedLikeCountAtLeast() {
             return 2155;
         }
-
-        @Override
-        public long expectedDislikeCountAtLeast() {
-            // Niconico does not have Dislike button
-            return -1;
-        }
     }
 
-    public static class SM1715919 extends DefaultStreamExtractorTest {
+    public static class SM1715919 extends SmileVideoTest {
         // Smartphone page (sp.nicovideo.jp)
         private static StreamExtractor extractor;
         private final static String SHORTED_URL = "https://sp.nicovideo.jp/watch/sm1715919";
@@ -422,11 +348,6 @@ public class NiconicoStreamExtractorTest {
         }
 
         @Override
-        public StreamType expectedStreamType() {
-            return StreamType.VIDEO_STREAM;
-        }
-
-        @Override
         public String expectedUploaderName() {
             return "ryo";
         }
@@ -437,32 +358,10 @@ public class NiconicoStreamExtractorTest {
         }
 
         @Override
-        public boolean expectedHasFrames() {
-            // Niconico does not support video preview with free account.
-            return false;
-        }
-
-        @Override
-        public boolean expectedHasSubtitles() {
-            // Niconico does not support subtitles, but there are uploader's comments.
-            return false;
-        }
-
-        @Override
         public List<String> expectedDescriptionContains() {
             final List<String> descs = new ArrayList<>();
             descs.add("恋と戦争においてはあらゆる戦術が許される");
             return descs;
-        }
-
-        @Override
-        public boolean expectedHasRelatedItems() {
-            return false;
-        }
-
-        @Override
-        public boolean expectedHasAudioStreams() {
-            return false;
         }
 
         @Override
@@ -491,15 +390,9 @@ public class NiconicoStreamExtractorTest {
         public long expectedLikeCountAtLeast() {
             return 6745;
         }
-
-        @Override
-        public long expectedDislikeCountAtLeast() {
-            // Niconico does not have Dislike button
-            return -1;
-        }
     }
 
-    public static class SM37761910 extends DefaultStreamExtractorTest {
+    public static class SM37761910 extends SmileVideoTest {
         // New specification video (max. size 1.5GB)
         private static StreamExtractor extractor;
         private final static String URL = "https://www.nicovideo.jp/watch/sm37761910";
@@ -514,11 +407,6 @@ public class NiconicoStreamExtractorTest {
         @Override
         public StreamExtractor extractor() throws Exception {
             return extractor;
-        }
-
-        @Override
-        public StreamingService expectedService() throws Exception {
-            return Niconico;
         }
 
         @Override
@@ -542,11 +430,6 @@ public class NiconicoStreamExtractorTest {
         }
 
         @Override
-        public StreamType expectedStreamType() {
-            return StreamType.VIDEO_STREAM;
-        }
-
-        @Override
         public String expectedUploaderName() {
             return "Ado";
         }
@@ -557,32 +440,10 @@ public class NiconicoStreamExtractorTest {
         }
 
         @Override
-        public boolean expectedHasFrames() {
-            // Niconico does not support video preview with free account.
-            return false;
-        }
-
-        @Override
-        public boolean expectedHasSubtitles() {
-            // Niconico does not support subtitles, but there are uploader's comments.
-            return false;
-        }
-
-        @Override
         public List<String> expectedDescriptionContains() {
             final List<String> descs = new ArrayList<>();
             descs.add("お前が一番うるさいよ");
             return descs;
-        }
-
-        @Override
-        public boolean expectedHasRelatedItems() {
-            return false;
-        }
-
-        @Override
-        public boolean expectedHasAudioStreams() {
-            return false;
         }
 
         @Override
@@ -610,12 +471,6 @@ public class NiconicoStreamExtractorTest {
         @Override
         public long expectedLikeCountAtLeast() {
             return 8996;
-        }
-
-        @Override
-        public long expectedDislikeCountAtLeast() {
-            // Niconico does not have Dislike button
-            return -1;
         }
     }
 }
