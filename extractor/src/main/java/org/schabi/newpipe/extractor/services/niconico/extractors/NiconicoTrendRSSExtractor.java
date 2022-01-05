@@ -27,8 +27,12 @@ public class NiconicoTrendRSSExtractor implements StreamInfoItemExtractor {
 
     @Override
     public String getName() throws ParsingException {
-        return Parser.matchGroup1(
-                NiconicoService.TRENDING_RSS_STR, item.select("title").text());
+        final String title = item.select("title").text();
+        if (Parser.isMatch(NiconicoService.TRENDING_RSS_STR, title))
+        {
+            return Parser.matchGroup1(NiconicoService.TRENDING_RSS_STR, title);
+        }
+        return title;
     }
 
     @Override
