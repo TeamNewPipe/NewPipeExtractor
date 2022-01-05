@@ -20,7 +20,7 @@ public class NiconicoTrendRSSExtractor implements StreamInfoItemExtractor {
     private final Element item;
     private final Document cdata;
 
-    public NiconicoTrendRSSExtractor(Element e) {
+    public NiconicoTrendRSSExtractor(final Element e) {
         item = e;
         cdata = Jsoup.parse(e.select("description").text());
     }
@@ -38,8 +38,7 @@ public class NiconicoTrendRSSExtractor implements StreamInfoItemExtractor {
         final Optional<TextNode> url = textNodes.stream().filter(
                 str -> Parser.isMatch(NiconicoService.SMILEVIDEO, str.text()))
                 .findFirst();
-        if (url.isPresent())
-        {
+        if (url.isPresent()) {
             return url.get().text();
         }
         throw new ParsingException("could not get video's url.");
@@ -70,8 +69,7 @@ public class NiconicoTrendRSSExtractor implements StreamInfoItemExtractor {
     @Override
     public long getViewCount() throws ParsingException {
         final String count = cdata.getElementsByClass("nico-info-total-view").text();
-        if (count.isEmpty())
-        {
+        if (count.isEmpty()) {
             return 0;
         }
         return Long.parseLong(count.replaceAll(",", ""));
