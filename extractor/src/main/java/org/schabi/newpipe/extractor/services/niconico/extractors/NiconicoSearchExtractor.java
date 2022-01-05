@@ -31,16 +31,19 @@ import javax.annotation.Nonnull;
 public class NiconicoSearchExtractor extends SearchExtractor {
     private JsonObject searchCollection;
 
-    public NiconicoSearchExtractor(StreamingService service, SearchQueryHandler linkHandler) {
+    public NiconicoSearchExtractor(final StreamingService service,
+                                   final SearchQueryHandler linkHandler) {
         super(service, linkHandler);
     }
 
     @Override
-    public void onFetchPage(@Nonnull Downloader downloader) throws IOException, ExtractionException {
-        final String response = getDownloader().get(getLinkHandler().getUrl(), NiconicoService.LOCALE).responseBody();
+    public void onFetchPage(final @Nonnull Downloader downloader)
+            throws IOException, ExtractionException {
+        final String response = getDownloader().get(
+                getLinkHandler().getUrl(), NiconicoService.LOCALE).responseBody();
         try {
             searchCollection = JsonParser.object().from(response);
-        } catch (JsonParserException e) {
+        } catch (final JsonParserException e) {
             throw new ExtractionException("could not parse search results.");
         }
     }
@@ -53,20 +56,23 @@ public class NiconicoSearchExtractor extends SearchExtractor {
     }
 
     @Override
-    public InfoItemsPage<InfoItem> getPage(Page page) throws IOException, ExtractionException {
-        if (page == null || isNullOrEmpty(page.getUrl()))
-        {
+    public InfoItemsPage<InfoItem> getPage(final Page page)
+            throws IOException, ExtractionException {
+        if (page == null || isNullOrEmpty(page.getUrl())) {
             throw  new IllegalArgumentException("page does not contain an URL.");
         }
 
-        final String response = getDownloader().get(page.getUrl(), NiconicoService.LOCALE).responseBody();
+        final String response = getDownloader().get(
+                page.getUrl(), NiconicoService.LOCALE).responseBody();
+
         try {
             searchCollection = JsonParser.object().from(response);
-        } catch (JsonParserException e) {
+        } catch (final JsonParserException e) {
             throw new ParsingException("could not parse search results.");
         }
 
-        return new InfoItemsPage<>(collectItems(searchCollection), getNextPageFromCurrentUrl(page.getUrl()));
+        return new InfoItemsPage<>(collectItems(searchCollection),
+                getNextPageFromCurrentUrl(page.getUrl()));
     }
 
     @Nonnull
@@ -87,11 +93,14 @@ public class NiconicoSearchExtractor extends SearchExtractor {
     }
 
     private InfoItemsCollector<InfoItem, InfoItemExtractor> collectItems(
-            final JsonObject searchCollection) {
-        final InfoItemsSearchCollector collector = new InfoItemsSearchCollector(getServiceId());
+            final JsonObject collection) {
+        final InfoItemsSearchCollector collector
+                = new InfoItemsSearchCollector(getServiceId());
 
-        for (int i = 0; i < searchCollection.getArray("data").size(); i++) {
-            collector.commit(new NiconicoStreamInfoItemExtractor(searchCollection.getArray("data").getObject(i)));
+        for (int i = 0; i < collection.getArray("data").size(); i++) {
+            collector.commit(
+                    new NiconicoStreamInfoItemExtractor(
+                            collection.getArray("data").getObject(i)));
         }
 
         return collector;
@@ -104,7 +113,7 @@ public class NiconicoSearchExtractor extends SearchExtractor {
             final int pageOffset = Integer.parseInt(Parser.matchGroup1(offset, currentUrl));
             return new Page(currentUrl.replace("&_offset=" + pageOffset, "&_offset="
                     + (pageOffset + ITEMS_PER_PAGE)));
-        } catch (Parser.RegexException e) {
+        } catch (final Parser.RegexException e) {
             throw new ParsingException("could not parse search queries.");
         }
     }

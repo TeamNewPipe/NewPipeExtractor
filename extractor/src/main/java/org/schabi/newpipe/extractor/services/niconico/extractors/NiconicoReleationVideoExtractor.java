@@ -11,8 +11,7 @@ import javax.annotation.Nullable;
 public class NiconicoReleationVideoExtractor implements StreamInfoItemExtractor {
     private final Element video;
 
-    public NiconicoReleationVideoExtractor(Element v)
-    {
+    public NiconicoReleationVideoExtractor(final Element v) {
         video = v;
     }
 

@@ -8,17 +8,18 @@ import java.util.List;
 
 public class NiconicoTrendLinkHandlerFactory extends ListLinkHandlerFactory {
     @Override
-    public String getId(String url) throws ParsingException {
+    public String getId(final String url) throws ParsingException {
         return "Trending";
     }
 
     @Override
-    public boolean onAcceptUrl(String url) throws ParsingException {
+    public boolean onAcceptUrl(final String url) throws ParsingException {
         return NiconicoService.DAILY_TREND_URL.equals(url);
     }
 
     @Override
-    public String getUrl(String id, List<String> contentFilter, String sortFilter) throws ParsingException {
+    public String getUrl(final String id, final List<String> contentFilter,
+                         final String sortFilter) throws ParsingException {
         return NiconicoService.DAILY_TREND_URL;
     }
 }

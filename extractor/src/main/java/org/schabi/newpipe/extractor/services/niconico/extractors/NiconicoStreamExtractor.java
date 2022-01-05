@@ -41,7 +41,8 @@ import javax.annotation.Nullable;
 public class NiconicoStreamExtractor extends StreamExtractor {
     private JsonObject watch;
 
-    public NiconicoStreamExtractor(StreamingService service, LinkHandler linkHandler) {
+    public NiconicoStreamExtractor(final StreamingService service,
+                                   final LinkHandler linkHandler) {
         super(service, linkHandler);
     }
 
@@ -75,9 +76,9 @@ public class NiconicoStreamExtractor extends StreamExtractor {
     @Nonnull
     @Override
     public String getUploaderUrl() throws ParsingException {
-        if (isChannel())
-        {
-            return NiconicoService.CHANNEL_URL + watch.getObject("channel").getString("id");
+        if (isChannel()) {
+            return NiconicoService.CHANNEL_URL
+                    + watch.getObject("channel").getString("id");
         }
         return NiconicoService.USER_URL + watch.getObject("owner").getLong("id");
     }
@@ -85,8 +86,7 @@ public class NiconicoStreamExtractor extends StreamExtractor {
     @Nonnull
     @Override
     public String getUploaderName() throws ParsingException {
-        if (isChannel())
-        {
+        if (isChannel()) {
             return watch.getObject("channel").getString("name");
         }
         return watch.getObject("owner").getString("nickname");
@@ -95,9 +95,9 @@ public class NiconicoStreamExtractor extends StreamExtractor {
     @Nonnull
     @Override
     public String getUploaderAvatarUrl() throws ParsingException {
-        if (isChannel())
-        {
-            return  watch.getObject("channel").getObject("thumbnail").getString("url");
+        if (isChannel()) {
+            return  watch.getObject("channel")
+                    .getObject("thumbnail").getString("url");
         }
         return watch.getObject("owner").getString("iconUrl");
     }
@@ -111,22 +111,29 @@ public class NiconicoStreamExtractor extends StreamExtractor {
     public List<VideoStream> getVideoStreams() throws IOException, ExtractionException {
         final List<VideoStream> videoStreams = new ArrayList<>();
 
-        final JsonObject session = watch.getObject("media").getObject("delivery").getObject("movie");
-        final String dmc = session.getObject("session").getArray("urls").getObject(0).getString("url") + "?_format=json";
-        final String s = NiconicoDMCPayloadBuilder.BuildJSON(session.getObject("session"));
+        final JsonObject session
+                = watch.getObject("media").getObject("delivery").getObject("movie");
+
+        final String dmc
+                = session.getObject("session").getArray("urls")
+                .getObject(0).getString("url") + "?_format=json";
+
+        final String s = NiconicoDMCPayloadBuilder.buildJSON(session.getObject("session"));
 
         final Map<String, List<String>> headers = new HashMap<>();
         headers.put("Content-Type", Collections.singletonList("application/json"));
 
-        final Response response = getDownloader().post(dmc, headers, s.getBytes(StandardCharsets.UTF_8), NiconicoService.LOCALE);
+        final Response response = getDownloader().post(
+                dmc, headers, s.getBytes(StandardCharsets.UTF_8), NiconicoService.LOCALE);
 
         try {
             final JsonObject content = JsonParser.object().from(response.responseBody());
 
-            final String contentURL = content.getObject("data").getObject("session").getString("content_uri");
+            final String contentURL = content.getObject("data").getObject("session")
+                    .getString("content_uri");
             videoStreams.add(new VideoStream(contentURL, MediaFormat.MPEG_4, "360p"));
 
-        } catch (JsonParserException e) {
+        } catch (final JsonParserException e) {
             throw new ExtractionException("could not get video contents.");
         }
 
@@ -157,7 +164,8 @@ public class NiconicoStreamExtractor extends StreamExtractor {
 
     @Nullable
     @Override
-    public InfoItemsCollector<? extends InfoItem, ? extends InfoItemExtractor> getRelatedItems() throws IOException, ExtractionException {
+    public InfoItemsCollector<? extends InfoItem, ? extends InfoItemExtractor> getRelatedItems()
+            throws IOException, ExtractionException {
         final StreamInfoItemsCollector collector = new StreamInfoItemsCollector(
                 getServiceId());
 
@@ -167,7 +175,7 @@ public class NiconicoStreamExtractor extends StreamExtractor {
 
         final Elements videos = response.getElementsByTag("video");
 
-        for (Element e: videos) {
+        for (final Element e: videos) {
             collector.commit(new NiconicoReleationVideoExtractor(e));
         }
 
@@ -175,14 +183,15 @@ public class NiconicoStreamExtractor extends StreamExtractor {
     }
 
     @Override
-    public void onFetchPage(@Nonnull Downloader downloader) throws IOException, ExtractionException {
+    public void onFetchPage(final @Nonnull Downloader downloader)
+            throws IOException, ExtractionException {
         final String url = getLinkHandler().getUrl();
         final Response response = downloader.get(url, null, NiconicoService.LOCALE);
         final Document page = Jsoup.parse(response.responseBody());
         try {
             watch = JsonParser.object().from(
                     page.getElementById("js-initial-watch-data").attr("data-api-data"));
-        } catch (JsonParserException e) {
+        } catch (final JsonParserException e) {
            throw new ExtractionException("could not extract watching page");
         }
     }

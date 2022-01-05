@@ -30,21 +30,25 @@ public class NiconicoUserExtractor extends ChannelExtractor {
     private Document rss;
     private JsonObject info;
 
-    public NiconicoUserExtractor(StreamingService service, ListLinkHandler linkHandler) {
+    public NiconicoUserExtractor(final StreamingService service,
+                                 final ListLinkHandler linkHandler) {
         super(service, linkHandler);
     }
 
     @Override
-    public void onFetchPage(@Nonnull Downloader downloader) throws IOException, ExtractionException {
+    public void onFetchPage(final @Nonnull Downloader downloader)
+            throws IOException, ExtractionException {
         final String url = getLinkHandler().getUrl() + "/video?rss=2.0&page=1";
         rss = Jsoup.parse(getDownloader().get(url).responseBody());
 
-        Document user = Jsoup.parse(getDownloader().get(getLinkHandler().getUrl()).responseBody());
+        final Document user = Jsoup.parse(getDownloader().get(
+                getLinkHandler().getUrl()).responseBody());
+
         try {
             info = JsonParser.object()
                     .from(user.getElementById("js-initial-userpage-data")
                             .attr("data-initial-data"));
-        } catch (JsonParserException e) {
+        } catch (final JsonParserException e) {
             throw new ExtractionException("could not parse user information.");
         }
     }
@@ -64,7 +68,7 @@ public class NiconicoUserExtractor extends ChannelExtractor {
 
         final Elements arrays = rss.select("item");
 
-        for (Element e : arrays) {
+        for (final Element e : arrays) {
             streamInfoItemsCollector.commit(new NiconicoTrendRSSExtractor(e));
         }
 
@@ -75,9 +79,9 @@ public class NiconicoUserExtractor extends ChannelExtractor {
     }
 
     @Override
-    public InfoItemsPage<StreamInfoItem> getPage(Page page) throws IOException, ExtractionException {
-        if (page == null || isNullOrEmpty(page.getUrl()))
-        {
+    public InfoItemsPage<StreamInfoItem> getPage(final Page page)
+            throws IOException, ExtractionException {
+        if (page == null || isNullOrEmpty(page.getUrl())) {
             throw  new IllegalArgumentException("page does not contain an URL.");
         }
 
@@ -88,11 +92,12 @@ public class NiconicoUserExtractor extends ChannelExtractor {
                 NiconicoService.LOCALE).responseBody());
         final Elements arrays = response.getElementsByTag("item");
 
-        for (Element e : arrays) {
+        for (final Element e : arrays) {
             streamInfoItemsCollector.commit(new NiconicoTrendRSSExtractor(e));
         }
 
-        return new InfoItemsPage<>(streamInfoItemsCollector, getNextPageFromCurrentUrl(page.getUrl()));
+        return new InfoItemsPage<>(streamInfoItemsCollector,
+                getNextPageFromCurrentUrl(page.getUrl()));
     }
 
     @Override
@@ -151,7 +156,7 @@ public class NiconicoUserExtractor extends ChannelExtractor {
             final int nowPage = Integer.parseInt(Parser.matchGroup1(page, currentUrl));
             return new Page(currentUrl.replace("&page=" + nowPage, "&page="
                     + (nowPage + 1)));
-        } catch (Parser.RegexException e) {
+        } catch (final Parser.RegexException e) {
             throw new ParsingException("could not parse pager.");
         }
     }

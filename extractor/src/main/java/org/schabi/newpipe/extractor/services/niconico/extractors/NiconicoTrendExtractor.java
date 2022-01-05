@@ -22,22 +22,24 @@ import javax.annotation.Nonnull;
 public class NiconicoTrendExtractor extends KioskExtractor<StreamInfoItem> {
     private Document rss;
 
-    public NiconicoTrendExtractor(StreamingService streamingService, ListLinkHandler linkHandler, String kioskId) {
+    public NiconicoTrendExtractor(final StreamingService streamingService,
+                                  final ListLinkHandler linkHandler, final String kioskId) {
         super(streamingService, linkHandler, kioskId);
     }
 
     @Override
-    public void onFetchPage(@Nonnull Downloader downloader) throws IOException, ExtractionException {
+    public void onFetchPage(final @Nonnull Downloader downloader)
+            throws IOException, ExtractionException {
         rss = Jsoup.parse(getDownloader().get(NiconicoService.DAILY_TREND_URL).responseBody());
     }
 
     @Nonnull
     @Override
-    public InfoItemsPage<StreamInfoItem> getInitialPage() throws IOException, ExtractionException {
+    public InfoItemsPage<StreamInfoItem> getInitialPage()throws IOException, ExtractionException {
         final StreamInfoItemsCollector collector = new StreamInfoItemsCollector(getServiceId());
         final Elements arrays = rss.getElementsByTag("item");
 
-        for (Element e : arrays) {
+        for (final Element e : arrays) {
             collector.commit(new NiconicoTrendRSSExtractor(e));
         }
 
@@ -45,7 +47,8 @@ public class NiconicoTrendExtractor extends KioskExtractor<StreamInfoItem> {
     }
 
     @Override
-    public InfoItemsPage<StreamInfoItem> getPage(Page page) throws IOException, ExtractionException {
+    public InfoItemsPage<StreamInfoItem> getPage(final Page page)
+            throws IOException, ExtractionException {
         return InfoItemsPage.emptyPage();
     }
 

@@ -17,12 +17,13 @@ import com.grack.nanojson.JsonParser;
 import com.grack.nanojson.JsonParserException;
 
 public class NiconicoSuggestionExtractor extends SuggestionExtractor {
-    public NiconicoSuggestionExtractor(StreamingService service) {
+    public NiconicoSuggestionExtractor(final StreamingService service) {
         super(service);
     }
 
     @Override
-    public List<String> suggestionList(String query) throws IOException, ExtractionException {
+    public List<String> suggestionList(final String query)
+            throws IOException, ExtractionException {
         final List<String> suggestions = new ArrayList<>();
         final String encoded = URLEncoder.encode(query, UTF_8);
         final String response = NewPipe.getDownloader()
@@ -32,7 +33,7 @@ public class NiconicoSuggestionExtractor extends SuggestionExtractor {
             for (int i = 0; i < jsonArray.size(); i++) {
                 suggestions.add(jsonArray.getString(i));
             }
-        } catch (JsonParserException e) {
+        } catch (final JsonParserException e) {
             throw new ExtractionException("could not parse search suggestions.");
         }
 

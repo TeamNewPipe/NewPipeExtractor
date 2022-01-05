@@ -32,27 +32,30 @@ import org.schabi.newpipe.extractor.suggestion.SuggestionExtractor;
 import java.util.Collections;
 
 public class NiconicoService extends StreamingService {
-    public NiconicoService(final int id)
-    {
+    public NiconicoService(final int id) {
         super(id, "Niconico", Collections.singletonList(VIDEO));
     }
     public static final String BASE_URL = "https://www.nicovideo.jp";
     public static final String USER_URL = "https://www.nicovideo.jp/user/";
     public static final String CHANNEL_URL = "https://ch.nicovideo.jp/";
-    public static final String DAILY_TREND_URL = "https://www.nicovideo.jp/ranking/genre/all?term=24h&rss=2.0";
-    public static final String SUGGESTION_URL = "https://sug.search.nicovideo.jp/suggestion/expand/";
-    public static final String RELATION_URL = "https://flapi.nicovideo.jp/api/getrelation?video=";
+    public static final String DAILY_TREND_URL
+            = "https://www.nicovideo.jp/ranking/genre/all?term=24h&rss=2.0";
+    public static final String SUGGESTION_URL
+            = "https://sug.search.nicovideo.jp/suggestion/expand/";
+    public static final String RELATION_URL
+            = "https://flapi.nicovideo.jp/api/getrelation?video=";
     public static final String TRENDING_RSS_STR = "^第\\d+位：(.*)$";
-    public static final String SMILEVIDEO = "(nicovideo\\.jp\\/watch|nico\\.ms)\\/((?:sm|so)\\d+)(.+)?";
-    public static final String USER_UPLOAD_LIST = "(?:www|sp).nicovideo.jp/user/(\\d+)(?:/video)?";
+    public static final String SMILEVIDEO
+            = "(nicovideo\\.jp\\/watch|nico\\.ms)\\/((?:sm|so)\\d+)(.+)?";
+    public static final String USER_UPLOAD_LIST
+            = "(?:www|sp).nicovideo.jp/user/(\\d+)(?:/video)?";
     public static final String APP_NAME = "NewPipe";
     // generally, Niconico uses Japanese, but some videos have multiple language texts.
     // Use ja-JP locale to get original information of video.
     public static final Localization LOCALE = Localization.fromLocalizationCode("ja-JP");
 
     @Override
-    public String getBaseUrl()
-    {
+    public String getBaseUrl() {
         return BASE_URL;
     }
 
@@ -82,7 +85,7 @@ public class NiconicoService extends StreamingService {
     }
 
     @Override
-    public SearchExtractor getSearchExtractor(SearchQueryHandler queryHandler) {
+    public SearchExtractor getSearchExtractor(final SearchQueryHandler queryHandler) {
         return new NiconicoSearchExtractor(this, queryHandler);
     }
 
@@ -102,14 +105,14 @@ public class NiconicoService extends StreamingService {
                 new NiconicoTrendExtractor(this,
                         new NiconicoTrendLinkHandlerFactory().fromUrl(url), id);
 
-        KioskList kioskList = new KioskList(this);
+        final KioskList kioskList = new KioskList(this);
 
         final NiconicoTrendLinkHandlerFactory h = new NiconicoTrendLinkHandlerFactory();
 
         try {
             kioskList.addKioskEntry(kioskFactory, h, "Trending");
             kioskList.setDefaultKiosk("Trending");
-        } catch (Exception e) {
+        } catch (final Exception e) {
             throw new ExtractionException(e);
         }
 
@@ -117,22 +120,26 @@ public class NiconicoService extends StreamingService {
     }
 
     @Override
-    public ChannelExtractor getChannelExtractor(ListLinkHandler linkHandler) throws ExtractionException {
+    public ChannelExtractor getChannelExtractor(final ListLinkHandler linkHandler)
+            throws ExtractionException {
         return new NiconicoUserExtractor(this, linkHandler);
     }
 
     @Override
-    public PlaylistExtractor getPlaylistExtractor(ListLinkHandler linkHandler) throws ExtractionException {
+    public PlaylistExtractor getPlaylistExtractor(final ListLinkHandler linkHandler)
+            throws ExtractionException {
         return null;
     }
 
     @Override
-    public StreamExtractor getStreamExtractor(LinkHandler linkHandler) throws ExtractionException {
+    public StreamExtractor getStreamExtractor(final LinkHandler linkHandler)
+            throws ExtractionException {
         return new NiconicoStreamExtractor(this, linkHandler);
     }
 
     @Override
-    public CommentsExtractor getCommentsExtractor(ListLinkHandler linkHandler) throws ExtractionException {
+    public CommentsExtractor getCommentsExtractor(final ListLinkHandler linkHandler)
+            throws ExtractionException {
         return null;
     }
 }

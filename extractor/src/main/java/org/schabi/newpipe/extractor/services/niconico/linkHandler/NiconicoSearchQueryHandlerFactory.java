@@ -12,7 +12,8 @@ import java.util.List;
 
 public class NiconicoSearchQueryHandlerFactory extends SearchQueryHandlerFactory {
     public static final int ITEMS_PER_PAGE = 10;
-    private static final String SEARCH_URL = "https://api.search.nicovideo.jp/api/v2/snapshot/video/contents/search";
+    private static final String SEARCH_URL
+            = "https://api.search.nicovideo.jp/api/v2/snapshot/video/contents/search";
 
     @Override
     public String getUrl(final String id,
@@ -21,12 +22,13 @@ public class NiconicoSearchQueryHandlerFactory extends SearchQueryHandlerFactory
         try {
             return SEARCH_URL + "?q=" + URLEncoder.encode(id, UTF_8)
                     + "&targets=title,description,tags"
-                    + "&fields=contentId,title,userId,channelId,viewCounter,lengthSeconds,thumbnailUrl,startTime"
+                    + "&fields=contentId,title,userId,channelId"
+                    + ",viewCounter,lengthSeconds,thumbnailUrl,startTime"
                     + "&_sort=-viewCounter"
                     + "&_offset=0"
                     + "&_limit=" + ITEMS_PER_PAGE
                     + "&_context=" + URLEncoder.encode(NiconicoService.APP_NAME, UTF_8);
-        } catch (UnsupportedEncodingException e) {
+        } catch (final UnsupportedEncodingException e) {
             throw new ParsingException("could not encode query.");
         }
     }

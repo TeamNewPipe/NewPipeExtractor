@@ -4,8 +4,7 @@ import com.grack.nanojson.JsonObject;
 import com.grack.nanojson.JsonWriter;
 
 public class NiconicoDMCPayloadBuilder {
-    public static String BuildJSON(JsonObject obj)
-    {
+    public static String buildJSON(final JsonObject obj) {
         return JsonWriter.string()
                 .object()
                     .object("session")
@@ -52,7 +51,9 @@ public class NiconicoDMCPayloadBuilder {
                             .end()
                         .end()
                         .object("content_auth")
-                            .value("auth_type", obj.getObject("authTypes").getString(obj.getArray("protocols").getString(0)))
+                            .value("auth_type",
+                                    obj.getObject("authTypes").getString(obj.getArray("protocols")
+                                            .getString(0)))
                             .value("content_key_timeout", obj.getLong("contentKeyTimeout"))
                             .value("service_id", "nicovideo")
                             .value("service_user_id", obj.getString("serviceUserId"))
