@@ -51,11 +51,11 @@ public class NiconicoUserExtractor extends ChannelExtractor {
             info = JsonParser.object()
                     .from(user.getElementById("js-initial-userpage-data")
                             .attr("data-initial-data"));
-            uploaderName = info.getObject("userDetails").getObject("userDetails")
-                    .getObject("user").getString("nickname");
+            final JsonObject infoObj = info.getObject("userDetails").getObject("userDetails")
+                    .getObject("user");
+            uploaderName = infoObj.getString("nickname");
             uploaderUrl = getLinkHandler().getUrl();
-            uploaderAvatarUrl = info.getObject("userDetails").getObject("userDetails")
-                    .getObject("user").getObject("icons").getString("large");
+            uploaderAvatarUrl = infoObj.getObject("icons").getString("large");
         } catch (final JsonParserException e) {
             throw new ExtractionException("could not parse user information.");
         }
