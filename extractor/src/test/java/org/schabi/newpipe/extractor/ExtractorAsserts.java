@@ -42,7 +42,7 @@ public class ExtractorAsserts {
 
     public static void assertIsSecureUrl(String urlToCheck) {
         URL url = urlFromString(urlToCheck);
-        assertEquals("https",url.getProtocol(), "Protocol of URL is not secure");
+        assertEquals("https", url.getProtocol(), "Protocol of URL is not secure");
     }
 
     public static void assertNotEmpty(String stringToCheck) {
