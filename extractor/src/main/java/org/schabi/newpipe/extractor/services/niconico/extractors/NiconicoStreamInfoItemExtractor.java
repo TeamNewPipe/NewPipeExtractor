@@ -5,6 +5,7 @@ import com.grack.nanojson.JsonObject;
 import org.schabi.newpipe.extractor.exceptions.ParsingException;
 import org.schabi.newpipe.extractor.localization.DateWrapper;
 import org.schabi.newpipe.extractor.services.niconico.NiconicoService;
+import org.schabi.newpipe.extractor.services.niconico.NiconicoServiceParsingHelper;
 import org.schabi.newpipe.extractor.stream.StreamInfoItemExtractor;
 import org.schabi.newpipe.extractor.stream.StreamType;
 
@@ -88,7 +89,7 @@ public class NiconicoStreamInfoItemExtractor implements StreamInfoItemExtractor 
     @Nullable
     @Override
     public DateWrapper getUploadDate() throws ParsingException {
-        return null;
+        return NiconicoServiceParsingHelper.parseSnapshotDateTime(item.getString("startTime"));
     }
 
     private boolean isChannel() {

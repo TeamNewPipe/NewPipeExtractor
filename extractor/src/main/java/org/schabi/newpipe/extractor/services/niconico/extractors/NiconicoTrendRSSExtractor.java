@@ -7,6 +7,7 @@ import org.jsoup.nodes.TextNode;
 import org.schabi.newpipe.extractor.exceptions.ParsingException;
 import org.schabi.newpipe.extractor.localization.DateWrapper;
 import org.schabi.newpipe.extractor.services.niconico.NiconicoService;
+import org.schabi.newpipe.extractor.services.niconico.NiconicoServiceParsingHelper;
 import org.schabi.newpipe.extractor.stream.StreamInfoItemExtractor;
 import org.schabi.newpipe.extractor.stream.StreamType;
 import org.schabi.newpipe.extractor.utils.Parser;
@@ -120,12 +121,16 @@ public class NiconicoTrendRSSExtractor implements StreamInfoItemExtractor {
     @Nullable
     @Override
     public String getTextualUploadDate() throws ParsingException {
-        return null;
+        // pubDate returns wrong date, and it should parse from nico-info-date.
+        final String strDate = cdata.getElementsByClass("nico-info-date").text();
+        return strDate;
     }
 
     @Nullable
     @Override
     public DateWrapper getUploadDate() throws ParsingException {
-        return null;
+        // pubDate returns wrong date, and it should parse from nico-info-date.
+        final String strDate = cdata.getElementsByClass("nico-info-date").text();
+        return NiconicoServiceParsingHelper.parseRSSDateTime(strDate);
     }
 }
