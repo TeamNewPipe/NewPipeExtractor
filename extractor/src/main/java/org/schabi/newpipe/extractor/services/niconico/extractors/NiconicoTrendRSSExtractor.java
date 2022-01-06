@@ -67,14 +67,14 @@ public class NiconicoTrendRSSExtractor implements StreamInfoItemExtractor {
 
     @Override
     public long getDuration() throws ParsingException {
-        return 0;
+        return -1;
     }
 
     @Override
     public long getViewCount() throws ParsingException {
         final String count = cdata.getElementsByClass("nico-info-total-view").text();
         if (count.isEmpty()) {
-            return 0;
+            return -1;
         }
         return Long.parseLong(count.replaceAll(",", ""));
     }
