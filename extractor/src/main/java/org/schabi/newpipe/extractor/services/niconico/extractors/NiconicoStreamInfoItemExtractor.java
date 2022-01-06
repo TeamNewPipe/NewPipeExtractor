@@ -54,11 +54,17 @@ public class NiconicoStreamInfoItemExtractor implements StreamInfoItemExtractor 
     @Override
     public String getUploaderName() throws ParsingException {
         // Snapshot search API could not get uploader name.
-        return String.valueOf(item.getLong("userId"));
+        if (isChannel()) {
+            return "ch" + item.getLong("channelId");
+        }
+        return "user/" + item.getLong("userId");
     }
 
     @Override
     public String getUploaderUrl() throws ParsingException {
+        if (isChannel()) {
+            return NiconicoService.CHANNEL_URL + "ch" + item.getLong("channelId");
+        }
         return NiconicoService.USER_URL + item.getLong("userId");
     }
 
@@ -83,5 +89,12 @@ public class NiconicoStreamInfoItemExtractor implements StreamInfoItemExtractor 
     @Override
     public DateWrapper getUploadDate() throws ParsingException {
         return null;
+    }
+
+    private boolean isChannel() {
+        if (item.has("channelId") && item.getLong("channelId") != 0) {
+            return true;
+        }
+        return false;
     }
 }
