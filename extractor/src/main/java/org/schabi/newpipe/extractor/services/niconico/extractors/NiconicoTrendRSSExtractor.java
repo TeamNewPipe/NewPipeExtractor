@@ -19,10 +19,19 @@ import javax.annotation.Nullable;
 public class NiconicoTrendRSSExtractor implements StreamInfoItemExtractor {
     private final Element item;
     private final Document cdata;
+    private final String uploaderName;
+    private final String uploaderUrl;
+    private final String uploaderAvaterUrl;
 
-    public NiconicoTrendRSSExtractor(final Element e) {
+    public NiconicoTrendRSSExtractor(final Element e, final @Nullable String upldName,
+                                     final @Nullable String upldUrl,
+                                     final @Nullable String upldAvaterUrl) {
         item = e;
         cdata = Jsoup.parse(e.select("description").text());
+
+        uploaderName = upldName;
+        uploaderUrl = upldUrl;
+        uploaderAvaterUrl = upldAvaterUrl;
     }
 
     @Override
@@ -81,18 +90,26 @@ public class NiconicoTrendRSSExtractor implements StreamInfoItemExtractor {
 
     @Override
     public String getUploaderName() throws ParsingException {
-        return "";
+        if (uploaderName == null || uploaderName.isEmpty())
+        {
+            return "";
+        }
+        return uploaderName;
     }
 
     @Override
     public String getUploaderUrl() throws ParsingException {
-        return "";
+        if (uploaderUrl == null || uploaderUrl.isEmpty())
+        {
+            return "";
+        }
+        return uploaderUrl;
     }
 
     @Nullable
     @Override
     public String getUploaderAvatarUrl() throws ParsingException {
-        return null;
+        return uploaderAvaterUrl;
     }
 
     @Override

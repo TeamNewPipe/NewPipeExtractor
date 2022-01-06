@@ -28,6 +28,9 @@ import javax.annotation.Nonnull;
 
 public class NiconicoUserExtractor extends ChannelExtractor {
     private Document rss;
+    private String uploaderName;
+    private String uploaderUrl;
+    private String uploaderAvatarUrl;
     private JsonObject info;
 
     public NiconicoUserExtractor(final StreamingService service,
@@ -48,6 +51,11 @@ public class NiconicoUserExtractor extends ChannelExtractor {
             info = JsonParser.object()
                     .from(user.getElementById("js-initial-userpage-data")
                             .attr("data-initial-data"));
+            uploaderName = info.getObject("userDetails").getObject("userDetails")
+                    .getObject("user").getString("nickname");
+            uploaderUrl = getLinkHandler().getUrl();
+            uploaderAvatarUrl = info.getObject("userDetails").getObject("userDetails")
+                    .getObject("user").getObject("icons").getString("large");
         } catch (final JsonParserException e) {
             throw new ExtractionException("could not parse user information.");
         }
@@ -56,8 +64,7 @@ public class NiconicoUserExtractor extends ChannelExtractor {
     @Nonnull
     @Override
     public String getName() throws ParsingException {
-        return info.getObject("userDetails").getObject("userDetails")
-                .getObject("user").getString("nickname");
+        return uploaderName;
     }
 
     @Nonnull
@@ -69,7 +76,8 @@ public class NiconicoUserExtractor extends ChannelExtractor {
         final Elements arrays = rss.select("item");
 
         for (final Element e : arrays) {
-            streamInfoItemsCollector.commit(new NiconicoTrendRSSExtractor(e));
+            streamInfoItemsCollector.commit(new NiconicoTrendRSSExtractor(e, uploaderName,
+                    uploaderUrl, uploaderAvatarUrl));
         }
 
         final String currentPageUrl = getLinkHandler().getUrl() + "/video?rss=2.0&page=1";
@@ -93,7 +101,8 @@ public class NiconicoUserExtractor extends ChannelExtractor {
         final Elements arrays = response.getElementsByTag("item");
 
         for (final Element e : arrays) {
-            streamInfoItemsCollector.commit(new NiconicoTrendRSSExtractor(e));
+            streamInfoItemsCollector.commit(new NiconicoTrendRSSExtractor(e, uploaderName,
+                    uploaderUrl, uploaderAvatarUrl));
         }
 
         return new InfoItemsPage<>(streamInfoItemsCollector,
@@ -102,8 +111,7 @@ public class NiconicoUserExtractor extends ChannelExtractor {
 
     @Override
     public String getAvatarUrl() throws ParsingException {
-        return info.getObject("userDetails").getObject("userDetails")
-                .getObject("user").getObject("icons").getString("large");
+        return uploaderAvatarUrl;
     }
 
     @Override

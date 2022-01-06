@@ -38,9 +38,11 @@ public class NiconicoTrendExtractor extends KioskExtractor<StreamInfoItem> {
     public InfoItemsPage<StreamInfoItem> getInitialPage()throws IOException, ExtractionException {
         final StreamInfoItemsCollector collector = new StreamInfoItemsCollector(getServiceId());
         final Elements arrays = rss.getElementsByTag("item");
+        final String uploaderName = rss.getElementsByTag("dc:creator").text();
+        final String uploaderUrl = rss.getElementsByTag("link").text();
 
         for (final Element e : arrays) {
-            collector.commit(new NiconicoTrendRSSExtractor(e));
+            collector.commit(new NiconicoTrendRSSExtractor(e, uploaderName, uploaderUrl, null));
         }
 
         return new InfoItemsPage<>(collector, null);
