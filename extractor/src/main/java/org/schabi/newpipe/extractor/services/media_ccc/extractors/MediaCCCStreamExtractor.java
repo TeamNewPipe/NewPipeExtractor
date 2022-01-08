@@ -110,6 +110,9 @@ public class MediaCCCStreamExtractor extends StreamExtractor {
                         mediaFormat = null;
                     }
 
+                    // Don't use the containsSimilarStream method because it will always return
+                    // false so if there are multiples audio streams available, only the first will
+                    // be extracted in this case.
                     audioStreams.add(new AudioStream(recording.getString("filename"),
                             recording.getString("recording_url"), mediaFormat, UNKNOWN_BITRATE));
                 }
@@ -137,6 +140,8 @@ public class MediaCCCStreamExtractor extends StreamExtractor {
                         mediaFormat = null;
                     }
 
+                    // Don't use the containsSimilarStream method because it will remove the
+                    // extraction of some video versions (mostly languages)
                     videoStreams.add(new VideoStream(recording.getString("filename"),
                             recording.getString("recording_url"), mediaFormat,
                             recording.getInt("height") + "p", false));

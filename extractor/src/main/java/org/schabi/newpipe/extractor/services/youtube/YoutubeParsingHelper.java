@@ -22,7 +22,6 @@ import java.io.UnsupportedEncodingException;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLDecoder;
-import java.nio.charset.StandardCharsets;
 import java.time.LocalDate;
 import java.time.OffsetDateTime;
 import java.time.ZoneOffset;
@@ -353,7 +352,7 @@ public class YoutubeParsingHelper {
                 .end()
                 .value("fetchLiveState", true)
                 .end()
-            .end().done().getBytes(StandardCharsets.UTF_8);
+            .end().done().getBytes(UTF_8);
         // @formatter:on
 
         final Map<String, List<String>> headers = new HashMap<>();
@@ -544,7 +543,7 @@ public class YoutubeParsingHelper {
                     .end()
                 .end()
                 .value("input", EMPTY_STRING)
-            .end().done().getBytes(StandardCharsets.UTF_8);
+            .end().done().getBytes(UTF_8);
         // @formatter:on
 
         final Response response = getDownloader().post(url,
@@ -954,7 +953,7 @@ public class YoutubeParsingHelper {
                         .end()
                     .end()
                     .done())
-                    .getBytes(StandardCharsets.UTF_8);
+                    .getBytes(UTF_8);
             // @formatter:on
         } else {
             // @formatter:off
@@ -966,7 +965,7 @@ public class YoutubeParsingHelper {
                         .end()
                     .end()
                     .done())
-                    .getBytes(StandardCharsets.UTF_8);
+                    .getBytes(UTF_8);
             // @formatter:on
         }
     }

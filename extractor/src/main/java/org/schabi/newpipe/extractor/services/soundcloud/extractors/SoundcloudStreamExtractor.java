@@ -260,7 +260,11 @@ public class SoundcloudStreamExtractor extends StreamExtractor {
                 try {
                     mediaUrl = getTranscodingUrl(url, protocol);
                     if (!mediaUrl.isEmpty()) {
-                        audioStreams.add(new AudioStream(preset, mediaUrl,  mediaFormat, bitrate));
+                        final AudioStream audioStream = new AudioStream(preset, mediaUrl,
+                                mediaFormat, bitrate);
+                        if (!Stream.containSimilarStream(audioStream, audioStreams)) {
+                            audioStreams.add(audioStream);
+                        }
                     }
                 } catch (final Exception ignored) {
                     // Something went wrong when parsing this transcoding, don't add it to the

@@ -426,15 +426,12 @@ public class PeertubeStreamExtractor extends StreamExtractor {
                     continue;
                 }
                 final JsonObject stream = (JsonObject) s;
-                videoStreams.add(new VideoStream(
-                        String.valueOf(stream.getInt("id", 0)),
-                        stream.getString(PLAYLIST_URL, EMPTY_STRING),
-                        true,
-                        MediaFormat.MPEG_4,
-                        DeliveryMethod.HLS,
-                        "",
-                        false,
-                        null));
+                // Don't use the containsSimilarStream method because it will always return false
+                // so if there are multiples HLS URLs returned, only the first will be extracted in
+                // this case.
+                videoStreams.add(new VideoStream(String.valueOf(stream.getInt("id", 0)),
+                        stream.getString(PLAYLIST_URL, EMPTY_STRING), true, MediaFormat.MPEG_4,
+                        DeliveryMethod.HLS, EMPTY_STRING, false, null));
             }
         } catch (final Exception e) {
             throw new ParsingException("Could not get video streams", e);
@@ -509,8 +506,12 @@ public class PeertubeStreamExtractor extends StreamExtractor {
                             hlsStreamUrl = playlistUrl.replace("master", JsonUtils.getNumber(
                                     stream, RESOLUTION_ID).toString());
                         }
-                        audioStreams.add(new AudioStream(id + "-" + DeliveryMethod.HLS,
-                                hlsStreamUrl, true, format, DeliveryMethod.HLS, UNKNOWN_BITRATE));
+                        final AudioStream audioStream = new AudioStream(id + "-"
+                                + DeliveryMethod.HLS, hlsStreamUrl, true, format,
+                                DeliveryMethod.HLS, UNKNOWN_BITRATE);
+                        if (!Stream.containSimilarStream(audioStream, audioStreams)) {
+                            audioStreams.add(audioStream);
+                        }
                     }
                 } else {
                     videoStreams.add(new VideoStream(
@@ -531,10 +532,12 @@ public class PeertubeStreamExtractor extends StreamExtractor {
                             hlsStreamUrl = playlistUrl.replace("master", JsonUtils.getNumber(
                                     stream, RESOLUTION_ID).toString());
                         }
-                        videoStreams.add(new VideoStream(
-                                id + "-" + DeliveryMethod.HLS,
-                                hlsStreamUrl, true, format, DeliveryMethod.HLS, resolution,
-                                false, playlistUrl));
+                        final VideoStream videoStream = new VideoStream(id + "-"
+                                + DeliveryMethod.HLS, hlsStreamUrl, true, format,
+                                DeliveryMethod.HLS, resolution, false, playlistUrl);
+                        if (!Stream.containSimilarStream(videoStream, videoStreams)) {
+                            videoStreams.add(videoStream);
+                        }
                     }
                 }
             }

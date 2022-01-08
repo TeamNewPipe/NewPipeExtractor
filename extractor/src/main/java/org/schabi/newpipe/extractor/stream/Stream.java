@@ -55,10 +55,13 @@ public abstract class Stream implements Serializable {
      *
      * @param stream the stream which will be compared to the streams in the stream list
      * @param streamList the list of {@link Stream Streams} which will be compared
+     * @return whether the list already contains one stream with equals stats
      */
     public static boolean containSimilarStream(final Stream stream,
                                                final List<? extends Stream> streamList) {
-        if (isNullOrEmpty(streamList)) return false;
+        if (isNullOrEmpty(streamList)) {
+            return false;
+        }
         for (final Stream cmpStream : streamList) {
             if (stream.equalStats(cmpStream)) {
                 return true;
@@ -68,25 +71,39 @@ public abstract class Stream implements Serializable {
     }
 
     /**
-     * Reveals whether two streams have the same stats (format and bitrate, for example).
+     * Reveals whether two streams have the same stats ({@link MediaFormat media format} and
+     * {@link DeliveryMethod delivery method}).
      *
      * <p>
-     * It returns always false if the id of the stream passed is unknown (or also if the stream
-     * passed is null) or if the format of the stream compared is not known.
+     * If the {@link MediaFormat media format} of the stream is unknown, the streams are compared
+     * by only using the {@link DeliveryMethod delivery method} and their id.
+     * </p>
+     * <p>
+     * Note: This method always returns always false if the stream passed is null.
      * </p>
      * @param cmp the stream object to be compared to this stream object
+     * @return whether the stream have the same stats or not, based on the criteria above
      */
     public boolean equalStats(final Stream cmp) {
-        if (mediaFormat != null && cmp != null && cmp.getFormat() != null) {
-            return mediaFormat.id == cmp.getFormat().id;
+        if (cmp == null) {
+            return false;
         }
-        return false;
+        Boolean haveSameMediaFormatId = null;
+        if (mediaFormat != null && cmp.mediaFormat != null) {
+            haveSameMediaFormatId = mediaFormat.id == cmp.mediaFormat.id;
+        }
+        final boolean areUsingSameDeliveryMethodAndAreUrlStreams =
+                deliveryMethod == cmp.deliveryMethod && isUrl == cmp.isUrl;
+        return haveSameMediaFormatId != null
+                ? haveSameMediaFormatId && areUsingSameDeliveryMethodAndAreUrlStreams
+                : areUsingSameDeliveryMethodAndAreUrlStreams;
     }
 
     /**
      * Reveals whether two streams are equal.
      *
      * @param cmp the stream object to be compared to this stream object
+     * @return whether streams are equal
      */
     public boolean equals(final Stream cmp) {
         return equalStats(cmp) && content.equals(cmp.content);
@@ -104,7 +121,7 @@ public abstract class Stream implements Serializable {
     /**
      * Gets the URL.
      *
-     * @return the URL
+     * @return the URL if the content is a URL, {@code null} otherwise
      * @deprecated Use {@link #getContent()} instead
      */
     @Deprecated
@@ -123,7 +140,7 @@ public abstract class Stream implements Serializable {
     }
 
     /**
-     * Return if the content is a URL or not.
+     * Returns if the content is a URL or not.
      *
      * @return {@code true} if the content of this stream content is a URL, {@code false}
      * if it is the actual content

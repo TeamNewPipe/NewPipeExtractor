@@ -21,7 +21,6 @@ import javax.xml.transform.dom.DOMSource;
 import javax.xml.transform.stream.StreamResult;
 import java.io.IOException;
 import java.io.StringWriter;
-import java.nio.charset.StandardCharsets;
 import java.util.*;
 
 import static org.schabi.newpipe.extractor.services.youtube.YoutubeParsingHelper.*;
@@ -575,7 +574,7 @@ public final class YoutubeDashManifestCreator {
                 final Map<String, List<String>> headers = new HashMap<>();
                 headers.put("User-Agent", Collections.singletonList(
                         getYoutubeAndroidAppUserAgent(null)));
-                final byte[] emptyBody = "".getBytes(StandardCharsets.UTF_8);
+                final byte[] emptyBody = "".getBytes(UTF_8);
                 return downloader.post(baseStreamingUrl, headers, emptyBody);
             } catch (final IOException | ExtractionException e) {
                 throw new YoutubeDashManifestCreationException(
