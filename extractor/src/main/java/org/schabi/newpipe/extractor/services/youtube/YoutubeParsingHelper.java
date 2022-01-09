@@ -5,6 +5,7 @@ import static org.schabi.newpipe.extractor.utils.Utils.EMPTY_STRING;
 import static org.schabi.newpipe.extractor.utils.Utils.HTTP;
 import static org.schabi.newpipe.extractor.utils.Utils.HTTPS;
 import static org.schabi.newpipe.extractor.utils.Utils.UTF_8;
+import static org.schabi.newpipe.extractor.utils.Utils.getStringResultFromRegexArray;
 import static org.schabi.newpipe.extractor.utils.Utils.isNullOrEmpty;
 
 import com.grack.nanojson.JsonArray;
@@ -57,20 +58,20 @@ import javax.annotation.Nullable;
  * Created by Christian Schabesberger on 02.03.16.
  *
  * Copyright (C) Christian Schabesberger 2016 <chris.schabesberger@mailbox.org>
- * YoutubeParsingHelper.java is part of NewPipe.
+ * YoutubeParsingHelper.java is part of NewPipe Extractor.
  *
- * NewPipe is free software: you can redistribute it and/or modify
+ * NewPipe Extractor is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
  *
- * NewPipe is distributed in the hope that it will be useful,
+ * NewPipe Extractor is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
  * GNU General Public License for more details.
  *
  * You should have received a copy of the GNU General Public License
- * along with NewPipe.  If not, see <http://www.gnu.org/licenses/>.
+ * along with NewPipe Extractor. If not, see <https://www.gnu.org/licenses/>.
  */
 
 public final class YoutubeParsingHelper {
@@ -98,6 +99,15 @@ public final class YoutubeParsingHelper {
     private static boolean keyAndVersionExtracted = false;
     @SuppressWarnings("OptionalUsedAsFieldOrParameterType")
     private static Optional<Boolean> hardcodedClientVersionAndKeyValid = Optional.empty();
+    private static final String[] INNERTUBE_CONTEXT_CLIENT_VERSION_REGEXES =
+            {"INNERTUBE_CONTEXT_CLIENT_VERSION\":\"([0-9\\.]+?)\"",
+                    "innertube_context_client_version\":\"([0-9\\.]+?)\"",
+                    "client.version=([0-9\\.]+)"};
+    private static final String[] INNERTUBE_API_KEY_REGEXES =
+            {"INNERTUBE_API_KEY\":\"([0-9a-zA-Z_-]+?)\"",
+                    "innertubeApiKey\":\"([0-9a-zA-Z_-]+?)\""};
+    private static final String INNERTUBE_CLIENT_NAME_REGEX =
+            "INNERTUBE_CONTEXT_CLIENT_NAME\":([0-9]+?),";
 
     private static final String CONTENT_PLAYBACK_NONCE_ALPHABET =
             "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789-_";
@@ -484,12 +494,33 @@ public final class YoutubeParsingHelper {
         return hardcodedClientVersionAndKeyValid.get();
     }
 
-    private static void extractClientVersionAndKey() throws IOException, ExtractionException {
+
+    private static void extractClientVersionAndKeyFromSwJs()
+            throws IOException, ExtractionException {
+        if (keyAndVersionExtracted) {
+            return;
+        }
+        final String url = "https://www.youtube.com/sw.js";
+        final Map<String, List<String>> headers = new HashMap<>();
+        headers.put("Origin", Collections.singletonList("https://www.youtube.com"));
+        headers.put("Referer", Collections.singletonList("https://www.youtube.com"));
+        final String response = getDownloader().get(url, headers).responseBody();
+        try {
+            clientVersion = getStringResultFromRegexArray(response,
+                    INNERTUBE_CONTEXT_CLIENT_VERSION_REGEXES, 1);
+            key = getStringResultFromRegexArray(response, INNERTUBE_API_KEY_REGEXES, 1);
+        } catch (final Parser.RegexException e) {
+            throw new ParsingException("Could not extract YouTube WEB InnerTube client version and API key from sw.js", e);
+        }
+        keyAndVersionExtracted = true;
+    }
+
+    private static void extractClientVersionAndKeyFromHtmlSearchResultsPage()
+            throws IOException, ExtractionException {
         // Don't extract the client version and the InnerTube key if it has been already extracted
         if (keyAndVersionExtracted) {
             return;
         }
-
         // Don't provide a search term in order to have a smaller response
         final String url = "https://www.youtube.com/results?search_query=&ucbcb=1";
         final Map<String, List<String>> headers = new HashMap<>();
@@ -526,21 +557,10 @@ public final class YoutubeParsingHelper {
             }
         }
 
-        String contextClientVersion;
-        final String[] patterns = {
-                "INNERTUBE_CONTEXT_CLIENT_VERSION\":\"([0-9\\.]+?)\"",
-                "innertube_context_client_version\":\"([0-9\\.]+?)\"",
-                "client.version=([0-9\\.]+)"
-        };
-        for (final String pattern : patterns) {
-            try {
-                contextClientVersion = Parser.matchGroup1(pattern, html);
-                if (!isNullOrEmpty(contextClientVersion)) {
-                    clientVersion = contextClientVersion;
-                    break;
-                }
-            } catch (final Parser.RegexException ignored) {
-            }
+        try {
+            clientVersion = getStringResultFromRegexArray(html,
+                    INNERTUBE_CONTEXT_CLIENT_VERSION_REGEXES, 1);
+        } catch (final Parser.RegexException ignored) {
         }
 
         if (!isNullOrEmpty(clientVersion) && !isNullOrEmpty(shortClientVersion)) {
@@ -548,13 +568,10 @@ public final class YoutubeParsingHelper {
         }
 
         try {
-            key = Parser.matchGroup1("INNERTUBE_API_KEY\":\"([0-9a-zA-Z_-]+?)\"", html);
-        } catch (final Parser.RegexException e1) {
-            try {
-                key = Parser.matchGroup1("innertubeApiKey\":\"([0-9a-zA-Z_-]+?)\"", html);
-            } catch (final Parser.RegexException e2) {
-                throw new ParsingException("Could not extract client version and key");
-            }
+            key = getStringResultFromRegexArray(html, INNERTUBE_API_KEY_REGEXES, 1);
+        } catch (final Parser.RegexException e) {
+            throw new ParsingException(
+                    "Could not extract YouTube WEB InnerTube client version and API key from HTML search results page");
         }
         keyAndVersionExtracted = true;
     }
@@ -567,7 +584,11 @@ public final class YoutubeParsingHelper {
             return clientVersion;
         }
 
-        extractClientVersionAndKey();
+        try {
+            extractClientVersionAndKeyFromSwJs();
+        } catch (final Exception e) {
+            extractClientVersionAndKeyFromHtmlSearchResultsPage();
+        }
 
         if (keyAndVersionExtracted) {
             return clientVersion;
@@ -588,7 +609,11 @@ public final class YoutubeParsingHelper {
             return key;
         }
 
-        extractClientVersionAndKey();
+        try {
+            extractClientVersionAndKeyFromSwJs();
+        } catch (final Exception e) {
+            extractClientVersionAndKeyFromHtmlSearchResultsPage();
+        }
 
         if (keyAndVersionExtracted) {
             return key;
@@ -682,8 +707,8 @@ public final class YoutubeParsingHelper {
         return response.responseBody().length() > 500 && response.responseCode() == 200;
     }
 
-    public static String[] getYoutubeMusicKey() throws IOException, ReCaptchaException,
-            Parser.RegexException {
+    public static String[] getYoutubeMusicKey()
+            throws IOException, ReCaptchaException, Parser.RegexException {
         if (youtubeMusicKey != null && youtubeMusicKey.length == 3) {
             return youtubeMusicKey;
         }
@@ -692,40 +717,34 @@ public final class YoutubeParsingHelper {
             return youtubeMusicKey;
         }
 
-        final String url = "https://music.youtube.com/";
-        final Map<String, List<String>> headers = new HashMap<>();
-        addCookieHeader(headers);
-        final String html = getDownloader().get(url, headers).responseBody();
+        String musicClientVersion = null;
+        String musicKey = null;
+        String musicClientName = null;
 
-        String innertubeApiKey;
         try {
-            innertubeApiKey = Parser.matchGroup1("INNERTUBE_API_KEY\":\"([0-9a-zA-Z_-]+?)\"", html);
-        } catch (final Parser.RegexException e) {
-            innertubeApiKey = Parser.matchGroup1("innertube_api_key\":\"([0-9a-zA-Z_-]+?)\"", html);
+            final String url = "https://music.youtube.com/sw.js";
+            final Map<String, List<String>> headers = new HashMap<>();
+            headers.put("Origin", Collections.singletonList("https://music.youtube.com"));
+            headers.put("Referer", Collections.singletonList("https://music.youtube.com"));
+            final String response = getDownloader().get(url, headers).responseBody();
+                musicClientVersion = getStringResultFromRegexArray(response,
+                        INNERTUBE_CONTEXT_CLIENT_VERSION_REGEXES, 1);
+                musicKey = getStringResultFromRegexArray(response,
+                        INNERTUBE_API_KEY_REGEXES, 1);
+                musicClientName = Parser.matchGroup1(INNERTUBE_CLIENT_NAME_REGEX, response);
+        } catch (final Exception e) {
+            final String url = "https://music.youtube.com/";
+            final Map<String, List<String>> headers = new HashMap<>();
+            addCookieHeader(headers);
+            final String html = getDownloader().get(url, headers).responseBody();
+
+            musicKey = getStringResultFromRegexArray(html, INNERTUBE_API_KEY_REGEXES, 1);
+            musicClientVersion = getStringResultFromRegexArray(html,
+                    INNERTUBE_CONTEXT_CLIENT_VERSION_REGEXES);
+            musicClientName = Parser.matchGroup1(INNERTUBE_CLIENT_NAME_REGEX, html);
         }
 
-        final String innertubeClientName
-                = Parser.matchGroup1("INNERTUBE_CONTEXT_CLIENT_NAME\":([0-9]+?),", html);
-
-        String innertubeClientVersion;
-        try {
-            innertubeClientVersion = Parser.matchGroup1(
-                    "INNERTUBE_CONTEXT_CLIENT_VERSION\":\"([0-9\\.]+?)\"", html);
-        } catch (final Parser.RegexException e) {
-            try {
-                innertubeClientVersion = Parser.matchGroup1(
-                        "INNERTUBE_CLIENT_VERSION\":\"([0-9\\.]+?)\"", html);
-            } catch (final Parser.RegexException ee) {
-                innertubeClientVersion = Parser.matchGroup1(
-                        "innertube_context_client_version\":\"([0-9\\.]+?)\"", html);
-            }
-        }
-
-        youtubeMusicKey = new String[]{
-                innertubeApiKey,
-                innertubeClientName,
-                innertubeClientVersion
-        };
+        youtubeMusicKey = new String[] { musicKey, musicClientName, musicClientVersion };
         return youtubeMusicKey;
     }
 
