@@ -301,8 +301,10 @@ public class YoutubeStreamExtractor extends StreamExtractor {
      */
     @Override
     public long getTimeStamp() throws ParsingException {
+        // Yes, I know this regex can capture an empty timestamp (as in
+        // `&t=`), but `getTimestampSeconds` handles that.
         final long timestamp =
-                getTimestampSeconds("((#|&|\\?)t=\\d{0,3}h?\\d{0,3}m?\\d{1,3}s?)");
+                getTimestampSeconds("((#|&|\\?)t=\\d*h?\\d*m?\\d+s?)");
 
         if (timestamp == -2) {
             // Regex for timestamp was not found

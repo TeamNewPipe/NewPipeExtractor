@@ -441,9 +441,9 @@ public abstract class StreamExtractor extends Extractor {
                 String minutesString = "";
                 String hoursString = "";
                 try {
-                    secondsString = Parser.matchGroup1("(\\d{1,3})s", timeStamp);
-                    minutesString = Parser.matchGroup1("(\\d{1,3})m", timeStamp);
-                    hoursString = Parser.matchGroup1("(\\d{1,3})h", timeStamp);
+                    secondsString = Parser.matchGroup1("(\\d+)s", timeStamp);
+                    minutesString = Parser.matchGroup1("(\\d+)m", timeStamp);
+                    hoursString = Parser.matchGroup1("(\\d+)h", timeStamp);
                 } catch (Exception e) {
                     //it could be that time is given in another method
                     if (secondsString.isEmpty() //if nothing was got,
