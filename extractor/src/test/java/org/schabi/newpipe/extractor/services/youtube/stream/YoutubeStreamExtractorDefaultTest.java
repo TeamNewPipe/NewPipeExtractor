@@ -112,8 +112,8 @@ public class YoutubeStreamExtractorDefaultTest {
 
     public static class DescriptionTestPewdiepie extends DefaultStreamExtractorTest {
         private static final String ID = "7PIMiDcwNvc";
-        private static final int TIMESTAMP = 17;
-        private static final String URL = BASE_URL + ID + "&t=" + TIMESTAMP;
+        private static final int TIMESTAMP = 7483;
+        private static final String URL = BASE_URL + ID + "&t=" + TIMESTAMP + "s";
         private static StreamExtractor extractor;
 
         @BeforeClass
