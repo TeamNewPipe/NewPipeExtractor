@@ -87,6 +87,7 @@ public final class YoutubeParsingHelper {
     private static final String HARDCODED_KEY = "AIzaSyAO_FJ2SlqU8Q4STEHLGCilw_Y9_11qcW8";
 
     private static final String ANDROID_YOUTUBE_KEY = "AIzaSyA8eiZmM1FaDVjRy-df2KTyQ_vz_yYM39w";
+    private static final String IOS_YOUTUBE_KEY = "AIzaSyB-63vPrdThhKuerbB2N_l7Kwwcxj6yUAc";
     private static final String MOBILE_YOUTUBE_CLIENT_VERSION = "16.49.37";
 
     private static String clientVersion;
@@ -717,9 +718,9 @@ public final class YoutubeParsingHelper {
             return youtubeMusicKey;
         }
 
-        String musicClientVersion = null;
-        String musicKey = null;
-        String musicClientName = null;
+        String musicClientVersion;
+        String musicKey;
+        String musicClientName;
 
         try {
             final String url = "https://music.youtube.com/sw.js";
@@ -950,19 +951,41 @@ public final class YoutubeParsingHelper {
     public static JsonObject getJsonAndroidPostResponse(
             final String endpoint,
             final byte[] body,
-            @Nonnull final ContentCountry contentCountry,
-            final Localization localization,
+            @Nonnull final Localization localization,
             @Nullable final String endPartOfUrlRequest) throws IOException, ExtractionException {
         final Map<String, List<String>> headers = new HashMap<>();
         headers.put("Content-Type", Collections.singletonList("application/json"));
         // Spoofing an Android 11 device with the hardcoded version of the Android app
         headers.put("User-Agent", Collections.singletonList("com.google.android.youtube/"
                 + MOBILE_YOUTUBE_CLIENT_VERSION + " (Linux; U; Android 11; "
-                + contentCountry.getCountryCode() + ") gzip"));
-        headers.put("x-goog-api-format-version", Collections.singletonList("2"));
+                + localization.getCountryCode() + ") gzip"));
+        headers.put("X-Goog-Api-Format-Version", Collections.singletonList("2"));
 
         final String baseEndpointUrl = "https://youtubei.googleapis.com/youtubei/v1/" + endpoint
                 + "?key=" + ANDROID_YOUTUBE_KEY;
+
+        final Response response = getDownloader().post(isNullOrEmpty(endPartOfUrlRequest)
+                        ? baseEndpointUrl : baseEndpointUrl + endPartOfUrlRequest,
+                headers, body, localization);
+
+        return JsonUtils.toJsonObject(getValidJsonResponseBody(response));
+    }
+
+    public static JsonObject getJsonIosPostResponse(
+            final String endpoint,
+            final byte[] body,
+            @Nonnull final Localization localization,
+            @Nullable final String endPartOfUrlRequest) throws IOException, ExtractionException {
+        final Map<String, List<String>> headers = new HashMap<>();
+        headers.put("Content-Type", Collections.singletonList("application/json"));
+        // Spoofing an iPhone 13 running iOS 15.2 with the hardcoded mobile client version
+        headers.put("User-Agent", Collections.singletonList("com.google.ios.youtube/"
+                + MOBILE_YOUTUBE_CLIENT_VERSION + "(iPhone14,5; U; CPU iOS 15_2 like Mac OS X; "
+                + localization.getCountryCode() + ")"));
+        headers.put("X-Goog-Api-Format-Version", Collections.singletonList("2"));
+
+        final String baseEndpointUrl = "https://youtubei.googleapis.com/youtubei/v1/" + endpoint
+                + "?key=" + IOS_YOUTUBE_KEY;
 
         final Response response = getDownloader().post(isNullOrEmpty(endPartOfUrlRequest)
                         ? baseEndpointUrl : baseEndpointUrl + endPartOfUrlRequest,
@@ -1011,6 +1034,32 @@ public final class YoutubeParsingHelper {
                     .object("client")
                         .value("clientName", "ANDROID")
                         .value("clientVersion", MOBILE_YOUTUBE_CLIENT_VERSION)
+                        .value("platform", "MOBILE")
+                        .value("hl", localization.getLocalizationCode())
+                        .value("gl", contentCountry.getCountryCode())
+                    .end()
+                    .object("user")
+                        // TO DO: provide a way to enable restricted mode with:
+                        // .value("enableSafetyMode", boolean)
+                        .value("lockedSafetyMode", false)
+                    .end()
+                .end();
+        // @formatter:on
+    }
+
+    @Nonnull
+    public static JsonBuilder<JsonObject> prepareIosMobileJsonBuilder(
+            @Nonnull final Localization localization,
+            @Nonnull final ContentCountry contentCountry) {
+        // @formatter:off
+        return JsonObject.builder()
+                .object("context")
+                    .object("client")
+                        .value("clientName", "IOS")
+                        .value("clientVersion", MOBILE_YOUTUBE_CLIENT_VERSION)
+                        // Device model is required to get 60fps streams
+                        .value("deviceModel", "iPhone14,5")
+                        .value("platform", "MOBILE")
                         .value("hl", localization.getLocalizationCode())
                         .value("gl", contentCountry.getCountryCode())
                     .end()
@@ -1070,6 +1119,45 @@ public final class YoutubeParsingHelper {
                         .value("clientName", "ANDROID")
                         .value("clientVersion", MOBILE_YOUTUBE_CLIENT_VERSION)
                         .value("clientScreen", "EMBED")
+                        .value("platform", "MOBILE")
+                        .value("hl", localization.getLocalizationCode())
+                        .value("gl", contentCountry.getCountryCode())
+                    .end()
+                    .object("thirdParty")
+                        .value("embedUrl", "https://www.youtube.com/watch?v=" + videoId)
+                    .end()
+                    .object("request")
+                        .array("internalExperimentFlags")
+                        .end()
+                        .value("useSsl", true)
+                    .end()
+                    .object("user")
+                        // TO DO: provide a way to enable restricted mode with:
+                        // .value("enableSafetyMode", boolean)
+                        .value("lockedSafetyMode", false)
+                    .end()
+                .end()
+                .value(CPN, contentPlaybackNonce)
+                .value(VIDEO_ID, videoId);
+        // @formatter:on
+    }
+
+    @Nonnull
+    public static JsonBuilder<JsonObject> prepareIosMobileEmbedVideoJsonBuilder(
+            @Nonnull final Localization localization,
+            @Nonnull final ContentCountry contentCountry,
+            @Nonnull final String videoId,
+            @Nonnull final String contentPlaybackNonce) {
+        // @formatter:off
+        return JsonObject.builder()
+                .object("context")
+                    .object("client")
+                        .value("clientName", "IOS")
+                        .value("clientVersion", MOBILE_YOUTUBE_CLIENT_VERSION)
+                        .value("clientScreen", "EMBED")
+                        // Device model is required to get 60fps streams
+                        .value("deviceModel", "iPhone14,5")
+                        .value("platform", "MOBILE")
                         .value("hl", localization.getLocalizationCode())
                         .value("gl", contentCountry.getCountryCode())
                     .end()

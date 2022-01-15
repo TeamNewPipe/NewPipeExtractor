@@ -116,6 +116,9 @@ public class YoutubeStreamExtractor extends StreamExtractor {
     @Nullable
     private static String playerCode = null;
 
+    private static boolean isAndroidClientFetchForced = false;
+    private static boolean isIosClientFetchForced = false;
+
     private JsonObject playerResponse;
     private JsonObject nextResponse;
 
@@ -123,14 +126,19 @@ public class YoutubeStreamExtractor extends StreamExtractor {
     private JsonObject desktopStreamingData;
     @Nullable
     private JsonObject androidStreamingData;
+    @Nullable
+    private JsonObject iosStreamingData;
+
     private JsonObject videoPrimaryInfoRenderer;
     private JsonObject videoSecondaryInfoRenderer;
     private int ageLimit = -1;
+    private StreamType streamType;
     @Nullable
     private List<SubtitlesStream> subtitles = null;
 
     private String desktopCpn;
     private String androidCpn;
+    private String iosCpn;
 
     public YoutubeStreamExtractor(final StreamingService service, final LinkHandler linkHandler) {
         super(service, linkHandler);
@@ -511,10 +519,15 @@ public class YoutubeStreamExtractor extends StreamExtractor {
     public String getHlsUrl() throws ParsingException {
         assertPageFetched();
 
-        if (desktopStreamingData != null) {
-            return desktopStreamingData.getString("hlsManifestUrl");
+        // Return HLS manifest of the iOS client first because on livestreams, the HLS manifest
+        // returned has separated audio and video streams
+        // Also, on videos, non-iOS clients don't have an HLS manifest URL in their player response
+        if (iosStreamingData != null) {
+            return iosStreamingData.getString("hlsManifestUrl", EMPTY_STRING);
+        } else if (desktopStreamingData != null) {
+            return desktopStreamingData.getString("hlsManifestUrl", EMPTY_STRING);
         } else if (androidStreamingData != null) {
-            return androidStreamingData.getString("hlsManifestUrl");
+            return androidStreamingData.getString("hlsManifestUrl", EMPTY_STRING);
         } else {
             return EMPTY_STRING;
         }
@@ -651,11 +664,16 @@ public class YoutubeStreamExtractor extends StreamExtractor {
     public StreamType getStreamType() {
         assertPageFetched();
 
+        return streamType;
+    }
+
+    private void setStreamType() {
         if (playerResponse.getObject("playabilityStatus").has("liveStreamability")
                 || playerResponse.getObject("videoDetails").getBoolean("isPostLiveDvr", false)) {
-            return StreamType.LIVE_STREAM;
+            streamType = StreamType.LIVE_STREAM;
+        } else {
+            streamType = StreamType.VIDEO_STREAM;
         }
-        return StreamType.VIDEO_STREAM;
     }
 
     @Nullable
@@ -763,14 +781,30 @@ public class YoutubeStreamExtractor extends StreamExtractor {
         final boolean ageRestricted = playabilityStatus.getString("reason", EMPTY_STRING)
                 .contains("age");
 
+        setStreamType();
+
         if (!playerResponse.has(STREAMING_DATA)) {
             try {
                 fetchDesktopEmbedJsonPlayer(contentCountry, localization, videoId);
             } catch (final Exception ignored) {
             }
-            try {
-                fetchAndroidEmbedJsonPlayer(contentCountry, localization, videoId);
-            } catch (final Exception ignored) {
+
+            // Refresh the stream type because the stream type maybe not properly known for
+            // age-restricted videos
+            setStreamType();
+
+            if (streamType == StreamType.VIDEO_STREAM || isAndroidClientFetchForced) {
+                try {
+                    fetchAndroidEmbedJsonPlayer(contentCountry, localization, videoId);
+                } catch (final Exception ignored) {
+                }
+            }
+
+            if (streamType == StreamType.LIVE_STREAM || isIosClientFetchForced) {
+                try {
+                    fetchIosEmbedJsonPlayer(contentCountry, localization, videoId);
+                } catch (final Exception ignored) {
+                }
             }
         }
 
@@ -798,9 +832,18 @@ public class YoutubeStreamExtractor extends StreamExtractor {
             nextResponse = getJsonPostResponse(NEXT, body, localization);
         }
 
-        if (!ageRestricted) {
+        if ((!ageRestricted && streamType == StreamType.VIDEO_STREAM)
+                || isAndroidClientFetchForced) {
             try {
                 fetchAndroidMobileJsonPlayer(contentCountry, localization, videoId);
+            } catch (final Exception ignored) {
+            }
+        }
+
+        if ((!ageRestricted && streamType == StreamType.LIVE_STREAM)
+                || isIosClientFetchForced) {
+            try {
+                fetchIosMobileJsonPlayer(contentCountry, localization, videoId);
             } catch (final Exception ignored) {
             }
         }
@@ -860,7 +903,7 @@ public class YoutubeStreamExtractor extends StreamExtractor {
     }
 
     /**
-     * Fetch the Android Mobile API and assign the streaming data to the mobileStreamingData JSON
+     * Fetch the Android Mobile API and assign the streaming data to the androidStreamingData JSON
      * object.
      */
     private void fetchAndroidMobileJsonPlayer(@Nonnull final ContentCountry contentCountry,
@@ -875,7 +918,7 @@ public class YoutubeStreamExtractor extends StreamExtractor {
                 .getBytes(UTF_8);
 
         final JsonObject androidPlayerResponse = getJsonAndroidPostResponse(PLAYER,
-                mobileBody, contentCountry, localization, "&t=" + generateTParameter()
+                mobileBody, localization, "&t=" + generateTParameter()
                         + "&id=" + videoId);
 
         final JsonObject streamingData = androidPlayerResponse.getObject(STREAMING_DATA);
@@ -888,7 +931,45 @@ public class YoutubeStreamExtractor extends StreamExtractor {
     }
 
     /**
-     * Download again the desktop JSON player as an embed client to bypass some age-restrictions.
+     * Fetch the iOS Mobile API and assign the streaming data to the iosStreamingData JSON
+     * object.
+     */
+    private void fetchIosMobileJsonPlayer(@Nonnull final ContentCountry contentCountry,
+                                          @Nonnull final Localization localization,
+                                          @Nonnull final String videoId)
+            throws IOException, ExtractionException {
+        iosCpn = generateContentPlaybackNonce();
+        final byte[] mobileBody = JsonWriter.string(prepareIosMobileJsonBuilder(
+                        localization, contentCountry)
+                        .value(VIDEO_ID, videoId)
+                        .value(CPN, iosCpn)
+                        .done())
+                .getBytes(UTF_8);
+
+        final JsonObject iosPlayerResponse = getJsonIosPostResponse(PLAYER,
+                mobileBody, localization, "&t=" + generateTParameter()
+                        + "&id=" + videoId);
+
+        final JsonObject streamingData = iosPlayerResponse.getObject(STREAMING_DATA);
+        if (!isNullOrEmpty(streamingData)) {
+            iosStreamingData = streamingData;
+            if (desktopStreamingData == null) {
+                playerResponse = iosPlayerResponse;
+            }
+        }
+    }
+
+    /**
+     * Download the web desktop JSON player as an embed client to bypass some age-restrictions and
+     * assign the streaming data to the desktopStreamingData JSON object.
+     *
+     * @param contentCountry the content country to use
+     * @param localization   the localization to use
+     * @param videoId        the video id
+     * @throws IOException         if something goes wrong when fetching the web desktop embed
+     *                             player endpoint
+     * @throws ExtractionException if something goes wrong when fetching the web desktop embed
+     *                             player endpoint
      */
     private void fetchDesktopEmbedJsonPlayer(@Nonnull final ContentCountry contentCountry,
                                              @Nonnull final Localization localization,
@@ -914,7 +995,16 @@ public class YoutubeStreamExtractor extends StreamExtractor {
     }
 
     /**
-     * Download the Android mobile JSON player as an embed client to bypass some age-restrictions.
+     * Download the Android mobile JSON player as an embed client to bypass some age-restrictions
+     * and assign the streaming data to the androidStreamingData JSON object.
+     *
+     * @param contentCountry the content country to use
+     * @param localization   the localization to use
+     * @param videoId        the video id
+     * @throws IOException         if something goes wrong when fetching the Android embed player
+     *                             endpoint
+     * @throws ExtractionException if something goes wrong when fetching the Android embed player
+     *                             endpoint
      */
     private void fetchAndroidEmbedJsonPlayer(@Nonnull final ContentCountry contentCountry,
                                              @Nonnull final Localization localization,
@@ -929,7 +1019,7 @@ public class YoutubeStreamExtractor extends StreamExtractor {
                 .done())
                 .getBytes(UTF_8);
         final JsonObject androidMobileEmbedPlayerResponse = getJsonAndroidPostResponse(PLAYER,
-                androidMobileEmbedBody, contentCountry, localization, "&t=" + generateTParameter()
+                androidMobileEmbedBody, localization, "&t=" + generateTParameter()
                         + "&id=" + videoId);
         final JsonObject streamingData = androidMobileEmbedPlayerResponse.getObject(
                 STREAMING_DATA);
@@ -938,6 +1028,43 @@ public class YoutubeStreamExtractor extends StreamExtractor {
                 playerResponse = androidMobileEmbedPlayerResponse;
             }
             androidStreamingData = androidMobileEmbedPlayerResponse.getObject(STREAMING_DATA);
+        }
+    }
+
+    /**
+     * Download the iOS mobile JSON player as an embed client to bypass some age-restrictions and
+     * assign the streaming data to the iosStreamingData JSON object.
+     *
+     * @param contentCountry the content country to use
+     * @param localization   the localization to use
+     * @param videoId        the video id
+     * @throws IOException         if something goes wrong when fetching the iOS embed player
+     *                             endpoint
+     * @throws ExtractionException if something goes wrong when fetching the iOS embed player
+     *                             endpoint
+     */
+    private void fetchIosEmbedJsonPlayer(@Nonnull final ContentCountry contentCountry,
+                                         @Nonnull final Localization localization,
+                                         @Nonnull final String videoId)
+            throws IOException, ExtractionException {
+        // Because a cpn is unique to each request, we need to generate it again
+        iosCpn = generateContentPlaybackNonce();
+
+        final byte[] androidMobileEmbedBody = JsonWriter.string(
+                prepareIosMobileEmbedVideoJsonBuilder(localization, contentCountry, videoId,
+                        iosCpn)
+                        .done())
+                .getBytes(UTF_8);
+        final JsonObject iosMobileEmbedPlayerResponse = getJsonIosPostResponse(PLAYER,
+                androidMobileEmbedBody, localization, "&t=" + generateTParameter()
+                        + "&id=" + videoId);
+        final JsonObject streamingData = iosMobileEmbedPlayerResponse.getObject(
+                STREAMING_DATA);
+        if (!isNullOrEmpty(streamingData)) {
+            if (desktopStreamingData == null) {
+                playerResponse = iosMobileEmbedPlayerResponse;
+            }
+            iosStreamingData = iosMobileEmbedPlayerResponse.getObject(STREAMING_DATA);
         }
     }
 
@@ -1104,12 +1231,17 @@ public class YoutubeStreamExtractor extends StreamExtractor {
             return urlAndItags;
         }
 
-        // Use the mobileStreamingData object first because there is no n param and no
+        // Use the androidStreamingData object first because there is no n param and no
         // signatureCiphers in streaming URLs of the Android client
         urlAndItags.putAll(getStreamsFromStreamingDataKey(
                 androidStreamingData, streamingDataKey, itagTypeWanted, androidCpn));
         urlAndItags.putAll(getStreamsFromStreamingDataKey(
                 desktopStreamingData, streamingDataKey, itagTypeWanted, desktopCpn));
+        // Use the iosStreamingData object in the last position because most of the available
+        // streams can be extracted with the Android and web clients and also because the iOS
+        // client is only enabled by default on livestreams
+        urlAndItags.putAll(getStreamsFromStreamingDataKey(
+                iosStreamingData, streamingDataKey, itagTypeWanted, androidCpn));
 
         return urlAndItags;
     }
@@ -1379,5 +1511,44 @@ public class YoutubeStreamExtractor extends StreamExtractor {
         playerCode = null;
         sts = null;
         YoutubeJavaScriptExtractor.resetJavaScriptCode();
+    }
+
+    /**
+     * Enable or disable the fetch of the Android client for all stream types.
+     *
+     * <p>
+     * By default, the fetch of the Android client will be made only on videos, in order to reduce
+     * data usage, because available streams of the Android client will be almost equal to the ones
+     * available on the web client.
+     * </p>
+     *
+     * <p>
+     * Enabling this option will allow you to get a 48kbps audio
+     * stream on livestreams without fetching the DASH manifest returned in YouTube's player
+     * response.
+     * </p>
+     * @param forceFetchOfAndroidClientValue whether to always fetch the Android client and not
+     *                                       only for videos
+     */
+    public static void forceFetchOfAndroidClient(final boolean forceFetchOfAndroidClientValue) {
+        isAndroidClientFetchForced = forceFetchOfAndroidClientValue;
+    }
+
+    /**
+     * Enable or disable the fetch of the iOS client for all stream types.
+     *
+     * <p>
+     * By default, the fetch of the iOS client will be made only on livestreams, in order to get an
+     * HLS manifest with separated audio and video.
+     * </p>
+     * <p>
+     * Enabling this option will allow you to get an
+     * HLS manifest also for videos.
+     * </p>
+     * @param forceFetchOfIosClientValue whether to always fetch the iOS client and not only for
+     *                                   livestreams
+     */
+    public static void forceFetchOfIosClient(final boolean forceFetchOfIosClientValue) {
+        isIosClientFetchForced = forceFetchOfIosClientValue;
     }
 }
