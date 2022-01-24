@@ -1,13 +1,13 @@
 package org.schabi.newpipe.extractor.services.media_ccc;
 
-import org.junit.BeforeClass;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.Test;
 import org.schabi.newpipe.downloader.DownloaderTestImpl;
 import org.schabi.newpipe.extractor.NewPipe;
 import org.schabi.newpipe.extractor.services.media_ccc.extractors.MediaCCCConferenceExtractor;
 
-import static junit.framework.TestCase.assertEquals;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.schabi.newpipe.extractor.ServiceList.MediaCCC;
 
 /**
@@ -17,7 +17,7 @@ public class MediaCCCConferenceExtractorTest {
     public static class FrOSCon2017 {
         private static MediaCCCConferenceExtractor extractor;
 
-        @BeforeClass
+        @BeforeAll
         public static void setUpClass() throws Exception {
             NewPipe.init(DownloaderTestImpl.getInstance());
             extractor = (MediaCCCConferenceExtractor) MediaCCC.getChannelExtractor("https://media.ccc.de/c/froscon2017");
@@ -53,7 +53,7 @@ public class MediaCCCConferenceExtractorTest {
     public static class Oscal2019 {
         private static MediaCCCConferenceExtractor extractor;
 
-        @BeforeClass
+        @BeforeAll
         public static void setUpClass() throws Exception {
             NewPipe.init(DownloaderTestImpl.getInstance());
             extractor = (MediaCCCConferenceExtractor) MediaCCC.getChannelExtractor("https://media.ccc.de/c/oscal19");

@@ -2,8 +2,8 @@
 
 package org.schabi.newpipe.extractor.services.bandcamp;
 
-import org.junit.BeforeClass;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.Test;
 import org.schabi.newpipe.downloader.DownloaderTestImpl;
 import org.schabi.newpipe.extractor.NewPipe;
 import org.schabi.newpipe.extractor.channel.ChannelExtractor;
@@ -12,14 +12,14 @@ import org.schabi.newpipe.extractor.services.BaseChannelExtractorTest;
 
 import java.io.IOException;
 
-import static org.junit.Assert.*;
+import static org.junit.jupiter.api.Assertions.*;
 import static org.schabi.newpipe.extractor.ServiceList.Bandcamp;
 
 public class BandcampChannelExtractorTest implements BaseChannelExtractorTest {
 
     private static ChannelExtractor extractor;
 
-    @BeforeClass
+    @BeforeAll
     public static void setUp() throws Exception {
         NewPipe.init(DownloaderTestImpl.getInstance());
         extractor = Bandcamp.getChannelExtractor("https://toupie.bandcamp.com/releases");
@@ -39,12 +39,12 @@ public class BandcampChannelExtractorTest implements BaseChannelExtractorTest {
 
     @Override
     public void testAvatarUrl() throws Exception {
-        assertTrue("unexpected avatar URL", extractor.getAvatarUrl().contains("://f4.bcbits.com/"));
+        assertTrue(extractor.getAvatarUrl().contains("://f4.bcbits.com/"), "unexpected avatar URL");
     }
 
     @Override
     public void testBannerUrl() throws Exception {
-        assertTrue("unexpected banner URL", extractor.getBannerUrl().contains("://f4.bcbits.com/"));
+        assertTrue(extractor.getBannerUrl().contains("://f4.bcbits.com/"), "unexpected banner URL");
     }
 
     @Override

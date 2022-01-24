@@ -1,7 +1,7 @@
 package org.schabi.newpipe.extractor.services.bandcamp;
 
-import org.junit.BeforeClass;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.Test;
 import org.schabi.newpipe.downloader.DownloaderTestImpl;
 import org.schabi.newpipe.extractor.ListExtractor;
 import org.schabi.newpipe.extractor.NewPipe;
@@ -13,16 +13,16 @@ import org.schabi.newpipe.extractor.utils.Utils;
 
 import java.io.IOException;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.schabi.newpipe.extractor.ServiceList.Bandcamp;
 
 public class BandcampCommentsExtractorTest {
 
     private static CommentsExtractor extractor;
 
-    @BeforeClass
+    @BeforeAll
     public static void setUp() throws ExtractionException, IOException {
         NewPipe.init(DownloaderTestImpl.getInstance());
         extractor = Bandcamp.getCommentsExtractor("https://floatingpoints.bandcamp.com/album/promises");

@@ -1,6 +1,6 @@
 package org.schabi.newpipe.extractor.services.youtube.stream;
 
-import org.junit.BeforeClass;
+import org.junit.jupiter.api.BeforeAll;
 import org.schabi.newpipe.downloader.DownloaderFactory;
 import org.schabi.newpipe.extractor.NewPipe;
 import org.schabi.newpipe.extractor.StreamingService;
@@ -10,7 +10,6 @@ import org.schabi.newpipe.extractor.services.youtube.extractors.YoutubeStreamExt
 import org.schabi.newpipe.extractor.stream.StreamExtractor;
 import org.schabi.newpipe.extractor.stream.StreamType;
 
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.Random;
@@ -26,7 +25,7 @@ public class YoutubeStreamExtractorAgeRestrictedTest extends DefaultStreamExtrac
     private static final String URL = YoutubeStreamExtractorDefaultTest.BASE_URL + ID + "&t=" + TIMESTAMP;
     private static StreamExtractor extractor;
 
-    @BeforeClass
+    @BeforeAll
     public static void setUp() throws Exception {
         YoutubeParsingHelper.resetClientVersionAndKey();
         YoutubeParsingHelper.setNumberGenerator(new Random(1));

@@ -20,17 +20,17 @@ package org.schabi.newpipe.extractor.services.youtube;
  * along with NewPipe.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-import org.junit.BeforeClass;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.Test;
 import org.schabi.newpipe.downloader.DownloaderTestImpl;
 import org.schabi.newpipe.extractor.NewPipe;
 import org.schabi.newpipe.extractor.exceptions.ParsingException;
 import org.schabi.newpipe.extractor.linkhandler.LinkHandlerFactory;
 import org.schabi.newpipe.extractor.services.youtube.linkHandler.YoutubeTrendingLinkHandlerFactory;
 
-import static junit.framework.TestCase.assertFalse;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.schabi.newpipe.extractor.ServiceList.YouTube;
 
 /**
@@ -39,7 +39,7 @@ import static org.schabi.newpipe.extractor.ServiceList.YouTube;
 public class YoutubeTrendingLinkHandlerFactoryTest {
     private static LinkHandlerFactory LinkHandlerFactory;
 
-    @BeforeClass
+    @BeforeAll
     public static void setUp() throws Exception {
         LinkHandlerFactory = YouTube.getKioskList().getListLinkHandlerFactoryByType("Trending");
         NewPipe.init(DownloaderTestImpl.getInstance());

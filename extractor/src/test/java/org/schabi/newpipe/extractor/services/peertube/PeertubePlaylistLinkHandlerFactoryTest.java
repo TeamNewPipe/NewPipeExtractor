@@ -1,14 +1,14 @@
 package org.schabi.newpipe.extractor.services.peertube;
 
-import org.junit.BeforeClass;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.Test;
 import org.schabi.newpipe.downloader.DownloaderTestImpl;
 import org.schabi.newpipe.extractor.NewPipe;
 import org.schabi.newpipe.extractor.exceptions.ParsingException;
 import org.schabi.newpipe.extractor.services.peertube.linkHandler.PeertubePlaylistLinkHandlerFactory;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 /**
  * Test for {@link PeertubePlaylistLinkHandlerFactory}
@@ -17,7 +17,7 @@ public class PeertubePlaylistLinkHandlerFactoryTest {
 
     private static PeertubePlaylistLinkHandlerFactory linkHandler;
 
-    @BeforeClass
+    @BeforeAll
     public static void setUp() {
         linkHandler = PeertubePlaylistLinkHandlerFactory.getInstance();
         NewPipe.init(DownloaderTestImpl.getInstance());

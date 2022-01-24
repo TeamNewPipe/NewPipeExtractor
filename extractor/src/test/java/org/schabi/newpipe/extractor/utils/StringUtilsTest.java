@@ -1,9 +1,9 @@
 package org.schabi.newpipe.extractor.utils;
 
-import org.junit.Ignore;
-import org.junit.Test;
+import org.junit.jupiter.api.Disabled;
+import org.junit.jupiter.api.Test;
 
-import static org.junit.Assert.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.schabi.newpipe.extractor.utils.StringUtils.matchToClosingParenthesis;
 
 public class StringUtilsTest {
@@ -48,7 +48,7 @@ public class StringUtilsTest {
         assertEquals(expected, substring);
     }
 
-    @Ignore("Functionality currently not needed")
+    @Disabled("Functionality currently not needed")
     @Test
     public void lessClosing__success() {
         String expected = "{{{}}}";

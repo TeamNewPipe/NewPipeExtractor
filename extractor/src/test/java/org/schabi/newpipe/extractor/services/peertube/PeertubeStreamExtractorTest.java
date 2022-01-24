@@ -1,8 +1,8 @@
 package org.schabi.newpipe.extractor.services.peertube;
 
-import org.junit.BeforeClass;
-import org.junit.Ignore;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.Disabled;
+import org.junit.jupiter.api.Test;
 import org.schabi.newpipe.downloader.DownloaderTestImpl;
 import org.schabi.newpipe.extractor.NewPipe;
 import org.schabi.newpipe.extractor.StreamingService;
@@ -19,7 +19,7 @@ import java.util.Locale;
 
 import javax.annotation.Nullable;
 
-import static org.junit.Assert.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.schabi.newpipe.extractor.ServiceList.PeerTube;
 
 public abstract class PeertubeStreamExtractorTest extends DefaultStreamExtractorTest {
@@ -36,7 +36,7 @@ public abstract class PeertubeStreamExtractorTest extends DefaultStreamExtractor
         private static final String URL = INSTANCE + BASE_URL + ID + "?start=" + TIMESTAMP_MINUTE + "m" + TIMESTAMP_SECOND + "s";
         private static StreamExtractor extractor;
 
-        @BeforeClass
+        @BeforeAll
         public static void setUp() throws Exception {
             NewPipe.init(DownloaderTestImpl.getInstance());
             // setting instance might break test when running in parallel (!)
@@ -102,7 +102,7 @@ public abstract class PeertubeStreamExtractorTest extends DefaultStreamExtractor
         private static final String URL = INSTANCE + BASE_URL + ID;
         private static StreamExtractor extractor;
 
-        @BeforeClass
+        @BeforeAll
         public static void setUp() throws Exception {
             NewPipe.init(DownloaderTestImpl.getInstance());
             // setting instance might break test when running in parallel (!)
@@ -140,14 +140,14 @@ public abstract class PeertubeStreamExtractorTest extends DefaultStreamExtractor
         @Override public List<String> expectedTags() { return Arrays.asList("Marinauts", "adobe flash", "adobe flash player", "flash games", "the marinauts"); }
     }
 
-    @Ignore("Test broken, SSL problem")
+    @Disabled("Test broken, SSL problem")
     public static class AgeRestricted extends PeertubeStreamExtractorTest {
         private static final String ID = "dbd8e5e1-c527-49b6-b70c-89101dbb9c08";
         private static final String INSTANCE = "https://nocensoring.net";
         private static final String URL = INSTANCE + "/videos/embed/" + ID;
         private static StreamExtractor extractor;
 
-        @BeforeClass
+        @BeforeAll
         public static void setUp() throws Exception {
             NewPipe.init(DownloaderTestImpl.getInstance());;
             // setting instance might break test when running in parallel (!)
@@ -186,7 +186,7 @@ public abstract class PeertubeStreamExtractorTest extends DefaultStreamExtractor
     }
 
 
-    @BeforeClass
+    @BeforeAll
     public static void setUp() throws Exception {
         NewPipe.init(DownloaderTestImpl.getInstance());
         PeerTube.setInstance(new PeertubeInstance("https://peertube.cpy.re", "PeerTube test server"));

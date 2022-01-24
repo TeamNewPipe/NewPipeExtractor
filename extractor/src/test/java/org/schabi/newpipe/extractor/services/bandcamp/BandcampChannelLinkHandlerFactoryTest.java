@@ -2,14 +2,14 @@
 
 package org.schabi.newpipe.extractor.services.bandcamp;
 
-import org.junit.BeforeClass;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.Test;
 import org.schabi.newpipe.downloader.DownloaderTestImpl;
 import org.schabi.newpipe.extractor.NewPipe;
 import org.schabi.newpipe.extractor.exceptions.ParsingException;
 import org.schabi.newpipe.extractor.services.bandcamp.linkHandler.BandcampChannelLinkHandlerFactory;
 
-import static org.junit.Assert.*;
+import static org.junit.jupiter.api.Assertions.*;
 
 /**
  * Test for {@link BandcampChannelLinkHandlerFactory}
@@ -17,7 +17,7 @@ import static org.junit.Assert.*;
 public class BandcampChannelLinkHandlerFactoryTest {
     private static BandcampChannelLinkHandlerFactory linkHandler;
 
-    @BeforeClass
+    @BeforeAll
     public static void setUp() {
         linkHandler = new BandcampChannelLinkHandlerFactory();
         NewPipe.init(DownloaderTestImpl.getInstance());
@@ -73,14 +73,14 @@ public class BandcampChannelLinkHandlerFactoryTest {
         assertEquals("https://lobstertheremin.com", linkHandler.getUrl("2735462545"));
     }
 
-    @Test(expected = ParsingException.class)
-    public void testGetUrlWithInvalidId() throws ParsingException {
-        linkHandler.getUrl("0");
+    @Test
+    public void testGetUrlWithInvalidId() {
+        assertThrows(ParsingException.class, () -> linkHandler.getUrl("0"));
     }
 
-    @Test(expected = ParsingException.class)
-    public void testGetIdWithInvalidUrl() throws ParsingException {
-        linkHandler.getId("https://bandcamp.com");
+    @Test
+    public void testGetIdWithInvalidUrl() {
+        assertThrows(ParsingException.class, () -> linkHandler.getUrl("https://bandcamp.com"));
     }
 
 }

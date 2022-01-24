@@ -20,13 +20,14 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.Collections;
 import java.util.List;
+import java.util.function.IntUnaryOperator;
 
 import static org.schabi.newpipe.extractor.services.soundcloud.linkHandler.SoundcloudSearchQueryHandlerFactory.ITEMS_PER_PAGE;
 import static org.schabi.newpipe.extractor.utils.Utils.EMPTY_STRING;
 import static org.schabi.newpipe.extractor.utils.Utils.isNullOrEmpty;
 
 public class SoundcloudSearchExtractor extends SearchExtractor {
-    private JsonArray searchCollection;
+    private JsonArray initialSearchCollection;
 
     public SoundcloudSearchExtractor(final StreamingService service,
                                      final SearchQueryHandler linkHandler) {
@@ -53,8 +54,9 @@ public class SoundcloudSearchExtractor extends SearchExtractor {
     @Nonnull
     @Override
     public InfoItemsPage<InfoItem> getInitialPage() throws IOException, ExtractionException {
-        return new InfoItemsPage<>(collectItems(searchCollection), getNextPageFromCurrentUrl(
-                getUrl()));
+        return new InfoItemsPage<>(
+                collectItems(initialSearchCollection),
+                getNextPageFromCurrentUrl(getUrl(), currentOffset -> ITEMS_PER_PAGE));
     }
 
     @Override
@@ -65,6 +67,7 @@ public class SoundcloudSearchExtractor extends SearchExtractor {
         }
 
         final Downloader dl = getDownloader();
+        final JsonArray searchCollection;
         try {
             final String response = dl.get(page.getUrl(), getExtractorLocalization())
                     .responseBody();
@@ -73,8 +76,9 @@ public class SoundcloudSearchExtractor extends SearchExtractor {
             throw new ParsingException("Could not parse json response", e);
         }
 
-        return new InfoItemsPage<>(collectItems(searchCollection), getNextPageFromCurrentUrl(page
-                .getUrl()));
+        return new InfoItemsPage<>(
+                collectItems(searchCollection),
+                getNextPageFromCurrentUrl(page.getUrl(), currentOffset -> currentOffset + ITEMS_PER_PAGE));
     }
 
     @Override
@@ -84,12 +88,12 @@ public class SoundcloudSearchExtractor extends SearchExtractor {
         final String url = getUrl();
         try {
             final String response = dl.get(url, getExtractorLocalization()).responseBody();
-            searchCollection = JsonParser.object().from(response).getArray("collection");
+            initialSearchCollection = JsonParser.object().from(response).getArray("collection");
         } catch (final JsonParserException e) {
             throw new ParsingException("Could not parse json response", e);
         }
 
-        if (searchCollection.isEmpty()) {
+        if (initialSearchCollection.isEmpty()) {
             throw new SearchExtractor.NothingFoundException("Nothing found");
         }
     }
@@ -118,12 +122,14 @@ public class SoundcloudSearchExtractor extends SearchExtractor {
         return collector;
     }
 
-    private Page getNextPageFromCurrentUrl(final String currentUrl)
+    private Page getNextPageFromCurrentUrl(final String currentUrl, final IntUnaryOperator newPageOffsetCalculator)
             throws MalformedURLException, UnsupportedEncodingException {
-        final int pageOffset = Integer.parseInt(
-                Parser.compatParseMap(new URL(currentUrl).getQuery()).get("offset"));
+        final int currentPageOffset = Integer.parseInt(
+                    Parser.compatParseMap(new URL(currentUrl).getQuery()).get("offset"));
 
-        return new Page(currentUrl.replace("&offset=" + pageOffset, "&offset="
-                + (pageOffset + ITEMS_PER_PAGE)));
+        return new Page(
+                currentUrl.replace(
+                        "&offset=" + currentPageOffset,
+                        "&offset=" + newPageOffsetCalculator.applyAsInt(currentPageOffset)));
     }
 }

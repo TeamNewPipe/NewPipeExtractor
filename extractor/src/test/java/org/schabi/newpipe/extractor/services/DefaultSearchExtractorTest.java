@@ -1,6 +1,6 @@
 package org.schabi.newpipe.extractor.services;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import org.schabi.newpipe.extractor.MetaInfo;
 import org.schabi.newpipe.extractor.search.SearchExtractor;
 
@@ -13,8 +13,8 @@ import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.schabi.newpipe.extractor.ExtractorAsserts.assertEmpty;
 import static org.schabi.newpipe.extractor.utils.Utils.isNullOrEmpty;
 

@@ -1,8 +1,8 @@
 package org.schabi.newpipe.extractor.services.youtube.stream;
 
-import org.junit.BeforeClass;
-import org.junit.Ignore;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.Disabled;
+import org.junit.jupiter.api.Test;
 import org.schabi.newpipe.downloader.DownloaderFactory;
 import org.schabi.newpipe.downloader.DownloaderTestImpl;
 import org.schabi.newpipe.extractor.MetaInfo;
@@ -29,8 +29,9 @@ import java.util.Random;
 
 import javax.annotation.Nullable;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.schabi.newpipe.extractor.ServiceList.YouTube;
 import static org.schabi.newpipe.extractor.utils.Utils.EMPTY_STRING;
 
@@ -59,7 +60,7 @@ public class YoutubeStreamExtractorDefaultTest {
     public static final String YOUTUBE_LICENCE = "YouTube licence";
 
     public static class NotAvailable {
-        @BeforeClass
+        @BeforeAll
         public static void setUp() throws IOException {
             YoutubeParsingHelper.resetClientVersionAndKey();
             YoutubeParsingHelper.setNumberGenerator(new Random(1));
@@ -67,46 +68,46 @@ public class YoutubeStreamExtractorDefaultTest {
             NewPipe.init(new DownloaderFactory().getDownloader(RESOURCE_PATH + "notAvailable"));
         }
 
-        @Test(expected = GeographicRestrictionException.class)
-        public void geoRestrictedContent() throws Exception {
+        @Test
+        void geoRestrictedContent() throws Exception {
             final StreamExtractor extractor =
                     YouTube.getStreamExtractor(BASE_URL + "_PL2HJKxnOM");
-            extractor.fetchPage();
+            assertThrows(GeographicRestrictionException.class, extractor::fetchPage);
         }
 
-        @Test(expected = ContentNotAvailableException.class)
-        public void nonExistentFetch() throws Exception {
+        @Test
+        void nonExistentFetch() throws Exception {
             final StreamExtractor extractor =
                     YouTube.getStreamExtractor(BASE_URL + "don-t-exist");
-            extractor.fetchPage();
+            assertThrows(ContentNotAvailableException.class, extractor::fetchPage);
         }
 
-        @Test(expected = ParsingException.class)
-        public void invalidId() throws Exception {
+        @Test
+        void invalidId() throws Exception {
             final StreamExtractor extractor =
                     YouTube.getStreamExtractor(BASE_URL + "INVALID_ID_INVALID_ID");
-            extractor.fetchPage();
+            assertThrows(ParsingException.class, extractor::fetchPage);
         }
 
-        @Test(expected = PaidContentException.class)
-        public void paidContent() throws Exception {
+        @Test
+        void paidContent() throws Exception {
             final StreamExtractor extractor =
                     YouTube.getStreamExtractor(BASE_URL + "ayI2iBwGdxw");
-            extractor.fetchPage();
+            assertThrows(PaidContentException.class, extractor::fetchPage);
         }
 
-        @Test(expected = PrivateContentException.class)
-        public void privateContent() throws Exception {
+        @Test
+        void privateContent() throws Exception {
             final StreamExtractor extractor =
                     YouTube.getStreamExtractor(BASE_URL + "8VajtrESJzA");
-            extractor.fetchPage();
+            assertThrows(PrivateContentException.class, extractor::fetchPage);
         }
 
-        @Test(expected = YoutubeMusicPremiumContentException.class)
-        public void youtubeMusicPremiumContent() throws Exception {
+        @Test
+        void youtubeMusicPremiumContent() throws Exception {
             final StreamExtractor extractor =
                     YouTube.getStreamExtractor(BASE_URL + "sMJ8bRN2dak");
-            extractor.fetchPage();
+            assertThrows(YoutubeMusicPremiumContentException.class, extractor::fetchPage);
         }
     }
 
@@ -116,7 +117,7 @@ public class YoutubeStreamExtractorDefaultTest {
         private static final String URL = BASE_URL + ID + "&t=" + TIMESTAMP + "s";
         private static StreamExtractor extractor;
 
-        @BeforeClass
+        @BeforeAll
         public static void setUp() throws Exception {
             YoutubeParsingHelper.resetClientVersionAndKey();
             YoutubeParsingHelper.setNumberGenerator(new Random(1));
@@ -160,7 +161,7 @@ public class YoutubeStreamExtractorDefaultTest {
         private static final String URL = BASE_URL + ID;
         private static StreamExtractor extractor;
 
-        @BeforeClass
+        @BeforeAll
         public static void setUp() throws Exception {
             YoutubeParsingHelper.resetClientVersionAndKey();
             YoutubeParsingHelper.setNumberGenerator(new Random(1));
@@ -207,14 +208,14 @@ public class YoutubeStreamExtractorDefaultTest {
         // @formatter:on
     }
 
-    @Ignore("Test broken, video was made private")
+    @Disabled("Test broken, video was made private")
     public static class RatingsDisabledTest extends DefaultStreamExtractorTest {
         private static final String ID = "HRKu0cvrr_o";
         private static final int TIMESTAMP = 17;
         private static final String URL = BASE_URL + ID + "&t=" + TIMESTAMP;
         private static StreamExtractor extractor;
 
-        @BeforeClass
+        @BeforeAll
         public static void setUp() throws Exception {
             YoutubeParsingHelper.resetClientVersionAndKey();
             YoutubeParsingHelper.setNumberGenerator(new Random(1));
@@ -252,7 +253,7 @@ public class YoutubeStreamExtractorDefaultTest {
         private static final String URL = BASE_URL + ID;
         private static StreamExtractor extractor;
 
-        @BeforeClass
+        @BeforeAll
         public static void setUp() throws Exception {
             YoutubeParsingHelper.resetClientVersionAndKey();
             YoutubeParsingHelper.setNumberGenerator(new Random(1));
@@ -314,7 +315,7 @@ public class YoutubeStreamExtractorDefaultTest {
         private static final String URL = BASE_URL + ID;
         private static StreamExtractor extractor;
 
-        @BeforeClass
+        @BeforeAll
         public static void setUp() throws Exception {
             YoutubeParsingHelper.resetClientVersionAndKey();
             YoutubeParsingHelper.setNumberGenerator(new Random(1));
@@ -368,12 +369,12 @@ public class YoutubeStreamExtractorDefaultTest {
 
         @Override
         @Test
-        @Ignore("encoding problem")
+        @Disabled("encoding problem")
         public void testName() {}
 
         @Override
         @Test
-        @Ignore("encoding problem")
+        @Disabled("encoding problem")
         public void testTags() {}
     }
 
@@ -383,7 +384,7 @@ public class YoutubeStreamExtractorDefaultTest {
         private static final String URL = BASE_URL + ID;
         private static StreamExtractor extractor;
 
-        @BeforeClass
+        @BeforeAll
         public static void setUp() throws Exception {
             YoutubeParsingHelper.resetClientVersionAndKey();
             YoutubeParsingHelper.setNumberGenerator(new Random(1));
@@ -437,7 +438,7 @@ public class YoutubeStreamExtractorDefaultTest {
     public static class UnlistedTest {
         private static YoutubeStreamExtractor extractor;
 
-        @BeforeClass
+        @BeforeAll
         public static void setUp() throws Exception {
             YoutubeStreamExtractor.resetDeobfuscationCode();
             NewPipe.init(DownloaderTestImpl.getInstance());
@@ -457,7 +458,7 @@ public class YoutubeStreamExtractorDefaultTest {
         private static final String URL = BASE_URL + ID;
         private static StreamExtractor extractor;
 
-        @BeforeClass
+        @BeforeAll
         public static void setUp() throws Exception {
             YoutubeStreamExtractor.resetDeobfuscationCode();
             NewPipe.init(DownloaderTestImpl.getInstance());
