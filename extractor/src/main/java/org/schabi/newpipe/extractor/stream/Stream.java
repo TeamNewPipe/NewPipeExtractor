@@ -7,6 +7,7 @@ import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.io.Serializable;
 import java.util.List;
+import java.util.Objects;
 
 import static org.schabi.newpipe.extractor.utils.Utils.isNullOrEmpty;
 
@@ -205,4 +206,24 @@ public abstract class Stream implements Serializable {
      */
     @Nullable
     public abstract ItagItem getItagItem();
+
+    @Override
+    public boolean equals(final Object obj) {
+        if (this == obj) {
+            return true;
+        }
+
+        if (obj == null || getClass() != obj.getClass()) {
+            return false;
+        }
+
+        final Stream stream = (Stream) obj;
+        return id.equals(stream.id) && mediaFormat == stream.mediaFormat
+                && deliveryMethod == stream.deliveryMethod;
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id, mediaFormat, deliveryMethod);
+    }
 }

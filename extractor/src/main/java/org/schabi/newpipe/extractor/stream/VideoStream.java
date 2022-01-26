@@ -25,6 +25,7 @@ import org.schabi.newpipe.extractor.services.youtube.ItagItem;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
+import java.util.Objects;
 
 public class VideoStream extends Stream {
     public static final String RESOLUTION_UNKNOWN = "";
@@ -318,5 +319,28 @@ public class VideoStream extends Stream {
     @Nullable
     public ItagItem getItagItem() {
         return itagItem;
+    }
+
+    @Override
+    public boolean equals(final Object obj) {
+        if (this == obj) {
+            return true;
+        }
+
+        if (obj == null || getClass() != obj.getClass()) {
+            return false;
+        }
+
+        if (!super.equals(obj)) {
+            return false;
+        }
+
+        final VideoStream videoStream = (VideoStream) obj;
+        return isVideoOnly == videoStream.isVideoOnly && resolution.equals(videoStream.resolution);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(super.hashCode(), resolution, isVideoOnly);
     }
 }
