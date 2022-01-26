@@ -5,6 +5,7 @@ import org.schabi.newpipe.extractor.NewPipe;
 import org.schabi.newpipe.extractor.downloader.Downloader;
 import org.schabi.newpipe.extractor.downloader.Response;
 import org.schabi.newpipe.extractor.exceptions.ExtractionException;
+import org.schabi.newpipe.extractor.utils.ManifestCreatorCache;
 import org.schabi.newpipe.extractor.utils.Utils;
 import org.w3c.dom.Attr;
 import org.w3c.dom.DOMException;
@@ -33,6 +34,7 @@ import static org.schabi.newpipe.extractor.utils.Utils.*;
  * It relies on external classes from the {@link org.w3c.dom} and {@link javax.xml} packages.
  * </p>
  */
+@SuppressWarnings({"ConstantConditions", "unused"})
 public final class YoutubeDashManifestCreator {
 
     /**
@@ -97,19 +99,20 @@ public final class YoutubeDashManifestCreator {
     /**
      * Cache of DASH manifests generated for OTF streams.
      */
-    private static final Map<String, String> GENERATED_OTF_MANIFESTS = new HashMap<>();
+    private static final ManifestCreatorCache<String, String> GENERATED_OTF_MANIFESTS =
+            new ManifestCreatorCache<>();
 
     /**
      * Cache of DASH manifests generated for post-live-DVR streams.
      */
-    private static final Map<String, String> GENERATED_POST_LIVE_STREAMS_MANIFESTS =
-            new HashMap<>();
+    private static final ManifestCreatorCache<String, String>
+            GENERATED_POST_LIVE_DVR_STREAMS_MANIFESTS = new ManifestCreatorCache<>();
 
     /**
      * Cache of DASH manifests generated for progressive streams.
      */
-    private static final Map<String, String> GENERATED_PROGRESSIVE_STREAMS_MANIFESTS =
-            new HashMap<>();
+    private static final ManifestCreatorCache<String, String>
+            GENERATED_PROGRESSIVE_STREAMS_MANIFESTS = new ManifestCreatorCache<>();
 
     /**
      * Enum of streaming format types used by YouTube in their streams.
@@ -165,6 +168,8 @@ public final class YoutubeDashManifestCreator {
      * while creating a manifest.
      */
     public static final class YoutubeDashManifestCreationException extends Exception {
+        private static final long serialVersionUID = 4514071286654036584L;
+
         YoutubeDashManifestCreationException(final String message) {
             super(message);
         }
@@ -240,7 +245,7 @@ public final class YoutubeDashManifestCreator {
             final long durationSecondsFallback)
             throws YoutubeDashManifestCreationException {
         if (GENERATED_OTF_MANIFESTS.containsKey(otfBaseStreamingUrl)) {
-            return GENERATED_OTF_MANIFESTS.get(otfBaseStreamingUrl);
+            return GENERATED_OTF_MANIFESTS.get(otfBaseStreamingUrl).getSecond();
         }
 
         final String originalOtfBaseStreamingUrl = otfBaseStreamingUrl;
@@ -373,8 +378,9 @@ public final class YoutubeDashManifestCreator {
             final int targetDurationSec,
             final long durationSecondsFallback)
             throws YoutubeDashManifestCreationException {
-        if (GENERATED_POST_LIVE_STREAMS_MANIFESTS.containsKey(postLiveStreamDvrStreamingUrl)) {
-            return GENERATED_POST_LIVE_STREAMS_MANIFESTS.get(postLiveStreamDvrStreamingUrl);
+        if (GENERATED_POST_LIVE_DVR_STREAMS_MANIFESTS.containsKey(postLiveStreamDvrStreamingUrl)) {
+            return GENERATED_POST_LIVE_DVR_STREAMS_MANIFESTS.get(postLiveStreamDvrStreamingUrl)
+                    .getSecond();
         }
         final String originalPostLiveStreamDvrStreamingUrl = postLiveStreamDvrStreamingUrl;
         final String streamDuration;
@@ -427,7 +433,7 @@ public final class YoutubeDashManifestCreator {
         generateSegmentElementForPostLiveDvrStreams(document, targetDurationSec, segmentCount);
 
         return buildResult(originalPostLiveStreamDvrStreamingUrl, document,
-                GENERATED_POST_LIVE_STREAMS_MANIFESTS);
+                GENERATED_POST_LIVE_DVR_STREAMS_MANIFESTS);
     }
 
     /**
@@ -495,7 +501,8 @@ public final class YoutubeDashManifestCreator {
             @Nonnull final ItagItem itagItem,
             final long durationSecondsFallback) throws YoutubeDashManifestCreationException {
         if (GENERATED_PROGRESSIVE_STREAMS_MANIFESTS.containsKey(progressiveStreamingBaseUrl)) {
-            return GENERATED_PROGRESSIVE_STREAMS_MANIFESTS.get(progressiveStreamingBaseUrl);
+            return GENERATED_PROGRESSIVE_STREAMS_MANIFESTS.get(progressiveStreamingBaseUrl)
+                    .getSecond();
         }
 
         if (durationSecondsFallback <= 0) {
@@ -1528,11 +1535,13 @@ public final class YoutubeDashManifestCreator {
     /**
      * Convert a DASH manifest {@link Document document} to a string.
      *
-     * @param originalBaseStreamingUrl    the original base URL of the stream
-     * @param document                    the document to be converted
-     * @param mapOfGeneratedManifestsType the {@link Map} on which store the string generated
-     *                                    (which is either {@link #GENERATED_OTF_MANIFESTS} or
-     *                                    {@link #GENERATED_POST_LIVE_STREAMS_MANIFESTS})
+     * @param originalBaseStreamingUrl the original base URL of the stream
+     * @param document                 the document to be converted
+     * @param manifestCreatorCache     the {@link ManifestCreatorCache} on which store the
+     *                                 string generated (which is either
+     *                                 {@link #GENERATED_OTF_MANIFESTS},
+     *                                 {@link #GENERATED_POST_LIVE_DVR_STREAMS_MANIFESTS} or
+     *                                 {@link #GENERATED_PROGRESSIVE_STREAMS_MANIFESTS})
      * @return the DASH manifest {@link Document document} converted to a string
      * @throws YoutubeDashManifestCreationException if something goes wrong when converting the
      *                                              {@link Document document}
@@ -1540,7 +1549,7 @@ public final class YoutubeDashManifestCreator {
     private static String buildResult(
             @Nonnull final String originalBaseStreamingUrl,
             @Nonnull final Document document,
-            @Nonnull final Map<String, String> mapOfGeneratedManifestsType)
+            @Nonnull final ManifestCreatorCache<String, String> manifestCreatorCache)
             throws YoutubeDashManifestCreationException {
         try {
             final StringWriter result = new StringWriter();
@@ -1552,7 +1561,7 @@ public final class YoutubeDashManifestCreator {
             transformer.setOutputProperty(OutputKeys.STANDALONE, "no");
             transformer.transform(new DOMSource(document), new StreamResult(result));
             final String stringResult = result.toString();
-            mapOfGeneratedManifestsType.put(originalBaseStreamingUrl, stringResult);
+            manifestCreatorCache.put(originalBaseStreamingUrl, stringResult);
             return stringResult;
         } catch (final Exception e) {
             throw new YoutubeDashManifestCreationException(
@@ -1570,12 +1579,12 @@ public final class YoutubeDashManifestCreator {
     }
 
     /**
-     * Get the number of cached post live streams manifests.
+     * Get the number of cached post-live-DVR streams manifests.
      *
-     * @return the number of cached post live streams manifests
+     * @return the number of cached post-live-DVR streams manifests
      */
-    public static int getPostLiveStreamsCachedManifestsSize() {
-        return GENERATED_POST_LIVE_STREAMS_MANIFESTS.size();
+    public static int getPostLiveDvrStreamsCachedManifestsSize() {
+        return GENERATED_POST_LIVE_DVR_STREAMS_MANIFESTS.size();
     }
 
     /**
@@ -1583,38 +1592,317 @@ public final class YoutubeDashManifestCreator {
      *
      * @return the number of cached progressive manifests
      */
-    public static int getProgressiveCachedManifestsSize() {
+    public static int getProgressiveStreamsCachedManifestsSize() {
         return GENERATED_PROGRESSIVE_STREAMS_MANIFESTS.size();
     }
 
     /**
-     * Clear the cached OTF manifests.
+     * Get the number of cached OTF, post-live-DVR streams and progressive manifests.
+     *
+     * @return the number of cached OTF, post-live-DVR streams and progressive manifests.
+     */
+    public static int getSizeOfManifestsCaches() {
+        return GENERATED_OTF_MANIFESTS.size()
+                + GENERATED_POST_LIVE_DVR_STREAMS_MANIFESTS.size()
+                + GENERATED_PROGRESSIVE_STREAMS_MANIFESTS.size();
+    }
+
+    /**
+     * Get the clear factor of OTF streams manifests cache.
+     *
+     * @return the clear factor of OTF streams manifests cache.
+     */
+    public static double getOtfStreamsClearFactor() {
+        return GENERATED_OTF_MANIFESTS.getClearFactor();
+    }
+
+    /**
+     * Get the clear factor of post-live-DVR streams manifests cache.
+     *
+     * @return the clear factor of post-live-DVR streams manifests cache.
+     */
+    public static double getPostLiveDvrStreamsClearFactor() {
+        return GENERATED_POST_LIVE_DVR_STREAMS_MANIFESTS.getClearFactor();
+    }
+
+    /**
+     * Get the clear factor of progressive streams manifests cache.
+     *
+     * @return the clear factor of progressive streams manifests cache.
+     */
+    public static double getProgressiveStreamsClearFactor() {
+        return GENERATED_PROGRESSIVE_STREAMS_MANIFESTS.getClearFactor();
+    }
+
+    /**
+     * Set the clear factor of cached OTF streams
+     *
+     * @param otfStreamsClearFactor the clear factor of OTF streams manifests cache.
+     */
+    public static void setOtfStreamsClearFactor(final double otfStreamsClearFactor) {
+        GENERATED_OTF_MANIFESTS.setClearFactor(otfStreamsClearFactor);
+    }
+
+    /**
+     * Set the clear factor of cached post-live-DVR streams
+     *
+     * @param postLiveDvrStreamsClearFactor the clear factor of post-live-DVR streams manifests
+     *                                      cache.
+     */
+    public static void setPostLiveDvrStreamsClearFactor(
+            final double postLiveDvrStreamsClearFactor) {
+        GENERATED_POST_LIVE_DVR_STREAMS_MANIFESTS.setClearFactor(postLiveDvrStreamsClearFactor);
+    }
+
+    /**
+     * Set the clear factor of cached progressive streams
+     *
+     * @param progressiveStreamsClearFactor the clear factor of progressive streams manifests
+     *                                      cache.
+     */
+    public static void setProgressiveStreamsClearFactor(
+            final double progressiveStreamsClearFactor) {
+        GENERATED_PROGRESSIVE_STREAMS_MANIFESTS.setClearFactor(progressiveStreamsClearFactor);
+    }
+
+    /**
+     * Set the clear factor of cached OTF, post-live-DVR and progressive streams.
+     *
+     * @param cachesClearFactor the clear factor of OTF, post-live-DVR and progressive streams
+     *                          manifests caches.
+     */
+    public static void setCachesClearFactor(final double cachesClearFactor) {
+        GENERATED_OTF_MANIFESTS.setClearFactor(cachesClearFactor);
+        GENERATED_POST_LIVE_DVR_STREAMS_MANIFESTS.setClearFactor(cachesClearFactor);
+        GENERATED_PROGRESSIVE_STREAMS_MANIFESTS.setClearFactor(cachesClearFactor);
+    }
+
+    /**
+     * Reset the clear factor of OTF streams cache to its
+     * {@link ManifestCreatorCache#DEFAULT_CLEAR_FACTOR default value}.
+     */
+    public static void resetOtfStreamsClearFactor() {
+        GENERATED_OTF_MANIFESTS.resetClearFactor();
+    }
+
+    /**
+     * Reset the clear factor of post-live-DVR streams cache to its
+     * {@link ManifestCreatorCache#DEFAULT_CLEAR_FACTOR default value}.
+     */
+    public static void resetPostLiveDvrStreamsClearFactor() {
+        GENERATED_POST_LIVE_DVR_STREAMS_MANIFESTS.resetClearFactor();
+    }
+
+    /**
+     * Reset the clear factor of progressive streams cache to its
+     * {@link ManifestCreatorCache#DEFAULT_CLEAR_FACTOR default value}.
+     */
+    public static void resetProgressiveStreamsClearFactor() {
+        GENERATED_PROGRESSIVE_STREAMS_MANIFESTS.resetClearFactor();
+    }
+
+    /**
+     * Reset the clear factor of OTF, post-live-DVR and progressive streams caches to their
+     * {@link ManifestCreatorCache#DEFAULT_CLEAR_FACTOR default value}.
+     */
+    public static void resetCachesClearFactor() {
+        GENERATED_OTF_MANIFESTS.resetClearFactor();
+        GENERATED_POST_LIVE_DVR_STREAMS_MANIFESTS.resetClearFactor();
+        GENERATED_PROGRESSIVE_STREAMS_MANIFESTS.resetClearFactor();
+    }
+
+    /**
+     * Set the limit of cached OTF streams.
+     *
+     * <p>
+     * When the cache limit size is reached, oldest manifests will be removed.
+     * </p>
+     *
+     * <p>
+     * If the new cache size set is less than the number of current cached manifests, oldest
+     * manifests will be also removed.
+     * </p>
+     *
+     * <p>
+     * Note that the limit must be more than 0 or an {@link IllegalArgumentException} will be
+     * thrown.
+     * </p>
+     *
+     * @param otfStreamsCacheLimit the maximum number of OTF streams in the corresponding cache.
+     */
+    public static void setOtfStreamsMaximumSize(final int otfStreamsCacheLimit) {
+        GENERATED_OTF_MANIFESTS.setMaximumSize(otfStreamsCacheLimit);
+    }
+
+    /**
+     * Set the limit of cached post-live-DVR streams.
+     *
+     * <p>
+     * When the cache limit size is reached, oldest manifests will be removed.
+     * </p>
+     *
+     * <p>
+     * If the new cache size set is less than the number of current cached manifests, oldest
+     * manifests will be also removed.
+     * </p>
+     *
+     * <p>
+     * Note that the limit must be more than 0 or an {@link IllegalArgumentException} will be
+     * thrown.
+     * </p>
+     *
+     * @param postLiveDvrStreamsCacheLimit the maximum number of post-live-DVR streams in the
+     *                                     corresponding cache.
+     */
+    public static void setPostLiveDvrStreamsMaximumSize(final int postLiveDvrStreamsCacheLimit) {
+        GENERATED_POST_LIVE_DVR_STREAMS_MANIFESTS.setMaximumSize(postLiveDvrStreamsCacheLimit);
+    }
+
+    /**
+     * Set the limit of cached progressive streams, if needed.
+     *
+     * <p>
+     * When the cache limit size is reached, oldest manifests will be removed.
+     * </p>
+     *
+     * <p>
+     * If the new cache size set is less than the number of current cached manifests, oldest
+     * manifests will be also removed.
+     * </p>
+     *
+     * <p>
+     * Note that the limit must be more than 0 or an {@link IllegalArgumentException} will be
+     * thrown.
+     * </p>
+     *
+     * @param progressiveCacheLimit the maximum number of progressive streams in the corresponding
+     *                              cache.
+     */
+    public static void setProgressiveStreamsMaximumSize(final int progressiveCacheLimit) {
+        GENERATED_PROGRESSIVE_STREAMS_MANIFESTS.setMaximumSize(progressiveCacheLimit);
+    }
+
+    /**
+     * Set the limit of cached OTF manifests, cached post-live-DVR manifests and cached progressive
+     * manifests.
+     *
+     * <p>
+     * When the caches limit size are reached, oldest manifests will be removed from their
+     * respective cache.
+     * </p>
+     *
+     * <p>
+     * For each cache, if its new size set is less than the number of current cached manifests,
+     * oldest manifests will be also removed.
+     * </p>
+     *
+     * <p>
+     * Note that the limit must be more than 0 or an {@link IllegalArgumentException} will be
+     * thrown.
+     * </p>
+     *
+     * @param cachesLimit the maximum size of OTF, post-live-DVR and progressive caches
+     */
+    public static void setManifestsCachesMaximumSize(final int cachesLimit) {
+        GENERATED_OTF_MANIFESTS.setMaximumSize(cachesLimit);
+        GENERATED_POST_LIVE_DVR_STREAMS_MANIFESTS.setMaximumSize(cachesLimit);
+        GENERATED_PROGRESSIVE_STREAMS_MANIFESTS.setMaximumSize(cachesLimit);
+    }
+
+    /**
+     * Clear cached OTF manifests.
+     *
+     * <p>
+     * The limit of this cache size set, if there is one, will be not unset.
+     * </p>
      */
     public static void clearOtfCachedManifests() {
         GENERATED_OTF_MANIFESTS.clear();
     }
 
     /**
-     * Clear the cached post live streams manifests.
+     * Clear cached post-live-DVR streams manifests.
+     *
+     * <p>
+     * The limit of this cache size set, if there is one, will be not unset.
+     * </p>
      */
-    public static void clearPostLiveStreamsCachedManifests() {
-        GENERATED_POST_LIVE_STREAMS_MANIFESTS.clear();
+    public static void clearPostLiveDvrStreamsCachedManifests() {
+        GENERATED_POST_LIVE_DVR_STREAMS_MANIFESTS.clear();
     }
 
     /**
-     * Clear the cached post live streams manifests.
+     * Clear cached progressive streams manifests.
+     *
+     * <p>
+     * The limit of this cache size set, if there is one, will be not unset.
+     * </p>
      */
     public static void clearProgressiveCachedManifests() {
-        GENERATED_POST_LIVE_STREAMS_MANIFESTS.clear();
+        GENERATED_PROGRESSIVE_STREAMS_MANIFESTS.clear();
     }
 
     /**
-     * Clear the cached OTF manifests, the cached post live streams manifests and the cached
-     * progressive manifests in their respective caches.
+     * Clear cached OTF manifests, cached post-live-DVR streams manifests and cached progressive
+     * manifests in their respective caches.
+     *
+     * <p>
+     * The limit of the caches size set, if any, will be not unset.
+     * </p>
      */
     public static void clearManifestsInCaches() {
         GENERATED_OTF_MANIFESTS.clear();
-        GENERATED_POST_LIVE_STREAMS_MANIFESTS.clear();
+        GENERATED_POST_LIVE_DVR_STREAMS_MANIFESTS.clear();
         GENERATED_PROGRESSIVE_STREAMS_MANIFESTS.clear();
+    }
+
+    /**
+     * Reset OTF manifests cache.
+     *
+     * <p>
+     * All cached manifests will be removed and the clear factor and the maximum size will be set
+     * to their default values.
+     * </p>
+     */
+    public static void resetOtfManifestsCache() {
+        GENERATED_OTF_MANIFESTS.reset();
+    }
+
+    /**
+     * Reset post-live-DVR manifests cache.
+     *
+     * <p>
+     * All cached manifests will be removed and the clear factor and the maximum size will be set
+     * to their default values.
+     * </p>
+     */
+    public static void resetPostLiveDvrManifestsCache() {
+        GENERATED_POST_LIVE_DVR_STREAMS_MANIFESTS.reset();
+    }
+
+    /**
+     * Reset progressive manifests cache.
+     *
+     * <p>
+     * All cached manifests will be removed and the clear factor and the maximum size will be set
+     * to their default values.
+     * </p>
+     */
+    public static void resetProgressiveManifestsCache() {
+        GENERATED_PROGRESSIVE_STREAMS_MANIFESTS.reset();
+    }
+
+    /**
+     * Reset OTF, post-live-DVR and progressive manifests caches.
+     *
+     * <p>
+     * For each cache, all cached manifests will be removed and the clear factor and the maximum
+     * size will be set to their default values.
+     * </p>
+     */
+    public static void resetCaches() {
+        GENERATED_OTF_MANIFESTS.reset();
+        GENERATED_POST_LIVE_DVR_STREAMS_MANIFESTS.reset();
+        GENERATED_PROGRESSIVE_STREAMS_MANIFESTS.reset();
     }
 }
