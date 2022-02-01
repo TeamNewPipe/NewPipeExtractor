@@ -36,7 +36,7 @@ public class YoutubeThrottlingDecrypter {
 
     private static final Pattern N_PARAM_PATTERN = Pattern.compile("[&?]n=([^&]+)");
     private static final Pattern FUNCTION_NAME_PATTERN = Pattern.compile(
-            "b=a\\.get\\(\"n\"\\)\\)&&\\(b=(\\w+)\\(b\\),a\\.set\\(\"n\",b\\)");
+            "b=a\\.get\\(\"n\"\\)\\)&&\\(b=(\\S+)\\(b\\),a\\.set\\(\"n\",b\\)");
 
     private static final Map<String, String> nParams = new HashMap<>();
 
@@ -66,7 +66,21 @@ public class YoutubeThrottlingDecrypter {
 
     private String parseDecodeFunctionName(final String playerJsCode)
             throws Parser.RegexException {
-        return Parser.matchGroup1(FUNCTION_NAME_PATTERN, playerJsCode);
+            String functionName = Parser.matchGroup1(FUNCTION_NAME_PATTERN, playerJsCode);
+            final int arrayStartBrace = functionName.indexOf("[");
+            
+            if (arrayStartBrace > 0) {
+                final String arrayVarName = functionName.substring(0, arrayStartBrace);
+                final String order = functionName.substring(
+                        arrayStartBrace + 1, functionName.indexOf("]"));
+                final int arrayNum = Integer.parseInt(order);
+                final Pattern arrayPattern = Pattern.compile(
+                        String.format("var %s=\\[(.+?)\\];", arrayVarName));
+                final String arrayStr = Parser.matchGroup1(arrayPattern, playerJsCode);
+                final String[] names = arrayStr.split(",");
+                functionName = names[arrayNum];
+            }
+            return functionName;
     }
 
     @Nonnull
@@ -87,15 +101,15 @@ public class YoutubeThrottlingDecrypter {
 
     @Nonnull
     private String parseWithRegex(final String playerJsCode, final String functionName) throws Parser.RegexException {
-        Pattern functionPattern = Pattern.compile(functionName + "=function(.*?}};)\n",
+        final Pattern functionPattern = Pattern.compile(functionName + "=function(.*?}};)\n",
                 Pattern.DOTALL);
         return "function " + functionName + Parser.matchGroup1(functionPattern, playerJsCode);
     }
 
     public String apply(final String url) throws Parser.RegexException {
         if (containsNParam(url)) {
-            String oldNParam = parseNParam(url);
-            String newNParam = decryptNParam(oldNParam);
+            final String oldNParam = parseNParam(url);
+            final String newNParam = decryptNParam(oldNParam);
             return replaceNParam(url, oldNParam, newNParam);
         } else {
             return url;
