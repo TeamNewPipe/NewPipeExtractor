@@ -36,7 +36,7 @@ public class YoutubeThrottlingDecrypter {
 
     private static final Pattern N_PARAM_PATTERN = Pattern.compile("[&?]n=([^&]+)");
     private static final Pattern FUNCTION_NAME_PATTERN = Pattern.compile(
-            "b=a\\.get\\(\"n\"\\)\\)&&\\(b=(\\w+)\\(b\\),a\\.set\\(\"n\",b\\)");
+            "b=a\\.get\\(\"n\"\\)\\)&&\\(b=(\\S+)\\(b\\),a\\.set\\(\"n\",b\\)");
 
     private static final Map<String, String> nParams = new HashMap<>();
 
