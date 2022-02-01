@@ -469,14 +469,12 @@ public class YoutubeStreamExtractor extends StreamExtractor {
     public List<AudioStream> getAudioStreams() throws ExtractionException {
         assertPageFetched();
         final List<AudioStream> audioStreams = new ArrayList<>();
-        final YoutubeThrottlingDecrypter throttlingDecrypter = new YoutubeThrottlingDecrypter(getId());
 
         try {
             for (final Map.Entry<String, ItagItem> entry : getItags(ADAPTIVE_FORMATS,
                     ItagItem.ItagType.AUDIO).entrySet()) {
                 final ItagItem itag = entry.getValue();
-                String url = entry.getKey();
-                url = throttlingDecrypter.apply(url);
+                final String url = tryDecryption(entry.getKey(), getId());
 
                 final AudioStream audioStream = new AudioStream(url, itag);
                 if (!Stream.containSimilarStream(audioStream, audioStreams)) {
@@ -494,14 +492,12 @@ public class YoutubeStreamExtractor extends StreamExtractor {
     public List<VideoStream> getVideoStreams() throws ExtractionException {
         assertPageFetched();
         final List<VideoStream> videoStreams = new ArrayList<>();
-        final YoutubeThrottlingDecrypter throttlingDecrypter = new YoutubeThrottlingDecrypter(getId());
 
         try {
             for (final Map.Entry<String, ItagItem> entry : getItags(FORMATS,
                     ItagItem.ItagType.VIDEO).entrySet()) {
                 final ItagItem itag = entry.getValue();
-                String url = entry.getKey();
-                url = throttlingDecrypter.apply(url);
+                final String url = tryDecryption(entry.getKey(), getId());
 
                 final VideoStream videoStream = new VideoStream(url, false, itag);
                 if (!Stream.containSimilarStream(videoStream, videoStreams)) {
@@ -519,14 +515,12 @@ public class YoutubeStreamExtractor extends StreamExtractor {
     public List<VideoStream> getVideoOnlyStreams() throws ExtractionException {
         assertPageFetched();
         final List<VideoStream> videoOnlyStreams = new ArrayList<>();
-        final YoutubeThrottlingDecrypter throttlingDecrypter = new YoutubeThrottlingDecrypter(getId());
 
         try {
             for (final Map.Entry<String, ItagItem> entry : getItags(ADAPTIVE_FORMATS,
                     ItagItem.ItagType.VIDEO_ONLY).entrySet()) {
                 final ItagItem itag = entry.getValue();
-                String url = entry.getKey();
-                url = throttlingDecrypter.apply(url);
+                final String url = tryDecryption(entry.getKey(), getId());
 
                 final VideoStream videoStream = new VideoStream(url, true, itag);
                 if (!Stream.containSimilarStream(videoStream, videoOnlyStreams)) {
@@ -538,6 +532,19 @@ public class YoutubeStreamExtractor extends StreamExtractor {
         }
 
         return videoOnlyStreams;
+    }
+
+    /**
+     * Try to decrypt url and fallback to given url, because decryption is not
+     * always needed.
+     * This way a breaking change from YouTube does not result in a broken extractor.
+     */
+    private String tryDecryption(final String url, final String videoId) {
+        try {
+            return YoutubeThrottlingDecrypter.apply(url, videoId);
+        } catch (ParsingException e) {
+            return url;
+        }
     }
 
     @Override
