@@ -33,6 +33,11 @@ public class PlaylistInfoItemsCollector extends InfoItemsCollector<PlaylistInfoI
         } catch (Exception e) {
             addError(e);
         }
+        try {
+            resultItem.setPlaylistType(extractor.getPlaylistType());
+        } catch (Exception e) {
+            addError(e);
+        }
         return resultItem;
     }
 }
