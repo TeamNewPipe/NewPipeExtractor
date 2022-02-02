@@ -10,6 +10,7 @@ import org.mozilla.javascript.ScriptableObject;
 
 import org.schabi.newpipe.extractor.MediaFormat;
 import org.schabi.newpipe.extractor.MetaInfo;
+import org.schabi.newpipe.extractor.MultiInfoItemsCollector;
 import org.schabi.newpipe.extractor.StreamingService;
 import org.schabi.newpipe.extractor.downloader.Downloader;
 import org.schabi.newpipe.extractor.exceptions.AgeRestrictedContentException;
@@ -618,7 +619,7 @@ public class YoutubeStreamExtractor extends StreamExtractor {
 
     @Nullable
     @Override
-    public StreamInfoItemsCollector getRelatedItems() throws ExtractionException {
+    public MultiInfoItemsCollector getRelatedItems() throws ExtractionException {
         assertPageFetched();
 
         if (getAgeLimit() != NO_AGE_LIMIT) {
@@ -626,8 +627,7 @@ public class YoutubeStreamExtractor extends StreamExtractor {
         }
 
         try {
-            final StreamInfoItemsCollector collector = new StreamInfoItemsCollector(
-                    getServiceId());
+            final MultiInfoItemsCollector collector = new MultiInfoItemsCollector(getServiceId());
 
             final JsonArray results = nextResponse.getObject("contents")
                     .getObject("twoColumnWatchNextResults").getObject("secondaryResults")
@@ -635,10 +635,14 @@ public class YoutubeStreamExtractor extends StreamExtractor {
 
             final TimeAgoParser timeAgoParser = getTimeAgoParser();
 
-            for (final Object ul : results) {
-                if (((JsonObject) ul).has("compactVideoRenderer")) {
-                    collector.commit(new YoutubeStreamInfoItemExtractor(((JsonObject) ul)
-                            .getObject("compactVideoRenderer"), timeAgoParser));
+            for (final Object resultObject : results) {
+                final JsonObject result = (JsonObject) resultObject;
+                if (result.has("compactVideoRenderer")) {
+                    collector.commit(new YoutubeStreamInfoItemExtractor(
+                            result.getObject("compactVideoRenderer"), timeAgoParser));
+                } else if (result.has("compactRadioRenderer")) {
+                    collector.commit(new YoutubeMixPlaylistInfoItemExtractor(
+                            result.getObject("compactRadioRenderer")));
                 }
             }
             return collector;

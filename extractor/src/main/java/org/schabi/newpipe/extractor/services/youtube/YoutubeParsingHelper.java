@@ -250,6 +250,17 @@ public class YoutubeParsingHelper {
     }
 
     /**
+     * Checks if the given playlist id is a YouTube My Mix (auto-generated playlist)
+     * Ids from a YouTube My Mix start with "RDMM"
+     *
+     * @param playlistId the playlist id
+     * @return Whether given id belongs to a YouTube My Mix
+     */
+    public static boolean isYoutubeMyMixId(@Nonnull final String playlistId) {
+        return playlistId.startsWith("RDMM");
+    }
+
+    /**
      * Checks if the given playlist id is a YouTube Music Mix (auto-generated playlist)
      * Ids from a YouTube Music Mix start with "RDAMVM" or "RDCLAK"
      *
@@ -278,7 +289,7 @@ public class YoutubeParsingHelper {
     @Nonnull
     public static String extractVideoIdFromMixId(@Nonnull final String playlistId)
             throws ParsingException {
-        if (playlistId.startsWith("RDMM")) { // My Mix
+        if (isYoutubeMyMixId(playlistId)) { // My Mix
             return playlistId.substring(4);
 
         } else if (isYoutubeMusicMixId(playlistId)) { // starts with "RDAMVM" or "RDCLAK"
@@ -703,6 +714,17 @@ public class YoutubeParsingHelper {
         }
 
         return thumbnailUrl;
+    }
+
+    public static String getThumbnailUrlFromInfoItem(final JsonObject infoItem)
+            throws ParsingException {
+        // TODO: Don't simply get the first item, but look at all thumbnails and their resolution
+        try {
+            return fixThumbnailUrl(infoItem.getObject("thumbnail").getArray("thumbnails")
+                    .getObject(0).getString("url"));
+        } catch (final Exception e) {
+            throw new ParsingException("Could not get thumbnail url", e);
+        }
     }
 
     @Nonnull

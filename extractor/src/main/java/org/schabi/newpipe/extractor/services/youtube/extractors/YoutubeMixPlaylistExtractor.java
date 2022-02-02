@@ -234,9 +234,9 @@ public class YoutubeMixPlaylistExtractor extends PlaylistExtractor {
     @Nonnull
     private String getThumbnailUrlFromPlaylistId(@Nonnull final String playlistId) throws ParsingException {
         final String videoId;
-        if (playlistId.startsWith("RDMM")) {
+        if (isYoutubeMyMixId(playlistId)) {
             videoId = playlistId.substring(4);
-        } else if (playlistId.startsWith("RDCMUC")) {
+        } else if (isYoutubeChannelMixId(playlistId)) {
             throw new ParsingException("This playlist is a channel mix");
         } else {
             videoId = playlistId.substring(2);
