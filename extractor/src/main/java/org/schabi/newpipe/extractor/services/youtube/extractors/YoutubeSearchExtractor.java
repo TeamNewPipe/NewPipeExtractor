@@ -11,7 +11,7 @@ import org.schabi.newpipe.extractor.exceptions.ParsingException;
 import org.schabi.newpipe.extractor.linkhandler.SearchQueryHandler;
 import org.schabi.newpipe.extractor.localization.Localization;
 import org.schabi.newpipe.extractor.localization.TimeAgoParser;
-import org.schabi.newpipe.extractor.search.InfoItemsSearchCollector;
+import org.schabi.newpipe.extractor.MultiInfoItemsCollector;
 import org.schabi.newpipe.extractor.search.SearchExtractor;
 import org.schabi.newpipe.extractor.services.youtube.YoutubeParsingHelper;
 import org.schabi.newpipe.extractor.utils.JsonUtils;
@@ -132,7 +132,7 @@ public class YoutubeSearchExtractor extends SearchExtractor {
     @Nonnull
     @Override
     public InfoItemsPage<InfoItem> getInitialPage() throws IOException, ExtractionException {
-        final InfoItemsSearchCollector collector = new InfoItemsSearchCollector(getServiceId());
+        final MultiInfoItemsCollector collector = new MultiInfoItemsCollector(getServiceId());
 
         final JsonArray sections = initialData.getObject("contents")
                 .getObject("twoColumnSearchResultsRenderer").getObject("primaryContents")
@@ -163,7 +163,7 @@ public class YoutubeSearchExtractor extends SearchExtractor {
         }
 
         final Localization localization = getExtractorLocalization();
-        final InfoItemsSearchCollector collector = new InfoItemsSearchCollector(getServiceId());
+        final MultiInfoItemsCollector collector = new MultiInfoItemsCollector(getServiceId());
 
         // @formatter:off
         final byte[] json = JsonWriter.string(prepareDesktopJsonBuilder(localization,
@@ -195,7 +195,7 @@ public class YoutubeSearchExtractor extends SearchExtractor {
                 .getObject("continuationItemRenderer")));
     }
 
-    private void collectStreamsFrom(final InfoItemsSearchCollector collector,
+    private void collectStreamsFrom(final MultiInfoItemsCollector collector,
                                     final JsonArray contents) throws NothingFoundException,
             ParsingException {
         final TimeAgoParser timeAgoParser = getTimeAgoParser();
