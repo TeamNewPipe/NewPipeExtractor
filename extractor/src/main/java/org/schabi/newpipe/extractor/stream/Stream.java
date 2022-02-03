@@ -15,6 +15,8 @@ import static org.schabi.newpipe.extractor.utils.Utils.isNullOrEmpty;
  * Creates a stream object.
  */
 public abstract class Stream implements Serializable {
+    private static final long serialVersionUID = -59591092068744672L;
+
     private final String id;
     @Nullable private final MediaFormat mediaFormat;
     private final String content;

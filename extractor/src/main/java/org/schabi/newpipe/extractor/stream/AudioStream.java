@@ -28,6 +28,8 @@ import javax.annotation.Nullable;
 import java.util.Objects;
 
 public class AudioStream extends Stream {
+    private static final long serialVersionUID = 271188551264661410L;
+
     public static final int UNKNOWN_BITRATE = -1;
 
     private final int averageBitrate;

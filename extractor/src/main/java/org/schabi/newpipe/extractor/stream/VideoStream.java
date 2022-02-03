@@ -28,6 +28,8 @@ import javax.annotation.Nullable;
 import java.util.Objects;
 
 public class VideoStream extends Stream {
+    private static final long serialVersionUID = -2711684390585131076L;
+
     public static final String RESOLUTION_UNKNOWN = "";
 
     private final String resolution;

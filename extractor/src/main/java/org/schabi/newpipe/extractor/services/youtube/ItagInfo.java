@@ -3,6 +3,8 @@ package org.schabi.newpipe.extractor.services.youtube;
 import java.io.Serializable;
 
 public class ItagInfo implements Serializable {
+    private static final long serialVersionUID = 6018056950573901967L;
+
     private final String content;
     private final ItagItem itagItem;
     private boolean isUrl;

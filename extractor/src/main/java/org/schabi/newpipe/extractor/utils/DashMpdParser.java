@@ -57,6 +57,8 @@ public class DashMpdParser {
     }
 
     public static class DashMpdParsingException extends ParsingException {
+        private static final long serialVersionUID = 2304679782211549014L;
+
         DashMpdParsingException(final String message, final Exception e) {
             super(message, e);
         }

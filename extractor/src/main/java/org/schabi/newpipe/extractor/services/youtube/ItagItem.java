@@ -11,6 +11,8 @@ import static org.schabi.newpipe.extractor.services.youtube.ItagItem.ItagType.*;
 import java.io.Serializable;
 
 public class ItagItem implements Serializable {
+    private static final long serialVersionUID = 2885399300064582464L;
+
     /**
      * List can be found here:
      * https://github.com/ytdl-org/youtube-dl/blob/c2350cac/youtube_dl/extractor/youtube.py#L1109
