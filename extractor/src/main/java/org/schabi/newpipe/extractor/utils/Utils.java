@@ -15,6 +15,7 @@ import java.util.LinkedList;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.security.SecureRandom;
 import java.util.regex.Pattern;
 
 public final class Utils {
@@ -25,16 +26,23 @@ public final class Utils {
     public static final String EMPTY_STRING = "";
     private static final Pattern M_PATTERN = Pattern.compile("(https?)?:\\/\\/m\\.");
     private static final Pattern WWW_PATTERN = Pattern.compile("(https?)?:\\/\\/www\\.");
+    private static final SecureRandom random = new SecureRandom();
 
     private Utils() {
         // no instance
     }
 
     /**
-     * Remove all non-digit characters from a string.<p>
-     * Examples:<p>
-     * <ul><li>1 234 567 views -&gt; 1234567</li>
-     * <li>$31,133.124 -&gt; 31133124</li></ul>
+     * Remove all non-digit characters from a string.
+     *
+     * <p>
+     * Examples:
+     * </p>
+     *
+     * <ul>
+     *     <li>1 234 567 views -&gt; 1234567</li>
+     *     <li>$31,133.124 -&gt; 31133124</li>
+     * </ul>
      *
      * @param toRemove string to remove non-digit chars
      * @return a string that contains only digits
@@ -45,8 +53,12 @@ public final class Utils {
     }
 
     /**
-     * <p>Convert a mixed number word to a long.</p>
-     * <p>Examples:</p>
+     * Convert a mixed number word to a long.
+     *
+     * <p>
+     * Examples:
+     * </p>
+     *
      * <ul>
      *     <li>123 -&gt; 123</li>
      *     <li>1.23K -&gt; 1230</li>
@@ -106,11 +118,15 @@ public final class Utils {
 
     /**
      * Get the value of a URL-query by name.
-     * If a url-query is give multiple times, only the value of the first query is returned
+     *
+     * <p>
+     * If an url-query is give multiple times, only the value of the first query is returned.
+     * </p>
      *
      * @param url           the url to be used
      * @param parameterName the pattern that will be used to check the url
-     * @return a string that contains the value of the query parameter or null if nothing was found
+     * @return a string that contains the value of the query parameter or {@code null} if nothing
+     * was found
      */
     @Nullable
     public static String getQueryValue(@Nonnull final URL url,
@@ -144,11 +160,14 @@ public final class Utils {
     }
 
     /**
-     * converts a string to a URL-Object.
-     * defaults to HTTP if no protocol is given
+     * Convert a string to a {@link URL URL object}.
+     *
+     * <p>
+     * Defaults to HTTP if no protocol is given.
+     * </p>
      *
      * @param url the string to be converted to a URL-Object
-     * @return a URL-Object containing the url
+     * @return a {@link URL URL object} containing the url
      */
     @Nonnull
     public static URL stringToURL(final String url) throws MalformedURLException {
@@ -187,6 +206,7 @@ public final class Utils {
         return url;
     }
 
+    @Nonnull
     public static String removeUTF8BOM(@Nonnull final String s) {
         String result = s;
         if (result.startsWith("\uFEFF")) {
@@ -198,6 +218,7 @@ public final class Utils {
         return result;
     }
 
+    @Nonnull
     public static String getBaseUrl(final String url) throws ParsingException {
         try {
             final URL uri = stringToURL(url);
@@ -244,6 +265,7 @@ public final class Utils {
      * <p>
      * This method can be also used for {@link com.grack.nanojson.JsonArray JsonArray}s.
      * </p>
+     *
      * @param collection the collection on which check if it's null or empty
      * @return whether the collection is null or empty
      */
@@ -257,6 +279,7 @@ public final class Utils {
      * <p>
      * This method can be also used for {@link com.grack.nanojson.JsonObject JsonObject}s.
      * </p>
+     *
      * @param map the {@link Map map} on which check if it's null or empty
      * @return whether the {@link Map map} is null or empty
      */
@@ -380,6 +403,7 @@ public final class Utils {
             } catch (final Parser.RegexException ignored) {
             }
         }
+
         if (result == null) {
             throw new Parser.RegexException("No regex matched the input on group " + group);
         }
@@ -413,9 +437,49 @@ public final class Utils {
             } catch (final Parser.RegexException ignored) {
             }
         }
+
         if (result == null) {
             throw new Parser.RegexException("No regex matched the input on group " + group);
         }
         return result;
+    }
+
+    /**
+     * Generate a random string using the secure random device {@link #random}.
+     *
+     * <p>
+     * {@link #setSecureRandomSeed(long)} might be useful when mocking tests.
+     * </p>
+     *
+     * @param alphabet the characters' alphabet to use
+     * @param length   the length of the returned string
+     * @return a random string of the requested length made of only characters from the provided
+     * alphabet
+     */
+    @Nonnull
+    public static String randomStringFromAlphabet(final String alphabet, final int length) {
+        final StringBuilder stringBuilder = new StringBuilder();
+        for (int i = 0; i < length; ++i) {
+            stringBuilder.append(alphabet.charAt(random.nextInt(alphabet.length())));
+        }
+        return stringBuilder.toString();
+    }
+
+    /**
+     * Seed the secure random device used for {@link #randomStringFromAlphabet(String, int)}.
+     *
+     * <p>
+     * Use this in tests so that they can be mocked as the same random numbers are always
+     * generated.
+     * </p>
+     *
+     * <p>
+     * This is not intended to be used outside of tests.
+     * </p>
+     *
+     * @param seed the seed to pass to {@link SecureRandom#setSeed(long)}
+     */
+    public static void setSecureRandomSeed(final long seed) {
+        random.setSeed(seed);
     }
 }

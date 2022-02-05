@@ -7,6 +7,7 @@ import static org.schabi.newpipe.extractor.utils.Utils.HTTPS;
 import static org.schabi.newpipe.extractor.utils.Utils.UTF_8;
 import static org.schabi.newpipe.extractor.utils.Utils.getStringResultFromRegexArray;
 import static org.schabi.newpipe.extractor.utils.Utils.isNullOrEmpty;
+import static org.schabi.newpipe.extractor.utils.Utils.randomStringFromAlphabet;
 
 import com.grack.nanojson.JsonArray;
 import com.grack.nanojson.JsonBuilder;
@@ -36,7 +37,6 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLDecoder;
 import java.nio.charset.StandardCharsets;
-import java.security.SecureRandom;
 import java.time.LocalDate;
 import java.time.OffsetDateTime;
 import java.time.ZoneOffset;
@@ -83,6 +83,11 @@ public final class YoutubeParsingHelper {
     public static final String CPN = "cpn";
     public static final String VIDEO_ID = "videoId";
 
+    /**
+     * Seed that will be used for video tests, in order to mock video requests.
+     */
+    private static final long SEED_FOR_VIDEOS_TESTS = 3000;
+
     private static final String HARDCODED_CLIENT_VERSION = "2.20220114.01.00";
     private static final String HARDCODED_KEY = "AIzaSyAO_FJ2SlqU8Q4STEHLGCilw_Y9_11qcW8";
 
@@ -100,6 +105,7 @@ public final class YoutubeParsingHelper {
     private static boolean keyAndVersionExtracted = false;
     @SuppressWarnings("OptionalUsedAsFieldOrParameterType")
     private static Optional<Boolean> hardcodedClientVersionAndKeyValid = Optional.empty();
+
     private static final String[] INNERTUBE_CONTEXT_CLIENT_VERSION_REGEXES =
             {"INNERTUBE_CONTEXT_CLIENT_VERSION\":\"([0-9\\.]+?)\"",
                     "innertube_context_client_version\":\"([0-9\\.]+?)\"",
@@ -107,6 +113,9 @@ public final class YoutubeParsingHelper {
     private static final String[] INNERTUBE_API_KEY_REGEXES =
             {"INNERTUBE_API_KEY\":\"([0-9a-zA-Z_-]+?)\"",
                     "innertubeApiKey\":\"([0-9a-zA-Z_-]+?)\""};
+    private static final String[] INITIAL_DATA_REGEXES =
+            {"window\\[\"ytInitialData\"\\]\\s*=\\s*(\\{.*?\\});",
+                    "var\\s*ytInitialData\\s*=\\s*(\\{.*?\\});"};
     private static final String INNERTUBE_CLIENT_NAME_REGEX =
             "INNERTUBE_CONTEXT_CLIENT_NAME\":([0-9]+?),";
 
@@ -116,13 +125,24 @@ public final class YoutubeParsingHelper {
     private static Random numberGenerator = new Random();
 
     /**
-     * <code>PENDING+</code> means that the user did not yet submit their choices.
+     * {@code PENDING+} means that the user did not yet submit their choices.
+     *
+     * <p>
      * Therefore, YouTube & Google should not track the user, because they did not give consent.
+     * </p>
+     *
+     * <p>
      * The three digits at the end can be random, but are required.
+     * </p>
      */
     private static final String CONSENT_COOKIE_VALUE = "PENDING+";
+
     /**
-     * Youtube <code>CONSENT</code> cookie. Should prevent redirect to consent.youtube.com
+     * YouTube {@code CONSENT} cookie.
+     *
+     * <p>
+     * Should prevent redirect to {@code consent.youtube.com}.
+     * </p>
      */
     private static final String CONSENT_COOKIE = "CONSENT=" + CONSENT_COOKIE_VALUE;
 
@@ -439,17 +459,10 @@ public final class YoutubeParsingHelper {
         }
     }
 
-    public static JsonObject getInitialData(final String html) throws ParsingException {
+    private static JsonObject getInitialData(final String html) throws ParsingException {
         try {
-            try {
-                final String initialData = Parser.matchGroup1(
-                        "window\\[\"ytInitialData\"\\]\\s*=\\s*(\\{.*?\\});", html);
-                return JsonParser.object().from(initialData);
-            } catch (final Parser.RegexException e) {
-                final String initialData = Parser.matchGroup1(
-                        "var\\s*ytInitialData\\s*=\\s*(\\{.*?\\});", html);
-                return JsonParser.object().from(initialData);
-            }
+            return JsonParser.object().from(getStringResultFromRegexArray(html,
+                    INITIAL_DATA_REGEXES, 1));
         } catch (final JsonParserException | Parser.RegexException e) {
             throw new ParsingException("Could not get ytInitialData", e);
         }
@@ -572,7 +585,7 @@ public final class YoutubeParsingHelper {
             key = getStringResultFromRegexArray(html, INNERTUBE_API_KEY_REGEXES, 1);
         } catch (final Parser.RegexException e) {
             throw new ParsingException(
-                    "Could not extract YouTube WEB InnerTube client version and API key from HTML search results page");
+                    "Could not extract YouTube WEB InnerTube client version and API key from HTML search results page", e);
         }
         keyAndVersionExtracted = true;
     }
@@ -730,8 +743,7 @@ public final class YoutubeParsingHelper {
             final String response = getDownloader().get(url, headers).responseBody();
                 musicClientVersion = getStringResultFromRegexArray(response,
                         INNERTUBE_CONTEXT_CLIENT_VERSION_REGEXES, 1);
-                musicKey = getStringResultFromRegexArray(response,
-                        INNERTUBE_API_KEY_REGEXES, 1);
+                musicKey = getStringResultFromRegexArray(response, INNERTUBE_API_KEY_REGEXES, 1);
                 musicClientName = Parser.matchGroup1(INNERTUBE_CLIENT_NAME_REGEX, response);
         } catch (final Exception e) {
             final String url = "https://music.youtube.com/";
@@ -815,10 +827,11 @@ public final class YoutubeParsingHelper {
     }
 
     /**
-     * Get the text from a JSON object that has either a simpleText or a runs array.
+     * Get the text from a JSON object that has either a {@code simpleText} or a {@code runs}
+     * array.
      *
      * @param textObject JSON object to get the text from
-     * @param html       whether to return HTML, by parsing the navigationEndpoint
+     * @param html       whether to return HTML, by parsing the {@code navigationEndpoint}
      * @return text in the JSON object or {@code null}
      */
     @Nullable
@@ -1495,15 +1508,7 @@ public final class YoutubeParsingHelper {
      */
     @Nonnull
     public static String generateContentPlaybackNonce() {
-        final SecureRandom random = new SecureRandom();
-        final StringBuilder stringBuilder = new StringBuilder();
-
-        for (int i = 0; i < 16; i++) {
-            stringBuilder.append(CONTENT_PLAYBACK_NONCE_ALPHABET.charAt(
-                    (random.nextInt(128) + 1) & 63));
-        }
-
-        return stringBuilder.toString();
+        return randomStringFromAlphabet(CONTENT_PLAYBACK_NONCE_ALPHABET, 16);
     }
 
     /**
@@ -1519,14 +1524,23 @@ public final class YoutubeParsingHelper {
      */
     @Nonnull
     public static String generateTParameter() {
-        final SecureRandom random = new SecureRandom();
-        final StringBuilder stringBuilder = new StringBuilder();
+        return randomStringFromAlphabet(CONTENT_PLAYBACK_NONCE_ALPHABET, 12);
+    }
 
-        for (int i = 0; i < 12; i++) {
-            stringBuilder.append(CONTENT_PLAYBACK_NONCE_ALPHABET.charAt(
-                    (random.nextInt(128) + 1) & 63));
-        }
-
-        return stringBuilder.toString();
+    /**
+     * Set the seed for video tests.
+     *
+     * <p>
+     * This seed will be used to generate the same {@code t} and {@code cpn} values between
+     * different execution of tests so mocks can be used for stream tests.
+     * </p>
+     *
+     * <p>
+     * This method will call {@link Utils#setSecureRandomSeed(long)} with the
+     * {@link #SEED_FOR_VIDEOS_TESTS value}.
+     * </p>
+     */
+    public static void setSeedForVideoTests() {
+        Utils.setSecureRandomSeed(SEED_FOR_VIDEOS_TESTS);
     }
 }
