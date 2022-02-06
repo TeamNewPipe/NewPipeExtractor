@@ -33,6 +33,7 @@ public class YoutubeStreamExtractorControversialTest extends DefaultStreamExtrac
     public static void setUp() throws Exception {
         YoutubeParsingHelper.resetClientVersionAndKey();
         YoutubeParsingHelper.setNumberGenerator(new Random(1));
+        YoutubeParsingHelper.setSeedForVideoTests();
         YoutubeStreamExtractor.resetDeobfuscationCode();
         NewPipe.init(DownloaderFactory.getDownloader(RESOURCE_PATH + "controversial"));
         extractor = YouTube.getStreamExtractor(URL);

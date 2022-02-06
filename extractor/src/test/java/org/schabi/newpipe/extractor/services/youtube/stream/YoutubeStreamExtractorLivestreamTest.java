@@ -30,6 +30,7 @@ public class YoutubeStreamExtractorLivestreamTest extends DefaultStreamExtractor
     public static void setUp() throws Exception {
         YoutubeParsingHelper.resetClientVersionAndKey();
         YoutubeParsingHelper.setNumberGenerator(new Random(1));
+        YoutubeParsingHelper.setSeedForVideoTests();
         YoutubeStreamExtractor.resetDeobfuscationCode();
         NewPipe.init(DownloaderFactory.getDownloader(RESOURCE_PATH + "live"));
         extractor = YouTube.getStreamExtractor(URL);

@@ -1,3 +1,23 @@
+/*
+ * Created by Christian Schabesberger on 30.12.15.
+ *
+ * Copyright (C) Christian Schabesberger 2015 <chris.schabesberger@mailbox.org>
+ * YoutubeVideoExtractorDefault.java is part of NewPipe Extractor.
+ *
+ * NewPipe Extractor is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * NewPipe Extractor is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with NewPipe Extractor. If not, see <https://www.gnu.org/licenses/>.
+ */
+
 package org.schabi.newpipe.extractor.services.youtube.stream;
 
 import org.junit.jupiter.api.BeforeAll;
@@ -35,25 +55,6 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.schabi.newpipe.extractor.ServiceList.YouTube;
 import static org.schabi.newpipe.extractor.utils.Utils.EMPTY_STRING;
 
-/*
- * Created by Christian Schabesberger on 30.12.15.
- *
- * Copyright (C) Christian Schabesberger 2015 <chris.schabesberger@mailbox.org>
- * YoutubeVideoExtractorDefault.java is part of NewPipe.
- *
- * NewPipe is free software: you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation, either version 3 of the License, or
- * (at your option) any later version.
- *
- * NewPipe is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- *
- * You should have received a copy of the GNU General Public License
- * along with NewPipe.  If not, see <http://www.gnu.org/licenses/>.
- */
 public class YoutubeStreamExtractorDefaultTest {
     private static final String RESOURCE_PATH = DownloaderFactory.RESOURCE_PATH + "services/youtube/extractor/stream/";
     static final String BASE_URL = "https://www.youtube.com/watch?v=";
@@ -64,6 +65,7 @@ public class YoutubeStreamExtractorDefaultTest {
         public static void setUp() throws IOException {
             YoutubeParsingHelper.resetClientVersionAndKey();
             YoutubeParsingHelper.setNumberGenerator(new Random(1));
+            YoutubeParsingHelper.setSeedForVideoTests();
             YoutubeStreamExtractor.resetDeobfuscationCode();
             NewPipe.init(DownloaderFactory.getDownloader(RESOURCE_PATH + "notAvailable"));
         }
@@ -121,6 +123,7 @@ public class YoutubeStreamExtractorDefaultTest {
         public static void setUp() throws Exception {
             YoutubeParsingHelper.resetClientVersionAndKey();
             YoutubeParsingHelper.setNumberGenerator(new Random(1));
+            YoutubeParsingHelper.setSeedForVideoTests();
             YoutubeStreamExtractor.resetDeobfuscationCode();
             NewPipe.init(DownloaderFactory.getDownloader(RESOURCE_PATH + "pewdiwpie"));
             extractor = YouTube.getStreamExtractor(URL);
@@ -166,6 +169,7 @@ public class YoutubeStreamExtractorDefaultTest {
         public static void setUp() throws Exception {
             YoutubeParsingHelper.resetClientVersionAndKey();
             YoutubeParsingHelper.setNumberGenerator(new Random(1));
+            YoutubeParsingHelper.setSeedForVideoTests();
             YoutubeStreamExtractor.resetDeobfuscationCode();
             NewPipe.init(DownloaderFactory.getDownloader(RESOURCE_PATH + "unboxing"));
             extractor = YouTube.getStreamExtractor(URL);
@@ -221,6 +225,7 @@ public class YoutubeStreamExtractorDefaultTest {
         public static void setUp() throws Exception {
             YoutubeParsingHelper.resetClientVersionAndKey();
             YoutubeParsingHelper.setNumberGenerator(new Random(1));
+            YoutubeParsingHelper.setSeedForVideoTests();
             YoutubeStreamExtractor.resetDeobfuscationCode();
             NewPipe.init(DownloaderFactory.getDownloader(RESOURCE_PATH + "ratingsDisabled"));
             extractor = YouTube.getStreamExtractor(URL);
@@ -259,6 +264,7 @@ public class YoutubeStreamExtractorDefaultTest {
         public static void setUp() throws Exception {
             YoutubeParsingHelper.resetClientVersionAndKey();
             YoutubeParsingHelper.setNumberGenerator(new Random(1));
+            YoutubeParsingHelper.setSeedForVideoTests();
             YoutubeStreamExtractor.resetDeobfuscationCode();
             NewPipe.init(DownloaderFactory.getDownloader(RESOURCE_PATH + "streamSegmentsTagesschau"));
             extractor = YouTube.getStreamExtractor(URL);
@@ -392,9 +398,10 @@ public class YoutubeStreamExtractorDefaultTest {
         public static void setUp() throws Exception {
             YoutubeParsingHelper.resetClientVersionAndKey();
             YoutubeParsingHelper.setNumberGenerator(new Random(1));
+            YoutubeParsingHelper.setSeedForVideoTests();
+            YoutubeStreamExtractor.resetDeobfuscationCode();
             NewPipe.init(DownloaderFactory.getDownloader(RESOURCE_PATH + "publicBroadcast"));
             extractor = YouTube.getStreamExtractor(URL);
-            YoutubeStreamExtractor.resetDeobfuscationCode();
             extractor.fetchPage();
         }
 
@@ -445,6 +452,9 @@ public class YoutubeStreamExtractorDefaultTest {
 
         @BeforeAll
         public static void setUp() throws Exception {
+            YoutubeParsingHelper.resetClientVersionAndKey();
+            YoutubeParsingHelper.setNumberGenerator(new Random(1));
+            YoutubeParsingHelper.setSeedForVideoTests();
             YoutubeStreamExtractor.resetDeobfuscationCode();
             NewPipe.init(DownloaderTestImpl.getInstance());
             extractor = (YoutubeStreamExtractor) YouTube
@@ -465,6 +475,9 @@ public class YoutubeStreamExtractorDefaultTest {
 
         @BeforeAll
         public static void setUp() throws Exception {
+            YoutubeParsingHelper.resetClientVersionAndKey();
+            YoutubeParsingHelper.setNumberGenerator(new Random(1));
+            YoutubeParsingHelper.setSeedForVideoTests();
             YoutubeStreamExtractor.resetDeobfuscationCode();
             NewPipe.init(DownloaderTestImpl.getInstance());
             extractor = YouTube.getStreamExtractor(URL);
