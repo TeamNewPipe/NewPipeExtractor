@@ -1,23 +1,21 @@
 package org.schabi.newpipe.extractor.services.youtube.stream;
 
+import static org.schabi.newpipe.extractor.ServiceList.YouTube;
+import static org.schabi.newpipe.extractor.stream.StreamExtractor.Privacy.UNLISTED;
+
 import org.junit.jupiter.api.BeforeAll;
 import org.schabi.newpipe.downloader.DownloaderFactory;
 import org.schabi.newpipe.extractor.NewPipe;
 import org.schabi.newpipe.extractor.StreamingService;
 import org.schabi.newpipe.extractor.services.DefaultStreamExtractorTest;
-import org.schabi.newpipe.extractor.services.youtube.YoutubeParsingHelper;
-import org.schabi.newpipe.extractor.services.youtube.extractors.YoutubeStreamExtractor;
+import org.schabi.newpipe.extractor.services.youtube.YoutubeTestsUtils;
 import org.schabi.newpipe.extractor.stream.StreamExtractor;
 import org.schabi.newpipe.extractor.stream.StreamType;
 
 import java.util.Arrays;
 import java.util.List;
-import java.util.Random;
 
 import javax.annotation.Nullable;
-
-import static org.schabi.newpipe.extractor.ServiceList.YouTube;
-import static org.schabi.newpipe.extractor.stream.StreamExtractor.Privacy.UNLISTED;
 
 public class YoutubeStreamExtractorUnlistedTest extends DefaultStreamExtractorTest {
     private static final String RESOURCE_PATH = DownloaderFactory.RESOURCE_PATH + "services/youtube/extractor/stream/";
@@ -27,10 +25,7 @@ public class YoutubeStreamExtractorUnlistedTest extends DefaultStreamExtractorTe
 
     @BeforeAll
     public static void setUp() throws Exception {
-        YoutubeParsingHelper.resetClientVersionAndKey();
-        YoutubeParsingHelper.setNumberGenerator(new Random(1));
-        YoutubeParsingHelper.setSeedForVideoTests();
-        YoutubeStreamExtractor.resetDeobfuscationCode();
+        YoutubeTestsUtils.ensureStateless();
         NewPipe.init(DownloaderFactory.getDownloader(RESOURCE_PATH + "unlisted"));
         extractor = YouTube.getStreamExtractor(URL);
         extractor.fetchPage();

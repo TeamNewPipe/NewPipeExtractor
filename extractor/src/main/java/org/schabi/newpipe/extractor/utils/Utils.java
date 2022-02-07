@@ -8,14 +8,13 @@ import java.io.UnsupportedEncodingException;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLDecoder;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Iterator;
 import java.util.LinkedList;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
-import java.security.SecureRandom;
 import java.util.regex.Pattern;
 
 public final class Utils {
@@ -26,7 +25,6 @@ public final class Utils {
     public static final String EMPTY_STRING = "";
     private static final Pattern M_PATTERN = Pattern.compile("(https?)?:\\/\\/m\\.");
     private static final Pattern WWW_PATTERN = Pattern.compile("(https?)?:\\/\\/www\\.");
-    private static final SecureRandom random = new SecureRandom();
 
     private Utils() {
         // no instance
@@ -75,8 +73,9 @@ public final class Utils {
             multiplier = Parser.matchGroup("[\\d]+([\\.,][\\d]+)?([KMBkmb])+", numberWord, 2);
         } catch (final ParsingException ignored) {
         }
-        final double count = Double.parseDouble(
-                Parser.matchGroup1("([\\d]+([\\.,][\\d]+)?)", numberWord).replace(",", "."));
+
+        final double count = Double.parseDouble(Parser.matchGroup1("([\\d]+([\\.,][\\d]+)?)",
+                numberWord).replace(",", "."));
         switch (multiplier.toUpperCase()) {
             case "K":
                 return (long) (count * 1e3);
@@ -442,44 +441,5 @@ public final class Utils {
             throw new Parser.RegexException("No regex matched the input on group " + group);
         }
         return result;
-    }
-
-    /**
-     * Generate a random string using the secure random device {@link #random}.
-     *
-     * <p>
-     * {@link #setSecureRandomSeed(long)} might be useful when mocking tests.
-     * </p>
-     *
-     * @param alphabet the characters' alphabet to use
-     * @param length   the length of the returned string
-     * @return a random string of the requested length made of only characters from the provided
-     * alphabet
-     */
-    @Nonnull
-    public static String randomStringFromAlphabet(final String alphabet, final int length) {
-        final StringBuilder stringBuilder = new StringBuilder();
-        for (int i = 0; i < length; ++i) {
-            stringBuilder.append(alphabet.charAt(random.nextInt(alphabet.length())));
-        }
-        return stringBuilder.toString();
-    }
-
-    /**
-     * Seed the secure random device used for {@link #randomStringFromAlphabet(String, int)}.
-     *
-     * <p>
-     * Use this in tests so that they can be mocked as the same random numbers are always
-     * generated.
-     * </p>
-     *
-     * <p>
-     * This is not intended to be used outside of tests.
-     * </p>
-     *
-     * @param seed the seed to pass to {@link SecureRandom#setSeed(long)}
-     */
-    public static void setSecureRandomSeed(final long seed) {
-        random.setSeed(seed);
     }
 }

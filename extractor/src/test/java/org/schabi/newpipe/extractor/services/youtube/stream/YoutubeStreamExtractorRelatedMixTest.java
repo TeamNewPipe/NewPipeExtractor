@@ -19,6 +19,7 @@ import org.schabi.newpipe.extractor.playlist.PlaylistInfo.PlaylistType;
 import org.schabi.newpipe.extractor.playlist.PlaylistInfoItem;
 import org.schabi.newpipe.extractor.services.DefaultStreamExtractorTest;
 import org.schabi.newpipe.extractor.services.youtube.YoutubeParsingHelper;
+import org.schabi.newpipe.extractor.services.youtube.YoutubeTestsUtils;
 import org.schabi.newpipe.extractor.services.youtube.extractors.YoutubeStreamExtractor;
 import org.schabi.newpipe.extractor.stream.StreamExtractor;
 import org.schabi.newpipe.extractor.stream.StreamType;
@@ -40,10 +41,7 @@ public class YoutubeStreamExtractorRelatedMixTest extends DefaultStreamExtractor
 
     @BeforeAll
     public static void setUp() throws Exception {
-        YoutubeParsingHelper.resetClientVersionAndKey();
-        YoutubeParsingHelper.setNumberGenerator(new Random(1));
-        YoutubeParsingHelper.setSeedForVideoTests();
-        YoutubeStreamExtractor.resetDeobfuscationCode();
+        YoutubeTestsUtils.ensureStateless();
         NewPipe.init(DownloaderFactory.getDownloader(RESOURCE_PATH + "relatedMix"));
         extractor = YouTube.getStreamExtractor(URL);
         extractor.fetchPage();

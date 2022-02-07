@@ -1,3 +1,23 @@
+/*
+ * Created by Christian Schabesberger on 02.03.16.
+ *
+ * Copyright (C) Christian Schabesberger 2016 <chris.schabesberger@mailbox.org>
+ * YoutubeParsingHelper.java is part of NewPipe Extractor.
+ *
+ * NewPipe Extractor is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * NewPipe Extractor is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with NewPipe Extractor. If not, see <https://www.gnu.org/licenses/>.
+ */
+
 package org.schabi.newpipe.extractor.services.youtube;
 
 import static org.schabi.newpipe.extractor.NewPipe.getDownloader;
@@ -7,7 +27,6 @@ import static org.schabi.newpipe.extractor.utils.Utils.HTTPS;
 import static org.schabi.newpipe.extractor.utils.Utils.UTF_8;
 import static org.schabi.newpipe.extractor.utils.Utils.getStringResultFromRegexArray;
 import static org.schabi.newpipe.extractor.utils.Utils.isNullOrEmpty;
-import static org.schabi.newpipe.extractor.utils.Utils.randomStringFromAlphabet;
 
 import com.grack.nanojson.JsonArray;
 import com.grack.nanojson.JsonBuilder;
@@ -29,6 +48,7 @@ import org.schabi.newpipe.extractor.playlist.PlaylistInfo;
 import org.schabi.newpipe.extractor.stream.Description;
 import org.schabi.newpipe.extractor.utils.JsonUtils;
 import org.schabi.newpipe.extractor.utils.Parser;
+import org.schabi.newpipe.extractor.utils.RandomStringFromAlphabetGenerator;
 import org.schabi.newpipe.extractor.utils.Utils;
 
 import java.io.IOException;
@@ -37,6 +57,7 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLDecoder;
 import java.nio.charset.StandardCharsets;
+import java.security.SecureRandom;
 import java.time.LocalDate;
 import java.time.OffsetDateTime;
 import java.time.ZoneOffset;
@@ -54,26 +75,6 @@ import java.util.Random;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
-/*
- * Created by Christian Schabesberger on 02.03.16.
- *
- * Copyright (C) Christian Schabesberger 2016 <chris.schabesberger@mailbox.org>
- * YoutubeParsingHelper.java is part of NewPipe Extractor.
- *
- * NewPipe Extractor is free software: you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation, either version 3 of the License, or
- * (at your option) any later version.
- *
- * NewPipe Extractor is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
- * GNU General Public License for more details.
- *
- * You should have received a copy of the GNU General Public License
- * along with NewPipe Extractor. If not, see <https://www.gnu.org/licenses/>.
- */
-
 public final class YoutubeParsingHelper {
 
     private YoutubeParsingHelper() {
@@ -82,11 +83,6 @@ public final class YoutubeParsingHelper {
     public static final String YOUTUBEI_V1_URL = "https://www.youtube.com/youtubei/v1/";
     public static final String CPN = "cpn";
     public static final String VIDEO_ID = "videoId";
-
-    /**
-     * Seed that will be used for video tests, in order to mock video requests.
-     */
-    private static final long SEED_FOR_VIDEOS_TESTS = 3000;
 
     private static final String HARDCODED_CLIENT_VERSION = "2.20220114.01.00";
     private static final String HARDCODED_KEY = "AIzaSyAO_FJ2SlqU8Q4STEHLGCilw_Y9_11qcW8";
@@ -122,7 +118,7 @@ public final class YoutubeParsingHelper {
     private static final String CONTENT_PLAYBACK_NONCE_ALPHABET =
             "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789-_";
 
-    private static Random numberGenerator = new Random();
+    private static Random numberGenerator = new SecureRandom();
 
     /**
      * {@code PENDING+} means that the user did not yet submit their choices.
@@ -606,12 +602,13 @@ public final class YoutubeParsingHelper {
 
         if (keyAndVersionExtracted) {
             return clientVersion;
-        } else {
-            if (areHardcodedClientVersionAndKeyValid()) {
-                clientVersion = HARDCODED_CLIENT_VERSION;
-                return clientVersion;
-            }
         }
+
+        if (areHardcodedClientVersionAndKeyValid()) {
+            clientVersion = HARDCODED_CLIENT_VERSION;
+            return clientVersion;
+        }
+
         throw new ExtractionException("Could not get YouTube WEB client version");
     }
 
@@ -631,11 +628,11 @@ public final class YoutubeParsingHelper {
 
         if (keyAndVersionExtracted) {
             return key;
-        } else {
-            if (areHardcodedClientVersionAndKeyValid()) {
-                key = HARDCODED_KEY;
-                return key;
-            }
+        }
+
+        if (areHardcodedClientVersionAndKeyValid()) {
+            key = HARDCODED_KEY;
+            return key;
         }
 
         // The ANDROID API key is also valid with the WEB client so return it if we couldn't
@@ -1508,7 +1505,8 @@ public final class YoutubeParsingHelper {
      */
     @Nonnull
     public static String generateContentPlaybackNonce() {
-        return randomStringFromAlphabet(CONTENT_PLAYBACK_NONCE_ALPHABET, 16);
+        return RandomStringFromAlphabetGenerator.generate(
+                CONTENT_PLAYBACK_NONCE_ALPHABET, 16, numberGenerator);
     }
 
     /**
@@ -1524,23 +1522,7 @@ public final class YoutubeParsingHelper {
      */
     @Nonnull
     public static String generateTParameter() {
-        return randomStringFromAlphabet(CONTENT_PLAYBACK_NONCE_ALPHABET, 12);
-    }
-
-    /**
-     * Set the seed for video tests.
-     *
-     * <p>
-     * This seed will be used to generate the same {@code t} and {@code cpn} values between
-     * different execution of tests so mocks can be used for stream tests.
-     * </p>
-     *
-     * <p>
-     * This method will call {@link Utils#setSecureRandomSeed(long)} with the
-     * {@link #SEED_FOR_VIDEOS_TESTS value}.
-     * </p>
-     */
-    public static void setSeedForVideoTests() {
-        Utils.setSecureRandomSeed(SEED_FOR_VIDEOS_TESTS);
+        return RandomStringFromAlphabetGenerator.generate(
+                CONTENT_PLAYBACK_NONCE_ALPHABET, 12, numberGenerator);
     }
 }

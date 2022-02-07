@@ -1,5 +1,11 @@
 package org.schabi.newpipe.extractor.services.youtube;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.schabi.newpipe.extractor.ServiceList.YouTube;
+
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import org.schabi.newpipe.downloader.DownloaderFactory;
@@ -17,13 +23,6 @@ import org.schabi.newpipe.extractor.utils.Utils;
 import java.io.IOException;
 import java.util.List;
 import java.util.Locale;
-import java.util.Random;
-
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertFalse;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.junit.jupiter.api.Assertions.assertTrue;
-import static org.schabi.newpipe.extractor.ServiceList.YouTube;
 
 public class YoutubeCommentsExtractorTest {
     private static final String RESOURCE_PATH = DownloaderFactory.RESOURCE_PATH + "services/youtube/extractor/comments/";
@@ -38,8 +37,7 @@ public class YoutubeCommentsExtractorTest {
 
         @BeforeAll
         public static void setUp() throws Exception {
-            YoutubeParsingHelper.resetClientVersionAndKey();
-            YoutubeParsingHelper.setNumberGenerator(new Random(1));
+            YoutubeTestsUtils.ensureStateless();
             NewPipe.init(DownloaderFactory.getDownloader(RESOURCE_PATH + "thomas"));
             extractor = (YoutubeCommentsExtractor) YouTube
                     .getCommentsExtractor(url);
@@ -127,8 +125,7 @@ public class YoutubeCommentsExtractorTest {
 
         @BeforeAll
         public static void setUp() throws Exception {
-            YoutubeParsingHelper.resetClientVersionAndKey();
-            YoutubeParsingHelper.setNumberGenerator(new Random(1));
+            YoutubeTestsUtils.ensureStateless();
             NewPipe.init(DownloaderFactory.getDownloader(RESOURCE_PATH + "empty"));
             extractor = (YoutubeCommentsExtractor) YouTube
                     .getCommentsExtractor(url);
@@ -167,8 +164,7 @@ public class YoutubeCommentsExtractorTest {
 
         @BeforeAll
         public static void setUp() throws Exception {
-            YoutubeParsingHelper.resetClientVersionAndKey();
-            YoutubeParsingHelper.setNumberGenerator(new Random(1));
+            YoutubeTestsUtils.ensureStateless();
             NewPipe.init(DownloaderFactory.getDownloader(RESOURCE_PATH + "hearted"));
             extractor = (YoutubeCommentsExtractor) YouTube
                     .getCommentsExtractor(url);
@@ -210,8 +206,7 @@ public class YoutubeCommentsExtractorTest {
 
         @BeforeAll
         public static void setUp() throws Exception {
-            YoutubeParsingHelper.resetClientVersionAndKey();
-            YoutubeParsingHelper.setNumberGenerator(new Random(1));
+            YoutubeTestsUtils.ensureStateless();
             NewPipe.init(DownloaderFactory.getDownloader(RESOURCE_PATH + "pinned"));
             extractor = (YoutubeCommentsExtractor) YouTube
                     .getCommentsExtractor(url);
@@ -252,8 +247,7 @@ public class YoutubeCommentsExtractorTest {
 
         @BeforeAll
         public static void setUp() throws Exception {
-            YoutubeParsingHelper.resetClientVersionAndKey();
-            YoutubeParsingHelper.setNumberGenerator(new Random(1));
+            YoutubeTestsUtils.ensureStateless();
             NewPipe.init(DownloaderFactory.getDownloader(RESOURCE_PATH + "likes"));
             extractor = (YoutubeCommentsExtractor) YouTube
                     .getCommentsExtractor(url);
@@ -284,8 +278,7 @@ public class YoutubeCommentsExtractorTest {
 
         @BeforeAll
         public static void setUp() throws Exception {
-            YoutubeParsingHelper.resetClientVersionAndKey();
-            YoutubeParsingHelper.setNumberGenerator(new Random(1));
+            YoutubeTestsUtils.ensureStateless();
             NewPipe.init(DownloaderFactory.getDownloader(RESOURCE_PATH + "localized_vote_count"));
             extractor = (YoutubeCommentsExtractor) YouTube
                     .getCommentsExtractor(url);
@@ -313,8 +306,7 @@ public class YoutubeCommentsExtractorTest {
 
         @BeforeAll
         public static void setUp() throws Exception {
-            YoutubeParsingHelper.resetClientVersionAndKey();
-            YoutubeParsingHelper.setNumberGenerator(new Random(1));
+            YoutubeTestsUtils.ensureStateless();
             NewPipe.init(DownloaderFactory.getDownloader(RESOURCE_PATH + "replies"));
             extractor = (YoutubeCommentsExtractor) YouTube
                     .getCommentsExtractor(url);
