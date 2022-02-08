@@ -1,6 +1,7 @@
 package org.schabi.newpipe.extractor.services.youtube.extractors;
 
 import static org.schabi.newpipe.extractor.services.youtube.YoutubeParsingHelper.getJsonPostResponse;
+import static org.schabi.newpipe.extractor.services.youtube.YoutubeParsingHelper.getTextFromObject;
 import static org.schabi.newpipe.extractor.services.youtube.YoutubeParsingHelper.prepareDesktopJsonBuilder;
 import static org.schabi.newpipe.extractor.utils.Utils.isNullOrEmpty;
 
@@ -28,6 +29,7 @@ import org.schabi.newpipe.extractor.utils.JsonUtils;
 import com.grack.nanojson.JsonArray;
 import com.grack.nanojson.JsonObject;
 import com.grack.nanojson.JsonWriter;
+import org.schabi.newpipe.extractor.utils.Utils;
 
 public class YoutubeCommentsExtractor extends CommentsExtractor {
 
@@ -44,6 +46,7 @@ public class YoutubeCommentsExtractor extends CommentsExtractor {
      */
     @SuppressWarnings("OptionalUsedAsFieldOrParameterType")
     private Optional<Boolean> optCommentsDisabled = Optional.empty();
+    private JsonObject ajaxJson;
 
     public YoutubeCommentsExtractor(
             final StreamingService service,
@@ -187,16 +190,15 @@ public class YoutubeCommentsExtractor extends CommentsExtractor {
                     .done())
                 .getBytes(StandardCharsets.UTF_8);
 
-        final JsonObject ajaxJson = getJsonPostResponse("next", body, localization);
+        this.ajaxJson = getJsonPostResponse("next", body, localization);
 
         final CommentsInfoItemsCollector collector = new CommentsInfoItemsCollector(
                 getServiceId());
-        collectCommentsFrom(collector, ajaxJson);
+        collectCommentsFrom(collector);
         return new InfoItemsPage<>(collector, getNextPage(ajaxJson));
     }
 
-    private void collectCommentsFrom(final CommentsInfoItemsCollector collector,
-                                     @Nonnull final JsonObject ajaxJson) throws ParsingException {
+    private void collectCommentsFrom(final CommentsInfoItemsCollector collector) throws ParsingException {
 
         final JsonArray onResponseReceivedEndpoints =
                 ajaxJson.getArray("onResponseReceivedEndpoints");
@@ -273,5 +275,18 @@ public class YoutubeCommentsExtractor extends CommentsExtractor {
         }
 
         return optCommentsDisabled.get();
+    }
+
+    @Override
+    public int getCommentsCount() throws ExtractionException {
+        final JsonObject commentsHeaderRenderer = ajaxJson
+                .getArray("onResponseReceivedEndpoints").getObject(0)
+                .getObject("reloadContinuationItemsCommand")
+                .getArray("continuationItems").getObject(0)
+                .getObject("commentsHeaderRenderer");
+
+        final String text = getTextFromObject(commentsHeaderRenderer.getObject("countText"));
+
+        return Integer.parseInt(Utils.removeNonDigitCharacters(text));
     }
 }
