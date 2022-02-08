@@ -113,7 +113,7 @@ public final class CommentsInfo extends ListInfo<CommentsInfoItem> {
     /**
      * Returns the total number of comments.
      *
-     * @return totalComments
+     * @return commentsCount the total number of comments.
      */
     public int getCommentsCount() {
         return commentsCount;
@@ -122,7 +122,7 @@ public final class CommentsInfo extends ListInfo<CommentsInfoItem> {
     /**
      * Sets the total number of comments.
      *
-     * @param commentsCount
+     * @param commentsCount the commentsCount to set.
      */
     public void setCommentsCount(int commentsCount) {
         this.commentsCount = commentsCount;
