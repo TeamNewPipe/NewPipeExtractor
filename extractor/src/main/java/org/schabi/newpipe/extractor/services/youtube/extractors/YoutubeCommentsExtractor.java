@@ -46,6 +46,9 @@ public class YoutubeCommentsExtractor extends CommentsExtractor {
      */
     @SuppressWarnings("OptionalUsedAsFieldOrParameterType")
     private Optional<Boolean> optCommentsDisabled = Optional.empty();
+    /**
+     * The second ajax <b>/next</b> response.
+     */
     private JsonObject ajaxJson;
 
     public YoutubeCommentsExtractor(
@@ -279,14 +282,17 @@ public class YoutubeCommentsExtractor extends CommentsExtractor {
 
     @Override
     public int getCommentsCount() throws ExtractionException {
-        final JsonObject commentsHeaderRenderer = ajaxJson
+        final JsonObject countText = ajaxJson
                 .getArray("onResponseReceivedEndpoints").getObject(0)
                 .getObject("reloadContinuationItemsCommand")
                 .getArray("continuationItems").getObject(0)
-                .getObject("commentsHeaderRenderer");
+                .getObject("commentsHeaderRenderer")
+                .getObject("countText");
 
-        final String text = getTextFromObject(commentsHeaderRenderer.getObject("countText"));
-
-        return Integer.parseInt(Utils.removeNonDigitCharacters(text));
+        try {
+            return Integer.parseInt(Utils.removeNonDigitCharacters(getTextFromObject(countText)));
+        } catch (final Exception e) {
+            throw new ExtractionException("Unable to get comments count", e);
+        }
     }
 }
