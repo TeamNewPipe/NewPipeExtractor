@@ -1272,7 +1272,7 @@ public class YoutubeStreamExtractor extends StreamExtractor {
                 final String panelIdentifier = panels.getObject(i)
                         .getObject("engagementPanelSectionListRenderer")
                         .getString("panelIdentifier");
-                if (panelIdentifier.equals(
+                if (panelIdentifier != null && panelIdentifier.equals(
                         "engagement-panel-macro-markers-description-chapters")) {
                     segmentsArray = panels.getObject(i)
                             .getObject("engagementPanelSectionListRenderer").getObject("content")
