@@ -138,6 +138,7 @@ public class YoutubeStreamExtractorDefaultTest {
         @Override public StreamType expectedStreamType() { return StreamType.VIDEO_STREAM; }
         @Override public String expectedUploaderName() { return "PewDiePie"; }
         @Override public String expectedUploaderUrl() { return "https://www.youtube.com/channel/UC-lHJZR3Gqxm24_Vd_AJ5Yw"; }
+        @Override public long expectedUploaderSubscriberCountAtLeast() { return 110_000_000; }
         @Override public List<String> expectedDescriptionContains() {
             return Arrays.asList("https://www.youtube.com/channel/UC7l23W7gFi4Uho6WSzckZRA",
                     "https://www.handcraftpictures.com/");
@@ -182,6 +183,7 @@ public class YoutubeStreamExtractorDefaultTest {
         @Override public StreamType expectedStreamType() { return StreamType.VIDEO_STREAM; }
         @Override public String expectedUploaderName() { return "Unbox Therapy"; }
         @Override public String expectedUploaderUrl() { return "https://www.youtube.com/channel/UCsTcErHg8oDvUnTzoqsYeNw"; }
+        @Override public long expectedUploaderSubscriberCountAtLeast() { return 18_000_000; }
         @Override public List<String> expectedDescriptionContains() {
             return Arrays.asList("https://www.youtube.com/watch?v=X7FLCHVXpsA&list=PL7u4lWXQ3wfI_7PgX0C-VTiwLeu0S4v34",
                     "https://www.youtube.com/watch?v=Lqv6G0pDNnw&list=PL7u4lWXQ3wfI_7PgX0C-VTiwLeu0S4v34",
@@ -274,6 +276,7 @@ public class YoutubeStreamExtractorDefaultTest {
         @Override public StreamType expectedStreamType() { return StreamType.VIDEO_STREAM; }
         @Override public String expectedUploaderName() { return "tagesschau"; }
         @Override public String expectedUploaderUrl() { return "https://www.youtube.com/channel/UC5NOEUbkLheQcaaRldYW5GA"; }
+        @Override public long expectedUploaderSubscriberCountAtLeast() { return 1_000_000; }
         @Override public boolean expectedUploaderVerified() { return true; }
         @Override public List<String> expectedDescriptionContains() {
             return Arrays.asList("Themen der Sendung", "07:15", "Wetter", "Sendung nachträglich bearbeitet");
@@ -336,6 +339,7 @@ public class YoutubeStreamExtractorDefaultTest {
         @Override public StreamType expectedStreamType() { return StreamType.VIDEO_STREAM; }
         @Override public String expectedUploaderName() { return "maiLab"; }
         @Override public String expectedUploaderUrl() { return "https://www.youtube.com/channel/UCyHDQ5C6z1NDmJ4g6SerW8g"; }
+        @Override public long expectedUploaderSubscriberCountAtLeast() { return 1_400_000; }
         @Override public List<String> expectedDescriptionContains()  {return Arrays.asList("Vitamin", "2:44", "Was ist Vitamin D?");}
         @Override public boolean expectedUploaderVerified() { return true; }
         @Override public long expectedLength() { return 1010; }
@@ -405,6 +409,7 @@ public class YoutubeStreamExtractorDefaultTest {
         @Override public StreamType expectedStreamType() { return StreamType.VIDEO_STREAM; }
         @Override public String expectedUploaderName() { return "Dinge Erklärt – Kurzgesagt"; }
         @Override public String expectedUploaderUrl() { return "https://www.youtube.com/channel/UCwRH985XgMYXQ6NxXDo8npw"; }
+        @Override public long expectedUploaderSubscriberCountAtLeast() { return 1_500_000; }
         @Override public List<String> expectedDescriptionContains() { return Arrays.asList("Lasst uns abtauchen!", "Angebot von funk", "Dinge"); }
         @Override public long expectedLength() { return 631; }
         @Override public long expectedTimestamp() { return TIMESTAMP; }

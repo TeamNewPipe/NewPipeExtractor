@@ -203,6 +203,17 @@ public abstract class StreamExtractor extends Extractor {
     }
 
     /**
+     * The subscriber count of the uploader.
+     * If the subscriber count is not implemented, or is unavailable, return <code>-1</code>.
+     *
+     * @return the subscriber count of the uploader or -1 if not available
+     * @throws ParsingException
+     */
+    public long getUploaderSubscriberCount() throws ParsingException {
+        return -1;
+    }
+
+    /**
      * The url to the image file/profile picture/avatar of the creator/uploader of the stream.
      * If the url is not available you can return an empty String.
      *

@@ -45,6 +45,7 @@ public abstract class DefaultStreamExtractorTest extends DefaultExtractorTest<St
     public abstract String expectedUploaderName();
     public abstract String expectedUploaderUrl();
     public boolean expectedUploaderVerified() { return false; }
+    public long expectedUploaderSubscriberCountAtLeast() { return -1; }
     public String expectedSubChannelName() { return ""; } // default: there is no subchannel
     public String expectedSubChannelUrl() { return ""; } // default: there is no subchannel
     public boolean expectedDescriptionIsEmpty() { return false; } // default: description is not empty
@@ -103,6 +104,12 @@ public abstract class DefaultStreamExtractorTest extends DefaultExtractorTest<St
     @Test
     public void testUploaderVerified() throws Exception {
         assertEquals(expectedUploaderVerified(), extractor().isUploaderVerified());
+    }
+
+    @Test
+    @Override
+    public void testSubscriberCount() throws Exception {
+        assertGreaterOrEqual(expectedUploaderSubscriberCountAtLeast(), extractor().getUploaderSubscriberCount());
     }
 
     @Test

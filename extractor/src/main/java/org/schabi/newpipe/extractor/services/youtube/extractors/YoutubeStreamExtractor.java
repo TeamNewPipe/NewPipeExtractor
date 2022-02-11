@@ -45,6 +45,7 @@ import java.time.OffsetDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.*;
 
+import static org.schabi.newpipe.extractor.ListExtractor.ITEM_COUNT_UNKNOWN;
 import static org.schabi.newpipe.extractor.services.youtube.YoutubeParsingHelper.*;
 import static org.schabi.newpipe.extractor.utils.Utils.EMPTY_STRING;
 import static org.schabi.newpipe.extractor.utils.Utils.UTF_8;
@@ -435,6 +436,20 @@ public class YoutubeStreamExtractor extends StreamExtractor {
         }
 
         return fixThumbnailUrl(url);
+    }
+
+    @Override
+    public long getUploaderSubscriberCount() throws ParsingException {
+        final JsonObject videoOwnerRenderer = JsonUtils.getObject(videoSecondaryInfoRenderer, "owner.videoOwnerRenderer");
+        if (videoOwnerRenderer.has("subscriberCountText")) {
+            try {
+                return Utils.mixedNumberWordToLong(getTextFromObject(videoOwnerRenderer.getObject("subscriberCountText")));
+            } catch (final NumberFormatException e) {
+                throw new ParsingException("Could not get subscriber count", e);
+            }
+        } else {
+            return ITEM_COUNT_UNKNOWN;
+        }
     }
 
     @Nonnull
