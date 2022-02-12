@@ -45,7 +45,6 @@ import java.time.OffsetDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.*;
 
-import static org.schabi.newpipe.extractor.ListExtractor.ITEM_COUNT_UNKNOWN;
 import static org.schabi.newpipe.extractor.services.youtube.YoutubeParsingHelper.*;
 import static org.schabi.newpipe.extractor.utils.Utils.EMPTY_STRING;
 import static org.schabi.newpipe.extractor.utils.Utils.UTF_8;
@@ -103,6 +102,8 @@ public class YoutubeStreamExtractor extends StreamExtractor {
     private int ageLimit = -1;
     @Nullable
     private List<SubtitlesStream> subtitles = null;
+
+    private static final long UNKNOWN_SUBSCRIBER_COUNT = -1;
 
     public YoutubeStreamExtractor(final StreamingService service, final LinkHandler linkHandler) {
         super(service, linkHandler);
@@ -448,7 +449,7 @@ public class YoutubeStreamExtractor extends StreamExtractor {
                 throw new ParsingException("Could not get uploader subscriber count", e);
             }
         } else {
-            return ITEM_COUNT_UNKNOWN;
+            return UNKNOWN_SUBSCRIBER_COUNT;
         }
     }
 

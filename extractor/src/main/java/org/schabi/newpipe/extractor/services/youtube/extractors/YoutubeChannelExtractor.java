@@ -61,6 +61,8 @@ public class YoutubeChannelExtractor extends ChannelExtractor {
     private JsonObject initialData;
     private JsonObject videoTab;
 
+    private static final long UNKNOWN_SUBSCRIBER_COUNT = -1;
+
     /**
      * Some channels have response redirects and the only way to reliably get the id is by saving it.
      * <p>
@@ -281,7 +283,7 @@ public class YoutubeChannelExtractor extends ChannelExtractor {
                 throw new ParsingException("Could not get subscriber count", e);
             }
         } else {
-            return ITEM_COUNT_UNKNOWN;
+            return UNKNOWN_SUBSCRIBER_COUNT;
         }
     }
 
