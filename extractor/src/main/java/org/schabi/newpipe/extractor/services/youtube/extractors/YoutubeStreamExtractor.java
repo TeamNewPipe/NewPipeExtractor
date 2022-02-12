@@ -445,7 +445,7 @@ public class YoutubeStreamExtractor extends StreamExtractor {
             try {
                 return Utils.mixedNumberWordToLong(getTextFromObject(videoOwnerRenderer.getObject("subscriberCountText")));
             } catch (final NumberFormatException e) {
-                throw new ParsingException("Could not get subscriber count", e);
+                throw new ParsingException("Could not get uploader subscriber count", e);
             }
         } else {
             return ITEM_COUNT_UNKNOWN;
