@@ -103,8 +103,6 @@ public class YoutubeStreamExtractor extends StreamExtractor {
     @Nullable
     private List<SubtitlesStream> subtitles = null;
 
-    private static final long UNKNOWN_SUBSCRIBER_COUNT = -1;
-
     public YoutubeStreamExtractor(final StreamingService service, final LinkHandler linkHandler) {
         super(service, linkHandler);
     }

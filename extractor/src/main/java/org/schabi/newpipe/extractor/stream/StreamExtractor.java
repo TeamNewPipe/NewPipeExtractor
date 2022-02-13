@@ -47,6 +47,7 @@ import java.util.Locale;
 public abstract class StreamExtractor extends Extractor {
 
     public static final int NO_AGE_LIMIT = 0;
+    public static final long UNKNOWN_SUBSCRIBER_COUNT = -1;
 
     public StreamExtractor(StreamingService service, LinkHandler linkHandler) {
         super(service, linkHandler);
