@@ -35,8 +35,8 @@ public class YoutubeMixPlaylistExtractorTest {
     private static YoutubeMixPlaylistExtractor extractor;
 
     public static class Mix {
-        private static final String VIDEO_ID = "QMVCAPd5cwBcg";
-        private static final String VIDEO_TITLE = "Mix – ";
+        private static final String VIDEO_ID = "UtF6Jej8yb4";
+        private static final String VIDEO_TITLE = "Avicii - The Nights";
 
         @BeforeAll
         public static void setUp() throws Exception {
@@ -128,10 +128,10 @@ public class YoutubeMixPlaylistExtractorTest {
 
     public static class MixWithIndex {
 
-        private static final String VIDEO_ID = "QMVCAPd5cwBcg";
-        private static final String VIDEO_TITLE = "Mix – ";
+        private static final String VIDEO_ID = "UtF6Jej8yb4";
+        private static final String VIDEO_TITLE = "Avicii - The Nights";
         private static final int INDEX = 4;
-        private static final String VIDEO_ID_NUMBER_4 = "lWA2pjMjpBs";
+        private static final String VIDEO_ID_NUMBER_4 = "ebXbLfLACGM";
 
         @BeforeAll
         public static void setUp() throws Exception {
