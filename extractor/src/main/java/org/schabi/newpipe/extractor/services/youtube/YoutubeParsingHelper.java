@@ -282,25 +282,24 @@ public class YoutubeParsingHelper {
     }
 
     /**
-     * Extracts the video id from the playlist id for Mixes.
-     *
+     * @return the video id extracted from the playlist id for Mixes
      * @throws ParsingException If the playlistId is a Channel Mix or not a mix.
      */
     @Nonnull
     public static String extractVideoIdFromMixId(@Nonnull final String playlistId)
             throws ParsingException {
-        if (isYoutubeMyMixId(playlistId)) { // My Mix
+        if (isYoutubeMyMixId(playlistId)) {
             return playlistId.substring(4);
 
-        } else if (isYoutubeMusicMixId(playlistId)) { // starts with "RDAMVM" or "RDCLAK"
+        } else if (isYoutubeMusicMixId(playlistId)) {
             return playlistId.substring(6);
 
-        } else if (isYoutubeChannelMixId(playlistId)) { // starts with "RMCM"
+        } else if (isYoutubeChannelMixId(playlistId)) {
             // Channel mix are build with RMCM{channelId}, so videoId can't be determined
             throw new ParsingException("Video id could not be determined from mix id: "
                     + playlistId);
 
-        } else if (isYoutubeMixId(playlistId)) { // normal mix, starts with "RD"
+        } else if (isYoutubeMixId(playlistId)) { // normal mix
             return playlistId.substring(2);
 
         } else { // not a mix
