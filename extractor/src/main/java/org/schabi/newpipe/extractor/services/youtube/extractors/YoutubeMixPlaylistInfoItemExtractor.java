@@ -3,6 +3,7 @@ package org.schabi.newpipe.extractor.services.youtube.extractors;
 import static org.schabi.newpipe.extractor.services.youtube.YoutubeParsingHelper.getTextFromObject;
 import static org.schabi.newpipe.extractor.services.youtube.YoutubeParsingHelper.getThumbnailUrlFromInfoItem;
 import static org.schabi.newpipe.extractor.services.youtube.YoutubeParsingHelper.isYoutubeChannelMixId;
+import static org.schabi.newpipe.extractor.services.youtube.YoutubeParsingHelper.isYoutubeGenreMixId;
 import static org.schabi.newpipe.extractor.services.youtube.YoutubeParsingHelper.isYoutubeMusicMixId;
 import static org.schabi.newpipe.extractor.utils.Utils.isNullOrEmpty;
 
@@ -74,8 +75,11 @@ public class YoutubeMixPlaylistInfoItemExtractor implements PlaylistInfoItemExtr
                 return PlaylistInfo.PlaylistType.MIX_MUSIC;
             } else if (isYoutubeChannelMixId(mixPlaylistId)) {
                 return PlaylistInfo.PlaylistType.MIX_CHANNEL;
+            } else if (isYoutubeGenreMixId(mixPlaylistId)) {
+                return PlaylistInfo.PlaylistType.MIX_GENRE;
             } else {
                 // either a normal mix based on a stream, or a "my mix" (still based on a stream)
+                // note: if YouTube introduces even more types of mixes, they will default to this
                 return PlaylistInfo.PlaylistType.MIX_STREAM;
             }
         } catch (final MalformedURLException e) {
