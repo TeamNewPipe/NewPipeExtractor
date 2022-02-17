@@ -2,7 +2,6 @@ package org.schabi.newpipe.extractor.services.youtube;
 
 import com.grack.nanojson.JsonWriter;
 import org.junit.jupiter.api.BeforeAll;
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.schabi.newpipe.downloader.DownloaderFactory;
 import org.schabi.newpipe.extractor.ExtractorAsserts;
@@ -11,6 +10,8 @@ import org.schabi.newpipe.extractor.ListExtractor.InfoItemsPage;
 import org.schabi.newpipe.extractor.NewPipe;
 import org.schabi.newpipe.extractor.Page;
 import org.schabi.newpipe.extractor.exceptions.ExtractionException;
+import org.schabi.newpipe.extractor.exceptions.ParsingException;
+import org.schabi.newpipe.extractor.playlist.PlaylistInfo;
 import org.schabi.newpipe.extractor.services.youtube.extractors.YoutubeMixPlaylistExtractor;
 import org.schabi.newpipe.extractor.stream.StreamInfoItem;
 
@@ -118,6 +119,11 @@ public class YoutubeMixPlaylistExtractorTest {
         void getStreamCount() {
             assertEquals(ListExtractor.ITEM_COUNT_INFINITE, extractor.getStreamCount());
         }
+
+        @Test
+        void getPlaylistType() throws ParsingException {
+            assertEquals(PlaylistInfo.PlaylistType.MIX_STREAM, extractor.getPlaylistType());
+        }
     }
 
     public static class MixWithIndex {
@@ -203,6 +209,11 @@ public class YoutubeMixPlaylistExtractorTest {
         void getStreamCount() {
             assertEquals(ListExtractor.ITEM_COUNT_INFINITE, extractor.getStreamCount());
         }
+
+        @Test
+        void getPlaylistType() throws ParsingException {
+            assertEquals(PlaylistInfo.PlaylistType.MIX_STREAM, extractor.getPlaylistType());
+        }
     }
 
     public static class MyMix {
@@ -286,6 +297,11 @@ public class YoutubeMixPlaylistExtractorTest {
         @Test
         void getStreamCount() {
             assertEquals(ListExtractor.ITEM_COUNT_INFINITE, extractor.getStreamCount());
+        }
+
+        @Test
+        void getPlaylistType() throws ParsingException {
+            assertEquals(PlaylistInfo.PlaylistType.MIX_STREAM, extractor.getPlaylistType());
         }
     }
 
@@ -380,6 +396,11 @@ public class YoutubeMixPlaylistExtractorTest {
         @Test
         void getStreamCount() {
             assertEquals(ListExtractor.ITEM_COUNT_INFINITE, extractor.getStreamCount());
+        }
+
+        @Test
+        void getPlaylistType() throws ParsingException {
+            assertEquals(PlaylistInfo.PlaylistType.MIX_CHANNEL, extractor.getPlaylistType());
         }
     }
 }

@@ -8,9 +8,9 @@ import org.schabi.newpipe.extractor.ExtractorAsserts;
 import org.schabi.newpipe.extractor.ListExtractor;
 import org.schabi.newpipe.extractor.NewPipe;
 import org.schabi.newpipe.extractor.exceptions.ContentNotAvailableException;
-import org.schabi.newpipe.extractor.exceptions.ExtractionException;
 import org.schabi.newpipe.extractor.exceptions.ParsingException;
 import org.schabi.newpipe.extractor.playlist.PlaylistExtractor;
+import org.schabi.newpipe.extractor.playlist.PlaylistInfo;
 import org.schabi.newpipe.extractor.services.BasePlaylistExtractorTest;
 import org.schabi.newpipe.extractor.services.youtube.extractors.YoutubePlaylistExtractor;
 import org.schabi.newpipe.extractor.stream.StreamInfoItem;
@@ -162,6 +162,11 @@ public class YoutubePlaylistExtractorTest {
         public void testUploaderVerified() throws Exception {
             assertFalse(extractor.isUploaderVerified());
         }
+
+        @Test
+        void getPlaylistType() throws ParsingException {
+            assertEquals(PlaylistInfo.PlaylistType.NORMAL, extractor.getPlaylistType());
+        }
     }
 
     public static class HugePlaylist implements BasePlaylistExtractorTest {
@@ -281,6 +286,11 @@ public class YoutubePlaylistExtractorTest {
         public void testUploaderVerified() throws Exception {
             assertTrue(extractor.isUploaderVerified());
         }
+
+        @Test
+        void getPlaylistType() throws ParsingException {
+            assertEquals(PlaylistInfo.PlaylistType.NORMAL, extractor.getPlaylistType());
+        }
     }
 
     public static class LearningPlaylist implements BasePlaylistExtractorTest {
@@ -385,6 +395,11 @@ public class YoutubePlaylistExtractorTest {
         @Override
         public void testUploaderVerified() throws Exception {
             assertTrue(extractor.isUploaderVerified());
+        }
+
+        @Test
+        void getPlaylistType() throws ParsingException {
+            assertEquals(PlaylistInfo.PlaylistType.NORMAL, extractor.getPlaylistType());
         }
     }
 
