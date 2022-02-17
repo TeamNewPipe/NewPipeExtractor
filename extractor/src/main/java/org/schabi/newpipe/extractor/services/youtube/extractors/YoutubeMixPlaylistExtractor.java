@@ -16,6 +16,7 @@ import org.schabi.newpipe.extractor.linkhandler.ListLinkHandler;
 import org.schabi.newpipe.extractor.localization.Localization;
 import org.schabi.newpipe.extractor.localization.TimeAgoParser;
 import org.schabi.newpipe.extractor.playlist.PlaylistExtractor;
+import org.schabi.newpipe.extractor.playlist.PlaylistInfo;
 import org.schabi.newpipe.extractor.services.youtube.YoutubeParsingHelper;
 import org.schabi.newpipe.extractor.stream.StreamInfoItem;
 import org.schabi.newpipe.extractor.stream.StreamInfoItemsCollector;
@@ -240,5 +241,11 @@ public class YoutubeMixPlaylistExtractor extends PlaylistExtractor {
     @Nonnull
     private String getThumbnailUrlFromVideoId(final String videoId) {
         return "https://i.ytimg.com/vi/" + videoId + "/hqdefault.jpg";
+    }
+
+    @Nonnull
+    @Override
+    public PlaylistInfo.PlaylistType getPlaylistType() throws ParsingException {
+        return extractPlaylistTypeFromPlaylistId(playlistData.getString("playlistId"));
     }
 }

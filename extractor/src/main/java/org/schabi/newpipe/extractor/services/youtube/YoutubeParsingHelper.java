@@ -339,6 +339,51 @@ public class YoutubeParsingHelper {
         }
     }
 
+    /**
+     * @param playlistId the playlist id to parse
+     * @return the {@link PlaylistInfo.PlaylistType} extracted from the playlistId (mix playlist
+     *         types included)
+     * @throws ParsingException if the playlistId is null or empty
+     */
+    @Nonnull
+    public static PlaylistInfo.PlaylistType extractPlaylistTypeFromPlaylistId(
+            final String playlistId) throws ParsingException {
+        if (isNullOrEmpty(playlistId)) {
+            throw new ParsingException("Could not extract playlist type from empty playlist id");
+        } else if (isYoutubeMusicMixId(playlistId)) {
+            return PlaylistInfo.PlaylistType.MIX_MUSIC;
+        } else if (isYoutubeChannelMixId(playlistId)) {
+            return PlaylistInfo.PlaylistType.MIX_CHANNEL;
+        } else if (isYoutubeGenreMixId(playlistId)) {
+            return PlaylistInfo.PlaylistType.MIX_GENRE;
+        } else if (isYoutubeMixId(playlistId)) { // normal mix
+            // Either a normal mix based on a stream, or a "my mix" (still based on a stream).
+            // NOTE: if YouTube introduces even more types of mixes that still start with RD,
+            // they will default to this, even though they might not be based on a stream.
+            return PlaylistInfo.PlaylistType.MIX_STREAM;
+        } else {
+            // not a known type of mix: just consider it a normal playlist
+            return PlaylistInfo.PlaylistType.NORMAL;
+        }
+    }
+
+    /**
+     * @param playlistUrl the playlist url to parse
+     * @return the {@link PlaylistInfo.PlaylistType} extracted from the playlistUrl's list param
+     *         (mix playlist types included)
+     * @throws ParsingException if the playlistUrl is malformed, if has no list param or if the list
+     *                          param is empty
+     */
+    public static PlaylistInfo.PlaylistType extractPlaylistTypeFromPlaylistUrl(
+            final String playlistUrl) throws ParsingException {
+        try {
+            return extractPlaylistTypeFromPlaylistId(
+                    Utils.getQueryValue(Utils.stringToURL(playlistUrl), "list"));
+        } catch (final MalformedURLException e) {
+            throw new ParsingException("Could not extract playlist type from malformed url", e);
+        }
+    }
+
     public static JsonObject getInitialData(final String html) throws ParsingException {
         try {
             try {
