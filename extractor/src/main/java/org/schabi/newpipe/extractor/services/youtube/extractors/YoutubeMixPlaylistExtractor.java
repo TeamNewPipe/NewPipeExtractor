@@ -232,19 +232,9 @@ public class YoutubeMixPlaylistExtractor extends PlaylistExtractor {
     }
 
     @Nonnull
-    private String getThumbnailUrlFromPlaylistId(@Nonnull final String playlistId) throws ParsingException {
-        final String videoId;
-        if (isYoutubeMyMixId(playlistId)) {
-            videoId = playlistId.substring(4);
-        } else if (isYoutubeChannelMixId(playlistId)) {
-            throw new ParsingException("This playlist is a channel mix");
-        } else {
-            videoId = playlistId.substring(2);
-        }
-        if (videoId.isEmpty()) {
-            throw new ParsingException("videoId is empty");
-        }
-        return getThumbnailUrlFromVideoId(videoId);
+    private String getThumbnailUrlFromPlaylistId(@Nonnull final String playlistId)
+            throws ParsingException {
+        return getThumbnailUrlFromVideoId(YoutubeParsingHelper.extractVideoIdFromMixId(playlistId));
     }
 
     @Nonnull
