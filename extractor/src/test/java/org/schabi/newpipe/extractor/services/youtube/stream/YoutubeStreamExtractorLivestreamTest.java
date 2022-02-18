@@ -1,7 +1,7 @@
 package org.schabi.newpipe.extractor.services.youtube.stream;
 
-import org.junit.BeforeClass;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.Test;
 import org.schabi.newpipe.downloader.DownloaderFactory;
 import org.schabi.newpipe.extractor.NewPipe;
 import org.schabi.newpipe.extractor.StreamingService;
@@ -26,7 +26,7 @@ public class YoutubeStreamExtractorLivestreamTest extends DefaultStreamExtractor
     private static final String URL = YoutubeStreamExtractorDefaultTest.BASE_URL + ID + "&t=" + TIMESTAMP;
     private static StreamExtractor extractor;
 
-    @BeforeClass
+    @BeforeAll
     public static void setUp() throws Exception {
         YoutubeParsingHelper.resetClientVersionAndKey();
         YoutubeParsingHelper.setNumberGenerator(new Random(1));
@@ -63,7 +63,7 @@ public class YoutubeStreamExtractorLivestreamTest extends DefaultStreamExtractor
     @Nullable @Override public String expectedUploadDate() { return "2020-02-22 00:00:00.000"; }
     @Nullable @Override public String expectedTextualUploadDate() { return "2020-02-22"; }
     @Override public long expectedLikeCountAtLeast() { return 825000; }
-    @Override public long expectedDislikeCountAtLeast() { return 15600; }
+    @Override public long expectedDislikeCountAtLeast() { return -1; }
     @Override public boolean expectedHasSubtitles() { return false; }
     @Nullable @Override public String expectedDashMpdUrlContains() { return "https://manifest.googlevideo.com/api/manifest/dash/"; }
     @Override public boolean expectedHasFrames() { return false; }

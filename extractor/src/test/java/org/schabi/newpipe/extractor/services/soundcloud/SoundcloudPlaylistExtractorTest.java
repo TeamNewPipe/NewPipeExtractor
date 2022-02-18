@@ -1,9 +1,10 @@
 package org.schabi.newpipe.extractor.services.soundcloud;
 
-import org.junit.BeforeClass;
-import org.junit.Ignore;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.Disabled;
+import org.junit.jupiter.api.Test;
 import org.schabi.newpipe.downloader.DownloaderTestImpl;
+import org.schabi.newpipe.extractor.ExtractorAsserts;
 import org.schabi.newpipe.extractor.ListExtractor;
 import org.schabi.newpipe.extractor.NewPipe;
 import org.schabi.newpipe.extractor.playlist.PlaylistExtractor;
@@ -11,8 +12,7 @@ import org.schabi.newpipe.extractor.services.BasePlaylistExtractorTest;
 import org.schabi.newpipe.extractor.services.soundcloud.extractors.SoundcloudPlaylistExtractor;
 import org.schabi.newpipe.extractor.stream.StreamInfoItem;
 
-import static org.hamcrest.CoreMatchers.*;
-import static org.junit.Assert.*;
+import static org.junit.jupiter.api.Assertions.*;
 import static org.schabi.newpipe.extractor.ExtractorAsserts.assertIsSecureUrl;
 import static org.schabi.newpipe.extractor.ServiceList.SoundCloud;
 import static org.schabi.newpipe.extractor.services.DefaultTests.*;
@@ -24,7 +24,7 @@ public class SoundcloudPlaylistExtractorTest {
     public static class LuvTape implements BasePlaylistExtractorTest {
         private static SoundcloudPlaylistExtractor extractor;
 
-        @BeforeClass
+        @BeforeAll
         public static void setUp() throws Exception {
             NewPipe.init(DownloaderTestImpl.getInstance());
             extractor = (SoundcloudPlaylistExtractor) SoundCloud
@@ -91,10 +91,10 @@ public class SoundcloudPlaylistExtractorTest {
         }
 
         @Test
-        public void testUploaderUrl() {
+        void testUploaderUrl() {
             final String uploaderUrl = extractor.getUploaderUrl();
             assertIsSecureUrl(uploaderUrl);
-            assertThat(uploaderUrl, containsString("liluzivert"));
+            ExtractorAsserts.assertContains("liluzivert", uploaderUrl);
         }
 
         @Test
@@ -109,10 +109,10 @@ public class SoundcloudPlaylistExtractorTest {
 
         @Test
         public void testStreamCount() {
-            assertTrue("Stream count does not fit: " + extractor.getStreamCount(), extractor.getStreamCount() >= 10);
+            ExtractorAsserts.assertGreaterOrEqual(10, extractor.getStreamCount());
         }
 
-        @Override
+        @Test
         public void testUploaderVerified() throws Exception {
             assertTrue(extractor.isUploaderVerified());
         }
@@ -121,7 +121,7 @@ public class SoundcloudPlaylistExtractorTest {
     public static class RandomHouseMusic implements BasePlaylistExtractorTest {
         private static SoundcloudPlaylistExtractor extractor;
 
-        @BeforeClass
+        @BeforeAll
         public static void setUp() throws Exception {
             NewPipe.init(DownloaderTestImpl.getInstance());
             extractor = (SoundcloudPlaylistExtractor) SoundCloud
@@ -188,10 +188,10 @@ public class SoundcloudPlaylistExtractorTest {
         }
 
         @Test
-        public void testUploaderUrl() {
+        void testUploaderUrl() {
             final String uploaderUrl = extractor.getUploaderUrl();
             assertIsSecureUrl(uploaderUrl);
-            assertThat(uploaderUrl, containsString("micky96"));
+            ExtractorAsserts.assertContains("micky96", uploaderUrl);
         }
 
         @Test
@@ -206,10 +206,10 @@ public class SoundcloudPlaylistExtractorTest {
 
         @Test
         public void testStreamCount() {
-            assertTrue("Stream count does not fit: " + extractor.getStreamCount(), extractor.getStreamCount() >= 10);
+            ExtractorAsserts.assertGreaterOrEqual(10, extractor.getStreamCount());
         }
 
-        @Override
+        @Test
         public void testUploaderVerified() throws Exception {
             assertFalse(extractor.isUploaderVerified());
         }
@@ -218,7 +218,7 @@ public class SoundcloudPlaylistExtractorTest {
     public static class EDMxxx implements BasePlaylistExtractorTest {
         private static SoundcloudPlaylistExtractor extractor;
 
-        @BeforeClass
+        @BeforeAll
         public static void setUp() throws Exception {
             NewPipe.init(DownloaderTestImpl.getInstance());
             extractor = (SoundcloudPlaylistExtractor) SoundCloud
@@ -231,7 +231,7 @@ public class SoundcloudPlaylistExtractorTest {
         //////////////////////////////////////////////////////////////////////////*/
 
         @Test
-        public void testGetPageInNewExtractor() throws Exception {
+        void testGetPageInNewExtractor() throws Exception {
             PlaylistExtractor newExtractor = SoundCloud.getPlaylistExtractor(extractor.getUrl());
             defaultTestGetPageInNewExtractor(extractor, newExtractor);
         }
@@ -300,10 +300,10 @@ public class SoundcloudPlaylistExtractorTest {
         }
 
         @Test
-        public void testUploaderUrl() {
+        void testUploaderUrl() {
             final String uploaderUrl = extractor.getUploaderUrl();
             assertIsSecureUrl(uploaderUrl);
-            assertTrue(uploaderUrl, uploaderUrl.contains("user350509423"));
+            ExtractorAsserts.assertContains("user350509423", uploaderUrl);
         }
 
         @Test
@@ -318,10 +318,10 @@ public class SoundcloudPlaylistExtractorTest {
 
         @Test
         public void testStreamCount() {
-            assertTrue("Stream count does not fit: " + extractor.getStreamCount(), extractor.getStreamCount() >= 370);
+            ExtractorAsserts.assertGreaterOrEqual(370, extractor.getStreamCount());
         }
 
-        @Override
+        @Test
         public void testUploaderVerified() throws Exception {
             assertFalse(extractor.isUploaderVerified());
         }
@@ -330,7 +330,7 @@ public class SoundcloudPlaylistExtractorTest {
     public static class SmallPlaylist implements BasePlaylistExtractorTest {
         private static SoundcloudPlaylistExtractor extractor;
 
-        @BeforeClass
+        @BeforeAll
         public static void setUp() throws Exception {
             NewPipe.init(DownloaderTestImpl.getInstance());
             extractor = (SoundcloudPlaylistExtractor) SoundCloud
@@ -377,7 +377,7 @@ public class SoundcloudPlaylistExtractorTest {
         }
 
         @Test
-        @Ignore("Test broken? Playlist has 2 entries, each page has 1 entry meaning it has 2 pages.")
+        @Disabled("Test broken? Playlist has 2 entries, each page has 1 entry meaning it has 2 pages.")
         public void testMoreRelatedItems() throws Exception {
             try {
                 defaultTestMoreItems(extractor);
@@ -404,10 +404,10 @@ public class SoundcloudPlaylistExtractorTest {
         }
 
         @Test
-        public void testUploaderUrl() {
+        void testUploaderUrl() {
             final String uploaderUrl = extractor.getUploaderUrl();
             assertIsSecureUrl(uploaderUrl);
-            assertThat(uploaderUrl, containsString("breezy-123"));
+            ExtractorAsserts.assertContains("breezy-123", uploaderUrl);
         }
 
         @Test
@@ -425,7 +425,7 @@ public class SoundcloudPlaylistExtractorTest {
             assertEquals(2, extractor.getStreamCount());
         }
 
-        @Override
+        @Test
         public void testUploaderVerified() throws Exception {
             assertFalse(extractor.isUploaderVerified());
         }

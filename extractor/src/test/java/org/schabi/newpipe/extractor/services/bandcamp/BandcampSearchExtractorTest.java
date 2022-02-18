@@ -2,8 +2,8 @@
 
 package org.schabi.newpipe.extractor.services.bandcamp;
 
-import org.junit.BeforeClass;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.Test;
 import org.schabi.newpipe.downloader.DownloaderTestImpl;
 import org.schabi.newpipe.extractor.*;
 import org.schabi.newpipe.extractor.exceptions.ExtractionException;
@@ -16,8 +16,8 @@ import org.schabi.newpipe.extractor.stream.StreamInfoItem;
 import javax.annotation.Nullable;
 import java.io.IOException;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.schabi.newpipe.extractor.ServiceList.Bandcamp;
 
 /**
@@ -25,7 +25,7 @@ import static org.schabi.newpipe.extractor.ServiceList.Bandcamp;
  */
 public class BandcampSearchExtractorTest {
 
-    @BeforeClass
+    @BeforeAll
     public static void setUp() {
         NewPipe.init(DownloaderTestImpl.getInstance());
 
@@ -106,7 +106,7 @@ public class BandcampSearchExtractorTest {
         private static SearchExtractor extractor;
         private static final String QUERY = "noise";
 
-        @BeforeClass
+        @BeforeAll
         public static void setUp() throws Exception {
             NewPipe.init(DownloaderTestImpl.getInstance());
             extractor = Bandcamp.getSearchExtractor(QUERY);

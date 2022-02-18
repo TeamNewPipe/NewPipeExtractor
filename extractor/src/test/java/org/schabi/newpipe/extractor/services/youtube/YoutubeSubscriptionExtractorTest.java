@@ -1,7 +1,7 @@
 package org.schabi.newpipe.extractor.services.youtube;
 
-import org.junit.BeforeClass;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.Test;
 import org.schabi.newpipe.downloader.DownloaderTestImpl;
 import org.schabi.newpipe.extractor.NewPipe;
 import org.schabi.newpipe.extractor.ServiceList;
@@ -16,7 +16,7 @@ import java.io.FileInputStream;
 import java.util.Arrays;
 import java.util.List;
 
-import static org.junit.Assert.*;
+import static org.junit.jupiter.api.Assertions.*;
 import static org.schabi.newpipe.FileUtils.resolveTestResource;
 import static org.schabi.newpipe.extractor.utils.Utils.UTF_8;
 
@@ -29,7 +29,7 @@ public class YoutubeSubscriptionExtractorTest {
     private static YoutubeSubscriptionExtractor subscriptionExtractor;
     private static LinkHandlerFactory urlHandler;
 
-    @BeforeClass
+    @BeforeAll
     public static void setupClass() {
         //Doesn't make network requests
         NewPipe.init(DownloaderTestImpl.getInstance());
@@ -107,7 +107,7 @@ public class YoutubeSubscriptionExtractorTest {
                 if (!correctType) {
                     e.printStackTrace();
                 }
-                assertTrue(e.getClass().getSimpleName() + " is not InvalidSourceException", correctType);
+                assertTrue(correctType, e.getClass().getSimpleName() + " is not InvalidSourceException");
             }
         }
     }

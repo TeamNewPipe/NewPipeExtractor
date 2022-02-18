@@ -1,7 +1,7 @@
 package org.schabi.newpipe.extractor.services.bandcamp;
 
-import org.junit.BeforeClass;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.Test;
 import org.schabi.newpipe.downloader.DownloaderTestImpl;
 import org.schabi.newpipe.extractor.NewPipe;
 import org.schabi.newpipe.extractor.StreamingService;
@@ -19,7 +19,7 @@ import java.util.Collections;
 import java.util.List;
 import java.util.TimeZone;
 
-import static org.junit.Assert.*;
+import static org.junit.jupiter.api.Assertions.*;
 import static org.schabi.newpipe.extractor.ServiceList.Bandcamp;
 
 public class BandcampRadioStreamExtractorTest extends DefaultStreamExtractorTest {
@@ -28,7 +28,7 @@ public class BandcampRadioStreamExtractorTest extends DefaultStreamExtractorTest
 
     private static final String URL = "https://bandcamp.com/?show=230";
 
-    @BeforeClass
+    @BeforeAll
     public static void setUp() throws IOException, ExtractionException {
         NewPipe.init(DownloaderTestImpl.getInstance());
         extractor = Bandcamp.getStreamExtractor(URL);
@@ -56,15 +56,15 @@ public class BandcampRadioStreamExtractorTest extends DefaultStreamExtractorTest
     @Override public String expectedUploaderName() { return "Andrew Jervis"; }
     @Override public int expectedStreamSegmentsCount() { return 30; }
 
-    @Test(expected = ContentNotSupportedException.class)
-    public void testGetUploaderUrl() throws ParsingException {
-        extractor.getUploaderUrl();
+    @Test
+    public void testGetUploaderUrl() {
+        assertThrows(ContentNotSupportedException.class, extractor::getUploaderUrl);
     }
 
-    @Test(expected = ContentNotSupportedException.class)
+    @Test
     @Override
     public void testUploaderUrl() throws Exception {
-        super.testUploaderUrl();
+        assertThrows(ContentNotSupportedException.class, super::testUploaderUrl);
     }
     @Override public String expectedUploaderUrl() { return null; }
 

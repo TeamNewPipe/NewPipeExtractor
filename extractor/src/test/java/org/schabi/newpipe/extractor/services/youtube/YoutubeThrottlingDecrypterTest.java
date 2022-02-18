@@ -1,7 +1,7 @@
 package org.schabi.newpipe.extractor.services.youtube;
 
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.mozilla.javascript.EvaluatorException;
 import org.schabi.newpipe.downloader.DownloaderTestImpl;
 import org.schabi.newpipe.extractor.NewPipe;
@@ -9,14 +9,13 @@ import org.schabi.newpipe.extractor.exceptions.ParsingException;
 
 import java.io.IOException;
 
-import static org.hamcrest.CoreMatchers.equalTo;
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.junit.Assert.assertNotEquals;
-import static org.junit.Assert.fail;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotEquals;
+import static org.junit.jupiter.api.Assertions.fail;
 
 public class YoutubeThrottlingDecrypterTest {
 
-    @Before
+    @BeforeEach
     public void setup() throws IOException {
         NewPipe.init(DownloaderTestImpl.getInstance());
     }
@@ -49,9 +48,9 @@ public class YoutubeThrottlingDecrypterTest {
     @Test
     public void testDecode__noNParam__success() throws ParsingException {
         final String noNParamUrl = "https://r5---sn-4g5ednsz.googlevideo.com/videoplayback?expire=1626553257&ei=SefyYPmIFoKT1wLtqbjgCQ&ip=127.0.0.1&id=o-AIT5xGifsaEAdEOAb5vd06J9VNtm-KHHolnaZRGPjHZi&itag=140&source=youtube&requiressl=yes&mh=xO&mm=31%2C29&mn=sn-4g5ednsz%2Csn-4g5e6nsr&ms=au%2Crdu&mv=m&mvi=5&pl=24&initcwndbps=1322500&vprv=1&mime=audio%2Fmp4&ns=cA2SS5atEe0mH8tMwGTO4RIG&gir=yes&clen=3009275&dur=185.898&lmt=1626356984653961&mt=1626531173&fvip=5&keepalive=yes&fexp=24001373%2C24007246&beids=23886212&c=WEB&txp=6411222&sparams=expire%2Cei%2Cip%2Cid%2Citag%2Csource%2Crequiressl%2Cvprv%2Cmime%2Cns%2Cgir%2Cclen%2Cdur%2Clmt&lsparams=mh%2Cmm%2Cmn%2Cms%2Cmv%2Cmvi%2Cpl%2Cinitcwndbps&lsig=AG3C_xAwRgIhAPueRlTutSlzPafxrqBmgZz5m7-Zfbw3QweDp3j4XO9SAiEA5tF7_ZCJFKmS-D6I1jlUURjpjoiTbsYyKuarV4u6E8Y%3D&sig=AOq0QJ8wRQIgRD_4WwkPeTEKGVSQqPsznMJGqq4nVJ8o1ChGBCgi4Y0CIQCZT3tI40YLKBWJCh2Q7AlvuUIpN0ficzdSElLeQpJdrw==";
-        String decrypted = new YoutubeThrottlingDecrypter().apply(noNParamUrl);
+        final String decrypted = new YoutubeThrottlingDecrypter().apply(noNParamUrl);
 
-        assertThat(decrypted, equalTo(noNParamUrl));
+        assertEquals(noNParamUrl, decrypted);
     }
 
 }

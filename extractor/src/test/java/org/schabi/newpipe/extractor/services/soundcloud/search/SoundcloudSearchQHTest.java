@@ -1,19 +1,18 @@
 package org.schabi.newpipe.extractor.services.soundcloud.search;
 
-import org.junit.BeforeClass;
-import org.junit.Ignore;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.Test;
 import org.schabi.newpipe.downloader.DownloaderTestImpl;
 import org.schabi.newpipe.extractor.NewPipe;
 
 import static java.util.Arrays.asList;
-import static org.junit.Assert.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.schabi.newpipe.extractor.ServiceList.SoundCloud;
 import static org.schabi.newpipe.extractor.services.soundcloud.linkHandler.SoundcloudSearchQueryHandlerFactory.*;
 
 public class SoundcloudSearchQHTest {
 
-    @BeforeClass
+    @BeforeAll
     public static void setUpClass() throws Exception {
         NewPipe.init(DownloaderTestImpl.getInstance());
     }

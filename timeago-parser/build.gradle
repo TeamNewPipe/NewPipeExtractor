@@ -1,6 +1,4 @@
 dependencies {
-    testImplementation "junit:junit:$junitVersion"
-
     implementation "com.github.TeamNewPipe:nanojson:$nanojsonVersion"
     implementation "com.github.spotbugs:spotbugs-annotations:$spotbugsVersion"
 }

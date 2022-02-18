@@ -1,8 +1,7 @@
 package org.schabi.newpipe.extractor.services.soundcloud;
 
-import org.junit.BeforeClass;
-import org.junit.Ignore;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.Test;
 import org.schabi.newpipe.downloader.DownloaderTestImpl;
 import org.schabi.newpipe.extractor.NewPipe;
 import org.schabi.newpipe.extractor.exceptions.ParsingException;
@@ -11,7 +10,7 @@ import org.schabi.newpipe.extractor.services.soundcloud.linkHandler.SoundcloudSt
 import java.util.ArrayList;
 import java.util.List;
 
-import static org.junit.Assert.*;
+import static org.junit.jupiter.api.Assertions.*;
 
 /**
  * Test for {@link SoundcloudStreamLinkHandlerFactory}
@@ -19,15 +18,15 @@ import static org.junit.Assert.*;
 public class SoundcloudStreamLinkHandlerFactoryTest {
     private static SoundcloudStreamLinkHandlerFactory linkHandler;
 
-    @BeforeClass
+    @BeforeAll
     public static void setUp() throws Exception {
         linkHandler = SoundcloudStreamLinkHandlerFactory.getInstance();
         NewPipe.init(DownloaderTestImpl.getInstance());
     }
 
-    @Test(expected = IllegalArgumentException.class)
-    public void getIdWithNullAsUrl() throws ParsingException {
-        linkHandler.fromUrl(null).getId();
+    @Test
+    public void getIdWithNullAsUrl() {
+        assertThrows(IllegalArgumentException.class, () -> linkHandler.fromUrl(null));
     }
 
     @Test

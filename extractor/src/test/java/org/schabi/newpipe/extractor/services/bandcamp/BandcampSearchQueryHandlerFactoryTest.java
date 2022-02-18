@@ -2,21 +2,21 @@
 
 package org.schabi.newpipe.extractor.services.bandcamp;
 
-import org.junit.BeforeClass;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.Test;
 import org.schabi.newpipe.downloader.DownloaderTestImpl;
 import org.schabi.newpipe.extractor.NewPipe;
 import org.schabi.newpipe.extractor.exceptions.ParsingException;
 import org.schabi.newpipe.extractor.services.bandcamp.linkHandler.BandcampSearchQueryHandlerFactory;
 
-import static org.junit.Assert.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.schabi.newpipe.extractor.ServiceList.Bandcamp;
 
 public class BandcampSearchQueryHandlerFactoryTest {
 
     static BandcampSearchQueryHandlerFactory searchQuery;
 
-    @BeforeClass
+    @BeforeAll
     public static void setUp() {
         NewPipe.init(DownloaderTestImpl.getInstance());
 

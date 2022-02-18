@@ -149,25 +149,22 @@ public class BandcampRadioStreamExtractor extends BandcampStreamExtractor {
     @Nonnull
     @Override
     public String getLicence() {
+        // Contrary to other Bandcamp streams, radio streams don't have a license
         return "";
     }
 
     @Nonnull
     @Override
     public String getCategory() {
+        // Contrary to other Bandcamp streams, radio streams don't have categories
         return "";
     }
 
     @Nonnull
     @Override
     public List<String> getTags() {
+        // Contrary to other Bandcamp streams, radio streams don't have tags
         return Collections.emptyList();
-    }
-
-    @Nonnull
-    @Override
-    public Privacy getPrivacy() {
-        return Privacy.PUBLIC;
     }
 
     @Override

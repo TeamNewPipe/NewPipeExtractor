@@ -14,16 +14,15 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-import static junit.framework.TestCase.assertFalse;
-import static org.junit.Assert.*;
+import static org.junit.jupiter.api.Assertions.*;
 import static org.schabi.newpipe.extractor.ExtractorAsserts.*;
 import static org.schabi.newpipe.extractor.StreamingService.LinkType;
 import static org.schabi.newpipe.extractor.utils.Utils.isNullOrEmpty;
 
 public final class DefaultTests {
     public static void defaultTestListOfItems(StreamingService expectedService, List<? extends InfoItem> itemsList, List<Throwable> errors) throws ParsingException {
-        assertFalse("List of items is empty", itemsList.isEmpty());
-        assertFalse("List of items contains a null element", itemsList.contains(null));
+        assertFalse(itemsList.isEmpty(), "List of items is empty");
+        assertFalse(itemsList.contains(null), "List of items contains a null element");
         assertEmptyErrors("Errors during extraction", errors);
 
         for (InfoItem item : itemsList) {
@@ -33,8 +32,8 @@ public final class DefaultTests {
             if (!isNullOrEmpty(thumbnailUrl)) {
                 assertIsSecureUrl(thumbnailUrl);
             }
-            assertNotNull("InfoItem type not set: " + item, item.getInfoType());
-            assertEquals("Unexpected item service id", expectedService.getServiceId(), item.getServiceId());
+            assertNotNull(item.getInfoType(), "InfoItem type not set: " + item);
+            assertEquals(expectedService.getServiceId(), item.getServiceId(), "Unexpected item service id");
             assertNotEmpty("Item name not set: " + item, item.getName());
 
             if (item instanceof StreamInfoItem) {
@@ -57,7 +56,7 @@ public final class DefaultTests {
 
                 if (!isNullOrEmpty(streamInfoItem.getTextualUploadDate())) {
                     final DateWrapper uploadDate = streamInfoItem.getUploadDate();
-                    assertNotNull("No parsed upload date", uploadDate);
+                    assertNotNull(uploadDate,"No parsed upload date");
                 }
 
             } else if (item instanceof ChannelInfoItem) {
@@ -74,22 +73,22 @@ public final class DefaultTests {
     private static void assertExpectedLinkType(StreamingService expectedService, String url, LinkType expectedLinkType) throws ParsingException {
         final LinkType linkTypeByUrl = expectedService.getLinkTypeByUrl(url);
 
-        assertNotEquals("Url is not recognized by its own service: \"" + url + "\"",
-                LinkType.NONE, linkTypeByUrl);
-        assertEquals("Service returned wrong link type for: \"" + url + "\"",
-                expectedLinkType, linkTypeByUrl);
+        assertNotEquals(LinkType.NONE, linkTypeByUrl,
+                "Url is not recognized by its own service: \"" + url + "\"");
+        assertEquals(expectedLinkType, linkTypeByUrl,
+                "Service returned wrong link type for: \"" + url + "\"");
     }
 
     public static void assertOnlyContainsType(ListExtractor.InfoItemsPage<? extends InfoItem> items, InfoItem.InfoType expectedType) {
         for (InfoItem item : items.getItems()) {
-            assertEquals("Item list contains unexpected info types",
-                    expectedType, item.getInfoType());
+            assertEquals(expectedType, item.getInfoType(),
+                    "Item list contains unexpected info types");
         }
     }
 
     public static <T extends InfoItem> void assertNoMoreItems(ListExtractor<T> extractor) throws Exception {
         final ListExtractor.InfoItemsPage<T> initialPage = extractor.getInitialPage();
-        assertFalse("More items available when it shouldn't", initialPage.hasNextPage());
+        assertFalse(initialPage.hasNextPage(), "More items available when it shouldn't");
     }
 
     public static void assertNoDuplicatedItems(StreamingService expectedService,
@@ -122,10 +121,10 @@ public final class DefaultTests {
 
     public static <T extends InfoItem> ListExtractor.InfoItemsPage<T> defaultTestMoreItems(ListExtractor<T> extractor) throws Exception {
         final ListExtractor.InfoItemsPage<T> initialPage = extractor.getInitialPage();
-        assertTrue("Doesn't have more items", initialPage.hasNextPage());
+        assertTrue(initialPage.hasNextPage(), "Doesn't have more items");
         ListExtractor.InfoItemsPage<T> nextPage = extractor.getPage(initialPage.getNextPage());
         final List<T> items = nextPage.getItems();
-        assertFalse("Next page is empty", items.isEmpty());
+        assertFalse(items.isEmpty(), "Next page is empty");
         assertEmptyErrors("Next page have errors", nextPage.getErrors());
 
         defaultTestListOfItems(extractor.getService(), nextPage.getItems(), nextPage.getErrors());

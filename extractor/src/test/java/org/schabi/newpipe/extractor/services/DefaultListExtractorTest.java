@@ -1,6 +1,6 @@
 package org.schabi.newpipe.extractor.services;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import org.schabi.newpipe.extractor.InfoItem;
 import org.schabi.newpipe.extractor.ListExtractor;
 

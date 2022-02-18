@@ -1,13 +1,13 @@
 package org.schabi.newpipe.extractor.services.youtube;
 
-import org.junit.BeforeClass;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.Test;
 import org.schabi.newpipe.downloader.DownloaderTestImpl;
 import org.schabi.newpipe.extractor.NewPipe;
 import org.schabi.newpipe.extractor.exceptions.ParsingException;
 import org.schabi.newpipe.extractor.services.youtube.linkHandler.YoutubePlaylistLinkHandlerFactory;
 
-import static org.junit.Assert.*;
+import static org.junit.jupiter.api.Assertions.*;
 
 /**
  * Test for {@link YoutubePlaylistLinkHandlerFactory}
@@ -15,15 +15,15 @@ import static org.junit.Assert.*;
 public class YoutubePlaylistLinkHandlerFactoryTest {
     private static YoutubePlaylistLinkHandlerFactory linkHandler;
 
-    @BeforeClass
+    @BeforeAll
     public static void setUp() {
         NewPipe.init(DownloaderTestImpl.getInstance());
         linkHandler = YoutubePlaylistLinkHandlerFactory.getInstance();
     }
 
-    @Test(expected = IllegalArgumentException.class)
-    public void getIdWithNullAsUrl() throws ParsingException {
-        linkHandler.fromId(null);
+    @Test
+    public void getIdWithNullAsUrl() {
+        assertThrows(IllegalArgumentException.class, () -> linkHandler.fromId(null));
     }
 
     @Test

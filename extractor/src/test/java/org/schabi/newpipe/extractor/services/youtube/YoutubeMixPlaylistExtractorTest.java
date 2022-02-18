@@ -1,11 +1,11 @@
 package org.schabi.newpipe.extractor.services.youtube;
 
 import com.grack.nanojson.JsonWriter;
-import org.hamcrest.MatcherAssert;
-import org.junit.BeforeClass;
-import org.junit.Ignore;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.Disabled;
+import org.junit.jupiter.api.Test;
 import org.schabi.newpipe.downloader.DownloaderFactory;
+import org.schabi.newpipe.extractor.ExtractorAsserts;
 import org.schabi.newpipe.extractor.ListExtractor;
 import org.schabi.newpipe.extractor.ListExtractor.InfoItemsPage;
 import org.schabi.newpipe.extractor.NewPipe;
@@ -15,33 +15,29 @@ import org.schabi.newpipe.extractor.services.youtube.extractors.YoutubeMixPlayli
 import org.schabi.newpipe.extractor.stream.StreamInfoItem;
 
 import java.io.IOException;
+import java.nio.charset.StandardCharsets;
 import java.util.*;
 
-import static org.hamcrest.CoreMatchers.containsString;
-import static org.hamcrest.CoreMatchers.startsWith;
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.schabi.newpipe.extractor.ExtractorAsserts.assertIsSecureUrl;
 import static org.schabi.newpipe.extractor.ServiceList.YouTube;
 import static org.schabi.newpipe.extractor.services.youtube.YoutubeParsingHelper.*;
-import static org.schabi.newpipe.extractor.utils.Utils.UTF_8;
 
 public class YoutubeMixPlaylistExtractorTest {
 
-    private static final String VIDEO_ID = "_AzeUSL9lZc";
-    private static final String VIDEO_TITLE =
-            "Most Beautiful And Emotional  Piano: Anime Music Shigatsu wa Kimi no Uso OST IMO";
     private static final String RESOURCE_PATH = DownloaderFactory.RESOURCE_PATH + "services/youtube/extractor/mix/";
     private static final Map<String, String> dummyCookie = new HashMap<>();
 
     private static YoutubeMixPlaylistExtractor extractor;
 
-    @Ignore("Test broken, video was blocked by SME and is only available in Japan")
     public static class Mix {
+        private static final String VIDEO_ID = "QMVCAPd5cwBcg";
+        private static final String VIDEO_TITLE = "Mix – ";
 
-        @BeforeClass
+        @BeforeAll
         public static void setUp() throws Exception {
             YoutubeParsingHelper.resetClientVersionAndKey();
             YoutubeParsingHelper.setNumberGenerator(new Random(1));
@@ -54,41 +50,41 @@ public class YoutubeMixPlaylistExtractorTest {
         }
 
         @Test
-        public void getServiceId() {
+        void getServiceId() {
             assertEquals(YouTube.getServiceId(), extractor.getServiceId());
         }
 
         @Test
-        public void getName() throws Exception {
+        void getName() throws Exception {
             final String name = extractor.getName();
-            assertThat(name, startsWith("Mix"));
-            assertThat(name, containsString(VIDEO_TITLE));
+            ExtractorAsserts.assertContains("Mix", name);
+            ExtractorAsserts.assertContains(VIDEO_TITLE, name);
         }
 
         @Test
-        public void getThumbnailUrl() throws Exception {
+        void getThumbnailUrl() throws Exception {
             final String thumbnailUrl = extractor.getThumbnailUrl();
             assertIsSecureUrl(thumbnailUrl);
-            MatcherAssert.assertThat(thumbnailUrl, containsString("yt"));
-            assertThat(thumbnailUrl, containsString(VIDEO_ID));
+            ExtractorAsserts.assertContains("yt", thumbnailUrl);
+            ExtractorAsserts.assertContains(VIDEO_ID, thumbnailUrl);
         }
 
         @Test
-        public void getInitialPage() throws Exception {
+        void getInitialPage() throws Exception {
             final InfoItemsPage<StreamInfoItem> streams = extractor.getInitialPage();
             assertFalse(streams.getItems().isEmpty());
             assertTrue(streams.hasNextPage());
         }
 
         @Test
-        public void getPage() throws Exception {
+        void getPage() throws Exception {
             final byte[] body = JsonWriter.string(prepareDesktopJsonBuilder(
                     NewPipe.getPreferredLocalization(), NewPipe.getPreferredContentCountry())
                     .value("videoId", VIDEO_ID)
                     .value("playlistId", "RD" + VIDEO_ID)
                     .value("params", "OAE%3D")
                     .done())
-                    .getBytes(UTF_8);
+                    .getBytes(StandardCharsets.UTF_8);
 
             final InfoItemsPage<StreamInfoItem> streams = extractor.getPage(new Page(
                     YOUTUBEI_V1_URL + "next?key=" + getKey(), null, null, dummyCookie, body));
@@ -97,7 +93,7 @@ public class YoutubeMixPlaylistExtractorTest {
         }
 
         @Test
-        public void getContinuations() throws Exception {
+        void getContinuations() throws Exception {
             InfoItemsPage<StreamInfoItem> streams = extractor.getInitialPage();
             final Set<String> urls = new HashSet<>();
 
@@ -119,53 +115,54 @@ public class YoutubeMixPlaylistExtractorTest {
         }
 
         @Test
-        public void getStreamCount() {
+        void getStreamCount() {
             assertEquals(ListExtractor.ITEM_COUNT_INFINITE, extractor.getStreamCount());
         }
     }
 
-    @Ignore("Test broken, video was removed by the uploader")
     public static class MixWithIndex {
 
-        private static final int INDEX = 13;
-        private static final String VIDEO_ID_NUMBER_13 = "qHtzO49SDmk";
+        private static final String VIDEO_ID = "QMVCAPd5cwBcg";
+        private static final String VIDEO_TITLE = "Mix – ";
+        private static final int INDEX = 4;
+        private static final String VIDEO_ID_NUMBER_4 = "lWA2pjMjpBs";
 
-        @BeforeClass
+        @BeforeAll
         public static void setUp() throws Exception {
             YoutubeParsingHelper.resetClientVersionAndKey();
             YoutubeParsingHelper.setNumberGenerator(new Random(1));
             NewPipe.init(new DownloaderFactory().getDownloader(RESOURCE_PATH + "mixWithIndex"));
             dummyCookie.put(YoutubeMixPlaylistExtractor.COOKIE_NAME, "whatever");
             extractor = (YoutubeMixPlaylistExtractor) YouTube
-                    .getPlaylistExtractor("https://www.youtube.com/watch?v=" + VIDEO_ID_NUMBER_13
+                    .getPlaylistExtractor("https://www.youtube.com/watch?v=" + VIDEO_ID_NUMBER_4
                             + "&list=RD" + VIDEO_ID + "&index=" + INDEX);
             extractor.fetchPage();
         }
 
         @Test
-        public void getName() throws Exception {
+        void getName() throws Exception {
             final String name = extractor.getName();
-            assertThat(name, startsWith("Mix"));
-            assertThat(name, containsString(VIDEO_TITLE));
+            ExtractorAsserts.assertContains("Mix", name);
+            ExtractorAsserts.assertContains(VIDEO_TITLE, name);
         }
 
         @Test
-        public void getThumbnailUrl() throws Exception {
+        void getThumbnailUrl() throws Exception {
             final String thumbnailUrl = extractor.getThumbnailUrl();
             assertIsSecureUrl(thumbnailUrl);
-            assertThat(thumbnailUrl, containsString("yt"));
-            assertThat(thumbnailUrl, containsString(VIDEO_ID));
+            ExtractorAsserts.assertContains("yt", thumbnailUrl);
+            ExtractorAsserts.assertContains(VIDEO_ID, thumbnailUrl);
         }
 
         @Test
-        public void getInitialPage() throws Exception {
+        void getInitialPage() throws Exception {
             final InfoItemsPage<StreamInfoItem> streams = extractor.getInitialPage();
             assertFalse(streams.getItems().isEmpty());
             assertTrue(streams.hasNextPage());
         }
 
         @Test
-        public void getPage() throws Exception {
+        void getPage() throws Exception {
             final byte[] body = JsonWriter.string(prepareDesktopJsonBuilder(
                     NewPipe.getPreferredLocalization(), NewPipe.getPreferredContentCountry())
                     .value("videoId", VIDEO_ID)
@@ -173,7 +170,7 @@ public class YoutubeMixPlaylistExtractorTest {
                     .value("playlistIndex", INDEX)
                     .value("params", "OAE%3D")
                     .done())
-                    .getBytes(UTF_8);
+                    .getBytes(StandardCharsets.UTF_8);
 
             final InfoItemsPage<StreamInfoItem> streams = extractor.getPage(new Page(
                     YOUTUBEI_V1_URL + "next?key=" + getKey(), null, null, dummyCookie, body));
@@ -182,7 +179,7 @@ public class YoutubeMixPlaylistExtractorTest {
         }
 
         @Test
-        public void getContinuations() throws Exception {
+        void getContinuations() throws Exception {
             InfoItemsPage<StreamInfoItem> streams = extractor.getInitialPage();
             final Set<String> urls = new HashSet<>();
 
@@ -203,15 +200,15 @@ public class YoutubeMixPlaylistExtractorTest {
         }
 
         @Test
-        public void getStreamCount() {
+        void getStreamCount() {
             assertEquals(ListExtractor.ITEM_COUNT_INFINITE, extractor.getStreamCount());
         }
     }
 
-    @Ignore("Test broken")
     public static class MyMix {
+        private static final String VIDEO_ID = "_AzeUSL9lZc";
 
-        @BeforeClass
+        @BeforeAll
         public static void setUp() throws Exception {
             YoutubeParsingHelper.resetClientVersionAndKey();
             YoutubeParsingHelper.setNumberGenerator(new Random(1));
@@ -224,39 +221,39 @@ public class YoutubeMixPlaylistExtractorTest {
         }
 
         @Test
-        public void getServiceId() {
+        void getServiceId() {
             assertEquals(YouTube.getServiceId(), extractor.getServiceId());
         }
 
         @Test
-        public void getName() throws Exception {
+        void getName() throws Exception {
             final String name = extractor.getName();
             assertEquals("My Mix", name);
         }
 
         @Test
-        public void getThumbnailUrl() throws Exception {
+        void getThumbnailUrl() throws Exception {
             final String thumbnailUrl = extractor.getThumbnailUrl();
             assertIsSecureUrl(thumbnailUrl);
-            assertThat(thumbnailUrl, startsWith("https://i.ytimg.com/vi/_AzeUSL9lZc"));
+            assertTrue(thumbnailUrl.startsWith("https://i.ytimg.com/vi/_AzeUSL9lZc"));
         }
 
         @Test
-        public void getInitialPage() throws Exception {
+        void getInitialPage() throws Exception {
             final InfoItemsPage<StreamInfoItem> streams = extractor.getInitialPage();
             assertFalse(streams.getItems().isEmpty());
             assertTrue(streams.hasNextPage());
         }
 
         @Test
-        public void getPage() throws Exception {
+        void getPage() throws Exception {
             final byte[] body = JsonWriter.string(prepareDesktopJsonBuilder(
                     NewPipe.getPreferredLocalization(), NewPipe.getPreferredContentCountry())
                     .value("videoId", VIDEO_ID)
                     .value("playlistId", "RDMM" + VIDEO_ID)
                     .value("params", "OAE%3D")
                     .done())
-                    .getBytes(UTF_8);
+                    .getBytes(StandardCharsets.UTF_8);
 
             final InfoItemsPage<StreamInfoItem> streams = extractor.getPage(new Page(
                     YOUTUBEI_V1_URL + "next?key=" + getKey(), null, null, dummyCookie, body));
@@ -265,7 +262,7 @@ public class YoutubeMixPlaylistExtractorTest {
         }
 
         @Test
-        public void getContinuations() throws Exception {
+        void getContinuations() throws Exception {
             InfoItemsPage<StreamInfoItem> streams = extractor.getInitialPage();
             final Set<String> urls = new HashSet<>();
 
@@ -287,14 +284,16 @@ public class YoutubeMixPlaylistExtractorTest {
         }
 
         @Test
-        public void getStreamCount() {
+        void getStreamCount() {
             assertEquals(ListExtractor.ITEM_COUNT_INFINITE, extractor.getStreamCount());
         }
     }
 
     public static class Invalid {
 
-        @BeforeClass
+        private static final String VIDEO_ID = "QMVCAPd5cwBcg";
+
+        @BeforeAll
         public static void setUp() throws IOException {
             YoutubeParsingHelper.resetClientVersionAndKey();
             YoutubeParsingHelper.setNumberGenerator(new Random(1));
@@ -302,23 +301,23 @@ public class YoutubeMixPlaylistExtractorTest {
             dummyCookie.put(YoutubeMixPlaylistExtractor.COOKIE_NAME, "whatever");
         }
 
-        @Ignore
-        @Test(expected = IllegalArgumentException.class)
-        public void getPageEmptyUrl() throws Exception {
+        @Test
+        void getPageEmptyUrl() throws Exception {
             extractor = (YoutubeMixPlaylistExtractor) YouTube
                     .getPlaylistExtractor("https://www.youtube.com/watch?v=" + VIDEO_ID
                             + "&list=RD" + VIDEO_ID);
+
             extractor.fetchPage();
-            extractor.getPage(new Page(""));
+            assertThrows(IllegalArgumentException.class, () -> extractor.getPage(new Page("")));
         }
 
-        @Test(expected = ExtractionException.class)
-        public void invalidVideoId() throws Exception {
+        @Test
+        void invalidVideoId() throws Exception {
             extractor = (YoutubeMixPlaylistExtractor) YouTube
                     .getPlaylistExtractor("https://www.youtube.com/watch?v=" + "abcde"
                             + "&list=RD" + "abcde");
-            extractor.fetchPage();
-            extractor.getName();
+
+            assertThrows(ExtractionException.class, extractor::fetchPage);
         }
     }
 
@@ -329,7 +328,7 @@ public class YoutubeMixPlaylistExtractorTest {
         private static final String CHANNEL_TITLE = "Linus Tech Tips";
 
 
-        @BeforeClass
+        @BeforeAll
         public static void setUp() throws Exception {
             YoutubeParsingHelper.resetClientVersionAndKey();
             YoutubeParsingHelper.setNumberGenerator(new Random(1));
@@ -342,35 +341,35 @@ public class YoutubeMixPlaylistExtractorTest {
         }
 
         @Test
-        public void getName() throws Exception {
+        void getName() throws Exception {
             final String name = extractor.getName();
-            assertThat(name, startsWith("Mix"));
-            assertThat(name, containsString(CHANNEL_TITLE));
+            ExtractorAsserts.assertContains("Mix", name);
+            ExtractorAsserts.assertContains(CHANNEL_TITLE, name);
         }
 
         @Test
-        public void getThumbnailUrl() throws Exception {
+        void getThumbnailUrl() throws Exception {
             final String thumbnailUrl = extractor.getThumbnailUrl();
             assertIsSecureUrl(thumbnailUrl);
-            assertThat(thumbnailUrl, containsString("yt"));
+            ExtractorAsserts.assertContains("yt", thumbnailUrl);
         }
 
         @Test
-        public void getInitialPage() throws Exception {
+        void getInitialPage() throws Exception {
             final InfoItemsPage<StreamInfoItem> streams = extractor.getInitialPage();
             assertFalse(streams.getItems().isEmpty());
             assertTrue(streams.hasNextPage());
         }
 
         @Test
-        public void getPage() throws Exception {
+        void getPage() throws Exception {
             final byte[] body = JsonWriter.string(prepareDesktopJsonBuilder(
                     NewPipe.getPreferredLocalization(), NewPipe.getPreferredContentCountry())
                     .value("videoId", VIDEO_ID_OF_CHANNEL)
                     .value("playlistId", "RDCM" + CHANNEL_ID)
                     .value("params", "OAE%3D")
                     .done())
-                    .getBytes(UTF_8);
+                    .getBytes(StandardCharsets.UTF_8);
 
             final InfoItemsPage<StreamInfoItem> streams = extractor.getPage(new Page(
                     YOUTUBEI_V1_URL + "next?key=" + getKey(), null, null, dummyCookie, body));
@@ -379,7 +378,7 @@ public class YoutubeMixPlaylistExtractorTest {
         }
 
         @Test
-        public void getStreamCount() {
+        void getStreamCount() {
             assertEquals(ListExtractor.ITEM_COUNT_INFINITE, extractor.getStreamCount());
         }
     }

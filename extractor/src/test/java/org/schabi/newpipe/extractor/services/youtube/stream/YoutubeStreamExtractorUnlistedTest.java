@@ -1,6 +1,6 @@
 package org.schabi.newpipe.extractor.services.youtube.stream;
 
-import org.junit.BeforeClass;
+import org.junit.jupiter.api.BeforeAll;
 import org.schabi.newpipe.downloader.DownloaderFactory;
 import org.schabi.newpipe.extractor.NewPipe;
 import org.schabi.newpipe.extractor.StreamingService;
@@ -25,7 +25,7 @@ public class YoutubeStreamExtractorUnlistedTest extends DefaultStreamExtractorTe
     static final String URL = YoutubeStreamExtractorDefaultTest.BASE_URL + ID;
     private static StreamExtractor extractor;
 
-    @BeforeClass
+    @BeforeAll
     public static void setUp() throws Exception {
         YoutubeParsingHelper.resetClientVersionAndKey();
         YoutubeParsingHelper.setNumberGenerator(new Random(1));
@@ -54,7 +54,7 @@ public class YoutubeStreamExtractorUnlistedTest extends DefaultStreamExtractorTe
     @Nullable @Override public String expectedUploadDate() { return "2017-09-22 00:00:00.000"; }
     @Nullable @Override public String expectedTextualUploadDate() { return "2017-09-22"; }
     @Override public long expectedLikeCountAtLeast() { return 110; }
-    @Override public long expectedDislikeCountAtLeast() { return 0; }
+    @Override public long expectedDislikeCountAtLeast() { return -1; }
     @Override public StreamExtractor.Privacy expectedPrivacy() { return UNLISTED; }
     @Override public String expectedLicence() { return "YouTube licence"; }
     @Override public String expectedCategory() { return "Gaming"; }

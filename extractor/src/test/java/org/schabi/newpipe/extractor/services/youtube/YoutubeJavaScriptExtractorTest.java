@@ -1,31 +1,31 @@
 package org.schabi.newpipe.extractor.services.youtube;
 
-import org.junit.Before;
-import org.junit.Test;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.schabi.newpipe.downloader.DownloaderTestImpl;
+import org.schabi.newpipe.extractor.ExtractorAsserts;
 import org.schabi.newpipe.extractor.NewPipe;
 import org.schabi.newpipe.extractor.exceptions.ParsingException;
 
 import java.io.IOException;
 
-import static org.hamcrest.CoreMatchers.*;
-import static org.hamcrest.MatcherAssert.assertThat;
-
 public class YoutubeJavaScriptExtractorTest {
 
-    @Before
+    @BeforeEach
     public void setup() throws IOException {
         NewPipe.init(DownloaderTestImpl.getInstance());
     }
 
     @Test
     public void testExtractJavaScriptUrlIframe() throws ParsingException {
-        assertThat(YoutubeJavaScriptExtractor.extractJavaScriptUrl(), endsWith("base.js"));
+        assertTrue(YoutubeJavaScriptExtractor.extractJavaScriptUrl().endsWith("base.js"));
     }
 
     @Test
     public void testExtractJavaScriptUrlEmbed() throws ParsingException {
-        assertThat(YoutubeJavaScriptExtractor.extractJavaScriptUrl("d4IGg5dqeO8"), endsWith("base.js"));
+        assertTrue(YoutubeJavaScriptExtractor.extractJavaScriptUrl("d4IGg5dqeO8").endsWith("base.js"));
     }
 
     @Test
@@ -48,9 +48,8 @@ public class YoutubeJavaScriptExtractorTest {
     }
 
     private void assertPlayerJsCode(final String playerJsCode) {
-        assertThat(playerJsCode, allOf(
-                containsString(" Copyright The Closure Library Authors.\n"
-                        + " SPDX-License-Identifier: Apache-2.0"),
-                containsString("var _yt_player")));
+        ExtractorAsserts.assertContains(" Copyright The Closure Library Authors.\n"
+                + " SPDX-License-Identifier: Apache-2.0", playerJsCode);
+        ExtractorAsserts.assertContains("var _yt_player", playerJsCode);
     }
 }

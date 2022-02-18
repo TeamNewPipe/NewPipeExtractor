@@ -1,7 +1,7 @@
 package org.schabi.newpipe.extractor.services.youtube.search;
 
-import org.junit.BeforeClass;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.Test;
 import org.schabi.newpipe.downloader.DownloaderFactory;
 import org.schabi.newpipe.extractor.*;
 import org.schabi.newpipe.extractor.channel.ChannelInfoItem;
@@ -22,8 +22,8 @@ import java.util.List;
 import java.util.Random;
 
 import static java.util.Collections.singletonList;
-import static junit.framework.TestCase.assertFalse;
-import static org.junit.Assert.*;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.*;
 import static org.schabi.newpipe.extractor.ExtractorAsserts.assertEmptyErrors;
 import static org.schabi.newpipe.extractor.ServiceList.YouTube;
 import static org.schabi.newpipe.extractor.services.DefaultTests.assertNoDuplicatedItems;
@@ -37,7 +37,7 @@ public class YoutubeSearchExtractorTest {
         private static SearchExtractor extractor;
         private static final String QUERY = "test";
 
-        @BeforeClass
+        @BeforeAll
         public static void setUp() throws Exception {
             YoutubeParsingHelper.resetClientVersionAndKey();
             YoutubeParsingHelper.setNumberGenerator(new Random(1));
@@ -60,7 +60,7 @@ public class YoutubeSearchExtractorTest {
         private static SearchExtractor extractor;
         private static final String QUERY = "test";
 
-        @BeforeClass
+        @BeforeAll
         public static void setUp() throws Exception {
             YoutubeParsingHelper.resetClientVersionAndKey();
             YoutubeParsingHelper.setNumberGenerator(new Random(1));
@@ -85,7 +85,7 @@ public class YoutubeSearchExtractorTest {
         private static SearchExtractor extractor;
         private static final String QUERY = "test";
 
-        @BeforeClass
+        @BeforeAll
         public static void setUp() throws Exception {
             YoutubeParsingHelper.resetClientVersionAndKey();
             YoutubeParsingHelper.setNumberGenerator(new Random(1));
@@ -110,7 +110,7 @@ public class YoutubeSearchExtractorTest {
         private static SearchExtractor extractor;
         private static final String QUERY = "test";
 
-        @BeforeClass
+        @BeforeAll
         public static void setUp() throws Exception {
             YoutubeParsingHelper.resetClientVersionAndKey();
             YoutubeParsingHelper.setNumberGenerator(new Random(1));
@@ -136,7 +136,7 @@ public class YoutubeSearchExtractorTest {
         private static final String QUERY = "newpip";
         private static final String EXPECTED_SUGGESTION = "newpipe";
 
-        @BeforeClass
+        @BeforeAll
         public static void setUp() throws Exception {
             YoutubeParsingHelper.resetClientVersionAndKey();
             YoutubeParsingHelper.setNumberGenerator(new Random(1));
@@ -161,7 +161,7 @@ public class YoutubeSearchExtractorTest {
         private static final String QUERY = "pewdeipie";
         private static final String EXPECTED_SUGGESTION = "pewdiepie";
 
-        @BeforeClass
+        @BeforeAll
         public static void setUp() throws Exception {
             YoutubeParsingHelper.resetClientVersionAndKey();
             YoutubeParsingHelper.setNumberGenerator(new Random(1));
@@ -186,7 +186,7 @@ public class YoutubeSearchExtractorTest {
         private static SearchExtractor extractor;
         private static final String QUERY = "UCO6AK";
 
-        @BeforeClass
+        @BeforeAll
         public static void setUp() throws Exception {
             YoutubeParsingHelper.resetClientVersionAndKey();
             YoutubeParsingHelper.setNumberGenerator(new Random(1));
@@ -217,7 +217,7 @@ public class YoutubeSearchExtractorTest {
             assertEquals(0, nextEmptyPage.getItems().size());
             assertEmptyErrors("Empty page has errors", nextEmptyPage.getErrors());
 
-            assertFalse("More items available when it shouldn't", nextEmptyPage.hasNextPage());
+            assertFalse(nextEmptyPage.hasNextPage(), "More items available when it shouldn't");
         }
     }
 
@@ -241,8 +241,8 @@ public class YoutubeSearchExtractorTest {
         private static SearchExtractor extractor;
         private static final String QUERY = "Covid";
 
-        @Test
-        public void clarificationTest() throws Exception {
+        @BeforeAll
+        public static void setUp() throws Exception {
             YoutubeParsingHelper.resetClientVersionAndKey();
             YoutubeParsingHelper.setNumberGenerator(new Random(1));
             NewPipe.init(new DownloaderFactory().getDownloader(RESOURCE_PATH + "metaInfo"));
@@ -278,7 +278,7 @@ public class YoutubeSearchExtractorTest {
         private static SearchExtractor extractor;
         private static final String QUERY = "bbc";
 
-        @BeforeClass
+        @BeforeAll
         public static void setUp() throws Exception {
             YoutubeParsingHelper.resetClientVersionAndKey();
             YoutubeParsingHelper.setNumberGenerator(new Random(1));
@@ -316,7 +316,7 @@ public class YoutubeSearchExtractorTest {
         private static SearchExtractor extractor;
         private static final String QUERY = "sidemen";
 
-        @BeforeClass
+        @BeforeAll
         public static void setUp() throws Exception {
             YoutubeParsingHelper.resetClientVersionAndKey();
             YoutubeParsingHelper.setNumberGenerator(new Random(1));
@@ -348,7 +348,7 @@ public class YoutubeSearchExtractorTest {
         private static SearchExtractor extractor;
         private static final String QUERY = "44wLAzydRFU";
 
-        @BeforeClass
+        @BeforeAll
         public static void setUp() throws Exception {
             YoutubeParsingHelper.resetClientVersionAndKey();
             YoutubeParsingHelper.setNumberGenerator(new Random(1));
