@@ -1272,6 +1272,8 @@ public class YoutubeStreamExtractor extends StreamExtractor {
                 final String panelIdentifier = panels.getObject(i)
                         .getObject("engagementPanelSectionListRenderer")
                         .getString("panelIdentifier");
+                // panelIdentifier might be null if the panel has something to do with ads
+                // See https://github.com/TeamNewPipe/NewPipe/issues/7792#issuecomment-1030900188
                 if ("engagement-panel-macro-markers-description-chapters".equals(panelIdentifier)) {
                     segmentsArray = panels.getObject(i)
                             .getObject("engagementPanelSectionListRenderer").getObject("content")
