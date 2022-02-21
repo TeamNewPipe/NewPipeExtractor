@@ -73,7 +73,8 @@ public class YoutubeCommentsExtractor extends CommentsExtractor {
 
     /**
      * Finds the initial comments token and initializes commentsDisabled.
-     * Also set
+     * <br/>
+     * Also sets {@link #optCommentsDisabled}.
      *
      * @return the continuation token or null if none was found
      */
@@ -85,14 +86,12 @@ public class YoutubeCommentsExtractor extends CommentsExtractor {
                 // Only use JsonObjects
                 .filter(JsonObject.class::isInstance)
                 .map(JsonObject.class::cast)
-                // Only process JsonObjects that have a itemSectionRenderer
-                .filter(jObj -> jObj.has("itemSectionRenderer"))
                 // Check if the comment-section is present
                 .filter(jObj -> {
                     try {
                         return "comments-section".equals(
                                 JsonUtils.getString(jObj, "itemSectionRenderer.targetId"));
-                    } catch (final ParsingException ex) {
+                    } catch (final ParsingException ignored) {
                         return false;
                     }
                 })
@@ -105,7 +104,7 @@ public class YoutubeCommentsExtractor extends CommentsExtractor {
                                         .getObject("itemSectionRenderer")
                                         .getArray("contents").getObject(0),
                                 "continuationItemRenderer.continuationEndpoint.continuationCommand.token");
-                    } catch (final ParsingException ex) {
+                    } catch (final ParsingException ignored) {
                         return null;
                     }
                 })
