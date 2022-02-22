@@ -351,7 +351,7 @@ public abstract class StreamExtractor extends Extractor {
     }
 
     /**
-     * Get the <a href="https://teamnewpipe.github.io/NewPipeExtractor/javadoc/">StreamType</a>.
+     * Get the {@link StreamType}.
      *
      * @return the type of the stream
      * @throws ParsingException
