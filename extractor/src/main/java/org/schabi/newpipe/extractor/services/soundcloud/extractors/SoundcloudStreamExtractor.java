@@ -210,12 +210,10 @@ public class SoundcloudStreamExtractor extends StreamExtractor {
     private String getDownloadUrl(@Nonnull final String trackId)
             throws IOException, ExtractionException {
         final Downloader dl = NewPipe.getDownloader();
-        final String response;
         final JsonObject downloadJsonObject;
 
-        response = dl.get(SOUNDCLOUD_API_V2_URL
-               + "tracks/" + trackId + "/download" + "?client_id=" + clientId())
-               .responseBody();
+        final String response = dl.get(SOUNDCLOUD_API_V2_URL + "tracks/" + trackId
+                + "/download" + "?client_id=" + clientId()).responseBody();
         try {
            downloadJsonObject = JsonParser.object().from(response);
         } catch (final JsonParserException e) {

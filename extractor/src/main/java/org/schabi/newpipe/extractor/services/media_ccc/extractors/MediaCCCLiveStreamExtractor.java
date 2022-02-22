@@ -15,6 +15,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.stream.IntStream;
 
 import static org.schabi.newpipe.extractor.stream.AudioStream.UNKNOWN_BITRATE;
 import static org.schabi.newpipe.extractor.utils.Utils.EMPTY_STRING;
@@ -24,21 +25,18 @@ public class MediaCCCLiveStreamExtractor extends StreamExtractor {
     private String group = "";
     private JsonObject room = null;
 
-    private final List<AudioStream> audioStreams = new ArrayList<>();
-    private final List<VideoStream> videoStreams = new ArrayList<>();
+    private List<AudioStream> audioStreams = null;
+    private List<VideoStream> videoStreams = null;
     private String firstDashUrlFound = null;
     private String firstHlsUrlFound = null;
 
-    public MediaCCCLiveStreamExtractor(final StreamingService service,
-                                       final LinkHandler linkHandler) {
+    public MediaCCCLiveStreamExtractor(final StreamingService service, final LinkHandler linkHandler) {
         super(service, linkHandler);
     }
 
     @Override
-    public void onFetchPage(@Nonnull final Downloader downloader)
-            throws IOException, ExtractionException {
-        final JsonArray doc = MediaCCCParsingHelper.getLiveStreams(downloader,
-                getExtractorLocalization());
+    public void onFetchPage(@Nonnull final Downloader downloader) throws IOException, ExtractionException {
+        final JsonArray doc = MediaCCCParsingHelper.getLiveStreams(downloader, getExtractorLocalization());
         // Find the correct room
         for (int c = 0; c < doc.size(); c++) {
             final JsonObject conferenceObject = doc.getObject(c);
@@ -48,8 +46,7 @@ public class MediaCCCLiveStreamExtractor extends StreamExtractor {
                 final JsonArray rooms = groups.getObject(g).getArray("rooms");
                 for (int r = 0; r < rooms.size(); r++) {
                     final JsonObject roomObject = rooms.getObject(r);
-                    if (getId().equals(conferenceObject.getString("slug") + "/"
-                            + roomObject.getString("slug"))) {
+                    if (getId().equals(conferenceObject.getString("slug") + "/" + roomObject.getString("slug"))) {
                         this.conference = conferenceObject;
                         this.group = groupObject;
                         this.room = roomObject;
@@ -76,8 +73,7 @@ public class MediaCCCLiveStreamExtractor extends StreamExtractor {
     @Nonnull
     @Override
     public Description getDescription() throws ParsingException {
-        return new Description(conference.getString("description") + " - " + group,
-                Description.PLAIN_TEXT);
+        return new Description(conference.getString("description") + " - " + group, Description.PLAIN_TEXT);
     }
 
     @Override
@@ -149,77 +145,73 @@ public class MediaCCCLiveStreamExtractor extends StreamExtractor {
 
     @Override
     public List<AudioStream> getAudioStreams() throws IOException, ExtractionException {
-        if (audioStreams.isEmpty()) {
-            for (int s = 0; s < room.getArray("streams").size(); s++) {
-                final JsonObject stream = room.getArray("streams").getObject(s);
-                if (stream.getString("type").equals("audio")) {
-                    for (final String type : stream.getObject("urls").keySet()) {
-                        final JsonObject urlObject = stream.getObject("urls").getObject(type);
-                        // The DASH manifest will be extracted with getDashMpdUrl
-                        if (!type.equals("dash")) {
-                            if (type.equals("hls")) {
-                                audioStreams.add(new AudioStream(urlObject.getString("tech"),
-                                        urlObject.getString("url"),
-                                        true,
-                                        // We don't know with the type string what media format
-                                        // will have HLS streams.
-                                        // However, the tech string may contain some information
-                                        // about the media format used.
-                                        null,
-                                        DeliveryMethod.HLS,
-                                        UNKNOWN_BITRATE));
-                            } else {
-                                audioStreams.add(new AudioStream(urlObject.getString("tech"),
-                                        urlObject.getString("url"),
-                                        MediaFormat.getFromSuffix(type),
-                                        UNKNOWN_BITRATE));
+        if (audioStreams == null) {
+            audioStreams = new ArrayList<>();
+            IntStream.range(0, room.getArray("streams").size())
+                    .mapToObj(s -> room.getArray("streams").getObject(s))
+                    .filter(stream -> stream.getString("type").equals("audio"))
+                    .forEachOrdered(stream -> {
+                        for (final String type : stream.getObject("urls").keySet()) {
+                            final JsonObject urlObject = stream.getObject("urls").getObject(type);
+                            // The DASH manifest will be extracted with getDashMpdUrl
+                            if (!type.equals("dash")) {
+                                if (type.equals("hls")) {
+                                    audioStreams.add(new AudioStream(urlObject.getString("tech"),
+                                            urlObject.getString("url"),
+                                            true,
+                                            // We don't know with the type string what media format
+                                            // will have HLS streams.
+                                            // However, the tech string may contain some information
+                                            // about the media format used.
+                                            null,
+                                            DeliveryMethod.HLS,
+                                            UNKNOWN_BITRATE));
+                                } else {
+                                    audioStreams.add(new AudioStream(urlObject.getString("tech"),
+                                            urlObject.getString("url"),
+                                            MediaFormat.getFromSuffix(type),
+                                            UNKNOWN_BITRATE));
+                                }
                             }
                         }
-                    }
-                }
-            }
+                    });
         }
         return audioStreams;
     }
 
     @Override
     public List<VideoStream> getVideoStreams() throws IOException, ExtractionException {
-        if (videoStreams.isEmpty()) {
-            for (int s = 0; s < room.getArray("streams").size(); s++) {
-                final JsonObject stream = room.getArray("streams").getObject(s);
-                if (stream.getString("type").equals("video")) {
-                    final String resolution = stream.getArray("videoSize").getInt(0) + "x"
-                            + stream.getArray("videoSize").getInt(1);
-                    for (final String type : stream.getObject("urls").keySet()) {
-                        final JsonObject urlObject = stream.getObject("urls").getObject(type);
-                        // The DASH manifest will be extracted with getDashMpdUrl
-                        if (!type.equals("dash")) {
-                            if (type.equals("hls")) {
-                                videoStreams.add(new VideoStream(urlObject.getString("tech"),
-                                        urlObject.getString("url"),
-                                        true,
-                                        // We don't know with the type string what type will have
-                                        // HLS
-                                        // streams.
-                                        // However, the tech string may contain some information
-                                        // about
-                                        // the media format used.
-                                        null,
-                                        DeliveryMethod.HLS,
-                                        resolution,
-                                        false,
-                                        null));
-                            } else {
-                                videoStreams.add(new VideoStream(urlObject.getString("tech"),
-                                        urlObject.getString("url"),
-                                        MediaFormat.getFromSuffix(type),
-                                        resolution,
-                                        false));
+        if (videoStreams == null) {
+            videoStreams = new ArrayList<>();
+            IntStream.range(0, room.getArray("streams").size())
+                    .mapToObj(s -> room.getArray("streams").getObject(s))
+                    .filter(stream -> stream.getString("type").equals("video"))
+                    .forEachOrdered(stream -> {
+                        final String resolution = stream.getArray("videoSize").getInt(0) + "x"
+                                + stream.getArray("videoSize").getInt(1);
+                        for (final String type : stream.getObject("urls").keySet()) {
+                            final JsonObject urlObject = stream.getObject("urls").getObject(type);
+                            // The DASH manifest will be extracted with getDashMpdUrl
+                            if (!type.equals("dash")) {
+                                if (type.equals("hls")) {
+                                    videoStreams.add(new VideoStream(urlObject.getString("tech"),
+                                            urlObject.getString("url"),
+                                            true,
+                                            // We don't know with the type string what type will have
+                                            // HLS streams.
+                                            // However, the tech string may contain some information about
+                                            // the media format used.
+                                            null, DeliveryMethod.HLS, resolution, false, null));
+                                } else {
+                                    videoStreams.add(new VideoStream(urlObject.getString("tech"),
+                                            urlObject.getString("url"),
+                                            MediaFormat.getFromSuffix(type),
+                                            resolution,
+                                            false));
+                                }
                             }
                         }
-                    }
-                }
-            }
+                    });
         }
         return videoStreams;
     }

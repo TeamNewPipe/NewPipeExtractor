@@ -35,7 +35,7 @@ public class BandcampStreamExtractor extends StreamExtractor {
     private JsonObject current;
     private Document document;
 
-    private final List<AudioStream> audioStreams = new ArrayList<>();
+    private List<AudioStream> audioStreams = null;
 
     public BandcampStreamExtractor(final StreamingService service, final LinkHandler linkHandler) {
         super(service, linkHandler);
@@ -115,8 +115,9 @@ public class BandcampStreamExtractor extends StreamExtractor {
     public String getThumbnailUrl() throws ParsingException {
         if (albumJson.isNull("art_id")) {
             return EMPTY_STRING;
+        } else {
+            return getImageUrl(albumJson.getLong("art_id"), true);
         }
-        else return getImageUrl(albumJson.getLong("art_id"), true);
     }
 
     @Nonnull
@@ -145,9 +146,15 @@ public class BandcampStreamExtractor extends StreamExtractor {
 
     @Override
     public List<AudioStream> getAudioStreams() {
-        if (audioStreams.isEmpty()) {
-            audioStreams.add(new AudioStream("mp3-128", albumJson.getArray("trackinfo")
-                    .getObject(0).getObject("file").getString("mp3-128"), MediaFormat.MP3, 128));
+        if (audioStreams == null) {
+            audioStreams = new ArrayList<>();
+            audioStreams.add(new AudioStream("mp3-128",
+                    albumJson.getArray("trackinfo")
+                            .getObject(0)
+                            .getObject("file")
+                            .getString("mp3-128"),
+                    MediaFormat.MP3,
+                    128));
         }
         return audioStreams;
     }
@@ -169,8 +176,8 @@ public class BandcampStreamExtractor extends StreamExtractor {
 
     @Override
     public PlaylistInfoItemsCollector getRelatedItems() {
-        final PlaylistInfoItemsCollector collector = new PlaylistInfoItemsCollector(
-                getServiceId());
+        final PlaylistInfoItemsCollector collector =
+                new PlaylistInfoItemsCollector(getServiceId());
         final Elements recommendedAlbums = document.getElementsByClass("recommended-album");
 
         for (final Element album : recommendedAlbums) {

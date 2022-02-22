@@ -393,7 +393,7 @@ public class PeertubeStreamExtractor extends StreamExtractor {
     }
 
     private void loadSubtitles() {
-        if (isNullOrEmpty(subtitles)) {
+        if (subtitles.isEmpty()) {
             try {
                 final Response response = getDownloader().get(baseUrl
                         + PeertubeStreamLinkHandlerFactory.VIDEO_API_ENDPOINT
@@ -470,75 +470,39 @@ public class PeertubeStreamExtractor extends StreamExtractor {
             */
             final boolean isInstanceUsingRandomUuidsForHlsStreams = !isNullOrEmpty(playlistUrl)
                     && playlistUrl.endsWith("-master.m3u8");
+
             for (final Object s : streams) {
                 if (!(s instanceof JsonObject)) {
                     continue;
                 }
+
                 final JsonObject stream = (JsonObject) s;
+                final String resolution = JsonUtils.getString(stream, "resolution.label");
                 final String url;
                 final String idSuffix;
-                if (stream.has(FILE_DOWNLOAD_URL)) {
-                    url = JsonUtils.getString(stream, FILE_DOWNLOAD_URL);
-                    idSuffix = FILE_DOWNLOAD_URL;
-                } else {
+
+                // Extract stream version of streams first
+                if (stream.has(FILE_URL)) {
                     url = JsonUtils.getString(stream, FILE_URL);
                     idSuffix = FILE_URL;
-                }
-                final String torrentUrl = JsonUtils.getString(stream, "torrentUrl");
-                final String resolution = JsonUtils.getString(stream, "resolution.label");
-                final String extension = url.substring(url.lastIndexOf(".") + 1);
-                final MediaFormat format = MediaFormat.getFromSuffix(extension);
-                final String id = resolution + "-" + extension;
-                if (resolution.toLowerCase().contains("audio")) {
-                    audioStreams.add(new AudioStream(
-                            id + "-" + idSuffix + "-" + DeliveryMethod.PROGRESSIVE_HTTP,
-                            url, true, format, DeliveryMethod.PROGRESSIVE_HTTP, UNKNOWN_BITRATE));
-                    audioStreams.add(new AudioStream(
-                            id + "-" + idSuffix + "-" + DeliveryMethod.TORRENT,
-                            torrentUrl, true, format, DeliveryMethod.TORRENT, UNKNOWN_BITRATE));
-                    if (!isNullOrEmpty(playlistUrl)) {
-                        final String hlsStreamUrl;
-                        if (isInstanceUsingRandomUuidsForHlsStreams) {
-                            hlsStreamUrl = getHlsPlaylistUrlFromFragmentedFileUrl(stream, idSuffix,
-                                    extension, url);
-
-                        } else {
-                            hlsStreamUrl = playlistUrl.replace("master", JsonUtils.getNumber(
-                                    stream, RESOLUTION_ID).toString());
-                        }
-                        final AudioStream audioStream = new AudioStream(id + "-"
-                                + DeliveryMethod.HLS, hlsStreamUrl, true, format,
-                                DeliveryMethod.HLS, UNKNOWN_BITRATE);
-                        if (!Stream.containSimilarStream(audioStream, audioStreams)) {
-                            audioStreams.add(audioStream);
-                        }
-                    }
                 } else {
-                    videoStreams.add(new VideoStream(
-                            id + "-" + idSuffix + "-" + DeliveryMethod.PROGRESSIVE_HTTP,
-                            url, true, format, DeliveryMethod.PROGRESSIVE_HTTP, resolution,
-                            false, null));
-                    videoStreams.add(new VideoStream(
-                            id + "-" + idSuffix + "-" + DeliveryMethod.TORRENT,
-                            torrentUrl, true, format, DeliveryMethod.TORRENT, resolution,
-                            false, null));
-                    if (!isNullOrEmpty(playlistUrl)) {
-                        final String hlsStreamUrl;
-                        if (isInstanceUsingRandomUuidsForHlsStreams) {
-                            hlsStreamUrl = getHlsPlaylistUrlFromFragmentedFileUrl(stream, idSuffix,
-                                    extension, url);
+                    url = JsonUtils.getString(stream, FILE_DOWNLOAD_URL);
+                    idSuffix = FILE_DOWNLOAD_URL;
+                }
 
-                        } else {
-                            hlsStreamUrl = playlistUrl.replace("master", JsonUtils.getNumber(
-                                    stream, RESOLUTION_ID).toString());
-                        }
-                        final VideoStream videoStream = new VideoStream(id + "-"
-                                + DeliveryMethod.HLS, hlsStreamUrl, true, format,
-                                DeliveryMethod.HLS, resolution, false, playlistUrl);
-                        if (!Stream.containSimilarStream(videoStream, videoStreams)) {
-                            videoStreams.add(videoStream);
-                        }
-                    }
+                if (isNullOrEmpty(url)) {
+                    // Not a valid stream URL
+                    return;
+                }
+
+                if (resolution.toLowerCase().contains("audio")) {
+                    // An audio stream
+                    addNewAudioStream(stream, isInstanceUsingRandomUuidsForHlsStreams, resolution,
+                            idSuffix, url, playlistUrl);
+                } else {
+                    // A video stream
+                    addNewVideoStream(stream, isInstanceUsingRandomUuidsForHlsStreams, resolution,
+                            idSuffix, url, playlistUrl);
                 }
             }
         } catch (final Exception e) {
@@ -547,18 +511,111 @@ public class PeertubeStreamExtractor extends StreamExtractor {
     }
 
     @Nonnull
-    private String getHlsPlaylistUrlFromFragmentedFileUrl(final JsonObject stream,
-                                                          @Nonnull final String idSuffix,
-                                                          @Nonnull final String format,
-                                                          final String url)
-            throws ParsingException {
+    private String getHlsPlaylistUrlFromFragmentedFileUrl(
+            @Nonnull final JsonObject streamJsonObject,
+            @Nonnull final String idSuffix,
+            @Nonnull final String format,
+            @Nonnull final String url) throws ParsingException {
         final String streamUrl;
-        if (idSuffix.equals(FILE_DOWNLOAD_URL)) {
-            streamUrl = JsonUtils.getString(stream, FILE_URL);
+        if (FILE_DOWNLOAD_URL.equals(idSuffix)) {
+            streamUrl = JsonUtils.getString(streamJsonObject, FILE_URL);
         } else {
             streamUrl = url;
         }
         return streamUrl.replace("-fragmented." + format, ".m3u8");
+    }
+
+    @Nonnull
+    private String getHlsPlaylistUrlFromMasterPlaylist(@Nonnull final JsonObject streamJsonObject,
+                                                       @Nonnull final String playlistUrl)
+            throws ParsingException {
+        return playlistUrl.replace("master", JsonUtils.getNumber(streamJsonObject,
+                RESOLUTION_ID).toString());
+    }
+
+    private void addNewAudioStream(@Nonnull final JsonObject streamJsonObject,
+                                   final boolean isInstanceUsingRandomUuidsForHlsStreams,
+                                   @Nonnull final String resolution,
+                                   @Nonnull final String idSuffix,
+                                   @Nonnull final String url,
+                                   @Nullable final String playlistUrl) throws ParsingException {
+        final String extension = url.substring(url.lastIndexOf(".") + 1);
+        final MediaFormat format = MediaFormat.getFromSuffix(extension);
+        final String id = resolution + "-" + extension;
+
+        // Add progressive HTTP streams first
+        audioStreams.add(new AudioStream(
+                id + "-" + idSuffix + "-" + DeliveryMethod.PROGRESSIVE_HTTP,
+                url, true, format, DeliveryMethod.PROGRESSIVE_HTTP, UNKNOWN_BITRATE));
+
+        // Then add HLS streams
+        if (!isNullOrEmpty(playlistUrl)) {
+            final String hlsStreamUrl;
+            if (isInstanceUsingRandomUuidsForHlsStreams) {
+                hlsStreamUrl = getHlsPlaylistUrlFromFragmentedFileUrl(streamJsonObject, idSuffix,
+                        extension, url);
+
+            } else {
+                hlsStreamUrl = getHlsPlaylistUrlFromMasterPlaylist(streamJsonObject, playlistUrl);
+            }
+            final AudioStream audioStream = new AudioStream(id + "-" + DeliveryMethod.HLS,
+                    hlsStreamUrl, true, format, DeliveryMethod.HLS, UNKNOWN_BITRATE);
+            if (!Stream.containSimilarStream(audioStream, audioStreams)) {
+                audioStreams.add(audioStream);
+            }
+        }
+
+        // Add finally torrent URLs
+        final String torrentUrl = JsonUtils.getString(streamJsonObject, "torrentUrl");
+        if (!isNullOrEmpty(torrentUrl)) {
+            audioStreams.add(new AudioStream(id + "-" + idSuffix + "-" + DeliveryMethod.TORRENT,
+                    torrentUrl, true, format, DeliveryMethod.TORRENT, UNKNOWN_BITRATE));
+        }
+    }
+
+    private void addNewVideoStream(@Nonnull final JsonObject streamJsonObject,
+                                   final boolean isInstanceUsingRandomUuidsForHlsStreams,
+                                   @Nonnull final String resolution,
+                                   @Nonnull final String idSuffix,
+                                   @Nonnull final String url,
+                                   @Nullable final String playlistUrl) throws ParsingException {
+        final String extension = url.substring(url.lastIndexOf(".") + 1);
+        final MediaFormat format = MediaFormat.getFromSuffix(extension);
+        final String id = resolution + "-" + extension;
+
+        // Add progressive HTTP streams first
+        videoStreams.add(new VideoStream(
+                id + "-" + idSuffix + "-" + DeliveryMethod.PROGRESSIVE_HTTP,
+                url, true, format, DeliveryMethod.PROGRESSIVE_HTTP, resolution,
+                false, null));
+
+        // Then add HLS streams
+        if (!isNullOrEmpty(playlistUrl)) {
+            final String hlsStreamUrl;
+            if (isInstanceUsingRandomUuidsForHlsStreams) {
+                hlsStreamUrl = getHlsPlaylistUrlFromFragmentedFileUrl(streamJsonObject, idSuffix,
+                        extension, url);
+            } else {
+                hlsStreamUrl = playlistUrl.replace("master", JsonUtils.getNumber(
+                        streamJsonObject, RESOLUTION_ID).toString());
+            }
+
+            final VideoStream videoStream = new VideoStream(id + "-"
+                    + DeliveryMethod.HLS, hlsStreamUrl, true, format,
+                    DeliveryMethod.HLS, resolution, false, playlistUrl);
+            if (!Stream.containSimilarStream(videoStream, videoStreams)) {
+                videoStreams.add(videoStream);
+            }
+        }
+
+        // Add finally torrent URLs
+        final String torrentUrl = JsonUtils.getString(streamJsonObject, "torrentUrl");
+        if (!isNullOrEmpty(torrentUrl)) {
+            videoStreams.add(new VideoStream(
+                    id + "-" + idSuffix + "-" + DeliveryMethod.TORRENT,
+                    torrentUrl, true, format, DeliveryMethod.TORRENT, resolution,
+                    false, null));
+        }
     }
 
     @Nonnull
