@@ -32,10 +32,26 @@ public class VideoStream extends Stream {
 
     public static final String RESOLUTION_UNKNOWN = "";
 
-    private final String resolution;
-    private final boolean isVideoOnly;
+    /**
+     * An integer to represent that the itag id returned is not available (only for YouTube, this
+     * should never happen) or not applicable (for other services than YouTube).
+     *
+     * <p>
+     * An itag should not have a negative value so {@code -1} is used for this constant.
+     * </p>
+     */
+    public static final int ITAG_NOT_AVAILABLE_OR_NOT_APPLICABLE = -1;
+
+    /** @deprecated Use {@link #getResolution()} instead. */
+    @Deprecated
+    public final String resolution;
+
+    /** @deprecated Use {@link #isVideoOnly()} instead. */
+    @Deprecated
+    public final boolean isVideoOnly;
+
     // Fields for DASH
-    private int itag;
+    private int itag = ITAG_NOT_AVAILABLE_OR_NOT_APPLICABLE;
     private int bitrate;
     private int initStart;
     private int initEnd;
@@ -141,6 +157,7 @@ public class VideoStream extends Stream {
 
     /**
      * Create a new video stream.
+     *
      * <p>
      * The media format and the resolution will be set by using respectively
      * {@link ItagItem#getMediaFormat()} and {@link ItagItem#resolutionString}.
@@ -183,6 +200,7 @@ public class VideoStream extends Stream {
 
     /**
      * Get the video resolution.
+     *
      * <p>
      * It can be unknown for some streams, like for HLS master playlists. In this case,
      * {@link #RESOLUTION_UNKNOWN} is returned by this method.
@@ -195,7 +213,8 @@ public class VideoStream extends Stream {
     }
 
     /**
-     * Return if the stream is video-only.
+     * Return whether the stream is video-only.
+     *
      * <p>
      * Video-only streams have no audio.
      * </p>
@@ -207,9 +226,14 @@ public class VideoStream extends Stream {
     }
 
     /**
-     * Get the itag of the stream.
+     * Get the itag identifier of the stream.
      *
-     * @return the number of the {@link ItagItem} passed in the constructor of the stream.
+     * <p>
+     * Always equals to {@link #ITAG_NOT_AVAILABLE_OR_NOT_APPLICABLE} for other streams than the
+     * ones of the YouTube service.
+     * </p>
+     *
+     * @return the number of the {@link ItagItem} passed in the constructor of the video stream.
      */
     public int getItag() {
         return itag;

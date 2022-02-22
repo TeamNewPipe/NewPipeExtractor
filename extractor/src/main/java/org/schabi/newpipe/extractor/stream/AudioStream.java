@@ -32,9 +32,22 @@ public class AudioStream extends Stream {
 
     public static final int UNKNOWN_BITRATE = -1;
 
-    private final int averageBitrate;
+    /**
+     * An integer to represent that the itag id returned is not available (only for YouTube, this
+     * should never happen) or not applicable (for other services than YouTube).
+     *
+     * <p>
+     * An itag should not have a negative value so {@code -1} is used for this constant.
+     * </p>
+     */
+    public static final int ITAG_NOT_AVAILABLE_OR_NOT_APPLICABLE = -1;
+
+    /** @deprecated Use {@link #getAverageBitrate()} instead. */
+    @Deprecated
+    public final int averageBitrate;
+
     // Fields for DASH
-    private int itag;
+    private int itag = ITAG_NOT_AVAILABLE_OR_NOT_APPLICABLE;
     private int bitrate;
     private int initStart;
     private int initEnd;
@@ -168,9 +181,14 @@ public class AudioStream extends Stream {
     }
 
     /**
-     * Get the itag of the stream.
+     * Get the itag identifier of the stream.
      *
-     * @return the number of the {@link ItagItem} passed in the constructor of the stream.
+     * <p>
+     * Always equals to {@link #ITAG_NOT_AVAILABLE_OR_NOT_APPLICABLE} for other streams than the
+     * ones of the YouTube service.
+     * </p>
+     *
+     * @return the number of the {@link ItagItem} passed in the constructor of the audio stream.
      */
     public int getItag() {
         return itag;

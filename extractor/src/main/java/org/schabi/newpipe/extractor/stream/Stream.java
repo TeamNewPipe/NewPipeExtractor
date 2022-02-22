@@ -17,6 +17,8 @@ import static org.schabi.newpipe.extractor.utils.Utils.isNullOrEmpty;
 public abstract class Stream implements Serializable {
     private static final long serialVersionUID = -59591092068744672L;
 
+    public static final int FORMAT_ID_UNKNOWN = -1;
+
     private final String id;
     @Nullable private final MediaFormat mediaFormat;
     private final String content;
@@ -24,10 +26,8 @@ public abstract class Stream implements Serializable {
     private final DeliveryMethod deliveryMethod;
     @Nullable private final String baseUrl;
 
-    public static final int FORMAT_ID_UNKNOWN = -1;
-
     /**
-     * Instantiates a new stream object.
+     * Instantiates a new {@code Stream} object.
      *
      * @param id             the ID which uniquely identifies the file, e.g. for YouTube this would
      *                       be the itag
@@ -54,7 +54,7 @@ public abstract class Stream implements Serializable {
     }
 
     /**
-     * Check if the list already contains one stream with equals stats.
+     * Checks if the list already contains one stream with equals stats.
      *
      * @param stream the stream which will be compared to the streams in the stream list
      * @param streamList the list of {@link Stream Streams} which will be compared
@@ -81,9 +81,11 @@ public abstract class Stream implements Serializable {
      * If the {@link MediaFormat media format} of the stream is unknown, the streams are compared
      * by only using the {@link DeliveryMethod delivery method} and their id.
      * </p>
+     *
      * <p>
      * Note: This method always returns always false if the stream passed is null.
      * </p>
+     *
      * @param cmp the stream object to be compared to this stream object
      * @return whether the stream have the same stats or not, based on the criteria above
      */
@@ -91,12 +93,14 @@ public abstract class Stream implements Serializable {
         if (cmp == null) {
             return false;
         }
+
         Boolean haveSameMediaFormatId = null;
         if (mediaFormat != null && cmp.mediaFormat != null) {
             haveSameMediaFormatId = mediaFormat.id == cmp.mediaFormat.id;
         }
         final boolean areUsingSameDeliveryMethodAndAreUrlStreams =
                 deliveryMethod == cmp.deliveryMethod && isUrl == cmp.isUrl;
+
         return haveSameMediaFormatId != null
                 ? haveSameMediaFormatId && areUsingSameDeliveryMethodAndAreUrlStreams
                 : areUsingSameDeliveryMethodAndAreUrlStreams;
@@ -113,7 +117,7 @@ public abstract class Stream implements Serializable {
     }
 
     /**
-     * Gets the ID for this stream, e.g. itag for YouTube.
+     * Gets the identifier of this stream, e.g. the itag for YouTube.
      *
      * @return the id
      */
@@ -122,10 +126,10 @@ public abstract class Stream implements Serializable {
     }
 
     /**
-     * Gets the URL.
+     * Gets the URL of this stream if the content is a URL, or {@code null} if that's the not case.
      *
      * @return the URL if the content is a URL, {@code null} otherwise
-     * @deprecated Use {@link #getContent()} instead
+     * @deprecated Use {@link #getContent()} instead.
      */
     @Deprecated
     @Nullable
@@ -186,6 +190,7 @@ public abstract class Stream implements Serializable {
 
     /**
      * Gets the base URL of a stream.
+     *
      * <p>
      * If the stream is not a DASH stream or an HLS stream, this value will always be null.
      * It may be also null for these streams too.
@@ -200,6 +205,7 @@ public abstract class Stream implements Serializable {
 
     /**
      * Gets the {@link ItagItem} of a stream.
+     *
      * <p>
      * If the stream is not a YouTube stream, this value will always be null.
      * </p>
