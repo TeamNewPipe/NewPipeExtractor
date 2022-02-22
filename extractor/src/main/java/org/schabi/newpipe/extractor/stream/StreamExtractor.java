@@ -207,11 +207,11 @@ public abstract class StreamExtractor extends Extractor {
      * The subscriber count of the uploader.
      * If the subscriber count is not implemented, or is unavailable, return <code>-1</code>.
      *
-     * @return the subscriber count of the uploader or -1 if not available
+     * @return the subscriber count of the uploader or {@value UNKNOWN_SUBSCRIBER_COUNT} if not available
      * @throws ParsingException
      */
     public long getUploaderSubscriberCount() throws ParsingException {
-        return -1;
+        return UNKNOWN_SUBSCRIBER_COUNT;
     }
 
     /**
