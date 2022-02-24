@@ -49,6 +49,7 @@ public class YoutubeStreamExtractorControversialTest extends DefaultStreamExtrac
     @Override public StreamType expectedStreamType() { return StreamType.VIDEO_STREAM; }
     @Override public String expectedUploaderName() { return "Amazing Atheist"; }
     @Override public String expectedUploaderUrl() { return "https://www.youtube.com/channel/UCjNxszyFPasDdRoD9J6X-sw"; }
+    @Override public long expectedUploaderSubscriberCountAtLeast() { return 977_000; }
     @Override public List<String> expectedDescriptionContains() {
         return Arrays.asList("http://www.huffingtonpost.com/2010/09/09/obama-gma-interview-quran_n_710282.html",
                 "freedom");
