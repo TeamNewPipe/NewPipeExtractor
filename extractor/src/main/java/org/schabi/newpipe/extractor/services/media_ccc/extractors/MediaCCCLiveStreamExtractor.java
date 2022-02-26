@@ -104,17 +104,19 @@ public class MediaCCCLiveStreamExtractor extends StreamExtractor {
     @Nonnull
     @Override
     public String getDashMpdUrl() throws ParsingException {
-        if (firstDashUrlFound == null) {
-            for (int s = 0; s < room.getArray("streams").size(); s++) {
-                final JsonObject stream = room.getArray("streams").getObject(s);
-                final JsonObject urls = stream.getObject("urls");
-                if (urls.has("dash")) {
-                    firstDashUrlFound = urls.getObject("dash").getString("url", EMPTY_STRING);
-                    return firstDashUrlFound;
-                }
-            }
-            firstDashUrlFound = EMPTY_STRING;
+        if (firstDashUrlFound != null) {
+            return firstDashUrlFound;
         }
+
+        for (int s = 0; s < room.getArray("streams").size(); s++) {
+            final JsonObject stream = room.getArray("streams").getObject(s);
+            final JsonObject urls = stream.getObject("urls");
+            if (urls.has("dash")) {
+                firstDashUrlFound = urls.getObject("dash").getString("url", EMPTY_STRING);
+                return firstDashUrlFound;
+            }
+        }
+        firstDashUrlFound = EMPTY_STRING;
         return firstDashUrlFound;
     }
 
@@ -129,17 +131,19 @@ public class MediaCCCLiveStreamExtractor extends StreamExtractor {
     @Nonnull
     @Override
     public String getHlsUrl() {
-        if (firstHlsUrlFound == null) {
-            for (int s = 0; s < room.getArray("streams").size(); s++) {
-                final JsonObject stream = room.getArray("streams").getObject(s);
-                final JsonObject urls = stream.getObject("urls");
-                if (urls.has("hls")) {
-                    firstHlsUrlFound = urls.getObject("hls").getString("url", EMPTY_STRING);
-                    return firstHlsUrlFound;
-                }
-            }
-            firstHlsUrlFound = EMPTY_STRING;
+        if (firstHlsUrlFound != null) {
+            return firstHlsUrlFound;
         }
+
+        for (int s = 0; s < room.getArray("streams").size(); s++) {
+            final JsonObject stream = room.getArray("streams").getObject(s);
+            final JsonObject urls = stream.getObject("urls");
+            if (urls.has("hls")) {
+                firstHlsUrlFound = urls.getObject("hls").getString("url", EMPTY_STRING);
+                return firstHlsUrlFound;
+            }
+        }
+        firstHlsUrlFound = EMPTY_STRING;
         return firstHlsUrlFound;
     }
 
@@ -149,7 +153,7 @@ public class MediaCCCLiveStreamExtractor extends StreamExtractor {
             audioStreams = new ArrayList<>();
             IntStream.range(0, room.getArray("streams").size())
                     .mapToObj(s -> room.getArray("streams").getObject(s))
-                    .filter(stream -> stream.getString("type").equals("audio"))
+                    .filter(streamJsonObject -> streamJsonObject.getString("type").equals("audio"))
                     .forEachOrdered(stream -> {
                         for (final String type : stream.getObject("urls").keySet()) {
                             final JsonObject urlObject = stream.getObject("urls").getObject(type);
@@ -186,11 +190,11 @@ public class MediaCCCLiveStreamExtractor extends StreamExtractor {
             IntStream.range(0, room.getArray("streams").size())
                     .mapToObj(s -> room.getArray("streams").getObject(s))
                     .filter(stream -> stream.getString("type").equals("video"))
-                    .forEachOrdered(stream -> {
-                        final String resolution = stream.getArray("videoSize").getInt(0) + "x"
-                                + stream.getArray("videoSize").getInt(1);
-                        for (final String type : stream.getObject("urls").keySet()) {
-                            final JsonObject urlObject = stream.getObject("urls").getObject(type);
+                    .forEachOrdered(streamJsonObject -> {
+                        final String resolution = streamJsonObject.getArray("videoSize").getInt(0)
+                                + "x" + streamJsonObject.getArray("videoSize").getInt(1);
+                        for (final String type : streamJsonObject.getObject("urls").keySet()) {
+                            final JsonObject urlObject = streamJsonObject.getObject("urls").getObject(type);
                             // The DASH manifest will be extracted with getDashMpdUrl
                             if (!type.equals("dash")) {
                                 if (type.equals("hls")) {

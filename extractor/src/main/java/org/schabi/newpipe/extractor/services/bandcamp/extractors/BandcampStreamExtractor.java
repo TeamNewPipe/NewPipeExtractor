@@ -115,9 +115,9 @@ public class BandcampStreamExtractor extends StreamExtractor {
     public String getThumbnailUrl() throws ParsingException {
         if (albumJson.isNull("art_id")) {
             return EMPTY_STRING;
-        } else {
-            return getImageUrl(albumJson.getLong("art_id"), true);
         }
+
+        return getImageUrl(albumJson.getLong("art_id"), true);
     }
 
     @Nonnull
@@ -178,11 +178,9 @@ public class BandcampStreamExtractor extends StreamExtractor {
     public PlaylistInfoItemsCollector getRelatedItems() {
         final PlaylistInfoItemsCollector collector =
                 new PlaylistInfoItemsCollector(getServiceId());
-        final Elements recommendedAlbums = document.getElementsByClass("recommended-album");
-
-        for (final Element album : recommendedAlbums) {
-            collector.commit(new BandcampRelatedPlaylistInfoItemExtractor(album));
-        }
+        document.getElementsByClass("recommended-album").stream()
+                .map(BandcampRelatedPlaylistInfoItemExtractor::new)
+                .forEach(collector::commit);
 
         return collector;
     }
