@@ -641,8 +641,11 @@ public class YoutubeStreamExtractor extends StreamExtractor {
                     collector.commit(new YoutubeStreamInfoItemExtractor(
                             result.getObject("compactVideoRenderer"), timeAgoParser));
                 } else if (result.has("compactRadioRenderer")) {
-                    collector.commit(new YoutubeMixPlaylistInfoItemExtractor(
+                    collector.commit(new YoutubeMixOrPlaylistInfoItemExtractor(
                             result.getObject("compactRadioRenderer")));
+                } else if (result.has("compactPlaylistRenderer")) {
+                    collector.commit(new YoutubeMixOrPlaylistInfoItemExtractor(
+                            result.getObject("compactPlaylistRenderer")));
                 }
             }
             return collector;

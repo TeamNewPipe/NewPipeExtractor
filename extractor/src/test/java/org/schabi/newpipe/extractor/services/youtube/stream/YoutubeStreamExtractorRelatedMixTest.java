@@ -111,5 +111,17 @@ public class YoutubeStreamExtractorRelatedMixTest extends DefaultStreamExtractor
         assertContains("list=RD" + ID, streamMix.getUrl());
         assertEquals("Mix – " + TITLE, streamMix.getName());
         assertIsSecureUrl(streamMix.getThumbnailUrl());
+
+        final List<PlaylistInfoItem> musicMixes = playlists.stream()
+                .filter(item -> item.getPlaylistType().equals(PlaylistType.MIX_MUSIC))
+                .collect(Collectors.toList());
+        assertEquals(1, musicMixes.size(), "Not found exactly one music mix in related items");
+
+        final PlaylistInfoItem musicMix = musicMixes.get(0);
+        assertSame(InfoItem.InfoType.PLAYLIST, musicMix.getInfoType());
+        assertEquals(YouTube.getServiceId(), musicMix.getServiceId());
+        assertContains("list=RDCLAK", musicMix.getUrl());
+        assertEquals("Hip Hop Essentials", musicMix.getName());
+        assertIsSecureUrl(musicMix.getThumbnailUrl());
     }
 }
