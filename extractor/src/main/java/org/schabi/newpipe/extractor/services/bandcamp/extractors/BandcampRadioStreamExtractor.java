@@ -5,7 +5,6 @@ import com.grack.nanojson.JsonObject;
 import com.grack.nanojson.JsonParser;
 import com.grack.nanojson.JsonParserException;
 import org.jsoup.Jsoup;
-import org.jsoup.nodes.Element;
 import org.schabi.newpipe.extractor.MediaFormat;
 import org.schabi.newpipe.extractor.NewPipe;
 import org.schabi.newpipe.extractor.StreamingService;
@@ -30,9 +29,12 @@ import java.util.List;
 import static org.schabi.newpipe.extractor.services.bandcamp.extractors.BandcampExtractorHelper.BASE_API_URL;
 import static org.schabi.newpipe.extractor.services.bandcamp.extractors.BandcampExtractorHelper.BASE_URL;
 import static org.schabi.newpipe.extractor.services.bandcamp.extractors.BandcampExtractorHelper.getImageUrl;
+import static org.schabi.newpipe.extractor.utils.Utils.EMPTY_STRING;
 
 public class BandcampRadioStreamExtractor extends BandcampStreamExtractor {
 
+    private static final String OPUS_LO = "opus_lo";
+    private static final String MP3_128 = "mp3-128";
     private JsonObject showInfo;
 
     public BandcampRadioStreamExtractor(final StreamingService service,
@@ -78,11 +80,9 @@ public class BandcampRadioStreamExtractor extends BandcampStreamExtractor {
 
     @Nonnull
     @Override
-    public String getUploaderName() throws ParsingException {
-        return Jsoup.parse(showInfo.getString("image_caption")).getElementsByTag("a").stream()
-                .map(Element::text)
-                .findFirst()
-                .orElseThrow(() -> new ParsingException("Could not get uploader name"));
+    public String getUploaderName() {
+        return Jsoup.parse(showInfo.getString("image_caption"))
+                .getElementsByTag("a").first().text();
     }
 
     @Nullable
@@ -116,23 +116,25 @@ public class BandcampRadioStreamExtractor extends BandcampStreamExtractor {
 
     @Override
     public List<AudioStream> getAudioStreams() {
-        final ArrayList<AudioStream> list = new ArrayList<>();
+        final List<AudioStream> audioStreams = new ArrayList<>();
         final JsonObject streams = showInfo.getObject("audio_stream");
 
-        if (streams.has("opus-lo")) {
-            list.add(new AudioStream(
-                    streams.getString("opus-lo"),
-                    MediaFormat.OPUS, 100
-            ));
-        }
-        if (streams.has("mp3-128")) {
-            list.add(new AudioStream(
-                    streams.getString("mp3-128"),
-                    MediaFormat.MP3, 128
-            ));
+        if (streams.has(MP3_128)) {
+            audioStreams.add(new AudioStream.Builder()
+                    .setId(MP3_128)
+                    .setContent(streams.getString(MP3_128), true)
+                    .setMediaFormat(MediaFormat.MP3)
+                    .setAverageBitrate(128)
+                    .build());
+        } else if (streams.has(OPUS_LO)) {
+            audioStreams.add(new AudioStream.Builder()
+                    .setId(OPUS_LO)
+                    .setContent(streams.getString(OPUS_LO), true)
+                    .setMediaFormat(MediaFormat.OPUS)
+                    .setAverageBitrate(100).build());
         }
 
-        return list;
+        return audioStreams;
     }
 
     @Nonnull
@@ -156,14 +158,14 @@ public class BandcampRadioStreamExtractor extends BandcampStreamExtractor {
     @Override
     public String getLicence() {
         // Contrary to other Bandcamp streams, radio streams don't have a license
-        return "";
+        return EMPTY_STRING;
     }
 
     @Nonnull
     @Override
     public String getCategory() {
         // Contrary to other Bandcamp streams, radio streams don't have categories
-        return "";
+        return EMPTY_STRING;
     }
 
     @Nonnull
