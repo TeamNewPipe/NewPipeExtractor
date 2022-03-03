@@ -14,16 +14,20 @@ import org.schabi.newpipe.extractor.MediaFormat;
 import org.schabi.newpipe.extractor.exceptions.ParsingException;
 
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 
-public class ItagItem {
+import java.io.Serializable;
+
+public class ItagItem implements Serializable {
+
     /**
-     * List can be found here
-     * https://github.com/ytdl-org/youtube-dl/blob/9fc5eaf/youtube_dl/extractor/youtube.py#L1071
+     * List can be found here:
+     * https://github.com/ytdl-org/youtube-dl/blob/e988fa4/youtube_dl/extractor/youtube.py#L1195
      */
     private static final ItagItem[] ITAG_LIST = {
             /////////////////////////////////////////////////////
-            // VIDEO     ID  Type   Format  Resolution  FPS  ///
-            ///////////////////////////////////////////////////
+            // VIDEO     ID  Type   Format  Resolution  FPS  ////
+            /////////////////////////////////////////////////////
             new ItagItem(17, VIDEO, v3GPP, "144p"),
             new ItagItem(36, VIDEO, v3GPP, "240p"),
 
@@ -41,8 +45,8 @@ public class ItagItem {
             new ItagItem(45, VIDEO, WEBM, "720p"),
             new ItagItem(46, VIDEO, WEBM, "1080p"),
 
-            ////////////////////////////////////////////////////////////////////
-            // AUDIO     ID      ItagType          Format        Bitrate    ///
+            //////////////////////////////////////////////////////////////////
+            // AUDIO     ID      ItagType          Format        Bitrate    //
             //////////////////////////////////////////////////////////////////
             new ItagItem(171, AUDIO, WEBMA, 128),
             new ItagItem(172, AUDIO, WEBMA, 256),
@@ -54,8 +58,8 @@ public class ItagItem {
             new ItagItem(251, AUDIO, WEBMA_OPUS, 160),
 
             /// VIDEO ONLY ////////////////////////////////////////////
-            //           ID      Type     Format  Resolution  FPS  ///
-            /////////////////////////////////////////////////////////
+            //           ID      Type     Format  Resolution  FPS  ////
+            ///////////////////////////////////////////////////////////
             new ItagItem(160, VIDEO_ONLY, MPEG_4, "144p"),
             new ItagItem(133, VIDEO_ONLY, MPEG_4, "240p"),
             new ItagItem(134, VIDEO_ONLY, MPEG_4, "360p"),
@@ -105,11 +109,23 @@ public class ItagItem {
                 return item;
             }
         }
-        throw new ParsingException("itag=" + itagId + " not supported");
+        throw new ParsingException("itag " + itagId + " is not supported");
     }
 
     /*//////////////////////////////////////////////////////////////////////////
-    // Contructors and misc
+    // Static constants
+    //////////////////////////////////////////////////////////////////////////*/
+
+    public static final int AVERAGE_BITRATE_UNKNOWN = -1;
+    public static final int SAMPLE_RATE_UNKNOWN = -1;
+    public static final int FPS_NOT_APPLICABLE_OR_UNKNOWN = -1;
+    public static final int TARGET_DURATION_SEC_UNKNOWN = -1;
+    public static final int AUDIO_CHANNELS_NOT_APPLICABLE_OR_UNKNOWN = -1;
+    public static final long CONTENT_LENGTH_UNKNOWN = -1;
+    public static final long APPROX_DURATION_MS_UNKNOWN = -1;
+
+    /*//////////////////////////////////////////////////////////////////////////
+    // Constructors and misc
     //////////////////////////////////////////////////////////////////////////*/
 
     public enum ItagType {
@@ -134,8 +150,6 @@ public class ItagItem {
 
     /**
      * Constructor for videos.
-     *
-     * @param resolution string that will be used in the frontend
      */
     public ItagItem(final int id,
                     final ItagType type,
@@ -159,22 +173,30 @@ public class ItagItem {
         this.avgBitrate = avgBitrate;
     }
 
-    private final MediaFormat mediaFormat;
-
-
     public MediaFormat getMediaFormat() {
         return mediaFormat;
     }
+
+    private final MediaFormat mediaFormat;
 
     public final int id;
     public final ItagType itagType;
 
     // Audio fields
-    public int avgBitrate = -1;
+    /** @deprecated Use {@link #getAverageBitrate()} instead. */
+    @Deprecated
+    public int avgBitrate = AVERAGE_BITRATE_UNKNOWN;
+    private int sampleRate = SAMPLE_RATE_UNKNOWN;
+    private int audioChannels = AUDIO_CHANNELS_NOT_APPLICABLE_OR_UNKNOWN;
 
     // Video fields
+    /** @deprecated Use {@link #getResolutionString()} instead. */
+    @Deprecated
     public String resolutionString;
-    public int fps = -1;
+
+    /** @deprecated Use {@link #getFps()} and {@link #setFps(int)} instead. */
+    @Deprecated
+    public int fps = FPS_NOT_APPLICABLE_OR_UNKNOWN;
 
     // Fields for Dash
     private int bitrate;
@@ -186,6 +208,9 @@ public class ItagItem {
     private int indexEnd;
     private String quality;
     private String codec;
+    private int targetDurationSec = TARGET_DURATION_SEC_UNKNOWN;
+    private long approxDurationMs = APPROX_DURATION_MS_UNKNOWN;
+    private long contentLength = CONTENT_LENGTH_UNKNOWN;
 
     public int getBitrate() {
         return bitrate;
@@ -209,6 +234,43 @@ public class ItagItem {
 
     public void setHeight(final int height) {
         this.height = height;
+    }
+
+    /**
+     * Get the frame rate per second.
+     *
+     * <p>
+     * It defaults to the standard value associated with this itag and is set to the {@code fps}
+     * value returned in the corresponding itag in the YouTube player response.
+     * </p>
+     *
+     * <p>
+     * Note that this value is only known for video itags, so {@link
+     * #FPS_NOT_APPLICABLE_OR_UNKNOWN} is returned for non video itags.
+     * </p>
+     *
+     * @return the frame rate per second or {@link #FPS_NOT_APPLICABLE_OR_UNKNOWN}
+     */
+    public int getFps() {
+        return fps;
+    }
+
+    /**
+     * Set the frame rate per second.
+     *
+     * <p>
+     * It is only known for video itags, so {@link #FPS_NOT_APPLICABLE_OR_UNKNOWN} is set/used for
+     * non video itags or if the sample rate value is less than or equal to 0.
+     * </p>
+     *
+     * @param fps the frame rate per second
+     */
+    public void setFps(final int fps) {
+        if (fps > 0) {
+            this.fps = fps;
+        } else {
+            this.fps = FPS_NOT_APPLICABLE_OR_UNKNOWN;
+        }
     }
 
     public int getInitStart() {
@@ -251,11 +313,216 @@ public class ItagItem {
         this.quality = quality;
     }
 
+    /**
+     * Get the resolution string associated to this {@code ItagItem}.
+     *
+     * <p>
+     * It is only known for video itags.
+     * </p>
+     *
+     * @return the resolution string associated to this {@code ItagItem} or
+     * {@code null}.
+     */
+    @Nullable
+    public String getResolutionString() {
+        return resolutionString;
+    }
+
     public String getCodec() {
         return codec;
     }
 
     public void setCodec(final String codec) {
         this.codec = codec;
+    }
+
+    /**
+     * Get the average bitrate.
+     *
+     * <p>
+     * It is only known for audio itags, so {@link #AVERAGE_BITRATE_UNKNOWN} is always returned for
+     * other itag types.
+     * </p>
+     *
+     * <p>
+     * Bitrate of video itags and precise bitrate of audio itags can be known using
+     * {@link #getBitrate()}.
+     * </p>
+     *
+     * @return the average bitrate or {@link #AVERAGE_BITRATE_UNKNOWN}
+     * @see #getBitrate()
+     */
+    public int getAverageBitrate() {
+        return avgBitrate;
+    }
+
+    /**
+     * Get the sample rate.
+     *
+     * <p>
+     * It is only known for audio itags, so {@link #SAMPLE_RATE_UNKNOWN} is returned for non audio
+     * itags or if the sample rate is unknown.
+     * </p>
+     *
+     * @return the sample rate or {@link #SAMPLE_RATE_UNKNOWN}
+     */
+    public int getSampleRate() {
+        return sampleRate;
+    }
+
+    /**
+     * Set the sample rate.
+     *
+     * <p>
+     * It is only known for audio itags, so {@link #SAMPLE_RATE_UNKNOWN} is set/used for non video
+     * itags or if the sample rate value is less than or equal to 0.
+     * </p>
+     *
+     * @param sampleRate the sample rate of an audio itag
+     */
+    public void setSampleRate(final int sampleRate) {
+        if (sampleRate > 0) {
+            this.sampleRate = sampleRate;
+        } else {
+            this.sampleRate = SAMPLE_RATE_UNKNOWN;
+        }
+    }
+
+    /**
+     * Get the number of audio channels.
+     *
+     * <p>
+     * It is only known for audio streams, so {@link #AUDIO_CHANNELS_NOT_APPLICABLE_OR_UNKNOWN} is
+     * returned for video streams or if it is unknown.
+     * </p>
+     *
+     * @return the number of audio channels or {@link #AUDIO_CHANNELS_NOT_APPLICABLE_OR_UNKNOWN}
+     */
+    public int getAudioChannels() {
+        return audioChannels;
+    }
+
+    /**
+     * Set the number of audio channels.
+     *
+     * <p>
+     * It is only known for audio itag, so {@link #AUDIO_CHANNELS_NOT_APPLICABLE_OR_UNKNOWN} is
+     * set/used for non audio itags or if the {@code audioChannels} value is less than or equal to
+     * 0.
+     * </p>
+     *
+     * @param audioChannels the number of audio channels of an audio itag
+     */
+    public void setAudioChannels(final int audioChannels) {
+        if (audioChannels > 0) {
+            this.audioChannels = audioChannels;
+        } else {
+            this.audioChannels = AUDIO_CHANNELS_NOT_APPLICABLE_OR_UNKNOWN;
+        }
+    }
+
+    /**
+     * Get the {@code targetDurationSec} value.
+     *
+     * <p>
+     * This value is an average time in seconds of sequences duration of livestreams and ended
+     * livestreams. It is only returned for these stream types by YouTube and makes no sense for
+     * videos, so {@link #TARGET_DURATION_SEC_UNKNOWN} is returned for video streams.
+     * </p>
+     *
+     * @return the {@code targetDurationSec} value or {@link #TARGET_DURATION_SEC_UNKNOWN}
+     */
+    public int getTargetDurationSec() {
+        return targetDurationSec;
+    }
+
+    /**
+     * Set the {@code targetDurationSec} value.
+     *
+     * <p>
+     * This value is an average time in seconds of sequences duration of livestreams and ended
+     * livestreams.
+     * </p>
+     *
+     * <p>
+     * It is only returned for these stream types by YouTube and makes no sense for
+     * videos, so {@link #TARGET_DURATION_SEC_UNKNOWN} will be set/used for video streams or if
+     * this value is less than or equal to 0.
+     * </p>
+     *
+     * @param targetDurationSec the target duration of a segment of streams which are using the
+     *                          live delivery method type
+     */
+    public void setTargetDurationSec(final int targetDurationSec) {
+        if (targetDurationSec > 0) {
+            this.targetDurationSec = targetDurationSec;
+        } else {
+            this.targetDurationSec = TARGET_DURATION_SEC_UNKNOWN;
+        }
+    }
+
+    /**
+     * Get the {@code approxDurationMs} value.
+     *
+     * <p>
+     * It is only known for DASH progressive streams, so {@link #APPROX_DURATION_MS_UNKNOWN} is
+     * returned for other stream types or if this value is less than or equal to 0.
+     * </p>
+     *
+     * @return the {@code approxDurationMs} value or {@link #APPROX_DURATION_MS_UNKNOWN}
+     */
+    public long getApproxDurationMs() {
+        return approxDurationMs;
+    }
+
+    /**
+     * Set the {@code approxDurationMs} value.
+     *
+     * <p>
+     * It is only known for DASH progressive streams, so {@link #APPROX_DURATION_MS_UNKNOWN} is
+     * set/used for other stream types or if this value is less than or equal to 0.
+     * </p>
+     *
+     * @param approxDurationMs the approximate duration of a DASH progressive stream, in
+     *                         milliseconds
+     */
+    public void setApproxDurationMs(final long approxDurationMs) {
+        if (approxDurationMs > 0) {
+            this.approxDurationMs = approxDurationMs;
+        } else {
+            this.approxDurationMs = APPROX_DURATION_MS_UNKNOWN;
+        }
+    }
+
+    /**
+     * Get the {@code contentLength} value.
+     *
+     * <p>
+     * It is only known for DASH progressive streams, so {@link #CONTENT_LENGTH_UNKNOWN} is
+     * returned for other stream types or if this value is less than or equal to 0.
+     * </p>
+     *
+     * @return the {@code contentLength} value or {@link #CONTENT_LENGTH_UNKNOWN}
+     */
+    public long getContentLength() {
+        return contentLength;
+    }
+
+    /**
+     * Set the content length of stream.
+     *
+     * <p>
+     * It is only known for DASH progressive streams, so {@link #CONTENT_LENGTH_UNKNOWN} is
+     * set/used for other stream types or if this value is less than or equal to 0.
+     * </p>
+     *
+     * @param contentLength the content length of a DASH progressive stream
+     */
+    public void setContentLength(final long contentLength) {
+        if (contentLength > 0) {
+            this.contentLength = contentLength;
+        } else {
+            this.contentLength = CONTENT_LENGTH_UNKNOWN;
+        }
     }
 }
