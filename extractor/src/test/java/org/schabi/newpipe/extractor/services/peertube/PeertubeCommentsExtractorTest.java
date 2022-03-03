@@ -28,17 +28,17 @@ public class PeertubeCommentsExtractorTest {
         public static void setUp() throws Exception {
             NewPipe.init(DownloaderTestImpl.getInstance());
             extractor = (PeertubeCommentsExtractor) PeerTube
-                    .getCommentsExtractor("https://framatube.org/videos/watch/04af977f-4201-4697-be67-a8d8cae6fa7a");
+                    .getCommentsExtractor("https://framatube.org/videos/watch/9c9de5e8-0a1e-484a-b099-e80766180a6d");
         }
 
         @Test
         public void testGetComments() throws IOException, ExtractionException {
             InfoItemsPage<CommentsInfoItem> comments = extractor.getInitialPage();
-            boolean result = findInComments(comments, "@root A great documentary on a great guy.");
+            boolean result = findInComments(comments, "Cool.");
 
             while (comments.hasNextPage() && !result) {
                 comments = extractor.getPage(comments.getNextPage());
-                result = findInComments(comments, "@root A great documentary on a great guy.");
+                result = findInComments(comments, "Cool.");
             }
 
             assertTrue(result);
@@ -46,16 +46,16 @@ public class PeertubeCommentsExtractorTest {
 
         @Test
         public void testGetCommentsFromCommentsInfo() throws IOException, ExtractionException {
-            CommentsInfo commentsInfo = CommentsInfo.getInfo("https://framatube.org/videos/watch/a8ea95b8-0396-49a6-8f30-e25e25fb2828");
+            CommentsInfo commentsInfo = CommentsInfo.getInfo("https://framatube.org/videos/watch/217eefeb-883d-45be-b7fc-a788ad8507d3");
             assertEquals("Comments", commentsInfo.getName());
 
-            boolean result = findInComments(commentsInfo.getRelatedItems(), "Loved it!!!");
+            boolean result = findInComments(commentsInfo.getRelatedItems(), "Cool");
 
             Page nextPage = commentsInfo.getNextPage();
             InfoItemsPage<CommentsInfoItem> moreItems = new InfoItemsPage<>(null, nextPage, null);
             while (moreItems.hasNextPage() && !result) {
                 moreItems = CommentsInfo.getMoreItems(PeerTube, commentsInfo, nextPage);
-                result = findInComments(moreItems.getItems(), "Loved it!!!");
+                result = findInComments(moreItems.getItems(), "Cool");
                 nextPage = moreItems.getNextPage();
             }
 
