@@ -76,6 +76,7 @@ public class YoutubeService extends StreamingService {
 
     @Override
     public String getBaseUrl() {
+        YoutubeThrottlingDecrypter.setFunctionNamePattern();
         return "https://youtube.com";
     }
 

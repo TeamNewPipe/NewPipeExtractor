@@ -34,22 +34,14 @@ import java.util.regex.Pattern;
  */
 public class YoutubeThrottlingDecrypter {
 
-    private static Pattern nParamPattern = Pattern.compile("[&?]n=([^&]+)");
-    private static Pattern functionNamePattern = Pattern.compile(
+    public static Pattern nParamPattern = Pattern.compile("[&?]n=([^&]+)");
+    public static Pattern functionNamePattern = Pattern.compile(
             "b=a\\.get\\(\"n\"\\)\\)&&\\(b=(\\S+)\\(b\\),a\\.set\\(\"n\",b\\)");
 
     private static final Map<String, String> nParams = new HashMap<>();
 
     private final String functionName;
     private final String function;
-
-    public static void setnParamPattern(String nParamPattern) {
-        YoutubeThrottlingDecrypter.nParamPattern = Pattern.compile(nParamPattern);
-    }
-
-    public static void setFunctionNamePattern(String functionNamePattern) {
-        YoutubeThrottlingDecrypter.functionNamePattern = Pattern.compile(functionNamePattern);
-    }
 
     /**
      * <p>
