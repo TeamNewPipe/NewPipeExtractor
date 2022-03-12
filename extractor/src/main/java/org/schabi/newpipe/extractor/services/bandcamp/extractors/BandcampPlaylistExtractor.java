@@ -19,10 +19,13 @@ import org.schabi.newpipe.extractor.stream.StreamInfoItemsCollector;
 
 import javax.annotation.Nonnull;
 import java.io.IOException;
+import java.util.Objects;
 
 import static org.schabi.newpipe.extractor.services.bandcamp.extractors.BandcampExtractorHelper.getImageUrl;
 import static org.schabi.newpipe.extractor.utils.JsonUtils.getJsonData;
 import static org.schabi.newpipe.extractor.services.bandcamp.extractors.BandcampStreamExtractor.getAlbumInfoJson;
+import static org.schabi.newpipe.extractor.utils.Utils.EMPTY_STRING;
+import static org.schabi.newpipe.extractor.utils.Utils.HTTPS;
 
 public class BandcampPlaylistExtractor extends PlaylistExtractor {
 
@@ -57,33 +60,27 @@ public class BandcampPlaylistExtractor extends PlaylistExtractor {
             throw new ParsingException("JSON does not exist", e);
         }
 
-
-
-        if (trackInfo.size() <= 0) {
+        if (trackInfo.isEmpty()) {
             // Albums without trackInfo need to be purchased before they can be played
             throw new ContentNotAvailableException("Album needs to be purchased");
         }
     }
 
+    @Nonnull
     @Override
     public String getThumbnailUrl() throws ParsingException {
         if (albumJson.isNull("art_id")) {
-            return "";
+            return EMPTY_STRING;
         } else {
             return getImageUrl(albumJson.getLong("art_id"), true);
         }
     }
 
     @Override
-    public String getBannerUrl() {
-        return "";
-    }
-
-    @Override
     public String getUploaderUrl() throws ParsingException {
         final String[] parts = getUrl().split("/");
         // https: (/) (/) * .bandcamp.com (/) and leave out the rest
-        return "https://" + parts[2] + "/";
+        return HTTPS + parts[2] + "/";
     }
 
     @Override
@@ -94,9 +91,10 @@ public class BandcampPlaylistExtractor extends PlaylistExtractor {
     @Override
     public String getUploaderAvatarUrl() {
         try {
-            return document.getElementsByClass("band-photo").first().attr("src");
-        } catch (NullPointerException e) {
-            return "";
+            return Objects.requireNonNull(document.getElementsByClass("band-photo").first())
+                    .attr("src");
+        } catch (final NullPointerException e) {
+            return EMPTY_STRING;
         }
     }
 
@@ -108,24 +106,6 @@ public class BandcampPlaylistExtractor extends PlaylistExtractor {
     @Override
     public long getStreamCount() {
         return trackInfo.size();
-    }
-
-    @Nonnull
-    @Override
-    public String getSubChannelName() {
-        return "";
-    }
-
-    @Nonnull
-    @Override
-    public String getSubChannelUrl() {
-        return "";
-    }
-
-    @Nonnull
-    @Override
-    public String getSubChannelAvatarUrl() {
-        return "";
     }
 
     @Nonnull
@@ -146,14 +126,13 @@ public class BandcampPlaylistExtractor extends PlaylistExtractor {
                 collector.commit(new BandcampPlaylistStreamInfoItemExtractor(
                         track, getUploaderUrl(), getThumbnailUrl()));
             }
-
         }
 
         return new InfoItemsPage<>(collector, null);
     }
 
     @Override
-    public InfoItemsPage<StreamInfoItem> getPage(Page page) {
+    public InfoItemsPage<StreamInfoItem> getPage(final Page page) {
         return null;
     }
 
