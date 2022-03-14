@@ -28,6 +28,8 @@ import org.schabi.newpipe.extractor.stream.StreamInfoItem;
 
 public abstract class ChannelExtractor extends ListExtractor<StreamInfoItem> {
 
+    public static final long UNKNOWN_SUBSCRIBER_COUNT = -1;
+
     public ChannelExtractor(StreamingService service, ListLinkHandler linkHandler) {
         super(service, linkHandler);
     }

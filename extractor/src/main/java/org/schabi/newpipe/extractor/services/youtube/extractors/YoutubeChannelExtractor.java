@@ -89,9 +89,9 @@ public class YoutubeChannelExtractor extends ChannelExtractor {
         // we couldn't get information about the channel associated with this URL, if there is one.
         if (!channelId[0].equals("channel")) {
             final byte[] body = JsonWriter.string(prepareDesktopJsonBuilder(
-                    getExtractorLocalization(), getExtractorContentCountry())
-                    .value("url", "https://www.youtube.com/" + channelPath)
-                    .done())
+                            getExtractorLocalization(), getExtractorContentCountry())
+                            .value("url", "https://www.youtube.com/" + channelPath)
+                            .done())
                     .getBytes(UTF_8);
 
             final JsonObject jsonResponse = getJsonPostResponse("navigation/resolve_url",
@@ -104,8 +104,8 @@ public class YoutubeChannelExtractor extends ChannelExtractor {
                     throw new ContentNotAvailableException("This channel doesn't exist.");
                 } else {
                     throw new ContentNotAvailableException("Got error:\""
-                        + errorJsonObject.getString("status") + "\": "
-                        + errorJsonObject.getString("message"));
+                            + errorJsonObject.getString("status") + "\": "
+                            + errorJsonObject.getString("message"));
                 }
             }
 
@@ -136,10 +136,10 @@ public class YoutubeChannelExtractor extends ChannelExtractor {
         int level = 0;
         while (level < 3) {
             final byte[] body = JsonWriter.string(prepareDesktopJsonBuilder(
-                    getExtractorLocalization(), getExtractorContentCountry())
-                    .value("browseId", id)
-                    .value("params", "EgZ2aWRlb3M%3D") // Equal to videos
-                    .done())
+                            getExtractorLocalization(), getExtractorContentCountry())
+                            .value("browseId", id)
+                            .value("params", "EgZ2aWRlb3M%3D") // Equal to videos
+                            .done())
                     .getBytes(UTF_8);
 
             final JsonObject jsonResponse = getJsonPostResponse("browse", body,
@@ -273,15 +273,14 @@ public class YoutubeChannelExtractor extends ChannelExtractor {
     public long getSubscriberCount() throws ParsingException {
         final JsonObject c4TabbedHeaderRenderer = initialData.getObject("header")
                 .getObject("c4TabbedHeaderRenderer");
-        if (c4TabbedHeaderRenderer.has("subscriberCountText")) {
-            try {
-                return Utils.mixedNumberWordToLong(getTextFromObject(c4TabbedHeaderRenderer
-                        .getObject("subscriberCountText")));
-            } catch (final NumberFormatException e) {
-                throw new ParsingException("Could not get subscriber count", e);
-            }
-        } else {
-            return ITEM_COUNT_UNKNOWN;
+        if (!c4TabbedHeaderRenderer.has("subscriberCountText")) {
+            return UNKNOWN_SUBSCRIBER_COUNT;
+        }
+        try {
+            return Utils.mixedNumberWordToLong(getTextFromObject(c4TabbedHeaderRenderer
+                    .getObject("subscriberCountText")));
+        } catch (final NumberFormatException e) {
+            throw new ParsingException("Could not get subscriber count", e);
         }
     }
 
@@ -385,9 +384,9 @@ public class YoutubeChannelExtractor extends ChannelExtractor {
                 .getString("token");
 
         final byte[] body = JsonWriter.string(prepareDesktopJsonBuilder(getExtractorLocalization(),
-                getExtractorContentCountry())
-                .value("continuation", continuation)
-                .done())
+                        getExtractorContentCountry())
+                        .value("continuation", continuation)
+                        .done())
                 .getBytes(UTF_8);
 
         return new Page(YOUTUBEI_V1_URL + "browse?key=" + getKey(), null, channelIds, null, body);

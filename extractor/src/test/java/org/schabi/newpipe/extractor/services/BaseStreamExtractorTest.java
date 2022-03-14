@@ -5,6 +5,7 @@ public interface BaseStreamExtractorTest extends BaseExtractorTest {
     void testUploaderName() throws Exception;
     void testUploaderUrl() throws Exception;
     void testUploaderAvatarUrl() throws Exception;
+    void testSubscriberCount() throws Exception;
     void testSubChannelName() throws Exception;
     void testSubChannelUrl() throws Exception;
     void testSubChannelAvatarUrl() throws Exception;

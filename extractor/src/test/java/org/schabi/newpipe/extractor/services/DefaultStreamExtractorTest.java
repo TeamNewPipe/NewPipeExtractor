@@ -34,6 +34,7 @@ import static org.schabi.newpipe.extractor.ExtractorAsserts.assertEqualsOrderInd
 import static org.schabi.newpipe.extractor.ExtractorAsserts.assertIsSecureUrl;
 import static org.schabi.newpipe.extractor.ExtractorAsserts.assertIsValidUrl;
 import static org.schabi.newpipe.extractor.services.DefaultTests.defaultTestListOfItems;
+import static org.schabi.newpipe.extractor.stream.StreamExtractor.UNKNOWN_SUBSCRIBER_COUNT;
 
 /**
  * Test for {@link StreamExtractor}
@@ -45,6 +46,7 @@ public abstract class DefaultStreamExtractorTest extends DefaultExtractorTest<St
     public abstract String expectedUploaderName();
     public abstract String expectedUploaderUrl();
     public boolean expectedUploaderVerified() { return false; }
+    public long expectedUploaderSubscriberCountAtLeast() { return UNKNOWN_SUBSCRIBER_COUNT; }
     public String expectedSubChannelName() { return ""; } // default: there is no subchannel
     public String expectedSubChannelUrl() { return ""; } // default: there is no subchannel
     public boolean expectedDescriptionIsEmpty() { return false; } // default: description is not empty
@@ -103,6 +105,16 @@ public abstract class DefaultStreamExtractorTest extends DefaultExtractorTest<St
     @Test
     public void testUploaderVerified() throws Exception {
         assertEquals(expectedUploaderVerified(), extractor().isUploaderVerified());
+    }
+
+    @Test
+    @Override
+    public void testSubscriberCount() throws Exception {
+        if (expectedUploaderSubscriberCountAtLeast() == UNKNOWN_SUBSCRIBER_COUNT) {
+            assertEquals(UNKNOWN_SUBSCRIBER_COUNT, extractor().getUploaderSubscriberCount());
+        } else {
+            assertGreaterOrEqual(expectedUploaderSubscriberCountAtLeast(), extractor().getUploaderSubscriberCount());
+        }
     }
 
     @Test

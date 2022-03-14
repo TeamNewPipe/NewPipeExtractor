@@ -235,6 +235,11 @@ public class StreamInfo extends Info {
         } catch (Exception e) {
             streamInfo.addError(e);
         }
+        try {
+            streamInfo.setUploaderSubscriberCount(extractor.getUploaderSubscriberCount());
+        } catch (Exception e) {
+            streamInfo.addError(e);
+        }
 
         try {
             streamInfo.setSubChannelName(extractor.getSubChannelName());
@@ -367,6 +372,7 @@ public class StreamInfo extends Info {
     private String uploaderUrl = "";
     private String uploaderAvatarUrl = "";
     private boolean uploaderVerified = false;
+    private long uploaderSubscriberCount = -1;
 
     private String subChannelName = "";
     private String subChannelUrl = "";
@@ -538,6 +544,14 @@ public class StreamInfo extends Info {
 
     public void setUploaderVerified(final boolean uploaderVerified) {
         this.uploaderVerified = uploaderVerified;
+    }
+
+    public long getUploaderSubscriberCount() {
+        return uploaderSubscriberCount;
+    }
+
+    public void setUploaderSubscriberCount(long uploaderSubscriberCount) {
+        this.uploaderSubscriberCount = uploaderSubscriberCount;
     }
 
     public String getSubChannelName() {

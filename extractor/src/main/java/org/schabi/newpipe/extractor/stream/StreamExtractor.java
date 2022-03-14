@@ -47,6 +47,7 @@ import java.util.Locale;
 public abstract class StreamExtractor extends Extractor {
 
     public static final int NO_AGE_LIMIT = 0;
+    public static final long UNKNOWN_SUBSCRIBER_COUNT = -1;
 
     public StreamExtractor(StreamingService service, LinkHandler linkHandler) {
         super(service, linkHandler);
@@ -200,6 +201,17 @@ public abstract class StreamExtractor extends Extractor {
      */
     public boolean isUploaderVerified() throws ParsingException {
         return false;
+    }
+
+    /**
+     * The subscriber count of the uploader.
+     * If the subscriber count is not implemented, or is unavailable, return <code>-1</code>.
+     *
+     * @return the subscriber count of the uploader or {@value UNKNOWN_SUBSCRIBER_COUNT} if not available
+     * @throws ParsingException
+     */
+    public long getUploaderSubscriberCount() throws ParsingException {
+        return UNKNOWN_SUBSCRIBER_COUNT;
     }
 
     /**

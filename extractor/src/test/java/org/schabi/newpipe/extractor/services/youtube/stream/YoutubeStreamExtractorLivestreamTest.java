@@ -52,6 +52,7 @@ public class YoutubeStreamExtractorLivestreamTest extends DefaultStreamExtractor
     @Override public StreamType expectedStreamType() { return StreamType.LIVE_STREAM; }
     @Override public String expectedUploaderName() { return "Lofi Girl"; }
     @Override public String expectedUploaderUrl() { return "https://www.youtube.com/channel/UCSJ4gkVC6NrvII8umztf0Ow"; }
+    @Override public long expectedUploaderSubscriberCountAtLeast() { return 9_800_000; }
     @Override public List<String> expectedDescriptionContains() {
         return Arrays.asList("Lofi Girl merch",
                 "Thank you for listening, I hope you will have a good time here");
