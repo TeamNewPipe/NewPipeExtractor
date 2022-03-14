@@ -2,12 +2,16 @@ package org.schabi.newpipe.extractor.services.media_ccc;
 
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.function.Executable;
 import org.schabi.newpipe.downloader.DownloaderTestImpl;
 import org.schabi.newpipe.extractor.NewPipe;
 import org.schabi.newpipe.extractor.kiosk.KioskExtractor;
 import org.schabi.newpipe.extractor.stream.StreamInfoItem;
 
+import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.schabi.newpipe.extractor.ServiceList.MediaCCC;
@@ -24,16 +28,18 @@ public class MediaCCCRecentListExtractorTest {
     }
 
     @Test
-    public void testStreamList() throws Exception {
+    void testStreamList() throws Exception {
         final List<StreamInfoItem> items = extractor.getInitialPage().getItems();
         assertEquals(100, items.size());
-        for (final StreamInfoItem item: items) {
-            assertFalse(isNullOrEmpty(item.getName()));
-            assertTrue(item.getDuration() > 0);
-            // Disabled for now, because sometimes videos are uploaded, but their release date is in the future
-            // assertTrue(item.getUploadDate().offsetDateTime().isBefore(OffsetDateTime.now()));
-        }
+
+        assertAll(items.stream().flatMap(this::getAllConditionsForItem));
     }
 
-
+    private Stream<Executable> getAllConditionsForItem(final StreamInfoItem item) {
+        return Stream.of(
+                () -> assertFalse(isNullOrEmpty(item.getName())),
+                () -> assertTrue(item.getDuration() > 0,
+                        "Duration[=" + item.getDuration() + "] of " + item + "is <= 0")
+        );
+    }
 }
