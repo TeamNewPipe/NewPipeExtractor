@@ -48,7 +48,7 @@ public class PeertubePlaylistLinkHandlerFactoryTest {
     }
 
     @Test
-    void getUrl() throws ParsingException {
+    void getUrl() {
         assertDoesNotThrow(() -> linkHandler.fromUrl("https://framatube.org/videos/watch/playlist/d8ca79f9-e4c7-4269-8183-d78ed269c909").getUrl());
         assertDoesNotThrow(() -> linkHandler.fromUrl("https://framatube.org/w/p/d8ca79f9-e4c7-4269-8183-d78ed269c909").getUrl());
         assertDoesNotThrow(() -> linkHandler.fromUrl("https://framatube.org/w/p/sLFbqXsw7sPR3AfvqQSBZB").getUrl());
