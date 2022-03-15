@@ -53,7 +53,7 @@ class YoutubeDashManifestCreatorTest {
     // Setting a higher number may let Google video servers return a lot of 403s
     private static final int MAXIMUM_NUMBER_OF_STREAMS_TO_TEST = 3;
 
-    public static class testGenerationOfOtfAndProgressiveManifests {
+    public static class TestGenerationOfOtfAndProgressiveManifests {
         private static final String url = "https://www.youtube.com/watch?v=DJ8GQUNUXGM";
         private static YoutubeStreamExtractor extractor;
 

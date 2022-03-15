@@ -12,15 +12,16 @@ import org.schabi.newpipe.extractor.linkhandler.LinkHandler;
 import org.schabi.newpipe.extractor.stream.AudioStream;
 import org.schabi.newpipe.extractor.stream.DeliveryMethod;
 import org.schabi.newpipe.extractor.stream.Description;
+import org.schabi.newpipe.extractor.stream.Stream;
 import org.schabi.newpipe.extractor.stream.StreamExtractor;
 import org.schabi.newpipe.extractor.stream.StreamType;
 import org.schabi.newpipe.extractor.stream.VideoStream;
 
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
-import java.util.stream.IntStream;
+import java.util.function.Function;
+import java.util.stream.Collectors;
 
 import javax.annotation.Nonnull;
 
@@ -58,9 +59,9 @@ public class MediaCCCLiveStreamExtractor extends StreamExtractor {
                     final JsonObject roomObject = rooms.getObject(r);
                     if (getId().equals(conferenceObject.getString("slug") + "/"
                             + roomObject.getString("slug"))) {
-                        this.conference = conferenceObject;
-                        this.group = groupObject;
-                        this.room = roomObject;
+                        conference = conferenceObject;
+                        group = groupObject;
+                        room = roomObject;
                         return;
                     }
                 }
@@ -109,122 +110,120 @@ public class MediaCCCLiveStreamExtractor extends StreamExtractor {
      * Get the URL of the first DASH stream found.
      *
      * <p>
-     * There can be several DASH streams, so the URL of the first found is returned by this method.
+     * There can be several DASH streams, so the URL of the first one found is returned by this
+     * method.
      * </p>
      *
      * <p>
-     * You can find the other video DASH streams by using {@link #getVideoStreams()}
+     * You can find the other DASH video streams by using {@link #getVideoStreams()}
      * </p>
      */
     @Nonnull
     @Override
     public String getDashMpdUrl() throws ParsingException {
-
-        for (int s = 0; s < room.getArray(STREAMS).size(); s++) {
-            final JsonObject stream = room.getArray(STREAMS).getObject(s);
-            final JsonObject urls = stream.getObject(URLS);
-            if (urls.has("dash")) {
-                return urls.getObject("dash").getString(URL, EMPTY_STRING);
-            }
-        }
-
-        return EMPTY_STRING;
+        return getManifestOfDeliveryMethodWanted("dash");
     }
 
     /**
      * Get the URL of the first HLS stream found.
      *
      * <p>
-     * There can be several HLS streams, so the URL of the first found is returned by this method.
+     * There can be several HLS streams, so the URL of the first one found is returned by this
+     * method.
      * </p>
      *
      * <p>
-     * You can find the other video HLS streams by using {@link #getVideoStreams()}
+     * You can find the other HLS video streams by using {@link #getVideoStreams()}
      * </p>
      */
     @Nonnull
     @Override
     public String getHlsUrl() {
-        for (int s = 0; s < room.getArray(STREAMS).size(); s++) {
-            final JsonObject stream = room.getArray(STREAMS).getObject(s);
-            final JsonObject urls = stream.getObject(URLS);
-            if (urls.has("hls")) {
-                return urls.getObject("hls").getString(URL, EMPTY_STRING);
-            }
-        }
-        return EMPTY_STRING;
+        return getManifestOfDeliveryMethodWanted("hls");
+    }
+
+    @Nonnull
+    private String getManifestOfDeliveryMethodWanted(@Nonnull final String deliveryMethod) {
+        return room.getArray(STREAMS).stream()
+                .filter(JsonObject.class::isInstance)
+                .map(JsonObject.class::cast)
+                .map(streamObject -> streamObject.getObject(URLS))
+                .filter(urls -> urls.has(deliveryMethod))
+                .map(urls -> urls.getObject(deliveryMethod).getString(URL, EMPTY_STRING))
+                .findFirst()
+                .orElse(EMPTY_STRING);
     }
 
     @Override
     public List<AudioStream> getAudioStreams() throws IOException, ExtractionException {
-        final List<AudioStream> audioStreams = new ArrayList<>();
-        IntStream.range(0, room.getArray(STREAMS).size())
-                .mapToObj(s -> room.getArray(STREAMS).getObject(s))
-                .filter(streamJsonObject -> streamJsonObject.getString("type").equals("audio"))
-                .forEachOrdered(streamJsonObject -> streamJsonObject.getObject(URLS).keySet()
-                        .forEach(type -> {
-                            final JsonObject urlObject = streamJsonObject.getObject(URLS)
-                                    .getObject(type);
-                            // The DASH manifest will be extracted with getDashMpdUrl
-                            if (!type.equals("dash")) {
-                                final AudioStream.Builder builder = new AudioStream.Builder()
-                                        .setId(urlObject.getString("tech", ID_UNKNOWN))
-                                        .setContent(urlObject.getString(URL), true)
-                                        .setAverageBitrate(UNKNOWN_BITRATE);
-                                if (type.equals("hls")) {
-                                    // We don't know with the type string what media format will
-                                    // have HLS streams.
-                                    // However, the tech string may contain some information
-                                    // about the media format used.
-                                    builder.setDeliveryMethod(DeliveryMethod.HLS);
-                                } else {
-                                    builder.setMediaFormat(MediaFormat.getFromSuffix(type));
-                                }
+        return getStreams("audio",
+                dto -> {
+                    final AudioStream.Builder builder = new AudioStream.Builder()
+                            .setId(dto.getUrlValue().getString("tech", ID_UNKNOWN))
+                            .setContent(dto.getUrlValue().getString(URL), true)
+                            .setAverageBitrate(UNKNOWN_BITRATE);
 
-                                audioStreams.add(builder.build());
-                            }
-                        }));
+                    if ("hls".equals(dto.getUrlKey())) {
+                        // We don't know with the type string what media format will
+                        // have HLS streams.
+                        // However, the tech string may contain some information
+                        // about the media format used.
+                        return builder.setDeliveryMethod(DeliveryMethod.HLS)
+                                .build();
+                    }
 
-        return audioStreams;
+                    return builder.setMediaFormat(MediaFormat.getFromSuffix(dto.getUrlKey()))
+                            .build();
+                });
     }
 
     @Override
     public List<VideoStream> getVideoStreams() throws IOException, ExtractionException {
-        final List<VideoStream> videoStreams = new ArrayList<>();
-        IntStream.range(0, room.getArray(STREAMS).size())
-                .mapToObj(s -> room.getArray(STREAMS).getObject(s))
-                .filter(stream -> stream.getString("type").equals("video"))
-                .forEachOrdered(streamJsonObject -> streamJsonObject.getObject(URLS).keySet()
-                        .forEach(type -> {
-                            final String resolution =
-                                    streamJsonObject.getArray("videoSize").getInt(0)
-                                    + "x"
-                                    + streamJsonObject.getArray("videoSize").getInt(1);
-                            final JsonObject urlObject = streamJsonObject.getObject(URLS)
-                                    .getObject(type);
-                            // The DASH manifest will be extracted with getDashMpdUrl
-                            if (!type.equals("dash")) {
-                                final VideoStream.Builder builder = new VideoStream.Builder()
-                                        .setId(urlObject.getString("tech", ID_UNKNOWN))
-                                        .setContent(urlObject.getString(URL), true)
-                                        .setIsVideoOnly(false)
-                                        .setResolution(resolution);
+        return getStreams("video",
+                dto -> {
+                    final JsonArray videoSize = dto.getStreamJsonObj().getArray("videoSize");
 
-                                if (type.equals("hls")) {
-                                    // We don't know with the type string what media format will
-                                    // have HLS streams.
-                                    // However, the tech string may contain some information
-                                    // about the media format used.
-                                    builder.setDeliveryMethod(DeliveryMethod.HLS);
-                                } else {
-                                    builder.setMediaFormat(MediaFormat.getFromSuffix(type));
-                                }
+                    final VideoStream.Builder builder = new VideoStream.Builder()
+                            .setId(dto.getUrlValue().getString("tech", ID_UNKNOWN))
+                            .setContent(dto.getUrlValue().getString(URL), true)
+                            .setIsVideoOnly(false)
+                            .setResolution(videoSize.getInt(0) + "x" + videoSize.getInt(1));
 
-                                videoStreams.add(builder.build());
-                            }
-                        }));
+                    if ("hls".equals(dto.getUrlKey())) {
+                        // We don't know with the type string what media format will
+                        // have HLS streams.
+                        // However, the tech string may contain some information
+                        // about the media format used.
+                        return builder.setDeliveryMethod(DeliveryMethod.HLS)
+                                .build();
+                    }
 
-        return videoStreams;
+                    return builder.setMediaFormat(MediaFormat.getFromSuffix(dto.getUrlKey()))
+                            .build();
+                });
+    }
+
+    private <T extends Stream> List<T> getStreams(
+            @Nonnull final String streamType,
+            @Nonnull final Function<MediaCCCLiveStreamMapperDTO, T> converter) {
+        return room.getArray(STREAMS).stream()
+                // Ensure that we use only process JsonObjects
+                .filter(JsonObject.class::isInstance)
+                .map(JsonObject.class::cast)
+                // Only process audio streams
+                .filter(streamJsonObj -> streamType.equals(streamJsonObj.getString("type")))
+                // Flatmap Urls and ensure that we use only process JsonObjects
+                .flatMap(streamJsonObj -> streamJsonObj.getObject(URLS).entrySet().stream()
+                        .filter(e -> e.getValue() instanceof JsonObject)
+                        .map(e -> new MediaCCCLiveStreamMapperDTO(
+                                streamJsonObj,
+                                e.getKey(),
+                                (JsonObject) e.getValue())))
+                // The DASH manifest will be extracted with getDashMpdUrl
+                .filter(dto -> !"dash".equals(dto.getUrlKey()))
+                // Convert
+                .map(converter)
+                .collect(Collectors.toList());
     }
 
     @Override

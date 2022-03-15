@@ -19,11 +19,11 @@ public abstract class Stream implements Serializable {
     public static final String ID_UNKNOWN = " ";
 
     /**
-     * An integer to represent that the itag id returned is not available (only for YouTube, this
+     * An integer to represent that the itag ID returned is not available (only for YouTube; this
      * should never happen) or not applicable (for other services than YouTube).
      *
      * <p>
-     * An itag should not have a negative value so {@code -1} is used for this constant.
+     * An itag should not have a negative value, so {@code -1} is used for this constant.
      * </p>
      */
     public static final int ITAG_NOT_AVAILABLE_OR_NOT_APPLICABLE = -1;
@@ -38,8 +38,8 @@ public abstract class Stream implements Serializable {
     /**
      * Instantiates a new {@code Stream} object.
      *
-     * @param id             the ID which uniquely identifies the file, e.g. for YouTube this would
-     *                       be the itag
+     * @param id             the identifier which uniquely identifies the file, e.g. for YouTube
+     *                       this would be the itag
      * @param content        the content or URL, depending on whether isUrl is true
      * @param isUrl          whether content is the URL or the actual content of e.g. a DASH
      *                       manifest
@@ -63,10 +63,10 @@ public abstract class Stream implements Serializable {
     }
 
     /**
-     * Checks if the list already contains one stream with equals stats.
+     * Checks if the list already contains a stream with the same statistics.
      *
-     * @param stream the stream which will be compared to the streams in the stream list
-     * @param streamList the list of {@link Stream Streams} which will be compared
+     * @param stream the stream to be compared against the streams in the stream list
+     * @param streamList the list of {@link Stream}s which will be compared
      * @return whether the list already contains one stream with equals stats
      */
     public static boolean containSimilarStream(final Stream stream,
@@ -83,16 +83,16 @@ public abstract class Stream implements Serializable {
     }
 
     /**
-     * Reveals whether two streams have the same stats ({@link MediaFormat media format} and
+     * Reveals whether two streams have the same statistics ({@link MediaFormat media format} and
      * {@link DeliveryMethod delivery method}).
      *
      * <p>
      * If the {@link MediaFormat media format} of the stream is unknown, the streams are compared
-     * by only using the {@link DeliveryMethod delivery method} and their id.
+     * by using only the {@link DeliveryMethod delivery method} and their ID.
      * </p>
      *
      * <p>
-     * Note: This method always returns always false if the stream passed is null.
+     * Note: This method always returns false if the stream passed is null.
      * </p>
      *
      * @param cmp the stream object to be compared to this stream object
@@ -118,9 +118,12 @@ public abstract class Stream implements Serializable {
     /**
      * Reveals whether two streams are equal.
      *
-     * @param cmp the stream object to be compared to this stream object
-     * @return whether streams are equal
+     * @param cmp a {@link Stream} object to be compared to this {@link Stream} instance.
+     * @return whether the compared streams are equal
+     * @deprecated Use {@link #equalStats(Stream)} to compare statistics of two streams and
+     * {@link #equals(Object)} to compare the equality of two streams instead.
      */
+    @Deprecated
     public boolean equals(final Stream cmp) {
         return equalStats(cmp) && content.equals(cmp.content);
     }
@@ -129,19 +132,19 @@ public abstract class Stream implements Serializable {
      * Gets the identifier of this stream, e.g. the itag for YouTube.
      *
      * <p>
-     * It should be normally unique but {@link #ID_UNKNOWN} may be returned as the identifier if
-     * one used by the stream extractor cannot be extracted, if the extractor uses a value from a
-     * streaming service.
+     * It should normally be unique, but {@link #ID_UNKNOWN} may be returned as the identifier if
+     * the one used by the stream extractor cannot be extracted, which could happen if the
+     * extractor uses a value from a streaming service.
      * </p>
      *
-     * @return the id (which may be {@link #ID_UNKNOWN})
+     * @return the identifier (which may be {@link #ID_UNKNOWN})
      */
     public String getId() {
         return id;
     }
 
     /**
-     * Gets the URL of this stream if the content is a URL, or {@code null} if that's the not case.
+     * Gets the URL of this stream if the content is a URL, or {@code null} otherwise.
      *
      * @return the URL if the content is a URL, {@code null} otherwise
      * @deprecated Use {@link #getContent()} instead.
@@ -162,10 +165,10 @@ public abstract class Stream implements Serializable {
     }
 
     /**
-     * Returns if the content is a URL or not.
+     * Returns whether the content is a URL or not.
      *
-     * @return {@code true} if the content of this stream content is a URL, {@code false}
-     * if it is the actual content
+     * @return {@code true} if the content of this stream is a URL, {@code false} if it's the
+     * actual content
      */
     public boolean isUrl() {
         return isUrl;
@@ -182,9 +185,9 @@ public abstract class Stream implements Serializable {
     }
 
     /**
-     * Gets the format id, which can be unknown.
+     * Gets the format ID, which can be unknown.
      *
-     * @return the format id or {@link #FORMAT_ID_UNKNOWN}
+     * @return the format ID or {@link #FORMAT_ID_UNKNOWN}
      */
     public int getFormatId() {
         if (mediaFormat != null) {
@@ -208,7 +211,7 @@ public abstract class Stream implements Serializable {
      *
      * <p>
      * If the stream is not a DASH stream or an HLS stream, this value will always be null.
-     * It may be also null for these streams too.
+     * It may also be null for these streams too.
      * </p>
      *
      * @return the base URL of the stream or {@code null}
@@ -222,7 +225,7 @@ public abstract class Stream implements Serializable {
      * Gets the {@link ItagItem} of a stream.
      *
      * <p>
-     * If the stream is not a YouTube stream, this value will always be null.
+     * If the stream is not from YouTube, this value will always be null.
      * </p>
      *
      * @return the {@link ItagItem} of the stream or {@code null}
@@ -242,11 +245,14 @@ public abstract class Stream implements Serializable {
 
         final Stream stream = (Stream) obj;
         return id.equals(stream.id) && mediaFormat == stream.mediaFormat
-                && deliveryMethod == stream.deliveryMethod;
+                && deliveryMethod == stream.deliveryMethod
+                && content.equals(stream.content)
+                && isUrl == stream.isUrl
+                && Objects.equals(baseUrl, stream.baseUrl);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, mediaFormat, deliveryMethod);
+        return Objects.hash(id, mediaFormat, deliveryMethod, content, isUrl, baseUrl);
     }
 }

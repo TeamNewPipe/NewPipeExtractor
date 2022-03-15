@@ -17,10 +17,10 @@ public enum StreamType {
     NONE,
 
     /**
-     * Enum constant to indicate that the stream type of stream content is a video.
+     * Enum constant to indicate that the stream type of stream content is a live video.
      *
      * <p>
-     * Note that contents <strong>can contain audio streams</strong> even if they also contain
+     * Note that contents <strong>may contain audio streams</strong> even if they also contain
      * video streams (video-only or video with audio, depending of the stream/the content/the
      * service).
      * </p>
@@ -46,23 +46,22 @@ public enum StreamType {
      *
      * <p>
      * Note that contents <strong>can contain audio live streams</strong> even if they also contain
-     * live video streams (video-only or video with audio, depending of the stream/the content/the
-     * service).
+     * live video streams (so video-only or video with audio, depending on the stream/the content/
+     * the service).
      * </p>
      */
     LIVE_STREAM,
 
     /**
-     * Enum constant to indicate that the stream type of stream content is a live audio content.
+     * Enum constant to indicate that the stream type of stream content is a live audio.
      *
      * <p>
      * Note that contents returned as live audio streams should not return live video streams.
      * </p>
      *
      * <p>
-     * So, in order to prevent unexpected behaviors, stream extractors which are returning this
-     * stream type for a content should ensure that no live video stream is returned for this
-     * content.
+     * To prevent unexpected behavior, stream extractors which are returning this stream type for a
+     * content should ensure that no live video stream is returned along with it.
      * </p>
      */
     AUDIO_LIVE_STREAM,
@@ -72,10 +71,10 @@ public enum StreamType {
      * ended live video stream.
      *
      * <p>
-     * Note that most of ended live video (or audio) contents may be extracted as
-     * {@link #VIDEO_STREAM regular video contents} (or
-     * {@link #AUDIO_STREAM regular audio contents}) later, because the service may encode them
-     * again later as normal video/audio streams. That's the case for example on YouTube.
+     * Note that most of the content of an ended live video (or audio) may be extracted as {@link
+     * #VIDEO_STREAM regular video contents} (or {@link #AUDIO_STREAM regular audio contents})
+     * later, because the service may encode them again later as normal video/audio streams. That's
+     * the case on YouTube, for example.
      * </p>
      *
      * <p>

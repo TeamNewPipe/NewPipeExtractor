@@ -35,7 +35,6 @@ import static org.schabi.newpipe.extractor.utils.Utils.*;
  * It relies on external classes from the {@link org.w3c.dom} and {@link javax.xml} packages.
  * </p>
  */
-@SuppressWarnings({"ConstantConditions", "unused"})
 public final class YoutubeDashManifestCreator {
 
     /**
@@ -115,6 +114,7 @@ public final class YoutubeDashManifestCreator {
          * </p>
          */
         PROGRESSIVE,
+
         /**
          * YouTube's OTF delivery method which uses a sequence parameter to get segments of
          * streams.
@@ -124,12 +124,14 @@ public final class YoutubeDashManifestCreator {
          * metadata needed to build the stream source (sidx boxes, segment length, segment count,
          * duration, ...)
          * </p>
+         *
          * <p>
          * Only used for videos; mostly those with a small amount of views, or ended livestreams
          * which have just been re-encoded as normal videos.
          * </p>
          */
         OTF,
+
         /**
          * YouTube's delivery method for livestreams which uses a sequence parameter to get
          * segments of streams.
@@ -139,6 +141,7 @@ public final class YoutubeDashManifestCreator {
          * metadata (sidx boxes, segment length, ...), which make no need of an initialization
          * segment.
          * </p>
+         *
          * <p>
          * Only used for livestreams (ended or running).
          * </p>
@@ -225,27 +228,27 @@ public final class YoutubeDashManifestCreator {
      */
     @Nonnull
     public static String createDashManifestFromOtfStreamingUrl(
-            @Nonnull String otfBaseStreamingUrl,
+            @Nonnull final String otfBaseStreamingUrl,
             @Nonnull final ItagItem itagItem,
-            final long durationSecondsFallback)
-            throws YoutubeDashManifestCreationException {
+            final long durationSecondsFallback) throws YoutubeDashManifestCreationException {
         if (GENERATED_OTF_MANIFESTS.containsKey(otfBaseStreamingUrl)) {
-            return GENERATED_OTF_MANIFESTS.get(otfBaseStreamingUrl).getSecond();
+            return Objects.requireNonNull(GENERATED_OTF_MANIFESTS.get(otfBaseStreamingUrl))
+                    .getSecond();
         }
 
-        final String originalOtfBaseStreamingUrl = otfBaseStreamingUrl;
+        String realOtfBaseStreamingUrl = otfBaseStreamingUrl;
         // Try to avoid redirects when streaming the content by saving the last URL we get
         // from video servers.
-        final Response response = getInitializationResponse(otfBaseStreamingUrl,
+        final Response response = getInitializationResponse(realOtfBaseStreamingUrl,
                 itagItem, DeliveryType.OTF);
-        otfBaseStreamingUrl = response.latestUrl().replace(SQ_0, EMPTY_STRING)
+        realOtfBaseStreamingUrl = response.latestUrl().replace(SQ_0, EMPTY_STRING)
                 .replace(RN_0, EMPTY_STRING).replace(ALR_YES, EMPTY_STRING);
 
         final int responseCode = response.responseCode();
         if (responseCode != 200) {
             throw new YoutubeDashManifestCreationException(
-                    "Unable to create the DASH manifest: could not get the initialization URL of the OTF stream: response code "
-                            + responseCode);
+                    "Unable to create the DASH manifest: could not get the initialization URL of "
+                            + "the OTF stream: response code " + responseCode);
         }
 
         final String[] segmentDuration;
@@ -266,7 +269,8 @@ public final class YoutubeDashManifestCreator {
             }
         } catch (final Exception e) {
             throw new YoutubeDashManifestCreationException(
-                    "Unable to generate the DASH manifest: could not get the duration of segments", e);
+                    "Unable to generate the DASH manifest: could not get the duration of segments",
+                    e);
         }
 
         final Document document = generateDocumentAndMpdElement(segmentDuration, DeliveryType.OTF,
@@ -278,7 +282,7 @@ public final class YoutubeDashManifestCreator {
         if (itagItem.itagType == ItagItem.ItagType.AUDIO) {
             generateAudioChannelConfigurationElement(document, itagItem);
         }
-        generateSegmentTemplateElement(document, otfBaseStreamingUrl, DeliveryType.OTF);
+        generateSegmentTemplateElement(document, realOtfBaseStreamingUrl, DeliveryType.OTF);
         generateSegmentTimelineElement(document);
         collectSegmentsData(segmentDuration);
         generateSegmentElementsForOtfStreams(document);
@@ -286,7 +290,7 @@ public final class YoutubeDashManifestCreator {
         SEGMENTS_DURATION.clear();
         DURATION_REPETITIONS.clear();
 
-        return buildResult(originalOtfBaseStreamingUrl, document, GENERATED_OTF_MANIFESTS);
+        return buildResult(otfBaseStreamingUrl, document, GENERATED_OTF_MANIFESTS);
     }
 
     /**
@@ -358,36 +362,37 @@ public final class YoutubeDashManifestCreator {
      */
     @Nonnull
     public static String createDashManifestFromPostLiveStreamDvrStreamingUrl(
-            @Nonnull String postLiveStreamDvrStreamingUrl,
+            @Nonnull final String postLiveStreamDvrStreamingUrl,
             @Nonnull final ItagItem itagItem,
             final int targetDurationSec,
-            final long durationSecondsFallback)
-            throws YoutubeDashManifestCreationException {
+            final long durationSecondsFallback) throws YoutubeDashManifestCreationException {
         if (GENERATED_POST_LIVE_DVR_STREAMS_MANIFESTS.containsKey(postLiveStreamDvrStreamingUrl)) {
-            return GENERATED_POST_LIVE_DVR_STREAMS_MANIFESTS.get(postLiveStreamDvrStreamingUrl)
-                    .getSecond();
+            return Objects.requireNonNull(GENERATED_POST_LIVE_DVR_STREAMS_MANIFESTS.get(
+                    postLiveStreamDvrStreamingUrl)).getSecond();
         }
-        final String originalPostLiveStreamDvrStreamingUrl = postLiveStreamDvrStreamingUrl;
+        String realPostLiveStreamDvrStreamingUrl = postLiveStreamDvrStreamingUrl;
         final String streamDuration;
         final String segmentCount;
 
         if (targetDurationSec <= 0) {
             throw new YoutubeDashManifestCreationException(
-                    "Could not generate the DASH manifest: the targetDurationSec value is less than or equal to 0 (" + targetDurationSec + ")");
+                    "Could not generate the DASH manifest: the targetDurationSec value is less "
+                            + "than or equal to 0 (" + targetDurationSec + ")");
         }
 
         try {
             // Try to avoid redirects when streaming the content by saving the latest URL we get
             // from video servers.
-            final Response response = getInitializationResponse(postLiveStreamDvrStreamingUrl,
+            final Response response = getInitializationResponse(realPostLiveStreamDvrStreamingUrl,
                     itagItem, DeliveryType.LIVE);
-            postLiveStreamDvrStreamingUrl = response.latestUrl().replace(SQ_0, EMPTY_STRING)
+            realPostLiveStreamDvrStreamingUrl = response.latestUrl().replace(SQ_0, EMPTY_STRING)
                     .replace(RN_0, EMPTY_STRING).replace(ALR_YES, EMPTY_STRING);
 
             final int responseCode = response.responseCode();
             if (responseCode != 200) {
                 throw new YoutubeDashManifestCreationException(
-                        "Could not generate the DASH manifest: could not get the initialization URL of the post-live-DVR stream: response code "
+                        "Could not generate the DASH manifest: could not get the initialization "
+                                + "segment of the post-live-DVR stream: response code "
                                 + responseCode);
             }
 
@@ -396,15 +401,18 @@ public final class YoutubeDashManifestCreator {
             segmentCount = responseHeaders.get("X-Head-Seqnum").get(0);
         } catch (final IndexOutOfBoundsException e) {
             throw new YoutubeDashManifestCreationException(
-                    "Could not generate the DASH manifest: could not get the value of the X-Head-Time-Millis or the X-Head-Seqnum header of the post-live-DVR streaming URL", e);
+                    "Could not generate the DASH manifest: could not get the value of the "
+                            + "X-Head-Time-Millis or the X-Head-Seqnum header of the post-live-DVR"
+                            + "streaming URL", e);
         }
 
         if (isNullOrEmpty(segmentCount)) {
             throw new YoutubeDashManifestCreationException(
-                    "Could not generate the DASH manifest: could not get the number of segments of the post-live-DVR stream");
+                    "Could not generate the DASH manifest: could not get the number of segments of"
+                            + "the post-live-DVR stream");
         }
 
-        final Document document = generateDocumentAndMpdElement(new String[]{streamDuration},
+        final Document document = generateDocumentAndMpdElement(new String[] {streamDuration},
                 DeliveryType.LIVE, itagItem, durationSecondsFallback);
         generatePeriodElement(document);
         generateAdaptationSetElement(document, itagItem);
@@ -413,11 +421,12 @@ public final class YoutubeDashManifestCreator {
         if (itagItem.itagType == ItagItem.ItagType.AUDIO) {
             generateAudioChannelConfigurationElement(document, itagItem);
         }
-        generateSegmentTemplateElement(document, postLiveStreamDvrStreamingUrl, DeliveryType.LIVE);
+        generateSegmentTemplateElement(document, realPostLiveStreamDvrStreamingUrl,
+                DeliveryType.LIVE);
         generateSegmentTimelineElement(document);
         generateSegmentElementForPostLiveDvrStreams(document, targetDurationSec, segmentCount);
 
-        return buildResult(originalPostLiveStreamDvrStreamingUrl, document,
+        return buildResult(postLiveStreamDvrStreamingUrl, document,
                 GENERATED_POST_LIVE_DVR_STREAMS_MANIFESTS);
     }
 
@@ -486,13 +495,14 @@ public final class YoutubeDashManifestCreator {
             @Nonnull final ItagItem itagItem,
             final long durationSecondsFallback) throws YoutubeDashManifestCreationException {
         if (GENERATED_PROGRESSIVE_STREAMS_MANIFESTS.containsKey(progressiveStreamingBaseUrl)) {
-            return GENERATED_PROGRESSIVE_STREAMS_MANIFESTS.get(progressiveStreamingBaseUrl)
-                    .getSecond();
+            return Objects.requireNonNull(GENERATED_PROGRESSIVE_STREAMS_MANIFESTS.get(
+                    progressiveStreamingBaseUrl)).getSecond();
         }
 
         if (durationSecondsFallback <= 0) {
             throw new YoutubeDashManifestCreationException(
-                    "Could not generate the DASH manifest: the durationSecondsFallback value is less than or equal to 0 (" + durationSecondsFallback + ")");
+                    "Could not generate the DASH manifest: the durationSecondsFallback value is"
+                            + "less than or equal to 0 (" + durationSecondsFallback + ")");
         }
 
         final Document document = generateDocumentAndMpdElement(new String[]{},
@@ -508,7 +518,8 @@ public final class YoutubeDashManifestCreator {
         generateSegmentBaseElement(document, itagItem);
         generateInitializationElement(document, itagItem);
 
-        return buildResult(progressiveStreamingBaseUrl, document, GENERATED_PROGRESSIVE_STREAMS_MANIFESTS);
+        return buildResult(progressiveStreamingBaseUrl, document,
+                GENERATED_PROGRESSIVE_STREAMS_MANIFESTS);
     }
 
     /**
@@ -564,7 +575,8 @@ public final class YoutubeDashManifestCreator {
                 return downloader.post(baseStreamingUrl, headers, emptyBody);
             } catch (final IOException | ExtractionException e) {
                 throw new YoutubeDashManifestCreationException(
-                        "Could not generate the DASH manifest: error when trying to get the ANDROID streaming post-live-DVR URL response", e);
+                        "Could not generate the DASH manifest: error when trying to get the "
+                                + "ANDROID streaming post-live-DVR URL response", e);
             }
         }
 
@@ -579,10 +591,12 @@ public final class YoutubeDashManifestCreator {
         } catch (final IOException | ExtractionException e) {
             if (isAnAndroidStreamingUrl) {
                 throw new YoutubeDashManifestCreationException(
-                        "Could not generate the DASH manifest: error when trying to get the ANDROID streaming URL response", e);
+                        "Could not generate the DASH manifest: error when trying to get the "
+                                + "ANDROID streaming URL response", e);
             } else {
                 throw new YoutubeDashManifestCreationException(
-                        "Could not generate the DASH manifest: error when trying to get the streaming URL response", e);
+                        "Could not generate the DASH manifest: error when trying to get the "
+                                + "streaming URL response", e);
             }
         }
     }
@@ -658,16 +672,18 @@ public final class YoutubeDashManifestCreator {
                 if (responseCode != 200) {
                     if (deliveryType == DeliveryType.LIVE) {
                         throw new YoutubeDashManifestCreationException(
-                                "Could not generate the DASH manifest: could not get the initialization URL of the post-live-DVR stream: response code "
-                                        + responseCode);
+                                "Could not generate the DASH manifest: could not get the "
+                                        + "initialization URL of the post-live-DVR stream: "
+                                        + "response code " + responseCode);
                     } else if (deliveryType == DeliveryType.OTF) {
                         throw new YoutubeDashManifestCreationException(
-                                "Could not generate the DASH manifest: could not get the initialization URL of the OTF stream: response code "
+                                "Could not generate the DASH manifest: could not get the "
+                                        + "initialization URL of the OTF stream: response code "
                                         + responseCode);
                     } else {
                         throw new YoutubeDashManifestCreationException(
-                                "Could not generate the DASH manifest: could not fetch the URL of the progressive stream: response code "
-                                        + responseCode);
+                                "Could not generate the DASH manifest: could not fetch the URL of "
+                                        + "the progressive stream: response code " + responseCode);
                     }
                 }
 
@@ -678,7 +694,8 @@ public final class YoutubeDashManifestCreator {
                             "Content-Type"));
                 } catch (final NullPointerException e) {
                     throw new YoutubeDashManifestCreationException(
-                            "Could not generate the DASH manifest: could not get the Content-Type header from the streaming URL", e);
+                            "Could not generate the DASH manifest: could not get the Content-Type "
+                                    + "header from the streaming URL", e);
                 }
 
                 // The response body is the redirection URL
@@ -692,16 +709,19 @@ public final class YoutubeDashManifestCreator {
 
             if (redirectsCount >= MAXIMUM_REDIRECT_COUNT) {
                 throw new YoutubeDashManifestCreationException(
-                        "Could not generate the DASH manifest: too many redirects when trying to get the WEB streaming URL response");
+                        "Could not generate the DASH manifest: too many redirects when trying to "
+                                + "get the WEB streaming URL response");
             }
 
             // This should never be reached, but is required because we don't want to return null
             // here
             throw new YoutubeDashManifestCreationException(
-                    "Could not generate the DASH manifest: error when trying to get the WEB streaming URL response");
+                    "Could not generate the DASH manifest: error when trying to get the WEB "
+                            + "streaming URL response");
         } catch (final IOException | ExtractionException e) {
             throw new YoutubeDashManifestCreationException(
-                    "Could not generate the DASH manifest: error when trying to get the WEB streaming URL response", e);
+                    "Could not generate the DASH manifest: error when trying to get the WEB "
+                            + "streaming URL response", e);
         }
     }
 
@@ -731,7 +751,8 @@ public final class YoutubeDashManifestCreator {
             }
         } catch (final NumberFormatException e) {
             throw new YoutubeDashManifestCreationException(
-                    "Could not generate the DASH manifest: unable to get the segments of the stream", e);
+                    "Could not generate the DASH manifest: unable to get the segments of the "
+                            + "stream", e);
         }
     }
 
@@ -767,7 +788,8 @@ public final class YoutubeDashManifestCreator {
             return streamLengthMs;
         } catch (final NumberFormatException e) {
             throw new YoutubeDashManifestCreationException(
-                    "Could not generate the DASH manifest: unable to get the length of the stream", e);
+                    "Could not generate the DASH manifest: unable to get the length of the stream",
+                    e);
         }
     }
 
@@ -778,6 +800,7 @@ public final class YoutubeDashManifestCreator {
      * The generated {@code <MPD>} element looks like the manifest returned into the player
      * response of videos with OTF streams:
      * </p>
+     *
      * <p>
      * {@code <MPD xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
      * xmlns="urn:mpeg:DASH:schema:MPD:2011"
@@ -787,6 +810,7 @@ public final class YoutubeDashManifestCreator {
      * (where {@code $duration$} represents the duration in seconds (a number with 3 digits after
      * the decimal point)
      * </p>
+     *
      * <p>
      * If the duration is an integer or a double with less than 3 digits after the decimal point,
      * it will be converted into a double with 3 digits after the decimal point.
@@ -859,8 +883,10 @@ public final class YoutubeDashManifestCreator {
                         streamDuration = durationSecondsFallback * 1000;
                     } else {
                         throw new YoutubeDashManifestCreationException(
-                                "Could not generate or append the MPD element of the DASH manifest to the document: "
-                                        + "the duration of the stream could not be determined and the durationSecondsFallback is less than or equal to 0");
+                                "Could not generate or append the MPD element of the DASH "
+                                        + "manifest to the document: the duration of the stream "
+                                        + "could not be determined and the "
+                                        + "durationSecondsFallback is less than or equal to 0");
                     }
                 }
             }
@@ -870,7 +896,8 @@ public final class YoutubeDashManifestCreator {
             mpdElement.setAttributeNode(mediaPresentationDurationAttribute);
         } catch (final Exception e) {
             throw new YoutubeDashManifestCreationException(
-                    "Could not generate or append the MPD element of the DASH manifest to the document", e);
+                    "Could not generate or append the MPD element of the DASH manifest to the "
+                            + "document", e);
         }
 
         return document;
@@ -898,7 +925,8 @@ public final class YoutubeDashManifestCreator {
             mpdElement.appendChild(periodElement);
         } catch (final DOMException e) {
             throw new YoutubeDashManifestCreationException(
-                    "Could not generate or append the Period element of the DASH manifest to the document", e);
+                    "Could not generate or append the Period element of the DASH manifest to the "
+                            + "document", e);
         }
     }
 
@@ -921,7 +949,8 @@ public final class YoutubeDashManifestCreator {
                                                      @Nonnull final ItagItem itagItem)
             throws YoutubeDashManifestCreationException {
         try {
-            final Element periodElement = (Element) document.getElementsByTagName("Period").item(0);
+            final Element periodElement = (Element) document.getElementsByTagName("Period")
+                    .item(0);
             final Element adaptationSetElement = document.createElement("AdaptationSet");
 
             final Attr idAttribute = document.createAttribute("id");
@@ -931,21 +960,25 @@ public final class YoutubeDashManifestCreator {
             final MediaFormat mediaFormat = itagItem.getMediaFormat();
             if (mediaFormat == null || isNullOrEmpty(mediaFormat.mimeType)) {
                 throw new YoutubeDashManifestCreationException(
-                        "Could not generate the AdaptationSet element of the DASH manifest to the document: the MediaFormat or the mime type of the MediaFormat of the ItagItem is null or empty");
+                        "Could not generate the AdaptationSet element of the DASH manifest to the "
+                                + "document: the MediaFormat or the mime type of the MediaFormat "
+                                + "of the ItagItem is null or empty");
             }
 
             final Attr mimeTypeAttribute = document.createAttribute("mimeType");
             mimeTypeAttribute.setValue(mediaFormat.mimeType);
             adaptationSetElement.setAttributeNode(mimeTypeAttribute);
 
-            final Attr subsegmentAlignmentAttribute = document.createAttribute("subsegmentAlignment");
+            final Attr subsegmentAlignmentAttribute = document.createAttribute(
+                    "subsegmentAlignment");
             subsegmentAlignmentAttribute.setValue("true");
             adaptationSetElement.setAttributeNode(subsegmentAlignmentAttribute);
 
             periodElement.appendChild(adaptationSetElement);
         } catch (final DOMException e) {
             throw new YoutubeDashManifestCreationException(
-                    "Could not generate or append the AdaptationSet element of the DASH manifest to the document", e);
+                    "Could not generate or append the AdaptationSet element of the DASH manifest "
+                            + "to the document", e);
         }
     }
 
@@ -956,9 +989,11 @@ public final class YoutubeDashManifestCreator {
      * <p>
      * This element, with its attributes and values, is:
      * </p>
+     *
      * <p>
      * {@code <Role schemeIdUri="urn:mpeg:DASH:role:2011" value="main"/>}
      * </p>
+     *
      * <p>
      * The {@code <AdaptationSet>} element needs to be generated before this element with
      * {@link #generateAdaptationSetElement(Document, ItagItem)}).
@@ -967,7 +1002,8 @@ public final class YoutubeDashManifestCreator {
      * @param document the {@link Document} on which the the {@code <Role>} element will be
      *                 appended
      * @throws YoutubeDashManifestCreationException if something goes wrong when generating or
-     *                                              appending the {@code <Role>} element to the document
+     *                                              appending the {@code <Role>} element to the
+     *                                              document
      */
     private static void generateRoleElement(@Nonnull final Document document)
             throws YoutubeDashManifestCreationException {
@@ -987,7 +1023,8 @@ public final class YoutubeDashManifestCreator {
             adaptationSetElement.appendChild(roleElement);
         } catch (final DOMException e) {
             throw new YoutubeDashManifestCreationException(
-                    "Could not generate or append the Role element of the DASH manifest to the document", e);
+                    "Could not generate or append the Role element of the DASH manifest to the "
+                            + "document", e);
         }
     }
 
@@ -1018,7 +1055,9 @@ public final class YoutubeDashManifestCreator {
             final int id = itagItem.id;
             if (id <= 0) {
                 throw new YoutubeDashManifestCreationException(
-                        "Could not generate the Representation element of the DASH manifest to the document: the id of the ItagItem is less than or equal to 0");
+                        "Could not generate the Representation element of the DASH manifest to "
+                                + "the document: the id of the ItagItem is less than or equal to "
+                                + "0");
             }
             final Attr idAttribute = document.createAttribute("id");
             idAttribute.setValue(String.valueOf(id));
@@ -1027,7 +1066,8 @@ public final class YoutubeDashManifestCreator {
             final String codec = itagItem.getCodec();
             if (isNullOrEmpty(codec)) {
                 throw new YoutubeDashManifestCreationException(
-                        "Could not generate the AdaptationSet element of the DASH manifest to the document: the codecs value is null or empty");
+                        "Could not generate the AdaptationSet element of the DASH manifest to the "
+                                + "document: the codec value is null or empty");
             }
             final Attr codecsAttribute = document.createAttribute("codecs");
             codecsAttribute.setValue(codec);
@@ -1044,7 +1084,9 @@ public final class YoutubeDashManifestCreator {
             final int bitrate = itagItem.getBitrate();
             if (bitrate <= 0) {
                 throw new YoutubeDashManifestCreationException(
-                        "Could not generate the Representation element of the DASH manifest to the document: the bitrate of the ItagItem is less than or equal to 0");
+                        "Could not generate the Representation element of the DASH manifest to "
+                                + "the document: the bitrate of the ItagItem is less than or "
+                                + "equal to 0");
             }
             final Attr bandwidthAttribute = document.createAttribute("bandwidth");
             bandwidthAttribute.setValue(String.valueOf(bitrate));
@@ -1057,7 +1099,9 @@ public final class YoutubeDashManifestCreator {
                 final int width = itagItem.getWidth();
                 if (height <= 0 && width <= 0) {
                     throw new YoutubeDashManifestCreationException(
-                            "Could not generate the Representation element of the DASH manifest to the document: the width and the height of the ItagItem are less than or equal to 0");
+                            "Could not generate the Representation element of the DASH manifest "
+                                    + "to the document: the width and the height of the ItagItem "
+                                    + "are less than or equal to 0");
                 }
 
                 if (width > 0) {
@@ -1087,7 +1131,8 @@ public final class YoutubeDashManifestCreator {
             adaptationSetElement.appendChild(representationElement);
         } catch (final DOMException e) {
             throw new YoutubeDashManifestCreationException(
-                    "Could not generate or append the Representation element of the DASH manifest to the document", e);
+                    "Could not generate or append the Representation element of the DASH manifest "
+                            + "to the document", e);
         }
     }
 
@@ -1098,6 +1143,7 @@ public final class YoutubeDashManifestCreator {
      * <p>
      * This method is only used when generating DASH manifests of audio streams.
      * </p>
+     *
      * <p>
      * It will produce the following element:
      * <br>
@@ -1108,6 +1154,7 @@ public final class YoutubeDashManifestCreator {
      * (where {@code audioChannelsValue} is get from the {@link ItagItem} passed as the second
      * parameter of this method)
      * </p>
+     *
      * <p>
      * The {@code <Representation>} element needs to be generated before this element with
      * {@link #generateRepresentationElement(Document, ItagItem)}).
@@ -1139,7 +1186,8 @@ public final class YoutubeDashManifestCreator {
             final int audioChannels = itagItem.getAudioChannels();
             if (audioChannels <= 0) {
                 throw new YoutubeDashManifestCreationException(
-                        "Could not generate the DASH manifest: the audioChannels value is less than or equal to 0 (" + audioChannels + ")");
+                        "Could not generate the DASH manifest: the audioChannels value is less "
+                                + "than or equal to 0 (" + audioChannels + ")");
             }
             valueAttribute.setValue(String.valueOf(itagItem.getAudioChannels()));
             audioChannelConfigurationElement.setAttributeNode(valueAttribute);
@@ -1147,7 +1195,8 @@ public final class YoutubeDashManifestCreator {
             representationElement.appendChild(audioChannelConfigurationElement);
         } catch (final DOMException e) {
             throw new YoutubeDashManifestCreationException(
-                    "Could not generate or append the AudioChannelConfiguration element of the DASH manifest to the document", e);
+                    "Could not generate or append the AudioChannelConfiguration element of the "
+                            + "DASH manifest to the document", e);
         }
     }
 
@@ -1158,6 +1207,7 @@ public final class YoutubeDashManifestCreator {
      * <p>
      * This method is only used when generating DASH manifests from progressive streams.
      * </p>
+     *
      * <p>
      * The {@code <Representation>} element needs to be generated before this element with
      * {@link #generateRepresentationElement(Document, ItagItem)}).
@@ -1182,7 +1232,8 @@ public final class YoutubeDashManifestCreator {
             representationElement.appendChild(baseURLElement);
         } catch (final DOMException e) {
             throw new YoutubeDashManifestCreationException(
-                    "Could not generate or append the BaseURL element of the DASH manifest to the document", e);
+                    "Could not generate or append the BaseURL element of the DASH manifest to the "
+                            + "document", e);
         }
     }
 
@@ -1193,6 +1244,7 @@ public final class YoutubeDashManifestCreator {
      * <p>
      * This method is only used when generating DASH manifests from progressive streams.
      * </p>
+     *
      * <p>
      * It generates the following element:
      * <br>
@@ -1201,6 +1253,7 @@ public final class YoutubeDashManifestCreator {
      * (where {@code indexStart} and {@code indexEnd} are gotten from the {@link ItagItem} passed
      * as the second parameter)
      * </p>
+     *
      * <p>
      * The {@code <Representation>} element needs to be generated before this element with
      * {@link #generateRepresentationElement(Document, ItagItem)}).
@@ -1227,12 +1280,14 @@ public final class YoutubeDashManifestCreator {
             final int indexStart = itagItem.getIndexStart();
             if (indexStart < 0) {
                 throw new YoutubeDashManifestCreationException(
-                        "Could not generate the DASH manifest: the indexStart value of the ItagItem is less than to 0 (" + indexStart + ")");
+                        "Could not generate the DASH manifest: the indexStart value of the "
+                                + "ItagItem is less than to 0 (" + indexStart + ")");
             }
             final int indexEnd = itagItem.getIndexEnd();
             if (indexEnd < 0) {
                 throw new YoutubeDashManifestCreationException(
-                        "Could not generate the DASH manifest: the indexEnd value of the ItagItem is less than to 0 (" + indexStart + ")");
+                        "Could not generate the DASH manifest: the indexEnd value of the ItagItem "
+                                + "is less than to 0 (" + indexStart + ")");
             }
 
             indexRangeAttribute.setValue(indexStart + "-" + indexEnd);
@@ -1241,7 +1296,8 @@ public final class YoutubeDashManifestCreator {
             representationElement.appendChild(segmentBaseElement);
         } catch (final DOMException e) {
             throw new YoutubeDashManifestCreationException(
-                    "Could not generate or append the SegmentBase element of the DASH manifest to the document", e);
+                    "Could not generate or append the SegmentBase element of the DASH manifest to "
+                            + "the document", e);
         }
     }
 
@@ -1252,6 +1308,7 @@ public final class YoutubeDashManifestCreator {
      * <p>
      * This method is only used when generating DASH manifests from progressive streams.
      * </p>
+     *
      * <p>
      * It generates the following element:
      * <br>
@@ -1260,6 +1317,7 @@ public final class YoutubeDashManifestCreator {
      * (where {@code indexStart} and {@code indexEnd} are gotten from the {@link ItagItem} passed
      * as the second parameter)
      * </p>
+     *
      * <p>
      * The {@code <SegmentBase>} element needs to be generated before this element with
      * {@link #generateSegmentBaseElement(Document, ItagItem)}).
@@ -1286,12 +1344,14 @@ public final class YoutubeDashManifestCreator {
             final int initStart = itagItem.getInitStart();
             if (initStart < 0) {
                 throw new YoutubeDashManifestCreationException(
-                        "Could not generate the DASH manifest: the initStart value of the ItagItem is less than to 0 (" + initStart + ")");
+                        "Could not generate the DASH manifest: the initStart value of the "
+                                + "ItagItem is less than to 0 (" + initStart + ")");
             }
             final int initEnd = itagItem.getInitEnd();
             if (initEnd < 0) {
                 throw new YoutubeDashManifestCreationException(
-                        "Could not generate the DASH manifest: the initEnd value of the ItagItem is less than to 0 (" + initEnd + ")");
+                        "Could not generate the DASH manifest: the initEnd value of the ItagItem "
+                                + "is less than to 0 (" + initEnd + ")");
             }
 
             rangeAttribute.setValue(initStart + "-" + initEnd);
@@ -1300,7 +1360,8 @@ public final class YoutubeDashManifestCreator {
             segmentBaseElement.appendChild(initializationElement);
         } catch (final DOMException e) {
             throw new YoutubeDashManifestCreationException(
-                    "Could not generate or append the Initialization element of the DASH manifest to the document", e);
+                    "Could not generate or append the Initialization element of the DASH manifest "
+                            + "to the document", e);
         }
     }
 
@@ -1311,6 +1372,7 @@ public final class YoutubeDashManifestCreator {
      * <p>
      * This method is only used when generating DASH manifests from OTF and post-live-DVR streams.
      * </p>
+     *
      * <p>
      * It will produce a {@code <SegmentTemplate>} element with the following attributes:
      * <ul>
@@ -1372,7 +1434,8 @@ public final class YoutubeDashManifestCreator {
             representationElement.appendChild(segmentTemplateElement);
         } catch (final DOMException e) {
             throw new YoutubeDashManifestCreationException(
-                    "Could not generate or append the SegmentTemplate element of the DASH manifest to the document", e);
+                    "Could not generate or append the SegmentTemplate element of the DASH "
+                            + "manifest to the document", e);
         }
     }
 
@@ -1401,7 +1464,8 @@ public final class YoutubeDashManifestCreator {
             segmentTemplateElement.appendChild(segmentTimelineElement);
         } catch (final DOMException e) {
             throw new YoutubeDashManifestCreationException(
-                    "Could not generate or append the SegmentTimeline element of the DASH manifest to the document", e);
+                    "Could not generate or append the SegmentTimeline element of the DASH "
+                            + "manifest to the document", e);
         }
     }
 
@@ -1413,16 +1477,20 @@ public final class YoutubeDashManifestCreator {
      * so we just have to loop into {@link #SEGMENTS_DURATION} and {@link #DURATION_REPETITIONS}
      * to generate the following element for each duration:
      * </p>
+     *
      * <p>
      * {@code <S d="segmentDuration" r="durationRepetition" />}
      * </p>
+     *
      * <p>
      * If there is no repetition of the duration between two segments, the {@code r} attribute is
      * not added to the {@code S} element.
      * </p>
+     *
      * <p>
      * These elements will be appended as children of the {@code <SegmentTimeline>} element.
      * </p>
+     *
      * <p>
      * The {@code <SegmentTimeline>} element needs to be generated before this element with
      * {@link #generateSegmentTimelineElement(Document)}.
@@ -1462,7 +1530,8 @@ public final class YoutubeDashManifestCreator {
 
         } catch (final DOMException | IllegalStateException | IndexOutOfBoundsException e) {
             throw new YoutubeDashManifestCreationException(
-                    "Could not generate or append the segment (S) elements of the DASH manifest to the document", e);
+                    "Could not generate or append the segment (S) elements of the DASH manifest "
+                            + "to the document", e);
         }
     }
 
@@ -1507,7 +1576,8 @@ public final class YoutubeDashManifestCreator {
             segmentTimelineElement.appendChild(sElement);
         } catch (final DOMException e) {
             throw new YoutubeDashManifestCreationException(
-                    "Could not generate or append the segment (S) elements of the DASH manifest to the document", e);
+                    "Could not generate or append the segment (S) elements of the DASH manifest "
+                            + "to the document", e);
         }
     }
 

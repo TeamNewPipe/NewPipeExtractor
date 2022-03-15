@@ -233,11 +233,10 @@ public class SoundcloudStreamExtractor extends StreamExtractor {
     @Nullable
     private String getDownloadUrl(@Nonnull final String trackId)
             throws IOException, ExtractionException {
-        final Downloader dl = NewPipe.getDownloader();
-        final JsonObject downloadJsonObject;
+        final String response = NewPipe.getDownloader().get(SOUNDCLOUD_API_V2_URL + "tracks/"
+                + trackId + "/download" + "?client_id=" + clientId()).responseBody();
 
-        final String response = dl.get(SOUNDCLOUD_API_V2_URL + "tracks/" + trackId
-                + "/download" + "?client_id=" + clientId()).responseBody();
+        final JsonObject downloadJsonObject;
         try {
             downloadJsonObject = JsonParser.object().from(response);
         } catch (final JsonParserException e) {
@@ -293,7 +292,7 @@ public class SoundcloudStreamExtractor extends StreamExtractor {
                     }
                 }
             } catch (final Exception ignored) {
-                // Something went wrong when parsing this transcoding, don't add it to the
+                // Something went wrong when parsing this transcoding URL, so don't add it to the
                 // audioStreams
             }
         }
@@ -304,11 +303,15 @@ public class SoundcloudStreamExtractor extends StreamExtractor {
      *
      * <p>
      * A track can have the {@code downloadable} boolean set to {@code true}, but it doesn't mean
-     * we can download it: if the value of the {@code has_download_left} boolean is true, the track
-     * can be downloaded; otherwise not.
+     * we can download it.
      * </p>
      *
-     * @param audioStreams the audio streams to which add the downloadable file
+     * <p>
+     * If the value of the {@code has_download_left} boolean is {@code true}, the track can be
+     * downloaded, and not otherwise.
+     * </p>
+     *
+     * @param audioStreams the audio streams to which the downloadable file is added
      */
     public void extractDownloadableFileIfAvailable(final List<AudioStream> audioStreams) {
         if (track.getBoolean("downloadable") && track.getBoolean("has_downloads_left")) {
@@ -332,9 +335,9 @@ public class SoundcloudStreamExtractor extends StreamExtractor {
      * Parses a SoundCloud HLS manifest to get a single URL of HLS streams.
      *
      * <p>
-     * This method downloads the provided manifest URL, find all web occurrences in the manifest,
-     * get the last segment URL, changes its segment range to {@code 0/track-length} and return
-     * this string.
+     * This method downloads the provided manifest URL, finds all web occurrences in the manifest,
+     * gets the last segment URL, changes its segment range to {@code 0/track-length}, and return
+     * this as a string.
      * </p>
      *
      * @param  hlsManifestUrl the URL of the manifest to be parsed

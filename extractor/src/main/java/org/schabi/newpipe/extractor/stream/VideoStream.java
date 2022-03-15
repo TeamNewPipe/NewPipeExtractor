@@ -81,7 +81,7 @@ public final class VideoStream extends Stream {
          * Set the identifier of the {@link VideoStream}.
          *
          * <p>
-         * It <b>must be not null</b> and should be non empty.
+         * It must not be null, and should be non empty.
          * </p>
          *
          * <p>
@@ -89,7 +89,7 @@ public final class VideoStream extends Stream {
          * Stream#ID_UNKNOWN ID_UNKNOWN} of the {@link Stream} class.
          * </p>
          *
-         * @param id the identifier of the {@link VideoStream}, which must be not null
+         * @param id the identifier of the {@link VideoStream}, which must not be null
          * @return this {@link Builder} instance
          */
         public Builder setId(@Nonnull final String id) {
@@ -101,7 +101,7 @@ public final class VideoStream extends Stream {
          * Set the content of the {@link VideoStream}.
          *
          * <p>
-         * It must be non null and should be non empty.
+         * It must not be null, and should be non empty.
          * </p>
          *
          * @param content the content of the {@link VideoStream}
@@ -120,8 +120,8 @@ public final class VideoStream extends Stream {
          *
          * <p>
          * It should be one of the video {@link MediaFormat}s ({@link MediaFormat#MPEG_4 MPEG_4},
-         * {@link MediaFormat#v3GPP v3GPP}, {@link MediaFormat#WEBM WEBM}) but can be {@code null}
-         * if the media format could not be determined.
+         * {@link MediaFormat#v3GPP v3GPP}, or {@link MediaFormat#WEBM WEBM}) but can be {@code
+         * null} if the media format could not be determined.
          * </p>
          *
          * <p>
@@ -140,7 +140,7 @@ public final class VideoStream extends Stream {
          * Set the {@link DeliveryMethod} of the {@link VideoStream}.
          *
          * <p>
-         * It must be not null.
+         * It must not be null.
          * </p>
          *
          * <p>
@@ -148,7 +148,7 @@ public final class VideoStream extends Stream {
          * </p>
          *
          * @param deliveryMethod the {@link DeliveryMethod} of the {@link VideoStream}, which must
-         *                       be not null
+         *                       not be null
          * @return this {@link Builder} instance
          */
         public Builder setDeliveryMethod(@Nonnull final DeliveryMethod deliveryMethod) {
@@ -160,8 +160,8 @@ public final class VideoStream extends Stream {
          * Set the base URL of the {@link VideoStream}.
          *
          * <p>
-         * Base URLs are for instance, for non-URLs content, the DASH or HLS manifest from which
-         * they have been parsed.
+         * For non-URL contents, the base URL is, for instance, a link to the DASH or HLS manifest
+         * from which the URLs have been parsed.
          * </p>
          *
          * <p>
@@ -245,8 +245,8 @@ public final class VideoStream extends Stream {
          *
          * @return a new {@link VideoStream} using the builder's current values
          * @throws IllegalStateException if {@code id}, {@code content} (and so {@code isUrl}),
-         * {@code deliveryMethod}, {@code isVideoOnly} or {@code resolution} have been not set or
-         * set as {@code null}
+         * {@code deliveryMethod}, {@code isVideoOnly} or {@code resolution} have been not set, or
+         * have been set as {@code null}
          */
         @Nonnull
         public VideoStream build() {
@@ -289,8 +289,8 @@ public final class VideoStream extends Stream {
     /**
      * Create a new video stream.
      *
-     * @param id             the ID which uniquely identifies the stream, e.g. for YouTube this
-     *                       would be the itag
+     * @param id             the identifier which uniquely identifies the stream, e.g. for YouTube
+     *                       this would be the itag
      * @param content        the content or the URL of the stream, depending on whether isUrl is
      *                       true
      * @param isUrl          whether content is the URL or the actual content of e.g. a DASH
@@ -303,6 +303,7 @@ public final class VideoStream extends Stream {
      * @param baseUrl        the base URL of the stream (see {@link Stream#getBaseUrl()} for more
      *                       information)
      */
+    @SuppressWarnings("checkstyle:ParameterNumber")
     private VideoStream(@Nonnull final String id,
                         @Nonnull final String content,
                         final boolean isUrl,

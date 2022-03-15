@@ -237,11 +237,15 @@ public class ItagItem implements Serializable {
     }
 
     /**
-     * Get the frame rate per second.
+     * Get the frame rate.
      *
      * <p>
-     * It defaults to the standard value associated with this itag and is set to the {@code fps}
-     * value returned in the corresponding itag in the YouTube player response.
+     * It is set to the {@code fps} value returned in the corresponding itag in the YouTube player
+     * response.
+     * </p>
+     *
+     * <p>
+     * It defaults to the standard value associated with this itag.
      * </p>
      *
      * <p>
@@ -249,28 +253,24 @@ public class ItagItem implements Serializable {
      * #FPS_NOT_APPLICABLE_OR_UNKNOWN} is returned for non video itags.
      * </p>
      *
-     * @return the frame rate per second or {@link #FPS_NOT_APPLICABLE_OR_UNKNOWN}
+     * @return the frame rate or {@link #FPS_NOT_APPLICABLE_OR_UNKNOWN}
      */
     public int getFps() {
         return fps;
     }
 
     /**
-     * Set the frame rate per second.
+     * Set the frame rate.
      *
      * <p>
      * It is only known for video itags, so {@link #FPS_NOT_APPLICABLE_OR_UNKNOWN} is set/used for
      * non video itags or if the sample rate value is less than or equal to 0.
      * </p>
      *
-     * @param fps the frame rate per second
+     * @param fps the frame rate
      */
     public void setFps(final int fps) {
-        if (fps > 0) {
-            this.fps = fps;
-        } else {
-            this.fps = FPS_NOT_APPLICABLE_OR_UNKNOWN;
-        }
+        this.fps = fps > 0 ? fps : FPS_NOT_APPLICABLE_OR_UNKNOWN;
     }
 
     public int getInitStart() {
@@ -314,13 +314,13 @@ public class ItagItem implements Serializable {
     }
 
     /**
-     * Get the resolution string associated to this {@code ItagItem}.
+     * Get the resolution string associated with this {@code ItagItem}.
      *
      * <p>
      * It is only known for video itags.
      * </p>
      *
-     * @return the resolution string associated to this {@code ItagItem} or
+     * @return the resolution string associated with this {@code ItagItem} or
      * {@code null}.
      */
     @Nullable
@@ -361,7 +361,7 @@ public class ItagItem implements Serializable {
      *
      * <p>
      * It is only known for audio itags, so {@link #SAMPLE_RATE_UNKNOWN} is returned for non audio
-     * itags or if the sample rate is unknown.
+     * itags, or if the sample rate is unknown.
      * </p>
      *
      * @return the sample rate or {@link #SAMPLE_RATE_UNKNOWN}
@@ -374,8 +374,8 @@ public class ItagItem implements Serializable {
      * Set the sample rate.
      *
      * <p>
-     * It is only known for audio itags, so {@link #SAMPLE_RATE_UNKNOWN} is set/used for non video
-     * itags or if the sample rate value is less than or equal to 0.
+     * It is only known for audio itags, so {@link #SAMPLE_RATE_UNKNOWN} is set/used for non audio
+     * itags, or if the sample rate value is less than or equal to 0.
      * </p>
      *
      * @param sampleRate the sample rate of an audio itag
@@ -392,8 +392,8 @@ public class ItagItem implements Serializable {
      * Get the number of audio channels.
      *
      * <p>
-     * It is only known for audio streams, so {@link #AUDIO_CHANNELS_NOT_APPLICABLE_OR_UNKNOWN} is
-     * returned for video streams or if it is unknown.
+     * It is only known for audio itags, so {@link #AUDIO_CHANNELS_NOT_APPLICABLE_OR_UNKNOWN} is
+     * returned for non audio itags, or if it is unknown.
      * </p>
      *
      * @return the number of audio channels or {@link #AUDIO_CHANNELS_NOT_APPLICABLE_OR_UNKNOWN}
@@ -406,28 +406,26 @@ public class ItagItem implements Serializable {
      * Set the number of audio channels.
      *
      * <p>
-     * It is only known for audio itag, so {@link #AUDIO_CHANNELS_NOT_APPLICABLE_OR_UNKNOWN} is
-     * set/used for non audio itags or if the {@code audioChannels} value is less than or equal to
+     * It is only known for audio itags, so {@link #AUDIO_CHANNELS_NOT_APPLICABLE_OR_UNKNOWN} is
+     * set/used for non audio itags, or if the {@code audioChannels} value is less than or equal to
      * 0.
      * </p>
      *
      * @param audioChannels the number of audio channels of an audio itag
      */
     public void setAudioChannels(final int audioChannels) {
-        if (audioChannels > 0) {
-            this.audioChannels = audioChannels;
-        } else {
-            this.audioChannels = AUDIO_CHANNELS_NOT_APPLICABLE_OR_UNKNOWN;
-        }
+        this.audioChannels = audioChannels > 0
+                ? audioChannels
+                : AUDIO_CHANNELS_NOT_APPLICABLE_OR_UNKNOWN;
     }
 
     /**
      * Get the {@code targetDurationSec} value.
      *
      * <p>
-     * This value is an average time in seconds of sequences duration of livestreams and ended
-     * livestreams. It is only returned for these stream types by YouTube and makes no sense for
-     * videos, so {@link #TARGET_DURATION_SEC_UNKNOWN} is returned for video streams.
+     * This value is the average time in seconds of the duration of sequences of livestreams and
+     * ended livestreams. It is only returned by YouTube for these stream types, and makes no sense
+     * for videos, so {@link #TARGET_DURATION_SEC_UNKNOWN} is returned for those.
      * </p>
      *
      * @return the {@code targetDurationSec} value or {@link #TARGET_DURATION_SEC_UNKNOWN}
@@ -440,25 +438,23 @@ public class ItagItem implements Serializable {
      * Set the {@code targetDurationSec} value.
      *
      * <p>
-     * This value is an average time in seconds of sequences duration of livestreams and ended
-     * livestreams.
+     * This value is the average time in seconds of the duration of sequences of livestreams and
+     * ended livestreams.
      * </p>
      *
      * <p>
-     * It is only returned for these stream types by YouTube and makes no sense for
-     * videos, so {@link #TARGET_DURATION_SEC_UNKNOWN} will be set/used for video streams or if
-     * this value is less than or equal to 0.
+     * It is only returned for these stream types by YouTube and makes no sense for videos, so
+     * {@link #TARGET_DURATION_SEC_UNKNOWN} will be set/used for video streams or if this value is
+     * less than or equal to 0.
      * </p>
      *
      * @param targetDurationSec the target duration of a segment of streams which are using the
      *                          live delivery method type
      */
     public void setTargetDurationSec(final int targetDurationSec) {
-        if (targetDurationSec > 0) {
-            this.targetDurationSec = targetDurationSec;
-        } else {
-            this.targetDurationSec = TARGET_DURATION_SEC_UNKNOWN;
-        }
+        this.targetDurationSec = targetDurationSec > 0
+                ? targetDurationSec
+                : TARGET_DURATION_SEC_UNKNOWN;
     }
 
     /**
@@ -487,11 +483,9 @@ public class ItagItem implements Serializable {
      *                         milliseconds
      */
     public void setApproxDurationMs(final long approxDurationMs) {
-        if (approxDurationMs > 0) {
-            this.approxDurationMs = approxDurationMs;
-        } else {
-            this.approxDurationMs = APPROX_DURATION_MS_UNKNOWN;
-        }
+        this.approxDurationMs = approxDurationMs > 0
+                ? approxDurationMs
+                : APPROX_DURATION_MS_UNKNOWN;
     }
 
     /**
@@ -519,10 +513,6 @@ public class ItagItem implements Serializable {
      * @param contentLength the content length of a DASH progressive stream
      */
     public void setContentLength(final long contentLength) {
-        if (contentLength > 0) {
-            this.contentLength = contentLength;
-        } else {
-            this.contentLength = CONTENT_LENGTH_UNKNOWN;
-        }
+        this.contentLength = contentLength > 0 ? contentLength : CONTENT_LENGTH_UNKNOWN;
     }
 }

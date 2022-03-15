@@ -25,6 +25,7 @@ import static org.schabi.newpipe.extractor.services.youtube.YoutubeParsingHelper
 import static org.schabi.newpipe.extractor.services.youtube.YoutubeParsingHelper.RACY_CHECK_OK;
 import static org.schabi.newpipe.extractor.services.youtube.YoutubeParsingHelper.VIDEO_ID;
 import static org.schabi.newpipe.extractor.services.youtube.YoutubeParsingHelper.createDesktopPlayerBody;
+import static org.schabi.newpipe.extractor.services.youtube.ItagItem.CONTENT_LENGTH_UNKNOWN;
 import static org.schabi.newpipe.extractor.services.youtube.YoutubeParsingHelper.fixThumbnailUrl;
 import static org.schabi.newpipe.extractor.services.youtube.YoutubeParsingHelper.generateContentPlaybackNonce;
 import static org.schabi.newpipe.extractor.services.youtube.YoutubeParsingHelper.generateTParameter;
@@ -66,7 +67,6 @@ import org.schabi.newpipe.extractor.localization.DateWrapper;
 import org.schabi.newpipe.extractor.localization.Localization;
 import org.schabi.newpipe.extractor.localization.TimeAgoParser;
 import org.schabi.newpipe.extractor.localization.TimeAgoPatternsManager;
-import org.schabi.newpipe.extractor.services.youtube.ItagInfo;
 import org.schabi.newpipe.extractor.services.youtube.ItagItem;
 import org.schabi.newpipe.extractor.services.youtube.YoutubeJavaScriptExtractor;
 import org.schabi.newpipe.extractor.services.youtube.YoutubeParsingHelper;
@@ -666,9 +666,10 @@ public class YoutubeStreamExtractor extends StreamExtractor {
     }
 
     private void setStreamType() {
-        if (playerResponse.getObject("playabilityStatus").has("liveStreamability")
-                || playerResponse.getObject("videoDetails").getBoolean("isPostLiveDvr", false)) {
+        if (playerResponse.getObject("playabilityStatus").has("liveStreamability")) {
             streamType = StreamType.LIVE_STREAM;
+        } else if (playerResponse.getObject("videoDetails").getBoolean("isPostLiveDvr", false)) {
+            streamType = StreamType.POST_LIVE_STREAM;
         } else {
             streamType = StreamType.VIDEO_STREAM;
         }
@@ -1171,7 +1172,7 @@ public class YoutubeStreamExtractor extends StreamExtractor {
 
             for (final Pair<JsonObject, String> pair : streamingDataAndCpnLoopList) {
                 itagInfos.addAll(getStreamsFromStreamingDataKey(pair.getFirst(), streamingDataKey,
-                        itagTypeWanted, streamType, pair.getSecond()));
+                        itagTypeWanted, pair.getSecond()));
             }
 
             final List<T> streamList = new ArrayList<>();
@@ -1189,6 +1190,32 @@ public class YoutubeStreamExtractor extends StreamExtractor {
         }
     }
 
+    /**
+     * Get the {@link StreamBuilderHelper} which will be used to build {@link AudioStream}s in
+     * {@link #getItags(String, ItagItem.ItagType, StreamBuilderHelper, String)}
+     *
+     * <p>
+     * The {@code StreamBuilderHelper} will set the following attributes in the
+     * {@link AudioStream}s built:
+     * <ul>
+     *     <li>the {@link ItagItem}'s id of the stream as its id;</li>
+     *     <li>{@link ItagInfo#getContent()} and {@link ItagInfo#getIsUrl()} as its content and
+     *     and as the value of {@code isUrl};</li>
+     *     <li>the media format returned by the {@link ItagItem} as its media format;</li>
+     *     <li>its average bitrate with the value returned by {@link
+     *     ItagItem#getAverageBitrate()};</li>
+     *     <li>the {@link ItagItem};</li>
+     *     <li>the {@link DeliveryMethod#DASH DASH delivery method}, for OTF streams, live streams
+     *     and ended streams.</li>
+     * </ul>
+     * </p>
+     *
+     * <p>
+     * Note that the {@link ItagItem} comes from an {@link ItagInfo} instance.
+     * </p>
+     *
+     * @return a {@link StreamBuilderHelper} to build {@link AudioStream}s
+     */
     @Nonnull
     private StreamBuilderHelper<AudioStream> getAudioStreamBuilderHelper() {
         return new StreamBuilderHelper<AudioStream>() {
@@ -1203,9 +1230,11 @@ public class YoutubeStreamExtractor extends StreamExtractor {
                         .setAverageBitrate(itagItem.getAverageBitrate())
                         .setItagItem(itagItem);
 
-                if (streamType != StreamType.VIDEO_STREAM || !itagInfo.getIsUrl()) {
-                    // YouTube uses the DASH delivery method for videos on OTF streams and
-                    // for all streams of post-live streams and live streams
+                if (streamType == StreamType.LIVE_STREAM
+                        || streamType == StreamType.POST_LIVE_STREAM
+                        || !itagInfo.getIsUrl()) {
+                    // For YouTube videos on OTF streams and for all streams of post-live streams
+                    // and live streams, only the DASH delivery method can be used.
                     builder.setDeliveryMethod(DeliveryMethod.DASH);
                 }
 
@@ -1214,6 +1243,40 @@ public class YoutubeStreamExtractor extends StreamExtractor {
         };
     }
 
+    /**
+     * Get the {@link StreamBuilderHelper} which will be used to build {@link VideoStream}s in
+     * {@link #getItags(String, ItagItem.ItagType, StreamBuilderHelper, String)}
+     *
+     * <p>
+     * The {@code StreamBuilderHelper} will set the following attributes in the
+     * {@link VideoStream}s built:
+     * <ul>
+     *     <li>the {@link ItagItem}'s id of the stream as its id;</li>
+     *     <li>{@link ItagInfo#getContent()} and {@link ItagInfo#getIsUrl()} as its content and
+     *     and as the value of {@code isUrl};</li>
+     *     <li>the media format returned by the {@link ItagItem} as its media format;</li>
+     *     <li>whether it is video-only with the {@code areStreamsVideoOnly} parameter</li>
+     *     <li>the {@link ItagItem};</li>
+     *     <li>the resolution, by trying to use, in this order:
+     *         <ol>
+     *             <li>the height returned by the {@link ItagItem} + {@code p} + the frame rate if
+     *             it is more than 30;</li>
+     *             <li>the default resolution string from the {@link ItagItem};</li>
+     *             <li>an {@link Utils#EMPTY_STRING empty string}.</li>
+     *         </ol>
+     *     </li>
+     *     <li>the {@link DeliveryMethod#DASH DASH delivery method}, for OTF streams, live streams
+     *     and ended streams.</li>
+     * </ul>
+     *
+     * <p>
+     * Note that the {@link ItagItem} comes from an {@link ItagInfo} instance.
+     * </p>
+     *
+     * @param areStreamsVideoOnly whether the {@link StreamBuilderHelper} will set the video
+     *                            streams as video-only streams
+     * @return a {@link StreamBuilderHelper} to build {@link VideoStream}s
+     */
     @Nonnull
     private StreamBuilderHelper<VideoStream> getVideoStreamBuilderHelper(
             final boolean areStreamsVideoOnly) {
@@ -1241,12 +1304,13 @@ public class YoutubeStreamExtractor extends StreamExtractor {
                     builder.setResolution(stringBuilder.toString());
                 } else {
                     final String resolutionString = itagItem.getResolutionString();
-                    builder.setResolution(resolutionString != null ? resolutionString : "");
+                    builder.setResolution(resolutionString != null ? resolutionString
+                            : EMPTY_STRING);
                 }
 
                 if (streamType != StreamType.VIDEO_STREAM || !itagInfo.getIsUrl()) {
-                    // YouTube uses the DASH delivery method for videos on OTF streams and
-                    // for all streams of post-live streams and live streams
+                    // For YouTube videos on OTF streams and for all streams of post-live streams
+                    // and live streams, only the DASH delivery method can be used.
                     builder.setDeliveryMethod(DeliveryMethod.DASH);
                 }
 
@@ -1260,15 +1324,15 @@ public class YoutubeStreamExtractor extends StreamExtractor {
             final JsonObject streamingData,
             final String streamingDataKey,
             @Nonnull final ItagItem.ItagType itagTypeWanted,
-            @Nonnull final StreamType contentStreamType,
-            @Nonnull final String contentPlaybackNonce) {
+            @Nonnull final String contentPlaybackNonce) throws ParsingException {
         if (streamingData == null || !streamingData.has(streamingDataKey)) {
             return Collections.emptyList();
         }
 
+        final String videoId = getId();
         final List<ItagInfo> itagInfos = new ArrayList<>();
         final JsonArray formats = streamingData.getArray(streamingDataKey);
-        for (int i = 0; i < formats.size(); i++) {
+        for (int i = 0; i != formats.size(); ++i) {
             final JsonObject formatData = formats.getObject(i);
             final int itag = formatData.getInt("itag");
 
@@ -1279,79 +1343,10 @@ public class YoutubeStreamExtractor extends StreamExtractor {
             try {
                 final ItagItem itagItem = ItagItem.getItag(itag);
                 final ItagItem.ItagType itagType = itagItem.itagType;
-                if (itagItem.itagType != itagTypeWanted) {
-                    continue;
+                if (itagType == itagTypeWanted) {
+                    buildAndAddItagInfoToList(videoId, itagInfos, formatData, itagItem,
+                            itagType, contentPlaybackNonce);
                 }
-                String streamUrl;
-                if (formatData.has("url")) {
-                    streamUrl = formatData.getString("url") + "&cpn="
-                            + contentPlaybackNonce;
-                } else {
-                    // This url has an obfuscated signature
-                    final String cipherString = formatData.has(CIPHER)
-                            ? formatData.getString(CIPHER)
-                            : formatData.getString(SIGNATURE_CIPHER);
-                    final Map<String, String> cipher = Parser.compatParseMap(
-                            cipherString);
-                    streamUrl = cipher.get("url") + "&" + cipher.get("sp") + "="
-                            + deobfuscateSignature(cipher.get("s"));
-                }
-
-                if (isWebStreamingUrl(streamUrl)) {
-                    streamUrl = tryDecryptUrl(streamUrl, getId()) + "&cver="
-                            + getClientVersion();
-                }
-
-                final JsonObject initRange = formatData.getObject("initRange");
-                final JsonObject indexRange = formatData.getObject("indexRange");
-                final String mimeType = formatData.getString("mimeType", EMPTY_STRING);
-                final String codec = mimeType.contains("codecs")
-                        ? mimeType.split("\"")[1] : EMPTY_STRING;
-
-                itagItem.setBitrate(formatData.getInt("bitrate"));
-                itagItem.setWidth(formatData.getInt("width"));
-                itagItem.setHeight(formatData.getInt("height"));
-                itagItem.setInitStart(Integer.parseInt(initRange.getString("start",
-                        "-1")));
-                itagItem.setInitEnd(Integer.parseInt(initRange.getString("end",
-                        "-1")));
-                itagItem.setIndexStart(Integer.parseInt(indexRange.getString("start",
-                        "-1")));
-                itagItem.setIndexEnd(Integer.parseInt(indexRange.getString("end",
-                        "-1")));
-                itagItem.setQuality(formatData.getString("quality"));
-                itagItem.setCodec(codec);
-                if (contentStreamType != StreamType.VIDEO_STREAM) {
-                    itagItem.setTargetDurationSec(formatData.getInt(
-                            "targetDurationSec"));
-                }
-                if (itagType == ItagItem.ItagType.VIDEO
-                        || itagType == ItagItem.ItagType.VIDEO_ONLY) {
-                    itagItem.setFps(formatData.getInt("fps"));
-                }
-                if (itagType == ItagItem.ItagType.AUDIO) {
-                    itagItem.setSampleRate(Integer.parseInt(formatData.getString(
-                            "audioSampleRate")));
-                    itagItem.setAudioChannels(formatData.getInt("audioChannels"));
-                }
-                itagItem.setContentLength(Long.parseLong(formatData.getString(
-                        "contentLength", "-1")));
-
-                final ItagInfo itagInfo = new ItagInfo(streamUrl, itagItem);
-
-                if (contentStreamType == StreamType.VIDEO_STREAM) {
-                    itagInfo.setIsUrl(!formatData.getString("type", EMPTY_STRING)
-                            .equalsIgnoreCase("FORMAT_STREAM_TYPE_OTF"));
-                } else {
-                    // We are currently not able to generate DASH manifests for running
-                    // livestreams, so because of the requirements of StreamInfo
-                    // objects, return these streams as DASH URL streams (even if they
-                    // are not playable).
-                    // Ended livestreams are returned as non URL streams
-                    itagInfo.setIsUrl(contentStreamType != StreamType.POST_LIVE_STREAM);
-                }
-
-                itagInfos.add(itagInfo);
             } catch (final IOException | ExtractionException ignored) {
             }
         }
@@ -1359,6 +1354,83 @@ public class YoutubeStreamExtractor extends StreamExtractor {
         return itagInfos;
     }
 
+    private void buildAndAddItagInfoToList(
+            @Nonnull final String videoId,
+            @Nonnull final List<ItagInfo> itagInfos,
+            @Nonnull final JsonObject formatData,
+            @Nonnull final ItagItem itagItem,
+            @Nonnull final ItagItem.ItagType itagType,
+            @Nonnull final String contentPlaybackNonce) throws IOException, ExtractionException {
+        String streamUrl;
+        if (formatData.has("url")) {
+            streamUrl = formatData.getString("url");
+        } else {
+            // This url has an obfuscated signature
+            final String cipherString = formatData.has(CIPHER)
+                    ? formatData.getString(CIPHER)
+                    : formatData.getString(SIGNATURE_CIPHER);
+            final Map<String, String> cipher = Parser.compatParseMap(
+                    cipherString);
+            streamUrl = cipher.get("url") + "&" + cipher.get("sp") + "="
+                    + deobfuscateSignature(cipher.get("s"));
+        }
+
+        // Add the content playback nonce to the stream URL
+        streamUrl += "&" + CPN + "=" + contentPlaybackNonce;
+
+        if (isWebStreamingUrl(streamUrl)) {
+            streamUrl = tryDecryptUrl(streamUrl, videoId) + "&cver=" + getClientVersion();
+        }
+
+        final JsonObject initRange = formatData.getObject("initRange");
+        final JsonObject indexRange = formatData.getObject("indexRange");
+        final String mimeType = formatData.getString("mimeType", EMPTY_STRING);
+        final String codec = mimeType.contains("codecs")
+                ? mimeType.split("\"")[1] : EMPTY_STRING;
+
+        itagItem.setBitrate(formatData.getInt("bitrate"));
+        itagItem.setWidth(formatData.getInt("width"));
+        itagItem.setHeight(formatData.getInt("height"));
+        itagItem.setInitStart(Integer.parseInt(initRange.getString("start", "-1")));
+        itagItem.setInitEnd(Integer.parseInt(initRange.getString("end", "-1")));
+        itagItem.setIndexStart(Integer.parseInt(indexRange.getString("start", "-1")));
+        itagItem.setIndexEnd(Integer.parseInt(indexRange.getString("end", "-1")));
+        itagItem.setQuality(formatData.getString("quality"));
+        itagItem.setCodec(codec);
+
+        if (streamType == StreamType.LIVE_STREAM || streamType == StreamType.POST_LIVE_STREAM) {
+            itagItem.setTargetDurationSec(formatData.getInt("targetDurationSec"));
+        }
+
+        if (itagType == ItagItem.ItagType.VIDEO || itagType == ItagItem.ItagType.VIDEO_ONLY) {
+            itagItem.setFps(formatData.getInt("fps"));
+        }
+        if (itagType == ItagItem.ItagType.AUDIO) {
+            // YouTube return the audio sample rate as a string
+            itagItem.setSampleRate(Integer.parseInt(formatData.getString("audioSampleRate")));
+            itagItem.setAudioChannels(formatData.getInt("audioChannels"));
+        }
+
+        // YouTube return the content length as a string
+        itagItem.setContentLength(Long.parseLong(formatData.getString("contentLength",
+                String.valueOf(CONTENT_LENGTH_UNKNOWN))));
+
+        final ItagInfo itagInfo = new ItagInfo(streamUrl, itagItem);
+
+        if (streamType == StreamType.VIDEO_STREAM) {
+            itagInfo.setIsUrl(!formatData.getString("type", EMPTY_STRING)
+                    .equalsIgnoreCase("FORMAT_STREAM_TYPE_OTF"));
+        } else {
+            // We are currently not able to generate DASH manifests for running
+            // livestreams, so because of the requirements of StreamInfo
+            // objects, return these streams as DASH URL streams (even if they
+            // are not playable).
+            // Ended livestreams are returned as non URL streams
+            itagInfo.setIsUrl(streamType != StreamType.POST_LIVE_STREAM);
+        }
+
+        itagInfos.add(itagInfo);
+    }
 
     @Nonnull
     @Override

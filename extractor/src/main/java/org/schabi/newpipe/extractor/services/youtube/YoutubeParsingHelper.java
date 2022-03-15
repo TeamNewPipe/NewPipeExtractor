@@ -1596,9 +1596,9 @@ public final class YoutubeParsingHelper {
     }
 
     /**
-     * Check if the streaming URL is a URL from the YouTube {@code WEB} client.
+     * Check if the streaming URL is from the YouTube {@code WEB} client.
      *
-     * @param url the streaming URL on which check if it's a {@code WEB} streaming URL.
+     * @param url the streaming URL to be checked.
      * @return true if it's a {@code WEB} streaming URL, false otherwise
      */
     public static boolean isWebStreamingUrl(@Nonnull final String url) {
@@ -1620,7 +1620,7 @@ public final class YoutubeParsingHelper {
     /**
      * Check if the streaming URL is a URL from the YouTube {@code ANDROID} client.
      *
-     * @param url the streaming URL on which check if it's a {@code ANDROID} streaming URL.
+     * @param url the streaming URL to be checked.
      * @return true if it's a {@code ANDROID} streaming URL, false otherwise
      */
     public static boolean isAndroidStreamingUrl(@Nonnull final String url) {

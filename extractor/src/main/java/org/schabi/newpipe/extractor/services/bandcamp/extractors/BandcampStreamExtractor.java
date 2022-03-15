@@ -120,9 +120,9 @@ public class BandcampStreamExtractor extends StreamExtractor {
     public String getThumbnailUrl() throws ParsingException {
         if (albumJson.isNull("art_id")) {
             return EMPTY_STRING;
-        } else {
-            return getImageUrl(albumJson.getLong("art_id"), true);
         }
+
+        return getImageUrl(albumJson.getLong("art_id"), true);
     }
 
     @Nonnull

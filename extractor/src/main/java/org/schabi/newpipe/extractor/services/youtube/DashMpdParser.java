@@ -27,7 +27,6 @@ import org.schabi.newpipe.extractor.exceptions.ParsingException;
 import org.schabi.newpipe.extractor.exceptions.ReCaptchaException;
 import org.schabi.newpipe.extractor.stream.AudioStream;
 import org.schabi.newpipe.extractor.stream.DeliveryMethod;
-import org.schabi.newpipe.extractor.stream.StreamInfo;
 import org.schabi.newpipe.extractor.stream.VideoStream;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
@@ -52,10 +51,26 @@ import javax.xml.transform.TransformerFactory;
 import javax.xml.transform.dom.DOMSource;
 import javax.xml.transform.stream.StreamResult;
 
+/**
+ * Class to extract streams from a DASH manifest.
+ *
+ * <p>
+ * Note that this class relies on the YouTube's {@link ItagItem} class and should be made generic
+ * in order to be used on other services.
+ * </p>
+ *
+ * <p>
+ * This class is not used by the extractor itself, as all streams are supported by the extractor.
+ * </p>
+ */
 public final class DashMpdParser {
     private DashMpdParser() {
     }
 
+    /**
+     * Exception class which is thrown when something went wrong when using
+     * {@link DashMpdParser#getStreams(String)}.
+     */
     public static class DashMpdParsingException extends ParsingException {
 
         DashMpdParsingException(final String message, final Exception e) {
@@ -63,15 +78,21 @@ public final class DashMpdParser {
         }
     }
 
+    /**
+     * Class which represents the result of a DASH MPD file parsing by {@link DashMpdParser}.
+     *
+     * <p>
+     * The result contains video, video-only and audio streams.
+     * </p>
+     */
     public static class Result {
         private final List<VideoStream> videoStreams;
         private final List<VideoStream> videoOnlyStreams;
         private final List<AudioStream> audioStreams;
 
-
-        public Result(final List<VideoStream> videoStreams,
-                      final List<VideoStream> videoOnlyStreams,
-                      final List<AudioStream> audioStreams) {
+        Result(final List<VideoStream> videoStreams,
+               final List<VideoStream> videoOnlyStreams,
+               final List<AudioStream> audioStreams) {
             this.videoStreams = videoStreams;
             this.videoOnlyStreams = videoOnlyStreams;
             this.audioStreams = audioStreams;
@@ -90,19 +111,22 @@ public final class DashMpdParser {
         }
     }
 
-    // TODO: Make this class generic and decouple from YouTube's ItagItem class.
-
     /**
-     * Will try to download and parse the DASH manifest (using {@link StreamInfo#getDashMpdUrl()}),
-     * adding items that are listed in the {@link ItagItem} class.
-     * <p>
-     * It has video, video only and audio streams.
-     * <p>
-     * Info about DASH MPD can be found here
+     * This method will try to download and parse the YouTube DASH MPD manifest URL provided to get
+     * supported {@link AudioStream}s and {@link VideoStream}s.
      *
-     * @param dashMpdUrl URL to the DASH MPD
+     * <p>
+     * The parser supports video, video-only and audio streams.
+     * </p>
+     *
+     * @param dashMpdUrl the URL of the DASH MPD manifest
+     * @return a {@link Result} which contains all video, video-only and audio streams extracted
+     * and supported by the extractor (so the ones for which {@link ItagItem#isSupported(int)}
+     * returns {@code true}).
+     * @throws DashMpdParsingException if something went wrong when downloading or parsing the
+     * manifest
      * @see <a href="https://www.brendanlong.com/the-structure-of-an-mpeg-dash-mpd.html">
-     *     www.brendanlog.com</a>
+     *     www.brendanlong.com's page about the structure of an MPEG-DASH MPD manifest</a>
      */
     @Nonnull
     public static Result getStreams(final String dashMpdUrl)
@@ -188,7 +212,7 @@ public final class DashMpdParser {
             throws TransformerException {
         final Element mpdElement = (Element) document.getElementsByTagName("MPD").item(0);
 
-        // Clone element so we can freely modify it
+        // Clone the element so we can freely modify it
         final Element adaptationSet = (Element) representation.getParentNode();
         final Element adaptationSetClone = (Element) adaptationSet.cloneNode(true);
 

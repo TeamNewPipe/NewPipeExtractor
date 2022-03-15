@@ -102,7 +102,7 @@ public class MediaCCCStreamExtractor extends StreamExtractor {
             final JsonObject recording = recordings.getObject(i);
             final String mimeType = recording.getString("mime_type");
             if (mimeType.startsWith("audio")) {
-                // First we need to resolve the actual video data from CDN
+                // First we need to resolve the actual video data from the CDN
                 final MediaFormat mediaFormat;
                 if (mimeType.endsWith("opus")) {
                     mediaFormat = MediaFormat.OPUS;
@@ -115,7 +115,7 @@ public class MediaCCCStreamExtractor extends StreamExtractor {
                 }
 
                 // Don't use the containsSimilarStream method because it will always return
-                // false so if there are multiples audio streams available, only the first will
+                // false. So if there are multiple audio streams available, only the first one will
                 // be extracted in this case.
                 audioStreams.add(new AudioStream.Builder()
                         .setId(recording.getString("filename", ID_UNKNOWN))
@@ -136,7 +136,7 @@ public class MediaCCCStreamExtractor extends StreamExtractor {
             final JsonObject recording = recordings.getObject(i);
             final String mimeType = recording.getString("mime_type");
             if (mimeType.startsWith("video")) {
-                // First we need to resolve the actual video data from CDN
+                // First we need to resolve the actual video data from the CDN
 
                 final MediaFormat mediaFormat;
                 if (mimeType.endsWith("webm")) {
@@ -148,7 +148,8 @@ public class MediaCCCStreamExtractor extends StreamExtractor {
                 }
 
                 // Don't use the containsSimilarStream method because it will remove the
-                // extraction of some video versions (mostly languages)
+                // extraction of some video versions (mostly languages). So if there are multiple
+                // video streams available, only the first one will be extracted in this case.
                 videoStreams.add(new VideoStream.Builder()
                         .setId(recording.getString("filename", ID_UNKNOWN))
                         .setContent(recording.getString("recording_url"), true)
