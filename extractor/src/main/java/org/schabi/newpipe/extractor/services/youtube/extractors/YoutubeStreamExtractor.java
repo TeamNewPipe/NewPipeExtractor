@@ -542,7 +542,7 @@ public class YoutubeStreamExtractor extends StreamExtractor {
     private String tryDecryption(final String url, final String videoId) {
         try {
             return YoutubeThrottlingDecrypter.apply(url, videoId);
-        } catch (ParsingException e) {
+        } catch (final ParsingException e) {
             return url;
         }
     }
