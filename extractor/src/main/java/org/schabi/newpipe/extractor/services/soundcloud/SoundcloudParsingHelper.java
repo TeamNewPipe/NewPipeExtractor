@@ -41,7 +41,7 @@ import static org.schabi.newpipe.extractor.utils.Utils.*;
 
 public class SoundcloudParsingHelper {
     static final String HARDCODED_CLIENT_ID =
-            "0vyDB4rxVEprGutWT0xQ2VZhYpVZxku4"; // Updated on 2022-02-11
+            "iJrxQkZJ16hwLUMCp8VVr69JP84PChVF"; // Updated on 2022-03-15
     private static String clientId;
     public static final String SOUNDCLOUD_API_V2_URL = "https://api-v2.soundcloud.com/";
 
