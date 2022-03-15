@@ -56,18 +56,21 @@ public class CommentsInfo extends ListInfo<CommentsInfoItem> {
     public static InfoItemsPage<CommentsInfoItem> getMoreItems(
             final CommentsInfo commentsInfo,
             final Page page) throws ExtractionException, IOException {
-        return getMoreItems(NewPipe.getService(commentsInfo.getServiceId()), commentsInfo, page);
+        return getMoreItems(NewPipe.getService(commentsInfo.getServiceId()), commentsInfo.getUrl(), page);
     }
 
     public static InfoItemsPage<CommentsInfoItem> getMoreItems(
             final StreamingService service,
             final CommentsInfo commentsInfo,
             final Page page) throws IOException, ExtractionException {
-        if (commentsInfo.getCommentsExtractor() == null) {
-            commentsInfo.setCommentsExtractor(service.getCommentsExtractor(commentsInfo.getUrl()));
-            commentsInfo.getCommentsExtractor().fetchPage();
-        }
-        return commentsInfo.getCommentsExtractor().getPage(page);
+        return getMoreItems(service, commentsInfo.getUrl(), page);
+    }
+
+    public static InfoItemsPage<CommentsInfoItem> getMoreItems(
+            final StreamingService service,
+            final String url,
+            final Page page) throws IOException, ExtractionException {
+        return service.getCommentsExtractor(url).getPage(page);
     }
 
     private transient CommentsExtractor commentsExtractor;
