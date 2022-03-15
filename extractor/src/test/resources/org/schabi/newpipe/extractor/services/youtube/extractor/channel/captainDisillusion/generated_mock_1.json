@@ -1,7 +1,7 @@
 {
   "request": {
     "httpMethod": "POST",
-    "url": "https://www.youtube.com/youtubei/v1/navigation/resolve_url?key\u003dAIzaSyAO_FJ2SlqU8Q4STEHLGCilw_Y9_11qcW8",
+    "url": "https://www.youtube.com/youtubei/v1/navigation/resolve_url?key\u003dAIzaSyAO_FJ2SlqU8Q4STEHLGCilw_Y9_11qcW8\u0026prettyPrint\u003dfalse",
     "headers": {
       "Accept-Language": [
         "en-GB, en;q\u003d0.9"
@@ -16,7 +16,7 @@
         "https://www.youtube.com"
       ],
       "X-YouTube-Client-Version": [
-        "2.20210728.00.00"
+        "2.20220315.01.00"
       ],
       "Content-Type": [
         "application/json"
@@ -35,6 +35,61 @@
       34,
       58,
       123,
+      34,
+      114,
+      101,
+      113,
+      117,
+      101,
+      115,
+      116,
+      34,
+      58,
+      123,
+      34,
+      105,
+      110,
+      116,
+      101,
+      114,
+      110,
+      97,
+      108,
+      69,
+      120,
+      112,
+      101,
+      114,
+      105,
+      109,
+      101,
+      110,
+      116,
+      70,
+      108,
+      97,
+      103,
+      115,
+      34,
+      58,
+      91,
+      93,
+      44,
+      34,
+      117,
+      115,
+      101,
+      83,
+      115,
+      108,
+      34,
+      58,
+      116,
+      114,
+      117,
+      101,
+      125,
+      44,
       34,
       99,
       108,
@@ -88,6 +143,46 @@
       34,
       44,
       34,
+      111,
+      114,
+      105,
+      103,
+      105,
+      110,
+      97,
+      108,
+      85,
+      114,
+      108,
+      34,
+      58,
+      34,
+      104,
+      116,
+      116,
+      112,
+      115,
+      58,
+      47,
+      47,
+      119,
+      119,
+      119,
+      46,
+      121,
+      111,
+      117,
+      116,
+      117,
+      98,
+      101,
+      46,
+      99,
+      111,
+      109,
+      34,
+      44,
+      34,
       99,
       108,
       105,
@@ -109,17 +204,38 @@
       50,
       48,
       50,
-      49,
-      48,
-      55,
       50,
-      56,
+      48,
+      51,
+      49,
+      53,
+      46,
+      48,
+      49,
       46,
       48,
       48,
-      46,
-      48,
-      48,
+      34,
+      44,
+      34,
+      112,
+      108,
+      97,
+      116,
+      102,
+      111,
+      114,
+      109,
+      34,
+      58,
+      34,
+      68,
+      69,
+      83,
+      75,
+      84,
+      79,
+      80,
       34,
       125,
       44,
@@ -225,7 +341,7 @@
     "responseMessage": "",
     "responseHeaders": {
       "alt-svc": [
-        "h3\u003d\":443\"; ma\u003d2592000,h3-29\u003d\":443\"; ma\u003d2592000,h3-T051\u003d\":443\"; ma\u003d2592000,h3-Q050\u003d\":443\"; ma\u003d2592000,h3-Q046\u003d\":443\"; ma\u003d2592000,h3-Q043\u003d\":443\"; ma\u003d2592000,quic\u003d\":443\"; ma\u003d2592000; v\u003d\"46,43\""
+        "h3\u003d\":443\"; ma\u003d2592000,h3-29\u003d\":443\"; ma\u003d2592000,h3-Q050\u003d\":443\"; ma\u003d2592000,h3-Q046\u003d\":443\"; ma\u003d2592000,h3-Q043\u003d\":443\"; ma\u003d2592000,quic\u003d\":443\"; ma\u003d2592000; v\u003d\"46,43\""
       ],
       "cache-control": [
         "private"
@@ -234,19 +350,19 @@
         "application/json; charset\u003dUTF-8"
       ],
       "date": [
-        "Fri, 30 Jul 2021 17:15:09 GMT"
+        "Tue, 15 Mar 2022 19:12:38 GMT"
       ],
       "expires": [
-        "Fri, 30 Jul 2021 17:15:09 GMT"
+        "Tue, 15 Mar 2022 19:12:38 GMT"
       ],
       "p3p": [
         "CP\u003d\"This is not a P3P policy! See g.co/p3phelp for more info.\""
       ],
       "server": [
-        "ESF"
+        "scaffolding on HTTPServer2"
       ],
       "set-cookie": [
-        "CONSENT\u003dPENDING+106; expires\u003dFri, 01-Jan-2038 00:00:00 GMT; path\u003d/; domain\u003d.youtube.com; Secure"
+        "CONSENT\u003dPENDING+708; expires\u003dThu, 14-Mar-2024 19:12:38 GMT; path\u003d/; domain\u003d.youtube.com; Secure"
       ],
       "vary": [
         "Origin",
@@ -263,7 +379,7 @@
         "0"
       ]
     },
-    "responseBody": "{\n  \"responseContext\": {\n    \"visitorData\": \"Cgs5bFRGcWFiLXJsYyid55CIBg%3D%3D\",\n    \"serviceTrackingParams\": [\n      {\n        \"service\": \"CSI\",\n        \"params\": [\n          {\n            \"key\": \"c\",\n            \"value\": \"WEB\"\n          },\n          {\n            \"key\": \"cver\",\n            \"value\": \"2.20210728.00.00\"\n          },\n          {\n            \"key\": \"yt_li\",\n            \"value\": \"0\"\n          },\n          {\n            \"key\": \"ResolveUrl_rid\",\n            \"value\": \"0x2c1228855582a8e5\"\n          }\n        ]\n      },\n      {\n        \"service\": \"GFEEDBACK\",\n        \"params\": [\n          {\n            \"key\": \"logged_in\",\n            \"value\": \"0\"\n          },\n          {\n            \"key\": \"e\",\n            \"value\": \"23918597,24070036,24068842,24056264,24045411,24002025,24059521,24050503,24049820,23996512,24044723,24028143,23968386,23987907,24016284,24049573,23944779,24053866,23857949,24058812,23983813,24080913,23882685,23974595,24049571,24058380,23986027,23843507,23744176,24002922,1714254,24036236,24007246,24004644,24043240,24036947,23998056,24060921,24030040,23804281,23891344,23966208,24070943,23946420,24076876,24001373,23983296,24057238,23891346,23884386,23996830,24056274,24002022,24079272,23934970,24058128,24077274,24077957,24042870,24037794\"\n          }\n        ]\n      },\n      {\n        \"service\": \"GUIDED_HELP\",\n        \"params\": [\n          {\n            \"key\": \"logged_in\",\n            \"value\": \"0\"\n          }\n        ]\n      },\n      {\n        \"service\": \"ECATCHER\",\n        \"params\": [\n          {\n            \"key\": \"client.version\",\n            \"value\": \"2.20210728\"\n          },\n          {\n            \"key\": \"client.name\",\n            \"value\": \"WEB\"\n          }\n        ]\n      }\n    ],\n    \"mainAppWebResponseContext\": {\n      \"loggedOut\": true\n    },\n    \"webResponseContextExtensionData\": {\n      \"hasDecorated\": true\n    }\n  },\n  \"endpoint\": {\n    \"clickTrackingParams\": \"IhMI7uO75KWL8gIVQhXxBR1KjgvfMghleHRlcm5hbA\u003d\u003d\",\n    \"commandMetadata\": {\n      \"webCommandMetadata\": {\n        \"url\": \"/youtubei/v1/navigation/resolve_url\",\n        \"webPageType\": \"WEB_PAGE_TYPE_CHANNEL\",\n        \"rootVe\": 3611,\n        \"apiUrl\": \"/youtubei/v1/browse\"\n      },\n      \"resolveUrlCommandMetadata\": {\n        \"isVanityUrl\": true\n      }\n    },\n    \"browseEndpoint\": {\n      \"browseId\": \"UCEOXxzW2vU0P-0THehuIIeg\",\n      \"params\": \"EgC4AQA%3D\"\n    }\n  }\n}\n",
-    "latestUrl": "https://www.youtube.com/youtubei/v1/navigation/resolve_url?key\u003dAIzaSyAO_FJ2SlqU8Q4STEHLGCilw_Y9_11qcW8"
+    "responseBody": "{\"responseContext\":{\"visitorData\":\"CgtsRmxxcVhCdUJMMCimysORBg%3D%3D\",\"serviceTrackingParams\":[{\"service\":\"CSI\",\"params\":[{\"key\":\"c\",\"value\":\"WEB\"},{\"key\":\"cver\",\"value\":\"2.20220315.01.00\"},{\"key\":\"yt_li\",\"value\":\"0\"},{\"key\":\"ResolveUrl_rid\",\"value\":\"0x9dff30845b199ee1\"}]},{\"service\":\"GFEEDBACK\",\"params\":[{\"key\":\"logged_in\",\"value\":\"0\"},{\"key\":\"e\",\"value\":\"23966208,24001373,24152442,24161848,24120829,23986026,24062268,24154616,24106839,24077266,24138064,24182586,23940247,24176755,24179789,1714259,23744176,24174213,24082662,24002025,23998056,24036947,23918597,24175488,24007790,24002022,24135310,24080738,24148482,24139173,24145515,23858057,23882502,24177193,24034168,24110902,24165080,23946420,23804281,24180089,23934970,24077241,24166867,24140247,24004644,24138442,24169726,24120819,23983296,24085811,39321475,24182870,24007246\"}]},{\"service\":\"GUIDED_HELP\",\"params\":[{\"key\":\"logged_in\",\"value\":\"0\"}]},{\"service\":\"ECATCHER\",\"params\":[{\"key\":\"client.version\",\"value\":\"2.20220315\"},{\"key\":\"client.name\",\"value\":\"WEB\"},{\"key\":\"client.fexp\",\"value\":\"23966208,24001373,24152442,24161848,24120829,23986026,24062268,24154616,24106839,24077266,24138064,24182586,23940247,24176755,24179789,1714259,23744176,24174213,24082662,24002025,23998056,24036947,23918597,24175488,24007790,24002022,24135310,24080738,24148482,24139173,24145515,23858057,23882502,24177193,24034168,24110902,24165080,23946420,23804281,24180089,23934970,24077241,24166867,24140247,24004644,24138442,24169726,24120819,23983296,24085811,39321475,24182870,24007246\"}]}],\"mainAppWebResponseContext\":{\"loggedOut\":true},\"webResponseContextExtensionData\":{\"hasDecorated\":true}},\"endpoint\":{\"clickTrackingParams\":\"IhMIwp_CpOnI9gIVWCvxBR3T2gynMghleHRlcm5hbA\u003d\u003d\",\"commandMetadata\":{\"webCommandMetadata\":{\"url\":\"/youtubei/v1/navigation/resolve_url\",\"webPageType\":\"WEB_PAGE_TYPE_CHANNEL\",\"rootVe\":3611,\"apiUrl\":\"/youtubei/v1/browse\"},\"resolveUrlCommandMetadata\":{\"isVanityUrl\":true}},\"browseEndpoint\":{\"browseId\":\"UCEOXxzW2vU0P-0THehuIIeg\",\"params\":\"EgC4AQA%3D\"}}}",
+    "latestUrl": "https://www.youtube.com/youtubei/v1/navigation/resolve_url?key\u003dAIzaSyAO_FJ2SlqU8Q4STEHLGCilw_Y9_11qcW8\u0026prettyPrint\u003dfalse"
   }
 }

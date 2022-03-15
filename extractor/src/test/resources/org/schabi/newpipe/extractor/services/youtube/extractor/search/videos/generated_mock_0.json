@@ -1,177 +1,18 @@
 {
   "request": {
-    "httpMethod": "POST",
-    "url": "https://www.youtube.com/youtubei/v1/guide?key\u003dAIzaSyAO_FJ2SlqU8Q4STEHLGCilw_Y9_11qcW8",
+    "httpMethod": "GET",
+    "url": "https://www.youtube.com/sw.js",
     "headers": {
       "Accept-Language": [
         "en-GB, en;q\u003d0.9"
       ],
-      "X-YouTube-Client-Name": [
-        "1"
+      "Origin": [
+        "https://www.youtube.com"
       ],
-      "X-YouTube-Client-Version": [
-        "2.20210728.00.00"
+      "Referer": [
+        "https://www.youtube.com"
       ]
     },
-    "dataToSend": [
-      123,
-      34,
-      99,
-      111,
-      110,
-      116,
-      101,
-      120,
-      116,
-      34,
-      58,
-      123,
-      34,
-      99,
-      108,
-      105,
-      101,
-      110,
-      116,
-      34,
-      58,
-      123,
-      34,
-      104,
-      108,
-      34,
-      58,
-      34,
-      101,
-      110,
-      45,
-      71,
-      66,
-      34,
-      44,
-      34,
-      103,
-      108,
-      34,
-      58,
-      34,
-      71,
-      66,
-      34,
-      44,
-      34,
-      99,
-      108,
-      105,
-      101,
-      110,
-      116,
-      78,
-      97,
-      109,
-      101,
-      34,
-      58,
-      34,
-      87,
-      69,
-      66,
-      34,
-      44,
-      34,
-      99,
-      108,
-      105,
-      101,
-      110,
-      116,
-      86,
-      101,
-      114,
-      115,
-      105,
-      111,
-      110,
-      34,
-      58,
-      34,
-      50,
-      46,
-      50,
-      48,
-      50,
-      49,
-      48,
-      55,
-      50,
-      56,
-      46,
-      48,
-      48,
-      46,
-      48,
-      48,
-      34,
-      125,
-      44,
-      34,
-      117,
-      115,
-      101,
-      114,
-      34,
-      58,
-      123,
-      34,
-      108,
-      111,
-      99,
-      107,
-      101,
-      100,
-      83,
-      97,
-      102,
-      101,
-      116,
-      121,
-      77,
-      111,
-      100,
-      101,
-      34,
-      58,
-      102,
-      97,
-      108,
-      115,
-      101,
-      125,
-      44,
-      34,
-      102,
-      101,
-      116,
-      99,
-      104,
-      76,
-      105,
-      118,
-      101,
-      83,
-      116,
-      97,
-      116,
-      101,
-      34,
-      58,
-      116,
-      114,
-      117,
-      101,
-      125,
-      125
-    ],
     "localization": {
       "languageCode": "en",
       "countryCode": "GB"
@@ -181,34 +22,49 @@
     "responseCode": 200,
     "responseMessage": "",
     "responseHeaders": {
+      "access-control-allow-credentials": [
+        "true"
+      ],
+      "access-control-allow-origin": [
+        "https://www.youtube.com"
+      ],
       "alt-svc": [
-        "h3\u003d\":443\"; ma\u003d2592000,h3-29\u003d\":443\"; ma\u003d2592000,h3-T051\u003d\":443\"; ma\u003d2592000,h3-Q050\u003d\":443\"; ma\u003d2592000,h3-Q046\u003d\":443\"; ma\u003d2592000,h3-Q043\u003d\":443\"; ma\u003d2592000,quic\u003d\":443\"; ma\u003d2592000; v\u003d\"46,43\""
+        "h3\u003d\":443\"; ma\u003d2592000,h3-29\u003d\":443\"; ma\u003d2592000,h3-Q050\u003d\":443\"; ma\u003d2592000,h3-Q046\u003d\":443\"; ma\u003d2592000,h3-Q043\u003d\":443\"; ma\u003d2592000,quic\u003d\":443\"; ma\u003d2592000; v\u003d\"46,43\""
       ],
       "cache-control": [
-        "private"
+        "private, max-age\u003d0"
       ],
       "content-type": [
-        "application/json; charset\u003dUTF-8"
+        "text/javascript; charset\u003dutf-8"
+      ],
+      "cross-origin-opener-policy-report-only": [
+        "same-origin; report-to\u003d\"ATmXEA_XZXH6CdbrmjUzyTbVgxu22C8KYH7NsxKbRt94\""
       ],
       "date": [
-        "Fri, 30 Jul 2021 17:04:33 GMT"
+        "Tue, 15 Mar 2022 19:12:34 GMT"
       ],
       "expires": [
-        "Fri, 30 Jul 2021 17:04:33 GMT"
+        "Tue, 15 Mar 2022 19:12:34 GMT"
       ],
       "p3p": [
-        "CP\u003d\"This is not a P3P policy! See g.co/p3phelp for more info.\""
+        "CP\u003d\"This is not a P3P policy! See http://support.google.com/accounts/answer/151657?hl\u003den-GB for more info.\""
+      ],
+      "permissions-policy": [
+        "ch-ua-arch\u003d*, ch-ua-bitness\u003d*, ch-ua-full-version\u003d*, ch-ua-full-version-list\u003d*, ch-ua-model\u003d*, ch-ua-platform\u003d*, ch-ua-platform-version\u003d*"
+      ],
+      "report-to": [
+        "{\"group\":\"ATmXEA_XZXH6CdbrmjUzyTbVgxu22C8KYH7NsxKbRt94\",\"max_age\":2592000,\"endpoints\":[{\"url\":\"https://csp.withgoogle.com/csp/report-to/encsid_ATmXEA_XZXH6CdbrmjUzyTbVgxu22C8KYH7NsxKbRt94\"}]}"
       ],
       "server": [
         "ESF"
       ],
       "set-cookie": [
-        "CONSENT\u003dPENDING+291; expires\u003dFri, 01-Jan-2038 00:00:00 GMT; path\u003d/; domain\u003d.youtube.com; Secure"
+        "YSC\u003dy3Fk2EqaQs4; Domain\u003d.youtube.com; Path\u003d/; Secure; HttpOnly; SameSite\u003dnone",
+        "VISITOR_INFO1_LIVE\u003d; Domain\u003d.youtube.com; Expires\u003dWed, 19-Jun-2019 19:12:34 GMT; Path\u003d/; Secure; HttpOnly; SameSite\u003dnone",
+        "CONSENT\u003dPENDING+579; expires\u003dThu, 14-Mar-2024 19:12:34 GMT; path\u003d/; domain\u003d.youtube.com; Secure"
       ],
-      "vary": [
-        "Origin",
-        "X-Origin",
-        "Referer"
+      "strict-transport-security": [
+        "max-age\u003d31536000"
       ],
       "x-content-type-options": [
         "nosniff"
@@ -220,7 +76,7 @@
         "0"
       ]
     },
-    "responseBody": "{\n  \"responseContext\": {\n    \"visitorData\": \"Cgt5a2Rka2lYb1ZQQSih4pCIBg%3D%3D\",\n    \"maxAgeSeconds\": 3600,\n    \"serviceTrackingParams\": [\n      {\n        \"service\": \"CSI\",\n        \"params\": [\n          {\n            \"key\": \"c\",\n            \"value\": \"WEB\"\n          },\n          {\n            \"key\": \"cver\",\n            \"value\": \"2.20210728.00.00\"\n          },\n          {\n            \"key\": \"yt_li\",\n            \"value\": \"0\"\n          },\n          {\n            \"key\": \"GetWebMainAppGuide_rid\",\n            \"value\": \"0x8218950eac3e94b4\"\n          }\n        ]\n      },\n      {\n        \"service\": \"GFEEDBACK\",\n        \"params\": [\n          {\n            \"key\": \"logged_in\",\n            \"value\": \"0\"\n          },\n          {\n            \"key\": \"e\",\n            \"value\": \"24051199,24075765,23986024,24002025,24049573,24036947,24028143,23974595,23744176,24049571,1714254,24058128,23944779,23996830,24068842,24002022,23983296,24060797,23983814,24078420,24057238,24049820,24077270,23968386,24050503,23996512,23918597,24045411,24007246,24059521,23998056,23885487,24070198,24070035,23882685,24056264,23934970,24037794,24042870,24076879,24002923,24058380,23966208,23857949,23891346,24058812,24056275,24036236,23884386,24004644,24053866,23891344,24043240,24016285,24001373,23804281,23946420,24060921,24030040\"\n          }\n        ]\n      },\n      {\n        \"service\": \"GUIDED_HELP\",\n        \"params\": [\n          {\n            \"key\": \"logged_in\",\n            \"value\": \"0\"\n          }\n        ]\n      },\n      {\n        \"service\": \"ECATCHER\",\n        \"params\": [\n          {\n            \"key\": \"client.version\",\n            \"value\": \"2.20210728\"\n          },\n          {\n            \"key\": \"client.name\",\n            \"value\": \"WEB\"\n          }\n        ]\n      }\n    ],\n    \"mainAppWebResponseContext\": {\n      \"loggedOut\": true\n    },\n    \"webResponseContextExtensionData\": {\n      \"hasDecorated\": true\n    }\n  },\n  \"trackingParams\": \"CAAQumkiEwjih7a1o4vyAhWKOhYKHbwKCVs\u003d\",\n  \"items\": [\n    {\n      \"guideSectionRenderer\": {\n        \"items\": [\n          {\n            \"guideEntryRenderer\": {\n              \"navigationEndpoint\": {\n                \"clickTrackingParams\": \"CBwQtSwYACITCOKHtrWji_ICFYo6FgodvAoJWw\u003d\u003d\",\n                \"commandMetadata\": {\n                  \"webCommandMetadata\": {\n                    \"url\": \"/\",\n                    \"webPageType\": \"WEB_PAGE_TYPE_BROWSE\",\n                    \"rootVe\": 3854,\n                    \"apiUrl\": \"/youtubei/v1/browse\"\n                  }\n                },\n                \"browseEndpoint\": {\n                  \"browseId\": \"FEwhat_to_watch\"\n                }\n              },\n              \"icon\": {\n                \"iconType\": \"WHAT_TO_WATCH\"\n              },\n              \"trackingParams\": \"CBwQtSwYACITCOKHtrWji_ICFYo6FgodvAoJWw\u003d\u003d\",\n              \"formattedTitle\": {\n                \"simpleText\": \"Home\"\n              },\n              \"accessibility\": {\n                \"accessibilityData\": {\n                  \"label\": \"Home\"\n                }\n              },\n              \"isPrimary\": true\n            }\n          },\n          {\n            \"guideEntryRenderer\": {\n              \"navigationEndpoint\": {\n                \"clickTrackingParams\": \"CBsQtSwYASITCOKHtrWji_ICFYo6FgodvAoJWw\u003d\u003d\",\n                \"commandMetadata\": {\n                  \"webCommandMetadata\": {\n                    \"url\": \"/feed/explore\",\n                    \"webPageType\": \"WEB_PAGE_TYPE_BROWSE\",\n                    \"rootVe\": 6827,\n                    \"apiUrl\": \"/youtubei/v1/browse\"\n                  }\n                },\n                \"browseEndpoint\": {\n                  \"browseId\": \"FEexplore\"\n                }\n              },\n              \"icon\": {\n                \"iconType\": \"TAB_EXPLORE\"\n              },\n              \"trackingParams\": \"CBsQtSwYASITCOKHtrWji_ICFYo6FgodvAoJWw\u003d\u003d\",\n              \"formattedTitle\": {\n                \"simpleText\": \"Explore\"\n              },\n              \"accessibility\": {\n                \"accessibilityData\": {\n                  \"label\": \"Explore\"\n                }\n              },\n              \"isPrimary\": true\n            }\n          },\n          {\n            \"guideEntryRenderer\": {\n              \"navigationEndpoint\": {\n                \"clickTrackingParams\": \"CBoQtSwYAiITCOKHtrWji_ICFYo6FgodvAoJWw\u003d\u003d\",\n                \"commandMetadata\": {\n                  \"webCommandMetadata\": {\n                    \"url\": \"/feed/subscriptions\",\n                    \"webPageType\": \"WEB_PAGE_TYPE_BROWSE\",\n                    \"rootVe\": 6827,\n                    \"apiUrl\": \"/youtubei/v1/browse\"\n                  }\n                },\n                \"browseEndpoint\": {\n                  \"browseId\": \"FEsubscriptions\"\n                }\n              },\n              \"icon\": {\n                \"iconType\": \"SUBSCRIPTIONS\"\n              },\n              \"trackingParams\": \"CBoQtSwYAiITCOKHtrWji_ICFYo6FgodvAoJWw\u003d\u003d\",\n              \"formattedTitle\": {\n                \"simpleText\": \"Subscriptions\"\n              },\n              \"accessibility\": {\n                \"accessibilityData\": {\n                  \"label\": \"Subscriptions\"\n                }\n              },\n              \"isPrimary\": true\n            }\n          }\n        ],\n        \"trackingParams\": \"CBkQ5isYACITCOKHtrWji_ICFYo6FgodvAoJWw\u003d\u003d\"\n      }\n    },\n    {\n      \"guideSectionRenderer\": {\n        \"items\": [\n          {\n            \"guideEntryRenderer\": {\n              \"navigationEndpoint\": {\n                \"clickTrackingParams\": \"CBgQtSwYACITCOKHtrWji_ICFYo6FgodvAoJWw\u003d\u003d\",\n                \"commandMetadata\": {\n                  \"webCommandMetadata\": {\n                    \"url\": \"/feed/library\",\n                    \"webPageType\": \"WEB_PAGE_TYPE_BROWSE\",\n                    \"rootVe\": 6827,\n                    \"apiUrl\": \"/youtubei/v1/browse\"\n                  }\n                },\n                \"browseEndpoint\": {\n                  \"browseId\": \"FElibrary\"\n                }\n              },\n              \"icon\": {\n                \"iconType\": \"VIDEO_LIBRARY_WHITE\"\n              },\n              \"trackingParams\": \"CBgQtSwYACITCOKHtrWji_ICFYo6FgodvAoJWw\u003d\u003d\",\n              \"formattedTitle\": {\n                \"simpleText\": \"Library\"\n              },\n              \"accessibility\": {\n                \"accessibilityData\": {\n                  \"label\": \"Library\"\n                }\n              },\n              \"targetId\": \"library-guide-item\",\n              \"isPrimary\": true\n            }\n          },\n          {\n            \"guideEntryRenderer\": {\n              \"navigationEndpoint\": {\n                \"clickTrackingParams\": \"CBcQtSwYASITCOKHtrWji_ICFYo6FgodvAoJWw\u003d\u003d\",\n                \"commandMetadata\": {\n                  \"webCommandMetadata\": {\n                    \"url\": \"/feed/history\",\n                    \"webPageType\": \"WEB_PAGE_TYPE_BROWSE\",\n                    \"rootVe\": 6827,\n                    \"apiUrl\": \"/youtubei/v1/browse\"\n                  }\n                },\n                \"browseEndpoint\": {\n                  \"browseId\": \"FEhistory\"\n                }\n              },\n              \"icon\": {\n                \"iconType\": \"WATCH_HISTORY\"\n              },\n              \"trackingParams\": \"CBcQtSwYASITCOKHtrWji_ICFYo6FgodvAoJWw\u003d\u003d\",\n              \"formattedTitle\": {\n                \"simpleText\": \"History\"\n              },\n              \"accessibility\": {\n                \"accessibilityData\": {\n                  \"label\": \"History\"\n                }\n              },\n              \"isPrimary\": true\n            }\n          }\n        ],\n        \"trackingParams\": \"CBYQ5isYASITCOKHtrWji_ICFYo6FgodvAoJWw\u003d\u003d\"\n      }\n    },\n    {\n      \"guideSigninPromoRenderer\": {\n        \"descriptiveText\": {\n          \"simpleText\": \"Sign in to like videos, comment and subscribe.\"\n        },\n        \"actionText\": {\n          \"simpleText\": \"Sign in\"\n        },\n        \"signInButton\": {\n          \"buttonRenderer\": {\n            \"style\": \"STYLE_SUGGESTIVE\",\n            \"size\": \"SIZE_DEFAULT\",\n            \"isDisabled\": false,\n            \"text\": {\n              \"simpleText\": \"Sign in\"\n            },\n            \"icon\": {\n              \"iconType\": \"AVATAR_LOGGED_OUT\"\n            },\n            \"navigationEndpoint\": {\n              \"clickTrackingParams\": \"CBUQ04AEIhMI4oe2taOL8gIVijoWCh28Cglb\",\n              \"commandMetadata\": {\n                \"webCommandMetadata\": {\n                  \"url\": \"https://accounts.google.com/ServiceLogin?service\u003dyoutube\u0026uilel\u003d3\u0026passive\u003dtrue\u0026continue\u003dhttps%3A%2F%2Fwww.youtube.com%2Fsignin%3Faction_handle_signin%3Dtrue%26app%3Ddesktop%26hl%3Den-GB%26next%3Dhttps%253A%252F%252Fwww.youtube.com%252Fyoutubei%252Fv1%252Fguide%253Fkey%253DAIzaSyAO_FJ2SlqU8Q4STEHLGCilw_Y9_11qcW8\u0026hl\u003den-GB\",\n                  \"webPageType\": \"WEB_PAGE_TYPE_UNKNOWN\",\n                  \"rootVe\": 83769\n                }\n              },\n              \"signInEndpoint\": {\n                \"hack\": true\n              }\n            },\n            \"trackingParams\": \"CBUQ04AEIhMI4oe2taOL8gIVijoWCh28Cglb\"\n          }\n        }\n      }\n    },\n    {\n      \"guideSectionRenderer\": {\n        \"items\": [\n          {\n            \"guideEntryRenderer\": {\n              \"navigationEndpoint\": {\n                \"clickTrackingParams\": \"CBQQtSwYACITCOKHtrWji_ICFYo6FgodvAoJWw\u003d\u003d\",\n                \"commandMetadata\": {\n                  \"webCommandMetadata\": {\n                    \"url\": \"/channel/UC-9-kyTW8ZkZNDHQJ6FgpwQ\",\n                    \"webPageType\": \"WEB_PAGE_TYPE_CHANNEL\",\n                    \"rootVe\": 3611,\n                    \"apiUrl\": \"/youtubei/v1/browse\"\n                  }\n                },\n                \"browseEndpoint\": {\n                  \"browseId\": \"UC-9-kyTW8ZkZNDHQJ6FgpwQ\"\n                }\n              },\n              \"thumbnail\": {\n                \"thumbnails\": [\n                  {\n                    \"url\": \"https://yt3.ggpht.com/1bFg1MQGsC9LPLsGSZUo1nktqplJL3MODNbgn7XryiA5ToiqiCtHgJbFAbP17HG9CPhd7I7e\u003ds88-c-k-c0x00ffffff-no-rj\"\n                  }\n                ]\n              },\n              \"trackingParams\": \"CBQQtSwYACITCOKHtrWji_ICFYo6FgodvAoJWw\u003d\u003d\",\n              \"formattedTitle\": {\n                \"simpleText\": \"Music\"\n              },\n              \"accessibility\": {\n                \"accessibilityData\": {\n                  \"label\": \"Music\"\n                }\n              }\n            }\n          },\n          {\n            \"guideEntryRenderer\": {\n              \"navigationEndpoint\": {\n                \"clickTrackingParams\": \"CBMQtSwYASITCOKHtrWji_ICFYo6FgodvAoJWw\u003d\u003d\",\n                \"commandMetadata\": {\n                  \"webCommandMetadata\": {\n                    \"url\": \"/channel/UCEgdi0XIXXZ-qJOFPf4JSKw\",\n                    \"webPageType\": \"WEB_PAGE_TYPE_CHANNEL\",\n                    \"rootVe\": 3611,\n                    \"apiUrl\": \"/youtubei/v1/browse\"\n                  }\n                },\n                \"browseEndpoint\": {\n                  \"browseId\": \"UCEgdi0XIXXZ-qJOFPf4JSKw\"\n                }\n              },\n              \"thumbnail\": {\n                \"thumbnails\": [\n                  {\n                    \"url\": \"https://yt3.ggpht.com/y3X8h5AI6VCjrE9d59czG5opru8bONtPxsQtzTz_0uTn7BUJX0LSCkIN5SRkI0D5AEeI4KpUCA\u003ds88-c-k-c0x00ffffff-no-rj\"\n                  }\n                ]\n              },\n              \"trackingParams\": \"CBMQtSwYASITCOKHtrWji_ICFYo6FgodvAoJWw\u003d\u003d\",\n              \"formattedTitle\": {\n                \"simpleText\": \"Sport\"\n              },\n              \"accessibility\": {\n                \"accessibilityData\": {\n                  \"label\": \"Sport\"\n                }\n              }\n            }\n          },\n          {\n            \"guideEntryRenderer\": {\n              \"navigationEndpoint\": {\n                \"clickTrackingParams\": \"CBIQtSwYAiITCOKHtrWji_ICFYo6FgodvAoJWw\u003d\u003d\",\n                \"commandMetadata\": {\n                  \"webCommandMetadata\": {\n                    \"url\": \"/gaming\",\n                    \"webPageType\": \"WEB_PAGE_TYPE_CHANNEL\",\n                    \"rootVe\": 3611,\n                    \"apiUrl\": \"/youtubei/v1/browse\"\n                  }\n                },\n                \"browseEndpoint\": {\n                  \"browseId\": \"UCOpNcN46UbXVtpKMrmU4Abg\"\n                }\n              },\n              \"thumbnail\": {\n                \"thumbnails\": [\n                  {\n                    \"url\": \"https://yt3.ggpht.com/ZHnyFT1DMt1yPoJc6FBZHxTbJXR4pgrFSqKxd3KPkG9EeWnwpGFZkkWR8fRnPXoI7HQYYyNdWA\u003ds88-c-k-c0x00ffffff-no-rj\"\n                  }\n                ]\n              },\n              \"trackingParams\": \"CBIQtSwYAiITCOKHtrWji_ICFYo6FgodvAoJWw\u003d\u003d\",\n              \"formattedTitle\": {\n                \"simpleText\": \"Gaming\"\n              },\n              \"accessibility\": {\n                \"accessibilityData\": {\n                  \"label\": \"Gaming\"\n                }\n              }\n            }\n          },\n          {\n            \"guideEntryRenderer\": {\n              \"navigationEndpoint\": {\n                \"clickTrackingParams\": \"CBEQnOQDGAMiEwjih7a1o4vyAhWKOhYKHbwKCVs\u003d\",\n                \"commandMetadata\": {\n                  \"webCommandMetadata\": {\n                    \"url\": \"/channel/UClgRkhTL3_hImCAmdLfDE4g\",\n                    \"webPageType\": \"WEB_PAGE_TYPE_CHANNEL\",\n                    \"rootVe\": 3611,\n                    \"apiUrl\": \"/youtubei/v1/browse\"\n                  }\n                },\n                \"browseEndpoint\": {\n                  \"browseId\": \"UClgRkhTL3_hImCAmdLfDE4g\"\n                }\n              },\n              \"thumbnail\": {\n                \"thumbnails\": [\n                  {\n                    \"url\": \"https://yt3.ggpht.com/6lo97rUTO7xhIBXZqLiaW2kA_eMBIEmqc27EqlKLyE4nAY-yzcKBG0Hs0YdUka3gJ629HcwgyzQ\u003ds88-c-k-c0x00ffffff-no-rj\"\n                  }\n                ]\n              },\n              \"trackingParams\": \"CBEQnOQDGAMiEwjih7a1o4vyAhWKOhYKHbwKCVs\u003d\",\n              \"formattedTitle\": {\n                \"simpleText\": \"Movies \u0026 shows\"\n              },\n              \"accessibility\": {\n                \"accessibilityData\": {\n                  \"label\": \"Movies \u0026 shows\"\n                }\n              }\n            }\n          },\n          {\n            \"guideEntryRenderer\": {\n              \"navigationEndpoint\": {\n                \"clickTrackingParams\": \"CBAQtSwYBCITCOKHtrWji_ICFYo6FgodvAoJWw\u003d\u003d\",\n                \"commandMetadata\": {\n                  \"webCommandMetadata\": {\n                    \"url\": \"/channel/UCYfdidRxbB8Qhf0Nx7ioOYw\",\n                    \"webPageType\": \"WEB_PAGE_TYPE_CHANNEL\",\n                    \"rootVe\": 3611,\n                    \"apiUrl\": \"/youtubei/v1/browse\"\n                  }\n                },\n                \"browseEndpoint\": {\n                  \"browseId\": \"UCYfdidRxbB8Qhf0Nx7ioOYw\"\n                }\n              },\n              \"thumbnail\": {\n                \"thumbnails\": [\n                  {\n                    \"url\": \"https://yt3.ggpht.com/bssm4mEw5OtrBUftn8rrcVTiM3mAImsDo8h-WZrUewuae1xiEYXhJod4Rud0TYnh3cGSiyW5aw\u003ds88-c-k-c0x00ffffff-no-rj\"\n                  }\n                ]\n              },\n              \"trackingParams\": \"CBAQtSwYBCITCOKHtrWji_ICFYo6FgodvAoJWw\u003d\u003d\",\n              \"formattedTitle\": {\n                \"simpleText\": \"News\"\n              },\n              \"accessibility\": {\n                \"accessibilityData\": {\n                  \"label\": \"News\"\n                }\n              }\n            }\n          },\n          {\n            \"guideEntryRenderer\": {\n              \"navigationEndpoint\": {\n                \"clickTrackingParams\": \"CA8QtSwYBSITCOKHtrWji_ICFYo6FgodvAoJWw\u003d\u003d\",\n                \"commandMetadata\": {\n                  \"webCommandMetadata\": {\n                    \"url\": \"/channel/UC4R8DWoMoI7CAwX8_LjQHig\",\n                    \"webPageType\": \"WEB_PAGE_TYPE_CHANNEL\",\n                    \"rootVe\": 3611,\n                    \"apiUrl\": \"/youtubei/v1/browse\"\n                  }\n                },\n                \"browseEndpoint\": {\n                  \"browseId\": \"UC4R8DWoMoI7CAwX8_LjQHig\"\n                }\n              },\n              \"thumbnail\": {\n                \"thumbnails\": [\n                  {\n                    \"url\": \"https://yt3.ggpht.com/8D6JlsnvwDZFMdcbjqVji82kggP3aXXbO-yBD0RFrKlp4G1zNt9wcqcVTSPnAI8GuUAbDYQwsg\u003ds88-c-k-c0x00ffffff-no-rj\"\n                  }\n                ]\n              },\n              \"trackingParams\": \"CA8QtSwYBSITCOKHtrWji_ICFYo6FgodvAoJWw\u003d\u003d\",\n              \"formattedTitle\": {\n                \"simpleText\": \"Live\"\n              },\n              \"accessibility\": {\n                \"accessibilityData\": {\n                  \"label\": \"Live\"\n                }\n              }\n            }\n          },\n          {\n            \"guideEntryRenderer\": {\n              \"navigationEndpoint\": {\n                \"clickTrackingParams\": \"CA4QtSwYBiITCOKHtrWji_ICFYo6FgodvAoJWw\u003d\u003d\",\n                \"commandMetadata\": {\n                  \"webCommandMetadata\": {\n                    \"url\": \"/channel/UCrpQ4p1Ql_hG8rKXIKM1MOQ\",\n                    \"webPageType\": \"WEB_PAGE_TYPE_CHANNEL\",\n                    \"rootVe\": 3611,\n                    \"apiUrl\": \"/youtubei/v1/browse\"\n                  }\n                },\n                \"browseEndpoint\": {\n                  \"browseId\": \"UCrpQ4p1Ql_hG8rKXIKM1MOQ\"\n                }\n              },\n              \"thumbnail\": {\n                \"thumbnails\": [\n                  {\n                    \"url\": \"https://yt3.ggpht.com/lgLOVpPYBp2dhCbtwfb4B5NA5UlIRkUr4bamhnixYO16vxahp_1tQRBoTX2AAY62HW1ali0s\u003ds88-c-k-c0x00ffffff-no-rj\"\n                  }\n                ]\n              },\n              \"trackingParams\": \"CA4QtSwYBiITCOKHtrWji_ICFYo6FgodvAoJWw\u003d\u003d\",\n              \"formattedTitle\": {\n                \"simpleText\": \"Fashion \u0026 beauty\"\n              },\n              \"accessibility\": {\n                \"accessibilityData\": {\n                  \"label\": \"Fashion \u0026 beauty\"\n                }\n              }\n            }\n          },\n          {\n            \"guideEntryRenderer\": {\n              \"navigationEndpoint\": {\n                \"clickTrackingParams\": \"CA0QtSwYByITCOKHtrWji_ICFYo6FgodvAoJWw\u003d\u003d\",\n                \"commandMetadata\": {\n                  \"webCommandMetadata\": {\n                    \"url\": \"/channel/UCtFRv9O2AHqOZjjynzrv-xg\",\n                    \"webPageType\": \"WEB_PAGE_TYPE_CHANNEL\",\n                    \"rootVe\": 3611,\n                    \"apiUrl\": \"/youtubei/v1/browse\"\n                  }\n                },\n                \"browseEndpoint\": {\n                  \"browseId\": \"UCtFRv9O2AHqOZjjynzrv-xg\"\n                }\n              },\n              \"thumbnail\": {\n                \"thumbnails\": [\n                  {\n                    \"url\": \"https://yt3.ggpht.com/k97NHGktsDIIJg7M4MqGfxVm0e4AZ-_Eeb-dszsBQDrXfWszTOA7SHGHZz3OUaNtKHJU-RNX\u003ds88-c-k-c0x00ffffff-no-rj\"\n                  }\n                ]\n              },\n              \"trackingParams\": \"CA0QtSwYByITCOKHtrWji_ICFYo6FgodvAoJWw\u003d\u003d\",\n              \"formattedTitle\": {\n                \"simpleText\": \"Learning\"\n              },\n              \"accessibility\": {\n                \"accessibilityData\": {\n                  \"label\": \"Learning\"\n                }\n              }\n            }\n          },\n          {\n            \"guideEntryRenderer\": {\n              \"navigationEndpoint\": {\n                \"clickTrackingParams\": \"CAwQtSwYCCITCOKHtrWji_ICFYo6FgodvAoJWw\u003d\u003d\",\n                \"commandMetadata\": {\n                  \"webCommandMetadata\": {\n                    \"url\": \"/channel/UCzuqhhs6NWbgTzMuM09WKDQ\",\n                    \"webPageType\": \"WEB_PAGE_TYPE_CHANNEL\",\n                    \"rootVe\": 3611,\n                    \"apiUrl\": \"/youtubei/v1/browse\"\n                  }\n                },\n                \"browseEndpoint\": {\n                  \"browseId\": \"UCzuqhhs6NWbgTzMuM09WKDQ\"\n                }\n              },\n              \"thumbnail\": {\n                \"thumbnails\": [\n                  {\n                    \"url\": \"https://yt3.ggpht.com/28t6EdUgf0URSYi0hVyum_Y9btLiis4voqUZtPlNqUMkN6wtueVF-PYh49iZ7mlm1U9NRwUzA7k\u003ds88-c-k-c0x00ffffff-no-rj\"\n                  }\n                ]\n              },\n              \"trackingParams\": \"CAwQtSwYCCITCOKHtrWji_ICFYo6FgodvAoJWw\u003d\u003d\",\n              \"formattedTitle\": {\n                \"simpleText\": \"360° Video\"\n              },\n              \"accessibility\": {\n                \"accessibilityData\": {\n                  \"label\": \"360° Video\"\n                }\n              }\n            }\n          }\n        ],\n        \"trackingParams\": \"CAsQ5isYAyITCOKHtrWji_ICFYo6FgodvAoJWw\u003d\u003d\",\n        \"formattedTitle\": {\n          \"simpleText\": \"Best of YouTube\"\n        }\n      }\n    },\n    {\n      \"guideSectionRenderer\": {\n        \"items\": [\n          {\n            \"guideEntryRenderer\": {\n              \"navigationEndpoint\": {\n                \"clickTrackingParams\": \"CAoQtSwYACITCOKHtrWji_ICFYo6FgodvAoJWw\u003d\u003d\",\n                \"commandMetadata\": {\n                  \"webCommandMetadata\": {\n                    \"url\": \"/feed/guide_builder\",\n                    \"webPageType\": \"WEB_PAGE_TYPE_BROWSE\",\n                    \"rootVe\": 6827,\n                    \"apiUrl\": \"/youtubei/v1/browse\"\n                  }\n                },\n                \"browseEndpoint\": {\n                  \"browseId\": \"FEguide_builder\"\n                }\n              },\n              \"icon\": {\n                \"iconType\": \"ADD_CIRCLE\"\n              },\n              \"trackingParams\": \"CAoQtSwYACITCOKHtrWji_ICFYo6FgodvAoJWw\u003d\u003d\",\n              \"formattedTitle\": {\n                \"simpleText\": \"Browse channels\"\n              },\n              \"accessibility\": {\n                \"accessibilityData\": {\n                  \"label\": \"Browse channels\"\n                }\n              }\n            }\n          }\n        ],\n        \"trackingParams\": \"CAkQ5isYBCITCOKHtrWji_ICFYo6FgodvAoJWw\u003d\u003d\"\n      }\n    },\n    {\n      \"guideSectionRenderer\": {\n        \"items\": [\n          {\n            \"guideEntryRenderer\": {\n              \"navigationEndpoint\": {\n                \"clickTrackingParams\": \"CAgQmbcBGAAiEwjih7a1o4vyAhWKOhYKHbwKCVs\u003d\",\n                \"commandMetadata\": {\n                  \"webCommandMetadata\": {\n                    \"url\": \"/premium\",\n                    \"webPageType\": \"WEB_PAGE_TYPE_BROWSE\",\n                    \"rootVe\": 11487,\n                    \"apiUrl\": \"/youtubei/v1/browse\"\n                  }\n                },\n                \"browseEndpoint\": {\n                  \"browseId\": \"SPunlimited\"\n                }\n              },\n              \"icon\": {\n                \"iconType\": \"UNLIMITED\"\n              },\n              \"trackingParams\": \"CAgQmbcBGAAiEwjih7a1o4vyAhWKOhYKHbwKCVs\u003d\",\n              \"formattedTitle\": {\n                \"simpleText\": \"YouTube Premium\"\n              },\n              \"accessibility\": {\n                \"accessibilityData\": {\n                  \"label\": \"YouTube Premium\"\n                }\n              }\n            }\n          },\n          {\n            \"guideEntryRenderer\": {\n              \"navigationEndpoint\": {\n                \"clickTrackingParams\": \"CAcQtSwYASITCOKHtrWji_ICFYo6FgodvAoJWw\u003d\u003d\",\n                \"commandMetadata\": {\n                  \"webCommandMetadata\": {\n                    \"url\": \"/channel/UC4R8DWoMoI7CAwX8_LjQHig\",\n                    \"webPageType\": \"WEB_PAGE_TYPE_CHANNEL\",\n                    \"rootVe\": 3611,\n                    \"apiUrl\": \"/youtubei/v1/browse\"\n                  }\n                },\n                \"browseEndpoint\": {\n                  \"browseId\": \"UC4R8DWoMoI7CAwX8_LjQHig\"\n                }\n              },\n              \"icon\": {\n                \"iconType\": \"LIVE\"\n              },\n              \"trackingParams\": \"CAcQtSwYASITCOKHtrWji_ICFYo6FgodvAoJWw\u003d\u003d\",\n              \"formattedTitle\": {\n                \"simpleText\": \"Live\"\n              },\n              \"accessibility\": {\n                \"accessibilityData\": {\n                  \"label\": \"Live\"\n                }\n              }\n            }\n          }\n        ],\n        \"trackingParams\": \"CAYQ5isYBSITCOKHtrWji_ICFYo6FgodvAoJWw\u003d\u003d\",\n        \"formattedTitle\": {\n          \"simpleText\": \"More from YouTube\"\n        }\n      }\n    },\n    {\n      \"guideSectionRenderer\": {\n        \"items\": [\n          {\n            \"guideEntryRenderer\": {\n              \"navigationEndpoint\": {\n                \"clickTrackingParams\": \"CAUQtSwYACITCOKHtrWji_ICFYo6FgodvAoJWw\u003d\u003d\",\n                \"commandMetadata\": {\n                  \"webCommandMetadata\": {\n                    \"url\": \"/account\",\n                    \"webPageType\": \"WEB_PAGE_TYPE_SETTINGS\",\n                    \"rootVe\": 23462,\n                    \"apiUrl\": \"/youtubei/v1/browse\"\n                  }\n                },\n                \"browseEndpoint\": {\n                  \"browseId\": \"SPaccount_overview\"\n                }\n              },\n              \"icon\": {\n                \"iconType\": \"SETTINGS\"\n              },\n              \"trackingParams\": \"CAUQtSwYACITCOKHtrWji_ICFYo6FgodvAoJWw\u003d\u003d\",\n              \"formattedTitle\": {\n                \"simpleText\": \"Settings\"\n              },\n              \"accessibility\": {\n                \"accessibilityData\": {\n                  \"label\": \"Settings\"\n                }\n              }\n            }\n          },\n          {\n            \"guideEntryRenderer\": {\n              \"navigationEndpoint\": {\n                \"clickTrackingParams\": \"CAQQtSwYASITCOKHtrWji_ICFYo6FgodvAoJWw\u003d\u003d\",\n                \"commandMetadata\": {\n                  \"webCommandMetadata\": {\n                    \"url\": \"/reporthistory\",\n                    \"webPageType\": \"WEB_PAGE_TYPE_BROWSE\",\n                    \"rootVe\": 6827,\n                    \"apiUrl\": \"/youtubei/v1/browse\"\n                  }\n                },\n                \"browseEndpoint\": {\n                  \"browseId\": \"SPreport_history\"\n                }\n              },\n              \"icon\": {\n                \"iconType\": \"FLAG\"\n              },\n              \"trackingParams\": \"CAQQtSwYASITCOKHtrWji_ICFYo6FgodvAoJWw\u003d\u003d\",\n              \"formattedTitle\": {\n                \"simpleText\": \"Report history\"\n              },\n              \"accessibility\": {\n                \"accessibilityData\": {\n                  \"label\": \"Report history\"\n                }\n              }\n            }\n          },\n          {\n            \"guideEntryRenderer\": {\n              \"icon\": {\n                \"iconType\": \"HELP\"\n              },\n              \"trackingParams\": \"CAMQtSwYAiITCOKHtrWji_ICFYo6FgodvAoJWw\u003d\u003d\",\n              \"formattedTitle\": {\n                \"simpleText\": \"Help\"\n              },\n              \"accessibility\": {\n                \"accessibilityData\": {\n                  \"label\": \"Help\"\n                }\n              },\n              \"serviceEndpoint\": {\n                \"clickTrackingParams\": \"CAMQtSwYAiITCOKHtrWji_ICFYo6FgodvAoJWw\u003d\u003d\",\n                \"commandMetadata\": {\n                  \"webCommandMetadata\": {\n                    \"sendPost\": true\n                  }\n                },\n                \"signalServiceEndpoint\": {\n                  \"signal\": \"CLIENT_SIGNAL\",\n                  \"actions\": [\n                    {\n                      \"clickTrackingParams\": \"CAMQtSwYAiITCOKHtrWji_ICFYo6FgodvAoJWw\u003d\u003d\",\n                      \"signalAction\": {\n                        \"signal\": \"HELP\"\n                      }\n                    }\n                  ]\n                }\n              }\n            }\n          },\n          {\n            \"guideEntryRenderer\": {\n              \"icon\": {\n                \"iconType\": \"FEEDBACK\"\n              },\n              \"trackingParams\": \"CAIQtSwYAyITCOKHtrWji_ICFYo6FgodvAoJWw\u003d\u003d\",\n              \"formattedTitle\": {\n                \"simpleText\": \"Send feedback\"\n              },\n              \"accessibility\": {\n                \"accessibilityData\": {\n                  \"label\": \"Send feedback\"\n                }\n              },\n              \"serviceEndpoint\": {\n                \"clickTrackingParams\": \"CAIQtSwYAyITCOKHtrWji_ICFYo6FgodvAoJWw\u003d\u003d\",\n                \"commandMetadata\": {\n                  \"webCommandMetadata\": {\n                    \"sendPost\": true\n                  }\n                },\n                \"signalServiceEndpoint\": {\n                  \"signal\": \"CLIENT_SIGNAL\",\n                  \"actions\": [\n                    {\n                      \"clickTrackingParams\": \"CAIQtSwYAyITCOKHtrWji_ICFYo6FgodvAoJWw\u003d\u003d\",\n                      \"sendFeedbackAction\": {\n                        \"bucket\": \"Kevlar\"\n                      }\n                    }\n                  ]\n                }\n              }\n            }\n          }\n        ],\n        \"trackingParams\": \"CAEQ5isYBiITCOKHtrWji_ICFYo6FgodvAoJWw\u003d\u003d\"\n      }\n    }\n  ]\n}\n",
-    "latestUrl": "https://www.youtube.com/youtubei/v1/guide?key\u003dAIzaSyAO_FJ2SlqU8Q4STEHLGCilw_Y9_11qcW8"
+    "responseBody": "/** 10652003255817520666 */self.document \u003d self; self.window \u003d self;var ytcfg\u003d{d:function(){return window.yt\u0026\u0026yt.config_||ytcfg.data_||(ytcfg.data_\u003d{})},get:function(k,o){return k in ytcfg.d()?ytcfg.d()[k]:o},set:function(){var a\u003darguments;if(a.length\u003e1)ytcfg.d()[a[0]]\u003da[1];else for(var k in a[0])ytcfg.d()[k]\u003da[0][k]}};\nytcfg.set({\"EXPERIMENT_FLAGS\":{\"allow_music_base_url\":true,\"allow_skip_networkless\":true,\"clear_user_partitioned_ls\":true,\"deprecate_two_way_binding_child\":true,\"deprecate_two_way_binding_parent\":true,\"desktop_image_cta_no_background\":true,\"desktop_text_ads_gray_visurl\":true,\"disable_child_node_auto_formatted_strings\":true,\"disable_simple_mixed_direction_formatted_strings\":true,\"disable_thumbnail_preloading\":true,\"enable_client_sli_logging\":true,\"enable_gel_log_commands\":true,\"enable_gray_visurl\":true,\"enable_mixed_direction_formatted_strings\":true,\"enable_sli_flush\":true,\"enable_topsoil_wta_for_halftime_live_infra\":true,\"enable_web_eom_visitor_data\":true,\"export_networkless_options\":true,\"forward_domain_admin_state_on_embeds\":true,\"html5_enable_single_video_vod_ivar_on_pacf\":true,\"html5_enable_video_overlay_on_inplayer_slot_for_tv\":true,\"html5_pacf_enable_dai\":true,\"json_condensed_response\":true,\"kevlar_dropdown_fix\":true,\"kevlar_gel_error_routing\":true,\"log_heartbeat_with_lifecycles\":true,\"log_web_endpoint_to_layer\":true,\"networkless_gel\":true,\"networkless_logging\":true,\"nwl_send_fast_on_unload\":true,\"offline_error_handling\":true,\"pageid_as_header_web\":true,\"pes_migrate_association_data\":true,\"polymer_bad_build_labels\":true,\"polymer_verifiy_app_state\":true,\"qoe_send_and_write\":true,\"record_app_crashed_web\":true,\"render_unicode_emojis_as_images_counterfactual\":true,\"search_image_menu_alignment\":true,\"skip_ls_gel_retry\":true,\"sponsorships_upsell_in_picker_check_eligibility\":true,\"suppress_error_204_logging\":true,\"sw_nav_request_network_first\":true,\"use_bg_facade\":true,\"use_document_lifecycles\":true,\"use_screen_manager_util\":true,\"use_undefined_csn_any_layer\":true,\"vss_final_ping_send_and_write\":true,\"vss_playback_use_send_and_write\":true,\"web_api_url\":true,\"web_click_command_fallback\":true,\"web_dedupe_ve_grafting\":true,\"web_deprecate_service_ajax_map_dependency\":true,\"web_enable_ad_signals_in_it_context\":true,\"web_fetch_promise_cleanup_killswitch\":true,\"web_forward_command_on_pbj\":true,\"web_log_memory_total_kbytes\":true,\"web_ordered_response_processors\":true,\"web_prefetch_preload_video\":true,\"web_yt_config_context\":true,\"ytidb_fetch_datasync_ids_for_data_cleanup\":true,\"addto_ajax_log_warning_fraction\":0.1,\"log_window_onerror_fraction\":0.1,\"ytidb_transaction_ended_event_rate_limit\":0.02,\"botguard_async_snapshot_timeout_ms\":3000,\"check_navigator_accuracy_timeout_ms\":0,\"initial_gel_batch_timeout\":2000,\"network_polling_interval\":30000,\"polymer_log_prop_change_observer_percent\":0,\"web_foreground_heartbeat_interval_ms\":28000,\"web_logging_max_batch\":150,\"ytidb_remake_db_retries\":1,\"ytidb_reopen_db_retries\":0,\"cb_v2_uxe\":\"23983171\",\"web_client_version_override\":\"\",\"kevlar_command_handler_command_banlist\":[],\"web_op_continuation_type_banlist\":[],\"web_op_endpoint_banlist\":[],\"web_op_signal_type_banlist\":[]},\"INNERTUBE_API_KEY\":\"AIzaSyAO_FJ2SlqU8Q4STEHLGCilw_Y9_11qcW8\",\"INNERTUBE_API_VERSION\":\"v1\",\"INNERTUBE_CLIENT_NAME\":\"WEB\",\"INNERTUBE_CLIENT_VERSION\":\"2.20220315.01.00\",\"INNERTUBE_CONTEXT\":{\"client\":{\"clientName\":\"WEB\",\"clientVersion\":\"2.20220315.01.00\"}},\"INNERTUBE_CONTEXT_CLIENT_NAME\":1,\"INNERTUBE_CONTEXT_CLIENT_VERSION\":\"2.20220315.01.00\",\"LATEST_ECATCHER_SERVICE_TRACKING_PARAMS\":{\"client.name\":\"WEB\"}});window.ytcfg.obfuscatedData_ \u003d [];if (self.trustedTypes \u0026\u0026 self.trustedTypes.createPolicy) {const swPolicy \u003d trustedTypes.createPolicy(\u0027youtubeServiceWorkerPolicy\u0027, {createScriptURL: function(ignored) { return \u0027https:\\/\\/www.youtube.com\\/s\\/desktop\\/d3f3a825\\/jsbin\\/serviceworker-notifications.vflset\\/serviceworker-notifications.js\u0027; }}); importScripts(swPolicy.createScriptURL(\u0027\u0027));} else {importScripts(\u0027https:\\/\\/www.youtube.com\\/s\\/desktop\\/d3f3a825\\/jsbin\\/serviceworker-notifications.vflset\\/serviceworker-notifications.js\u0027);}",
+    "latestUrl": "https://www.youtube.com/sw.js"
   }
 }
