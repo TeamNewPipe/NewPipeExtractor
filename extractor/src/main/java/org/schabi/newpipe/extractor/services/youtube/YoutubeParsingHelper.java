@@ -94,18 +94,18 @@ public final class YoutubeParsingHelper {
     public static final String CPN = "cpn";
     public static final String VIDEO_ID = "videoId";
 
-    private static final String HARDCODED_CLIENT_VERSION = "2.20220114.01.00";
+    private static final String HARDCODED_CLIENT_VERSION = "2.20220315.01.00";
     private static final String HARDCODED_KEY = "AIzaSyAO_FJ2SlqU8Q4STEHLGCilw_Y9_11qcW8";
 
     private static final String ANDROID_YOUTUBE_KEY = "AIzaSyA8eiZmM1FaDVjRy-df2KTyQ_vz_yYM39w";
     private static final String IOS_YOUTUBE_KEY = "AIzaSyB-63vPrdThhKuerbB2N_l7Kwwcxj6yUAc";
-    private static final String MOBILE_YOUTUBE_CLIENT_VERSION = "16.49.38";
+    private static final String MOBILE_YOUTUBE_CLIENT_VERSION = "17.10.35";
 
     private static String clientVersion;
     private static String key;
 
     private static final String[] HARDCODED_YOUTUBE_MUSIC_KEY =
-            {"AIzaSyC9XL3ZjWddXya6X74dJoCTL-WEYFDNX30", "67", "1.20220110.00.00"};
+            {"AIzaSyC9XL3ZjWddXya6X74dJoCTL-WEYFDNX30", "67", "1.20220309.01.00"};
     private static String[] youtubeMusicKey;
 
     private static boolean keyAndVersionExtracted = false;
@@ -973,22 +973,8 @@ public final class YoutubeParsingHelper {
             final byte[] body,
             @Nonnull final Localization localization,
             @Nullable final String endPartOfUrlRequest) throws IOException, ExtractionException {
-        final Map<String, List<String>> headers = new HashMap<>();
-        headers.put("Content-Type", Collections.singletonList("application/json"));
-        // Spoofing an Android 11 device with the hardcoded version of the Android app
-        headers.put("User-Agent", Collections.singletonList("com.google.android.youtube/"
-                + MOBILE_YOUTUBE_CLIENT_VERSION + " (Linux; U; Android 11; "
-                + localization.getCountryCode() + ") gzip"));
-        headers.put("X-Goog-Api-Format-Version", Collections.singletonList("2"));
-
-        final String baseEndpointUrl = "https://youtubei.googleapis.com/youtubei/v1/" + endpoint
-                + "?key=" + ANDROID_YOUTUBE_KEY + DISABLE_PRETTY_PRINT_PARAMETER;
-
-        final Response response = getDownloader().post(isNullOrEmpty(endPartOfUrlRequest)
-                        ? baseEndpointUrl : baseEndpointUrl + endPartOfUrlRequest,
-                headers, body, localization);
-
-        return JsonUtils.toJsonObject(getValidJsonResponseBody(response));
+        return getMobilePostResponse(endpoint, body, localization,
+                getAndroidUserAgent(localization), ANDROID_YOUTUBE_KEY, endPartOfUrlRequest);
     }
 
     public static JsonObject getJsonIosPostResponse(
@@ -996,21 +982,28 @@ public final class YoutubeParsingHelper {
             final byte[] body,
             @Nonnull final Localization localization,
             @Nullable final String endPartOfUrlRequest) throws IOException, ExtractionException {
+        return getMobilePostResponse(endpoint, body, localization, getIosUserAgent(localization),
+                IOS_YOUTUBE_KEY, endPartOfUrlRequest);
+    }
+
+    private static JsonObject getMobilePostResponse(
+            final String endpoint,
+            final byte[] body,
+            @Nonnull final Localization localization,
+            @Nonnull final String userAgent,
+            @Nonnull final String key,
+            @Nullable final String endPartOfUrlRequest) throws IOException, ExtractionException {
         final Map<String, List<String>> headers = new HashMap<>();
         headers.put("Content-Type", Collections.singletonList("application/json"));
-        // Spoofing an iPhone 13 running iOS 15.2 with the hardcoded mobile client version
-        headers.put("User-Agent", Collections.singletonList("com.google.ios.youtube/"
-                + MOBILE_YOUTUBE_CLIENT_VERSION + "(iPhone14,5; U; CPU iOS 15_2 like Mac OS X; "
-                + localization.getCountryCode() + ")"));
+        headers.put("User-Agent", Collections.singletonList(userAgent));
         headers.put("X-Goog-Api-Format-Version", Collections.singletonList("2"));
 
         final String baseEndpointUrl = "https://youtubei.googleapis.com/youtubei/v1/" + endpoint
-                + "?key=" + IOS_YOUTUBE_KEY + DISABLE_PRETTY_PRINT_PARAMETER;
+                + "?key=" + key + DISABLE_PRETTY_PRINT_PARAMETER;
 
         final Response response = getDownloader().post(isNullOrEmpty(endPartOfUrlRequest)
                         ? baseEndpointUrl : baseEndpointUrl + endPartOfUrlRequest,
                 headers, body, localization);
-
         return JsonUtils.toJsonObject(getValidJsonResponseBody(response));
     }
 
@@ -1231,6 +1224,48 @@ public final class YoutubeParsingHelper {
                 .done())
                 .getBytes(StandardCharsets.UTF_8);
         // @formatter:on
+    }
+
+    /**
+     * Get the user-agent string used as the user-agent for InnerTube requests with the Android
+     * client.
+     *
+     * If the {@link Localization} provided is {@code null}, fallbacks to
+     * {@link Localization#DEFAULT the default one}.
+     *
+     * @param localization the {@link Localization} to set in the user-agent
+     * @return the Android user-agent used for InnerTube requests with the Android client,
+     * depending on the {@link Localization} provided
+     */
+    @Nonnull
+    public static String getAndroidUserAgent(@Nullable final Localization localization) {
+        // Spoofing an Android 12 device with the hardcoded version of the Android app
+        return "com.google.android.youtube/" + MOBILE_YOUTUBE_CLIENT_VERSION
+                + " (Linux; U; Android 12; "
+                + (localization != null ? localization.getCountryCode()
+                        : Localization.DEFAULT.getCountryCode())
+                + ") gzip";
+    }
+
+    /**
+     * Get the user-agent string used as the user-agent for InnerTube requests with the iOS
+     * client.
+     *
+     * If the {@link Localization} provided is {@code null}, fallbacks to
+     * {@link Localization#DEFAULT the default one}.
+     *
+     * @param localization the {@link Localization} to set in the user-agent
+     * @return the iOS user-agent used for InnerTube requests with the iOS client, depending on the
+     * {@link Localization} provided
+     */
+    @Nonnull
+    public static String getIosUserAgent(@Nullable final Localization localization) {
+        // Spoofing an iPhone 13 running iOS 15.4 with the hardcoded mobile client version
+        return "com.google.ios.youtube/" + MOBILE_YOUTUBE_CLIENT_VERSION
+                + "(iPhone14,5; U; CPU iOS 15_4 like Mac OS X; "
+                + (localization != null ? localization.getCountryCode()
+                        : Localization.DEFAULT.getCountryCode())
+                + ")";
     }
 
     /**
