@@ -90,8 +90,8 @@ public class YoutubeMixPlaylistExtractor extends PlaylistExtractor {
         final Map<String, List<String>> headers = new HashMap<>();
         addClientInfoHeaders(headers);
 
-        final Response response = getDownloader().post(YOUTUBEI_V1_URL + "next?key=" + getKey(),
-                headers, body, localization);
+        final Response response = getDownloader().post(YOUTUBEI_V1_URL + "next?key=" + getKey()
+                + DISABLE_PRETTY_PRINT_PARAMETER, headers, body, localization);
 
         initialData = JsonUtils.toJsonObject(getValidJsonResponseBody(response));
         playlistData = initialData.getObject("contents").getObject("twoColumnWatchNextResults")

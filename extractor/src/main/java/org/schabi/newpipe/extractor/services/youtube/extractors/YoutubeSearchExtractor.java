@@ -239,7 +239,8 @@ public class YoutubeSearchExtractor extends SearchExtractor {
         final String token = continuationItemRenderer.getObject("continuationEndpoint")
                 .getObject("continuationCommand").getString("token");
 
-        final String url = YOUTUBEI_V1_URL + "search?key=" + getKey();
+        final String url = YOUTUBEI_V1_URL + "search?key=" + getKey()
+                + DISABLE_PRETTY_PRINT_PARAMETER;
 
         return new Page(url, token);
     }

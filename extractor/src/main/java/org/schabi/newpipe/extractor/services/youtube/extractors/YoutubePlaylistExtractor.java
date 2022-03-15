@@ -317,7 +317,8 @@ public class YoutubePlaylistExtractor extends PlaylistExtractor {
                             .done())
                     .getBytes(StandardCharsets.UTF_8);
 
-            return new Page(YOUTUBEI_V1_URL + "browse?key=" + getKey(), body);
+            return new Page(YOUTUBEI_V1_URL + "browse?key=" + getKey()
+                    + DISABLE_PRETTY_PRINT_PARAMETER, body);
         } else {
             return null;
         }

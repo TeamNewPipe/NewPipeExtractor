@@ -395,7 +395,8 @@ public class YoutubeChannelExtractor extends ChannelExtractor {
                         .done())
                 .getBytes(UTF_8);
 
-        return new Page(YOUTUBEI_V1_URL + "browse?key=" + getKey(), null, channelIds, null, body);
+        return new Page(YOUTUBEI_V1_URL + "browse?key=" + getKey()
+                + DISABLE_PRETTY_PRINT_PARAMETER, null, channelIds, null, body);
     }
 
     /**

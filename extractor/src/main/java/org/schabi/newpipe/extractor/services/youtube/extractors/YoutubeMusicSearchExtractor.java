@@ -60,7 +60,7 @@ public class YoutubeMusicSearchExtractor extends SearchExtractor {
         final String[] youtubeMusicKeys = YoutubeParsingHelper.getYoutubeMusicKey();
 
         final String url = "https://music.youtube.com/youtubei/v1/search?alt=json&key="
-                + youtubeMusicKeys[0];
+                + youtubeMusicKeys[0] + DISABLE_PRETTY_PRINT_PARAMETER;
 
         final String params;
 

@@ -81,6 +81,16 @@ public final class YoutubeParsingHelper {
     }
 
     public static final String YOUTUBEI_V1_URL = "https://www.youtube.com/youtubei/v1/";
+
+    /**
+     * A parameter to disable pretty-printed response of InnerTube requests, to reduce response
+     * sizes.
+     *
+     * <p>
+     * Sent in query parameters of the requests, <b>after</b> the API key.
+     * </p>
+     **/
+    public static final String DISABLE_PRETTY_PRINT_PARAMETER = "&prettyPrint=false";
     public static final String CPN = "cpn";
     public static final String VIDEO_ID = "videoId";
 
@@ -495,7 +505,7 @@ public final class YoutubeParsingHelper {
         // This endpoint is fetched by the YouTube website to get the items of its main menu and is
         // pretty lightweight (around 30kB)
         final Response response = getDownloader().post(YOUTUBEI_V1_URL + "guide?key="
-                        + HARDCODED_KEY, headers, body);
+                        + HARDCODED_KEY + DISABLE_PRETTY_PRINT_PARAMETER, headers, body);
         final String responseBody = response.responseBody();
         final int responseCode = response.responseCode();
 
@@ -674,7 +684,7 @@ public final class YoutubeParsingHelper {
             ReCaptchaException {
         final String url =
                 "https://music.youtube.com/youtubei/v1/music/get_search_suggestions?alt=json&key="
-                + HARDCODED_YOUTUBE_MUSIC_KEY[0];
+                        + HARDCODED_YOUTUBE_MUSIC_KEY[0] + DISABLE_PRETTY_PRINT_PARAMETER;
 
         // @formatter:off
         final byte[] json = JsonWriter.string()
@@ -953,7 +963,7 @@ public final class YoutubeParsingHelper {
         headers.put("Content-Type", Collections.singletonList("application/json"));
 
         final Response response = getDownloader().post(YOUTUBEI_V1_URL + endpoint + "?key="
-                + getKey(), headers, body, localization);
+                + getKey() + DISABLE_PRETTY_PRINT_PARAMETER, headers, body, localization);
 
         return JsonUtils.toJsonObject(getValidJsonResponseBody(response));
     }
@@ -972,7 +982,7 @@ public final class YoutubeParsingHelper {
         headers.put("X-Goog-Api-Format-Version", Collections.singletonList("2"));
 
         final String baseEndpointUrl = "https://youtubei.googleapis.com/youtubei/v1/" + endpoint
-                + "?key=" + ANDROID_YOUTUBE_KEY;
+                + "?key=" + ANDROID_YOUTUBE_KEY + DISABLE_PRETTY_PRINT_PARAMETER;
 
         final Response response = getDownloader().post(isNullOrEmpty(endPartOfUrlRequest)
                         ? baseEndpointUrl : baseEndpointUrl + endPartOfUrlRequest,
@@ -995,7 +1005,7 @@ public final class YoutubeParsingHelper {
         headers.put("X-Goog-Api-Format-Version", Collections.singletonList("2"));
 
         final String baseEndpointUrl = "https://youtubei.googleapis.com/youtubei/v1/" + endpoint
-                + "?key=" + IOS_YOUTUBE_KEY;
+                + "?key=" + IOS_YOUTUBE_KEY + DISABLE_PRETTY_PRINT_PARAMETER;
 
         final Response response = getDownloader().post(isNullOrEmpty(endPartOfUrlRequest)
                         ? baseEndpointUrl : baseEndpointUrl + endPartOfUrlRequest,
