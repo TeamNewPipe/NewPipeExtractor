@@ -30,7 +30,7 @@ public class YoutubeStreamExtractorUnlistedTest extends DefaultStreamExtractorTe
         YoutubeParsingHelper.resetClientVersionAndKey();
         YoutubeParsingHelper.setNumberGenerator(new Random(1));
         YoutubeStreamExtractor.resetDeobfuscationCode();
-        NewPipe.init(new DownloaderFactory().getDownloader(RESOURCE_PATH + "unlisted"));
+        NewPipe.init(DownloaderFactory.getDownloader(RESOURCE_PATH + "unlisted"));
         extractor = YouTube.getStreamExtractor(URL);
         extractor.fetchPage();
     }

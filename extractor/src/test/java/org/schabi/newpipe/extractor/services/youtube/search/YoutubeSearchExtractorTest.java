@@ -41,7 +41,7 @@ public class YoutubeSearchExtractorTest {
         public static void setUp() throws Exception {
             YoutubeParsingHelper.resetClientVersionAndKey();
             YoutubeParsingHelper.setNumberGenerator(new Random(1));
-            NewPipe.init(new DownloaderFactory().getDownloader(RESOURCE_PATH + "all"));
+            NewPipe.init(DownloaderFactory.getDownloader(RESOURCE_PATH + "all"));
             extractor = YouTube.getSearchExtractor(QUERY);
             extractor.fetchPage();
         }
@@ -64,7 +64,7 @@ public class YoutubeSearchExtractorTest {
         public static void setUp() throws Exception {
             YoutubeParsingHelper.resetClientVersionAndKey();
             YoutubeParsingHelper.setNumberGenerator(new Random(1));
-            NewPipe.init(new DownloaderFactory().getDownloader(RESOURCE_PATH + "channel"));
+            NewPipe.init(DownloaderFactory.getDownloader(RESOURCE_PATH + "channel"));
             extractor = YouTube.getSearchExtractor(QUERY, singletonList(CHANNELS), "");
             extractor.fetchPage();
         }
@@ -89,7 +89,7 @@ public class YoutubeSearchExtractorTest {
         public static void setUp() throws Exception {
             YoutubeParsingHelper.resetClientVersionAndKey();
             YoutubeParsingHelper.setNumberGenerator(new Random(1));
-            NewPipe.init(new DownloaderFactory().getDownloader(RESOURCE_PATH + "playlist"));
+            NewPipe.init(DownloaderFactory.getDownloader(RESOURCE_PATH + "playlist"));
             extractor = YouTube.getSearchExtractor(QUERY, singletonList(PLAYLISTS), "");
             extractor.fetchPage();
         }
@@ -114,7 +114,7 @@ public class YoutubeSearchExtractorTest {
         public static void setUp() throws Exception {
             YoutubeParsingHelper.resetClientVersionAndKey();
             YoutubeParsingHelper.setNumberGenerator(new Random(1));
-            NewPipe.init(new DownloaderFactory().getDownloader(RESOURCE_PATH + "videos"));
+            NewPipe.init(DownloaderFactory.getDownloader(RESOURCE_PATH + "videos"));
             extractor = YouTube.getSearchExtractor(QUERY, singletonList(VIDEOS), "");
             extractor.fetchPage();
         }
@@ -140,7 +140,7 @@ public class YoutubeSearchExtractorTest {
         public static void setUp() throws Exception {
             YoutubeParsingHelper.resetClientVersionAndKey();
             YoutubeParsingHelper.setNumberGenerator(new Random(1));
-            NewPipe.init(new DownloaderFactory().getDownloader(RESOURCE_PATH + "suggestions"));
+            NewPipe.init(DownloaderFactory.getDownloader(RESOURCE_PATH + "suggestions"));
             extractor = YouTube.getSearchExtractor(QUERY, singletonList(VIDEOS), "");
             extractor.fetchPage();
         }
@@ -165,7 +165,7 @@ public class YoutubeSearchExtractorTest {
         public static void setUp() throws Exception {
             YoutubeParsingHelper.resetClientVersionAndKey();
             YoutubeParsingHelper.setNumberGenerator(new Random(1));
-            NewPipe.init(new DownloaderFactory().getDownloader(RESOURCE_PATH + "corrected"));
+            NewPipe.init(DownloaderFactory.getDownloader(RESOURCE_PATH + "corrected"));
             extractor = YouTube.getSearchExtractor(QUERY, singletonList(VIDEOS), "");
             extractor.fetchPage();
         }
@@ -190,7 +190,7 @@ public class YoutubeSearchExtractorTest {
         public static void setUp() throws Exception {
             YoutubeParsingHelper.resetClientVersionAndKey();
             YoutubeParsingHelper.setNumberGenerator(new Random(1));
-            NewPipe.init(new DownloaderFactory().getDownloader(RESOURCE_PATH + "random"));
+            NewPipe.init(DownloaderFactory.getDownloader(RESOURCE_PATH + "random"));
             extractor = YouTube.getSearchExtractor(QUERY);
             extractor.fetchPage();
         }
@@ -226,7 +226,7 @@ public class YoutubeSearchExtractorTest {
         public void duplicatedItemsCheck() throws Exception {
             YoutubeParsingHelper.resetClientVersionAndKey();
             YoutubeParsingHelper.setNumberGenerator(new Random(1));
-            NewPipe.init(new DownloaderFactory().getDownloader(RESOURCE_PATH + "paging"));
+            NewPipe.init(DownloaderFactory.getDownloader(RESOURCE_PATH + "paging"));
             final SearchExtractor extractor = YouTube.getSearchExtractor("cirque du soleil", singletonList(VIDEOS), "");
             extractor.fetchPage();
 
@@ -245,7 +245,7 @@ public class YoutubeSearchExtractorTest {
         public static void setUp() throws Exception {
             YoutubeParsingHelper.resetClientVersionAndKey();
             YoutubeParsingHelper.setNumberGenerator(new Random(1));
-            NewPipe.init(new DownloaderFactory().getDownloader(RESOURCE_PATH + "metaInfo"));
+            NewPipe.init(DownloaderFactory.getDownloader(RESOURCE_PATH + "metaInfo"));
             extractor = YouTube.getSearchExtractor(QUERY, singletonList(VIDEOS), "");
             extractor.fetchPage();
         }
@@ -282,7 +282,7 @@ public class YoutubeSearchExtractorTest {
         public static void setUp() throws Exception {
             YoutubeParsingHelper.resetClientVersionAndKey();
             YoutubeParsingHelper.setNumberGenerator(new Random(1));
-            NewPipe.init(new DownloaderFactory().getDownloader(RESOURCE_PATH + "verified"));
+            NewPipe.init(DownloaderFactory.getDownloader(RESOURCE_PATH + "verified"));
             extractor = YouTube.getSearchExtractor(QUERY, singletonList(CHANNELS), "");
             extractor.fetchPage();
         }
@@ -320,7 +320,7 @@ public class YoutubeSearchExtractorTest {
         public static void setUp() throws Exception {
             YoutubeParsingHelper.resetClientVersionAndKey();
             YoutubeParsingHelper.setNumberGenerator(new Random(1));
-            NewPipe.init(new DownloaderFactory().getDownloader(RESOURCE_PATH + "video_uploader_avatar"));
+            NewPipe.init(DownloaderFactory.getDownloader(RESOURCE_PATH + "video_uploader_avatar"));
             extractor = YouTube.getSearchExtractor(QUERY, singletonList(VIDEOS), "");
             extractor.fetchPage();
         }
@@ -352,7 +352,7 @@ public class YoutubeSearchExtractorTest {
         public static void setUp() throws Exception {
             YoutubeParsingHelper.resetClientVersionAndKey();
             YoutubeParsingHelper.setNumberGenerator(new Random(1));
-            NewPipe.init(new DownloaderFactory().getDownloader(RESOURCE_PATH + "video_description"));
+            NewPipe.init(DownloaderFactory.getDownloader(RESOURCE_PATH + "video_description"));
             extractor = YouTube.getSearchExtractor(QUERY, singletonList(VIDEOS), "");
             extractor.fetchPage();
         }

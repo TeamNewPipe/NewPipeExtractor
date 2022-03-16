@@ -40,7 +40,7 @@ public class YoutubeCommentsExtractorTest {
         public static void setUp() throws Exception {
             YoutubeParsingHelper.resetClientVersionAndKey();
             YoutubeParsingHelper.setNumberGenerator(new Random(1));
-            NewPipe.init(new DownloaderFactory().getDownloader(RESOURCE_PATH + "thomas"));
+            NewPipe.init(DownloaderFactory.getDownloader(RESOURCE_PATH + "thomas"));
             extractor = (YoutubeCommentsExtractor) YouTube
                     .getCommentsExtractor(url);
             extractor.fetchPage();
@@ -129,7 +129,7 @@ public class YoutubeCommentsExtractorTest {
         public static void setUp() throws Exception {
             YoutubeParsingHelper.resetClientVersionAndKey();
             YoutubeParsingHelper.setNumberGenerator(new Random(1));
-            NewPipe.init(new DownloaderFactory().getDownloader(RESOURCE_PATH + "empty"));
+            NewPipe.init(DownloaderFactory.getDownloader(RESOURCE_PATH + "empty"));
             extractor = (YoutubeCommentsExtractor) YouTube
                     .getCommentsExtractor(url);
             extractor.fetchPage();
@@ -169,7 +169,7 @@ public class YoutubeCommentsExtractorTest {
         public static void setUp() throws Exception {
             YoutubeParsingHelper.resetClientVersionAndKey();
             YoutubeParsingHelper.setNumberGenerator(new Random(1));
-            NewPipe.init(new DownloaderFactory().getDownloader(RESOURCE_PATH + "hearted"));
+            NewPipe.init(DownloaderFactory.getDownloader(RESOURCE_PATH + "hearted"));
             extractor = (YoutubeCommentsExtractor) YouTube
                     .getCommentsExtractor(url);
             extractor.fetchPage();
@@ -212,7 +212,7 @@ public class YoutubeCommentsExtractorTest {
         public static void setUp() throws Exception {
             YoutubeParsingHelper.resetClientVersionAndKey();
             YoutubeParsingHelper.setNumberGenerator(new Random(1));
-            NewPipe.init(new DownloaderFactory().getDownloader(RESOURCE_PATH + "pinned"));
+            NewPipe.init(DownloaderFactory.getDownloader(RESOURCE_PATH + "pinned"));
             extractor = (YoutubeCommentsExtractor) YouTube
                     .getCommentsExtractor(url);
             extractor.fetchPage();
@@ -254,7 +254,7 @@ public class YoutubeCommentsExtractorTest {
         public static void setUp() throws Exception {
             YoutubeParsingHelper.resetClientVersionAndKey();
             YoutubeParsingHelper.setNumberGenerator(new Random(1));
-            NewPipe.init(new DownloaderFactory().getDownloader(RESOURCE_PATH + "likes"));
+            NewPipe.init(DownloaderFactory.getDownloader(RESOURCE_PATH + "likes"));
             extractor = (YoutubeCommentsExtractor) YouTube
                     .getCommentsExtractor(url);
             extractor.fetchPage();
@@ -286,7 +286,7 @@ public class YoutubeCommentsExtractorTest {
         public static void setUp() throws Exception {
             YoutubeParsingHelper.resetClientVersionAndKey();
             YoutubeParsingHelper.setNumberGenerator(new Random(1));
-            NewPipe.init(new DownloaderFactory().getDownloader(RESOURCE_PATH + "localized_vote_count"));
+            NewPipe.init(DownloaderFactory.getDownloader(RESOURCE_PATH + "localized_vote_count"));
             extractor = (YoutubeCommentsExtractor) YouTube
                     .getCommentsExtractor(url);
             // Force non english local here
@@ -315,7 +315,7 @@ public class YoutubeCommentsExtractorTest {
         public static void setUp() throws Exception {
             YoutubeParsingHelper.resetClientVersionAndKey();
             YoutubeParsingHelper.setNumberGenerator(new Random(1));
-            NewPipe.init(new DownloaderFactory().getDownloader(RESOURCE_PATH + "replies"));
+            NewPipe.init(DownloaderFactory.getDownloader(RESOURCE_PATH + "replies"));
             extractor = (YoutubeCommentsExtractor) YouTube
                     .getCommentsExtractor(url);
             extractor.fetchPage();

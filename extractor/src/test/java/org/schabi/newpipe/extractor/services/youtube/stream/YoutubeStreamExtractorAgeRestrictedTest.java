@@ -30,7 +30,7 @@ public class YoutubeStreamExtractorAgeRestrictedTest extends DefaultStreamExtrac
         YoutubeParsingHelper.resetClientVersionAndKey();
         YoutubeParsingHelper.setNumberGenerator(new Random(1));
         YoutubeStreamExtractor.resetDeobfuscationCode();
-        NewPipe.init(new DownloaderFactory().getDownloader(RESOURCE_PATH + "ageRestricted"));
+        NewPipe.init(DownloaderFactory.getDownloader(RESOURCE_PATH + "ageRestricted"));
         extractor = YouTube.getStreamExtractor(URL);
         extractor.fetchPage();
     }

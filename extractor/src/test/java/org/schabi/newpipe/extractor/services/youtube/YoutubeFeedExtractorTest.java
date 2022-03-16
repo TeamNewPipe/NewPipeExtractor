@@ -30,7 +30,7 @@ public class YoutubeFeedExtractorTest {
         public static void setUp() throws Exception {
             YoutubeParsingHelper.resetClientVersionAndKey();
             YoutubeParsingHelper.setNumberGenerator(new Random(1));
-            NewPipe.init(new DownloaderFactory().getDownloader(RESOURCE_PATH));
+            NewPipe.init(DownloaderFactory.getDownloader(RESOURCE_PATH));
             extractor = (YoutubeFeedExtractor) YouTube
                     .getFeedExtractor("https://www.youtube.com/user/Kurzgesagt");
             extractor.fetchPage();
@@ -84,7 +84,7 @@ public class YoutubeFeedExtractorTest {
 
         @BeforeAll
         public static void setUp() throws IOException {
-            NewPipe.init(new DownloaderFactory().getDownloader(RESOURCE_PATH + "notAvailable/"));
+            NewPipe.init(DownloaderFactory.getDownloader(RESOURCE_PATH + "notAvailable/"));
         }
 
         @Test
