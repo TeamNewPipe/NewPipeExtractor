@@ -127,11 +127,13 @@ public class SoundcloudPlaylistExtractor extends PlaylistExtractor {
                 new StreamInfoItemsCollector(getServiceId());
         final List<String> ids = new ArrayList<>();
 
-        final JsonArray tracks = playlist.getArray("tracks");
-        tracks.stream().filter(JsonObject.class::isInstance)
+        playlist.getArray("tracks")
+                .stream()
+                .filter(JsonObject.class::isInstance)
                 .map(JsonObject.class::cast)
                 .forEachOrdered(track -> {
-                    if (track.has("title")) { // i.e. if full info is available
+                    // i.e. if full info is available
+                    if (track.has("title")) {
                         streamInfoItemsCollector.commit(
                                 new SoundcloudStreamInfoItemExtractor(track));
                     } else {

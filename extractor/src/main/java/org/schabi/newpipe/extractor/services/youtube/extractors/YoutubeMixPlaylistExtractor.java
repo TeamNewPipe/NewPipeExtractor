@@ -224,8 +224,8 @@ public class YoutubeMixPlaylistExtractor extends PlaylistExtractor {
 
         streams.stream()
                 .filter(JsonObject.class::isInstance)
-                .map(stream -> ((JsonObject) stream)
-                .getObject("playlistPanelVideoRenderer"))
+                .map(JsonObject.class::cast)
+                .map(stream -> stream.getObject("playlistPanelVideoRenderer"))
                 .filter(Objects::nonNull)
                 .map(streamInfo -> new YoutubeStreamInfoItemExtractor(streamInfo, timeAgoParser))
                 .forEachOrdered(collector::commit);

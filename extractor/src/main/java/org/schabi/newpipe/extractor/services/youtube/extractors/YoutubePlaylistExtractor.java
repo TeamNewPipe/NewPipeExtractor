@@ -236,6 +236,7 @@ public class YoutubePlaylistExtractor extends PlaylistExtractor {
                 .getArray("contents");
 
         final JsonObject videoPlaylistObject = contents.stream()
+                .filter(JsonObject.class::isInstance)
                 .map(JsonObject.class::cast)
                 .map(content -> content.getObject("itemSectionRenderer")
                         .getArray("contents")
@@ -316,9 +317,11 @@ public class YoutubePlaylistExtractor extends PlaylistExtractor {
         final TimeAgoParser timeAgoParser = getTimeAgoParser();
 
         videos.stream()
-                .filter(video -> ((JsonObject) video).has(PLAYLIST_VIDEO_RENDERER))
-                .map(video -> new YoutubeStreamInfoItemExtractor(((JsonObject) video)
-                        .getObject(PLAYLIST_VIDEO_RENDERER), timeAgoParser) {
+                .filter(JsonObject.class::isInstance)
+                .map(JsonObject.class::cast)
+                .filter(video -> video.has(PLAYLIST_VIDEO_RENDERER))
+                .map(video -> new YoutubeStreamInfoItemExtractor(
+                        video.getObject(PLAYLIST_VIDEO_RENDERER), timeAgoParser) {
                     @Override
                     public long getViewCount() {
                         return -1;
