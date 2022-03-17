@@ -1,6 +1,7 @@
 package org.schabi.newpipe.extractor.services.youtube.search;
 
 import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.schabi.newpipe.downloader.DownloaderFactory;
 import org.schabi.newpipe.extractor.*;
@@ -131,6 +132,7 @@ public class YoutubeSearchExtractorTest {
         @Override public InfoItem.InfoType expectedInfoItemType() { return InfoItem.InfoType.STREAM; }
     }
 
+    @Disabled("Currently constantly switching between \"Did you mean\" and \"Showing results for ...\" occurs")
     public static class Suggestion extends DefaultSearchExtractorTest {
         private static SearchExtractor extractor;
         private static final String QUERY = "newpip";

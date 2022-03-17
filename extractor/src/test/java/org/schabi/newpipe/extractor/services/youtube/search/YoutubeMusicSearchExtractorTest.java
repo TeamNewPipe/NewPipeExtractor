@@ -130,6 +130,7 @@ public class YoutubeMusicSearchExtractorTest {
         @Override public InfoItem.InfoType expectedInfoItemType() { return InfoItem.InfoType.CHANNEL; }
     }
 
+    @Disabled("Currently constantly switching between \"Did you mean\" and \"Showing results for ...\" occurs")
     public static class Suggestion extends DefaultSearchExtractorTest {
         private static SearchExtractor extractor;
         private static final String QUERY = "megaman x3";
