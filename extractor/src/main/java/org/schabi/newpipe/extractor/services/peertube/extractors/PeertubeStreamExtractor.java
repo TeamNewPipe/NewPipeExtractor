@@ -74,7 +74,7 @@ public class PeertubeStreamExtractor extends StreamExtractor {
         try {
             text = JsonUtils.getString(json, "description");
         } catch (ParsingException e) {
-            return Description.emptyDescription;
+            return Description.EMPTY_DESCRIPTION;
         }
         if (text.length() == 250 && text.substring(247).equals("...")) {
             //if description is shortened, get full description

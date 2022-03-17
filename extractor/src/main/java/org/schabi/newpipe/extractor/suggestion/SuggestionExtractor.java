@@ -15,11 +15,12 @@ public abstract class SuggestionExtractor {
     @Nullable private Localization forcedLocalization;
     @Nullable private ContentCountry forcedContentCountry;
 
-    public SuggestionExtractor(StreamingService service) {
+    public SuggestionExtractor(final StreamingService service) {
         this.service = service;
     }
 
-    public abstract List<String> suggestionList(String query) throws IOException, ExtractionException;
+    public abstract List<String> suggestionList(String query)
+            throws IOException, ExtractionException;
 
     public int getServiceId() {
         return service.getServiceId();
@@ -31,11 +32,11 @@ public abstract class SuggestionExtractor {
 
     // TODO: Create a more general Extractor class
 
-    public void forceLocalization(@Nullable Localization localization) {
+    public void forceLocalization(@Nullable final Localization localization) {
         this.forcedLocalization = localization;
     }
 
-    public void forceContentCountry(@Nullable ContentCountry contentCountry) {
+    public void forceContentCountry(@Nullable final ContentCountry contentCountry) {
         this.forcedContentCountry = contentCountry;
     }
 
@@ -46,6 +47,7 @@ public abstract class SuggestionExtractor {
 
     @Nonnull
     public ContentCountry getExtractorContentCountry() {
-        return forcedContentCountry == null ? getService().getContentCountry() : forcedContentCountry;
+        return forcedContentCountry == null
+                ? getService().getContentCountry() : forcedContentCountry;
     }
 }

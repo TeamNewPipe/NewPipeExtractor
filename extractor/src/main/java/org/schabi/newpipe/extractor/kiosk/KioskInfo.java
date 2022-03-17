@@ -26,34 +26,30 @@ import org.schabi.newpipe.extractor.NewPipe;
 import org.schabi.newpipe.extractor.Page;
 import org.schabi.newpipe.extractor.StreamingService;
 import org.schabi.newpipe.extractor.exceptions.ExtractionException;
-import org.schabi.newpipe.extractor.exceptions.ParsingException;
 import org.schabi.newpipe.extractor.linkhandler.ListLinkHandler;
 import org.schabi.newpipe.extractor.stream.StreamInfoItem;
 import org.schabi.newpipe.extractor.utils.ExtractorHelper;
 
 import java.io.IOException;
 
-public class KioskInfo extends ListInfo<StreamInfoItem> {
-    private KioskInfo(int serviceId, ListLinkHandler linkHandler, String name) throws ParsingException {
+public final class KioskInfo extends ListInfo<StreamInfoItem> {
+    private KioskInfo(final int serviceId, final ListLinkHandler linkHandler, final String name) {
         super(serviceId, linkHandler, name);
     }
 
-    public static ListExtractor.InfoItemsPage<StreamInfoItem> getMoreItems(StreamingService service,
-                                                                           String url,
-                                                                           Page page)
+    public static ListExtractor.InfoItemsPage<StreamInfoItem> getMoreItems(
+            final StreamingService service, final String url, final Page page)
             throws IOException, ExtractionException {
-        KioskList kl = service.getKioskList();
-        KioskExtractor extractor = kl.getExtractorByUrl(url, page);
-        return extractor.getPage(page);
+        return service.getKioskList().getExtractorByUrl(url, page).getPage(page);
     }
 
-    public static KioskInfo getInfo(String url) throws IOException, ExtractionException {
+    public static KioskInfo getInfo(final String url) throws IOException, ExtractionException {
         return getInfo(NewPipe.getServiceByUrl(url), url);
     }
 
-    public static KioskInfo getInfo(StreamingService service, String url) throws IOException, ExtractionException {
-        KioskList kl = service.getKioskList();
-        KioskExtractor extractor = kl.getExtractorByUrl(url, null);
+    public static KioskInfo getInfo(final StreamingService service, final String url)
+            throws IOException, ExtractionException {
+        final KioskExtractor extractor = service.getKioskList().getExtractorByUrl(url, null);
         extractor.fetchPage();
         return getInfo(extractor);
     }
@@ -63,13 +59,14 @@ public class KioskInfo extends ListInfo<StreamInfoItem> {
      *
      * @param extractor an extractor where fetchPage() was already got called on.
      */
-    public static KioskInfo getInfo(KioskExtractor extractor) throws ExtractionException {
+    public static KioskInfo getInfo(final KioskExtractor extractor) throws ExtractionException {
 
         final KioskInfo info = new KioskInfo(extractor.getServiceId(),
                 extractor.getLinkHandler(),
                 extractor.getName());
 
-        final ListExtractor.InfoItemsPage<StreamInfoItem> itemsPage = ExtractorHelper.getItemsPageOrLogError(info, extractor);
+        final ListExtractor.InfoItemsPage<StreamInfoItem> itemsPage
+                = ExtractorHelper.getItemsPageOrLogError(info, extractor);
         info.setRelatedItems(itemsPage.getItems());
         info.setNextPage(itemsPage.getNextPage());
 

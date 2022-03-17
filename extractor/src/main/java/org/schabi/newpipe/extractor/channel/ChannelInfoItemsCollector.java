@@ -23,45 +23,42 @@ import org.schabi.newpipe.extractor.exceptions.ParsingException;
  * along with NewPipe.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-public class ChannelInfoItemsCollector extends InfoItemsCollector<ChannelInfoItem, ChannelInfoItemExtractor> {
-    public ChannelInfoItemsCollector(int serviceId) {
+public final class ChannelInfoItemsCollector
+        extends InfoItemsCollector<ChannelInfoItem, ChannelInfoItemExtractor> {
+    public ChannelInfoItemsCollector(final int serviceId) {
         super(serviceId);
     }
 
     @Override
-    public ChannelInfoItem extract(ChannelInfoItemExtractor extractor) throws ParsingException {
-        // important information
-        int serviceId = getServiceId();
-        String name = extractor.getName();
-        String url = extractor.getUrl();
-
-        ChannelInfoItem resultItem = new ChannelInfoItem(serviceId, url, name);
-
+    public ChannelInfoItem extract(final ChannelInfoItemExtractor extractor)
+            throws ParsingException {
+        final ChannelInfoItem resultItem = new ChannelInfoItem(
+                getServiceId(), extractor.getUrl(), extractor.getName());
 
         // optional information
         try {
             resultItem.setSubscriberCount(extractor.getSubscriberCount());
-        } catch (Exception e) {
+        } catch (final Exception e) {
             addError(e);
         }
         try {
             resultItem.setStreamCount(extractor.getStreamCount());
-        } catch (Exception e) {
+        } catch (final Exception e) {
             addError(e);
         }
         try {
             resultItem.setThumbnailUrl(extractor.getThumbnailUrl());
-        } catch (Exception e) {
+        } catch (final Exception e) {
             addError(e);
         }
         try {
             resultItem.setDescription(extractor.getDescription());
-        } catch (Exception e) {
+        } catch (final Exception e) {
             addError(e);
         }
         try {
             resultItem.setVerified(extractor.isVerified());
-        } catch (Exception e) {
+        } catch (final Exception e) {
             addError(e);
         }
 

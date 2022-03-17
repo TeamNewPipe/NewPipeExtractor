@@ -19,13 +19,14 @@ public abstract class Downloader {
     /**
      * Do a GET request to get the resource that the url is pointing to.<br>
      * <br>
-     * This method calls {@link #get(String, Map, Localization)} with the default preferred localization. It should only be
-     * used when the resource that will be fetched won't be affected by the localization.
+     * This method calls {@link #get(String, Map, Localization)} with the default preferred
+     * localization. It should only be used when the resource that will be fetched won't be affected
+     * by the localization.
      *
      * @param url the URL that is pointing to the wanted resource
      * @return the result of the GET request
      */
-    public Response get(String url) throws IOException, ReCaptchaException {
+    public Response get(final String url) throws IOException, ReCaptchaException {
         return get(url, null, NewPipe.getPreferredLocalization());
     }
 
@@ -38,7 +39,8 @@ public abstract class Downloader {
      * @param localization the source of the value of the {@code Accept-Language} header
      * @return the result of the GET request
      */
-    public Response get(String url, @Nullable Localization localization) throws IOException, ReCaptchaException {
+    public Response get(final String url, @Nullable final Localization localization)
+            throws IOException, ReCaptchaException {
         return get(url, null, localization);
     }
 
@@ -50,7 +52,8 @@ public abstract class Downloader {
      *                Any default headers <b>should</b> be overridden by these.
      * @return the result of the GET request
      */
-    public Response get(String url, @Nullable Map<String, List<String>> headers) throws IOException, ReCaptchaException {
+    public Response get(final String url, @Nullable final Map<String, List<String>> headers)
+            throws IOException, ReCaptchaException {
         return get(url, headers, NewPipe.getPreferredLocalization());
     }
 
@@ -65,7 +68,9 @@ public abstract class Downloader {
      * @param localization the source of the value of the {@code Accept-Language} header
      * @return the result of the GET request
      */
-    public Response get(String url, @Nullable Map<String, List<String>> headers, @Nullable Localization localization)
+    public Response get(final String url,
+                        @Nullable final Map<String, List<String>> headers,
+                        @Nullable final Localization localization)
             throws IOException, ReCaptchaException {
         return execute(Request.newBuilder()
                 .get(url)
@@ -80,7 +85,7 @@ public abstract class Downloader {
      * @param url the URL that is pointing to the wanted resource
      * @return the result of the HEAD request
      */
-    public Response head(String url) throws IOException, ReCaptchaException {
+    public Response head(final String url) throws IOException, ReCaptchaException {
         return head(url, null);
     }
 
@@ -92,7 +97,7 @@ public abstract class Downloader {
      *                Any default headers <b>should</b> be overridden by these.
      * @return the result of the HEAD request
      */
-    public Response head(String url, @Nullable Map<String, List<String>> headers)
+    public Response head(final String url, @Nullable final Map<String, List<String>> headers)
             throws IOException, ReCaptchaException {
         return execute(Request.newBuilder()
                 .head(url)
@@ -109,7 +114,9 @@ public abstract class Downloader {
      * @param dataToSend byte array that will be sent when doing the request.
      * @return the result of the GET request
      */
-    public Response post(String url, @Nullable Map<String, List<String>> headers, @Nullable byte[] dataToSend)
+    public Response post(final String url,
+                         @Nullable final Map<String, List<String>> headers,
+                         @Nullable final byte[] dataToSend)
             throws IOException, ReCaptchaException {
         return post(url, headers, dataToSend, NewPipe.getPreferredLocalization());
     }
@@ -126,7 +133,10 @@ public abstract class Downloader {
      * @param localization the source of the value of the {@code Accept-Language} header
      * @return the result of the GET request
      */
-    public Response post(String url, @Nullable Map<String, List<String>> headers, @Nullable byte[] dataToSend, @Nullable Localization localization)
+    public Response post(final String url,
+                         @Nullable final Map<String, List<String>> headers,
+                         @Nullable final byte[] dataToSend,
+                         @Nullable final Localization localization)
             throws IOException, ReCaptchaException {
         return execute(Request.newBuilder()
                 .post(url, dataToSend)
@@ -140,5 +150,6 @@ public abstract class Downloader {
      *
      * @return the result of the request
      */
-    public abstract Response execute(@Nonnull Request request) throws IOException, ReCaptchaException;
+    public abstract Response execute(@Nonnull Request request)
+            throws IOException, ReCaptchaException;
 }

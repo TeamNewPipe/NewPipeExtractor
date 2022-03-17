@@ -50,7 +50,7 @@ public class MultiInfoItemsCollector extends InfoItemsCollector<InfoItem, InfoIt
     private final ChannelInfoItemsCollector userCollector;
     private final PlaylistInfoItemsCollector playlistCollector;
 
-    public MultiInfoItemsCollector(int serviceId) {
+    public MultiInfoItemsCollector(final int serviceId) {
         super(serviceId);
         streamCollector = new StreamInfoItemsCollector(serviceId);
         userCollector = new ChannelInfoItemsCollector(serviceId);
@@ -76,7 +76,7 @@ public class MultiInfoItemsCollector extends InfoItemsCollector<InfoItem, InfoIt
     }
 
     @Override
-    public InfoItem extract(InfoItemExtractor extractor) throws ParsingException {
+    public InfoItem extract(final InfoItemExtractor extractor) throws ParsingException {
         // Use the corresponding collector for each item extractor type
         if (extractor instanceof StreamInfoItemExtractor) {
             return streamCollector.extract((StreamInfoItemExtractor) extractor);

@@ -9,7 +9,8 @@ import java.util.Calendar;
 import java.util.GregorianCalendar;
 
 /**
- * A wrapper class that provides a field to describe if the date/time is precise or just an approximation.
+ * A wrapper class that provides a field to describe if the date/time is precise or just an
+ * approximation.
  */
 public class DateWrapper implements Serializable {
     @Nonnull
@@ -20,7 +21,8 @@ public class DateWrapper implements Serializable {
      * @deprecated Use {@link #DateWrapper(OffsetDateTime)} instead.
      */
     @Deprecated
-    public DateWrapper(@Nonnull Calendar calendar) {
+    public DateWrapper(@Nonnull final Calendar calendar) {
+        //noinspection deprecation
         this(calendar, false);
     }
 
@@ -28,15 +30,16 @@ public class DateWrapper implements Serializable {
      * @deprecated Use {@link #DateWrapper(OffsetDateTime, boolean)} instead.
      */
     @Deprecated
-    public DateWrapper(@Nonnull Calendar calendar, boolean isApproximation) {
+    public DateWrapper(@Nonnull final Calendar calendar, final boolean isApproximation) {
         this(OffsetDateTime.ofInstant(calendar.toInstant(), ZoneOffset.UTC), isApproximation);
     }
 
-    public DateWrapper(@Nonnull OffsetDateTime offsetDateTime) {
+    public DateWrapper(@Nonnull final OffsetDateTime offsetDateTime) {
         this(offsetDateTime, false);
     }
 
-    public DateWrapper(@Nonnull OffsetDateTime offsetDateTime, boolean isApproximation) {
+    public DateWrapper(@Nonnull final OffsetDateTime offsetDateTime,
+                       final boolean isApproximation) {
         this.offsetDateTime = offsetDateTime.withOffsetSameInstant(ZoneOffset.UTC);
         this.isApproximation = isApproximation;
     }
@@ -60,8 +63,8 @@ public class DateWrapper implements Serializable {
     }
 
     /**
-     * @return if the date is considered is precise or just an approximation (e.g. service only returns an approximation
-     * like 2 weeks ago instead of a precise date).
+     * @return if the date is considered is precise or just an approximation (e.g. service only
+     * returns an approximation like 2 weeks ago instead of a precise date).
      */
     public boolean isApproximation() {
         return isApproximation;

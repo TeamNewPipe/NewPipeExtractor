@@ -24,7 +24,7 @@ import org.schabi.newpipe.extractor.MediaFormat;
 import org.schabi.newpipe.extractor.services.youtube.ItagItem;
 
 public class AudioStream extends Stream {
-    public int average_bitrate = -1;
+    private final int averageBitrate;
 
     // Fields for Dash
     private int itag;
@@ -42,9 +42,11 @@ public class AudioStream extends Stream {
      * @param format the format
      * @param averageBitrate the average bitrate
      */
-    public AudioStream(String url, MediaFormat format, int averageBitrate) {
+    public AudioStream(final String url,
+                       final MediaFormat format,
+                       final int averageBitrate) {
         super(url, format);
-        this.average_bitrate = averageBitrate;
+        this.averageBitrate = averageBitrate;
     }
 
     /**
@@ -52,7 +54,7 @@ public class AudioStream extends Stream {
      * @param url the url
      * @param itag the ItagItem of the Stream
      */
-    public AudioStream(String url, ItagItem itag) {
+    public AudioStream(final String url, final ItagItem itag) {
         this(url, itag.getMediaFormat(), itag.avgBitrate);
         this.itag = itag.id;
         this.quality = itag.getQuality();
@@ -65,9 +67,9 @@ public class AudioStream extends Stream {
     }
 
     @Override
-    public boolean equalStats(Stream cmp) {
-        return super.equalStats(cmp) && cmp instanceof AudioStream &&
-                average_bitrate == ((AudioStream) cmp).average_bitrate;
+    public boolean equalStats(final Stream cmp) {
+        return super.equalStats(cmp) && cmp instanceof AudioStream
+                && averageBitrate == ((AudioStream) cmp).averageBitrate;
     }
 
     /**
@@ -75,7 +77,7 @@ public class AudioStream extends Stream {
      * @return the average bitrate or -1
      */
     public int getAverageBitrate() {
-        return average_bitrate;
+        return averageBitrate;
     }
 
     public int getItag() {
