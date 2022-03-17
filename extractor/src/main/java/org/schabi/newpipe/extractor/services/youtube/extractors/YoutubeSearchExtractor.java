@@ -133,6 +133,7 @@ public class YoutubeSearchExtractor extends SearchExtractor {
         return !showingResultsForRenderer.isEmpty();
     }
 
+    @Nonnull
     @Override
     public List<MetaInfo> getMetaInfo() throws ParsingException {
         return YoutubeParsingHelper.getMetaInfo(
