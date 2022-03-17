@@ -7,12 +7,14 @@ import org.schabi.newpipe.downloader.DownloaderTestImpl;
 import org.schabi.newpipe.extractor.ExtractorAsserts;
 import org.schabi.newpipe.extractor.ListExtractor;
 import org.schabi.newpipe.extractor.NewPipe;
+import org.schabi.newpipe.extractor.exceptions.ParsingException;
 import org.schabi.newpipe.extractor.playlist.PlaylistExtractor;
 import org.schabi.newpipe.extractor.services.BasePlaylistExtractorTest;
 import org.schabi.newpipe.extractor.services.soundcloud.extractors.SoundcloudPlaylistExtractor;
 import org.schabi.newpipe.extractor.stream.StreamInfoItem;
 
 import static org.junit.jupiter.api.Assertions.*;
+import static org.schabi.newpipe.extractor.ExtractorAsserts.assertEmpty;
 import static org.schabi.newpipe.extractor.ExtractorAsserts.assertIsSecureUrl;
 import static org.schabi.newpipe.extractor.ServiceList.SoundCloud;
 import static org.schabi.newpipe.extractor.services.DefaultTests.*;
@@ -85,9 +87,9 @@ public class SoundcloudPlaylistExtractorTest {
         }
 
         @Test
-        public void testBannerUrl() {
+        public void testBannerUrl() throws ParsingException {
             // SoundCloud playlists do not have a banner
-            assertNull(extractor.getBannerUrl());
+            assertEmpty(extractor.getBannerUrl());
         }
 
         @Test
@@ -182,9 +184,9 @@ public class SoundcloudPlaylistExtractorTest {
         }
 
         @Test
-        public void testBannerUrl() {
+        public void testBannerUrl() throws ParsingException {
             // SoundCloud playlists do not have a banner
-            assertNull(extractor.getBannerUrl());
+            assertEmpty(extractor.getBannerUrl());
         }
 
         @Test
@@ -294,9 +296,9 @@ public class SoundcloudPlaylistExtractorTest {
         }
 
         @Test
-        public void testBannerUrl() {
+        public void testBannerUrl() throws ParsingException {
             // SoundCloud playlists do not have a banner
-            assertNull(extractor.getBannerUrl());
+            assertEmpty(extractor.getBannerUrl());
         }
 
         @Test
@@ -398,9 +400,9 @@ public class SoundcloudPlaylistExtractorTest {
         }
 
         @Test
-        public void testBannerUrl() {
+        public void testBannerUrl() throws ParsingException {
             // SoundCloud playlists do not have a banner
-            assertNull(extractor.getBannerUrl());
+            assertEmpty(extractor.getBannerUrl());
         }
 
         @Test

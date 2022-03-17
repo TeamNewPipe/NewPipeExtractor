@@ -29,14 +29,10 @@ public class PeertubePlaylistExtractor extends PlaylistExtractor {
         super(service, linkHandler);
     }
 
+    @Nonnull
     @Override
     public String getThumbnailUrl() throws ParsingException {
         return getBaseUrl() + playlistInfo.getString("thumbnailPath");
-    }
-
-    @Override
-    public String getBannerUrl() {
-        return null;
     }
 
     @Override
