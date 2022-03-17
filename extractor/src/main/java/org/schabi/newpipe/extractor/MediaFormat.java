@@ -22,6 +22,9 @@ package org.schabi.newpipe.extractor;
  * along with NewPipe.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+import java.util.Arrays;
+import java.util.function.Function;
+
 /**
  * Static data about various media formats support by NewPipe, eg mime type, extension
  */
@@ -61,46 +64,47 @@ public enum MediaFormat {
         this.mimeType = mimeType;
     }
 
+    private static <T> T getById(final int id,
+                                 final Function<MediaFormat, T> field,
+                                 final T orElse) {
+        return Arrays.stream(MediaFormat.values())
+                .filter(mediaFormat -> mediaFormat.id == id)
+                .map(field)
+                .findFirst()
+                .orElse(orElse);
+    }
+
     /**
      * Return the friendly name of the media format with the supplied id
      *
-     * @param ident the id of the media format. Currently an arbitrary, NewPipe-specific number.
+     * @param id the id of the media format. Currently an arbitrary, NewPipe-specific number.
      * @return the friendly name of the MediaFormat associated with this ids,
      * or an empty String if none match it.
      */
-    public static String getNameById(int ident) {
-        for (MediaFormat vf : MediaFormat.values()) {
-            if (vf.id == ident) return vf.name;
-        }
-        return "";
+    public static String getNameById(final int id) {
+        return getById(id, MediaFormat::getName, "");
     }
 
     /**
      * Return the file extension of the media format with the supplied id
      *
-     * @param ident the id of the media format. Currently an arbitrary, NewPipe-specific number.
+     * @param id the id of the media format. Currently an arbitrary, NewPipe-specific number.
      * @return the file extension of the MediaFormat associated with this ids,
      * or an empty String if none match it.
      */
-    public static String getSuffixById(int ident) {
-        for (MediaFormat vf : MediaFormat.values()) {
-            if (vf.id == ident) return vf.suffix;
-        }
-        return "";
+    public static String getSuffixById(final int id) {
+        return getById(id, MediaFormat::getSuffix, "");
     }
 
     /**
      * Return the MIME type of the media format with the supplied id
      *
-     * @param ident the id of the media format. Currently an arbitrary, NewPipe-specific number.
+     * @param id the id of the media format. Currently an arbitrary, NewPipe-specific number.
      * @return the MIME type of the MediaFormat associated with this ids,
      * or an empty String if none match it.
      */
-    public static String getMimeById(int ident) {
-        for (MediaFormat vf : MediaFormat.values()) {
-            if (vf.id == ident) return vf.mimeType;
-        }
-        return "";
+    public static String getMimeById(final int id) {
+        return getById(id, MediaFormat::getMimeType, null);
     }
 
     /**
@@ -109,11 +113,11 @@ public enum MediaFormat {
      * @return MediaFormat associated with this mime type,
      * or null if none match it.
      */
-    public static MediaFormat getFromMimeType(String mimeType) {
-        for (MediaFormat vf : MediaFormat.values()) {
-            if (vf.mimeType.equals(mimeType)) return vf;
-        }
-        return null;
+    public static MediaFormat getFromMimeType(final String mimeType) {
+        return Arrays.stream(MediaFormat.values())
+                .filter(mediaFormat -> mediaFormat.mimeType.equals(mimeType))
+                .findFirst()
+                .orElse(null);
     }
 
     /**
@@ -122,18 +126,15 @@ public enum MediaFormat {
      * @param id the id
      * @return the id of the media format or null.
      */
-    public static MediaFormat getFormatById(int id) {
-        for (MediaFormat vf : values()) {
-            if (vf.id == id) return vf;
-        }
-        return null;
+    public static MediaFormat getFormatById(final int id) {
+        return getById(id, mediaFormat -> mediaFormat, null);
     }
 
-    public static MediaFormat getFromSuffix(String suffix) {
-        for (MediaFormat vf : values()) {
-            if (vf.suffix.equals(suffix)) return vf;
-        }
-        return null;
+    public static MediaFormat getFromSuffix(final String suffix) {
+        return Arrays.stream(MediaFormat.values())
+                .filter(mediaFormat -> mediaFormat.suffix.equals(suffix))
+                .findFirst()
+                .orElse(null);
     }
 
     /**
