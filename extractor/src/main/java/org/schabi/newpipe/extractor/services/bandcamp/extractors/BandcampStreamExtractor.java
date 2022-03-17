@@ -128,11 +128,10 @@ public class BandcampStreamExtractor extends StreamExtractor {
     @Nonnull
     @Override
     public String getUploaderAvatarUrl() {
-        try {
-            return document.getElementsByClass("band-photo").first().attr("src");
-        } catch (final NullPointerException e) {
-            return "";
-        }
+        return document.getElementsByClass("band-photo").stream()
+                .map(element -> element.attr("src"))
+                .findFirst()
+                .orElse("");
     }
 
     @Nonnull
