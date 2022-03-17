@@ -16,7 +16,9 @@ import org.schabi.newpipe.extractor.stream.StreamInfoItemsCollector;
 
 import javax.annotation.Nonnull;
 import java.io.IOException;
+import java.time.OffsetDateTime;
 import java.util.Comparator;
+import java.util.function.Function;
 
 public class MediaCCCRecentKiosk extends KioskExtractor<StreamInfoItem> {
 
@@ -51,11 +53,17 @@ public class MediaCCCRecentKiosk extends KioskExtractor<StreamInfoItem> {
                 streamInfoItem -> streamInfoItem.getUploadDate().offsetDateTime());
         comparator = comparator.reversed();
 
-        final StreamInfoItemsCollector collector
-                = new StreamInfoItemsCollector(getServiceId(), comparator);
-        for (int i = 0; i < events.size(); i++) {
-            collector.commit(new MediaCCCRecentKioskExtractor(events.getObject(i)));
-        }
+        final StreamInfoItemsCollector collector =
+                new StreamInfoItemsCollector(getServiceId(), comparator);
+
+        events.stream()
+                .filter(JsonObject.class::isInstance)
+                .map(JsonObject.class::cast)
+                .map(MediaCCCRecentKioskExtractor::new)
+                // #813 / voc/voctoweb#609 -> returns faulty data -> filter it out
+                .filter(extractor -> extractor.getDuration() > 0)
+                .forEach(collector::commit);
+
         return new InfoItemsPage<>(collector, null);
     }
 
