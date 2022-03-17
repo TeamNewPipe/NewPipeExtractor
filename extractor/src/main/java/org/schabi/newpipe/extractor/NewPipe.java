@@ -71,22 +71,20 @@ public final class NewPipe {
         return ServiceList.all();
     }
 
-    public static StreamingService getService(int serviceId) throws ExtractionException {
-        for (StreamingService service : ServiceList.all()) {
-            if (service.getServiceId() == serviceId) {
-                return service;
-            }
-        }
-        throw new ExtractionException("There's no service with the id = \"" + serviceId + "\"");
+    public static StreamingService getService(final int serviceId) throws ExtractionException {
+        return ServiceList.all().stream()
+                .filter(service -> service.getServiceId() == serviceId)
+                .findFirst()
+                .orElseThrow(() -> new ExtractionException(
+                        "There's no service with the id = \"" + serviceId + "\""));
     }
 
-    public static StreamingService getService(String serviceName) throws ExtractionException {
-        for (StreamingService service : ServiceList.all()) {
-            if (service.getServiceInfo().getName().equals(serviceName)) {
-                return service;
-            }
-        }
-        throw new ExtractionException("There's no service with the name = \"" + serviceName + "\"");
+    public static StreamingService getService(final String serviceName) throws ExtractionException {
+        return ServiceList.all().stream()
+                .filter(service -> service.getServiceInfo().getName().equals(serviceName))
+                .findFirst()
+                .orElseThrow(() -> new ExtractionException(
+                        "There's no service with the name = \"" + serviceName + "\""));
     }
 
     public static StreamingService getServiceByUrl(final String url) throws ExtractionException {
