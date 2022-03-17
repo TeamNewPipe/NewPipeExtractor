@@ -1,9 +1,17 @@
 package org.schabi.newpipe.extractor.services.soundcloud;
 
+import static org.schabi.newpipe.extractor.ServiceList.SoundCloud;
+import static org.schabi.newpipe.extractor.utils.Utils.EMPTY_STRING;
+import static org.schabi.newpipe.extractor.utils.Utils.UTF_8;
+import static org.schabi.newpipe.extractor.utils.Utils.isNullOrEmpty;
+import static org.schabi.newpipe.extractor.utils.Utils.replaceHttpWithHttps;
+import static java.util.Collections.singletonList;
+
 import com.grack.nanojson.JsonArray;
 import com.grack.nanojson.JsonObject;
 import com.grack.nanojson.JsonParser;
 import com.grack.nanojson.JsonParserException;
+
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
@@ -23,7 +31,6 @@ import org.schabi.newpipe.extractor.utils.Parser;
 import org.schabi.newpipe.extractor.utils.Parser.RegexException;
 import org.schabi.newpipe.extractor.utils.Utils;
 
-import javax.annotation.Nonnull;
 import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URL;
@@ -35,13 +42,9 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 
-import static java.util.Collections.singletonList;
-import static org.schabi.newpipe.extractor.ServiceList.SoundCloud;
-import static org.schabi.newpipe.extractor.utils.Utils.*;
+import javax.annotation.Nonnull;
 
 public class SoundcloudParsingHelper {
-    static final String HARDCODED_CLIENT_ID =
-            "0vyDB4rxVEprGutWT0xQ2VZhYpVZxku4"; // Updated on 2022-02-11
     private static String clientId;
     public static final String SOUNDCLOUD_API_V2_URL = "https://api-v2.soundcloud.com/";
 
@@ -52,12 +55,6 @@ public class SoundcloudParsingHelper {
         if (!isNullOrEmpty(clientId)) return clientId;
 
         final Downloader dl = NewPipe.getDownloader();
-        clientId = HARDCODED_CLIENT_ID;
-        if (checkIfHardcodedClientIdIsValid()) {
-            return clientId;
-        } else {
-            clientId = null;
-        }
 
         final Response download = dl.get("https://soundcloud.com");
         final String responseBody = download.responseBody();
@@ -87,14 +84,6 @@ public class SoundcloudParsingHelper {
 
         // Officially give up
         throw new ExtractionException("Couldn't extract client id");
-    }
-
-    static boolean checkIfHardcodedClientIdIsValid() throws IOException, ReCaptchaException {
-        final int responseCode = NewPipe.getDownloader().get(SOUNDCLOUD_API_V2_URL + "?client_id="
-                + HARDCODED_CLIENT_ID).responseCode();
-        // If the response code is 404, it means that the client_id is valid; otherwise,
-        // it should be not valid
-        return responseCode == 404;
     }
 
     public static OffsetDateTime parseDateFrom(final String textualUploadDate)
