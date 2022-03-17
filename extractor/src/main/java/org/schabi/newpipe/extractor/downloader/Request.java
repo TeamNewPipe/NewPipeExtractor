@@ -26,15 +26,15 @@ public class Request {
         this.dataToSend = dataToSend;
         this.localization = localization;
 
-        Map<String, List<String>> headersToSet = null;
-        if (headers == null) headers = Collections.emptyMap();
-
+        final Map<String, List<String>> actualHeaders = new LinkedHashMap<>();
+        if (headers != null) {
+            actualHeaders.putAll(headers);
+        }
         if (automaticLocalizationHeader && localization != null) {
-            headersToSet = new LinkedHashMap<>(headersFromLocalization(localization));
-            headersToSet.putAll(headers);
+            actualHeaders.putAll(headersFromLocalization(localization));
         }
 
-        this.headers = Collections.unmodifiableMap(headersToSet == null ? headers : headersToSet);
+        this.headers = Collections.unmodifiableMap(actualHeaders);
     }
 
     private Request(Builder builder) {
