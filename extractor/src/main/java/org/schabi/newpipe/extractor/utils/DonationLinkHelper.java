@@ -1,9 +1,11 @@
 package org.schabi.newpipe.extractor.utils;
 
 import java.net.MalformedURLException;
-import java.net.URL;
 
-public class DonationLinkHelper {
+/**
+ * Note: this class seems unused? Should it be removed?
+ */
+public final class DonationLinkHelper {
     public enum DonationService {
         NO_DONATION,
         PATREON,
@@ -15,9 +17,12 @@ public class DonationLinkHelper {
         AMAZON,
     }
 
-    public static DonationService getDonationServiceByLink(String link) throws MalformedURLException {
-        URL url = new URL(fixLink(link));
-        switch (url.getHost()) {
+    private DonationLinkHelper() {
+    }
+
+    public static DonationService getDonationServiceByLink(final String link)
+            throws MalformedURLException {
+        switch (Utils.stringToURL(link).getHost()) {
             case "www.patreon.com":
             case "patreon.com":
                 return DonationService.PATREON;
@@ -29,18 +34,11 @@ public class DonationLinkHelper {
         }
     }
 
-    public static AffiliateService getAffiliateServiceByLink(String link) throws MalformedURLException {
-        URL url = new URL(fixLink(link));
-        switch (url.getHost()) {
-            case "amzn.to": return AffiliateService.AMAZON;
-            default: return AffiliateService.NO_AFFILIATE;
+    public static AffiliateService getAffiliateServiceByLink(final String link)
+            throws MalformedURLException {
+        if ("amzn.to".equals(Utils.stringToURL(link).getHost())) {
+            return AffiliateService.AMAZON;
         }
+        return AffiliateService.NO_AFFILIATE;
     }
-
-    private static String fixLink(String link) {
-        return (link.startsWith("https://") || link.startsWith("http://"))
-                ? link
-                : "https://" + link;
-    }
-
 }
