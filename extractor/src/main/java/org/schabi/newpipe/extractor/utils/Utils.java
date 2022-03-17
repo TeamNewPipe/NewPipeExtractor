@@ -6,10 +6,15 @@ import java.io.UnsupportedEncodingException;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLDecoder;
-import java.util.*;
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.Iterator;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Map;
 import java.util.regex.Pattern;
 
-public class Utils {
+public final class Utils {
 
     public static final String HTTP = "http://";
     public static final String HTTPS = "https://";
@@ -46,18 +51,16 @@ public class Utils {
      *
      * @param numberWord string to be converted to a long
      * @return a long
-     * @throws NumberFormatException
-     * @throws ParsingException
      */
     public static long mixedNumberWordToLong(final String numberWord) throws NumberFormatException,
             ParsingException {
         String multiplier = "";
         try {
             multiplier = Parser.matchGroup("[\\d]+([\\.,][\\d]+)?([KMBkmb])+", numberWord, 2);
-        } catch (ParsingException ignored) {
+        } catch (final ParsingException ignored) {
         }
-        double count = Double.parseDouble(Parser.matchGroup1("([\\d]+([\\.,][\\d]+)?)", numberWord)
-                .replace(",", "."));
+        final double count = Double.parseDouble(
+                Parser.matchGroup1("([\\d]+([\\.,][\\d]+)?)", numberWord).replace(",", "."));
         switch (multiplier.toUpperCase()) {
             case "K":
                 return (long) (count * 1e3);
@@ -86,15 +89,10 @@ public class Utils {
         }
     }
 
-    public static void printErrors(List<Throwable> errors) {
-        for (Throwable e : errors) {
-            e.printStackTrace();
-            System.err.println("----------------");
-        }
-    }
-
     public static String replaceHttpWithHttps(final String url) {
-        if (url == null) return null;
+        if (url == null) {
+            return null;
+        }
 
         if (!url.isEmpty() && url.startsWith(HTTP)) {
             return HTTPS + url.substring(HTTP.length());
@@ -111,19 +109,17 @@ public class Utils {
      * @return a string that contains the value of the query parameter or null if nothing was found
      */
     public static String getQueryValue(final URL url, final String parameterName) {
-        String urlQuery = url.getQuery();
+        final String urlQuery = url.getQuery();
 
         if (urlQuery != null) {
-            for (String param : urlQuery.split("&")) {
-                String[] params = param.split("=", 2);
+            for (final String param : urlQuery.split("&")) {
+                final String[] params = param.split("=", 2);
 
                 String query;
                 try {
                     query = URLDecoder.decode(params[0], UTF_8);
                 } catch (final UnsupportedEncodingException e) {
-                    System.err.println(
-                            "Cannot decode string with UTF-8. using the string without decoding");
-                    e.printStackTrace();
+                    // Cannot decode string with UTF-8, using the string without decoding
                     query = params[0];
                 }
 
@@ -131,9 +127,7 @@ public class Utils {
                     try {
                         return URLDecoder.decode(params[1], UTF_8);
                     } catch (final UnsupportedEncodingException e) {
-                        System.err.println(
-                                "Cannot decode string with UTF-8. using the string without decoding");
-                        e.printStackTrace();
+                        // Cannot decode string with UTF-8, using the string without decoding
                         return params[1];
                     }
                 }
@@ -153,7 +147,7 @@ public class Utils {
     public static URL stringToURL(final String url) throws MalformedURLException {
         try {
             return new URL(url);
-        } catch (MalformedURLException e) {
+        } catch (final MalformedURLException e) {
             // if no protocol is given try prepending "https://"
             if (e.getMessage().equals("no protocol: " + url)) {
                 return new URL(HTTPS + url);
@@ -165,13 +159,13 @@ public class Utils {
 
     public static boolean isHTTP(final URL url) {
         // make sure its http or https
-        String protocol = url.getProtocol();
+        final String protocol = url.getProtocol();
         if (!protocol.equals("http") && !protocol.equals("https")) {
             return false;
         }
 
-        boolean usesDefaultPort = url.getPort() == url.getDefaultPort();
-        boolean setsNoPort = url.getPort() == -1;
+        final boolean usesDefaultPort = url.getPort() == url.getDefaultPort();
+        final boolean setsNoPort = url.getPort() == -1;
 
         return setsNoPort || usesDefaultPort;
     }
@@ -186,14 +180,15 @@ public class Utils {
         return url;
     }
 
-    public static String removeUTF8BOM(String s) {
-        if (s.startsWith("\uFEFF")) {
-            s = s.substring(1);
+    public static String removeUTF8BOM(final String s) {
+        String result = s;
+        if (result.startsWith("\uFEFF")) {
+            result = result.substring(1);
         }
-        if (s.endsWith("\uFEFF")) {
-            s = s.substring(0, s.length() - 1);
+        if (result.endsWith("\uFEFF")) {
+            result = result.substring(0, result.length() - 1);
         }
-        return s;
+        return result;
     }
 
     public static String getBaseUrl(final String url) throws ParsingException {
@@ -243,7 +238,7 @@ public class Utils {
     }
 
     // can be used for JsonObjects
-    public static boolean isNullOrEmpty(final Map map) {
+    public static boolean isNullOrEmpty(final Map<?, ?> map) {
         return map == null || map.isEmpty();
     }
 

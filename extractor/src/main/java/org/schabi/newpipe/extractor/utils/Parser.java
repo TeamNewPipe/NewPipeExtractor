@@ -39,60 +39,66 @@ import static org.schabi.newpipe.extractor.utils.Utils.UTF_8;
 /**
  * avoid using regex !!!
  */
-public class Parser {
+public final class Parser {
 
     private Parser() {
     }
 
     public static class RegexException extends ParsingException {
-        public RegexException(String message) {
+        public RegexException(final String message) {
             super(message);
         }
     }
 
-    public static String matchGroup1(String pattern, String input) throws RegexException {
+    public static String matchGroup1(final String pattern, final String input)
+            throws RegexException {
         return matchGroup(pattern, input, 1);
     }
 
-    public static String matchGroup1(Pattern pattern, String input) throws RegexException {
+    public static String matchGroup1(final Pattern pattern,
+                                     final String input) throws RegexException {
         return matchGroup(pattern, input, 1);
     }
 
-    public static String matchGroup(String pattern, String input, int group) throws RegexException {
-        Pattern pat = Pattern.compile(pattern);
-        return matchGroup(pat, input, group);
+    public static String matchGroup(final String pattern,
+                                    final String input,
+                                    final int group) throws RegexException {
+        return matchGroup(Pattern.compile(pattern), input, group);
     }
 
-    public static String matchGroup(Pattern pat, String input, int group) throws RegexException {
-        Matcher mat = pat.matcher(input);
-        boolean foundMatch = mat.find();
+    public static String matchGroup(final Pattern pat, final String input, final int group)
+            throws RegexException {
+        final Matcher matcher = pat.matcher(input);
+        final boolean foundMatch = matcher.find();
         if (foundMatch) {
-            return mat.group(group);
+            return matcher.group(group);
         } else {
             // only pass input to exception message when it is not too long
             if (input.length() > 1024) {
                 throw new RegexException("failed to find pattern \"" + pat.pattern() + "\"");
             } else {
-                throw new RegexException("failed to find pattern \"" + pat.pattern() + "\" inside of \"" + input + "\"");
+                throw new RegexException("failed to find pattern \"" + pat.pattern()
+                        + "\" inside of \"" + input + "\"");
             }
         }
     }
 
-    public static boolean isMatch(String pattern, String input) {
+    public static boolean isMatch(final String pattern, final String input) {
         final Pattern pat = Pattern.compile(pattern);
         final Matcher mat = pat.matcher(input);
         return mat.find();
     }
 
-    public static boolean isMatch(Pattern pattern, String input) {
+    public static boolean isMatch(final Pattern pattern, final String input) {
         final Matcher mat = pattern.matcher(input);
         return mat.find();
     }
 
-    public static Map<String, String> compatParseMap(final String input) throws UnsupportedEncodingException {
-        Map<String, String> map = new HashMap<>();
-        for (String arg : input.split("&")) {
-            String[] splitArg = arg.split("=");
+    public static Map<String, String> compatParseMap(final String input)
+            throws UnsupportedEncodingException {
+        final  Map<String, String> map = new HashMap<>();
+        for (final String arg : input.split("&")) {
+            final String[] splitArg = arg.split("=");
             if (splitArg.length > 1) {
                 map.put(splitArg[0], URLDecoder.decode(splitArg[1], UTF_8));
             } else {
@@ -104,19 +110,19 @@ public class Parser {
 
     public static String[] getLinksFromString(final String txt) throws ParsingException {
         try {
-            ArrayList<String> links = new ArrayList<>();
-            LinkExtractor linkExtractor = LinkExtractor.builder()
+            final ArrayList<String> links = new ArrayList<>();
+            final LinkExtractor linkExtractor = LinkExtractor.builder()
                     .linkTypes(EnumSet.of(LinkType.URL, LinkType.WWW))
                     .build();
-            Iterable<LinkSpan> linkss = linkExtractor.extractLinks(txt);
-            for (LinkSpan ls : linkss) {
+            final Iterable<LinkSpan> linkSpans = linkExtractor.extractLinks(txt);
+            for (final LinkSpan ls : linkSpans) {
                 links.add(txt.substring(ls.getBeginIndex(), ls.getEndIndex()));
             }
 
             String[] linksarray = new String[links.size()];
             linksarray = links.toArray(linksarray);
             return linksarray;
-        } catch (Exception e) {
+        } catch (final Exception e) {
             throw new ParsingException("Could not get links from string", e);
         }
     }

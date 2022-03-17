@@ -2,7 +2,7 @@ package org.schabi.newpipe.extractor.utils;
 
 import javax.annotation.Nonnull;
 
-public class StringUtils {
+public final class StringUtils {
 
     private StringUtils() {
     }
@@ -15,7 +15,8 @@ public class StringUtils {
      * or parenthesis could not be matched .
      */
     @Nonnull
-    public static String matchToClosingParenthesis(@Nonnull final String string, @Nonnull final String start) {
+    public static String matchToClosingParenthesis(@Nonnull final String string,
+                                                   @Nonnull final String start) {
         int startIndex = string.indexOf(start);
         if (startIndex < 0) {
             throw new IndexOutOfBoundsException();
