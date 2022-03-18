@@ -53,22 +53,22 @@ public class MediaCCCConferenceExtractor extends ChannelExtractor {
     }
 
     @Override
-    public String getParentChannelName() throws ParsingException {
+    public String getParentChannelName() {
         return "";
     }
 
     @Override
-    public String getParentChannelUrl() throws ParsingException {
+    public String getParentChannelUrl() {
         return "";
     }
 
     @Override
-    public String getParentChannelAvatarUrl() throws ParsingException {
+    public String getParentChannelAvatarUrl() {
         return "";
     }
 
     @Override
-    public boolean isVerified() throws ParsingException {
+    public boolean isVerified() {
         return false;
     }
 
@@ -91,10 +91,11 @@ public class MediaCCCConferenceExtractor extends ChannelExtractor {
     @Override
     public void onFetchPage(@Nonnull final Downloader downloader)
             throws IOException, ExtractionException {
-        final String conferenceUrl = MediaCCCConferenceLinkHandlerFactory.CONFERENCE_API_ENDPOINT + getId();
+        final String conferenceUrl
+                = MediaCCCConferenceLinkHandlerFactory.CONFERENCE_API_ENDPOINT + getId();
         try {
             conferenceData = JsonParser.object().from(downloader.get(conferenceUrl).responseBody());
-        } catch (JsonParserException jpe) {
+        } catch (final JsonParserException jpe) {
             throw new ExtractionException("Could not parse json returnd by url: " + conferenceUrl);
         }
     }

@@ -7,9 +7,12 @@ import org.schabi.newpipe.extractor.utils.Parser;
 import java.util.List;
 
 public class MediaCCCConferenceLinkHandlerFactory extends ListLinkHandlerFactory {
-    public static final String CONFERENCE_API_ENDPOINT = "https://api.media.ccc.de/public/conferences/";
+    public static final String CONFERENCE_API_ENDPOINT
+            = "https://api.media.ccc.de/public/conferences/";
     public static final String CONFERENCE_PATH = "https://media.ccc.de/c/";
-    private static final String ID_PATTERN = "(?:(?:(?:api\\.)?media\\.ccc\\.de/public/conferences/)|(?:media\\.ccc\\.de/[bc]/))([^/?&#]*)";
+    private static final String ID_PATTERN
+            = "(?:(?:(?:api\\.)?media\\.ccc\\.de/public/conferences/)"
+            + "|(?:media\\.ccc\\.de/[bc]/))([^/?&#]*)";
 
     @Override
     public String getUrl(final String id,
@@ -27,7 +30,7 @@ public class MediaCCCConferenceLinkHandlerFactory extends ListLinkHandlerFactory
     public boolean onAcceptUrl(final String url) {
         try {
             return getId(url) != null;
-        } catch (ParsingException e) {
+        } catch (final ParsingException e) {
             return false;
         }
     }

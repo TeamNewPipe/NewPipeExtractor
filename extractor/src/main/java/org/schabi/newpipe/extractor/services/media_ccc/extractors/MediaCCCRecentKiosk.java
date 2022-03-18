@@ -22,17 +22,20 @@ public class MediaCCCRecentKiosk extends KioskExtractor<StreamInfoItem> {
 
     private JsonObject doc;
 
-    public MediaCCCRecentKiosk(StreamingService streamingService, ListLinkHandler linkHandler, String kioskId) {
+    public MediaCCCRecentKiosk(final StreamingService streamingService,
+                               final ListLinkHandler linkHandler,
+                               final String kioskId) {
         super(streamingService, linkHandler, kioskId);
     }
 
     @Override
-    public void onFetchPage(@Nonnull Downloader downloader) throws IOException, ExtractionException {
+    public void onFetchPage(@Nonnull final Downloader downloader)
+            throws IOException, ExtractionException {
         final String site = downloader.get("https://api.media.ccc.de/public/events/recent",
                 getExtractorLocalization()).responseBody();
         try {
             doc = JsonParser.object().from(site);
-        } catch (JsonParserException jpe) {
+        } catch (final JsonParserException jpe) {
             throw new ExtractionException("Could not parse json.", jpe);
         }
     }
@@ -48,7 +51,8 @@ public class MediaCCCRecentKiosk extends KioskExtractor<StreamInfoItem> {
                 streamInfoItem -> streamInfoItem.getUploadDate().offsetDateTime());
         comparator = comparator.reversed();
 
-        StreamInfoItemsCollector collector = new StreamInfoItemsCollector(getServiceId(), comparator);
+        final StreamInfoItemsCollector collector
+                = new StreamInfoItemsCollector(getServiceId(), comparator);
         for (int i = 0; i < events.size(); i++) {
             collector.commit(new MediaCCCRecentKioskExtractor(events.getObject(i)));
         }
@@ -56,7 +60,8 @@ public class MediaCCCRecentKiosk extends KioskExtractor<StreamInfoItem> {
     }
 
     @Override
-    public InfoItemsPage<StreamInfoItem> getPage(Page page) throws IOException, ExtractionException {
+    public InfoItemsPage<StreamInfoItem> getPage(final Page page)
+            throws IOException, ExtractionException {
         return InfoItemsPage.emptyPage();
     }
 
