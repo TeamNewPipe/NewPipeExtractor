@@ -1,35 +1,51 @@
 package org.schabi.newpipe.extractor.services.peertube;
 
+import static org.schabi.newpipe.extractor.StreamingService.ServiceInfo.MediaCapability.COMMENTS;
+import static org.schabi.newpipe.extractor.StreamingService.ServiceInfo.MediaCapability.VIDEO;
+import static java.util.Arrays.asList;
+
 import org.schabi.newpipe.extractor.StreamingService;
 import org.schabi.newpipe.extractor.channel.ChannelExtractor;
 import org.schabi.newpipe.extractor.comments.CommentsExtractor;
 import org.schabi.newpipe.extractor.exceptions.ExtractionException;
-import org.schabi.newpipe.extractor.kiosk.KioskExtractor;
 import org.schabi.newpipe.extractor.kiosk.KioskList;
-import org.schabi.newpipe.extractor.linkhandler.*;
+import org.schabi.newpipe.extractor.linkhandler.LinkHandler;
+import org.schabi.newpipe.extractor.linkhandler.LinkHandlerFactory;
+import org.schabi.newpipe.extractor.linkhandler.ListLinkHandler;
+import org.schabi.newpipe.extractor.linkhandler.ListLinkHandlerFactory;
+import org.schabi.newpipe.extractor.linkhandler.SearchQueryHandler;
+import org.schabi.newpipe.extractor.linkhandler.SearchQueryHandlerFactory;
 import org.schabi.newpipe.extractor.playlist.PlaylistExtractor;
 import org.schabi.newpipe.extractor.search.SearchExtractor;
-import org.schabi.newpipe.extractor.services.peertube.extractors.*;
-import org.schabi.newpipe.extractor.services.peertube.linkHandler.*;
+import org.schabi.newpipe.extractor.services.peertube.extractors.PeertubeAccountExtractor;
+import org.schabi.newpipe.extractor.services.peertube.extractors.PeertubeChannelExtractor;
+import org.schabi.newpipe.extractor.services.peertube.extractors.PeertubeCommentsExtractor;
+import org.schabi.newpipe.extractor.services.peertube.extractors.PeertubePlaylistExtractor;
+import org.schabi.newpipe.extractor.services.peertube.extractors.PeertubeSearchExtractor;
+import org.schabi.newpipe.extractor.services.peertube.extractors.PeertubeStreamExtractor;
+import org.schabi.newpipe.extractor.services.peertube.extractors.PeertubeSuggestionExtractor;
+import org.schabi.newpipe.extractor.services.peertube.extractors.PeertubeTrendingExtractor;
+import org.schabi.newpipe.extractor.services.peertube.linkHandler.PeertubeChannelLinkHandlerFactory;
+import org.schabi.newpipe.extractor.services.peertube.linkHandler.PeertubeCommentsLinkHandlerFactory;
+import org.schabi.newpipe.extractor.services.peertube.linkHandler.PeertubePlaylistLinkHandlerFactory;
+import org.schabi.newpipe.extractor.services.peertube.linkHandler.PeertubeSearchQueryHandlerFactory;
+import org.schabi.newpipe.extractor.services.peertube.linkHandler.PeertubeStreamLinkHandlerFactory;
+import org.schabi.newpipe.extractor.services.peertube.linkHandler.PeertubeTrendingLinkHandlerFactory;
 import org.schabi.newpipe.extractor.stream.StreamExtractor;
 import org.schabi.newpipe.extractor.subscription.SubscriptionExtractor;
 import org.schabi.newpipe.extractor.suggestion.SuggestionExtractor;
 
 import java.util.List;
 
-import static java.util.Arrays.asList;
-import static org.schabi.newpipe.extractor.StreamingService.ServiceInfo.MediaCapability.COMMENTS;
-import static org.schabi.newpipe.extractor.StreamingService.ServiceInfo.MediaCapability.VIDEO;
-
 public class PeertubeService extends StreamingService {
 
     private PeertubeInstance instance;
 
-    public PeertubeService(int id) {
-        this(id, PeertubeInstance.defaultInstance);
+    public PeertubeService(final int id) {
+        this(id, PeertubeInstance.DEFAULT_INSTANCE);
     }
 
-    public PeertubeService(int id, PeertubeInstance instance) {
+    public PeertubeService(final int id, final PeertubeInstance instance) {
         super(id, "PeerTube", asList(VIDEO, COMMENTS));
         this.instance = instance;
     }
@@ -60,13 +76,10 @@ public class PeertubeService extends StreamingService {
     }
 
     @Override
-    public SearchExtractor getSearchExtractor(SearchQueryHandler queryHandler) {
+    public SearchExtractor getSearchExtractor(final SearchQueryHandler queryHandler) {
         final List<String> contentFilters = queryHandler.getContentFilters();
-        boolean external = false;
-        if (!contentFilters.isEmpty() && contentFilters.get(0).startsWith("sepia_")) {
-            external = true;
-        }
-        return new PeertubeSearchExtractor(this, queryHandler, external);
+        return new PeertubeSearchExtractor(this, queryHandler,
+                !contentFilters.isEmpty() && contentFilters.get(0).startsWith("sepia_"));
     }
 
     @Override
@@ -80,7 +93,7 @@ public class PeertubeService extends StreamingService {
     }
 
     @Override
-    public ChannelExtractor getChannelExtractor(ListLinkHandler linkHandler)
+    public ChannelExtractor getChannelExtractor(final ListLinkHandler linkHandler)
             throws ExtractionException {
 
         if (linkHandler.getUrl().contains("/video-channels/")) {
@@ -91,19 +104,19 @@ public class PeertubeService extends StreamingService {
     }
 
     @Override
-    public PlaylistExtractor getPlaylistExtractor(ListLinkHandler linkHandler)
+    public PlaylistExtractor getPlaylistExtractor(final ListLinkHandler linkHandler)
             throws ExtractionException {
         return new PeertubePlaylistExtractor(this, linkHandler);
     }
 
     @Override
-    public StreamExtractor getStreamExtractor(LinkHandler linkHandler)
+    public StreamExtractor getStreamExtractor(final LinkHandler linkHandler)
             throws ExtractionException {
         return new PeertubeStreamExtractor(this, linkHandler);
     }
 
     @Override
-    public CommentsExtractor getCommentsExtractor(ListLinkHandler linkHandler)
+    public CommentsExtractor getCommentsExtractor(final ListLinkHandler linkHandler)
             throws ExtractionException {
         return new PeertubeCommentsExtractor(this, linkHandler);
     }
@@ -117,34 +130,31 @@ public class PeertubeService extends StreamingService {
         return this.instance;
     }
 
-    public void setInstance(PeertubeInstance instance) {
+    public void setInstance(final PeertubeInstance instance) {
         this.instance = instance;
     }
 
     @Override
     public KioskList getKioskList() throws ExtractionException {
-        KioskList.KioskExtractorFactory kioskFactory = new KioskList.KioskExtractorFactory() {
-            @Override
-            public KioskExtractor createNewKiosk(StreamingService streamingService,
-                                                 String url,
-                                                 String id)
-                    throws ExtractionException {
-                return new PeertubeTrendingExtractor(PeertubeService.this,
-                        new PeertubeTrendingLinkHandlerFactory().fromId(id), id);
-            }
-        };
+        final KioskList.KioskExtractorFactory kioskFactory = (streamingService, url, id) ->
+                new PeertubeTrendingExtractor(
+                        PeertubeService.this,
+                        new PeertubeTrendingLinkHandlerFactory().fromId(id),
+                        id
+                );
 
-        KioskList list = new KioskList(this);
+        final KioskList list = new KioskList(this);
 
         // add kiosks here e.g.:
         final PeertubeTrendingLinkHandlerFactory h = new PeertubeTrendingLinkHandlerFactory();
         try {
             list.addKioskEntry(kioskFactory, h, PeertubeTrendingLinkHandlerFactory.KIOSK_TRENDING);
-            list.addKioskEntry(kioskFactory, h, PeertubeTrendingLinkHandlerFactory.KIOSK_MOST_LIKED);
+            list.addKioskEntry(kioskFactory, h,
+                    PeertubeTrendingLinkHandlerFactory.KIOSK_MOST_LIKED);
             list.addKioskEntry(kioskFactory, h, PeertubeTrendingLinkHandlerFactory.KIOSK_RECENT);
             list.addKioskEntry(kioskFactory, h, PeertubeTrendingLinkHandlerFactory.KIOSK_LOCAL);
             list.setDefaultKiosk(PeertubeTrendingLinkHandlerFactory.KIOSK_TRENDING);
-        } catch (Exception e) {
+        } catch (final Exception e) {
             throw new ExtractionException(e);
         }
 
