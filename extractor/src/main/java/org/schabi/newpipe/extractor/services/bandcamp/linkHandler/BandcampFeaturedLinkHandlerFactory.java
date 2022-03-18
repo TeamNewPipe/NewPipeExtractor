@@ -16,7 +16,9 @@ import static org.schabi.newpipe.extractor.services.bandcamp.extractors.Bandcamp
 public class BandcampFeaturedLinkHandlerFactory extends ListLinkHandlerFactory {
 
     @Override
-    public String getUrl(final String id, final List<String> contentFilter, final String sortFilter) {
+    public String getUrl(final String id,
+                         final List<String> contentFilter,
+                         final String sortFilter) {
         if (id.equals(KIOSK_FEATURED)) {
             return FEATURED_API_URL; // doesn't have a website
         } else if (id.equals(KIOSK_RADIO)) {
@@ -27,11 +29,11 @@ public class BandcampFeaturedLinkHandlerFactory extends ListLinkHandlerFactory {
     }
 
     @Override
-    public String getId(String url) {
-        url = Utils.replaceHttpWithHttps(url);
-        if (BandcampExtractorHelper.isRadioUrl(url) || url.equals(RADIO_API_URL)) {
+    public String getId(final String url) {
+        final String fixedUrl = Utils.replaceHttpWithHttps(url);
+        if (BandcampExtractorHelper.isRadioUrl(fixedUrl) || fixedUrl.equals(RADIO_API_URL)) {
             return KIOSK_RADIO;
-        } else if (url.equals(FEATURED_API_URL)) {
+        } else if (fixedUrl.equals(FEATURED_API_URL)) {
             return KIOSK_FEATURED;
         } else {
             return null;
@@ -39,8 +41,10 @@ public class BandcampFeaturedLinkHandlerFactory extends ListLinkHandlerFactory {
     }
 
     @Override
-    public boolean onAcceptUrl(String url) {
-        url = Utils.replaceHttpWithHttps(url);
-        return url.equals(FEATURED_API_URL) || (url.equals(RADIO_API_URL) || BandcampExtractorHelper.isRadioUrl(url));
+    public boolean onAcceptUrl(final String url) {
+        final String fixedUrl = Utils.replaceHttpWithHttps(url);
+        return fixedUrl.equals(FEATURED_API_URL)
+                || fixedUrl.equals(RADIO_API_URL)
+                || BandcampExtractorHelper.isRadioUrl(fixedUrl);
     }
 }

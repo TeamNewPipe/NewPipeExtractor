@@ -30,7 +30,8 @@ public class BandcampChannelLinkHandlerFactory extends ListLinkHandlerFactory {
 
             return String.valueOf(bandData.getLong("id"));
 
-        } catch (final IOException | ReCaptchaException | ArrayIndexOutOfBoundsException | JsonParserException e) {
+        } catch (final IOException | ReCaptchaException | ArrayIndexOutOfBoundsException
+                | JsonParserException e) {
             throw new ParsingException("Download failed", e);
         }
     }
@@ -46,7 +47,8 @@ public class BandcampChannelLinkHandlerFactory extends ListLinkHandlerFactory {
                     .getString("bandcamp_url")
                     .replace("http://", "https://");
         } catch (final NullPointerException e) {
-            throw new ParsingException("JSON does not contain URL (invalid id?) or is otherwise invalid", e);
+            throw new ParsingException(
+                    "JSON does not contain URL (invalid id?) or is otherwise invalid", e);
         }
 
     }
@@ -55,16 +57,18 @@ public class BandcampChannelLinkHandlerFactory extends ListLinkHandlerFactory {
      * Accepts only pages that lead to the root of an artist profile. Supports external pages.
      */
     @Override
-    public boolean onAcceptUrl(String url) throws ParsingException {
+    public boolean onAcceptUrl(final String url) throws ParsingException {
 
-        url = url.toLowerCase();
+        final String lowercaseUrl = url.toLowerCase();
 
         // https: | | artist.bandcamp.com | releases
         //  0      1           2               3
-        String[] splitUrl = url.split("/");
+        final String[] splitUrl = lowercaseUrl.split("/");
 
         // URL is too short
-        if (splitUrl.length < 3) return false;
+        if (splitUrl.length < 3) {
+            return false;
+        }
 
         // Must have "releases" or "music" as segment after url or none at all
         if (splitUrl.length > 3 && !(
@@ -80,7 +84,7 @@ public class BandcampChannelLinkHandlerFactory extends ListLinkHandlerFactory {
             }
 
             // Test whether domain is supported
-            return BandcampExtractorHelper.isSupportedDomain(url);
+            return BandcampExtractorHelper.isSupportedDomain(lowercaseUrl);
         }
     }
 }

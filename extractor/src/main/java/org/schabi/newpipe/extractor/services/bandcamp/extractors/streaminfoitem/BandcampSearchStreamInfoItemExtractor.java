@@ -7,9 +7,11 @@ import javax.annotation.Nullable;
 
 public class BandcampSearchStreamInfoItemExtractor extends BandcampStreamInfoItemExtractor {
 
-    private final Element resultInfo, searchResult;
+    private final Element resultInfo;
+    private final Element searchResult;
 
-    public BandcampSearchStreamInfoItemExtractor(final Element searchResult, final String uploaderUrl) {
+    public BandcampSearchStreamInfoItemExtractor(final Element searchResult,
+                                                 final String uploaderUrl) {
         super(uploaderUrl);
         this.searchResult = searchResult;
         resultInfo = searchResult.getElementsByClass("result-info").first();

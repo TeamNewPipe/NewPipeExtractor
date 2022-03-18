@@ -13,21 +13,25 @@ import java.util.List;
 public class BandcampCommentsLinkHandlerFactory extends ListLinkHandlerFactory {
 
     @Override
-    public String getId(String url) throws ParsingException {
+    public String getId(final String url) throws ParsingException {
         return url;
     }
 
     @Override
-    public boolean onAcceptUrl(String url) throws ParsingException {
+    public boolean onAcceptUrl(final String url) throws ParsingException {
         // Don't accept URLs that don't point to a track
-        if (!url.toLowerCase().matches("https?://.+\\..+/(track|album)/.+")) return false;
+        if (!url.toLowerCase().matches("https?://.+\\..+/(track|album)/.+")) {
+            return false;
+        }
 
         // Test whether domain is supported
         return BandcampExtractorHelper.isSupportedDomain(url);
     }
 
     @Override
-    public String getUrl(String id, List<String> contentFilter, String sortFilter) throws ParsingException {
+    public String getUrl(final String id,
+                         final List<String> contentFilter,
+                         final String sortFilter) throws ParsingException {
         return id;
     }
 }

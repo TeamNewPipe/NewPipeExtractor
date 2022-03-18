@@ -8,7 +8,8 @@ import org.schabi.newpipe.extractor.exceptions.ParsingException;
 
 public class BandcampChannelInfoItemExtractor implements ChannelInfoItemExtractor {
 
-    private final Element resultInfo, searchResult;
+    private final Element resultInfo;
+    private final Element searchResult;
 
     public BandcampChannelInfoItemExtractor(final Element searchResult) {
         this.searchResult = searchResult;
