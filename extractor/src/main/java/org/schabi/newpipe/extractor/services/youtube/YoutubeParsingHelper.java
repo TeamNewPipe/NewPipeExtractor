@@ -812,7 +812,7 @@ public final class YoutubeParsingHelper {
 
         if (html) {
             text = text.replaceAll("\\n", "<br>");
-            text = text.replaceAll("  ", " &nbsp;");
+            text = text.replaceAll(" {2}", " &nbsp;");
         }
 
         return text;
