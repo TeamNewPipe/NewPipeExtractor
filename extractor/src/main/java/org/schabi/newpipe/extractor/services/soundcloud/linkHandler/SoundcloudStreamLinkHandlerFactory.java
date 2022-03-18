@@ -6,9 +6,9 @@ import org.schabi.newpipe.extractor.services.soundcloud.SoundcloudParsingHelper;
 import org.schabi.newpipe.extractor.utils.Parser;
 import org.schabi.newpipe.extractor.utils.Utils;
 
-public class SoundcloudStreamLinkHandlerFactory extends LinkHandlerFactory {
-    private static final SoundcloudStreamLinkHandlerFactory instance =
-            new SoundcloudStreamLinkHandlerFactory();
+public final class SoundcloudStreamLinkHandlerFactory extends LinkHandlerFactory {
+    private static final SoundcloudStreamLinkHandlerFactory INSTANCE
+            = new SoundcloudStreamLinkHandlerFactory();
     private static final String URL_PATTERN = "^https?://(www\\.|m\\.)?soundcloud.com/[0-9a-z_-]+"
             + "/(?!(tracks|albums|sets|reposts|followers|following)/?$)[0-9a-z_-]+/?([#?].*)?$";
 
@@ -16,7 +16,7 @@ public class SoundcloudStreamLinkHandlerFactory extends LinkHandlerFactory {
     }
 
     public static SoundcloudStreamLinkHandlerFactory getInstance() {
-        return instance;
+        return INSTANCE;
     }
 
     @Override

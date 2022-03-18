@@ -46,7 +46,7 @@ public class SoundcloudPlaylistInfoItemExtractor implements PlaylistInfoItemExtr
 
                 // First look for track artwork url
                 if (trackObject.isString(ARTWORK_URL_KEY)) {
-                    String artworkUrl = trackObject.getString(ARTWORK_URL_KEY, EMPTY_STRING);
+                    final String artworkUrl = trackObject.getString(ARTWORK_URL_KEY, EMPTY_STRING);
                     if (!artworkUrl.isEmpty()) {
                         // An artwork URL with a better resolution
                         return artworkUrl.replace("large.jpg", "crop.jpg");
@@ -56,7 +56,9 @@ public class SoundcloudPlaylistInfoItemExtractor implements PlaylistInfoItemExtr
                 // Then look for track creator avatar url
                 final JsonObject creator = trackObject.getObject(USER_KEY);
                 final String creatorAvatar = creator.getString(AVATAR_URL_KEY, EMPTY_STRING);
-                if (!creatorAvatar.isEmpty()) return creatorAvatar;
+                if (!creatorAvatar.isEmpty()) {
+                    return creatorAvatar;
+                }
             }
         } catch (final Exception ignored) {
             // Try other method

@@ -9,13 +9,16 @@ import java.util.List;
 
 import static org.schabi.newpipe.extractor.services.soundcloud.SoundcloudParsingHelper.clientId;
 
-public class SoundcloudCommentsLinkHandlerFactory extends ListLinkHandlerFactory {
+public final class SoundcloudCommentsLinkHandlerFactory extends ListLinkHandlerFactory {
 
-    private static final SoundcloudCommentsLinkHandlerFactory instance =
+    private static final SoundcloudCommentsLinkHandlerFactory INSTANCE =
             new SoundcloudCommentsLinkHandlerFactory();
 
+    private SoundcloudCommentsLinkHandlerFactory() {
+    }
+
     public static SoundcloudCommentsLinkHandlerFactory getInstance() {
-        return instance;
+        return INSTANCE;
     }
 
     @Override
