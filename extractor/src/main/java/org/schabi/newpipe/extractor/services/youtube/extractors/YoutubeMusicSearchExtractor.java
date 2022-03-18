@@ -279,6 +279,7 @@ public class YoutubeMusicSearchExtractor extends SearchExtractor {
         return new InfoItemsPage<>(collector, getNextPageFrom(continuations));
     }
 
+    @SuppressWarnings("MethodLength")
     private void collectMusicStreamsFrom(final MultiInfoItemsCollector collector,
                                          @Nonnull final JsonArray videos) {
         final TimeAgoParser timeAgoParser = getTimeAgoParser();

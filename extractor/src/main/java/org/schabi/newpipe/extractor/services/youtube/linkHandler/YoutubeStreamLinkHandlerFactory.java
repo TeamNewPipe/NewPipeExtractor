@@ -81,6 +81,7 @@ public final class YoutubeStreamLinkHandlerFactory extends LinkHandlerFactory {
         return "https://www.youtube.com/watch?v=" + id;
     }
 
+    @SuppressWarnings("AvoidNestedBlocks")
     @Override
     public String getId(final String theUrlString)
             throws ParsingException, IllegalArgumentException {

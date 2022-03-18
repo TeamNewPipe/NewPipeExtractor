@@ -29,6 +29,7 @@ import java.util.function.Function;
  * Static data about various media formats support by NewPipe, eg mime type, extension
  */
 
+@SuppressWarnings("MethodParamPad") // we want the media format table below to be aligned
 public enum MediaFormat {
     // @formatter:off
     //video and audio combined formats

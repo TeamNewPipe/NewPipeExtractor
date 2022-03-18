@@ -39,8 +39,8 @@ public class YoutubeThrottlingDecrypter {
             "b=a\\.get\\(\"n\"\\)\\)&&\\(b=(\\S+)\\(b\\),a\\.set\\(\"n\",b\\)");
 
     private static final Map<String, String> N_PARAMS_CACHE = new HashMap<>();
-    private static String FUNCTION;
-    private static String FUNCTION_NAME;
+    @SuppressWarnings("StaticVariableName") private static String FUNCTION;
+    @SuppressWarnings("StaticVariableName") private static String FUNCTION_NAME;
 
     private final String functionName;
     private final String function;

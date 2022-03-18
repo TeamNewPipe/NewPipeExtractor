@@ -211,6 +211,7 @@ public class StreamInfo extends Info {
         }
     }
 
+    @SuppressWarnings("MethodLength")
     private static void extractOptionalData(final StreamInfo streamInfo,
                                             final StreamExtractor extractor) {
         /* ---- optional data goes here: ---- */
