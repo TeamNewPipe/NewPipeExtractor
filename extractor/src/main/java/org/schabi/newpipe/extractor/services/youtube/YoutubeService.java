@@ -1,11 +1,16 @@
 package org.schabi.newpipe.extractor.services.youtube;
 
+import static org.schabi.newpipe.extractor.StreamingService.ServiceInfo.MediaCapability.AUDIO;
+import static org.schabi.newpipe.extractor.StreamingService.ServiceInfo.MediaCapability.COMMENTS;
+import static org.schabi.newpipe.extractor.StreamingService.ServiceInfo.MediaCapability.LIVE;
+import static org.schabi.newpipe.extractor.StreamingService.ServiceInfo.MediaCapability.VIDEO;
+import static java.util.Arrays.asList;
+
 import org.schabi.newpipe.extractor.StreamingService;
 import org.schabi.newpipe.extractor.channel.ChannelExtractor;
 import org.schabi.newpipe.extractor.comments.CommentsExtractor;
 import org.schabi.newpipe.extractor.exceptions.ExtractionException;
 import org.schabi.newpipe.extractor.feed.FeedExtractor;
-import org.schabi.newpipe.extractor.kiosk.KioskExtractor;
 import org.schabi.newpipe.extractor.kiosk.KioskList;
 import org.schabi.newpipe.extractor.linkhandler.LinkHandler;
 import org.schabi.newpipe.extractor.linkhandler.LinkHandlerFactory;
@@ -42,12 +47,6 @@ import java.util.List;
 
 import javax.annotation.Nonnull;
 
-import static java.util.Arrays.asList;
-import static org.schabi.newpipe.extractor.StreamingService.ServiceInfo.MediaCapability.AUDIO;
-import static org.schabi.newpipe.extractor.StreamingService.ServiceInfo.MediaCapability.COMMENTS;
-import static org.schabi.newpipe.extractor.StreamingService.ServiceInfo.MediaCapability.LIVE;
-import static org.schabi.newpipe.extractor.StreamingService.ServiceInfo.MediaCapability.VIDEO;
-
 /*
  * Created by Christian Schabesberger on 23.08.15.
  *
@@ -70,7 +69,7 @@ import static org.schabi.newpipe.extractor.StreamingService.ServiceInfo.MediaCap
 
 public class YoutubeService extends StreamingService {
 
-    public YoutubeService(int id) {
+    public YoutubeService(final int id) {
         super(id, "YouTube", asList(AUDIO, VIDEO, LIVE, COMMENTS));
     }
 
@@ -100,12 +99,12 @@ public class YoutubeService extends StreamingService {
     }
 
     @Override
-    public StreamExtractor getStreamExtractor(LinkHandler linkHandler) {
+    public StreamExtractor getStreamExtractor(final LinkHandler linkHandler) {
         return new YoutubeStreamExtractor(this, linkHandler);
     }
 
     @Override
-    public ChannelExtractor getChannelExtractor(ListLinkHandler linkHandler) {
+    public ChannelExtractor getChannelExtractor(final ListLinkHandler linkHandler) {
         return new YoutubeChannelExtractor(this, linkHandler);
     }
 
@@ -120,7 +119,7 @@ public class YoutubeService extends StreamingService {
     }
 
     @Override
-    public SearchExtractor getSearchExtractor(SearchQueryHandler query) {
+    public SearchExtractor getSearchExtractor(final SearchQueryHandler query) {
         final List<String> contentFilters = query.getContentFilters();
 
         if (!contentFilters.isEmpty() && contentFilters.get(0).startsWith("music_")) {
@@ -137,22 +136,21 @@ public class YoutubeService extends StreamingService {
 
     @Override
     public KioskList getKioskList() throws ExtractionException {
-        KioskList list = new KioskList(this);
+        final KioskList list = new KioskList(this);
 
         // add kiosks here e.g.:
         try {
-            list.addKioskEntry(new KioskList.KioskExtractorFactory() {
-                @Override
-                public KioskExtractor createNewKiosk(StreamingService streamingService,
-                                                     String url,
-                                                     String id)
-                        throws ExtractionException {
-                    return new YoutubeTrendingExtractor(YoutubeService.this,
-                            new YoutubeTrendingLinkHandlerFactory().fromUrl(url), id);
-                }
-            }, new YoutubeTrendingLinkHandlerFactory(), "Trending");
+            list.addKioskEntry(
+                    (streamingService, url, id) -> new YoutubeTrendingExtractor(
+                            YoutubeService.this,
+                            new YoutubeTrendingLinkHandlerFactory().fromUrl(url),
+                            id
+                    ),
+                    new YoutubeTrendingLinkHandlerFactory(),
+                    "Trending"
+            );
             list.setDefaultKiosk("Trending");
-        } catch (Exception e) {
+        } catch (final Exception e) {
             throw new ExtractionException(e);
         }
 
@@ -176,7 +174,7 @@ public class YoutubeService extends StreamingService {
     }
 
     @Override
-    public CommentsExtractor getCommentsExtractor(ListLinkHandler urlIdHandler)
+    public CommentsExtractor getCommentsExtractor(final ListLinkHandler urlIdHandler)
             throws ExtractionException {
         return new YoutubeCommentsExtractor(this, urlIdHandler);
     }
@@ -199,14 +197,14 @@ public class YoutubeService extends StreamingService {
 
     // https://www.youtube.com/picker_ajax?action_country_json=1
     private static final List<ContentCountry> SUPPORTED_COUNTRIES = ContentCountry.listFrom(
-            "DZ", "AR", "AU", "AT", "AZ", "BH", "BD", "BY", "BE", "BO", "BA", "BR", "BG", "CA", "CL",
-            "CO", "CR", "HR", "CY", "CZ", "DK", "DO", "EC", "EG", "SV", "EE", "FI", "FR", "GE", "DE",
-            "GH", "GR", "GT", "HN", "HK", "HU", "IS", "IN", "ID", "IQ", "IE", "IL", "IT", "JM", "JP",
-            "JO", "KZ", "KE", "KW", "LV", "LB", "LY", "LI", "LT", "LU", "MY", "MT", "MX", "ME", "MA",
-            "NP", "NL", "NZ", "NI", "NG", "MK", "NO", "OM", "PK", "PA", "PG", "PY", "PE", "PH", "PL",
-            "PT", "PR", "QA", "RO", "RU", "SA", "SN", "RS", "SG", "SK", "SI", "ZA", "KR", "ES", "LK",
-            "SE", "CH", "TW", "TZ", "TH", "TN", "TR", "UG", "UA", "AE", "GB", "US", "UY", "VE", "VN",
-            "YE", "ZW"
+            "DZ", "AR", "AU", "AT", "AZ", "BH", "BD", "BY", "BE", "BO", "BA", "BR", "BG", "CA",
+            "CL", "CO", "CR", "HR", "CY", "CZ", "DK", "DO", "EC", "EG", "SV", "EE", "FI", "FR",
+            "GE", "DE", "GH", "GR", "GT", "HN", "HK", "HU", "IS", "IN", "ID", "IQ", "IE", "IL",
+            "IT", "JM", "JP", "JO", "KZ", "KE", "KW", "LV", "LB", "LY", "LI", "LT", "LU", "MY",
+            "MT", "MX", "ME", "MA", "NP", "NL", "NZ", "NI", "NG", "MK", "NO", "OM", "PK", "PA",
+            "PG", "PY", "PE", "PH", "PL", "PT", "PR", "QA", "RO", "RU", "SA", "SN", "RS", "SG",
+            "SK", "SI", "ZA", "KR", "ES", "LK", "SE", "CH", "TW", "TZ", "TH", "TN", "TR", "UG",
+            "UA", "AE", "GB", "US", "UY", "VE", "VN", "YE", "ZW"
     );
 
     @Override

@@ -19,7 +19,7 @@ import javax.annotation.Nonnull;
  * This class handling fetching the JavaScript file in order to allow other classes to extract the
  * needed functions.
  */
-public class YoutubeJavaScriptExtractor {
+public final class YoutubeJavaScriptExtractor {
 
     private static final String HTTPS = "https:";
     private static String cachedJavaScriptCode;
@@ -81,9 +81,10 @@ public class YoutubeJavaScriptExtractor {
             final String hashPattern = "player\\\\\\/([a-z0-9]{8})\\\\\\/";
             final String hash = Parser.matchGroup1(hashPattern, iframeContent);
 
-            return String.format("https://www.youtube.com/s/player/%s/player_ias.vflset/en_US/base.js", hash);
-
-        } catch (final Exception i) { }
+            return String.format(
+                    "https://www.youtube.com/s/player/%s/player_ias.vflset/en_US/base.js", hash);
+        } catch (final Exception ignored) {
+        }
 
         throw new ParsingException("Iframe API did not provide YouTube player js url");
     }
@@ -109,8 +110,8 @@ public class YoutubeJavaScriptExtractor {
                     }
                 }
             }
-
-        } catch (final Exception i) { }
+        } catch (final Exception ignored) {
+        }
 
         throw new ParsingException("Embedded info did not provide YouTube player js url");
     }

@@ -80,7 +80,8 @@ public class YoutubeThrottlingDecrypter {
     public static String apply(final String url, final String videoId) throws ParsingException {
         if (containsNParam(url)) {
             if (FUNCTION == null) {
-                final String playerJsCode = YoutubeJavaScriptExtractor.extractJavaScriptCode(videoId);
+                final String playerJsCode
+                        = YoutubeJavaScriptExtractor.extractJavaScriptCode(videoId);
 
                 FUNCTION_NAME = parseDecodeFunctionName(playerJsCode);
                 FUNCTION = parseDecodeFunction(playerJsCode, FUNCTION_NAME);
@@ -118,19 +119,22 @@ public class YoutubeThrottlingDecrypter {
             throws Parser.RegexException {
         try {
             return parseWithParenthesisMatching(playerJsCode, functionName);
-        } catch (Exception e) {
+        } catch (final Exception e) {
             return parseWithRegex(playerJsCode, functionName);
         }
     }
 
     @Nonnull
-    private static String parseWithParenthesisMatching(final String playerJsCode, final String functionName) {
+    private static String parseWithParenthesisMatching(final String playerJsCode,
+                                                       final String functionName) {
         final String functionBase = functionName + "=function";
-        return functionBase + StringUtils.matchToClosingParenthesis(playerJsCode, functionBase) + ";";
+        return functionBase + StringUtils.matchToClosingParenthesis(playerJsCode, functionBase)
+                + ";";
     }
 
     @Nonnull
-    private static String parseWithRegex(final String playerJsCode, final String functionName) throws Parser.RegexException {
+    private static String parseWithRegex(final String playerJsCode, final String functionName)
+            throws Parser.RegexException {
         final Pattern functionPattern = Pattern.compile(functionName + "=function(.*?}};)\n",
                 Pattern.DOTALL);
         return "function " + functionName + Parser.matchGroup1(functionPattern, playerJsCode);
@@ -155,7 +159,9 @@ public class YoutubeThrottlingDecrypter {
         return Parser.matchGroup1(N_PARAM_PATTERN, url);
     }
 
-    private static String decryptNParam(final String function, final String functionName, final String nParam) {
+    private static String decryptNParam(final String function,
+                                        final String functionName,
+                                        final String nParam) {
         if (N_PARAMS_CACHE.containsKey(nParam)) {
             return N_PARAMS_CACHE.get(nParam);
         }

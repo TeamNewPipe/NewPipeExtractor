@@ -1,10 +1,21 @@
 package org.schabi.newpipe.extractor.services.youtube.extractors;
 
+import static org.schabi.newpipe.extractor.services.youtube.YoutubeParsingHelper.YOUTUBEI_V1_URL;
+import static org.schabi.newpipe.extractor.services.youtube.YoutubeParsingHelper.addClientInfoHeaders;
+import static org.schabi.newpipe.extractor.services.youtube.YoutubeParsingHelper.extractCookieValue;
+import static org.schabi.newpipe.extractor.services.youtube.YoutubeParsingHelper.getKey;
+import static org.schabi.newpipe.extractor.services.youtube.YoutubeParsingHelper.getValidJsonResponseBody;
+import static org.schabi.newpipe.extractor.services.youtube.YoutubeParsingHelper.prepareDesktopJsonBuilder;
+import static org.schabi.newpipe.extractor.utils.Utils.EMPTY_STRING;
+import static org.schabi.newpipe.extractor.utils.Utils.getQueryValue;
+import static org.schabi.newpipe.extractor.utils.Utils.isNullOrEmpty;
+import static org.schabi.newpipe.extractor.utils.Utils.stringToURL;
+
 import com.grack.nanojson.JsonArray;
 import com.grack.nanojson.JsonBuilder;
 import com.grack.nanojson.JsonObject;
-
 import com.grack.nanojson.JsonWriter;
+
 import org.schabi.newpipe.extractor.ListExtractor;
 import org.schabi.newpipe.extractor.Page;
 import org.schabi.newpipe.extractor.StreamingService;
@@ -25,13 +36,13 @@ import org.schabi.newpipe.extractor.utils.JsonUtils;
 import java.io.IOException;
 import java.net.URL;
 import java.nio.charset.StandardCharsets;
-import java.util.*;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Objects;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
-
-import static org.schabi.newpipe.extractor.services.youtube.YoutubeParsingHelper.*;
-import static org.schabi.newpipe.extractor.utils.Utils.*;
 
 /**
  * A {@link YoutubePlaylistExtractor} for a mix (auto-generated playlist).
@@ -84,8 +95,9 @@ public class YoutubeMixPlaylistExtractor extends PlaylistExtractor {
         initialData = JsonUtils.toJsonObject(getValidJsonResponseBody(response));
         playlistData = initialData.getObject("contents").getObject("twoColumnWatchNextResults")
                 .getObject("playlist").getObject("playlist");
-        if (isNullOrEmpty(playlistData)) throw new ExtractionException(
-                "Could not get playlistData");
+        if (isNullOrEmpty(playlistData)) {
+            throw new ExtractionException("Could not get playlistData");
+        }
         cookieValue = extractCookieValue(COOKIE_NAME, response);
     }
 

@@ -1,14 +1,22 @@
 package org.schabi.newpipe.extractor.services.youtube;
 
+import static org.schabi.newpipe.extractor.MediaFormat.M4A;
+import static org.schabi.newpipe.extractor.MediaFormat.MPEG_4;
+import static org.schabi.newpipe.extractor.MediaFormat.WEBM;
+import static org.schabi.newpipe.extractor.MediaFormat.WEBMA;
+import static org.schabi.newpipe.extractor.MediaFormat.WEBMA_OPUS;
+import static org.schabi.newpipe.extractor.MediaFormat.v3GPP;
+import static org.schabi.newpipe.extractor.services.youtube.ItagItem.ItagType.AUDIO;
+import static org.schabi.newpipe.extractor.services.youtube.ItagItem.ItagType.VIDEO;
+import static org.schabi.newpipe.extractor.services.youtube.ItagItem.ItagType.VIDEO_ONLY;
+
 import org.schabi.newpipe.extractor.MediaFormat;
 import org.schabi.newpipe.extractor.exceptions.ParsingException;
 
-import static org.schabi.newpipe.extractor.MediaFormat.*;
-import static org.schabi.newpipe.extractor.services.youtube.ItagItem.ItagType.*;
-
 public class ItagItem {
     /**
-     * List can be found here https://github.com/ytdl-org/youtube-dl/blob/9fc5eafb8e384453a49f7cfe73147be491f0b19d/youtube_dl/extractor/youtube.py#L1071
+     * List can be found here
+     * https://github.com/ytdl-org/youtube-dl/blob/9fc5eafb8e384453a49f7cfe73147be491f0b19d/youtube_dl/extractor/youtube.py#L1071
      */
     private static final ItagItem[] ITAG_LIST = {
             /////////////////////////////////////////////////////
@@ -79,8 +87,8 @@ public class ItagItem {
     // Utils
     //////////////////////////////////////////////////////////////////////////*/
 
-    public static boolean isSupported(int itag) {
-        for (ItagItem item : ITAG_LIST) {
+    public static boolean isSupported(final int itag) {
+        for (final ItagItem item : ITAG_LIST) {
             if (itag == item.id) {
                 return true;
             }
@@ -88,8 +96,8 @@ public class ItagItem {
         return false;
     }
 
-    public static ItagItem getItag(int itagId) throws ParsingException {
-        for (ItagItem item : ITAG_LIST) {
+    public static ItagItem getItag(final int itagId) throws ParsingException {
+        for (final ItagItem item : ITAG_LIST) {
             if (itagId == item.id) {
                 return item;
             }
@@ -110,7 +118,10 @@ public class ItagItem {
     /**
      * Call {@link #ItagItem(int, ItagType, MediaFormat, String, int)} with the fps set to 30.
      */
-    public ItagItem(int id, ItagType type, MediaFormat format, String resolution) {
+    public ItagItem(final int id,
+                    final ItagType type,
+                    final MediaFormat format,
+                    final String resolution) {
         this.id = id;
         this.itagType = type;
         this.mediaFormat = format;
@@ -123,7 +134,11 @@ public class ItagItem {
      *
      * @param resolution string that will be used in the frontend
      */
-    public ItagItem(int id, ItagType type, MediaFormat format, String resolution, int fps) {
+    public ItagItem(final int id,
+                    final ItagType type,
+                    final MediaFormat format,
+                    final String resolution,
+                    final int fps) {
         this.id = id;
         this.itagType = type;
         this.mediaFormat = format;
@@ -131,7 +146,10 @@ public class ItagItem {
         this.fps = fps;
     }
 
-    public ItagItem(int id, ItagType type, MediaFormat format, int avgBitrate) {
+    public ItagItem(final int id,
+                    final ItagType type,
+                    final MediaFormat format,
+                    final int avgBitrate) {
         this.id = id;
         this.itagType = type;
         this.mediaFormat = format;
@@ -170,7 +188,7 @@ public class ItagItem {
         return bitrate;
     }
 
-    public void setBitrate(int bitrate) {
+    public void setBitrate(final int bitrate) {
         this.bitrate = bitrate;
     }
 
@@ -178,7 +196,7 @@ public class ItagItem {
         return width;
     }
 
-    public void setWidth(int width) {
+    public void setWidth(final int width) {
         this.width = width;
     }
 
@@ -186,7 +204,7 @@ public class ItagItem {
         return height;
     }
 
-    public void setHeight(int height) {
+    public void setHeight(final int height) {
         this.height = height;
     }
 
@@ -194,7 +212,7 @@ public class ItagItem {
         return initStart;
     }
 
-    public void setInitStart(int initStart) {
+    public void setInitStart(final int initStart) {
         this.initStart = initStart;
     }
 
@@ -202,7 +220,7 @@ public class ItagItem {
         return initEnd;
     }
 
-    public void setInitEnd(int initEnd) {
+    public void setInitEnd(final int initEnd) {
         this.initEnd = initEnd;
     }
 
@@ -210,7 +228,7 @@ public class ItagItem {
         return indexStart;
     }
 
-    public void setIndexStart(int indexStart) {
+    public void setIndexStart(final int indexStart) {
         this.indexStart = indexStart;
     }
 
@@ -218,7 +236,7 @@ public class ItagItem {
         return indexEnd;
     }
 
-    public void setIndexEnd(int indexEnd) {
+    public void setIndexEnd(final int indexEnd) {
         this.indexEnd = indexEnd;
     }
 
@@ -226,7 +244,7 @@ public class ItagItem {
         return quality;
     }
 
-    public void setQuality(String quality) {
+    public void setQuality(final String quality) {
         this.quality = quality;
     }
 
@@ -234,7 +252,7 @@ public class ItagItem {
         return codec;
     }
 
-    public void setCodec(String codec) {
+    public void setCodec(final String codec) {
         this.codec = codec;
     }
 }
