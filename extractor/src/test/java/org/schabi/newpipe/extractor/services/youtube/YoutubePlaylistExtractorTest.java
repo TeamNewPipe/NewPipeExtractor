@@ -43,7 +43,7 @@ public class YoutubePlaylistExtractorTest {
         public static void setUp() throws IOException {
             YoutubeParsingHelper.resetClientVersionAndKey();
             YoutubeParsingHelper.setNumberGenerator(new Random(1));
-            NewPipe.init(new DownloaderFactory().getDownloader(RESOURCE_PATH + "notAvailable"));
+            NewPipe.init(DownloaderFactory.getDownloader(RESOURCE_PATH + "notAvailable"));
         }
 
         @Test
@@ -68,7 +68,7 @@ public class YoutubePlaylistExtractorTest {
         public static void setUp() throws Exception {
             YoutubeParsingHelper.resetClientVersionAndKey();
             YoutubeParsingHelper.setNumberGenerator(new Random(1));
-            NewPipe.init(new DownloaderFactory().getDownloader(RESOURCE_PATH + "TimelessPopHits"));
+            NewPipe.init(DownloaderFactory.getDownloader(RESOURCE_PATH + "TimelessPopHits"));
             extractor = (YoutubePlaylistExtractor) YouTube
                     .getPlaylistExtractor("http://www.youtube.com/watch?v=lp-EO5I60KA&list=PLMC9KNkIncKtPzgY-5rmhvj7fax8fdxoj");
             extractor.fetchPage();
@@ -171,7 +171,7 @@ public class YoutubePlaylistExtractorTest {
         public static void setUp() throws Exception {
             YoutubeParsingHelper.resetClientVersionAndKey();
             YoutubeParsingHelper.setNumberGenerator(new Random(1));
-            NewPipe.init(new DownloaderFactory().getDownloader(RESOURCE_PATH + "huge"));
+            NewPipe.init(DownloaderFactory.getDownloader(RESOURCE_PATH + "huge"));
             extractor = (YoutubePlaylistExtractor) YouTube
                     .getPlaylistExtractor("https://www.youtube.com/watch?v=8SbUC-UaAxE&list=PLWwAypAcFRgKAIIFqBr9oy-ZYZnixa_Fj");
             extractor.fetchPage();
@@ -290,7 +290,7 @@ public class YoutubePlaylistExtractorTest {
         public static void setUp() throws Exception {
             YoutubeParsingHelper.resetClientVersionAndKey();
             YoutubeParsingHelper.setNumberGenerator(new Random(1));
-            NewPipe.init(new DownloaderFactory().getDownloader(RESOURCE_PATH + "learning"));
+            NewPipe.init(DownloaderFactory.getDownloader(RESOURCE_PATH + "learning"));
             extractor = (YoutubePlaylistExtractor) YouTube
                     .getPlaylistExtractor("https://www.youtube.com/playlist?list=PL8dPuuaLjXtOAKed_MxxWBNaPno5h3Zs8");
             extractor.fetchPage();
@@ -394,7 +394,7 @@ public class YoutubePlaylistExtractorTest {
         public static void setUp() throws IOException {
             YoutubeParsingHelper.resetClientVersionAndKey();
             YoutubeParsingHelper.setNumberGenerator(new Random(1));
-            NewPipe.init(new DownloaderFactory().getDownloader(RESOURCE_PATH + "continuations"));
+            NewPipe.init(DownloaderFactory.getDownloader(RESOURCE_PATH + "continuations"));
         }
 
         @Test

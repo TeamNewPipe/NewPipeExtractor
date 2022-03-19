@@ -47,7 +47,7 @@ public class YoutubeSuggestionExtractorTest {
     public static void setUp() throws Exception {
         YoutubeParsingHelper.resetClientVersionAndKey();
         YoutubeParsingHelper.setNumberGenerator(new Random(1));
-        NewPipe.init(new DownloaderFactory().getDownloader(RESOURCE_PATH + ""), new Localization("de", "DE"));
+        NewPipe.init(DownloaderFactory.getDownloader(RESOURCE_PATH + ""), new Localization("de", "DE"));
         suggestionExtractor = YouTube.getSuggestionExtractor();
     }
 

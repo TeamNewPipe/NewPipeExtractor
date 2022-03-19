@@ -26,7 +26,7 @@ public class YoutubeKioskExtractorTest {
         public static void setUp() throws Exception {
             YoutubeParsingHelper.resetClientVersionAndKey();
             YoutubeParsingHelper.setNumberGenerator(new Random(1));
-            NewPipe.init(new DownloaderFactory().getDownloader(RESOURCE_PATH + "trending"));
+            NewPipe.init(DownloaderFactory.getDownloader(RESOURCE_PATH + "trending"));
             extractor = (YoutubeTrendingExtractor) YouTube.getKioskList().getDefaultKioskExtractor();
             extractor.fetchPage();
         }

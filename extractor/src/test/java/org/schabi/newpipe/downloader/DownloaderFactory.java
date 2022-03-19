@@ -6,9 +6,17 @@ import java.io.IOException;
 
 public class DownloaderFactory {
 
-    public final static String RESOURCE_PATH = "src/test/resources/org/schabi/newpipe/extractor/";
+    public static final String RESOURCE_PATH = "src/test/resources/org/schabi/newpipe/extractor/";
 
-    private final static DownloaderType DEFAULT_DOWNLOADER = DownloaderType.REAL;
+    private static final DownloaderType DEFAULT_DOWNLOADER = DownloaderType.REAL;
+
+    public static DownloaderType getDownloaderType() {
+        try {
+            return DownloaderType.valueOf(System.getProperty("downloader"));
+        } catch (final Exception e) {
+            return DEFAULT_DOWNLOADER;
+        }
+    }
 
     /**
      * <p>
@@ -28,14 +36,8 @@ public class DownloaderFactory {
      * @param path The path to the folder where mocks are saved/retrieved.
      *             Preferably starting with {@link DownloaderFactory#RESOURCE_PATH}
      */
-    public Downloader getDownloader(String path) throws IOException {
-        DownloaderType type;
-        try {
-            type = DownloaderType.valueOf(System.getProperty("downloader"));
-        } catch (Exception e) {
-            type = DEFAULT_DOWNLOADER;
-        }
-
+    public static Downloader getDownloader(final String path) throws IOException {
+        final DownloaderType type = getDownloaderType();
         switch (type) {
             case REAL:
                 return DownloaderTestImpl.getInstance();
@@ -44,7 +46,7 @@ public class DownloaderFactory {
             case RECORDING:
                 return new RecordingDownloader(path);
             default:
-                throw new UnsupportedOperationException("Unknown downloader type: " + type.toString());
+                throw new UnsupportedOperationException("Unknown downloader type: " + type);
         }
     }
 }

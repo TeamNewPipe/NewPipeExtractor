@@ -34,7 +34,7 @@ public class YoutubeStreamExtractorControversialTest extends DefaultStreamExtrac
         YoutubeParsingHelper.resetClientVersionAndKey();
         YoutubeParsingHelper.setNumberGenerator(new Random(1));
         YoutubeStreamExtractor.resetDeobfuscationCode();
-        NewPipe.init(new DownloaderFactory().getDownloader(RESOURCE_PATH + "controversial"));
+        NewPipe.init(DownloaderFactory.getDownloader(RESOURCE_PATH + "controversial"));
         extractor = YouTube.getStreamExtractor(URL);
         extractor.fetchPage();
     }

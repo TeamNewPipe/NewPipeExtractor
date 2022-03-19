@@ -48,7 +48,7 @@ public class YoutubeTrendingKioskInfoTest {
             throws Exception {
         YoutubeParsingHelper.resetClientVersionAndKey();
         YoutubeParsingHelper.setNumberGenerator(new Random(1));
-        NewPipe.init(new DownloaderFactory().getDownloader(RESOURCE_PATH));
+        NewPipe.init(DownloaderFactory.getDownloader(RESOURCE_PATH));
         LinkHandlerFactory LinkHandlerFactory = ((StreamingService) YouTube).getKioskList().getListLinkHandlerFactoryByType("Trending");
 
         kioskInfo = KioskInfo.getInfo(YouTube, LinkHandlerFactory.fromId("Trending").getUrl());

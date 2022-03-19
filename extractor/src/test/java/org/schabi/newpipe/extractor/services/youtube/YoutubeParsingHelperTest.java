@@ -21,7 +21,7 @@ public class YoutubeParsingHelperTest {
     public static void setUp() throws IOException {
         YoutubeParsingHelper.resetClientVersionAndKey();
         YoutubeParsingHelper.setNumberGenerator(new Random(1));
-        NewPipe.init(new DownloaderFactory().getDownloader(RESOURCE_PATH + "youtubeParsingHelper"));
+        NewPipe.init(DownloaderFactory.getDownloader(RESOURCE_PATH + "youtubeParsingHelper"));
     }
 
     @Test

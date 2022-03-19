@@ -41,7 +41,7 @@ public class YoutubeMixPlaylistExtractorTest {
         public static void setUp() throws Exception {
             YoutubeParsingHelper.resetClientVersionAndKey();
             YoutubeParsingHelper.setNumberGenerator(new Random(1));
-            NewPipe.init(new DownloaderFactory().getDownloader(RESOURCE_PATH + "mix"));
+            NewPipe.init(DownloaderFactory.getDownloader(RESOURCE_PATH + "mix"));
             dummyCookie.put(YoutubeMixPlaylistExtractor.COOKIE_NAME, "whatever");
             extractor = (YoutubeMixPlaylistExtractor) YouTube
                     .getPlaylistExtractor("https://www.youtube.com/watch?v=" + VIDEO_ID
@@ -131,7 +131,7 @@ public class YoutubeMixPlaylistExtractorTest {
         public static void setUp() throws Exception {
             YoutubeParsingHelper.resetClientVersionAndKey();
             YoutubeParsingHelper.setNumberGenerator(new Random(1));
-            NewPipe.init(new DownloaderFactory().getDownloader(RESOURCE_PATH + "mixWithIndex"));
+            NewPipe.init(DownloaderFactory.getDownloader(RESOURCE_PATH + "mixWithIndex"));
             dummyCookie.put(YoutubeMixPlaylistExtractor.COOKIE_NAME, "whatever");
             extractor = (YoutubeMixPlaylistExtractor) YouTube
                     .getPlaylistExtractor("https://www.youtube.com/watch?v=" + VIDEO_ID_NUMBER_4
@@ -212,7 +212,7 @@ public class YoutubeMixPlaylistExtractorTest {
         public static void setUp() throws Exception {
             YoutubeParsingHelper.resetClientVersionAndKey();
             YoutubeParsingHelper.setNumberGenerator(new Random(1));
-            NewPipe.init(new DownloaderFactory().getDownloader(RESOURCE_PATH + "myMix"));
+            NewPipe.init(DownloaderFactory.getDownloader(RESOURCE_PATH + "myMix"));
             dummyCookie.put(YoutubeMixPlaylistExtractor.COOKIE_NAME, "whatever");
             extractor = (YoutubeMixPlaylistExtractor) YouTube
                     .getPlaylistExtractor("https://www.youtube.com/watch?v=" + VIDEO_ID
@@ -297,7 +297,7 @@ public class YoutubeMixPlaylistExtractorTest {
         public static void setUp() throws IOException {
             YoutubeParsingHelper.resetClientVersionAndKey();
             YoutubeParsingHelper.setNumberGenerator(new Random(1));
-            NewPipe.init(new DownloaderFactory().getDownloader(RESOURCE_PATH + "invalid"));
+            NewPipe.init(DownloaderFactory.getDownloader(RESOURCE_PATH + "invalid"));
             dummyCookie.put(YoutubeMixPlaylistExtractor.COOKIE_NAME, "whatever");
         }
 
@@ -332,7 +332,7 @@ public class YoutubeMixPlaylistExtractorTest {
         public static void setUp() throws Exception {
             YoutubeParsingHelper.resetClientVersionAndKey();
             YoutubeParsingHelper.setNumberGenerator(new Random(1));
-            NewPipe.init(new DownloaderFactory().getDownloader(RESOURCE_PATH + "channelMix"));
+            NewPipe.init(DownloaderFactory.getDownloader(RESOURCE_PATH + "channelMix"));
             dummyCookie.put(YoutubeMixPlaylistExtractor.COOKIE_NAME, "whatever");
             extractor = (YoutubeMixPlaylistExtractor) YouTube
                     .getPlaylistExtractor("https://www.youtube.com/watch?v=" + VIDEO_ID_OF_CHANNEL
