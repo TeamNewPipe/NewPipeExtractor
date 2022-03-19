@@ -14,6 +14,7 @@ import org.schabi.newpipe.extractor.linkhandler.ListLinkHandler;
 import org.schabi.newpipe.extractor.localization.Localization;
 import org.schabi.newpipe.extractor.localization.TimeAgoParser;
 import org.schabi.newpipe.extractor.playlist.PlaylistExtractor;
+import org.schabi.newpipe.extractor.playlist.PlaylistInfo;
 import org.schabi.newpipe.extractor.services.youtube.YoutubeParsingHelper;
 import org.schabi.newpipe.extractor.stream.StreamInfoItem;
 import org.schabi.newpipe.extractor.stream.StreamInfoItemsCollector;
@@ -328,5 +329,11 @@ public class YoutubePlaylistExtractor extends PlaylistExtractor {
                     }
                 })
                 .forEachOrdered(collector::commit);
+    }
+
+    @Nonnull
+    @Override
+    public PlaylistInfo.PlaylistType getPlaylistType() throws ParsingException {
+        return extractPlaylistTypeFromPlaylistUrl(getUrl());
     }
 }

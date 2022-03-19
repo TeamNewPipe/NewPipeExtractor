@@ -3,6 +3,8 @@ package org.schabi.newpipe.extractor.playlist;
 import org.schabi.newpipe.extractor.InfoItemExtractor;
 import org.schabi.newpipe.extractor.exceptions.ParsingException;
 
+import javax.annotation.Nonnull;
+
 public interface PlaylistInfoItemExtractor extends InfoItemExtractor {
 
     /**
@@ -18,4 +20,13 @@ public interface PlaylistInfoItemExtractor extends InfoItemExtractor {
      * @throws ParsingException
      */
     long getStreamCount() throws ParsingException;
+
+    /**
+     * @return the type of this playlist, see {@link PlaylistInfo.PlaylistType} for a description
+     *         of types. If not overridden always returns {@link PlaylistInfo.PlaylistType#NORMAL}.
+     */
+    @Nonnull
+    default PlaylistInfo.PlaylistType getPlaylistType() throws ParsingException {
+        return PlaylistInfo.PlaylistType.NORMAL;
+    }
 }

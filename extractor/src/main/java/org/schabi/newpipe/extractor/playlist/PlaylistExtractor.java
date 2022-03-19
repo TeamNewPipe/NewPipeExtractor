@@ -49,4 +49,8 @@ public abstract class PlaylistExtractor extends ListExtractor<StreamInfoItem> {
     public String getSubChannelAvatarUrl() throws ParsingException {
         return EMPTY_STRING;
     }
+
+    public PlaylistInfo.PlaylistType getPlaylistType() throws ParsingException {
+        return PlaylistInfo.PlaylistType.NORMAL;
+    }
 }

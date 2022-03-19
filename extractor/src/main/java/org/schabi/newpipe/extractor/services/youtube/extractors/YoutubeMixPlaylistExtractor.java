@@ -16,6 +16,7 @@ import org.schabi.newpipe.extractor.linkhandler.ListLinkHandler;
 import org.schabi.newpipe.extractor.localization.Localization;
 import org.schabi.newpipe.extractor.localization.TimeAgoParser;
 import org.schabi.newpipe.extractor.playlist.PlaylistExtractor;
+import org.schabi.newpipe.extractor.playlist.PlaylistInfo;
 import org.schabi.newpipe.extractor.services.youtube.YoutubeParsingHelper;
 import org.schabi.newpipe.extractor.stream.StreamInfoItem;
 import org.schabi.newpipe.extractor.stream.StreamInfoItemsCollector;
@@ -232,23 +233,19 @@ public class YoutubeMixPlaylistExtractor extends PlaylistExtractor {
     }
 
     @Nonnull
-    private String getThumbnailUrlFromPlaylistId(@Nonnull final String playlistId) throws ParsingException {
-        final String videoId;
-        if (playlistId.startsWith("RDMM")) {
-            videoId = playlistId.substring(4);
-        } else if (playlistId.startsWith("RDCMUC")) {
-            throw new ParsingException("This playlist is a channel mix");
-        } else {
-            videoId = playlistId.substring(2);
-        }
-        if (videoId.isEmpty()) {
-            throw new ParsingException("videoId is empty");
-        }
-        return getThumbnailUrlFromVideoId(videoId);
+    private String getThumbnailUrlFromPlaylistId(@Nonnull final String playlistId)
+            throws ParsingException {
+        return getThumbnailUrlFromVideoId(YoutubeParsingHelper.extractVideoIdFromMixId(playlistId));
     }
 
     @Nonnull
     private String getThumbnailUrlFromVideoId(final String videoId) {
         return "https://i.ytimg.com/vi/" + videoId + "/hqdefault.jpg";
+    }
+
+    @Nonnull
+    @Override
+    public PlaylistInfo.PlaylistType getPlaylistType() throws ParsingException {
+        return extractPlaylistTypeFromPlaylistId(playlistData.getString("playlistId"));
     }
 }

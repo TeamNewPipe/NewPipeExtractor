@@ -15,7 +15,7 @@ import org.schabi.newpipe.extractor.downloader.Downloader;
 import org.schabi.newpipe.extractor.exceptions.ExtractionException;
 import org.schabi.newpipe.extractor.exceptions.ParsingException;
 import org.schabi.newpipe.extractor.linkhandler.SearchQueryHandler;
-import org.schabi.newpipe.extractor.search.InfoItemsSearchCollector;
+import org.schabi.newpipe.extractor.MultiInfoItemsCollector;
 import org.schabi.newpipe.extractor.search.SearchExtractor;
 import org.schabi.newpipe.extractor.services.media_ccc.extractors.infoItems.MediaCCCStreamInfoItemExtractor;
 import org.schabi.newpipe.extractor.services.media_ccc.linkHandler.MediaCCCConferencesListLinkHandlerFactory;
@@ -66,7 +66,7 @@ public class MediaCCCSearchExtractor extends SearchExtractor {
     @Nonnull
     @Override
     public InfoItemsPage<InfoItem> getInitialPage() {
-        final InfoItemsSearchCollector searchItems = new InfoItemsSearchCollector(getServiceId());
+        final MultiInfoItemsCollector searchItems = new MultiInfoItemsCollector(getServiceId());
 
         if (getLinkHandler().getContentFilters().contains(CONFERENCES)
                 || getLinkHandler().getContentFilters().contains(ALL)
@@ -122,7 +122,7 @@ public class MediaCCCSearchExtractor extends SearchExtractor {
 
     private void searchConferences(final String searchString,
                                    final List<ChannelInfoItem> channelItems,
-                                   final InfoItemsSearchCollector collector) {
+                                   final MultiInfoItemsCollector collector) {
         for (final ChannelInfoItem item : channelItems) {
             if (item.getName().toUpperCase().contains(
                     searchString.toUpperCase())) {

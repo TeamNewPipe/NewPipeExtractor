@@ -12,7 +12,7 @@ import org.schabi.newpipe.extractor.downloader.Response;
 import org.schabi.newpipe.extractor.exceptions.ExtractionException;
 import org.schabi.newpipe.extractor.exceptions.ParsingException;
 import org.schabi.newpipe.extractor.linkhandler.SearchQueryHandler;
-import org.schabi.newpipe.extractor.search.InfoItemsSearchCollector;
+import org.schabi.newpipe.extractor.MultiInfoItemsCollector;
 import org.schabi.newpipe.extractor.search.SearchExtractor;
 import org.schabi.newpipe.extractor.services.peertube.PeertubeParsingHelper;
 import org.schabi.newpipe.extractor.utils.Utils;
@@ -87,7 +87,7 @@ public class PeertubeSearchExtractor extends SearchExtractor {
             PeertubeParsingHelper.validate(json);
             final long total = json.getLong("total");
 
-            final InfoItemsSearchCollector collector = new InfoItemsSearchCollector(getServiceId());
+            final MultiInfoItemsCollector collector = new MultiInfoItemsCollector(getServiceId());
             collectStreamsFrom(collector, json, getBaseUrl(), sepia);
 
             return new InfoItemsPage<>(collector, PeertubeParsingHelper.getNextPage(page.getUrl(), total));

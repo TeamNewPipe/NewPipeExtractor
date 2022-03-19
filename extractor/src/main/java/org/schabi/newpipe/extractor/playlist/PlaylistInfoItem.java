@@ -9,6 +9,7 @@ public class PlaylistInfoItem extends InfoItem {
      * How many streams this playlist have
      */
     private long streamCount = 0;
+    private PlaylistInfo.PlaylistType playlistType;
 
     public PlaylistInfoItem(int serviceId, String url, String name) {
         super(InfoType.PLAYLIST, serviceId, url, name);
@@ -28,5 +29,13 @@ public class PlaylistInfoItem extends InfoItem {
 
     public void setStreamCount(long stream_count) {
         this.streamCount = stream_count;
+    }
+
+    public PlaylistInfo.PlaylistType getPlaylistType() {
+        return playlistType;
+    }
+
+    public void setPlaylistType(final PlaylistInfo.PlaylistType playlistType) {
+        this.playlistType = playlistType;
     }
 }

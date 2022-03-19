@@ -9,7 +9,7 @@ import org.schabi.newpipe.extractor.downloader.Downloader;
 import org.schabi.newpipe.extractor.exceptions.ExtractionException;
 import org.schabi.newpipe.extractor.exceptions.ParsingException;
 import org.schabi.newpipe.extractor.linkhandler.SearchQueryHandler;
-import org.schabi.newpipe.extractor.search.InfoItemsSearchCollector;
+import org.schabi.newpipe.extractor.MultiInfoItemsCollector;
 import org.schabi.newpipe.extractor.search.SearchExtractor;
 import org.schabi.newpipe.extractor.utils.Parser;
 
@@ -100,7 +100,7 @@ public class SoundcloudSearchExtractor extends SearchExtractor {
 
     private InfoItemsCollector<InfoItem, InfoItemExtractor> collectItems(
             final JsonArray searchCollection) {
-        final InfoItemsSearchCollector collector = new InfoItemsSearchCollector(getServiceId());
+        final MultiInfoItemsCollector collector = new MultiInfoItemsCollector(getServiceId());
 
         for (final Object result : searchCollection) {
             if (!(result instanceof JsonObject)) continue;

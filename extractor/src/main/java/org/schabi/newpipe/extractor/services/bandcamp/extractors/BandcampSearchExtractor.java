@@ -15,7 +15,7 @@ import org.schabi.newpipe.extractor.downloader.Downloader;
 import org.schabi.newpipe.extractor.exceptions.ExtractionException;
 import org.schabi.newpipe.extractor.exceptions.ParsingException;
 import org.schabi.newpipe.extractor.linkhandler.SearchQueryHandler;
-import org.schabi.newpipe.extractor.search.InfoItemsSearchCollector;
+import org.schabi.newpipe.extractor.MultiInfoItemsCollector;
 import org.schabi.newpipe.extractor.search.SearchExtractor;
 import org.schabi.newpipe.extractor.services.bandcamp.extractors.streaminfoitem.BandcampSearchStreamInfoItemExtractor;
 
@@ -50,7 +50,7 @@ public class BandcampSearchExtractor extends SearchExtractor {
     public InfoItemsPage<InfoItem> getPage(final Page page) throws IOException, ExtractionException {
         final String html = getDownloader().get(page.getUrl()).responseBody();
 
-        final InfoItemsSearchCollector collector = new InfoItemsSearchCollector(getServiceId());
+        final MultiInfoItemsCollector collector = new MultiInfoItemsCollector(getServiceId());
 
 
         final Document d = Jsoup.parse(html);

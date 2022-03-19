@@ -252,15 +252,7 @@ public class YoutubeStreamInfoItemExtractor implements StreamInfoItemExtractor {
 
     @Override
     public String getThumbnailUrl() throws ParsingException {
-        try {
-            // TODO: Don't simply get the first item, but look at all thumbnails and their resolution
-            String url = videoInfo.getObject("thumbnail").getArray("thumbnails")
-                    .getObject(0).getString("url");
-
-            return fixThumbnailUrl(url);
-        } catch (Exception e) {
-            throw new ParsingException("Could not get thumbnail url", e);
-        }
+        return getThumbnailUrlFromInfoItem(videoInfo);
     }
 
     private boolean isPremium() {
