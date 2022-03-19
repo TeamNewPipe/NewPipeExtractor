@@ -399,7 +399,8 @@ public class YoutubeChannelExtractorTest {
 
         @Test
         public void testDescription() throws Exception {
-            ExtractorAsserts.assertContains("small team who want to make science look beautiful", extractor.getDescription());
+            ExtractorAsserts.assertContains("science", extractor.getDescription());
+            ExtractorAsserts.assertContains("animators", extractor.getDescription());
             //TODO: Description get cuts out, because the og:description is optimized and don't have all the content
             //assertTrue(description, description.contains("Currently we make one animation video per month"));
         }
