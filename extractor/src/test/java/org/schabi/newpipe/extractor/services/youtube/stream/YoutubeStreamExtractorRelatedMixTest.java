@@ -11,6 +11,7 @@ import static org.schabi.newpipe.extractor.services.youtube.stream.YoutubeStream
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import org.schabi.newpipe.downloader.DownloaderFactory;
+import org.schabi.newpipe.downloader.MockOnly;
 import org.schabi.newpipe.extractor.InfoItem;
 import org.schabi.newpipe.extractor.NewPipe;
 import org.schabi.newpipe.extractor.StreamingService;
@@ -42,7 +43,7 @@ public class YoutubeStreamExtractorRelatedMixTest extends DefaultStreamExtractor
         YoutubeParsingHelper.resetClientVersionAndKey();
         YoutubeParsingHelper.setNumberGenerator(new Random(1));
         YoutubeStreamExtractor.resetDeobfuscationCode();
-        NewPipe.init(new DownloaderFactory().getDownloader(RESOURCE_PATH + "relatedMix"));
+        NewPipe.init(DownloaderFactory.getDownloader(RESOURCE_PATH + "relatedMix"));
         extractor = YouTube.getStreamExtractor(URL);
         extractor.fetchPage();
     }
@@ -62,6 +63,7 @@ public class YoutubeStreamExtractorRelatedMixTest extends DefaultStreamExtractor
         return Arrays.asList("https://www.youtube.com/user/danielleviband/", "©");
     }
     @Override public boolean expectedUploaderVerified() { return true; }
+    @Override public long expectedUploaderSubscriberCountAtLeast() { return 32_000_000; }
     @Override public long expectedLength() { return 208; }
     @Override public long expectedTimestamp() { return 0; }
     @Override public long expectedViewCountAtLeast() { return 449_000_000; }
@@ -86,6 +88,7 @@ public class YoutubeStreamExtractorRelatedMixTest extends DefaultStreamExtractor
     // @formatter:on
 
     @Test
+    @MockOnly // related items keep changing, and so do the mixes contained within them
     @Override
     public void testRelatedItems() throws Exception {
         super.testRelatedItems();
