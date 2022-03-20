@@ -17,4 +17,9 @@ import java.lang.annotation.RetentionPolicy;
 @Retention(RetentionPolicy.RUNTIME)
 @ExtendWith(MockOnlyCondition.class)
 public @interface MockOnly {
+
+    /**
+     * The reason why the test is mockonly.
+     */
+    String value();
 }

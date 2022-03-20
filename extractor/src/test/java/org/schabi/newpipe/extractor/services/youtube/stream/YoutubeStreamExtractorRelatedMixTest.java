@@ -88,7 +88,7 @@ public class YoutubeStreamExtractorRelatedMixTest extends DefaultStreamExtractor
     // @formatter:on
 
     @Test
-    @MockOnly // related items keep changing, and so do the mixes contained within them
+    @MockOnly("related items keep changing, and so do the mixes contained within them")
     @Override
     public void testRelatedItems() throws Exception {
         super.testRelatedItems();
