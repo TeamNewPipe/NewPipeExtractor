@@ -1085,10 +1085,13 @@ public class YoutubeParsingHelper {
     public static String extractCookieValue(final String cookieName,
                                             @Nonnull final Response response) {
         final List<String> cookies = response.responseHeaders().get("set-cookie");
-        int startIndex;
-        String result = "";
+        if (cookies == null) {
+            return EMPTY_STRING;
+        }
+
+        String result = EMPTY_STRING;
         for (final String cookie : cookies) {
-            startIndex = cookie.indexOf(cookieName);
+            final int startIndex = cookie.indexOf(cookieName);
             if (startIndex != -1) {
                 result = cookie.substring(startIndex + cookieName.length() + "=".length(),
                         cookie.indexOf(";", startIndex));
