@@ -139,13 +139,13 @@ public class StreamInfo extends Info {
         } catch (Exception e) {
             streamInfo.addError(new ExtractionException("Couldn't get audio streams", e));
         }
-        /* Extract video stream url */
+        /* Extract video streams */
         try {
             streamInfo.setVideoStreams(extractor.getVideoStreams());
         } catch (Exception e) {
             streamInfo.addError(new ExtractionException("Couldn't get video streams", e));
         }
-        /* Extract video only stream url */
+        /* Extract video only streams */
         try {
             streamInfo.setVideoOnlyStreams(extractor.getVideoOnlyStreams());
         } catch (Exception e) {
@@ -181,13 +181,16 @@ public class StreamInfo extends Info {
 
         // Either audio or video has to be available, otherwise we didn't get a stream
         // (since videoOnly are optional, they don't count).
-        if ((streamInfo.videoStreams.isEmpty()) && (streamInfo.audioStreams.isEmpty())) {
+        if (streamInfo.videoStreams.isEmpty()
+                && streamInfo.audioStreams.isEmpty()
+                && isNullOrEmpty(streamInfo.getHlsUrl())
+                && isNullOrEmpty(streamInfo.getDashMpdUrl())) {
 
             if (dashMpdError != null) {
                 // If we don't have any video or audio and the dashMpd 'errored', add it to the
                 // error list
-                // (it's optional and it don't get added automatically, but it's good to have
-                // some additional error context)
+                // (It's optional, and it is not added automatically,
+                // but it's good to have some additional error context).
                 streamInfo.addError(dashMpdError);
             }
 

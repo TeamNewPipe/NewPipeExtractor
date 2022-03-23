@@ -93,15 +93,12 @@ public class MediaCCCLiveStreamExtractor extends StreamExtractor {
     @Override
     public String getHlsUrl() {
         // TODO: There are multiple HLS streams.
-        //       Make getHlsUrl() and getDashMpdUrl() return lists of VideoStreams, so the user can choose a resolution.
+        //       Make getHlsUrl() and getDashMpdUrl() return lists of VideoStreams
+        //       to allow selecting a resolution.
         for (int s = 0; s < room.getArray("streams").size(); s++) {
             final JsonObject stream = room.getArray("streams").getObject(s);
-            if (stream.getString("type").equals("video")) {
-                final String resolution = stream.getArray("videoSize").getInt(0) + "x"
-                        + stream.getArray("videoSize").getInt(1);
-                if (stream.has("hls")) {
-                    return stream.getObject("urls").getObject("hls").getString("url");
-                }
+            if (stream.getString("type").equals("video") && stream.getObject("urls").has("hls")) {
+                return stream.getObject("urls").getObject("hls").getString("url");
             }
         }
         return "";
@@ -114,8 +111,11 @@ public class MediaCCCLiveStreamExtractor extends StreamExtractor {
             final JsonObject stream = room.getArray("streams").getObject(s);
             if (stream.getString("type").equals("audio")) {
                 for (final String type : stream.getObject("urls").keySet()) {
-                    final JsonObject url = stream.getObject("urls").getObject(type);
-                    audioStreams.add(new AudioStream(url.getString("url"), MediaFormat.getFromSuffix(type), -1));
+                    if (!type.equals("hls")) {
+                        final JsonObject url = stream.getObject("urls").getObject(type);
+                        audioStreams.add(new AudioStream(
+                                url.getString("url"), MediaFormat.getFromSuffix(type), -1));
+                    }
                 }
             }
         }
