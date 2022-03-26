@@ -40,3 +40,10 @@ jobs:
             echo running with mock downloader
             ./gradlew check --stacktrace -Ddownloader=MOCK
           fi
+
+      - name: Upload test reports when failure occurs
+        uses: actions/upload-artifact@v3
+        if: failure()
+        with:
+          name: NewPipeExtractor-test-reports
+          path: extractor/build/reports/tests/test/**
