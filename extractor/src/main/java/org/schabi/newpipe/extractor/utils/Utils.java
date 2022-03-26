@@ -391,22 +391,19 @@ public final class Utils {
                                                        @Nonnull final String[] regexes,
                                                        final int group)
             throws Parser.RegexException {
-        String result = null;
         for (final String regex : regexes) {
             try {
-                result = Parser.matchGroup(regex, input, group);
+                final String result = Parser.matchGroup(regex, input, group);
                 if (result != null) {
-                    // Continue if the result is null
-                    break;
+                    return result;
                 }
+
+                // Continue if the result is null
             } catch (final Parser.RegexException ignored) {
             }
         }
 
-        if (result == null) {
-            throw new Parser.RegexException("No regex matched the input on group " + group);
-        }
-        return result;
+        throw new Parser.RegexException("No regex matched the input on group " + group);
     }
 
     /**
@@ -425,21 +422,18 @@ public final class Utils {
                                                        @Nonnull final Pattern[] regexes,
                                                        final int group)
             throws Parser.RegexException {
-        String result = null;
         for (final Pattern regex : regexes) {
             try {
-                result = Parser.matchGroup(regex, input, group);
+                final String result = Parser.matchGroup(regex, input, group);
                 if (result != null) {
-                    // Continue if the result is null
-                    break;
+                    return result;
                 }
+
+                // Continue if the result is null
             } catch (final Parser.RegexException ignored) {
             }
         }
 
-        if (result == null) {
-            throw new Parser.RegexException("No regex matched the input on group " + group);
-        }
-        return result;
+        throw new Parser.RegexException("No regex matched the input on group " + group);
     }
 }
