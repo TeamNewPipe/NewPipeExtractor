@@ -49,7 +49,6 @@ import org.schabi.newpipe.extractor.stream.Description;
 import org.schabi.newpipe.extractor.stream.Frameset;
 import org.schabi.newpipe.extractor.stream.Stream;
 import org.schabi.newpipe.extractor.stream.StreamExtractor;
-import org.schabi.newpipe.extractor.stream.StreamInfoItemsCollector;
 import org.schabi.newpipe.extractor.stream.StreamSegment;
 import org.schabi.newpipe.extractor.stream.StreamType;
 import org.schabi.newpipe.extractor.stream.SubtitlesStream;
@@ -206,7 +205,7 @@ public class YoutubeStreamExtractor extends StreamExtractor {
             // TODO: this parses English formatted dates only, we need a better approach to parse
             //  the textual date
             final LocalDate localDate = LocalDate.parse(getTextFromObject(
-                            getVideoPrimaryInfoRenderer().getObject("dateText")),
+                    getVideoPrimaryInfoRenderer().getObject("dateText")),
                     DateTimeFormatter.ofPattern("dd MMM yyyy", Locale.ENGLISH));
             return DateTimeFormatter.ISO_LOCAL_DATE.format(localDate);
         } catch (final Exception ignored) {
@@ -730,9 +729,9 @@ public class YoutubeStreamExtractor extends StreamExtractor {
         final Localization localization = getExtractorLocalization();
         final ContentCountry contentCountry = getExtractorContentCountry();
         final byte[] body = JsonWriter.string(prepareDesktopJsonBuilder(
-                        localization, contentCountry)
-                        .value("videoId", videoId)
-                        .done())
+                localization, contentCountry)
+                .value("videoId", videoId)
+                .done())
                 .getBytes(UTF_8);
 
         // Put the sts string if we already know it so we don't have to fetch again the player
@@ -781,8 +780,8 @@ public class YoutubeStreamExtractor extends StreamExtractor {
 
         if (ageRestricted) {
             final byte[] ageRestrictedBody = JsonWriter.string(prepareDesktopEmbedVideoJsonBuilder(
-                            localization, contentCountry, videoId)
-                            .done())
+                    localization, contentCountry, videoId)
+                    .done())
                     .getBytes(UTF_8);
             nextResponse = getJsonPostResponse("next", ageRestrictedBody, localization);
         } else {
@@ -865,9 +864,9 @@ public class YoutubeStreamExtractor extends StreamExtractor {
                                               final String videoId)
             throws IOException, ExtractionException {
         final byte[] mobileBody = JsonWriter.string(prepareAndroidMobileJsonBuilder(
-                        localization, contentCountry)
-                        .value("videoId", videoId)
-                        .done())
+                localization, contentCountry)
+                .value("videoId", videoId)
+                .done())
                 .getBytes(UTF_8);
         final JsonObject mobilePlayerResponse = getJsonMobilePostResponse("player",
                 mobileBody, contentCountry, localization);

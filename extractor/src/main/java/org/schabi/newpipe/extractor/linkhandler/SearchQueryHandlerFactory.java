@@ -1,12 +1,11 @@
 package org.schabi.newpipe.extractor.linkhandler;
 
+import static org.schabi.newpipe.extractor.utils.Utils.EMPTY_STRING;
+
 import org.schabi.newpipe.extractor.exceptions.ParsingException;
 
-import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
-
-import static org.schabi.newpipe.extractor.utils.Utils.EMPTY_STRING;
 
 public abstract class SearchQueryHandlerFactory extends ListLinkHandlerFactory {
 

@@ -33,7 +33,7 @@ public class PlaylistInfoItemsCollector
         }
         try {
             resultItem.setPlaylistType(extractor.getPlaylistType());
-        } catch (Exception e) {
+        } catch (final Exception e) {
             addError(e);
         }
         return resultItem;
