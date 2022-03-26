@@ -9,7 +9,7 @@ public class BandcampCommentsInfoItemExtractor implements CommentsInfoItemExtrac
     private final Element writing;
     private final String url;
 
-    public BandcampCommentsInfoItemExtractor(Element writing, String url) {
+    public BandcampCommentsInfoItemExtractor(final Element writing, final String url) {
         this.writing = writing;
         this.url = url;
     }

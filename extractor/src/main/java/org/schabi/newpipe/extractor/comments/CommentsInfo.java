@@ -11,7 +11,7 @@ import org.schabi.newpipe.extractor.utils.ExtractorHelper;
 
 import java.io.IOException;
 
-public class CommentsInfo extends ListInfo<CommentsInfoItem> {
+public final class CommentsInfo extends ListInfo<CommentsInfoItem> {
 
     private CommentsInfo(
             final int serviceId,
@@ -56,7 +56,8 @@ public class CommentsInfo extends ListInfo<CommentsInfoItem> {
     public static InfoItemsPage<CommentsInfoItem> getMoreItems(
             final CommentsInfo commentsInfo,
             final Page page) throws ExtractionException, IOException {
-        return getMoreItems(NewPipe.getService(commentsInfo.getServiceId()), commentsInfo.getUrl(), page);
+        return getMoreItems(NewPipe.getService(commentsInfo.getServiceId()), commentsInfo.getUrl(),
+                page);
     }
 
     public static InfoItemsPage<CommentsInfoItem> getMoreItems(
@@ -86,7 +87,7 @@ public class CommentsInfo extends ListInfo<CommentsInfoItem> {
 
     /**
      * @apiNote Warning: This method is experimental and may get removed in a future release.
-     * @return <code>true</code> if the comments are disabled otherwise <code>false</code> (default)
+     * @return {@code true} if the comments are disabled otherwise {@code false} (default)
      * @see CommentsExtractor#isCommentsDisabled()
      */
     public boolean isCommentsDisabled() {
@@ -95,7 +96,7 @@ public class CommentsInfo extends ListInfo<CommentsInfoItem> {
 
     /**
      * @apiNote Warning: This method is experimental and may get removed in a future release.
-     * @param commentsDisabled <code>true</code> if the comments are disabled otherwise <code>false</code>
+     * @param commentsDisabled {@code true} if the comments are disabled otherwise {@code false}
      */
     public void setCommentsDisabled(final boolean commentsDisabled) {
         this.commentsDisabled = commentsDisabled;

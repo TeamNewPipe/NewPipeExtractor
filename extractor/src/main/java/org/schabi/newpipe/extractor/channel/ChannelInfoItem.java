@@ -29,7 +29,7 @@ public class ChannelInfoItem extends InfoItem {
     private long streamCount = -1;
     private boolean verified = false;
 
-    public ChannelInfoItem(int serviceId, String url, String name) {
+    public ChannelInfoItem(final int serviceId, final String url, final String name) {
         super(InfoType.CHANNEL, serviceId, url, name);
     }
 
@@ -37,7 +37,7 @@ public class ChannelInfoItem extends InfoItem {
         return description;
     }
 
-    public void setDescription(String description) {
+    public void setDescription(final String description) {
         this.description = description;
     }
 
@@ -45,23 +45,23 @@ public class ChannelInfoItem extends InfoItem {
         return subscriberCount;
     }
 
-    public void setSubscriberCount(long subscriber_count) {
-        this.subscriberCount = subscriber_count;
+    public void setSubscriberCount(final long subscriberCount) {
+        this.subscriberCount = subscriberCount;
     }
 
     public long getStreamCount() {
         return streamCount;
     }
 
-    public void setStreamCount(long stream_count) {
-        this.streamCount = stream_count;
+    public void setStreamCount(final long streamCount) {
+        this.streamCount = streamCount;
     }
 
     public boolean isVerified() {
         return verified;
     }
 
-    public void setVerified(boolean verified) {
+    public void setVerified(final boolean verified) {
         this.verified = verified;
     }
 }

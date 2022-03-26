@@ -18,19 +18,22 @@ import java.io.IOException;
 public class MediaCCCLiveStreamKiosk extends KioskExtractor<StreamInfoItem> {
     private JsonArray doc;
 
-    public MediaCCCLiveStreamKiosk(StreamingService streamingService, ListLinkHandler linkHandler, String kioskId) {
+    public MediaCCCLiveStreamKiosk(final StreamingService streamingService,
+                                   final ListLinkHandler linkHandler,
+                                   final String kioskId) {
         super(streamingService, linkHandler, kioskId);
     }
 
     @Override
-    public void onFetchPage(@Nonnull Downloader downloader) throws IOException, ExtractionException {
+    public void onFetchPage(@Nonnull final Downloader downloader)
+            throws IOException, ExtractionException {
         doc = MediaCCCParsingHelper.getLiveStreams(downloader, getExtractorLocalization());
     }
 
     @Nonnull
     @Override
     public InfoItemsPage<StreamInfoItem> getInitialPage() throws IOException, ExtractionException {
-        StreamInfoItemsCollector collector = new StreamInfoItemsCollector(getServiceId());
+        final StreamInfoItemsCollector collector = new StreamInfoItemsCollector(getServiceId());
         for (int c = 0; c < doc.size(); c++) {
             final JsonObject conference = doc.getObject(c);
             final JsonArray groups = conference.getArray("groups");
@@ -48,7 +51,8 @@ public class MediaCCCLiveStreamKiosk extends KioskExtractor<StreamInfoItem> {
     }
 
     @Override
-    public InfoItemsPage<StreamInfoItem> getPage(Page page) throws IOException, ExtractionException {
+    public InfoItemsPage<StreamInfoItem> getPage(final Page page)
+            throws IOException, ExtractionException {
         return InfoItemsPage.emptyPage();
     }
 

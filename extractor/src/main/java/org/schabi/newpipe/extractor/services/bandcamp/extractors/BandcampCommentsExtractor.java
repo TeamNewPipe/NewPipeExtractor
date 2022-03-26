@@ -21,25 +21,27 @@ public class BandcampCommentsExtractor extends CommentsExtractor {
     private Document document;
 
 
-    public BandcampCommentsExtractor(StreamingService service, ListLinkHandler linkHandler) {
+    public BandcampCommentsExtractor(final StreamingService service,
+                                     final ListLinkHandler linkHandler) {
         super(service, linkHandler);
     }
 
     @Override
-    public void onFetchPage(@Nonnull Downloader downloader) throws IOException, ExtractionException {
-        String html = downloader.get(getLinkHandler().getUrl()).responseBody();
-        document = Jsoup.parse(html);
+    public void onFetchPage(@Nonnull final Downloader downloader)
+            throws IOException, ExtractionException {
+        document = Jsoup.parse(downloader.get(getLinkHandler().getUrl()).responseBody());
     }
 
     @Nonnull
     @Override
-    public InfoItemsPage<CommentsInfoItem> getInitialPage() throws IOException, ExtractionException {
+    public InfoItemsPage<CommentsInfoItem> getInitialPage()
+            throws IOException, ExtractionException {
 
-        CommentsInfoItemsCollector collector = new CommentsInfoItemsCollector(getServiceId());
+        final CommentsInfoItemsCollector collector = new CommentsInfoItemsCollector(getServiceId());
 
-        Elements writings = document.getElementsByClass("writing");
+        final Elements writings = document.getElementsByClass("writing");
 
-        for (Element writing : writings) {
+        for (final Element writing : writings) {
             collector.commit(new BandcampCommentsInfoItemExtractor(writing, getUrl()));
         }
 
@@ -47,7 +49,8 @@ public class BandcampCommentsExtractor extends CommentsExtractor {
     }
 
     @Override
-    public InfoItemsPage<CommentsInfoItem> getPage(Page page) throws IOException, ExtractionException {
+    public InfoItemsPage<CommentsInfoItem> getPage(final Page page)
+            throws IOException, ExtractionException {
         return null;
     }
 }

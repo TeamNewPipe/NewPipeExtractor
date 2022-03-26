@@ -8,14 +8,17 @@ import org.schabi.newpipe.extractor.utils.Utils;
 
 import java.util.List;
 
-public class SoundcloudChannelLinkHandlerFactory extends ListLinkHandlerFactory {
-    private static final SoundcloudChannelLinkHandlerFactory instance =
-            new SoundcloudChannelLinkHandlerFactory();
-    private static final String URL_PATTERN ="^https?://(www\\.|m\\.)?soundcloud.com/[0-9a-z_-]+"
+public final class SoundcloudChannelLinkHandlerFactory extends ListLinkHandlerFactory {
+    private static final SoundcloudChannelLinkHandlerFactory INSTANCE
+            = new SoundcloudChannelLinkHandlerFactory();
+    private static final String URL_PATTERN = "^https?://(www\\.|m\\.)?soundcloud.com/[0-9a-z_-]+"
             + "(/((tracks|albums|sets|reposts|followers|following)/?)?)?([#?].*)?$";
 
+    private SoundcloudChannelLinkHandlerFactory() {
+    }
+
     public static SoundcloudChannelLinkHandlerFactory getInstance() {
-        return instance;
+        return INSTANCE;
     }
 
 

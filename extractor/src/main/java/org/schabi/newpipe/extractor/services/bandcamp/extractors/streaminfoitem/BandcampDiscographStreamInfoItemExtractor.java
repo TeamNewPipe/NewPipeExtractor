@@ -9,9 +9,9 @@ import javax.annotation.Nullable;
 public class BandcampDiscographStreamInfoItemExtractor extends BandcampStreamInfoItemExtractor {
 
     private final JsonObject discograph;
-    public BandcampDiscographStreamInfoItemExtractor(final JsonObject discograph, final String uploaderUrl) {
+    public BandcampDiscographStreamInfoItemExtractor(final JsonObject discograph,
+                                                     final String uploaderUrl) {
         super(uploaderUrl);
-
         this.discograph = discograph;
     }
 

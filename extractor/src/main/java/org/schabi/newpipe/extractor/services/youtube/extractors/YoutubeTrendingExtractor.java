@@ -55,7 +55,8 @@ public class YoutubeTrendingExtractor extends KioskExtractor<StreamInfoItem> {
     }
 
     @Override
-    public void onFetchPage(@Nonnull final Downloader downloader) throws IOException, ExtractionException {
+    public void onFetchPage(@Nonnull final Downloader downloader)
+            throws IOException, ExtractionException {
         // @formatter:off
         final byte[] body = JsonWriter.string(prepareDesktopJsonBuilder(getExtractorLocalization(),
                 getExtractorContentCountry())
@@ -92,15 +93,15 @@ public class YoutubeTrendingExtractor extends KioskExtractor<StreamInfoItem> {
     @Nonnull
     @Override
     public InfoItemsPage<StreamInfoItem> getInitialPage() {
-        StreamInfoItemsCollector collector = new StreamInfoItemsCollector(getServiceId());
+        final StreamInfoItemsCollector collector = new StreamInfoItemsCollector(getServiceId());
         final TimeAgoParser timeAgoParser = getTimeAgoParser();
-        JsonArray itemSectionRenderers = initialData.getObject("contents")
+        final JsonArray itemSectionRenderers = initialData.getObject("contents")
                 .getObject("twoColumnBrowseResultsRenderer").getArray("tabs").getObject(0)
                 .getObject("tabRenderer").getObject("content").getObject("sectionListRenderer")
                 .getArray("contents");
 
         for (final Object itemSectionRenderer : itemSectionRenderers) {
-            JsonObject expandedShelfContentsRenderer = ((JsonObject) itemSectionRenderer)
+            final JsonObject expandedShelfContentsRenderer = ((JsonObject) itemSectionRenderer)
                     .getObject("itemSectionRenderer").getArray("contents").getObject(0)
                     .getObject("shelfRenderer").getObject("content")
                     .getObject("expandedShelfContentsRenderer");

@@ -1,11 +1,17 @@
 package org.schabi.newpipe.extractor.services.soundcloud.extractors;
 
+import static org.schabi.newpipe.extractor.services.soundcloud.SoundcloudParsingHelper.SOUNDCLOUD_API_V2_URL;
+import static org.schabi.newpipe.extractor.utils.Utils.EMPTY_STRING;
+import static org.schabi.newpipe.extractor.utils.Utils.HTTPS;
+import static org.schabi.newpipe.extractor.utils.Utils.UTF_8;
+import static org.schabi.newpipe.extractor.utils.Utils.isNullOrEmpty;
+
 import com.grack.nanojson.JsonArray;
 import com.grack.nanojson.JsonObject;
 import com.grack.nanojson.JsonParser;
 import com.grack.nanojson.JsonParserException;
+
 import org.schabi.newpipe.extractor.MediaFormat;
-import org.schabi.newpipe.extractor.MetaInfo;
 import org.schabi.newpipe.extractor.NewPipe;
 import org.schabi.newpipe.extractor.StreamingService;
 import org.schabi.newpipe.extractor.downloader.Downloader;
@@ -18,20 +24,22 @@ import org.schabi.newpipe.extractor.exceptions.SoundCloudGoPlusContentException;
 import org.schabi.newpipe.extractor.linkhandler.LinkHandler;
 import org.schabi.newpipe.extractor.localization.DateWrapper;
 import org.schabi.newpipe.extractor.services.soundcloud.SoundcloudParsingHelper;
-import org.schabi.newpipe.extractor.stream.*;
+import org.schabi.newpipe.extractor.stream.AudioStream;
+import org.schabi.newpipe.extractor.stream.Description;
+import org.schabi.newpipe.extractor.stream.StreamExtractor;
+import org.schabi.newpipe.extractor.stream.StreamInfoItemsCollector;
+import org.schabi.newpipe.extractor.stream.StreamType;
+import org.schabi.newpipe.extractor.stream.VideoStream;
 
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
-import java.util.Locale;
 
-import static org.schabi.newpipe.extractor.services.soundcloud.SoundcloudParsingHelper.SOUNDCLOUD_API_V2_URL;
-import static org.schabi.newpipe.extractor.utils.Utils.*;
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 
 public class SoundcloudStreamExtractor extends StreamExtractor {
     private JsonObject track;
@@ -53,8 +61,10 @@ public class SoundcloudStreamExtractor extends StreamExtractor {
             if (policy.equals("SNIP")) {
                 throw new SoundCloudGoPlusContentException();
             }
-            if (policy.equals("BLOCK")) throw new GeographicRestrictionException(
+            if (policy.equals("BLOCK")) {
+                throw new GeographicRestrictionException(
                         "This track is not available in user's country");
+            }
             throw new ContentNotAvailableException("Content not available: policy " + policy);
         }
     }
@@ -152,7 +162,9 @@ public class SoundcloudStreamExtractor extends StreamExtractor {
         // Streams can be streamable and downloadable - or explicitly not.
         // For playing the track, it is only necessary to have a streamable track.
         // If this is not the case, this track might not be published yet.
-        if (!track.getBoolean("streamable") || !isAvailable) return audioStreams;
+        if (!track.getBoolean("streamable") || !isAvailable) {
+            return audioStreams;
+        }
 
         try {
             final JsonArray transcodings = track.getObject("media").getArray("transcodings");
@@ -172,8 +184,8 @@ public class SoundcloudStreamExtractor extends StreamExtractor {
         boolean presence = false;
         for (final Object transcoding : transcodings) {
             final JsonObject transcodingJsonObject = (JsonObject) transcoding;
-            if (transcodingJsonObject.getString("preset").contains("mp3") &&
-                    transcodingJsonObject.getObject("format").getString("protocol")
+            if (transcodingJsonObject.getString("preset").contains("mp3")
+                    && transcodingJsonObject.getObject("format").getString("protocol")
                             .equals("progressive")) {
                 presence = true;
                 break;
@@ -345,10 +357,9 @@ public class SoundcloudStreamExtractor extends StreamExtractor {
         final List<String> tags = new ArrayList<>();
         String escapedTag = "";
         boolean isEscaped = false;
-        for (int i = 0; i < tagList.length; i++) {
-            String tag = tagList[i];
+        for (final String tag : tagList) {
             if (tag.startsWith("\"")) {
-                escapedTag += tagList[i].replace("\"", "");
+                escapedTag += tag.replace("\"", "");
                 isEscaped = true;
             } else if (isEscaped) {
                 if (tag.endsWith("\"")) {
@@ -358,7 +369,7 @@ public class SoundcloudStreamExtractor extends StreamExtractor {
                 } else {
                     escapedTag += " " + tag;
                 }
-            } else if (!tag.isEmpty()){
+            } else if (!tag.isEmpty()) {
                 tags.add(tag);
             }
         }

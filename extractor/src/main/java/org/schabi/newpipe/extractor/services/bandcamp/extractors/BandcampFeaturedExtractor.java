@@ -25,17 +25,20 @@ public class BandcampFeaturedExtractor extends KioskExtractor<PlaylistInfoItem> 
 
     public static final String KIOSK_FEATURED = "Featured";
     public static final String FEATURED_API_URL = BASE_API_URL + "/mobile/24/bootstrap_data";
-    public static final String MORE_FEATURED_API_URL = BASE_API_URL + "/mobile/24/feed_older_logged_out";
+    public static final String MORE_FEATURED_API_URL
+            = BASE_API_URL + "/mobile/24/feed_older_logged_out";
 
     private JsonObject json;
 
-    public BandcampFeaturedExtractor(final StreamingService streamingService, final ListLinkHandler listLinkHandler,
+    public BandcampFeaturedExtractor(final StreamingService streamingService,
+                                     final ListLinkHandler listLinkHandler,
                                      final String kioskId) {
         super(streamingService, listLinkHandler, kioskId);
     }
 
     @Override
-    public void onFetchPage(@Nonnull Downloader downloader) throws IOException, ExtractionException {
+    public void onFetchPage(@Nonnull final Downloader downloader)
+            throws IOException, ExtractionException {
         try {
             json = JsonParser.object().from(
                     getDownloader().post(
@@ -55,9 +58,8 @@ public class BandcampFeaturedExtractor extends KioskExtractor<PlaylistInfoItem> 
 
     @Nonnull
     @Override
-    public InfoItemsPage<PlaylistInfoItem> getInitialPage() throws IOException, ExtractionException {
-
-
+    public InfoItemsPage<PlaylistInfoItem> getInitialPage()
+            throws IOException, ExtractionException {
         final JsonArray featuredStories = json.getObject("feed_content")
                 .getObject("stories")
                 .getArray("featured");
@@ -65,8 +67,7 @@ public class BandcampFeaturedExtractor extends KioskExtractor<PlaylistInfoItem> 
         return extractItems(featuredStories);
     }
 
-    private InfoItemsPage<PlaylistInfoItem> extractItems(JsonArray featuredStories) {
-
+    private InfoItemsPage<PlaylistInfoItem> extractItems(final JsonArray featuredStories) {
         final PlaylistInfoItemsCollector c = new PlaylistInfoItemsCollector(getServiceId());
 
         for (int i = 0; i < featuredStories.size(); i++) {
@@ -81,14 +82,13 @@ public class BandcampFeaturedExtractor extends KioskExtractor<PlaylistInfoItem> 
         }
 
         final JsonObject lastFeaturedStory = featuredStories.getObject(featuredStories.size() - 1);
-
         return new InfoItemsPage<>(c, getNextPageFrom(lastFeaturedStory));
     }
 
     /**
      * Next Page can be generated from metadata of last featured story
      */
-    private Page getNextPageFrom(JsonObject lastFeaturedStory) {
+    private Page getNextPageFrom(final JsonObject lastFeaturedStory) {
         final long lastStoryDate = lastFeaturedStory.getLong("story_date");
         final long lastStoryId = lastFeaturedStory.getLong("ntid");
         final String lastStoryType = lastFeaturedStory.getString("story_type");
@@ -99,9 +99,10 @@ public class BandcampFeaturedExtractor extends KioskExtractor<PlaylistInfoItem> 
     }
 
     @Override
-    public InfoItemsPage<PlaylistInfoItem> getPage(Page page) throws IOException, ExtractionException {
+    public InfoItemsPage<PlaylistInfoItem> getPage(final Page page)
+            throws IOException, ExtractionException {
 
-        JsonObject response;
+        final JsonObject response;
         try {
             response = JsonParser.object().from(
                     getDownloader().get(page.getUrl()).responseBody()

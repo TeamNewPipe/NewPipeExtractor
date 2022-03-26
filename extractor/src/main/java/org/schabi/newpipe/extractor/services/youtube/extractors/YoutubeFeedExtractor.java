@@ -22,14 +22,15 @@ import java.io.IOException;
 import javax.annotation.Nonnull;
 
 public class YoutubeFeedExtractor extends FeedExtractor {
-    public YoutubeFeedExtractor(StreamingService service, ListLinkHandler linkHandler) {
+    public YoutubeFeedExtractor(final StreamingService service, final ListLinkHandler linkHandler) {
         super(service, linkHandler);
     }
 
     private Document document;
 
     @Override
-    public void onFetchPage(@Nonnull Downloader downloader) throws IOException, ExtractionException {
+    public void onFetchPage(@Nonnull final Downloader downloader)
+            throws IOException, ExtractionException {
         final String channelIdOrUser = getLinkHandler().getId();
         final String feedUrl = YoutubeParsingHelper.getFeedUrlFrom(channelIdOrUser);
 
@@ -46,7 +47,7 @@ public class YoutubeFeedExtractor extends FeedExtractor {
         final Elements entries = document.select("feed > entry");
         final StreamInfoItemsCollector collector = new StreamInfoItemsCollector(getServiceId());
 
-        for (Element entryElement : entries) {
+        for (final Element entryElement : entries) {
             collector.commit(new YoutubeFeedInfoItemExtractor(entryElement));
         }
 

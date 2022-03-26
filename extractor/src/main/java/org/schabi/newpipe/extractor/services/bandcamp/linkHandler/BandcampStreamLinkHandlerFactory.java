@@ -50,10 +50,14 @@ public class BandcampStreamLinkHandlerFactory extends LinkHandlerFactory {
     public boolean onAcceptUrl(final String url) throws ParsingException {
 
         // Accept Bandcamp radio
-        if (BandcampExtractorHelper.isRadioUrl(url)) return true;
+        if (BandcampExtractorHelper.isRadioUrl(url)) {
+            return true;
+        }
 
         // Don't accept URLs that don't point to a track
-        if (!url.toLowerCase().matches("https?://.+\\..+/track/.+")) return false;
+        if (!url.toLowerCase().matches("https?://.+\\..+/track/.+")) {
+            return false;
+        }
 
         // Test whether domain is supported
         return BandcampExtractorHelper.isSupportedDomain(url);

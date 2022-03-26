@@ -27,7 +27,7 @@ public abstract class Stream implements Serializable {
      * @param url    the url
      * @param format the format
      */
-    public Stream(String url, MediaFormat format) {
+    public Stream(final String url, final MediaFormat format) {
         this(url, null, format);
     }
 
@@ -35,12 +35,14 @@ public abstract class Stream implements Serializable {
      * Instantiates a new stream object.
      *
      * @param url        the url
-     * @param torrentUrl the url to torrent file, example https://webtorrent.io/torrents/big-buck-bunny.torrent
+     * @param torrentUrl the url to torrent file, example
+     *                   https://webtorrent.io/torrents/big-buck-bunny.torrent
      * @param format     the format
      */
-    public Stream(String url, String torrentUrl, MediaFormat format) {
+    public Stream(final String url, final String torrentUrl, final MediaFormat format) {
         this.url = url;
         this.torrentUrl = torrentUrl;
+        //noinspection deprecation
         this.format = format.id;
         this.mediaFormat = format;
     }
@@ -48,24 +50,29 @@ public abstract class Stream implements Serializable {
     /**
      * Reveals whether two streams have the same stats (format and bitrate, for example)
      */
-    public boolean equalStats(Stream cmp) {
+    public boolean equalStats(final Stream cmp) {
         return cmp != null && getFormatId() == cmp.getFormatId();
     }
 
     /**
      * Reveals whether two Streams are equal
      */
-    public boolean equals(Stream cmp) {
+    public boolean equals(final Stream cmp) {
         return equalStats(cmp) && url.equals(cmp.url);
     }
 
     /**
      * Check if the list already contains one stream with equals stats
      */
-    public static boolean containSimilarStream(Stream stream, List<? extends Stream> streamList) {
-        if (isNullOrEmpty(streamList)) return false;
-        for (Stream cmpStream : streamList) {
-            if (stream.equalStats(cmpStream)) return true;
+    public static boolean containSimilarStream(final Stream stream,
+                                               final List<? extends Stream> streamList) {
+        if (isNullOrEmpty(streamList)) {
+            return false;
+        }
+        for (final Stream cmpStream : streamList) {
+            if (stream.equalStats(cmpStream)) {
+                return true;
+            }
         }
         return false;
     }

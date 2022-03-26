@@ -13,7 +13,7 @@ import java.time.format.DateTimeParseException;
 public class YoutubeFeedInfoItemExtractor implements StreamInfoItemExtractor {
     private final Element entryElement;
 
-    public YoutubeFeedInfoItemExtractor(Element entryElement) {
+    public YoutubeFeedInfoItemExtractor(final Element entryElement) {
         this.entryElement = entryElement;
     }
 
@@ -37,7 +37,8 @@ public class YoutubeFeedInfoItemExtractor implements StreamInfoItemExtractor {
 
     @Override
     public long getViewCount() {
-        return Long.parseLong(entryElement.getElementsByTag("media:statistics").first().attr("views"));
+        return Long.parseLong(entryElement.getElementsByTag("media:statistics").first()
+                .attr("views"));
     }
 
     @Override
@@ -72,8 +73,9 @@ public class YoutubeFeedInfoItemExtractor implements StreamInfoItemExtractor {
     public DateWrapper getUploadDate() throws ParsingException {
         try {
             return new DateWrapper(OffsetDateTime.parse(getTextualUploadDate()));
-        } catch (DateTimeParseException e) {
-            throw new ParsingException("Could not parse date (\"" + getTextualUploadDate() + "\")", e);
+        } catch (final DateTimeParseException e) {
+            throw new ParsingException("Could not parse date (\"" + getTextualUploadDate() + "\")",
+                    e);
         }
     }
 

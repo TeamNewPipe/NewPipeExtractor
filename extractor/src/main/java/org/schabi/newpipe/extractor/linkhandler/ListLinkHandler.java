@@ -1,5 +1,7 @@
 package org.schabi.newpipe.extractor.linkhandler;
 
+import static org.schabi.newpipe.extractor.utils.Utils.EMPTY_STRING;
+
 import java.util.Collections;
 import java.util.List;
 
@@ -7,17 +9,17 @@ public class ListLinkHandler extends LinkHandler {
     protected final List<String> contentFilters;
     protected final String sortFilter;
 
-    public ListLinkHandler(String originalUrl,
-                           String url,
-                           String id,
-                           List<String> contentFilters,
-                           String sortFilter) {
+    public ListLinkHandler(final String originalUrl,
+                           final String url,
+                           final String id,
+                           final List<String> contentFilters,
+                           final String sortFilter) {
         super(originalUrl, url, id);
         this.contentFilters = Collections.unmodifiableList(contentFilters);
         this.sortFilter = sortFilter;
     }
 
-    public ListLinkHandler(ListLinkHandler handler) {
+    public ListLinkHandler(final ListLinkHandler handler) {
         this(handler.originalUrl,
                 handler.url,
                 handler.id,
@@ -25,14 +27,12 @@ public class ListLinkHandler extends LinkHandler {
                 handler.sortFilter);
     }
 
-    public ListLinkHandler(LinkHandler handler,
-                           List<String> contentFilters,
-                           String sortFilter) {
+    public ListLinkHandler(final LinkHandler handler) {
         this(handler.originalUrl,
                 handler.url,
                 handler.id,
-                contentFilters,
-                sortFilter);
+                Collections.emptyList(),
+                EMPTY_STRING);
     }
 
     public List<String> getContentFilters() {

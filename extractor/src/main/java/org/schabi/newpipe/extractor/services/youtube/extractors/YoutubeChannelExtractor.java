@@ -1,5 +1,17 @@
 package org.schabi.newpipe.extractor.services.youtube.extractors;
 
+import static org.schabi.newpipe.extractor.services.youtube.YoutubeParsingHelper.YOUTUBEI_V1_URL;
+import static org.schabi.newpipe.extractor.services.youtube.YoutubeParsingHelper.addClientInfoHeaders;
+import static org.schabi.newpipe.extractor.services.youtube.YoutubeParsingHelper.fixThumbnailUrl;
+import static org.schabi.newpipe.extractor.services.youtube.YoutubeParsingHelper.getJsonPostResponse;
+import static org.schabi.newpipe.extractor.services.youtube.YoutubeParsingHelper.getKey;
+import static org.schabi.newpipe.extractor.services.youtube.YoutubeParsingHelper.getTextFromObject;
+import static org.schabi.newpipe.extractor.services.youtube.YoutubeParsingHelper.getValidJsonResponseBody;
+import static org.schabi.newpipe.extractor.services.youtube.YoutubeParsingHelper.prepareDesktopJsonBuilder;
+import static org.schabi.newpipe.extractor.utils.Utils.EMPTY_STRING;
+import static org.schabi.newpipe.extractor.utils.Utils.UTF_8;
+import static org.schabi.newpipe.extractor.utils.Utils.isNullOrEmpty;
+
 import com.grack.nanojson.JsonArray;
 import com.grack.nanojson.JsonObject;
 import com.grack.nanojson.JsonWriter;
@@ -31,11 +43,6 @@ import java.util.Map;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
-import static org.schabi.newpipe.extractor.services.youtube.YoutubeParsingHelper.*;
-import static org.schabi.newpipe.extractor.utils.Utils.EMPTY_STRING;
-import static org.schabi.newpipe.extractor.utils.Utils.UTF_8;
-import static org.schabi.newpipe.extractor.utils.Utils.isNullOrEmpty;
-
 /*
  * Created by Christian Schabesberger on 25.07.16.
  *
@@ -56,13 +63,12 @@ import static org.schabi.newpipe.extractor.utils.Utils.isNullOrEmpty;
  * along with NewPipe.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-@SuppressWarnings("WeakerAccess")
 public class YoutubeChannelExtractor extends ChannelExtractor {
     private JsonObject initialData;
     private JsonObject videoTab;
 
     /**
-     * Some channels have response redirects and the only way to reliably get the id is by saving it.
+     * Some channels have response redirects and the only way to reliably get the id is by saving it
      * <p>
      * "Movies & Shows":
      * <pre>
@@ -233,7 +239,7 @@ public class YoutubeChannelExtractor extends ChannelExtractor {
     @Override
     public String getAvatarUrl() throws ParsingException {
         try {
-            String url = initialData.getObject("header")
+            final String url = initialData.getObject("header")
                     .getObject("c4TabbedHeaderRenderer").getObject("avatar").getArray("thumbnails")
                     .getObject(0).getString("url");
 
@@ -246,7 +252,7 @@ public class YoutubeChannelExtractor extends ChannelExtractor {
     @Override
     public String getBannerUrl() throws ParsingException {
         try {
-            String url = initialData.getObject("header")
+            final String url = initialData.getObject("header")
                     .getObject("c4TabbedHeaderRenderer").getObject("banner").getArray("thumbnails")
                     .getObject(0).getString("url");
 
@@ -361,7 +367,7 @@ public class YoutubeChannelExtractor extends ChannelExtractor {
 
         final JsonObject ajaxJson = JsonUtils.toJsonObject(getValidJsonResponseBody(response));
 
-        JsonObject sectionListContinuation = ajaxJson.getArray("onResponseReceivedActions")
+        final JsonObject sectionListContinuation = ajaxJson.getArray("onResponseReceivedActions")
                 .getObject(0)
                 .getObject("appendContinuationItemsAction");
 
@@ -436,28 +442,30 @@ public class YoutubeChannelExtractor extends ChannelExtractor {
 
     @Nullable
     private JsonObject getVideoTab() throws ParsingException {
-        if (this.videoTab != null) return this.videoTab;
+        if (this.videoTab != null) {
+            return this.videoTab;
+        }
 
-        JsonArray tabs = initialData.getObject("contents")
+        final JsonArray tabs = initialData.getObject("contents")
                 .getObject("twoColumnBrowseResultsRenderer")
                 .getArray("tabs");
-        JsonObject videoTab = null;
 
+        JsonObject foundVideoTab = null;
         for (final Object tab : tabs) {
             if (((JsonObject) tab).has("tabRenderer")) {
                 if (((JsonObject) tab).getObject("tabRenderer").getString("title",
                         EMPTY_STRING).equals("Videos")) {
-                    videoTab = ((JsonObject) tab).getObject("tabRenderer");
+                    foundVideoTab = ((JsonObject) tab).getObject("tabRenderer");
                     break;
                 }
             }
         }
 
-        if (videoTab == null) {
+        if (foundVideoTab == null) {
             throw new ContentNotSupportedException("This channel has no Videos tab");
         }
 
-        final String messageRendererText = getTextFromObject(videoTab.getObject("content")
+        final String messageRendererText = getTextFromObject(foundVideoTab.getObject("content")
                 .getObject("sectionListRenderer").getArray("contents").getObject(0)
                 .getObject("itemSectionRenderer").getArray("contents").getObject(0)
                 .getObject("messageRenderer").getObject("text"));
@@ -466,7 +474,7 @@ public class YoutubeChannelExtractor extends ChannelExtractor {
             return null;
         }
 
-        this.videoTab = videoTab;
-        return videoTab;
+        this.videoTab = foundVideoTab;
+        return foundVideoTab;
     }
 }

@@ -44,7 +44,7 @@ import java.util.List;
 
 import javax.annotation.Nonnull;
 
-public class SoundcloudParsingHelper {
+public final class SoundcloudParsingHelper {
     private static String clientId;
     public static final String SOUNDCLOUD_API_V2_URL = "https://api-v2.soundcloud.com/";
 
@@ -52,7 +52,9 @@ public class SoundcloudParsingHelper {
     }
 
     public static synchronized String clientId() throws ExtractionException, IOException {
-        if (!isNullOrEmpty(clientId)) return clientId;
+        if (!isNullOrEmpty(clientId)) {
+            return clientId;
+        }
 
         final Downloader dl = NewPipe.getDownloader();
 
@@ -109,7 +111,7 @@ public class SoundcloudParsingHelper {
     public static JsonObject resolveFor(@Nonnull final Downloader downloader, final String url)
             throws IOException, ExtractionException {
         final String apiUrl = SOUNDCLOUD_API_V2_URL + "resolve"
-                + "?url=" + URLEncoder.encode(url, UTF_8) 
+                + "?url=" + URLEncoder.encode(url, UTF_8)
                 + "&client_id=" + clientId();
 
         try {
@@ -142,18 +144,20 @@ public class SoundcloudParsingHelper {
      *
      * @return the resolved id
      */
-    public static String resolveIdWithWidgetApi(String urlString) throws IOException,
+    public static String resolveIdWithWidgetApi(final String urlString) throws IOException,
             ParsingException {
         // Remove the tailing slash from URLs due to issues with the SoundCloud API
-        if (urlString.charAt(urlString.length() - 1) == '/') urlString = urlString.substring(0,
-                urlString.length() - 1);
+        String fixedUrl = urlString;
+        if (fixedUrl.charAt(fixedUrl.length() - 1) == '/') {
+            fixedUrl = fixedUrl.substring(0, fixedUrl.length() - 1);
+        }
         // Make URL lower case and remove m. and www. if it exists.
         // Without doing this, the widget API does not recognize the URL.
-        urlString = Utils.removeMAndWWWFromUrl(urlString.toLowerCase());
+        fixedUrl = Utils.removeMAndWWWFromUrl(fixedUrl.toLowerCase());
 
         final URL url;
         try {
-            url = Utils.stringToURL(urlString);
+            url = Utils.stringToURL(fixedUrl);
         } catch (final MalformedURLException e) {
             throw new IllegalArgumentException("The given URL is not valid");
         }
@@ -225,8 +229,9 @@ public class SoundcloudParsingHelper {
         String nextPageUrl;
         try {
             nextPageUrl = responseObject.getString("next_href");
-            if (!nextPageUrl.contains("client_id=")) nextPageUrl += "&client_id="
-                    + SoundcloudParsingHelper.clientId();
+            if (!nextPageUrl.contains("client_id=")) {
+                nextPageUrl += "&client_id=" + SoundcloudParsingHelper.clientId();
+            }
         } catch (final Exception ignored) {
             nextPageUrl = "";
         }
@@ -291,8 +296,9 @@ public class SoundcloudParsingHelper {
         String nextPageUrl;
         try {
             nextPageUrl = responseObject.getString("next_href");
-            if (!nextPageUrl.contains("client_id=")) nextPageUrl += "&client_id="
-                    + SoundcloudParsingHelper.clientId();
+            if (!nextPageUrl.contains("client_id=")) {
+                nextPageUrl += "&client_id=" + SoundcloudParsingHelper.clientId();
+            }
         } catch (final Exception ignored) {
             nextPageUrl = "";
         }

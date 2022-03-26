@@ -16,8 +16,10 @@ public class MetaInfo implements Serializable {
     private List<URL> urls = new ArrayList<>();
     private List<String> urlTexts = new ArrayList<>();
 
-    public MetaInfo(@Nonnull final String title, @Nonnull final Description content,
-                    @Nonnull final List<URL> urls, @Nonnull final List<String> urlTexts) {
+    public MetaInfo(@Nonnull final String title,
+                    @Nonnull final Description content,
+                    @Nonnull final List<URL> urls,
+                    @Nonnull final List<String> urlTexts) {
         this.title = title;
         this.content = content;
         this.urls = urls;

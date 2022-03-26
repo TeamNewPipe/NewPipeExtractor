@@ -40,15 +40,18 @@ public class VideoStream extends Stream {
     private String quality;
     private String codec;
 
-    public VideoStream(String url, MediaFormat format, String resolution) {
+    public VideoStream(final String url, final MediaFormat format, final String resolution) {
         this(url, format, resolution, false);
     }
 
-    public VideoStream(String url, MediaFormat format, String resolution, boolean isVideoOnly) {
+    public VideoStream(final String url,
+                       final MediaFormat format,
+                       final String resolution,
+                       final boolean isVideoOnly) {
         this(url, null, format, resolution, isVideoOnly);
     }
 
-    public VideoStream(String url, boolean isVideoOnly, ItagItem itag) {
+    public VideoStream(final String url, final boolean isVideoOnly, final ItagItem itag) {
         this(url, itag.getMediaFormat(), itag.resolutionString, isVideoOnly);
         this.itag = itag.id;
         this.bitrate = itag.getBitrate();
@@ -63,21 +66,28 @@ public class VideoStream extends Stream {
         this.fps = itag.fps;
     }
 
-    public VideoStream(String url, String torrentUrl, MediaFormat format, String resolution) {
+    public VideoStream(final String url,
+                       final String torrentUrl,
+                       final MediaFormat format,
+                       final String resolution) {
         this(url, torrentUrl, format, resolution, false);
     }
 
-    public VideoStream(String url, String torrentUrl, MediaFormat format, String resolution, boolean isVideoOnly) {
+    public VideoStream(final String url,
+                       final String torrentUrl,
+                       final MediaFormat format,
+                       final String resolution,
+                       final boolean isVideoOnly) {
         super(url, torrentUrl, format);
         this.resolution = resolution;
         this.isVideoOnly = isVideoOnly;
     }
 
     @Override
-    public boolean equalStats(Stream cmp) {
-        return super.equalStats(cmp) && cmp instanceof VideoStream &&
-                resolution.equals(((VideoStream) cmp).resolution) &&
-                isVideoOnly == ((VideoStream) cmp).isVideoOnly;
+    public boolean equalStats(final Stream cmp) {
+        return super.equalStats(cmp) && cmp instanceof VideoStream
+                && resolution.equals(((VideoStream) cmp).resolution)
+                && isVideoOnly == ((VideoStream) cmp).isVideoOnly;
     }
 
     /**

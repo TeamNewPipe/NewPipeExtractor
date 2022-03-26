@@ -34,7 +34,9 @@ public class SoundcloudSubscriptionExtractor extends SubscriptionExtractor {
     @Override
     public List<SubscriptionItem> fromChannelUrl(final String channelUrl) throws IOException,
             ExtractionException {
-        if (channelUrl == null) throw new InvalidSourceException("Channel url is null");
+        if (channelUrl == null) {
+            throw new InvalidSourceException("Channel url is null");
+        }
 
         final String id;
         try {
@@ -53,18 +55,15 @@ public class SoundcloudSubscriptionExtractor extends SubscriptionExtractor {
         return toSubscriptionItems(collector.getItems());
     }
 
-    private String getUrlFrom(String channelUrl) {
-        channelUrl = replaceHttpWithHttps(channelUrl);
-
-        if (!channelUrl.startsWith(HTTPS)) {
-            if (!channelUrl.contains("soundcloud.com/")) {
-                channelUrl = "https://soundcloud.com/" + channelUrl;
-            } else {
-                channelUrl = HTTPS + channelUrl;
-            }
+    private String getUrlFrom(final String channelUrl) {
+        final String fixedUrl = replaceHttpWithHttps(channelUrl);
+        if (fixedUrl.startsWith(HTTPS)) {
+            return channelUrl;
+        } else if (!fixedUrl.contains("soundcloud.com/")) {
+            return "https://soundcloud.com/" + fixedUrl;
+        } else {
+            return HTTPS + fixedUrl;
         }
-
-        return channelUrl;
     }
 
     /*//////////////////////////////////////////////////////////////////////////

@@ -1,11 +1,14 @@
 package org.schabi.newpipe.extractor.services.peertube.extractors;
 
+import static org.schabi.newpipe.extractor.utils.Utils.UTF_8;
+import static org.schabi.newpipe.extractor.utils.Utils.isNullOrEmpty;
+
 import com.grack.nanojson.JsonArray;
 import com.grack.nanojson.JsonObject;
 import com.grack.nanojson.JsonParser;
 import com.grack.nanojson.JsonParserException;
+
 import org.schabi.newpipe.extractor.MediaFormat;
-import org.schabi.newpipe.extractor.MetaInfo;
 import org.schabi.newpipe.extractor.NewPipe;
 import org.schabi.newpipe.extractor.StreamingService;
 import org.schabi.newpipe.extractor.downloader.Downloader;
@@ -18,12 +21,17 @@ import org.schabi.newpipe.extractor.localization.DateWrapper;
 import org.schabi.newpipe.extractor.services.peertube.PeertubeParsingHelper;
 import org.schabi.newpipe.extractor.services.peertube.linkHandler.PeertubeSearchQueryHandlerFactory;
 import org.schabi.newpipe.extractor.services.peertube.linkHandler.PeertubeStreamLinkHandlerFactory;
-import org.schabi.newpipe.extractor.stream.*;
+import org.schabi.newpipe.extractor.stream.AudioStream;
+import org.schabi.newpipe.extractor.stream.Description;
+import org.schabi.newpipe.extractor.stream.Stream;
+import org.schabi.newpipe.extractor.stream.StreamExtractor;
+import org.schabi.newpipe.extractor.stream.StreamInfoItemsCollector;
+import org.schabi.newpipe.extractor.stream.StreamType;
+import org.schabi.newpipe.extractor.stream.SubtitlesStream;
+import org.schabi.newpipe.extractor.stream.VideoStream;
 import org.schabi.newpipe.extractor.utils.JsonUtils;
 import org.schabi.newpipe.extractor.utils.Utils;
 
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
@@ -32,15 +40,16 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Locale;
 
-import static org.schabi.newpipe.extractor.utils.Utils.UTF_8;
-import static org.schabi.newpipe.extractor.utils.Utils.isNullOrEmpty;
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 
 public class PeertubeStreamExtractor extends StreamExtractor {
     private final String baseUrl;
     private JsonObject json;
     private final List<SubtitlesStream> subtitles = new ArrayList<>();
 
-    public PeertubeStreamExtractor(final StreamingService service, final LinkHandler linkHandler) throws ParsingException {
+    public PeertubeStreamExtractor(final StreamingService service, final LinkHandler linkHandler)
+            throws ParsingException {
         super(service, linkHandler);
         this.baseUrl = getBaseUrl();
     }
@@ -73,9 +82,10 @@ public class PeertubeStreamExtractor extends StreamExtractor {
         String text;
         try {
             text = JsonUtils.getString(json, "description");
-        } catch (ParsingException e) {
-            return Description.emptyDescription;
+        } catch (final ParsingException e) {
+            return Description.EMPTY_DESCRIPTION;
         }
+
         if (text.length() == 250 && text.substring(247).equals("...")) {
             //if description is shortened, get full description
             final Downloader dl = NewPipe.getDownloader();
@@ -140,7 +150,8 @@ public class PeertubeStreamExtractor extends StreamExtractor {
     public String getUploaderUrl() throws ParsingException {
         final String name = JsonUtils.getString(json, "account.name");
         final String host = JsonUtils.getString(json, "account.host");
-        return getService().getChannelLHFactory().fromId("accounts/" + name + "@" + host, baseUrl).getUrl();
+        return getService().getChannelLHFactory()
+                .fromId("accounts/" + name + "@" + host, baseUrl).getUrl();
     }
 
     @Nonnull
@@ -155,7 +166,7 @@ public class PeertubeStreamExtractor extends StreamExtractor {
         String value;
         try {
             value = JsonUtils.getString(json, "account.avatar.path");
-        } catch (Exception e) {
+        } catch (final Exception e) {
             value = "/client/assets/images/default-avatar.png";
         }
         return baseUrl + value;
@@ -179,7 +190,7 @@ public class PeertubeStreamExtractor extends StreamExtractor {
         String value;
         try {
             value = JsonUtils.getString(json, "channel.avatar.path");
-        } catch (Exception e) {
+        } catch (final Exception e) {
             value = "/client/assets/images/default-avatar.png";
         }
         return baseUrl + value;
@@ -200,35 +211,41 @@ public class PeertubeStreamExtractor extends StreamExtractor {
     public List<VideoStream> getVideoStreams() throws ExtractionException {
         assertPageFetched();
         final List<VideoStream> videoStreams = new ArrayList<>();
+
         // mp4
         try {
             videoStreams.addAll(getVideoStreamsFromArray(json.getArray("files")));
-        } catch (Exception ignored) { }
+        } catch (final Exception ignored) { }
+
         // HLS
         try {
             final JsonArray streamingPlaylists = json.getArray("streamingPlaylists");
             for (final Object p : streamingPlaylists) {
-                if (!(p instanceof JsonObject)) continue;
+                if (!(p instanceof JsonObject)) {
+                    continue;
+                }
                 final JsonObject playlist = (JsonObject) p;
                 videoStreams.addAll(getVideoStreamsFromArray(playlist.getArray("files")));
             }
-        } catch (Exception e) {
+        } catch (final Exception e) {
             throw new ParsingException("Could not get video streams", e);
         }
 
         if (getStreamType() == StreamType.LIVE_STREAM) {
-            final String url = getHlsUrl();
-            videoStreams.add(new VideoStream(url, MediaFormat.MPEG_4, "720p"));
+            videoStreams.add(new VideoStream(getHlsUrl(), MediaFormat.MPEG_4, "720p"));
         }
 
         return videoStreams;
     }
 
-    private List<VideoStream> getVideoStreamsFromArray(final JsonArray streams) throws ParsingException {
+    private List<VideoStream> getVideoStreamsFromArray(final JsonArray streams)
+            throws ParsingException {
         try {
             final List<VideoStream> videoStreams = new ArrayList<>();
             for (final Object s : streams) {
-                if (!(s instanceof JsonObject)) continue;
+                if (!(s instanceof JsonObject)) {
+                    continue;
+                }
                 final JsonObject stream = (JsonObject) s;
                 final String url;
                 if (stream.has("fileDownloadUrl")) {
@@ -240,13 +257,14 @@ public class PeertubeStreamExtractor extends StreamExtractor {
                 final String resolution = JsonUtils.getString(stream, "resolution.label");
                 final String extension = url.substring(url.lastIndexOf(".") + 1);
                 final MediaFormat format = MediaFormat.getFromSuffix(extension);
-                final VideoStream videoStream = new VideoStream(url, torrentUrl, format, resolution);
+                final VideoStream videoStream
+                        = new VideoStream(url, torrentUrl, format, resolution);
                 if (!Stream.containSimilarStream(videoStream, videoStreams)) {
                     videoStreams.add(videoStream);
                 }
             }
             return videoStreams;
-        } catch (Exception e) {
+        } catch (final Exception e) {
             throw new ParsingException("Could not get video streams from array");
         }
 
@@ -287,8 +305,8 @@ public class PeertubeStreamExtractor extends StreamExtractor {
         final String apiUrl;
         if (tags.isEmpty()) {
             apiUrl = baseUrl + "/api/v1/accounts/" + JsonUtils.getString(json, "account.name")
-                    + "@" + JsonUtils.getString(json, "account.host") +
-                    "/videos?start=0&count=8";
+                    + "@" + JsonUtils.getString(json, "account.host")
+                    + "/videos?start=0&count=8";
         } else {
             apiUrl = getRelatedItemsUrl(tags);
         }
@@ -313,7 +331,7 @@ public class PeertubeStreamExtractor extends StreamExtractor {
     public String getSupportInfo() {
         try {
             return JsonUtils.getString(json, "support");
-        } catch (ParsingException e) {
+        } catch (final ParsingException e) {
             return "";
         }
     }
@@ -326,16 +344,17 @@ public class PeertubeStreamExtractor extends StreamExtractor {
             params.append("&tagsOneOf=");
             params.append(URLEncoder.encode(tag, UTF_8));
         }
-        return url + "?" + params.toString();
+        return url + "?" + params;
     }
 
-    private void getStreamsFromApi(final StreamInfoItemsCollector collector, final String apiUrl) throws ReCaptchaException, IOException, ParsingException {
+    private void getStreamsFromApi(final StreamInfoItemsCollector collector, final String apiUrl)
+            throws ReCaptchaException, IOException, ParsingException {
         final Response response = getDownloader().get(apiUrl);
         JsonObject relatedVideosJson = null;
         if (response != null && !Utils.isBlank(response.responseBody())) {
             try {
                 relatedVideosJson = JsonParser.object().from(response.responseBody());
-            } catch (JsonParserException e) {
+            } catch (final JsonParserException e) {
                 throw new ParsingException("Could not parse json data for related videos", e);
             }
         }
@@ -345,27 +364,33 @@ public class PeertubeStreamExtractor extends StreamExtractor {
         }
     }
 
-    private void collectStreamsFrom(final StreamInfoItemsCollector collector, final JsonObject json) throws ParsingException {
+    private void collectStreamsFrom(final StreamInfoItemsCollector collector,
+                                    final JsonObject jsonObject)
+            throws ParsingException {
         final JsonArray contents;
         try {
-            contents = (JsonArray) JsonUtils.getValue(json, "data");
-        } catch (Exception e) {
+            contents = (JsonArray) JsonUtils.getValue(jsonObject, "data");
+        } catch (final Exception e) {
             throw new ParsingException("unable to extract related videos", e);
         }
 
         for (final Object c : contents) {
             if (c instanceof JsonObject) {
                 final JsonObject item = (JsonObject) c;
-                final PeertubeStreamInfoItemExtractor extractor = new PeertubeStreamInfoItemExtractor(item, baseUrl);
+                final PeertubeStreamInfoItemExtractor extractor
+                        = new PeertubeStreamInfoItemExtractor(item, baseUrl);
                 //do not add the same stream in related streams
-                if (!extractor.getUrl().equals(getUrl())) collector.commit(extractor);
+                if (!extractor.getUrl().equals(getUrl())) {
+                    collector.commit(extractor);
+                }
             }
         }
     }
 
     @Override
     public void onFetchPage(final Downloader downloader) throws IOException, ExtractionException {
-        final Response response = downloader.get(baseUrl + PeertubeStreamLinkHandlerFactory.VIDEO_API_ENDPOINT + getId());
+        final Response response = downloader.get(
+                baseUrl + PeertubeStreamLinkHandlerFactory.VIDEO_API_ENDPOINT + getId());
         if (response != null) {
             setInitialData(response.responseBody());
         } else {
@@ -378,7 +403,7 @@ public class PeertubeStreamExtractor extends StreamExtractor {
     private void setInitialData(final String responseBody) throws ExtractionException {
         try {
             json = JsonParser.object().from(responseBody);
-        } catch (JsonParserException e) {
+        } catch (final JsonParserException e) {
             throw new ExtractionException("Unable to extract PeerTube stream data", e);
         }
         if (json == null) {
@@ -402,11 +427,12 @@ public class PeertubeStreamExtractor extends StreamExtractor {
                         final String languageCode = JsonUtils.getString(caption, "language.id");
                         final String ext = url.substring(url.lastIndexOf(".") + 1);
                         final MediaFormat fmt = MediaFormat.getFromSuffix(ext);
-                        if (fmt != null && !isNullOrEmpty(languageCode))
+                        if (fmt != null && !isNullOrEmpty(languageCode)) {
                             subtitles.add(new SubtitlesStream(fmt, languageCode, url, false));
+                        }
                     }
                 }
-            } catch (Exception e) {
+            } catch (final Exception e) {
                 // ignore all exceptions
             }
         }
@@ -457,7 +483,7 @@ public class PeertubeStreamExtractor extends StreamExtractor {
     public Locale getLanguageInfo() {
         try {
             return new Locale(JsonUtils.getString(json, "language.id"));
-        } catch (ParsingException e) {
+        } catch (final ParsingException e) {
             return null;
         }
     }

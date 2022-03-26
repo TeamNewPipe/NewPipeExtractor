@@ -1,5 +1,12 @@
 package org.schabi.newpipe.extractor.services.youtube;
 
+import static org.schabi.newpipe.extractor.NewPipe.getDownloader;
+import static org.schabi.newpipe.extractor.utils.Utils.EMPTY_STRING;
+import static org.schabi.newpipe.extractor.utils.Utils.HTTP;
+import static org.schabi.newpipe.extractor.utils.Utils.HTTPS;
+import static org.schabi.newpipe.extractor.utils.Utils.UTF_8;
+import static org.schabi.newpipe.extractor.utils.Utils.isNullOrEmpty;
+
 import com.grack.nanojson.JsonArray;
 import com.grack.nanojson.JsonBuilder;
 import com.grack.nanojson.JsonObject;
@@ -10,7 +17,11 @@ import com.grack.nanojson.JsonWriter;
 import org.schabi.newpipe.extractor.MetaInfo;
 import org.schabi.newpipe.extractor.Page;
 import org.schabi.newpipe.extractor.downloader.Response;
-import org.schabi.newpipe.extractor.exceptions.*;
+import org.schabi.newpipe.extractor.exceptions.AccountTerminatedException;
+import org.schabi.newpipe.extractor.exceptions.ContentNotAvailableException;
+import org.schabi.newpipe.extractor.exceptions.ExtractionException;
+import org.schabi.newpipe.extractor.exceptions.ParsingException;
+import org.schabi.newpipe.extractor.exceptions.ReCaptchaException;
 import org.schabi.newpipe.extractor.localization.ContentCountry;
 import org.schabi.newpipe.extractor.localization.Localization;
 import org.schabi.newpipe.extractor.playlist.PlaylistInfo;
@@ -28,17 +39,17 @@ import java.time.LocalDate;
 import java.time.OffsetDateTime;
 import java.time.ZoneOffset;
 import java.time.format.DateTimeParseException;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Objects;
+import java.util.Optional;
+import java.util.Random;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
-
-import static org.schabi.newpipe.extractor.NewPipe.getDownloader;
-import static org.schabi.newpipe.extractor.utils.Utils.EMPTY_STRING;
-import static org.schabi.newpipe.extractor.utils.Utils.HTTP;
-import static org.schabi.newpipe.extractor.utils.Utils.HTTPS;
-import static org.schabi.newpipe.extractor.utils.Utils.UTF_8;
-import static org.schabi.newpipe.extractor.utils.Utils.isNullOrEmpty;
 
 /*
  * Created by Christian Schabesberger on 02.03.16.
@@ -60,7 +71,7 @@ import static org.schabi.newpipe.extractor.utils.Utils.isNullOrEmpty;
  * along with NewPipe.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-public class YoutubeParsingHelper {
+public final class YoutubeParsingHelper {
 
     private YoutubeParsingHelper() {
     }
@@ -99,10 +110,10 @@ public class YoutubeParsingHelper {
             "https://www.youtube.com/feeds/videos.xml?channel_id=";
     private static final String FEED_BASE_USER = "https://www.youtube.com/feeds/videos.xml?user=";
 
-    private static boolean isGoogleURL(String url) {
-        url = extractCachedUrlIfNeeded(url);
+    private static boolean isGoogleURL(final String url) {
+        final String cachedUrl = extractCachedUrlIfNeeded(url);
         try {
-            final URL u = new URL(url);
+            final URL u = new URL(cachedUrl);
             final String host = u.getHost();
             return host.startsWith("google.")
                     || host.startsWith("m.google.")
@@ -442,7 +453,10 @@ public class YoutubeParsingHelper {
 
     private static void extractClientVersionAndKey() throws IOException, ExtractionException {
         // Don't extract the client version and the InnerTube key if it has been already extracted
-        if (keyAndVersionExtracted) return;
+        if (keyAndVersionExtracted) {
+            return;
+        }
+
         // Don't provide a search term in order to have a smaller response
         final String url = "https://www.youtube.com/results?search_query=&ucbcb=1";
         final Map<String, List<String>> headers = new HashMap<>();
@@ -460,8 +474,8 @@ public class YoutubeParsingHelper {
                 final JsonArray params = s.getArray("params");
                 for (final Object param : params) {
                     final JsonObject p = (JsonObject) param;
-                    final String key = p.getString("key");
-                    if (key != null && key.equals("cver")) {
+                    final String paramKey = p.getString("key");
+                    if (paramKey != null && paramKey.equals("cver")) {
                         clientVersion = p.getString("value");
                     }
                 }
@@ -471,8 +485,8 @@ public class YoutubeParsingHelper {
                 final JsonArray params = s.getArray("params");
                 for (final Object param : params) {
                     final JsonObject p = (JsonObject) param;
-                    final String key = p.getString("key");
-                    if (key != null && key.equals("client.version")) {
+                    final String paramKey = p.getString("key");
+                    if (paramKey != null && paramKey.equals("client.version")) {
                         shortClientVersion = p.getString("value");
                     }
                 }
@@ -516,9 +530,12 @@ public class YoutubeParsingHelper {
      * Get the client version
      */
     public static String getClientVersion() throws IOException, ExtractionException {
-        if (!isNullOrEmpty(clientVersion)) return clientVersion;
+        if (!isNullOrEmpty(clientVersion)) {
+            return clientVersion;
+        }
         if (areHardcodedClientVersionAndKeyValid()) {
-            return clientVersion = HARDCODED_CLIENT_VERSION;
+            clientVersion = HARDCODED_CLIENT_VERSION;
+            return clientVersion;
         }
 
         extractClientVersionAndKey();
@@ -529,9 +546,12 @@ public class YoutubeParsingHelper {
      * Get the key
      */
     public static String getKey() throws IOException, ExtractionException {
-        if (!isNullOrEmpty(key)) return key;
+        if (!isNullOrEmpty(key)) {
+            return key;
+        }
         if (areHardcodedClientVersionAndKeyValid()) {
-            return key = HARDCODED_KEY;
+            key = HARDCODED_KEY;
+            return key;
         }
 
         extractClientVersionAndKey();
@@ -574,7 +594,7 @@ public class YoutubeParsingHelper {
                 + HARDCODED_YOUTUBE_MUSIC_KEY[0];
 
         // @formatter:off
-        byte[] json = JsonWriter.string()
+        final byte[] json = JsonWriter.string()
             .object()
                 .object("context")
                     .object("client")
@@ -617,9 +637,12 @@ public class YoutubeParsingHelper {
 
     public static String[] getYoutubeMusicKey() throws IOException, ReCaptchaException,
             Parser.RegexException {
-        if (youtubeMusicKey != null && youtubeMusicKey.length == 3) return youtubeMusicKey;
+        if (youtubeMusicKey != null && youtubeMusicKey.length == 3) {
+            return youtubeMusicKey;
+        }
         if (isHardcodedYoutubeMusicKeyValid()) {
-            return youtubeMusicKey = HARDCODED_YOUTUBE_MUSIC_KEY;
+            youtubeMusicKey = HARDCODED_YOUTUBE_MUSIC_KEY;
+            return youtubeMusicKey;
         }
 
         final String url = "https://music.youtube.com/";
@@ -627,31 +650,36 @@ public class YoutubeParsingHelper {
         addCookieHeader(headers);
         final String html = getDownloader().get(url, headers).responseBody();
 
-        String key;
+        String innertubeApiKey;
         try {
-            key = Parser.matchGroup1("INNERTUBE_API_KEY\":\"([0-9a-zA-Z_-]+?)\"", html);
+            innertubeApiKey = Parser.matchGroup1("INNERTUBE_API_KEY\":\"([0-9a-zA-Z_-]+?)\"", html);
         } catch (final Parser.RegexException e) {
-            key = Parser.matchGroup1("innertube_api_key\":\"([0-9a-zA-Z_-]+?)\"", html);
+            innertubeApiKey = Parser.matchGroup1("innertube_api_key\":\"([0-9a-zA-Z_-]+?)\"", html);
         }
 
-        final String clientName = Parser.matchGroup1("INNERTUBE_CONTEXT_CLIENT_NAME\":([0-9]+?),",
-                html);
+        final String innertubeClientName
+                = Parser.matchGroup1("INNERTUBE_CONTEXT_CLIENT_NAME\":([0-9]+?),", html);
 
-        String clientVersion;
+        String innertubeClientVersion;
         try {
-            clientVersion = Parser.matchGroup1(
+            innertubeClientVersion = Parser.matchGroup1(
                     "INNERTUBE_CONTEXT_CLIENT_VERSION\":\"([0-9\\.]+?)\"", html);
         } catch (final Parser.RegexException e) {
             try {
-                clientVersion = Parser.matchGroup1(
+                innertubeClientVersion = Parser.matchGroup1(
                         "INNERTUBE_CLIENT_VERSION\":\"([0-9\\.]+?)\"", html);
             } catch (final Parser.RegexException ee) {
-                clientVersion = Parser.matchGroup1(
+                innertubeClientVersion = Parser.matchGroup1(
                         "innertube_context_client_version\":\"([0-9\\.]+?)\"", html);
             }
         }
 
-        return youtubeMusicKey = new String[]{key, clientName, clientVersion};
+        youtubeMusicKey = new String[]{
+                innertubeApiKey,
+                innertubeClientName,
+                innertubeClientVersion
+        };
+        return youtubeMusicKey;
     }
 
     @Nullable
@@ -667,16 +695,14 @@ public class YoutubeParsingHelper {
             if (internUrl.startsWith("/redirect?")) {
                 // q parameter can be the first parameter
                 internUrl = internUrl.substring(10);
-                String[] params = internUrl.split("&");
-                for (String param : params) {
+                final String[] params = internUrl.split("&");
+                for (final String param : params) {
                     if (param.split("=")[0].equals("q")) {
-                        String url;
                         try {
-                            url = URLDecoder.decode(param.split("=")[1], UTF_8);
+                            return URLDecoder.decode(param.split("=")[1], UTF_8);
                         } catch (final UnsupportedEncodingException e) {
                             return null;
                         }
-                        return url;
                     }
                 }
             } else if (internUrl.startsWith("http")) {
@@ -702,7 +728,7 @@ public class YoutubeParsingHelper {
             throw new ParsingException("canonicalBaseUrl is null and browseId is not a channel (\""
                     + browseEndpoint + "\")");
         } else if (navigationEndpoint.has("watchEndpoint")) {
-            StringBuilder url = new StringBuilder();
+            final StringBuilder url = new StringBuilder();
             url.append("https://www.youtube.com/watch?v=").append(navigationEndpoint
                     .getObject("watchEndpoint").getString("videoId"));
             if (navigationEndpoint.getObject("watchEndpoint").has("playlistId")) {
@@ -715,8 +741,8 @@ public class YoutubeParsingHelper {
             }
             return url.toString();
         } else if (navigationEndpoint.has("watchPlaylistEndpoint")) {
-            return "https://www.youtube.com/playlist?list=" +
-                    navigationEndpoint.getObject("watchPlaylistEndpoint").getString("playlistId");
+            return "https://www.youtube.com/playlist?list="
+                    + navigationEndpoint.getObject("watchPlaylistEndpoint").getString("playlistId");
         }
         return null;
     }
@@ -731,17 +757,23 @@ public class YoutubeParsingHelper {
     @Nullable
     public static String getTextFromObject(final JsonObject textObject, final boolean html)
             throws ParsingException {
-        if (isNullOrEmpty(textObject)) return null;
+        if (isNullOrEmpty(textObject)) {
+            return null;
+        }
 
-        if (textObject.has("simpleText")) return textObject.getString("simpleText");
+        if (textObject.has("simpleText")) {
+            return textObject.getString("simpleText");
+        }
 
-        if (textObject.getArray("runs").isEmpty()) return null;
+        if (textObject.getArray("runs").isEmpty()) {
+            return null;
+        }
 
         final StringBuilder textBuilder = new StringBuilder();
         for (final Object textPart : textObject.getArray("runs")) {
-            String text = ((JsonObject) textPart).getString("text");
+            final String text = ((JsonObject) textPart).getString("text");
             if (html && ((JsonObject) textPart).has("navigationEndpoint")) {
-                String url = getUrlFromNavigationEndpoint(((JsonObject) textPart)
+                final String url = getUrlFromNavigationEndpoint(((JsonObject) textPart)
                         .getObject("navigationEndpoint"));
                 if (!isNullOrEmpty(url)) {
                     textBuilder.append("<a href=\"").append(url).append("\">").append(text)
@@ -768,27 +800,28 @@ public class YoutubeParsingHelper {
     }
 
     @Nullable
-    public static String getTextAtKey(@Nonnull final JsonObject jsonObject, final String key)
+    public static String getTextAtKey(@Nonnull final JsonObject jsonObject, final String theKey)
             throws ParsingException {
-        if (jsonObject.isString(key)) {
-            return jsonObject.getString(key);
+        if (jsonObject.isString(theKey)) {
+            return jsonObject.getString(theKey);
         } else {
-            return getTextFromObject(jsonObject.getObject(key));
+            return getTextFromObject(jsonObject.getObject(theKey));
         }
     }
 
-    public static String fixThumbnailUrl(@Nonnull String thumbnailUrl) {
-        if (thumbnailUrl.startsWith("//")) {
-            thumbnailUrl = thumbnailUrl.substring(2);
+    public static String fixThumbnailUrl(@Nonnull final String thumbnailUrl) {
+        String result = thumbnailUrl;
+        if (result.startsWith("//")) {
+            result = result.substring(2);
         }
 
-        if (thumbnailUrl.startsWith(HTTP)) {
-            thumbnailUrl = Utils.replaceHttpWithHttps(thumbnailUrl);
-        } else if (!thumbnailUrl.startsWith(HTTPS)) {
-            thumbnailUrl = "https://" + thumbnailUrl;
+        if (result.startsWith(HTTP)) {
+            result = Utils.replaceHttpWithHttps(result);
+        } else if (!result.startsWith(HTTPS)) {
+            result = "https://" + result;
         }
 
-        return thumbnailUrl;
+        return result;
     }
 
     public static String getThumbnailUrlFromInfoItem(final JsonObject infoItem)
@@ -882,7 +915,7 @@ public class YoutubeParsingHelper {
 
     public static JsonArray getJsonResponse(final String url, final Localization localization)
             throws IOException, ExtractionException {
-        Map<String, List<String>> headers = new HashMap<>();
+        final Map<String, List<String>> headers = new HashMap<>();
         addYouTubeHeaders(headers);
 
         final Response response = getDownloader().get(url, headers, localization);
@@ -1011,7 +1044,8 @@ public class YoutubeParsingHelper {
             throws IOException, ExtractionException {
         if (withThirdParty) {
             // @formatter:off
-            return JsonWriter.string(prepareDesktopEmbedVideoJsonBuilder(localization, contentCountry, videoId)
+            return JsonWriter.string(prepareDesktopEmbedVideoJsonBuilder(
+                    localization, contentCountry, videoId)
                     .object("playbackContext")
                         .object("contentPlaybackContext")
                             .value("signatureTimestamp", sts)
@@ -1070,7 +1104,7 @@ public class YoutubeParsingHelper {
      */
     public static void addCookieHeader(@Nonnull final Map<String, List<String>> headers) {
         if (headers.get("Cookie") == null) {
-            headers.put("Cookie", Arrays.asList(generateConsentCookie()));
+            headers.put("Cookie", Collections.singletonList(generateConsentCookie()));
         } else {
             headers.get("Cookie").add(generateConsentCookie());
         }
@@ -1121,15 +1155,27 @@ public class YoutubeParsingHelper {
                     if (alertText.contains("violation") || alertText.contains("violating")
                             || alertText.contains("infringement")) {
                         // Possible error messages:
-                        // "This account has been terminated for a violation of YouTube's Terms of Service."
-                        // "This account has been terminated due to multiple or severe violations of YouTube's policy prohibiting hate speech."
-                        // "This account has been terminated due to multiple or severe violations of YouTube's policy prohibiting content designed to harass, bully or threaten."
-                        // "This account has been terminated due to multiple or severe violations of YouTube's policy against spam, deceptive practices and misleading content or other Terms of Service violations."
-                        // "This account has been terminated due to multiple or severe violations of YouTube's policy on nudity or sexual content."
-                        // "This account has been terminated for violating YouTube's Community Guidelines."
-                        // "This account has been terminated because we received multiple third-party claims of copyright infringement regarding material that the user posted."
-                        // "This account has been terminated because it is linked to an account that received multiple third-party claims of copyright infringement."
-                        throw new AccountTerminatedException(alertText, AccountTerminatedException.Reason.VIOLATION);
+                        // "This account has been terminated for a violation of YouTube's Terms of
+                        //     Service."
+                        // "This account has been terminated due to multiple or severe violations of
+                        //     YouTube's policy prohibiting hate speech."
+                        // "This account has been terminated due to multiple or severe violations of
+                        //     YouTube's policy prohibiting content designed to harass, bully or
+                        //     threaten."
+                        // "This account has been terminated due to multiple or severe violations
+                        //     of YouTube's policy against spam, deceptive practices and misleading
+                        //     content or other Terms of Service violations."
+                        // "This account has been terminated due to multiple or severe violations of
+                        //     YouTube's policy on nudity or sexual content."
+                        // "This account has been terminated for violating YouTube's Community
+                        //     Guidelines."
+                        // "This account has been terminated because we received multiple
+                        //     third-party claims of copyright infringement regarding material that
+                        //     the user posted."
+                        // "This account has been terminated because it is linked to an account that
+                        //     received multiple third-party claims of copyright infringement."
+                        throw new AccountTerminatedException(alertText,
+                                AccountTerminatedException.Reason.VIOLATION);
                     } else {
                         throw new AccountTerminatedException(alertText);
                     }
@@ -1146,8 +1192,8 @@ public class YoutubeParsingHelper {
         for (final Object content : contents) {
             final JsonObject resultObject = (JsonObject) content;
             if (resultObject.has("itemSectionRenderer")) {
-                for (final Object sectionContentObject :
-                        resultObject.getObject("itemSectionRenderer").getArray("contents")) {
+                for (final Object sectionContentObject
+                        : resultObject.getObject("itemSectionRenderer").getArray("contents")) {
 
                     final JsonObject sectionContent = (JsonObject) sectionContentObject;
                     if (sectionContent.has("infoPanelContentRenderer")) {
@@ -1200,8 +1246,8 @@ public class YoutubeParsingHelper {
     }
 
     @Nonnull
-    private static MetaInfo getClarificationRendererContent(@Nonnull final JsonObject clarificationRenderer)
-            throws ParsingException {
+    private static MetaInfo getClarificationRendererContent(
+            @Nonnull final JsonObject clarificationRenderer) throws ParsingException {
         final MetaInfo metaInfo = new MetaInfo();
 
         final String title = YoutubeParsingHelper.getTextFromObject(clarificationRenderer
@@ -1275,7 +1321,7 @@ public class YoutubeParsingHelper {
             return false;
         }
 
-        for (Object badge : badges) {
+        for (final Object badge : badges) {
             final String style = ((JsonObject) badge).getObject("metadataBadgeRenderer")
                     .getString("style");
             if (style != null && (style.equals("BADGE_STYLE_TYPE_VERIFIED")

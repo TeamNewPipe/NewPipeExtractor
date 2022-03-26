@@ -11,10 +11,13 @@ import org.schabi.newpipe.extractor.linkhandler.ListLinkHandlerFactory;
 import org.schabi.newpipe.extractor.services.youtube.YoutubeParsingHelper;
 import org.schabi.newpipe.extractor.utils.Utils;
 
-public class YoutubePlaylistLinkHandlerFactory extends ListLinkHandlerFactory {
+public final class YoutubePlaylistLinkHandlerFactory extends ListLinkHandlerFactory {
 
     private static final YoutubePlaylistLinkHandlerFactory INSTANCE =
             new YoutubePlaylistLinkHandlerFactory();
+
+    private YoutubePlaylistLinkHandlerFactory() {
+    }
 
     public static YoutubePlaylistLinkHandlerFactory getInstance() {
         return INSTANCE;
@@ -54,8 +57,10 @@ public class YoutubePlaylistLinkHandlerFactory extends ListLinkHandlerFactory {
 
             if (YoutubeParsingHelper.isYoutubeChannelMixId(listID)
                     && Utils.getQueryValue(urlObj, "v") == null) {
-                //Video id can't be determined from the channel mix id. See YoutubeParsingHelper#extractVideoIdFromMixId
-                throw new ContentNotSupportedException("Channel Mix without a video id are not supported");
+                // Video id can't be determined from the channel mix id.
+                // See YoutubeParsingHelper#extractVideoIdFromMixId
+                throw new ContentNotSupportedException(
+                        "Channel Mix without a video id are not supported");
             }
 
             return listID;
@@ -69,15 +74,15 @@ public class YoutubePlaylistLinkHandlerFactory extends ListLinkHandlerFactory {
     public boolean onAcceptUrl(final String url) {
         try {
             getId(url);
-        } catch (ParsingException e) {
+        } catch (final ParsingException e) {
             return false;
         }
         return true;
     }
 
     /**
-     * If it is a mix (auto-generated playlist) URL, return a {@link LinkHandler} where the URL is like
-     * {@code https://youtube.com/watch?v=videoId&list=playlistId}
+     * If it is a mix (auto-generated playlist) URL, return a {@link LinkHandler} where the URL is
+     * like {@code https://youtube.com/watch?v=videoId&list=playlistId}
      * <p>Otherwise use super</p>
      */
     @Override
@@ -92,11 +97,9 @@ public class YoutubePlaylistLinkHandlerFactory extends ListLinkHandlerFactory {
                 }
                 final String newUrl = "https://www.youtube.com/watch?v=" + videoID
                     + "&list=" + listID;
-                return new ListLinkHandler(new LinkHandler(url, newUrl, listID),
-                        getContentFilter(url),
-                        getSortFilter(url));
+                return new ListLinkHandler(new LinkHandler(url, newUrl, listID));
             }
-        } catch (MalformedURLException exception) {
+        } catch (final MalformedURLException exception) {
             throw new ParsingException("Error could not parse URL: " + exception.getMessage(),
                 exception);
         }

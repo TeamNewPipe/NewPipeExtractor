@@ -103,7 +103,8 @@ public class YoutubeCommentsExtractor extends CommentsExtractor {
                                 itemSectionRenderer
                                         .getObject("itemSectionRenderer")
                                         .getArray("contents").getObject(0),
-                                "continuationItemRenderer.continuationEndpoint.continuationCommand.token");
+                                "continuationItemRenderer.continuationEndpoint"
+                                        + ".continuationCommand.token");
                     } catch (final ParsingException ignored) {
                         return null;
                     }

@@ -43,13 +43,13 @@ import java.util.List;
  * along with NewPipe.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-public class DashMpdParser {
+public final class DashMpdParser {
 
     private DashMpdParser() {
     }
 
     public static class DashMpdParsingException extends ParsingException {
-        DashMpdParsingException(String message, Exception e) {
+        DashMpdParsingException(final String message, final Exception e) {
             super(message, e);
         }
     }
@@ -64,12 +64,12 @@ public class DashMpdParser {
         private final List<VideoStream> segmentedVideoOnlyStreams;
 
 
-        public ParserResult(List<VideoStream> videoStreams,
-                            List<AudioStream> audioStreams,
-                            List<VideoStream> videoOnlyStreams,
-                            List<VideoStream> segmentedVideoStreams,
-                            List<AudioStream> segmentedAudioStreams,
-                            List<VideoStream> segmentedVideoOnlyStreams) {
+        public ParserResult(final List<VideoStream> videoStreams,
+                            final List<AudioStream> audioStreams,
+                            final List<VideoStream> videoOnlyStreams,
+                            final List<VideoStream> segmentedVideoStreams,
+                            final List<AudioStream> segmentedAudioStreams,
+                            final List<VideoStream> segmentedVideoOnlyStreams) {
             this.videoStreams = videoStreams;
             this.audioStreams = audioStreams;
             this.videoOnlyStreams = videoOnlyStreams;
@@ -110,19 +110,20 @@ public class DashMpdParser {
      * It has video, video only and audio streams and will only add to the list if it don't
      * find a similar stream in the respective lists (calling {@link Stream#equalStats}).
      * <p>
-     * Info about dash MPD can be found here
+     * Info about dash MPD can be found
+     * <a href="https://www.brendanlong.com/the-structure-of-an-mpeg-dash-mpd.html">here</a>.
      *
      * @param streamInfo where the parsed streams will be added
-     * @see <a href="https://www.brendanlong.com/the-structure-of-an-mpeg-dash-mpd.html">www.brendanlog.com</a>
      */
     public static ParserResult getStreams(final StreamInfo streamInfo)
             throws DashMpdParsingException, ReCaptchaException {
-        String dashDoc;
-        Downloader downloader = NewPipe.getDownloader();
+        final String dashDoc;
+        final Downloader downloader = NewPipe.getDownloader();
         try {
             dashDoc = downloader.get(streamInfo.getDashMpdUrl()).responseBody();
-        } catch (IOException ioe) {
-            throw new DashMpdParsingException("Could not get dash mpd: " + streamInfo.getDashMpdUrl(), ioe);
+        } catch (final IOException ioe) {
+            throw new DashMpdParsingException(
+                    "Could not get dash mpd: " + streamInfo.getDashMpdUrl(), ioe);
         }
 
         try {
@@ -144,62 +145,70 @@ public class DashMpdParser {
             for (int i = 0; i < representationList.getLength(); i++) {
                 final Element representation = (Element) representationList.item(i);
                 try {
-                    final String mimeType = ((Element) representation.getParentNode()).getAttribute("mimeType");
+                    final String mimeType
+                            = ((Element) representation.getParentNode()).getAttribute("mimeType");
                     final String id = representation.getAttribute("id");
-                    final String url = representation.getElementsByTagName("BaseURL").item(0).getTextContent();
+                    final String url = representation
+                            .getElementsByTagName("BaseURL").item(0).getTextContent();
                     final ItagItem itag = ItagItem.getItag(Integer.parseInt(id));
-                    final Node segmentationList = representation.getElementsByTagName("SegmentList").item(0);
+                    final Node segmentationList
+                            = representation.getElementsByTagName("SegmentList").item(0);
 
-                    // if SegmentList is not null this means that BaseUrl is not representing the url to the stream.
-                    // instead we need to add the "media=" value from the <SegementURL/> tags inside the <SegmentList/>
-                    // tag in order to get a full working url. However each of these is just pointing to a part of the
-                    // video, so we can not return a URL with a working stream here.
-                    // Instead of putting those streams into the list of regular stream urls wie put them in a
-                    // for example "segmentedVideoStreams" list.
-                    if (itag != null) {
-                        final MediaFormat mediaFormat = MediaFormat.getFromMimeType(mimeType);
+                    // If SegmentList is not null this means that BaseUrl is not representing the
+                    // url to the stream. Instead we need to add the "media=" value from the
+                    // <SegementURL/> tags inside the <SegmentList/> tag in order to get a full
+                    // working url. However each of these is just pointing to a part of the video,
+                    // so we can not return a URL with a working stream here. Instead of putting
+                    // those streams into the list of regular stream urls we put them in a for
+                    // example "segmentedVideoStreams" list.
 
-                        if (itag.itagType.equals(ItagItem.ItagType.AUDIO)) {
-                            if (segmentationList == null) {
-                                final AudioStream audioStream = new AudioStream(url, mediaFormat, itag.avgBitrate);
-                                if (!Stream.containSimilarStream(audioStream, streamInfo.getAudioStreams())) {
-                                    audioStreams.add(audioStream);
-                                }
-                            } else {
-                                segmentedAudioStreams.add(
-                                        new AudioStream(id, mediaFormat, itag.avgBitrate));
+                    final MediaFormat mediaFormat = MediaFormat.getFromMimeType(mimeType);
+
+                    if (itag.itagType.equals(ItagItem.ItagType.AUDIO)) {
+                        if (segmentationList == null) {
+                            final AudioStream audioStream
+                                    = new AudioStream(url, mediaFormat, itag.avgBitrate);
+                            if (!Stream.containSimilarStream(audioStream,
+                                    streamInfo.getAudioStreams())) {
+                                audioStreams.add(audioStream);
                             }
                         } else {
-                            boolean isVideoOnly = itag.itagType.equals(ItagItem.ItagType.VIDEO_ONLY);
+                            segmentedAudioStreams.add(
+                                    new AudioStream(id, mediaFormat, itag.avgBitrate));
+                        }
+                    } else {
+                        final boolean isVideoOnly
+                                = itag.itagType.equals(ItagItem.ItagType.VIDEO_ONLY);
 
-                            if (segmentationList == null) {
-                                final VideoStream videoStream = new VideoStream(url,
-                                        mediaFormat,
-                                        itag.resolutionString,
-                                        isVideoOnly);
+                        if (segmentationList == null) {
+                            final VideoStream videoStream = new VideoStream(url,
+                                    mediaFormat,
+                                    itag.resolutionString,
+                                    isVideoOnly);
 
-                                if (isVideoOnly) {
-                                    if (!Stream.containSimilarStream(videoStream, streamInfo.getVideoOnlyStreams())) {
-                                        videoOnlyStreams.add(videoStream);
-                                    }
-                                } else if (!Stream.containSimilarStream(videoStream, streamInfo.getVideoStreams())) {
-                                    videoStreams.add(videoStream);
+                            if (isVideoOnly) {
+                                if (!Stream.containSimilarStream(videoStream,
+                                        streamInfo.getVideoOnlyStreams())) {
+                                    videoOnlyStreams.add(videoStream);
                                 }
+                            } else if (!Stream.containSimilarStream(videoStream,
+                                    streamInfo.getVideoStreams())) {
+                                videoStreams.add(videoStream);
+                            }
+                        } else {
+                            final VideoStream videoStream = new VideoStream(id,
+                                    mediaFormat,
+                                    itag.resolutionString,
+                                    isVideoOnly);
+
+                            if (isVideoOnly) {
+                                segmentedVideoOnlyStreams.add(videoStream);
                             } else {
-                                final VideoStream videoStream = new VideoStream(id,
-                                        mediaFormat,
-                                        itag.resolutionString,
-                                        isVideoOnly);
-
-                                if (isVideoOnly) {
-                                    segmentedVideoOnlyStreams.add(videoStream);
-                                } else {
-                                    segmentedVideoStreams.add(videoStream);
-                                }
+                                segmentedVideoStreams.add(videoStream);
                             }
                         }
                     }
-                } catch (Exception ignored) {
+                } catch (final Exception ignored) {
                 }
             }
             return new ParserResult(
@@ -209,7 +218,7 @@ public class DashMpdParser {
                     segmentedVideoStreams,
                     segmentedAudioStreams,
                     segmentedVideoOnlyStreams);
-        } catch (Exception e) {
+        } catch (final Exception e) {
             throw new DashMpdParsingException("Could not parse Dash mpd", e);
         }
     }

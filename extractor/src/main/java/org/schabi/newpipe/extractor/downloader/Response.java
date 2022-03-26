@@ -17,11 +17,14 @@ public class Response {
 
     private final String latestUrl;
 
-    public Response(int responseCode, String responseMessage, Map<String, List<String>> responseHeaders,
-                    @Nullable String responseBody, @Nullable String latestUrl) {
+    public Response(final int responseCode,
+                    final String responseMessage,
+                    @Nullable final Map<String, List<String>> responseHeaders,
+                    @Nullable final String responseBody,
+                    @Nullable final String latestUrl) {
         this.responseCode = responseCode;
         this.responseMessage = responseMessage;
-        this.responseHeaders = responseHeaders != null ? responseHeaders : Collections.<String, List<String>>emptyMap();
+        this.responseHeaders = responseHeaders == null ? Collections.emptyMap() : responseHeaders;
 
         this.responseBody = responseBody == null ? "" : responseBody;
         this.latestUrl = latestUrl;
@@ -60,14 +63,15 @@ public class Response {
 
     /**
      * For easy access to some header value that (usually) don't repeat itself.
-     * <p>For getting all the values associated to the header, use {@link #responseHeaders()} (e.g. {@code Set-Cookie}).
+     * <p>For getting all the values associated to the header, use {@link #responseHeaders()} (e.g.
+     * {@code Set-Cookie}).
      *
      * @param name the name of the header
      * @return the first value assigned to this header
      */
     @Nullable
-    public String getHeader(String name) {
-        for (Map.Entry<String, List<String>> headerEntry : responseHeaders.entrySet()) {
+    public String getHeader(final String name) {
+        for (final Map.Entry<String, List<String>> headerEntry : responseHeaders.entrySet()) {
             final String key = headerEntry.getKey();
             if (key != null && key.equalsIgnoreCase(name) && !headerEntry.getValue().isEmpty()) {
                 return headerEntry.getValue().get(0);
