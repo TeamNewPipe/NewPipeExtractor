@@ -13,16 +13,6 @@ public abstract class ListLinkHandlerFactory extends LinkHandlerFactory {
     // To Override
     ///////////////////////////////////
 
-    @SuppressWarnings({"RedundantThrows", "unused"})
-    public List<String> getContentFilter(final String url) throws ParsingException {
-        return Collections.emptyList();
-    }
-
-    @SuppressWarnings({"RedundantThrows", "unused"})
-    public String getSortFilter(final String url) throws ParsingException {
-        return "";
-    }
-
     public abstract String getUrl(String id, List<String> contentFilter, String sortFilter)
             throws ParsingException;
 
@@ -50,18 +40,17 @@ public abstract class ListLinkHandlerFactory extends LinkHandlerFactory {
             throw new IllegalArgumentException("url may not be null");
         }
 
-        return new ListLinkHandler(super.fromUrl(url, baseUrl), getContentFilter(url),
-                getSortFilter(url));
+        return new ListLinkHandler(super.fromUrl(url, baseUrl));
     }
 
     @Override
     public ListLinkHandler fromId(final String id) throws ParsingException {
-        return new ListLinkHandler(super.fromId(id), new ArrayList<>(0), "");
+        return new ListLinkHandler(super.fromId(id));
     }
 
     @Override
     public ListLinkHandler fromId(final String id, final String baseUrl) throws ParsingException {
-        return new ListLinkHandler(super.fromId(id, baseUrl), new ArrayList<>(0), "");
+        return new ListLinkHandler(super.fromId(id, baseUrl));
     }
 
     public ListLinkHandler fromQuery(final String id,

@@ -97,9 +97,7 @@ public final class YoutubePlaylistLinkHandlerFactory extends ListLinkHandlerFact
                 }
                 final String newUrl = "https://www.youtube.com/watch?v=" + videoID
                     + "&list=" + listID;
-                return new ListLinkHandler(new LinkHandler(url, newUrl, listID),
-                        getContentFilter(url),
-                        getSortFilter(url));
+                return new ListLinkHandler(new LinkHandler(url, newUrl, listID));
             }
         } catch (final MalformedURLException exception) {
             throw new ParsingException("Error could not parse URL: " + exception.getMessage(),
