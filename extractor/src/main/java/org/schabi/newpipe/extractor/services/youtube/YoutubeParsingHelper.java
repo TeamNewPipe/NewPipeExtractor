@@ -80,6 +80,9 @@ public final class YoutubeParsingHelper {
     private YoutubeParsingHelper() {
     }
 
+    /**
+     * The base URL of requests of the {@code WEB} client to the InnerTube internal API
+     */
     public static final String YOUTUBEI_V1_URL = "https://www.youtube.com/youtubei/v1/";
 
     /**
@@ -91,14 +94,60 @@ public final class YoutubeParsingHelper {
      * </p>
      **/
     public static final String DISABLE_PRETTY_PRINT_PARAMETER = "&prettyPrint=false";
+
+    /**
+     * A parameter sent by official clients named {@code contentPlaybackNonce}.
+     *
+     * <p>
+     * It is sent by official clients on videoplayback requests, and by all clients (except the
+     * {@code WEB} one to the player requests.
+     * </p>
+     *
+     * <p>
+     * It is composed of 16 characters which are generated from
+     * {@link #CONTENT_PLAYBACK_NONCE_ALPHABET this alphabet}, with the use of strong random
+     * values.
+     * </p>
+     *
+     * @see #generateContentPlaybackNonce()
+     */
     public static final String CPN = "cpn";
     public static final String VIDEO_ID = "videoId";
 
+    /**
+     * The client version for InnerTube requests with the {@code WEB} client, used as the last
+     * fallback if the extraction of the real one failed.
+     *
+     * You can get it directly either into YouTube pages or the service worker JavaScript file
+     * ({@code https://www.youtube.com/sw.js}) (also applies for YouTube Music).
+     */
     private static final String HARDCODED_CLIENT_VERSION = "2.20220315.01.00";
     private static final String HARDCODED_KEY = "AIzaSyAO_FJ2SlqU8Q4STEHLGCilw_Y9_11qcW8";
 
+    /**
+     * The InnerTube API key used by the {@code ANDROID} client. Found with the help of
+     * reverse-engineering app network requests.
+     */
     private static final String ANDROID_YOUTUBE_KEY = "AIzaSyA8eiZmM1FaDVjRy-df2KTyQ_vz_yYM39w";
+
+    /**
+     * The InnerTube API key used by the {@code iOS} client. Found with the help of
+     * reverse-engineering app network requests.
+     */
     private static final String IOS_YOUTUBE_KEY = "AIzaSyB-63vPrdThhKuerbB2N_l7Kwwcxj6yUAc";
+
+    /**
+     * The hardcoded client version of the Android app used for InnerTube requests with this
+     * client.
+     *
+     * <p>
+     * It can be extracted by getting the latest release version of the app in an APK repository
+     * such as APKMirror.
+     * </p>
+     *
+     * @implNote This version is also used for the {@code iOS} client, as getting the app version
+     * without an iPhone device is not so easily.
+     */
     private static final String MOBILE_YOUTUBE_CLIENT_VERSION = "17.10.35";
 
     private static String clientVersion;
@@ -127,6 +176,16 @@ public final class YoutubeParsingHelper {
 
     private static final String CONTENT_PLAYBACK_NONCE_ALPHABET =
             "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789-_";
+
+    /**
+     * The device machine id for the iPhone 13, used to get 60fps with the {@code iOS} client.
+     *
+     * <p>
+     * See <a href="https://gist.github.com/adamawolf/3048717">this GitHub Gist</a> for more
+     * information.
+     * </p>
+     */
+    private static final String IOS_DEVICE_MODEL = "iPhone14,5";
 
     private static Random numberGenerator = new SecureRandom();
 
@@ -1071,7 +1130,7 @@ public final class YoutubeParsingHelper {
                         .value("clientName", "IOS")
                         .value("clientVersion", MOBILE_YOUTUBE_CLIENT_VERSION)
                         // Device model is required to get 60fps streams
-                        .value("deviceModel", "iPhone14,5")
+                        .value("deviceModel", IOS_DEVICE_MODEL)
                         .value("platform", "MOBILE")
                         .value("hl", localization.getLocalizationCode())
                         .value("gl", contentCountry.getCountryCode())
@@ -1169,7 +1228,7 @@ public final class YoutubeParsingHelper {
                         .value("clientVersion", MOBILE_YOUTUBE_CLIENT_VERSION)
                         .value("clientScreen", "EMBED")
                         // Device model is required to get 60fps streams
-                        .value("deviceModel", "iPhone14,5")
+                        .value("deviceModel", IOS_DEVICE_MODEL)
                         .value("platform", "MOBILE")
                         .value("hl", localization.getLocalizationCode())
                         .value("gl", contentCountry.getCountryCode())
@@ -1208,6 +1267,8 @@ public final class YoutubeParsingHelper {
                         : prepareDesktopJsonBuilder(localization, contentCountry))
                 .object("playbackContext")
                     .object("contentPlaybackContext")
+                        // Some parameters which are sent by the official WEB client (probably some
+                        // of them are not useful)
                         .value("currentUrl", "/watch?v=" + videoId)
                         .value("vis", 0)
                         .value("splay", false)
@@ -1260,9 +1321,10 @@ public final class YoutubeParsingHelper {
      */
     @Nonnull
     public static String getIosUserAgent(@Nullable final Localization localization) {
-        // Spoofing an iPhone 13 running iOS 15.4 with the hardcoded mobile client version
+        // Spoofing an iPhone running iOS 15.4 with the hardcoded mobile client version
         return "com.google.ios.youtube/" + MOBILE_YOUTUBE_CLIENT_VERSION
-                + "(iPhone14,5; U; CPU iOS 15_4 like Mac OS X; "
+                + "(" + IOS_DEVICE_MODEL
+                + "; U; CPU iOS 15_4 like Mac OS X; "
                 + (localization != null ? localization.getCountryCode()
                         : Localization.DEFAULT.getCountryCode())
                 + ")";
