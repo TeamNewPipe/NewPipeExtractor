@@ -18,9 +18,6 @@ import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
 public final class JsonUtils {
-    public static final JsonObject EMPTY_OBJECT = new JsonObject();
-    public static final JsonArray EMPTY_ARRAY = new JsonArray();
-
     private JsonUtils() {
     }
 
@@ -34,7 +31,7 @@ public final class JsonUtils {
             throw new ParsingException("Unable to get " + path);
         }
 
-        final Object result = object.get(keys.get(keys.size() - 1));
+        final Object result = parentObject.get(keys.get(keys.size() - 1));
         if (result == null) {
             throw new ParsingException("Unable to get " + path);
         }
