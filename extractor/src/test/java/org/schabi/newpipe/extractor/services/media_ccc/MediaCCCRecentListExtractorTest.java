@@ -1,17 +1,21 @@
 package org.schabi.newpipe.extractor.services.media_ccc;
 
+import static org.junit.jupiter.api.Assertions.assertAll;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.schabi.newpipe.extractor.ExtractorAsserts.assertGreater;
+import static org.schabi.newpipe.extractor.ServiceList.MediaCCC;
+import static org.schabi.newpipe.extractor.utils.Utils.isNullOrEmpty;
+
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.function.Executable;
 import org.schabi.newpipe.downloader.DownloaderTestImpl;
 import org.schabi.newpipe.extractor.NewPipe;
 import org.schabi.newpipe.extractor.kiosk.KioskExtractor;
 import org.schabi.newpipe.extractor.stream.StreamInfoItem;
 
 import java.util.List;
-
-import static org.junit.jupiter.api.Assertions.*;
-import static org.schabi.newpipe.extractor.ServiceList.MediaCCC;
-import static org.schabi.newpipe.extractor.utils.Utils.isNullOrEmpty;
+import java.util.stream.Stream;
 
 public class MediaCCCRecentListExtractorTest {
     private static KioskExtractor extractor;
@@ -24,16 +28,23 @@ public class MediaCCCRecentListExtractorTest {
     }
 
     @Test
-    public void testStreamList() throws Exception {
+    void testStreamList() throws Exception {
         final List<StreamInfoItem> items = extractor.getInitialPage().getItems();
-        assertEquals(100, items.size());
-        for (final StreamInfoItem item: items) {
-            assertFalse(isNullOrEmpty(item.getName()));
-            assertTrue(item.getDuration() > 0);
-            // Disabled for now, because sometimes videos are uploaded, but their release date is in the future
-            // assertTrue(item.getUploadDate().offsetDateTime().isBefore(OffsetDateTime.now()));
-        }
+        assertFalse(items.isEmpty(), "No items returned");
+
+        assertAll(items.stream().flatMap(this::getAllConditionsForItem));
     }
 
-
+    private Stream<Executable> getAllConditionsForItem(final StreamInfoItem item) {
+        return Stream.of(
+                () -> assertFalse(
+                        isNullOrEmpty(item.getName()),
+                        "Name=[" + item.getName() + "] of " + item + " is empty or null"
+                ),
+                () -> assertGreater(0,
+                        item.getDuration(),
+                        "Duration[=" + item.getDuration() + "] of " + item + " is <= 0"
+                )
+        );
+    }
 }

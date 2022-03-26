@@ -41,16 +41,12 @@ public final class NewPipe {
     }
 
     public static void init(final Downloader d) {
-        downloader = d;
-        preferredLocalization = Localization.DEFAULT;
-        preferredContentCountry = ContentCountry.DEFAULT;
+        init(d, Localization.DEFAULT);
     }
 
     public static void init(final Downloader d, final Localization l) {
-        downloader = d;
-        preferredLocalization = l;
-        preferredContentCountry = l.getCountryCode().isEmpty()
-                ? ContentCountry.DEFAULT : new ContentCountry(l.getCountryCode());
+        init(d, l, l.getCountryCode().isEmpty()
+                ? ContentCountry.DEFAULT : new ContentCountry(l.getCountryCode()));
     }
 
     public static void init(final Downloader d, final Localization l, final ContentCountry c) {

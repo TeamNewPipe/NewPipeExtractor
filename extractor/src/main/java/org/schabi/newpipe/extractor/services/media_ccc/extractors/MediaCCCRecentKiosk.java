@@ -4,6 +4,7 @@ import com.grack.nanojson.JsonArray;
 import com.grack.nanojson.JsonObject;
 import com.grack.nanojson.JsonParser;
 import com.grack.nanojson.JsonParserException;
+
 import org.schabi.newpipe.extractor.Page;
 import org.schabi.newpipe.extractor.StreamingService;
 import org.schabi.newpipe.extractor.downloader.Downloader;
@@ -14,9 +15,10 @@ import org.schabi.newpipe.extractor.linkhandler.ListLinkHandler;
 import org.schabi.newpipe.extractor.stream.StreamInfoItem;
 import org.schabi.newpipe.extractor.stream.StreamInfoItemsCollector;
 
-import javax.annotation.Nonnull;
 import java.io.IOException;
 import java.util.Comparator;
+
+import javax.annotation.Nonnull;
 
 public class MediaCCCRecentKiosk extends KioskExtractor<StreamInfoItem> {
 
@@ -51,11 +53,17 @@ public class MediaCCCRecentKiosk extends KioskExtractor<StreamInfoItem> {
                 streamInfoItem -> streamInfoItem.getUploadDate().offsetDateTime());
         comparator = comparator.reversed();
 
-        final StreamInfoItemsCollector collector
-                = new StreamInfoItemsCollector(getServiceId(), comparator);
-        for (int i = 0; i < events.size(); i++) {
-            collector.commit(new MediaCCCRecentKioskExtractor(events.getObject(i)));
-        }
+        final StreamInfoItemsCollector collector =
+                new StreamInfoItemsCollector(getServiceId(), comparator);
+
+        events.stream()
+                .filter(JsonObject.class::isInstance)
+                .map(JsonObject.class::cast)
+                .map(MediaCCCRecentKioskExtractor::new)
+                // #813 / voc/voctoweb#609 -> returns faulty data -> filter it out
+                .filter(extractor -> extractor.getDuration() > 0)
+                .forEach(collector::commit);
+
         return new InfoItemsPage<>(collector, null);
     }
 

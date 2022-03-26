@@ -1,6 +1,17 @@
 package org.schabi.newpipe.extractor.services.youtube;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.schabi.newpipe.extractor.ExtractorAsserts.assertIsSecureUrl;
+import static org.schabi.newpipe.extractor.ServiceList.YouTube;
+import static org.schabi.newpipe.extractor.services.youtube.YoutubeParsingHelper.YOUTUBEI_V1_URL;
+import static org.schabi.newpipe.extractor.services.youtube.YoutubeParsingHelper.getKey;
+import static org.schabi.newpipe.extractor.services.youtube.YoutubeParsingHelper.prepareDesktopJsonBuilder;
+
 import com.grack.nanojson.JsonWriter;
+
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import org.schabi.newpipe.downloader.DownloaderFactory;
@@ -17,15 +28,11 @@ import org.schabi.newpipe.extractor.stream.StreamInfoItem;
 
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
-import java.util.*;
-
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertFalse;
-import static org.junit.jupiter.api.Assertions.assertThrows;
-import static org.junit.jupiter.api.Assertions.assertTrue;
-import static org.schabi.newpipe.extractor.ExtractorAsserts.assertIsSecureUrl;
-import static org.schabi.newpipe.extractor.ServiceList.YouTube;
-import static org.schabi.newpipe.extractor.services.youtube.YoutubeParsingHelper.*;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Map;
+import java.util.Random;
+import java.util.Set;
 
 public class YoutubeMixPlaylistExtractorTest {
 
@@ -35,8 +42,8 @@ public class YoutubeMixPlaylistExtractorTest {
     private static YoutubeMixPlaylistExtractor extractor;
 
     public static class Mix {
-        private static final String VIDEO_ID = "UtF6Jej8yb4";
-        private static final String VIDEO_TITLE = "Avicii - The Nights";
+        private static final String VIDEO_ID = "QqsLTNkzvaY";
+        private static final String VIDEO_TITLE = "Mix – ";
 
         @BeforeAll
         public static void setUp() throws Exception {
@@ -128,10 +135,10 @@ public class YoutubeMixPlaylistExtractorTest {
 
     public static class MixWithIndex {
 
-        private static final String VIDEO_ID = "UtF6Jej8yb4";
-        private static final String VIDEO_TITLE = "Avicii - The Nights";
-        private static final int INDEX = 4;
-        private static final String VIDEO_ID_NUMBER_4 = "ebXbLfLACGM";
+        private static final String VIDEO_ID = "QqsLTNkzvaY";
+        private static final String VIDEO_TITLE = "Mix – ";
+        private static final int INDEX = 7; // YT starts the index with 1...
+        private static final String VIDEO_ID_AT_INDEX = "xAUJYP8tnRE";
 
         @BeforeAll
         public static void setUp() throws Exception {
@@ -140,7 +147,7 @@ public class YoutubeMixPlaylistExtractorTest {
             NewPipe.init(DownloaderFactory.getDownloader(RESOURCE_PATH + "mixWithIndex"));
             dummyCookie.put(YoutubeMixPlaylistExtractor.COOKIE_NAME, "whatever");
             extractor = (YoutubeMixPlaylistExtractor) YouTube
-                    .getPlaylistExtractor("https://www.youtube.com/watch?v=" + VIDEO_ID_NUMBER_4
+                    .getPlaylistExtractor("https://www.youtube.com/watch?v=" + VIDEO_ID_AT_INDEX
                             + "&list=RD" + VIDEO_ID + "&index=" + INDEX);
             extractor.fetchPage();
         }

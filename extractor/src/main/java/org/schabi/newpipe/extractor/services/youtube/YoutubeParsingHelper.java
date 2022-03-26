@@ -219,10 +219,34 @@ public final class YoutubeParsingHelper {
                 throw new ParsingException("Error duration string with unknown format: " + input);
         }
 
-        return ((Integer.parseInt(Utils.removeNonDigitCharacters(days)) * 24
-                + Integer.parseInt(Utils.removeNonDigitCharacters(hours))) * 60
-                + Integer.parseInt(Utils.removeNonDigitCharacters(minutes))) * 60
-                + Integer.parseInt(Utils.removeNonDigitCharacters(seconds));
+        return ((convertDurationToInt(days) * 24
+                + convertDurationToInt(hours)) * 60
+                + convertDurationToInt(minutes)) * 60
+                + convertDurationToInt(seconds);
+    }
+
+    /**
+     * Tries to convert a duration string to an integer without throwing an exception.
+     * <br/>
+     * Helper method for {@link #parseDurationString(String)}.
+     * <br/>
+     * Note: This method is also used as a workaround for NewPipe#8034 (YT shorts no longer
+     * display any duration in channels).
+     *
+     * @param input The string to process
+     * @return The converted integer or 0 if the conversion failed.
+     */
+    private static int convertDurationToInt(final String input) {
+        if (input == null || input.isEmpty()) {
+            return 0;
+        }
+
+        final String clearedInput = Utils.removeNonDigitCharacters(input);
+        try {
+            return Integer.parseInt(clearedInput);
+        } catch (final NumberFormatException ex) {
+            return 0;
+        }
     }
 
     @Nonnull

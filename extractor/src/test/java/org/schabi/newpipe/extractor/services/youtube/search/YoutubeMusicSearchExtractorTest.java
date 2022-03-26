@@ -1,8 +1,12 @@
 package org.schabi.newpipe.extractor.services.youtube.search;
 
+import static org.schabi.newpipe.extractor.ServiceList.YouTube;
+import static java.util.Collections.singletonList;
+
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Disabled;
 import org.schabi.newpipe.downloader.DownloaderTestImpl;
+import org.schabi.newpipe.downloader.MockOnly;
 import org.schabi.newpipe.extractor.InfoItem;
 import org.schabi.newpipe.extractor.NewPipe;
 import org.schabi.newpipe.extractor.StreamingService;
@@ -13,9 +17,6 @@ import org.schabi.newpipe.extractor.services.youtube.linkHandler.YoutubeSearchQu
 import java.net.URLEncoder;
 
 import javax.annotation.Nullable;
-
-import static java.util.Collections.singletonList;
-import static org.schabi.newpipe.extractor.ServiceList.YouTube;
 
 // Doesn't work with mocks. Makes request with different `dataToSend` I think
 public class YoutubeMusicSearchExtractorTest {
@@ -130,6 +131,7 @@ public class YoutubeMusicSearchExtractorTest {
         @Override public InfoItem.InfoType expectedInfoItemType() { return InfoItem.InfoType.CHANNEL; }
     }
 
+    @Disabled("Currently constantly switching between \"Did you mean\" and \"Showing results for ...\" occurs")
     public static class Suggestion extends DefaultSearchExtractorTest {
         private static SearchExtractor extractor;
         private static final String QUERY = "megaman x3";

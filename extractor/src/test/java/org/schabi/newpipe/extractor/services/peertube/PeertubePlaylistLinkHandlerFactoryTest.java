@@ -7,6 +7,7 @@ import org.schabi.newpipe.extractor.NewPipe;
 import org.schabi.newpipe.extractor.exceptions.ParsingException;
 import org.schabi.newpipe.extractor.services.peertube.linkHandler.PeertubePlaylistLinkHandlerFactory;
 
+import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
@@ -24,7 +25,7 @@ public class PeertubePlaylistLinkHandlerFactoryTest {
     }
 
     @Test
-    public void acceptUrlTest() throws ParsingException {
+    void acceptUrlTest() throws ParsingException {
         assertTrue(linkHandler.acceptUrl("https://framatube.org/videos/watch/playlist/d8ca79f9-e4c7-4269-8183-d78ed269c909"));
         assertTrue(linkHandler.acceptUrl("https://framatube.org/w/p/d8ca79f9-e4c7-4269-8183-d78ed269c909"));
         assertTrue(linkHandler.acceptUrl("https://framatube.org/videos/watch/playlist/d8ca79f9-e4c7-4269-8183-d78ed269c909/videos"));
@@ -35,7 +36,7 @@ public class PeertubePlaylistLinkHandlerFactoryTest {
     }
 
     @Test
-    public void getIdFromUrl() throws ParsingException {
+    void getIdFromUrl() throws ParsingException {
         assertEquals("d8ca79f9-e4c7-4269-8183-d78ed269c909", linkHandler.getId("https://framatube.org/videos/watch/playlist/d8ca79f9-e4c7-4269-8183-d78ed269c909"));
         assertEquals("d8ca79f9-e4c7-4269-8183-d78ed269c909", linkHandler.getId("https://framatube.org/w/p/d8ca79f9-e4c7-4269-8183-d78ed269c909"));
         assertEquals("dacdc4ef-5160-4846-9b70-a655880da667", linkHandler.getId("https://framatube.org/videos/watch/playlist/dacdc4ef-5160-4846-9b70-a655880da667"));
@@ -47,9 +48,9 @@ public class PeertubePlaylistLinkHandlerFactoryTest {
     }
 
     @Test
-    public void getUrl() throws ParsingException {
-        System.out.println(linkHandler.fromUrl("https://framatube.org/videos/watch/playlist/d8ca79f9-e4c7-4269-8183-d78ed269c909").getUrl());;
-        System.out.println(linkHandler.fromUrl("https://framatube.org/w/p/d8ca79f9-e4c7-4269-8183-d78ed269c909").getUrl());;
-        System.out.println(linkHandler.fromUrl("https://framatube.org/w/p/sLFbqXsw7sPR3AfvqQSBZB").getUrl());;
+    void getUrl() {
+        assertDoesNotThrow(() -> linkHandler.fromUrl("https://framatube.org/videos/watch/playlist/d8ca79f9-e4c7-4269-8183-d78ed269c909").getUrl());
+        assertDoesNotThrow(() -> linkHandler.fromUrl("https://framatube.org/w/p/d8ca79f9-e4c7-4269-8183-d78ed269c909").getUrl());
+        assertDoesNotThrow(() -> linkHandler.fromUrl("https://framatube.org/w/p/sLFbqXsw7sPR3AfvqQSBZB").getUrl());
     }
 }
