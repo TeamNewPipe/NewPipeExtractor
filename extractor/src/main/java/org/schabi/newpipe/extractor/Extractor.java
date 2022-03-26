@@ -30,12 +30,12 @@ public abstract class Extractor {
 
     private boolean pageFetched = false;
     // called like this to prevent checkstyle errors about "hiding a field"
-    private final Downloader theDownloader;
+    private final Downloader downloader;
 
-    public Extractor(final StreamingService service, final LinkHandler linkHandler) {
+    protected Extractor(final StreamingService service, final LinkHandler linkHandler) {
         this.service = Objects.requireNonNull(service, "service is null");
         this.linkHandler = Objects.requireNonNull(linkHandler, "LinkHandler is null");
-        this.theDownloader = Objects.requireNonNull(NewPipe.getDownloader(), "downloader is null");
+        this.downloader = Objects.requireNonNull(NewPipe.getDownloader(), "downloader is null");
     }
 
     /**
@@ -57,7 +57,7 @@ public abstract class Extractor {
         if (pageFetched) {
             return;
         }
-        onFetchPage(theDownloader);
+        onFetchPage(downloader);
         pageFetched = true;
     }
 
@@ -78,6 +78,7 @@ public abstract class Extractor {
      * @throws IOException         if the page can not be loaded
      * @throws ExtractionException if the pages content is not understood
      */
+    @SuppressWarnings("HiddenField")
     public abstract void onFetchPage(@Nonnull Downloader downloader)
             throws IOException, ExtractionException;
 
@@ -120,7 +121,7 @@ public abstract class Extractor {
     }
 
     public Downloader getDownloader() {
-        return theDownloader;
+        return downloader;
     }
 
     /*//////////////////////////////////////////////////////////////////////////
