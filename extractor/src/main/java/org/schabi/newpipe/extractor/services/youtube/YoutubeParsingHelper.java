@@ -589,7 +589,8 @@ public final class YoutubeParsingHelper {
                     INNERTUBE_CONTEXT_CLIENT_VERSION_REGEXES, 1);
             key = getStringResultFromRegexArray(response, INNERTUBE_API_KEY_REGEXES, 1);
         } catch (final Parser.RegexException e) {
-            throw new ParsingException("Could not extract YouTube WEB InnerTube client version and API key from sw.js", e);
+            throw new ParsingException("Could not extract YouTube WEB InnerTube client version "
+                    + "and API key from sw.js", e);
         }
         keyAndVersionExtracted = true;
     }
@@ -649,8 +650,8 @@ public final class YoutubeParsingHelper {
         try {
             key = getStringResultFromRegexArray(html, INNERTUBE_API_KEY_REGEXES, 1);
         } catch (final Parser.RegexException e) {
-            throw new ParsingException(
-                    "Could not extract YouTube WEB InnerTube client version and API key from HTML search results page", e);
+            throw new ParsingException("Could not extract YouTube WEB InnerTube client version "
+                    + "and API key from HTML search results page", e);
         }
         keyAndVersionExtracted = true;
     }
@@ -823,7 +824,7 @@ public final class YoutubeParsingHelper {
             musicClientName = Parser.matchGroup1(INNERTUBE_CLIENT_NAME_REGEX, html);
         }
 
-        youtubeMusicKey = new String[] { musicKey, musicClientName, musicClientVersion };
+        youtubeMusicKey = new String[] {musicKey, musicClientName, musicClientVersion};
         return youtubeMusicKey;
     }
 
@@ -1050,7 +1051,7 @@ public final class YoutubeParsingHelper {
             final byte[] body,
             @Nonnull final Localization localization,
             @Nonnull final String userAgent,
-            @Nonnull final String key,
+            @Nonnull final String innerTubeApiKey,
             @Nullable final String endPartOfUrlRequest) throws IOException, ExtractionException {
         final Map<String, List<String>> headers = new HashMap<>();
         headers.put("Content-Type", Collections.singletonList("application/json"));
@@ -1058,7 +1059,7 @@ public final class YoutubeParsingHelper {
         headers.put("X-Goog-Api-Format-Version", Collections.singletonList("2"));
 
         final String baseEndpointUrl = "https://youtubei.googleapis.com/youtubei/v1/" + endpoint
-                + "?key=" + key + DISABLE_PRETTY_PRINT_PARAMETER;
+                + "?key=" + innerTubeApiKey + DISABLE_PRETTY_PRINT_PARAMETER;
 
         final Response response = getDownloader().post(isNullOrEmpty(endPartOfUrlRequest)
                         ? baseEndpointUrl : baseEndpointUrl + endPartOfUrlRequest,
@@ -1363,6 +1364,7 @@ public final class YoutubeParsingHelper {
      * @see #CONSENT_COOKIE
      * @param headers the headers which should be completed
      */
+    @SuppressWarnings("ArraysAsListWithZeroOrOneArgument")
     public static void addCookieHeader(@Nonnull final Map<String, List<String>> headers) {
         if (headers.get("Cookie") == null) {
             headers.put("Cookie", Arrays.asList(generateConsentCookie()));

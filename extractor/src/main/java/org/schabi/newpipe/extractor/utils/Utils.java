@@ -282,7 +282,7 @@ public final class Utils {
      * @param map the {@link Map map} on which check if it's null or empty
      * @return whether the {@link Map map} is null or empty
      */
-    public static <K,V> boolean isNullOrEmpty(final Map<K, V> map) {
+    public static <K, V> boolean isNullOrEmpty(final Map<K, V> map) {
         return map == null || map.isEmpty();
     }
 

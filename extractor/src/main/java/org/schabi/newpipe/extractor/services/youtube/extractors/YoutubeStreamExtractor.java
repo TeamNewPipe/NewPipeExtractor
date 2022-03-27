@@ -1079,7 +1079,8 @@ public class YoutubeStreamExtractor extends StreamExtractor {
         }
     }
 
-    private static String getDeobfuscationFuncName(final String thePlayerCode) throws DeobfuscateException {
+    private static String getDeobfuscationFuncName(final String thePlayerCode)
+            throws DeobfuscateException {
         Parser.RegexException exception = null;
         for (final String regex : REGEXES) {
             try {
