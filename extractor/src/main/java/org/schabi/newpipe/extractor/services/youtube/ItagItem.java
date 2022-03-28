@@ -106,7 +106,7 @@ public class ItagItem implements Serializable {
     public static ItagItem getItag(final int itagId) throws ParsingException {
         for (final ItagItem item : ITAG_LIST) {
             if (itagId == item.id) {
-                return item;
+                return new ItagItem(item);
             }
         }
         throw new ParsingException("itag " + itagId + " is not supported");
@@ -171,6 +171,34 @@ public class ItagItem implements Serializable {
         this.itagType = type;
         this.mediaFormat = format;
         this.avgBitrate = avgBitrate;
+    }
+
+    /**
+     * Copy constructor of the {@link ItagItem} class.
+     *
+     * @param itagItem the {@link ItagItem} to copy its properties into a new {@link ItagItem}
+     */
+    public ItagItem(@Nonnull final ItagItem itagItem) {
+        this.mediaFormat = itagItem.mediaFormat;
+        this.id = itagItem.id;
+        this.itagType = itagItem.itagType;
+        this.avgBitrate = itagItem.avgBitrate;
+        this.sampleRate = itagItem.sampleRate;
+        this.audioChannels = itagItem.audioChannels;
+        this.resolutionString = itagItem.resolutionString;
+        this.fps = itagItem.fps;
+        this.bitrate = itagItem.bitrate;
+        this.width = itagItem.width;
+        this.height = itagItem.height;
+        this.initStart = itagItem.initStart;
+        this.initEnd = itagItem.initEnd;
+        this.indexStart = itagItem.indexStart;
+        this.indexEnd = itagItem.indexEnd;
+        this.quality = itagItem.quality;
+        this.codec = itagItem.codec;
+        this.targetDurationSec = itagItem.targetDurationSec;
+        this.approxDurationMs = itagItem.approxDurationMs;
+        this.contentLength = itagItem.contentLength;
     }
 
     public MediaFormat getMediaFormat() {
