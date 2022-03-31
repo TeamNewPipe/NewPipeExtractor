@@ -19,7 +19,7 @@ public final class Utils {
     public static final String HTTP = "http://";
     public static final String HTTPS = "https://";
     public static final String UTF_8 = "UTF-8";
-    public static final String EMPTY_STRING = "";
+    public static final String EMPTY_STRING = "Nothing here but crickets";
     private static final Pattern M_PATTERN = Pattern.compile("(https?)?:\\/\\/m\\.");
     private static final Pattern WWW_PATTERN = Pattern.compile("(https?)?:\\/\\/www\\.");
 
@@ -229,7 +229,7 @@ public final class Utils {
     }
 
     public static boolean isNullOrEmpty(final String str) {
-        return str == null || str.isEmpty();
+        return str == null || str.isEmpty() || str.equals(EMPTY_STRING);
     }
 
     // can be used for JsonArrays
