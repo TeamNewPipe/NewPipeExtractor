@@ -81,9 +81,15 @@ public final class YoutubeParsingHelper {
     }
 
     /**
-     * The base URL of requests of the {@code WEB} client to the InnerTube internal API
+     * The base URL of requests of the {@code WEB} clients to the InnerTube internal API.
      */
     public static final String YOUTUBEI_V1_URL = "https://www.youtube.com/youtubei/v1/";
+
+    /**
+     * The base URL of requests of non-web clients to the InnerTube internal API.
+     */
+    public static final String YOUTUBEI_V1_GAPIS_URL =
+            "https://youtubei.googleapis.com/youtubei/v1/";
 
     /**
      * A parameter to disable pretty-printed response of InnerTube requests, to reduce response
@@ -113,6 +119,26 @@ public final class YoutubeParsingHelper {
      */
     public static final String CPN = "cpn";
     public static final String VIDEO_ID = "videoId";
+
+    /**
+     * A parameter sent by official clients named {@code contentCheckOk}.
+     *
+     * <p>
+     * Setting it to {@code true} allows us to get streaming data on videos with a warning about
+     * what the sensible content they contain.
+     * </p>
+     */
+    public static final String CONTENT_CHECK_OK = "contentCheckOk";
+
+    /**
+     * A parameter which may be send by official clients named {@code racyCheckOk}.
+     *
+     * <p>
+     * What this parameter does is not really known, but it seems to be linked to sensitive
+     * contents such as age-restricted content.
+     * </p>
+     */
+    public static final String RACY_CHECK_OK = "racyCheckOk";
 
     /**
      * The client version for InnerTube requests with the {@code WEB} client, used as the last
@@ -149,6 +175,12 @@ public final class YoutubeParsingHelper {
      * without an iPhone device is not so easily.
      */
     private static final String MOBILE_YOUTUBE_CLIENT_VERSION = "17.10.35";
+
+    /**
+     * The hardcoded client version of the Android app used for InnerTube requests with this
+     * client.
+     */
+    private static final String TVHTML5_SIMPLY_EMBED_CLIENT_VERSION = "2.0";
 
     private static String clientVersion;
     private static String key;
@@ -664,6 +696,9 @@ public final class YoutubeParsingHelper {
             return clientVersion;
         }
 
+        // Always extract latest client version, by trying first to extract it from the JavaScript
+        // service worker, then from HTML search results page as a fallback, to prevent
+        // fingerprinting based on the client version used
         try {
             extractClientVersionAndKeyFromSwJs();
         } catch (final Exception e) {
@@ -674,6 +709,7 @@ public final class YoutubeParsingHelper {
             return clientVersion;
         }
 
+        // Fallback to the hardcoded one if it's valid
         if (areHardcodedClientVersionAndKeyValid()) {
             clientVersion = HARDCODED_CLIENT_VERSION;
             return clientVersion;
@@ -690,6 +726,9 @@ public final class YoutubeParsingHelper {
             return key;
         }
 
+        // Always extract the key used by the webiste, by trying first to extract it from the
+        // JavaScript service worker, then from HTML search results page as a fallback, to prevent
+        // fingerprinting based on the key and/or invalid key issues
         try {
             extractClientVersionAndKeyFromSwJs();
         } catch (final Exception e) {
@@ -700,6 +739,7 @@ public final class YoutubeParsingHelper {
             return key;
         }
 
+        // Fallback to the hardcoded one if it's valid
         if (areHardcodedClientVersionAndKeyValid()) {
             key = HARDCODED_KEY;
             return key;
@@ -1058,8 +1098,8 @@ public final class YoutubeParsingHelper {
         headers.put("User-Agent", Collections.singletonList(userAgent));
         headers.put("X-Goog-Api-Format-Version", Collections.singletonList("2"));
 
-        final String baseEndpointUrl = "https://youtubei.googleapis.com/youtubei/v1/" + endpoint
-                + "?key=" + innerTubeApiKey + DISABLE_PRETTY_PRINT_PARAMETER;
+        final String baseEndpointUrl = YOUTUBEI_V1_GAPIS_URL + endpoint + "?key=" + innerTubeApiKey
+                + DISABLE_PRETTY_PRINT_PARAMETER;
 
         final Response response = getDownloader().post(isNullOrEmpty(endPartOfUrlRequest)
                         ? baseEndpointUrl : baseEndpointUrl + endPartOfUrlRequest,
@@ -1146,29 +1186,23 @@ public final class YoutubeParsingHelper {
     }
 
     @Nonnull
-    public static JsonBuilder<JsonObject> prepareDesktopEmbedVideoJsonBuilder(
+    public static JsonBuilder<JsonObject> prepareTvHtml5EmbedJsonBuilder(
             @Nonnull final Localization localization,
             @Nonnull final ContentCountry contentCountry,
-            @Nonnull final String videoId) throws IOException, ExtractionException {
-        // @formatter:off
+            @Nonnull final String videoId) {
+                // @formatter:off
         return JsonObject.builder()
                 .object("context")
                     .object("client")
+                        .value("clientName", "TVHTML5_SIMPLY_EMBEDDED_PLAYER")
+                        .value("clientVersion", TVHTML5_SIMPLY_EMBED_CLIENT_VERSION)
+                        .value("clientScreen", "EMBED")
+                        .value("platform", "TV")
                         .value("hl", localization.getLocalizationCode())
                         .value("gl", contentCountry.getCountryCode())
-                        .value("clientName", "WEB")
-                        .value("clientVersion", getClientVersion())
-                        .value("clientScreen", "EMBED")
-                        .value("originalUrl", "https://www.youtube.com")
-                        .value("platform", "DESKTOP")
                     .end()
                     .object("thirdParty")
                         .value("embedUrl", "https://www.youtube.com/watch?v=" + videoId)
-                    .end()
-                    .object("request")
-                        .array("internalExperimentFlags")
-                        .end()
-                        .value("useSsl", true)
                     .end()
                     .object("user")
                         // TO DO: provide a way to enable restricted mode with:
@@ -1180,109 +1214,29 @@ public final class YoutubeParsingHelper {
     }
 
     @Nonnull
-    public static JsonBuilder<JsonObject> prepareAndroidMobileEmbedVideoJsonBuilder(
-            @Nonnull final Localization localization,
-            @Nonnull final ContentCountry contentCountry,
-            @Nonnull final String videoId,
-            @Nonnull final String contentPlaybackNonce) {
-        // @formatter:off
-        return JsonObject.builder()
-                .object("context")
-                    .object("client")
-                        .value("clientName", "ANDROID")
-                        .value("clientVersion", MOBILE_YOUTUBE_CLIENT_VERSION)
-                        .value("clientScreen", "EMBED")
-                        .value("platform", "MOBILE")
-                        .value("hl", localization.getLocalizationCode())
-                        .value("gl", contentCountry.getCountryCode())
-                    .end()
-                    .object("thirdParty")
-                        .value("embedUrl", "https://www.youtube.com/watch?v=" + videoId)
-                    .end()
-                    .object("request")
-                        .array("internalExperimentFlags")
-                        .end()
-                        .value("useSsl", true)
-                    .end()
-                    .object("user")
-                        // TO DO: provide a way to enable restricted mode with:
-                        // .value("enableSafetyMode", boolean)
-                        .value("lockedSafetyMode", false)
-                    .end()
-                .end()
-                .value(CPN, contentPlaybackNonce)
-                .value(VIDEO_ID, videoId);
-        // @formatter:on
-    }
-
-    @Nonnull
-    public static JsonBuilder<JsonObject> prepareIosMobileEmbedVideoJsonBuilder(
-            @Nonnull final Localization localization,
-            @Nonnull final ContentCountry contentCountry,
-            @Nonnull final String videoId,
-            @Nonnull final String contentPlaybackNonce) {
-        // @formatter:off
-        return JsonObject.builder()
-                .object("context")
-                    .object("client")
-                        .value("clientName", "IOS")
-                        .value("clientVersion", MOBILE_YOUTUBE_CLIENT_VERSION)
-                        .value("clientScreen", "EMBED")
-                        // Device model is required to get 60fps streams
-                        .value("deviceModel", IOS_DEVICE_MODEL)
-                        .value("platform", "MOBILE")
-                        .value("hl", localization.getLocalizationCode())
-                        .value("gl", contentCountry.getCountryCode())
-                    .end()
-                    .object("thirdParty")
-                        .value("embedUrl", "https://www.youtube.com/watch?v=" + videoId)
-                    .end()
-                    .object("request")
-                        .array("internalExperimentFlags")
-                        .end()
-                        .value("useSsl", true)
-                    .end()
-                    .object("user")
-                        // TO DO: provide a way to enable restricted mode with:
-                        // .value("enableSafetyMode", boolean)
-                        .value("lockedSafetyMode", false)
-                    .end()
-                .end()
-                .value(CPN, contentPlaybackNonce)
-                .value(VIDEO_ID, videoId);
-        // @formatter:on
-    }
-
-    @Nonnull
     public static byte[] createDesktopPlayerBody(
             @Nonnull final Localization localization,
             @Nonnull final ContentCountry contentCountry,
             @Nonnull final String videoId,
             @Nonnull final String sts,
-            final boolean isEmbedClientScreen,
+            final boolean isTvHtml5DesktopJsonBuilder,
             @Nonnull final String contentPlaybackNonce) throws IOException, ExtractionException {
         // @formatter:off
-        return JsonWriter.string((isEmbedClientScreen
-                        ? prepareDesktopEmbedVideoJsonBuilder(localization, contentCountry,
-                            videoId)
+        return JsonWriter.string((isTvHtml5DesktopJsonBuilder
+                        ? prepareTvHtml5EmbedJsonBuilder(localization, contentCountry, videoId)
                         : prepareDesktopJsonBuilder(localization, contentCountry))
                 .object("playbackContext")
                     .object("contentPlaybackContext")
-                        // Some parameters which are sent by the official WEB client (probably some
-                        // of them are not useful)
-                        .value("currentUrl", "/watch?v=" + videoId)
-                        .value("vis", 0)
-                        .value("splay", false)
-                        .value("autoCaptionsDefaultOn", false)
-                        .value("autonavState", "STATE_NONE")
-                        .value("html5Preference", "HTML5_PREF_WANTS")
+                        // Some parameters which are sent by the official WEB client in player
+                        // requests, which seems to avoid throttling on streams from it
                         .value("signatureTimestamp", sts)
                         .value("referer", "https://www.youtube.com/watch?v=" + videoId)
-                        .value("lactMilliseconds", "-1")
                     .end()
                 .end()
                 .value(CPN, contentPlaybackNonce)
                 .value(VIDEO_ID, videoId)
+                .value(CONTENT_CHECK_OK, true)
+                .value(RACY_CHECK_OK, true)
                 .done())
                 .getBytes(StandardCharsets.UTF_8);
         // @formatter:on
