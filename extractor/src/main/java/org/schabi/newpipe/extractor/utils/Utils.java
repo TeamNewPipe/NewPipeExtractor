@@ -15,6 +15,7 @@ import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.regex.Pattern;
 
 public final class Utils {
@@ -73,9 +74,8 @@ public final class Utils {
             multiplier = Parser.matchGroup("[\\d]+([\\.,][\\d]+)?([KMBkmb])+", numberWord, 2);
         } catch (final ParsingException ignored) {
         }
-
-        final double count = Double.parseDouble(Parser.matchGroup1("([\\d]+([\\.,][\\d]+)?)",
-                numberWord).replace(",", "."));
+        final double count = Double.parseDouble(
+                Parser.matchGroup1("([\\d]+([\\.,][\\d]+)?)", numberWord).replace(",", "."));
         switch (multiplier.toUpperCase()) {
             case "K":
                 return (long) (count * 1e3);
@@ -391,19 +391,12 @@ public final class Utils {
                                                        @Nonnull final String[] regexes,
                                                        final int group)
             throws Parser.RegexException {
-        for (final String regex : regexes) {
-            try {
-                final String result = Parser.matchGroup(regex, input, group);
-                if (result != null) {
-                    return result;
-                }
-
-                // Continue if the result is null
-            } catch (final Parser.RegexException ignored) {
-            }
-        }
-
-        throw new Parser.RegexException("No regex matched the input on group " + group);
+        return getStringResultFromRegexArray(input,
+                Arrays.stream(regexes)
+                        .filter(Objects::nonNull)
+                        .map(Pattern::compile)
+                        .toArray(Pattern[]::new),
+                group);
     }
 
     /**
