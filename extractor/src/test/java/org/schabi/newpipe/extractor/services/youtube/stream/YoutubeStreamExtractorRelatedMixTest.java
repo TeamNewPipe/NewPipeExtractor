@@ -9,25 +9,22 @@ import static org.schabi.newpipe.extractor.ServiceList.YouTube;
 import static org.schabi.newpipe.extractor.services.youtube.stream.YoutubeStreamExtractorDefaultTest.YOUTUBE_LICENCE;
 
 import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.schabi.newpipe.downloader.DownloaderFactory;
-import org.schabi.newpipe.downloader.MockOnly;
 import org.schabi.newpipe.extractor.InfoItem;
 import org.schabi.newpipe.extractor.NewPipe;
 import org.schabi.newpipe.extractor.StreamingService;
 import org.schabi.newpipe.extractor.playlist.PlaylistInfo.PlaylistType;
 import org.schabi.newpipe.extractor.playlist.PlaylistInfoItem;
 import org.schabi.newpipe.extractor.services.DefaultStreamExtractorTest;
-import org.schabi.newpipe.extractor.services.youtube.YoutubeParsingHelper;
 import org.schabi.newpipe.extractor.services.youtube.YoutubeTestsUtils;
-import org.schabi.newpipe.extractor.services.youtube.extractors.YoutubeStreamExtractor;
 import org.schabi.newpipe.extractor.stream.StreamExtractor;
 import org.schabi.newpipe.extractor.stream.StreamType;
 
 import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
-import java.util.Random;
 import java.util.stream.Collectors;
 
 import javax.annotation.Nullable;
@@ -87,7 +84,7 @@ public class YoutubeStreamExtractorRelatedMixTest extends DefaultStreamExtractor
     // @formatter:on
 
     @Test
-    @MockOnly("related items keep changing, and so do the mixes contained within them")
+    @Disabled("Mixes are not available in related items anymore")
     @Override
     public void testRelatedItems() throws Exception {
         super.testRelatedItems();
