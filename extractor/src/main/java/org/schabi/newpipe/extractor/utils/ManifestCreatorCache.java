@@ -1,10 +1,10 @@
 package org.schabi.newpipe.extractor.utils;
 
+import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Map;
-import java.util.Objects;
 import java.util.concurrent.ConcurrentHashMap;
 
 /**
@@ -225,50 +225,11 @@ public final class ManifestCreatorCache<K extends Serializable, V extends Serial
         this.clearFactor = DEFAULT_CLEAR_FACTOR;
     }
 
-    /**
-     * Reveals whether an object is equal to a {@code ManifestCreator} cache existing object.
-     *
-     * @param obj the object to compare with the current {@code ManifestCreatorCache} object
-     * @return whether the object compared is equal to the current {@code ManifestCreatorCache}
-     * object
-     */
-    @Override
-    public boolean equals(final Object obj) {
-        if (this == obj) {
-            return true;
-        }
-
-        if (obj == null || getClass() != obj.getClass()) {
-            return false;
-        }
-
-        final ManifestCreatorCache<?, ?> manifestCreatorCache =
-                (ManifestCreatorCache<?, ?>) obj;
-        return maximumSize == manifestCreatorCache.maximumSize
-                && Double.compare(manifestCreatorCache.clearFactor, clearFactor) == 0
-                && concurrentHashMap.equals(manifestCreatorCache.concurrentHashMap);
-    }
-
-    /**
-     * Returns a hash code of the current {@code ManifestCreatorCache}, using its
-     * {@link #maximumSize maximum size}, {@link #clearFactor clear factor} and
-     * {@link #concurrentHashMap internal concurrent hash map} used as a cache.
-     *
-     * @return a hash code of the current {@code ManifestCreatorCache}
-     */
-    @Override
-    public int hashCode() {
-        return Objects.hash(maximumSize, clearFactor, concurrentHashMap);
-    }
-
-    /**
-     * Returns a string version of the {@link ConcurrentHashMap} used internally as the cache.
-     *
-     * @return the string version of the {@link ConcurrentHashMap} used internally as the cache
-     */
+    @Nonnull
     @Override
     public String toString() {
-        return concurrentHashMap.toString();
+        return "ManifestCreatorCache[clearFactor=" + clearFactor + ", maximumSize=" + maximumSize
+                + ", concurrentHashMap=" + concurrentHashMap + "]";
     }
 
     /**
@@ -285,17 +246,16 @@ public final class ManifestCreatorCache<K extends Serializable, V extends Serial
         final int difference = concurrentHashMap.size() - newLimit;
         final ArrayList<Map.Entry<K, Pair<Integer, V>>> entriesToRemove = new ArrayList<>();
 
-        for (final Map.Entry<K, Pair<Integer, V>> entry : concurrentHashMap.entrySet()) {
+        concurrentHashMap.entrySet().forEach(entry -> {
             final Pair<Integer, V> value = entry.getValue();
             if (value.getFirst() < difference) {
                 entriesToRemove.add(entry);
             } else {
                 value.setFirst(value.getFirst() - difference);
             }
-        }
+        });
 
-        for (final Map.Entry<K, Pair<Integer, V>> entry : entriesToRemove) {
-            concurrentHashMap.remove(entry.getKey(), entry.getValue());
-        }
+        entriesToRemove.forEach(entry -> concurrentHashMap.remove(entry.getKey(),
+                entry.getValue()));
     }
 }
