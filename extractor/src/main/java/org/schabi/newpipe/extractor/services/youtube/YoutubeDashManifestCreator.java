@@ -23,10 +23,22 @@ import javax.xml.transform.stream.StreamResult;
 import java.io.IOException;
 import java.io.StringWriter;
 import java.nio.charset.StandardCharsets;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Locale;
+import java.util.Map;
+import java.util.Objects;
 
-import static org.schabi.newpipe.extractor.services.youtube.YoutubeParsingHelper.*;
-import static org.schabi.newpipe.extractor.utils.Utils.*;
+import static org.schabi.newpipe.extractor.services.youtube.YoutubeParsingHelper.addClientInfoHeaders;
+import static org.schabi.newpipe.extractor.services.youtube.YoutubeParsingHelper.getYoutubeAndroidAppUserAgent;
+import static org.schabi.newpipe.extractor.services.youtube.YoutubeParsingHelper.isAndroidStreamingUrl;
+import static org.schabi.newpipe.extractor.services.youtube.YoutubeParsingHelper.isWebStreamingUrl;
+import static org.schabi.newpipe.extractor.utils.Utils.EMPTY_STRING;
+import static org.schabi.newpipe.extractor.utils.Utils.isBlank;
+import static org.schabi.newpipe.extractor.utils.Utils.isNullOrEmpty;
 
 /**
  * Class to generate DASH manifests from YouTube OTF, progressive and ended/post-live-DVR streams.
@@ -202,11 +214,11 @@ public final class YoutubeDashManifestCreator {
      * <p>In order to generate the DASH manifest, this method will:
      *      <ul>
      *          <li>request the first sequence of the stream (the base URL on which the first
-     *          sequence parameters are appended (see {@link #RN_0} and {@link #SQ_0})) with a POST
-     *          or GET request (depending of the client on which the streaming URL comes from);
+     *          sequence parameter is appended (see {@link #SQ_0})) with a POST or GET request
+     *          (depending of the client on which the streaming URL comes from);
      *          </li>
      *          <li>follow its redirection(s), if any;</li>
-     *          <li>save the last URL, remove the first sequence parameters;</li>
+     *          <li>save the last URL, remove the first sequence parameter;</li>
      *          <li>use the information provided in the {@link ItagItem} to generate all
      *          elements of the DASH manifest.</li>
      *      </ul>
@@ -331,8 +343,8 @@ public final class YoutubeDashManifestCreator {
      * <p>In order to generate the DASH manifest, this method will:
      *      <ul>
      *          <li>request the first sequence of the stream (the base URL on which the first
-     *          sequence parameters are appended (see {@link #RN_0} and {@link #SQ_0})) with a POST
-     *          or GET request (depending of the client on which the streaming URL comes from);
+     *          sequence parameter is appended (see {@link #SQ_0})) with a POST or GET request
+     *          (depending of the client on which the streaming URL comes from);
      *          </li>
      *          <li>follow its redirection(s), if any;</li>
      *          <li>save the last URL, remove the first sequence parameters;</li>
@@ -491,7 +503,7 @@ public final class YoutubeDashManifestCreator {
      */
     @Nonnull
     public static String createDashManifestFromProgressiveStreamingUrl(
-            @Nonnull String progressiveStreamingBaseUrl,
+            @Nonnull final String progressiveStreamingBaseUrl,
             @Nonnull final ItagItem itagItem,
             final long durationSecondsFallback) throws YoutubeDashManifestCreationException {
         if (GENERATED_PROGRESSIVE_STREAMS_MANIFESTS.containsKey(progressiveStreamingBaseUrl)) {
@@ -526,12 +538,11 @@ public final class YoutubeDashManifestCreator {
      * Get the "initialization" {@link Response response} of a stream.
      *
      * <p>
-     * This method fetches:
+     * This method fetches, for OTF streams and for post-live-DVR streams:
      * <ul>
-     *     <li>for progressive streams, the base URL of the stream with a HEAD request;</li>
-     *     <li>for OTF streams and for post-live-DVR streams, the base URL of the stream, to which
-     *     are appended {@link #SQ_0} and {@link #RN_0} params, with a GET request for streaming
-     *     URLs from the WEB client and a POST request for the ones from the Android client;</li>
+     *     <li>the base URL of the stream, to which are appended {@link #SQ_0} and {@link #RN_0}
+     *     parameters, with a GET request for streaming URLs from the WEB client and a POST request
+     *     for the ones from the Android client;</li>
      *     <li>for streaming URLs from the WEB client, the {@link #ALR_YES} param is also added.
      *     </li>
      * </ul>
@@ -545,6 +556,7 @@ public final class YoutubeDashManifestCreator {
      * @throws YoutubeDashManifestCreationException if something goes wrong when fetching the
      *                                              "initialization" response and/or its redirects
      */
+    @SuppressWarnings("checkstyle:FinalParameters")
     @Nonnull
     private static Response getInitializationResponse(@Nonnull String baseStreamingUrl,
                                                       @Nonnull final ItagItem itagItem,
@@ -604,11 +616,12 @@ public final class YoutubeDashManifestCreator {
     /**
      * Append {@link #SQ_0} for post-live-DVR and OTF streams and {@link #RN_0} to all streams.
      *
-     * @param baseStreamingUrl the base streaming URL to which the param(s) are being appended
+     * @param baseStreamingUrl the base streaming URL to which the parameter(s) are being appended
      * @param deliveryType     the {@link DeliveryType} of the stream
      * @return the base streaming URL to which the param(s) are appended, depending on the
      * {@link DeliveryType} of the stream
      */
+    @SuppressWarnings({"checkstyle:FinalParameters", "checkstyle:FinalLocalVariable"})
     @Nonnull
     private static String appendRnParamAndSqParamIfNeeded(
             @Nonnull String baseStreamingUrl,
@@ -644,6 +657,7 @@ public final class YoutubeDashManifestCreator {
      * @throws YoutubeDashManifestCreationException if something goes wrong when trying to get the
      *                                              response without any redirection
      */
+    @SuppressWarnings("checkstyle:FinalParameters")
     @Nonnull
     private static Response getStreamingWebUrlWithoutRedirects(
             @Nonnull final Downloader downloader,
@@ -1312,7 +1326,7 @@ public final class YoutubeDashManifestCreator {
      * <p>
      * It generates the following element:
      * <br>
-     * {@code <Initialization range="initStart-initEnd"></SegmentBase>}
+     * {@code <Initialization range="initStart-initEnd"/>}
      * <br>
      * (where {@code indexStart} and {@code indexEnd} are gotten from the {@link ItagItem} passed
      * as the second parameter)
@@ -1380,9 +1394,9 @@ public final class YoutubeDashManifestCreator {
      *     {@code 1} for OTF streams;</li>
      *     <li>{@code timescale}, which is always {@code 1000};</li>
      *     <li>{@code media}, which is the base URL of the stream on which is appended
-     *     {@code &sq=$Number$&rn=$Number$};</li>
+     *     {@code &sq=$Number$};</li>
      *     <li>{@code initialization} (only for OTF streams), which is the base URL of the stream
-     *     on which is appended {@link #SQ_0} and {@link #RN_0}.</li>
+     *     on which is appended {@link #SQ_0}.</li>
      * </ul>
      * </p>
      *
@@ -1423,12 +1437,12 @@ public final class YoutubeDashManifestCreator {
             // Post-live-DVR/ended livestreams streams don't require an initialization sequence
             if (!isDeliveryTypeLive) {
                 final Attr initializationAttribute = document.createAttribute("initialization");
-                initializationAttribute.setValue(baseUrl + SQ_0 + RN_0);
+                initializationAttribute.setValue(baseUrl + SQ_0);
                 segmentTemplateElement.setAttributeNode(initializationAttribute);
             }
 
             final Attr mediaAttribute = document.createAttribute("media");
-            mediaAttribute.setValue(baseUrl + "&sq=$Number$&rn=$Number$");
+            mediaAttribute.setValue(baseUrl + "&sq=$Number$");
             segmentTemplateElement.setAttributeNode(mediaAttribute);
 
             representationElement.appendChild(segmentTemplateElement);

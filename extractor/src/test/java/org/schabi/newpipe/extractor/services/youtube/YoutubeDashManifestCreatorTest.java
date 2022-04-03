@@ -21,7 +21,12 @@ import java.net.URL;
 import java.util.List;
 import java.util.Random;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNotEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.schabi.newpipe.extractor.ServiceList.YouTube;
 import static org.schabi.newpipe.extractor.utils.Utils.isBlank;
 
@@ -428,8 +433,8 @@ class YoutubeDashManifestCreatorTest {
                 throw new AssertionError("The value of the initialization attribute is not an URL",
                         e);
             }
-            assertTrue(initializationValue.endsWith("&sq=0&rn=0"),
-                    "The value of the initialization attribute doesn't end with &sq=0&rn=0");
+            assertTrue(initializationValue.endsWith("&sq=0"),
+                    "The value of the initialization attribute doesn't end with &sq=0");
 
             final String mediaValue = segmentTemplateElement.getAttribute("media");
             assertFalse(isBlank(mediaValue),
@@ -440,8 +445,8 @@ class YoutubeDashManifestCreatorTest {
                 throw new AssertionError("The value of the media attribute is not an URL",
                         e);
             }
-            assertTrue(mediaValue.endsWith("&sq=$Number$&rn=$Number$"),
-                    "The value of the media attribute doesn't end with &sq=$Number$&rn=$Number$");
+            assertTrue(mediaValue.endsWith("&sq=$Number$"),
+                    "The value of the media attribute doesn't end with &sq=$Number$");
 
             final String startNumberValue = segmentTemplateElement.getAttribute("startNumber");
             assertFalse(isBlank(startNumberValue),

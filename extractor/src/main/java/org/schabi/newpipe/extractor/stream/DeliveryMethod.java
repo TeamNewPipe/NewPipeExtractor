@@ -48,8 +48,8 @@ public enum DeliveryMethod {
      *
      * @see <a href="https://en.wikipedia.org/wiki/BitTorrent">Wikipedia's BitTorrent's page</a>,
      * <a href="https://en.wikipedia.org/wiki/Torrent_file">Wikipedia's page about torrent files
-     * </a> and <a href=""https://www.bittorrent.org/></a> for more information about the
-     * BitTorrent protocol
+     * </a> and <a href="https://www.bittorrent.org">Bitorrent's website</a> for more information
+     * about the BitTorrent protocol
      */
     TORRENT
 }

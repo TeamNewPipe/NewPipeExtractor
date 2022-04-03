@@ -1292,21 +1292,9 @@ public class YoutubeStreamExtractor extends StreamExtractor {
                         .setIsVideoOnly(areStreamsVideoOnly)
                         .setItagItem(itagItem);
 
-                final int height = itagItem.getHeight();
-                if (height > 0) {
-                    final StringBuilder stringBuilder = new StringBuilder();
-                    stringBuilder.append(height);
-                    stringBuilder.append("p");
-                    final int fps = itagItem.getFps();
-                    if (fps > 30) {
-                        stringBuilder.append(fps);
-                    }
-                    builder.setResolution(stringBuilder.toString());
-                } else {
-                    final String resolutionString = itagItem.getResolutionString();
-                    builder.setResolution(resolutionString != null ? resolutionString
-                            : EMPTY_STRING);
-                }
+                final String resolutionString = itagItem.getResolutionString();
+                builder.setResolution(resolutionString != null ? resolutionString
+                        : EMPTY_STRING);
 
                 if (streamType != StreamType.VIDEO_STREAM || !itagInfo.getIsUrl()) {
                     // For YouTube videos on OTF streams and for all streams of post-live streams
