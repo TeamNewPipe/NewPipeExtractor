@@ -7,6 +7,7 @@ import org.schabi.newpipe.extractor.NewPipe;
 import org.schabi.newpipe.extractor.services.youtube.extractors.YoutubeStreamExtractor;
 import org.schabi.newpipe.extractor.stream.DeliveryMethod;
 import org.schabi.newpipe.extractor.stream.Stream;
+import org.schabi.newpipe.extractor.stream.VideoStream;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
@@ -26,6 +27,7 @@ import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.schabi.newpipe.extractor.ServiceList.YouTube;
 import static org.schabi.newpipe.extractor.utils.Utils.isBlank;
@@ -96,14 +98,14 @@ class YoutubeDashManifestCreatorTest {
                     extractor.getVideoOnlyStreams());
             testStreams(DeliveryMethod.PROGRESSIVE_HTTP,
                     extractor.getAudioStreams());
-            try {
-                testStreams(DeliveryMethod.PROGRESSIVE_HTTP,
-                        extractor.getVideoStreams());
-            } catch (final Exception e) {
-                assertEquals(YoutubeDashManifestCreator.YoutubeDashManifestCreationException.class,
-                        e.getClass(), "The exception thrown was not the one excepted: "
-                                + e.getClass().getName()
-                                + "was thrown instead of YoutubeDashManifestCreationException");
+            // This exception should be always thrown, as we are not able to generate DASH
+            // manifests of video formats with audio
+            final List<VideoStream> videoStreams = extractor.getVideoStreams();
+            if (!videoStreams.isEmpty()) {
+                assertThrows(YoutubeDashManifestCreator.YoutubeDashManifestCreationException.class,
+                        () -> testStreams(DeliveryMethod.PROGRESSIVE_HTTP, videoStreams),
+                        "The exception thrown for the generation of DASH manifests for YouTube "
+                                + "progressive video streams with audio was not the one excepted");
             }
         }
 
@@ -145,7 +147,7 @@ class YoutubeDashManifestCreatorTest {
                     assertFalse(isBlank(dashManifest), "The DASH manifest is null or empty: "
                             + dashManifest);
                 }
-                i++;
+                ++i;
             }
         }
 
