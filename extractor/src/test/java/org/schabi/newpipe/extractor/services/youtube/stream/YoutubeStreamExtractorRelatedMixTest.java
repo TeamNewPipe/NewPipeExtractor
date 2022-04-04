@@ -84,7 +84,7 @@ public class YoutubeStreamExtractorRelatedMixTest extends DefaultStreamExtractor
     // @formatter:on
 
     @Test
-    @Disabled("Mixes are not available in related items anymore")
+    @Disabled("Mixes are not available in related items anymore, see https://github.com/TeamNewPipe/NewPipeExtractor/issues/820")
     @Override
     public void testRelatedItems() throws Exception {
         super.testRelatedItems();
