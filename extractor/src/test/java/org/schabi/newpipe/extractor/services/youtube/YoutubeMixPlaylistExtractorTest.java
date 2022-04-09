@@ -6,9 +6,7 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.schabi.newpipe.extractor.ExtractorAsserts.assertIsSecureUrl;
 import static org.schabi.newpipe.extractor.ServiceList.YouTube;
-import static org.schabi.newpipe.extractor.services.youtube.YoutubeParsingHelper.YOUTUBEI_V1_URL;
-import static org.schabi.newpipe.extractor.services.youtube.YoutubeParsingHelper.getKey;
-import static org.schabi.newpipe.extractor.services.youtube.YoutubeParsingHelper.prepareDesktopJsonBuilder;
+import static org.schabi.newpipe.extractor.services.youtube.YoutubeParsingHelper.*;
 
 import com.grack.nanojson.JsonWriter;
 
@@ -31,7 +29,6 @@ import java.nio.charset.StandardCharsets;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
-import java.util.Random;
 import java.util.Set;
 
 public class YoutubeMixPlaylistExtractorTest {
@@ -47,8 +44,7 @@ public class YoutubeMixPlaylistExtractorTest {
 
         @BeforeAll
         public static void setUp() throws Exception {
-            YoutubeParsingHelper.resetClientVersionAndKey();
-            YoutubeParsingHelper.setNumberGenerator(new Random(1));
+            YoutubeTestsUtils.ensureStateless();
             NewPipe.init(DownloaderFactory.getDownloader(RESOURCE_PATH + "mix"));
             dummyCookie.put(YoutubeMixPlaylistExtractor.COOKIE_NAME, "whatever");
             extractor = (YoutubeMixPlaylistExtractor) YouTube
@@ -95,7 +91,8 @@ public class YoutubeMixPlaylistExtractorTest {
                     .getBytes(StandardCharsets.UTF_8);
 
             final InfoItemsPage<StreamInfoItem> streams = extractor.getPage(new Page(
-                    YOUTUBEI_V1_URL + "next?key=" + getKey(), null, null, dummyCookie, body));
+                    YOUTUBEI_V1_URL + "next?key=" + getKey() + DISABLE_PRETTY_PRINT_PARAMETER,
+                    null, null, dummyCookie, body));
             assertFalse(streams.getItems().isEmpty());
             assertTrue(streams.hasNextPage());
         }
@@ -142,8 +139,7 @@ public class YoutubeMixPlaylistExtractorTest {
 
         @BeforeAll
         public static void setUp() throws Exception {
-            YoutubeParsingHelper.resetClientVersionAndKey();
-            YoutubeParsingHelper.setNumberGenerator(new Random(1));
+            YoutubeTestsUtils.ensureStateless();
             NewPipe.init(DownloaderFactory.getDownloader(RESOURCE_PATH + "mixWithIndex"));
             dummyCookie.put(YoutubeMixPlaylistExtractor.COOKIE_NAME, "whatever");
             extractor = (YoutubeMixPlaylistExtractor) YouTube
@@ -186,7 +182,8 @@ public class YoutubeMixPlaylistExtractorTest {
                     .getBytes(StandardCharsets.UTF_8);
 
             final InfoItemsPage<StreamInfoItem> streams = extractor.getPage(new Page(
-                    YOUTUBEI_V1_URL + "next?key=" + getKey(), null, null, dummyCookie, body));
+                    YOUTUBEI_V1_URL + "next?key=" + getKey() + DISABLE_PRETTY_PRINT_PARAMETER,
+                    null, null, dummyCookie, body));
             assertFalse(streams.getItems().isEmpty());
             assertTrue(streams.hasNextPage());
         }
@@ -228,8 +225,7 @@ public class YoutubeMixPlaylistExtractorTest {
 
         @BeforeAll
         public static void setUp() throws Exception {
-            YoutubeParsingHelper.resetClientVersionAndKey();
-            YoutubeParsingHelper.setNumberGenerator(new Random(1));
+            YoutubeTestsUtils.ensureStateless();
             NewPipe.init(DownloaderFactory.getDownloader(RESOURCE_PATH + "myMix"));
             dummyCookie.put(YoutubeMixPlaylistExtractor.COOKIE_NAME, "whatever");
             extractor = (YoutubeMixPlaylistExtractor) YouTube
@@ -274,7 +270,8 @@ public class YoutubeMixPlaylistExtractorTest {
                     .getBytes(StandardCharsets.UTF_8);
 
             final InfoItemsPage<StreamInfoItem> streams = extractor.getPage(new Page(
-                    YOUTUBEI_V1_URL + "next?key=" + getKey(), null, null, dummyCookie, body));
+                    YOUTUBEI_V1_URL + "next?key=" + getKey() + DISABLE_PRETTY_PRINT_PARAMETER,
+                    null, null, dummyCookie, body));
             assertFalse(streams.getItems().isEmpty());
             assertTrue(streams.hasNextPage());
         }
@@ -318,8 +315,7 @@ public class YoutubeMixPlaylistExtractorTest {
 
         @BeforeAll
         public static void setUp() throws IOException {
-            YoutubeParsingHelper.resetClientVersionAndKey();
-            YoutubeParsingHelper.setNumberGenerator(new Random(1));
+            YoutubeTestsUtils.ensureStateless();
             NewPipe.init(DownloaderFactory.getDownloader(RESOURCE_PATH + "invalid"));
             dummyCookie.put(YoutubeMixPlaylistExtractor.COOKIE_NAME, "whatever");
         }
@@ -353,8 +349,7 @@ public class YoutubeMixPlaylistExtractorTest {
 
         @BeforeAll
         public static void setUp() throws Exception {
-            YoutubeParsingHelper.resetClientVersionAndKey();
-            YoutubeParsingHelper.setNumberGenerator(new Random(1));
+            YoutubeTestsUtils.ensureStateless();
             NewPipe.init(DownloaderFactory.getDownloader(RESOURCE_PATH + "channelMix"));
             dummyCookie.put(YoutubeMixPlaylistExtractor.COOKIE_NAME, "whatever");
             extractor = (YoutubeMixPlaylistExtractor) YouTube
@@ -395,7 +390,8 @@ public class YoutubeMixPlaylistExtractorTest {
                     .getBytes(StandardCharsets.UTF_8);
 
             final InfoItemsPage<StreamInfoItem> streams = extractor.getPage(new Page(
-                    YOUTUBEI_V1_URL + "next?key=" + getKey(), null, null, dummyCookie, body));
+                    YOUTUBEI_V1_URL + "next?key=" + getKey() + DISABLE_PRETTY_PRINT_PARAMETER,
+                    null, null, dummyCookie, body));
             assertFalse(streams.getItems().isEmpty());
             assertTrue(streams.hasNextPage());
         }
@@ -417,9 +413,8 @@ public class YoutubeMixPlaylistExtractorTest {
 
         @BeforeAll
         public static void setUp() throws Exception {
-            YoutubeParsingHelper.resetClientVersionAndKey();
-            YoutubeParsingHelper.setNumberGenerator(new Random(1));
-            NewPipe.init(new DownloaderFactory().getDownloader(RESOURCE_PATH + "genreMix"));
+            YoutubeTestsUtils.ensureStateless();
+            NewPipe.init(DownloaderFactory.getDownloader(RESOURCE_PATH + "genreMix"));
             dummyCookie.put(YoutubeMixPlaylistExtractor.COOKIE_NAME, "whatever");
             extractor = (YoutubeMixPlaylistExtractor) YouTube
                     .getPlaylistExtractor("https://www.youtube.com/watch?v=" + VIDEO_ID

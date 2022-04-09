@@ -1,5 +1,6 @@
 package org.schabi.newpipe.extractor.services.youtube.extractors;
 
+import static org.schabi.newpipe.extractor.services.youtube.YoutubeParsingHelper.DISABLE_PRETTY_PRINT_PARAMETER;
 import static org.schabi.newpipe.extractor.services.youtube.YoutubeParsingHelper.fixThumbnailUrl;
 import static org.schabi.newpipe.extractor.services.youtube.YoutubeParsingHelper.getTextFromObject;
 import static org.schabi.newpipe.extractor.services.youtube.YoutubeParsingHelper.getUrlFromNavigationEndpoint;
@@ -60,7 +61,7 @@ public class YoutubeMusicSearchExtractor extends SearchExtractor {
         final String[] youtubeMusicKeys = YoutubeParsingHelper.getYoutubeMusicKey();
 
         final String url = "https://music.youtube.com/youtubei/v1/search?alt=json&key="
-                + youtubeMusicKeys[0];
+                + youtubeMusicKeys[0] + DISABLE_PRETTY_PRINT_PARAMETER;
 
         final String params;
 

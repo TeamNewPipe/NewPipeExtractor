@@ -1,5 +1,6 @@
 package org.schabi.newpipe.extractor.services.youtube.extractors;
 
+import static org.schabi.newpipe.extractor.services.youtube.YoutubeParsingHelper.DISABLE_PRETTY_PRINT_PARAMETER;
 import static org.schabi.newpipe.extractor.services.youtube.YoutubeParsingHelper.YOUTUBEI_V1_URL;
 import static org.schabi.newpipe.extractor.services.youtube.YoutubeParsingHelper.addClientInfoHeaders;
 import static org.schabi.newpipe.extractor.services.youtube.YoutubeParsingHelper.extractCookieValue;
@@ -90,8 +91,8 @@ public class YoutubeMixPlaylistExtractor extends PlaylistExtractor {
         final Map<String, List<String>> headers = new HashMap<>();
         addClientInfoHeaders(headers);
 
-        final Response response = getDownloader().post(YOUTUBEI_V1_URL + "next?key=" + getKey(),
-                headers, body, localization);
+        final Response response = getDownloader().post(YOUTUBEI_V1_URL + "next?key=" + getKey()
+                + DISABLE_PRETTY_PRINT_PARAMETER, headers, body, localization);
 
         initialData = JsonUtils.toJsonObject(getValidJsonResponseBody(response));
         playlistData = initialData.getObject("contents").getObject("twoColumnWatchNextResults")

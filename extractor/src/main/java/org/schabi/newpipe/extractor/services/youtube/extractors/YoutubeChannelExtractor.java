@@ -1,5 +1,6 @@
 package org.schabi.newpipe.extractor.services.youtube.extractors;
 
+import static org.schabi.newpipe.extractor.services.youtube.YoutubeParsingHelper.DISABLE_PRETTY_PRINT_PARAMETER;
 import static org.schabi.newpipe.extractor.services.youtube.YoutubeParsingHelper.YOUTUBEI_V1_URL;
 import static org.schabi.newpipe.extractor.services.youtube.YoutubeParsingHelper.addClientInfoHeaders;
 import static org.schabi.newpipe.extractor.services.youtube.YoutubeParsingHelper.fixThumbnailUrl;
@@ -395,7 +396,8 @@ public class YoutubeChannelExtractor extends ChannelExtractor {
                         .done())
                 .getBytes(UTF_8);
 
-        return new Page(YOUTUBEI_V1_URL + "browse?key=" + getKey(), null, channelIds, null, body);
+        return new Page(YOUTUBEI_V1_URL + "browse?key=" + getKey()
+                + DISABLE_PRETTY_PRINT_PARAMETER, null, channelIds, null, body);
     }
 
     /**

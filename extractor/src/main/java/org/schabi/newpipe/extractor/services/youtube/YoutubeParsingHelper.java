@@ -1,3 +1,23 @@
+/*
+ * Created by Christian Schabesberger on 02.03.16.
+ *
+ * Copyright (C) Christian Schabesberger 2016 <chris.schabesberger@mailbox.org>
+ * YoutubeParsingHelper.java is part of NewPipe Extractor.
+ *
+ * NewPipe Extractor is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * NewPipe Extractor is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with NewPipe Extractor. If not, see <https://www.gnu.org/licenses/>.
+ */
+
 package org.schabi.newpipe.extractor.services.youtube;
 
 import static org.schabi.newpipe.extractor.NewPipe.getDownloader;
@@ -5,6 +25,7 @@ import static org.schabi.newpipe.extractor.utils.Utils.EMPTY_STRING;
 import static org.schabi.newpipe.extractor.utils.Utils.HTTP;
 import static org.schabi.newpipe.extractor.utils.Utils.HTTPS;
 import static org.schabi.newpipe.extractor.utils.Utils.UTF_8;
+import static org.schabi.newpipe.extractor.utils.Utils.getStringResultFromRegexArray;
 import static org.schabi.newpipe.extractor.utils.Utils.isNullOrEmpty;
 
 import com.grack.nanojson.JsonArray;
@@ -15,7 +36,6 @@ import com.grack.nanojson.JsonParserException;
 import com.grack.nanojson.JsonWriter;
 
 import org.schabi.newpipe.extractor.MetaInfo;
-import org.schabi.newpipe.extractor.Page;
 import org.schabi.newpipe.extractor.downloader.Response;
 import org.schabi.newpipe.extractor.exceptions.AccountTerminatedException;
 import org.schabi.newpipe.extractor.exceptions.ContentNotAvailableException;
@@ -28,6 +48,7 @@ import org.schabi.newpipe.extractor.playlist.PlaylistInfo;
 import org.schabi.newpipe.extractor.stream.Description;
 import org.schabi.newpipe.extractor.utils.JsonUtils;
 import org.schabi.newpipe.extractor.utils.Parser;
+import org.schabi.newpipe.extractor.utils.RandomStringFromAlphabetGenerator;
 import org.schabi.newpipe.extractor.utils.Utils;
 
 import java.io.IOException;
@@ -35,11 +56,14 @@ import java.io.UnsupportedEncodingException;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLDecoder;
+import java.nio.charset.StandardCharsets;
+import java.security.SecureRandom;
 import java.time.LocalDate;
 import java.time.OffsetDateTime;
 import java.time.ZoneOffset;
 import java.time.format.DateTimeParseException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
@@ -51,58 +75,171 @@ import java.util.Random;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
-/*
- * Created by Christian Schabesberger on 02.03.16.
- *
- * Copyright (C) Christian Schabesberger 2016 <chris.schabesberger@mailbox.org>
- * YoutubeParsingHelper.java is part of NewPipe.
- *
- * NewPipe is free software: you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation, either version 3 of the License, or
- * (at your option) any later version.
- *
- * NewPipe is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- *
- * You should have received a copy of the GNU General Public License
- * along with NewPipe.  If not, see <http://www.gnu.org/licenses/>.
- */
-
 public final class YoutubeParsingHelper {
 
     private YoutubeParsingHelper() {
     }
 
+    /**
+     * The base URL of requests of the {@code WEB} clients to the InnerTube internal API.
+     */
     public static final String YOUTUBEI_V1_URL = "https://www.youtube.com/youtubei/v1/";
 
-    private static final String HARDCODED_CLIENT_VERSION = "2.20210728.00.00";
+    /**
+     * The base URL of requests of non-web clients to the InnerTube internal API.
+     */
+    public static final String YOUTUBEI_V1_GAPIS_URL =
+            "https://youtubei.googleapis.com/youtubei/v1/";
+
+    /**
+     * A parameter to disable pretty-printed response of InnerTube requests, to reduce response
+     * sizes.
+     *
+     * <p>
+     * Sent in query parameters of the requests, <b>after</b> the API key.
+     * </p>
+     **/
+    public static final String DISABLE_PRETTY_PRINT_PARAMETER = "&prettyPrint=false";
+
+    /**
+     * A parameter sent by official clients named {@code contentPlaybackNonce}.
+     *
+     * <p>
+     * It is sent by official clients on videoplayback requests, and by all clients (except the
+     * {@code WEB} one to the player requests.
+     * </p>
+     *
+     * <p>
+     * It is composed of 16 characters which are generated from
+     * {@link #CONTENT_PLAYBACK_NONCE_ALPHABET this alphabet}, with the use of strong random
+     * values.
+     * </p>
+     *
+     * @see #generateContentPlaybackNonce()
+     */
+    public static final String CPN = "cpn";
+    public static final String VIDEO_ID = "videoId";
+
+    /**
+     * A parameter sent by official clients named {@code contentCheckOk}.
+     *
+     * <p>
+     * Setting it to {@code true} allows us to get streaming data on videos with a warning about
+     * what the sensible content they contain.
+     * </p>
+     */
+    public static final String CONTENT_CHECK_OK = "contentCheckOk";
+
+    /**
+     * A parameter which may be send by official clients named {@code racyCheckOk}.
+     *
+     * <p>
+     * What this parameter does is not really known, but it seems to be linked to sensitive
+     * contents such as age-restricted content.
+     * </p>
+     */
+    public static final String RACY_CHECK_OK = "racyCheckOk";
+
+    /**
+     * The client version for InnerTube requests with the {@code WEB} client, used as the last
+     * fallback if the extraction of the real one failed.
+     *
+     * You can get it directly either into YouTube pages or the service worker JavaScript file
+     * ({@code https://www.youtube.com/sw.js}) (also applies for YouTube Music).
+     */
+    private static final String HARDCODED_CLIENT_VERSION = "2.20220315.01.00";
     private static final String HARDCODED_KEY = "AIzaSyAO_FJ2SlqU8Q4STEHLGCilw_Y9_11qcW8";
-    private static final String MOBILE_YOUTUBE_KEY = "AIzaSyA8eiZmM1FaDVjRy-df2KTyQ_vz_yYM39w";
-    private static final String MOBILE_YOUTUBE_CLIENT_VERSION = "16.29.38";
+
+    /**
+     * The InnerTube API key used by the {@code ANDROID} client. Found with the help of
+     * reverse-engineering app network requests.
+     */
+    private static final String ANDROID_YOUTUBE_KEY = "AIzaSyA8eiZmM1FaDVjRy-df2KTyQ_vz_yYM39w";
+
+    /**
+     * The InnerTube API key used by the {@code iOS} client. Found with the help of
+     * reverse-engineering app network requests.
+     */
+    private static final String IOS_YOUTUBE_KEY = "AIzaSyB-63vPrdThhKuerbB2N_l7Kwwcxj6yUAc";
+
+    /**
+     * The hardcoded client version of the Android app used for InnerTube requests with this
+     * client.
+     *
+     * <p>
+     * It can be extracted by getting the latest release version of the app in an APK repository
+     * such as APKMirror.
+     * </p>
+     *
+     * @implNote This version is also used for the {@code iOS} client, as getting the app version
+     * without an iPhone device is not so easily.
+     */
+    private static final String MOBILE_YOUTUBE_CLIENT_VERSION = "17.10.35";
+
+    /**
+     * The hardcoded client version of the Android app used for InnerTube requests with this
+     * client.
+     */
+    private static final String TVHTML5_SIMPLY_EMBED_CLIENT_VERSION = "2.0";
+
     private static String clientVersion;
     private static String key;
 
     private static final String[] HARDCODED_YOUTUBE_MUSIC_KEY =
-            {"AIzaSyC9XL3ZjWddXya6X74dJoCTL-WEYFDNX30", "67", "1.20210726.00.01"};
+            {"AIzaSyC9XL3ZjWddXya6X74dJoCTL-WEYFDNX30", "67", "1.20220309.01.00"};
     private static String[] youtubeMusicKey;
 
     private static boolean keyAndVersionExtracted = false;
     @SuppressWarnings("OptionalUsedAsFieldOrParameterType")
     private static Optional<Boolean> hardcodedClientVersionAndKeyValid = Optional.empty();
 
-    private static Random numberGenerator = new Random();
+    private static final String[] INNERTUBE_CONTEXT_CLIENT_VERSION_REGEXES =
+            {"INNERTUBE_CONTEXT_CLIENT_VERSION\":\"([0-9\\.]+?)\"",
+                    "innertube_context_client_version\":\"([0-9\\.]+?)\"",
+                    "client.version=([0-9\\.]+)"};
+    private static final String[] INNERTUBE_API_KEY_REGEXES =
+            {"INNERTUBE_API_KEY\":\"([0-9a-zA-Z_-]+?)\"",
+                    "innertubeApiKey\":\"([0-9a-zA-Z_-]+?)\""};
+    private static final String[] INITIAL_DATA_REGEXES =
+            {"window\\[\"ytInitialData\"\\]\\s*=\\s*(\\{.*?\\});",
+                    "var\\s*ytInitialData\\s*=\\s*(\\{.*?\\});"};
+    private static final String INNERTUBE_CLIENT_NAME_REGEX =
+            "INNERTUBE_CONTEXT_CLIENT_NAME\":([0-9]+?),";
+
+    private static final String CONTENT_PLAYBACK_NONCE_ALPHABET =
+            "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789-_";
 
     /**
-     * <code>PENDING+</code> means that the user did not yet submit their choices.
+     * The device machine id for the iPhone 13, used to get 60fps with the {@code iOS} client.
+     *
+     * <p>
+     * See <a href="https://gist.github.com/adamawolf/3048717">this GitHub Gist</a> for more
+     * information.
+     * </p>
+     */
+    private static final String IOS_DEVICE_MODEL = "iPhone14,5";
+
+    private static Random numberGenerator = new SecureRandom();
+
+    /**
+     * {@code PENDING+} means that the user did not yet submit their choices.
+     *
+     * <p>
      * Therefore, YouTube & Google should not track the user, because they did not give consent.
+     * </p>
+     *
+     * <p>
      * The three digits at the end can be random, but are required.
+     * </p>
      */
     private static final String CONSENT_COOKIE_VALUE = "PENDING+";
+
     /**
-     * Youtube <code>CONSENT</code> cookie. Should prevent redirect to consent.youtube.com
+     * YouTube {@code CONSENT} cookie.
+     *
+     * <p>
+     * Should prevent redirect to {@code consent.youtube.com}.
+     * </p>
      */
     private static final String CONSENT_COOKIE = "CONSENT=" + CONSENT_COOKIE_VALUE;
 
@@ -419,17 +556,10 @@ public final class YoutubeParsingHelper {
         }
     }
 
-    public static JsonObject getInitialData(final String html) throws ParsingException {
+    private static JsonObject getInitialData(final String html) throws ParsingException {
         try {
-            try {
-                final String initialData = Parser.matchGroup1(
-                        "window\\[\"ytInitialData\"\\]\\s*=\\s*(\\{.*?\\});", html);
-                return JsonParser.object().from(initialData);
-            } catch (final Parser.RegexException e) {
-                final String initialData = Parser.matchGroup1(
-                        "var\\s*ytInitialData\\s*=\\s*(\\{.*?\\});", html);
-                return JsonParser.object().from(initialData);
-            }
+            return JsonParser.object().from(getStringResultFromRegexArray(html,
+                    INITIAL_DATA_REGEXES, 1));
         } catch (final JsonParserException | Parser.RegexException e) {
             throw new ParsingException("Could not get ytInitialData", e);
         }
@@ -466,7 +596,7 @@ public final class YoutubeParsingHelper {
         // This endpoint is fetched by the YouTube website to get the items of its main menu and is
         // pretty lightweight (around 30kB)
         final Response response = getDownloader().post(YOUTUBEI_V1_URL + "guide?key="
-                        + HARDCODED_KEY, headers, body);
+                        + HARDCODED_KEY + DISABLE_PRETTY_PRINT_PARAMETER, headers, body);
         final String responseBody = response.responseBody();
         final int responseCode = response.responseCode();
 
@@ -475,12 +605,34 @@ public final class YoutubeParsingHelper {
         return hardcodedClientVersionAndKeyValid.get();
     }
 
-    private static void extractClientVersionAndKey() throws IOException, ExtractionException {
+
+    private static void extractClientVersionAndKeyFromSwJs()
+            throws IOException, ExtractionException {
+        if (keyAndVersionExtracted) {
+            return;
+        }
+        final String url = "https://www.youtube.com/sw.js";
+        final Map<String, List<String>> headers = new HashMap<>();
+        headers.put("Origin", Collections.singletonList("https://www.youtube.com"));
+        headers.put("Referer", Collections.singletonList("https://www.youtube.com"));
+        final String response = getDownloader().get(url, headers).responseBody();
+        try {
+            clientVersion = getStringResultFromRegexArray(response,
+                    INNERTUBE_CONTEXT_CLIENT_VERSION_REGEXES, 1);
+            key = getStringResultFromRegexArray(response, INNERTUBE_API_KEY_REGEXES, 1);
+        } catch (final Parser.RegexException e) {
+            throw new ParsingException("Could not extract YouTube WEB InnerTube client version "
+                    + "and API key from sw.js", e);
+        }
+        keyAndVersionExtracted = true;
+    }
+
+    private static void extractClientVersionAndKeyFromHtmlSearchResultsPage()
+            throws IOException, ExtractionException {
         // Don't extract the client version and the InnerTube key if it has been already extracted
         if (keyAndVersionExtracted) {
             return;
         }
-
         // Don't provide a search term in order to have a smaller response
         final String url = "https://www.youtube.com/results?search_query=&ucbcb=1";
         final Map<String, List<String>> headers = new HashMap<>();
@@ -517,21 +669,10 @@ public final class YoutubeParsingHelper {
             }
         }
 
-        String contextClientVersion;
-        final String[] patterns = {
-                "INNERTUBE_CONTEXT_CLIENT_VERSION\":\"([0-9\\.]+?)\"",
-                "innertube_context_client_version\":\"([0-9\\.]+?)\"",
-                "client.version=([0-9\\.]+)"
-        };
-        for (final String pattern : patterns) {
-            try {
-                contextClientVersion = Parser.matchGroup1(pattern, html);
-                if (!isNullOrEmpty(contextClientVersion)) {
-                    clientVersion = contextClientVersion;
-                    break;
-                }
-            } catch (final Parser.RegexException ignored) {
-            }
+        try {
+            clientVersion = getStringResultFromRegexArray(html,
+                    INNERTUBE_CONTEXT_CLIENT_VERSION_REGEXES, 1);
+        } catch (final Parser.RegexException ignored) {
         }
 
         if (!isNullOrEmpty(clientVersion) && !isNullOrEmpty(shortClientVersion)) {
@@ -539,52 +680,79 @@ public final class YoutubeParsingHelper {
         }
 
         try {
-            key = Parser.matchGroup1("INNERTUBE_API_KEY\":\"([0-9a-zA-Z_-]+?)\"", html);
-        } catch (final Parser.RegexException e1) {
-            try {
-                key = Parser.matchGroup1("innertubeApiKey\":\"([0-9a-zA-Z_-]+?)\"", html);
-            } catch (final Parser.RegexException e2) {
-                throw new ParsingException("Could not extract client version and key");
-            }
+            key = getStringResultFromRegexArray(html, INNERTUBE_API_KEY_REGEXES, 1);
+        } catch (final Parser.RegexException e) {
+            throw new ParsingException("Could not extract YouTube WEB InnerTube client version "
+                    + "and API key from HTML search results page", e);
         }
         keyAndVersionExtracted = true;
     }
 
     /**
-     * Get the client version
+     * Get the client version used by YouTube website on InnerTube requests.
      */
     public static String getClientVersion() throws IOException, ExtractionException {
         if (!isNullOrEmpty(clientVersion)) {
             return clientVersion;
         }
+
+        // Always extract latest client version, by trying first to extract it from the JavaScript
+        // service worker, then from HTML search results page as a fallback, to prevent
+        // fingerprinting based on the client version used
+        try {
+            extractClientVersionAndKeyFromSwJs();
+        } catch (final Exception e) {
+            extractClientVersionAndKeyFromHtmlSearchResultsPage();
+        }
+
+        if (keyAndVersionExtracted) {
+            return clientVersion;
+        }
+
+        // Fallback to the hardcoded one if it's valid
         if (areHardcodedClientVersionAndKeyValid()) {
             clientVersion = HARDCODED_CLIENT_VERSION;
             return clientVersion;
         }
 
-        extractClientVersionAndKey();
-        return clientVersion;
+        throw new ExtractionException("Could not get YouTube WEB client version");
     }
 
     /**
-     * Get the key
+     * Get the internal API key used by YouTube website on InnerTube requests.
      */
     public static String getKey() throws IOException, ExtractionException {
         if (!isNullOrEmpty(key)) {
             return key;
         }
+
+        // Always extract the key used by the webiste, by trying first to extract it from the
+        // JavaScript service worker, then from HTML search results page as a fallback, to prevent
+        // fingerprinting based on the key and/or invalid key issues
+        try {
+            extractClientVersionAndKeyFromSwJs();
+        } catch (final Exception e) {
+            extractClientVersionAndKeyFromHtmlSearchResultsPage();
+        }
+
+        if (keyAndVersionExtracted) {
+            return key;
+        }
+
+        // Fallback to the hardcoded one if it's valid
         if (areHardcodedClientVersionAndKeyValid()) {
             key = HARDCODED_KEY;
             return key;
         }
 
-        extractClientVersionAndKey();
-        return key;
+        // The ANDROID API key is also valid with the WEB client so return it if we couldn't
+        // extract the WEB API key.
+        return ANDROID_YOUTUBE_KEY;
     }
 
     /**
      * <p>
-     * <b>Only use in tests.</b>
+     * <b>Only used in tests.</b>
      * </p>
      *
      * <p>
@@ -600,11 +768,12 @@ public final class YoutubeParsingHelper {
     public static void resetClientVersionAndKey() {
         clientVersion = null;
         key = null;
+        keyAndVersionExtracted = false;
     }
 
     /**
      * <p>
-     * <b>Only use in tests.</b>
+     * <b>Only used in tests.</b>
      * </p>
      */
     public static void setNumberGenerator(final Random random) {
@@ -615,7 +784,7 @@ public final class YoutubeParsingHelper {
             ReCaptchaException {
         final String url =
                 "https://music.youtube.com/youtubei/v1/music/get_search_suggestions?alt=json&key="
-                + HARDCODED_YOUTUBE_MUSIC_KEY[0];
+                        + HARDCODED_YOUTUBE_MUSIC_KEY[0] + DISABLE_PRETTY_PRINT_PARAMETER;
 
         // @formatter:off
         final byte[] json = JsonWriter.string()
@@ -659,8 +828,8 @@ public final class YoutubeParsingHelper {
         return response.responseBody().length() > 500 && response.responseCode() == 200;
     }
 
-    public static String[] getYoutubeMusicKey() throws IOException, ReCaptchaException,
-            Parser.RegexException {
+    public static String[] getYoutubeMusicKey()
+            throws IOException, ReCaptchaException, Parser.RegexException {
         if (youtubeMusicKey != null && youtubeMusicKey.length == 3) {
             return youtubeMusicKey;
         }
@@ -669,40 +838,33 @@ public final class YoutubeParsingHelper {
             return youtubeMusicKey;
         }
 
-        final String url = "https://music.youtube.com/";
-        final Map<String, List<String>> headers = new HashMap<>();
-        addCookieHeader(headers);
-        final String html = getDownloader().get(url, headers).responseBody();
+        String musicClientVersion;
+        String musicKey;
+        String musicClientName;
 
-        String innertubeApiKey;
         try {
-            innertubeApiKey = Parser.matchGroup1("INNERTUBE_API_KEY\":\"([0-9a-zA-Z_-]+?)\"", html);
-        } catch (final Parser.RegexException e) {
-            innertubeApiKey = Parser.matchGroup1("innertube_api_key\":\"([0-9a-zA-Z_-]+?)\"", html);
+            final String url = "https://music.youtube.com/sw.js";
+            final Map<String, List<String>> headers = new HashMap<>();
+            headers.put("Origin", Collections.singletonList("https://music.youtube.com"));
+            headers.put("Referer", Collections.singletonList("https://music.youtube.com"));
+            final String response = getDownloader().get(url, headers).responseBody();
+                musicClientVersion = getStringResultFromRegexArray(response,
+                        INNERTUBE_CONTEXT_CLIENT_VERSION_REGEXES, 1);
+                musicKey = getStringResultFromRegexArray(response, INNERTUBE_API_KEY_REGEXES, 1);
+                musicClientName = Parser.matchGroup1(INNERTUBE_CLIENT_NAME_REGEX, response);
+        } catch (final Exception e) {
+            final String url = "https://music.youtube.com/";
+            final Map<String, List<String>> headers = new HashMap<>();
+            addCookieHeader(headers);
+            final String html = getDownloader().get(url, headers).responseBody();
+
+            musicKey = getStringResultFromRegexArray(html, INNERTUBE_API_KEY_REGEXES, 1);
+            musicClientVersion = getStringResultFromRegexArray(html,
+                    INNERTUBE_CONTEXT_CLIENT_VERSION_REGEXES);
+            musicClientName = Parser.matchGroup1(INNERTUBE_CLIENT_NAME_REGEX, html);
         }
 
-        final String innertubeClientName
-                = Parser.matchGroup1("INNERTUBE_CONTEXT_CLIENT_NAME\":([0-9]+?),", html);
-
-        String innertubeClientVersion;
-        try {
-            innertubeClientVersion = Parser.matchGroup1(
-                    "INNERTUBE_CONTEXT_CLIENT_VERSION\":\"([0-9\\.]+?)\"", html);
-        } catch (final Parser.RegexException e) {
-            try {
-                innertubeClientVersion = Parser.matchGroup1(
-                        "INNERTUBE_CLIENT_VERSION\":\"([0-9\\.]+?)\"", html);
-            } catch (final Parser.RegexException ee) {
-                innertubeClientVersion = Parser.matchGroup1(
-                        "innertube_context_client_version\":\"([0-9\\.]+?)\"", html);
-            }
-        }
-
-        youtubeMusicKey = new String[]{
-                innertubeApiKey,
-                innertubeClientName,
-                innertubeClientVersion
-        };
+        youtubeMusicKey = new String[] {musicKey, musicClientName, musicClientVersion};
         return youtubeMusicKey;
     }
 
@@ -754,7 +916,7 @@ public final class YoutubeParsingHelper {
         } else if (navigationEndpoint.has("watchEndpoint")) {
             final StringBuilder url = new StringBuilder();
             url.append("https://www.youtube.com/watch?v=").append(navigationEndpoint
-                    .getObject("watchEndpoint").getString("videoId"));
+                    .getObject("watchEndpoint").getString(VIDEO_ID));
             if (navigationEndpoint.getObject("watchEndpoint").has("playlistId")) {
                 url.append("&list=").append(navigationEndpoint.getObject("watchEndpoint")
                         .getString("playlistId"));
@@ -772,10 +934,11 @@ public final class YoutubeParsingHelper {
     }
 
     /**
-     * Get the text from a JSON object that has either a simpleText or a runs array.
+     * Get the text from a JSON object that has either a {@code simpleText} or a {@code runs}
+     * array.
      *
      * @param textObject JSON object to get the text from
-     * @param html       whether to return HTML, by parsing the navigationEndpoint
+     * @param html       whether to return HTML, by parsing the {@code navigationEndpoint}
      * @return text in the JSON object or {@code null}
      */
     @Nullable
@@ -891,17 +1054,6 @@ public final class YoutubeParsingHelper {
         return responseBody;
     }
 
-    public static Response getResponse(final String url, final Localization localization)
-            throws IOException, ExtractionException {
-        final Map<String, List<String>> headers = new HashMap<>();
-        addYouTubeHeaders(headers);
-
-        final Response response = getDownloader().get(url, headers, localization);
-        getValidJsonResponseBody(response);
-
-        return response;
-    }
-
     public static JsonObject getJsonPostResponse(final String endpoint,
                                                  final byte[] body,
                                                  final Localization localization)
@@ -911,51 +1063,48 @@ public final class YoutubeParsingHelper {
         headers.put("Content-Type", Collections.singletonList("application/json"));
 
         final Response response = getDownloader().post(YOUTUBEI_V1_URL + endpoint + "?key="
-                + getKey(), headers, body, localization);
+                + getKey() + DISABLE_PRETTY_PRINT_PARAMETER, headers, body, localization);
 
         return JsonUtils.toJsonObject(getValidJsonResponseBody(response));
     }
 
-    public static JsonObject getJsonMobilePostResponse(final String endpoint,
-                                                       final byte[] body,
-                                                       @Nonnull final ContentCountry
-                                                               contentCountry,
-                                                       final Localization localization)
-            throws IOException, ExtractionException {
+    public static JsonObject getJsonAndroidPostResponse(
+            final String endpoint,
+            final byte[] body,
+            @Nonnull final Localization localization,
+            @Nullable final String endPartOfUrlRequest) throws IOException, ExtractionException {
+        return getMobilePostResponse(endpoint, body, localization,
+                getAndroidUserAgent(localization), ANDROID_YOUTUBE_KEY, endPartOfUrlRequest);
+    }
+
+    public static JsonObject getJsonIosPostResponse(
+            final String endpoint,
+            final byte[] body,
+            @Nonnull final Localization localization,
+            @Nullable final String endPartOfUrlRequest) throws IOException, ExtractionException {
+        return getMobilePostResponse(endpoint, body, localization, getIosUserAgent(localization),
+                IOS_YOUTUBE_KEY, endPartOfUrlRequest);
+    }
+
+    private static JsonObject getMobilePostResponse(
+            final String endpoint,
+            final byte[] body,
+            @Nonnull final Localization localization,
+            @Nonnull final String userAgent,
+            @Nonnull final String innerTubeApiKey,
+            @Nullable final String endPartOfUrlRequest) throws IOException, ExtractionException {
         final Map<String, List<String>> headers = new HashMap<>();
         headers.put("Content-Type", Collections.singletonList("application/json"));
-        // Spoofing an Android 11 device with the hardcoded version of the Android app
-        headers.put("User-Agent", Collections.singletonList("com.google.android.youtube/"
-                + MOBILE_YOUTUBE_CLIENT_VERSION + "Linux; U; Android 11; "
-                + contentCountry.getCountryCode() + ") gzip"));
-        headers.put("x-goog-api-format-version", Collections.singletonList("2"));
+        headers.put("User-Agent", Collections.singletonList(userAgent));
+        headers.put("X-Goog-Api-Format-Version", Collections.singletonList("2"));
 
-        final Response response = getDownloader().post(
-                "https://youtubei.googleapis.com/youtubei/v1/" + endpoint + "?key="
-                        + MOBILE_YOUTUBE_KEY, headers, body, localization);
+        final String baseEndpointUrl = YOUTUBEI_V1_GAPIS_URL + endpoint + "?key=" + innerTubeApiKey
+                + DISABLE_PRETTY_PRINT_PARAMETER;
 
+        final Response response = getDownloader().post(isNullOrEmpty(endPartOfUrlRequest)
+                        ? baseEndpointUrl : baseEndpointUrl + endPartOfUrlRequest,
+                headers, body, localization);
         return JsonUtils.toJsonObject(getValidJsonResponseBody(response));
-    }
-
-    public static JsonArray getJsonResponse(final String url, final Localization localization)
-            throws IOException, ExtractionException {
-        final Map<String, List<String>> headers = new HashMap<>();
-        addYouTubeHeaders(headers);
-
-        final Response response = getDownloader().get(url, headers, localization);
-
-        return JsonUtils.toJsonArray(getValidJsonResponseBody(response));
-    }
-
-    public static JsonArray getJsonResponse(@Nonnull final Page page,
-                                            final Localization localization)
-            throws IOException, ExtractionException {
-        final Map<String, List<String>> headers = new HashMap<>();
-        addYouTubeHeaders(headers);
-
-        final Response response = getDownloader().get(page.getUrl(), headers, localization);
-
-        return JsonUtils.toJsonArray(getValidJsonResponseBody(response));
     }
 
     @Nonnull
@@ -971,6 +1120,13 @@ public final class YoutubeParsingHelper {
                         .value("gl", contentCountry.getCountryCode())
                         .value("clientName", "WEB")
                         .value("clientVersion", getClientVersion())
+                        .value("originalUrl", "https://www.youtube.com")
+                        .value("platform", "DESKTOP")
+                    .end()
+                    .object("request")
+                        .array("internalExperimentFlags")
+                        .end()
+                        .value("useSsl", true)
                     .end()
                     .object("user")
                         // TO DO: provide a way to enable restricted mode with:
@@ -991,6 +1147,7 @@ public final class YoutubeParsingHelper {
                     .object("client")
                         .value("clientName", "ANDROID")
                         .value("clientVersion", MOBILE_YOUTUBE_CLIENT_VERSION)
+                        .value("platform", "MOBILE")
                         .value("hl", localization.getLocalizationCode())
                         .value("gl", contentCountry.getCountryCode())
                     .end()
@@ -1004,45 +1161,43 @@ public final class YoutubeParsingHelper {
     }
 
     @Nonnull
-    public static JsonBuilder<JsonObject> prepareDesktopEmbedVideoJsonBuilder(
+    public static JsonBuilder<JsonObject> prepareIosMobileJsonBuilder(
             @Nonnull final Localization localization,
-            @Nonnull final ContentCountry contentCountry,
-            @Nonnull final String videoId) throws IOException, ExtractionException {
+            @Nonnull final ContentCountry contentCountry) {
         // @formatter:off
         return JsonObject.builder()
                 .object("context")
                     .object("client")
+                        .value("clientName", "IOS")
+                        .value("clientVersion", MOBILE_YOUTUBE_CLIENT_VERSION)
+                        // Device model is required to get 60fps streams
+                        .value("deviceModel", IOS_DEVICE_MODEL)
+                        .value("platform", "MOBILE")
                         .value("hl", localization.getLocalizationCode())
                         .value("gl", contentCountry.getCountryCode())
-                        .value("clientName", "WEB")
-                        .value("clientVersion", getClientVersion())
-                        .value("clientScreen", "EMBED")
-                    .end()
-                    .object("thirdParty")
-                        .value("embedUrl", "https://www.youtube.com/watch?v=" + videoId)
                     .end()
                     .object("user")
                         // TO DO: provide a way to enable restricted mode with:
                         // .value("enableSafetyMode", boolean)
                         .value("lockedSafetyMode", false)
                     .end()
-                .end()
-                .value("videoId", videoId);
+                .end();
         // @formatter:on
     }
 
     @Nonnull
-    public static JsonBuilder<JsonObject> prepareAndroidMobileEmbedVideoJsonBuilder(
+    public static JsonBuilder<JsonObject> prepareTvHtml5EmbedJsonBuilder(
             @Nonnull final Localization localization,
             @Nonnull final ContentCountry contentCountry,
             @Nonnull final String videoId) {
-        // @formatter:off
+                // @formatter:off
         return JsonObject.builder()
                 .object("context")
                     .object("client")
-                        .value("clientName", "ANDROID")
-                        .value("clientVersion", MOBILE_YOUTUBE_CLIENT_VERSION)
+                        .value("clientName", "TVHTML5_SIMPLY_EMBEDDED_PLAYER")
+                        .value("clientVersion", TVHTML5_SIMPLY_EMBED_CLIENT_VERSION)
                         .value("clientScreen", "EMBED")
+                        .value("platform", "TV")
                         .value("hl", localization.getLocalizationCode())
                         .value("gl", contentCountry.getCountryCode())
                     .end()
@@ -1054,43 +1209,80 @@ public final class YoutubeParsingHelper {
                         // .value("enableSafetyMode", boolean)
                         .value("lockedSafetyMode", false)
                     .end()
-                .end()
-                .value("videoId", videoId);
+                .end();
         // @formatter:on
     }
 
     @Nonnull
-    public static byte[] createPlayerBodyWithSts(final Localization localization,
-                                                 final ContentCountry contentCountry,
-                                                 final String videoId,
-                                                 final boolean withThirdParty,
-                                                 @Nullable final String sts)
-            throws IOException, ExtractionException {
-        if (withThirdParty) {
-            // @formatter:off
-            return JsonWriter.string(prepareDesktopEmbedVideoJsonBuilder(
-                    localization, contentCountry, videoId)
-                    .object("playbackContext")
-                        .object("contentPlaybackContext")
-                            .value("signatureTimestamp", sts)
-                        .end()
+    public static byte[] createDesktopPlayerBody(
+            @Nonnull final Localization localization,
+            @Nonnull final ContentCountry contentCountry,
+            @Nonnull final String videoId,
+            @Nonnull final String sts,
+            final boolean isTvHtml5DesktopJsonBuilder,
+            @Nonnull final String contentPlaybackNonce) throws IOException, ExtractionException {
+        // @formatter:off
+        return JsonWriter.string((isTvHtml5DesktopJsonBuilder
+                        ? prepareTvHtml5EmbedJsonBuilder(localization, contentCountry, videoId)
+                        : prepareDesktopJsonBuilder(localization, contentCountry))
+                .object("playbackContext")
+                    .object("contentPlaybackContext")
+                        // Some parameters which are sent by the official WEB client in player
+                        // requests, which seems to avoid throttling on streams from it
+                        .value("signatureTimestamp", sts)
+                        .value("referer", "https://www.youtube.com/watch?v=" + videoId)
                     .end()
-                    .done())
-                    .getBytes(UTF_8);
-            // @formatter:on
-        } else {
-            // @formatter:off
-            return JsonWriter.string(prepareDesktopJsonBuilder(localization, contentCountry)
-                    .value("videoId", videoId)
-                    .object("playbackContext")
-                        .object("contentPlaybackContext")
-                            .value("signatureTimestamp", sts)
-                        .end()
-                    .end()
-                    .done())
-                    .getBytes(UTF_8);
-            // @formatter:on
-        }
+                .end()
+                .value(CPN, contentPlaybackNonce)
+                .value(VIDEO_ID, videoId)
+                .value(CONTENT_CHECK_OK, true)
+                .value(RACY_CHECK_OK, true)
+                .done())
+                .getBytes(StandardCharsets.UTF_8);
+        // @formatter:on
+    }
+
+    /**
+     * Get the user-agent string used as the user-agent for InnerTube requests with the Android
+     * client.
+     *
+     * If the {@link Localization} provided is {@code null}, fallbacks to
+     * {@link Localization#DEFAULT the default one}.
+     *
+     * @param localization the {@link Localization} to set in the user-agent
+     * @return the Android user-agent used for InnerTube requests with the Android client,
+     * depending on the {@link Localization} provided
+     */
+    @Nonnull
+    public static String getAndroidUserAgent(@Nullable final Localization localization) {
+        // Spoofing an Android 12 device with the hardcoded version of the Android app
+        return "com.google.android.youtube/" + MOBILE_YOUTUBE_CLIENT_VERSION
+                + " (Linux; U; Android 12; "
+                + (localization != null ? localization.getCountryCode()
+                        : Localization.DEFAULT.getCountryCode())
+                + ") gzip";
+    }
+
+    /**
+     * Get the user-agent string used as the user-agent for InnerTube requests with the iOS
+     * client.
+     *
+     * If the {@link Localization} provided is {@code null}, fallbacks to
+     * {@link Localization#DEFAULT the default one}.
+     *
+     * @param localization the {@link Localization} to set in the user-agent
+     * @return the iOS user-agent used for InnerTube requests with the iOS client, depending on the
+     * {@link Localization} provided
+     */
+    @Nonnull
+    public static String getIosUserAgent(@Nullable final Localization localization) {
+        // Spoofing an iPhone running iOS 15.4 with the hardcoded mobile client version
+        return "com.google.ios.youtube/" + MOBILE_YOUTUBE_CLIENT_VERSION
+                + "(" + IOS_DEVICE_MODEL
+                + "; U; CPU iOS 15_4 like Mac OS X; "
+                + (localization != null ? localization.getCountryCode()
+                        : Localization.DEFAULT.getCountryCode())
+                + ")";
     }
 
     /**
@@ -1126,9 +1318,10 @@ public final class YoutubeParsingHelper {
      * @see #CONSENT_COOKIE
      * @param headers the headers which should be completed
      */
+    @SuppressWarnings("ArraysAsListWithZeroOrOneArgument")
     public static void addCookieHeader(@Nonnull final Map<String, List<String>> headers) {
         if (headers.get("Cookie") == null) {
-            headers.put("Cookie", Collections.singletonList(generateConsentCookie()));
+            headers.put("Cookie", Arrays.asList(generateConsentCookie()));
         } else {
             headers.get("Cookie").add(generateConsentCookie());
         }
@@ -1365,5 +1558,34 @@ public final class YoutubeParsingHelper {
                 .replaceAll("\\\\x7d", "}")
                 .replaceAll("\\\\x5b", "[")
                 .replaceAll("\\\\x5d", "]");
+    }
+
+    /**
+     * Generate a content playback nonce (also called {@code cpn}), sent by YouTube clients in
+     * playback requests (and also for some clients, in the player request body).
+     *
+     * @return a content playback nonce string
+     */
+    @Nonnull
+    public static String generateContentPlaybackNonce() {
+        return RandomStringFromAlphabetGenerator.generate(
+                CONTENT_PLAYBACK_NONCE_ALPHABET, 16, numberGenerator);
+    }
+
+    /**
+     * Try to generate a {@code t} parameter, sent by mobile clients as a query of the player
+     * request.
+     *
+     * <p>
+     * Some researches needs to be done to know how this parameter, unique at each request, is
+     * generated.
+     * </p>
+     *
+     * @return a 12 characters string to try to reproduce the {@code} parameter
+     */
+    @Nonnull
+    public static String generateTParameter() {
+        return RandomStringFromAlphabetGenerator.generate(
+                CONTENT_PLAYBACK_NONCE_ALPHABET, 12, numberGenerator);
     }
 }
