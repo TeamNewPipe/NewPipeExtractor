@@ -33,8 +33,11 @@ import java.util.Map;
 import java.util.Objects;
 
 import static org.schabi.newpipe.extractor.services.youtube.YoutubeParsingHelper.addClientInfoHeaders;
-import static org.schabi.newpipe.extractor.services.youtube.YoutubeParsingHelper.getYoutubeAndroidAppUserAgent;
+import static org.schabi.newpipe.extractor.services.youtube.YoutubeParsingHelper.getAndroidUserAgent;
+import static org.schabi.newpipe.extractor.services.youtube.YoutubeParsingHelper.getIosUserAgent;
 import static org.schabi.newpipe.extractor.services.youtube.YoutubeParsingHelper.isAndroidStreamingUrl;
+import static org.schabi.newpipe.extractor.services.youtube.YoutubeParsingHelper.isIosStreamingUrl;
+import static org.schabi.newpipe.extractor.services.youtube.YoutubeParsingHelper.isTvHtml5SimplyEmbeddedPlayerStreamingUrl;
 import static org.schabi.newpipe.extractor.services.youtube.YoutubeParsingHelper.isWebStreamingUrl;
 import static org.schabi.newpipe.extractor.utils.Utils.EMPTY_STRING;
 import static org.schabi.newpipe.extractor.utils.Utils.isBlank;
@@ -562,54 +565,44 @@ public final class YoutubeDashManifestCreator {
                                                       @Nonnull final ItagItem itagItem,
                                                       final DeliveryType deliveryType)
             throws YoutubeDashManifestCreationException {
-        final boolean isAWebStreamingUrl = isWebStreamingUrl(baseStreamingUrl);
+        final boolean isAHtml5StreamingUrl = isWebStreamingUrl(baseStreamingUrl)
+                || isTvHtml5SimplyEmbeddedPlayerStreamingUrl(baseStreamingUrl);
         final boolean isAnAndroidStreamingUrl = isAndroidStreamingUrl(baseStreamingUrl);
-        final boolean isAnAndroidStreamingUrlAndAPostLiveDvrStream = isAnAndroidStreamingUrl
-                && deliveryType == DeliveryType.LIVE;
-        if (isAWebStreamingUrl) {
+        final boolean isAnIosStreamingUrl = isIosStreamingUrl(baseStreamingUrl);
+        if (isAHtml5StreamingUrl) {
             baseStreamingUrl += ALR_YES;
         }
         baseStreamingUrl = appendRnParamAndSqParamIfNeeded(baseStreamingUrl, deliveryType);
 
         final Downloader downloader = NewPipe.getDownloader();
-        if (isAWebStreamingUrl) {
+        if (isAHtml5StreamingUrl) {
             final String mimeTypeExpected = itagItem.getMediaFormat().getMimeType();
             if (!isNullOrEmpty(mimeTypeExpected)) {
                 return getStreamingWebUrlWithoutRedirects(downloader, baseStreamingUrl,
                         mimeTypeExpected, deliveryType);
             }
-        } else if (isAnAndroidStreamingUrlAndAPostLiveDvrStream) {
+        } else if (isAnAndroidStreamingUrl || isAnIosStreamingUrl) {
             try {
                 final Map<String, List<String>> headers = new HashMap<>();
                 headers.put("User-Agent", Collections.singletonList(
-                        getYoutubeAndroidAppUserAgent(null)));
+                        isAnAndroidStreamingUrl ? getAndroidUserAgent(null)
+                                : getIosUserAgent(null)));
                 final byte[] emptyBody = "".getBytes(StandardCharsets.UTF_8);
                 return downloader.post(baseStreamingUrl, headers, emptyBody);
             } catch (final IOException | ExtractionException e) {
                 throw new YoutubeDashManifestCreationException(
                         "Could not generate the DASH manifest: error when trying to get the "
-                                + "ANDROID streaming post-live-DVR URL response", e);
+                                + (isAnIosStreamingUrl ? "ANDROID" : "IOS")
+                                + " streaming URL response", e);
             }
         }
 
         try {
-            final Map<String, List<String>> headers = new HashMap<>();
-            if (isAnAndroidStreamingUrl) {
-                headers.put("User-Agent", Collections.singletonList(
-                        getYoutubeAndroidAppUserAgent(null)));
-            }
-
-            return downloader.get(baseStreamingUrl, headers);
+            return downloader.get(baseStreamingUrl);
         } catch (final IOException | ExtractionException e) {
-            if (isAnAndroidStreamingUrl) {
                 throw new YoutubeDashManifestCreationException(
-                        "Could not generate the DASH manifest: error when trying to get the "
-                                + "ANDROID streaming URL response", e);
-            } else {
-                throw new YoutubeDashManifestCreationException(
-                        "Could not generate the DASH manifest: error when trying to get the "
-                                + "streaming URL response", e);
-            }
+                    "Could not generate the DASH manifest: error when trying to get the streaming "
+                            + "URL response", e);
         }
     }
 
@@ -834,8 +827,10 @@ public final class YoutubeDashManifestCreator {
      *                                sequence of the stream
      * @param deliveryType            the {@link DeliveryType} of the stream, see the enum for
      *                                possible values
+     * @param itagItem                the {@link ItagItem} which will be used to get the duration
+     *                                of progressive streams
      * @param durationSecondsFallback the duration in seconds, extracted from player response, used
-     *                                as a fallback
+     *                                as a fallback if the duration could not be determined
      * @return a {@link Document} object which contains a {@code <MPD>} element
      * @throws YoutubeDashManifestCreationException if something goes wrong when generating/
      *                                              appending the {@link Document object} or the
@@ -1698,7 +1693,7 @@ public final class YoutubeDashManifestCreator {
     }
 
     /**
-     * Set the clear factor of cached OTF streams
+     * Set the clear factor of cached OTF streams.
      *
      * @param otfStreamsClearFactor the clear factor of OTF streams manifests cache.
      */
@@ -1707,7 +1702,7 @@ public final class YoutubeDashManifestCreator {
     }
 
     /**
-     * Set the clear factor of cached post-live-DVR streams
+     * Set the clear factor of cached post-live-DVR streams.
      *
      * @param postLiveDvrStreamsClearFactor the clear factor of post-live-DVR streams manifests
      *                                      cache.
@@ -1718,7 +1713,7 @@ public final class YoutubeDashManifestCreator {
     }
 
     /**
-     * Set the clear factor of cached progressive streams
+     * Set the clear factor of cached progressive streams.
      *
      * @param progressiveStreamsClearFactor the clear factor of progressive streams manifests
      *                                      cache.
