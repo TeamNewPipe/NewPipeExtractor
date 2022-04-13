@@ -1,8 +1,5 @@
-package org.schabi.newpipe.extractor.search;
+package org.schabi.newpipe.extractor;
 
-import org.schabi.newpipe.extractor.InfoItem;
-import org.schabi.newpipe.extractor.InfoItemExtractor;
-import org.schabi.newpipe.extractor.InfoItemsCollector;
 import org.schabi.newpipe.extractor.channel.ChannelInfoItemExtractor;
 import org.schabi.newpipe.extractor.channel.ChannelInfoItemsCollector;
 import org.schabi.newpipe.extractor.exceptions.ParsingException;
@@ -36,7 +33,8 @@ import java.util.List;
  */
 
 /**
- * Collector for search results
+ * A collector that can handle many extractor types, to be used when a list contains items of
+ * different types (e.g. search)
  * <p>
  * This collector can handle the following extractor types:
  * <ul>
@@ -44,15 +42,15 @@ import java.util.List;
  *     <li>{@link ChannelInfoItemExtractor}</li>
  *     <li>{@link PlaylistInfoItemExtractor}</li>
  * </ul>
- * Calling {@link #extract(InfoItemExtractor)} or {@link #commit(Object)} with any
+ * Calling {@link #extract(InfoItemExtractor)} or {@link #commit(InfoItemExtractor)} with any
  * other extractor type will raise an exception.
  */
-public class InfoItemsSearchCollector extends InfoItemsCollector<InfoItem, InfoItemExtractor> {
+public class MultiInfoItemsCollector extends InfoItemsCollector<InfoItem, InfoItemExtractor> {
     private final StreamInfoItemsCollector streamCollector;
     private final ChannelInfoItemsCollector userCollector;
     private final PlaylistInfoItemsCollector playlistCollector;
 
-    public InfoItemsSearchCollector(int serviceId) {
+    public MultiInfoItemsCollector(final int serviceId) {
         super(serviceId);
         streamCollector = new StreamInfoItemsCollector(serviceId);
         userCollector = new ChannelInfoItemsCollector(serviceId);
@@ -78,7 +76,7 @@ public class InfoItemsSearchCollector extends InfoItemsCollector<InfoItem, InfoI
     }
 
     @Override
-    public InfoItem extract(InfoItemExtractor extractor) throws ParsingException {
+    public InfoItem extract(final InfoItemExtractor extractor) throws ParsingException {
         // Use the corresponding collector for each item extractor type
         if (extractor instanceof StreamInfoItemExtractor) {
             return streamCollector.extract((StreamInfoItemExtractor) extractor);

@@ -1,5 +1,17 @@
 package org.schabi.newpipe.extractor.services.youtube;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.fail;
+import static org.schabi.newpipe.extractor.ExtractorAsserts.assertContains;
+import static org.schabi.newpipe.extractor.ExtractorAsserts.assertIsSecureUrl;
+import static org.schabi.newpipe.extractor.ServiceList.YouTube;
+import static org.schabi.newpipe.extractor.services.DefaultTests.defaultTestGetPageInNewExtractor;
+import static org.schabi.newpipe.extractor.services.DefaultTests.defaultTestMoreItems;
+import static org.schabi.newpipe.extractor.services.DefaultTests.defaultTestRelatedItems;
+
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import org.schabi.newpipe.downloader.DownloaderFactory;
@@ -15,13 +27,6 @@ import org.schabi.newpipe.extractor.services.BaseChannelExtractorTest;
 import org.schabi.newpipe.extractor.services.youtube.extractors.YoutubeChannelExtractor;
 
 import java.io.IOException;
-import java.util.Random;
-
-import static org.junit.jupiter.api.Assertions.*;
-import static org.schabi.newpipe.extractor.ExtractorAsserts.assertContains;
-import static org.schabi.newpipe.extractor.ExtractorAsserts.assertIsSecureUrl;
-import static org.schabi.newpipe.extractor.ServiceList.YouTube;
-import static org.schabi.newpipe.extractor.services.DefaultTests.*;
 
 /**
  * Test for {@link ChannelExtractor}
@@ -33,9 +38,8 @@ public class YoutubeChannelExtractorTest {
     public static class NotAvailable {
         @BeforeAll
         public static void setUp() throws IOException {
-            YoutubeParsingHelper.resetClientVersionAndKey();
-            YoutubeParsingHelper.setNumberGenerator(new Random(1));
-            NewPipe.init(new DownloaderFactory().getDownloader(RESOURCE_PATH + "notAvailable"));
+            YoutubeTestsUtils.ensureStateless();
+            NewPipe.init(DownloaderFactory.getDownloader(RESOURCE_PATH + "notAvailable"));
         }
 
         @Test
@@ -130,9 +134,8 @@ public class YoutubeChannelExtractorTest {
     public static class NotSupported {
         @BeforeAll
         public static void setUp() throws IOException {
-            YoutubeParsingHelper.resetClientVersionAndKey();
-            YoutubeParsingHelper.setNumberGenerator(new Random(1));
-            NewPipe.init(new DownloaderFactory().getDownloader(RESOURCE_PATH + "notSupported"));
+            YoutubeTestsUtils.ensureStateless();
+            NewPipe.init(DownloaderFactory.getDownloader(RESOURCE_PATH + "notSupported"));
         }
 
         @Test
@@ -149,9 +152,8 @@ public class YoutubeChannelExtractorTest {
 
         @BeforeAll
         public static void setUp() throws Exception {
-            YoutubeParsingHelper.resetClientVersionAndKey();
-            YoutubeParsingHelper.setNumberGenerator(new Random(1));
-            NewPipe.init(new DownloaderFactory().getDownloader(RESOURCE_PATH + "gronkh"));
+            YoutubeTestsUtils.ensureStateless();
+            NewPipe.init(DownloaderFactory.getDownloader(RESOURCE_PATH + "gronkh"));
             extractor = (YoutubeChannelExtractor) YouTube
                     .getChannelExtractor("http://www.youtube.com/user/Gronkh");
             extractor.fetchPage();
@@ -246,9 +248,8 @@ public class YoutubeChannelExtractorTest {
 
         @BeforeAll
         public static void setUp() throws Exception {
-            YoutubeParsingHelper.resetClientVersionAndKey();
-            YoutubeParsingHelper.setNumberGenerator(new Random(1));
-            NewPipe.init(new DownloaderFactory().getDownloader(RESOURCE_PATH + "VSauce"));
+            YoutubeTestsUtils.ensureStateless();
+            NewPipe.init(DownloaderFactory.getDownloader(RESOURCE_PATH + "VSauce"));
             extractor = (YoutubeChannelExtractor) YouTube
                     .getChannelExtractor("https://www.youtube.com/user/Vsauce");
             extractor.fetchPage();
@@ -342,9 +343,8 @@ public class YoutubeChannelExtractorTest {
 
         @BeforeAll
         public static void setUp() throws Exception {
-            YoutubeParsingHelper.resetClientVersionAndKey();
-            YoutubeParsingHelper.setNumberGenerator(new Random(1));
-            NewPipe.init(new DownloaderFactory().getDownloader(RESOURCE_PATH + "kurzgesagt"));
+            YoutubeTestsUtils.ensureStateless();
+            NewPipe.init(DownloaderFactory.getDownloader(RESOURCE_PATH + "kurzgesagt"));
             extractor = (YoutubeChannelExtractor) YouTube
                     .getChannelExtractor("https://www.youtube.com/channel/UCsXVk37bltHxD1rDPwtNM8Q");
             extractor.fetchPage();
@@ -399,7 +399,8 @@ public class YoutubeChannelExtractorTest {
 
         @Test
         public void testDescription() throws Exception {
-            ExtractorAsserts.assertContains("small team who want to make science look beautiful", extractor.getDescription());
+            ExtractorAsserts.assertContains("science", extractor.getDescription());
+            ExtractorAsserts.assertContains("animators", extractor.getDescription());
             //TODO: Description get cuts out, because the og:description is optimized and don't have all the content
             //assertTrue(description, description.contains("Currently we make one animation video per month"));
         }
@@ -459,9 +460,8 @@ public class YoutubeChannelExtractorTest {
 
         @BeforeAll
         public static void setUp() throws Exception {
-            YoutubeParsingHelper.resetClientVersionAndKey();
-            YoutubeParsingHelper.setNumberGenerator(new Random(1));
-            NewPipe.init(new DownloaderFactory().getDownloader(RESOURCE_PATH + "captainDisillusion"));
+            YoutubeTestsUtils.ensureStateless();
+            NewPipe.init(DownloaderFactory.getDownloader(RESOURCE_PATH + "captainDisillusion"));
             extractor = (YoutubeChannelExtractor) YouTube
                     .getChannelExtractor("https://www.youtube.com/user/CaptainDisillusion/videos");
             extractor.fetchPage();
@@ -554,9 +554,8 @@ public class YoutubeChannelExtractorTest {
 
         @BeforeAll
         public static void setUp() throws Exception {
-            YoutubeParsingHelper.resetClientVersionAndKey();
-            YoutubeParsingHelper.setNumberGenerator(new Random(1));
-            NewPipe.init(new DownloaderFactory().getDownloader(RESOURCE_PATH + "random"));
+            YoutubeTestsUtils.ensureStateless();
+            NewPipe.init(DownloaderFactory.getDownloader(RESOURCE_PATH + "random"));
             extractor = (YoutubeChannelExtractor) YouTube
                     .getChannelExtractor("https://www.youtube.com/channel/UCUaQMQS9lY5lit3vurpXQ6w");
             extractor.fetchPage();

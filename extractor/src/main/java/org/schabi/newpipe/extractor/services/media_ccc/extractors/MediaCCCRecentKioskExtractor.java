@@ -1,15 +1,17 @@
 package org.schabi.newpipe.extractor.services.media_ccc.extractors;
 
 import com.grack.nanojson.JsonObject;
+
 import org.schabi.newpipe.extractor.exceptions.ParsingException;
 import org.schabi.newpipe.extractor.localization.DateWrapper;
 import org.schabi.newpipe.extractor.services.media_ccc.linkHandler.MediaCCCConferenceLinkHandlerFactory;
 import org.schabi.newpipe.extractor.stream.StreamInfoItemExtractor;
 import org.schabi.newpipe.extractor.stream.StreamType;
 
-import javax.annotation.Nullable;
 import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
+
+import javax.annotation.Nullable;
 
 public class MediaCCCRecentKioskExtractor implements StreamInfoItemExtractor {
 
@@ -45,9 +47,9 @@ public class MediaCCCRecentKioskExtractor implements StreamInfoItemExtractor {
     }
 
     @Override
-    public long getDuration() throws ParsingException {
-        // duration and length have the same value
-        // see https://github.com/voc/voctoweb/blob/master/app/views/public/shared/_event.json.jbuilder
+    public long getDuration() {
+        // duration and length have the same value, see
+        // https://github.com/voc/voctoweb/blob/master/app/views/public/shared/_event.json.jbuilder
         return event.getInt("duration");
     }
 

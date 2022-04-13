@@ -4,7 +4,6 @@ import org.schabi.newpipe.extractor.exceptions.ParsingException;
 import org.schabi.newpipe.extractor.utils.Utils;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 
 public abstract class ListLinkHandlerFactory extends LinkHandlerFactory {
@@ -13,17 +12,13 @@ public abstract class ListLinkHandlerFactory extends LinkHandlerFactory {
     // To Override
     ///////////////////////////////////
 
-    public List<String> getContentFilter(String url) throws ParsingException {
-        return Collections.emptyList();
-    }
+    public abstract String getUrl(String id, List<String> contentFilter, String sortFilter)
+            throws ParsingException;
 
-    public String getSortFilter(String url) throws ParsingException {
-        return "";
-    }
-
-    public abstract String getUrl(String id, List<String> contentFilter, String sortFilter) throws ParsingException;
-
-    public String getUrl(String id, List<String> contentFilter, String sortFilter, String baseUrl) throws ParsingException {
+    public String getUrl(final String id,
+                         final List<String> contentFilter,
+                         final String sortFilter,
+                         final String baseUrl) throws ParsingException {
         return getUrl(id, contentFilter, sortFilter);
     }
 
@@ -39,55 +34,58 @@ public abstract class ListLinkHandlerFactory extends LinkHandlerFactory {
     }
 
     @Override
-    public ListLinkHandler fromUrl(String url, String baseUrl) throws ParsingException {
-        if (url == null) throw new IllegalArgumentException("url may not be null");
+    public ListLinkHandler fromUrl(final String url, final String baseUrl) throws ParsingException {
+        if (url == null) {
+            throw new IllegalArgumentException("url may not be null");
+        }
 
-        return new ListLinkHandler(super.fromUrl(url, baseUrl), getContentFilter(url), getSortFilter(url));
+        return new ListLinkHandler(super.fromUrl(url, baseUrl));
     }
 
     @Override
-    public ListLinkHandler fromId(String id) throws ParsingException {
-        return new ListLinkHandler(super.fromId(id), new ArrayList<String>(0), "");
+    public ListLinkHandler fromId(final String id) throws ParsingException {
+        return new ListLinkHandler(super.fromId(id));
     }
 
     @Override
-    public ListLinkHandler fromId(String id, String baseUrl) throws ParsingException {
-        return new ListLinkHandler(super.fromId(id, baseUrl), new ArrayList<String>(0), "");
+    public ListLinkHandler fromId(final String id, final String baseUrl) throws ParsingException {
+        return new ListLinkHandler(super.fromId(id, baseUrl));
     }
 
-    public ListLinkHandler fromQuery(String id,
-                                     List<String> contentFilters,
-                                     String sortFilter) throws ParsingException {
+    public ListLinkHandler fromQuery(final String id,
+                                     final List<String> contentFilters,
+                                     final String sortFilter) throws ParsingException {
         final String url = getUrl(id, contentFilters, sortFilter);
         return new ListLinkHandler(url, url, id, contentFilters, sortFilter);
     }
 
-    public ListLinkHandler fromQuery(String id,
-                                     List<String> contentFilters,
-                                     String sortFilter, String baseUrl) throws ParsingException {
+    public ListLinkHandler fromQuery(final String id,
+                                     final List<String> contentFilters,
+                                     final String sortFilter,
+                                     final String baseUrl) throws ParsingException {
         final String url = getUrl(id, contentFilters, sortFilter, baseUrl);
         return new ListLinkHandler(url, url, id, contentFilters, sortFilter);
     }
 
 
     /**
-     * For making ListLinkHandlerFactory compatible with LinkHandlerFactory we need to override this,
-     * however it should not be overridden by the actual implementation.
+     * For making ListLinkHandlerFactory compatible with LinkHandlerFactory we need to override
+     * this, however it should not be overridden by the actual implementation.
      *
-     * @param id
      * @return the url corresponding to id without any filters applied
      */
-    public String getUrl(String id) throws ParsingException {
-        return getUrl(id, new ArrayList<String>(0), "");
+    public String getUrl(final String id) throws ParsingException {
+        return getUrl(id, new ArrayList<>(0), "");
     }
 
     @Override
-    public String getUrl(String id, String baseUrl) throws ParsingException {
-        return getUrl(id, new ArrayList<String>(0), "", baseUrl);
+    public String getUrl(final String id, final String baseUrl) throws ParsingException {
+        return getUrl(id, new ArrayList<>(0), "", baseUrl);
     }
 
     /**
-     * Will returns content filter the corresponding extractor can handle like "channels", "videos", "music", etc.
+     * Will returns content filter the corresponding extractor can handle like "channels", "videos",
+     * "music", etc.
      *
      * @return filter that can be applied when building a query for getting a list
      */
@@ -96,7 +94,8 @@ public abstract class ListLinkHandlerFactory extends LinkHandlerFactory {
     }
 
     /**
-     * Will returns sort filter the corresponding extractor can handle like "A-Z", "oldest first", "size", etc.
+     * Will returns sort filter the corresponding extractor can handle like "A-Z", "oldest first",
+     * "size", etc.
      *
      * @return filter that can be applied when building a query for getting a list
      */

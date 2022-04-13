@@ -20,8 +20,10 @@ package org.schabi.newpipe.extractor.services.youtube.linkHandler;
  * along with NewPipe.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+import static org.schabi.newpipe.extractor.services.youtube.YoutubeParsingHelper.isInvidioURL;
+import static org.schabi.newpipe.extractor.services.youtube.YoutubeParsingHelper.isYoutubeURL;
+
 import org.schabi.newpipe.extractor.linkhandler.ListLinkHandlerFactory;
-import org.schabi.newpipe.extractor.services.youtube.YoutubeParsingHelper;
 import org.schabi.newpipe.extractor.utils.Utils;
 
 import java.net.MalformedURLException;
@@ -30,25 +32,28 @@ import java.util.List;
 
 public class YoutubeTrendingLinkHandlerFactory extends ListLinkHandlerFactory {
 
-    public String getUrl(String id, List<String> contentFilters, String sortFilter) {
+    public String getUrl(final String id,
+                         final List<String> contentFilters,
+                         final String sortFilter) {
         return "https://www.youtube.com/feed/trending";
     }
 
     @Override
-    public String getId(String url) {
+    public String getId(final String url) {
         return "Trending";
     }
 
     @Override
     public boolean onAcceptUrl(final String url) {
-        URL urlObj;
+        final URL urlObj;
         try {
             urlObj = Utils.stringToURL(url);
-        } catch (MalformedURLException e) {
+        } catch (final MalformedURLException e) {
             return false;
         }
 
-        String urlPath = urlObj.getPath();
-        return Utils.isHTTP(urlObj) && (YoutubeParsingHelper.isYoutubeURL(urlObj) || YoutubeParsingHelper.isInvidioURL(urlObj)) && urlPath.equals("/feed/trending");
+        final String urlPath = urlObj.getPath();
+        return Utils.isHTTP(urlObj) && (isYoutubeURL(urlObj) || isInvidioURL(urlObj))
+                && urlPath.equals("/feed/trending");
     }
 }

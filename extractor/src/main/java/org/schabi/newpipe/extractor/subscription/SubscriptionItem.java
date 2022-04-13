@@ -4,9 +4,10 @@ import java.io.Serializable;
 
 public class SubscriptionItem implements Serializable {
     private final int serviceId;
-    private final String url, name;
+    private final String url;
+    private final String name;
 
-    public SubscriptionItem(int serviceId, String url, String name) {
+    public SubscriptionItem(final int serviceId, final String url, final String name) {
         this.serviceId = serviceId;
         this.url = url;
         this.name = name;
@@ -26,7 +27,7 @@ public class SubscriptionItem implements Serializable {
 
     @Override
     public String toString() {
-        return getClass().getSimpleName() + "@" + Integer.toHexString(hashCode()) +
-                "[name=" + name + " > " + serviceId + ":" + url + "]";
+        return getClass().getSimpleName() + "@" + Integer.toHexString(hashCode())
+                + "[name=" + name + " > " + serviceId + ":" + url + "]";
     }
 }

@@ -28,13 +28,15 @@ public class BandcampRadioExtractor extends KioskExtractor<StreamInfoItem> {
 
     private JsonObject json = null;
 
-    public BandcampRadioExtractor(final StreamingService streamingService, final ListLinkHandler linkHandler,
+    public BandcampRadioExtractor(final StreamingService streamingService,
+                                  final ListLinkHandler linkHandler,
                                   final String kioskId) {
         super(streamingService, linkHandler, kioskId);
     }
 
     @Override
-    public void onFetchPage(@Nonnull final Downloader downloader) throws IOException, ExtractionException {
+    public void onFetchPage(@Nonnull final Downloader downloader)
+            throws IOException, ExtractionException {
         try {
             json = JsonParser.object().from(
                     getDownloader().get(RADIO_API_URL).responseBody());

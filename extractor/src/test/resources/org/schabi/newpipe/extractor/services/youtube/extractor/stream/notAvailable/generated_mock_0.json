@@ -1,188 +1,12 @@
 {
   "request": {
-    "httpMethod": "POST",
-    "url": "https://www.youtube.com/youtubei/v1/player?key\u003dAIzaSyAO_FJ2SlqU8Q4STEHLGCilw_Y9_11qcW8",
+    "httpMethod": "GET",
+    "url": "https://www.youtube.com/iframe_api",
     "headers": {
       "Accept-Language": [
         "en-GB, en;q\u003d0.9"
-      ],
-      "Origin": [
-        "https://www.youtube.com"
-      ],
-      "X-YouTube-Client-Name": [
-        "1"
-      ],
-      "Referer": [
-        "https://www.youtube.com"
-      ],
-      "X-YouTube-Client-Version": [
-        "2.20210728.00.00"
-      ],
-      "Content-Type": [
-        "application/json"
       ]
     },
-    "dataToSend": [
-      123,
-      34,
-      99,
-      111,
-      110,
-      116,
-      101,
-      120,
-      116,
-      34,
-      58,
-      123,
-      34,
-      99,
-      108,
-      105,
-      101,
-      110,
-      116,
-      34,
-      58,
-      123,
-      34,
-      104,
-      108,
-      34,
-      58,
-      34,
-      101,
-      110,
-      45,
-      71,
-      66,
-      34,
-      44,
-      34,
-      103,
-      108,
-      34,
-      58,
-      34,
-      71,
-      66,
-      34,
-      44,
-      34,
-      99,
-      108,
-      105,
-      101,
-      110,
-      116,
-      78,
-      97,
-      109,
-      101,
-      34,
-      58,
-      34,
-      87,
-      69,
-      66,
-      34,
-      44,
-      34,
-      99,
-      108,
-      105,
-      101,
-      110,
-      116,
-      86,
-      101,
-      114,
-      115,
-      105,
-      111,
-      110,
-      34,
-      58,
-      34,
-      50,
-      46,
-      50,
-      48,
-      50,
-      49,
-      48,
-      55,
-      50,
-      56,
-      46,
-      48,
-      48,
-      46,
-      48,
-      48,
-      34,
-      125,
-      44,
-      34,
-      117,
-      115,
-      101,
-      114,
-      34,
-      58,
-      123,
-      34,
-      108,
-      111,
-      99,
-      107,
-      101,
-      100,
-      83,
-      97,
-      102,
-      101,
-      116,
-      121,
-      77,
-      111,
-      100,
-      101,
-      34,
-      58,
-      102,
-      97,
-      108,
-      115,
-      101,
-      125,
-      125,
-      44,
-      34,
-      118,
-      105,
-      100,
-      101,
-      111,
-      73,
-      100,
-      34,
-      58,
-      34,
-      73,
-      78,
-      86,
-      65,
-      76,
-      73,
-      68,
-      95,
-      73,
-      68,
-      95,
-      34,
-      125
-    ],
     "localization": {
       "languageCode": "en",
       "countryCode": "GB"
@@ -196,30 +20,42 @@
         "h3\u003d\":443\"; ma\u003d2592000,h3-29\u003d\":443\"; ma\u003d2592000,h3-Q050\u003d\":443\"; ma\u003d2592000,h3-Q046\u003d\":443\"; ma\u003d2592000,h3-Q043\u003d\":443\"; ma\u003d2592000,quic\u003d\":443\"; ma\u003d2592000; v\u003d\"46,43\""
       ],
       "cache-control": [
-        "private"
+        "private, max-age\u003d0"
       ],
       "content-type": [
-        "application/json; charset\u003dUTF-8"
+        "text/javascript; charset\u003dutf-8"
+      ],
+      "cross-origin-opener-policy-report-only": [
+        "same-origin; report-to\u003d\"youtube_main\""
+      ],
+      "cross-origin-resource-policy": [
+        "cross-origin"
       ],
       "date": [
-        "Mon, 27 Dec 2021 16:06:44 GMT"
+        "Sat, 02 Apr 2022 17:15:01 GMT"
       ],
       "expires": [
-        "Mon, 27 Dec 2021 16:06:44 GMT"
+        "Sat, 02 Apr 2022 17:15:01 GMT"
       ],
       "p3p": [
-        "CP\u003d\"This is not a P3P policy! See g.co/p3phelp for more info.\""
+        "CP\u003d\"This is not a P3P policy! See http://support.google.com/accounts/answer/151657?hl\u003den-GB for more info.\""
+      ],
+      "permissions-policy": [
+        "ch-ua-arch\u003d*, ch-ua-bitness\u003d*, ch-ua-full-version\u003d*, ch-ua-full-version-list\u003d*, ch-ua-model\u003d*, ch-ua-platform\u003d*, ch-ua-platform-version\u003d*"
+      ],
+      "report-to": [
+        "{\"group\":\"youtube_main\",\"max_age\":2592000,\"endpoints\":[{\"url\":\"https://csp.withgoogle.com/csp/report-to/youtube_main\"}]}"
       ],
       "server": [
         "ESF"
       ],
       "set-cookie": [
-        "CONSENT\u003dPENDING+208; expires\u003dWed, 27-Dec-2023 16:06:44 GMT; path\u003d/; domain\u003d.youtube.com; Secure"
+        "YSC\u003dNPszQ0igNvc; Domain\u003d.youtube.com; Path\u003d/; Secure; HttpOnly; SameSite\u003dnone",
+        "VISITOR_INFO1_LIVE\u003d4xAYoE5opFI; Domain\u003d.youtube.com; Expires\u003dThu, 29-Sep-2022 17:15:01 GMT; Path\u003d/; Secure; HttpOnly; SameSite\u003dnone",
+        "CONSENT\u003dPENDING+169; expires\u003dMon, 01-Apr-2024 17:15:01 GMT; path\u003d/; domain\u003d.youtube.com; Secure"
       ],
-      "vary": [
-        "Origin",
-        "X-Origin",
-        "Referer"
+      "strict-transport-security": [
+        "max-age\u003d31536000"
       ],
       "x-content-type-options": [
         "nosniff"
@@ -231,7 +67,7 @@
         "0"
       ]
     },
-    "responseBody": "{\n  \"responseContext\": {\n    \"visitorData\": \"CgtJX3JrLWgwZ0tDOCiUyaeOBg%3D%3D\",\n    \"serviceTrackingParams\": [\n      {\n        \"service\": \"GFEEDBACK\",\n        \"params\": [\n          {\n            \"key\": \"is_viewed_live\",\n            \"value\": \"False\"\n          },\n          {\n            \"key\": \"logged_in\",\n            \"value\": \"0\"\n          },\n          {\n            \"key\": \"e\",\n            \"value\": \"24129402,24002923,23918597,24129193,24080738,24106566,24143789,23744176,24002022,24109110,24135287,23827034,23934970,24136746,24135236,24142470,24007790,24146886,23984877,24058380,24028143,23946420,9406122,23968386,24001373,24116735,24085811,39321475,24120819,23880831,24045469,24148481,24004644,24007246,24142941,24036948,24077241,23998056,24116717,24143428,24115641,24110902,24106839,23804281,23983296,24131029,23944779,24034168,24077266,23884386,23882502,23966208,24145419,24138703,1714251,24138442,24111165,24141462,24117475,24109690,24140247,24104858,24082662,23880837,24084439,24127638,24141079,24002025,24134152,24045470,23986017\"\n          }\n        ]\n      },\n      {\n        \"service\": \"CSI\",\n        \"params\": [\n          {\n            \"key\": \"c\",\n            \"value\": \"WEB\"\n          },\n          {\n            \"key\": \"cver\",\n            \"value\": \"2.20210728.00.00\"\n          },\n          {\n            \"key\": \"yt_li\",\n            \"value\": \"0\"\n          },\n          {\n            \"key\": \"GetPlayer_rid\",\n            \"value\": \"0x1663d7190830fba5\"\n          }\n        ]\n      },\n      {\n        \"service\": \"GUIDED_HELP\",\n        \"params\": [\n          {\n            \"key\": \"logged_in\",\n            \"value\": \"0\"\n          }\n        ]\n      },\n      {\n        \"service\": \"ECATCHER\",\n        \"params\": [\n          {\n            \"key\": \"client.version\",\n            \"value\": \"2.20211103\"\n          },\n          {\n            \"key\": \"client.name\",\n            \"value\": \"WEB\"\n          },\n          {\n            \"key\": \"client.fexp\",\n            \"value\": \"24129402,24002923,23918597,24129193,24080738,24106566,24143789,23744176,24002022,24109110,24135287,23827034,23934970,24136746,24135236,24142470,24007790,24146886,23984877,24058380,24028143,23946420,9406122,23968386,24001373,24116735,24085811,39321475,24120819,23880831,24045469,24148481,24004644,24007246,24142941,24036948,24077241,23998056,24116717,24143428,24115641,24110902,24106839,23804281,23983296,24131029,23944779,24034168,24077266,23884386,23882502,23966208,24145419,24138703,1714251,24138442,24111165,24141462,24117475,24109690,24140247,24104858,24082662,23880837,24084439,24127638,24141079,24002025,24134152,24045470,23986017\"\n          }\n        ]\n      }\n    ],\n    \"mainAppWebResponseContext\": {\n      \"loggedOut\": true\n    },\n    \"webResponseContextExtensionData\": {\n      \"hasDecorated\": true\n    }\n  },\n  \"trackingParams\": \"CAAQu2kiEwiOh-2groT1AhUpQnoFHfvNDwA\u003d\",\n  \"playabilityStatus\": {\n    \"status\": \"ERROR\",\n    \"reason\": \"Video unavailable\",\n    \"errorScreen\": {\n      \"playerErrorMessageRenderer\": {\n        \"reason\": {\n          \"simpleText\": \"Video unavailable\"\n        },\n        \"thumbnail\": {\n          \"thumbnails\": [\n            {\n              \"url\": \"//s.ytimg.com/yts/img/meh7-vflGevej7.png\",\n              \"width\": 140,\n              \"height\": 100\n            }\n          ]\n        },\n        \"icon\": {\n          \"iconType\": \"ERROR_OUTLINE\"\n        }\n      }\n    },\n    \"contextParams\": \"Q0FBU0FnZ0E\u003d\"\n  },\n  \"frameworkUpdates\": {\n    \"entityBatchUpdate\": {\n      \"mutations\": [\n        {\n          \"entityKey\": \"Eg0KC0lOVkFMSURfSURfIPYBKAE%3D\",\n          \"type\": \"ENTITY_MUTATION_TYPE_REPLACE\",\n          \"payload\": {\n            \"offlineabilityEntity\": {\n              \"key\": \"Eg0KC0lOVkFMSURfSURfIPYBKAE%3D\",\n              \"accessState\": \"OFFLINEABILITY_FEATURE_ACCESS_STATE_UNKNOWN\",\n              \"addToOfflineButtonState\": \"ADD_TO_OFFLINE_BUTTON_STATE_UNKNOWN\"\n            }\n          }\n        }\n      ],\n      \"timestamp\": {\n        \"seconds\": \"1640621204\",\n        \"nanos\": 531183203\n      }\n    }\n  }\n}\n",
-    "latestUrl": "https://www.youtube.com/youtubei/v1/player?key\u003dAIzaSyAO_FJ2SlqU8Q4STEHLGCilw_Y9_11qcW8"
+    "responseBody": "var scriptUrl \u003d \u0027https:\\/\\/www.youtube.com\\/s\\/player\\/449ea0a5\\/www-widgetapi.vflset\\/www-widgetapi.js\u0027;try{var ttPolicy\u003dwindow.trustedTypes.createPolicy(\"youtube-widget-api\",{createScriptURL:function(x){return x}});scriptUrl\u003dttPolicy.createScriptURL(scriptUrl)}catch(e){}if(!window[\"YT\"])var YT\u003d{loading:0,loaded:0};if(!window[\"YTConfig\"])var YTConfig\u003d{\"host\":\"https://www.youtube.com\"};\nif(!YT.loading){YT.loading\u003d1;(function(){var l\u003d[];YT.ready\u003dfunction(f){if(YT.loaded)f();else l.push(f)};window.onYTReady\u003dfunction(){YT.loaded\u003d1;for(var i\u003d0;i\u003cl.length;i++)try{l[i]()}catch(e$0){}};YT.setConfig\u003dfunction(c){for(var k in c)if(c.hasOwnProperty(k))YTConfig[k]\u003dc[k]};var a\u003ddocument.createElement(\"script\");a.type\u003d\"text/javascript\";a.id\u003d\"www-widgetapi-script\";a.src\u003dscriptUrl;a.async\u003dtrue;var c\u003ddocument.currentScript;if(c){var n\u003dc.nonce||c.getAttribute(\"nonce\");if(n)a.setAttribute(\"nonce\",n)}var b\u003d\ndocument.getElementsByTagName(\"script\")[0];b.parentNode.insertBefore(a,b)})()};\n",
+    "latestUrl": "https://www.youtube.com/iframe_api"
   }
 }

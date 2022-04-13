@@ -6,6 +6,7 @@ import com.grack.nanojson.JsonObject;
 import com.grack.nanojson.JsonParser;
 import com.grack.nanojson.JsonParserException;
 import com.grack.nanojson.JsonWriter;
+
 import org.jsoup.Jsoup;
 import org.schabi.newpipe.extractor.NewPipe;
 import org.schabi.newpipe.extractor.exceptions.ParsingException;
@@ -18,18 +19,21 @@ import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.Locale;
 
-public class BandcampExtractorHelper {
+public final class BandcampExtractorHelper {
 
     public static final String BASE_URL = "https://bandcamp.com";
     public static final String BASE_API_URL = BASE_URL + "/api";
+
+    private BandcampExtractorHelper() {
+    }
 
     /**
      * Translate all these parameters together to the URL of the corresponding album or track
      * using the mobile API
      */
-    public static String getStreamUrlFromIds(final long bandId, final long itemId, final String itemType)
-            throws ParsingException {
-
+    public static String getStreamUrlFromIds(final long bandId,
+                                             final long itemId,
+                                             final String itemType) throws ParsingException {
         try {
             final String jsonString = NewPipe.getDownloader().get(
                     BASE_API_URL + "/mobile/22/tralbum_details?band_id=" + bandId
@@ -50,7 +54,7 @@ public class BandcampExtractorHelper {
      * <a href=https://notabug.org/fynngodau/bandcampDirect/wiki/rewindBandcamp+%E2%80%93+Fetching+artist+details>
      * More technical info.</a>
      */
-    public static JsonObject getArtistDetails(String id) throws ParsingException {
+    public static JsonObject getArtistDetails(final String id) throws ParsingException {
         try {
             return
                     JsonParser.object().from(
@@ -91,24 +95,24 @@ public class BandcampExtractorHelper {
     public static boolean isSupportedDomain(final String url) throws ParsingException {
 
         // Accept all bandcamp.com URLs
-        if (url.toLowerCase().matches("https?://.+\\.bandcamp\\.com(/.*)?")) return true;
+        if (url.toLowerCase().matches("https?://.+\\.bandcamp\\.com(/.*)?")) {
+            return true;
+        }
 
         try {
             // Test other URLs for whether they contain a footer that links to bandcamp
-            return Jsoup.parse(
-                    NewPipe.getDownloader().get(url).responseBody()
-            )
+            return Jsoup.parse(NewPipe.getDownloader().get(url).responseBody())
                     .getElementById("pgFt")
                     .getElementById("pgFt-inner")
                     .getElementById("footer-logo-wrapper")
                     .getElementById("footer-logo")
                     .getElementsByClass("hiddenAccess")
                     .text().equals("Bandcamp");
-        } catch (NullPointerException e) {
+        } catch (final NullPointerException e) {
             return false;
-        } catch (IOException | ReCaptchaException e) {
-            throw new ParsingException("Could not determine whether URL is custom domain " +
-                    "(not available? network error?)");
+        } catch (final IOException | ReCaptchaException e) {
+            throw new ParsingException("Could not determine whether URL is custom domain "
+                    + "(not available? network error?)");
         }
     }
 
@@ -121,10 +125,10 @@ public class BandcampExtractorHelper {
         return url.toLowerCase().matches("https?://bandcamp\\.com/\\?show=\\d+");
     }
 
-    static DateWrapper parseDate(final String textDate) throws ParsingException {
+    public static DateWrapper parseDate(final String textDate) throws ParsingException {
         try {
-            final ZonedDateTime zonedDateTime = ZonedDateTime.parse(
-                    textDate, DateTimeFormatter.ofPattern("dd MMM yyyy HH:mm:ss zzz", Locale.ENGLISH));
+            final ZonedDateTime zonedDateTime = ZonedDateTime.parse(textDate,
+                    DateTimeFormatter.ofPattern("dd MMM yyyy HH:mm:ss zzz", Locale.ENGLISH));
             return new DateWrapper(zonedDateTime.toOffsetDateTime(), false);
         } catch (final DateTimeException e) {
             throw new ParsingException("Could not parse date '" + textDate + "'", e);

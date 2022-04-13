@@ -1,5 +1,12 @@
 package org.schabi.newpipe.extractor.services.youtube;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.schabi.newpipe.extractor.ServiceList.YouTube;
+import static org.schabi.newpipe.extractor.services.DefaultTests.assertNoMoreItems;
+import static org.schabi.newpipe.extractor.services.DefaultTests.defaultTestRelatedItems;
+
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import org.schabi.newpipe.downloader.DownloaderFactory;
@@ -10,14 +17,6 @@ import org.schabi.newpipe.extractor.services.BaseListExtractorTest;
 import org.schabi.newpipe.extractor.services.youtube.extractors.YoutubeFeedExtractor;
 
 import java.io.IOException;
-import java.util.Random;
-
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertThrows;
-import static org.junit.jupiter.api.Assertions.assertTrue;
-import static org.schabi.newpipe.extractor.ServiceList.YouTube;
-import static org.schabi.newpipe.extractor.services.DefaultTests.assertNoMoreItems;
-import static org.schabi.newpipe.extractor.services.DefaultTests.defaultTestRelatedItems;
 
 public class YoutubeFeedExtractorTest {
 
@@ -28,9 +27,8 @@ public class YoutubeFeedExtractorTest {
 
         @BeforeAll
         public static void setUp() throws Exception {
-            YoutubeParsingHelper.resetClientVersionAndKey();
-            YoutubeParsingHelper.setNumberGenerator(new Random(1));
-            NewPipe.init(new DownloaderFactory().getDownloader(RESOURCE_PATH));
+            YoutubeTestsUtils.ensureStateless();
+            NewPipe.init(DownloaderFactory.getDownloader(RESOURCE_PATH));
             extractor = (YoutubeFeedExtractor) YouTube
                     .getFeedExtractor("https://www.youtube.com/user/Kurzgesagt");
             extractor.fetchPage();
@@ -84,7 +82,7 @@ public class YoutubeFeedExtractorTest {
 
         @BeforeAll
         public static void setUp() throws IOException {
-            NewPipe.init(new DownloaderFactory().getDownloader(RESOURCE_PATH + "notAvailable/"));
+            NewPipe.init(DownloaderFactory.getDownloader(RESOURCE_PATH + "notAvailable/"));
         }
 
         @Test

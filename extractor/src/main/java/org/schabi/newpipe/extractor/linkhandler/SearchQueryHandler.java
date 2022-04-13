@@ -4,15 +4,15 @@ import java.util.List;
 
 public class SearchQueryHandler extends ListLinkHandler {
 
-    public SearchQueryHandler(String originalUrl,
-                              String url,
-                              String searchString,
-                              List<String> contentFilters,
-                              String sortFilter) {
+    public SearchQueryHandler(final String originalUrl,
+                              final String url,
+                              final String searchString,
+                              final List<String> contentFilters,
+                              final String sortFilter) {
         super(originalUrl, url, searchString, contentFilters, sortFilter);
     }
 
-    public SearchQueryHandler(ListLinkHandler handler) {
+    public SearchQueryHandler(final ListLinkHandler handler) {
         this(handler.originalUrl,
                 handler.url,
                 handler.id,

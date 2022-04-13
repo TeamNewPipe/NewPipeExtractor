@@ -1,11 +1,11 @@
 package org.schabi.newpipe.extractor.linkhandler;
 
+import static org.schabi.newpipe.extractor.utils.Utils.EMPTY_STRING;
+
 import org.schabi.newpipe.extractor.exceptions.ParsingException;
 
-import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
-
-import static org.schabi.newpipe.extractor.utils.Utils.EMPTY_STRING;
 
 public abstract class SearchQueryHandlerFactory extends ListLinkHandlerFactory {
 
@@ -14,9 +14,11 @@ public abstract class SearchQueryHandlerFactory extends ListLinkHandlerFactory {
     ///////////////////////////////////
 
     @Override
-    public abstract String getUrl(String query, List<String> contentFilter, String sortFilter) throws ParsingException;
+    public abstract String getUrl(String query, List<String> contentFilter, String sortFilter)
+            throws ParsingException;
 
-    public String getSearchString(String url) {
+    @SuppressWarnings("unused")
+    public String getSearchString(final String url) {
         return "";
     }
 
@@ -25,28 +27,26 @@ public abstract class SearchQueryHandlerFactory extends ListLinkHandlerFactory {
     ///////////////////////////////////
 
     @Override
-    public String getId(String url) {
+    public String getId(final String url) {
         return getSearchString(url);
     }
 
     @Override
-    public SearchQueryHandler fromQuery(String query,
-                                        List<String> contentFilter,
-                                        String sortFilter) throws ParsingException {
+    public SearchQueryHandler fromQuery(final String query,
+                                        final List<String> contentFilter,
+                                        final String sortFilter) throws ParsingException {
         return new SearchQueryHandler(super.fromQuery(query, contentFilter, sortFilter));
     }
 
-    public SearchQueryHandler fromQuery(String query) throws ParsingException {
-        return fromQuery(query, new ArrayList<>(0), EMPTY_STRING);
+    public SearchQueryHandler fromQuery(final String query) throws ParsingException {
+        return fromQuery(query, Collections.emptyList(), EMPTY_STRING);
     }
 
     /**
      * It's not mandatory for NewPipe to handle the Url
-     *
-     * @param url
      */
     @Override
-    public boolean onAcceptUrl(String url) {
+    public boolean onAcceptUrl(final String url) {
         return false;
     }
 }

@@ -10,7 +10,7 @@ import org.schabi.newpipe.extractor.stream.StreamType;
 import javax.annotation.Nullable;
 
 public class MediaCCCStreamInfoItemExtractor implements StreamInfoItemExtractor {
-    private JsonObject event;
+    private final JsonObject event;
 
     public MediaCCCStreamInfoItemExtractor(final JsonObject event) {
         this.event = event;

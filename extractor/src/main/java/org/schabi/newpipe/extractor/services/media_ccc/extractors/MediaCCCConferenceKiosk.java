@@ -32,8 +32,8 @@ public class MediaCCCConferenceKiosk extends KioskExtractor<ChannelInfoItem> {
     @Nonnull
     @Override
     public InfoItemsPage<ChannelInfoItem> getInitialPage() {
-        JsonArray conferences = doc.getArray("conferences");
-        ChannelInfoItemsCollector collector = new ChannelInfoItemsCollector(getServiceId());
+        final JsonArray conferences = doc.getArray("conferences");
+        final ChannelInfoItemsCollector collector = new ChannelInfoItemsCollector(getServiceId());
         for (int i = 0; i < conferences.size(); i++) {
             collector.commit(new MediaCCCConferenceInfoItemExtractor(conferences.getObject(i)));
         }
@@ -54,7 +54,7 @@ public class MediaCCCConferenceKiosk extends KioskExtractor<ChannelInfoItem> {
                 .responseBody();
         try {
             doc = JsonParser.object().from(site);
-        } catch (JsonParserException jpe) {
+        } catch (final JsonParserException jpe) {
             throw new ExtractionException("Could not parse json.", jpe);
         }
     }

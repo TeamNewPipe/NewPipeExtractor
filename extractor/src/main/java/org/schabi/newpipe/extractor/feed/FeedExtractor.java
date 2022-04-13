@@ -11,7 +11,7 @@ import org.schabi.newpipe.extractor.stream.StreamInfoItem;
  * YouTube is an example of a service that has this alternative available.
  */
 public abstract class FeedExtractor extends ListExtractor<StreamInfoItem> {
-    public FeedExtractor(StreamingService service, ListLinkHandler listLinkHandler) {
+    public FeedExtractor(final StreamingService service, final ListLinkHandler listLinkHandler) {
         super(service, listLinkHandler);
     }
 }

@@ -12,6 +12,7 @@ import javax.annotation.Nonnull;
 
 /**
  * Base class to extractors that have a list (e.g. playlists, users).
+ * @param <R> the info item type this list extractor provides
  */
 public abstract class ListExtractor<R extends InfoItem> extends Extractor {
     /**
@@ -30,7 +31,7 @@ public abstract class ListExtractor<R extends InfoItem> extends Extractor {
      */
     public static final long ITEM_COUNT_MORE_THAN_100 = -3;
 
-    public ListExtractor(StreamingService service, ListLinkHandler linkHandler) {
+    public ListExtractor(final StreamingService service, final ListLinkHandler linkHandler) {
         super(service, linkHandler);
     }
 
@@ -50,8 +51,9 @@ public abstract class ListExtractor<R extends InfoItem> extends Extractor {
      * @return a {@link InfoItemsPage} corresponding to the requested page
      * @see InfoItemsPage#getNextPage()
      */
-    public abstract InfoItemsPage<R> getPage(final Page page) throws IOException, ExtractionException;
+    public abstract InfoItemsPage<R> getPage(Page page) throws IOException, ExtractionException;
 
+    @Nonnull
     @Override
     public ListLinkHandler getLinkHandler() {
         return (ListLinkHandler) super.getLinkHandler();
@@ -64,15 +66,17 @@ public abstract class ListExtractor<R extends InfoItem> extends Extractor {
     /**
      * A class that is used to wrap a list of gathered items and eventual errors, it
      * also contains a field that points to the next available page ({@link #nextPage}).
+     * @param <T> the info item type that this page is supposed to store and provide
      */
     public static class InfoItemsPage<T extends InfoItem> {
         private static final InfoItemsPage<InfoItem> EMPTY =
-                new InfoItemsPage<>(Collections.<InfoItem>emptyList(), null, Collections.<Throwable>emptyList());
+                new InfoItemsPage<>(Collections.emptyList(), null, Collections.emptyList());
 
         /**
          * A convenient method that returns a representation of an empty page.
          *
-         * @return a type-safe page with the list of items and errors empty and the nextPage set to {@code null}.
+         * @return a type-safe page with the list of items and errors empty and the nextPage set to
+         *         {@code null}.
          */
         public static <T extends InfoItem> InfoItemsPage<T> emptyPage() {
             //noinspection unchecked
@@ -97,11 +101,13 @@ public abstract class ListExtractor<R extends InfoItem> extends Extractor {
          */
         private final List<Throwable> errors;
 
-        public InfoItemsPage(InfoItemsCollector<T, ?> collector, Page nextPage) {
+        public InfoItemsPage(final InfoItemsCollector<T, ?> collector, final Page nextPage) {
             this(collector.getItems(), nextPage, collector.getErrors());
         }
 
-        public InfoItemsPage(List<T> itemsList, Page nextPage, List<Throwable> errors) {
+        public InfoItemsPage(final List<T> itemsList,
+                             final Page nextPage,
+                             final List<Throwable> errors) {
             this.itemsList = itemsList;
             this.nextPage = nextPage;
             this.errors = errors;

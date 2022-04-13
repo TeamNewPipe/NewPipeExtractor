@@ -1,6 +1,25 @@
 package org.schabi.newpipe.extractor.services.youtube.extractors;
 
-import com.grack.nanojson.*;
+import static org.schabi.newpipe.extractor.services.youtube.YoutubeParsingHelper.DISABLE_PRETTY_PRINT_PARAMETER;
+import static org.schabi.newpipe.extractor.services.youtube.YoutubeParsingHelper.fixThumbnailUrl;
+import static org.schabi.newpipe.extractor.services.youtube.YoutubeParsingHelper.getTextFromObject;
+import static org.schabi.newpipe.extractor.services.youtube.YoutubeParsingHelper.getUrlFromNavigationEndpoint;
+import static org.schabi.newpipe.extractor.services.youtube.YoutubeParsingHelper.getValidJsonResponseBody;
+import static org.schabi.newpipe.extractor.services.youtube.linkHandler.YoutubeSearchQueryHandlerFactory.MUSIC_ALBUMS;
+import static org.schabi.newpipe.extractor.services.youtube.linkHandler.YoutubeSearchQueryHandlerFactory.MUSIC_ARTISTS;
+import static org.schabi.newpipe.extractor.services.youtube.linkHandler.YoutubeSearchQueryHandlerFactory.MUSIC_PLAYLISTS;
+import static org.schabi.newpipe.extractor.services.youtube.linkHandler.YoutubeSearchQueryHandlerFactory.MUSIC_SONGS;
+import static org.schabi.newpipe.extractor.services.youtube.linkHandler.YoutubeSearchQueryHandlerFactory.MUSIC_VIDEOS;
+import static org.schabi.newpipe.extractor.utils.Utils.EMPTY_STRING;
+import static org.schabi.newpipe.extractor.utils.Utils.UTF_8;
+import static org.schabi.newpipe.extractor.utils.Utils.isNullOrEmpty;
+
+import com.grack.nanojson.JsonArray;
+import com.grack.nanojson.JsonObject;
+import com.grack.nanojson.JsonParser;
+import com.grack.nanojson.JsonParserException;
+import com.grack.nanojson.JsonWriter;
+
 import org.schabi.newpipe.extractor.InfoItem;
 import org.schabi.newpipe.extractor.MetaInfo;
 import org.schabi.newpipe.extractor.Page;
@@ -12,24 +31,21 @@ import org.schabi.newpipe.extractor.exceptions.ReCaptchaException;
 import org.schabi.newpipe.extractor.linkhandler.SearchQueryHandler;
 import org.schabi.newpipe.extractor.localization.DateWrapper;
 import org.schabi.newpipe.extractor.localization.TimeAgoParser;
-import org.schabi.newpipe.extractor.search.InfoItemsSearchCollector;
+import org.schabi.newpipe.extractor.MultiInfoItemsCollector;
 import org.schabi.newpipe.extractor.search.SearchExtractor;
 import org.schabi.newpipe.extractor.services.youtube.YoutubeParsingHelper;
 import org.schabi.newpipe.extractor.utils.JsonUtils;
 import org.schabi.newpipe.extractor.utils.Parser;
 import org.schabi.newpipe.extractor.utils.Utils;
 
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
 import java.io.IOException;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import static org.schabi.newpipe.extractor.services.youtube.YoutubeParsingHelper.*;
-import static org.schabi.newpipe.extractor.services.youtube.linkHandler.YoutubeSearchQueryHandlerFactory.*;
-import static org.schabi.newpipe.extractor.utils.Utils.*;
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 
 public class YoutubeMusicSearchExtractor extends SearchExtractor {
     private JsonObject initialData;
@@ -45,7 +61,7 @@ public class YoutubeMusicSearchExtractor extends SearchExtractor {
         final String[] youtubeMusicKeys = YoutubeParsingHelper.getYoutubeMusicKey();
 
         final String url = "https://music.youtube.com/youtubei/v1/search?alt=json&key="
-                + youtubeMusicKeys[0];
+                + youtubeMusicKeys[0] + DISABLE_PRETTY_PRINT_PARAMETER;
 
         final String params;
 
@@ -162,7 +178,7 @@ public class YoutubeMusicSearchExtractor extends SearchExtractor {
             return false;
         }
 
-        JsonObject firstContent = itemSectionRenderer.getArray("contents").getObject(0);
+        final JsonObject firstContent = itemSectionRenderer.getArray("contents").getObject(0);
 
         return firstContent.has("didYouMeanRenderer")
                 || firstContent.has("showingResultsForRenderer");
@@ -177,7 +193,7 @@ public class YoutubeMusicSearchExtractor extends SearchExtractor {
     @Nonnull
     @Override
     public InfoItemsPage<InfoItem> getInitialPage() throws IOException, ExtractionException {
-        final InfoItemsSearchCollector collector = new InfoItemsSearchCollector(getServiceId());
+        final MultiInfoItemsCollector collector = new MultiInfoItemsCollector(getServiceId());
 
         final JsonArray contents = JsonUtils.getArray(JsonUtils.getArray(initialData,
                 "contents.tabbedSearchResultsRenderer.tabs").getObject(0),
@@ -206,12 +222,12 @@ public class YoutubeMusicSearchExtractor extends SearchExtractor {
             throw new IllegalArgumentException("Page doesn't contain an URL");
         }
 
-        final InfoItemsSearchCollector collector = new InfoItemsSearchCollector(getServiceId());
+        final MultiInfoItemsCollector collector = new MultiInfoItemsCollector(getServiceId());
 
         final String[] youtubeMusicKeys = YoutubeParsingHelper.getYoutubeMusicKey();
 
         // @formatter:off
-        byte[] json = JsonWriter.string()
+        final byte[] json = JsonWriter.string()
             .object()
                 .object("context")
                     .object("client")
@@ -264,7 +280,8 @@ public class YoutubeMusicSearchExtractor extends SearchExtractor {
         return new InfoItemsPage<>(collector, getNextPageFrom(continuations));
     }
 
-    private void collectMusicStreamsFrom(final InfoItemsSearchCollector collector,
+    @SuppressWarnings("MethodLength")
+    private void collectMusicStreamsFrom(final MultiInfoItemsCollector collector,
                                          @Nonnull final JsonArray videos) {
         final TimeAgoParser timeAgoParser = getTimeAgoParser();
 
@@ -331,7 +348,8 @@ public class YoutubeMusicSearchExtractor extends SearchExtractor {
                         @Override
                         public String getUploaderUrl() throws ParsingException {
                             if (searchType.equals(MUSIC_VIDEOS)) {
-                                JsonArray items = info.getObject("menu").getObject("menuRenderer")
+                                final JsonArray items = info.getObject("menu")
+                                        .getObject("menuRenderer")
                                         .getArray("items");
                                 for (final Object item : items) {
                                     final JsonObject menuNavigationItemRenderer =
@@ -354,8 +372,9 @@ public class YoutubeMusicSearchExtractor extends SearchExtractor {
                                         .getObject("musicResponsiveListItemFlexColumnRenderer")
                                         .getObject("text").getArray("runs").getObject(0);
 
-                                if (!navigationEndpointHolder.has("navigationEndpoint"))
+                                if (!navigationEndpointHolder.has("navigationEndpoint")) {
                                     return null;
+                                }
 
                                 final String url = getUrlFromNavigationEndpoint(
                                         navigationEndpointHolder.getObject("navigationEndpoint"));

@@ -33,7 +33,7 @@ public class StreamSegment implements Serializable {
     @Nullable
     private String previewUrl = null;
 
-    public StreamSegment(String title, int startTimeSeconds) {
+    public StreamSegment(final String title, final int startTimeSeconds) {
         this.title = title;
         this.startTimeSeconds = startTimeSeconds;
     }

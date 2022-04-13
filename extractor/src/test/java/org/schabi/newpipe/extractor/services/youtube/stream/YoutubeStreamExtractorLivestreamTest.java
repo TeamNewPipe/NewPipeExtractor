@@ -1,23 +1,21 @@
 package org.schabi.newpipe.extractor.services.youtube.stream;
 
+import static org.schabi.newpipe.extractor.ServiceList.YouTube;
+
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import org.schabi.newpipe.downloader.DownloaderFactory;
 import org.schabi.newpipe.extractor.NewPipe;
 import org.schabi.newpipe.extractor.StreamingService;
 import org.schabi.newpipe.extractor.services.DefaultStreamExtractorTest;
-import org.schabi.newpipe.extractor.services.youtube.YoutubeParsingHelper;
-import org.schabi.newpipe.extractor.services.youtube.extractors.YoutubeStreamExtractor;
+import org.schabi.newpipe.extractor.services.youtube.YoutubeTestsUtils;
 import org.schabi.newpipe.extractor.stream.StreamExtractor;
 import org.schabi.newpipe.extractor.stream.StreamType;
 
 import java.util.Arrays;
 import java.util.List;
-import java.util.Random;
 
 import javax.annotation.Nullable;
-
-import static org.schabi.newpipe.extractor.ServiceList.YouTube;
 
 public class YoutubeStreamExtractorLivestreamTest extends DefaultStreamExtractorTest {
     private static final String RESOURCE_PATH = DownloaderFactory.RESOURCE_PATH + "services/youtube/extractor/stream/";
@@ -28,10 +26,8 @@ public class YoutubeStreamExtractorLivestreamTest extends DefaultStreamExtractor
 
     @BeforeAll
     public static void setUp() throws Exception {
-        YoutubeParsingHelper.resetClientVersionAndKey();
-        YoutubeParsingHelper.setNumberGenerator(new Random(1));
-        YoutubeStreamExtractor.resetDeobfuscationCode();
-        NewPipe.init(new DownloaderFactory().getDownloader(RESOURCE_PATH + "live"));
+        YoutubeTestsUtils.ensureStateless();
+        NewPipe.init(DownloaderFactory.getDownloader(RESOURCE_PATH + "live"));
         extractor = YouTube.getStreamExtractor(URL);
         extractor.fetchPage();
     }
@@ -52,6 +48,7 @@ public class YoutubeStreamExtractorLivestreamTest extends DefaultStreamExtractor
     @Override public StreamType expectedStreamType() { return StreamType.LIVE_STREAM; }
     @Override public String expectedUploaderName() { return "Lofi Girl"; }
     @Override public String expectedUploaderUrl() { return "https://www.youtube.com/channel/UCSJ4gkVC6NrvII8umztf0Ow"; }
+    @Override public long expectedUploaderSubscriberCountAtLeast() { return 9_800_000; }
     @Override public List<String> expectedDescriptionContains() {
         return Arrays.asList("Lofi Girl merch",
                 "Thank you for listening, I hope you will have a good time here");

@@ -18,14 +18,16 @@ public class BandcampPlaylistStreamInfoItemExtractor extends BandcampStreamInfoI
     private String substituteCoverUrl;
     private final StreamingService service;
 
-    public BandcampPlaylistStreamInfoItemExtractor(final JsonObject track, final String uploaderUrl,
+    public BandcampPlaylistStreamInfoItemExtractor(final JsonObject track,
+                                                   final String uploaderUrl,
                                                    final StreamingService service) {
         super(uploaderUrl);
         this.track = track;
         this.service = service;
     }
 
-    public BandcampPlaylistStreamInfoItemExtractor(final JsonObject track, final String uploaderUrl,
+    public BandcampPlaylistStreamInfoItemExtractor(final JsonObject track,
+                                                   final String uploaderUrl,
                                                    final String substituteCoverUrl) {
         this(track, uploaderUrl, (StreamingService) null);
         this.substituteCoverUrl = substituteCoverUrl;

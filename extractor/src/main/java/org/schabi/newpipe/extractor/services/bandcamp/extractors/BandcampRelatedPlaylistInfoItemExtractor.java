@@ -14,7 +14,7 @@ import javax.annotation.Nonnull;
 public class BandcampRelatedPlaylistInfoItemExtractor implements PlaylistInfoItemExtractor {
     private final Element relatedAlbum;
 
-    public BandcampRelatedPlaylistInfoItemExtractor(@Nonnull Element relatedAlbum) {
+    public BandcampRelatedPlaylistInfoItemExtractor(@Nonnull final Element relatedAlbum) {
         this.relatedAlbum = relatedAlbum;
     }
 

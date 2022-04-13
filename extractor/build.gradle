@@ -1,9 +1,25 @@
+plugins {
+    id 'checkstyle'
+}
+
 test {
-//  Pass on downloader type to tests for different CI jobs. See DownloaderFactory.java and ci.yml
+    // Pass on downloader type to tests for different CI jobs. See DownloaderFactory.java and ci.yml
     if (System.properties.containsKey('downloader')) {
         systemProperty('downloader', System.getProperty('downloader'))
     }
     useJUnitPlatform()
+    dependsOn checkstyleMain // run checkstyle when testing
+}
+
+checkstyle {
+    getConfigDirectory().set(rootProject.file("checkstyle"))
+    ignoreFailures false
+    showViolations true
+    toolVersion checkstyleVersion
+}
+
+checkstyleTest {
+    enabled false // do not checkstyle test files
 }
 
 dependencies {
@@ -11,9 +27,11 @@ dependencies {
 
     implementation "com.github.TeamNewPipe:nanojson:$nanojsonVersion"
     implementation 'org.jsoup:jsoup:1.14.3'
-    implementation 'org.mozilla:rhino:1.7.13'
+    implementation 'org.mozilla:rhino:1.7.14'
     implementation "com.github.spotbugs:spotbugs-annotations:$spotbugsVersion"
     implementation 'org.nibor.autolink:autolink:0.10.0'
+
+    checkstyle "com.puppycrawl.tools:checkstyle:$checkstyleVersion"
 
     testImplementation platform("org.junit:junit-bom:$junitVersion")
     testImplementation 'org.junit.jupiter:junit-jupiter-api'
@@ -21,5 +39,5 @@ dependencies {
     testImplementation 'org.junit.jupiter:junit-jupiter-params'
 
     testImplementation "com.squareup.okhttp3:okhttp:3.12.13"
-    testImplementation 'com.google.code.gson:gson:2.8.9'
+    testImplementation 'com.google.code.gson:gson:2.9.0'
 }

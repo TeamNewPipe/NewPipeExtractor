@@ -29,7 +29,8 @@ import java.util.List;
  * along with NewPipe.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-public abstract class InfoItemsCollector<I extends InfoItem, E extends InfoItemExtractor> implements Collector<I, E> {
+public abstract class InfoItemsCollector<I extends InfoItem, E extends InfoItemExtractor>
+        implements Collector<I, E> {
 
     private final List<I> itemList = new ArrayList<>();
     private final List<Throwable> errors = new ArrayList<>();
@@ -77,7 +78,7 @@ public abstract class InfoItemsCollector<I extends InfoItem, E extends InfoItemE
      * Add an error
      * @param error the error
      */
-    protected void addError(Exception error) {
+    protected void addError(final Exception error) {
         errors.add(error);
     }
 
@@ -85,7 +86,7 @@ public abstract class InfoItemsCollector<I extends InfoItem, E extends InfoItemE
      * Add an item
      * @param item the item
      */
-    protected void addItem(I item) {
+    protected void addItem(final I item) {
         itemList.add(item);
     }
 
@@ -98,12 +99,12 @@ public abstract class InfoItemsCollector<I extends InfoItem, E extends InfoItemE
     }
 
     @Override
-    public void commit(E extractor) {
+    public void commit(final E extractor) {
         try {
             addItem(extract(extractor));
-        } catch (FoundAdException ae) {
+        } catch (final FoundAdException ae) {
             // found an ad. Maybe a debug line could be placed here
-        } catch (ParsingException e) {
+        } catch (final ParsingException e) {
             addError(e);
         }
     }

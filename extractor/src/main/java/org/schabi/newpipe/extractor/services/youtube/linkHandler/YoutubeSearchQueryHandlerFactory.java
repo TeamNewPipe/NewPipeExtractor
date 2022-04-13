@@ -11,7 +11,7 @@ import java.util.List;
 import static org.schabi.newpipe.extractor.utils.Utils.UTF_8;
 import static org.schabi.newpipe.extractor.utils.Utils.isNullOrEmpty;
 
-public class YoutubeSearchQueryHandlerFactory extends SearchQueryHandlerFactory {
+public final class YoutubeSearchQueryHandlerFactory extends SearchQueryHandlerFactory {
 
     public static final String ALL = "all";
     public static final String VIDEOS = "videos";
@@ -84,7 +84,10 @@ public class YoutubeSearchQueryHandlerFactory extends SearchQueryHandlerFactory 
 
     @Nonnull
     public static String getSearchParameter(final String contentFilter) {
-        if (isNullOrEmpty(contentFilter)) return "";
+        if (isNullOrEmpty(contentFilter)) {
+            return "";
+        }
+
         switch (contentFilter) {
                 case VIDEOS:
                     return "EgIQAQ%3D%3D";

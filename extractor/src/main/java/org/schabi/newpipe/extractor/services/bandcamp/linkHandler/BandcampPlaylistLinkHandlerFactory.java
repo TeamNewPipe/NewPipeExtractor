@@ -18,8 +18,9 @@ public class BandcampPlaylistLinkHandlerFactory extends ListLinkHandlerFactory {
     }
 
     @Override
-    public String getUrl(final String url, final List<String> contentFilter, final String sortFilter)
-            throws ParsingException {
+    public String getUrl(final String url,
+                         final List<String> contentFilter,
+                         final String sortFilter) throws ParsingException {
         return url;
     }
 
@@ -30,7 +31,9 @@ public class BandcampPlaylistLinkHandlerFactory extends ListLinkHandlerFactory {
     public boolean onAcceptUrl(final String url) throws ParsingException {
 
         // Exclude URLs which do not lead to an album
-        if (!url.toLowerCase().matches("https?://.+\\..+/album/.+")) return false;
+        if (!url.toLowerCase().matches("https?://.+\\..+/album/.+")) {
+            return false;
+        }
 
         // Test whether domain is supported
         return BandcampExtractorHelper.isSupportedDomain(url);

@@ -15,7 +15,7 @@ import org.schabi.newpipe.extractor.downloader.Downloader;
 import org.schabi.newpipe.extractor.exceptions.ExtractionException;
 import org.schabi.newpipe.extractor.exceptions.ParsingException;
 import org.schabi.newpipe.extractor.linkhandler.SearchQueryHandler;
-import org.schabi.newpipe.extractor.search.InfoItemsSearchCollector;
+import org.schabi.newpipe.extractor.MultiInfoItemsCollector;
 import org.schabi.newpipe.extractor.search.SearchExtractor;
 import org.schabi.newpipe.extractor.services.bandcamp.extractors.streaminfoitem.BandcampSearchStreamInfoItemExtractor;
 
@@ -26,7 +26,8 @@ import java.util.List;
 
 public class BandcampSearchExtractor extends SearchExtractor {
 
-    public BandcampSearchExtractor(StreamingService service, SearchQueryHandler linkHandler) {
+    public BandcampSearchExtractor(final StreamingService service,
+                                   final SearchQueryHandler linkHandler) {
         super(service, linkHandler);
     }
 
@@ -47,10 +48,11 @@ public class BandcampSearchExtractor extends SearchExtractor {
         return Collections.emptyList();
     }
 
-    public InfoItemsPage<InfoItem> getPage(final Page page) throws IOException, ExtractionException {
+    public InfoItemsPage<InfoItem> getPage(final Page page)
+            throws IOException, ExtractionException {
         final String html = getDownloader().get(page.getUrl()).responseBody();
 
-        final InfoItemsSearchCollector collector = new InfoItemsSearchCollector(getServiceId());
+        final MultiInfoItemsCollector collector = new MultiInfoItemsCollector(getServiceId());
 
 
         final Document d = Jsoup.parse(html);
@@ -86,8 +88,9 @@ public class BandcampSearchExtractor extends SearchExtractor {
 
         // Count pages
         final Elements pageLists = d.getElementsByClass("pagelist");
-        if (pageLists.isEmpty())
+        if (pageLists.isEmpty()) {
             return new InfoItemsPage<>(collector, null);
+        }
 
         final Elements pages = pageLists.first().getElementsByTag("li");
 
@@ -120,7 +123,7 @@ public class BandcampSearchExtractor extends SearchExtractor {
     }
 
     @Override
-    public void onFetchPage(@Nonnull final Downloader downloader) throws IOException, ExtractionException {
-
+    public void onFetchPage(@Nonnull final Downloader downloader)
+            throws IOException, ExtractionException {
     }
 }

@@ -8,28 +8,36 @@ import org.schabi.newpipe.extractor.utils.Parser;
 
 import java.util.List;
 
-public class PeertubePlaylistLinkHandlerFactory extends ListLinkHandlerFactory {
+public final class PeertubePlaylistLinkHandlerFactory extends ListLinkHandlerFactory {
 
-    private static final PeertubePlaylistLinkHandlerFactory instance = new PeertubePlaylistLinkHandlerFactory();
+    private static final PeertubePlaylistLinkHandlerFactory INSTANCE
+            = new PeertubePlaylistLinkHandlerFactory();
     private static final String ID_PATTERN = "(/videos/watch/playlist/|/w/p/)([^/?&#]*)";
 
+    private PeertubePlaylistLinkHandlerFactory() {
+    }
+
     public static PeertubePlaylistLinkHandlerFactory getInstance() {
-        return instance;
+        return INSTANCE;
     }
 
     @Override
-    public String getUrl(String id, List<String> contentFilters, String sortFilter) {
-        String baseUrl = ServiceList.PeerTube.getBaseUrl();
-        return getUrl(id, contentFilters, sortFilter, baseUrl);
+    public String getUrl(final String id,
+                         final List<String> contentFilters,
+                         final String sortFilter) {
+        return getUrl(id, contentFilters, sortFilter, ServiceList.PeerTube.getBaseUrl());
     }
 
     @Override
-    public String getUrl(String id, List<String> contentFilters, String sortFilter, String baseUrl) {
+    public String getUrl(final String id,
+                         final List<String> contentFilters,
+                         final String sortFilter,
+                         final String baseUrl) {
         return baseUrl + "/api/v1/video-playlists/" + id;
     }
 
     @Override
-    public String getId(String url) throws ParsingException {
+    public String getId(final String url) throws ParsingException {
         return Parser.matchGroup(ID_PATTERN, url, 2);
     }
 
@@ -38,7 +46,7 @@ public class PeertubePlaylistLinkHandlerFactory extends ListLinkHandlerFactory {
         try {
             getId(url);
             return true;
-        } catch (ParsingException e) {
+        } catch (final ParsingException e) {
             return false;
         }
     }

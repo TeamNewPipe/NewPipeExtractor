@@ -14,7 +14,8 @@ public class MediaCCCLiveStreamKioskExtractor implements StreamInfoItemExtractor
     private final String group;
     private final JsonObject roomInfo;
 
-    public MediaCCCLiveStreamKioskExtractor(final JsonObject conferenceInfo, final String group,
+    public MediaCCCLiveStreamKioskExtractor(final JsonObject conferenceInfo,
+                                            final String group,
                                             final JsonObject roomInfo) {
         this.conferenceInfo = conferenceInfo;
         this.group = group;
@@ -39,7 +40,7 @@ public class MediaCCCLiveStreamKioskExtractor implements StreamInfoItemExtractor
     @Override
     public StreamType getStreamType() throws ParsingException {
         boolean isVideo = false;
-        for (Object stream : roomInfo.getArray("streams")) {
+        for (final Object stream : roomInfo.getArray("streams")) {
             if ("video".equals(((JsonObject) stream).getString("type"))) {
                 isVideo = true;
                 break;
@@ -65,7 +66,8 @@ public class MediaCCCLiveStreamKioskExtractor implements StreamInfoItemExtractor
 
     @Override
     public String getUploaderName() throws ParsingException {
-        return conferenceInfo.getString("conference") + " - " + group + " - " + roomInfo.getString("display");
+        return conferenceInfo.getString("conference") + " - " + group
+                + " - " + roomInfo.getString("display");
     }
 
     @Override

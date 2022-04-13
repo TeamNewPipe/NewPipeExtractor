@@ -23,9 +23,9 @@ import java.util.ArrayList;
 import java.util.List;
 
 import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
 
 import static org.schabi.newpipe.extractor.services.soundcloud.SoundcloudParsingHelper.SOUNDCLOUD_API_V2_URL;
+import static org.schabi.newpipe.extractor.utils.Utils.EMPTY_STRING;
 import static org.schabi.newpipe.extractor.utils.Utils.isNullOrEmpty;
 
 public class SoundcloudPlaylistExtractor extends PlaylistExtractor {
@@ -67,7 +67,7 @@ public class SoundcloudPlaylistExtractor extends PlaylistExtractor {
         return playlist.getString("title");
     }
 
-    @Nullable
+    @Nonnull
     @Override
     public String getThumbnailUrl() {
         String artworkUrl = playlist.getString("artwork_url");
@@ -80,22 +80,19 @@ public class SoundcloudPlaylistExtractor extends PlaylistExtractor {
 
                 for (final StreamInfoItem item : infoItems.getItems()) {
                     artworkUrl = item.getThumbnailUrl();
-                    if (!isNullOrEmpty(artworkUrl)) break;
+                    if (!isNullOrEmpty(artworkUrl)) {
+                        break;
+                    }
                 }
             } catch (final Exception ignored) {
             }
 
             if (artworkUrl == null) {
-                return null;
+                return EMPTY_STRING;
             }
         }
 
         return artworkUrl.replace("large.jpg", "crop.jpg");
-    }
-
-    @Override
-    public String getBannerUrl() {
-        return null;
     }
 
     @Override
@@ -125,42 +122,26 @@ public class SoundcloudPlaylistExtractor extends PlaylistExtractor {
 
     @Nonnull
     @Override
-    public String getSubChannelName() {
-        return "";
-    }
-
-    @Nonnull
-    @Override
-    public String getSubChannelUrl() {
-        return "";
-    }
-
-    @Nonnull
-    @Override
-    public String getSubChannelAvatarUrl() {
-        return "";
-    }
-
-    @Nonnull
-    @Override
     public InfoItemsPage<StreamInfoItem> getInitialPage() {
         final StreamInfoItemsCollector streamInfoItemsCollector =
                 new StreamInfoItemsCollector(getServiceId());
         final List<String> ids = new ArrayList<>();
 
-        final JsonArray tracks = playlist.getArray("tracks");
-        for (final Object o : tracks) {
-            if (o instanceof JsonObject) {
-                final JsonObject track = (JsonObject) o;
-                if (track.has("title")) { // i.e. if full info is available
-                    streamInfoItemsCollector.commit(new SoundcloudStreamInfoItemExtractor(track));
-                } else {
-                    // %09d would be enough, but a 0 before the number does not create problems, so
-                    // let's be sure
-                    ids.add(String.format("%010d", track.getInt("id")));
-                }
-            }
-        }
+        playlist.getArray("tracks")
+                .stream()
+                .filter(JsonObject.class::isInstance)
+                .map(JsonObject.class::cast)
+                .forEachOrdered(track -> {
+                    // i.e. if full info is available
+                    if (track.has("title")) {
+                        streamInfoItemsCollector.commit(
+                                new SoundcloudStreamInfoItemExtractor(track));
+                    } else {
+                        // %09d would be enough, but a 0 before the number does not create
+                        // problems, so let's be sure
+                        ids.add(String.format("%010d", track.getInt("id")));
+                    }
+                });
 
         return new InfoItemsPage<>(streamInfoItemsCollector, new Page(ids));
     }

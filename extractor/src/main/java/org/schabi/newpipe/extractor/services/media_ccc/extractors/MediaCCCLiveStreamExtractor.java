@@ -2,50 +2,51 @@ package org.schabi.newpipe.extractor.services.media_ccc.extractors;
 
 import com.grack.nanojson.JsonArray;
 import com.grack.nanojson.JsonObject;
+
 import org.schabi.newpipe.extractor.MediaFormat;
-import org.schabi.newpipe.extractor.MetaInfo;
 import org.schabi.newpipe.extractor.StreamingService;
 import org.schabi.newpipe.extractor.downloader.Downloader;
 import org.schabi.newpipe.extractor.exceptions.ExtractionException;
 import org.schabi.newpipe.extractor.exceptions.ParsingException;
 import org.schabi.newpipe.extractor.linkhandler.LinkHandler;
-import org.schabi.newpipe.extractor.localization.DateWrapper;
-import org.schabi.newpipe.extractor.stream.*;
+import org.schabi.newpipe.extractor.stream.AudioStream;
+import org.schabi.newpipe.extractor.stream.Description;
+import org.schabi.newpipe.extractor.stream.StreamExtractor;
+import org.schabi.newpipe.extractor.stream.StreamType;
+import org.schabi.newpipe.extractor.stream.VideoStream;
 
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
-import java.util.Locale;
+
+import javax.annotation.Nonnull;
 
 public class MediaCCCLiveStreamExtractor extends StreamExtractor {
-    private JsonArray doc = null;
     private JsonObject conference = null;
     private String group = "";
     private JsonObject room = null;
 
-    public MediaCCCLiveStreamExtractor(StreamingService service, LinkHandler linkHandler) {
+    public MediaCCCLiveStreamExtractor(final StreamingService service,
+                                       final LinkHandler linkHandler) {
         super(service, linkHandler);
     }
 
     @Override
-    public void onFetchPage(@Nonnull Downloader downloader) throws IOException, ExtractionException {
-        doc = MediaCCCParsingHelper.getLiveStreams(downloader, getExtractorLocalization());
+    public void onFetchPage(@Nonnull final Downloader downloader)
+            throws IOException, ExtractionException {
+        final JsonArray doc =
+                MediaCCCParsingHelper.getLiveStreams(downloader, getExtractorLocalization());
         // find correct room
         for (int c = 0; c < doc.size(); c++) {
-            final JsonObject conference = doc.getObject(c);
+            conference = doc.getObject(c);
             final JsonArray groups = conference.getArray("groups");
             for (int g = 0; g < groups.size(); g++) {
-                final String group = groups.getObject(g).getString("group");
+                group = groups.getObject(g).getString("group");
                 final JsonArray rooms = groups.getObject(g).getArray("rooms");
                 for (int r = 0; r < rooms.size(); r++) {
-                    final JsonObject room = rooms.getObject(r);
-                    if (getId().equals(conference.getString("slug") + "/" + room.getString("slug"))) {
-                        this.conference = conference;
-                        this.group = group;
-                        this.room = room;
+                    room = rooms.getObject(r);
+                    if (getId().equals(
+                            conference.getString("slug") + "/" + room.getString("slug"))) {
                         return;
                     }
                 }
@@ -69,7 +70,8 @@ public class MediaCCCLiveStreamExtractor extends StreamExtractor {
     @Nonnull
     @Override
     public Description getDescription() throws ParsingException {
-        return new Description(conference.getString("description") + " - " + group, Description.PLAIN_TEXT);
+        return new Description(conference.getString("description")
+                + " - " + group, Description.PLAIN_TEXT);
     }
 
     @Override
@@ -93,12 +95,11 @@ public class MediaCCCLiveStreamExtractor extends StreamExtractor {
     @Override
     public String getHlsUrl() {
         // TODO: There are multiple HLS streams.
-        //       Make getHlsUrl() and getDashMpdUrl() return lists of VideoStreams, so the user can choose a resolution.
+        //       Make getHlsUrl() and getDashMpdUrl() return lists of VideoStreams,
+        //       so the user can choose a resolution.
         for (int s = 0; s < room.getArray("streams").size(); s++) {
             final JsonObject stream = room.getArray("streams").getObject(s);
             if (stream.getString("type").equals("video")) {
-                final String resolution = stream.getArray("videoSize").getInt(0) + "x"
-                        + stream.getArray("videoSize").getInt(1);
                 if (stream.has("hls")) {
                     return stream.getObject("urls").getObject("hls").getString("url");
                 }
@@ -115,7 +116,8 @@ public class MediaCCCLiveStreamExtractor extends StreamExtractor {
             if (stream.getString("type").equals("audio")) {
                 for (final String type : stream.getObject("urls").keySet()) {
                     final JsonObject url = stream.getObject("urls").getObject(type);
-                    audioStreams.add(new AudioStream(url.getString("url"), MediaFormat.getFromSuffix(type), -1));
+                    audioStreams.add(new AudioStream(url.getString("url"),
+                            MediaFormat.getFromSuffix(type), -1));
                 }
             }
         }

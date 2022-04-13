@@ -10,20 +10,25 @@ import java.util.List;
 
 import static org.schabi.newpipe.extractor.utils.Utils.UTF_8;
 
-public class PeertubeSearchQueryHandlerFactory extends SearchQueryHandlerFactory {
+public final class PeertubeSearchQueryHandlerFactory extends SearchQueryHandlerFactory {
 
     public static final String VIDEOS = "videos";
     public static final String SEPIA_VIDEOS = "sepia_videos"; // sepia is the global index
     public static final String SEPIA_BASE_URL = "https://sepiasearch.org";
     public static final String SEARCH_ENDPOINT = "/api/v1/search/videos";
 
+    private PeertubeSearchQueryHandlerFactory() {
+    }
+
     public static PeertubeSearchQueryHandlerFactory getInstance() {
         return new PeertubeSearchQueryHandlerFactory();
     }
 
     @Override
-    public String getUrl(String searchString, List<String> contentFilters, String sortFilter) throws ParsingException {
-        String baseUrl;
+    public String getUrl(final String searchString,
+                         final List<String> contentFilters,
+                         final String sortFilter) throws ParsingException {
+        final String baseUrl;
         if (!contentFilters.isEmpty() && contentFilters.get(0).startsWith("sepia_")) {
             baseUrl = SEPIA_BASE_URL;
         } else {
@@ -33,10 +38,13 @@ public class PeertubeSearchQueryHandlerFactory extends SearchQueryHandlerFactory
     }
 
     @Override
-    public String getUrl(String searchString, List<String> contentFilters, String sortFilter, String baseUrl) throws ParsingException {
+    public String getUrl(final String searchString,
+                         final List<String> contentFilters,
+                         final String sortFilter,
+                         final String baseUrl) throws ParsingException {
         try {
             return baseUrl + SEARCH_ENDPOINT + "?search=" + URLEncoder.encode(searchString, UTF_8);
-        } catch (UnsupportedEncodingException e) {
+        } catch (final UnsupportedEncodingException e) {
             throw new ParsingException("Could not encode query", e);
         }
     }

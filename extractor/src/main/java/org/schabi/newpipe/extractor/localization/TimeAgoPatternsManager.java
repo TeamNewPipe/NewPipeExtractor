@@ -6,14 +6,18 @@ import org.schabi.newpipe.extractor.timeago.PatternsManager;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
-public class TimeAgoPatternsManager {
-    @Nullable
-    private static PatternsHolder getPatternsFor(@Nonnull Localization localization) {
-        return PatternsManager.getPatterns(localization.getLanguageCode(), localization.getCountryCode());
+public final class TimeAgoPatternsManager {
+    private TimeAgoPatternsManager() {
     }
 
     @Nullable
-    public static TimeAgoParser getTimeAgoParserFor(@Nonnull Localization localization) {
+    private static PatternsHolder getPatternsFor(@Nonnull final Localization localization) {
+        return PatternsManager.getPatterns(localization.getLanguageCode(),
+                localization.getCountryCode());
+    }
+
+    @Nullable
+    public static TimeAgoParser getTimeAgoParserFor(@Nonnull final Localization localization) {
         final PatternsHolder holder = getPatternsFor(localization);
 
         if (holder == null) {

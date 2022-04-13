@@ -1,6 +1,23 @@
 package org.schabi.newpipe.extractor.services.youtube.extractors;
 
-import com.grack.nanojson.*;
+import static org.schabi.newpipe.extractor.services.youtube.YoutubeParsingHelper.DISABLE_PRETTY_PRINT_PARAMETER;
+import static org.schabi.newpipe.extractor.services.youtube.YoutubeParsingHelper.YOUTUBEI_V1_URL;
+import static org.schabi.newpipe.extractor.services.youtube.YoutubeParsingHelper.getJsonPostResponse;
+import static org.schabi.newpipe.extractor.services.youtube.YoutubeParsingHelper.getKey;
+import static org.schabi.newpipe.extractor.services.youtube.YoutubeParsingHelper.getTextFromObject;
+import static org.schabi.newpipe.extractor.services.youtube.YoutubeParsingHelper.getValidJsonResponseBody;
+import static org.schabi.newpipe.extractor.services.youtube.YoutubeParsingHelper.prepareDesktopJsonBuilder;
+import static org.schabi.newpipe.extractor.services.youtube.linkHandler.YoutubeSearchQueryHandlerFactory.getSearchParameter;
+import static org.schabi.newpipe.extractor.utils.Utils.UTF_8;
+import static org.schabi.newpipe.extractor.utils.Utils.isNullOrEmpty;
+
+import com.grack.nanojson.JsonArray;
+import com.grack.nanojson.JsonBuilder;
+import com.grack.nanojson.JsonObject;
+import com.grack.nanojson.JsonParser;
+import com.grack.nanojson.JsonParserException;
+import com.grack.nanojson.JsonWriter;
+
 import org.schabi.newpipe.extractor.InfoItem;
 import org.schabi.newpipe.extractor.MetaInfo;
 import org.schabi.newpipe.extractor.Page;
@@ -11,20 +28,16 @@ import org.schabi.newpipe.extractor.exceptions.ParsingException;
 import org.schabi.newpipe.extractor.linkhandler.SearchQueryHandler;
 import org.schabi.newpipe.extractor.localization.Localization;
 import org.schabi.newpipe.extractor.localization.TimeAgoParser;
-import org.schabi.newpipe.extractor.search.InfoItemsSearchCollector;
+import org.schabi.newpipe.extractor.MultiInfoItemsCollector;
 import org.schabi.newpipe.extractor.search.SearchExtractor;
 import org.schabi.newpipe.extractor.services.youtube.YoutubeParsingHelper;
 import org.schabi.newpipe.extractor.utils.JsonUtils;
 
-import javax.annotation.Nonnull;
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.List;
 
-import static org.schabi.newpipe.extractor.services.youtube.linkHandler.YoutubeSearchQueryHandlerFactory.getSearchParameter;
-import static org.schabi.newpipe.extractor.services.youtube.YoutubeParsingHelper.*;
-import static org.schabi.newpipe.extractor.utils.Utils.UTF_8;
-import static org.schabi.newpipe.extractor.utils.Utils.isNullOrEmpty;
+import javax.annotation.Nonnull;
 
 /*
  * Created by Christian Schabesberger on 22.07.2018
@@ -132,7 +145,7 @@ public class YoutubeSearchExtractor extends SearchExtractor {
     @Nonnull
     @Override
     public InfoItemsPage<InfoItem> getInitialPage() throws IOException, ExtractionException {
-        final InfoItemsSearchCollector collector = new InfoItemsSearchCollector(getServiceId());
+        final MultiInfoItemsCollector collector = new MultiInfoItemsCollector(getServiceId());
 
         final JsonArray sections = initialData.getObject("contents")
                 .getObject("twoColumnSearchResultsRenderer").getObject("primaryContents")
@@ -163,7 +176,7 @@ public class YoutubeSearchExtractor extends SearchExtractor {
         }
 
         final Localization localization = getExtractorLocalization();
-        final InfoItemsSearchCollector collector = new InfoItemsSearchCollector(getServiceId());
+        final MultiInfoItemsCollector collector = new MultiInfoItemsCollector(getServiceId());
 
         // @formatter:off
         final byte[] json = JsonWriter.string(prepareDesktopJsonBuilder(localization,
@@ -179,7 +192,7 @@ public class YoutubeSearchExtractor extends SearchExtractor {
         final JsonObject ajaxJson;
         try {
             ajaxJson = JsonParser.object().from(responseBody);
-        } catch (JsonParserException e) {
+        } catch (final JsonParserException e) {
             throw new ParsingException("Could not parse JSON", e);
         }
 
@@ -195,7 +208,7 @@ public class YoutubeSearchExtractor extends SearchExtractor {
                 .getObject("continuationItemRenderer")));
     }
 
-    private void collectStreamsFrom(final InfoItemsSearchCollector collector,
+    private void collectStreamsFrom(final MultiInfoItemsCollector collector,
                                     final JsonArray contents) throws NothingFoundException,
             ParsingException {
         final TimeAgoParser timeAgoParser = getTimeAgoParser();
@@ -227,7 +240,8 @@ public class YoutubeSearchExtractor extends SearchExtractor {
         final String token = continuationItemRenderer.getObject("continuationEndpoint")
                 .getObject("continuationCommand").getString("token");
 
-        final String url = YOUTUBEI_V1_URL + "search?key=" + getKey();
+        final String url = YOUTUBEI_V1_URL + "search?key=" + getKey()
+                + DISABLE_PRETTY_PRINT_PARAMETER;
 
         return new Page(url, token);
     }

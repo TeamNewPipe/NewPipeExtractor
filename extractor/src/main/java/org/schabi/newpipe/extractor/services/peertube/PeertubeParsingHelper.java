@@ -17,7 +17,7 @@ import java.time.OffsetDateTime;
 import java.time.ZoneOffset;
 import java.time.format.DateTimeParseException;
 
-public class PeertubeParsingHelper {
+public final class PeertubeParsingHelper {
     public static final String START_KEY = "start";
     public static final String COUNT_KEY = "count";
     public static final int ITEMS_PER_PAGE = 12;
@@ -33,10 +33,11 @@ public class PeertubeParsingHelper {
         }
     }
 
-    public static OffsetDateTime parseDateFrom(final String textualUploadDate) throws ParsingException {
+    public static OffsetDateTime parseDateFrom(final String textualUploadDate)
+            throws ParsingException {
         try {
             return OffsetDateTime.ofInstant(Instant.parse(textualUploadDate), ZoneOffset.UTC);
-        } catch (DateTimeParseException e) {
+        } catch (final DateTimeParseException e) {
             throw new ParsingException("Could not parse date: \"" + textualUploadDate + "\"", e);
         }
     }
@@ -45,25 +46,31 @@ public class PeertubeParsingHelper {
         final String prevStart;
         try {
             prevStart = Parser.matchGroup1(START_PATTERN, prevPageUrl);
-        } catch (Parser.RegexException e) {
+        } catch (final Parser.RegexException e) {
             return null;
         }
-        if (Utils.isBlank(prevStart)) return null;
+        if (Utils.isBlank(prevStart)) {
+            return null;
+        }
+
         final long nextStart;
         try {
             nextStart = Long.parseLong(prevStart) + ITEMS_PER_PAGE;
-        } catch (NumberFormatException e) {
+        } catch (final NumberFormatException e) {
             return null;
         }
 
         if (nextStart >= total) {
             return null;
         } else {
-            return new Page(prevPageUrl.replace(START_KEY + "=" + prevStart, START_KEY + "=" + nextStart));
+            return new Page(prevPageUrl.replace(
+                    START_KEY + "=" + prevStart, START_KEY + "=" + nextStart));
         }
     }
 
-    public static void collectStreamsFrom(final InfoItemsCollector collector, final JsonObject json, final String baseUrl) throws ParsingException {
+    public static void collectStreamsFrom(final InfoItemsCollector collector,
+                                          final JsonObject json,
+                                          final String baseUrl) throws ParsingException {
         collectStreamsFrom(collector, json, baseUrl, false);
     }
 
@@ -74,13 +81,15 @@ public class PeertubeParsingHelper {
      * @param json      the file to retrieve data from
      * @param baseUrl   the base Url of the instance
      * @param sepia     if we should use PeertubeSepiaStreamInfoItemExtractor
-     * @throws ParsingException
      */
-    public static void collectStreamsFrom(final InfoItemsCollector collector, final JsonObject json, final String baseUrl, boolean sepia) throws ParsingException {
+    public static void collectStreamsFrom(final InfoItemsCollector collector,
+                                          final JsonObject json,
+                                          final String baseUrl,
+                                          final boolean sepia) throws ParsingException {
         final JsonArray contents;
         try {
             contents = (JsonArray) JsonUtils.getValue(json, "data");
-        } catch (Exception e) {
+        } catch (final Exception e) {
             throw new ParsingException("Unable to extract list info", e);
         }
 
@@ -93,7 +102,7 @@ public class PeertubeParsingHelper {
                     item = item.getObject("video");
                 }
 
-                PeertubeStreamInfoItemExtractor extractor;
+                final PeertubeStreamInfoItemExtractor extractor;
                 if (sepia) {
                     extractor = new PeertubeSepiaStreamInfoItemExtractor(item, baseUrl);
                 } else {

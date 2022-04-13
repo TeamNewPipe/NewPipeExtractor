@@ -6,9 +6,10 @@ import org.schabi.newpipe.extractor.playlist.PlaylistInfoItemExtractor;
 import javax.annotation.Nonnull;
 
 public class BandcampPlaylistInfoItemExtractor implements PlaylistInfoItemExtractor {
-    private final Element searchResult, resultInfo;
+    private final Element searchResult;
+    private final Element resultInfo;
 
-    public BandcampPlaylistInfoItemExtractor(@Nonnull Element searchResult) {
+    public BandcampPlaylistInfoItemExtractor(@Nonnull final Element searchResult) {
         this.searchResult = searchResult;
         resultInfo = searchResult.getElementsByClass("result-info").first();
     }
@@ -41,6 +42,8 @@ public class BandcampPlaylistInfoItemExtractor implements PlaylistInfoItemExtrac
                 .getElementsByTag("img").first();
         if (img != null) {
             return img.attr("src");
-        } else return null;
+        } else {
+            return null;
+        }
     }
 }

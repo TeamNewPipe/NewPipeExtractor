@@ -7,7 +7,9 @@ import org.schabi.newpipe.extractor.utils.Parser;
 public class MediaCCCLiveStreamLinkHandlerFactory extends LinkHandlerFactory {
     public static final String VIDEO_API_ENDPOINT = "https://api.media.ccc.de/public/events/";
     private static final String VIDEO_PATH = "https://streaming.media.ccc.de/v/";
-    private static final String ID_PATTERN = "(?:(?:(?:api\\.)?media\\.ccc\\.de/public/events/)|(?:media\\.ccc\\.de/v/))([^/?&#]*)";
+    private static final String ID_PATTERN
+            = "(?:(?:(?:api\\.)?media\\.ccc\\.de/public/events/)"
+            + "|(?:media\\.ccc\\.de/v/))([^/?&#]*)";
 
     @Override
     public String getId(final String url) throws ParsingException {
@@ -23,7 +25,7 @@ public class MediaCCCLiveStreamLinkHandlerFactory extends LinkHandlerFactory {
     public boolean onAcceptUrl(final String url) {
         try {
             return getId(url) != null;
-        } catch (ParsingException e) {
+        } catch (final ParsingException e) {
             return false;
         }
     }

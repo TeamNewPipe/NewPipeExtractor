@@ -10,19 +10,21 @@ public abstract class ListInfo<T extends InfoItem> extends Info {
     private final List<String> contentFilters;
     private final String sortFilter;
 
-    public ListInfo(int serviceId,
-                    String id,
-                    String url,
-                    String originalUrl,
-                    String name,
-                    List<String> contentFilter,
-                    String sortFilter) {
+    public ListInfo(final int serviceId,
+                    final String id,
+                    final String url,
+                    final String originalUrl,
+                    final String name,
+                    final List<String> contentFilter,
+                    final String sortFilter) {
         super(serviceId, id, url, originalUrl, name);
         this.contentFilters = contentFilter;
         this.sortFilter = sortFilter;
     }
 
-    public ListInfo(int serviceId, ListLinkHandler listUrlIdHandler, String name) {
+    public ListInfo(final int serviceId,
+                    final ListLinkHandler listUrlIdHandler,
+                    final String name) {
         super(serviceId, listUrlIdHandler, name);
         this.contentFilters = listUrlIdHandler.getContentFilters();
         this.sortFilter = listUrlIdHandler.getSortFilter();
@@ -32,7 +34,7 @@ public abstract class ListInfo<T extends InfoItem> extends Info {
         return relatedItems;
     }
 
-    public void setRelatedItems(List<T> relatedItems) {
+    public void setRelatedItems(final List<T> relatedItems) {
         this.relatedItems = relatedItems;
     }
 
@@ -44,7 +46,7 @@ public abstract class ListInfo<T extends InfoItem> extends Info {
         return nextPage;
     }
 
-    public void setNextPage(Page page) {
+    public void setNextPage(final Page page) {
         this.nextPage = page;
     }
 

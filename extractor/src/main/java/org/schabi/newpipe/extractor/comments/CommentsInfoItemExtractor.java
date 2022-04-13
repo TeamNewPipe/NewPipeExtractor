@@ -18,7 +18,8 @@ public interface CommentsInfoItemExtractor extends InfoItemExtractor {
      *
      * <br>
      *
-     * NOTE: Currently only implemented for YT {@link YoutubeCommentsInfoItemExtractor#getLikeCount()}
+     * NOTE: Currently only implemented for YT {@link
+     * YoutubeCommentsInfoItemExtractor#getLikeCount()}
      * with limitations (only approximate like count is returned)
      *
      * @see StreamExtractor#getLikeCount()

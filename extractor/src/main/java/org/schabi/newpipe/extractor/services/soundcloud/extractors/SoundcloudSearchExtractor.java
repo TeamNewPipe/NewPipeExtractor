@@ -4,12 +4,18 @@ import com.grack.nanojson.JsonArray;
 import com.grack.nanojson.JsonObject;
 import com.grack.nanojson.JsonParser;
 import com.grack.nanojson.JsonParserException;
-import org.schabi.newpipe.extractor.*;
+
+import org.schabi.newpipe.extractor.InfoItem;
+import org.schabi.newpipe.extractor.InfoItemExtractor;
+import org.schabi.newpipe.extractor.InfoItemsCollector;
+import org.schabi.newpipe.extractor.MetaInfo;
+import org.schabi.newpipe.extractor.Page;
+import org.schabi.newpipe.extractor.StreamingService;
 import org.schabi.newpipe.extractor.downloader.Downloader;
 import org.schabi.newpipe.extractor.exceptions.ExtractionException;
 import org.schabi.newpipe.extractor.exceptions.ParsingException;
 import org.schabi.newpipe.extractor.linkhandler.SearchQueryHandler;
-import org.schabi.newpipe.extractor.search.InfoItemsSearchCollector;
+import org.schabi.newpipe.extractor.MultiInfoItemsCollector;
 import org.schabi.newpipe.extractor.search.SearchExtractor;
 import org.schabi.newpipe.extractor.utils.Parser;
 
@@ -76,9 +82,9 @@ public class SoundcloudSearchExtractor extends SearchExtractor {
             throw new ParsingException("Could not parse json response", e);
         }
 
-        return new InfoItemsPage<>(
-                collectItems(searchCollection),
-                getNextPageFromCurrentUrl(page.getUrl(), currentOffset -> currentOffset + ITEMS_PER_PAGE));
+        return new InfoItemsPage<>(collectItems(searchCollection),
+                getNextPageFromCurrentUrl(page.getUrl(),
+                        currentOffset -> currentOffset + ITEMS_PER_PAGE));
     }
 
     @Override
@@ -100,10 +106,13 @@ public class SoundcloudSearchExtractor extends SearchExtractor {
 
     private InfoItemsCollector<InfoItem, InfoItemExtractor> collectItems(
             final JsonArray searchCollection) {
-        final InfoItemsSearchCollector collector = new InfoItemsSearchCollector(getServiceId());
+        final MultiInfoItemsCollector collector = new MultiInfoItemsCollector(getServiceId());
 
         for (final Object result : searchCollection) {
-            if (!(result instanceof JsonObject)) continue;
+            if (!(result instanceof JsonObject)) {
+                continue;
+            }
+
             final JsonObject searchResult = (JsonObject) result;
             final String kind = searchResult.getString("kind", EMPTY_STRING);
             switch (kind) {
@@ -122,7 +131,8 @@ public class SoundcloudSearchExtractor extends SearchExtractor {
         return collector;
     }
 
-    private Page getNextPageFromCurrentUrl(final String currentUrl, final IntUnaryOperator newPageOffsetCalculator)
+    private Page getNextPageFromCurrentUrl(final String currentUrl,
+                                           final IntUnaryOperator newPageOffsetCalculator)
             throws MalformedURLException, UnsupportedEncodingException {
         final int currentPageOffset = Integer.parseInt(
                     Parser.compatParseMap(new URL(currentUrl).getQuery()).get("offset"));

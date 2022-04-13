@@ -1,5 +1,18 @@
 package org.schabi.newpipe.extractor.services.youtube;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.schabi.newpipe.extractor.ExtractorAsserts.assertIsSecureUrl;
+import static org.schabi.newpipe.extractor.ListExtractor.ITEM_COUNT_UNKNOWN;
+import static org.schabi.newpipe.extractor.ServiceList.YouTube;
+import static org.schabi.newpipe.extractor.services.DefaultTests.assertNoMoreItems;
+import static org.schabi.newpipe.extractor.services.DefaultTests.defaultTestGetPageInNewExtractor;
+import static org.schabi.newpipe.extractor.services.DefaultTests.defaultTestListOfItems;
+import static org.schabi.newpipe.extractor.services.DefaultTests.defaultTestMoreItems;
+import static org.schabi.newpipe.extractor.services.DefaultTests.defaultTestRelatedItems;
+
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
@@ -8,27 +21,14 @@ import org.schabi.newpipe.extractor.ExtractorAsserts;
 import org.schabi.newpipe.extractor.ListExtractor;
 import org.schabi.newpipe.extractor.NewPipe;
 import org.schabi.newpipe.extractor.exceptions.ContentNotAvailableException;
-import org.schabi.newpipe.extractor.exceptions.ExtractionException;
 import org.schabi.newpipe.extractor.exceptions.ParsingException;
 import org.schabi.newpipe.extractor.playlist.PlaylistExtractor;
+import org.schabi.newpipe.extractor.playlist.PlaylistInfo;
 import org.schabi.newpipe.extractor.services.BasePlaylistExtractorTest;
 import org.schabi.newpipe.extractor.services.youtube.extractors.YoutubePlaylistExtractor;
 import org.schabi.newpipe.extractor.stream.StreamInfoItem;
 
 import java.io.IOException;
-import java.util.Random;
-
-import static org.junit.jupiter.api.Assertions.assertFalse;
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertThrows;
-import static org.junit.jupiter.api.Assertions.assertTrue;
-import static org.schabi.newpipe.extractor.ExtractorAsserts.assertIsSecureUrl;
-import static org.schabi.newpipe.extractor.ServiceList.YouTube;
-import static org.schabi.newpipe.extractor.services.DefaultTests.assertNoMoreItems;
-import static org.schabi.newpipe.extractor.services.DefaultTests.defaultTestGetPageInNewExtractor;
-import static org.schabi.newpipe.extractor.services.DefaultTests.defaultTestListOfItems;
-import static org.schabi.newpipe.extractor.services.DefaultTests.defaultTestMoreItems;
-import static org.schabi.newpipe.extractor.services.DefaultTests.defaultTestRelatedItems;
 
 /**
  * Test for {@link YoutubePlaylistExtractor}
@@ -40,9 +40,8 @@ public class YoutubePlaylistExtractorTest {
     public static class NotAvailable {
         @BeforeAll
         public static void setUp() throws IOException {
-            YoutubeParsingHelper.resetClientVersionAndKey();
-            YoutubeParsingHelper.setNumberGenerator(new Random(1));
-            NewPipe.init(new DownloaderFactory().getDownloader(RESOURCE_PATH + "notAvailable"));
+            YoutubeTestsUtils.ensureStateless();
+            NewPipe.init(DownloaderFactory.getDownloader(RESOURCE_PATH + "notAvailable"));
         }
 
         @Test
@@ -65,9 +64,8 @@ public class YoutubePlaylistExtractorTest {
 
         @BeforeAll
         public static void setUp() throws Exception {
-            YoutubeParsingHelper.resetClientVersionAndKey();
-            YoutubeParsingHelper.setNumberGenerator(new Random(1));
-            NewPipe.init(new DownloaderFactory().getDownloader(RESOURCE_PATH + "TimelessPopHits"));
+            YoutubeTestsUtils.ensureStateless();
+            NewPipe.init(DownloaderFactory.getDownloader(RESOURCE_PATH + "TimelessPopHits"));
             extractor = (YoutubePlaylistExtractor) YouTube
                     .getPlaylistExtractor("http://www.youtube.com/watch?v=lp-EO5I60KA&list=PLMC9KNkIncKtPzgY-5rmhvj7fax8fdxoj");
             extractor.fetchPage();
@@ -129,7 +127,7 @@ public class YoutubePlaylistExtractorTest {
 
         @Disabled
         @Test
-        public void testBannerUrl() {
+        public void testBannerUrl() throws ParsingException {
             final String bannerUrl = extractor.getBannerUrl();
             assertIsSecureUrl(bannerUrl);
             ExtractorAsserts.assertContains("yt", bannerUrl);
@@ -161,6 +159,11 @@ public class YoutubePlaylistExtractorTest {
         public void testUploaderVerified() throws Exception {
             assertFalse(extractor.isUploaderVerified());
         }
+
+        @Test
+        void getPlaylistType() throws ParsingException {
+            assertEquals(PlaylistInfo.PlaylistType.NORMAL, extractor.getPlaylistType());
+        }
     }
 
     public static class HugePlaylist implements BasePlaylistExtractorTest {
@@ -168,9 +171,8 @@ public class YoutubePlaylistExtractorTest {
 
         @BeforeAll
         public static void setUp() throws Exception {
-            YoutubeParsingHelper.resetClientVersionAndKey();
-            YoutubeParsingHelper.setNumberGenerator(new Random(1));
-            NewPipe.init(new DownloaderFactory().getDownloader(RESOURCE_PATH + "huge"));
+            YoutubeTestsUtils.ensureStateless();
+            NewPipe.init(DownloaderFactory.getDownloader(RESOURCE_PATH + "huge"));
             extractor = (YoutubePlaylistExtractor) YouTube
                     .getPlaylistExtractor("https://www.youtube.com/watch?v=8SbUC-UaAxE&list=PLWwAypAcFRgKAIIFqBr9oy-ZYZnixa_Fj");
             extractor.fetchPage();
@@ -249,7 +251,7 @@ public class YoutubePlaylistExtractorTest {
 
         @Disabled
         @Test
-        public void testBannerUrl() {
+        public void testBannerUrl() throws ParsingException {
             final String bannerUrl = extractor.getBannerUrl();
             assertIsSecureUrl(bannerUrl);
             ExtractorAsserts.assertContains("yt", bannerUrl);
@@ -280,6 +282,11 @@ public class YoutubePlaylistExtractorTest {
         public void testUploaderVerified() throws Exception {
             assertTrue(extractor.isUploaderVerified());
         }
+
+        @Test
+        void getPlaylistType() throws ParsingException {
+            assertEquals(PlaylistInfo.PlaylistType.NORMAL, extractor.getPlaylistType());
+        }
     }
 
     public static class LearningPlaylist implements BasePlaylistExtractorTest {
@@ -287,9 +294,8 @@ public class YoutubePlaylistExtractorTest {
 
         @BeforeAll
         public static void setUp() throws Exception {
-            YoutubeParsingHelper.resetClientVersionAndKey();
-            YoutubeParsingHelper.setNumberGenerator(new Random(1));
-            NewPipe.init(new DownloaderFactory().getDownloader(RESOURCE_PATH + "learning"));
+            YoutubeTestsUtils.ensureStateless();
+            NewPipe.init(DownloaderFactory.getDownloader(RESOURCE_PATH + "learning"));
             extractor = (YoutubePlaylistExtractor) YouTube
                     .getPlaylistExtractor("https://www.youtube.com/playlist?list=PL8dPuuaLjXtOAKed_MxxWBNaPno5h3Zs8");
             extractor.fetchPage();
@@ -352,7 +358,7 @@ public class YoutubePlaylistExtractorTest {
 
         @Disabled
         @Test
-        public void testBannerUrl() {
+        public void testBannerUrl() throws ParsingException {
             final String bannerUrl = extractor.getBannerUrl();
             assertIsSecureUrl(bannerUrl);
             ExtractorAsserts.assertContains("yt", bannerUrl);
@@ -377,12 +383,18 @@ public class YoutubePlaylistExtractorTest {
 
         @Test
         public void testStreamCount() throws Exception {
-            ExtractorAsserts.assertGreater(40, extractor.getStreamCount());
+            // We are not able to extract the stream count of YouTube learning playlists
+            assertEquals(ITEM_COUNT_UNKNOWN, extractor.getStreamCount());
         }
 
         @Override
         public void testUploaderVerified() throws Exception {
             assertTrue(extractor.isUploaderVerified());
+        }
+
+        @Test
+        void getPlaylistType() throws ParsingException {
+            assertEquals(PlaylistInfo.PlaylistType.NORMAL, extractor.getPlaylistType());
         }
     }
 
@@ -390,9 +402,8 @@ public class YoutubePlaylistExtractorTest {
 
         @BeforeAll
         public static void setUp() throws IOException {
-            YoutubeParsingHelper.resetClientVersionAndKey();
-            YoutubeParsingHelper.setNumberGenerator(new Random(1));
-            NewPipe.init(new DownloaderFactory().getDownloader(RESOURCE_PATH + "continuations"));
+            YoutubeTestsUtils.ensureStateless();
+            NewPipe.init(DownloaderFactory.getDownloader(RESOURCE_PATH + "continuations"));
         }
 
         @Test

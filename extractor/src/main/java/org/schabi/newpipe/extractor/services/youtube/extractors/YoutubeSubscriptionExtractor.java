@@ -70,7 +70,7 @@ public class YoutubeSubscriptionExtractor extends SubscriptionExtractor {
         final JsonArray subscriptions;
         try {
             subscriptions = JsonParser.array().from(contentInputStream);
-        } catch (JsonParserException e) {
+        } catch (final JsonParserException e) {
             throw new InvalidSourceException("Invalid json input stream", e);
         }
 
@@ -101,7 +101,7 @@ public class YoutubeSubscriptionExtractor extends SubscriptionExtractor {
 
     public List<SubscriptionItem> fromZipInputStream(@Nonnull final InputStream contentInputStream)
             throws ExtractionException {
-        try (final ZipInputStream zipInputStream = new ZipInputStream(contentInputStream)) {
+        try (ZipInputStream zipInputStream = new ZipInputStream(contentInputStream)) {
             ZipEntry zipEntry;
             while ((zipEntry = zipInputStream.getNextEntry()) != null) {
                 if (zipEntry.getName().toLowerCase().endsWith(".csv")) {
@@ -122,15 +122,16 @@ public class YoutubeSubscriptionExtractor extends SubscriptionExtractor {
             throw new InvalidSourceException("Error reading contents of zip file", e);
         }
 
-        throw new InvalidSourceException("Unable to find a valid subscriptions.csv file (try extracting and selecting the csv file)");
+        throw new InvalidSourceException("Unable to find a valid subscriptions.csv file"
+                + " (try extracting and selecting the csv file)");
     }
 
     public List<SubscriptionItem> fromCsvInputStream(@Nonnull final InputStream contentInputStream)
             throws ExtractionException {
         // Expected format of CSV file:
-        //      Channel Id,Channel Url,Channel Title
-        //      UC1JTQBa5QxZCpXrFSkMxmPw,http://www.youtube.com/channel/UC1JTQBa5QxZCpXrFSkMxmPw,Raycevick
-        //      UCFl7yKfcRcFmIUbKeCA-SJQ,http://www.youtube.com/channel/UCFl7yKfcRcFmIUbKeCA-SJQ,Joji
+        // Channel Id,Channel Url,Channel Title
+        //UC1JTQBa5QxZCpXrFSkMxmPw,http://www.youtube.com/channel/UC1JTQBa5QxZCpXrFSkMxmPw,Raycevick
+        //UCFl7yKfcRcFmIUbKeCA-SJQ,http://www.youtube.com/channel/UCFl7yKfcRcFmIUbKeCA-SJQ,Joji
         //
         // Notes:
         //      It's always 3 columns

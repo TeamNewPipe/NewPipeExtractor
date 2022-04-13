@@ -13,26 +13,35 @@ import java.util.List;
 
 public class FeedInfo extends ListInfo<StreamInfoItem> {
 
-    public FeedInfo(int serviceId, String id, String url, String originalUrl, String name, List<String> contentFilter, String sortFilter) {
+    public FeedInfo(final int serviceId,
+                    final String id,
+                    final String url,
+                    final String originalUrl,
+                    final String name,
+                    final List<String> contentFilter,
+                    final String sortFilter) {
         super(serviceId, id, url, originalUrl, name, contentFilter, sortFilter);
     }
 
-    public static FeedInfo getInfo(String url) throws IOException, ExtractionException {
+    public static FeedInfo getInfo(final String url) throws IOException, ExtractionException {
         return getInfo(NewPipe.getServiceByUrl(url), url);
     }
 
-    public static FeedInfo getInfo(StreamingService service, String url) throws IOException, ExtractionException {
+    public static FeedInfo getInfo(final StreamingService service, final String url)
+            throws IOException, ExtractionException {
         final FeedExtractor extractor = service.getFeedExtractor(url);
 
         if (extractor == null) {
-            throw new IllegalArgumentException("Service \"" + service.getServiceInfo().getName() + "\" doesn't support FeedExtractor.");
+            throw new IllegalArgumentException("Service \"" + service.getServiceInfo().getName()
+                    + "\" doesn't support FeedExtractor.");
         }
 
         extractor.fetchPage();
         return getInfo(extractor);
     }
 
-    public static FeedInfo getInfo(FeedExtractor extractor) throws IOException, ExtractionException {
+    public static FeedInfo getInfo(final FeedExtractor extractor)
+            throws IOException, ExtractionException {
         extractor.fetchPage();
 
         final int serviceId = extractor.getServiceId();
@@ -43,7 +52,8 @@ public class FeedInfo extends ListInfo<StreamInfoItem> {
 
         final FeedInfo info = new FeedInfo(serviceId, id, url, originalUrl, name, null, null);
 
-        final InfoItemsPage<StreamInfoItem> itemsPage = ExtractorHelper.getItemsPageOrLogError(info, extractor);
+        final InfoItemsPage<StreamInfoItem> itemsPage
+                = ExtractorHelper.getItemsPageOrLogError(info, extractor);
         info.setRelatedItems(itemsPage.getItems());
         info.setNextPage(itemsPage.getNextPage());
 

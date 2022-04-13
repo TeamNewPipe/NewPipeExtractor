@@ -27,7 +27,9 @@ import static org.schabi.newpipe.extractor.services.peertube.PeertubeParsingHelp
 import static org.schabi.newpipe.extractor.utils.Utils.isNullOrEmpty;
 
 public class PeertubeTrendingExtractor extends KioskExtractor<StreamInfoItem> {
-    public PeertubeTrendingExtractor(final StreamingService streamingService, final ListLinkHandler linkHandler, final String kioskId) {
+    public PeertubeTrendingExtractor(final StreamingService streamingService,
+                                     final ListLinkHandler linkHandler,
+                                     final String kioskId) {
         super(streamingService, linkHandler, kioskId);
     }
 
@@ -38,12 +40,13 @@ public class PeertubeTrendingExtractor extends KioskExtractor<StreamInfoItem> {
 
     @Override
     public InfoItemsPage<StreamInfoItem> getInitialPage() throws IOException, ExtractionException {
-        final String pageUrl = getUrl() + "&" + START_KEY + "=0&" + COUNT_KEY + "=" + ITEMS_PER_PAGE;
-        return getPage(new Page(pageUrl));
+        return getPage(new Page(getUrl() + "&" + START_KEY + "=0&"
+                + COUNT_KEY + "=" + ITEMS_PER_PAGE));
     }
 
     @Override
-    public InfoItemsPage<StreamInfoItem> getPage(final Page page) throws IOException, ExtractionException {
+    public InfoItemsPage<StreamInfoItem> getPage(final Page page)
+            throws IOException, ExtractionException {
         if (page == null || isNullOrEmpty(page.getUrl())) {
             throw new IllegalArgumentException("Page doesn't contain an URL");
         }
@@ -54,7 +57,7 @@ public class PeertubeTrendingExtractor extends KioskExtractor<StreamInfoItem> {
         if (response != null && !Utils.isBlank(response.responseBody())) {
             try {
                 json = JsonParser.object().from(response.responseBody());
-            } catch (Exception e) {
+            } catch (final Exception e) {
                 throw new ParsingException("Could not parse json data for kiosk info", e);
             }
         }
@@ -66,12 +69,15 @@ public class PeertubeTrendingExtractor extends KioskExtractor<StreamInfoItem> {
             final StreamInfoItemsCollector collector = new StreamInfoItemsCollector(getServiceId());
             collectStreamsFrom(collector, json, getBaseUrl());
 
-            return new InfoItemsPage<>(collector, PeertubeParsingHelper.getNextPage(page.getUrl(), total));
+            return new InfoItemsPage<>(collector,
+                    PeertubeParsingHelper.getNextPage(page.getUrl(), total));
         } else {
             throw new ExtractionException("Unable to get PeerTube kiosk info");
         }
     }
 
     @Override
-    public void onFetchPage(@Nonnull final Downloader downloader) throws IOException, ExtractionException { }
+    public void onFetchPage(@Nonnull final Downloader downloader)
+            throws IOException, ExtractionException {
+    }
 }

@@ -39,8 +39,9 @@ public class SoundcloudSuggestionExtractor extends SuggestionExtractor {
         try {
             final JsonArray collection = JsonParser.object().from(response).getArray("collection");
             for (final Object suggestion : collection) {
-                if (suggestion instanceof JsonObject) suggestions.add(((JsonObject) suggestion)
-                        .getString("query"));
+                if (suggestion instanceof JsonObject) {
+                    suggestions.add(((JsonObject) suggestion).getString("query"));
+                }
             }
 
             return suggestions;

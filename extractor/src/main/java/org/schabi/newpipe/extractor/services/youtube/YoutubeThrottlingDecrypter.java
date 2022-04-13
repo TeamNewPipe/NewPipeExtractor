@@ -34,11 +34,13 @@ import java.util.regex.Pattern;
  */
 public class YoutubeThrottlingDecrypter {
 
-    public static Pattern nParamPattern = Pattern.compile("[&?]n=([^&]+)");
-    public static Pattern functionNamePattern = Pattern.compile(
+    public static Pattern N_PARAM_PATTERN = Pattern.compile("[&?]n=([^&]+)");
+    public static Pattern FUNCTION_NAME_PATTERN = Pattern.compile(
             "b=a\\.get\\(\"n\"\\)\\)&&\\(b=(\\S+)\\(b\\),a\\.set\\(\"n\",b\\)");
 
-    private static final Map<String, String> nParams = new HashMap<>();
+    private static final Map<String, String> N_PARAMS_CACHE = new HashMap<>();
+    @SuppressWarnings("StaticVariableName") private static String FUNCTION;
+    @SuppressWarnings("StaticVariableName") private static String FUNCTION_NAME;
 
     private final String functionName;
     private final String function;
@@ -49,6 +51,8 @@ public class YoutubeThrottlingDecrypter {
      * is requested.
      * </p>
      * Otherwise use the no-arg constructor which uses a constant value.
+     *
+     * @deprecated Use static function instead
      */
     public YoutubeThrottlingDecrypter(final String videoId) throws ParsingException {
         final String playerJsCode = YoutubeJavaScriptExtractor.extractJavaScriptCode(videoId);
@@ -57,6 +61,9 @@ public class YoutubeThrottlingDecrypter {
         function = parseDecodeFunction(playerJsCode, functionName);
     }
 
+    /**
+     * @deprecated Use static function instead
+     */
     public YoutubeThrottlingDecrypter() throws ParsingException {
         final String playerJsCode = YoutubeJavaScriptExtractor.extractJavaScriptCode();
 
@@ -64,79 +71,109 @@ public class YoutubeThrottlingDecrypter {
         function = parseDecodeFunction(playerJsCode, functionName);
     }
 
-    private String parseDecodeFunctionName(final String playerJsCode)
-            throws Parser.RegexException {
-            String functionName = Parser.matchGroup1(functionNamePattern, playerJsCode);
-            final int arrayStartBrace = functionName.indexOf("[");
-            
-            if (arrayStartBrace > 0) {
-                final String arrayVarName = functionName.substring(0, arrayStartBrace);
-                final String order = functionName.substring(
-                        arrayStartBrace + 1, functionName.indexOf("]"));
-                final int arrayNum = Integer.parseInt(order);
-                final Pattern arrayPattern = Pattern.compile(
-                        String.format("var %s=\\[(.+?)\\];", arrayVarName));
-                final String arrayStr = Parser.matchGroup1(arrayPattern, playerJsCode);
-                final String[] names = arrayStr.split(",");
-                functionName = names[arrayNum];
-            }
-            return functionName;
-    }
-
-    @Nonnull
-    private String parseDecodeFunction(final String playerJsCode, final String functionName)
-            throws Parser.RegexException {
-        try {
-            return parseWithParenthesisMatching(playerJsCode, functionName);
-        } catch (Exception e) {
-            return parseWithRegex(playerJsCode, functionName);
-        }
-    }
-
-    @Nonnull
-    private String parseWithParenthesisMatching(final String playerJsCode, final String functionName) {
-        final String functionBase = functionName + "=function";
-        return functionBase + StringUtils.matchToClosingParenthesis(playerJsCode, functionBase) + ";";
-    }
-
-    @Nonnull
-    private String parseWithRegex(final String playerJsCode, final String functionName) throws Parser.RegexException {
-        final Pattern functionPattern = Pattern.compile(functionName + "=function(.*?}};)\n",
-                Pattern.DOTALL);
-        return "function " + functionName + Parser.matchGroup1(functionPattern, playerJsCode);
-    }
-
-    public String apply(final String url) throws Parser.RegexException {
+    /**
+     * <p>
+     * The videoId is only used to fetch the decryption function.
+     * It can be a constant value of any existing video.
+     * A constant value is discouraged, because it could allow tracking.
+     */
+    public static String apply(final String url, final String videoId) throws ParsingException {
         if (containsNParam(url)) {
+            if (FUNCTION == null) {
+                final String playerJsCode
+                        = YoutubeJavaScriptExtractor.extractJavaScriptCode(videoId);
+
+                FUNCTION_NAME = parseDecodeFunctionName(playerJsCode);
+                FUNCTION = parseDecodeFunction(playerJsCode, FUNCTION_NAME);
+            }
+
             final String oldNParam = parseNParam(url);
-            final String newNParam = decryptNParam(oldNParam);
+            final String newNParam = decryptNParam(FUNCTION, FUNCTION_NAME, oldNParam);
             return replaceNParam(url, oldNParam, newNParam);
         } else {
             return url;
         }
     }
 
-    private boolean containsNParam(final String url) {
-        return Parser.isMatch(nParamPattern, url);
+    private static String parseDecodeFunctionName(final String playerJsCode)
+            throws Parser.RegexException {
+        String functionName = Parser.matchGroup1(FUNCTION_NAME_PATTERN, playerJsCode);
+        final int arrayStartBrace = functionName.indexOf("[");
+
+        if (arrayStartBrace > 0) {
+            final String arrayVarName = functionName.substring(0, arrayStartBrace);
+            final String order = functionName.substring(
+                    arrayStartBrace + 1, functionName.indexOf("]"));
+            final int arrayNum = Integer.parseInt(order);
+            final Pattern arrayPattern = Pattern.compile(
+                    String.format("var %s=\\[(.+?)\\];", arrayVarName));
+            final String arrayStr = Parser.matchGroup1(arrayPattern, playerJsCode);
+            final String[] names = arrayStr.split(",");
+            functionName = names[arrayNum];
+        }
+        return functionName;
     }
 
-    private String parseNParam(final String url) throws Parser.RegexException {
-        return Parser.matchGroup1(nParamPattern, url);
+    @Nonnull
+    private static String parseDecodeFunction(final String playerJsCode, final String functionName)
+            throws Parser.RegexException {
+        try {
+            return parseWithParenthesisMatching(playerJsCode, functionName);
+        } catch (final Exception e) {
+            return parseWithRegex(playerJsCode, functionName);
+        }
     }
 
-    private String decryptNParam(final String nParam) {
-        if (nParams.containsKey(nParam)) {
-            return nParams.get(nParam);
+    @Nonnull
+    private static String parseWithParenthesisMatching(final String playerJsCode,
+                                                       final String functionName) {
+        final String functionBase = functionName + "=function";
+        return functionBase + StringUtils.matchToClosingParenthesis(playerJsCode, functionBase)
+                + ";";
+    }
+
+    @Nonnull
+    private static String parseWithRegex(final String playerJsCode, final String functionName)
+            throws Parser.RegexException {
+        final Pattern functionPattern = Pattern.compile(functionName + "=function(.*?}};)\n",
+                Pattern.DOTALL);
+        return "function " + functionName + Parser.matchGroup1(functionPattern, playerJsCode);
+    }
+
+    @Deprecated
+    public String apply(final String url) throws ParsingException {
+        if (containsNParam(url)) {
+            final String oldNParam = parseNParam(url);
+            final String newNParam = decryptNParam(function, functionName, oldNParam);
+            return replaceNParam(url, oldNParam, newNParam);
+        } else {
+            return url;
+        }
+    }
+
+    private static boolean containsNParam(final String url) {
+        return Parser.isMatch(N_PARAM_PATTERN, url);
+    }
+
+    private static String parseNParam(final String url) throws Parser.RegexException {
+        return Parser.matchGroup1(N_PARAM_PATTERN, url);
+    }
+
+    private static String decryptNParam(final String function,
+                                        final String functionName,
+                                        final String nParam) {
+        if (N_PARAMS_CACHE.containsKey(nParam)) {
+            return N_PARAMS_CACHE.get(nParam);
         }
         final String decryptedNParam = JavaScript.run(function, functionName, nParam);
-        nParams.put(nParam, decryptedNParam);
+        N_PARAMS_CACHE.put(nParam, decryptedNParam);
         return decryptedNParam;
     }
 
     @Nonnull
-    private String replaceNParam(@Nonnull final String url,
-                                 final String oldValue,
-                                 final String newValue) {
+    private static String replaceNParam(@Nonnull final String url,
+                                        final String oldValue,
+                                        final String newValue) {
         return url.replace(oldValue, newValue);
     }
 
@@ -144,13 +181,13 @@ public class YoutubeThrottlingDecrypter {
      * @return the number of the cached "n" query parameters.
      */
     public static int getCacheSize() {
-        return nParams.size();
+        return N_PARAMS_CACHE.size();
     }
 
     /**
      * Clears all stored "n" query parameters.
      */
     public static void clearCache() {
-        nParams.clear();
+        N_PARAMS_CACHE.clear();
     }
 }
