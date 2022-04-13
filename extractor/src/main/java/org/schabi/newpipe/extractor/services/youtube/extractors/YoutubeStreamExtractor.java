@@ -101,6 +101,7 @@ import javax.annotation.Nullable;
  */
 
 public class YoutubeStreamExtractor extends StreamExtractor {
+    public static boolean userNextResponse = false;
     /*//////////////////////////////////////////////////////////////////////////
     // Exceptions
     //////////////////////////////////////////////////////////////////////////*/
@@ -844,7 +845,9 @@ public class YoutubeStreamExtractor extends StreamExtractor {
                 .value(RACY_CHECK_OK, true)
                 .done())
                 .getBytes(UTF_8);
-        nextResponse = getJsonPostResponse(NEXT, body, localization);
+        if (userNextResponse){
+            nextResponse = getJsonPostResponse(NEXT, body, localization);
+        }
 
         if ((!ageRestricted && streamType == StreamType.VIDEO_STREAM)
                 || isAndroidClientFetchForced) {
