@@ -847,20 +847,20 @@ public class YoutubeStreamExtractor extends StreamExtractor {
                 .getBytes(UTF_8);
         if (userNextResponse){
             nextResponse = getJsonPostResponse(NEXT, body, localization);
-            if ((!ageRestricted && streamType == StreamType.VIDEO_STREAM)
-                    || isAndroidClientFetchForced) {
-                try {
-                    fetchAndroidMobileJsonPlayer(contentCountry, localization, videoId);
-                } catch (final Exception ignored) {
-                }
+        }
+        if ((!ageRestricted && streamType == StreamType.VIDEO_STREAM)
+                || isAndroidClientFetchForced) {
+            try {
+                fetchAndroidMobileJsonPlayer(contentCountry, localization, videoId);
+            } catch (final Exception ignored) {
             }
+        }
 
-            if ((!ageRestricted && streamType == StreamType.LIVE_STREAM)
-                    || isIosClientFetchForced) {
-                try {
-                    fetchIosMobileJsonPlayer(contentCountry, localization, videoId);
-                } catch (final Exception ignored) {
-                }
+        if ((!ageRestricted && streamType == StreamType.LIVE_STREAM)
+                || isIosClientFetchForced) {
+            try {
+                fetchIosMobileJsonPlayer(contentCountry, localization, videoId);
+            } catch (final Exception ignored) {
             }
         }
     }
