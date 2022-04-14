@@ -654,10 +654,6 @@ public class YoutubeStreamExtractor extends StreamExtractor {
     @Nonnull
     public List<SubtitlesStream> getSubtitles(final MediaFormat format) throws ParsingException {
         assertPageFetched();
-        // If the video is age-restricted getSubtitles will fail
-        if (getAgeLimit() != NO_AGE_LIMIT) {
-            return Collections.emptyList();
-        }
         if (subtitles != null) {
             // Already calculated
             return subtitles;
