@@ -51,12 +51,16 @@ public class InvidiousFeedExtractor extends FeedExtractor {
     }
 
     @Override
-    public InfoItemsPage<StreamInfoItem> getPage(final Page page) throws IOException, ExtractionException {
+    public InfoItemsPage<StreamInfoItem> getPage(
+            final Page page
+    ) throws IOException, ExtractionException {
         return null;
     }
 
     @Override
-    public void onFetchPage(@Nonnull final Downloader downloader) throws IOException, ExtractionException {
+    public void onFetchPage(
+            @Nonnull final Downloader downloader
+    ) throws IOException, ExtractionException {
         final String feedUrl = baseUrl + "/feed/channel/" + getLinkHandler().getId();
         final Response response = downloader.get(feedUrl);
         document = Jsoup.parse(getValidResponseBody(response, feedUrl));

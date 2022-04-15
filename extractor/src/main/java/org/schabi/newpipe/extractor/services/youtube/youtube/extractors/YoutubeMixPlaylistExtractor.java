@@ -245,7 +245,8 @@ public class YoutubeMixPlaylistExtractor extends PlaylistExtractor {
     @Nonnull
     public static String getThumbnailUrlFromPlaylistId(@Nonnull final String playlistId)
             throws ParsingException {
-        return getThumbnailUrlFromVideoId(YoutubePlaylistHelper.extractVideoIdFromMixId(playlistId));
+        return getThumbnailUrlFromVideoId(
+                YoutubePlaylistHelper.extractVideoIdFromMixId(playlistId));
     }
 
     @Nonnull

@@ -67,7 +67,9 @@ public class InvidiousPlaylistExtractor extends PlaylistExtractor {
     }
 
     @Override
-    public InfoItemsPage<StreamInfoItem> getPage(final Page page) throws IOException, ExtractionException {
+    public InfoItemsPage<StreamInfoItem> getPage(
+            final Page page
+    ) throws IOException, ExtractionException {
         if (Integer.parseInt(page.getId()) != 1) {
             final Response rp = NewPipe.getDownloader().get(page.getUrl());
             json = InvidiousParsingHelper.getValidJsonObjectFromResponse(rp, page.getUrl());
@@ -92,12 +94,13 @@ public class InvidiousPlaylistExtractor extends PlaylistExtractor {
     }
 
     public Page getPage(final int page) throws ParsingException {
-        return InvidiousParsingHelper.getPage(baseUrl + "/api/v1/playlists/" +
-                getId(), page);
+        return InvidiousParsingHelper.getPage(baseUrl + "/api/v1/playlists/" + getId(), page);
     }
 
     @Override
-    public void onFetchPage(@Nonnull final Downloader downloader) throws IOException, ExtractionException {
+    public void onFetchPage(
+            @Nonnull final Downloader downloader
+    ) throws IOException, ExtractionException {
         final String apiUrl = baseUrl + "/api/v1/playlists/" + getId();
 
         final Response response = downloader.get(apiUrl);

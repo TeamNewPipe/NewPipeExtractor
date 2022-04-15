@@ -9,8 +9,6 @@ import javax.annotation.Nonnull;
 
 public abstract class AbstractInstance implements Instance {
 
-    protected Boolean valid = null;
-
     protected final String url;
     protected String name;
 

@@ -42,7 +42,7 @@ public class PeertubeInstance extends AbstractInstance {
             this.setName(JsonUtils.getString(json, "instance.name"));
         } catch (final Exception e) {
             throw new InstanceMetaDataFetchException(
-                    "Unable to fetch trending from " + urlToCheck, e);
+                    "Unable to fetch config from " + urlToCheck, e);
         }
     }
 }

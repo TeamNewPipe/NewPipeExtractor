@@ -142,13 +142,13 @@ public final class InvidiousParsingHelper {
         return fixThumbnailUrl(url);
     }
 
-    public static String fixThumbnailUrl(String thumbnailUrl) {
+    public static String fixThumbnailUrl(final String thumbnailUrl) {
         if (thumbnailUrl.startsWith(HTTP) || thumbnailUrl.startsWith(HTTPS)) {
             return thumbnailUrl;
         }
 
         if (thumbnailUrl.startsWith("//")) {
-            thumbnailUrl = thumbnailUrl.substring(2);
+            return HTTPS + thumbnailUrl.substring(2);
         }
 
         return HTTPS + thumbnailUrl;

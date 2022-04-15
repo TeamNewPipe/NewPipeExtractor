@@ -42,6 +42,7 @@ public class YoutubeCommentsExtractor extends CommentsExtractor {
      * If the method or another one that is depending on disabled comments
      * is now called again, the method execution can avoid unnecessary calls
      */
+    @SuppressWarnings("OptionalUsedAsFieldOrParameterType")
     private Optional<Boolean> optCommentsDisabled = Optional.empty();
 
     public YoutubeCommentsExtractor(

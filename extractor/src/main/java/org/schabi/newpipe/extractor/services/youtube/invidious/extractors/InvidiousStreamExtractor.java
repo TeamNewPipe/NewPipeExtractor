@@ -53,8 +53,8 @@ public class InvidiousStreamExtractor extends StreamExtractor {
     public void onFetchPage(
             @Nonnull final Downloader downloader
     ) throws IOException, ExtractionException {
-        final String apiUrl = baseUrl + "/api/v1/videos/" + getId() +
-                "?region=" + getExtractorContentCountry().getCountryCode();
+        final String apiUrl = baseUrl + "/api/v1/videos/" + getId()
+                + "?region=" + getExtractorContentCountry().getCountryCode();
 
         final Response response = downloader.get(apiUrl);
 

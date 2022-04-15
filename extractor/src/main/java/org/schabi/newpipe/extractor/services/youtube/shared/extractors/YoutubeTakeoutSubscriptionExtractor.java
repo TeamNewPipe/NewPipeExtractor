@@ -102,7 +102,7 @@ public class YoutubeTakeoutSubscriptionExtractor extends SubscriptionExtractor {
 
     public List<SubscriptionItem> fromZipInputStream(@Nonnull final InputStream contentInputStream)
             throws ExtractionException {
-        try (final ZipInputStream zipInputStream = new ZipInputStream(contentInputStream)) {
+        try (ZipInputStream zipInputStream = new ZipInputStream(contentInputStream)) {
             ZipEntry zipEntry;
             while ((zipEntry = zipInputStream.getNextEntry()) != null) {
                 if (zipEntry.getName().toLowerCase().endsWith(".csv")) {
@@ -143,7 +143,8 @@ public class YoutubeTakeoutSubscriptionExtractor extends SubscriptionExtractor {
         int currentLine = 0;
         String line = "";
 
-        try (final BufferedReader br = new BufferedReader(new InputStreamReader(contentInputStream))) {
+        try (BufferedReader br =
+                     new BufferedReader(new InputStreamReader(contentInputStream))) {
             final List<SubscriptionItem> subscriptionItems = new ArrayList<>();
 
             // ignore header and skip first line

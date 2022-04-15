@@ -69,11 +69,12 @@ public abstract class YoutubeLikePlaylistLinkHandlerFactory extends ListLinkHand
      * Returns the url for the mix-playlist.
      * <br/>
      * Example for Youtube: {@code https://youtube.com/watch?v=videoId&list=playlistId}
+     *
      * @param videoID id of the video
-     * @param listID id of the list
+     * @param listID  id of the list
      * @return url for the mix-playlist
      */
-    protected abstract String getMixUrl(final String videoID, final String listID);
+    protected abstract String getMixUrl(String videoID, String listID);
 
     /**
      * If it is a mix (auto-generated playlist) URL, return a {@link LinkHandler} where the URL is

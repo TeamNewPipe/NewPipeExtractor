@@ -33,15 +33,15 @@ public abstract class YoutubeLikeStreamingService extends StreamingService {
     }
 
     @Override
-    public abstract StreamExtractor getStreamExtractor(final LinkHandler linkHandler);
+    public abstract StreamExtractor getStreamExtractor(LinkHandler linkHandler);
 
     @Override
-    public abstract ChannelExtractor getChannelExtractor(final ListLinkHandler linkHandler);
+    public abstract ChannelExtractor getChannelExtractor(ListLinkHandler linkHandler);
 
     @Override
-    public abstract PlaylistExtractor getPlaylistExtractor(final ListLinkHandler linkHandler);
+    public abstract PlaylistExtractor getPlaylistExtractor(ListLinkHandler linkHandler);
 
     @Nonnull
     @Override
-    public abstract FeedExtractor getFeedExtractor(final String url) throws ExtractionException;
+    public abstract FeedExtractor getFeedExtractor(String url) throws ExtractionException;
 }

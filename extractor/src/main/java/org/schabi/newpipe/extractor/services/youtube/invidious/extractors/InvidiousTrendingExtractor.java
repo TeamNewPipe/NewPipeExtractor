@@ -64,7 +64,9 @@ public class InvidiousTrendingExtractor extends KioskExtractor<StreamInfoItem> {
     }
 
     @Override
-    public InfoItemsPage<StreamInfoItem> getPage(final Page page) throws IOException, ExtractionException {
+    public InfoItemsPage<StreamInfoItem> getPage(
+            final Page page
+    ) throws IOException, ExtractionException {
         return InfoItemsPage.emptyPage();
     }
 

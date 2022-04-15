@@ -17,16 +17,11 @@ public interface Instance {
      * The base url of this instance.
      * <br/>
      * Note that the url is returned without trailing slashes.
-     * Use {@link #getUrlWithTrailingSlash()} if you want a trailing slash.
      *
      * @return base url
      */
     @Nonnull
     String getUrl();
-
-    default String getUrlWithTrailingSlash() {
-        return getUrl() + "/";
-    }
 
 
     /**

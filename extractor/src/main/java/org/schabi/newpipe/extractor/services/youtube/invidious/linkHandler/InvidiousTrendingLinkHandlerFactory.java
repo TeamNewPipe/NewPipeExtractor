@@ -41,7 +41,7 @@ public final class InvidiousTrendingLinkHandlerFactory extends ListLinkHandlerFa
     public String getUrl(final String id,
                          final List<String> contentFilters,
                          final String sortFilter,
-                         final String baseUrl) {
+                         @SuppressWarnings("HiddenField") final String baseUrl) {
         return String.format(KIOSK_MAP.get(id), baseUrl);
     }
 

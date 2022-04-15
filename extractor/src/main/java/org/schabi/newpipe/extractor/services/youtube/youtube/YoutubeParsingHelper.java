@@ -1211,8 +1211,9 @@ public final class YoutubeParsingHelper {
             final String metaInfoLinkUrl = YoutubeParsingHelper.getUrlFromNavigationEndpoint(
                     infoPanelContentRenderer.getObject("sourceEndpoint"));
             try {
-                metaInfo.addUrl(new URL(Objects.requireNonNull(YoutubeUrlHelper.extractCachedUrlIfNeeded(
-                        metaInfoLinkUrl))));
+                metaInfo.addUrl(new URL(
+                        Objects.requireNonNull(YoutubeUrlHelper.extractCachedUrlIfNeeded(
+                                metaInfoLinkUrl))));
             } catch (final NullPointerException | MalformedURLException e) {
                 throw new ParsingException("Could not get metadata info URL", e);
             }
@@ -1249,7 +1250,8 @@ public final class YoutubeParsingHelper {
             try {
                 final String url = YoutubeParsingHelper.getUrlFromNavigationEndpoint(actionButton
                         .getObject("command"));
-                metaInfo.addUrl(new URL(Objects.requireNonNull(YoutubeUrlHelper.extractCachedUrlIfNeeded(url))));
+                metaInfo.addUrl(new URL(
+                        Objects.requireNonNull(YoutubeUrlHelper.extractCachedUrlIfNeeded(url))));
             } catch (final NullPointerException | MalformedURLException e) {
                 throw new ParsingException("Could not get metadata info URL", e);
             }
@@ -1297,16 +1299,6 @@ public final class YoutubeParsingHelper {
         }
 
         return false;
-    }
-
-    @Nonnull
-    public static String unescapeDocument(@Nonnull final String doc) {
-        return doc
-                .replaceAll("\\\\x22", "\"")
-                .replaceAll("\\\\x7b", "{")
-                .replaceAll("\\\\x7d", "}")
-                .replaceAll("\\\\x5b", "[")
-                .replaceAll("\\\\x5d", "]");
     }
 
     /**

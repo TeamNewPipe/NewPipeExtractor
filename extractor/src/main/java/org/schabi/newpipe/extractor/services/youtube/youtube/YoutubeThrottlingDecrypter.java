@@ -41,7 +41,9 @@ public class YoutubeThrottlingDecrypter {
             "\\.get\\(\"n\"\\)\\)&&\\(b=([a-zA-Z0-9$]+)(?:\\[(\\d+)])?\\([a-zA-Z0-9]\\)");
 
     private static final Map<String, String> N_PARAMS_CACHE = new HashMap<>();
+    @SuppressWarnings("StaticVariableName")
     private static String FUNCTION;
+    @SuppressWarnings("StaticVariableName")
     private static String FUNCTION_NAME;
 
     private final String functionName;

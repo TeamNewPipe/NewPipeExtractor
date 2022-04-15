@@ -65,7 +65,7 @@ public class InvidiousInstance extends YoutubeLikeInstance<InvidiousService> {
             responseCheck.check(response);
         } catch (final Exception e) {
             throw new InstanceMetaDataFetchException(
-                    "Unable to fetch trending from " + urlToCheck, e);
+                    "Unable to fetch from " + urlToCheck, e);
         }
     }
 
@@ -81,6 +81,6 @@ public class InvidiousInstance extends YoutubeLikeInstance<InvidiousService> {
 
     @FunctionalInterface
     public interface ResponseCheck {
-        void check(final Response r) throws Exception;
+        void check(Response r) throws Exception;
     }
 }

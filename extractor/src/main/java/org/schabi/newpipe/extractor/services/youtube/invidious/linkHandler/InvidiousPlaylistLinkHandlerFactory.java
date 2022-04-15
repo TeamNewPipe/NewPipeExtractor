@@ -16,7 +16,7 @@ public class InvidiousPlaylistLinkHandlerFactory extends YoutubeLikePlaylistLink
     @Override
     public String getUrl(final String id, final List<String> contentFilters,
                          final String sortFilter) {
-        return baseUrl +"/playlist?list=" + id;
+        return baseUrl + "/playlist?list=" + id;
     }
 
     @Override

@@ -2,6 +2,11 @@ package org.schabi.newpipe.extractor.services.youtube;
 
 import org.schabi.newpipe.extractor.instance.AbstractInstance;
 
+/**
+ * A YouTube-like instance (or proxy)
+ *
+ * @param <S>
+ */
 public abstract class YoutubeLikeInstance<S extends YoutubeLikeStreamingService>
         extends AbstractInstance {
 

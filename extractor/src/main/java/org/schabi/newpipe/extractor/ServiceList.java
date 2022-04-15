@@ -31,7 +31,7 @@ import java.util.List;
 /**
  * A list of supported services.
  */
-// keep unusual names and inner assignments
+@SuppressWarnings("ConstantName") // keep unusual names
 public final class ServiceList {
     private ServiceList() {
         //no instance

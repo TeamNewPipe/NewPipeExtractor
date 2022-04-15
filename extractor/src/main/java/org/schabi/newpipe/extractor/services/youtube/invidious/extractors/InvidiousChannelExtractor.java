@@ -49,7 +49,9 @@ public class InvidiousChannelExtractor extends ChannelExtractor {
     }
 
     @Override
-    public InfoItemsPage<StreamInfoItem> getPage(final Page page) throws IOException, ExtractionException {
+    public InfoItemsPage<StreamInfoItem> getPage(
+            final Page page
+    ) throws IOException, ExtractionException {
         final Response rp = NewPipe.getDownloader().get(page.getUrl());
         final JsonArray array =
                 InvidiousParsingHelper.getValidJsonArrayFromResponse(rp, page.getUrl());
@@ -71,7 +73,9 @@ public class InvidiousChannelExtractor extends ChannelExtractor {
     }
 
     @Override
-    public void onFetchPage(@Nonnull final Downloader downloader) throws IOException, ExtractionException {
+    public void onFetchPage(
+            @Nonnull final Downloader downloader
+    ) throws IOException, ExtractionException {
         final String apiUrl = baseUrl + "/api/v1/channels/" + getUid(getId())
                 + "?fields=author,description,subCount,authorThumbnails,authorBanners,authorId"
                 + "&region=" + getExtractorContentCountry().getCountryCode();

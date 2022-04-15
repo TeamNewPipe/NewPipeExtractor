@@ -1,5 +1,8 @@
 package org.schabi.newpipe.extractor.instance;
 
+/**
+ * Thrown when an {@link Instance} couldn't be validated.
+ */
 public class InstanceMetaDataFetchException extends RuntimeException {
     public InstanceMetaDataFetchException(final String message) {
         super(message);

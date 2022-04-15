@@ -73,7 +73,10 @@ public class InvidiousSearchExtractor extends SearchExtractor {
         results = InvidiousParsingHelper.getValidJsonArrayFromResponse(response, getUrl());
     }
 
-    private void collectStreamsFrom(final MultiInfoItemsCollector collector, final JsonObject json) {
+    private void collectStreamsFrom(
+            final MultiInfoItemsCollector collector,
+            final JsonObject json
+    ) {
         final String type = json.getString("type");
 
         switch (type) {
