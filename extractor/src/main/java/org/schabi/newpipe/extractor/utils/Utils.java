@@ -200,6 +200,16 @@ public final class Utils {
         return setsNoPort || usesDefaultPort;
     }
 
+    public static String removeMAndWWWFromHost(final String host) {
+        if (host.startsWith("m.")) {
+            return host.replace("m.", "");
+        }
+        if (host.startsWith("www.")) {
+            return host.replace("www.", "");
+        }
+        return host;
+    }
+
     public static String removeMAndWWWFromUrl(final String url) {
         if (M_PATTERN.matcher(url).find()) {
             return url.replace("m.", "");

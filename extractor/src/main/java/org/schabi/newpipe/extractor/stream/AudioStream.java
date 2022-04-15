@@ -21,7 +21,7 @@ package org.schabi.newpipe.extractor.stream;
  */
 
 import org.schabi.newpipe.extractor.MediaFormat;
-import org.schabi.newpipe.extractor.services.youtube.ItagItem;
+import org.schabi.newpipe.extractor.services.youtube.shared.ItagItem;
 
 public class AudioStream extends Stream {
     private final int averageBitrate;

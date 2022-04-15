@@ -97,36 +97,31 @@ public class BandcampService extends StreamingService {
     }
 
     @Override
-    public KioskList getKioskList() throws ExtractionException {
+    public KioskList getKioskList() {
 
         final KioskList kioskList = new KioskList(this);
 
-        try {
-            kioskList.addKioskEntry(
-                    (streamingService, url, kioskId) -> new BandcampFeaturedExtractor(
-                            BandcampService.this,
-                            new BandcampFeaturedLinkHandlerFactory().fromUrl(FEATURED_API_URL),
-                            kioskId
-                    ),
-                    new BandcampFeaturedLinkHandlerFactory(),
-                    KIOSK_FEATURED
-            );
+        kioskList.addKioskEntry(
+                (streamingService, url, kioskId) -> new BandcampFeaturedExtractor(
+                        BandcampService.this,
+                        new BandcampFeaturedLinkHandlerFactory().fromUrl(FEATURED_API_URL),
+                        kioskId
+                ),
+                new BandcampFeaturedLinkHandlerFactory(),
+                KIOSK_FEATURED
+        );
 
-            kioskList.addKioskEntry(
-                    (streamingService, url, kioskId) -> new BandcampRadioExtractor(
-                            BandcampService.this,
-                            new BandcampFeaturedLinkHandlerFactory().fromUrl(RADIO_API_URL),
-                            kioskId
-                    ),
-                    new BandcampFeaturedLinkHandlerFactory(),
-                    KIOSK_RADIO
-            );
+        kioskList.addKioskEntry(
+                (streamingService, url, kioskId) -> new BandcampRadioExtractor(
+                        BandcampService.this,
+                        new BandcampFeaturedLinkHandlerFactory().fromUrl(RADIO_API_URL),
+                        kioskId
+                ),
+                new BandcampFeaturedLinkHandlerFactory(),
+                KIOSK_RADIO
+        );
 
-            kioskList.setDefaultKiosk(KIOSK_FEATURED);
-
-        } catch (final Exception e) {
-            throw new ExtractionException(e);
-        }
+        kioskList.setDefaultKiosk(KIOSK_FEATURED);
 
         return kioskList;
     }

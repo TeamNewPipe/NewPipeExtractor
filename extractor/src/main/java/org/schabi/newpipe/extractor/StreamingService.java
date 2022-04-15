@@ -23,9 +23,10 @@ import org.schabi.newpipe.extractor.subscription.SubscriptionExtractor;
 import org.schabi.newpipe.extractor.suggestion.SuggestionExtractor;
 import org.schabi.newpipe.extractor.utils.Utils;
 
-import javax.annotation.Nullable;
 import java.util.Collections;
 import java.util.List;
+
+import javax.annotation.Nullable;
 
 /*
  * Copyright (C) Christian Schabesberger 2018 <chris.schabesberger@mailbox.org>
@@ -97,13 +98,14 @@ public abstract class StreamingService {
      * If you Implement one do not set id within your implementation of this extractor, instead
      * set the id when you put the extractor into {@link ServiceList}
      * All other parameters can be set directly from the overriding constructor.
-     * @param id the number of the service to identify him within the NewPipe frontend
-     * @param name the name of the service
+     *
+     * @param id           the number of the service to identify him within the NewPipe frontend
+     * @param name         the name of the service
      * @param capabilities the type of media this service can handle
      */
-    public StreamingService(final int id,
-                            final String name,
-                            final List<ServiceInfo.MediaCapability> capabilities) {
+    protected StreamingService(final int id,
+                               final String name,
+                               final List<ServiceInfo.MediaCapability> capabilities) {
         this.serviceId = id;
         this.serviceInfo = new ServiceInfo(name, capabilities);
     }
@@ -192,9 +194,10 @@ public abstract class StreamingService {
 
     /**
      * Must create a new instance of a KioskList implementation.
+     *
      * @return a new KioskList instance
      */
-    public abstract KioskList getKioskList() throws ExtractionException;
+    public abstract KioskList getKioskList();
 
     /**
      * Must create a new instance of a ChannelExtractor implementation.

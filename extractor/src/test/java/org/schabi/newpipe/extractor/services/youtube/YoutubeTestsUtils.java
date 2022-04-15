@@ -1,6 +1,7 @@
 package org.schabi.newpipe.extractor.services.youtube;
 
-import org.schabi.newpipe.extractor.services.youtube.extractors.YoutubeStreamExtractor;
+import org.schabi.newpipe.extractor.services.youtube.youtube.YoutubeParsingHelper;
+import org.schabi.newpipe.extractor.services.youtube.youtube.extractors.YoutubeStreamExtractor;
 
 import java.util.Random;
 

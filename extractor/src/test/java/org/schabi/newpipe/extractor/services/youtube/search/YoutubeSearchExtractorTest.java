@@ -7,9 +7,9 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.schabi.newpipe.extractor.ExtractorAsserts.assertEmptyErrors;
 import static org.schabi.newpipe.extractor.ServiceList.YouTube;
 import static org.schabi.newpipe.extractor.services.DefaultTests.assertNoDuplicatedItems;
-import static org.schabi.newpipe.extractor.services.youtube.linkHandler.YoutubeSearchQueryHandlerFactory.CHANNELS;
-import static org.schabi.newpipe.extractor.services.youtube.linkHandler.YoutubeSearchQueryHandlerFactory.PLAYLISTS;
-import static org.schabi.newpipe.extractor.services.youtube.linkHandler.YoutubeSearchQueryHandlerFactory.VIDEOS;
+import static org.schabi.newpipe.extractor.services.youtube.youtube.linkHandler.YoutubeSearchQueryHandlerFactory.CHANNELS;
+import static org.schabi.newpipe.extractor.services.youtube.youtube.linkHandler.YoutubeSearchQueryHandlerFactory.PLAYLISTS;
+import static org.schabi.newpipe.extractor.services.youtube.youtube.linkHandler.YoutubeSearchQueryHandlerFactory.VIDEOS;
 import static java.util.Collections.singletonList;
 
 import org.junit.jupiter.api.BeforeAll;
@@ -211,6 +211,7 @@ public class YoutubeSearchExtractorTest {
         // Test Overrides
         //////////////////////////////////////////////////////////////////////////*/
 
+        @Override
         @Test
         public void testMoreRelatedItems() throws Exception {
             final ListExtractor.InfoItemsPage<InfoItem> initialPage = extractor().getInitialPage();
@@ -301,7 +302,7 @@ public class YoutubeSearchExtractorTest {
         public void testAtLeastOneVerified() throws IOException, ExtractionException {
             final List<InfoItem> items = extractor.getInitialPage().getItems();
             boolean verified = false;
-            for (InfoItem item : items) {
+            for (final InfoItem item : items) {
                 if (((ChannelInfoItem) item).isVerified()) {
                     verified = true;
                     break;

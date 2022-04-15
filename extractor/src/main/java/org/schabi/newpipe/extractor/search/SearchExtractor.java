@@ -7,9 +7,12 @@ import org.schabi.newpipe.extractor.StreamingService;
 import org.schabi.newpipe.extractor.exceptions.ExtractionException;
 import org.schabi.newpipe.extractor.exceptions.ParsingException;
 import org.schabi.newpipe.extractor.linkhandler.SearchQueryHandler;
+import org.schabi.newpipe.extractor.utils.Utils;
+
+import java.util.Collections;
+import java.util.List;
 
 import javax.annotation.Nonnull;
-import java.util.List;
 
 public abstract class SearchExtractor extends ListExtractor<InfoItem> {
 
@@ -27,17 +30,6 @@ public abstract class SearchExtractor extends ListExtractor<InfoItem> {
         return getLinkHandler().getSearchString();
     }
 
-    /**
-     * The search suggestion provided by the service.
-     * <p>
-     * This method also returns the corrected query if
-     * {@link SearchExtractor#isCorrectedSearch()} is true.
-     *
-     * @return a suggestion to another query, the corrected query, or an empty String.
-     */
-    @Nonnull
-    public abstract String getSearchSuggestion() throws ParsingException;
-
     @Nonnull
     @Override
     public SearchQueryHandler getLinkHandler() {
@@ -51,6 +43,19 @@ public abstract class SearchExtractor extends ListExtractor<InfoItem> {
     }
 
     /**
+     * The search suggestion provided by the service.
+     * <p>
+     * This method also returns the corrected query if
+     * {@link SearchExtractor#isCorrectedSearch()} is true.
+     *
+     * @return a suggestion to another query, the corrected query, or an empty String.
+     */
+    @Nonnull
+    public String getSearchSuggestion() throws ParsingException {
+        return Utils.EMPTY_STRING;
+    }
+
+    /**
      * Tell if the search was corrected by the service (if it's not exactly the search you typed).
      * <p>
      * Example: on YouTube, if you search for "pewdeipie",
@@ -58,15 +63,20 @@ public abstract class SearchExtractor extends ListExtractor<InfoItem> {
      *
      * @return whether the results comes from a corrected query or not.
      */
-    public abstract boolean isCorrectedSearch() throws ParsingException;
+    public boolean isCorrectedSearch() throws ParsingException {
+        return false;
+    }
 
     /**
      * Meta information about the search query.
      * <p>
      * Example: on YouTube, if you search for "Covid-19",
      * there is a box with information from the WHO about Covid-19 and a link to the WHO's website.
+     *
      * @return additional meta information about the search query
      */
     @Nonnull
-    public abstract List<MetaInfo> getMetaInfo() throws ParsingException;
+    public List<MetaInfo> getMetaInfo() throws ParsingException {
+        return Collections.emptyList();
+    }
 }

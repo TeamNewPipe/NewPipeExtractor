@@ -1,18 +1,19 @@
 package org.schabi.newpipe.extractor.services.youtube;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import org.schabi.newpipe.downloader.DownloaderTestImpl;
 import org.schabi.newpipe.extractor.NewPipe;
 import org.schabi.newpipe.extractor.exceptions.ParsingException;
-import org.schabi.newpipe.extractor.services.youtube.linkHandler.YoutubeChannelLinkHandlerFactory;
-
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertFalse;
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import org.schabi.newpipe.extractor.services.youtube.shared.linkHandler.YoutubeLikeChannelLinkHandlerFactory;
+import org.schabi.newpipe.extractor.services.youtube.youtube.linkHandler.YoutubeChannelLinkHandlerFactory;
 
 /**
- * Test for {@link YoutubeChannelLinkHandlerFactory}
+ * Test for {@link YoutubeLikeChannelLinkHandlerFactory}
  */
 public class YoutubeChannelLinkHandlerFactoryTest {
 

@@ -100,11 +100,6 @@ public class BandcampPlaylistExtractor extends PlaylistExtractor {
     }
 
     @Override
-    public boolean isUploaderVerified() throws ParsingException {
-        return false;
-    }
-
-    @Override
     public long getStreamCount() {
         return trackInfo.size();
     }

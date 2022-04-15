@@ -50,10 +50,9 @@ public class KioskList {
 
     public void addKioskEntry(final KioskExtractorFactory extractorFactory,
                               final ListLinkHandlerFactory handlerFactory,
-                              final String id)
-            throws Exception {
+                              final String id) {
         if (kioskList.get(id) != null) {
-            throw new Exception("Kiosk with type " + id + " already exists.");
+            throw new IllegalArgumentException("Kiosk with type " + id + " already exists.");
         }
         kioskList.put(id, new KioskEntry(extractorFactory, handlerFactory));
     }

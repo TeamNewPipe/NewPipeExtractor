@@ -102,7 +102,7 @@ public class SoundcloudService extends StreamingService {
     }
 
     @Override
-    public KioskList getKioskList() throws ExtractionException {
+    public KioskList getKioskList() {
         final KioskList.KioskExtractorFactory chartsFactory = (streamingService, url, id) ->
                 new SoundcloudChartsExtractor(SoundcloudService.this,
                         new SoundcloudChartsLinkHandlerFactory().fromUrl(url), id);
@@ -111,13 +111,9 @@ public class SoundcloudService extends StreamingService {
 
         // add kiosks here e.g.:
         final SoundcloudChartsLinkHandlerFactory h = new SoundcloudChartsLinkHandlerFactory();
-        try {
-            list.addKioskEntry(chartsFactory, h, "Top 50");
-            list.addKioskEntry(chartsFactory, h, "New & hot");
-            list.setDefaultKiosk("New & hot");
-        } catch (final Exception e) {
-            throw new ExtractionException(e);
-        }
+        list.addKioskEntry(chartsFactory, h, "Top 50");
+        list.addKioskEntry(chartsFactory, h, "New & hot");
+        list.setDefaultKiosk("New & hot");
 
         return list;
     }

@@ -85,26 +85,6 @@ public class BandcampChannelExtractor extends ChannelExtractor {
         return channelInfo.getString("bio");
     }
 
-    @Override
-    public String getParentChannelName() {
-        return null;
-    }
-
-    @Override
-    public String getParentChannelUrl() {
-        return null;
-    }
-
-    @Override
-    public String getParentChannelAvatarUrl() {
-        return null;
-    }
-
-    @Override
-    public boolean isVerified() throws ParsingException {
-        return false;
-    }
-
     @Nonnull
     @Override
     public InfoItemsPage<StreamInfoItem> getInitialPage() throws ParsingException {

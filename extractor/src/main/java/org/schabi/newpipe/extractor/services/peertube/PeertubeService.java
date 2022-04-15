@@ -4,6 +4,7 @@ import static org.schabi.newpipe.extractor.StreamingService.ServiceInfo.MediaCap
 import static org.schabi.newpipe.extractor.StreamingService.ServiceInfo.MediaCapability.VIDEO;
 import static java.util.Arrays.asList;
 
+import org.schabi.newpipe.extractor.InstanceBasedStreamingService;
 import org.schabi.newpipe.extractor.StreamingService;
 import org.schabi.newpipe.extractor.channel.ChannelExtractor;
 import org.schabi.newpipe.extractor.comments.CommentsExtractor;
@@ -37,7 +38,8 @@ import org.schabi.newpipe.extractor.suggestion.SuggestionExtractor;
 
 import java.util.List;
 
-public class PeertubeService extends StreamingService {
+public class PeertubeService extends StreamingService
+        implements InstanceBasedStreamingService<PeertubeInstance> {
 
     private PeertubeInstance instance;
 
@@ -48,6 +50,21 @@ public class PeertubeService extends StreamingService {
     public PeertubeService(final int id, final PeertubeInstance instance) {
         super(id, "PeerTube", asList(VIDEO, COMMENTS));
         this.instance = instance;
+    }
+
+    @Override
+    public PeertubeInstance getInstance() {
+        return this.instance;
+    }
+
+    @Override
+    public void setInstance(final PeertubeInstance instance) {
+        this.instance = instance;
+    }
+
+    @Override
+    public String getBaseUrl() {
+        return instance.getUrl();
     }
 
     @Override
@@ -122,20 +139,7 @@ public class PeertubeService extends StreamingService {
     }
 
     @Override
-    public String getBaseUrl() {
-        return instance.getUrl();
-    }
-
-    public PeertubeInstance getInstance() {
-        return this.instance;
-    }
-
-    public void setInstance(final PeertubeInstance instance) {
-        this.instance = instance;
-    }
-
-    @Override
-    public KioskList getKioskList() throws ExtractionException {
+    public KioskList getKioskList() {
         final KioskList.KioskExtractorFactory kioskFactory = (streamingService, url, id) ->
                 new PeertubeTrendingExtractor(
                         PeertubeService.this,
@@ -147,16 +151,12 @@ public class PeertubeService extends StreamingService {
 
         // add kiosks here e.g.:
         final PeertubeTrendingLinkHandlerFactory h = new PeertubeTrendingLinkHandlerFactory();
-        try {
-            list.addKioskEntry(kioskFactory, h, PeertubeTrendingLinkHandlerFactory.KIOSK_TRENDING);
-            list.addKioskEntry(kioskFactory, h,
-                    PeertubeTrendingLinkHandlerFactory.KIOSK_MOST_LIKED);
-            list.addKioskEntry(kioskFactory, h, PeertubeTrendingLinkHandlerFactory.KIOSK_RECENT);
-            list.addKioskEntry(kioskFactory, h, PeertubeTrendingLinkHandlerFactory.KIOSK_LOCAL);
-            list.setDefaultKiosk(PeertubeTrendingLinkHandlerFactory.KIOSK_TRENDING);
-        } catch (final Exception e) {
-            throw new ExtractionException(e);
-        }
+        list.addKioskEntry(kioskFactory, h, PeertubeTrendingLinkHandlerFactory.KIOSK_TRENDING);
+        list.addKioskEntry(kioskFactory, h,
+                PeertubeTrendingLinkHandlerFactory.KIOSK_MOST_LIKED);
+        list.addKioskEntry(kioskFactory, h, PeertubeTrendingLinkHandlerFactory.KIOSK_RECENT);
+        list.addKioskEntry(kioskFactory, h, PeertubeTrendingLinkHandlerFactory.KIOSK_LOCAL);
+        list.setDefaultKiosk(PeertubeTrendingLinkHandlerFactory.KIOSK_TRENDING);
 
         return list;
     }

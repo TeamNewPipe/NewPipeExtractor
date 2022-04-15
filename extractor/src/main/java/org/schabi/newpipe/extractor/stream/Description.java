@@ -1,9 +1,9 @@
 package org.schabi.newpipe.extractor.stream;
 
+import static org.schabi.newpipe.extractor.utils.Utils.EMPTY_STRING;
+
 import java.io.Serializable;
 import java.util.Objects;
-
-import static org.schabi.newpipe.extractor.utils.Utils.EMPTY_STRING;
 
 public class Description implements Serializable {
 
@@ -17,11 +17,7 @@ public class Description implements Serializable {
 
     public Description(final String content, final int type) {
         this.type = type;
-        if (content == null) {
-            this.content = "";
-        } else {
-            this.content = content;
-        }
+        this.content = content == null ? "" : content;
     }
 
     public String getContent() {
