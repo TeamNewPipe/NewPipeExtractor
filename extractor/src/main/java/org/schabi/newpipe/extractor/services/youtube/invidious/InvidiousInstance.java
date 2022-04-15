@@ -12,6 +12,8 @@ import org.schabi.newpipe.extractor.utils.Utils;
 
 public class InvidiousInstance extends YoutubeLikeInstance<InvidiousService> {
 
+    public static final String SERVICE_NAME = "Invidious";
+
     public InvidiousInstance(final String url) {
         super(url, tryExtractDomainFromUrl(url, "Invidious instance" + url.hashCode()));
     }
@@ -74,7 +76,7 @@ public class InvidiousInstance extends YoutubeLikeInstance<InvidiousService> {
 
     @Override
     public String getServiceName() {
-        return "Invidious";
+        return SERVICE_NAME;
     }
 
     @FunctionalInterface

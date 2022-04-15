@@ -51,12 +51,8 @@ import javax.annotation.Nonnull;
 public class InvidiousService extends YoutubeLikeStreamingService {
     protected InvidiousInstance instance;
 
-    public InvidiousService(final int id) {
-        super(id, "Invidious", asList(AUDIO, VIDEO, LIVE, COMMENTS));
-    }
-
     public InvidiousService(final int id, final InvidiousInstance instance) {
-        super(id, "Invidious", asList(AUDIO, VIDEO, LIVE, COMMENTS));
+        super(id, InvidiousInstance.SERVICE_NAME, asList(AUDIO, VIDEO, LIVE, COMMENTS));
         this.instance = instance;
     }
 

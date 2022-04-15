@@ -48,7 +48,7 @@ public class PeertubeService extends StreamingService
     }
 
     public PeertubeService(final int id, final PeertubeInstance instance) {
-        super(id, "PeerTube", asList(VIDEO, COMMENTS));
+        super(id, PeertubeInstance.SERVICE_NAME, asList(VIDEO, COMMENTS));
         this.instance = instance;
     }
 

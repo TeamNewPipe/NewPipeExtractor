@@ -12,13 +12,13 @@ import org.schabi.newpipe.extractor.utils.Utils;
 
 public class PeertubeInstance extends AbstractInstance {
 
-    public static final String INSTANCE_SERVICE_NAME = "Peertube";
+    public static final String SERVICE_NAME = "Peertube";
 
     public static final PeertubeInstance DEFAULT_INSTANCE =
             new PeertubeInstance("https://framatube.org", "FramaTube");
 
     public PeertubeInstance(final String url) {
-        super(url, INSTANCE_SERVICE_NAME);
+        super(url, SERVICE_NAME);
     }
 
     public PeertubeInstance(final String url, final String name) {

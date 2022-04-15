@@ -71,7 +71,7 @@ import javax.annotation.Nonnull;
 public class YoutubeDirectService extends YoutubeLikeStreamingService {
 
     public YoutubeDirectService(final int id) {
-        super(id, "YouTube", asList(AUDIO, VIDEO, LIVE, COMMENTS));
+        super(id, YoutubeInstance.SERVICE_NAME, asList(AUDIO, VIDEO, LIVE, COMMENTS));
     }
 
     @Override
