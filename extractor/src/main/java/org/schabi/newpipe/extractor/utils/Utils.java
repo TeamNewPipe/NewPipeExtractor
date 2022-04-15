@@ -201,11 +201,11 @@ public final class Utils {
     }
 
     public static String removeMAndWWWFromHost(final String host) {
-        if (host.startsWith("m.")) {
-            return host.replace("m.", "");
+        if (host.toLowerCase().startsWith("m.")) {
+            return host.length() > 2 ? host.substring(2) : "";
         }
-        if (host.startsWith("www.")) {
-            return host.replace("www.", "");
+        if (host.toLowerCase().startsWith("www.")) {
+            return host.length() > 4 ? host.substring(4) : "";
         }
         return host;
     }

@@ -24,11 +24,9 @@ import org.schabi.newpipe.extractor.exceptions.ContentNotAvailableException;
 import org.schabi.newpipe.extractor.exceptions.ContentNotSupportedException;
 import org.schabi.newpipe.extractor.exceptions.ParsingException;
 import org.schabi.newpipe.extractor.services.BaseChannelExtractorTest;
-import org.schabi.newpipe.extractor.services.youtube.youtube.YoutubeParsingHelper;
 import org.schabi.newpipe.extractor.services.youtube.youtube.extractors.YoutubeChannelExtractor;
 
 import java.io.IOException;
-import java.util.Random;
 
 /**
  * Test for {@link ChannelExtractor}
@@ -45,7 +43,7 @@ public class YoutubeChannelExtractorTest {
         }
 
         @Test
-        public void deletedFetch() throws Exception {
+        void deletedFetch() throws Exception {
             final ChannelExtractor extractor =
                     YouTube.getChannelExtractor("https://www.youtube.com/channel/UCAUc4iz6edWerIjlnL8OSSw");
 
@@ -53,7 +51,7 @@ public class YoutubeChannelExtractorTest {
         }
 
         @Test
-        public void nonExistentFetch() throws Exception {
+        void nonExistentFetch() throws Exception {
             final ChannelExtractor extractor =
                     YouTube.getChannelExtractor("https://www.youtube.com/channel/DOESNT-EXIST");
 
@@ -61,7 +59,7 @@ public class YoutubeChannelExtractorTest {
         }
 
         @Test
-        public void accountTerminatedTOSFetch() throws Exception {
+        void accountTerminatedTOSFetch() throws Exception {
             // "This account has been terminated for a violation of YouTube's Terms of Service."
             final ChannelExtractor extractor =
                     YouTube.getChannelExtractor("https://www.youtube.com/channel/UCTGjY2I-ZUGnwVoWAGRd7XQ");
@@ -72,7 +70,7 @@ public class YoutubeChannelExtractorTest {
         }
 
         @Test
-        public void accountTerminatedCommunityFetch() throws Exception {
+        void accountTerminatedCommunityFetch() throws Exception {
             // "This account has been terminated for violating YouTube's Community Guidelines."
             final ChannelExtractor extractor =
                     YouTube.getChannelExtractor("https://www.youtube.com/channel/UC0AuOxCr9TZ0TtEgL1zpIgA");
@@ -83,7 +81,7 @@ public class YoutubeChannelExtractorTest {
         }
 
         @Test
-        public void accountTerminatedHateFetch() throws Exception {
+        void accountTerminatedHateFetch() throws Exception {
             // "This account has been terminated due to multiple or severe violations
             // of YouTube's policy prohibiting hate speech."
             final ChannelExtractor extractor =
@@ -95,7 +93,7 @@ public class YoutubeChannelExtractorTest {
         }
 
         @Test
-        public void accountTerminatedBullyFetch() throws Exception {
+        void accountTerminatedBullyFetch() throws Exception {
             // "This account has been terminated due to multiple or severe violations
             // of YouTube's policy prohibiting content designed to harass, bully or threaten."
             final ChannelExtractor extractor =
@@ -107,7 +105,7 @@ public class YoutubeChannelExtractorTest {
         }
 
         @Test
-        public void accountTerminatedSpamFetch() throws Exception {
+        void accountTerminatedSpamFetch() throws Exception {
             // "This account has been terminated due to multiple or severe violations
             // of YouTube's policy against spam, deceptive practices and misleading content
             // or other Terms of Service violations."
@@ -120,7 +118,7 @@ public class YoutubeChannelExtractorTest {
         }
 
         @Test
-        public void accountTerminatedCopyrightFetch() throws Exception {
+        void accountTerminatedCopyrightFetch() throws Exception {
             // "This account has been terminated because we received multiple third-party claims
             // of copyright infringement regarding material that the user posted."
             final ChannelExtractor extractor =
@@ -142,7 +140,8 @@ public class YoutubeChannelExtractorTest {
 
         @Test
         void noVideoTab() throws Exception {
-            final ChannelExtractor extractor = YouTube.getChannelExtractor("https://invidio.us/channel/UC-9-kyTW8ZkZNDHQJ6FgpwQ");
+            final ChannelExtractor extractor =
+                    YouTube.getChannelExtractor("https://invidious.fdn.fr/channel/UC-9-kyTW8ZkZNDHQJ6FgpwQ");
 
             extractor.fetchPage();
             assertThrows(ContentNotSupportedException.class, extractor::getInitialPage);
@@ -489,7 +488,7 @@ public class YoutubeChannelExtractorTest {
         }
 
         @Test
-        public void testGetPageInNewExtractor() throws Exception {
+        void testGetPageInNewExtractor() throws Exception {
             final ChannelExtractor newExtractor = YouTube.getChannelExtractor(extractor.getUrl());
             defaultTestGetPageInNewExtractor(extractor, newExtractor);
         }

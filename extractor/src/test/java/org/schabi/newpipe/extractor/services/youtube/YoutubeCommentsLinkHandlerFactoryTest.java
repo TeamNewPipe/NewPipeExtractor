@@ -23,12 +23,12 @@ public class YoutubeCommentsLinkHandlerFactoryTest {
     }
 
     @Test
-    public void getIdWithNullAsUrl() {
+    void getIdWithNullAsUrl() {
         assertThrows(IllegalArgumentException.class, () -> linkHandler.fromId(null));
     }
 
     @Test
-    public void getIdFromYt() throws ParsingException {
+    void getIdFromYt() throws ParsingException {
         assertEquals("VM_6n762j6M", linkHandler.fromUrl("https://www.youtube.com/watch?v=VM_6n762j6M").getId());
         assertEquals("VM_6n762j6M", linkHandler.fromUrl("https://m.youtube.com/watch?v=VM_6n762j6M").getId());
         assertEquals("VM_6n762j6M", linkHandler.fromUrl("https://youtube.com/watch?v=VM_6n762j6M").getId());
@@ -38,7 +38,7 @@ public class YoutubeCommentsLinkHandlerFactoryTest {
     }
 
     @Test
-    public void testAcceptUrl() throws ParsingException {
+    void testAcceptUrl() throws ParsingException {
         assertTrue(linkHandler.acceptUrl("https://www.youtube.com/watch?v=VM_6n762j6M&t=20"));
         assertTrue(linkHandler.acceptUrl("https://WWW.youtube.com/watch?v=VM_6n762j6M&t=20"));
         assertTrue(linkHandler.acceptUrl("https://youtube.com/watch?v=VM_6n762j6M&t=20"));
@@ -46,7 +46,7 @@ public class YoutubeCommentsLinkHandlerFactoryTest {
     }
 
     @Test
-    public void testDeniesUrl() throws ParsingException {
+    void testDeniesUrl() throws ParsingException {
         assertFalse(linkHandler.acceptUrl("https://www.you com/watch?v=VM_6n762j6M"));
         assertFalse(linkHandler.acceptUrl("https://com/watch?v=VM_6n762j6M"));
         assertFalse(linkHandler.acceptUrl("htt ://com/watch?v=VM_6n762j6M"));
@@ -54,16 +54,16 @@ public class YoutubeCommentsLinkHandlerFactoryTest {
     }
 
     @Test
-    public void getIdFromInvidious() throws ParsingException {
-        assertEquals("VM_6n762j6M", linkHandler.fromUrl("https://www.invidio.us/watch?v=VM_6n762j6M").getId());
-        assertEquals("VM_6n762j6M", linkHandler.fromUrl("https://invidio.us/watch?v=VM_6n762j6M").getId());
-        assertEquals("VM_6n762j6M", linkHandler.fromUrl("https://INVIDIO.US/watch?v=VM_6n762j6M").getId());
-        assertEquals("VM_6n762j6M", linkHandler.fromUrl("https://invidio.us/VM_6n762j6M").getId());
-        assertEquals("VM_6n762j6M", linkHandler.fromUrl("https://invidio.us/VM_6n762j6M&t=20").getId());
+    void getIdFromInvidious() throws ParsingException {
+        assertEquals("VM_6n762j6M", linkHandler.fromUrl("https://www.invidious.fdn.fr/watch?v=VM_6n762j6M").getId());
+        assertEquals("VM_6n762j6M", linkHandler.fromUrl("https://invidious.fdn.fr/watch?v=VM_6n762j6M").getId());
+        assertEquals("VM_6n762j6M", linkHandler.fromUrl("https://INVIDIOUS.FDN.FR/watch?v=VM_6n762j6M").getId());
+        assertEquals("VM_6n762j6M", linkHandler.fromUrl("https://invidious.fdn.fr/VM_6n762j6M").getId());
+        assertEquals("VM_6n762j6M", linkHandler.fromUrl("https://invidious.fdn.fr/VM_6n762j6M&t=20").getId());
     }
 
     @Test
-    public void getIdFromY2ube() throws ParsingException {
+    void getIdFromY2ube() throws ParsingException {
         assertEquals("VM_6n762j6M", linkHandler.fromUrl("https://y2u.be/VM_6n762j6M").getId());
         assertEquals("VM_6n762j6M", linkHandler.fromUrl("https://Y2U.Be/VM_6n762j6M").getId());
     }

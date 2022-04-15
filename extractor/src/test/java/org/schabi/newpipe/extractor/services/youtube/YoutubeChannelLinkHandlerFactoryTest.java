@@ -26,7 +26,7 @@ public class YoutubeChannelLinkHandlerFactoryTest {
     }
 
     @Test
-    public void acceptUrlTest() throws ParsingException {
+    void acceptUrlTest() throws ParsingException {
         assertTrue(linkHandler.acceptUrl("https://www.youtube.com/user/Gronkh"));
         assertTrue(linkHandler.acceptUrl("https://www.youtube.com/user/Netzkino/videos"));
 
@@ -43,11 +43,11 @@ public class YoutubeChannelLinkHandlerFactoryTest {
         assertTrue(linkHandler.acceptUrl("https://hooktube.com/channel/UClq42foiSgl7sSpLupnugGA"));
         assertTrue(linkHandler.acceptUrl("https://hooktube.com/channel/UClq42foiSgl7sSpLupnugGA/videos?disable_polymer=1"));
 
-        assertTrue(linkHandler.acceptUrl("https://invidio.us/user/Gronkh"));
-        assertTrue(linkHandler.acceptUrl("https://invidio.us/user/Netzkino/videos"));
+        assertTrue(linkHandler.acceptUrl("https://invidious.fdn.fr/user/Gronkh"));
+        assertTrue(linkHandler.acceptUrl("https://invidious.fdn.fr/user/Netzkino/videos"));
 
-        assertTrue(linkHandler.acceptUrl("https://invidio.us/channel/UClq42foiSgl7sSpLupnugGA"));
-        assertTrue(linkHandler.acceptUrl("https://invidio.us/channel/UClq42foiSgl7sSpLupnugGA/videos?disable_polymer=1"));
+        assertTrue(linkHandler.acceptUrl("https://invidious.fdn.fr/channel/UClq42foiSgl7sSpLupnugGA"));
+        assertTrue(linkHandler.acceptUrl("https://invidious.fdn.fr/channel/UClq42foiSgl7sSpLupnugGA/videos?disable_polymer=1"));
         assertTrue(linkHandler.acceptUrl("https://www.youtube.com/watchismo"));
 
 
@@ -63,7 +63,7 @@ public class YoutubeChannelLinkHandlerFactoryTest {
     }
 
     @Test
-    public void getIdFromUrl() throws ParsingException {
+    void getIdFromUrl() throws ParsingException {
         assertEquals("user/Gronkh", linkHandler.fromUrl("https://www.youtube.com/user/Gronkh").getId());
         assertEquals("user/Netzkino", linkHandler.fromUrl("https://www.youtube.com/user/Netzkino/videos").getId());
 
@@ -77,11 +77,11 @@ public class YoutubeChannelLinkHandlerFactoryTest {
         assertEquals("channel/UClq42foiSgl7sSpLupnugGA", linkHandler.fromUrl("https://hooktube.com/channel/UClq42foiSgl7sSpLupnugGA").getId());
         assertEquals("channel/UClq42foiSgl7sSpLupnugGA", linkHandler.fromUrl("https://hooktube.com/channel/UClq42foiSgl7sSpLupnugGA/videos?disable_polymer=1").getId());
 
-        assertEquals("user/Gronkh", linkHandler.fromUrl("https://invidio.us/user/Gronkh").getId());
-        assertEquals("user/Netzkino", linkHandler.fromUrl("https://invidio.us/user/Netzkino/videos").getId());
+        assertEquals("user/Gronkh", linkHandler.fromUrl("https://invidious.fdn.fr/user/Gronkh").getId());
+        assertEquals("user/Netzkino", linkHandler.fromUrl("https://invidious.fdn.fr/user/Netzkino/videos").getId());
 
-        assertEquals("channel/UClq42foiSgl7sSpLupnugGA", linkHandler.fromUrl("https://invidio.us/channel/UClq42foiSgl7sSpLupnugGA").getId());
-        assertEquals("channel/UClq42foiSgl7sSpLupnugGA", linkHandler.fromUrl("https://invidio.us/channel/UClq42foiSgl7sSpLupnugGA/videos?disable_polymer=1").getId());
+        assertEquals("channel/UClq42foiSgl7sSpLupnugGA", linkHandler.fromUrl("https://invidious.fdn.fr/channel/UClq42foiSgl7sSpLupnugGA").getId());
+        assertEquals("channel/UClq42foiSgl7sSpLupnugGA", linkHandler.fromUrl("https://invidious.fdn.fr/channel/UClq42foiSgl7sSpLupnugGA/videos?disable_polymer=1").getId());
 
         assertEquals("c/creatoracademy", linkHandler.fromUrl("https://www.youtube.com/c/creatoracademy").getId());
         assertEquals("c/YouTubeCreators", linkHandler.fromUrl("https://www.youtube.com/c/YouTubeCreators").getId());

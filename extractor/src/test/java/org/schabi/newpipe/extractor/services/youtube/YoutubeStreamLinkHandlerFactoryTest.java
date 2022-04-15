@@ -30,23 +30,23 @@ public class YoutubeStreamLinkHandlerFactoryTest {
     }
 
     @Test
-    public void getIdWithNullAsUrl() {
+    void getIdWithNullAsUrl() {
         assertThrows(IllegalArgumentException.class, () -> linkHandler.fromId(null));
     }
 
     @Test
-    public void getIdForAd() throws ParsingException {
+    void getIdForAd() throws ParsingException {
         assertThrows(FoundAdException.class, () -> linkHandler.fromUrl(AD_URL));
     }
 
     @Test
-    public void getIdForInvalidUrls() {
+    void getIdForInvalidUrls() {
         final List<String> invalidUrls = new ArrayList<>(50);
         invalidUrls.add("https://www.youtube.com/watch?v=jZViOEv90d");
         invalidUrls.add("https://www.youtube.com/watchjZViOEv90d");
         invalidUrls.add("https://www.youtube.com/");
         invalidUrls.add("https://www.youtube.com/channel/UCBR8-60-B28hp2BmDPdntcQ");
-        invalidUrls.add("https://invidio.us/channel/UCBR8-60-B28hp2BmDPdntcQ");
+        invalidUrls.add("https://invidious.fdn.fr/channel/UCBR8-60-B28hp2BmDPdntcQ");
         for (final String invalidUrl : invalidUrls) {
             Throwable exception = null;
             try {
@@ -61,7 +61,7 @@ public class YoutubeStreamLinkHandlerFactoryTest {
     }
 
     @Test
-    public void getIdfromYt() throws Exception {
+    void getIdfromYt() throws Exception {
         assertEquals("jZViOEv90dI", linkHandler.fromUrl("https://www.youtube.com/watch?v=jZViOEv90dI").getId());
         assertEquals("W-fFHeTX70Q", linkHandler.fromUrl("https://www.youtube.com/watch?v=W-fFHeTX70Q").getId());
         assertEquals("jZViOEv90dI", linkHandler.fromUrl("https://www.youtube.com/watch?v=jZViOEv90dI&t=100").getId());
@@ -101,7 +101,7 @@ public class YoutubeStreamLinkHandlerFactoryTest {
     }
 
     @Test
-    public void testAcceptYtUrl() throws ParsingException {
+    void testAcceptYtUrl() throws ParsingException {
         assertTrue(linkHandler.acceptUrl("https://www.youtube.com/watch?v=jZViOEv90dI"));
         assertTrue(linkHandler.acceptUrl("https://www.youtube.com/watch?v=jZViOEv90dI&t=100"));
         assertTrue(linkHandler.acceptUrl("https://WWW.YouTube.com/watch?v=jZViOEv90dI&t=100"));
@@ -125,7 +125,7 @@ public class YoutubeStreamLinkHandlerFactoryTest {
     }
 
     @Test
-    public void testAcceptHookUrl() throws ParsingException {
+    void testAcceptHookUrl() throws ParsingException {
         assertTrue(linkHandler.acceptUrl("https://hooktube.com/watch?v=TglNG-yjabU"));
         assertTrue(linkHandler.acceptUrl("http://hooktube.com/watch?v=TglNG-yjabU"));
         assertTrue(linkHandler.acceptUrl("hooktube.com/watch?v=3msbfr6pBNE"));
@@ -136,7 +136,7 @@ public class YoutubeStreamLinkHandlerFactoryTest {
     }
 
     @Test
-    public void testGetHookIdfromUrl() throws ParsingException {
+    void testGetHookIdfromUrl() throws ParsingException {
         assertEquals("TglNG-yjabU", linkHandler.fromUrl("https://hooktube.com/watch?v=TglNG-yjabU").getId());
         assertEquals("TglNG-yjabU", linkHandler.fromUrl("http://hooktube.com/watch?v=TglNG-yjabU").getId());
         assertEquals("3msbfr6pBNE", linkHandler.fromUrl("hooktube.com/watch?v=3msbfr6pBNE").getId());
@@ -148,28 +148,28 @@ public class YoutubeStreamLinkHandlerFactoryTest {
     }
 
     @Test
-    public void testAcceptInvidiousUrl() throws ParsingException {
-        assertTrue(linkHandler.acceptUrl("https://invidio.us/watch?v=TglNG-yjabU"));
-        assertTrue(linkHandler.acceptUrl("http://www.invidio.us/watch?v=TglNG-yjabU"));
-        assertTrue(linkHandler.acceptUrl("http://invidio.us/watch?v=TglNG-yjabU"));
-        assertTrue(linkHandler.acceptUrl("invidio.us/watch?v=3msbfr6pBNE"));
-        assertTrue(linkHandler.acceptUrl("https://invidio.us/watch?v=ocH3oSnZG3c&test=PLS2VU1j4vzuZwooPjV26XM9UEBY2CPNn2"));
-        assertTrue(linkHandler.acceptUrl("invidio.us/embed/3msbfr6pBNE"));
-        assertTrue(linkHandler.acceptUrl("invidio.us/watch/3msbfr6pBNE"));
-        assertTrue(linkHandler.acceptUrl("invidio.us/v/3msbfr6pBNE"));
-        assertTrue(linkHandler.acceptUrl("invidio.us/w/3msbfr6pBNE"));
+    void testAcceptInvidiousUrl() throws ParsingException {
+        assertTrue(linkHandler.acceptUrl("https://invidious.fdn.fr/watch?v=TglNG-yjabU"));
+        assertTrue(linkHandler.acceptUrl("http://www.invidious.fdn.fr/watch?v=TglNG-yjabU"));
+        assertTrue(linkHandler.acceptUrl("http://invidious.fdn.fr/watch?v=TglNG-yjabU"));
+        assertTrue(linkHandler.acceptUrl("invidious.fdn.fr/watch?v=3msbfr6pBNE"));
+        assertTrue(linkHandler.acceptUrl("https://invidious.fdn.fr/watch?v=ocH3oSnZG3c&test=PLS2VU1j4vzuZwooPjV26XM9UEBY2CPNn2"));
+        assertTrue(linkHandler.acceptUrl("invidious.fdn.fr/embed/3msbfr6pBNE"));
+        assertTrue(linkHandler.acceptUrl("invidious.fdn.fr/watch/3msbfr6pBNE"));
+        assertTrue(linkHandler.acceptUrl("invidious.fdn.fr/v/3msbfr6pBNE"));
+        assertTrue(linkHandler.acceptUrl("invidious.fdn.fr/w/3msbfr6pBNE"));
     }
 
     @Test
-    public void testGetInvidiousIdfromUrl() throws ParsingException {
-        assertEquals("TglNG-yjabU", linkHandler.fromUrl("https://invidio.us/watch?v=TglNG-yjabU").getId());
-        assertEquals("TglNG-yjabU", linkHandler.fromUrl("http://www.invidio.us/watch?v=TglNG-yjabU").getId());
-        assertEquals("TglNG-yjabU", linkHandler.fromUrl("http://invidio.us/watch?v=TglNG-yjabU").getId());
-        assertEquals("3msbfr6pBNE", linkHandler.fromUrl("invidio.us/watch?v=3msbfr6pBNE").getId());
-        assertEquals("ocH3oSnZG3c", linkHandler.fromUrl("https://invidio.us/watch?v=ocH3oSnZG3c&test=PLS2VU1j4vzuZwooPjV26XM9UEBY2CPNn2").getId());
-        assertEquals("3msbfr6pBNE", linkHandler.fromUrl("invidio.us/embed/3msbfr6pBNE").getId());
-        assertEquals("3msbfr6pBNE", linkHandler.fromUrl("invidio.us/v/3msbfr6pBNE").getId());
-        assertEquals("3msbfr6pBNE", linkHandler.fromUrl("invidio.us/w/3msbfr6pBNE").getId());
-        assertEquals("3msbfr6pBNE", linkHandler.fromUrl("invidio.us/watch/3msbfr6pBNE").getId());
+    void testGetInvidiousIdfromUrl() throws ParsingException {
+        assertEquals("TglNG-yjabU", linkHandler.fromUrl("https://invidious.fdn.fr/watch?v=TglNG-yjabU").getId());
+        assertEquals("TglNG-yjabU", linkHandler.fromUrl("http://www.invidious.fdn.fr/watch?v=TglNG-yjabU").getId());
+        assertEquals("TglNG-yjabU", linkHandler.fromUrl("http://invidious.fdn.fr/watch?v=TglNG-yjabU").getId());
+        assertEquals("3msbfr6pBNE", linkHandler.fromUrl("invidious.fdn.fr/watch?v=3msbfr6pBNE").getId());
+        assertEquals("ocH3oSnZG3c", linkHandler.fromUrl("https://invidious.fdn.fr/watch?v=ocH3oSnZG3c&test=PLS2VU1j4vzuZwooPjV26XM9UEBY2CPNn2").getId());
+        assertEquals("3msbfr6pBNE", linkHandler.fromUrl("invidious.fdn.fr/embed/3msbfr6pBNE").getId());
+        assertEquals("3msbfr6pBNE", linkHandler.fromUrl("invidious.fdn.fr/v/3msbfr6pBNE").getId());
+        assertEquals("3msbfr6pBNE", linkHandler.fromUrl("invidious.fdn.fr/w/3msbfr6pBNE").getId());
+        assertEquals("3msbfr6pBNE", linkHandler.fromUrl("invidious.fdn.fr/watch/3msbfr6pBNE").getId());
     }
 }

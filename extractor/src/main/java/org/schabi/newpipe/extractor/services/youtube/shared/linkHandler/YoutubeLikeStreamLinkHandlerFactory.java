@@ -118,11 +118,19 @@ public abstract class YoutubeLikeStreamLinkHandlerFactory extends LinkHandlerFac
                 final String viewQueryValue = Utils.getQueryValue(decodedURL, "v");
                 return assertIsId(viewQueryValue);
 
-            } else if ((isInvidioURL(url) || isHooktubeURL(url))
-                    && path.equalsIgnoreCase("watch")) {
-                final String viewQueryValue = Utils.getQueryValue(url, "v");
-                if (viewQueryValue != null) {
-                    return assertIsId(viewQueryValue);
+            } else if (isInvidioURL(url) || isHooktubeURL(url)) {
+                // /watch?v=<ID>
+                if ("watch".equalsIgnoreCase(path)) {
+                    final String viewQueryValue = Utils.getQueryValue(url, "v");
+                    if (viewQueryValue != null) {
+                        return assertIsId(viewQueryValue);
+                    }
+                }
+
+                // /<ID>
+                final String maybeId = extractId(path);
+                if (maybeId != null) {
+                    return maybeId;
                 }
             }
 

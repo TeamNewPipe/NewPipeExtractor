@@ -62,12 +62,12 @@ public final class YoutubeUrlHelper {
                 "invidio.xamh.de",
                 "y.com.cm"
         ));
-        final String host = Utils.removeMAndWWWFromUrl(url.getHost()).toLowerCase();
+        final String host = Utils.removeMAndWWWFromHost(url.getHost()).toLowerCase();
         return invInstances.contains(host);
     }
 
     public static boolean isY2ubeURL(@Nonnull final URL url) {
-        return Utils.removeMAndWWWFromUrl(url.getHost()).equalsIgnoreCase("y2u.be");
+        return Utils.removeMAndWWWFromHost(url.getHost()).equalsIgnoreCase("y2u.be");
     }
 
     /**
