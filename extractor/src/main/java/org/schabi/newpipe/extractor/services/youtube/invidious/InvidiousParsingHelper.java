@@ -98,7 +98,7 @@ public final class InvidiousParsingHelper {
 
     public static DateWrapper getUploadDateFromEpochTime(final long epochTime) {
         return new DateWrapper(
-                OffsetDateTime.ofInstant(Instant.ofEpochMilli(epochTime), ZoneOffset.UTC));
+                OffsetDateTime.ofInstant(Instant.ofEpochSecond(epochTime), ZoneOffset.UTC));
     }
 
     public static String getUid(@Nonnull final String id) {
