@@ -2,13 +2,13 @@ package org.schabi.newpipe.extractor.services.youtube.shared.linkHandler;
 
 import org.schabi.newpipe.extractor.exceptions.ParsingException;
 import org.schabi.newpipe.extractor.linkhandler.ListLinkHandlerFactory;
-import org.schabi.newpipe.extractor.services.youtube.shared.YoutubeUrlHelper;
 import org.schabi.newpipe.extractor.utils.Utils;
 
 import java.net.URL;
 import java.util.regex.Pattern;
 
-public abstract class YoutubeLikeChannelLinkHandlerFactory extends ListLinkHandlerFactory {
+public abstract class YoutubeLikeChannelLinkHandlerFactory extends ListLinkHandlerFactory
+        implements YoutubeLikeLinkHandlerFactory {
 
     protected static final Pattern EXCLUDED_SEGMENTS =
             Pattern.compile("playlist|watch|attribution_link|watch_popup|embed|feed|select_site");
@@ -30,9 +30,7 @@ public abstract class YoutubeLikeChannelLinkHandlerFactory extends ListLinkHandl
             final URL urlObj = Utils.stringToURL(url);
             String path = urlObj.getPath();
 
-            if (!Utils.isHTTP(urlObj) || !(YoutubeUrlHelper.isYoutubeURL(urlObj)
-                    || YoutubeUrlHelper.isInvidioURL(urlObj)
-                    || YoutubeUrlHelper.isHooktubeURL(urlObj))) {
+            if (!Utils.isHTTP(urlObj) || !isSupportedYouTubeLikeHost(urlObj)) {
                 throw new ParsingException("the URL given is not a Youtube-URL");
             }
 

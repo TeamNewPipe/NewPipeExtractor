@@ -200,6 +200,14 @@ public final class Utils {
         return setsNoPort || usesDefaultPort;
     }
 
+    public static String getHostOrNull(@Nonnull final String url) {
+        try {
+            return stringToURL(url).getHost();
+        } catch (final MalformedURLException ex) {
+            return null;
+        }
+    }
+
     public static String removeMAndWWWFromHost(final String host) {
         if (host.toLowerCase().startsWith("m.")) {
             return host.length() > 2 ? host.substring(2) : "";

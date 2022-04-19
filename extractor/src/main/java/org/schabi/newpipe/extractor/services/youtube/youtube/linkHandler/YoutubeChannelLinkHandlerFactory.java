@@ -24,7 +24,8 @@ import java.util.List;
  * along with NewPipe.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-public final class YoutubeChannelLinkHandlerFactory extends YoutubeLikeChannelLinkHandlerFactory {
+public final class YoutubeChannelLinkHandlerFactory extends YoutubeLikeChannelLinkHandlerFactory
+        implements YoutubeLinkHandlerFactory {
 
     public static final YoutubeChannelLinkHandlerFactory INSTANCE
             = new YoutubeChannelLinkHandlerFactory();

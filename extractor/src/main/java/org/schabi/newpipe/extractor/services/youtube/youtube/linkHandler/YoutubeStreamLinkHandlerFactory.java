@@ -22,7 +22,8 @@ import org.schabi.newpipe.extractor.services.youtube.shared.linkHandler.YoutubeL
  * along with NewPipe.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-public final class YoutubeStreamLinkHandlerFactory extends YoutubeLikeStreamLinkHandlerFactory {
+public final class YoutubeStreamLinkHandlerFactory extends YoutubeLikeStreamLinkHandlerFactory
+        implements YoutubeLinkHandlerFactory {
 
     private static final YoutubeStreamLinkHandlerFactory INSTANCE
             = new YoutubeStreamLinkHandlerFactory();

@@ -4,7 +4,8 @@ import org.schabi.newpipe.extractor.services.youtube.shared.linkHandler.YoutubeL
 
 import java.util.List;
 
-public final class YoutubePlaylistLinkHandlerFactory extends YoutubeLikePlaylistLinkHandlerFactory {
+public final class YoutubePlaylistLinkHandlerFactory extends YoutubeLikePlaylistLinkHandlerFactory
+        implements YoutubeLinkHandlerFactory {
 
     private static final YoutubePlaylistLinkHandlerFactory INSTANCE =
             new YoutubePlaylistLinkHandlerFactory();

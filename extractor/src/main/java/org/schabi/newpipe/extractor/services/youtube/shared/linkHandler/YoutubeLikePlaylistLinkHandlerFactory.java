@@ -6,21 +6,20 @@ import org.schabi.newpipe.extractor.linkhandler.LinkHandler;
 import org.schabi.newpipe.extractor.linkhandler.ListLinkHandler;
 import org.schabi.newpipe.extractor.linkhandler.ListLinkHandlerFactory;
 import org.schabi.newpipe.extractor.services.youtube.shared.YoutubePlaylistHelper;
-import org.schabi.newpipe.extractor.services.youtube.shared.YoutubeUrlHelper;
 import org.schabi.newpipe.extractor.utils.Utils;
 
 import java.net.MalformedURLException;
 import java.net.URL;
 
-public abstract class YoutubeLikePlaylistLinkHandlerFactory extends ListLinkHandlerFactory {
+public abstract class YoutubeLikePlaylistLinkHandlerFactory extends ListLinkHandlerFactory
+        implements YoutubeLikeLinkHandlerFactory {
 
     @Override
     public String getId(final String url) throws ParsingException {
         try {
             final URL urlObj = Utils.stringToURL(url);
 
-            if (!Utils.isHTTP(urlObj) || !(YoutubeUrlHelper.isYoutubeURL(urlObj)
-                    || YoutubeUrlHelper.isInvidioURL(urlObj))) {
+            if (!Utils.isHTTP(urlObj) || !isSupportedYouTubeLikeHost(urlObj)) {
                 throw new ParsingException("The url given is not a YouTube-URL");
             }
 

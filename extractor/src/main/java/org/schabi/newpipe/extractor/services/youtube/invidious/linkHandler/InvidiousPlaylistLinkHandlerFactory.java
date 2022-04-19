@@ -5,12 +5,18 @@ import org.schabi.newpipe.extractor.services.youtube.shared.linkHandler.YoutubeL
 
 import java.util.List;
 
-public class InvidiousPlaylistLinkHandlerFactory extends YoutubeLikePlaylistLinkHandlerFactory {
+public class InvidiousPlaylistLinkHandlerFactory extends YoutubeLikePlaylistLinkHandlerFactory
+        implements InvidiousLinkHandlerFactory {
 
     protected final String baseUrl;
 
     public InvidiousPlaylistLinkHandlerFactory(final InvidiousService service) {
         this.baseUrl = service.getInstance().getUrl();
+    }
+
+    @Override
+    public String getInvidiousBaseUrl() {
+        return baseUrl;
     }
 
     @Override

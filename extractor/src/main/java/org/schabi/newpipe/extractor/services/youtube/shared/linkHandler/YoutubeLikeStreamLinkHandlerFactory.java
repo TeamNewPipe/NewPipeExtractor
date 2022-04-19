@@ -1,7 +1,6 @@
 package org.schabi.newpipe.extractor.services.youtube.shared.linkHandler;
 
 import static org.schabi.newpipe.extractor.services.youtube.shared.YoutubeUrlHelper.isHooktubeURL;
-import static org.schabi.newpipe.extractor.services.youtube.shared.YoutubeUrlHelper.isInvidioURL;
 import static org.schabi.newpipe.extractor.services.youtube.shared.YoutubeUrlHelper.isY2ubeURL;
 import static org.schabi.newpipe.extractor.services.youtube.shared.YoutubeUrlHelper.isYoutubeServiceURL;
 import static org.schabi.newpipe.extractor.services.youtube.shared.YoutubeUrlHelper.isYoutubeURL;
@@ -23,7 +22,8 @@ import java.util.regex.Pattern;
 
 import javax.annotation.Nullable;
 
-public abstract class YoutubeLikeStreamLinkHandlerFactory extends LinkHandlerFactory {
+public abstract class YoutubeLikeStreamLinkHandlerFactory extends LinkHandlerFactory
+        implements YoutubeLikeLinkHandlerFactory {
 
     protected static final Pattern YOUTUBE_VIDEO_ID_REGEX_PATTERN
             = Pattern.compile("^([a-zA-Z0-9_-]{11})");
@@ -85,12 +85,7 @@ public abstract class YoutubeLikeStreamLinkHandlerFactory extends LinkHandlerFac
             path = path.substring(1);
         }
 
-        if (!Utils.isHTTP(url)
-                || !(isYoutubeURL(url)
-                || isYoutubeServiceURL(url)
-                || isHooktubeURL(url)
-                || isInvidioURL(url)
-                || isY2ubeURL(url))
+        if (!Utils.isHTTP(url) || !(isSupportedYouTubeLikeHost(url))
         ) {
             if ("googleads.g.doubleclick.net".equalsIgnoreCase(host)) {
                 throw new FoundAdException("Error found ad: " + urlString);
@@ -103,7 +98,7 @@ public abstract class YoutubeLikeStreamLinkHandlerFactory extends LinkHandlerFac
             throw new ParsingException("Can't find handler for url: " + urlString);
         }
 
-        if (isYoutubeURL(url) || isInvidioURL(url) || isHooktubeURL(url)) {
+        if (isYoutubeURL(url) || isInvidiousUrl(url) || isHooktubeURL(url)) {
             if (isYoutubeURL(url)
                     && "attribution_link".equalsIgnoreCase(path)) {
                 final String uQueryValue = Utils.getQueryValue(url, "u");
@@ -118,7 +113,7 @@ public abstract class YoutubeLikeStreamLinkHandlerFactory extends LinkHandlerFac
                 final String viewQueryValue = Utils.getQueryValue(decodedURL, "v");
                 return assertIsId(viewQueryValue);
 
-            } else if (isInvidioURL(url) || isHooktubeURL(url)) {
+            } else if (isInvidiousUrl(url) || isHooktubeURL(url)) {
                 // /watch?v=<ID>
                 if ("watch".equalsIgnoreCase(path)) {
                     final String viewQueryValue = Utils.getQueryValue(url, "v");
