@@ -46,6 +46,10 @@ public class InvidiousSearchExtractor extends SearchExtractor {
     public InfoItemsPage<InfoItem> getPage(
             final Page page
     ) throws IOException, ExtractionException {
+        if (results == null) {
+            return InfoItemsPage.emptyPage();
+        }
+
         int pageNumber = 1;
         try {
             if (page.getId() != null) {
