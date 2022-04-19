@@ -47,6 +47,10 @@ public class InvidiousCommentsExtractor extends CommentsExtractor {
     public InfoItemsPage<CommentsInfoItem> getPage(
             final Page page
     ) throws IOException, ExtractionException {
+        if (page == null) {
+            return InfoItemsPage.emptyPage();
+        }
+
         final Downloader dl = NewPipe.getDownloader();
         final Response response = dl.get(page.getUrl());
 
@@ -59,8 +63,14 @@ public class InvidiousCommentsExtractor extends CommentsExtractor {
 
 
     public Page getNextPage() throws ParsingException {
+        final String continuation = json.getString("continuation");
+
+        if (continuation == null || continuation.isEmpty()) {
+            return null;
+        }
+
         return new Page(baseUrl + "/api/v1/comments/" + getId()
-                + "?continuation=" + json.getString("continuation"));
+                + "?continuation=" + continuation);
     }
 
     @Override
