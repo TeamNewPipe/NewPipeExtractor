@@ -95,8 +95,7 @@ public class InvidiousStreamExtractor extends StreamExtractor {
 
     @Override
     public int getAgeLimit() {
-        final boolean isFamilyFriendly = json.getBoolean("isFamilyFriendly");
-        return isFamilyFriendly ? NO_AGE_LIMIT : 18;
+        return json.getBoolean("isFamilyFriendly") ? NO_AGE_LIMIT : 18;
     }
 
     @Override

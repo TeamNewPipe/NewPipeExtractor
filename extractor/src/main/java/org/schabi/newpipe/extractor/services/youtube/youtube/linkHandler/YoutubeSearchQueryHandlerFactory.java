@@ -41,9 +41,6 @@ public final class YoutubeSearchQueryHandlerFactory extends SearchQueryHandlerFa
             if (!contentFilters.isEmpty()) {
                 final String contentFilter = contentFilters.get(0);
                 switch (contentFilter) {
-                    case ALL:
-                    default:
-                        break;
                     case VIDEOS:
                         return SEARCH_URL + URLEncoder.encode(searchString, UTF_8)
                                 + "&sp=EgIQAQ%253D%253D";
@@ -59,6 +56,9 @@ public final class YoutubeSearchQueryHandlerFactory extends SearchQueryHandlerFa
                     case MUSIC_PLAYLISTS:
                     case MUSIC_ARTISTS:
                         return MUSIC_SEARCH_URL + URLEncoder.encode(searchString, UTF_8);
+                    case ALL:
+                    default:
+                        break;
                 }
             }
 
