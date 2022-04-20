@@ -11,12 +11,18 @@ import javax.annotation.Nullable;
 
 public class InvidiousCommentsInfoItemExtractor implements CommentsInfoItemExtractor {
 
-    private final String url;
     private final JsonObject json;
+    private final String url;
+    private final String baseUrl;
 
-    public InvidiousCommentsInfoItemExtractor(final JsonObject json, final String url) {
+    public InvidiousCommentsInfoItemExtractor(
+            final JsonObject json,
+            final String url,
+            final String baseUrl
+    ) {
         this.json = json;
         this.url = url;
+        this.baseUrl = baseUrl;
     }
 
     @Override
@@ -48,7 +54,7 @@ public class InvidiousCommentsInfoItemExtractor implements CommentsInfoItemExtra
 
     @Override
     public String getUploaderUrl() {
-        return json.getString("authorUrl");
+        return baseUrl + json.getString("authorUrl");
     }
 
     @Override

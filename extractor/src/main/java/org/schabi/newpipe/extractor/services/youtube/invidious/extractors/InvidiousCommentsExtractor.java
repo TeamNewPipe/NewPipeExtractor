@@ -92,7 +92,7 @@ public class InvidiousCommentsExtractor extends CommentsExtractor {
         entries.stream()
                 .filter(JsonObject.class::isInstance)
                 .map(JsonObject.class::cast)
-                .map(commentObj -> new InvidiousCommentsInfoItemExtractor(commentObj, url))
+                .map(commentObj -> new InvidiousCommentsInfoItemExtractor(commentObj, url, baseUrl))
                 .forEach(collector::commit);
     }
 
