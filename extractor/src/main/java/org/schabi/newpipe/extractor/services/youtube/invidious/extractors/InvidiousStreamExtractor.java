@@ -266,7 +266,8 @@ public class InvidiousStreamExtractor extends StreamExtractor {
             json.getArray("recommendedVideos").stream()
                     .filter(JsonObject.class::isInstance)
                     .map(JsonObject.class::cast)
-                    .forEach(o -> new InvidiousStreamInfoItemExtractor(o, baseUrl));
+                    .map(o -> new InvidiousStreamInfoItemExtractor(o, baseUrl))
+                    .forEach(collector::commit);
 
             return collector;
         } catch (final Exception e) {
