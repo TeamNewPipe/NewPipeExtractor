@@ -16,10 +16,12 @@ import org.schabi.newpipe.extractor.exceptions.ParsingException;
 import javax.annotation.Nonnull;
 
 public class ItagItem {
+    // CHECKSTYLE:OFF - url has to be there in one piece
     /**
      * List can be found here
      * https://github.com/ytdl-org/youtube-dl/blob/9fc5eaf/youtube_dl/extractor/youtube.py#L1071
      */
+    // CHECKSTYLE:ON
     private static final ItagItem[] ITAG_LIST = {
             /////////////////////////////////////////////////////
             // VIDEO     ID  Type   Format  Resolution  FPS  ///
