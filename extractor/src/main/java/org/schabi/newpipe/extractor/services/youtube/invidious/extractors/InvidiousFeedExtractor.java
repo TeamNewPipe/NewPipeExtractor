@@ -1,5 +1,6 @@
 package org.schabi.newpipe.extractor.services.youtube.invidious.extractors;
 
+import static org.schabi.newpipe.extractor.services.youtube.invidious.InvidiousParsingHelper.getUid;
 import static org.schabi.newpipe.extractor.services.youtube.invidious.InvidiousParsingHelper.getValidResponseBody;
 
 import org.jsoup.Jsoup;
@@ -61,7 +62,7 @@ public class InvidiousFeedExtractor extends FeedExtractor {
     public void onFetchPage(
             @Nonnull final Downloader downloader
     ) throws IOException, ExtractionException {
-        final String feedUrl = baseUrl + "/feed/channel/" + getLinkHandler().getId();
+        final String feedUrl = baseUrl + "/feed/channel/" + getUid(getLinkHandler().getId());
         final Response response = downloader.get(feedUrl);
         document = Jsoup.parse(getValidResponseBody(response, feedUrl));
     }
