@@ -11,6 +11,7 @@ import org.schabi.newpipe.extractor.channel.ChannelExtractor;
 import org.schabi.newpipe.extractor.downloader.Downloader;
 import org.schabi.newpipe.extractor.downloader.Response;
 import org.schabi.newpipe.extractor.exceptions.ExtractionException;
+import org.schabi.newpipe.extractor.exceptions.ParsingException;
 import org.schabi.newpipe.extractor.linkhandler.ListLinkHandler;
 import org.schabi.newpipe.extractor.services.youtube.invidious.InvidiousParsingHelper;
 import org.schabi.newpipe.extractor.services.youtube.invidious.InvidiousService;
@@ -20,7 +21,6 @@ import org.schabi.newpipe.extractor.stream.StreamInfoItemsCollector;
 import java.io.IOException;
 
 import javax.annotation.Nonnull;
-
 
 public class InvidiousChannelExtractor extends ChannelExtractor {
 
@@ -41,20 +41,28 @@ public class InvidiousChannelExtractor extends ChannelExtractor {
         return getPage(getPage(1));
     }
 
-    protected Page getPage(final int page) {
-        return InvidiousParsingHelper.getPage(
-                baseUrl + "/api/v1/channels/videos/" + json.getString("authorId"),
-                page
-        );
+    protected Page getPage(final int page) throws ParsingException {
+        return new Page(
+                baseUrl + "/api/v1/channels/videos/" + getUid(getId())
+                        + "?page=" + page,
+                String.valueOf(page));
     }
 
     @Override
     public InfoItemsPage<StreamInfoItem> getPage(
             final Page page
     ) throws IOException, ExtractionException {
+        if (page == null) {
+            return InfoItemsPage.emptyPage();
+        }
+
         final Response rp = NewPipe.getDownloader().get(page.getUrl());
         final JsonArray array =
                 InvidiousParsingHelper.getValidJsonArrayFromResponse(rp, page.getUrl());
+
+        if (array.isEmpty()) {
+            return InfoItemsPage.emptyPage();
+        }
 
         final StreamInfoItemsCollector collector = new StreamInfoItemsCollector(getServiceId());
         array.stream()
@@ -63,9 +71,11 @@ public class InvidiousChannelExtractor extends ChannelExtractor {
                 .map(o -> new InvidiousStreamInfoItemExtractor(o, baseUrl))
                 .forEach(collector::commit);
 
-        final Page nextPage = array.size() < 59
-                // max number of items per page
-                // with Second it is 29 but next Page logic is not implemented
+        // If there are less than 60 results we reached the end
+        // CHECKSTYLE:OFF - url has to be there in one piece
+        // https://github.com/iv-org/invidious/blob/4900ce24fac163d801a56af1fcf0f4c207448adf/src/invidious/routes/api/v1/channels.cr#L178
+        // CHECKSTYLE:ON
+        final Page nextPage = array.size() < 60
                 ? null
                 : getPage(Integer.parseInt(page.getId()) + 1);
 

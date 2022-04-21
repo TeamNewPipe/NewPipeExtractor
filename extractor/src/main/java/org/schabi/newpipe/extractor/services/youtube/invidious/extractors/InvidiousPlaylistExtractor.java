@@ -35,8 +35,7 @@ public class InvidiousPlaylistExtractor extends PlaylistExtractor {
     @Nonnull
     @Override
     public String getThumbnailUrl() {
-        final JsonArray thumbnails = json.getArray("authorThumbnails");
-        return InvidiousParsingHelper.getThumbnailUrl(thumbnails);
+        return InvidiousParsingHelper.getThumbnailUrl(json.getArray("authorThumbnails"));
     }
 
     @Override
@@ -63,14 +62,18 @@ public class InvidiousPlaylistExtractor extends PlaylistExtractor {
     @Nonnull
     @Override
     public InfoItemsPage<StreamInfoItem> getInitialPage() throws IOException, ExtractionException {
-        return getPage(getPage(1));
+        return getPage(getPageByIndex(0));
     }
 
     @Override
     public InfoItemsPage<StreamInfoItem> getPage(
             final Page page
     ) throws IOException, ExtractionException {
-        if (Integer.parseInt(page.getId()) != 1) {
+        if (page == null) {
+            return InfoItemsPage.emptyPage();
+        }
+        // Initial fetched page (onFetchPage) already contains these info so don't fetch again
+        if (Integer.parseInt(page.getId()) != 0) {
             final Response rp = NewPipe.getDownloader().get(page.getUrl());
             json = InvidiousParsingHelper.getValidJsonObjectFromResponse(rp, page.getUrl());
         }
@@ -84,17 +87,40 @@ public class InvidiousPlaylistExtractor extends PlaylistExtractor {
                 .map(commentObj -> new InvidiousStreamInfoItemExtractor(commentObj, baseUrl))
                 .forEach(collector::commit);
 
-        final Page nextPage = videos.size() < 99
-                // max number of items per page
-                ? null
-                : getPage(Integer.parseInt(page.getId()) + 1);
+        final int lastIndex = videos.isEmpty()
+                ? -1
+                : videos.getObject(videos.size() - 1).getInt("index", -1);
 
+        final Page nextPage = lastIndex == -1 || lastIndex >= getStreamCount() - 1
+                ? null
+                : getPageByIndex(lastIndex);
 
         return new InfoItemsPage<>(collector, nextPage);
     }
 
-    public Page getPage(final int page) throws ParsingException {
-        return InvidiousParsingHelper.getPage(baseUrl + "/api/v1/playlists/" + getId(), page);
+    /*
+     * Note: Querying is done by index and not pagination, because it's a lot easier
+     * // CHECKSTYLE:OFF - url has to be there in one piece
+     * https://github.com/iv-org/invidious/blob/4900ce24fac163d801a56af1fcf0f4c207448adf/src/invidious/routes/api/v1/misc.cr#L20-L22
+     * // CHECKSTYLE:ON
+     *
+     * e.g. Paging contains multiple duplicate items:
+     * Playlist-Size=505
+     * Page StartIndex EndIndex Video-Count
+     * 1 0   199 200
+     * 2 50  249 200
+     * 3 150 349 200
+     * 4 250 449 200
+     * 5 350 504 154
+     * 6 450 504 54
+     * 7 -
+     *
+     * Also note that the index is also used as offset
+     */
+    public Page getPageByIndex(final int index) throws ParsingException {
+        return new Page(
+                baseUrl + "/api/v1/playlists/" + getId() + "?index=" + index,
+                String.valueOf(index));
     }
 
     @Override

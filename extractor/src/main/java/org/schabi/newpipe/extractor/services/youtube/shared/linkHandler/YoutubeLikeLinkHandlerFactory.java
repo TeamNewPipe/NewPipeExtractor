@@ -14,5 +14,5 @@ public interface YoutubeLikeLinkHandlerFactory {
                 || YoutubeUrlHelper.isY2ubeURL(url);
     }
 
-    boolean isInvidiousUrl(final URL url);
+    boolean isInvidiousUrl(URL url);
 }
