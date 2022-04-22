@@ -1,5 +1,7 @@
 package org.schabi.newpipe.extractor.kiosk;
 
+import static org.schabi.newpipe.extractor.utils.Utils.isNullOrEmpty;
+
 import org.schabi.newpipe.extractor.NewPipe;
 import org.schabi.newpipe.extractor.Page;
 import org.schabi.newpipe.extractor.StreamingService;
@@ -8,13 +10,13 @@ import org.schabi.newpipe.extractor.linkhandler.ListLinkHandlerFactory;
 import org.schabi.newpipe.extractor.localization.ContentCountry;
 import org.schabi.newpipe.extractor.localization.Localization;
 
-import javax.annotation.Nullable;
 import java.io.IOException;
 import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.Set;
 
-import static org.schabi.newpipe.extractor.utils.Utils.isNullOrEmpty;
+import javax.annotation.Nullable;
 
 public class KioskList {
 
@@ -26,7 +28,8 @@ public class KioskList {
     }
 
     private final StreamingService service;
-    private final HashMap<String, KioskEntry> kioskList = new HashMap<>();
+    // Use a linked hash map to keep track of the order
+    private final HashMap<String, KioskEntry> kioskList = new LinkedHashMap<>();
     private String defaultKiosk = null;
 
     @Nullable

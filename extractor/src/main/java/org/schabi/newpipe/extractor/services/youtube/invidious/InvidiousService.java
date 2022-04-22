@@ -117,8 +117,8 @@ public class InvidiousService extends YoutubeLikeStreamingService {
 
         final InvidiousTrendingLinkHandlerFactory lhf =
                 new InvidiousTrendingLinkHandlerFactory(InvidiousService.this);
-        list.addKioskEntry(kioskFactory, lhf, InvidiousTrendingLinkHandlerFactory.KIOSK_POPULAR);
         list.addKioskEntry(kioskFactory, lhf, InvidiousTrendingLinkHandlerFactory.KIOSK_TRENDING);
+        list.addKioskEntry(kioskFactory, lhf, InvidiousTrendingLinkHandlerFactory.KIOSK_POPULAR);
         list.setDefaultKiosk(InvidiousTrendingLinkHandlerFactory.KIOSK_TRENDING);
 
         return list;

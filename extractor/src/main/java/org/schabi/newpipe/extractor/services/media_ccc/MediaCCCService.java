@@ -91,17 +91,6 @@ public class MediaCCCService extends StreamingService {
     public KioskList getKioskList() {
         final KioskList list = new KioskList(this);
 
-        // add kiosks here e.g.:
-        list.addKioskEntry(
-                (streamingService, url, kioskId) -> new MediaCCCConferenceKiosk(
-                        MediaCCCService.this,
-                        new MediaCCCConferencesListLinkHandlerFactory().fromUrl(url),
-                        kioskId
-                ),
-                new MediaCCCConferencesListLinkHandlerFactory(),
-                "conferences"
-        );
-
         list.addKioskEntry(
                 (streamingService, url, kioskId) -> new MediaCCCRecentKiosk(
                         MediaCCCService.this,
@@ -110,6 +99,16 @@ public class MediaCCCService extends StreamingService {
                 ),
                 new MediaCCCRecentListLinkHandlerFactory(),
                 "recent"
+        );
+
+        list.addKioskEntry(
+                (streamingService, url, kioskId) -> new MediaCCCConferenceKiosk(
+                        MediaCCCService.this,
+                        new MediaCCCConferencesListLinkHandlerFactory().fromUrl(url),
+                        kioskId
+                ),
+                new MediaCCCConferencesListLinkHandlerFactory(),
+                "conferences"
         );
 
         list.addKioskEntry(
