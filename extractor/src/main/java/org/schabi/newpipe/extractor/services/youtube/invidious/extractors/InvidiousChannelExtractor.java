@@ -112,7 +112,7 @@ public class InvidiousChannelExtractor extends ChannelExtractor {
 
     @Override
     public long getSubscriberCount() {
-        return json.getNumber("subCount").longValue();
+        return json.getLong("subCount");
     }
 
     @Override

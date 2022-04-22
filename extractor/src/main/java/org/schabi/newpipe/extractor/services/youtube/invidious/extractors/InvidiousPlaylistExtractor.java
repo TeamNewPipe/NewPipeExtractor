@@ -55,8 +55,7 @@ public class InvidiousPlaylistExtractor extends PlaylistExtractor {
 
     @Override
     public long getStreamCount() {
-        final Number number = json.getNumber("videoCount");
-        return number == null ? -1 : number.longValue();
+        return json.getLong("videoCount", -1);
     }
 
     @Nonnull

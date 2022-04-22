@@ -71,15 +71,13 @@ public class InvidiousStreamExtractor extends StreamExtractor {
     @Nullable
     @Override
     public DateWrapper getUploadDate() {
-        return InvidiousParsingHelper.getUploadDateFromEpochTime(
-                json.getNumber("published").longValue());
+        return InvidiousParsingHelper.getUploadDateFromEpochTime(json.getLong("published"));
     }
 
     @Nonnull
     @Override
     public String getThumbnailUrl() {
-        final JsonArray thumbnail = json.getArray("authorThumbnails");
-        return InvidiousParsingHelper.getThumbnailUrl(thumbnail);
+        return InvidiousParsingHelper.getThumbnailUrl(json.getArray("videoThumbnails"));
     }
 
     @Nonnull
@@ -100,7 +98,7 @@ public class InvidiousStreamExtractor extends StreamExtractor {
 
     @Override
     public long getLength() {
-        return json.getNumber("lengthSeconds").longValue();
+        return json.getLong("lengthSeconds");
     }
 
     @Override
@@ -111,17 +109,12 @@ public class InvidiousStreamExtractor extends StreamExtractor {
 
     @Override
     public long getViewCount() {
-        return json.getNumber("viewCount").longValue();
+        return json.getLong("viewCount");
     }
 
     @Override
     public long getLikeCount() {
-        return json.getNumber("likeCount").longValue();
-    }
-
-    @Override
-    public long getDislikeCount() {
-        return json.getNumber("dislikeCount").longValue();
+        return json.getLong("likeCount");
     }
 
     @Nonnull

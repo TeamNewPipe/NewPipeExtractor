@@ -27,7 +27,7 @@ public class InvidiousCommentsInfoItemExtractor implements CommentsInfoItemExtra
 
     @Override
     public int getLikeCount() {
-        return json.getNumber("likeCount").intValue();
+        return json.getInt("likeCount");
     }
 
     @Override
@@ -43,8 +43,7 @@ public class InvidiousCommentsInfoItemExtractor implements CommentsInfoItemExtra
     @Nullable
     @Override
     public DateWrapper getUploadDate() {
-        return InvidiousParsingHelper.getUploadDateFromEpochTime(
-                json.getNumber("published").longValue());
+        return InvidiousParsingHelper.getUploadDateFromEpochTime(json.getLong("published"));
     }
 
     @Override

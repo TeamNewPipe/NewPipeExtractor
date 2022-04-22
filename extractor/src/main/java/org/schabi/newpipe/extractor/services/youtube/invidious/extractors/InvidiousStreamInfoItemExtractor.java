@@ -42,8 +42,7 @@ public class InvidiousStreamInfoItemExtractor implements StreamInfoItemExtractor
 
     @Override
     public long getDuration() {
-        final Number number = json.getNumber("lengthSeconds");
-        return number == null ? -1 : number.longValue();
+        return json.getLong("lengthSeconds", -1);
     }
 
     @Override
@@ -74,12 +73,14 @@ public class InvidiousStreamInfoItemExtractor implements StreamInfoItemExtractor
     @Nullable
     @Override
     public DateWrapper getUploadDate() {
-        final Number epochTime = json.getNumber("published");
-        if (epochTime != null) {
-            return getUploadDateFromEpochTime(epochTime.longValue());
+        final long epochTime = json.getLong("published", -1);
+
+        // Time is not always provided e.g. on related videos of a video it's missing
+        if (epochTime == -1) {
+            return null;
         }
 
-        return null;
+        return getUploadDateFromEpochTime(epochTime);
     }
 
     @Override
