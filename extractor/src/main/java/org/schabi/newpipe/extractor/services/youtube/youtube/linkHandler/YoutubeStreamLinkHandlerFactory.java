@@ -31,12 +31,17 @@ public final class YoutubeStreamLinkHandlerFactory extends YoutubeLikeStreamLink
     private YoutubeStreamLinkHandlerFactory() {
     }
 
-    public static YoutubeStreamLinkHandlerFactory getInstance() {
-        return INSTANCE;
+    @Override
+    protected boolean isPlaylistUrl(final String url) {
+        return YoutubePlaylistLinkHandlerFactory.getInstance().onAcceptUrl(url);
     }
 
     @Override
     public String getUrl(final String id) {
         return "https://www.youtube.com/watch?v=" + id;
+    }
+
+    public static YoutubeStreamLinkHandlerFactory getInstance() {
+        return INSTANCE;
     }
 }

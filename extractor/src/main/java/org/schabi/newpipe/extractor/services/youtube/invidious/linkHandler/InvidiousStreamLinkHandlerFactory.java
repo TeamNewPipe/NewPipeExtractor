@@ -8,14 +8,22 @@ public class InvidiousStreamLinkHandlerFactory extends YoutubeLikeStreamLinkHand
         implements InvidiousLinkHandlerFactory {
 
     protected final String baseUrl;
+    protected final InvidiousPlaylistLinkHandlerFactory playlistLinkHandlerFactory;
 
     public InvidiousStreamLinkHandlerFactory(final InvidiousService service) {
-        this.baseUrl = service.getInstance().getUrl();
+        baseUrl = service.getInstance().getUrl();
+        playlistLinkHandlerFactory =
+                (InvidiousPlaylistLinkHandlerFactory) service.getPlaylistLHFactory();
     }
 
     @Override
     public String getInvidiousBaseUrl() {
         return baseUrl;
+    }
+
+    @Override
+    protected boolean isPlaylistUrl(final String url) {
+        return playlistLinkHandlerFactory.onAcceptUrl(url);
     }
 
     @Override

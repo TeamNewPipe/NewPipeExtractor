@@ -8,7 +8,6 @@ import static org.schabi.newpipe.extractor.services.youtube.shared.YoutubeUrlHel
 import org.schabi.newpipe.extractor.exceptions.FoundAdException;
 import org.schabi.newpipe.extractor.exceptions.ParsingException;
 import org.schabi.newpipe.extractor.linkhandler.LinkHandlerFactory;
-import org.schabi.newpipe.extractor.services.youtube.youtube.linkHandler.YoutubePlaylistLinkHandlerFactory;
 import org.schabi.newpipe.extractor.utils.Utils;
 
 import java.net.MalformedURLException;
@@ -32,11 +31,12 @@ public abstract class YoutubeLikeStreamLinkHandlerFactory extends LinkHandlerFac
 
     @Nullable
     private static String extractId(@Nullable final String id) {
-        if (id != null) {
-            final Matcher m = YOUTUBE_VIDEO_ID_REGEX_PATTERN.matcher(id);
-            return m.find() ? m.group(1) : null;
+        if (id == null) {
+            return null;
         }
-        return null;
+
+        final Matcher m = YOUTUBE_VIDEO_ID_REGEX_PATTERN.matcher(id);
+        return m.find() ? m.group(1) : null;
     }
 
     private static String assertIsId(@Nullable final String id) throws ParsingException {
@@ -85,8 +85,7 @@ public abstract class YoutubeLikeStreamLinkHandlerFactory extends LinkHandlerFac
             path = path.substring(1);
         }
 
-        if (!Utils.isHTTP(url) || !(isSupportedYouTubeLikeHost(url))
-        ) {
+        if (!Utils.isHTTP(url) || !isSupportedYouTubeLikeHost(url)) {
             if ("googleads.g.doubleclick.net".equalsIgnoreCase(host)) {
                 throw new FoundAdException("Error found ad: " + urlString);
             }
@@ -94,8 +93,8 @@ public abstract class YoutubeLikeStreamLinkHandlerFactory extends LinkHandlerFac
             throw new ParsingException("The url is not a Youtube-URL");
         }
 
-        if (YoutubePlaylistLinkHandlerFactory.getInstance().acceptUrl(urlString)) {
-            throw new ParsingException("Can't find handler for url: " + urlString);
+        if (isPlaylistUrl(urlString)) {
+            throw new ParsingException("This url is a playlist url: " + urlString);
         }
 
         if (isYoutubeURL(url) || isInvidiousUrl(url) || isHooktubeURL(url)) {
@@ -155,6 +154,8 @@ public abstract class YoutubeLikeStreamLinkHandlerFactory extends LinkHandlerFac
 
         throw new ParsingException("Error no suitable url: " + urlString);
     }
+
+    protected abstract boolean isPlaylistUrl(String url);
 
     @Override
     public boolean onAcceptUrl(final String url) throws FoundAdException {
