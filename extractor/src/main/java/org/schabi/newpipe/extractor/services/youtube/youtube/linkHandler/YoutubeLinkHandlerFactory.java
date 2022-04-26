@@ -9,6 +9,6 @@ public interface YoutubeLinkHandlerFactory extends YoutubeLikeLinkHandlerFactory
 
     @Override
     default boolean isInvidiousUrl(final URL url) {
-        return YoutubeUrlHelper.isInvidioURL(url);
+        return YoutubeUrlHelper.isInvidiousURL(url);
     }
 }

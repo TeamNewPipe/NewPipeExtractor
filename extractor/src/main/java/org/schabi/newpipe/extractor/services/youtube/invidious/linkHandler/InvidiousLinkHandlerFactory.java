@@ -14,6 +14,6 @@ public interface InvidiousLinkHandlerFactory extends YoutubeLikeLinkHandlerFacto
     default boolean isInvidiousUrl(final URL url) {
         return Utils.removeMAndWWWFromHost(url.getHost())
                 .equalsIgnoreCase(Utils.getHostOrNull(getInvidiousBaseUrl()))
-                && YoutubeUrlHelper.isInvidioURL(url);
+                || YoutubeUrlHelper.isInvidiousURL(url);
     }
 }

@@ -43,7 +43,7 @@ public final class YoutubeUrlHelper {
         return host.equalsIgnoreCase("hooktube.com");
     }
 
-    public static boolean isInvidioURL(@Nonnull final URL url) {
+    public static boolean isInvidiousURL(@Nonnull final URL url) {
         // Valid, working instances as of 2022-03
         final Set<String> invInstances = new HashSet<>(Arrays.asList(
                 "invidious.snopyta.org",
