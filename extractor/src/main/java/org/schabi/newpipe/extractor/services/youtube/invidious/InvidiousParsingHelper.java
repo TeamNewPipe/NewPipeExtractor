@@ -61,12 +61,19 @@ public final class InvidiousParsingHelper {
             final Response response,
             final String apiUrl
     ) throws ExtractionException {
-        if (response.responseCode() == 404) {
-            throw new ContentNotAvailableException("Could not get page " + apiUrl
-                    + " (HTTP " + response.responseCode() + " : " + response.responseMessage());
-        } else if (response.responseCode() >= 400) {
-            throw new ExtractionException("Could not get page " + apiUrl
-                    + " (HTTP " + response.responseCode() + " : " + response.responseMessage());
+        if (response.responseCode() >= 400) {
+            final String trimmedBody = response.responseBody().length() > 100
+                    ? response.responseBody().substring(0, 98) + "..."
+                    : response.responseBody();
+            final String message = "Could not get page " + apiUrl
+                    + " [code=" + response.responseCode()
+                    + ",message=" + response.responseMessage()
+                    + ",body=" + trimmedBody
+                    + "]";
+            if (response.responseCode() == 404) {
+                throw new ContentNotAvailableException(message);
+            }
+            throw new ExtractionException(message);
         }
 
         return response.responseBody();
