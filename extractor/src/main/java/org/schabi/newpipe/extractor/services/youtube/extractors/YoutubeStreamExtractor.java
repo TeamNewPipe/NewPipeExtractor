@@ -60,6 +60,7 @@ import org.schabi.newpipe.extractor.stream.StreamType;
 import org.schabi.newpipe.extractor.stream.SubtitlesStream;
 import org.schabi.newpipe.extractor.stream.VideoStream;
 import org.schabi.newpipe.extractor.utils.JsonUtils;
+import org.schabi.newpipe.extractor.utils.Pair;
 import org.schabi.newpipe.extractor.utils.Parser;
 import org.schabi.newpipe.extractor.utils.Utils;
 
@@ -71,7 +72,6 @@ import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
-import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Locale;
@@ -1170,19 +1170,19 @@ public class YoutubeStreamExtractor extends StreamExtractor {
             return urlAndItags;
         }
 
-        final Map<String, JsonObject> streamingDataAndCpnLoopMap = new HashMap<>();
+        final List<Pair<JsonObject, String>> streamingDataAndCpnLoopList = new ArrayList<>();
         // Use the androidStreamingData object first because there is no n param and no
         // signatureCiphers in streaming URLs of the Android client
-        streamingDataAndCpnLoopMap.put(androidCpn, androidStreamingData);
-        streamingDataAndCpnLoopMap.put(html5Cpn, html5StreamingData);
+        streamingDataAndCpnLoopList.add(new Pair<>(androidStreamingData, androidCpn));
+        streamingDataAndCpnLoopList.add(new Pair<>(html5StreamingData, html5Cpn));
         // Use the iosStreamingData object in the last position because most of the available
         // streams can be extracted with the Android and web clients and also because the iOS
         // client is only enabled by default on livestreams
-        streamingDataAndCpnLoopMap.put(iosCpn, iosStreamingData);
+        streamingDataAndCpnLoopList.add(new Pair<>(iosStreamingData, iosCpn));
 
-        for (final Map.Entry<String, JsonObject> entry : streamingDataAndCpnLoopMap.entrySet()) {
-            urlAndItags.putAll(getStreamsFromStreamingDataKey(entry.getValue(), streamingDataKey,
-                    itagTypeWanted, entry.getKey()));
+        for (final Pair<JsonObject, String> pair : streamingDataAndCpnLoopList) {
+            urlAndItags.putAll(getStreamsFromStreamingDataKey(pair.getFirst(), streamingDataKey,
+                    itagTypeWanted, pair.getSecond()));
         }
 
         return urlAndItags;
