@@ -147,8 +147,8 @@ public class MediaCCCStreamExtractor extends StreamExtractor {
                     mediaFormat = null;
                 }
 
-                // Don't use the containsSimilarStream method because it will remove the
-                // extraction of some video versions (mostly languages). So if there are multiple
+                // Don't use the containsSimilarStream method because it will prevent the
+                // extraction of some video variations (mostly languages). So if there are multiple
                 // video streams available, only the first one will be extracted in this case.
                 videoStreams.add(new VideoStream.Builder()
                         .setId(recording.getString("filename", ID_UNKNOWN))

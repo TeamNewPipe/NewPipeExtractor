@@ -141,17 +141,13 @@ public final class ManifestCreatorCache<K extends Serializable, V extends Serial
     }
 
     /**
-     * Returns the number of cached manifests in the cache.
-     *
-     * @return the number of cached manifests
+     * @return the number of cached manifests in the cache
      */
     public int size() {
         return concurrentHashMap.size();
     }
 
     /**
-     * Gets the maximum size of the cache.
-     *
      * @return the maximum size of the cache
      */
     public long getMaximumSize() {
@@ -188,9 +184,7 @@ public final class ManifestCreatorCache<K extends Serializable, V extends Serial
     }
 
     /**
-     * Gets the current clear factor of the cache, used when the cache limit size is reached.
-     *
-     * @return the current clear factor of the cache
+     * @return the current clear factor of the cache, used when the cache limit size is reached
      */
     public double getClearFactor() {
         return clearFactor;

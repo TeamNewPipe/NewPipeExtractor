@@ -116,19 +116,6 @@ public abstract class Stream implements Serializable {
     }
 
     /**
-     * Reveals whether two streams are equal.
-     *
-     * @param cmp a {@link Stream} object to be compared to this {@link Stream} instance.
-     * @return whether the compared streams are equal
-     * @deprecated Use {@link #equalStats(Stream)} to compare statistics of two streams and
-     * {@link #equals(Object)} to compare the equality of two streams instead.
-     */
-    @Deprecated
-    public boolean equals(final Stream cmp) {
-        return equalStats(cmp) && content.equals(cmp.content);
-    }
-
-    /**
      * Gets the identifier of this stream, e.g. the itag for YouTube.
      *
      * <p>

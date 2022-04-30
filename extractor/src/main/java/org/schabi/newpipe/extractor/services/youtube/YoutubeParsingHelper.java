@@ -1264,8 +1264,8 @@ public final class YoutubeParsingHelper {
         // Spoofing an Android 12 device with the hardcoded version of the Android app
         return "com.google.android.youtube/" + MOBILE_YOUTUBE_CLIENT_VERSION
                 + " (Linux; U; Android 12; "
-                + (localization != null ? localization.getCountryCode()
-                        : Localization.DEFAULT.getCountryCode())
+                + (localization == null ? Localization.DEFAULT.getCountryCode()
+                        : localization.getCountryCode())
                 + ") gzip";
     }
 

@@ -210,7 +210,7 @@ public class MediaCCCLiveStreamExtractor extends StreamExtractor {
                 // Ensure that we use only process JsonObjects
                 .filter(JsonObject.class::isInstance)
                 .map(JsonObject.class::cast)
-                // Only process audio streams
+                // Only process streams of requested type
                 .filter(streamJsonObj -> streamType.equals(streamJsonObj.getString("type")))
                 // Flatmap Urls and ensure that we use only process JsonObjects
                 .flatMap(streamJsonObj -> streamJsonObj.getObject(URLS).entrySet().stream()
