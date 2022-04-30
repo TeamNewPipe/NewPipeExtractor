@@ -13,10 +13,13 @@ import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 
 import javax.annotation.Nonnull;
+import javax.xml.XMLConstants;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
+import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.transform.OutputKeys;
 import javax.xml.transform.Transformer;
+import javax.xml.transform.TransformerException;
 import javax.xml.transform.TransformerFactory;
 import javax.xml.transform.dom.DOMSource;
 import javax.xml.transform.stream.StreamResult;
@@ -45,10 +48,7 @@ import static org.schabi.newpipe.extractor.utils.Utils.isNullOrEmpty;
 
 /**
  * Class to generate DASH manifests from YouTube OTF, progressive and ended/post-live-DVR streams.
- *
- * <p>
  * It relies on external classes from the {@link org.w3c.dom} and {@link javax.xml} packages.
- * </p>
  */
 public final class YoutubeDashManifestCreator {
 
@@ -305,7 +305,7 @@ public final class YoutubeDashManifestCreator {
         SEGMENTS_DURATION.clear();
         DURATION_REPETITIONS.clear();
 
-        return buildResult(otfBaseStreamingUrl, document, GENERATED_OTF_MANIFESTS);
+        return buildAndCacheResult(otfBaseStreamingUrl, document, GENERATED_OTF_MANIFESTS);
     }
 
     /**
@@ -441,7 +441,7 @@ public final class YoutubeDashManifestCreator {
         generateSegmentTimelineElement(document);
         generateSegmentElementForPostLiveDvrStreams(document, targetDurationSec, segmentCount);
 
-        return buildResult(postLiveStreamDvrStreamingUrl, document,
+        return buildAndCacheResult(postLiveStreamDvrStreamingUrl, document,
                 GENERATED_POST_LIVE_DVR_STREAMS_MANIFESTS);
     }
 
@@ -533,7 +533,7 @@ public final class YoutubeDashManifestCreator {
         generateSegmentBaseElement(document, itagItem);
         generateInitializationElement(document, itagItem);
 
-        return buildResult(progressiveStreamingBaseUrl, document,
+        return buildAndCacheResult(progressiveStreamingBaseUrl, document,
                 GENERATED_PROGRESSIVE_STREAMS_MANIFESTS);
     }
 
@@ -841,13 +841,8 @@ public final class YoutubeDashManifestCreator {
                                                           @Nonnull final ItagItem itagItem,
                                                           final long durationSecondsFallback)
             throws YoutubeDashManifestCreationException {
-        final DocumentBuilderFactory documentBuilderFactory;
-        final DocumentBuilder documentBuilder;
-        final Document document;
         try {
-            documentBuilderFactory = DocumentBuilderFactory.newInstance();
-            documentBuilder = documentBuilderFactory.newDocumentBuilder();
-            document = documentBuilder.newDocument();
+            final Document document = newDocument();
 
             final Element mpdElement = document.createElement("MPD");
             document.appendChild(mpdElement);
@@ -903,13 +898,13 @@ public final class YoutubeDashManifestCreator {
             final String durationSeconds = String.format(Locale.ENGLISH, "%.3f", duration);
             mediaPresentationDurationAttribute.setValue("PT" + durationSeconds + "S");
             mpdElement.setAttributeNode(mediaPresentationDurationAttribute);
+
+            return document;
         } catch (final Exception e) {
             throw new YoutubeDashManifestCreationException(
                     "Could not generate or append the MPD element of the DASH manifest to the "
                             + "document", e);
         }
-
-        return document;
     }
 
     /**
@@ -1591,7 +1586,7 @@ public final class YoutubeDashManifestCreator {
     }
 
     /**
-     * Convert a DASH manifest {@link Document document} to a string.
+     * Convert a DASH manifest {@link Document document} to a string and cache it.
      *
      * @param originalBaseStreamingUrl the original base URL of the stream
      * @param document                 the document to be converted
@@ -1604,23 +1599,16 @@ public final class YoutubeDashManifestCreator {
      * @throws YoutubeDashManifestCreationException if something goes wrong when converting the
      *                                              {@link Document document}
      */
-    private static String buildResult(
+    private static String buildAndCacheResult(
             @Nonnull final String originalBaseStreamingUrl,
             @Nonnull final Document document,
             @Nonnull final ManifestCreatorCache<String, String> manifestCreatorCache)
             throws YoutubeDashManifestCreationException {
-        try {
-            final StringWriter result = new StringWriter();
-            final TransformerFactory transformerFactory = TransformerFactory.newInstance();
 
-            final Transformer transformer = transformerFactory.newTransformer();
-            transformer.setOutputProperty(OutputKeys.VERSION, "1.0");
-            transformer.setOutputProperty(OutputKeys.ENCODING, "UTF-8");
-            transformer.setOutputProperty(OutputKeys.STANDALONE, "no");
-            transformer.transform(new DOMSource(document), new StreamResult(result));
-            final String stringResult = result.toString();
-            manifestCreatorCache.put(originalBaseStreamingUrl, stringResult);
-            return stringResult;
+        try {
+            final String documentXml = documentToXml(document);
+            manifestCreatorCache.put(originalBaseStreamingUrl, documentXml);
+            return documentXml;
         } catch (final Exception e) {
             throw new YoutubeDashManifestCreationException(
                     "Could not convert the DASH manifest generated to a string", e);
@@ -1628,8 +1616,54 @@ public final class YoutubeDashManifestCreator {
     }
 
     /**
-     * Get the number of cached OTF streams manifests.
+     * Securing against XEE is done by passing {@code false} to {@link
+     * DocumentBuilderFactory#setExpandEntityReferences(boolean)}, also see
+     * <a href="https://github.com/ChuckerTeam/chucker/pull/201">ChuckerTeam/chucker#201</a>.
      *
+     * @return an instance of document secured against XEE attacks, that should then be convertible
+     *         to an XML string without security problems
+     * @see #documentToXml(Document) Use documentToXml to convert the created document to XML, which
+     *                               is also secured against XEE!
+     */
+    private static Document newDocument() throws ParserConfigurationException {
+        final DocumentBuilderFactory documentBuilderFactory
+                = DocumentBuilderFactory.newInstance();
+        documentBuilderFactory.setExpandEntityReferences(false);
+
+        final DocumentBuilder documentBuilder = documentBuilderFactory.newDocumentBuilder();
+        return documentBuilder.newDocument();
+    }
+
+    /**
+     * Securing against XEE is done by setting {@link XMLConstants#FEATURE_SECURE_PROCESSING} to
+     * {@code true} in the {@link TransformerFactory}, also see
+     * <a href="https://github.com/ChuckerTeam/chucker/pull/201">ChuckerTeam/chucker#201</a>.
+     * The best way to do this would be setting the attributes {@link
+     * XMLConstants#ACCESS_EXTERNAL_DTD} and {@link XMLConstants#ACCESS_EXTERNAL_STYLESHEET}, but
+     * unfortunately the engine on Android does not support them.
+     *
+     * @param document the document to convert; must have been created using {@link #newDocument()}
+     *                 to properly prevent XEE attacks!
+     * @return the document converted to an XML string, making sure there can't be XEE attacks
+     */
+    private static String documentToXml(@Nonnull final Document document)
+            throws TransformerException {
+
+        final TransformerFactory transformerFactory = TransformerFactory.newInstance();
+        transformerFactory.setFeature(XMLConstants.FEATURE_SECURE_PROCESSING, true);
+
+        final Transformer transformer = transformerFactory.newTransformer();
+        transformer.setOutputProperty(OutputKeys.VERSION, "1.0");
+        transformer.setOutputProperty(OutputKeys.ENCODING, "UTF-8");
+        transformer.setOutputProperty(OutputKeys.STANDALONE, "no");
+
+        final StringWriter result = new StringWriter();
+        transformer.transform(new DOMSource(document), new StreamResult(result));
+
+        return result.toString();
+    }
+
+    /**
      * @return the number of cached OTF streams manifests
      */
     public static int getOtfCachedManifestsSize() {
@@ -1637,8 +1671,6 @@ public final class YoutubeDashManifestCreator {
     }
 
     /**
-     * Get the number of cached post-live-DVR streams manifests.
-     *
      * @return the number of cached post-live-DVR streams manifests
      */
     public static int getPostLiveDvrStreamsCachedManifestsSize() {
@@ -1646,8 +1678,6 @@ public final class YoutubeDashManifestCreator {
     }
 
     /**
-     * Get the number of cached progressive manifests.
-     *
      * @return the number of cached progressive manifests
      */
     public static int getProgressiveStreamsCachedManifestsSize() {
@@ -1655,8 +1685,6 @@ public final class YoutubeDashManifestCreator {
     }
 
     /**
-     * Get the number of cached OTF, post-live-DVR streams and progressive manifests.
-     *
      * @return the number of cached OTF, post-live-DVR streams and progressive manifests.
      */
     public static int getSizeOfManifestsCaches() {
@@ -1666,8 +1694,6 @@ public final class YoutubeDashManifestCreator {
     }
 
     /**
-     * Get the clear factor of OTF streams manifests cache.
-     *
      * @return the clear factor of OTF streams manifests cache.
      */
     public static double getOtfStreamsClearFactor() {
@@ -1675,8 +1701,6 @@ public final class YoutubeDashManifestCreator {
     }
 
     /**
-     * Get the clear factor of post-live-DVR streams manifests cache.
-     *
      * @return the clear factor of post-live-DVR streams manifests cache.
      */
     public static double getPostLiveDvrStreamsClearFactor() {
@@ -1684,8 +1708,6 @@ public final class YoutubeDashManifestCreator {
     }
 
     /**
-     * Get the clear factor of progressive streams manifests cache.
-     *
      * @return the clear factor of progressive streams manifests cache.
      */
     public static double getProgressiveStreamsClearFactor() {
@@ -1693,8 +1715,6 @@ public final class YoutubeDashManifestCreator {
     }
 
     /**
-     * Set the clear factor of cached OTF streams.
-     *
      * @param otfStreamsClearFactor the clear factor of OTF streams manifests cache.
      */
     public static void setOtfStreamsClearFactor(final double otfStreamsClearFactor) {
@@ -1702,10 +1722,8 @@ public final class YoutubeDashManifestCreator {
     }
 
     /**
-     * Set the clear factor of cached post-live-DVR streams.
-     *
-     * @param postLiveDvrStreamsClearFactor the clear factor of post-live-DVR streams manifests
-     *                                      cache.
+     * @param postLiveDvrStreamsClearFactor the clear factor to set for post-live-DVR streams
+     *                                      manifests cache
      */
     public static void setPostLiveDvrStreamsClearFactor(
             final double postLiveDvrStreamsClearFactor) {
@@ -1713,10 +1731,8 @@ public final class YoutubeDashManifestCreator {
     }
 
     /**
-     * Set the clear factor of cached progressive streams.
-     *
-     * @param progressiveStreamsClearFactor the clear factor of progressive streams manifests
-     *                                      cache.
+     * @param progressiveStreamsClearFactor the clear factor to set for progressive streams
+     *                                      manifests cache
      */
     public static void setProgressiveStreamsClearFactor(
             final double progressiveStreamsClearFactor) {
@@ -1724,10 +1740,8 @@ public final class YoutubeDashManifestCreator {
     }
 
     /**
-     * Set the clear factor of cached OTF, post-live-DVR and progressive streams.
-     *
-     * @param cachesClearFactor the clear factor of OTF, post-live-DVR and progressive streams
-     *                          manifests caches.
+     * @param cachesClearFactor the clear factor to set for OTF, post-live-DVR and progressive
+     *                          streams manifests caches
      */
     public static void setCachesClearFactor(final double cachesClearFactor) {
         GENERATED_OTF_MANIFESTS.setClearFactor(cachesClearFactor);
