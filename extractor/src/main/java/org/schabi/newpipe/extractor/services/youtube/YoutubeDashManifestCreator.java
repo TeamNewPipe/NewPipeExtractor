@@ -1649,6 +1649,7 @@ public final class YoutubeDashManifestCreator {
     private static String documentToXml(@Nonnull final Document document)
             throws TransformerException {
 
+        @SuppressWarnings("java:S2755") // see javadoc: this is actually taken care of
         final TransformerFactory transformerFactory = TransformerFactory.newInstance();
         transformerFactory.setFeature(XMLConstants.FEATURE_SECURE_PROCESSING, true);
 
