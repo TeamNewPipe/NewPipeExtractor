@@ -119,7 +119,7 @@ public class BandcampStreamExtractor extends StreamExtractor {
     @Override
     public String getThumbnailUrl() throws ParsingException {
         if (albumJson.isNull("art_id")) {
-            return "";
+            return Utils.EMPTY_STRING;
         } else {
             return getImageUrl(albumJson.getLong("art_id"), true);
         }
@@ -131,7 +131,7 @@ public class BandcampStreamExtractor extends StreamExtractor {
         return document.getElementsByClass("band-photo").stream()
                 .map(element -> element.attr("src"))
                 .findFirst()
-                .orElse("");
+                .orElse(Utils.EMPTY_STRING);
     }
 
     @Nonnull

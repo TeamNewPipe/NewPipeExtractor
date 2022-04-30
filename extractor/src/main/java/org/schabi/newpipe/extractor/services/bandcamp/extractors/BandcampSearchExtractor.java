@@ -18,6 +18,7 @@ import org.schabi.newpipe.extractor.linkhandler.SearchQueryHandler;
 import org.schabi.newpipe.extractor.MultiInfoItemsCollector;
 import org.schabi.newpipe.extractor.search.SearchExtractor;
 import org.schabi.newpipe.extractor.services.bandcamp.extractors.streaminfoitem.BandcampSearchStreamInfoItemExtractor;
+import org.schabi.newpipe.extractor.utils.Utils;
 
 import javax.annotation.Nonnull;
 import java.io.IOException;
@@ -34,7 +35,7 @@ public class BandcampSearchExtractor extends SearchExtractor {
     @NonNull
     @Override
     public String getSearchSuggestion() {
-        return "";
+        return Utils.EMPTY_STRING;
     }
 
     @Override
@@ -58,13 +59,9 @@ public class BandcampSearchExtractor extends SearchExtractor {
                     .flatMap(element -> element.getElementsByClass("itemtype").stream())
                     .map(Element::text)
                     .findFirst()
-                    .orElse("");
+                    .orElse(Utils.EMPTY_STRING);
 
             switch (type) {
-                default:
-                case "FAN":
-                    // don't display fan results
-                    break;
                 case "ARTIST":
                     collector.commit(new BandcampChannelInfoItemExtractor(searchResult));
                     break;
@@ -73,6 +70,9 @@ public class BandcampSearchExtractor extends SearchExtractor {
                     break;
                 case "TRACK":
                     collector.commit(new BandcampSearchStreamInfoItemExtractor(searchResult, null));
+                    break;
+                default:
+                    // don't display fan results ("FAN") or other things
                     break;
             }
         }
