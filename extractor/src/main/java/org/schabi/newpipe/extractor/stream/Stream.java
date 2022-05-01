@@ -33,7 +33,7 @@ public abstract class Stream implements Serializable {
     private final String content;
     private final boolean isUrl;
     private final DeliveryMethod deliveryMethod;
-    @Nullable private final String baseUrl;
+    @Nullable private final String manifestUrl;
 
     /**
      * Instantiates a new {@code Stream} object.
@@ -45,21 +45,21 @@ public abstract class Stream implements Serializable {
      *                       manifest
      * @param format         the {@link MediaFormat}, which can be null
      * @param deliveryMethod the delivery method of the stream
-     * @param baseUrl        the base URL of the content if the stream is a DASH or an HLS
-     *                       manifest, which can be null
+     * @param manifestUrl    the URL of the manifest this stream comes from (if applicable,
+     *                       otherwise null)
      */
     public Stream(final String id,
                   final String content,
                   final boolean isUrl,
                   @Nullable final MediaFormat format,
                   final DeliveryMethod deliveryMethod,
-                  @Nullable final String baseUrl) {
+                  @Nullable final String manifestUrl) {
         this.id = id;
         this.content = content;
         this.isUrl = isUrl;
         this.mediaFormat = format;
         this.deliveryMethod = deliveryMethod;
-        this.baseUrl = baseUrl;
+        this.manifestUrl = manifestUrl;
     }
 
     /**
@@ -184,7 +184,7 @@ public abstract class Stream implements Serializable {
     }
 
     /**
-     * Gets the delivery method.
+     * Gets the {@link DeliveryMethod}.
      *
      * @return the delivery method
      */
@@ -194,18 +194,13 @@ public abstract class Stream implements Serializable {
     }
 
     /**
-     * Gets the base URL of a stream.
+     * Gets the URL of the manifest this stream comes from (if applicable, otherwise null).
      *
-     * <p>
-     * If the stream is not a DASH stream or an HLS stream, this value will always be null.
-     * It may also be null for these streams too.
-     * </p>
-     *
-     * @return the base URL of the stream or {@code null}
+     * @return the URL of the manifest this stream comes from or {@code null}
      */
     @Nullable
-    public String getBaseUrl() {
-        return baseUrl;
+    public String getManifestUrl() {
+        return manifestUrl;
     }
 
     /**
@@ -235,11 +230,11 @@ public abstract class Stream implements Serializable {
                 && deliveryMethod == stream.deliveryMethod
                 && content.equals(stream.content)
                 && isUrl == stream.isUrl
-                && Objects.equals(baseUrl, stream.baseUrl);
+                && Objects.equals(manifestUrl, stream.manifestUrl);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, mediaFormat, deliveryMethod, content, isUrl, baseUrl);
+        return Objects.hash(id, mediaFormat, deliveryMethod, content, isUrl, manifestUrl);
     }
 }

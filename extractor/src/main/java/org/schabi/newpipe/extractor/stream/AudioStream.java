@@ -56,7 +56,7 @@ public final class AudioStream extends Stream {
         @Nullable
         private MediaFormat mediaFormat;
         @Nullable
-        private String baseUrl;
+        private String manifestUrl;
         private int averageBitrate = UNKNOWN_BITRATE;
         @Nullable
         private ItagItem itagItem;
@@ -148,22 +148,13 @@ public final class AudioStream extends Stream {
         }
 
         /**
-         * Set the base URL of the {@link AudioStream}.
+         * Sets the URL of the manifest this stream comes from (if applicable, otherwise null).
          *
-         * <p>
-         * For non-URL contents, the base URL is, for instance, a link to the DASH or HLS manifest
-         * from which the URLs have been parsed.
-         * </p>
-         *
-         * <p>
-         * The default value is {@code null}.
-         * </p>
-         *
-         * @param baseUrl the base URL of the {@link AudioStream}, which can be null
+         * @param manifestUrl the URL of the manifest this stream comes from or {@code null}
          * @return this {@link Builder} instance
          */
-        public Builder setBaseUrl(@Nullable final String baseUrl) {
-            this.baseUrl = baseUrl;
+        public Builder setManifestUrl(@Nullable final String manifestUrl) {
+            this.manifestUrl = manifestUrl;
             return this;
         }
 
@@ -236,7 +227,7 @@ public final class AudioStream extends Stream {
             }
 
             return new AudioStream(id, content, isUrl, mediaFormat, deliveryMethod, averageBitrate,
-                    baseUrl, itagItem);
+                    manifestUrl, itagItem);
         }
     }
 
@@ -255,8 +246,8 @@ public final class AudioStream extends Stream {
      * @param averageBitrate the average bitrate of the stream (which can be unknown, see
      *                       {@link #UNKNOWN_BITRATE})
      * @param itagItem       the {@link ItagItem} corresponding to the stream, which cannot be null
-     * @param baseUrl        the base URL of the stream (see {@link Stream#getBaseUrl()} for more
-     *                       information)
+     * @param manifestUrl    the URL of the manifest this stream comes from (if applicable,
+     *                       otherwise null)
      */
     @SuppressWarnings("checkstyle:ParameterNumber")
     private AudioStream(@Nonnull final String id,
@@ -265,9 +256,9 @@ public final class AudioStream extends Stream {
                         @Nullable final MediaFormat format,
                         @Nonnull final DeliveryMethod deliveryMethod,
                         final int averageBitrate,
-                        @Nullable final String baseUrl,
+                        @Nullable final String manifestUrl,
                         @Nullable final ItagItem itagItem) {
-        super(id, content, isUrl, format, deliveryMethod, baseUrl);
+        super(id, content, isUrl, format, deliveryMethod, manifestUrl);
         if (itagItem != null) {
             this.itagItem = itagItem;
             this.itag = itagItem.id;

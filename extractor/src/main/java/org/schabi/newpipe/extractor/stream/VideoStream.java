@@ -64,7 +64,7 @@ public final class VideoStream extends Stream {
         @Nullable
         private MediaFormat mediaFormat;
         @Nullable
-        private String baseUrl;
+        private String manifestUrl;
         // Use of the Boolean class instead of the primitive type needed for setter call check
         private Boolean isVideoOnly;
         private String resolution;
@@ -157,22 +157,13 @@ public final class VideoStream extends Stream {
         }
 
         /**
-         * Set the base URL of the {@link VideoStream}.
+         * Sets the URL of the manifest this stream comes from (if applicable, otherwise null).
          *
-         * <p>
-         * For non-URL contents, the base URL is, for instance, a link to the DASH or HLS manifest
-         * from which the URLs have been parsed.
-         * </p>
-         *
-         * <p>
-         * The default value is {@code null}.
-         * </p>
-         *
-         * @param baseUrl the base URL of the {@link VideoStream}, which can be null
+         * @param manifestUrl the URL of the manifest this stream comes from or {@code null}
          * @return this {@link Builder} instance
          */
-        public Builder setBaseUrl(@Nullable final String baseUrl) {
-            this.baseUrl = baseUrl;
+        public Builder setManifestUrl(@Nullable final String manifestUrl) {
+            this.manifestUrl = manifestUrl;
             return this;
         }
 
@@ -282,7 +273,7 @@ public final class VideoStream extends Stream {
             }
 
             return new VideoStream(id, content, isUrl, mediaFormat, deliveryMethod, resolution,
-                    isVideoOnly, baseUrl, itagItem);
+                    isVideoOnly, manifestUrl, itagItem);
         }
     }
 
@@ -300,8 +291,8 @@ public final class VideoStream extends Stream {
      * @param resolution     the resolution of the stream
      * @param isVideoOnly    whether the stream is video-only
      * @param itagItem       the {@link ItagItem} corresponding to the stream, which cannot be null
-     * @param baseUrl        the base URL of the stream (see {@link Stream#getBaseUrl()} for more
-     *                       information)
+     * @param manifestUrl    the URL of the manifest this stream comes from (if applicable,
+     *                       otherwise null)
      */
     @SuppressWarnings("checkstyle:ParameterNumber")
     private VideoStream(@Nonnull final String id,
@@ -311,9 +302,9 @@ public final class VideoStream extends Stream {
                         @Nonnull final DeliveryMethod deliveryMethod,
                         @Nonnull final String resolution,
                         final boolean isVideoOnly,
-                        @Nullable final String baseUrl,
+                        @Nullable final String manifestUrl,
                         @Nullable final ItagItem itagItem) {
-        super(id, content, isUrl, format, deliveryMethod, baseUrl);
+        super(id, content, isUrl, format, deliveryMethod, manifestUrl);
         if (itagItem != null) {
             this.itagItem = itagItem;
             this.itag = itagItem.id;

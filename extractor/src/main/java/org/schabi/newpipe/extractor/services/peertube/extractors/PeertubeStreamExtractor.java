@@ -570,7 +570,7 @@ public class PeertubeStreamExtractor extends StreamExtractor {
                     .setDeliveryMethod(DeliveryMethod.HLS)
                     .setMediaFormat(format)
                     .setAverageBitrate(UNKNOWN_BITRATE)
-                    .setBaseUrl(playlistUrl)
+                    .setManifestUrl(playlistUrl)
                     .build();
             if (!Stream.containSimilarStream(audioStream, audioStreams)) {
                 audioStreams.add(audioStream);
@@ -623,7 +623,7 @@ public class PeertubeStreamExtractor extends StreamExtractor {
                     .setDeliveryMethod(DeliveryMethod.HLS)
                     .setResolution(resolution)
                     .setMediaFormat(format)
-                    .setBaseUrl(playlistUrl)
+                    .setManifestUrl(playlistUrl)
                     .build();
             if (!Stream.containSimilarStream(videoStream, videoStreams)) {
                 videoStreams.add(videoStream);
