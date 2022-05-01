@@ -79,7 +79,7 @@ public final class YoutubeDashManifestCreator {
      *
      * <p>
      * This list is automatically cleared in the execution of
-     * {@link #createDashManifestFromOtfStreamingUrl(String, ItagItem, long)}, before the DASH
+     * {@link #fromOtfStreamingUrl(String, ItagItem, long)}, before the DASH
      * manifest is converted to a string.
      * </p>
      */
@@ -90,7 +90,7 @@ public final class YoutubeDashManifestCreator {
      *
      * <p>
      * This list is automatically cleared in the execution of
-     * {@link #createDashManifestFromOtfStreamingUrl(String, ItagItem, long)}, before the DASH
+     * {@link #fromOtfStreamingUrl(String, ItagItem, long)}, before the DASH
      * manifest is converted to a string.
      * </p>
      */
@@ -242,7 +242,7 @@ public final class YoutubeDashManifestCreator {
      *                                              the DASH manifest
      */
     @Nonnull
-    public static String createDashManifestFromOtfStreamingUrl(
+    public static String fromOtfStreamingUrl(
             @Nonnull final String otfBaseStreamingUrl,
             @Nonnull final ItagItem itagItem,
             final long durationSecondsFallback) throws YoutubeDashManifestCreationException {
@@ -376,7 +376,7 @@ public final class YoutubeDashManifestCreator {
      *                                              the DASH manifest
      */
     @Nonnull
-    public static String createDashManifestFromPostLiveStreamDvrStreamingUrl(
+    public static String fromPostLiveStreamDvrStreamingUrl(
             @Nonnull final String postLiveStreamDvrStreamingUrl,
             @Nonnull final ItagItem itagItem,
             final int targetDurationSec,
@@ -505,7 +505,7 @@ public final class YoutubeDashManifestCreator {
      *                                              the DASH manifest
      */
     @Nonnull
-    public static String createDashManifestFromProgressiveStreamingUrl(
+    public static String fromProgressiveStreamingUrl(
             @Nonnull final String progressiveStreamingBaseUrl,
             @Nonnull final ItagItem itagItem,
             final long durationSecondsFallback) throws YoutubeDashManifestCreationException {

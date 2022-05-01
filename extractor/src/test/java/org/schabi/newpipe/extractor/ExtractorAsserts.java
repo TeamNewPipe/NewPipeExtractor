@@ -15,6 +15,8 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
+import org.schabi.newpipe.extractor.utils.Utils;
+
 public class ExtractorAsserts {
     public static void assertEmptyErrors(String message, List<Throwable> errors) {
         if (!errors.isEmpty()) {
@@ -62,6 +64,14 @@ public class ExtractorAsserts {
         if (stringToCheck != null) {
             assertTrue(stringToCheck.isEmpty(), message);
         }
+    }
+
+    public static void assertNotBlank(String stringToCheck) {
+        assertNotBlank(stringToCheck, null);
+    }
+
+    public static void assertNotBlank(String stringToCheck, @Nullable String message) {
+        assertFalse(Utils.isBlank(stringToCheck), message);
     }
 
     public static void assertGreater(final long expected, final long actual) {
