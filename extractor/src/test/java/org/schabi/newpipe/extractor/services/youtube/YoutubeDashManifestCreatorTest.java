@@ -11,6 +11,13 @@ import static org.schabi.newpipe.extractor.ExtractorAsserts.assertGreaterOrEqual
 import static org.schabi.newpipe.extractor.ExtractorAsserts.assertIsValidUrl;
 import static org.schabi.newpipe.extractor.ExtractorAsserts.assertNotBlank;
 import static org.schabi.newpipe.extractor.ServiceList.YouTube;
+import static org.schabi.newpipe.extractor.services.youtube.YoutubeDashManifestCreator.ADAPTATION_SET;
+import static org.schabi.newpipe.extractor.services.youtube.YoutubeDashManifestCreator.INITIALIZATION;
+import static org.schabi.newpipe.extractor.services.youtube.YoutubeDashManifestCreator.PERIOD;
+import static org.schabi.newpipe.extractor.services.youtube.YoutubeDashManifestCreator.REPRESENTATION;
+import static org.schabi.newpipe.extractor.services.youtube.YoutubeDashManifestCreator.SEGMENT_BASE;
+import static org.schabi.newpipe.extractor.services.youtube.YoutubeDashManifestCreator.SEGMENT_TEMPLATE;
+import static org.schabi.newpipe.extractor.services.youtube.YoutubeDashManifestCreator.SEGMENT_TIMELINE;
 import static org.schabi.newpipe.extractor.utils.Utils.isBlank;
 
 import org.junit.jupiter.api.BeforeAll;
@@ -95,7 +102,7 @@ class YoutubeDashManifestCreatorTest {
         assertProgressiveStreams(extractor.getAudioStreams());
 
         // we are not able to generate DASH manifests of video formats with audio
-        assertThrows(YoutubeDashManifestCreator.YoutubeDashManifestCreationException.class,
+        assertThrows(YoutubeDashManifestCreator.CreationException.class,
                 () -> assertProgressiveStreams(extractor.getVideoStreams()));
     }
 
@@ -193,22 +200,22 @@ class YoutubeDashManifestCreatorTest {
     }
 
     private void assertPeriodElement(@Nonnull final Document document) {
-        assertGetElement(document, "Period", "MPD");
+        assertGetElement(document, PERIOD, "MPD");
     }
 
     private void assertAdaptationSetElement(@Nonnull final Document document,
                                             @Nonnull final ItagItem itagItem) {
-        final Element element = assertGetElement(document, "AdaptationSet", "Period");
+        final Element element = assertGetElement(document, ADAPTATION_SET, PERIOD);
         assertAttrEquals(itagItem.getMediaFormat().getMimeType(), element, "mimeType");
     }
 
     private void assertRoleElement(@Nonnull final Document document) {
-        assertGetElement(document, "Role", "AdaptationSet");
+        assertGetElement(document, "Role", ADAPTATION_SET);
     }
 
     private void assertRepresentationElement(@Nonnull final Document document,
                                              @Nonnull final ItagItem itagItem) {
-        final Element element = assertGetElement(document, "Representation", "AdaptationSet");
+        final Element element = assertGetElement(document, REPRESENTATION, ADAPTATION_SET);
 
         assertAttrEquals(itagItem.getBitrate(), element, "bandwidth");
         assertAttrEquals(itagItem.getCodec(), element, "codecs");
@@ -226,12 +233,12 @@ class YoutubeDashManifestCreatorTest {
     private void assertAudioChannelConfigurationElement(@Nonnull final Document document,
                                                         @Nonnull final ItagItem itagItem) {
         final Element element = assertGetElement(document,
-                "AudioChannelConfiguration", "Representation");
+                "AudioChannelConfiguration", REPRESENTATION);
         assertAttrEquals(itagItem.getAudioChannels(), element, "value");
     }
 
     private void assertSegmentTemplateElement(@Nonnull final Document document) {
-        final Element element = assertGetElement(document, "SegmentTemplate", "Representation");
+        final Element element = assertGetElement(document, SEGMENT_TEMPLATE, REPRESENTATION);
 
         final String initializationValue = element.getAttribute("initialization");
         assertIsValidUrl(initializationValue);
@@ -245,7 +252,7 @@ class YoutubeDashManifestCreatorTest {
     }
 
     private void assertSegmentTimelineAndSElements(@Nonnull final Document document) {
-        final Element element = assertGetElement(document, "SegmentTimeline", "SegmentTemplate");
+        final Element element = assertGetElement(document, SEGMENT_TIMELINE, SEGMENT_TEMPLATE);
         final NodeList childNodes = element.getChildNodes();
         assertGreater(0, childNodes.getLength());
 
@@ -269,19 +276,19 @@ class YoutubeDashManifestCreatorTest {
     }
 
     private void assertBaseUrlElement(@Nonnull final Document document) {
-        final Element element = assertGetElement(document, "BaseURL", "Representation");
+        final Element element = assertGetElement(document, "BaseURL", REPRESENTATION);
         assertIsValidUrl(element.getTextContent());
     }
 
     private void assertSegmentBaseElement(@Nonnull final Document document,
                                           @Nonnull final ItagItem itagItem) {
-        final Element element = assertGetElement(document, "SegmentBase", "Representation");
+        final Element element = assertGetElement(document, SEGMENT_BASE, REPRESENTATION);
         assertRangeEquals(itagItem.getIndexStart(), itagItem.getIndexEnd(), element, "indexRange");
     }
 
     private void assertInitializationElement(@Nonnull final Document document,
                                              @Nonnull final ItagItem itagItem) {
-        final Element element = assertGetElement(document, "Initialization", "SegmentBase");
+        final Element element = assertGetElement(document, INITIALIZATION, SEGMENT_BASE);
         assertRangeEquals(itagItem.getInitStart(), itagItem.getInitEnd(), element, "range");
     }
 
