@@ -1,5 +1,16 @@
 package org.schabi.newpipe.extractor.services.youtube;
 
+import static org.schabi.newpipe.extractor.services.youtube.YoutubeParsingHelper.addClientInfoHeaders;
+import static org.schabi.newpipe.extractor.services.youtube.YoutubeParsingHelper.getAndroidUserAgent;
+import static org.schabi.newpipe.extractor.services.youtube.YoutubeParsingHelper.getIosUserAgent;
+import static org.schabi.newpipe.extractor.services.youtube.YoutubeParsingHelper.isAndroidStreamingUrl;
+import static org.schabi.newpipe.extractor.services.youtube.YoutubeParsingHelper.isIosStreamingUrl;
+import static org.schabi.newpipe.extractor.services.youtube.YoutubeParsingHelper.isTvHtml5SimplyEmbeddedPlayerStreamingUrl;
+import static org.schabi.newpipe.extractor.services.youtube.YoutubeParsingHelper.isWebStreamingUrl;
+import static org.schabi.newpipe.extractor.utils.Utils.EMPTY_STRING;
+import static org.schabi.newpipe.extractor.utils.Utils.isBlank;
+import static org.schabi.newpipe.extractor.utils.Utils.isNullOrEmpty;
+
 import org.schabi.newpipe.extractor.MediaFormat;
 import org.schabi.newpipe.extractor.NewPipe;
 import org.schabi.newpipe.extractor.downloader.Downloader;
@@ -12,6 +23,17 @@ import org.w3c.dom.DOMException;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 
+import java.io.IOException;
+import java.io.StringWriter;
+import java.nio.charset.StandardCharsets;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Locale;
+import java.util.Map;
+import java.util.Objects;
+
 import javax.annotation.Nonnull;
 import javax.xml.XMLConstants;
 import javax.xml.parsers.DocumentBuilder;
@@ -23,28 +45,6 @@ import javax.xml.transform.TransformerException;
 import javax.xml.transform.TransformerFactory;
 import javax.xml.transform.dom.DOMSource;
 import javax.xml.transform.stream.StreamResult;
-import java.io.IOException;
-import java.io.StringWriter;
-import java.nio.charset.StandardCharsets;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Locale;
-import java.util.Map;
-import java.util.Objects;
-
-import static org.schabi.newpipe.extractor.services.youtube.YoutubeParsingHelper.addClientInfoHeaders;
-import static org.schabi.newpipe.extractor.services.youtube.YoutubeParsingHelper.getAndroidUserAgent;
-import static org.schabi.newpipe.extractor.services.youtube.YoutubeParsingHelper.getIosUserAgent;
-import static org.schabi.newpipe.extractor.services.youtube.YoutubeParsingHelper.isAndroidStreamingUrl;
-import static org.schabi.newpipe.extractor.services.youtube.YoutubeParsingHelper.isIosStreamingUrl;
-import static org.schabi.newpipe.extractor.services.youtube.YoutubeParsingHelper.isTvHtml5SimplyEmbeddedPlayerStreamingUrl;
-import static org.schabi.newpipe.extractor.services.youtube.YoutubeParsingHelper.isWebStreamingUrl;
-import static org.schabi.newpipe.extractor.utils.Utils.EMPTY_STRING;
-import static org.schabi.newpipe.extractor.utils.Utils.isBlank;
-import static org.schabi.newpipe.extractor.utils.Utils.isNullOrEmpty;
 
 /**
  * Class to generate DASH manifests from YouTube OTF, progressive and ended/post-live-DVR streams.
@@ -73,28 +73,6 @@ public final class YoutubeDashManifestCreator {
      * The redirect count limit that this class uses, which is the same limit as OkHttp.
      */
     private static final int MAXIMUM_REDIRECT_COUNT = 20;
-
-    /**
-     * A list of durations of segments of an OTF stream.
-     *
-     * <p>
-     * This list is automatically cleared in the execution of
-     * {@link #fromOtfStreamingUrl(String, ItagItem, long)}, before the DASH
-     * manifest is converted to a string.
-     * </p>
-     */
-    private static final List<Integer> SEGMENTS_DURATION = new ArrayList<>();
-
-    /**
-     * A list of contiguous repetitions of durations of an OTF stream.
-     *
-     * <p>
-     * This list is automatically cleared in the execution of
-     * {@link #fromOtfStreamingUrl(String, ItagItem, long)}, before the DASH
-     * manifest is converted to a string.
-     * </p>
-     */
-    private static final List<Integer> DURATION_REPETITIONS = new ArrayList<>();
 
     /**
      * Cache of DASH manifests generated for OTF streams.
@@ -296,11 +274,7 @@ public final class YoutubeDashManifestCreator {
         }
         generateSegmentTemplateElement(document, realOtfBaseStreamingUrl, DeliveryType.OTF);
         generateSegmentTimelineElement(document);
-        collectSegmentsData(segmentDuration);
-        generateSegmentElementsForOtfStreams(document);
-
-        SEGMENTS_DURATION.clear();
-        DURATION_REPETITIONS.clear();
+        generateSegmentElementsForOtfStreams(segmentDuration, document);
 
         return buildAndCacheResult(otfBaseStreamingUrl, document, OTF_CACHE);
     }
@@ -718,35 +692,6 @@ public final class YoutubeDashManifestCreator {
             throw new YoutubeDashManifestCreationException(
                     "Could not generate the DASH manifest: error when trying to get the WEB "
                             + "streaming URL response", e);
-        }
-    }
-
-    /**
-     * Collect all segments from an OTF stream, by parsing the string array which contains all the
-     * sequences.
-     *
-     * @param segmentDuration the string array which contains all the sequences extracted with the
-     *                        regular expression
-     */
-    private static void collectSegmentsData(@Nonnull final String[] segmentDuration)
-            throws YoutubeDashManifestCreationException {
-        try {
-            for (final String segDuration : segmentDuration) {
-                final String[] segmentLengthRepeat = segDuration.split("\\(r=");
-                int segmentRepeatCount = 0;
-                // There are repetitions of a segment duration in other segments
-                if (segmentLengthRepeat.length > 1) {
-                    segmentRepeatCount = Integer.parseInt(Utils.removeNonDigitCharacters(
-                            segmentLengthRepeat[1]));
-                }
-                final int segmentLength = Integer.parseInt(segmentLengthRepeat[0]);
-                SEGMENTS_DURATION.add(segmentLength);
-                DURATION_REPETITIONS.add(segmentRepeatCount);
-            }
-        } catch (final NumberFormatException e) {
-            throw new YoutubeDashManifestCreationException(
-                    "Could not generate the DASH manifest: unable to get the segments of the "
-                            + "stream", e);
         }
     }
 
@@ -1429,8 +1374,7 @@ public final class YoutubeDashManifestCreator {
      *
      * <p>
      * By parsing by the first media sequence, we know how many durations and repetitions there are
-     * so we just have to loop into {@link #SEGMENTS_DURATION} and {@link #DURATION_REPETITIONS}
-     * to generate the following element for each duration:
+     * so we just have to loop into segment durations to generate the following elements for each:
      * </p>
      *
      * <p>
@@ -1451,36 +1395,43 @@ public final class YoutubeDashManifestCreator {
      * {@link #generateSegmentTimelineElement(Document)}.
      * </p>
      *
+     * @param segmentDurations the sequences "length" or "length(r=repeat_count" extracted with the
+     *                         regexes
      * @param document the {@link Document} on which the the {@code <S>} elements will be appended
      */
-    private static void generateSegmentElementsForOtfStreams(@Nonnull final Document document)
+    private static void generateSegmentElementsForOtfStreams(final String[] segmentDurations,
+                                                             final Document document)
             throws YoutubeDashManifestCreationException {
+
         try {
-            if (SEGMENTS_DURATION.isEmpty() || DURATION_REPETITIONS.isEmpty()) {
-                throw new IllegalStateException(
-                        "Duration of segments and/or repetition(s) of segments are unknown");
-            }
             final Element segmentTimelineElement = (Element) document.getElementsByTagName(
                     "SegmentTimeline").item(0);
 
-            for (int i = 0; i < SEGMENTS_DURATION.size(); i++) {
+            for (final String segmentDuration : segmentDurations) {
                 final Element sElement = document.createElement("S");
 
-                final int durationRepetition = DURATION_REPETITIONS.get(i);
-                if (durationRepetition != 0) {
+                final String[] segmentLengthRepeat = segmentDuration.split("\\(r=");
+                // make sure segmentLengthRepeat[0], which is the length, is convertible to int
+                Integer.parseInt(segmentLengthRepeat[0]);
+
+                // There are repetitions of a segment duration in other segments
+                if (segmentLengthRepeat.length > 1) {
+                    final int segmentRepeatCount = Integer.parseInt(
+                            Utils.removeNonDigitCharacters(segmentLengthRepeat[1]));
                     final Attr rAttribute = document.createAttribute("r");
-                    rAttribute.setValue(String.valueOf(durationRepetition));
+                    rAttribute.setValue(String.valueOf(segmentRepeatCount));
                     sElement.setAttributeNode(rAttribute);
                 }
 
                 final Attr dAttribute = document.createAttribute("d");
-                dAttribute.setValue(String.valueOf(SEGMENTS_DURATION.get(i)));
+                dAttribute.setValue(segmentLengthRepeat[0]);
                 sElement.setAttributeNode(dAttribute);
 
                 segmentTimelineElement.appendChild(sElement);
             }
 
-        } catch (final DOMException | IllegalStateException | IndexOutOfBoundsException e) {
+        } catch (final DOMException | IllegalStateException | IndexOutOfBoundsException
+                | NumberFormatException e) {
             throw new YoutubeDashManifestCreationException(
                     "Could not generate or append the segment (S) elements of the DASH manifest "
                             + "to the document", e);
