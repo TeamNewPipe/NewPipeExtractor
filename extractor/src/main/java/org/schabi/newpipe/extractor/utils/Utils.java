@@ -2,8 +2,6 @@ package org.schabi.newpipe.extractor.utils;
 
 import org.schabi.newpipe.extractor.exceptions.ParsingException;
 
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
 import java.io.UnsupportedEncodingException;
 import java.net.MalformedURLException;
 import java.net.URL;
@@ -18,10 +16,17 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.regex.Pattern;
 
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
+
 public final class Utils {
 
     public static final String HTTP = "http://";
     public static final String HTTPS = "https://";
+    /**
+     * @deprecated Use {@link java.nio.charset.StandardCharsets#UTF_8}
+     */
+    @Deprecated
     public static final String UTF_8 = "UTF-8";
     public static final String EMPTY_STRING = "";
     private static final Pattern M_PATTERN = Pattern.compile("(https?)?:\\/\\/m\\.");

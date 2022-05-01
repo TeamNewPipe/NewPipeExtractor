@@ -1,19 +1,19 @@
 package org.schabi.newpipe.extractor.stream;
 
+import static org.schabi.newpipe.extractor.utils.Utils.isNullOrEmpty;
+
 import org.schabi.newpipe.extractor.MediaFormat;
 
 import java.io.Serializable;
 import java.util.List;
-
-import static org.schabi.newpipe.extractor.utils.Utils.isNullOrEmpty;
 
 /**
  * Creates a stream object from url, format and optional torrent url
  */
 public abstract class Stream implements Serializable {
     private final MediaFormat mediaFormat;
-    public final String url;
-    public final String torrentUrl;
+    private final String url;
+    private final String torrentUrl;
 
     /**
      * @deprecated Use {@link #getFormat()}  or {@link #getFormatId()}
