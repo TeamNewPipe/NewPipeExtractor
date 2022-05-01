@@ -99,20 +99,20 @@ public final class YoutubeDashManifestCreator {
     /**
      * Cache of DASH manifests generated for OTF streams.
      */
-    private static final ManifestCreatorCache<String, String> GENERATED_OTF_MANIFESTS =
-            new ManifestCreatorCache<>();
+    private static final ManifestCreatorCache<String, String> OTF_CACHE
+            = new ManifestCreatorCache<>();
 
     /**
      * Cache of DASH manifests generated for post-live-DVR streams.
      */
-    private static final ManifestCreatorCache<String, String>
-            GENERATED_POST_LIVE_DVR_STREAMS_MANIFESTS = new ManifestCreatorCache<>();
+    private static final ManifestCreatorCache<String, String> POST_LIVE_DVR_CACHE
+            = new ManifestCreatorCache<>();
 
     /**
      * Cache of DASH manifests generated for progressive streams.
      */
-    private static final ManifestCreatorCache<String, String>
-            GENERATED_PROGRESSIVE_STREAMS_MANIFESTS = new ManifestCreatorCache<>();
+    private static final ManifestCreatorCache<String, String> PROGRESSIVE_CACHE
+            = new ManifestCreatorCache<>();
 
     /**
      * Enum of streaming format types used by YouTube in their streams.
@@ -238,17 +238,14 @@ public final class YoutubeDashManifestCreator {
      * @param durationSecondsFallback the duration of the video, which will be used if the duration
      *                                could not be extracted from the first sequence
      * @return the manifest generated into a string
-     * @throws YoutubeDashManifestCreationException if something goes wrong when trying to generate
-     *                                              the DASH manifest
      */
     @Nonnull
     public static String fromOtfStreamingUrl(
             @Nonnull final String otfBaseStreamingUrl,
             @Nonnull final ItagItem itagItem,
             final long durationSecondsFallback) throws YoutubeDashManifestCreationException {
-        if (GENERATED_OTF_MANIFESTS.containsKey(otfBaseStreamingUrl)) {
-            return Objects.requireNonNull(GENERATED_OTF_MANIFESTS.get(otfBaseStreamingUrl))
-                    .getSecond();
+        if (OTF_CACHE.containsKey(otfBaseStreamingUrl)) {
+            return Objects.requireNonNull(OTF_CACHE.get(otfBaseStreamingUrl)).getSecond();
         }
 
         String realOtfBaseStreamingUrl = otfBaseStreamingUrl;
@@ -305,7 +302,7 @@ public final class YoutubeDashManifestCreator {
         SEGMENTS_DURATION.clear();
         DURATION_REPETITIONS.clear();
 
-        return buildAndCacheResult(otfBaseStreamingUrl, document, GENERATED_OTF_MANIFESTS);
+        return buildAndCacheResult(otfBaseStreamingUrl, document, OTF_CACHE);
     }
 
     /**
@@ -372,8 +369,6 @@ public final class YoutubeDashManifestCreator {
      *                                      if the duration could not be extracted from the first
      *                                      sequence
      * @return the manifest generated into a string
-     * @throws YoutubeDashManifestCreationException if something goes wrong when trying to generate
-     *                                              the DASH manifest
      */
     @Nonnull
     public static String fromPostLiveStreamDvrStreamingUrl(
@@ -381,9 +376,9 @@ public final class YoutubeDashManifestCreator {
             @Nonnull final ItagItem itagItem,
             final int targetDurationSec,
             final long durationSecondsFallback) throws YoutubeDashManifestCreationException {
-        if (GENERATED_POST_LIVE_DVR_STREAMS_MANIFESTS.containsKey(postLiveStreamDvrStreamingUrl)) {
-            return Objects.requireNonNull(GENERATED_POST_LIVE_DVR_STREAMS_MANIFESTS.get(
-                    postLiveStreamDvrStreamingUrl)).getSecond();
+        if (POST_LIVE_DVR_CACHE.containsKey(postLiveStreamDvrStreamingUrl)) {
+            return Objects.requireNonNull(POST_LIVE_DVR_CACHE.get(postLiveStreamDvrStreamingUrl))
+                    .getSecond();
         }
         String realPostLiveStreamDvrStreamingUrl = postLiveStreamDvrStreamingUrl;
         final String streamDuration;
@@ -442,7 +437,7 @@ public final class YoutubeDashManifestCreator {
         generateSegmentElementForPostLiveDvrStreams(document, targetDurationSec, segmentCount);
 
         return buildAndCacheResult(postLiveStreamDvrStreamingUrl, document,
-                GENERATED_POST_LIVE_DVR_STREAMS_MANIFESTS);
+                POST_LIVE_DVR_CACHE);
     }
 
     /**
@@ -501,17 +496,15 @@ public final class YoutubeDashManifestCreator {
      *                                    if the duration could not be extracted from the first
      *                                    sequence
      * @return the manifest generated into a string
-     * @throws YoutubeDashManifestCreationException if something goes wrong when trying to generate
-     *                                              the DASH manifest
      */
     @Nonnull
     public static String fromProgressiveStreamingUrl(
             @Nonnull final String progressiveStreamingBaseUrl,
             @Nonnull final ItagItem itagItem,
             final long durationSecondsFallback) throws YoutubeDashManifestCreationException {
-        if (GENERATED_PROGRESSIVE_STREAMS_MANIFESTS.containsKey(progressiveStreamingBaseUrl)) {
-            return Objects.requireNonNull(GENERATED_PROGRESSIVE_STREAMS_MANIFESTS.get(
-                    progressiveStreamingBaseUrl)).getSecond();
+        if (PROGRESSIVE_CACHE.containsKey(progressiveStreamingBaseUrl)) {
+            return Objects.requireNonNull(PROGRESSIVE_CACHE.get(progressiveStreamingBaseUrl))
+                    .getSecond();
         }
 
         if (durationSecondsFallback <= 0) {
@@ -534,7 +527,7 @@ public final class YoutubeDashManifestCreator {
         generateInitializationElement(document, itagItem);
 
         return buildAndCacheResult(progressiveStreamingBaseUrl, document,
-                GENERATED_PROGRESSIVE_STREAMS_MANIFESTS);
+                PROGRESSIVE_CACHE);
     }
 
     /**
@@ -555,9 +548,7 @@ public final class YoutubeDashManifestCreator {
      * @param itagItem         the {@link ItagItem} of stream, which cannot be null
      * @param deliveryType     the {@link DeliveryType} of the stream
      * @return the "initialization" response, without redirections on the network on which the
-     * request(s) is/are made
-     * @throws YoutubeDashManifestCreationException if something goes wrong when fetching the
-     *                                              "initialization" response and/or its redirects
+     *         request(s) is/are made
      */
     @SuppressWarnings("checkstyle:FinalParameters")
     @Nonnull
@@ -647,8 +638,6 @@ public final class YoutubeDashManifestCreator {
      * @param responseMimeTypeExpected the response mime type expected from Google video servers
      * @param deliveryType             the {@link DeliveryType} of the stream
      * @return the response of the stream which should have no redirections
-     * @throws YoutubeDashManifestCreationException if something goes wrong when trying to get the
-     *                                              response without any redirection
      */
     @SuppressWarnings("checkstyle:FinalParameters")
     @Nonnull
@@ -738,8 +727,6 @@ public final class YoutubeDashManifestCreator {
      *
      * @param segmentDuration the string array which contains all the sequences extracted with the
      *                        regular expression
-     * @throws YoutubeDashManifestCreationException if something goes wrong when trying to collect
-     *                                              the segments of the OTF stream
      */
     private static void collectSegmentsData(@Nonnull final String[] segmentDuration)
             throws YoutubeDashManifestCreationException {
@@ -774,8 +761,6 @@ public final class YoutubeDashManifestCreator {
      * @param segmentDuration the segment duration object extracted from the initialization
      *                        sequence of the stream
      * @return the duration of the OTF stream
-     * @throws YoutubeDashManifestCreationException if something goes wrong when parsing the
-     *                                              {@code segmentDuration} object
      */
     private static int getStreamDuration(@Nonnull final String[] segmentDuration)
             throws YoutubeDashManifestCreationException {
@@ -832,9 +817,6 @@ public final class YoutubeDashManifestCreator {
      * @param durationSecondsFallback the duration in seconds, extracted from player response, used
      *                                as a fallback if the duration could not be determined
      * @return a {@link Document} object which contains a {@code <MPD>} element
-     * @throws YoutubeDashManifestCreationException if something goes wrong when generating/
-     *                                              appending the {@link Document object} or the
-     *                                              {@code <MPD>} element
      */
     private static Document generateDocumentAndMpdElement(@Nonnull final String[] segmentDuration,
                                                           final DeliveryType deliveryType,
@@ -917,9 +899,6 @@ public final class YoutubeDashManifestCreator {
      *
      * @param document the {@link Document} on which the the {@code <Period>} element will be
      *                 appended
-     * @throws YoutubeDashManifestCreationException if something goes wrong when generating or
-     *                                              appending the {@code <Period>} element to the
-     *                                              document
      */
     private static void generatePeriodElement(@Nonnull final Document document)
             throws YoutubeDashManifestCreationException {
@@ -945,9 +924,6 @@ public final class YoutubeDashManifestCreator {
      * @param document the {@link Document} on which the the {@code <Period>} element will be
      *                 appended
      * @param itagItem the {@link ItagItem} corresponding to the stream, which cannot be null
-     * @throws YoutubeDashManifestCreationException if something goes wrong when generating or
-     *                                              appending the {@code <Period>} element to the
-     *                                              document
      */
     private static void generateAdaptationSetElement(@Nonnull final Document document,
                                                      @Nonnull final ItagItem itagItem)
@@ -1005,9 +981,6 @@ public final class YoutubeDashManifestCreator {
      *
      * @param document the {@link Document} on which the the {@code <Role>} element will be
      *                 appended
-     * @throws YoutubeDashManifestCreationException if something goes wrong when generating or
-     *                                              appending the {@code <Role>} element to the
-     *                                              document
      */
     private static void generateRoleElement(@Nonnull final Document document)
             throws YoutubeDashManifestCreationException {
@@ -1044,9 +1017,6 @@ public final class YoutubeDashManifestCreator {
      * @param document the {@link Document} on which the the {@code <SegmentTimeline>} element will
      *                 be appended
      * @param itagItem the {@link ItagItem} to use, which cannot be null
-     * @throws YoutubeDashManifestCreationException if something goes wrong when generating or
-     *                                              appending the {@code <Representation>} element
-     *                                              to the document
      */
     private static void generateRepresentationElement(@Nonnull final Document document,
                                                       @Nonnull final ItagItem itagItem)
@@ -1167,10 +1137,6 @@ public final class YoutubeDashManifestCreator {
      * @param document the {@link Document} on which the {@code <AudioChannelConfiguration>}
      *                 element will be appended
      * @param itagItem the {@link ItagItem} to use, which cannot be null
-     * @throws YoutubeDashManifestCreationException if something goes wrong when generating or
-     *                                              appending the
-     *                                              {@code <AudioChannelConfiguration>} element
-     *                                              to the document
      */
     private static void generateAudioChannelConfigurationElement(
             @Nonnull final Document document,
@@ -1221,9 +1187,6 @@ public final class YoutubeDashManifestCreator {
      *                 be appended
      * @param baseUrl  the base URL of the stream, which cannot be null and will be set as the
      *                 content of the {@code <BaseURL>} element
-     * @throws YoutubeDashManifestCreationException if something goes wrong when generating or
-     *                                              appending the {@code <BaseURL>} element
-     *                                              to the document
      */
     private static void generateBaseUrlElement(@Nonnull final Document document,
                                                @Nonnull final String baseUrl)
@@ -1266,9 +1229,6 @@ public final class YoutubeDashManifestCreator {
      * @param document the {@link Document} on which the {@code <SegmentBase>} element will
      *                 be appended
      * @param itagItem the {@link ItagItem} to use, which cannot be null
-     * @throws YoutubeDashManifestCreationException if something goes wrong when generating or
-     *                                              appending the {@code <SegmentBase>} element
-     *                                              to the document
      */
     private static void generateSegmentBaseElement(@Nonnull final Document document,
                                                    @Nonnull final ItagItem itagItem)
@@ -1330,9 +1290,6 @@ public final class YoutubeDashManifestCreator {
      * @param document the {@link Document} on which the {@code <Initialization>} element will
      *                 be appended
      * @param itagItem the {@link ItagItem} to use, which cannot be null
-     * @throws YoutubeDashManifestCreationException if something goes wrong when generating or
-     *                                              appending the {@code <Initialization>} element
-     *                                              to the document
      */
     private static void generateInitializationElement(@Nonnull final Document document,
                                                       @Nonnull final ItagItem itagItem)
@@ -1399,9 +1356,6 @@ public final class YoutubeDashManifestCreator {
      *                     be appended
      * @param baseUrl      the base URL of the OTF/post-live-DVR stream
      * @param deliveryType the stream {@link DeliveryType delivery type}
-     * @throws YoutubeDashManifestCreationException if something goes wrong when generating or
-     *                                              appending the {@code <SegmentTemplate>} element
-     *                                              to the document
      */
     private static void generateSegmentTemplateElement(@Nonnull final Document document,
                                                        @Nonnull final String baseUrl,
@@ -1454,9 +1408,6 @@ public final class YoutubeDashManifestCreator {
      *
      * @param document the {@link Document} on which the the {@code <SegmentTimeline>} element will
      *                 be appended
-     * @throws YoutubeDashManifestCreationException if something goes wrong when generating or
-     *                                              appending the {@code <SegmentTimeline>} element
-     *                                              to the document
      */
     private static void generateSegmentTimelineElement(@Nonnull final Document document)
             throws YoutubeDashManifestCreationException {
@@ -1501,9 +1452,6 @@ public final class YoutubeDashManifestCreator {
      * </p>
      *
      * @param document the {@link Document} on which the the {@code <S>} elements will be appended
-     * @throws YoutubeDashManifestCreationException if something goes wrong when generating or
-     *                                              appending the {@code <S>} elements to the
-     *                                              document
      */
     private static void generateSegmentElementsForOtfStreams(@Nonnull final Document document)
             throws YoutubeDashManifestCreationException {
@@ -1556,9 +1504,6 @@ public final class YoutubeDashManifestCreator {
      *                              stream
      * @param segmentCount          the number of segments, extracted by the main method which
      *                              generates manifests of post DVR livestreams
-     * @throws YoutubeDashManifestCreationException if something goes wrong when generating or
-     *                                              appending the {@code <S>} element to the
-     *                                              document
      */
     private static void generateSegmentElementForPostLiveDvrStreams(
             @Nonnull final Document document,
@@ -1591,13 +1536,9 @@ public final class YoutubeDashManifestCreator {
      * @param originalBaseStreamingUrl the original base URL of the stream
      * @param document                 the document to be converted
      * @param manifestCreatorCache     the {@link ManifestCreatorCache} on which store the
-     *                                 string generated (which is either
-     *                                 {@link #GENERATED_OTF_MANIFESTS},
-     *                                 {@link #GENERATED_POST_LIVE_DVR_STREAMS_MANIFESTS} or
-     *                                 {@link #GENERATED_PROGRESSIVE_STREAMS_MANIFESTS})
+     *                                 string generated (use either {@link #OTF_CACHE},
+     *                                 {@link #POST_LIVE_DVR_CACHE} or {@link #PROGRESSIVE_CACHE})
      * @return the DASH manifest {@link Document document} converted to a string
-     * @throws YoutubeDashManifestCreationException if something goes wrong when converting the
-     *                                              {@link Document document}
      */
     private static String buildAndCacheResult(
             @Nonnull final String originalBaseStreamingUrl,
@@ -1665,317 +1606,23 @@ public final class YoutubeDashManifestCreator {
     }
 
     /**
-     * @return the number of cached OTF streams manifests
+     * @return the cache of DASH manifests generated for OTF streams
      */
-    public static int getOtfCachedManifestsSize() {
-        return GENERATED_OTF_MANIFESTS.size();
+    public static ManifestCreatorCache<String, String> getOtfManifestsCache() {
+        return OTF_CACHE;
     }
 
     /**
-     * @return the number of cached post-live-DVR streams manifests
+     * @return the cache of DASH manifests generated for post-live-DVR streams
      */
-    public static int getPostLiveDvrStreamsCachedManifestsSize() {
-        return GENERATED_POST_LIVE_DVR_STREAMS_MANIFESTS.size();
+    public static ManifestCreatorCache<String, String> getPostLiveDvrManifestsCache() {
+        return POST_LIVE_DVR_CACHE;
     }
 
     /**
-     * @return the number of cached progressive manifests
+     * @return the cache of DASH manifests generated for progressive streams
      */
-    public static int getProgressiveStreamsCachedManifestsSize() {
-        return GENERATED_PROGRESSIVE_STREAMS_MANIFESTS.size();
-    }
-
-    /**
-     * @return the number of cached OTF, post-live-DVR streams and progressive manifests.
-     */
-    public static int getSizeOfManifestsCaches() {
-        return GENERATED_OTF_MANIFESTS.size()
-                + GENERATED_POST_LIVE_DVR_STREAMS_MANIFESTS.size()
-                + GENERATED_PROGRESSIVE_STREAMS_MANIFESTS.size();
-    }
-
-    /**
-     * @return the clear factor of OTF streams manifests cache.
-     */
-    public static double getOtfStreamsClearFactor() {
-        return GENERATED_OTF_MANIFESTS.getClearFactor();
-    }
-
-    /**
-     * @return the clear factor of post-live-DVR streams manifests cache.
-     */
-    public static double getPostLiveDvrStreamsClearFactor() {
-        return GENERATED_POST_LIVE_DVR_STREAMS_MANIFESTS.getClearFactor();
-    }
-
-    /**
-     * @return the clear factor of progressive streams manifests cache.
-     */
-    public static double getProgressiveStreamsClearFactor() {
-        return GENERATED_PROGRESSIVE_STREAMS_MANIFESTS.getClearFactor();
-    }
-
-    /**
-     * @param otfStreamsClearFactor the clear factor of OTF streams manifests cache.
-     */
-    public static void setOtfStreamsClearFactor(final double otfStreamsClearFactor) {
-        GENERATED_OTF_MANIFESTS.setClearFactor(otfStreamsClearFactor);
-    }
-
-    /**
-     * @param postLiveDvrStreamsClearFactor the clear factor to set for post-live-DVR streams
-     *                                      manifests cache
-     */
-    public static void setPostLiveDvrStreamsClearFactor(
-            final double postLiveDvrStreamsClearFactor) {
-        GENERATED_POST_LIVE_DVR_STREAMS_MANIFESTS.setClearFactor(postLiveDvrStreamsClearFactor);
-    }
-
-    /**
-     * @param progressiveStreamsClearFactor the clear factor to set for progressive streams
-     *                                      manifests cache
-     */
-    public static void setProgressiveStreamsClearFactor(
-            final double progressiveStreamsClearFactor) {
-        GENERATED_PROGRESSIVE_STREAMS_MANIFESTS.setClearFactor(progressiveStreamsClearFactor);
-    }
-
-    /**
-     * @param cachesClearFactor the clear factor to set for OTF, post-live-DVR and progressive
-     *                          streams manifests caches
-     */
-    public static void setCachesClearFactor(final double cachesClearFactor) {
-        GENERATED_OTF_MANIFESTS.setClearFactor(cachesClearFactor);
-        GENERATED_POST_LIVE_DVR_STREAMS_MANIFESTS.setClearFactor(cachesClearFactor);
-        GENERATED_PROGRESSIVE_STREAMS_MANIFESTS.setClearFactor(cachesClearFactor);
-    }
-
-    /**
-     * Reset the clear factor of OTF streams cache to its
-     * {@link ManifestCreatorCache#DEFAULT_CLEAR_FACTOR default value}.
-     */
-    public static void resetOtfStreamsClearFactor() {
-        GENERATED_OTF_MANIFESTS.resetClearFactor();
-    }
-
-    /**
-     * Reset the clear factor of post-live-DVR streams cache to its
-     * {@link ManifestCreatorCache#DEFAULT_CLEAR_FACTOR default value}.
-     */
-    public static void resetPostLiveDvrStreamsClearFactor() {
-        GENERATED_POST_LIVE_DVR_STREAMS_MANIFESTS.resetClearFactor();
-    }
-
-    /**
-     * Reset the clear factor of progressive streams cache to its
-     * {@link ManifestCreatorCache#DEFAULT_CLEAR_FACTOR default value}.
-     */
-    public static void resetProgressiveStreamsClearFactor() {
-        GENERATED_PROGRESSIVE_STREAMS_MANIFESTS.resetClearFactor();
-    }
-
-    /**
-     * Reset the clear factor of OTF, post-live-DVR and progressive streams caches to their
-     * {@link ManifestCreatorCache#DEFAULT_CLEAR_FACTOR default value}.
-     */
-    public static void resetCachesClearFactor() {
-        GENERATED_OTF_MANIFESTS.resetClearFactor();
-        GENERATED_POST_LIVE_DVR_STREAMS_MANIFESTS.resetClearFactor();
-        GENERATED_PROGRESSIVE_STREAMS_MANIFESTS.resetClearFactor();
-    }
-
-    /**
-     * Set the limit of cached OTF streams.
-     *
-     * <p>
-     * When the cache limit size is reached, oldest manifests will be removed.
-     * </p>
-     *
-     * <p>
-     * If the new cache size set is less than the number of current cached manifests, oldest
-     * manifests will be also removed.
-     * </p>
-     *
-     * <p>
-     * Note that the limit must be more than 0 or an {@link IllegalArgumentException} will be
-     * thrown.
-     * </p>
-     *
-     * @param otfStreamsCacheLimit the maximum number of OTF streams in the corresponding cache.
-     */
-    public static void setOtfStreamsMaximumSize(final int otfStreamsCacheLimit) {
-        GENERATED_OTF_MANIFESTS.setMaximumSize(otfStreamsCacheLimit);
-    }
-
-    /**
-     * Set the limit of cached post-live-DVR streams.
-     *
-     * <p>
-     * When the cache limit size is reached, oldest manifests will be removed.
-     * </p>
-     *
-     * <p>
-     * If the new cache size set is less than the number of current cached manifests, oldest
-     * manifests will be also removed.
-     * </p>
-     *
-     * <p>
-     * Note that the limit must be more than 0 or an {@link IllegalArgumentException} will be
-     * thrown.
-     * </p>
-     *
-     * @param postLiveDvrStreamsCacheLimit the maximum number of post-live-DVR streams in the
-     *                                     corresponding cache.
-     */
-    public static void setPostLiveDvrStreamsMaximumSize(final int postLiveDvrStreamsCacheLimit) {
-        GENERATED_POST_LIVE_DVR_STREAMS_MANIFESTS.setMaximumSize(postLiveDvrStreamsCacheLimit);
-    }
-
-    /**
-     * Set the limit of cached progressive streams, if needed.
-     *
-     * <p>
-     * When the cache limit size is reached, oldest manifests will be removed.
-     * </p>
-     *
-     * <p>
-     * If the new cache size set is less than the number of current cached manifests, oldest
-     * manifests will be also removed.
-     * </p>
-     *
-     * <p>
-     * Note that the limit must be more than 0 or an {@link IllegalArgumentException} will be
-     * thrown.
-     * </p>
-     *
-     * @param progressiveCacheLimit the maximum number of progressive streams in the corresponding
-     *                              cache.
-     */
-    public static void setProgressiveStreamsMaximumSize(final int progressiveCacheLimit) {
-        GENERATED_PROGRESSIVE_STREAMS_MANIFESTS.setMaximumSize(progressiveCacheLimit);
-    }
-
-    /**
-     * Set the limit of cached OTF manifests, cached post-live-DVR manifests and cached progressive
-     * manifests.
-     *
-     * <p>
-     * When the caches limit size are reached, oldest manifests will be removed from their
-     * respective cache.
-     * </p>
-     *
-     * <p>
-     * For each cache, if its new size set is less than the number of current cached manifests,
-     * oldest manifests will be also removed.
-     * </p>
-     *
-     * <p>
-     * Note that the limit must be more than 0 or an {@link IllegalArgumentException} will be
-     * thrown.
-     * </p>
-     *
-     * @param cachesLimit the maximum size of OTF, post-live-DVR and progressive caches
-     */
-    public static void setManifestsCachesMaximumSize(final int cachesLimit) {
-        GENERATED_OTF_MANIFESTS.setMaximumSize(cachesLimit);
-        GENERATED_POST_LIVE_DVR_STREAMS_MANIFESTS.setMaximumSize(cachesLimit);
-        GENERATED_PROGRESSIVE_STREAMS_MANIFESTS.setMaximumSize(cachesLimit);
-    }
-
-    /**
-     * Clear cached OTF manifests.
-     *
-     * <p>
-     * The limit of this cache size set, if there is one, will be not unset.
-     * </p>
-     */
-    public static void clearOtfCachedManifests() {
-        GENERATED_OTF_MANIFESTS.clear();
-    }
-
-    /**
-     * Clear cached post-live-DVR streams manifests.
-     *
-     * <p>
-     * The limit of this cache size set, if there is one, will be not unset.
-     * </p>
-     */
-    public static void clearPostLiveDvrStreamsCachedManifests() {
-        GENERATED_POST_LIVE_DVR_STREAMS_MANIFESTS.clear();
-    }
-
-    /**
-     * Clear cached progressive streams manifests.
-     *
-     * <p>
-     * The limit of this cache size set, if there is one, will be not unset.
-     * </p>
-     */
-    public static void clearProgressiveCachedManifests() {
-        GENERATED_PROGRESSIVE_STREAMS_MANIFESTS.clear();
-    }
-
-    /**
-     * Clear cached OTF manifests, cached post-live-DVR streams manifests and cached progressive
-     * manifests in their respective caches.
-     *
-     * <p>
-     * The limit of the caches size set, if any, will be not unset.
-     * </p>
-     */
-    public static void clearManifestsInCaches() {
-        GENERATED_OTF_MANIFESTS.clear();
-        GENERATED_POST_LIVE_DVR_STREAMS_MANIFESTS.clear();
-        GENERATED_PROGRESSIVE_STREAMS_MANIFESTS.clear();
-    }
-
-    /**
-     * Reset OTF manifests cache.
-     *
-     * <p>
-     * All cached manifests will be removed and the clear factor and the maximum size will be set
-     * to their default values.
-     * </p>
-     */
-    public static void resetOtfManifestsCache() {
-        GENERATED_OTF_MANIFESTS.reset();
-    }
-
-    /**
-     * Reset post-live-DVR manifests cache.
-     *
-     * <p>
-     * All cached manifests will be removed and the clear factor and the maximum size will be set
-     * to their default values.
-     * </p>
-     */
-    public static void resetPostLiveDvrManifestsCache() {
-        GENERATED_POST_LIVE_DVR_STREAMS_MANIFESTS.reset();
-    }
-
-    /**
-     * Reset progressive manifests cache.
-     *
-     * <p>
-     * All cached manifests will be removed and the clear factor and the maximum size will be set
-     * to their default values.
-     * </p>
-     */
-    public static void resetProgressiveManifestsCache() {
-        GENERATED_PROGRESSIVE_STREAMS_MANIFESTS.reset();
-    }
-
-    /**
-     * Reset OTF, post-live-DVR and progressive manifests caches.
-     *
-     * <p>
-     * For each cache, all cached manifests will be removed and the clear factor and the maximum
-     * size will be set to their default values.
-     * </p>
-     */
-    public static void resetCaches() {
-        GENERATED_OTF_MANIFESTS.reset();
-        GENERATED_POST_LIVE_DVR_STREAMS_MANIFESTS.reset();
-        GENERATED_PROGRESSIVE_STREAMS_MANIFESTS.reset();
+    public static ManifestCreatorCache<String, String> getProgressiveManifestsCache() {
+        return PROGRESSIVE_CACHE;
     }
 }
