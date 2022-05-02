@@ -20,12 +20,6 @@
         <property name="fileNamePattern" value="module\-info\.java$"/>
     </module>
 
-    <!-- https://checkstyle.org/config_filters.html#SuppressionFilter -->
-    <module name="SuppressionFilter">
-        <property name="file" value="${config_loc}/suppressions.xml" />
-        <property name="optional" value="true"/>
-    </module>
-
     <!-- Checks that a package-info.java file exists for each package.     -->
     <!-- See https://checkstyle.org/config_javadoc.html#JavadocPackage -->
     <!--<module name="JavadocPackage"/>-->
@@ -67,6 +61,8 @@
     <!-- </module> -->
 
     <module name="SuppressWarningsFilter" />
+
+    <module name="SuppressWithPlainTextCommentFilter"/>
 
     <module name="TreeWalker">
         <!-- Checks for Javadoc comments.                     -->
