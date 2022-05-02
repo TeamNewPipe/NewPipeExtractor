@@ -138,7 +138,7 @@ public class PeertubeChannelExtractor extends ChannelExtractor {
     }
 
     @Override
-    public void onFetchPage(final Downloader downloader)
+    public void onFetchPage(@Nonnull final Downloader downloader)
             throws IOException, ExtractionException {
         final Response response = downloader.get(
                 baseUrl + PeertubeChannelLinkHandlerFactory.API_ENDPOINT + getId());

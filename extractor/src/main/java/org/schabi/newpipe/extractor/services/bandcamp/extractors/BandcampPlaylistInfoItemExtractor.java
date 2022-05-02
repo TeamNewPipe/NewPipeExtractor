@@ -38,12 +38,6 @@ public class BandcampPlaylistInfoItemExtractor implements PlaylistInfoItemExtrac
 
     @Override
     public String getThumbnailUrl() {
-        final Element img = searchResult.getElementsByClass("art").first()
-                .getElementsByTag("img").first();
-        if (img != null) {
-            return img.attr("src");
-        } else {
-            return null;
-        }
+        return BandcampExtractorHelper.getThumbnailUrlFromSearchResult(searchResult);
     }
 }

@@ -13,6 +13,8 @@ import static org.schabi.newpipe.extractor.services.youtube.ItagItem.ItagType.VI
 import org.schabi.newpipe.extractor.MediaFormat;
 import org.schabi.newpipe.extractor.exceptions.ParsingException;
 
+import javax.annotation.Nonnull;
+
 public class ItagItem {
     /**
      * List can be found here
@@ -96,6 +98,7 @@ public class ItagItem {
         return false;
     }
 
+    @Nonnull
     public static ItagItem getItag(final int itagId) throws ParsingException {
         for (final ItagItem item : ITAG_LIST) {
             if (itagId == item.id) {

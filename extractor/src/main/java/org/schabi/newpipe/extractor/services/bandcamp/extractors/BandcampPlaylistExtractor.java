@@ -1,8 +1,15 @@
 package org.schabi.newpipe.extractor.services.bandcamp.extractors;
 
+import static org.schabi.newpipe.extractor.services.bandcamp.extractors.BandcampExtractorHelper.getImageUrl;
+import static org.schabi.newpipe.extractor.services.bandcamp.extractors.BandcampStreamExtractor.getAlbumInfoJson;
+import static org.schabi.newpipe.extractor.utils.JsonUtils.getJsonData;
+import static org.schabi.newpipe.extractor.utils.Utils.EMPTY_STRING;
+import static org.schabi.newpipe.extractor.utils.Utils.HTTPS;
+
 import com.grack.nanojson.JsonArray;
 import com.grack.nanojson.JsonObject;
 import com.grack.nanojson.JsonParserException;
+
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.schabi.newpipe.extractor.Page;
@@ -17,15 +24,9 @@ import org.schabi.newpipe.extractor.services.bandcamp.extractors.streaminfoitem.
 import org.schabi.newpipe.extractor.stream.StreamInfoItem;
 import org.schabi.newpipe.extractor.stream.StreamInfoItemsCollector;
 
-import javax.annotation.Nonnull;
 import java.io.IOException;
-import java.util.Objects;
 
-import static org.schabi.newpipe.extractor.services.bandcamp.extractors.BandcampExtractorHelper.getImageUrl;
-import static org.schabi.newpipe.extractor.utils.JsonUtils.getJsonData;
-import static org.schabi.newpipe.extractor.services.bandcamp.extractors.BandcampStreamExtractor.getAlbumInfoJson;
-import static org.schabi.newpipe.extractor.utils.Utils.EMPTY_STRING;
-import static org.schabi.newpipe.extractor.utils.Utils.HTTPS;
+import javax.annotation.Nonnull;
 
 public class BandcampPlaylistExtractor extends PlaylistExtractor {
 
@@ -92,12 +93,10 @@ public class BandcampPlaylistExtractor extends PlaylistExtractor {
 
     @Override
     public String getUploaderAvatarUrl() {
-        try {
-            return Objects.requireNonNull(document.getElementsByClass("band-photo").first())
-                    .attr("src");
-        } catch (final NullPointerException e) {
-            return EMPTY_STRING;
-        }
+        return document.getElementsByClass("band-photo").stream()
+                .map(element -> element.attr("src"))
+                .findFirst()
+                .orElse(EMPTY_STRING);
     }
 
     @Override

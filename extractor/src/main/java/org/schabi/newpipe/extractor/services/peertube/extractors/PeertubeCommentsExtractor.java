@@ -23,12 +23,15 @@ import static org.schabi.newpipe.extractor.services.peertube.PeertubeParsingHelp
 import static org.schabi.newpipe.extractor.services.peertube.PeertubeParsingHelper.START_KEY;
 import static org.schabi.newpipe.extractor.utils.Utils.isNullOrEmpty;
 
+import javax.annotation.Nonnull;
+
 public class PeertubeCommentsExtractor extends CommentsExtractor {
     public PeertubeCommentsExtractor(final StreamingService service,
                                      final ListLinkHandler uiHandler) {
         super(service, uiHandler);
     }
 
+    @Nonnull
     @Override
     public InfoItemsPage<CommentsInfoItem> getInitialPage()
             throws IOException, ExtractionException {
@@ -84,6 +87,6 @@ public class PeertubeCommentsExtractor extends CommentsExtractor {
     }
 
     @Override
-    public void onFetchPage(final Downloader downloader) {
+    public void onFetchPage(@Nonnull final Downloader downloader) {
     }
 }
