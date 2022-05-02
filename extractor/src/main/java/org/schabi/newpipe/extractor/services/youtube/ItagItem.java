@@ -18,7 +18,7 @@ import javax.annotation.Nonnull;
 public class ItagItem {
     /**
      * List can be found here
-     * https://github.com/ytdl-org/youtube-dl/blob/9fc5eafb8e384453a49f7cfe73147be491f0b19d/youtube_dl/extractor/youtube.py#L1071
+     * https://github.com/ytdl-org/youtube-dl/blob/9fc5eaf/youtube_dl/extractor/youtube.py#L1071
      */
     private static final ItagItem[] ITAG_LIST = {
             /////////////////////////////////////////////////////
