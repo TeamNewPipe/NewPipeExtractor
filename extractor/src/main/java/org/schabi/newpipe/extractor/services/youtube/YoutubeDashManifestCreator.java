@@ -1094,6 +1094,7 @@ public final class YoutubeDashManifestCreator {
         }
     }
 
+    // CHECKSTYLE:OFF
     /**
      * Generate the {@code <SegmentBase>} element, appended as a child of the
      * {@code <Representation>} element.
@@ -1120,6 +1121,7 @@ public final class YoutubeDashManifestCreator {
      *                 be appended
      * @param itagItem the {@link ItagItem} to use, which cannot be null
      */
+    // CHECKSTYLE:ON
     private static void generateSegmentBaseElement(@Nonnull final Document document,
                                                    @Nonnull final ItagItem itagItem)
             throws CreationException {
