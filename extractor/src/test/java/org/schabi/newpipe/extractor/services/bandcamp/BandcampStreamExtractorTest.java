@@ -91,7 +91,7 @@ public class BandcampStreamExtractorTest extends DefaultStreamExtractorTest {
 
     @Override
     public long expectedLength() {
-        return 0;
+        return 124;
     }
 
     @Override

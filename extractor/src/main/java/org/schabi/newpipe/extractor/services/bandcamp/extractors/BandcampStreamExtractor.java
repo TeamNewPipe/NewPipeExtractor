@@ -162,6 +162,12 @@ public class BandcampStreamExtractor extends StreamExtractor {
     }
 
     @Override
+    public long getLength() throws ParsingException {
+        return (long) albumJson.getArray("trackinfo").getObject(0)
+                .getDouble("duration");
+    }
+
+    @Override
     public List<VideoStream> getVideoStreams() {
         return Collections.emptyList();
     }
