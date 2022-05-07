@@ -6,6 +6,7 @@ import static org.schabi.newpipe.extractor.StreamingService.ServiceInfo.MediaCap
 import static org.schabi.newpipe.extractor.StreamingService.ServiceInfo.MediaCapability.VIDEO;
 import static java.util.Arrays.asList;
 
+import org.schabi.newpipe.extractor.InstanceBasedStreamingService;
 import org.schabi.newpipe.extractor.StreamingService;
 import org.schabi.newpipe.extractor.channel.ChannelExtractor;
 import org.schabi.newpipe.extractor.comments.CommentsExtractor;
@@ -22,28 +23,13 @@ import org.schabi.newpipe.extractor.localization.ContentCountry;
 import org.schabi.newpipe.extractor.localization.Localization;
 import org.schabi.newpipe.extractor.playlist.PlaylistExtractor;
 import org.schabi.newpipe.extractor.search.SearchExtractor;
-import org.schabi.newpipe.extractor.services.youtube.extractors.YoutubeChannelExtractor;
-import org.schabi.newpipe.extractor.services.youtube.extractors.YoutubeCommentsExtractor;
-import org.schabi.newpipe.extractor.services.youtube.extractors.YoutubeFeedExtractor;
-import org.schabi.newpipe.extractor.services.youtube.extractors.YoutubeMixPlaylistExtractor;
-import org.schabi.newpipe.extractor.services.youtube.extractors.YoutubeMusicSearchExtractor;
-import org.schabi.newpipe.extractor.services.youtube.extractors.YoutubePlaylistExtractor;
-import org.schabi.newpipe.extractor.services.youtube.extractors.YoutubeSearchExtractor;
-import org.schabi.newpipe.extractor.services.youtube.extractors.YoutubeStreamExtractor;
-import org.schabi.newpipe.extractor.services.youtube.extractors.YoutubeSubscriptionExtractor;
-import org.schabi.newpipe.extractor.services.youtube.extractors.YoutubeSuggestionExtractor;
-import org.schabi.newpipe.extractor.services.youtube.extractors.YoutubeTrendingExtractor;
-import org.schabi.newpipe.extractor.services.youtube.linkHandler.YoutubeChannelLinkHandlerFactory;
-import org.schabi.newpipe.extractor.services.youtube.linkHandler.YoutubeCommentsLinkHandlerFactory;
-import org.schabi.newpipe.extractor.services.youtube.linkHandler.YoutubePlaylistLinkHandlerFactory;
-import org.schabi.newpipe.extractor.services.youtube.linkHandler.YoutubeSearchQueryHandlerFactory;
-import org.schabi.newpipe.extractor.services.youtube.linkHandler.YoutubeStreamLinkHandlerFactory;
-import org.schabi.newpipe.extractor.services.youtube.linkHandler.YoutubeTrendingLinkHandlerFactory;
+import org.schabi.newpipe.extractor.services.youtube.youtube.YoutubeInstance;
 import org.schabi.newpipe.extractor.stream.StreamExtractor;
 import org.schabi.newpipe.extractor.subscription.SubscriptionExtractor;
 import org.schabi.newpipe.extractor.suggestion.SuggestionExtractor;
 
 import java.util.List;
+import java.util.Objects;
 
 import javax.annotation.Nonnull;
 
@@ -67,153 +53,125 @@ import javax.annotation.Nonnull;
  * along with NewPipe.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-public class YoutubeService extends StreamingService {
+public class YoutubeService extends StreamingService
+        implements InstanceBasedStreamingService<YoutubeLikeInstance<? extends StreamingService>> {
+
+    @Nonnull
+    protected YoutubeLikeInstance<? extends StreamingService> instance;
+    @Nonnull
+    protected YoutubeLikeStreamingService subService;
 
     public YoutubeService(final int id) {
+        this(id, YoutubeInstance.YOUTUBE);
+    }
+
+    public YoutubeService(
+            final int id,
+            final YoutubeLikeInstance<? extends StreamingService> instance) {
         super(id, "YouTube", asList(AUDIO, VIDEO, LIVE, COMMENTS));
+        this.setInstance(instance);
+    }
+
+    @Override
+    @Nonnull
+    public YoutubeLikeInstance<? extends StreamingService> getInstance() {
+        return instance;
+    }
+
+    @Override
+    public void setInstance(final YoutubeLikeInstance<? extends StreamingService> instance) {
+        this.instance = Objects.requireNonNull(instance);
+        subService = Objects.requireNonNull(instance.getNewStreamingService(getServiceId()));
     }
 
     @Override
     public String getBaseUrl() {
-        return "https://youtube.com";
+        return subService.getBaseUrl();
     }
 
     @Override
     public LinkHandlerFactory getStreamLHFactory() {
-        return YoutubeStreamLinkHandlerFactory.getInstance();
+        return subService.getStreamLHFactory();
     }
 
     @Override
     public ListLinkHandlerFactory getChannelLHFactory() {
-        return YoutubeChannelLinkHandlerFactory.getInstance();
+        return subService.getChannelLHFactory();
     }
 
     @Override
     public ListLinkHandlerFactory getPlaylistLHFactory() {
-        return YoutubePlaylistLinkHandlerFactory.getInstance();
+        return subService.getPlaylistLHFactory();
     }
 
     @Override
     public SearchQueryHandlerFactory getSearchQHFactory() {
-        return YoutubeSearchQueryHandlerFactory.getInstance();
+        return subService.getSearchQHFactory();
     }
 
     @Override
     public StreamExtractor getStreamExtractor(final LinkHandler linkHandler) {
-        return new YoutubeStreamExtractor(this, linkHandler);
+        return subService.getStreamExtractor(linkHandler);
     }
 
     @Override
     public ChannelExtractor getChannelExtractor(final ListLinkHandler linkHandler) {
-        return new YoutubeChannelExtractor(this, linkHandler);
+        return subService.getChannelExtractor(linkHandler);
     }
 
     @Override
     public PlaylistExtractor getPlaylistExtractor(final ListLinkHandler linkHandler) {
-        if (YoutubeParsingHelper.isYoutubeMixId(linkHandler.getId())
-                && !YoutubeParsingHelper.isYoutubeMusicMixId(linkHandler.getId())) {
-            return new YoutubeMixPlaylistExtractor(this, linkHandler);
-        } else {
-            return new YoutubePlaylistExtractor(this, linkHandler);
-        }
+        return subService.getPlaylistExtractor(linkHandler);
     }
 
     @Override
     public SearchExtractor getSearchExtractor(final SearchQueryHandler query) {
-        final List<String> contentFilters = query.getContentFilters();
-
-        if (!contentFilters.isEmpty() && contentFilters.get(0).startsWith("music_")) {
-            return new YoutubeMusicSearchExtractor(this, query);
-        } else {
-            return new YoutubeSearchExtractor(this, query);
-        }
+        return subService.getSearchExtractor(query);
     }
 
     @Override
     public SuggestionExtractor getSuggestionExtractor() {
-        return new YoutubeSuggestionExtractor(this);
+        return subService.getSuggestionExtractor();
     }
 
     @Override
-    public KioskList getKioskList() throws ExtractionException {
-        final KioskList list = new KioskList(this);
-
-        // add kiosks here e.g.:
-        try {
-            list.addKioskEntry(
-                    (streamingService, url, id) -> new YoutubeTrendingExtractor(
-                            YoutubeService.this,
-                            new YoutubeTrendingLinkHandlerFactory().fromUrl(url),
-                            id
-                    ),
-                    new YoutubeTrendingLinkHandlerFactory(),
-                    "Trending"
-            );
-            list.setDefaultKiosk("Trending");
-        } catch (final Exception e) {
-            throw new ExtractionException(e);
-        }
-
-        return list;
+    public KioskList getKioskList() {
+        return subService.getKioskList();
     }
 
     @Override
     public SubscriptionExtractor getSubscriptionExtractor() {
-        return new YoutubeSubscriptionExtractor(this);
+        return subService.getSubscriptionExtractor();
     }
 
     @Nonnull
     @Override
     public FeedExtractor getFeedExtractor(final String channelUrl) throws ExtractionException {
-        return new YoutubeFeedExtractor(this, getChannelLHFactory().fromUrl(channelUrl));
+        return subService.getFeedExtractor(channelUrl);
     }
 
     @Override
     public ListLinkHandlerFactory getCommentsLHFactory() {
-        return YoutubeCommentsLinkHandlerFactory.getInstance();
+        return subService.getCommentsLHFactory();
     }
 
     @Override
     public CommentsExtractor getCommentsExtractor(final ListLinkHandler urlIdHandler)
             throws ExtractionException {
-        return new YoutubeCommentsExtractor(this, urlIdHandler);
+        return subService.getCommentsExtractor(urlIdHandler);
     }
 
     /*//////////////////////////////////////////////////////////////////////////
     // Localization
     //////////////////////////////////////////////////////////////////////////*/
 
-    // https://www.youtube.com/picker_ajax?action_language_json=1
-    private static final List<Localization> SUPPORTED_LANGUAGES = Localization.listFrom(
-            "en-GB"
-            /*"af", "am", "ar", "az", "be", "bg", "bn", "bs", "ca", "cs", "da", "de",
-            "el", "en", "en-GB", "es", "es-419", "es-US", "et", "eu", "fa", "fi", "fil", "fr",
-            "fr-CA", "gl", "gu", "hi", "hr", "hu", "hy", "id", "is", "it", "iw", "ja",
-            "ka", "kk", "km", "kn", "ko", "ky", "lo", "lt", "lv", "mk", "ml", "mn",
-            "mr", "ms", "my", "ne", "nl", "no", "pa", "pl", "pt", "pt-PT", "ro", "ru",
-            "si", "sk", "sl", "sq", "sr", "sr-Latn", "sv", "sw", "ta", "te", "th", "tr",
-            "uk", "ur", "uz", "vi", "zh-CN", "zh-HK", "zh-TW", "zu"*/
-    );
-
-    // https://www.youtube.com/picker_ajax?action_country_json=1
-    private static final List<ContentCountry> SUPPORTED_COUNTRIES = ContentCountry.listFrom(
-            "DZ", "AR", "AU", "AT", "AZ", "BH", "BD", "BY", "BE", "BO", "BA", "BR", "BG", "CA",
-            "CL", "CO", "CR", "HR", "CY", "CZ", "DK", "DO", "EC", "EG", "SV", "EE", "FI", "FR",
-            "GE", "DE", "GH", "GR", "GT", "HN", "HK", "HU", "IS", "IN", "ID", "IQ", "IE", "IL",
-            "IT", "JM", "JP", "JO", "KZ", "KE", "KW", "LV", "LB", "LY", "LI", "LT", "LU", "MY",
-            "MT", "MX", "ME", "MA", "NP", "NL", "NZ", "NI", "NG", "MK", "NO", "OM", "PK", "PA",
-            "PG", "PY", "PE", "PH", "PL", "PT", "PR", "QA", "RO", "RU", "SA", "SN", "RS", "SG",
-            "SK", "SI", "ZA", "KR", "ES", "LK", "SE", "CH", "TW", "TZ", "TH", "TN", "TR", "UG",
-            "UA", "AE", "GB", "US", "UY", "VE", "VN", "YE", "ZW"
-    );
-
     @Override
     public List<Localization> getSupportedLocalizations() {
-        return SUPPORTED_LANGUAGES;
+        return subService.getSupportedLocalizations();
     }
 
     @Override
     public List<ContentCountry> getSupportedCountries() {
-        return SUPPORTED_COUNTRIES;
+        return subService.getSupportedCountries();
     }
 }

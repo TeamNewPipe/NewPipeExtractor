@@ -1,6 +1,7 @@
 package org.schabi.newpipe.extractor.services.media_ccc.extractors;
 
 import com.grack.nanojson.JsonObject;
+
 import org.schabi.newpipe.extractor.exceptions.ParsingException;
 import org.schabi.newpipe.extractor.localization.DateWrapper;
 import org.schabi.newpipe.extractor.stream.StreamInfoItemExtractor;
@@ -50,11 +51,6 @@ public class MediaCCCLiveStreamKioskExtractor implements StreamInfoItemExtractor
     }
 
     @Override
-    public boolean isAd() throws ParsingException {
-        return false;
-    }
-
-    @Override
     public long getDuration() throws ParsingException {
         return 0;
     }
@@ -73,17 +69,6 @@ public class MediaCCCLiveStreamKioskExtractor implements StreamInfoItemExtractor
     @Override
     public String getUploaderUrl() throws ParsingException {
         return "https://media.ccc.de/c/" + conferenceInfo.getString("slug");
-    }
-
-    @Nullable
-    @Override
-    public String getUploaderAvatarUrl() {
-        return null;
-    }
-
-    @Override
-    public boolean isUploaderVerified() throws ParsingException {
-        return false;
     }
 
     @Nullable

@@ -1,6 +1,7 @@
 package org.schabi.newpipe.extractor.services.peertube.extractors;
 
 import com.grack.nanojson.JsonObject;
+
 import org.schabi.newpipe.extractor.ServiceList;
 import org.schabi.newpipe.extractor.exceptions.ParsingException;
 import org.schabi.newpipe.extractor.localization.DateWrapper;
@@ -38,11 +39,6 @@ public class PeertubeStreamInfoItemExtractor implements StreamInfoItemExtractor 
     }
 
     @Override
-    public boolean isAd() {
-        return false;
-    }
-
-    @Override
     public long getViewCount() {
         return item.getLong("views");
     }
@@ -64,11 +60,6 @@ public class PeertubeStreamInfoItemExtractor implements StreamInfoItemExtractor 
             return baseUrl + account.getObject("avatar").getString("path");
         }
         return null;
-    }
-
-    @Override
-    public boolean isUploaderVerified() throws ParsingException {
-        return false;
     }
 
     @Override

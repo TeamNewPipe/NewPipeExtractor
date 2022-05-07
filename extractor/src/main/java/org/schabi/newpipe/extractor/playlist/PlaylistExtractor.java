@@ -1,5 +1,7 @@
 package org.schabi.newpipe.extractor.playlist;
 
+import static org.schabi.newpipe.extractor.utils.Utils.EMPTY_STRING;
+
 import org.schabi.newpipe.extractor.ListExtractor;
 import org.schabi.newpipe.extractor.StreamingService;
 import org.schabi.newpipe.extractor.exceptions.ParsingException;
@@ -8,8 +10,6 @@ import org.schabi.newpipe.extractor.stream.StreamInfoItem;
 
 import javax.annotation.Nonnull;
 
-import static org.schabi.newpipe.extractor.utils.Utils.EMPTY_STRING;
-
 public abstract class PlaylistExtractor extends ListExtractor<StreamInfoItem> {
 
     public PlaylistExtractor(final StreamingService service, final ListLinkHandler linkHandler) {
@@ -17,9 +17,16 @@ public abstract class PlaylistExtractor extends ListExtractor<StreamInfoItem> {
     }
 
     public abstract String getUploaderUrl() throws ParsingException;
+
     public abstract String getUploaderName() throws ParsingException;
-    public abstract String getUploaderAvatarUrl() throws ParsingException;
-    public abstract boolean isUploaderVerified() throws ParsingException;
+
+    public String getUploaderAvatarUrl() throws ParsingException {
+        return EMPTY_STRING;
+    }
+
+    public boolean isUploaderVerified() throws ParsingException {
+        return false;
+    }
 
     public abstract long getStreamCount() throws ParsingException;
 

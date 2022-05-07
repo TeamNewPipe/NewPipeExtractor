@@ -13,7 +13,6 @@ import static org.schabi.newpipe.extractor.services.bandcamp.extractors.Bandcamp
 import org.schabi.newpipe.extractor.StreamingService;
 import org.schabi.newpipe.extractor.channel.ChannelExtractor;
 import org.schabi.newpipe.extractor.comments.CommentsExtractor;
-import org.schabi.newpipe.extractor.exceptions.ExtractionException;
 import org.schabi.newpipe.extractor.kiosk.KioskList;
 import org.schabi.newpipe.extractor.linkhandler.LinkHandler;
 import org.schabi.newpipe.extractor.linkhandler.LinkHandlerFactory;
@@ -97,36 +96,31 @@ public class BandcampService extends StreamingService {
     }
 
     @Override
-    public KioskList getKioskList() throws ExtractionException {
+    public KioskList getKioskList() {
 
         final KioskList kioskList = new KioskList(this);
 
-        try {
-            kioskList.addKioskEntry(
-                    (streamingService, url, kioskId) -> new BandcampFeaturedExtractor(
-                            BandcampService.this,
-                            new BandcampFeaturedLinkHandlerFactory().fromUrl(FEATURED_API_URL),
-                            kioskId
-                    ),
-                    new BandcampFeaturedLinkHandlerFactory(),
-                    KIOSK_FEATURED
-            );
+        kioskList.addKioskEntry(
+                (streamingService, url, kioskId) -> new BandcampFeaturedExtractor(
+                        BandcampService.this,
+                        new BandcampFeaturedLinkHandlerFactory().fromUrl(FEATURED_API_URL),
+                        kioskId
+                ),
+                new BandcampFeaturedLinkHandlerFactory(),
+                KIOSK_FEATURED
+        );
 
-            kioskList.addKioskEntry(
-                    (streamingService, url, kioskId) -> new BandcampRadioExtractor(
-                            BandcampService.this,
-                            new BandcampFeaturedLinkHandlerFactory().fromUrl(RADIO_API_URL),
-                            kioskId
-                    ),
-                    new BandcampFeaturedLinkHandlerFactory(),
-                    KIOSK_RADIO
-            );
+        kioskList.addKioskEntry(
+                (streamingService, url, kioskId) -> new BandcampRadioExtractor(
+                        BandcampService.this,
+                        new BandcampFeaturedLinkHandlerFactory().fromUrl(RADIO_API_URL),
+                        kioskId
+                ),
+                new BandcampFeaturedLinkHandlerFactory(),
+                KIOSK_RADIO
+        );
 
-            kioskList.setDefaultKiosk(KIOSK_FEATURED);
-
-        } catch (final Exception e) {
-            throw new ExtractionException(e);
-        }
+        kioskList.setDefaultKiosk(KIOSK_FEATURED);
 
         return kioskList;
     }

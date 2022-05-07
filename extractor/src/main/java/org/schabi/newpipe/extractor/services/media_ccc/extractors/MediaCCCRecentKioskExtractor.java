@@ -42,11 +42,6 @@ public class MediaCCCRecentKioskExtractor implements StreamInfoItemExtractor {
     }
 
     @Override
-    public boolean isAd() {
-        return false;
-    }
-
-    @Override
     public long getDuration() {
         // duration and length have the same value, see
         // https://github.com/voc/voctoweb/blob/master/app/views/public/shared/_event.json.jbuilder
@@ -68,17 +63,6 @@ public class MediaCCCRecentKioskExtractor implements StreamInfoItemExtractor {
         return new MediaCCCConferenceLinkHandlerFactory()
                 .fromUrl(event.getString("conference_url")) // API URL
                 .getUrl(); // web URL
-    }
-
-    @Nullable
-    @Override
-    public String getUploaderAvatarUrl() {
-        return null;
-    }
-
-    @Override
-    public boolean isUploaderVerified() throws ParsingException {
-        return false;
     }
 
     @Nullable

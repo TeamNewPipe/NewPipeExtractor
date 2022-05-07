@@ -1,17 +1,18 @@
 package org.schabi.newpipe.extractor.services.youtube;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotEquals;
+import static org.junit.jupiter.api.Assertions.fail;
+
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mozilla.javascript.EvaluatorException;
 import org.schabi.newpipe.downloader.DownloaderTestImpl;
 import org.schabi.newpipe.extractor.NewPipe;
 import org.schabi.newpipe.extractor.exceptions.ParsingException;
+import org.schabi.newpipe.extractor.services.youtube.youtube.YoutubeThrottlingDecrypter;
 
 import java.io.IOException;
-
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotEquals;
-import static org.junit.jupiter.api.Assertions.fail;
 
 public class YoutubeThrottlingDecrypterTest {
 
@@ -30,7 +31,7 @@ public class YoutubeThrottlingDecrypterTest {
             try {
                 final String decryptedUrl = YoutubeThrottlingDecrypter.apply(encryptedUrl, videoId);
                 assertNotEquals(encryptedUrl, decryptedUrl);
-            } catch (EvaluatorException e) {
+            } catch (final EvaluatorException e) {
                 fail("Failed to extract n param decrypt function for video " + videoId + "\n" + e);
             }
         }

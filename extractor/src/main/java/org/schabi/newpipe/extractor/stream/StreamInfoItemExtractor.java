@@ -43,7 +43,9 @@ public interface StreamInfoItemExtractor extends InfoItemExtractor {
      * @return {@code true} if the stream is an ad.
      * @throws ParsingException thrown if there is an error in the extraction
      */
-    boolean isAd() throws ParsingException;
+    default boolean isAd() throws ParsingException {
+        return false;
+    }
 
     /**
      * Get the stream duration in seconds
@@ -78,7 +80,9 @@ public interface StreamInfoItemExtractor extends InfoItemExtractor {
      * @throws ParsingException if there is an error in the extraction
      */
     @Nullable
-    String getUploaderAvatarUrl() throws ParsingException;
+    default String getUploaderAvatarUrl() throws ParsingException {
+        return null;
+    }
 
     /**
      * Whether the uploader has been verified by the service's provider.
@@ -87,7 +91,9 @@ public interface StreamInfoItemExtractor extends InfoItemExtractor {
      * @return whether the uploader has been verified by the service's provider
      * @throws ParsingException
      */
-    boolean isUploaderVerified() throws ParsingException;
+    default boolean isUploaderVerified() throws ParsingException {
+        return false;
+    }
 
     /**
      * The original textual date provided by the service. Should be used as a fallback if

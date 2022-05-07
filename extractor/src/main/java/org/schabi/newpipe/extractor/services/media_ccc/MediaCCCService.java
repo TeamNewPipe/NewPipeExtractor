@@ -7,7 +7,6 @@ import static java.util.Arrays.asList;
 import org.schabi.newpipe.extractor.StreamingService;
 import org.schabi.newpipe.extractor.channel.ChannelExtractor;
 import org.schabi.newpipe.extractor.comments.CommentsExtractor;
-import org.schabi.newpipe.extractor.exceptions.ExtractionException;
 import org.schabi.newpipe.extractor.kiosk.KioskList;
 import org.schabi.newpipe.extractor.linkhandler.LinkHandler;
 import org.schabi.newpipe.extractor.linkhandler.LinkHandlerFactory;
@@ -89,46 +88,40 @@ public class MediaCCCService extends StreamingService {
     }
 
     @Override
-    public KioskList getKioskList() throws ExtractionException {
+    public KioskList getKioskList() {
         final KioskList list = new KioskList(this);
 
-        // add kiosks here e.g.:
-        try {
-            list.addKioskEntry(
-                    (streamingService, url, kioskId) -> new MediaCCCConferenceKiosk(
-                            MediaCCCService.this,
-                            new MediaCCCConferencesListLinkHandlerFactory().fromUrl(url),
-                            kioskId
-                    ),
-                    new MediaCCCConferencesListLinkHandlerFactory(),
-                    "conferences"
-            );
+        list.addKioskEntry(
+                (streamingService, url, kioskId) -> new MediaCCCRecentKiosk(
+                        MediaCCCService.this,
+                        new MediaCCCRecentListLinkHandlerFactory().fromUrl(url),
+                        kioskId
+                ),
+                new MediaCCCRecentListLinkHandlerFactory(),
+                "recent"
+        );
 
-            list.addKioskEntry(
-                    (streamingService, url, kioskId) -> new MediaCCCRecentKiosk(
-                            MediaCCCService.this,
-                            new MediaCCCRecentListLinkHandlerFactory().fromUrl(url),
-                            kioskId
-                    ),
-                    new MediaCCCRecentListLinkHandlerFactory(),
-                    "recent"
-            );
+        list.addKioskEntry(
+                (streamingService, url, kioskId) -> new MediaCCCConferenceKiosk(
+                        MediaCCCService.this,
+                        new MediaCCCConferencesListLinkHandlerFactory().fromUrl(url),
+                        kioskId
+                ),
+                new MediaCCCConferencesListLinkHandlerFactory(),
+                "conferences"
+        );
 
-            list.addKioskEntry(
-                    (streamingService, url, kioskId) -> new MediaCCCLiveStreamKiosk(
-                            MediaCCCService.this,
-                            new MediaCCCLiveListLinkHandlerFactory().fromUrl(url),
-                            kioskId
-                    ),
-                    new MediaCCCLiveListLinkHandlerFactory(),
-                    "live"
-            );
+        list.addKioskEntry(
+                (streamingService, url, kioskId) -> new MediaCCCLiveStreamKiosk(
+                        MediaCCCService.this,
+                        new MediaCCCLiveListLinkHandlerFactory().fromUrl(url),
+                        kioskId
+                ),
+                new MediaCCCLiveListLinkHandlerFactory(),
+                "live"
+        );
 
-            list.setDefaultKiosk("recent");
-        } catch (final Exception e) {
-            throw new ExtractionException(e);
-        }
-
+        list.setDefaultKiosk("recent");
         return list;
     }
 

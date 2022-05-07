@@ -1,6 +1,5 @@
 package org.schabi.newpipe.extractor.services.bandcamp.extractors.streaminfoitem;
 
-import org.schabi.newpipe.extractor.exceptions.ParsingException;
 import org.schabi.newpipe.extractor.localization.DateWrapper;
 import org.schabi.newpipe.extractor.stream.StreamInfoItemExtractor;
 import org.schabi.newpipe.extractor.stream.StreamType;
@@ -42,15 +41,5 @@ public abstract class BandcampStreamInfoItemExtractor implements StreamInfoItemE
     @Override
     public DateWrapper getUploadDate() {
         return null;
-    }
-
-    @Override
-    public boolean isUploaderVerified() throws ParsingException {
-        return false;
-    }
-
-    @Override
-    public boolean isAd() {
-        return false;
     }
 }

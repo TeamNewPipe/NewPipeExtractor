@@ -9,6 +9,8 @@ import org.schabi.newpipe.downloader.DownloaderFactory;
 import org.schabi.newpipe.extractor.NewPipe;
 import org.schabi.newpipe.extractor.exceptions.ExtractionException;
 import org.schabi.newpipe.extractor.exceptions.ParsingException;
+import org.schabi.newpipe.extractor.services.youtube.shared.YoutubeUrlHelper;
+import org.schabi.newpipe.extractor.services.youtube.youtube.YoutubeParsingHelper;
 
 import java.io.IOException;
 
@@ -44,8 +46,8 @@ public class YoutubeParsingHelperTest {
     @Test
     public void testConvertFromGoogleCacheUrl() {
         assertEquals("https://mohfw.gov.in/",
-                YoutubeParsingHelper.extractCachedUrlIfNeeded("https://webcache.googleusercontent.com/search?q=cache:https://mohfw.gov.in/"));
+                YoutubeUrlHelper.extractCachedUrlIfNeeded("https://webcache.googleusercontent.com/search?q=cache:https://mohfw.gov.in/"));
         assertEquals("https://www.infektionsschutz.de/coronavirus-sars-cov-2.html",
-                YoutubeParsingHelper.extractCachedUrlIfNeeded("https://www.infektionsschutz.de/coronavirus-sars-cov-2.html"));
+                YoutubeUrlHelper.extractCachedUrlIfNeeded("https://www.infektionsschutz.de/coronavirus-sars-cov-2.html"));
     }
 }

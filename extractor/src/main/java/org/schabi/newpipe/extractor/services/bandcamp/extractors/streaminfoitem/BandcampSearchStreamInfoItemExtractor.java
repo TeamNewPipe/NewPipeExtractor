@@ -4,8 +4,6 @@ import org.jsoup.nodes.Element;
 import org.schabi.newpipe.extractor.exceptions.ParsingException;
 import org.schabi.newpipe.extractor.services.bandcamp.extractors.BandcampExtractorHelper;
 
-import javax.annotation.Nullable;
-
 public class BandcampSearchStreamInfoItemExtractor extends BandcampStreamInfoItemExtractor {
 
     private final Element resultInfo;
@@ -27,12 +25,6 @@ public class BandcampSearchStreamInfoItemExtractor extends BandcampStreamInfoIte
         } else {
             return splitBy[0];
         }
-    }
-
-    @Nullable
-    @Override
-    public String getUploaderAvatarUrl() {
-        return null;
     }
 
     @Override

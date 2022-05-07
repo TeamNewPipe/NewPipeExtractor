@@ -29,11 +29,6 @@ public class MediaCCCConferenceInfoItemExtractor implements ChannelInfoItemExtra
     }
 
     @Override
-    public boolean isVerified() throws ParsingException {
-        return false;
-    }
-
-    @Override
     public String getName() throws ParsingException {
         return conference.getString("title");
     }

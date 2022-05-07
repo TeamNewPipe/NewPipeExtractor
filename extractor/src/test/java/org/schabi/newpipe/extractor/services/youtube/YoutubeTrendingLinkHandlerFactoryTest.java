@@ -20,18 +20,18 @@ package org.schabi.newpipe.extractor.services.youtube;
  * along with NewPipe.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.schabi.newpipe.extractor.ServiceList.YouTube;
+
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import org.schabi.newpipe.downloader.DownloaderTestImpl;
 import org.schabi.newpipe.extractor.NewPipe;
 import org.schabi.newpipe.extractor.exceptions.ParsingException;
 import org.schabi.newpipe.extractor.linkhandler.LinkHandlerFactory;
-import org.schabi.newpipe.extractor.services.youtube.linkHandler.YoutubeTrendingLinkHandlerFactory;
-
-import static org.junit.jupiter.api.Assertions.assertFalse;
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertTrue;
-import static org.schabi.newpipe.extractor.ServiceList.YouTube;
+import org.schabi.newpipe.extractor.services.youtube.youtube.linkHandler.YoutubeTrendingLinkHandlerFactory;
 
 /**
  * Test for {@link YoutubeTrendingLinkHandlerFactory}
@@ -68,9 +68,9 @@ public class YoutubeTrendingLinkHandlerFactoryTest {
         assertTrue(LinkHandlerFactory.acceptUrl("https://youtube.com/feed/trending"));
         assertTrue(LinkHandlerFactory.acceptUrl("m.youtube.com/feed/trending"));
 
-        assertTrue(LinkHandlerFactory.acceptUrl("https://www.invidio.us/feed/trending"));
-        assertTrue(LinkHandlerFactory.acceptUrl("https://invidio.us/feed/trending"));
-        assertTrue(LinkHandlerFactory.acceptUrl("invidio.us/feed/trending"));
+        assertTrue(LinkHandlerFactory.acceptUrl("https://www.invidious.fdn.fr/feed/trending"));
+        assertTrue(LinkHandlerFactory.acceptUrl("https://invidious.fdn.fr/feed/trending"));
+        assertTrue(LinkHandlerFactory.acceptUrl("invidious.fdn.fr/feed/trending"));
 
         assertFalse(LinkHandlerFactory.acceptUrl("https://youtu.be/feed/trending"));
         assertFalse(LinkHandlerFactory.acceptUrl("kdskjfiiejfia"));

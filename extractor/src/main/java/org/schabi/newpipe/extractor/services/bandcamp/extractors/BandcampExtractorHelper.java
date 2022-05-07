@@ -52,12 +52,14 @@ public final class BandcampExtractorHelper {
 
     }
 
+    // CHECKSTYLE:OFF - url has to be there in one piece
     /**
      * Fetch artist details from mobile endpoint.
      * <a href="https://notabug.org/fynngodau/bandcampDirect/wiki/
      * rewindBandcamp+%E2%80%93+Fetching+artist+details">
      * More technical info.</a>
      */
+    // CHECKSTYLE:ON
     public static JsonObject getArtistDetails(final String id) throws ParsingException {
         try {
             return

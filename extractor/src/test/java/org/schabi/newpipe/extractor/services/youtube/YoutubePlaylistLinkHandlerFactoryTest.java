@@ -1,13 +1,16 @@
 package org.schabi.newpipe.extractor.services.youtube;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import org.schabi.newpipe.downloader.DownloaderTestImpl;
 import org.schabi.newpipe.extractor.NewPipe;
 import org.schabi.newpipe.extractor.exceptions.ParsingException;
-import org.schabi.newpipe.extractor.services.youtube.linkHandler.YoutubePlaylistLinkHandlerFactory;
-
-import static org.junit.jupiter.api.Assertions.*;
+import org.schabi.newpipe.extractor.services.youtube.youtube.linkHandler.YoutubePlaylistLinkHandlerFactory;
 
 /**
  * Test for {@link YoutubePlaylistLinkHandlerFactory}
@@ -22,12 +25,12 @@ public class YoutubePlaylistLinkHandlerFactoryTest {
     }
 
     @Test
-    public void getIdWithNullAsUrl() {
+    void getIdWithNullAsUrl() {
         assertThrows(IllegalArgumentException.class, () -> linkHandler.fromId(null));
     }
 
     @Test
-    public void getIdfromYt() throws Exception {
+    void getIdfromYt() throws Exception {
         assertEquals("PLW5y1tjAOzI3orQNF1yGGVL5x-pR2K1dC", linkHandler.fromUrl("https://www.youtube.com/playlist?list=PLW5y1tjAOzI3orQNF1yGGVL5x-pR2K1dC").getId());
         assertEquals("PLz8YL4HVC87WJQDzVoY943URKQCsHS9XV", linkHandler.fromUrl("https://www.youtube.com/playlist?list=PLz8YL4HVC87WJQDzVoY943URKQCsHS9XV").getId());
         assertEquals("PLW5y1tjAOzI3orQNF1yGGVL5x-pR2K1dC", linkHandler.fromUrl("https://www.youtube.com/playlist?list=PLW5y1tjAOzI3orQNF1yGGVL5x-pR2K1dC&t=100").getId());
@@ -43,7 +46,7 @@ public class YoutubePlaylistLinkHandlerFactoryTest {
     }
 
     @Test
-    public void testAcceptYtUrl() throws ParsingException {
+    void testAcceptYtUrl() throws ParsingException {
         assertTrue(linkHandler.acceptUrl("https://www.youtube.com/playlist?list=PLW5y1tjAOzI3orQNF1yGGVL5x-pR2K1dC"));
         assertTrue(linkHandler.acceptUrl("https://www.youtube.com/playlist?list=PLz8YL4HVC87WJQDzVoY943URKQCsHS9XV"));
         assertTrue(linkHandler.acceptUrl("https://WWW.youtube.com/playlist?list=PLW5y1tjAOzI3orQNF1yGGVL5x-pR2K1dCI"));
@@ -60,7 +63,7 @@ public class YoutubePlaylistLinkHandlerFactoryTest {
     }
 
     @Test
-    public void testDeniesInvalidYtUrl() throws ParsingException {
+    void testDeniesInvalidYtUrl() throws ParsingException {
         assertFalse(linkHandler.acceptUrl("https://www.youtube.com/feed/trending?list=PLz8YL4HVC87WJQDzVoY943URKQCsHS9XV"));
         assertFalse(linkHandler.acceptUrl("https://www.youtube.com/feed/subscriptions?list=PLz8YL4HVC87WJQDzVoY943URKQCsHS9XV"));
         assertFalse(linkHandler.acceptUrl("ftp://www.youtube.com/feed/trending?list=PLz8YL4HVC87WJQDzVoY943URKQCsHS9XV"));
@@ -70,20 +73,20 @@ public class YoutubePlaylistLinkHandlerFactoryTest {
     }
 
     @Test
-    public void testAcceptInvidioUrl() throws ParsingException {
-        assertTrue(linkHandler.acceptUrl("https://www.invidio.us/playlist?list=PLW5y1tjAOzI3orQNF1yGGVL5x-pR2K1dC"));
-        assertTrue(linkHandler.acceptUrl("https://www.invidio.us/playlist?list=PLz8YL4HVC87WJQDzVoY943URKQCsHS9XV"));
-        assertTrue(linkHandler.acceptUrl("https://WWW.invidio.us/playlist?list=PLW5y1tjAOzI3orQNF1yGGVL5x-pR2K1dCI"));
-        assertTrue(linkHandler.acceptUrl("HTTPS://www.invidio.us/playlist?list=PLW5y1tjAOzI3orQNF1yGGVL5x-pR2K1dC"));
-        assertTrue(linkHandler.acceptUrl("https://www.invidio.us/watch?v=0JFM3PRZH-k&index=8&list=PLW5y1tjAOzI3orQNF1yGGVL5x-pR2K1dC"));
-        assertTrue(linkHandler.acceptUrl("http://www.invidio.us/watch?v=0JFM3PRZH-k&index=8&list=PLW5y1tjAOzI3orQNF1yGGVL5x-pR2K1dC"));
-        assertTrue(linkHandler.acceptUrl("https://invidio.us/playlist?list=PLW5y1tjAOzI3orQNF1yGGVL5x-pR2K1dC"));
-        assertTrue(linkHandler.acceptUrl("www.invidio.us/playlist?list=PLW5y1tjAOzI3orQNF1yGGVL5x-pR2K1dC"));
-        assertTrue(linkHandler.acceptUrl("www.invidio.us/playlist?list=PLz8YL4HVC87WJQDzVoY943URKQCsHS9XV"));
+    void testAcceptInvidioUrl() throws ParsingException {
+        assertTrue(linkHandler.acceptUrl("https://www.invidious.fdn.fr/playlist?list=PLW5y1tjAOzI3orQNF1yGGVL5x-pR2K1dC"));
+        assertTrue(linkHandler.acceptUrl("https://www.invidious.fdn.fr/playlist?list=PLz8YL4HVC87WJQDzVoY943URKQCsHS9XV"));
+        assertTrue(linkHandler.acceptUrl("https://WWW.invidious.fdn.fr/playlist?list=PLW5y1tjAOzI3orQNF1yGGVL5x-pR2K1dCI"));
+        assertTrue(linkHandler.acceptUrl("HTTPS://www.invidious.fdn.fr/playlist?list=PLW5y1tjAOzI3orQNF1yGGVL5x-pR2K1dC"));
+        assertTrue(linkHandler.acceptUrl("https://www.invidious.fdn.fr/watch?v=0JFM3PRZH-k&index=8&list=PLW5y1tjAOzI3orQNF1yGGVL5x-pR2K1dC"));
+        assertTrue(linkHandler.acceptUrl("http://www.invidious.fdn.fr/watch?v=0JFM3PRZH-k&index=8&list=PLW5y1tjAOzI3orQNF1yGGVL5x-pR2K1dC"));
+        assertTrue(linkHandler.acceptUrl("https://invidious.fdn.fr/playlist?list=PLW5y1tjAOzI3orQNF1yGGVL5x-pR2K1dC"));
+        assertTrue(linkHandler.acceptUrl("www.invidious.fdn.fr/playlist?list=PLW5y1tjAOzI3orQNF1yGGVL5x-pR2K1dC"));
+        assertTrue(linkHandler.acceptUrl("www.invidious.fdn.fr/playlist?list=PLz8YL4HVC87WJQDzVoY943URKQCsHS9XV"));
     }
 
     @Test
-    public void testDeniesInvalidInvidioUrl() throws ParsingException {
+    void testDeniesInvalidInvidioUrl() throws ParsingException {
         assertFalse(linkHandler.acceptUrl("https://invidio.us/feed/trending?list=PLz8YL4HVC87WJQDzVoY943URKQCsHS9XV"));
         assertFalse(linkHandler.acceptUrl("https://invidio.us/feed/subscriptions?list=PLz8YL4HVC87WJQDzVoY943URKQCsHS9XV"));
         assertFalse(linkHandler.acceptUrl("ftp:/invidio.us/feed/trending?list=PLz8YL4HVC87WJQDzVoY943URKQCsHS9XV"));
@@ -93,21 +96,21 @@ public class YoutubePlaylistLinkHandlerFactoryTest {
     }
 
     @Test
-    public void testGetInvidioIdfromUrl() throws ParsingException {
-        assertEquals("PLW5y1tjAOzI3orQNF1yGGVL5x-pR2K1dC", linkHandler.fromUrl("https://www.invidio.us/playlist?list=PLW5y1tjAOzI3orQNF1yGGVL5x-pR2K1dC").getId());
-        assertEquals("PLz8YL4HVC87WJQDzVoY943URKQCsHS9XV", linkHandler.fromUrl("https://www.invidio.us/playlist?list=PLz8YL4HVC87WJQDzVoY943URKQCsHS9XV").getId());
-        assertEquals("PLW5y1tjAOzI3orQNF1yGGVL5x-pR2K1dC", linkHandler.fromUrl("https://www.invidio.us/playlist?list=PLW5y1tjAOzI3orQNF1yGGVL5x-pR2K1dC&t=100").getId());
-        assertEquals("PLW5y1tjAOzI3orQNF1yGGVL5x-pR2K1dC", linkHandler.fromUrl("https://WWW.invidio.us/playlist?list=PLW5y1tjAOzI3orQNF1yGGVL5x-pR2K1dC&t=100").getId());
-        assertEquals("PLW5y1tjAOzI3orQNF1yGGVL5x-pR2K1dC", linkHandler.fromUrl("HTTPS://www.invidio.us/playlist?list=PLW5y1tjAOzI3orQNF1yGGVL5x-pR2K1dC&t=100").getId());
-        assertEquals("PLW5y1tjAOzI3orQNF1yGGVL5x-pR2K1dC", linkHandler.fromUrl("https://www.invidio.us/watch?v=0JFM3PRZH-k&index=8&list=PLW5y1tjAOzI3orQNF1yGGVL5x-pR2K1dC").getId());
-        assertEquals("PLW5y1tjAOzI3orQNF1yGGVL5x-pR2K1dC", linkHandler.fromUrl("http://www.invidio.us/watch?v=0JFM3PRZH-k&index=8&list=PLW5y1tjAOzI3orQNF1yGGVL5x-pR2K1dC").getId());
-        assertEquals("PLW5y1tjAOzI3orQNF1yGGVL5x-pR2K1dC", linkHandler.fromUrl("https://invidio.us/playlist?list=PLW5y1tjAOzI3orQNF1yGGVL5x-pR2K1dC").getId());
-        assertEquals("PLW5y1tjAOzI3orQNF1yGGVL5x-pR2K1dC", linkHandler.fromUrl("www.invidio.us/playlist?list=PLW5y1tjAOzI3orQNF1yGGVL5x-pR2K1dC").getId());
-        assertEquals("PLz8YL4HVC87WJQDzVoY943URKQCsHS9XV", linkHandler.fromUrl("www.invidio.us/playlist?list=PLz8YL4HVC87WJQDzVoY943URKQCsHS9XV").getId());
+    void testGetInvidioIdfromUrl() throws ParsingException {
+        assertEquals("PLW5y1tjAOzI3orQNF1yGGVL5x-pR2K1dC", linkHandler.fromUrl("https://www.invidious.fdn.fr/playlist?list=PLW5y1tjAOzI3orQNF1yGGVL5x-pR2K1dC").getId());
+        assertEquals("PLz8YL4HVC87WJQDzVoY943URKQCsHS9XV", linkHandler.fromUrl("https://www.invidious.fdn.fr/playlist?list=PLz8YL4HVC87WJQDzVoY943URKQCsHS9XV").getId());
+        assertEquals("PLW5y1tjAOzI3orQNF1yGGVL5x-pR2K1dC", linkHandler.fromUrl("https://www.invidious.fdn.fr/playlist?list=PLW5y1tjAOzI3orQNF1yGGVL5x-pR2K1dC&t=100").getId());
+        assertEquals("PLW5y1tjAOzI3orQNF1yGGVL5x-pR2K1dC", linkHandler.fromUrl("https://WWW.invidious.fdn.fr/playlist?list=PLW5y1tjAOzI3orQNF1yGGVL5x-pR2K1dC&t=100").getId());
+        assertEquals("PLW5y1tjAOzI3orQNF1yGGVL5x-pR2K1dC", linkHandler.fromUrl("HTTPS://www.invidious.fdn.fr/playlist?list=PLW5y1tjAOzI3orQNF1yGGVL5x-pR2K1dC&t=100").getId());
+        assertEquals("PLW5y1tjAOzI3orQNF1yGGVL5x-pR2K1dC", linkHandler.fromUrl("https://www.invidious.fdn.fr/watch?v=0JFM3PRZH-k&index=8&list=PLW5y1tjAOzI3orQNF1yGGVL5x-pR2K1dC").getId());
+        assertEquals("PLW5y1tjAOzI3orQNF1yGGVL5x-pR2K1dC", linkHandler.fromUrl("http://www.invidious.fdn.fr/watch?v=0JFM3PRZH-k&index=8&list=PLW5y1tjAOzI3orQNF1yGGVL5x-pR2K1dC").getId());
+        assertEquals("PLW5y1tjAOzI3orQNF1yGGVL5x-pR2K1dC", linkHandler.fromUrl("https://invidious.fdn.fr/playlist?list=PLW5y1tjAOzI3orQNF1yGGVL5x-pR2K1dC").getId());
+        assertEquals("PLW5y1tjAOzI3orQNF1yGGVL5x-pR2K1dC", linkHandler.fromUrl("www.invidious.fdn.fr/playlist?list=PLW5y1tjAOzI3orQNF1yGGVL5x-pR2K1dC").getId());
+        assertEquals("PLz8YL4HVC87WJQDzVoY943URKQCsHS9XV", linkHandler.fromUrl("www.invidious.fdn.fr/playlist?list=PLz8YL4HVC87WJQDzVoY943URKQCsHS9XV").getId());
     }
 
     @Test
-    public void fromUrlIsMixVideo() throws Exception {
+    void fromUrlIsMixVideo() throws Exception {
         final String videoId = "_AzeUSL9lZc";
         String url = "https://www.youtube.com/watch?v=" + videoId + "&list=RD" + videoId;
         assertEquals(url, linkHandler.fromUrl(url).getUrl());
@@ -118,10 +121,10 @@ public class YoutubePlaylistLinkHandlerFactoryTest {
     }
 
     @Test
-    public void fromUrlIsMixPlaylist() throws Exception {
+    void fromUrlIsMixPlaylist() throws Exception {
         final String videoId = "_AzeUSL9lZc";
         final String url = "https://www.youtube.com/watch?v=" + videoId + "&list=RD" + videoId;
         assertEquals(url,
-            linkHandler.fromUrl("https://www.youtube.com/watch?list=RD" + videoId).getUrl());
+                linkHandler.fromUrl("https://www.youtube.com/watch?list=RD" + videoId).getUrl());
     }
 }

@@ -107,7 +107,7 @@ public class StreamInfoItemsCollector
         try {
             addItem(extract(extractor));
         } catch (final FoundAdException ae) {
-            //System.out.println("AD_WARNING: " + ae.getMessage());
+            // Do nothing
         } catch (final Exception e) {
             addError(e);
         }

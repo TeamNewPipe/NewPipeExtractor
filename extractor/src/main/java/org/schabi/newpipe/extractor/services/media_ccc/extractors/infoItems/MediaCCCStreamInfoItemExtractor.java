@@ -1,6 +1,7 @@
 package org.schabi.newpipe.extractor.services.media_ccc.extractors.infoItems;
 
 import com.grack.nanojson.JsonObject;
+
 import org.schabi.newpipe.extractor.exceptions.ParsingException;
 import org.schabi.newpipe.extractor.localization.DateWrapper;
 import org.schabi.newpipe.extractor.services.media_ccc.extractors.MediaCCCParsingHelper;
@@ -22,11 +23,6 @@ public class MediaCCCStreamInfoItemExtractor implements StreamInfoItemExtractor 
     }
 
     @Override
-    public boolean isAd() {
-        return false;
-    }
-
-    @Override
     public long getDuration() {
         return event.getInt("length");
     }
@@ -44,17 +40,6 @@ public class MediaCCCStreamInfoItemExtractor implements StreamInfoItemExtractor 
     @Override
     public String getUploaderUrl() {
         return event.getString("conference_url");
-    }
-
-    @Nullable
-    @Override
-    public String getUploaderAvatarUrl() {
-        return null;
-    }
-
-    @Override
-    public boolean isUploaderVerified() throws ParsingException {
-        return false;
     }
 
     @Nullable

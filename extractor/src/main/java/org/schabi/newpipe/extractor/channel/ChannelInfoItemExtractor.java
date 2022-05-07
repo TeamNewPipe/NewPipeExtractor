@@ -30,5 +30,7 @@ public interface ChannelInfoItemExtractor extends InfoItemExtractor {
 
     long getStreamCount() throws ParsingException;
 
-    boolean isVerified() throws ParsingException;
+    default boolean isVerified() throws ParsingException {
+        return false;
+    }
 }
