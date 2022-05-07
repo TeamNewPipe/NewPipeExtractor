@@ -20,6 +20,7 @@
 
 package org.schabi.newpipe.extractor.services.youtube.extractors;
 
+import static org.schabi.newpipe.extractor.services.youtube.ItagItem.APPROX_DURATION_MS_UNKNOWN;
 import static org.schabi.newpipe.extractor.services.youtube.YoutubeParsingHelper.CONTENT_CHECK_OK;
 import static org.schabi.newpipe.extractor.services.youtube.YoutubeParsingHelper.CPN;
 import static org.schabi.newpipe.extractor.services.youtube.YoutubeParsingHelper.RACY_CHECK_OK;
@@ -1396,9 +1397,11 @@ public class YoutubeStreamExtractor extends StreamExtractor {
             itagItem.setAudioChannels(formatData.getInt("audioChannels"));
         }
 
-        // YouTube return the content length as a string
+        // YouTube return the content length and the approximate duration as strings
         itagItem.setContentLength(Long.parseLong(formatData.getString("contentLength",
                 String.valueOf(CONTENT_LENGTH_UNKNOWN))));
+        itagItem.setApproxDurationMs(Long.parseLong(formatData.getString("approxDurationMs",
+                String.valueOf(APPROX_DURATION_MS_UNKNOWN))));
 
         final ItagInfo itagInfo = new ItagInfo(streamUrl, itagItem);
 
