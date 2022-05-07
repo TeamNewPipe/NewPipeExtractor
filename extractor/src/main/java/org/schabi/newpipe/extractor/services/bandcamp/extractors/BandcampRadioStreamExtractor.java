@@ -33,7 +33,7 @@ import static org.schabi.newpipe.extractor.utils.Utils.EMPTY_STRING;
 
 public class BandcampRadioStreamExtractor extends BandcampStreamExtractor {
 
-    private static final String OPUS_LO = "opus_lo";
+    private static final String OPUS_LO = "opus-lo";
     private static final String MP3_128 = "mp3-128";
     private JsonObject showInfo;
 
@@ -126,7 +126,9 @@ public class BandcampRadioStreamExtractor extends BandcampStreamExtractor {
                     .setMediaFormat(MediaFormat.MP3)
                     .setAverageBitrate(128)
                     .build());
-        } else if (streams.has(OPUS_LO)) {
+        }
+
+        if (streams.has(OPUS_LO)) {
             audioStreams.add(new AudioStream.Builder()
                     .setId(OPUS_LO)
                     .setContent(streams.getString(OPUS_LO), true)
