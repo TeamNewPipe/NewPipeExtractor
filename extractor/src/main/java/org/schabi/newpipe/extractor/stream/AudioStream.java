@@ -25,7 +25,6 @@ import org.schabi.newpipe.extractor.services.youtube.ItagItem;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
-import java.util.Objects;
 
 public final class AudioStream extends Stream {
     public static final int UNKNOWN_BITRATE = -1;
@@ -380,28 +379,5 @@ public final class AudioStream extends Stream {
     @Nullable
     public ItagItem getItagItem() {
         return itagItem;
-    }
-
-    @Override
-    public boolean equals(final Object obj) {
-        if (this == obj) {
-            return true;
-        }
-
-        if (obj == null || getClass() != obj.getClass()) {
-            return false;
-        }
-
-        if (!super.equals(obj)) {
-            return false;
-        }
-
-        final AudioStream audioStream = (AudioStream) obj;
-        return averageBitrate == audioStream.averageBitrate;
-    }
-
-    @Override
-    public int hashCode() {
-        return Objects.hash(super.hashCode(), averageBitrate);
     }
 }
