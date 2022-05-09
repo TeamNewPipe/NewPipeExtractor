@@ -43,9 +43,4 @@ public class NewPipeTest {
         assertEquals(getServiceByUrl("https://soundcloud.com/pegboardnerds"), SoundCloud);
         assertEquals(getServiceByUrl("https://www.google.com/url?sa=t&url=https%3A%2F%2Fsoundcloud.com%2Fciaoproduction&rct=j&q=&esrc=s&source=web&cd="), SoundCloud);
     }
-
-    @Test
-    public void getServiceNameWithId() throws Exception {
-        assertEquals(NewPipe.getNameOfService(YouTube.getServiceId()), YouTube.getServiceInfo().getName());
-    }
 }

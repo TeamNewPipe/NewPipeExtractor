@@ -93,16 +93,6 @@ public final class NewPipe {
         throw new ExtractionException("No service can handle the url = \"" + url + "\"");
     }
 
-    public static String getNameOfService(final int id) {
-        try {
-            return getService(id).getServiceInfo().getName();
-        } catch (final Exception e) {
-            System.err.println("Service id not known");
-            e.printStackTrace();
-            return "<unknown>";
-        }
-    }
-
     /*//////////////////////////////////////////////////////////////////////////
     // Localization
     //////////////////////////////////////////////////////////////////////////*/
