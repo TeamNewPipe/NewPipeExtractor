@@ -1264,8 +1264,7 @@ public final class YoutubeParsingHelper {
         // Spoofing an Android 12 device with the hardcoded version of the Android app
         return "com.google.android.youtube/" + MOBILE_YOUTUBE_CLIENT_VERSION
                 + " (Linux; U; Android 12; "
-                + (localization == null ? Localization.DEFAULT.getCountryCode()
-                        : localization.getCountryCode())
+                + (localization != null ? localization : Localization.DEFAULT).getCountryCode()
                 + ") gzip";
     }
 
@@ -1284,10 +1283,8 @@ public final class YoutubeParsingHelper {
     public static String getIosUserAgent(@Nullable final Localization localization) {
         // Spoofing an iPhone running iOS 15.4 with the hardcoded mobile client version
         return "com.google.ios.youtube/" + MOBILE_YOUTUBE_CLIENT_VERSION
-                + "(" + IOS_DEVICE_MODEL
-                + "; U; CPU iOS 15_4 like Mac OS X; "
-                + (localization != null ? localization.getCountryCode()
-                        : Localization.DEFAULT.getCountryCode())
+                + "(" + IOS_DEVICE_MODEL + "; U; CPU iOS 15_4 like Mac OS X; "
+                + (localization != null ? localization : Localization.DEFAULT).getCountryCode()
                 + ")";
     }
 
