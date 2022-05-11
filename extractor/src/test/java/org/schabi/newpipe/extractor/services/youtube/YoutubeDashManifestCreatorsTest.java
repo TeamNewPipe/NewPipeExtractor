@@ -1,5 +1,30 @@
 package org.schabi.newpipe.extractor.services.youtube;
 
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.Test;
+import org.schabi.newpipe.downloader.DownloaderTestImpl;
+import org.schabi.newpipe.extractor.NewPipe;
+import org.schabi.newpipe.extractor.services.youtube.dashmanifestcreators.CreationException;
+import org.schabi.newpipe.extractor.services.youtube.dashmanifestcreators.YoutubeOtfDashManifestCreator;
+import org.schabi.newpipe.extractor.services.youtube.dashmanifestcreators.YoutubeProgressiveDashManifestCreator;
+import org.schabi.newpipe.extractor.services.youtube.extractors.YoutubeStreamExtractor;
+import org.schabi.newpipe.extractor.stream.DeliveryMethod;
+import org.schabi.newpipe.extractor.stream.Stream;
+import org.w3c.dom.Document;
+import org.w3c.dom.Element;
+import org.w3c.dom.NodeList;
+import org.xml.sax.InputSource;
+
+import javax.annotation.Nonnull;
+import javax.xml.parsers.DocumentBuilder;
+import javax.xml.parsers.DocumentBuilderFactory;
+import java.io.StringReader;
+import java.util.List;
+import java.util.Random;
+import java.util.function.Consumer;
+import java.util.stream.Collectors;
+import java.util.stream.IntStream;
+
 import static org.junit.jupiter.api.Assertions.assertAll;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
@@ -11,41 +36,25 @@ import static org.schabi.newpipe.extractor.ExtractorAsserts.assertGreaterOrEqual
 import static org.schabi.newpipe.extractor.ExtractorAsserts.assertIsValidUrl;
 import static org.schabi.newpipe.extractor.ExtractorAsserts.assertNotBlank;
 import static org.schabi.newpipe.extractor.ServiceList.YouTube;
-import static org.schabi.newpipe.extractor.services.youtube.YoutubeDashManifestCreator.ADAPTATION_SET;
-import static org.schabi.newpipe.extractor.services.youtube.YoutubeDashManifestCreator.INITIALIZATION;
-import static org.schabi.newpipe.extractor.services.youtube.YoutubeDashManifestCreator.PERIOD;
-import static org.schabi.newpipe.extractor.services.youtube.YoutubeDashManifestCreator.REPRESENTATION;
-import static org.schabi.newpipe.extractor.services.youtube.YoutubeDashManifestCreator.SEGMENT_BASE;
-import static org.schabi.newpipe.extractor.services.youtube.YoutubeDashManifestCreator.SEGMENT_TEMPLATE;
-import static org.schabi.newpipe.extractor.services.youtube.YoutubeDashManifestCreator.SEGMENT_TIMELINE;
+import static org.schabi.newpipe.extractor.services.youtube.dashmanifestcreators.YoutubeDashManifestCreatorsUtils.ADAPTATION_SET;
+import static org.schabi.newpipe.extractor.services.youtube.dashmanifestcreators.YoutubeDashManifestCreatorsUtils.AUDIO_CHANNEL_CONFIGURATION;
+import static org.schabi.newpipe.extractor.services.youtube.dashmanifestcreators.YoutubeDashManifestCreatorsUtils.BASE_URL;
+import static org.schabi.newpipe.extractor.services.youtube.dashmanifestcreators.YoutubeDashManifestCreatorsUtils.INITIALIZATION;
+import static org.schabi.newpipe.extractor.services.youtube.dashmanifestcreators.YoutubeDashManifestCreatorsUtils.MPD;
+import static org.schabi.newpipe.extractor.services.youtube.dashmanifestcreators.YoutubeDashManifestCreatorsUtils.PERIOD;
+import static org.schabi.newpipe.extractor.services.youtube.dashmanifestcreators.YoutubeDashManifestCreatorsUtils.REPRESENTATION;
+import static org.schabi.newpipe.extractor.services.youtube.dashmanifestcreators.YoutubeDashManifestCreatorsUtils.ROLE;
+import static org.schabi.newpipe.extractor.services.youtube.dashmanifestcreators.YoutubeDashManifestCreatorsUtils.SEGMENT_BASE;
+import static org.schabi.newpipe.extractor.services.youtube.dashmanifestcreators.YoutubeDashManifestCreatorsUtils.SEGMENT_TEMPLATE;
+import static org.schabi.newpipe.extractor.services.youtube.dashmanifestcreators.YoutubeDashManifestCreatorsUtils.SEGMENT_TIMELINE;
 import static org.schabi.newpipe.extractor.utils.Utils.isBlank;
 
-import org.junit.jupiter.api.BeforeAll;
-import org.junit.jupiter.api.Test;
-import org.schabi.newpipe.downloader.DownloaderTestImpl;
-import org.schabi.newpipe.extractor.NewPipe;
-import org.schabi.newpipe.extractor.services.youtube.extractors.YoutubeStreamExtractor;
-import org.schabi.newpipe.extractor.stream.DeliveryMethod;
-import org.schabi.newpipe.extractor.stream.Stream;
-import org.w3c.dom.Document;
-import org.w3c.dom.Element;
-import org.w3c.dom.NodeList;
-import org.xml.sax.InputSource;
-
-import java.io.StringReader;
-import java.util.List;
-import java.util.Random;
-import java.util.function.Consumer;
-import java.util.stream.Collectors;
-import java.util.stream.IntStream;
-
-import javax.annotation.Nonnull;
-import javax.xml.parsers.DocumentBuilder;
-import javax.xml.parsers.DocumentBuilderFactory;
-
 /**
- * Test for {@link YoutubeDashManifestCreator}. Tests the generation of OTF and Progressive
- * manifests.
+ * Test for YouTube DASH manifest creators.
+ *
+ * <p>
+ * Tests the generation of OTF and progressive manifests.
+ * </p>
  *
  * <p>
  * We cannot test the generation of DASH manifests for ended livestreams because these videos will
@@ -54,8 +63,9 @@ import javax.xml.parsers.DocumentBuilderFactory;
  *
  * <p>
  * The generation of DASH manifests for OTF streams, which can be tested, uses a video licenced
- * under the Creative Commons Attribution licence (reuse allowed):
- * {@code https://www.youtube.com/watch?v=DJ8GQUNUXGM}
+ * under the Creative Commons Attribution licence (reuse allowed): {@code A New Era of Open?
+ * COVID-19 and the Pursuit for Equitable Solutions} (<a href=
+ * "https://www.youtube.com/watch?v=DJ8GQUNUXGM">https://www.youtube.com/watch?v=DJ8GQUNUXGM</a>)
  * </p>
  *
  * <p>
@@ -68,8 +78,8 @@ import javax.xml.parsers.DocumentBuilderFactory;
  * So the real downloader will be used everytime on this test class.
  * </p>
  */
-class YoutubeDashManifestCreatorTest {
-    // Setting a higher number may let Google video servers return a lot of 403s
+class YoutubeDashManifestCreatorsTest {
+    // Setting a higher number may let Google video servers return 403s
     private static final int MAX_STREAMS_TO_TEST_PER_METHOD = 3;
     private static final String url = "https://www.youtube.com/watch?v=DJ8GQUNUXGM";
     private static YoutubeStreamExtractor extractor;
@@ -102,7 +112,7 @@ class YoutubeDashManifestCreatorTest {
         assertProgressiveStreams(extractor.getAudioStreams());
 
         // we are not able to generate DASH manifests of video formats with audio
-        assertThrows(YoutubeDashManifestCreator.CreationException.class,
+        assertThrows(CreationException.class,
                 () -> assertProgressiveStreams(extractor.getVideoStreams()));
     }
 
@@ -110,7 +120,7 @@ class YoutubeDashManifestCreatorTest {
 
         for (final Stream stream : assertFilterStreams(streams, DeliveryMethod.DASH)) {
             //noinspection ConstantConditions
-            final String manifest = YoutubeDashManifestCreator.fromOtfStreamingUrl(
+            final String manifest = YoutubeOtfDashManifestCreator.fromOtfStreamingUrl(
                     stream.getContent(), stream.getItagItem(), videoLength);
             assertNotBlank(manifest);
 
@@ -129,8 +139,9 @@ class YoutubeDashManifestCreatorTest {
 
         for (final Stream stream : assertFilterStreams(streams, DeliveryMethod.PROGRESSIVE_HTTP)) {
             //noinspection ConstantConditions
-            final String manifest = YoutubeDashManifestCreator.fromProgressiveStreamingUrl(
-                    stream.getContent(), stream.getItagItem(), videoLength);
+            final String manifest =
+                    YoutubeProgressiveDashManifestCreator.fromProgressiveStreamingUrl(
+                            stream.getContent(), stream.getItagItem(), videoLength);
             assertNotBlank(manifest);
 
             assertManifestGenerated(
@@ -145,8 +156,10 @@ class YoutubeDashManifestCreatorTest {
         }
     }
 
-    private List<? extends Stream> assertFilterStreams(final List<? extends Stream> streams,
-                                                       final DeliveryMethod deliveryMethod) {
+    @Nonnull
+    private List<? extends Stream> assertFilterStreams(
+            @Nonnull final List<? extends Stream> streams,
+            final DeliveryMethod deliveryMethod) {
 
         final List<? extends Stream> filteredStreams = streams.stream()
                 .filter(stream -> stream.getDeliveryMethod() == deliveryMethod)
@@ -190,7 +203,7 @@ class YoutubeDashManifestCreatorTest {
     }
 
     private void assertMpdElement(@Nonnull final Document document) {
-        final Element element = (Element) document.getElementsByTagName("MPD").item(0);
+        final Element element = (Element) document.getElementsByTagName(MPD).item(0);
         assertNotNull(element);
         assertNull(element.getParentNode().getNodeValue());
 
@@ -200,7 +213,7 @@ class YoutubeDashManifestCreatorTest {
     }
 
     private void assertPeriodElement(@Nonnull final Document document) {
-        assertGetElement(document, PERIOD, "MPD");
+        assertGetElement(document, PERIOD, MPD);
     }
 
     private void assertAdaptationSetElement(@Nonnull final Document document,
@@ -210,7 +223,7 @@ class YoutubeDashManifestCreatorTest {
     }
 
     private void assertRoleElement(@Nonnull final Document document) {
-        assertGetElement(document, "Role", ADAPTATION_SET);
+        assertGetElement(document, ROLE, ADAPTATION_SET);
     }
 
     private void assertRepresentationElement(@Nonnull final Document document,
@@ -232,8 +245,8 @@ class YoutubeDashManifestCreatorTest {
 
     private void assertAudioChannelConfigurationElement(@Nonnull final Document document,
                                                         @Nonnull final ItagItem itagItem) {
-        final Element element = assertGetElement(document,
-                "AudioChannelConfiguration", REPRESENTATION);
+        final Element element = assertGetElement(document, AUDIO_CHANNEL_CONFIGURATION,
+                REPRESENTATION);
         assertAttrEquals(itagItem.getAudioChannels(), element, "value");
     }
 
@@ -276,7 +289,7 @@ class YoutubeDashManifestCreatorTest {
     }
 
     private void assertBaseUrlElement(@Nonnull final Document document) {
-        final Element element = assertGetElement(document, "BaseURL", REPRESENTATION);
+        final Element element = assertGetElement(document, BASE_URL, REPRESENTATION);
         assertIsValidUrl(element.getTextContent());
     }
 
@@ -294,7 +307,7 @@ class YoutubeDashManifestCreatorTest {
 
 
     private void assertAttrEquals(final int expected,
-                                  final Element element,
+                                  @Nonnull final Element element,
                                   final String attribute) {
 
         final int actual = Integer.parseInt(element.getAttribute(attribute));
@@ -305,7 +318,7 @@ class YoutubeDashManifestCreatorTest {
     }
 
     private void assertAttrEquals(final String expected,
-                                  final Element element,
+                                  @Nonnull final Element element,
                                   final String attribute) {
         final String actual = element.getAttribute(attribute);
         assertAll(
@@ -316,7 +329,7 @@ class YoutubeDashManifestCreatorTest {
 
     private void assertRangeEquals(final int expectedStart,
                                    final int expectedEnd,
-                                   final Element element,
+                                   @Nonnull final Element element,
                                    final String attribute) {
         final String range = element.getAttribute(attribute);
         assertNotBlank(range);
@@ -334,7 +347,8 @@ class YoutubeDashManifestCreatorTest {
         );
     }
 
-    private Element assertGetElement(final Document document,
+    @Nonnull
+    private Element assertGetElement(@Nonnull final Document document,
                                      final String tagName,
                                      final String expectedParentTagName) {
 
