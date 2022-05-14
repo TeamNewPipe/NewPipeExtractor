@@ -161,6 +161,7 @@ public final class YoutubeOtfDashManifestCreator {
     /**
      * @return the cache of DASH manifests generated for OTF streams
      */
+    @Nonnull
     public static ManifestCreatorCache<String, String> getCache() {
         return OTF_STREAMS_CACHE;
     }
