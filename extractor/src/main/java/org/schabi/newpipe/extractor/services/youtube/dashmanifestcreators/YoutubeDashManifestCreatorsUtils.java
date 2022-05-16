@@ -696,11 +696,11 @@ public final class YoutubeDashManifestCreatorsUtils {
     }
 
     /**
-     * Generate a new {@link DocumentBuilder} secured from XEE attacks, on platforms which
+     * Generate a new {@link DocumentBuilder} secured from XXE attacks, on platforms which
      * support setting {@link XMLConstants#ACCESS_EXTERNAL_DTD} and
      * {@link XMLConstants#ACCESS_EXTERNAL_SCHEMA} in {@link DocumentBuilderFactory} instances.
      *
-     * @return an instance of {@link Document} secured against XEE attacks on supported platforms,
+     * @return an instance of {@link Document} secured against XXE attacks on supported platforms,
      * that should then be convertible to an XML string without security problems
      */
     private static Document newDocument() throws ParserConfigurationException {
@@ -718,13 +718,13 @@ public final class YoutubeDashManifestCreatorsUtils {
     }
 
     /**
-     * Generate a new {@link TransformerFactory} secured from XEE attacks, on platforms which
+     * Generate a new {@link TransformerFactory} secured from XXE attacks, on platforms which
      * support setting {@link XMLConstants#ACCESS_EXTERNAL_DTD} and
      * {@link XMLConstants#ACCESS_EXTERNAL_SCHEMA} in {@link TransformerFactory} instances.
      *
      * @param document the document to convert, which must have been created using
-     *                 {@link #newDocument()} to properly prevent XEE attacks
-     * @return the document converted to an XML string, making sure there can't be XEE attacks
+     *                 {@link #newDocument()} to properly prevent XXE attacks
+     * @return the document converted to an XML string, making sure there can't be XXE attacks
      */
     // Sonar warning is suppressed because it is still shown even if we apply its solution
     @SuppressWarnings("squid:S2755")
