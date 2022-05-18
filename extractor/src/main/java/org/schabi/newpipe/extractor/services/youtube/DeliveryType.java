@@ -4,7 +4,7 @@ package org.schabi.newpipe.extractor.services.youtube;
  * Streaming format types used by YouTube in their streams.
  *
  * <p>
- * It is different of {@link org.schabi.newpipe.extractor.stream.DeliveryMethod delivery methods}!
+ * It is different from {@link org.schabi.newpipe.extractor.stream.DeliveryMethod delivery methods}!
  * </p>
  */
 public enum DeliveryType {

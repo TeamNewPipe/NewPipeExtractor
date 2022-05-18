@@ -83,59 +83,18 @@ public final class YoutubeDashManifestCreatorsUtils {
      */
     public static final String ALR_YES = "&alr=yes";
 
-    /**
-     * Constant which represents the {@code MPD} element of DASH manifests.
-     */
+    // XML elements of DASH MPD manifests
+    // see https://www.brendanlong.com/the-structure-of-an-mpeg-dash-mpd.html
     public static final String MPD = "MPD";
-
-    /**
-     * Constant which represents the {@code Period} element of DASH manifests.
-     */
     public static final String PERIOD = "Period";
-
-    /**
-     * Constant which represents the {@code AdaptationSet} element of DASH manifests.
-     */
     public static final String ADAPTATION_SET = "AdaptationSet";
-
-    /**
-     * Constant which represents the {@code Role} element of DASH manifests.
-     */
     public static final String ROLE = "Role";
-
-    /**
-     * Constant which represents the {@code Representation} element of DASH manifests.
-     */
     public static final String REPRESENTATION = "Representation";
-
-    /**
-     * Constant which represents the {@code AudioChannelConfiguration} element of DASH manifests.
-     */
     public static final String AUDIO_CHANNEL_CONFIGURATION = "AudioChannelConfiguration";
-
-    /**
-     * Constant which represents the {@code SegmentTemplate} element of DASH manifests.
-     */
     public static final String SEGMENT_TEMPLATE = "SegmentTemplate";
-
-    /**
-     * Constant which represents the {@code SegmentTimeline} element of DASH manifests.
-     */
     public static final String SEGMENT_TIMELINE = "SegmentTimeline";
-
-    /**
-     * Constant which represents the {@code SegmentBase} element of DASH manifests.
-     */
     public static final String BASE_URL = "BaseURL";
-
-    /**
-     * Constant which represents the {@code SegmentBase} element of DASH manifests.
-     */
     public static final String SEGMENT_BASE = "SegmentBase";
-
-    /**
-     * Constant which represents the {@code Initialization} element of DASH manifests.
-     */
     public static final String INITIALIZATION = "Initialization";
 
     /**
@@ -665,7 +624,7 @@ public final class YoutubeDashManifestCreatorsUtils {
         if (isHtml5StreamingUrl) {
             baseStreamingUrl += ALR_YES;
         }
-        baseStreamingUrl = appendRnParamAndSqParamIfNeeded(baseStreamingUrl, deliveryType);
+        baseStreamingUrl = appendRnSqParamsIfNeeded(baseStreamingUrl, deliveryType);
 
         final Downloader downloader = NewPipe.getDownloader();
         if (isHtml5StreamingUrl) {
@@ -701,7 +660,7 @@ public final class YoutubeDashManifestCreatorsUtils {
      * {@link XMLConstants#ACCESS_EXTERNAL_SCHEMA} in {@link DocumentBuilderFactory} instances.
      *
      * @return an instance of {@link Document} secured against XXE attacks on supported platforms,
-     * that should then be convertible to an XML string without security problems
+     *         that should then be convertible to an XML string without security problems
      */
     private static Document newDocument() throws ParserConfigurationException {
         final DocumentBuilderFactory documentBuilderFactory = DocumentBuilderFactory.newInstance();
@@ -709,8 +668,8 @@ public final class YoutubeDashManifestCreatorsUtils {
             documentBuilderFactory.setAttribute(XMLConstants.ACCESS_EXTERNAL_DTD, "");
             documentBuilderFactory.setAttribute(XMLConstants.ACCESS_EXTERNAL_SCHEMA, "");
         } catch (final Exception ignored) {
-            // Ignore exceptions as setting these attributes to secure XML generation is supported
-            // by all platforms (like the Android implementation)
+            // Ignore exceptions as setting these attributes to secure XML generation is not
+            // supported by all platforms (like the Android implementation)
         }
 
         final DocumentBuilder documentBuilder = documentBuilderFactory.newDocumentBuilder();
@@ -736,8 +695,8 @@ public final class YoutubeDashManifestCreatorsUtils {
             transformerFactory.setAttribute(XMLConstants.ACCESS_EXTERNAL_DTD, "");
             transformerFactory.setAttribute(XMLConstants.ACCESS_EXTERNAL_SCHEMA, "");
         } catch (final Exception ignored) {
-            // Ignore exceptions as setting these attributes to secure XML generation is supported
-            // by all platforms (like the Android implementation)
+            // Ignore exceptions as setting these attributes to secure XML generation is not
+            // supported by all platforms (like the Android implementation)
         }
 
         final Transformer transformer = transformerFactory.newTransformer();
@@ -759,16 +718,10 @@ public final class YoutubeDashManifestCreatorsUtils {
      * @return the base streaming URL to which the param(s) are appended, depending on the
      * {@link DeliveryType} of the stream
      */
-    @SuppressWarnings({"checkstyle:FinalParameters", "checkstyle:FinalLocalVariable"})
     @Nonnull
-    private static String appendRnParamAndSqParamIfNeeded(
-            @Nonnull String baseStreamingUrl,
-            @Nonnull final DeliveryType deliveryType) {
-        if (deliveryType != DeliveryType.PROGRESSIVE) {
-            baseStreamingUrl += SQ_0;
-        }
-
-        return baseStreamingUrl + RN_0;
+    private static String appendRnSqParamsIfNeeded(@Nonnull final String baseStreamingUrl,
+                                                   @Nonnull final DeliveryType deliveryType) {
+        return baseStreamingUrl + (deliveryType == DeliveryType.PROGRESSIVE ? "" : SQ_0) + RN_0;
     }
 
     /**

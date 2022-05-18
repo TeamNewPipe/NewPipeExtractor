@@ -1140,17 +1140,11 @@ public class YoutubeStreamExtractor extends StreamExtractor {
         return videoSecondaryInfoRenderer;
     }
 
-    @FunctionalInterface
-    private interface StreamBuilderHelper<T extends Stream> {
-        @Nonnull
-        T buildStream(ItagInfo itagInfo);
-    }
-
     @Nonnull
     private <T extends Stream> List<T> getItags(
             final String streamingDataKey,
             final ItagItem.ItagType itagTypeWanted,
-            final StreamBuilderHelper<T> streamBuilderHelper,
+            final java.util.function.Function<ItagInfo, T> streamBuilderHelper,
             final String streamTypeExceptionMessage) throws ParsingException {
         try {
             final List<ItagInfo> itagInfos = new ArrayList<>();
@@ -1176,7 +1170,7 @@ public class YoutubeStreamExtractor extends StreamExtractor {
 
             final List<T> streamList = new ArrayList<>();
             for (final ItagInfo itagInfo : itagInfos) {
-                final T stream = streamBuilderHelper.buildStream(itagInfo);
+                final T stream = streamBuilderHelper.apply(itagInfo);
                 if (!Stream.containSimilarStream(stream, streamList)) {
                     streamList.add(stream);
                 }
@@ -1190,8 +1184,8 @@ public class YoutubeStreamExtractor extends StreamExtractor {
     }
 
     /**
-     * Get the {@link StreamBuilderHelper} which will be used to build {@link AudioStream}s in
-     * {@link #getItags(String, ItagItem.ItagType, StreamBuilderHelper, String)}
+     * Get the stream builder helper which will be used to build {@link AudioStream}s in
+     * {@link #getItags(String, ItagItem.ItagType, java.util.function.Function, String)}
      *
      * <p>
      * The {@code StreamBuilderHelper} will set the following attributes in the
@@ -1213,38 +1207,34 @@ public class YoutubeStreamExtractor extends StreamExtractor {
      * Note that the {@link ItagItem} comes from an {@link ItagInfo} instance.
      * </p>
      *
-     * @return a {@link StreamBuilderHelper} to build {@link AudioStream}s
+     * @return a stream builder helper to build {@link AudioStream}s
      */
     @Nonnull
-    private StreamBuilderHelper<AudioStream> getAudioStreamBuilderHelper() {
-        return new StreamBuilderHelper<AudioStream>() {
-            @Nonnull
-            @Override
-            public AudioStream buildStream(@Nonnull final ItagInfo itagInfo) {
-                final ItagItem itagItem = itagInfo.getItagItem();
-                final AudioStream.Builder builder = new AudioStream.Builder()
-                        .setId(String.valueOf(itagItem.id))
-                        .setContent(itagInfo.getContent(), itagInfo.getIsUrl())
-                        .setMediaFormat(itagItem.getMediaFormat())
-                        .setAverageBitrate(itagItem.getAverageBitrate())
-                        .setItagItem(itagItem);
+    private java.util.function.Function<ItagInfo, AudioStream> getAudioStreamBuilderHelper() {
+        return (itagInfo) -> {
+            final ItagItem itagItem = itagInfo.getItagItem();
+            final AudioStream.Builder builder = new AudioStream.Builder()
+                    .setId(String.valueOf(itagItem.id))
+                    .setContent(itagInfo.getContent(), itagInfo.getIsUrl())
+                    .setMediaFormat(itagItem.getMediaFormat())
+                    .setAverageBitrate(itagItem.getAverageBitrate())
+                    .setItagItem(itagItem);
 
-                if (streamType == StreamType.LIVE_STREAM
-                        || streamType == StreamType.POST_LIVE_STREAM
-                        || !itagInfo.getIsUrl()) {
-                    // For YouTube videos on OTF streams and for all streams of post-live streams
-                    // and live streams, only the DASH delivery method can be used.
-                    builder.setDeliveryMethod(DeliveryMethod.DASH);
-                }
-
-                return builder.build();
+            if (streamType == StreamType.LIVE_STREAM
+                    || streamType == StreamType.POST_LIVE_STREAM
+                    || !itagInfo.getIsUrl()) {
+                // For YouTube videos on OTF streams and for all streams of post-live streams
+                // and live streams, only the DASH delivery method can be used.
+                builder.setDeliveryMethod(DeliveryMethod.DASH);
             }
+
+            return builder.build();
         };
     }
 
     /**
-     * Get the {@link StreamBuilderHelper} which will be used to build {@link VideoStream}s in
-     * {@link #getItags(String, ItagItem.ItagType, StreamBuilderHelper, String)}
+     * Get the stream builder helper which will be used to build {@link VideoStream}s in
+     * {@link #getItags(String, ItagItem.ItagType, java.util.function.Function, String)}
      *
      * <p>
      * The {@code StreamBuilderHelper} will set the following attributes in the
@@ -1272,37 +1262,33 @@ public class YoutubeStreamExtractor extends StreamExtractor {
      * Note that the {@link ItagItem} comes from an {@link ItagInfo} instance.
      * </p>
      *
-     * @param areStreamsVideoOnly whether the {@link StreamBuilderHelper} will set the video
+     * @param areStreamsVideoOnly whether the stream builder helper will set the video
      *                            streams as video-only streams
-     * @return a {@link StreamBuilderHelper} to build {@link VideoStream}s
+     * @return a stream builder helper to build {@link VideoStream}s
      */
     @Nonnull
-    private StreamBuilderHelper<VideoStream> getVideoStreamBuilderHelper(
+    private java.util.function.Function<ItagInfo, VideoStream> getVideoStreamBuilderHelper(
             final boolean areStreamsVideoOnly) {
-        return new StreamBuilderHelper<VideoStream>() {
-            @Nonnull
-            @Override
-            public VideoStream buildStream(@Nonnull final ItagInfo itagInfo) {
-                final ItagItem itagItem = itagInfo.getItagItem();
-                final VideoStream.Builder builder = new VideoStream.Builder()
-                        .setId(String.valueOf(itagItem.id))
-                        .setContent(itagInfo.getContent(), itagInfo.getIsUrl())
-                        .setMediaFormat(itagItem.getMediaFormat())
-                        .setIsVideoOnly(areStreamsVideoOnly)
-                        .setItagItem(itagItem);
+        return (itagInfo) -> {
+            final ItagItem itagItem = itagInfo.getItagItem();
+            final VideoStream.Builder builder = new VideoStream.Builder()
+                    .setId(String.valueOf(itagItem.id))
+                    .setContent(itagInfo.getContent(), itagInfo.getIsUrl())
+                    .setMediaFormat(itagItem.getMediaFormat())
+                    .setIsVideoOnly(areStreamsVideoOnly)
+                    .setItagItem(itagItem);
 
-                final String resolutionString = itagItem.getResolutionString();
-                builder.setResolution(resolutionString != null ? resolutionString
-                        : EMPTY_STRING);
+            final String resolutionString = itagItem.getResolutionString();
+            builder.setResolution(resolutionString != null ? resolutionString
+                    : EMPTY_STRING);
 
-                if (streamType != StreamType.VIDEO_STREAM || !itagInfo.getIsUrl()) {
-                    // For YouTube videos on OTF streams and for all streams of post-live streams
-                    // and live streams, only the DASH delivery method can be used.
-                    builder.setDeliveryMethod(DeliveryMethod.DASH);
-                }
-
-                return builder.build();
+            if (streamType != StreamType.VIDEO_STREAM || !itagInfo.getIsUrl()) {
+                // For YouTube videos on OTF streams and for all streams of post-live streams
+                // and live streams, only the DASH delivery method can be used.
+                builder.setDeliveryMethod(DeliveryMethod.DASH);
             }
+
+            return builder.build();
         };
     }
 

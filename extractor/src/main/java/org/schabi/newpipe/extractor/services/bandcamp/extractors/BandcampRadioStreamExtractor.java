@@ -5,6 +5,7 @@ import com.grack.nanojson.JsonObject;
 import com.grack.nanojson.JsonParser;
 import com.grack.nanojson.JsonParserException;
 import org.jsoup.Jsoup;
+import org.jsoup.nodes.Element;
 import org.schabi.newpipe.extractor.MediaFormat;
 import org.schabi.newpipe.extractor.NewPipe;
 import org.schabi.newpipe.extractor.StreamingService;
@@ -80,9 +81,11 @@ public class BandcampRadioStreamExtractor extends BandcampStreamExtractor {
 
     @Nonnull
     @Override
-    public String getUploaderName() {
-        return Jsoup.parse(showInfo.getString("image_caption"))
-                .getElementsByTag("a").first().text();
+    public String getUploaderName() throws ParsingException {
+        return Jsoup.parse(showInfo.getString("image_caption")).getElementsByTag("a").stream()
+                .map(Element::text)
+                .findFirst()
+                .orElseThrow(() -> new ParsingException("Could not get uploader name"));
     }
 
     @Nullable

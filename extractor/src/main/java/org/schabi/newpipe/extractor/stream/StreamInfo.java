@@ -114,7 +114,7 @@ public class StreamInfo extends Info {
         final String name = extractor.getName();
         final int ageLimit = extractor.getAgeLimit();
 
-        // Suppress always-non-null warning as here we double-check it is really not null
+        // Suppress always-non-null warning as here we double-check it really is not null
         //noinspection ConstantConditions
         if (streamType == StreamType.NONE
                 || isNullOrEmpty(url)
