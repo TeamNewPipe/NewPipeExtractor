@@ -1,6 +1,8 @@
 package org.schabi.newpipe.extractor;
 
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
+import org.schabi.newpipe.extractor.localization.Localization;
 
 import java.util.HashSet;
 
@@ -24,6 +26,21 @@ public class NewPipeTest {
                             + " (current service > " + streamingService.getServiceInfo().getName() + ")";
 
             assertTrue(servicesId.add(streamingService.getServiceId()), errorMsg);
+        }
+    }
+
+    @Test
+    public void testGetCountryCodeAndGetLanguageCode() {
+        try {
+            HashSet<Integer> servicesId = new HashSet<>();
+            for (StreamingService streamingService : NewPipe.getServices()) {
+                Localization Localization1 = new Localization("W4JN-$nw<}7EGpwmm(EQ", "ndBdj-qEHp!#I]LDWP=,");
+                String errorMsg = ((("There are services with the same id = " + streamingService.getServiceId()) + " (current service > ") + streamingService.getServiceInfo().getName()) + ")";
+                streamingService.getTimeAgoParser(new Localization("W4JN-$nw<}7EGpwmm(EQ", "ndBdj-qEHp!#I]LDWP=,"));
+            }
+            Assertions.fail("testAllServicesHaveDifferentId_mg38 should have thrown IllegalArgumentException");
+        } catch (IllegalArgumentException expected) {
+            Assertions.assertEquals("Localization is not supported (\"Localization[W4JN-$nw<}7EGpwmm(EQ-ndBdj-qEHp!#I]LDWP=,]\")", expected.getMessage());
         }
     }
 
