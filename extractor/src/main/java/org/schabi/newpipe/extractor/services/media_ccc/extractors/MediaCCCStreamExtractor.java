@@ -114,9 +114,9 @@ public class MediaCCCStreamExtractor extends StreamExtractor {
                     mediaFormat = null;
                 }
 
-                // Don't use the containsSimilarStream method because it will always return
-                // false. So if there are multiple audio streams available, only the first one will
-                // be extracted in this case.
+                // Not checking containsSimilarStream here, since MediaCCC does not provide enough
+                // information to decide whether two streams are similar. Hence that method would
+                // always return false, e.g. even for different language variations.
                 audioStreams.add(new AudioStream.Builder()
                         .setId(recording.getString("filename", ID_UNKNOWN))
                         .setContent(recording.getString("recording_url"), true)
@@ -137,7 +137,6 @@ public class MediaCCCStreamExtractor extends StreamExtractor {
             final String mimeType = recording.getString("mime_type");
             if (mimeType.startsWith("video")) {
                 // First we need to resolve the actual video data from the CDN
-
                 final MediaFormat mediaFormat;
                 if (mimeType.endsWith("webm")) {
                     mediaFormat = MediaFormat.WEBM;
@@ -147,9 +146,9 @@ public class MediaCCCStreamExtractor extends StreamExtractor {
                     mediaFormat = null;
                 }
 
-                // Don't use the containsSimilarStream method because it will prevent the
-                // extraction of some video variations (mostly languages). So if there are multiple
-                // video streams available, only the first one will be extracted in this case.
+                // Not checking containsSimilarStream here, since MediaCCC does not provide enough
+                // information to decide whether two streams are similar. Hence that method would
+                // always return false, e.g. even for different language variations.
                 videoStreams.add(new VideoStream.Builder()
                         .setId(recording.getString("filename", ID_UNKNOWN))
                         .setContent(recording.getString("recording_url"), true)
