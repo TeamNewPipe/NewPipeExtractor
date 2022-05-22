@@ -853,7 +853,7 @@ public final class YoutubeParsingHelper {
                 musicKey = getStringResultFromRegexArray(response, INNERTUBE_API_KEY_REGEXES, 1);
                 musicClientName = Parser.matchGroup1(INNERTUBE_CLIENT_NAME_REGEX, response);
         } catch (final Exception e) {
-            final String url = "https://music.youtube.com/";
+            final String url = "https://music.youtube.com/?ucbcb=1";
             final Map<String, List<String>> headers = new HashMap<>();
             addCookieHeader(headers);
             final String html = getDownloader().get(url, headers).responseBody();
