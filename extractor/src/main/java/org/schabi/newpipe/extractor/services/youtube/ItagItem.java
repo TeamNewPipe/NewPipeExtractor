@@ -409,11 +409,7 @@ public class ItagItem implements Serializable {
      * @param sampleRate the sample rate of an audio itag
      */
     public void setSampleRate(final int sampleRate) {
-        if (sampleRate > 0) {
-            this.sampleRate = sampleRate;
-        } else {
-            this.sampleRate = SAMPLE_RATE_UNKNOWN;
-        }
+        this.sampleRate = sampleRate > 0 ? sampleRate : SAMPLE_RATE_UNKNOWN;
     }
 
     /**

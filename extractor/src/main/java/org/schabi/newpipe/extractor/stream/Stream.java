@@ -94,24 +94,15 @@ public abstract class Stream implements Serializable {
      * Note: This method always returns false if the stream passed is null.
      * </p>
      *
-     * @param cmp the stream object to be compared to this stream object
+     * @param other the stream object to be compared to this stream object
      * @return whether the stream have the same stats or not, based on the criteria above
      */
-    public boolean equalStats(@Nullable final Stream cmp) {
-        if (cmp == null) {
+    public boolean equalStats(@Nullable final Stream other) {
+        if (other == null || mediaFormat == null || other.mediaFormat == null) {
             return false;
         }
-
-        Boolean haveSameMediaFormatId = null;
-        if (mediaFormat != null && cmp.mediaFormat != null) {
-            haveSameMediaFormatId = mediaFormat.id == cmp.mediaFormat.id;
-        }
-        final boolean areUsingSameDeliveryMethodAndAreUrlStreams =
-                deliveryMethod == cmp.deliveryMethod && isUrl == cmp.isUrl;
-
-        return haveSameMediaFormatId != null
-                ? haveSameMediaFormatId && areUsingSameDeliveryMethodAndAreUrlStreams
-                : areUsingSameDeliveryMethodAndAreUrlStreams;
+        return mediaFormat.id == other.mediaFormat.id && deliveryMethod == other.deliveryMethod
+                && isUrl == other.isUrl;
     }
 
     /**

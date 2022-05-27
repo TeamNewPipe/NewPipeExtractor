@@ -5,7 +5,6 @@ import org.schabi.newpipe.extractor.services.youtube.DeliveryType;
 import org.schabi.newpipe.extractor.services.youtube.ItagItem;
 import org.schabi.newpipe.extractor.utils.ManifestCreatorCache;
 import org.schabi.newpipe.extractor.utils.Utils;
-import org.w3c.dom.Attr;
 import org.w3c.dom.DOMException;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
@@ -23,6 +22,7 @@ import static org.schabi.newpipe.extractor.services.youtube.dashmanifestcreators
 import static org.schabi.newpipe.extractor.services.youtube.dashmanifestcreators.YoutubeDashManifestCreatorsUtils.generateSegmentTemplateElement;
 import static org.schabi.newpipe.extractor.services.youtube.dashmanifestcreators.YoutubeDashManifestCreatorsUtils.generateSegmentTimelineElement;
 import static org.schabi.newpipe.extractor.services.youtube.dashmanifestcreators.YoutubeDashManifestCreatorsUtils.getInitializationResponse;
+import static org.schabi.newpipe.extractor.services.youtube.dashmanifestcreators.YoutubeDashManifestCreatorsUtils.setAttribute;
 import static org.schabi.newpipe.extractor.utils.Utils.EMPTY_STRING;
 import static org.schabi.newpipe.extractor.utils.Utils.isBlank;
 
@@ -148,14 +148,14 @@ public final class YoutubeOtfDashManifestCreator {
             streamDuration = durationSecondsFallback * 1000;
         }
 
-        final Document document = generateDocumentAndDoCommonElementsGeneration(itagItem,
+        final Document doc = generateDocumentAndDoCommonElementsGeneration(itagItem,
                 streamDuration);
 
-        generateSegmentTemplateElement(document, realOtfBaseStreamingUrl, DeliveryType.OTF);
-        generateSegmentTimelineElement(document);
-        generateSegmentElementsForOtfStreams(segmentDuration, document);
+        generateSegmentTemplateElement(doc, realOtfBaseStreamingUrl, DeliveryType.OTF);
+        generateSegmentTimelineElement(doc);
+        generateSegmentElementsForOtfStreams(segmentDuration, doc);
 
-        return buildAndCacheResult(otfBaseStreamingUrl, document, OTF_STREAMS_CACHE);
+        return buildAndCacheResult(otfBaseStreamingUrl, doc, OTF_STREAMS_CACHE);
     }
 
     /**
@@ -192,17 +192,18 @@ public final class YoutubeOtfDashManifestCreator {
      *
      * @param segmentDurations the sequences "length" or "length(r=repeat_count" extracted with the
      *                         regular expressions
-     * @param document the {@link Document} on which the {@code <S>} elements will be appended
+     * @param doc              the {@link Document} on which the {@code <S>} elements will be
+     *                         appended
      */
     private static void generateSegmentElementsForOtfStreams(
             @Nonnull final String[] segmentDurations,
-            @Nonnull final Document document) throws CreationException {
+            @Nonnull final Document doc) throws CreationException {
         try {
-            final Element segmentTimelineElement = (Element) document.getElementsByTagName(
+            final Element segmentTimelineElement = (Element) doc.getElementsByTagName(
                     SEGMENT_TIMELINE).item(0);
 
             for (final String segmentDuration : segmentDurations) {
-                final Element sElement = document.createElement("S");
+                final Element sElement = doc.createElement("S");
 
                 final String[] segmentLengthRepeat = segmentDuration.split("\\(r=");
                 // make sure segmentLengthRepeat[0], which is the length, is convertible to int
@@ -212,14 +213,9 @@ public final class YoutubeOtfDashManifestCreator {
                 if (segmentLengthRepeat.length > 1) {
                     final int segmentRepeatCount = Integer.parseInt(
                             Utils.removeNonDigitCharacters(segmentLengthRepeat[1]));
-                    final Attr rAttribute = document.createAttribute("r");
-                    rAttribute.setValue(String.valueOf(segmentRepeatCount));
-                    sElement.setAttributeNode(rAttribute);
+                    setAttribute(sElement, doc, "r", String.valueOf(segmentRepeatCount));
                 }
-
-                final Attr dAttribute = document.createAttribute("d");
-                dAttribute.setValue(segmentLengthRepeat[0]);
-                sElement.setAttributeNode(dAttribute);
+                setAttribute(sElement, doc, "d", segmentLengthRepeat[0]);
 
                 segmentTimelineElement.appendChild(sElement);
             }

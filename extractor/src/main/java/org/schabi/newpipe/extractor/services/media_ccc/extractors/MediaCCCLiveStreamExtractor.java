@@ -159,11 +159,11 @@ public class MediaCCCLiveStreamExtractor extends StreamExtractor {
         return getStreams("audio",
                 dto -> {
                     final AudioStream.Builder builder = new AudioStream.Builder()
-                            .setId(dto.getUrlValue().getString("tech", ID_UNKNOWN))
-                            .setContent(dto.getUrlValue().getString(URL), true)
+                            .setId(dto.urlValue.getString("tech", ID_UNKNOWN))
+                            .setContent(dto.urlValue.getString(URL), true)
                             .setAverageBitrate(UNKNOWN_BITRATE);
 
-                    if ("hls".equals(dto.getUrlKey())) {
+                    if ("hls".equals(dto.urlKey)) {
                         // We don't know with the type string what media format will
                         // have HLS streams.
                         // However, the tech string may contain some information
@@ -172,7 +172,7 @@ public class MediaCCCLiveStreamExtractor extends StreamExtractor {
                                 .build();
                     }
 
-                    return builder.setMediaFormat(MediaFormat.getFromSuffix(dto.getUrlKey()))
+                    return builder.setMediaFormat(MediaFormat.getFromSuffix(dto.urlKey))
                             .build();
                 });
     }
@@ -181,15 +181,15 @@ public class MediaCCCLiveStreamExtractor extends StreamExtractor {
     public List<VideoStream> getVideoStreams() throws IOException, ExtractionException {
         return getStreams("video",
                 dto -> {
-                    final JsonArray videoSize = dto.getStreamJsonObj().getArray("videoSize");
+                    final JsonArray videoSize = dto.streamJsonObj.getArray("videoSize");
 
                     final VideoStream.Builder builder = new VideoStream.Builder()
-                            .setId(dto.getUrlValue().getString("tech", ID_UNKNOWN))
-                            .setContent(dto.getUrlValue().getString(URL), true)
+                            .setId(dto.urlValue.getString("tech", ID_UNKNOWN))
+                            .setContent(dto.urlValue.getString(URL), true)
                             .setIsVideoOnly(false)
                             .setResolution(videoSize.getInt(0) + "x" + videoSize.getInt(1));
 
-                    if ("hls".equals(dto.getUrlKey())) {
+                    if ("hls".equals(dto.urlKey)) {
                         // We don't know with the type string what media format will
                         // have HLS streams.
                         // However, the tech string may contain some information
@@ -198,9 +198,30 @@ public class MediaCCCLiveStreamExtractor extends StreamExtractor {
                                 .build();
                     }
 
-                    return builder.setMediaFormat(MediaFormat.getFromSuffix(dto.getUrlKey()))
+                    return builder.setMediaFormat(MediaFormat.getFromSuffix(dto.urlKey))
                             .build();
                 });
+    }
+
+
+    /**
+     * This is just an internal class used in {@link #getStreams(String, Function)} to tie together
+     * the stream json object, its URL key and its URL value. An object of this class would be
+     * temporary and the three values it holds would be <b>convert</b>ed to a proper {@link Stream}
+     * object based on the wanted stream type.
+     */
+    private static final class MediaCCCLiveStreamMapperDTO {
+        final JsonObject streamJsonObj;
+        final String urlKey;
+        final JsonObject urlValue;
+
+        MediaCCCLiveStreamMapperDTO(final JsonObject streamJsonObj,
+                                    final String urlKey,
+                                    final JsonObject urlValue) {
+            this.streamJsonObj = streamJsonObj;
+            this.urlKey = urlKey;
+            this.urlValue = urlValue;
+        }
     }
 
     private <T extends Stream> List<T> getStreams(
@@ -220,7 +241,7 @@ public class MediaCCCLiveStreamExtractor extends StreamExtractor {
                                 e.getKey(),
                                 (JsonObject) e.getValue())))
                 // The DASH manifest will be extracted with getDashMpdUrl
-                .filter(dto -> !"dash".equals(dto.getUrlKey()))
+                .filter(dto -> !"dash".equals(dto.urlKey))
                 // Convert
                 .map(converter)
                 .collect(Collectors.toList());

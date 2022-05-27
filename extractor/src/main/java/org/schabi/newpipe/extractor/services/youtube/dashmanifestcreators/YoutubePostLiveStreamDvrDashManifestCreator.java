@@ -4,7 +4,6 @@ import org.schabi.newpipe.extractor.downloader.Response;
 import org.schabi.newpipe.extractor.services.youtube.DeliveryType;
 import org.schabi.newpipe.extractor.services.youtube.ItagItem;
 import org.schabi.newpipe.extractor.utils.ManifestCreatorCache;
-import org.w3c.dom.Attr;
 import org.w3c.dom.DOMException;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
@@ -23,6 +22,7 @@ import static org.schabi.newpipe.extractor.services.youtube.dashmanifestcreators
 import static org.schabi.newpipe.extractor.services.youtube.dashmanifestcreators.YoutubeDashManifestCreatorsUtils.generateSegmentTemplateElement;
 import static org.schabi.newpipe.extractor.services.youtube.dashmanifestcreators.YoutubeDashManifestCreatorsUtils.generateSegmentTimelineElement;
 import static org.schabi.newpipe.extractor.services.youtube.dashmanifestcreators.YoutubeDashManifestCreatorsUtils.getInitializationResponse;
+import static org.schabi.newpipe.extractor.services.youtube.dashmanifestcreators.YoutubeDashManifestCreatorsUtils.setAttribute;
 import static org.schabi.newpipe.extractor.utils.Utils.EMPTY_STRING;
 import static org.schabi.newpipe.extractor.utils.Utils.isNullOrEmpty;
 
@@ -159,15 +159,15 @@ public final class YoutubePostLiveStreamDvrDashManifestCreator {
             streamDuration = durationSecondsFallback;
         }
 
-        final Document document = generateDocumentAndDoCommonElementsGeneration(itagItem,
+        final Document doc = generateDocumentAndDoCommonElementsGeneration(itagItem,
                 streamDuration);
 
-        generateSegmentTemplateElement(document, realPostLiveStreamDvrStreamingUrl,
+        generateSegmentTemplateElement(doc, realPostLiveStreamDvrStreamingUrl,
                 DeliveryType.LIVE);
-        generateSegmentTimelineElement(document);
-        generateSegmentElementForPostLiveDvrStreams(document, targetDurationSec, segmentCount);
+        generateSegmentTimelineElement(doc);
+        generateSegmentElementForPostLiveDvrStreams(doc, targetDurationSec, segmentCount);
 
-        return buildAndCacheResult(postLiveStreamDvrStreamingUrl, document,
+        return buildAndCacheResult(postLiveStreamDvrStreamingUrl, doc,
                 POST_LIVE_DVR_STREAMS_CACHE);
     }
 
@@ -190,7 +190,7 @@ public final class YoutubePostLiveStreamDvrDashManifestCreator {
      * {@code <S d="targetDurationSecValue" r="segmentCount" />}
      * </p>
      *
-     * @param document              the {@link Document} on which the {@code <S>} element will
+     * @param doc                   the {@link Document} on which the {@code <S>} element will
      *                              be appended
      * @param targetDurationSeconds the {@code targetDurationSec} value from YouTube player
      *                              response's stream
@@ -198,21 +198,16 @@ public final class YoutubePostLiveStreamDvrDashManifestCreator {
      *                              #fromPostLiveStreamDvrStreamingUrl(String, ItagItem, int, long)}
      */
     private static void generateSegmentElementForPostLiveDvrStreams(
-            @Nonnull final Document document,
+            @Nonnull final Document doc,
             final int targetDurationSeconds,
             @Nonnull final String segmentCount) throws CreationException {
         try {
-            final Element segmentTimelineElement = (Element) document.getElementsByTagName(
+            final Element segmentTimelineElement = (Element) doc.getElementsByTagName(
                     SEGMENT_TIMELINE).item(0);
-            final Element sElement = document.createElement("S");
+            final Element sElement = doc.createElement("S");
 
-            final Attr dAttribute = document.createAttribute("d");
-            dAttribute.setValue(String.valueOf(targetDurationSeconds * 1000));
-            sElement.setAttributeNode(dAttribute);
-
-            final Attr rAttribute = document.createAttribute("r");
-            rAttribute.setValue(segmentCount);
-            sElement.setAttributeNode(rAttribute);
+            setAttribute(sElement, doc, "d", String.valueOf(targetDurationSeconds * 1000));
+            setAttribute(sElement, doc, "r", segmentCount);
 
             segmentTimelineElement.appendChild(sElement);
         } catch (final DOMException e) {

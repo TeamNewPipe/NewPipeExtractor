@@ -98,6 +98,25 @@ public final class YoutubeDashManifestCreatorsUtils {
     public static final String INITIALIZATION = "Initialization";
 
     /**
+     * Create an attribute with {@link Document#createAttribute(String)}, assign to it the provided
+     * name and value, then add it to the provided element using {@link
+     * Element#setAttributeNode(Attr)}.
+     *
+     * @param element element to which to add the created node
+     * @param doc     document to use to create the attribute
+     * @param name    name of the attribute
+     * @param value   value of the attribute, will be set using {@link Attr#setValue(String)}
+     */
+    public static void setAttribute(final Element element,
+                                    final Document doc,
+                                    final String name,
+                                    final String value) {
+        final Attr attr = doc.createAttribute(name);
+        attr.setValue(value);
+        element.setAttributeNode(attr);
+    }
+
+    /**
      * Generate a {@link Document} with common manifest creator elements added to it.
      *
      * <p>
@@ -123,17 +142,17 @@ public final class YoutubeDashManifestCreatorsUtils {
     public static Document generateDocumentAndDoCommonElementsGeneration(
             @Nonnull final ItagItem itagItem,
             final long streamDuration) throws CreationException {
-        final Document document = generateDocumentAndMpdElement(streamDuration);
+        final Document doc = generateDocumentAndMpdElement(streamDuration);
 
-        generatePeriodElement(document);
-        generateAdaptationSetElement(document, itagItem);
-        generateRoleElement(document);
-        generateRepresentationElement(document, itagItem);
+        generatePeriodElement(doc);
+        generateAdaptationSetElement(doc, itagItem);
+        generateRoleElement(doc);
+        generateRepresentationElement(doc, itagItem);
         if (itagItem.itagType == ItagItem.ItagType.AUDIO) {
-            generateAudioChannelConfigurationElement(document, itagItem);
+            generateAudioChannelConfigurationElement(doc, itagItem);
         }
 
-        return document;
+        return doc;
     }
 
     /**
@@ -161,46 +180,25 @@ public final class YoutubeDashManifestCreatorsUtils {
     public static Document generateDocumentAndMpdElement(final long duration)
             throws CreationException {
         try {
-            final Document document = newDocument();
+            final Document doc = newDocument();
 
-            final Element mpdElement = document.createElement(MPD);
-            document.appendChild(mpdElement);
+            final Element mpdElement = doc.createElement(MPD);
+            doc.appendChild(mpdElement);
 
-            final Attr xmlnsXsiAttribute = document.createAttribute("xmlns:xsi");
-            xmlnsXsiAttribute.setValue("http://www.w3.org/2001/XMLSchema-instance");
-            mpdElement.setAttributeNode(xmlnsXsiAttribute);
+            setAttribute(mpdElement, doc, "xmlns:xsi", "http://www.w3.org/2001/XMLSchema-instance");
+            setAttribute(mpdElement, doc, "xmlns", "urn:mpeg:DASH:schema:MPD:2011");
+            setAttribute(mpdElement, doc, "xsi:schemaLocation",
+                    "urn:mpeg:DASH:schema:MPD:2011 DASH-MPD.xsd");
+            setAttribute(mpdElement, doc, "minBufferTime", "PT1.500S");
+            setAttribute(mpdElement, doc, "profiles", "urn:mpeg:dash:profile:full:2011");
+            setAttribute(mpdElement, doc, "type", "static");
+            setAttribute(mpdElement, doc, "mediaPresentationDuration",
+                    String.format(Locale.ENGLISH, "PT%.3fS", duration / 1000.0));
 
-            final Attr xmlns = document.createAttribute("xmlns");
-            xmlns.setValue("urn:mpeg:DASH:schema:MPD:2011");
-            mpdElement.setAttributeNode(xmlns);
-
-            final Attr xsiSchemaLocationAttribute = document.createAttribute("xsi:schemaLocation");
-            xsiSchemaLocationAttribute.setValue("urn:mpeg:DASH:schema:MPD:2011 DASH-MPD.xsd");
-            mpdElement.setAttributeNode(xsiSchemaLocationAttribute);
-
-            final Attr minBufferTimeAttribute = document.createAttribute("minBufferTime");
-            minBufferTimeAttribute.setValue("PT1.500S");
-            mpdElement.setAttributeNode(minBufferTimeAttribute);
-
-            final Attr profilesAttribute = document.createAttribute("profiles");
-            profilesAttribute.setValue("urn:mpeg:dash:profile:full:2011");
-            mpdElement.setAttributeNode(profilesAttribute);
-
-            final Attr typeAttribute = document.createAttribute("type");
-            typeAttribute.setValue("static");
-            mpdElement.setAttributeNode(typeAttribute);
-
-            final Attr mediaPresentationDurationAttribute = document.createAttribute(
-                    "mediaPresentationDuration");
-            final String durationSeconds = String.format(Locale.ENGLISH, "%.3f",
-                    duration / 1000.0);
-            mediaPresentationDurationAttribute.setValue("PT" + durationSeconds + "S");
-            mpdElement.setAttributeNode(mediaPresentationDurationAttribute);
-
-            return document;
+            return doc;
         } catch (final Exception e) {
             throw new CreationException(
-                    "Could not generate the DASH manifest or append the MPD document to it", e);
+                    "Could not generate the DASH manifest or append the MPD doc to it", e);
         }
     }
 
@@ -212,14 +210,13 @@ public final class YoutubeDashManifestCreatorsUtils {
      * {@link #generateDocumentAndMpdElement(long)}.
      * </p>
      *
-     * @param document the {@link Document} on which the the {@code <Period>} element will be
-     *                 appended
+     * @param doc the {@link Document} on which the the {@code <Period>} element will be appended
      */
-    public static void generatePeriodElement(@Nonnull final Document document)
+    public static void generatePeriodElement(@Nonnull final Document doc)
             throws CreationException {
         try {
-            final Element mpdElement = (Element) document.getElementsByTagName(MPD).item(0);
-            final Element periodElement = document.createElement(PERIOD);
+            final Element mpdElement = (Element) doc.getElementsByTagName(MPD).item(0);
+            final Element periodElement = doc.createElement(PERIOD);
             mpdElement.appendChild(periodElement);
         } catch (final DOMException e) {
             throw CreationException.couldNotAddElement(PERIOD, e);
@@ -235,21 +232,18 @@ public final class YoutubeDashManifestCreatorsUtils {
      * {@link #generatePeriodElement(Document)}.
      * </p>
      *
-     * @param document the {@link Document} on which the {@code <Period>} element will be
-     *                 appended
+     * @param doc the {@link Document} on which the {@code <Period>} element will be appended
      * @param itagItem the {@link ItagItem} corresponding to the stream, which must not be null
      */
-    public static void generateAdaptationSetElement(@Nonnull final Document document,
+    public static void generateAdaptationSetElement(@Nonnull final Document doc,
                                                     @Nonnull final ItagItem itagItem)
             throws CreationException {
         try {
-            final Element periodElement = (Element) document.getElementsByTagName(PERIOD)
+            final Element periodElement = (Element) doc.getElementsByTagName(PERIOD)
                     .item(0);
-            final Element adaptationSetElement = document.createElement(ADAPTATION_SET);
+            final Element adaptationSetElement = doc.createElement(ADAPTATION_SET);
 
-            final Attr idAttribute = document.createAttribute("id");
-            idAttribute.setValue("0");
-            adaptationSetElement.setAttributeNode(idAttribute);
+            setAttribute(adaptationSetElement, doc, "id", "0");
 
             final MediaFormat mediaFormat = itagItem.getMediaFormat();
             if (mediaFormat == null || isNullOrEmpty(mediaFormat.getMimeType())) {
@@ -257,14 +251,8 @@ public final class YoutubeDashManifestCreatorsUtils {
                         "the MediaFormat or its mime type is null or empty");
             }
 
-            final Attr mimeTypeAttribute = document.createAttribute("mimeType");
-            mimeTypeAttribute.setValue(mediaFormat.getMimeType());
-            adaptationSetElement.setAttributeNode(mimeTypeAttribute);
-
-            final Attr subsegmentAlignmentAttribute = document.createAttribute(
-                    "subsegmentAlignment");
-            subsegmentAlignmentAttribute.setValue("true");
-            adaptationSetElement.setAttributeNode(subsegmentAlignmentAttribute);
+            setAttribute(adaptationSetElement, doc, "mimeType", mediaFormat.getMimeType());
+            setAttribute(adaptationSetElement, doc, "subsegmentAlignment", "true");
 
             periodElement.appendChild(adaptationSetElement);
         } catch (final DOMException e) {
@@ -289,23 +277,17 @@ public final class YoutubeDashManifestCreatorsUtils {
      * {@link #generateAdaptationSetElement(Document, ItagItem)}).
      * </p>
      *
-     * @param document the {@link Document} on which the the {@code <Role>} element will be
-     *                 appended
+     * @param doc the {@link Document} on which the the {@code <Role>} element will be appended
      */
-    public static void generateRoleElement(@Nonnull final Document document)
+    public static void generateRoleElement(@Nonnull final Document doc)
             throws CreationException {
         try {
-            final Element adaptationSetElement = (Element) document.getElementsByTagName(
+            final Element adaptationSetElement = (Element) doc.getElementsByTagName(
                     ADAPTATION_SET).item(0);
-            final Element roleElement = document.createElement(ROLE);
+            final Element roleElement = doc.createElement(ROLE);
 
-            final Attr schemeIdUriAttribute = document.createAttribute("schemeIdUri");
-            schemeIdUriAttribute.setValue("urn:mpeg:DASH:role:2011");
-            roleElement.setAttributeNode(schemeIdUriAttribute);
-
-            final Attr valueAttribute = document.createAttribute("value");
-            valueAttribute.setValue("main");
-            roleElement.setAttributeNode(valueAttribute);
+            setAttribute(roleElement, doc, "schemeIdUri", "urn:mpeg:DASH:role:2011");
+            setAttribute(roleElement, doc, "value", "main");
 
             adaptationSetElement.appendChild(roleElement);
         } catch (final DOMException e) {
@@ -322,56 +304,43 @@ public final class YoutubeDashManifestCreatorsUtils {
      * {@link #generateAdaptationSetElement(Document, ItagItem)}).
      * </p>
      *
-     * @param document the {@link Document} on which the the {@code <SegmentTimeline>} element will
-     *                 be appended
+     * @param doc the {@link Document} on which the the {@code <SegmentTimeline>} element will be
+     *            appended
      * @param itagItem the {@link ItagItem} to use, which must not be null
      */
-    public static void generateRepresentationElement(@Nonnull final Document document,
+    public static void generateRepresentationElement(@Nonnull final Document doc,
                                                      @Nonnull final ItagItem itagItem)
             throws CreationException {
         try {
-            final Element adaptationSetElement = (Element) document.getElementsByTagName(
+            final Element adaptationSetElement = (Element) doc.getElementsByTagName(
                     ADAPTATION_SET).item(0);
-            final Element representationElement = document.createElement(REPRESENTATION);
+            final Element representationElement = doc.createElement(REPRESENTATION);
 
             final int id = itagItem.id;
             if (id <= 0) {
                 throw CreationException.couldNotAddElement(REPRESENTATION,
                         "the id of the ItagItem is <= 0");
             }
-            final Attr idAttribute = document.createAttribute("id");
-            idAttribute.setValue(String.valueOf(id));
-            representationElement.setAttributeNode(idAttribute);
+            setAttribute(representationElement, doc, "id", String.valueOf(id));
 
             final String codec = itagItem.getCodec();
             if (isNullOrEmpty(codec)) {
                 throw CreationException.couldNotAddElement(ADAPTATION_SET,
                         "the codec value of the ItagItem is null or empty");
             }
-            final Attr codecsAttribute = document.createAttribute("codecs");
-            codecsAttribute.setValue(codec);
-            representationElement.setAttributeNode(codecsAttribute);
-
-            final Attr startWithSAPAttribute = document.createAttribute("startWithSAP");
-            startWithSAPAttribute.setValue("1");
-            representationElement.setAttributeNode(startWithSAPAttribute);
-
-            final Attr maxPlayoutRateAttribute = document.createAttribute("maxPlayoutRate");
-            maxPlayoutRateAttribute.setValue("1");
-            representationElement.setAttributeNode(maxPlayoutRateAttribute);
+            setAttribute(representationElement, doc, "codecs", codec);
+            setAttribute(representationElement, doc, "startWithSAP", "1");
+            setAttribute(representationElement, doc, "maxPlayoutRate", "1");
 
             final int bitrate = itagItem.getBitrate();
             if (bitrate <= 0) {
                 throw CreationException.couldNotAddElement(REPRESENTATION,
                         "the bitrate of the ItagItem is <= 0");
             }
-            final Attr bandwidthAttribute = document.createAttribute("bandwidth");
-            bandwidthAttribute.setValue(String.valueOf(bitrate));
-            representationElement.setAttributeNode(bandwidthAttribute);
+            setAttribute(representationElement, doc, "bandwidth", String.valueOf(bitrate));
 
-            final ItagItem.ItagType itagType = itagItem.itagType;
-
-            if (itagType == ItagItem.ItagType.VIDEO || itagType == ItagItem.ItagType.VIDEO_ONLY) {
+            if (itagItem.itagType == ItagItem.ItagType.VIDEO
+                    || itagItem.itagType == ItagItem.ItagType.VIDEO_ONLY) {
                 final int height = itagItem.getHeight();
                 final int width = itagItem.getWidth();
                 if (height <= 0 && width <= 0) {
@@ -380,25 +349,19 @@ public final class YoutubeDashManifestCreatorsUtils {
                 }
 
                 if (width > 0) {
-                    final Attr widthAttribute = document.createAttribute("width");
-                    widthAttribute.setValue(String.valueOf(width));
-                    representationElement.setAttributeNode(widthAttribute);
+                    setAttribute(representationElement, doc, "width", String.valueOf(width));
                 }
-
-                final Attr heightAttribute = document.createAttribute("height");
-                heightAttribute.setValue(String.valueOf(itagItem.getHeight()));
-                representationElement.setAttributeNode(heightAttribute);
+                setAttribute(representationElement, doc, "height",
+                        String.valueOf(itagItem.getHeight()));
 
                 final int fps = itagItem.getFps();
                 if (fps > 0) {
-                    final Attr frameRateAttribute = document.createAttribute("frameRate");
-                    frameRateAttribute.setValue(String.valueOf(fps));
-                    representationElement.setAttributeNode(frameRateAttribute);
+                    setAttribute(representationElement, doc, "frameRate", String.valueOf(fps));
                 }
             }
 
-            if (itagType == ItagItem.ItagType.AUDIO && itagItem.getSampleRate() > 0) {
-                final Attr audioSamplingRateAttribute = document.createAttribute(
+            if (itagItem.itagType == ItagItem.ItagType.AUDIO && itagItem.getSampleRate() > 0) {
+                final Attr audioSamplingRateAttribute = doc.createAttribute(
                         "audioSamplingRate");
                 audioSamplingRateAttribute.setValue(String.valueOf(itagItem.getSampleRate()));
             }
@@ -433,32 +396,28 @@ public final class YoutubeDashManifestCreatorsUtils {
      * {@link #generateRepresentationElement(Document, ItagItem)}).
      * </p>
      *
-     * @param document the {@link Document} on which the {@code <AudioChannelConfiguration>}
-     *                 element will be appended
+     * @param doc the {@link Document} on which the {@code <AudioChannelConfiguration>} element will
+     *            be appended
      * @param itagItem the {@link ItagItem} to use, which must not be null
      */
     public static void generateAudioChannelConfigurationElement(
-            @Nonnull final Document document,
+            @Nonnull final Document doc,
             @Nonnull final ItagItem itagItem) throws CreationException {
         try {
-            final Element representationElement = (Element) document.getElementsByTagName(
+            final Element representationElement = (Element) doc.getElementsByTagName(
                     REPRESENTATION).item(0);
-            final Element audioChannelConfigurationElement = document.createElement(
+            final Element audioChannelConfigurationElement = doc.createElement(
                     AUDIO_CHANNEL_CONFIGURATION);
 
-            final Attr schemeIdUriAttribute = document.createAttribute("schemeIdUri");
-            schemeIdUriAttribute.setValue(
+            setAttribute(audioChannelConfigurationElement, doc, "schemeIdUri",
                     "urn:mpeg:dash:23003:3:audio_channel_configuration:2011");
-            audioChannelConfigurationElement.setAttributeNode(schemeIdUriAttribute);
 
-            final Attr valueAttribute = document.createAttribute("value");
-            final int audioChannels = itagItem.getAudioChannels();
-            if (audioChannels <= 0) {
+            if (itagItem.getAudioChannels() <= 0) {
                 throw new CreationException("the number of audioChannels in the ItagItem is <= 0: "
-                        + audioChannels);
+                        + itagItem.getAudioChannels());
             }
-            valueAttribute.setValue(String.valueOf(itagItem.getAudioChannels()));
-            audioChannelConfigurationElement.setAttributeNode(valueAttribute);
+            setAttribute(audioChannelConfigurationElement, doc, "value",
+                    String.valueOf(itagItem.getAudioChannels()));
 
             representationElement.appendChild(audioChannelConfigurationElement);
         } catch (final DOMException e) {
@@ -467,22 +426,22 @@ public final class YoutubeDashManifestCreatorsUtils {
     }
 
     /**
-     * Convert a DASH manifest {@link Document document} to a string and cache it.
+     * Convert a DASH manifest {@link Document doc} to a string and cache it.
      *
      * @param originalBaseStreamingUrl the original base URL of the stream
-     * @param document                 the document to be converted
+     * @param doc                      the doc to be converted
      * @param manifestCreatorCache     the {@link ManifestCreatorCache} on which store the string
      *                                 generated
-     * @return the DASH manifest {@link Document document} converted to a string
+     * @return the DASH manifest {@link Document doc} converted to a string
      */
     public static String buildAndCacheResult(
             @Nonnull final String originalBaseStreamingUrl,
-            @Nonnull final Document document,
+            @Nonnull final Document doc,
             @Nonnull final ManifestCreatorCache<String, String> manifestCreatorCache)
             throws CreationException {
 
         try {
-            final String documentXml = documentToXml(document);
+            final String documentXml = documentToXml(doc);
             manifestCreatorCache.put(originalBaseStreamingUrl, documentXml);
             return documentXml;
         } catch (final Exception e) {
@@ -517,13 +476,13 @@ public final class YoutubeDashManifestCreatorsUtils {
      * {@link #generateRepresentationElement(Document, ItagItem)}).
      * </p>
      *
-     * @param document     the {@link Document} on which the {@code <SegmentTemplate>} element will
+     * @param doc          the {@link Document} on which the {@code <SegmentTemplate>} element will
      *                     be appended
      * @param baseUrl      the base URL of the OTF/post-live-DVR stream
      * @param deliveryType the stream {@link DeliveryType delivery type}, which must be either
      * {@link DeliveryType#OTF OTF} or {@link DeliveryType#LIVE LIVE}
      */
-    public static void generateSegmentTemplateElement(@Nonnull final Document document,
+    public static void generateSegmentTemplateElement(@Nonnull final Document doc,
                                                       @Nonnull final String baseUrl,
                                                       final DeliveryType deliveryType)
             throws CreationException {
@@ -533,32 +492,22 @@ public final class YoutubeDashManifestCreatorsUtils {
         }
 
         try {
-            final Element representationElement = (Element) document.getElementsByTagName(
+            final Element representationElement = (Element) doc.getElementsByTagName(
                     REPRESENTATION).item(0);
-            final Element segmentTemplateElement = document.createElement(SEGMENT_TEMPLATE);
+            final Element segmentTemplateElement = doc.createElement(SEGMENT_TEMPLATE);
 
-            final Attr startNumberAttribute = document.createAttribute("startNumber");
-            final boolean isDeliveryTypeLive = deliveryType == DeliveryType.LIVE;
             // The first sequence of post DVR streams is the beginning of the video stream and not
             // an initialization segment
-            final String startNumberValue = isDeliveryTypeLive ? "0" : "1";
-            startNumberAttribute.setValue(startNumberValue);
-            segmentTemplateElement.setAttributeNode(startNumberAttribute);
-
-            final Attr timescaleAttribute = document.createAttribute("timescale");
-            timescaleAttribute.setValue("1000");
-            segmentTemplateElement.setAttributeNode(timescaleAttribute);
+            setAttribute(segmentTemplateElement, doc, "startNumber",
+                    deliveryType == DeliveryType.LIVE ? "0" : "1");
+            setAttribute(segmentTemplateElement, doc, "timescale", "1000");
 
             // Post-live-DVR/ended livestreams streams don't require an initialization sequence
-            if (!isDeliveryTypeLive) {
-                final Attr initializationAttribute = document.createAttribute("initialization");
-                initializationAttribute.setValue(baseUrl + SQ_0);
-                segmentTemplateElement.setAttributeNode(initializationAttribute);
+            if (deliveryType != DeliveryType.LIVE) {
+                setAttribute(segmentTemplateElement, doc, "initialization", baseUrl + SQ_0);
             }
 
-            final Attr mediaAttribute = document.createAttribute("media");
-            mediaAttribute.setValue(baseUrl + "&sq=$Number$");
-            segmentTemplateElement.setAttributeNode(mediaAttribute);
+            setAttribute(segmentTemplateElement, doc, "media", baseUrl + "&sq=$Number$");
 
             representationElement.appendChild(segmentTemplateElement);
         } catch (final DOMException e) {
@@ -575,15 +524,15 @@ public final class YoutubeDashManifestCreatorsUtils {
      * {@link #generateSegmentTemplateElement(Document, String, DeliveryType)}.
      * </p>
      *
-     * @param document the {@link Document} on which the the {@code <SegmentTimeline>} element will
-     *                 be appended
+     * @param doc the {@link Document} on which the the {@code <SegmentTimeline>} element will be
+     *            appended
      */
-    public static void generateSegmentTimelineElement(@Nonnull final Document document)
+    public static void generateSegmentTimelineElement(@Nonnull final Document doc)
             throws CreationException {
         try {
-            final Element segmentTemplateElement = (Element) document.getElementsByTagName(
+            final Element segmentTemplateElement = (Element) doc.getElementsByTagName(
                     SEGMENT_TEMPLATE).item(0);
-            final Element segmentTimelineElement = document.createElement(SEGMENT_TIMELINE);
+            final Element segmentTimelineElement = doc.createElement(SEGMENT_TIMELINE);
 
             segmentTemplateElement.appendChild(segmentTimelineElement);
         } catch (final DOMException e) {
@@ -672,8 +621,7 @@ public final class YoutubeDashManifestCreatorsUtils {
             // supported by all platforms (like the Android implementation)
         }
 
-        final DocumentBuilder documentBuilder = documentBuilderFactory.newDocumentBuilder();
-        return documentBuilder.newDocument();
+        return documentBuilderFactory.newDocumentBuilder().newDocument();
     }
 
     /**
@@ -681,13 +629,13 @@ public final class YoutubeDashManifestCreatorsUtils {
      * support setting {@link XMLConstants#ACCESS_EXTERNAL_DTD} and
      * {@link XMLConstants#ACCESS_EXTERNAL_SCHEMA} in {@link TransformerFactory} instances.
      *
-     * @param document the document to convert, which must have been created using
-     *                 {@link #newDocument()} to properly prevent XXE attacks
-     * @return the document converted to an XML string, making sure there can't be XXE attacks
+     * @param doc the doc to convert, which must have been created using {@link #newDocument()} to
+     *            properly prevent XXE attacks
+     * @return the doc converted to an XML string, making sure there can't be XXE attacks
      */
     // Sonar warning is suppressed because it is still shown even if we apply its solution
     @SuppressWarnings("squid:S2755")
-    private static String documentToXml(@Nonnull final Document document)
+    private static String documentToXml(@Nonnull final Document doc)
             throws TransformerException {
 
         final TransformerFactory transformerFactory = TransformerFactory.newInstance();
@@ -705,7 +653,7 @@ public final class YoutubeDashManifestCreatorsUtils {
         transformer.setOutputProperty(OutputKeys.STANDALONE, "no");
 
         final StringWriter result = new StringWriter();
-        transformer.transform(new DOMSource(document), new StreamResult(result));
+        transformer.transform(new DOMSource(doc), new StreamResult(result));
 
         return result.toString();
     }

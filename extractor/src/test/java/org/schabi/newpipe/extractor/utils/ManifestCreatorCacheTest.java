@@ -53,6 +53,11 @@ class ManifestCreatorCacheTest {
                         + "call");
     }
 
+    /**
+     * Adds sample strings to the provided manifest creator cache, in order to test clear factor and
+     * maximum size.
+     * @param cache the cache to fill with some data
+     */
     private static void setCacheContent(final ManifestCreatorCache<String, String> cache) {
         int i = 0;
         while (i < 26) {

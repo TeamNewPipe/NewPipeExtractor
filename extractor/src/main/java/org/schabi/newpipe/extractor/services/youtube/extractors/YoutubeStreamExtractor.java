@@ -1147,34 +1147,27 @@ public class YoutubeStreamExtractor extends StreamExtractor {
             final java.util.function.Function<ItagInfo, T> streamBuilderHelper,
             final String streamTypeExceptionMessage) throws ParsingException {
         try {
-            final List<ItagInfo> itagInfos = new ArrayList<>();
-            if (html5StreamingData == null && androidStreamingData == null
-                    && iosStreamingData == null) {
-                return Collections.emptyList();
-            }
-
-            final List<Pair<JsonObject, String>> streamingDataAndCpnLoopList = new ArrayList<>();
-            // Use the androidStreamingData object first because there is no n param and no
-            // signatureCiphers in streaming URLs of the Android client
-            streamingDataAndCpnLoopList.add(new Pair<>(androidStreamingData, androidCpn));
-            streamingDataAndCpnLoopList.add(new Pair<>(html5StreamingData, html5Cpn));
-            // Use the iosStreamingData object in the last position because most of the available
-            // streams can be extracted with the Android and web clients and also because the iOS
-            // client is only enabled by default on livestreams
-            streamingDataAndCpnLoopList.add(new Pair<>(iosStreamingData, iosCpn));
-
-            for (final Pair<JsonObject, String> pair : streamingDataAndCpnLoopList) {
-                itagInfos.addAll(getStreamsFromStreamingDataKey(pair.getFirst(), streamingDataKey,
-                        itagTypeWanted, pair.getSecond()));
-            }
-
+            final String videoId = getId();
             final List<T> streamList = new ArrayList<>();
-            for (final ItagInfo itagInfo : itagInfos) {
-                final T stream = streamBuilderHelper.apply(itagInfo);
-                if (!Stream.containSimilarStream(stream, streamList)) {
-                    streamList.add(stream);
-                }
-            }
+
+            java.util.stream.Stream.of(
+                    // Use the androidStreamingData object first because there is no n param and no
+                    // signatureCiphers in streaming URLs of the Android client
+                    new Pair<>(androidStreamingData, androidCpn),
+                    new Pair<>(html5StreamingData, html5Cpn),
+                    // Use the iosStreamingData object in the last position because most of the
+                    // available streams can be extracted with the Android and web clients and also
+                    // because the iOS client is only enabled by default on livestreams
+                    new Pair<>(iosStreamingData, iosCpn)
+            )
+                    .flatMap(pair -> getStreamsFromStreamingDataKey(videoId, pair.getFirst(),
+                            streamingDataKey, itagTypeWanted, pair.getSecond()))
+                    .map(streamBuilderHelper)
+                    .forEachOrdered(stream -> {
+                        if (!Stream.containSimilarStream(stream, streamList)) {
+                            streamList.add(stream);
+                        }
+                    });
 
             return streamList;
         } catch (final Exception e) {
@@ -1293,43 +1286,36 @@ public class YoutubeStreamExtractor extends StreamExtractor {
     }
 
     @Nonnull
-    private List<ItagInfo> getStreamsFromStreamingDataKey(
+    private java.util.stream.Stream<ItagInfo> getStreamsFromStreamingDataKey(
+            final String videoId,
             final JsonObject streamingData,
             final String streamingDataKey,
             @Nonnull final ItagItem.ItagType itagTypeWanted,
-            @Nonnull final String contentPlaybackNonce) throws ParsingException {
+            @Nonnull final String contentPlaybackNonce) {
         if (streamingData == null || !streamingData.has(streamingDataKey)) {
-            return Collections.emptyList();
+            return java.util.stream.Stream.empty();
         }
 
-        final String videoId = getId();
-        final List<ItagInfo> itagInfos = new ArrayList<>();
-        final JsonArray formats = streamingData.getArray(streamingDataKey);
-        for (int i = 0; i != formats.size(); ++i) {
-            final JsonObject formatData = formats.getObject(i);
-            final int itag = formatData.getInt("itag");
-
-            if (!ItagItem.isSupported(itag)) {
-                continue;
-            }
-
-            try {
-                final ItagItem itagItem = ItagItem.getItag(itag);
-                final ItagItem.ItagType itagType = itagItem.itagType;
-                if (itagType == itagTypeWanted) {
-                    buildAndAddItagInfoToList(videoId, itagInfos, formatData, itagItem,
-                            itagType, contentPlaybackNonce);
-                }
-            } catch (final IOException | ExtractionException ignored) {
-            }
-        }
-
-        return itagInfos;
+        return streamingData.getArray(streamingDataKey).stream()
+                .filter(JsonObject.class::isInstance)
+                .map(JsonObject.class::cast)
+                .map(formatData -> {
+                    try {
+                        final ItagItem itagItem = ItagItem.getItag(formatData.getInt("itag"));
+                        if (itagItem.itagType == itagTypeWanted) {
+                            return buildAndAddItagInfoToList(videoId, formatData, itagItem,
+                                    itagItem.itagType, contentPlaybackNonce);
+                        }
+                    } catch (final IOException | ExtractionException ignored) {
+                        // if the itag is not supported and getItag fails, we end up here
+                    }
+                    return null;
+                })
+                .filter(Objects::nonNull);
     }
 
-    private void buildAndAddItagInfoToList(
+    private ItagInfo buildAndAddItagInfoToList(
             @Nonnull final String videoId,
-            @Nonnull final List<ItagInfo> itagInfos,
             @Nonnull final JsonObject formatData,
             @Nonnull final ItagItem itagItem,
             @Nonnull final ItagItem.ItagType itagType,
@@ -1372,12 +1358,10 @@ public class YoutubeStreamExtractor extends StreamExtractor {
 
         if (streamType == StreamType.LIVE_STREAM || streamType == StreamType.POST_LIVE_STREAM) {
             itagItem.setTargetDurationSec(formatData.getInt("targetDurationSec"));
-        }
-
-        if (itagType == ItagItem.ItagType.VIDEO || itagType == ItagItem.ItagType.VIDEO_ONLY) {
+        } else if (itagType == ItagItem.ItagType.VIDEO
+                || itagType == ItagItem.ItagType.VIDEO_ONLY) {
             itagItem.setFps(formatData.getInt("fps"));
-        }
-        if (itagType == ItagItem.ItagType.AUDIO) {
+        } else if (itagType == ItagItem.ItagType.AUDIO) {
             // YouTube return the audio sample rate as a string
             itagItem.setSampleRate(Integer.parseInt(formatData.getString("audioSampleRate")));
             itagItem.setAudioChannels(formatData.getInt("audioChannels"));
@@ -1403,7 +1387,7 @@ public class YoutubeStreamExtractor extends StreamExtractor {
             itagInfo.setIsUrl(streamType != StreamType.POST_LIVE_STREAM);
         }
 
-        itagInfos.add(itagInfo);
+        return itagInfo;
     }
 
     @Nonnull

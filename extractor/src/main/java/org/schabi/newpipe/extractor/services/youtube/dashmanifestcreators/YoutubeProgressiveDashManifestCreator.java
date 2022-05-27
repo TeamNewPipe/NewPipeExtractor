@@ -3,7 +3,6 @@ package org.schabi.newpipe.extractor.services.youtube.dashmanifestcreators;
 import org.schabi.newpipe.extractor.services.youtube.DeliveryType;
 import org.schabi.newpipe.extractor.services.youtube.ItagItem;
 import org.schabi.newpipe.extractor.utils.ManifestCreatorCache;
-import org.w3c.dom.Attr;
 import org.w3c.dom.DOMException;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
@@ -18,6 +17,7 @@ import static org.schabi.newpipe.extractor.services.youtube.dashmanifestcreators
 import static org.schabi.newpipe.extractor.services.youtube.dashmanifestcreators.YoutubeDashManifestCreatorsUtils.SEGMENT_BASE;
 import static org.schabi.newpipe.extractor.services.youtube.dashmanifestcreators.YoutubeDashManifestCreatorsUtils.buildAndCacheResult;
 import static org.schabi.newpipe.extractor.services.youtube.dashmanifestcreators.YoutubeDashManifestCreatorsUtils.generateDocumentAndDoCommonElementsGeneration;
+import static org.schabi.newpipe.extractor.services.youtube.dashmanifestcreators.YoutubeDashManifestCreatorsUtils.setAttribute;
 
 /**
  * Class which generates DASH manifests of {@link DeliveryType#PROGRESSIVE YouTube progressive}
@@ -100,14 +100,14 @@ public final class YoutubeProgressiveDashManifestCreator {
             }
         }
 
-        final Document document = generateDocumentAndDoCommonElementsGeneration(itagItem,
+        final Document doc = generateDocumentAndDoCommonElementsGeneration(itagItem,
                 streamDuration);
 
-        generateBaseUrlElement(document, progressiveStreamingBaseUrl);
-        generateSegmentBaseElement(document, itagItem);
-        generateInitializationElement(document, itagItem);
+        generateBaseUrlElement(doc, progressiveStreamingBaseUrl);
+        generateSegmentBaseElement(doc, itagItem);
+        generateInitializationElement(doc, itagItem);
 
-        return buildAndCacheResult(progressiveStreamingBaseUrl, document,
+        return buildAndCacheResult(progressiveStreamingBaseUrl, doc,
                 PROGRESSIVE_STREAMS_CACHE);
     }
 
@@ -128,18 +128,17 @@ public final class YoutubeProgressiveDashManifestCreator {
      * {@link YoutubeDashManifestCreatorsUtils#generateRepresentationElement(Document, ItagItem)}).
      * </p>
      *
-     * @param document the {@link Document} on which the {@code <BaseURL>} element will
-     *                 be appended
+     * @param doc the {@link Document} on which the {@code <BaseURL>} element will be appended
      * @param baseUrl  the base URL of the stream, which must not be null and will be set as the
      *                 content of the {@code <BaseURL>} element
      */
-    private static void generateBaseUrlElement(@Nonnull final Document document,
+    private static void generateBaseUrlElement(@Nonnull final Document doc,
                                                @Nonnull final String baseUrl)
             throws CreationException {
         try {
-            final Element representationElement = (Element) document.getElementsByTagName(
+            final Element representationElement = (Element) doc.getElementsByTagName(
                     REPRESENTATION).item(0);
-            final Element baseURLElement = document.createElement(BASE_URL);
+            final Element baseURLElement = doc.createElement(BASE_URL);
             baseURLElement.setTextContent(baseUrl);
             representationElement.appendChild(baseURLElement);
         } catch (final DOMException e) {
@@ -167,28 +166,23 @@ public final class YoutubeProgressiveDashManifestCreator {
      * should be generated too.
      * </p>
      *
-     * @param document the {@link Document} on which the {@code <SegmentBase>} element will be
-     *                 appended
+     * @param doc the {@link Document} on which the {@code <SegmentBase>} element will be appended
      * @param itagItem the {@link ItagItem} to use, which must not be null
      */
-    private static void generateSegmentBaseElement(@Nonnull final Document document,
+    private static void generateSegmentBaseElement(@Nonnull final Document doc,
                                                    @Nonnull final ItagItem itagItem)
             throws CreationException {
         try {
-            final Element representationElement = (Element) document.getElementsByTagName(
+            final Element representationElement = (Element) doc.getElementsByTagName(
                     REPRESENTATION).item(0);
+            final Element segmentBaseElement = doc.createElement(SEGMENT_BASE);
 
-            final Element segmentBaseElement = document.createElement(SEGMENT_BASE);
-            final Attr indexRangeAttribute = document.createAttribute("indexRange");
-
+            final String range = itagItem.getIndexStart() + "-" + itagItem.getIndexEnd();
             if (itagItem.getIndexStart() < 0 || itagItem.getIndexEnd() < 0) {
                 throw CreationException.couldNotAddElement(SEGMENT_BASE,
-                        "ItagItem's indexStart or " + "indexEnd are < 0: "
-                                + itagItem.getIndexStart() + "-" + itagItem.getIndexEnd());
+                        "ItagItem's indexStart or " + "indexEnd are < 0: " + range);
             }
-
-            indexRangeAttribute.setValue(itagItem.getIndexStart() + "-" + itagItem.getIndexEnd());
-            segmentBaseElement.setAttributeNode(indexRangeAttribute);
+            setAttribute(segmentBaseElement, doc, "indexRange", range);
 
             representationElement.appendChild(segmentBaseElement);
         } catch (final DOMException e) {
@@ -214,28 +208,24 @@ public final class YoutubeProgressiveDashManifestCreator {
      * {@link #generateSegmentBaseElement(Document, ItagItem)}).
      * </p>
      *
-     * @param document the {@link Document} on which the {@code <Initialization>} element will
-     *                 be appended
+     * @param doc the {@link Document} on which the {@code <Initialization>} element will be
+     *            appended
      * @param itagItem the {@link ItagItem} to use, which must not be null
      */
-    private static void generateInitializationElement(@Nonnull final Document document,
+    private static void generateInitializationElement(@Nonnull final Document doc,
                                                       @Nonnull final ItagItem itagItem)
             throws CreationException {
         try {
-            final Element segmentBaseElement = (Element) document.getElementsByTagName(
+            final Element segmentBaseElement = (Element) doc.getElementsByTagName(
                     SEGMENT_BASE).item(0);
+            final Element initializationElement = doc.createElement(INITIALIZATION);
 
-            final Element initializationElement = document.createElement(INITIALIZATION);
-            final Attr rangeAttribute = document.createAttribute("range");
-
+            final String range = itagItem.getInitStart() + "-" + itagItem.getInitEnd();
             if (itagItem.getInitStart() < 0 || itagItem.getInitEnd() < 0) {
                 throw CreationException.couldNotAddElement(INITIALIZATION,
-                        "ItagItem's initStart and/or " + "initEnd are/is < 0: "
-                                + itagItem.getInitStart() + "-" + itagItem.getInitEnd());
+                        "ItagItem's initStart and/or " + "initEnd are/is < 0: " + range);
             }
-
-            rangeAttribute.setValue(itagItem.getInitStart() + "-" + itagItem.getInitEnd());
-            initializationElement.setAttributeNode(rangeAttribute);
+            setAttribute(initializationElement, doc, "range", range);
 
             segmentBaseElement.appendChild(initializationElement);
         } catch (final DOMException e) {
