@@ -188,25 +188,27 @@ public class SoundcloudStreamExtractorTest {
             super.testAudioStreams();
             final List<AudioStream> audioStreams = extractor.getAudioStreams();
             assertEquals(2, audioStreams.size());
-            for (final AudioStream audioStream : audioStreams) {
+            audioStreams.forEach(audioStream -> {
                 final DeliveryMethod deliveryMethod = audioStream.getDeliveryMethod();
-                assertSame(DeliveryMethod.PROGRESSIVE_HTTP, deliveryMethod,
-                        "Wrong delivery method for stream " + audioStream.getId() + ": "
-                                + deliveryMethod);
                 final String mediaUrl = audioStream.getContent();
                 if (audioStream.getFormat() == MediaFormat.OPUS) {
                     // Assert that it's an OPUS 64 kbps media URL with a single range which comes
                     // from an HLS SoundCloud CDN
                     ExtractorAsserts.assertContains("-hls-opus-media.sndcdn.com", mediaUrl);
                     ExtractorAsserts.assertContains(".64.opus", mediaUrl);
-                }
-                if (audioStream.getFormat() == MediaFormat.MP3) {
+                    assertSame(DeliveryMethod.HLS, deliveryMethod,
+                            "Wrong delivery method for stream " + audioStream.getId() + ": "
+                                    + deliveryMethod);
+                } else if (audioStream.getFormat() == MediaFormat.MP3) {
                     // Assert that it's a MP3 128 kbps media URL which comes from a progressive
                     // SoundCloud CDN
                     ExtractorAsserts.assertContains("-media.sndcdn.com/bKOA7Pwbut93.128.mp3",
                             mediaUrl);
+                    assertSame(DeliveryMethod.PROGRESSIVE_HTTP, deliveryMethod,
+                            "Wrong delivery method for stream " + audioStream.getId() + ": "
+                                    + deliveryMethod);
                 }
-            }
+            });
         }
     }
 }
