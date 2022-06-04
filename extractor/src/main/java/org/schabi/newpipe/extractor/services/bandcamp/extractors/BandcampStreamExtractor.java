@@ -11,7 +11,6 @@ import com.grack.nanojson.JsonParserException;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
-import org.schabi.newpipe.extractor.MediaFormat;
 import org.schabi.newpipe.extractor.StreamingService;
 import org.schabi.newpipe.extractor.downloader.Downloader;
 import org.schabi.newpipe.extractor.exceptions.ExtractionException;
@@ -19,11 +18,13 @@ import org.schabi.newpipe.extractor.exceptions.ParsingException;
 import org.schabi.newpipe.extractor.linkhandler.LinkHandler;
 import org.schabi.newpipe.extractor.localization.DateWrapper;
 import org.schabi.newpipe.extractor.playlist.PlaylistInfoItemsCollector;
-import org.schabi.newpipe.extractor.stream.AudioStream;
 import org.schabi.newpipe.extractor.stream.Description;
 import org.schabi.newpipe.extractor.stream.StreamExtractor;
 import org.schabi.newpipe.extractor.stream.StreamType;
-import org.schabi.newpipe.extractor.stream.VideoStream;
+import org.schabi.newpipe.extractor.streamdata.delivery.simpleimpl.SimpleProgressiveHTTPDeliveryDataImpl;
+import org.schabi.newpipe.extractor.streamdata.format.registry.AudioFormatRegistry;
+import org.schabi.newpipe.extractor.streamdata.stream.AudioStream;
+import org.schabi.newpipe.extractor.streamdata.stream.simpleimpl.SimpleAudioStreamImpl;
 import org.schabi.newpipe.extractor.utils.JsonUtils;
 import org.schabi.newpipe.extractor.utils.Utils;
 
@@ -143,31 +144,23 @@ public class BandcampStreamExtractor extends StreamExtractor {
 
     @Override
     public List<AudioStream> getAudioStreams() {
-        return Collections.singletonList(new AudioStream.Builder()
-                .setId("mp3-128")
-                .setContent(albumJson.getArray("trackinfo")
-                        .getObject(0)
-                        .getObject("file")
-                        .getString("mp3-128"), true)
-                .setMediaFormat(MediaFormat.MP3)
-                .setAverageBitrate(128)
-                .build());
+        return Collections.singletonList(
+                new SimpleAudioStreamImpl(
+                        new SimpleProgressiveHTTPDeliveryDataImpl(albumJson
+                                .getArray("trackinfo")
+                                .getObject(0)
+                                .getObject("file")
+                                .getString("mp3-128")),
+                        AudioFormatRegistry.MP3,
+                        128
+                )
+        );
     }
 
     @Override
     public long getLength() throws ParsingException {
         return (long) albumJson.getArray("trackinfo").getObject(0)
                 .getDouble("duration");
-    }
-
-    @Override
-    public List<VideoStream> getVideoStreams() {
-        return Collections.emptyList();
-    }
-
-    @Override
-    public List<VideoStream> getVideoOnlyStreams() {
-        return Collections.emptyList();
     }
 
     @Override

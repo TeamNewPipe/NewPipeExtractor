@@ -1,6 +1,5 @@
 package org.schabi.newpipe.extractor.services.peertube.extractors;
 
-import static org.schabi.newpipe.extractor.stream.AudioStream.UNKNOWN_BITRATE;
 import static org.schabi.newpipe.extractor.utils.Utils.UTF_8;
 import static org.schabi.newpipe.extractor.utils.Utils.isNullOrEmpty;
 
@@ -9,7 +8,6 @@ import com.grack.nanojson.JsonObject;
 import com.grack.nanojson.JsonParser;
 import com.grack.nanojson.JsonParserException;
 
-import org.schabi.newpipe.extractor.MediaFormat;
 import org.schabi.newpipe.extractor.NewPipe;
 import org.schabi.newpipe.extractor.StreamingService;
 import org.schabi.newpipe.extractor.downloader.Downloader;
@@ -22,15 +20,24 @@ import org.schabi.newpipe.extractor.localization.DateWrapper;
 import org.schabi.newpipe.extractor.services.peertube.PeertubeParsingHelper;
 import org.schabi.newpipe.extractor.services.peertube.linkHandler.PeertubeSearchQueryHandlerFactory;
 import org.schabi.newpipe.extractor.services.peertube.linkHandler.PeertubeStreamLinkHandlerFactory;
-import org.schabi.newpipe.extractor.stream.AudioStream;
-import org.schabi.newpipe.extractor.stream.DeliveryMethod;
 import org.schabi.newpipe.extractor.stream.Description;
-import org.schabi.newpipe.extractor.stream.Stream;
 import org.schabi.newpipe.extractor.stream.StreamExtractor;
 import org.schabi.newpipe.extractor.stream.StreamInfoItemsCollector;
 import org.schabi.newpipe.extractor.stream.StreamType;
-import org.schabi.newpipe.extractor.stream.SubtitlesStream;
-import org.schabi.newpipe.extractor.stream.VideoStream;
+import org.schabi.newpipe.extractor.streamdata.delivery.DeliveryData;
+import org.schabi.newpipe.extractor.streamdata.delivery.simpleimpl.SimpleHLSDeliveryDataImpl;
+import org.schabi.newpipe.extractor.streamdata.delivery.simpleimpl.SimpleProgressiveHTTPDeliveryDataImpl;
+import org.schabi.newpipe.extractor.streamdata.delivery.simpleimpl.SimpleTorrentDeliveryDataImpl;
+import org.schabi.newpipe.extractor.streamdata.format.registry.AudioFormatRegistry;
+import org.schabi.newpipe.extractor.streamdata.format.registry.SubtitleFormatRegistry;
+import org.schabi.newpipe.extractor.streamdata.format.registry.VideoAudioFormatRegistry;
+import org.schabi.newpipe.extractor.streamdata.stream.AudioStream;
+import org.schabi.newpipe.extractor.streamdata.stream.Stream;
+import org.schabi.newpipe.extractor.streamdata.stream.SubtitleStream;
+import org.schabi.newpipe.extractor.streamdata.stream.VideoAudioStream;
+import org.schabi.newpipe.extractor.streamdata.stream.simpleimpl.SimpleAudioStreamImpl;
+import org.schabi.newpipe.extractor.streamdata.stream.simpleimpl.SimpleSubtitleStreamImpl;
+import org.schabi.newpipe.extractor.streamdata.stream.simpleimpl.SimpleVideoAudioStreamImpl;
 import org.schabi.newpipe.extractor.utils.JsonUtils;
 import org.schabi.newpipe.extractor.utils.Utils;
 
@@ -41,6 +48,9 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Locale;
+import java.util.Objects;
+import java.util.function.BiFunction;
+import java.util.function.Consumer;
 import java.util.stream.Collectors;
 
 import javax.annotation.Nonnull;
@@ -59,9 +69,9 @@ public class PeertubeStreamExtractor extends StreamExtractor {
     private final String baseUrl;
     private JsonObject json;
 
-    private final List<SubtitlesStream> subtitles = new ArrayList<>();
-    private final List<AudioStream> audioStreams = new ArrayList<>();
-    private final List<VideoStream> videoStreams = new ArrayList<>();
+    private List<SubtitleStream> subtitles = null;
+    private List<AudioStream> audioStreams = null;
+    private List<VideoAudioStream> videoStreams = null;
 
     public PeertubeStreamExtractor(final StreamingService service, final LinkHandler linkHandler)
             throws ParsingException {
@@ -118,12 +128,7 @@ public class PeertubeStreamExtractor extends StreamExtractor {
 
     @Override
     public int getAgeLimit() throws ParsingException {
-        final boolean isNSFW = JsonUtils.getBoolean(json, "nsfw");
-        if (isNSFW) {
-            return 18;
-        } else {
-            return NO_AGE_LIMIT;
-        }
+        return JsonUtils.getBoolean(json, "nsfw") ? 18 : NO_AGE_LIMIT;
     }
 
     @Override
@@ -136,12 +141,9 @@ public class PeertubeStreamExtractor extends StreamExtractor {
         final long timestamp = getTimestampSeconds(
                 "((#|&|\\?)start=\\d{0,3}h?\\d{0,3}m?\\d{1,3}s?)");
 
-        if (timestamp == -2) {
-            // regex for timestamp was not found
-            return 0;
-        } else {
-            return timestamp;
-        }
+        return (timestamp == -2)
+                ? 0 // regex for timestamp was not found
+                : timestamp;
     }
 
     @Override
@@ -212,15 +214,16 @@ public class PeertubeStreamExtractor extends StreamExtractor {
 
     @Nonnull
     @Override
-    public String getHlsUrl() {
+    public String getHlsMasterPlaylistUrl() throws ParsingException {
         assertPageFetched();
 
-        if (getStreamType() == StreamType.VIDEO_STREAM
-                && !isNullOrEmpty(json.getObject(FILES))) {
+        if (!isLive() && !isNullOrEmpty(json.getObject(FILES))) {
             return json.getObject(FILES).getString(PLAYLIST_URL, "");
         }
 
-        return json.getArray(STREAMING_PLAYLISTS).getObject(0).getString(PLAYLIST_URL, "");
+        return json.getArray(STREAMING_PLAYLISTS)
+                .getObject(0)
+                .getString(PLAYLIST_URL, "");
     }
 
     @Override
@@ -234,51 +237,35 @@ public class PeertubeStreamExtractor extends StreamExtractor {
         That's why the extraction of audio streams is only run when there are video streams
         extracted and when the content is not a livestream.
          */
-        if (audioStreams.isEmpty() && videoStreams.isEmpty()
-                && getStreamType() == StreamType.VIDEO_STREAM) {
-            getStreams();
-        }
+        tryExtractStreams();
 
         return audioStreams;
     }
 
     @Override
-    public List<VideoStream> getVideoStreams() throws ExtractionException {
+    public List<VideoAudioStream> getVideoStreams() throws ExtractionException {
         assertPageFetched();
 
-        if (videoStreams.isEmpty()) {
-            if (getStreamType() == StreamType.VIDEO_STREAM) {
-                getStreams();
-            } else {
-                extractLiveVideoStreams();
-            }
-        }
+        tryExtractStreams();
 
         return videoStreams;
     }
 
-    @Override
-    public List<VideoStream> getVideoOnlyStreams() {
-        return Collections.emptyList();
-    }
-
     @Nonnull
     @Override
-    public List<SubtitlesStream> getSubtitlesDefault() {
+    public List<SubtitleStream> getSubtitles() {
+        assertPageFetched();
         return subtitles;
-    }
-
-    @Nonnull
-    @Override
-    public List<SubtitlesStream> getSubtitles(final MediaFormat format) {
-        return subtitles.stream()
-                .filter(sub -> sub.getFormat() == format)
-                .collect(Collectors.toList());
     }
 
     @Override
     public StreamType getStreamType() {
-        return json.getBoolean("isLive") ? StreamType.LIVE_STREAM : StreamType.VIDEO_STREAM;
+        return isLive() ? StreamType.LIVE_STREAM : StreamType.VIDEO_STREAM;
+    }
+
+    @Override
+    public boolean isLive() {
+        return json.getBoolean("isLive");
     }
 
     @Nullable
@@ -383,7 +370,7 @@ public class PeertubeStreamExtractor extends StreamExtractor {
             throw new ExtractionException("Could not extract PeerTube channel data");
         }
 
-        loadSubtitles();
+        tryExtractSubtitles();
     }
 
     private void setInitialData(final String responseBody) throws ExtractionException {
@@ -398,53 +385,94 @@ public class PeertubeStreamExtractor extends StreamExtractor {
         PeertubeParsingHelper.validate(json);
     }
 
-    private void loadSubtitles() {
-        if (subtitles.isEmpty()) {
-            try {
-                final Response response = getDownloader().get(baseUrl
-                        + PeertubeStreamLinkHandlerFactory.VIDEO_API_ENDPOINT
-                        + getId() + "/captions");
-                final JsonObject captionsJson = JsonParser.object().from(response.responseBody());
-                final JsonArray captions = JsonUtils.getArray(captionsJson, "data");
-                for (final Object c : captions) {
-                    if (c instanceof JsonObject) {
-                        final JsonObject caption = (JsonObject) c;
-                        final String url = baseUrl + JsonUtils.getString(caption, "captionPath");
-                        final String languageCode = JsonUtils.getString(caption, "language.id");
-                        final String ext = url.substring(url.lastIndexOf(".") + 1);
-                        final MediaFormat fmt = MediaFormat.getFromSuffix(ext);
-                        if (fmt != null && !isNullOrEmpty(languageCode)) {
-                            subtitles.add(new SubtitlesStream.Builder()
-                                    .setContent(url, true)
-                                    .setMediaFormat(fmt)
-                                    .setLanguageCode(languageCode)
-                                    .setAutoGenerated(false)
-                                    .build());
+    private void tryExtractSubtitles() {
+        if (subtitles != null) {
+            return;
+        }
+        try {
+            final Response response = getDownloader().get(baseUrl
+                    + PeertubeStreamLinkHandlerFactory.VIDEO_API_ENDPOINT
+                    + getId() + "/captions");
+            final JsonObject captionsJson = JsonParser.object().from(response.responseBody());
+            final JsonArray captions = JsonUtils.getArray(captionsJson, "data");
+
+            subtitles = captions.stream()
+                    .filter(JsonObject.class::isInstance)
+                    .map(JsonObject.class::cast)
+                    .map(caption -> {
+                        try {
+                            final String url = baseUrl + JsonUtils.getString(caption,
+                                    "captionPath");
+
+                            return new SimpleSubtitleStreamImpl(
+                                    new SimpleProgressiveHTTPDeliveryDataImpl(url),
+                                    new SubtitleFormatRegistry()
+                                            .getFromSuffix(
+                                                    url.substring(url.lastIndexOf(".") + 1)),
+                                    false,
+                                    JsonUtils.getString(caption, "language.id")
+                            );
+                        } catch (final Exception ignored) {
+                            return null;
                         }
-                    }
-                }
-            } catch (final Exception ignored) {
-                // Ignore all exceptions
-            }
+                    })
+                    .filter(Objects::nonNull)
+                    .collect(Collectors.toList());
+        } catch (final Exception ignored) {
+            subtitles = Collections.emptyList();
+        }
+    }
+
+    private void tryExtractStreams() throws ParsingException {
+        if (audioStreams != null && videoStreams != null) {
+            return;
+        }
+
+        // Initialize
+        audioStreams = new ArrayList<>();
+        videoStreams = new ArrayList<>();
+
+        if (isLive()) {
+            extractLiveVideoStreams();
+            return;
+        }
+
+        // Progressive streams
+        try {
+            addStreamsFromArray(
+                    json.getArray(FILES),
+                    null);
+        } catch (final Exception e) {
+            throw new ParsingException("Could not add HLS streams", e);
+        }
+
+        // HLS streams
+        try {
+            json.getArray(STREAMING_PLAYLISTS).stream()
+                    .filter(JsonObject.class::isInstance)
+                    .map(JsonObject.class::cast)
+                    .forEach(playlist -> addStreamsFromArray(
+                            playlist.getArray(FILES),
+                            playlist.getString(PLAYLIST_URL)));
+        } catch (final Exception e) {
+            throw new ParsingException("Could not add HLS streams", e);
         }
     }
 
     private void extractLiveVideoStreams() throws ParsingException {
         try {
-            final JsonArray streamingPlaylists = json.getArray(STREAMING_PLAYLISTS);
-            streamingPlaylists.stream()
+            json.getArray(STREAMING_PLAYLISTS)
+                    .stream()
                     .filter(JsonObject.class::isInstance)
                     .map(JsonObject.class::cast)
-                    .map(stream -> new VideoStream.Builder()
-                            .setId(String.valueOf(stream.getInt("id", -1)))
-                            .setContent(stream.getString(PLAYLIST_URL, ""), true)
-                            .setIsVideoOnly(false)
-                            .setResolution("")
-                            .setMediaFormat(MediaFormat.MPEG_4)
-                            .setDeliveryMethod(DeliveryMethod.HLS)
-                            .build())
-                    // Don't use the containsSimilarStream method because it will always return
-                    // false so if there are multiples HLS URLs returned, only the first will be
+                    .map(stream -> new SimpleVideoAudioStreamImpl(
+                            new SimpleHLSDeliveryDataImpl(stream.getString(PLAYLIST_URL, "")),
+                            VideoAudioFormatRegistry.MPEG_4)
+                    )
+                    // Don't use the containsSimilarStream method because it will always
+                    // return
+                    // false so if there are multiples HLS URLs returned, only the first
+                    // will be
                     // extracted in this case.
                     .forEachOrdered(videoStreams::add);
         } catch (final Exception e) {
@@ -452,192 +480,98 @@ public class PeertubeStreamExtractor extends StreamExtractor {
         }
     }
 
-    private void getStreams() throws ParsingException {
-        // Progressive streams
-        getStreamsFromArray(json.getArray(FILES), "");
+    private void addStreamsFromArray(
+            @Nonnull final JsonArray streams,
+            final String playlistUrl
+    ) {
+        streams.stream()
+                .filter(JsonObject.class::isInstance)
+                .map(JsonObject.class::cast)
+                .filter(stream -> !isNullOrEmpty(getUrlFromStream(stream)))
+                .forEach(stream -> {
+                    final String resolution = getResolutionFromStream(stream);
 
-        // HLS streams
-        try {
-            for (final JsonObject playlist : json.getArray(STREAMING_PLAYLISTS).stream()
-                    .filter(JsonObject.class::isInstance)
-                    .map(JsonObject.class::cast)
-                    .collect(Collectors.toList())) {
-                getStreamsFromArray(playlist.getArray(FILES), playlist.getString(PLAYLIST_URL));
-            }
-        } catch (final Exception e) {
-            throw new ParsingException("Could not get streams", e);
-        }
+                    if (resolution.toLowerCase().contains("audio")) {
+                        // An audio stream
+                        addNewStreams(
+                                this.audioStreams,
+                                stream,
+                                playlistUrl,
+                                (s, dd) -> new SimpleAudioStreamImpl(
+                                        dd,
+                                        new AudioFormatRegistry()
+                                                .getFromSuffix(getExtensionFromStream(s))
+                                )
+                        );
+
+                    } else {
+                        // A video stream
+                        addNewStreams(
+                                this.videoStreams,
+                                stream,
+                                playlistUrl,
+                                (s, dd) -> new SimpleVideoAudioStreamImpl(
+                                        dd,
+                                        new VideoAudioFormatRegistry()
+                                                .getFromSuffix(getExtensionFromStream(s)),
+                                        resolution
+                                )
+                        );
+                    }
+                });
     }
 
-    private void getStreamsFromArray(@Nonnull final JsonArray streams,
-                                     final String playlistUrl) throws ParsingException {
-        try {
-            /*
-            Starting with version 3.4.0 of PeerTube, the HLS playlist of stream resolutions
-            contains the UUID of the streams, so we can't use the same method to get the URL of
-            the HLS playlist without fetching the master playlist.
-            These UUIDs are the same as the ones returned into the fileUrl and fileDownloadUrl
-            strings.
-            */
-            final boolean isInstanceUsingRandomUuidsForHlsStreams = !isNullOrEmpty(playlistUrl)
-                    && playlistUrl.endsWith("-master.m3u8");
-
-            for (final JsonObject stream : streams.stream()
-                    .filter(JsonObject.class::isInstance)
-                    .map(JsonObject.class::cast)
-                    .collect(Collectors.toList())) {
-
-                // Extract stream version of streams first
-                final String url = JsonUtils.getString(stream,
-                        stream.has(FILE_URL) ? FILE_URL : FILE_DOWNLOAD_URL);
-                if (isNullOrEmpty(url)) {
-                    // Not a valid stream URL
-                    return;
-                }
-
-                final String resolution = JsonUtils.getString(stream, "resolution.label");
-                final String idSuffix = stream.has(FILE_URL) ? FILE_URL : FILE_DOWNLOAD_URL;
-
-                if (resolution.toLowerCase().contains("audio")) {
-                    // An audio stream
-                    addNewAudioStream(stream, isInstanceUsingRandomUuidsForHlsStreams, resolution,
-                            idSuffix, url, playlistUrl);
-                } else {
-                    // A video stream
-                    addNewVideoStream(stream, isInstanceUsingRandomUuidsForHlsStreams, resolution,
-                            idSuffix, url, playlistUrl);
-                }
-            }
-        } catch (final Exception e) {
-            throw new ParsingException("Could not get streams from array", e);
-        }
+    private static String getResolutionFromStream(@Nonnull final JsonObject stream) {
+        return stream.getObject("resolution")
+                .getString("label");
     }
 
-    @Nonnull
-    private String getHlsPlaylistUrlFromFragmentedFileUrl(
-            @Nonnull final JsonObject streamJsonObject,
-            @Nonnull final String idSuffix,
-            @Nonnull final String format,
-            @Nonnull final String url) throws ParsingException {
-        final String streamUrl = FILE_DOWNLOAD_URL.equals(idSuffix)
-                ? JsonUtils.getString(streamJsonObject, FILE_URL)
-                : url;
-        return streamUrl.replace("-fragmented." + format, ".m3u8");
+    private static String getStreamUrlKeyFromStream(@Nonnull final JsonObject stream) {
+        return stream.has(FILE_URL) ? FILE_URL : FILE_DOWNLOAD_URL;
     }
 
-    @Nonnull
-    private String getHlsPlaylistUrlFromMasterPlaylist(@Nonnull final JsonObject streamJsonObject,
-                                                       @Nonnull final String playlistUrl)
-            throws ParsingException {
-        return playlistUrl.replace("master", JsonUtils.getNumber(streamJsonObject,
-                RESOLUTION_ID).toString());
+    private static String getUrlFromStream(@Nonnull final JsonObject stream) {
+        return stream.getString(getStreamUrlKeyFromStream(stream));
     }
 
-    private void addNewAudioStream(@Nonnull final JsonObject streamJsonObject,
-                                   final boolean isInstanceUsingRandomUuidsForHlsStreams,
-                                   @Nonnull final String resolution,
-                                   @Nonnull final String idSuffix,
-                                   @Nonnull final String url,
-                                   @Nullable final String playlistUrl) throws ParsingException {
-        final String extension = url.substring(url.lastIndexOf(".") + 1);
-        final MediaFormat format = MediaFormat.getFromSuffix(extension);
-        final String id = resolution + "-" + extension;
-
-        // Add progressive HTTP streams first
-        audioStreams.add(new AudioStream.Builder()
-                .setId(id + "-" + idSuffix + "-" + DeliveryMethod.PROGRESSIVE_HTTP)
-                .setContent(url, true)
-                .setMediaFormat(format)
-                .setAverageBitrate(UNKNOWN_BITRATE)
-                .build());
-
-        // Then add HLS streams
-        if (!isNullOrEmpty(playlistUrl)) {
-            final String hlsStreamUrl;
-            if (isInstanceUsingRandomUuidsForHlsStreams) {
-                hlsStreamUrl = getHlsPlaylistUrlFromFragmentedFileUrl(streamJsonObject, idSuffix,
-                        extension, url);
-
-            } else {
-                hlsStreamUrl = getHlsPlaylistUrlFromMasterPlaylist(streamJsonObject, playlistUrl);
-            }
-            final AudioStream audioStream = new AudioStream.Builder()
-                    .setId(id + "-" + DeliveryMethod.HLS)
-                    .setContent(hlsStreamUrl, true)
-                    .setDeliveryMethod(DeliveryMethod.HLS)
-                    .setMediaFormat(format)
-                    .setAverageBitrate(UNKNOWN_BITRATE)
-                    .setManifestUrl(playlistUrl)
-                    .build();
-            if (!Stream.containSimilarStream(audioStream, audioStreams)) {
-                audioStreams.add(audioStream);
-            }
-        }
-
-        // Finally, add torrent URLs
-        final String torrentUrl = JsonUtils.getString(streamJsonObject, "torrentUrl");
-        if (!isNullOrEmpty(torrentUrl)) {
-            audioStreams.add(new AudioStream.Builder()
-                    .setId(id + "-" + idSuffix + "-" + DeliveryMethod.TORRENT)
-                    .setContent(torrentUrl, true)
-                    .setDeliveryMethod(DeliveryMethod.TORRENT)
-                    .setMediaFormat(format)
-                    .setAverageBitrate(UNKNOWN_BITRATE)
-                    .build());
-        }
+    private static String getExtensionFromStream(@Nonnull final JsonObject stream) {
+        final String url = stream.getString(getStreamUrlKeyFromStream(stream));
+        return url.substring(url.lastIndexOf(".") + 1);
     }
 
-    private void addNewVideoStream(@Nonnull final JsonObject streamJsonObject,
-                                   final boolean isInstanceUsingRandomUuidsForHlsStreams,
-                                   @Nonnull final String resolution,
-                                   @Nonnull final String idSuffix,
-                                   @Nonnull final String url,
-                                   @Nullable final String playlistUrl) throws ParsingException {
-        final String extension = url.substring(url.lastIndexOf(".") + 1);
-        final MediaFormat format = MediaFormat.getFromSuffix(extension);
-        final String id = resolution + "-" + extension;
+    private <S extends Stream> void addNewStreams(
+            final List<S> streams,
+            @Nonnull final JsonObject stream,
+            final String playlistUrl,
+            @Nonnull final BiFunction<JsonObject, DeliveryData, S> buildStream
+    ) {
+        final Consumer<DeliveryData> addDeliveryDataToStream =
+                dd -> {
+                    try {
+                        streams.add(buildStream.apply(stream, dd));
+                    } catch (final Exception ignored) {
+                        // Ignore exception when a single stream couldn't be added
+                    }
+                };
 
-        // Add progressive HTTP streams first
-        videoStreams.add(new VideoStream.Builder()
-                .setId(id + "-" + idSuffix + "-" + DeliveryMethod.PROGRESSIVE_HTTP)
-                .setContent(url, true)
-                .setIsVideoOnly(false)
-                .setResolution(resolution)
-                .setMediaFormat(format)
-                .build());
+        // Add Progressive HTTP (this is also done for HLS streams because the source file can
+        // also be streamed over progressive HTTP)
+        addDeliveryDataToStream.accept(
+                new SimpleProgressiveHTTPDeliveryDataImpl(getUrlFromStream(stream)));
 
-        // Then add HLS streams
-        if (!isNullOrEmpty(playlistUrl)) {
-            final String hlsStreamUrl = isInstanceUsingRandomUuidsForHlsStreams
-                    ? getHlsPlaylistUrlFromFragmentedFileUrl(streamJsonObject, idSuffix, extension,
-                            url)
-                    : getHlsPlaylistUrlFromMasterPlaylist(streamJsonObject, playlistUrl);
-
-            final VideoStream videoStream = new VideoStream.Builder()
-                    .setId(id + "-" + DeliveryMethod.HLS)
-                    .setContent(hlsStreamUrl, true)
-                    .setIsVideoOnly(false)
-                    .setDeliveryMethod(DeliveryMethod.HLS)
-                    .setResolution(resolution)
-                    .setMediaFormat(format)
-                    .setManifestUrl(playlistUrl)
-                    .build();
-            if (!Stream.containSimilarStream(videoStream, videoStreams)) {
-                videoStreams.add(videoStream);
-            }
+        // Add HLS (only for PeerTube 3.4+)
+        if (!isNullOrEmpty(playlistUrl)
+                && playlistUrl.endsWith("-master.m3u8")
+                && !isNullOrEmpty(stream.getString(FILE_URL))
+        ) {
+            addDeliveryDataToStream.accept(new SimpleHLSDeliveryDataImpl(stream.getString(FILE_URL)
+                    .replace("-fragmented." + getExtensionFromStream(stream), ".m3u8")));
         }
 
-        // Add finally torrent URLs
-        final String torrentUrl = JsonUtils.getString(streamJsonObject, "torrentUrl");
-        if (!isNullOrEmpty(torrentUrl)) {
-            videoStreams.add(new VideoStream.Builder()
-                    .setId(id + "-" + idSuffix + "-" + DeliveryMethod.TORRENT)
-                    .setContent(torrentUrl, true)
-                    .setIsVideoOnly(false)
-                    .setDeliveryMethod(DeliveryMethod.TORRENT)
-                    .setResolution(resolution)
-                    .setMediaFormat(format)
-                    .build());
+        // Add torrent
+        if (!isNullOrEmpty(stream.getString("torrentUrl"))) {
+            addDeliveryDataToStream.accept(
+                    new SimpleTorrentDeliveryDataImpl(stream.getString("torrentUrl")));
         }
     }
 
