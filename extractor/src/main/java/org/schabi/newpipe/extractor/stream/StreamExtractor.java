@@ -20,11 +20,10 @@ package org.schabi.newpipe.extractor.stream;
  * along with NewPipe.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-import org.schabi.newpipe.extractor.InfoItem;
-import org.schabi.newpipe.extractor.InfoItemsCollector;
-import org.schabi.newpipe.extractor.InfoItemExtractor;
 import org.schabi.newpipe.extractor.Extractor;
-import org.schabi.newpipe.extractor.MediaFormat;
+import org.schabi.newpipe.extractor.InfoItem;
+import org.schabi.newpipe.extractor.InfoItemExtractor;
+import org.schabi.newpipe.extractor.InfoItemsCollector;
 import org.schabi.newpipe.extractor.MetaInfo;
 import org.schabi.newpipe.extractor.StreamingService;
 import org.schabi.newpipe.extractor.channel.ChannelExtractor;
@@ -32,15 +31,19 @@ import org.schabi.newpipe.extractor.exceptions.ExtractionException;
 import org.schabi.newpipe.extractor.exceptions.ParsingException;
 import org.schabi.newpipe.extractor.linkhandler.LinkHandler;
 import org.schabi.newpipe.extractor.localization.DateWrapper;
+import org.schabi.newpipe.extractor.streamdata.stream.AudioStream;
+import org.schabi.newpipe.extractor.streamdata.stream.SubtitleStream;
+import org.schabi.newpipe.extractor.streamdata.stream.VideoAudioStream;
+import org.schabi.newpipe.extractor.streamdata.stream.VideoStream;
 import org.schabi.newpipe.extractor.utils.Parser;
-
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
 
 import java.io.IOException;
 import java.util.Collections;
 import java.util.List;
 import java.util.Locale;
+
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 
 /**
  * Scrapes information from a video/audio streaming service (eg, YouTube).
@@ -50,7 +53,7 @@ public abstract class StreamExtractor extends Extractor {
     public static final int NO_AGE_LIMIT = 0;
     public static final long UNKNOWN_SUBSCRIBER_COUNT = -1;
 
-    public StreamExtractor(final StreamingService service, final LinkHandler linkHandler) {
+    protected StreamExtractor(final StreamingService service, final LinkHandler linkHandler) {
         super(service, linkHandler);
     }
 
@@ -254,10 +257,20 @@ public abstract class StreamExtractor extends Extractor {
     }
 
     /**
-     * Get the dash mpd url. If you don't know what a dash MPD is you can read about it
-     * <a href="https://www.brendanlong.com/the-structure-of-an-mpeg-dash-mpd.html">here</a>.
+     * Get the dash mpd url.
      *
-     * @return the url as a string or an empty string or an empty string if not available
+     * <p>
+     * If you don't know how DASH works take a look at
+     * <a href="https://ottverse.com/hls-vs-mpeg-dash-video-streaming/#How_does_MPEG-DASH_Work">
+     * here</a>.
+     * </p>
+     *
+     * <p>
+     * If you don't know what a dash MPD is you can read about it
+     * <a href="https://www.brendanlong.com/the-structure-of-an-mpeg-dash-mpd.html">here</a>.
+     * </p>
+     *
+     * @return the url as a string or an empty string if not available
      * @throws ParsingException if an error occurs while reading
      */
     @Nonnull
@@ -266,15 +279,18 @@ public abstract class StreamExtractor extends Extractor {
     }
 
     /**
-     * I am not sure if this is in use, and how this is used. However the frontend is missing
-     * support for HLS streams. Prove me if I am wrong. Please open an
-     * <a href="https://github.com/teamnewpipe/newpipe/issues">issue</a>,
-     * or fix this description if you know whats up with this.
+     * Get the HLS master playlist url.
+     *
+     * <p>
+     * If you don't know how HLS works take a look at
+     *
+     * <a href="https://ottverse.com/hls-vs-mpeg-dash-video-streaming/#How_does_HLS_work">here</a>.
+     * </p>
      *
      * @return The Url to the hls stream or an empty string if not available.
      */
     @Nonnull
-    public String getHlsUrl() throws ParsingException {
+    public String getHlsMasterPlaylistUrl() throws ParsingException {
         return "";
     }
 
@@ -286,10 +302,12 @@ public abstract class StreamExtractor extends Extractor {
      *
      * @return a list of audio only streams in the format of AudioStream
      */
-    public abstract List<AudioStream> getAudioStreams() throws IOException, ExtractionException;
+    public List<AudioStream> getAudioStreams() throws IOException, ExtractionException {
+        return Collections.emptyList();
+    }
 
     /**
-     * This should return a list of available {@link VideoStream}s.
+     * This should return a list of available {@link VideoAudioStream}s.
      * Be aware this is the list of video streams which do contain an audio stream.
      * You can also return null or an empty list, however be aware that if you don't return anything
      * in getAudioStreams(), getVideoOnlyStreams() and getDashMpdUrl() either the Collector will
@@ -297,7 +315,9 @@ public abstract class StreamExtractor extends Extractor {
      *
      * @return a list of combined video and streams in the format of AudioStream
      */
-    public abstract List<VideoStream> getVideoStreams() throws IOException, ExtractionException;
+    public List<VideoAudioStream> getVideoStreams() throws IOException, ExtractionException {
+        return Collections.emptyList();
+    }
 
     /**
      * This should return a list of available {@link VideoStream}s.
@@ -308,29 +328,18 @@ public abstract class StreamExtractor extends Extractor {
      *
      * @return a list of video and streams in the format of AudioStream
      */
-    public abstract List<VideoStream> getVideoOnlyStreams() throws IOException, ExtractionException;
+    public List<VideoStream> getVideoOnlyStreams() throws IOException, ExtractionException {
+        return Collections.emptyList();
+    }
 
     /**
-     * This will return a list of available {@link SubtitlesStream}s.
+     * This will return a list of available {@link SubtitleStream}s.
      * If no subtitles are available an empty list can be returned.
      *
      * @return a list of available subtitles or an empty list
      */
     @Nonnull
-    public List<SubtitlesStream> getSubtitlesDefault() throws IOException, ExtractionException {
-        return Collections.emptyList();
-    }
-
-    /**
-     * This will return a list of available {@link SubtitlesStream}s given by a specific type.
-     * If no subtitles in that specific format are available an empty list can be returned.
-     *
-     * @param format the media format by which the subtitles should be filtered
-     * @return a list of available subtitles or an empty list
-     */
-    @Nonnull
-    public List<SubtitlesStream> getSubtitles(final MediaFormat format)
-            throws IOException, ExtractionException {
+    public List<SubtitleStream> getSubtitles() throws IOException, ExtractionException {
         return Collections.emptyList();
     }
 
@@ -339,7 +348,13 @@ public abstract class StreamExtractor extends Extractor {
      *
      * @return the type of the stream
      */
+    @Deprecated // TODO - kill
     public abstract StreamType getStreamType() throws ParsingException;
+
+    // TODO - Implement
+    public boolean isLive() {
+        return false;
+    }
 
     /**
      * Should return a list of streams related to the current handled. Many services show suggested

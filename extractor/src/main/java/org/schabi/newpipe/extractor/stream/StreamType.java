@@ -1,5 +1,6 @@
 package org.schabi.newpipe.extractor.stream;
 
+// TODO: Remove this useless class
 /**
  * An enum representing the stream type of a {@link StreamInfo} extracted by a {@link
  * StreamExtractor}.
@@ -11,6 +12,7 @@ public enum StreamType {
      * enum constant outside of the extractor as it will never be returned by an {@link
      * org.schabi.newpipe.extractor.Extractor} and is only used internally.
      */
+    // TODO: useless
     NONE,
 
     /**
@@ -18,6 +20,7 @@ public enum StreamType {
      * provide audio-only {@link AudioStream}s</strong> in addition to video or video-only {@link
      * VideoStream}s.
      */
+    // TODO: Default
     VIDEO_STREAM,
 
     /**
@@ -26,6 +29,7 @@ public enum StreamType {
      * ensure that no video stream is returned in {@link StreamExtractor#getVideoStreams()} and
      * {@link StreamExtractor#getVideoOnlyStreams()}.
      */
+    // TODO: Can be replaced by checking #getVideoStreams or #getVideoOnlyStreams
     AUDIO_STREAM,
 
     /**
@@ -33,6 +37,7 @@ public enum StreamType {
      * provide audio-only {@link AudioStream}s</strong> in addition to video or video-only {@link
      * VideoStream}s.
      */
+    // TODO: Can be replaced by flag isLive
     LIVE_STREAM,
 
     /**
@@ -41,6 +46,7 @@ public enum StreamType {
      * should ensure that no video stream is returned in {@link StreamExtractor#getVideoStreams()}
      * and {@link StreamExtractor#getVideoOnlyStreams()}.
      */
+    // TODO: Can be replaced by flag isLive
     AUDIO_LIVE_STREAM,
 
     /**
@@ -55,6 +61,7 @@ public enum StreamType {
      * the case on YouTube, for example.
      * </p>
      */
+    // TODO: Useless (only used internally inside YT)
     POST_LIVE_STREAM,
 
     /**
@@ -70,5 +77,6 @@ public enum StreamType {
      * again later.
      * </p>
      */
+    // TODO: Useless (only used internally inside YT)
     POST_LIVE_AUDIO_STREAM
 }

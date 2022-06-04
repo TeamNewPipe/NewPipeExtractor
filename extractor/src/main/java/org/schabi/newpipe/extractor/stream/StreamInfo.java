@@ -1,5 +1,7 @@
 package org.schabi.newpipe.extractor.stream;
 
+import static org.schabi.newpipe.extractor.utils.Utils.isNullOrEmpty;
+
 import org.schabi.newpipe.extractor.Info;
 import org.schabi.newpipe.extractor.InfoItem;
 import org.schabi.newpipe.extractor.MetaInfo;
@@ -9,6 +11,10 @@ import org.schabi.newpipe.extractor.exceptions.ContentNotAvailableException;
 import org.schabi.newpipe.extractor.exceptions.ContentNotSupportedException;
 import org.schabi.newpipe.extractor.exceptions.ExtractionException;
 import org.schabi.newpipe.extractor.localization.DateWrapper;
+import org.schabi.newpipe.extractor.streamdata.stream.AudioStream;
+import org.schabi.newpipe.extractor.streamdata.stream.SubtitleStream;
+import org.schabi.newpipe.extractor.streamdata.stream.VideoAudioStream;
+import org.schabi.newpipe.extractor.streamdata.stream.VideoStream;
 import org.schabi.newpipe.extractor.utils.ExtractorHelper;
 
 import java.io.IOException;
@@ -16,10 +22,9 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Locale;
+import java.util.Objects;
 
 import javax.annotation.Nonnull;
-
-import static org.schabi.newpipe.extractor.utils.Utils.isNullOrEmpty;
 
 /*
  * Created by Christian Schabesberger on 26.08.15.
@@ -135,18 +140,6 @@ public class StreamInfo extends Info {
         /* ---- Stream extraction goes here ---- */
         // At least one type of stream has to be available, otherwise an exception will be thrown
         // directly into the frontend.
-
-        try {
-            streamInfo.setDashMpdUrl(extractor.getDashMpdUrl());
-        } catch (final Exception e) {
-            streamInfo.addError(new ExtractionException("Couldn't get DASH manifest", e));
-        }
-
-        try {
-            streamInfo.setHlsUrl(extractor.getHlsUrl());
-        } catch (final Exception e) {
-            streamInfo.addError(new ExtractionException("Couldn't get HLS manifest", e));
-        }
 
         /* Load and extract audio */
         try {
@@ -286,7 +279,7 @@ public class StreamInfo extends Info {
             streamInfo.addError(e);
         }
         try {
-            streamInfo.setSubtitles(extractor.getSubtitlesDefault());
+            streamInfo.setSubtitles(extractor.getSubtitles());
         } catch (final Exception e) {
             streamInfo.addError(e);
         }
@@ -369,16 +362,14 @@ public class StreamInfo extends Info {
     private String subChannelUrl = "";
     private String subChannelAvatarUrl = "";
 
-    private List<VideoStream> videoStreams = new ArrayList<>();
+    private List<VideoAudioStream> videoStreams = new ArrayList<>();
     private List<AudioStream> audioStreams = new ArrayList<>();
     private List<VideoStream> videoOnlyStreams = new ArrayList<>();
 
-    private String dashMpdUrl = "";
-    private String hlsUrl = "";
     private List<InfoItem> relatedItems = new ArrayList<>();
 
     private long startPosition = 0;
-    private List<SubtitlesStream> subtitles = new ArrayList<>();
+    private List<SubtitleStream> subtitles = new ArrayList<>();
 
     private String host = "";
     private StreamExtractor.Privacy privacy;
@@ -564,68 +555,39 @@ public class StreamInfo extends Info {
         this.subChannelAvatarUrl = subChannelAvatarUrl;
     }
 
-    public List<VideoStream> getVideoStreams() {
+    @Nonnull
+    public List<VideoAudioStream> getVideoStreams() {
         return videoStreams;
     }
 
-    public void setVideoStreams(final List<VideoStream> videoStreams) {
-        this.videoStreams = videoStreams;
+    public void setVideoStreams(@Nonnull final List<VideoAudioStream> videoStreams) {
+        this.videoStreams = Objects.requireNonNull(videoStreams);
     }
 
+    @Nonnull
     public List<AudioStream> getAudioStreams() {
         return audioStreams;
     }
 
-    public void setAudioStreams(final List<AudioStream> audioStreams) {
-        this.audioStreams = audioStreams;
+    public void setAudioStreams(@Nonnull final List<AudioStream> audioStreams) {
+        this.audioStreams = Objects.requireNonNull(audioStreams);
     }
 
+    @Nonnull
     public List<VideoStream> getVideoOnlyStreams() {
         return videoOnlyStreams;
     }
 
-    public void setVideoOnlyStreams(final List<VideoStream> videoOnlyStreams) {
-        this.videoOnlyStreams = videoOnlyStreams;
-    }
-
-    public String getDashMpdUrl() {
-        return dashMpdUrl;
-    }
-
-    public void setDashMpdUrl(final String dashMpdUrl) {
-        this.dashMpdUrl = dashMpdUrl;
-    }
-
-    public String getHlsUrl() {
-        return hlsUrl;
-    }
-
-    public void setHlsUrl(final String hlsUrl) {
-        this.hlsUrl = hlsUrl;
+    public void setVideoOnlyStreams(@Nonnull final List<VideoStream> videoOnlyStreams) {
+        this.videoOnlyStreams = Objects.requireNonNull(videoOnlyStreams);
     }
 
     public List<InfoItem> getRelatedItems() {
         return relatedItems;
     }
 
-    /**
-     * @deprecated Use {@link #getRelatedItems()}
-     */
-    @Deprecated
-    public List<InfoItem> getRelatedStreams() {
-        return getRelatedItems();
-    }
-
     public void setRelatedItems(final List<InfoItem> relatedItems) {
         this.relatedItems = relatedItems;
-    }
-
-    /**
-     * @deprecated Use {@link #setRelatedItems(List)}
-     */
-    @Deprecated
-    public void setRelatedStreams(final List<InfoItem> relatedItemsToSet) {
-        setRelatedItems(relatedItemsToSet);
     }
 
     public long getStartPosition() {
@@ -636,12 +598,13 @@ public class StreamInfo extends Info {
         this.startPosition = startPosition;
     }
 
-    public List<SubtitlesStream> getSubtitles() {
+    @Nonnull
+    public List<SubtitleStream> getSubtitles() {
         return subtitles;
     }
 
-    public void setSubtitles(final List<SubtitlesStream> subtitles) {
-        this.subtitles = subtitles;
+    public void setSubtitles(@Nonnull final List<SubtitleStream> subtitles) {
+        this.subtitles = Objects.requireNonNull(subtitles);
     }
 
     public String getHost() {
