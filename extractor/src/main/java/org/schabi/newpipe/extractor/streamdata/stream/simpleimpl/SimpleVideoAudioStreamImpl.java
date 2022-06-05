@@ -47,7 +47,7 @@ public class SimpleVideoAudioStreamImpl extends AbstractStreamImpl implements Vi
             @Nonnull final DeliveryData deliveryData,
             @Nullable final VideoAudioMediaFormat videoAudioMediaFormat
     ) {
-        this(deliveryData, videoAudioMediaFormat, new VideoQualityData());
+        this(deliveryData, videoAudioMediaFormat, VideoQualityData.fromUnknown());
     }
 
     @Nullable

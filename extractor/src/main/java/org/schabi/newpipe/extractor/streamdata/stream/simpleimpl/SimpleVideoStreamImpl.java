@@ -34,7 +34,7 @@ public class SimpleVideoStreamImpl extends AbstractStreamImpl implements VideoSt
     }
 
     public SimpleVideoStreamImpl(@Nonnull final DeliveryData deliveryData) {
-        this(deliveryData, new VideoQualityData());
+        this(deliveryData, VideoQualityData.fromUnknown());
     }
 
     @Nullable

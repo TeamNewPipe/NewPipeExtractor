@@ -517,7 +517,7 @@ public class PeertubeStreamExtractor extends StreamExtractor {
                                         dd,
                                         new VideoAudioFormatRegistry()
                                                 .getFromSuffix(getExtensionFromStream(s)),
-                                        new VideoQualityData(
+                                        VideoQualityData.fromHeightFps(
                                                 resJson.getInt("id", VideoQualityData.UNKNOWN),
                                                 stream.getInt("fps", VideoQualityData.UNKNOWN))
                                 )

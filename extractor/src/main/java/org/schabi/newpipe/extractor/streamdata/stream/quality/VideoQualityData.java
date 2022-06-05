@@ -13,18 +13,6 @@ public class VideoQualityData {
         this.fps = fps;
     }
 
-    public VideoQualityData(final int height, final int fps) {
-        this(height, UNKNOWN, fps);
-    }
-
-    public VideoQualityData(final int height) {
-        this(height, UNKNOWN);
-    }
-
-    public VideoQualityData() {
-        this(UNKNOWN);
-    }
-
 
     public int height() {
         return height;
@@ -42,5 +30,21 @@ public class VideoQualityData {
         return height() == other.height()
                 && width() == other.width()
                 && fps() == other.fps();
+    }
+
+    public static VideoQualityData fromHeightWidth(final int height, final int width) {
+        return new VideoQualityData(height, width, UNKNOWN);
+    }
+
+    public static VideoQualityData fromHeightFps(final int height, final int fps) {
+        return new VideoQualityData(height, UNKNOWN, fps);
+    }
+
+    public static VideoQualityData fromHeight(final int height) {
+        return new VideoQualityData(height, UNKNOWN, UNKNOWN);
+    }
+
+    public static VideoQualityData fromUnknown() {
+        return new VideoQualityData(UNKNOWN, UNKNOWN, UNKNOWN);
     }
 }

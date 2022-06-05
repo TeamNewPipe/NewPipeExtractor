@@ -202,10 +202,9 @@ public class MediaCCCLiveStreamExtractor extends StreamExtractor {
                             deliveryData,
                             // TODO: This looks wrong
                             new VideoAudioFormatRegistry().getFromSuffix(dto.getUrlKey()),
-                            new VideoQualityData(
+                            VideoQualityData.fromHeightWidth(
                                     /*height=*/videoSize.getInt(1, VideoQualityData.UNKNOWN),
-                                    /*width=*/videoSize.getInt(0, VideoQualityData.UNKNOWN),
-                                    VideoQualityData.UNKNOWN)
+                                    /*width=*/videoSize.getInt(0, VideoQualityData.UNKNOWN))
                     );
                 })
                 .collect(Collectors.toList());

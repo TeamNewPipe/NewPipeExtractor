@@ -113,11 +113,9 @@ public class MediaCCCStreamExtractor extends StreamExtractor {
                         null,
                         AudioStream.UNKNOWN_BITRATE,
                         new VideoAudioFormatRegistry().getFromMimeType(o.getString("mime_type")),
-                        new VideoQualityData(
+                        VideoQualityData.fromHeightWidth(
                                 o.getInt("height", VideoQualityData.UNKNOWN),
-                                o.getInt("width", VideoQualityData.UNKNOWN),
-                                VideoQualityData.UNKNOWN
-                        )
+                                o.getInt("width", VideoQualityData.UNKNOWN))
                 ))
                 .collect(Collectors.toList());
     }
