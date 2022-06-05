@@ -7,6 +7,7 @@ package org.schabi.newpipe.extractor.services.youtube;
  * It is different from {@link org.schabi.newpipe.extractor.stream.DeliveryMethod delivery methods}!
  * </p>
  */
+// TODO: Kill
 public enum DeliveryType {
 
     /**
