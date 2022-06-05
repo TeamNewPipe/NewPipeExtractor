@@ -22,6 +22,7 @@ import org.schabi.newpipe.extractor.streamdata.format.registry.AudioFormatRegist
 import org.schabi.newpipe.extractor.streamdata.format.registry.VideoAudioFormatRegistry;
 import org.schabi.newpipe.extractor.streamdata.stream.AudioStream;
 import org.schabi.newpipe.extractor.streamdata.stream.VideoAudioStream;
+import org.schabi.newpipe.extractor.streamdata.stream.quality.VideoQualityData;
 import org.schabi.newpipe.extractor.streamdata.stream.simpleimpl.SimpleAudioStreamImpl;
 import org.schabi.newpipe.extractor.streamdata.stream.simpleimpl.SimpleVideoAudioStreamImpl;
 
@@ -201,7 +202,10 @@ public class MediaCCCLiveStreamExtractor extends StreamExtractor {
                             deliveryData,
                             // TODO: This looks wrong
                             new VideoAudioFormatRegistry().getFromSuffix(dto.getUrlKey()),
-                            videoSize.getInt(0) + "x" + videoSize.getInt(1)
+                            new VideoQualityData(
+                                    /*height=*/videoSize.getInt(1, VideoQualityData.UNKNOWN),
+                                    /*width=*/videoSize.getInt(0, VideoQualityData.UNKNOWN),
+                                    VideoQualityData.UNKNOWN)
                     );
                 })
                 .collect(Collectors.toList());

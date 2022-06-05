@@ -35,6 +35,7 @@ import org.schabi.newpipe.extractor.streamdata.stream.AudioStream;
 import org.schabi.newpipe.extractor.streamdata.stream.Stream;
 import org.schabi.newpipe.extractor.streamdata.stream.SubtitleStream;
 import org.schabi.newpipe.extractor.streamdata.stream.VideoAudioStream;
+import org.schabi.newpipe.extractor.streamdata.stream.quality.VideoQualityData;
 import org.schabi.newpipe.extractor.streamdata.stream.simpleimpl.SimpleAudioStreamImpl;
 import org.schabi.newpipe.extractor.streamdata.stream.simpleimpl.SimpleSubtitleStreamImpl;
 import org.schabi.newpipe.extractor.streamdata.stream.simpleimpl.SimpleVideoAudioStreamImpl;
@@ -465,6 +466,7 @@ public class PeertubeStreamExtractor extends StreamExtractor {
                     .stream()
                     .filter(JsonObject.class::isInstance)
                     .map(JsonObject.class::cast)
+                    // TODO Check! This is the master playlist!
                     .map(stream -> new SimpleVideoAudioStreamImpl(
                             new SimpleHLSDeliveryDataImpl(stream.getString(PLAYLIST_URL, "")),
                             VideoAudioFormatRegistry.MPEG_4)
@@ -489,9 +491,10 @@ public class PeertubeStreamExtractor extends StreamExtractor {
                 .map(JsonObject.class::cast)
                 .filter(stream -> !isNullOrEmpty(getUrlFromStream(stream)))
                 .forEach(stream -> {
-                    final String resolution = getResolutionFromStream(stream);
-
-                    if (resolution.toLowerCase().contains("audio")) {
+                    final JsonObject resJson = stream.getObject("resolution");
+                    if (resJson.getString("label", "")
+                            .toLowerCase()
+                            .contains("audio")) {
                         // An audio stream
                         addNewStreams(
                                 this.audioStreams,
@@ -514,17 +517,15 @@ public class PeertubeStreamExtractor extends StreamExtractor {
                                         dd,
                                         new VideoAudioFormatRegistry()
                                                 .getFromSuffix(getExtensionFromStream(s)),
-                                        resolution
+                                        new VideoQualityData(
+                                                resJson.getInt("id", VideoQualityData.UNKNOWN),
+                                                stream.getInt("fps", VideoQualityData.UNKNOWN))
                                 )
                         );
                     }
                 });
     }
 
-    private static String getResolutionFromStream(@Nonnull final JsonObject stream) {
-        return stream.getObject("resolution")
-                .getString("label");
-    }
 
     private static String getStreamUrlKeyFromStream(@Nonnull final JsonObject stream) {
         return stream.has(FILE_URL) ? FILE_URL : FILE_DOWNLOAD_URL;

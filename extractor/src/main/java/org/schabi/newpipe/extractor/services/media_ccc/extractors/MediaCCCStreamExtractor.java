@@ -21,6 +21,7 @@ import org.schabi.newpipe.extractor.streamdata.format.registry.AudioFormatRegist
 import org.schabi.newpipe.extractor.streamdata.format.registry.VideoAudioFormatRegistry;
 import org.schabi.newpipe.extractor.streamdata.stream.AudioStream;
 import org.schabi.newpipe.extractor.streamdata.stream.VideoAudioStream;
+import org.schabi.newpipe.extractor.streamdata.stream.quality.VideoQualityData;
 import org.schabi.newpipe.extractor.streamdata.stream.simpleimpl.SimpleAudioStreamImpl;
 import org.schabi.newpipe.extractor.streamdata.stream.simpleimpl.SimpleVideoAudioStreamImpl;
 import org.schabi.newpipe.extractor.utils.JsonUtils;
@@ -112,7 +113,11 @@ public class MediaCCCStreamExtractor extends StreamExtractor {
                         null,
                         AudioStream.UNKNOWN_BITRATE,
                         new VideoAudioFormatRegistry().getFromMimeType(o.getString("mime_type")),
-                        o.getInt("height") + "p"
+                        new VideoQualityData(
+                                o.getInt("height", VideoQualityData.UNKNOWN),
+                                o.getInt("width", VideoQualityData.UNKNOWN),
+                                VideoQualityData.UNKNOWN
+                        )
                 ))
                 .collect(Collectors.toList());
     }
@@ -139,8 +144,7 @@ public class MediaCCCStreamExtractor extends StreamExtractor {
             conferenceData = JsonParser.object()
                     .from(downloader.get(data.getString("conference_url")).responseBody());
         } catch (final JsonParserException jpe) {
-            throw new ExtractionException("Could not parse json returned by URL: " + videoUrl,
-                    jpe);
+            throw new ExtractionException("Could not parse json returned by URL: " + videoUrl, jpe);
         }
     }
 

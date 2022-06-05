@@ -3,6 +3,7 @@ package org.schabi.newpipe.extractor.streamdata.stream.simpleimpl;
 import org.schabi.newpipe.extractor.streamdata.delivery.DeliveryData;
 import org.schabi.newpipe.extractor.streamdata.format.VideoAudioMediaFormat;
 import org.schabi.newpipe.extractor.streamdata.stream.VideoStream;
+import org.schabi.newpipe.extractor.streamdata.stream.quality.VideoQualityData;
 
 import java.util.Objects;
 
@@ -13,27 +14,27 @@ public class SimpleVideoStreamImpl extends AbstractStreamImpl implements VideoSt
     @Nullable
     private final VideoAudioMediaFormat videoAudioMediaFormat;
     @Nonnull
-    private final String resolution;
+    private final VideoQualityData videoQualityData;
 
     public SimpleVideoStreamImpl(
             @Nonnull final DeliveryData deliveryData,
             @Nullable final VideoAudioMediaFormat videoAudioMediaFormat,
-            @Nonnull final String resolution
+            @Nonnull final VideoQualityData videoQualityData
     ) {
         super(deliveryData);
         this.videoAudioMediaFormat = videoAudioMediaFormat;
-        this.resolution = Objects.requireNonNull(resolution);
+        this.videoQualityData = Objects.requireNonNull(videoQualityData);
     }
 
     public SimpleVideoStreamImpl(
             @Nonnull final DeliveryData deliveryData,
-            @Nonnull final String resolution
+            @Nonnull final VideoQualityData videoQualityData
     ) {
-        this(deliveryData, null, resolution);
+        this(deliveryData, null, videoQualityData);
     }
 
     public SimpleVideoStreamImpl(@Nonnull final DeliveryData deliveryData) {
-        this(deliveryData, null, UNKNOWN_RESOLUTION);
+        this(deliveryData, new VideoQualityData());
     }
 
     @Nullable
@@ -44,7 +45,7 @@ public class SimpleVideoStreamImpl extends AbstractStreamImpl implements VideoSt
 
     @Nonnull
     @Override
-    public String resolution() {
-        return resolution;
+    public VideoQualityData videoQualityData() {
+        return videoQualityData;
     }
 }

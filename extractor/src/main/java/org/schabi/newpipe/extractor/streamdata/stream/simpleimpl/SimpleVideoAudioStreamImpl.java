@@ -4,6 +4,7 @@ import org.schabi.newpipe.extractor.streamdata.delivery.DeliveryData;
 import org.schabi.newpipe.extractor.streamdata.format.AudioMediaFormat;
 import org.schabi.newpipe.extractor.streamdata.format.VideoAudioMediaFormat;
 import org.schabi.newpipe.extractor.streamdata.stream.VideoAudioStream;
+import org.schabi.newpipe.extractor.streamdata.stream.quality.VideoQualityData;
 
 import java.util.Objects;
 
@@ -18,35 +19,35 @@ public class SimpleVideoAudioStreamImpl extends AbstractStreamImpl implements Vi
     @Nullable
     private final VideoAudioMediaFormat videoAudioMediaFormat;
     @Nonnull
-    private final String resolution;
+    private final VideoQualityData videoQualityData;
 
     public SimpleVideoAudioStreamImpl(
             @Nonnull final DeliveryData deliveryData,
             @Nullable final AudioMediaFormat audioMediaFormat,
             final int averageBitrate,
             @Nullable final VideoAudioMediaFormat videoAudioMediaFormat,
-            @Nonnull final String resolution
+            @Nonnull final VideoQualityData videoQualityData
     ) {
         super(deliveryData);
         this.audioMediaFormat = audioMediaFormat;
         this.averageBitrate = averageBitrate;
         this.videoAudioMediaFormat = videoAudioMediaFormat;
-        this.resolution = Objects.requireNonNull(resolution);
+        this.videoQualityData = Objects.requireNonNull(videoQualityData);
     }
 
     public SimpleVideoAudioStreamImpl(
             @Nonnull final DeliveryData deliveryData,
             @Nullable final VideoAudioMediaFormat videoAudioMediaFormat,
-            @Nonnull final String resolution
+            @Nonnull final VideoQualityData videoQualityData
     ) {
-        this(deliveryData, null, UNKNOWN_BITRATE, videoAudioMediaFormat, resolution);
+        this(deliveryData, null, UNKNOWN_BITRATE, videoAudioMediaFormat, videoQualityData);
     }
 
     public SimpleVideoAudioStreamImpl(
             @Nonnull final DeliveryData deliveryData,
             @Nullable final VideoAudioMediaFormat videoAudioMediaFormat
     ) {
-        this(deliveryData, videoAudioMediaFormat, UNKNOWN_RESOLUTION);
+        this(deliveryData, videoAudioMediaFormat, new VideoQualityData());
     }
 
     @Nullable
@@ -68,7 +69,7 @@ public class SimpleVideoAudioStreamImpl extends AbstractStreamImpl implements Vi
 
     @Nonnull
     @Override
-    public String resolution() {
-        return resolution;
+    public VideoQualityData videoQualityData() {
+        return videoQualityData;
     }
 }
