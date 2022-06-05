@@ -1,0 +1,14 @@
+package org.schabi.newpipe.extractor.services.youtube.itag;
+
+import org.schabi.newpipe.extractor.streamdata.format.VideoAudioMediaFormat;
+import org.schabi.newpipe.extractor.streamdata.stream.quality.VideoQualityData;
+
+import javax.annotation.Nonnull;
+
+public interface VideoItagFormat extends ItagFormat {
+    @Nonnull
+    VideoAudioMediaFormat videoMediaFormat();
+
+    @Nonnull
+    VideoQualityData videoQualityData();
+}
