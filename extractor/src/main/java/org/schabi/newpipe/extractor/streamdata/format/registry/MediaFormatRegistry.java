@@ -24,7 +24,7 @@ public abstract class MediaFormatRegistry<F extends AbstractMediaFormat> {
                          final Function<F, T> field,
                          final T orElse) {
         return Arrays.stream(values())
-                .filter(mediaFormat -> mediaFormat.getId() == id)
+                .filter(mediaFormat -> mediaFormat.id() == id)
                 .map(field)
                 .findFirst()
                 .orElse(orElse);
@@ -39,7 +39,7 @@ public abstract class MediaFormatRegistry<F extends AbstractMediaFormat> {
      */
     @Nonnull
     public String getNameById(final int id) {
-        return getById(id, AbstractMediaFormat::getName, "");
+        return getById(id, AbstractMediaFormat::name, "");
     }
 
     /**
@@ -51,7 +51,7 @@ public abstract class MediaFormatRegistry<F extends AbstractMediaFormat> {
      */
     @Nullable
     public String getMimeById(final int id) {
-        return getById(id, AbstractMediaFormat::getMimeType, null);
+        return getById(id, AbstractMediaFormat::mimeType, null);
     }
 
     /**
@@ -63,7 +63,7 @@ public abstract class MediaFormatRegistry<F extends AbstractMediaFormat> {
     @Nullable
     public F getFromMimeType(final String mimeType) {
         return Arrays.stream(values())
-                .filter(mediaFormat -> mediaFormat.getMimeType().equals(mimeType))
+                .filter(mediaFormat -> mediaFormat.mimeType().equals(mimeType))
                 .findFirst()
                 .orElse(null);
     }
@@ -71,7 +71,7 @@ public abstract class MediaFormatRegistry<F extends AbstractMediaFormat> {
     @Nullable
     public F getFromSuffix(final String suffix) {
         return Arrays.stream(values())
-                .filter(mediaFormat -> mediaFormat.getSuffix().equals(suffix))
+                .filter(mediaFormat -> mediaFormat.suffix().equals(suffix))
                 .findFirst()
                 .orElse(null);
     }

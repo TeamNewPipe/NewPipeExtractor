@@ -14,6 +14,7 @@ import com.grack.nanojson.JsonParserException;
 import org.schabi.newpipe.extractor.NewPipe;
 import org.schabi.newpipe.extractor.StreamingService;
 import org.schabi.newpipe.extractor.downloader.Downloader;
+import org.schabi.newpipe.extractor.downloader.Response;
 import org.schabi.newpipe.extractor.exceptions.ContentNotAvailableException;
 import org.schabi.newpipe.extractor.exceptions.ExtractionException;
 import org.schabi.newpipe.extractor.exceptions.GeographicRestrictionException;
@@ -258,8 +259,8 @@ public class SoundcloudStreamExtractor extends StreamExtractor {
 
                     final String preset = transcoding.getString("preset", "");
 
-                    AudioMediaFormat mediaFormat = null;
-                    int averageBitrate = AudioStream.UNKNOWN_BITRATE;
+                    final AudioMediaFormat mediaFormat;
+                    final int averageBitrate;
                     if (preset.contains("mp3")) {
                         // Don't add the MP3 HLS stream if there is a progressive stream present
                         // because the two have the same bitrate
@@ -271,13 +272,15 @@ public class SoundcloudStreamExtractor extends StreamExtractor {
                     } else if (preset.contains("opus")) {
                         mediaFormat = AudioFormatRegistry.OPUS;
                         averageBitrate = 64;
+                    } else {
+                        return null;
                     }
 
                     return (AudioStream) new SimpleAudioStreamImpl(
+                            mediaFormat,
                             protocol.equals("hls")
                                     ? new SimpleHLSDeliveryDataImpl(mediaUrl)
                                     : new SimpleProgressiveHTTPDeliveryDataImpl(mediaUrl),
-                            mediaFormat,
                             averageBitrate
                     );
                 })
@@ -311,7 +314,17 @@ public class SoundcloudStreamExtractor extends StreamExtractor {
             if (isNullOrEmpty(downloadUrl)) {
                 return Optional.empty();
             }
+
+            // Find out what type of file is served
+            final String fileType = determineFileTypeFromDownloadUrl(downloadUrl);
+
+            // No fileType found -> ignore it
+            if (isNullOrEmpty(fileType)) {
+                return Optional.empty();
+            }
+
             return Optional.of(new SimpleAudioStreamImpl(
+                    new AudioFormatRegistry().getFromSuffix(fileType),
                     new SimpleProgressiveHTTPDeliveryDataImpl(downloadUrl)
             ));
         } catch (final Exception ignored) {
@@ -319,6 +332,37 @@ public class SoundcloudStreamExtractor extends StreamExtractor {
             // exception throw because this "stream" is not necessary to play the track
             return Optional.empty();
         }
+    }
+
+    /**
+     * Determines the file type/extension of the download url.
+     * <p>
+     * Note: Uses HTTP FETCH for inspection.
+     * </p>
+     */
+    @Nullable
+    private String determineFileTypeFromDownloadUrl(final String downloadUrl)
+            throws IOException, ReCaptchaException {
+
+        final Response response = NewPipe.getDownloader().head(downloadUrl);
+
+        // As of 2022-06 Soundcloud uses AWS S3
+        // Use the AWS header to identify the filetype first because it's simpler
+        final String amzMetaFileType = response.getHeader("x-amz-meta-file-type");
+        if (!isNullOrEmpty(amzMetaFileType)) {
+            return amzMetaFileType;
+        }
+
+        // If the AWS header was not present try extract the filetype
+        // by inspecting the download file name
+        // Example-Value:
+        // attachment;filename="SoundCloud%20Download"; filename*=utf-8''song.mp3
+        final String contentDisp = response.getHeader("Content-Disposition");
+        if (!isNullOrEmpty(contentDisp) && contentDisp.contains(".")) {
+            return contentDisp.substring(contentDisp.lastIndexOf(".") + 1);
+        }
+
+        return null;
     }
 
     /**

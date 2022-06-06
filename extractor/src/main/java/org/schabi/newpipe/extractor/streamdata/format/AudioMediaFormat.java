@@ -9,6 +9,4 @@ public class AudioMediaFormat extends AbstractMediaFormat {
     ) {
         super(id, name, suffix, mimeType);
     }
-
-
 }

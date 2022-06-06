@@ -1,4 +1,4 @@
-package org.schabi.newpipe.extractor.services.youtube.itag;
+package org.schabi.newpipe.extractor.services.youtube.itag.format.registry;
 
 import static org.schabi.newpipe.extractor.services.youtube.itag.delivery.simpleimpl.SimpleItagDeliveryDataBuilder.dash;
 import static org.schabi.newpipe.extractor.services.youtube.itag.delivery.simpleimpl.SimpleItagDeliveryDataBuilder.hls;
@@ -9,17 +9,21 @@ import static org.schabi.newpipe.extractor.streamdata.stream.quality.VideoQualit
 import static org.schabi.newpipe.extractor.streamdata.stream.quality.VideoQualityData.fromHeightFps;
 import static org.schabi.newpipe.extractor.streamdata.stream.quality.VideoQualityData.fromHeightWidth;
 
-import org.schabi.newpipe.extractor.services.youtube.itag.simpleimpl.SimpleAudioItagFormat;
-import org.schabi.newpipe.extractor.services.youtube.itag.simpleimpl.SimpleVideoAudioItagFormat;
-import org.schabi.newpipe.extractor.services.youtube.itag.simpleimpl.SimpleVideoItagFormat;
+import org.schabi.newpipe.extractor.services.youtube.itag.format.AudioItagFormat;
+import org.schabi.newpipe.extractor.services.youtube.itag.format.ItagFormat;
+import org.schabi.newpipe.extractor.services.youtube.itag.format.VideoAudioItagFormat;
+import org.schabi.newpipe.extractor.services.youtube.itag.format.VideoItagFormat;
+import org.schabi.newpipe.extractor.services.youtube.itag.format.simpleimpl.SimpleAudioItagFormat;
+import org.schabi.newpipe.extractor.services.youtube.itag.format.simpleimpl.SimpleVideoAudioItagFormat;
+import org.schabi.newpipe.extractor.services.youtube.itag.format.simpleimpl.SimpleVideoItagFormat;
 import org.schabi.newpipe.extractor.streamdata.format.registry.AudioFormatRegistry;
 
-/**
- * https://github.com/ytdl-org/youtube-dl/blob/9aa8e5340f3d5ece372b983f8e399277ca1f1fe4/youtube_dl/extractor/youtube.py#L1195
- */
+import java.util.stream.Stream;
+
+// https://github.com/ytdl-org/youtube-dl/blob/9aa8e5340f3d5ece372b983f8e399277ca1f1fe4/youtube_dl/extractor/youtube.py#L1195
 public final class ItagFormatRegistry {
 
-    public static final VideoAudioItagFormat[] VIDEO_AUDIO_FORMATS = new VideoAudioItagFormat[] {
+    public static final VideoAudioItagFormat[] VIDEO_AUDIO_FORMATS = new VideoAudioItagFormat[]{
             // v-- Video-codec: mp4v; Audio-codec: aac --v
             new SimpleVideoAudioItagFormat(17, V3GPP, fromHeightWidth(144, 176), 24),
             // v-- Video-codec: h264; Audio-codec: aac --v
@@ -109,8 +113,21 @@ public final class ItagFormatRegistry {
             new SimpleVideoItagFormat(315, WEBM, fromHeightFps(2160, 60), dash()),
     };
 
-
     private ItagFormatRegistry() {
         // No impl
+    }
+
+    public static boolean isSupported(final int id) {
+        return Stream.of(VIDEO_AUDIO_FORMATS, AUDIO_FORMATS, VIDEO_FORMATS)
+                .flatMap(Stream::of)
+                .anyMatch(itagFormat -> itagFormat.id() == id);
+    }
+
+    public static ItagFormat getById(final int id) {
+        return Stream.of(VIDEO_AUDIO_FORMATS, AUDIO_FORMATS, VIDEO_FORMATS)
+                .flatMap(Stream::of)
+                .filter(itagFormat -> itagFormat.id() == id)
+                .findFirst()
+                .orElse(null);
     }
 }

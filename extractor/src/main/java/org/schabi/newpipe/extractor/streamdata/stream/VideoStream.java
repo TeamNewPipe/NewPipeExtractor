@@ -10,13 +10,7 @@ import javax.annotation.Nullable;
 /**
  * Represents a video (only) stream.
  */
-public interface VideoStream extends Stream {
-    // TODO: Check if this can be non-null
-    @Nullable
-    default VideoAudioMediaFormat videoMediaFormat() {
-        return null;
-    }
-
+public interface VideoStream extends Stream<VideoAudioMediaFormat> {
     VideoQualityData videoQualityData();
 
     @Override
@@ -26,7 +20,7 @@ public interface VideoStream extends Stream {
         }
 
         final VideoStream otherVideoStream = (VideoStream) other;
-        return Objects.equals(videoMediaFormat(), otherVideoStream.videoMediaFormat())
+        return Objects.equals(mediaFormat(), otherVideoStream.mediaFormat())
                 && videoQualityData().equalsVideoQualityData(otherVideoStream.videoQualityData());
     }
 }

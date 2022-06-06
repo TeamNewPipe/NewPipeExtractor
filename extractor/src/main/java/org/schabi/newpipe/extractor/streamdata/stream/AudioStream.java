@@ -9,24 +9,8 @@ import javax.annotation.Nullable;
 /**
  * Represents a audio (only) stream.
  */
-public interface AudioStream extends Stream {
-    int UNKNOWN_BITRATE = -1;
-
-    // TODO: Check if this can be non-null
-    @Nullable
-    default AudioMediaFormat audioMediaFormat() {
-        return null;
-    }
-
-    /**
-     * Get the average bitrate of the stream.
-     *
-     * @return the average bitrate or <code>-1</code> if unknown
-     */
-    default int averageBitrate() {
-        return UNKNOWN_BITRATE;
-    }
-
+public interface AudioStream extends Stream<AudioMediaFormat>, BaseAudioStream {
+    
     @Override
     default boolean equalsStream(@Nullable final Stream other) {
         if (!(other instanceof AudioStream)) {
@@ -34,7 +18,7 @@ public interface AudioStream extends Stream {
         }
 
         final AudioStream otherAudioStream = (AudioStream) other;
-        return Objects.equals(audioMediaFormat(), otherAudioStream.audioMediaFormat())
+        return Objects.equals(mediaFormat(), otherAudioStream.mediaFormat())
                 && averageBitrate() == otherAudioStream.averageBitrate();
     }
 }

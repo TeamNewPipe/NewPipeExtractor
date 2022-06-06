@@ -1,7 +1,7 @@
-package org.schabi.newpipe.extractor.services.youtube.itag.simpleimpl;
+package org.schabi.newpipe.extractor.services.youtube.itag.format.simpleimpl;
 
-import org.schabi.newpipe.extractor.services.youtube.itag.VideoAudioItagFormat;
 import org.schabi.newpipe.extractor.services.youtube.itag.delivery.ItagFormatDeliveryData;
+import org.schabi.newpipe.extractor.services.youtube.itag.format.VideoAudioItagFormat;
 import org.schabi.newpipe.extractor.streamdata.format.VideoAudioMediaFormat;
 import org.schabi.newpipe.extractor.streamdata.stream.quality.VideoQualityData;
 
@@ -12,19 +12,19 @@ public class SimpleVideoAudioItagFormat extends SimpleVideoItagFormat
     private final int averageBitrate;
 
     public SimpleVideoAudioItagFormat(final int id,
-                                      @Nonnull final VideoAudioMediaFormat videoAudioMediaFormat,
+                                      @Nonnull final VideoAudioMediaFormat mediaFormat,
                                       @Nonnull final VideoQualityData videoQualityData,
                                       final int averageBitrate,
                                       @Nonnull final ItagFormatDeliveryData deliveryData) {
-        super(id, videoAudioMediaFormat, videoQualityData, deliveryData);
+        super(id, mediaFormat, videoQualityData, deliveryData);
         this.averageBitrate = averageBitrate;
     }
 
     public SimpleVideoAudioItagFormat(final int id,
-                                      @Nonnull final VideoAudioMediaFormat videoAudioMediaFormat,
+                                      @Nonnull final VideoAudioMediaFormat mediaFormat,
                                       @Nonnull final VideoQualityData videoQualityData,
                                       final int averageBitrate) {
-        super(id, videoAudioMediaFormat, videoQualityData);
+        super(id, mediaFormat, videoQualityData);
         this.averageBitrate = averageBitrate;
     }
 

@@ -2,7 +2,7 @@ package org.schabi.newpipe.extractor.streamdata.format;
 
 import java.util.Objects;
 
-public abstract class AbstractMediaFormat {
+public abstract class AbstractMediaFormat implements MediaFormat {
     private final int id;
     private final String name;
     private final String suffix;
@@ -20,19 +20,23 @@ public abstract class AbstractMediaFormat {
         this.mimeType = mimeType;
     }
 
-    public int getId() {
+    @Override
+    public int id() {
         return id;
     }
 
-    public String getName() {
+    @Override
+    public String name() {
         return name;
     }
 
-    public String getSuffix() {
+    @Override
+    public String suffix() {
         return suffix;
     }
 
-    public String getMimeType() {
+    @Override
+    public String mimeType() {
         return mimeType;
     }
 
@@ -41,11 +45,14 @@ public abstract class AbstractMediaFormat {
         if (this == o) return true;
         if (!(o instanceof AbstractMediaFormat)) return false;
         final AbstractMediaFormat that = (AbstractMediaFormat) o;
-        return getId() == that.getId() && Objects.equals(getName(), that.getName()) && Objects.equals(getSuffix(), that.getSuffix()) && Objects.equals(getMimeType(), that.getMimeType());
+        return id() == that.id()
+                && Objects.equals(name(), that.name())
+                && Objects.equals(suffix(), that.suffix())
+                && Objects.equals(mimeType(), that.mimeType());
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(getId(), getName(), getSuffix(), getMimeType());
+        return Objects.hash(id(), name(), suffix(), mimeType());
     }
 }

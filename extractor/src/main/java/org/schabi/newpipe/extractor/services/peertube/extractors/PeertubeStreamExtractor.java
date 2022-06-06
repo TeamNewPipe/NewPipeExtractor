@@ -402,14 +402,15 @@ public class PeertubeStreamExtractor extends StreamExtractor {
                     .map(JsonObject.class::cast)
                     .map(caption -> {
                         try {
-                            final String url = baseUrl + JsonUtils.getString(caption,
-                                    "captionPath");
+                            final String url =
+                                    baseUrl + JsonUtils.getString(caption, "captionPath");
 
                             return new SimpleSubtitleStreamImpl(
-                                    new SimpleProgressiveHTTPDeliveryDataImpl(url),
+                                    // TODO: Check for null
                                     new SubtitleFormatRegistry()
                                             .getFromSuffix(
                                                     url.substring(url.lastIndexOf(".") + 1)),
+                                    new SimpleProgressiveHTTPDeliveryDataImpl(url),
                                     false,
                                     JsonUtils.getString(caption, "language.id")
                             );
@@ -467,9 +468,9 @@ public class PeertubeStreamExtractor extends StreamExtractor {
                     .filter(JsonObject.class::isInstance)
                     .map(JsonObject.class::cast)
                     // TODO Check! This is the master playlist!
-                    .map(stream -> new SimpleVideoAudioStreamImpl(
-                            new SimpleHLSDeliveryDataImpl(stream.getString(PLAYLIST_URL, "")),
-                            VideoAudioFormatRegistry.MPEG_4)
+                    .map(s -> new SimpleVideoAudioStreamImpl(
+                            VideoAudioFormatRegistry.MPEG_4,
+                            new SimpleHLSDeliveryDataImpl(s.getString(PLAYLIST_URL, "")))
                     )
                     // Don't use the containsSimilarStream method because it will always
                     // return
@@ -501,9 +502,9 @@ public class PeertubeStreamExtractor extends StreamExtractor {
                                 stream,
                                 playlistUrl,
                                 (s, dd) -> new SimpleAudioStreamImpl(
-                                        dd,
                                         new AudioFormatRegistry()
-                                                .getFromSuffix(getExtensionFromStream(s))
+                                                .getFromSuffix(getExtensionFromStream(s)),
+                                        dd
                                 )
                         );
 
@@ -514,9 +515,9 @@ public class PeertubeStreamExtractor extends StreamExtractor {
                                 stream,
                                 playlistUrl,
                                 (s, dd) -> new SimpleVideoAudioStreamImpl(
-                                        dd,
                                         new VideoAudioFormatRegistry()
                                                 .getFromSuffix(getExtensionFromStream(s)),
+                                        dd,
                                         VideoQualityData.fromHeightFps(
                                                 resJson.getInt("id", VideoQualityData.UNKNOWN),
                                                 stream.getInt("fps", VideoQualityData.UNKNOWN))
