@@ -13,7 +13,6 @@ import org.schabi.newpipe.extractor.exceptions.ParsingException;
 import org.schabi.newpipe.extractor.linkhandler.LinkHandler;
 import org.schabi.newpipe.extractor.stream.Description;
 import org.schabi.newpipe.extractor.stream.StreamExtractor;
-import org.schabi.newpipe.extractor.stream.StreamType;
 import org.schabi.newpipe.extractor.streamdata.delivery.DeliveryData;
 import org.schabi.newpipe.extractor.streamdata.delivery.simpleimpl.SimpleDASHUrlDeliveryDataImpl;
 import org.schabi.newpipe.extractor.streamdata.delivery.simpleimpl.SimpleHLSDeliveryDataImpl;
@@ -224,11 +223,6 @@ public class MediaCCCLiveStreamExtractor extends StreamExtractor {
                                 streamJsonObj,
                                 e.getKey(),
                                 (JsonObject) e.getValue())));
-    }
-
-    @Override
-    public StreamType getStreamType() throws ParsingException {
-        return StreamType.LIVE_STREAM;
     }
 
     @Override

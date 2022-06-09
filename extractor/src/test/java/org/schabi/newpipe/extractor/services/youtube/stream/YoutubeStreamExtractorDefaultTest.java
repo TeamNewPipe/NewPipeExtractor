@@ -43,6 +43,7 @@ import org.schabi.newpipe.extractor.services.DefaultStreamExtractorTest;
 import org.schabi.newpipe.extractor.services.youtube.YoutubeTestsUtils;
 import org.schabi.newpipe.extractor.services.youtube.extractors.YoutubeStreamExtractor;
 import org.schabi.newpipe.extractor.stream.Description;
+import org.schabi.newpipe.extractor.stream.Privacy;
 import org.schabi.newpipe.extractor.stream.StreamExtractor;
 import org.schabi.newpipe.extractor.stream.StreamSegment;
 import org.schabi.newpipe.extractor.stream.StreamType;
@@ -442,7 +443,7 @@ public class YoutubeStreamExtractorDefaultTest {
 
         @Test
         void testGetUnlisted() {
-            assertEquals(StreamExtractor.Privacy.UNLISTED, extractor.getPrivacy());
+            assertEquals(Privacy.UNLISTED, extractor.getPrivacy());
         }
     }
 

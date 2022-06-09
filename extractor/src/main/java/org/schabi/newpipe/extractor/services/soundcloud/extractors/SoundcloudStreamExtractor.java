@@ -25,9 +25,9 @@ import org.schabi.newpipe.extractor.linkhandler.LinkHandler;
 import org.schabi.newpipe.extractor.localization.DateWrapper;
 import org.schabi.newpipe.extractor.services.soundcloud.SoundcloudParsingHelper;
 import org.schabi.newpipe.extractor.stream.Description;
+import org.schabi.newpipe.extractor.stream.Privacy;
 import org.schabi.newpipe.extractor.stream.StreamExtractor;
 import org.schabi.newpipe.extractor.stream.StreamInfoItemsCollector;
-import org.schabi.newpipe.extractor.stream.StreamType;
 import org.schabi.newpipe.extractor.streamdata.delivery.simpleimpl.SimpleHLSDeliveryDataImpl;
 import org.schabi.newpipe.extractor.streamdata.delivery.simpleimpl.SimpleProgressiveHTTPDeliveryDataImpl;
 import org.schabi.newpipe.extractor.streamdata.format.AudioMediaFormat;
@@ -402,17 +402,9 @@ public class SoundcloudStreamExtractor extends StreamExtractor {
         throw new ParsingException("Could not get any URL from HLS manifest");
     }
 
-    private static String urlEncode(final String value) {
-        try {
-            return URLEncoder.encode(value, UTF_8);
-        } catch (final UnsupportedEncodingException e) {
-            throw new IllegalStateException(e);
-        }
-    }
-
     @Override
-    public StreamType getStreamType() {
-        return StreamType.AUDIO_STREAM;
+    public boolean isAudioOnly() {
+        return true;
     }
 
     @Nullable
@@ -469,5 +461,14 @@ public class SoundcloudStreamExtractor extends StreamExtractor {
             }
         }
         return tags;
+    }
+
+
+    private static String urlEncode(final String value) {
+        try {
+            return URLEncoder.encode(value, UTF_8);
+        } catch (final UnsupportedEncodingException e) {
+            throw new IllegalStateException(e);
+        }
     }
 }

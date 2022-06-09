@@ -15,7 +15,6 @@ import org.schabi.newpipe.extractor.services.media_ccc.linkHandler.MediaCCCConfe
 import org.schabi.newpipe.extractor.services.media_ccc.linkHandler.MediaCCCStreamLinkHandlerFactory;
 import org.schabi.newpipe.extractor.stream.Description;
 import org.schabi.newpipe.extractor.stream.StreamExtractor;
-import org.schabi.newpipe.extractor.stream.StreamType;
 import org.schabi.newpipe.extractor.streamdata.delivery.simpleimpl.SimpleProgressiveHTTPDeliveryDataImpl;
 import org.schabi.newpipe.extractor.streamdata.format.registry.AudioFormatRegistry;
 import org.schabi.newpipe.extractor.streamdata.format.registry.VideoAudioFormatRegistry;
@@ -124,11 +123,6 @@ public class MediaCCCStreamExtractor extends StreamExtractor {
                 .map(JsonObject.class::cast)
                 .filter(rec -> rec.getString("mime_type", "")
                         .startsWith(startsWithMimeType));
-    }
-
-    @Override
-    public StreamType getStreamType() {
-        return StreamType.VIDEO_STREAM;
     }
 
     @Override

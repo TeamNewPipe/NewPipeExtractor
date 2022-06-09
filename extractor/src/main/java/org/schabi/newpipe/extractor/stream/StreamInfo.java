@@ -51,7 +51,6 @@ import javax.annotation.Nonnull;
  */
 public class StreamInfo extends Info {
 
-    private StreamType streamType;
     private String thumbnailUrl = "";
     private String textualUploadDate;
     private DateWrapper uploadDate;
@@ -73,14 +72,17 @@ public class StreamInfo extends Info {
     private String subChannelUrl = "";
     private String subChannelAvatarUrl = "";
 
+    private List<VideoAudioStream> videoStreams = new ArrayList<>();
+    private List<AudioStream> audioStreams = new ArrayList<>();
+    private List<VideoStream> videoOnlyStreams = new ArrayList<>();
+
     @Nonnull
     private String dashMpdUrl = "";
     @Nonnull
     private String hlsMasterPlaylistUrl = "";
 
-    private List<VideoAudioStream> videoStreams = new ArrayList<>();
-    private List<AudioStream> audioStreams = new ArrayList<>();
-    private List<VideoStream> videoOnlyStreams = new ArrayList<>();
+    private boolean audioOnly = false;
+    private boolean live = false;
 
     private List<InfoItem> relatedItems = new ArrayList<>();
 
@@ -88,7 +90,7 @@ public class StreamInfo extends Info {
     private List<SubtitleStream> subtitles = new ArrayList<>();
 
     private String host = "";
-    private StreamExtractor.Privacy privacy;
+    private Privacy privacy;
     private String category = "";
     private String licence = "";
     private String supportInfo = "";
@@ -100,12 +102,10 @@ public class StreamInfo extends Info {
     public StreamInfo(final int serviceId,
                       final String url,
                       final String originalUrl,
-                      final StreamType streamType,
                       final String id,
                       final String name,
                       final int ageLimit) {
         super(serviceId, id, url, originalUrl, name);
-        this.streamType = streamType;
         this.ageLimit = ageLimit;
     }
 
@@ -113,19 +113,6 @@ public class StreamInfo extends Info {
      * Preview frames, e.g. for the storyboard / seekbar thumbnail preview
      */
     private List<Frameset> previewFrames = Collections.emptyList();
-
-    /**
-     * Get the stream type
-     *
-     * @return the stream type
-     */
-    public StreamType getStreamType() {
-        return streamType;
-    }
-
-    public void setStreamType(final StreamType streamType) {
-        this.streamType = streamType;
-    }
 
     /**
      * Get the thumbnail url
@@ -328,6 +315,22 @@ public class StreamInfo extends Info {
         this.hlsMasterPlaylistUrl = Objects.requireNonNull(hlsMasterPlaylistUrl);
     }
 
+    public boolean isAudioOnly() {
+        return audioOnly;
+    }
+
+    public void setAudioOnly(final boolean audioOnly) {
+        this.audioOnly = audioOnly;
+    }
+
+    public boolean isLive() {
+        return live;
+    }
+
+    public void setLive(final boolean live) {
+        this.live = live;
+    }
+
     public List<InfoItem> getRelatedItems() {
         return relatedItems;
     }
@@ -361,11 +364,11 @@ public class StreamInfo extends Info {
         this.host = host;
     }
 
-    public StreamExtractor.Privacy getPrivacy() {
+    public Privacy getPrivacy() {
         return this.privacy;
     }
 
-    public void setPrivacy(final StreamExtractor.Privacy privacy) {
+    public void setPrivacy(final Privacy privacy) {
         this.privacy = privacy;
     }
 
@@ -479,23 +482,32 @@ public class StreamInfo extends Info {
         extractor.getServiceId(); // Check if a exception is thrown
         final String url = extractor.getUrl();
         extractor.getOriginalUrl(); // Check if a exception is thrown
-        final StreamType streamType = extractor.getStreamType();
         final String id = extractor.getId();
         final String name = extractor.getName();
         final int ageLimit = extractor.getAgeLimit();
 
         // Suppress always-non-null warning as here we double-check it really is not null
         //noinspection ConstantConditions
-        if (streamType == StreamType.NONE
-                || isNullOrEmpty(url)
+        if (isNullOrEmpty(url)
                 || isNullOrEmpty(id)
                 || name == null /* but it can be empty of course */
                 || ageLimit == -1) {
-            throw new ExtractionException("Some important stream information was not given.");
+            throw new ExtractionException("Some important stream information was not given");
         }
 
-        return new StreamInfo(extractor.getServiceId(), url, extractor.getOriginalUrl(),
-                streamType, id, name, ageLimit);
+        final StreamInfo streamInfo = new StreamInfo(
+                extractor.getServiceId(),
+                url,
+                extractor.getOriginalUrl(),
+                id,
+                name,
+                ageLimit);
+
+        // These methods don't throw checked exceptions but the data is essential.
+        streamInfo.setLive(extractor.isLive());
+        streamInfo.setAudioOnly(extractor.isAudioOnly());
+
+        return streamInfo;
     }
 
 

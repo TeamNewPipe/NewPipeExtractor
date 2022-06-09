@@ -1,5 +1,17 @@
 package org.schabi.newpipe.extractor.services;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.schabi.newpipe.extractor.ExtractorAsserts.assertEqualsOrderIndependent;
+import static org.schabi.newpipe.extractor.ExtractorAsserts.assertGreaterOrEqual;
+import static org.schabi.newpipe.extractor.ExtractorAsserts.assertIsSecureUrl;
+import static org.schabi.newpipe.extractor.ExtractorAsserts.assertIsValidUrl;
+import static org.schabi.newpipe.extractor.services.DefaultTests.defaultTestListOfItems;
+import static org.schabi.newpipe.extractor.stream.StreamExtractor.UNKNOWN_SUBSCRIBER_COUNT;
+
 import org.junit.jupiter.api.Test;
 import org.schabi.newpipe.extractor.ExtractorAsserts;
 import org.schabi.newpipe.extractor.InfoItemsCollector;
@@ -9,32 +21,20 @@ import org.schabi.newpipe.extractor.localization.DateWrapper;
 import org.schabi.newpipe.extractor.stream.AudioStream;
 import org.schabi.newpipe.extractor.stream.Description;
 import org.schabi.newpipe.extractor.stream.Frameset;
+import org.schabi.newpipe.extractor.stream.Privacy;
 import org.schabi.newpipe.extractor.stream.StreamExtractor;
 import org.schabi.newpipe.extractor.stream.StreamType;
-import org.schabi.newpipe.extractor.stream.SubtitlesStream;
-import org.schabi.newpipe.extractor.stream.VideoStream;
 
-import javax.annotation.Nullable;
-import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.Collections;
 import java.util.List;
 import java.util.Locale;
 import java.util.stream.Collectors;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertFalse;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.junit.jupiter.api.Assertions.assertNull;
-import static org.junit.jupiter.api.Assertions.assertTrue;
-import static org.schabi.newpipe.extractor.ExtractorAsserts.assertGreaterOrEqual;
-import static org.schabi.newpipe.extractor.ExtractorAsserts.assertEqualsOrderIndependent;
-import static org.schabi.newpipe.extractor.ExtractorAsserts.assertIsSecureUrl;
-import static org.schabi.newpipe.extractor.ExtractorAsserts.assertIsValidUrl;
-import static org.schabi.newpipe.extractor.services.DefaultTests.defaultTestListOfItems;
-import static org.schabi.newpipe.extractor.stream.StreamExtractor.UNKNOWN_SUBSCRIBER_COUNT;
+import javax.annotation.Nullable;
 
 /**
  * Test for {@link StreamExtractor}
@@ -67,7 +67,7 @@ public abstract class DefaultStreamExtractorTest extends DefaultExtractorTest<St
     @Nullable public String expectedDashMpdUrlContains() { return null; } // default: no dash mpd
     public boolean expectedHasFrames() { return true; } // default: there are frames
     public String expectedHost() { return ""; } // default: no host for centralized platforms
-    public StreamExtractor.Privacy expectedPrivacy() { return StreamExtractor.Privacy.PUBLIC; } // default: public
+    public Privacy expectedPrivacy() { return Privacy.PUBLIC; } // default: public
     public String expectedCategory() { return ""; } // default: no category
     public String expectedLicence() { return ""; } // default: no licence
     public Locale expectedLanguageInfo() { return null; } // default: no language info available
@@ -75,12 +75,6 @@ public abstract class DefaultStreamExtractorTest extends DefaultExtractorTest<St
     public String expectedSupportInfo() { return ""; } // default: no support info available
     public int expectedStreamSegmentsCount() { return -1; } // return 0 or greater to test (default is -1 to ignore)
     public List<MetaInfo> expectedMetaInfo() throws MalformedURLException { return Collections.emptyList(); } // default: no metadata info available
-
-    @Test
-    @Override
-    public void testStreamType() throws Exception {
-        assertEquals(expectedStreamType(), extractor().getStreamType());
-    }
 
     @Test
     @Override

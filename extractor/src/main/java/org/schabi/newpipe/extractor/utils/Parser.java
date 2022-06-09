@@ -93,13 +93,16 @@ public final class Parser {
     }
 
     @Nonnull
-    public static Map<String, String> compatParseMap(@Nonnull final String input)
-            throws UnsupportedEncodingException {
+    public static Map<String, String> compatParseMap(@Nonnull final String input) {
         final Map<String, String> map = new HashMap<>();
         for (final String arg : input.split("&")) {
             final String[] splitArg = arg.split("=");
             if (splitArg.length > 1) {
-                map.put(splitArg[0], URLDecoder.decode(splitArg[1], UTF_8));
+                try {
+                    map.put(splitArg[0], URLDecoder.decode(splitArg[1], UTF_8));
+                } catch (final UnsupportedEncodingException ignored) {
+                    // No UTF-8 = Not possible
+                }
             } else {
                 map.put(splitArg[0], "");
             }

@@ -344,14 +344,19 @@ public abstract class StreamExtractor extends Extractor {
     }
 
     /**
-     * Get the {@link StreamType}.
+     * This will return whenever there are only audio streams available.
      *
-     * @return the type of the stream
+     * @return <code>true</code> when audio only otherwise <code>false</code>
      */
-    @Deprecated // TODO - kill
-    public abstract StreamType getStreamType() throws ParsingException;
+    public boolean isAudioOnly() {
+        return false;
+    }
 
-    // TODO - Implement
+    /**
+     * This will return whenever the current stream is live.
+     *
+     * @return <code>true</code> when live otherwise <code>false</code>
+     */
     public boolean isLive() {
         return false;
     }
@@ -366,8 +371,8 @@ public abstract class StreamExtractor extends Extractor {
      * @return a list of InfoItems showing the related videos/streams
      */
     @Nullable
-    public InfoItemsCollector<? extends InfoItem, ? extends InfoItemExtractor>
-    getRelatedItems() throws IOException, ExtractionException {
+    public InfoItemsCollector<? extends InfoItem, ? extends InfoItemExtractor> getRelatedItems()
+            throws IOException, ExtractionException {
         return null;
     }
 
@@ -382,9 +387,8 @@ public abstract class StreamExtractor extends Extractor {
         final InfoItemsCollector<?, ?> collector = getRelatedItems();
         if (collector instanceof StreamInfoItemsCollector) {
             return (StreamInfoItemsCollector) collector;
-        } else {
-            return null;
         }
+        return null;
     }
 
     /**
@@ -429,33 +433,33 @@ public abstract class StreamExtractor extends Extractor {
             return -2;
         }
 
-        if (!timestamp.isEmpty()) {
-            try {
-                String secondsString = "";
-                String minutesString = "";
-                String hoursString = "";
-                try {
-                    secondsString = Parser.matchGroup1("(\\d+)s", timestamp);
-                    minutesString = Parser.matchGroup1("(\\d+)m", timestamp);
-                    hoursString = Parser.matchGroup1("(\\d+)h", timestamp);
-                } catch (final Exception e) {
-                    // it could be that time is given in another method
-                    if (secondsString.isEmpty() && minutesString.isEmpty()) {
-                        // if nothing was obtained, treat as unlabelled seconds
-                        secondsString = Parser.matchGroup1("t=(\\d+)", timestamp);
-                    }
-                }
-
-                final int seconds = secondsString.isEmpty() ? 0 : Integer.parseInt(secondsString);
-                final int minutes = minutesString.isEmpty() ? 0 : Integer.parseInt(minutesString);
-                final int hours = hoursString.isEmpty() ? 0 : Integer.parseInt(hoursString);
-
-                return seconds + (60L * minutes) + (3600L * hours);
-            } catch (final ParsingException e) {
-                throw new ParsingException("Could not get timestamp.", e);
-            }
-        } else {
+        if (timestamp.isEmpty()) {
             return 0;
+        }
+
+        try {
+            String secondsString = "";
+            String minutesString = "";
+            String hoursString = "";
+            try {
+                secondsString = Parser.matchGroup1("(\\d+)s", timestamp);
+                minutesString = Parser.matchGroup1("(\\d+)m", timestamp);
+                hoursString = Parser.matchGroup1("(\\d+)h", timestamp);
+            } catch (final Exception e) {
+                // it could be that time is given in another method
+                if (secondsString.isEmpty() && minutesString.isEmpty()) {
+                    // if nothing was obtained, treat as unlabelled seconds
+                    secondsString = Parser.matchGroup1("t=(\\d+)", timestamp);
+                }
+            }
+
+            final int seconds = secondsString.isEmpty() ? 0 : Integer.parseInt(secondsString);
+            final int minutes = minutesString.isEmpty() ? 0 : Integer.parseInt(minutesString);
+            final int hours = hoursString.isEmpty() ? 0 : Integer.parseInt(hoursString);
+
+            return seconds + (60L * minutes) + (3600L * hours);
+        } catch (final ParsingException e) {
+            throw new ParsingException("Could not get timestamp.", e);
         }
     }
 
@@ -567,13 +571,5 @@ public abstract class StreamExtractor extends Extractor {
     @Nonnull
     public List<MetaInfo> getMetaInfo() throws ParsingException {
         return Collections.emptyList();
-    }
-
-    public enum Privacy {
-        PUBLIC,
-        UNLISTED,
-        PRIVATE,
-        INTERNAL,
-        OTHER
     }
 }

@@ -10,10 +10,10 @@ import java.util.Optional;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
-public class ItagInfo {
+public class ItagInfo<I extends ItagFormat<?>> {
 
     @Nonnull
-    private final ItagFormat itagFormat;
+    private final I itagFormat;
 
     // TODO: Maybe generate the streamUrl on-demand and not always instantly?
     @Nonnull
@@ -21,8 +21,11 @@ public class ItagInfo {
 
     // region Audio
 
+    /**
+     * The average bitrate in KBit/s
+     */
     @Nullable
-    private Integer averageBitRate;
+    private Integer averageBitrate;
 
     @Nullable
     private Integer audioSampleRate;
@@ -78,7 +81,7 @@ public class ItagInfo {
 
 
     public ItagInfo(
-            @Nonnull final ItagFormat itagFormat,
+            @Nonnull final I itagFormat,
             @Nonnull final String streamUrl) {
         this.itagFormat = itagFormat;
         this.streamUrl = streamUrl;
@@ -87,7 +90,7 @@ public class ItagInfo {
     // region Getters + Setters
 
     @Nonnull
-    public ItagFormat getItagFormat() {
+    public I getItagFormat() {
         return itagFormat;
     }
 
@@ -97,12 +100,12 @@ public class ItagInfo {
     }
 
     @Nullable
-    public Integer getAverageBitRate() {
-        return averageBitRate;
+    public Integer getAverageBitrate() {
+        return averageBitrate;
     }
 
-    public void setAverageBitRate(@Nullable final Integer averageBitRate) {
-        this.averageBitRate = averageBitRate;
+    public void setAverageBitrate(@Nullable final Integer averageBitrate) {
+        this.averageBitrate = averageBitrate;
     }
 
     @Nullable
@@ -238,12 +241,12 @@ public class ItagInfo {
      * @return averageBitRate in KBit/s or <code>-1</code>
      */
     public int getCombinedAverageBitrate() {
-        if (averageBitRate != null) {
-            return (int) Math.round(averageBitRate / 1000d);
+        if (averageBitrate != null) {
+            return averageBitrate;
         }
 
         if (itagFormat instanceof BaseAudioItagFormat) {
-            return ((BaseAudioItagFormat)itagFormat).averageBitrate();
+            return ((BaseAudioItagFormat) itagFormat).averageBitrate();
         }
 
         return -1;

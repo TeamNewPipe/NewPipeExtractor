@@ -117,14 +117,14 @@ public final class ItagFormatRegistry {
         // No impl
     }
 
-    public static boolean isSupported(final int id) {
-        return Stream.of(VIDEO_AUDIO_FORMATS, AUDIO_FORMATS, VIDEO_FORMATS)
+    public static boolean isSupported(final ItagFormat<?>[] itagFormats, final int id) {
+        return Stream.of(itagFormats)
                 .flatMap(Stream::of)
                 .anyMatch(itagFormat -> itagFormat.id() == id);
     }
 
-    public static ItagFormat getById(final int id) {
-        return Stream.of(VIDEO_AUDIO_FORMATS, AUDIO_FORMATS, VIDEO_FORMATS)
+    public static <I extends ItagFormat<?>> I getById(final I[] itagFormats, final int id) {
+        return Stream.of(itagFormats)
                 .flatMap(Stream::of)
                 .filter(itagFormat -> itagFormat.id() == id)
                 .findFirst()

@@ -21,9 +21,9 @@ import org.schabi.newpipe.extractor.services.peertube.PeertubeParsingHelper;
 import org.schabi.newpipe.extractor.services.peertube.linkHandler.PeertubeSearchQueryHandlerFactory;
 import org.schabi.newpipe.extractor.services.peertube.linkHandler.PeertubeStreamLinkHandlerFactory;
 import org.schabi.newpipe.extractor.stream.Description;
+import org.schabi.newpipe.extractor.stream.Privacy;
 import org.schabi.newpipe.extractor.stream.StreamExtractor;
 import org.schabi.newpipe.extractor.stream.StreamInfoItemsCollector;
-import org.schabi.newpipe.extractor.stream.StreamType;
 import org.schabi.newpipe.extractor.streamdata.delivery.DeliveryData;
 import org.schabi.newpipe.extractor.streamdata.delivery.simpleimpl.SimpleHLSDeliveryDataImpl;
 import org.schabi.newpipe.extractor.streamdata.delivery.simpleimpl.SimpleProgressiveHTTPDeliveryDataImpl;
@@ -257,11 +257,6 @@ public class PeertubeStreamExtractor extends StreamExtractor {
     public List<SubtitleStream> getSubtitles() {
         assertPageFetched();
         return subtitles;
-    }
-
-    @Override
-    public StreamType getStreamType() {
-        return isLive() ? StreamType.LIVE_STREAM : StreamType.VIDEO_STREAM;
     }
 
     @Override

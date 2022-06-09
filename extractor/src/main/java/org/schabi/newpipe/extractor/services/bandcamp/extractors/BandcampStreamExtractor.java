@@ -20,7 +20,6 @@ import org.schabi.newpipe.extractor.localization.DateWrapper;
 import org.schabi.newpipe.extractor.playlist.PlaylistInfoItemsCollector;
 import org.schabi.newpipe.extractor.stream.Description;
 import org.schabi.newpipe.extractor.stream.StreamExtractor;
-import org.schabi.newpipe.extractor.stream.StreamType;
 import org.schabi.newpipe.extractor.streamdata.delivery.simpleimpl.SimpleProgressiveHTTPDeliveryDataImpl;
 import org.schabi.newpipe.extractor.streamdata.format.registry.AudioFormatRegistry;
 import org.schabi.newpipe.extractor.streamdata.stream.AudioStream;
@@ -158,14 +157,14 @@ public class BandcampStreamExtractor extends StreamExtractor {
     }
 
     @Override
-    public long getLength() throws ParsingException {
-        return (long) albumJson.getArray("trackinfo").getObject(0)
-                .getDouble("duration");
+    public boolean isAudioOnly() {
+        return true;
     }
 
     @Override
-    public StreamType getStreamType() {
-        return StreamType.AUDIO_STREAM;
+    public long getLength() throws ParsingException {
+        return (long) albumJson.getArray("trackinfo").getObject(0)
+                .getDouble("duration");
     }
 
     @Override
