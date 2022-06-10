@@ -30,12 +30,22 @@ public interface StreamInfoItemExtractor extends InfoItemExtractor {
 
 
     /**
-     * Get the stream type
+     * This will return whenever there are only audio streams available.
      *
-     * @return the stream type
-     * @throws ParsingException thrown if there is an error in the extraction
+     * @return <code>true</code> when audio only otherwise <code>false</code>
      */
-    StreamType getStreamType() throws ParsingException;
+    default boolean isAudioOnly() {
+        return false;
+    }
+
+    /**
+     * This will return whenever the current stream is live.
+     *
+     * @return <code>true</code> when live otherwise <code>false</code>
+     */
+    default boolean isLive() {
+        return false;
+    }
 
     /**
      * Check if the stream is an ad.

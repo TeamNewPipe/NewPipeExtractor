@@ -22,11 +22,7 @@ public class BandcampSearchStreamInfoItemExtractor extends BandcampStreamInfoIte
     public String getUploaderName() {
         final String subhead = resultInfo.getElementsByClass("subhead").text();
         final String[] splitBy = subhead.split("by ");
-        if (splitBy.length > 1) {
-            return splitBy[1];
-        } else {
-            return splitBy[0];
-        }
+        return splitBy.length > 1 ? splitBy[1] : splitBy[0];
     }
 
     @Nullable

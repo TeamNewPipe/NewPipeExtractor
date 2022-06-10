@@ -3,7 +3,6 @@ package org.schabi.newpipe.extractor.services.bandcamp.extractors.streaminfoitem
 import org.schabi.newpipe.extractor.exceptions.ParsingException;
 import org.schabi.newpipe.extractor.localization.DateWrapper;
 import org.schabi.newpipe.extractor.stream.StreamInfoItemExtractor;
-import org.schabi.newpipe.extractor.stream.StreamType;
 
 import javax.annotation.Nullable;
 
@@ -13,13 +12,13 @@ import javax.annotation.Nullable;
 public abstract class BandcampStreamInfoItemExtractor implements StreamInfoItemExtractor {
     private final String uploaderUrl;
 
-    public BandcampStreamInfoItemExtractor(final String uploaderUrl) {
+    protected BandcampStreamInfoItemExtractor(final String uploaderUrl) {
         this.uploaderUrl = uploaderUrl;
     }
 
     @Override
-    public StreamType getStreamType() {
-        return StreamType.AUDIO_STREAM;
+    public boolean isAudioOnly() {
+        return true;
     }
 
     @Override

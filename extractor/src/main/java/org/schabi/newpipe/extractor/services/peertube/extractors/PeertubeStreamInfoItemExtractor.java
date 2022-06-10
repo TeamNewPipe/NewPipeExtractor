@@ -1,12 +1,12 @@
 package org.schabi.newpipe.extractor.services.peertube.extractors;
 
 import com.grack.nanojson.JsonObject;
+
 import org.schabi.newpipe.extractor.ServiceList;
 import org.schabi.newpipe.extractor.exceptions.ParsingException;
 import org.schabi.newpipe.extractor.localization.DateWrapper;
 import org.schabi.newpipe.extractor.services.peertube.PeertubeParsingHelper;
 import org.schabi.newpipe.extractor.stream.StreamInfoItemExtractor;
-import org.schabi.newpipe.extractor.stream.StreamType;
 import org.schabi.newpipe.extractor.utils.JsonUtils;
 
 import javax.annotation.Nullable;
@@ -93,8 +93,8 @@ public class PeertubeStreamInfoItemExtractor implements StreamInfoItemExtractor 
     }
 
     @Override
-    public StreamType getStreamType() {
-        return item.getBoolean("isLive") ? StreamType.LIVE_STREAM : StreamType.VIDEO_STREAM;
+    public boolean isLive() {
+        return item.getBoolean("isLive");
     }
 
     @Override

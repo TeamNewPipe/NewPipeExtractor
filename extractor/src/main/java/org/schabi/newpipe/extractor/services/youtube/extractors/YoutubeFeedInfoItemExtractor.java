@@ -4,24 +4,17 @@ import org.jsoup.nodes.Element;
 import org.schabi.newpipe.extractor.exceptions.ParsingException;
 import org.schabi.newpipe.extractor.localization.DateWrapper;
 import org.schabi.newpipe.extractor.stream.StreamInfoItemExtractor;
-import org.schabi.newpipe.extractor.stream.StreamType;
 
-import javax.annotation.Nullable;
 import java.time.OffsetDateTime;
 import java.time.format.DateTimeParseException;
+
+import javax.annotation.Nullable;
 
 public class YoutubeFeedInfoItemExtractor implements StreamInfoItemExtractor {
     private final Element entryElement;
 
     public YoutubeFeedInfoItemExtractor(final Element entryElement) {
         this.entryElement = entryElement;
-    }
-
-    @Override
-    public StreamType getStreamType() {
-        // It is not possible to determine the stream type using the feed endpoint.
-        // All entries are considered a video stream.
-        return StreamType.VIDEO_STREAM;
     }
 
     @Override

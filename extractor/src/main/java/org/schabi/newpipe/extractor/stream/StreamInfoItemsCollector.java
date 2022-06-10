@@ -45,7 +45,11 @@ public class StreamInfoItemsCollector
         }
 
         final StreamInfoItem resultItem = new StreamInfoItem(
-                getServiceId(), extractor.getUrl(), extractor.getName(), extractor.getStreamType());
+                getServiceId(),
+                extractor.getUrl(),
+                extractor.getName(),
+                extractor.isAudioOnly(),
+                extractor.isLive());
 
         // optional information
         try {

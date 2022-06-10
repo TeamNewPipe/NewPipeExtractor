@@ -8,7 +8,6 @@ import org.schabi.newpipe.extractor.exceptions.ParsingException;
 import org.schabi.newpipe.extractor.localization.DateWrapper;
 import org.schabi.newpipe.extractor.services.soundcloud.SoundcloudParsingHelper;
 import org.schabi.newpipe.extractor.stream.StreamInfoItemExtractor;
-import org.schabi.newpipe.extractor.stream.StreamType;
 
 import javax.annotation.Nullable;
 
@@ -18,6 +17,11 @@ public class SoundcloudStreamInfoItemExtractor implements StreamInfoItemExtracto
 
     public SoundcloudStreamInfoItemExtractor(final JsonObject itemObject) {
         this.itemObject = itemObject;
+    }
+
+    @Override
+    public boolean isAudioOnly() {
+        return true;
     }
 
     @Override
@@ -78,11 +82,6 @@ public class SoundcloudStreamInfoItemExtractor implements StreamInfoItemExtracto
             artworkUrl = itemObject.getObject("user").getString("avatar_url");
         }
         return artworkUrl.replace("large.jpg", "crop.jpg");
-    }
-
-    @Override
-    public StreamType getStreamType() {
-        return StreamType.AUDIO_STREAM;
     }
 
     @Override

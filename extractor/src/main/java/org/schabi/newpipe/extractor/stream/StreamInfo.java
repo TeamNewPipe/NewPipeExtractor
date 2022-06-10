@@ -81,8 +81,8 @@ public class StreamInfo extends Info {
     @Nonnull
     private String hlsMasterPlaylistUrl = "";
 
-    private boolean audioOnly = false;
-    private boolean live = false;
+    private final boolean audioOnly;
+    private final boolean live;
 
     private List<InfoItem> relatedItems = new ArrayList<>();
 
@@ -104,9 +104,13 @@ public class StreamInfo extends Info {
                       final String originalUrl,
                       final String id,
                       final String name,
-                      final int ageLimit) {
+                      final int ageLimit,
+                      final boolean audioOnly,
+                      final boolean live) {
         super(serviceId, id, url, originalUrl, name);
         this.ageLimit = ageLimit;
+        this.audioOnly = audioOnly;
+        this.live = live;
     }
 
     /**
@@ -319,16 +323,8 @@ public class StreamInfo extends Info {
         return audioOnly;
     }
 
-    public void setAudioOnly(final boolean audioOnly) {
-        this.audioOnly = audioOnly;
-    }
-
     public boolean isLive() {
         return live;
-    }
-
-    public void setLive(final boolean live) {
-        this.live = live;
     }
 
     public List<InfoItem> getRelatedItems() {
@@ -495,19 +491,15 @@ public class StreamInfo extends Info {
             throw new ExtractionException("Some important stream information was not given");
         }
 
-        final StreamInfo streamInfo = new StreamInfo(
+        return new StreamInfo(
                 extractor.getServiceId(),
                 url,
                 extractor.getOriginalUrl(),
                 id,
                 name,
-                ageLimit);
-
-        // These methods don't throw checked exceptions but the data is essential.
-        streamInfo.setLive(extractor.isLive());
-        streamInfo.setAudioOnly(extractor.isAudioOnly());
-
-        return streamInfo;
+                ageLimit,
+                extractor.isAudioOnly(),
+                extractor.isLive());
     }
 
 

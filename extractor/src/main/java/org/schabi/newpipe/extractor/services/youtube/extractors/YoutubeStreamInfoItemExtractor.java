@@ -14,7 +14,6 @@ import org.schabi.newpipe.extractor.localization.TimeAgoParser;
 import org.schabi.newpipe.extractor.services.youtube.YoutubeParsingHelper;
 import org.schabi.newpipe.extractor.services.youtube.linkHandler.YoutubeStreamLinkHandlerFactory;
 import org.schabi.newpipe.extractor.stream.StreamInfoItemExtractor;
-import org.schabi.newpipe.extractor.stream.StreamType;
 import org.schabi.newpipe.extractor.utils.JsonUtils;
 import org.schabi.newpipe.extractor.utils.Utils;
 
@@ -46,7 +45,7 @@ import javax.annotation.Nullable;
 public class YoutubeStreamInfoItemExtractor implements StreamInfoItemExtractor {
     private final JsonObject videoInfo;
     private final TimeAgoParser timeAgoParser;
-    private StreamType cachedStreamType;
+    private Boolean cachedIsLive;
 
     /**
      * Creates an extractor of StreamInfoItems from a YouTube page.
@@ -61,19 +60,23 @@ public class YoutubeStreamInfoItemExtractor implements StreamInfoItemExtractor {
     }
 
     @Override
-    public StreamType getStreamType() {
-        if (cachedStreamType != null) {
-            return cachedStreamType;
+    public boolean isLive() {
+        if (cachedIsLive != null) {
+            return cachedIsLive;
         }
 
+        cachedIsLive = determineIfIsLive();
+        return cachedIsLive;
+    }
+
+    private boolean determineIfIsLive() {
         final JsonArray badges = videoInfo.getArray("badges");
         for (final Object badge : badges) {
             final JsonObject badgeRenderer
                     = ((JsonObject) badge).getObject("metadataBadgeRenderer");
-            if (badgeRenderer.getString("style", "").equals("BADGE_STYLE_TYPE_LIVE_NOW")
-                    || badgeRenderer.getString("label", "").equals("LIVE NOW")) {
-                cachedStreamType = StreamType.LIVE_STREAM;
-                return cachedStreamType;
+            if ("BADGE_STYLE_TYPE_LIVE_NOW".equals(badgeRenderer.getString("style"))
+                    || "LIVE NOW".equals(badgeRenderer.getString("label"))) {
+                return true;
             }
         }
 
@@ -82,13 +85,11 @@ public class YoutubeStreamInfoItemExtractor implements StreamInfoItemExtractor {
                     .getObject("thumbnailOverlayTimeStatusRenderer")
                     .getString("style", "");
             if (style.equalsIgnoreCase("LIVE")) {
-                cachedStreamType = StreamType.LIVE_STREAM;
-                return cachedStreamType;
+                return true;
             }
         }
 
-        cachedStreamType = StreamType.VIDEO_STREAM;
-        return cachedStreamType;
+        return false;
     }
 
     @Override
@@ -118,7 +119,7 @@ public class YoutubeStreamInfoItemExtractor implements StreamInfoItemExtractor {
 
     @Override
     public long getDuration() throws ParsingException {
-        if (getStreamType() == StreamType.LIVE_STREAM || isPremiere()) {
+        if (isLive() || isPremiere()) {
             return -1;
         }
 
@@ -212,7 +213,7 @@ public class YoutubeStreamInfoItemExtractor implements StreamInfoItemExtractor {
     @Nullable
     @Override
     public String getTextualUploadDate() throws ParsingException {
-        if (getStreamType().equals(StreamType.LIVE_STREAM)) {
+        if (isLive()) {
             return null;
         }
 
@@ -232,7 +233,7 @@ public class YoutubeStreamInfoItemExtractor implements StreamInfoItemExtractor {
     @Nullable
     @Override
     public DateWrapper getUploadDate() throws ParsingException {
-        if (getStreamType().equals(StreamType.LIVE_STREAM)) {
+        if (isLive()) {
             return null;
         }
 

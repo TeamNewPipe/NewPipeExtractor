@@ -2,16 +2,16 @@
 
 package org.schabi.newpipe.extractor.services.bandcamp.extractors;
 
+import static org.schabi.newpipe.extractor.services.bandcamp.extractors.BandcampExtractorHelper.BASE_URL;
+import static org.schabi.newpipe.extractor.services.bandcamp.extractors.BandcampExtractorHelper.getImageUrl;
+
 import com.grack.nanojson.JsonObject;
+
 import org.schabi.newpipe.extractor.exceptions.ParsingException;
 import org.schabi.newpipe.extractor.localization.DateWrapper;
 import org.schabi.newpipe.extractor.stream.StreamInfoItemExtractor;
-import org.schabi.newpipe.extractor.stream.StreamType;
 
 import javax.annotation.Nullable;
-
-import static org.schabi.newpipe.extractor.services.bandcamp.extractors.BandcampExtractorHelper.BASE_URL;
-import static org.schabi.newpipe.extractor.services.bandcamp.extractors.BandcampExtractorHelper.getImageUrl;
 
 public class BandcampRadioInfoItemExtractor implements StreamInfoItemExtractor {
 
@@ -58,8 +58,8 @@ public class BandcampRadioInfoItemExtractor implements StreamInfoItemExtractor {
     }
 
     @Override
-    public StreamType getStreamType() {
-        return StreamType.AUDIO_STREAM;
+    public boolean isAudioOnly() {
+        return true;
     }
 
     @Override
