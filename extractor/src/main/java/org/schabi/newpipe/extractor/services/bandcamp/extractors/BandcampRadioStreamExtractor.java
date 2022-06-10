@@ -11,7 +11,6 @@ import com.grack.nanojson.JsonParserException;
 
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Element;
-import org.schabi.newpipe.extractor.MediaFormat;
 import org.schabi.newpipe.extractor.NewPipe;
 import org.schabi.newpipe.extractor.StreamingService;
 import org.schabi.newpipe.extractor.downloader.Downloader;
@@ -21,9 +20,12 @@ import org.schabi.newpipe.extractor.exceptions.ParsingException;
 import org.schabi.newpipe.extractor.exceptions.ReCaptchaException;
 import org.schabi.newpipe.extractor.linkhandler.LinkHandler;
 import org.schabi.newpipe.extractor.playlist.PlaylistInfoItemsCollector;
-import org.schabi.newpipe.extractor.stream.AudioStream;
 import org.schabi.newpipe.extractor.stream.Description;
 import org.schabi.newpipe.extractor.stream.StreamSegment;
+import org.schabi.newpipe.extractor.streamdata.delivery.simpleimpl.SimpleProgressiveHTTPDeliveryDataImpl;
+import org.schabi.newpipe.extractor.streamdata.format.registry.AudioFormatRegistry;
+import org.schabi.newpipe.extractor.streamdata.stream.AudioStream;
+import org.schabi.newpipe.extractor.streamdata.stream.simpleimpl.SimpleAudioStreamImpl;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -120,24 +122,23 @@ public class BandcampRadioStreamExtractor extends BandcampStreamExtractor {
 
     @Override
     public List<AudioStream> getAudioStreams() {
-        final List<AudioStream> audioStreams = new ArrayList<>();
         final JsonObject streams = showInfo.getObject("audio_stream");
 
+        final List<AudioStream> audioStreams = new ArrayList<>();
         if (streams.has(MP3_128)) {
-            audioStreams.add(new AudioStream.Builder()
-                    .setId(MP3_128)
-                    .setContent(streams.getString(MP3_128), true)
-                    .setMediaFormat(MediaFormat.MP3)
-                    .setAverageBitrate(128)
-                    .build());
+            audioStreams.add(new SimpleAudioStreamImpl(
+                    AudioFormatRegistry.MP3,
+                    new SimpleProgressiveHTTPDeliveryDataImpl(streams.getString(MP3_128)),
+                    128
+            ));
         }
 
         if (streams.has(OPUS_LO)) {
-            audioStreams.add(new AudioStream.Builder()
-                    .setId(OPUS_LO)
-                    .setContent(streams.getString(OPUS_LO), true)
-                    .setMediaFormat(MediaFormat.OPUS)
-                    .setAverageBitrate(100).build());
+            audioStreams.add(new SimpleAudioStreamImpl(
+                    AudioFormatRegistry.OPUS,
+                    new SimpleProgressiveHTTPDeliveryDataImpl(streams.getString(OPUS_LO)),
+                    100
+            ));
         }
 
         return audioStreams;

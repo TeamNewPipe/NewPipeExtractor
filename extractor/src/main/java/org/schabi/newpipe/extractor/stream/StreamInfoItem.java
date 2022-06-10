@@ -140,7 +140,8 @@ public class StreamInfoItem extends InfoItem {
     @Override
     public String toString() {
         return "StreamInfoItem{"
-                + "streamType=" + streamType
+                + "audioOnly=" + audioOnly
+                + ", live='" + live + '\''
                 + ", uploaderName='" + uploaderName + '\''
                 + ", textualUploadDate='" + textualUploadDate + '\''
                 + ", viewCount=" + viewCount
