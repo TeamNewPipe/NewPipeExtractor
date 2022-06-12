@@ -597,7 +597,7 @@ public class YoutubeStreamExtractor extends StreamExtractor {
 
     @Override
     public List<AudioStream> getAudioStreams() throws ExtractionException {
-        return getItags(
+        return buildStrems(
                 ADAPTIVE_FORMATS,
                 ItagFormatRegistry.AUDIO_FORMATS,
                 (itagInfo, deliveryData) -> new SimpleAudioStreamImpl(
@@ -609,7 +609,7 @@ public class YoutubeStreamExtractor extends StreamExtractor {
 
     @Override
     public List<VideoAudioStream> getVideoStreams() throws ExtractionException {
-        return getItags(FORMATS,
+        return buildStrems(FORMATS,
                 ItagFormatRegistry.VIDEO_AUDIO_FORMATS,
                 (itagInfo, deliveryData) -> new SimpleVideoAudioStreamImpl(
                         itagInfo.getItagFormat().mediaFormat(),
@@ -621,7 +621,7 @@ public class YoutubeStreamExtractor extends StreamExtractor {
 
     @Override
     public List<VideoStream> getVideoOnlyStreams() throws ExtractionException {
-        return getItags(
+        return buildStrems(
                 ADAPTIVE_FORMATS,
                 ItagFormatRegistry.VIDEO_FORMATS,
                 (itagInfo, deliveryData) -> new SimpleVideoStreamImpl(
@@ -1204,7 +1204,7 @@ public class YoutubeStreamExtractor extends StreamExtractor {
 
     @Nonnull
     private <T extends org.schabi.newpipe.extractor.streamdata.stream.Stream<?>,
-            I extends ItagFormat<?>> List<T> getItags(
+            I extends ItagFormat<?>> List<T> buildStrems(
             final String streamingDataKey,
             final I[] itagFormats,
             final BiFunction<ItagInfo<I>, DeliveryData, T> streamBuilder,
