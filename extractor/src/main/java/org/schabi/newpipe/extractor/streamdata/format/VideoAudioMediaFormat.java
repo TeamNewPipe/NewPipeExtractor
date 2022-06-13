@@ -1,11 +1,13 @@
 package org.schabi.newpipe.extractor.streamdata.format;
 
+import javax.annotation.Nonnull;
+
 public class VideoAudioMediaFormat extends AbstractMediaFormat {
     public VideoAudioMediaFormat(
             final int id,
-            final String name,
-            final String suffix,
-            final String mimeType
+            @Nonnull final String name,
+            @Nonnull final String suffix,
+            @Nonnull final String mimeType
     ) {
         super(id, name, suffix, mimeType);
     }

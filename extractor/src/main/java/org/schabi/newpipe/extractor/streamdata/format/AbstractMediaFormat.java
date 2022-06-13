@@ -2,6 +2,8 @@ package org.schabi.newpipe.extractor.streamdata.format;
 
 import java.util.Objects;
 
+import javax.annotation.Nonnull;
+
 public abstract class AbstractMediaFormat implements MediaFormat {
     private final int id;
     private final String name;
@@ -10,14 +12,14 @@ public abstract class AbstractMediaFormat implements MediaFormat {
 
     protected AbstractMediaFormat(
             final int id,
-            final String name,
-            final String suffix,
-            final String mimeType
+            @Nonnull final String name,
+            @Nonnull final String suffix,
+            @Nonnull final String mimeType
     ) {
         this.id = id;
-        this.name = name;
-        this.suffix = suffix;
-        this.mimeType = mimeType;
+        this.name = Objects.requireNonNull(name);
+        this.suffix = Objects.requireNonNull(suffix);
+        this.mimeType = Objects.requireNonNull(mimeType);
     }
 
     @Override
@@ -25,16 +27,19 @@ public abstract class AbstractMediaFormat implements MediaFormat {
         return id;
     }
 
+    @Nonnull
     @Override
     public String name() {
         return name;
     }
 
+    @Nonnull
     @Override
     public String suffix() {
         return suffix;
     }
 
+    @Nonnull
     @Override
     public String mimeType() {
         return mimeType;
