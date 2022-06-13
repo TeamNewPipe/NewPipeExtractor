@@ -1,30 +1,5 @@
 package org.schabi.newpipe.extractor.services.youtube;
 
-import org.junit.jupiter.api.BeforeAll;
-import org.junit.jupiter.api.Test;
-import org.schabi.newpipe.downloader.DownloaderTestImpl;
-import org.schabi.newpipe.extractor.NewPipe;
-import org.schabi.newpipe.extractor.services.youtube.dashmanifestcreators.CreationException;
-import org.schabi.newpipe.extractor.services.youtube.dashmanifestcreators.YoutubeOtfDashManifestCreator;
-import org.schabi.newpipe.extractor.services.youtube.dashmanifestcreators.YoutubeProgressiveDashManifestCreator;
-import org.schabi.newpipe.extractor.services.youtube.extractors.YoutubeStreamExtractor;
-import org.schabi.newpipe.extractor.stream.DeliveryMethod;
-import org.schabi.newpipe.extractor.stream.Stream;
-import org.w3c.dom.Document;
-import org.w3c.dom.Element;
-import org.w3c.dom.NodeList;
-import org.xml.sax.InputSource;
-
-import javax.annotation.Nonnull;
-import javax.xml.parsers.DocumentBuilder;
-import javax.xml.parsers.DocumentBuilderFactory;
-import java.io.StringReader;
-import java.util.List;
-import java.util.Random;
-import java.util.function.Consumer;
-import java.util.stream.Collectors;
-import java.util.stream.IntStream;
-
 import static org.junit.jupiter.api.Assertions.assertAll;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
@@ -36,18 +11,44 @@ import static org.schabi.newpipe.extractor.ExtractorAsserts.assertGreaterOrEqual
 import static org.schabi.newpipe.extractor.ExtractorAsserts.assertIsValidUrl;
 import static org.schabi.newpipe.extractor.ExtractorAsserts.assertNotBlank;
 import static org.schabi.newpipe.extractor.ServiceList.YouTube;
-import static org.schabi.newpipe.extractor.services.youtube.dashmanifestcreators.YoutubeDashManifestCreatorsUtils.ADAPTATION_SET;
-import static org.schabi.newpipe.extractor.services.youtube.dashmanifestcreators.YoutubeDashManifestCreatorsUtils.AUDIO_CHANNEL_CONFIGURATION;
-import static org.schabi.newpipe.extractor.services.youtube.dashmanifestcreators.YoutubeDashManifestCreatorsUtils.BASE_URL;
-import static org.schabi.newpipe.extractor.services.youtube.dashmanifestcreators.YoutubeDashManifestCreatorsUtils.INITIALIZATION;
-import static org.schabi.newpipe.extractor.services.youtube.dashmanifestcreators.YoutubeDashManifestCreatorsUtils.MPD;
-import static org.schabi.newpipe.extractor.services.youtube.dashmanifestcreators.YoutubeDashManifestCreatorsUtils.PERIOD;
-import static org.schabi.newpipe.extractor.services.youtube.dashmanifestcreators.YoutubeDashManifestCreatorsUtils.REPRESENTATION;
-import static org.schabi.newpipe.extractor.services.youtube.dashmanifestcreators.YoutubeDashManifestCreatorsUtils.ROLE;
-import static org.schabi.newpipe.extractor.services.youtube.dashmanifestcreators.YoutubeDashManifestCreatorsUtils.SEGMENT_BASE;
-import static org.schabi.newpipe.extractor.services.youtube.dashmanifestcreators.YoutubeDashManifestCreatorsUtils.SEGMENT_TEMPLATE;
-import static org.schabi.newpipe.extractor.services.youtube.dashmanifestcreators.YoutubeDashManifestCreatorsUtils.SEGMENT_TIMELINE;
+import static org.schabi.newpipe.extractor.services.youtube.dashmanifestcreator.YoutubeDashManifestCreatorsUtils.ADAPTATION_SET;
+import static org.schabi.newpipe.extractor.services.youtube.dashmanifestcreator.YoutubeDashManifestCreatorsUtils.AUDIO_CHANNEL_CONFIGURATION;
+import static org.schabi.newpipe.extractor.services.youtube.dashmanifestcreator.YoutubeDashManifestCreatorsUtils.BASE_URL;
+import static org.schabi.newpipe.extractor.services.youtube.dashmanifestcreator.YoutubeDashManifestCreatorsUtils.INITIALIZATION;
+import static org.schabi.newpipe.extractor.services.youtube.dashmanifestcreator.YoutubeDashManifestCreatorsUtils.MPD;
+import static org.schabi.newpipe.extractor.services.youtube.dashmanifestcreator.YoutubeDashManifestCreatorsUtils.PERIOD;
+import static org.schabi.newpipe.extractor.services.youtube.dashmanifestcreator.YoutubeDashManifestCreatorsUtils.REPRESENTATION;
+import static org.schabi.newpipe.extractor.services.youtube.dashmanifestcreator.YoutubeDashManifestCreatorsUtils.ROLE;
+import static org.schabi.newpipe.extractor.services.youtube.dashmanifestcreator.YoutubeDashManifestCreatorsUtils.SEGMENT_BASE;
+import static org.schabi.newpipe.extractor.services.youtube.dashmanifestcreator.YoutubeDashManifestCreatorsUtils.SEGMENT_TEMPLATE;
+import static org.schabi.newpipe.extractor.services.youtube.dashmanifestcreator.YoutubeDashManifestCreatorsUtils.SEGMENT_TIMELINE;
 import static org.schabi.newpipe.extractor.utils.Utils.isBlank;
+
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.Test;
+import org.schabi.newpipe.downloader.DownloaderTestImpl;
+import org.schabi.newpipe.extractor.NewPipe;
+import org.schabi.newpipe.extractor.services.youtube.dashmanifestcreator.YoutubeOtfDashManifestCreator;
+import org.schabi.newpipe.extractor.services.youtube.dashmanifestcreator.YoutubeProgressiveDashManifestCreator;
+import org.schabi.newpipe.extractor.services.youtube.extractors.YoutubeStreamExtractor;
+import org.schabi.newpipe.extractor.stream.DeliveryMethod;
+import org.schabi.newpipe.extractor.stream.Stream;
+import org.schabi.newpipe.extractor.streamdata.delivery.dashmanifestcreator.DashManifestCreationException;
+import org.w3c.dom.Document;
+import org.w3c.dom.Element;
+import org.w3c.dom.NodeList;
+import org.xml.sax.InputSource;
+
+import java.io.StringReader;
+import java.util.List;
+import java.util.Random;
+import java.util.function.Consumer;
+import java.util.stream.Collectors;
+import java.util.stream.IntStream;
+
+import javax.annotation.Nonnull;
+import javax.xml.parsers.DocumentBuilder;
+import javax.xml.parsers.DocumentBuilderFactory;
 
 /**
  * Test for YouTube DASH manifest creators.
@@ -112,7 +113,7 @@ class YoutubeDashManifestCreatorsTest {
         assertProgressiveStreams(extractor.getAudioStreams());
 
         // we are not able to generate DASH manifests of video formats with audio
-        assertThrows(CreationException.class,
+        assertThrows(DashManifestCreationException.class,
                 () -> assertProgressiveStreams(extractor.getVideoStreams()));
     }
 

@@ -9,11 +9,19 @@ public class ItagInfoRange {
         this.end = end;
     }
 
-    public int getStart() {
+    public int start() {
         return start;
     }
 
-    public int getEnd() {
+    public int end() {
         return end;
+    }
+
+    @Override
+    public String toString() {
+        return "ItagInfoRange{" +
+                "start=" + start +
+                ", end=" + end +
+                '}';
     }
 }
