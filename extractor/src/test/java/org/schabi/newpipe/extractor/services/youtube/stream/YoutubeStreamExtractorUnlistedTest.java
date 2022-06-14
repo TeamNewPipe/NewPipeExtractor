@@ -39,7 +39,6 @@ public class YoutubeStreamExtractorUnlistedTest extends DefaultStreamExtractorTe
     @Override public String expectedUrlContains() { return URL; }
     @Override public String expectedOriginalUrlContains() { return URL; }
 
-    @Override public StreamType expectedStreamType() { return StreamType.VIDEO_STREAM; }
     @Override public String expectedUploaderName() { return "Hooked"; }
     @Override public String expectedUploaderUrl() { return "https://www.youtube.com/channel/UCPysfiuOv4VKBeXFFPhKXyw"; }
     @Override public long expectedUploaderSubscriberCountAtLeast() { return 24_300; }

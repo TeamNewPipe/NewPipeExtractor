@@ -43,7 +43,6 @@ public class MediaCCCStreamExtractorTest {
         @Override public String expectedId() { return ID; }
         @Override public String expectedUrlContains() { return URL; }
         @Override public String expectedOriginalUrlContains() { return URL; }
-        @Override public StreamType expectedStreamType() { return StreamType.VIDEO_STREAM; }
         @Override public String expectedUploaderName() { return "gpn18"; }
         @Override public String expectedUploaderUrl() { return "https://media.ccc.de/c/gpn18"; }
         @Override public List<String> expectedDescriptionContains() { return Arrays.asList("SSH-Sessions", "\"Terminal Multiplexer\""); }
@@ -76,8 +75,8 @@ public class MediaCCCStreamExtractorTest {
 
         @Override
         @Test
-        public void testVideoStreams() throws Exception {
-            super.testVideoStreams();
+        public void testVideoOnlyStreams() throws Exception {
+            super.testVideoOnlyStreams();
             assertEquals(4, extractor.getVideoStreams().size());
         }
 
@@ -115,7 +114,6 @@ public class MediaCCCStreamExtractorTest {
         }
         @Override public String expectedUrlContains() { return URL; }
         @Override public String expectedOriginalUrlContains() { return URL; }
-        @Override public StreamType expectedStreamType() { return StreamType.VIDEO_STREAM; }
         @Override public String expectedUploaderName() { return "36c3"; }
         @Override public String expectedUploaderUrl() { return "https://media.ccc.de/c/36c3"; }
         @Override public List<String> expectedDescriptionContains() { return Arrays.asList("WhatsApp", "Signal"); }
@@ -146,8 +144,8 @@ public class MediaCCCStreamExtractorTest {
 
         @Override
         @Test
-        public void testVideoStreams() throws Exception {
-            super.testVideoStreams();
+        public void testVideoOnlyStreams() throws Exception {
+            super.testVideoOnlyStreams();
             assertEquals(8, extractor.getVideoStreams().size());
         }
 

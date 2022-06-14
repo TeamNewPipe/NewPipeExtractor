@@ -57,7 +57,6 @@ public abstract class PeertubeStreamExtractorTest extends DefaultStreamExtractor
         @Override public String expectedUrlContains() { return INSTANCE + BASE_URL + ID; }
         @Override public String expectedOriginalUrlContains() { return URL; }
 
-        @Override public StreamType expectedStreamType() { return StreamType.VIDEO_STREAM; }
         @Override public String expectedUploaderName() { return "Framasoft"; }
         @Override public String expectedUploaderUrl() { return "https://framatube.org/accounts/framasoft@framatube.org"; }
         @Override public String expectedSubChannelName() { return "A propos de PeerTube"; }
@@ -118,7 +117,6 @@ public abstract class PeertubeStreamExtractorTest extends DefaultStreamExtractor
         @Override public String expectedUrlContains() { return INSTANCE + BASE_URL + ID; }
         @Override public String expectedOriginalUrlContains() { return URL; }
 
-        @Override public StreamType expectedStreamType() { return StreamType.VIDEO_STREAM; }
         @Override public String expectedUploaderName() { return "Marinauts"; }
         @Override public String expectedUploaderUrl() { return "https://tilvids.com/accounts/marinauts@tilvids.com"; }
         @Override public String expectedSubChannelName() { return "Main marinauts channel"; }
@@ -163,7 +161,6 @@ public abstract class PeertubeStreamExtractorTest extends DefaultStreamExtractor
         @Override public String expectedUrlContains() { return INSTANCE + BASE_URL + ID; }
         @Override public String expectedOriginalUrlContains() { return URL; }
 
-        @Override public StreamType expectedStreamType() { return StreamType.VIDEO_STREAM; }
         @Override public String expectedUploaderName() { return "Résilience humaine"; }
         @Override public String expectedUploaderUrl() { return "https://nocensoring.net/accounts/gmt@nocensoring.net"; }
         @Override public String expectedSubChannelName() { return "SYSTEM FAILURE Quel à-venir ?"; }

@@ -15,15 +15,20 @@ import static org.schabi.newpipe.extractor.stream.StreamExtractor.UNKNOWN_SUBSCR
 import org.junit.jupiter.api.Test;
 import org.schabi.newpipe.extractor.ExtractorAsserts;
 import org.schabi.newpipe.extractor.InfoItemsCollector;
-import org.schabi.newpipe.extractor.MediaFormat;
 import org.schabi.newpipe.extractor.MetaInfo;
 import org.schabi.newpipe.extractor.localization.DateWrapper;
-import org.schabi.newpipe.extractor.stream.AudioStream;
 import org.schabi.newpipe.extractor.stream.Description;
 import org.schabi.newpipe.extractor.stream.Frameset;
 import org.schabi.newpipe.extractor.stream.Privacy;
 import org.schabi.newpipe.extractor.stream.StreamExtractor;
 import org.schabi.newpipe.extractor.stream.StreamType;
+import org.schabi.newpipe.extractor.streamdata.delivery.DASHManifestDeliveryData;
+import org.schabi.newpipe.extractor.streamdata.delivery.DeliveryData;
+import org.schabi.newpipe.extractor.streamdata.delivery.UrlBasedDeliveryData;
+import org.schabi.newpipe.extractor.streamdata.stream.AudioStream;
+import org.schabi.newpipe.extractor.streamdata.stream.SubtitleStream;
+import org.schabi.newpipe.extractor.streamdata.stream.VideoAudioStream;
+import org.schabi.newpipe.extractor.streamdata.stream.VideoStream;
 
 import java.net.MalformedURLException;
 import java.net.URL;
@@ -42,7 +47,8 @@ import javax.annotation.Nullable;
 public abstract class DefaultStreamExtractorTest extends DefaultExtractorTest<StreamExtractor>
         implements BaseStreamExtractorTest {
 
-    public abstract StreamType expectedStreamType();
+    public boolean expectedIsLive() { return false; }
+    public boolean expectedIsAudioOnly() { return false; }
     public abstract String expectedUploaderName();
     public abstract String expectedUploaderUrl();
     public boolean expectedUploaderVerified() { return false; }
@@ -61,8 +67,9 @@ public abstract class DefaultStreamExtractorTest extends DefaultExtractorTest<St
     public boolean expectedHasRelatedItems() { return true; } // default: there are related videos
     public int expectedAgeLimit() { return StreamExtractor.NO_AGE_LIMIT; } // default: no limit
     @Nullable public String expectedErrorMessage() { return null; } // default: no error message
-    public boolean expectedHasVideoStreams() { return true; } // default: there are video streams
-    public boolean expectedHasAudioStreams() { return true; } // default: there are audio streams
+    public boolean expectedHasVideoOnlyStreams() { return true; }
+    public boolean expectedHasVideoAndAudioStreams() { return true; }
+    public boolean expectedHasAudioStreams() { return true; }
     public boolean expectedHasSubtitles() { return true; } // default: there are subtitles streams
     @Nullable public String expectedDashMpdUrlContains() { return null; } // default: no dash mpd
     public boolean expectedHasFrames() { return true; } // default: there are frames
@@ -254,34 +261,39 @@ public abstract class DefaultStreamExtractorTest extends DefaultExtractorTest<St
 
     @Test
     @Override
-    public void testVideoStreams() throws Exception {
-        final List<VideoStream> videoStreams = extractor().getVideoStreams();
+    public void testVideoOnlyStreams() throws Exception {
         final List<VideoStream> videoOnlyStreams = extractor().getVideoOnlyStreams();
-        assertNotNull(videoStreams);
         assertNotNull(videoOnlyStreams);
-        videoStreams.addAll(videoOnlyStreams);
 
-        if (expectedHasVideoStreams()) {
-            assertFalse(videoStreams.isEmpty());
+        if (expectedHasVideoOnlyStreams()) {
+            assertFalse(videoOnlyStreams.isEmpty());
 
-            for (final VideoStream stream : videoStreams) {
-                if (stream.isUrl()) {
-                    assertIsSecureUrl(stream.getContent());
-                }
-                final StreamType streamType = extractor().getStreamType();
-                // On some video streams, the resolution can be empty and the format be unknown,
-                // especially on livestreams (like streams with HLS master playlists)
-                if (streamType != StreamType.LIVE_STREAM
-                        && streamType != StreamType.AUDIO_LIVE_STREAM) {
-                    assertFalse(stream.getResolution().isEmpty());
-                    final int formatId = stream.getFormatId();
-                    // see MediaFormat: video stream formats range from 0 to 0x100
-                    assertTrue(0 <= formatId && formatId < 0x100,
-                            "Format id does not fit a video stream: " + formatId);
-                }
+            for (final VideoStream stream : videoOnlyStreams) {
+                assertNotNull(stream.mediaFormat());
+                assertNotNull(stream.videoQualityData());
+                checkDeliveryData(stream.deliveryData());
             }
         } else {
-            assertTrue(videoStreams.isEmpty());
+            assertTrue(videoOnlyStreams.isEmpty());
+        }
+    }
+
+    @Test
+    @Override
+    public void testVideoAudioStreams() throws Exception {
+        final List<VideoAudioStream> videoAudioStreams = extractor().getVideoStreams();
+        assertNotNull(videoAudioStreams);
+
+        if (expectedHasVideoAndAudioStreams()) {
+            assertFalse(videoAudioStreams.isEmpty());
+
+            for (final VideoAudioStream stream : videoAudioStreams) {
+                assertNotNull(stream.mediaFormat());
+                assertNotNull(stream.videoQualityData());
+                checkDeliveryData(stream.deliveryData());
+            }
+        } else {
+            assertTrue(videoAudioStreams.isEmpty());
         }
     }
 
@@ -295,17 +307,8 @@ public abstract class DefaultStreamExtractorTest extends DefaultExtractorTest<St
             assertFalse(audioStreams.isEmpty());
 
             for (final AudioStream stream : audioStreams) {
-                if (stream.isUrl()) {
-                    assertIsSecureUrl(stream.getContent());
-                }
-
-                // The media format can be unknown on some audio streams
-                if (stream.getFormat() != null) {
-                    final int formatId = stream.getFormat().id;
-                    // see MediaFormat: audio stream formats range from 0x100 to 0x1000
-                    assertTrue(0x100 <= formatId && formatId < 0x1000,
-                            "Format id does not fit an audio stream: " + formatId);
-                }
+                assertNotNull(stream.mediaFormat());
+                checkDeliveryData(stream.deliveryData());
             }
         } else {
             assertTrue(audioStreams.isEmpty());
@@ -315,32 +318,29 @@ public abstract class DefaultStreamExtractorTest extends DefaultExtractorTest<St
     @Test
     @Override
     public void testSubtitles() throws Exception {
-        final List<SubtitlesStream> subtitles = extractor().getSubtitlesDefault();
+        final List<SubtitleStream> subtitles = extractor().getSubtitles();
         assertNotNull(subtitles);
 
         if (expectedHasSubtitles()) {
             assertFalse(subtitles.isEmpty());
 
-            for (final SubtitlesStream stream : subtitles) {
-                if (stream.isUrl()) {
-                    assertIsSecureUrl(stream.getContent());
-                }
-
-                final int formatId = stream.getFormatId();
-                // see MediaFormat: video stream formats range from 0x1000 to 0x10000
-                assertTrue(0x1000 <= formatId && formatId < 0x10000,
-                        "Format id does not fit a subtitles stream: " + formatId);
+            for (final SubtitleStream stream : subtitles) {
+                assertNotNull(stream.languageCode());
+                assertNotNull(stream.mediaFormat());
+                checkDeliveryData(stream.deliveryData());
             }
         } else {
             assertTrue(subtitles.isEmpty());
+        }
+    }
 
-            final MediaFormat[] formats = {MediaFormat.VTT, MediaFormat.TTML, MediaFormat.SRT,
-                    MediaFormat.TRANSCRIPT1, MediaFormat.TRANSCRIPT2, MediaFormat.TRANSCRIPT3};
-            for (final MediaFormat format : formats) {
-                final List<SubtitlesStream> formatSubtitles = extractor().getSubtitles(format);
-                assertNotNull(formatSubtitles);
-                assertTrue(formatSubtitles.isEmpty());
-            }
+    private void checkDeliveryData(final DeliveryData deliveryData) {
+        if (deliveryData instanceof UrlBasedDeliveryData) {
+            assertIsSecureUrl(((UrlBasedDeliveryData) deliveryData).url());
+        } else if (deliveryData instanceof DASHManifestDeliveryData) {
+            final DASHManifestDeliveryData dashManifestDD =
+                    (DASHManifestDeliveryData) deliveryData;
+            assertNotNull(dashManifestDD.getDashManifestCreator());
         }
     }
 
@@ -455,6 +455,15 @@ public abstract class DefaultStreamExtractorTest extends DefaultExtractorTest<St
                 assertTrue(urls.contains(expectedUrl));
             }
         }
+    }
 
+    @Test
+    public void testIsLive() throws Exception {
+        assertEquals(expectedIsLive(), extractor().isLive());
+    }
+
+    @Test
+    public void testIsAudioOnly() throws Exception {
+        assertEquals(expectedIsAudioOnly(), extractor().isAudioOnly());
     }
 }

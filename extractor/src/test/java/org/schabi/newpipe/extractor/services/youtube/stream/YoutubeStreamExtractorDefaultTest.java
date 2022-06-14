@@ -134,7 +134,6 @@ public class YoutubeStreamExtractorDefaultTest {
         @Override public String expectedUrlContains() { return BASE_URL + ID; }
         @Override public String expectedOriginalUrlContains() { return URL; }
 
-        @Override public StreamType expectedStreamType() { return StreamType.VIDEO_STREAM; }
         @Override public String expectedUploaderName() { return "PewDiePie"; }
         @Override public String expectedUploaderUrl() { return "https://www.youtube.com/channel/UC-lHJZR3Gqxm24_Vd_AJ5Yw"; }
         @Override public long expectedUploaderSubscriberCountAtLeast() { return 110_000_000; }
@@ -177,7 +176,6 @@ public class YoutubeStreamExtractorDefaultTest {
         @Override public String expectedUrlContains() { return URL; }
         @Override public String expectedOriginalUrlContains() { return URL; }
 
-        @Override public StreamType expectedStreamType() { return StreamType.VIDEO_STREAM; }
         @Override public String expectedUploaderName() { return "Unbox Therapy"; }
         @Override public String expectedUploaderUrl() { return "https://www.youtube.com/channel/UCsTcErHg8oDvUnTzoqsYeNw"; }
         @Override public long expectedUploaderSubscriberCountAtLeast() { return 18_000_000; }
@@ -230,7 +228,6 @@ public class YoutubeStreamExtractorDefaultTest {
         @Override public String expectedUrlContains() { return BASE_URL + ID; }
         @Override public String expectedOriginalUrlContains() { return URL; }
 
-        @Override public StreamType expectedStreamType() { return StreamType.VIDEO_STREAM; }
         @Override public String expectedUploaderName() { return "YouTuber PrinceOfFALLEN"; }
         @Override public String expectedUploaderUrl() { return "https://www.youtube.com/channel/UCQT2yul0lr6Ie9qNQNmw-sg"; }
         @Override public List<String> expectedDescriptionContains() { return Arrays.asList("dislikes", "Alpha", "wrong"); }
@@ -266,7 +263,6 @@ public class YoutubeStreamExtractorDefaultTest {
         @Override public String expectedUrlContains() { return BASE_URL + ID; }
         @Override public String expectedOriginalUrlContains() { return URL; }
 
-        @Override public StreamType expectedStreamType() { return StreamType.VIDEO_STREAM; }
         @Override public String expectedUploaderName() { return "tagesschau"; }
         @Override public String expectedUploaderUrl() { return "https://www.youtube.com/channel/UC5NOEUbkLheQcaaRldYW5GA"; }
         @Override public long expectedUploaderSubscriberCountAtLeast() { return 1_000_000; }
@@ -327,7 +323,6 @@ public class YoutubeStreamExtractorDefaultTest {
         @Override public String expectedUrlContains() { return BASE_URL + ID; }
         @Override public String expectedOriginalUrlContains() { return URL; }
 
-        @Override public StreamType expectedStreamType() { return StreamType.VIDEO_STREAM; }
         @Override public String expectedUploaderName() { return "maiLab"; }
         @Override public String expectedUploaderUrl() { return "https://www.youtube.com/channel/UCyHDQ5C6z1NDmJ4g6SerW8g"; }
         @Override public long expectedUploaderSubscriberCountAtLeast() { return 1_400_000; }
@@ -395,7 +390,6 @@ public class YoutubeStreamExtractorDefaultTest {
         @Override public String expectedUrlContains() { return BASE_URL + ID; }
         @Override public String expectedOriginalUrlContains() { return URL; }
 
-        @Override public StreamType expectedStreamType() { return StreamType.VIDEO_STREAM; }
         @Override public String expectedUploaderName() { return "Dinge Erklärt – Kurzgesagt"; }
         @Override public String expectedUploaderUrl() { return "https://www.youtube.com/channel/UCwRH985XgMYXQ6NxXDo8npw"; }
         @Override public long expectedUploaderSubscriberCountAtLeast() { return 1_500_000; }

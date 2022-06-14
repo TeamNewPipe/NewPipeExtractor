@@ -22,7 +22,8 @@ public interface BaseStreamExtractorTest extends BaseExtractorTest {
     void testAgeLimit() throws Exception;
     void testErrorMessage() throws Exception;
     void testAudioStreams() throws Exception;
-    void testVideoStreams() throws Exception;
+    void testVideoOnlyStreams() throws Exception;
+    void testVideoAudioStreams() throws Exception;
     void testSubtitles() throws Exception;
     void testGetDashMpdUrl() throws Exception;
     void testFrames() throws Exception;

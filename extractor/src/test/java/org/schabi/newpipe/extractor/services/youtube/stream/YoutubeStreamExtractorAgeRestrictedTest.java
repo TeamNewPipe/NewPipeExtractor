@@ -38,7 +38,6 @@ public class YoutubeStreamExtractorAgeRestrictedTest extends DefaultStreamExtrac
     @Override public String expectedUrlContains() { return YoutubeStreamExtractorDefaultTest.BASE_URL + ID; }
     @Override public String expectedOriginalUrlContains() { return URL; }
 
-    @Override public StreamType expectedStreamType() { return StreamType.VIDEO_STREAM; }
     @Override public String expectedUploaderName() { return "DAN TV"; }
     @Override public String expectedUploaderUrl() { return "https://www.youtube.com/channel/UCcQHIVL83g5BEQe2IJFb-6w"; }
     @Override public long expectedUploaderSubscriberCountAtLeast() { return 50; }

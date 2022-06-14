@@ -53,7 +53,7 @@ public class SoundcloudStreamExtractorTest {
         @Override public String expectedUrlContains() { return UPLOADER + "/" + ID; }
         @Override public String expectedOriginalUrlContains() { return URL; }
 
-        @Override public StreamType expectedStreamType() { return StreamType.AUDIO_STREAM; }
+        @Override public boolean expectedIsAudioOnly() { return true; }
         @Override public String expectedUploaderName() { return "Jess Glynne"; }
         @Override public String expectedUploaderUrl() { return UPLOADER; }
         @Override public boolean expectedUploaderVerified() { return true; }
@@ -67,7 +67,7 @@ public class SoundcloudStreamExtractorTest {
         @Override public long expectedLikeCountAtLeast() { return -1; }
         @Override public long expectedDislikeCountAtLeast() { return -1; }
         @Override public boolean expectedHasAudioStreams() { return false; }
-        @Override public boolean expectedHasVideoStreams() { return false; }
+        @Override public boolean expectedHasVideoAndAudioStreams() { return false; }
         @Override public boolean expectedHasSubtitles() { return false; }
         @Override public boolean expectedHasFrames() { return false; }
         @Override public int expectedStreamSegmentsCount() { return 0; }
@@ -116,7 +116,7 @@ public class SoundcloudStreamExtractorTest {
         @Override public String expectedUrlContains() { return UPLOADER + "/" + ID; }
         @Override public String expectedOriginalUrlContains() { return URL; }
 
-        @Override public StreamType expectedStreamType() { return StreamType.AUDIO_STREAM; }
+        @Override public boolean expectedIsAudioOnly() { return true; }
         @Override public String expectedUploaderName() { return "martinsolveig"; }
         @Override public String expectedUploaderUrl() { return UPLOADER; }
         @Override public boolean expectedUploaderVerified() { return true; }
@@ -130,7 +130,7 @@ public class SoundcloudStreamExtractorTest {
         @Override public long expectedLikeCountAtLeast() { return -1; }
         @Override public long expectedDislikeCountAtLeast() { return -1; }
         @Override public boolean expectedHasAudioStreams() { return false; }
-        @Override public boolean expectedHasVideoStreams() { return false; }
+        @Override public boolean expectedHasVideoAndAudioStreams() { return false; }
         @Override public boolean expectedHasRelatedItems() { return true; }
         @Override public boolean expectedHasSubtitles() { return false; }
         @Override public boolean expectedHasFrames() { return false; }
@@ -160,7 +160,7 @@ public class SoundcloudStreamExtractorTest {
         @Override public String expectedUrlContains() { return UPLOADER + "/" + ID; }
         @Override public String expectedOriginalUrlContains() { return URL; }
 
-        @Override public StreamType expectedStreamType() { return StreamType.AUDIO_STREAM; }
+        @Override public boolean expectedIsAudioOnly() { return true; }
         @Override public String expectedUploaderName() { return "Creative Commons"; }
         @Override public String expectedUploaderUrl() { return UPLOADER; }
         @Override public List<String> expectedDescriptionContains() { return Arrays.asList("Stigmergy is a mechanism of indirect coordination",
@@ -172,7 +172,7 @@ public class SoundcloudStreamExtractorTest {
         @Nullable @Override public String expectedTextualUploadDate() { return "2019-03-28 13:36:18"; }
         @Override public long expectedLikeCountAtLeast() { return -1; }
         @Override public long expectedDislikeCountAtLeast() { return -1; }
-        @Override public boolean expectedHasVideoStreams() { return false; }
+        @Override public boolean expectedHasVideoAndAudioStreams() { return false; }
         @Override public boolean expectedHasSubtitles() { return false; }
         @Override public boolean expectedHasFrames() { return false; }
         @Override public int expectedStreamSegmentsCount() { return 0; }

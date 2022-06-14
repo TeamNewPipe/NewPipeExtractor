@@ -70,8 +70,8 @@ public class BandcampStreamExtractorTest extends DefaultStreamExtractorTest {
     }
 
     @Override
-    public StreamType expectedStreamType() {
-        return StreamType.AUDIO_STREAM;
+    public boolean expectedIsAudioOnly() {
+        return true;
     }
 
     @Override
@@ -120,7 +120,7 @@ public class BandcampStreamExtractorTest extends DefaultStreamExtractorTest {
     }
 
     @Override
-    public boolean expectedHasVideoStreams() {
+    public boolean expectedHasVideoAndAudioStreams() {
         return false;
     }
 

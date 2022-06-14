@@ -1,5 +1,11 @@
 package org.schabi.newpipe.extractor.services.bandcamp;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.schabi.newpipe.extractor.ServiceList.Bandcamp;
+
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import org.schabi.newpipe.downloader.DownloaderTestImpl;
@@ -11,16 +17,12 @@ import org.schabi.newpipe.extractor.exceptions.ParsingException;
 import org.schabi.newpipe.extractor.services.DefaultStreamExtractorTest;
 import org.schabi.newpipe.extractor.services.bandcamp.extractors.BandcampRadioStreamExtractor;
 import org.schabi.newpipe.extractor.stream.StreamExtractor;
-import org.schabi.newpipe.extractor.stream.StreamType;
 
 import java.io.IOException;
 import java.util.Calendar;
 import java.util.Collections;
 import java.util.List;
 import java.util.TimeZone;
-
-import static org.junit.jupiter.api.Assertions.*;
-import static org.schabi.newpipe.extractor.ServiceList.Bandcamp;
 
 public class BandcampRadioStreamExtractorTest extends DefaultStreamExtractorTest {
 
@@ -47,11 +49,11 @@ public class BandcampRadioStreamExtractorTest extends DefaultStreamExtractorTest
     @Override public String expectedId() throws Exception { return "230"; }
     @Override public String expectedUrlContains() throws Exception { return URL; }
     @Override public String expectedOriginalUrlContains() throws Exception { return URL; }
-    @Override public boolean expectedHasVideoStreams() { return false; }
+    @Override public boolean expectedHasVideoAndAudioStreams() { return false; }
     @Override public boolean expectedHasSubtitles() { return false; }
     @Override public boolean expectedHasFrames() { return false; }
     @Override public boolean expectedHasRelatedItems() { return false; }
-    @Override public StreamType expectedStreamType() { return StreamType.AUDIO_STREAM; }
+    @Override public boolean expectedIsAudioOnly() { return true; }
     @Override public StreamingService expectedService() { return Bandcamp; }
     @Override public String expectedUploaderName() { return "Andrew Jervis"; }
     @Override public int expectedStreamSegmentsCount() { return 30; }
@@ -80,6 +82,7 @@ public class BandcampRadioStreamExtractorTest extends DefaultStreamExtractorTest
 
     @Override public String expectedUploadDate() { return "16 May 2017 00:00:00 GMT"; }
     @Override public String expectedTextualUploadDate() { return "16 May 2017 00:00:00 GMT"; }
+    @Override
     @Test
     public void testUploadDate() throws ParsingException {
         final Calendar expectedCalendar = Calendar.getInstance();
