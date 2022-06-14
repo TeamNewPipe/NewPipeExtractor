@@ -10,7 +10,7 @@ import javax.annotation.Nullable;
  * Represents a audio (only) stream.
  */
 public interface AudioStream extends Stream<AudioMediaFormat>, BaseAudioStream {
-    
+
     @Override
     default boolean equalsStream(@Nullable final Stream other) {
         if (!(other instanceof AudioStream)) {

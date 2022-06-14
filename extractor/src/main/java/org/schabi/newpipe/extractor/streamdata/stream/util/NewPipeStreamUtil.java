@@ -28,7 +28,7 @@ public final class NewPipeStreamUtil {
 
     public <T extends Stream> List<T> removeEqualStreams(final Collection<T> streams) {
         final List<T> returnList = new ArrayList<>();
-        for(final T stream : streams) {
+        for (final T stream : streams) {
             if (!containSimilarStream(stream, returnList)) {
                 returnList.add(stream);
             }

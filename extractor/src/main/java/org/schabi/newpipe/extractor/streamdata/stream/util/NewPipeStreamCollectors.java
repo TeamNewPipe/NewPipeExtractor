@@ -17,23 +17,23 @@ public final class NewPipeStreamCollectors {
         // No impl
     }
 
-    public static <T extends org.schabi.newpipe.extractor.streamdata.stream.Stream>
-        Collector<T, ?, List<T>> toDistinctList() {
+    public static <T extends org.schabi.newpipe.extractor.streamdata.stream.Stream<?>>
+    Collector<T, ?, List<T>> toDistinctList() {
         return deduplicateEqualStreams(x -> x);
     }
 
-    public static <T extends org.schabi.newpipe.extractor.streamdata.stream.Stream>
-        Collector<T, ?, Stream<T>> toDistinctStream() {
+    public static <T extends org.schabi.newpipe.extractor.streamdata.stream.Stream<?>>
+    Collector<T, ?, Stream<T>> toDistinctStream() {
         return deduplicateEqualStreams(List::stream);
     }
 
-    public static <T extends org.schabi.newpipe.extractor.streamdata.stream.Stream, R>
-        Collector<T, ?, R> deduplicateEqualStreams(final Function<List<T>, R> finisher) {
+    public static <T extends org.schabi.newpipe.extractor.streamdata.stream.Stream<?>, R>
+    Collector<T, ?, R> deduplicateEqualStreams(final Function<List<T>, R> finisher) {
         return new CollectorImpl<>(
                 (Supplier<List<T>>) ArrayList::new,
                 List::add,
                 (left, right) -> {
-                    for(final T rightElement : right) {
+                    for (final T rightElement : right) {
                         if (NewPipeStreamUtil.containSimilarStream(rightElement, left)) {
                             left.add(rightElement);
                         }
@@ -44,15 +44,11 @@ public final class NewPipeStreamCollectors {
                 CH_ID);
     }
 
-    /**
-     * Copied from {@link java.util.stream.Collectors}
-     */
+    // region COPIED FROM java.util.stream.Collectors
+
     static final Set<Collector.Characteristics> CH_ID =
             Collections.unmodifiableSet(EnumSet.of(Collector.Characteristics.IDENTITY_FINISH));
 
-    /**
-     * Copied from {@link java.util.stream.Collectors}
-     */
     static class CollectorImpl<T, A, R> implements Collector<T, A, R> {
         private final Supplier<A> supplier;
         private final BiConsumer<A, T> accumulator;
@@ -63,7 +59,7 @@ public final class NewPipeStreamCollectors {
         CollectorImpl(final Supplier<A> supplier,
                       final BiConsumer<A, T> accumulator,
                       final BinaryOperator<A> combiner,
-                      final Function<A,R> finisher,
+                      final Function<A, R> finisher,
                       final Set<Characteristics> characteristics) {
             this.supplier = supplier;
             this.accumulator = accumulator;
@@ -97,4 +93,6 @@ public final class NewPipeStreamCollectors {
             return characteristics;
         }
     }
+
+    //endregion
 }

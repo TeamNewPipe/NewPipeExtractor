@@ -47,8 +47,12 @@ public abstract class AbstractMediaFormat implements MediaFormat {
 
     @Override
     public boolean equals(final Object o) {
-        if (this == o) return true;
-        if (!(o instanceof AbstractMediaFormat)) return false;
+        if (this == o) {
+            return true;
+        }
+        if (!(o instanceof AbstractMediaFormat)) {
+            return false;
+        }
         final AbstractMediaFormat that = (AbstractMediaFormat) o;
         return id() == that.id()
                 && Objects.equals(name(), that.name())

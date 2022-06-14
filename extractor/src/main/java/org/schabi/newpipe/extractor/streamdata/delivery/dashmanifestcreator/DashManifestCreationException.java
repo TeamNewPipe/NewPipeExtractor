@@ -7,7 +7,7 @@ import javax.annotation.Nonnull;
  * while creating a manifest.
  */
 public class DashManifestCreationException extends RuntimeException {
-    
+
     public DashManifestCreationException(final String message) {
         super(message);
     }
@@ -51,6 +51,7 @@ public class DashManifestCreationException extends RuntimeException {
     @Nonnull
     public static DashManifestCreationException couldNotAddElement(final String element,
                                                                    final String reason) {
-        return new DashManifestCreationException("Could not add " + element + " element: " + reason);
+        return new DashManifestCreationException(
+                "Could not add " + element + " element: " + reason);
     }
 }

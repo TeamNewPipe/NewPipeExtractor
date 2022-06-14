@@ -99,6 +99,7 @@ public class StreamInfo extends Info {
     private List<StreamSegment> streamSegments = new ArrayList<>();
     private List<MetaInfo> metaInfo = new ArrayList<>();
 
+    @SuppressWarnings("checkstyle:ParameterNumber")
     public StreamInfo(final int serviceId,
                       final String url,
                       final String originalUrl,
@@ -554,8 +555,8 @@ public class StreamInfo extends Info {
                 && streamInfo.getDashMpdUrl().trim().isEmpty()
                 && streamInfo.getHlsMasterPlaylistUrl().trim().isEmpty()
         ) {
-            throw new StreamExtractException("Could not get any required streaming-data. " +
-                    "See error variable to get further details.");
+            throw new StreamExtractException("Could not get any required streaming-data. "
+                    + "See error variable to get further details.");
         }
     }
 

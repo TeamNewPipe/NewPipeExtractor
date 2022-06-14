@@ -21,5 +21,5 @@ public interface Stream<M extends MediaFormat> {
 
 
     // TODO: May also have to check deliverydata
-    boolean equalsStream(@Nullable final Stream other);
+    boolean equalsStream(@Nullable Stream other);
 }

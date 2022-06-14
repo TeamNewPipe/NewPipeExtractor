@@ -35,9 +35,8 @@ public class YoutubeOtfDashManifestCreator extends AbstractYoutubeDashManifestCr
 
         final int responseCode = response.responseCode();
         if (responseCode != 200) {
-            throw new DashManifestCreationException("Could not get the initialization URL: " +
-                    "response code "
-                    + responseCode);
+            throw new DashManifestCreationException("Could not get the initialization URL: "
+                    + "response code " + responseCode);
         }
 
         final String[] segmentDurations;
@@ -150,13 +149,13 @@ public class YoutubeOtfDashManifestCreator extends AbstractYoutubeDashManifestCr
                     })
                     .sum();
         } catch (final NumberFormatException e) {
-            throw new DashManifestCreationException("Could not get stream length from sequences " +
-                    "list", e);
+            throw new DashManifestCreationException(
+                    "Could not get stream length from sequences list", e);
         }
     }
 
-    protected Stream<String[]> streamAndSplitSegmentDurations(@Nonnull final String[] segmentDurations) {
-        return Stream.of(segmentDurations)
+    protected Stream<String[]> streamAndSplitSegmentDurations(@Nonnull final String[] durations) {
+        return Stream.of(durations)
                 .map(segDuration -> segDuration.split("\\(r="));
     }
 }

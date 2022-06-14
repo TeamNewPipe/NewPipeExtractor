@@ -478,20 +478,23 @@ public abstract class AbstractYoutubeDashManifestCreator implements DashManifest
 
     // region initResponse
 
+    @SuppressWarnings("checkstyle:FinalParameters")
     @Nonnull
-    protected Response getInitializationResponse(@Nonnull String baseStreamingUrl) {
+    protected Response getInitializationResponse(@Nonnull final String baseStreamingUrl) {
         final boolean isHtml5StreamingUrl = isWebStreamingUrl(baseStreamingUrl)
                 || isTvHtml5SimplyEmbeddedPlayerStreamingUrl(baseStreamingUrl);
         final boolean isAndroidStreamingUrl = isAndroidStreamingUrl(baseStreamingUrl);
         final boolean isIosStreamingUrl = isIosStreamingUrl(baseStreamingUrl);
+
+        String streamingUrl = baseStreamingUrl;
         if (isHtml5StreamingUrl) {
-            baseStreamingUrl += ALR_YES;
+            streamingUrl += ALR_YES;
         }
-        baseStreamingUrl = appendBaseStreamingUrlParams(baseStreamingUrl);
+        streamingUrl = appendBaseStreamingUrlParams(streamingUrl);
 
         final Downloader downloader = NewPipe.getDownloader();
         if (isHtml5StreamingUrl) {
-            return getStreamingWebUrlWithoutRedirects(downloader, baseStreamingUrl);
+            return getStreamingWebUrlWithoutRedirects(downloader, streamingUrl);
         } else if (isAndroidStreamingUrl || isIosStreamingUrl) {
             try {
                 final Map<String, List<String>> headers = new HashMap<>();
@@ -500,7 +503,7 @@ public abstract class AbstractYoutubeDashManifestCreator implements DashManifest
                                 ? getAndroidUserAgent(null)
                                 : getIosUserAgent(null)));
                 final byte[] emptyBody = "".getBytes(StandardCharsets.UTF_8);
-                return downloader.post(baseStreamingUrl, headers, emptyBody);
+                return downloader.post(streamingUrl, headers, emptyBody);
             } catch (final IOException | ExtractionException e) {
                 throw new DashManifestCreationException("Could not get the "
                         + (isIosStreamingUrl ? "IOS" : "ANDROID") + " streaming URL response", e);
@@ -508,7 +511,7 @@ public abstract class AbstractYoutubeDashManifestCreator implements DashManifest
         }
 
         try {
-            return downloader.get(baseStreamingUrl);
+            return downloader.get(streamingUrl);
         } catch (final IOException | ExtractionException e) {
             throw new DashManifestCreationException("Could not get the streaming URL response", e);
         }
@@ -517,13 +520,15 @@ public abstract class AbstractYoutubeDashManifestCreator implements DashManifest
     @Nonnull
     protected Response getStreamingWebUrlWithoutRedirects(
             @Nonnull final Downloader downloader,
-            @Nonnull String streamingUrl) {
+            @Nonnull final String streamingUrl) {
         try {
             final Map<String, List<String>> headers = new HashMap<>();
             addClientInfoHeaders(headers);
 
+            String currentStreamingUrl = streamingUrl;
+
             for (int r = 0; r < MAXIMUM_REDIRECT_COUNT; r++) {
-                final Response response = downloader.get(streamingUrl, headers);
+                final Response response = downloader.get(currentStreamingUrl, headers);
 
                 final int responseCode = response.responseCode();
                 if (responseCode != 200) {
@@ -544,7 +549,7 @@ public abstract class AbstractYoutubeDashManifestCreator implements DashManifest
                     return response;
                 }
 
-                streamingUrl = response.responseBody();
+                currentStreamingUrl = response.responseBody();
             }
 
             throw new DashManifestCreationException("Too many redirects");

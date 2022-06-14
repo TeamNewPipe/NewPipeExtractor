@@ -20,7 +20,9 @@ import org.schabi.newpipe.extractor.streamdata.format.registry.AudioFormatRegist
 
 import java.util.stream.Stream;
 
+// CHECKSTYLE:OFF - Link is too long
 // https://github.com/ytdl-org/youtube-dl/blob/9aa8e5340f3d5ece372b983f8e399277ca1f1fe4/youtube_dl/extractor/youtube.py#L1195
+// CHECKSTYLE:ON
 public final class ItagFormatRegistry {
 
     public static final VideoAudioItagFormat[] VIDEO_AUDIO_FORMATS = new VideoAudioItagFormat[]{
@@ -35,7 +37,9 @@ public final class ItagFormatRegistry {
             new SimpleVideoAudioItagFormat(35, MPEG_4, fromHeightWidth(480, 854), 128),
 
             // Itag 36 is no longer used because the height is unstable and it's not returned by YT
+            // CHECKSTYLE:OFF - Link is too long
             // see also: https://github.com/ytdl-org/youtube-dl/blob/9aa8e5340f3d5ece372b983f8e399277ca1f1fe4/youtube_dl/extractor/youtube.py#L1204
+            // CHECKSTYLE:ON
             new SimpleVideoAudioItagFormat(37, MPEG_4, fromHeightWidth(1080, 1920), 192),
             new SimpleVideoAudioItagFormat(38, MPEG_4, fromHeightWidth(3072, 4092), 192),
 

@@ -1,7 +1,7 @@
 package org.schabi.newpipe.extractor.streamdata.stream.quality;
 
 public class VideoQualityData {
-    public static int UNKNOWN = -1;
+    public static final int UNKNOWN = -1;
 
     private final int height;
     private final int width;

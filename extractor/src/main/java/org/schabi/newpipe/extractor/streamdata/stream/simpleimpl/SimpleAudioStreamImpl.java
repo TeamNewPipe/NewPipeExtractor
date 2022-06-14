@@ -6,7 +6,8 @@ import org.schabi.newpipe.extractor.streamdata.stream.AudioStream;
 
 import javax.annotation.Nonnull;
 
-public class SimpleAudioStreamImpl extends AbstractStreamImpl<AudioMediaFormat> implements AudioStream {
+public class SimpleAudioStreamImpl extends AbstractStreamImpl<AudioMediaFormat>
+        implements AudioStream {
     private final int averageBitrate;
 
     public SimpleAudioStreamImpl(
@@ -24,7 +25,7 @@ public class SimpleAudioStreamImpl extends AbstractStreamImpl<AudioMediaFormat> 
     ) {
         this(mediaFormat, deliveryData, UNKNOWN_AVG_BITRATE);
     }
-    
+
     @Override
     public int averageBitrate() {
         return averageBitrate;

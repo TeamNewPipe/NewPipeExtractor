@@ -19,9 +19,9 @@ public class ItagInfoRange {
 
     @Override
     public String toString() {
-        return "ItagInfoRange{" +
-                "start=" + start +
-                ", end=" + end +
-                '}';
+        return "ItagInfoRange{"
+                + "start=" + start
+                + ", end=" + end
+                + '}';
     }
 }

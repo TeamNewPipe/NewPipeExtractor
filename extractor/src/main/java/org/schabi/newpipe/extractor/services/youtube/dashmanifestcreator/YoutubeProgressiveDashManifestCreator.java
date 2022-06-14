@@ -29,8 +29,8 @@ public class YoutubeProgressiveDashManifestCreator extends AbstractYoutubeDashMa
         } else if (durationSecondsFallback > 0) {
             streamDurationMs = durationSecondsFallback * 1000;
         } else {
-            throw DashManifestCreationException.couldNotAddElement(MPD, "the duration of the " +
-                    "stream could not be determined and durationSecondsFallback is <= 0");
+            throw DashManifestCreationException.couldNotAddElement(MPD,
+                    "unable to determine duration and fallback is invalid");
         }
 
         generateDocumentAndCommonElements(streamDurationMs);
