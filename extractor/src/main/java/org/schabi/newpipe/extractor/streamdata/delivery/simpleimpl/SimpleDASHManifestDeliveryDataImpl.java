@@ -1,9 +1,9 @@
 package org.schabi.newpipe.extractor.streamdata.delivery.simpleimpl;
 
 import org.schabi.newpipe.extractor.streamdata.delivery.DASHManifestDeliveryData;
+import org.schabi.newpipe.extractor.streamdata.delivery.dashmanifestcreator.DashManifestCreator;
 
 import java.util.Objects;
-import java.util.function.Supplier;
 
 import javax.annotation.Nonnull;
 
@@ -21,14 +21,27 @@ import javax.annotation.Nonnull;
 public class SimpleDASHManifestDeliveryDataImpl extends AbstractDeliveryDataImpl
         implements DASHManifestDeliveryData {
     @Nonnull
-    private final Supplier<String> dashManifestBuilder;
+    private final DashManifestCreator dashManifestCreator;
 
-    public SimpleDASHManifestDeliveryDataImpl(@Nonnull final Supplier<String> dashManifestBuilder) {
-        this.dashManifestBuilder = Objects.requireNonNull(dashManifestBuilder);
+    private String cachedDashManifest;
+
+    public SimpleDASHManifestDeliveryDataImpl(
+            @Nonnull final DashManifestCreator dashManifestCreator
+    ) {
+        this.dashManifestCreator = Objects.requireNonNull(dashManifestCreator);
     }
 
     @Override
-    public String getManifestAsString() {
-        return dashManifestBuilder.get();
+    @Nonnull
+    public DashManifestCreator getDashManifestCreator() {
+        return dashManifestCreator;
+    }
+
+    @Override
+    public String getCachedDashManifestAsString() {
+        if (cachedDashManifest != null) {
+            cachedDashManifest = getDashManifestCreator().generateManifest();
+        }
+        return cachedDashManifest;
     }
 }

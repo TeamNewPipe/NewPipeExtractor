@@ -66,6 +66,9 @@ import org.schabi.newpipe.extractor.localization.TimeAgoPatternsManager;
 import org.schabi.newpipe.extractor.services.youtube.YoutubeJavaScriptExtractor;
 import org.schabi.newpipe.extractor.services.youtube.YoutubeParsingHelper;
 import org.schabi.newpipe.extractor.services.youtube.YoutubeThrottlingDecrypter;
+import org.schabi.newpipe.extractor.services.youtube.dashmanifestcreator.YoutubeOtfDashManifestCreator;
+import org.schabi.newpipe.extractor.services.youtube.dashmanifestcreator.YoutubePostLiveStreamDvrDashManifestCreator;
+import org.schabi.newpipe.extractor.services.youtube.dashmanifestcreator.YoutubeProgressiveDashManifestCreator;
 import org.schabi.newpipe.extractor.services.youtube.itag.delivery.HLSItagFormatDeliveryData;
 import org.schabi.newpipe.extractor.services.youtube.itag.delivery.ItagFormatDeliveryData;
 import org.schabi.newpipe.extractor.services.youtube.itag.delivery.ProgressiveHTTPItagFormatDeliveryData;
@@ -82,6 +85,8 @@ import org.schabi.newpipe.extractor.stream.Privacy;
 import org.schabi.newpipe.extractor.stream.StreamExtractor;
 import org.schabi.newpipe.extractor.stream.StreamSegment;
 import org.schabi.newpipe.extractor.streamdata.delivery.DeliveryData;
+import org.schabi.newpipe.extractor.streamdata.delivery.dashmanifestcreator.DashManifestCreator;
+import org.schabi.newpipe.extractor.streamdata.delivery.simpleimpl.SimpleDASHManifestDeliveryDataImpl;
 import org.schabi.newpipe.extractor.streamdata.delivery.simpleimpl.SimpleHLSDeliveryDataImpl;
 import org.schabi.newpipe.extractor.streamdata.delivery.simpleimpl.SimpleProgressiveHTTPDeliveryDataImpl;
 import org.schabi.newpipe.extractor.streamdata.format.registry.SubtitleFormatRegistry;
@@ -1254,16 +1259,27 @@ public class YoutubeStreamExtractor extends StreamExtractor {
         }
 
         // DASH
-        // TODO
-        if ("FORMAT_STREAM_TYPE_OTF".equalsIgnoreCase(itagInfo.getType())) {
-            // OTF DASH MANIFEST
-        } else if (isPostLive()) {
-            // YoutubePostLiveStreamDvrDashManifestCreator
+        // Duration in seconds used as fallback inside the dashManifestCreators
+        long durationInSec;
+        try {
+            durationInSec = getLength();
+        } catch (final ParsingException e) {
+            durationInSec = -1;
         }
-        // YoutubeProgressiveDashManifestCreator
 
+        return new SimpleDASHManifestDeliveryDataImpl(
+                getDashManifestCreatorConstructor(itagInfo).apply(itagInfo, durationInSec));
+    }
 
-        return null;
+    private BiFunction<ItagInfo<?>, Long, DashManifestCreator> getDashManifestCreatorConstructor(
+            final ItagInfo<?> itagInfo
+    ) {
+        if ("FORMAT_STREAM_TYPE_OTF".equalsIgnoreCase(itagInfo.getType())) {
+            return YoutubeOtfDashManifestCreator::new;
+        } else if (isPostLive()) {
+            return YoutubePostLiveStreamDvrDashManifestCreator::new;
+        }
+        return YoutubeProgressiveDashManifestCreator::new;
     }
 
     @Nonnull

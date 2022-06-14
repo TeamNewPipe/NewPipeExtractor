@@ -17,8 +17,8 @@ import javax.annotation.Nonnull;
 
 public class YoutubePostLiveStreamDvrDashManifestCreator extends AbstractYoutubeDashManifestCreator {
 
-    protected YoutubePostLiveStreamDvrDashManifestCreator(@Nonnull final ItagInfo<?> itagInfo,
-                                                          final long durationSecondsFallback) {
+    public YoutubePostLiveStreamDvrDashManifestCreator(@Nonnull final ItagInfo<?> itagInfo,
+                                                       final long durationSecondsFallback) {
         super(itagInfo, durationSecondsFallback);
     }
 
