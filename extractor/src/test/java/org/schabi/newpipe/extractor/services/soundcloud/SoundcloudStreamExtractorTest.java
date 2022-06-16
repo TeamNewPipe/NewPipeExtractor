@@ -1,29 +1,29 @@
 package org.schabi.newpipe.extractor.services.soundcloud;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.schabi.newpipe.extractor.ServiceList.SoundCloud;
+
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.schabi.newpipe.downloader.DownloaderTestImpl;
 import org.schabi.newpipe.extractor.ExtractorAsserts;
-import org.schabi.newpipe.extractor.MediaFormat;
 import org.schabi.newpipe.extractor.NewPipe;
 import org.schabi.newpipe.extractor.StreamingService;
 import org.schabi.newpipe.extractor.exceptions.GeographicRestrictionException;
 import org.schabi.newpipe.extractor.exceptions.SoundCloudGoPlusContentException;
 import org.schabi.newpipe.extractor.services.DefaultStreamExtractorTest;
-import org.schabi.newpipe.extractor.stream.AudioStream;
-import org.schabi.newpipe.extractor.stream.DeliveryMethod;
 import org.schabi.newpipe.extractor.stream.StreamExtractor;
-import org.schabi.newpipe.extractor.stream.StreamType;
+import org.schabi.newpipe.extractor.streamdata.delivery.ProgressiveHTTPDeliveryData;
+import org.schabi.newpipe.extractor.streamdata.format.registry.AudioFormatRegistry;
+import org.schabi.newpipe.extractor.streamdata.stream.AudioStream;
 
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
 import javax.annotation.Nullable;
-
-import static org.junit.jupiter.api.Assertions.*;
-import static org.schabi.newpipe.extractor.ServiceList.SoundCloud;
 
 public class SoundcloudStreamExtractorTest {
     private static final String SOUNDCLOUD = "https://soundcloud.com/";
@@ -186,29 +186,33 @@ public class SoundcloudStreamExtractorTest {
         @Test
         public void testAudioStreams() throws Exception {
             super.testAudioStreams();
+
             final List<AudioStream> audioStreams = extractor.getAudioStreams();
             assertEquals(2, audioStreams.size());
-            audioStreams.forEach(audioStream -> {
-                final DeliveryMethod deliveryMethod = audioStream.getDeliveryMethod();
-                final String mediaUrl = audioStream.getContent();
-                if (audioStream.getFormat() == MediaFormat.OPUS) {
+
+            for (final AudioStream audioStream : audioStreams) {
+                assertTrue(audioStream.deliveryData() instanceof ProgressiveHTTPDeliveryData,
+                        "Wrong delivery method for mediaFormat=" + audioStream.mediaFormat()
+                                + " , avgBR=" + audioStream.averageBitrate()
+                                + " , deliverDataType=" + audioStream.deliveryData().getClass()
+                );
+
+                final ProgressiveHTTPDeliveryData deliveryData =
+                        (ProgressiveHTTPDeliveryData) audioStream.deliveryData();
+
+                final String mediaUrl = deliveryData.url();
+                if (audioStream.mediaFormat() == AudioFormatRegistry.OPUS) {
                     // Assert that it's an OPUS 64 kbps media URL with a single range which comes
                     // from an HLS SoundCloud CDN
                     ExtractorAsserts.assertContains("-hls-opus-media.sndcdn.com", mediaUrl);
                     ExtractorAsserts.assertContains(".64.opus", mediaUrl);
-                    assertSame(DeliveryMethod.HLS, deliveryMethod,
-                            "Wrong delivery method for stream " + audioStream.getId() + ": "
-                                    + deliveryMethod);
-                } else if (audioStream.getFormat() == MediaFormat.MP3) {
+                } else if (audioStream.mediaFormat() == AudioFormatRegistry.MP3) {
                     // Assert that it's a MP3 128 kbps media URL which comes from a progressive
                     // SoundCloud CDN
                     ExtractorAsserts.assertContains("-media.sndcdn.com/bKOA7Pwbut93.128.mp3",
                             mediaUrl);
-                    assertSame(DeliveryMethod.PROGRESSIVE_HTTP, deliveryMethod,
-                            "Wrong delivery method for stream " + audioStream.getId() + ": "
-                                    + deliveryMethod);
                 }
-            });
+            }
         }
     }
 }

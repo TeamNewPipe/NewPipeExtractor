@@ -1,7 +1,6 @@
 package org.schabi.newpipe.extractor.services;
 
 public interface BaseStreamExtractorTest extends BaseExtractorTest {
-    void testStreamType() throws Exception;
     void testUploaderName() throws Exception;
     void testUploaderUrl() throws Exception;
     void testUploaderAvatarUrl() throws Exception;

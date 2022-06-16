@@ -5,8 +5,8 @@ import org.junit.jupiter.api.Test;
 import org.schabi.newpipe.downloader.DownloaderTestImpl;
 import org.schabi.newpipe.extractor.NewPipe;
 import org.schabi.newpipe.extractor.services.media_ccc.extractors.MediaCCCStreamExtractor;
-import org.schabi.newpipe.extractor.stream.AudioStream;
 import org.schabi.newpipe.extractor.stream.StreamExtractor;
+import org.schabi.newpipe.extractor.streamdata.stream.AudioStream;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.schabi.newpipe.extractor.ServiceList.MediaCCC;
@@ -34,7 +34,7 @@ public class MediaCCCOggTest {
     @Test
     public void getAudioStreamsContainOgg() throws Exception {
         for (AudioStream stream : extractor.getAudioStreams()) {
-            assertEquals("OGG", stream.getFormat().toString());
+            assertEquals("ogg", stream.mediaFormat().name());
         }
     }
 }

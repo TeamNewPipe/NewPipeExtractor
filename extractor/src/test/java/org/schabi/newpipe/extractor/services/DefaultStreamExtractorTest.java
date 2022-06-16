@@ -21,7 +21,6 @@ import org.schabi.newpipe.extractor.stream.Description;
 import org.schabi.newpipe.extractor.stream.Frameset;
 import org.schabi.newpipe.extractor.stream.Privacy;
 import org.schabi.newpipe.extractor.stream.StreamExtractor;
-import org.schabi.newpipe.extractor.stream.StreamType;
 import org.schabi.newpipe.extractor.streamdata.delivery.DASHManifestDeliveryData;
 import org.schabi.newpipe.extractor.streamdata.delivery.DeliveryData;
 import org.schabi.newpipe.extractor.streamdata.delivery.UrlBasedDeliveryData;
@@ -194,12 +193,13 @@ public abstract class DefaultStreamExtractorTest extends DefaultExtractorTest<St
     public void testUploadDate() throws Exception {
         final DateWrapper dateWrapper = extractor().getUploadDate();
 
-        if (expectedUploadDate() == null) {
+        final String expectedUploadDate = expectedUploadDate();
+        if (expectedUploadDate == null) {
             assertNull(dateWrapper);
         } else {
             assertNotNull(dateWrapper);
 
-            final LocalDateTime expectedDateTime = LocalDateTime.parse(expectedUploadDate(),
+            final LocalDateTime expectedDateTime = LocalDateTime.parse(expectedUploadDate,
                     DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss.SSS"));
             final LocalDateTime actualDateTime = dateWrapper.offsetDateTime().toLocalDateTime();
 
