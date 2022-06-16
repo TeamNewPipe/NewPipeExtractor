@@ -5,7 +5,6 @@ import static org.schabi.newpipe.extractor.services.soundcloud.SoundcloudParsing
 import static org.schabi.newpipe.extractor.stream.AudioStream.UNKNOWN_BITRATE;
 import static org.schabi.newpipe.extractor.stream.Stream.ID_UNKNOWN;
 import static org.schabi.newpipe.extractor.utils.Utils.EMPTY_STRING;
-import static org.schabi.newpipe.extractor.utils.Utils.HTTPS;
 import static org.schabi.newpipe.extractor.utils.Utils.UTF_8;
 import static org.schabi.newpipe.extractor.utils.Utils.isNullOrEmpty;
 
@@ -22,7 +21,6 @@ import org.schabi.newpipe.extractor.exceptions.ContentNotAvailableException;
 import org.schabi.newpipe.extractor.exceptions.ExtractionException;
 import org.schabi.newpipe.extractor.exceptions.GeographicRestrictionException;
 import org.schabi.newpipe.extractor.exceptions.ParsingException;
-import org.schabi.newpipe.extractor.exceptions.ReCaptchaException;
 import org.schabi.newpipe.extractor.exceptions.SoundCloudGoPlusContentException;
 import org.schabi.newpipe.extractor.linkhandler.LinkHandler;
 import org.schabi.newpipe.extractor.localization.DateWrapper;
@@ -245,61 +243,30 @@ public class SoundcloudStreamExtractor extends StreamExtractor {
                         return;
                     }
 
-                    final String preset = transcoding.getString("preset", ID_UNKNOWN);
-                    final String protocol = transcoding.getObject("format").getString("protocol");
-                    final AudioStream.Builder builder = new AudioStream.Builder()
-                            .setId(preset);
-
                     try {
-                        // streamUrl can be either the MP3 progressive stream URL or the
-                        // manifest URL of the HLS MP3 stream (if there is no MP3 progressive
-                        // stream, see above)
-                        final String streamUrl = getTranscodingUrl(url);
+                        final String preset = transcoding.getString("preset", ID_UNKNOWN);
+                        final String protocol = transcoding.getObject("format")
+                                .getString("protocol");
+                        final AudioStream.Builder builder = new AudioStream.Builder()
+                                .setId(preset);
+
+                        final boolean isHls = protocol.equals("hls");
+                        if (isHls) {
+                            builder.setDeliveryMethod(DeliveryMethod.HLS);
+                        }
+
+                        builder.setContent(getTranscodingUrl(url), true);
 
                         if (preset.contains("mp3")) {
                             // Don't add the MP3 HLS stream if there is a progressive stream
-                            // present because the two have the same bitrate
-                            final boolean isHls = protocol.equals("hls");
+                            // present because both have the same bitrate
                             if (mp3ProgressiveInStreams && isHls) {
                                 return;
                             }
 
                             builder.setMediaFormat(MediaFormat.MP3);
                             builder.setAverageBitrate(128);
-
-                            if (isHls) {
-                                builder.setDeliveryMethod(DeliveryMethod.HLS);
-                                builder.setContent(streamUrl, true);
-
-                                final AudioStream hlsStream = builder.build();
-                                if (!Stream.containSimilarStream(hlsStream, audioStreams)) {
-                                    audioStreams.add(hlsStream);
-                                }
-
-                                final String progressiveHlsUrl =
-                                        getSingleUrlFromHlsManifest(streamUrl);
-                                builder.setDeliveryMethod(DeliveryMethod.PROGRESSIVE_HTTP);
-                                builder.setContent(progressiveHlsUrl, true);
-
-                                final AudioStream progressiveHlsStream = builder.build();
-                                if (!Stream.containSimilarStream(
-                                        progressiveHlsStream, audioStreams)) {
-                                    audioStreams.add(progressiveHlsStream);
-                                }
-
-                                // The MP3 HLS stream has been added in both versions (HLS and
-                                // progressive with the manifest parsing trick), so we need to
-                                // continue (otherwise the code would try to add again the stream,
-                                // which would be not added because the containsSimilarStream
-                                // method would return false and an audio stream object would be
-                                // created for nothing)
-                                return;
-                            } else {
-                                builder.setContent(streamUrl, true);
-                            }
                         } else if (preset.contains("opus")) {
-                            // The HLS manifest trick doesn't work for opus streams
-                            builder.setContent(streamUrl, true);
                             builder.setMediaFormat(MediaFormat.OPUS);
                             builder.setAverageBitrate(64);
                             builder.setDeliveryMethod(DeliveryMethod.HLS);
@@ -350,47 +317,6 @@ public class SoundcloudStreamExtractor extends StreamExtractor {
                 // exception throw because this "stream" is not necessary to play the track
             }
         }
-    }
-
-    /**
-     * Parses a SoundCloud HLS MP3 manifest to get a single URL of HLS streams.
-     *
-     * <p>
-     * This method downloads the provided manifest URL, finds all web occurrences in the manifest,
-     * gets the last segment URL, changes its segment range to {@code 0/track-length}, and return
-     * this as a string.
-     * </p>
-     *
-     * <p>
-     * This was working before for Opus streams, but has been broken by SoundCloud.
-     * </p>
-     *
-     * @param  hlsManifestUrl the URL of the manifest to be parsed
-     * @return a single URL that contains a range equal to the length of the track
-     */
-    @Nonnull
-    private static String getSingleUrlFromHlsManifest(@Nonnull final String hlsManifestUrl)
-            throws ParsingException {
-        final String hlsManifestResponse;
-
-        try {
-            hlsManifestResponse = NewPipe.getDownloader().get(hlsManifestUrl).responseBody();
-        } catch (final IOException | ReCaptchaException e) {
-            throw new ParsingException("Could not get SoundCloud HLS manifest");
-        }
-
-        final String[] lines = hlsManifestResponse.split("\\r?\\n");
-        for (int l = lines.length - 1; l >= 0; l--) {
-            final String line = lines[l];
-            // Get the last URL from manifest, because it contains the range of the stream
-            if (line.trim().length() != 0 && !line.startsWith("#") && line.startsWith(HTTPS)) {
-                final String[] hlsLastRangeUrlArray = line.split("/");
-                return HTTPS + hlsLastRangeUrlArray[2] + "/media/0/" + hlsLastRangeUrlArray[5]
-                        + "/" + hlsLastRangeUrlArray[6];
-            }
-        }
-
-        throw new ParsingException("Could not get any URL from HLS manifest");
     }
 
     private static String urlEncode(final String value) {
