@@ -284,7 +284,7 @@ public abstract class AbstractYoutubeDashManifestCreator implements DashManifest
             final String codec = itagInfo.getCodec();
             if (isNullOrEmpty(codec)) {
                 throw DashManifestCreationException.couldNotAddElement(ADAPTATION_SET,
-                        "the codec value of the ItagItem is null or empty");
+                        "invalid codec=" + codec);
             }
 
             appendNewAttrWithValue(
@@ -326,7 +326,7 @@ public abstract class AbstractYoutubeDashManifestCreator implements DashManifest
 
                 if (videoQualityData.fps() > 0) {
                     appendNewAttrWithValue(
-                            representationElement, "height", videoQualityData.fps());
+                            representationElement, "frameRate", videoQualityData.fps());
                 }
             }
 

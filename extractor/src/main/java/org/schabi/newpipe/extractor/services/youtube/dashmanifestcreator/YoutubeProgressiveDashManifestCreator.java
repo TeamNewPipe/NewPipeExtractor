@@ -34,6 +34,7 @@ public class YoutubeProgressiveDashManifestCreator extends AbstractYoutubeDashMa
         }
 
         generateDocumentAndCommonElements(streamDurationMs);
+        generateBaseUrlElement(itagInfo.getStreamUrl());
         generateSegmentBaseElement();
         generateInitializationElement();
 

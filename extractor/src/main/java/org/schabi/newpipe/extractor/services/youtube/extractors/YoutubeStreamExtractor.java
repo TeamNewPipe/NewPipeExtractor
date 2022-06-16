@@ -846,7 +846,7 @@ public class YoutubeStreamExtractor extends StreamExtractor {
                 .getBytes(StandardCharsets.UTF_8);
         nextResponse = getJsonPostResponse(NEXT, body, localization);
 
-        if ((!isAgeRestricted && !isLive && !isPostLive())
+        if ((!isAgeRestricted && !isLive && !isPostLive)
                 || isAndroidClientFetchForced) {
             try {
                 fetchAndroidMobileJsonPlayer(contentCountry, localization, videoId);
@@ -1368,7 +1368,7 @@ public class YoutubeStreamExtractor extends StreamExtractor {
             itagInfo.setFps(getNullableInteger(formatData, "fps"));
         }
 
-        itagInfo.setBitRate(getNullableInteger(formatData, "bitRate"));
+        itagInfo.setBitRate(getNullableInteger(formatData, "bitrate"));
         itagInfo.setQuality(formatData.getString("quality"));
 
         final String mimeType = formatData.getString("mimeType", "");
