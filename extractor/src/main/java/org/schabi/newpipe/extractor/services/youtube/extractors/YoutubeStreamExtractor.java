@@ -1358,13 +1358,20 @@ public class YoutubeStreamExtractor extends StreamExtractor {
 
         if (streamType == StreamType.LIVE_STREAM || streamType == StreamType.POST_LIVE_STREAM) {
             itagItem.setTargetDurationSec(formatData.getInt("targetDurationSec"));
-        } else if (itagType == ItagItem.ItagType.VIDEO
-                || itagType == ItagItem.ItagType.VIDEO_ONLY) {
+        }
+
+        if (itagType == ItagItem.ItagType.VIDEO || itagType == ItagItem.ItagType.VIDEO_ONLY) {
             itagItem.setFps(formatData.getInt("fps"));
         } else if (itagType == ItagItem.ItagType.AUDIO) {
             // YouTube return the audio sample rate as a string
             itagItem.setSampleRate(Integer.parseInt(formatData.getString("audioSampleRate")));
-            itagItem.setAudioChannels(formatData.getInt("audioChannels"));
+            itagItem.setAudioChannels(formatData.getInt("audioChannels",
+                    // Most audio streams have two audio channels, so use this value if the real
+                    // count cannot be extracted
+                    // Doing this prevents an exception when generating the
+                    // AudioChannelConfiguration element of DASH manifests of audio streams in
+                    // YoutubeDashManifestCreatorUtils
+                    2));
         }
 
         // YouTube return the content length and the approximate duration as strings
