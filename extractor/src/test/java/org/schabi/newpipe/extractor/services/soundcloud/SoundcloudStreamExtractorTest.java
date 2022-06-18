@@ -67,6 +67,7 @@ public class SoundcloudStreamExtractorTest {
         @Override public long expectedLikeCountAtLeast() { return -1; }
         @Override public long expectedDislikeCountAtLeast() { return -1; }
         @Override public boolean expectedHasAudioStreams() { return false; }
+        @Override public boolean expectedHasVideoOnlyStreams() { return false; }
         @Override public boolean expectedHasVideoAndAudioStreams() { return false; }
         @Override public boolean expectedHasSubtitles() { return false; }
         @Override public boolean expectedHasFrames() { return false; }
@@ -130,6 +131,7 @@ public class SoundcloudStreamExtractorTest {
         @Override public long expectedLikeCountAtLeast() { return -1; }
         @Override public long expectedDislikeCountAtLeast() { return -1; }
         @Override public boolean expectedHasAudioStreams() { return false; }
+        @Override public boolean expectedHasVideoOnlyStreams() { return false; }
         @Override public boolean expectedHasVideoAndAudioStreams() { return false; }
         @Override public boolean expectedHasRelatedItems() { return true; }
         @Override public boolean expectedHasSubtitles() { return false; }
@@ -172,6 +174,7 @@ public class SoundcloudStreamExtractorTest {
         @Nullable @Override public String expectedTextualUploadDate() { return "2019-03-28 13:36:18"; }
         @Override public long expectedLikeCountAtLeast() { return -1; }
         @Override public long expectedDislikeCountAtLeast() { return -1; }
+        @Override public boolean expectedHasVideoOnlyStreams() { return false; }
         @Override public boolean expectedHasVideoAndAudioStreams() { return false; }
         @Override public boolean expectedHasSubtitles() { return false; }
         @Override public boolean expectedHasFrames() { return false; }

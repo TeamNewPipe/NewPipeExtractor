@@ -119,6 +119,11 @@ public class BandcampStreamExtractorTest extends DefaultStreamExtractorTest {
     }
 
     @Override
+    public boolean expectedHasVideoOnlyStreams() {
+        return false;
+    }
+
+    @Override
     public boolean expectedHasVideoAndAudioStreams() {
         return false;
     }

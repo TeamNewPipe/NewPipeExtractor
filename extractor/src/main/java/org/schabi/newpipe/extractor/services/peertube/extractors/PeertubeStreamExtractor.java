@@ -64,7 +64,6 @@ public class PeertubeStreamExtractor extends StreamExtractor {
     private static final String FILE_DOWNLOAD_URL = "fileDownloadUrl";
     private static final String FILE_URL = "fileUrl";
     private static final String PLAYLIST_URL = "playlistUrl";
-    private static final String RESOLUTION_ID = "resolution.id";
     private static final String STREAMING_PLAYLISTS = "streamingPlaylists";
 
     private final String baseUrl;

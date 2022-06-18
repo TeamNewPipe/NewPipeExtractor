@@ -60,6 +60,7 @@ public class YoutubeStreamExtractorLivestreamTest extends DefaultStreamExtractor
     @Nullable @Override public String expectedTextualUploadDate() { return "2022-07-12"; }
     @Override public long expectedLikeCountAtLeast() { return 340_000; }
     @Override public long expectedDislikeCountAtLeast() { return -1; }
+    @Override public boolean expectedHasVideoAndAudioStreams() { return false; }
     @Override public boolean expectedHasSubtitles() { return false; }
     @Nullable @Override public String expectedDashMpdUrlContains() { return "https://manifest.googlevideo.com/api/manifest/dash/"; }
     @Override public boolean expectedHasFrames() { return false; }

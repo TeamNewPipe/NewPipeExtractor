@@ -24,6 +24,7 @@ import static org.schabi.newpipe.extractor.ServiceList.PeerTube;
 public abstract class PeertubeStreamExtractorTest extends DefaultStreamExtractorTest {
     private static final String BASE_URL = "/videos/watch/";
 
+    @Override public boolean expectedHasVideoOnlyStreams() { return false; }
     @Override public boolean expectedHasAudioStreams() { return false; }
     @Override public boolean expectedHasFrames() { return false; }
 

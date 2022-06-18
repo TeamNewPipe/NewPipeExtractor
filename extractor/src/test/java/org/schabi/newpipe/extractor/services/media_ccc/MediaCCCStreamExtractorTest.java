@@ -52,6 +52,7 @@ public class MediaCCCStreamExtractorTest {
         @Override public long expectedLikeCountAtLeast() { return -1; }
         @Override public long expectedDislikeCountAtLeast() { return -1; }
         @Override public boolean expectedHasRelatedItems() { return false; }
+        @Override public boolean expectedHasVideoOnlyStreams() { return false; }
         @Override public boolean expectedHasSubtitles() { return false; }
         @Override public boolean expectedHasFrames() { return false; }
         @Override public List<String> expectedTags() { return Arrays.asList("gpn18", "105"); }
@@ -74,8 +75,8 @@ public class MediaCCCStreamExtractorTest {
 
         @Override
         @Test
-        public void testVideoOnlyStreams() throws Exception {
-            super.testVideoOnlyStreams();
+        public void testVideoAudioStreams() throws Exception {
+            super.testVideoAudioStreams();
             assertEquals(4, extractor.getVideoStreams().size());
         }
 
@@ -123,6 +124,7 @@ public class MediaCCCStreamExtractorTest {
         @Override public long expectedLikeCountAtLeast() { return -1; }
         @Override public long expectedDislikeCountAtLeast() { return -1; }
         @Override public boolean expectedHasRelatedItems() { return false; }
+        @Override public boolean expectedHasVideoOnlyStreams() { return false; }
         @Override public boolean expectedHasSubtitles() { return false; }
         @Override public boolean expectedHasFrames() { return false; }
         @Override public List<String> expectedTags() { return Arrays.asList("36c3", "10565", "2019", "Security", "Main"); }
@@ -143,8 +145,8 @@ public class MediaCCCStreamExtractorTest {
 
         @Override
         @Test
-        public void testVideoOnlyStreams() throws Exception {
-            super.testVideoOnlyStreams();
+        public void testVideoAudioStreams() throws Exception {
+            super.testVideoAudioStreams();
             assertEquals(8, extractor.getVideoStreams().size());
         }
 

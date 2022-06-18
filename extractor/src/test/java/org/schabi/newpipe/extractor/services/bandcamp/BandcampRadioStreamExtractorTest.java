@@ -49,6 +49,7 @@ public class BandcampRadioStreamExtractorTest extends DefaultStreamExtractorTest
     @Override public String expectedId() throws Exception { return "230"; }
     @Override public String expectedUrlContains() throws Exception { return URL; }
     @Override public String expectedOriginalUrlContains() throws Exception { return URL; }
+    @Override public boolean expectedHasVideoOnlyStreams() { return false; }
     @Override public boolean expectedHasVideoAndAudioStreams() { return false; }
     @Override public boolean expectedHasSubtitles() { return false; }
     @Override public boolean expectedHasFrames() { return false; }
