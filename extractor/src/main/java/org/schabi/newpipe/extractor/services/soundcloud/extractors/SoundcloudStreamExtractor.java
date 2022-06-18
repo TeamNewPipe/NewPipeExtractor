@@ -34,7 +34,6 @@ import org.schabi.newpipe.extractor.streamdata.format.AudioMediaFormat;
 import org.schabi.newpipe.extractor.streamdata.format.registry.AudioFormatRegistry;
 import org.schabi.newpipe.extractor.streamdata.stream.AudioStream;
 import org.schabi.newpipe.extractor.streamdata.stream.simpleimpl.SimpleAudioStreamImpl;
-import org.schabi.newpipe.extractor.streamdata.stream.util.NewPipeStreamCollectors;
 
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
@@ -44,6 +43,7 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -185,15 +185,6 @@ public class SoundcloudStreamExtractor extends StreamExtractor {
         }
     }
 
-    private static boolean checkMp3ProgressivePresence(@Nonnull final JsonArray transcodings) {
-        return transcodings.stream()
-                .filter(JsonObject.class::isInstance)
-                .map(JsonObject.class::cast)
-                .anyMatch(transcoding -> transcoding.getString("preset").contains("mp3")
-                        && transcoding.getObject("format").getString("protocol")
-                        .equals("progressive"));
-    }
-
     @Nonnull
     private String getTranscodingUrl(final String endpointUrl,
                                      final String protocol)
@@ -237,8 +228,6 @@ public class SoundcloudStreamExtractor extends StreamExtractor {
             return Collections.emptyList();
         }
 
-        final boolean mp3ProgressiveInStreams = checkMp3ProgressivePresence(transcodings);
-
         return transcodings.stream()
                 .filter(JsonObject.class::isInstance)
                 .map(JsonObject.class::cast)
@@ -262,11 +251,6 @@ public class SoundcloudStreamExtractor extends StreamExtractor {
                     final AudioMediaFormat mediaFormat;
                     final int averageBitrate;
                     if (preset.contains("mp3")) {
-                        // Don't add the MP3 HLS stream if there is a progressive stream present
-                        // because the two have the same bitrate
-                        if (mp3ProgressiveInStreams && protocol.equals("hls")) {
-                            return null;
-                        }
                         mediaFormat = AudioFormatRegistry.MP3;
                         averageBitrate = 128;
                     } else if (preset.contains("opus")) {
@@ -285,7 +269,7 @@ public class SoundcloudStreamExtractor extends StreamExtractor {
                     );
                 })
                 .filter(Objects::nonNull)
-                .collect(NewPipeStreamCollectors.toDistinctList());
+                .collect(Collectors.toList());
     }
 
     /**

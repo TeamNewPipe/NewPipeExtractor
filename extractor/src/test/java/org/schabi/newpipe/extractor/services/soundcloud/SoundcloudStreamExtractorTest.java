@@ -16,6 +16,7 @@ import org.schabi.newpipe.extractor.exceptions.SoundCloudGoPlusContentException;
 import org.schabi.newpipe.extractor.services.DefaultStreamExtractorTest;
 import org.schabi.newpipe.extractor.stream.StreamExtractor;
 import org.schabi.newpipe.extractor.streamdata.delivery.ProgressiveHTTPDeliveryData;
+import org.schabi.newpipe.extractor.streamdata.delivery.UrlBasedDeliveryData;
 import org.schabi.newpipe.extractor.streamdata.format.registry.AudioFormatRegistry;
 import org.schabi.newpipe.extractor.streamdata.stream.AudioStream;
 
@@ -191,30 +192,20 @@ public class SoundcloudStreamExtractorTest {
             super.testAudioStreams();
 
             final List<AudioStream> audioStreams = extractor.getAudioStreams();
-            assertEquals(2, audioStreams.size());
+            assertEquals(3, audioStreams.size());
 
             for (final AudioStream audioStream : audioStreams) {
-                assertTrue(audioStream.deliveryData() instanceof ProgressiveHTTPDeliveryData,
+                assertTrue(audioStream.deliveryData() instanceof UrlBasedDeliveryData,
                         "Wrong delivery method for mediaFormat=" + audioStream.mediaFormat()
                                 + " , avgBR=" + audioStream.averageBitrate()
                                 + " , deliverDataType=" + audioStream.deliveryData().getClass()
                 );
 
-                final ProgressiveHTTPDeliveryData deliveryData =
-                        (ProgressiveHTTPDeliveryData) audioStream.deliveryData();
+                final UrlBasedDeliveryData deliveryData =
+                        (UrlBasedDeliveryData) audioStream.deliveryData();
 
                 final String mediaUrl = deliveryData.url();
-                if (audioStream.mediaFormat() == AudioFormatRegistry.OPUS) {
-                    // Assert that it's an OPUS 64 kbps media URL with a single range which comes
-                    // from an HLS SoundCloud CDN
-                    ExtractorAsserts.assertContains("-hls-opus-media.sndcdn.com", mediaUrl);
-                    ExtractorAsserts.assertContains(".64.opus", mediaUrl);
-                } else if (audioStream.mediaFormat() == AudioFormatRegistry.MP3) {
-                    // Assert that it's a MP3 128 kbps media URL which comes from a progressive
-                    // SoundCloud CDN
-                    ExtractorAsserts.assertContains("-media.sndcdn.com/bKOA7Pwbut93.128.mp3",
-                            mediaUrl);
-                }
+                ExtractorAsserts.assertContains("-media.sndcdn.com", mediaUrl);
             }
         }
     }
