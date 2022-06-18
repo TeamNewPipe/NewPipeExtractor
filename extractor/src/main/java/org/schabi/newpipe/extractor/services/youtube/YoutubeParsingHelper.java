@@ -558,6 +558,7 @@ public final class YoutubeParsingHelper {
         headers.put("X-YouTube-Client-Name", singletonList("1"));
         headers.put("X-YouTube-Client-Version",
                 singletonList(HARDCODED_CLIENT_VERSION));
+        headers.put("Content-Type", Collections.singletonList("application/json"));
 
         // This endpoint is fetched by the YouTube website to get the items of its main menu and is
         // pretty lightweight (around 30kB)
@@ -805,7 +806,7 @@ public final class YoutubeParsingHelper {
         headers.put("X-YouTube-Client-Version", singletonList(
                 HARDCODED_YOUTUBE_MUSIC_KEY[2]));
         headers.put("Origin", singletonList("https://music.youtube.com"));
-        headers.put("Referer", singletonList("music.youtube.com"));
+        headers.put("Referer", singletonList("https://music.youtube.com"));
         headers.put("Content-Type", singletonList("application/json"));
 
         final Response response = getDownloader().post(url, headers, json);
@@ -1148,13 +1149,12 @@ public final class YoutubeParsingHelper {
                                                  final Localization localization)
             throws IOException, ExtractionException {
         final Map<String, List<String>> headers = new HashMap<>();
-        addClientInfoHeaders(headers);
+        addYouTubeHeaders(headers);
         headers.put("Content-Type", singletonList("application/json"));
 
-        final Response response = getDownloader().post(YOUTUBEI_V1_URL + endpoint + "?key="
-                + getKey() + DISABLE_PRETTY_PRINT_PARAMETER, headers, body, localization);
-
-        return JsonUtils.toJsonObject(getValidJsonResponseBody(response));
+        return JsonUtils.toJsonObject(getValidJsonResponseBody(
+                getDownloader().post(YOUTUBEI_V1_URL + endpoint + "?key=" + getKey()
+                        + DISABLE_PRETTY_PRINT_PARAMETER, headers, body, localization)));
     }
 
     public static JsonObject getJsonAndroidPostResponse(
@@ -1183,17 +1183,18 @@ public final class YoutubeParsingHelper {
             @Nonnull final String innerTubeApiKey,
             @Nullable final String endPartOfUrlRequest) throws IOException, ExtractionException {
         final Map<String, List<String>> headers = new HashMap<>();
-        headers.put("Content-Type", singletonList("application/json"));
         headers.put("User-Agent", singletonList(userAgent));
         headers.put("X-Goog-Api-Format-Version", singletonList("2"));
+        headers.put("Content-Type", singletonList("application/json"));
 
         final String baseEndpointUrl = YOUTUBEI_V1_GAPIS_URL + endpoint + "?key=" + innerTubeApiKey
                 + DISABLE_PRETTY_PRINT_PARAMETER;
 
-        final Response response = getDownloader().post(isNullOrEmpty(endPartOfUrlRequest)
-                        ? baseEndpointUrl : baseEndpointUrl + endPartOfUrlRequest,
-                headers, body, localization);
-        return JsonUtils.toJsonObject(getValidJsonResponseBody(response));
+        return JsonUtils.toJsonObject(getValidJsonResponseBody(
+                getDownloader().post(isNullOrEmpty(endPartOfUrlRequest)
+                                ? baseEndpointUrl
+                                : baseEndpointUrl + endPartOfUrlRequest,
+                        headers, body, localization)));
     }
 
     @Nonnull
@@ -1394,6 +1395,17 @@ public final class YoutubeParsingHelper {
                 + "(" + IOS_DEVICE_MODEL + "; U; CPU iOS 15_6 like Mac OS X; "
                 + (localization != null ? localization : Localization.DEFAULT).getCountryCode()
                 + ")";
+    }
+
+    @Nonnull
+    public static Map<String, List<String>> getYoutubeMusicHeaders() {
+        final Map<String, List<String>> headers = new HashMap<>();
+        headers.put("X-YouTube-Client-Name", Collections.singletonList(youtubeMusicKey[1]));
+        headers.put("X-YouTube-Client-Version", Collections.singletonList(youtubeMusicKey[2]));
+        headers.put("Origin", Collections.singletonList("https://music.youtube.com"));
+        headers.put("Referer", Collections.singletonList("https://music.youtube.com"));
+        headers.put("Content-Type", Collections.singletonList("application/json"));
+        return headers;
     }
 
     /**

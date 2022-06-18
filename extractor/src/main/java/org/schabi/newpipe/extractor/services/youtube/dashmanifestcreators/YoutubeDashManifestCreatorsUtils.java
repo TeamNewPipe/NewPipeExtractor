@@ -35,7 +35,6 @@ import java.util.Locale;
 import java.util.Map;
 import java.util.Objects;
 
-import static org.schabi.newpipe.extractor.services.youtube.YoutubeParsingHelper.addClientInfoHeaders;
 import static org.schabi.newpipe.extractor.services.youtube.YoutubeParsingHelper.getAndroidUserAgent;
 import static org.schabi.newpipe.extractor.services.youtube.YoutubeParsingHelper.getIosUserAgent;
 import static org.schabi.newpipe.extractor.services.youtube.YoutubeParsingHelper.isAndroidStreamingUrl;
@@ -707,7 +706,8 @@ public final class YoutubeDashManifestCreatorsUtils {
             throws CreationException {
         try {
             final Map<String, List<String>> headers = new HashMap<>();
-            addClientInfoHeaders(headers);
+            headers.put("Origin", Collections.singletonList("https://www.youtube.com"));
+            headers.put("Referer", Collections.singletonList("https://www.youtube.com"));
 
             String responseMimeType = "";
 
