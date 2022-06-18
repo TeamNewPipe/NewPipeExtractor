@@ -57,9 +57,11 @@ public class YoutubeProgressiveDashManifestCreator extends AbstractYoutubeDashMa
     protected void generateBaseUrlElement(@Nonnull final String baseUrl)
             throws DashManifestCreationException {
         try {
-            final Element representationElement = getFirstElementByName(REPRESENTATION);
+            final Element baseURLElement = createElement(BASE_URL);
 
-            appendNewAttrWithValue(representationElement, BASE_URL, baseUrl);
+            baseURLElement.setTextContent(baseUrl);
+
+            getFirstElementByName(REPRESENTATION).appendChild(baseURLElement);
         } catch (final DOMException e) {
             throw DashManifestCreationException.couldNotAddElement(BASE_URL, e);
         }

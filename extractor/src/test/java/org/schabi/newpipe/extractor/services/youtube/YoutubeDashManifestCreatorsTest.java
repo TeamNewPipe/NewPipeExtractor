@@ -33,9 +33,12 @@ import org.schabi.newpipe.extractor.services.youtube.dashmanifestcreator.Youtube
 import org.schabi.newpipe.extractor.services.youtube.extractors.YoutubeStreamExtractor;
 import org.schabi.newpipe.extractor.streamdata.delivery.DASHManifestDeliveryData;
 import org.schabi.newpipe.extractor.streamdata.delivery.dashmanifestcreator.DashManifestCreator;
+import org.schabi.newpipe.extractor.streamdata.stream.AudioStream;
 import org.schabi.newpipe.extractor.streamdata.stream.BaseAudioStream;
 import org.schabi.newpipe.extractor.streamdata.stream.Stream;
+import org.schabi.newpipe.extractor.streamdata.stream.VideoAudioStream;
 import org.schabi.newpipe.extractor.streamdata.stream.VideoStream;
+import org.schabi.newpipe.extractor.streamdata.stream.quality.VideoQualityData;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
@@ -45,7 +48,10 @@ import java.io.StringReader;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
 import javax.annotation.Nonnull;
@@ -84,8 +90,8 @@ import javax.xml.parsers.DocumentBuilderFactory;
  */
 class YoutubeDashManifestCreatorsTest {
     // Setting a higher number may let Google video servers return 403s
-    private static final int MAX_STREAMS_TO_TEST_PER_METHOD = 3;
-    private static final String url = "https://www.youtube.com/watch?v=DJ8GQUNUXGM";
+    private static final int MAX_STREAMS_TO_TEST_PER_METHOD = 5;
+    private static final String URL = "https://www.youtube.com/watch?v=DJ8GQUNUXGM";
 
     private static final String RESOURCE_PATH =
             DownloaderFactory.RESOURCE_PATH + "services/youtube/extractor/dashmanifest/";
@@ -97,28 +103,38 @@ class YoutubeDashManifestCreatorsTest {
         YoutubeTestsUtils.ensureStateless();
         NewPipe.init(DownloaderFactory.getDownloader(RESOURCE_PATH));
 
-        extractor = (YoutubeStreamExtractor) YouTube.getStreamExtractor(url);
+        extractor = (YoutubeStreamExtractor) YouTube.getStreamExtractor(URL);
         extractor.fetchPage();
     }
 
     @Test
     void testVideoOnlyStreams() throws ExtractionException {
-        checkStreams(extractor.getVideoOnlyStreams());
+        final List<VideoStream> videoStreams = getDashStreams(extractor.getVideoOnlyStreams());
+        assertTrue(videoStreams.size() > 0);
+        checkDashStreams(videoStreams);
     }
 
     @Test
     void testVideoStreams() throws ExtractionException {
-        checkStreams(extractor.getVideoStreams());
+        List<VideoAudioStream> videoAudioStreams = getDashStreams(extractor.getVideoStreams());
+        assertEquals(0, videoAudioStreams.size(), "There should be no dash streams for video-audio streams");
     }
 
     @Test
     void testAudioStreams() throws ExtractionException {
-        checkStreams(extractor.getAudioStreams());
+        final List<AudioStream> audioStreams = getDashStreams(extractor.getAudioStreams());
+        assertTrue(audioStreams.size() > 0);
+        checkDashStreams(audioStreams);
     }
 
-    private <S extends Stream<?>> void checkStreams(final Collection<S> streams) {
-        assertAll(streams.stream()
+    private <S extends Stream<?>> List<S> getDashStreams(final List<S> streams) {
+        return streams.stream()
                 .filter(s -> s.deliveryData() instanceof DASHManifestDeliveryData)
+                .collect(Collectors.toList());
+    }
+
+    private <S extends Stream<?>> void checkDashStreams(final Collection<S> streams) {
+        assertAll(streams.stream()
                 .limit(MAX_STREAMS_TO_TEST_PER_METHOD)
                 .map(s ->
                         () -> checkManifest(s,
