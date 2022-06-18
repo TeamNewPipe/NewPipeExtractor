@@ -112,7 +112,7 @@ public abstract class Downloader {
      * @param headers    a list of headers that will be used in the request.
      *                   Any default headers <b>should</b> be overridden by these.
      * @param dataToSend byte array that will be sent when doing the request.
-     * @return the result of the GET request
+     * @return the result of the POST request
      */
     public Response post(final String url,
                          @Nullable final Map<String, List<String>> headers,
@@ -131,7 +131,7 @@ public abstract class Downloader {
      *                     Any default headers <b>should</b> be overridden by these.
      * @param dataToSend   byte array that will be sent when doing the request.
      * @param localization the source of the value of the {@code Accept-Language} header
-     * @return the result of the GET request
+     * @return the result of the POST request
      */
     public Response post(final String url,
                          @Nullable final Map<String, List<String>> headers,
