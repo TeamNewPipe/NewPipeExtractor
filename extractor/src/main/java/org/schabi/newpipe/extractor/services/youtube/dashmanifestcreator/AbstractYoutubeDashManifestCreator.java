@@ -381,14 +381,16 @@ public abstract class AbstractYoutubeDashManifestCreator implements DashManifest
                     "schemeIdUri",
                     "urn:mpeg:dash:23003:3:audio_channel_configuration:2011");
 
-            final Integer audioChannels = itagInfo.getAudioChannels();
+            Integer audioChannels = itagInfo.getAudioChannels();
             if (audioChannels != null && audioChannels <= 0) {
-                throw new DashManifestCreationException(
-                        "Invalid value for 'audioChannels'=" + audioChannels);
+                // Encountered invalid number of audio channels
+                // Most audio streams have 2 audio channels, so use this value as fallback
+                // see also https://github.com/TeamNewPipe/NewPipeExtractor/pull/859
+                audioChannels = 2;
             }
 
             appendNewAttrWithValue(
-                    audioChannelConfigElement, "value", itagInfo.getAudioChannels());
+                    audioChannelConfigElement, "value", audioChannels);
 
             getFirstElementByName(REPRESENTATION).appendChild(audioChannelConfigElement);
         } catch (final DOMException e) {
