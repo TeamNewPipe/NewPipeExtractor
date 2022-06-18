@@ -402,7 +402,7 @@ public class PeertubeStreamExtractor extends StreamExtractor {
                             return new SimpleSubtitleStreamImpl(
                                     // TODO: Check for null
                                     new SubtitleFormatRegistry()
-                                            .getFromSuffix(
+                                            .getFromSuffixOrThrow(
                                                     url.substring(url.lastIndexOf(".") + 1)),
                                     new SimpleProgressiveHTTPDeliveryDataImpl(url),
                                     false,
@@ -497,7 +497,7 @@ public class PeertubeStreamExtractor extends StreamExtractor {
                                 playlistUrl,
                                 (s, dd) -> new SimpleAudioStreamImpl(
                                         new AudioFormatRegistry()
-                                                .getFromSuffix(getExtensionFromStream(s)),
+                                                .getFromSuffixOrThrow(getExtensionFromStream(s)),
                                         dd
                                 )
                         );
@@ -510,7 +510,7 @@ public class PeertubeStreamExtractor extends StreamExtractor {
                                 playlistUrl,
                                 (s, dd) -> new SimpleVideoAudioStreamImpl(
                                         new VideoAudioFormatRegistry()
-                                                .getFromSuffix(getExtensionFromStream(s)),
+                                                .getFromSuffixOrThrow(getExtensionFromStream(s)),
                                         dd,
                                         VideoQualityData.fromHeightFps(
                                                 resJson.getInt("id", VideoQualityData.UNKNOWN),

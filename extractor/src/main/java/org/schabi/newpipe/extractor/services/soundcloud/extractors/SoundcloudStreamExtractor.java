@@ -324,7 +324,7 @@ public class SoundcloudStreamExtractor extends StreamExtractor {
             }
 
             return Optional.of(new SimpleAudioStreamImpl(
-                    new AudioFormatRegistry().getFromSuffix(fileType),
+                    new AudioFormatRegistry().getFromSuffixOrThrow(fileType),
                     new SimpleProgressiveHTTPDeliveryDataImpl(downloadUrl)
             ));
         } catch (final Exception ignored) {

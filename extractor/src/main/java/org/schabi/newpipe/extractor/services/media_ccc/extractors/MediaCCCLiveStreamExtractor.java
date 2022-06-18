@@ -174,7 +174,7 @@ public class MediaCCCLiveStreamExtractor extends StreamExtractor {
 
                     return new SimpleAudioStreamImpl(
                             // TODO: This looks wrong
-                            new AudioFormatRegistry().getFromSuffix(dto.getUrlKey()),
+                            new AudioFormatRegistry().getFromSuffixOrThrow(dto.getUrlKey()),
                             deliveryData
                     );
                 })
@@ -199,7 +199,7 @@ public class MediaCCCLiveStreamExtractor extends StreamExtractor {
 
                     return new SimpleVideoAudioStreamImpl(
                             // TODO: This looks wrong
-                            new VideoAudioFormatRegistry().getFromSuffix(dto.getUrlKey()),
+                            new VideoAudioFormatRegistry().getFromSuffixOrThrow(dto.getUrlKey()),
                             deliveryData,
                             VideoQualityData.fromHeightWidth(
                                     /*height=*/videoSize.getInt(1, VideoQualityData.UNKNOWN),

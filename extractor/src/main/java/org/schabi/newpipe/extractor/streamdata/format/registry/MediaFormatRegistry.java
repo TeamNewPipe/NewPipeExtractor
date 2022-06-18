@@ -57,23 +57,29 @@ public abstract class MediaFormatRegistry<F extends AbstractMediaFormat> {
     /**
      * Return the MediaFormat with the supplied mime type
      *
-     * @return MediaFormat associated with this mime type,
-     * or null if none match it.
+     * @return MediaFormat associated with this mime type
+     * @throws IllegalStateException if there is no matching MediaFormat
      */
-    @Nullable
-    public F getFromMimeType(final String mimeType) {
+    @Nonnull
+    public F getFromMimeTypeOrThrow(final String mimeType) {
         return Arrays.stream(values())
                 .filter(mediaFormat -> mediaFormat.mimeType().equals(mimeType))
                 .findFirst()
-                .orElse(null);
+                .orElseThrow(() -> new IllegalStateException("No matching MediaFormat"));
     }
 
-    @Nullable
-    public F getFromSuffix(final String suffix) {
+    /**
+     * Return the MediaFormat with the supplied suffix
+     *
+     * @return MediaFormat associated with this suffix
+     * @throws IllegalStateException if there is no matching MediaFormat
+     */
+    @Nonnull
+    public F getFromSuffixOrThrow(final String suffix) {
         return Arrays.stream(values())
                 .filter(mediaFormat -> mediaFormat.suffix().equals(suffix))
                 .findFirst()
-                .orElse(null);
+                .orElseThrow(() -> new IllegalStateException("No matching MediaFormat"));
     }
 
 }

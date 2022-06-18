@@ -98,7 +98,7 @@ public class MediaCCCStreamExtractor extends StreamExtractor {
     public List<AudioStream> getAudioStreams() throws ExtractionException {
         return getRecordingsByMimeType("audio")
                 .map(o -> new SimpleAudioStreamImpl(
-                        new AudioFormatRegistry().getFromMimeType(o.getString("mime_type")),
+                        new AudioFormatRegistry().getFromMimeTypeOrThrow(o.getString("mime_type")),
                         new SimpleProgressiveHTTPDeliveryDataImpl(o.getString("recording_url"))
                 ))
                 .collect(Collectors.toList());
@@ -108,7 +108,8 @@ public class MediaCCCStreamExtractor extends StreamExtractor {
     public List<VideoAudioStream> getVideoStreams() throws ExtractionException {
         return getRecordingsByMimeType("video")
                 .map(o -> new SimpleVideoAudioStreamImpl(
-                        new VideoAudioFormatRegistry().getFromMimeType(o.getString("mime_type")),
+                        new VideoAudioFormatRegistry()
+                                .getFromMimeTypeOrThrow(o.getString("mime_type")),
                         new SimpleProgressiveHTTPDeliveryDataImpl(o.getString("recording_url")),
                         VideoQualityData.fromHeightWidth(
                                 o.getInt("height", VideoQualityData.UNKNOWN),
