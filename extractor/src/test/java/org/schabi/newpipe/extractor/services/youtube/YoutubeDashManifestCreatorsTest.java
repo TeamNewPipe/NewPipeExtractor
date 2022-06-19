@@ -25,7 +25,7 @@ import static org.schabi.newpipe.extractor.utils.Utils.isBlank;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.function.Executable;
-import org.schabi.newpipe.downloader.DownloaderFactory;
+import org.schabi.newpipe.downloader.DownloaderTestImpl;
 import org.schabi.newpipe.extractor.NewPipe;
 import org.schabi.newpipe.extractor.exceptions.ExtractionException;
 import org.schabi.newpipe.extractor.services.youtube.dashmanifestcreator.YoutubeOtfDashManifestCreator;
@@ -38,7 +38,6 @@ import org.schabi.newpipe.extractor.streamdata.stream.BaseAudioStream;
 import org.schabi.newpipe.extractor.streamdata.stream.Stream;
 import org.schabi.newpipe.extractor.streamdata.stream.VideoAudioStream;
 import org.schabi.newpipe.extractor.streamdata.stream.VideoStream;
-import org.schabi.newpipe.extractor.streamdata.stream.quality.VideoQualityData;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
@@ -48,9 +47,7 @@ import java.io.StringReader;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
-import java.util.LinkedHashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
@@ -93,15 +90,14 @@ class YoutubeDashManifestCreatorsTest {
     private static final int MAX_STREAMS_TO_TEST_PER_METHOD = 5;
     private static final String URL = "https://www.youtube.com/watch?v=DJ8GQUNUXGM";
 
-    private static final String RESOURCE_PATH =
-            DownloaderFactory.RESOURCE_PATH + "services/youtube/extractor/dashmanifest/";
-
     private static YoutubeStreamExtractor extractor;
 
     @BeforeAll
     public static void setUp() throws Exception {
         YoutubeTestsUtils.ensureStateless();
-        NewPipe.init(DownloaderFactory.getDownloader(RESOURCE_PATH));
+        // Has to be done with a real downloader otherwise because there are secondary requests when
+        // building a DASHManifest which require valid requests with a real IP
+        NewPipe.init(DownloaderTestImpl.getInstance());
 
         extractor = (YoutubeStreamExtractor) YouTube.getStreamExtractor(URL);
         extractor.fetchPage();
@@ -116,7 +112,7 @@ class YoutubeDashManifestCreatorsTest {
 
     @Test
     void testVideoStreams() throws ExtractionException {
-        List<VideoAudioStream> videoAudioStreams = getDashStreams(extractor.getVideoStreams());
+        final List<VideoAudioStream> videoAudioStreams = getDashStreams(extractor.getVideoStreams());
         assertEquals(0, videoAudioStreams.size(), "There should be no dash streams for video-audio streams");
     }
 
