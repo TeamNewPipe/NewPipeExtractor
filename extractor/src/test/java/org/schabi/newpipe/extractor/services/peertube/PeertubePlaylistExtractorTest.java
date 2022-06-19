@@ -43,7 +43,7 @@ public class PeertubePlaylistExtractorTest {
 
         @Test
         public void testGetUploaderAvatarUrl() throws ParsingException {
-            assertEquals("https://framatube.org/lazy-static/avatars/cd0f781d-0287-4be2-94f1-24cd732337b2.jpg", extractor.getUploaderAvatarUrl());
+            assertEquals("https://framatube.org/lazy-static/avatars/c6801ff9-cb49-42e6-b2db-3db623248115.jpg", extractor.getUploaderAvatarUrl());
         }
 
         @Test
@@ -68,7 +68,7 @@ public class PeertubePlaylistExtractorTest {
 
         @Test
         public void testGetSubChannelAvatarUrl() throws ParsingException {
-            assertEquals("https://framatube.org/lazy-static/avatars/f1dcd0e8-e651-42ed-ae81-bb3bd4aff2bc.png",
+            assertEquals("https://framatube.org/lazy-static/avatars/e801ccce-8694-4309-b0ab-e6f0e552ef77.png",
                     extractor.getSubChannelAvatarUrl());
         }
     }
