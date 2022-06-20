@@ -4,7 +4,6 @@ import org.schabi.newpipe.extractor.streamdata.delivery.DeliveryData;
 import org.schabi.newpipe.extractor.streamdata.format.MediaFormat;
 
 import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
 
 public interface Stream<M extends MediaFormat> {
 
@@ -18,8 +17,4 @@ public interface Stream<M extends MediaFormat> {
 
     @Nonnull
     DeliveryData deliveryData();
-
-
-    // TODO: May also have to check deliverydata
-    boolean equalsStream(@Nullable Stream other);
 }

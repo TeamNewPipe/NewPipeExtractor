@@ -1,7 +1,5 @@
 package org.schabi.newpipe.extractor.streamdata.stream;
 
-import javax.annotation.Nullable;
-
 public interface BaseAudioStream {
     int UNKNOWN_AVG_BITRATE = -1;
 
@@ -12,14 +10,5 @@ public interface BaseAudioStream {
      */
     default int averageBitrate() {
         return UNKNOWN_AVG_BITRATE;
-    }
-
-    default boolean equalsStream(@Nullable final Stream other) {
-        if (!(other instanceof BaseAudioStream)) {
-            return false;
-        }
-
-        final BaseAudioStream otherAudioStream = (BaseAudioStream) other;
-        return averageBitrate() == otherAudioStream.averageBitrate();
     }
 }
