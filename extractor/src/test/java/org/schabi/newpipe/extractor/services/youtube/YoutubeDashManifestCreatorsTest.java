@@ -170,7 +170,7 @@ class YoutubeDashManifestCreatorsTest {
         }
 
         final DashManifestCreator dashManifestCreator =
-                ((DASHManifestDeliveryData) stream.deliveryData()).getDashManifestCreator();
+                ((DASHManifestDeliveryData) stream.deliveryData()).dashManifestCreator();
         if (dashManifestCreator instanceof YoutubeOtfDashManifestCreator) {
             asserts.add(() -> assertSegmentTemplateElement(document));
             asserts.add(() -> assertSegmentTimelineAndSElements(document));

@@ -340,7 +340,7 @@ public abstract class DefaultStreamExtractorTest extends DefaultExtractorTest<St
         } else if (deliveryData instanceof DASHManifestDeliveryData) {
             final DASHManifestDeliveryData dashManifestDD =
                     (DASHManifestDeliveryData) deliveryData;
-            assertNotNull(dashManifestDD.getDashManifestCreator());
+            assertNotNull(dashManifestDD.dashManifestCreator());
         }
     }
 

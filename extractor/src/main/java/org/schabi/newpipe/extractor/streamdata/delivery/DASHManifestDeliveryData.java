@@ -6,7 +6,7 @@ import javax.annotation.Nonnull;
 
 public interface DASHManifestDeliveryData extends DASHDeliveryData {
     @Nonnull
-    DashManifestCreator getDashManifestCreator();
+    DashManifestCreator dashManifestCreator();
 
     String getCachedDashManifestAsString();
 }

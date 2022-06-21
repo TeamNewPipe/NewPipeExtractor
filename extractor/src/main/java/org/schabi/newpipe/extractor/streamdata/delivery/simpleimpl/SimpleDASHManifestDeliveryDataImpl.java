@@ -33,14 +33,14 @@ public class SimpleDASHManifestDeliveryDataImpl extends AbstractDeliveryDataImpl
 
     @Override
     @Nonnull
-    public DashManifestCreator getDashManifestCreator() {
+    public DashManifestCreator dashManifestCreator() {
         return dashManifestCreator;
     }
 
     @Override
     public String getCachedDashManifestAsString() {
         if (cachedDashManifest == null) {
-            cachedDashManifest = getDashManifestCreator().generateManifest();
+            cachedDashManifest = dashManifestCreator().generateManifest();
         }
         return cachedDashManifest;
     }
