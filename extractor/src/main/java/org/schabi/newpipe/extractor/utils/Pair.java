@@ -3,7 +3,7 @@ package org.schabi.newpipe.extractor.utils;
 import java.util.Objects;
 
 /**
- * class to create a pair of objects.
+ * Class to create a pair of objects.
  *
  *
  * <p>

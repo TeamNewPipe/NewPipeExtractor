@@ -2,7 +2,7 @@ package org.schabi.newpipe.extractor.streamdata.delivery.dashmanifestcreator;
 
 public final class DashManifestCreatorConstants {
     private DashManifestCreatorConstants() {
-        // No impl!
+        // No impl
     }
 
     // XML elements of DASH MPD manifests

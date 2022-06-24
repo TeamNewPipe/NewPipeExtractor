@@ -614,7 +614,8 @@ public class YoutubeStreamExtractor extends StreamExtractor {
 
     @Override
     public List<VideoAudioStream> getVideoStreams() throws ExtractionException {
-        return buildStrems(FORMATS,
+        return buildStrems(
+                FORMATS,
                 ItagFormatRegistry.VIDEO_AUDIO_FORMATS,
                 (itagInfo, deliveryData) -> new SimpleVideoAudioStreamImpl(
                         itagInfo.getItagFormat().mediaFormat(),
@@ -1249,6 +1250,19 @@ public class YoutubeStreamExtractor extends StreamExtractor {
         }
     }
 
+    /*
+     * Note: We build the manifests for YT ourself because the provided ones (according to AudricV)
+     * <ul>
+     * <li>aren't working https://github.com/google/ExoPlayer/issues/2422#issuecomment-283080031
+     * </li>
+     * <li>causes memory problems; TransactionTooLargeException: data parcel size 3174340</li>
+     * <li>are not always returned, only for videos with OTF streams, or on (ended or not)
+     * livestreams</li>
+     * <li>Instead of downloading a 10MB manifest when you can generate one which is 1 or 2MB
+     * large</li>
+     * <li>Also, this manifest isn't used at all by modern YouTube clients.</li>
+     * </ul>
+     */
     @Nonnull
     private <I extends ItagFormat<?>> DeliveryData buildDeliveryData(final ItagInfo<I> itagInfo) {
         final ItagFormatDeliveryData iDeliveryData = itagInfo.getItagFormat().deliveryData();

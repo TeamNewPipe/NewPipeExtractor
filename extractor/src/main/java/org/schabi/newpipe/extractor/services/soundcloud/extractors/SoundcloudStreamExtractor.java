@@ -260,7 +260,7 @@ public class SoundcloudStreamExtractor extends StreamExtractor {
                         return null;
                     }
 
-                    return (AudioStream) new SimpleAudioStreamImpl(
+                    return new SimpleAudioStreamImpl(
                             mediaFormat,
                             protocol.equals("hls")
                                     ? new SimpleHLSDeliveryDataImpl(mediaUrl)

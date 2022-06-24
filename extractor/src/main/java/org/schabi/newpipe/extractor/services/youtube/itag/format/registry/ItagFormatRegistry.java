@@ -21,7 +21,15 @@ import org.schabi.newpipe.extractor.streamdata.format.registry.AudioFormatRegist
 import java.util.stream.Stream;
 
 // CHECKSTYLE:OFF - Link is too long
-// https://github.com/ytdl-org/youtube-dl/blob/9aa8e5340f3d5ece372b983f8e399277ca1f1fe4/youtube_dl/extractor/youtube.py#L1195
+/**
+ * A registry that contains all supported YouTube itags.
+ * <p>
+ * For additional information you may also check:
+ * <ul>
+ *     <li>https://github.com/ytdl-org/youtube-dl/blob/9aa8e5340f3d5ece372b983f8e399277ca1f1fe4/youtube_dl/extractor/youtube.py#L1195</li>
+ *     <li>https://gist.github.com/AgentOak/34d47c65b1d28829bb17c24c04a0096f</li>
+ * </ul>
+ */
 // CHECKSTYLE:ON
 public final class ItagFormatRegistry {
 

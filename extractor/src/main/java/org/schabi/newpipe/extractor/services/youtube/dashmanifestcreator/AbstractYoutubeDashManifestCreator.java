@@ -54,7 +54,18 @@ import javax.xml.transform.TransformerFactory;
 import javax.xml.transform.dom.DOMSource;
 import javax.xml.transform.stream.StreamResult;
 
-// TODO: Doc
+/**
+ * Abstract class for YouTube DASH manifest creation.
+ *
+ * <p>
+ * This class includes common methods of manifest creators and useful constants.
+ * </p>
+ *
+ * <p>
+ * Generation of DASH documents and their conversion as a string is done using external classes
+ * from {@link org.w3c.dom} and {@link javax.xml} packages.
+ * </p>
+ */
 public abstract class AbstractYoutubeDashManifestCreator implements DashManifestCreator {
 
     /**

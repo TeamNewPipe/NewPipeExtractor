@@ -36,13 +36,6 @@ public class SimpleVideoAudioStreamImpl extends AbstractStreamImpl<VideoAudioMed
         this(mediaFormat, deliveryData, videoQualityData, UNKNOWN_AVG_BITRATE);
     }
 
-    public SimpleVideoAudioStreamImpl(
-            @Nonnull final VideoAudioMediaFormat mediaFormat,
-            @Nonnull final DeliveryData deliveryData
-    ) {
-        this(mediaFormat, deliveryData, VideoQualityData.fromUnknown());
-    }
-
     @Nonnull
     @Override
     public VideoQualityData videoQualityData() {

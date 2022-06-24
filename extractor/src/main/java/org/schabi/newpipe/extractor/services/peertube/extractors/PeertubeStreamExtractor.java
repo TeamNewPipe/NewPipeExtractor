@@ -400,7 +400,6 @@ public class PeertubeStreamExtractor extends StreamExtractor {
                                     baseUrl + JsonUtils.getString(caption, "captionPath");
 
                             return new SimpleSubtitleStreamImpl(
-                                    // TODO: Check for null
                                     new SubtitleFormatRegistry()
                                             .getFromSuffixOrThrow(
                                                     url.substring(url.lastIndexOf(".") + 1)),

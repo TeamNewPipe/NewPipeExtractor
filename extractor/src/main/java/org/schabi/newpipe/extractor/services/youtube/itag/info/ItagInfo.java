@@ -15,7 +15,6 @@ public class ItagInfo<I extends ItagFormat<?>> {
     @Nonnull
     private final I itagFormat;
 
-    // TODO: Maybe generate the streamUrl on-demand and not always instantly?
     @Nonnull
     private final String streamUrl;
 
