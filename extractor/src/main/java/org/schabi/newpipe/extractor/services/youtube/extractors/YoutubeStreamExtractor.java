@@ -847,7 +847,8 @@ public class YoutubeStreamExtractor extends StreamExtractor {
                 .getBytes(StandardCharsets.UTF_8);
         nextResponse = getJsonPostResponse(NEXT, body, localization);
 
-        if ((!isAgeRestricted && !isLive && !isPostLive)
+        // this will only be run for post-live and normal streams
+        if ((!isAgeRestricted && !isLive)
                 || isAndroidClientFetchForced) {
             try {
                 fetchAndroidMobileJsonPlayer(contentCountry, localization, videoId);
