@@ -27,6 +27,7 @@ import org.schabi.newpipe.extractor.streamdata.stream.simpleimpl.SimpleVideoAudi
 
 import java.io.IOException;
 import java.util.List;
+import java.util.Objects;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -162,22 +163,16 @@ public class MediaCCCLiveStreamExtractor extends StreamExtractor {
     public List<AudioStream> getAudioStreams() throws IOException, ExtractionException {
         return getStreamDTOs("audio")
                 .map(dto -> {
-                    final String url = dto.getUrlValue().getString(URL);
-                    final DeliveryData deliveryData;
-                    if ("hls".equals(dto.getUrlKey())) {
-                        deliveryData = new SimpleHLSDeliveryDataImpl(url);
-                    } else if ("dash".equals(dto.getUrlKey())) {
-                        deliveryData = new SimpleDASHUrlDeliveryDataImpl(url);
-                    } else {
-                        deliveryData = new SimpleProgressiveHTTPDeliveryDataImpl(url);
+                    try {
+                        return new SimpleAudioStreamImpl(
+                                new AudioFormatRegistry().getFromSuffixOrThrow(dto.getUrlKey()),
+                                buildDeliveryData(dto)
+                        );
+                    } catch (final Exception ignored) {
+                        return null;
                     }
-
-                    return new SimpleAudioStreamImpl(
-                            // TODO: This looks wrong
-                            new AudioFormatRegistry().getFromSuffixOrThrow(dto.getUrlKey()),
-                            deliveryData
-                    );
                 })
+                .filter(Objects::nonNull)
                 .collect(Collectors.toList());
     }
 
@@ -185,28 +180,35 @@ public class MediaCCCLiveStreamExtractor extends StreamExtractor {
     public List<VideoAudioStream> getVideoStreams() throws IOException, ExtractionException {
         return getStreamDTOs("video")
                 .map(dto -> {
-                    final String url = dto.getUrlValue().getString(URL);
-                    final DeliveryData deliveryData;
-                    if ("hls".equals(dto.getUrlKey())) {
-                        deliveryData = new SimpleHLSDeliveryDataImpl(url);
-                    } else if ("dash".equals(dto.getUrlKey())) {
-                        deliveryData = new SimpleDASHUrlDeliveryDataImpl(url);
-                    } else {
-                        deliveryData = new SimpleProgressiveHTTPDeliveryDataImpl(url);
+                    try {
+                        final JsonArray videoSize =
+                                dto.getStreamJsonObj().getArray("videoSize");
+
+                        return new SimpleVideoAudioStreamImpl(
+                                // TODO: This looks wrong
+                                new VideoAudioFormatRegistry()
+                                        .getFromSuffixOrThrow(dto.getUrlKey()),
+                                buildDeliveryData(dto),
+                                VideoQualityData.fromHeightWidth(
+                                        videoSize.getInt(1, VideoQualityData.UNKNOWN),
+                                        videoSize.getInt(0, VideoQualityData.UNKNOWN))
+                        );
+                    } catch (final Exception ignored) {
+                        return null;
                     }
-
-                    final JsonArray videoSize = dto.getStreamJsonObj().getArray("videoSize");
-
-                    return new SimpleVideoAudioStreamImpl(
-                            // TODO: This looks wrong
-                            new VideoAudioFormatRegistry().getFromSuffixOrThrow(dto.getUrlKey()),
-                            deliveryData,
-                            VideoQualityData.fromHeightWidth(
-                                    /*height=*/videoSize.getInt(1, VideoQualityData.UNKNOWN),
-                                    /*width=*/videoSize.getInt(0, VideoQualityData.UNKNOWN))
-                    );
                 })
+                .filter(Objects::nonNull)
                 .collect(Collectors.toList());
+    }
+
+    private DeliveryData buildDeliveryData(final MediaCCCLiveStreamMapperDTO dto) {
+        final String url = dto.getUrlValue().getString(URL);
+        if ("hls".equals(dto.getUrlKey())) {
+            return new SimpleHLSDeliveryDataImpl(url);
+        } else if ("dash".equals(dto.getUrlKey())) {
+            return new SimpleDASHUrlDeliveryDataImpl(url);
+        }
+        return new SimpleProgressiveHTTPDeliveryDataImpl(url);
     }
 
     private Stream<MediaCCCLiveStreamMapperDTO> getStreamDTOs(@Nonnull final String streamType) {
