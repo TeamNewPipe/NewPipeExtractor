@@ -428,11 +428,6 @@ public class PeertubeStreamExtractor extends StreamExtractor {
         audioStreams = new ArrayList<>();
         videoStreams = new ArrayList<>();
 
-        if (isLive()) {
-            extractLiveVideoStreams();
-            return;
-        }
-
         // Progressive streams
         try {
             addStreamsFromArray(
@@ -452,28 +447,6 @@ public class PeertubeStreamExtractor extends StreamExtractor {
                             playlist.getString(PLAYLIST_URL)));
         } catch (final Exception e) {
             throw new ParsingException("Could not add HLS streams", e);
-        }
-    }
-
-    private void extractLiveVideoStreams() throws ParsingException {
-        try {
-            json.getArray(STREAMING_PLAYLISTS)
-                    .stream()
-                    .filter(JsonObject.class::isInstance)
-                    .map(JsonObject.class::cast)
-                    // TODO Check! This is the master playlist!
-                    .map(s -> new SimpleVideoAudioStreamImpl(
-                            VideoAudioFormatRegistry.MPEG_4,
-                            new SimpleHLSDeliveryDataImpl(s.getString(PLAYLIST_URL, "")))
-                    )
-                    // Don't use the containsSimilarStream method because it will always
-                    // return
-                    // false so if there are multiples HLS URLs returned, only the first
-                    // will be
-                    // extracted in this case.
-                    .forEachOrdered(videoStreams::add);
-        } catch (final Exception e) {
-            throw new ParsingException("Could not get video streams", e);
         }
     }
 
