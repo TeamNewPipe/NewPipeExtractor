@@ -823,11 +823,16 @@ public class YoutubeStreamExtractor extends StreamExtractor {
                 .getBytes(StandardCharsets.UTF_8);
         nextResponse = getJsonPostResponse(NEXT, body, localization);
 
-        if ((!isAgeRestricted && streamType == StreamType.VIDEO_STREAM)
+        // streamType can only have LIVE_STREAM, POST_LIVE_STREAM and VIDEO_STREAM values (see
+        // setStreamType()), so this block will be run only for POST_LIVE_STREAM and VIDEO_STREAM
+        // values if fetching of the ANDROID client is not forced
+        if ((!isAgeRestricted && streamType != StreamType.LIVE_STREAM)
                 || isAndroidClientFetchForced) {
             try {
                 fetchAndroidMobileJsonPlayer(contentCountry, localization, videoId);
             } catch (final Exception ignored) {
+                // Ignore exceptions related to ANDROID client fetch or parsing, as it is not
+                // compulsory to play contents
             }
         }
 
@@ -836,6 +841,8 @@ public class YoutubeStreamExtractor extends StreamExtractor {
             try {
                 fetchIosMobileJsonPlayer(contentCountry, localization, videoId);
             } catch (final Exception ignored) {
+                // Ignore exceptions related to IOS client fetch or parsing, as it is not
+                // compulsory to play contents
             }
         }
     }
