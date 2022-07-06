@@ -162,16 +162,17 @@ public class YoutubeStreamExtractor extends StreamExtractor {
     @Override
     public String getName() throws ParsingException {
         assertPageFetched();
-        String title = null;
+        String title;
 
-        try {
-            title = getTextFromObject(getVideoPrimaryInfoRenderer().getObject("title"));
-        } catch (final ParsingException ignored) {
-            // Age-restricted videos cause a ParsingException here
-        }
+        // Try to get the video's original title, which is untranslated
+        title = playerResponse.getObject("videoDetails").getString("title");
 
         if (isNullOrEmpty(title)) {
-            title = playerResponse.getObject("videoDetails").getString("title");
+            try {
+                title = getTextFromObject(getVideoPrimaryInfoRenderer().getObject("title"));
+            } catch (final ParsingException ignored) {
+                // Age-restricted videos cause a ParsingException here
+            }
 
             if (isNullOrEmpty(title)) {
                 throw new ParsingException("Could not get name");
