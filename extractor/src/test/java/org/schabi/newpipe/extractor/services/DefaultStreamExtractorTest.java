@@ -270,7 +270,7 @@ public abstract class DefaultStreamExtractorTest extends DefaultExtractorTest<St
 
             for (final VideoStream stream : videoOnlyStreams) {
                 assertNotNull(stream.mediaFormat());
-                assertNotNull(stream.videoQualityData());
+                assertNotNull(stream.qualityData());
                 checkDeliveryData(stream.deliveryData());
             }
         } else {
@@ -289,7 +289,7 @@ public abstract class DefaultStreamExtractorTest extends DefaultExtractorTest<St
 
             for (final VideoAudioStream stream : videoAudioStreams) {
                 assertNotNull(stream.mediaFormat());
-                assertNotNull(stream.videoQualityData());
+                assertNotNull(stream.qualityData());
                 checkDeliveryData(stream.deliveryData());
             }
         } else {

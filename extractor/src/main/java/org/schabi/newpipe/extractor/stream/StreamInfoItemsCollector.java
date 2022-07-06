@@ -48,8 +48,8 @@ public class StreamInfoItemsCollector
                 getServiceId(),
                 extractor.getUrl(),
                 extractor.getName(),
-                extractor.isAudioOnly(),
-                extractor.isLive());
+                extractor.isLive(),
+                extractor.isAudioOnly());
 
         // optional information
         try {

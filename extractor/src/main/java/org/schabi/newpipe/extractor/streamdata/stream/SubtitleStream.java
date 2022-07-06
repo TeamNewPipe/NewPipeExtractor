@@ -39,5 +39,10 @@ public interface SubtitleStream extends Stream<SubtitleMediaFormat> {
      *
      * @return the {@link Locale locale} of the subtitles
      */
+    @Nonnull
     Locale locale();
+
+    default String getDisplayLanguageName() {
+        return locale().getDisplayName(locale());
+    }
 }

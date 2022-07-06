@@ -10,5 +10,5 @@ import javax.annotation.Nonnull;
  */
 public interface VideoStream extends Stream<VideoAudioMediaFormat> {
     @Nonnull
-    VideoQualityData videoQualityData();
+    VideoQualityData qualityData();
 }

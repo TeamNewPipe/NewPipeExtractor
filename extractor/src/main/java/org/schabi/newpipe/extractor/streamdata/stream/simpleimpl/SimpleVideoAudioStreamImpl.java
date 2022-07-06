@@ -38,7 +38,7 @@ public class SimpleVideoAudioStreamImpl extends AbstractStreamImpl<VideoAudioMed
 
     @Nonnull
     @Override
-    public VideoQualityData videoQualityData() {
+    public VideoQualityData qualityData() {
         return videoQualityData;
     }
 
