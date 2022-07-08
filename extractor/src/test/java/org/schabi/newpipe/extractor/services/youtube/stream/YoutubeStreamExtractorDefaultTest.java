@@ -407,14 +407,6 @@ public class YoutubeStreamExtractorDefaultTest {
         @Nullable @Override public String expectedTextualUploadDate() { return "2019-06-12"; }
         @Override public long expectedLikeCountAtLeast() { return 70000; }
         @Override public long expectedDislikeCountAtLeast() { return -1; }
-        @Override public List<MetaInfo> expectedMetaInfo() throws MalformedURLException {
-            return Collections.singletonList(new MetaInfo(
-                    EMPTY_STRING,
-                    new Description("Funk is a German public broadcast service.", Description.PLAIN_TEXT),
-                    Collections.singletonList(new URL("https://de.wikipedia.org/wiki/Funk_(Medienangebot)?wprov=yicw1")),
-                    Collections.singletonList("Wikipedia (German)")
-            ));
-        }
         @Override public boolean expectedUploaderVerified() { return true; }
         @Override public String expectedLicence() { return YOUTUBE_LICENCE; }
         @Override public String expectedCategory() { return "Education"; }

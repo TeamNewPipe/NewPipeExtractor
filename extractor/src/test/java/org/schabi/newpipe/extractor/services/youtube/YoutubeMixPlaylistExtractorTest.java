@@ -11,6 +11,7 @@ import static org.schabi.newpipe.extractor.services.youtube.YoutubeParsingHelper
 import com.grack.nanojson.JsonWriter;
 
 import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.schabi.newpipe.downloader.DownloaderFactory;
 import org.schabi.newpipe.extractor.ExtractorAsserts;
@@ -220,6 +221,7 @@ public class YoutubeMixPlaylistExtractorTest {
         }
     }
 
+    @Disabled("Video doesn't exist")
     public static class MyMix {
         private static final String VIDEO_ID = "_AzeUSL9lZc";
 
