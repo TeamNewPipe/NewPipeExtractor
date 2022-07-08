@@ -233,7 +233,7 @@ public final class YoutubeParsingHelper {
      * The three digits at the end can be random, but are required.
      * </p>
      */
-    private static final String CONSENT_COOKIE_VALUE = "PENDING+";
+    private static final String CONSENT_COOKIE_VALUE = "YES+";
 
     /**
      * YouTube {@code CONSENT} cookie.

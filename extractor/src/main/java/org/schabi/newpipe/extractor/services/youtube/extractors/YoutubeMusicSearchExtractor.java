@@ -142,46 +142,42 @@ public class YoutubeMusicSearchExtractor extends SearchExtractor {
     @Nonnull
     @Override
     public String getSearchSuggestion() throws ParsingException {
-        final JsonObject itemSectionRenderer = JsonUtils.getArray(JsonUtils.getArray(initialData,
-                "contents.tabbedSearchResultsRenderer.tabs").getObject(0),
-                "tabRenderer.content.sectionListRenderer.contents")
+        for (final Object obj : initialData
+                .getObject("contents")
+                .getObject("tabbedSearchResultsRenderer")
+                .getArray("tabs")
                 .getObject(0)
-                .getObject("itemSectionRenderer");
-        if (itemSectionRenderer.isEmpty()) {
-            return "";
+                .getObject("tabRenderer")
+                .getObject("content")
+                .getObject("sectionListRenderer")
+                .getArray("contents")) {
+            final JsonObject itemSectionRenderer =
+                    ((JsonObject) obj).getObject("itemSectionRenderer");
+
+            if (itemSectionRenderer.isEmpty()) {
+                continue;
+            }
+
+            final JsonObject didYouMeanRenderer = itemSectionRenderer.getArray("contents")
+                    .getObject(0).getObject("didYouMeanRenderer");
+            final JsonObject showingResultsForRenderer = itemSectionRenderer.getArray("contents")
+                    .getObject(0)
+                    .getObject("showingResultsForRenderer");
+
+            if (!didYouMeanRenderer.isEmpty()) {
+                return getTextFromObject(didYouMeanRenderer.getObject("correctedQuery"));
+            } else if (!showingResultsForRenderer.isEmpty()) {
+                return JsonUtils.getString(showingResultsForRenderer,
+                        "correctedQueryEndpoint.searchEndpoint.query");
+            }
         }
 
-        final JsonObject didYouMeanRenderer = itemSectionRenderer.getArray("contents")
-                .getObject(0).getObject("didYouMeanRenderer");
-        final JsonObject showingResultsForRenderer = itemSectionRenderer.getArray("contents")
-                .getObject(0)
-                .getObject("showingResultsForRenderer");
-
-        if (!didYouMeanRenderer.isEmpty()) {
-            return getTextFromObject(didYouMeanRenderer.getObject("correctedQuery"));
-        } else if (!showingResultsForRenderer.isEmpty()) {
-            return JsonUtils.getString(showingResultsForRenderer,
-                    "correctedQueryEndpoint.searchEndpoint.query");
-        } else {
-            return "";
-        }
+        return "";
     }
 
     @Override
     public boolean isCorrectedSearch() throws ParsingException {
-        final JsonObject itemSectionRenderer = JsonUtils.getArray(JsonUtils.getArray(initialData,
-                "contents.tabbedSearchResultsRenderer.tabs").getObject(0),
-                "tabRenderer.content.sectionListRenderer.contents")
-                .getObject(0)
-                .getObject("itemSectionRenderer");
-        if (itemSectionRenderer.isEmpty()) {
-            return false;
-        }
-
-        final JsonObject firstContent = itemSectionRenderer.getArray("contents").getObject(0);
-
-        return firstContent.has("didYouMeanRenderer")
-                || firstContent.has("showingResultsForRenderer");
+        return this.getSearchSuggestion() != "";
     }
 
     @Nonnull
