@@ -38,7 +38,6 @@ import org.schabi.newpipe.extractor.utils.JsonUtils;
 import java.io.IOException;
 import java.net.URL;
 import java.nio.charset.StandardCharsets;
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -92,10 +91,10 @@ public class YoutubeMixPlaylistExtractor extends PlaylistExtractor {
         final Map<String, List<String>> headers = new HashMap<>();
         // Cookie is required due to consent
         addYouTubeHeaders(headers);
-        headers.put("Content-Type", Collections.singletonList("application/json"));
 
-        final Response response = getDownloader().post(YOUTUBEI_V1_URL + "next?key=" + getKey()
-                + DISABLE_PRETTY_PRINT_PARAMETER, headers, body, localization);
+        final Response response = getDownloader().postWithContentTypeJson(
+                YOUTUBEI_V1_URL + "next?key=" + getKey() + DISABLE_PRETTY_PRINT_PARAMETER,
+                headers, body, localization);
 
         initialData = JsonUtils.toJsonObject(getValidJsonResponseBody(response));
         playlistData = initialData
@@ -226,10 +225,9 @@ public class YoutubeMixPlaylistExtractor extends PlaylistExtractor {
         final Map<String, List<String>> headers = new HashMap<>();
         // Cookie is required due to consent
         addYouTubeHeaders(headers);
-        headers.put("Content-Type", Collections.singletonList("application/json"));
 
-        final Response response = getDownloader().post(page.getUrl(), headers, page.getBody(),
-                getExtractorLocalization());
+        final Response response = getDownloader().postWithContentTypeJson(page.getUrl(), headers,
+                page.getBody(), getExtractorLocalization());
         final JsonObject ajaxJson = JsonUtils.toJsonObject(getValidJsonResponseBody(response));
         final JsonObject playlistJson = ajaxJson.getObject("contents")
                 .getObject("twoColumnWatchNextResults").getObject("playlist").getObject("playlist");

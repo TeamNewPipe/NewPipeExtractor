@@ -42,10 +42,9 @@ public class BandcampFeaturedExtractor extends KioskExtractor<PlaylistInfoItem> 
     public void onFetchPage(@Nonnull final Downloader downloader)
             throws IOException, ExtractionException {
         try {
-            json = JsonParser.object().from(getDownloader().post(
+            json = JsonParser.object().from(getDownloader().postWithContentTypeJson(
                             FEATURED_API_URL,
-                            Collections.singletonMap("Content-Type",
-                                    Collections.singletonList("application/json")),
+                            Collections.emptyMap(),
                             "{\"platform\":\"\",\"version\":0}".getBytes(StandardCharsets.UTF_8))
                     .responseBody());
         } catch (final JsonParserException e) {

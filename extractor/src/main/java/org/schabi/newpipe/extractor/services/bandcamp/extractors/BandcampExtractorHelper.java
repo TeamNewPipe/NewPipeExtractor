@@ -61,10 +61,9 @@ public final class BandcampExtractorHelper {
      */
     public static JsonObject getArtistDetails(final String id) throws ParsingException {
         try {
-            return JsonParser.object().from(NewPipe.getDownloader().post(
+            return JsonParser.object().from(NewPipe.getDownloader().postWithContentTypeJson(
                     BASE_API_URL + "/mobile/22/band_details",
-                    Collections.singletonMap("Content-Type",
-                            Collections.singletonList("application/json")),
+                    Collections.emptyMap(),
                     JsonWriter.string()
                             .object()
                             .value("band_id", id)

@@ -115,8 +115,8 @@ public class YoutubeMusicSearchExtractor extends SearchExtractor {
             .end().done().getBytes(StandardCharsets.UTF_8);
         // @formatter:on
 
-        final String responseBody = getValidJsonResponseBody(getDownloader().post(url,
-                getYoutubeMusicHeaders(), json));
+        final String responseBody = getValidJsonResponseBody(
+                getDownloader().postWithContentTypeJson(url, getYoutubeMusicHeaders(), json));
 
         try {
             initialData = JsonParser.object().from(responseBody);
@@ -243,8 +243,9 @@ public class YoutubeMusicSearchExtractor extends SearchExtractor {
             .end().done().getBytes(StandardCharsets.UTF_8);
         // @formatter:on
 
-        final String responseBody = getValidJsonResponseBody(getDownloader().post(page.getUrl(),
-                getYoutubeMusicHeaders(), json));
+        final String responseBody = getValidJsonResponseBody(
+                getDownloader().postWithContentTypeJson(
+                        page.getUrl(), getYoutubeMusicHeaders(), json));
 
         final JsonObject ajaxJson;
         try {
