@@ -1,5 +1,6 @@
 package org.schabi.newpipe.extractor.comments;
 
+import org.schabi.newpipe.extractor.Image;
 import org.schabi.newpipe.extractor.InfoItemExtractor;
 import org.schabi.newpipe.extractor.Page;
 import org.schabi.newpipe.extractor.exceptions.ParsingException;
@@ -8,7 +9,9 @@ import org.schabi.newpipe.extractor.services.youtube.extractors.YoutubeCommentsI
 import org.schabi.newpipe.extractor.stream.Description;
 import org.schabi.newpipe.extractor.stream.StreamExtractor;
 
+import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
+import java.util.List;
 
 public interface CommentsInfoItemExtractor extends InfoItemExtractor {
 
@@ -77,8 +80,9 @@ public interface CommentsInfoItemExtractor extends InfoItemExtractor {
         return "";
     }
 
-    default String getUploaderAvatarUrl() throws ParsingException {
-        return "";
+    @Nonnull
+    default List<Image> getUploaderAvatars() throws ParsingException {
+        return List.of();
     }
 
     /**

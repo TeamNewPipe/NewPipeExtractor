@@ -1,39 +1,41 @@
-package org.schabi.newpipe.extractor.stream;
-
-import org.schabi.newpipe.extractor.InfoItemExtractor;
-import org.schabi.newpipe.extractor.exceptions.ParsingException;
-import org.schabi.newpipe.extractor.localization.DateWrapper;
-
-import javax.annotation.Nullable;
-
 /*
  * Created by Christian Schabesberger on 28.02.16.
  *
  * Copyright (C) Christian Schabesberger 2016 <chris.schabesberger@mailbox.org>
- * StreamInfoItemExtractor.java is part of NewPipe.
+ * StreamInfoItemExtractor.java is part of NewPipe Extractor.
  *
- * NewPipe is free software: you can redistribute it and/or modify
+ * NewPipe Extractor is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
  *
- * NewPipe is distributed in the hope that it will be useful,
+ * NewPipe Extractor is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Public License for more details.
  *
  * You should have received a copy of the GNU General Public License
- * along with NewPipe.  If not, see <http://www.gnu.org/licenses/>.
+ * along with NewPipe Extractor.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-public interface StreamInfoItemExtractor extends InfoItemExtractor {
+package org.schabi.newpipe.extractor.stream;
 
+import org.schabi.newpipe.extractor.Image;
+import org.schabi.newpipe.extractor.InfoItemExtractor;
+import org.schabi.newpipe.extractor.exceptions.ParsingException;
+import org.schabi.newpipe.extractor.localization.DateWrapper;
+
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
+import java.util.List;
+
+public interface StreamInfoItemExtractor extends InfoItemExtractor {
 
     /**
      * Get the stream type
      *
      * @return the stream type
-     * @throws ParsingException thrown if there is an error in the extraction
+     * @throws ParsingException if there is an error in the extraction
      */
     StreamType getStreamType() throws ParsingException;
 
@@ -41,7 +43,7 @@ public interface StreamInfoItemExtractor extends InfoItemExtractor {
      * Check if the stream is an ad.
      *
      * @return {@code true} if the stream is an ad.
-     * @throws ParsingException thrown if there is an error in the extraction
+     * @throws ParsingException if there is an error in the extraction
      */
     boolean isAd() throws ParsingException;
 
@@ -49,7 +51,7 @@ public interface StreamInfoItemExtractor extends InfoItemExtractor {
      * Get the stream duration in seconds
      *
      * @return the stream duration in seconds
-     * @throws ParsingException thrown if there is an error in the extraction
+     * @throws ParsingException if there is an error in the extraction
      */
     long getDuration() throws ParsingException;
 
@@ -57,7 +59,7 @@ public interface StreamInfoItemExtractor extends InfoItemExtractor {
      * Parses the number of views
      *
      * @return the number of views or -1 for live streams
-     * @throws ParsingException thrown if there is an error in the extraction
+     * @throws ParsingException if there is an error in the extraction
      */
     long getViewCount() throws ParsingException;
 
@@ -65,27 +67,29 @@ public interface StreamInfoItemExtractor extends InfoItemExtractor {
      * Get the uploader name
      *
      * @return the uploader name
-     * @throws ParsingException if parsing fails
+     * @throws ParsingException if there is an error in the extraction
      */
     String getUploaderName() throws ParsingException;
 
     String getUploaderUrl() throws ParsingException;
 
     /**
-     * Get the uploader's avatar
+     * Get the uploader avatars.
      *
-     * @return The uploader's avatar url or {@code null} if not provided by the service.
+     * @return the uploader avatars or an empty list if not provided by the service
      * @throws ParsingException if there is an error in the extraction
      */
-    @Nullable
-    String getUploaderAvatarUrl() throws ParsingException;
+    @Nonnull
+    default List<Image> getUploaderAvatars() throws ParsingException {
+        return List.of();
+    }
 
     /**
      * Whether the uploader has been verified by the service's provider.
      * If there is no verification implemented, return <code>false</code>.
      *
      * @return whether the uploader has been verified by the service's provider
-     * @throws ParsingException
+     * @throws ParsingException if there is an error in the extraction
      */
     boolean isUploaderVerified() throws ParsingException;
 
@@ -109,8 +113,8 @@ public interface StreamInfoItemExtractor extends InfoItemExtractor {
      * </p>
      *
      * @return The date and time (can be approximated) this item was uploaded or {@code null}.
-     * @throws ParsingException if there is an error in the extraction
-     *                          or the extracted date couldn't be parsed.
+     * @throws ParsingException if there is an error in the extraction or the extracted date
+     * couldn't be parsed
      * @see #getTextualUploadDate()
      */
     @Nullable
@@ -137,6 +141,7 @@ public interface StreamInfoItemExtractor extends InfoItemExtractor {
      * </p>
      *
      * @return whether the stream is a short-form content
+     * @throws ParsingException if there is an error in the extraction
      */
     default boolean isShortFormContent() throws ParsingException {
         return false;
