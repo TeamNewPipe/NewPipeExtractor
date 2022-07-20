@@ -1,25 +1,26 @@
-package org.schabi.newpipe.extractor.stream;
-
 /*
  * Created by Christian Schabesberger on 10.08.18.
  *
  * Copyright (C) Christian Schabesberger 2016 <chris.schabesberger@mailbox.org>
- * StreamExtractor.java is part of NewPipe.
+ * StreamExtractor.java is part of NewPipe Extractor.
  *
- * NewPipe is free software: you can redistribute it and/or modify
+ * NewPipe Extractor is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
  *
- * NewPipe is distributed in the hope that it will be useful,
+ * NewPipe Extractor is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Public License for more details.
  *
  * You should have received a copy of the GNU General Public License
- * along with NewPipe.  If not, see <http://www.gnu.org/licenses/>.
+ * along with NewPipe Extractor.  If not, see <https://www.gnu.org/licenses/>.
  */
 
+package org.schabi.newpipe.extractor.stream;
+
+import org.schabi.newpipe.extractor.Image;
 import org.schabi.newpipe.extractor.InfoItem;
 import org.schabi.newpipe.extractor.InfoItemsCollector;
 import org.schabi.newpipe.extractor.InfoItemExtractor;
@@ -87,13 +88,12 @@ public abstract class StreamExtractor extends Extractor {
     }
 
     /**
-     * This will return the url to the thumbnail of the stream. Try to return the medium resolution
-     * here.
+     * This will return the thumbnails of the stream.
      *
-     * @return The url of the thumbnail.
+     * @return the thumbnails of the stream
      */
     @Nonnull
-    public abstract String getThumbnailUrl() throws ParsingException;
+    public abstract List<Image> getThumbnails() throws ParsingException;
 
     /**
      * This is the stream description.
@@ -208,14 +208,18 @@ public abstract class StreamExtractor extends Extractor {
     }
 
     /**
-     * The url to the image file/profile picture/avatar of the creator/uploader of the stream.
-     * If the url is not available you can return an empty String.
+     * The image files/profile pictures/avatars of the creator/uploader of the stream.
      *
-     * @return The url of the image file of the uploader or an empty String
+     * <p>
+     * If they are not available in the stream on specific cases, you must return an empty list for
+     * these ones, like it is made by default.
+     * </p>
+     *
+     * @return the avatars of the sub-channel of the stream or an empty list (default)
      */
     @Nonnull
-    public String getUploaderAvatarUrl() throws ParsingException {
-        return "";
+    public List<Image> getUploaderAvatars() throws ParsingException {
+        return List.of();
     }
 
     /**
@@ -243,14 +247,23 @@ public abstract class StreamExtractor extends Extractor {
     }
 
     /**
-     * The url to the image file/profile picture/avatar of the sub-channel of the stream.
-     * If the url is not available you can return an empty String.
+     * The avatars of the sub-channel of the stream.
      *
-     * @return The url of the image file of the sub-channel or an empty String
+     * <p>
+     * If they are not available in the stream on specific cases, you must return an empty list for
+     * these ones, like it is made by default.
+     * </p>
+     *
+     * <p>
+     * If the concept of sub-channels doesn't apply to the stream's service, keep the default
+     * implementation.
+     * </p>
+     *
+     * @return the avatars of the sub-channel of the stream or an empty list (default)
      */
     @Nonnull
-    public String getSubChannelAvatarUrl() throws ParsingException {
-        return "";
+    public List<Image> getSubChannelAvatars() throws ParsingException {
+        return List.of();
     }
 
     /**
