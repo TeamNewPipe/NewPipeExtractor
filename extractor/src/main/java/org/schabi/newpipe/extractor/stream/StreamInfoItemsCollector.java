@@ -1,3 +1,23 @@
+/*
+ * Created by Christian Schabesberger on 28.02.16.
+ *
+ * Copyright (C) Christian Schabesberger 2016 <chris.schabesberger@mailbox.org>
+ * StreamInfoItemsCollector.java is part of NewPipe Extractor.
+ *
+ * NewPipe Extractor is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * NewPipe Extractor is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with NewPipe Extractor.  If not, see <https://www.gnu.org/licenses/>.
+ */
+
 package org.schabi.newpipe.extractor.stream;
 
 import org.schabi.newpipe.extractor.InfoItemsCollector;
@@ -5,26 +25,6 @@ import org.schabi.newpipe.extractor.exceptions.FoundAdException;
 import org.schabi.newpipe.extractor.exceptions.ParsingException;
 
 import java.util.Comparator;
-
-/*
- * Created by Christian Schabesberger on 28.02.16.
- *
- * Copyright (C) Christian Schabesberger 2016 <chris.schabesberger@mailbox.org>
- * StreamInfoItemsCollector.java is part of NewPipe.
- *
- * NewPipe is free software: you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation, either version 3 of the License, or
- * (at your option) any later version.
- *
- * NewPipe is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- *
- * You should have received a copy of the GNU General Public License
- * along with NewPipe.  If not, see <http://www.gnu.org/licenses/>.
- */
 
 public class StreamInfoItemsCollector
         extends InfoItemsCollector<StreamInfoItem, StreamInfoItemExtractor> {
@@ -74,7 +74,7 @@ public class StreamInfoItemsCollector
             addError(e);
         }
         try {
-            resultItem.setThumbnailUrl(extractor.getThumbnailUrl());
+            resultItem.setThumbnails(extractor.getThumbnails());
         } catch (final Exception e) {
             addError(e);
         }
@@ -84,7 +84,7 @@ public class StreamInfoItemsCollector
             addError(e);
         }
         try {
-            resultItem.setUploaderAvatarUrl(extractor.getUploaderAvatarUrl());
+            resultItem.setUploaderAvatars(extractor.getUploaderAvatars());
         } catch (final Exception e) {
             addError(e);
         }
@@ -111,8 +111,7 @@ public class StreamInfoItemsCollector
     public void commit(final StreamInfoItemExtractor extractor) {
         try {
             addItem(extract(extractor));
-        } catch (final FoundAdException ae) {
-            //System.out.println("AD_WARNING: " + ae.getMessage());
+        } catch (final FoundAdException ignored) {
         } catch (final Exception e) {
             addError(e);
         }
