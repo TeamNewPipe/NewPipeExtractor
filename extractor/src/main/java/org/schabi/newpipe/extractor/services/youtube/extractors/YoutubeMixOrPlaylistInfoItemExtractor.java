@@ -2,11 +2,12 @@ package org.schabi.newpipe.extractor.services.youtube.extractors;
 
 import static org.schabi.newpipe.extractor.services.youtube.YoutubeParsingHelper.extractPlaylistTypeFromPlaylistUrl;
 import static org.schabi.newpipe.extractor.services.youtube.YoutubeParsingHelper.getTextFromObject;
-import static org.schabi.newpipe.extractor.services.youtube.YoutubeParsingHelper.getThumbnailUrlFromInfoItem;
+import static org.schabi.newpipe.extractor.services.youtube.YoutubeParsingHelper.getThumbnailsFromInfoItem;
 import static org.schabi.newpipe.extractor.utils.Utils.isNullOrEmpty;
 
 import com.grack.nanojson.JsonObject;
 
+import org.schabi.newpipe.extractor.Image;
 import org.schabi.newpipe.extractor.ListExtractor;
 import org.schabi.newpipe.extractor.exceptions.ParsingException;
 import org.schabi.newpipe.extractor.playlist.PlaylistInfo;
@@ -14,6 +15,7 @@ import org.schabi.newpipe.extractor.playlist.PlaylistInfoItemExtractor;
 import org.schabi.newpipe.extractor.services.youtube.YoutubeParsingHelper;
 
 import javax.annotation.Nonnull;
+import java.util.List;
 
 public class YoutubeMixOrPlaylistInfoItemExtractor implements PlaylistInfoItemExtractor {
     private final JsonObject mixInfoItem;
@@ -40,9 +42,10 @@ public class YoutubeMixOrPlaylistInfoItemExtractor implements PlaylistInfoItemEx
         return url;
     }
 
+    @Nonnull
     @Override
-    public String getThumbnailUrl() throws ParsingException {
-        return getThumbnailUrlFromInfoItem(mixInfoItem);
+    public List<Image> getThumbnails() throws ParsingException {
+        return getThumbnailsFromInfoItem(mixInfoItem);
     }
 
     @Override
@@ -75,7 +78,7 @@ public class YoutubeMixOrPlaylistInfoItemExtractor implements PlaylistInfoItemEx
             return Integer.parseInt(countString);
         } catch (final NumberFormatException ignored) {
             // un-parsable integer: this is a mix with infinite items and "50+" as count string
-            // (though youtube music mixes do not necessarily have an infinite count of songs)
+            // (though YouTube Music mixes do not necessarily have an infinite count of songs)
             return ListExtractor.ITEM_COUNT_INFINITE;
         }
     }

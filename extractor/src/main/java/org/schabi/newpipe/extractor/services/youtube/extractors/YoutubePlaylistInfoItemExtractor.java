@@ -2,16 +2,20 @@ package org.schabi.newpipe.extractor.services.youtube.extractors;
 
 import com.grack.nanojson.JsonArray;
 import com.grack.nanojson.JsonObject;
+
+import org.schabi.newpipe.extractor.Image;
 import org.schabi.newpipe.extractor.exceptions.ParsingException;
 import org.schabi.newpipe.extractor.playlist.PlaylistInfoItemExtractor;
 import org.schabi.newpipe.extractor.services.youtube.YoutubeParsingHelper;
 import org.schabi.newpipe.extractor.services.youtube.linkHandler.YoutubePlaylistLinkHandlerFactory;
 import org.schabi.newpipe.extractor.utils.Utils;
 
-import static org.schabi.newpipe.extractor.services.youtube.YoutubeParsingHelper.fixThumbnailUrl;
+import javax.annotation.Nonnull;
+import java.util.List;
+
+import static org.schabi.newpipe.extractor.services.youtube.YoutubeParsingHelper.getImagesFromThumbnailsArray;
 import static org.schabi.newpipe.extractor.services.youtube.YoutubeParsingHelper.getTextFromObject;
 import static org.schabi.newpipe.extractor.services.youtube.YoutubeParsingHelper.getUrlFromObject;
-
 
 public class YoutubePlaylistInfoItemExtractor implements PlaylistInfoItemExtractor {
     private final JsonObject playlistInfoItem;
@@ -20,8 +24,9 @@ public class YoutubePlaylistInfoItemExtractor implements PlaylistInfoItemExtract
         this.playlistInfoItem = playlistInfoItem;
     }
 
+    @Nonnull
     @Override
-    public String getThumbnailUrl() throws ParsingException {
+    public List<Image> getThumbnails() throws ParsingException {
         try {
             JsonArray thumbnails = playlistInfoItem.getArray("thumbnails")
                     .getObject(0)
@@ -31,9 +36,9 @@ public class YoutubePlaylistInfoItemExtractor implements PlaylistInfoItemExtract
                         .getArray("thumbnails");
             }
 
-            return fixThumbnailUrl(thumbnails.getObject(0).getString("url"));
+            return getImagesFromThumbnailsArray(thumbnails);
         } catch (final Exception e) {
-            throw new ParsingException("Could not get thumbnail url", e);
+            throw new ParsingException("Could not get thumbnails", e);
         }
     }
 

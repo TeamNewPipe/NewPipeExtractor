@@ -1,7 +1,33 @@
+/*
+ * Copyright (C) Christian Schabesberger 2016 <chris.schabesberger@mailbox.org>
+ * YoutubeStreamInfoItemExtractor.java is part of NewPipe Extractor.
+ *
+ * NewPipe Extractor is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * NewPipe Extractor is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with NewPipe Extractor.  If not, see <https://www.gnu.org/licenses/>.
+ */
+
 package org.schabi.newpipe.extractor.services.youtube.extractors;
+
+import static org.schabi.newpipe.extractor.services.youtube.YoutubeParsingHelper.getTextFromObject;
+import static org.schabi.newpipe.extractor.services.youtube.YoutubeParsingHelper.getThumbnailsFromInfoItem;
+import static org.schabi.newpipe.extractor.services.youtube.YoutubeParsingHelper.getImagesFromThumbnailsArray;
+import static org.schabi.newpipe.extractor.services.youtube.YoutubeParsingHelper.getUrlFromNavigationEndpoint;
+import static org.schabi.newpipe.extractor.utils.Utils.isNullOrEmpty;
 
 import com.grack.nanojson.JsonArray;
 import com.grack.nanojson.JsonObject;
+
+import org.schabi.newpipe.extractor.Image;
 import org.schabi.newpipe.extractor.exceptions.ParsingException;
 import org.schabi.newpipe.extractor.localization.DateWrapper;
 import org.schabi.newpipe.extractor.localization.TimeAgoParser;
@@ -15,34 +41,13 @@ import org.schabi.newpipe.extractor.utils.Utils;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
+
 import java.time.Instant;
 import java.time.OffsetDateTime;
 import java.time.ZoneOffset;
 import java.time.format.DateTimeFormatter;
+import java.util.List;
 import java.util.regex.Pattern;
-
-import static org.schabi.newpipe.extractor.services.youtube.YoutubeParsingHelper.getTextFromObject;
-import static org.schabi.newpipe.extractor.services.youtube.YoutubeParsingHelper.getThumbnailUrlFromInfoItem;
-import static org.schabi.newpipe.extractor.services.youtube.YoutubeParsingHelper.getUrlFromNavigationEndpoint;
-import static org.schabi.newpipe.extractor.utils.Utils.isNullOrEmpty;
-
-/*
- * Copyright (C) Christian Schabesberger 2016 <chris.schabesberger@mailbox.org>
- * YoutubeStreamInfoItemExtractor.java is part of NewPipe.
- *
- * NewPipe is free software: you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation, either version 3 of the License, or
- * (at your option) any later version.
- *
- * NewPipe is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- *
- * You should have received a copy of the GNU General Public License
- * along with NewPipe.  If not, see <http://www.gnu.org/licenses/>.
- */
 
 public class YoutubeStreamInfoItemExtractor implements StreamInfoItemExtractor {
 
@@ -215,21 +220,22 @@ public class YoutubeStreamInfoItemExtractor implements StreamInfoItemExtractor {
         return url;
     }
 
-    @Nullable
+    @Nonnull
     @Override
-    public String getUploaderAvatarUrl() throws ParsingException {
+    public List<Image> getUploaderAvatars() throws ParsingException {
         if (videoInfo.has("channelThumbnailSupportedRenderers")) {
-            return JsonUtils.getArray(videoInfo, "channelThumbnailSupportedRenderers"
-                    + ".channelThumbnailWithLinkRenderer.thumbnail.thumbnails")
-                    .getObject(0).getString("url");
+            return getImagesFromThumbnailsArray(JsonUtils.getArray(videoInfo,
+                    // CHECKSTYLE:OFF
+                    "channelThumbnailSupportedRenderers.channelThumbnailWithLinkRenderer.thumbnail.thumbnails"));
+                    // CHECKSTYLE:ON
         }
 
         if (videoInfo.has("channelThumbnail")) {
-            return JsonUtils.getArray(videoInfo, "channelThumbnail.thumbnails")
-                    .getObject(0).getString("url");
+            return getImagesFromThumbnailsArray(
+                    JsonUtils.getArray(videoInfo, "channelThumbnail.thumbnails"));
         }
 
-        return null;
+        return List.of();
     }
 
     @Override
@@ -371,9 +377,10 @@ public class YoutubeStreamInfoItemExtractor implements StreamInfoItemExtractor {
                         videoInfoTitleAccessibilityData)));
     }
 
+    @Nonnull
     @Override
-    public String getThumbnailUrl() throws ParsingException {
-        return getThumbnailUrlFromInfoItem(videoInfo);
+    public List<Image> getThumbnails() throws ParsingException {
+        return getThumbnailsFromInfoItem(videoInfo);
     }
 
     private boolean isPremium() {
@@ -409,10 +416,10 @@ public class YoutubeStreamInfoItemExtractor implements StreamInfoItemExtractor {
     @Nullable
     @Override
     public String getShortDescription() throws ParsingException {
-
         if (videoInfo.has("detailedMetadataSnippets")) {
             return getTextFromObject(videoInfo.getArray("detailedMetadataSnippets")
-                    .getObject(0).getObject("snippetText"));
+                    .getObject(0)
+                    .getObject("snippetText"));
         }
 
         if (videoInfo.has("descriptionSnippet")) {

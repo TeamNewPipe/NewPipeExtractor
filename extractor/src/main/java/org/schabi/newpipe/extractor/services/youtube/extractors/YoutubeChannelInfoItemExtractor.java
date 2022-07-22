@@ -1,7 +1,28 @@
+/*
+ * Created by Christian Schabesberger on 12.02.17.
+ *
+ * Copyright (C) Christian Schabesberger 2017 <chris.schabesberger@mailbox.org>
+ * YoutubeChannelInfoItemExtractor.java is part of NewPipe Extractor.
+ *
+ * NewPipe Extractor is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * NewPipe Extractor is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with NewPipe Extractor. If not, see <https://www.gnu.org/licenses/>.
+ */
+
 package org.schabi.newpipe.extractor.services.youtube.extractors;
 
 import com.grack.nanojson.JsonObject;
 
+import org.schabi.newpipe.extractor.Image;
 import org.schabi.newpipe.extractor.ListExtractor;
 import org.schabi.newpipe.extractor.channel.ChannelInfoItemExtractor;
 import org.schabi.newpipe.extractor.exceptions.ParsingException;
@@ -9,28 +30,11 @@ import org.schabi.newpipe.extractor.services.youtube.YoutubeParsingHelper;
 import org.schabi.newpipe.extractor.services.youtube.linkHandler.YoutubeChannelLinkHandlerFactory;
 import org.schabi.newpipe.extractor.utils.Utils;
 
-import static org.schabi.newpipe.extractor.services.youtube.YoutubeParsingHelper.fixThumbnailUrl;
-import static org.schabi.newpipe.extractor.services.youtube.YoutubeParsingHelper.getTextFromObject;
+import javax.annotation.Nonnull;
+import java.util.List;
 
-/*
- * Created by Christian Schabesberger on 12.02.17.
- *
- * Copyright (C) Christian Schabesberger 2017 <chris.schabesberger@mailbox.org>
- * YoutubeChannelInfoItemExtractor.java is part of NewPipe.
- *
- * NewPipe is free software: you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation, either version 3 of the License, or
- * (at your option) any later version.
- *
- * NewPipe is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- *
- * You should have received a copy of the GNU General Public License
- * along with NewPipe.  If not, see <http://www.gnu.org/licenses/>.
- */
+import static org.schabi.newpipe.extractor.services.youtube.YoutubeParsingHelper.getTextFromObject;
+import static org.schabi.newpipe.extractor.services.youtube.YoutubeParsingHelper.getThumbnailsFromInfoItem;
 
 public class YoutubeChannelInfoItemExtractor implements ChannelInfoItemExtractor {
     private final JsonObject channelInfoItem;
@@ -53,15 +57,13 @@ public class YoutubeChannelInfoItemExtractor implements ChannelInfoItemExtractor
         this.withHandle = wHandle;
     }
 
+    @Nonnull
     @Override
-    public String getThumbnailUrl() throws ParsingException {
+    public List<Image> getThumbnails() throws ParsingException {
         try {
-            final String url = channelInfoItem.getObject("thumbnail").getArray("thumbnails")
-                    .getObject(0).getString("url");
-
-            return fixThumbnailUrl(url);
+            return getThumbnailsFromInfoItem(channelInfoItem);
         } catch (final Exception e) {
-            throw new ParsingException("Could not get thumbnail url", e);
+            throw new ParsingException("Could not get thumbnails", e);
         }
     }
 
