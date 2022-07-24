@@ -10,6 +10,9 @@ on:
       - master
   pull_request:
 
+permissions:
+  contents: read
+
 jobs:
   build-and-test:
     runs-on: ubuntu-latest
@@ -20,8 +23,7 @@ jobs:
         uses: actions/setup-java@v3
         with:
           java-version: '8'
-          distribution: 'adopt'
-          
+          distribution: 'temurin'
 
       - name: Cache Gradle dependencies
         uses: actions/cache@v3
