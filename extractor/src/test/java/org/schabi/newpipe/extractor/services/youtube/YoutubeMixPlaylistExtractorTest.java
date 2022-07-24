@@ -221,9 +221,8 @@ public class YoutubeMixPlaylistExtractorTest {
         }
     }
 
-    @Disabled("Video doesn't exist")
     public static class MyMix {
-        private static final String VIDEO_ID = "_AzeUSL9lZc";
+        private static final String VIDEO_ID = "YVkUvmDQ3HY";
 
         @BeforeAll
         public static void setUp() throws Exception {
@@ -251,7 +250,7 @@ public class YoutubeMixPlaylistExtractorTest {
         void getThumbnailUrl() throws Exception {
             final String thumbnailUrl = extractor.getThumbnailUrl();
             assertIsSecureUrl(thumbnailUrl);
-            assertTrue(thumbnailUrl.startsWith("https://i.ytimg.com/vi/_AzeUSL9lZc"));
+            assertTrue(thumbnailUrl.startsWith("https://i.ytimg.com/vi/" + VIDEO_ID));
         }
 
         @Test
