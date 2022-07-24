@@ -177,7 +177,7 @@ public class YoutubeMusicSearchExtractor extends SearchExtractor {
 
     @Override
     public boolean isCorrectedSearch() throws ParsingException {
-        return this.getSearchSuggestion() != "";
+        return getSearchSuggestion() != "";
     }
 
     @Nonnull
