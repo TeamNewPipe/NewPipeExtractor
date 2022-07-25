@@ -1,5 +1,11 @@
 package org.schabi.newpipe.extractor.services.soundcloud;
 
+import static org.schabi.newpipe.extractor.Image.ResolutionLevel.LOW;
+import static org.schabi.newpipe.extractor.Image.ResolutionLevel.MEDIUM;
+import static org.schabi.newpipe.extractor.ServiceList.SoundCloud;
+import static org.schabi.newpipe.extractor.utils.Utils.isNullOrEmpty;
+import static org.schabi.newpipe.extractor.utils.Utils.replaceHttpWithHttps;
+
 import com.grack.nanojson.JsonArray;
 import com.grack.nanojson.JsonObject;
 import com.grack.nanojson.JsonParser;
@@ -9,6 +15,7 @@ import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 import org.schabi.newpipe.extractor.MultiInfoItemsCollector;
+import org.schabi.newpipe.extractor.Image;
 import org.schabi.newpipe.extractor.NewPipe;
 import org.schabi.newpipe.extractor.channel.ChannelInfoItemsCollector;
 import org.schabi.newpipe.extractor.downloader.Downloader;
@@ -20,12 +27,14 @@ import org.schabi.newpipe.extractor.services.soundcloud.extractors.SoundcloudCha
 import org.schabi.newpipe.extractor.services.soundcloud.extractors.SoundcloudPlaylistInfoItemExtractor;
 import org.schabi.newpipe.extractor.services.soundcloud.extractors.SoundcloudStreamInfoItemExtractor;
 import org.schabi.newpipe.extractor.stream.StreamInfoItemsCollector;
+import org.schabi.newpipe.extractor.utils.ImageSuffix;
 import org.schabi.newpipe.extractor.utils.JsonUtils;
 import org.schabi.newpipe.extractor.utils.Parser;
 import org.schabi.newpipe.extractor.utils.Parser.RegexException;
 import org.schabi.newpipe.extractor.utils.Utils;
 
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URL;
@@ -35,12 +44,47 @@ import java.time.format.DateTimeParseException;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
-
-import static org.schabi.newpipe.extractor.ServiceList.SoundCloud;
-import static org.schabi.newpipe.extractor.utils.Utils.isNullOrEmpty;
-import static org.schabi.newpipe.extractor.utils.Utils.replaceHttpWithHttps;
+import java.util.stream.Collectors;
 
 public final class SoundcloudParsingHelper {
+    // CHECKSTYLE:OFF
+    // From https://web.archive.org/web/20210214185000/https://developers.soundcloud.com/docs/api/reference#tracks
+    // and researches on images used by the websites
+    // CHECKSTYLE:ON
+    /*
+    SoundCloud avatars and artworks are almost squares
+
+    When we get non-square pictures, all these images variants are still squares, except the
+    original and the crop versions provides images which are respecting aspect ratios.
+    The websites only use the square variants.
+
+    t2400x2400 and t3000x3000 variants also exists, but are not returned as several images are
+    uploaded with a lower size than these variants: in this case, these variants return an upscaled
+    version of the original image.
+    */
+    private static final List<ImageSuffix> ALBUMS_AND_ARTWORKS_URL_SUFFIXES_AND_RESOLUTIONS =
+            List.of(new ImageSuffix("mini.jpg", 16, 16, LOW),
+                    new ImageSuffix("t20x20.jpg", 20, 20, LOW),
+                    new ImageSuffix("small.jpg", 32, 32, LOW),
+                    new ImageSuffix("badge.jpg", 47, 47, LOW),
+                    new ImageSuffix("t50x50.jpg", 50, 50, LOW),
+                    new ImageSuffix("t60x60.jpg", 60, 60, LOW),
+                    // Seems to work also on avatars, even if it is written to be not the case in
+                    // the old API docs
+                    new ImageSuffix("t67x67.jpg", 67, 67, LOW),
+                    new ImageSuffix("t80x80.jpg", 80, 80, LOW),
+                    new ImageSuffix("large.jpg", 100, 100, LOW),
+                    new ImageSuffix("t120x120.jpg", 120, 120, LOW),
+                    new ImageSuffix("t200x200.jpg", 200, 200, MEDIUM),
+                    new ImageSuffix("t240x240.jpg", 240, 240, MEDIUM),
+                    new ImageSuffix("t250x250.jpg", 250, 250, MEDIUM),
+                    new ImageSuffix("t300x300.jpg", 300, 300, MEDIUM),
+                    new ImageSuffix("t500x500.jpg", 500, 500, MEDIUM));
+
+    private static final List<ImageSuffix> VISUALS_URL_SUFFIXES_AND_RESOLUTIONS =
+            List.of(new ImageSuffix("t1240x260.jpg", 1240, 260, MEDIUM),
+                    new ImageSuffix("t2480x520.jpg", 2480, 520, MEDIUM));
+
     private static String clientId;
     public static final String SOUNDCLOUD_API_V2_URL = "https://api-v2.soundcloud.com/";
 
@@ -365,5 +409,58 @@ public final class SoundcloudParsingHelper {
     @Nonnull
     public static String getUploaderName(final JsonObject object) {
         return object.getObject("user").getString("username", "");
+    }
+
+    @Nonnull
+    public static List<Image> getAllImagesFromTrackObject(@Nonnull final JsonObject trackObject)
+            throws ParsingException {
+        final String artworkUrl = trackObject.getString("artwork_url");
+        if (artworkUrl != null) {
+            return getAllImagesFromArtworkOrAvatarUrl(artworkUrl);
+        }
+        final String avatarUrl = trackObject.getObject("user").getString("avatar_url");
+        if (avatarUrl != null) {
+            return getAllImagesFromArtworkOrAvatarUrl(avatarUrl);
+        }
+
+        throw new ParsingException("Could not get track or track user's thumbnails");
+    }
+
+    @Nonnull
+    public static List<Image> getAllImagesFromArtworkOrAvatarUrl(
+            @Nullable final String originalArtworkOrAvatarUrl) {
+        if (isNullOrEmpty(originalArtworkOrAvatarUrl)) {
+            return List.of();
+        }
+
+        return getAllImagesFromImageUrlReturned(
+                // Artwork and avatars are originally returned with the "large" resolution, which
+                // is 100x100
+                originalArtworkOrAvatarUrl.replace("large.jpg", ""),
+                ALBUMS_AND_ARTWORKS_URL_SUFFIXES_AND_RESOLUTIONS);
+    }
+
+    @Nonnull
+    public static List<Image> getAllImagesFromVisualUrl(
+            @Nullable final String originalVisualUrl) {
+        if (isNullOrEmpty(originalVisualUrl)) {
+            return List.of();
+        }
+
+        return getAllImagesFromImageUrlReturned(
+                // Images are originally returned with the "original" resolution, which may be
+                // huge so don't include it for size purposes
+                originalVisualUrl.replace("original.jpg", ""),
+                VISUALS_URL_SUFFIXES_AND_RESOLUTIONS);
+    }
+
+    private static List<Image> getAllImagesFromImageUrlReturned(
+            @Nonnull final String baseImageUrl,
+            @Nonnull final List<ImageSuffix> imageSuffixes) {
+        return imageSuffixes.stream()
+                .map(imageSuffix -> new Image(baseImageUrl + imageSuffix.getSuffix(),
+                        imageSuffix.getHeight(), imageSuffix.getWidth(),
+                        imageSuffix.getResolutionLevel()))
+                .collect(Collectors.toUnmodifiableList());
     }
 }
