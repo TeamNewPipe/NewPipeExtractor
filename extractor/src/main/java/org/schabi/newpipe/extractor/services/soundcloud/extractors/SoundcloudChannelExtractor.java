@@ -1,11 +1,14 @@
 package org.schabi.newpipe.extractor.services.soundcloud.extractors;
 
 import static org.schabi.newpipe.extractor.services.soundcloud.SoundcloudParsingHelper.SOUNDCLOUD_API_V2_URL;
+import static org.schabi.newpipe.extractor.services.soundcloud.SoundcloudParsingHelper.getAllImagesFromArtworkOrAvatarUrl;
+import static org.schabi.newpipe.extractor.services.soundcloud.SoundcloudParsingHelper.getAllImagesFromVisualUrl;
 
 import com.grack.nanojson.JsonObject;
 import com.grack.nanojson.JsonParser;
 import com.grack.nanojson.JsonParserException;
 
+import org.schabi.newpipe.extractor.Image;
 import org.schabi.newpipe.extractor.StreamingService;
 import org.schabi.newpipe.extractor.channel.ChannelExtractor;
 import org.schabi.newpipe.extractor.channel.tabs.ChannelTabs;
@@ -59,15 +62,19 @@ public class SoundcloudChannelExtractor extends ChannelExtractor {
         return user.getString("username");
     }
 
+    @Nonnull
     @Override
-    public String getAvatarUrl() {
-        return user.getString("avatar_url");
+    public List<Image> getAvatars() {
+        return getAllImagesFromArtworkOrAvatarUrl(user.getString("avatar_url"));
     }
 
+    @Nonnull
     @Override
-    public String getBannerUrl() {
-        return user.getObject("visuals").getArray("visuals").getObject(0)
-                .getString("visual_url");
+    public List<Image> getBanners() {
+        return getAllImagesFromVisualUrl(user.getObject("visuals")
+                .getArray("visuals")
+                .getObject(0)
+                .getString("visual_url"));
     }
 
     @Override
@@ -95,9 +102,10 @@ public class SoundcloudChannelExtractor extends ChannelExtractor {
         return "";
     }
 
+    @Nonnull
     @Override
-    public String getParentChannelAvatarUrl() {
-        return "";
+    public List<Image> getParentChannelAvatars() {
+        return List.of();
     }
 
     @Override

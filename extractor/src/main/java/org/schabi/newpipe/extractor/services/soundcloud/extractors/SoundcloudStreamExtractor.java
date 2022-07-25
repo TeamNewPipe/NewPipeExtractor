@@ -2,6 +2,10 @@ package org.schabi.newpipe.extractor.services.soundcloud.extractors;
 
 import static org.schabi.newpipe.extractor.services.soundcloud.SoundcloudParsingHelper.SOUNDCLOUD_API_V2_URL;
 import static org.schabi.newpipe.extractor.services.soundcloud.SoundcloudParsingHelper.clientId;
+import static org.schabi.newpipe.extractor.services.soundcloud.SoundcloudParsingHelper.getAllImagesFromArtworkOrAvatarUrl;
+import static org.schabi.newpipe.extractor.services.soundcloud.SoundcloudParsingHelper.getAllImagesFromTrackObject;
+import static org.schabi.newpipe.extractor.services.soundcloud.SoundcloudParsingHelper.getAvatarUrl;
+import static org.schabi.newpipe.extractor.services.soundcloud.SoundcloudParsingHelper.parseDateFrom;
 import static org.schabi.newpipe.extractor.stream.AudioStream.UNKNOWN_BITRATE;
 import static org.schabi.newpipe.extractor.stream.Stream.ID_UNKNOWN;
 import static org.schabi.newpipe.extractor.utils.Utils.isNullOrEmpty;
@@ -11,6 +15,7 @@ import com.grack.nanojson.JsonObject;
 import com.grack.nanojson.JsonParser;
 import com.grack.nanojson.JsonParserException;
 
+import org.schabi.newpipe.extractor.Image;
 import org.schabi.newpipe.extractor.MediaFormat;
 import org.schabi.newpipe.extractor.NewPipe;
 import org.schabi.newpipe.extractor.StreamingService;
@@ -96,18 +101,13 @@ public class SoundcloudStreamExtractor extends StreamExtractor {
     @Nonnull
     @Override
     public DateWrapper getUploadDate() throws ParsingException {
-        return new DateWrapper(SoundcloudParsingHelper.parseDateFrom(track.getString(
-                "created_at")));
+        return new DateWrapper(parseDateFrom(track.getString("created_at")));
     }
 
     @Nonnull
     @Override
-    public String getThumbnailUrl() {
-        String artworkUrl = track.getString("artwork_url", "");
-        if (artworkUrl.isEmpty()) {
-            artworkUrl = track.getObject("user").getString("avatar_url", "");
-        }
-        return artworkUrl.replace("large.jpg", "crop.jpg");
+    public List<Image> getThumbnails() throws ParsingException {
+        return getAllImagesFromTrackObject(track);
     }
 
     @Nonnull
@@ -155,8 +155,8 @@ public class SoundcloudStreamExtractor extends StreamExtractor {
 
     @Nonnull
     @Override
-    public String getUploaderAvatarUrl() {
-        return SoundcloudParsingHelper.getAvatarUrl(track);
+    public List<Image> getUploaderAvatars() {
+        return getAllImagesFromArtworkOrAvatarUrl(getAvatarUrl(track));
     }
 
     @Override
