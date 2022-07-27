@@ -1,22 +1,24 @@
 package org.schabi.newpipe.extractor.services.peertube.extractors;
 
 import com.grack.nanojson.JsonObject;
+import org.schabi.newpipe.extractor.Image;
 import org.schabi.newpipe.extractor.ListExtractor;
 import org.schabi.newpipe.extractor.channel.ChannelInfoItemExtractor;
 import org.schabi.newpipe.extractor.exceptions.ParsingException;
 
 import javax.annotation.Nonnull;
-import java.util.Comparator;
+import java.util.List;
+
+import static org.schabi.newpipe.extractor.services.peertube.PeertubeParsingHelper.getAvatarsFromOwnerAccountOrVideoChannelObject;
 
 public class PeertubeChannelInfoItemExtractor implements ChannelInfoItemExtractor {
 
-    final JsonObject item;
-    final JsonObject uploader;
-    final String baseUrl;
+    private final JsonObject item;
+    private final String baseUrl;
+
     public PeertubeChannelInfoItemExtractor(@Nonnull final JsonObject item,
                                             @Nonnull final String baseUrl) {
         this.item = item;
-        this.uploader = item.getObject("uploader");
         this.baseUrl = baseUrl;
     }
 
@@ -30,14 +32,10 @@ public class PeertubeChannelInfoItemExtractor implements ChannelInfoItemExtracto
         return item.getString("url");
     }
 
+    @Nonnull
     @Override
-    public String getThumbnailUrl() throws ParsingException {
-        return item.getArray("avatars").stream()
-                .filter(JsonObject.class::isInstance)
-                .map(JsonObject.class::cast)
-                .max(Comparator.comparingInt(avatar -> avatar.getInt("width")))
-                .map(avatar -> baseUrl + avatar.getString("path"))
-                .orElse(null);
+    public List<Image> getThumbnails() throws ParsingException {
+        return getAvatarsFromOwnerAccountOrVideoChannelObject(baseUrl, item);
     }
 
     @Override

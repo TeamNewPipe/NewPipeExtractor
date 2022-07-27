@@ -6,21 +6,24 @@ import com.grack.nanojson.JsonObject;
 import com.grack.nanojson.JsonWriter;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
+import org.schabi.newpipe.extractor.Image;
 import org.schabi.newpipe.extractor.Page;
 import org.schabi.newpipe.extractor.ServiceList;
 import org.schabi.newpipe.extractor.comments.CommentsInfoItemExtractor;
 import org.schabi.newpipe.extractor.exceptions.ParsingException;
 import org.schabi.newpipe.extractor.localization.DateWrapper;
-import org.schabi.newpipe.extractor.services.peertube.PeertubeParsingHelper;
 import org.schabi.newpipe.extractor.stream.Description;
 import org.schabi.newpipe.extractor.utils.JsonUtils;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.nio.charset.StandardCharsets;
+import java.util.List;
 import java.util.Objects;
 
 import static org.schabi.newpipe.extractor.services.peertube.extractors.PeertubeCommentsExtractor.CHILDREN;
+import static org.schabi.newpipe.extractor.services.peertube.PeertubeParsingHelper.getAvatarsFromOwnerAccountOrVideoChannelObject;
+import static org.schabi.newpipe.extractor.services.peertube.PeertubeParsingHelper.parseDateFrom;
 
 public class PeertubeCommentsInfoItemExtractor implements CommentsInfoItemExtractor {
     @Nonnull
@@ -52,15 +55,10 @@ public class PeertubeCommentsInfoItemExtractor implements CommentsInfoItemExtrac
         return url + "/" + getCommentId();
     }
 
+    @Nonnull
     @Override
-    public String getThumbnailUrl() {
-        String value;
-        try {
-            value = JsonUtils.getString(item, "account.avatar.path");
-        } catch (final Exception e) {
-            value = "/client/assets/images/default-avatar.png";
-        }
-        return baseUrl + value;
+    public List<Image> getThumbnails() {
+        return getUploaderAvatars();
     }
 
     @Override
@@ -76,7 +74,7 @@ public class PeertubeCommentsInfoItemExtractor implements CommentsInfoItemExtrac
     @Override
     public DateWrapper getUploadDate() throws ParsingException {
         final String textualUploadDate = getTextualUploadDate();
-        return new DateWrapper(PeertubeParsingHelper.parseDateFrom(textualUploadDate));
+        return new DateWrapper(parseDateFrom(textualUploadDate));
     }
 
     @Override
@@ -97,15 +95,10 @@ public class PeertubeCommentsInfoItemExtractor implements CommentsInfoItemExtrac
         return Objects.toString(item.getLong("id"), null);
     }
 
+    @Nonnull
     @Override
-    public String getUploaderAvatarUrl() {
-        String value;
-        try {
-            value = JsonUtils.getString(item, "account.avatar.path");
-        } catch (final Exception e) {
-            value = "/client/assets/images/default-avatar.png";
-        }
-        return baseUrl + value;
+    public List<Image> getUploaderAvatars() {
+        return getAvatarsFromOwnerAccountOrVideoChannelObject(baseUrl, item.getObject("account"));
     }
 
     @Override
