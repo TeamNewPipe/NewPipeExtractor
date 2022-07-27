@@ -65,7 +65,6 @@ import java.time.OffsetDateTime;
 import java.time.ZoneOffset;
 import java.time.format.DateTimeParseException;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
@@ -1325,10 +1324,9 @@ public final class YoutubeParsingHelper {
      * @see #CONSENT_COOKIE
      * @param headers the headers which should be completed
      */
-    @SuppressWarnings("ArraysAsListWithZeroOrOneArgument")
     public static void addCookieHeader(@Nonnull final Map<String, List<String>> headers) {
         if (headers.get("Cookie") == null) {
-            headers.put("Cookie", Arrays.asList(generateConsentCookie()));
+            headers.put("Cookie", Collections.singletonList(generateConsentCookie()));
         } else {
             headers.get("Cookie").add(generateConsentCookie());
         }
