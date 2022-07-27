@@ -32,15 +32,8 @@ public class Request {
                    @Nullable final byte[] dataToSend,
                    @Nullable final Localization localization,
                    final boolean automaticLocalizationHeader) {
-        if (httpMethod == null) {
-            throw new IllegalArgumentException("Request's httpMethod is null");
-        }
-        if (url == null) {
-            throw new IllegalArgumentException("Request's url is null");
-        }
-
-        this.httpMethod = httpMethod;
-        this.url = url;
+        this.httpMethod = Objects.requireNonNull(httpMethod, "Request's httpMethod is null");
+        this.url = Objects.requireNonNull(url, "Request's url is null");
         this.dataToSend = dataToSend;
         this.localization = localization;
 

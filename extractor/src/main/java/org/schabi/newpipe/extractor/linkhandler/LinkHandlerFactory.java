@@ -3,6 +3,8 @@ package org.schabi.newpipe.extractor.linkhandler;
 import org.schabi.newpipe.extractor.exceptions.ParsingException;
 import org.schabi.newpipe.extractor.utils.Utils;
 
+import java.util.Objects;
+
 /*
  * Created by Christian Schabesberger on 26.07.16.
  *
@@ -72,9 +74,7 @@ public abstract class LinkHandlerFactory {
      * @return a {@link LinkHandler} complete with information
      */
     public LinkHandler fromUrl(final String url, final String baseUrl) throws ParsingException {
-        if (url == null) {
-            throw new IllegalArgumentException("URL cannot be null");
-        }
+        Objects.requireNonNull(url, "URL cannot be null");
         if (!acceptUrl(url)) {
             throw new ParsingException("URL not accepted: " + url);
         }
@@ -84,17 +84,13 @@ public abstract class LinkHandlerFactory {
     }
 
     public LinkHandler fromId(final String id) throws ParsingException {
-        if (id == null) {
-            throw new IllegalArgumentException("id can not be null");
-        }
+        Objects.requireNonNull(id, "ID cannot be null");
         final String url = getUrl(id);
         return new LinkHandler(url, url, id);
     }
 
     public LinkHandler fromId(final String id, final String baseUrl) throws ParsingException {
-        if (id == null) {
-            throw new IllegalArgumentException("id can not be null");
-        }
+        Objects.requireNonNull(id, "ID cannot be null");
         final String url = getUrl(id, baseUrl);
         return new LinkHandler(url, url, id);
     }
