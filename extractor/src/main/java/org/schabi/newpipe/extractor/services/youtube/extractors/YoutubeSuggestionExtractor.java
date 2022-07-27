@@ -1,6 +1,6 @@
 package org.schabi.newpipe.extractor.services.youtube.extractors;
 
-import static org.schabi.newpipe.extractor.services.youtube.YoutubeParsingHelper.addCookieHeader;
+import static org.schabi.newpipe.extractor.services.youtube.YoutubeParsingHelper.getCookieHeader;
 import static org.schabi.newpipe.extractor.utils.Utils.UTF_8;
 
 import com.grack.nanojson.JsonArray;
@@ -17,9 +17,7 @@ import org.schabi.newpipe.extractor.suggestion.SuggestionExtractor;
 import java.io.IOException;
 import java.net.URLEncoder;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 /*
  * Created by Christian Schabesberger on 28.09.16.
@@ -59,10 +57,7 @@ public class YoutubeSuggestionExtractor extends SuggestionExtractor {
                 + "&gl=" + URLEncoder.encode(getExtractorContentCountry().getCountryCode(), UTF_8)
                 + "&q=" + URLEncoder.encode(query, UTF_8);
 
-        final Map<String, List<String>> headers = new HashMap<>();
-        addCookieHeader(headers);
-
-        String response = dl.get(url, headers, getExtractorLocalization()).responseBody();
+        String response = dl.get(url, getCookieHeader(), getExtractorLocalization()).responseBody();
         // trim JSONP part "JP(...)"
         response = response.substring(3, response.length() - 1);
         try {
