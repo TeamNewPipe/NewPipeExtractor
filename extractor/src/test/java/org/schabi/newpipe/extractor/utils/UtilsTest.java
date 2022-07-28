@@ -3,9 +3,6 @@ package org.schabi.newpipe.extractor.utils;
 import org.junit.jupiter.api.Test;
 import org.schabi.newpipe.extractor.exceptions.ParsingException;
 
-import javax.annotation.Nonnull;
-import java.util.Arrays;
-
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 class UtilsTest {
@@ -20,8 +17,8 @@ class UtilsTest {
 
     @Test
     void testJoin() {
-        assertEquals("some,random,stuff", Utils.join(",", Arrays.asList("some", "random", "stuff")));
-        assertEquals("some,random,not-null,stuff", Utils.nonEmptyAndNullJoin(",", new String[]{"some", "null", "random", "", "not-null", null, "stuff"}));
+        assertEquals("some,random,not-null,stuff", Utils.nonEmptyAndNullJoin(",",
+                "some", "null", "random", "", "not-null", null, "stuff"));
     }
 
     @Test

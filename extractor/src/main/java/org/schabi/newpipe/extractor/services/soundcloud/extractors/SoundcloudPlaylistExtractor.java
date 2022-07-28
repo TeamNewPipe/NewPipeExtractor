@@ -16,7 +16,6 @@ import org.schabi.newpipe.extractor.playlist.PlaylistExtractor;
 import org.schabi.newpipe.extractor.services.soundcloud.SoundcloudParsingHelper;
 import org.schabi.newpipe.extractor.stream.StreamInfoItem;
 import org.schabi.newpipe.extractor.stream.StreamInfoItemsCollector;
-import org.schabi.newpipe.extractor.utils.Utils;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -165,7 +164,7 @@ public class SoundcloudPlaylistExtractor extends PlaylistExtractor {
         }
 
         final String currentPageUrl = SOUNDCLOUD_API_V2_URL + "tracks?client_id="
-                + SoundcloudParsingHelper.clientId() + "&ids=" + Utils.join(",", currentIds);
+                + SoundcloudParsingHelper.clientId() + "&ids=" + String.join(",", currentIds);
 
         final StreamInfoItemsCollector collector = new StreamInfoItemsCollector(getServiceId());
         final String response = NewPipe.getDownloader().get(currentPageUrl,

@@ -6,15 +6,12 @@ import java.io.UnsupportedEncodingException;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLDecoder;
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
-import java.util.Iterator;
-import java.util.LinkedList;
-import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.regex.Pattern;
+import java.util.stream.Collectors;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -311,30 +308,13 @@ public final class Utils {
     }
 
     @Nonnull
-    public static String join(final CharSequence delimiter,
-                              @Nonnull final Iterable<? extends CharSequence> elements) {
-        final StringBuilder stringBuilder = new StringBuilder();
-        final Iterator<? extends CharSequence> iterator = elements.iterator();
-        while (iterator.hasNext()) {
-            stringBuilder.append(iterator.next());
-            if (iterator.hasNext()) {
-                stringBuilder.append(delimiter);
-            }
-        }
-        return stringBuilder.toString();
-    }
-
-    @Nonnull
     public static String join(
             final String delimiter,
             final String mapJoin,
             @Nonnull final Map<? extends CharSequence, ? extends CharSequence> elements) {
-        final List<String> list = new LinkedList<>();
-        for (final Map.Entry<? extends CharSequence, ? extends CharSequence> entry
-                : elements.entrySet()) {
-            list.add(entry.getKey() + mapJoin + entry.getValue());
-        }
-        return join(delimiter, list);
+        return elements.entrySet().stream()
+                .map(entry -> entry.getKey() + mapJoin + entry.getValue())
+                .collect(Collectors.joining(delimiter));
     }
 
     /**
@@ -342,10 +322,10 @@ public final class Utils {
      */
     @Nonnull
     public static String nonEmptyAndNullJoin(final CharSequence delimiter,
-                                             final String[] elements) {
-        final List<String> list = new ArrayList<>(Arrays.asList(elements));
-        list.removeIf(s -> isNullOrEmpty(s) || s.equals("null"));
-        return join(delimiter, list);
+                                             final String... elements) {
+        return Arrays.stream(elements)
+                .filter(s -> !isNullOrEmpty(s) && !s.equals("null"))
+                .collect(Collectors.joining(delimiter));
     }
 
     /**
