@@ -26,6 +26,9 @@ import org.schabi.newpipe.extractor.exceptions.ParsingException;
 
 import java.io.UnsupportedEncodingException;
 import java.net.URLDecoder;
+import java.nio.charset.StandardCharsets;
+import java.util.ArrayList;
+import java.util.EnumSet;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.regex.Matcher;
@@ -99,7 +102,7 @@ public final class Parser {
         for (final String arg : input.split("&")) {
             final String[] splitArg = arg.split("=");
             if (splitArg.length > 1) {
-                map.put(splitArg[0], URLDecoder.decode(splitArg[1], UTF_8));
+                map.put(splitArg[0], URLDecoder.decode(splitArg[1], StandardCharsets.UTF_8.name()));
             } else {
                 map.put(splitArg[0], "");
             }

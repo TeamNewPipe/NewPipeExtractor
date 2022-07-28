@@ -6,6 +6,7 @@ import java.io.UnsupportedEncodingException;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLDecoder;
+import java.nio.charset.StandardCharsets;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Map;
@@ -17,14 +18,8 @@ import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
 public final class Utils {
-
     public static final String HTTP = "http://";
     public static final String HTTPS = "https://";
-    /**
-     * @deprecated Use {@link java.nio.charset.StandardCharsets#UTF_8}
-     */
-    @Deprecated
-    public static final String UTF_8 = "UTF-8";
     private static final Pattern M_PATTERN = Pattern.compile("(https?)?://m\\.");
     private static final Pattern WWW_PATTERN = Pattern.compile("(https?)?://www\\.");
 
@@ -139,7 +134,7 @@ public final class Utils {
 
                 String query;
                 try {
-                    query = URLDecoder.decode(params[0], UTF_8);
+                    query = URLDecoder.decode(params[0], StandardCharsets.UTF_8.name());
                 } catch (final UnsupportedEncodingException e) {
                     // Cannot decode string with UTF-8, using the string without decoding
                     query = params[0];
@@ -147,7 +142,7 @@ public final class Utils {
 
                 if (query.equals(parameterName)) {
                     try {
-                        return URLDecoder.decode(params[1], UTF_8);
+                        return URLDecoder.decode(params[1], StandardCharsets.UTF_8.name());
                     } catch (final UnsupportedEncodingException e) {
                         // Cannot decode string with UTF-8, using the string without decoding
                         return params[1];
@@ -246,7 +241,8 @@ public final class Utils {
         try {
             final URL decoded = Utils.stringToURL(url);
             if (decoded.getHost().contains("google") && decoded.getPath().equals("/url")) {
-                return URLDecoder.decode(Parser.matchGroup1("&url=([^&]+)(?:&|$)", url), UTF_8);
+                return URLDecoder.decode(Parser.matchGroup1("&url=([^&]+)(?:&|$)", url),
+                        StandardCharsets.UTF_8.name());
             }
         } catch (final Exception ignored) {
         }

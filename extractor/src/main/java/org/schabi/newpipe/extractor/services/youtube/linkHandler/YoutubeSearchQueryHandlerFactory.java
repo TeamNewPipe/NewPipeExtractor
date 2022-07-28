@@ -1,15 +1,16 @@
 package org.schabi.newpipe.extractor.services.youtube.linkHandler;
 
+import static org.schabi.newpipe.extractor.utils.Utils.isNullOrEmpty;
+
 import org.schabi.newpipe.extractor.exceptions.ParsingException;
 import org.schabi.newpipe.extractor.linkhandler.SearchQueryHandlerFactory;
 
-import javax.annotation.Nonnull;
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
+import java.nio.charset.StandardCharsets;
 import java.util.List;
 
-import static org.schabi.newpipe.extractor.utils.Utils.UTF_8;
-import static org.schabi.newpipe.extractor.utils.Utils.isNullOrEmpty;
+import javax.annotation.Nonnull;
 
 public final class YoutubeSearchQueryHandlerFactory extends SearchQueryHandlerFactory {
 
@@ -44,24 +45,28 @@ public final class YoutubeSearchQueryHandlerFactory extends SearchQueryHandlerFa
                     default:
                         break;
                     case VIDEOS:
-                        return SEARCH_URL + URLEncoder.encode(searchString, UTF_8)
+                        return SEARCH_URL + URLEncoder.encode(searchString,
+                                StandardCharsets.UTF_8.name())
                                 + "&sp=EgIQAQ%253D%253D";
                     case CHANNELS:
-                        return SEARCH_URL + URLEncoder.encode(searchString, UTF_8)
+                        return SEARCH_URL + URLEncoder.encode(searchString,
+                                StandardCharsets.UTF_8.name())
                                 + "&sp=EgIQAg%253D%253D";
                     case PLAYLISTS:
-                        return SEARCH_URL + URLEncoder.encode(searchString, UTF_8)
+                        return SEARCH_URL + URLEncoder.encode(searchString,
+                                StandardCharsets.UTF_8.name())
                                 + "&sp=EgIQAw%253D%253D";
                     case MUSIC_SONGS:
                     case MUSIC_VIDEOS:
                     case MUSIC_ALBUMS:
                     case MUSIC_PLAYLISTS:
                     case MUSIC_ARTISTS:
-                        return MUSIC_SEARCH_URL + URLEncoder.encode(searchString, UTF_8);
+                        return MUSIC_SEARCH_URL + URLEncoder.encode(searchString,
+                                StandardCharsets.UTF_8.name());
                 }
             }
 
-            return SEARCH_URL + URLEncoder.encode(searchString, UTF_8);
+            return SEARCH_URL + URLEncoder.encode(searchString, StandardCharsets.UTF_8.name());
         } catch (final UnsupportedEncodingException e) {
             throw new ParsingException("Could not encode query", e);
         }

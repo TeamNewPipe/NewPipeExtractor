@@ -4,7 +4,6 @@ import static org.schabi.newpipe.extractor.services.soundcloud.SoundcloudParsing
 import static org.schabi.newpipe.extractor.services.soundcloud.SoundcloudParsingHelper.clientId;
 import static org.schabi.newpipe.extractor.stream.AudioStream.UNKNOWN_BITRATE;
 import static org.schabi.newpipe.extractor.stream.Stream.ID_UNKNOWN;
-import static org.schabi.newpipe.extractor.utils.Utils.UTF_8;
 import static org.schabi.newpipe.extractor.utils.Utils.isNullOrEmpty;
 
 import com.grack.nanojson.JsonArray;
@@ -36,6 +35,7 @@ import org.schabi.newpipe.extractor.stream.VideoStream;
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
+import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -320,7 +320,7 @@ public class SoundcloudStreamExtractor extends StreamExtractor {
 
     private static String urlEncode(final String value) {
         try {
-            return URLEncoder.encode(value, UTF_8);
+            return URLEncoder.encode(value, StandardCharsets.UTF_8.name());
         } catch (final UnsupportedEncodingException e) {
             throw new IllegalStateException(e);
         }

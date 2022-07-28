@@ -5,9 +5,8 @@ import org.schabi.newpipe.extractor.linkhandler.SearchQueryHandlerFactory;
 
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
+import java.nio.charset.StandardCharsets;
 import java.util.List;
-
-import static org.schabi.newpipe.extractor.utils.Utils.UTF_8;
 
 public class MediaCCCSearchQueryHandlerFactory extends SearchQueryHandlerFactory {
     public static final String ALL = "all";
@@ -33,7 +32,7 @@ public class MediaCCCSearchQueryHandlerFactory extends SearchQueryHandlerFactory
                          final String sortFilter) throws ParsingException {
         try {
             return "https://media.ccc.de/public/events/search?q="
-                    + URLEncoder.encode(query, UTF_8);
+                    + URLEncoder.encode(query, StandardCharsets.UTF_8.name());
         } catch (final UnsupportedEncodingException e) {
             throw new ParsingException("Could not create search string with query: " + query, e);
         }

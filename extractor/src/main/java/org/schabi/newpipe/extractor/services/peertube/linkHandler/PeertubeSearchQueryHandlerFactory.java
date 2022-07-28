@@ -6,9 +6,8 @@ import org.schabi.newpipe.extractor.linkhandler.SearchQueryHandlerFactory;
 
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
+import java.nio.charset.StandardCharsets;
 import java.util.List;
-
-import static org.schabi.newpipe.extractor.utils.Utils.UTF_8;
 
 public final class PeertubeSearchQueryHandlerFactory extends SearchQueryHandlerFactory {
 
@@ -43,7 +42,8 @@ public final class PeertubeSearchQueryHandlerFactory extends SearchQueryHandlerF
                          final String sortFilter,
                          final String baseUrl) throws ParsingException {
         try {
-            return baseUrl + SEARCH_ENDPOINT + "?search=" + URLEncoder.encode(searchString, UTF_8);
+            return baseUrl + SEARCH_ENDPOINT + "?search=" + URLEncoder.encode(searchString,
+                    StandardCharsets.UTF_8.name());
         } catch (final UnsupportedEncodingException e) {
             throw new ParsingException("Could not encode query", e);
         }

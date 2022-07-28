@@ -23,7 +23,6 @@ package org.schabi.newpipe.extractor.services.youtube;
 import static org.schabi.newpipe.extractor.NewPipe.getDownloader;
 import static org.schabi.newpipe.extractor.utils.Utils.HTTP;
 import static org.schabi.newpipe.extractor.utils.Utils.HTTPS;
-import static org.schabi.newpipe.extractor.utils.Utils.UTF_8;
 import static org.schabi.newpipe.extractor.utils.Utils.getStringResultFromRegexArray;
 import static org.schabi.newpipe.extractor.utils.Utils.isNullOrEmpty;
 import static java.util.Collections.singletonList;
@@ -575,7 +574,7 @@ public final class YoutubeParsingHelper {
                 .end()
                 .value("fetchLiveState", true)
                 .end()
-            .end().done().getBytes(UTF_8);
+            .end().done().getBytes(StandardCharsets.UTF_8);
         // @formatter:on
 
         final Map<String, List<String>> headers = new HashMap<>();
@@ -820,7 +819,7 @@ public final class YoutubeParsingHelper {
                     .end()
                 .end()
                 .value("input", "")
-            .end().done().getBytes(UTF_8);
+            .end().done().getBytes(StandardCharsets.UTF_8);
         // @formatter:on
 
         final Map<String, List<String>> headers = new HashMap<>();
@@ -892,7 +891,8 @@ public final class YoutubeParsingHelper {
                 for (final String param : params) {
                     if (param.split("=")[0].equals("q")) {
                         try {
-                            return URLDecoder.decode(param.split("=")[1], UTF_8);
+                            return URLDecoder.decode(param.split("=")[1],
+                                    StandardCharsets.UTF_8.name());
                         } catch (final UnsupportedEncodingException e) {
                             return null;
                         }
