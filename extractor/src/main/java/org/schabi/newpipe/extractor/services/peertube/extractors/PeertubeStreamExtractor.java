@@ -1,5 +1,7 @@
 package org.schabi.newpipe.extractor.services.peertube.extractors;
 
+import static org.schabi.newpipe.extractor.services.peertube.PeertubeParsingHelper.getAvatarsFromOwnerAccountOrVideoChannelObject;
+import static org.schabi.newpipe.extractor.services.peertube.PeertubeParsingHelper.getThumbnailsFromPlaylistOrVideoItem;
 import static org.schabi.newpipe.extractor.stream.AudioStream.UNKNOWN_BITRATE;
 import static org.schabi.newpipe.extractor.utils.Utils.isNullOrEmpty;
 
@@ -7,7 +9,7 @@ import com.grack.nanojson.JsonArray;
 import com.grack.nanojson.JsonObject;
 import com.grack.nanojson.JsonParser;
 import com.grack.nanojson.JsonParserException;
-
+import org.schabi.newpipe.extractor.Image;
 import org.schabi.newpipe.extractor.MediaFormat;
 import org.schabi.newpipe.extractor.NewPipe;
 import org.schabi.newpipe.extractor.StreamingService;
@@ -87,8 +89,8 @@ public class PeertubeStreamExtractor extends StreamExtractor {
 
     @Nonnull
     @Override
-    public String getThumbnailUrl() throws ParsingException {
-        return baseUrl + JsonUtils.getString(json, "previewPath");
+    public List<Image> getThumbnails() throws ParsingException {
+        return getThumbnailsFromPlaylistOrVideoItem(baseUrl, json);
     }
 
     @Nonnull
@@ -176,14 +178,8 @@ public class PeertubeStreamExtractor extends StreamExtractor {
 
     @Nonnull
     @Override
-    public String getUploaderAvatarUrl() {
-        String value;
-        try {
-            value = JsonUtils.getString(json, "account.avatar.path");
-        } catch (final Exception e) {
-            value = "/client/assets/images/default-avatar.png";
-        }
-        return baseUrl + value;
+    public List<Image> getUploaderAvatars() {
+        return getAvatarsFromOwnerAccountOrVideoChannelObject(baseUrl, json.getObject("account"));
     }
 
     @Nonnull
@@ -200,14 +196,8 @@ public class PeertubeStreamExtractor extends StreamExtractor {
 
     @Nonnull
     @Override
-    public String getSubChannelAvatarUrl() {
-        String value;
-        try {
-            value = JsonUtils.getString(json, "channel.avatar.path");
-        } catch (final Exception e) {
-            value = "/client/assets/images/default-avatar.png";
-        }
-        return baseUrl + value;
+    public List<Image> getSubChannelAvatars() {
+        return getAvatarsFromOwnerAccountOrVideoChannelObject(baseUrl, json.getObject("channel"));
     }
 
     @Nonnull
