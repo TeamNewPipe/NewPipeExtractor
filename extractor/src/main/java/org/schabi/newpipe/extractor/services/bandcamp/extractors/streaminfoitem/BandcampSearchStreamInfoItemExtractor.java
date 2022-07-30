@@ -1,10 +1,13 @@
 package org.schabi.newpipe.extractor.services.bandcamp.extractors.streaminfoitem;
 
 import org.jsoup.nodes.Element;
+import org.schabi.newpipe.extractor.Image;
 import org.schabi.newpipe.extractor.exceptions.ParsingException;
-import org.schabi.newpipe.extractor.services.bandcamp.extractors.BandcampExtractorHelper;
 
-import javax.annotation.Nullable;
+import javax.annotation.Nonnull;
+import java.util.List;
+
+import static org.schabi.newpipe.extractor.services.bandcamp.extractors.BandcampExtractorHelper.getImagesFromSearchResult;
 
 public class BandcampSearchStreamInfoItemExtractor extends BandcampStreamInfoItemExtractor {
 
@@ -29,12 +32,6 @@ public class BandcampSearchStreamInfoItemExtractor extends BandcampStreamInfoIte
         }
     }
 
-    @Nullable
-    @Override
-    public String getUploaderAvatarUrl() {
-        return null;
-    }
-
     @Override
     public String getName() throws ParsingException {
         return resultInfo.getElementsByClass("heading").text();
@@ -45,9 +42,10 @@ public class BandcampSearchStreamInfoItemExtractor extends BandcampStreamInfoIte
         return resultInfo.getElementsByClass("itemurl").text();
     }
 
+    @Nonnull
     @Override
-    public String getThumbnailUrl() throws ParsingException {
-        return BandcampExtractorHelper.getThumbnailUrlFromSearchResult(searchResult);
+    public List<Image> getThumbnails() throws ParsingException {
+        return getImagesFromSearchResult(searchResult);
     }
 
     @Override

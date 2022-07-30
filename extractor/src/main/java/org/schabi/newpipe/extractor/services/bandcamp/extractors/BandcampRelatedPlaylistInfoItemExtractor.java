@@ -3,10 +3,14 @@
 package org.schabi.newpipe.extractor.services.bandcamp.extractors;
 
 import org.jsoup.nodes.Element;
+import org.schabi.newpipe.extractor.Image;
 import org.schabi.newpipe.extractor.exceptions.ParsingException;
 import org.schabi.newpipe.extractor.playlist.PlaylistInfoItemExtractor;
 
 import javax.annotation.Nonnull;
+import java.util.List;
+
+import static org.schabi.newpipe.extractor.services.bandcamp.extractors.BandcampExtractorHelper.getImagesFromImageUrl;
 
 /**
  * Extracts recommended albums from tracks' website
@@ -28,9 +32,10 @@ public class BandcampRelatedPlaylistInfoItemExtractor implements PlaylistInfoIte
         return relatedAlbum.getElementsByClass("album-link").attr("abs:href");
     }
 
+    @Nonnull
     @Override
-    public String getThumbnailUrl() throws ParsingException {
-        return relatedAlbum.getElementsByClass("album-art").attr("src");
+    public List<Image> getThumbnails() throws ParsingException {
+        return getImagesFromImageUrl(relatedAlbum.getElementsByClass("album-art").attr("src"));
     }
 
     @Override

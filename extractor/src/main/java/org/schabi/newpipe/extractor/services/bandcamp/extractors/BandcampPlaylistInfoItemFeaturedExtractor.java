@@ -1,9 +1,14 @@
 package org.schabi.newpipe.extractor.services.bandcamp.extractors;
 
 import com.grack.nanojson.JsonObject;
+import org.schabi.newpipe.extractor.Image;
 import org.schabi.newpipe.extractor.playlist.PlaylistInfoItemExtractor;
+import org.schabi.newpipe.extractor.utils.Utils;
 
-import static org.schabi.newpipe.extractor.services.bandcamp.extractors.BandcampExtractorHelper.getImageUrl;
+import javax.annotation.Nonnull;
+import java.util.List;
+
+import static org.schabi.newpipe.extractor.services.bandcamp.extractors.BandcampExtractorHelper.getImagesFromImageId;
 
 public class BandcampPlaylistInfoItemFeaturedExtractor implements PlaylistInfoItemExtractor {
 
@@ -40,12 +45,14 @@ public class BandcampPlaylistInfoItemFeaturedExtractor implements PlaylistInfoIt
 
     @Override
     public String getUrl() {
-        return featuredStory.getString("item_url").replaceAll("http://", "https://");
+        return Utils.replaceHttpWithHttps(featuredStory.getString("item_url"));
     }
 
+    @Nonnull
     @Override
-    public String getThumbnailUrl() {
-        return featuredStory.has("art_id") ? getImageUrl(featuredStory.getLong("art_id"), true)
-                : getImageUrl(featuredStory.getLong("item_art_id"), true);
+    public List<Image> getThumbnails() {
+        return featuredStory.has("art_id")
+                ? getImagesFromImageId(featuredStory.getLong("art_id"), true)
+                : getImagesFromImageId(featuredStory.getLong("item_art_id"), true);
     }
 }
