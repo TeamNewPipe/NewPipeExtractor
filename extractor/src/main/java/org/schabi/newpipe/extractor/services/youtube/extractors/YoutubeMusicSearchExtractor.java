@@ -1,5 +1,37 @@
 package org.schabi.newpipe.extractor.services.youtube.extractors;
 
+import com.grack.nanojson.JsonArray;
+import com.grack.nanojson.JsonObject;
+import com.grack.nanojson.JsonParser;
+import com.grack.nanojson.JsonParserException;
+import com.grack.nanojson.JsonWriter;
+import org.schabi.newpipe.extractor.InfoItem;
+import org.schabi.newpipe.extractor.MetaInfo;
+import org.schabi.newpipe.extractor.MultiInfoItemsCollector;
+import org.schabi.newpipe.extractor.Page;
+import org.schabi.newpipe.extractor.StreamingService;
+import org.schabi.newpipe.extractor.downloader.Downloader;
+import org.schabi.newpipe.extractor.exceptions.ExtractionException;
+import org.schabi.newpipe.extractor.exceptions.ParsingException;
+import org.schabi.newpipe.extractor.exceptions.ReCaptchaException;
+import org.schabi.newpipe.extractor.linkhandler.SearchQueryHandler;
+import org.schabi.newpipe.extractor.localization.DateWrapper;
+import org.schabi.newpipe.extractor.localization.TimeAgoParser;
+import org.schabi.newpipe.extractor.search.SearchExtractor;
+import org.schabi.newpipe.extractor.services.youtube.YoutubeParsingHelper;
+import org.schabi.newpipe.extractor.utils.JsonUtils;
+import org.schabi.newpipe.extractor.utils.Parser;
+import org.schabi.newpipe.extractor.utils.Utils;
+
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
+import java.io.IOException;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
+
 import static org.schabi.newpipe.extractor.services.youtube.YoutubeParsingHelper.DISABLE_PRETTY_PRINT_PARAMETER;
 import static org.schabi.newpipe.extractor.services.youtube.YoutubeParsingHelper.fixThumbnailUrl;
 import static org.schabi.newpipe.extractor.services.youtube.YoutubeParsingHelper.getTextFromObject;
@@ -13,39 +45,6 @@ import static org.schabi.newpipe.extractor.services.youtube.linkHandler.YoutubeS
 import static org.schabi.newpipe.extractor.utils.Utils.EMPTY_STRING;
 import static org.schabi.newpipe.extractor.utils.Utils.UTF_8;
 import static org.schabi.newpipe.extractor.utils.Utils.isNullOrEmpty;
-
-import com.grack.nanojson.JsonArray;
-import com.grack.nanojson.JsonObject;
-import com.grack.nanojson.JsonParser;
-import com.grack.nanojson.JsonParserException;
-import com.grack.nanojson.JsonWriter;
-
-import org.schabi.newpipe.extractor.InfoItem;
-import org.schabi.newpipe.extractor.MetaInfo;
-import org.schabi.newpipe.extractor.Page;
-import org.schabi.newpipe.extractor.StreamingService;
-import org.schabi.newpipe.extractor.downloader.Downloader;
-import org.schabi.newpipe.extractor.exceptions.ExtractionException;
-import org.schabi.newpipe.extractor.exceptions.ParsingException;
-import org.schabi.newpipe.extractor.exceptions.ReCaptchaException;
-import org.schabi.newpipe.extractor.linkhandler.SearchQueryHandler;
-import org.schabi.newpipe.extractor.localization.DateWrapper;
-import org.schabi.newpipe.extractor.localization.TimeAgoParser;
-import org.schabi.newpipe.extractor.MultiInfoItemsCollector;
-import org.schabi.newpipe.extractor.search.SearchExtractor;
-import org.schabi.newpipe.extractor.services.youtube.YoutubeParsingHelper;
-import org.schabi.newpipe.extractor.utils.JsonUtils;
-import org.schabi.newpipe.extractor.utils.Parser;
-import org.schabi.newpipe.extractor.utils.Utils;
-
-import java.io.IOException;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
 
 public class YoutubeMusicSearchExtractor extends SearchExtractor {
     private JsonObject initialData;
@@ -133,55 +132,52 @@ public class YoutubeMusicSearchExtractor extends SearchExtractor {
         }
     }
 
-    @Nonnull
-    @Override
-    public String getUrl() throws ParsingException {
-        return super.getUrl();
+    private List<JsonObject> getItemSectionRendererContents() {
+        return initialData
+                .getObject("contents")
+                .getObject("tabbedSearchResultsRenderer")
+                .getArray("tabs")
+                .getObject(0)
+                .getObject("tabRenderer")
+                .getObject("content")
+                .getObject("sectionListRenderer")
+                .getArray("contents")
+                .stream()
+                .filter(JsonObject.class::isInstance)
+                .map(JsonObject.class::cast)
+                .map(c -> c.getObject("itemSectionRenderer"))
+                .filter(isr -> !isr.isEmpty())
+                .map(isr -> isr
+                        .getArray("contents")
+                        .getObject(0))
+                .collect(Collectors.toList());
     }
 
     @Nonnull
     @Override
     public String getSearchSuggestion() throws ParsingException {
-        final JsonObject itemSectionRenderer = JsonUtils.getArray(JsonUtils.getArray(initialData,
-                "contents.tabbedSearchResultsRenderer.tabs").getObject(0),
-                "tabRenderer.content.sectionListRenderer.contents")
-                .getObject(0)
-                .getObject("itemSectionRenderer");
-        if (itemSectionRenderer.isEmpty()) {
-            return "";
+        for (final JsonObject obj : getItemSectionRendererContents()) {
+            final JsonObject didYouMeanRenderer = obj
+                    .getObject("didYouMeanRenderer");
+            final JsonObject showingResultsForRenderer = obj
+                    .getObject("showingResultsForRenderer");
+
+            if (!didYouMeanRenderer.isEmpty()) {
+                return getTextFromObject(didYouMeanRenderer.getObject("correctedQuery"));
+            } else if (!showingResultsForRenderer.isEmpty()) {
+                return JsonUtils.getString(showingResultsForRenderer,
+                        "correctedQueryEndpoint.searchEndpoint.query");
+            }
         }
 
-        final JsonObject didYouMeanRenderer = itemSectionRenderer.getArray("contents")
-                .getObject(0).getObject("didYouMeanRenderer");
-        final JsonObject showingResultsForRenderer = itemSectionRenderer.getArray("contents")
-                .getObject(0)
-                .getObject("showingResultsForRenderer");
-
-        if (!didYouMeanRenderer.isEmpty()) {
-            return getTextFromObject(didYouMeanRenderer.getObject("correctedQuery"));
-        } else if (!showingResultsForRenderer.isEmpty()) {
-            return JsonUtils.getString(showingResultsForRenderer,
-                    "correctedQueryEndpoint.searchEndpoint.query");
-        } else {
-            return "";
-        }
+        return "";
     }
 
     @Override
     public boolean isCorrectedSearch() throws ParsingException {
-        final JsonObject itemSectionRenderer = JsonUtils.getArray(JsonUtils.getArray(initialData,
-                "contents.tabbedSearchResultsRenderer.tabs").getObject(0),
-                "tabRenderer.content.sectionListRenderer.contents")
-                .getObject(0)
-                .getObject("itemSectionRenderer");
-        if (itemSectionRenderer.isEmpty()) {
-            return false;
-        }
-
-        final JsonObject firstContent = itemSectionRenderer.getArray("contents").getObject(0);
-
-        return firstContent.has("didYouMeanRenderer")
-                || firstContent.has("showingResultsForRenderer");
+        return getItemSectionRendererContents()
+                .stream()
+                .anyMatch(obj -> obj.has("showingResultsForRenderer"));
     }
 
     @Nonnull
