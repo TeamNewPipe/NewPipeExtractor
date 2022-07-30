@@ -19,7 +19,7 @@ import javax.annotation.Nullable;
 
 public class YoutubeStreamExtractorLivestreamTest extends DefaultStreamExtractorTest {
     private static final String RESOURCE_PATH = DownloaderFactory.RESOURCE_PATH + "services/youtube/extractor/stream/";
-    private static final String ID = "5qap5aO4i9A";
+    private static final String ID = "jfKfPfyJRdk";
     private static final int TIMESTAMP = 1737;
     private static final String URL = YoutubeStreamExtractorDefaultTest.BASE_URL + ID + "&t=" + TIMESTAMP;
     private static StreamExtractor extractor;
@@ -57,9 +57,9 @@ public class YoutubeStreamExtractorLivestreamTest extends DefaultStreamExtractor
     @Override public long expectedLength() { return 0; }
     @Override public long expectedTimestamp() { return TIMESTAMP; }
     @Override public long expectedViewCountAtLeast() { return 0; }
-    @Nullable @Override public String expectedUploadDate() { return "2020-02-22 00:00:00.000"; }
-    @Nullable @Override public String expectedTextualUploadDate() { return "2020-02-22"; }
-    @Override public long expectedLikeCountAtLeast() { return 825000; }
+    @Nullable @Override public String expectedUploadDate() { return "2022-07-12 00:00:00.000"; }
+    @Nullable @Override public String expectedTextualUploadDate() { return "2022-07-12"; }
+    @Override public long expectedLikeCountAtLeast() { return 340_000; }
     @Override public long expectedDislikeCountAtLeast() { return -1; }
     @Override public boolean expectedHasSubtitles() { return false; }
     @Nullable @Override public String expectedDashMpdUrlContains() { return "https://manifest.googlevideo.com/api/manifest/dash/"; }
