@@ -1,21 +1,33 @@
 package org.schabi.newpipe.extractor.services.media_ccc.extractors;
 
 import com.grack.nanojson.JsonArray;
+import com.grack.nanojson.JsonObject;
 import com.grack.nanojson.JsonParser;
 import com.grack.nanojson.JsonParserException;
+import org.schabi.newpipe.extractor.Image;
+import org.schabi.newpipe.extractor.Image.ResolutionLevel;
 import org.schabi.newpipe.extractor.downloader.Downloader;
 import org.schabi.newpipe.extractor.exceptions.ExtractionException;
 import org.schabi.newpipe.extractor.exceptions.ParsingException;
 import org.schabi.newpipe.extractor.exceptions.ReCaptchaException;
 import org.schabi.newpipe.extractor.localization.Localization;
 
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import java.io.IOException;
 import java.time.OffsetDateTime;
 import java.time.format.DateTimeParseException;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
 import java.util.regex.Pattern;
 
+import static org.schabi.newpipe.extractor.Image.HEIGHT_UNKNOWN;
+import static org.schabi.newpipe.extractor.Image.WIDTH_UNKNOWN;
+import static org.schabi.newpipe.extractor.utils.Utils.isNullOrEmpty;
+
 public final class MediaCCCParsingHelper {
-    // {conference_slug}/{room_slug}
+    // conference_slug/room_slug
     private static final Pattern LIVE_STREAM_ID_PATTERN = Pattern.compile("\\w+/\\w+");
     private static JsonArray liveStreams = null;
 
@@ -68,5 +80,99 @@ public final class MediaCCCParsingHelper {
             }
         }
         return liveStreams;
+    }
+
+    /**
+     * Get an {@link Image} list from a given image logo URL.
+     *
+     * <p>
+     * If the image URL is null or empty, an empty list is returned; otherwise, a singleton list is
+     * returned containing an {@link Image} with the image URL with its height, width and
+     * resolution unknown.
+     * </p>
+     *
+     * @param logoImageUrl a logo image URL, which can be null or empty
+     * @return an unmodifiable list of {@link Image}s, which is always empty or a singleton
+     */
+    @Nonnull
+    public static List<Image> getImageListFromLogoImageUrl(@Nullable final String logoImageUrl) {
+        if (isNullOrEmpty(logoImageUrl)) {
+            return List.of();
+        }
+
+        return List.of(new Image(logoImageUrl, HEIGHT_UNKNOWN, WIDTH_UNKNOWN,
+                ResolutionLevel.UNKNOWN));
+    }
+
+    /**
+     * Get the {@link Image} list of thumbnails from a given stream item.
+     *
+     * <p>
+     * MediaCCC API provides two thumbnails for a stream item: a {@code thumb_url} one, which is
+     * medium quality and a {@code poster_url} one, which is high quality in most cases.
+     * </p>
+     *
+     * @param streamItem a stream JSON item of MediaCCC's API, which must not be null
+     * @return an unmodifiable list, which is never null but can be empty.
+     */
+    @Nonnull
+    public static List<Image> getThumbnailsFromStreamItem(@Nonnull final JsonObject streamItem) {
+        return getThumbnailsFromObject(streamItem, "thumb_url", "poster_url");
+    }
+
+    /**
+     * Get the {@link Image} list of thumbnails from a given live stream item.
+     *
+     * <p>
+     * MediaCCC API provides two URL thumbnails for a livestream item: a {@code thumb} one,
+     * which should be medium quality and a {@code poster_url} one, which should be high quality.
+     * </p>
+     *
+     * @param liveStreamItem a stream JSON item of MediaCCC's API, which must not be null
+     * @return an unmodifiable list, which is never null but can be empty.
+     */
+    @Nonnull
+    public static List<Image> getThumbnailsFromLiveStreamItem(
+            @Nonnull final JsonObject liveStreamItem) {
+        return getThumbnailsFromObject(liveStreamItem, "thumb", "poster");
+    }
+
+    /**
+     * Utility method to get an {@link Image} list of thumbnails from a stream or a livestream.
+     *
+     * <p>
+     * MediaCCC's API thumbnails come from two elements: a {@code thumb} element, which links to a
+     * medium thumbnail and a {@code poster} element, which links to a high thumbnail.
+     * </p>
+     * <p>
+     * Thumbnails are only added if their URLs are not null or empty.
+     * </p>
+     *
+     * @param streamOrLivestreamItem a (live)stream JSON item of MediaCCC's API, which must not be
+     *                               null
+     * @param thumbUrlKey  the name of the {@code thumb} URL key
+     * @param posterUrlKey the name of the {@code poster} URL key
+     * @return an unmodifiable list, which is never null but can be empty.
+     */
+    @Nonnull
+    private static List<Image> getThumbnailsFromObject(
+            @Nonnull final JsonObject streamOrLivestreamItem,
+            @Nonnull final String thumbUrlKey,
+            @Nonnull final String posterUrlKey) {
+        final List<Image> imageList = new ArrayList<>(2);
+
+        final String thumbUrl = streamOrLivestreamItem.getString(thumbUrlKey);
+        if (!isNullOrEmpty(thumbUrl)) {
+            imageList.add(new Image(thumbUrl, HEIGHT_UNKNOWN, WIDTH_UNKNOWN,
+                    ResolutionLevel.MEDIUM));
+        }
+
+        final String posterUrl = streamOrLivestreamItem.getString(posterUrlKey);
+        if (!isNullOrEmpty(posterUrl)) {
+            imageList.add(new Image(posterUrl, HEIGHT_UNKNOWN, WIDTH_UNKNOWN,
+                    ResolutionLevel.HIGH));
+        }
+
+        return Collections.unmodifiableList(imageList);
     }
 }
