@@ -1,28 +1,15 @@
 package org.schabi.newpipe.extractor.services.youtube.extractors;
 
-import static org.schabi.newpipe.extractor.services.youtube.YoutubeParsingHelper.DISABLE_PRETTY_PRINT_PARAMETER;
-import static org.schabi.newpipe.extractor.services.youtube.YoutubeParsingHelper.YOUTUBEI_V1_URL;
-import static org.schabi.newpipe.extractor.services.youtube.YoutubeParsingHelper.addClientInfoHeaders;
-import static org.schabi.newpipe.extractor.services.youtube.YoutubeParsingHelper.extractCookieValue;
-import static org.schabi.newpipe.extractor.services.youtube.YoutubeParsingHelper.extractPlaylistTypeFromPlaylistId;
-import static org.schabi.newpipe.extractor.services.youtube.YoutubeParsingHelper.getKey;
-import static org.schabi.newpipe.extractor.services.youtube.YoutubeParsingHelper.getValidJsonResponseBody;
-import static org.schabi.newpipe.extractor.services.youtube.YoutubeParsingHelper.prepareDesktopJsonBuilder;
-import static org.schabi.newpipe.extractor.utils.Utils.EMPTY_STRING;
-import static org.schabi.newpipe.extractor.utils.Utils.getQueryValue;
-import static org.schabi.newpipe.extractor.utils.Utils.isNullOrEmpty;
-import static org.schabi.newpipe.extractor.utils.Utils.stringToURL;
-
 import com.grack.nanojson.JsonArray;
 import com.grack.nanojson.JsonBuilder;
 import com.grack.nanojson.JsonObject;
 import com.grack.nanojson.JsonWriter;
-
 import org.schabi.newpipe.extractor.ListExtractor;
 import org.schabi.newpipe.extractor.Page;
 import org.schabi.newpipe.extractor.StreamingService;
 import org.schabi.newpipe.extractor.downloader.Downloader;
 import org.schabi.newpipe.extractor.downloader.Response;
+import org.schabi.newpipe.extractor.exceptions.ConsentRequiredException;
 import org.schabi.newpipe.extractor.exceptions.ExtractionException;
 import org.schabi.newpipe.extractor.exceptions.ParsingException;
 import org.schabi.newpipe.extractor.linkhandler.ListLinkHandler;
@@ -35,6 +22,8 @@ import org.schabi.newpipe.extractor.stream.StreamInfoItem;
 import org.schabi.newpipe.extractor.stream.StreamInfoItemsCollector;
 import org.schabi.newpipe.extractor.utils.JsonUtils;
 
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import java.io.IOException;
 import java.net.URL;
 import java.nio.charset.StandardCharsets;
@@ -43,8 +32,18 @@ import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
+import static org.schabi.newpipe.extractor.services.youtube.YoutubeParsingHelper.DISABLE_PRETTY_PRINT_PARAMETER;
+import static org.schabi.newpipe.extractor.services.youtube.YoutubeParsingHelper.YOUTUBEI_V1_URL;
+import static org.schabi.newpipe.extractor.services.youtube.YoutubeParsingHelper.addYouTubeHeaders;
+import static org.schabi.newpipe.extractor.services.youtube.YoutubeParsingHelper.extractCookieValue;
+import static org.schabi.newpipe.extractor.services.youtube.YoutubeParsingHelper.extractPlaylistTypeFromPlaylistId;
+import static org.schabi.newpipe.extractor.services.youtube.YoutubeParsingHelper.getKey;
+import static org.schabi.newpipe.extractor.services.youtube.YoutubeParsingHelper.getValidJsonResponseBody;
+import static org.schabi.newpipe.extractor.services.youtube.YoutubeParsingHelper.prepareDesktopJsonBuilder;
+import static org.schabi.newpipe.extractor.utils.Utils.EMPTY_STRING;
+import static org.schabi.newpipe.extractor.utils.Utils.getQueryValue;
+import static org.schabi.newpipe.extractor.utils.Utils.isNullOrEmpty;
+import static org.schabi.newpipe.extractor.utils.Utils.stringToURL;
 
 /**
  * A {@link YoutubePlaylistExtractor} for a mix (auto-generated playlist).
@@ -89,16 +88,26 @@ public class YoutubeMixPlaylistExtractor extends PlaylistExtractor {
         final byte[] body = JsonWriter.string(jsonBody.done()).getBytes(StandardCharsets.UTF_8);
 
         final Map<String, List<String>> headers = new HashMap<>();
-        addClientInfoHeaders(headers);
+        // Cookie is required due to consent
+        addYouTubeHeaders(headers);
 
         final Response response = getDownloader().post(YOUTUBEI_V1_URL + "next?key=" + getKey()
                 + DISABLE_PRETTY_PRINT_PARAMETER, headers, body, localization);
 
         initialData = JsonUtils.toJsonObject(getValidJsonResponseBody(response));
-        playlistData = initialData.getObject("contents").getObject("twoColumnWatchNextResults")
-                .getObject("playlist").getObject("playlist");
+        playlistData = initialData
+                .getObject("contents")
+                .getObject("twoColumnWatchNextResults")
+                .getObject("playlist")
+                .getObject("playlist");
         if (isNullOrEmpty(playlistData)) {
-            throw new ExtractionException("Could not get playlistData");
+            final ExtractionException ex = new ExtractionException("Could not get playlistData");
+            if (!YoutubeParsingHelper.isConsentAccepted()) {
+                throw new ConsentRequiredException(
+                        "Consent is required in some countries to view Mix playlists",
+                        ex);
+            }
+            throw ex;
         }
         cookieValue = extractCookieValue(COOKIE_NAME, response);
     }
@@ -212,7 +221,8 @@ public class YoutubeMixPlaylistExtractor extends PlaylistExtractor {
 
         final StreamInfoItemsCollector collector = new StreamInfoItemsCollector(getServiceId());
         final Map<String, List<String>> headers = new HashMap<>();
-        addClientInfoHeaders(headers);
+        // Cookie is required due to consent
+        addYouTubeHeaders(headers);
 
         final Response response = getDownloader().post(page.getUrl(), headers, page.getBody(),
                 getExtractorLocalization());

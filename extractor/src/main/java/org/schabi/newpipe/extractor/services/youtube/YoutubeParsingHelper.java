@@ -27,7 +27,6 @@ import static org.schabi.newpipe.extractor.utils.Utils.HTTPS;
 import static org.schabi.newpipe.extractor.utils.Utils.UTF_8;
 import static org.schabi.newpipe.extractor.utils.Utils.getStringResultFromRegexArray;
 import static org.schabi.newpipe.extractor.utils.Utils.isNullOrEmpty;
-
 import static java.util.Collections.singletonList;
 
 import com.grack.nanojson.JsonArray;
@@ -245,16 +244,19 @@ public final class YoutubeParsingHelper {
      * The three digits at the end can be random, but are required.
      * </p>
      */
-    private static final String CONSENT_COOKIE_VALUE = "PENDING+";
-
+    private static final String CONSENT_COOKIE_PENDING_VALUE = "PENDING+";
     /**
-     * YouTube {@code CONSENT} cookie.
+     * {@code YES+} means that the user did submit their choices and accepted all cookies.
      *
      * <p>
-     * Should prevent redirect to {@code consent.youtube.com}.
+     * Therefore, YouTube & Google can track the user, because they did give consent.
+     * </p>
+     *
+     * <p>
+     * The three digits at the end can be random, but are required.
      * </p>
      */
-    private static final String CONSENT_COOKIE = "CONSENT=" + CONSENT_COOKIE_VALUE;
+    private static final String CONSENT_COOKIE_YES_VALUE = "YES+";
 
     private static final String FEED_BASE_CHANNEL_ID =
             "https://www.youtube.com/feeds/videos.xml?channel_id=";
@@ -264,6 +266,13 @@ public final class YoutubeParsingHelper {
             Pattern.compile("&c=TVHTML5_SIMPLY_EMBEDDED_PLAYER");
     private static final Pattern C_ANDROID_PATTERN = Pattern.compile("&c=ANDROID");
     private static final Pattern C_IOS_PATTERN = Pattern.compile("&c=IOS");
+
+    /**
+     * {@code false} (default) will use {@link #CONSENT_COOKIE_PENDING_VALUE}.
+     * <br/>
+     * {@code true} will use {@link #CONSENT_COOKIE_YES_VALUE}.
+     */
+    private static boolean consentAccepted = false;
 
     private static boolean isGoogleURL(final String url) {
         final String cachedUrl = extractCachedUrlIfNeeded(url);
@@ -1378,7 +1387,6 @@ public final class YoutubeParsingHelper {
 
     /**
      * Add the <code>CONSENT</code> cookie to prevent redirect to <code>consent.youtube.com</code>
-     * @see #CONSENT_COOKIE
      * @param headers the headers which should be completed
      */
     public static void addCookieHeader(@Nonnull final Map<String, List<String>> headers) {
@@ -1391,8 +1399,9 @@ public final class YoutubeParsingHelper {
 
     @Nonnull
     public static String generateConsentCookie() {
-        final int statusCode = 100 + numberGenerator.nextInt(900);
-        return CONSENT_COOKIE + statusCode;
+        return "CONSENT="
+                + (isConsentAccepted() ? CONSENT_COOKIE_YES_VALUE : CONSENT_COOKIE_PENDING_VALUE)
+                + (100 + numberGenerator.nextInt(900));
     }
 
     public static String extractCookieValue(final String cookieName,
@@ -1612,16 +1621,6 @@ public final class YoutubeParsingHelper {
         return false;
     }
 
-    @Nonnull
-    public static String unescapeDocument(@Nonnull final String doc) {
-        return doc
-                .replaceAll("\\\\x22", "\"")
-                .replaceAll("\\\\x7b", "{")
-                .replaceAll("\\\\x7d", "}")
-                .replaceAll("\\\\x5b", "[")
-                .replaceAll("\\\\x5d", "]");
-    }
-
     /**
      * Generate a content playback nonce (also called {@code cpn}), sent by YouTube clients in
      * playback requests (and also for some clients, in the player request body).
@@ -1691,5 +1690,13 @@ public final class YoutubeParsingHelper {
      */
     public static boolean isIosStreamingUrl(@Nonnull final String url) {
         return Parser.isMatch(C_IOS_PATTERN, url);
+    }
+
+    public static void setConsentAccepted(final boolean accepted) {
+        consentAccepted = accepted;
+    }
+
+    public static boolean isConsentAccepted() {
+        return consentAccepted;
     }
 }

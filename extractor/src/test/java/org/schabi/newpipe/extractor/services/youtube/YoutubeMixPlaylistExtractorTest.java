@@ -1,15 +1,6 @@
 package org.schabi.newpipe.extractor.services.youtube;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertFalse;
-import static org.junit.jupiter.api.Assertions.assertThrows;
-import static org.junit.jupiter.api.Assertions.assertTrue;
-import static org.schabi.newpipe.extractor.ExtractorAsserts.assertIsSecureUrl;
-import static org.schabi.newpipe.extractor.ServiceList.YouTube;
-import static org.schabi.newpipe.extractor.services.youtube.YoutubeParsingHelper.*;
-
 import com.grack.nanojson.JsonWriter;
-
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import org.schabi.newpipe.downloader.DownloaderFactory;
@@ -31,6 +22,17 @@ import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.schabi.newpipe.extractor.ExtractorAsserts.assertIsSecureUrl;
+import static org.schabi.newpipe.extractor.ServiceList.YouTube;
+import static org.schabi.newpipe.extractor.services.youtube.YoutubeParsingHelper.DISABLE_PRETTY_PRINT_PARAMETER;
+import static org.schabi.newpipe.extractor.services.youtube.YoutubeParsingHelper.YOUTUBEI_V1_URL;
+import static org.schabi.newpipe.extractor.services.youtube.YoutubeParsingHelper.getKey;
+import static org.schabi.newpipe.extractor.services.youtube.YoutubeParsingHelper.prepareDesktopJsonBuilder;
+
 public class YoutubeMixPlaylistExtractorTest {
 
     private static final String RESOURCE_PATH = DownloaderFactory.RESOURCE_PATH + "services/youtube/extractor/mix/";
@@ -45,6 +47,7 @@ public class YoutubeMixPlaylistExtractorTest {
         @BeforeAll
         public static void setUp() throws Exception {
             YoutubeTestsUtils.ensureStateless();
+            YoutubeParsingHelper.setConsentAccepted(true);
             NewPipe.init(DownloaderFactory.getDownloader(RESOURCE_PATH + "mix"));
             dummyCookie.put(YoutubeMixPlaylistExtractor.COOKIE_NAME, "whatever");
             extractor = (YoutubeMixPlaylistExtractor) YouTube
@@ -140,6 +143,7 @@ public class YoutubeMixPlaylistExtractorTest {
         @BeforeAll
         public static void setUp() throws Exception {
             YoutubeTestsUtils.ensureStateless();
+            YoutubeParsingHelper.setConsentAccepted(true);
             NewPipe.init(DownloaderFactory.getDownloader(RESOURCE_PATH + "mixWithIndex"));
             dummyCookie.put(YoutubeMixPlaylistExtractor.COOKIE_NAME, "whatever");
             extractor = (YoutubeMixPlaylistExtractor) YouTube
@@ -221,11 +225,12 @@ public class YoutubeMixPlaylistExtractorTest {
     }
 
     public static class MyMix {
-        private static final String VIDEO_ID = "_AzeUSL9lZc";
+        private static final String VIDEO_ID = "YVkUvmDQ3HY";
 
         @BeforeAll
         public static void setUp() throws Exception {
             YoutubeTestsUtils.ensureStateless();
+            YoutubeParsingHelper.setConsentAccepted(true);
             NewPipe.init(DownloaderFactory.getDownloader(RESOURCE_PATH + "myMix"));
             dummyCookie.put(YoutubeMixPlaylistExtractor.COOKIE_NAME, "whatever");
             extractor = (YoutubeMixPlaylistExtractor) YouTube
@@ -249,7 +254,7 @@ public class YoutubeMixPlaylistExtractorTest {
         void getThumbnailUrl() throws Exception {
             final String thumbnailUrl = extractor.getThumbnailUrl();
             assertIsSecureUrl(thumbnailUrl);
-            assertTrue(thumbnailUrl.startsWith("https://i.ytimg.com/vi/_AzeUSL9lZc"));
+            assertTrue(thumbnailUrl.startsWith("https://i.ytimg.com/vi/" + VIDEO_ID));
         }
 
         @Test
@@ -316,6 +321,7 @@ public class YoutubeMixPlaylistExtractorTest {
         @BeforeAll
         public static void setUp() throws IOException {
             YoutubeTestsUtils.ensureStateless();
+            YoutubeParsingHelper.setConsentAccepted(true);
             NewPipe.init(DownloaderFactory.getDownloader(RESOURCE_PATH + "invalid"));
             dummyCookie.put(YoutubeMixPlaylistExtractor.COOKIE_NAME, "whatever");
         }
@@ -350,6 +356,7 @@ public class YoutubeMixPlaylistExtractorTest {
         @BeforeAll
         public static void setUp() throws Exception {
             YoutubeTestsUtils.ensureStateless();
+            YoutubeParsingHelper.setConsentAccepted(true);
             NewPipe.init(DownloaderFactory.getDownloader(RESOURCE_PATH + "channelMix"));
             dummyCookie.put(YoutubeMixPlaylistExtractor.COOKIE_NAME, "whatever");
             extractor = (YoutubeMixPlaylistExtractor) YouTube
@@ -414,6 +421,7 @@ public class YoutubeMixPlaylistExtractorTest {
         @BeforeAll
         public static void setUp() throws Exception {
             YoutubeTestsUtils.ensureStateless();
+            YoutubeParsingHelper.setConsentAccepted(true);
             NewPipe.init(DownloaderFactory.getDownloader(RESOURCE_PATH + "genreMix"));
             dummyCookie.put(YoutubeMixPlaylistExtractor.COOKIE_NAME, "whatever");
             extractor = (YoutubeMixPlaylistExtractor) YouTube
