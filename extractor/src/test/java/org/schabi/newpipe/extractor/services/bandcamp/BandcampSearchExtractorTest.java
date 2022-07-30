@@ -36,7 +36,7 @@ public class BandcampSearchExtractorTest {
      * the accordingly named song by Zach Benson
      */
     @Test
-    public void testStreamSearch() throws ExtractionException, IOException {
+    void testStreamSearch() throws ExtractionException, IOException {
         final SearchExtractor extractor = Bandcamp.getSearchExtractor("best friend's basement");
 
         final ListExtractor.InfoItemsPage<InfoItem> page = extractor.getInitialPage();
@@ -54,7 +54,7 @@ public class BandcampSearchExtractorTest {
      * Tests whether searching bandcamp for "C418" returns the artist's profile
      */
     @Test
-    public void testChannelSearch() throws ExtractionException, IOException {
+    void testChannelSearch() throws ExtractionException, IOException {
         final SearchExtractor extractor = Bandcamp.getSearchExtractor("C418");
         final InfoItem c418 = extractor.getInitialPage()
                 .getItems().get(0);
@@ -71,19 +71,21 @@ public class BandcampSearchExtractorTest {
      * Tests whether searching bandcamp for "minecraft volume alpha" returns the corresponding album
      */
     @Test
-    public void testAlbumSearch() throws ExtractionException, IOException {
+    void testAlbumSearch() throws ExtractionException, IOException {
         final SearchExtractor extractor = Bandcamp.getSearchExtractor("minecraft volume alpha");
         InfoItem minecraft = extractor.getInitialPage()
                 .getItems().get(0);
 
         // Minecraft volume alpha should be the first result, no?
-        assertEquals("Minecraft - Volume Alpha", minecraft.getName());
+        assertEquals("Minecraft: Volume Alpha (cover)", minecraft.getName());
         assertTrue(minecraft.getThumbnailUrl().endsWith(".jpg"));
         assertTrue(minecraft.getThumbnailUrl().contains("f4.bcbits.com/img/"));
-        assertEquals("https://c418.bandcamp.com/album/minecraft-volume-alpha", minecraft.getUrl());
+        assertEquals(
+                "https://chromacat248.bandcamp.com/album/minecraft-volume-alpha-cover",
+                minecraft.getUrl());
 
         // Verify that playlist tracks counts get extracted correctly
-        assertEquals(24, ((PlaylistInfoItem) minecraft).getStreamCount());
+        assertEquals(3, ((PlaylistInfoItem) minecraft).getStreamCount());
 
     }
 
@@ -91,7 +93,7 @@ public class BandcampSearchExtractorTest {
      * Tests searches with multiple pages
      */
     @Test
-    public void testMultiplePages() throws ExtractionException, IOException {
+    void testMultiplePages() throws ExtractionException, IOException {
         // A query practically guaranteed to have the maximum amount of pages
         final SearchExtractor extractor = Bandcamp.getSearchExtractor("e");
 
