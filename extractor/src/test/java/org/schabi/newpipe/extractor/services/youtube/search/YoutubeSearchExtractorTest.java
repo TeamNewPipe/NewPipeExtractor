@@ -254,15 +254,14 @@ public class YoutubeSearchExtractorTest {
         @Override public String expectedSearchString() { return QUERY; }
         @Override public String expectedSearchSuggestion() { return null; }
         @Override public List<MetaInfo> expectedMetaInfo() throws MalformedURLException {
-            final List<URL> urls = new ArrayList<>();
-            urls.add(new URL("https://www.who.int/emergencies/diseases/novel-coronavirus-2019"));
-            final List<String> urlTexts = new ArrayList<>();
-            urlTexts.add("LEARN MORE");
             return Collections.singletonList(new MetaInfo(
                     "COVID-19",
-                    new Description("Get the latest information from the WHO about coronavirus.", Description.PLAIN_TEXT),
-                    urls,
-                    urlTexts
+                    new Description(
+                            "Get the latest information from the WHO about coronavirus.",
+                            Description.PLAIN_TEXT),
+                    Collections.singletonList(
+                            new URL("https://www.who.int/emergencies/diseases/novel-coronavirus-2019")),
+                    Collections.singletonList("LEARN MORE")
             ));
         }
         // testMoreRelatedItems is broken because a video has no duration shown
