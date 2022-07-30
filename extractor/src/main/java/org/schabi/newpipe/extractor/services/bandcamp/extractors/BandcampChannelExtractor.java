@@ -2,12 +2,18 @@
 
 package org.schabi.newpipe.extractor.services.bandcamp.extractors;
 
+import static org.schabi.newpipe.extractor.Image.HEIGHT_UNKNOWN;
+import static org.schabi.newpipe.extractor.Image.WIDTH_UNKNOWN;
+import static org.schabi.newpipe.extractor.services.bandcamp.extractors.BandcampExtractorHelper.getArtistDetails;
+import static org.schabi.newpipe.extractor.services.bandcamp.extractors.BandcampExtractorHelper.getImagesFromImageId;
 import static org.schabi.newpipe.extractor.utils.Utils.replaceHttpWithHttps;
 
 import com.grack.nanojson.JsonArray;
 import com.grack.nanojson.JsonObject;
 
 import org.jsoup.Jsoup;
+import org.schabi.newpipe.extractor.Image;
+import org.schabi.newpipe.extractor.Image.ResolutionLevel;
 import org.schabi.newpipe.extractor.StreamingService;
 import org.schabi.newpipe.extractor.channel.ChannelExtractor;
 import org.schabi.newpipe.extractor.channel.tabs.ChannelTabExtractor;
@@ -25,6 +31,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
+import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import javax.annotation.Nonnull;
@@ -38,17 +45,15 @@ public class BandcampChannelExtractor extends ChannelExtractor {
         super(service, linkHandler);
     }
 
+    @Nonnull
     @Override
-    public String getAvatarUrl() {
-        if (channelInfo.getLong("bio_image_id") == 0) {
-            return "";
-        }
-
-        return BandcampExtractorHelper.getImageUrl(channelInfo.getLong("bio_image_id"), false);
+    public List<Image> getAvatars() {
+        return getImagesFromImageId(channelInfo.getLong("bio_image_id"), false);
     }
 
+    @Nonnull
     @Override
-    public String getBannerUrl() throws ParsingException {
+    public List<Image> getBanners() throws ParsingException {
         /*
          * Mobile API does not return the header or not the correct header.
          * Therefore, we need to query the website
@@ -62,8 +67,11 @@ public class BandcampChannelExtractor extends ChannelExtractor {
                     .filter(Objects::nonNull)
                     .flatMap(element -> element.getElementsByTag("img").stream())
                     .map(element -> element.attr("src"))
-                    .findFirst()
-                    .orElse(""); // no banner available
+                    .filter(url -> !url.isEmpty())
+                    .map(url -> new Image(
+                            replaceHttpWithHttps(url), HEIGHT_UNKNOWN, WIDTH_UNKNOWN,
+                            ResolutionLevel.UNKNOWN))
+                    .collect(Collectors.toUnmodifiableList());
 
         } catch (final IOException | ReCaptchaException e) {
             throw new ParsingException("Could not download artist web site", e);
@@ -98,9 +106,10 @@ public class BandcampChannelExtractor extends ChannelExtractor {
         return null;
     }
 
+    @Nonnull
     @Override
-    public String getParentChannelAvatarUrl() {
-        return null;
+    public List<Image> getParentChannelAvatars() {
+        return List.of();
     }
 
     @Override
@@ -156,7 +165,7 @@ public class BandcampChannelExtractor extends ChannelExtractor {
     @Override
     public void onFetchPage(@Nonnull final Downloader downloader)
             throws IOException, ExtractionException {
-        channelInfo = BandcampExtractorHelper.getArtistDetails(getId());
+        channelInfo = getArtistDetails(getId());
     }
 
     @Nonnull

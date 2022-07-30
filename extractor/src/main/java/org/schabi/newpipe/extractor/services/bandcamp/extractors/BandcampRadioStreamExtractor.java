@@ -3,6 +3,7 @@ package org.schabi.newpipe.extractor.services.bandcamp.extractors;
 import static org.schabi.newpipe.extractor.services.bandcamp.extractors.BandcampExtractorHelper.BASE_API_URL;
 import static org.schabi.newpipe.extractor.services.bandcamp.extractors.BandcampExtractorHelper.BASE_URL;
 import static org.schabi.newpipe.extractor.services.bandcamp.extractors.BandcampExtractorHelper.getImageUrl;
+import static org.schabi.newpipe.extractor.services.bandcamp.extractors.BandcampExtractorHelper.getImagesFromImageId;
 
 import com.grack.nanojson.JsonArray;
 import com.grack.nanojson.JsonObject;
@@ -11,6 +12,8 @@ import com.grack.nanojson.JsonParserException;
 
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Element;
+import org.schabi.newpipe.extractor.Image;
+import org.schabi.newpipe.extractor.Image.ResolutionLevel;
 import org.schabi.newpipe.extractor.MediaFormat;
 import org.schabi.newpipe.extractor.NewPipe;
 import org.schabi.newpipe.extractor.StreamingService;
@@ -97,14 +100,16 @@ public class BandcampRadioStreamExtractor extends BandcampStreamExtractor {
 
     @Nonnull
     @Override
-    public String getThumbnailUrl() throws ParsingException {
-        return getImageUrl(showInfo.getLong("show_image_id"), false);
+    public List<Image> getThumbnails() throws ParsingException {
+        return getImagesFromImageId(showInfo.getLong("show_image_id"), false);
     }
 
     @Nonnull
     @Override
-    public String getUploaderAvatarUrl() {
-        return BASE_URL + "/img/buttons/bandcamp-button-circle-whitecolor-512.png";
+    public List<Image> getUploaderAvatars() {
+        return Collections.singletonList(
+                new Image(BASE_URL + "/img/buttons/bandcamp-button-circle-whitecolor-512.png",
+                        512, 512, ResolutionLevel.MEDIUM));
     }
 
     @Nonnull

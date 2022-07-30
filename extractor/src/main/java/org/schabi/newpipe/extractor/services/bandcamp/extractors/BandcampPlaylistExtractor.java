@@ -1,6 +1,7 @@
 package org.schabi.newpipe.extractor.services.bandcamp.extractors;
 
-import static org.schabi.newpipe.extractor.services.bandcamp.extractors.BandcampExtractorHelper.getImageUrl;
+import static org.schabi.newpipe.extractor.services.bandcamp.extractors.BandcampExtractorHelper.getImagesFromImageId;
+import static org.schabi.newpipe.extractor.services.bandcamp.extractors.BandcampExtractorHelper.getImagesFromImageUrl;
 import static org.schabi.newpipe.extractor.services.bandcamp.extractors.BandcampStreamExtractor.getAlbumInfoJson;
 import static org.schabi.newpipe.extractor.utils.JsonUtils.getJsonData;
 import static org.schabi.newpipe.extractor.utils.Utils.HTTPS;
@@ -13,6 +14,7 @@ import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
+import org.schabi.newpipe.extractor.Image;
 import org.schabi.newpipe.extractor.Page;
 import org.schabi.newpipe.extractor.StreamingService;
 import org.schabi.newpipe.extractor.downloader.Downloader;
@@ -28,6 +30,7 @@ import org.schabi.newpipe.extractor.stream.StreamInfoItemsCollector;
 
 import java.io.IOException;
 import java.util.Objects;
+import java.util.List;
 
 import javax.annotation.Nonnull;
 
@@ -74,11 +77,11 @@ public class BandcampPlaylistExtractor extends PlaylistExtractor {
 
     @Nonnull
     @Override
-    public String getThumbnailUrl() throws ParsingException {
+    public List<Image> getThumbnails() throws ParsingException {
         if (albumJson.isNull("art_id")) {
-            return "";
+            return List.of();
         } else {
-            return getImageUrl(albumJson.getLong("art_id"), true);
+            return getImagesFromImageId(albumJson.getLong("art_id"), true);
         }
     }
 
@@ -94,12 +97,14 @@ public class BandcampPlaylistExtractor extends PlaylistExtractor {
         return albumJson.getString("artist");
     }
 
+    @Nonnull
     @Override
-    public String getUploaderAvatarUrl() {
-        return document.getElementsByClass("band-photo").stream()
+    public List<Image> getUploaderAvatars() {
+        return getImagesFromImageUrl(document.getElementsByClass("band-photo")
+                .stream()
                 .map(element -> element.attr("src"))
                 .findFirst()
-                .orElse("");
+                .orElse(""));
     }
 
     @Override
@@ -154,7 +159,7 @@ public class BandcampPlaylistExtractor extends PlaylistExtractor {
             } else {
                 // Pretend every track has the same cover art as the album
                 collector.commit(new BandcampPlaylistStreamInfoItemExtractor(
-                        track, getUploaderUrl(), getThumbnailUrl()));
+                        track, getUploaderUrl(), getThumbnails()));
             }
         }
 
