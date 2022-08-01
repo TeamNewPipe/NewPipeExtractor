@@ -39,5 +39,5 @@ dependencies {
     testImplementation 'org.junit.jupiter:junit-jupiter-params'
 
     testImplementation "com.squareup.okhttp3:okhttp:3.12.13"
-    testImplementation 'com.google.code.gson:gson:2.9.0'
+    testImplementation 'com.google.code.gson:gson:2.9.1'
 }
