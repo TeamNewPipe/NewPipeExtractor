@@ -4,13 +4,13 @@ import org.junit.jupiter.api.Test;
 
 public interface BasePlaylistExtractorTest extends BaseListExtractorTest {
     @Test
-    void testThumbnailUrl() throws Exception;
+    void testThumbnails() throws Exception;
     @Test
-    void testBannerUrl() throws Exception;
+    void testBanners() throws Exception;
     @Test
     void testUploaderName() throws Exception;
     @Test
-    void testUploaderAvatarUrl() throws Exception;
+    void testUploaderAvatars() throws Exception;
     @Test
     void testStreamCount() throws Exception;
     @Test

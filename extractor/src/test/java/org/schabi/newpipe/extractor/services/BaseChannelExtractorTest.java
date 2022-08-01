@@ -6,9 +6,9 @@ public interface BaseChannelExtractorTest extends BaseExtractorTest {
     @Test
     void testDescription() throws Exception;
     @Test
-    void testAvatarUrl() throws Exception;
+    void testAvatars() throws Exception;
     @Test
-    void testBannerUrl() throws Exception;
+    void testBanners() throws Exception;
     @Test
     void testFeedUrl() throws Exception;
     @Test
