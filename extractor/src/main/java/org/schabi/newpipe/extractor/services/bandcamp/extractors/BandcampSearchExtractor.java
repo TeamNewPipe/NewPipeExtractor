@@ -18,6 +18,7 @@ import org.schabi.newpipe.extractor.linkhandler.SearchQueryHandler;
 import org.schabi.newpipe.extractor.MultiInfoItemsCollector;
 import org.schabi.newpipe.extractor.search.SearchExtractor;
 import org.schabi.newpipe.extractor.services.bandcamp.extractors.streaminfoitem.BandcampSearchStreamInfoItemExtractor;
+import org.schabi.newpipe.extractor.utils.Utils;
 
 import javax.annotation.Nonnull;
 import java.io.IOException;
@@ -34,7 +35,7 @@ public class BandcampSearchExtractor extends SearchExtractor {
     @NonNull
     @Override
     public String getSearchSuggestion() {
-        return "";
+        return Utils.EMPTY_STRING;
     }
 
     @Override
@@ -50,40 +51,30 @@ public class BandcampSearchExtractor extends SearchExtractor {
 
     public InfoItemsPage<InfoItem> getPage(final Page page)
             throws IOException, ExtractionException {
-        final String html = getDownloader().get(page.getUrl()).responseBody();
-
         final MultiInfoItemsCollector collector = new MultiInfoItemsCollector(getServiceId());
+        final Document d = Jsoup.parse(getDownloader().get(page.getUrl()).responseBody());
 
-
-        final Document d = Jsoup.parse(html);
-
-        final Elements searchResultsElements = d.getElementsByClass("searchresult");
-
-        for (final Element searchResult : searchResultsElements) {
-
-            final String type = searchResult.getElementsByClass("result-info").first()
-                    .getElementsByClass("itemtype").first().text();
+        for (final Element searchResult : d.getElementsByClass("searchresult")) {
+            final String type = searchResult.getElementsByClass("result-info").stream()
+                    .flatMap(element -> element.getElementsByClass("itemtype").stream())
+                    .map(Element::text)
+                    .findFirst()
+                    .orElse(Utils.EMPTY_STRING);
 
             switch (type) {
-                default:
-                    continue;
-                case "FAN":
-                    // don't display fan results
-                    break;
-
                 case "ARTIST":
                     collector.commit(new BandcampChannelInfoItemExtractor(searchResult));
                     break;
-
                 case "ALBUM":
                     collector.commit(new BandcampPlaylistInfoItemExtractor(searchResult));
                     break;
-
                 case "TRACK":
                     collector.commit(new BandcampSearchStreamInfoItemExtractor(searchResult, null));
                     break;
+                default:
+                    // don't display fan results ("FAN") or other things
+                    break;
             }
-
         }
 
         // Count pages
@@ -92,7 +83,10 @@ public class BandcampSearchExtractor extends SearchExtractor {
             return new InfoItemsPage<>(collector, null);
         }
 
-        final Elements pages = pageLists.first().getElementsByTag("li");
+        final Elements pages = pageLists.stream()
+                .map(element -> element.getElementsByTag("li"))
+                .findFirst()
+                .orElseGet(Elements::new);
 
         // Find current page
         int currentPage = -1;

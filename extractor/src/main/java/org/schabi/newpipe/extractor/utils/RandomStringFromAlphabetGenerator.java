@@ -16,7 +16,7 @@ public final class RandomStringFromAlphabetGenerator {
      * Generate a random string from an alphabet.
      *
      * @param alphabet the characters' alphabet to use
-     * @param length   the length of the returned string (> 0)
+     * @param length   the length of the returned string (greater than 0)
      * @param random   {@link Random} (or better {@link java.security.SecureRandom}) used for
      *                 generating the random string
      * @return a random string of the requested length made of only characters from the provided

@@ -33,11 +33,13 @@ public class PeertubeTrendingExtractor extends KioskExtractor<StreamInfoItem> {
         super(streamingService, linkHandler, kioskId);
     }
 
+    @Nonnull
     @Override
     public String getName() throws ParsingException {
         return getId();
     }
 
+    @Nonnull
     @Override
     public InfoItemsPage<StreamInfoItem> getInitialPage() throws IOException, ExtractionException {
         return getPage(new Page(getUrl() + "&" + START_KEY + "=0&"

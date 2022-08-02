@@ -5,6 +5,10 @@ on:
     branches:
       - master
 
+permissions:
+  # The generated docs are written to the `gh-pages` branch.
+  contents: write
+
 jobs:
   build-and-deploy-docs:
     runs-on: ubuntu-latest
@@ -12,13 +16,13 @@ jobs:
       - uses: actions/checkout@v3
 
       - name: set up JDK 8
-        uses: actions/setup-java@v2
+        uses: actions/setup-java@v3
         with:
           java-version: '8'
-          distribution: 'adopt'
+          distribution: 'temurin'
 
       - name: Cache Gradle dependencies
-        uses: actions/cache@v2
+        uses: actions/cache@v3
         with:
           path: ~/.gradle/caches
           key: ${{ runner.os }}-gradle-${{ hashFiles('**/*.gradle') }}

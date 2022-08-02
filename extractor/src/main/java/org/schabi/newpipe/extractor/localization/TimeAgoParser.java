@@ -7,7 +7,6 @@ import org.schabi.newpipe.extractor.utils.Parser;
 import java.time.OffsetDateTime;
 import java.time.ZoneOffset;
 import java.time.temporal.ChronoUnit;
-import java.util.Collection;
 import java.util.Map;
 import java.util.regex.Pattern;
 
@@ -58,36 +57,27 @@ public class TimeAgoParser {
             }
         }
 
-        int timeAgoAmount;
-        try {
-            timeAgoAmount = parseTimeAgoAmount(textualDate);
-        } catch (final NumberFormatException e) {
-            // If there is no valid number in the textual date,
-            // assume it is 1 (as in 'a second ago').
-            timeAgoAmount = 1;
-        }
-
-        final ChronoUnit chronoUnit = parseChronoUnit(textualDate);
-        return getResultFor(timeAgoAmount, chronoUnit);
+        return getResultFor(parseTimeAgoAmount(textualDate), parseChronoUnit(textualDate));
     }
 
-    private int parseTimeAgoAmount(final String textualDate) throws NumberFormatException {
-        return Integer.parseInt(textualDate.replaceAll("\\D+", ""));
+    private int parseTimeAgoAmount(final String textualDate) {
+        try {
+            return Integer.parseInt(textualDate.replaceAll("\\D+", ""));
+        } catch (final NumberFormatException ignored) {
+            // If there is no valid number in the textual date,
+            // assume it is 1 (as in 'a second ago').
+            return 1;
+        }
     }
 
     private ChronoUnit parseChronoUnit(final String textualDate) throws ParsingException {
-        for (final Map.Entry<ChronoUnit, Collection<String>> entry
-                : patternsHolder.asMap().entrySet()) {
-            final ChronoUnit chronoUnit = entry.getKey();
-
-            for (final String agoPhrase : entry.getValue()) {
-                if (textualDateMatches(textualDate, agoPhrase)) {
-                    return chronoUnit;
-                }
-            }
-        }
-
-        throw new ParsingException("Unable to parse the date: " + textualDate);
+        return patternsHolder.asMap().entrySet().stream()
+                .filter(e -> e.getValue().stream()
+                        .anyMatch(agoPhrase -> textualDateMatches(textualDate, agoPhrase)))
+                .map(Map.Entry::getKey)
+                .findFirst()
+                .orElseThrow(() ->
+                        new ParsingException("Unable to parse the date: " + textualDate));
     }
 
     private boolean textualDateMatches(final String textualDate, final String agoPhrase) {
@@ -97,24 +87,21 @@ public class TimeAgoParser {
 
         if (patternsHolder.wordSeparator().isEmpty()) {
             return textualDate.toLowerCase().contains(agoPhrase.toLowerCase());
-        } else {
-            final String escapedPhrase = Pattern.quote(agoPhrase.toLowerCase());
-            final String escapedSeparator;
-            if (patternsHolder.wordSeparator().equals(" ")) {
+        }
+
+        final String escapedPhrase = Pattern.quote(agoPhrase.toLowerCase());
+        final String escapedSeparator = patternsHolder.wordSeparator().equals(" ")
                 // From JDK8 → \h - Treat horizontal spaces as a normal one
                 // (non-breaking space, thin space, etc.)
-                escapedSeparator = "[ \\t\\xA0\\u1680\\u180e\\u2000-\\u200a\\u202f\\u205f\\u3000]";
-            } else {
-                escapedSeparator = Pattern.quote(patternsHolder.wordSeparator());
-            }
+                ? "[ \\t\\xA0\\u1680\\u180e\\u2000-\\u200a\\u202f\\u205f\\u3000]"
+                : Pattern.quote(patternsHolder.wordSeparator());
 
-            // (^|separator)pattern($|separator)
-            // Check if the pattern is surrounded by separators or start/end of the string.
-            final String pattern =
-                    "(^|" + escapedSeparator + ")" + escapedPhrase + "($|" + escapedSeparator + ")";
+        // (^|separator)pattern($|separator)
+        // Check if the pattern is surrounded by separators or start/end of the string.
+        final String pattern =
+                "(^|" + escapedSeparator + ")" + escapedPhrase + "($|" + escapedSeparator + ")";
 
-            return Parser.isMatch(pattern, textualDate.toLowerCase());
-        }
+        return Parser.isMatch(pattern, textualDate.toLowerCase());
     }
 
     private DateWrapper getResultFor(final int timeAgoAmount, final ChronoUnit chronoUnit) {

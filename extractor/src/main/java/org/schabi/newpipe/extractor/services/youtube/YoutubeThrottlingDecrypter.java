@@ -8,6 +8,7 @@ import org.schabi.newpipe.extractor.utils.StringUtils;
 import javax.annotation.Nonnull;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 /**
@@ -34,13 +35,13 @@ import java.util.regex.Pattern;
  */
 public class YoutubeThrottlingDecrypter {
 
-    public static Pattern N_PARAM_PATTERN = Pattern.compile("[&?]n=([^&]+)");
-    public static Pattern FUNCTION_NAME_PATTERN = Pattern.compile(
-            "b=a\\.get\\(\"n\"\\)\\)&&\\(b=(\\S+)\\(b\\),a\\.set\\(\"n\",b\\)");
+    public static final Pattern N_PARAM_PATTERN = Pattern.compile("[&?]n=([^&]+)");
+    public static final Pattern FUNCTION_NAME_PATTERN = Pattern.compile(
+            "\\.get\\(\"n\"\\)\\)&&\\(b=([a-zA-Z0-9$]+)(?:\\[(\\d+)])?\\([a-zA-Z0-9]\\)");
 
-    private static final Map<String, String> N_PARAMS_CACHE = new HashMap<>();
-    @SuppressWarnings("StaticVariableName") private static String FUNCTION;
-    @SuppressWarnings("StaticVariableName") private static String FUNCTION_NAME;
+    public static final Map<String, String> N_PARAMS_CACHE = new HashMap<>();
+    @SuppressWarnings("StaticVariableName") public static String FUNCTION;
+    @SuppressWarnings("StaticVariableName") public static String FUNCTION_NAME;
 
     private final String functionName;
     private final String function;
@@ -97,21 +98,24 @@ public class YoutubeThrottlingDecrypter {
 
     private static String parseDecodeFunctionName(final String playerJsCode)
             throws Parser.RegexException {
-        String functionName = Parser.matchGroup1(FUNCTION_NAME_PATTERN, playerJsCode);
-        final int arrayStartBrace = functionName.indexOf("[");
-
-        if (arrayStartBrace > 0) {
-            final String arrayVarName = functionName.substring(0, arrayStartBrace);
-            final String order = functionName.substring(
-                    arrayStartBrace + 1, functionName.indexOf("]"));
-            final int arrayNum = Integer.parseInt(order);
-            final Pattern arrayPattern = Pattern.compile(
-                    String.format("var %s=\\[(.+?)\\];", arrayVarName));
-            final String arrayStr = Parser.matchGroup1(arrayPattern, playerJsCode);
-            final String[] names = arrayStr.split(",");
-            functionName = names[arrayNum];
+        final Matcher matcher = FUNCTION_NAME_PATTERN.matcher(playerJsCode);
+        final boolean foundMatch = matcher.find();
+        if (!foundMatch) {
+            throw new Parser.RegexException("Failed to find pattern \""
+                    + FUNCTION_NAME_PATTERN + "\"");
         }
-        return functionName;
+
+        final String functionName = matcher.group(1);
+        if (matcher.groupCount() == 1) {
+            return functionName;
+        }
+
+        final int arrayNum = Integer.parseInt(matcher.group(2));
+        final Pattern arrayPattern = Pattern.compile(
+                "var " + Pattern.quote(functionName) + "\\s*=\\s*\\[(.+?)];");
+        final String arrayStr = Parser.matchGroup1(arrayPattern, playerJsCode);
+        final String[] names = arrayStr.split(",");
+        return names[arrayNum];
     }
 
     @Nonnull

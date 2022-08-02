@@ -4,6 +4,8 @@ import org.jsoup.nodes.Element;
 import org.schabi.newpipe.extractor.comments.CommentsInfoItemExtractor;
 import org.schabi.newpipe.extractor.exceptions.ParsingException;
 
+import java.util.Objects;
+
 public class BandcampCommentsInfoItemExtractor implements CommentsInfoItemExtractor {
 
     private final Element writing;
@@ -16,7 +18,7 @@ public class BandcampCommentsInfoItemExtractor implements CommentsInfoItemExtrac
 
     @Override
     public String getName() throws ParsingException {
-        return writing.getElementsByClass("text").first().ownText();
+        return getCommentText();
     }
 
     @Override
@@ -30,13 +32,21 @@ public class BandcampCommentsInfoItemExtractor implements CommentsInfoItemExtrac
     }
 
     @Override
-    public String getCommentText() {
-        return writing.getElementsByClass("text").first().ownText();
+    public String getCommentText() throws ParsingException {
+        return writing.getElementsByClass("text").stream()
+                .filter(Objects::nonNull)
+                .map(Element::ownText)
+                .findFirst()
+                .orElseThrow(() -> new ParsingException("Could not get comment text"));
     }
 
     @Override
     public String getUploaderName() throws ParsingException {
-        return writing.getElementsByClass("name").first().text();
+        return writing.getElementsByClass("name").stream()
+                .filter(Objects::nonNull)
+                .map(Element::text)
+                .findFirst()
+                .orElseThrow(() -> new ParsingException("Could not get uploader name"));
     }
 
     @Override

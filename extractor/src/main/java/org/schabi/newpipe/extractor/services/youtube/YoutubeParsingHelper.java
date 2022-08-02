@@ -71,6 +71,7 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.Random;
+import java.util.regex.Pattern;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -246,6 +247,11 @@ public final class YoutubeParsingHelper {
     private static final String FEED_BASE_CHANNEL_ID =
             "https://www.youtube.com/feeds/videos.xml?channel_id=";
     private static final String FEED_BASE_USER = "https://www.youtube.com/feeds/videos.xml?user=";
+    private static final Pattern C_WEB_PATTERN = Pattern.compile("&c=WEB");
+    private static final Pattern C_TVHTML5_SIMPLY_EMBEDDED_PLAYER_PATTERN =
+            Pattern.compile("&c=TVHTML5_SIMPLY_EMBEDDED_PLAYER");
+    private static final Pattern C_ANDROID_PATTERN = Pattern.compile("&c=ANDROID");
+    private static final Pattern C_IOS_PATTERN = Pattern.compile("&c=IOS");
 
     private static boolean isGoogleURL(final String url) {
         final String cachedUrl = extractCachedUrlIfNeeded(url);
@@ -853,7 +859,7 @@ public final class YoutubeParsingHelper {
                 musicKey = getStringResultFromRegexArray(response, INNERTUBE_API_KEY_REGEXES, 1);
                 musicClientName = Parser.matchGroup1(INNERTUBE_CLIENT_NAME_REGEX, response);
         } catch (final Exception e) {
-            final String url = "https://music.youtube.com/";
+            final String url = "https://music.youtube.com/?ucbcb=1";
             final Map<String, List<String>> headers = new HashMap<>();
             addCookieHeader(headers);
             final String html = getDownloader().get(url, headers).responseBody();
@@ -975,7 +981,7 @@ public final class YoutubeParsingHelper {
 
         if (html) {
             text = text.replaceAll("\\n", "<br>");
-            text = text.replaceAll("  ", " &nbsp;");
+            text = text.replaceAll(" {2}", " &nbsp;");
         }
 
         return text;
@@ -1190,7 +1196,7 @@ public final class YoutubeParsingHelper {
             @Nonnull final Localization localization,
             @Nonnull final ContentCountry contentCountry,
             @Nonnull final String videoId) {
-                // @formatter:off
+        // @formatter:off
         return JsonObject.builder()
                 .object("context")
                     .object("client")
@@ -1258,8 +1264,7 @@ public final class YoutubeParsingHelper {
         // Spoofing an Android 12 device with the hardcoded version of the Android app
         return "com.google.android.youtube/" + MOBILE_YOUTUBE_CLIENT_VERSION
                 + " (Linux; U; Android 12; "
-                + (localization != null ? localization.getCountryCode()
-                        : Localization.DEFAULT.getCountryCode())
+                + (localization != null ? localization : Localization.DEFAULT).getCountryCode()
                 + ") gzip";
     }
 
@@ -1278,10 +1283,8 @@ public final class YoutubeParsingHelper {
     public static String getIosUserAgent(@Nullable final Localization localization) {
         // Spoofing an iPhone running iOS 15.4 with the hardcoded mobile client version
         return "com.google.ios.youtube/" + MOBILE_YOUTUBE_CLIENT_VERSION
-                + "(" + IOS_DEVICE_MODEL
-                + "; U; CPU iOS 15_4 like Mac OS X; "
-                + (localization != null ? localization.getCountryCode()
-                        : Localization.DEFAULT.getCountryCode())
+                + "(" + IOS_DEVICE_MODEL + "; U; CPU iOS 15_4 like Mac OS X; "
+                + (localization != null ? localization : Localization.DEFAULT).getCountryCode()
                 + ")";
     }
 
@@ -1587,5 +1590,47 @@ public final class YoutubeParsingHelper {
     public static String generateTParameter() {
         return RandomStringFromAlphabetGenerator.generate(
                 CONTENT_PLAYBACK_NONCE_ALPHABET, 12, numberGenerator);
+    }
+
+    /**
+     * Check if the streaming URL is from the YouTube {@code WEB} client.
+     *
+     * @param url the streaming URL to be checked.
+     * @return true if it's a {@code WEB} streaming URL, false otherwise
+     */
+    public static boolean isWebStreamingUrl(@Nonnull final String url) {
+        return Parser.isMatch(C_WEB_PATTERN, url);
+    }
+
+    /**
+     * Check if the streaming URL is a URL from the YouTube {@code TVHTML5_SIMPLY_EMBEDDED_PLAYER}
+     * client.
+     *
+     * @param url the streaming URL on which check if it's a {@code TVHTML5_SIMPLY_EMBEDDED_PLAYER}
+     *            streaming URL.
+     * @return true if it's a {@code TVHTML5_SIMPLY_EMBEDDED_PLAYER} streaming URL, false otherwise
+     */
+    public static boolean isTvHtml5SimplyEmbeddedPlayerStreamingUrl(@Nonnull final String url) {
+        return Parser.isMatch(C_TVHTML5_SIMPLY_EMBEDDED_PLAYER_PATTERN, url);
+    }
+
+    /**
+     * Check if the streaming URL is a URL from the YouTube {@code ANDROID} client.
+     *
+     * @param url the streaming URL to be checked.
+     * @return true if it's a {@code ANDROID} streaming URL, false otherwise
+     */
+    public static boolean isAndroidStreamingUrl(@Nonnull final String url) {
+        return Parser.isMatch(C_ANDROID_PATTERN, url);
+    }
+
+    /**
+     * Check if the streaming URL is a URL from the YouTube {@code IOS} client.
+     *
+     * @param url the streaming URL on which check if it's a {@code IOS} streaming URL.
+     * @return true if it's a {@code IOS} streaming URL, false otherwise
+     */
+    public static boolean isIosStreamingUrl(@Nonnull final String url) {
+        return Parser.isMatch(C_IOS_PATTERN, url);
     }
 }
