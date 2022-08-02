@@ -9,19 +9,17 @@ allprojects {
     targetCompatibility = 1.8
 
     version 'v0.22.1'
-    group 'com.github.TeamNewPipe'
+    group 'com.github.fabiano-araujo'
 
     repositories {
         mavenCentral()
         maven { url "https://jitpack.io" }
     }
 
-    afterEvaluate {
-        publishing {
-            publications {
-                mavenJava(MavenPublication) {
-                    from components.java
-                }
+    publishing {
+        publications {
+            mavenJava(MavenPublication) {
+                from components.java
             }
         }
     }
