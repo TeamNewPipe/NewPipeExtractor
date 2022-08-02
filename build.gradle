@@ -8,8 +8,8 @@ allprojects {
     sourceCompatibility = 1.8
     targetCompatibility = 1.8
 
-    version 'v0.22.2'
-    group 'com.github.fabiano-araujo'
+    version 'v0.22.1'
+    group 'com.github.TeamNewPipe'
 
     repositories {
         mavenCentral()
