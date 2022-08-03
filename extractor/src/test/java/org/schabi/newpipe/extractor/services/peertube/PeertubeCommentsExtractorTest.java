@@ -18,6 +18,7 @@ import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.schabi.newpipe.extractor.ServiceList.PeerTube;
+import static org.schabi.newpipe.extractor.services.DefaultTests.defaultTestImageCollection;
 
 public class PeertubeCommentsExtractorTest {
     public static class Default {
@@ -73,12 +74,12 @@ public class PeertubeCommentsExtractorTest {
                     .forEach(commentsInfoItem -> {
                         assertFalse(Utils.isBlank(commentsInfoItem.getUploaderUrl()));
                         assertFalse(Utils.isBlank(commentsInfoItem.getUploaderName()));
-                        assertFalse(Utils.isBlank(commentsInfoItem.getUploaderAvatarUrl()));
+                        defaultTestImageCollection(commentsInfoItem.getUploaderAvatars());
                         assertFalse(Utils.isBlank(commentsInfoItem.getCommentId()));
                         assertFalse(Utils.isBlank(commentsInfoItem.getCommentText().getContent()));
                         assertFalse(Utils.isBlank(commentsInfoItem.getName()));
                         assertFalse(Utils.isBlank(commentsInfoItem.getTextualUploadDate()));
-                        assertFalse(Utils.isBlank(commentsInfoItem.getThumbnailUrl()));
+                        defaultTestImageCollection(commentsInfoItem.getThumbnails());
                         assertFalse(Utils.isBlank(commentsInfoItem.getUrl()));
                         assertEquals(-1, commentsInfoItem.getLikeCount());
                         assertTrue(Utils.isBlank(commentsInfoItem.getTextualLikeCount()));

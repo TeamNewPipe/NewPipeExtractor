@@ -2,9 +2,9 @@ package org.schabi.newpipe.extractor.services.peertube;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.schabi.newpipe.extractor.ServiceList.PeerTube;
+import static org.schabi.newpipe.extractor.services.DefaultTests.defaultTestImageCollection;
 
 import org.junit.jupiter.api.BeforeAll;
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.schabi.newpipe.downloader.DownloaderTestImpl;
 import org.schabi.newpipe.extractor.ExtractorAsserts;
@@ -31,11 +31,8 @@ public class PeertubePlaylistExtractorTest {
         }
 
         @Test
-        @Disabled("URL changes with every request")
-        void testGetThumbnailUrl() throws ParsingException {
-            assertEquals(
-                    "https://framatube.org/static/thumbnails/playlist-96b0ee2b-a5a7-4794-8769-58d8ccb79ab7.jpg",
-                    extractor.getThumbnailUrl());
+        void testGetThumbnails() throws ParsingException {
+            defaultTestImageCollection(extractor.getThumbnails());
         }
 
         @Test
@@ -44,10 +41,8 @@ public class PeertubePlaylistExtractorTest {
         }
 
         @Test
-        void testGetUploaderAvatarUrl() throws ParsingException {
-            assertEquals(
-                    "https://framatube.org/lazy-static/avatars/c6801ff9-cb49-42e6-b2db-3db623248115.jpg",
-                    extractor.getUploaderAvatarUrl());
+        void testGetUploaderAvatars() throws ParsingException {
+            defaultTestImageCollection(extractor.getUploaderAvatars());
         }
 
         @Test
@@ -76,10 +71,8 @@ public class PeertubePlaylistExtractorTest {
         }
 
         @Test
-        void testGetSubChannelAvatarUrl() throws ParsingException {
-            assertEquals(
-                    "https://framatube.org/lazy-static/avatars/e801ccce-8694-4309-b0ab-e6f0e552ef77.png",
-                    extractor.getSubChannelAvatarUrl());
+        void testGetSubChannelAvatars() throws ParsingException {
+            defaultTestImageCollection(extractor.getSubChannelAvatars());
         }
     }
 }

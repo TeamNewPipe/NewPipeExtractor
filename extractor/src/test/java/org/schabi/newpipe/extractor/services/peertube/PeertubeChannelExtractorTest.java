@@ -3,7 +3,6 @@ package org.schabi.newpipe.extractor.services.peertube;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import org.schabi.newpipe.downloader.DownloaderTestImpl;
-import org.schabi.newpipe.extractor.ExtractorAsserts;
 import org.schabi.newpipe.extractor.NewPipe;
 import org.schabi.newpipe.extractor.channel.tabs.ChannelTabs;
 import org.schabi.newpipe.extractor.exceptions.ParsingException;
@@ -13,11 +12,12 @@ import org.schabi.newpipe.extractor.services.peertube.extractors.PeertubeChannel
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
-import static org.schabi.newpipe.extractor.ExtractorAsserts.assertIsSecureUrl;
+import static org.schabi.newpipe.extractor.ExtractorAsserts.assertEmpty;
+import static org.schabi.newpipe.extractor.ExtractorAsserts.assertGreaterOrEqual;
 import static org.schabi.newpipe.extractor.ExtractorAsserts.assertTabsContain;
 import static org.schabi.newpipe.extractor.ServiceList.PeerTube;
+import static org.schabi.newpipe.extractor.services.DefaultTests.defaultTestImageCollection;
 
 /**
  * Test for {@link PeertubeChannelExtractor}
@@ -71,33 +71,33 @@ public class PeertubeChannelExtractorTest {
         //////////////////////////////////////////////////////////////////////////*/
 
         @Test
-        public void testDescription() throws ParsingException {
+        public void testDescription() {
             assertNotNull(extractor.getDescription());
         }
 
         @Test
-        public void testParentChannelName() throws ParsingException {
+        void testParentChannelName() throws ParsingException {
             assertEquals("lqdn", extractor.getParentChannelName());
         }
 
         @Test
-        public void testParentChannelUrl() throws ParsingException {
+        void testParentChannelUrl() throws ParsingException {
             assertEquals("https://video.lqdn.fr/accounts/lqdn", extractor.getParentChannelUrl());
         }
 
         @Test
-        public void testParentChannelAvatarUrl() throws ParsingException {
-            assertIsSecureUrl(extractor.getParentChannelAvatarUrl());
+        void testParentChannelAvatarUrl() {
+            defaultTestImageCollection(extractor.getParentChannelAvatars());
         }
 
         @Test
-        public void testAvatarUrl() throws ParsingException {
-            assertIsSecureUrl(extractor.getAvatarUrl());
+        public void testAvatars() {
+            defaultTestImageCollection(extractor.getAvatars());
         }
 
         @Test
-        public void testBannerUrl() throws ParsingException {
-            assertNull(extractor.getBannerUrl());
+        public void testBanners() {
+            assertEmpty(extractor.getBanners());
         }
 
         @Test
@@ -106,10 +106,11 @@ public class PeertubeChannelExtractorTest {
         }
 
         @Test
-        public void testSubscriberCount() throws ParsingException {
-            ExtractorAsserts.assertGreaterOrEqual(230, extractor.getSubscriberCount());
+        public void testSubscriberCount() {
+            assertGreaterOrEqual(230, extractor.getSubscriberCount());
         }
 
+        @Test
         @Override
         public void testVerified() throws Exception {
             assertFalse(extractor.isVerified());
@@ -176,33 +177,33 @@ public class PeertubeChannelExtractorTest {
         //////////////////////////////////////////////////////////////////////////*/
 
         @Test
-        public void testDescription() throws ParsingException {
+        public void testDescription() {
             assertNotNull(extractor.getDescription());
         }
 
         @Test
-        public void testParentChannelName() throws ParsingException {
+        void testParentChannelName() throws ParsingException {
             assertEquals("nathan", extractor.getParentChannelName());
         }
 
         @Test
-        public void testParentChannelUrl() throws ParsingException {
+        void testParentChannelUrl() throws ParsingException {
             assertEquals("https://skeptikon.fr/accounts/nathan", extractor.getParentChannelUrl());
         }
 
         @Test
-        public void testParentChannelAvatarUrl() throws ParsingException {
-            assertIsSecureUrl(extractor.getParentChannelAvatarUrl());
+        void testParentChannelAvatars() {
+            defaultTestImageCollection(extractor.getParentChannelAvatars());
         }
 
         @Test
-        public void testAvatarUrl() throws ParsingException {
-            assertIsSecureUrl(extractor.getAvatarUrl());
+        public void testAvatars() {
+            defaultTestImageCollection(extractor.getAvatars());
         }
 
         @Test
-        public void testBannerUrl() throws ParsingException {
-            assertNull(extractor.getBannerUrl());
+        public void testBanners() throws ParsingException {
+            assertEmpty(extractor.getBanners());
         }
 
         @Test
@@ -211,10 +212,11 @@ public class PeertubeChannelExtractorTest {
         }
 
         @Test
-        public void testSubscriberCount() throws ParsingException {
-            ExtractorAsserts.assertGreaterOrEqual(700, extractor.getSubscriberCount());
+        public void testSubscriberCount() {
+            assertGreaterOrEqual(700, extractor.getSubscriberCount());
         }
 
+        @Test
         @Override
         public void testVerified() throws Exception {
             assertFalse(extractor.isVerified());
