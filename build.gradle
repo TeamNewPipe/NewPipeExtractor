@@ -29,7 +29,7 @@ allprojects {
     ext {
         nanojsonVersion = "1d9e1aea9049fc9f85e68b43ba39fe7be1c1f751"
         spotbugsVersion = "4.7.1"
-        junitVersion = "5.8.2"
+        junitVersion = "5.9.0"
         checkstyleVersion = "9.3" // do not use latest version (10.0) as it requires compile JDK 11
     }
 }
