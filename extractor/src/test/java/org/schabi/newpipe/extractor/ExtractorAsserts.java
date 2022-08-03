@@ -4,6 +4,7 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 import java.util.Set;
@@ -60,6 +61,16 @@ public class ExtractorAsserts {
         assertFalse(stringToCheck.isEmpty(), message);
     }
 
+    public static void assertNotEmpty(@Nullable final Collection<?> collectionToCheck) {
+        assertNotEmpty(null, collectionToCheck);
+    }
+
+    public static void assertNotEmpty(@Nullable final String message,
+                                      @Nullable final Collection<?> collectionToCheck) {
+        assertNotNull(collectionToCheck);
+        assertFalse(collectionToCheck.isEmpty(), message);
+    }
+
     public static void assertEmpty(String stringToCheck) {
         assertEmpty(null, stringToCheck);
     }
@@ -67,6 +78,12 @@ public class ExtractorAsserts {
     public static void assertEmpty(@Nullable String message, String stringToCheck) {
         if (stringToCheck != null) {
             assertTrue(stringToCheck.isEmpty(), message);
+        }
+    }
+
+    public static void assertEmpty(@Nullable final Collection<?> collectionToCheck) {
+        if (collectionToCheck != null) {
+            assertTrue(collectionToCheck.isEmpty());
         }
     }
 
@@ -159,5 +176,51 @@ public class ExtractorAsserts {
         Arrays.stream(expectedTabs)
                 .forEach(expectedTab -> assertTrue(tabSet.contains(expectedTab),
                         "Missing " + expectedTab + " tab (got " + tabSet + ")"));
+    }
+
+    public static void assertContainsImageUrlInImageCollection(
+            @Nullable final String exceptedImageUrlContained,
+            @Nullable final Collection<Image> imageCollection) {
+        assertNotNull(exceptedImageUrlContained, "exceptedImageUrlContained is null");
+        assertNotNull(imageCollection, "imageCollection is null");
+        assertTrue(imageCollection.stream().anyMatch(image ->
+                image.getUrl().equals(exceptedImageUrlContained)));
+    }
+
+    public static void assertContainsOnlyEquivalentImages(
+            @Nullable final Collection<Image> firstImageCollection,
+            @Nullable final Collection<Image> secondImageCollection) {
+        assertNotNull(firstImageCollection);
+        assertNotNull(secondImageCollection);
+        assertEquals(firstImageCollection.size(), secondImageCollection.size());
+
+        firstImageCollection.forEach(exceptedImage ->
+                assertTrue(secondImageCollection.stream().anyMatch(image ->
+                        exceptedImage.getUrl().equals(image.getUrl())
+                                && exceptedImage.getHeight() == image.getHeight()
+                                && exceptedImage.getWidth() == image.getWidth())));
+    }
+
+    public static void assertNotOnlyContainsEquivalentImages(
+            @Nullable final Collection<Image> firstImageCollection,
+            @Nullable final Collection<Image> secondImageCollection) {
+        assertNotNull(firstImageCollection);
+        assertNotNull(secondImageCollection);
+
+        if (secondImageCollection.size() != firstImageCollection.size()) {
+            return;
+        }
+
+        for (final Image unexpectedImage : firstImageCollection) {
+            for (final Image image : secondImageCollection) {
+                if (!image.getUrl().equals(unexpectedImage.getUrl())
+                        || image.getHeight() != unexpectedImage.getHeight()
+                        || image.getWidth() != unexpectedImage.getWidth()) {
+                    return;
+                }
+            }
+        }
+
+        throw new AssertionError("All excepted images have an equivalent in the image list");
     }
 }
