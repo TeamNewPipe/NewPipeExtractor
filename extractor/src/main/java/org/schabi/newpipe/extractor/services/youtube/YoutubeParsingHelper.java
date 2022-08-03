@@ -28,6 +28,8 @@ import static org.schabi.newpipe.extractor.utils.Utils.UTF_8;
 import static org.schabi.newpipe.extractor.utils.Utils.getStringResultFromRegexArray;
 import static org.schabi.newpipe.extractor.utils.Utils.isNullOrEmpty;
 
+import static java.util.Collections.singletonList;
+
 import com.grack.nanojson.JsonArray;
 import com.grack.nanojson.JsonBuilder;
 import com.grack.nanojson.JsonObject;
@@ -63,7 +65,6 @@ import java.time.OffsetDateTime;
 import java.time.ZoneOffset;
 import java.time.format.DateTimeParseException;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
@@ -595,9 +596,9 @@ public final class YoutubeParsingHelper {
         // @formatter:on
 
         final Map<String, List<String>> headers = new HashMap<>();
-        headers.put("X-YouTube-Client-Name", Collections.singletonList("1"));
+        headers.put("X-YouTube-Client-Name", singletonList("1"));
         headers.put("X-YouTube-Client-Version",
-                Collections.singletonList(HARDCODED_CLIENT_VERSION));
+                singletonList(HARDCODED_CLIENT_VERSION));
 
         // This endpoint is fetched by the YouTube website to get the items of its main menu and is
         // pretty lightweight (around 30kB)
@@ -619,8 +620,8 @@ public final class YoutubeParsingHelper {
         }
         final String url = "https://www.youtube.com/sw.js";
         final Map<String, List<String>> headers = new HashMap<>();
-        headers.put("Origin", Collections.singletonList("https://www.youtube.com"));
-        headers.put("Referer", Collections.singletonList("https://www.youtube.com"));
+        headers.put("Origin", singletonList("https://www.youtube.com"));
+        headers.put("Referer", singletonList("https://www.youtube.com"));
         final String response = getDownloader().get(url, headers).responseBody();
         try {
             clientVersion = getStringResultFromRegexArray(response,
@@ -641,9 +642,7 @@ public final class YoutubeParsingHelper {
         }
         // Don't provide a search term in order to have a smaller response
         final String url = "https://www.youtube.com/results?search_query=&ucbcb=1";
-        final Map<String, List<String>> headers = new HashMap<>();
-        addCookieHeader(headers);
-        final String html = getDownloader().get(url, headers).responseBody();
+        final String html = getDownloader().get(url, getCookieHeader()).responseBody();
         final JsonObject initialData = getInitialData(html);
         final JsonArray serviceTrackingParams = initialData.getObject("responseContext")
                 .getArray("serviceTrackingParams");
@@ -821,13 +820,13 @@ public final class YoutubeParsingHelper {
         // @formatter:on
 
         final Map<String, List<String>> headers = new HashMap<>();
-        headers.put("X-YouTube-Client-Name", Collections.singletonList(
+        headers.put("X-YouTube-Client-Name", singletonList(
                 HARDCODED_YOUTUBE_MUSIC_KEY[1]));
-        headers.put("X-YouTube-Client-Version", Collections.singletonList(
+        headers.put("X-YouTube-Client-Version", singletonList(
                 HARDCODED_YOUTUBE_MUSIC_KEY[2]));
-        headers.put("Origin", Collections.singletonList("https://music.youtube.com"));
-        headers.put("Referer", Collections.singletonList("music.youtube.com"));
-        headers.put("Content-Type", Collections.singletonList("application/json"));
+        headers.put("Origin", singletonList("https://music.youtube.com"));
+        headers.put("Referer", singletonList("music.youtube.com"));
+        headers.put("Content-Type", singletonList("application/json"));
 
         final Response response = getDownloader().post(url, headers, json);
         // Ensure to have a valid response
@@ -851,8 +850,8 @@ public final class YoutubeParsingHelper {
         try {
             final String url = "https://music.youtube.com/sw.js";
             final Map<String, List<String>> headers = new HashMap<>();
-            headers.put("Origin", Collections.singletonList("https://music.youtube.com"));
-            headers.put("Referer", Collections.singletonList("https://music.youtube.com"));
+            headers.put("Origin", singletonList("https://music.youtube.com"));
+            headers.put("Referer", singletonList("https://music.youtube.com"));
             final String response = getDownloader().get(url, headers).responseBody();
                 musicClientVersion = getStringResultFromRegexArray(response,
                         INNERTUBE_CONTEXT_CLIENT_VERSION_REGEXES, 1);
@@ -860,9 +859,7 @@ public final class YoutubeParsingHelper {
                 musicClientName = Parser.matchGroup1(INNERTUBE_CLIENT_NAME_REGEX, response);
         } catch (final Exception e) {
             final String url = "https://music.youtube.com/?ucbcb=1";
-            final Map<String, List<String>> headers = new HashMap<>();
-            addCookieHeader(headers);
-            final String html = getDownloader().get(url, headers).responseBody();
+            final String html = getDownloader().get(url, getCookieHeader()).responseBody();
 
             musicKey = getStringResultFromRegexArray(html, INNERTUBE_API_KEY_REGEXES, 1);
             musicClientVersion = getStringResultFromRegexArray(html,
@@ -1066,7 +1063,7 @@ public final class YoutubeParsingHelper {
             throws IOException, ExtractionException {
         final Map<String, List<String>> headers = new HashMap<>();
         addClientInfoHeaders(headers);
-        headers.put("Content-Type", Collections.singletonList("application/json"));
+        headers.put("Content-Type", singletonList("application/json"));
 
         final Response response = getDownloader().post(YOUTUBEI_V1_URL + endpoint + "?key="
                 + getKey() + DISABLE_PRETTY_PRINT_PARAMETER, headers, body, localization);
@@ -1100,9 +1097,9 @@ public final class YoutubeParsingHelper {
             @Nonnull final String innerTubeApiKey,
             @Nullable final String endPartOfUrlRequest) throws IOException, ExtractionException {
         final Map<String, List<String>> headers = new HashMap<>();
-        headers.put("Content-Type", Collections.singletonList("application/json"));
-        headers.put("User-Agent", Collections.singletonList(userAgent));
-        headers.put("X-Goog-Api-Format-Version", Collections.singletonList("2"));
+        headers.put("Content-Type", singletonList("application/json"));
+        headers.put("User-Agent", singletonList(userAgent));
+        headers.put("X-Goog-Api-Format-Version", singletonList("2"));
 
         final String baseEndpointUrl = YOUTUBEI_V1_GAPIS_URL + endpoint + "?key=" + innerTubeApiKey
                 + DISABLE_PRETTY_PRINT_PARAMETER;
@@ -1306,14 +1303,20 @@ public final class YoutubeParsingHelper {
      */
     public static void addClientInfoHeaders(@Nonnull final Map<String, List<String>> headers)
             throws IOException, ExtractionException {
-        headers.computeIfAbsent("Origin", k -> Collections.singletonList(
-                "https://www.youtube.com"));
-        headers.computeIfAbsent("Referer", k -> Collections.singletonList(
-                "https://www.youtube.com"));
-        headers.computeIfAbsent("X-YouTube-Client-Name", k -> Collections.singletonList("1"));
+        headers.computeIfAbsent("Origin", k -> singletonList("https://www.youtube.com"));
+        headers.computeIfAbsent("Referer", k -> singletonList("https://www.youtube.com"));
+        headers.computeIfAbsent("X-YouTube-Client-Name", k -> singletonList("1"));
         if (headers.get("X-YouTube-Client-Version") == null) {
-            headers.put("X-YouTube-Client-Version", Collections.singletonList(getClientVersion()));
+            headers.put("X-YouTube-Client-Version", singletonList(getClientVersion()));
         }
+    }
+
+    /**
+     * Create a map with the required cookie header.
+     * @return A singleton map containing the header.
+     */
+    public static Map<String, List<String>> getCookieHeader() {
+        return Collections.singletonMap("Cookie", singletonList(generateConsentCookie()));
     }
 
     /**
@@ -1321,10 +1324,9 @@ public final class YoutubeParsingHelper {
      * @see #CONSENT_COOKIE
      * @param headers the headers which should be completed
      */
-    @SuppressWarnings("ArraysAsListWithZeroOrOneArgument")
     public static void addCookieHeader(@Nonnull final Map<String, List<String>> headers) {
         if (headers.get("Cookie") == null) {
-            headers.put("Cookie", Arrays.asList(generateConsentCookie()));
+            headers.put("Cookie", Collections.singletonList(generateConsentCookie()));
         } else {
             headers.get("Cookie").add(generateConsentCookie());
         }

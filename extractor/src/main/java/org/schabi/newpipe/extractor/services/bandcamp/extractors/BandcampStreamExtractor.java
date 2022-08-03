@@ -31,7 +31,6 @@ import org.schabi.newpipe.extractor.utils.Utils;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -149,8 +148,7 @@ public class BandcampStreamExtractor extends StreamExtractor {
 
     @Override
     public List<AudioStream> getAudioStreams() {
-        final List<AudioStream> audioStreams = new ArrayList<>();
-        audioStreams.add(new AudioStream.Builder()
+        return Collections.singletonList(new AudioStream.Builder()
                 .setId("mp3-128")
                 .setContent(albumJson.getArray("trackinfo")
                         .getObject(0)
@@ -159,7 +157,6 @@ public class BandcampStreamExtractor extends StreamExtractor {
                 .setMediaFormat(MediaFormat.MP3)
                 .setAverageBitrate(128)
                 .build());
-        return audioStreams;
     }
 
     @Override

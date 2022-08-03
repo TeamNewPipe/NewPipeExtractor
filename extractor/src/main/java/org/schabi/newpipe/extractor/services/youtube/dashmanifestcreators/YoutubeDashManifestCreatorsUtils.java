@@ -584,10 +584,9 @@ public final class YoutubeDashManifestCreatorsUtils {
             }
         } else if (isAndroidStreamingUrl || isIosStreamingUrl) {
             try {
-                final Map<String, List<String>> headers = new HashMap<>();
-                headers.put("User-Agent", Collections.singletonList(
-                        isAndroidStreamingUrl ? getAndroidUserAgent(null)
-                                : getIosUserAgent(null)));
+                final Map<String, List<String>> headers = Collections.singletonMap("User-Agent",
+                        Collections.singletonList(isAndroidStreamingUrl
+                                ? getAndroidUserAgent(null) : getIosUserAgent(null)));
                 final byte[] emptyBody = "".getBytes(StandardCharsets.UTF_8);
                 return downloader.post(baseStreamingUrl, headers, emptyBody);
             } catch (final IOException | ExtractionException e) {

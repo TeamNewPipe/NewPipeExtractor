@@ -42,7 +42,7 @@ public class Request {
             actualHeaders.putAll(headers);
         }
         if (automaticLocalizationHeader && localization != null) {
-            actualHeaders.putAll(headersFromLocalization(localization));
+            actualHeaders.putAll(getHeadersFromLocalization(localization));
         }
 
         this.headers = Collections.unmodifiableMap(actualHeaders);
@@ -91,7 +91,7 @@ public class Request {
      * A localization object that should be used when executing a request.<br>
      * <br>
      * Usually the {@code Accept-Language} will be set to this value (a helper
-     * method to do this easily: {@link Request#headersFromLocalization(Localization)}).
+     * method to do this easily: {@link Request#getHeadersFromLocalization(Localization)}).
      */
     @Nullable
     public Localization localization() {
@@ -158,7 +158,7 @@ public class Request {
          * A localization object that should be used when executing a request.<br>
          * <br>
          * Usually the {@code Accept-Language} will be set to this value (a helper
-         * method to do this easily: {@link Request#headersFromLocalization(Localization)}).
+         * method to do this easily: {@link Request#getHeadersFromLocalization(Localization)}).
          */
         public Builder localization(final Localization localizationToSet) {
             this.localization = localizationToSet;
@@ -238,23 +238,17 @@ public class Request {
 
     @SuppressWarnings("WeakerAccess")
     @Nonnull
-    public static Map<String, List<String>> headersFromLocalization(
+    public static Map<String, List<String>> getHeadersFromLocalization(
             @Nullable final Localization localization) {
         if (localization == null) {
             return Collections.emptyMap();
         }
 
-        final Map<String, List<String>> headers = new LinkedHashMap<>();
-        if (!localization.getCountryCode().isEmpty()) {
-            headers.put("Accept-Language",
-                    Collections.singletonList(localization.getLocalizationCode()
-                            + ", " + localization.getLanguageCode() + ";q=0.9"));
-        } else {
-            headers.put("Accept-Language",
-                    Collections.singletonList(localization.getLanguageCode()));
-        }
-
-        return headers;
+        final String languageCode = localization.getLanguageCode();
+        final List<String> languageCodeList = Collections.singletonList(
+                localization.getCountryCode().isEmpty() ? languageCode
+                        : localization.getLocalizationCode() + ", " + languageCode + ";q=0.9");
+        return Collections.singletonMap("Accept-Language", languageCodeList);
     }
 
     /*//////////////////////////////////////////////////////////////////////////
